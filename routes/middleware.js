@@ -23,6 +23,22 @@ exports.initLocals = function(req, res, next) {
 	
 	var locals = res.locals;
 	
+	// Create the different navigation groupings
+	locals.siteNav = [
+		{ label: 'About Us',		key: 'about',			href: '/about'},
+		{ label: 'Our Services',	key: 'services',		href: '/services'},
+		{ label: 'Success Stories',	key: 'successStories',	href: '/success-stories'},
+		{ label: 'Upcoming Events',	key: 'upcomingEvents',	href: '/upcoming-events'}
+	]
+
+	locals.mainNav = [
+		{ label: 'Considering Adoption',	key: 'consideringAdoption',		href: '/considering-adoption'},
+		{ label: 'Meet the Children',		key: 'meetTheChildren',			href: '/meet-the-children'},
+		{ label: 'Family Support Services',	key: 'familySupportServices',	href: '/family-support-services'},
+		{ label: 'For Social Workers',		key: 'forSocialWorkers',		href: '/for-social-workers'},
+		{ label: 'Ways to Help',			key: 'waysToHelp',				href: '/ways-to-help'}
+	]
+
 	locals.navLinks = [
 		{ label: 'Home',		key: 'home',		href: '/' }
 	];

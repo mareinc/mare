@@ -21,37 +21,41 @@
 		
 	</head>
 	<body>
-		<div id="header">
-			<div class="container">
-				<div role="navigation" class="navbar navbar-default">
-					<div class="container-fluid">
-						<div class="navbar-header">
-							<button type="button" data-toggle="collapse" data-target=".navbar-collapse" class="navbar-toggle">
-								<span class="sr-only">Toggle navigation</span>
-								<span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
-							</button>
-							<a href="/" class="navbar-brand">MARE</a>
-						</div>
-						<div class="collapse navbar-collapse">
-							<ul class="nav navbar-nav navbar-left">
-									{{# each navLinks}}
-									<li {{#ifeq ../section key}}class="active"{{else}}{{/ifeq}}>
-										<a href="{{ href }}">{{ label }}</a>
-									</li>
-								{{/each}}
-							</ul>
-							<ul class="nav navbar-nav navbar-right">
-								{{#if user}}
-								<li><a href="/keystone/signout">Sign Out</a></li>
-								{{else}}
-								<li><a href="/keystone/signin">Sign In</a></li>
-								{{/if}}
-							</ul>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
+		<header>
+			<img src="" alt="logo-placeholder">
+			<nav class="top-nav">
+				<ul>
+					<li class="top-nav-item">Home</li>
+					<li class="top-nav-item">Language
+						<span class="language-option">En</span>
+						<span class="language-option">Sp</li>
+					<li class="top-nav-item">
+						<a href="/keystone/signin">Log in</a>
+						<span class="down-arrow"></span>
+					</li>
+					<li class="top-nav-item donate">Donate</li>
+				</ul>
+			</nav>
+			<nav class="site-nav">
+				<ul>
+					{{# each siteNav}}
+						<li>
+							<a href="{{ href }}">{{ label }}</a>
+						</li>
+					{{/each}}
+				</ul>
+			</nav>
+			<nav class="main-nav">
+				<ul>
+					{{# each mainNav}}
+						<li>
+							<a href="{{ href }}">{{ label }}</a>
+						</li>
+					{{/each}}
+				</ul>
+			</nav>
+		</header>
+		
 		<div id="body">
 			<!--
 				Flash messages allow you to display once-off status messages to users, e.g. form
@@ -84,11 +88,27 @@
 			<!-- The content block should contain the body of your template's content-->
 			{{{body}}}
 		</div>
-		<div class="container">
-			<div id="footer">
-				<p>Powered by <a href="http://keystonejs.com" target="_blank">KeystoneJS</a>.</p>
+		<footer>
+			<nav>
+				<span>Contact Us</span>
+				<span>Our Partners</span>
+				<span>Privacy Policy</span>
+				<span>Non Discrimination Policy</span>
+				<span>Terms of Use</span>
+			</nav>
+			<nav class="social">
+				<span>social media icons placeholder</span>
+			</nav>
+			<img class="sponsor" src="">
+			<div>
+				<span class="address">45 Franklin Street, 5th Floor, Boston, MA 02110-1301</span>
+				<span class="phone">Phone: 617-54-ADOPT (542-3678)</span>
+				<span class="phone">Toll Free: 1-800-882-1176</span>
+				<span class="fax">Fax: 617-542-1006</span>
+				<span class="disclaimer">MARE is partially funded by the Massachusetts Department of Children and Families (DCF)</span>
+				<span class="copyright">&copy; 2015 MARE Inc. All rights reserved.</span>
 			</div>
-		</div>
+		</footer>
 		{{!--
 			//- jQuery 1.11.1 is included by default, and required by both Bootstrap
 			//- and the KeystoneJS Content Editor. If you are not targeting IE8,
