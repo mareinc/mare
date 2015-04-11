@@ -18,6 +18,8 @@ User.add({
 
 // Provide access to Keystone
 User.schema.virtual('canAccessKeystone').get(function() {
+	'use strict';
+	
 	return this.isAdmin;
 });
 

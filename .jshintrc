@@ -1,60 +1,65 @@
 {
-  "bitwise": true,
-  "camelcase": true,
-  "curly": false,  /* custom */
+  /*
+   * ENVIRONMENTS
+   * =================
+   */
+
+  // Define globals exposed by modern browsers.
+  "browser": true,
+
+  // Define globals exposed by jQuery.
+  "jquery": true,
+
+  // Define globals exposed by Node.js.
+  "node": true,
+
+  // TODO: Consider adding devel (for non production)
+  // TODO: Consider adding browserify
+  // TODO: Consider adding mocha
+  // NOTE: When using es3 = true, it may get in the way of Mocha and generate erros during linting
+
+  /*
+   * ENFORCING OPTIONS
+   * =================
+   */
+
+  // Curly braces are required around blocks in loops and conditionals.
+  "curly": true,
+
+  // Prohibit use of == and != in favor of === and !==.
   "eqeqeq": true,
-  "es3": true,
-  "forin": true,
-  "freeze": true,
-  "immed": true,
-  "indent": 1,  /* custom */
+
+  // Code must adhere to ECMAScript 3 specifications to support IE 6/7/8/9.
+  "es3": false,
+
+  // Enables warnings about using identifiers which are defined in future versions of JavaScript.
+  "futurehostile": true,
+
+  // Prohibit use of a variable before it is defined.
   "latedef": true,
-  "newcap": true,
-  "noarg": true,
-  "noempty": true,
-  "nonbsp": true,
-  "nonew": true,
-  "plusplus": false,  /* custom */
-  "quotmark": true,
+
+  // Prohibit use of explicitly undeclared variables.
   "undef": true,
+
+  // Warn when variables are defined but never used.
   "unused": true,
-  "strict": false, /* enable later */
-  "trailing": true,
-  "maxparams": false,
-  "maxdepth": false,
-  "maxstatements": false,
-  "maxcomplexity": false,
-  "maxlen": false,
-  "asi": false,
-  "boss": true,  /* custom */
-  "debug": false,
-  "eqnull": true,  /* custom */
-  "esnext": false,
-  "evil": false,
-  "expr": false,
-  "funcscope": false,
-  "gcl": false,
-  "globalstrict": false,
-  "iterator": false,
-  "lastsemic": false,
-  "laxbreak": false,
-  "laxcomma": false,
-  "loopfunc": false,
-  "moz": false,
-  "multistr": false,
-  "notypeof": false,
-  "proto": false,
-  "scripturl": false,
-  "smarttabs": false,
-  "shadow": false,
-  "sub": false,
-  "supernew": false,
-  "noyield": false,
-  "browser": true,  /* custom */
-  "node": true,  /* custom */
-  "onevar": true,  /* custom */
-  "globals": {  /* custom */
-    /* MOCHA: http://stackoverflow.com/a/19572515/130638 */
+
+  /*
+   * RELAXING OPTIONS
+   * =================
+   */
+
+  // Suppress warnings about == null comparisons.
+  "eqnull": true,
+
+  // Enforce placing 'use strict' at the top function scope
+  "strict": true,
+
+  /*
+   * MOCHA OPTIONS - http://stackoverflow.com/a/19572515/130638
+   * =================
+   */
+  "globals": {
     "describe"   : false,
     "it"         : false,
     "before"     : false,

@@ -33,6 +33,7 @@ var routes = {
 
 // Setup Route Bindings
 exports = module.exports = function(app) {
+	'use strict';
 	
 	// Views
 	app.get('/', routes.views.index);

@@ -11,8 +11,11 @@
  * can be previewed at /keystone/test-email/{key}
  */
 
-var keystone = require('keystone');
+/* NOTE: Uncomment this when you're ready to set up email
 
-module.exports = {
-	
-};
+  var keystone = require('keystone');
+
+  module.exports = {
+  	
+  };
+*/

@@ -7,6 +7,8 @@
 		<title>MARE</title>
 		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 		<link href="/styles/site.css" rel="stylesheet">
+		{{!-- this is temporary until I get preprocessing to work, remove this and the file once I do --}}
+		<link href="/styles/temp.css" rel="stylesheet">
 		
 		{{!-- This file provides the default styling for the KeystoneJS Content Editor 
 			- only renders when user is logged in and admin--}}
@@ -21,31 +23,35 @@
 		
 	</head>
 	<body>
-		<header>
-			<img src="" alt="logo-placeholder">
-			<nav class="top-nav">
-				<ul>
-					<li class="top-nav-item">Home</li>
-					<li class="top-nav-item">Language
-						<span class="language-option">En</span>
-						<span class="language-option">Sp</li>
-					<li class="top-nav-item">
-						<a href="/keystone/signin">Log in</a>
-						<span class="down-arrow"></span>
-					</li>
-					<li class="top-nav-item donate">Donate</li>
-				</ul>
-			</nav>
-			<nav class="site-nav">
-				<ul>
-					{{# each siteNav}}
-						<li>
-							<a href="{{ href }}">{{ label }}</a>
+		<header class="global-header">
+			<span class="logo-container">
+				<img src="/images/logo-temp.png" alt="logo">
+			</span>
+			<span class="header-navigation-container">
+				<nav class="nav top-nav">
+					<ul>
+						<li class="top-nav-item">Home</li>
+						<li class="top-nav-item">Language
+							<span class="language-option">En</span>
+							<span class="language-option">Sp</li>
+						<li class="top-nav-item">
+							<a href="/keystone/signin">Log in</a>
+							<span class="glyphicon glyphicon-triangle-bottom"></span>
 						</li>
-					{{/each}}
-				</ul>
-			</nav>
-			<nav class="main-nav">
+						<li class="top-nav-item donate">Donate</li>
+					</ul>
+				</nav>
+				<nav class="nav site-nav">
+					<ul>
+						{{# each siteNav}}
+							<li>
+								<a href="{{ href }}">{{ label }}</a>
+							</li>
+						{{/each}}
+					</ul>
+				</nav>
+			</span>
+			<nav class="nav main-nav">
 				<ul>
 					{{# each mainNav}}
 						<li>
@@ -88,7 +94,7 @@
 			<!-- The content block should contain the body of your template's content-->
 			{{{body}}}
 		</div>
-		<footer>
+		<footer class="global-footer">
 			<nav>
 				<span>Contact Us</span>
 				<span>Our Partners</span>
@@ -97,9 +103,9 @@
 				<span>Terms of Use</span>
 			</nav>
 			<nav class="social">
-				<span>social media icons placeholder</span>
+				<img src="/images/social-icons-temp.png" alt="social-icons">
 			</nav>
-			<img class="sponsor" src="">
+			<img class="sponsor" src="/images/sponsor-jordans-temp.png" alt="sponsor-image">
 			<div>
 				<span class="address">45 Franklin Street, 5th Floor, Boston, MA 02110-1301</span>
 				<span class="phone">Phone: 617-54-ADOPT (542-3678)</span>
