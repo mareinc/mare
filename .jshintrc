@@ -1,7 +1,7 @@
 {
   /*
    * ENVIRONMENTS
-   * =================
+   * ============
    */
 
   // Define globals exposed by modern browsers.
@@ -16,7 +16,6 @@
   // TODO: Consider adding devel (for non production)
   // TODO: Consider adding browserify
   // TODO: Consider adding mocha
-  // NOTE: When using es3 = true, it may get in the way of Mocha and generate erros during linting
 
   /*
    * ENFORCING OPTIONS
@@ -28,9 +27,6 @@
 
   // Prohibit use of == and != in favor of === and !==.
   "eqeqeq": true,
-
-  // Code must adhere to ECMAScript 3 specifications to support IE 6/7/8/9.
-  "es3": false,
 
   // Enables warnings about using identifiers which are defined in future versions of JavaScript.
   "futurehostile": true,
@@ -46,7 +42,7 @@
 
   /*
    * RELAXING OPTIONS
-   * =================
+   * ================
    */
 
   // Suppress warnings about == null comparisons.
@@ -57,8 +53,9 @@
 
   /*
    * MOCHA OPTIONS - http://stackoverflow.com/a/19572515/130638
-   * =================
+   * ==========================================================
    */
+
   "globals": {
     "describe"   : false,
     "it"         : false,
