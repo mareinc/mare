@@ -1,17 +1,14 @@
 var keystone = require('keystone'),
     Types = keystone.Field.Types;
 
-/**
- * Menu Model
- * ==========
- */
-
+// Create model. Additional options allow menu name to be used as a reference in dropdown menus
 var Menu = new keystone.List('Menu', {
     autokey: { path: 'slug', from: 'label', unique: true },
     map: { name: 'label' },
     defaultSort: '-location'
 });
 
+// Create fields
 Menu.add({
     label: { type: Types.Text, required: true, initial: true, index: true },
     url: { type: Types.Url, required: true, initial: true, index: true },
@@ -19,9 +16,6 @@ Menu.add({
     parent: { type: Types.Relationship, ref: 'Menu', many: false, initial: true, filters: {location: ':location'} }
 });
 
-/**
- * Registration
- */
-
+// Define default columns in the admin interface and register the model
 Menu.defaultColumns = 'label, url, location, parent';
 Menu.register();
