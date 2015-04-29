@@ -35,7 +35,8 @@ keystone.init({
   'session': true,
   'auth': true,
   'user model': 'User',
-  'cookie secret': 'tq+qW&CaS~{bTSw|nG=]KGW#2X*u}<?$v9S|LaD|K*.q>.a<&rC[A~6%9rEwtl~h'
+  // TODO: Check to see if this should remain private, especially if the project is open source
+  'cookie secret': 'tq+qW&CaS~{bTSw|nG=]KGW#2X*u}<?$v9S|LaD|K*.q>.a<&rC[A~6%9rEwtl~h',
 
 });
 

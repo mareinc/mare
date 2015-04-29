@@ -1,131 +1,132 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<title>MARE</title>
-		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
-		<link href="/styles/site.css" rel="stylesheet">
-		{{!-- this is temporary until I get preprocessing to work, remove this and the file once I do --}}
-		<link href="/styles/temp.css" rel="stylesheet">
-		
-		{{!-- This file provides the default styling for the KeystoneJS Content Editor 
-			- only renders when user is logged in and admin--}}
-		{{{isAdminEditorCSS user}}}
-		
-		{{!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries
-		//- Safely remove this block if you are not targeting IE8 --}}
-		<!--[if lt IE 9]>
-			<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js" />
-			<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js" />
-		<![endif]-->
-		
-	</head>
-	<body>
-		<header class="global-header">
-			<span class="logo-container">
-				<img src="/images/logo-temp.png" alt="logo">
-			</span>
-			<span class="header-navigation-container">
-				<nav class="nav top-nav">
-					<ul>
-						<li class="top-nav-item">Home</li>
-						<li class="top-nav-item">Language
-							<span class="language-option">En</span>
-							<span class="language-option">Sp</li>
-						<li class="top-nav-item">
-							<a href="/keystone/signin">Log in</a>
-							<span class="glyphicon glyphicon-triangle-bottom"></span>
-						</li>
-						<li class="top-nav-item donate">Donate</li>
-					</ul>
-				</nav>
-				<nav class="nav site-nav">
-					<ul>
-						{{# each siteNav}}
-							<li>
-								<a href="{{ url }}">{{ label }}</a>
-							</li>
-						{{/each}}
-					</ul>
-				</nav>
-			</span>
-			<nav class="nav main-nav">
-				<ul>
-					{{# each mainNav}}
-						<li>
-							<a href="{{ href }}">{{ label }}</a>
-						</li>
-					{{/each}}
-				</ul>
-			</nav>
-		</header>
-		
-		<div id="body">
-			<!--
-				Flash messages allow you to display once-off status messages to users, e.g. form
-				validation errors, success messages, etc
-			-->
-			{{#if messages}}
-			<div id="flash-messages" class="container">
-				{{#if messages.info}}
-				<div class="alert alert-info">
-						{{{flashMessages messages.info}}}
-				</div>
-				{{/if}}
-				{{#if messages.success}}
-				<div class="alert alert-success">
-						{{{flashMessages messages.success}}}
-				</div>
-				{{/if}}
-				{{#if messages.warning}}
-				<div class="alert alert-warning">
-						{{{flashMessages messages.warning}}}
-				</div>
-				{{/if}}
-				{{#if messages.error}}
-				<div class="alert alert-danger">
-						{{{flashMessages messages.error}}}
-				</div>
-				{{/if}}
-			</div>
-			{{/if}}
-			<!-- The content block should contain the body of your template's content-->
-			{{{body}}}
-		</div>
-		<footer class="global-footer">
-			<nav>
-				<span>Contact Us</span>
-				<span>Our Partners</span>
-				<span>Privacy Policy</span>
-				<span>Non Discrimination Policy</span>
-				<span>Terms of Use</span>
-			</nav>
-			<nav class="social">
-				<img src="/images/social-icons-temp.png" alt="social-icons">
-			</nav>
-			<img class="sponsor" src="/images/sponsor-jordans-temp.png" alt="sponsor-image">
-			<div>
-				<span class="address">45 Franklin Street, 5th Floor, Boston, MA 02110-1301</span>
-				<span class="phone">Phone: 617-54-ADOPT (542-3678)</span>
-				<span class="phone">Toll Free: 1-800-882-1176</span>
-				<span class="fax">Fax: 617-542-1006</span>
-				<span class="disclaimer">MARE is partially funded by the Massachusetts Department of Children and Families (DCF)</span>
-				<span class="copyright">&copy; 2015 MARE Inc. All rights reserved.</span>
-			</div>
-		</footer>
-		{{!--
-			//- jQuery 1.11.1 is included by default, and required by both Bootstrap
-			//- and the KeystoneJS Content Editor. If you are not targeting IE8,
-			//- you can upgrade to 2.1.1 (also bundled) for better performance.
-		--}}
-		<script src="/js/lib/jquery/jquery-1.11.1.min.js"></script>
-		{{!--
-			//- Customise which Bootstrap javascript files are served by including
-			//- them specifically here, instead of bootstrap-3.2.0.min.js
-		--}}
-		<script src="/js/lib/bootstrap/bootstrap-3.2.0.min.js"></script>
-		{{{isAdminEditorJS user}}}
-	</body>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>MARE</title>
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link href="/styles/site.css" rel="stylesheet">
+    {{!-- this is temporary until I get preprocessing to work, remove this and the file once I do --}}
+    <link href="/styles/temp.css" rel="stylesheet">
+
+    <link href="/modules/slideshow/style.css" rel="stylesheet">
+    {{!-- This file provides the default styling for the KeystoneJS Content Editor 
+      - only renders when user is logged in and admin--}}
+    {{{isAdminEditorCSS user}}}
+    
+    {{!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries
+    //- Safely remove this block if you are not targeting IE8 --}}
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js" />
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js" />
+    <![endif]-->
+    
+  </head>
+  <body>
+    <header class="global-header">
+      <span class="logo-container">
+        <img src="/images/logo-temp.png" alt="logo">
+      </span>
+      <span class="header-navigation-container">
+        <nav class="nav top-nav">
+          <ul>
+            <li class="top-nav-item">Home</li>
+            <li class="top-nav-item">Language
+              <span class="language-option">En</span>
+              <span class="language-option">Sp</li>
+            <li class="top-nav-item">
+              <a href="/keystone/signin">Log in</a>
+              <span class="glyphicon glyphicon-triangle-bottom"></span>
+            </li>
+            <li class="top-nav-item donate">Donate</li>
+          </ul>
+        </nav>
+        <nav class="nav site-nav">
+          <ul>
+            {{# each siteNav}}
+              <li>
+                <a href="{{ url }}">{{ label }}</a>
+              </li>
+            {{/each}}
+          </ul>
+        </nav>
+      </span>
+      <nav class="nav main-nav">
+        <ul>
+          {{# each mainNav}}
+            <li>
+              <a href="{{ href }}">{{ label }}</a>
+            </li>
+          {{/each}}
+        </ul>
+      </nav>
+    </header>
+    
+    <div id="body">
+      <!--
+        Flash messages allow you to display once-off status messages to users, e.g. form
+        validation errors, success messages, etc
+      -->
+      {{#if messages}}
+      <div id="flash-messages" class="container">
+        {{#if messages.info}}
+        <div class="alert alert-info">
+            {{{flashMessages messages.info}}}
+        </div>
+        {{/if}}
+        {{#if messages.success}}
+        <div class="alert alert-success">
+            {{{flashMessages messages.success}}}
+        </div>
+        {{/if}}
+        {{#if messages.warning}}
+        <div class="alert alert-warning">
+            {{{flashMessages messages.warning}}}
+        </div>
+        {{/if}}
+        {{#if messages.error}}
+        <div class="alert alert-danger">
+            {{{flashMessages messages.error}}}
+        </div>
+        {{/if}}
+      </div>
+      {{/if}}
+      <!-- The content block should contain the body of your template's content-->
+      {{{body}}}
+    </div>
+    <footer class="global-footer">
+      <nav>
+        <span>Contact Us</span>
+        <span>Our Partners</span>
+        <span>Privacy Policy</span>
+        <span>Non Discrimination Policy</span>
+        <span>Terms of Use</span>
+      </nav>
+      <nav class="social">
+        <img src="/images/social-icons-temp.png" alt="social-icons">
+      </nav>
+      <img class="sponsor" src="/images/sponsor-jordans-temp.png" alt="sponsor-image">
+      <div>
+        <span class="address">45 Franklin Street, 5th Floor, Boston, MA 02110-1301</span>
+        <span class="phone">Phone: 617-54-ADOPT (542-3678)</span>
+        <span class="phone">Toll Free: 1-800-882-1176</span>
+        <span class="fax">Fax: 617-542-1006</span>
+        <span class="disclaimer">MARE is partially funded by the Massachusetts Department of Children and Families (DCF)</span>
+        <span class="copyright">&copy; 2015 MARE Inc. All rights reserved.</span>
+      </div>
+    </footer>
+    {{!--
+      //- jQuery 1.11.1 is included by default, and required by both Bootstrap
+      //- and the KeystoneJS Content Editor. If you are not targeting IE8,
+      //- you can upgrade to 2.1.1 (also bundled) for better performance.
+    --}}
+    <script src="/js/lib/jquery/jquery-1.11.1.min.js"></script>
+    {{!--
+      //- Customise which Bootstrap javascript files are served by including
+      //- them specifically here, instead of bootstrap-3.2.0.min.js
+    --}}
+    <script src="/js/lib/bootstrap/bootstrap-3.2.0.min.js"></script>
+    {{{isAdminEditorJS user}}}
+  </body>
 </html>
