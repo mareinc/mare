@@ -56,10 +56,10 @@ exports.initLocals = function(req, res, next) {
     Menu.model.find()
         .where('title', target)
         .exec(function(err, targetMenu) {
-          var primaryNavItemIDs = targetMenu[0].get('pages');
+        //var primaryNavItemIDs = targetMenu[0].get('pages');
           // Called in this way for now to make sure we have the primary nav items before
           // moving onto the next step.
-          attachMainMenuItems(list, primaryNavItemIDs);
+        //attachMainMenuItems(list, primaryNavItemIDs);
 
 
     });
