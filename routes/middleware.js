@@ -28,6 +28,7 @@ exports.initLocals = function(req, res, next) {
 
   // Load menu models
   var Menu = keystone.list('Menu');
+  var Page = keystone.list('Page');
   
   // Create the navigation groups
 
@@ -35,8 +36,9 @@ exports.initLocals = function(req, res, next) {
   locals.siteNav = [];
   locals.mainNav = [];
 
+  // Note: Might want to bind these to a data- attribute to prevent the need to explicitly call the menu(s) by name
   populateMenu(locals.siteNav, 'site menu');
-  populateMenu(locals.mainNav, 'main menu');
+  //populateMenu(locals.mainNav, 'main menu');
 
   locals.navLinks = [
     { label: 'Home', key: 'home', href: '/' }
@@ -46,30 +48,54 @@ exports.initLocals = function(req, res, next) {
   
   next();
 
-  function populateMenu(menu, location) {
-    Menu.model.find()
-        .where('location', location)
-        .where('parent', undefined)
-        .exec(function(err, menus) {
-          _.each(menus, function(menuItem) {
-            // Recursively attach all child menu items
-            //attachSubMenus(location, menuItem);
+  /* 
+      TODO: PULL INIT OF ADMIN VS NON-ADMIN INTO DIFFERENT MIDDLEWARE 
+  */
+  function populateMenu(list, target) {
 
-            menu.push(menuItem);
+    Menu.model.find()
+        .where('title', target)
+        .exec(function(err, targetMenu) {
+          var primaryNavItemIDs = targetMenu[0].get('pages');
+          // Called in this way for now to make sure we have the primary nav items before
+          // moving onto the next step.
+          attachMainMenuItems(list, primaryNavItemIDs);
+
+
+    });
+
+    function attachMainMenuItems(list, primaryNavItemIDs) {
+      // Loop through all top level list elements
+      // Recursively check for elements with each target element as a parent
+      Page.model.find()
+          .where('_id')
+          .in(primaryNavItemIDs)
+          .exec(function(err, menuItems) {
+            _.each(menuItems, function(menuItem) {
+              list.push({
+                key: menuItem.key,
+                url: menuItem.url,
+                title: menuItem.title
+              })
+            });
           });
-        });
-  }
+      }
+    }
+
+    function attachSubMenuItems() {
+
+    }
   // This feels like an inefficient way to build the menu, perhaps it can be done with a better DB query
-  // function attachSubMenus(location, menu) {
+  // function attachSubMenus(target, menu) {
   //   Menu.model.find()
-  //       .where('location', location)
+  //       .where('location', target)
   //       .where('parent', menu._id)
   //       .exec(function(err, menus) {
   //         menu.children = [];
 
   //         _.each(menus, function(menuItem) {
   //           // Recursively attach all child menu items
-  //           attachSubMenus(location, menuItem);
+  //           attachSubMenus(target, menuItem);
 
   //           menu.children.push(menuItem);
   //         });
