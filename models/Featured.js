@@ -10,22 +10,28 @@ var Featured = new keystone.List('Featured Item', {
 });
 
 // Create fields
-Featured.add({
-    title: { type: Types.Text, required: true, initial: true, index: true },
-    summary: { type: Types.Textarea, required: true, initial: true },
-    url: { type: Types.Url, noedit: true },
-    isEvent: { type: Types.Boolean, label: 'is an event', initial: true },
-    eventReference: { type: Types.Relationship, label: 'event', ref: 'Event', many: false, dependsOn: { isEvent: true }, initial: true },
-    pageReference: { type: Types.Relationship, label: 'page', ref: 'Page', many: false, dependsOn: { isEvent: false }, initial: true },
-    image: { type: Types.CloudinaryImage }
-});
+Featured.add(
+    { title: { type: Types.Text, default: 'Featured Items', noedit: true, initial: true } },
 
-// Pre Save
-Featured.schema.pre('save', function(next) {
-    this.url = this.isEvent ? this.eventReference.url : this.pageReference.url;
-    next();
-});
+    { heading: 'About Us' },
+    { aboutUsTitle: { type: Types.Text, label: 'title', required: true, initial: true, index: true } },
+    { aboutUsSummary: { type: Types.Textarea, label: 'summary', required: true, initial: true } },
+    { aboutUsTarget: { type: Types.Relationship, ref: 'Page', label: 'target page', filter: { type: 'aboutUs' }, initial: true } },
+      // Need URL field.  Should auto-populate from the selected page
+
+    { heading: 'Success Story' },
+    { successStoryTitle: { type: Types.Text, label: 'title', required: true, initial: true, index: true } },
+    { successStorySummary: { type: Types.Textarea, label: 'summary', required: true, initial: true } },
+    { successStoryTarget: { type: Types.Relationship, ref: 'Page', label: 'target page', filter: { type: 'successStory' }, initial: true } },
+      // Need URL field.  Should auto-populate from the selected page
+
+    { heading: 'Upcoming Event' },
+    { upcomingEventTitle: { type: Types.Text, label: 'title', required: true, initial: true, index: true } },
+    { upcomingEventSummary: { type: Types.Textarea, label: 'summary', required: true, initial: true } },
+    { upcomingEventTarget: { type: Types.Relationship, ref: 'Event', label: 'target event', initial: true } }
+      // Need URL field.  Should auto-populate from the selected page
+);
 
 // Define default columns in the admin interface and register the model
-Featured.defaultColumns = 'title, summary, url, image';
+Featured.defaultColumns = 'title, aboutUsTarget, successStoryTarget, upcomingEventTarget';
 Featured.register();

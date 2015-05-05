@@ -6,7 +6,8 @@ var keystone = require('keystone'),
 var Page = new keystone.List('Page', {
     track: true,
     autokey: { path: 'key', from: 'title', unique: true },
-    map: { name: 'title' }
+    map: { name: 'title' },
+    defaultSort: '-menu subMenu'
 });
 
 // Create fields
@@ -14,18 +15,17 @@ Page.add({
     title: { type: String, label: 'page title', required: true, initial: true, index: true },
     url: { type: Types.Url, noedit: true },
     isMenuElement: { type: Types.Boolean, label: 'appears in a menu', initial: true, index: true },
-    menu: { type: Types.Select, label: 'menu', options: 'site menu, main menu', dependsOn: { isMenuElement: true }, initial: true },
-    subMenu: { type: Types.Relationship, label: 'sub menu', ref: 'Page', many: false, dependsOn: { menu: 'main menu' }, filters: { menu: ':menu' }, initial: true },
+    menu: { type: Types.Relationship, label: 'menu', ref: 'Menu', dependsOn: { isMenuElement: true }, initial: true },
+    subMenu: { type: Types.Relationship, label: 'sub menu', ref: 'Page', many: false, dependsOn: { isMenuElement: true }, filters: { menu: ':menu' }, initial: true },
     content: { type: Types.Html, wysiwyg: true, initial: true }
 });
 
 // Pre Save
-// ------------------------------
 Page.schema.pre('save', function(next) {
     this.url = '/' + this.key;
     next();
 });
 
 // Define default columns in the admin interface and register the model
-Page.defaultColumns = 'title, url, isMenuElement, menu, subMenu';
+Page.defaultColumns = 'title, url, menu, subMenu';
 Page.register();

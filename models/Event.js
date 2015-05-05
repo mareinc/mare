@@ -13,8 +13,11 @@ var Event = new keystone.List('Event', {
 Event.add({
     title: { type: String, label: 'event name', required: true, initial: true, index: true },
     url: { type: Types.Url, noedit: true },
-    starts: { type: Types.Datetime, default: Date.now },
-    ends: { type: Types.Datetime }
+    location: { type: Types.Location, initial: true },
+    starts: { type: Types.Datetime, default: Date.now, initial: true },
+    ends: { type: Types.Datetime, initial: true },
+    description: { type: Types.Html, wysiwyg: true, initial: true }
+    //contact: { type: Types.Relationship, label: 'contact person', ref: 'Contact'}
 });
 
 // Pre Save
