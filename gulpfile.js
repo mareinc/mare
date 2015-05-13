@@ -1,8 +1,9 @@
-var gulp = require('gulp'),
-	jshint = require('gulp-jshint'),
-	jscs = require('gulp-jscs'),
-	jshintReporter = require('jshint-stylish'),
-	watch = require('gulp-watch');
+var gulp 			= require('gulp'),
+	jshint 			= require('gulp-jshint'),
+	jscs 			= require('gulp-jscs'),
+	jshintReporter 	= require('jshint-stylish'),
+	watch 			= require('gulp-watch');
+	browserify 		= require('browserify');
 
 /*
  * Create variables for our project paths so we can change in one place
@@ -32,4 +33,15 @@ gulp.task('watch:lint', function () {
 		.pipe(watch())
 		.pipe(jshint())
 		.pipe(jshint.reporter(jshintReporter));
+});
+
+// tasks for concatenating, minifying, and adding CommonJS functionality via Browserify
+gulp.task('scripts', function() {
+    // Single entry point to browserify 
+    gulp.src('src/js/app.js')
+        .pipe(browserify({
+          insertGlobals : true,
+          debug : !gulp.env.production
+        }))
+        .pipe(gulp.dest('./build/js'))
 });
