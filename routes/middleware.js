@@ -13,6 +13,9 @@ var _ = require('underscore');
 // Load in Keystone for model references
 var keystone = require('keystone');
 
+// Load Q for promises
+var Q = require('q');
+
 /**
   Initialises the standard view locals
   
@@ -26,85 +29,78 @@ exports.initLocals = function(req, res, next) {
   
   var locals = res.locals;
 
-  // Load menu models
-  var Menu = keystone.list('Menu');
-  var Page = keystone.list('Page');
-  
-  // Create the navigation groups
-
-  // Create arrays to hold our menu objects
-  locals.siteNav = [];
-  locals.mainNav = [];
-
-  // Note: Might want to bind these to a data- attribute to prevent the need to explicitly call the menu(s) by name
-  populateMenu(locals.siteNav, 'site menu');
-  //populateMenu(locals.mainNav, 'main menu');
-
   locals.navLinks = [
     { label: 'Home', key: 'home', href: '/' }
   ];
   
   locals.user = req.user;
+
+  // Load models needed to build out menus
+  var Menu = keystone.list('Menu');
+  var Page = keystone.list('Page');
+
+  // Create arrays for each menu
+  var siteNav = locals.siteNav = [];
+  var mainNav = locals.mainNav = [];
+
+  // Load menu data via deferreds to ensure they are fully populated before moving on
+  Q.all([
+    populateMenu(siteNav, 'site menu'),
+    populateMenu(mainNav, 'main menu')
+  ]).then(function() {
+    next();
+  }).done();
+
+  // Debt: Try the populate ability using .populate() in the page query
+  // Debt: Think about making menu loading more modular, and storing that middleware in the /lib directory (See comment at top of page)
+  function populateMenu(list, title) {
+    var deferred = Q.defer();
+
+    // Find the menu in order to extract it's ID
+    Menu.model.findOne()
+        .where('title', title)
+        .exec()
+        .then(function(menu) {
+
+          // Use the menu ID to find all page references it contains
+          Page.model.find()
+              .where('menu', menu.id)
+              .exec()
+              .then(function (pages) {
+                // Debt: Clean up promise usage, binding of locals.siteNav and locals.mainNav is ugly
+                if(list === locals.siteNav) {
+                  locals.siteNav = buildMenuElement(pages);
+                } else if(list === locals.mainNav) {
+                  locals.mainNav = buildMenuElement(pages);
+                }
+
+                deferred.resolve();
+              });
+        });
+
+        return deferred.promise;
   
-  next();
+    function buildMenuElement(pages, target) {
+      
+      var menuArr = [];
 
-  /* 
-      TODO: PULL INIT OF ADMIN VS NON-ADMIN INTO DIFFERENT MIDDLEWARE 
-  */
-  function populateMenu(list, target) {
+      // Debt: Use better Underscore method for filtering pages
+      _.each(pages, function(page) {
 
-    Menu.model.find()
-        .where('title', target)
-        .exec(function(err, targetMenu) {
-        //var primaryNavItemIDs = targetMenu[0].get('pages');
-          // Called in this way for now to make sure we have the primary nav items before
-          // moving onto the next step.
-        //attachMainMenuItems(list, primaryNavItemIDs);
+        // == instead of === because subMenu is an Object and target is a String
+        if(page.get('subMenu') == target) {
+                    menuArr.push({
+                      url: page.url,
+                      title: page.title,
+                      children: buildMenuElement(pages, page.id)
+                    });
+                  }
+                });
 
-
-    });
-
-    function attachMainMenuItems(list, primaryNavItemIDs) {
-      // Loop through all top level list elements
-      // Recursively check for elements with each target element as a parent
-      Page.model.find()
-          .where('_id')
-          .in(primaryNavItemIDs)
-          .exec(function(err, menuItems) {
-            _.each(menuItems, function(menuItem) {
-              list.push({
-                key: menuItem.key,
-                url: menuItem.url,
-                title: menuItem.title
-              })
-            });
-          });
-      }
+      return menuArr;
     }
-
-    function attachSubMenuItems() {
-
-    }
-  // This feels like an inefficient way to build the menu, perhaps it can be done with a better DB query
-  // function attachSubMenus(target, menu) {
-  //   Menu.model.find()
-  //       .where('location', target)
-  //       .where('parent', menu._id)
-  //       .exec(function(err, menus) {
-  //         menu.children = [];
-
-  //         _.each(menus, function(menuItem) {
-  //           // Recursively attach all child menu items
-  //           attachSubMenus(target, menuItem);
-
-  //           menu.children.push(menuItem);
-  //         });
-  //         console.log(menu);         
-  //       });
-  // }
-  
+  };
 };
-
 
 /**
   Fetches and clears the flashMessages before a view is rendered
