@@ -1,5 +1,4 @@
 var keystone = require('keystone'),
-    _ = require('underscore'),
     Types = keystone.Field.Types;
 
 // Create model. Additional options allow menu name to be used what auto-generating URLs
@@ -14,10 +13,10 @@ var Page = new keystone.List('Page', {
 Page.add({
     title: { type: String, label: 'page title', required: true, initial: true, index: true },
     url: { type: Types.Url, noedit: true },
-    isMenuElement: { type: Types.Boolean, label: 'appears in a menu', initial: true, index: true },
-    menu: { type: Types.Relationship, label: 'menu', ref: 'Menu', dependsOn: { isMenuElement: true }, initial: true },
-    subMenu: { type: Types.Relationship, label: 'sub menu', ref: 'Page', many: false, dependsOn: { isMenuElement: true }, filters: { menu: ':menu' }, initial: true },
-    content: { type: Types.Html, wysiwyg: true, initial: true }
+    isMenuElement: { type: Types.Boolean, label: 'appears in a menu', index: true },
+    menu: { type: Types.Relationship, label: 'menu', ref: 'Menu', dependsOn: { isMenuElement: true } },
+    subMenu: { type: Types.Relationship, label: 'sub menu', ref: 'Page', many: false, dependsOn: { isMenuElement: true }, filters: { menu: ':menu' } },
+    content: { type: Types.Html, wysiwyg: true }
 });
 
 // Pre Save
