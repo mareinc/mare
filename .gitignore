@@ -29,3 +29,7 @@ node_modules
 
 # Ignore .DS_Store files on OS X
 .DS_Store
+
+# Ignore New Relic app configuration and logging files
+newrelic.js
+newrelic_agent.log
