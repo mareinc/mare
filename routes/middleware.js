@@ -54,51 +54,51 @@ exports.initLocals = function(req, res, next) {
   // Debt: Try the populate ability using .populate() in the page query
   // Debt: Think about making menu loading more modular, and storing that middleware in the /lib directory (See comment at top of page)
   function populateMenu(list, title) {
-    var deferred = Q.defer();
+    // var deferred = Q.defer();
 
-    // Find the menu in order to extract it's ID
-    Menu.model.findOne()
-        .where('title', title)
-        .exec()
-        .then(function(menu) {
+    // // Find the menu in order to extract it's ID
+    // Menu.model.findOne()
+    //     .where('title', title)
+    //     .exec()
+    //     .then(function(menu) {
 
-          // Use the menu ID to find all page references it contains
-          Page.model.find()
-              .where('menu', menu.id)
-              .exec()
-              .then(function (pages) {
-                // Debt: Clean up promise usage, binding of locals.siteNav and locals.mainNav is ugly
-                if(list === locals.siteNav) {
-                  locals.siteNav = buildMenuElement(pages);
-                } else if(list === locals.mainNav) {
-                  locals.mainNav = buildMenuElement(pages);
-                }
+    //       // Use the menu ID to find all page references it contains
+    //       Page.model.find()
+    //           .where('menu', menu.id)
+    //           .exec()
+    //           .then(function (pages) {
+    //             // Debt: Clean up promise usage, binding of locals.siteNav and locals.mainNav is ugly
+    //             if(list === locals.siteNav) {
+    //               locals.siteNav = buildMenuElement(pages);
+    //             } else if(list === locals.mainNav) {
+    //               locals.mainNav = buildMenuElement(pages);
+    //             }
 
-                deferred.resolve();
-              });
-        });
+    //             deferred.resolve();
+    //           });
+    //     });
 
-        return deferred.promise;
+    //     return deferred.promise;
   
-    function buildMenuElement(pages, target) {
+    // function buildMenuElement(pages, target) {
       
-      var menuArr = [];
+    //   var menuArr = [];
 
-      // Debt: Use better Underscore method for filtering pages
-      _.each(pages, function(page) {
+    //   // Debt: Use better Underscore method for filtering pages
+    //   _.each(pages, function(page) {
 
-        // == instead of === because subMenu is an Object and target is a String
-        if(page.get('subMenu') == target) {
-                    menuArr.push({
-                      url: page.url,
-                      title: page.title,
-                      children: buildMenuElement(pages, page.id)
-                    });
-                  }
-                });
+    //     // == instead of === because subMenu is an Object and target is a String
+    //     if(page.get('subMenu') == target) {
+    //                 menuArr.push({
+    //                   url: page.url,
+    //                   title: page.title,
+    //                   children: buildMenuElement(pages, page.id)
+    //                 });
+    //               }
+    //             });
 
-      return menuArr;
-    }
+    //   return menuArr;
+    // }
   };
 };
 
