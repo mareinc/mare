@@ -1,21 +1,19 @@
-var keystone = require('keystone'),
-    Types = keystone.Field.Types;
+var keystone = require('keystone')
 
 // Create model. Additional options allow menu name to be used as a reference in dropdown menus
 var Menu = new keystone.List('Menu', {
-    autokey: { path: 'slug', from: 'label', unique: true },
-    map: { name: 'label' },
-    defaultSort: '-location'
+    autokey: { path: 'key', from: 'title', unique: true },
+    map: { name: 'title' }
 });
 
 // Create fields
 Menu.add({
-    label: { type: Types.Text, required: true, initial: true, index: true },
-    url: { type: Types.Url, required: true, initial: true, index: true },
-    location: { type: Types.Select, options: 'site menu, main menu', default: 'main menu', initial: true },
-    parent: { type: Types.Relationship, ref: 'Menu', many: false, initial: true, filters: {location: ':location'} }
+    title: { type: String, required: true, initial: true, index: true },
 });
 
+// Bind to the page relationship to show all pages added to the menu
+Menu.relationship({ path: 'pages', ref: 'Page', refPath: 'menu' });
+
 // Define default columns in the admin interface and register the model
-Menu.defaultColumns = 'label, url, location, parent';
+Menu.defaultColumns = 'title';
 Menu.register();
