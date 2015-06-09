@@ -78,12 +78,30 @@ keystone.set('email locals', {
 
 // Be sure to update this rule to include your site's actual domain, and add
 // other rules your email templates require.
+
+// UNCOMMENT SECTION BELOW TO START WORK ACCOMODATING MORE ENVIRONMENT TYPES
+
+// var path =  switch(keystone.get('env')) {
+//               case 'development': 'http://development.adoptions.io/'; break;
+//               case 'test'       : 'http://staging.adoptions.io/';     break;
+//               case 'production' : 'http://adoptions.io/';             break;
+//               default           : 'http://localhost:3000/':
+//             }
+
+// keystone.set('email rules', [{
+//   find: '/images/',
+//   replace: path + 'images/';
+// }, {
+//   find '/keystone/',
+//   replace: path + 'keystone/';
+// }]);
+
 keystone.set('email rules', [{
   find: '/images/',
-  replace: (keystone.get('env') === 'production') ? 'http://www.your-server.com/images/' : 'http://localhost:3000/images/'
+  replace: (keystone.get('env') === 'production') ? 'http://adoptions.io/images/' : 'http://localhost:3000/images/'
 }, {
   find: '/keystone/',
-  replace: (keystone.get('env') === 'production') ? 'http://www.your-server.com/keystone/' : 'http://localhost:3000/keystone/'
+  replace: (keystone.get('env') === 'production') ? 'http://adoptions.io/keystone/' : 'http://localhost:3000/keystone/'
 }]);
 
 // Load your project's email test routes
