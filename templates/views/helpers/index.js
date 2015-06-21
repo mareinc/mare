@@ -92,7 +92,7 @@ module.exports = function() {
 	// Returns an html-string of the categories on the post.
 	// By default, categories are separated by commas.
 	// input. categories:['tech', 'js']
-	// output. 'Filed Undder <a href="blog/tech">tech</a>, <a href="blog/js">js</a>'
+	// output. 'Filed Under <a href="blog/tech">tech</a>, <a href="blog/js">js</a>'
 	
 	_helpers.categoryList = function(categories, options) {
 		var autolink = _.isString(options.hash.autolink) && options.hash.autolink === "false" ? false : true,

@@ -41,6 +41,10 @@ keystone.init({
 
 });
 
+// Cloudinary configuration
+// optional, will prefix each image public_id with [{prefix}]/{list.path}/{field.path}/
+keystone.set('cloudinary folders', true);
+
 // Load your project's Models
 keystone.import('models');
 
