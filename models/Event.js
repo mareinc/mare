@@ -17,7 +17,7 @@ Event.add({
     starts: { type: Types.Datetime, default: Date.now, initial: true },
     ends: { type: Types.Datetime, initial: true },
     description: { type: Types.Html, wysiwyg: true, initial: true },
-    graphic: { type: Types.CloudinaryImage, select: true, selectPrefix: '/events/' }
+    graphic: { type: Types.CloudinaryImage, folder: 'events/', autoCleanup : true }
     //contact: { type: Types.Relationship, label: 'contact person', ref: 'Contact'}
 });
 
