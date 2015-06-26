@@ -55,9 +55,12 @@
       <nav class="nav main-nav">
         <ul>
           {{# each mainNav}}
-            <li>
-              <a href="{{ url }}">{{ title }}</a>
-            </li>
+            <li>{{ title }}</li>
+              {{# if subNav }}
+                {{# each subNav}}
+                  <li><a href={{href}}>{{title}}</a></li>
+                {{/each}}
+              {{/if}}
           {{/each}}
         </ul>
       </nav>
