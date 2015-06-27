@@ -37,6 +37,7 @@ exports = module.exports = function(app) {
 	
 	// Views
 	app.get('/'				, routes.views.index);
+	app.get('/page/*'		, routes.views.page);
 	app.get('/photo-listing', routes.views.photoListing);
 	
 	
