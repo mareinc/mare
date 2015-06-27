@@ -6,7 +6,7 @@ var Page = new keystone.List('Page', {
     track: true,
     autokey: { path: 'key', from: 'title', unique: true },
     map: { name: 'title' },
-    defaultSort: '-menu subMenu'
+    defaultSort: 'title'
 });
 
 // Create fields
@@ -23,5 +23,5 @@ Page.schema.pre('save', function(next) {
 });
 
 // Define default columns in the admin interface and register the model
-Page.defaultColumns = 'title, url, menu, subMenu';
+Page.defaultColumns = 'title, url';
 Page.register();
