@@ -1,6 +1,69 @@
 {{!< default}}
 <div class="main">
-  
-    <div>This is the base page for the child gallery template</div>
-
+    <div class="section-header">
+        <span class="section-title">Meet the Children</span>
+        <picture class="section-header-image" src="http://placehold.it/680x310&text=section header image" alt="section-header-image-placeholder"></picture>
+    </div>
+    <aside class="sidebar">
+        <nav class="section-menu">
+            <ul>
+                <li><a href="/">Who are the Children?</a></li>
+                <li><a href="/">Waiting Child Profiles</a></li>
+                <li><a href="/">Search for Children</a></li>
+                <li><a href="/">Other Ways to Meet Waiting Children</a></li>
+            </ul>
+        </nav>
+        <section class="donate"></section>
+        <aside class="popout">
+            <span class="description">Popout description</span>
+            <picture class="popout-image" src="http://placehold.it/280x310&text=popout image" alt="popout-image-placeholder"></picture>
+            <span class="popout-type">Success Stories</span>
+            <span class="popout-title">This is the title for the popout<span>
+            <div class="learn-more">
+                <span>Learn more</span><span class="icon-double-arrow-left">&gt;&gt;</span>
+            </div>
+        </aside>
+    </aside>
+    <div>
+        <span class="page-header">Waiting Child Profiles</span>
+        <button class="question">
+    </div>
+    <div class="filters">
+        <label for="order">Order:</label>
+        <select>
+            <option>Most Recent</option>
+            <option>Option 2</option>
+            <option>Option 3</option>
+        </select>
+        <span class="icon-text-unit">
+            <picture class="video"></picture>
+            <span class="text">Video Profile</span>
+        </span>
+        <span class="icon-text-unit">
+            <picture class="wednesdays-child"></picture>
+            <span class="text">Wednesday's Child</span>
+        </span>
+    </div>
+    <section class="profiles" style="background-color:white">
+    <script>
+        console.log(children);
+        console.log(locals.children);
+        console.log(res.locals.children);
+    </script>
+    {{# each children}}
+        <div class="loud">THIS REPRESENTS A CHILD</div>
+    {{/each}}
+        <span class="profile">
+            <picture></picture>
+            <div class="details">
+                <span class="name">Krystal</span>
+                <span class="age">Age 14</span>
+                <span class="icons"></span>
+                <span class="view-profile">
+                    <span>View Profile</span>
+                    <span class="double-arrow-left">&gt;&gt;</span>
+                </span>
+            </div>
+        </span>
+    </section>
 </div>

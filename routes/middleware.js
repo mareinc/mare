@@ -13,9 +13,6 @@ var _ = require('underscore');
 // Load in Keystone for model references
 var keystone = require('keystone');
 
-// Load Q for promises
-var Q = require('q');
-
 /**
   Initialises the standard view locals
   
