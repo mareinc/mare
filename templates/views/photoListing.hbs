@@ -2,7 +2,7 @@
 <div class="main">
     <div class="section-header">
         <span class="section-title">Meet the Children</span>
-        <picture class="section-header-image" src="http://placehold.it/680x310&text=section header image" alt="section-header-image-placeholder"></picture>
+        <img class="section-image" src="http://placehold.it/680x310&text=section image" alt="section-image-placeholder"></img>
     </div>
     <aside class="sidebar">
         <nav class="section-menu">
@@ -14,11 +14,11 @@
             </ul>
         </nav>
         <section class="donate"></section>
-        <aside class="popout">
+        <aside class="callout">
             <span class="description">Popout description</span>
-            <picture class="popout-image" src="http://placehold.it/280x310&text=popout image" alt="popout-image-placeholder"></picture>
-            <span class="popout-type">Success Stories</span>
-            <span class="popout-title">This is the title for the popout<span>
+            <img class="callout-image" src="http://placehold.it/280x310&text=callout image" alt="callout-image-placeholder"></img>
+            <span class="callout-type">Success Stories</span>
+            <span class="callout-title">This is the title for the callout<span>
             <div class="learn-more">
                 <span>Learn more</span><span class="icon-double-arrow-left">&gt;&gt;</span>
             </div>
@@ -36,25 +36,20 @@
             <option>Option 3</option>
         </select>
         <span class="icon-text-unit">
-            <picture class="video"></picture>
+            <img class="video"></img>
             <span class="text">Video Profile</span>
         </span>
         <span class="icon-text-unit">
-            <picture class="wednesdays-child"></picture>
+            <img class="wednesdays-child"></img>
             <span class="text">Wednesday's Child</span>
         </span>
     </div>
     <section class="profiles" style="background-color:white">
-    <script>
-        console.log(children);
-        console.log(locals.children);
-        console.log(res.locals.children);
-    </script>
     {{# each children}}
-        <div class="loud">THIS REPRESENTS A CHILD</div>
+        <div>THIS REPRESENTS A CHILD</div>
     {{/each}}
         <span class="profile">
-            <picture></picture>
+            <img></img>
             <div class="details">
                 <span class="name">Krystal</span>
                 <span class="age">Age 14</span>
