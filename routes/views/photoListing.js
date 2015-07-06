@@ -14,7 +14,7 @@ exports = module.exports = function(req, res) {
     Child.model.find()
         .exec()
         .then(function (results) {
-
+            
             locals.children = results;
 
             view.render('photoListing');

@@ -2,7 +2,7 @@
 <div class="main">
     <div class="section-header">
         <span class="section-title">Meet the Children</span>
-        <img class="section-image" src="http://placehold.it/680x310&text=section image" alt="section-image-placeholder"></img>
+        <img class="section-image" src="http://placehold.it/680x310&text=section image" alt="section-image-placeholder">
     </div>
     <aside class="sidebar">
         <nav class="section-menu">
@@ -16,7 +16,7 @@
         <section class="donate"></section>
         <aside class="callout">
             <span class="description">Popout description</span>
-            <img class="callout-image" src="http://placehold.it/280x310&text=callout image" alt="callout-image-placeholder"></img>
+            <img class="callout-image" src="http://placehold.it/280x310&text=callout image" alt="callout-image-placeholder">
             <span class="callout-type">Success Stories</span>
             <span class="callout-title">This is the title for the callout<span>
             <div class="learn-more">
@@ -30,29 +30,27 @@
     </div>
     <div class="filters">
         <label for="order">Order:</label>
-        <select>
-            <option>Most Recent</option>
-            <option>Option 2</option>
-            <option>Option 3</option>
+        <select id="order" name="order">
+            <option value="most-recent" selected>Most Recent</option>
+            <option value="option-2">Option 2</option>
+            <option value="option-3">Option 3</option>
         </select>
         <span class="icon-text-unit">
-            <img class="video"></img>
+            <img class="video">
             <span class="text">Video Profile</span>
         </span>
         <span class="icon-text-unit">
-            <img class="wednesdays-child"></img>
+            <img class="wednesdays-child">
             <span class="text">Wednesday's Child</span>
         </span>
     </div>
     <section class="profiles" style="background-color:white">
     {{# each children}}
-        <div>THIS REPRESENTS A CHILD</div>
-    {{/each}}
         <span class="profile">
-            <img></img>
+            <img src={{ image.url }}>
             <div class="details">
-                <span class="name">Krystal</span>
-                <span class="age">Age 14</span>
+                <span class="name">{{ name.first }} {{ name.last }}</span>
+                <span class="age">{{ age }}</span>
                 <span class="icons"></span>
                 <span class="view-profile">
                     <span>View Profile</span>
@@ -60,5 +58,6 @@
                 </span>
             </div>
         </span>
+    {{/each}}
     </section>
 </div>
