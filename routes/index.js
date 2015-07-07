@@ -36,7 +36,9 @@ exports = module.exports = function(app) {
 	'use strict';
 	
 	// Views
-	app.get('/', routes.views.index);
+	app.get('/'				, routes.views.index);
+	app.get('/page/*'		, routes.views.page);
+	app.get('/photo-listing', routes.views.photoListing);
 	
 	
 	// NOTE: To protect a route so that only admins can see it, use the requireUser middleware:

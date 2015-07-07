@@ -9,6 +9,8 @@
     <link href="/styles/site.css" rel="stylesheet">
     {{!-- this is temporary until I get preprocessing to work, remove this and the file once I do --}}
     <link href="/styles/temp.css" rel="stylesheet">
+    {{!-- TODO: This needs to be placed in the photo listing file, or will be rolled into a main file via Gulp --}}
+    <link href="/styles/photo-listing.css" rel="stylesheet">
 
     <link href="/modules/slideshow/style.css" rel="stylesheet">
     {{!-- This file provides the default styling for the KeystoneJS Content Editor 
@@ -55,9 +57,12 @@
       <nav class="nav main-nav">
         <ul>
           {{# each mainNav}}
-            <li>
-              <a href="{{ url }}">{{ title }}</a>
-            </li>
+            <li>{{ title }}</li>
+              {{# if subNav }}
+                {{# each subNav}}
+                  <li><a href={{href}}>{{title}}</a></li>
+                {{/each}}
+              {{/if}}
           {{/each}}
         </ul>
       </nav>

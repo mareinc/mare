@@ -13,9 +13,6 @@ var _ = require('underscore');
 // Load in Keystone for model references
 var keystone = require('keystone');
 
-// Load Q for promises
-var Q = require('q');
-
 /**
   Initialises the standard view locals
   
@@ -35,71 +32,55 @@ exports.initLocals = function(req, res, next) {
   
   locals.user = req.user;
 
-  // Load models needed to build out menus
-  var Menu = keystone.list('Menu');
-  var Page = keystone.list('Page');
+  // Create the site menu navigation elements
+  var siteNav = locals.siteNav = [
+    { title: 'About us', href: '/about-us' },
+    { title: 'Our Services', href: '/our-services' },
+    { title: 'Success Stories', href: '/success-stories' },
+    { title: 'Upcoming Events', href: '/upcoming-events' }
+  ];
 
-  // Create arrays for each menu
-  var siteNav = locals.siteNav = [];
-  var mainNav = locals.mainNav = [];
+  // Create the main menu navigation.
+  var mainNav = locals.mainNav = [
+    { title: 'Considering Adoption?', subMenu: [
+      { title: 'Types of Adoption', href: '/types-of-adoption' },
+      { title: 'Can I adopt a Child from Foster Care?', href: '/can-i-adopt-a-child-from-foster-care' },
+      { title: 'Steps in the Process', href: '/steps-in-the-process' },
+      { title: 'How Can MARE Help?', href: '/how-can-mare-help' }
+    ]},
+    { title: 'Meet the Children', subMenu: [
+      { title: 'Who are the Children?', href: '/who-are-the-children' },
+      { title: 'Waiting Child Profiles', href: '/waiting-child-profiles' },
+      { title: 'Ways to Meet Waiting Children', href: '/ways-to-meet-waiting-children' },
+      { title: 'For Homestudied Families', href: '/for-homestudied-families' }
+    ]},
+    { title: 'Family Support Services', subMenu: [
+      { title: 'How Does MARE Support Families', href: '/how-does-mare-support-families' },
+      { title: 'Friend of the Family Mentor Program', href: '/friend-of-the-family-mentor-program' },
+      { title: 'Other Family Support Services', href: '/other-family-support-services' }
+    ]},
+    { title: 'For Social Workers', subMenu: [
+      { title: 'Register a Child', href: '/register-a-child' },
+      { title: 'Recruitment Opportunities', href: '/recruitment-opportunities' },
+      { title: 'Attend Events', href: '/attend-events' },
+      { title: 'Register a Family', href: '/register-a-family' },
+      { title: 'Use Online Matching', href: '/use-online-matching' }
+    ]},
+    { title: 'Ways to Help', subMenu: [
+      { title: 'For Individuals', href: '/for-individuals' },
+      { title: 'For Businesses', href: '/for-businesses' },
+      { title: 'Experienced Families', href: '/experienced-families' },
+      { title: 'Walk for Adoption &amp; Other Events', href: '/walk-for-adoption-and-other-events' },
+      { title: 'Donate Your Car', href: '/donate-your-car' },
+      { title: 'Creative Ways to Support MARE', subMenu: [
+        { title: 'Host a Workplace Lunch &amp; Learn', href: '/host-a-workplace-lunch-and-learn' },
+        { title: 'Another Creative Way to Help', href: '/another-creative-way-to-help' },
+        { title: 'Yet a Third Way to Help', href: '/yet-a-third-way-to-help' },
+        { title: 'And Even a Fourth Way', href: '/and-even-a-fourth-way' }
+      ]}
+    ]}];
 
-  // Load menu data via deferreds to ensure they are fully populated before moving on
-  Q.all([
-    populateMenu(siteNav, 'site menu'),
-    populateMenu(mainNav, 'main menu')
-  ]).then(function() {
-    next();
-  }).done();
-
-  // Debt: Try the populate ability using .populate() in the page query
-  // Debt: Think about making menu loading more modular, and storing that middleware in the /lib directory (See comment at top of page)
-  function populateMenu(list, title) {
-    // var deferred = Q.defer();
-
-    // // Find the menu in order to extract it's ID
-    // Menu.model.findOne()
-    //     .where('title', title)
-    //     .exec()
-    //     .then(function(menu) {
-
-    //       // Use the menu ID to find all page references it contains
-    //       Page.model.find()
-    //           .where('menu', menu.id)
-    //           .exec()
-    //           .then(function (pages) {
-    //             // Debt: Clean up promise usage, binding of locals.siteNav and locals.mainNav is ugly
-    //             if(list === locals.siteNav) {
-    //               locals.siteNav = buildMenuElement(pages);
-    //             } else if(list === locals.mainNav) {
-    //               locals.mainNav = buildMenuElement(pages);
-    //             }
-
-    //             deferred.resolve();
-    //           });
-    //     });
-
-    //     return deferred.promise;
-  
-    // function buildMenuElement(pages, target) {
-      
-    //   var menuArr = [];
-
-    //   // Debt: Use better Underscore method for filtering pages
-    //   _.each(pages, function(page) {
-
-    //     // == instead of === because subMenu is an Object and target is a String
-    //     if(page.get('subMenu') == target) {
-    //                 menuArr.push({
-    //                   url: page.url,
-    //                   title: page.title,
-    //                   children: buildMenuElement(pages, page.id)
-    //                 });
-    //               }
-    //             });
-
-    //   return menuArr;
-    // }
-  };
+  next();
 };
 
 /**

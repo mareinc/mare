@@ -19,30 +19,30 @@ Child.add({
         part3: { type: Types.Textarea, label: 'And here\'s what others say...', required: true, initial: true },
         part4: { type: Types.Textarea, label: 'If I could have my own special wish...', required: true, initial: true }
     },
-     primaryLanguage: { type: Types.Select, label: 'Primary Language', options: 'English, Spanish, Portuguese', default: 'English', required: true, initial: true },
-//     video: {},
-//     image: {type: Types.CloudinaryImage, folder: 'path/to/image'},
-     ethnicity: { type: Types.Select, label: 'Ethnicity', options: 'Mixed Race, African American, Hispanic/Latino, Asian, Middle Eastern, Pacific Islander, Native American/Alaskan, Other', required: true, initial: true },
-     gender: { type: Types.Select, label: 'Gender', options: 'Male, Female', required: true, initial: true },
-     legalStatus: { type: Types.Select, label: 'Legal Status', options: 'Legally Free, Something Else', required: true, initial: true },
-     wednesdaysChild: { type: Types.Boolean, label: 'Wednesday\'s Child?' },
-//     linked Social Worker
-//     linked to interested families at various steps in the process
-     contactWithSiblings: { type: Types.Boolean, label: 'Has contact with siblings?' },
-//     linkedSiblings: {},
-     contactWithParents: { type: Types.Boolean, label: 'Has contact with parents?' },
-     physicalNeeds: { type: Types.Select, label: 'Physical needs', options: 'Mild, Moderate, Severe', required: true, initial: true },
-     physicalNeedsDescription: { type: Types.Textarea, label: 'Description of physical needs', dependsOn: { physicalNeeds: true } },
-     emotionalNeeds: { type: Types.Select, label: 'Emotional needs', options: 'Mild, Moderate, Severe', required: true, initial: true },
-     emotionalNeedsDescription: { type: Types.Textarea, label: 'Description of emotional needs', dependsOn: { emotionalNeeds: true } },
-     intellectualNeeds: { type: Types.Select, label: 'Intellectual needs', options: 'Mild, Moderate, Severe', required: true, initial: true },
-     intellectualNeedsDescription: { type: Types.Textarea, label: 'Description of intellectual needs', dependsOn: { intellectualNeeds: true } }
-     //disabilities: { types: Types.Select, label: 'Disabilities', options: 'Autism, Other', multiple: true, initial: true }
+    primaryLanguage: { type: Types.Select, label: 'Primary Language', options: 'English, Spanish, Portuguese', default: 'English', required: true, initial: true },
+    // video: { type: Types.CloudinaryVideo, folder: 'children/', autoCleanup: true },
+    image: { type: Types.CloudinaryImage, folder: 'children/', autoCleanup: true },
+    ethnicity: { type: Types.Select, label: 'Ethnicity', options: 'Mixed Race, African American, Hispanic/Latino, Asian, Middle Eastern, Pacific Islander, Native American/Alaskan, Other', required: true, initial: true },
+    gender: { type: Types.Select, label: 'Gender', options: 'Male, Female', required: true, initial: true },
+    legalStatus: { type: Types.Select, label: 'Legal Status', options: 'Legally Free, Something Else', required: true, initial: true },
+    wednesdaysChild: { type: Types.Boolean, label: 'Wednesday\'s Child?' },
+//    linked Social Worker
+//    linked to interested families at various steps in the process
+    contactWithSiblings: { type: Types.Boolean, label: 'Has contact with siblings?' },
+//    linkedSiblings: {},
+    contactWithParents: { type: Types.Boolean, label: 'Has contact with parents?' },
+    physicalNeeds: { type: Types.Select, label: 'Physical needs', options: 'Mild, Moderate, Severe', required: true, initial: true },
+    // physicalNeedsDescription: { type: Types.Textarea, label: 'Description of physical needs', dependsOn: { physicalNeeds: true } },
+    emotionalNeeds: { type: Types.Select, label: 'Emotional needs', options: 'Mild, Moderate, Severe', required: true, initial: true },
+    // emotionalNeedsDescription: { type: Types.Textarea, label: 'Description of emotional needs', dependsOn: { emotionalNeeds: true } },
+    intellectualNeeds: { type: Types.Select, label: 'Intellectual needs', options: 'Mild, Moderate, Severe', required: true, initial: true },
+    // intellectualNeedsDescription: { type: Types.Textarea, label: 'Description of intellectual needs', dependsOn: { intellectualNeeds: true } }
+    disabilities: { type: Types.Select, label: 'Disabilities', options: 'Autism, Other', multiple: true, initial: true }
  });
 
 // Pre Save
 Child.schema.pre('save', function(next) {
-    // TODO: Assign a registration number
+    // TODO: Assign a registration number if one isn't assigned
     next();
 });
 
