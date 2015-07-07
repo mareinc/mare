@@ -1,63 +1,197 @@
 {{!< default}}
 <div class="main">
-    <div class="section-header">
-        <span class="section-title">Meet the Children</span>
-        <img class="section-image" src="http://placehold.it/680x310&text=section image" alt="section-image-placeholder">
-    </div>
-    <aside class="sidebar">
-        <nav class="section-menu">
-            <ul>
-                <li><a href="/">Who are the Children?</a></li>
-                <li><a href="/">Waiting Child Profiles</a></li>
-                <li><a href="/">Search for Children</a></li>
-                <li><a href="/">Other Ways to Meet Waiting Children</a></li>
-            </ul>
-        </nav>
-        <section class="donate"></section>
-        <aside class="callout">
-            <span class="description">Popout description</span>
-            <img class="callout-image" src="http://placehold.it/280x310&text=callout image" alt="callout-image-placeholder">
-            <span class="callout-type">Success Stories</span>
-            <span class="callout-title">This is the title for the callout<span>
-            <div class="learn-more">
-                <span>Learn more</span><span class="icon-double-arrow-left">&gt;&gt;</span>
-            </div>
+    <div class="content">
+        <div class="section-header">
+            <span class="section-title">Meet the Children</span>
+            <img class="section-image" src="/images/meet-the-children.png" alt="section-image-placeholder">
+        </div>
+        <aside class="sidebar">
+            <nav class="section-menu">
+                <ul>
+                    <li><a href="/">Who are the Children?</a></li>
+                    <li><a href="/">Waiting Child Profiles</a></li>
+                    <li><a href="/">Search for Children</a></li>
+                    <li><a href="/">Other Ways to Meet Waiting Children</a></li>
+                </ul>
+            </nav>
+            <section class="donate"></section>
+            <aside class="callout">
+                <span class="description">"It feels so good to be a family," says Brady, who's getting used to being called "Mommy."</span>
+                <img class="callout-image" src="/images/success-story-popout.png" alt="callout-image-placeholder">
+                <span class="callout-controls">
+                    <div class="callout-type">Success Stories</div>
+                    <div class="callout-title">Meet the Whitney Family</div>
+                    <div class="learn-more">
+                        <span>Learn more</span><span class="icon-double-arrow-left">&gt;&gt;</span>
+                    </div>
+                </span>
+            </aside>
         </aside>
-    </aside>
-    <div>
-        <span class="page-header">Waiting Child Profiles</span>
-        <button class="question">
-    </div>
-    <div class="filters">
-        <label for="order">Order:</label>
-        <select id="order" name="order">
-            <option value="most-recent" selected>Most Recent</option>
-            <option value="option-2">Option 2</option>
-            <option value="option-3">Option 3</option>
-        </select>
-        <span class="icon-text-unit">
-            <img class="video">
-            <span class="text">Video Profile</span>
-        </span>
-        <span class="icon-text-unit">
-            <img class="wednesdays-child">
-            <span class="text">Wednesday's Child</span>
-        </span>
-    </div>
-    <section class="profiles" style="background-color:white">
-    {{# each children}}
-        <span class="profile">
-            <img src={{ image.url }}>
-            <div class="details">
-                <span class="name">{{ name.first }} {{ name.last }}</span>
-                <span class="age">{{ age }}</span>
-                <span class="icons"></span>
-                <span class="view-profile">
-                    <span>View Profile</span>
-                    <span class="double-arrow-left">&gt;&gt;</span>
+        <section class="main-column">
+            <div>
+                <span class="page-header">Waiting Child Profiles</span>
+                <button class="question">HAVE A QUESTION?</button>
+            </div>
+            <div class="filters">
+                <label for="order">Order:</label>
+                <select id="order" name="order">
+                    <option value="most-recent" selected>Most Recent</option>
+                    <option value="option-2">Option 2</option>
+                    <option value="option-3">Option 3</option>
+                </select>
+                <span class="icon-text-unit">
+                    <img class="video">
+                    <span class="text">Video Profile</span>
+                </span>
+                <span class="icon-text-unit">
+                    <img class="wednesdays-child">
+                    <span class="text">Wednesday's Child</span>
                 </span>
             </div>
-        </span>
-    {{/each}}
-    </section>
+            <section class="profile-zone">
+            <ul class="profiles">
+            {{# each children}}
+                <li class="profile">
+                    <img src={{ image.url }}>
+                    <div class="details">
+                        <span class="name">{{ name.first }} {{ name.last }}</span>
+                        <span class="age">{{ age }}</span>
+                        <span class="icons"></span>
+                        <span class="view-profile">
+                            <span>View Profile</span>
+                            <span class="double-arrow-left">&gt;&gt;</span>
+                        </span>
+                    </div>
+                </li>
+            {{/each}}
+            {{# each children}}
+                <li class="profile">
+                    <img src={{ image.url }}>
+                    <div class="details">
+                        <span class="name">{{ name.first }} {{ name.last }}</span>
+                        <span class="age">{{ age }}</span>
+                        <span class="icons"></span>
+                        <span class="view-profile">
+                            <span>View Profile</span>
+                            <span class="double-arrow-left">&gt;&gt;</span>
+                        </span>
+                    </div>
+                </li>
+            {{/each}}
+            {{# each children}}
+                <li class="profile">
+                    <img src={{ image.url }}>
+                    <div class="details">
+                        <span class="name">{{ name.first }} {{ name.last }}</span>
+                        <span class="age">{{ age }}</span>
+                        <span class="icons"></span>
+                        <span class="view-profile">
+                            <span>View Profile</span>
+                            <span class="double-arrow-left">&gt;&gt;</span>
+                        </span>
+                    </div>
+                </li>
+            {{/each}}
+            {{# each children}}
+                <li class="profile">
+                    <img src={{ image.url }}>
+                    <div class="details">
+                        <span class="name">{{ name.first }} {{ name.last }}</span>
+                        <span class="age">{{ age }}</span>
+                        <span class="icons"></span>
+                        <span class="view-profile">
+                            <span>View Profile</span>
+                            <span class="double-arrow-left">&gt;&gt;</span>
+                        </span>
+                    </div>
+                </li>
+            {{/each}}
+            {{# each children}}
+                <li class="profile">
+                    <img src={{ image.url }}>
+                    <div class="details">
+                        <span class="name">{{ name.first }} {{ name.last }}</span>
+                        <span class="age">{{ age }}</span>
+                        <span class="icons"></span>
+                        <span class="view-profile">
+                            <span>View Profile</span>
+                            <span class="double-arrow-left">&gt;&gt;</span>
+                        </span>
+                    </div>
+                </li>
+            {{/each}}
+            {{# each children}}
+                <li class="profile">
+                    <img src={{ image.url }}>
+                    <div class="details">
+                        <span class="name">{{ name.first }} {{ name.last }}</span>
+                        <span class="age">{{ age }}</span>
+                        <span class="icons"></span>
+                        <span class="view-profile">
+                            <span>View Profile</span>
+                            <span class="double-arrow-left">&gt;&gt;</span>
+                        </span>
+                    </div>
+                </li>
+            {{/each}}
+            {{# each children}}
+                <li class="profile">
+                    <img src={{ image.url }}>
+                    <div class="details">
+                        <span class="name">{{ name.first }} {{ name.last }}</span>
+                        <span class="age">{{ age }}</span>
+                        <span class="icons"></span>
+                        <span class="view-profile">
+                            <span>View Profile</span>
+                            <span class="double-arrow-left">&gt;&gt;</span>
+                        </span>
+                    </div>
+                </li>
+            {{/each}}
+            {{# each children}}
+                <li class="profile">
+                    <img src={{ image.url }}>
+                    <div class="details">
+                        <span class="name">{{ name.first }} {{ name.last }}</span>
+                        <span class="age">{{ age }}</span>
+                        <span class="icons"></span>
+                        <span class="view-profile">
+                            <span>View Profile</span>
+                            <span class="double-arrow-left">&gt;&gt;</span>
+                        </span>
+                    </div>
+                </li>
+            {{/each}}
+            {{# each children}}
+                <li class="profile">
+                    <img src={{ image.url }}>
+                    <div class="details">
+                        <span class="name">{{ name.first }} {{ name.last }}</span>
+                        <span class="age">{{ age }}</span>
+                        <span class="icons"></span>
+                        <span class="view-profile">
+                            <span>View Profile</span>
+                            <span class="double-arrow-left">&gt;&gt;</span>
+                        </span>
+                    </div>
+                </li>
+            {{/each}}
+            {{# each children}}
+                <li class="profile">
+                    <img src={{ image.url }}>
+                    <div class="details">
+                        <span class="name">{{ name.first }} {{ name.last }}</span>
+                        <span class="age">{{ age }}</span>
+                        <span class="icons"></span>
+                        <span class="view-profile">
+                            <span>View Profile</span>
+                            <span class="double-arrow-left">&gt;&gt;</span>
+                        </span>
+                    </div>
+                </li>
+            {{/each}}
+            </ul>
+            </section>
+        </section>
+    </div>
 </div>
