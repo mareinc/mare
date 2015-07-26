@@ -1,7 +1,7 @@
 var keystone = require('keystone');
 
 // Load model to allow fetching of children data
-var Child = keystone.list('Child')
+var Child = keystone.list('Child');
 
 exports = module.exports = function(req, res) {
     'use strict';

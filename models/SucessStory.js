@@ -17,6 +17,8 @@ SuccessStory.add({
 
 // Pre Save
 SuccessStory.schema.pre('save', function(next) {
+	'use strict';
+
     this.url = '/success-story/' + this.key;
     next();
 });

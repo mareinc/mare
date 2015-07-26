@@ -1,5 +1,4 @@
 var keystone = require('keystone'),
-    _ = require('underscore'),
     Types = keystone.Field.Types;
 
 // Create model. Additional options allow menu name to be used what auto-generating URLs
@@ -23,6 +22,8 @@ Event.add({
 
 // Pre Save
 Event.schema.pre('save', function(next) {
+    'use strict';
+
     this.url = '/events/' + this.key;
     next();
 });

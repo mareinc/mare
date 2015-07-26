@@ -42,6 +42,8 @@ Child.add({
 
 // Pre Save
 Child.schema.pre('save', function(next) {
+    'use strict';
+    
     // TODO: Assign a registration number if one isn't assigned
     next();
 });

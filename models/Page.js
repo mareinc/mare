@@ -18,6 +18,8 @@ Page.add({
 
 // Pre Save
 Page.schema.pre('save', function(next) {
+'use strict';
+
     this.url = '/' + this.key;
     next();
 });

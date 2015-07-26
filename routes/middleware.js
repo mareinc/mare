@@ -11,7 +11,7 @@
 var _ = require('underscore');
 
 // Load in Keystone for model references
-var keystone = require('keystone');
+// var keystone = require('keystone');
 
 /**
   Initialises the standard view locals
@@ -33,7 +33,7 @@ exports.initLocals = function(req, res, next) {
   locals.user = req.user;
 
   // Create the site menu navigation elements
-  var siteNav = locals.siteNav = [
+  locals.siteNav = [
     { title: 'About us', href: '/about-us' },
     { title: 'Our Services', href: '/our-services' },
     { title: 'Success Stories', href: '/success-stories' },
@@ -41,7 +41,7 @@ exports.initLocals = function(req, res, next) {
   ];
 
   // Create the main menu navigation.
-  var mainNav = locals.mainNav = [
+  locals.mainNav = [
     { title: 'Considering Adoption?', subMenu: [
       { title: 'Types of Adoption', href: '/types-of-adoption' },
       { title: 'Can I adopt a Child from Foster Care?', href: '/can-i-adopt-a-child-from-foster-care' },

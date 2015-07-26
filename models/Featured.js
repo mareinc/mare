@@ -33,6 +33,8 @@ Featured.add(
 
 // Pre Save
 Featured.schema.pre('save', function(next) {
+    'use strict';
+    
     // keystone.list('Page').model.find()
     //         .where('_id', this.aboutUs);
 
