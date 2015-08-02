@@ -70,10 +70,10 @@ exports.initLocals = function(req, res, next) {
 			{ title: 'For Individuals', href: '/page/for-individuals' },
 			{ title: 'For Businesses', href: '/page/for-businesses' },
 			{ title: 'Experienced Families', href: '/page/experienced-families' },
-			{ title: 'Walk for Adoption &amp; Other Events', href: '/page/walk-for-adoption-and-other-events' },
+			{ title: 'Walk for Adoption & Other Events', href: '/page/walk-for-adoption-and-other-events' },
 			{ title: 'Donate Your Car', href: '/page/donate-your-car' },
 			{ title: 'Creative Ways to Support MARE', subMenu: [
-				{ title: 'Host a Workplace Lunch &amp; Learn', href: '/page/host-a-workplace-lunch-and-learn' },
+				{ title: 'Host a Workplace Lunch & Learn', href: '/page/host-a-workplace-lunch-and-learn' },
 				{ title: 'Another Creative Way to Help', href: '/page/another-creative-way-to-help' },
 				{ title: 'Yet a Third Way to Help', href: '/page/yet-a-third-way-to-help' },
 				{ title: 'And Even a Fourth Way', href: '/page/and-even-a-fourth-way' }
