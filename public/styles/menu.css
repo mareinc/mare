@@ -1,0 +1,127 @@
+.top-nav {
+	height: auto;
+	margin: 0px;
+}
+
+.top-nav ul {
+	margin: 0;
+	padding: 0;
+}
+
+.top-nav li {
+	display: inline-block;
+}
+
+.top-nav li > a {
+	text-decoration: none;
+	color: #00F;
+	padding: 8px 8px 8px 8px;
+}
+
+nav {
+	display: block;
+	text-align: center;
+}
+
+nav ul {
+	margin: 0;
+	padding:0;
+	list-style: none;
+}
+
+.main-nav {
+	clear: both;
+	background-color: #3D4573;
+}
+
+.main-nav > .nav a {
+	display:block; 
+	background: #3D4573; 
+	color: #fff; 
+	text-decoration: none;
+	padding: 0.6em 1.8em;
+	text-transform: uppercase;
+	font-size: 80%;
+	letter-spacing: 2px;
+	text-shadow: 0 -1px 0 #000;
+	position: relative;
+}
+
+.main-nav > .nav {
+	vertical-align: top; 
+	display: inline-block;
+	box-shadow: 
+		1px -1px -1px 1px #000, 
+		-1px 1px -1px 1px #fff, 
+		0 0 6px 3px #fff;
+	border-radius:6px;
+}
+
+.main-nav > .nav li {
+	position: relative;
+}
+
+.main-nav > .nav > li { 
+	float: left;
+	margin-right: 1px;
+}
+
+.main-nav > .nav li:hover > a { 
+	color: #FBB03B; 
+}
+
+.main-nav > .nav li li a { 
+	margin-top: 1px;
+}
+
+/*.main-nav > .nav li a:first-child:nth-last-child(2):before { 
+	content: ""; 
+	position: absolute; 
+	height: 0; 
+	width: 0; 
+	border: 5px solid transparent; 
+	top: 50% ;
+	right:5px;
+ }*/
+
+ /* submenu positioning*/
+.main-nav > .nav ul {
+	position: absolute;
+	white-space: nowrap;
+	border-bottom: 5px solid #FBB03B; 
+	z-index: 1;
+	left: -99999em;
+}
+
+.main-nav > .nav > li:hover > ul {
+	left: auto;
+	min-width: 100%;
+}
+
+.main-nav > .nav > li li:hover > ul {
+	left: -96.2%;
+	margin-right: 1px;
+	top: -1px;
+}
+
+/* arrow hover styling */
+.main-nav > .nav > li > a:first-child:nth-last-child(2):before { 
+	border-top-color: #aaa; 
+}
+
+.main-nav > .nav > li:hover > a:first-child:nth-last-child(2):before {
+	border: 5px solid transparent; 
+	border-bottom-color: #FBB03B; 
+	margin-top:-5px
+}
+
+.main-nav > .nav li li > a:first-child:nth-last-child(2):before {
+	border-left-color: #aaa; 
+	margin-top: -5px
+}
+
+.main-nav > .nav li li:hover > a:first-child:nth-last-child(2):before {
+	border: 5px solid transparent; 
+	border-right-color: #FBB03B;
+	right: 10px; 
+}
