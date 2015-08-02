@@ -38,6 +38,7 @@ exports = module.exports = function(app) {
 	// Views
 	app.get('/'				, routes.views.main);
 	app.get('/page/*'		, routes.views.page);
+	app.get('/form/*'		, routes.views.form);
 	app.get('/photo-listing', routes.views.photoListing);
 	
 	
