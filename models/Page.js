@@ -20,7 +20,7 @@ Page.add({
 Page.schema.pre('save', function(next) {
 'use strict';
 
-    this.url = '/' + this.key;
+    this.url = '/page/' + this.key;
     next();
 });
 
