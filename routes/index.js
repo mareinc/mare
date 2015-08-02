@@ -36,7 +36,7 @@ exports = module.exports = function(app) {
 	'use strict';
 	
 	// Views
-	app.get('/'				, routes.views.index);
+	app.get('/'				, routes.views.main);
 	app.get('/page/*'		, routes.views.page);
 	app.get('/photo-listing', routes.views.photoListing);
 	

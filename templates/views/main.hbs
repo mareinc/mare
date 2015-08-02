@@ -1,0 +1,24 @@
+{{!< default}}
+<div class="main">
+	<div class="content">
+		<div class="container">
+			<div id="owl-demo" class="owl-carousel">
+				{{#each slides}}
+				<div class="item">
+					<img class="lazyOwl" data-src="http://placehold.it/1100x400&text=featured" alt="Sample Image">
+					<span class="featured-description">
+						<span class="featured-header">{{ heading }}</span>
+						<span class="featured-tagline">{{ subHeading }}</span>
+						<span class="featured-learn-more">{{ guideLabel }}</span>
+					</span>
+				</div>
+				{{/each}}
+			</div>
+		</div>
+		<div class="featured">
+			<img src="http://placehold.it/400x250&text=featured" alt="featured-images-placeholder">
+			<img src="http://placehold.it/400x250&text=featured" alt="featured-images-placeholder">
+			<img src="http://placehold.it/400x250&text=featured" alt="featured-images-placeholder">
+		</div>
+	</div>
+</div>
