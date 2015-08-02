@@ -1,18 +1,18 @@
 /*
-  jscs settings for the project
+	jscs settings for the project
 */
 
 {
-  /*
-   * airbnb jscs rules
-   * =================
-   */
-  "preset": "airbnb",
+	/*
+	 * airbnb jscs rules
+	 * =================
+	 */
+	"preset": "airbnb",
 
-  /*
-   * additional project specific rules
-   * =================================
-   */
+	/*
+	 * additional project specific rules
+	 * =================================
+	 */
 
-  "disallowAnonymousFunctions": true
+	"disallowAnonymousFunctions": true
 }
