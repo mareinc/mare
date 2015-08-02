@@ -74,7 +74,7 @@ nav ul {
 	margin-top: 1px;
 }
 
-/*.main-nav > .nav li a:first-child:nth-last-child(2):before { 
+.main-nav > .nav li a:first-child:nth-last-child(2):before { 
 	content: ""; 
 	position: absolute; 
 	height: 0; 
@@ -82,7 +82,7 @@ nav ul {
 	border: 5px solid transparent; 
 	top: 50% ;
 	right:5px;
- }*/
+ }
 
  /* submenu positioning*/
 .main-nav > .nav ul {
