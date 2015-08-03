@@ -24,7 +24,6 @@ exports = module.exports = function(req, res) {
 				.then(function (slides) {
 
 					locals.slides = _.sortBy(slides, function(slide) { return +slide.order; });
-					console.log(locals.slides);
 
 					view.render('main');
 				});
