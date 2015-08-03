@@ -10,14 +10,22 @@ var Event = new keystone.List('Event', {
 
 // Create fields
 Event.add({
-	title: { type: String, label: 'event name', required: true, initial: true, index: true },
-	url: { type: Types.Url, noedit: true },
-	location: { type: Types.Location, initial: true },
-	starts: { type: Types.Datetime, default: Date.now, initial: true },
-	ends: { type: Types.Datetime, initial: true },
-	description: { type: Types.Html, wysiwyg: true, initial: true },
-	graphic: { type: Types.CloudinaryImage, folder: 'events/', autoCleanup : true }
-	//contact: { type: Types.Relationship, label: 'contact person', ref: 'User'}
+	title: { type: Types.Text, label: 'event name', required: true, initial: true, index: true },
+	url: { type: Types.Url, noedit: true } },
+
+	{ heading: 'Location' }, {
+		addressLine1: { type: Types.Text, label: 'Address Line 1', required: true, initial: false },
+		addressLine2: { type: Types.Text, label: 'Address Line 2', initial: false },
+		city: { type: Types.Text, label: 'City', required: true, initial: false },
+		state: { type: Types.Text, label: 'State', required: true, initial: false },
+		zip: { type: Types.Number, label: 'Zip Code', required: true, initial: false },
+		country: { type: Types.Text, label: 'Country (This will be a dropdown menu)', required: true, initial: false } },
+	{ heading: 'Details'}, {
+		starts: { type: Types.Datetime, initial: true },
+		ends: { type: Types.Datetime, initial: true },
+		description: { type: Types.Html, wysiwyg: true, initial: true },
+		graphic: { type: Types.CloudinaryImage, folder: 'events/', autoCleanup : true },
+		contact: { type: Types.Relationship, label: 'contact person', ref: 'User'}
 });
 
 // Pre Save
