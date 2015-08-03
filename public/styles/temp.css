@@ -120,8 +120,22 @@ body {
 
 .global-footer {
 	border-top: 15px solid #3D4573;
+	    background-color: #FFFBD7;
 }
 
 .global-footer nav {
 	display: inline-block;
+	color: #62544A;
+}
+
+nav.footer-nav > span:after {
+    content: " |";
+    margin: 0 2px;
+    font-size: 1.2em;
+}
+
+nav.footer-nav > span:last-child:after {
+    content: "";
+    margin: 0;
+    font-size: 1em;
 }

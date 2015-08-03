@@ -2,7 +2,7 @@
 
 .section-header {
 	background-color: #8FCED6;
-		margin-bottom: 15px;
+	margin-bottom: 15px;
 }
 
 .section-title {
@@ -101,49 +101,54 @@
 }
 
 .profiles {
-		list-style: none;
-		font-size: 0px;
+	list-style: none;
+	font-size: 0px;
 }
 
 .profile {
-		display: inline-block;
-		background: #fff;
-		border-right: 1px solid #000;
-		border-bottom: 1px solid #000;
-		font-size: 16px;
-		font-size: 1rem;
-		vertical-align: top;
-		box-shadow: 0 0 5px #ddd;
-		box-sizing: border-box;
-		-moz-box-sizing: border-box;
-		-webkit-box-sizing: border-box;
-		margin-right: 3%;
-		margin-bottom: 20px;
+	display: inline-block;
+	background: #fff;
+	border-right: 1px solid #000;
+	border-bottom: 1px solid #000;
+	font-size: 16px;
+	font-size: 1rem;
+	vertical-align: top;
+	box-shadow: 0 0 5px #ddd;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	margin-right: 3%;
+	margin-bottom: 20px;
 }
 
 .profile img {
-		max-width: 100%;
-		height: auto;
+	max-width: 100%;
+	height: auto;
 }
 
 .profile .details {
-		padding: 10px;
-		background-color: #fffac2;
-		margin-top: -1px;
-		color: #1B229D;
+	padding: 10px;
+	background-color: #fffac2;
+	margin-top: -1px;
+	color: #1B229D;
+	height: 151px;
+}
+
+.profile .details > span {
+	max-width: 180px;
 }
 
 .profile .details > .name {
-		display: block;
-		font-size: 2em;
-		font-style: italic;
+	display: block;
+	font-size: 2em;
+	font-style: italic;
 }
 
 .profile .details > .age {
-		display: block;
-		margin: 5px 0 10px;
-		font-size: 1.3em;
-		color: #66584D;
+	display: block;
+	margin: 5px 0 10px;
+	font-size: 1.3em;
+	color: #66584D;
 }
 
 .profile .deatils .view-profile {
