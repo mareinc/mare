@@ -12,23 +12,23 @@ var Featured = new keystone.List('Featured Item', {
 Featured.add(
 	{ title: { type: Types.Text, default: 'Featured Items', noedit: true, initial: true } },
 
-	{ heading: 'About Us' },
-	{ aboutUsTarget: { type: Types.Relationship, ref: 'Page', label: 'target page', filter: { type: 'aboutUs' }, initial: true } },
-	{ aboutUsTitle: { type: Types.Text, label: 'title', noedit: true, index: true } },
-	{ aboutUsSummary: { type: Types.Textarea, label: 'summary', noedit: true } },
-	{ aboutUsUrl: { type: Types.Url, noedit: true } },
+	{ heading: 'About Us' }, {
+		aboutUsTarget: { type: Types.Relationship, ref: 'Page', label: 'target page', filter: { type: 'aboutUs' }, initial: true },
+		aboutUsTitle: { type: Types.Text, label: 'title', noedit: true, index: true },
+		aboutUsSummary: { type: Types.Textarea, label: 'summary', noedit: true },
+		aboutUsUrl: { type: Types.Url, noedit: true } },
 
-	{ heading: 'Success Story' },
-	{ successStoryTarget: { type: Types.Relationship, ref: 'SuccessStory', label: 'target page', filter: { type: 'successStory' }, initial: true } },
-	{ successStoryTitle: { type: Types.Text, label: 'title', noedit: true, index: true } },
-	{ successStorySummary: { type: Types.Textarea, label: 'summary', noedit: true } },
-	{ successStoryUrl: { type: Types.Url, noedit: true } },
+	{ heading: 'Success Story' }, {
+		successStoryTarget: { type: Types.Relationship, ref: 'SuccessStory', label: 'target page', filter: { type: 'successStory' }, initial: true },
+		successStoryTitle: { type: Types.Text, label: 'title', noedit: true, index: true },
+		successStorySummary: { type: Types.Textarea, label: 'summary', noedit: true },
+		successStoryUrl: { type: Types.Url, noedit: true } },
 
-	{ heading: 'Upcoming Event' },
-	{ upcomingEventTarget: { type: Types.Relationship, ref: 'Event', label: 'target event', initial: true } },
-	{ upcomingEventTitle: { type: Types.Text, label: 'title', noedit: true, index: true } },
-	{ upcomingEventSummary: { type: Types.Textarea, label: 'summary', noedit: true } },
-	{ upcomingEventUrl: { type: Types.Url, noedit: true } }
+	{ heading: 'Upcoming Event' }, {
+		upcomingEventTarget: { type: Types.Relationship, ref: 'Event', label: 'target event', initial: true },
+		upcomingEventTitle: { type: Types.Text, label: 'title', noedit: true, index: true },
+		upcomingEventSummary: { type: Types.Textarea, label: 'summary', noedit: true },
+		upcomingEventUrl: { type: Types.Url, noedit: true } }
 );
 
 // Pre Save
