@@ -22,17 +22,13 @@ exports = module.exports = function(req, res) {
 				.where('parent', slideshowId)
 				.exec()
 				.then(function (slides) {
-
+					
 					locals.slides = _.sortBy(slides, function(slide) { return +slide.order; });
 
 					view.render('main');
 				});
 
-		});//.then(function() {
-
-		// 	view.render('main');
-
-		// });
+		});
 	
 	// TODO: Get the featured models
 };
