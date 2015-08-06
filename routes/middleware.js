@@ -51,7 +51,7 @@ exports.initLocals = function(req, res, next) {
 		{ title: 'Meet the Children', subMenu: [
 			{ title: 'Who are the Children?', href: '/page/who-are-the-children' },
 			{ title: 'Waiting Child Profiles', href: '/page/waiting-child-profiles' },
-			{ title: 'Ways to Meet Waiting Children', href: '/page/ways-to-meet-waiting-children' },
+			{ title: 'Other Ways to Meet Waiting Children', href: '/page/ways-to-meet-waiting-children' },
 			{ title: 'For Homestudied Families', href: '/page/for-homestudied-families' }
 		]},
 		{ title: 'Family Support Services', subMenu: [
@@ -61,6 +61,7 @@ exports.initLocals = function(req, res, next) {
 		]},
 		{ title: 'For Social Workers', subMenu: [
 			{ title: 'Register a Child', href: '/page/register-a-child' },
+			{ title: 'How MARE can Help You', href: '/page/how-mare-can-help-you'},
 			{ title: 'Recruitment Opportunities', href: '/page/recruitment-opportunities' },
 			{ title: 'Attend Events', href: '/page/attend-events' },
 			{ title: 'Register a Family', href: '/page/register-a-family' },
