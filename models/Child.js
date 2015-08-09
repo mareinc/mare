@@ -9,6 +9,8 @@ var Child = new keystone.List('Child', {
 
 // Create fields
 Child.add({
+	image: { type: Types.CloudinaryImage, folder: 'children/', autoCleanup: true }, //select: true, selectPrefix: 'children/' isn't working
+	//video: { type: Types.CloudinaryVideo, folder: 'children/', autoCleanup: true },
 	name: { type: Types.Name, label: 'Name', required: true, index: true, initial: true },
 	age: { type: Number, label: 'Age', required: true, index: true, initial: true },
 	registrationNumber: { type: Number, label: 'Registration Number', required: true, index: true, initial: true },
@@ -19,8 +21,6 @@ Child.add({
 		part4: { type: Types.Textarea, label: 'If I could have my own special wish...', required: true, initial: true }
 	},
 	primaryLanguage: { type: Types.Select, label: 'Primary Language', options: 'English, Spanish, Portuguese', default: 'English', required: true, initial: true },
-	//video: { type: Types.CloudinaryVideo, folder: 'children/', autoCleanup: true },
-	image: { type: Types.CloudinaryImage, folder: 'children/', autoCleanup: true }, //select: true, selectPrefix: 'children/' isn't working
 	ethnicity: { type: Types.Select, label: 'Ethnicity', options: 'White, African American, Hispanic/Latino, Asian, Middle Eastern, Pacific Islander, Native American/Alaskan, Mixed Race, Other', required: true, initial: true },
 	gender: { type: Types.Select, label: 'Gender', options: 'Male, Female', required: true, initial: true },
 	legalStatus: { type: Types.Select, label: 'Legal Status', options: 'Legally Free, Something Else', required: true, initial: true },
