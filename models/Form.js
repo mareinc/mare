@@ -8,18 +8,19 @@ var Form = new keystone.List('Form', {
 	map: { name: 'title' }
 });
 
+// TODO: Try to fix the date time field to either not have milliseconds, or to parse it on save for a cleaner display of default columns
 // Create fields
 Form.add({
-	title: { type: String, label: 'form name', required: true, initial: true, index: true },
+	title: { type: String, label: 'form name', required: true, index: true, initial: true },
 	url: { type: Types.Url, noedit: true },
-	contact: { type: Types.Relationship, ref: 'User', label: 'contact person', initial: true, dependsOn: { selectUnregisteredContact: false } },
+	contact: { type: Types.Relationship, ref: 'User', label: 'contact person', dependsOn: { selectUnregisteredContact: false }, initial: true },
+	graphic: { type: Types.CloudinaryImage, folder: 'forms/', autoCleanup : true },
 	selectUnregisteredContact: { type: Types.Boolean, label: 'contact person isn\'t registered with MARE', initial: true },
 	unregisteredContact: { type: String, label: 'contact person\'s email', dependsOn: { selectUnregisteredContact: true } },
 	selectFormRange: { type: Types.Boolean, label: 'form valid for specific time range', initial: true },
-	availableFrom: { type: Types.Datetime, label: 'available from', initial: true, dependsOn: { selectFormRange: true } },
-	availableTo: { type: Types.Datetime, label: 'available to', initial: true, dependsOn: { selectFormRange: true } },
-	content: { type: Types.Html, wysiwyg: true, initial: true },
-	graphic: { type: Types.CloudinaryImage, folder: 'forms/', autoCleanup : true }
+	availableFrom: { type: Types.Datetime, label: 'available from', dependsOn: { selectFormRange: true }, initial: true },
+	availableTo: { type: Types.Datetime, label: 'available to', dependsOn: { selectFormRange: true }, initial: true },
+	content: { type: Types.Html, wysiwyg: true, initial: true }
 });
 
 // Pre Save

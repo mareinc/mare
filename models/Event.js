@@ -10,7 +10,7 @@ var Event = new keystone.List('Event', {
 
 // Create fields
 Event.add({
-	title: { type: Types.Text, label: 'event name', required: true, initial: true, index: true },
+	title: { type: Types.Text, label: 'event name', required: true, index: true, initial: true },
 	url: { type: Types.Url, noedit: true },
 	contact: { type: Types.Relationship, label: 'contact person', ref: 'User', initial: true},
 	graphic: { type: Types.CloudinaryImage, folder: 'events/', autoCleanup : true } },

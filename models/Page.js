@@ -11,7 +11,7 @@ var Page = new keystone.List('Page', {
 
 // Create fields
 Page.add({
-	title: { type: String, label: 'page title', required: true, initial: true, index: true },
+	title: { type: String, label: 'page title', required: true, index: true, initial: true },
 	url: { type: Types.Url, noedit: true },
 	content: { type: Types.Html, wysiwyg: true }
 });

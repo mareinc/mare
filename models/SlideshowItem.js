@@ -9,12 +9,12 @@ var SlideshowItem = new keystone.List('Slideshow Item', {
 
 // Create fields
 SlideshowItem.add({
+	image: { type: Types.CloudinaryImage, folder: 'slideshow/', autoCleanup: true },
 	parent: { type: Types.Relationship, label: 'slideshow', ref: 'Slideshow', many: false, initial: true },
 	heading: { type: Types.Text, label: 'heading', initial: true },
 	subHeading: { type: Types.Text, label: 'sub-heading', initial: true },
 	guideLabel: { type: Types.Text, label: 'label', initial: true},
-	order: { type: Types.Number, label: 'order', initial: true },
-	image: { type: Types.CloudinaryImage, folder: 'slideshow/', autoCleanup: true }
+	order: { type: Types.Number, label: 'order', initial: true }
 });
 
 // Pre Save

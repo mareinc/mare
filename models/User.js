@@ -7,8 +7,8 @@ var User = new keystone.List('User');
 // Create fields
 User.add({
 	name: { type: Types.Name, required: true, index: true },
-	email: { type: Types.Email, initial: true, required: true, index: true },
-	password: { type: Types.Password, initial: true, required: true },
+	email: { type: Types.Email, required: true, index: true, initial: true },
+	password: { type: Types.Password, required: true, initial: true },
     avatar: { type: Types.CloudinaryImage, folder: 'users/', autoCleanup: true }
 }, 'Permissions', {
 	isAdmin: { type: Boolean, label: 'Can access Keystone', index: true }
