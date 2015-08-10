@@ -39,7 +39,6 @@ Featured.schema.pre('save', function(next) {
 
 	// TODO: These need to truncate to 250 characters (to the nearest word)
 	// TODO: These should append an elipses if the summary was truncated
-console.log('starting');
 	keystone.list('Page').model.find()
 			.where('_id', this.aboutUsTarget)
 			.exec()
