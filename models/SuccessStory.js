@@ -10,8 +10,8 @@ var SuccessStory = new keystone.List('SuccessStory', {
 // Create fields
 SuccessStory.add({
 	heading: { type: Types.Text, label: 'heading', required: true, index: true, initial: true },
-	subHeading: { type: Types.Text, label: 'sub-heading', index: true },
-	content: { type: Types.Html, wysiwyg: true }
+	subHeading: { type: Types.Text, label: 'sub-heading', initial: true },
+	content: { type: Types.Html, wysiwyg: true, initial: true }
 });
 
 // Pre Save

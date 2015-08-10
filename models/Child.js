@@ -9,7 +9,7 @@ var Child = new keystone.List('Child', {
 
 // Create fields
 Child.add({
-	image: { type: Types.CloudinaryImage, folder: 'children/', autoCleanup: true }, //select: true, selectPrefix: 'children/' isn't working
+	image: { type: Types.CloudinaryImage, folder: 'children/', select: true, publicID: 'slug', autoCleanup: true }, //select: true, selectPrefix: 'children/' isn't working
 	//video: { type: Types.CloudinaryVideo, folder: 'children/', autoCleanup: true },
 	name: { type: Types.Name, label: 'Name', required: true, index: true, initial: true },
 	age: { type: Number, label: 'Age', required: true, index: true, initial: true },

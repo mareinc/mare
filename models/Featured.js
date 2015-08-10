@@ -34,32 +34,46 @@ Featured.add(
 // Pre Save
 Featured.schema.pre('save', function(next) {
 	'use strict';
-	
-	// keystone.list('Page').model.find()
-	//         .where('_id', this.aboutUs);
 
-	// keystone.list('SuccessStory').find()
-	//         .where('_id', this.successStory);
+	var self = this;
 
-	// keystone.list('Event').model.find()
-	//         .where('_id', this.upcomingEvent);
+	// TODO: These need to truncate to 250 characters (to the nearest word)
+	// TODO: These should append an elipses if the summary was truncated
+console.log('starting');
+	keystone.list('Page').model.find()
+			.where('_id', this.aboutUsTarget)
+			.exec()
+			.then(function(page) {
 
-	// this.aboutUsTitle = aboutUs.title;
-	// this.successStoryTitle = successStory.title;
-	// this.upcomingEventTitle = upcomingEvent.title;
+					self.aboutUsTitle = page[0].title;
+					self.aboutUsSummary = page[0].content.replace(/<\/?[^>]+(>|$)/g, '');
+					self.aboutUsUrl = page[0].url;
 
-	// // These need to truncate to 250 characters (to the nearest word)
-	// // These should append an elipses if the summary was truncated
-	// this.aboutUsSummary = aboutUs.content;
-	// this.successStorySummary = successStory.content;
-	// this.upcomingEventSummary = upcomingEvent.description;
+			}, function(err) {
+				console.log(err);
+			}).then(keystone.list('SuccessStory').model.find()
+				.where('_id', this.successStoryTarget)
+				.exec()
+				.then(function(successStory) {
 
-	// this.aboutUsUrl = aboutUs.url;
-	// this.successStoryUrl = successStory.url;
-	// this.upcomingEventUrl = upcomingEvent.url;
+		       		self.successStoryTitle = successStory[0].heading;
+		       		self.successStorySummary = successStory[0].content.replace(/<\/?[^>]+(>|$)/g, '');
+		       		self.successStoryUrl = '/success-stories/';
 
-	next();
-});
+			}, function(err) {
+				console.log(err);
+			}).then(keystone.list('Event').model.find()
+				.where('_id', this.upcomingEventTarget)
+				.exec()
+				.then(function(event) {
+
+					self.upcomingEventTitle = event[0].title;
+					self.upcomingEventSummary = event[0].description.replace(/<\/?[^>]+(>|$)/g, '');
+					self.upcomingEventUrl = event[0].url;
+
+					next();
+			})
+))});
 
 // Define default columns in the admin interface and register the model
 Featured.defaultColumns = 'title, aboutUsTarget, successStoryTarget, upcomingEventTarget';
