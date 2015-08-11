@@ -103,6 +103,27 @@ body {
 	width: 100%;
 }
 
+.owl-carousel .owl-wrapper, .owl-carousel .owl-item {
+    -webkit-backface-visibility: hidden;
+    -moz-backface-visibility: hidden;
+    -ms-backface-visibility: hidden;
+    -webkit-transform: translate3d(0,0,0);
+    -moz-transform: translate3d(0,0,0);
+    -ms-transform: translate3d(0,0,0);
+    position: relative;
+}
+
+.main .featured-description {
+    position: absolute;
+    z-index: 10;
+    top: 70%;
+    width: 50%;
+    padding: 20px;
+    background-color: #000;
+    opacity: .2;
+    color: #fff;
+}
+
 .main .featured {
 	margin-top: 15px;
 }
