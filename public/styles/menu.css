@@ -37,7 +37,7 @@ nav ul {
 .main-nav > .nav a {
 	display:block; 
 	background: #3D4573; 
-	color: #fff; 
+	color: #D5D5D5; 
 	text-decoration: none;
 	padding: 0.6em 1.8em;
 	text-transform: uppercase;
@@ -61,66 +61,53 @@ nav ul {
 
 .main-nav > .nav > li { 
 	float: left;
-	margin-right: 1px;
+	min-width: 150px;
 }
 
 .main-nav > .nav li:hover > a { 
-	color: #FBB03B; 
+    background-color: #0C0D3C;
+    color: #fff;
 }
 
-.main-nav > .nav li li a { 
-    border-top: 1px solid #ccc;
+.main-nav > .nav li:hover li a { 
+    background-color: #0C0D3C;
+    padding: 0.6em 1.5em 0.6em 0.6em;
+    text-align: left;
 }
 
-.main-nav > .nav li a:first-child:nth-last-child(2):before { 
+.main-nav .sub-menu:before { 
 	content: ""; 
 	position: absolute; 
 	height: 0; 
 	width: 0; 
-	border: 5px solid transparent; 
+	border: 5px solid transparent;
+	border-left-color: #d5d5d5;
 	top: 50% ;
 	right:5px;
  }
 
- /* submenu positioning*/
+ .main-nav li:hover > .sub-menu:before {
+	border-left-color: transparent; 
+	border-right-color: #fff;
+	right: 10px; 
+}
+
+ /* submenu positioning */
 .main-nav > .nav ul {
 	position: absolute;
-	white-space: nowrap;
-	border-bottom: 5px solid #FBB03B; 
-	z-index: 1;
+	/* white-space: nowrap; // keeps submenu width restricted by parent width when turned off */
+	z-index: 10;
 	left: -99999em;
 }
 
 .main-nav > .nav > li:hover > ul {
 	left: auto;
 	min-width: 100%;
-	/*max-width: 105%;*/
 }
 
+/* second submenu positioning */
 .main-nav > .nav > li li:hover > ul {
-	left: -96.2%;
-	margin-right: 1px;
-	top: -1px;
-}
-
-/* arrow hover styling */
-.main-nav > .nav > li > a:first-child:nth-last-child(2):before { 
-	border-top-color: #aaa; 
-}
-
-.main-nav > .nav > li:hover > a:first-child:nth-last-child(2):before {
-	border: 5px solid transparent; 
-	border-bottom-color: #FBB03B; 
-	margin-top:-5px
-}
-
-.main-nav > .nav li li > a:first-child:nth-last-child(2):before {
-	border-left-color: #aaa; 
-	margin-top: -5px
-}
-
-.main-nav > .nav li li:hover > a:first-child:nth-last-child(2):before {
-	border: 5px solid transparent; 
-	border-right-color: #FBB03B;
-	right: 10px; 
+	top: 0;
+	left: -100%;
+    width: 100%;
 }

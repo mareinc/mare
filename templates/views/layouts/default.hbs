@@ -72,12 +72,12 @@
 					{{# each mainNav}}
 					<li>
 						{{# if subMenu}}
-						<a href="#">{{ title }}</a>
+						<a href="#" class="parent main-menu">{{ title }}</a>
 						<ul>
 							{{# each subMenu}}
 							<li>
 								{{# if subMenu}}
-								<a href="#">{{ title }}</a>
+								<a href="#" class="parent sub-menu">{{ title }}</a>
 								<ul>
 									{{# each subMenu}}
 									<li>
@@ -92,7 +92,7 @@
 							{{/each}}
 						</ul>
 						{{else}}
-						<a href="{{ href }}">{{ title }}
+						<a href="{{ href }}">{{ title }}</a>
 						{{/if}}
 					</li>
 					{{/each}}
