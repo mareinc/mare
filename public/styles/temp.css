@@ -16,6 +16,10 @@ body {
 	box-sizing: inherit;
 }
 
+.hidden {
+	display: none;
+}
+
 .content-wrapper {
 	max-width: 1200px;
 	margin: 0 auto;

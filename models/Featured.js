@@ -72,7 +72,8 @@ Featured.schema.pre('save', function(next) {
 
 					next();
 			})
-))});
+		));
+	});
 
 // Define default columns in the admin interface and register the model
 Featured.defaultColumns = 'title, aboutUsTarget, successStoryTarget, upcomingEventTarget';
