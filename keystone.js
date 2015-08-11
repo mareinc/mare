@@ -83,9 +83,11 @@ keystone.set('email locals', {
 		}
 	},
 	host: (function() {
-		if (keystone.get('env') === 'development') return 'http://development.adoptions.io';
-		if (keystone.get('env') === 'staging') return 'http://staging.adoptions.io';
-		if (keystone.get('env') === 'production') return 'http://adoptions.io';
+		'use strict';
+
+		if (keystone.get('env') === 'development') { return 'http://development.adoptions.io'; }
+		if (keystone.get('env') === 'staging') { return 'http://staging.adoptions.io'; }
+		if (keystone.get('env') === 'production') { return 'http://adoptions.io'; }
 		return (keystone.get('host') || 'http://localhost:') + (keystone.get('port') || '3000');
 	})()
 });
@@ -93,17 +95,21 @@ keystone.set('email locals', {
 keystone.set('email rules', [{
 	find: '/images/',
 	replace: (function() {
-		if (keystone.get('env') === 'development') return 'http://development.adoptions.io/images';
-		if (keystone.get('env') === 'staging') return 'http://staging.adoptions.io/images';
-		if (keystone.get('env') === 'production') return 'http://adoptions.io/images';
+		'use strict';
+
+		if (keystone.get('env') === 'development') { return 'http://development.adoptions.io/images'; }
+		if (keystone.get('env') === 'staging') { return 'http://staging.adoptions.io/images'; }
+		if (keystone.get('env') === 'production') { return 'http://adoptions.io/images'; }
 		return (keystone.get('host') || 'http://localhost:') + (keystone.get('port') || '3000/images');
 	})()
 }, {
 	find: '/keystone/',
 	replace: (function() {
-		if (keystone.get('env') === 'development') return 'http://development.adoptions.io/keystone';
-		if (keystone.get('env') === 'staging') return 'http://staging.adoptions.io/keystone';
-		if (keystone.get('env') === 'production') return 'http://adoptions.io/keystone';
+		'use strict';
+
+		if (keystone.get('env') === 'development') { return 'http://development.adoptions.io/keystone'; }
+		if (keystone.get('env') === 'staging') { return 'http://staging.adoptions.io/keystone'; }
+		if (keystone.get('env') === 'production') { return 'http://adoptions.io/keystone'; }
 		return (keystone.get('host') || 'http://localhost:') + (keystone.get('port') || '3000/keystone');
 	})()
 }]);
