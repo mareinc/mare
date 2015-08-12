@@ -10,8 +10,8 @@ var gulp 			= require('gulp'),
 	uglify			= require('gulp-uglify'),
 	minify			= require('gulp-minify-css'),
 	sourcemaps 		= require('gulp-sourcemaps'),
-	autoprefixer 	= require('gulp-autoprefixer');
-//	imagemin		= require('gulp-imagemin');
+	autoprefixer 	= require('gulp-autoprefixer'),
+	imagemin		= require('gulp-imagemin');
 
 /*
  * Create variables for our project paths so we can change in one place
@@ -23,11 +23,14 @@ var paths = {
 		'keystone.js', 
 		'package.json'],
 	'css':[
-		'public/styles/**/*.scss',
-		'public/modules/**/*.css'],
+		'public/modules/**/*.css',
+		'public/styles/**/*.scss'],
 	'js':[
 		'public/js/*.js',
-		'public/modules/**/*.js']
+		'public/modules/**/*.js'],
+	'img':[
+		'public/images/*',
+		'public/modules/**/*.gif']
 };
 
 // Styles Task
@@ -56,6 +59,13 @@ gulp.task('scripts', function() {
 		.pipe(gulp.dest('public/dist'));
 });
 
+// Images Task
+gulp.task('images', function() {
+	gulp.src(paths.img)
+		.pipe(imagemin())
+		.pipe(gulp.dest('public/dist/img'));
+});
+
 // gulp lint
 gulp.task( 'lint', function() {
 	gulp.src(paths.src)
@@ -79,7 +89,7 @@ gulp.task('watch:lint', function () {
 		.pipe(jshint.reporter(jshintReporter));
 });
 
-gulp.task('default', ['styles']);
+gulp.task('default', ['styles', 'scripts', 'images']);
 
 
 
