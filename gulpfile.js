@@ -24,23 +24,37 @@ var paths = {
 		'package.json'],
 	'css':[
 		'public/styles/**/*.scss',
-		'public/modules/**/*.css']
+		'public/modules/**/*.css'],
+	'js':[
+		'public/js/*.js',
+		'public/modules/**/*.js']
 };
 
 // Styles Task
 gulp.task('styles', function() {
 	return gulp.src(paths.css)
-	.pipe(sourcemaps.init())
-	.pipe(sass())
-	.pipe(autoprefixer())
-	.pipe(concat('mare.css'))
-	.pipe(gulp.dest('public/dist'))
-	.pipe(minify({compatibility: 'ie8'}))
-	.pipe(rename({suffix: '.min'}))
-	.pipe(sourcemaps.write('.'))
-	.pipe(gulp.dest('public/dist'));
+		.pipe(sourcemaps.init())
+		.pipe(sass())
+		.pipe(autoprefixer())
+		.pipe(concat('mare.css'))
+		.pipe(gulp.dest('public/dist'))
+		.pipe(minify({compatibility: 'ie8'}))
+		.pipe(rename({suffix: '.min'}))
+		.pipe(sourcemaps.write('.'))
+		.pipe(gulp.dest('public/dist'));
 });
 
+// Scripts Task
+gulp.task('scripts', function() {
+	return gulp.src(paths.js)
+		.pipe(sourcemaps.init())
+		.pipe(concat('mare.js'))
+		.pipe(gulp.dest('public/dist'))
+		.pipe(uglify())
+		.pipe(rename({suffix: '.min'}))
+		.pipe(sourcemaps.write('.'))
+		.pipe(gulp.dest('public/dist'));
+});
 
 // gulp lint
 gulp.task( 'lint', function() {

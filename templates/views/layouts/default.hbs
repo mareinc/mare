@@ -8,8 +8,6 @@
 		<title>MARE</title>
 		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 		
-		{{!-- TODO: Need to make sure the admin panel has a separate admin.css file built for it --}}
-		
 		<link rel="stylesheet" href="/dist/mare.min.css">
 
 		{{!-- This file provides the default styling for the KeystoneJS Content Editor 
@@ -140,21 +138,11 @@
 		</footer>
 
 		{{!--
-		//- jQuery 1.11.1 is included by default, and required by both Bootstrap
-		//- and the KeystoneJS Content Editor. If you are not targeting IE8,
-		//- you can upgrade to 2.1.1 (also bundled) for better performance.
+		//- jQuery 1.11.1 is included by default, and required by the KeystoneJS Content Editor. If you are not targeting IE8, you can upgrade to 2.1.1 (also bundled) for better performance.
 		--}}
-		<script src="/js/lib/jquery/jquery-1.11.1.min.js"></script>
-		{{!--
-		//- Customize which Bootstrap javascript files are served by including
-		//- them specifically here, instead of bootstrap-3.2.0.min.js
-		--}}
-		<script src="/js/lib/bootstrap/bootstrap-3.2.0.min.js"></script>
-
-		<script src="/modules/owl-carousel/owl.carousel.min.js"></script>
-
-		<script src="/js/main.js"></script>
-		<script src="/js/menu.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+		
+		<script src="/dist/mare.min.js"></script>
 
 		{{{isAdminEditorJS user}}}
 	</body>
