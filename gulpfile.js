@@ -8,7 +8,9 @@ var gulp 			= require('gulp'),
 	concat 			= require('gulp-concat'),
 	rename			= require('gulp-rename'),
 	uglify			= require('gulp-uglify'),
-	minify			= require('gulp-minify-css');
+	minify			= require('gulp-minify-css'),
+	sourcemaps 		= require('gulp-sourcemaps'),
+	autoprefixer 	= require('gulp-autoprefixer');
 //	imagemin		= require('gulp-imagemin');
 
 /*
@@ -28,12 +30,14 @@ var paths = {
 // Styles Task
 gulp.task('styles', function() {
 	return gulp.src(paths.css)
+	.pipe(sourcemaps.init())
 	.pipe(sass())
-	.on('error', function(err) { console.error('Error!', err.message); })
+	.pipe(autoprefixer())
 	.pipe(concat('mare.css'))
 	.pipe(gulp.dest('public/dist'))
 	.pipe(minify({compatibility: 'ie8'}))
 	.pipe(rename({suffix: '.min'}))
+	.pipe(sourcemaps.write('.'))
 	.pipe(gulp.dest('public/dist'));
 });
 
