@@ -21,7 +21,7 @@ body {
 }
 
 .content-wrapper {
-	max-width: 1200px;
+	max-width: 1080px;
 	margin: 0 auto;
 }
 
@@ -33,11 +33,9 @@ body {
 .global-header .logo-container,
 .global-header .header-navigation-container {
 	display: inline-block;
-	width: 50%;
 }
 
 .global-header .logo-container {
-	float: left;
 	margin-bottom: 10px;
 }
 
@@ -46,16 +44,15 @@ body {
 }
 
 .global-header img {
-	margin-left: 70px;
 	margin-top: 20px;
-	width: 80%;
 }
 
 .global-header .top-nav {
-	width: 500px;
+	width: 170%;
 	background-color: #66584D;
 	color: #fff;
 	padding-left: 20px;
+	float: right;
 }
 
 .global-header .top-nav li {
@@ -97,7 +94,6 @@ body {
 }
 
 .main > .content {
-	width: 90%;
 	margin: auto;
 	background-color: #fff;
 	padding: 0 10px 10px;
@@ -175,14 +171,14 @@ body {
 }
 
 .main .owl-carousel .featured-learn-more:after {
-    content: "";
-    position: absolute;
-    height: 0;
-    width: 0;
-    border: 5px solid transparent;
-    border-left-color: #544A65;
-    bottom: 23px;
-    margin-left: 10px;
+	content: "";
+	position: absolute;
+	height: 0;
+	width: 0;
+	border: 5px solid transparent;
+	border-left-color: #544A65;
+	bottom: 23px;
+	margin-left: 10px;
 }
 
 .main .featured {

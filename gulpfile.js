@@ -3,9 +3,12 @@ var gulp 			= require('gulp'),
 	jscs 			= require('gulp-jscs'),
 	jshintReporter 	= require('jshint-stylish'),
 	watch 			= require('gulp-watch'),
-	browserify 		= require('browserify');
-//	concat 			= require('gulp-concat'),
-//	uglify			= require('gulp-uglify'),
+	browserify 		= require('browserify'),
+	sass 			= require('gulp-sass'),
+	concat 			= require('gulp-concat'),
+	rename			= require('gulp-rename'),
+	uglify			= require('gulp-uglify'),
+	minify			= require('gulp-minify-css');
 //	imagemin		= require('gulp-imagemin');
 
 /*
@@ -16,8 +19,23 @@ var paths = {
 		'./models/**/*.js',
 		'./routes/**/*.js', 
 		'keystone.js', 
-		'package.json']
+		'package.json'],
+	'css':[
+		'public/styles/**/*.scss',
+		'public/modules/**/*.css']
 };
+
+// Styles Task
+gulp.task('styles', function() {
+	return gulp.src(paths.css)
+	.pipe(sass())
+	.on('error', function(err) { console.error('Error!', err.message); })
+	.pipe(concat('mare.css'))
+	.pipe(gulp.dest('public/dist'))
+	.pipe(minify({compatibility: 'ie8'}))
+	.pipe(rename({suffix: '.min'}))
+	.pipe(gulp.dest('public/dist'));
+});
 
 
 // gulp lint
@@ -42,3 +60,12 @@ gulp.task('watch:lint', function () {
 		.pipe(jshint())
 		.pipe(jshint.reporter(jshintReporter));
 });
+
+gulp.task('default', ['styles']);
+
+
+
+
+
+
+

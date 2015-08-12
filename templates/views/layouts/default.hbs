@@ -8,17 +8,9 @@
 		<title>MARE</title>
 		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 		
-		<!-- <link href="/styles/site.css" rel="stylesheet"> -->
-		{{!-- TODO: This was pulled out to prevent the bootstrap nonsense from making it into the site.Need to add Normalize separately, and make sure the admin panel has a separate admin.css file built for it --}}
+		{{!-- TODO: Need to make sure the admin panel has a separate admin.css file built for it --}}
 		
-		<link rel="stylesheet" href="/modules/owl-carousel/owl.carousel.css">
-		<link rel="stylesheet" href="/modules/owl-carousel/owl.theme.css">
-		<link rel="stylesheet" href="/modules/owl-carousel/owl.transitions.css">
-		{{!-- this is temporary until I get preprocessing to work, remove this and the file once I do --}}
-		<link rel="stylesheet" href="/styles/temp.css">
-		{{!-- TODO: This needs to be placed in the photo listing file, or will be rolled into a main file via Gulp --}}
-		<link rel="stylesheet" href="/styles/photo-listing.css">
-		<link rel="stylesheet" href="/styles/menu.css">
+		<link rel="stylesheet" href="/dist/mare.min.css">
 
 		{{!-- This file provides the default styling for the KeystoneJS Content Editor 
 		- only renders when user is logged in and admin--}}
@@ -44,59 +36,47 @@
 						<ul class="nav">
 							<li class="top-nav-item"><a href="/">Home</a></li>
 							<li class="top-nav-item">
-								<span class="language-label">Language</span>
-								<span class="language-option">En</span>
-								<span class="language-option">Sp</span>
-							</li>
-							<li class="top-nav-item">
 								<a href="/keystone/signin">Log in</a>
 								<span class="glyphicon glyphicon-triangle-bottom"></span>
 							</li>
 							<li class="top-nav-item donate">Donate</li>
 						</ul>
 					</nav>
-					<!-- <nav class="site-nav">
-						<ul class="nav>
-						{{# each siteNav}}
-							<li>
-								<a href="{{ url }}">{{ title }}</a>
-							</li>
-						{{/each}}
-						</ul>
-					</nav> -->
 				</span>
 			</div>
 
 			<nav class="main-nav">
-				<ul class="nav">
-					{{# each mainNav}}
-					<li>
-						{{# if subMenu}}
-						<a href="#" class="parent main-menu">{{ title }}</a>
-						<ul>
-							{{# each subMenu}}
-							<li>
-								{{# if subMenu}}
-								<a href="#" class="parent sub-menu">{{ title }}</a>
-								<ul>
-									{{# each subMenu}}
-									<li>
-										<a href="{{ href }}">{{ title }}</a>
-									</li>
-									{{/each}}
-								</ul>
-								{{else}}
-								<a href="{{ href }}">{{ title }}</a>
-								{{/if}}
-							</li>
-							{{/each}}
-						</ul>
-						{{else}}
-						<a href="{{ href }}">{{ title }}</a>
-						{{/if}}
-					</li>
-					{{/each}}
-				</ul>
+				<div class="content-wrapper">
+					<ul class="nav">
+						{{# each mainNav}}
+						<li>
+							{{# if subMenu}}
+							<a href="#" class="parent main-menu">{{ title }}</a>
+							<ul>
+								{{# each subMenu}}
+								<li>
+									{{# if subMenu}}
+									<a href="#" class="parent sub-menu">{{ title }}</a>
+									<ul>
+										{{# each subMenu}}
+										<li>
+											<a href="{{ href }}">{{ title }}</a>
+										</li>
+										{{/each}}
+									</ul>
+									{{else}}
+									<a href="{{ href }}">{{ title }}</a>
+									{{/if}}
+								</li>
+								{{/each}}
+							</ul>
+							{{else}}
+							<a href="{{ href }}">{{ title }}</a>
+							{{/if}}
+						</li>
+						{{/each}}
+					</ul>
+				</div>
 			</nav>
 		</header>
 			
