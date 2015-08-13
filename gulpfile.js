@@ -13,9 +13,7 @@ var gulp 			= require('gulp'),
 	autoprefixer 	= require('gulp-autoprefixer'),
 	imagemin		= require('gulp-imagemin');
 
-/*
- * Create variables for our project paths so we can change in one place
- */
+// path variables
 var paths = {
 	'src':[
 		'./models/**/*.js',
@@ -26,16 +24,16 @@ var paths = {
 		'public/modules/**/*.css',
 		'public/styles/**/*.scss'],
 	'js':[
-		'public/js/*.js',
-		'public/modules/**/*.js'],
+		'public/modules/**/*.js',
+		'public/js/*.js'],
 	'img':[
 		'public/images/*',
 		'public/modules/**/*.gif']
 };
 
-// Styles Task
+// styles task
 gulp.task('styles', function() {
-	return gulp.src(paths.css)
+	gulp.src(paths.css)
 		.pipe(sourcemaps.init())
 		.pipe(sass())
 		.pipe(autoprefixer())
@@ -47,9 +45,9 @@ gulp.task('styles', function() {
 		.pipe(gulp.dest('public/dist'));
 });
 
-// Scripts Task
+// scripts task
 gulp.task('scripts', function() {
-	return gulp.src(paths.js)
+	gulp.src(paths.js)
 		.pipe(sourcemaps.init())
 		.pipe(concat('mare.js'))
 		.pipe(gulp.dest('public/dist'))
@@ -59,7 +57,7 @@ gulp.task('scripts', function() {
 		.pipe(gulp.dest('public/dist'));
 });
 
-// Images Task
+// images task
 gulp.task('images', function() {
 	gulp.src(paths.img)
 		.pipe(imagemin())
@@ -76,10 +74,10 @@ gulp.task( 'lint', function() {
 
 // gulp jscs
 // TODO: need to adjust src to minified, concatenated js file
-gulp.task('jscs'), function() {
-	gulp.src('src/mare.json')
-		.pipe(jscs());
-}
+// gulp.task('jscs'), function() {
+// 	gulp.src('public/dist/mare.js')
+// 		.pipe(jscs());
+// }
 
 // gulp watcher for lint
 gulp.task('watch:lint', function () {
@@ -89,11 +87,4 @@ gulp.task('watch:lint', function () {
 		.pipe(jshint.reporter(jshintReporter));
 });
 
-gulp.task('default', ['styles', 'scripts', 'images']);
-
-
-
-
-
-
-
+gulp.task('default', gulp.parallel('styles', 'scripts', 'images'));
