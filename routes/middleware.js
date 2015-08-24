@@ -32,14 +32,6 @@ exports.initLocals = function(req, res, next) {
 
 	locals.user = req.user;
 
-	// Create the site menu navigation elements
-	locals.siteNav = [
-		{ title: 'About us', href: '/page/about-us' },
-		{ title: 'Our Services', href: '/page/our-services' },
-		{ title: 'Success Stories', href: '/page/success-stories' },
-		{ title: 'Upcoming Events', href: '/page/upcoming-events' }
-	];
-
 	// Create the main menu navigation.
 	locals.mainNav = [
 		{ title: 'Considering Adoption?', subMenu: [
@@ -62,23 +54,20 @@ exports.initLocals = function(req, res, next) {
 		{ title: 'For Social Workers', subMenu: [
 			{ title: 'Register a Child', href: '/page/register-a-child' },
 			{ title: 'How MARE can Help You', href: '/page/how-mare-can-help-you'},
-			{ title: 'Recruitment Opportunities', href: '/page/recruitment-opportunities' },
 			{ title: 'Attend Events', href: '/page/attend-events' },
 			{ title: 'Register a Family', href: '/page/register-a-family' },
 			{ title: 'Use Online Matching', href: '/page/use-online-matching' }
 		]},
 		{ title: 'Ways to Help', subMenu: [
-			{ title: 'For Individuals', href: '/page/for-individuals' },
-			{ title: 'For Businesses', href: '/page/for-businesses' },
-			{ title: 'Experienced Families', href: '/page/experienced-families' },
-			{ title: 'Walk for Adoption & Other Events', href: '/page/walk-for-adoption-and-other-events' },
-			{ title: 'Donate Your Car', href: '/page/donate-your-car' },
-			{ title: 'Creative Ways to Support MARE', subMenu: [
-				{ title: 'Host a Workplace Lunch & Learn', href: '/page/host-a-workplace-lunch-and-learn' },
-				{ title: 'Another Creative Way to Help', href: '/page/another-creative-way-to-help' },
-				{ title: 'Yet a Third Way to Help', href: '/page/yet-a-third-way-to-help' },
-				{ title: 'And Even a Fourth Way', href: '/page/and-even-a-fourth-way' }
-			]}
+			{ title: 'Why give?', href: '/page/why-give' },
+			{ title: 'How you can help', href: '/page/how-you-can-help' },
+			{ title: 'How businesses and organizations can help', href: '/page/how-businesses-and-organizations-can-help' },
+			{ title: 'Experienced families', href: '/page/experienced-families' }
+		]},
+		{ title: 'About Us', subMenu: [
+			{ title: 'Our Services', href: '/page/our-services'},			
+			{ title: 'Success Stories', href: '/page/success-stories'},
+			{ title: 'Upcoming Events', href: '/page/upcoming-events'}
 		]}];
 
 	next();

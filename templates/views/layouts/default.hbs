@@ -10,34 +10,74 @@
 		
 		<link rel="stylesheet" href="/dist/mare.min.css">
 
+		<script src="/dist/modernizr.custom.min.js"></script>
+
 		{{!-- This file provides the default styling for the KeystoneJS Content Editor 
 		- only renders when user is logged in and admin--}}
 		{{{isAdminEditorCSS user}}}
 		
-		{{!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries
+		{{!-- Respond.js IE8 support of HTML5 elements and media queries
 		//- Safely remove this block if you are not targeting IE8 --}}
 		<!--[if lt IE 9]>
-		<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js" />
 		<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js" />
 		<![endif]-->
 		
 	</head>
 	<body>
-		<header class="global-header">
+
+		<nav id="mobile-menu" class="hidden">
+			<ul>
+				{{# each mainNav}}
+				<li>
+					{{# if subMenu}}
+						<a href="#">{{ title }}</a>
+						<ul>
+							{{# each subMenu}}
+							<li>
+								{{# if subMenu}}
+								<a href="#">{{ title }}</a>
+								<ul>
+									{{# each subMenu}}
+									<li>
+										<a href="{{ href }}">{{ title }}</a>
+									</li>
+									{{/each}}
+								</ul>
+								{{else}}
+								<a href="{{ href }}">{{ title }}</a>
+								{{/if}}
+							</li>
+							{{/each}}
+						</ul>
+						{{else}}
+						<a href="{{ href }}">{{ title }}</a>
+					{{/if}}
+				</li>
+				{{/each}}
+			</ul>
+		</nav>
+
+		<div class="global-header">
 			<div class="content-wrapper">
 				<span class="logo-container">
-					<img src="/dist/img/logo-temp-combined.png" alt="logo">
+					<img src="/dist/img/mare-logo.png" alt="logo">
+					<img src="/dist/img/mare-logo-text.png" alt="logo">
 				</span>
 				<span class="header-navigation-container">
 
 					<nav class="top-nav">
 						<ul class="nav">
-							<li class="top-nav-item"><a href="/">Home</a></li>
-							<li class="top-nav-item">
+							<li class="top-nav-item home-link"><a href="/">Home</a></li>
+							<li class="top-nav-item log-in-link">
 								<a href="/keystone/signin">Log in</a>
-								<span class="glyphicon glyphicon-triangle-bottom"></span>
+								<span class="arrow-down"></span>
 							</li>
 							<li class="top-nav-item donate">Donate</li>
+							<li class="top-nav-item hamburger">
+								<a href="#mobile-menu">
+									<img src="/dist/img/hamburger.png">
+								</a>
+							</li>
 						</ul>
 					</nav>
 				</span>
@@ -76,7 +116,7 @@
 					</ul>
 				</div>
 			</nav>
-		</header>
+		</div>
 			
 		<div class="body">
 			<div class="content-wrapper">
@@ -113,7 +153,7 @@
 			</div>
 		</div>
 
-		<footer class="global-footer">
+		<div class="global-footer">
 			<div class="content-wrapper">
 				<nav class="footer-nav">
 					<span>Contact Us</span>
@@ -123,9 +163,13 @@
 					<span>Terms of Use</span>
 				</nav>
 				<nav class="social-nav">
-					<img src="/dist/img/social-icons-temp.png" alt="social-icons">
+					<img src="/dist/img/facebook-icon.png" alt="facebook">
+					<img src="/dist/img/twitter-icon.png" alt="twitter">
+					<img src="/dist/img/pinterest-icon.png" alt="pinterest">
+					<img src="/dist/img/youtube-icon.png" alt="youtube">
 				</nav>
-				<img class="sponsor" src="/dist/img/sponsor-jordans-temp.png" alt="sponsor-image">
+				<img class="sponsor" src="/dist/img/jordans-furniture-logo.png" alt="jordans furniture">
+				<img class="sponsor" src="/dist/img/jack-williams-logo.png" alt="jack williams">
 				<div>
 					<span class="address">45 Franklin Street, 5th Floor, Boston, MA 02110-1301</span>
 					<span class="phone">Phone: 617-54-ADOPT (542-3678)</span>
@@ -135,7 +179,7 @@
 					<span class="copyright">&copy; 2015 MARE Inc. All rights reserved.</span>
 				</div>
 			</div>
-		</footer>
+		</div>
 
 		{{!--
 		//- jQuery 1.11.1 is included by default, and required by the KeystoneJS Content Editor. If you are not targeting IE8, you can upgrade to 2.1.1 (also bundled) for better performance.

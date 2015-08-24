@@ -4,16 +4,53 @@ html {
 	box-sizing: border-box;
 }
 
-body {
-	margin: 0;
-	font-size: 14px;
-	background-color: #FFFBD7;
-}
-
 *, *:before, *:after {
 	-webkit-box-sizing: inherit;
 	-moz-box-sizing: inherit;
 	box-sizing: inherit;
+}
+
+body {
+	margin: 0;
+	font-size: 14px;
+	background-color: #FFFBD7;
+	min-width: 320px;
+}
+
+.arrow-up {
+	width: 0; 
+	height: 0; 
+	border-left: 5px solid transparent;
+	border-right: 5px solid transparent;
+	
+	border-bottom: 5px solid #000;
+}
+
+.arrow-down {
+	width: 0; 
+	height: 0; 
+	border-left: 5px solid transparent;
+	border-right: 5px solid transparent;
+	
+	border-top: 5px solid #000;
+}
+
+.arrow-right {
+	width: 0; 
+	height: 0; 
+	border-top: 5px solid transparent;
+	border-bottom: 5px solid transparent;
+	
+	border-left: 5px solid #000;
+}
+
+.arrow-left {
+	width: 0; 
+	height: 0; 
+	border-top: 5px solid transparent;
+	border-bottom: 5px solid transparent; 
+	
+	border-right: 5px solid #000; 
 }
 
 .hidden {
@@ -25,9 +62,15 @@ body {
 	margin: 0 auto;
 }
 
+/* TODO: IE8 nastiness at the bottom, be sure to test it */
 .global-header {
-	background-color: #FFFAC2;
-	position: relative;
+    background-color: #FFFAC2;
+    position: fixed;
+    z-index: 10;
+    width: 100%;
+    min-width: 320px;
+    box-shadow: 0px 0px 10px #616161;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=180, Color='#616161')";
 }
 
 .global-header .logo-container,
@@ -36,7 +79,12 @@ body {
 }
 
 .global-header .logo-container {
-	margin-bottom: 10px;
+	margin: 10px;
+}
+
+.global-header .logo-container > img {
+	display: block;
+	width: 80%;
 }
 
 .global-header .header-navigation-container {
@@ -44,33 +92,35 @@ body {
 }
 
 .global-header img {
-	margin-top: 20px;
+	// margin: 20px 0 0 20px;
 }
 
 .global-header .top-nav {
 	width: 170%;
 	background-color: #66584D;
 	color: #fff;
-	padding-left: 20px;
 	float: right;
 }
 
 .global-header .top-nav li {
-	padding: 10px 20px 5px;
+	padding: 10px 10px;
+}
+
+.top-nav li.home-link {
+    display: none;
 }
 
 .global-header .top-nav .donate {
-	background-color: #FBB03B;
-	padding-bottom: 10px;
 	position: absolute;
-	border-bottom-left-radius: 5px;
-	border-bottom-right-radius: 5px;
-	text-transform: uppercase;
-	color: #66584D;
-	font-weight: 600;
-	box-shadow: 5px 5px 10px -2px;
-	padding-top: 15px;
-	margin-left: 20px;
+	top: 36px;
+    right: 15px;
+    background-color: #FBB03B;
+    padding-bottom: 10px;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    text-transform: uppercase;
+    color: #66584D;
+    font-weight: 600;
 }
 
 .global-header .top-nav a,
@@ -83,6 +133,17 @@ body {
 	margin-left: 4%;
 	font-style: italic;
 	font-size: 1.1em;
+}
+
+.log-in-link {
+	position: relative;
+}
+
+.log-in-link > .arrow-down {
+	position: absolute;
+    border-top-color: #fff;
+    right: 2px;
+    top: 16px;
 }
 
 .body {
@@ -207,19 +268,103 @@ body {
 		background-color: #FFFBD7;
 }
 
-.global-footer nav {
+.global-footer .footer-nav {
 	display: inline-block;
 	color: #62544A;
 }
 
-nav.footer-nav > span:after {
-	content: " |";
+.global-footer .social-nav {
+	display: inline-block;
+}
+
+.footer-nav > span:after {
+	content: "|";
 	margin: 0 2px;
 	font-size: 1.2em;
 }
 
-nav.footer-nav > span:last-child:after {
+.footer-nav > span:last-child:after {
 	content: "";
 	margin: 0;
 	font-size: 1em;
+}
+
+// TODO: put these in the correct place
+.hamburger {
+    position: absolute;
+    top: -1px;
+    right: 0;
+}
+
+.top-nav ul {
+	position: relative;
+}
+
+// Show the home link again
+@media all and (min-width: 360px) {
+
+	.top-nav li.home-link {
+	    display: inline-block;
+	    margin-right: -20px;
+	}
+
+	.log-in-link {
+	    margin-right: -18px;
+	}
+}
+
+// move the donate link back into the menu
+@media all and (min-width: 440px) {
+
+	.global-header .top-nav .donate {
+		right: 55px;
+		top: 0;
+		box-shadow: 5px 5px 10px -2px;
+		padding-top: 15px;
+	}
+
+	.top-nav li.home-link {
+	    margin-right: -25px;
+	}
+
+	.log-in-link {
+	    margin-right: 32px;
+	}
+
+	.log-in-link > .arrow-down {
+	    right: 5px;
+	}
+}
+
+@media all and (min-width: 460px) {
+	.global-header .logo-container > img {
+	    width: 90%;
+	}
+}
+
+@media all and (min-width: 480px) {
+	.global-header .logo-container > img {
+	    width: 100%;
+	}
+}
+
+@media all and (min-width: 660px) {
+	.global-header .logo-container > img {
+	    display: inline-block;
+	    width: inherit;
+	}
+
+	.global-header .logo-container > img:nth-child(2) {
+	    position: relative;
+	    top: -9px;
+	}
+}
+
+@media all and (min-width: 850px) {
+	/* TODO: Check to see if this works for clearing the IE-8 -ms-filter style */
+	.global-header {
+		position: relative;
+		box-shadow: none;
+    	-ms-filter: none;
+	}
 }

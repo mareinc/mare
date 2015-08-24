@@ -1,3 +1,8 @@
+// override the mobile menu anchor widths to allow clicking anywhere on a line to open a sub-menu if it exists
+em.mm-counter+a.mm-next {
+    width: 100%;
+}
+
 nav ul {
 	margin: 0;
 	padding:0;
@@ -27,7 +32,8 @@ nav ul {
 .main-nav {
 	display: none;
 }
-@media all and (min-width: 960px) {
+
+@media all and (min-width: 820px) {
 	.main-nav {
 		display: block;
 		text-align: center;
@@ -42,7 +48,7 @@ nav ul {
 		text-decoration: none;
 		padding: 0.6em 0.3em;
 		text-transform: uppercase;
-		font-size: 80%;
+		font-size: .8em;
 		position: relative;
 	}
 
@@ -62,7 +68,7 @@ nav ul {
 
 	.main-nav .nav > li { 
 		display: inline-block;
-	    width: 19%;
+	    margin-right: 10px;
 	}
 
 	.main-nav .nav li:hover > a { 
@@ -111,5 +117,48 @@ nav ul {
 		top: 0;
 		left: -100%;
 	    width: 100%;
+	}
+}
+
+@media all and (min-width: 850px) {
+	.main-nav .nav > li {
+		margin-right: 15px;
+	}
+}
+
+@media all and (min-width: 880px) {
+	.main-nav .nav > li {
+		margin-right: 20px;
+	}
+}
+
+@media all and (min-width: 910px) {
+	.main-nav .nav > li {
+		margin-right: 25px;
+	}
+}
+
+@media all and (min-width: 940px) {
+	.main-nav .nav > li {
+		margin-right: 30px;
+	}
+}
+
+@media all and (min-width: 970px) {
+	.main-nav .nav > li {
+		margin-right: 35px;
+	}
+}
+
+@media all and (min-width: 1000px) {
+	.main-nav .nav > li {
+		margin-right: 40px;
+	}
+}
+
+@media all and (min-width: 1030px) {
+	.main-nav .nav > li {
+		margin-right: 0;
+	    width: 16%;
 	}
 }

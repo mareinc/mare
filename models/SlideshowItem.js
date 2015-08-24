@@ -27,5 +27,5 @@ SlideshowItem.schema.pre('save', function(next) {
 });
 
 // Define default columns in the admin interface and register the model
-SlideshowItem.defaultColumns = 'parent, order, heading';
+SlideshowItem.defaultColumns = 'heading, order, parent';
 SlideshowItem.register();
