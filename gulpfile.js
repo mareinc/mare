@@ -3,7 +3,6 @@ var gulp 			= require('gulp'),
 	jscs 			= require('gulp-jscs'),
 	jshintReporter 	= require('jshint-stylish'),
 	watch 			= require('gulp-watch'),
-	browserify 		= require('browserify'),
 	sass 			= require('gulp-sass'),
 	concat 			= require('gulp-concat'),
 	rename			= require('gulp-rename'),
@@ -11,7 +10,9 @@ var gulp 			= require('gulp'),
 	minify			= require('gulp-minify-css'),
 	sourcemaps 		= require('gulp-sourcemaps'),
 	autoprefixer 	= require('gulp-autoprefixer'),
-	imagemin		= require('gulp-imagemin');
+	imagemin		= require('gulp-imagemin'),
+	gulpIgnore 		= require('gulp-ignore');
+	del 			= require('del');
 
 // path variables
 var paths = {
@@ -24,8 +25,13 @@ var paths = {
 		'public/modules/**/*.css',
 		'public/styles/**/*.scss'],
 	'js':[
+		'public/js/lib/jquery/**/*.js',
 		'public/modules/**/*.js',
 		'public/js/*.js'],
+	'standalone-js':[
+		'public/js/lib/standalone-scripts/**/*.js'],
+	'admin-panel-js':[
+		'public/js/lib/**/*.js'],
 	'img':[
 		'public/images/*',
 		'public/modules/**/*.gif']
@@ -33,7 +39,7 @@ var paths = {
 
 // styles task
 gulp.task('styles', function() {
-	gulp.src(paths.css)
+	return gulp.src(paths.css)
 		.pipe(sourcemaps.init())
 		.pipe(sass())
 		.pipe(autoprefixer())
@@ -45,9 +51,17 @@ gulp.task('styles', function() {
 		.pipe(gulp.dest('public/dist'));
 });
 
+// task for scripts which are meant to remain separate from the concatenated, minified scripts file
+gulp.task('standalone-scripts', function() {
+	return gulp.src(paths['standalone-js'])
+		.pipe(gulp.dest('public/dist'));
+});
+
 // scripts task
 gulp.task('scripts', function() {
-	gulp.src(paths.js)
+	return gulp.src(paths.js)
+		// need to fix this ignore, it's not working
+		.pipe(gulpIgnore.exclude(paths['standalone-js']))
 		.pipe(sourcemaps.init())
 		.pipe(concat('mare.js'))
 		.pipe(gulp.dest('public/dist'))
@@ -59,7 +73,7 @@ gulp.task('scripts', function() {
 
 // images task
 gulp.task('images', function() {
-	gulp.src(paths.img)
+	return gulp.src(paths.img)
 		.pipe(imagemin())
 		.pipe(gulp.dest('public/dist/img'));
 });
@@ -72,12 +86,16 @@ gulp.task( 'lint', function() {
 
 });
 
-// gulp jscs
-// TODO: need to adjust src to minified, concatenated js file
-// gulp.task('jscs'), function() {
-// 	gulp.src('public/dist/mare.js')
-// 		.pipe(jscs());
-// }
+// Watch Task
+gulp.task('watch', function() {
+	gulp.watch(paths.css, gulp.series('styles'));
+	gulp.watch(paths.js, gulp.series('scripts'));
+	gulp.watch(paths.img, gulp.series('images'));
+});
+
+gulp.task('clean', function (cb) {
+          del(['public/dist/*'], cb);
+});
 
 // gulp watcher for lint
 gulp.task('watch:lint', function () {
@@ -87,4 +105,14 @@ gulp.task('watch:lint', function () {
 		.pipe(jshint.reporter(jshintReporter));
 });
 
-gulp.task('default', gulp.parallel('styles', 'scripts', 'images'));
+// gulp build task
+gulp.task('build', gulp.parallel('styles', 'standalone-scripts', 'scripts', 'images'));
+
+gulp.task('default', gulp.series('clean', 'build', 'watch'));
+
+// gulp jscs
+// TODO: need to adjust src to minified, concatenated js file
+// gulp.task('jscs'), function() {
+// 	gulp.src('public/dist/mare.js')
+// 		.pipe(jscs());
+// }
