@@ -3,7 +3,8 @@ var keystone = require('keystone'),
 
 // Load models to allow fetching of slideshow data
 var Slideshow = keystone.list('Slideshow'),
-	SlideshowItems = keystone.list('Slideshow Item');
+	SlideshowItems = keystone.list('Slideshow Item'),
+	FeaturedItems = keystone.list('Featured Item');
 
 exports = module.exports = function(req, res) {
 	'use strict';
@@ -25,10 +26,15 @@ exports = module.exports = function(req, res) {
 					
 					locals.slides = _.sortBy(slides, function(slide) { return +slide.order; });
 
-					view.render('main');
-				});
+				}).then(function() {
+					FeaturedItems.model.find()
+						.exec()
+						.then(function(featuredItems) {
 
+							locals.featuredItems = featuredItems;
+
+							view.render('main');
+						});
+				});
 		});
-	
-	// TODO: Get the featured models
 };

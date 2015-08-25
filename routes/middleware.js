@@ -65,9 +65,15 @@ exports.initLocals = function(req, res, next) {
 			{ title: 'Experienced families', href: '/page/experienced-families' }
 		]},
 		{ title: 'About Us', subMenu: [
-			{ title: 'Our Services', href: '/page/our-services'},			
-			{ title: 'Success Stories', href: '/page/success-stories'},
-			{ title: 'Upcoming Events', href: '/page/upcoming-events'}
+			{ title: 'Mission & Vision', href: '/page/mission-and-vision'},
+			{ title: 'History', href: '/page/history'},
+			{ title: 'Meet the Staff', href: '/page/meet-the-staff'},
+			{ title: 'Board of Directors', href: '/page/board-of-directors'},
+			{ title: 'MARE in the News', href: '/page/mare-in-the-news'},
+			{ title: 'Annual Report', href: '/page/annual-report'}
+			// { title: 'Our Services', href: '/page/our-services'},			
+			// { title: 'Success Stories', href: '/page/success-stories'},
+			// { title: 'Upcoming Events', href: '/page/upcoming-events'}
 		]}];
 
 	next();

@@ -57,6 +57,13 @@ body {
 	display: none;
 }
 
+.cover {
+	position: relative;
+	top: 0;
+	bottom: 0;
+	display: block;
+}
+
 .content-wrapper {
 	max-width: 1080px;
 	margin: 0 auto;
@@ -247,25 +254,79 @@ body {
 	margin-left: 10px;
 }
 
-.main .featured {
-	margin-top: 15px;
+.main .featured-items {
+	margin: 15px 0;
+    padding: 0;
 }
 
-.main .featured img:first-child {
-	margin-right: 2%;
+.main .featured-items .featured-item {
+	display: block;
+	margin-bottom: 15px;
 }
 
-.main .featured img:last-child {
-	margin-left: 2%;
+.main .featured-item > a {
+    text-decoration: none;
+    color: #000;
 }
 
-.main .featured img {
-	width: 31.5%;
+.main .featured-item img {
+    width: 100%;
+}
+
+.featured-item-description {
+	position: relative;
+    padding: 15px;
+    margin-top: -3px;
+}
+
+.main .featured-item:nth-child(1) .featured-item-description {
+	background-color: #8FCED6;
+}
+
+.main .featured-item:nth-child(2) .featured-item-description {
+	background-color: #6BADC8;
+}
+
+.main .featured-item:nth-child(3) .featured-item-description {
+	background-color: #F29F57;
+}
+
+.main .featured-item .featured-item-title,
+.main .featured-item .featured-item-summary,
+.main .featured-item .featured-item-learn-more {
+	display: block;
+}
+
+.main .featured-item .featured-item-title {
+	text-transform: uppercase;
+    font-weight: 600;
+    font-size: 1.1em;
+    margin-bottom: 5px;
+}
+
+.main .featured-item .featured-item-summary {
+	font-style: italic;
+	margin-bottom: 5px;
+}
+
+.main .featured-item .featured-item-learn-more {
+
+}
+
+.main .featured-item .featured-item-learn-more:after {
+	content: "";
+    position: absolute;
+    height: 0;
+    width: 0;
+    border: 5px solid transparent;
+    border-left-color: #544A65;
+    bottom: 17px;
+    margin-left: 5px;
 }
 
 .global-footer {
 	border-top: 15px solid #3D4573;
-		background-color: #FFFBD7;
+	background-color: #FFFBD7;
 }
 
 .global-footer .footer-nav {
@@ -357,6 +418,27 @@ body {
 	.global-header .logo-container > img:nth-child(2) {
 	    position: relative;
 	    top: -9px;
+	}
+
+	.main .featured-items .featured-item {
+		display: inline-block;
+		width: 32%;
+	}
+
+	.main .featured-items .featured-item-title {
+		height: 35px;
+	}
+
+	.main .featured-items .featured-item-summary {
+		height: 25px;
+	}
+
+	.main .featured-items .featured-item:first-child {
+		margin-right: 2%;
+	}
+
+	.main .featured-items .featured-item:last-child {
+		margin-left: 2%;
 	}
 }
 
