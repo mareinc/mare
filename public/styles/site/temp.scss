@@ -157,10 +157,6 @@ body {
 	background-color: #9EA2B9;
 }
 
-.main {
-	padding-bottom: 3%
-}
-
 .main > .content {
 	margin: auto;
 	background-color: #fff;
@@ -327,6 +323,7 @@ body {
 .global-footer {
 	border-top: 15px solid #3D4573;
 	background-color: #FFFBD7;
+	padding: 15px;
 }
 
 .global-footer .footer-nav {
@@ -336,18 +333,44 @@ body {
 
 .global-footer .social-nav {
 	display: inline-block;
+	position: relative;
+    top: -10px;
 }
 
-.footer-nav > span:after {
-	content: "|";
-	margin: 0 2px;
+.global-footer .sponsor-jordans-furniture {
+	margin-left: 10px;
+}
+
+.global-footer .sponsor-jack-williams {
+	margin-left: 20px;
+}
+
+.global-footer .contact-info {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.global-footer .footer-nav > span:after,
+.global-footer .contact-info > span:after {
+    content: " |";
+    margin: 0 2px;
 	font-size: 1.2em;
 }
 
-.footer-nav > span:last-child:after {
+.global-footer .footer-nav > span:after,
+.global-footer .contact-info > span:last-child:after {
 	content: "";
 	margin: 0;
 	font-size: 1em;
+}
+
+.global-footer .disclaimer {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.global-footer .disclaimer > .copyright {
+    margin-left: 5px;
 }
 
 // TODO: put these in the correct place
@@ -418,6 +441,10 @@ body {
 	.global-header .logo-container > img:nth-child(2) {
 	    position: relative;
 	    top: -9px;
+	}
+
+	.main {
+		padding-bottom: 3%;
 	}
 
 	.main .featured-items .featured-item {
