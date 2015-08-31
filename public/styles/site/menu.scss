@@ -1,0 +1,164 @@
+// override the mobile menu anchor widths to allow clicking anywhere on a line to open a sub-menu if it exists
+em.mm-counter+a.mm-next {
+    width: 100%;
+}
+
+nav ul {
+	margin: 0;
+	padding:0;
+	list-style: none;
+}
+
+.top-nav {
+	height: auto;
+	margin: 0px;
+}
+
+.top-nav ul {
+	margin: 0;
+	padding: 0;
+}
+
+.top-nav li {
+	display: inline-block;
+}
+
+.top-nav li > a {
+	text-decoration: none;
+	color: #000;
+	padding: 8px 8px 8px 8px;
+}
+
+.main-nav {
+	display: none;
+}
+
+@media all and (min-width: 820px) {
+	.main-nav {
+		display: block;
+		text-align: center;
+		clear: both;
+		background-color: #3D4573;
+	}
+
+	.main-nav .nav a {
+		display:block; 
+		background: #3D4573; 
+		color: #D5D5D5; 
+		text-decoration: none;
+		padding: 0.6em 0.3em;
+		text-transform: uppercase;
+		font-size: .8em;
+		position: relative;
+	}
+
+	.main-nav .nav {
+		vertical-align: top; 
+		display: block;
+		box-shadow: 
+			1px -1px -1px 1px #000, 
+			-1px 1px -1px 1px #fff, 
+			0 0 6px 3px #fff;
+		border-radius:6px;
+	}
+
+	.main-nav .nav li {
+		position: relative;
+	}
+
+	.main-nav .nav > li { 
+		display: inline-block;
+	    margin-right: 10px;
+	}
+
+	.main-nav .nav li:hover > a { 
+	    background-color: #0C0D3C;
+	    color: #fff;
+	}
+
+	.main-nav .nav li:hover li a { 
+	    background-color: #0C0D3C;
+	    padding: 0.6em 1.5em 0.6em 0.6em;
+	    text-align: left;
+	}
+
+	.main-nav .sub-menu:before { 
+		content: ""; 
+		position: absolute; 
+		height: 0; 
+		width: 0; 
+		border: 5px solid transparent;
+		border-left-color: #d5d5d5;
+		top: 50% ;
+		right:5px;
+	 }
+
+	 .main-nav li:hover > .sub-menu:before {
+		border-left-color: transparent; 
+		border-right-color: #fff;
+		right: 10px; 
+	}
+
+	 /* submenu positioning */
+	.main-nav .nav ul {
+		position: absolute;
+		/* white-space: nowrap; // keeps submenu width restricted by parent width when turned off */
+		z-index: 10;
+		left: -99999em;
+	}
+
+	.main-nav .nav > li:hover > ul {
+		left: auto;
+		min-width: 100%;
+	}
+
+	/* second submenu positioning */
+	.main-nav .nav > li li:hover > ul {
+		top: 0;
+		left: -100%;
+	    width: 100%;
+	}
+}
+
+@media all and (min-width: 850px) {
+	.main-nav .nav > li {
+		margin-right: 15px;
+	}
+}
+
+@media all and (min-width: 880px) {
+	.main-nav .nav > li {
+		margin-right: 20px;
+	}
+}
+
+@media all and (min-width: 910px) {
+	.main-nav .nav > li {
+		margin-right: 25px;
+	}
+}
+
+@media all and (min-width: 940px) {
+	.main-nav .nav > li {
+		margin-right: 30px;
+	}
+}
+
+@media all and (min-width: 970px) {
+	.main-nav .nav > li {
+		margin-right: 35px;
+	}
+}
+
+@media all and (min-width: 1000px) {
+	.main-nav .nav > li {
+		margin-right: 40px;
+	}
+}
+
+@media all and (min-width: 1030px) {
+	.main-nav .nav > li {
+		margin-right: 0;
+	    width: 16%;
+	}
+}

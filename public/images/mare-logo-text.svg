@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="181px" height="38px" viewBox="0 0 181 38" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
+    <!-- Generator: Sketch 3.3.3 (12081) - http://www.bohemiancoding.com/sketch -->
+    <title>mare-logo-text</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
+        <g id="header" sketch:type="MSLayerGroup" transform="translate(282.250000, 29.048200) scale(1, -1) translate(-282.250000, -29.048200) translate(-239.750000, -31.951800)">
+            <path d="M1043,121.5 L1,121.5 L1,1.5 L1043,1.5 L1043,121.5 Z" id="Shape" fill="#FFFAC2" sketch:type="MSShapeGroup"></path>
+            <g id="Group" transform="translate(62.000000, 44.000000)" font-weight="normal" font-size="16" font-family="Museo Sans" fill="#3D4573" sketch:type="MSTextLayer">
+                <g transform="translate(268.501500, 27.771100) scale(1, -1) translate(-268.501500, -27.771100) translate(178.501500, 9.771100)">
+                    <text id="massachusetts-adopti">
+                        <tspan x="0" y="15" fill="#000000">massachusetts adoption</tspan>
+                    </text>
+                    <text id="resource-exchange">
+                        <tspan x="0" y="31.8" fill="#000000">resource exchange</tspan>
+                    </text>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

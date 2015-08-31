@@ -1,0 +1,501 @@
+html {
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+*, *:before, *:after {
+	-webkit-box-sizing: inherit;
+	-moz-box-sizing: inherit;
+	box-sizing: inherit;
+}
+
+body {
+	margin: 0;
+	font-size: 14px;
+	background-color: #FFFBD7;
+	min-width: 320px;
+}
+
+.arrow-up {
+	width: 0; 
+	height: 0; 
+	border-left: 5px solid transparent;
+	border-right: 5px solid transparent;
+	
+	border-bottom: 5px solid #000;
+}
+
+.arrow-down {
+	width: 0; 
+	height: 0; 
+	border-left: 5px solid transparent;
+	border-right: 5px solid transparent;
+	
+	border-top: 5px solid #000;
+}
+
+.arrow-right {
+	width: 0; 
+	height: 0; 
+	border-top: 5px solid transparent;
+	border-bottom: 5px solid transparent;
+	
+	border-left: 5px solid #000;
+}
+
+.arrow-left {
+	width: 0; 
+	height: 0; 
+	border-top: 5px solid transparent;
+	border-bottom: 5px solid transparent; 
+	
+	border-right: 5px solid #000; 
+}
+
+.hidden {
+	display: none;
+}
+
+.cover {
+	position: relative;
+	top: 0;
+	bottom: 0;
+	display: block;
+}
+
+.content-wrapper {
+	max-width: 1080px;
+	margin: 0 auto;
+}
+
+/* TODO: IE8 nastiness at the bottom, be sure to test it */
+.global-header {
+    background-color: #FFFAC2;
+    position: fixed;
+    z-index: 10;
+    width: 100%;
+    min-width: 320px;
+    box-shadow: 0px 0px 10px #616161;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=180, Color='#616161')";
+}
+
+.global-header .logo-container,
+.global-header .header-navigation-container {
+	display: inline-block;
+}
+
+.global-header .logo-container {
+	margin: 10px;
+}
+
+.global-header .logo-container > img {
+	display: block;
+	width: 80%;
+}
+
+.global-header .header-navigation-container {
+	float: right;
+}
+
+.global-header img {
+	// margin: 20px 0 0 20px;
+}
+
+.global-header .top-nav {
+	width: 170%;
+	background-color: #66584D;
+	color: #fff;
+	float: right;
+}
+
+.global-header .top-nav li {
+	padding: 10px 10px;
+}
+
+.top-nav li.home-link {
+    display: none;
+}
+
+.global-header .top-nav .donate {
+	position: absolute;
+	top: 36px;
+    right: 15px;
+    background-color: #FBB03B;
+    padding-bottom: 10px;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    text-transform: uppercase;
+    color: #66584D;
+    font-weight: 600;
+}
+
+.global-header .top-nav a,
+.global-header .top-nav a:visited {
+	color: #fff;
+}
+
+.site-nav {
+	margin-top: 30px;
+	margin-left: 4%;
+	font-style: italic;
+	font-size: 1.1em;
+}
+
+.log-in-link {
+	position: relative;
+}
+
+.log-in-link > .arrow-down {
+	position: absolute;
+    border-top-color: #fff;
+    right: 2px;
+    top: 16px;
+}
+
+.body {
+	background-color: #9EA2B9;
+}
+
+.main > .content {
+	margin: auto;
+	background-color: #fff;
+	padding: 0 10px 10px;
+}
+
+.main .slideshow img {
+	width: 100%;
+}
+
+// temporary owl carousel loading gif override that was lost when preparing for production
+.owl-item.loading{
+	background: url(img/owl-carousel/AjaxLoader.gif) no-repeat center center
+}
+
+.owl-carousel .owl-wrapper,
+.owl-carousel .owl-item {
+	-webkit-backface-visibility: hidden;
+	-moz-backface-visibility: hidden;
+	-ms-backface-visibility: hidden;
+	-webkit-transform: translate3d(0,0,0);
+	-moz-transform: translate3d(0,0,0);
+	-ms-transform: translate3d(0,0,0);
+	position: relative;
+}
+
+/* color pallette for carousel description backgrounds */
+.main .owl-carousel .owl-item:nth-child(1) .featured-description {
+	background-color: #D2B9FE;
+}
+
+.main .owl-carousel .owl-item:nth-child(2) .featured-description {
+	background-color: #F0A058;
+}
+
+.main .owl-carousel .owl-item:nth-child(3) .featured-description {
+	background-color: #60B6F5;
+}
+
+.main .owl-carousel .owl-item:nth-child(4) .featured-description {
+	background-color: #C3AE8D;
+}
+/* include repeat styles in case more than 4 slides are added */
+.main .owl-carousel .owl-item:nth-child(5) .featured-description {
+	background-color: #D2B9FE;
+}
+
+.main .owl-carousel .owl-item:nth-child(6) .featured-description {
+	background-color: #F0A058;
+}
+
+.main .owl-carousel .owl-item:nth-child(7) .featured-description {
+	background-color: #60B6F5;
+}
+
+.main .owl-carousel .owl-item:nth-child(8) .featured-description {
+	background-color: #C3AE8D;
+}
+
+.main .owl-carousel .featured-description {
+	position: absolute;
+	bottom: 10%;
+	z-index: 10;
+	cursor: pointer;
+	width: 50%;
+	padding: 20px;
+	color: #544A65;
+}
+
+.main .owl-carousel .featured-header {
+	text-transform: uppercase;
+	font-size: 1.5em;
+	margin-bottom: 10px;
+}
+
+.main .owl-carousel .featured-tagline {
+	font-size: 1.5em;
+	font-style: italic;
+	color: #fff;
+	margin-bottom: 10px;
+}
+
+.main .owl-carousel .featured-learn-more:after {
+	content: "";
+	position: absolute;
+	height: 0;
+	width: 0;
+	border: 5px solid transparent;
+	border-left-color: #544A65;
+	bottom: 23px;
+	margin-left: 10px;
+}
+
+.main .featured-items {
+	margin: 15px 0;
+    padding: 0;
+}
+
+.main .featured-items .featured-item {
+	display: block;
+	margin-bottom: 15px;
+}
+
+.main .featured-item > a {
+    text-decoration: none;
+    color: #000;
+}
+
+.main .featured-item img {
+    width: 100%;
+}
+
+.featured-item-description {
+	position: relative;
+    padding: 15px;
+    margin-top: -3px;
+}
+
+.main .featured-item:nth-child(1) .featured-item-description {
+	background-color: #8FCED6;
+}
+
+.main .featured-item:nth-child(2) .featured-item-description {
+	background-color: #6BADC8;
+}
+
+.main .featured-item:nth-child(3) .featured-item-description {
+	background-color: #F29F57;
+}
+
+.main .featured-item .featured-item-title,
+.main .featured-item .featured-item-summary,
+.main .featured-item .featured-item-learn-more {
+	display: block;
+}
+
+.main .featured-item .featured-item-title {
+	text-transform: uppercase;
+    font-weight: 600;
+    font-size: 1.1em;
+    margin-bottom: 5px;
+}
+
+.main .featured-item .featured-item-summary {
+	font-style: italic;
+	margin-bottom: 5px;
+}
+
+.main .featured-item .featured-item-learn-more {
+
+}
+
+.main .featured-item .featured-item-learn-more:after {
+	content: "";
+    position: absolute;
+    height: 0;
+    width: 0;
+    border: 5px solid transparent;
+    border-left-color: #544A65;
+    bottom: 17px;
+    margin-left: 5px;
+}
+
+.global-footer {
+	border-top: 15px solid #3D4573;
+	background-color: #FFFBD7;
+	padding: 15px;
+}
+
+.global-footer .footer-nav {
+	display: inline-block;
+	color: #62544A;
+}
+
+.global-footer .social-nav {
+	display: inline-block;
+	position: relative;
+    top: -10px;
+}
+
+.global-footer .sponsor-jordans-furniture {
+	margin-left: 10px;
+}
+
+.global-footer .sponsor-jack-williams {
+	margin-left: 20px;
+}
+
+.global-footer .contact-info {
+    text-align: center;
+    margin-top: 10px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// THIS IS WHERE YOU LEFT OFF, FIX FOR FOOTER-NAV
+
+.global-footer .footer-nav > span:after,
+.global-footer .contact-info > span:after {
+    content: " |";
+    margin: 0 2px;
+	font-size: 1.2em;
+}
+
+.global-footer .footer-nav > span:after,
+.global-footer .contact-info > span:last-child:after {
+	content: "";
+	margin: 0;
+	font-size: 1em;
+}
+
+.global-footer .disclaimer {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.global-footer .disclaimer > .copyright {
+    margin-left: 5px;
+}
+
+// TODO: put these in the correct place
+.hamburger {
+    position: absolute;
+    top: -1px;
+    right: 0;
+}
+
+.top-nav ul {
+	position: relative;
+}
+
+// Show the home link again
+@media all and (min-width: 360px) {
+
+	.top-nav li.home-link {
+	    display: inline-block;
+	    margin-right: -20px;
+	}
+
+	.log-in-link {
+	    margin-right: -18px;
+	}
+}
+
+// move the donate link back into the menu
+@media all and (min-width: 440px) {
+
+	.global-header .top-nav .donate {
+		right: 55px;
+		top: 0;
+		box-shadow: 5px 5px 10px -2px;
+		padding-top: 15px;
+	}
+
+	.top-nav li.home-link {
+	    margin-right: -25px;
+	}
+
+	.log-in-link {
+	    margin-right: 32px;
+	}
+
+	.log-in-link > .arrow-down {
+	    right: 5px;
+	}
+}
+
+@media all and (min-width: 460px) {
+	.global-header .logo-container > img {
+	    width: 90%;
+	}
+}
+
+@media all and (min-width: 480px) {
+	.global-header .logo-container > img {
+	    width: 100%;
+	}
+}
+
+@media all and (min-width: 660px) {
+	.global-header .logo-container > img {
+	    display: inline-block;
+	    width: inherit;
+	}
+
+	.global-header .logo-container > img:nth-child(2) {
+	    position: relative;
+	    top: -9px;
+	}
+
+	.main {
+		padding-bottom: 3%;
+	}
+
+	.main .featured-items .featured-item {
+		display: inline-block;
+		width: 32%;
+	}
+
+	.main .featured-items .featured-item-title {
+		height: 35px;
+	}
+
+	.main .featured-items .featured-item-summary {
+		height: 25px;
+	}
+
+	.main .featured-items .featured-item:first-child {
+		margin-right: 2%;
+	}
+
+	.main .featured-items .featured-item:last-child {
+		margin-left: 2%;
+	}
+}
+
+@media all and (min-width: 850px) {
+	/* TODO: Check to see if this works for clearing the IE-8 -ms-filter style */
+	.global-header {
+		position: relative;
+		box-shadow: none;
+    	-ms-filter: none;
+	}
+}
