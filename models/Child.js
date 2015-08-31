@@ -10,6 +10,8 @@ var Child = new keystone.List('Child', {
 // Create fields
 Child.add({
 	image: { type: Types.CloudinaryImage, folder: 'children/', select: true, publicID: 'slug', autoCleanup: true }, //select: true, selectPrefix: 'children/' isn't working
+	thumbnailImage: {type: Types.Url, hidden: true},
+	detailImage: {type: Types.Url, hidden: true},
 	//video: { type: Types.CloudinaryVideo, folder: 'children/', autoCleanup: true },
 	name: { type: Types.Name, label: 'Name', required: true, index: true, initial: true },
 	age: { type: Number, label: 'Age', required: true, index: true, initial: true },
@@ -45,6 +47,12 @@ Child.add({
 // Pre Save
 Child.schema.pre('save', function(next) {
 	'use strict';
+
+	this.thumbnailImage = this._.image.thumbnail(640,300,{ quality: 60 });
+	this.detailImage = this._.image.thumbnail(640,640,{ quality: 60 });
+
+	console.log(this.thumbnailImage);
+	console.log(this.detailImage);
 	
 	// TODO: Assign a registration number if one isn't assigned
 	next();
