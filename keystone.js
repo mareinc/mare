@@ -39,6 +39,19 @@ keystone.init({
 	'auth': true,
 	'user model': 'User',
 
+	'wysiwyg override toolbar': false,
+	'wysiwyg menubar': true,
+	'wysiwyg skin': 'lightgray',
+	'wysiwyg additional buttons': 'searchreplace visualchars,'
+	 + ' charmap ltr rtl pagebreak paste, forecolor backcolor,'
+	 +' emoticons media image, preview print ',
+	'wysiwyg additional plugins': 'table, advlist, anchor,'
+	 + ' autolink, autosave, bbcode, charmap, contextmenu, '
+	 + ' directionality, emoticons, fullpage, hr, media, pagebreak,'
+	 + ' paste, preview, print, searchreplace, textcolor,'
+	 + ' visualblocks, visualchars, wordcount',
+	'wysiwyg images': true,
+
 	'cookie secret': process.env.COOKIE_SECRET || 'mare',
 
 	'mandrill api key': process.env.MANDRILL_APIKEY,
