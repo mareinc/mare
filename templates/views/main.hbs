@@ -5,8 +5,7 @@
 			<div id="owl-demo" class="owl-carousel">
 				{{#each slides}}
 				<div class="item">
-					<img class="lazyOwl" data-src="http://placehold.it/1100x400&text=featured-{{ @index }}" alt="Sample Image">
-					{{!-- <img class="lazyOwl" data-src="{{ image.url }}" alt="{{ heading }}"> --}}
+					<img class="lazyOwl" data-src="{{ image_scaled }}" alt="{{ heading }}">
 					<span class="featured-description hidden">
 						<div class="featured-header">{{ heading }}</div>
 						<div class="featured-tagline">{{ subHeading }}</div>
@@ -20,7 +19,7 @@
 		<ul class="featured-items">
 			<li class="featured-item feature-about-us">
 				<a href="{{ aboutUsUrl }}" class="cover">
-					<img src="http://placehold.it/400x250&text=featured" alt="{{ aboutUsTitle }}">
+					<img src="{{ aboutUsImage_stretched }}" alt="{{ aboutUsTitle }}">
 					<div class="featured-item-description">
 						<span class="featured-item-title">{{ aboutUsTitle }}</span>
 						<span class="featured-item-summary">{{ aboutUsSummary }}</span>
@@ -30,7 +29,7 @@
 			</span>
 			<li class="featured-item featured-success-story">
 				<a href="{{ successStoryUrl }}" class="cover">
-					<img src="http://placehold.it/400x250&text=featured" alt="{{ successStoryTitle }}">
+					<img src="{{ successStoryImage_stretched }}" alt="{{ successStoryTitle }}">
 					<div class="featured-item-description">
 						<span class="featured-item-title">{{ successStoryTitle }}</span>
 						<span class="featured-item-summary">{{ successStorySummary }}</span>
@@ -40,7 +39,7 @@
 			</span>
 			<li class="featured-item featured-upcoming-event">
 				<a href="{{ upcomingEventUrl }}" class="cover">
-					<img src="http://placehold.it/400x250&text=featured" alt="{{ upcomingEventTitle }}">
+					<img src="{{ upcomingEventImage_stretched }}" alt="{{ upcomingEventTitle }}">
 					<div class="featured-item-description">
 						<span class="featured-item-title">{{ upcomingEventTitle }}</span>
 						<span class="featured-item-summary">{{ upcomingEventSummary }}</span>
