@@ -2604,13 +2604,11 @@ body {
   background-color: #C3AE8D; }
 
 .main .owl-carousel .featured-description {
-  position: absolute;
-  bottom: 10%;
-  z-index: 10;
   cursor: pointer;
-  width: 50%;
   padding: 20px;
-  color: #544A65; }
+  color: #544A65;
+  display: block;
+  margin-top: -3px; }
 
 .main .owl-carousel .featured-header {
   text-transform: uppercase;
@@ -2775,6 +2773,11 @@ body {
     top: -9px; }
   .main {
     padding-bottom: 3%; }
+  .main .owl-carousel .featured-description {
+    position: absolute;
+    bottom: 10%;
+    z-index: 10;
+    width: 50%; }
   .main .featured-items .featured-item {
     display: inline-block;
     width: 32%; }
