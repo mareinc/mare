@@ -44,11 +44,11 @@ keystone.init({
 	'wysiwyg skin': 'lightgray',
 	'wysiwyg additional buttons': 'searchreplace visualchars,'
 	 + ' charmap ltr rtl pagebreak paste, forecolor backcolor,'
-	 +' emoticons media image, preview print ',
-	'wysiwyg additional plugins': 'table, advlist, anchor,'
-	 + ' autolink, autosave, bbcode, charmap, contextmenu, '
+	 +' emoticons media image, preview print, fontselect fontsizeselect',
+	'wysiwyg additional plugins': 'advlist, anchor,'
+	 + ' autolink, autosave, bbcode, charmap, contextmenu,'
 	 + ' directionality, emoticons, fullpage, hr, media, pagebreak,'
-	 + ' paste, preview, print, searchreplace, textcolor,'
+	 + ' paste, preview, print, searchreplace, table, textcolor,'
 	 + ' visualblocks, visualchars, wordcount',
 	'wysiwyg images': true,
 
