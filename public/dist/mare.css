@@ -2559,10 +2559,7 @@ body {
 .main > .content {
   margin: auto;
   background-color: #fff;
-  padding: 0 10px 10px; }
-
-.main .slideshow img {
-  width: 100%; }
+  padding: 111px 10px 10px; }
 
 .owl-item.loading {
   background: url(img/owl-carousel/AjaxLoader.gif) no-repeat center center; }
@@ -2576,6 +2573,9 @@ body {
   -moz-transform: translate3d(0, 0, 0);
   -ms-transform: translate3d(0, 0, 0);
   position: relative; }
+
+.owl-carousel .owl-item img {
+  max-width: 100%; }
 
 /* color pallette for carousel description backgrounds */
 .main .owl-carousel .owl-item:nth-child(1) .featured-description {
@@ -2749,20 +2749,24 @@ body {
     top: 0;
     box-shadow: 5px 5px 10px -2px;
     padding-top: 15px; }
-  .top-nav li.home-link {
+  .global-header .top-nav li.home-link {
     margin-right: -25px; }
-  .log-in-link {
+  .global-header .log-in-link {
     margin-right: 32px; }
-  .log-in-link > .arrow-down {
+  .global-header .log-in-link > .arrow-down {
     right: 5px; } }
 
 @media all and (min-width: 460px) {
   .global-header .logo-container > img {
-    width: 90%; } }
+    width: 90%; }
+  .main > .content {
+    padding-top: 123px; } }
 
 @media all and (min-width: 480px) {
   .global-header .logo-container > img {
-    width: 100%; } }
+    width: 100%; }
+  .main > .content {
+    padding-top: 134px; } }
 
 @media all and (min-width: 660px) {
   .global-header .logo-container > img {
@@ -2773,6 +2777,8 @@ body {
     top: -9px; }
   .main {
     padding-bottom: 3%; }
+  .main > .content {
+    padding-top: 90px; }
   .main .owl-carousel .featured-description {
     position: absolute;
     bottom: 10%;
@@ -2790,9 +2796,11 @@ body {
   .main .featured-items .featured-item:last-child {
     margin-left: 2%; } }
 
-@media all and (min-width: 850px) {
+@media all and (min-width: 820px) {
   /* TODO: Check to see if this works for clearing the IE-8 -ms-filter style */
   .global-header {
     position: relative;
     box-shadow: none;
-    -ms-filter: none; } }
+    -ms-filter: none; }
+  .main > .content {
+    padding-top: 0; } }

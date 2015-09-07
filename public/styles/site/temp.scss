@@ -98,10 +98,6 @@ body {
 	float: right;
 }
 
-.global-header img {
-	// margin: 20px 0 0 20px;
-}
-
 .global-header .top-nav {
 	width: 170%;
 	background-color: #66584D;
@@ -160,11 +156,7 @@ body {
 .main > .content {
 	margin: auto;
 	background-color: #fff;
-	padding: 0 10px 10px;
-}
-
-.main .slideshow img {
-	width: 100%;
+	padding: 111px 10px 10px;
 }
 
 // temporary owl carousel loading gif override that was lost when preparing for production
@@ -181,6 +173,10 @@ body {
 	-moz-transform: translate3d(0,0,0);
 	-ms-transform: translate3d(0,0,0);
 	position: relative;
+}
+
+.owl-carousel .owl-item img {
+	max-width: 100%;
 }
 
 /* color pallette for carousel description backgrounds */
@@ -427,28 +423,37 @@ body {
 		padding-top: 15px;
 	}
 
-	.top-nav li.home-link {
+	.global-header .top-nav li.home-link {
 	    margin-right: -25px;
 	}
 
-	.log-in-link {
+	.global-header .log-in-link {
 	    margin-right: 32px;
 	}
 
-	.log-in-link > .arrow-down {
+	.global-header .log-in-link > .arrow-down {
 	    right: 5px;
 	}
+
 }
 
 @media all and (min-width: 460px) {
 	.global-header .logo-container > img {
 	    width: 90%;
 	}
+
+	.main > .content {
+		padding-top: 123px;
+	}
 }
 
 @media all and (min-width: 480px) {
 	.global-header .logo-container > img {
 	    width: 100%;
+	}
+
+	.main > .content {
+		padding-top: 134px;
 	}
 }
 
@@ -465,6 +470,10 @@ body {
 
 	.main {
 		padding-bottom: 3%;
+	}
+
+	.main > .content {
+		padding-top: 90px;
 	}
 
 	.main .owl-carousel .featured-description {
@@ -496,11 +505,15 @@ body {
 	}
 }
 
-@media all and (min-width: 850px) {
+@media all and (min-width: 820px) {
 	/* TODO: Check to see if this works for clearing the IE-8 -ms-filter style */
 	.global-header {
 		position: relative;
 		box-shadow: none;
     	-ms-filter: none;
+	}
+
+	.main > .content {
+		padding-top: 0;
 	}
 }

@@ -261,11 +261,12 @@ $(document).ready(function() {
  
  	// initialize the carousel on the home page
 	$("#owl-demo").owlCarousel({
+    autoPlay : 3000,
+    stopOnHover: true,
 		singleItem : true,
 		lazyLoad : true,
 		lazyEffect: 'fade',
-		autoPlay : true,
-		slideSpeed : 300,
+    autoHeight: true,
 		transitionStyle : 'fade'
 	});
 
