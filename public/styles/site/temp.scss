@@ -21,8 +21,7 @@ body {
 	width: 0; 
 	height: 0; 
 	border-left: 5px solid transparent;
-	border-right: 5px solid transparent;
-	
+	border-right: 5px solid transparent;	
 	border-bottom: 5px solid #000;
 }
 
@@ -30,8 +29,7 @@ body {
 	width: 0; 
 	height: 0; 
 	border-left: 5px solid transparent;
-	border-right: 5px solid transparent;
-	
+	border-right: 5px solid transparent;	
 	border-top: 5px solid #000;
 }
 
@@ -39,8 +37,7 @@ body {
 	width: 0; 
 	height: 0; 
 	border-top: 5px solid transparent;
-	border-bottom: 5px solid transparent;
-	
+	border-bottom: 5px solid transparent;	
 	border-left: 5px solid #000;
 }
 
@@ -48,8 +45,7 @@ body {
 	width: 0; 
 	height: 0; 
 	border-top: 5px solid transparent;
-	border-bottom: 5px solid transparent; 
-	
+	border-bottom: 5px solid transparent; 	
 	border-right: 5px solid #000; 
 }
 
@@ -156,7 +152,11 @@ body {
 .main > .content {
 	margin: auto;
 	background-color: #fff;
-	padding: 111px 10px 10px;
+	padding-top: 111px;
+}
+
+.main > .content > .content-body {
+	padding: 0 10px;
 }
 
 // temporary owl carousel loading gif override that was lost when preparing for production

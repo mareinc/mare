@@ -42,14 +42,14 @@ keystone.init({
 	'wysiwyg override toolbar': false,
 	'wysiwyg menubar': true,
 	'wysiwyg skin': 'lightgray',
-	'wysiwyg additional buttons': 'searchreplace visualchars,'
-	 + ' charmap ltr rtl pagebreak paste, forecolor backcolor,'
-	 +' emoticons media image, preview print, fontselect fontsizeselect',
-	'wysiwyg additional plugins': 'advlist, anchor,'
-	 + ' autolink, autosave, bbcode, charmap, contextmenu,'
-	 + ' directionality, emoticons, fullpage, hr, media, pagebreak,'
-	 + ' paste, preview, print, searchreplace, table, textcolor,'
-	 + ' visualblocks, visualchars, wordcount',
+	'wysiwyg additional buttons': 'searchreplace visualchars,' +
+	 	' charmap ltr rtl pagebreak paste, forecolor backcolor,' +
+	 	' emoticons media image, preview print, fontselect fontsizeselect',
+	'wysiwyg additional plugins': 'advlist, anchor,' +
+		' autolink, autosave, bbcode, charmap, contextmenu,' +
+		' directionality, emoticons, fullpage, hr, media, pagebreak,' +
+		' paste, preview, print, searchreplace, table, textcolor,' +
+		' visualblocks, visualchars, wordcount',
 	'wysiwyg images': true,
 
 	'cookie secret': process.env.COOKIE_SECRET || 'mare',
