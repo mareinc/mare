@@ -24,6 +24,9 @@ var paths = {
 	'css':[
 		'public/modules/**/*.css',
 		'public/styles/**/*.scss'],
+	'standalone-css':[
+		'public/styles/font-awesome/*.css'
+	],
 	'js':[
 		'public/js/lib/jquery/**/*.js',
 		'public/modules/**/*.js',
@@ -34,7 +37,14 @@ var paths = {
 		'public/js/lib/**/*.js'],
 	'img':[
 		'public/images/*',
-		'public/modules/**/*.gif']
+		'public/modules/**/*.gif'],
+	'fonts':[
+		'public/fonts/*.eot',
+		'public/fonts/*.svg',
+		'public/fonts/*.ttf',
+		'public/fonts/*.woff',
+		'public/fonts/*.woff2'
+	]
 };
 
 // styles task
@@ -51,11 +61,23 @@ gulp.task('styles', function() {
 		.pipe(gulp.dest('public/dist'));
 });
 
+// TODO: need to figure out why it's not coming in with the Bootstrap styles for the minified output.
+// task for styles which are meant to remain separate from the concatenated, minified styles file 
+gulp.task('standalone-styles', function() {
+	return gulp.src(paths['standalone-css'])
+		.pipe(gulp.dest('public/dist'));
+});
+
 // task for scripts which are meant to remain separate from the concatenated, minified scripts file
 gulp.task('standalone-scripts', function() {
 	return gulp.src(paths['standalone-js'])
 		.pipe(gulp.dest('public/dist'));
 });
+
+gulp.task('fonts', function() {
+	return gulp.src(paths.fonts)
+		.pipe(gulp.dest('public/dist/fonts'));
+})
 
 // scripts task
 gulp.task('scripts', function() {
@@ -93,6 +115,7 @@ gulp.task('watch', function() {
 	gulp.watch(paths.img, gulp.series('images'));
 });
 
+// Empty out the dist directory to ensure old files don't hang around
 gulp.task('clean', function (cb) {
           del(['public/dist/*'], cb);
 });
@@ -106,7 +129,7 @@ gulp.task('watch:lint', function () {
 });
 
 // gulp build task
-gulp.task('build', gulp.parallel('styles', 'standalone-scripts', 'scripts', 'images'));
+gulp.task('build', gulp.parallel('standalone-styles', 'styles', 'standalone-scripts', 'scripts', 'images', 'fonts'));
 
 gulp.task('default', gulp.series('clean', 'build', 'watch'));
 
