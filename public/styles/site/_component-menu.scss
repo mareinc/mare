@@ -25,7 +25,7 @@ nav ul {
 
 .top-nav li > a {
 	text-decoration: none;
-	color: #000;
+	color: $dark-text-color;
 	padding: 8px 8px 8px 8px;
 }
 
@@ -38,13 +38,13 @@ nav ul {
 		display: block;
 		text-align: center;
 		clear: both;
-		background-color: #3D4573;
+		background-color: $nav-background-color-3;
 	}
 
 	.main-nav .nav a {
 		display:block; 
-		background: #3D4573; 
-		color: #D5D5D5; 
+		background: $nav-background-color-3; 
+		color: $nav-text-color-2; 
 		text-decoration: none;
 		padding: 0.6em 0.3em;
 		text-transform: uppercase;
@@ -55,10 +55,6 @@ nav ul {
 	.main-nav .nav {
 		vertical-align: top; 
 		display: block;
-		box-shadow: 
-			1px -1px -1px 1px #000, 
-			-1px 1px -1px 1px #fff, 
-			0 0 6px 3px #fff;
 		border-radius:6px;
 	}
 
@@ -72,12 +68,12 @@ nav ul {
 	}
 
 	.main-nav .nav li:hover > a { 
-	    background-color: #0C0D3C;
-	    color: #fff;
+	    background-color: $nav-background-color-4;
+	    color: $light-text-color;
 	}
 
 	.main-nav .nav li:hover li a { 
-	    background-color: #0C0D3C;
+	    background-color: $nav-background-color-4;
 	    padding: 0.6em 1.5em 0.6em 0.6em;
 	    text-align: left;
 	}

@@ -1,0 +1,42 @@
+.main > .content {
+	margin: auto;
+	padding-top: 111px;
+	background-color: $light-background-color;
+}
+
+.main > .content > .content-body {
+	background-color: $light-background-color;
+	padding: 15px 10px 0;
+}
+
+@media all and (min-width: 460px) {
+
+	.main > .content {
+		padding-top: 123px;
+	}
+}
+
+@media all and (min-width: 480px) {
+
+	.main > .content {
+		padding-top: 134px;
+	}
+}
+
+@media all and (min-width: 660px) {
+
+	.main {
+		padding-bottom: 3%;
+	}
+
+	.main > .content {
+		padding-top: 90px;
+	}
+}
+
+@media all and (min-width: 820px) {
+
+	.main > .content {
+		padding-top: 0;
+	}
+}
