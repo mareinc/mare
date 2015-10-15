@@ -1,0 +1,497 @@
+{{!< default}}
+<div class="main">
+	<div class="content">
+		<div class="content-header">
+			<span class="section-title">Register</span>
+			<img class="section-image" src="/dist/img/register.png" alt="section-image-placeholder">
+		</div>
+		<div class="content-body">
+			<aside class="sidebar left-sidebar">
+				<aside class="callout">
+					<span class="description">"It feels so good to be a family," says Brady, who's getting used to being called "Mommy."</span>
+					<img class="callout-image" src="/dist/img/success-story-popout.png" alt="callout-image-placeholder">
+					<span class="callout-controls">
+						<div class="callout-type">Success Stories</div>
+						<div class="callout-title">Meet the Whitney Family</div>
+						<div class="learn-more">
+							<span>Learn more</span><span class="icon-double-arrow-right">&gt;&gt;</span>
+						</div>
+					</span>
+				</aside>
+			</aside>
+			<section class="main-column">
+				<div class="page-header">
+					<span class="page-header-text">Register</span>
+				</div>
+				<div class="register-intro">
+					Lorem ipsum dolor sit amet, consectetur adipiscing elit. In gravida ultricies tempor. Aenean sodales rutrum urna in porta. Vestibulum in mi non risus mattis imperdiet eget ac metus. Sed mauris nunc, rutrum eu posuere a, vehicula vitae neque. Donec nec lorem laoreet, accumsan mauris vitae, bibendum metus. Donec sit amet odio luctus arcu suscipit laoreet a in dolor. Sed commodo sagittis mattis. Aenean cursus malesuada purus ut posuere.
+				</div>
+				<select class="registration-type-selector" name="registration-type-selector">
+				    <option value="siteVisitor" selected="selected">Site Visitor</option>
+				    <option value="socialWorker">Social Worker</option>
+				    <option value="prospectiveParent">Prospective Parent</option>
+				</select>
+				<section class="site-visitor-registration">
+					<div class="registration-type-header">Site Visitor Registration</div>
+					<span class="required required-description">* Required</span>
+					<form action="/register" class="registration-form" method="POST">
+						<input type="hidden" class="registration-type" name="registrationType" value="siteVisitor">
+						<input type="text" class="input input-medium" required id="site-user-first-name" name="firstName">
+						<label for="site-user-first-name" class="label required-field">First Name</label>
+						<input type="text" class="input input-medium" required id="site-user-last-name" name="lastName">
+						<label for="site-user-last-name" class="label required-field">Last Name</label>
+						<input type="email" class="input input-medium" required id="site-user-email" name="email" pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
+						<label for="site-user-email" class="label required-field">Email Address</label>
+
+						<input type="password" class="input input-medium" required id="site-user-password" name="password">
+						<label for="site-user-password" class="label required-field">Password</label>
+						<input type="password" class="input input-medium" required id="site-user-confirm-password" name="confirmPassword">
+						<label for="site-user-confirm-password" class="label required-field">Confirm Password</label>
+
+						<div class="input-section-description">While not required for registration, providing your contact details below will make registering
+	for events on the MARE site faster and easier.</div>
+						<input type="text" class="input input-large" id="site-user-address-1" name="address1">
+						<label for="site-user-address-1" class="label">Address 1</label>
+						<input type="text" class="input input-large" id="site-user-address-2" name="address2">
+						<label for="site-user-address-2" class="label">Address 2</label>
+						<input type="text" class="input input-medium" id="site-user-city" name="city">
+						<label for="site-user-city" class="label">City</label>
+
+						<select name="state" class="input state-select">
+							<option>Alabama</option>
+							<option>Alaska</option>
+							<option>Arizona</option>
+							<option>Arkansas</option>
+							<option>California</option>
+							<option>Colorado</option>
+							<option>Connecticut</option>
+							<option>Delaware</option>
+							<option>District of Columbia</option>
+							<option>Florida</option>
+							<option>Georgia</option>
+							<option>Hawaii</option>
+							<option>Idaho</option>
+							<option>Illinois</option>
+							<option>Indiana</option>
+							<option>Iowa</option>
+							<option>Kansas</option>
+							<option>Kentucky</option>
+							<option>Louisiana</option>
+							<option>Maine</option>
+							<option>Maryland</option>
+							<option>Massachusetts</option>
+							<option>Michigan</option>
+							<option>Minnesota</option>
+							<option>Mississippi</option>
+							<option>Missouri</option>
+							<option>Montana</option>
+							<option>Nebraska</option>
+							<option>Nevada</option>
+							<option>New Hampshire</option>
+							<option>New Jersey</option>
+							<option>New Mexico</option>
+							<option>New York</option>
+							<option>North Carolina</option>
+							<option>North Dakota</option>
+							<option>Ohio</option>
+							<option>Oklahoma</option>
+							<option>Oregon</option>
+							<option>Pennsylvania</option>
+							<option>Rhode Island</option>
+							<option>South Carolina</option>
+							<option>South Dakota</option>
+							<option>Tennessee</option>
+							<option>Texas</option>
+							<option>Utah</option>
+							<option>Vermont</option>
+							<option>Virginia</option>
+							<option>Washington</option>
+							<option>West Virginia</option>
+							<option>Wisconsin</option>
+							<option>Wyoming</option>
+						</select>
+
+						<input type="text" class="input input-small" id="site-user-zip-code" name="zipCode" pattern="\d{5}([ \-]\d{4})?">
+						<label for="site-user-zip-code" class="label">Zip Code</label>
+						<input type="text" class="input input-small" id="site-user-mobile-phone" name="mobilePhone" pattern="^\s*(?:\+?(\d{1,3}))?([-. (]*(\d{3})[-. )]*)?((\d{3})[-. ]*(\d{2,4})(?:[-.x ]*(\d+))?)\s*$">
+						<label for="site-user-mobile-phone" class="label">Mobile Phone</label>
+						<input type="text" class="input input-small" id="site-user-other-phone" name="otherPhone" pattern="^\s*(?:\+?(\d{1,3}))?([-. (]*(\d{3})[-. )]*)?((\d{3})[-. ]*(\d{2,4})(?:[-.x ]*(\d+))?)\s*$">
+						<label for="site-user-other-phone" class="label">Other Phone</label>
+						
+						<button class="register" type="submit">Register</button>
+					</form>
+				</section>
+
+				<section class="social-worker-registration hidden">
+					<div class="registration-type-header">Social Worker Registration</div>
+					<span class="required required-description">* Required</span>
+					<form action="/register" class="registration-form" method="POST">
+						<input type="hidden" class="registration-type" name="registrationType" value="socialWorker">
+						<div class="registration-section-header">Account Setup</div>
+						<input type="text" class="input input-medium" required id="social-worker-first-name" name="firstName">
+						<label for="social-worker-first-name" class="label required-field">First Name</label>
+						<input type="text" class="input input-medium" required id="social-worker-last-name" name="lastName">
+						<label for="social-worker-last-name" class="label required-field">Last Name</label>
+						<input type="email" class="input input-medium" required id="social-worker-email" name="email" pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
+						<label for="social-worker-email" class="label required-field">Email Address</label>
+
+						<input type="password" class="input input-medium" required id="social-worker-password" name="password">
+						<label for="social-worker-password" class="label required-field">Password</label>
+						<input type="password" class="input input-medium" required id="social-worker-confirm-password" name="confirmPassword">
+						<label for="social-worker-confirm-password" class="label required-field">Confirm Password</label>
+
+						<div class="registration-section-header">Contact Details</div>
+						<input type="text" class="input input-large" required id="social-worker-agency" name="agency">
+						<label for="social-worker-agency" class="label required-field">Agency</label>
+						<input type="text" class="input input-large" required id="social-worker-title" name="title">
+						<label for="social-worker-title" class="label required-field">Title</label>
+
+						<input type="text" class="input input-small" required id="social-worker-phone" name="phone" pattern="^\s*(?:\+?(\d{1,3}))?([-. (]*(\d{3})[-. )]*)?((\d{3})[-. ]*(\d{2,4})(?:[-.x ]*(\d+))?)\s*$">
+						<label for="social-worker-phone" class="label required-field">Phone</label>
+
+						<input type="text" class="input input-small" id="social-worker-mobile-phone" name="mobilePhone" pattern="^\s*(?:\+?(\d{1,3}))?([-. (]*(\d{3})[-. )]*)?((\d{3})[-. ]*(\d{2,4})(?:[-.x ]*(\d+))?)\s*$">
+						<label for="social-worker-mobile-phone" class="label">Mobile Phone</label>
+
+
+
+						<input type="text" class="input input-large" required id="social-worker-address-1" name="address1">
+						<label for="social-worker-address-1" class="label required-field">Address 1</label>
+						<input type="text" class="input input-large" id="social-worker-address-2" name="address2">
+						<label for="social-worker-address-2" class="label">Address 2</label>
+						<input type="text" class="input input-medium" required id="social-worker-city" name="city">
+						<label for="social-worker-city" class="label required-field">City</label>
+
+						<select name="state" class="input state-select" required>
+							<option>Alabama</option>
+							<option>Alaska</option>
+							<option>Arizona</option>
+							<option>Arkansas</option>
+							<option>California</option>
+							<option>Colorado</option>
+							<option>Connecticut</option>
+							<option>Delaware</option>
+							<option>District of Columbia</option>
+							<option>Florida</option>
+							<option>Georgia</option>
+							<option>Hawaii</option>
+							<option>Idaho</option>
+							<option>Illinois</option>
+							<option>Indiana</option>
+							<option>Iowa</option>
+							<option>Kansas</option>
+							<option>Kentucky</option>
+							<option>Louisiana</option>
+							<option>Maine</option>
+							<option>Maryland</option>
+							<option>Massachusetts</option>
+							<option>Michigan</option>
+							<option>Minnesota</option>
+							<option>Mississippi</option>
+							<option>Missouri</option>
+							<option>Montana</option>
+							<option>Nebraska</option>
+							<option>Nevada</option>
+							<option>New Hampshire</option>
+							<option>New Jersey</option>
+							<option>New Mexico</option>
+							<option>New York</option>
+							<option>North Carolina</option>
+							<option>North Dakota</option>
+							<option>Ohio</option>
+							<option>Oklahoma</option>
+							<option>Oregon</option>
+							<option>Pennsylvania</option>
+							<option>Rhode Island</option>
+							<option>South Carolina</option>
+							<option>South Dakota</option>
+							<option>Tennessee</option>
+							<option>Texas</option>
+							<option>Utah</option>
+							<option>Vermont</option>
+							<option>Virginia</option>
+							<option>Washington</option>
+							<option>West Virginia</option>
+							<option>Wisconsin</option>
+							<option>Wyoming</option>
+						</select>
+
+						<input type="text" class="input input-small" required id="social-worker-zip-code" name="zipCode" pattern="\d{5}([ \-]\d{4})?">
+						<label for="social-worker-zip-code" class="label required-field">Zip Code</label>
+						
+						<button class="register" type="submit">Register</button>
+					</form>
+				</section>
+
+				<section class="prospective-parent-registration hidden">
+					<div class="registration-type-header">Prospective Parent Registration</div>
+					<span class="required required-description">* Required</span>
+					<form action="/register" class="registration-form" method="POST">
+						<input type="hidden" class="registration-type" name="registrationType" value="prospectiveParent">
+						<div class="registration-section-header">Account Setup</div>
+						<input type="email" class="input input-medium" required id="email" name="email" pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
+						<label for="email" class="label required-field">Email Address</label>
+						<input type="password" class="input input-medium" required id="password" name="password">
+						<label for="password" class="label required-field">Password</label>
+						<input type="password" class="input input-medium" required id="confirm-password" name="confirmPassword">
+						<label for="confirm-password" class="label required-field">Confirm Password</label>
+						<!-- This will end part 1 -->
+						<div class="registration-section-header">Primary Contact</div>
+						<input type="text" class="input left-50" required id="first-name" name="firstName">
+						<label for="first-name" class="label required-field">First Name</label>
+						<input type="text" class="input right-50" required id="last-name" name="lastName">
+						<label for="last-name" class="label required-field">Last Name</label>
+						<input type="text" class="input left-50" required id="phone" name="phone" pattern="^\s*(?:\+?(\d{1,3}))?([-. (]*(\d{3})[-. )]*)?((\d{3})[-. ]*(\d{2,4})(?:[-.x ]*(\d+))?)\s*$">
+						<label for="phone" class="label required-field">Phone</label>
+						
+						<div class="gender-select">
+							<span class="gender-select-text">Gender:</span>
+							<input type="radio" name="gender" value="male">Male</input>
+							<input type="radio" name="gender" value="female">Female</input>
+						</div>
+						<div class="race left-50">
+							<span class="race-text">Race/Ethnicity (check all that apply):</span>
+							<input type="checkbox" name="race" value="africanAmerican">African American</input>
+							<input type="checkbox" name="race" value="asian">Asian</input>
+							<input type="checkbox" name="race" value="caucasian">Caucasian</input>
+							<input type="checkbox" name="race" value="hispanicLatino">Hispanic/Latino</input>
+							<input type="checkbox" name="race" value="nativeAmerican">Native American</input>
+							<input type="checkbox" name="race" value="other">Other</input>
+						</div>
+						<div class="right-50">
+							<input type="text" class="input" id="occupation" name="occupation">
+							<label for="occupation" class="label">Occupation</label>
+							<input type="text" class="input" id="date-of-birth" name="dateOfBirth" placeholder="DD/MM/YYYY">
+							<label for="date-of-birth" class="label">Date of Birth</label>
+						</div>
+						<!-- This will end part 2 -->
+						<div class="registration-section-header">Home Address</div>
+						<input type="text" class="input input-large" required id="address-1" name="address1">
+						<label for="address-1" class="label required-field">Address 1</label>
+						<input type="text" class="input input-large" id="address-2" name="address2">
+						<label for="address-2" class="label">Address 2</label>
+						<input type="text" class="input input-medium" required id="city" name="city">
+						<label for="city" class="label required-field">City</label>
+
+						<select name="state" class="input state-select" required>
+							<option>Alabama</option>
+							<option>Alaska</option>
+							<option>Arizona</option>
+							<option>Arkansas</option>
+							<option>California</option>
+							<option>Colorado</option>
+							<option>Connecticut</option>
+							<option>Delaware</option>
+							<option>District of Columbia</option>
+							<option>Florida</option>
+							<option>Georgia</option>
+							<option>Hawaii</option>
+							<option>Idaho</option>
+							<option>Illinois</option>
+							<option>Indiana</option>
+							<option>Iowa</option>
+							<option>Kansas</option>
+							<option>Kentucky</option>
+							<option>Louisiana</option>
+							<option>Maine</option>
+							<option>Maryland</option>
+							<option>Massachusetts</option>
+							<option>Michigan</option>
+							<option>Minnesota</option>
+							<option>Mississippi</option>
+							<option>Missouri</option>
+							<option>Montana</option>
+							<option>Nebraska</option>
+							<option>Nevada</option>
+							<option>New Hampshire</option>
+							<option>New Jersey</option>
+							<option>New Mexico</option>
+							<option>New York</option>
+							<option>North Carolina</option>
+							<option>North Dakota</option>
+							<option>Ohio</option>
+							<option>Oklahoma</option>
+							<option>Oregon</option>
+							<option>Pennsylvania</option>
+							<option>Rhode Island</option>
+							<option>South Carolina</option>
+							<option>South Dakota</option>
+							<option>Tennessee</option>
+							<option>Texas</option>
+							<option>Utah</option>
+							<option>Vermont</option>
+							<option>Virginia</option>
+							<option>Washington</option>
+							<option>West Virginia</option>
+							<option>Wisconsin</option>
+							<option>Wyoming</option>
+						</select>
+
+						<input type="text" class="input input-small" required id="zip-code" name="zipCode" pattern="\d{5}([ \-]\d{4})?">
+						<label for="zip-code" class="label required-field">Zip Code</label>
+						<!-- This will end part 3 -->
+						<div class="registration-section-header">Homestudy Details</div>
+						<div class="homestudy-select">
+							<span class="homestudy-select-text left-50">Have you completed a Homestudy?</span>
+							<div class="homestudy-select-options right-50">
+								<input type="radio" name="homestudy" value="yes">Yes</input>
+								<input type="radio" name="homestudy" value="no">No</input>
+							</div>
+						</div>
+						<input type="text" class="input left-50" id="homestudy-date-complete" name="homestudyDateComplete" placeholder="DD/MM/YYYY">
+						<label for="homestudy-date-complete" class="label required-field">Date Homestudy Completed/Updated</label>
+						<input type="text" class="input left-50" required id="social-worker-name" name="socialWorkerName">
+						<label for="social-worker-name" class="label required-field">Social Worker Name</label>
+						<input type="text" class="input right-50" required id="social-worker-agency" name="socialWorkerAgency">
+						<label for="social-worker-agency" class="label required-field">Social Worker Agency</label>
+
+						<input type="text" class="input left-50" required id="social-worker-phone" name="socialWorkerPhone" pattern="^\s*(?:\+?(\d{1,3}))?([-. (]*(\d{3})[-. )]*)?((\d{3})[-. ]*(\d{2,4})(?:[-.x ]*(\d+))?)\s*$">
+						<label for="social-worker-phone" class="label required-field">Social Worker Phone Number</label>
+						<input type="text" class="input right-50" required id="social-worker-email" name="socialWorkerEmail">
+						<label for="social-worker-email" class="label required-field">Social Worker Email Address</label>
+						<!-- TODO: placeholder for homestudy submission -->
+						<!-- This will end part 4 -->
+						<div class="registration-section-header">Family Details</div>
+						<label for="children-in-home" class="label left-70">Total number of children currently living at home:</label>
+						<select id="children-in-home" name="childrenInHome" class="input registration-number-select">
+							<option>0</option>
+							<option>1</option>
+							<option>2</option>
+							<option>3</option>
+							<option>4</option>
+							<option>5</option>
+							<option>6</option>
+							<option>7</option>
+							<option>8</option>
+							<option>9</option>
+							<option>10+</option>
+						</select>
+						<div class="registration-sub-section-header header-blue">Male Children</div>
+						<label for="male-children-in-home" class="label left-70">Number of <span class="text-blue"> male</span> children in home:</label>
+						<select id="male-children-in-home" name="maleChildrenInHome" class="input registration-number-select">
+							<option>0</option>
+							<option>1</option>
+							<option>2</option>
+							<option>3</option>
+							<option>4</option>
+							<option>5</option>
+							<option>6</option>
+							<option>7</option>
+							<option>8</option>
+							<option>9</option>
+							<option>10+</option>
+						</select>
+						<label for="male-children-in-home-ages" class="label left-70">Ages of <span class="text-blue"> male</span> children (separated by commas):</label>
+						<input type="text" class="input right-30" id="male-children-in-home-ages" name="maleChildrenInHomeAges">
+						<label for="biological-male-children" class="label left-70">Number of biological<span class="text-blue"> male</span> children:</label>
+						<select id="biological-male-children" name="biologicalMaleChildren" class="input registration-number-select">
+							<option>0</option>
+							<option>1</option>
+							<option>2</option>
+							<option>3</option>
+							<option>4</option>
+							<option>5</option>
+							<option>6</option>
+							<option>7</option>
+							<option>8</option>
+							<option>9</option>
+							<option>10+</option>
+						</select>
+						<label for="adopted-male-children" class="label left-70">Number of adopted<span class="text-blue"> male</span>children:</label>
+						<select id="adopted-male-children" name="adoptedMaleChildren" class="input registration-number-select">
+							<option>0</option>
+							<option>1</option>
+							<option>2</option>
+							<option>3</option>
+							<option>4</option>
+							<option>5</option>
+							<option>6</option>
+							<option>7</option>
+							<option>8</option>
+							<option>9</option>
+							<option>10+</option>
+						</select>
+
+
+						<div class="registration-sub-section-header header-pink">Female Children</div>
+						<label for="female-children-in-home" class="label left-70">Number of <span class="text-pink"> female</span>children in home:</label>
+						<select id="female-children-in-home" name="femaleChildrenInHome" class="input registration-number-select">
+							<option>0</option>
+							<option>1</option>
+							<option>2</option>
+							<option>3</option>
+							<option>4</option>
+							<option>5</option>
+							<option>6</option>
+							<option>7</option>
+							<option>8</option>
+							<option>9</option>
+							<option>10+</option>
+						</select>
+						<label for="female-children-in-home-ages" class="label left-70">Ages of <span class="text-pink"> female</span>children (separated by commas):</label>
+						<input type="text" class="input right-30" id="female-children-in-home-ages" name="femaleChildrenInHomeAges">
+						<label for="biological-female-children" class="label left-70">Number of biological<span class="text-pink"> female</span>children:</label>
+						<select id="biological-female-children" name="biologicalFemaleChildren" class="input registration-number-select">
+							<option>0</option>
+							<option>1</option>
+							<option>2</option>
+							<option>3</option>
+							<option>4</option>
+							<option>5</option>
+							<option>6</option>
+							<option>7</option>
+							<option>8</option>
+							<option>9</option>
+							<option>10+</option>
+						</select>
+						<label for="adopted-female-children" class="label left-70">Number of adopted<span class="text-pink"> female</span>children:</label>
+						<select id="adopted-female-children" name="adoptedFemaleChildren" class="input registration-number-select">
+							<option>0</option>
+							<option>1</option>
+							<option>2</option>
+							<option>3</option>
+							<option>4</option>
+							<option>5</option>
+							<option>6</option>
+							<option>7</option>
+							<option>8</option>
+							<option>9</option>
+							<option>10+</option>
+						</select>
+						<hr class="registration-divider">
+
+						<label for="other-adults-in-home" class="label left-70">Number of other adults living in home</label>
+						<select id="other-adults-in-home" name="otherAdultsInHome" class="input registration-number-select">
+							<option>0</option>
+							<option>1</option>
+							<option>2</option>
+							<option>3</option>
+							<option>4</option>
+							<option>5</option>
+							<option>6</option>
+							<option>7</option>
+							<option>8</option>
+							<option>9</option>
+							<option>10+</option>
+						</select>
+
+						<label for="primary-language-in-home" class="label left-70">Primary language spoken at home:</label>
+						<input type="text" class="input right-30" id="primary-language-in-home" name="primaryLanguageInHome">
+						<label for="other-languages-in-home" class="label left-70">Other language(s) spoken at home:</label>
+						<input type="text" class="input right-30" id="other-languages-in-home" name="otherLanguagesInHome">
+						<!-- This will end part 4 -->
+						<div class="registration-section-header">Adoption Preferences</div>
+						<div>. . .</div>
+						<div>More options coming soon</div>
+						<div>. . .</div>
+
+
+
+						
+						<button class="register" type="submit">Register</button>
+					</form>
+				</section>
+
+			</section>
+		</div>
+	</div>
+</div>
