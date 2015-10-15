@@ -50,7 +50,7 @@ keystone.init({
 		' directionality, emoticons, fullpage, hr, media, pagebreak,' +
 		' paste, preview, print, searchreplace, table, textcolor,' +
 		' visualblocks, visualchars, wordcount',
-	'wysiwyg images': true,
+	'wysiwyg cloudinary images': true,
 
 	'cookie secret': process.env.COOKIE_SECRET || 'mare',
 
