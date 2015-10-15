@@ -1,0 +1,154 @@
+.register-intro {
+	margin: 0 0 10px;
+}
+
+.registration-type {
+	margin: 0 0 10px;
+}
+
+.registration-type:before {
+	content: "Register as:";
+	margin: 0 8px 0 0;
+	font-weight: 600;
+}
+
+.registration-type-header,
+.registration-section-header {
+	text-transform: uppercase;
+	border-bottom: 1px solid $border-color-1;
+	margin: 20px 0 8px;
+    padding: 0 0 5px;
+    clear: both;	/* TODO: Temporary until the registration styles work for left-x and right-x */
+}
+
+.registration-form {
+    font-size: .8em;
+}
+
+.required-description {
+	display: block;
+	margin: 0 0 10px;
+	font-size: .8em;
+}
+
+.input-section-description {
+    margin: 10px 0 15px;
+}
+
+.label {
+    display: block;
+    padding: 0 0 10px;
+}
+
+/* TODO: These inputs and possibly the label are more global than just this page, they are for all forms.  Create a more appropriate .scss file for them */
+.input {
+    margin: 0 0 5px;
+    padding: 5px;
+}
+
+.input-small {
+	width: 200px;
+}
+
+.input-medium {
+    width: 300px;
+}
+
+.input-large {
+	width: 350px;
+}
+
+select {
+	display: block;
+}
+
+.state-select {
+    margin: 10px 0 20px;
+}
+
+/* TODO: Change class names to signify that these are buttons */
+.register,
+.log-in {
+	padding: 10px 15px;
+	border-radius: 5px;
+	color: $light-text-color;
+    text-transform: uppercase;
+    margin: 0 0 10px;
+}
+
+.register {
+	background-color: $button-color-1;
+}
+
+.log-in {
+	background-color: $button-color-2;
+}
+
+/* TODO: all temporary until styles are fixed with left-x and right-x */
+.left-50,
+.right-50,
+.left-70,
+.right-30 {
+    display: inline-block;
+    clear: both;
+}
+
+.left-50,
+.right-50 {
+	width: 50%;
+	float: right;
+}
+
+.left-70,
+.right-30 {
+	float: left;
+}
+
+.left-70 {
+	width: 70%;
+}
+
+.right-30 {
+	width: 30%;
+}
+
+.header-blue {
+	color: $form-color-1;
+	border-bottom: 1px solid $form-color-1;
+}
+
+.header-pink {
+	color: $form-color-2;
+	border-bottom: 1px solid $form-color-2;
+}
+
+.text-blue {
+	color: $form-color-1;
+}
+
+.text-pink {
+	color: $form-color-2;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -71,11 +71,61 @@
 	position: relative;
 }
 
+.log-in-link-text {
+	padding: 0 10px 0 5px;
+}
+
 .log-in-link > .arrow-down {
 	position: absolute;
     border-top-color: #fff;
     right: 2px;
     top: 16px;
+}
+
+.log-in-container {
+	display: none; /* TODO: deal with this using a hidden class instead */
+	position: absolute;
+    background-color: $light-background-color;
+    color: $nav-text-color-1;
+    padding: 10px;
+    border: 1px solid $border-color-2;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    right: 0;
+    top: 35px;
+    z-index: 10;
+}
+
+.log-in-container label {
+	font-size: .8em;
+	position: relative;
+	top: -5px;
+}
+
+.log-out-link {
+    margin-right: 20px;
+}
+
+.log-in-container .log-in {
+	margin: 10px 0; /* TODO: Did this quick, make sure it's not overriding too much */
+}
+
+.log-in-container .forgot-password {
+	float: right;
+    width: 50%;
+    font-size: .8em;
+    position: relative;
+    top: 16px;
+    color: $nav-text-color-3;
+}
+
+.log-in-container .register-header {
+	font-size: 1.4em;
+	color: $nav-text-color-3;
+}
+
+.log-in-container .register-body {
+	margin: 5px 0;
 }
 
 // TODO: put these in the correct place
