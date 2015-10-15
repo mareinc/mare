@@ -2221,6 +2221,14 @@ th {
   bottom: 0;
   display: block; }
 
+.required {
+  color: #FF0000; }
+
+.required-field:after {
+  content: "*";
+  color: #FF0000;
+  padding-left: 5px; }
+
 html {
   box-sizing: border-box; }
 
@@ -2310,11 +2318,55 @@ body {
 .log-in-link {
   position: relative; }
 
+.log-in-link-text {
+  padding: 0 10px 0 5px; }
+
 .log-in-link > .arrow-down {
   position: absolute;
   border-top-color: #fff;
   right: 2px;
   top: 16px; }
+
+.log-in-container {
+  display: none;
+  /* TODO: deal with this using a hidden class instead */
+  position: absolute;
+  background-color: #FFFFFF;
+  color: #66584D;
+  padding: 10px;
+  border: 1px solid #66584D;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  right: 0;
+  top: 35px;
+  z-index: 10; }
+
+.log-in-container label {
+  font-size: .8em;
+  position: relative;
+  top: -5px; }
+
+.log-out-link {
+  margin-right: 20px; }
+
+.log-in-container .log-in {
+  margin: 10px 0;
+  /* TODO: Did this quick, make sure it's not overriding too much */ }
+
+.log-in-container .forgot-password {
+  float: right;
+  width: 50%;
+  font-size: .8em;
+  position: relative;
+  top: 16px;
+  color: #404272; }
+
+.log-in-container .register-header {
+  font-size: 1.4em;
+  color: #404272; }
+
+.log-in-container .register-body {
+  margin: 5px 0; }
 
 .hamburger {
   position: absolute;
@@ -2374,7 +2426,7 @@ body {
 
 .main > .content > .content-body {
   background-color: #FFFFFF;
-  padding: 15px 10px 0; }
+  padding: 0 10px 0; }
 
 @media all and (min-width: 460px) {
   .main > .content {
@@ -2696,7 +2748,6 @@ nav ul {
 .global-footer .disclaimer > .copyright {
   margin-left: 5px; }
 
-/* TODO:  BEM all the things, then Sass all the things.  */
 .content-header {
   margin-bottom: 15px; }
 
@@ -2722,6 +2773,7 @@ nav ul {
   font-size: 1.5em;
   border-top: 1px solid #000;
   border-bottom: 1px solid #000;
+  margin: 0 0 10px;
   padding: 8px 0;
   color: #3C4573; }
 
@@ -2737,85 +2789,15 @@ nav ul {
 .page-header > .page-header-text > .page-dropdown.arrow-up {
   border-bottom-color: #3C4573; }
 
-/* display at breakpoint */
 .page-header > .question {
   display: none; }
-
-.filters > .order {
-  display: block;
-  margin-bottom: 15px; }
 
 .sidebar {
   display: none; }
 
-.filters {
-  margin-bottom: 10px; }
-
-/* Profile contents */
-.profile-zone {
-  border-top: 1px solid black;
-  padding-top: 15px; }
-
-.profiles {
-  list-style: none;
-  font-size: 0px;
-  padding: 0; }
-
-/* override at breakpoint */
-.profiles > li:nth-child(odd) {
-  margin-right: 3%; }
-
-.profile {
-  display: inline-block;
-  width: 48.5%;
-  background: #fff;
-  border-right: 1px solid #000;
-  border-bottom: 1px solid #000;
-  font-size: 16px;
-  font-size: 1rem;
-  vertical-align: top;
-  box-shadow: 0 0 5px #ddd;
-  box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
-  margin-bottom: 20px;
-  cursor: pointer; }
-
-.profile img {
-  max-width: 100%;
-  height: auto; }
-
-.profile .details {
-  padding: 10px;
-  background-color: #fffac2;
-  margin-top: -1px;
-  color: #1B229D;
-  height: 151px; }
-
-.profile .details > span {
-  max-width: 180px; }
-
-.profile .details > .name {
-  display: block;
-  font-size: 2em;
-  font-style: italic; }
-
-.profile .details > .age {
-  display: block;
-  margin: 5px 0 10px;
-  font-size: 1.3em;
-  color: #66584D; }
-
-.profile .deatils .view-profile {
-  font-size: 1.2em; }
-
-@media all and (min-width: 440px) {
-  .profile {
-    width: 31.33333333%;
-    margin-right: 3%; }
-  .profiles > li:nth-child(3n) {
-    margin-right: 0; } }
-
+/* TODO: Separate sidebar into it's own _.scss file */
+/* TODO: Bring colors into _utility-colors.scss */
+/* TODO: Create a _utility-layouts.scss for column manipulation and fluid layout */
 @media all and (min-width: 660px) {
   .content-header {
     background-color: #8FCED6; }
@@ -2896,6 +2878,86 @@ nav ul {
   .section-image {
     width: 59.5%; } }
 
+/* small adjustment to ensure image stays snugly against the right side of the header */
+@media all and (min-width: 965px) {
+  .section-image {
+    width: 59.6%; } }
+
+/* TODO: BEM all the things, then Sass all the things.  */
+/* TODO: Bring breakpoint code under each selector */
+/* TODO: Sass up the styles even more with nested selectors */
+.filters > .order {
+  display: block;
+  margin-bottom: 15px; }
+
+.filters {
+  margin-bottom: 10px; }
+
+/* Profile contents */
+.profile-zone {
+  border-top: 1px solid black;
+  padding-top: 15px; }
+
+.profiles {
+  list-style: none;
+  font-size: 0px;
+  padding: 0; }
+
+/* override at breakpoint */
+.profiles > li:nth-child(odd) {
+  margin-right: 3%; }
+
+.profile {
+  display: inline-block;
+  width: 48.5%;
+  background: #fff;
+  border-right: 1px solid #000;
+  border-bottom: 1px solid #000;
+  font-size: 16px;
+  font-size: 1rem;
+  vertical-align: top;
+  box-shadow: 0 0 5px #ddd;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  margin-bottom: 20px;
+  cursor: pointer; }
+
+.profile img {
+  max-width: 100%;
+  height: auto; }
+
+.profile .details {
+  padding: 10px;
+  background-color: #fffac2;
+  margin-top: -1px;
+  color: #1B229D;
+  height: 151px; }
+
+.profile .details > span {
+  max-width: 180px; }
+
+.profile .details > .name {
+  display: block;
+  font-size: 2em;
+  font-style: italic; }
+
+.profile .details > .age {
+  display: block;
+  margin: 5px 0 10px;
+  font-size: 1.3em;
+  color: #66584D; }
+
+.profile .deatils .view-profile {
+  font-size: 1.2em; }
+
+@media all and (min-width: 440px) {
+  .profile {
+    width: 31.33333333%;
+    margin-right: 3%; }
+  .profiles > li:nth-child(3n) {
+    margin-right: 0; } }
+
 @media all and (min-width: 880px) {
   .profile {
     width: 22.75%;
@@ -2905,7 +2967,109 @@ nav ul {
   .profiles > li:nth-child(4n) {
     margin-right: 0; } }
 
-/* small adjustment to ensure image stays snugly against the right side of the header */
-@media all and (min-width: 965px) {
-  .section-image {
-    width: 59.6%; } }
+.register-intro {
+  margin: 0 0 10px; }
+
+.registration-type {
+  margin: 0 0 10px; }
+
+.registration-type:before {
+  content: "Register as:";
+  margin: 0 8px 0 0;
+  font-weight: 600; }
+
+.registration-type-header,
+.registration-section-header {
+  text-transform: uppercase;
+  border-bottom: 1px solid #99918E;
+  margin: 20px 0 8px;
+  padding: 0 0 5px;
+  clear: both;
+  /* TODO: Temporary until the registration styles work for left-x and right-x */ }
+
+.registration-form {
+  font-size: .8em; }
+
+.required-description {
+  display: block;
+  margin: 0 0 10px;
+  font-size: .8em; }
+
+.input-section-description {
+  margin: 10px 0 15px; }
+
+.label {
+  display: block;
+  padding: 0 0 10px; }
+
+/* TODO: These inputs and possibly the label are more global than just this page, they are for all forms.  Create a more appropriate .scss file for them */
+.input {
+  margin: 0 0 5px;
+  padding: 5px; }
+
+.input-small {
+  width: 200px; }
+
+.input-medium {
+  width: 300px; }
+
+.input-large {
+  width: 350px; }
+
+select {
+  display: block; }
+
+.state-select {
+  margin: 10px 0 20px; }
+
+/* TODO: Change class names to signify that these are buttons */
+.register,
+.log-in {
+  padding: 10px 15px;
+  border-radius: 5px;
+  color: #FFFFFF;
+  text-transform: uppercase;
+  margin: 0 0 10px; }
+
+.register {
+  background-color: #66584D; }
+
+.log-in {
+  background-color: #404272; }
+
+/* TODO: all temporary until styles are fixed with left-x and right-x */
+.left-50,
+.right-50,
+.left-70,
+.right-30 {
+  display: inline-block;
+  clear: both; }
+
+.left-50,
+.right-50 {
+  width: 50%;
+  float: right; }
+
+.left-70,
+.right-30 {
+  float: left; }
+
+.left-70 {
+  width: 70%; }
+
+.right-30 {
+  width: 30%; }
+
+.header-blue {
+  color: #3EAAF5;
+  border-bottom: 1px solid #3EAAF5; }
+
+.header-pink {
+  color: #FF7FAE;
+  border-bottom: 1px solid #FF7FAE; }
+
+.text-blue {
+  color: #3EAAF5; }
+
+.text-pink {
+  color: #FF7FAE; }
