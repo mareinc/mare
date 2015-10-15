@@ -1,0 +1,52 @@
+.arrow-up {
+	width: 0; 
+	height: 0; 
+	border-left: 5px solid transparent;
+	border-right: 5px solid transparent;	
+	border-bottom: 5px solid #000;
+}
+
+.arrow-down {
+	width: 0; 
+	height: 0; 
+	border-left: 5px solid transparent;
+	border-right: 5px solid transparent;	
+	border-top: 5px solid #000;
+}
+
+.arrow-right {
+	width: 0; 
+	height: 0; 
+	border-top: 5px solid transparent;
+	border-bottom: 5px solid transparent;	
+	border-left: 5px solid #000;
+}
+
+.arrow-left {
+	width: 0; 
+	height: 0; 
+	border-top: 5px solid transparent;
+	border-bottom: 5px solid transparent; 	
+	border-right: 5px solid #000; 
+}
+
+.hidden {
+	display: none;
+}
+
+.cover {
+	position: relative;
+	top: 0;
+	bottom: 0;
+	display: block;
+}
+
+.required {
+    color: $required-color;
+}
+
+.required-field:after {
+	content: "*";
+	color: $required-color;
+	padding-left: 5px;
+}

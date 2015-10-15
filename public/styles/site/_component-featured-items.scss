@@ -1,0 +1,93 @@
+.main .featured-items {
+	margin: 15px 0;
+    padding: 0;
+}
+
+.main .featured-items .featured-item {
+	display: block;
+	margin-bottom: 15px;
+}
+
+.main .featured-item > a {
+    text-decoration: none;
+    color: $dark-text-color;
+}
+
+.main .featured-item img {
+    width: 100%;
+}
+
+.featured-item-description {
+	position: relative;
+    padding: 15px;
+    margin-top: -3px;
+}
+
+.main .featured-item:nth-child(1) .featured-item-description {
+	background-color: $description-background-color-5;
+}
+
+.main .featured-item:nth-child(2) .featured-item-description {
+	background-color: $description-background-color-6;
+}
+
+.main .featured-item:nth-child(3) .featured-item-description {
+	background-color: $description-background-color-7;
+}
+
+.main .featured-item .featured-item-title,
+.main .featured-item .featured-item-summary,
+.main .featured-item .featured-item-learn-more {
+	display: block;
+}
+
+.main .featured-item .featured-item-title {
+	text-transform: uppercase;
+    font-weight: 600;
+    font-size: 1.1em;
+    margin-bottom: 5px;
+}
+
+.main .featured-item .featured-item-summary {
+	font-style: italic;
+	margin-bottom: 5px;
+}
+
+.main .featured-item .featured-item-learn-more {
+
+}
+
+.main .featured-item .featured-item-learn-more:after {
+	content: "";
+    position: absolute;
+    height: 0;
+    width: 0;
+    border: 5px solid transparent;
+    border-left-color: $description-text-color;
+    bottom: 17px;
+    margin-left: 5px;
+}
+
+@media all and (min-width: 660px) {
+    
+    .main .featured-items .featured-item {
+        display: inline-block;
+        width: 32%;
+    }
+
+    .main .featured-items .featured-item-title {
+        height: 35px;
+    }
+
+    .main .featured-items .featured-item-summary {
+        height: 25px;
+    }
+
+    .main .featured-items .featured-item:first-child {
+        margin-right: 2%;
+    }
+
+    .main .featured-items .featured-item:last-child {
+        margin-left: 2%;
+    }
+}

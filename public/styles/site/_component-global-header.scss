@@ -1,0 +1,213 @@
+/* TODO: IE8 nastiness at the bottom, be sure to test it */
+.global-header {
+    background-color: $header-background-color;
+    position: fixed;
+    z-index: 10;
+    width: 100%;
+    min-width: 320px;
+    box-shadow: 0px 0px 10px $shadow-color-1;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=180, Color='#616161')";
+}
+
+.global-header .logo-container,
+.global-header .header-navigation-container {
+	display: inline-block;
+}
+
+.global-header .logo-container {
+	margin: 10px;
+}
+
+.global-header .logo-container > img {
+	display: block;
+	width: 80%;
+}
+
+.global-header .header-navigation-container {
+	float: right;
+}
+
+.global-header .top-nav {
+	width: 170%;
+	background-color: $nav-background-color-1;
+	color: $light-text-color;
+	float: right;
+}
+
+.global-header .top-nav li {
+	padding: 10px 10px;
+}
+
+.top-nav li.home-link {
+    display: none;
+}
+
+.global-header .top-nav .donate {
+	position: absolute;
+	top: 36px;
+    right: 15px;
+    background-color: $nav-background-color-2;
+    padding-bottom: 10px;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    text-transform: uppercase;
+    color: $nav-text-color-1;
+    font-weight: 600;
+}
+
+.global-header .top-nav a,
+.global-header .top-nav a:visited {
+	color: $light-text-color;
+}
+
+.site-nav {
+	margin-top: 30px;
+	margin-left: 4%;
+	font-style: italic;
+	font-size: 1.1em;
+}
+
+.log-in-link {
+	position: relative;
+}
+
+.log-in-link-text {
+	padding: 0 10px 0 5px;
+}
+
+.log-in-link > .arrow-down {
+	position: absolute;
+    border-top-color: #fff;
+    right: 2px;
+    top: 16px;
+}
+
+.log-in-container {
+	display: none; /* TODO: deal with this using a hidden class instead */
+	position: absolute;
+    background-color: $light-background-color;
+    color: $nav-text-color-1;
+    padding: 10px;
+    border: 1px solid $border-color-2;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    right: 0;
+    top: 35px;
+    z-index: 10;
+}
+
+.log-in-container label {
+	font-size: .8em;
+	position: relative;
+	top: -5px;
+}
+
+.log-out-link {
+    margin-right: 20px;
+}
+
+.log-in-container .log-in {
+	margin: 10px 0; /* TODO: Did this quick, make sure it's not overriding too much */
+}
+
+.log-in-container .forgot-password {
+	float: right;
+    width: 50%;
+    font-size: .8em;
+    position: relative;
+    top: 16px;
+    color: $nav-text-color-3;
+}
+
+.log-in-container .register-header {
+	font-size: 1.4em;
+	color: $nav-text-color-3;
+}
+
+.log-in-container .register-body {
+	margin: 5px 0;
+}
+
+// TODO: put these in the correct place
+.hamburger {
+    position: absolute;
+    top: -1px;
+    right: 0;
+}
+
+.top-nav ul {
+	position: relative;
+}
+
+// Show the home link again
+@media all and (min-width: 360px) {
+
+	.top-nav li.home-link {
+	    display: inline-block;
+	    margin-right: -20px;
+	}
+
+	.log-in-link {
+	    margin-right: -18px;
+	}
+}
+
+// move the donate link back into the menu
+@media all and (min-width: 440px) {
+
+	.global-header .top-nav .donate {
+		right: 55px;
+		top: 0;
+		box-shadow: 5px 5px 10px -2px;
+		padding-top: 15px;
+	}
+
+	.global-header .top-nav li.home-link {
+	    margin-right: -25px;
+	}
+
+	.global-header .log-in-link {
+	    margin-right: 32px;
+	}
+
+	.global-header .log-in-link > .arrow-down {
+	    right: 5px;
+	}
+}
+
+@media all and (min-width: 460px) {
+
+	.global-header .logo-container > img {
+	    width: 90%;
+	}
+}
+
+@media all and (min-width: 480px) {
+
+	.global-header .logo-container > img {
+	    width: 100%;
+	}
+}
+
+@media all and (min-width: 660px) {
+
+	.global-header .logo-container > img {
+	    display: inline-block;
+	    width: inherit;
+	}
+
+	.global-header .logo-container > img:nth-child(2) {
+	    position: relative;
+	    top: -9px;
+	}
+}
+
+@media all and (min-width: 820px) {
+	
+	/* TODO: Check to see if this works for clearing the IE-8 -ms-filter style */
+	.global-header {
+		position: relative;
+		box-shadow: none;
+    	-ms-filter: none;
+	}
+}

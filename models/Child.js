@@ -23,7 +23,7 @@ Child.add({
 		part4: { type: Types.Textarea, label: 'If I could have my own special wish...', required: true, initial: true }
 	},
 	primaryLanguage: { type: Types.Select, label: 'Primary Language', options: 'English, Spanish, Portuguese', default: 'English', required: true, initial: true },
-	ethnicity: { type: Types.Select, label: 'Ethnicity', options: 'White, African American, Hispanic/Latino, Asian, Middle Eastern, Pacific Islander, Native American/Alaskan, Mixed Race, Other', required: true, initial: true },
+	ethnicity: { type: Types.Select, label: 'Ethnicity', options: 'African American, Asian, Caucasian, Hispanic/Latino, Middle Eastern, Pacific Islander, Native American/Alaskan, Mixed Race, Other', required: true, initial: true },
 	gender: { type: Types.Select, label: 'Gender', options: 'Male, Female', required: true, initial: true },
 	legalStatus: { type: Types.Select, label: 'Legal Status', options: 'Legally Free, Something Else', required: true, initial: true },
 	wednesdaysChild: { type: Types.Boolean, label: 'Wednesday\'s Child?', initial: true },

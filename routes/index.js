@@ -40,7 +40,12 @@ exports = module.exports = function(app) {
 	app.get('/page/*'		, routes.views.page);
 	app.get('/form/*'		, routes.views.form);
 	app.get('/photo-listing', routes.views.photoListing);
-	
+	app.get('/register'		, routes.views.register);
+	app.get('/preferences'	, middleware.requireUser, routes.views.preferences);
+
+	app.post('/register'	, middleware.registerUser);
+	app.post('/login'		, middleware.login);
+	app.get('/logout'		, middleware.logout);
 	
 	// NOTE: To protect a route so that only admins can see it, use the requireUser middleware:
 	// app.get('/protected', middleware.requireUser, routes.views.protected);

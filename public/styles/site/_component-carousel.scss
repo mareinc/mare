@@ -1,0 +1,95 @@
+// temporary owl carousel loading gif override that was lost when preparing for production
+.owl-item.loading{
+	background: url(img/owl-carousel/AjaxLoader.gif) no-repeat center center
+}
+
+.owl-carousel .owl-wrapper,
+.owl-carousel .owl-item {
+	-webkit-backface-visibility: hidden;
+	-moz-backface-visibility: hidden;
+	-ms-backface-visibility: hidden;
+	-webkit-transform: translate3d(0,0,0);
+	-moz-transform: translate3d(0,0,0);
+	-ms-transform: translate3d(0,0,0);
+	position: relative;
+}
+
+.owl-carousel .owl-item img {
+	max-width: 100%;
+}
+
+/* color pallette for carousel description backgrounds */
+.main .owl-carousel .owl-item:nth-child(1) .featured-description {
+	background-color: $description-background-color-1;
+}
+
+.main .owl-carousel .owl-item:nth-child(2) .featured-description {
+	background-color: $description-background-color-2;
+}
+
+.main .owl-carousel .owl-item:nth-child(3) .featured-description {
+	background-color: $description-background-color-3;
+}
+
+.main .owl-carousel .owl-item:nth-child(4) .featured-description {
+	background-color: $description-background-color-4;
+}
+/* include repeat styles in case more than 4 slides are added */
+.main .owl-carousel .owl-item:nth-child(5) .featured-description {
+	background-color: $description-background-color-1;
+}
+
+.main .owl-carousel .owl-item:nth-child(6) .featured-description {
+	background-color: $description-background-color-2;
+}
+
+.main .owl-carousel .owl-item:nth-child(7) .featured-description {
+	background-color: $description-background-color-3;
+}
+
+.main .owl-carousel .owl-item:nth-child(8) .featured-description {
+	background-color: $description-background-color-4;
+}
+
+.main .owl-carousel .featured-description {
+    cursor: pointer;
+    padding: 20px;
+    color: $description-text-color;
+    display: block;
+    margin-top: -3px;
+}
+
+.main .owl-carousel .featured-header {
+	text-transform: uppercase;
+	font-size: 1.5em;
+	margin-bottom: 10px;
+}
+
+.main .owl-carousel .featured-tagline {
+	font-size: 1.5em;
+	font-style: italic;
+	color: #fff;
+	margin-bottom: 10px;
+}
+
+// TODO: Should this use the 'arrow' class
+.main .owl-carousel .featured-learn-more:after {
+	content: "";
+	position: absolute;
+	height: 0;
+	width: 0;
+	border: 5px solid transparent;
+	border-left-color: $description-text-color;
+	bottom: 23px;
+	margin-left: 10px;
+}
+
+@media all and (min-width: 660px) {
+	
+	.main .owl-carousel .featured-description {
+		position: absolute;
+		bottom: 10%;
+		z-index: 10;
+		width: 50%;
+	}
+}
