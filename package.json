@@ -41,8 +41,8 @@
     "jshint-stylish": "~1.0.1"
   },
   "engines": {
-    "node": ">=4.2.1",
-    "npm": ">=2.14.7"
+    "node": "^4.2.1",
+    "npm": "^2.14.7"
   },
   "scripts": {
     "start": "node keystone.js"
