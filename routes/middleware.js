@@ -8,10 +8,10 @@
  * modules in your project's /lib directory.
  */
 
-var _ = require('underscore');
-
-// Load in Keystone for model references
-var keystone = require('keystone'),
+var _ = require('underscore'),
+	stripe = require('stripe')('process.env.STRIPE_TEST_SECRET'),
+	// Load in Keystone for model references
+	keystone = require('keystone'),
 	User = keystone.list('User');
 
 /**
@@ -218,5 +218,21 @@ exports.logout = function(req, res) {
 	keystone.session.signout(req, res, function() {
 		res.redirect('/');
 	});
-	
+};
+
+exports.charge = function(req, res) {
+	var stripeToken = req.body.stripeToken;
+    var amount = 1000;
+
+    stripe.charges.create({
+        card: stripeToken,
+        currency: 'usd',
+        amount: amount
+    }, function(err, charge) {
+        if (err) {
+            res.send(500, err);
+        } else {
+            res.send(204);
+        }
+    });
 };

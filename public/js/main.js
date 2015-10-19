@@ -102,4 +102,35 @@ $(document).ready(function() {
 		}
 	});
 
+	/* initialize Stripe donations */
+
+	// Define handler to be called when Stripe returns a card token
+    function onReceiveToken(token, args) {
+        // Submit token to server so it can charge the card
+        $.ajax({
+            url: '/charge',
+            type: 'POST',
+            data: {
+                stripeToken: token.id
+            }
+        });
+    };
+
+	// Configure Checkout
+    var checkout = StripeCheckout.configure({
+        key: app.config.STRIPE_TEST_KEY,
+        token: onReceiveToken,
+
+        image: 'http://nairteashop.org/wp-content/uploads/avatar.png',
+        name: 'adoptions.io',
+        description: 'Do it for the children',
+        amount: 1000,
+        billingAddress: 'true'
+    });
+
+    // Open Checkout when the link is clicked
+	$('.donate').on('click', function() {
+        checkout.open();
+        return false;
+    });
 });
