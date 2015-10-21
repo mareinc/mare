@@ -37,6 +37,7 @@ keystone.init({
 	'auto update': true,
 	'session': true,
 	'auth': true,
+	'signin url': '/',
 	'user model': 'User',
 
 	'wysiwyg override toolbar': false,
