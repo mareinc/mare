@@ -70,24 +70,27 @@
 
 @media all and (min-width: 660px) {
     
-    .main .featured-items .featured-item {
-        display: inline-block;
-        width: 32%;
-    }
+    .main .featured-items {
 
-    .main .featured-items .featured-item-title {
-        height: 35px;
-    }
+        .featured-item {
+            display: inline-block;
+            width: 32%;
+        }
 
-    .main .featured-items .featured-item-summary {
-        height: 25px;
-    }
+        .featured-item-title {
+            height: 35px;
+        }
 
-    .main .featured-items .featured-item:first-child {
-        margin-right: 2%;
-    }
+        .featured-item-summary {
+            height: 45px;
+        }
 
-    .main .featured-items .featured-item:last-child {
-        margin-left: 2%;
+        .featured-item:first-child {
+            margin-right: 2%;
+        }
+
+        .featured-item:last-child {
+            margin-left: 2%;
+        }
     }
 }

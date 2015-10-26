@@ -14,17 +14,17 @@ Featured.add(
 
 	{ heading: 'About Us' }, {
 		aboutUsTarget: { type: Types.Relationship, ref: 'Page', label: 'target page', filter: { type: 'aboutUs' }, required: true, initial: true },
-		aboutUsTitle: { type: Types.Text, label: 'title', noedit: true, index: true },
-		aboutUsSummary: { type: Types.Textarea, label: 'summary', noedit: true },
+		aboutUsTitle: { type: Types.Text, label: 'title', index: true, required: true, initial: true },
+		aboutUsSummary: { type: Types.Textarea, label: 'summary', initial: true },
 		aboutUsImage: { type: Types.CloudinaryImage, folder: 'featured/', autoCleanup: true },
-		aboutUsImage_stretched: {type: Types.Url, hidden: true},
-		aboutUsImage_scaled: {type: Types.Url, hidden: true},
+		aboutUsImage_stretched: {type: Types.Url, hidden: true },
+		aboutUsImage_scaled: {type: Types.Url, hidden: true },
 		aboutUsUrl: { type: Types.Url, noedit: true } },
 
 	{ heading: 'Success Story' }, {
 		successStoryTarget: { type: Types.Relationship, ref: 'SuccessStory', label: 'target page', filter: { type: 'successStory' }, required: true, initial: true },
-		successStoryTitle: { type: Types.Text, label: 'title', noedit: true, index: true },
-		successStorySummary: { type: Types.Textarea, label: 'summary', noedit: true },
+		successStoryTitle: { type: Types.Text, label: 'title', index: true, required: true, initial: true },
+		successStorySummary: { type: Types.Textarea, label: 'summary', initial: true },
 		successStoryImage: { type: Types.CloudinaryImage, folder: 'featured/', autoCleanup: true },
 		successStoryImage_stretched: {type: Types.Url, hidden: true},
 		successStoryImage_scaled: {type: Types.Url, hidden: true},
@@ -32,8 +32,8 @@ Featured.add(
 
 	{ heading: 'Upcoming Event' }, {
 		upcomingEventTarget: { type: Types.Relationship, ref: 'Event', label: 'target event', required: true, initial: true },
-		upcomingEventTitle: { type: Types.Text, label: 'title', noedit: true, index: true },
-		upcomingEventSummary: { type: Types.Textarea, label: 'summary', noedit: true },
+		upcomingEventTitle: { type: Types.Text, label: 'title', index: true, required: true, initial: true },
+		upcomingEventSummary: { type: Types.Textarea, label: 'summary', initial: true },
 		upcomingEventImage: { type: Types.CloudinaryImage, folder: 'featured/', autoCleanup: true },
 		upcomingEventImage_stretched: {type: Types.Url, hidden: true},
 		upcomingEventImage_scaled: {type: Types.Url, hidden: true},
@@ -47,17 +47,21 @@ Featured.schema.pre('save', function(next) {
 	var self = this;
 
 	// TODO: These need to truncate to 250 characters (to the nearest word)
+	self.aboutUsSummary = self.aboutUsSummary.substring(0, 250);
+	self.successStorySummary = self.successStorySummary.substring(0, 250);
+	self.upcomingEventSummary = self.upcomingEventSummary.substring(0, 250);
 	// TODO: These should append an elipses if the summary was truncated
 	keystone.list('Page').model.find()
 			.where('_id', this.aboutUsTarget)
 			.exec()
 			.then(function(page) {
 
-					self.aboutUsTitle = page[0].title;
-					self.aboutUsSummary = page[0].content.replace(/<\/?[^>]+(>|$)/g, '');
-					self.aboutUsUrl = page[0].url;
-					self.aboutUsImage_stretched = self._.aboutUsImage.scale(400,250,{ quality: 80 });
-					self.aboutUsImage_scaled = self._.aboutUsImage.thumbnail(400,250,{ quality: 80 });
+				self.aboutUsTitle = page[0].title;
+				self.aboutUsSummary = page[0].content.replace(/<\/?[^>]+(>|$)/g, '');
+				self.aboutUsSummary = self.aboutUsSummary.substring(0, 200);
+				self.aboutUsUrl = page[0].url;
+				self.aboutUsImage_stretched = self._.aboutUsImage.scale(400,250,{ quality: 80 });
+				self.aboutUsImage_scaled = self._.aboutUsImage.thumbnail(400,250,{ quality: 80 });
 
 			}, function(err) {
 				console.log(err);
@@ -68,6 +72,7 @@ Featured.schema.pre('save', function(next) {
 
 		       		self.successStoryTitle = successStory[0].heading;
 		       		self.successStorySummary = successStory[0].content.replace(/<\/?[^>]+(>|$)/g, '');
+		       		self.successStorySummary = self.successStorySummary.substring(0, 200);
 		       		self.successStoryUrl = '/success-stories/';
 		       		self.successStoryImage_stretched = self._.successStoryImage.scale(400,250,{ quality: 80 });
 					self.successStoryImage_scaled = self._.successStoryImage.thumbnail(400,250,{ quality: 80 });
@@ -81,18 +86,12 @@ Featured.schema.pre('save', function(next) {
 
 					self.upcomingEventTitle = event[0].title;
 					self.upcomingEventSummary = event[0].description.replace(/<\/?[^>]+(>|$)/g, '');
+					self.upcomingEventSummary = self.upcomingEventSummary.substring(0, 200);
 					self.upcomingEventUrl = event[0].url;
 					self.upcomingEventImage_stretched = self._.upcomingEventImage.scale(400,250,{ quality: 80 });
 					self.upcomingEventImage_scaled = self._.upcomingEventImage.thumbnail(400,250,{ quality: 80 });
 
 					next();
-
-					console.log(self.aboutUsImage_stretched);
-					console.log(self.aboutUsImage_scaled);
-					console.log(self.successStoryImage_stretched);
-					console.log(self.successStoryImage_scaled);
-					console.log(self.upcomingEventImage_stretched);
-					console.log(self.upcomingEventImage_scaled);
 			})
 		));
 	});
