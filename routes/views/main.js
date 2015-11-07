@@ -16,6 +16,10 @@ exports = module.exports = function(req, res) {
 		.where('title', 'Main Page Slideshow')
 		.exec()
 		.then(function (slideshow) {
+			if(!slideshow) {
+				console.log('unable to load the slideshow');
+				res.redirect('/preferences');
+			}
 			
 			var slideshowId = slideshow[0].get('_id');
 
