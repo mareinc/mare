@@ -18,11 +18,11 @@ exports = module.exports = function(req, res) {
 		.then(function (slideshow) {
 			if(!slideshow) {
 				console.log('unable to load the slideshow');
-				res.redirect('/preferences');
 			}
 			
 			var slideshowId = slideshow[0].get('_id');
 
+			// TODO: Change to callbacks instead of promises (This should be done globally across views and middleware)
 			SlideshowItems.model.find()
 				.where('parent', slideshowId)
 				.exec()
@@ -37,6 +37,8 @@ exports = module.exports = function(req, res) {
 							locals.featuredItems = featuredItems;
 
 							view.render('main');
+							// TODO: If the necessary elements don't exist on the page, maybe render 
+							//       a blank page to allow logging in and creating them
 						});
 				});
 		});
