@@ -47,8 +47,8 @@ keystone.init({
 	 	' charmap ltr rtl pagebreak paste, forecolor backcolor,' +
 	 	' emoticons media image, preview print, fontselect fontsizeselect',
 	'wysiwyg additional plugins': 'advlist, anchor,' +
-		' autolink, autosave, bbcode, charmap, contextmenu,' +
-		' directionality, emoticons, fullpage, hr, media, pagebreak,' +
+		' autolink, autosave, charmap, contextmenu,' +
+		' directionality, emoticons, hr, media, pagebreak,' +
 		' paste, preview, print, searchreplace, table, textcolor,' +
 		' visualblocks, visualchars, wordcount',
 	'wysiwyg cloudinary images': true,
