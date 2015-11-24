@@ -102,6 +102,12 @@ $(document).ready(function() {
 		}
 	});
 
+	// initialize the photo listing gallery grid
+	$('#grid').mediaBoxes({
+        boxesToLoadStart: 12,
+        boxesToLoad: 8,
+    }); 
+
 	/* initialize Stripe donations */
 
 	// Define handler to be called when Stripe returns a card token
