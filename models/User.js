@@ -6,8 +6,6 @@ var User = new keystone.List('User');
 
 // Create fields
 User.add('Permissions', {
-	// Retrofitting this model with isAdmin because Keystone requires it.  Checks for this attribute exist in the core Keystone code
-	// isAdmin: { type: Boolean, label: 'Can access Keystone', index: true, noedit: true, hidden: true },
 	userType: { type: Types.Select, options: 'Site User, Prospective Parent, Social Worker, Administrator', label: 'User Type', required: true, index: true, initial: true }
 }, { heading: 'User Information' }, {
 	name: {
