@@ -18,6 +18,18 @@ var cloudinaryUrlLimit = _.template(CLOUDINARY_HOST + '/<%= cloudinaryUser %>/im
 module.exports = function() {
 	
 	var _helpers = {};
+
+	/* TODO: This should be placed in a date-time.js file, but I wasn't able to get it to register on my first try */
+	_helpers.getAge = function(dateOfBirth) {
+        var today = new Date();
+        var birthDate = new Date(dateOfBirth);
+        var age = today.getFullYear() - birthDate.getFullYear();
+        var month = today.getMonth() - birthDate.getMonth();
+        if (month < 0 || (month === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+        return age;
+    };
 	
 	/**
 	 * Generic HBS Helpers
