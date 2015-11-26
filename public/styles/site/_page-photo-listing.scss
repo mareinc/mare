@@ -14,95 +14,41 @@
 /* Profile contents */
 .profile-zone {
 	border-top: 1px solid black;
-	padding-top: 15px;
+	padding-bottom: 15px;
 }
 
 .profiles {
-	list-style: none;
-	font-size: 0px;
-	padding: 0;
-}
-
-/* override at breakpoint */
-.profiles > li:nth-child(odd) {
-    margin-right: 3%;
+	margin-top: 15px;
 }
 
 .profile {
-	display: inline-block;
-	width: 48.5%;
-	background: #fff;
-	border-right: 1px solid #000;
-	border-bottom: 1px solid #000;
-	font-size: 16px;
-	font-size: 1rem;
-	vertical-align: top;
-	box-shadow: 0 0 5px #ddd;
-	box-sizing: border-box;
-	-moz-box-sizing: border-box;
-	-webkit-box-sizing: border-box;
-	margin-bottom: 20px;
 	cursor: pointer;
 }
 
-.profile img {
-	max-width: 100%;
-	height: auto;
-}
-
 .profile .details {
-	padding: 10px;
 	background-color: #fffac2;
-	margin-top: -1px;
 	color: #1B229D;
-	height: 151px;
-}
-
-.profile .details > span {
-	max-width: 180px;
 }
 
 .profile .details > .name {
-	display: block;
-	font-size: 2em;
+	font-size: 1.4em;
 	font-style: italic;
 }
 
 .profile .details > .age {
-	display: block;
-	margin: 5px 0 10px;
-	font-size: 1.3em;
 	color: #66584D;
+	margin-top: .4em;
 }
 
-.profile .deatils .view-profile {
-	font-size: 1.2em;
+.profile .details > .view-profile {
+	margin-top: .4em;
 }
 
-// Switch to 3 profiles per row
-@media all and (min-width: 440px) {
-	.profile {
-		width: 31.33333333%;
-		margin-right: 3%;
-	}
-
-	.profiles > li:nth-child(3n) {
-		margin-right: 0;
-	}
-}
-
-// Switch to 4 profiles per row
-@media all and (min-width: 880px) {
-	.profile {
-		width: 22.75%;
-		margin-right: 3%;
-	}
-
-	.profiles > li:nth-child(3n) {
-		margin-right: 3%;
-	}
-
-	.profiles > li:nth-child(4n) {
-		margin-right: 0;
-	}
+.white-popup {
+	position: relative;
+	background: #FFF;
+	padding: 20px;
+	width: auto;
+	max-width: 500px;
+	margin: 20px auto;
 }
