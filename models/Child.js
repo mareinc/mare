@@ -61,11 +61,8 @@ Child.add({
 Child.schema.pre('save', function(next) {
 	'use strict';
 	// TODO: Fix the sizing of these images
-	this.thumbnailImage = this._.image.thumbnail(640,300,{ quality: 60 });
+	this.thumbnailImage = this._.image.thumbnail(415,415,{ quality: 60 });
 	this.detailImage = this._.image.thumbnail(640,640,{ quality: 60 });
-
-	console.log(this.thumbnailImage);
-	console.log(this.detailImage);
 	
 	// TODO: Assign a registration number if one isn't assigned
 	next();
