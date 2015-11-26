@@ -34,14 +34,16 @@
 					<button class="question">HAVE A QUESTION?</button>
 				</div>
 				<div class="filters">
-					<span class="order">
-						<label for="order">Order:</label>
-						<select id="order" name="order">
-							<option value="most-recent" selected>Most Recent</option>
-							<option value="option-2">Option 2</option>
-							<option value="option-3">Option 3</option>
-						</select>
-					</span>
+					<div class="media-boxes-drop-down" id="sort">
+						<span class="sort-order-label">Order</span>
+						<div class="media-boxes-drop-down-header"></div>
+						<ul class="media-boxes-drop-down-menu">
+							<li><a class="selected" href="#" data-sort-by="original-order">Original Order</a></li>
+							<li><a href="#" data-sort-by="name" data-sort-toggle="true">Sort by name</a></li>
+							<li><a href="#" data-sort-by="age" data-sort-toggle="true">Sort by age</a></li>
+							{{!-- <li><a href="#" data-sort-by="added" data-sort-toggle="true">Sort by date added</a></li> --}}
+						</ul>
+					</div>
 					<span class="icon-text-unit">
 						<img class="video">
 						<span class="text">Video Profile</span>
@@ -52,22 +54,36 @@
 					</span>
 				</div>
 				<section class="profile-zone">
-				<ul class="profiles">
-				{{#each children}}
-					<li class="profile">
-						<img src={{ image.url }}>
-						<div class="details">
-							<span class="name">{{ name.first }} {{ name.last }}</span>
-							<span class="age">Age {{ age }}</span>
-							<span class="icons"></span>
-							<span class="view-profile">
-								<span>View Profile</span>
-								<span class="icon-double-arrow-right">&gt;&gt;</span>
-							</span>
-						</div>
-					</li>
-				{{/each}}
-				</ul>
+
+					<div id="grid" class="profiles">
+						{{#each children}}
+							<div class="media-box" data-id="{{ name.first }}">
+								<div data-popup="http://goo.gl/Rbi9CB"></div>
+								<div class="profile mb-open-popup">
+									<div class="media-box-image">
+										<div data-thumbnail={{ thumbnailImage }}></div>
+										<div data-popup="http://goo.gl/Rbi9CB"></div>
+									</div>
+								
+									<div class="media-box-content details">
+										<div class="media-box-name name">{{ name.first }}</div>
+										<div class="media-box-age age">Age {{getAge birthDate}}</div>
+										<div class="icons"></div>
+										<div class="view-profile">
+											<span>View Profile</span>
+											<span class="icon-double-arrow-right">&gt;&gt;</span>
+										</div>
+										{{!-- <div class="media-box-added hidden">{{ registrationDate }}</div> --}}
+									</div>
+								</div>
+
+							</div>
+						{{/each}}
+					</div>
+					{{!-- <div id="test-popup" class="white-popup mfp-hide">
+						Popup content
+					</div> --}}
+
 				</section>
 			</section>
 		</div>
