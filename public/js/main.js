@@ -131,6 +131,35 @@ app.functions = function() {
 		        // addedDate: '.media-box-added' //When you sort by date added, it will only look in the elements with the class "media-box-date-added"
 		    }
 	    });
+
+	    //setup the modal window when a child card is clicked
+	    $('.media-box').on('click', function() {
+	    	var registrationNumber = $(this).data('registration-number');
+	    	getChildData(registrationNumber);
+	    });
+
+	    // TODO: once these functions are broken out by function, this should be pulled
+	    //       out into a more accessible function to allow access to it in other areas of the app
+	    function getChildData(registrationNumber) {
+	    	console.log(registrationNumber);
+
+	    	// Submit token to server so it can charge the card
+	        $.ajax({
+	        	dataType: 'json',
+	            url: '/getChildDetails',
+	            type: 'POST',
+	            data: {
+	                registrationNumber: registrationNumber
+	            }
+	     	}).done(function(childDetails) {
+	     		var source = $("#child-details-template").html();
+				var template = Handlebars.compile(source);
+				var data = childDetails;
+				var html = template(data);
+				console.log(childDetails);
+				console.log(html);
+	     	});
+	    }
 	};
 
 	initializeDonationspage = function() {

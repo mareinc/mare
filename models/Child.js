@@ -37,10 +37,9 @@ Child.add({
 	hasContactWithBirthFamily: { type: Types.Boolean, label: 'Has contact with birth family?', initial: true },
 	birthFamilyContactsString: { type: Types.Text, label: 'Birth Family (comma separated)', initial: true },
 	profile: {
-		part1: { type: Types.Textarea, label: 'Hi! My name is...', required: true, initial: true }, // TODO: Check to see if we need a field for this, or if it will always autofill with: 'Hi! My name is [first name]...'
-		part2: { type: Types.Textarea, label: 'Let me tell you more about myself...', required: true, initial: true },
-		part3: { type: Types.Textarea, label: 'And here\'s what others say...', required: true, initial: true },
-		part4: { type: Types.Textarea, label: 'If I could have my own special wish...', required: true, initial: true }
+		part1: { type: Types.Textarea, label: 'Let me tell you more about myself...', required: true, initial: true },
+		part2: { type: Types.Textarea, label: 'And here\'s what others say...', required: true, initial: true },
+		part3: { type: Types.Textarea, label: 'If I could have my own special wish...', required: true, initial: true }
 	},
 	wednesdaysChild: { type: Types.Boolean, label: 'Wednesday\'s Child?', initial: true },
 	// physicalNeeds: { type: Types.Select, label: 'Physical needs', options: 'None, Mild, Moderate, Severe', required: true, initial: true },

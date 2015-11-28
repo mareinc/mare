@@ -12,7 +12,8 @@ var _ = require('underscore'),
 	stripe = require('stripe')('process.env.STRIPE_TEST_SECRET'),
 	// Load in Keystone for model references
 	keystone = require('keystone'),
-	User = keystone.list('User');
+	User = keystone.list('User'),
+	Child = keystone.list('Child');
 
 /**
 	Initialises the standard view locals
@@ -225,6 +226,31 @@ exports.logout = function(req, res) {
 	keystone.session.signout(req, res, function() {
 		res.redirect('/');
 	});
+};
+// TODO: include an error message for this and other functions in middleware if applicable
+exports.getChildDetails = function(req, res) {
+	var childData = req.body,
+		registrationNumber = childData['registrationNumber'];
+
+	Child.model.find()
+        .where('registrationNumber', registrationNumber)
+        .exec()
+        .then(function (child) {
+
+        	var child = child[0];
+
+        	var relevantData = {
+        		name: child.name.first,
+        		birthDate: child.birthDate,
+        		registrationNumber: child.registrationNumber,
+        		profile: child.profile,
+        		detailImage: child.detailImage,
+        		video: child.video,
+        		wednesdaysChild: child.wednesdaysChild
+        	};
+
+        	res.send(relevantData);
+        });
 };
 
 exports.charge = function(req, res) {
