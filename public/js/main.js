@@ -31,6 +31,80 @@ app.functions = function() {
 		}
 	};
 
+	enablePageScrolling = function() {
+		$('html, body').removeClass('scrolling-disabled');
+	};
+
+	disablePageScrolling = function() {
+		$('html, body').addClass('scrolling-disabled');
+	};
+
+	initializeModal = function() {
+		$('.modal__close').on('click', function() {
+	    	app.functions.closeModal();
+	    	app.functions.clearModalContents();
+	    });
+	};
+
+	openModal = function() {
+		$('.modal__background').fadeIn();
+		$('.modal-container__contents').hide();
+		$('.modal-container__loading').show();
+		$('.modal__container').fadeIn();
+
+		app.functions.disablePageScrolling();
+	};
+
+	closeModal = function() {
+		$('.modal__background').fadeOut();
+		$('.modal__container').fadeOut();
+
+		app.functions.enablePageScrolling();
+	};
+
+	clearModalContents = function() {
+		$('.modal-container__contents').html('');
+	};
+
+	initializeModalControls = function() {
+		$('.profile-navigation__previous, .profile-navigation__next').on('click', function() {
+	    	var registrationNumber = $(this).data('registration-number');
+
+	    	$('.modal-container__contents').fadeOut(function() {
+
+	    		app.functions.clearModalContents();
+
+	    		$('.modal-container__loading').fadeIn(function() {
+	    			app.functions.getChildData(registrationNumber);
+	    		});
+
+	    	});
+	    });
+	};
+
+	initializeModalTabs = function() {
+		$('.profile-tabs__tab').removeClass('profile-tabs__tab--selected');
+		$('.profile-tabs__tab').first().addClass('profile-tabs__tab--selected');
+
+		$('.profile-tab__contents').removeClass('profile-tab__contents--selected');
+		$('.profile-tab__contents').first().addClass('profile-tab__contents--selected');
+
+		$('.profile-tabs__tab').on('click', function() {
+			if($(this).hasClass('profile-tabs__tab--selected')) {
+				return;
+			}
+
+			var selectedContentType = $(this).data('tab');
+
+			$('.profile-tabs__tab--selected').removeClass('profile-tabs__tab--selected');
+			$(this).addClass('profile-tabs__tab--selected');
+
+			$('.profile-tab__contents--selected').removeClass('profile-tab__contents--selected');
+			$('[data-contents=' + selectedContentType + ']').addClass('profile-tab__contents--selected');
+
+		});
+	};
+
 	initializeSiteMenu = function() {
 		// allows the mobile menu to be seen (it was hidden to prevent it flashing on the screen during page load)
 		$('#mobile-menu').removeClass('hidden');
@@ -132,35 +206,55 @@ app.functions = function() {
 		    }
 	    });
 
-	    //setup the modal window when a child card is clicked
+	    // setup the modal window when a child card is clicked
 	    $('.media-box').on('click', function() {
-	    	var registrationNumber = $(this).data('registration-number');
-	    	getChildData(registrationNumber);
+	    	var selectedChild = $(this),
+	    		registrationNumber = selectedChild.data('registration-number');
+
+	    	app.functions.openModal();
+	    	app.functions.getChildData(registrationNumber);
 	    });
 
-	    // TODO: once these functions are broken out by function, this should be pulled
-	    //       out into a more accessible function to allow access to it in other areas of the app
-	    function getChildData(registrationNumber) {
-	    	console.log(registrationNumber);
-
-	    	// Submit token to server so it can charge the card
-	        $.ajax({
-	        	dataType: 'json',
-	            url: '/getChildDetails',
-	            type: 'POST',
-	            data: {
-	                registrationNumber: registrationNumber
-	            }
-	     	}).done(function(childDetails) {
-	     		var source = $("#child-details-template").html();
-				var template = Handlebars.compile(source);
-				var data = childDetails;
-				var html = template(data);
-				console.log(childDetails);
-				console.log(html);
-	     	});
-	    }
+	    app.functions.initializeModal();
 	};
+
+    getChildData = function(registrationNumber) {
+    	// Submit token to server so it can charge the card
+        $.ajax({
+        	dataType: 'json',
+            url: '/getChildDetails',
+            type: 'POST',
+            data: {
+                registrationNumber: registrationNumber
+            }
+     	}).done(function(childDetails) {
+     		app.children = app.children || {};
+     		app.children.selectedChild = childDetails.registrationNumber;
+
+     		var selectedChildElement = $('[data-registration-number=' + app.children.selectedChild + ']');
+     		var previousChildElement = selectedChildElement.prev();
+     		var nextChildElement = selectedChildElement.next();
+
+     		childDetails.previousChildRegistrationNumber = previousChildElement.data('registration-number');
+     		childDetails.nextChildRegistrationNumber = nextChildElement.data('registration-number');
+
+     		var source = $("#child-details-template").html();
+			var template = Handlebars.compile(source);
+			var html = template(childDetails);
+			
+			$('.modal-container__contents').html(html);
+
+			$('.modal-container__loading').fadeOut(function() {
+				$('.modal-container__contents').fadeIn();
+			});
+
+			app.functions.initializeModalControls();
+			app.functions.initializeModalTabs();
+
+			console.log(childDetails);
+
+     	});
+    }
 
 	initializeDonationspage = function() {
 		// Define handler to be called when Stripe returns a card token
@@ -197,17 +291,25 @@ app.functions = function() {
 	return {
 		storeUrlInfo				: storeUrlInfo,
 		bindTouch					: bindTouch,
+		enablePageScrolling			: enablePageScrolling,
+		disablePageScrolling		: disablePageScrolling,
+		initializeModal				: initializeModal,
+		openModal					: openModal,
+		closeModal					: closeModal,
+		clearModalContents			: clearModalContents,
+		initializeModalControls		: initializeModalControls,
+		initializeModalTabs			: initializeModalTabs,
 		initializeSiteMenu 			: initializeSiteMenu,
 		initializeMobileMenu 		: initializeMobileMenu,
 		initializeHomePage 			: initializeHomePage,
 		initializeRegistrationPage 	: initializeRegistrationPage,
 		initializePhotoListingPage 	: initializePhotoListingPage,
+		getChildData				: getChildData,
 		initializeDonationspage 	: initializeDonationspage
 	}
 }();
 
 $(function() {
-	
 	// basic setup function for every page
 	app.functions.bindTouch();
 	app.functions.storeUrlInfo();
