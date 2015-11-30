@@ -227,11 +227,13 @@ exports.logout = function(req, res) {
 		res.redirect('/');
 	});
 };
+
 // TODO: include an error message for this and other functions in middleware if applicable
 exports.getChildDetails = function(req, res) {
 	var childData = req.body,
 		registrationNumber = childData['registrationNumber'];
 
+	/* TODO: Fetch only the needed fields instead of grabbing everything */
 	Child.model.find()
         .where('registrationNumber', registrationNumber)
         .exec()
@@ -241,11 +243,12 @@ exports.getChildDetails = function(req, res) {
 
         	var relevantData = {
         		name: child.name.first,
-        		birthDate: child.birthDate,
+        		age: exports.getAge(child.birthDate),
         		registrationNumber: child.registrationNumber,
         		profile: child.profile,
-        		detailImage: child.detailImage,
-        		video: child.video,
+        		thumbnailImage: child.thumbnailImage,
+        		hasVideo: child.video.length > 0,
+        		video: child.video.replace('watch?v=', 'embed/'),
         		wednesdaysChild: child.wednesdaysChild
         	};
 
@@ -269,3 +272,16 @@ exports.charge = function(req, res) {
         }
     });
 };
+
+// TODO: This function is a duplicate of one found in templates/views/helpers/index.js, which is used exclusively 
+// 		 for handlebars templates.  Try to consolodate them
+exports.getAge = function(dateOfBirth) {
+	var today = new Date();
+        var birthDate = new Date(dateOfBirth);
+        var age = today.getFullYear() - birthDate.getFullYear();
+        var month = today.getMonth() - birthDate.getMonth();
+        if (month < 0 || (month === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+        return age;
+}
