@@ -345,7 +345,7 @@ $(document).ready(function() {
 
 	/* check for dropdown menu selection on registration page to show the correct form */
 	/* TODO: consider adding a class to the 'active' form, hide that with a fadeOut(), then fadeIn() the selected form. */
-	$('.registration-type-selector').change(function() {
+	$('.registration-type-selector > select').change(function() {
 		var siteForm = $('.site-visitor-registration'),
 			socialWorkerForm = $('.social-worker-registration'),
 			prospectiveParentForm = $('.prospective-parent-registration'),
