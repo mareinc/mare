@@ -5455,6 +5455,9 @@ body {
     box-shadow: none;
     -ms-filter: none; } }
 
+.main {
+  padding-top: 1px; }
+
 .content {
   color: #66584D; }
 
