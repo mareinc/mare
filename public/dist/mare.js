@@ -4476,7 +4476,7 @@ app.functions = function() {
 		});
 	};
 
-	initializePhotoListingPage = function() {
+	initializeWaitingChildProfilesPage = function() {
 		// initialize the photo listing gallery grid
 		$('#grid').mediaBoxes({
 	        boxesToLoadStart: 12,
@@ -4574,23 +4574,23 @@ app.functions = function() {
 	};
 
 	return {
-		storeUrlInfo				: storeUrlInfo,
-		bindTouch					: bindTouch,
-		enablePageScrolling			: enablePageScrolling,
-		disablePageScrolling		: disablePageScrolling,
-		initializeModal				: initializeModal,
-		openModal					: openModal,
-		closeModal					: closeModal,
-		clearModalContents			: clearModalContents,
-		initializeModalControls		: initializeModalControls,
-		initializeModalTabs			: initializeModalTabs,
-		initializeSiteMenu 			: initializeSiteMenu,
-		initializeMobileMenu 		: initializeMobileMenu,
-		initializeHomePage 			: initializeHomePage,
-		initializeRegistrationPage 	: initializeRegistrationPage,
-		initializePhotoListingPage 	: initializePhotoListingPage,
-		getChildData				: getChildData,
-		initializeDonationspage 	: initializeDonationspage
+		storeUrlInfo						: storeUrlInfo,
+		bindTouch							: bindTouch,
+		enablePageScrolling					: enablePageScrolling,
+		disablePageScrolling				: disablePageScrolling,
+		initializeModal						: initializeModal,
+		openModal							: openModal,
+		closeModal							: closeModal,
+		clearModalContents					: clearModalContents,
+		initializeModalControls				: initializeModalControls,
+		initializeModalTabs					: initializeModalTabs,
+		initializeSiteMenu 					: initializeSiteMenu,
+		initializeMobileMenu 				: initializeMobileMenu,
+		initializeHomePage 					: initializeHomePage,
+		initializeRegistrationPage 			: initializeRegistrationPage,
+		initializeWaitingChildProfilesPage 	: initializeWaitingChildProfilesPage,
+		getChildData						: getChildData,
+		initializeDonationspage 			: initializeDonationspage
 	}
 }();
 
@@ -4617,8 +4617,8 @@ app.router = function() {
 			case 'form':
 				setupForm();
 				break;
-			case 'photo-listing':
-				setupPhotoListingPage();
+			case 'waiting-child-profiles':
+				setupWaitingChildProfilesPage();
 				break;
 			case 'register':
 				setupRegistrationPage();
@@ -4647,9 +4647,9 @@ app.router = function() {
 		console.log('form route');
 	};
 
-	setupPhotoListingPage = function() {
-		console.log('photo listing route');
-		app.functions.initializePhotoListingPage();
+	setupWaitingChildProfilesPage = function() {
+		console.log('waiting child profiles route');
+		app.functions.initializeWaitingChildProfilesPage();
 	};
 
 	setupRegistrationPage = function() {
