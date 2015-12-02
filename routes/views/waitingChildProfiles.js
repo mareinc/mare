@@ -16,7 +16,7 @@ exports = module.exports = function(req, res) {
             
             locals.children = results;
 
-            view.render('photoListing');
+            view.render('waitingChildProfiles');
         });
 
 };
