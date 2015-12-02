@@ -6,8 +6,6 @@ var User = new keystone.List('User');
 
 // Create fields
 User.add('Permissions', {
-	// Retrofitting this model with isAdmin because Keystone requires it.  Checks for this attribute exist in the core Keystone code
-	// isAdmin: { type: Boolean, label: 'Can access Keystone', index: true, noedit: true, hidden: true },
 	userType: { type: Types.Select, options: 'Site User, Prospective Parent, Social Worker, Administrator', label: 'User Type', required: true, index: true, initial: true }
 }, { heading: 'User Information' }, {
 	name: {
@@ -16,10 +14,13 @@ User.add('Permissions', {
 	},
 	email: { type: Types.Email, label: 'Email Address', required: true, index: true, initial: true },
 	password: { type: Types.Password, label: 'Password', required: true, initial: true },
-	avatar: { type: Types.CloudinaryImage, label: 'Avatar', folder: 'users/', select: true, selectPrefix: 'users/', autoCleanup: true, dependsOn: { userType: 'Site User' } }
+	siteUserAvatar: { type: Types.CloudinaryImage, label: 'Avatar', folder: 'users/site users', select: true, selectPrefix: 'users/site users', autoCleanup: true, dependsOn: { userType: 'Site User' } },
+	prospectiveParentAvatar: { type: Types.CloudinaryImage, label: 'Avatar', folder: 'users/prospective parents', select: true, selectPrefix: 'users/prospective parents', autoCleanup: true, dependsOn: { userType: 'Prospective Parent' } },
+	socialWorkerAvatar: { type: Types.CloudinaryImage, label: 'Avatar', folder: 'users/social workers', select: true, selectPrefix: 'users/social workers', autoCleanup: true, dependsOn: { userType: 'Social Worker' } },
+	adminAvatar: { type: Types.CloudinaryImage, label: 'Avatar', folder: 'users/administrators', select: true, selectPrefix: 'users/administrators', autoCleanup: true, dependsOn: { userType: 'Administrator' } }
 }, { heading: 'Contact Information' }, {
 	phone: { type: Types.Text, label: 'Phone number', initial: true, dependsOn: { userType: ['Social Worker', 'Prospective Parent'] } },
-	mobilePhone: { type: Types.Text, label: 'Mobile phone number', initial: true, dependsOn: { userType: ['Site User', 'Social Worker'] } },
+	mobilePhone: { type: Types.Text, label: 'Mobile phone number', initial: true, dependsOn: { userType: ['Site User'] } },
 	otherPhone: { type: Types.Text, label: 'Other phone number', initial: true, dependsOn: { userType: ['Site User', 'Prospective Parent'] } },
     address1: { type: Types.Text, label: 'Address 1', initial: true },
 	address2: { type: Types.Text, label: 'Address 2', initial: true },
@@ -28,6 +29,7 @@ User.add('Permissions', {
 	zipCode: { type: Types.Text, label: 'Zip code', initial: true }
 // }, 'Social Worker Information', {
 }, { heading: 'Social Worker Information', dependsOn: { userType: 'Social Worker' } }, {
+	position: { type: Types.Select, options: 'adoption worker, recruitment worker, supervisor, administrator, family worker, other', label: 'Position', initial: true, dependsOn: { userType: 'Social Worker' } },
 	agency: { type: Types.Text, label: 'Agency', index: true, initial: true, dependsOn: { userType: 'Social Worker' } },
 	title: { type: Types.Text, label: 'Title', index: true, initial: true, dependsOn: { userType: 'Social Worker' } }
 }, { heading: 'Prospective Parent Information', dependsOn: { userType: 'Prospective Parent' } }, {

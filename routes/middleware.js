@@ -12,7 +12,8 @@ var _ = require('underscore'),
 	stripe = require('stripe')('process.env.STRIPE_TEST_SECRET'),
 	// Load in Keystone for model references
 	keystone = require('keystone'),
-	User = keystone.list('User');
+	User = keystone.list('User'),
+	Child = keystone.list('Child');
 
 /**
 	Initialises the standard view locals
@@ -227,6 +228,34 @@ exports.logout = function(req, res) {
 	});
 };
 
+// TODO: include an error message for this and other functions in middleware if applicable
+exports.getChildDetails = function(req, res) {
+	var childData = req.body,
+		registrationNumber = childData['registrationNumber'];
+
+	/* TODO: Fetch only the needed fields instead of grabbing everything */
+	Child.model.find()
+        .where('registrationNumber', registrationNumber)
+        .exec()
+        .then(function (child) {
+
+        	var child = child[0];
+
+        	var relevantData = {
+        		name: child.name.first,
+        		age: exports.getAge(child.birthDate),
+        		registrationNumber: child.registrationNumber,
+        		profile: child.profile,
+        		thumbnailImage: child.thumbnailImage,
+        		hasVideo: child.video.length > 0,
+        		video: child.video.replace('watch?v=', 'embed/'),
+        		wednesdaysChild: child.wednesdaysChild
+        	};
+
+        	res.send(relevantData);
+        });
+};
+
 exports.charge = function(req, res) {
 	var stripeToken = req.body.stripeToken;
     var amount = 1000;
@@ -243,3 +272,16 @@ exports.charge = function(req, res) {
         }
     });
 };
+
+// TODO: This function is a duplicate of one found in templates/views/helpers/index.js, which is used exclusively 
+// 		 for handlebars templates.  Try to consolodate them
+exports.getAge = function(dateOfBirth) {
+	var today = new Date();
+        var birthDate = new Date(dateOfBirth);
+        var age = today.getFullYear() - birthDate.getFullYear();
+        var month = today.getMonth() - birthDate.getMonth();
+        if (month < 0 || (month === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+        return age;
+}

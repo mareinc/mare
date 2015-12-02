@@ -28,7 +28,6 @@ var paths = {
 		'public/styles/font-awesome/*.css'
 	],
 	'js':[
-		'public/js/lib/jquery/**/*.js',
 		'public/modules/**/*.js',
 		'public/js/*.js'],
 	'standalone-js':[

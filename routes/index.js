@@ -36,19 +36,21 @@ exports = module.exports = function(app) {
 	'use strict';
 	
 	// Views
-	app.get('/'				, routes.views.main);
-	app.get('/page/*'		, routes.views.page);
-	app.get('/form/*'		, routes.views.form);
-	app.get('/photo-listing', routes.views.photoListing);
-	app.get('/register'		, routes.views.register);
-	app.get('/preferences'	, middleware.requireUser, routes.views.preferences);
+	app.get('/'					, routes.views.main);
+	app.get('/page/*'			, routes.views.page);
+	app.get('/form/*'			, routes.views.form);
+	app.get('/photo-listing'	, routes.views.photoListing);
+	app.get('/register'			, routes.views.register);
+	app.get('/preferences'		, middleware.requireUser, routes.views.preferences);
 
-	app.post('/register'	, middleware.registerUser);
-	app.post('/login'		, middleware.login);
-	app.get('/logout'		, middleware.logout);
+	app.post('/register'		, middleware.registerUser);
+	app.post('/login'			, middleware.login);
+	app.get('/logout'			, middleware.logout);
 
-	app.get('/donate'		, routes.views.donate);
-	app.post('/charge'		, middleware.charge);
+	app.post('/getChildDetails'	, middleware.getChildDetails);
+
+	app.get('/donate'			, routes.views.donate);
+	app.post('/charge'			, middleware.charge);
 	
 	// NOTE: To protect a route so that only admins can see it, use the requireUser middleware:
 	// app.get('/protected', middleware.requireUser, routes.views.protected);
