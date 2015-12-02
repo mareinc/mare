@@ -6,14 +6,17 @@
 	margin: 0 0 10px;
 }
 
-.registration-type:before {
+.registration-type-selector:before {
 	content: "Register as:";
 	margin: 0 8px 0 0;
-	font-weight: 600;
+}
+.registration-type-selector > select {
+	display: inline;
 }
 
 .registration-type-header,
-.registration-section-header {
+.registration-section-header,
+.registration-sub-section-header {
 	text-transform: uppercase;
 	border-bottom: 1px solid $border-color-1;
 	margin: 20px 0 8px;
@@ -21,8 +24,13 @@
     clear: both;	/* TODO: Temporary until the registration styles work for left-x and right-x */
 }
 
+.registration-sub-section-header {
+	margin-top: 0;
+	text-transform: none;
+}
+
 .registration-form {
-    font-size: .8em;
+    /*font-size: .8em;*/
 }
 
 .required-description {
@@ -84,34 +92,6 @@ select {
 	background-color: $button-color-2;
 }
 
-/* TODO: all temporary until styles are fixed with left-x and right-x */
-.left-50,
-.right-50,
-.left-70,
-.right-30 {
-    display: inline-block;
-    clear: both;
-}
-
-.left-50,
-.right-50 {
-	width: 50%;
-	float: right;
-}
-
-.left-70,
-.right-30 {
-	float: left;
-}
-
-.left-70 {
-	width: 70%;
-}
-
-.right-30 {
-	width: 30%;
-}
-
 .header-blue {
 	color: $form-color-1;
 	border-bottom: 1px solid $form-color-1;
@@ -131,8 +111,30 @@ select {
 }
 
 
+.checkbox-inline,
+.radio-inline {
+    position: relative;
+    display: inline-block;
+    padding-left: 20px;
+    margin-bottom: 0;
+    font-weight: 400;
+    vertical-align: middle;
+    cursor: pointer;
+}
+.checkbox-inline+.checkbox-inline,
+.radio-inline+.radio-inline {
+    margin-top: 0;
+    margin-left: 10px;
+}
 
-
+.checkbox input[type=checkbox],
+.checkbox-inline input[type=checkbox], 
+.radio input[type=radio], 
+.radio-inline input[type=radio] {
+    position: absolute;
+    margin-top: 4px\9;
+    margin-left: -20px;
+}
 
 
 

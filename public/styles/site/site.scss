@@ -3,7 +3,7 @@
 
 // Bootstrap can be removed entirely by deleting this line.
 
-//@import "bootstrap/bootstrap";
+//@import "../bootstrap/bootstrap";
 
 // The easiest way to customise Bootstrap variables while
 // being able to easily override the source files with new
@@ -15,6 +15,7 @@
 @import "_utility-colors";
 @import "_utility-variables";
 @import "_utility-classes";
+@import "_grid";
 
 // Site Styles
 // ===========
