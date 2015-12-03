@@ -27,7 +27,6 @@ User.add('Permissions', {
 	city: { type: Types.Text, label: 'City', initial: true },
 	state: { type: Types.Select, options: 'Alabama, Alaska, Arizona, Arkansas, California, Colorado, Connecticut, Delaware, Florida, Georgia, Hawaii, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Maryland, Massachusetts, Michigan, Minnesota, Mississippi, Missouri, Montana, Nebraska, Nevada, New Hampshire, New Jersey, New Mexico, New York, North Carolina, North Dakota, Ohio, Oklahoma, Oregon, Pennsylvania, Rhode Island, South Carolina, South Dakota, Tennessee, Texas, Utah, Vermont, Virginia, Washington, West Virginia, Wisconsin, Wyoming', label: 'State', initial: true },
 	zipCode: { type: Types.Text, label: 'Zip code', initial: true }
-// }, 'Social Worker Information', {
 }, { heading: 'Social Worker Information', dependsOn: { userType: 'Social Worker' } }, {
 	position: { type: Types.Select, options: 'adoption worker, recruitment worker, supervisor, administrator, family worker, other', label: 'Position', initial: true, dependsOn: { userType: 'Social Worker' } },
 	agency: { type: Types.Text, label: 'Agency', index: true, initial: true, dependsOn: { userType: 'Social Worker' } },
@@ -45,7 +44,6 @@ User.add('Permissions', {
 		socialWorkerAgency: { type: Types.Text, label: 'Social Worker Agency', initial: true, dependsOn: { userType: 'Prospective Parent' } },
 		SocialWorkerPhone: { type: Types.Text, label: 'Social Worker Phone Number', initial: true, dependsOn: { userType: 'Prospective Parent' } },
 		SocialWorkerEmail: { type: Types.Text, label: 'Social Worker Email Address', initial: true, dependsOn: { userType: 'Prospective Parent' } }
-		// Add file uploader
 	}
 }, { heading: 'Prospective Parent Details', dependsOn: { userType: 'Prospective Parent' } }, {
 	children: {

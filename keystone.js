@@ -64,6 +64,9 @@ keystone.set('cloudinary folders', true);
 // optional, will force cloudinary to serve images over https
 keystone.set('cloudinary secure', true);
 
+// S3 configuration for hosted file storage
+keystone.set('s3 config', { bucket: process.env.S3_BUCKET_NAME, key: process.env.S3_KEY, secret: process.env.S3_SECRET });
+
 // Load project's Models
 keystone.import('models');
 
@@ -135,8 +138,11 @@ keystone.set('email tests', require('./routes/emails'));
 keystone.set('nav', {
 	'people'			: ['users', 'children'],
 	'images'			: ['featured-items', 'slideshows', 'slideshow-items'],
-	'content pages'		: ['pages', 'events', 'forms'],
-	'content snippets'	: ['success-stories']
+	'content pages'		: ['pages', 'forms'],
+	'content snippets'	: ['success-stories'],
+	'events'			: ['events', 'adoption-parties'],
+	'lists'				: ['disabilities', 'media-eligibilities', 'recommended-family-constellations']
+
 });
 
 // Start Keystone to connect to your database and initialise the web server
