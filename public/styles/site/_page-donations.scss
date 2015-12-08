@@ -279,11 +279,11 @@
     border: 0;
 }
 
-input[type=text],
-input[type=number],
-input[type=email],
-textarea,
-select {
+.give-money-body input[type=text],
+.give-money-body input[type=number],
+.give-money-body input[type=email],
+.give-money-body textarea,
+.give-money-body select {
     border: 0;
     background-color: #f1f1f1;
     border-top: solid 1px #d7d7d7;
@@ -299,26 +299,7 @@ input[type="number"]::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
 }
+
 input[type="number"] {
     -moz-appearance: textfield;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

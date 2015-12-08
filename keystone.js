@@ -141,7 +141,7 @@ keystone.set('nav', {
 	'content pages'		: ['pages', 'forms'],
 	'content snippets'	: ['success-stories'],
 	'events'			: ['events', 'adoption-parties'],
-	'lists'				: ['disabilities', 'media-eligibilities', 'recommended-family-constellations']
+	'lists'				: ['disabilities', 'media-eligibilities', 'child-placement-considerations', 'recommended-family-constellations']
 
 });
 

@@ -7066,11 +7066,11 @@ nav ul {
   height: 260px;
   border: 0; }
 
-input[type=text],
-input[type=number],
-input[type=email],
-textarea,
-select {
+.give-money-body input[type=text],
+.give-money-body input[type=number],
+.give-money-body input[type=email],
+.give-money-body textarea,
+.give-money-body select {
   border: 0;
   background-color: #f1f1f1;
   border-top: solid 1px #d7d7d7;
@@ -7265,11 +7265,11 @@ label {
 .input-large {
   width: 350px; }
 
-/*
-select {
-	display: block;
-}
-*/
+.registration-form select,
+.registration-type-selector select {
+  background-color: #FFFFFF;
+  border: 1px solid #D5D5D5; }
+
 .state-select {
   margin: 10px 0 20px; }
 

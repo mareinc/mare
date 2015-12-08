@@ -5,7 +5,7 @@ var keystone = require('keystone'),
 var Child = new keystone.List('Child', {
 	track: true,
 	autokey: { path: 'slug', from: 'registrationNumber', unique: true },
-	map: { name: 'name.first' },
+	map: { name: 'name.first' + ' ' + 'name.last' },
 	defaultSort: 'name.last'
 });
 
@@ -28,7 +28,7 @@ Child.add({ heading: 'General Information' }, {
 	language: { type: Types.Select, label: 'Language', options: 'English, Spanish, Portuguese, Chinese, Other', default: 'English', required: true, initial: true },
 	statusChangeDate: { type: Types.Date, label: 'Status Change Date', initial: true }, // TODO: Logic needed, see line 14 of https://docs.google.com/spreadsheets/d/1Opb9qziX2enTehJx5K1J9KAT7v-j2yAdqwyQUMSsFwc/edit#gid=1235141373
 	status: { type: Types.Select, label: 'Status', options: 'Active, On Hold, Withdrawn, Placed, Disrupted, Reunification', required: true, index: true, initial: true },
-	gender: { type: Types.Select, label: 'Gender', options: 'Male, Female', required: true, index: true, initial: true },
+	gender: { type: Types.Select, label: 'Gender', options: 'Male, Female, Other', required: true, index: true, initial: true },
 	race: { type: Types.Select, label: 'Race', options: 'African American, African American/Asian, African American/Caucasian, African American/Hispanic, African American/Native American, Asian, Asian/Caucasian, Asian/Hispanic, Asian/Native American, Caucasian, Caucasian/Hispanic, Caucasian/Native American, Hispanic, Hispanic/Native American, Native American, Other', required: true, index: true, initial: true },
 	legalStatus: { type: Types.Select, label: 'Legal Status', options: 'Free, Legal Risk', required: true, index: true, initial: true }
 
@@ -45,6 +45,7 @@ Child.add({ heading: 'General Information' }, {
 	recommendedFamilyConstellation: { type: Types.Relationship, label: 'Recommended Family Constellation', ref: 'Recommended Family Constellations', many: true, required: true, index: true, initial: true },
 	requiresOlderChildren: { type: Types.Boolean, label: 'Requires Older Children', dependsOn: { recommendedFamilyConstellation: 'Multi Child Home' }, initial: true },
 	requiresYoungerChildren: { type: Types.Boolean, label: 'Requires Younger Children', dependsOn: { recommendedFamilyConstellation: 'Multi Child Home' }, initial: true },
+	childPlacementConsiderations: { type: Types.Relationship, label: 'Child Placement Considerations', ref: 'Child Placement Considerations', many: true, index: true },
 	extranetUrl: { type: Types.Url, label: 'Extranet and Related Profile URL', initial: true },
 	wednesdaysChild: { type: Types.Boolean, label: 'Wednesday\'s Child?', initial: true }
 
@@ -66,6 +67,9 @@ Child.add({ heading: 'General Information' }, {
 		part2: { type: Types.Textarea, label: 'And here\'s what others say...', required: true, initial: true },
 		part3: { type: Types.Textarea, label: 'If I could have my own special wish...', required: true, initial: true }
 	}
+}, { heading: 'Registration' }, {
+
+	registeredBy: { type: Types.Select, label: 'Registered By', options: 'Unknown, Adoption Worker, Recruitment Worker', required: true, index: true, initial: true }
 
 }, { heading: 'Adoption Worker' }, {	
 
@@ -114,19 +118,20 @@ Child.add({ heading: 'General Information' }, {
 		type: Types.S3File,
 		s3path: '/child/photolisting-pages',
 		filename: function(item, filename){
-			console.log(item);
-			console.log('-------');
-			console.log(filename);
+			console.log(item.registrationNumber + '_' + item.name.first.toLowerCase() + '-' + item.name.last.toLowerCase() + '_photo-listing-page');
+
 			// prefix file name with object id
-			return item._id + '-1-' + filename;
+			return item.registrationNumber + '_' + item.name.first.toLowerCase() + '-' + item.name.last.toLowerCase() + '_photo-listing-page';
 		}
 	},
 	otherAttachement: {
 		type: Types.S3File,
 		s3path: '/child/other',
 		filename: function(item, filename){
+			console.log(item.registrationNumber + '_' + item.name.first.toLowerCase() + '-' + item.name.last.toLowerCase() + '_other-attachment');
+			
 			// prefix file name with object id
-			return item._id + '-2-' + filename;
+			return item.registrationNumber + '_' + item.name.first.toLowerCase() + '-' + item.name.last.toLowerCase() + '_other-attachment';
 		}
 	}
 });
