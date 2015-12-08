@@ -32,3 +32,6 @@ newrelic_agent.log
 
 # Ignore .idea directory
 .idea/*
+
+# Ignore the public/dist directory to prevent newly processed code from being checked in with changes
+public/dist/*

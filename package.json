@@ -19,9 +19,7 @@
     "node-sass-middleware": "^0.9.6",
     "q": "^1.4.1",
     "stripe": "^4.0.0",
-    "underscore": "~1.7.0"
-  },
-  "devDependencies": {
+    "underscore": "~1.7.0",
     "browserify": "^11.0.1",
     "del": "^1.2.1",
     "gulp": "gulpjs/gulp#4.0",
@@ -46,7 +44,8 @@
     "npm": "^2.14.7"
   },
   "scripts": {
-    "start": "node keystone.js"
+    "start": "node keystone.js",
+    "postinstall": "gulp heroku"
   },
   "main": "keystone.js"
 }

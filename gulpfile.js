@@ -132,6 +132,9 @@ gulp.task('build', gulp.parallel('standalone-styles', 'styles', 'standalone-scri
 
 gulp.task('default', gulp.series('clean', 'build', 'watch'));
 
+// task built specfically for running on Heroku server when new code is deployed
+gulp.task('heroku', gulp.series('clean', 'build'));
+
 // gulp jscs
 // TODO: need to adjust src to minified, concatenated js file
 // gulp.task('jscs'), function() {
