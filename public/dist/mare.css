@@ -5161,6 +5161,15 @@ th {
 .inline {
   display: inline; }
 
+.text-left {
+  text-align: left; }
+
+.text-center {
+  text-align: center; }
+
+.text-right {
+  text-align: right; }
+
 .row {
   margin-left: -15px;
   margin-right: -15px; }
