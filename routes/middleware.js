@@ -230,6 +230,7 @@ exports.logout = function(req, res) {
 
 // TODO: include an error message for this and other functions in middleware if applicable
 exports.getChildDetails = function(req, res) {
+
 	var childData = req.body,
 		registrationNumber = childData['registrationNumber'];
 
@@ -242,11 +243,13 @@ exports.getChildDetails = function(req, res) {
         	var child = child[0];
 
         	var relevantData = {
-        		name: child.name.first,
+        		name: child.firstName,
         		age: exports.getAge(child.birthDate),
         		registrationNumber: child.registrationNumber,
-        		profile: child.profile,
-        		thumbnailImage: child.thumbnailImage,
+        		profilePart1: child.profilePart1,
+        		profilePart2: child.profilePart2,
+        		profilePart3: child.profilePart3,
+        		detailImage: child.detailImage,
         		hasVideo: child.video.length > 0,
         		video: child.video.replace('watch?v=', 'embed/'),
         		wednesdaysChild: child.wednesdaysChild
