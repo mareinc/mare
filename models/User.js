@@ -2,7 +2,11 @@ var keystone = require('keystone'),
 	Types = keystone.Field.Types;
 
 // Create model
-var User = new keystone.List('User');
+var User = new keystone.List('User', {
+	track: true,
+	map: { name: 'name.fullName' },
+	defaultSort: 'name.fullName'
+});
 
 // Create fields
 User.add('Permissions', {
@@ -11,6 +15,7 @@ User.add('Permissions', {
 	name: {
 		first: { type: Types.Text, label: 'First Name', required: true, index: true, initial: true },
 		last: { type: Types.Text, label: 'Last Name', required: true, index: true, initial: true },
+		fullName: { type: Types.Text, label: 'Name', hidden: true }
 	},
 	email: { type: Types.Email, label: 'Email Address', required: true, index: true, initial: true },
 	password: { type: Types.Password, label: 'Password', required: true, initial: true },
@@ -115,14 +120,20 @@ User.add('Permissions', {
 	}
 });
 
+User.relationship({ path: 'children', ref: 'Child', refPath: 'adoptionWorker' });
+
 // Pre Save
-// User.schema.pre('save', function(next) {
-// 	'use strict';
+User.schema.pre('save', function(next) {
+	'use strict';
 
-// 	this.isAdmin = this.userType === 'Administrator' ? true : false;
+	// Build the name string for better identification when linking through Relationship field types
+	var firstName	= this.name.first,
+		lastName	= this.name.last.length > 0 ? ' ' + this.name.last : '';
+	
+	this.name.fullName = firstName + lastName;
 
-// 	next();
-// });
+	next();
+});
 
 /* TODO: VERY IMPORTANT:  Need to fix this to provide the link to access the keystone admin panel again */
 /* Changing names or reworking this file changed the check in node_modules/keystone/templates/views/signin.jade for user.isAdmin on line 14 */
@@ -141,5 +152,5 @@ User.schema.virtual('getUserType').get(function() {
 })
 
 // Define default columns in the admin interface and register the model
-User.defaultColumns = 'name.first, name.last, email, userType';
+User.defaultColumns = 'name.fullName, email, userType';
 User.register();
