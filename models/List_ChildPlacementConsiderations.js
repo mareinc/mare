@@ -4,8 +4,7 @@ var keystone = require('keystone'),
 // Create model. Additional options allow menu name to be used what auto-generating URLs
 var ChildPlacementConsiderations = new keystone.List('Child Placement Considerations', {
 	autokey: { path: 'key', from: 'title', unique: true },
-	map: { name: 'title' },
-	defaultSort: 'title'
+	map: { name: 'title' }
 });
 
 // Create fields

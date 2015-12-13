@@ -4,8 +4,7 @@ var keystone = require('keystone'),
 // Create model. Additional options allow menu name to be used what auto-generating URLs
 var RecommendedFamilyConstellation = new keystone.List('Recommended Family Constellations', {
 	autokey: { path: 'key', from: 'constellationType', unique: true },
-	map: { name: 'constellationType' },
-	defaultSort: 'constellationType'
+	map: { name: 'constellationType' }
 });
 
 // Create fields

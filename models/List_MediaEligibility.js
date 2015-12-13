@@ -4,8 +4,7 @@ var keystone = require('keystone'),
 // Create model. Additional options allow menu name to be used what auto-generating URLs
 var MediaEligibility = new keystone.List('Media Eligibility', {
 	autokey: { path: 'key', from: 'MediaEligibility', unique: true },
-	map: { name: 'MediaEligibility' },
-	defaultSort: 'MediaEligibility'
+	map: { name: 'MediaEligibility' }
 });
 
 // Create fields

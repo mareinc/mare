@@ -4,8 +4,7 @@ var keystone = require('keystone'),
 // Create model. Additional options allow menu name to be used what auto-generating URLs
 var Disabilities = new keystone.List('Disabilities', {
 	autokey: { path: 'key', from: 'disability', unique: true },
-	map: { name: 'disability' },
-	defaultSort: 'disability'
+	map: { name: 'disability' }
 });
 
 // Create fields
