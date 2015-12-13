@@ -4,26 +4,26 @@ var keystone = require('keystone'),
 // Create model
 var Child = new keystone.List('Child', {
 	track: true,
-	autokey: { path: 'slug', from: 'registrationNumber', unique: true },
-	map: { name: 'name.first' + ' ' + 'name.last' },
-	defaultSort: 'name.last'
+	autokey: { path: 'key', from: 'registrationNumber', unique: true },
+	map: { name: 'fullName' },
+	defaultSort: 'fullName'
 });
 
 // Create fields
 Child.add({ heading: 'General Information' }, {
 	registrationNumber: { type: Number, label: 'Registration Number', format: false, required: true, index: true, initial: true },
-	registrationDate: { type: Types.Date, label: 'Registration Date', default: Date.now(), required: true, initial: true },
+	registrationDate: { type: Types.Date, label: 'Registration Date', format: 'DD MM YYYY', default: Date.now(), required: true, initial: true },
 	image: { type: Types.CloudinaryImage, folder: 'children/', select: true, selectPrefix: 'children/', publicID: 'slug', autoCleanup: true },
-	thumbnailImage: {type: Types.Url, hidden: true},
-	detailImage: {type: Types.Url, hidden: true},
+	galleryImage: {type: Types.Url, hidden: true },
+	detailImage: {type: Types.Url, hidden: true },
 	video: { type: Types.Url, label: 'Video', initial: true },
-	name: {
-		first: { type: Types.Text, label: 'First Name', required: true, index: true, initial: true },
-		middle: { type: Types.Text, label: 'Middle Name', initial: true },
-		last: { type: Types.Text, label: 'Last Name', required: true, index: true, initial: true },
-		alias: { type: Types.Text, label: 'Alias', initial: true },
-		nickname: { type: Types.Text, label: 'Nickname', initial: true }
-	},
+	firstName: { type: Types.Text, label: 'First Name', required: true, index: true, initial: true },
+	middleName: { type: Types.Text, label: 'Middle Name', initial: true },
+	lastName: { type: Types.Text, label: 'Last Name', required: true, index: true, initial: true },
+	alias: { type: Types.Text, label: 'Alias', initial: true },
+	nickName: { type: Types.Text, label: 'Nickname', initial: true },
+	fullName: { type: Types.Text, label: 'Name', hidden: true, initial: false },
+	identifyingName: { type: Types.Text, label: 'Name', hidden: true },
 	birthDate: { type: Types.Date, label: 'Date of Birth', required: true, initial: true },
 	language: { type: Types.Select, label: 'Language', options: 'English, Spanish, Portuguese, Chinese, Other', default: 'English', required: true, initial: true },
 	statusChangeDate: { type: Types.Date, label: 'Status Change Date', initial: true }, // TODO: Logic needed, see line 14 of https://docs.google.com/spreadsheets/d/1Opb9qziX2enTehJx5K1J9KAT7v-j2yAdqwyQUMSsFwc/edit#gid=1235141373
@@ -62,11 +62,10 @@ Child.add({ heading: 'General Information' }, {
 
 }, { heading: 'Profile' }, {
 
-	profile: {
-		part1: { type: Types.Textarea, label: 'Let me tell you more about myself...', required: true, initial: true },
-		part2: { type: Types.Textarea, label: 'And here\'s what others say...', required: true, initial: true },
-		part3: { type: Types.Textarea, label: 'If I could have my own special wish...', required: true, initial: true }
-	}
+	profilePart1: { type: Types.Textarea, label: 'Let me tell you more about myself...', required: true, initial: true },
+	profilePart2: { type: Types.Textarea, label: 'And here\'s what others say...', required: true, initial: true },
+	profilePart3: { type: Types.Textarea, label: 'If I could have my own special wish...', required: true, initial: true }
+
 }, { heading: 'Registration' }, {
 
 	registeredBy: { type: Types.Select, label: 'Registered By', options: 'Unknown, Adoption Worker, Recruitment Worker', required: true, index: true, initial: true }
@@ -118,38 +117,44 @@ Child.add({ heading: 'General Information' }, {
 		type: Types.S3File,
 		s3path: '/child/photolisting-pages',
 		filename: function(item, filename){
-			console.log(item.registrationNumber + '_' + item.name.first.toLowerCase() + '-' + item.name.last.toLowerCase() + '_photo-listing-page');
-
-			// prefix file name with object id
-			return item.registrationNumber + '_' + item.name.first.toLowerCase() + '-' + item.name.last.toLowerCase() + '_photo-listing-page';
+			// prefix file name with registration number and add the user's name for easier identification
+			return item.registrationNumber + '_' + item.firstName.toLowerCase() + '-' + item.lastName.toLowerCase() + '_photo-listing-page';
 		}
 	},
 	otherAttachement: {
 		type: Types.S3File,
 		s3path: '/child/other',
 		filename: function(item, filename){
-			console.log(item.registrationNumber + '_' + item.name.first.toLowerCase() + '-' + item.name.last.toLowerCase() + '_other-attachment');
-			
-			// prefix file name with object id
-			return item.registrationNumber + '_' + item.name.first.toLowerCase() + '-' + item.name.last.toLowerCase() + '_other-attachment';
+			// prefix file name with registration number and add the user's name for easier identification
+			return item.registrationNumber + '_' + item.firstName.toLowerCase() + '-' + item.lastName.toLowerCase() + '_other-attachment';
 		}
 	}
 });
 
 // Displaly associations via the Relationship field type
-// Child.relationship({ path: 'events', ref: 'Event', refPath: 'the field in that model that has the relationship' });
+Child.relationship({ path: 'children', ref: 'Child', refPath: 'siblingContacts' });
 
 // Pre Save
 Child.schema.pre('save', function(next) {
 	'use strict';
-	// TODO: Fix the sizing of these images
-	this.thumbnailImage = this._.image.thumbnail(415,415,{ quality: 60 });
-	this.detailImage = this._.image.thumbnail(640,640,{ quality: 60 });
+
+	this.galleryImage = this._.image.thumbnail(430,430,{ quality: 60 });
+	this.detailImage = this._.image.thumbnail(200,200,{ quality: 60 });
+
+	// Build the name string for better identification when linking through Relationship field types
+	var firstName	= this.firstName,
+		alias		= this.alias.length > 0 ? ' "' + this.alias + '"' : '',
+		middleName	= this.middleName.length > 0 ? ' ' + this.middleName : '',
+		lastName	= this.lastName.length > 0 ? ' ' + this.lastName : '',
+		nickName	= this.nickName.length > 0 ? ' (' + this.nickName + ')' : '';
 	
+	this.fullName = firstName + middleName + lastName;
+	this.identifyingName = firstName + alias + middleName + lastName + nickName;
+
 	// TODO: Assign a registration number if one isn't assigned
 	next();
 });
 
 // // Define default columns in the admin interface and register the model
-Child.defaultColumns = 'registrationNumber, name.first, name.last, ethnicity, legalStatus, gender';
+Child.defaultColumns = 'registrationNumber, name.fullName, ethnicity, legalStatus, gender';
 Child.register();
