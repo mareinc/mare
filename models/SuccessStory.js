@@ -4,6 +4,7 @@ var keystone = require('keystone'),
 // Create model. Additional options allow menu name to be used what auto-generating URLs
 var SuccessStory = new keystone.List('SuccessStory', {
 	track: true,
+	autokey: { path: 'key', from: 'heading', unique: true },
 	map: { name: 'heading' }
 });
 
