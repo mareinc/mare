@@ -6,7 +6,7 @@
 				<div id="owl-demo" class="owl-carousel">
 					{{#each slides}}
 					<div class="item">
-						<img class="lazyOwl" data-src="{{ image_scaled }}" alt="{{ heading }}">
+						<img class="lazyOwl" data-src="{{ imageScaled }}" alt="{{ heading }}">
 						<span class="featured-description hidden">
 							<div class="featured-header">{{ heading }}</div>
 							<div class="featured-tagline">{{ subHeading }}</div>
@@ -19,31 +19,31 @@
 			{{#each featuredItems}}
 			<ul class="featured-items">
 				<li class="featured-item feature-about-us">
-					<a href="{{ aboutUsUrl }}" class="cover">
-						<img src="{{ aboutUsImage_scaled }}" alt="{{ aboutUsTitle }}">
+					<a href="{{ aboutUs.url }}" class="cover">
+						<img src="{{ aboutUs.imageScaled }}" alt="{{ aboutUs.title }}">
 						<div class="featured-item-description">
-							<span class="featured-item-title">{{ aboutUsTitle }}</span>
-							<span class="featured-item-summary">{{ aboutUsSummary }}</span>
+							<span class="featured-item-title">{{ aboutUs.title }}</span>
+							<span class="featured-item-summary">{{ aboutUs.summary }}</span>
 							<span class="featured-item-learn-more">Learn more</span>
 						</div>
 					</a>
 				</span>
 				<li class="featured-item featured-success-story">
-					<a href="{{ successStoryUrl }}" class="cover">
-						<img src="{{ successStoryImage_scaled }}" alt="{{ successStoryTitle }}">
+					<a href="{{ successStory.url }}" class="cover">
+						<img src="{{ successStory.imageScaled }}" alt="{{ successStory.title }}">
 						<div class="featured-item-description">
-							<span class="featured-item-title">{{ successStoryTitle }}</span>
-							<span class="featured-item-summary">{{ successStorySummary }}</span>
+							<span class="featured-item-title">{{ successStory.title }}</span>
+							<span class="featured-item-summary">{{ successStory.summary }}</span>
 							<span class="featured-item-learn-more">Learn more</span>
 						</div>
 					</a>
 				</span>
 				<li class="featured-item featured-upcoming-event">
-					<a href="{{ upcomingEventUrl }}" class="cover">
-						<img src="{{ upcomingEventImage_scaled }}" alt="{{ upcomingEventTitle }}">
+					<a href="{{ upcomingEvent.url }}" class="cover">
+						<img src="{{ upcomingEvent.imageScaled }}" alt="{{ upcomingEvent.title }}">
 						<div class="featured-item-description">
-							<span class="featured-item-title">{{ upcomingEventTitle }}</span>
-							<span class="featured-item-summary">{{ upcomingEventSummary }}</span>
+							<span class="featured-item-title">{{ upcomingEvent.title }}</span>
+							<span class="featured-item-summary">{{ upcomingEvent.summary }}</span>
 							<span class="featured-item-learn-more">Learn more</span>
 						</div>
 					</a>
