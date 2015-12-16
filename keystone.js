@@ -49,9 +49,20 @@ keystone.init({
 	'wysiwyg additional plugins': 'advlist, anchor,' +
 		' autolink, autosave, charmap, contextmenu,' +
 		' directionality, emoticons, hr, media, pagebreak,' +
-		' paste, preview, print, searchreplace, table, textcolor,' +
+		' paste, preview, print, searchreplace, table, template, textcolor,' +
 		' visualblocks, visualchars, wordcount',
 	'wysiwyg cloudinary images': true,
+
+	'wysiwyg additional options': {
+
+		extended_valid_elements : '+div[class]',
+		content_css: '/keystone/styles/content/editor.min.css',
+		templates: [
+    		{title: '30/70 Content', description: 'Columns (30% Left, 70% Right)', content: '<div class="row"><div class="col-sm-8">Left Content</div><div class="col-sm-16">Right Content</div></div><p>Stuff after...</p>'},
+    		{title: '70/30 Content', description: 'Columns (70% Left, 30% Right)', content: '<div class="row"><div class="col-sm-16">Left Content</div><div class="col-sm-8">Right Content</div></div><p>Stuff after...</p>'},
+    		{title: '50/50 Content', description: 'Columns (50% Left, 50% Right)', content: '<div class="row"><div class="col-sm-12">Left Content</div><div class="col-sm-12">Right Content</div></div><p>Stuff after...</p>'}
+  		]
+  	},
 
 	'cookie secret': process.env.COOKIE_SECRET || 'mare',
 
