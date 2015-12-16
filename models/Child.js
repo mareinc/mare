@@ -12,7 +12,7 @@ var Child = new keystone.List('Child', {
 // Create fields
 Child.add({ heading: 'General Information' }, {
 	registrationNumber: { type: Number, label: 'Registration Number', format: false, required: true, index: true, initial: true },
-	registrationDate: { type: Types.Date, label: 'Registration Date', format: 'DD MM YYYY', default: Date.now(), required: true, initial: true },
+	registrationDate: { type: Types.Date, label: 'Registration Date', default: Date.now(), required: true, initial: true },
 	image: { type: Types.CloudinaryImage, folder: 'children/', select: true, selectPrefix: 'children/', publicID: 'slug', autoCleanup: true },
 	galleryImage: {type: Types.Url, hidden: true },
 	detailImage: {type: Types.Url, hidden: true },
@@ -42,10 +42,10 @@ Child.add({ heading: 'General Information' }, {
 
 }, { heading: '!! Not sure what section these three go under !!' }, {	
 
-	recommendedFamilyConstellation: { type: Types.Relationship, label: 'Recommended Family Constellation', ref: 'Recommended Family Constellations', many: true, required: true, index: true, initial: true },
+	recommendedFamilyConstellation: { type: Types.Relationship, label: 'Recommended Family Constellations', ref: 'Recommended Family Constellation', many: true, required: true, index: true, initial: true },
 	requiresOlderChildren: { type: Types.Boolean, label: 'Requires Older Children', dependsOn: { recommendedFamilyConstellation: 'Multi Child Home' }, initial: true },
 	requiresYoungerChildren: { type: Types.Boolean, label: 'Requires Younger Children', dependsOn: { recommendedFamilyConstellation: 'Multi Child Home' }, initial: true },
-	childPlacementConsiderations: { type: Types.Relationship, label: 'Child Placement Considerations', ref: 'Child Placement Considerations', many: true, index: true },
+	childPlacementConsiderations: { type: Types.Relationship, label: 'Child Placement Considerations', ref: 'Child Placement Consideration', many: true, index: true },
 	extranetUrl: { type: Types.Url, label: 'Extranet and Related Profile URL', initial: true },
 	wednesdaysChild: { type: Types.Boolean, label: 'Wednesday\'s Child?', initial: true }
 
@@ -58,7 +58,7 @@ Child.add({ heading: 'General Information' }, {
 	intellectualNeeds: { type: Types.Select, label: 'Intellectual needs', options: 'None, Mild, Moderate, Severe', required: true, initial: true },
 	intellectualNeedsDescription: { type: Types.Textarea, label: 'Description of intellectual needs', dependsOn: { intellectualNeeds: ['Mild', 'Moderate', 'Severe'] }, initial: true },
 	specialNeedsNotes: { type: Types.Textarea, label: 'Notes', dependsOn: { physicalNeeds: ['Mild', 'Moderate', 'Severe'], emotionalNeeds: ['Mild', 'Moderate', 'Severe'], intellectualNeeds: ['Mild', 'Moderate', 'Severe'] }, initial: true },
-	disabilities: { type: Types.Relationship, label: 'Disabilities', ref: 'Disabilities', many: true, initial: true }
+	disabilities: { type: Types.Relationship, label: 'Disabilities', ref: 'Disability', many: true, initial: true }
 
 }, { heading: 'Profile' }, {
 
@@ -72,7 +72,7 @@ Child.add({ heading: 'General Information' }, {
 
 }, { heading: 'Adoption Worker' }, {	
 
-	adoptionWorker: { type: Types.Relationship, label: 'Adoption Worker', ref: 'User', filters: { userType: 'Social Worker' }, initial: true }
+	adoptionWorker: { type: Types.Relationship, label: 'Adoption Worker', ref: 'Social Worker', initial: true }
 
 }, { heading: 'Photolisting' }, {
 
@@ -105,7 +105,7 @@ Child.add({ heading: 'General Information' }, {
 
 }, { heading: 'Adoption Parties' }, {
 
-	adoptionParties: { type: Types.Relationship, label: 'Adoption Parties', ref: 'Adoption Parties', many: true, initial: true }
+	adoptionParties: { type: Types.Relationship, label: 'Adoption Parties', ref: 'Adoption Party', many: true, initial: true }
 
 }, { heading: 'Internal Notes' }, {
 
