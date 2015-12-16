@@ -13,6 +13,8 @@ var _ = require('underscore'),
 	// Load in Keystone for model references
 	keystone = require('keystone'),
 	User = keystone.list('User'),
+	SiteUser = keystone.list('Site User'),
+	SocialWorker = keystone.list('Social Worker'),
 	Child = keystone.list('Child');
 
 /**
@@ -123,66 +125,103 @@ exports.requireUser = function(req, res, next) {
 };
 
 exports.registerUser = function(req, res, next) {
-	var userData = req.body,
-		registrationType = userData['registrationType'];
+	var user = req.body,
+		registrationType = user['registrationType'];
+
+	if(registrationType === 'siteVisitor' || registrationType === 'socialWorker') {
+
+		// TODO: isEmailDuplicate DOES NOT WORK BASED ON A RACE CONDITION, AND THIS CHECK NEEDS TO BE REDONE
+		var isEmailValid = exports.validateEmail(user.email),
+			isEmailDuplicate = exports.checkForDuplicateEmail(user.email),
+			isPasswordValid = exports.validatePassword(user.password, user.confirmPassword);
+
+		if(!isEmailValid) {
+			console.log('email is invalid');
+			req.flash('error', 'email is invalid');
+			return;
+		}
+
+		if(isEmailDuplicate) {
+			console.log('email is a duplicate');
+			req.flash('error', 'email already exists in the system');
+			return;
+		}
+
+		if(!isPasswordValid) {
+			console.log('passwords don\'t match');
+			req.flash('error', 'passwords don\'t match');
+			return;
+		}
+
+	}
 
 	/* TODO: this could be cleaned up significantly by pulling the user creation out of the if blocks and specifying shared fields once */
 	if(registrationType === 'siteVisitor') {
-		var newUser = new User.model({
-			userType	: 'Site User',
-			name: {
-				first	: userData.firstName,
-				last	: userData.lastName
-			},
-			email		: userData.email,
-			password	: userData.password,
-			mobilePhone	: userData.mobilePhone,
-			otherPhone	: userData.otherPhone,
-			address1	: userData.address1,
-			address2	: userData.address2,
-			city		: userData.city,
-			state		: userData.state,
-			zipCode		: userData.zipCode
-		});
 
-		console.log('making a new site user');
+		/* TODO: Test required fields when created all user types */
+		var hasRequiredFields = exports.checkRequiredFields([user.firstName, user.lastName, user.email, user.password, user.confirmPassword]);
+
+		if( !hasRequiredFields ) {
+			console.log('required fields are missing, I\'ll be more specific about which ones in the future');
+			// req.flash('error', 'required fields are missing');
+			return;
+		}
+
+		var newUser = new SiteUser.model({
+
+			name: {
+				first	: user.firstName,
+				last	: user.lastName
+			},
+
+			password	: user.password,
+			email		: user.email,
+			
+			phone: {
+				mobile	: user.mobilePhone,
+				home	: user.homePhone
+			},
+
+			address: {
+				street1	: user.street1,
+				street2	: user.street2,
+				city	: user.city,
+				state	: user.state,
+				zipCode	: user.zipCode
+			}
+
+		});
 
 	} else if(registrationType === 'socialWorker') {
-		var newUser = new User.model({
-			userType	: 'Social Worker',
-			name: {
-				first	: userData.firstName,
-				last	: userData.lastName
-			},
-			email		: userData.email,
-			password	: userData.password,
-			phone		: userData.phone,
-			mobilePhone	: userData.mobilePhone,
-			agency		: userData.agency,
-			title		: userData.title,
-			address1	: userData.address1,
-			address2	: userData.address2,
-			city		: userData.city,
-			state		: userData.state,
-			zipCode		: userData.zipCode
-		});
 
-		console.log('making a new social worker');
+		var newUser = new SocialWorker.model({
+
+			name: {
+				first	: user.firstName,
+				last	: user.lastName
+			},
+
+			password	: user.password,
+			email		: user.email,
+			phone		: user.phone,
+
+			address		: {
+				street1	: user.street1,
+				street2	: user.street2,
+				city	: user.city,
+				state	: user.state,
+				zipCode	: user.zipCode,
+			},
+
+			agency		: user.agency,
+			title		: user.title
+		});
 
 	} else if(registrationType === 'prospectiveParent') {
 		// consider a different function for partial data saves
 		console.log('making a new prospective parent');
 		return;
 	}
-
-	/* TODO: Check to see if email address is already registered */
-
-	/* TODO: Check for password encryption, encrypt if needed.  Think of using an environment key variable for the task */
-
-	/* TODO: Perform validation checks */
-	// if (userData.password !== userData.confirmPassword) {
-	//     // post an error flash message
-	// }
 
 	/* TODO: Check for all required fields */
 
@@ -194,9 +233,63 @@ exports.registerUser = function(req, res, next) {
 	/* TODO: Place next() in the appropriate place */
 };
 
+/* New user data validation functions */
+// Return true if the submitted email is valid
+exports.validateEmail = function(email) {
+
+	var emailPattern = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/;
+	return emailPattern.test(email);
+
+};
+// Return true if the submitted email already exists in the system
+// TODO: This doesn't return in time for the above check and users with duplicate emails are allowed to be created.
+exports.checkForDuplicateEmail = function(email) {
+
+	var isEmailDuplicate = false;
+
+	User.model.find()
+		.where('email', email)
+		.exec(function (err, user) {
+			console.log(user);
+
+			if( user ) {
+				console.log('setting duplicate to true');
+				isEmailDuplicate = true;
+			}
+
+			console.log('returning email duplicate value');
+			return isEmailDuplicate;
+
+		});
+
+}
+
+// Return true if the submitted 'password' and 'confirm password' match
+exports.validatePassword = function(password, confirmPassword) {
+
+	return password == confirmPassword;
+
+};
+
+// TODO: Verify this function works as expected
+exports.checkRequiredFields = function(fieldArray) {
+	var allFieldsRequired = true;
+	// Loop through the array and make sure there's a value for each
+	_.each(fieldArray, function(element) {
+
+		if( !element || element.trim().length === 0 ) {
+			allFieldsRequired = false;
+		}
+	});
+
+	return allFieldsRequired;
+}
+
 exports.login = function(req, res, next) {
+	/* TODO: Need to add a check to see if the user is verified and active (see Lisa for details) */
 
 	if (!req.body.email || !req.body.password) {
+		/* TODO: Need a better message for the user, flash messages won't work because page reloads are stupid */
 		req.flash('error', 'Please enter your username and password.');
 		return next();
 	}
@@ -211,6 +304,7 @@ exports.login = function(req, res, next) {
 	}
 	
 	var onFail = function() {
+		/* TODO: Need a better message for the user, flash messages won't work because page reloads are stupid */
 		req.flash('error', 'Your username or password were incorrect, please try again.');
 		return next();
 	}
@@ -283,8 +377,10 @@ exports.getAge = function(dateOfBirth) {
         var birthDate = new Date(dateOfBirth);
         var age = today.getFullYear() - birthDate.getFullYear();
         var month = today.getMonth() - birthDate.getMonth();
+        
         if (month < 0 || (month === 0 && today.getDate() < birthDate.getDate())) {
             age--;
         }
+        
         return age;
 }
