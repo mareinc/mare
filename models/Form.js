@@ -14,10 +14,9 @@ Form.add({
 	title: { type: String, label: 'form name', required: true, index: true, initial: true },
 	url: { type: Types.Url, noedit: true },
 	contact: { type: Types.Relationship, ref: 'User', label: 'contact person', dependsOn: { selectUnregisteredContact: false }, initial: true },
-	graphic: { type: Types.CloudinaryImage, folder: 'forms/', autoCleanup : true },
 	selectUnregisteredContact: { type: Types.Boolean, label: 'contact person isn\'t registered with MARE', initial: true },
 	unregisteredContact: { type: String, label: 'contact person\'s email', dependsOn: { selectUnregisteredContact: true } },
-	selectFormRange: { type: Types.Boolean, label: 'form valid for specific time range', initial: true },
+	hasRange: { type: Types.Boolean, label: 'form valid for specific time range', initial: true },
 	availableFrom: { type: Types.Datetime, label: 'available from', dependsOn: { selectFormRange: true }, initial: true },
 	availableTo: { type: Types.Datetime, label: 'available to', dependsOn: { selectFormRange: true }, initial: true },
 	content: { type: Types.Html, wysiwyg: true, initial: true }
@@ -35,5 +34,5 @@ Form.schema.pre('save', function(next) {
 });
 
 // Define default columns in the admin interface and register the model
-Form.defaultColumns = 'title, url, contact, starts, ends';
+Form.defaultColumns = 'title, url, contact, availableFrom, availableTo';
 Form.register();
