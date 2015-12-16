@@ -3,15 +3,15 @@ var keystone = require('keystone'),
 
 // Create model. Additional options allow menu name to be used what auto-generating URLs
 var MediaEligibility = new keystone.List('Media Eligibility', {
-	autokey: { path: 'key', from: 'MediaEligibility', unique: true },
-	map: { name: 'MediaEligibility' }
+	autokey: { path: 'key', from: 'mediaEligibility', unique: true },
+	map: { name: 'mediaEligibility' }
 });
 
 // Create fields
 MediaEligibility.add({
-	MediaEligibility: { type: String, label: 'Media Eligibility', required: true, index: true, initial: true }
+	mediaEligibility: { type: String, label: 'Media Eligibility', required: true, index: true, initial: true }
 });
 
 // Define default columns in the admin interface and register the model
-MediaEligibility.defaultColumns = 'MediaEligibility';
+MediaEligibility.defaultColumns = 'mediaEligibility';
 MediaEligibility.register();
