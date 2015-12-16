@@ -136,12 +136,14 @@ keystone.set('email tests', require('./routes/emails'));
 
 // Configure the navigation bar in Keystone's Admin UI
 keystone.set('nav', {
-	'people'			: ['users', 'children'],
+	'people'			: ['users', 'site-users', 'prospective-parent-or-families', 'social-workers', 'children'],
 	'images'			: ['featured-items', 'slideshows', 'slideshow-items'],
 	'content pages'		: ['pages', 'forms'],
 	'content snippets'	: ['success-stories'],
 	'events'			: ['events', 'adoption-parties'],
-	'lists'				: ['disabilities', 'media-eligibilities', 'child-placement-considerations', 'recommended-family-constellations']
+	'lists'				: ['child-placement-considerations', 'child-statuses', 'child-types', 'contact-methods', 
+						   'disabilities', 'family-constellations', 'genders', 'languages', 'media-eligibilities',
+						   'races', 'recommended-family-constellations', 'states']
 
 });
 
