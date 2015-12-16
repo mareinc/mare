@@ -11,8 +11,8 @@ var SlideshowItem = new keystone.List('Slideshow Item', {
 // Create fields
 SlideshowItem.add({
 	image: { type: Types.CloudinaryImage, folder: 'slideshow/', autoCleanup: true },
-	image_stretched: {type: Types.Url, hidden: true},
-	image_scaled: {type: Types.Url, hidden: true},
+	imageStretched: {type: Types.Url, hidden: true},
+	imageScaled: {type: Types.Url, hidden: true},
 	parent: { type: Types.Relationship, label: 'slideshow', ref: 'Slideshow', many: false, initial: true },
 	heading: { type: Types.Text, label: 'heading', initial: true },
 	subHeading: { type: Types.Text, label: 'sub-heading', initial: true },
@@ -24,8 +24,8 @@ SlideshowItem.add({
 SlideshowItem.schema.pre('save', function(next) {
 	'use strict';
 
-	this.image_stretched = this._.image.scale(1100,400,{ quality: 40 });
-	this.image_scaled = this._.image.thumbnail(1100,400,{ quality: 40 });
+	this.imageStretched = this._.image.scale(1100,400,{ quality: 40 });
+	this.imageScaled = this._.image.thumbnail(1100,400,{ quality: 40 });
 	// TODO: Consider formatting the order to 0,0
 
 	next();
