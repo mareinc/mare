@@ -9,13 +9,60 @@
 
 exports.create = {
 	User: [{
-		userType: 'Administrator',
+		permissions: {
+			isVerified: true,
+			isActive: true
+		},
 		name: {
 			first: 'Admin',
 			last: 'User'
 		},
-		email: 'admin@keystonejs.com',
-		password: 'admin'
+		password: 'admin',
+		email: 'admin@keystonejs.com'
+	},{
+		permissions: {
+			isVerified: true,
+			isActive: true
+		},
+		name: {
+			first: 'Jared',
+			last: 'Collier'
+		},
+		password: 'JaredCollier',
+		email: 'jared.j.collier@gmail.com'
+	},{
+		permissions: {
+			isVerified: true,
+			isActive: true
+		},
+		name: {
+			first: 'Tom',
+			last: 'Koch'
+		},
+		password: 'TomKoch',
+		email: 'tommysalsa@gmail.com'
+	},{
+		permissions: {
+			isVerified: true,
+			isActive: true
+		},
+		name: {
+			first: 'Guillermo',
+			last: 'Martin'
+		},
+		password: 'GuillermoMartin',
+		email: 'guillermo.mare@gmail.com'
+	},{
+		permissions: {
+			isVerified: true,
+			isActive: true
+		},
+		name: {
+			first: 'Lisa',
+			last: 'Funaro'
+		},
+		password: 'LisaFunaro',
+		email: 'lisafd4@gmail.com'
 	}]
 };
 
