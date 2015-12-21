@@ -75,13 +75,6 @@ exports.initLocals = function(req, res, next) {
 			{ title: 'Board of Directors', href: '/page/board-of-directors'},
 			{ title: 'MARE in the News', href: '/page/mare-in-the-news'},
 			{ title: 'Annual Report', href: '/page/annual-report'},
-			{ title: 'Upcoming Events', subMenu: [
-				{ title: 'MARE Adoption Parties & Information Events', href: '/page/mare-adoption-parties-and-information-events' },
-				{ title: 'MAPP Training', href: '/page/mapp-training' },
-				{ title: 'Agency Information Meetings', href: '/page/agency-information-meetings' },
-				{ title: 'Other Opportunities & Trainings', href: '/page/other-opportunities-and-trainings' },
-				{ title: 'Fundraising Events', href: '/page/fundraising-events' }
-			]}
 		]}];
 
 	next();

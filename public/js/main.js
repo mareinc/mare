@@ -156,6 +156,9 @@ app.functions = function() {
 	};
 
 	initializeHomePage = function() {
+		// DOM Cacheing
+		$featuredPanelOverlay = $('.panel-overlay');
+
 		// initialize the carousel default settings
 		$("#owl-demo").owlCarousel({
 			autoPlay : 3000,
@@ -169,8 +172,13 @@ app.functions = function() {
 
 		// prevents the carousel image descriptions from loading in before the images do
 		// TODO: This doesn't seem to be working as well as it needs to.
-		$( "#owl-demo img" ).load(function() {
+		$('#owl-demo img').load(function() {
 			$(this).siblings('.featured-description').removeClass('hidden');
+		});
+
+		// initialize the featured overlay
+		$('.panel-toggle').click(function() {
+			$featuredPanelOverlay.toggleClass('panel-overlay--closed');
 		});
 	};
 

@@ -27,7 +27,7 @@
 							<span class="featured-item-learn-more">Learn more</span>
 						</div>
 					</a>
-				</span>
+				</li>
 				<li class="featured-item featured-success-story">
 					<a href="{{ successStory.url }}" class="cover">
 						<img src="{{ successStory.imageScaled }}" alt="{{ successStory.title }}">
@@ -37,17 +37,23 @@
 							<span class="featured-item-learn-more">Learn more</span>
 						</div>
 					</a>
-				</span>
+				</li>
 				<li class="featured-item featured-upcoming-event">
-					<a href="{{ upcomingEvent.url }}" class="cover">
-						<img src="{{ upcomingEvent.imageScaled }}" alt="{{ upcomingEvent.title }}">
-						<div class="featured-item-description">
-							<span class="featured-item-title">{{ upcomingEvent.title }}</span>
-							<span class="featured-item-summary">{{ upcomingEvent.summary }}</span>
-							<span class="featured-item-learn-more">Learn more</span>
-						</div>
-					</a>
-				</span>
+					<img src="{{ upcomingEvent.imageScaled }}" alt="{{ upcomingEvent.title }}">
+					<div class="featured-item-description">
+						<span class="featured-item-title">{{ upcomingEvent.title }}</span>
+						<span class="featured-item-summary">{{ upcomingEvent.summary }}</span>
+						<span class="featured-item-learn-more">Learn more</span>
+					</div>
+					<div class="panel-overlay panel-overlay--closed">
+						<div class="panel-toggle">Upcoming Events</div>
+						<div class="panel-overlay__option"><a href="/page/mare-adoption-parties-and-information-events" class="panel-overlay__option-link">MARE Adoption Parties & Information Events</a></div>
+						<div class="panel-overlay__option"><a href="/page/mapp-training" class="panel-overlay__option-link">MAPP Training</a></div>
+						<div class="panel-overlay__option"><a href="/page/agency-information-meetings" class="panel-overlay__option-link">Agency Information Meetings</a></div>
+						<div class="panel-overlay__option"><a href="/page/other-opportunities-and-trainings" class="panel-overlay__option-link">Other Opportunities & Trainings</a></div>
+						<div class="panel-overlay__option"><a href="/page/fundraising-events" class="panel-overlay__option-link">Fundraising Events</a></div>
+					</div>
+				</li>
 			</ul>
 			{{/each}}
 		</div>
