@@ -34,23 +34,20 @@
 					<button class="question">HAVE A QUESTION?</button>
 				</div>
 				<div class="filters">
-					<div class="media-boxes-drop-down" id="sort">
-						<span class="sort-order-label">Order</span>
-						<div class="media-boxes-drop-down-header"></div>
-						<ul class="media-boxes-drop-down-menu">
-							<li><a class="selected" href="#" data-sort-by="original-order">Original Order</a></li>
-							<li><a href="#" data-sort-by="name" data-sort-toggle="true">Sort by name</a></li>
-							<li><a href="#" data-sort-by="age" data-sort-toggle="true">Sort by age</a></li>
-							{{!-- <li><a href="#" data-sort-by="added" data-sort-toggle="true">Sort by date added</a></li> --}}
-						</ul>
+					<div class="waiting-child-sort inline-block filter">
+						<select name="waiting-child-sort">
+					    	<option value="original" selected="selected">Original Order</option>
+					    	<option value="name">Sort by Name</option>
+					    	<option value="age">Sort by Age</option>
+						</select>
 					</div>
-					<span class="icon-text-unit">
-						<img class="video" src="/dist/img/video-icon.png">
-						<span class="text">Video Profile</span>
+					<span class="icon-text-unit filter">
+						<img class="icon-text-unit__icon video" src="/dist/img/video-icon.png">
+						<span class="icon-text-unit__text">Video Profile</span>
 					</span>
-					<span class="icon-text-unit">
-						<img class="wednesdays-child" src="/dist/img/wednesdays-child-icon.png">
-						<span class="text">Wednesday's Child</span>
+					<span class="icon-text-unit filter">
+						<img class="icon-text-unit__icon wednesdays-child" src="/dist/img/wednesdays-child-icon.png">
+						<span class="icon-text-unit__text">Wednesday's Child</span>
 					</span>
 				</div>
 				<section class="profile-zone">
@@ -66,7 +63,14 @@
 									<div class="media-box-content details">
 										<div class="media-box-name name">{{ name.first }}</div>
 										<div class="media-box-age age">Age {{getAge birthDate}}</div>
-										<div class="icons"></div>
+										<div class="icons">
+											{{#if hasVideoSnapshot}}
+												<img class="badge" src="/dist/img/video-icon.png">
+											{{/if}}
+											{{#if wednesdaysChild}}
+												<img class="badge" src="/dist/img/wednesdays-child-icon.png">
+											{{/if}}
+										</div>
 										<div class="view-profile">
 											<span>View Profile</span>
 											<span class="icon-double-arrow-right">&gt;&gt;</span>

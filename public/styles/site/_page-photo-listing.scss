@@ -11,6 +11,31 @@
 	margin-bottom: 10px;
 }
 
+.filters > .filter {
+    margin-right: 15px;
+}
+
+.filters > .waiting-child-sort:before {
+    content: "Order:";
+    margin: 0 8px 0 0;
+}
+.filters > .waiting-child-sort select {
+    background-color: #FFF;
+    border: 1px solid #D5D5D5;
+}
+
+.filters > .icon-text-unit {
+    display:inline-block;
+    vertical-align: middle;
+}
+.filters .icon-text-unit__icon {
+    vertical-align:middle;
+    width: 20px;
+}
+.filters .icon-text-unit__text {
+    vertical-align: middle;
+}
+
 /* Profile contents */
 .profile-zone {
 	border-top: 1px solid black;
@@ -33,6 +58,20 @@
 .profile .details > .name {
 	font-size: 1.4em;
 	font-style: italic;
+}
+
+.profile .details > .icons {
+    position:relative;
+    top: -20px;
+}
+
+.profile .details > .icons > .badge {
+    float: right;
+    width: 20px;
+}
+
+.profile .details > .icons > .badge + .badge {
+    margin-right: 6px;
 }
 
 .profile .details > .age {
@@ -146,3 +185,10 @@
     width: 100%;
     height: 100%;
 }
+
+
+
+
+
+
+
