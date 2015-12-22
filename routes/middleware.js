@@ -330,12 +330,12 @@ exports.getChildDetails = function(req, res) {
         	var child = child[0];
 
         	var relevantData = {
-        		name: child.firstName,
+        		name: child.name.first,
         		age: exports.getAge(child.birthDate),
         		registrationNumber: child.registrationNumber,
-        		profilePart1: child.profilePart1,
-        		profilePart2: child.profilePart2,
-        		profilePart3: child.profilePart3,
+        		profilePart1: child.profile.part1,
+        		profilePart2: child.profile.part2,
+        		profilePart3: child.profile.part3,
         		detailImage: child.detailImage,
         		hasVideo: child.video.length > 0,
         		video: child.video.replace('watch?v=', 'embed/'),
