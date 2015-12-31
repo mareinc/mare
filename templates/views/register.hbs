@@ -504,42 +504,19 @@
 							</div>
 						</div>
 						<div class="row">
-							<div class="col-sm-12">
+							<div class="col-sm-18">
 								<div class="row">
 									<div class="col-sm-24 form-group">
 										<span class="race-text">Race/Ethnicity (check all that apply):</span>
 									</div>
 								</div>
-								<div class="col-sm-12 form-group">
-									<label class="checkbox-inline">
-										<input type="checkbox" name="Contact1Race" value="africanAmerican" />African American
-									</label>
-								</div>
-								<div class="col-sm-12 form-group">
-									<label class="checkbox-inline">
-										<input type="checkbox" name="Contact1Race" value="asian" />Asian
-									</label>
-								</div>
-								<div class="col-sm-12 form-group">
-									<label class="checkbox-inline">
-										<input type="checkbox" name="Contact1Race" value="caucasian" />Caucasian
-									</label>
-								</div>
-								<div class="col-sm-12 form-group">
-									<label class="checkbox-inline">
-										<input type="checkbox" name="Contact1Race" value="hispanicLatino" />Hispanic/Latino
-									</label>
-								</div>
-								<div class="col-sm-12 form-group">
-									<label class="checkbox-inline">
-										<input type="checkbox" name="Contact1Race" value="nativeAmerican" />Native American
-									</label>
-								</div>
-								<div class="col-sm-12 form-group">
-									<label class="checkbox-inline">
-										<input type="checkbox" name="Contact1Race" value="other" />Other
-									</label>
-								</div>
+								{{#each race}}
+									<div class="col-sm-12 form-group">
+										<label class="checkbox-inline">
+											<input type="checkbox" name="Contact2Race" value="{{race}}">{{race}}
+										</label>
+									</div>
+								{{/each}}
 							</div>
 							<div class="col-sm-6">
 								<div class="form-group">
@@ -592,42 +569,19 @@
 							</div>
 						</div>
 						<div class="row">
-							<div class="col-sm-12">
+							<div class="col-sm-18">
 								<div class="row">
 									<div class="col-sm-24 form-group">
 										<span class="race-text">Race/Ethnicity (check all that apply):</span>
 									</div>
 								</div>
-								<div class="col-sm-12 form-group">
-									<label class="checkbox-inline">
-										<input type="checkbox" name="Contact2Race" value="africanAmerican" />African American
-									</label>
-								</div>
-								<div class="col-sm-12 form-group">
-									<label class="checkbox-inline">
-										<input type="checkbox" name="Contact2Race" value="asian" />Asian
-									</label>
-								</div>
-								<div class="col-sm-12 form-group">
-									<label class="checkbox-inline">
-										<input type="checkbox" name="Contact2Race" value="caucasian" />Caucasian
-									</label>
-								</div>
-								<div class="col-sm-12 form-group">
-									<label class="checkbox-inline">
-										<input type="checkbox" name="Contact2Race" value="hispanicLatino" />Hispanic/Latino
-									</label>
-								</div>
-								<div class="col-sm-12 form-group">
-									<label class="checkbox-inline">
-										<input type="checkbox" name="Contact2Race" value="nativeAmerican" />Native American
-									</label>
-								</div>
-								<div class="col-sm-12 form-group">
-									<label class="checkbox-inline">
-										<input type="checkbox" name="Contact2Race" value="other" />Other
-									</label>
-								</div>
+								{{#each race}}
+									<div class="col-sm-12 form-group">
+										<label class="checkbox-inline">
+											<input type="checkbox" name="Contact2Race" value="{{race}}">{{race}}
+										</label>
+									</div>
+								{{/each}}
 							</div>
 							<div class="col-sm-6">
 								<div class="form-group">
@@ -761,6 +715,60 @@
 							<div class="col-sm-12 form-group">
 								<input type="text" class="input" required id="social-worker-email" name="socialWorkerEmail">
 								<label for="social-worker-email" class="label required-field">Social Worker Email Address</label>
+							</div>
+						</div>
+						
+						<br />
+						<strong>Submit Your Homestudy</strong>
+						<p>To complete your registration as a Massachusetts homestudied family, you must submit your homestudy to us via one of the following methods (choose one):</p>
+						<div class="row">
+							<div class="col-sm-12 form-group">
+								<label class="label radio-inline">
+									<input type="radio" name="HomeStudySubmission" value="mail"> 
+									Upload PDF or MS Word &reg; format:
+								</label>
+							</div>
+							<div class="col-sm-12">
+								<input id="home-study-file-upload" class="input-inline" placeholder="Choose File" disabled="disabled" />
+								<div class="btn btn-default btn-file-upload">
+								    <span>Upload</span>
+								    <input id="upload-button" type="file" class="file-upload" name="HomeStudyFileUpload" />
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-12 form-group">
+								<label class="label radio-inline">
+									<input type="radio" name="HomeStudySubmission" value="email"> 
+									Email to web@mareinc.org:
+								</label>
+							</div>
+							<div class="col-sm-12">
+								<a href="mailto:web@mareinc.org" class="btn btn-default">Email</a>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-12 form-group">
+								<label class="label radio-inline">
+									<input type="radio" name="HomeStudySubmission" value="fax"> 
+									Fax to 617-542-1006, Attention: Homestudy Registration
+								</label>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-12 form-group">
+								<label class="label radio-inline">
+									<input type="radio" name="HomeStudySubmission" value="mail"> 
+									<div class="indented-text">
+										Mail to: 
+										<div class="indent-text">
+											Massachusetts Adoption Resource Exchange<br />
+											45 Franklin Street<br />
+											5th Floor<br />
+											Boston, MA 02110-1301
+										</div>
+									</div>
+								</label>
 							</div>
 						</div>
 
@@ -1080,38 +1088,17 @@
 							<div class="col-sm-12 form-group">
 								<label class="label marg-bottom-xs-5">Race/Ethnicity (check all that apply)</label>
 							</div>
-							<div class="col-sm-12">
+						</div>
+						<div class="row form-group">
+							<div class="col-sm-18 col-sm-offset-3">
 								<div class="row">
-									<div class="col-sm-12 form-group">
-										<label class="checkbox-inline">
-											<input type="checkbox" name="AdoptionPrefRace" value="African American">African American
-										</label>
-									</div>
-									<div class="col-sm-12 form-group">
-										<label class="checkbox-inline">
-											<input type="checkbox" name="AdoptionPrefRace" value="Asian">Asian
-										</label>
-									</div>
-									<div class="col-sm-12 form-group">
-										<label class="checkbox-inline">
-											<input type="checkbox" name="AdoptionPrefRace" value="Caucasian">Caucasian
-										</label>
-									</div>
-									<div class="col-sm-12 form-group">
-										<label class="checkbox-inline">
-											<input type="checkbox" name="AdoptionPrefRace" value="Hispanic / Latino">Hispanic/Latino
-										</label>
-									</div>
-									<div class="col-sm-12 form-group">
-										<label class="checkbox-inline">
-											<input type="checkbox" name="AdoptionPrefRace" value="Native American">Native American
-										</label>
-									</div>
-									<div class="col-sm-12 form-group">
-										<label class="checkbox-inline">
-											<input type="checkbox" name="AdoptionPrefRace" value="Other">Other
-										</label>
-									</div>
+									{{#each race}}
+										<div class="col-sm-12 form-group">
+											<label class="checkbox-inline">
+												<input type="checkbox" name="AdoptionPrefRace" value="{{race}}">{{race}}
+											</label>
+										</div>
+									{{/each}}
 								</div>
 							</div>
 						</div>
