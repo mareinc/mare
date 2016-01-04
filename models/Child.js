@@ -14,10 +14,6 @@ Child.add({ heading: 'Child Information' }, {
 	registrationNumber: { type: Number, label: 'Registration Number', format: false, required: true, index: true, initial: true },
 	registrationDate: { type: Types.Date, label: 'Registration Date', default: Date.now(), required: true, initial: true },
 	
-	image: { type: Types.CloudinaryImage, folder: 'children/', select: true, selectPrefix: 'children/', publicID: 'slug', autoCleanup: true },
-	galleryImage: {type: Types.Url, hidden: true },
-	detailImage: {type: Types.Url, hidden: true },
-	
 	video: { type: Types.Url, label: 'Video', initial: true },
 	
 	name: {
@@ -37,11 +33,16 @@ Child.add({ heading: 'Child Information' }, {
 	gender: { type: Types.Relationship, label: 'Gender', ref: 'Gender', many: false, required: true, index: true, initial: true },	
 	race: { type: Types.Relationship, label: 'Race', ref: 'Race', many: false, required: true, index: true, initial: true },
 	legalStatus: { type: Types.Select, label: 'Legal Status', options: 'Free, Legal Risk', required: true, index: true, initial: true },
+	
 	hasContactWithSiblings: { type: Types.Boolean, label: 'Has contact with siblings?', index: true, initial: true },
-	siblingContactsString: { type: Types.Text, label: 'Siblings (comma separated)', initial: true },
-	siblingContacts: { type: Types.Relationship, label: 'Siblings', ref: 'Child', many: true, initial: true },
+	siblingTypeOfContact: { type: Types.Text, label: 'Type of contact', initial: true },
+	siblingContacts: { type: Types.Relationship, label: 'Siblings to be placed together (comma separated)', ref: 'Child', many: true, initial: true },
 	hasContactWithBirthFamily: { type: Types.Boolean, label: 'Has contact with birth family?', initial: true },
-	birthFamilyContactsString: { type: Types.Text, label: 'Birth Family (comma separated)', initial: true }
+	birthFamilyTypeOfContact: { type: Types.Text, label: 'Type of contact', initial: true },
+
+	residence: { type: Types.Select, label: 'Where does the child presently live?', options: 'Foster home; IFC, residential/group care', initial: true },
+	city: { type: Types.Text, label: 'City/town of child\'s current location', initial: true },
+	careFacilityName: { type: Types.Text, label: 'Name of Residential/Group care facility', initial: true }
 
 }, { heading: 'Special Needs' }, {	
 
@@ -53,7 +54,12 @@ Child.add({ heading: 'Child Information' }, {
 	emotionalNeedsDescription: { type: Types.Textarea, label: 'Description of emotional needs', initial: true },
 	intellectualNeeds: { type: Types.Select, label: 'Intellectual needs', options: 'None, Mild, Moderate, Severe', required: true, initial: true },
 	// intellectualNeedsDescription: { type: Types.Textarea, label: 'Description of intellectual needs', dependsOn: { intellectualNeeds: ['Mild', 'Moderate', 'Severe'] }, initial: true }
-	intellectualNeedsDescription: { type: Types.Textarea, label: 'Description of intellectual needs', initial: true }
+	intellectualNeedsDescription: { type: Types.Textarea, label: 'Description of intellectual needs', initial: true },
+
+	disabilities: { type: Types.Relationship, label: 'Disabilities', ref: 'Disability', many: true, initial: true },
+
+	// specialNeedsNotes: { type: Types.Textarea, label: 'Notes', dependsOn: { physicalNeeds: ['Mild', 'Moderate', 'Severe'], emotionalNeeds: ['Mild', 'Moderate', 'Severe'], intellectualNeeds: ['Mild', 'Moderate', 'Severe'] }, initial: true },
+	specialNeedsNotes: { type: Types.Textarea, label: 'Notes', initial: true }
 
 }, { heading: 'Placement Considerations' }, {	
 
@@ -63,7 +69,8 @@ Child.add({ heading: 'Child Information' }, {
 }, { heading: 'Agency Information' }, {
 
 	registeredBy: { type: Types.Select, label: 'Registered By', options: 'Unknown, Adoption Worker, Recruitment Worker', required: true, index: true, initial: true },
-	adoptionWorker: { type: Types.Relationship, label: 'Adoption Worker', ref: 'Social Worker', initial: true }
+	adoptionWorker: { type: Types.Relationship, label: 'Adoption Worker', ref: 'Social Worker', filters: { position: 'adoption worker' }, initial: true },
+	recruitmentWorker: { type: Types.Relationship, label: 'Recruitment Worker', ref: 'Social Worker', filters: { position: 'recruitment worker' }, initial: true }
 
 }, { heading: 'Photolisting Information' }, {
 
@@ -80,7 +87,12 @@ Child.add({ heading: 'Child Information' }, {
 	// photolistingPhotoDate: { type: Types.Date, label: 'Date of Photolisting Photo', dependsOn: { hasPhotolistingPhoto: true }, initial: true },
 	photolistingPhotoDate: { type: Types.Date, label: 'Date of Photolisting Photo', initial: true },
 	photolistingPageNumber: { type: Number, label: 'Photolisting Page', format: false, index: true, initial: true },
-	previousPhotolistingPageNumber: { type: Number, label: 'Previous Photolisting Page', format: false, index: true, initial: true }
+	previousPhotolistingPageNumber: { type: Number, label: 'Previous Photolisting Page', format: false, index: true, initial: true },
+
+	image: { type: Types.CloudinaryImage, folder: 'children/', select: true, selectPrefix: 'children/', publicID: 'slug', autoCleanup: true },
+	galleryImage: {type: Types.Url, hidden: true },
+	detailImage: {type: Types.Url, hidden: true },
+	extranetUrl: { type: Types.Url, label: 'Extranet and Related Profile URL', initial: true } // Since this is redudant as this just points the the url where the photo exists (the child's page), we may hide this field.  This must be kept in as it will help us track down the child information in the old system in the event of an issue.
 	
 }, { heading: 'Recruitment Options' }, {
 
@@ -111,32 +123,14 @@ Child.add({ heading: 'Child Information' }, {
 	matchingEvent: { type: Types.Boolean, label: 'Matching Event', index: true, initial: true },
 	// matchingEventDate: { type: Types.Date, label: 'Date of Matching Event', dependsOn: { matchingEvent: true }, initial: true },
 	matchingEventDate: { type: Types.Date, label: 'Date of Matching Event', initial: true },
+
+	adoptionParties: { type: Types.Relationship, label: 'Adoption Parties', ref: 'Event', filters: { type: 'adoption party' }, many: true, initial: true },
 	
 	mediaEligibility: { type: Types.Relationship, label: 'Media Eligibility', ref: 'Media Eligibility', many: true, initial: true },
 	// otherMediaDescription: { type: Types.Textarea, label: 'Description', dependsOn: { mediaEligibility: 'Other' }, initial: true } // THIS DOESN'T WORK, MAKE IT WORK!
 	otherMediaDescription: { type: Types.Textarea, label: 'Description', initial: true }
 
-}, { heading: 'REMOVED FIELDS' }, {
-	
-	// requiresOlderChildren: { type: Types.Boolean, label: 'Requires Older Children', dependsOn: { recommendedFamilyConstellation: 'Multi Child Home' }, initial: true },
-	// requiresYoungerChildren: { type: Types.Boolean, label: 'Requires Younger Children', dependsOn: { recommendedFamilyConstellation: 'Multi Child Home' }, initial: true },
-	requiresOlderChildren: { type: Types.Boolean, label: 'Requires Older Children', initial: true },
-	requiresYoungerChildren: { type: Types.Boolean, label: 'Requires Younger Children', initial: true },
-	extranetUrl: { type: Types.Url, label: 'Extranet and Related Profile URL', initial: true },
-	
-	// specialNeedsNotes: { type: Types.Textarea, label: 'Notes', dependsOn: { physicalNeeds: ['Mild', 'Moderate', 'Severe'], emotionalNeeds: ['Mild', 'Moderate', 'Severe'], intellectualNeeds: ['Mild', 'Moderate', 'Severe'] }, initial: true },
-	specialNeedsNotes: { type: Types.Textarea, label: 'Notes', initial: true },
-	disabilities: { type: Types.Relationship, label: 'Disabilities', ref: 'Disability', many: true, initial: true }
-
-}, { heading: 'Adoption Parties - REMOVED FIELDS' }, {
-
-	adoptionParties: { type: Types.Relationship, label: 'Adoption Parties', ref: 'Adoption Party', many: true, initial: true }
-
-}, { heading: 'Internal Notes - REMOVED FIELDS' }, {
-
-	internalNotes: { type: Types.Textarea, label: 'Internal Notes', initial: true }
-
-}, { heading: 'Attachments - REMOVED FIELDS' }, {
+}, { heading: 'Attachments' }, {
 
 	photolistingPage: {
 		type: Types.S3File,
