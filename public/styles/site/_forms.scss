@@ -29,6 +29,20 @@
     margin-left: -20px;
 }
 
+.input-inline {
+    display: inline-block;
+    padding: 5px;
+    width: auto;
+}
+.indented-text {
+    position:relative
+}
+.indent-text {
+    position: relative;
+    top: -15px;
+    left: 55px;
+}
+
 select {
     height: 27px;
 }

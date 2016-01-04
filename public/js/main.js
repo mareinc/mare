@@ -197,6 +197,10 @@ app.functions = function() {
 				case 'prospectiveParent': siteForm.hide(); socialWorkerForm.hide(); prospectiveParentForm.show(); break;
 			}
 		});
+
+		$("#upload-button").change(function() {
+    		$("#home-study-file-upload").val(this.value);
+		});
 	};
 
 	initializeWaitingChildProfilesPage = function() {
