@@ -32,7 +32,7 @@ Child.add({ heading: 'Child Information' }, {
 	status: { type: Types.Relationship, label: 'Status', ref: 'Child Status', many: false, required: true, index: true, initial: true },
 	gender: { type: Types.Relationship, label: 'Gender', ref: 'Gender', many: false, required: true, index: true, initial: true },	
 	race: { type: Types.Relationship, label: 'Race', ref: 'Race', many: false, required: true, index: true, initial: true },
-	legalStatus: { type: Types.Select, label: 'Legal Status', options: 'Free, Legal Risk', required: true, index: true, initial: true },
+	legalStatus: { type: Types.Relationship, label: 'Legal Status', ref: 'Legal Status', required: true, index: true, initial: true },
 	
 	hasContactWithSiblings: { type: Types.Boolean, label: 'Has contact with siblings?', index: true, initial: true },
 	siblingTypeOfContact: { type: Types.Text, label: 'Type of contact', initial: true },
@@ -40,7 +40,7 @@ Child.add({ heading: 'Child Information' }, {
 	hasContactWithBirthFamily: { type: Types.Boolean, label: 'Has contact with birth family?', initial: true },
 	birthFamilyTypeOfContact: { type: Types.Text, label: 'Type of contact', initial: true },
 
-	residence: { type: Types.Select, label: 'Where does the child presently live?', options: 'Foster home; IFC, residential/group care', initial: true },
+	residence: { type: Types.Relationship, label: 'Where does the child presently live?', ref: 'Residence', initial: true },
 	city: { type: Types.Text, label: 'City/town of child\'s current location', initial: true },
 	careFacilityName: { type: Types.Text, label: 'Name of Residential/Group care facility', initial: true }
 
