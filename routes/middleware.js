@@ -15,7 +15,8 @@ var _ = require('underscore'),
 	User = keystone.list('User'),
 	SiteUser = keystone.list('Site User'),
 	SocialWorker = keystone.list('Social Worker'),
-	Child = keystone.list('Child');
+	Child = keystone.list('Child'),
+	Gender = keystone.list('Gender');
 
 /**
 	Initialises the standard view locals
@@ -324,6 +325,7 @@ exports.getChildDetails = function(req, res) {
 	/* TODO: Fetch only the needed fields instead of grabbing everything */
 	Child.model.find()
         .where('registrationNumber', registrationNumber)
+        .populate('gender')
         .exec()
         .then(function (child) {
 
@@ -332,11 +334,14 @@ exports.getChildDetails = function(req, res) {
         	var relevantData = {
         		name: child.name.first,
         		age: exports.getAge(child.birthDate),
+        		gender: child.gender.gender,
         		registrationNumber: child.registrationNumber,
         		profilePart1: child.profile.part1,
         		profilePart2: child.profile.part2,
         		profilePart3: child.profile.part3,
         		detailImage: child.detailImage,
+        		hasImage: child.image.url.length > 0 ? true : false,
+        		missingImage: exports.getMissingImageLocation(this.hasImage, this.gender),
         		hasVideo: child.video.length > 0,
         		video: child.video.replace('watch?v=', 'embed/'),
         		wednesdaysChild: child.wednesdaysChild
@@ -376,4 +381,18 @@ exports.getAge = function(dateOfBirth) {
         }
         
         return age;
-}
+};
+
+exports.getMissingImageLocation = function(hasImage, gender) {
+
+	if ( hasImage ) {
+		return '';
+	}
+
+	if ( gender === 'female' ) {
+		return '/dist/img/noImageFemale_gallery.png';
+	}
+
+	return '/dist/img/noImageMale_gallery.png';
+
+};
