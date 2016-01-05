@@ -99,5 +99,7 @@ exports.create = {
 		state: 'Wisconsin'
 	}, {	
 		state: 'Wyoming'
+	}, {
+		state: 'AE'
 	}]
 };
