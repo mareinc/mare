@@ -64,9 +64,7 @@ keystone.init({
   		]
   	},
 
-	'cookie secret': process.env.COOKIE_SECRET || 'mare',
-
-	'mandrill api key': process.env.MANDRILL_APIKEY,
+	'cookie secret': process.env.COOKIE_SECRET || '-eRWCqW&S~{bTw-|nG=]av*#2X*u}<?$v44|LV^|K*.q>.a<&rC[A~6%9rVcgh~)'
 });
 
 // Cloudinary configuration
@@ -74,6 +72,10 @@ keystone.init({
 keystone.set('cloudinary folders', true);
 // optional, will force cloudinary to serve images over https
 keystone.set('cloudinary secure', true);
+
+// Mandrill configuration
+keystone.set('mandrill api key', process.env.MANDRILL_APIKEY);
+keystone.set('mandrill username', process.env.MANDRILL_USERNAME);
 
 // S3 configuration for hosted file storage
 keystone.set('s3 config', { bucket: process.env.S3_BUCKET_NAME, key: process.env.S3_KEY, secret: process.env.S3_SECRET });
@@ -151,10 +153,12 @@ keystone.set('nav', {
 	'images'			: ['featured-items', 'slideshows', 'slideshow-items'],
 	'content pages'		: ['pages', 'forms'],
 	'content snippets'	: ['success-stories'],
-	'events'			: ['events', 'adoption-parties'],
+	'events'			: ['events'],
 	'lists'				: ['child-placement-considerations', 'child-statuses', 'child-types', 'contact-methods', 
-						   'disabilities', 'family-constellations', 'genders', 'languages', 'media-eligibilities',
-						   'races', 'recommended-family-constellations', 'states']
+						   'disabilities', 'event-types', 'family-constellations', 'genders', 'languages', 'legal-statuses',
+						   'media-eligibilities', 'races', 'recommended-family-constellations', 'regions', 'residences',
+						   'states' ],
+	'change tracking'	: ['family-histories']
 
 });
 
