@@ -1,0 +1,18 @@
+var keystone = require('keystone'),
+	Types = keystone.Field.Types;
+
+// Create model. Additional options allow menu name to be used what auto-generating URLs
+var Region = new keystone.List('Region', {
+	autokey: { path: 'key', from: 'Region', unique: true },
+	map: { name: 'region' }
+});
+
+// Create fields
+Region.add({
+	region: { type: String, label: 'Region', required: true, index: true, initial: true },
+	isActive: { type: Types.Boolean, label: 'Active', required: true, initial: true }
+});
+
+// Define default columns in the admin interface and register the model
+Region.defaultColumns = 'region';
+Region.register();
