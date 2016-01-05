@@ -39,6 +39,7 @@ exports = module.exports = function(app) {
 	app.get('/'							, routes.views.main);
 	app.get('/page/*'					, routes.views.page);
 	app.get('/form/*'					, routes.views.form);
+	app.get('/events/*'					, routes.views.event);
 	app.get('/waiting-child-profiles'	, routes.views.waitingChildProfiles);
 	app.get('/register'					, routes.views.register);
 	app.get('/preferences'				, middleware.requireUser, routes.views.preferences);
