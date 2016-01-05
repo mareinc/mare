@@ -24,14 +24,14 @@ ProspectiveParentOrFamily.add('Permissions', {
 	initialContact: { type: Types.Date, label: 'Initial Contact', default: Date.now(), required: true, initial: true },
 	flagCalls: { type: Types.Boolean, label: 'Flag Calls', initial: true },
 	// familyConstellation: { type: Types.Relationship, label: 'Family Constellation', ref: 'Recommended Family Constellations', required: true, index: true, initial: true },
-	familyConstellation: { type: Types.Select, options: 'Single Male, Single Gay Male, Single Straight Male, Single Female, Single Gay Female, Single Straight Female, Female/Female Couple, Male/Male Couple', required: true, index: true, initial: true },
+	familyConstellation: { type: Types.Relationship, label: 'Family Constellation', ref: 'Family Constellation', required: true, index: true, initial: true },
 	// language: { type: Types.Select, label: 'Language', options: 'English, Spanish, Portuguese, Chinese, Other', default: 'English', required: true, initial: true },
 	language: { type: Types.Text, label: 'Language', required: true, initial: true },
 	
 	password: { type: Types.Password, label: 'Password', required: true, initial: true },
 	avatar: { type: Types.CloudinaryImage, label: 'Avatar', folder: 'users/prospective parents\\/families', autoCleanup: true }
 
-}, 'Contacts', {
+}, 'Contact 1', {
 
 	contact1: {
 
@@ -53,6 +53,8 @@ ProspectiveParentOrFamily.add('Permissions', {
 		occupation: { type: Types.Text, label: 'Occupation', initial: true },
 		birthDate: { type: Types.Date, label: 'Date of Birth', required: true, initial: true }
 	},
+
+}, 'Contact 2', {
 
 	contact2: {
 		name: {
@@ -79,10 +81,10 @@ ProspectiveParentOrFamily.add('Permissions', {
 	homePhone: { type: Types.Text, label: 'Home Phone Number', required: true, initial: true },
 
 	address: {
-		street1: { type: Types.Text, label: 'Street', required: true, initial: true },
-		street2: { type: Types.Text, label: '', required: true, initial: true },
+		street1: { type: Types.Text, label: 'Address Line 1', required: true, initial: true },
+		street2: { type: Types.Text, label: 'Address Line 2', initial: true },
 		city: { type: Types.Text, label: 'City', required: true, initial: true },
-		state: { type: Types.Select, options: 'Alabama, Alaska, Arizona, Arkansas, California, Colorado, Connecticut, Delaware, Florida, Georgia, Hawaii, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Maryland, Massachusetts, Michigan, Minnesota, Mississippi, Missouri, Montana, Nebraska, Nevada, New Hampshire, New Jersey, New Mexico, New York, North Carolina, North Dakota, Ohio, Oklahoma, Oregon, Pennsylvania, Rhode Island, South Carolina, South Dakota, Tennessee, Texas, Utah, Vermont, Virginia, Washington, West Virginia, Wisconsin, Wyoming', label: 'State', required: true, index: true, initial: true },
+		state: { type: Types.Relationship, label: 'State', ref: 'State', required: true, index: true, initial: true },
 		zipCode: { type: Types.Text, label: 'Zip code', required: true, index: true, initial: true },
 		country: { type: Types.Text, label: 'Country', initial: true }
 	}

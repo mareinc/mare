@@ -34,17 +34,17 @@ SocialWorker.add('Permissions', {
 	phone: { type: Types.Text, label: 'Phone number', initial: true },
 
 	address: {
-	    street1: { type: Types.Text, label: 'Street', initial: true },
-		street2: { type: Types.Text, label: '', initial: true },
+	    street1: { type: Types.Text, label: 'Address Line 1', initial: true },
+		street2: { type: Types.Text, label: 'Address Line 2', initial: true },
 		city: { type: Types.Text, label: 'City', initial: true },
-		state: { type: Types.Select, options: 'Alabama, Alaska, Arizona, Arkansas, California, Colorado, Connecticut, Delaware, Florida, Georgia, Hawaii, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Maryland, Massachusetts, Michigan, Minnesota, Mississippi, Missouri, Montana, Nebraska, Nevada, New Hampshire, New Jersey, New Mexico, New York, North Carolina, North Dakota, Ohio, Oklahoma, Oregon, Pennsylvania, Rhode Island, South Carolina, South Dakota, Tennessee, Texas, Utah, Vermont, Virginia, Washington, West Virginia, Wisconsin, Wyoming', label: 'State', index: true, initial: true },
+		state: { type: Types.Relationship, label: 'State', ref: 'State', index: true, initial: true },
 		zipCode: { type: Types.Text, label: 'Zip code', index: true, initial: true }
 	}
 
 }, 'Social Worker Information', {
 
 	position: { type: Types.Select, options: 'adoption worker, recruitment worker, supervisor, administrator, family worker, other', label: 'Position', initial: true },
-	agency: { type: Types.Text, label: 'Agency', index: true, initial: true },
+	agency: { type: Types.Relationship, label: 'Agency', ref: 'Agency', initial: true },
 	title: { type: Types.Text, label: 'Title', index: true, initial: true }
 
 });
