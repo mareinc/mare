@@ -8,6 +8,6 @@ exports.create = {
 	}, {	
 		language: 'Chinese'
 	}, {	
-		language: 'Other'
+		language: 'other'
 	}]
 };

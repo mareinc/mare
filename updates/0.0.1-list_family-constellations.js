@@ -1,19 +1,19 @@
 exports.create = {
 	'Family Constellation': [{
-		familyConstellation: 'Single Male'
+		familyConstellation: 'single male'
 	}, {	
-		familyConstellation: 'Single Gay Male'
+		familyConstellation: 'single gay male'
 	}, {	
-		familyConstellation: 'Single Straight Male'
+		familyConstellation: 'single straight male'
 	}, {	
-		familyConstellation: 'Single Female'
+		familyConstellation: 'single female'
 	}, {	
-		familyConstellation: 'Single Gay Female'
+		familyConstellation: 'single gay female'
 	}, {	
-		familyConstellation: 'Single Straight Female'
+		familyConstellation: 'single straight female'
 	}, {	
-		familyConstellation: 'Female/Female Couple'
+		familyConstellation: 'female/female couple'
 	}, {	
-		familyConstellation: 'Male/Male Couple'
+		familyConstellation: 'male/male couple'
 	}]
 };

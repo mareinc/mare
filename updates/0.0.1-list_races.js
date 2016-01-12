@@ -10,6 +10,6 @@ exports.create = {
 	}, {	
 		race: 'Native American'
 	}, {	
-		race: 'Other'
+		race: 'other'
 	}]
 };

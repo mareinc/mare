@@ -1,7 +1,7 @@
 exports.create = {
 	'Legal Status': [{
-		legalStatus: 'Free'
+		legalStatus: 'free'
 	}, {	
-		legalStatus: 'Legal Risk'
+		legalStatus: 'legal risk'
 	}]
 };

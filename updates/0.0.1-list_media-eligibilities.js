@@ -2,13 +2,13 @@ exports.create = {
 	'Media Eligibility': [{
 		mediaEligibility: 'AdoptUSkids'
 	}, {
-		mediaEligibility: 'Annual report'
+		mediaEligibility: 'annual report'
 	}, {
 		mediaEligibility: 'Facebook'
 	}, {
 		mediaEligibility: 'Heart Gallery'
 	}, {
-		mediaEligibility: 'Other - TEXT BOX'
+		mediaEligibility: 'other - text box'
 	}, {
 		mediaEligibility: 'Spanish print'
 	}, {

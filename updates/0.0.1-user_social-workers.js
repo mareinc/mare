@@ -10,7 +10,12 @@ exports.create = {
 		},
 		password: 'JonnySocial',
 		email: 'jonny.social@gmail.com',
-		phone: '(617) 100-2000',
+		phone: {
+			work: '(617) 100-2000',
+			home: '(617) 100-2001',
+			cell: '(617) 100-2002',
+			preferred: 'home'
+		},
 		address: {
 			street1: '100 Social Street',
 			street2: 'Suite 100',
@@ -18,8 +23,6 @@ exports.create = {
 			state: 'Massachusetts',
 			zipCode: '02110'
 		},
-		position: 'adoption worker',
-		agency: 'ACME Social Workers',
 		title: 'sample social worker'
 	}]
 };

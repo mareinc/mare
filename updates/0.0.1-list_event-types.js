@@ -1,13 +1,13 @@
 exports.create = {
 	'Event Type': [{
-		eventType: 'MARE Adoption Parties & Information Events'
-	}, {	
-		eventType: 'MAPP Training'
-	}, {	
-		eventType: 'Agency Information Meetings'
-	}, {	
-		eventType: 'Other Opportunities & Trainings'
-	}, {	
-		eventType: 'Fundraising Events'
+		eventType: 'MARE adoption parties & information events'
+	}, {
+		eventType: 'MAPP training'
+	}, {
+		eventType: 'agency information meetings'
+	}, {
+		eventType: 'other opportunities & trainings'
+	}, {
+		eventType: 'fundraising events'
 	}]
 };

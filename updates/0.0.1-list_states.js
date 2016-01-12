@@ -1,5 +1,7 @@
 exports.create = {
 	'State': [{
+		state: 'AE'
+	},
 		state: 'Alabama'
 	}, {	
 		state: 'Alaska'
@@ -99,7 +101,5 @@ exports.create = {
 		state: 'Wisconsin'
 	}, {	
 		state: 'Wyoming'
-	}, {
-		state: 'AE'
 	}]
 };
