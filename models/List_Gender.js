@@ -9,7 +9,7 @@ var Gender = new keystone.List('Gender', {
 
 // Create fields
 Gender.add({
-	gender: { type: String, label: 'Gender', required: true, index: true, initial: true }
+	gender: { type: Types.Text, label: 'Gender', required: true, index: true, initial: true }
 });
 
 // Define default columns in the admin interface and register the model

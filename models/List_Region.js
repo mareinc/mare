@@ -9,7 +9,7 @@ var Region = new keystone.List('Region', {
 
 // Create fields
 Region.add({
-	region: { type: String, label: 'Region', required: true, index: true, initial: true },
+	region: { type: Types.Text, label: 'Region', required: true, index: true, initial: true },
 	isActive: { type: Types.Boolean, label: 'Active', required: true, initial: true }
 });
 

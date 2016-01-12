@@ -11,14 +11,14 @@ var Form = new keystone.List('Form', {
 // TODO: Try to fix the date time field to either not have milliseconds, or to parse it on save for a cleaner display of default columns
 // Create fields
 Form.add({
-	title: { type: String, label: 'form name', required: true, index: true, initial: true },
+	title: { type: Types.Text, label: 'form name', required: true, index: true, initial: true },
 	url: { type: Types.Url, noedit: true },
 	contact: { type: Types.Relationship, ref: 'User', label: 'contact person', dependsOn: { selectUnregisteredContact: false }, initial: true },
 	selectUnregisteredContact: { type: Types.Boolean, label: 'contact person isn\'t registered with MARE', initial: true },
-	unregisteredContact: { type: String, label: 'contact person\'s email', dependsOn: { selectUnregisteredContact: true } },
+	unregisteredContact: { type: Types.Text, label: 'contact person\'s email', dependsOn: { selectUnregisteredContact: true } },
 	hasRange: { type: Types.Boolean, label: 'form valid for specific time range', initial: true },
-	availableFrom: { type: Types.Datetime, label: 'available from', dependsOn: { selectFormRange: true }, initial: true },
-	availableTo: { type: Types.Datetime, label: 'available to', dependsOn: { selectFormRange: true }, initial: true },
+	availableFrom: { type: Types.Text, label: 'available from', dependsOn: { selectFormRange: true }, initial: true },
+	availableTo: { type: Types.Text, label: 'available to', dependsOn: { selectFormRange: true }, initial: true },
 	content: { type: Types.Html, wysiwyg: true, initial: true }
 });
 

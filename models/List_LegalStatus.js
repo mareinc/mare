@@ -9,7 +9,7 @@ var LegalStatus = new keystone.List('Legal Status', {
 
 // Create fields
 LegalStatus.add({
-	legalStatus: { type: String, label: 'Legal Status', required: true, index: true, initial: true }
+	legalStatus: { type: Types.Text, label: 'Legal Status', required: true, index: true, initial: true }
 });
 
 // Define default columns in the admin interface and register the model

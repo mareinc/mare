@@ -9,7 +9,7 @@ var Race = new keystone.List('Race', {
 
 // Create fields
 Race.add({
-	race: { type: String, label: 'Race', required: true, index: true, initial: true }
+	race: { type: Types.Text, label: 'Race', required: true, index: true, initial: true }
 });
 
 // Define default columns in the admin interface and register the model

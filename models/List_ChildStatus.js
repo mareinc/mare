@@ -9,7 +9,7 @@ var ChildStatus = new keystone.List('Child Status', {
 
 // Create fields
 ChildStatus.add({
-	childStatus: { type: String, label: 'Child Status', required: true, index: true, initial: true }
+	childStatus: { type: Types.Text, label: 'Child Status', required: true, index: true, initial: true }
 });
 
 // Define default columns in the admin interface and register the model

@@ -9,7 +9,7 @@ var State = new keystone.List('State', {
 
 // Create fields
 State.add({
-	state: { type: String, label: 'State', required: true, index: true, initial: true }
+	state: { type: Types.Text, label: 'State', required: true, index: true, initial: true }
 });
 
 // Define default columns in the admin interface and register the model

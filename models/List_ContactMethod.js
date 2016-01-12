@@ -9,7 +9,7 @@ var ContactMethod = new keystone.List('Contact Method', {
 
 // Create fields
 ContactMethod.add({
-	contactMethod: { type: String, label: 'Contact Method', required: true, index: true, initial: true }
+	contactMethod: { type: Types.Text, label: 'Contact Method', required: true, index: true, initial: true }
 });
 
 // Define default columns in the admin interface and register the model
