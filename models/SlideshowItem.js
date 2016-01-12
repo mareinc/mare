@@ -13,7 +13,7 @@ SlideshowItem.add({
 	image: { type: Types.CloudinaryImage, folder: 'slideshow/', autoCleanup: true },
 	imageStretched: {type: Types.Url, hidden: true},
 	imageScaled: {type: Types.Url, hidden: true},
-	parent: { type: Types.Relationship, label: 'slideshow', ref: 'Slideshow', many: false, initial: true },
+	parent: { type: Types.Relationship, label: 'slideshow', ref: 'Slideshow', initial: true },
 	heading: { type: Types.Text, label: 'heading', initial: true },
 	subHeading: { type: Types.Text, label: 'sub-heading', initial: true },
 	guideLabel: { type: Types.Text, label: 'label', initial: true},

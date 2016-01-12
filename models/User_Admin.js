@@ -55,10 +55,10 @@ User.add('Permissions', {
 
 	phone: {
 		work: { type: Types.Text, label: 'Work phone number', initial: true },
-		workExtension: { type: Types.Text, label: 'Extension', initial: true },
-		mobile: { type: Types.Text, label: 'Mobile phone number', initial: true },
-		home: { type: Types.Text, label: 'Home phone number', initial: true }
-    },
+		home: { type: Types.Text, label: 'Home phone number', initial: true },
+		cell: { type: Types.Text, label: 'Cell phone number', initial: true },
+		preferred: { type: Types.Select, label: 'Preferred phone', options: 'work, home, cell', initial: true }
+	},
 
 	address: {
 	    street1: { type: Types.Text, label: 'Address Line 1', initial: true },

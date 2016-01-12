@@ -32,8 +32,10 @@ SiteUser.add('Permissions', {
 	email: { type: Types.Email, label: 'Email Address', unique: true, required: true, index: true, initial: true },
 	
 	phone: {
-		mobile: { type: Types.Text, label: 'Mobile phone number', initial: true },
-		home: { type: Types.Text, label: 'Home phone number', initial: true }
+		work: { type: Types.Text, label: 'Work phone number', initial: true },
+		home: { type: Types.Text, label: 'Home phone number', initial: true },
+		cell: { type: Types.Text, label: 'Cell phone number', initial: true },
+		preferred: { type: Types.Select, label: 'Preferred phone', options: 'work, home, cell', initial: true }
 	},
 
 	address: {

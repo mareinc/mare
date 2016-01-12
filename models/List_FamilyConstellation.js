@@ -9,7 +9,7 @@ var FamilyConstellation = new keystone.List('Family Constellation', {
 
 // Create fields
 FamilyConstellation.add({
-	familyConstellation: { type: String, label: 'Family Constellation', required: true, index: true, initial: true }
+	familyConstellation: { type: Types.Text, label: 'Family Constellation', required: true, index: true, initial: true }
 });
 
 // Define default columns in the admin interface and register the model
