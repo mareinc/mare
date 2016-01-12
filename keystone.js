@@ -154,11 +154,12 @@ keystone.set('nav', {
 	'content pages'		: ['pages', 'forms'],
 	'content snippets'	: ['success-stories'],
 	'events'			: ['events'],
+	'mailing lists'		: ['mailing-lists'],
 	'lists'				: ['child-placement-considerations', 'child-statuses', 'child-types', 'contact-methods', 
-						   'disabilities', 'event-types', 'family-constellations', 'genders', 'languages', 'legal-statuses',
-						   'media-eligibilities', 'races', 'recommended-family-constellations', 'regions', 'residences',
-						   'states' ],
-	'change tracking'	: ['family-histories']
+						   'disabilities', 'event-types', 'family-constellations', 'genders', 'inquiry-methods', 
+						   'inquiry-types', 'languages', 'legal-statuses', 'media-eligibilities', 'races', 
+						   'regions', 'residences', 'social-worker-positions', 'states' ],
+	'change tracking'	: ['child-histories', 'family-histories']
 
 });
 
