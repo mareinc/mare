@@ -17,7 +17,7 @@ SocialWorker.add('Permissions', {
 	}
 
 }, 'General Information', {
-	
+
 	name: {
 		first: { type: Types.Text, label: 'First Name', required: true, index: true, initial: true },
 		last: { type: Types.Text, label: 'Last Name', required: true, index: true, initial: true },
@@ -28,10 +28,15 @@ SocialWorker.add('Permissions', {
 	avatar: { type: Types.CloudinaryImage, label: 'Avatar', folder: 'users/social workers', select: true, autoCleanup: true }
 
 }, 'Contact Information', {
-	
+
 	email: { type: Types.Email, label: 'Email Address', unique: true, required: true, index: true, initial: true },
-	
-	phone: { type: Types.Text, label: 'Phone number', initial: true },
+
+	phone: {
+		work: { type: Types.Text, label: 'Work phone number', initial: true },
+		home: { type: Types.Text, label: 'Home phone number', initial: true },
+		cell: { type: Types.Text, label: 'Cell phone number', initial: true },
+		preferred: { type: Types.Select, label: 'Preferred phone', options: 'work, home, cell', initial: true }
+	},
 
 	address: {
 	    street1: { type: Types.Text, label: 'Address Line 1', initial: true },
@@ -43,6 +48,7 @@ SocialWorker.add('Permissions', {
 
 }, 'Social Worker Information', {
 
+	// position: { type: Types.Relationship, label: 'Position', ref: 'Social Worker Position', initial: true },
 	position: { type: Types.Select, options: 'adoption worker, recruitment worker, supervisor, administrator, family worker, other', label: 'Position', initial: true },
 	agency: { type: Types.Relationship, label: 'Agency', ref: 'Agency', initial: true },
 	title: { type: Types.Text, label: 'Title', index: true, initial: true }
@@ -62,5 +68,5 @@ SocialWorker.schema.pre('save', function(next) {
 });
 
 // Define default columns in the admin interface and register the model
-SocialWorker.defaultColumns = 'name.full, phone, email';
+SocialWorker.defaultColumns = 'name.full, phone.work, phone.home, phone.cell, phone.preferred, email';
 SocialWorker.register();

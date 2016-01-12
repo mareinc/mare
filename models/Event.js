@@ -37,9 +37,10 @@ Event.add({ heading: 'General Information' }, {
 	name: { type: Types.Text, label: 'Event Name', required: true, index: true, initial: true },
 	url: { type: Types.Url, noedit: true },
 	isActive: { type: Types.Boolean, label: 'Is Event Active?', index: true, initial: true },
-	type: { type: Types.Relationship, label: 'Event Type', ref: 'Event Type', required: true, index: true, initial: true }
+	// type: { type: Types.Relationship, label: 'Event Type', ref: 'Event Type', required: true, index: true, initial: true }
+	type: { type: Types.Select, label: 'Event Type', options: 'MARE adoption parties & information events, MAPP training, agency information meetings, other opportunities & trainings, fundraising events', required: true, initial: true }
 
-}, { heading: 'Address' }, {	
+}, { heading: 'Address' }, {
 
 	address: {
 	    street1: { type: Types.Text, label: 'Address Line 1', initial: true },
@@ -49,10 +50,11 @@ Event.add({ heading: 'General Information' }, {
 		zipCode: { type: Types.Text, label: 'Zip code', index: true, initial: true }
 	}
 
-}, { heading: 'Details' }, {	
+}, { heading: 'Details' }, {
 
-	starts: { type: Types.Datetime, initial: true },
-	ends: { type: Types.Datetime, initial: true },
+	date: { type: Types.Text, label: 'Date', note: 'mm/dd/yyyy', required: true, initial: true },
+	startTime: { type: Types.Text, label: 'Start time', required: true, initial: true },
+	endTime: { type: Types.Text, label: 'End time', required: true, initial: true },
 	contact: { type: Types.Relationship, label: 'Contact Person', ref: 'User', initial: true },
 	description: { type: Types.Html, wysiwyg: true, initial: true },
 	isRecurring: { type: Types.Boolean, label: 'Recurring Event?', index: true, initial: true },
