@@ -4,7 +4,7 @@ exports.create = {
 	}, {
 		region: 'northern'
 	}, {
-		region: 'southeastern'
+		region: 'southern'
 	}, {
 		region: 'western'
 	}, {
