@@ -2,7 +2,7 @@ exports.create = {
 	'City or Town': [{
 		cityOrTown: 'ABINGTON',
 		areaOffice: 'Plymouth Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'ACTON',
 		areaOffice: 'Framingham Area Office',
@@ -10,7 +10,7 @@ exports.create = {
 	}, {
 		cityOrTown: 'ACUSHNET',
 		areaOffice: 'New Bedford Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'ADAMS',
 		areaOffice: 'Pittsfield Area Office',
@@ -42,11 +42,11 @@ exports.create = {
 	}, {
 		cityOrTown: 'AQUINNAH',
 		areaOffice: 'Cape & Islands Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'ARLINGTON',
 		areaOffice: 'Arlington Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'ASHBURNHAM',
 		areaOffice: 'North Central Area Office',
@@ -70,7 +70,7 @@ exports.create = {
 	}, {
 		cityOrTown: 'ATTLEBORO',
 		areaOffice: 'Taunton Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'AUBURN',
 		areaOffice: 'Worcester East Area Office',
@@ -78,7 +78,7 @@ exports.create = {
 	}, {
 		cityOrTown: 'AVON',
 		areaOffice: 'Brockton Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'AYER',
 		areaOffice: 'North Central Area Office',
@@ -86,7 +86,7 @@ exports.create = {
 	}, {
 		cityOrTown: 'BARNSTABLE',
 		areaOffice: 'Cape & Islands Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'BARRE',
 		areaOffice: 'Worcester West Area Office',
@@ -110,11 +110,11 @@ exports.create = {
 	}, {
 		cityOrTown: 'BELMONT',
 		areaOffice: 'Arlington Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'BERKLEY',
 		areaOffice: 'Taunton Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'BERLIN',
 		areaOffice: 'Worcester East Area Office',
@@ -182,11 +182,11 @@ exports.create = {
 	}, {
 		cityOrTown: 'BOURNE',
 		areaOffice: 'Cape & Islands Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'BOURNEDALE',
 		areaOffice: 'Cape & Islands Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'BOXBOROUGH',
 		areaOffice: 'Framingham Area Office',
@@ -206,15 +206,15 @@ exports.create = {
 	}, {
 		cityOrTown: 'BRAINTREE',
 		areaOffice: 'Coastal Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'BREWSTER',
 		areaOffice: 'Cape & Islands Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'BRIDGEWATER',
 		areaOffice: 'Brockton Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'BRIMFIELD',
 		areaOffice: 'South Central/Blackstone Valley Area Office',
@@ -222,7 +222,7 @@ exports.create = {
 	}, {
 		cityOrTown: 'BROCKTON',
 		areaOffice: 'Brockton Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'BROOKFIELD',
 		areaOffice: 'Worcester West Area Office',
@@ -246,7 +246,7 @@ exports.create = {
 	}, {
 		cityOrTown: 'CANTON',
 		areaOffice: 'Arlington Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'CARLISLE',
 		areaOffice: 'Framingham Area Office',
@@ -254,7 +254,7 @@ exports.create = {
 	}, {
 		cityOrTown: 'CARVER',
 		areaOffice: 'Plymouth Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'CHARLEMONT',
 		areaOffice: 'Greenfield/Northampton Area Office',
@@ -266,7 +266,7 @@ exports.create = {
 	}, {
 		cityOrTown: 'CHATHAM',
 		areaOffice: 'Cape & Islands Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'CHELMSFORD',
 		areaOffice: 'Lowell Area Office',
@@ -294,7 +294,7 @@ exports.create = {
 	}, {
 		cityOrTown: 'CHILMARK',
 		areaOffice: 'Cape & Islands Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'CLARKSBURG',
 		areaOffice: 'Pittsfield Area Office',
@@ -306,7 +306,7 @@ exports.create = {
 	}, {
 		cityOrTown: 'COHASSET',
 		areaOffice: 'Coastal Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'COLRAIN',
 		areaOffice: 'Greenfield/Northampton Area Office',
@@ -334,11 +334,11 @@ exports.create = {
 	}, {
 		cityOrTown: 'DARTMOUTH',
 		areaOffice: 'New Bedford Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'DEDHAM',
 		areaOffice: 'Arlington Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'DEERFIELD',
 		areaOffice: 'Greenfield/Northampton Area Office',
@@ -346,11 +346,11 @@ exports.create = {
 	}, {
 		cityOrTown: 'DENNIS',
 		areaOffice: 'Cape & Islands Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'DIGHTON',
 		areaOffice: 'Taunton Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'DOUGLAS',
 		areaOffice: 'South Central/Blackstone Valley Area Office',
@@ -374,11 +374,11 @@ exports.create = {
 	}, {
 		cityOrTown: 'DUXBURY',
 		areaOffice: 'Plymouth Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'EAST BRIDGEWATER',
 		areaOffice: 'Brockton Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'EAST BROOKFIELD',
 		areaOffice: 'Worcester West Area Office',
@@ -394,7 +394,7 @@ exports.create = {
 	}, {
 		cityOrTown: 'EASTHAM',
 		areaOffice: 'Cape & Islands Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'EASTHAMPTON',
 		areaOffice: 'Greenfield/Northampton Area Office',
@@ -402,11 +402,11 @@ exports.create = {
 	}, {
 		cityOrTown: 'EASTON',
 		areaOffice: 'Brockton Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'EDGARTOWN',
 		areaOffice: 'Cape & Islands Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'EGREMONT',
 		areaOffice: 'Pittsfield Area Office',
@@ -426,15 +426,15 @@ exports.create = {
 	}, {
 		cityOrTown: 'FAIRHAVEN',
 		areaOffice: 'New Bedford Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'FALL RIVER',
 		areaOffice: 'Fall River Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'FALMOUTH',
 		areaOffice: 'Cape & Islands Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'FITCHBURG',
 		areaOffice: 'North Central Area Office',
@@ -446,7 +446,7 @@ exports.create = {
 	}, {
 		cityOrTown: 'FOXBOROUGH',
 		areaOffice: 'Arlington Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'FRAMINGHAM',
 		areaOffice: 'Framingham Area Office',
@@ -458,7 +458,7 @@ exports.create = {
 	}, {
 		cityOrTown: 'FREETOWN',
 		areaOffice: 'Fall River Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'GARDNER',
 		areaOffice: 'North Central Area Office',
@@ -466,7 +466,7 @@ exports.create = {
 	}, {
 		cityOrTown: 'GAY HEAD',
 		areaOffice: 'Cape & Islands Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'GEORGETOWN',
 		areaOffice: 'Haverhill Area Office',
@@ -486,7 +486,7 @@ exports.create = {
 	}, {
 		cityOrTown: 'GOSNOLD',
 		areaOffice: 'Cape & Islands Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'GRAFTON',
 		areaOffice: 'Worcester East Area Office',
@@ -522,7 +522,7 @@ exports.create = {
 	}, {
 		cityOrTown: 'HALIFAX',
 		areaOffice: 'Plymouth Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'HAMILTON',
 		areaOffice: 'Cape Ann Area Office',
@@ -538,11 +538,11 @@ exports.create = {
 	}, {
 		cityOrTown: 'HANOVER',
 		areaOffice: 'Plymouth Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'HANSON',
 		areaOffice: 'Plymouth Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'HARDWICK',
 		areaOffice: 'Worcester West Area Office',
@@ -554,7 +554,7 @@ exports.create = {
 	}, {
 		cityOrTown: 'HARWICH',
 		areaOffice: 'Cape & Islands Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'HATFIELD',
 		areaOffice: 'Greenfield/Northampton Area Office',
@@ -574,7 +574,7 @@ exports.create = {
 	}, {
 		cityOrTown: 'HINGHAM',
 		areaOffice: 'Coastal Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'HINSDALE',
 		areaOffice: 'Pittsfield Area Office',
@@ -582,7 +582,7 @@ exports.create = {
 	}, {
 		cityOrTown: 'HOLBROOK',
 		areaOffice: 'Brockton Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'HOLDEN',
 		areaOffice: 'Worcester West Area Office',
@@ -618,7 +618,7 @@ exports.create = {
 	}, {
 		cityOrTown: 'HULL',
 		areaOffice: 'Coastal Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'HYDE PARK',
 		areaOffice: 'Hyde Park Area Office',
@@ -630,7 +630,7 @@ exports.create = {
 	}, {
 		cityOrTown: 'HYANNIS',
 		areaOffice: 'Cape & Islands Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'IPSWICH',
 		areaOffice: 'Haverhill Area Office',
@@ -638,11 +638,11 @@ exports.create = {
 	}, {
 		cityOrTown: 'KINGSTON',
 		areaOffice: 'Plymouth Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'LAKEVILLE',
 		areaOffice: 'Plymouth Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'LANCASTER',
 		areaOffice: 'Worcester East Area Office',
@@ -678,7 +678,7 @@ exports.create = {
 	}, {
 		cityOrTown: 'LEXINGTON',
 		areaOffice: 'Arlington Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'LEYDEN',
 		areaOffice: 'Greenfield/Northampton Area Office',
@@ -726,7 +726,7 @@ exports.create = {
 	}, {
 		cityOrTown: 'MANSFIELD',
 		areaOffice: 'Taunton Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'MARBLEHEAD',
 		areaOffice: 'Cape Ann Area Office',
@@ -734,7 +734,7 @@ exports.create = {
 	}, {
 		cityOrTown: 'MARION',
 		areaOffice: 'Plymouth Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'MARLBOROUGH',
 		areaOffice: 'Framingham Area Office',
@@ -742,15 +742,15 @@ exports.create = {
 	}, {
 		cityOrTown: 'MARSHFIELD',
 		areaOffice: 'Plymouth Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'MASHPEE',
 		areaOffice: 'Cape & Islands Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'MATTAPOISETT',
 		areaOffice: 'Plymouth Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'MAYNARD',
 		areaOffice: 'Framingham Area Office',
@@ -758,7 +758,7 @@ exports.create = {
 	}, {
 		cityOrTown: 'MEDFIELD',
 		areaOffice: 'Arlington Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'MEDFORD',
 		areaOffice: 'Malden Area Office',
@@ -786,7 +786,7 @@ exports.create = {
 	}, {
 		cityOrTown: 'MIDDLEBOROUGH',
 		areaOffice: 'Plymouth Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'MIDDLEFIELD',
 		areaOffice: 'Greenfield/Northampton Area Office',
@@ -806,7 +806,7 @@ exports.create = {
 	}, {
 		cityOrTown: 'MILLIS',
 		areaOffice: 'Arlington Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'MILLVILLE',
 		areaOffice: 'South Central/Blackstone Valley Area Office',
@@ -814,7 +814,7 @@ exports.create = {
 	}, {
 		cityOrTown: 'MILTON',
 		areaOffice: 'Coastal Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'MONROE',
 		areaOffice: 'Pittsfield Area Office',
@@ -846,7 +846,7 @@ exports.create = {
 	}, {
 		cityOrTown: 'NANTUCKET',
 		areaOffice: 'Cape & Islands Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'NATICK',
 		areaOffice: 'Framingham Area Office',
@@ -854,7 +854,7 @@ exports.create = {
 	}, {
 		cityOrTown: 'NEEDHAM',
 		areaOffice: 'Arlington Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'NEW ASHFORD',
 		areaOffice: 'Pittsfield Area Office',
@@ -862,7 +862,7 @@ exports.create = {
 	}, {
 		cityOrTown: 'NEW BEDFORD',
 		areaOffice: 'New Bedford Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'NEW BRAINTREE',
 		areaOffice: 'Worcester West Area Office',
@@ -886,11 +886,11 @@ exports.create = {
 	}, {
 		cityOrTown: 'NEWTON',
 		areaOffice: 'Arlington Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'NORFOLK',
 		areaOffice: 'Arlington Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'NORTH ADAMS',
 		areaOffice: 'Pittsfield Area Office',
@@ -902,7 +902,7 @@ exports.create = {
 	}, {
 		cityOrTown: 'NORTH ATTLEBOROUGH',
 		areaOffice: 'Taunton Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'NORTH BROOKFIELD',
 		areaOffice: 'Worcester West Area Office',
@@ -910,7 +910,7 @@ exports.create = {
 	}, {
 		cityOrTown: 'NORTH EASTON',
 		areaOffice: 'Brockton Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'NORTH READING',
 		areaOffice: 'Malden Area Office',
@@ -934,19 +934,19 @@ exports.create = {
 	}, {
 		cityOrTown: 'NORTON',
 		areaOffice: 'Taunton Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'NORWELL',
 		areaOffice: 'Coastal Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'NORWOOD',
 		areaOffice: 'Arlington Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'OAK BLUFFS',
 		areaOffice: 'Cape & Islands Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'OAKHAM',
 		areaOffice: 'Worcester West Area Office',
@@ -958,7 +958,7 @@ exports.create = {
 	}, {
 		cityOrTown: 'ORLEANS',
 		areaOffice: 'Cape & Islands Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'OTIS',
 		areaOffice: 'Pittsfield Area Office',
@@ -986,7 +986,7 @@ exports.create = {
 	}, {
 		cityOrTown: 'PEMBROKE',
 		areaOffice: 'Plymouth Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'PEPPERELL',
 		areaOffice: 'Lowell Area Office',
@@ -1014,15 +1014,15 @@ exports.create = {
 	}, {
 		cityOrTown: 'PLAINVILLE',
 		areaOffice: 'Arlington Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'PLYMOUTH',
 		areaOffice: 'Plymouth Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'PLYMPTON',
 		areaOffice: 'Plymouth Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'PRINCETON',
 		areaOffice: 'Worcester West Area Office',
@@ -1030,19 +1030,19 @@ exports.create = {
 	}, {
 		cityOrTown: 'PROVINCETOWN',
 		areaOffice: 'Cape & Islands Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'QUINCY',
 		areaOffice: 'Coastal Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'RANDOLPH',
 		areaOffice: 'Coastal Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'RAYNHAM',
 		areaOffice: 'Taunton Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'READING',
 		areaOffice: 'Malden Area Office',
@@ -1050,7 +1050,7 @@ exports.create = {
 	}, {
 		cityOrTown: 'REHOBOTH',
 		areaOffice: 'Taunton Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'REVERE',
 		areaOffice: 'Harbor Area Office',
@@ -1062,11 +1062,11 @@ exports.create = {
 	}, {
 		cityOrTown: 'ROCHESTER',
 		areaOffice: 'Plymouth Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'ROCKLAND',
 		areaOffice: 'Plymouth Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'ROCKPORT',
 		areaOffice: 'Cape Ann Area Office',
@@ -1098,7 +1098,7 @@ exports.create = {
 	}, {
 		cityOrTown: 'SAGAMORE',
 		areaOffice: 'Cape & Islands Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'SALEM',
 		areaOffice: 'Cape Ann Area Office',
@@ -1114,7 +1114,7 @@ exports.create = {
 	}, {
 		cityOrTown: 'SANDWICH',
 		areaOffice: 'Cape & Islands Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'SAUGUS',
 		areaOffice: 'Lynn Area Office',
@@ -1126,15 +1126,15 @@ exports.create = {
 	}, {
 		cityOrTown: 'SCITUATE',
 		areaOffice: 'Coastal Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'SEEKONK',
 		areaOffice: 'Taunton Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'SHARON',
 		areaOffice: 'Arlington Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'SHEFFIELD',
 		areaOffice: 'Pittsfield Area Office',
@@ -1162,7 +1162,7 @@ exports.create = {
 	}, {
 		cityOrTown: 'SOMERSET',
 		areaOffice: 'Fall River Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'SOMERVILLE',
 		areaOffice: 'Cambridge/Somerville Area Office',
@@ -1170,7 +1170,7 @@ exports.create = {
 	}, {
 		cityOrTown: 'SOUTH EASTON',
 		areaOffice: 'Brockton Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'SOUTH HADLEY',
 		areaOffice: 'Van Wart Area Office',
@@ -1218,7 +1218,7 @@ exports.create = {
 	}, {
 		cityOrTown: 'STOUGHTON',
 		areaOffice: 'Brockton Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'STOW',
 		areaOffice: 'Framingham Area Office',
@@ -1246,11 +1246,11 @@ exports.create = {
 	}, {
 		cityOrTown: 'SWANSEA',
 		areaOffice: 'Fall River Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'TAUNTON',
 		areaOffice: 'Taunton Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'TEMPLETON',
 		areaOffice: 'North Central Area Office',
@@ -1262,7 +1262,7 @@ exports.create = {
 	}, {
 		cityOrTown: 'TISBURY',
 		areaOffice: 'Cape & Islands Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'TOLLAND',
 		areaOffice: 'Holyoke Area Office',
@@ -1278,7 +1278,7 @@ exports.create = {
 	}, {
 		cityOrTown: 'TRURO',
 		areaOffice: 'Cape & Islands Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'TYNGSBOROUGH',
 		areaOffice: 'Lowell Area Office',
@@ -1306,11 +1306,11 @@ exports.create = {
 	}, {
 		cityOrTown: 'WALPOLE',
 		areaOffice: 'Arlington Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'WALTHAM',
 		areaOffice: 'Arlington Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'WARE',
 		areaOffice: 'Van Wart Area Office',
@@ -1318,7 +1318,7 @@ exports.create = {
 	}, {
 		cityOrTown: 'WAREHAM',
 		areaOffice: 'Plymouth Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'WARREN',
 		areaOffice: 'Worcester West Area Office',
@@ -1334,7 +1334,7 @@ exports.create = {
 	}, {
 		cityOrTown: 'WATERTOWN',
 		areaOffice: 'Arlington Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'WAYLAND',
 		areaOffice: 'Framingham Area Office',
@@ -1346,11 +1346,11 @@ exports.create = {
 	}, {
 		cityOrTown: 'WELLESLEY',
 		areaOffice: 'Arlington Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'WELLFLEET',
 		areaOffice: 'Cape & Islands Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'WENDELL',
 		areaOffice: 'Greenfield/Northampton Area Office',
@@ -1366,7 +1366,7 @@ exports.create = {
 	}, {
 		cityOrTown: 'WEST BRIDGEWATER',
 		areaOffice: 'Brockton Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'WEST BROOKFIELD',
 		areaOffice: 'Worcester West Area Office',
@@ -1386,7 +1386,7 @@ exports.create = {
 	}, {
 		cityOrTown: 'WEST TISBURY',
 		areaOffice: 'Cape & Islands Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'WESTBOROUGH',
 		areaOffice: 'Framingham Area Office',
@@ -1410,19 +1410,19 @@ exports.create = {
 	}, {
 		cityOrTown: 'WESTON',
 		areaOffice: 'Arlington Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'WESTPORT',
 		areaOffice: 'Fall River Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'WESTWOOD',
 		areaOffice: 'Arlington Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'WEYMOUTH',
 		areaOffice: 'Coastal Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'WHATELY',
 		areaOffice: 'Greenfield/Northampton Area Office',
@@ -1434,7 +1434,7 @@ exports.create = {
 	}, {
 		cityOrTown: 'WHITMAN',
 		areaOffice: 'Plymouth Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'WILBRAHAM',
 		areaOffice: 'Van Wart Area Office',
@@ -1486,10 +1486,10 @@ exports.create = {
 	}, {
 		cityOrTown: 'WRENTHAM',
 		areaOffice: 'Arlington Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}, {
 		cityOrTown: 'YARMOUTH',
 		areaOffice: 'Cape & Islands Area Office',
-		region: 'Southeastern'
+		region: 'Southern'
 	}]
 };
