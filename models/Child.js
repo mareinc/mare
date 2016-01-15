@@ -41,8 +41,9 @@ Child.add({ heading: 'Child Information' }, {
 	birthFamilyTypeOfContact: { type: Types.Text, label: 'Type of contact', initial: true },
 
 	residence: { type: Types.Relationship, label: 'Where does the child presently live?', ref: 'Residence', initial: true },
-	city: { type: Types.Text, label: 'City/town of child\'s current location', initial: true },
-	careFacilityName: { type: Types.Text, label: 'Name of Residential/Group care facility', initial: true }
+	city: { type: Types.Relationship, label: 'City/town of child\'s current location', ref: 'City or Town', initial: true },
+	careFacilityName: { type: Types.Text, label: 'Name of Residential/Group care facility', initial: true },
+	dateMovedToResidence: { type: Types.Text, label: 'Date of Birth', note: 'mm/dd/yyyy', required: true, initial: true }
 
 }, { heading: 'Special Needs' }, {
 
