@@ -17,20 +17,20 @@ SiteUser.add('Permissions', {
 	}
 
 }, { heading: 'User Information' }, {
-	
+
 	name: {
 		first: { type: Types.Text, label: 'First Name', required: true, index: true, initial: true },
 		last: { type: Types.Text, label: 'Last Name', required: true, index: true, initial: true },
-		full: { type: Types.Text, label: 'Name', hidden: true }
+		full: { type: Types.Text, label: 'Name', hidden: true, noedit: true }
 	},
-	
+
 	password: { type: Types.Password, label: 'Password', required: true, initial: true },
 	avatar: { type: Types.CloudinaryImage, label: 'Avatar', folder: 'users/site users', autoCleanup: true }
 
 }, { heading: 'Contact Information' }, {
-	
+
 	email: { type: Types.Email, label: 'Email Address', unique: true, required: true, index: true, initial: true },
-	
+
 	phone: {
 		work: { type: Types.Text, label: 'Work phone number', initial: true },
 		home: { type: Types.Text, label: 'Home phone number', initial: true },

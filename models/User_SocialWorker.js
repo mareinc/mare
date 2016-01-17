@@ -21,7 +21,7 @@ SocialWorker.add('Permissions', {
 	name: {
 		first: { type: Types.Text, label: 'First Name', required: true, index: true, initial: true },
 		last: { type: Types.Text, label: 'Last Name', required: true, index: true, initial: true },
-		full: { type: Types.Text, label: 'Name', hidden: true }
+		full: { type: Types.Text, label: 'Name', hidden: true, noedit: true }
 	},
 
 	password: { type: Types.Password, label: 'Password', required: true, initial: true },

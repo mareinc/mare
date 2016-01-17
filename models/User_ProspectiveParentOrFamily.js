@@ -37,7 +37,7 @@ ProspectiveParentOrFamily.add('Permissions', {
 		name: {
 			first: { type: Types.Text, label: 'first Name', required: true, index: true, initial: true },
 			last: { type: Types.Text, label: 'last Name', required: true, index: true, initial: true },
-			full: { type: Types.Text, label: 'name', hidden: true }
+			full: { type: Types.Text, label: 'name', hidden: true, noedit: true }
 		},
 
 		phone: {
@@ -48,7 +48,7 @@ ProspectiveParentOrFamily.add('Permissions', {
 		},
 
 		email: { type: Types.Email, label: 'email address', index: true, initial: true },
-		preferredMethod: { type: Types.Select, label: 'preferred method', options: 'e-mail, home phone, cell phone, work phone, unknown', required: true, index: true, initial: true },
+		preferredMethod: { type: Types.Select, label: 'preferred communication method', options: 'e-mail, home phone, cell phone, work phone, unknown', required: true, index: true, initial: true },
 		gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', required: true, index: true, initial: true },
 		race: { type: Types.Relationship, label: 'race', ref: 'Race', many: true, required: true, index: true, initial: true },
 		occupation: { type: Types.Text, label: 'occupation', initial: true },
@@ -59,9 +59,9 @@ ProspectiveParentOrFamily.add('Permissions', {
 
 	contact2: {
 		name: {
-			firstName: { type: Types.Text, label: 'first name', index: true, initial: true },
-			lastName: { type: Types.Text, label: 'last name', index: true, initial: true },
-			full: { type: Types.Text, label: 'name', hidden: true }
+			first: { type: Types.Text, label: 'first name', index: true, initial: true },
+			last: { type: Types.Text, label: 'last name', index: true, initial: true },
+			full: { type: Types.Text, label: 'name', hidden: true, noedit: true }
 		},
 
 		phone: {
@@ -72,7 +72,7 @@ ProspectiveParentOrFamily.add('Permissions', {
 		},
 
 		email: { type: Types.Email, label: 'email address', index: true, initial: true },
-		preferredMethod: { type: Types.Select, label: 'preferred method', options: 'e-mail, home phone, cell phone, work phone, unknown', index: true, initial: true },
+		preferredMethod: { type: Types.Select, label: 'preferred communication method', options: 'e-mail, home phone, cell phone, work phone, unknown', index: true, initial: true },
 		gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', index: true, initial: true },
 		race: { type: Types.Relationship, label: 'race', ref: 'Race', many: true, index: true, initial: true },
 		occupation: { type: Types.Text, label: 'occupation', initial: true },

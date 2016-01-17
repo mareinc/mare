@@ -22,7 +22,7 @@ Child.add({ heading: 'Child Information' }, {
 		last: { type: Types.Text, label: 'Last Name', required: true, index: true, initial: true },
 		alias: { type: Types.Text, label: 'Alias', initial: true },
 		nickName: { type: Types.Text, label: 'Nickname', initial: true },
-		full: { type: Types.Text, label: 'Name', hidden: true, noedit: true, initial: false },
+		full: { type: Types.Text, label: 'Name', hidden: true, noedit: true },
 		identifying: { type: Types.Text, label: 'Name', hidden: true }
 	},
 
