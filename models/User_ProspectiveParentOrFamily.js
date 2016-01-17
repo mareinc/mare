@@ -255,7 +255,20 @@ ProspectiveParentOrFamily.schema.pre('save', function(next) {
 	'use strict';
 
 	this.contact1.name.full = this.contact1.name.first + ' ' + this.contact1.name.last;
-	this.contact2.name.full = this.contact2.name.first + ' ' + this.contact2.name.last;
+
+	// if both the first and last names are set for the second contact, set the full name to 'first last'
+	// if only the first name is set, set the full name to the first name
+	// if only the last name is set, set the full name to the last name
+	// if neither the first nor the last name have been entered, set the full name to an empty string
+	if(this.contact2.name.first && this.contact2.name.first.length > 0 && this.contact2.name.last && this.contact2.name.last.length > 0) {
+		this.contact2.name.full = this.contact2.name.first + ' ' + this.contact2.name.last;
+	} else if(this.contact2.name.first && this.contact2.name.first.length > 0 && (!this.contact2.name.last || !this.contact2.name.last.length > 0)) {
+		this.contact2.name.full = this.contact2.name.first;
+	} else if((!this.contact2.name.first || !this.contact2.name.first.length > 0) && this.contact2.name.last && this.contact2.name.last.length > 0) {
+		this.contact2.name.full = this.contact2.name.last;
+	} else {
+		this.contact2.name.full = '';
+	}
 
 	// TODO: Assign a registration number if one isn't assigned
 	next();
