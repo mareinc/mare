@@ -9,7 +9,6 @@ var ProspectiveParentOrFamily = new keystone.List('Prospective Parent or Family'
 	defaultSort: 'contact1.name.full'
 });
 
-
 // Create fields
 ProspectiveParentOrFamily.add('Permissions', {
 
@@ -37,7 +36,7 @@ ProspectiveParentOrFamily.add('Permissions', {
 		name: {
 			first: { type: Types.Text, label: 'first Name', required: true, index: true, initial: true },
 			last: { type: Types.Text, label: 'last Name', required: true, index: true, initial: true },
-			full: { type: Types.Text, label: 'name', hidden: true, noedit: true }
+			full: { type: Types.Text, label: 'name', hidden: true, noedit: true, initial: false }
 		},
 
 		phone: {
@@ -164,7 +163,7 @@ ProspectiveParentOrFamily.add('Permissions', {
 	homestudy: {
 		completed: { type: Types.Boolean, label: 'homestudy completed', index: true, initial: true },
 		initialDate: { type: Types.Text, label: 'initial date homestudy completed', note: 'mm/dd/yyyy', dependsOn: { 'homestudy.completed': true }, initial: true },
-		mostRecentDate: { type: Types.Text, label: 'most recent date homestudy completed', note: 'mm/dd/yyyy', dependsOn: { 'homestudy.completed': true }, initial: true }
+		mostRecentDate: { type: Types.Text, label: 'most recent update completed', note: 'mm/dd/yyyy', dependsOn: { 'homestudy.completed': true }, initial: true }
 	},
 
 	onlineMatching: {
@@ -210,7 +209,7 @@ ProspectiveParentOrFamily.add('Permissions', {
 }, 'Info Preferences', {
 
 	infoPacket: {
-		packet: { type: Types.Select, options: 'english, spanish, none', label: 'Packet', index: true, initial: true },
+		packet: { type: Types.Select, options: 'English, Spanish, none', label: 'Packet', index: true, initial: true },
 		date: { type: Types.Text, label: 'date info packet sent', note: 'mm/dd/yyyy', initial: true },
 		notes: { type: Types.Textarea, label: 'notes', initial: true },
 		mailingLists: { type: Types.Relationship, label: 'mailing lists', ref: 'Mailing List', many: true, index: true, initial: true }
@@ -221,26 +220,32 @@ ProspectiveParentOrFamily.add('Permissions', {
 	matchingPreferences: {
 		male: { type: Types.Boolean, label: 'male', index: true, initial: true },
 		female: { type: Types.Boolean, label: 'female', index: true, initial: true },
-		race: { type: Types.Relationship, label: 'race', ref: 'Race', index: true, initial: true },
-		disabilities: { type: Types.Relationship, label: 'disabilities', ref: 'Disability', index: true, initial: true },
-		physicallyChallenged: { type: Types.Boolean, label: 'physically challenged', index: true, initial: true },
-		developmentallyChallenged: { type: Types.Boolean, label: 'developmentally challenged', index: true, initial: true },
 		legalRisk: { type: Types.Boolean, label: 'legal risk', index: true, initial: true },
-		siblingContact: { type: Types.Boolean, label: 'contact with siblings', index: true, initial: true },
-		birthFamilyContact: { type: Types.Boolean, label: 'contact with birth parents', index: true, initial: true },
-		numberOfChildrenToAdopt: { type: Types.Number, label: 'number of children to adopt', index: true, initial: true },
-		otherConsiderations: { type: Types.Relationship, label: 'other considerations', ref: 'Child Placement Consideration', initial: true },
 
 		adoptionAges: {
 			from: { type: Types.Number, label: 'from age', index: true, initial: true },
 			to: { type: Types.Number, label: 'to age', index: true, initial: true }
 		},
 
+		numberOfChildrenToAdopt: { type: Types.Number, label: 'number of children to adopt', index: true, initial: true },
+		siblingContact: { type: Types.Boolean, label: 'contact with siblings', index: true, initial: true },
+		birthFamilyContact: { type: Types.Boolean, label: 'contact with birth parents', index: true, initial: true },
+		race: { type: Types.Relationship, label: 'race', ref: 'Race', many: true, index: true, initial: true },
+
 		maxNeeds: {
 			physical: { type: Types.Select, options: 'none, mild, moderate, severe', label: 'maximum physical needs', index: true, initial: true },
 			intellectual: { type: Types.Select, options: 'none, mild, moderate, severe', label: 'maximum intellectual needs', index: true, initial: true },
 			emotional: { type: Types.Select, options: 'none, mild, moderate, severe', label: 'maximum emotional needs', index: true, initial: true }
-		}
+		},
+
+		disabilities: { type: Types.Relationship, label: 'disabilities', ref: 'Disability', many: true, index: true, initial: true },
+		otherConsiderations: { type: Types.Relationship, label: 'other considerations', ref: 'Child Placement Consideration', initial: true },
+
+		physicallyChallenged: { type: Types.Boolean, label: 'physically challenged', index: true, initial: true },
+		developmentallyChallenged: { type: Types.Boolean, label: 'developmentally challenged', index: true, initial: true },
+
+
+
 	}
 
 });
