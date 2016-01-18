@@ -23,5 +23,5 @@ SuccessStory.schema.pre('save', function(next) {
 });
 
 // Define default columns in the admin interface and register the model
-SuccessStory.defaultColumns = 'title, url';
+SuccessStory.defaultColumns = 'heading';
 SuccessStory.register();
