@@ -9,7 +9,7 @@ var ChildPlacementConsideration = new keystone.List('Child Placement Considerati
 
 // Create fields
 ChildPlacementConsideration.add({
-	childPlacementConsideration: { type: Types.Text, label: 'Child Placement Consideration', required: true, index: true, initial: true }
+	childPlacementConsideration: { type: Types.Text, label: 'child placement consideration', required: true, index: true, initial: true }
 });
 
 // Define default columns in the admin interface and register the model

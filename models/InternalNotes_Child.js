@@ -11,11 +11,11 @@ var InternalNotes = new keystone.List('Internal Notes', {
 // Create fields
 InternalNotes.add({
 
-    noteId: { type: Types.Number, label: 'Note ID', required: true, initial: true, noedit: true },
-    child: { type: Types.Relationship, label: 'Child', ref: 'User', required: true, initial: true, noedit: true },
-    date: { type: Types.Text, label: 'Note Date', note: 'mm/dd/yyyy', required: true, initial: true, noedit: true },
-    employee: { type: Types.Relationship, label: 'Note Creator', ref: 'User', required: true, initial: true, noedit: true },
-    note: { type: Types.Textarea, label: 'Note', required: true, initial: true, noedit: true }
+    noteId: { type: Types.Number, label: 'note ID', required: true, initial: true, noedit: true },
+    child: { type: Types.Relationship, label: 'child', ref: 'User', required: true, initial: true, noedit: true },
+    date: { type: Types.Text, label: 'note date', note: 'mm/dd/yyyy', required: true, initial: true, noedit: true },
+    employee: { type: Types.Relationship, label: 'note creator', ref: 'User', required: true, initial: true, noedit: true },
+    note: { type: Types.Textarea, label: 'note', required: true, initial: true, noedit: true }
 
 });
 

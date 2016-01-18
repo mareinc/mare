@@ -9,7 +9,7 @@ var Residence = new keystone.List('Residence', {
 
 // Create fields
 Residence.add({
-	residence: { type: Types.Text, label: 'Residence', required: true, index: true, initial: true }
+	residence: { type: Types.Text, label: 'residence', required: true, index: true, initial: true }
 });
 
 // Define default columns in the admin interface and register the model

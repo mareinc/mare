@@ -9,7 +9,7 @@ var SocialWorkerPosition = new keystone.List('Social Worker Position', {
 
 // Create fields
 SocialWorkerPosition.add({
-	position: { type: Types.Text, label: 'Position', required: true, index: true, initial: true }
+	position: { type: Types.Text, label: 'position', required: true, index: true, initial: true }
 });
 
 // Define default columns in the admin interface and register the model

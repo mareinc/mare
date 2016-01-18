@@ -9,7 +9,7 @@ var Disability = new keystone.List('Disability', {
 
 // Create fields
 Disability.add({
-	disability: { type: Types.Text, label: 'Disability', required: true, index: true, initial: true }
+	disability: { type: Types.Text, label: 'disability', required: true, index: true, initial: true }
 });
 
 // Define default columns in the admin interface and register the model

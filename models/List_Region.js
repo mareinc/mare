@@ -9,7 +9,7 @@ var Region = new keystone.List('Region', {
 
 // Create fields
 Region.add({
-	region: { type: Types.Text, label: 'Region', required: true, index: true, initial: true }
+	region: { type: Types.Text, label: 'region', required: true, index: true, initial: true }
 });
 
 // Define default columns in the admin interface and register the model

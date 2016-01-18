@@ -9,7 +9,7 @@ var InquiryType = new keystone.List('Inquiry Type', {
 
 // Create fields
 InquiryType.add({
-	inquiryType: { type: Types.Text, label: 'Inquiry Type', required: true, index: true, initial: true }
+	inquiryType: { type: Types.Text, label: 'inquiry type', required: true, index: true, initial: true }
 });
 
 // Define default columns in the admin interface and register the model

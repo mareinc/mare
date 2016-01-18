@@ -9,7 +9,7 @@ var Language = new keystone.List('Language', {
 
 // Create fields
 Language.add({
-	language: { type: Types.Text, label: 'Language', required: true, index: true, initial: true }
+	language: { type: Types.Text, label: 'language', required: true, index: true, initial: true }
 });
 
 // Define default columns in the admin interface and register the model

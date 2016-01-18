@@ -10,22 +10,22 @@ var Agency = new keystone.List('Agency', {
 
 // Create fields
 Agency.add({
-	code: { type: Types.Number, label: 'Agency Code', required: true, initial: true },
-	name: { type: Types.Text, label: 'Agency Name', required: true, initial: true },
+	code: { type: Types.Number, label: 'agency code', required: true, initial: true },
+	name: { type: Types.Text, label: 'agency name', required: true, initial: true },
 
-	phone: { type: Types.Text, label: 'Phone Number', initial: true },
-	fax: { type: Types.Text, label: 'Fax Number', initial: true },
+	phone: { type: Types.Text, label: 'phone number', initial: true },
+	fax: { type: Types.Text, label: 'fax number', initial: true },
 
 	address: {
-		street1: { type: Types.Text, label: 'Address Line 1', initial: true },
-		street2: { type: Types.Text, label: 'Address Line 2', initial: true },
-		city: { type: Types.Text, label: 'City', initial: true },
-		state: { type: Types.Relationship, label: 'State', ref: 'State', index: true, initial: true },
-		zipCode: { type: Types.Text, label: 'Zip code', index: true, initial: true }
+		street1: { type: Types.Text, label: 'address line 1', initial: true },
+		street2: { type: Types.Text, label: 'address line 2', initial: true },
+		city: { type: Types.Text, label: 'city', initial: true },
+		state: { type: Types.Relationship, label: 'state', ref: 'State', index: true, initial: true },
+		zipCode: { type: Types.Text, label: 'zip code', index: true, initial: true }
 	},
 
-	url: { type: Types.Text, label: 'Agency URL', initial: true },
-	region: { type: Types.Relationship, label: 'Region', ref: 'Region', initial: true }
+	url: { type: Types.Text, label: 'agency url', initial: true },
+	region: { type: Types.Relationship, label: 'region', ref: 'Region', initial: true }
 
 });
 
