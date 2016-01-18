@@ -6,7 +6,7 @@ var Placement = new keystone.List('Placement', {
     track: true,
     autokey: { path: 'key', from: 'slug', unique: true },
     map: { name: 'slug' }
-}); 
+});
 
 // Create fields
 Placement.add('Date', {
@@ -21,7 +21,7 @@ Placement.add('Date', {
     agency: { type: Types.Relationship, label: 'agency', ref: 'Agency', required: true, initial: true },
     nonMAREPlacement: { type: Types.Boolean, label: 'non-MARE placement', index: true, initial: true },
     constellation: { type: Types.Relationship, label: 'constellation', ref: 'Family Constellation', index: true, initial: true },
-    race: { type: Types.Relationship, label: 'race', ref: 'Race', index: true, initial: true },
+    race: { type: Types.Relationship, label: 'race', ref: 'Race', many: true, index: true, initial: true },
     source: { type: Types.Relationship, label: 'sources', ref: 'Source', index: true, initial: true },
     notes: { type: Types.Textarea, label: 'notes', initial: true }
 
