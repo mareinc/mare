@@ -95,39 +95,39 @@ ProspectiveParentOrFamily.add('Permissions', {
 	numberOfChildren: { type: Types.Select, label: 'number of children', options: '1, 2, 3, 4, 5, 6+', required: true, initial: true },
 
 	currentChild1: {
-		name: { type: Types.Text, label: 'child 1 name:', initial: true, dependsOn: { numberOfChildren: ['1', '2', '3', '4', '5', '6+'] } },
-		birthDate: { type: Types.Text, label: 'child 1 date of birth', note: 'mm/dd/yyyy', initial: true, dependsOn: { numberOfChildren: ['1', '2', '3', '4', '5', '6+'] } },
-		type: { type: Types.Relationship, label: 'child 1 type', ref: 'Child Type', initial: true, dependsOn: { numberOfChildren: ['1', '2', '3', '4', '5', '6+'] } }
+		name: { type: Types.Text, label: 'child 1 name:', dependsOn: { numberOfChildren: ['1', '2', '3', '4', '5', '6+'] }, initial: true },
+		birthDate: { type: Types.Text, label: 'child 1 date of birth', note: 'mm/dd/yyyy', dependsOn: { numberOfChildren: ['1', '2', '3', '4', '5', '6+'] }, initial: true },
+		type: { type: Types.Relationship, label: 'child 1 type', ref: 'Child Type', dependsOn: { numberOfChildren: ['1', '2', '3', '4', '5', '6+'] }, initial: true }
 	},
 
 	currentChild2: {
-		name: { type: Types.Text, label: 'child 2 name:', initial: true, dependsOn: { numberOfChildren: ['2', '3', '4', '5', '6+'] } },
-		birthDate: { type: Types.Text, label: 'child 2 date of birth', note: 'mm/dd/yyyy', initial: true, dependsOn: { numberOfChildren: ['2', '3', '4', '5', '6+'] } },
-		type: { type: Types.Relationship, label: 'child 2 type', ref: 'Child Type', initial: true, dependsOn: { numberOfChildren: ['2', '3', '4', '5', '6+'] } }
+		name: { type: Types.Text, label: 'child 2 name:', dependsOn: { numberOfChildren: ['2', '3', '4', '5', '6+'] }, initial: true },
+		birthDate: { type: Types.Text, label: 'child 2 date of birth', note: 'mm/dd/yyyy', dependsOn: { numberOfChildren: ['2', '3', '4', '5', '6+'] }, initial: true },
+		type: { type: Types.Relationship, label: 'child 2 type', ref: 'Child Type', dependsOn: { numberOfChildren: ['2', '3', '4', '5', '6+'] }, initial: true }
 	},
 
 	currentChild3: {
-		name: { type: Types.Text, label: 'child 3 name:', initial: true, dependsOn: { numberOfChildren: ['3', '4', '5', '6+'] } },
-		birthDate: { type: Types.Text, label: 'child 3 date of birth', note: 'mm/dd/yyyy', initial: true, dependsOn: { numberOfChildren: ['3', '4', '5', '6+'] } },
-		type: { type: Types.Relationship, label: 'child 3 type', ref: 'Child Type', initial: true, dependsOn: { numberOfChildren: ['3', '4', '5', '6+'] } }
+		name: { type: Types.Text, label: 'child 3 name:', dependsOn: { numberOfChildren: ['3', '4', '5', '6+'] }, initial: true },
+		birthDate: { type: Types.Text, label: 'child 3 date of birth', note: 'mm/dd/yyyy', dependsOn: { numberOfChildren: ['3', '4', '5', '6+'] }, initial: true },
+		type: { type: Types.Relationship, label: 'child 3 type', ref: 'Child Type', dependsOn: { numberOfChildren: ['3', '4', '5', '6+'] }, initial: true }
 	},
 
 	currentChild4: {
-		name: { type: Types.Text, label: 'child 4 name:', initial: true, dependsOn: { numberOfChildren: ['4', '5', '6+'] } },
-		birthDate: { type: Types.Text, label: 'child 4 date of birth', note: 'mm/dd/yyyy', initial: true, dependsOn: { numberOfChildren: ['4', '5', '6+'] } },
-		type: { type: Types.Relationship, label: 'child 4 type', ref: 'Child Type', initial: true, dependsOn: { numberOfChildren: ['4', '5', '6+'] } }
+		name: { type: Types.Text, label: 'child 4 name:', dependsOn: { numberOfChildren: ['4', '5', '6+'] }, initial: true },
+		birthDate: { type: Types.Text, label: 'child 4 date of birth', note: 'mm/dd/yyyy', dependsOn: { numberOfChildren: ['4', '5', '6+'] }, initial: true },
+		type: { type: Types.Relationship, label: 'child 4 type', ref: 'Child Type', dependsOn: { numberOfChildren: ['4', '5', '6+'] }, initial: true }
 	},
 
 	currentChild5: {
-		name: { type: Types.Text, label: 'child 5 name:', initial: true, dependsOn: { numberOfChildren: ['5', '6+'] } },
-		birthDate: { type: Types.Text, label: 'child 5 date of birth', note: 'mm/dd/yyyy', initial: true, dependsOn: { numberOfChildren: ['5', '6+'] } },
-		type: { type: Types.Relationship, label: 'child 5 type', ref: 'Child Type', initial: true, dependsOn: { numberOfChildren: ['5', '6+'] } }
+		name: { type: Types.Text, label: 'child 5 name:', dependsOn: { numberOfChildren: ['5', '6+'] }, initial: true },
+		birthDate: { type: Types.Text, label: 'child 5 date of birth', note: 'mm/dd/yyyy', dependsOn: { numberOfChildren: ['5', '6+'] }, initial: true },
+		type: { type: Types.Relationship, label: 'child 5 type', ref: 'Child Type', dependsOn: { numberOfChildren: ['5', '6+'] }, initial: true }
 	},
 
 	currentChild6: {
-		name: { type: Types.Text, label: 'child 6 name:', initial: true, dependsOn: { numberOfChildren: ['6+'] } },
-		birthDate: { type: Types.Text, label: 'child 6 date of birth', note: 'mm/dd/yyyy', initial: true, dependsOn: { numberOfChildren: ['6+'] } },
-		type: { type: Types.Relationship, label: 'child 6 type', ref: 'Child Type', initial: true, dependsOn: { numberOfChildren: ['6+'] } }
+		name: { type: Types.Text, label: 'child 6 name:', dependsOn: { numberOfChildren: ['6+'] }, initial: true },
+		birthDate: { type: Types.Text, label: 'child 6 date of birth', note: 'mm/dd/yyyy', dependsOn: { numberOfChildren: ['6+'] }, initial: true },
+		type: { type: Types.Relationship, label: 'child 6 type', ref: 'Child Type', dependsOn: { numberOfChildren: ['6+'] }, initial: true }
 	}
 
 }, 'Other Considerations', {
@@ -239,12 +239,7 @@ ProspectiveParentOrFamily.add('Permissions', {
 		},
 
 		disabilities: { type: Types.Relationship, label: 'disabilities', ref: 'Disability', many: true, index: true, initial: true },
-		otherConsiderations: { type: Types.Relationship, label: 'other considerations', ref: 'Child Placement Consideration', initial: true },
-
-		physicallyChallenged: { type: Types.Boolean, label: 'physically challenged', index: true, initial: true },
-		developmentallyChallenged: { type: Types.Boolean, label: 'developmentally challenged', index: true, initial: true },
-
-
+		otherConsiderations: { type: Types.Relationship, label: 'other considerations', ref: 'Child Placement Consideration', initial: true }
 
 	}
 

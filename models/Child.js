@@ -18,31 +18,31 @@ Child.add({ heading: 'Child Information' }, {
 
 	name: {
 		first: { type: Types.Text, label: 'first name', required: true, index: true, initial: true },
-		middle: { type: Types.Text, label: 'middle name' },
+		middle: { type: Types.Text, label: 'middle name', initial: true },
 		last: { type: Types.Text, label: 'last name', required: true, index: true, initial: true },
-		alias: { type: Types.Text, label: 'alias' },
-		nickName: { type: Types.Text, label: 'nickname' },
+		alias: { type: Types.Text, label: 'alias', initial: true },
+		nickName: { type: Types.Text, label: 'nickname', initial: true },
 		full: { type: Types.Text, label: 'name', hidden: true, noedit: true, initial: false },
 		identifying: { type: Types.Text, hidden: true }
 	},
 
 	birthDate: { type: Types.Text, label: 'date of birth', note: 'mm/dd/yyyy', required: true, initial: true },
 	language: { type: Types.Relationship, label: 'language', ref: 'Language', many: true, required: true, initial: true },
-	statusChangeDate: { type: Types.Text, label: 'status change date', note: 'mm/dd/yyyy' }, // TODO: Logic needed, see line 14 of https://docs.google.com/spreadsheets/d/1Opb9qziX2enTehJx5K1J9KAT7v-j2yAdqwyQUMSsFwc/edit#gid=1235141373
+	statusChangeDate: { type: Types.Text, label: 'status change date', note: 'mm/dd/yyyy', initial: true }, // TODO: Logic needed, see line 14 of https://docs.google.com/spreadsheets/d/1Opb9qziX2enTehJx5K1J9KAT7v-j2yAdqwyQUMSsFwc/edit#gid=1235141373
 	status: { type: Types.Relationship, label: 'status', ref: 'Child Status', required: true, index: true, initial: true },
 	gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', required: true, index: true, initial: true },
 	race: { type: Types.Relationship, label: 'race', ref: 'Race', many: true, required: true, index: true, initial: true },
 	legalStatus: { type: Types.Relationship, label: 'legal status', ref: 'Legal Status', required: true, index: true, initial: true },
 
-	hasContactWithSiblings: { type: Types.Boolean, label: 'has contact with siblings?', index: true },
-	siblingTypeOfContact: { type: Types.Text, label: 'type of contact' },
-	siblingContacts: { type: Types.Relationship, label: 'siblings to be placed together (comma separated)', ref: 'Child', many: true },
-	hasContactWithBirthFamily: { type: Types.Boolean, label: 'has contact with birth family?' },
-	birthFamilyTypeOfContact: { type: Types.Text, label: 'type of contact' },
+	hasContactWithSiblings: { type: Types.Boolean, label: 'has contact with siblings?', index: true, initial: true },
+	siblingTypeOfContact: { type: Types.Text, label: 'type of contact', initial: true },
+	siblingContacts: { type: Types.Relationship, label: 'siblings to be placed together (comma separated)', ref: 'Child', many: true, initial: true },
+	hasContactWithBirthFamily: { type: Types.Boolean, label: 'has contact with birth family?', initial: true },
+	birthFamilyTypeOfContact: { type: Types.Text, label: 'type of contact', initial: true },
 
-	residence: { type: Types.Relationship, label: 'where does the child presently live?', ref: 'Residence' },
-	city: { type: Types.Relationship, label: 'city/town of child\'s current location', ref: 'City or Town' },
-	careFacilityName: { type: Types.Text, label: 'name of residential/group care facility' },
+	residence: { type: Types.Relationship, label: 'where does the child presently live?', ref: 'Residence', initial: true },
+	city: { type: Types.Relationship, label: 'city/town of child\'s current location', ref: 'City or Town', initial: true },
+	careFacilityName: { type: Types.Text, label: 'name of residential/group care facility', initial: true },
 	dateMovedToResidence: { type: Types.Text, label: 'date moved to current residence', note: 'mm/dd/yyyy', required: true, initial: true }
 
 }, { heading: 'Special Needs' }, {
@@ -54,22 +54,22 @@ Child.add({ heading: 'Child Information' }, {
 	intellectualNeeds: { type: Types.Select, label: 'intellectual needs', options: 'None, Mild, Moderate, Severe', required: true, initial: true },
 	intellectualNeedsDescription: { type: Types.Textarea, label: 'description of intellectual needs', dependsOn: { intellectualNeeds: ['Mild', 'Moderate', 'Severe'] }, initial: true },
 
-	disabilities: { type: Types.Relationship, label: 'disabilities', ref: 'Disability', many: true },
+	disabilities: { type: Types.Relationship, label: 'disabilities', ref: 'Disability', many: true, initial: true },
 
-	specialNeedsNotes: { type: Types.Textarea, label: 'notes', dependsOn: { physicalNeeds: ['Mild', 'Moderate', 'Severe'], emotionalNeeds: ['Mild', 'Moderate', 'Severe'], intellectualNeeds: ['Mild', 'Moderate', 'Severe'] } }
+	specialNeedsNotes: { type: Types.Textarea, label: 'notes', dependsOn: { physicalNeeds: ['Mild', 'Moderate', 'Severe'], emotionalNeeds: ['Mild', 'Moderate', 'Severe'], intellectualNeeds: ['Mild', 'Moderate', 'Severe'] }, initial: true }
 	// specialNeedsNotes: { type: Types.Textarea, label: 'Notes', initial: true }
 
 }, { heading: 'Placement Considerations' }, {
 
 	recommendedFamilyConstellation: { type: Types.Relationship, label: 'recommended family constellations', ref: 'Family Constellation', many: true, required: true, index: true, initial: true },
 	otherFamilyConstellationConsideration: { type: Types.Relationship, label: 'other family constellation consideration', ref: 'Other Family Constellation Consideration', many: true, index: true, initial: true },
-	childPlacementConsiderations: { type: Types.Relationship, label: 'child placement considerations', ref: 'Child Placement Consideration', many: true, index: true }
+	childPlacementConsiderations: { type: Types.Relationship, label: 'child placement considerations', ref: 'Child Placement Consideration', many: true, index: true, initial: true }
 
 }, { heading: 'Agency Information' }, {
 
 	registeredBy: { type: Types.Select, label: 'registered by', options: 'Unknown, Adoption Worker, Recruitment Worker', required: true, index: true, initial: true },
-	adoptionWorker: { type: Types.Relationship, label: 'adoption worker', ref: 'Social Worker', filters: { position: 'adoption worker' } },
-	recruitmentWorker: { type: Types.Relationship, label: 'recruitment worker', ref: 'Social Worker', filters: { position: 'recruitment worker' } }
+	adoptionWorker: { type: Types.Relationship, label: 'adoption worker', ref: 'Social Worker', filters: { position: 'adoption worker' }, initial: true },
+	recruitmentWorker: { type: Types.Relationship, label: 'recruitment worker', ref: 'Social Worker', filters: { position: 'recruitment worker' }, initial: true }
 
 }, { heading: 'Photolisting Information' }, {
 
@@ -79,46 +79,46 @@ Child.add({ heading: 'Child Information' }, {
 		part3: { type: Types.Textarea, label: 'if I could have my own special wish...', required: true, initial: true }
 	},
 
-	hasPhotolistingWriteup: { type: Types.Boolean, label: 'photolisting writeup', index: true },
-	photolistingWriteupDate: { type: Types.Text, label: 'date of photolisting writeup', note: 'mm/dd/yyyy', dependsOn: { hasPhotolistingWriteup: true } },
-	hasPhotolistingPhoto: { type: Types.Boolean, label: 'photolisting photo', index: true },
-	photolistingPhotoDate: { type: Types.Text, label: 'date of photolisting photo', note: 'mm/dd/yyyy', dependsOn: { hasPhotolistingPhoto: true } },
-	photolistingPageNumber: { type: Number, label: 'photolisting page', format: false, index: true },
-	previousPhotolistingPageNumber: { type: Number, label: 'previous photolisting page', format: false, index: true },
+	hasPhotolistingWriteup: { type: Types.Boolean, label: 'photolisting writeup', index: true, initial: true },
+	photolistingWriteupDate: { type: Types.Text, label: 'date of photolisting writeup', note: 'mm/dd/yyyy', dependsOn: { hasPhotolistingWriteup: true }, initial: true },
+	hasPhotolistingPhoto: { type: Types.Boolean, label: 'photolisting photo', index: true, initial: true },
+	photolistingPhotoDate: { type: Types.Text, label: 'date of photolisting photo', note: 'mm/dd/yyyy', dependsOn: { hasPhotolistingPhoto: true }, initial: true },
+	photolistingPageNumber: { type: Number, label: 'photolisting page', format: false, index: true, initial: true },
+	previousPhotolistingPageNumber: { type: Number, label: 'previous photolisting page', format: false, index: true, initial: true },
 
 	// image: { type: Types.CloudinaryImage, folder: 'children/', select: true, selectPrefix: 'children/', publicID: 'slug', autoCleanup: true },
 	image: { type: Types.CloudinaryImage, label: 'image', folder: 'children/', publicID: 'name.identifying', autoCleanup: true },
 	galleryImage: {type: Types.Url, hidden: true },
 	detailImage: {type: Types.Url, hidden: true },
-	extranetUrl: { type: Types.Url, label: 'extranet and related profile url' } // Since this is redudant as this just points the the url where the photo exists (the child's page), we may hide this field.  This must be kept in as it will help us track down the child information in the old system in the event of an issue.
+	extranetUrl: { type: Types.Url, label: 'extranet and related profile url', initial: true } // Since this is redudant as this just points the the url where the photo exists (the child's page), we may hide this field.  This must be kept in as it will help us track down the child information in the old system in the event of an issue.
 
 }, { heading: 'Recruitment Options' }, {
 
-	hasVideoSnapshot: { type: Types.Boolean, label: 'video snapshot', index: true },
-	videoSnapshotDate: { type: Types.Text, label: 'date of video snapshot', note: 'mm/dd/yyyy', dependsOn: { hasVideoSnapshot: true } },
+	hasVideoSnapshot: { type: Types.Boolean, label: 'video snapshot', index: true, initial: true },
+	videoSnapshotDate: { type: Types.Text, label: 'date of video snapshot', note: 'mm/dd/yyyy', dependsOn: { hasVideoSnapshot: true }, initial: true },
 
-	onMAREWebsite: { type: Types.Boolean, label: 'MARE website', index: true },
-	onMAREWebsiteDate: { type: Types.Text, label: 'date on MARE website', note: 'mm/dd/yyyy', dependsOn: { onMAREWebsite: true } },
+	onMAREWebsite: { type: Types.Boolean, label: 'MARE website', index: true, initial: true },
+	onMAREWebsiteDate: { type: Types.Text, label: 'date on MARE website', note: 'mm/dd/yyyy', dependsOn: { onMAREWebsite: true }, initial: true },
 
-	onAdoptuskids: { type: Types.Boolean, label: 'Adoptuskids website', index: true },
-	onAdoptuskidsDate: { type: Types.Text, label: 'date on Adoptuskids', note: 'mm/dd/yyyy', dependsOn: { onAdoptuskids: true } },
+	onAdoptuskids: { type: Types.Boolean, label: 'Adoptuskids website', index: true, initial: true },
+	onAdoptuskidsDate: { type: Types.Text, label: 'date on Adoptuskids', note: 'mm/dd/yyyy', dependsOn: { onAdoptuskids: true }, initial: true },
 
-	onOnlineMatching: { type: Types.Boolean, label: 'online matching website', index: true },
-	onOnlineMatchingDate: { type: Types.Text, label: 'date on online matching', note: 'mm/dd/yyyy', dependsOn: { onOnlineMatching: true } },
+	onOnlineMatching: { type: Types.Boolean, label: 'online matching website', index: true, initial: true },
+	onOnlineMatchingDate: { type: Types.Text, label: 'date on online matching', note: 'mm/dd/yyyy', dependsOn: { onOnlineMatching: true }, initial: true },
 
-	wednesdaysChild: { type: Types.Boolean, label: 'Wednesday\'s Child?' },
-	wednesdaysChildDate: { type: Types.Text, label: 'date of Wednesday\'s Child', note: 'mm/dd/yyyy', dependsOn: { wednesdaysChild: true } },
+	wednesdaysChild: { type: Types.Boolean, label: 'Wednesday\'s Child?', initial: true },
+	wednesdaysChildDate: { type: Types.Text, label: 'date of Wednesday\'s Child', note: 'mm/dd/yyyy', dependsOn: { wednesdaysChild: true }, initial: true },
 
-	coalitionMeeting: { type: Types.Boolean, label: 'coalition meeting', index: true },
-	coalitionMeetingDate: { type: Types.Text, label: 'date of coalition meeting', note: 'mm/dd/yyyy', dependsOn: { coalitionMeeting: true } },
+	coalitionMeeting: { type: Types.Boolean, label: 'coalition meeting', index: true, initial: true },
+	coalitionMeetingDate: { type: Types.Text, label: 'date of coalition meeting', note: 'mm/dd/yyyy', dependsOn: { coalitionMeeting: true }, initial: true },
 
-	matchingEvent: { type: Types.Boolean, label: 'matching event', index: true },
-	matchingEventDate: { type: Types.Text, label: 'date of matching event', note: 'mm/dd/yyyy', dependsOn: { matchingEvent: true } },
+	matchingEvent: { type: Types.Boolean, label: 'matching event', index: true, initial: true },
+	matchingEventDate: { type: Types.Text, label: 'date of matching event', note: 'mm/dd/yyyy', dependsOn: { matchingEvent: true }, initial: true },
 
-	adoptionParties: { type: Types.Relationship, label: 'adoption parties', ref: 'Event', filters: { type: 'adoption party' }, many: true },
+	adoptionParties: { type: Types.Relationship, label: 'adoption parties', ref: 'Event', filters: { type: 'adoption party' }, many: true, initial: true },
 
-	mediaEligibility: { type: Types.Relationship, label: 'media eligibility', ref: 'Media Eligibility', many: true },
-	otherMediaDescription: { type: Types.Textarea, label: 'description', dependsOn: { mediaEligibility: 'Other' } } // THIS DOESN'T WORK, MAKE IT WORK!
+	mediaEligibility: { type: Types.Relationship, label: 'media eligibility', ref: 'Media Eligibility', many: true, initial: true },
+	otherMediaDescription: { type: Types.Textarea, label: 'description', dependsOn: { mediaEligibility: 'Other' }, initial: true } // THIS DOESN'T WORK, MAKE IT WORK!
 
 }, { heading: 'Attachments' }, {
 

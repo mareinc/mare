@@ -16,7 +16,7 @@ Placement.add('Date', {
     }
 
 }, 'Placement', {
-    child: { type: Types.Relationship, label: 'child', ref: 'Child', required: true, index: true, initial: true },
+    child: { type: Types.Relationship, label: 'child', ref: 'Child', many: true, required: true, index: true, initial: true },
     prospectiveParentOrFamily: { type: Types.Relationship, label: 'prospective parent or family', ref: 'Prospective Parent or Family', required: true, index: true, initial: true },
     agency: { type: Types.Relationship, label: 'agency', ref: 'Agency', required: true, initial: true },
     nonMAREPlacement: { type: Types.Boolean, label: 'non-MARE placement', index: true, initial: true },

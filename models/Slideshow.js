@@ -10,7 +10,7 @@ var Slideshow = new keystone.List('Slideshow', {
 
 // Create fields
 Slideshow.add({
-	title: { type: Types.Text, initial: true }
+	title: { type: Types.Text, label: 'slideshow title', initial: true }
 });
 
 Slideshow.relationship({ path: 'slideshow-items', label: 'slide', ref: 'Slideshow Item', refPath: 'parent' });

@@ -15,7 +15,7 @@ Form.add({
 	url: { type: Types.Url, noedit: true },
 	contact: { type: Types.Relationship, ref: 'User', label: 'contact person', dependsOn: { selectUnregisteredContact: false }, initial: true },
 	selectUnregisteredContact: { type: Types.Boolean, label: 'contact person isn\'t registered with MARE', initial: true },
-	unregisteredContact: { type: Types.Text, label: 'contact person\'s email', dependsOn: { selectUnregisteredContact: true } },
+	unregisteredContact: { type: Types.Text, label: 'contact person\'s email', dependsOn: { selectUnregisteredContact: true }, initial: true },
 	hasRange: { type: Types.Boolean, label: 'form valid for specific time range', initial: true },
 	availableFrom: { type: Types.Text, label: 'available from', dependsOn: { selectFormRange: true }, initial: true },
 	availableTo: { type: Types.Text, label: 'available to', dependsOn: { selectFormRange: true }, initial: true },

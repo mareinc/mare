@@ -1,6 +1,6 @@
-/* Fields in old system, missing from the new one
+2/* Fields in old system, missing from the new one
 
-rcs_id ( Recruitment Source ID )
+rcs_id ( Recruitment Source ID )  This will be the list of 300+ sources, we don't need it because we're typing a new name
 location ( We break it out into multiple fields which means importing might be a manual process )
 directions
 schedule_datetime ( Right now they just track the start date/time )

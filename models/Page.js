@@ -13,7 +13,7 @@ var Page = new keystone.List('Page', {
 Page.add({
 	title: { type: Types.Text, label: 'page title', required: true, index: true, initial: true },
 	url: { type: Types.Url, noedit: true },
-	content: { type: Types.Html, wysiwyg: true }
+	content: { type: Types.Html, wysiwyg: true, initial: true }
 });
 
 // Pre Save
