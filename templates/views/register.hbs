@@ -23,6 +23,10 @@
 				<div class="page-header">
 					<span class="page-header-text">Register with MARE</span>
 				</div>
+				{{#if registrationSubmitted}}
+					<h3>Thanks for registering.</h3>
+					<p>You can now try to log in.</p>
+				{{else}}
 				<div class="register-intro">
 					Lorem ipsum dolor sit amet, consectetur adipiscing elit. In gravida ultricies tempor. Aenean sodales rutrum urna in porta. Vestibulum in mi non risus mattis imperdiet eget ac metus. Sed mauris nunc, rutrum eu posuere a, vehicula vitae neque. Donec nec lorem laoreet, accumsan mauris vitae, bibendum metus. Donec sit amet odio luctus arcu suscipit laoreet a in dolor. Sed commodo sagittis mattis. Aenean cursus malesuada purus ut posuere.
 				</div>
@@ -38,6 +42,7 @@
 					<span class="required required-description">* Required</span>
 					<form action="/register" class="registration-form" method="POST">
 						<input type="hidden" class="registration-type" name="registrationType" value="siteVisitor">
+						<input type="hidden" name="action" value="register">
 						<div class="row form-group">
 							<div class="col-sm-12">
 								<input type="text" class="input" required id="site-user-first-name" name="firstName">
@@ -64,7 +69,7 @@
 						</div>
 						<div class="row form-group">
 							<div class="col-sm-12">
-								<input type="password" class="input" required id="site-user-confirm-password" name="confirmPassword">
+								<input type="password" class="input" required id="site-user-confirm-password" name="password_confirm">
 								<label for="site-user-confirm-password" class="label required-field">Confirm Password</label>
 							</div>
 						</div>
@@ -91,57 +96,9 @@
 						<div class="row form-group">
 							<div class="col-sm-12">
 								<select id="site-user-state" name="state" class="input">
-									<option>Alabama</option>
-									<option>Alaska</option>
-									<option>Arizona</option>
-									<option>Arkansas</option>
-									<option>California</option>
-									<option>Colorado</option>
-									<option>Connecticut</option>
-									<option>Delaware</option>
-									<option>District of Columbia</option>
-									<option>Florida</option>
-									<option>Georgia</option>
-									<option>Hawaii</option>
-									<option>Idaho</option>
-									<option>Illinois</option>
-									<option>Indiana</option>
-									<option>Iowa</option>
-									<option>Kansas</option>
-									<option>Kentucky</option>
-									<option>Louisiana</option>
-									<option>Maine</option>
-									<option>Maryland</option>
-									<option>Massachusetts</option>
-									<option>Michigan</option>
-									<option>Minnesota</option>
-									<option>Mississippi</option>
-									<option>Missouri</option>
-									<option>Montana</option>
-									<option>Nebraska</option>
-									<option>Nevada</option>
-									<option>New Hampshire</option>
-									<option>New Jersey</option>
-									<option>New Mexico</option>
-									<option>New York</option>
-									<option>North Carolina</option>
-									<option>North Dakota</option>
-									<option>Ohio</option>
-									<option>Oklahoma</option>
-									<option>Oregon</option>
-									<option>Pennsylvania</option>
-									<option>Rhode Island</option>
-									<option>South Carolina</option>
-									<option>South Dakota</option>
-									<option>Tennessee</option>
-									<option>Texas</option>
-									<option>Utah</option>
-									<option>Vermont</option>
-									<option>Virginia</option>
-									<option>Washington</option>
-									<option>West Virginia</option>
-									<option>Wisconsin</option>
-									<option>Wyoming</option>
+								{{#each state}}
+									<option value="{{_id}}">{{state}}</option>
+								{{/each}}
 								</select>
 								<label for="site-user-state" class="label">State</label>
 							</div>
@@ -261,7 +218,7 @@
 						</div>
 						<div class="row form-group">
 							<div class="col-sm-12">
-								<input type="password" class="input" required id="social-worker-confirm-password" name="confirmPassword">
+								<input type="password" class="input" required id="social-worker-confirm-password" name="password.confirm">
 								<label for="social-worker-confirm-password" class="label required-field">Confirm Password</label>
 							</div>
 						</div>
@@ -1223,7 +1180,7 @@
 						<button class="register" type="submit">Register</button>
 					</form>
 				</section>
-
+				{{/if}}
 			</section>
 		</div>
 	</div>

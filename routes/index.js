@@ -33,6 +33,7 @@ var routes = {
 
 // Setup Route Bindings
 exports = module.exports = function(app) {
+	
 	'use strict';
 	
 	// Views
@@ -44,7 +45,8 @@ exports = module.exports = function(app) {
 	app.get('/register'					, routes.views.register);
 	app.get('/preferences'				, middleware.requireUser, routes.views.preferences);
 
-	app.post('/register'				, middleware.registerUser);
+	//app.post('/register'				, middleware.registerUser);
+	app.post('/register'				, routes.views.register);
 	app.post('/login'					, middleware.login);
 	app.get('/logout'					, middleware.logout);
 

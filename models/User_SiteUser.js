@@ -58,6 +58,39 @@ SiteUser.schema.pre('save', function(next) {
 	next();
 });
 
+
+SiteUser.schema.post('save', function() {
+	this.sendNotificationEmail();
+});
+
+SiteUser.schema.methods.sendNotificationEmail = function(callback) {
+	
+	if ('function' !== typeof callback) {
+		callback = function() {
+			console.log('Inside keystone.Email() callback: ',arguments);
+		};
+	}
+	
+	var user = this;
+
+	//Find the email template in templates/emails/
+	new keystone.Email({
+    		templateExt: 'hbs',
+    		templateEngine: require('handlebars'),
+    		templateName: 'welcome'
+  	}).send({
+		to: ['tommysalsa@gmail.com', 'jared.j.collier@gmail.com'],
+		from: {
+			name: 'MARE',
+			email: 'info@mareinc.org'
+		},
+		subject: 'Thank you for registering',
+		message: 'This is a test welcome email from the MARE site. Thank you for registering!',
+		user: user
+	}, callback);
+	
+};
+
 // Define default columns in the admin interface and register the model
 SiteUser.defaultColumns = 'name.full, email, isActive, isVerified';
 SiteUser.register();
