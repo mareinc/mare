@@ -34,9 +34,8 @@ SocialWorker.add('Permissions', {
 
 	phone: {
 		work: { type: Types.Text, label: 'work phone number', initial: true },
-		home: { type: Types.Text, label: 'home phone number', initial: true },
 		cell: { type: Types.Text, label: 'cell phone number', initial: true },
-		preferred: { type: Types.Select, label: 'preferred phone', options: 'work, home, cell', initial: true }
+		preferred: { type: Types.Select, label: 'preferred phone', options: 'work, cell', initial: true }
 	},
 
 	address: {
@@ -52,7 +51,8 @@ SocialWorker.add('Permissions', {
 	// position: { type: Types.Relationship, label: 'Position', ref: 'Social Worker Position', initial: true },
 	position: { type: Types.Select, options: 'adoption worker, recruitment worker, supervisor, administrator, family worker, other', label: 'Position', initial: true },
 	agency: { type: Types.Relationship, label: 'agency', ref: 'Agency', initial: true },
-	title: { type: Types.Text, label: 'title', index: true, initial: true }
+	title: { type: Types.Text, label: 'title', index: true, initial: true },
+	notes: { type: Types.Textarea, label: 'notes', initial: true }
 
 });
 
