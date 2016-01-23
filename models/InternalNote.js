@@ -4,7 +4,8 @@ var keystone = require('keystone'),
 // Create model. Additional options allow menu name to be used what auto-generating URLs
 var InternalNotes = new keystone.List('Internal Note', {
     track: true,
-    autokey: { path: 'key', from: 'slug', unique: true }
+    autokey: { path: 'key', from: 'slug', unique: true },
+    defaultSort: 'date'
 });
 
 // Create fields
@@ -30,5 +31,5 @@ InternalNotes.schema.pre('save', function(next) {
 });
 
 // Define default columns in the admin interface and register the model
-InternalNotes.defaultColumns = 'date, child, note';
+InternalNotes.defaultColumns = 'date, child, family, note';
 InternalNotes.register();
