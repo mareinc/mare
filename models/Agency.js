@@ -10,7 +10,7 @@ var Agency = new keystone.List('Agency', {
 
 // Create fields
 Agency.add({
-	code: { type: Types.Number, label: 'agency code', required: true, initial: true },
+	code: { type: Types.Text, label: 'agency code', required: true, initial: true },
 	name: { type: Types.Text, label: 'agency name', required: true, initial: true },
 
 	phone: { type: Types.Text, label: 'phone number', initial: true },
@@ -21,11 +21,11 @@ Agency.add({
 		street2: { type: Types.Text, label: 'address line 2', initial: true },
 		city: { type: Types.Text, label: 'city', initial: true },
 		state: { type: Types.Relationship, label: 'state', ref: 'State', index: true, initial: true },
-		zipCode: { type: Types.Text, label: 'zip code', index: true, initial: true }
+		zipCode: { type: Types.Text, label: 'zip code', index: true, initial: true },
+		region: { type: Types.Relationship, label: 'region', ref: 'Region', initial: true }
 	},
 
 	url: { type: Types.Text, label: 'agency url', initial: true },
-	region: { type: Types.Relationship, label: 'region', ref: 'Region', initial: true }
 
 });
 
