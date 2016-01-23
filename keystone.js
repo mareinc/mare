@@ -23,7 +23,7 @@ keystone.init({
 	'views': 'templates/views',
 	'view engine': 'hbs',
 	'view cache': false,
-	
+
 	'custom engine': handlebars.create({
 		layoutsDir: 'templates/views/layouts',
 		partialsDir: 'templates/views/partials',
@@ -33,7 +33,7 @@ keystone.init({
 	}).engine,
 
 	'emails': 'templates/emails',
-	
+
 	'auto update': true,
 	'session': true,
 	'auth': true,
@@ -75,7 +75,7 @@ keystone.set('cloudinary secure', true);
 
 // Mandrill configuration
 // Tom Koch:
-// Commenting these out because further into the app, MANDRILL_APIKEY 
+// Commenting these out because further into the app, MANDRILL_APIKEY
 // turns out to be undefined. Email works when I commented these out.
 // See node_modules/keystone/index.js. That file already loads all of these
 // .env variables. Probably dont need to set theme here.
@@ -160,10 +160,12 @@ keystone.set('nav', {
 	'content snippets'	: ['success-stories'],
 	'events'			: ['events'],
 	'mailing lists'		: ['mailing-lists'],
-	'lists'				: ['child-placement-considerations', 'child-statuses', 'child-types', 'contact-methods', 
-						   'disabilities', 'event-types', 'family-constellations', 'genders', 'inquiry-methods', 
-						   'inquiry-types', 'languages', 'legal-statuses', 'media-eligibilities', 'races', 
-						   'regions', 'residences', 'social-worker-positions', 'states' ],
+	'relationships'		: ['placements', 'siblings'],
+	'lists'				: ['child-placement-considerations', 'child-statuses', 'child-types', 'city-or-towns',
+						   'closed-reasons', 'contact-methods', 'disabilities', 'event-types', 'family-constellations',
+						   'genders', 'inquiry-methods', 'inquiry-types', 'languages', 'legal-statuses', 'media-eligibilities',
+						   'other-family-constellation-considerations', 'races','regions', 'residences',
+						   'single-parent-options', 'social-worker-positions', 'states' ],
 	'change tracking'	: ['child-histories', 'family-histories']
 
 });
