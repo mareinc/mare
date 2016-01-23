@@ -5,7 +5,7 @@ var User = keystone.list('User');
 
 exports = module.exports = function(req, res) {
     'use strict';
-  
+
     var view = new keystone.View(req, res),
         locals = res.locals;
 
