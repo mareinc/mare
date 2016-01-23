@@ -36,14 +36,6 @@ SocialWorker.add('Permissions', {
 		work: { type: Types.Text, label: 'work phone number', initial: true },
 		cell: { type: Types.Text, label: 'cell phone number', initial: true },
 		preferred: { type: Types.Select, label: 'preferred phone', options: 'work, cell', initial: true }
-	},
-
-	address: {
-	    street1: { type: Types.Text, label: 'address line 1', initial: true },
-		street2: { type: Types.Text, label: 'address line 2', initial: true },
-		city: { type: Types.Text, label: 'city', initial: true },
-		state: { type: Types.Relationship, label: 'state', ref: 'State', index: true, initial: true },
-		zipCode: { type: Types.Text, label: 'zip code', index: true, initial: true }
 	}
 
 }, 'Social Worker Information', {
@@ -51,6 +43,16 @@ SocialWorker.add('Permissions', {
 	// position: { type: Types.Relationship, label: 'Position', ref: 'Social Worker Position', initial: true },
 	position: { type: Types.Select, options: 'adoption worker, recruitment worker, supervisor, administrator, family worker, other', label: 'Position', initial: true },
 	agency: { type: Types.Relationship, label: 'agency', ref: 'Agency', initial: true },
+
+	address: {
+	    street1: { type: Types.Text, label: 'address line 1', initial: true },
+		street2: { type: Types.Text, label: 'address line 2', initial: true },
+		city: { type: Types.Text, label: 'city', initial: true },
+		state: { type: Types.Relationship, label: 'state', ref: 'State', index: true, initial: true },
+		zipCode: { type: Types.Text, label: 'zip code', index: true, initial: true },
+		region: { type: Types.Relationship, label: 'region', ref: 'Region', initial: true }
+	},
+
 	title: { type: Types.Text, label: 'title', index: true, initial: true },
 	notes: { type: Types.Textarea, label: 'notes', initial: true }
 
