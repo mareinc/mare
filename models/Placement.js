@@ -50,5 +50,5 @@ Placement.add('Placement', {
 });
 
 // Define default columns in the admin interface and register the model
-Placement.defaultColumns = 'child, family, constellation';
+Placement.defaultColumns = 'child, prospectiveParentOrFamily, family.name, disruptionDate';
 Placement.register();
