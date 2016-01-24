@@ -239,7 +239,7 @@ ProspectiveParentOrFamily.add('Permissions', {
 		},
 
 		disabilities: { type: Types.Relationship, label: 'disabilities', ref: 'Disability', many: true, index: true, initial: true },
-		otherConsiderations: { type: Types.Relationship, label: 'other considerations', ref: 'Child Placement Consideration', initial: true }
+		otherConsiderations: { type: Types.Relationship, label: 'other considerations', ref: 'Other Consideration', initial: true }
 
 	}
 
