@@ -63,7 +63,7 @@ Child.add({ heading: 'Child Information' }, {
 
 	recommendedFamilyConstellation: { type: Types.Relationship, label: 'recommended family constellations', ref: 'Family Constellation', many: true, required: true, index: true, initial: true },
 	otherFamilyConstellationConsideration: { type: Types.Relationship, label: 'other family constellation consideration', ref: 'Other Family Constellation Consideration', many: true, index: true, initial: true },
-	childPlacementConsiderations: { type: Types.Relationship, label: 'child placement considerations', ref: 'Child Placement Consideration', many: true, index: true, initial: true }
+	otherConsiderations: { type: Types.Relationship, label: 'other considerations', ref: 'Other Consideration', many: true, index: true, initial: true }
 
 }, { heading: 'Agency Information' }, {
 
