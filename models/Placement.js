@@ -23,26 +23,26 @@ Placement.add('Placement', {
 }, 'Family', {
 
     family: {
-        name: { type: Types.Text, label: 'family name', dependsOn: { childPlacedWithMAREFamily: true }, initial: true },
+        name: { type: Types.Text, label: 'family name', dependsOn: { childPlacedWithMAREFamily: false }, initial: true },
 
         address: {
-            street1: { type: Types.Text, label: 'address Line 1', dependsOn: { childPlacedWithMAREFamily: true }, initial: true },
-            street2: { type: Types.Text, label: 'address Line 2', dependsOn: { childPlacedWithMAREFamily: true }, initial: true },
-            city: { type: Types.Text, label: 'city', dependsOn: { childPlacedWithMAREFamily: true }, initial: true },
-            state: { type: Types.Relationship, label: 'state', ref: 'State', dependsOn: { childPlacedWithMAREFamily: true }, index: true, initial: true },
-            zipCode: { type: Types.Text, label: 'zip code', dependsOn: { childPlacedWithMAREFamily: true }, index: true, initial: true },
-            country: { type: Types.Text, label: 'country', dependsOn: { childPlacedWithMAREFamily: true }, initial: true },
-            region: { type: Types.Relationship, label: 'region', dependsOn: { childPlacedWithMAREFamily: true }, ref: 'Region', initial: true }
+            street1: { type: Types.Text, label: 'address Line 1', dependsOn: { childPlacedWithMAREFamily: false }, initial: true },
+            street2: { type: Types.Text, label: 'address Line 2', dependsOn: { childPlacedWithMAREFamily: false }, initial: true },
+            city: { type: Types.Text, label: 'city', dependsOn: { childPlacedWithMAREFamily: false }, initial: true },
+            state: { type: Types.Relationship, label: 'state', ref: 'State', dependsOn: { childPlacedWithMAREFamily: false }, index: true, initial: true },
+            zipCode: { type: Types.Text, label: 'zip code', dependsOn: { childPlacedWithMAREFamily: false }, index: true, initial: true },
+            country: { type: Types.Text, label: 'country', dependsOn: { childPlacedWithMAREFamily: false }, initial: true },
+            region: { type: Types.Relationship, label: 'region', dependsOn: { childPlacedWithMAREFamily: false }, ref: 'Region', initial: true }
         },
 
         phone: {
-            work: { type: Types.Text, label: 'work phone number', dependsOn: { childPlacedWithMAREFamily: true }, initial: true },
-            home: { type: Types.Text, label: 'home phone number', dependsOn: { childPlacedWithMAREFamily: true }, initial: true },
-            cell: { type: Types.Text, label: 'cell phone number', dependsOn: { childPlacedWithMAREFamily: true }, initial: true },
-            preferred: { type: Types.Select, label: 'preferred phone', options: 'work, home, cell', dependsOn: { childPlacedWithMAREFamily: true }, initial: true }
+            work: { type: Types.Text, label: 'work phone number', dependsOn: { childPlacedWithMAREFamily: false }, initial: true },
+            home: { type: Types.Text, label: 'home phone number', dependsOn: { childPlacedWithMAREFamily: false }, initial: true },
+            cell: { type: Types.Text, label: 'cell phone number', dependsOn: { childPlacedWithMAREFamily: false }, initial: true },
+            preferred: { type: Types.Select, label: 'preferred phone', options: 'work, home, cell', dependsOn: { childPlacedWithMAREFamily: false }, initial: true }
         },
 
-        email: { type: Types.Email, label: 'email address', dependsOn: { childPlacedWithMAREFamily: true }, index: true, initial: true },
+        email: { type: Types.Email, label: 'email address', dependsOn: { childPlacedWithMAREFamily: false }, index: true, initial: true },
     }
 
 }, 'Disruption', {
