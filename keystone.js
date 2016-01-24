@@ -161,9 +161,9 @@ keystone.set('nav', {
 	'events'			: ['events'],
 	'mailing lists'		: ['mailing-lists'],
 	'relationships'		: ['placements', 'siblings'],
-	'lists'				: ['child-placement-considerations', 'child-statuses', 'child-types', 'city-or-towns',
-						   'closed-reasons', 'contact-methods', 'disabilities', 'event-types', 'family-constellations',
-						   'genders', 'inquiry-methods', 'inquiry-types', 'languages', 'legal-statuses', 'media-eligibilities',
+	'lists'				: ['child-statuses', 'child-types', 'city-or-towns', 'closed-reasons', 'contact-methods',
+						   'disabilities', 'event-types', 'family-constellations', 'genders', 'inquiry-methods',
+						   'inquiry-types', 'languages', 'legal-statuses', 'media-eligibilities', 'other-considerations',
 						   'other-family-constellation-considerations', 'races','regions', 'residences',
 						   'single-parent-options', 'social-worker-positions', 'states' ],
 	'change tracking'	: ['child-histories', 'family-histories']

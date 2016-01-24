@@ -1,11 +1,11 @@
 exports.create = {
-	'Child Placement Consideration': [{
-		childPlacementConsideration: 'fire setting'
-	}, {	
-		childPlacementConsideration: 'hurts animals'
-	}, {	
-		childPlacementConsideration: 'self harm'
-	}, {	
-		childPlacementConsideration: 'sexual abuse'
+	'Other Consideration': [{
+		otherConsideration: 'fire setting'
+	}, {
+		otherConsideration: 'hurts animals'
+	}, {
+		otherConsideration: 'self harm'
+	}, {
+		otherConsideration: 'sexual abuse'
 	}]
 };
