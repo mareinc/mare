@@ -5,5 +5,7 @@ exports.create = {
 		inquiryMethod: 'phone'
 	}, {
 		inquiryMethod: 'in person'
+	}, {
+		inquiryMethod: 'mail'
 	}]
 };

@@ -5,5 +5,7 @@ exports.create = {
 		inquiryType: 'general inquiry'
 	}, {
 		inquiryType: 'complaint'
+	}, {
+		inquiryType: 'family support consultation'
 	}]
 };
