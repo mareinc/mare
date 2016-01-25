@@ -246,7 +246,8 @@ ProspectiveParentOrFamily.add('Permissions', {
 });
 
 ProspectiveParentOrFamily.relationship({ path: 'placements', ref: 'Placement', refPath: 'prospectiveParentOrFamily' });
-ProspectiveParentOrFamily.relationship({ path: 'internal-notes', ref: 'Internal Note', refPath: 'family' });
+ProspectiveParentOrFamily.relationship({ path: 'inquiries', ref: 'Inquiry', refPath: 'prospectiveParentOrFamily' });
+ProspectiveParentOrFamily.relationship({ path: 'internal-notes', ref: 'Internal Note', refPath: 'prospectiveParentOrFamily' });
 
 // Displaly associations via the Relationship field type
 // TODO: link inquiries.

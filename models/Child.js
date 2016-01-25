@@ -146,6 +146,7 @@ Child.add({ heading: 'Child Information' }, {
 Child.relationship({ path: 'children', ref: 'Child', refPath: 'siblingContacts' });
 // Child.relationship({ path: 'siblings', ref: 'Sibling', refPath: 'child1' });
 Child.relationship({ path: 'placements', ref: 'Placement', refPath: 'child' });
+Child.relationship({ path: 'inquiries', ref: 'Inquiry', refPath: 'child' });
 Child.relationship({ path: 'internal-notes', ref: 'Internal Note', refPath: 'child' });
 
 // Pre Save

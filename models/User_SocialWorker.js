@@ -59,6 +59,7 @@ SocialWorker.add('Permissions', {
 });
 
 SocialWorker.relationship({ path: 'children', ref: 'Child', refPath: 'adoptionWorker' });
+SocialWorker.relationship({ path: 'inquiries', ref: 'Inquiry', refPath: 'socialWorker' });
 
 // Pre Save
 SocialWorker.schema.pre('save', function(next) {
