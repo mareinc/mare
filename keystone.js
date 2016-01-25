@@ -160,7 +160,7 @@ keystone.set('nav', {
 	'content snippets'	: ['success-stories'],
 	'events'			: ['events'],
 	'mailing lists'		: ['mailing-lists'],
-	'relationships'		: ['placements', 'siblings'],
+	'relationships'		: ['placements'],
 	'lists'				: ['child-statuses', 'child-types', 'city-or-towns', 'closed-reasons', 'contact-methods',
 						   'disabilities', 'event-types', 'family-constellations', 'genders', 'inquiry-methods',
 						   'inquiry-types', 'languages', 'legal-statuses', 'media-eligibilities', 'other-considerations',
