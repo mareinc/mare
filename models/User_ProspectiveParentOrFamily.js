@@ -19,11 +19,11 @@ ProspectiveParentOrFamily.add('Permissions', {
 
 }, 'General Information', {
 
-	registrationNumber: { type: Number, label: 'registration number', format: false, required: true, index: true, initial: true },
+	registrationNumber: { type: Number, label: 'registration number', format: false, required: true, initial: true },
 	initialContact: { type: Types.Text, label: 'initial contact', note: 'mm/dd/yyyy', required: true, initial: true },
 	flagCalls: { type: Types.Boolean, label: 'flag calls', initial: true },
-	familyConstellation: { type: Types.Relationship, label: 'family constellation', ref: 'Family Constellation', required: true, index: true, initial: true },
-	singleParentOptions: { type: Types.Relationship, label: 'single parent options', ref: 'Single Parent Option', index: true, initial: true },
+	familyConstellation: { type: Types.Relationship, label: 'family constellation', ref: 'Family Constellation', required: true, initial: true },
+	singleParentOptions: { type: Types.Relationship, label: 'single parent options', ref: 'Single Parent Option', initial: true },
 	language: { type: Types.Relationship, label: 'language', ref: 'Language', required: true, initial: true },
 
 	password: { type: Types.Password, label: 'password', required: true, initial: true },
@@ -34,8 +34,8 @@ ProspectiveParentOrFamily.add('Permissions', {
 	contact1: {
 
 		name: {
-			first: { type: Types.Text, label: 'first Name', required: true, index: true, initial: true },
-			last: { type: Types.Text, label: 'last Name', required: true, index: true, initial: true },
+			first: { type: Types.Text, label: 'first Name', required: true, initial: true },
+			last: { type: Types.Text, label: 'last Name', required: true, initial: true },
 			full: { type: Types.Text, label: 'name', hidden: true, noedit: true, initial: false }
 		},
 
@@ -46,10 +46,10 @@ ProspectiveParentOrFamily.add('Permissions', {
 			preferred: { type: Types.Select, label: 'preferred phone', options: 'work, home, cell', initial: true }
 		},
 
-		email: { type: Types.Email, label: 'email address', index: true, initial: true },
-		preferredMethod: { type: Types.Select, label: 'preferred communication method', options: 'e-mail, home phone, cell phone, work phone, unknown', required: true, index: true, initial: true },
-		gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', required: true, index: true, initial: true },
-		race: { type: Types.Relationship, label: 'race', ref: 'Race', many: true, required: true, index: true, initial: true },
+		email: { type: Types.Email, label: 'email address', initial: true },
+		preferredMethod: { type: Types.Select, label: 'preferred communication method', options: 'e-mail, home phone, cell phone, work phone, unknown', required: true, initial: true },
+		gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', required: true, initial: true },
+		race: { type: Types.Relationship, label: 'race', ref: 'Race', many: true, required: true, initial: true },
 		occupation: { type: Types.Text, label: 'occupation', initial: true },
 		birthDate: { type: Types.Text, label: 'date of birth', note: 'mm/dd/yyyy', required: true, initial: true }
 	},
@@ -58,8 +58,8 @@ ProspectiveParentOrFamily.add('Permissions', {
 
 	contact2: {
 		name: {
-			first: { type: Types.Text, label: 'first name', index: true, initial: true },
-			last: { type: Types.Text, label: 'last name', index: true, initial: true },
+			first: { type: Types.Text, label: 'first name', initial: true },
+			last: { type: Types.Text, label: 'last name', initial: true },
 			full: { type: Types.Text, label: 'name', hidden: true, noedit: true }
 		},
 
@@ -70,10 +70,10 @@ ProspectiveParentOrFamily.add('Permissions', {
 			preferred: { type: Types.Select, label: 'preferred phone', options: 'work, home, cell', initial: true }
 		},
 
-		email: { type: Types.Email, label: 'email address', index: true, initial: true },
-		preferredMethod: { type: Types.Select, label: 'preferred communication method', options: 'e-mail, home phone, cell phone, work phone, unknown', index: true, initial: true },
-		gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', index: true, initial: true },
-		race: { type: Types.Relationship, label: 'race', ref: 'Race', many: true, index: true, initial: true },
+		email: { type: Types.Email, label: 'email address', initial: true },
+		preferredMethod: { type: Types.Select, label: 'preferred communication method', options: 'e-mail, home phone, cell phone, work phone, unknown', initial: true },
+		gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', initial: true },
+		race: { type: Types.Relationship, label: 'race', ref: 'Race', many: true, initial: true },
 		occupation: { type: Types.Text, label: 'occupation', initial: true },
 		birthDate: { type: Types.Text, label: 'date of birth', note: 'mm/dd/yyyy', initial: true }
 	}
@@ -84,8 +84,8 @@ ProspectiveParentOrFamily.add('Permissions', {
 		street1: { type: Types.Text, label: 'address line 1', required: true, initial: true },
 		street2: { type: Types.Text, label: 'address line 2', initial: true },
 		city: { type: Types.Text, label: 'city', required: true, initial: true },
-		state: { type: Types.Relationship, label: 'state', ref: 'State', required: true, index: true, initial: true },
-		zipCode: { type: Types.Text, label: 'zip code', required: true, index: true, initial: true },
+		state: { type: Types.Relationship, label: 'state', ref: 'State', required: true, initial: true },
+		zipCode: { type: Types.Text, label: 'zip code', required: true, initial: true },
 		country: { type: Types.Text, label: 'country', initial: true },
 		region: { type: Types.Relationship, label: 'region', ref: 'Region', initial: true }
 	}
@@ -143,47 +143,47 @@ ProspectiveParentOrFamily.add('Permissions', {
 
 	stages: {
 		gatheringInformation: {
-			started: { type: Types.Boolean, label: 'gathering information', index: true, initial: true },
+			started: { type: Types.Boolean, label: 'gathering information', initial: true },
 			date: { type: Types.Text, label: 'date gathering information started', note: 'mm/dd/yyyy', dependsOn: { 'stages.gatheringInformation.started': true }, initial: true }
 		},
 		lookingForAgency: {
-			started: { type: Types.Boolean, label: 'looking for agency', index: true, initial: true },
+			started: { type: Types.Boolean, label: 'looking for agency', initial: true },
 			date: { type: Types.Text, label: 'date looking for agency started', note: 'mm/dd/yyyy', dependsOn: { 'stages.lookingForAgency.started': true }, initial: true }
 		},
 		workingWithAgency: {
-			started: { type: Types.Boolean, label: 'working with agency', index: true, initial: true },
+			started: { type: Types.Boolean, label: 'working with agency', initial: true },
 			date: { type: Types.Text, label: 'date working with agency started', note: 'mm/dd/yyyy', dependsOn: { 'stages.workingWithAgency.started': true }, initial: true }
 		},
 		MAPPTrainingCompleted: {
-			completed: { type: Types.Boolean, label: 'MAPP training completed', index: true, initial: true },
+			completed: { type: Types.Boolean, label: 'MAPP training completed', initial: true },
 			date: { type: Types.Text, label: 'date MAPP training completed', note: 'mm/dd/yyyy', dependsOn: { 'stages.MAPPTrainingCompleted.completed': true }, initial: true }
 		}
 	},
 
 	homestudy: {
-		completed: { type: Types.Boolean, label: 'homestudy completed', index: true, initial: true },
+		completed: { type: Types.Boolean, label: 'homestudy completed', initial: true },
 		initialDate: { type: Types.Text, label: 'initial date homestudy completed', note: 'mm/dd/yyyy', dependsOn: { 'homestudy.completed': true }, initial: true },
 		mostRecentDate: { type: Types.Text, label: 'most recent update completed', note: 'mm/dd/yyyy', dependsOn: { 'homestudy.completed': true }, initial: true }
 	},
 
 	onlineMatching: {
-		started: { type: Types.Boolean, label: 'online matching', index: true, initial: true },
+		started: { type: Types.Boolean, label: 'online matching', initial: true },
 		date: { type: Types.Text, label: 'date online matching started', note: 'mm/dd/yyyy', dependsOn: { 'onlineMatching.started': true }, initial: true }
 	},
 
 	registeredWithMARE: {
-		registered: { type: Types.Boolean, label: 'registered with MARE', index: true, initial: true },
+		registered: { type: Types.Boolean, label: 'registered with MARE', initial: true },
 		date: { type: Types.Text, label: 'date registered with MARE', note: 'mm/dd/yyyy', dependsOn: { 'registeredWithMARE.registered': true }, initial: true },
 		status: { type: Types.Relationship, label: 'status', ref: 'Child Status', dependsOn: { 'registeredWithMARE.registered': true }, initial: true }
 	},
 
 	familyProfile: {
-		created: { type: Types.Boolean, label: 'family profile created', index: true, initial: true },
+		created: { type: Types.Boolean, label: 'family profile created', initial: true },
 		date: { type: Types.Text, label: 'date family profile created', note: 'mm/dd/yyyy', dependsOn: { 'familyProfile.created': true }, initial: true }
 	},
 
 	closed: {
-		isClosed: { type: Types.Boolean, label: 'closed', index: true, initial: true },
+		isClosed: { type: Types.Boolean, label: 'closed', initial: true },
 		date: { type: Types.Text, label: 'date closed', note: 'mm/dd/yyyy', dependsOn: { 'closed.isClosed': true }, initial: true },
 		reason: { type: Types.Relationship, label: 'reason', ref: 'Closed Reason', dependsOn: { 'closed.isClosed': true }, initial: true }
 	}
@@ -195,50 +195,50 @@ ProspectiveParentOrFamily.add('Permissions', {
 }, 'Family Services', {
 
 	familyServices: {
-		mentee: { type: Types.Boolean, label: 'mentee', index: true, initial: true },
-		mentor: { type: Types.Boolean, label: 'mentor', index: true, initial: true },
-		mediaSpokesperson: { type: Types.Boolean, label: 'media spokesperson', index: true, initial: true },
-		eventPresenterOrSpokesperson: { type: Types.Boolean, label: 'event presenter/spokesperson', index: true, initial: true },
-		communityOutreach: { type: Types.Boolean, label: 'community outreach', index: true, initial: true },
-		fundraising: { type: Types.Boolean, label: 'fundraising', index: true, initial: true },
-		MARESupportGroupLeader: { type: Types.Boolean, label: 'MARE support group leader', index: true, initial: true },
-		MARESupportGroupParticipant: { type: Types.Boolean, label: 'MARE support group participant', index: true, initial: true },
-		receivesConsultationServices: { type: Types.Boolean, label: 'receives consultation services', index: true, initial: true }
+		mentee: { type: Types.Boolean, label: 'mentee', initial: true },
+		mentor: { type: Types.Boolean, label: 'mentor', initial: true },
+		mediaSpokesperson: { type: Types.Boolean, label: 'media spokesperson', initial: true },
+		eventPresenterOrSpokesperson: { type: Types.Boolean, label: 'event presenter/spokesperson', initial: true },
+		communityOutreach: { type: Types.Boolean, label: 'community outreach', initial: true },
+		fundraising: { type: Types.Boolean, label: 'fundraising', initial: true },
+		MARESupportGroupLeader: { type: Types.Boolean, label: 'MARE support group leader', initial: true },
+		MARESupportGroupParticipant: { type: Types.Boolean, label: 'MARE support group participant', initial: true },
+		receivesConsultationServices: { type: Types.Boolean, label: 'receives consultation services', initial: true }
 	}
 
 }, 'Info Preferences', {
 
 	infoPacket: {
-		packet: { type: Types.Select, options: 'English, Spanish, none', label: 'Packet', index: true, initial: true },
+		packet: { type: Types.Select, options: 'English, Spanish, none', label: 'Packet', initial: true },
 		date: { type: Types.Text, label: 'date info packet sent', note: 'mm/dd/yyyy', initial: true },
 		notes: { type: Types.Textarea, label: 'notes', initial: true },
-		mailingLists: { type: Types.Relationship, label: 'mailing lists', ref: 'Mailing List', many: true, index: true, initial: true }
+		mailingLists: { type: Types.Relationship, label: 'mailing lists', ref: 'Mailing List', many: true, initial: true }
 	}
 
 }, 'Matching Preferences', {
 
 	matchingPreferences: {
-		male: { type: Types.Boolean, label: 'male', index: true, initial: true },
-		female: { type: Types.Boolean, label: 'female', index: true, initial: true },
-		legalRisk: { type: Types.Boolean, label: 'legal risk', index: true, initial: true },
+		male: { type: Types.Boolean, label: 'male', initial: true },
+		female: { type: Types.Boolean, label: 'female', initial: true },
+		legalStatus: { type: Types.Relationship, label: 'legal status', ref: 'Legal Status', many: true, initial: true },
 
 		adoptionAges: {
-			from: { type: Types.Number, label: 'from age', index: true, initial: true },
-			to: { type: Types.Number, label: 'to age', index: true, initial: true }
+			from: { type: Types.Number, label: 'from age', initial: true },
+			to: { type: Types.Number, label: 'to age', initial: true }
 		},
 
-		numberOfChildrenToAdopt: { type: Types.Number, label: 'number of children to adopt', index: true, initial: true },
-		siblingContact: { type: Types.Boolean, label: 'contact with siblings', index: true, initial: true },
-		birthFamilyContact: { type: Types.Boolean, label: 'contact with birth parents', index: true, initial: true },
-		race: { type: Types.Relationship, label: 'race', ref: 'Race', many: true, index: true, initial: true },
+		numberOfChildrenToAdopt: { type: Types.Number, label: 'number of children to adopt', initial: true },
+		siblingContact: { type: Types.Boolean, label: 'contact with siblings', initial: true },
+		birthFamilyContact: { type: Types.Boolean, label: 'contact with birth parents', initial: true },
+		race: { type: Types.Relationship, label: 'race', ref: 'Race', many: true, initial: true },
 
 		maxNeeds: {
-			physical: { type: Types.Select, options: 'none, mild, moderate, severe', label: 'maximum physical needs', index: true, initial: true },
-			intellectual: { type: Types.Select, options: 'none, mild, moderate, severe', label: 'maximum intellectual needs', index: true, initial: true },
-			emotional: { type: Types.Select, options: 'none, mild, moderate, severe', label: 'maximum emotional needs', index: true, initial: true }
+			physical: { type: Types.Select, options: 'none, mild, moderate, severe', label: 'maximum physical needs', initial: true },
+			intellectual: { type: Types.Select, options: 'none, mild, moderate, severe', label: 'maximum intellectual needs', initial: true },
+			emotional: { type: Types.Select, options: 'none, mild, moderate, severe', label: 'maximum emotional needs', initial: true }
 		},
 
-		disabilities: { type: Types.Relationship, label: 'disabilities', ref: 'Disability', many: true, index: true, initial: true },
+		disabilities: { type: Types.Relationship, label: 'disabilities', ref: 'Disability', many: true, initial: true },
 		otherConsiderations: { type: Types.Relationship, label: 'other considerations', ref: 'Other Consideration', initial: true }
 
 	}
