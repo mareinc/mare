@@ -3,7 +3,7 @@
 
 // Bootstrap can be removed entirely by deleting this line.
 
-//@import "bootstrap/bootstrap";
+//@import "../bootstrap/bootstrap";
 
 // The easiest way to customise Bootstrap variables while
 // being able to easily override the source files with new
@@ -15,6 +15,9 @@
 @import "_utility-colors";
 @import "_utility-variables";
 @import "_utility-classes";
+@import "_grid";
+@import "_forms";
+@import "_buttons";
 
 // Site Styles
 // ===========
@@ -42,6 +45,7 @@ body {
 }
 
 .body {
+	min-height: 43em;
 	background-color: $main-content-background-color;
 }
 
@@ -58,5 +62,6 @@ body {
 // Page Styles
 // ===========
 @import "_page";
+@import "_page-donations";
 @import "_page-photo-listing";
 @import "_page-register";

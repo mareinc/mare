@@ -42,7 +42,7 @@
     display: none;
 }
 
-.global-header .top-nav .donate {
+.global-header .top-nav .donate-link-container {
 	position: absolute;
 	top: 36px;
     right: 15px;
@@ -155,7 +155,7 @@
 // move the donate link back into the menu
 @media all and (min-width: 440px) {
 
-	.global-header .top-nav .donate {
+	.global-header .top-nav .donate-link-container {
 		right: 55px;
 		top: 0;
 		box-shadow: 5px 5px 10px -2px;
@@ -167,7 +167,7 @@
 	}
 
 	.global-header .log-in-link {
-	    margin-right: 32px;
+	    margin-right: 40px;
 	}
 
 	.global-header .log-in-link > .arrow-down {

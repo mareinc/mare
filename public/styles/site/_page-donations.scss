@@ -1,0 +1,305 @@
+.donations-header {
+	text-align: center;
+    text-transform: uppercase;
+    padding: 124px 0 0;
+    margin-bottom: 24px;
+    font-size: 2em;
+}
+
+@media all and (min-width: 600px) {
+	.donations-header {
+		font-size: 3em;
+		padding: 24px 5em;
+	}
+}
+
+#give-money-machine {
+	position: relative;
+    color: #979792;
+    margin-left: 2%;
+}
+
+.give-money-body,
+.give-money-tiers {
+    float: left;
+}
+
+.give-money-tiers {
+    display: none;
+}
+
+@media all and (min-width: 600px) {
+	.give-money-tiers {
+		list-style-type: none;
+	    padding: 0;
+	    margin: 15px 0 0 0;
+	    width: 192px;
+		display: block;
+	}
+}
+
+.give-money-tiers li {
+    display: block;
+    position: relative;
+    width: 179px;
+    height: 57px;
+    background: #f0efe7;
+    border-radius: 7px;
+    margin: 0 0 4px 0;
+    cursor: pointer;
+}
+
+.give-money-tiers h3 {
+    font-size: 18px;
+    margin: 0 9px 3px 9px;
+    padding-top: 9px;
+    position: relative;
+    z-index: 1;
+    text-align: center;
+}
+
+.give-money-tiers li span {
+    position: relative;
+	display: block;
+	text-align: center;
+}
+
+.give-money-tiers li.selected .tier-selected {
+    display: block;
+    background: transparent url('/images/form_pointers/arrow-blue.png') no-repeat 192px 0;
+}
+
+#give-money-machine.blue .tier-selected {
+    background-image: url('/images/form_pointers/arrow-blue.png');
+}
+
+#give-money-machine.green .tier-selected {
+    background-image: url('/images/form_pointers/arrow-green.png');
+}
+
+#give-money-machine.orange .tier-selected {
+    background-image: url('/images/form_pointers/arrow-orange.png');
+}
+
+#give-money-machine.red-clay .tier-selected {
+    background-image: url('/images/form_pointers/arrow-red-clay.png');
+}
+
+.tier-selected {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 440px;
+}
+
+#give-money-machine.blue .tier-selected-bg,
+#give-money-machine.blue #donate-now,
+#give-money-machine.blue .progress {
+    background-color: #15a9b6;
+}
+
+.tier-selected-bg {
+    height: 100%;
+    width: 192px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: #15a9b6;
+}
+
+.tier-selected-description {
+    position: absolute;
+    top: 0;
+    right: 4px;
+    width: 212px;
+}
+
+.tier-selected p {
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 0;
+    margin: 0;
+    width: 185px;
+}
+
+#give-money-machine.blue .tier-selected .bar {
+    border-color: #15a9b6;
+}
+
+.tier-selected .bar {
+    display: none;
+    border: solid 3px #15a9b6;
+    border-radius: 3px;
+    margin-bottom: 12px;
+}
+
+.tier-selected .omg {
+    display: none;
+}
+
+.give-money-body {
+	height: 330px;
+	width: 97%;
+	border: solid 1px #f6f5f2;
+	background: #fff;
+}
+
+@media all and (min-width: 600px) {
+	.give-money-body {
+	    width: 756px;
+	}
+}
+
+.give-money-body form {
+    width: 252px;
+    font-family: 'Dosis', sans-serif;
+}
+
+#give-money-machine.blue .give-money-body form label,
+#give-money-machine.blue .give-money-body form input[type=number] {
+    color: #15a9b6;
+}
+
+#give-money-machine.green .give-money-body form label,
+#give-money-machine.green .give-money-body form input[type=number] {
+    color: #35ba74;
+}
+
+#give-money-machine.orange .give-money-body form label,
+#give-money-machine.orange .give-money-body form input[type=number] {
+    color: #f99513;
+}
+
+#give-money-machine.red-clay .give-money-body form label,
+#give-money-machine.red-clay .give-money-body form input[type=number] {
+    color: #df5326;
+}
+
+#give-money-machine.blue .tier-selected-bg,
+#give-money-machine.blue #donate-now,
+#give-money-machine.blue .progress {
+    background-color: #15a9b6;
+}
+
+#give-money-machine.green .tier-selected-bg,
+#give-money-machine.green #donate-now,
+#give-money-machine.green .progress {
+    background-color: #35ba74;
+}
+
+#give-money-machine.orange .tier-selected-bg,
+#give-money-machine.orange #donate-now,
+#give-money-machine.orange .progress {
+    background-color: #f99513;
+}
+
+#give-money-machine.red-clay .tier-selected-bg,
+#give-money-machine.red-clay #donate-now,
+#give-money-machine.red-clay .progress {
+    background-color: #df5326;
+}
+
+.give-money-body form label {
+    display: block;
+    visibility: visible;
+    margin: 0 0 20px 0;
+    font-size: 24px;
+    text-transform: uppercase;
+    color: #15a9b6;
+}
+
+.give-money-body form input[type=number] {
+    font-size: 72px;
+    height: 86px;
+    width: 118%;
+    padding: 5px 0 0 35px;
+    margin: 0 0 20px 0;
+    color: #15a9b6;
+    background: #ebeced url(/images/dollar-sign-and-text.gif) no-repeat -253px -5px;
+}
+
+@media all and (min-width: 600px) {
+	.give-money-body form input[type=number] {
+		width: 86%;
+	}
+}
+
+#donate-now {
+    padding: 11px 0;
+    width: 132px;
+    background: #15a9b6;
+    border: 0;
+    border-radius: 8px;
+    font-size: 17px;
+    color: #fff;
+}
+
+.give-money-body .tier-images {
+	display: none;
+}
+
+@media all and (min-width: 1000px) {
+	.give-money-body .tier-images {
+		display: block;
+    	width: 205px;
+    	height: 260px;
+    	list-style-type: none;
+    	padding: 0;
+	}
+}
+
+.give-money-body .tier-images,
+.give-money-body form {
+    margin: 2em;
+}
+
+@media all and (min-width: 600px) {
+	.give-money-body .tier-images,
+	.give-money-body form {
+	    margin: 30px 27px 0 0;
+	    float: right;
+	}
+}
+
+.tier-images li {
+    display: none;
+}
+
+.tier-images li.selected {
+    display: block;
+}
+
+.tier-images img {
+    width: 205px;
+    height: 260px;
+    border: 0;
+}
+
+.give-money-body input[type=text],
+.give-money-body input[type=number],
+.give-money-body input[type=email],
+.give-money-body textarea,
+.give-money-body select {
+    border: 0;
+    background-color: #f1f1f1;
+    border-top: solid 1px #d7d7d7;
+    border-left: solid 1px #d7d7d7;
+    -moz-box-shadow: inset 2px 2px 5px #d7d7d7;
+    -webkit-box-shadow: inset 2px 2px 5px #d7d7d7;
+    box-shadow: inset 2px 2px 5px #d7d7d7;
+}
+
+/* shut down the scroll up/down buttons for the donation amount input field */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield;
+}

@@ -23,7 +23,7 @@ keystone.init({
 	'views': 'templates/views',
 	'view engine': 'hbs',
 	'view cache': false,
-	
+
 	'custom engine': handlebars.create({
 		layoutsDir: 'templates/views/layouts',
 		partialsDir: 'templates/views/partials',
@@ -33,10 +33,11 @@ keystone.init({
 	}).engine,
 
 	'emails': 'templates/emails',
-	
+
 	'auto update': true,
 	'session': true,
 	'auth': true,
+	'signin url': '/',
 	'user model': 'User',
 
 	'wysiwyg override toolbar': false,
@@ -46,15 +47,24 @@ keystone.init({
 	 	' charmap ltr rtl pagebreak paste, forecolor backcolor,' +
 	 	' emoticons media image, preview print, fontselect fontsizeselect',
 	'wysiwyg additional plugins': 'advlist, anchor,' +
-		' autolink, autosave, bbcode, charmap, contextmenu,' +
-		' directionality, emoticons, fullpage, hr, media, pagebreak,' +
-		' paste, preview, print, searchreplace, table, textcolor,' +
+		' autolink, autosave, charmap, contextmenu,' +
+		' directionality, emoticons, hr, media, pagebreak,' +
+		' paste, preview, print, searchreplace, table, template, textcolor,' +
 		' visualblocks, visualchars, wordcount',
 	'wysiwyg cloudinary images': true,
 
-	'cookie secret': process.env.COOKIE_SECRET || 'mare',
+	'wysiwyg additional options': {
 
-	'mandrill api key': process.env.MANDRILL_APIKEY,
+		extended_valid_elements : '+div[class]',
+		content_css: '/keystone/styles/content/editor.min.css',
+		templates: [
+    		{title: '30/70 Content', description: 'Columns (30% Left, 70% Right)', content: '<div class="row"><div class="col-sm-8">Left Content</div><div class="col-sm-16">Right Content</div></div><p>Stuff after...</p>'},
+    		{title: '70/30 Content', description: 'Columns (70% Left, 30% Right)', content: '<div class="row"><div class="col-sm-16">Left Content</div><div class="col-sm-8">Right Content</div></div><p>Stuff after...</p>'},
+    		{title: '50/50 Content', description: 'Columns (50% Left, 50% Right)', content: '<div class="row"><div class="col-sm-12">Left Content</div><div class="col-sm-12">Right Content</div></div><p>Stuff after...</p>'}
+  		]
+  	},
+
+	'cookie secret': process.env.COOKIE_SECRET || '-eRWCqW&S~{bTw-|nG=]av*#2X*u}<?$v44|LV^|K*.q>.a<&rC[A~6%9rVcgh~)'
 });
 
 // Cloudinary configuration
@@ -62,6 +72,18 @@ keystone.init({
 keystone.set('cloudinary folders', true);
 // optional, will force cloudinary to serve images over https
 keystone.set('cloudinary secure', true);
+
+// Mandrill configuration
+// Tom Koch:
+// Commenting these out because further into the app, MANDRILL_APIKEY
+// turns out to be undefined. Email works when I commented these out.
+// See node_modules/keystone/index.js. That file already loads all of these
+// .env variables. Probably dont need to set theme here.
+//keystone.set('mandrill api key', process.env.MANDRILL_APIKEY);
+//keystone.set('mandrill username', process.env.MANDRILL_USERNAME);
+
+// S3 configuration for hosted file storage
+keystone.set('s3 config', { bucket: process.env.S3_BUCKET_NAME, key: process.env.S3_KEY, secret: process.env.S3_SECRET });
 
 // Load project's Models
 keystone.import('models');
@@ -132,10 +154,20 @@ keystone.set('email tests', require('./routes/emails'));
 
 // Configure the navigation bar in Keystone's Admin UI
 keystone.set('nav', {
-	'people'			: ['users', 'children'],
+	'people'			: ['users', 'site-users', 'prospective-parent-or-families', 'social-workers', 'children'],
 	'images'			: ['featured-items', 'slideshows', 'slideshow-items'],
-	'content pages'		: ['pages', 'events', 'forms'],
-	'content snippets'	: ['success-stories']
+	'content pages'		: ['pages', 'forms'],
+	'content snippets'	: ['success-stories'],
+	'events'			: ['events'],
+	'mailing lists'		: ['mailing-lists'],
+	'relationships'		: ['placements'],
+	'lists'				: ['child-statuses', 'child-types', 'city-or-towns', 'closed-reasons', 'contact-methods',
+						   'disabilities', 'event-types', 'family-constellations', 'genders', 'inquiry-methods',
+						   'inquiry-types', 'languages', 'legal-statuses', 'media-eligibilities', 'other-considerations',
+						   'other-family-constellation-considerations', 'races','regions', 'residences',
+						   'single-parent-options', 'social-worker-positions', 'states' ],
+	'change tracking'	: ['child-histories', 'family-histories']
+
 });
 
 // Start Keystone to connect to your database and initialise the web server

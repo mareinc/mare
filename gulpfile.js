@@ -28,7 +28,6 @@ var paths = {
 		'public/styles/font-awesome/*.css'
 	],
 	'js':[
-		'public/js/lib/jquery/**/*.js',
 		'public/modules/**/*.js',
 		'public/js/*.js'],
 	'standalone-js':[
@@ -132,6 +131,9 @@ gulp.task('watch:lint', function () {
 gulp.task('build', gulp.parallel('standalone-styles', 'styles', 'standalone-scripts', 'scripts', 'images', 'fonts'));
 
 gulp.task('default', gulp.series('clean', 'build', 'watch'));
+
+// task built specfically for running on Heroku server when new code is deployed
+gulp.task('heroku', gulp.series('clean', 'build'));
 
 // gulp jscs
 // TODO: need to adjust src to minified, concatenated js file
