@@ -4,6 +4,7 @@
 }
 
 .main .featured-items .featured-item {
+    position: relative;
 	display: block;
 	margin-bottom: 15px;
 }
@@ -68,26 +69,83 @@
     margin-left: 5px;
 }
 
+.panel-toggle {
+    padding: 7.5px 15px;
+    text-align: center;
+    border-bottom: 3px solid $border-color-3;
+    cursor: pointer;
+}
+
+.panel-overlay {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 100%;
+    overflow: hidden;
+    border-top: none;
+    background-color: $description-background-color-7;
+    -webkit-transition: all 1s ease-in-out;
+    -moz-transition: all 1s ease-in-out;
+    -o-transition: all 1s ease-in-out;
+    transition: all 1s ease-in-out;
+
+    &--closed {
+        height: 10%;
+        border-top: 1px solid $border-color-3;
+    }
+}
+
+.panel-overlay__option {
+    border-bottom: 1px solid $border-color-3;
+}
+
+.panel-overlay__option:nth-child(1) {
+    padding-top: 15px
+}
+
+.panel-overlay__option-link {
+    display: block;
+    text-decoration: none;
+    color: $main-content-color;
+    padding: 18.5px 15px;
+    cursor: pointer;
+}
+
+.panel-overlay--closed > .panel-toggle {
+    border-bottom: none;
+}
+
 @media all and (min-width: 660px) {
     
-    .main .featured-items .featured-item {
-        display: inline-block;
-        width: 32%;
+    .main .featured-items {
+
+        .featured-item {
+            display: inline-block;
+            width: 32%;
+            margin-left: -4px;
+        }
+
+        .featured-item-title {
+            height: 35px;
+        }
+
+        .featured-item-summary {
+            height: 45px;
+        }
+
+        .featured-item:first-child {
+            margin-right: 2%;
+        }
+
+        .featured-item:last-child {
+            margin-left: 2%;
+        }
     }
 
-    .main .featured-items .featured-item-title {
-        height: 35px;
-    }
-
-    .main .featured-items .featured-item-summary {
-        height: 25px;
-    }
-
-    .main .featured-items .featured-item:first-child {
-        margin-right: 2%;
-    }
-
-    .main .featured-items .featured-item:last-child {
-        margin-left: 2%;
+    .panel-overlay {
+        &--closed {
+            height: 10%;
+        }
     }
 }

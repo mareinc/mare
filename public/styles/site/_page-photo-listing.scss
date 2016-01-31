@@ -1,4 +1,4 @@
-/* TODO: BEM all the things, then Sass all the things.  */
+/* TODO: BEM all the things, then Sass all the things.  Also, ITCSS all the filename things  */
 /* TODO: Bring breakpoint code under each selector */
 /* TODO: Sass up the styles even more with nested selectors */
 
@@ -11,98 +11,184 @@
 	margin-bottom: 10px;
 }
 
+.filters > .filter {
+    margin-right: 15px;
+}
+
+.filters > .waiting-child-sort:before {
+    content: "Order:";
+    margin: 0 8px 0 0;
+}
+.filters > .waiting-child-sort select {
+    background-color: #FFF;
+    border: 1px solid #D5D5D5;
+}
+
+.filters > .icon-text-unit {
+    display:inline-block;
+    vertical-align: middle;
+}
+.filters .icon-text-unit__icon {
+    vertical-align:middle;
+    width: 20px;
+}
+.filters .icon-text-unit__text {
+    vertical-align: middle;
+}
+
 /* Profile contents */
 .profile-zone {
 	border-top: 1px solid black;
-	padding-top: 15px;
+	padding-bottom: 15px;
 }
 
 .profiles {
-	list-style: none;
-	font-size: 0px;
-	padding: 0;
-}
-
-/* override at breakpoint */
-.profiles > li:nth-child(odd) {
-    margin-right: 3%;
+	margin-top: 15px;
 }
 
 .profile {
-	display: inline-block;
-	width: 48.5%;
-	background: #fff;
-	border-right: 1px solid #000;
-	border-bottom: 1px solid #000;
-	font-size: 16px;
-	font-size: 1rem;
-	vertical-align: top;
-	box-shadow: 0 0 5px #ddd;
-	box-sizing: border-box;
-	-moz-box-sizing: border-box;
-	-webkit-box-sizing: border-box;
-	margin-bottom: 20px;
 	cursor: pointer;
 }
 
-.profile img {
-	max-width: 100%;
-	height: auto;
-}
-
 .profile .details {
-	padding: 10px;
 	background-color: #fffac2;
-	margin-top: -1px;
 	color: #1B229D;
-	height: 151px;
-}
-
-.profile .details > span {
-	max-width: 180px;
 }
 
 .profile .details > .name {
-	display: block;
-	font-size: 2em;
+	font-size: 1.4em;
 	font-style: italic;
 }
 
+.profile .details > .icons {
+    position:relative;
+    top: -20px;
+}
+
+.profile .details > .icons > .badge {
+    float: right;
+    width: 20px;
+}
+
+.profile .details > .icons > .badge + .badge {
+    margin-right: 6px;
+}
+
 .profile .details > .age {
-	display: block;
-	margin: 5px 0 10px;
-	font-size: 1.3em;
 	color: #66584D;
+	margin-top: .4em;
 }
 
-.profile .deatils .view-profile {
-	font-size: 1.2em;
+.profile .details > .view-profile {
+	margin-top: .4em;
 }
 
-// Switch to 3 profiles per row
-@media all and (min-width: 440px) {
-	.profile {
-		width: 31.33333333%;
-		margin-right: 3%;
-	}
-
-	.profiles > li:nth-child(3n) {
-		margin-right: 0;
-	}
+/* TODO: We've BEM'ed below, now BEM above! */
+.profile__profile-navigation {
+	margin-bottom: 1em;
+	color: $modal-color-1;
 }
 
-// Switch to 4 profiles per row
-@media all and (min-width: 880px) {
-	.profile {
-		width: 22.75%;
-		margin-right: 3%;
-	}
-
-	.profiles > li:nth-child(3n) {
-		margin-right: 3%;
-	}
-
-	.profiles > li:nth-child(4n) {
-		margin-right: 0;
-	}
+.profile-navigation__previous-text,
+.profile-navigation__next-text,
+.profile-navigation__divider {
+	position: relative;
+	top: -8px;
 }
+
+.profile-navigation__previous,
+.profile-navigation__next {
+	cursor: pointer;
+}
+
+.profile-navigation__divider {
+	margin: 0 .1em;
+    font-size: 1.2em;
+}
+
+.profile-tabs {
+	border-bottom: 1px solid $modal-color-1;
+	margin-bottom: 1em;
+}
+
+.profile-tabs__tab {
+    padding: 1em;
+    display: inline-block;
+
+    &:not(.profile-tabs__tab--selected) {
+    	cursor: pointer;
+    }
+}
+
+.profile-tabs__tab--selected {
+    background-color: $modal-color-1;
+    color: #fff;
+}
+
+.profile-tab__contents {
+	display: none;
+}
+
+.profile-tab__contents--selected {
+	display: block;
+}
+
+.profile__profile-picture {
+    width: 200px;
+    position: absolute;
+    right: 1em;
+}
+
+.profile-details__name {
+    font-size: 1.4em;
+    font-style: italic;
+    margin-bottom: .4em;
+    font-weight: 400;
+}
+
+.profile-details__age {
+    margin-bottom: .8em;
+}
+
+.profile-details__registration-number {
+    margin-bottom: 2em;
+}
+
+.detailed-child-info__header {
+    font-weight: 600;
+}
+
+.detailed-child-info__introduction,
+.detailed-child-info__part-1,
+.detailed-child-info__part-2,
+.detailed-child-info__part-3 {
+    margin-bottom: 1.5em;
+}
+
+.detailed-child-info__introduction,
+.detailed-child-info__part-1 {
+	margin-right: 15em;
+}
+
+.profile-details__video-container {
+    position: relative;
+    width: 100%;
+    height: 0;
+    padding-bottom: 56.25%;
+    margin-bottom: 1.5em;
+}
+
+.profile-details__video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+
+
+
+
+
+

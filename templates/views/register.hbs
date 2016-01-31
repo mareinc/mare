@@ -21,103 +21,167 @@
 			</aside>
 			<section class="main-column">
 				<div class="page-header">
-					<span class="page-header-text">Register</span>
+					<span class="page-header-text">Register with MARE</span>
 				</div>
+				{{#if registrationSubmitted}}
+					<h3>Thanks for registering.</h3>
+					<p>You can now try to log in.</p>
+				{{else}}
 				<div class="register-intro">
 					Lorem ipsum dolor sit amet, consectetur adipiscing elit. In gravida ultricies tempor. Aenean sodales rutrum urna in porta. Vestibulum in mi non risus mattis imperdiet eget ac metus. Sed mauris nunc, rutrum eu posuere a, vehicula vitae neque. Donec nec lorem laoreet, accumsan mauris vitae, bibendum metus. Donec sit amet odio luctus arcu suscipit laoreet a in dolor. Sed commodo sagittis mattis. Aenean cursus malesuada purus ut posuere.
 				</div>
-				<select class="registration-type-selector" name="registration-type-selector">
-				    <option value="siteVisitor" selected="selected">Site Visitor</option>
-				    <option value="socialWorker">Social Worker</option>
-				    <option value="prospectiveParent">Prospective Parent</option>
-				</select>
+				<div class="registration-type-selector">
+					<select name="registration-type-selector">
+					    <option value="siteVisitor" selected="selected">Site Visitor</option>
+					    <option value="socialWorker">Social Worker</option>
+					    <option value="prospectiveParent">Prospective Parent</option>
+					</select>
+				</div>
 				<section class="site-visitor-registration">
 					<div class="registration-type-header">Site Visitor Registration</div>
 					<span class="required required-description">* Required</span>
 					<form action="/register" class="registration-form" method="POST">
 						<input type="hidden" class="registration-type" name="registrationType" value="siteVisitor">
-						<input type="text" class="input input-medium" required id="site-user-first-name" name="firstName">
-						<label for="site-user-first-name" class="label required-field">First Name</label>
-						<input type="text" class="input input-medium" required id="site-user-last-name" name="lastName">
-						<label for="site-user-last-name" class="label required-field">Last Name</label>
-						<input type="email" class="input input-medium" required id="site-user-email" name="email" pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
-						<label for="site-user-email" class="label required-field">Email Address</label>
-
-						<input type="password" class="input input-medium" required id="site-user-password" name="password">
-						<label for="site-user-password" class="label required-field">Password</label>
-						<input type="password" class="input input-medium" required id="site-user-confirm-password" name="confirmPassword">
-						<label for="site-user-confirm-password" class="label required-field">Confirm Password</label>
-
+						<input type="hidden" name="action" value="register">
+						<div class="row form-group">
+							<div class="col-sm-12">
+								<input type="text" class="input" required id="site-user-first-name" name="firstName">
+								<label for="site-user-first-name" class="label required-field">First Name</label>
+							</div>
+						</div>
+						<div class="row form-group">
+							<div class="col-sm-12">
+								<input type="text" class="input" required id="site-user-last-name" name="lastName">
+								<label for="site-user-last-name" class="label required-field">Last Name</label>
+							</div>
+						</div>
+						<div class="row form-group">
+							<div class="col-sm-12">
+								<input type="email" class="input" required id="site-user-email" name="email" pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
+								<label for="site-user-email" class="label required-field">Email Address</label>
+							</div>
+						</div>
+						<div class="row form-group">
+							<div class="col-sm-12">
+								<input type="password" class="input" required id="site-user-password" name="password">
+								<label for="site-user-password" class="label required-field">Password</label>
+							</div>
+						</div>
+						<div class="row form-group">
+							<div class="col-sm-12">
+								<input type="password" class="input" required id="site-user-confirm-password" name="password_confirm">
+								<label for="site-user-confirm-password" class="label required-field">Confirm Password</label>
+							</div>
+						</div>
 						<div class="input-section-description">While not required for registration, providing your contact details below will make registering
 	for events on the MARE site faster and easier.</div>
-						<input type="text" class="input input-large" id="site-user-address-1" name="address1">
-						<label for="site-user-address-1" class="label">Address 1</label>
-						<input type="text" class="input input-large" id="site-user-address-2" name="address2">
-						<label for="site-user-address-2" class="label">Address 2</label>
-						<input type="text" class="input input-medium" id="site-user-city" name="city">
-						<label for="site-user-city" class="label">City</label>
+						<div class="row form-group">
+							<div class="col-sm-12">
+								<input type="text" class="input" id="site-user-street-1" name="street1">
+								<label for="site-user-street-1" class="label">Street 1</label>
+							</div>
+						</div>
+						<div class="row form-group">
+							<div class="col-sm-12">
+								<input type="text" class="input" id="site-user-street-2" name="street2">
+								<label for="site-user-street-2" class="label">Street 2</label>
+							</div>
+						</div>
+						<div class="row form-group">
+							<div class="col-sm-12">
+								<input type="text" class="input" id="site-user-city" name="city">
+								<label for="site-user-city" class="label">City</label>
+							</div>
+						</div>
+						<div class="row form-group">
+							<div class="col-sm-12">
+								<select id="site-user-state" name="state" class="input">
+								{{#each state}}
+									<option value="{{_id}}">{{state}}</option>
+								{{/each}}
+								</select>
+								<label for="site-user-state" class="label">State</label>
+							</div>
+						</div>
+						<div class="row form-group">
+							<div class="col-sm-12">
+								<input type="text" class="input" id="site-user-zip-code" name="zipCode" pattern="\d{5}([ \-]\d{4})?">
+								<label for="site-user-zip-code" class="label">Zip Code</label>
+							</div>
+						</div>
+						<div class="row form-group">
+							<div class="col-sm-12">
+								<input type="text" class="input" id="site-user-mobile-phone" name="mobilePhone" pattern="^\s*(?:\+?(\d{1,3}))?([-. (]*(\d{3})[-. )]*)?((\d{3})[-. ]*(\d{2,4})(?:[-.x ]*(\d+))?)\s*$">
+								<label for="site-user-mobile-phone" class="label">Mobile Phone</label>
+							</div>
+						</div>
+						<div class="row form-group">
+							<div class="col-sm-12">
+								<input type="text" class="input" id="site-user-home-phone" name="homePhone" pattern="^\s*(?:\+?(\d{1,3}))?([-. (]*(\d{3})[-. )]*)?((\d{3})[-. ]*(\d{2,4})(?:[-.x ]*(\d+))?)\s*$">
+								<label for="site-user-home-phone" class="label">Home Phone</label>
+							</div>
+						</div>
 
-						<select name="state" class="input state-select">
-							<option>Alabama</option>
-							<option>Alaska</option>
-							<option>Arizona</option>
-							<option>Arkansas</option>
-							<option>California</option>
-							<option>Colorado</option>
-							<option>Connecticut</option>
-							<option>Delaware</option>
-							<option>District of Columbia</option>
-							<option>Florida</option>
-							<option>Georgia</option>
-							<option>Hawaii</option>
-							<option>Idaho</option>
-							<option>Illinois</option>
-							<option>Indiana</option>
-							<option>Iowa</option>
-							<option>Kansas</option>
-							<option>Kentucky</option>
-							<option>Louisiana</option>
-							<option>Maine</option>
-							<option>Maryland</option>
-							<option>Massachusetts</option>
-							<option>Michigan</option>
-							<option>Minnesota</option>
-							<option>Mississippi</option>
-							<option>Missouri</option>
-							<option>Montana</option>
-							<option>Nebraska</option>
-							<option>Nevada</option>
-							<option>New Hampshire</option>
-							<option>New Jersey</option>
-							<option>New Mexico</option>
-							<option>New York</option>
-							<option>North Carolina</option>
-							<option>North Dakota</option>
-							<option>Ohio</option>
-							<option>Oklahoma</option>
-							<option>Oregon</option>
-							<option>Pennsylvania</option>
-							<option>Rhode Island</option>
-							<option>South Carolina</option>
-							<option>South Dakota</option>
-							<option>Tennessee</option>
-							<option>Texas</option>
-							<option>Utah</option>
-							<option>Vermont</option>
-							<option>Virginia</option>
-							<option>Washington</option>
-							<option>West Virginia</option>
-							<option>Wisconsin</option>
-							<option>Wyoming</option>
-						</select>
+						<div class="registration-section-header">Mare &amp; You</div>
 
-						<input type="text" class="input input-small" id="site-user-zip-code" name="zipCode" pattern="\d{5}([ \-]\d{4})?">
-						<label for="site-user-zip-code" class="label">Zip Code</label>
-						<input type="text" class="input input-small" id="site-user-mobile-phone" name="mobilePhone" pattern="^\s*(?:\+?(\d{1,3}))?([-. (]*(\d{3})[-. )]*)?((\d{3})[-. ]*(\d{2,4})(?:[-.x ]*(\d+))?)\s*$">
-						<label for="site-user-mobile-phone" class="label">Mobile Phone</label>
-						<input type="text" class="input input-small" id="site-user-other-phone" name="otherPhone" pattern="^\s*(?:\+?(\d{1,3}))?([-. (]*(\d{3})[-. )]*)?((\d{3})[-. ]*(\d{2,4})(?:[-.x ]*(\d+))?)\s*$">
-						<label for="site-user-other-phone" class="label">Other Phone</label>
-						
+						<div class="row">
+							<div class="col-sm-24 form-group">
+								<label class="label marg-bottom-xs-5">How did you hear abut MARE?</label>
+							</div>
+							<div class="col-sm-12">
+								<div class="row">
+									<div class="col-sm-12 form-group">
+										<label class="checkbox-inline">
+											<input type="checkbox" name="howDidYouHear" value="Web">Web
+										</label>
+									</div>
+									<div class="col-sm-12 form-group">
+										<label class="checkbox-inline">
+											<input type="checkbox" name="howDidYouHear" value="Wednesday’s Child">Wednesday’s Child
+										</label>
+									</div>
+									<div class="col-sm-12 form-group">
+										<label class="checkbox-inline">
+											<input type="checkbox" name="howDidYouHear" value="Adoption Event">Adoption Event
+										</label>
+									</div>
+									<div class="col-sm-12 form-group">
+										<label class="checkbox-inline">
+											<input type="checkbox" name="howDidYouHear" value="Friend / Family">Friend / Family
+										</label>
+									</div>
+									<div class="col-sm-12 form-group">
+										<label class="checkbox-inline">
+											<input type="checkbox" name="howDidYouHear" value="Newspaper">Newspaper
+										</label>
+									</div>
+									<div class="col-sm-12 form-group">
+										<label class="checkbox-inline">
+											<input type="checkbox" name="howDidYouHear" value="Heart Gallery Display">Heart Gallery Display
+										</label>
+									</div>
+									<div class="col-sm-12 form-group">
+										<label class="checkbox-inline">
+											<input type="checkbox" name="howDidYouHear" value="Social Media">Social Media
+										</label>
+									</div>
+									<div class="col-sm-12 form-group">
+										<label class="checkbox-inline">
+											<input type="checkbox" name="howDidYouHear" value="AdoptMassachusettsKids.org">AdoptMassachusettsKids.org
+										</label>
+									</div>
+									<div class="col-sm-12 form-group">
+										<label class="checkbox-inline">
+											<input type="checkbox" name="howDidYouHear" value="Other" onClick="$('#site-user-how-did-you-hear').show()">Other
+										</label>
+									</div>
+									<div class="col-sm-12 form-group">
+										<input type="text" style="display:none" class="input" id="site-user-how-did-you-hear" name="howDidYouHearOther" placeholder="Other...">
+									</div>
+								</div>
+							</div>
+						</div>
+
 						<button class="register" type="submit">Register</button>
 					</form>
 				</section>
@@ -128,96 +192,206 @@
 					<form action="/register" class="registration-form" method="POST">
 						<input type="hidden" class="registration-type" name="registrationType" value="socialWorker">
 						<div class="registration-section-header">Account Setup</div>
-						<input type="text" class="input input-medium" required id="social-worker-first-name" name="firstName">
-						<label for="social-worker-first-name" class="label required-field">First Name</label>
-						<input type="text" class="input input-medium" required id="social-worker-last-name" name="lastName">
-						<label for="social-worker-last-name" class="label required-field">Last Name</label>
-						<input type="email" class="input input-medium" required id="social-worker-email" name="email" pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
-						<label for="social-worker-email" class="label required-field">Email Address</label>
-
-						<input type="password" class="input input-medium" required id="social-worker-password" name="password">
-						<label for="social-worker-password" class="label required-field">Password</label>
-						<input type="password" class="input input-medium" required id="social-worker-confirm-password" name="confirmPassword">
-						<label for="social-worker-confirm-password" class="label required-field">Confirm Password</label>
+						<div class="row form-group">
+							<div class="col-sm-12">
+								<input type="text" class="input" required id="social-worker-first-name" name="firstName">
+								<label for="social-worker-first-name" class="label required-field">First Name</label>
+							</div>
+						</div>
+						<div class="row form-group">
+							<div class="col-sm-12">
+								<input type="text" class="input" required id="social-worker-last-name" name="lastName">
+								<label for="social-worker-last-name" class="label required-field">Last Name</label>
+							</div>
+						</div>
+						<div class="row form-group">
+							<div class="col-sm-12">
+								<input type="email" class="input" required id="social-worker-email" name="email" pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
+								<label for="social-worker-email" class="label required-field">Email Address</label>
+							</div>
+						</div>
+						<div class="row form-group">
+							<div class="col-sm-12">
+								<input type="password" class="input" required id="social-worker-password" name="password">
+								<label for="social-worker-password" class="label required-field">Password</label>
+							</div>
+						</div>
+						<div class="row form-group">
+							<div class="col-sm-12">
+								<input type="password" class="input" required id="social-worker-confirm-password" name="password.confirm">
+								<label for="social-worker-confirm-password" class="label required-field">Confirm Password</label>
+							</div>
+						</div>
 
 						<div class="registration-section-header">Contact Details</div>
-						<input type="text" class="input input-large" required id="social-worker-agency" name="agency">
-						<label for="social-worker-agency" class="label required-field">Agency</label>
-						<input type="text" class="input input-large" required id="social-worker-title" name="title">
-						<label for="social-worker-title" class="label required-field">Title</label>
 
-						<input type="text" class="input input-small" required id="social-worker-phone" name="phone" pattern="^\s*(?:\+?(\d{1,3}))?([-. (]*(\d{3})[-. )]*)?((\d{3})[-. ]*(\d{2,4})(?:[-.x ]*(\d+))?)\s*$">
-						<label for="social-worker-phone" class="label required-field">Phone</label>
+						<div class="row form-group">
+							<div class="col-sm-12">
+								<input type="text" class="input" required id="social-worker-agency" name="agency">
+								<label for="social-worker-agency" class="label required-field">Agency</label>
+							</div>
+						</div>
+						<div class="row form-group">
+							<div class="col-sm-12">
+								<input type="text" class="input" required id="social-worker-title" name="title">
+								<label for="social-worker-title" class="label required-field">Title</label>
+							</div>
+						</div>
+						<div class="row form-group">
+							<div class="col-sm-12">
+								<input type="text" class="input" required id="social-worker-phone" name="phone" pattern="^\s*(?:\+?(\d{1,3}))?([-. (]*(\d{3})[-. )]*)?((\d{3})[-. ]*(\d{2,4})(?:[-.x ]*(\d+))?)\s*$">
+								<label for="social-worker-phone" class="label required-field">Phone</label>
+							</div>
+						</div>
+						<div class="row form-group">
+							<div class="col-sm-12">
+								<input type="text" class="input" id="social-worker-mobile-phone" name="mobilePhone" pattern="^\s*(?:\+?(\d{1,3}))?([-. (]*(\d{3})[-. )]*)?((\d{3})[-. ]*(\d{2,4})(?:[-.x ]*(\d+))?)\s*$">
+								<label for="social-worker-mobile-phone" class="label">Mobile Phone</label>
+							</div>
+						</div>
+						<div class="row form-group">
+							<div class="col-sm-12">
+								<input type="text" class="input" required id="social-worker-street-1" name="street1">
+								<label for="social-worker-street-1" class="label required-field">Street 1</label>
+							</div>
+						</div>
+						<div class="row form-group">
+							<div class="col-sm-12">
+								<input type="text" class="input" id="social-worker-street-2" name="street2">
+								<label for="social-worker-street-2" class="label">Street 2</label>
+							</div>
+						</div>
+						<div class="row form-group">
+							<div class="col-sm-12">
+								<input type="text" class="input" required id="social-worker-city" name="city">
+								<label for="social-worker-city" class="label required-field">City</label>
+							</div>
+						</div>
+						<div class="row form-group">
+							<div class="col-sm-12">
+								<select name="state" class="input" id="social-worker-state" required>
+									<option>Alabama</option>
+									<option>Alaska</option>
+									<option>Arizona</option>
+									<option>Arkansas</option>
+									<option>California</option>
+									<option>Colorado</option>
+									<option>Connecticut</option>
+									<option>Delaware</option>
+									<option>District of Columbia</option>
+									<option>Florida</option>
+									<option>Georgia</option>
+									<option>Hawaii</option>
+									<option>Idaho</option>
+									<option>Illinois</option>
+									<option>Indiana</option>
+									<option>Iowa</option>
+									<option>Kansas</option>
+									<option>Kentucky</option>
+									<option>Louisiana</option>
+									<option>Maine</option>
+									<option>Maryland</option>
+									<option>Massachusetts</option>
+									<option>Michigan</option>
+									<option>Minnesota</option>
+									<option>Mississippi</option>
+									<option>Missouri</option>
+									<option>Montana</option>
+									<option>Nebraska</option>
+									<option>Nevada</option>
+									<option>New Hampshire</option>
+									<option>New Jersey</option>
+									<option>New Mexico</option>
+									<option>New York</option>
+									<option>North Carolina</option>
+									<option>North Dakota</option>
+									<option>Ohio</option>
+									<option>Oklahoma</option>
+									<option>Oregon</option>
+									<option>Pennsylvania</option>
+									<option>Rhode Island</option>
+									<option>South Carolina</option>
+									<option>South Dakota</option>
+									<option>Tennessee</option>
+									<option>Texas</option>
+									<option>Utah</option>
+									<option>Vermont</option>
+									<option>Virginia</option>
+									<option>Washington</option>
+									<option>West Virginia</option>
+									<option>Wisconsin</option>
+									<option>Wyoming</option>
+								</select>
+								<label for="social-worker-state" class="label required-field">State</label>
+							</div>
+						</div>
+						<div class="row form-group">
+							<div class="col-sm-12">
+								<input type="text" class="input" required id="social-worker-zip-code" name="zipCode" pattern="\d{5}([ \-]\d{4})?">
+								<label for="social-worker-zip-code" class="label required-field">Zip Code</label>
+							</div>
+						</div>
 
-						<input type="text" class="input input-small" id="social-worker-mobile-phone" name="mobilePhone" pattern="^\s*(?:\+?(\d{1,3}))?([-. (]*(\d{3})[-. )]*)?((\d{3})[-. ]*(\d{2,4})(?:[-.x ]*(\d+))?)\s*$">
-						<label for="social-worker-mobile-phone" class="label">Mobile Phone</label>
+						<div class="registration-section-header">Mare &amp; You</div>
 
+						<div class="row">
+							<div class="col-sm-24 form-group">
+								<label class="label marg-bottom-xs-5">How did you hear abut MARE?</label>
+							</div>
+							<div class="col-sm-12">
+								<div class="row">
+									<div class="col-sm-12 form-group">
+										<label class="checkbox-inline">
+											<input type="checkbox" name="howDidYouHear" value="Web">Web
+										</label>
+									</div>
+									<div class="col-sm-12 form-group">
+										<label class="checkbox-inline">
+											<input type="checkbox" name="howDidYouHear" value="Wednesday’s Child">Wednesday’s Child
+										</label>
+									</div>
+									<div class="col-sm-12 form-group">
+										<label class="checkbox-inline">
+											<input type="checkbox" name="howDidYouHear" value="Adoption Event">Adoption Event
+										</label>
+									</div>
+									<div class="col-sm-12 form-group">
+										<label class="checkbox-inline">
+											<input type="checkbox" name="howDidYouHear" value="Friend / Family">Friend / Family
+										</label>
+									</div>
+									<div class="col-sm-12 form-group">
+										<label class="checkbox-inline">
+											<input type="checkbox" name="howDidYouHear" value="Newspaper">Newspaper
+										</label>
+									</div>
+									<div class="col-sm-12 form-group">
+										<label class="checkbox-inline">
+											<input type="checkbox" name="howDidYouHear" value="Heart Gallery Display">Heart Gallery Display
+										</label>
+									</div>
+									<div class="col-sm-12 form-group">
+										<label class="checkbox-inline">
+											<input type="checkbox" name="howDidYouHear" value="Social Media">Social Media
+										</label>
+									</div>
+									<div class="col-sm-12 form-group">
+										<label class="checkbox-inline">
+											<input type="checkbox" name="howDidYouHear" value="AdoptMassachusettsKids.org">AdoptMassachusettsKids.org
+										</label>
+									</div>
+									<div class="col-sm-12 form-group">
+										<label class="checkbox-inline">
+											<input type="checkbox" name="howDidYouHear" value="Other" onClick="$('#social-worker-how-did-you-hear').show()">Other
+										</label>
+									</div>
+									<div class="col-sm-12 form-group">
+										<input type="text" style="display:none" class="input" id="social-worker-how-did-you-hear" name="howDidYouHearOther" placeholder="Other...">
+									</div>
+								</div>
+							</div>
+						</div>
 
-
-						<input type="text" class="input input-large" required id="social-worker-address-1" name="address1">
-						<label for="social-worker-address-1" class="label required-field">Address 1</label>
-						<input type="text" class="input input-large" id="social-worker-address-2" name="address2">
-						<label for="social-worker-address-2" class="label">Address 2</label>
-						<input type="text" class="input input-medium" required id="social-worker-city" name="city">
-						<label for="social-worker-city" class="label required-field">City</label>
-
-						<select name="state" class="input state-select" required>
-							<option>Alabama</option>
-							<option>Alaska</option>
-							<option>Arizona</option>
-							<option>Arkansas</option>
-							<option>California</option>
-							<option>Colorado</option>
-							<option>Connecticut</option>
-							<option>Delaware</option>
-							<option>District of Columbia</option>
-							<option>Florida</option>
-							<option>Georgia</option>
-							<option>Hawaii</option>
-							<option>Idaho</option>
-							<option>Illinois</option>
-							<option>Indiana</option>
-							<option>Iowa</option>
-							<option>Kansas</option>
-							<option>Kentucky</option>
-							<option>Louisiana</option>
-							<option>Maine</option>
-							<option>Maryland</option>
-							<option>Massachusetts</option>
-							<option>Michigan</option>
-							<option>Minnesota</option>
-							<option>Mississippi</option>
-							<option>Missouri</option>
-							<option>Montana</option>
-							<option>Nebraska</option>
-							<option>Nevada</option>
-							<option>New Hampshire</option>
-							<option>New Jersey</option>
-							<option>New Mexico</option>
-							<option>New York</option>
-							<option>North Carolina</option>
-							<option>North Dakota</option>
-							<option>Ohio</option>
-							<option>Oklahoma</option>
-							<option>Oregon</option>
-							<option>Pennsylvania</option>
-							<option>Rhode Island</option>
-							<option>South Carolina</option>
-							<option>South Dakota</option>
-							<option>Tennessee</option>
-							<option>Texas</option>
-							<option>Utah</option>
-							<option>Vermont</option>
-							<option>Virginia</option>
-							<option>Washington</option>
-							<option>West Virginia</option>
-							<option>Wisconsin</option>
-							<option>Wyoming</option>
-						</select>
-
-						<input type="text" class="input input-small" required id="social-worker-zip-code" name="zipCode" pattern="\d{5}([ \-]\d{4})?">
-						<label for="social-worker-zip-code" class="label required-field">Zip Code</label>
-						
 						<button class="register" type="submit">Register</button>
 					</form>
 				</section>
@@ -228,269 +402,787 @@
 					<form action="/register" class="registration-form" method="POST">
 						<input type="hidden" class="registration-type" name="registrationType" value="prospectiveParent">
 						<div class="registration-section-header">Account Setup</div>
-						<input type="email" class="input input-medium" required id="email" name="email" pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
-						<label for="email" class="label required-field">Email Address</label>
-						<input type="password" class="input input-medium" required id="password" name="password">
-						<label for="password" class="label required-field">Password</label>
-						<input type="password" class="input input-medium" required id="confirm-password" name="confirmPassword">
-						<label for="confirm-password" class="label required-field">Confirm Password</label>
-						<!-- This will end part 1 -->
-						<div class="registration-section-header">Primary Contact</div>
-						<input type="text" class="input left-50" required id="first-name" name="firstName">
-						<label for="first-name" class="label required-field">First Name</label>
-						<input type="text" class="input right-50" required id="last-name" name="lastName">
-						<label for="last-name" class="label required-field">Last Name</label>
-						<input type="text" class="input left-50" required id="phone" name="phone" pattern="^\s*(?:\+?(\d{1,3}))?([-. (]*(\d{3})[-. )]*)?((\d{3})[-. ]*(\d{2,4})(?:[-.x ]*(\d+))?)\s*$">
-						<label for="phone" class="label required-field">Phone</label>
-						
-						<div class="gender-select">
-							<span class="gender-select-text">Gender:</span>
-							<input type="radio" name="gender" value="male">Male</input>
-							<input type="radio" name="gender" value="female">Female</input>
-						</div>
-						<div class="race left-50">
-							<span class="race-text">Race/Ethnicity (check all that apply):</span>
-							<input type="checkbox" name="race" value="africanAmerican">African American</input>
-							<input type="checkbox" name="race" value="asian">Asian</input>
-							<input type="checkbox" name="race" value="caucasian">Caucasian</input>
-							<input type="checkbox" name="race" value="hispanicLatino">Hispanic/Latino</input>
-							<input type="checkbox" name="race" value="nativeAmerican">Native American</input>
-							<input type="checkbox" name="race" value="other">Other</input>
-						</div>
-						<div class="right-50">
-							<input type="text" class="input" id="occupation" name="occupation">
-							<label for="occupation" class="label">Occupation</label>
-							<input type="text" class="input" id="date-of-birth" name="dateOfBirth" placeholder="DD/MM/YYYY">
-							<label for="date-of-birth" class="label">Date of Birth</label>
-						</div>
-						<!-- This will end part 2 -->
-						<div class="registration-section-header">Home Address</div>
-						<input type="text" class="input input-large" required id="address-1" name="address1">
-						<label for="address-1" class="label required-field">Address 1</label>
-						<input type="text" class="input input-large" id="address-2" name="address2">
-						<label for="address-2" class="label">Address 2</label>
-						<input type="text" class="input input-medium" required id="city" name="city">
-						<label for="city" class="label required-field">City</label>
-
-						<select name="state" class="input state-select" required>
-							<option>Alabama</option>
-							<option>Alaska</option>
-							<option>Arizona</option>
-							<option>Arkansas</option>
-							<option>California</option>
-							<option>Colorado</option>
-							<option>Connecticut</option>
-							<option>Delaware</option>
-							<option>District of Columbia</option>
-							<option>Florida</option>
-							<option>Georgia</option>
-							<option>Hawaii</option>
-							<option>Idaho</option>
-							<option>Illinois</option>
-							<option>Indiana</option>
-							<option>Iowa</option>
-							<option>Kansas</option>
-							<option>Kentucky</option>
-							<option>Louisiana</option>
-							<option>Maine</option>
-							<option>Maryland</option>
-							<option>Massachusetts</option>
-							<option>Michigan</option>
-							<option>Minnesota</option>
-							<option>Mississippi</option>
-							<option>Missouri</option>
-							<option>Montana</option>
-							<option>Nebraska</option>
-							<option>Nevada</option>
-							<option>New Hampshire</option>
-							<option>New Jersey</option>
-							<option>New Mexico</option>
-							<option>New York</option>
-							<option>North Carolina</option>
-							<option>North Dakota</option>
-							<option>Ohio</option>
-							<option>Oklahoma</option>
-							<option>Oregon</option>
-							<option>Pennsylvania</option>
-							<option>Rhode Island</option>
-							<option>South Carolina</option>
-							<option>South Dakota</option>
-							<option>Tennessee</option>
-							<option>Texas</option>
-							<option>Utah</option>
-							<option>Vermont</option>
-							<option>Virginia</option>
-							<option>Washington</option>
-							<option>West Virginia</option>
-							<option>Wisconsin</option>
-							<option>Wyoming</option>
-						</select>
-
-						<input type="text" class="input input-small" required id="zip-code" name="zipCode" pattern="\d{5}([ \-]\d{4})?">
-						<label for="zip-code" class="label required-field">Zip Code</label>
-						<!-- This will end part 3 -->
-						<div class="registration-section-header">Homestudy Details</div>
-						<div class="homestudy-select">
-							<span class="homestudy-select-text left-50">Have you completed a Homestudy?</span>
-							<div class="homestudy-select-options right-50">
-								<input type="radio" name="homestudy" value="yes">Yes</input>
-								<input type="radio" name="homestudy" value="no">No</input>
+						<div class="row">
+							<div class="col-sm-12 form-group">
+								<input type="email" class="input" required id="email" name="email" pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
+								<label for="email" class="label required-field">Email Address</label>
 							</div>
 						</div>
-						<input type="text" class="input left-50" id="homestudy-date-complete" name="homestudyDateComplete" placeholder="DD/MM/YYYY">
-						<label for="homestudy-date-complete" class="label required-field">Date Homestudy Completed/Updated</label>
-						<input type="text" class="input left-50" required id="social-worker-name" name="socialWorkerName">
-						<label for="social-worker-name" class="label required-field">Social Worker Name</label>
-						<input type="text" class="input right-50" required id="social-worker-agency" name="socialWorkerAgency">
-						<label for="social-worker-agency" class="label required-field">Social Worker Agency</label>
+						<div class="row">
+							<div class="col-sm-12 form-group">
+								<input type="password" class="input" required id="password" name="password">
+								<label for="password" class="label required-field">Password</label>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-12 form-group">
+								<input type="password" class="input" required id="confirm-password" name="confirmPassword">
+								<label for="confirm-password" class="label required-field">Confirm Password</label>
+							</div>
+						</div>
+						<!-- This will end part 1 -->
 
-						<input type="text" class="input left-50" required id="social-worker-phone" name="socialWorkerPhone" pattern="^\s*(?:\+?(\d{1,3}))?([-. (]*(\d{3})[-. )]*)?((\d{3})[-. ]*(\d{2,4})(?:[-.x ]*(\d+))?)\s*$">
-						<label for="social-worker-phone" class="label required-field">Social Worker Phone Number</label>
-						<input type="text" class="input right-50" required id="social-worker-email" name="socialWorkerEmail">
-						<label for="social-worker-email" class="label required-field">Social Worker Email Address</label>
-						<!-- TODO: placeholder for homestudy submission -->
-						<!-- This will end part 4 -->
+						<div class="registration-section-header">Contact 1</div>
+
+						<div class="row">
+							<div class="col-sm-12 form-group">
+								<input type="text" class="input" required id="contact1-first-name" name="Contact1FirstName">
+								<label for="contact1-first-name" class="label required-field">First Name</label>
+							</div>
+							<div class="col-sm-12 form-group">
+								<input type="text" class="input" required id="contact1-last-name" name="Contact1LastName">
+								<label for="contact1-last-name" class="label required-field">Last Name</label>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-12 form-group">
+								<input type="email" class="input" required id="contact1-email" name="Contact1Email" pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
+								<label for="contact1-email" class="label required-field">Email Address</label>
+							</div>
+							<div class="col-sm-12 form-group">
+								<input type="text" class="input" required id="contact1-phone" name="Contact1Phone" pattern="^\s*(?:\+?(\d{1,3}))?([-. (]*(\d{3})[-. )]*)?((\d{3})[-. ]*(\d{2,4})(?:[-.x ]*(\d+))?)\s*$">
+								<label for="contact1-phone" class="label required-field">Phone</label>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-12 form-group">
+								<span class="gender-select-text">Gender:</span> &nbsp;&nbsp;
+								<label class="radio-inline"><input type="radio" name="Contact1Gender" value="male"> Male</label>
+								<label class="radio-inline"><input type="radio" name="Contact1Gender" value="female"> Female</label>
+								<label class="radio-inline"><input type="radio" name="Contact1Gender" value="other"> Other</label>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-18">
+								<div class="row">
+									<div class="col-sm-24 form-group">
+										<span class="race-text">Race/Ethnicity (check all that apply):</span>
+									</div>
+								</div>
+								{{#each race}}
+									<div class="col-sm-12 form-group">
+										<label class="checkbox-inline">
+											<input type="checkbox" name="Contact2Race" value="{{race}}">{{race}}
+										</label>
+									</div>
+								{{/each}}
+							</div>
+							<div class="col-sm-6">
+								<div class="form-group">
+									<input type="text" class="input" id="contact1-occupation" name="Contact1Occupation">
+									<label for="contact1-occupation" class="label">Occupation</label>
+								</div>
+								<div class="form-group">
+									<input type="text" class="input" id="contact1-date-of-birth" name="Contact1DateOfBirth" placeholder="DD/MM/YYYY">
+									<label for="contact1-date-of-birth" class="label">Date of Birth</label>
+								</div>
+							</div>
+						</div>
+
+						<div class="registration-section-header">Contact 2</div>
+
+						<div class="row">
+							<div class="col-sm-12 form-group">
+								<input type="text" class="input" required id="contact2-first-name" name="Contact2FirstName">
+								<label for="contact2-first-name" class="label required-field">First Name</label>
+							</div>
+							<div class="col-sm-12 form-group">
+								<input type="text" class="input" required id="contact2-last-name" name="Contact2LastName">
+								<label for="contact2-last-name" class="label required-field">Last Name</label>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-12 form-group">
+								<input type="email" class="input" required id="contact2-email" name="Contact2Email" pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
+								<label for="contact2-email" class="label required-field">Email Address</label>
+							</div>
+							<div class="col-sm-12 form-group">
+								<input type="text" class="input" required id="contact2-phone" name="Contact2Phone" pattern="^\s*(?:\+?(\d{1,3}))?([-. (]*(\d{3})[-. )]*)?((\d{3})[-. ]*(\d{2,4})(?:[-.x ]*(\d+))?)\s*$">
+								<label for="contact2-phone" class="label required-field">Phone</label>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-12 form-group">
+								<span class="gender-select-text">Gender:</span> &nbsp;&nbsp;
+								<label class="radio-inline"><input type="radio" name="Contact2Gender" value="male"> Male</label>
+								<label class="radio-inline"><input type="radio" name="Contact2Gender" value="female"> Female</label>
+								<label class="radio-inline"><input type="radio" name="Contact2Gender" value="other"> Other</label>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-18">
+								<div class="row">
+									<div class="col-sm-24 form-group">
+										<span class="race-text">Race/Ethnicity (check all that apply):</span>
+									</div>
+								</div>
+								{{#each race}}
+									<div class="col-sm-12 form-group">
+										<label class="checkbox-inline">
+											<input type="checkbox" name="Contact2Race" value="{{race}}">{{race}}
+										</label>
+									</div>
+								{{/each}}
+							</div>
+							<div class="col-sm-6">
+								<div class="form-group">
+									<input type="text" class="input" id="contact2-occupation" name="Contact2Occupation">
+									<label for="contact2-occupation" class="label">Occupation</label>
+								</div>
+								<div class="form-group">
+									<input type="text" class="input" id="contact2-date-of-birth" name="Contact2DateOfBirth" placeholder="DD/MM/YYYY">
+									<label for="contact2-date-of-birth" class="label">Date of Birth</label>
+								</div>
+							</div>
+						</div>
+
+						<div class="registration-section-header">Family Constellation</div>
+
+						<div class="row form-group">
+							<div class="col-sm-12">
+								<select id="family-constellation" name="familyConstellation" class="input">
+									<option value="id1_fill_in_later">single male</option>
+									<option value="id2_fill_in_later">single gay male</option>
+									<option value="id3_fill_in_later">single straight male</option>
+									<option value="id4_fill_in_later">single female</option>
+									<option value="id5_fill_in_later">single gay female</option>
+									<option value="id6_fill_in_later">single straight female</option>
+									<option value="id7_fill_in_later">female/female couple</option>
+									<option value="id8_fill_in_later">male/male couple</option>
+									<option value="id9_fill_in_later">male/female couple</option>
+								</select>
+								<label for="family-constellation" class="label">Family Constellation</label>
+							</div>
+						</div>
+
+						<div class="registration-section-header">Home Address</div>
+
+						<div class="row">
+							<div class="col-sm-12 form-group">
+								<input type="text" class="input" required id="address-1" name="address1">
+								<label for="address-1" class="label required-field">Address 1</label>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-12 form-group">
+								<input type="text" class="input" id="address-2" name="address2">
+								<label for="address-2" class="label">Address 2</label>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-12 form-group">
+								<input type="text" class="input" required id="city" name="city">
+								<label for="city" class="label required-field">City</label>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-12 form-group">
+								<select id="state" name="state" class="input" required>
+									<option>Alabama</option>
+									<option>Alaska</option>
+									<option>Arizona</option>
+									<option>Arkansas</option>
+									<option>California</option>
+									<option>Colorado</option>
+									<option>Connecticut</option>
+									<option>Delaware</option>
+									<option>District of Columbia</option>
+									<option>Florida</option>
+									<option>Georgia</option>
+									<option>Hawaii</option>
+									<option>Idaho</option>
+									<option>Illinois</option>
+									<option>Indiana</option>
+									<option>Iowa</option>
+									<option>Kansas</option>
+									<option>Kentucky</option>
+									<option>Louisiana</option>
+									<option>Maine</option>
+									<option>Maryland</option>
+									<option>Massachusetts</option>
+									<option>Michigan</option>
+									<option>Minnesota</option>
+									<option>Mississippi</option>
+									<option>Missouri</option>
+									<option>Montana</option>
+									<option>Nebraska</option>
+									<option>Nevada</option>
+									<option>New Hampshire</option>
+									<option>New Jersey</option>
+									<option>New Mexico</option>
+									<option>New York</option>
+									<option>North Carolina</option>
+									<option>North Dakota</option>
+									<option>Ohio</option>
+									<option>Oklahoma</option>
+									<option>Oregon</option>
+									<option>Pennsylvania</option>
+									<option>Rhode Island</option>
+									<option>South Carolina</option>
+									<option>South Dakota</option>
+									<option>Tennessee</option>
+									<option>Texas</option>
+									<option>Utah</option>
+									<option>Vermont</option>
+									<option>Virginia</option>
+									<option>Washington</option>
+									<option>West Virginia</option>
+									<option>Wisconsin</option>
+									<option>Wyoming</option>
+								</select>
+								<label for="state" class="label required-field">State</label>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-12 form-group">
+								<input type="text" class="input" required id="zip-code" name="zipCode" pattern="\d{5}([ \-]\d{4})?">
+								<label for="zip-code" class="label required-field">Zip Code</label>
+							</div>
+						</div>
+						<!-- This will end part 3 -->
+
+
+						<div class="registration-section-header">Homestudy Details</div>
+
+						<div class="homestudy-select row no-margin double-padding">
+							<span class="homestudy-select-text">Have you completed a Homestudy?</span> &nbsp;&nbsp;
+							<label class="radio-inline"><input type="radio" name="homestudy" value="yes" />Yes</label>
+							<label class="radio-inline"><input type="radio" name="homestudy" value="no" />No</label>
+						</div>
+
+						<div class="row">
+							<div class="col-sm-12 form-group">
+								<input type="text" class="input" id="homestudy-date-complete" name="homestudyDateComplete" placeholder="DD/MM/YYYY">
+								<label for="homestudy-date-complete" class="label required-field">Date Homestudy Completed/Updated</label>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-12 form-group">
+								<input type="text" class="input" required id="social-worker-name" name="socialWorkerName">
+								<label for="social-worker-name" class="label required-field">Social Worker Name</label>
+							</div>
+							<div class="col-sm-12 form-group">
+								<input type="text" class="input" required id="social-worker-agency" name="socialWorkerAgency">
+								<label for="social-worker-agency" class="label required-field">Social Worker Agency</label>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-12 form-group">
+								<input type="text" class="input" required id="social-worker-phone" name="socialWorkerPhone" pattern="^\s*(?:\+?(\d{1,3}))?([-. (]*(\d{3})[-. )]*)?((\d{3})[-. ]*(\d{2,4})(?:[-.x ]*(\d+))?)\s*$">
+								<label for="social-worker-phone" class="label required-field">Social Worker Phone Number</label>
+							</div>
+							<div class="col-sm-12 form-group">
+								<input type="text" class="input" required id="social-worker-email" name="socialWorkerEmail">
+								<label for="social-worker-email" class="label required-field">Social Worker Email Address</label>
+							</div>
+						</div>
+
+						<br />
+						<strong>Submit Your Homestudy</strong>
+						<p>To complete your registration as a Massachusetts homestudied family, you must submit your homestudy to us via one of the following methods (choose one):</p>
+						<div class="row">
+							<div class="col-sm-12 form-group">
+								<label class="label radio-inline">
+									<input type="radio" name="HomeStudySubmission" value="mail">
+									Upload PDF or MS Word &reg; format:
+								</label>
+							</div>
+							<div class="col-sm-12">
+								<input id="home-study-file-upload" class="input-inline" placeholder="Choose File" disabled="disabled" />
+								<div class="btn btn-default btn-file-upload">
+								    <span>Upload</span>
+								    <input id="upload-button" type="file" class="file-upload" name="HomeStudyFileUpload" />
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-12 form-group">
+								<label class="label radio-inline">
+									<input type="radio" name="HomeStudySubmission" value="email">
+									Email to web@mareinc.org:
+								</label>
+							</div>
+							<div class="col-sm-12">
+								<a href="mailto:web@mareinc.org" class="btn btn-default">Email</a>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-12 form-group">
+								<label class="label radio-inline">
+									<input type="radio" name="HomeStudySubmission" value="fax">
+									Fax to 617-542-1006, Attention: Homestudy Registration
+								</label>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-12 form-group">
+								<label class="label radio-inline">
+									<input type="radio" name="HomeStudySubmission" value="mail">
+									<div class="indented-text">
+										Mail to:
+										<div class="indent-text">
+											Massachusetts Adoption Resource Exchange<br />
+											45 Franklin Street<br />
+											5th Floor<br />
+											Boston, MA 02110-1301
+										</div>
+									</div>
+								</label>
+							</div>
+						</div>
+
 						<div class="registration-section-header">Family Details</div>
-						<label for="children-in-home" class="label left-70">Total number of children currently living at home:</label>
-						<select id="children-in-home" name="childrenInHome" class="input registration-number-select">
-							<option>0</option>
-							<option>1</option>
-							<option>2</option>
-							<option>3</option>
-							<option>4</option>
-							<option>5</option>
-							<option>6</option>
-							<option>7</option>
-							<option>8</option>
-							<option>9</option>
-							<option>10+</option>
-						</select>
+
+						<div class="row form-group">
+							<div class="col-sm-12">
+								<label for="children-in-home" class="label marg-bottom-xs-5">Total number of children currently living at home:</label>
+							</div>
+							<div class="col-sm-12">
+								<select id="children-in-home" name="childrenInHome" class="input registration-number-select">
+									<option>0</option>
+									<option>1</option>
+									<option>2</option>
+									<option>3</option>
+									<option>4</option>
+									<option>5</option>
+									<option>6</option>
+									<option>7</option>
+									<option>8</option>
+									<option>9</option>
+									<option>10+</option>
+								</select>
+							</div>
+						</div>
+
 						<div class="registration-sub-section-header header-blue">Male Children</div>
-						<label for="male-children-in-home" class="label left-70">Number of <span class="text-blue"> male</span> children in home:</label>
-						<select id="male-children-in-home" name="maleChildrenInHome" class="input registration-number-select">
-							<option>0</option>
-							<option>1</option>
-							<option>2</option>
-							<option>3</option>
-							<option>4</option>
-							<option>5</option>
-							<option>6</option>
-							<option>7</option>
-							<option>8</option>
-							<option>9</option>
-							<option>10+</option>
-						</select>
-						<label for="male-children-in-home-ages" class="label left-70">Ages of <span class="text-blue"> male</span> children (separated by commas):</label>
-						<input type="text" class="input right-30" id="male-children-in-home-ages" name="maleChildrenInHomeAges">
-						<label for="biological-male-children" class="label left-70">Number of biological<span class="text-blue"> male</span> children:</label>
-						<select id="biological-male-children" name="biologicalMaleChildren" class="input registration-number-select">
-							<option>0</option>
-							<option>1</option>
-							<option>2</option>
-							<option>3</option>
-							<option>4</option>
-							<option>5</option>
-							<option>6</option>
-							<option>7</option>
-							<option>8</option>
-							<option>9</option>
-							<option>10+</option>
-						</select>
-						<label for="adopted-male-children" class="label left-70">Number of adopted<span class="text-blue"> male</span>children:</label>
-						<select id="adopted-male-children" name="adoptedMaleChildren" class="input registration-number-select">
-							<option>0</option>
-							<option>1</option>
-							<option>2</option>
-							<option>3</option>
-							<option>4</option>
-							<option>5</option>
-							<option>6</option>
-							<option>7</option>
-							<option>8</option>
-							<option>9</option>
-							<option>10+</option>
-						</select>
+
+						<div class="row form-group">
+							<div class="col-sm-12">
+								<label for="male-children-in-home" class="label marg-bottom-xs-5">Number of <span class="text-blue"> male</span> children in home:</label>
+							</div>
+							<div class="col-sm-12">
+								<select id="male-children-in-home" name="maleChildrenInHome" class="input registration-number-select">
+									<option>0</option>
+									<option>1</option>
+									<option>2</option>
+									<option>3</option>
+									<option>4</option>
+									<option>5</option>
+									<option>6</option>
+									<option>7</option>
+									<option>8</option>
+									<option>9</option>
+									<option>10+</option>
+								</select>
+							</div>
+						</div>
+						<div class="row form-group">
+							<div class="col-sm-12">
+								<label for="male-children-in-home-ages" class="label marg-bottom-xs-5">Ages of <span class="text-blue"> male</span> children (separated by commas):</label>
+							</div>
+							<div class="col-sm-12">
+								<input type="text" class="input " id="male-children-in-home-ages" name="maleChildrenInHomeAges">
+							</div>
+						</div>
+						<div class="row form-group">
+							<div class="col-sm-12">
+								<label for="biological-male-children" class="label marg-bottom-xs-5">Number of biological<span class="text-blue"> male</span> children:</label>
+							</div>
+							<div class="col-sm-12">
+								<select id="biological-male-children" name="biologicalMaleChildren" class="input registration-number-select">
+									<option>0</option>
+									<option>1</option>
+									<option>2</option>
+									<option>3</option>
+									<option>4</option>
+									<option>5</option>
+									<option>6</option>
+									<option>7</option>
+									<option>8</option>
+									<option>9</option>
+									<option>10+</option>
+								</select>
+							</div>
+						</div>
+						<div class="row form-group">
+							<div class="col-sm-12">
+								<label for="adopted-male-children" class="label marg-bottom-xs-5">Number of adopted <span class="text-blue">male</span> children:</label>
+							</div>
+							<div class="col-sm-12">
+								<select id="adopted-male-children" name="adoptedMaleChildren" class="input registration-number-select">
+									<option>0</option>
+									<option>1</option>
+									<option>2</option>
+									<option>3</option>
+									<option>4</option>
+									<option>5</option>
+									<option>6</option>
+									<option>7</option>
+									<option>8</option>
+									<option>9</option>
+									<option>10+</option>
+								</select>
+							</div>
+						</div>
 
 
 						<div class="registration-sub-section-header header-pink">Female Children</div>
-						<label for="female-children-in-home" class="label left-70">Number of <span class="text-pink"> female</span>children in home:</label>
-						<select id="female-children-in-home" name="femaleChildrenInHome" class="input registration-number-select">
-							<option>0</option>
-							<option>1</option>
-							<option>2</option>
-							<option>3</option>
-							<option>4</option>
-							<option>5</option>
-							<option>6</option>
-							<option>7</option>
-							<option>8</option>
-							<option>9</option>
-							<option>10+</option>
-						</select>
-						<label for="female-children-in-home-ages" class="label left-70">Ages of <span class="text-pink"> female</span>children (separated by commas):</label>
-						<input type="text" class="input right-30" id="female-children-in-home-ages" name="femaleChildrenInHomeAges">
-						<label for="biological-female-children" class="label left-70">Number of biological<span class="text-pink"> female</span>children:</label>
-						<select id="biological-female-children" name="biologicalFemaleChildren" class="input registration-number-select">
-							<option>0</option>
-							<option>1</option>
-							<option>2</option>
-							<option>3</option>
-							<option>4</option>
-							<option>5</option>
-							<option>6</option>
-							<option>7</option>
-							<option>8</option>
-							<option>9</option>
-							<option>10+</option>
-						</select>
-						<label for="adopted-female-children" class="label left-70">Number of adopted<span class="text-pink"> female</span>children:</label>
-						<select id="adopted-female-children" name="adoptedFemaleChildren" class="input registration-number-select">
-							<option>0</option>
-							<option>1</option>
-							<option>2</option>
-							<option>3</option>
-							<option>4</option>
-							<option>5</option>
-							<option>6</option>
-							<option>7</option>
-							<option>8</option>
-							<option>9</option>
-							<option>10+</option>
-						</select>
+
+						<div class="row form-group">
+							<div class="col-sm-12">
+								<label for="female-children-in-home" class="label marg-bottom-xs-5">Number of <span class="text-pink">female</span> children in home:</label>
+							</div>
+							<div class="col-sm-12">
+								<select id="female-children-in-home" name="femaleChildrenInHome" class="input registration-number-select">
+									<option>0</option>
+									<option>1</option>
+									<option>2</option>
+									<option>3</option>
+									<option>4</option>
+									<option>5</option>
+									<option>6</option>
+									<option>7</option>
+									<option>8</option>
+									<option>9</option>
+									<option>10+</option>
+								</select>
+							</div>
+						</div>
+						<div class="row form-group">
+							<div class="col-sm-12">
+								<label for="female-children-in-home-ages" class="label marg-bottom-xs-5">Ages of <span class="text-pink">female</span> children (separated by commas):</label>
+							</div>
+							<div class="col-sm-12">
+								<input type="text" class="input " id="female-children-in-home-ages" name="femaleChildrenInHomeAges">
+							</div>
+						</div>
+						<div class="row form-group">
+							<div class="col-sm-12">
+								<label for="biological-female-children" class="label marg-bottom-xs-5">Number of biological <span class="text-pink">female</span> children:</label>
+							</div>
+							<div class="col-sm-12">
+								<select id="biological-female-children" name="biologicalFemaleChildren" class="input registration-number-select">
+									<option>0</option>
+									<option>1</option>
+									<option>2</option>
+									<option>3</option>
+									<option>4</option>
+									<option>5</option>
+									<option>6</option>
+									<option>7</option>
+									<option>8</option>
+									<option>9</option>
+									<option>10+</option>
+								</select>
+							</div>
+						</div>
+						<div class="row form-group">
+							<div class="col-sm-12">
+								<label for="adopted-female-children" class="label marg-bottom-xs-5">Number of adopted <span class="text-pink">female</span> children:</label>
+							</div>
+							<div class="col-sm-12">
+								<select id="adopted-female-children" name="adoptedFemaleChildren" class="input registration-number-select">
+									<option>0</option>
+									<option>1</option>
+									<option>2</option>
+									<option>3</option>
+									<option>4</option>
+									<option>5</option>
+									<option>6</option>
+									<option>7</option>
+									<option>8</option>
+									<option>9</option>
+									<option>10+</option>
+								</select>
+							</div>
+						</div>
+
 						<hr class="registration-divider">
 
-						<label for="other-adults-in-home" class="label left-70">Number of other adults living in home</label>
-						<select id="other-adults-in-home" name="otherAdultsInHome" class="input registration-number-select">
-							<option>0</option>
-							<option>1</option>
-							<option>2</option>
-							<option>3</option>
-							<option>4</option>
-							<option>5</option>
-							<option>6</option>
-							<option>7</option>
-							<option>8</option>
-							<option>9</option>
-							<option>10+</option>
-						</select>
+						<div class="row form-group">
+							<div class="col-sm-12">
+								<label for="other-adults-in-home" class="label marg-bottom-xs-5">Number of other adults living in home</label>
+							</div>
+							<div class="col-sm-12">
+								<select id="other-adults-in-home" name="otherAdultsInHome" class="input registration-number-select">
+									<option>0</option>
+									<option>1</option>
+									<option>2</option>
+									<option>3</option>
+									<option>4</option>
+									<option>5</option>
+									<option>6</option>
+									<option>7</option>
+									<option>8</option>
+									<option>9</option>
+									<option>10+</option>
+								</select>
+							</div>
+						</div>
+						<div class="row form-group">
+							<div class="col-sm-12">
+								<label for="primary-language-in-home" class="label marg-bottom-xs-5">Primary language spoken at home:</label>
+							</div>
+							<div class="col-sm-12">
+								<input type="text" class="input" id="primary-language-in-home" name="primaryLanguageInHome">
+							</div>
+						</div>
+						<div class="row form-group">
+							<div class="col-sm-12">
+								<label for="other-languages-in-home" class="label marg-bottom-xs-5">Other language(s) spoken at home:</label>
+							</div>
+							<div class="col-sm-12">
+								<input type="text" class="input" id="other-languages-in-home" name="otherLanguagesInHome">
+							</div>
+						</div>
 
-						<label for="primary-language-in-home" class="label left-70">Primary language spoken at home:</label>
-						<input type="text" class="input right-30" id="primary-language-in-home" name="primaryLanguageInHome">
-						<label for="other-languages-in-home" class="label left-70">Other language(s) spoken at home:</label>
-						<input type="text" class="input right-30" id="other-languages-in-home" name="otherLanguagesInHome">
-						<!-- This will end part 4 -->
+
 						<div class="registration-section-header">Adoption Preferences</div>
-						<div>. . .</div>
-						<div>More options coming soon</div>
-						<div>. . .</div>
 
+						<div class="row form-group">
+							<div class="col-sm-12">
+								<label class="label marg-bottom-xs-5">Gender of children approved for:</label>
+							</div>
+							<div class="col-sm-12">
+								<label class="checkbox-inline">
+									<input type="checkbox" name="approvedChildrenGender" value="male" />Male
+								</label>
+								<label class="checkbox-inline">
+									<input type="checkbox" name="approvedChildrenGender" value="female" />Female
+								</label>
+							</div>
+						</div>
+						<div class="row form-group">
+							<div class="col-sm-12">
+								<label class="label marg-bottom-xs-5">Legal Status</label>
+							</div>
+							<div class="col-sm-12">
+								<label class="checkbox-inline">
+									<input type="checkbox" name="legalStatus" value="free" />Free</label>
+								</label>
+								<label class="checkbox-inline">
+									<input type="checkbox" name="legalStatus" value="legal risk" />Legal Risk
+								</label>
+							</div>
+						</div>
+						<div class="row form-group">
+							<div class="col-sm-12">
+								<label class="label marg-bottom-xs-5">Age Range</label>
+							</div>
+							<div class="col-sm-12">
+								<div class="row">
+									<div class="col-xs-8">
+										<select name="ageRangeTop" class="input registration-number-select inline">
+											<option>0</option>
+											<option>1</option>
+											<option>2</option>
+											<option>3</option>
+											<option>4</option>
+											<option>5</option>
+											<option>6</option>
+											<option>7</option>
+											<option>8</option>
+											<option>9</option>
+											<option>10+</option>
+										</select>
+									</div>
+									<div class="col-xs-4 text-center">To:</div>
+									<div class="col-xs-8">
+										<select name="ageRangeBottom" class="input registration-number-select inline">
+											<option>0</option>
+											<option>1</option>
+											<option>2</option>
+											<option>3</option>
+											<option>4</option>
+											<option>5</option>
+											<option>6</option>
+											<option>7</option>
+											<option>8</option>
+											<option>9</option>
+											<option>10+</option>
+										</select>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row form-group">
+							<div class="col-sm-12">
+								<label class="label marg-bottom-xs-5">Number of children preferred:</label>
+							</div>
+							<div class="col-sm-12">
+								<select name="numberOfChildrenPrefered" class="input registration-number-select">
+									<option>0</option>
+									<option>1</option>
+									<option>2</option>
+									<option>3</option>
+									<option>4</option>
+									<option>5</option>
+									<option>6</option>
+									<option>7</option>
+									<option>8</option>
+									<option>9</option>
+									<option>10+</option>
+								</select>
+							</div>
+						</div>
+						<div class="row form-group">
+							<div class="col-sm-12">
+								<label class="label marg-bottom-xs-5">Contact with biological siblings?</label>
+							</div>
+							<div class="col-sm-12">
+								<label class="radio-inline"><input type="radio" name="contactBioSiblings" value="yes" />Yes</label>
+								<label class="radio-inline"><input type="radio" name="contactBioSiblings" value="no" />No</label>
+							</div>
+						</div>
+						<div class="row form-group">
+							<div class="col-sm-12">
+								<label class="label marg-bottom-xs-5">Contact with biological parents?</label>
+							</div>
+							<div class="col-sm-12">
+								<label class="radio-inline"><input type="radio" name="contactBioParents" value="yes" />Yes</label>
+								<label class="radio-inline"><input type="radio" name="contactBioParents" value="no" />No</label>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-12 form-group">
+								<label class="label marg-bottom-xs-5">Race/Ethnicity (check all that apply)</label>
+							</div>
+						</div>
+						<div class="row form-group">
+							<div class="col-sm-18 col-sm-offset-3">
+								<div class="row">
+									{{#each race}}
+										<div class="col-sm-12 form-group">
+											<label class="checkbox-inline">
+												<input type="checkbox" name="AdoptionPrefRace" value="{{race}}">{{race}}
+											</label>
+										</div>
+									{{/each}}
+								</div>
+							</div>
+						</div>
+						<div class="row form-group">
+							<div class="col-sm-12">
+								<label class="label marg-bottom-xs-5">Level of physical needs</label>
+							</div>
+							<div class="col-sm-12">
+								<label class="radio-inline"><input type="radio" name="physicalNeeds" value="mild" />Mild</label>
+								<label class="radio-inline"><input type="radio" name="physicalNeeds" value="moderate" />Moderate</label>
+								<label class="radio-inline"><input type="radio" name="physicalNeeds" value="severe" />Severe</label>
+							</div>
+						</div>
+						<div class="row form-group">
+							<div class="col-sm-12">
+								<label class="label marg-bottom-xs-5">Level of emotional needs</label>
+							</div>
+							<div class="col-sm-12">
+								<label class="radio-inline"><input type="radio" name="emotionalNeeds" value="mild" />Mild</label>
+								<label class="radio-inline"><input type="radio" name="emotionalNeeds" value="moderate" />Moderate</label>
+								<label class="radio-inline"><input type="radio" name="emotionalNeeds" value="severe" />Severe</label>
+							</div>
+						</div>
+						<div class="row form-group">
+							<div class="col-sm-12">
+								<label class="label marg-bottom-xs-5">Level of intellectual needs</label>
+							</div>
+							<div class="col-sm-12">
+								<label class="radio-inline"><input type="radio" name="intellectualNeeds" value="mild" />Mild</label>
+								<label class="radio-inline"><input type="radio" name="intellectualNeeds" value="moderate" />Moderate</label>
+								<label class="radio-inline"><input type="radio" name="intellectualNeeds" value="severe" />Severe</label>
+							</div>
+						</div>
 
+						<div class="registration-section-header">Mare &amp; You</div>
 
-						
+						<div class="row">
+							<div class="col-sm-24 form-group">
+								<label class="label marg-bottom-xs-5">How did you hear abut MARE?</label>
+							</div>
+							<div class="col-sm-12">
+								<div class="row">
+									<div class="col-sm-12 form-group">
+										<label class="checkbox-inline">
+											<input type="checkbox" name="howDidYouHear" value="Web">Web
+										</label>
+									</div>
+									<div class="col-sm-12 form-group">
+										<label class="checkbox-inline">
+											<input type="checkbox" name="howDidYouHear" value="Wednesday’s Child">Wednesday’s Child
+										</label>
+									</div>
+									<div class="col-sm-12 form-group">
+										<label class="checkbox-inline">
+											<input type="checkbox" name="howDidYouHear" value="Adoption Event">Adoption Event
+										</label>
+									</div>
+									<div class="col-sm-12 form-group">
+										<label class="checkbox-inline">
+											<input type="checkbox" name="howDidYouHear" value="Friend / Family">Friend / Family
+										</label>
+									</div>
+									<div class="col-sm-12 form-group">
+										<label class="checkbox-inline">
+											<input type="checkbox" name="howDidYouHear" value="Newspaper">Newspaper
+										</label>
+									</div>
+									<div class="col-sm-12 form-group">
+										<label class="checkbox-inline">
+											<input type="checkbox" name="howDidYouHear" value="Heart Gallery Display">Heart Gallery Display
+										</label>
+									</div>
+									<div class="col-sm-12 form-group">
+										<label class="checkbox-inline">
+											<input type="checkbox" name="howDidYouHear" value="Social Media">Social Media
+										</label>
+									</div>
+									<div class="col-sm-12 form-group">
+										<label class="checkbox-inline">
+											<input type="checkbox" name="howDidYouHear" value="AdoptMassachusettsKids.org">AdoptMassachusettsKids.org
+										</label>
+									</div>
+									<div class="col-sm-12 form-group">
+										<label class="checkbox-inline">
+											<input type="checkbox" name="howDidYouHear" value="Other" onClick="$('#parent-how-did-you-hear').show()">Other
+										</label>
+									</div>
+									<div class="col-sm-12 form-group">
+										<input type="text" style="display:none" class="input" id="parent-how-did-you-hear" name="howDidYouHearOther" placeholder="Other...">
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="row form-group">
+							<div class="col-sm-12">
+								<label class="label marg-bottom-xs-5">Would you like to be added to the MARE News email list (quarterly):</label>
+							</div>
+							<div class="col-sm-12">
+								<label class="radio-inline"><input type="radio" name="mareEmailList" value="Yes" />Yes</label>
+								<label class="radio-inline"><input type="radio" name="mareEmailList" value="No" />No</label>
+							</div>
+						</div>
+						<div class="row form-group">
+							<div class="col-sm-12">
+								<label class="label marg-bottom-xs-5">Would you like to be added to the Adoption Party email list (events held in MA only):</label>
+							</div>
+							<div class="col-sm-12">
+								<label class="radio-inline"><input type="radio" name="adoptionPartyEmailList" value="Yes" />Yes</label>
+								<label class="radio-inline"><input type="radio" name="adoptionPartyEmailList" value="No" />No</label>
+							</div>
+						</div>
+						<div class="row form-group">
+							<div class="col-sm-12">
+								<label class="label marg-bottom-xs-5">Would you like to receive information on how to create a family profile?</label>
+							</div>
+							<div class="col-sm-12">
+								<label class="radio-inline"><input type="radio" name="receiveHowToCreateFamilyProfile" value="Yes" />Yes</label>
+								<label class="radio-inline"><input type="radio" name="receiveHowToCreateFamilyProfile" value="No" />No</label>
+							</div>
+						</div>
 						<button class="register" type="submit">Register</button>
 					</form>
 				</section>
-
+				{{/if}}
 			</section>
 		</div>
 	</div>

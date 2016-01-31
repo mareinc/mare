@@ -16,13 +16,18 @@ exports = module.exports = function(req, res) {
 		.where('title', 'Main Page Slideshow')
 		.exec()
 		.then(function (slideshow) {
+			if(!slideshow) {
+				console.log('unable to load the slideshow');
+			}
 			
 			var slideshowId = slideshow[0].get('_id');
 
+			// TODO: Change to callbacks instead of promises (This should be done globally across views and middleware)
 			SlideshowItems.model.find()
 				.where('parent', slideshowId)
 				.exec()
 				.then(function (slides) {
+					/* TODO: Can possible remove slide order if I use sortable in the Model.  See DB section of the documentation */
 					locals.slides = _.sortBy(slides, function(slide) { return +slide.order; });
 
 				}).then(function() {
@@ -33,6 +38,8 @@ exports = module.exports = function(req, res) {
 							locals.featuredItems = featuredItems;
 
 							view.render('main');
+							// TODO: If the necessary elements don't exist on the page, maybe render 
+							//       a blank page to allow logging in and creating them
 						});
 				});
 		});

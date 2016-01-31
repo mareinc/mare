@@ -50,3 +50,14 @@
 	color: $required-color;
 	padding-left: 5px;
 }
+
+.inline {
+	display: inline;
+}
+.inline-block {
+	display: inline-block;
+}
+
+.text-left {text-align:left;}
+.text-center {text-align:center;}
+.text-right {text-align:right;}

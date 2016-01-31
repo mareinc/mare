@@ -2,8 +2,9 @@ var keystone = require('keystone'),
 	Types = keystone.Field.Types;
 
 // Create model. Additional options allow menu name to be used what auto-generating URLs
-var SuccessStory = new keystone.List('SuccessStory', {
+var SuccessStory = new keystone.List('Success Story', {
 	track: true,
+	autokey: { path: 'key', from: 'heading', unique: true },
 	map: { name: 'heading' }
 });
 
@@ -22,5 +23,5 @@ SuccessStory.schema.pre('save', function(next) {
 });
 
 // Define default columns in the admin interface and register the model
-SuccessStory.defaultColumns = 'title, url';
+SuccessStory.defaultColumns = 'heading';
 SuccessStory.register();
