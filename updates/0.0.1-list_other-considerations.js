@@ -7,5 +7,7 @@ exports.create = {
 		otherConsideration: 'self harm'
 	}, {
 		otherConsideration: 'sexual abuse'
+	}, {
+		otherConsideration: 'LGBTQ youth'
 	}]
 };
