@@ -58,8 +58,9 @@ SocialWorker.add('Permissions', {
 
 });
 
-SocialWorker.relationship({ path: 'children', ref: 'Child', refPath: 'adoptionWorker' });
-SocialWorker.relationship({ path: 'inquiries', ref: 'Inquiry', refPath: 'socialWorker' });
+SocialWorker.relationship({ path: 'children', label: 'children', ref: 'Child', refPath: 'adoptionWorker' });
+SocialWorker.relationship({ path: 'my inquiries', label: 'my inquiries', ref: 'Inquiry', refPath: 'socialWorker' });
+SocialWorker.relationship({ path: 'family inquiries', label: 'family inquiries', ref: 'Inquiry', refPath: 'childsSocialWorker' });
 
 // Pre Save
 SocialWorker.schema.pre('save', function(next) {
