@@ -1,59 +1,66 @@
-var keystone = require('keystone');
-var Race = keystone.list('Race');
-var State = keystone.list('State');
-
-var SiteUser = keystone.list('Site User');
-
-//var SocialWorker = keystone.list('Social Worker');
-//var ProspectiveParentOrFamily = new keystone.List('Prospective Parent or Family');
-
+var keystone = require('keystone'),
+    async = require('async'),
+    Race = keystone.list('Race'),
+    State = keystone.list('State'),
+    Gender = keystone.list('Gender'),
+    LegalStatus = keystone.list('Legal Status'),
+    FamilyConstellation = keystone.list('Family Constellation'),
+    SiteUser = keystone.list('Site User'),
+    SocialWorker = keystone.list('Social Worker'),
+    ProspectiveParentOrFamily = keystone.list('Prospective Parent or Family');
 
 exports = module.exports = function(req, res) {
     'use strict';
-      
+
     var view = new keystone.View(req, res),
         locals = res.locals;
 
     // Set locals
     locals.validationErrors = {};
     locals.registrationSubmitted = false;
-    
-
-    //On a GET request...
-    //Get all options for Race/Ethnicity checkboxes
-    view.on('get', function(next) {
-
-        Race.model.find()
-            .exec()
-            .then(function (results) {
-                
-                locals.race = results;
-
-                //Then get all options for the State dropdown
-                State.model.find()
-                    .exec()
-                    .then(function (results) {
-                        locals.state = results;
-                        next();
-                    });
-
-                //next();
-            });
+    // Fetch all the dynamic data to fill in the form dropdown and selection areas.  Render the view once all the data has been retrieved.
+    async.parallel([
+        function(done) {
+            State.model.find().select('state').exec().then(function(states) {
+                locals.states = states;
+                done();
+            })},
+        function(done) {
+            Race.model.find().select('race').exec().then(function(races) {
+                locals.races = races;
+                done();
+            })},
+        function(done) {
+            Gender.model.find().select('gender').exec().then(function(genders) {
+                locals.genders = genders;
+                done();
+            })},
+        function(done) {
+            FamilyConstellation.model.find().select('familyConstellation').exec().then(function(familyConstellations) {
+                locals.familyConstellations = familyConstellations;
+                done();
+            })},
+        function(done) {
+            LegalStatus.model.find().select('legalStatus').exec().then(function(legalStatuses) {
+                locals.legalStatuses = legalStatuses;
+                done();
+            })}
+    ], function() {
+        view.render('register');
     });
-
 
     // On a POST request...
     // Save the new user item to the database.
     // The Model sends a welcome email after save.
     view.on('post', { action: 'register' }, function(next) {
 
-        
+
          var user               = req.body,
              registrationType   = user.registrationType;
 
 
         if(registrationType === 'siteVisitor'){
-            
+
             var newUser = new SiteUser.model({
 
                 name: {
@@ -77,7 +84,7 @@ exports = module.exports = function(req, res) {
                     zipCode : user.zipCode
                 }
             });
-            
+
 
             /*
              * THIS IS HOW YOU FLASH A MESSAGE, MUST BE AN OBJECT
@@ -113,17 +120,17 @@ exports = module.exports = function(req, res) {
                 agency      : user.agency,
                 title       : user.title
             });
-            */ 
+            */
         }
         else if(registrationType === 'prospectiveParent') {
 
             /*
             var newUser = new ProspectiveParentOrFamily.model({
-    
+
             });
             */
         }
-        
+
         newUser.save(function(err){
             if(err){
                 console.log(err);
@@ -134,9 +141,7 @@ exports = module.exports = function(req, res) {
             }
             next();
         });
-        
+
         //next();
     });
-
-    view.render('register');
 };
