@@ -15,25 +15,38 @@ Inquiry.add('General Information', {
 	takenOn: { type: Types.Text, label: 'taken on', note: 'mm/dd/yyyy', required: true, initial: true },
 
 	inquirer: { type: Types.Select, label: 'inquirer', options: 'family, social worker', default: 'family', initial: true },
-	inquiryType: { type: Types.Relationship, label: 'inquiry type', ref: 'Inquiry Type', required: true, index: true, initial: true },
+	inquiryType: { type: Types.Select, label: 'inquiry type', options: 'child inquiry, complaint, family support consultation, general inquiry', required: true, initial: true },
 	inquiryMethod: { type: Types.Relationship, label: 'inquiry method', ref: 'Inquiry Method', required: true, index: true, initial: true },
 
 }, 'Inquiry Details', {
 
 	source: { type: Types.Relationship, label: 'source', ref: 'Source', required: true, initial: true },
 
-	child: { type: Types.Relationship, label: 'child', ref: 'Child', required: true, initial: true },
-	childsSocialWorker: { type: Types.Relationship, label: 'child\'s social worker', ref: 'Social Worker', noedit: true, initial: true },
+	child: { type: Types.Relationship, label: 'child', ref: 'Child', dependsOn: { inquiryType: ['child inquiry', 'complaint', 'family support consultation'] }, initial: true },
+	childsSocialWorker: { type: Types.Relationship, label: 'child\'s social worker', ref: 'Social Worker', dependsOn: { inquiryType: ['child inquiry', 'complaint', 'family support consultation'] }, noedit: true },
 	previousChildsSocialWorker: { type: Types.Relationship, ref: 'Social Worker', noedit: true, hidden: true },
-	prospectiveParentOrFamily: { type: Types.Relationship, label: 'familiy', ref: 'Prospective Parent or Family', dependsOn: { inquirer: 'family' }, required: true, initial: true },
+	prospectiveParentOrFamily: { type: Types.Relationship, label: 'familiy', ref: 'Prospective Parent or Family', dependsOn: { inquirer: 'family' }, initial: true },
 	socialWorker: { type: Types.Relationship, label: 'social worker', ref: 'Social Worker', dependsOn: { inquirer: 'social worker' }, initial: true },
-	sendConfirmation: { type: Types.Boolean, label: 'send confirmation', initial: true },
-	confirmationSent: { type: Types.Boolean, label: 'confirmation sent', default: false, noedit: true },
+	onBehalfOfMAREFamily: { type: Types.Boolean, label: 'is the family registered?', default: true, dependsOn: { inquirer: 'social worker' }, initial: true },
+	onBehalfOfFamily: { type: Types.Relationship, label: 'on behalf of', ref: 'Prospective Parent or Family', dependsOn: { inquirer: 'social worker', onBehalfOfMAREFamily: true }, initial: true },
+	onBehalfOfFamilyText: { type: Types.Text, label: 'on behalf of', dependsOn: { inquirer: 'social worker', onBehalfOfMAREFamily: false }, initial: true },
 	comments: { type: Types.Textarea, label: 'comments', initial: true }
 
 }, 'Agency', {
 
-	agency: { type: Types.Relationship, label: 'agency at time of inquiry', ref: 'Agency', noedit: true }
+	agency: { type: Types.Relationship, label: 'agency at time of inquiry', ref: 'Agency', noedit: true },
+	agnecyReferral: { type: Types.Relationship, label: 'agency referrals', ref: 'Agency', dependsOn: { inquiryType: ['child inquiry', 'complaint', 'family support consultation'] }, many: true, initial: true }
+
+}, 'Confirmation', {
+
+	sendConfirmation: { type: Types.Boolean, label: 'send confirmation', initial: true },
+	confirmationSentToInquirer: { type: Types.Boolean, label: 'confirmation sent to inquirer', noedit: true },
+	confirmationSentToCSC: { type: Types.Boolean, label: 'confirmation sent to the CSC', noedit: true },
+	confirmationSentToChildsSocialWorker: { type: Types.Boolean, label: 'cofirmation sent to child\'s social worker', noedit: true }
+
+}, 'CSC', {
+
+	familyCanProceed: { type: Types.Boolean, label: 'CSC approves family to proceed' }
 
 });
 
@@ -101,7 +114,7 @@ Inquiry.schema.methods.setEmailRecipients = function(emailAddresses, done) {
 		keystone.list('Prospective Parent or Family').model.findById(self.prospectiveParentOrFamily)
 				.exec()
 				.then(function(results) {
-					emailAddresses.push(results.contact1.email, results.contact2.email);
+					emailAddresses.push(results.contact1.email);
 					done();
 				});
 	// If a social worker made the inquiry, we need to fetch their email address
@@ -121,9 +134,8 @@ Inquiry.schema.methods.setEmailRecipients = function(emailAddresses, done) {
 
 Inquiry.schema.methods.sendConfirmationEmail = function(emailAddresses, done) {
 	var self = this;
-	console.log('confirmation sent: ' + self.confirmationSent);
 
-	if(!self.confirmationSent) {
+	if(!self.confirmationSent && self.sendConfirmation === true) {
 		//Find the email template in templates/emails/
 		new keystone.Email({
 	    		templateExt: 'hbs',
