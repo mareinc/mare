@@ -96,7 +96,7 @@
 						<div class="row form-group">
 							<div class="col-sm-12">
 								<select id="site-user-state" name="state" class="input">
-								{{#each state}}
+								{{#each states}}
 									<option value="{{_id}}">{{state}}</option>
 								{{/each}}
 								</select>
@@ -269,58 +269,10 @@
 						</div>
 						<div class="row form-group">
 							<div class="col-sm-12">
-								<select name="state" class="input" id="social-worker-state" required>
-									<option>Alabama</option>
-									<option>Alaska</option>
-									<option>Arizona</option>
-									<option>Arkansas</option>
-									<option>California</option>
-									<option>Colorado</option>
-									<option>Connecticut</option>
-									<option>Delaware</option>
-									<option>District of Columbia</option>
-									<option>Florida</option>
-									<option>Georgia</option>
-									<option>Hawaii</option>
-									<option>Idaho</option>
-									<option>Illinois</option>
-									<option>Indiana</option>
-									<option>Iowa</option>
-									<option>Kansas</option>
-									<option>Kentucky</option>
-									<option>Louisiana</option>
-									<option>Maine</option>
-									<option>Maryland</option>
-									<option>Massachusetts</option>
-									<option>Michigan</option>
-									<option>Minnesota</option>
-									<option>Mississippi</option>
-									<option>Missouri</option>
-									<option>Montana</option>
-									<option>Nebraska</option>
-									<option>Nevada</option>
-									<option>New Hampshire</option>
-									<option>New Jersey</option>
-									<option>New Mexico</option>
-									<option>New York</option>
-									<option>North Carolina</option>
-									<option>North Dakota</option>
-									<option>Ohio</option>
-									<option>Oklahoma</option>
-									<option>Oregon</option>
-									<option>Pennsylvania</option>
-									<option>Rhode Island</option>
-									<option>South Carolina</option>
-									<option>South Dakota</option>
-									<option>Tennessee</option>
-									<option>Texas</option>
-									<option>Utah</option>
-									<option>Vermont</option>
-									<option>Virginia</option>
-									<option>Washington</option>
-									<option>West Virginia</option>
-									<option>Wisconsin</option>
-									<option>Wyoming</option>
+								<select id="social-worker-state" name="state" class="input" required>
+								{{#each states}}
+									<option value="{{_id}}">{{state}}</option>
+								{{/each}}
 								</select>
 								<label for="social-worker-state" class="label required-field">State</label>
 							</div>
@@ -447,9 +399,9 @@
 						<div class="row">
 							<div class="col-sm-12 form-group">
 								<span class="gender-select-text">Gender:</span> &nbsp;&nbsp;
-								<label class="radio-inline"><input type="radio" name="Contact1Gender" value="male"> Male</label>
-								<label class="radio-inline"><input type="radio" name="Contact1Gender" value="female"> Female</label>
-								<label class="radio-inline"><input type="radio" name="Contact1Gender" value="other"> Other</label>
+								{{#each genders}}
+									<label class="radio-inline"><input type="radio" name="Contact1Gender" value="{{_id}}">{{gender}}</option>
+								{{/each}}
 							</div>
 						</div>
 						<div class="row">
@@ -459,12 +411,12 @@
 										<span class="race-text">Race/Ethnicity (check all that apply):</span>
 									</div>
 								</div>
-								{{#each race}}
-									<div class="col-sm-12 form-group">
-										<label class="checkbox-inline">
-											<input type="checkbox" name="Contact2Race" value="{{race}}">{{race}}
-										</label>
-									</div>
+								{{#each races}}
+								<div class="col-sm-12 form-group">
+									<label class="checkbox-inline">
+										<input type="checkbox" name="Contact1Race" value="{{_id}}">{{race}}
+									</label>
+								</div>
 								{{/each}}
 							</div>
 							<div class="col-sm-6">
@@ -504,9 +456,9 @@
 						<div class="row">
 							<div class="col-sm-12 form-group">
 								<span class="gender-select-text">Gender:</span> &nbsp;&nbsp;
-								<label class="radio-inline"><input type="radio" name="Contact2Gender" value="male"> Male</label>
-								<label class="radio-inline"><input type="radio" name="Contact2Gender" value="female"> Female</label>
-								<label class="radio-inline"><input type="radio" name="Contact2Gender" value="other"> Other</label>
+								{{#each genders}}
+									<label class="radio-inline"><input type="radio" name="Contact2Gender" value="{{_id}}">{{gender}}</option>
+								{{/each}}
 							</div>
 						</div>
 						<div class="row">
@@ -516,12 +468,12 @@
 										<span class="race-text">Race/Ethnicity (check all that apply):</span>
 									</div>
 								</div>
-								{{#each race}}
-									<div class="col-sm-12 form-group">
-										<label class="checkbox-inline">
-											<input type="checkbox" name="Contact2Race" value="{{race}}">{{race}}
-										</label>
-									</div>
+								{{#each races}}
+								<div class="col-sm-12 form-group">
+									<label class="checkbox-inline">
+										<input type="checkbox" name="Contact2Race" value="{{_id}}">{{race}}
+									</label>
+								</div>
 								{{/each}}
 							</div>
 							<div class="col-sm-6">
@@ -541,15 +493,9 @@
 						<div class="row form-group">
 							<div class="col-sm-12">
 								<select id="family-constellation" name="familyConstellation" class="input">
-									<option value="id1_fill_in_later">single male</option>
-									<option value="id2_fill_in_later">single gay male</option>
-									<option value="id3_fill_in_later">single straight male</option>
-									<option value="id4_fill_in_later">single female</option>
-									<option value="id5_fill_in_later">single gay female</option>
-									<option value="id6_fill_in_later">single straight female</option>
-									<option value="id7_fill_in_later">female/female couple</option>
-									<option value="id8_fill_in_later">male/male couple</option>
-									<option value="id9_fill_in_later">male/female couple</option>
+								{{#each familyConstellations}}
+									<option value="{{_id}}">{{familyConstellation}}</option>
+								{{/each}}
 								</select>
 								<label for="family-constellation" class="label">Family Constellation</label>
 							</div>
@@ -578,57 +524,9 @@
 						<div class="row">
 							<div class="col-sm-12 form-group">
 								<select id="state" name="state" class="input" required>
-									<option>Alabama</option>
-									<option>Alaska</option>
-									<option>Arizona</option>
-									<option>Arkansas</option>
-									<option>California</option>
-									<option>Colorado</option>
-									<option>Connecticut</option>
-									<option>Delaware</option>
-									<option>District of Columbia</option>
-									<option>Florida</option>
-									<option>Georgia</option>
-									<option>Hawaii</option>
-									<option>Idaho</option>
-									<option>Illinois</option>
-									<option>Indiana</option>
-									<option>Iowa</option>
-									<option>Kansas</option>
-									<option>Kentucky</option>
-									<option>Louisiana</option>
-									<option>Maine</option>
-									<option>Maryland</option>
-									<option>Massachusetts</option>
-									<option>Michigan</option>
-									<option>Minnesota</option>
-									<option>Mississippi</option>
-									<option>Missouri</option>
-									<option>Montana</option>
-									<option>Nebraska</option>
-									<option>Nevada</option>
-									<option>New Hampshire</option>
-									<option>New Jersey</option>
-									<option>New Mexico</option>
-									<option>New York</option>
-									<option>North Carolina</option>
-									<option>North Dakota</option>
-									<option>Ohio</option>
-									<option>Oklahoma</option>
-									<option>Oregon</option>
-									<option>Pennsylvania</option>
-									<option>Rhode Island</option>
-									<option>South Carolina</option>
-									<option>South Dakota</option>
-									<option>Tennessee</option>
-									<option>Texas</option>
-									<option>Utah</option>
-									<option>Vermont</option>
-									<option>Virginia</option>
-									<option>Washington</option>
-									<option>West Virginia</option>
-									<option>Wisconsin</option>
-									<option>Wyoming</option>
+								{{#each states}}
+									<option value="{{_id}}">{{state}}</option>
+								{{/each}}
 								</select>
 								<label for="state" class="label required-field">State</label>
 							</div>
@@ -944,12 +842,11 @@
 								<label class="label marg-bottom-xs-5">Gender of children approved for:</label>
 							</div>
 							<div class="col-sm-12">
+								{{#each genders}}
 								<label class="checkbox-inline">
-									<input type="checkbox" name="approvedChildrenGender" value="male" />Male
+									<input type="checkbox" name="approvedChildrenGender" value="{{_id}}">{{gender}}
 								</label>
-								<label class="checkbox-inline">
-									<input type="checkbox" name="approvedChildrenGender" value="female" />Female
-								</label>
+								{{/each}}
 							</div>
 						</div>
 						<div class="row form-group">
@@ -957,12 +854,11 @@
 								<label class="label marg-bottom-xs-5">Legal Status</label>
 							</div>
 							<div class="col-sm-12">
+							{{#each legalStatuses}}
 								<label class="checkbox-inline">
-									<input type="checkbox" name="legalStatus" value="free" />Free</label>
+									<input type="checkbox" name="legalStatus" value="{{_id}}">{{legalStatus}}
 								</label>
-								<label class="checkbox-inline">
-									<input type="checkbox" name="legalStatus" value="legal risk" />Legal Risk
-								</label>
+							{{/each}}
 							</div>
 						</div>
 						<div class="row form-group">
@@ -1051,13 +947,13 @@
 						<div class="row form-group">
 							<div class="col-sm-18 col-sm-offset-3">
 								<div class="row">
-									{{#each race}}
-										<div class="col-sm-12 form-group">
-											<label class="checkbox-inline">
-												<input type="checkbox" name="AdoptionPrefRace" value="{{race}}">{{race}}
-											</label>
-										</div>
-									{{/each}}
+								{{#each races}}
+									<div class="col-sm-12 form-group">
+										<label class="checkbox-inline">
+											<input type="checkbox" name="AdoptionPrefRace" value="{{_id}}">{{race}}
+										</label>
+									</div>
+								{{/each}}
 								</div>
 							</div>
 						</div>
