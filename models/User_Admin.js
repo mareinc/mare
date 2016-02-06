@@ -70,6 +70,9 @@ User.add('Permissions', {
 
 });
 
+// Displaly associations via the Relationship field type
+User.relationship({ path: 'cscRegionContact', ref: 'CSC Region Contact', label: 'contact for the following regions', refPath: 'cscRegionContact' });
+
 // Pre Save
 User.schema.pre('save', function(next) {
 	'use strict';
