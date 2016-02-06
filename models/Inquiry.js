@@ -35,7 +35,7 @@ Inquiry.add('General Information', {
 }, 'Agency', {
 
 	agency: { type: Types.Relationship, label: 'agency at time of inquiry', ref: 'Agency', dependsOn: { inquiryType: ['child inquiry', 'complaint', 'family support consultation'] }, noedit: true },
-	agnecyReferral: { type: Types.Relationship, label: 'agency referrals', ref: 'Agency', dependsOn: { inquiryType: 'general inquiry' }, many: true, initial: true }
+	agencyReferral: { type: Types.Relationship, label: 'agency referrals', ref: 'Agency', dependsOn: { inquiryType: 'general inquiry' }, many: true, initial: true }
 
 }, 'Confirmation', {
 
@@ -303,7 +303,7 @@ Inquiry.schema.methods.sendConfirmationEmailToChildsSocialWorker = function(emai
 	new keystone.Email({
     		templateExt 	: 'hbs',
     		templateEngine 	: require('handlebars'),
-    		templateName 	: 'inquiry-csc-notification'
+    		templateName 	: 'inquiry-social-worker-notification'
   	}).send({
 		to: emailAddressSocialWorker,
 		from: {
