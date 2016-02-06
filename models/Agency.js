@@ -25,7 +25,7 @@ Agency.add({
 		region: { type: Types.Relationship, label: 'region', ref: 'Region', initial: true }
 	},
 
-	url: { type: Types.Text, label: 'agency url', initial: true },
+	url: { type: Types.Text, label: 'agency url', initial: true }
 
 });
 
