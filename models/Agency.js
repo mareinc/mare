@@ -25,8 +25,8 @@ Agency.add({
 		region: { type: Types.Relationship, label: 'region', ref: 'Region', initial: true }
 	},
 
-	url: { type: Types.Text, label: 'agency url', initial: true }
-
+	url: { type: Types.Text, label: 'agency url', initial: true },
+	generalInquiryContact: { type: Types.Email, label: 'general inquiry contact', required: true, initial: true }
 });
 
 // Define default columns in the admin interface and register the model
