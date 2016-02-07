@@ -69,7 +69,8 @@ Child.add({ heading: 'Child Information' }, {
 
 	registeredBy: { type: Types.Select, label: 'registered by', options: 'Unknown, Adoption Worker, Recruitment Worker', required: true, index: true, initial: true },
 	adoptionWorker: { type: Types.Relationship, label: 'adoption worker', ref: 'Social Worker', filters: { position: 'adoption worker' }, initial: true },
-	recruitmentWorker: { type: Types.Relationship, label: 'recruitment worker', ref: 'Social Worker', filters: { position: 'recruitment worker' }, initial: true }
+	recruitmentWorker: { type: Types.Relationship, label: 'recruitment worker', ref: 'Social Worker', filters: { position: 'recruitment worker' }, initial: true },
+	region: { type: Types.Relationship, label: 'region', ref: 'Region', initial: true }
 
 }, { heading: 'Photolisting Information' }, {
 
