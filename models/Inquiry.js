@@ -92,6 +92,7 @@ Inquiry.schema.pre('save', function(next) {
 	    	if(!self.emailSentToCSC) {
 	    		if(self.inquiryType === 'general inquiry') {
 	    			emailAddressesCSC = ['jared.j.collier@gmail.com'];
+	    			// emailAddressesCSC = ['dtomaz@mareinc.org'];
 	    			console.log('3a. no CSC email sent, but it\'s a general inquiry - hardcode CSC email address');
 	    			done();
 	    		} else {
@@ -257,12 +258,12 @@ Inquiry.schema.methods.setCSCEmailRecipients = function(emailAddressesCSC, done)
 	var self = this,
 		region;
 	// The region we want to match on is stored in the agency we calculated from the child's social worker.  Get the agency record.
-	keystone.list('Agency').model.findById(self.agency)
+	keystone.list('Child').model.findById(self.child)
 			.exec()
-			.then(function(agency) {
-				// Use the region information in the agency record to match to one or more CSC region contacts, which hold a region and CSC staff user mapping
+			.then(function(child) {
+				// Use the region information in the child record to match to one or more CSC region contacts, which hold a region and CSC staff user mapping
 				keystone.list('CSC Region Contact').model.find()
-						.where('region', agency.address.region)
+						.where('region', child.region)
 						.populate('cscRegionContact')			// We need the information for the contact, not just their ID
 						.exec()
 						.then(function(CSCRegionContacts) {
