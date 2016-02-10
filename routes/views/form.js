@@ -36,31 +36,37 @@ exports = module.exports = function(req, res) {
 			        view.render('forms/adoption-party.hbs');
 			        break;
 
-			    case "adoption-party-family-registration-form2":
-			        view.render('forms/adoption-party.hbs');
+                case "adoption-party-social-worker-registration-form":
+                //The URL in there now is misspelled... this case catches it. registr(ai)ton.
+			    case "adoption-party-social-worker-registraiton-form":
+
+			        view.render('forms/adoption-party-social-worker.hbs');
 			        break;
 
 			    default:
-			        view.render('form');
+
+                    // Fetch the page with the matching URL
+                    // If it exists, pass the object into the rendering
+                    // TODO: If it doesn't exist, forward to a 404 page
+                    
+                    Form.model.find()
+                        .where('url', req.originalUrl)
+                        .exec()
+                        .then(function (targetForm) {
+                            
+                            locals.targetForm = targetForm[0];
+
+                            // Render the view
+                            view.render('form');
+
+                        });
+                    
+
+			        //view.render('form');
 			}
     });
 
-    // Fetch the page with the matching URL
-    // If it exists, pass the object into the rendering
-    // TODO: If it doesn't exist, forward to a 404 page
-    /*
-    Form.model.find()
-		.where('url', req.originalUrl)
-		.exec()
-		.then(function (targetForm) {
-			
-			locals.targetForm = targetForm[0];
 
-			// Render the view
-    		view.render('form');
-
-		});
-	*/
 
 
 };
