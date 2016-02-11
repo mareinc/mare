@@ -21,14 +21,17 @@
 			</aside>
 			<section class="main-column">
 				<div class="page-header">
-					<span class="page-header-text">Register with MARE</span>
+					<span class="page-header-text">Create an Account</span>
 				</div>
 				{{#if registrationSubmitted}}
 					<h3>Thanks for registering.</h3>
 					<p>You can now try to log in.</p>
 				{{else}}
 				<div class="register-intro">
-					Lorem ipsum dolor sit amet, consectetur adipiscing elit. In gravida ultricies tempor. Aenean sodales rutrum urna in porta. Vestibulum in mi non risus mattis imperdiet eget ac metus. Sed mauris nunc, rutrum eu posuere a, vehicula vitae neque. Donec nec lorem laoreet, accumsan mauris vitae, bibendum metus. Donec sit amet odio luctus arcu suscipit laoreet a in dolor. Sed commodo sagittis mattis. Aenean cursus malesuada purus ut posuere.
+					Families: Once you create an account, you can quickly and easily inquire about specific children, RSVP for events and manage your subscription preferences.  If you are a Massachusetts family with an approved homestudy, creating an account will also allow you to access a greater pool of waiting children (including those at legal risk) and upload your homestudy to be shared with workers across the state for consideration for specific children.
+				</div>
+				<div class="register-intro">
+					Workers: If you are a Massachusetts social worker, you must create an account to register a child or family, RSVP for events, track inquiries and update your MARE caseload.
 				</div>
 				<div class="registration-type-selector">
 					<select name="registration-type-selector">
@@ -95,9 +98,9 @@
 						</div>
 						<div class="row form-group">
 							<div class="col-sm-12">
-								<select id="site-user-state" name="state" class="input">
+								<select id="site-user-state" name="state" class="input state-select">
 								{{#each states}}
-									<option value="{{_id}}">{{state}}</option>
+									<option value="{{_id}}" data-state="{{state}}">{{state}}</option>
 								{{/each}}
 								</select>
 								<label for="site-user-state" class="label">State</label>
@@ -269,7 +272,7 @@
 						</div>
 						<div class="row form-group">
 							<div class="col-sm-12">
-								<select id="social-worker-state" name="state" class="input" required>
+								<select id="social-worker-state" name="state" class="input state-select" required>
 								{{#each states}}
 									<option value="{{_id}}">{{state}}</option>
 								{{/each}}
@@ -281,66 +284,6 @@
 							<div class="col-sm-12">
 								<input type="text" class="input" required id="social-worker-zip-code" name="zipCode" pattern="\d{5}([ \-]\d{4})?">
 								<label for="social-worker-zip-code" class="label required-field">Zip Code</label>
-							</div>
-						</div>
-
-						<div class="registration-section-header">Mare &amp; You</div>
-
-						<div class="row">
-							<div class="col-sm-24 form-group">
-								<label class="label marg-bottom-xs-5">How did you hear abut MARE?</label>
-							</div>
-							<div class="col-sm-12">
-								<div class="row">
-									<div class="col-sm-12 form-group">
-										<label class="checkbox-inline">
-											<input type="checkbox" name="howDidYouHear" value="Web">Web
-										</label>
-									</div>
-									<div class="col-sm-12 form-group">
-										<label class="checkbox-inline">
-											<input type="checkbox" name="howDidYouHear" value="Wednesday’s Child">Wednesday’s Child
-										</label>
-									</div>
-									<div class="col-sm-12 form-group">
-										<label class="checkbox-inline">
-											<input type="checkbox" name="howDidYouHear" value="Adoption Event">Adoption Event
-										</label>
-									</div>
-									<div class="col-sm-12 form-group">
-										<label class="checkbox-inline">
-											<input type="checkbox" name="howDidYouHear" value="Friend / Family">Friend / Family
-										</label>
-									</div>
-									<div class="col-sm-12 form-group">
-										<label class="checkbox-inline">
-											<input type="checkbox" name="howDidYouHear" value="Newspaper">Newspaper
-										</label>
-									</div>
-									<div class="col-sm-12 form-group">
-										<label class="checkbox-inline">
-											<input type="checkbox" name="howDidYouHear" value="Heart Gallery Display">Heart Gallery Display
-										</label>
-									</div>
-									<div class="col-sm-12 form-group">
-										<label class="checkbox-inline">
-											<input type="checkbox" name="howDidYouHear" value="Social Media">Social Media
-										</label>
-									</div>
-									<div class="col-sm-12 form-group">
-										<label class="checkbox-inline">
-											<input type="checkbox" name="howDidYouHear" value="AdoptMassachusettsKids.org">AdoptMassachusettsKids.org
-										</label>
-									</div>
-									<div class="col-sm-12 form-group">
-										<label class="checkbox-inline">
-											<input type="checkbox" name="howDidYouHear" value="Other" onClick="$('#social-worker-how-did-you-hear').show()">Other
-										</label>
-									</div>
-									<div class="col-sm-12 form-group">
-										<input type="text" style="display:none" class="input" id="social-worker-how-did-you-hear" name="howDidYouHearOther" placeholder="Other...">
-									</div>
-								</div>
 							</div>
 						</div>
 
@@ -523,7 +466,7 @@
 						</div>
 						<div class="row">
 							<div class="col-sm-12 form-group">
-								<select id="state" name="state" class="input" required>
+								<select id="state" name="state" class="input state-select" required>
 								{{#each states}}
 									<option value="{{_id}}">{{state}}</option>
 								{{/each}}
@@ -1050,7 +993,7 @@
 
 						<div class="row form-group">
 							<div class="col-sm-12">
-								<label class="label marg-bottom-xs-5">Would you like to be added to the MARE News email list (quarterly):</label>
+								<label class="label marg-bottom-xs-5">Would you like to be added to the MARE News email list:</label>
 							</div>
 							<div class="col-sm-12">
 								<label class="radio-inline"><input type="radio" name="mareEmailList" value="Yes" />Yes</label>

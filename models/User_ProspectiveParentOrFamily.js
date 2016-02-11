@@ -25,6 +25,7 @@ ProspectiveParentOrFamily.add('Permissions', {
 	familyConstellation: { type: Types.Relationship, label: 'family constellation', ref: 'Family Constellation', required: true, initial: true },
 	singleParentOptions: { type: Types.Relationship, label: 'single parent options', ref: 'Single Parent Option', initial: true },
 	language: { type: Types.Relationship, label: 'language', ref: 'Language', required: true, initial: true },
+	otherLanguages: { type: Types.Relationship, label: 'other languages', ref: 'Language', many: true, initial: true },
 
 	password: { type: Types.Password, label: 'password', required: true, initial: true },
 	avatar: { type: Types.CloudinaryImage, label: 'avatar', folder: 'users/prospective parents\\/families', autoCleanup: true }
@@ -218,8 +219,7 @@ ProspectiveParentOrFamily.add('Permissions', {
 }, 'Matching Preferences', {
 
 	matchingPreferences: {
-		male: { type: Types.Boolean, label: 'male', initial: true },
-		female: { type: Types.Boolean, label: 'female', initial: true },
+		gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', many: true, initial: true },
 		legalStatus: { type: Types.Relationship, label: 'legal status', ref: 'Legal Status', many: true, initial: true },
 
 		adoptionAges: {
@@ -243,6 +243,8 @@ ProspectiveParentOrFamily.add('Permissions', {
 
 	}
 
+}, 'Registration Details', {
+	registeredViaWebsite: { type: Types.Boolean, label: 'registered through the website', noedit: true, initial: true }
 });
 
 ProspectiveParentOrFamily.relationship({ path: 'placements', ref: 'Placement', refPath: 'prospectiveParentOrFamily' });
