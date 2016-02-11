@@ -39,9 +39,16 @@ exports = module.exports = function(req, res) {
                 case "adoption-party-social-worker-registration-form":
                 //The URL in there now is misspelled... this case catches it. registr(ai)ton.
 			    case "adoption-party-social-worker-registraiton-form":
-
 			        view.render('forms/adoption-party-social-worker.hbs');
 			        break;
+
+                case "agency-event-submission-form":
+                    view.render('forms/agency-event-submission.hbs');
+                    break;
+
+                case "car-donation-form":
+                    view.render('forms/car-donation.hbs');
+                    break;
 
 			    default:
 
