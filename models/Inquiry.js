@@ -1,7 +1,7 @@
-var keystone = require('keystone'),
-	async = require('async'),
-	_ = require('underscore');
-	Types = keystone.Field.Types;
+var keystone 	= require('keystone'),
+	async 		= require('async'),
+	_ 			= require('underscore'),
+	Types 		= keystone.Field.Types;
 
 // Create model. Additional options allow menu name to be used to auto-generate the URL
 var Inquiry = new keystone.List('Inquiry', {
