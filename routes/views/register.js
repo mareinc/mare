@@ -1,5 +1,6 @@
 var keystone = require('keystone'),
     async = require('async'),
+    _ = require('underscore'),
     Race = keystone.list('Race'),
     State = keystone.list('State'),
     Gender = keystone.list('Gender'),
@@ -22,7 +23,15 @@ exports = module.exports = function(req, res) {
     async.parallel([
         function(done) {
             State.model.find().select('state').exec().then(function(states) {
+
+                _.each(states, function(state) {
+                    if(state.state === 'Massachusetts') {
+                        state['defaultSelection'] = true;
+                    }
+                });
+
                 locals.states = states;
+
                 done();
             })},
         function(done) {

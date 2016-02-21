@@ -468,7 +468,11 @@
 							<div class="col-sm-12 form-group">
 								<select id="state" name="state" class="input state-select" required>
 								{{#each states}}
-									<option value="{{_id}}">{{state}}</option>
+									{{#if defaultSelection}}
+										<option value="{{_id}}" selected="selected">{{state}}</option>
+									{{else}}
+										<option value="{{_id}}">{{state}}</option>
+									{{/if}}
 								{{/each}}
 								</select>
 								<label for="state" class="label required-field">State</label>
