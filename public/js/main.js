@@ -17,7 +17,7 @@ app.functions = function() {
 		if (Modernizr.touch) {
 			$(".nav li").unbind('mouseenter mouseleave');
 			$(".nav li a.parent").unbind('click');
-			$(".nav li .more").unbind('click').bind('click', function() {     
+			$(".nav li .more").unbind('click').bind('click', function() {
 				$(this).parent("li").toggleClass("hover");
 			});
 
@@ -183,18 +183,43 @@ app.functions = function() {
 	};
 
 	initializeRegistrationPage = function() {
+		var currentForm = 'siteVisitor';
 		/* check for dropdown menu selection on registration page to show the correct form */
 		/* TODO: consider adding a class to the 'active' form, hide that with a fadeOut(), then fadeIn() the selected form. */
 		$('.registration-type-selector > select').change(function() {
 			var siteForm = $('.site-visitor-registration'),
 				socialWorkerForm = $('.social-worker-registration'),
-				prospectiveParentForm = $('.prospective-parent-registration'),
-				currentValue = $(this).val();
+				prospectiveParentForm = $('.prospective-parent-registration');
 
-			switch(currentValue) {
+			currentForm = $(this).val();
+
+			switch(currentForm) {
 				case 'siteVisitor': socialWorkerForm.hide(); prospectiveParentForm.hide(); siteForm.show(); break;
 				case 'socialWorker': siteForm.hide(); prospectiveParentForm.hide(); socialWorkerForm.show(); break;
 				case 'prospectiveParent': siteForm.hide(); socialWorkerForm.hide(); prospectiveParentForm.show(); break;
+			}
+		});
+
+		/* initialization for the site user registration form */
+		$('.otherWayToHearAboutMARE').click(function() {
+			if(currentForm === 'siteVisitor') {
+				$('#site-visitor-how-did-you-hear-other').toggleClass('hidden');
+			} else {
+				$('#prospective-parent-how-did-you-hear-other').toggleClass('hidden');
+			}
+		});
+		/* initialization for the prospective parent and family registration form */
+		$('#prospective-parent-or-family-state').change(function() {
+			var selectedOption = $(this).children('option:selected');
+			if(selectedOption.html() === 'Massachusetts') {
+				// Show the homestudy section of the form
+				$('.prospective-family-submit-your-homestudy-section').show();
+			} else {
+				// hide the homestudy section of the form
+				$('.prospective-family-submit-your-homestudy-section').hide();
+				// clear out any uploaded homestudy files
+				$('[name=HomeStudySubmission]').attr('checked', false);
+				$('#home-study-file-upload').val(''); // TODO: homestudy is one word, the JavaScript, HTML, and CSS needs to be cleaned up everywhere for this
 			}
 		});
 
@@ -253,7 +278,7 @@ app.functions = function() {
      		var source = $("#child-details-template").html();
 			var template = Handlebars.compile(source);
 			var html = template(childDetails);
-			
+
 			$('.modal-container__contents').html(html);
 
 			$('.modal-container__loading').fadeOut(function() {
