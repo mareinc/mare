@@ -32,7 +32,7 @@ exports.registerUser = function(req, res, next) {
 			// TODO: Add check for required fields
 			if(res.locals.messages.length > 0) {
 				// TODO: return an error message to the user and return
-				next();
+				res.redirect('/keystone/register');
 			} else {
 				console.log('creating new site user, checks have passed');
 
@@ -72,9 +72,11 @@ exports.registerUser = function(req, res, next) {
 				console.log(newUser);
 				newUser.save(function(err) {
 
-					res.locals.messages.push({ type: 'success', message: 'new user successfully created' });
-					console.log('user has been saved');
-					next();
+					res.locals.messages.push({ type: 'success', message: 'your user account was successfully created' });
+					console.log('site user has been saved');
+
+					//next();
+					res.redirect('/keystone/register');
 					/* TODO: Post a success or error flash message */
 				}, function(err) {
 
@@ -86,7 +88,73 @@ exports.registerUser = function(req, res, next) {
 			}
 		});
 	} else if (registrationType === 'socialWorker') {
-		console.log('TODO: make a new social worker');
+		async.parallel([
+			function(done) { exports.validateEmail(user.email, res, done); },
+			function(done) { exports.checkForDuplicateEmail(user.email, SocialWorker, res, done); },
+			function(done) { exports.validatePassword(user.password, user.confirmPassword, res, done); }
+			// function(done) { exports.checkRequiredFields([user.firstName, user.lastName, user.email, user.password, user.confirmPassword]); }
+		], function() {
+			if(res.locals.isEmailInvalid) { res.locals.messages.push({ type: 'error', message: 'email is invalid' }); }
+			if(res.locals.isEmailDuplicate) { res.locals.messages.push({ type: 'error', message: 'email already exists in the system' }); }
+			if(res.locals.isPasswordInvalid) { res.locals.messages.push({ type: 'error', message: 'passwords don\'t match' }); }
+
+			console.log(res.locals.messages);
+			// TODO: Add check for required fields
+			if(res.locals.messages.length > 0) {
+				// TODO: return an error message to the user and return
+				res.redirect('/keystone/register');
+			} else {
+				console.log('creating new social worker, checks have passed');
+
+				console.log(user);
+
+				var newUser = new SocialWorker.model({
+
+					name: {
+						first			: user.firstName,
+						last			: user.lastName
+					},
+
+					password			: user.password,
+					email				: user.email,
+					agency				: user.agency,
+					title				: user.title,
+
+					phone: {
+						work			: user.workPhone,
+						cell			: user.phone,
+						preferred 		: user.preferredPhone
+					},
+
+					address: {
+						street1			: user.street1,
+						street2			: user.street2,
+						city			: user.city,
+						state			: user.state,
+						zipCode			: user.zipCode
+					}
+
+				});
+
+				console.log('about to save...');
+				console.log(newUser);
+				newUser.save(function(err) {
+
+					res.locals.messages.push({ type: 'success', message: 'your social worker account has been successfully created' });
+					console.log('social worker has been saved');
+
+					//next();
+					res.redirect('/keystone/register');
+					/* TODO: Post a success or error flash message */
+				}, function(err) {
+
+					res.locals.messages.push({ type: 'error', message: 'there was a problem saving your information, please try again.  If this problem persists, please contact MARE.' });
+					console.log(err);
+					next();
+
+				});
+			}
+		});
 	} else if (registrationType === 'prospectiveParent') {
 		console.log('TODO: make a new prospective parent');
 	}
@@ -111,8 +179,6 @@ exports.checkForDuplicateEmail = function(email, userType, res, done) {
 	userType.model.findOne()
 		.where('email', email)
 		.exec(function (err, user) {
-			console.log('user for duplicate email');
-			console.log(user);
 
 			res.locals.isEmailDuplicate = user ? true : false;
 			done();
