@@ -33,6 +33,9 @@
 				<div class="register-intro">
 					Workers: If you are a Massachusetts social worker, you must create an account to register a child or family, RSVP for events, track inquiries and update your MARE caseload.
 				</div>
+				<div class="register-intro">
+					Site Visitors: Feel free to browse the website without registering, you can always create an account at a later time.
+				</div>
 				<div class="registration-type-selector">
 					<select name="registration-type-selector">
 					    <option value="siteVisitor" selected="selected">Site Visitor</option>
@@ -101,7 +104,11 @@
 								<div class="col-sm-12">
 									<select id="site-user-state" name="state" class="input state-select">
 									{{#each states}}
-										<option value="{{_id}}" data-state="{{state}}">{{state}}</option>
+										{{#if defaultSelection}}
+											<option value="{{_id}}" selected="selected">{{state}}</option>
+										{{else}}
+											<option value="{{_id}}">{{state}}</option>
+										{{/if}}
 									{{/each}}
 									</select>
 									<label for="site-user-state" class="label">State</label>
@@ -132,7 +139,7 @@
 
 							<div class="row">
 								<div class="col-sm-24 form-group">
-									<label class="label marg-bottom-xs-5">How did you hear abut MARE?</label>
+									<label class="label marg-bottom-xs-5">How did you hear about MARE (please check all that apply)?</label>
 								</div>
 								<div class="col-sm-12">
 									<div class="row">
@@ -165,31 +172,31 @@
 							<div class="registration-section-header">Account Setup</div>
 							<div class="row form-group">
 								<div class="col-sm-12">
-									<input type="text" class="input" required id="social-worker-first-name" name="firstName">
+									<input type="text" id="social-worker-first-name" class="input" name="firstName" required>
 									<label for="social-worker-first-name" class="label required-field">First Name</label>
 								</div>
 							</div>
 							<div class="row form-group">
 								<div class="col-sm-12">
-									<input type="text" class="input" required id="social-worker-last-name" name="lastName">
+									<input type="text" id="social-worker-last-name" class="input" name="lastName" required>
 									<label for="social-worker-last-name" class="label required-field">Last Name</label>
 								</div>
 							</div>
 							<div class="row form-group">
 								<div class="col-sm-12">
-									<input type="email" class="input" required id="social-worker-email" name="email" pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
+									<input type="email" id="social-worker-email" class="input" name="email" pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" required>
 									<label for="social-worker-email" class="label required-field">Email Address</label>
 								</div>
 							</div>
 							<div class="row form-group">
 								<div class="col-sm-12">
-									<input type="password" class="input" required id="social-worker-password" name="password">
+									<input type="password" id="social-worker-password" class="input" name="password" required>
 									<label for="social-worker-password" class="label required-field">Password</label>
 								</div>
 							</div>
 							<div class="row form-group">
 								<div class="col-sm-12">
-									<input type="password" class="input" required id="social-worker-confirm-password" name="confirmPassword">
+									<input type="password" id="social-worker-confirm-password" class="input" name="confirmPassword" required>
 									<label for="social-worker-confirm-password" class="label required-field">Confirm Password</label>
 								</div>
 							</div>
@@ -244,7 +251,11 @@
 								<div class="col-sm-12">
 									<select id="social-worker-state" name="state" class="input state-select" required>
 									{{#each states}}
-										<option value="{{_id}}">{{state}}</option>
+										{{#if defaultSelection}}
+											<option value="{{_id}}" selected="selected">{{state}}</option>
+										{{else}}
+											<option value="{{_id}}">{{state}}</option>
+										{{/if}}
 									{{/each}}
 									</select>
 									<label for="social-worker-state" class="label required-field">State</label>
@@ -315,7 +326,7 @@
 								</div>
 							</div>
 							<div class="row">
-								<div class="col-sm-12 form-group">
+								<div class="col-sm-24 form-group">
 									<span class="gender-select-text">Gender:</span> &nbsp;&nbsp;
 									{{#each genders}}
 										<label class="radio-inline"><input type="radio" name="Contact1Gender" value="{{_id}}">{{gender}}</label>
@@ -374,7 +385,7 @@
 								</div>
 							</div>
 							<div class="row">
-								<div class="col-sm-12 form-group">
+								<div class="col-sm-24 form-group">
 									<span class="gender-select-text">Gender:</span> &nbsp;&nbsp;
 									{{#each genders}}
 										<label class="radio-inline"><input type="radio" name="Contact2Gender" value="{{_id}}">{{gender}}</label>
@@ -467,38 +478,38 @@
 								</div>
 							</div>
 							<div class="row">
+								<div class="col-sm-24 form-group">Where are you in the adoption process?</div>
 								<div class="col-sm-12 form-group">
-									<div class="col-sm-12">Where are you in the adoption process?</div>
-									<div class="col-sm-12 form-group">
-										<label class="checkbox-inline">
-											<input type="checkbox" name="ProcessProgression" value="gatheringInformation">Gathering Information
-										</label>
-										<label class="checkbox-inline">
-											<input type="checkbox" name="ProcessProgression" value="lookingForAgency">Looking for an agency
-										</label>
-										<label class="checkbox-inline">
-											<input type="checkbox" name="ProcessProgression" value="workingWithAgency">Working with an agency
-										</label>
-										<label class="checkbox-inline">
-											<input type="checkbox" name="ProcessProgression" value="MAPPTrainingCompleted">MAPP training completed
-										</label>
-										<label class="checkbox-inline">
-											<input type="checkbox" name="ProcessProgression" value="homestudyCompleted">Homestudy completed
-										</label>
-									</div>
+									<label class="checkbox-inline">
+										<input type="checkbox" name="ProcessProgression" value="gatheringInformation">Gathering Information
+									</label>
+								</div>
+								<div class="col-sm-12 form-group">
+									<label class="checkbox-inline">
+										<input type="checkbox" name="ProcessProgression" value="lookingForAgency">Looking for an agency
+									</label>
+								</div>
+								<div class="col-sm-12 form-group">
+									<label class="checkbox-inline">
+										<input type="checkbox" name="ProcessProgression" value="workingWithAgency">Working with an agency
+									</label>
+								</div>
+								<div class="col-sm-12 form-group">
+									<label class="checkbox-inline">
+										<input type="checkbox" name="ProcessProgression" value="MAPPTrainingCompleted">MAPP training completed
+									</label>
+								</div>
+								<div class="col-sm-12 form-group">
+									<label class="checkbox-inline">
+										<input type="checkbox" class="homestudy-completed-checkbox" name="ProcessProgression" value="homestudyCompleted">Homestudy completed
+									</label>
 								</div>
 							</div>
 						</section>
 						<!-- This will end part 3 -->
 
-						<section class="prospective-parent-homestudy-details-section">
+						<section class="prospective-parent-homestudy-details-section hidden">
 							<div class="registration-section-header">Homestudy Details</div>
-
-							<div class="homestudy-select row no-margin double-padding">
-								<span class="homestudy-select-text">Have you completed a Homestudy?</span> &nbsp;&nbsp;
-								<label class="radio-inline"><input type="radio" name="homestudy" value="yes" />Yes</label>
-								<label class="radio-inline"><input type="radio" name="homestudy" value="no" />No</label>
-							</div>
 
 							<div class="row">
 								<div class="col-sm-12 form-group">
@@ -788,6 +799,13 @@
 									<input type="text" class="input" id="other-languages-in-home" name="otherLanguagesInHome">
 								</div>
 							</div>
+							<div class="row form-group">
+								<div class="col-sm-24">
+									<label class="checkbox-inline">
+										<input type="checkbox" name="havePets" value="yes">Have pets in the home
+									</label>
+								</div>
+							</div>
 						</section>
 
 						<section class="prospective-parent-adoption-preferences-section">
@@ -943,6 +961,44 @@
 									<label class="radio-inline"><input type="radio" name="intellectualNeeds" value="severe" />Severe</label>
 								</div>
 							</div>
+							<div class="row">
+								<div class="col-sm-12 form-group">
+									<label class="label marg-bottom-xs-5">Disabilities (check all that apply)</label>
+								</div>
+							</div>
+							<div class="row form-group">
+								<div class="col-sm-12">
+									<div class="row">
+									{{#each disabilities}}
+										<div class="col-sm-12 form-group">
+											<label class="checkbox-inline">
+												<input type="checkbox" name="disability" value="{{_id}}">{{disability}}
+											</label>
+										</div>
+									{{/each}}
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-12 form-group">
+									<label class="label marg-bottom-xs-5">Other considerations (check all that apply)</label>
+								</div>
+							</div>
+							<div class="row form-group">
+								<div class="col-sm-12">
+									<div class="row">
+									{{#each otherConsiderations}}
+										<div class="col-sm-12 form-group">
+											<label class="checkbox-inline">
+												<input type="checkbox" name="otherConsideration" value="{{_id}}">{{otherConsideration}}
+											</label>
+										</div>
+									{{/each}}
+									</div>
+								</div>
+							</div>
+
+
 						</section>
 
 						<section class="prospective-parent-mare-and-you-section">
@@ -950,7 +1006,7 @@
 
 							<div class="row">
 								<div class="col-sm-24 form-group">
-									<label class="label marg-bottom-xs-5">How did you hear about MARE?</label>
+									<label class="label marg-bottom-xs-5">How did you hear about MARE (please check all that apply)?</label>
 								</div>
 
 								<div class="col-sm-12">
