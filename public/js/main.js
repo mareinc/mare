@@ -201,7 +201,7 @@ app.functions = function() {
 		});
 
 		/* initialization for the site user registration form */
-		$('.otherWayToHearAboutMARE').click(function() {
+		$('.otherWayToHearAboutMARE').change(function() {
 			if(currentForm === 'siteVisitor') {
 				$('#site-visitor-how-did-you-hear-other').toggleClass('hidden');
 			} else {
@@ -223,6 +223,12 @@ app.functions = function() {
 			}
 		});
 
+		// only show the homestudy area if the user has completed a homestudy
+		$('.homestudy-completed-checkbox').change(function() {
+			$('.prospective-parent-homestudy-details-section').toggleClass('hidden');
+		});
+
+		// monitor to track when the user uploads a homestudy form
 		$("#upload-button").change(function() {
     		$("#home-study-file-upload").val(this.value);
 		});
