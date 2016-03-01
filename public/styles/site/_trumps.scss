@@ -1,0 +1,20 @@
+.hidden {
+	display: none;
+}
+
+.cover {
+	position: relative;
+	top: 0;
+	bottom: 0;
+	display: block;
+}
+
+.required {
+    color: $required-color;
+}
+
+.required-field:after {
+	content: "*";
+	color: $required-color;
+	padding-left: 5px;
+}

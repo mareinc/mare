@@ -46,5 +46,5 @@ Placement.add('Placement', {
 });
 
 // Define default columns in the admin interface and register the model
-Placement.defaultColumns = 'placementDate, prospectiveParentOrFamily, family.name, source';
+Placement.defaultColumns = 'placementDate, child, prospectiveParentOrFamily, family.name, source';
 Placement.register();

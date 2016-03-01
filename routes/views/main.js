@@ -1,3 +1,5 @@
+//TODO: Clean this up with async
+
 var keystone = require('keystone'),
 	_ = require('underscore');
 
@@ -8,7 +10,7 @@ var Slideshow = keystone.list('Slideshow'),
 
 exports = module.exports = function(req, res) {
 	'use strict';
-	
+
 	var view = new keystone.View(req, res),
 		locals = res.locals;
 
@@ -19,7 +21,7 @@ exports = module.exports = function(req, res) {
 			if(!slideshow) {
 				console.log('unable to load the slideshow');
 			}
-			
+
 			var slideshowId = slideshow[0].get('_id');
 
 			// TODO: Change to callbacks instead of promises (This should be done globally across views and middleware)
@@ -38,7 +40,7 @@ exports = module.exports = function(req, res) {
 							locals.featuredItems = featuredItems;
 
 							view.render('main');
-							// TODO: If the necessary elements don't exist on the page, maybe render 
+							// TODO: If the necessary elements don't exist on the page, maybe render
 							//       a blank page to allow logging in and creating them
 						});
 				});
