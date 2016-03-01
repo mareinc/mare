@@ -23,11 +23,6 @@
 				<div class="page-header">
 					<span class="page-header-text">Adoption Party Social Worker Registration</span>
 				</div>
-				<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. In gravida ultricies tempor. 
-				Aenean sodales rutrum urna in porta. Vestibulum in mi non risus mattis imperdiet eget ac metus. 
-				Sed mauris nunc, rutrum eu posuere a, vehicula vitae neque. Donec nec lorem laoreet, accumsan 
-				mauris vitae, bibendum metus. Donec sit amet odio luctus arcu suscipit laoreet a in dolor. 
-				Sed commodo sagittis mattis. Aenean cursus malesuada purus ut posuere.</p>
 
 				<form action="/register" class="registration-form" method="POST">
 					
@@ -76,6 +71,12 @@
 						</div>
 					</div>
 					<div class="row form-group">
+						<div class="col-sm-12">
+							<input type="text" class="input" required id="email" name="email" />
+							<label for="email" class="label required-field">Email</label>
+						</div>
+					</div>
+					<div class="row form-group">
 						<div class="col-sm-12 form-group">
 							<textarea class="input" id="attending-children" name="attendingChildren" rows="3"></textarea>
 							<label for="attending-children" class="label">Name(s) of Child(ren) (First, last) attending Adoption Party. <br /><em>Children must be registered with MARE.</em></label>
@@ -89,8 +90,8 @@
 					</div>
 					<div class="row form-group">
 						<div class="col-sm-12 form-group">
-							<input type="text" class="input" id="chaperone-email" name="chaperoneEmail" required />
-							<label for="chaperone-email" class="label required-field">Their Email Address</label>
+							<input type="text" class="input" id="chaperone-email" name="chaperoneEmail" />
+							<label for="chaperone-email" class="label">Their Email Address</label>
 						</div>
 					</div>
 					<div class="row form-group">
