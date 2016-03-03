@@ -50,6 +50,10 @@ exports = module.exports = function(req, res) {
                     view.render('forms/car-donation.hbs');
                     break;
 
+                case "child-registration-form":
+                    view.render('forms/child-registration.hbs');
+                    break;
+
 			    default:
 
                     // Fetch the page with the matching URL
