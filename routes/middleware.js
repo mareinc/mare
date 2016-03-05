@@ -50,7 +50,7 @@ exports.initLocals = function(req, res, next) {
 		{ title: 'Meet the Children', subMenu: [
 			{ title: 'Who are the Children?', href: '/page/who-are-the-children' },
 			{ title: 'Waiting Child Profiles', href: '/waiting-child-profiles' },
-			{ title: 'Other Ways to Meet Waiting Children', href: '/page/ways-to-meet-waiting-children' },
+			{ title: 'Other Ways to Meet Waiting Children', href: '/page/other-ways-to-meet-waiting-children' },
 			{ title: 'For Homestudied Families', href: '/page/for-homestudied-families' }
 		]},
 		{ title: 'Family Support Services', subMenu: [
