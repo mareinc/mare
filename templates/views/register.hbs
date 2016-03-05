@@ -44,10 +44,11 @@
 					</select>
 				</div>
 				<section class="site-visitor-registration">
-					<section class="site-visitor-registration-section">
-						<div class="registration-type-header">Site Visitor Registration</div>
-						<span class="required required-description">* Required</span>
-						<form action="/register" class="registration-form" method="POST">
+					<form action="/register" class="registration-form" method="POST">
+						<section class="site-visitor-registration-section">
+							<div class="registration-type-header">Site Visitor Registration</div>
+							<span class="required required-description">* Required</span>
+
 							<input type="hidden" class="registration-type" name="registrationType" value="siteVisitor">
 							<input type="hidden" name="action" value="register">
 							<div class="row form-group">
@@ -145,8 +146,8 @@
 									<div class="row">
 										{{#each waysToHearAboutMARE}}
 										<div class="col-sm-12 form-group">
-											<label class="checkbox-inline">
-												<input type="checkbox" {{#if other}}class="otherWayToHearAboutMARE" {{/if}}name="howDidYouHear" value="{{_id}}">{{wayToHearAboutMARE}}
+											<label class="checkbox-inline way-to-hear-about-MARE {{#if other}}other-way-to-hear-about-MARE{{/if}}">
+												<input type="checkbox" name="howDidYouHear" value="{{_id}}">{{wayToHearAboutMARE}}
 											</label>
 										</div>
 										{{/each}}
@@ -519,21 +520,21 @@
 							</div>
 							<div class="row">
 								<div class="col-sm-12 form-group">
-									<input type="text" class="input" required id="social-worker-name" name="socialWorkerName">
+									<input type="text" class="input" id="social-worker-name" name="socialWorkerName">
 									<label for="social-worker-name" class="label required-field">Social Worker Name</label>
 								</div>
 								<div class="col-sm-12 form-group">
-									<input type="text" class="input" required id="social-worker-agency" name="socialWorkerAgency">
+									<input type="text" class="input" id="social-worker-agency" name="socialWorkerAgency">
 									<label for="social-worker-agency" class="label required-field">Social Worker Agency</label>
 								</div>
 							</div>
 							<div class="row">
 								<div class="col-sm-12 form-group">
-									<input type="text" class="input" required id="social-worker-phone" name="socialWorkerPhone" pattern="^\s*(?:\+?(\d{1,3}))?([-. (]*(\d{3})[-. )]*)?((\d{3})[-. ]*(\d{2,4})(?:[-.x ]*(\d+))?)\s*$">
+									<input type="text" class="input" id="social-worker-phone" name="socialWorkerPhone" pattern="^\s*(?:\+?(\d{1,3}))?([-. (]*(\d{3})[-. )]*)?((\d{3})[-. ]*(\d{2,4})(?:[-.x ]*(\d+))?)\s*$">
 									<label for="social-worker-phone" class="label required-field">Social Worker Phone Number</label>
 								</div>
 								<div class="col-sm-12 form-group">
-									<input type="text" class="input" required id="social-worker-email" name="socialWorkerEmail">
+									<input type="text" class="input" id="social-worker-email" name="socialWorkerEmail">
 									<label for="social-worker-email" class="label required-field">Social Worker Email Address</label>
 								</div>
 							</div>
@@ -1013,8 +1014,8 @@
 									<div class="row">
 										{{#each waysToHearAboutMARE}}
 										<div class="col-sm-12 form-group">
-											<label class="checkbox-inline">
-												<input type="checkbox" {{#if other}}class="otherWayToHearAboutMARE" {{/if}}name="howDidYouHear" value="{{_id}}">{{wayToHearAboutMARE}}
+											<label class="checkbox-inline way-to-hear-about-MARE {{#if other}}other-way-to-hear-about-MARE{{/if}}">
+												<input type="checkbox" name="howDidYouHear" value="{{_id}}">{{wayToHearAboutMARE}}
 											</label>
 										</div>
 										{{/each}}
