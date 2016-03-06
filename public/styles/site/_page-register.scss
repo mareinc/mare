@@ -6,7 +6,7 @@
 	margin: 0 0 10px;
 }
 
-.registration-type-selector:before {
+.registration-type-selector-container:before {
 	content: "Register as:";
 	margin: 0 8px 0 0;
 }
@@ -54,7 +54,7 @@ label {
 	display: block;
 	width: 100%;
     /* margin: 0 0 5px; */
-    padding: 5px; 
+    padding: 5px;
 }
 
 .input-small {
