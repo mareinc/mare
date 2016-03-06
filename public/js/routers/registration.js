@@ -5,12 +5,47 @@
 
 		// TODO: Split this up based on the form we're showing the user
 		routes: {
-			'.*' : 'loadRegistrationPage',
+			''				: 'navigateToDefault',
+			'site-user' 	: 'loadSiteUserRegistration',
+			'social-worker'	: 'loadSocialWorkerRegistration',
+			'family'		: 'loadFamilyRegistration',
+			'*other'		: 'navigateToDefault'
 		},
 
-		loadRegistrationPage: function() {
-			// Load the view for the registration pages
+		initialize: function() {
+			// Load the view for the registration page as a whole
 			mare.views.registration = mare.views.registration || new mare.views.Registration();
+		},
+
+		loadSiteUserRegistration: function loadSiteUserRegistration() {
+			// Initialize the view for the site user form if it doesn't already exist
+			mare.views.siteVisitorRegistration = mare.views.siteVisitorRegistration || new mare.views.SiteVisitorRegistration();
+			// Update the form selector for consistency
+			mare.views.registration.$formSelector.val('siteVisitor');
+			// Use the view for the reigistraiton page as a whole to display the correct area
+			mare.views.registration.showSiteUserForm();
+		},
+
+		loadSocialWorkerRegistration: function loadSocialWorkerRegistration() {
+			// Initialize the view for the social worker form if it doesn't already exist
+			mare.views.socialWorkerRegistration = mare.views.socialWorkerRegistration || new mare.views.SocialWorkerRegistration();
+			// Update the form selector for consistency
+			mare.views.registration.$formSelector.val('socialWorker');
+			// Use the view for the reigistraiton page as a whole to display the correct area
+			mare.views.registration.showSocialWorkerForm();
+		},
+
+		loadFamilyRegistration: function loadFamilyRegistration() {
+			// Initialize the view for the family form if it doesn't already exist
+			mare.views.familyRegistration = mare.views.familyRegistration || new mare.views.FamilyRegistration();
+			// Update the form selector for consistency
+			mare.views.registration.$formSelector.val('prospectiveParent');
+			// Use the view for the reigistraiton page as a whole to display the correct area
+			mare.views.registration.showFamilyForm();
+		},
+		/* Handle any poorly formed routes or navigation to the registration page without specifying a route by rerouting to the default form */
+		navigateToDefault: function navigateToDefault() {
+			this.navigate( 'site-user', { trigger: true, replace: true } );
 		}
 
 	});
