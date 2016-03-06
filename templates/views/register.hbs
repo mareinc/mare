@@ -36,8 +36,8 @@
 				<div class="register-intro">
 					Site Visitors: Feel free to browse the website without registering, you can always create an account at a later time.
 				</div>
-				<div class="registration-type-selector">
-					<select name="registration-type-selector">
+				<div class="registration-type-selector-container">
+					<select class="registration-type-selector" name="registration-type-selector">
 					    <option value="siteVisitor" selected="selected">Site Visitor</option>
 					    <option value="socialWorker">Social Worker</option>
 					    <option value="prospectiveParent">Prospective Parent</option>
@@ -146,7 +146,7 @@
 									<div class="row">
 										{{#each waysToHearAboutMARE}}
 										<div class="col-sm-12 form-group">
-											<label class="checkbox-inline way-to-hear-about-MARE {{#if other}}other-way-to-hear-about-MARE{{/if}}">
+											<label class="checkbox-inline way-to-hear-about-MARE {{#if other}}other-way-to-hear-about-mare{{/if}}">
 												<input type="checkbox" name="howDidYouHear" value="{{_id}}">{{wayToHearAboutMARE}}
 											</label>
 										</div>
@@ -1014,7 +1014,7 @@
 									<div class="row">
 										{{#each waysToHearAboutMARE}}
 										<div class="col-sm-12 form-group">
-											<label class="checkbox-inline way-to-hear-about-MARE {{#if other}}other-way-to-hear-about-MARE{{/if}}">
+											<label class="checkbox-inline way-to-hear-about-MARE {{#if other}}other-way-to-hear-about-mare{{/if}}">
 												<input type="checkbox" name="howDidYouHear" value="{{_id}}">{{wayToHearAboutMARE}}
 											</label>
 										</div>
