@@ -10,7 +10,7 @@
 
 		initialize: function() {
 			// DOM cache any commonly used elements to improve performance
-			this.$howDidYouHearOther = $('#site-visitor-how-did-you-hear-other');
+			this.$howDidYouHearOther = this.$('#site-visitor-how-did-you-hear-other');
 		},
 
 		toggleOtherWayToHearTextField: function toggleOtherWayToHearTextField() {

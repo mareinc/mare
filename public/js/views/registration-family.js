@@ -2,7 +2,7 @@
 	'use strict';
 
 	mare.views.FamilyRegistration = Backbone.View.extend({
-		el: 'body',
+		el: 'prospective-parent-registration',
 
 		events: {
 			'change .other-way-to-hear-about-mare'			: 'toggleOtherWayToHearTextField',
@@ -13,10 +13,10 @@
 
 		initialize: function() {
 			// DOM cache any commonly used elements to improve performance
-			this.$howDidYouHearOther			= $('#prospective-parent-how-did-you-hear-other');
-			this.$state							= $('#prospective-parent-or-family-state');
-			this.$homestudySection				= $('.prospective-family-submit-your-homestudy-section');
-			this.$homestudySubmissionSection	= $('.prospective-parent-homestudy-details-section');
+			this.$howDidYouHearOther			= this.$('#prospective-parent-how-did-you-hear-other');
+			this.$state							= this.$('#prospective-parent-or-family-state');
+			this.$homestudySection				= this.$('.prospective-family-submit-your-homestudy-section');
+			this.$homestudySubmissionSection	= this.$('.prospective-parent-homestudy-details-section');
 		},
 
 		toggleOtherWayToHearTextField: function toggleOtherWayToHearTextField() {
@@ -33,8 +33,8 @@
 				// hide the homestudy section of the form
 				this.$homestudySection.hide();
 				// clear out any uploaded homestudy files
-				$('[name=HomeStudySubmission]').attr('checked', false);
-				$('#home-study-file-upload').val(''); // TODO: homestudy is one word, the JavaScript, HTML, and CSS needs to be cleaned up everywhere for this
+				this.$('[name=HomeStudySubmission]').attr('checked', false);
+				this.$('#home-study-file-upload').val(''); // TODO: homestudy is one word, the JavaScript, HTML, and CSS needs to be cleaned up everywhere for this
 			}
 		},
 
@@ -44,7 +44,7 @@
 
 		uploadForm: function uploadForm(event) {
 			var target = event.target
-			$("#home-study-file-upload").val(target.value);
+			this.$("#home-study-file-upload").val(target.value);
 		}
 
 	});
