@@ -9,27 +9,44 @@
 		},
 
 		initialize: function() {
-			// Initialize the views for the three registration forms
-			mare.views.siteVisitorRegistration = mare.views.siteVisitorRegistration || new mare.views.SiteVisitorRegistration();
-			mare.views.socialWorkerRegistration = mare.views.socialWorkerRegistration || new mare.views.SocialWorkerRegistration();
-			mare.views.familyRegistration = mare.views.familyRegistration || new mare.views.FamilyRegistration();
 			// DOM cache any commonly used elements to improve performance
-			this.$formSelector = $('.registration-type-selector');
-			this.$siteForm = $('.site-visitor-registration');
-			this.$socialWorkerForm = $('.social-worker-registration');
-			this.$prospectiveParentForm = $('.prospective-parent-registration');
-
-			this.currentForm = 'siteVisitor';
+			this.$formSelector			= this.$( '.registration-type-selector' );
+			this.$siteUserForm			= this.$( '.site-visitor-registration' );
+			this.$socialWorkerForm		= this.$( '.social-worker-registration' );
+			this.$prospectiveParentForm = this.$( '.prospective-parent-registration' );
 		},
 
 		changeForm: function changeForm() {
 			this.currentForm = this.$formSelector.val();
 
 			switch(this.currentForm) {
-				case 'siteVisitor': this.$socialWorkerForm.hide(); this.$prospectiveParentForm.hide(); this.$siteForm.show(); break;
-				case 'socialWorker': this.$siteForm.hide(); this.$prospectiveParentForm.hide(); this.$socialWorkerForm.show(); break;
-				case 'prospectiveParent': this.$siteForm.hide(); this.$socialWorkerForm.hide(); this.$prospectiveParentForm.show(); break;
+				case 'siteVisitor'			: mare.routers.registration.navigate( 'site-user', { trigger: true } ); break;
+				case 'socialWorker'			: mare.routers.registration.navigate( 'social-worker', { trigger: true } ); break;
+				case 'prospectiveParent'	: mare.routers.registration.navigate( 'family', { trigger: true } ); break;
+				default						: mare.routers.registration.navigate( 'site-user', { trigger: true, replace: true } );
 			}
+		},
+
+		updateFormSelector: function updateFormSelector(selection) {
+			this.$formSelector.val(selection);
+		},
+
+		showSiteUserForm: function showSiteUserForm() {
+			this.$socialWorkerForm.fadeOut();
+			this.$prospectiveParentForm.fadeOut();
+			this.$siteUserForm.fadeIn();
+		},
+
+		showSocialWorkerForm: function showSocialWorkerForm() {
+			this.$siteUserForm.fadeOut();
+			this.$prospectiveParentForm.fadeOut();
+			this.$socialWorkerForm.fadeIn();
+		},
+
+		showFamilyForm: function showFamilyForm() {
+			this.$siteUserForm.fadeOut();
+			this.$socialWorkerForm.fadeOut();
+			this.$prospectiveParentForm.fadeIn();
 		}
 
 	});
