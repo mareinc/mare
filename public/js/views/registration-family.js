@@ -2,7 +2,7 @@
 	'use strict';
 
 	mare.views.FamilyRegistration = Backbone.View.extend({
-		el: 'prospective-parent-registration',
+		el: 'registration-form--family',
 
 		events: {
 			'change .other-way-to-hear-about-mare'			: 'toggleOtherWayToHearTextField',
@@ -17,6 +17,8 @@
 			this.$state							= this.$('#prospective-parent-or-family-state');
 			this.$homestudySection				= this.$('.prospective-family-submit-your-homestudy-section');
 			this.$homestudySubmissionSection	= this.$('.prospective-parent-homestudy-details-section');
+			// Initialize parsley validation on the form
+			this.$el.parsley();
 		},
 
 		toggleOtherWayToHearTextField: function toggleOtherWayToHearTextField() {
