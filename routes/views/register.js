@@ -2,6 +2,8 @@ var keystone					= require('keystone'),
 	async						= require('async'),
 	_							= require('underscore'),
 	registrationMiddleware		= require('../middleware/register'),
+	Region 						= keystone.list('Region'),
+	Position					= keystone.list('Social Worker Position'),
 	Race						= keystone.list('Race'),
 	State						= keystone.list('State'),
 	Gender						= keystone.list('Gender'),
@@ -43,6 +45,16 @@ exports = module.exports = function(req, res) {
 		function(done) {
 			Gender.model.find().select('gender').exec().then(function(genders) {
 				locals.genders = genders;
+				done();
+			})},
+		function(done) {
+			Region.model.find().select('region').exec().then(function(regions) {
+				locals.regions = regions;
+				done();
+			})},
+		function(done) {
+			Position.model.find().select('position').exec().then(function(positions) {
+				locals.positions = positions;
 				done();
 			})},
 		function(done) {
