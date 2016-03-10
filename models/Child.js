@@ -33,6 +33,7 @@ Child.add({ heading: 'Child Information' }, {
 	gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', required: true, index: true, initial: true },
 	race: { type: Types.Relationship, label: 'race', ref: 'Race', many: true, required: true, index: true, initial: true },
 	legalStatus: { type: Types.Relationship, label: 'legal status', ref: 'Legal Status', required: true, index: true, initial: true },
+	yearEnteredCare: { type: Types.Text, label: 'year entered care', note: 'yyyy', initial: true },
 
 	hasContactWithSiblings: { type: Types.Boolean, label: 'has contact with siblings?', index: true, initial: true },
 	siblingTypeOfContact: { type: Types.Text, label: 'type of contact', initial: true },
@@ -69,7 +70,8 @@ Child.add({ heading: 'Child Information' }, {
 
 	registeredBy: { type: Types.Select, label: 'registered by', options: 'Unknown, Adoption Worker, Recruitment Worker', required: true, index: true, initial: true },
 	adoptionWorker: { type: Types.Relationship, label: 'adoption worker', ref: 'Social Worker', filters: { position: 'adoption worker' }, initial: true },
-	recruitmentWorker: { type: Types.Relationship, label: 'recruitment worker', ref: 'Social Worker', filters: { position: 'recruitment worker' }, initial: true }
+	recruitmentWorker: { type: Types.Relationship, label: 'recruitment worker', ref: 'Social Worker', filters: { position: 'recruitment worker' }, initial: true },
+	region: { type: Types.Relationship, label: 'region', ref: 'Region', initial: true }
 
 }, { heading: 'Photolisting Information' }, {
 

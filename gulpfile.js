@@ -18,8 +18,8 @@ var gulp 			= require('gulp'),
 var paths = {
 	'src':[
 		'./models/**/*.js',
-		'./routes/**/*.js', 
-		'keystone.js', 
+		'./routes/**/*.js',
+		'keystone.js',
 		'package.json'],
 	'css':[
 		'public/modules/**/*.css',
@@ -29,7 +29,12 @@ var paths = {
 	],
 	'js':[
 		'public/modules/**/*.js',
-		'public/js/*.js'],
+		'public/js/mare.js',
+		'public/js/models/*.js',
+		'public/js/collections.*.js',
+		'public/js/views/*.js',
+		'public/js/routers/*.js',
+		'public/js/main.js'],
 	'standalone-js':[
 		'public/js/lib/standalone-scripts/**/*.js'],
 	'admin-panel-js':[
@@ -61,7 +66,7 @@ gulp.task('styles', function() {
 });
 
 // TODO: need to figure out why it's not coming in with the Bootstrap styles for the minified output.
-// task for styles which are meant to remain separate from the concatenated, minified styles file 
+// task for styles which are meant to remain separate from the concatenated, minified styles file
 gulp.task('standalone-styles', function() {
 	return gulp.src(paths['standalone-css'])
 		.pipe(gulp.dest('public/dist'));

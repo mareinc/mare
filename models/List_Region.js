@@ -12,6 +12,9 @@ Region.add({
 	region: { type: Types.Text, label: 'region', required: true, index: true, initial: true }
 });
 
+// Displaly associations via the Relationship field type
+Region.relationship({ path: 'region', ref: 'CSC Region Contact', label: 'CSC contacts', refPath: 'region' });
+
 // Define default columns in the admin interface and register the model
 Region.defaultColumns = 'region';
 Region.register();

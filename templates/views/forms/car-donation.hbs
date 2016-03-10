@@ -1,0 +1,291 @@
+{{!< default}}
+<div class="main">
+	<div class="content">
+		<div class="content-header">
+			<span class="section-title">Car Donation</span>
+			<img class="section-image" src="/dist/img/register.png" alt="section-image-placeholder">
+		</div>
+		<div class="content-body">
+			<aside class="sidebar left-sidebar">
+				<aside class="callout">
+					<span class="description">"It feels so good to be a family," says Brady, who's getting used to being called "Mommy."</span>
+					<img class="callout-image" src="/dist/img/success-story-popout.png" alt="callout-image-placeholder">
+					<span class="callout-controls">
+						<div class="callout-type">Success Stories</div>
+						<div class="callout-title">Meet the Whitney Family</div>
+						<div class="learn-more">
+							<span>Learn more</span><span class="icon-double-arrow-right">&gt;&gt;</span>
+						</div>
+					</span>
+				</aside>
+			</aside>
+			<section class="main-column">
+				<div class="page-header">
+					<span class="page-header-text">Car Donation Form</span>
+				</div>
+				
+				<p>Please be sure to have your title information available prior to filling out this form.  
+				Route 128 Used Auto Parts &amp; Sales’ towing area encompasses Eastern and Central parts of Massachusetts.</p>
+
+				<form action="/donatecar" class="registration-form" method="POST">
+					
+					<input type="hidden" name="action" value="donateCar" />
+
+					<div class="registration-section-header">Contact Person's Information</div>
+
+					<div class="row">
+						<div class="col-sm-6 form-group">
+							<input type="text" class="input" id="contact-first-name" name="contactFirstName" required />
+							<label for="contact-first-name" class="label required-field">First Name</label>
+						</div>
+						<div class="col-sm-6 form-group">
+							<input type="text" class="input" id="contact-last-name" name="contactLastName" required />
+							<label for="contact-last-name" class="label required-field">Last Name</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-6 form-group">
+							<input type="text" class="input" id="contact-home-phone" name="contactHomePhone" required />
+							<label for="contact-home-phone" class="label required-field">Home Phone</label>
+						</div>
+						<div class="col-sm-6 form-group">
+							<input type="text" class="input" id="contact-work-phone" name="contactWorkPhone" required />
+							<label for="contact-work-phone" class="label required-field">Work Phone</label>
+						</div>
+					</div>
+					<div class="row form-group">
+						<div class="col-sm-12">
+							<input type="email" class="input" required id="contact-email" name="contactEmail" pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
+							<label for="contact-email" class="label required-field">Email <em>(Required for receipt)</em></label>
+						</div>
+					</div>
+					<div class="row form-group">
+						<div class="col-sm-12">
+							<input type="text" class="input" required id="contact-address1" name="contactAddress1">
+							<label for="contact-address1" class="label required-field">Address 1</label>
+						</div>
+					</div>
+					<div class="row form-group">
+						<div class="col-sm-12">
+							<input type="text" class="input" required id="contact-address2" name="contactAddress2">
+							<label for="contact-address2" class="label required-field">Address 2</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-6 form-group">
+							<input type="text" class="input" required id="contact-city" name="contactCity">
+							<label for="contact-city" class="label required-field">City</label>
+						</div>
+						<div class="col-sm-6 form-group">
+							<select id="contact-state" name="contactState" class="input" required>
+							{{#each states}}
+								<option value="{{_id}}">{{state}}</option>
+							{{/each}}
+							</select>
+							<label for="contact-state" class="label required-field">State</label>
+						</div>
+						<div class="col-sm-6 form-group">
+							<input type="text" class="input" required id="contact-zip" name="contactZip" pattern="\d{5}([ \-]\d{4})?">
+							<label for="contact-zip" class="label required-field">Zip Code</label>
+						</div>
+					</div>
+
+
+					<div class="registration-section-header">Car Location</div>
+
+					<div class="row form-group">
+						<div class="col-sm-12">
+							<input type="text" class="input" id="car-location" name="carLocation" required />
+							<label for="car-location" class="label required-field">Current Location <em>(driveway, business, etc)</em></label>
+						</div>
+					</div>
+					<div class="row form-group">
+						<div class="col-sm-12">
+							<input type="text" class="input" required id="car-address" name="carAddress">
+							<label for="car-address" class="label required-field">Address</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-6 form-group">
+							<input type="text" class="input" required id="car-city" name="carCity">
+							<label for="car-city" class="label required-field">City</label>
+						</div>
+						<div class="col-sm-6 form-group">
+							<select id="car-state" name="carState" class="input" required>
+							{{#each states}}
+								<option value="{{_id}}">{{state}}</option>
+							{{/each}}
+							</select>
+							<label for="car-state" class="label required-field">State</label>
+						</div>
+						<div class="col-sm-6 form-group">
+							<input type="text" class="input" required id="car-zip" name="carZip" pattern="\d{5}([ \-]\d{4})?">
+							<label for="car-zip" class="label required-field">Zip Code</label>
+						</div>
+					</div>
+
+					<div class="registration-section-header">Car Information</div>
+
+					<p class="top-label">Car Owners Name</p>
+					<div class="row">
+						<div class="col-sm-6 form-group">
+							<input type="text" class="input" id="car-owner-first-name" name="carOwnerFirstName" required />
+							<label for="car-owner-first-name" class="label required-field">First Name</label>
+						</div>
+						<div class="col-sm-6 form-group">
+							<input type="text" class="input" id="car-owner-last-name" name="carOwnerLastName" required />
+							<label for="car-owner-last-name" class="label required-field">Last Name</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-6 form-group">
+							<input type="text" class="input" id="car-year" name="carYear" required />
+							<label for="car-year" class="label required-field">Year</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-6 form-group">
+							<input type="text" class="input" id="car-make" name="carMake" required />
+							<label for="car-make" class="label required-field">Make</label>
+						</div>
+						<div class="col-sm-6 form-group">
+							<input type="text" class="input" id="car-model" name="carModel" required />
+							<label for="car-model" class="label required-field">Model</label>
+						</div>
+						<div class="col-sm-6 form-group">
+							<input type="text" class="input" id="car-color" name="carColor" required />
+							<label for="car-color" class="label required-field">Color</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-6 form-group">
+							<input type="text" class="input" id="car-mileage" name="carMileage" required />
+							<label for="car-mileage" class="label required-field">Mileage</label>
+						</div>			
+					</div>
+					<div class="row form-group">
+						<div class="col-sm-12">
+							<input type="text" class="input" id="car-vin" name="carVin" required />
+							<label for="car-vin" class="label required-field">Vin # <em>(17 digits)</em></label>
+						</div>
+					</div>
+					<div class="row form-group">
+						<div class="col-sm-12 form-group">
+							<input type="text" class="input" id="car-title" name="carTitle" required />
+							<label for="car-title" class="label required-field">Title #</label>
+						</div>
+					</div>
+					<div class="row form-group">
+						<div class="col-sm-12">
+							<span>Is the car running?</span> &nbsp;&nbsp;
+							<label class="radio-inline"><input type="radio" name="carRunning" value="yes">Yes</label>
+							<label class="radio-inline"><input type="radio" name="carRunning" value="no">No</label>
+						</div>
+					</div>
+					<div class="row form-group">
+						<div class="col-sm-12">
+							<span>Was the car in any accidents?</span> &nbsp;&nbsp;
+							<label class="radio-inline"><input type="radio" name="carAccident" value="yes">Yes</label>
+							<label class="radio-inline"><input type="radio" name="carAccident" value="no">No</label>
+						</div>
+					</div>
+					<div class="row form-group">
+						<div class="col-sm-12">
+							<span>Do the tires have air in them?</span> &nbsp;&nbsp;
+							<label class="radio-inline"><input type="radio" name="carAirInTires" value="yes">Yes</label>
+							<label class="radio-inline"><input type="radio" name="carAirInTires" value="no">No</label>
+						</div>
+					</div>
+					<div class="row form-group">
+						<div class="col-sm-12">
+							<span>Is there any rust?</span> &nbsp;&nbsp;
+							<label class="radio-inline"><input type="radio" name="carRust" value="yes">Yes</label>
+							<label class="radio-inline"><input type="radio" name="carRust" value="no">No</label>
+						</div>
+					</div>
+					<div class="row form-group">
+						<div class="col-sm-12">
+							<textarea class="input" id="car-mechanical-problems" name="carMechanicalProblems" rows="3" required=""></textarea>
+							<label for="car-mechanical-problems" class="label required-field">Please note any major mechanical problems</label>
+						</div>
+					</div>
+					<div class="row form-group">
+						<div class="col-sm-12">
+							<textarea class="input" id="car-body-damage" name="carBodyDamage" rows="3" required=""></textarea>
+							<label for="car-body-damage" class="label required-field">Please note any body damage</label>
+						</div>
+					</div>
+
+
+					<div class="registration-section-header">Mare &amp; You</div>
+
+					<div class="row form-group">
+						<div class="col-sm-24 form-group">
+							<label class="label marg-bottom-xs-5 required-field">How did you hear about the car donation program?</label>
+						</div>
+						<div class="col-sm-12">
+							<div class="row">
+								<div class="col-sm-12 form-group">
+									<label class="checkbox-inline">
+										<input type="checkbox" name="howDidYouHear" value="Web">Web
+									</label>
+								</div>
+								<div class="col-sm-12 form-group">
+									<label class="checkbox-inline">
+										<input type="checkbox" name="howDidYouHear" value="Wednesday’s Child">Wednesday’s Child
+									</label>
+								</div>
+								<div class="col-sm-12 form-group">
+									<label class="checkbox-inline">
+										<input type="checkbox" name="howDidYouHear" value="Adoption Event">Adoption Event
+									</label>
+								</div>
+								<div class="col-sm-12 form-group">
+									<label class="checkbox-inline">
+										<input type="checkbox" name="howDidYouHear" value="Friend / Family">Friend / Family
+									</label>
+								</div>
+								<div class="col-sm-12 form-group">
+									<label class="checkbox-inline">
+										<input type="checkbox" name="howDidYouHear" value="Newspaper">Newspaper
+									</label>
+								</div>
+								<div class="col-sm-12 form-group">
+									<label class="checkbox-inline">
+										<input type="checkbox" name="howDidYouHear" value="Heart Gallery Display">Heart Gallery Display
+									</label>
+								</div>
+								<div class="col-sm-12 form-group">
+									<label class="checkbox-inline">
+										<input type="checkbox" name="howDidYouHear" value="Social Media">Social Media
+									</label>
+								</div>
+								<div class="col-sm-12 form-group">
+									<label class="checkbox-inline">
+										<input type="checkbox" name="howDidYouHear" value="AdoptMassachusettsKids.org">AdoptMassachusettsKids.org
+									</label>
+								</div>
+								<div class="col-sm-12 form-group">
+									<label class="checkbox-inline">
+										<input type="checkbox" name="howDidYouHear" value="Other" onClick="$('#parent-how-did-you-hear').show()">Other
+									</label>
+								</div>
+								<div class="col-sm-12 form-group">
+									<input type="text" style="display:none" class="input" id="parent-how-did-you-hear" name="howDidYouHearOther" placeholder="Other...">
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row form-group">
+						<div class="col-sm-24">
+							<textarea class="input" id="comments" name="comments" rows="5"></textarea>
+							<label for="comments" class="label">Questions or Comments</label>
+						</div>
+					</div>
+
+					<button class="register" type="submit">Submit</button>
+				</form>
+			</section>
+		</div>
+	</div>
+</div>

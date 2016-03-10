@@ -6,7 +6,7 @@
 	margin: 0 0 10px;
 }
 
-.registration-type-selector:before {
+.registration-type-selector-container:before {
 	content: "Register as:";
 	margin: 0 8px 0 0;
 }
@@ -27,10 +27,6 @@
 .registration-sub-section-header {
 	margin-top: 0;
 	text-transform: none;
-}
-
-.registration-form {
-    /*font-size: .8em;*/
 }
 
 .required-description {
@@ -54,7 +50,7 @@ label {
 	display: block;
 	width: 100%;
     /* margin: 0 0 5px; */
-    padding: 5px; 
+    padding: 5px;
 }
 
 .input-small {
@@ -76,7 +72,7 @@ label {
 }
 
 .state-select {
-    margin: 10px 0 20px;
+    margin: 10px 0 5px;
 }
 
 /* TODO: Change class names to signify that these are buttons */

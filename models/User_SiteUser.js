@@ -16,20 +16,20 @@ SiteUser.add('Permissions', {
 		isActive: { type: Boolean, label: 'is active', default: true, noedit: true }
 	}
 
-}, { heading: 'User Information' }, {
+}, 'User Information', {
 
 	name: {
-		first: { type: Types.Text, label: 'first name', required: true, index: true, initial: true },
-		last: { type: Types.Text, label: 'last name', required: true, index: true, initial: true },
+		first: { type: Types.Text, label: 'first name', required: true, initial: true },
+		last: { type: Types.Text, label: 'last name', required: true, initial: true },
 		full: { type: Types.Text, label: 'name', hidden: true, noedit: true, initial: false }
 	},
 
 	password: { type: Types.Password, label: 'password', required: true, initial: true },
 	avatar: { type: Types.CloudinaryImage, label: 'avatar', folder: 'users/site users', autoCleanup: true }
 
-}, { heading: 'Contact Information' }, {
+}, 'Contact Information', {
 
-	email: { type: Types.Email, label: 'email address', unique: true, required: true, index: true, initial: true },
+	email: { type: Types.Email, label: 'email address', unique: true, required: true, initial: true },
 
 	phone: {
 		work: { type: Types.Text, label: 'work phone number', initial: true },
@@ -42,10 +42,13 @@ SiteUser.add('Permissions', {
 	    street1: { type: Types.Text, label: 'address line 1', initial: true },
 		street2: { type: Types.Text, label: 'address line 2', initial: true },
 		city: { type: Types.Text, label: 'city', initial: true },
-		state: { type: Types.Relationship, label: 'state', ref: 'State', index: true, initial: true },
-		zipCode: { type: Types.Text, label: 'zip code', index: true, initial: true }
+		state: { type: Types.Relationship, label: 'state', ref: 'State', initial: true },
+		zipCode: { type: Types.Text, label: 'zip code', initial: true }
 	}
 
+}, 'Heard About MARE From', {
+	heardAboutMAREFrom: { type: Types.Relationship, label: 'how did you hear about mare?', ref: 'Way To Hear About MARE', many: true, initial: true },
+	heardAboutMAREOther: { type: Types.Text, label: 'other', note: 'only fill out if "other" is selected in the field above', initial: true }
 });
 
 // Pre Save
@@ -60,17 +63,17 @@ SiteUser.schema.pre('save', function(next) {
 
 
 SiteUser.schema.post('save', function() {
-	this.sendNotificationEmail();
+	// this.sendNotificationEmail();
 });
 
 SiteUser.schema.methods.sendNotificationEmail = function(callback) {
-	
+
 	if ('function' !== typeof callback) {
 		callback = function() {
 			console.log('Inside keystone.Email() callback: ',arguments);
 		};
 	}
-	
+
 	var user = this;
 
 	//Find the email template in templates/emails/
@@ -88,7 +91,7 @@ SiteUser.schema.methods.sendNotificationEmail = function(callback) {
 		message: 'This is a test welcome email from the MARE site. Thank you for registering!',
 		user: user
 	}, callback);
-	
+
 };
 
 // Define default columns in the admin interface and register the model
