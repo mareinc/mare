@@ -19,6 +19,7 @@
 			this.$homestudySubmissionSection	= this.$('.prospective-parent-homestudy-details-section');
 			// Initialize parsley validation on the form
 			this.$el.parsley();
+			this.form.on('field:validated', this.validateForm);
 		},
 
 		toggleOtherWayToHearTextField: function toggleOtherWayToHearTextField() {
@@ -47,6 +48,12 @@
 		uploadForm: function uploadForm(event) {
 			var target = event.target
 			this.$("#home-study-file-upload").val(target.value);
+		},
+
+		validateForm: function validateForm() {
+			var ok = $('.parsley-error').length === 0;
+			$('.bs-callout-info').toggleClass('hidden', !ok);
+			$('.bs-callout-warning').toggleClass('hidden', ok);
 		}
 
 	});

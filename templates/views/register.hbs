@@ -53,31 +53,31 @@
 							<input type="hidden" name="action" value="register">
 							<div class="row form-group">
 								<div class="col-sm-12">
-									<input type="text" id="site-user-first-name" class="input" name="firstName" data-parsley-error-message="required" required="">
+									<input type="text" id="site-user-first-name" class="input" name="firstName" placeholder="John" data-parsley-error-message="required" required="">
 									<label for="site-user-first-name" class="label required-field">First Name</label>
 								</div>
 							</div>
 							<div class="row form-group">
 								<div class="col-sm-12">
-									<input type="text" id="site-user-last-name" class="input" name="lastName" data-parsley-error-message="required" required="">
+									<input type="text" id="site-user-last-name" class="input" name="lastName" placeholder="Smith" data-parsley-error-message="required" required="">
 									<label for="site-user-last-name" class="label required-field">Last Name</label>
 								</div>
 							</div>
 							<div class="row form-group">
 								<div class="col-sm-12">
-									<input type="email" id="site-user-email" class="input" name="email" data-parsley-trigger="change" data-parsley-error-message="required" required="">
+									<input type="email" id="site-user-email" class="input" name="email" placeholder="john.smith@gmail.com" data-parsley-trigger="change" data-parsley-error-message="required" required="">
 									<label for="site-user-email" class="label required-field">Email Address</label>
 								</div>
 							</div>
 							<div class="row form-group">
 								<div class="col-sm-12">
-									<input type="password" id="site-user-password" class="input" name="password" data-parsley-error-message="required" required="">
+									<input type="password" id="site-user-password" class="input" name="password" placeholder="**********" data-parsley-error-message="required" required="">
 									<label for="site-user-password" class="label required-field">Password</label>
 								</div>
 							</div>
 							<div class="row form-group">
 								<div class="col-sm-12">
-									<input type="password" id="site-user-confirm-password" class="input" name="confirmPassword" data-parsley-error-message="required" required="">
+									<input type="password" id="site-user-confirm-password" class="input" name="confirmPassword" placeholder="**********" data-parsley-equalto="#site-user-password" data-parsley-error-message="passwords must match" required="">
 									<label for="site-user-confirm-password" class="label required-field">Confirm Password</label>
 								</div>
 							</div>
@@ -85,19 +85,19 @@
 		for events on the MARE site faster and easier.</div>
 							<div class="row form-group">
 								<div class="col-sm-12">
-									<input type="text" id="site-user-street-1" class="input" name="street1">
+									<input type="text" id="site-user-street-1" class="input" name="street1" placeholder="100 Main Street">
 									<label for="site-user-street-1" class="label">Street 1</label>
 								</div>
 							</div>
 							<div class="row form-group">
 								<div class="col-sm-12">
-									<input type="text" id="site-user-street-2" class="input" name="street2">
+									<input type="text" id="site-user-street-2" class="input" name="street2" placeholder="Suite 1">
 									<label for="site-user-street-2" class="label">Street 2</label>
 								</div>
 							</div>
 							<div class="row form-group">
 								<div class="col-sm-12">
-									<input type="text" id="site-user-city" class="input" name="city">
+									<input type="text" id="site-user-city" class="input" name="city" placeholder="Boston">
 									<label for="site-user-city" class="label">City</label>
 								</div>
 							</div>
@@ -117,25 +117,25 @@
 							</div>
 							<div class="row form-group">
 								<div class="col-sm-12">
-									<input type="number" id="site-user-zip-code" class="input" name="zipCode">
+									<input type="number" id="site-user-zip-code" class="input" name="zipCode" placeholder="02111">
 									<label for="site-user-zip-code" class="label">Zip Code</label>
 								</div>
 							</div>
 							<div class="row form-group">
 								<div class="col-sm-12">
-									<input type="text" id="site-user-home-phone" class="input" name="homePhone">
+									<input type="text" id="site-user-home-phone" class="input" name="homePhone" placeholder="(617) 111-1111">
 									<label for="site-user-home-phone" class="label">Home Phone</label>
 								</div>
 							</div>
 							<div class="row form-group">
 								<div class="col-sm-12">
-									<input type="text" id="site-user-work-phone" class="input" name="workPhone">
+									<input type="text" id="site-user-work-phone" class="input" name="workPhone" placeholder="(617) 222-2222">
 									<label for="site-user-work-phone" class="label">Work Phone</label>
 								</div>
 							</div>
 							<div class="row form-group">
 								<div class="col-sm-12">
-									<input type="text" id="site-user-mobile-phone" class="input" name="mobilePhone">
+									<input type="text" id="site-user-mobile-phone" class="input" name="mobilePhone" placeholder="(617) 333-3333">
 									<label for="site-user-mobile-phone" class="label">Mobile Phone</label>
 								</div>
 							</div>
@@ -145,7 +145,7 @@
 										<option value="default" class="default-blank-selection"></option>
 										<option value="home">home</option>
 										<option value="work">work</option>
-										<option value="cell">cell</option>
+										<option value="mobile">mobile</option>
 									</select>
 									<label for="site-user-preferred-phone" class="label">Preferred Phone</label>
 								</div>
@@ -191,31 +191,31 @@
 							<div class="registration-section-header">Account Setup</div>
 							<div class="row form-group">
 								<div class="col-sm-12">
-									<input type="text" id="social-worker-first-name" class="input" name="firstName" data-parsley-error-message="required" required="">
+									<input type="text" id="social-worker-first-name" class="input" name="firstName" placeholder="John" data-parsley-error-message="required" required="">
 									<label for="social-worker-first-name" class="label required-field">First Name</label>
 								</div>
 							</div>
 							<div class="row form-group">
 								<div class="col-sm-12">
-									<input type="text" id="social-worker-last-name" class="input" name="lastName" data-parsley-error-message="required" required="">
+									<input type="text" id="social-worker-last-name" class="input" name="lastName" placeholder="Smith" data-parsley-error-message="required" required="">
 									<label for="social-worker-last-name" class="label required-field">Last Name</label>
 								</div>
 							</div>
 							<div class="row form-group">
 								<div class="col-sm-12">
-									<input type="email" id="social-worker-email" class="input" name="email" data-parsley-trigger="change" data-parsley-error-message="required" required="">
+									<input type="email" id="social-worker-email" class="input" name="email" placeholder="john.smith@gmail.com" data-parsley-trigger="change" data-parsley-error-message="required" required="">
 									<label for="social-worker-email" class="label required-field">Email Address</label>
 								</div>
 							</div>
 							<div class="row form-group">
 								<div class="col-sm-12">
-									<input type="password" id="social-worker-password" class="input" name="password" data-parsley-error-message="required" required="">
+									<input type="password" id="social-worker-password" class="input" name="password" placeholder="**********" data-parsley-error-message="required" required="">
 									<label for="social-worker-password" class="label required-field">Password</label>
 								</div>
 							</div>
 							<div class="row form-group">
 								<div class="col-sm-12">
-									<input type="password" id="social-worker-confirm-password" class="input" name="confirmPassword" data-parsley-error-message="required" required="">
+									<input type="password" id="social-worker-confirm-password" class="input" name="confirmPassword" placeholder="**********" data-parsley-equalto="#social-worker-password" data-parsley-error-message="passwords must match" required="">
 									<label for="social-worker-confirm-password" class="label required-field">Confirm Password</label>
 								</div>
 							</div>
@@ -236,25 +236,25 @@
 							</div>
 							<div class="row form-group">
 								<div class="col-sm-12">
-									<input type="text" class="input" id="social-worker-agency" name="agency" data-parsley-error-message="required" required="">
+									<input type="text" id="social-worker-agency" class="input" name="agency" data-parsley-error-message="required" required="">
 									<label for="social-worker-agency" class="label required-field">Agency</label>
 								</div>
 							</div>
 							<div class="row form-group">
 								<div class="col-sm-12">
-									<input type="text" class="input" id="social-worker-title" name="title" data-parsley-error-message="required" required="">
+									<input type="text" id="social-worker-title" class="input" name="title" data-parsley-error-message="required" required="">
 									<label for="social-worker-title" class="label required-field">Title</label>
 								</div>
 							</div>
 							<div class="row form-group">
 								<div class="col-sm-12">
-									<input type="text" id="social-worker-work-phone" class="input" name="workPhone" data-parsley-error-message="required" required="">
+									<input type="text" id="social-worker-work-phone" class="input" name="workPhone" placeholder="(617) 111-1111" data-parsley-error-message="required" required="">
 									<label for="social-worker-work-phone" class="label">Work Phone</label>
 								</div>
 							</div>
 							<div class="row form-group">
 								<div class="col-sm-12">
-									<input type="text" id="social-worker-mobile-phone" class="input" name="mobilePhone">
+									<input type="text" id="social-worker-mobile-phone" class="input" name="mobilePhone" placeholder="(617) 222-2222">
 									<label for="social-worker-mobile-phone" class="label">Mobile Phone</label>
 								</div>
 							</div>
@@ -262,32 +262,32 @@
 								<div class="col-sm-12">
 									<select id="social-worker-preferred-phone" class="input social-worker-preferred-phone-select" name="social-worker-preferred-phone" data-parsley-error-message="required" required="">
 										<option value="work">work</option>
-										<option value="cell">cell</option>
+										<option value="mobile">mobile</option>
 									</select>
 									<label for="social-worker-preferred-phone" class="label">Preferred Phone</label>
 								</div>
 							</div>
 							<div class="row form-group">
 								<div class="col-sm-12">
-									<input type="text" class="input" id="social-worker-street-1" name="street1" data-parsley-error-message="required" required="">
+									<input type="text" id="social-worker-street-1" class="input" name="street1" placeholder="100 Main Street" data-parsley-error-message="required" required="">
 									<label for="social-worker-street-1" class="label required-field">Street 1</label>
 								</div>
 							</div>
 							<div class="row form-group">
 								<div class="col-sm-12">
-									<input type="text" class="input" id="social-worker-street-2" name="street2">
+									<input type="text" id="social-worker-street-2" class="input" name="street2" placeholder="Suite 1">
 									<label for="social-worker-street-2" class="label">Street 2</label>
 								</div>
 							</div>
 							<div class="row form-group">
 								<div class="col-sm-12">
-									<input type="text" class="input" id="social-worker-city" name="city" data-parsley-error-message="required" required="">
+									<input type="text" id="social-worker-city" class="input" name="city" placeholder="Boston" data-parsley-error-message="required" required="">
 									<label for="social-worker-city" class="label required-field">City</label>
 								</div>
 							</div>
 							<div class="row form-group">
 								<div class="col-sm-12">
-									<select id="social-worker-state" name="state" class="input state-select" data-parsley-error-message="required" required="">
+									<select id="social-worker-state" class="input state-select" name="state">
 									{{#each states}}
 										{{#if defaultSelection}}
 											<option value="{{_id}}" selected="selected">{{state}}</option>
@@ -301,13 +301,13 @@
 							</div>
 							<div class="row form-group">
 								<div class="col-sm-12">
-									<input type="number" class="input" id="social-worker-zip-code" name="zipCode" data-parsley-length="[5, 5]" data-parsley-error-message="required" required="">
+									<input type="number" id="social-worker-zip-code" class="input" name="zipCode" placeholder="02111" data-parsley-length="[5, 5]" data-parsley-error-message="required" required="">
 									<label for="social-worker-zip-code" class="label required-field">Zip Code</label>
 								</div>
 							</div>
 							<div class="row">
 								<div class="col-sm-12 form-group">
-									<select id="social-worker-region" name="region" class="input region-select">
+									<select id="social-worker-region" class="input region-select" name="region">
 									{{#each regions}}
 										<option value="{{_id}}">{{region}}</option>
 									{{/each}}
@@ -445,22 +445,22 @@
 
 							<div class="row">
 								<div class="col-sm-12 form-group">
-									<input type="text" class="input" required id="contact2-first-name" name="Contact2FirstName">
-									<label for="contact2-first-name" class="label required-field">First Name</label>
+									<input type="text" class="input" id="contact2-first-name" name="Contact2FirstName">
+									<label for="contact2-first-name" class="label">First Name</label>
 								</div>
 								<div class="col-sm-12 form-group">
-									<input type="text" class="input" required id="contact2-last-name" name="Contact2LastName">
-									<label for="contact2-last-name" class="label required-field">Last Name</label>
+									<input type="text" class="input" id="contact2-last-name" name="Contact2LastName">
+									<label for="contact2-last-name" class="label">Last Name</label>
 								</div>
 							</div>
 							<div class="row">
 								<div class="col-sm-12 form-group">
-									<input type="email" class="input" required id="contact2-email" name="Contact2Email" pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
-									<label for="contact2-email" class="label required-field">Email Address</label>
+									<input type="email" class="input" id="contact2-email" name="Contact2Email">
+									<label for="contact2-email" class="label">Email Address</label>
 								</div>
 								<div class="col-sm-12 form-group">
-									<input type="text" class="input" required id="contact2-phone" name="Contact2Phone" pattern="^\s*(?:\+?(\d{1,3}))?([-. (]*(\d{3})[-. )]*)?((\d{3})[-. ]*(\d{2,4})(?:[-.x ]*(\d+))?)\s*$">
-									<label for="contact2-phone" class="label required-field">Phone</label>
+									<input type="text" class="input" id="contact2-phone" name="Contact2Phone">
+									<label for="contact2-phone" class="label">Phone</label>
 								</div>
 							</div>
 							<div class="row">
