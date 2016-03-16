@@ -33,6 +33,10 @@ textarea.parsley-error {
     -o-transition: all .3s ease-in;
     -moz-transition: all .3s ease-in;
     -webkit-transition: all .3s ease-in;
+
+    input[data-parsley-required="false"] + & {
+    	display: none;
+    }
 }
 
 .parsley-errors-list.filled {
