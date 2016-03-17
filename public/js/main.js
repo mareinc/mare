@@ -16,7 +16,7 @@ $(function() {
 		case 'waiting-child-profiles'	: mare.routers.waitingChildProfiles = new mare.routers.WaitingChildProfiles();	break;
 		case 'register'					: mare.routers.registration = new mare.routers.Registration();					break;
 		case 'preferences'				: mare.routers.preferences = new mare.routers.Preferences();					break;
-		case 'donate'					: mare.routers.donations = new mare.routers.Donations();						break;
+		case 'donate'					: mare.routers.donations = new mare.routers.Donations();
 	}
     // start the backbone history state for browser navigation through backbone routes
     Backbone.history.start();
