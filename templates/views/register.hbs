@@ -169,7 +169,9 @@
 											</label>
 										</div>
 										{{/each}}
-										<div class="col-sm-12 form-group">
+									</div>
+									<div class="row">
+										<div class="col-sm-24 form-group">
 											<input type="text" id="site-visitor-how-did-you-hear-other" class="input hidden" name="howDidYouHearOther" placeholder="other...">
 										</div>
 									</div>
@@ -234,16 +236,23 @@
 									<label for="position" class="label">Position</label>
 								</div>
 							</div>
-							<div class="row form-group">
-								<div class="col-sm-12">
-									<input type="text" id="social-worker-agency" class="input" name="agency" data-parsley-error-message="required" required="">
-									<label for="social-worker-agency" class="label required-field">Agency</label>
+							<div class="row">
+								<div class="col-sm-12 form-group">
+									<label class="checkbox-inline social-worker-title-checkbox">
+										<input type="checkbox" name="title" value="{{_id}}" data-parsley-errors-messages-disabled="true" required="">My title differs from the position listed above
+									</label>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-12 form-group social-worker-title-group hidden">
+									<input type="text" id="social-worker-title" class="input" name="socialWorkerTitle" placeholder="my title">
+									<label for="social-worker-title" class="label required-field">Title</label>
 								</div>
 							</div>
 							<div class="row form-group">
 								<div class="col-sm-12">
-									<input type="text" id="social-worker-title" class="input" name="title" data-parsley-error-message="required" required="">
-									<label for="social-worker-title" class="label required-field">Title</label>
+									<input type="text" id="social-worker-agency" class="input" name="agency" data-parsley-error-message="required" required="">
+									<label for="social-worker-agency" class="label required-field">Agency</label>
 								</div>
 							</div>
 							<div class="row form-group">
