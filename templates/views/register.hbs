@@ -53,57 +53,57 @@
 							<input type="hidden" name="action" value="register">
 							<div class="row form-group">
 								<div class="col-sm-12">
-									<input type="text" id="site-user-first-name" class="input" name="firstName" placeholder="John" data-parsley-error-message="required" required="">
-									<label for="site-user-first-name" class="label required-field">First Name</label>
+									<input type="text" id="site-visitor-first-name" class="input" name="firstName" placeholder="John" data-parsley-error-message="required" required="">
+									<label for="site-visitor-first-name" class="label required-field">First Name</label>
 								</div>
 							</div>
 							<div class="row form-group">
 								<div class="col-sm-12">
-									<input type="text" id="site-user-last-name" class="input" name="lastName" placeholder="Smith" data-parsley-error-message="required" required="">
-									<label for="site-user-last-name" class="label required-field">Last Name</label>
+									<input type="text" id="site-visitor-last-name" class="input" name="lastName" placeholder="Smith" data-parsley-error-message="required" required="">
+									<label for="site-visitor-last-name" class="label required-field">Last Name</label>
 								</div>
 							</div>
 							<div class="row form-group">
 								<div class="col-sm-12">
-									<input type="email" id="site-user-email" class="input" name="email" placeholder="john.smith@gmail.com" data-parsley-trigger="change" data-parsley-error-message="required" required="">
-									<label for="site-user-email" class="label required-field">Email Address</label>
+									<input type="email" id="site-visitor-email" class="input" name="email" placeholder="john.smith@gmail.com" data-parsley-trigger="change" data-parsley-error-message="required" required="">
+									<label for="site-visitor-email" class="label required-field">Email Address</label>
 								</div>
 							</div>
 							<div class="row form-group">
 								<div class="col-sm-12">
-									<input type="password" id="site-user-password" class="input" name="password" placeholder="**********" data-parsley-error-message="required" required="">
-									<label for="site-user-password" class="label required-field">Password</label>
+									<input type="password" id="site-visitor-password" class="input" name="password" placeholder="**********" data-parsley-error-message="required" required="">
+									<label for="site-visitor-password" class="label required-field">Password</label>
 								</div>
 							</div>
 							<div class="row form-group">
 								<div class="col-sm-12">
-									<input type="password" id="site-user-confirm-password" class="input" name="confirmPassword" placeholder="**********" data-parsley-equalto="#site-user-password" data-parsley-error-message="passwords must match" required="">
-									<label for="site-user-confirm-password" class="label required-field">Confirm Password</label>
+									<input type="password" id="site-visitor-confirm-password" class="input" name="confirmPassword" placeholder="**********" data-parsley-equalto="#site-visitor-password" data-parsley-error-message="passwords must match" required="">
+									<label for="site-visitor-confirm-password" class="label required-field">Confirm Password</label>
 								</div>
 							</div>
 							<div class="input-section-description">While not required for registration, providing your contact details below will make registering
 		for events on the MARE site faster and easier.</div>
 							<div class="row form-group">
 								<div class="col-sm-12">
-									<input type="text" id="site-user-street-1" class="input" name="street1" placeholder="100 Main Street">
-									<label for="site-user-street-1" class="label">Street 1</label>
+									<input type="text" id="site-visitor-street-1" class="input" name="street1" placeholder="100 Main Street">
+									<label for="site-visitor-street-1" class="label">Street 1</label>
 								</div>
 							</div>
 							<div class="row form-group">
 								<div class="col-sm-12">
-									<input type="text" id="site-user-street-2" class="input" name="street2" placeholder="Suite 1">
-									<label for="site-user-street-2" class="label">Street 2</label>
+									<input type="text" id="site-visitor-street-2" class="input" name="street2" placeholder="Suite 1">
+									<label for="site-visitor-street-2" class="label">Street 2</label>
 								</div>
 							</div>
 							<div class="row form-group">
 								<div class="col-sm-12">
-									<input type="text" id="site-user-city" class="input" name="city" placeholder="Boston">
-									<label for="site-user-city" class="label">City</label>
+									<input type="text" id="site-visitor-city" class="input" name="city" placeholder="Boston">
+									<label for="site-visitor-city" class="label">City</label>
 								</div>
 							</div>
 							<div class="row form-group">
 								<div class="col-sm-12">
-									<select id="site-user-state" class="input state-select" name="state">
+									<select id="site-visitor-state" class="input state-select" name="state">
 									{{#each states}}
 										{{#if defaultSelection}}
 											<option value="{{_id}}" selected="selected">{{state}}</option>
@@ -112,42 +112,42 @@
 										{{/if}}
 									{{/each}}
 									</select>
-									<label for="site-user-state" class="label">State</label>
+									<label for="site-visitor-state" class="label">State</label>
 								</div>
 							</div>
 							<div class="row form-group">
 								<div class="col-sm-12">
-									<input type="number" id="site-user-zip-code" class="input" name="zipCode" placeholder="02111">
-									<label for="site-user-zip-code" class="label">Zip Code</label>
+									<input type="number" id="site-visitor-zip-code" class="input" name="zipCode" placeholder="02111">
+									<label for="site-visitor-zip-code" class="label">Zip Code</label>
 								</div>
 							</div>
 							<div class="row form-group">
 								<div class="col-sm-12">
-									<input type="text" id="site-user-home-phone" class="input" name="homePhone" placeholder="(617) 111-1111">
-									<label for="site-user-home-phone" class="label">Home Phone</label>
+									<input type="text" id="site-visitor-home-phone" class="input" name="homePhone" placeholder="(617) 111-1111">
+									<label for="site-visitor-home-phone" class="label">Home Phone</label>
 								</div>
 							</div>
 							<div class="row form-group">
 								<div class="col-sm-12">
-									<input type="text" id="site-user-work-phone" class="input" name="workPhone" placeholder="(617) 222-2222">
-									<label for="site-user-work-phone" class="label">Work Phone</label>
+									<input type="text" id="site-visitor-work-phone" class="input" name="workPhone" placeholder="(617) 222-2222">
+									<label for="site-visitor-work-phone" class="label">Work Phone</label>
 								</div>
 							</div>
 							<div class="row form-group">
 								<div class="col-sm-12">
-									<input type="text" id="site-user-mobile-phone" class="input" name="mobilePhone" placeholder="(617) 333-3333">
-									<label for="site-user-mobile-phone" class="label">Mobile Phone</label>
+									<input type="text" id="site-visitor-mobile-phone" class="input" name="mobilePhone" placeholder="(617) 333-3333">
+									<label for="site-visitor-mobile-phone" class="label">Mobile Phone</label>
 								</div>
 							</div>
 							<div class="row form-group">
 								<div class="col-sm-12">
-									<select id="site-user-preferred-phone" class="input site-user-preferred-phone-select" name="site-user-preferred-phone">
+									<select id="site-visitor-preferred-phone" class="input site-visitor-preferred-phone-select" name="site-visitor-preferred-phone">
 										<option value="default" class="default-blank-selection"></option>
 										<option value="home">home</option>
 										<option value="work">work</option>
 										<option value="mobile">mobile</option>
 									</select>
-									<label for="site-user-preferred-phone" class="label">Preferred Phone</label>
+									<label for="site-visitor-preferred-phone" class="label">Preferred Phone</label>
 								</div>
 							</div>
 						</section>
@@ -361,13 +361,13 @@
 					</form>
 				</section>
 
-				<section class="prospective-parent-registration hidden">
+				<section class="family-registration hidden">
 					<div class="registration-type-header">Prospective Parent Registration</div>
 					<span class="required required-description">* Required</span>
 					<form action="/register" class="registration-form registration-form--family" method="POST">
 						<input type="hidden" class="registration-type" name="registrationType" value="prospectiveParent">
 
-						<section class="prospective-parent-account-setup-section">
+						<section class="family-account-setup-section">
 							<div class="registration-section-header">Account Setup</div>
 							<div class="row">
 								<div class="col-sm-12 form-group">
@@ -377,20 +377,20 @@
 							</div>
 							<div class="row">
 								<div class="col-sm-12 form-group">
-									<input type="password" class="input" required id="prospective-parent-password" name="password">
-									<label for="prospective-parent-password" class="label required-field">Password</label>
+									<input type="password" class="input" required id="family-password" name="password">
+									<label for="family-password" class="label required-field">Password</label>
 								</div>
 							</div>
 							<div class="row">
 								<div class="col-sm-12 form-group">
-									<input type="password" class="input" required id="prospective-parent-confirm-password" name="confirmPassword">
-									<label for="prospective-parent-confirm-password" class="label required-field">Confirm Password</label>
+									<input type="password" class="input" required id="family-confirm-password" name="confirmPassword">
+									<label for="family-confirm-password" class="label required-field">Confirm Password</label>
 								</div>
 							</div>
 						</section>
 						<!-- This will end part 1 -->
 
-						<section class="prospective-parent-contact-1-section">
+						<section class="family-contact-1-section">
 							<div class="registration-section-header">Contact 1</div>
 
 							<div class="row">
@@ -449,7 +449,7 @@
 							</div>
 						</section>
 
-						<section class="prospective-parent-contact-2-section">
+						<section class="family-contact-2-section">
 							<div class="registration-section-header">Contact 2</div>
 
 							<div class="row">
@@ -508,7 +508,7 @@
 							</div>
 						</section>
 
-						<section class="prospective-parent-family-constellation-section">
+						<section class="family-constellation-section">
 
 							<div class="registration-section-header">Family Constellation</div>
 
@@ -524,7 +524,7 @@
 							</div>
 						</section>
 
-						<section class="prospective-parent-home-address-section">
+						<section class="family-home-address-section">
 							<div class="registration-section-header">Home Address</div>
 
 							<div class="row">
@@ -547,7 +547,7 @@
 							</div>
 							<div class="row">
 								<div class="col-sm-12 form-group">
-									<select id="prospective-parent-or-family-state" name="state" class="input state-select" required>
+									<select id="family-state" name="state" class="input state-select" required>
 									{{#each states}}
 										{{#if defaultSelection}}
 											<option value="{{_id}}" selected="selected">{{state}}</option>
@@ -596,7 +596,7 @@
 						</section>
 						<!-- This will end part 3 -->
 
-						<section class="prospective-parent-homestudy-details-section hidden">
+						<section class="family-homestudy-details-section hidden">
 							<div class="registration-section-header">Homestudy Details</div>
 
 							<div class="row">
@@ -630,43 +630,26 @@
 								<strong>Submit Your Homestudy</strong>
 								<p>To complete your registration as a Massachusetts homestudied family, you must submit your homestudy to us via one of the following methods (choose one):</p>
 								<div class="row">
+									<div class="col-sm-12 form-group">Upload PDF or Microsoft Word<sup>&reg;</sup> format:</div>
 									<div class="col-sm-12 form-group">
-										<label class="label radio-inline">
-											<input type="radio" name="HomeStudySubmission" value="mail">
-											Upload PDF or MS Word &reg; format:
-										</label>
-									</div>
-									<div class="col-sm-12">
-										<input id="home-study-file-upload" class="input-inline" placeholder="Choose File" disabled="disabled" />
 										<div class="btn btn-default btn-file-upload">
 										    <span>Upload</span>
 										    <input id="upload-button" type="file" class="file-upload" name="HomeStudyFileUpload" />
 										</div>
+										<span class="homestudy-file-upload-text"></span>
 									</div>
 								</div>
 								<div class="row">
+									<div class="col-sm-12 form-group">Email to web@mareinc.org:</div>
 									<div class="col-sm-12 form-group">
-										<label class="label radio-inline">
-											<input type="radio" name="HomeStudySubmission" value="email">
-											Email to web@mareinc.org:
-										</label>
-									</div>
-									<div class="col-sm-12">
-										<a href="mailto:web@mareinc.org" class="btn btn-default">Email</a>
+										<a href="mailto:web@mareinc.org" class="btn btn-default">Send as e-mail</a>
 									</div>
 								</div>
 								<div class="row">
-									<div class="col-sm-12 form-group">
-										<label class="label radio-inline">
-											<input type="radio" name="HomeStudySubmission" value="fax">
-											Fax to 617-542-1006, Attention: Homestudy Registration
-										</label>
-									</div>
+									<div class="col-sm-12 form-group">Fax to 617-542-1006, Attention: Homestudy Registration</div>
 								</div>
 								<div class="row">
 									<div class="col-sm-12 form-group">
-										<label class="label radio-inline">
-											<input type="radio" name="HomeStudySubmission" value="mail">
 											<div class="indented-text">
 												Mail to:
 												<div class="indent-text">
@@ -676,13 +659,12 @@
 													Boston, MA 02110-1301
 												</div>
 											</div>
-										</label>
 									</div>
 								</div>
 							</section>
 						</section>
 
-						<section class="prospective-parent-family-details-section">
+						<section class="family-details-section">
 							<div class="registration-section-header">Family Details</div>
 
 							<div class="row form-group">
@@ -896,19 +878,22 @@
 							</div>
 						</section>
 
-						<section class="prospective-parent-adoption-preferences-section">
+						<section class="family-adoption-preferences-section">
 							<div class="registration-section-header">Adoption Preferences</div>
-
 							<div class="row form-group">
 								<div class="col-sm-12">
 									<label class="label marg-bottom-xs-5">Gender of children approved for:</label>
 								</div>
 								<div class="col-sm-12">
+									<div class="row">
 									{{#each genders}}
-									<label class="checkbox-inline">
-										<input type="checkbox" name="approvedChildrenGender" value="{{_id}}">{{gender}}
-									</label>
+										<div class="col-sm-24 form-group">
+											<label class="checkbox-inline">
+												<input type="checkbox" name="approvedChildrenGender" value="{{_id}}">{{gender}}
+											</label>
+										</div>
 									{{/each}}
+									</div>
 								</div>
 							</div>
 							<div class="row form-group">
@@ -916,11 +901,15 @@
 									<label class="label marg-bottom-xs-5">Legal Status</label>
 								</div>
 								<div class="col-sm-12">
-								{{#each legalStatuses}}
-									<label class="checkbox-inline">
-										<input type="checkbox" name="legalStatus" value="{{_id}}">{{legalStatus}}
-									</label>
-								{{/each}}
+									<div class="row">
+									{{#each legalStatuses}}
+										<div class="col-sm-24 form-group">
+											<label class="checkbox-inline">
+												<input type="checkbox" name="legalStatus" value="{{_id}}">{{legalStatus}}
+											</label>
+										</div>
+									{{/each}}
+									</div>
 								</div>
 							</div>
 							<div class="row form-group">
@@ -1089,25 +1078,27 @@
 
 						</section>
 
-						<section class="prospective-parent-mare-and-you-section">
+						<section class="family-mare-and-you-section">
 							<div class="registration-section-header">Mare &amp; You</div>
 
 							<div class="row">
 								<div class="col-sm-24 form-group">
-									<label class="label marg-bottom-xs-5">How did you hear about MARE (please check all that apply)?</label>
+									<label class="label required-field marg-bottom-xs-5">How did you hear about MARE (please check all that apply)?</label>
 								</div>
-
+								<div class="family-how-did-you-hear-error form-group-error hidden">You must select at least one.</div>
 								<div class="col-sm-12">
 									<div class="row">
 										{{#each waysToHearAboutMARE}}
 										<div class="col-sm-12 form-group">
 											<label class="checkbox-inline way-to-hear-about-MARE {{#if other}}other-way-to-hear-about-mare{{/if}}">
-												<input type="checkbox" name="howDidYouHear" value="{{_id}}">{{wayToHearAboutMARE}}
+												<input type="checkbox" name="howDidYouHear[]" value="{{_id}}" data-parsley-errors-messages-disabled="true" {{#if other}}data-parsley-mincheck="1" required=""{{/if}}>{{wayToHearAboutMARE}}
 											</label>
 										</div>
 										{{/each}}
-										<div class="col-sm-12 form-group">
-											<input type="text" class="input hidden" id="prospective-parent-how-did-you-hear-other" name="howDidYouHearOther" placeholder="other...">
+									</div>
+									<div class="row">
+										<div class="col-sm-24 form-group">
+											<input type="text" id="family-how-did-you-hear-other" class="input hidden" name="howDidYouHearOther" placeholder="other...">
 										</div>
 									</div>
 								</div>

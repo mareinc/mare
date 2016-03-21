@@ -2,24 +2,29 @@
 	'use strict';
 
 	mare.views.FamilyRegistration = Backbone.View.extend({
-		el: 'registration-form--family',
+		el: '.registration-form--family',
 
 		events: {
-			'change .other-way-to-hear-about-mare'			: 'toggleOtherWayToHearTextField',
-			'change #prospective-parent-or-family-state'	: 'toggleHomestudySubmission',
-			'change .homestudy-completed-checkbox'			: 'toggleHomestudySection',
-			'change #upload-button'							: 'uploadForm'
+			'change .other-way-to-hear-about-mare'	: 'toggleOtherWayToHearTextField',
+			'change #family-state'					: 'toggleHomestudySubmission',
+			'change .homestudy-completed-checkbox'	: 'toggleHomestudySection',
+			'change #upload-button'					: 'uploadForm'
 		},
 
 		initialize: function() {
 			// DOM cache any commonly used elements to improve performance
-			this.$howDidYouHearOther			= this.$('#prospective-parent-how-did-you-hear-other');
-			this.$state							= this.$('#prospective-parent-or-family-state');
-			this.$homestudySection				= this.$('.prospective-family-submit-your-homestudy-section');
-			this.$homestudySubmissionSection	= this.$('.prospective-parent-homestudy-details-section');
+			this.$howDidYouHearOther			= this.$('#family-how-did-you-hear-other');
+			this.$state							= this.$('#family-state');
+			this.$homestudySection				= this.$('.family-submit-your-homestudy-section');
+			this.$homestudySubmissionSection	= this.$('.family-homestudy-details-section');
 			// Initialize parsley validation on the form
-			// this.$el.parsley();
-			// this.form.on('field:validated', this.validateForm);
+			this.form = this.$el.parsley();
+			// Bind the hidden 'other' text box for use in binding/unbinding validation
+			this.howDidYouHearOtherValidator = this.$howDidYouHearOther.parsley();
+			// DOM cache the Parsley validation message for the hidden 'other' field for use in binding/unbinding validation
+			this.$howDidYouHearOtherErrorMessage = this.$howDidYouHearOther.next();
+
+			this.form.on('field:validated', this.validateForm);
 		},
 
 		toggleOtherWayToHearTextField: function toggleOtherWayToHearTextField() {
@@ -37,7 +42,7 @@
 				this.$homestudySection.hide();
 				// clear out any uploaded homestudy files
 				this.$('[name=HomeStudySubmission]').attr('checked', false);
-				this.$('#home-study-file-upload').val(''); // TODO: homestudy is one word, the JavaScript, HTML, and CSS needs to be cleaned up everywhere for this
+				this.$('#homestudy-file-upload').val('');
 			}
 		},
 
@@ -46,15 +51,17 @@
 		},
 
 		uploadForm: function uploadForm(event) {
-			var target = event.target
-			this.$("#home-study-file-upload").val(target.value);
-		}
+			var filepath = event.target.value;
+			var filename = filepath.substr( filepath.lastIndexOf("\\") + 1 );
 
-		// validateForm: function validateForm() {
-		// 	var ok = $('.parsley-error').length === 0;
-		// 	$('.bs-callout-info').toggleClass('hidden', !ok);
-		// 	$('.bs-callout-warning').toggleClass('hidden', ok);
-		// }
+			this.$(".homestudy-file-upload-text").html(filename);
+		},
+
+		validateForm: function validateForm() {
+			var ok = $('.parsley-error').length === 0;
+			$('.bs-callout-info').toggleClass('hidden', !ok);
+			$('.bs-callout-warning').toggleClass('hidden', ok);
+		}
 
 	});
 })();

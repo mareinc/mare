@@ -10,6 +10,7 @@
 	content: "Register as:";
 	margin: 0 8px 0 0;
 }
+
 .registration-type-selector > select {
 	display: inline;
 }
@@ -109,4 +110,8 @@ label {
 
 .text-pink {
 	color: $form-color-2;
+}
+
+.homestudy-file-upload-text {
+	margin-left: 5px;
 }
