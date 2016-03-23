@@ -141,7 +141,7 @@
 							</div>
 							<div class="row form-group">
 								<div class="col-sm-12">
-									<select id="site-visitor-preferred-phone" class="input site-visitor-preferred-phone-select" name="site-visitor-preferred-phone">
+									<select id="site-visitor-preferred-phone" class="input site-visitor-preferred-phone-select" name="siteVisitorPreferredPhone">
 										<option value="default" class="default-blank-selection"></option>
 										<option value="home">home</option>
 										<option value="work">work</option>
@@ -172,7 +172,7 @@
 									</div>
 									<div class="row">
 										<div class="col-sm-24 form-group">
-											<input type="text" id="site-visitor-how-did-you-hear-other" class="input hidden" name="howDidYouHearOther" placeholder="other...">
+											<input type="text" id="site-visitor-how-did-you-hear-other" class="input required-field hidden" name="howDidYouHearOther" data-parsley-required="false" data-parsley-error-message="required" placeholder="other...">
 										</div>
 									</div>
 								</div>
@@ -269,7 +269,7 @@
 							</div>
 							<div class="row form-group">
 								<div class="col-sm-12">
-									<select id="social-worker-preferred-phone" class="input social-worker-preferred-phone-select" name="social-worker-preferred-phone" data-parsley-error-message="required" required="">
+									<select id="social-worker-preferred-phone" class="input social-worker-preferred-phone-select" name="socialWorkerPreferredPhone" data-parsley-error-message="required" required="">
 										<option value="work">work</option>
 										<option value="mobile">mobile</option>
 									</select>
@@ -333,8 +333,8 @@
 									<label class="label marg-bottom-xs-5">Would you like to be added to the MARE News email list:</label>
 								</div>
 								<div class="col-sm-12">
-									<label class="radio-inline"><input type="radio" name="mareEmailList" value="Yes" />Yes</label>
-									<label class="radio-inline"><input type="radio" name="mareEmailList" value="No" />No</label>
+									<label class="radio-inline"><input type="radio" name="mareEmailList" value="yes" checked="checked">Yes</label>
+									<label class="radio-inline"><input type="radio" name="mareEmailList" value="no">No</label>
 								</div>
 							</div>
 							<div class="row form-group">
@@ -342,8 +342,8 @@
 									<label class="label marg-bottom-xs-5">Would you like to be added to the Adoption Party email list (events held in MA only):</label>
 								</div>
 								<div class="col-sm-12">
-									<label class="radio-inline"><input type="radio" name="adoptionPartyEmailList" value="Yes" />Yes</label>
-									<label class="radio-inline"><input type="radio" name="adoptionPartyEmailList" value="No" />No</label>
+									<label class="radio-inline"><input type="radio" name="adoptionPartyEmailList" value="yes" checked="checked">Yes</label>
+									<label class="radio-inline"><input type="radio" name="adoptionPartyEmailList" value="no">No</label>
 								</div>
 							</div>
 							<div class="row form-group">
@@ -351,8 +351,8 @@
 									<label class="label marg-bottom-xs-5">Would you like to be added to the Fundraising Events email list?</label>
 								</div>
 								<div class="col-sm-12">
-									<label class="radio-inline"><input type="radio" name="fundraisingEventsEmailList" value="Yes" />Yes</label>
-									<label class="radio-inline"><input type="radio" name="fundraisingEventsEmailList" value="No" />No</label>
+									<label class="radio-inline"><input type="radio" name="fundraisingEventsEmailList" value="yes" checked="checked">Yes</label>
+									<label class="radio-inline"><input type="radio" name="fundraisingEventsEmailList" value="no">No</label>
 								</div>
 							</div>
 						</section>
@@ -371,53 +371,51 @@
 							<div class="registration-section-header">Account Setup</div>
 							<div class="row">
 								<div class="col-sm-12 form-group">
-									<input type="email" class="input" required id="email" name="email" pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
-									<label for="email" class="label required-field">Email Address</label>
+									<input type="email" id="family-email" class="input" name="email" placeholder="john.smith@gmail.com" data-parsley-trigger="change" data-parsley-error-message="required" required="">
+									<label for="family-email" class="label required-field">Email Address</label>
 								</div>
 							</div>
 							<div class="row">
 								<div class="col-sm-12 form-group">
-									<input type="password" class="input" required id="family-password" name="password">
+									<input type="password" id="family-password" class="input" name="password" placeholder="**********" data-parsley-error-message="required" required="">
 									<label for="family-password" class="label required-field">Password</label>
 								</div>
 							</div>
 							<div class="row">
 								<div class="col-sm-12 form-group">
-									<input type="password" class="input" required id="family-confirm-password" name="confirmPassword">
+									<input type="password" id="family-confirm-password" class="input" name="confirmPassword" placeholder="**********" data-parsley-equalto="#family-password" data-parsley-error-message="passwords must match" required="">
 									<label for="family-confirm-password" class="label required-field">Confirm Password</label>
 								</div>
 							</div>
 						</section>
-						<!-- This will end part 1 -->
 
 						<section class="family-contact-1-section">
 							<div class="registration-section-header">Contact 1</div>
-
 							<div class="row">
 								<div class="col-sm-12 form-group">
-									<input type="text" class="input" required id="contact1-first-name" name="Contact1FirstName">
+									<input type="text" id="contact1-first-name" class="input" name="contact1FirstName" placeholder="John" data-parsley-error-message="required" required="">
 									<label for="contact1-first-name" class="label required-field">First Name</label>
 								</div>
 								<div class="col-sm-12 form-group">
-									<input type="text" class="input" required id="contact1-last-name" name="Contact1LastName">
+									<input type="text" id="contact1-last-name" class="input" name="contact1LastName" placeholder="Smith" data-parsley-error-message="required" required="">
 									<label for="contact1-last-name" class="label required-field">Last Name</label>
 								</div>
 							</div>
 							<div class="row">
 								<div class="col-sm-12 form-group">
-									<input type="email" class="input" required id="contact1-email" name="Contact1Email" pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
+									<input type="email" id="contact1-email" class="input" name="contact1Email" placeholder="john.smith@gmail.com" data-parsley-trigger="change" data-parsley-error-message="required" required="">
 									<label for="contact1-email" class="label required-field">Email Address</label>
 								</div>
 								<div class="col-sm-12 form-group">
-									<input type="text" class="input" required id="contact1-phone" name="Contact1Phone" pattern="^\s*(?:\+?(\d{1,3}))?([-. (]*(\d{3})[-. )]*)?((\d{3})[-. ]*(\d{2,4})(?:[-.x ]*(\d+))?)\s*$">
+									<input type="text" id="contact1-phone" class="input" name="contact1Phone" placeholder="(617) 111-1111" data-parsley-error-message="required" required="">
 									<label for="contact1-phone" class="label required-field">Phone</label>
 								</div>
 							</div>
 							<div class="row">
 								<div class="col-sm-24 form-group">
-									<span class="gender-select-text">Gender:</span> &nbsp;&nbsp;
+									<span class="gender-select-text required-field">Gender:</span> &nbsp;&nbsp;
 									{{#each genders}}
-										<label class="radio-inline"><input type="radio" name="Contact1Gender" value="{{_id}}">{{gender}}</label>
+										<label class="radio-inline"><input type="radio" name="contact1Gender" value="{{_id}}">{{gender}}</label>
 									{{/each}}
 								</div>
 							</div>
@@ -431,19 +429,19 @@
 									{{#each races}}
 									<div class="col-sm-12 form-group">
 										<label class="checkbox-inline">
-											<input type="checkbox" name="Contact1Race" value="{{_id}}">{{race}}
+											<input type="checkbox" name="contact1Race" value="{{_id}}">{{race}}
 										</label>
 									</div>
 									{{/each}}
 								</div>
 								<div class="col-sm-12">
 									<div class="form-group">
-										<input type="text" class="input" id="contact1-occupation" name="Contact1Occupation">
+										<input type="text" id="contact1-occupation" class="input" name="contact1Occupation" placeholder="teacher">
 										<label for="contact1-occupation" class="label">Occupation</label>
 									</div>
 									<div class="form-group">
-										<input type="text" class="input" id="contact1-date-of-birth" name="Contact1DateOfBirth" placeholder="DD/MM/YYYY">
-										<label for="contact1-date-of-birth" class="label">Date of Birth</label>
+										<input type="text" class="input" id="contact1-date-of-birth" name="contact1DateOfBirth" data-parsley-error-message="required" required="" placeholder="MM/DD/YYYY">
+										<label for="contact1-date-of-birth" class="label required-field">Date of Birth</label>
 									</div>
 								</div>
 							</div>
@@ -454,21 +452,21 @@
 
 							<div class="row">
 								<div class="col-sm-12 form-group">
-									<input type="text" class="input" id="contact2-first-name" name="Contact2FirstName">
+									<input type="text" id="contact2-first-name" class="input" name="contact2FirstName" placeholder="Jane">
 									<label for="contact2-first-name" class="label">First Name</label>
 								</div>
 								<div class="col-sm-12 form-group">
-									<input type="text" class="input" id="contact2-last-name" name="Contact2LastName">
+									<input type="text" id="contact2-last-name" class="input" name="contact2LastName" placeholder="Smith">
 									<label for="contact2-last-name" class="label">Last Name</label>
 								</div>
 							</div>
 							<div class="row">
 								<div class="col-sm-12 form-group">
-									<input type="email" class="input" id="contact2-email" name="Contact2Email">
+									<input type="email" id="contact2-email" class="input" name="contact2Email" placeholder="jane.smith@gmail.com">
 									<label for="contact2-email" class="label">Email Address</label>
 								</div>
 								<div class="col-sm-12 form-group">
-									<input type="text" class="input" id="contact2-phone" name="Contact2Phone">
+									<input type="text" id="contact2-phone" class="input" name="contact2Phone" placeholder="(617) 222-2222">
 									<label for="contact2-phone" class="label">Phone</label>
 								</div>
 							</div>
@@ -476,7 +474,7 @@
 								<div class="col-sm-24 form-group">
 									<span class="gender-select-text">Gender:</span> &nbsp;&nbsp;
 									{{#each genders}}
-										<label class="radio-inline"><input type="radio" name="Contact2Gender" value="{{_id}}">{{gender}}</label>
+										<label class="radio-inline"><input type="radio" name="contact2Gender" value="{{_id}}">{{gender}}</label>
 									{{/each}}
 								</div>
 							</div>
@@ -490,18 +488,18 @@
 									{{#each races}}
 									<div class="col-sm-12 form-group">
 										<label class="checkbox-inline">
-											<input type="checkbox" name="Contact2Race" value="{{_id}}">{{race}}
+											<input type="checkbox" name="contact2Race" value="{{_id}}">{{race}}
 										</label>
 									</div>
 									{{/each}}
 								</div>
 								<div class="col-sm-12">
 									<div class="form-group">
-										<input type="text" class="input" id="contact2-occupation" name="Contact2Occupation">
+										<input type="text" id="contact2-occupation" class="input" name="contact2Occupation" placeholder="police officer">
 										<label for="contact2-occupation" class="label">Occupation</label>
 									</div>
 									<div class="form-group">
-										<input type="text" class="input" id="contact2-date-of-birth" name="Contact2DateOfBirth" placeholder="DD/MM/YYYY">
+										<input type="text" id="contact2-date-of-birth" class="input" name="contact2DateOfBirth" placeholder="MM/DD/YYYY">
 										<label for="contact2-date-of-birth" class="label">Date of Birth</label>
 									</div>
 								</div>
@@ -514,7 +512,7 @@
 
 							<div class="row form-group">
 								<div class="col-sm-12">
-									<select id="family-constellation" name="familyConstellation" class="input">
+									<select id="family-constellation" class="input" name="familyConstellation">
 									{{#each familyConstellations}}
 										<option value="{{_id}}">{{familyConstellation}}</option>
 									{{/each}}
@@ -529,25 +527,25 @@
 
 							<div class="row">
 								<div class="col-sm-12 form-group">
-									<input type="text" class="input" required id="address-1" name="address1">
-									<label for="address-1" class="label required-field">Address 1</label>
+									<input type="text" id="family-street-1" class="input" name="street1" placeholder="100 Main Street" data-parsley-error-message="required" required="">
+									<label for="family-street-1" class="label required-field">Street 1</label>
 								</div>
 							</div>
 							<div class="row">
 								<div class="col-sm-12 form-group">
-									<input type="text" class="input" id="address-2" name="address2">
-									<label for="address-2" class="label">Address 2</label>
+									<input type="text" id="family-street-2" class="input" name="street2" placeholder="Suite 1">
+									<label for="family-street-2" class="label">Street 2</label>
 								</div>
 							</div>
 							<div class="row">
 								<div class="col-sm-12 form-group">
-									<input type="text" class="input" required id="city" name="city">
+									<input type="text" id="city" class="input" name="city" placeholder="Boston" data-parsley-error-message="required" required="">
 									<label for="city" class="label required-field">City</label>
 								</div>
 							</div>
 							<div class="row">
 								<div class="col-sm-12 form-group">
-									<select id="family-state" name="state" class="input state-select" required>
+									<select id="family-state" class="input state-select" name="state">
 									{{#each states}}
 										{{#if defaultSelection}}
 											<option value="{{_id}}" selected="selected">{{state}}</option>
@@ -561,7 +559,7 @@
 							</div>
 							<div class="row">
 								<div class="col-sm-12 form-group">
-									<input type="number" class="input" required id="zip-code" name="zipCode" pattern="\d{5}([ \-]\d{4})?">
+									<input type="number" id="zip-code" class="input" name="zipCode" placeholder="02111" data-parsley-error-message="required" required="">
 									<label for="zip-code" class="label required-field">Zip Code</label>
 								</div>
 							</div>
@@ -569,27 +567,27 @@
 								<div class="col-sm-24 form-group">Where are you in the adoption process?</div>
 								<div class="col-sm-12 form-group">
 									<label class="checkbox-inline">
-										<input type="checkbox" name="ProcessProgression" value="gatheringInformation">Gathering Information
+										<input type="checkbox" name="processProgression" value="gatheringInformation">Gathering Information
 									</label>
 								</div>
 								<div class="col-sm-12 form-group">
 									<label class="checkbox-inline">
-										<input type="checkbox" name="ProcessProgression" value="lookingForAgency">Looking for an agency
+										<input type="checkbox" name="processProgression" value="lookingForAgency">Looking for an agency
 									</label>
 								</div>
 								<div class="col-sm-12 form-group">
 									<label class="checkbox-inline">
-										<input type="checkbox" name="ProcessProgression" value="workingWithAgency">Working with an agency
+										<input type="checkbox" name="processProgression" value="workingWithAgency">Working with an agency
 									</label>
 								</div>
 								<div class="col-sm-12 form-group">
 									<label class="checkbox-inline">
-										<input type="checkbox" name="ProcessProgression" value="MAPPTrainingCompleted">MAPP training completed
+										<input type="checkbox" name="processProgression" value="MAPPTrainingCompleted">MAPP training completed
 									</label>
 								</div>
 								<div class="col-sm-12 form-group">
 									<label class="checkbox-inline">
-										<input type="checkbox" class="homestudy-completed-checkbox" name="ProcessProgression" value="homestudyCompleted">Homestudy completed
+										<input type="checkbox" class="homestudy-completed-checkbox" name="processProgression" value="homestudyCompleted">Homestudy completed
 									</label>
 								</div>
 							</div>
@@ -601,27 +599,27 @@
 
 							<div class="row">
 								<div class="col-sm-12 form-group">
-									<input type="text" class="input" id="homestudy-date-complete" name="homestudyDateComplete" placeholder="DD/MM/YYYY">
+									<input type="text" id="homestudy-date-complete" class="input" name="homestudyDateComplete" data-parsley-required="false" data-parsley-error-message="required" placeholder="MM/DD/YYYY">
 									<label for="homestudy-date-complete" class="label required-field">Date Homestudy Completed/Updated</label>
 								</div>
 							</div>
 							<div class="row">
 								<div class="col-sm-12 form-group">
-									<input type="text" class="input" id="social-worker-name" name="socialWorkerName">
+									<input type="text" id="social-worker-name" class="input" name="socialWorkerName" data-parsley-required="false" data-parsley-error-message="required" placeholder="Jim Smith">
 									<label for="social-worker-name" class="label required-field">Social Worker Name</label>
 								</div>
 								<div class="col-sm-12 form-group">
-									<input type="text" class="input" id="social-worker-agency" name="socialWorkerAgency">
+									<input type="text" id="social-worker-agency" class="input" name="socialWorkerAgency" data-parsley-required="false" data-parsley-error-message="required" placeholder="Jim's Agency">
 									<label for="social-worker-agency" class="label required-field">Social Worker Agency</label>
 								</div>
 							</div>
 							<div class="row">
 								<div class="col-sm-12 form-group">
-									<input type="text" class="input" id="social-worker-phone" name="socialWorkerPhone" pattern="^\s*(?:\+?(\d{1,3}))?([-. (]*(\d{3})[-. )]*)?((\d{3})[-. ]*(\d{2,4})(?:[-.x ]*(\d+))?)\s*$">
+									<input type="text" id="social-worker-phone" class="input" name="socialWorkerPhone" data-parsley-required="false" data-parsley-error-message="required" placeholder="(617) 333-3333">
 									<label for="social-worker-phone" class="label required-field">Social Worker Phone Number</label>
 								</div>
 								<div class="col-sm-12 form-group">
-									<input type="text" class="input" id="social-worker-email" name="socialWorkerEmail">
+									<input type="email" id="social-worker-email" class="input" name="socialWorkerEmail" data-parsley-required="false" data-parsley-error-message="required" placeholder="jim.smith@gmail.com">
 									<label for="social-worker-email" class="label required-field">Social Worker Email Address</label>
 								</div>
 							</div>
@@ -634,7 +632,7 @@
 									<div class="col-sm-12 form-group">
 										<div class="btn btn-default btn-file-upload">
 										    <span>Upload</span>
-										    <input id="upload-button" type="file" class="file-upload" name="HomeStudyFileUpload" />
+										    <input id="upload-button" type="file" class="file-upload" name="homeStudyFileUpload">
 										</div>
 										<span class="homestudy-file-upload-text"></span>
 									</div>
@@ -919,7 +917,7 @@
 								<div class="col-sm-12">
 									<div class="row">
 										<div class="col-xs-8">
-											<select name="ageRangeTop" class="input registration-number-select inline">
+											<select name="ageRangeFrom" class="input registration-number-select inline">
 												<option>0</option>
 												<option>1</option>
 												<option>2</option>
@@ -935,7 +933,7 @@
 										</div>
 										<div class="col-xs-4 text-center">To:</div>
 										<div class="col-xs-8">
-											<select name="ageRangeBottom" class="input registration-number-select inline">
+											<select name="ageRangeTo" class="input registration-number-select inline">
 												<option>0</option>
 												<option>1</option>
 												<option>2</option>
@@ -977,8 +975,8 @@
 									<label class="label marg-bottom-xs-5">Contact with biological siblings?</label>
 								</div>
 								<div class="col-sm-12">
-									<label class="radio-inline"><input type="radio" name="contactBioSiblings" value="yes" />Yes</label>
-									<label class="radio-inline"><input type="radio" name="contactBioSiblings" value="no" />No</label>
+									<label class="radio-inline"><input type="radio" name="contactWithBiologicalSiblings" value="yes">Yes</label>
+									<label class="radio-inline"><input type="radio" name="contactWithBiologicalSiblings" value="no">No</label>
 								</div>
 							</div>
 							<div class="row form-group">
@@ -986,8 +984,8 @@
 									<label class="label marg-bottom-xs-5">Contact with biological parents?</label>
 								</div>
 								<div class="col-sm-12">
-									<label class="radio-inline"><input type="radio" name="contactBioParents" value="yes" />Yes</label>
-									<label class="radio-inline"><input type="radio" name="contactBioParents" value="no" />No</label>
+									<label class="radio-inline"><input type="radio" name="contactWithBiologicalParents" value="yes">Yes</label>
+									<label class="radio-inline"><input type="radio" name="contactWithBiologicalParents" value="no">No</label>
 								</div>
 							</div>
 							<div class="row">
@@ -1001,7 +999,7 @@
 									{{#each races}}
 										<div class="col-sm-12 form-group">
 											<label class="checkbox-inline">
-												<input type="checkbox" name="AdoptionPrefRace" value="{{_id}}">{{race}}
+												<input type="checkbox" name="adoptionPrefRace" value="{{_id}}">{{race}}
 											</label>
 										</div>
 									{{/each}}
@@ -1013,9 +1011,9 @@
 									<label class="label marg-bottom-xs-5">Level of physical needs</label>
 								</div>
 								<div class="col-sm-12">
-									<label class="radio-inline"><input type="radio" name="physicalNeeds" value="mild" />Mild</label>
-									<label class="radio-inline"><input type="radio" name="physicalNeeds" value="moderate" />Moderate</label>
-									<label class="radio-inline"><input type="radio" name="physicalNeeds" value="severe" />Severe</label>
+									<label class="radio-inline"><input type="radio" name="physicalNeeds" value="mild">Mild</label>
+									<label class="radio-inline"><input type="radio" name="physicalNeeds" value="moderate">Moderate</label>
+									<label class="radio-inline"><input type="radio" name="physicalNeeds" value="severe">Severe</label>
 								</div>
 							</div>
 							<div class="row form-group">
@@ -1023,9 +1021,9 @@
 									<label class="label marg-bottom-xs-5">Level of emotional needs</label>
 								</div>
 								<div class="col-sm-12">
-									<label class="radio-inline"><input type="radio" name="emotionalNeeds" value="mild" />Mild</label>
-									<label class="radio-inline"><input type="radio" name="emotionalNeeds" value="moderate" />Moderate</label>
-									<label class="radio-inline"><input type="radio" name="emotionalNeeds" value="severe" />Severe</label>
+									<label class="radio-inline"><input type="radio" name="emotionalNeeds" value="mild">Mild</label>
+									<label class="radio-inline"><input type="radio" name="emotionalNeeds" value="moderate">Moderate</label>
+									<label class="radio-inline"><input type="radio" name="emotionalNeeds" value="severe">Severe</label>
 								</div>
 							</div>
 							<div class="row form-group">
@@ -1033,9 +1031,9 @@
 									<label class="label marg-bottom-xs-5">Level of intellectual needs</label>
 								</div>
 								<div class="col-sm-12">
-									<label class="radio-inline"><input type="radio" name="intellectualNeeds" value="mild" />Mild</label>
-									<label class="radio-inline"><input type="radio" name="intellectualNeeds" value="moderate" />Moderate</label>
-									<label class="radio-inline"><input type="radio" name="intellectualNeeds" value="severe" />Severe</label>
+									<label class="radio-inline"><input type="radio" name="intellectualNeeds" value="mild">Mild</label>
+									<label class="radio-inline"><input type="radio" name="intellectualNeeds" value="moderate">Moderate</label>
+									<label class="radio-inline"><input type="radio" name="intellectualNeeds" value="severe">Severe</label>
 								</div>
 							</div>
 							<div class="row">
@@ -1080,7 +1078,6 @@
 
 						<section class="family-mare-and-you-section">
 							<div class="registration-section-header">Mare &amp; You</div>
-
 							<div class="row">
 								<div class="col-sm-24 form-group">
 									<label class="label required-field marg-bottom-xs-5">How did you hear about MARE (please check all that apply)?</label>
@@ -1098,7 +1095,7 @@
 									</div>
 									<div class="row">
 										<div class="col-sm-24 form-group">
-											<input type="text" id="family-how-did-you-hear-other" class="input hidden" name="howDidYouHearOther" placeholder="other...">
+											<input type="text" id="family-how-did-you-hear-other" class="input required-field hidden" name="howDidYouHearOther" data-parsley-required="false" data-parsley-error-message="required" placeholder="other...">
 										</div>
 									</div>
 								</div>
@@ -1109,8 +1106,8 @@
 									<label class="label marg-bottom-xs-5">Would you like to be added to the MARE News email list:</label>
 								</div>
 								<div class="col-sm-12">
-									<label class="radio-inline"><input type="radio" name="mareEmailList" value="Yes" />Yes</label>
-									<label class="radio-inline"><input type="radio" name="mareEmailList" value="No" />No</label>
+									<label class="radio-inline"><input type="radio" name="mareEmailList" value="yes" checked="checked">Yes</label>
+									<label class="radio-inline"><input type="radio" name="mareEmailList" value="no">No</label>
 								</div>
 							</div>
 							<div class="row form-group">
@@ -1118,8 +1115,8 @@
 									<label class="label marg-bottom-xs-5">Would you like to be added to the Adoption Party email list (events held in MA only):</label>
 								</div>
 								<div class="col-sm-12">
-									<label class="radio-inline"><input type="radio" name="adoptionPartyEmailList" value="Yes" />Yes</label>
-									<label class="radio-inline"><input type="radio" name="adoptionPartyEmailList" value="No" />No</label>
+									<label class="radio-inline"><input type="radio" name="adoptionPartyEmailList" value="yes" checked="checked">Yes</label>
+									<label class="radio-inline"><input type="radio" name="adoptionPartyEmailList" value="no">No</label>
 								</div>
 							</div>
 							<div class="row form-group">
@@ -1127,8 +1124,8 @@
 									<label class="label marg-bottom-xs-5">Would you like to receive information on how to create a family profile?</label>
 								</div>
 								<div class="col-sm-12">
-									<label class="radio-inline"><input type="radio" name="receiveHowToCreateFamilyProfile" value="Yes" />Yes</label>
-									<label class="radio-inline"><input type="radio" name="receiveHowToCreateFamilyProfile" value="No" />No</label>
+									<label class="radio-inline"><input type="radio" name="receiveHowToCreateFamilyProfile" value="yes" checked="checked">Yes</label>
+									<label class="radio-inline"><input type="radio" name="receiveHowToCreateFamilyProfile" value="no">No</label>
 								</div>
 							</div>
 						</section>
