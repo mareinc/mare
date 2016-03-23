@@ -35,8 +35,6 @@
 			} else {
 				// Add validation binding
 				this.$howDidYouHearOther.attr('data-parsley-required', 'true');
-				// Create a custom error message to display if validation fails
-				this.$howDidYouHearOther.attr('data-parsley-error-message', 'required');
 			}
 		},
 
