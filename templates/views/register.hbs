@@ -226,7 +226,7 @@
 						<section class="social-worker-contact-details-section">
 							<div class="registration-section-header">Contact Details</div>
 
-							<div class="row">
+							{{!-- <div class="row">
 								<div class="col-sm-12 form-group">
 									<select id="social-worker-position" name="position" class="input position-select">
 									{{#each positions}}
@@ -235,11 +235,24 @@
 									</select>
 									<label for="position" class="label">Position</label>
 								</div>
+							</div> --}}
+							<div class="row">
+								<div class="col-sm-12 form-group">
+									<select id="social-worker-position" name="position" class="input position-select">
+										<option value="adoption worker">adoption worker</option>
+										<option value="recruitment worker">recruitment worker</option>
+										<option value="supervisor">supervisor</option>
+										<option value="administrator">administrator</option>
+										<option value="family worker">family worker</option>
+										<option value="other">other</option>
+									</select>
+									<label for="position" class="label">Position</label>
+								</div>
 							</div>
 							<div class="row">
 								<div class="col-sm-12 form-group">
 									<label class="checkbox-inline social-worker-title-checkbox">
-										<input type="checkbox" name="title" value="{{_id}}" data-parsley-errors-messages-disabled="true" required="">My title differs from the position listed above
+										<input type="checkbox" value="{{_id}}" data-parsley-errors-messages-disabled="true" required="">My title differs from the position listed above
 									</label>
 								</div>
 							</div>
@@ -619,7 +632,7 @@
 									<label for="social-worker-phone" class="label required-field">Social Worker Phone Number</label>
 								</div>
 								<div class="col-sm-12 form-group">
-									<input type="email" id="social-worker-email" class="input" name="socialWorkerEmail" data-parsley-required="false" data-parsley-error-message="required" placeholder="jim.smith@gmail.com">
+									<input type="email" id="social-worker-email" class="input" name="socialWorkerEmail" data-parsley-trigger="change" data-parsley-required="false" data-parsley-error-message="required" placeholder="jim.smith@gmail.com">
 									<label for="social-worker-email" class="label required-field">Social Worker Email Address</label>
 								</div>
 							</div>
