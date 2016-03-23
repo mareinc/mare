@@ -48,16 +48,16 @@ Child.add({ heading: 'Child Information' }, {
 
 }, { heading: 'Special Needs' }, {
 
-	physicalNeeds: { type: Types.Select, label: 'physical needs', options: 'None, Mild, Moderate, Severe', required: true, initial: true },
-	physicalNeedsDescription: { type: Types.Textarea, label: 'description of physical needs', dependsOn: { physicalNeeds: ['Mild', 'Moderate', 'Severe'] }, initial: true },
-	emotionalNeeds: { type: Types.Select, label: 'emotional needs', options: 'None, Mild, Moderate, Severe', required: true, initial: true },
-	emotionalNeedsDescription: { type: Types.Textarea, label: 'description of emotional needs', dependsOn: { emotionalNeeds: ['Mild', 'Moderate', 'Severe'] }, initial: true },
-	intellectualNeeds: { type: Types.Select, label: 'intellectual needs', options: 'None, Mild, Moderate, Severe', required: true, initial: true },
-	intellectualNeedsDescription: { type: Types.Textarea, label: 'description of intellectual needs', dependsOn: { intellectualNeeds: ['Mild', 'Moderate', 'Severe'] }, initial: true },
+	physicalNeeds: { type: Types.Select, label: 'physical needs', options: 'none, mild, moderate, severe', required: true, initial: true },
+	physicalNeedsDescription: { type: Types.Textarea, label: 'description of physical needs', dependsOn: { physicalNeeds: ['mild', 'moderate', 'severe'] }, initial: true },
+	emotionalNeeds: { type: Types.Select, label: 'emotional needs', options: 'none, mild, moderate, severe', required: true, initial: true },
+	emotionalNeedsDescription: { type: Types.Textarea, label: 'description of emotional needs', dependsOn: { emotionalNeeds: ['mild', 'moderate', 'severe'] }, initial: true },
+	intellectualNeeds: { type: Types.Select, label: 'intellectual needs', options: 'none, mild, moderate, severe', required: true, initial: true },
+	intellectualNeedsDescription: { type: Types.Textarea, label: 'description of intellectual needs', dependsOn: { intellectualNeeds: ['mild', 'moderate', 'severe'] }, initial: true },
 
 	disabilities: { type: Types.Relationship, label: 'disabilities', ref: 'Disability', many: true, initial: true },
 
-	specialNeedsNotes: { type: Types.Textarea, label: 'notes', dependsOn: { physicalNeeds: ['Mild', 'Moderate', 'Severe'], emotionalNeeds: ['Mild', 'Moderate', 'Severe'], intellectualNeeds: ['Mild', 'Moderate', 'Severe'] }, initial: true }
+	specialNeedsNotes: { type: Types.Textarea, label: 'notes', dependsOn: { physicalNeeds: ['mild', 'moderate', 'severe'], emotionalNeeds: ['mild', 'moderate', 'severe'], intellectualNeeds: ['mild', 'moderate', 'severe'] }, initial: true }
 	// specialNeedsNotes: { type: Types.Textarea, label: 'Notes', initial: true }
 
 }, { heading: 'Placement Considerations' }, {
@@ -68,7 +68,7 @@ Child.add({ heading: 'Child Information' }, {
 
 }, { heading: 'Agency Information' }, {
 
-	registeredBy: { type: Types.Select, label: 'registered by', options: 'Unknown, Adoption Worker, Recruitment Worker', required: true, index: true, initial: true },
+	registeredBy: { type: Types.Select, label: 'registered by', options: 'unknown, adoption worker, recruitment worker', required: true, index: true, initial: true },
 	adoptionWorker: { type: Types.Relationship, label: 'adoption worker', ref: 'Social Worker', filters: { position: 'adoption worker' }, initial: true },
 	recruitmentWorker: { type: Types.Relationship, label: 'recruitment worker', ref: 'Social Worker', filters: { position: 'recruitment worker' }, initial: true },
 	region: { type: Types.Relationship, label: 'region', ref: 'Region', initial: true }
