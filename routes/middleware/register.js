@@ -3,6 +3,7 @@ var keystone 		= require('keystone'),
 	_ 				= require('underscore'),
 	SiteUser 		= keystone.list('Site User'),
 	SocialWorker 	= keystone.list('Social Worker');
+	MailingList		= keystone.list('Mailing List');
 
 exports.registerUser = function(req, res, next) {
 	console.log('in register user');
@@ -31,8 +32,7 @@ exports.registerUser = function(req, res, next) {
 			console.log(res.locals.messages);
 			// TODO: Add check for required fields
 			if(res.locals.messages.length > 0) {
-				// TODO: return an error message to the user and return
-				res.redirect('/keystone/register');
+				// TODO: send the error messages as flash messages
 			} else {
 				console.log('creating new site user, checks have passed');
 
@@ -73,10 +73,10 @@ exports.registerUser = function(req, res, next) {
 				newUser.save(function(err) {
 
 					res.locals.messages.push({ type: 'success', message: 'your user account was successfully created' });
-					console.log('site user has been saved');
+					console.log('site visitor has been saved');
 
 					//next();
-					res.redirect('/keystone/register');
+					res.redirect('/register#site-visitor');
 					/* TODO: Post a success or error flash message */
 				}, function(err) {
 
@@ -102,7 +102,7 @@ exports.registerUser = function(req, res, next) {
 			// TODO: Add check for required fields
 			if(res.locals.messages.length > 0) {
 				// TODO: return an error message to the user and return
-				res.redirect('/keystone/register');
+				res.redirect('/register#social-worker');
 			} else {
 				console.log('creating new social worker, checks have passed');
 
@@ -117,13 +117,15 @@ exports.registerUser = function(req, res, next) {
 
 					password			: user.password,
 					email				: user.email,
-					agency				: user.agency,
-					title				: user.title,
+					agencyNotListed		: true,
+					agencyText			: user.agency,
+					title				: user.socialWorkerTitle,
+					position			: user.position,
 
 					phone: {
 						work			: user.workPhone,
-						cell			: user.phone,
-						preferred 		: user.preferredPhone
+						cell			: user.mobilePhone,
+						preferred 		: user.socialWorkerPreferredPhone
 					},
 
 					address: {
@@ -131,7 +133,8 @@ exports.registerUser = function(req, res, next) {
 						street2			: user.street2,
 						city			: user.city,
 						state			: user.state,
-						zipCode			: user.zipCode
+						zipCode			: user.zipCode,
+						region 			: user.region
 					}
 
 				});
@@ -142,10 +145,19 @@ exports.registerUser = function(req, res, next) {
 
 					res.locals.messages.push({ type: 'success', message: 'your social worker account has been successfully created' });
 					console.log('social worker has been saved');
+					console.log('the email: ' + user.email);
+					var email = user.email;
+
+					var userID;
+
+					SocialWorker.model.findOne({ email }).exec(function (err, user) {
+						console.log(user);
+						console.log(user._id);
+					});
 
 					//next();
-					res.redirect('/keystone/register');
-					/* TODO: Post a success or error flash message */
+					res.redirect('/register#social-worker');
+					 // TODO: Post a success or error flash message
 				}, function(err) {
 
 					res.locals.messages.push({ type: 'error', message: 'there was a problem saving your information, please try again.  If this problem persists, please contact MARE.' });
