@@ -39,8 +39,8 @@ SiteUser.add('Permissions', {
 	},
 
 	address: {
-	    street1: { type: Types.Text, label: 'address line 1', initial: true },
-		street2: { type: Types.Text, label: 'address line 2', initial: true },
+	    street1: { type: Types.Text, label: 'street 1', initial: true },
+		street2: { type: Types.Text, label: 'street 2', initial: true },
 		city: { type: Types.Text, label: 'city', initial: true },
 		state: { type: Types.Relationship, label: 'state', ref: 'State', initial: true },
 		zipCode: { type: Types.Text, label: 'zip code', initial: true }
@@ -50,6 +50,8 @@ SiteUser.add('Permissions', {
 	heardAboutMAREFrom: { type: Types.Relationship, label: 'how did you hear about mare?', ref: 'Way To Hear About MARE', many: true, initial: true },
 	heardAboutMAREOther: { type: Types.Text, label: 'other', note: 'only fill out if "other" is selected in the field above', initial: true }
 });
+
+SiteUser.relationship({ path: 'mailing-lists', ref: 'Mailing List', refPath: 'siteUserAttendees' });
 
 // Pre Save
 SiteUser.schema.pre('save', function(next) {

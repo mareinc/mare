@@ -45,8 +45,8 @@ SocialWorker.add('Permissions', {
 	agency: { type: Types.Relationship, label: 'agency', ref: 'Agency', initial: true },
 
 	address: {
-	    street1: { type: Types.Text, label: 'address line 1', initial: true },
-		street2: { type: Types.Text, label: 'address line 2', initial: true },
+	    street1: { type: Types.Text, label: 'street 1', initial: true },
+		street2: { type: Types.Text, label: 'street 2', initial: true },
 		city: { type: Types.Text, label: 'city', initial: true },
 		state: { type: Types.Relationship, label: 'state', ref: 'State', index: true, initial: true },
 		zipCode: { type: Types.Text, label: 'zip code', index: true, initial: true },
@@ -61,6 +61,7 @@ SocialWorker.add('Permissions', {
 SocialWorker.relationship({ path: 'children', label: 'children', ref: 'Child', refPath: 'adoptionWorker' });
 SocialWorker.relationship({ path: 'my inquiries', label: 'my inquiries', ref: 'Inquiry', refPath: 'socialWorker' });
 SocialWorker.relationship({ path: 'family inquiries', label: 'family inquiries', ref: 'Inquiry', refPath: 'childsSocialWorker' });
+SocialWorker.relationship({ path: 'mailing-lists', ref: 'Mailing List', refPath: 'socialWorkerAttendees' });
 
 // Pre Save
 SocialWorker.schema.pre('save', function(next) {
