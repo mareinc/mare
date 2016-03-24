@@ -82,8 +82,8 @@ ProspectiveParentOrFamily.add('Permissions', {
 }, 'Home Contact Information', {
 
 	address: {
-		street1: { type: Types.Text, label: 'address line 1', required: true, initial: true },
-		street2: { type: Types.Text, label: 'address line 2', initial: true },
+		street1: { type: Types.Text, label: 'street 1', required: true, initial: true },
+		street2: { type: Types.Text, label: 'street 2', initial: true },
 		city: { type: Types.Text, label: 'city', required: true, initial: true },
 		state: { type: Types.Relationship, label: 'state', ref: 'State', required: true, initial: true },
 		zipCode: { type: Types.Text, label: 'zip code', required: true, initial: true },
@@ -249,6 +249,7 @@ ProspectiveParentOrFamily.add('Permissions', {
 
 ProspectiveParentOrFamily.relationship({ path: 'placements', ref: 'Placement', refPath: 'prospectiveParentOrFamily' });
 ProspectiveParentOrFamily.relationship({ path: 'inquiries', ref: 'Inquiry', refPath: 'prospectiveParentOrFamily' });
+ProspectiveParentOrFamily.relationship({ path: 'mailing-lists', ref: 'Mailing List', refPath: 'prospectiveParentOrFamilyAttendees' });
 ProspectiveParentOrFamily.relationship({ path: 'internal-notes', ref: 'Internal Note', refPath: 'prospectiveParentOrFamily' });
 
 // Displaly associations via the Relationship field type

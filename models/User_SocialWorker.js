@@ -35,7 +35,7 @@ SocialWorker.add('Permissions', {
 	phone: {
 		work: { type: Types.Text, label: 'work phone number', initial: true },
 		cell: { type: Types.Text, label: 'cell phone number', initial: true },
-		preferred: { type: Types.Select, label: 'preferred phone', options: 'work, cell', initial: true }
+		preferred: { type: Types.Select, label: 'preferred phone', options: 'work, mobile', initial: true }
 	}
 
 }, 'Social Worker Information', {
@@ -43,10 +43,12 @@ SocialWorker.add('Permissions', {
 	// position: { type: Types.Relationship, label: 'Position', ref: 'Social Worker Position', initial: true },
 	position: { type: Types.Select, options: 'adoption worker, recruitment worker, supervisor, administrator, family worker, other', label: 'Position', initial: true },
 	agency: { type: Types.Relationship, label: 'agency', ref: 'Agency', initial: true },
+	agencyNotListed: { type: Types.Boolean, label: 'agency isn\'t listed', initial: true },
+	agencyText: { type: Types.Text, label: 'agency', dependsOn: { agencyNotListed: true }, initial: true },
 
 	address: {
-	    street1: { type: Types.Text, label: 'address line 1', initial: true },
-		street2: { type: Types.Text, label: 'address line 2', initial: true },
+	    street1: { type: Types.Text, label: 'street 1', initial: true },
+		street2: { type: Types.Text, label: 'street 2', initial: true },
 		city: { type: Types.Text, label: 'city', initial: true },
 		state: { type: Types.Relationship, label: 'state', ref: 'State', index: true, initial: true },
 		zipCode: { type: Types.Text, label: 'zip code', index: true, initial: true },
@@ -61,6 +63,7 @@ SocialWorker.add('Permissions', {
 SocialWorker.relationship({ path: 'children', label: 'children', ref: 'Child', refPath: 'adoptionWorker' });
 SocialWorker.relationship({ path: 'my inquiries', label: 'my inquiries', ref: 'Inquiry', refPath: 'socialWorker' });
 SocialWorker.relationship({ path: 'family inquiries', label: 'family inquiries', ref: 'Inquiry', refPath: 'childsSocialWorker' });
+SocialWorker.relationship({ path: 'mailing-lists', ref: 'Mailing List', refPath: 'socialWorkerAttendees' });
 
 // Pre Save
 SocialWorker.schema.pre('save', function(next) {

@@ -17,8 +17,8 @@ Agency.add({
 	fax: { type: Types.Text, label: 'fax number', initial: true },
 
 	address: {
-		street1: { type: Types.Text, label: 'address line 1', initial: true },
-		street2: { type: Types.Text, label: 'address line 2', initial: true },
+		street1: { type: Types.Text, label: 'street 1', initial: true },
+		street2: { type: Types.Text, label: 'street 2', initial: true },
 		city: { type: Types.Text, label: 'city', initial: true },
 		state: { type: Types.Relationship, label: 'state', ref: 'State', index: true, initial: true },
 		zipCode: { type: Types.Text, label: 'zip code', index: true, initial: true },

@@ -15,8 +15,6 @@ MailingList.add({
 	familyAttendees: { type: Types.Relationship, label: 'prospective parents or families', ref: 'Prospective Parent or Family', many: true, initial: true }
 });
 
-MailingList.relationship({ path: 'mailing-lists', ref: 'Prospective Parent or Family', refPath: 'prospectiveParentOrFamily' });
-
 // Define default columns in the admin interface and register the model
 MailingList.defaultColumns = 'mailingList';
 MailingList.register();
