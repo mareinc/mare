@@ -23,6 +23,7 @@ exports = module.exports = function(req, res) {
 	locals.validationErrors = {};
 	locals.registrationSubmitted = false;
 	// Fetch all the dynamic data to fill in the form dropdown and selection areas.  Render the view once all the data has been retrieved.
+	// TODO: these can be brought to a more generic place for reuse, maybe in a services layer.
 	async.parallel([
 		function(done) {
 			State.model.find().select('state').exec().then(function(states) {
