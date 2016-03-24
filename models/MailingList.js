@@ -9,7 +9,10 @@ var MailingList = new keystone.List('Mailing List', {
 
 // Create fields
 MailingList.add({
-	mailingList: { type: Types.Text, label: 'mailing list', required: true, index: true, initial: true }
+	mailingList: { type: Types.Text, label: 'mailing list', required: true, index: true, initial: true },
+	siteVisitorAttendees: { type: Types.Relationship, label: 'site users', ref: 'Site User', many: true, initial: true },
+	socialWorkerAttendees: { type: Types.Relationship, label: 'social workers', ref: 'Social Worker', many: true, initial: true },
+	familyAttendees: { type: Types.Relationship, label: 'prospective parents or families', ref: 'Prospective Parent or Family', many: true, initial: true }
 });
 
 MailingList.relationship({ path: 'mailing-lists', ref: 'Prospective Parent or Family', refPath: 'prospectiveParentOrFamily' });
