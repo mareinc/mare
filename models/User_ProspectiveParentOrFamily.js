@@ -34,14 +34,13 @@ ProspectiveParentOrFamily.add('Permissions', {
 	contact1: {
 
 		name: {
-			first: { type: Types.Text, label: 'first Name', required: true, initial: true },
-			last: { type: Types.Text, label: 'last Name', required: true, initial: true },
+			first: { type: Types.Text, label: 'first name', required: true, initial: true },
+			last: { type: Types.Text, label: 'last name', required: true, initial: true },
 			full: { type: Types.Text, label: 'name', hidden: true, noedit: true, initial: false }
 		},
 
 		phone: {
 			work: { type: Types.Text, label: 'work phone number', initial: true },
-			home: { type: Types.Text, label: 'home phone number', initial: true },
 			cell: { type: Types.Text, label: 'cell phone number', initial: true },
 			preferred: { type: Types.Select, label: 'preferred phone', options: 'work, home, cell', initial: true }
 		},
@@ -65,7 +64,6 @@ ProspectiveParentOrFamily.add('Permissions', {
 
 		phone: {
 			work: { type: Types.Text, label: 'work phone number', initial: true },
-			home: { type: Types.Text, label: 'home phone number', initial: true },
 			cell: { type: Types.Text, label: 'cell phone number', initial: true },
 			preferred: { type: Types.Select, label: 'preferred phone', options: 'work, home, cell', initial: true }
 		},
@@ -86,9 +84,10 @@ ProspectiveParentOrFamily.add('Permissions', {
 		city: { type: Types.Text, label: 'city', required: true, initial: true },
 		state: { type: Types.Relationship, label: 'state', ref: 'State', required: true, initial: true },
 		zipCode: { type: Types.Text, label: 'zip code', required: true, initial: true },
-		country: { type: Types.Text, label: 'country', initial: true },
 		region: { type: Types.Relationship, label: 'region', ref: 'Region', initial: true }
-	}
+	},
+
+	homePhone: { type: Types.Text, label: 'home phone number', initial: true }
 
 }, 'Current Children in Family', {
 

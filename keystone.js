@@ -165,7 +165,7 @@ keystone.set('nav', {
 						   'disabilities', 'event-types', 'family-constellations', 'genders', 'inquiry-methods',
 						   'inquiry-types', 'languages', 'legal-statuses', 'media-eligibilities', 'other-considerations',
 						   'other-family-constellation-considerations', 'races','regions', 'residences',
-						   'single-parent-options', 'social-worker-positions', 'states' ],
+						   'social-worker-positions', 'states' ],
 	'change tracking'	: ['child-histories', 'family-histories']
 
 });
