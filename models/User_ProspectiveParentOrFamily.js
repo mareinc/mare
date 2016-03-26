@@ -240,9 +240,12 @@ ProspectiveParentOrFamily.add('Permissions', {
 	infoPacket: {
 		packet: { type: Types.Select, options: 'English, Spanish, none', label: 'Packet', initial: true },
 		date: { type: Types.Text, label: 'date info packet sent', note: 'mm/dd/yyyy', initial: true },
-		notes: { type: Types.Textarea, label: 'notes', initial: true },
-		mailingLists: { type: Types.Relationship, label: 'mailing lists', ref: 'Mailing List', many: true, initial: true }
+		notes: { type: Types.Textarea, label: 'notes', initial: true }
 	}
+
+}, 'Mailing Lists', {
+
+	mailingLists: { type: Types.Relationship, label: 'add to the following mailing lists', ref: 'Mailing List', many: true, initial: true }
 
 }, 'Matching Preferences', {
 
