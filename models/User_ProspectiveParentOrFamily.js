@@ -243,6 +243,11 @@ ProspectiveParentOrFamily.add('Permissions', {
 
 	}
 
+}, 'Heard About MARE From', {
+
+	heardAboutMAREFrom: { type: Types.Relationship, label: 'how did you hear about mare?', ref: 'Way To Hear About MARE', many: true, initial: true },
+	heardAboutMAREOther: { type: Types.Text, label: 'other', note: 'only fill out if "other" is selected in the field above', initial: true }
+
 }, 'Registration Details', {
 	registeredViaWebsite: { type: Types.Boolean, label: 'registered through the website', noedit: true, initial: true }
 });
