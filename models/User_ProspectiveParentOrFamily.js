@@ -189,7 +189,9 @@ ProspectiveParentOrFamily.add('Permissions', {
 
 }, 'Social Worker Information', {
 
-	socialWorker: { type: Types.Relationship, label: 'social worker', ref: 'Social Worker', initial: true }
+	socialWorker: { type: Types.Relationship, label: 'social worker', ref: 'Social Worker', initial: true },
+	socialWorkerNotListed: { type: Types.Boolean, label: 'social worker isn\'t listed', initial: true },
+	socialWorkerText: { type: Types.Text, label: 'social worker', dependsOn: { socialWorkerNotListed: true }, initial: true }
 
 }, 'Family Services', {
 
