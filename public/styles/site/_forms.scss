@@ -3,6 +3,11 @@ form > div {
     clear: both;
 }
 
+select {
+    background-color: $light-background-color;
+    border: 1px solid $form-color-3;
+}
+
 .form-group {
     position: relative;
     margin-bottom: 15px;

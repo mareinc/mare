@@ -306,7 +306,8 @@
 							</div>
 							<div class="row form-group">
 								<div class="col-sm-12">
-									<select id="social-worker-preferred-phone" class="input social-worker-preferred-phone-select" name="preferredPhone" data-parsley-error-message="required" required="">
+									<select id="social-worker-preferred-phone" class="input social-worker-preferred-phone-select" name="preferredPhone" data-parsley-errors-messages-disabled="true" required="">
+										<option value=""></option>
 										<option value="work">work</option>
 										<option value="mobile">mobile</option>
 									</select>
@@ -353,12 +354,13 @@
 							</div>
 							<div class="row">
 								<div class="col-sm-12 form-group">
-									<select id="social-worker-region" class="input region-select" name="region">
+									<select id="social-worker-region" class="input region-select" name="region" data-parsley-errors-messages-disabled="true" required="">
+									<option value=""></option>
 									{{#each regions}}
 										<option value="{{_id}}">{{region}}</option>
 									{{/each}}
 									</select>
-									<label for="region" class="label">Region</label>
+									<label for="region" class="label required-field">Region</label>
 								</div>
 							</div>
 						</section>
@@ -898,7 +900,7 @@
 								</div>
 								<div class="col-sm-12">
 									<select name="primaryLanguageInHome" class="input registration-number-select">
-										<option value="default" class="default-blank-selection" selected="selected"></option>
+										<option value=""></option>
 										{{#each languages}}
 											<option value="{{_id}}">{{language}}</option>
 										{{/each}}
