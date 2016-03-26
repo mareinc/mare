@@ -852,7 +852,7 @@
 
 							<div class="row form-group">
 								<div class="col-sm-12">
-									<label for="other-adults-in-home" class="label marg-bottom-xs-5">Number of other adults living in home</label>
+									<label for="other-adults-in-home" class="label marg-bottom-xs-5">Number of other adults living in home:</label>
 								</div>
 								<div class="col-sm-12">
 									<select id="other-adults-in-home" name="otherAdultsInHome" class="input registration-number-select">
@@ -875,7 +875,12 @@
 									<label for="primary-language-in-home" class="label marg-bottom-xs-5">Primary language spoken at home:</label>
 								</div>
 								<div class="col-sm-12">
-									<input type="text" class="input" id="primary-language-in-home" name="primaryLanguageInHome">
+									<select name="primaryLanguageInHome" class="input registration-number-select">
+										<option value="default" class="default-blank-selection" selected="selected"></option>
+										{{#each languages}}
+											<option value="{{_id}}">{{language}}</option>
+										{{/each}}
+									</select>
 								</div>
 							</div>
 							<div class="row form-group">
