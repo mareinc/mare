@@ -178,6 +178,30 @@
 								</div>
 							</div>
 
+							<div class="row form-group">
+								<div class="col-sm-24">
+									<label class="checkbox-inline">
+										<input type="checkbox" class="info-packet-toggle" name="infoPacket" value="yes">Please send me a general adoption information packet
+									</label>
+								</div>
+							</div>
+							<div class="row form-group info-packet-details hidden">
+								<div class="col-sm-12 form-group">
+									<select id="info-packet-format" class="input info-packet-select" name="infoPacketFormat">
+											<option value="email" selected="selected">e-mail</option>
+											<option value="mail">mail</option>
+									</select>
+									<label for="info-packet-format" class="label">Preferred Format</label>
+								</div>
+								<div class="col-sm-12 form-group">
+									<select id="info-packet-language" class="input info-packet-select" name="infoPacketLanguage">
+											<option value="english" selected="selected">English</option>
+											<option value="spanish">Spanish</option>
+									</select>
+									<label for="info-packet-format" class="label">Preferred Language</label>
+								</div>
+							</div>
+
 							<button class="register" type="submit">Register</button>
 						</section>
 					</form>
