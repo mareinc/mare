@@ -91,42 +91,54 @@ ProspectiveParentOrFamily.add('Permissions', {
 
 }, 'Current Children in Family', {
 
-	numberOfChildren: { type: Types.Select, label: 'number of children', options: '1, 2, 3, 4, 5, 6+', required: true, initial: true },
+	numberOfChildren: { type: Types.Select, label: 'number of children', options: '1, 2, 3, 4, 5, 6, 7, 8+', required: true, initial: true },
 
 	currentChild1: {
-		name: { type: Types.Text, label: 'child 1 name:', dependsOn: { numberOfChildren: ['1', '2', '3', '4', '5', '6+'] }, initial: true },
-		birthDate: { type: Types.Text, label: 'child 1 date of birth', note: 'mm/dd/yyyy', dependsOn: { numberOfChildren: ['1', '2', '3', '4', '5', '6+'] }, initial: true },
-		type: { type: Types.Relationship, label: 'child 1 type', ref: 'Child Type', dependsOn: { numberOfChildren: ['1', '2', '3', '4', '5', '6+'] }, initial: true }
+		name: { type: Types.Text, label: 'child 1 name:', dependsOn: { numberOfChildren: ['1', '2', '3', '4', '5', '6', '7', '8+'] }, initial: true },
+		birthDate: { type: Types.Text, label: 'child 1 date of birth', note: 'mm/dd/yyyy', dependsOn: { numberOfChildren: ['1', '2', '3', '4', '5', '6', '7', '8+'] }, initial: true },
+		type: { type: Types.Relationship, label: 'child 1 type', ref: 'Child Type', dependsOn: { numberOfChildren: ['1', '2', '3', '4', '5', '6', '7', '8+'] }, initial: true }
 	},
 
 	currentChild2: {
-		name: { type: Types.Text, label: 'child 2 name:', dependsOn: { numberOfChildren: ['2', '3', '4', '5', '6+'] }, initial: true },
-		birthDate: { type: Types.Text, label: 'child 2 date of birth', note: 'mm/dd/yyyy', dependsOn: { numberOfChildren: ['2', '3', '4', '5', '6+'] }, initial: true },
-		type: { type: Types.Relationship, label: 'child 2 type', ref: 'Child Type', dependsOn: { numberOfChildren: ['2', '3', '4', '5', '6+'] }, initial: true }
+		name: { type: Types.Text, label: 'child 2 name:', dependsOn: { numberOfChildren: ['2', '3', '4', '5', '6', '7', '8+'] }, initial: true },
+		birthDate: { type: Types.Text, label: 'child 2 date of birth', note: 'mm/dd/yyyy', dependsOn: { numberOfChildren: ['2', '3', '4', '5', '6', '7', '8+'] }, initial: true },
+		type: { type: Types.Relationship, label: 'child 2 type', ref: 'Child Type', dependsOn: { numberOfChildren: ['2', '3', '4', '5', '6', '7', '8+'] }, initial: true }
 	},
 
 	currentChild3: {
-		name: { type: Types.Text, label: 'child 3 name:', dependsOn: { numberOfChildren: ['3', '4', '5', '6+'] }, initial: true },
-		birthDate: { type: Types.Text, label: 'child 3 date of birth', note: 'mm/dd/yyyy', dependsOn: { numberOfChildren: ['3', '4', '5', '6+'] }, initial: true },
-		type: { type: Types.Relationship, label: 'child 3 type', ref: 'Child Type', dependsOn: { numberOfChildren: ['3', '4', '5', '6+'] }, initial: true }
+		name: { type: Types.Text, label: 'child 3 name:', dependsOn: { numberOfChildren: ['3', '4', '5', '6', '7', '8+'] }, initial: true },
+		birthDate: { type: Types.Text, label: 'child 3 date of birth', note: 'mm/dd/yyyy', dependsOn: { numberOfChildren: ['3', '4', '5', '6', '7', '8+'] }, initial: true },
+		type: { type: Types.Relationship, label: 'child 3 type', ref: 'Child Type', dependsOn: { numberOfChildren: ['3', '4', '5', '6', '7', '8+'] }, initial: true }
 	},
 
 	currentChild4: {
-		name: { type: Types.Text, label: 'child 4 name:', dependsOn: { numberOfChildren: ['4', '5', '6+'] }, initial: true },
-		birthDate: { type: Types.Text, label: 'child 4 date of birth', note: 'mm/dd/yyyy', dependsOn: { numberOfChildren: ['4', '5', '6+'] }, initial: true },
-		type: { type: Types.Relationship, label: 'child 4 type', ref: 'Child Type', dependsOn: { numberOfChildren: ['4', '5', '6+'] }, initial: true }
+		name: { type: Types.Text, label: 'child 4 name:', dependsOn: { numberOfChildren: ['4', '5', '6', '7', '8+'] }, initial: true },
+		birthDate: { type: Types.Text, label: 'child 4 date of birth', note: 'mm/dd/yyyy', dependsOn: { numberOfChildren: ['4', '5', '6', '7', '8+'] }, initial: true },
+		type: { type: Types.Relationship, label: 'child 4 type', ref: 'Child Type', dependsOn: { numberOfChildren: ['4', '5', '6', '7', '8+'] }, initial: true }
 	},
 
 	currentChild5: {
-		name: { type: Types.Text, label: 'child 5 name:', dependsOn: { numberOfChildren: ['5', '6+'] }, initial: true },
-		birthDate: { type: Types.Text, label: 'child 5 date of birth', note: 'mm/dd/yyyy', dependsOn: { numberOfChildren: ['5', '6+'] }, initial: true },
-		type: { type: Types.Relationship, label: 'child 5 type', ref: 'Child Type', dependsOn: { numberOfChildren: ['5', '6+'] }, initial: true }
+		name: { type: Types.Text, label: 'child 5 name:', dependsOn: { numberOfChildren: ['5', '6', '7', '8+'] }, initial: true },
+		birthDate: { type: Types.Text, label: 'child 5 date of birth', note: 'mm/dd/yyyy', dependsOn: { numberOfChildren: ['5', '6', '7', '8+'] }, initial: true },
+		type: { type: Types.Relationship, label: 'child 5 type', ref: 'Child Type', dependsOn: { numberOfChildren: ['5', '6', '7', '8+'] }, initial: true }
 	},
 
 	currentChild6: {
-		name: { type: Types.Text, label: 'child 6 name:', dependsOn: { numberOfChildren: ['6+'] }, initial: true },
-		birthDate: { type: Types.Text, label: 'child 6 date of birth', note: 'mm/dd/yyyy', dependsOn: { numberOfChildren: ['6+'] }, initial: true },
-		type: { type: Types.Relationship, label: 'child 6 type', ref: 'Child Type', dependsOn: { numberOfChildren: ['6+'] }, initial: true }
+		name: { type: Types.Text, label: 'child 6 name:', dependsOn: { numberOfChildren: ['6', '7', '8+'] }, initial: true },
+		birthDate: { type: Types.Text, label: 'child 6 date of birth', note: 'mm/dd/yyyy', dependsOn: { numberOfChildren: ['6', '7', '8+'] }, initial: true },
+		type: { type: Types.Relationship, label: 'child 6 type', ref: 'Child Type', dependsOn: { numberOfChildren: ['6', '7', '8+'] }, initial: true }
+	},
+
+	currentChild7: {
+		name: { type: Types.Text, label: 'child 7 name:', dependsOn: { numberOfChildren: ['7', '8+'] }, initial: true },
+		birthDate: { type: Types.Text, label: 'child 7 date of birth', note: 'mm/dd/yyyy', dependsOn: { numberOfChildren: ['7', '8+'] }, initial: true },
+		type: { type: Types.Relationship, label: 'child 7 type', ref: 'Child Type', dependsOn: { numberOfChildren: ['7', '8+'] }, initial: true }
+	},
+
+	currentChild8: {
+		name: { type: Types.Text, label: 'child 8 name:', dependsOn: { numberOfChildren: ['8+'] }, initial: true },
+		birthDate: { type: Types.Text, label: 'child 8 date of birth', note: 'mm/dd/yyyy', dependsOn: { numberOfChildren: ['8+'] }, initial: true },
+		type: { type: Types.Relationship, label: 'child 8 type', ref: 'Child Type', dependsOn: { numberOfChildren: ['8+'] }, initial: true }
 	}
 
 }, 'Other Considerations', {
