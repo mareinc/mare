@@ -8,6 +8,7 @@ var keystone					= require('keystone'),
 	State						= keystone.list('State'),
 	Gender						= keystone.list('Gender'),
 	LegalStatus					= keystone.list('Legal Status'),
+	Language					= keystone.list('Language'),
 	FamilyConstellation			= keystone.list('Family Constellation'),
 	Disability					= keystone.list('Disability'),
 	OtherConsideration			= keystone.list('Other Consideration'),
@@ -66,6 +67,11 @@ exports = module.exports = function(req, res) {
 		function(done) {
 			LegalStatus.model.find().select('legalStatus').exec().then(function(legalStatuses) {
 				locals.legalStatuses = legalStatuses;
+				done();
+			})},
+		function(done) {
+			Language.model.find().select('language').exec().then(function(languages) {
+				locals.languages = languages;
 				done();
 			})},
 		function(done) {
