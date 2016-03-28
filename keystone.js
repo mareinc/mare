@@ -161,7 +161,7 @@ keystone.set('nav', {
 	'events'			: ['events'],
 	'mailing lists'		: ['mailing-lists'],
 	'relationships'		: ['csc-region-contacts', 'placements'],
-	'lists'				: ['child-statuses', 'child-types', 'city-or-towns', 'closed-reasons', 'contact-methods',
+	'lists'				: ['child-statuses', 'child-types', 'city-or-towns', 'closed-reasons', 'communication-methods',
 						   'disabilities', 'event-types', 'family-constellations', 'genders', 'inquiry-methods',
 						   'inquiry-types', 'languages', 'legal-statuses', 'media-eligibilities', 'other-considerations',
 						   'other-family-constellation-considerations', 'races','regions', 'residences',

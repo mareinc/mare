@@ -34,7 +34,7 @@ SiteUser.add('Permissions', {
 	phone: {
 		work: { type: Types.Text, label: 'work phone number', initial: true },
 		home: { type: Types.Text, label: 'home phone number', initial: true },
-		cell: { type: Types.Text, label: 'cell phone number', initial: true },
+		mobile: { type: Types.Text, label: 'mobile phone number', initial: true },
 		preferred: { type: Types.Select, label: 'preferred phone', options: 'work, home, mobile', initial: true }
 	},
 

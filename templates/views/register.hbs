@@ -188,7 +188,7 @@
 							<div class="row form-group info-packet-details hidden">
 								<div class="col-sm-12 form-group">
 									<select id="info-packet-format" class="input info-packet-select" name="infoPacketFormat">
-											<option value="email" selected="selected">e-mail</option>
+											<option value="email" selected="selected">email</option>
 											<option value="mail">mail</option>
 									</select>
 									<label for="info-packet-format" class="label">Preferred Format</label>
@@ -276,7 +276,7 @@
 							<div class="row">
 								<div class="col-sm-12 form-group">
 									<label class="checkbox-inline social-worker-title-checkbox">
-										<input type="checkbox" value="{{_id}}" data-parsley-errors-messages-disabled="true" required="">My title differs from the position listed above
+										<input type="checkbox" name="titleDiffersFromPosition" data-parsley-errors-messages-disabled="true" required="">My title differs from the position listed above
 									</label>
 								</div>
 							</div>
@@ -451,6 +451,17 @@
 								</div>
 							</div>
 							<div class="row">
+								<div class="col-sm-12 form-group">
+									<select id="contact1-preferred-communication-method" class="input" name="contact1PreferredCommunicationMethod" data-parsley-errors-messages-disabled="true" required="">
+										<option value=""></option>
+										<option value="email">email</option>
+										<option value="home phone">home</option>
+										<option value="mobile phone">mobile</option>
+									</select>
+									<label for="contact1-preferred-communication-method" class="label required-field">Preferred Contact Method</label>
+								</div>
+							</div>
+							<div class="row">
 								<div class="col-sm-24 form-group">
 									<span class="gender-select-text required-field">Gender</span> &nbsp;&nbsp;
 									{{#each genders}}
@@ -507,6 +518,17 @@
 								<div class="col-sm-12 form-group">
 									<input type="text" id="contact2-phone" class="input" name="contact2Mobile" placeholder="(617) 222-2222">
 									<label for="contact2-phone" class="label">Mobile Phone</label>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-12 form-group">
+									<select id="contact2-preferred-communication-method" class="input" name="contact2PreferredCommunicationMethod">
+										<option value=""></option>
+										<option value="email">email</option>
+										<option value="home phone">home</option>
+										<option value="mobile phone">mobile</option>
+									</select>
+									<label for="contact2-preferred-communication-method" class="label">Preferred Contact Method</label>
 								</div>
 							</div>
 							<div class="row">
@@ -685,7 +707,7 @@
 								<div class="row">
 									<div class="col-sm-12 form-group">Email to web@mareinc.org:</div>
 									<div class="col-sm-12 form-group">
-										<a href="mailto:web@mareinc.org" class="btn btn-default">Send as e-mail</a>
+										<a href="mailto:web@mareinc.org" class="btn btn-default">Send as email</a>
 									</div>
 								</div>
 								<div class="row">
@@ -745,9 +767,7 @@
 										<option>5</option>
 										<option>6</option>
 										<option>7</option>
-										<option>8</option>
-										<option>9</option>
-										<option>10+</option>
+										<option>8+</option>
 									</select>
 								</div>
 							</div>
@@ -773,9 +793,7 @@
 										<option>5</option>
 										<option>6</option>
 										<option>7</option>
-										<option>8</option>
-										<option>9</option>
-										<option>10+</option>
+										<option>8+</option>
 									</select>
 								</div>
 							</div>
@@ -793,9 +811,7 @@
 										<option>5</option>
 										<option>6</option>
 										<option>7</option>
-										<option>8</option>
-										<option>9</option>
-										<option>10+</option>
+										<option>8+</option>
 									</select>
 								</div>
 							</div>
@@ -817,9 +833,7 @@
 										<option>5</option>
 										<option>6</option>
 										<option>7</option>
-										<option>8</option>
-										<option>9</option>
-										<option>10+</option>
+										<option>8+</option>
 									</select>
 								</div>
 							</div>
@@ -845,9 +859,7 @@
 										<option>5</option>
 										<option>6</option>
 										<option>7</option>
-										<option>8</option>
-										<option>9</option>
-										<option>10+</option>
+										<option>8+</option>
 									</select>
 								</div>
 							</div>
@@ -865,9 +877,7 @@
 										<option>5</option>
 										<option>6</option>
 										<option>7</option>
-										<option>8</option>
-										<option>9</option>
-										<option>10+</option>
+										<option>8+</option>
 									</select>
 								</div>
 							</div>
@@ -945,7 +955,7 @@
 									{{#each genders}}
 										<div class="col-sm-12 form-group">
 											<label class="checkbox-inline">
-												<input type="checkbox" name="approvedChildrenGender" value="{{_id}}">{{gender}}
+												<input type="checkbox" name="preferredGender" value="{{_id}}">{{gender}}
 											</label>
 										</div>
 									{{/each}}
@@ -1083,9 +1093,10 @@
 									<label class="label marg-bottom-xs-5">Maximum level of physical needs</label>
 								</div>
 								<div class="col-sm-12">
-									<label class="radio-inline"><input type="radio" name="physicalNeeds" value="mild">Mild</label>
-									<label class="radio-inline"><input type="radio" name="physicalNeeds" value="moderate">Moderate</label>
-									<label class="radio-inline"><input type="radio" name="physicalNeeds" value="severe">Severe</label>
+									<label class="radio-inline"><input type="radio" name="maximumPhysicalNeeds" value="none">None</label>
+									<label class="radio-inline"><input type="radio" name="maximumPhysicalNeeds" value="mild">Mild</label>
+									<label class="radio-inline"><input type="radio" name="maximumPhysicalNeeds" value="moderate">Moderate</label>
+									<label class="radio-inline"><input type="radio" name="maximumPhysicalNeeds" value="severe">Severe</label>
 								</div>
 							</div>
 							<div class="row form-group">
@@ -1093,9 +1104,10 @@
 									<label class="label marg-bottom-xs-5">Maximum level of emotional needs</label>
 								</div>
 								<div class="col-sm-12">
-									<label class="radio-inline"><input type="radio" name="emotionalNeeds" value="mild">Mild</label>
-									<label class="radio-inline"><input type="radio" name="emotionalNeeds" value="moderate">Moderate</label>
-									<label class="radio-inline"><input type="radio" name="emotionalNeeds" value="severe">Severe</label>
+									<label class="radio-inline"><input type="radio" name="maximumEmotionalNeeds" value="none">None</label>
+									<label class="radio-inline"><input type="radio" name="maximumEmotionalNeeds" value="mild">Mild</label>
+									<label class="radio-inline"><input type="radio" name="maximumEmotionalNeeds" value="moderate">Moderate</label>
+									<label class="radio-inline"><input type="radio" name="maximumEmotionalNeeds" value="severe">Severe</label>
 								</div>
 							</div>
 							<div class="row form-group">
@@ -1103,9 +1115,10 @@
 									<label class="label marg-bottom-xs-5">Maximum level of intellectual needs</label>
 								</div>
 								<div class="col-sm-12">
-									<label class="radio-inline"><input type="radio" name="intellectualNeeds" value="mild">Mild</label>
-									<label class="radio-inline"><input type="radio" name="intellectualNeeds" value="moderate">Moderate</label>
-									<label class="radio-inline"><input type="radio" name="intellectualNeeds" value="severe">Severe</label>
+									<label class="radio-inline"><input type="radio" name="maximumIntellectualNeeds" value="none">None</label>
+									<label class="radio-inline"><input type="radio" name="maximumIntellectualNeeds" value="mild">Mild</label>
+									<label class="radio-inline"><input type="radio" name="maximumIntellectualNeeds" value="moderate">Moderate</label>
+									<label class="radio-inline"><input type="radio" name="maximumIntellectualNeeds" value="severe">Severe</label>
 								</div>
 							</div>
 							<div class="row">
@@ -1119,7 +1132,7 @@
 									{{#each disabilities}}
 										<div class="col-sm-12 form-group">
 											<label class="checkbox-inline">
-												<input type="checkbox" name="disability" value="{{_id}}">{{disability}}
+												<input type="checkbox" name="disabilities" value="{{_id}}">{{disability}}
 											</label>
 										</div>
 									{{/each}}
@@ -1137,7 +1150,7 @@
 									{{#each otherConsiderations}}
 										<div class="col-sm-12 form-group">
 											<label class="checkbox-inline">
-												<input type="checkbox" name="otherConsideration" value="{{_id}}">{{otherConsideration}}
+												<input type="checkbox" name="otherConsiderations" value="{{_id}}">{{otherConsideration}}
 											</label>
 										</div>
 									{{/each}}
@@ -1189,15 +1202,6 @@
 								<div class="col-sm-12">
 									<label class="radio-inline"><input type="radio" name="adoptionPartyEmailList" value="yes" checked="checked">Yes</label>
 									<label class="radio-inline"><input type="radio" name="adoptionPartyEmailList" value="no">No</label>
-								</div>
-							</div>
-							<div class="row form-group">
-								<div class="col-sm-12">
-									<label class="label marg-bottom-xs-5">Would you like to receive information on how to create a family profile?</label>
-								</div>
-								<div class="col-sm-12">
-									<label class="radio-inline"><input type="radio" name="receiveHowToCreateFamilyProfile" value="yes" checked="checked">Yes</label>
-									<label class="radio-inline"><input type="radio" name="receiveHowToCreateFamilyProfile" value="no">No</label>
 								</div>
 							</div>
 						</section>
