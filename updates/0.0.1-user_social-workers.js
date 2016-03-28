@@ -13,7 +13,7 @@ exports.create = {
 		phone: {
 			work: '(617) 100-2000',
 			home: '(617) 100-2001',
-			cell: '(617) 100-2002',
+			mobile: '(617) 100-2002',
 			preferred: 'home'
 		},
 		address: {
