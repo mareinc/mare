@@ -34,8 +34,8 @@ Placement.add('Placement', {
         phone: {
             work: { type: Types.Text, label: 'work phone number', dependsOn: { childPlacedWithMAREFamily: false }, initial: true },
             home: { type: Types.Text, label: 'home phone number', dependsOn: { childPlacedWithMAREFamily: false }, initial: true },
-            cell: { type: Types.Text, label: 'cell phone number', dependsOn: { childPlacedWithMAREFamily: false }, initial: true },
-            preferred: { type: Types.Select, label: 'preferred phone', options: 'work, home, cell', dependsOn: { childPlacedWithMAREFamily: false }, initial: true }
+            mobile: { type: Types.Text, label: 'mobile phone number', dependsOn: { childPlacedWithMAREFamily: false }, initial: true },
+            preferred: { type: Types.Select, label: 'preferred phone', options: 'work, home, mobile', dependsOn: { childPlacedWithMAREFamily: false }, initial: true }
         },
 
         email: { type: Types.Email, label: 'email address', dependsOn: { childPlacedWithMAREFamily: false }, index: true, initial: true },
