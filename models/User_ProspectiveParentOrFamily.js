@@ -17,6 +17,12 @@ ProspectiveParentOrFamily.add('Permissions', {
 		isActive: { type: Boolean, label: 'is active', default: true, noedit: true }
 	}
 
+}, 'User Information', {
+
+	email: { type: Types.Email, label: 'email address', unique: true, required: true, initial: true },
+	password: { type: Types.Password, label: 'password', required: true, initial: true },
+	avatar: { type: Types.CloudinaryImage, label: 'avatar', folder: 'users/prospective parents\\/families', autoCleanup: true }
+
 }, 'General Information', {
 
 	registrationNumber: { type: Number, label: 'registration number', format: false, required: true, initial: true },
@@ -25,9 +31,6 @@ ProspectiveParentOrFamily.add('Permissions', {
 	familyConstellation: { type: Types.Relationship, label: 'family constellation', ref: 'Family Constellation', required: true, initial: true },
 	language: { type: Types.Relationship, label: 'language', ref: 'Language', required: true, initial: true },
 	otherLanguages: { type: Types.Relationship, label: 'other languages', ref: 'Language', many: true, initial: true },
-
-	password: { type: Types.Password, label: 'password', required: true, initial: true },
-	avatar: { type: Types.CloudinaryImage, label: 'avatar', folder: 'users/prospective parents\\/families', autoCleanup: true }
 
 }, 'Contact 1', {
 
@@ -41,12 +44,11 @@ ProspectiveParentOrFamily.add('Permissions', {
 
 		phone: {
 			work: { type: Types.Text, label: 'work phone number', initial: true },
-			cell: { type: Types.Text, label: 'cell phone number', initial: true },
-			preferred: { type: Types.Select, label: 'preferred phone', options: 'work, home, cell', initial: true }
+			mobile: { type: Types.Text, label: 'mobile phone number', initial: true }
 		},
 
 		email: { type: Types.Email, label: 'email address', initial: true },
-		preferredMethod: { type: Types.Select, label: 'preferred communication method', options: 'e-mail, home phone, cell phone, work phone, unknown', required: true, initial: true },
+		preferredCommunicationMethod: { type: Types.Select, label: 'preferred communication method', options: 'email, home phone, mobile phone, work phone, unknown', required: true, initial: true },
 		gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', required: true, initial: true },
 		race: { type: Types.Relationship, label: 'race', ref: 'Race', many: true, required: true, initial: true },
 		occupation: { type: Types.Text, label: 'occupation', initial: true },
@@ -64,12 +66,11 @@ ProspectiveParentOrFamily.add('Permissions', {
 
 		phone: {
 			work: { type: Types.Text, label: 'work phone number', initial: true },
-			cell: { type: Types.Text, label: 'cell phone number', initial: true },
-			preferred: { type: Types.Select, label: 'preferred phone', options: 'work, home, cell', initial: true }
+			mobile: { type: Types.Text, label: 'mobile phone number', initial: true }
 		},
 
 		email: { type: Types.Email, label: 'email address', initial: true },
-		preferredMethod: { type: Types.Select, label: 'preferred communication method', options: 'e-mail, home phone, cell phone, work phone, unknown', initial: true },
+		preferredCommunicationMethod: { type: Types.Select, label: 'preferred communication method', options: 'email, home phone, mobile phone, work phone, unknown', initial: true },
 		gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', initial: true },
 		race: { type: Types.Relationship, label: 'race', ref: 'Race', many: true, initial: true },
 		occupation: { type: Types.Text, label: 'occupation', initial: true },
@@ -91,7 +92,7 @@ ProspectiveParentOrFamily.add('Permissions', {
 
 }, 'Current Children in Family', {
 
-	numberOfChildren: { type: Types.Select, label: 'number of children', options: '1, 2, 3, 4, 5, 6, 7, 8+', required: true, initial: true },
+	numberOfChildren: { type: Types.Select, label: 'number of children', options: '0, 1, 2, 3, 4, 5, 6, 7, 8+', required: true, initial: true },
 
 }, { heading: 'Child 1', dependsOn: { numberOfChildren: ['1', '2', '3', '4', '5', '6', '7', '8+'] } }, {
 	child1: {
