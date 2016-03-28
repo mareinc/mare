@@ -135,7 +135,7 @@ exports.saveSocialWorker = function saveSocialWorker(user, res, done) {
 		email				: user.email,
 		agencyNotListed		: true,
 		agencyText			: user.agency,
-		title				: user.socialWorkerTitle,
+		title				: user.titleDiffersFromPosition ? user.socialWorkerTitle : user.position,
 		position			: user.position,
 
 		phone: {
