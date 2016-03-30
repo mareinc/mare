@@ -338,7 +338,7 @@ exports.validatePassword = function validatePassword(password, confirmPassword, 
 exports.getUserID = function getUserID(user, userType, res, done) {
 	var email = user.email;
 
-	userType.model.findOne({ email }).exec(function (err, user) {
+	userType.model.findOne({ email: email }).exec(function (err, user) {
 		res.locals.newUserID = user._id;
 		done();
 	});
