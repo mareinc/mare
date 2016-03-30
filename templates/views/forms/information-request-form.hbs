@@ -1,0 +1,382 @@
+{{!< default}}
+<div class="main">
+	<div class="content">
+		<div class="content-header">
+			<span class="section-title">Information Request</span>
+			<img class="section-image" src="/dist/img/register.png" alt="section-image-placeholder">
+		</div>
+		<div class="content-body">
+			<aside class="sidebar left-sidebar">
+				<aside class="callout">
+					<span class="description">"It feels so good to be a family," says Brady, who's getting used to being called "Mommy."</span>
+					<img class="callout-image" src="/dist/img/success-story-popout.png" alt="callout-image-placeholder">
+					<span class="callout-controls">
+						<div class="callout-type">Success Stories</div>
+						<div class="callout-title">Meet the Whitney Family</div>
+						<div class="learn-more">
+							<span>Learn more</span><span class="icon-double-arrow-right">&gt;&gt;</span>
+						</div>
+					</span>
+				</aside>
+			</aside>
+			<section class="main-column">
+				<div class="page-header">
+					<span class="page-header-text">Information Request</span>
+				</div>
+
+
+				<form action="/informationrequest" class="info-request-form registration-form" method="POST">
+					<input type="hidden" name="action" value="requestInformation" />
+
+					<div class="registration-section-header">Request Information</div>
+					<br />
+					<div class="row">
+						<div class="col-sm-24">
+							<div class="row">
+								<div class="col-sm-24 form-group">
+									<span class="required-field">I am interested in:</span>
+								</div>
+							</div>
+							<div class="col-sm-24 form-group">
+								<label class="checkbox-inline">
+									<input type="checkbox" name="interest" value="Information about a specific child(ren)">Information about a specific child(ren)
+								</label>
+							</div>
+							<div class="col-sm-24 form-group">
+								<label class="checkbox-inline">
+									<input type="checkbox" name="interest" value="General adoption information">General adoption information
+								</label>
+							</div>						
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12 form-group">
+							<input type="text" class="input" id="child-registration-number" name="childRegistrationNumber" required />
+							<label for="child-registration-number" class="label required-field">Child(ren)'s' Registration Number</label>
+						</div>
+					</div>
+					<div class="row form-group">
+						<div class="col-sm-24">
+							<div class="row">
+								<div class="col-sm-24 form-group">
+									<span class="race-text required-field">Where are you in the adoption process?</span>
+								</div>
+							</div>
+							<div class="col-sm-24 form-group">
+								<label class="checkbox-inline">
+									<input type="checkbox" name="whereInAdoptionProcess" value="Gathering Information">Gathering Information
+								</label>
+							</div>
+							<div class="col-sm-24 form-group">
+								<label class="checkbox-inline">
+									<input type="checkbox" name="whereInAdoptionProcess" value="Enrolled in MAPP">Enrolled in MAPP
+								</label>
+							</div>							
+							<div class="col-sm-24 form-group">
+								<label class="checkbox-inline">
+									<input type="checkbox" name="whereInAdoptionProcess" value="Completing homestudy">Completing homestudy
+								</label>
+							</div>							
+							<div class="col-sm-24 form-group">
+								<label class="checkbox-inline">
+									<input type="checkbox" name="whereInAdoptionProcess" value="Homestudy complete/waiting to be matched">Homestudy complete/waiting to be matched
+								</label>
+							</div>							
+						</div>
+					</div>
+					<div class="row form-group">
+						<div class="col-sm-12 col-md-7">
+							<input type="text" class="input" id="home-study-date-completed" name="homeStudyDateCompleted" placeholder="DD/MM/YYYY">
+							<label for="home-study-date-completed" class="label">If homestudied, date completed</label>
+						</div>
+					</div>
+
+					<div class="registration-section-header">Contact 1 Information</div>
+
+					<div class="row">
+						<div class="col-sm-12 col-md-6 form-group">
+							<input type="text" class="input" id="contact1-first-name" name="contact1FirstName" required />
+							<label for="contact1-first-name" class="label required-field">First Name</label>
+						</div>
+						<div class="col-sm-12 col-md-6 form-group">
+							<input type="text" class="input" id="contact1-last-name" name="contact1LastName" required />
+							<label for="contact1-last-name" class="label required-field">Last Name</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-6 form-group">
+							<input type="text" class="input" id="contact1-primary-phone" name="contact1PrimaryPhone" required />
+							<label for="contact1-primary-phone" class="label required-field">Primary Phone</label>
+						</div>
+						<div class="col-sm-6 form-group">
+							<select id="contact1-phone-type" name="contact1PhoneType" class="input" required>
+								<option value="Cell">Cell</option>
+								<option value="Work">Work</option>
+								<option value="Phone">Phone</option>
+							</select>
+							<label for="contact1-phone-type" class="label required-field">Specify Type</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-6 form-group">
+							<input type="text" class="input" id="contact1-other-phone" name="contact1OtherPhone" required />
+							<label for="contact1-other-phone" class="label required-field">Other Phone</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12 form-group">
+							<input type="email" class="input" required id="contact1-email" name="contact1Email" pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
+							<label for="contact1-email" class="label required-field">Email</label>
+						</div>
+					</div>
+					<div class="row double-padding">
+						<div class="col-sm-24">
+							<span class="gender-select-text">Gender:</span> &nbsp;&nbsp;
+							{{#each genders}}
+								<label class="radio-inline"><input type="radio" name="Contact1Gender" value="{{_id}}">{{gender}}</label>
+							{{/each}}
+						</div>
+					</div>
+					<div class="row form-group">
+						<div class="col-sm-24">
+							<div class="row">
+								<div class="col-sm-24 form-group">
+									<span class="race-text">Ethnicity:</span>
+								</div>
+							</div>
+							<div class="col-sm-16 col-md-12">
+								<div class="row has-other-checkbox">
+									{{#each races}}
+									<div class="col-sm-12 form-group">
+										<label class="checkbox-inline">
+											<input type="checkbox" {{#if other}}class="other-toggle"{{/if}} name="Contact1Race" value="{{_id}}">{{race}}
+										</label>
+									</div>
+									{{/each}}
+									<div class="col-sm-12 form-group">
+										<input type="text" class="input hidden other-checkbox" name="contact1RaceOther" placeholder="Other...">
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row form-group">
+						<div class="col-sm-6">
+							<input type="text" class="input" id="contact1-date-of-birth" name="Contact1DateOfBirth" placeholder="DD/MM/YYYY">
+							<label for="contact1-date-of-birth" class="label required-field">Date of Birth</label>
+						</div>
+					</div>
+					<div class="row form-group">
+						<div class="col-sm-12">
+							<input type="text" class="input" required id="contact1-address1" name="contact1Address1">
+							<label for="contact1-address1" class="label required-field">Address 1</label>
+						</div>
+					</div>
+					<div class="row form-group">
+						<div class="col-sm-12">
+							<input type="text" class="input" required id="contact1-address2" name="contact1Address2">
+							<label for="contact1-address2" class="label required-field">Address 2</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-6 form-group">
+							<input type="text" class="input" required id="contact1-city" name="contact1City">
+							<label for="contact1-city" class="label required-field">City</label>
+						</div>
+						<div class="col-sm-6 form-group">
+							<select id="contact1-state" name="contact1State" class="input" required>
+							{{#each states}}
+								<option value="{{_id}}">{{state}}</option>
+							{{/each}}
+							</select>
+							<label for="contact1-state" class="label required-field">State</label>
+						</div>
+						<div class="col-sm-6 form-group">
+							<input type="text" class="input" required id="contact1-zip" name="contact1Zip" pattern="\d{5}([ \-]\d{4})?">
+							<label for="contact1-zip" class="label required-field">Zip Code</label>
+						</div>
+					</div>
+					
+
+					<div class="registration-section-header">Contact 2 Information</div>
+
+					<div class="row">
+						<div class="col-sm-12 col-md-6 form-group">
+							<input type="text" class="input" id="contact2-first-name" name="contact2FirstName" required />
+							<label for="contact2-first-name" class="label required-field">First Name</label>
+						</div>
+						<div class="col-sm-12 col-md-6 form-group">
+							<input type="text" class="input" id="contact2-last-name" name="contact2LastName" required />
+							<label for="contact2-last-name" class="label required-field">Last Name</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-6 form-group">
+							<input type="text" class="input" id="contact2-primary-phone" name="contact2PrimaryPhone" required />
+							<label for="contact2-primary-phone" class="label required-field">Primary Phone</label>
+						</div>
+						<div class="col-sm-6 form-group">
+							<select id="contact2-phone-type" name="contact2PhoneType" class="input" required>
+								<option value="Cell">Cell</option>
+								<option value="Work">Work</option>
+								<option value="Phone">Phone</option>
+							</select>
+							<label for="contact2-phone-type" class="label required-field">Specify Type</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12 form-group">
+							<input type="email" class="input" required id="contact2-email" name="contact2Email" pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
+							<label for="contact2-email" class="label required-field">Email</label>
+						</div>
+					</div>
+					<div class="row double-padding">
+						<div class="col-sm-24">
+							<span class="gender-select-text">Gender:</span> &nbsp;&nbsp;
+							{{#each genders}}
+								<label class="radio-inline"><input type="radio" name="Contact2Gender" value="{{_id}}">{{gender}}</label>
+							{{/each}}
+						</div>
+					</div>
+					<div class="row form-group">
+						<div class="col-sm-24">
+							<div class="row">
+								<div class="col-sm-24 form-group">
+									<span class="race-text">Ethnicity:</span>
+								</div>
+							</div>
+							<div class="col-sm-16 col-md-12">
+								<div class="row has-other-checkbox">
+									{{#each races}}
+									<div class="col-sm-12 form-group">
+										<label class="checkbox-inline">
+											<input type="checkbox" {{#if other}}class="other-toggle"{{/if}} name="Contact2Race" value="{{_id}}">{{race}}
+										</label>
+									</div>
+									{{/each}}
+									<div class="col-sm-12 form-group">
+										<input type="text" class="input hidden other-checkbox" name="contact2RaceOther" placeholder="Other...">
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row form-group">
+						<div class="col-sm-6">
+							<input type="text" class="input" id="contact2-date-of-birth" name="Contact2DateOfBirth" placeholder="DD/MM/YYYY">
+							<label for="contact2-date-of-birth" class="label">Date of Birth</label>
+						</div>
+					</div>
+
+
+					<div class="registration-section-header">Social Worker Information</div>
+
+					<div class="row">
+						<div class="col-sm-12 col-md-6 form-group">
+							<input type="text" class="input" id="social-worker-first-name" name="socialWorkerFirstName" required />
+							<label for="social-worker-first-name" class="label required-field">First Name</label>
+						</div>
+						<div class="col-sm-12 col-md-6 form-group">
+							<input type="text" class="input" id="social-worker-last-name" name="socialWorkerLastName" required />
+							<label for="social-worker-last-name" class="label required-field">Last Name</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12 form-group">
+							<input type="text" class="input" required id="social-worker-agency" name="socialWorkerAgency">
+							<label for="social-worker-agency" class="label required-field">Agency</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12 form-group">
+							<input type="email" class="input" required id="social-worker-email" name="socialWorkerEmail" pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
+							<label for="social-worker-email" class="label required-field">Email</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-6 form-group">
+							<input type="text" class="input" id="social-worker-phone" name="socialWorkerPhone" required />
+							<label for="social-worker-phone" class="label required-field">Phone</label>
+						</div>
+					</div>
+
+
+					<div class="registration-section-header">Mare &amp; You</div>
+
+					<div class="row">
+						<div class="col-sm-24 form-group">
+							<label class="label marg-bottom-xs-5">How did you hear about MARE/this particular child?</label>
+						</div>
+
+						<div class="col-sm-16 col-md-12">
+							<div class="row has-other-checkbox">
+								{{#each waysToHearAboutMARE}}
+								<div class="col-sm-12 form-group">
+									<label class="checkbox-inline">
+										<input type="checkbox" {{#if other}}class="otherWayToHearAboutMARE other-toggle" {{/if}}name="howDidYouHear" value="{{_id}}">{{wayToHearAboutMARE}}
+									</label>
+								</div>
+								{{/each}}
+								<div class="col-sm-12 form-group">
+									<input type="text" class="input hidden other-checkbox" id="how-did-you-hear-other" name="howDidYouHearOther" placeholder="other...">
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row form-group">
+						<div class="col-sm-24 form-group">
+							<label class="label marg-bottom-xs-5">I would like to receive the MARE Moment (monthly e-newsletter)</label>
+						</div>
+						<div class="col-sm-24">
+							<div class="row">
+								<div class="col-xs-3">
+									<label class="radio-inline"><input type="radio" name="receiveMareMoment" value="Yes">Yes</label>
+								</div>
+								<div class="col-xs-3">
+									<label class="radio-inline"><input type="radio" name="receiveMareMoment" value="No">No</label>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row form-group">
+						<div class="col-sm-24 form-group">
+							<label class="label marg-bottom-xs-5">I would like to be notified about upcoming adoption events in MA:</label>
+						</div>
+						<div class="col-sm-24">
+							<div class="row">
+								<div class="col-xs-3">
+									<label class="radio-inline"><input type="radio" name="receiveUpcomingEvents" value="Yes">Yes</label>
+								</div>
+								<div class="col-xs-3">
+									<label class="radio-inline"><input type="radio" name="receiveUpcomingEvents" value="No">No</label>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row form-group">
+						<div class="col-sm-24 form-group">
+							<label class="label marg-bottom-xs-5">For Massachusetts Families only: I would like to receive a General Adoption Information Packet:</label>
+						</div>
+						<div class="col-sm-24">
+							<div class="row">
+								<div class="col-xs-3">
+									<label class="radio-inline"><input type="radio" name="receiveInfoPacket" value="Yes">Yes</label>
+								</div>
+								<div class="col-xs-3">
+									<label class="radio-inline"><input type="radio" name="receiveInfoPacket" value="No">No</label>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row form-group">
+						<div class="col-sm-24">
+							<textarea class="input" id="comments" name="comments" rows="5"></textarea>
+							<label for="comments" class="label">Questions or Comments</label>
+						</div>
+					</div>
+					<button class="register" type="submit">Submit</button>
+				</form>
+			</section>
+		</div>
+	</div>
+</div>

@@ -3,7 +3,9 @@ var keystone 	= require('keystone'),
     Race = keystone.list('Race'),
     State = keystone.list('State'),
     Gender = keystone.list('Gender'),
-	Form 		= keystone.list('Form');
+    WayToHearAboutMARE  = keystone.list('Way To Hear About MARE'),
+	Form 		= keystone.list('Form'),
+    _ = require('underscore');
 
 exports = module.exports = function(req, res) {
     'use strict';
@@ -20,12 +22,29 @@ exports = module.exports = function(req, res) {
             })},
         function(done) {
             Race.model.find().select('race').exec().then(function(races) {
+                _.each(races, function(race) {
+                    if(race.race === 'other') {
+                        race.other = true;
+                    }
+                });
                 locals.races = races;
                 done();
             })},
         function(done) {
             Gender.model.find().select('gender').exec().then(function(genders) {
                 locals.genders = genders;
+                done();
+            })},
+        function(done) {
+            WayToHearAboutMARE.model.find().select('wayToHearAboutMARE').exec().then(function(waysToHearAboutMARE) {
+
+                _.each(waysToHearAboutMARE, function(wayToHearAboutMARE) {
+                    if(wayToHearAboutMARE.wayToHearAboutMARE === 'other') {
+                        wayToHearAboutMARE.other = true;
+                    }
+                });
+
+                locals.waysToHearAboutMARE = waysToHearAboutMARE;
                 done();
             })}
     ], function() {
@@ -38,6 +57,7 @@ exports = module.exports = function(req, res) {
 
                 case "adoption-party-social-worker-registration-form":
                 //The URL in there now is misspelled... this case catches it. registr(ai)ton.
+
 			    case "adoption-party-social-worker-registraiton-form":
 			        view.render('forms/adoption-party-social-worker.hbs');
 			        break;
@@ -52,6 +72,10 @@ exports = module.exports = function(req, res) {
 
                 case "child-registration-form":
                     view.render('forms/child-registration.hbs');
+                    break;
+
+                 case "information-request-form":
+                    view.render('forms/information-request-form.hbs');
                     break;
 
 			    default:
@@ -72,12 +96,7 @@ exports = module.exports = function(req, res) {
 
                         });
                     
-
 			        //view.render('form');
 			}
     });
-
-
-
-
 };
