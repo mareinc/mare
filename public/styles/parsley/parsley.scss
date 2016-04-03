@@ -8,7 +8,8 @@ textarea.parsley-success {
 
 input.parsley-error,
 select.parsley-error,
-textarea.parsley-error {
+textarea.parsley-error,
+.error-container.parsley-error {
 	color: #B94A48;
 	background-color: #F2DEDE;
 	border: 1px solid #EED3D7;
