@@ -182,7 +182,19 @@ Family.add('General Information', {
 	homestudy: {
 		completed: { type: Types.Boolean, label: 'homestudy completed', initial: true },
 		initialDate: { type: Types.Text, label: 'initial date homestudy completed', note: 'mm/dd/yyyy', dependsOn: { 'homestudy.completed': true }, initial: true },
-		mostRecentDate: { type: Types.Text, label: 'most recent update completed', note: 'mm/dd/yyyy', dependsOn: { 'homestudy.completed': true }, initial: true }
+		mostRecentDate: { type: Types.Text, label: 'most recent update completed', note: 'mm/dd/yyyy', dependsOn: { 'homestudy.completed': true }, initial: true },
+
+		homestudyFile: {
+			dependsOn: { 'homestudy.completed': true },
+			type: Types.S3File,
+			s3path: '/family/homestudy',
+			filename: function(item, filename){
+				console.log('item');
+				console.log(item);
+				// prefix file name with registration number and add the user's name for easier identification
+				return item.fileName;
+			}
+		}
 	},
 
 	onlineMatching: {
@@ -272,7 +284,13 @@ Family.add('General Information', {
 	heardAboutMAREOther: { type: Types.Text, label: 'other', note: 'only fill out if "other" is selected in the field above', initial: true }
 
 }, 'Registration Details', {
+
 	registeredViaWebsite: { type: Types.Boolean, label: 'registered through the website', noedit: true, initial: true }
+
+}, 'System Information', {
+
+	fileName: { type: Types.Text, hidden: true }
+
 });
 
 Family.relationship({ path: 'placements', ref: 'Placement', refPath: 'prospectiveParentOrFamily' });
@@ -302,6 +320,8 @@ Family.schema.pre('save', function(next) {
 	} else {
 		this.contact2.name.full = '';
 	}
+	// Create an identifying name for file uploads
+	this.fileName = this.registrationNumber + '_' + this.contact1.name.first.toLowerCase();
 
 	// TODO: Assign a registration number if one isn't assigned
 	next();
@@ -318,5 +338,5 @@ Family.schema.virtual('canAccessKeystone').get(function() {
 });
 
 // // Define default columns in the admin interface and register the model
-Family.defaultColumns = 'registrationNumber, contact1.name.full, contact2.name.full, permissions.isActive';
+Family.defaultColumns = 'registrationNumber, contact1.name.full, permissions.isActive';
 Family.register();
