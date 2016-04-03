@@ -273,7 +273,7 @@
 								</div>
 							</div>
 							<div class="row">
-								<div class="col-sm-12 form-group">
+								<div class="col-sm-24 form-group">
 									<label class="checkbox-inline social-worker-title-checkbox">
 										<input type="checkbox" name="titleDiffersFromPosition" data-parsley-errors-messages-disabled="true" required="">My title differs from the position listed above
 									</label>
@@ -574,14 +574,15 @@
 
 						<section class="family-constellation-section">
 
-							<div class="registration-section-header">Family Constellation</div>
+							<div class="registration-section-header required-field">Family Constellation</div>
 
 							<div class="row form-group">
 								<div class="col-sm-12">
-									<select id="family-constellation" class="input" name="familyConstellation">
-									{{#each familyConstellations}}
+									<select id="family-constellation" class="input" name="familyConstellation" data-parsley-errors-messages-disabled="true" required="">
+										<option value=""></option>
+										{{#each familyConstellations}}
 										<option value="{{_id}}">{{familyConstellation}}</option>
-									{{/each}}
+										{{/each}}
 									</select>
 									<label for="family-constellation" class="label">Family Constellation</label>
 								</div>
@@ -931,12 +932,12 @@
 								</div>
 							</div>
 							<div class="row">
-								<div class="col-sm-12 form-group">
+								<div class="col-sm-24 form-group">
 									<label class="label marg-bottom-xs-5">Other language(s) spoken at home</label>
 								</div>
 							</div>
 							<div class="row form-group">
-								<div class="col-sm-12">
+								<div class="col-sm-16">
 									<div class="row">
 									{{#each languages}}
 										<div class="col-sm-12 form-group">
@@ -1092,12 +1093,12 @@
 								</div>
 							</div>
 							<div class="row">
-								<div class="col-sm-12 form-group">
+								<div class="col-sm-24 form-group">
 									<label class="label marg-bottom-xs-5 required-field">Race/Ethnicity (check all that apply)</label>
 								</div>
 							</div>
 							<div class="row form-group">
-								<div class="col-sm-12">
+								<div class="col-sm-16">
 									<div id="preferred-race-error-container" class="row error-container">
 										{{#each races}}
 										<div class="col-sm-12 form-group">
@@ -1149,12 +1150,12 @@
 								</div>
 							</div>
 							<div class="row">
-								<div class="col-sm-12 form-group">
+								<div class="col-sm-24 form-group">
 									<label class="label marg-bottom-xs-5">Disabilities (check all that apply)</label>
 								</div>
 							</div>
 							<div class="row form-group">
-								<div class="col-sm-12">
+								<div class="col-sm-16">
 									<div class="row">
 									{{#each disabilities}}
 										<div class="col-sm-12 form-group">
@@ -1167,12 +1168,12 @@
 								</div>
 							</div>
 							<div class="row">
-								<div class="col-sm-12 form-group">
+								<div class="col-sm-24 form-group">
 									<label class="label marg-bottom-xs-5">Other considerations (check all that apply)</label>
 								</div>
 							</div>
 							<div class="row form-group">
-								<div class="col-sm-12">
+								<div class="col-sm-16">
 									<div class="row">
 									{{#each otherConsiderations}}
 										<div class="col-sm-12 form-group">
@@ -1192,7 +1193,7 @@
 
 							<div class="row">
 								<div class="col-sm-24 form-group">
-									<label class="label required-field marg-bottom-xs-5">How did you hear about MARE (please check all that apply)?</label>
+									<label class="label required-field marg-bottom-xs-5">How did you hear about MARE (check all that apply)?</label>
 								</div>
 								<div class="col-sm-16">
 									<div id="family-how-did-you-hear-error-container" class="row error-container">
