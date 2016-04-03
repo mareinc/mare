@@ -1,9 +1,9 @@
 var keystone 		= require('keystone'),
 	async 			= require('async'),
 	_ 				= require('underscore'),
-	SiteUser 		= keystone.list('Site User'),
+	SiteVisitor 	= keystone.list('Site Visitor'),
 	SocialWorker 	= keystone.list('Social Worker'),
-	Family			= keystone.list('Prospective Parent or Family');
+	Family			= keystone.list('Family');
 	MailingList		= keystone.list('Mailing List');
 
 exports.registerUser = function(req, res, next) {
@@ -19,7 +19,7 @@ exports.registerUser = function(req, res, next) {
 	// Set the user type and redirect URL for use throughout the registration process
 	switch(res.locals.registrationType) {
 		case 'siteVisitor':
-			res.locals.userType = SiteUser;
+			res.locals.userType = SiteVisitor;
 			res.locals.redirectPath = '/register#site-visitor';
 			break;
 		case 'socialWorker':
@@ -81,7 +81,7 @@ exports.registerUser = function(req, res, next) {
 
 exports.saveSiteVisitor = function saveSiteVisitor(user, res, done) {
 
-	var newUser = new SiteUser.model({
+	var newUser = new SiteVisitor.model({
 
 		name: {
 			first			: user.firstName,

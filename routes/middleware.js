@@ -13,8 +13,6 @@ var _ 				= require('underscore'),
 	// Load in Keystone for model references
 	keystone 		= require('keystone'),
 	User 			= keystone.list('User'),
-	SiteUser 		= keystone.list('Site User'),
-	SocialWorker 	= keystone.list('Social Worker'),
 	Child 			= keystone.list('Child'),
 	Gender 			= keystone.list('Gender');
 
