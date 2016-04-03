@@ -1,14 +1,16 @@
 var keystone 		= require('keystone'),
 	async 			= require('async'),
 	_ 				= require('underscore'),
+	User			= keystone.list('User'),
 	SiteVisitor 	= keystone.list('Site Visitor'),
 	SocialWorker 	= keystone.list('Social Worker'),
-	Family			= keystone.list('Family');
+	Family			= keystone.list('Family'),
 	MailingList		= keystone.list('Mailing List');
 
 exports.registerUser = function(req, res, next) {
 
-	var user = req.body;
+	var user = req.body,
+		files;
 
 	// Initialize validation checks to failing values to ensure they actually pass all checks
 	res.locals.isEmailInvalid		= true,
@@ -19,15 +21,15 @@ exports.registerUser = function(req, res, next) {
 	// Set the user type and redirect URL for use throughout the registration process
 	switch(res.locals.registrationType) {
 		case 'siteVisitor':
-			res.locals.userType = SiteVisitor;
+			res.locals.userModel = SiteVisitor;
 			res.locals.redirectPath = '/register#site-visitor';
 			break;
 		case 'socialWorker':
-			res.locals.userType = SocialWorker;
+			res.locals.userModel = SocialWorker;
 			res.locals.redirectPath = '/register#social-worker';
 			break;
-		case 'prospectiveParent':
-			res.locals.userType = Family;
+		case 'family':
+			res.locals.userModel = Family;
 			res.locals.redirectPath = '/register#family';
 	}
 	// TODO: Remove this line, it's just for debugging
@@ -35,7 +37,7 @@ exports.registerUser = function(req, res, next) {
 
 	async.parallel([
 		function(done) { exports.validateEmail(user.email, res, done); },
-		function(done) { exports.checkForDuplicateEmail(user.email, res.locals.userType, res, done); },
+		function(done) { exports.checkForDuplicateEmail(user.email, res, done); },
 		function(done) { exports.validatePassword(user.password, user.confirmPassword, res, done); }
 	], function() {
 		if(res.locals.isEmailInvalid) { res.locals.messages.push({ type: 'error', message: 'email is invalid' }); }
@@ -46,31 +48,39 @@ exports.registerUser = function(req, res, next) {
 		// TODO: Add check for required fields
 		if(res.locals.messages.length > 0) {
 			// TODO: send the error messages as flash messages
-			res.redirect(res.locals.redirectPath);
+			res.redirect(303, res.locals.redirectPath);
 		} else {
 			if(res.locals.registrationType === 'siteVisitor') {
+
 				async.series([
 					function(done) { exports.saveSiteVisitor(user, res, done); }
 				], function() {
-					res.redirect(res.locals.redirectPath);
+					res.redirect(303, res.locals.redirectPath);
 					 // TODO: Post a success or error flash message
 				});
+
 			} else if (res.locals.registrationType === 'socialWorker') {
+
 				async.series([
 					function(done) { exports.saveSocialWorker(user, res, done); },
-					function(done) { exports.getUserID(user, res.locals.userType, res, done); },
-					function(done) { exports.addToMailingLists(user, res.locals.userType, res, done); }
+					function(done) { exports.getUserID(user, res.locals.userModel, res, done); },
+					function(done) { exports.addToMailingLists(user, res, done); }
 				], function() {
-					res.redirect(res.locals.redirectPath);
+					res.redirect(303, res.locals.redirectPath);
 					 // TODO: Post a success or error flash message
 				});
-			} else if (res.locals.registrationType === 'prospectiveParent') {
+
+			} else if (res.locals.registrationType === 'family') {
+				// Store any uploaded files
+			    res.locals.files = req.files;
+
 				async.series([
 					function(done) { exports.saveFamily(user, res, done); },
-					function(done) { exports.getUserID(user, res.locals.userType, res, done); },
-					function(done) { exports.addToMailingLists(user, res.locals.userType, res, done); }
+					function(done) { exports.getUserID(user, res.locals.userModel, res, done); },
+					function(done) { exports.uploadFile(res.locals.userModel, 'homestudy', 'homestudyFile_upload', res.locals.files.homestudyFile_upload, res, done); },
+					function(done) { exports.addToMailingLists(user, res, done); }
 				], function() {
-					res.redirect(res.locals.redirectPath);
+					res.redirect(303, res.locals.redirectPath);
 					 // TODO: Post a success or error flash message
 				});
 			}
@@ -112,7 +122,7 @@ exports.saveSiteVisitor = function saveSiteVisitor(user, res, done) {
 	});
 
 	newUser.save(function(err) {
-		res.locals.messages.push({ type: 'success', message: 'your site visitor account has been successfully created' });
+		res.locals.messages.push({ type: 'success', message: 'Congratulations, your account has been successfully created' });
 		done();
 	}, function(err) {
 		console.log(err);
@@ -276,7 +286,7 @@ exports.saveFamily = function saveFamily(user, res, done) {
 		registeredViaWebsite				: true
 	});
 
-	exports.setChildren(user, newUser);
+	exports.setChildren(user, newUser, res);
 
 	newUser.save(function(err) {
 		console.log('new family saved');
@@ -306,12 +316,10 @@ exports.validateEmail = function validateEmail(email, res, done) {
 	done();
 
 };
-// Return true if the submitted email already exists in the system
-// TODO: This doesn't return in time for the above check and users with duplicate emails are allowed to be created
-// TODO: We need to verify that no user anywhere in the system is registered with that email, not just the user type they are trying to create
-exports.checkForDuplicateEmail = function checkForDuplicateEmail(email, userType, res, done) {
-
-	userType.model.findOne()
+// Return true if the submitted email already exists in the system for a user of any type
+exports.checkForDuplicateEmail = function checkForDuplicateEmail(email, res, done) {
+	// All user types inherit from the User model, so checking User will allow us to accurately check for duplicates
+	User.model.findOne()
 		.where('email', email)
 		.exec(function (err, user) {
 
@@ -335,17 +343,17 @@ exports.validatePassword = function validatePassword(password, confirmPassword, 
 
 };
 
-exports.getUserID = function getUserID(user, userType, res, done) {
+exports.getUserID = function getUserID(user, userModel, res, done) {
 	var email = user.email;
 
-	userType.model.findOne({ email: email }).exec(function (err, user) {
+	userModel.model.findOne({ email: email }).exec(function (err, user) {
 		res.locals.newUserID = user._id;
 		done();
 	});
 
 };
 
-exports.addToMailingLists = function addToMailingLists(user, userType, res, done) {
+exports.addToMailingLists = function addToMailingLists(user, res, done) {
 	res.locals.mailingLists = {
 		news			: '5692fcc6eb0d8a13f5f5ecc7',
 		adoptionParties	: '569806f50151ac0300616ca0',
@@ -357,15 +365,16 @@ exports.addToMailingLists = function addToMailingLists(user, userType, res, done
 	if(user.mareEmailList === 'yes') { res.locals.requestedMailingLists.push('news'); }
 	if(user.adoptionPartyEmailList === 'yes') { res.locals.requestedMailingLists.push('adoptionParties'); }
 	if(user.fundraisingEventsEmailList === 'yes') { res.locals.requestedMailingLists.push('fundraising'); }
-
+	// Loop through each of the mailing lists the user should be added to and add them.  Async allows all assignments
+	// to happen in parallel before handling the result.
 	async.each(res.locals.requestedMailingLists, function(listName, callback) {
-		keystone.list('Mailing List').model.findById(res.locals.mailingLists[listName])
+		MailingList.model.findById(res.locals.mailingLists[listName])
 				.exec()
 				.then(function(result) {
 
 					if(res.locals.registrationType === 'socialWorker') {
 						result.socialWorkerAttendees.push(res.locals.newUserID);
-					} else if (res.locals.registrationType === 'prospectiveParent') {
+					} else if (res.locals.registrationType === 'family') {
 						result.familyAttendees.push(res.locals.newUserID);
 					}
 
@@ -396,6 +405,33 @@ exports.addToMailingLists = function addToMailingLists(user, userType, res, done
 	});
 };
 
+exports.uploadFile = function uploadFile(userModel, targetFieldPrefix, targetField, file, res, done) {
+
+	userModel.model.findById(res.locals.newUserID)
+				.exec()
+				.then(function(user) {
+					console.log('file');
+					console.log(file);
+
+					if(file.length > 0) {
+						user[targetFieldPrefix][targetField] = file;
+					}
+
+					user.save(function(err) {
+						console.log('file saved for the user');
+						done();
+					}, function(err) {
+						console.log(err);
+						done();
+					});
+
+				}, function(err) {
+					console.log('error fetching user to save file attachment');
+					console.log(err);
+					done();
+				});
+};
+
 exports.getCurrentDate = function getCurrentDate() {
 
 	var date = new Date();
@@ -405,7 +441,7 @@ exports.getCurrentDate = function getCurrentDate() {
 
 };
 
-exports.setChildren = function setChildren(family, familyObject) {
+exports.setChildren = function setChildren(family, familyObject, res) {
 
 	console.log('adding children to family object');
 

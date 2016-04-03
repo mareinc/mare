@@ -574,7 +574,7 @@
 
 						<section class="family-constellation-section">
 
-							<div class="registration-section-header required-field">Family Constellation</div>
+							<div class="registration-section-header">Family Constellation</div>
 
 							<div class="row form-group">
 								<div class="col-sm-12">
@@ -584,7 +584,7 @@
 										<option value="{{_id}}">{{familyConstellation}}</option>
 										{{/each}}
 									</select>
-									<label for="family-constellation" class="label">Family Constellation</label>
+									<label for="family-constellation" class="label required-field">Family Constellation</label>
 								</div>
 							</div>
 						</section>
@@ -713,9 +713,9 @@
 									<div class="col-sm-12 form-group">
 										<div class="btn btn-default btn-file-upload">
 										    <span>Upload</span>
-										    <input id="upload-button" type="file" class="file-upload" name="homeStudyFile_upload">
+										    <input id="upload-button" type="file" class="file-upload" id="homestudyFile_upload" name="homestudyFile_upload">
 										</div>
-										<span class="homestudy-file-upload-text"></span>
+										<span class="homestudy-file-text"></span>
 									</div>
 								</div>
 								<div class="row">
@@ -920,10 +920,10 @@
 							</div>
 							<div class="row form-group">
 								<div class="col-sm-12">
-									<label for="primary-language-in-home" class="label marg-bottom-xs-5">Primary language spoken at home</label>
+									<label for="primary-language-in-home" class="label marg-bottom-xs-5 required-field">Primary language spoken at home</label>
 								</div>
 								<div class="col-sm-12">
-									<select name="primaryLanguageInHome" class="input registration-number-select">
+									<select name="primaryLanguageInHome" class="input registration-number-select" data-parsley-errors-messages-disabled="true" required="">
 										<option value=""></option>
 										{{#each languages}}
 											<option value="{{_id}}">{{language}}</option>

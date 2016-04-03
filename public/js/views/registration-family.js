@@ -108,7 +108,7 @@
 			var filepath = event.target.value;
 			var filename = filepath.substr( filepath.lastIndexOf("\\") + 1 );
 			// Show the file name to the user as a point of reference after they've selected the file they wish to upload
-			this.$(".homestudy-file-upload-text").html(filename);
+			this.$(".homestudy-file-text").html(filename);
 		},
 
 		validateForm: function validateForm() {
