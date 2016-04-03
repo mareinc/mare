@@ -154,9 +154,9 @@ keystone.set('email tests', require('./routes/emails'));
 
 // Configure the navigation bar in Keystone's Admin UI
 keystone.set('nav', {
-	'people'			: ['users', 'site-users', 'prospective-parent-or-families', 'social-workers', 'children'],
+	'people'			: ['users', 'admins', 'site-visitors', 'families', 'social-workers', 'children'],
 	'images'			: ['featured-items', 'slideshows', 'slideshow-items'],
-	'content pages'		: ['pages', 'forms'],
+	'content pages'		: ['pages'],
 	'content snippets'	: ['success-stories'],
 	'events'			: ['events'],
 	'mailing lists'		: ['mailing-lists'],
