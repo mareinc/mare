@@ -159,13 +159,12 @@
 								<div class="col-sm-24 form-group">
 									<label class="label required-field marg-bottom-xs-5">How did you hear about MARE (please check all that apply)?</label>
 								</div>
-								<div class="site-visitor-how-did-you-hear-error form-group-error hidden">You must select at least one.</div>
-								<div class="col-sm-12">
-									<div class="row">
+								<div class="col-sm-16">
+									<div id="site-visitor-how-did-you-hear-error-container" class="row error-container">
 										{{#each waysToHearAboutMARE}}
 										<div class="col-sm-12 form-group">
 											<label class="checkbox-inline way-to-hear-about-MARE {{#if other}}other-way-to-hear-about-mare{{/if}}">
-												<input type="checkbox" name="howDidYouHear[]" value="{{_id}}" data-parsley-errors-messages-disabled="true" {{#if other}}data-parsley-mincheck="1" required=""{{/if}}>{{wayToHearAboutMARE}}
+												<input type="checkbox" name="howDidYouHear[]" value="{{_id}}" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#site-visitor-how-did-you-hear-error-container" data-parsley-mincheck="1" required="">{{wayToHearAboutMARE}}
 											</label>
 										</div>
 										{{/each}}
@@ -403,7 +402,7 @@
 				<section class="family-registration hidden">
 					<div class="registration-type-header">Prospective Parent Registration</div>
 					<span class="required required-description">* Required</span>
-					<form action="/register" class="registration-form registration-form--family" method="POST">
+					<form enctype="multipart/form-data" action="/register" class="registration-form registration-form--family" method="POST">
 						<input type="hidden" class="registration-type" name="registrationType" value="prospectiveParent">
 
 						<section class="family-account-setup-section">
@@ -463,26 +462,30 @@
 							</div>
 							<div class="row">
 								<div class="col-sm-24 form-group">
-									<span class="gender-select-text required-field">Gender</span> &nbsp;&nbsp;
-									{{#each genders}}
-										<label class="radio-inline"><input type="radio" name="contact1Gender" value="{{_id}}">{{gender}}</label>
-									{{/each}}
+									<span id="contact1-gender-error-container" class="error-container">
+										<span class="gender-select-text required-field">Gender</span> &nbsp;&nbsp;
+										{{#each genders}}
+											<label class="radio-inline"><input type="radio" name="contact1Gender" value="{{_id}}" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#contact1-gender-error-container" required="">{{gender}}</label>
+										{{/each}}
+									</span>
 								</div>
 							</div>
 							<div class="row">
 								<div class="col-sm-12">
 									<div class="row">
-										<div class="col-sm-12 form-group">
+										<div class="col-sm-24 form-group">
 											<span class="race-text">Race/Ethnicity (check all that apply)</span>
 										</div>
 									</div>
-									{{#each races}}
-									<div class="col-sm-12 form-group">
-										<label class="checkbox-inline">
-											<input type="checkbox" name="contact1Race" value="{{_id}}">{{race}}
-										</label>
+									<div class="row">
+										{{#each races}}
+										<div class="col-sm-12 form-group">
+											<label class="checkbox-inline">
+												<input type="checkbox" name="contact1Race" value="{{_id}}">{{race}}
+											</label>
+										</div>
+										{{/each}}
 									</div>
-									{{/each}}
 								</div>
 								<div class="col-sm-12">
 									<div class="form-group">
@@ -542,17 +545,19 @@
 							<div class="row">
 								<div class="col-sm-12">
 									<div class="row">
-										<div class="col-sm-12 form-group">
-											<span class="race-text">Race/Ethnicity (check all that apply):</span>
+										<div class="col-sm-24 form-group">
+											<span class="race-text">Race/Ethnicity (check all that apply)</span>
 										</div>
 									</div>
-									{{#each races}}
-									<div class="col-sm-12 form-group">
-										<label class="checkbox-inline">
-											<input type="checkbox" name="contact2Race" value="{{_id}}">{{race}}
-										</label>
+									<div class="row">
+										{{#each races}}
+										<div class="col-sm-12 form-group">
+											<label class="checkbox-inline">
+												<input type="checkbox" name="contact2Race" value="{{_id}}">{{race}}
+											</label>
+										</div>
+										{{/each}}
 									</div>
-									{{/each}}
 								</div>
 								<div class="col-sm-12">
 									<div class="form-group">
@@ -630,32 +635,61 @@
 									<label for="home-phone" class="label">Home Phone</label>
 								</div>
 							</div>
+
+
 							<div class="row">
-								<div class="col-sm-24 form-group">Where are you in the adoption process?</div>
 								<div class="col-sm-12 form-group">
-									<label class="checkbox-inline">
-										<input type="checkbox" name="processProgression" value="gatheringInformation">Gathering Information
-									</label>
+									<label class="label marg-bottom-xs-5">Race/Ethnicity (check all that apply)</label>
 								</div>
-								<div class="col-sm-12 form-group">
-									<label class="checkbox-inline">
-										<input type="checkbox" name="processProgression" value="lookingForAgency">Looking for an agency
-									</label>
+							</div>
+							<div class="row form-group">
+								<div class="col-sm-12">
+									<div class="row">
+									{{#each races}}
+										<div class="col-sm-12 form-group">
+											<label class="checkbox-inline">
+												<input type="checkbox" name="adoptionPrefRace" value="{{_id}}">{{race}}
+											</label>
+										</div>
+									{{/each}}
+									</div>
 								</div>
-								<div class="col-sm-12 form-group">
-									<label class="checkbox-inline">
-										<input type="checkbox" name="processProgression" value="workingWithAgency">Working with an agency
-									</label>
+							</div>
+
+							<div class="row">
+								<div class="col-sm-24 form-group">
+									<label class="label marg-bottom-xs-5">Where are you in the adoption process?</label>
 								</div>
-								<div class="col-sm-12 form-group">
-									<label class="checkbox-inline">
-										<input type="checkbox" name="processProgression" value="MAPPTrainingCompleted">MAPP training completed
-									</label>
-								</div>
-								<div class="col-sm-12 form-group">
-									<label class="checkbox-inline">
-										<input type="checkbox" class="homestudy-completed-checkbox" name="processProgression" value="homestudyCompleted">Homestudy completed
-									</label>
+							</div>
+							<div class="row form-group">
+								<div class="col-sm-16">
+									<div class="row">
+										<div class="col-sm-12 form-group">
+											<label class="checkbox-inline">
+												<input type="checkbox" name="processProgression" value="gatheringInformation">Gathering Information
+											</label>
+										</div>
+										<div class="col-sm-12 form-group">
+											<label class="checkbox-inline">
+												<input type="checkbox" name="processProgression" value="lookingForAgency">Looking for an agency
+											</label>
+										</div>
+										<div class="col-sm-12 form-group">
+											<label class="checkbox-inline">
+												<input type="checkbox" name="processProgression" value="workingWithAgency">Working with an agency
+											</label>
+										</div>
+										<div class="col-sm-12 form-group">
+											<label class="checkbox-inline">
+												<input type="checkbox" name="processProgression" value="MAPPTrainingCompleted">MAPP training completed
+											</label>
+										</div>
+										<div class="col-sm-12 form-group">
+											<label class="checkbox-inline">
+												<input type="checkbox" class="homestudy-completed-checkbox" name="processProgression" value="homestudyCompleted">Homestudy completed
+											</label>
+										</div>
+									</div>
 								</div>
 							</div>
 						</section>
@@ -699,7 +733,7 @@
 									<div class="col-sm-12 form-group">
 										<div class="btn btn-default btn-file-upload">
 										    <span>Upload</span>
-										    <input id="upload-button" type="file" class="file-upload" name="homeStudyFileUpload">
+										    <input id="upload-button" type="file" class="file-upload" name="homeStudyFile_upload">
 										</div>
 										<span class="homestudy-file-upload-text"></span>
 									</div>
@@ -1158,22 +1192,21 @@
 								</div>
 							</div>
 
-
 						</section>
 
 						<section class="family-mare-and-you-section">
 							<div class="registration-section-header">Mare &amp; You</div>
+
 							<div class="row">
 								<div class="col-sm-24 form-group">
 									<label class="label required-field marg-bottom-xs-5">How did you hear about MARE (please check all that apply)?</label>
 								</div>
-								<div class="family-how-did-you-hear-error form-group-error hidden">You must select at least one.</div>
-								<div class="col-sm-12">
-									<div class="row">
+								<div class="col-sm-16">
+									<div id="family-how-did-you-hear-error-container" class="row error-container">
 										{{#each waysToHearAboutMARE}}
 										<div class="col-sm-12 form-group">
 											<label class="checkbox-inline way-to-hear-about-MARE {{#if other}}other-way-to-hear-about-mare{{/if}}">
-												<input type="checkbox" name="howDidYouHear[]" value="{{_id}}" data-parsley-errors-messages-disabled="true" {{#if other}}data-parsley-mincheck="1" required=""{{/if}}>{{wayToHearAboutMARE}}
+												<input type="checkbox" name="howDidYouHear[]" value="{{_id}}" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#family-how-did-you-hear-error-container" data-parsley-mincheck="1" required="">{{wayToHearAboutMARE}}
 											</label>
 										</div>
 										{{/each}}
