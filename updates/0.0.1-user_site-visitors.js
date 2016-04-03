@@ -1,5 +1,5 @@
 exports.create = {
-	'Site User': [{
+	'Site Visitor': [{
 		permissions: {
 			isVerified: true,
 			isActive: true
