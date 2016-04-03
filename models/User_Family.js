@@ -184,7 +184,8 @@ Family.add('General Information', {
 		initialDate: { type: Types.Text, label: 'initial date homestudy completed', note: 'mm/dd/yyyy', dependsOn: { 'homestudy.completed': true }, initial: true },
 		mostRecentDate: { type: Types.Text, label: 'most recent update completed', note: 'mm/dd/yyyy', dependsOn: { 'homestudy.completed': true }, initial: true },
 
-		homestudyFile: {
+		homestudyFile_upload: {
+			label: 'homestudy file',
 			dependsOn: { 'homestudy.completed': true },
 			type: Types.S3File,
 			s3path: '/family/homestudy',
