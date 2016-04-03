@@ -9,5 +9,7 @@ exports.create = {
 		region: 'western'
 	}, {
 		region: 'Boston'
+	}, {
+		region: 'out of state'
 	}]
 };
