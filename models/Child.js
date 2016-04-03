@@ -129,7 +129,7 @@ Child.add({ heading: 'Child Information' }, {
 		s3path: '/child/photolisting-pages',
 		filename: function(item, filename){
 			// prefix file name with registration number and add the user's name for easier identification
-			return item.name.identifying;
+			return fileName;
 		}
 	},
 
@@ -138,7 +138,7 @@ Child.add({ heading: 'Child Information' }, {
 		s3path: '/child/other',
 		filename: function(item, filename){
 			// prefix file name with registration number and add the user's name for easier identification
-			return item.name.identifying;
+			return fileName;
 		}
 	}
 
@@ -166,7 +166,8 @@ Child.schema.pre('save', function(next) {
 
 
 	this.name.full = firstName + middleName + lastName;
-	this.name.identifying = this.registrationNumber + '_' + firstName.toLowerCase();
+	// Create an identifying name for file uploads
+	this.fileName = this.registrationNumber + '_' + this.name.first.toLowerCase();
 
 	// TODO: Assign a registration number if one isn't assigned
 	next();
