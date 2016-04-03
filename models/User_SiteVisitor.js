@@ -1,35 +1,28 @@
-var keystone = require('keystone'),
-	Types = keystone.Field.Types;
+var keystone	= require('keystone'),
+	Types		= keystone.Field.Types,
+	User		= keystone.list('User');
 
 // Create model
-var SiteUser = new keystone.List('Site User', {
+var SiteVisitor = new keystone.List('Site Visitor', {
+	inherits: User,
 	track: true,
 	map: { name: 'name.full' },
 	defaultSort: 'name.full'
 });
 
 // Create fields
-SiteUser.add('Permissions', {
-
-	permissions: {
-		isVerified: { type: Boolean, label: 'has a verified email address', default: false, noedit: true },
-		isActive: { type: Boolean, label: 'is active', default: true, noedit: true }
-	}
-
-}, 'User Information', {
+SiteVisitor.add('General Information', {
 
 	name: {
-		first: { type: Types.Text, label: 'first name', required: true, initial: true },
-		last: { type: Types.Text, label: 'last name', required: true, initial: true },
+		first: { type: Types.Text, label: 'first name', required: true, index: true, initial: true },
+		last: { type: Types.Text, label: 'last name', required: true, index: true, initial: true },
 		full: { type: Types.Text, label: 'name', hidden: true, noedit: true, initial: false }
 	},
 
-	password: { type: Types.Password, label: 'password', required: true, initial: true },
-	avatar: { type: Types.CloudinaryImage, label: 'avatar', folder: 'users/site users', autoCleanup: true }
+	// avatar: { type: Types.CloudinaryImage, label: 'avatar', folder: 'users/site visitors', select: true, selectPrefix: 'users/site visitors', autoCleanup: true }
+	avatar: { type: Types.CloudinaryImage, label: 'avatar', folder: 'users/site visitors', autoCleanup: true }
 
 }, 'Contact Information', {
-
-	email: { type: Types.Email, label: 'email address', unique: true, required: true, initial: true },
 
 	phone: {
 		work: { type: Types.Text, label: 'work phone number', initial: true },
@@ -51,24 +44,29 @@ SiteUser.add('Permissions', {
 	heardAboutMAREOther: { type: Types.Text, label: 'other', note: 'only fill out if "other" is selected in the field above', initial: true }
 });
 
-SiteUser.relationship({ path: 'mailing-lists', ref: 'Mailing List', refPath: 'siteUserAttendees' });
+SiteVisitor.relationship({ path: 'mailing-lists', ref: 'Mailing List', refPath: 'siteUserAttendees' });
 
 // Pre Save
-SiteUser.schema.pre('save', function(next) {
+User.schema.pre('save', function(next) {
 	'use strict';
 
 	// Populate the full name string for better identification when linking through Relationship field types
-	this.name.full = this.name.first +  ' ' + this.name.last;
+	this.name.full = this.name.first + ' ' + this.name.last;
 
 	next();
 });
 
+/* TODO: VERY IMPORTANT:  Need to fix this to provide the link to access the keystone admin panel again */
+/* 						  Changing names or reworking this file changed the check in node_modules/keystone/templates/views/signin.jade
+/*						  for user.isAdmin on line 14 */
+// Provide access to Keystone
+SiteVisitor.schema.virtual('canAccessKeystone').get(function() {
+	'use strict';
 
-SiteUser.schema.post('save', function() {
-	// this.sendNotificationEmail();
+	return false;
 });
 
-SiteUser.schema.methods.sendNotificationEmail = function(callback) {
+SiteVisitor.schema.methods.sendNotificationEmail = function(callback) {
 
 	if ('function' !== typeof callback) {
 		callback = function() {
@@ -97,5 +95,5 @@ SiteUser.schema.methods.sendNotificationEmail = function(callback) {
 };
 
 // Define default columns in the admin interface and register the model
-SiteUser.defaultColumns = 'name.full, email, isActive, isVerified';
-SiteUser.register();
+SiteVisitor.defaultColumns = 'name.full, email, permissions.isActive';
+SiteVisitor.register();

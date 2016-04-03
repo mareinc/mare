@@ -1,29 +1,20 @@
-var keystone = require('keystone'),
-	Types = keystone.Field.Types;
+var keystone	= require('keystone'),
+	Types		= keystone.Field.Types,
+	User		= keystone.list('User');
 
 // Create model
-var ProspectiveParentOrFamily = new keystone.List('Prospective Parent or Family', {
+var Family = new keystone.List('Family', {
+	inherits: User,
 	track: true,
-	autokey: { path: 'key', from: 'registrationNumber', unique: true },
 	map: { name: 'contact1.name.full' },
 	defaultSort: 'contact1.name.full'
 });
 
 // Create fields
-ProspectiveParentOrFamily.add('Permissions', {
+Family.add('General Information', {
 
-	permissions: {
-		isVerified: { type: Boolean, label: 'has a verified email address', default: false, noedit: true },
-		isActive: { type: Boolean, label: 'is active', default: true, noedit: true }
-	}
-
-}, 'User Information', {
-
-	email: { type: Types.Email, label: 'email address', unique: true, required: true, initial: true },
-	password: { type: Types.Password, label: 'password', required: true, initial: true },
-	avatar: { type: Types.CloudinaryImage, label: 'avatar', folder: 'users/prospective parents\\/families', autoCleanup: true }
-
-}, 'General Information', {
+	// avatar: { type: Types.CloudinaryImage, label: 'avatar', folder: 'users/families', select: true, selectPrefix: 'users/families', autoCleanup: true },
+	avatar: { type: Types.CloudinaryImage, label: 'avatar', folder: 'users/families', autoCleanup: true },
 
 	registrationNumber: { type: Number, label: 'registration number', format: false, required: true, initial: true },
 	initialContact: { type: Types.Text, label: 'initial contact', note: 'mm/dd/yyyy', required: true, initial: true },
@@ -284,16 +275,16 @@ ProspectiveParentOrFamily.add('Permissions', {
 	registeredViaWebsite: { type: Types.Boolean, label: 'registered through the website', noedit: true, initial: true }
 });
 
-ProspectiveParentOrFamily.relationship({ path: 'placements', ref: 'Placement', refPath: 'prospectiveParentOrFamily' });
-ProspectiveParentOrFamily.relationship({ path: 'inquiries', ref: 'Inquiry', refPath: 'prospectiveParentOrFamily' });
-ProspectiveParentOrFamily.relationship({ path: 'mailing-lists', ref: 'Mailing List', refPath: 'prospectiveParentOrFamilyAttendees' });
-ProspectiveParentOrFamily.relationship({ path: 'internal-notes', ref: 'Internal Note', refPath: 'prospectiveParentOrFamily' });
+Family.relationship({ path: 'placements', ref: 'Placement', refPath: 'prospectiveParentOrFamily' });
+Family.relationship({ path: 'inquiries', ref: 'Inquiry', refPath: 'prospectiveParentOrFamily' });
+Family.relationship({ path: 'mailing-lists', ref: 'Mailing List', refPath: 'prospectiveParentOrFamilyAttendees' });
+Family.relationship({ path: 'internal-notes', ref: 'Internal Note', refPath: 'prospectiveParentOrFamily' });
 
 // Displaly associations via the Relationship field type
 // TODO: link inquiries.
 
 // Pre Save
-ProspectiveParentOrFamily.schema.pre('save', function(next) {
+Family.schema.pre('save', function(next) {
 	'use strict';
 
 	this.contact1.name.full = this.contact1.name.first + ' ' + this.contact1.name.last;
@@ -316,6 +307,16 @@ ProspectiveParentOrFamily.schema.pre('save', function(next) {
 	next();
 });
 
+/* TODO: VERY IMPORTANT:  Need to fix this to provide the link to access the keystone admin panel again */
+/* 						  Changing names or reworking this file changed the check in node_modules/keystone/templates/views/signin.jade
+/*						  for user.isAdmin on line 14 */
+// Provide access to Keystone
+Family.schema.virtual('canAccessKeystone').get(function() {
+	'use strict';
+
+	return false;
+});
+
 // // Define default columns in the admin interface and register the model
-ProspectiveParentOrFamily.defaultColumns = 'registrationNumber, contact1.name.full, contact2.name.full';
-ProspectiveParentOrFamily.register();
+Family.defaultColumns = 'registrationNumber, contact1.name.full, contact2.name.full, permissions.isActive';
+Family.register();

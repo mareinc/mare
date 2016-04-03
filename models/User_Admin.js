@@ -1,44 +1,17 @@
-/* Fields in old system, missing from the new one
-
-initials
-login_name
-scp_id (security profile ID)
-
-   Fields in new system, missing from the old one
-
-isVerified
-isActive
-avatar
-phone.work
-phone.mobile
-phone.home
-address.street1
-address.street2
-address.city
-address.state
-address.zipCode
-
-   End missing fields */
-
-var keystone = require('keystone'),
-	Types = keystone.Field.Types;
+var keystone	= require('keystone'),
+	Types		= keystone.Field.Types,
+	User		= keystone.list('User');
 
 // Create model
-var User = new keystone.List('User', {
+var Admin = new keystone.List('Admin', {
+	inherits: User,
 	track: true,
 	map: { name: 'name.full' },
 	defaultSort: 'name.full'
 });
 
 // Create fields
-User.add('Permissions', {
-
-	permissions: {
-		isVerified: { type: Boolean, label: 'has a verified email address', default: false, noedit: true },
-		isActive: { type: Boolean, label: 'is active', default: true, noedit: true }
-	}
-
-}, 'General Information', {
+Admin.add('General Information', {
 
 	name: {
 		first: { type: Types.Text, label: 'first name', required: true, index: true, initial: true },
@@ -46,12 +19,10 @@ User.add('Permissions', {
 		full: { type: Types.Text, label: 'name', hidden: true, noedit: true, initial: false }
 	},
 
-	password: { type: Types.Password, label: 'password', required: true, initial: true },
+	// avatar: { type: Types.CloudinaryImage, label: 'avatar', folder: 'users/admin', select: true, selectPrefix: 'users/admin', autoCleanup: true }
 	avatar: { type: Types.CloudinaryImage, label: 'avatar', folder: 'users/admin', autoCleanup: true }
 
 }, 'Contact Information', {
-
-	email: { type: Types.Email, label: 'email address', unique: true, required: true, index: true, initial: true },
 
 	phone: {
 		work: { type: Types.Text, label: 'work phone number', initial: true },
@@ -71,12 +42,13 @@ User.add('Permissions', {
 });
 
 // Displaly associations via the Relationship field type
-User.relationship({ path: 'cscRegionContact', ref: 'CSC Region Contact', label: 'contact for the following regions', refPath: 'cscRegionContact' });
+Admin.relationship({ path: 'cscRegionContact', ref: 'CSC Region Contact', label: 'contact for the following regions', refPath: 'cscRegionContact' });
 
 // Pre Save
-User.schema.pre('save', function(next) {
+Admin.schema.pre('save', function(next) {
 	'use strict';
-
+	// All administrator accounts are considered verified by default
+	this.isVerified = true;
 	// Populate the full name string for better identification when linking through Relationship field types
 	this.name.full = this.name.first + ' ' + this.name.last;
 
@@ -94,5 +66,5 @@ User.schema.virtual('canAccessKeystone').get(function() {
 });
 
 // Define default columns in the admin interface and register the model
-User.defaultColumns = 'name.full, email, phone.work, isActive, isVerified';
-User.register();
+Admin.defaultColumns = 'name.full, email, phone.work, permissions.isActive';
+Admin.register();

@@ -1,22 +1,17 @@
-var keystone = require('keystone'),
-	Types = keystone.Field.Types;
+var keystone	= require('keystone'),
+	Types		= keystone.Field.Types,
+	User		= keystone.list('User');
 
 // Create model
 var SocialWorker = new keystone.List('Social Worker', {
+	inherits: User,
 	track: true,
 	map: { name: 'name.full' },
 	defaultSort: 'name.full'
 });
 
 // Create fields
-SocialWorker.add('Permissions', {
-
-	permissions: {
-		isVerified: { type: Boolean, label: 'has a verified email address', default: false, noedit: true },
-		isActive: { type: Boolean, label: 'is active', default: true, noedit: true }
-	}
-
-}, 'General Information', {
+SocialWorker.add('General Information', {
 
 	name: {
 		first: { type: Types.Text, label: 'first name', required: true, index: true, initial: true },
@@ -24,7 +19,6 @@ SocialWorker.add('Permissions', {
 		full: { type: Types.Text, label: 'name', hidden: true, noedit: true, initial: false }
 	},
 
-	password: { type: Types.Password, label: 'password', required: true, initial: true },
 	// avatar: { type: Types.CloudinaryImage, label: 'avatar', folder: 'users/social workers', select: true, selectPrefix: 'users/social workers', autoCleanup: true }
 	avatar: { type: Types.CloudinaryImage, label: 'avatar', folder: 'users/social workers', autoCleanup: true }
 
@@ -75,6 +69,16 @@ SocialWorker.schema.pre('save', function(next) {
 	next();
 });
 
+/* TODO: VERY IMPORTANT:  Need to fix this to provide the link to access the keystone admin panel again */
+/* 						  Changing names or reworking this file changed the check in node_modules/keystone/templates/views/signin.jade
+/*						  for user.isAdmin on line 14 */
+// Provide access to Keystone
+SocialWorker.schema.virtual('canAccessKeystone').get(function() {
+	'use strict';
+
+	return false;
+});
+
 // Define default columns in the admin interface and register the model
-SocialWorker.defaultColumns = 'name.full, phone.work, phone.home, phone.cell, phone.preferred, email';
+SocialWorker.defaultColumns = 'name.full, phone.work, phone.home, phone.cell, phone.preferred, email, permissions.isActive';
 SocialWorker.register();
