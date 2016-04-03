@@ -403,7 +403,7 @@
 					<div class="registration-type-header">Prospective Parent Registration</div>
 					<span class="required required-description">* Required</span>
 					<form enctype="multipart/form-data" action="/register" class="registration-form registration-form--family" method="POST">
-						<input type="hidden" class="registration-type" name="registrationType" value="prospectiveParent">
+						<input type="hidden" class="registration-type" name="registrationType" value="family">
 
 						<section class="family-account-setup-section">
 							<div class="registration-section-header">Account Setup</div>
@@ -477,11 +477,11 @@
 											<span class="race-text">Race/Ethnicity (check all that apply)</span>
 										</div>
 									</div>
-									<div class="row">
+									<div id="contact1-race-error-container" class="row error-container">
 										{{#each races}}
 										<div class="col-sm-12 form-group">
 											<label class="checkbox-inline">
-												<input type="checkbox" name="contact1Race" value="{{_id}}">{{race}}
+												<input type="checkbox" name="contact1Race" value="{{_id}}" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#contact1-race-error-container" required="">{{race}}
 											</label>
 										</div>
 										{{/each}}
