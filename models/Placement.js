@@ -9,7 +9,7 @@ Placement.add('Placement', {
     placementDate: { type: Types.Text, label: 'placement date', note: 'mm/dd/yyyy', initial: true },
     child: { type: Types.Relationship, label: 'child', ref: 'Child', required: true, index: true, initial: true },
     childPlacedWithMAREFamily: { type: Types.Boolean, label: 'child placed with MARE family', initial: true },
-    prospectiveParentOrFamily: { type: Types.Relationship, label: 'prospective parent or family', ref: 'Prospective Parent or Family', dependsOn: { childPlacedWithMAREFamily: true }, required: true, index: true, initial: true },
+    placedWithFamily: { type: Types.Relationship, label: 'family', ref: 'Family', dependsOn: { childPlacedWithMAREFamily: true }, required: true, index: true, initial: true },
     familyAgency: { type: Types.Relationship, label: 'family\'s agency', ref: 'Agency', dependsOn: { childPlacedWithMAREFamily: true }, required: true, initial: true },
     constellation: { type: Types.Relationship, label: 'constellation', ref: 'Family Constellation', dependsOn: { childPlacedWithMAREFamily: false }, index: true, initial: true },
     race: { type: Types.Relationship, label: 'race', ref: 'Race', dependsOn: { childPlacedWithMAREFamily: false }, many: true, index: true, initial: true },
@@ -46,5 +46,5 @@ Placement.add('Placement', {
 });
 
 // Define default columns in the admin interface and register the model
-Placement.defaultColumns = 'placementDate, child, prospectiveParentOrFamily, family.name, source';
+Placement.defaultColumns = 'placementDate, child, placedWithFamily, family.name, source';
 Placement.register();
