@@ -10,7 +10,7 @@ var Child = new keystone.List('Child', {
 });
 
 // Create fields
-Child.add({ heading: 'Child Information' }, {
+Child.add('Child Information', {
 	registrationNumber: { type: Number, label: 'registration number', format: false, required: true, index: true, initial: true },
 	registrationDate: { type: Types.Text, label: 'registration date', note: 'mm/dd/yyyy', required: true, initial: true },
 
@@ -22,8 +22,7 @@ Child.add({ heading: 'Child Information' }, {
 		last: { type: Types.Text, label: 'last name', required: true, index: true, initial: true },
 		alias: { type: Types.Text, label: 'alias', initial: true },
 		nickName: { type: Types.Text, label: 'nickname', initial: true },
-		full: { type: Types.Text, label: 'name', hidden: true, noedit: true, initial: false },
-		identifying: { type: Types.Text, hidden: true }
+		full: { type: Types.Text, label: 'name', hidden: true, noedit: true, initial: false }
 	},
 
 	birthDate: { type: Types.Text, label: 'date of birth', note: 'mm/dd/yyyy', required: true, initial: true },
@@ -46,7 +45,7 @@ Child.add({ heading: 'Child Information' }, {
 	careFacilityName: { type: Types.Text, label: 'name of residential/group care facility', initial: true },
 	dateMovedToResidence: { type: Types.Text, label: 'date moved to current residence', note: 'mm/dd/yyyy', required: true, initial: true }
 
-}, { heading: 'Special Needs' }, {
+}, 'Special Needs', {
 
 	physicalNeeds: { type: Types.Select, label: 'physical needs', options: 'none, mild, moderate, severe', required: true, initial: true },
 	physicalNeedsDescription: { type: Types.Textarea, label: 'description of physical needs', dependsOn: { physicalNeeds: ['mild', 'moderate', 'severe'] }, initial: true },
@@ -60,20 +59,20 @@ Child.add({ heading: 'Child Information' }, {
 	specialNeedsNotes: { type: Types.Textarea, label: 'notes', dependsOn: { physicalNeeds: ['mild', 'moderate', 'severe'], emotionalNeeds: ['mild', 'moderate', 'severe'], intellectualNeeds: ['mild', 'moderate', 'severe'] }, initial: true }
 	// specialNeedsNotes: { type: Types.Textarea, label: 'Notes', initial: true }
 
-}, { heading: 'Placement Considerations' }, {
+}, 'Placement Considerations', {
 
 	recommendedFamilyConstellation: { type: Types.Relationship, label: 'recommended family constellations', ref: 'Family Constellation', many: true, required: true, index: true, initial: true },
 	otherFamilyConstellationConsideration: { type: Types.Relationship, label: 'other family constellation consideration', ref: 'Other Family Constellation Consideration', many: true, index: true, initial: true },
 	otherConsiderations: { type: Types.Relationship, label: 'other considerations', ref: 'Other Consideration', many: true, index: true, initial: true }
 
-}, { heading: 'Agency Information' }, {
+}, 'Agency Information', {
 
 	registeredBy: { type: Types.Select, label: 'registered by', options: 'unknown, adoption worker, recruitment worker', required: true, index: true, initial: true },
 	adoptionWorker: { type: Types.Relationship, label: 'adoption worker', ref: 'Social Worker', filters: { position: 'adoption worker' }, initial: true },
 	recruitmentWorker: { type: Types.Relationship, label: 'recruitment worker', ref: 'Social Worker', filters: { position: 'recruitment worker' }, initial: true },
 	region: { type: Types.Relationship, label: 'region', ref: 'Region', initial: true }
 
-}, { heading: 'Photolisting Information' }, {
+}, 'Photolisting Information', {
 
 	profile: {
 		part1: { type: Types.Textarea, label: 'let me tell you more about myself...', required: true, initial: true },
@@ -94,7 +93,7 @@ Child.add({ heading: 'Child Information' }, {
 	detailImage: {type: Types.Url, hidden: true },
 	extranetUrl: { type: Types.Url, label: 'extranet and related profile url', initial: true } // Since this is redudant as this just points the the url where the photo exists (the child's page), we may hide this field.  This must be kept in as it will help us track down the child information in the old system in the event of an issue.
 
-}, { heading: 'Recruitment Options' }, {
+}, 'Recruitment Options', {
 
 	hasVideoSnapshot: { type: Types.Boolean, label: 'video snapshot', index: true, initial: true },
 	videoSnapshotDate: { type: Types.Text, label: 'date of video snapshot', note: 'mm/dd/yyyy', dependsOn: { hasVideoSnapshot: true }, initial: true },
@@ -122,7 +121,7 @@ Child.add({ heading: 'Child Information' }, {
 	mediaEligibility: { type: Types.Relationship, label: 'media eligibility', ref: 'Media Eligibility', many: true, initial: true },
 	otherMediaDescription: { type: Types.Textarea, label: 'description', dependsOn: { mediaEligibility: 'Other' }, initial: true } // THIS DOESN'T WORK, MAKE IT WORK!
 
-}, { heading: 'Attachments' }, {
+}, 'Attachments', {
 
 	photolistingPage: {
 		type: Types.S3File,
@@ -141,6 +140,10 @@ Child.add({ heading: 'Child Information' }, {
 			return fileName;
 		}
 	}
+
+}, 'System Information', {
+
+	fileName: { type: Types.Text, hidden: true }
 
 });
 
