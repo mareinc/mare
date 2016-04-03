@@ -407,15 +407,14 @@ exports.addToMailingLists = function addToMailingLists(user, res, done) {
 
 exports.uploadFile = function uploadFile(userModel, targetFieldPrefix, targetField, file, res, done) {
 
+	// TODO: however this will be done, we need to check to see if the file object is stored, if not, we can ignore this whole function
 	userModel.model.findById(res.locals.newUserID)
 				.exec()
 				.then(function(user) {
 					console.log('file');
 					console.log(file);
 
-					if(file.length > 0) {
-						user[targetFieldPrefix][targetField] = file;
-					}
+					user[targetFieldPrefix][targetField] = file;
 
 					user.save(function(err) {
 						console.log('file saved for the user');
