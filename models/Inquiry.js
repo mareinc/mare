@@ -46,7 +46,7 @@ Inquiry.add('General Information', {
 }, 'Emails Sent', {
 
 	thankYouSentToInquirer: { type: Types.Boolean, label: 'thank you sent to inquirer', noedit: true },
-	emailSentToCSC: { type: Types.Boolean, label: 'email sent to CSC staff', noedit: true },
+	emailSentToCSC: { type: Types.Boolean, label: 'email sent to MARE staff', noedit: true },
 	emailSentToInquirer: { type: Types.Boolean, label: 'information sent to inquirer',  noedit: true },
 	emailSentToChildsSocialWorker: { type: Types.Boolean, label: 'email sent to child\'s social worker', dependsOn: { inquiryType: ['child inquiry', 'complaint', 'family support consultation'] }, noedit: true },
 	emailSentToAgencies: { type: Types.Boolean, label: 'email sent to agencies', dependsOn: { inquiryType: 'general inquiry'}, noedit: true }
