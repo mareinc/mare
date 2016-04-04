@@ -40,8 +40,10 @@ SiteVisitor.add('General Information', {
 	}
 
 }, 'Heard About MARE From', {
+
 	heardAboutMAREFrom: { type: Types.Relationship, label: 'how did you hear about mare?', ref: 'Way To Hear About MARE', many: true, initial: true },
 	heardAboutMAREOther: { type: Types.Text, label: 'other', note: 'only fill out if "other" is selected in the field above', initial: true }
+
 });
 
 SiteVisitor.relationship({ path: 'mailing-lists', ref: 'Mailing List', refPath: 'siteUserAttendees' });
@@ -52,6 +54,8 @@ User.schema.pre('save', function(next) {
 
 	// Populate the full name string for better identification when linking through Relationship field types
 	this.name.full = this.name.first + ' ' + this.name.last;
+	// Set the userType for role based page rendering
+	this.userType = 'site visitor';
 
 	next();
 });

@@ -288,7 +288,7 @@ Family.add('General Information', {
 
 	registeredViaWebsite: { type: Types.Boolean, label: 'registered through the website', noedit: true, initial: true }
 
-}, 'System Information', {
+}, {
 
 	fileName: { type: Types.Text, hidden: true }
 
@@ -323,6 +323,8 @@ Family.schema.pre('save', function(next) {
 	}
 	// Create an identifying name for file uploads
 	this.fileName = this.registrationNumber + '_' + this.contact1.name.first.toLowerCase();
+	// Set the userType for role based page rendering
+	this.userType = 'family';
 
 	// TODO: Assign a registration number if one isn't assigned
 	next();

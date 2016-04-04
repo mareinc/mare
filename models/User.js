@@ -22,6 +22,10 @@ User.add('Permissions', {
 	email: { type: Types.Email, label: 'email address', unique: true, required: true, index: true, initial: true },
 	password: { type: Types.Password, label: 'password', required: true, initial: true }
 
+}, {
+
+	userType: { type: Types.Text, hidden: true }
+
 });
 
 // Define default columns in the admin interface and register the model

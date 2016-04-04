@@ -65,6 +65,8 @@ SocialWorker.schema.pre('save', function(next) {
 
 	// Populate the full name string for better identification when linking through Relationship field types
 	this.name.full = this.name.first + ' ' + this.name.last;
+	// Set the userType for role based page rendering
+	this.userType = 'social worker';
 
 	next();
 });
