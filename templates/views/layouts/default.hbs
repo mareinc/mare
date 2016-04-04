@@ -29,17 +29,17 @@
 
 		<nav id="mobile-menu" class="hidden">
 			<ul>
-				{{# each mainNav}}
+				{{#each mainNav}}
 				<li>
-					{{# if subMenu}}
+					{{#if subMenu}}
 						<a href="#">{{ title }}</a>
 						<ul>
-							{{# each subMenu}}
+							{{#each subMenu}}
 							<li>
-								{{# if subMenu}}
+								{{#if subMenu}}
 								<a href="#">{{ title }}</a>
 								<ul>
-									{{# each subMenu}}
+									{{#each subMenu}}
 									<li>
 										<a href="{{ href }}">{{ title }}</a>
 									</li>
@@ -85,7 +85,7 @@
 					<nav class="top-nav">
 						<ul class="nav">
 							<li class="top-nav-item home-link"><a href="/">Home</a></li>
-							{{# if user }}
+							{{#if user }}
 								<li class="top-nav-item log-out-link"><a href="/logout">Log Out</a></li>
 							{{else}}
 								<li class="top-nav-item log-in-link">
@@ -128,17 +128,17 @@
 			<nav class="main-nav">
 				<div class="content-wrapper">
 					<ul class="nav">
-						{{# each mainNav}}
-						<li>
-							{{# if subMenu}}
+						{{#each mainNav}}
+						<li {{#if lastMenu}}class="menu-item--last"{{/if}}>
+							{{#if subMenu}}
 							<a href="#" class="parent main-menu">{{ title }}</a>
 							<ul>
-								{{# each subMenu}}
+								{{#each subMenu}}
 								<li>
-									{{# if subMenu}}
+									{{#if subMenu}}
 									<a href="#" class="parent sub-menu">{{ title }}</a>
 									<ul>
-										{{# each subMenu}}
+										{{#each subMenu}}
 										<li>
 											<a href="{{ href }}">{{ title }}</a>
 										</li>
