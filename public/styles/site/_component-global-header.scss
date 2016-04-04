@@ -189,7 +189,7 @@
 	}
 }
 
-@media all and (min-width: 660px) {
+@media all and (min-width: 655px) {
 
 	.global-header .logo-container > img {
 	    display: inline-block;
@@ -203,7 +203,7 @@
 }
 
 @media all and (min-width: 820px) {
-	
+
 	/* TODO: Check to see if this works for clearing the IE-8 -ms-filter style */
 	.global-header {
 		position: relative;
