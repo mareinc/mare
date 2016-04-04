@@ -63,13 +63,20 @@ exports.initLocals = function(req, res, next) {
 			{ title: 'Register a Family', href: '/page/register-a-family' },
 			{ title: 'Search for Children & Families', href: '/page/search-for-children-and-families' }
 		]},
+		{ title: 'Events', subMenu: [
+			{ title: 'MARE Adoption Parties & Information Events', href: '/page/mare-adoption-parties-and-information-events'},
+			{ title: 'MAPP Training', href: '/page/mapp-training' },
+			{ title: 'Agency Information Meetings', href: '/page/agency-information-meetings' },
+			{ title: 'Other Opportunities & Trainings', href: '/page/other-opportunities-and-trainings' },
+			{ title: 'Fundraising Events', href: '/page/fundraising-events' }
+		]},
 		{ title: 'Ways to Help', subMenu: [
 			{ title: 'Why give?', href: '/page/why-give' },
 			{ title: 'How you can help', href: '/page/how-you-can-help' },
 			{ title: 'How businesses and organizations can help', href: '/page/how-businesses-and-organizations-can-help' },
 			{ title: 'Experienced families', href: '/page/experienced-families' }
 		]},
-		{ title: 'About Us', subMenu: [
+		{ title: 'About Us', lastMenu: true, subMenu: [
 			{ title: 'Mission & Vision', href: '/page/mission-and-vision'},
 			{ title: 'History', href: '/page/history'},
 			{ title: 'Meet the Staff', href: '/page/meet-the-staff'},
