@@ -160,13 +160,13 @@ keystone.set('nav', {
 	'content snippets'	: ['success-stories'],
 	'events'			: ['events'],
 	'mailing lists'		: ['mailing-lists'],
-	'relationships'		: ['csc-region-contacts', 'placements'],
+	'relationships'		: ['csc-region-contacts', 'csc-email-contacts', 'placements'],
+	'change tracking'	: ['child-histories', 'family-histories'],
 	'lists'				: ['child-statuses', 'child-types', 'city-or-towns', 'closed-reasons', 'communication-methods',
-						   'disabilities', 'event-types', 'family-constellations', 'genders', 'inquiry-methods',
+						   'disabilities', 'email-targets', 'event-types', 'family-constellations', 'genders', 'inquiry-methods',
 						   'inquiry-types', 'languages', 'legal-statuses', 'media-eligibilities', 'other-considerations',
-						   'other-family-constellation-considerations', 'races','regions', 'residences',
-						   'social-worker-positions', 'states' ],
-	'change tracking'	: ['child-histories', 'family-histories']
+						   'other-family-constellation-considerations', 'races', 'regions', 'residences',
+						   'social-worker-positions', 'sources', 'states', 'way-to-hear-about-mares' ]
 
 });
 
