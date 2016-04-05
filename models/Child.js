@@ -10,7 +10,12 @@ var Child = new keystone.List('Child', {
 });
 
 // Create fields
-Child.add('Child Information', {
+Child.add('Display Options', {
+
+	siteVisibility: { type: Types.Select, label: 'child is visible to', options: 'everyone, registered social workers and families', required: true, initial: true }
+
+}, 'Child Information', {
+
 	registrationNumber: { type: Number, label: 'registration number', format: false, required: true, initial: true },
 	registrationDate: { type: Types.Text, label: 'registration date', note: 'mm/dd/yyyy', required: true, initial: true },
 
@@ -139,10 +144,8 @@ Child.add('Child Information', {
 			// prefix file name with registration number and add the user's name for easier identification
 			return fileName;
 		}
-	}
-
-}, 'System Information', {
-
+	},
+	// system field to store an appropriate file prefix for the child
 	fileName: { type: Types.Text, hidden: true }
 
 });
