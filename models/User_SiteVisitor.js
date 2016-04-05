@@ -39,6 +39,14 @@ SiteVisitor.add('General Information', {
 		zipCode: { type: Types.Text, label: 'zip code', initial: true }
 	}
 
+}, 'Info Preferences', {
+
+	infoPacket: {
+		packet: { type: Types.Select, options: 'English, Spanish, none', label: 'Packet', initial: true },
+		date: { type: Types.Text, label: 'date info packet sent', note: 'mm/dd/yyyy', initial: true },
+		notes: { type: Types.Textarea, label: 'notes', initial: true }
+	}
+
 }, 'Heard About MARE From', {
 
 	heardAboutMAREFrom: { type: Types.Relationship, label: 'how did you hear about mare?', ref: 'Way To Hear About MARE', many: true, initial: true },
