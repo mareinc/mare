@@ -9,7 +9,7 @@ var OtherFamilyConstellationConsideration = new keystone.List('Other Family Cons
 
 // Create fields
 OtherFamilyConstellationConsideration.add({
-	otherFamilyConstellationConsideration: { type: Types.Text, label: 'other family constellation consideration', required: true, index: true, initial: true }
+	otherFamilyConstellationConsideration: { type: Types.Text, label: 'other family constellation consideration', required: true, initial: true }
 });
 
 // Define default columns in the admin interface and register the model

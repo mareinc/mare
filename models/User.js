@@ -19,7 +19,7 @@ User.add('Permissions', {
 
 }, 'General Information', {
 
-	email: { type: Types.Email, label: 'email address', unique: true, required: true, index: true, initial: true },
+	email: { type: Types.Email, label: 'email address', unique: true, required: true, initial: true },
 	password: { type: Types.Password, label: 'password', required: true, initial: true }
 
 }, {

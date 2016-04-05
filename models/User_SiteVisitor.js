@@ -14,8 +14,8 @@ var SiteVisitor = new keystone.List('Site Visitor', {
 SiteVisitor.add('General Information', {
 
 	name: {
-		first: { type: Types.Text, label: 'first name', required: true, index: true, initial: true },
-		last: { type: Types.Text, label: 'last name', required: true, index: true, initial: true },
+		first: { type: Types.Text, label: 'first name', required: true, initial: true },
+		last: { type: Types.Text, label: 'last name', required: true, initial: true },
 		full: { type: Types.Text, label: 'name', hidden: true, noedit: true, initial: false }
 	},
 

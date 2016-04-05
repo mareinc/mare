@@ -34,10 +34,10 @@ var Event = new keystone.List('Event', {
 // Create fields
 Event.add({ heading: 'General Information' }, {
 
-	name: { type: Types.Text, label: 'event name', required: true, index: true, initial: true },
+	name: { type: Types.Text, label: 'event name', required: true, initial: true },
 	url: { type: Types.Url, label: 'url', noedit: true },
-	isActive: { type: Types.Boolean, label: 'is event active?', index: true, initial: true },
-	// type: { type: Types.Relationship, label: 'Event Type', ref: 'Event Type', required: true, index: true, initial: true }
+	isActive: { type: Types.Boolean, label: 'is event active?', initial: true },
+	// type: { type: Types.Relationship, label: 'Event Type', ref: 'Event Type', required: true, initial: true }
 	type: { type: Types.Select, label: 'event type', options: 'MARE adoption parties & information events, MAPP training, agency information meetings, other opportunities & trainings, fundraising events', required: true, initial: true }
 
 }, { heading: 'Address' }, {
@@ -46,8 +46,8 @@ Event.add({ heading: 'General Information' }, {
 	    street1: { type: Types.Text, label: 'street 1', initial: true },
 		street2: { type: Types.Text, label: 'street 2', initial: true },
 		city: { type: Types.Text, label: 'city', initial: true },
-		state: { type: Types.Relationship, label: 'state', ref: 'State', index: true, initial: true },
-		zipCode: { type: Types.Text, label: 'zip code', index: true, initial: true }
+		state: { type: Types.Relationship, label: 'state', ref: 'State', initial: true },
+		zipCode: { type: Types.Text, label: 'zip code', initial: true }
 	},
 
 	contactEmail: { type: Types.Text, label: 'contact person email', required: true, initial: true },
@@ -58,7 +58,7 @@ Event.add({ heading: 'General Information' }, {
 	startTime: { type: Types.Text, label: 'start time', required: true, initial: true },
 	endTime: { type: Types.Text, label: 'end time', required: true, initial: true },
 	description: { type: Types.Html, label: 'description', wysiwyg: true, initial: true },
-	isRecurring: { type: Types.Boolean, label: 'recurring event?', index: true, initial: true },
+	isRecurring: { type: Types.Boolean, label: 'recurring event?', initial: true },
 	recurringDuration: { type: Types.Select, label: 'recurs every', options: 'day, week, month', dependsOn: { isRecurring: true }, initial: true }
 
 }, { heading: 'Notes' }, {

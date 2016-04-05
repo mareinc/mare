@@ -7,13 +7,13 @@ var Placement = new keystone.List('Placement');
 // Create fields
 Placement.add('Placement', {
     placementDate: { type: Types.Text, label: 'placement date', note: 'mm/dd/yyyy', initial: true },
-    child: { type: Types.Relationship, label: 'child', ref: 'Child', required: true, index: true, initial: true },
+    child: { type: Types.Relationship, label: 'child', ref: 'Child', required: true, initial: true },
     childPlacedWithMAREFamily: { type: Types.Boolean, label: 'child placed with MARE family', initial: true },
-    placedWithFamily: { type: Types.Relationship, label: 'family', ref: 'Family', dependsOn: { childPlacedWithMAREFamily: true }, required: true, index: true, initial: true },
+    placedWithFamily: { type: Types.Relationship, label: 'family', ref: 'Family', dependsOn: { childPlacedWithMAREFamily: true }, required: true, initial: true },
     familyAgency: { type: Types.Relationship, label: 'family\'s agency', ref: 'Agency', dependsOn: { childPlacedWithMAREFamily: true }, required: true, initial: true },
-    constellation: { type: Types.Relationship, label: 'constellation', ref: 'Family Constellation', dependsOn: { childPlacedWithMAREFamily: false }, index: true, initial: true },
-    race: { type: Types.Relationship, label: 'race', ref: 'Race', dependsOn: { childPlacedWithMAREFamily: false }, many: true, index: true, initial: true },
-    source: { type: Types.Relationship, label: 'sources', ref: 'Source', index: true, initial: true },
+    constellation: { type: Types.Relationship, label: 'constellation', ref: 'Family Constellation', dependsOn: { childPlacedWithMAREFamily: false }, initial: true },
+    race: { type: Types.Relationship, label: 'race', ref: 'Race', dependsOn: { childPlacedWithMAREFamily: false }, many: true, initial: true },
+    source: { type: Types.Relationship, label: 'sources', ref: 'Source', initial: true },
     notes: { type: Types.Textarea, label: 'notes', initial: true }
 
 }, 'Family', {
@@ -25,8 +25,8 @@ Placement.add('Placement', {
             street1: { type: Types.Text, label: 'address Line 1', dependsOn: { childPlacedWithMAREFamily: false }, initial: true },
             street2: { type: Types.Text, label: 'address Line 2', dependsOn: { childPlacedWithMAREFamily: false }, initial: true },
             city: { type: Types.Text, label: 'city', dependsOn: { childPlacedWithMAREFamily: false }, initial: true },
-            state: { type: Types.Relationship, label: 'state', ref: 'State', dependsOn: { childPlacedWithMAREFamily: false }, index: true, initial: true },
-            zipCode: { type: Types.Text, label: 'zip code', dependsOn: { childPlacedWithMAREFamily: false }, index: true, initial: true },
+            state: { type: Types.Relationship, label: 'state', ref: 'State', dependsOn: { childPlacedWithMAREFamily: false }, initial: true },
+            zipCode: { type: Types.Text, label: 'zip code', dependsOn: { childPlacedWithMAREFamily: false }, initial: true },
             country: { type: Types.Text, label: 'country', dependsOn: { childPlacedWithMAREFamily: false }, initial: true },
             region: { type: Types.Relationship, label: 'region', dependsOn: { childPlacedWithMAREFamily: false }, ref: 'Region', initial: true }
         },
@@ -38,7 +38,7 @@ Placement.add('Placement', {
             preferred: { type: Types.Select, label: 'preferred phone', options: 'work, home, mobile', dependsOn: { childPlacedWithMAREFamily: false }, initial: true }
         },
 
-        email: { type: Types.Email, label: 'email address', dependsOn: { childPlacedWithMAREFamily: false }, index: true, initial: true },
+        email: { type: Types.Email, label: 'email address', dependsOn: { childPlacedWithMAREFamily: false }, initial: true },
     }
 
 }, 'Disruption', {

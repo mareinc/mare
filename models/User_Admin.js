@@ -14,8 +14,8 @@ var Admin = new keystone.List('Admin', {
 Admin.add('General Information', {
 
 	name: {
-		first: { type: Types.Text, label: 'first name', required: true, index: true, initial: true },
-		last: { type: Types.Text, label: 'last name', required: true, index: true, initial: true },
+		first: { type: Types.Text, label: 'first name', required: true, initial: true },
+		last: { type: Types.Text, label: 'last name', required: true, initial: true },
 		full: { type: Types.Text, label: 'name', hidden: true, noedit: true, initial: false }
 	},
 
@@ -35,8 +35,8 @@ Admin.add('General Information', {
 	    street1: { type: Types.Text, label: 'street 1', initial: true },
 		street2: { type: Types.Text, label: 'street 2', initial: true },
 		city: { type: Types.Text, label: 'city', initial: true },
-		state: { type: Types.Relationship, label: 'state', ref: 'State', index: true, initial: true },
-		zipCode: { type: Types.Text, label: 'zip code', index: true, initial: true }
+		state: { type: Types.Relationship, label: 'state', ref: 'State', initial: true },
+		zipCode: { type: Types.Text, label: 'zip code', initial: true }
 	}
 
 });

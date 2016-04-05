@@ -9,7 +9,7 @@ var Source = new keystone.List('Source', {
 
 // Create fields
 Source.add({
-	source: { type: Types.Text, label: 'source', required: true, index: true, initial: true }
+	source: { type: Types.Text, label: 'source', required: true, initial: true }
 });
 
 // Define default columns in the admin interface and register the model

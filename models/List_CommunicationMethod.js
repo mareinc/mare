@@ -9,7 +9,7 @@ var CommunicationMethod = new keystone.List('Communication Method', {
 
 // Create fields
 CommunicationMethod.add({
-	communicationMethod: { type: Types.Text, label: 'communication method', required: true, index: true, initial: true }
+	communicationMethod: { type: Types.Text, label: 'communication method', required: true, initial: true }
 });
 
 // Define default columns in the admin interface and register the model

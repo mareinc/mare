@@ -14,8 +14,8 @@ var SocialWorker = new keystone.List('Social Worker', {
 SocialWorker.add('General Information', {
 
 	name: {
-		first: { type: Types.Text, label: 'first name', required: true, index: true, initial: true },
-		last: { type: Types.Text, label: 'last name', required: true, index: true, initial: true },
+		first: { type: Types.Text, label: 'first name', required: true, initial: true },
+		last: { type: Types.Text, label: 'last name', required: true, initial: true },
 		full: { type: Types.Text, label: 'name', hidden: true, noedit: true, initial: false }
 	},
 
@@ -24,7 +24,7 @@ SocialWorker.add('General Information', {
 
 }, 'Contact Information', {
 
-	email: { type: Types.Email, label: 'email address', unique: true, required: true, index: true, initial: true },
+	email: { type: Types.Email, label: 'email address', unique: true, required: true, initial: true },
 
 	phone: {
 		work: { type: Types.Text, label: 'work phone number', initial: true },
@@ -44,12 +44,12 @@ SocialWorker.add('General Information', {
 	    street1: { type: Types.Text, label: 'street 1', initial: true },
 		street2: { type: Types.Text, label: 'street 2', initial: true },
 		city: { type: Types.Text, label: 'city', initial: true },
-		state: { type: Types.Relationship, label: 'state', ref: 'State', index: true, initial: true },
-		zipCode: { type: Types.Text, label: 'zip code', index: true, initial: true },
+		state: { type: Types.Relationship, label: 'state', ref: 'State', initial: true },
+		zipCode: { type: Types.Text, label: 'zip code', initial: true },
 		region: { type: Types.Relationship, label: 'region', ref: 'Region', initial: true }
 	},
 
-	title: { type: Types.Text, label: 'title', index: true, initial: true },
+	title: { type: Types.Text, label: 'title', initial: true },
 	notes: { type: Types.Textarea, label: 'notes', initial: true }
 
 });
