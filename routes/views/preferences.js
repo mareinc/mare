@@ -1,6 +1,6 @@
-var keystone	= require('keystone'),
-	async		= require('async'),
-	User		= keystone.list('User');
+var keystone		= require('keystone'),
+	async			= require('async'),
+	userService		= require('../middleware/service_user');
 
 exports = module.exports = function(req, res) {
     'use strict';
@@ -11,17 +11,11 @@ exports = module.exports = function(req, res) {
     var userId = req.user.get('_id');
 
     async.parallel([
-		function(done) {
-			User.model.findById(userId)
-				.exec()
-				.then(function(user) {
-
-					locals.user = user;
-
-					done();
-			})}
+		function(done) { userService.getUserById(req, res, done, userId); }
 	], function() {
+
 		view.render('preferences');
+
 	});
 
 };
