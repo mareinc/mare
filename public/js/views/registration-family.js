@@ -8,7 +8,8 @@
 			'change .other-way-to-hear-about-mare'	: 'toggleOtherWayToHearTextField',
 			'change #family-state'					: 'toggleHomestudySubmission',
 			'change .homestudy-completed-checkbox'	: 'toggleHomestudySection',
-			'change #upload-button'					: 'uploadForm'
+			'change #upload-button'					: 'uploadForm',
+			'change .info-packet-toggle'			: 'toggleInfoPacketDetailsSection'
 		},
 
 		initialize: function() {
@@ -22,12 +23,12 @@
 			this.$homestudySection				= this.$('.family-submit-your-homestudy-section');
 			this.$homestudySubmissionSection	= this.$('.family-homestudy-details-section');
 			this.$howDidYouHearOther			= this.$('#family-how-did-you-hear-other');
+			this.$infoPacketDetails				= this.$('.info-packet-details');
 			// Initialize parsley validation on the form
 			this.form = this.$el.parsley();
-			// Bind the hidden 'other' text box for use in binding/unbinding validation
-			this.howDidYouHearOtherValidator = this.$howDidYouHearOther.parsley();
-			// Bind the hidden homestudy text boxes for use in binding/unbinding validation
-			this.homestudyCompletionDateValidator 	= this.$homestudyCompletionDate.parsley();
+
+			this.howDidYouHearOtherValidator 		= this.$howDidYouHearOther.parsley(); // Bind the hidden 'other' text box for use in binding/unbinding validation
+			this.homestudyCompletionDateValidator 	= this.$homestudyCompletionDate.parsley(); // Bind the hidden homestudy text boxes for use in binding/unbinding validation
 			this.socialWorkerNameValidator 			= this.$socialWorkerName.parsley();
 			this.socialWorkerAgencyValidator 		= this.$socialWorkerAgency.parsley();
 			this.socialWorkerPhoneValidator 		= this.$socialWorkerPhone.parsley();
@@ -101,6 +102,11 @@
 				this.$('[name=HomeStudySubmission]').attr('checked', false);
 				this.$('#homestudy-file-upload').val('');
 			}
+		},
+
+		toggleInfoPacketDetailsSection: function toggleInfoPacketDetailsSection() {
+			// Hide/show the hidden information packet section via the hidden class
+			this.$infoPacketDetails.toggleClass('hidden');
 		},
 
 		uploadForm: function uploadForm(event) {
