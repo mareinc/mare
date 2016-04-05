@@ -116,12 +116,19 @@ exports.saveSiteVisitor = function saveSiteVisitor(user, res, done) {
 			zipCode			: user.zipCode
 		},
 
+		infoPacket: {
+			packet			: user.infoPacket === 'yes' ? user.infoPacketLanguage : 'none'
+		},
+
 		heardAboutMAREFrom 	: user.howDidYouHear,
 		heardAboutMAREOther	: user.howDidYouHearOther
 
 	});
 
 	newUser.save(function(err) {
+		// TODO: if the user requested an email of the info packet, send it
+		// TODO: if the user requested a mail copy of the info packet, add it to an object containing email information before sending it to Diane
+		//       so we can capture all relevant information in one email
 		res.locals.messages.push({ type: 'success', message: 'Congratulations, your account has been successfully created' });
 		done();
 	}, function(err) {
@@ -256,6 +263,10 @@ exports.saveFamily = function saveFamily(user, res, done) {
 		socialWorkerNotListed				: true,
 		socialWorkerText					: user.socialWorkerName,
 
+		infoPacket: {
+			packet							: user.infoPacket === 'yes' ? user.infoPacketLanguage : 'none'
+		},
+
 		matchingPreferences: {
 			gender							: user.preferredGender,
 			legalStatus						: user.legalStatus,
@@ -289,6 +300,9 @@ exports.saveFamily = function saveFamily(user, res, done) {
 	exports.setChildren(user, newUser, res);
 
 	newUser.save(function(err) {
+		// TODO: if the user requested an email of the info packet, send it
+		// TODO: if the user requested a mail copy of the info packet, add it to an object containing email information before sending it to Diane
+		//       so we can capture all relevant information in one email
 		console.log('new family saved');
 		res.locals.messages.push({ type: 'success', message: 'your account has been successfully created' });
 		done();
