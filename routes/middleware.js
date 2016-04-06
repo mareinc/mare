@@ -82,7 +82,12 @@ exports.initLocals = function(req, res, next) {
 			{ title: 'Meet the Staff', href: '/page/meet-the-staff'},
 			{ title: 'Board of Directors', href: '/page/board-of-directors'},
 			{ title: 'MARE in the News', href: '/page/mare-in-the-news'},
-			{ title: 'Annual Report', href: '/page/annual-report'},
+			{ title: 'Adoption Party Family Registration Form', href: '/form/adoption-party-family-registration-form'},
+			{ title: 'Adoption Party Social Worker Registration Form', href: '/form/adoption-party-social-worker-registration-form'},
+			{ title: 'Agency Event Submission Form', href: '/form/agency-event-submission-form'},
+			{ title: 'Car Donation Form', href: '/form/car-donation-form'},
+			{ title: 'Child Registration Form', href: '/form/child-registration-form'},
+			{ title: 'Information Request Form', href: '/form/information-request-form'}
 		]}];
 
 	next();
