@@ -10,15 +10,17 @@ exports = module.exports = function(req, res) {
 	var view 	= new keystone.View(req, res),
 		locals 	= res.locals;
 
-	// Set locals
-	// TODO: Check to see if these are still used
-	locals.validationErrors 		= {};
-	locals.registrationSubmitted 	= false;
-	// Fetch all the dynamic data to fill in the form dropdown and selection areas.  Render the view once all the data has been retrieved.
-	// TODO: these can be brought to a more generic place for reuse, maybe in a services layer.
+	// objects with additional search parameters
+	var stateOptions		= { default: 'Massachusetts' },
+		raceOptions			= { other: true },
+		waysToHearOptions	= { other: true };
+
+
+
+	// Fetch all the dynamic data to fill in the form dropdown and selection areas.
 	async.parallel([
-		function(done) { listsService.getAllStates(req, res, done) },
-		function(done) { listsService.getAllRaces(req, res, done) },
+		function(done) { listsService.getAllStates(req, res, done, stateOptions) },
+		function(done) { listsService.getAllRaces(req, res, done, raceOptions) },
 		function(done) { listsService.getAllGenders(req, res, done) },
 		function(done) { listsService.getAllRegions(req, res, done) },
 		function(done) { listsService.getAllSocialWorkerPositions(req, res, done) },
@@ -27,9 +29,9 @@ exports = module.exports = function(req, res) {
 		function(done) { listsService.getAllLanguages(req, res, done) },
 		function(done) { listsService.getAllDisabilities(req, res, done) },
 		function(done) { listsService.getOtherConsiderations(req, res, done) },
-		function(done) { listsService.getAllWaysToHearAboutMARE(req, res, done) }
+		function(done) { listsService.getAllWaysToHearAboutMARE(req, res, done, waysToHearOptions) }
 	], function() {
-
+		// Render the view once all the data has been retrieved
 		view.render('register');
 
 	});
