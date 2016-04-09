@@ -1,3 +1,5 @@
+/* TODO: move all this middleware into the appropriate files inside the middleware/ directory
+
 /**
  * This file contains the common middleware used by your routes.
  *
