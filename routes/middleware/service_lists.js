@@ -54,7 +54,7 @@ exports.getAllSocialWorkerPositions = function getAllSocialWorkerPositions(req, 
 				});
 };
 
-exports.getAllRaces = function getAllRaces(req, res, done) {
+exports.getAllRaces = function getAllRaces(req, res, done, options) {
 
 	req.locals = res.locals || {};
 	var locals = res.locals;
@@ -62,6 +62,17 @@ exports.getAllRaces = function getAllRaces(req, res, done) {
 	Race.model.find()
 				.exec()
 				.then(function (races) {
+					// If there is a value of 'other' in the list, which should appear at the bottom of any
+					// dropdown lists on the site, add an appropriate attribute
+					if(options && options.other) {
+
+						_.each(races, function(race) {
+							if(race.race === 'other') {
+								race.other = true;
+							}
+						});
+
+					}
 
 					locals.races = races;
 					// execute done function if async is used to continue the flow of execution
@@ -75,7 +86,7 @@ exports.getAllRaces = function getAllRaces(req, res, done) {
 				});
 };
 
-exports.getAllStates = function getAllStates(req, res, done) {
+exports.getAllStates = function getAllStates(req, res, done, options) {
 
 	req.locals = res.locals || {};
 	var locals = res.locals;
@@ -83,12 +94,16 @@ exports.getAllStates = function getAllStates(req, res, done) {
 	State.model.find()
 				.exec()
 				.then(function (states) {
+					// If there is a default value which should appear selected when a dropdown menu is first rendered add an appropriate attribute
+					if(options && options.default) {
 
-					_.each(states, function(state) {
-						if(state.state === 'Massachusetts') {
-							state.defaultSelection = true;
-						}
-					});
+						_.each(states, function(state) {
+							if(state.state === options.default) {
+								state.defaultSelection = true;
+							}
+						});
+
+					}
 
 					locals.states = states;
 					// execute done function if async is used to continue the flow of execution
@@ -228,7 +243,7 @@ exports.getOtherConsiderations = function getOtherConsiderations(req, res, done)
 				});
 };
 
-exports.getAllWaysToHearAboutMARE = function getAllWaysToHearAboutMARE(req, res, done) {
+exports.getAllWaysToHearAboutMARE = function getAllWaysToHearAboutMARE(req, res, done, options) {
 
 	req.locals = res.locals || {};
 	var locals = res.locals;
@@ -236,12 +251,17 @@ exports.getAllWaysToHearAboutMARE = function getAllWaysToHearAboutMARE(req, res,
 	WayToHearAboutMARE.model.find()
 				.exec()
 				.then(function (waysToHearAboutMARE) {
+					// If there is a value of 'other' in the list, which should appear at the bottom of any
+					// dropdown lists on the site, add an appropriate attribute
+					if(options && options.other) {
 
-					_.each(waysToHearAboutMARE, function(wayToHearAboutMARE) {
-						if(wayToHearAboutMARE.wayToHearAboutMARE === 'other') {
-							wayToHearAboutMARE.other = true;
-						}
-					});
+						_.each(waysToHearAboutMARE, function(wayToHearAboutMARE) {
+							if(wayToHearAboutMARE.wayToHearAboutMARE === 'other') {
+								wayToHearAboutMARE.other = true;
+							}
+						});
+
+					}
 
 					locals.waysToHearAboutMARE = waysToHearAboutMARE;
 					// execute done function if async is used to continue the flow of execution
