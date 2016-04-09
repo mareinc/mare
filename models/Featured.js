@@ -19,8 +19,7 @@ Featured.add({
 		target: { type: Types.Relationship, ref: 'Page', label: 'target page', filter: { type: 'aboutUs' }, required: true, initial: true },
 		title: { type: Types.Text, label: 'title', required: true, initial: true },
 		summary: { type: Types.Textarea, label: 'summary', initial: true },
-		// image: { type: Types.CloudinaryImage, folder: 'featured/', select: true, selectPrefix: 'featured/', autoCleanup: true },
-		image: { type: Types.CloudinaryImage, folder: 'featured/', autoCleanup: true },
+		image: { type: Types.CloudinaryImage, folder: 'featured/', select: true, selectPrefix: 'featured/', autoCleanup: true },
 		imageStretched: {type: Types.Url, hidden: true },
 		imageScaled: {type: Types.Url, hidden: true },
 		url: { type: Types.Url, noedit: true }
@@ -29,11 +28,10 @@ Featured.add({
 }, 'Success Story', {
 
 	successStory: {
-		target: { type: Types.Relationship, ref: 'Success Story', label: 'target page', filter: { type: 'successStory' }, required: true, initial: true },
+		target: { type: Types.Relationship, ref: 'Success Story', label: 'target page', required: true, initial: true },
 		title: { type: Types.Text, label: 'title', required: true, initial: true },
 		summary: { type: Types.Textarea, label: 'summary', initial: true },
-		// image: { type: Types.CloudinaryImage, folder: 'featured/', select: true, selectPrefix: 'featured/', autoCleanup: true },
-		image: { type: Types.CloudinaryImage, folder: 'featured/', autoCleanup: true },
+		image: { type: Types.CloudinaryImage, folder: 'featured/', select: true, selectPrefix: 'featured/', autoCleanup: true },
 		imageStretched: {type: Types.Url, hidden: true},
 		imageScaled: {type: Types.Url, hidden: true},
 		url: { type: Types.Url, noedit: true }
@@ -45,8 +43,7 @@ Featured.add({
 		target: { type: Types.Relationship, ref: 'Event', label: 'target event', required: true, initial: true },
 		title: { type: Types.Text, label: 'title', required: true, initial: true },
 		summary: { type: Types.Textarea, label: 'summary', initial: true },
-		// image: { type: Types.CloudinaryImage, folder: 'featured/', select: true, selectPrefix: 'featured/', autoCleanup: true },
-		image: { type: Types.CloudinaryImage, folder: 'featured/', autoCleanup: true },
+		image: { type: Types.CloudinaryImage, folder: 'featured/', select: true, selectPrefix: 'featured/', autoCleanup: true },
 		imageStretched: {type: Types.Url, hidden: true},
 		imageScaled: {type: Types.Url, hidden: true},
 		url: { type: Types.Url, noedit: true }
@@ -70,22 +67,22 @@ Featured.schema.pre('save', function(next) {
 			.then(function(page) {
 
 				self.aboutUs.title = page[0].title;
-				self.aboutUs.summary = page[0].content.replace(/<\/?[^>]+(>|$)/g, '');
-				self.aboutUs.summary = self.aboutUs.summary.substring(0, 200);
+				// self.aboutUs.summary = page[0].content.replace(/<\/?[^>]+(>|$)/g, '');
+				// self.aboutUs.summary = self.aboutUs.summary.substring(0, 200);
 				self.aboutUs.url = page[0].url;
 				self.aboutUs.imageStretched = self._.aboutUs.image.scale(400,250,{ quality: 80 });
 				self.aboutUs.imageScaled = self._.aboutUs.image.thumbnail(400,250,{ quality: 80 });
 
 			}, function(err) {
 				console.log(err);
-			}).then(keystone.list('SuccessStory').model.find()
+			}).then(keystone.list('Success Story').model.find()
 				.where('_id', this.successStory.target)
 				.exec()
 				.then(function(successStory) {
 
 		       		self.successStory.title = successStory[0].heading;
-		       		self.successStory.summary = successStory[0].content.replace(/<\/?[^>]+(>|$)/g, '');
-		       		self.successStory.summary = self.successStory.summary.substring(0, 200);
+		       		// self.successStory.summary = successStory[0].content.replace(/<\/?[^>]+(>|$)/g, '');
+		       		// self.successStory.summary = self.successStory.summary.substring(0, 200);
 		       		self.successStory.url = '/success-stories/';
 		       		self.successStory.imageStretched = self._.successStory.image.scale(400,250,{ quality: 80 });
 					self.successStory.imageScaled = self._.successStory.image.thumbnail(400,250,{ quality: 80 });
@@ -98,8 +95,8 @@ Featured.schema.pre('save', function(next) {
 				.then(function(event) {
 
 					self.upcomingEvent.title = event[0].title;
-					self.upcomingEvent.summary = event[0].description.replace(/<\/?[^>]+(>|$)/g, '');
-					self.upcomingEvent.summary = self.upcomingEvent.summary.substring(0, 200);
+					// self.upcomingEvent.summary = event[0].description.replace(/<\/?[^>]+(>|$)/g, '');
+					// self.upcomingEvent.summary = self.upcomingEvent.summary.substring(0, 200);
 					self.upcomingEvent.url = event[0].url;
 					self.upcomingEvent.imageStretched = self._.upcomingEvent.image.scale(400,250,{ quality: 80 });
 					self.upcomingEvent.imageScaled = self._.upcomingEvent.image.thumbnail(400,250,{ quality: 80 });

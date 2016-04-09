@@ -62,7 +62,6 @@ Child.add('Display Options', {
 	disabilities: { type: Types.Relationship, label: 'disabilities', ref: 'Disability', many: true, initial: true },
 
 	specialNeedsNotes: { type: Types.Textarea, label: 'notes', dependsOn: { physicalNeeds: ['mild', 'moderate', 'severe'], emotionalNeeds: ['mild', 'moderate', 'severe'], intellectualNeeds: ['mild', 'moderate', 'severe'] }, initial: true }
-	// specialNeedsNotes: { type: Types.Textarea, label: 'Notes', initial: true }
 
 }, 'Placement Considerations', {
 
@@ -92,8 +91,7 @@ Child.add('Display Options', {
 	photolistingPageNumber: { type: Number, label: 'photolisting page', format: false, initial: true },
 	previousPhotolistingPageNumber: { type: Number, label: 'previous photolisting page', format: false, initial: true },
 
-	// image: { type: Types.CloudinaryImage, folder: 'children/', select: true, selectPrefix: 'children/', publicID: 'slug', autoCleanup: true },
-	image: { type: Types.CloudinaryImage, label: 'image', folder: 'children/', publicID: 'name.identifying', autoCleanup: true },
+	image: { type: Types.CloudinaryImage, folder: 'children/', select: true, selectPrefix: 'children/', publicID: 'fileName', autoCleanup: true },
 	galleryImage: {type: Types.Url, hidden: true },
 	detailImage: {type: Types.Url, hidden: true },
 	extranetUrl: { type: Types.Url, label: 'extranet and related profile url', initial: true } // Since this is redudant as this just points the the url where the photo exists (the child's page), we may hide this field.  This must be kept in as it will help us track down the child information in the old system in the event of an issue.
@@ -132,7 +130,7 @@ Child.add('Display Options', {
 		type: Types.S3File,
 		s3path: '/child/photolisting-pages',
 		filename: function(item, filename){
-			// prefix file name with registration number and add the user's name for easier identification
+			// prefix file name with registration number and the user's name for easier identification
 			return fileName;
 		}
 	},
@@ -141,11 +139,14 @@ Child.add('Display Options', {
 		type: Types.S3File,
 		s3path: '/child/other',
 		filename: function(item, filename){
-			// prefix file name with registration number and add the user's name for easier identification
+			// prefix file name with registration number and name for easier identification
 			return fileName;
 		}
-	},
-	// system field to store an appropriate file prefix for the child
+	}
+/* Container for all system fields (add a heading if any are meant to be visible through the admin UI) */
+}, {
+
+	// system field to store an appropriate file prefix
 	fileName: { type: Types.Text, hidden: true }
 
 });
@@ -179,6 +180,6 @@ Child.schema.pre('save', function(next) {
 	next();
 });
 
-// // Define default columns in the admin interface and register the model
+// Define default columns in the admin interface and register the model
 Child.defaultColumns = 'registrationNumber, name.full, ethnicity, legalStatus, gender';
 Child.register();
