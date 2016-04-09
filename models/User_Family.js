@@ -13,8 +13,7 @@ var Family = new keystone.List('Family', {
 // Create fields
 Family.add('General Information', {
 
-	// avatar: { type: Types.CloudinaryImage, label: 'avatar', folder: 'users/families', select: true, selectPrefix: 'users/families', autoCleanup: true },
-	avatar: { type: Types.CloudinaryImage, label: 'avatar', folder: 'users/families', autoCleanup: true },
+	avatar: { type: Types.CloudinaryImage, label: 'avatar', folder: 'users/families', select: true, selectPrefix: 'users/families', autoCleanup: true },
 
 	registrationNumber: { type: Number, label: 'registration number', format: false, required: true, initial: true },
 	initialContact: { type: Types.Text, label: 'initial contact', note: 'mm/dd/yyyy', required: true, initial: true },
@@ -192,7 +191,7 @@ Family.add('General Information', {
 			filename: function(item, filename){
 				console.log('item');
 				console.log(item);
-				// prefix file name with registration number and add the user's name for easier identification
+				// prefix file name with registration number and name for easier identification
 				return item.fileName;
 			}
 		}

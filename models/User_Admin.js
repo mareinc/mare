@@ -19,8 +19,7 @@ Admin.add('General Information', {
 		full: { type: Types.Text, label: 'name', hidden: true, noedit: true, initial: false }
 	},
 
-	// avatar: { type: Types.CloudinaryImage, label: 'avatar', folder: 'users/admin', select: true, selectPrefix: 'users/admin', autoCleanup: true }
-	avatar: { type: Types.CloudinaryImage, label: 'avatar', folder: 'users/admin', autoCleanup: true }
+	avatar: { type: Types.CloudinaryImage, label: 'avatar', folder: 'users/admin', select: true, selectPrefix: 'users/admin', autoCleanup: true }
 
 }, 'Contact Information', {
 
