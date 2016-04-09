@@ -8,9 +8,9 @@ exports.getAllChildren = function getAllChildren(req, res, done) {
 
 	Child.model.find()
 				.exec()
-				.then(function (results) {
+				.then(function (children) {
 
-					locals.children = results;
+					locals.children = children;
 					// execute done function if async is used to continue the flow of execution
 					done()
 
