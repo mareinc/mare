@@ -18,10 +18,11 @@
  * http://expressjs.com/api.html#app.VERB
  */
 
-var keystone = require('keystone'),
-	middleware = require('./middleware'),
-	registrationMiddleware = require('./middleware/register'),
-	importRoutes = keystone.importer(__dirname);
+var keystone				= require('keystone'),
+	middleware				= require('./middleware/middleware'),
+	registrationMiddleware	= require('./middleware/register'),
+	childService			= require('./middleware/service_child'),
+	importRoutes			= keystone.importer(__dirname);
 
 // Common Middleware
 keystone.pre('routes', middleware.initLocals);
@@ -38,23 +39,25 @@ exports = module.exports = function(app) {
 	'use strict';
 
 	// Views
-	app.get('/'							, routes.views.main);
-	app.get('/page/*'					, routes.views.page);
-	app.get('/form/*'					, routes.views.form);
-	app.get('/events/*'					, routes.views.event);
-	app.get('/waiting-child-profiles'	, routes.views.waitingChildProfiles);
-	app.get('/register'					, routes.views.register);
-	app.get('/preferences'				, middleware.requireUser, routes.views.preferences);
+	app.get('/'								, routes.views.main);
+	app.get('/page/*'						, routes.views.page);
+	app.get('/form/*'						, routes.views.form);
+	app.get('/events/*'						, routes.views.event);
+	app.get('/waiting-child-profiles'		, routes.views.waitingChildProfiles);
+	app.get('/register'						, routes.views.register);
+	app.get('/preferences'					, middleware.requireUser, routes.views.preferences);
 
-	app.post('/register'				, registrationMiddleware.registerUser);
+	app.post('/register'					, registrationMiddleware.registerUser);
 
-	app.post('/login'					, middleware.login);
-	app.get('/logout'					, middleware.logout);
+	app.post('/login'						, middleware.login);
+	app.get('/logout'						, middleware.logout);
 
-	app.post('/getChildDetails'			, middleware.getChildDetails);
+	app.post('/getChildDetails'				, middleware.getChildDetails);
 
-	app.get('/donate'					, routes.views.donate);
-	app.post('/charge'					, middleware.charge);
+	app.get('/donate'						, routes.views.donate);
+	app.post('/charge'						, middleware.charge);
+	// Services
+	app.get('/services/get-children-data'	, childService.sendChildrenData);
 
 	// NOTE: To protect a route so that only admins can see it, use the requireUser middleware:
 	// app.get('/protected', middleware.requireUser, routes.views.protected);
