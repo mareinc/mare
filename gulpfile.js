@@ -31,7 +31,7 @@ var paths = {
 		'public/modules/**/*.js',
 		'public/js/mare.js',
 		'public/js/models/*.js',
-		'public/js/collections.*.js',
+		'public/js/collections/*.js',
 		'public/js/views/*.js',
 		'public/js/routers/*.js',
 		'public/js/main.js'],
