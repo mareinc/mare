@@ -2,10 +2,10 @@
     'use strict';
 
     window.mare = {
-        models:{},
-        collections:{},
-        views:{},
-        routers:{},
+        models: {},
+        collections: {},
+        views: {},
+        routers: {},
         settings: {},
         url: {},
         config: {
