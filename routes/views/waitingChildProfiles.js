@@ -1,7 +1,6 @@
 var keystone		= require('keystone'),
 	async			= require('async'),
-	childService	= require('../middleware/service_child'),
-	userService		= require('../middleware/service_user');
+	childService	= require('../middleware/service_child');
 
 exports = module.exports = function(req, res) {
 	'use strict';
@@ -11,15 +10,17 @@ exports = module.exports = function(req, res) {
 
 	// Set local variables
 	locals.userType	= req.user ? req.user.get('userType') : 'anonymous';
+	locals.targetChildren = locals.userType === 'anonymous' || locals.userType === 'site visitor' ? 'unrestricted' : 'all';
 
 	async.series([
 		function(done) {
 
-			if(locals.userType === 'anonymous' || locals.userType === 'site visitor') {
-				childService.getUnrestrictedChildren(req, res, done);
-			} else {
+			if(locals.targetChildren === 'all') {
 				childService.getAllChildren(req, res, done);
+			} else {
+				childService.getUnrestrictedChildren(req, res, done);
 			}
+
 		}
 
 	], function() {
