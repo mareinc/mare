@@ -169,6 +169,26 @@ exports.logout = function(req, res) {
 	});
 };
 
+/* TODO: This should be placed in a date-time.js file, but I wasn't able to get it to register on my first try */
+exports.getAge = function getAge(dateOfBirth) {
+
+	var today = new Date();
+	var birthDate = new Date(dateOfBirth);
+	var age = today.getFullYear() - birthDate.getFullYear();
+	var month = today.getMonth() - birthDate.getMonth();
+
+	if (month < 0 || (month === 0 && today.getDate() < birthDate.getDate())) {
+		age--;
+	}
+
+	return age;
+};
+
+/* Date objects are easily compared for sorting purposes when converted to milliseconds */
+exports.convertDate = function convertDate(date) {
+	return new Date(date).getTime();
+};
+
 // TODO: include an error message for this and other functions in middleware if applicable
 exports.getChildDetails = function(req, res) {
 
@@ -194,7 +214,6 @@ exports.getChildDetails = function(req, res) {
         		profilePart3: child.profile.part3,
         		detailImage: child.detailImage,
         		hasImage: child.image.url.length > 0 ? true : false,
-        		missingImage: exports.getMissingImageLocation(this.hasImage, this.gender),
         		hasVideo: child.video.length > 0,
         		video: child.video.replace('watch?v=', 'embed/'),
         		wednesdaysChild: child.wednesdaysChild
@@ -219,33 +238,4 @@ exports.charge = function(req, res) {
             res.send(204);
         }
     });
-};
-
-// TODO: This function is a duplicate of one found in templates/views/helpers/index.js, which is used exclusively
-// 		 for handlebars templates.  Try to consolodate them
-exports.getAge = function(dateOfBirth) {
-	var today = new Date();
-        var birthDate = new Date(dateOfBirth);
-        var age = today.getFullYear() - birthDate.getFullYear();
-        var month = today.getMonth() - birthDate.getMonth();
-
-        if (month < 0 || (month === 0 && today.getDate() < birthDate.getDate())) {
-            age--;
-        }
-
-        return age;
-};
-
-exports.getMissingImageLocation = function(hasImage, gender) {
-
-	if ( hasImage ) {
-		return '';
-	}
-
-	if ( gender === 'female' ) {
-		return '/dist/img/noImageFemale_gallery.png';
-	}
-
-	return '/dist/img/noImageMale_gallery.png';
-
 };
