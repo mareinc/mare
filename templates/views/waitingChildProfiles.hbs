@@ -33,24 +33,30 @@
 					<span class="page-header-text">Waiting Child Profiles<span class="page-dropdown arrow-down"></span></span>
 					<button class="question">HAVE A QUESTION?</button>
 				</div>
-				<div class="filters">
-					<div class="waiting-child-sort inline-block filter">
-						<select name="waiting-child-sort">
-					    	<option value="original" selected="selected">Original Order</option>
-					    	<option value="name">Sort by Name</option>
-					    	<option value="age">Sort by Age</option>
-						</select>
+
+				<section class="filters-container">
+					<div class="media-boxes-drop-down waiting-child-profiles-filter" id="waiting-child-profiles-sort">
+						<div class="media-boxes-drop-down-header"><span class="fa fa-sort-desc"></span>Original Order</div>
+						<ul class="media-boxes-drop-down-menu" style="display: none;">
+							<li><a href="#" data-sort-by="original-order" class="selected">Original Order</a></li>
+							<li><a href="#" data-sort-by="name" data-sort-toggle="true">Sort by Name</a></li>
+							<li><a href="#" data-sort-by="age" data-sort-toggle="true">Sort by Age</a></li>
+							<li><a href="#" data-sort-by="date-added" data-sort-toggle="true">Sort by Date Added</a></li>
+						</ul>
 					</div>
-					<span class="icon-text-unit filter">
-						<img class="icon-text-unit__icon video" src="/dist/img/video-icon.png">
-						<span class="icon-text-unit__text">Video Profile</span>
-					</span>
-					<span class="icon-text-unit filter">
-						<img class="icon-text-unit__icon wednesdays-child" src="/dist/img/wednesdays-child-icon.png">
-						<span class="icon-text-unit__text">Wednesday's Child</span>
-					</span>
-				</div>
-				<section class="profile-zone">
+					<div class="icon-key">
+						<span class="icon-text-unit filter">
+							<img class="icon-text-unit__icon video" src="/dist/img/video-icon.png">
+							<span class="icon-text-unit__text">Video Profile</span>
+						</span>
+						<span class="icon-text-unit filter">
+							<img class="icon-text-unit__icon wednesdays-child" src="/dist/img/wednesdays-child-icon.png">
+							<span class="icon-text-unit__text">Wednesday's Child</span>
+						</span>
+					</div>
+				</section>
+
+				<section class="profiles-container">
 
 					<div id="grid" class="profiles">
 						{{#each children}}
@@ -59,10 +65,12 @@
 									<div class="media-box-image">
 										<div data-thumbnail={{ galleryImage }}></div>
 									</div>
-								
+
 									<div class="media-box-content details">
 										<div class="media-box-name name">{{ name.first }}</div>
-										<div class="media-box-age age">Age {{getAge birthDate}}</div>
+										<div class="media-box-age hidden">{{ ageConverted }}</div>
+										<div class="media-box-date-added hidden">{{ registrationDateConverted }}</div>
+										<div class="age">Age {{ age }}</div>
 										<div class="icons">
 											{{#if hasVideoSnapshot}}
 												<img class="badge" src="/dist/img/video-icon.png">
@@ -75,7 +83,6 @@
 											<span>View Profile</span>
 											<span class="icon-double-arrow-right">&gt;&gt;</span>
 										</div>
-										{{!-- <div class="media-box-added hidden">{{ registrationDate }}</div> --}}
 									</div>
 								</div>
 
@@ -88,3 +95,92 @@
 		</div>
 	</div>
 </div>
+
+<script id="child-details-template" type="text/x-handlebars-template">
+
+	<div class="detailed-profile">
+
+		<div class="profile__profile-navigation">
+			\{{#if previousChildRegistrationNumber}}
+			<span class="profile-navigation__previous" data-registration-number=\{{previousChildRegistrationNumber}}>
+				<i class="fa fa-angle-left fa-3x profile-navigation__previous-icon"></i>
+				<span class="profile-navigation__previous-text">Previous Child</span>
+			</span>
+			\{{/if}}
+			\{{#if previousChildRegistrationNumber}}
+				\{{#if nextChildRegistrationNumber}}
+				<span class="profile-navigation__divider">|</span>
+				\{{/if}}
+			\{{/if}}
+			\{{#if nextChildRegistrationNumber}}
+			<span class="profile-navigation__next" data-registration-number=\{{nextChildRegistrationNumber}}>
+				<span class="profile-navigation__next-text">Next Child</span>
+				<i class="fa fa-angle-right fa-3x profile-navigation__next-icon"></i>
+			</span>
+			\{{/if}}
+		</div>
+
+		<div class="profile-tabs">
+			<span class="profile-tabs__tab profile-tabs__tab--selected" data-tab="profile">profile</span>
+			\{{#if hasVideo}}<span class="profile-tabs__tab" data-tab="video">video</span>\{{/if}}
+			\{{#if wednesdaysChild}}<span class="profile-tabs__tab" data-tab="wednesdays-child">wednesday's child</span>\{{/if}}
+		</div>
+
+		<div class="profile-tab__contents profile-tab__contents--selected" data-contents="profile">
+
+			<img class="profile__profile-picture" src=\{{ detailImage }}>
+
+			<div class="profile__basic-info">
+				<div class="profile-details__name">\{{ name }}</div>
+				<div class="profile-details__age">Age \{{ age }}</div>
+				<div class="profile-details__registration-number">Registration # \{{ registrationNumber }}</div>
+			</div>
+
+			<div class="profile__detailed-child-info">
+				<div class="detailed-child-info__introduction">
+					<div class="detailed-child-info__header">Hi! My name is \{{ name }}.</div>
+				</div>
+				<div class="detailed-child-info__part-1">
+					<div class="detailed-child-info__header">Let me tell you more about myself...</div>
+					<div class="detailed-child-info__body">\{{ profilePart1 }}</div>
+				</div>
+				<div class="detailed-child-info__part-2">
+					<div class="detailed-child-info__header">And here’s what others say...</div>
+					<div class="detailed-child-info__body">\{{ profilePart2 }}</div>
+				</div>
+				<div class="detailed-child-info__part-3">
+					<div class="detailed-child-info__header">If I could have my own special wish...</div>
+					<div class="detailed-child-info__body">\{{ profilePart3 }}</div>
+				</div>
+			</div>
+
+			<div class="detailed-profile__footer">You can help bring me closer to finding "a place to call HOME" by filling out the <a href="/">MARE Information Request Form</a>. They will be glad to help you get more information about me.</div>
+		</div>
+
+		\{{#if hasVideo}}
+		<div class="profile-tab__contents" data-contents="video">
+
+			<div class="profile__basic-info">
+				<div class="profile-details__name">\{{ name }}</div>
+				<div class="profile-details__age">Age \{{ age }}</div>
+				<div class="profile-details__registration-number">Registration # \{{ registrationNumber }}</div>
+			</div>
+
+			<div class="profile-details__video-container">
+				<iframe src=\{{video}} frameborder="0" allowfullscreen class="profile-details__video"></iframe>
+			</div>
+
+			<div class="detailed-profile__footer">You can help bring me closer to finding "a place to call HOME" by filling out the <a href="/">MARE Information Request Form</a>. They will be glad to help you get more information about me.</div>
+
+		</div>
+		\{{/if}}
+
+		\{{#if wednesdaysChild}}
+		<div class="profile-tab__contents" data-contents="wednesdays-child">
+			<span>Wednesday's Child content will go here</span>
+		</div>
+		\{{/if}}
+
+	</div>
+
+</script>
