@@ -21,4 +21,4 @@ exports.getPageByUrl = function getPageByUrl(req, res, done, url) {
 					done();
 
 				});
-}
+};

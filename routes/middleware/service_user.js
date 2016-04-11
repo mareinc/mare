@@ -52,5 +52,4 @@ exports.getUserById = function getUserById(req, res, done, options) {
 					done();
 
 				});
-
-}
+};

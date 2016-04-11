@@ -22,4 +22,4 @@ exports.getEventByUrl = function getEventByUrl(req, res, done, url) {
 					done();
 
 				});
-}
+};
