@@ -58,7 +58,7 @@
             this.checkout.open();
 
             return false;
-        },
+        }
 
     });
 })();
