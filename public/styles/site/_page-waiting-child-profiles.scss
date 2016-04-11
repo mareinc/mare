@@ -2,42 +2,34 @@
 /* TODO: Bring breakpoint code under each selector */
 /* TODO: Sass up the styles even more with nested selectors */
 
-.filters > .order {
-	display: block;
-	margin-bottom: 15px;
+.filters-container {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
 }
 
-.filters {
-	margin-bottom: 10px;
+.icon-key {
+    display: flex;
+    justify-content: space-around;
+    width: 300px;
 }
 
-.filters > .filter {
-    margin-right: 15px;
+.icon-text-unit {
+    display: inline-block;
+    margin-left: 10px;
 }
 
-.filters > .waiting-child-sort:before {
-    content: "Order:";
-    margin: 0 8px 0 0;
-}
-.filters > .waiting-child-sort select {
-    background-color: #FFF;
-    border: 1px solid #D5D5D5;
-}
-
-.filters > .icon-text-unit {
-    display:inline-block;
-    vertical-align: middle;
-}
-.filters .icon-text-unit__icon {
+.icon-text-unit__icon {
     vertical-align:middle;
     width: 20px;
 }
-.filters .icon-text-unit__text {
+
+.icon-text-unit__text {
     vertical-align: middle;
 }
 
 /* Profile contents */
-.profile-zone {
+.profiles-container {
 	border-top: 1px solid black;
 	padding-bottom: 15px;
 }
@@ -184,6 +176,37 @@
     left: 0;
     width: 100%;
     height: 100%;
+}
+
+/* hover effect on the image */
+.media-box-image img{
+    -webkit-transition: all 0.3s ease-in-out;
+       -moz-transition: all 0.3s ease-in-out;
+        -ms-transition: all 0.3s ease-in-out;
+         -o-transition: all 0.3s ease-in-out;
+            transition: all 0.3s ease-in-out;
+
+    -webkit-transform-origin: bottom left;
+       -moz-transform-origin: bottom left;
+        -ms-transform-origin: bottom left;
+         -o-transform-origin: bottom left;
+            transform-origin: bottom left;
+}
+
+.media-box-container:hover img{
+    -webkit-transform: scale(1.1) translate(-10px);
+       -moz-transform: scale(1.1) translate(-10px);
+         -o-transform: scale(1.1) translate(-10px);
+        -ms-transform: scale(1.1) translate(-10px);
+            transform: scale(1.1) translate(-10px);
+}
+
+.media-box-container {
+    box-shadow: 1px 1px 3px rgba(0,0,0,.75);
+}
+
+.media-boxes-load-more-button {
+    display: none;
 }
 
 
