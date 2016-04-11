@@ -12,24 +12,37 @@
 		},
 
 		initialize: function() {
+
+			var self = this;
+
+			$.ajax({
+				url: '/services/get-children-data'
+			}).done(function(data) {
+
+				mare.collections.children = mare.collections.children || new mare.collections.Children(data);
+				// Initialize the gallery once we've fetch the child data used to show child details
+				self.initializeMediaBoxes();
+
+			}).fail(function(err) {
+				// TODO: Show an error message instead of the gallery if we failed to fetch the child data
+				console.log(err);
+			});
+
 			// DOM cache any commonly used elements to improve performance
 			this.$formSelector = $('.registration-type-selector');
 
-			this.initializeMediaBoxes();
 		},
 
 		initializeMediaBoxes: function initializeMediaBoxes() {
 			// initialize the photo listing gallery grid
 			$('#grid').mediaBoxes({
 		        boxesToLoadStart: 12,
-		        boxesToLoad: 8,
-
-		        sortContainer: '#sort',
-		        sort: 'a',
+		        boxesToLoad 	: 8,
+		        sortContainer 	: '#waiting-child-profiles-sort',
 		        getSortData: {
-			        name: '.media-box-name', //When you sort by name, it will only look in the elements with the class "media-box-name"
-			        age: '.media-box-age' //When you sort by age, it will only look in the elements with the class "media-box-age"
-			        // addedDate: '.media-box-added' //When you sort by date added, it will only look in the elements with the class "media-box-date-added"
+			        name		: '.media-box-name', // look in the elements with the class "media-box-name" and sort by the innerHTML value
+			        age			: '.media-box-age', // look in the elements with the class "media-box-age" and sort by the innerHTML value
+			        dateAdded	: '.media-box-date-added' // look in the elements with the class "media-box-date-added" and sort by the innerHTML value
 			    }
 		    });
 		},
@@ -121,7 +134,7 @@
 	     		var selectedChildElement = $('[data-registration-number=' + mare.children.selectedChild + ']');
 	     		var previousChildElement = selectedChildElement.prev();
 	     		var nextChildElement = selectedChildElement.next();
-
+	     		// TODO: This needs to change to reflect sorting and filtering in the UI
 	     		childDetails.previousChildRegistrationNumber = previousChildElement.data('registration-number');
 	     		childDetails.nextChildRegistrationNumber = nextChildElement.data('registration-number');
 
