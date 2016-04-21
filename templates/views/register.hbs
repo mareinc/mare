@@ -705,7 +705,7 @@
 								</div>
 							</div>
 
-							<section class="subheading prospective-family-submit-your-homestudy-section">
+							<section class="subheading family-submit-your-homestudy-section">
 								<strong>Submit Your Homestudy</strong>
 								<p>To complete your registration as a Massachusetts homestudied family, you must submit your homestudy to us via one of the following methods (choose one):</p>
 								<div class="row">
@@ -746,7 +746,7 @@
 						<section class="family-details-section">
 							<div class="registration-section-header">Family Details</div>
 
-							<div class="row form-group">
+							<div class="row form-group children-in-home">
 								<div class="col-sm-12">
 									<label for="children-in-home" class="label marg-bottom-xs-5">Total number of children currently living at home</label>
 								</div>
@@ -765,134 +765,50 @@
 								</div>
 							</div>
 
-							<div class="registration-sub-section-header header-blue">Male Children</div>
-
-							<div class="row form-group">
-								<div class="col-sm-12">
-									<label for="male-children-in-home" class="label marg-bottom-xs-5">Number of <span class="text-blue"> male</span> children in home</label>
-								</div>
-								<div class="col-sm-12">
-									<select id="male-children-in-home" name="maleChildrenInHome" class="input registration-number-select">
-										<option>0</option>
-										<option>1</option>
-										<option>2</option>
-										<option>3</option>
-										<option>4</option>
-										<option>5</option>
-										<option>6</option>
-										<option>7</option>
-										<option>8+</option>
-									</select>
-								</div>
-							</div>
-							<div class="row form-group">
-								<div class="col-sm-12">
-									<label for="male-children-in-home-ages" class="label marg-bottom-xs-5">Ages of <span class="text-blue"> male</span> children (separated by commas)</label>
-								</div>
-								<div class="col-sm-12">
-									<input type="text" class="input " id="male-children-in-home-ages" name="maleChildrenInHomeAges">
-								</div>
-							</div>
-							<div class="row form-group">
-								<div class="col-sm-12">
-									<label for="biological-male-children" class="label marg-bottom-xs-5">Number of biological<span class="text-blue"> male</span> children</label>
-								</div>
-								<div class="col-sm-12">
-									<select id="biological-male-children" name="biologicalMaleChildren" class="input registration-number-select">
-										<option>0</option>
-										<option>1</option>
-										<option>2</option>
-										<option>3</option>
-										<option>4</option>
-										<option>5</option>
-										<option>6</option>
-										<option>7</option>
-										<option>8+</option>
-									</select>
-								</div>
-							</div>
-							<div class="row form-group">
-								<div class="col-sm-12">
-									<label for="adopted-male-children" class="label marg-bottom-xs-5">Number of adopted <span class="text-blue">male</span> children</label>
-								</div>
-								<div class="col-sm-12">
-									<select id="adopted-male-children" name="adoptedMaleChildren" class="input registration-number-select">
-										<option>0</option>
-										<option>1</option>
-										<option>2</option>
-										<option>3</option>
-										<option>4</option>
-										<option>5</option>
-										<option>6</option>
-										<option>7</option>
-										<option>8+</option>
-									</select>
+							<div class="row form-group children-form-heading hidden">
+								<div class="col-sm-24">
+									<div class="label marg-bottom-xs-5">
+										Child 
+										<span class="child-number"></span>
+									</div>
 								</div>
 							</div>
 
-
-							<div class="registration-sub-section-header header-pink">Female Children</div>
-
-							<div class="row form-group">
-								<div class="col-sm-12">
-									<label for="female-children-in-home" class="label marg-bottom-xs-5">Number of <span class="text-pink">female</span> children in home</label>
+							<div class="row form-group children-form hidden">
+								<div class="col-sm-12 form-group">
+									<div class="row">
+										<div class="col-sm-24 form-group">
+											<input type="text" class="input" name="name">
+											<label class="label marg-bottom-xs-5">Name</label>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-sm-24">
+											<select name="gender" class="input registration-number-select">
+											{{#each genders}}
+												<option value="{{_id}}">{{ gender }}</option>
+											{{/each}}
+											</select>
+											<label class="label marg-bottom-xs-5">Gender</label>
+										</div>
+									</div>
 								</div>
-								<div class="col-sm-12">
-									<select id="female-children-in-home" name="femaleChildrenInHome" class="input registration-number-select">
-										<option>0</option>
-										<option>1</option>
-										<option>2</option>
-										<option>3</option>
-										<option>4</option>
-										<option>5</option>
-										<option>6</option>
-										<option>7</option>
-										<option>8+</option>
-									</select>
-								</div>
-							</div>
-							<div class="row form-group">
-								<div class="col-sm-12">
-									<label for="female-children-in-home-ages" class="label marg-bottom-xs-5">Ages of <span class="text-pink">female</span> children (separated by commas)</label>
-								</div>
-								<div class="col-sm-12">
-									<input type="text" class="input " id="female-children-in-home-ages" name="femaleChildrenInHomeAges">
-								</div>
-							</div>
-							<div class="row form-group">
-								<div class="col-sm-12">
-									<label for="biological-female-children" class="label marg-bottom-xs-5">Number of biological <span class="text-pink">female</span> children</label>
-								</div>
-								<div class="col-sm-12">
-									<select id="biological-female-children" name="biologicalFemaleChildren" class="input registration-number-select">
-										<option>0</option>
-										<option>1</option>
-										<option>2</option>
-										<option>3</option>
-										<option>4</option>
-										<option>5</option>
-										<option>6</option>
-										<option>7</option>
-										<option>8+</option>
-									</select>
-								</div>
-							</div>
-							<div class="row form-group">
-								<div class="col-sm-12">
-									<label for="adopted-female-children" class="label marg-bottom-xs-5">Number of adopted <span class="text-pink">female</span> children</label>
-								</div>
-								<div class="col-sm-12">
-									<select id="adopted-female-children" name="adoptedFemaleChildren" class="input registration-number-select">
-										<option>0</option>
-										<option>1</option>
-										<option>2</option>
-										<option>3</option>
-										<option>4</option>
-										<option>5</option>
-										<option>6</option>
-										<option>7</option>
-										<option>8+</option>
-									</select>
+								<div class="col-sm-12 form-group">
+									<div class="row">
+										<div class="col-sm-24 form-group">
+											<input type="text" class="input " name="birthDate" placeholder="MM/DD/YYYY">
+											<label class="label marg-bottom-xs-5">Date of Birth</label>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-sm-24">
+											<select name="type" class="input registration-number-select">
+												<option>Biological</option>
+												<option>Adopted</option>
+											</select>
+											<label class="label marg-bottom-xs-5">Type</label>
+										</div>
+									</div>
 								</div>
 							</div>
 
@@ -916,6 +832,13 @@
 										<option>9</option>
 										<option>10+</option>
 									</select>
+								</div>
+							</div>
+							<div class="row form-group">
+								<div class="col-sm-24">
+									<label class="checkbox-inline">
+										<input type="checkbox" name="havePets" value="yes">Have pets in the home
+									</label>
 								</div>
 							</div>
 							<div class="row form-group">
@@ -947,13 +870,6 @@
 										</div>
 									{{/each}}
 									</div>
-								</div>
-							</div>
-							<div class="row form-group">
-								<div class="col-sm-24">
-									<label class="checkbox-inline">
-										<input type="checkbox" name="havePets" value="yes">Have pets in the home
-									</label>
 								</div>
 							</div>
 						</section>
