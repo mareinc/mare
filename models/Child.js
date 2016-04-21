@@ -154,9 +154,11 @@ Child.add('Display Options', {
 // Displaly associations via the Relationship field type
 Child.relationship({ path: 'children', ref: 'Child', refPath: 'siblingContacts' });
 // Child.relationship({ path: 'siblings', ref: 'Sibling', refPath: 'child1' });
-Child.relationship({ path: 'placements', ref: 'Placement', refPath: 'child' });
-Child.relationship({ path: 'inquiries', ref: 'Inquiry', refPath: 'child' });
-Child.relationship({ path: 'internal-notes', ref: 'Internal Note', refPath: 'child' });
+Child.relationship({ ref: 'Placement', refPath: 'child', path: 'placements' });
+Child.relationship({ ref: 'Inquiry', refPath: 'child', path: 'inquiries' });
+Child.relationship({ ref: 'Family', refPath: 'bookmarkedChildren', path: 'families', label: 'bookmarked by families' });
+Child.relationship({ ref: 'Social Worker', refPath: 'bookmarkedChildren', path: 'social workers', label: 'bookmarked by social workers' });
+Child.relationship({ ref: 'Internal Note', refPath: 'child', path: 'internal notes', label: 'internal notes' });
 
 // Pre Save
 Child.schema.pre('save', function(next) {
