@@ -752,15 +752,15 @@
 								</div>
 								<div class="col-sm-12">
 									<select id="children-in-home" name="childrenInHome" class="input registration-number-select">
-										<option>0</option>
-										<option>1</option>
-										<option>2</option>
-										<option>3</option>
-										<option>4</option>
-										<option>5</option>
-										<option>6</option>
-										<option>7</option>
-										<option>8+</option>
+										<option value="0">0</option>
+										<option value="1">1</option>
+										<option value="2">2</option>
+										<option value="3">3</option>
+										<option value="4">4</option>
+										<option value="5">5</option>
+										<option value="6">6</option>
+										<option value="7">7</option>
+										<option value="8">8+</option>
 									</select>
 								</div>
 							</div>
@@ -768,7 +768,7 @@
 							<div class="row form-group children-form-heading hidden">
 								<div class="col-sm-24">
 									<div class="label marg-bottom-xs-5">
-										Child 
+										Child
 										<span class="child-number"></span>
 									</div>
 								</div>
@@ -785,6 +785,7 @@
 									<div class="row">
 										<div class="col-sm-24">
 											<select name="gender" class="input registration-number-select">
+												<option value=""></option>
 											{{#each genders}}
 												<option value="{{_id}}">{{ gender }}</option>
 											{{/each}}
@@ -803,8 +804,10 @@
 									<div class="row">
 										<div class="col-sm-24">
 											<select name="type" class="input registration-number-select">
-												<option>Biological</option>
-												<option>Adopted</option>
+												<option value=""></option>
+											{{#each childTypes}}
+												<option value="{{ _id }}">{{ displayName }}</option>
+											{{/each}}
 											</select>
 											<label class="label marg-bottom-xs-5">Type</label>
 										</div>
@@ -820,17 +823,17 @@
 								</div>
 								<div class="col-sm-12">
 									<select id="other-adults-in-home" name="otherAdultsInHome" class="input registration-number-select">
-										<option>0</option>
-										<option>1</option>
-										<option>2</option>
-										<option>3</option>
-										<option>4</option>
-										<option>5</option>
-										<option>6</option>
-										<option>7</option>
-										<option>8</option>
-										<option>9</option>
-										<option>10+</option>
+										<option value="0">0</option>
+										<option value="1">1</option>
+										<option value="2">2</option>
+										<option value="3">3</option>
+										<option value="4">4</option>
+										<option value="5">5</option>
+										<option value="6">6</option>
+										<option value="7">7</option>
+										<option value="8">8</option>
+										<option value="9">9</option>
+										<option value="10">10+</option>
 									</select>
 								</div>
 							</div>
