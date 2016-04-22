@@ -244,16 +244,17 @@ exports.getOtherConsiderations = function getOtherConsiderations(req, res, done)
 				});
 };
 
-exports.getAllChildTypes = function getAllChildTypes(req, res, done) {
+exports.getChildTypesForWebsite = function getChildTypesForWebsite(req, res, done) {
 
 	req.locals = res.locals || {};
 	var locals = res.locals;
 
 	ChildType.model.find()
+				.where('availableOnWebsite', true)
 				.exec()
-				.then(function (childType) {
+				.then(function (childTypes) {
 
-					locals.childType = childType;
+					locals.childTypes = childTypes;
 					// execute done function if async is used to continue the flow of execution
 					done()
 
