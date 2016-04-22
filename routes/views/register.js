@@ -27,7 +27,7 @@ exports = module.exports = function(req, res) {
 		function(done) { listsService.getAllLanguages(req, res, done) },
 		function(done) { listsService.getAllDisabilities(req, res, done) },
 		function(done) { listsService.getOtherConsiderations(req, res, done) },
-		function(done) { listsService.getAllChildTypes(req, res, done) },
+		function(done) { listsService.getChildTypesForWebsite(req, res, done) },
 		function(done) { listsService.getAllWaysToHearAboutMARE(req, res, done, waysToHearOptions) }
 	], function() {
 		// Render the view once all the data has been retrieved
