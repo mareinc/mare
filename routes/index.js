@@ -22,6 +22,7 @@ var keystone				= require('keystone'),
 	middleware				= require('./middleware/middleware'),
 	registrationMiddleware	= require('./middleware/register'),
 	childService			= require('./middleware/service_child'),
+	familyService			= require('./middleware/service_family'),
 	importRoutes			= keystone.importer(__dirname);
 
 // Common Middleware
@@ -58,6 +59,8 @@ exports = module.exports = function(app) {
 	app.post('/charge'						, middleware.charge);
 	// Services
 	app.get('/services/get-children-data'	, childService.sendChildrenData);
+	app.post('/services/add-bookmark'		, familyService.addChildBookmark);
+	app.post('/services/remove-bookmark'	, familyService.removeChildBookmark);
 
 	// NOTE: To protect a route so that only admins can see it, use the requireUser middleware:
 	// app.get('/protected', middleware.requireUser, routes.views.protected);
