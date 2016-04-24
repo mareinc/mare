@@ -16,8 +16,8 @@
 }
 
 .registration-type-header,
-.registration-section-header,
-.registration-sub-section-header {
+.form-section-header,
+.form-section-sub-header {
 	text-transform: uppercase;
 	border-bottom: 1px solid $border-color-1;
 	margin: 35px 0 8px;
@@ -25,7 +25,7 @@
     clear: both;	/* TODO: Temporary until the registration styles work for left-x and right-x */
 }
 
-.registration-sub-section-header {
+.form-section-sub-header {
 	margin-top: 0;
 	text-transform: none;
 }
