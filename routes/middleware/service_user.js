@@ -29,6 +29,7 @@ exports.getTargetModel = function getTargetModel(req, res, userType) {
 	return targetModel;
 
 };
+
 /* Get a user of any type by their _id value in the database */
 exports.getUserById = function getUserById(req, res, done, options) {
 	// Several options need to be available in callback functions, expose them globally via res.locals
