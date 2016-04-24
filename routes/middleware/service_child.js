@@ -106,6 +106,44 @@ exports.setNoChildImage = function setNoChildImage(req, res, child) {
 	}
 };
 
+exports.getChildByRegistrationNumber = function getChildByRegistrationNumber(req, res, done, registrationNumber) {
+
+	var locals				= res.locals,
+		registrationNumber	= parseInt(registrationNumber);
+
+		Child.model.find()
+				.where('registrationNumber', registrationNumber)
+				.exec()
+				.then(function (child) {
+
+					locals.child = child[0];
+					done();
+
+				}, function(err) {
+
+					console.log(err);
+					done();
+
+				});
+
+	// Child.model.find()
+	// 			.where('registrationNumber', registrationNumber) // The child schema stores registration number as a number, we're getting it as a string
+	// 			.exec()
+	// 			.then(function (child) {
+
+	// 				locals.child = child;
+	// 				// execute done function if async is used to continue the flow of execution
+	// 				// TODO: if this is used in non-async middleware, done or next should be passed into options and the appropriate one should be executed
+	// 				done();
+
+	// 			}, function(err) {
+
+	// 				console.log(err);
+	// 				done();
+
+	// 			});
+};
+
 /* Expose the child data to the front-end via an API call */
 exports.sendChildrenData = function sendChildrenData(req, res, next) {
 
