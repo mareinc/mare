@@ -2,6 +2,10 @@
 /* TODO: Bring breakpoint code under each selector */
 /* TODO: Sass up the styles even more with nested selectors */
 
+.gallery-search-form {
+    display: none;
+}
+
 .filters-container {
     display: flex;
     justify-content: flex-start;
@@ -180,25 +184,12 @@
 
 /* hover effect on the image */
 .media-box-image img{
-    -webkit-transition: all 0.3s ease-in-out;
-       -moz-transition: all 0.3s ease-in-out;
-        -ms-transition: all 0.3s ease-in-out;
-         -o-transition: all 0.3s ease-in-out;
-            transition: all 0.3s ease-in-out;
-
-    -webkit-transform-origin: bottom left;
-       -moz-transform-origin: bottom left;
-        -ms-transform-origin: bottom left;
-         -o-transform-origin: bottom left;
-            transform-origin: bottom left;
+    transition: all 0.3s ease-in-out;
+    transform-origin: bottom left;
 }
 
 .media-box-container:hover img{
-    -webkit-transform: scale(1.1) translate(-10px);
-       -moz-transform: scale(1.1) translate(-10px);
-         -o-transform: scale(1.1) translate(-10px);
-        -ms-transform: scale(1.1) translate(-10px);
-            transform: scale(1.1) translate(-10px);
+    transform: scale(1.1) translate(-10px);
 }
 
 .media-box-container {
@@ -207,6 +198,21 @@
 
 .media-boxes-load-more-button {
     display: none;
+}
+
+.bookmark {
+    display: inline-block;
+    margin-top: 10px;
+    font-family: sans-serif;
+    transition: all .2s ease-in-out;
+
+    &:hover {
+        transform: scale(1.1);
+    }
+
+    &--active {
+        color: #66584D;
+    }
 }
 
 
