@@ -5,11 +5,11 @@
 
 		// TODO: Split this up based on the form we're showing the user
 		routes: {
-			''				: 'navigateToDefault',
+			''				: 'loadDefault',
 			'site-visitor' 	: 'loadSiteVisitorRegistration',
 			'social-worker'	: 'loadSocialWorkerRegistration',
 			'family'		: 'loadFamilyRegistration',
-			'*other'		: 'navigateToDefault'
+			'*other'		: 'loadDefault'
 		},
 
 		initialize: function() {
@@ -44,7 +44,7 @@
 			mare.views.registration.showFamilyForm();
 		},
 		/* Handle any poorly formed routes or navigation to the registration page without specifying a route by rerouting to the default form */
-		navigateToDefault: function navigateToDefault() {
+		loadDefault: function loadDefault() {
 			this.navigate( 'site-visitor', { trigger: true, replace: true } );
 		}
 
