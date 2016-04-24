@@ -2,7 +2,8 @@ var keystone		= require('keystone'),
 	async			= require('async'),
 	_				= require('underscore'),
 	childService	= require('../middleware/service_child'),
-	familyService	= require('../middleware/service_family');
+	familyService	= require('../middleware/service_family'),
+	listsService	= require('../middleware/service_lists');
 
 exports = module.exports = function(req, res) {
 	'use strict';
@@ -41,7 +42,13 @@ exports = module.exports = function(req, res) {
 			} else {
 				done();
 			}
-		}
+		},
+		function(done) { listsService.getAllGenders(req, res, done) },
+		function(done) { listsService.getAllRaces(req, res, done) },
+		function(done) { listsService.getAllLanguages(req, res, done) },
+		function(done) { listsService.getAllDisabilities(req, res, done) },
+		function(done) { listsService.getOtherConsiderations(req, res, done) },
+		function(done) { listsService.getAllFamilyConstellations(req, res, done) }
 
 	], function() {
 
