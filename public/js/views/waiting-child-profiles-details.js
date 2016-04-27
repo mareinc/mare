@@ -2,8 +2,10 @@
 	'use strict';
 
 	mare.views.ChildDetails = Backbone.View.extend({
-		// This view controls everything inside the element with class 'child-details'
-		el: '.child-details',
+		// This view controls the content of the modal window, create an element to insert into the modal
+		tagName: 'section',
+		// Give the container for our view a class we can hook into
+  		className: 'child-details',
 
 		initialize: function initialize() {
 			// Store a reference to this for insde callbacks where context is lost
@@ -21,16 +23,21 @@
 		},
 
 		render: function render(childModel) {
-			// Pass the child model to display details for through the template we stored during initialization
+			// Get the index of the current child model in the children collection
+			var childIndex = mare.collections.children.indexOf(childModel);
+			// Check to see if there are children to navigate to before and after the currently displayed child
+			var hasPreviousChild = childIndex > 0;
+			var hasNextChild = childIndex !== mare.collections.children.length - 1;
+			// Set whether there are previous and next children on the model so we have access to the information during rendering
+			childModel.set('hasPreviousChild', hasPreviousChild);
+			childModel.set('hasNextChild', hasNextChild);
+			// Pass the child model to through the template we stored during initialization
 			var html = this.template(childModel.toJSON());
-			console.log(html);
-			console.log(this);
-			console.log(this.$el);
 			// Render the contents area and tabs
-			this.$el.html(html);
+			$('.modal-container__contents').html(html);
 			// Remove the loading indicator and display the details content
-			this.$('.modal-container__loading').fadeOut(function() {
-				this.$('.modal-container__contents').fadeIn();
+			$('.modal-container__loading').fadeOut(function() {
+				$('.modal-container__contents').fadeIn();
 			});
 			// Set up the modal tab click events
 			// TODO: combine these with the generic bindEvents function below
@@ -40,19 +47,28 @@
 		},
 
 		bindEvents: function bindEvents() {
-			this.$el.find('.modal__close').click(this.closeModal);
-			// 'click .modal__close'					: 'closeModal',
-			// 'click .profile-navigation__previous'	: 'displayNextChildDetails',
-			// 'click .profile-navigation__next'		: 'displayNextChildDetails'
+			$('.modal__close').click(this.closeModal);
+			$('.profile-navigation__previous').click(this.displayPreviousChildDetails);
+			$('.profile-navigation__next').click(this.displayNextChildDetails);
 		},
 
 		/* When a child card is clicked, display detailed information for that child in a modal window */
 		displayChildDetails: function displayChildDetails(event) {
+			// Store a reference to this for insde callbacks where context is lost
+			var view = this;
+
 			var selectedChild = $(event.currentTarget),
 				registrationNumber = selectedChild.data('registration-number');
-
+			// Open the modal immediately with a loading indicator to keep the site feeling snappy
 			this.openModal();
-			this.getChildData(registrationNumber);
+			// Create a promise to determine when the child details have been fetched
+			var hasChildDetails = $.Deferred();
+			// Fetch the child details information
+			this.getChildData(registrationNumber, hasChildDetails);
+			// Render the details modal once the child data is returned
+			hasChildDetails.done(function(childModel) {
+				view.render(childModel);
+			});
 		},
 
 		/* Look at the current child, then traverse the DOM to determine which child to dislpay next */
@@ -137,42 +153,39 @@
 		/* Make a call to fetch data for the current child to show detailed information for */
 		// TODO: once we have the general data pulled into a Backbone collection, this should be driven off the next model, not the next item in the DOM.
 		// 		 this change should also fix the bug where next/previous shows the wrong child based on DOM sorting
-		getChildData: function getChildData(registrationNumber) {
+		getChildData: function getChildData(registrationNumber, hasChildDetails) {
 			// Store a reference to this for insde callbacks where context is lost
 			var view = this;
-			// Submit token to server so it can charge the card
-			$.ajax({
-				dataType: 'json',
-				url: '/services/get-child-details',
-				type: 'POST',
-				data: {
-					registrationNumber: registrationNumber
-				}
-			}).done(function(childDetails) {
-				// Fetch the model for the child we requested details about
-				var childModel = view.collection.find(function(child) {
-					return child.get('registrationNumber') === registrationNumber;
-				});
-
-				// Append the new fields to the child model
-				childModel.set(childDetails);
-
-				// mare.children = mare.children || {};
-				// mare.children.selectedChild = childDetails.registrationNumber;
-
-				// var selectedChildElement = $('[data-registration-number=' + mare.children.selectedChild + ']');
-				// var previousChildElement = selectedChildElement.prev();
-				// var nextChildElement = selectedChildElement.next();
-				// // TODO: This needs to change to reflect sorting and filtering in the UI
-				// childDetails.previousChildRegistrationNumber = previousChildElement.data('registration-number');
-				// childDetails.nextChildRegistrationNumber = nextChildElement.data('registration-number');
-				view.render(childModel);
-
-			}).fail(function(err) {
-				// TODO: Show an error message to the user
-				console.log(err);
+			// Fetch the model for the child we requested details about
+			var childModel = this.collection.find(function(child) {
+				return child.get('registrationNumber') === registrationNumber;
 			});
+			// Submit a request to the service layer to fetch child data if we don't have it
+			if(!childModel.get('hasDetails')) {
+				$.ajax({
+					dataType: 'json',
+					url: '/services/get-child-details',
+					type: 'POST',
+					data: {
+						registrationNumber: registrationNumber
+					}
+				}).done(function(childDetails) {
+					// Append the new fields to the child model and set a flag so fetch the same child information a second time
+					childModel.set(childDetails);
+					childModel.set('hasDetails', true);
+					// Resolve the promise saying we have the child details
+					hasChildDetails.resolve(childModel);
+
+				}).fail(function(err) {
+					// TODO: Show an error message to the user
+					console.log(err);
+				});
+			} else {
+				// We already have the child details so resolve the promise
+				hasChildDetails.resolve(childModel);
+			}
 		},
+
 		/* Determine how to handle a click on the bookmark button based on the current state of the bookmark */
 		toggleBookmark: function toggleBookmark(e) {
 			e.stopPropagation();
