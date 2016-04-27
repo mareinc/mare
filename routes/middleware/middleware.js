@@ -189,40 +189,6 @@ exports.convertDate = function convertDate(date) {
 	return new Date(date).getTime();
 };
 
-// TODO: include an error message for this and other functions in middleware if applicable
-exports.getChildDetails = function(req, res) {
-
-	var childData = req.body,
-		registrationNumber = childData['registrationNumber'];
-
-	/* TODO: Fetch only the needed fields instead of grabbing everything */
-	Child.model.find()
-        .where('registrationNumber', registrationNumber)
-        .populate('gender')
-        .exec()
-        .then(function (child) {
-
-        	var child = child[0];
-
-        	var relevantData = {
-        		name: child.name.first,
-        		age: exports.getAge(child.birthDate),
-        		gender: child.gender.gender,
-        		registrationNumber: child.registrationNumber,
-        		profilePart1: child.profile.part1,
-        		profilePart2: child.profile.part2,
-        		profilePart3: child.profile.part3,
-        		detailImage: child.detailImage,
-        		hasImage: child.image.url.length > 0 ? true : false,
-        		hasVideo: child.video.length > 0,
-        		video: child.video.replace('watch?v=', 'embed/'),
-        		wednesdaysChild: child.wednesdaysChild
-        	};
-
-        	res.send(relevantData);
-        });
-};
-
 exports.charge = function(req, res) {
 	var stripeToken = req.body.stripeToken;
     var amount = 1000;
