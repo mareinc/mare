@@ -5,13 +5,46 @@
 		// This view controls everything inside the element with class 'child-details'
 		el: '.child-details',
 
-		events: {
-			'click .modal__close'					: 'closeModal',
-			'click .profile-navigation__previous'	: 'displayNextChildDetails',
-			'click .profile-navigation__next'		: 'displayNextChildDetails'
+		initialize: function initialize() {
+			// Store a reference to this for insde callbacks where context is lost
+			var view = this;
+			// Create a hook to access the gallery template
+			var childDetailsHtml = $('#child-details-template').html();
+			// Compile the template to be used during rendering/repainting the gallery
+			this.template = Handlebars.compile(childDetailsHtml);
+			// Initialize the details modal once we've fetched the basic child data, this is needed because the details will be appended to the same collection
+			mare.promises.childrenDataLoaded.done(function() {
+				view.collection = mare.collections.children;
+				// Bind event handlers
+				view.collection.on('child-details-loaded', view.render);
+			});
 		},
 
-		initialize: function() {},
+		render: function render(childModel) {
+			// Pass the child model to display details for through the template we stored during initialization
+			var html = this.template(childModel.toJSON());
+			console.log(html);
+			console.log(this);
+			console.log(this.$el);
+			// Render the contents area and tabs
+			this.$el.html(html);
+			// Remove the loading indicator and display the details content
+			this.$('.modal-container__loading').fadeOut(function() {
+				this.$('.modal-container__contents').fadeIn();
+			});
+			// Set up the modal tab click events
+			// TODO: combine these with the generic bindEvents function below
+			this.initializeModalTabs();
+			// Set up binding for all events in the modal
+			this.bindEvents();
+		},
+
+		bindEvents: function bindEvents() {
+			this.$el.find('.modal__close').click(this.closeModal);
+			// 'click .modal__close'					: 'closeModal',
+			// 'click .profile-navigation__previous'	: 'displayNextChildDetails',
+			// 'click .profile-navigation__next'		: 'displayNextChildDetails'
+		},
 
 		/* When a child card is clicked, display detailed information for that child in a modal window */
 		displayChildDetails: function displayChildDetails(event) {
@@ -24,17 +57,18 @@
 
 		/* Look at the current child, then traverse the DOM to determine which child to dislpay next */
 		displayNextChildDetails: function displayNextChildDetails(event) {
-			var self = this;
+			// Store a reference to this for insde callbacks where context is lost
+			var view = this;
 
 			var selectedChild = $(event.currentTarget),
 				registrationNumber = selectedChild.data('registration-number');
 
 			$('.modal-container__contents').fadeOut(function() {
 
-				self.clearModalContents();
+				view.clearModalContents();
 
 				$('.modal-container__loading').fadeIn(function() {
-					self.getChildData(registrationNumber);
+					view.getChildData(registrationNumber);
 				});
 
 			});
@@ -104,37 +138,35 @@
 		// TODO: once we have the general data pulled into a Backbone collection, this should be driven off the next model, not the next item in the DOM.
 		// 		 this change should also fix the bug where next/previous shows the wrong child based on DOM sorting
 		getChildData: function getChildData(registrationNumber) {
-			var self = this;
+			// Store a reference to this for insde callbacks where context is lost
+			var view = this;
 			// Submit token to server so it can charge the card
 			$.ajax({
 				dataType: 'json',
-				url: '/getChildDetails',
+				url: '/services/get-child-details',
 				type: 'POST',
 				data: {
 					registrationNumber: registrationNumber
 				}
 			}).done(function(childDetails) {
-				mare.children = mare.children || {};
-				mare.children.selectedChild = childDetails.registrationNumber;
-
-				var selectedChildElement = $('[data-registration-number=' + mare.children.selectedChild + ']');
-				var previousChildElement = selectedChildElement.prev();
-				var nextChildElement = selectedChildElement.next();
-				// TODO: This needs to change to reflect sorting and filtering in the UI
-				childDetails.previousChildRegistrationNumber = previousChildElement.data('registration-number');
-				childDetails.nextChildRegistrationNumber = nextChildElement.data('registration-number');
-
-				var source = $("#child-details-template").html();
-				var template = Handlebars.compile(source);
-				var html = template(childDetails);
-
-				$('.modal-container__contents').html(html);
-
-				$('.modal-container__loading').fadeOut(function() {
-					$('.modal-container__contents').fadeIn();
+				// Fetch the model for the child we requested details about
+				var childModel = view.collection.find(function(child) {
+					return child.get('registrationNumber') === registrationNumber;
 				});
 
-				self.initializeModalTabs();
+				// Append the new fields to the child model
+				childModel.set(childDetails);
+
+				// mare.children = mare.children || {};
+				// mare.children.selectedChild = childDetails.registrationNumber;
+
+				// var selectedChildElement = $('[data-registration-number=' + mare.children.selectedChild + ']');
+				// var previousChildElement = selectedChildElement.prev();
+				// var nextChildElement = selectedChildElement.next();
+				// // TODO: This needs to change to reflect sorting and filtering in the UI
+				// childDetails.previousChildRegistrationNumber = previousChildElement.data('registration-number');
+				// childDetails.nextChildRegistrationNumber = nextChildElement.data('registration-number');
+				view.render(childModel);
 
 			}).fail(function(err) {
 				// TODO: Show an error message to the user
