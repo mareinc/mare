@@ -55,7 +55,7 @@
 
 		/* When a child card is clicked, pass the request to the subview in charge of the details modal */
 		displayChildDetails: function displayChildDetails(event) {
-			mare.views.childDetails.displayChildDetails(event);
+			mare.views.childDetails.handleGalleryClick(event);
 		},
 
 		/* Determine how to handle a click on the bookmark button based on the current state of the bookmark */
