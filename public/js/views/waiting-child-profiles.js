@@ -15,6 +15,8 @@
 			this.$gallery		= this.$( '.gallery' );
 			this.$searchForm	= this.$( '.gallery-search-form' );
 
+			// Create a promise to resolve once we have data for all children the user is allowed to see
+			mare.promises.childrenDataLoaded = $.Deferred();
 			// Fetch children the current user is allowed to view
 			this.getChildren();
 
@@ -29,6 +31,8 @@
 			// Fade the search form out and fade the gallery in
 			this.$searchForm.fadeOut();
 			this.$gallery.fadeIn();
+			// Render the gallery
+			mare.views.gallery.render();
 		},
 
 		/* Hide the gallery and show the gallery search form */
@@ -42,10 +46,14 @@
 		   which is fetched as needed to save bandwidth */
 		getChildren: function getChildren() {
 			$.ajax({
-				url: '/services/get-children-data'
+				dataType: 'json',
+				url: '/services/get-children-data',
+				type: 'POST'
 			}).done(function(data) {
 				// Store the child data in a Backbone collection available from the mare namespace
 				mare.collections.children = mare.collections.children || new mare.collections.Children(data);
+				// Resolve the promise tracking child data loading
+				mare.promises.childrenDataLoaded.resolve();
 
 			}).fail(function(err) {
 				// TODO: Show an error message instead of the gallery if we failed to fetch the child data
