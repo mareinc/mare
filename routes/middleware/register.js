@@ -248,8 +248,8 @@ exports.saveFamily = function saveFamily(user, res, done) {
 		stages 								: exports.getStages(user),
 
 		homestudy: {
-			completed						: user.processProgression.indexOf('homestudyCompleted') !== -1 ? true : false,
-			initialDate						: user.processProgression.indexOf('homestudyCompleted') !== -1 ? user.homestudyDateComplete : undefined
+			completed						: !user.processProgression ? false : user.processProgression.indexOf('homestudyCompleted') !== -1 ? true : false,
+			initialDate						: !user.processProgression ? false : user.processProgression.indexOf('homestudyCompleted') !== -1 ? user.homestudyDateComplete : undefined
 		},
 
 		numberOfChildren					: user.childrenInHome,
@@ -509,6 +509,10 @@ exports.getStages = function getStages(family) {
 		lookingForAgency: {},
 		gatheringInformation: {}
 	};
+	// If no checkboxes have been checked for process progression, return the empty object
+	if(family.processProgression === undefined) {
+		return stages;
+	}
 
 	if(family.processProgression.indexOf('MAPPTrainingCompleted') !== -1) {
 
