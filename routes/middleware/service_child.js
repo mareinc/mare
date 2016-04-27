@@ -117,6 +117,8 @@ exports.getChildByRegistrationNumber = function getChildByRegistrationNumber(req
 				.then(function (child) {
 
 					locals.child = child[0];
+					// execute done function if async is used to continue the flow of execution
+	 				// TODO: if this is used in non-async middleware, done or next should be passed into options and the appropriate one should be executed
 					done();
 
 				}, function(err) {
@@ -126,26 +128,10 @@ exports.getChildByRegistrationNumber = function getChildByRegistrationNumber(req
 
 				});
 
-	// Child.model.find()
-	// 			.where('registrationNumber', registrationNumber) // The child schema stores registration number as a number, we're getting it as a string
-	// 			.exec()
-	// 			.then(function (child) {
-
-	// 				locals.child = child;
-	// 				// execute done function if async is used to continue the flow of execution
-	// 				// TODO: if this is used in non-async middleware, done or next should be passed into options and the appropriate one should be executed
-	// 				done();
-
-	// 			}, function(err) {
-
-	// 				console.log(err);
-	// 				done();
-
-	// 			});
 };
 
-/* Expose the child data to the front-end via an API call */
-exports.sendChildrenData = function sendChildrenData(req, res, next) {
+/* Expose the child data for the gallery view to the front-end via an API call */
+exports.sendGalleryData = function sendGalleryData(req, res, next) {
 
 	var locals = res.locals;
 	// Set local variables
@@ -174,15 +160,9 @@ exports.sendChildrenData = function sendChildrenData(req, res, next) {
 	    		age							: middleware.getAge(child.birthDate),
 	    		ageConverted				: middleware.convertDate(child.birthDate),
 	    		registrationDateConverted	: middleware.convertDate(child.registrationDate),
-	    		gender						: child.gender.gender,
 	    		registrationNumber			: child.registrationNumber,
-	    		profilePart1				: child.profile.part1,
-	    		profilePart2				: child.profile.part2,
-	    		profilePart3				: child.profile.part3,
-	    		detailImage					: child.detailImage,
-	    		hasImage					: child.image.url && child.image.url.length > 0 ? true : false,
-	    		hasVideo					: child.video && child.video.length > 0 ? true : false,
-	    		video						: child.video && child.video.length > 0 ? child.video.replace('watch?v=', 'embed/') : '',
+	    		galleryImage				: child.galleryImage,
+	    		hasVideo					: child.video && child.video.length > 0,
 	    		wednesdaysChild				: child.wednesdaysChild
 	    	};
 
@@ -193,4 +173,32 @@ exports.sendChildrenData = function sendChildrenData(req, res, next) {
 		res.send(locals.publicChildrenData);
 
 	});
+};
+
+// TODO: include an error message for this and other functions in middleware if applicable
+exports.getChildDetails = function(req, res, next) {
+
+	var childData = req.body,
+		registrationNumber = childData['registrationNumber'];
+
+	/* TODO: Fetch only the needed fields instead of grabbing everything */
+	Child.model.find()
+        .where('registrationNumber', registrationNumber)
+        .populate('gender')
+        .exec()
+        .then(function (child) {
+
+        	var child = child[0];
+
+        	var relevantData = {
+        		profilePart1		: child.profile.part1,
+        		profilePart2		: child.profile.part2,
+        		profilePart3		: child.profile.part3,
+        		detailImage			: child.detailImage,
+        		hasImage			: _.isEmpty(child.image) && child.image.url.length > 0,
+        		video				: this.hasVideo ? child.video.replace('watch?v=', 'embed/') : undefined,
+        	};
+
+        	res.send(relevantData);
+        });
 };
