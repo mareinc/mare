@@ -494,19 +494,19 @@
 <script id="child-details-template" type="text/x-handlebars-template">
 
 	<div class="profile__profile-navigation">
-		\{{#if hasPreviousChild}}
-		<span class="profile-navigation__previous">
+		\{{#if hasPrevious}}
+		<span class="profile-navigation__previous" data-child-index="\{{ previousIndex }}">
 			<i class="fa fa-angle-left fa-3x profile-navigation__previous-icon"></i>
 			<span class="profile-navigation__previous-text">Previous Child</span>
 		</span>
 		\{{/if}}
-		\{{#if hasPreviousChild}}
-			\{{#if hasNextChild}}
+		\{{#if hasPrevious}}
+			\{{#if hasNext}}
 			<span class="profile-navigation__divider">|</span>
 			\{{/if}}
 		\{{/if}}
-		\{{#if hasNextChild}}
-		<span class="profile-navigation__next">
+		\{{#if hasNext}}
+		<span class="profile-navigation__next" data-child-index="\{{ nextIndex }}">
 			<span class="profile-navigation__next-text">Next Child</span>
 			<i class="fa fa-angle-right fa-3x profile-navigation__next-icon"></i>
 		</span>
