@@ -11,10 +11,32 @@
 		},
 
 		initialize: function() {
+			// Store a reference to this for insde callbacks where context is lost
+			var view = this;
+			// Create a hook to access the gallery template
+			var galleryHtml = $('#gallery-template').html();
+			// Compile the template to be used during rendering/repainting the gallery
+			this.template = Handlebars.compile(galleryHtml);
 			// Initialize a subview for the details modal
 			mare.views.childDetails = mare.views.childDetails || new mare.views.ChildDetails();
-			// Initialize the gallery once we've fetch the child data used to show child details
-			this.initializeMediaBoxes();
+			// Initialize the gallery once we've fetched the child data needed to display the gallery (this doesn't include child details data)
+			mare.promises.childrenDataLoaded.done(function() {
+				view.collection = mare.collections.children;
+			});
+		},
+
+		render: function render() {
+			// Store a reference to this for insde callbacks where context is lost
+			var view = this;
+			// The gallery can't render until we have the user permissions and the child data is loaded
+			// use the promise bound to both data to delay rendering until we have them
+			$.when(mare.promises.permissionsLoaded, mare.promises.childrenDataLoaded).then(function() {
+				// Pass the collection data through the gallery template to generate the HTML to be added to the gallery
+				var html = view.template(view.collection.toJSON());
+				view.$el.html(html);
+				// Once the html is rendered to the page, initialize the gallery display plugin
+				view.initializeMediaBoxes();
+			});
 		},
 
 		initializeMediaBoxes: function initializeMediaBoxes() {
@@ -24,9 +46,9 @@
 				boxesToLoad 	: 8,
 				sortContainer 	: '#waiting-child-profiles-sort',
 				getSortData: {
-					name		: '.media-box-name', // look in the elements with the class "media-box-name" and sort by the innerHTML value
-					age			: '.media-box-age', // look in the elements with the class "media-box-age" and sort by the innerHTML value
-					dateAdded	: '.media-box-date-added' // look in the elements with the class "media-box-date-added" and sort by the innerHTML value
+					name		: '.media-box-name', 		// look in the elements with the class "media-box-name" and sort by the innerHTML value
+					age			: '.media-box-age', 		// look in the elements with the class "media-box-age" and sort by the innerHTML value
+					dateAdded	: '.media-box-date-added' 	// look in the elements with the class "media-box-date-added" and sort by the innerHTML value
 				}
 			});
 		},
