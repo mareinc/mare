@@ -64,6 +64,7 @@ exports.getUnrestrictedChildren = function getUnrestrictedChildren(req, res, don
 						child.age						= middleware.getAge(child.birthDate);
 			    		child.ageConverted				= middleware.convertDate(child.birthDate);
 			    		child.registrationDateConverted	= middleware.convertDate(child.registrationDate);
+			    		console.log(child);
 					});
 
 					locals.children = children;
@@ -90,6 +91,7 @@ exports.setNoChildImage = function setNoChildImage(req, res, child) {
 		NO_IMAGE_FEMALE_GALLERY = 'images/no-image-female_gallery.png',
 		NO_IMAGE_FEMALE_DETAILS = 'images/no-image-female_detail.png';
 	// If there's no image or if the child has been identified as legal risk set the correct picture for males/females
+
 	if(child.image.url === undefined || child.legalStatus.legalStatus === 'legal risk') {
 
 		if(child.gender.gender === 'male') {
@@ -103,6 +105,7 @@ exports.setNoChildImage = function setNoChildImage(req, res, child) {
 			child.galleryImage = NO_IMAGE_FEMALE_GALLERY;
 
 		}
+		console.log(child);
 	}
 };
 
@@ -163,6 +166,7 @@ exports.getGalleryData = function getGalleryData(req, res, next) {
 	    		registrationDateConverted	: middleware.convertDate(child.registrationDate),
 	    		registrationNumber			: child.registrationNumber,
 	    		galleryImage				: child.galleryImage,
+	    		detailImage					: child.detailImage,
 	    		hasVideo					: child.video && child.video.length > 0,
 	    		wednesdaysChild				: child.wednesdaysChild
 	    	};
@@ -195,7 +199,6 @@ exports.getChildDetails = function(req, res, next) {
         		profilePart1		: child.profile.part1,
         		profilePart2		: child.profile.part2,
         		profilePart3		: child.profile.part3,
-        		detailImage			: child.detailImage,
         		hasImage			: _.isEmpty(child.image) && child.image.url.length > 0,
         		video				: child.video && child.video.length > 0 ? child.video.replace('watch?v=', 'embed/') : undefined,
         	};
