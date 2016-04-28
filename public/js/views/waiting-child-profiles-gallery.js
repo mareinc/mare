@@ -33,7 +33,7 @@
 			$.when(mare.promises.permissionsLoaded, mare.promises.childrenDataLoaded).then(function() {
 				// Pass the collection data through the gallery template to generate the HTML to be added to the gallery
 				var html = view.template(view.collection.toJSON());
-				view.$el.html(html);
+				view.$('.profiles-container').html(html);
 				// Once the html is rendered to the page, initialize the gallery display plugin
 				view.initializeMediaBoxes();
 			});
@@ -45,6 +45,7 @@
 				boxesToLoadStart: 12,
 				boxesToLoad 	: 8,
 				sortContainer 	: '#waiting-child-profiles-sort',
+				sort: 'a',
 				getSortData: {
 					name		: '.media-box-name', 		// look in the elements with the class "media-box-name" and sort by the innerHTML value
 					age			: '.media-box-age', 		// look in the elements with the class "media-box-age" and sort by the innerHTML value
