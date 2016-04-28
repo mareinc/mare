@@ -105,8 +105,12 @@
 				index = selectedChild.data('child-index');
 			// This event is called from a click event so the view context is lost, we need to explicitly call all functions
 			var child = mare.views.childDetails.getChildByIndex(index);
-
-			mare.views.childDetails.getDetails(child);
+			// Fade displayed child details if any are shown, and display the loading indicator
+			$('.modal-container__contents').fadeOut(function() {
+				$('.modal-container__loading').fadeIn(function() {
+					mare.views.childDetails.getDetails(child);
+				});
+			});
 		},
 
 		/* Make a call to fetch data for the current child to show detailed information for */
