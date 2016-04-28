@@ -101,7 +101,6 @@
 		},
 
 		handleNavClick: function handleNavClick(event) {
-			console.log(event);
 			var selectedChild = $(event.currentTarget),
 				index = selectedChild.data('child-index');
 			// This event is called from a click event so the view context is lost, we need to explicitly call all functions
