@@ -158,6 +158,7 @@ exports.getGalleryData = function getGalleryData(req, res, next) {
 			var relevantData = {
 	    		name						: child.name.first,
 	    		age							: middleware.getAge(child.birthDate),
+	    		legalStatus					: child.legalStatus.legalStatus,
 	    		ageConverted				: middleware.convertDate(child.birthDate),
 	    		registrationDateConverted	: middleware.convertDate(child.registrationDate),
 	    		registrationNumber			: child.registrationNumber,
