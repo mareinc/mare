@@ -131,7 +131,7 @@ exports.getChildByRegistrationNumber = function getChildByRegistrationNumber(req
 };
 
 /* Expose the child data for the gallery view to the front-end via an API call */
-exports.sendGalleryData = function sendGalleryData(req, res, next) {
+exports.getGalleryData = function getGalleryData(req, res, next) {
 
 	var locals = res.locals;
 	// Set local variables

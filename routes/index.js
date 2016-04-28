@@ -57,7 +57,7 @@ exports = module.exports = function(app) {
 	app.get('/donate'								, routes.views.donate);
 	app.post('/charge'								, middleware.charge);
 	// Services
-	app.post('/services/get-children-data'			, childService.sendGalleryData);
+	app.post('/services/get-children-data'			, childService.getGalleryData);
 	app.post('/services/get-child-details'			, childService.getChildDetails);
 	app.post('/services/add-bookmark'				, familyService.addChildBookmark);
 	app.post('/services/remove-bookmark'			, familyService.removeChildBookmark);
