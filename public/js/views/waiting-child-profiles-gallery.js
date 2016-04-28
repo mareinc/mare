@@ -6,8 +6,9 @@
 		el: '.gallery',
 
 		events: {
-			'click .media-box'						: 'displayChildDetails',
-			'click .bookmark'						: 'toggleBookmark'
+			'click .media-box'							: 'displayChildDetails',
+			'click .bookmark'							: 'toggleBookmark',
+			'click .waiting-child-profiles-sort-option'	: 'sortCollection'
 		},
 
 		initialize: function() {
@@ -127,6 +128,13 @@
 				console.log(err);
 			});
 
+		},
+
+		sortCollection: function sortCollection(event) {
+			var $currentTarget = $(event.currentTarget);
+			var sortBy = $currentTarget.data('sort-by');
+
+			this.collection.reorder(sortBy);
 		}
 
 	});
