@@ -32,6 +32,7 @@
 			$('.modal__close').unbind('click');
 			$('.profile-navigation__previous').unbind('click');
 			$('.profile-navigation__next').unbind('click');
+			$('.profile-tabs__tab').unbind('click');
 		},
 
 		render: function render(childModel) {
@@ -101,9 +102,12 @@
 		},
 
 		handleNavClick: function handleNavClick(event) {
+			// This event is called from a click event so the view context is lost, we need to explicitly call all functions
+			mare.views.childDetails.unbindEvents();
+
 			var selectedChild = $(event.currentTarget),
 				index = selectedChild.data('child-index');
-			// This event is called from a click event so the view context is lost, we need to explicitly call all functions
+
 			var child = mare.views.childDetails.getChildByIndex(index);
 			// Fade displayed child details if any are shown, and display the loading indicator
 			$('.modal-container__contents').fadeOut(function() {
@@ -157,6 +161,9 @@
 		/* Close the modal container */
 		// TODO: This should be moved to a more appropriate location that's accessible to all pages
 		closeModal: function closeModal() {
+			// This event is called from a click event so the view context is lost, we need to explicitly call all functions
+			mare.views.childDetails.unbindEvents();
+
 			$('.modal__background').fadeOut();
 			$('.modal__container').fadeOut();
 
@@ -175,19 +182,13 @@
 		// TOOD: consider making this more generic and pulling it into a location that's accessible to all pages
 		initializeModalTabs: function initializeModalTabs() {
 			// DOM cache any commonly used elements to improve performance
-			// TODO: possilby pull these and all other elements used regulary into the initialize function prefixed with this
-			var $profileTabs = $('.profile-tabs__tab'),
-				$selectedTab = $('.profile-tabs__tab--selected'),
-				$profileTabContents = $('.profile-tab__contents'),
-				$selectedTabContents = $('.profile-tab__contents--selected')
-
-			$profileTabs.removeClass('profile-tabs__tab--selected');
-			$profileTabs.first().addClass('profile-tabs__tab--selected');
-
-			$profileTabContents.removeClass('profile-tab__contents--selected');
-			$profileTabContents.first().addClass('profile-tab__contents--selected');
+			var $profileTabs = $('.profile-tabs__tab')
 
 			$profileTabs.on('click', function() {
+				// DOM cache any commonly used elements to improve performance
+				var $selectedTab			= $('.profile-tabs__tab--selected'),
+					$selectedTabContents	= $('.profile-tab__contents--selected');
+
 				if($(this).hasClass('profile-tabs__tab--selected')) {
 					return;
 				}
