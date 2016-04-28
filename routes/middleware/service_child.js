@@ -197,7 +197,7 @@ exports.getChildDetails = function(req, res, next) {
         		profilePart3		: child.profile.part3,
         		detailImage			: child.detailImage,
         		hasImage			: _.isEmpty(child.image) && child.image.url.length > 0,
-        		video				: this.hasVideo ? child.video.replace('watch?v=', 'embed/') : undefined,
+        		video				: child.video && child.video.length > 0 ? child.video.replace('watch?v=', 'embed/') : undefined,
         	};
 
         	res.send(relevantData);
