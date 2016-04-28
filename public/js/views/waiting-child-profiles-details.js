@@ -7,12 +7,6 @@
 		// Give the container for our view a class we can hook into
   		className: 'child-details',
 
-  		events: {
-  			'click .modal__close': closeModal,
-			'click .profile-navigation__previous': handleNavClick,
-			'click .profile-navigation__next': handleNavClick
-  		}
-
 		initialize: function initialize() {
 			// Store a reference to this for insde callbacks where context is lost
 			var view = this;
@@ -26,6 +20,18 @@
 				// Bind event handler for when child details are returned
 				view.on('child-details-loaded', view.render);
 			});
+		},
+
+		bindEvents: function bindEvents() {
+  			$('.modal__close').click(this.closeModal);
+			$('.profile-navigation__previous').click(this.handleNavClick);
+			$('.profile-navigation__next').click(this.handleNavClick);
+		},
+
+		unbindEvents: function unbindEvents() {
+			$('.modal__close').unbind('click');
+			$('.profile-navigation__previous').unbind('click');
+			$('.profile-navigation__next').unbind('click');
 		},
 
 		render: function render(childModel) {
@@ -44,6 +50,8 @@
 			this.$el.attr('data-registration-number', childModel.get('registrationNumber'));
 			// Set up the modal tab click events
 			this.initializeModalTabs();
+			// Bind click events for the newly rendered elements
+			this.bindEvents();
 
 		},
 
@@ -93,6 +101,7 @@
 		},
 
 		handleNavClick: function handleNavClick(event) {
+			console.log(event);
 			var selectedChild = $(event.currentTarget),
 				index = selectedChild.data('child-index');
 			// This event is called from a click event so the view context is lost, we need to explicitly call all functions
