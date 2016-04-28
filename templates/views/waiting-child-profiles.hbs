@@ -29,7 +29,34 @@
 				</aside>
 			</aside>
 			<section class="main-column">
-				<section class="gallery"></section>
+				<section class="gallery">
+					<div class="page-header">
+						<span class="page-header-text">Waiting Child Profiles</span>
+					</div>
+
+					<section class="filters-container">
+
+						<div class="media-boxes-drop-down waiting-child-profiles-filter" id="waiting-child-profiles-sort">
+							<div class="media-boxes-drop-down-header"><span class="fa fa-sort-desc"></span>Sort by Most Recent</div>
+							<ul class="media-boxes-drop-down-menu">
+								<li><a class="selected" href="#" data-sort-by="date-added">Sort by Most Recent</a></li>
+								<li><a href="#" data-sort-by="name" data-sort-toggle="true">Sort by Name</a></li>
+								<li><a href="#" data-sort-by="age" data-sort-toggle="true">Sort by Age</a></li>
+							</ul>
+						</div>
+						<div class="icon-key">
+							<span class="icon-text-unit filter">
+								<img class="icon-text-unit__icon video" src="/dist/img/video-icon.png">
+								<span class="icon-text-unit__text">Video Profile</span>
+							</span>
+							<span class="icon-text-unit filter">
+								<img class="icon-text-unit__icon wednesdays-child" src="/dist/img/wednesdays-child-icon.png">
+								<span class="icon-text-unit__text">Wednesday's Child</span>
+							</span>
+						</div>
+					</section>
+					<section class="profiles-container"></section>
+				</section>
 
 				<section class="gallery-search-form hidden">
 					<div class="page-header">
@@ -422,72 +449,42 @@
 
 <script id="gallery-template" type="text/x-handlebars-template">
 
-	<div class="page-header">
-		<span class="page-header-text">Waiting Child Profiles</span>
-	</div>
+	<div id="grid" class="profiles">
+		\{{#each []}}
+			<div class="media-box" data-registration-number="\{{ registrationNumber }}">
+				<div class="profile">
+					<div class="media-box-image">
+						<div data-thumbnail=\{{ galleryImage }}></div>
+					</div>
 
-	<section class="filters-container">
-
-		<div class="media-boxes-drop-down waiting-child-profiles-filter" id="waiting-child-profiles-sort">
-			<div class="media-boxes-drop-down-header"><span class="fa fa-sort-desc"></span>Original Order</div>
-			<ul class="media-boxes-drop-down-menu" style="display: none;">
-				<li><a href="#" data-sort-by="original-order" class="selected">Original Order</a></li>
-				<li><a href="#" data-sort-by="name" data-sort-toggle="true">Sort by Name</a></li>
-				<li><a href="#" data-sort-by="age" data-sort-toggle="true">Sort by Age</a></li>
-				<li><a href="#" data-sort-by="date-added" data-sort-toggle="true">Sort by Date Added</a></li>
-			</ul>
-		</div>
-		<div class="icon-key">
-			<span class="icon-text-unit filter">
-				<img class="icon-text-unit__icon video" src="/dist/img/video-icon.png">
-				<span class="icon-text-unit__text">Video Profile</span>
-			</span>
-			<span class="icon-text-unit filter">
-				<img class="icon-text-unit__icon wednesdays-child" src="/dist/img/wednesdays-child-icon.png">
-				<span class="icon-text-unit__text">Wednesday's Child</span>
-			</span>
-		</div>
-	</section>
-
-	<section class="profiles-container">
-
-		<div id="grid" class="profiles">
-			\{{#each []}}
-				<div class="media-box" data-registration-number="\{{ registrationNumber }}">
-					<div class="profile">
-						<div class="media-box-image">
-							<div data-thumbnail=\{{ galleryImage }}></div>
-						</div>
-
-						<div class="media-box-content details">
-							<div class="media-box-name name">\{{ name }}</div>
-							<div class="media-box-age hidden">\{{ ageConverted }}</div>
-							<div class="media-box-date-added hidden">\{{ registrationDateConverted }}</div>
-							<div class="age">Age \{{ age }}</div>
-							<div class="icons">
-							\{{#if hasVideo}}
-								<img class="badge" src="/dist/img/video-icon.png">
-							\{{/if}}
-							\{{#if wednesdaysChild}}
-								<img class="badge" src="/dist/img/wednesdays-child-icon.png">
-							\{{/if}}
-							</div>
-							<div class="view-profile">
-								<span>View Profile</span>
-								<span class="icon-double-arrow-right">&gt;&gt;</span>
-							</div>
-						\{{#if ../canBookmarkChildren}}
-							<span class="bookmark \{{#if isBookmarked}}bookmark--active\{{/if}}">
-								<i class="fa \{{#if isBookmarked}} fa-minus-square-o bookmark__icon--active \{{else}} fa-plus-square-o \{{/if}} bookmark__icon "></i>
-								<span class="bookmark__text">Bookmark</span>
-							</span>
+					<div class="media-box-content details">
+						<div class="media-box-name name">\{{ name }}</div>
+						<div class="media-box-age hidden">\{{ ageConverted }}</div>
+						<div class="media-box-date-added hidden">\{{ registrationDateConverted }}</div>
+						<div class="age">Age \{{ age }}</div>
+						<div class="icons">
+						\{{#if hasVideo}}
+							<img class="badge" src="/dist/img/video-icon.png">
+						\{{/if}}
+						\{{#if wednesdaysChild}}
+							<img class="badge" src="/dist/img/wednesdays-child-icon.png">
 						\{{/if}}
 						</div>
+						<div class="view-profile">
+							<span>View Profile</span>
+							<span class="icon-double-arrow-right">&gt;&gt;</span>
+						</div>
+					\{{#if ../canBookmarkChildren}}
+						<span class="bookmark \{{#if isBookmarked}}bookmark--active\{{/if}}">
+							<i class="fa \{{#if isBookmarked}} fa-minus-square-o bookmark__icon--active \{{else}} fa-plus-square-o \{{/if}} bookmark__icon "></i>
+							<span class="bookmark__text">Bookmark</span>
+						</span>
+					\{{/if}}
 					</div>
 				</div>
-			\{{/each}}
-		</div>
-	</section>
+			</div>
+		\{{/each}}
+	</div>
 
 </script>
 
