@@ -64,6 +64,7 @@ exports.getUnrestrictedChildren = function getUnrestrictedChildren(req, res, don
 						child.age						= middleware.getAge(child.birthDate);
 			    		child.ageConverted				= middleware.convertDate(child.birthDate);
 			    		child.registrationDateConverted	= middleware.convertDate(child.registrationDate);
+
 					});
 
 					locals.children = children;
@@ -90,6 +91,7 @@ exports.setNoChildImage = function setNoChildImage(req, res, child) {
 		NO_IMAGE_FEMALE_GALLERY = 'images/no-image-female_gallery.png',
 		NO_IMAGE_FEMALE_DETAILS = 'images/no-image-female_detail.png';
 	// If there's no image or if the child has been identified as legal risk set the correct picture for males/females
+
 	if(child.image.url === undefined || child.legalStatus.legalStatus === 'legal risk') {
 
 		if(child.gender.gender === 'male') {
@@ -106,8 +108,32 @@ exports.setNoChildImage = function setNoChildImage(req, res, child) {
 	}
 };
 
-/* Expose the child data to the front-end via an API call */
-exports.sendChildrenData = function sendChildrenData(req, res, next) {
+exports.getChildByRegistrationNumber = function getChildByRegistrationNumber(req, res, done, registrationNumber) {
+
+	var locals				= res.locals,
+		registrationNumber	= parseInt(registrationNumber);
+
+		Child.model.find()
+				.where('registrationNumber', registrationNumber)
+				.exec()
+				.then(function (child) {
+
+					locals.child = child[0];
+					// execute done function if async is used to continue the flow of execution
+	 				// TODO: if this is used in non-async middleware, done or next should be passed into options and the appropriate one should be executed
+					done();
+
+				}, function(err) {
+
+					console.log(err);
+					done();
+
+				});
+
+};
+
+/* Expose the child data for the gallery view to the front-end via an API call */
+exports.getGalleryData = function getGalleryData(req, res, next) {
 
 	var locals = res.locals;
 	// Set local variables
@@ -134,17 +160,13 @@ exports.sendChildrenData = function sendChildrenData(req, res, next) {
 			var relevantData = {
 	    		name						: child.name.first,
 	    		age							: middleware.getAge(child.birthDate),
+	    		legalStatus					: child.legalStatus.legalStatus,
 	    		ageConverted				: middleware.convertDate(child.birthDate),
 	    		registrationDateConverted	: middleware.convertDate(child.registrationDate),
-	    		gender						: child.gender.gender,
 	    		registrationNumber			: child.registrationNumber,
-	    		profilePart1				: child.profile.part1,
-	    		profilePart2				: child.profile.part2,
-	    		profilePart3				: child.profile.part3,
+	    		galleryImage				: child.galleryImage,
 	    		detailImage					: child.detailImage,
-	    		hasImage					: child.image.url && child.image.url.length > 0 ? true : false,
-	    		hasVideo					: child.video && child.video.length > 0 ? true : false,
-	    		video						: child.video && child.video.length > 0 ? child.video.replace('watch?v=', 'embed/') : '',
+	    		hasVideo					: child.video && child.video.length > 0,
 	    		wednesdaysChild				: child.wednesdaysChild
 	    	};
 
@@ -155,4 +177,31 @@ exports.sendChildrenData = function sendChildrenData(req, res, next) {
 		res.send(locals.publicChildrenData);
 
 	});
+};
+
+// TODO: include an error message for this and other functions in middleware if applicable
+exports.getChildDetails = function(req, res, next) {
+
+	var childData = req.body,
+		registrationNumber = childData['registrationNumber'];
+
+	/* TODO: Fetch only the needed fields instead of grabbing everything */
+	Child.model.find()
+        .where('registrationNumber', registrationNumber)
+        .populate('gender')
+        .exec()
+        .then(function (child) {
+
+        	var child = child[0];
+
+        	var relevantData = {
+        		profilePart1		: child.profile.part1,
+        		profilePart2		: child.profile.part2,
+        		profilePart3		: child.profile.part3,
+        		hasImage			: _.isEmpty(child.image) && child.image.url.length > 0,
+        		video				: child.video && child.video.length > 0 ? child.video.replace('watch?v=', 'embed/') : undefined,
+        	};
+
+        	res.send(relevantData);
+        });
 };

@@ -153,7 +153,7 @@
 						</section>
 
 						<section class="site-visitor-mare-and-you-section">
-							<div class="registration-section-header">Mare &amp; You</div>
+							<div class="form-section-header">Mare &amp; You</div>
 
 							<div class="row">
 								<div class="col-sm-24 form-group">
@@ -213,7 +213,7 @@
 						<input type="hidden" class="registration-type" name="registrationType" value="socialWorker">
 
 						<section class="social-worker-account-setup-section">
-							<div class="registration-section-header">Account Setup</div>
+							<div class="form-section-header">Account Setup</div>
 							<div class="row form-group">
 								<div class="col-sm-12">
 									<input type="text" id="social-worker-first-name" class="input" name="firstName" placeholder="John" data-parsley-error-message="required" required="">
@@ -247,7 +247,7 @@
 						</section>
 
 						<section class="social-worker-contact-details-section">
-							<div class="registration-section-header">Contact Details</div>
+							<div class="form-section-header">Contact Details</div>
 
 							{{!-- <div class="row">
 								<div class="col-sm-12 form-group">
@@ -365,7 +365,7 @@
 						</section>
 
 						<section class="social-worker-mare-and-you-section">
-							<div class="registration-section-header">Mare &amp; You</div>
+							<div class="form-section-header">Mare &amp; You</div>
 							<div class="row form-group">
 								<div class="col-sm-12">
 									<label class="label marg-bottom-xs-5">Would you like to be added to the MARE News email list?</label>
@@ -406,7 +406,7 @@
 						<input type="hidden" class="registration-type" name="registrationType" value="family">
 
 						<section class="family-account-setup-section">
-							<div class="registration-section-header">Account Setup</div>
+							<div class="form-section-header">Account Setup</div>
 							<div class="row">
 								<div class="col-sm-12 form-group">
 									<input type="email" id="family-email" class="input" name="email" placeholder="john.smith@gmail.com" data-parsley-trigger="change" data-parsley-error-message="required" required="">
@@ -428,7 +428,7 @@
 						</section>
 
 						<section class="family-contact-1-section">
-							<div class="registration-section-header">Contact 1</div>
+							<div class="form-section-header">Contact 1</div>
 							<div class="row">
 								<div class="col-sm-12 form-group">
 									<input type="text" id="contact1-first-name" class="input" name="contact1FirstName" placeholder="John" data-parsley-error-message="required" required="">
@@ -501,7 +501,7 @@
 						</section>
 
 						<section class="family-contact-2-section">
-							<div class="registration-section-header">Contact 2</div>
+							<div class="form-section-header">Contact 2</div>
 
 							<div class="row">
 								<div class="col-sm-12 form-group">
@@ -574,7 +574,7 @@
 
 						<section class="family-constellation-section">
 
-							<div class="registration-section-header">Family Constellation</div>
+							<div class="form-section-header">Family Constellation</div>
 
 							<div class="row form-group">
 								<div class="col-sm-12">
@@ -590,7 +590,7 @@
 						</section>
 
 						<section class="family-home-address-section">
-							<div class="registration-section-header">Home Address</div>
+							<div class="form-section-header">Home Address</div>
 
 							<div class="row">
 								<div class="col-sm-12 form-group">
@@ -676,7 +676,7 @@
 						<!-- This will end part 3 -->
 
 						<section class="family-homestudy-details-section hidden">
-							<div class="registration-section-header">Homestudy Details</div>
+							<div class="form-section-header">Homestudy Details</div>
 
 							<div class="row">
 								<div class="col-sm-12 form-group">
@@ -744,14 +744,14 @@
 						</section>
 
 						<section class="family-details-section">
-							<div class="registration-section-header">Family Details</div>
+							<div class="form-section-header">Family Details</div>
 
 							<div class="row form-group children-in-home">
 								<div class="col-sm-12">
 									<label for="children-in-home" class="label marg-bottom-xs-5">Total number of children currently living at home</label>
 								</div>
 								<div class="col-sm-12">
-									<select id="children-in-home" name="childrenInHome" class="input registration-number-select">
+									<select id="children-in-home" name="childrenInHome" class="input form__number-select">
 										<option>0</option>
 										<option>1</option>
 										<option>2</option>
@@ -768,7 +768,7 @@
 							<div class="row form-group children-form-heading hidden">
 								<div class="col-sm-24">
 									<div class="label marg-bottom-xs-5">
-										Child 
+										Child
 										<span class="child-number"></span>
 									</div>
 								</div>
@@ -819,7 +819,7 @@
 									<label for="other-adults-in-home" class="label marg-bottom-xs-5">Number of other adults living in home</label>
 								</div>
 								<div class="col-sm-12">
-									<select id="other-adults-in-home" name="otherAdultsInHome" class="input registration-number-select">
+									<select id="other-adults-in-home" name="otherAdultsInHome" class="input form__number-select">
 										<option>0</option>
 										<option>1</option>
 										<option>2</option>
@@ -846,7 +846,7 @@
 									<label for="primary-language-in-home" class="label marg-bottom-xs-5 required-field">Primary language spoken at home</label>
 								</div>
 								<div class="col-sm-12">
-									<select name="primaryLanguageInHome" class="input registration-number-select" data-parsley-errors-messages-disabled="true" required="">
+									<select name="primaryLanguageInHome" class="input form__number-select" data-parsley-errors-messages-disabled="true" required="">
 										<option value=""></option>
 										{{#each languages}}
 											<option value="{{_id}}">{{language}}</option>
@@ -875,7 +875,7 @@
 						</section>
 
 						<section class="family-adoption-preferences-section">
-							<div class="registration-section-header">Adoption Preferences</div>
+							<div class="form-section-header">Adoption Preferences</div>
 
 							<div class="row form-group">
 								<div class="col-sm-12">
@@ -916,7 +916,7 @@
 								<div class="col-sm-12">
 									<div class="row">
 										<div class="col-xs-8">
-											<select name="ageRangeFrom" class="input registration-number-select inline" data-parsley-errors-messages-disabled="true" required="">
+											<select name="ageRangeFrom" class="input form__number-select inline" data-parsley-errors-messages-disabled="true" required="">
 												<option value=""></option>
 												<option value="0">0</option>
 												<option value="1">1</option>
@@ -940,7 +940,7 @@
 										</div>
 										<div class="col-xs-4 text-center">To:</div>
 										<div class="col-xs-8">
-											<select name="ageRangeTo" class="input registration-number-select inline" data-parsley-errors-messages-disabled="true" required="">
+											<select name="ageRangeTo" class="input form__number-select inline" data-parsley-errors-messages-disabled="true" required="">
 												<option value=""></option>
 												<option value="0">0</option>
 												<option value="1">1</option>
@@ -970,7 +970,7 @@
 									<label class="label marg-bottom-xs-5 required-field">Number of children preferred</label>
 								</div>
 								<div class="col-sm-12">
-									<select name="numberOfChildrenPrefered" class="input registration-number-select" data-parsley-errors-messages-disabled="true" required="">
+									<select name="numberOfChildrenPrefered" class="input form__number-select" data-parsley-errors-messages-disabled="true" required="">
 										<option value=""></option>
 										<option value="0">0</option>
 										<option value="1">1</option>
@@ -1105,7 +1105,7 @@
 						</section>
 
 						<section class="family-mare-and-you-section">
-							<div class="registration-section-header">Mare &amp; You</div>
+							<div class="form-section-header">Mare &amp; You</div>
 
 							<div class="row">
 								<div class="col-sm-24 form-group">

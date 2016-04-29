@@ -291,6 +291,10 @@ Family.add('General Information', {
 
 	fileName: { type: Types.Text, hidden: true }
 
+}, 'User Selections', {
+
+	bookmarkedChildren: { type: Types.Relationship, label: 'bookmarked children', ref: 'Child', many: true, noedit: true }
+
 });
 
 Family.relationship({ path: 'placements', ref: 'Placement', refPath: 'prospectiveParentOrFamily' });

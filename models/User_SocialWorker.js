@@ -51,6 +51,10 @@ SocialWorker.add('General Information', {
 	title: { type: Types.Text, label: 'title', initial: true },
 	notes: { type: Types.Textarea, label: 'notes', initial: true }
 
+}, 'User Selections', {
+
+	bookmarkedChildren: { type: Types.Relationship, label: 'bookmarked children', ref: 'Child', many: true, noedit: true }
+
 });
 
 SocialWorker.relationship({ path: 'children', label: 'children', ref: 'Child', refPath: 'adoptionWorker' });
