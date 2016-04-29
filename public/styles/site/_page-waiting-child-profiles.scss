@@ -7,29 +7,63 @@
 // }
 
 .filters-container {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
+	display: block;
+
+	@media all and (min-width: 500px) {
+		display: flex;
+		justify-content: flex-start;
+		align-items: flex-start;
+    	flex-direction: column;
+	}
+}
+
+.modify-search__button--modify,
+.modify-search__button--clear {
+	font-size: .9em;
+
+	color: $dark-text-color;
+	background-color: $button-color-light;
+}
+
+.search__container {
+    margin-bottom: 10px;
+}
+
+.waiting-child-profiles-filter {
+	margin-bottom: 15px;
+}
+
+.waiting-child-profiles-filter {
+    width: 90%;
+
+    @media all and (min-width: 500px) {
+    	width: 140px;
+    }
 }
 
 .icon-key {
-    display: flex;
-    justify-content: space-around;
-    width: 300px;
+	display: block;
+	margin-top: 15px;
+
+	@media all and (min-width: 500px) {
+		width: 300px;
+		margin-top: 0;
+		align-self: flex-end;
+	}
 }
 
 .icon-text-unit {
-    display: inline-block;
-    margin-left: 10px;
+	display: inline-block;
+	margin-left: 10px;
 }
 
 .icon-text-unit__icon {
-    vertical-align:middle;
-    width: 20px;
+	vertical-align:middle;
+	width: 20px;
 }
 
 .icon-text-unit__text {
-    vertical-align: middle;
+	vertical-align: middle;
 }
 
 /* Profile contents */
@@ -57,20 +91,21 @@
 }
 
 .profile .details > .icons {
-    position:relative;
-    top: -20px;
+	position:relative;
+	top: -20px;
 }
 
 .profile .details > .icons > .badge {
-    float: right;
-    width: 20px;
+	float: right;
+	width: 20px;
 }
 
 .profile .details > .icons > .badge + .badge {
-    margin-right: 6px;
+	margin-right: 6px;
 }
 
-.profile .details > .age {
+.profile .details > .age,
+.profile .details > .legal-status {
 	color: #66584D;
 	margin-top: .4em;
 }
@@ -99,7 +134,7 @@
 
 .profile-navigation__divider {
 	margin: 0 .1em;
-    font-size: 1.2em;
+	font-size: 1.2em;
 }
 
 .profile-tabs {
@@ -108,17 +143,17 @@
 }
 
 .profile-tabs__tab {
-    padding: 1em;
-    display: inline-block;
+	padding: 1em;
+	display: inline-block;
 
-    &:not(.profile-tabs__tab--selected) {
-    	cursor: pointer;
-    }
+	&:not(.profile-tabs__tab--selected) {
+		cursor: pointer;
+	}
 }
 
 .profile-tabs__tab--selected {
-    background-color: $modal-color-1;
-    color: #fff;
+	background-color: $modal-color-1;
+	color: #fff;
 }
 
 .profile-tab__contents {
@@ -130,39 +165,39 @@
 }
 
 .profile__profile-picture {
-    width: 200px;
-    position: absolute;
-    right: 1em;
+	width: 200px;
+	position: absolute;
+	right: 1em;
 }
 
 .profile__basic-info {
-    margin-right: 15em;
+	margin-right: 15em;
 }
 
 .profile-details__name {
-    font-size: 1.4em;
-    font-style: italic;
-    margin-bottom: .4em;
-    font-weight: 400;
+	font-size: 1.4em;
+	font-style: italic;
+	margin-bottom: .4em;
+	font-weight: 400;
 }
 
 .profile-details__age {
-    margin-bottom: .8em;
+	margin-bottom: .8em;
 }
 
 .profile-details__registration-number {
-    margin-bottom: 2em;
+	margin-bottom: 2em;
 }
 
 .detailed-child-info__header {
-    font-weight: 600;
+	font-weight: 600;
 }
 
 .detailed-child-info__introduction,
 .detailed-child-info__part-1,
 .detailed-child-info__part-2,
 .detailed-child-info__part-3 {
-    margin-bottom: 1.5em;
+	margin-bottom: 1.5em;
 }
 
 .detailed-child-info__introduction,
@@ -171,52 +206,52 @@
 }
 
 .profile-details__video-container {
-    position: relative;
-    width: 100%;
-    height: 0;
-    padding-bottom: 56.25%;
-    margin-bottom: 1.5em;
+	position: relative;
+	width: 100%;
+	height: 0;
+	padding-bottom: 56.25%;
+	margin-bottom: 1.5em;
 }
 
 .profile-details__video {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
 }
 
 /* hover effect on the image */
 .media-box-image img{
-    transition: all 0.3s ease-in-out;
-    transform-origin: bottom left;
+	transition: all 0.3s ease-in-out;
+	transform-origin: bottom left;
 }
 
 .media-box-container:hover img{
-    transform: scale(1.1) translate(-10px);
+	transform: scale(1.1) translate(-10px);
 }
 
 .media-box-container {
-    box-shadow: 1px 1px 3px rgba(0,0,0,.75);
+	box-shadow: 1px 1px 3px rgba(0,0,0,.75);
 }
 
 .media-boxes-load-more-button {
-    display: none;
+	display: none;
 }
 
 .bookmark {
-    display: inline-block;
-    margin-top: 10px;
-    font-family: sans-serif;
-    transition: all .2s ease-in-out;
+	display: inline-block;
+	margin-top: 10px;
+	font-family: sans-serif;
+	transition: all .2s ease-in-out;
 
-    &:hover {
-        transform: scale(1.1);
-    }
+	&:hover {
+		transform: scale(1.1);
+	}
 
-    &--active {
-        color: #66584D;
-    }
+	&--active {
+		color: #66584D;
+	}
 }
 
 
