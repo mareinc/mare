@@ -130,7 +130,7 @@
 
 		},
 
-		sortCollection: function sortCollection(event) {
+		sortGallery: function sortGallery(event) {
 			var $currentTarget = $(event.currentTarget);
 			var sortBy = $currentTarget.data('sort-by');
 
