@@ -6,8 +6,9 @@
 		el: 'body',
 
 		events: {
-			'click .search'			: 'showGallery',
-			'click .modifySearch'	: 'showSearchForm'
+			'click .search'							: 'showGallery',
+			'click .modify-search__button--modify'	: 'showSearchForm',
+			'click .modify-sarch__button--clear'	: 'resetGallery'
 		},
 
 		initialize: function initialize() {
@@ -19,6 +20,9 @@
 			mare.promises.childrenDataLoaded = $.Deferred();
 			// Fetch children the current user is allowed to view
 			this.getChildren();
+
+			// Create a Backbone collection for filtered children data based on the users search criteria
+			mare.collections.FilteredChildren = mare.collections.FilteredChildren || new mare.collections.Children();
 
 			// Initialize views for the gallery and serach form
 			mare.views.gallery = mare.views.gallery || new mare.views.Gallery();
@@ -50,6 +54,7 @@
 				url: '/services/get-children-data',
 				type: 'POST'
 			}).done(function(data) {
+				// TODO: maybe pull the collection creation into the initialize funciton for better readability
 				// Store the child data in a Backbone collection available from the mare namespace
 				mare.collections.children = mare.collections.children || new mare.collections.Children(data);
 				// Resolve the promise tracking child data loading
@@ -59,6 +64,10 @@
 				// TODO: Show an error message instead of the gallery if we failed to fetch the child data
 				console.log(err);
 			});
+		},
+
+		resetGallery: function resetGallery() {
+
 		}
 
 	});
