@@ -64,7 +64,7 @@ exports.getUnrestrictedChildren = function getUnrestrictedChildren(req, res, don
 						child.age						= middleware.getAge(child.birthDate);
 			    		child.ageConverted				= middleware.convertDate(child.birthDate);
 			    		child.registrationDateConverted	= middleware.convertDate(child.registrationDate);
-			    		console.log(child);
+
 					});
 
 					locals.children = children;
@@ -105,7 +105,6 @@ exports.setNoChildImage = function setNoChildImage(req, res, child) {
 			child.galleryImage = NO_IMAGE_FEMALE_GALLERY;
 
 		}
-		console.log(child);
 	}
 };
 
