@@ -1,3 +1,10 @@
+.button {
+  padding: 5px 10px;
+  border-radius: 5px;
+  text-transform: uppercase;
+}
+
+// TODO: Not sure where most of the stuff below came from, check for use, delete if you're able to
 [role="button"] {
   cursor: pointer;
 }
