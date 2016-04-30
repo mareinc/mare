@@ -23,7 +23,7 @@
 				case 'siteVisitor'			: mare.routers.registration.navigate( 'site-visitor', { trigger: true } ); break;
 				case 'socialWorker'			: mare.routers.registration.navigate( 'social-worker', { trigger: true } ); break;
 				case 'prospectiveParent'	: mare.routers.registration.navigate( 'family', { trigger: true } ); break;
-				default						: mare.routers.registration.navigate( 'site-user', { trigger: true, replace: true } );
+				default						: mare.routers.registration.navigate( 'site-visitor', { trigger: true, replace: true } );
 			}
 		},
 
