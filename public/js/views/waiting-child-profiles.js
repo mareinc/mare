@@ -7,8 +7,8 @@
 
 		events: {
 			'click .search'							: 'showGallery',
-			'click .modify-search__button--modify'	: 'showSearchForm',
-			'click .modify-sarch__button--clear'	: 'resetGallery'
+			'click .modify-search__button--modify'	: 'handleSearchClick',
+			'click .modify-search__button--clear'	: 'handleResetClick'
 		},
 
 		initialize: function initialize() {
@@ -32,18 +32,24 @@
 
 		/* Hide the gallery search form and show the gallery */
 		showGallery: function showGallery() {
+			// Store a reference to this for insde callbacks where context is lost
+			var view = this;
 			// Fade the search form out and fade the gallery in
-			this.$searchForm.fadeOut();
-			this.$gallery.fadeIn();
-			// Render the gallery
-			mare.views.gallery.render();
+			this.$searchForm.fadeOut(function() {
+				view.$gallery.fadeIn();
+				// Render the gallery
+				mare.views.gallery.render();
+			});
 		},
 
 		/* Hide the gallery and show the gallery search form */
 		showSearchForm: function showSearchForm() {
+			// Store a reference to this for insde callbacks where context is lost
+			var view = this;
 			// Fade the gallery out and fade the search form in
-			this.$gallery.fadeOut();
-			this.$searchForm.fadeIn();
+			this.$gallery.fadeOut(function() {
+				view.$searchForm.fadeIn();
+			});
 		},
 
 		/* get all children information the user is allowed to view.  This only includes data to show in the gallery cards, no detailed information
@@ -64,6 +70,10 @@
 				// TODO: Show an error message instead of the gallery if we failed to fetch the child data
 				console.log(err);
 			});
+		},
+		/* Route to the search form to preserve browser history state */
+		handleSearchClick: function handleSearchClick() {
+			mare.routers.waitingChildProfiles.navigate( 'search', { trigger: true } );
 		},
 
 		resetGallery: function resetGallery() {

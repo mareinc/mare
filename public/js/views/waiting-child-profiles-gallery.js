@@ -8,7 +8,7 @@
 		events: {
 			'click .media-box'							: 'displayChildDetails',
 			'click .bookmark'							: 'toggleBookmark',
-			'click .waiting-child-profiles-sort-option'	: 'sortCollection'
+			'click .waiting-child-profiles-sort-option'	: 'sortGallery'
 		},
 
 		initialize: function() {

@@ -2,9 +2,10 @@
 /* TODO: Bring breakpoint code under each selector */
 /* TODO: Sass up the styles even more with nested selectors */
 
-// .gallery-search-form {
-//     display: none;
-// }
+.gallery,
+.gallery-search-form {
+    display: none;
+}
 
 .filters-container {
 	display: block;
