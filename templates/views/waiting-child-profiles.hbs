@@ -44,7 +44,7 @@
 						<div class="media-boxes-drop-down waiting-child-profiles-filter" id="waiting-child-profiles-sort">
 							<div class="media-boxes-drop-down-header"><span class="fa fa-sort-desc"></span>Sort by Most Recent</div>
 							<ul class="media-boxes-drop-down-menu">
-								<li><a class="selected waiting-child-profiles-sort-option" href="#" data-sort-by="date-added">Sort by Most Recent</a></li>
+								<li><a class="selected waiting-child-profiles-sort-option" href="#" data-sort-by="date-added" data-sort-ascending="false">Sort by Most Recent</a></li>
 								<li><a class="waiting-child-profiles-sort-option" href="#" data-sort-by="name">Sort by Name</a></li>
 								<li><a class="waiting-child-profiles-sort-option" href="#" data-sort-by="age" data-sort-ascending="false">Sort by Age</a></li>
 							</ul>
@@ -335,17 +335,20 @@
 					<section class="form-section form-section--family-profile">
 						<div class="form-section-header">Family Profile</div>
 
-						<div class="row form-group">
-							<div class="col-sm-12">
+						<div class="row">
+							<div class="col-sm-24 form-group">
 								<label for="family-constellation" class="label marg-bottom-xs-5">Family type:</label>
 							</div>
-							<div class="col-sm-12">
-								<select id="family-constellation" name="familyConstellation" class="input">
-									<option value=""></option>
-									{{#each familyConstellations}}
-									<option value="{{_id}}">{{familyConstellation}}</option>
-									{{/each}}
-								</select>
+						</div>
+						<div class="row form-group">
+							<div class="col-sm-24">
+							{{#each familyConstellations}}
+								<div class="col-sm-8 form-group">
+									<label class="checkbox-inline">
+										<input type="checkbox" name="familyConstellation" value="{{_id}}">{{familyConstellation}}
+									</label>
+								</div>
+							{{/each}}
 							</div>
 						</div>
 						<div class="row form-group">
