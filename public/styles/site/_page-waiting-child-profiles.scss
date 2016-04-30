@@ -7,8 +7,9 @@
     display: none;
 }
 
-.filters-container {
+.filters {
 	display: block;
+	margin-bottom: 15px;
 
 	@media all and (min-width: 500px) {
 		display: flex;
@@ -18,23 +19,19 @@
 	}
 }
 
-.modify-search__button--modify,
-.modify-search__button--clear {
+.filters__search {
+    margin-bottom: 10px;
+}
+
+.filters__search-button {
 	font-size: .9em;
 
 	color: $dark-text-color;
 	background-color: $button-color-light;
 }
 
-.search__container {
-    margin-bottom: 10px;
-}
-
 .waiting-child-profiles-filter {
 	margin-bottom: 15px;
-}
-
-.waiting-child-profiles-filter {
     width: 90%;
 
     @media all and (min-width: 500px) {
