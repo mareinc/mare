@@ -93,7 +93,7 @@ keystone.set('routes', require('./routes'));
 
 // Setup common locals for your templates. The following are required for the
 // bundled templates and layouts. Any runtime locals (that should be set uniquely
-// for each request) should be added to ./routes/middleware.js
+// for each request) should be added to ./routes/middleware/middleware.js
 keystone.set('locals', {
 	_: require('underscore'),
 	moment: require('moment'),
@@ -154,19 +154,19 @@ keystone.set('email tests', require('./routes/emails'));
 
 // Configure the navigation bar in Keystone's Admin UI
 keystone.set('nav', {
-	'people'			: ['users', 'site-users', 'prospective-parent-or-families', 'social-workers', 'children'],
+	'people'			: ['users', 'admins', 'site-visitors', 'families', 'social-workers', 'children'],
 	'images'			: ['featured-items', 'slideshows', 'slideshow-items'],
-	'content pages'		: ['pages', 'forms'],
+	'content pages'		: ['pages'],
 	'content snippets'	: ['success-stories'],
 	'events'			: ['events'],
 	'mailing lists'		: ['mailing-lists'],
-	'relationships'		: ['placements'],
-	'lists'				: ['child-statuses', 'child-types', 'city-or-towns', 'closed-reasons', 'contact-methods',
-						   'disabilities', 'event-types', 'family-constellations', 'genders', 'inquiry-methods',
+	'relationships'		: ['csc-region-contacts', 'csc-email-contacts', 'placements'],
+	'change tracking'	: ['child-histories', 'family-histories'],
+	'lists'				: ['child-statuses', 'child-types', 'city-or-towns', 'closed-reasons', 'communication-methods',
+						   'disabilities', 'email-targets', 'event-types', 'family-constellations', 'genders', 'inquiry-methods',
 						   'inquiry-types', 'languages', 'legal-statuses', 'media-eligibilities', 'other-considerations',
-						   'other-family-constellation-considerations', 'races','regions', 'residences',
-						   'single-parent-options', 'social-worker-positions', 'states' ],
-	'change tracking'	: ['child-histories', 'family-histories']
+						   'other-family-constellation-considerations', 'races', 'regions', 'residences',
+						   'social-worker-positions', 'sources', 'states', 'way-to-hear-about-mares' ]
 
 });
 

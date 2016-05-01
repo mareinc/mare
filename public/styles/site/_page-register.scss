@@ -6,31 +6,28 @@
 	margin: 0 0 10px;
 }
 
-.registration-type-selector:before {
+.registration-type-selector-container:before {
 	content: "Register as:";
 	margin: 0 8px 0 0;
 }
+
 .registration-type-selector > select {
 	display: inline;
 }
 
 .registration-type-header,
-.registration-section-header,
-.registration-sub-section-header {
+.form-section-header,
+.form-section-sub-header {
 	text-transform: uppercase;
 	border-bottom: 1px solid $border-color-1;
-	margin: 35px 0 8px;
+	margin: 35px 0 20px;
     padding: 0 0 5px;
     clear: both;	/* TODO: Temporary until the registration styles work for left-x and right-x */
 }
 
-.registration-sub-section-header {
+.form-section-sub-header {
 	margin-top: 0;
 	text-transform: none;
-}
-
-.registration-form {
-    /*font-size: .8em;*/
 }
 
 .required-description {
@@ -54,7 +51,7 @@ label {
 	display: block;
 	width: 100%;
     /* margin: 0 0 5px; */
-    padding: 5px; 
+    padding: 5px;
 }
 
 .input-small {
@@ -69,14 +66,8 @@ label {
 	width: 350px;
 }
 
-.registration-form select,
-.registration-type-selector select {
-	background-color: $light-background-color;
-	border: 1px solid $form-color-3;
-}
-
 .state-select {
-    margin: 10px 0 20px;
+    margin: 10px 0 5px;
 }
 
 /* TODO: Change class names to signify that these are buttons */
@@ -113,4 +104,12 @@ label {
 
 .text-pink {
 	color: $form-color-2;
+}
+
+.homestudy-file-text {
+	margin-left: 5px;
+}
+
+.error-container {
+    padding: 5px 5px 5px 0;
 }

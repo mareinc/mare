@@ -21,1165 +21,1163 @@
 			</aside>
 			<section class="main-column">
 				<div class="page-header">
-					<span class="page-header-text">Register with MARE</span>
+					<span class="page-header-text">Create an Account</span>
 				</div>
 				{{#if registrationSubmitted}}
 					<h3>Thanks for registering.</h3>
 					<p>You can now try to log in.</p>
 				{{else}}
 				<div class="register-intro">
-					Lorem ipsum dolor sit amet, consectetur adipiscing elit. In gravida ultricies tempor. Aenean sodales rutrum urna in porta. Vestibulum in mi non risus mattis imperdiet eget ac metus. Sed mauris nunc, rutrum eu posuere a, vehicula vitae neque. Donec nec lorem laoreet, accumsan mauris vitae, bibendum metus. Donec sit amet odio luctus arcu suscipit laoreet a in dolor. Sed commodo sagittis mattis. Aenean cursus malesuada purus ut posuere.
+					Families: Once you create an account, you can quickly and easily inquire about specific children, RSVP for events and manage your subscription preferences.  If you are a Massachusetts family with an approved homestudy, creating an account will also allow you to access a greater pool of waiting children (including those at legal risk) and upload your homestudy to be shared with workers across the state for consideration for specific children.
 				</div>
-				<div class="registration-type-selector">
-					<select name="registration-type-selector">
+				<div class="register-intro">
+					Workers: If you are a Massachusetts social worker, you must create an account to register a child or family, RSVP for events, track inquiries and update your MARE caseload.
+				</div>
+				<div class="register-intro">
+					Site Visitors: Feel free to browse the website without registering, you can always create an account at a later time.
+				</div>
+				<div class="registration-type-selector-container">
+					<select class="registration-type-selector" name="registration-type-selector">
 					    <option value="siteVisitor" selected="selected">Site Visitor</option>
 					    <option value="socialWorker">Social Worker</option>
 					    <option value="prospectiveParent">Prospective Parent</option>
 					</select>
 				</div>
 				<section class="site-visitor-registration">
-					<div class="registration-type-header">Site Visitor Registration</div>
-					<span class="required required-description">* Required</span>
-					<form action="/register" class="registration-form" method="POST">
-						<input type="hidden" class="registration-type" name="registrationType" value="siteVisitor">
-						<input type="hidden" name="action" value="register">
-						<div class="row form-group">
-							<div class="col-sm-12">
-								<input type="text" class="input" required id="site-user-first-name" name="firstName">
-								<label for="site-user-first-name" class="label required-field">First Name</label>
-							</div>
-						</div>
-						<div class="row form-group">
-							<div class="col-sm-12">
-								<input type="text" class="input" required id="site-user-last-name" name="lastName">
-								<label for="site-user-last-name" class="label required-field">Last Name</label>
-							</div>
-						</div>
-						<div class="row form-group">
-							<div class="col-sm-12">
-								<input type="email" class="input" required id="site-user-email" name="email" pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
-								<label for="site-user-email" class="label required-field">Email Address</label>
-							</div>
-						</div>
-						<div class="row form-group">
-							<div class="col-sm-12">
-								<input type="password" class="input" required id="site-user-password" name="password">
-								<label for="site-user-password" class="label required-field">Password</label>
-							</div>
-						</div>
-						<div class="row form-group">
-							<div class="col-sm-12">
-								<input type="password" class="input" required id="site-user-confirm-password" name="password_confirm">
-								<label for="site-user-confirm-password" class="label required-field">Confirm Password</label>
-							</div>
-						</div>
-						<div class="input-section-description">While not required for registration, providing your contact details below will make registering
-	for events on the MARE site faster and easier.</div>
-						<div class="row form-group">
-							<div class="col-sm-12">
-								<input type="text" class="input" id="site-user-street-1" name="street1">
-								<label for="site-user-street-1" class="label">Street 1</label>
-							</div>
-						</div>
-						<div class="row form-group">
-							<div class="col-sm-12">
-								<input type="text" class="input" id="site-user-street-2" name="street2">
-								<label for="site-user-street-2" class="label">Street 2</label>
-							</div>
-						</div>
-						<div class="row form-group">
-							<div class="col-sm-12">
-								<input type="text" class="input" id="site-user-city" name="city">
-								<label for="site-user-city" class="label">City</label>
-							</div>
-						</div>
-						<div class="row form-group">
-							<div class="col-sm-12">
-								<select id="site-user-state" name="state" class="input">
-								{{#each state}}
-									<option value="{{_id}}">{{state}}</option>
-								{{/each}}
-								</select>
-								<label for="site-user-state" class="label">State</label>
-							</div>
-						</div>
-						<div class="row form-group">
-							<div class="col-sm-12">
-								<input type="text" class="input" id="site-user-zip-code" name="zipCode" pattern="\d{5}([ \-]\d{4})?">
-								<label for="site-user-zip-code" class="label">Zip Code</label>
-							</div>
-						</div>
-						<div class="row form-group">
-							<div class="col-sm-12">
-								<input type="text" class="input" id="site-user-mobile-phone" name="mobilePhone" pattern="^\s*(?:\+?(\d{1,3}))?([-. (]*(\d{3})[-. )]*)?((\d{3})[-. ]*(\d{2,4})(?:[-.x ]*(\d+))?)\s*$">
-								<label for="site-user-mobile-phone" class="label">Mobile Phone</label>
-							</div>
-						</div>
-						<div class="row form-group">
-							<div class="col-sm-12">
-								<input type="text" class="input" id="site-user-home-phone" name="homePhone" pattern="^\s*(?:\+?(\d{1,3}))?([-. (]*(\d{3})[-. )]*)?((\d{3})[-. ]*(\d{2,4})(?:[-.x ]*(\d+))?)\s*$">
-								<label for="site-user-home-phone" class="label">Home Phone</label>
-							</div>
-						</div>
+					<form action="/register" class="registration-form registration-form--site-visitor" method="POST">
+						<section class="site-visitor-registration-section">
+							<div class="registration-type-header">Site Visitor Registration</div>
+							<span class="required required-description">* Required</span>
 
-						<div class="registration-section-header">Mare &amp; You</div>
-
-						<div class="row">
-							<div class="col-sm-24 form-group">
-								<label class="label marg-bottom-xs-5">How did you hear abut MARE?</label>
+							<input type="hidden" class="registration-type" name="registrationType" value="siteVisitor">
+							<input type="hidden" name="action" value="register">
+							<div class="row form-group">
+								<div class="col-sm-12">
+									<input type="text" id="site-visitor-first-name" class="input" name="firstName" placeholder="John" data-parsley-error-message="required" required="">
+									<label for="site-visitor-first-name" class="label required-field">First Name</label>
+								</div>
 							</div>
-							<div class="col-sm-12">
-								<div class="row">
-									<div class="col-sm-12 form-group">
-										<label class="checkbox-inline">
-											<input type="checkbox" name="howDidYouHear" value="Web">Web
-										</label>
+							<div class="row form-group">
+								<div class="col-sm-12">
+									<input type="text" id="site-visitor-last-name" class="input" name="lastName" placeholder="Smith" data-parsley-error-message="required" required="">
+									<label for="site-visitor-last-name" class="label required-field">Last Name</label>
+								</div>
+							</div>
+							<div class="row form-group">
+								<div class="col-sm-12">
+									<input type="email" id="site-visitor-email" class="input" name="email" placeholder="john.smith@gmail.com" data-parsley-trigger="change" data-parsley-error-message="required" required="">
+									<label for="site-visitor-email" class="label required-field">Email Address</label>
+								</div>
+							</div>
+							<div class="row form-group">
+								<div class="col-sm-12">
+									<input type="password" id="site-visitor-password" class="input" name="password" placeholder="**********" data-parsley-error-message="required" required="">
+									<label for="site-visitor-password" class="label required-field">Password</label>
+								</div>
+							</div>
+							<div class="row form-group">
+								<div class="col-sm-12">
+									<input type="password" id="site-visitor-confirm-password" class="input" name="confirmPassword" placeholder="**********" data-parsley-equalto="#site-visitor-password" data-parsley-error-message="passwords must match" required="">
+									<label for="site-visitor-confirm-password" class="label required-field">Confirm Password</label>
+								</div>
+							</div>
+							<div class="input-section-description">While not required for registration, providing your contact details below will make registering
+		for events on the MARE site faster and easier.</div>
+							<div class="row form-group">
+								<div class="col-sm-12">
+									<input type="text" id="site-visitor-street-1" class="input" name="street1" placeholder="100 Main Street">
+									<label for="site-visitor-street-1" class="label">Street 1</label>
+								</div>
+							</div>
+							<div class="row form-group">
+								<div class="col-sm-12">
+									<input type="text" id="site-visitor-street-2" class="input" name="street2" placeholder="Suite 1">
+									<label for="site-visitor-street-2" class="label">Street 2</label>
+								</div>
+							</div>
+							<div class="row form-group">
+								<div class="col-sm-12">
+									<input type="text" id="site-visitor-city" class="input" name="city" placeholder="Boston">
+									<label for="site-visitor-city" class="label">City</label>
+								</div>
+							</div>
+							<div class="row form-group">
+								<div class="col-sm-12">
+									<select id="site-visitor-state" class="input state-select" name="state">
+									{{#each states}}
+										{{#if defaultSelection}}
+											<option value="{{_id}}" selected="selected">{{state}}</option>
+										{{else}}
+											<option value="{{_id}}">{{state}}</option>
+										{{/if}}
+									{{/each}}
+									</select>
+									<label for="site-visitor-state" class="label">State</label>
+								</div>
+							</div>
+							<div class="row form-group">
+								<div class="col-sm-12">
+									<input type="number" id="site-visitor-zip-code" class="input" name="zipCode" placeholder="02111">
+									<label for="site-visitor-zip-code" class="label">Zip Code</label>
+								</div>
+							</div>
+							<div class="row form-group">
+								<div class="col-sm-12">
+									<input type="text" id="site-visitor-home-phone" class="input" name="homePhone" placeholder="(617) 111-1111">
+									<label for="site-visitor-home-phone" class="label">Home Phone</label>
+								</div>
+							</div>
+							<div class="row form-group">
+								<div class="col-sm-12">
+									<input type="text" id="site-visitor-work-phone" class="input" name="workPhone" placeholder="(617) 222-2222">
+									<label for="site-visitor-work-phone" class="label">Work Phone</label>
+								</div>
+							</div>
+							<div class="row form-group">
+								<div class="col-sm-12">
+									<input type="text" id="site-visitor-mobile-phone" class="input" name="mobilePhone" placeholder="(617) 333-3333">
+									<label for="site-visitor-mobile-phone" class="label">Mobile Phone</label>
+								</div>
+							</div>
+							<div class="row form-group">
+								<div class="col-sm-12">
+									<select id="site-visitor-preferred-phone" class="input site-visitor-preferred-phone-select" name="preferredPhone">
+										<option value="default" class="default-blank-selection"></option>
+										<option value="home">home</option>
+										<option value="work">work</option>
+										<option value="mobile">mobile</option>
+									</select>
+									<label for="site-visitor-preferred-phone" class="label">Preferred Phone</label>
+								</div>
+							</div>
+						</section>
+
+						<section class="site-visitor-mare-and-you-section">
+							<div class="form-section-header">Mare &amp; You</div>
+
+							<div class="row">
+								<div class="col-sm-24 form-group">
+									<label class="label required-field marg-bottom-xs-5">How did you hear about MARE (please check all that apply)?</label>
+								</div>
+								<div class="col-sm-16">
+									<div id="site-visitor-how-did-you-hear-error-container" class="row error-container">
+										{{#each waysToHearAboutMARE}}
+										<div class="col-sm-12 form-group">
+											<label class="checkbox-inline way-to-hear-about-MARE {{#if other}}other-way-to-hear-about-mare{{/if}}">
+												<input type="checkbox" name="howDidYouHear[]" value="{{_id}}" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#site-visitor-how-did-you-hear-error-container" data-parsley-mincheck="1" required="">{{wayToHearAboutMARE}}
+											</label>
+										</div>
+										{{/each}}
 									</div>
-									<div class="col-sm-12 form-group">
-										<label class="checkbox-inline">
-											<input type="checkbox" name="howDidYouHear" value="Wednesday’s Child">Wednesday’s Child
-										</label>
-									</div>
-									<div class="col-sm-12 form-group">
-										<label class="checkbox-inline">
-											<input type="checkbox" name="howDidYouHear" value="Adoption Event">Adoption Event
-										</label>
-									</div>
-									<div class="col-sm-12 form-group">
-										<label class="checkbox-inline">
-											<input type="checkbox" name="howDidYouHear" value="Friend / Family">Friend / Family
-										</label>
-									</div>
-									<div class="col-sm-12 form-group">
-										<label class="checkbox-inline">
-											<input type="checkbox" name="howDidYouHear" value="Newspaper">Newspaper
-										</label>
-									</div>
-									<div class="col-sm-12 form-group">
-										<label class="checkbox-inline">
-											<input type="checkbox" name="howDidYouHear" value="Heart Gallery Display">Heart Gallery Display
-										</label>
-									</div>
-									<div class="col-sm-12 form-group">
-										<label class="checkbox-inline">
-											<input type="checkbox" name="howDidYouHear" value="Social Media">Social Media
-										</label>
-									</div>
-									<div class="col-sm-12 form-group">
-										<label class="checkbox-inline">
-											<input type="checkbox" name="howDidYouHear" value="AdoptMassachusettsKids.org">AdoptMassachusettsKids.org
-										</label>
-									</div>
-									<div class="col-sm-12 form-group">
-										<label class="checkbox-inline">
-											<input type="checkbox" name="howDidYouHear" value="Other" onClick="$('#site-user-how-did-you-hear').show()">Other
-										</label>
-									</div>
-									<div class="col-sm-12 form-group">
-										<input type="text" style="display:none" class="input" id="site-user-how-did-you-hear" name="howDidYouHearOther" placeholder="Other...">
+									<div class="row">
+										<div class="col-sm-24 form-group">
+											<input type="text" id="site-visitor-how-did-you-hear-other" class="input required-field hidden" name="howDidYouHearOther" data-parsley-required="false" data-parsley-error-message="required" placeholder="other...">
+										</div>
 									</div>
 								</div>
 							</div>
-						</div>
 
-						<button class="register" type="submit">Register</button>
+							<div class="row form-group">
+								<div class="col-sm-24">
+									<label class="checkbox-inline">
+										<input type="checkbox" class="info-packet-toggle" name="infoPacket" value="yes">Please send me a general adoption information packet
+									</label>
+								</div>
+							</div>
+							<div class="row form-group info-packet-details hidden">
+								<div class="col-sm-12 form-group">
+									<select id="info-packet-format" class="input info-packet-select" name="infoPacketFormat">
+											<option value="email" selected="selected">email</option>
+											<option value="mail">mail</option>
+									</select>
+									<label for="info-packet-format" class="label">Preferred Format</label>
+								</div>
+								<div class="col-sm-12 form-group">
+									<select id="info-packet-language" class="input info-packet-select" name="infoPacketLanguage">
+											<option value="English" selected="selected">English</option>
+											<option value="Spanish">Spanish</option>
+									</select>
+									<label for="info-packet-format" class="label">Preferred Language</label>
+								</div>
+							</div>
+
+							<button class="register" type="submit">Register</button>
+						</section>
 					</form>
 				</section>
 
 				<section class="social-worker-registration hidden">
 					<div class="registration-type-header">Social Worker Registration</div>
 					<span class="required required-description">* Required</span>
-					<form action="/register" class="registration-form" method="POST">
+					<form action="/register" class="registration-form registration-form--social-worker" method="POST">
 						<input type="hidden" class="registration-type" name="registrationType" value="socialWorker">
-						<div class="registration-section-header">Account Setup</div>
-						<div class="row form-group">
-							<div class="col-sm-12">
-								<input type="text" class="input" required id="social-worker-first-name" name="firstName">
-								<label for="social-worker-first-name" class="label required-field">First Name</label>
-							</div>
-						</div>
-						<div class="row form-group">
-							<div class="col-sm-12">
-								<input type="text" class="input" required id="social-worker-last-name" name="lastName">
-								<label for="social-worker-last-name" class="label required-field">Last Name</label>
-							</div>
-						</div>
-						<div class="row form-group">
-							<div class="col-sm-12">
-								<input type="email" class="input" required id="social-worker-email" name="email" pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
-								<label for="social-worker-email" class="label required-field">Email Address</label>
-							</div>
-						</div>
-						<div class="row form-group">
-							<div class="col-sm-12">
-								<input type="password" class="input" required id="social-worker-password" name="password">
-								<label for="social-worker-password" class="label required-field">Password</label>
-							</div>
-						</div>
-						<div class="row form-group">
-							<div class="col-sm-12">
-								<input type="password" class="input" required id="social-worker-confirm-password" name="password.confirm">
-								<label for="social-worker-confirm-password" class="label required-field">Confirm Password</label>
-							</div>
-						</div>
 
-						<div class="registration-section-header">Contact Details</div>
-
-						<div class="row form-group">
-							<div class="col-sm-12">
-								<input type="text" class="input" required id="social-worker-agency" name="agency">
-								<label for="social-worker-agency" class="label required-field">Agency</label>
-							</div>
-						</div>
-						<div class="row form-group">
-							<div class="col-sm-12">
-								<input type="text" class="input" required id="social-worker-title" name="title">
-								<label for="social-worker-title" class="label required-field">Title</label>
-							</div>
-						</div>
-						<div class="row form-group">
-							<div class="col-sm-12">
-								<input type="text" class="input" required id="social-worker-phone" name="phone" pattern="^\s*(?:\+?(\d{1,3}))?([-. (]*(\d{3})[-. )]*)?((\d{3})[-. ]*(\d{2,4})(?:[-.x ]*(\d+))?)\s*$">
-								<label for="social-worker-phone" class="label required-field">Phone</label>
-							</div>
-						</div>
-						<div class="row form-group">
-							<div class="col-sm-12">
-								<input type="text" class="input" id="social-worker-mobile-phone" name="mobilePhone" pattern="^\s*(?:\+?(\d{1,3}))?([-. (]*(\d{3})[-. )]*)?((\d{3})[-. ]*(\d{2,4})(?:[-.x ]*(\d+))?)\s*$">
-								<label for="social-worker-mobile-phone" class="label">Mobile Phone</label>
-							</div>
-						</div>
-						<div class="row form-group">
-							<div class="col-sm-12">
-								<input type="text" class="input" required id="social-worker-street-1" name="street1">
-								<label for="social-worker-street-1" class="label required-field">Street 1</label>
-							</div>
-						</div>
-						<div class="row form-group">
-							<div class="col-sm-12">
-								<input type="text" class="input" id="social-worker-street-2" name="street2">
-								<label for="social-worker-street-2" class="label">Street 2</label>
-							</div>
-						</div>
-						<div class="row form-group">
-							<div class="col-sm-12">
-								<input type="text" class="input" required id="social-worker-city" name="city">
-								<label for="social-worker-city" class="label required-field">City</label>
-							</div>
-						</div>
-						<div class="row form-group">
-							<div class="col-sm-12">
-								<select name="state" class="input" id="social-worker-state" required>
-									<option>Alabama</option>
-									<option>Alaska</option>
-									<option>Arizona</option>
-									<option>Arkansas</option>
-									<option>California</option>
-									<option>Colorado</option>
-									<option>Connecticut</option>
-									<option>Delaware</option>
-									<option>District of Columbia</option>
-									<option>Florida</option>
-									<option>Georgia</option>
-									<option>Hawaii</option>
-									<option>Idaho</option>
-									<option>Illinois</option>
-									<option>Indiana</option>
-									<option>Iowa</option>
-									<option>Kansas</option>
-									<option>Kentucky</option>
-									<option>Louisiana</option>
-									<option>Maine</option>
-									<option>Maryland</option>
-									<option>Massachusetts</option>
-									<option>Michigan</option>
-									<option>Minnesota</option>
-									<option>Mississippi</option>
-									<option>Missouri</option>
-									<option>Montana</option>
-									<option>Nebraska</option>
-									<option>Nevada</option>
-									<option>New Hampshire</option>
-									<option>New Jersey</option>
-									<option>New Mexico</option>
-									<option>New York</option>
-									<option>North Carolina</option>
-									<option>North Dakota</option>
-									<option>Ohio</option>
-									<option>Oklahoma</option>
-									<option>Oregon</option>
-									<option>Pennsylvania</option>
-									<option>Rhode Island</option>
-									<option>South Carolina</option>
-									<option>South Dakota</option>
-									<option>Tennessee</option>
-									<option>Texas</option>
-									<option>Utah</option>
-									<option>Vermont</option>
-									<option>Virginia</option>
-									<option>Washington</option>
-									<option>West Virginia</option>
-									<option>Wisconsin</option>
-									<option>Wyoming</option>
-								</select>
-								<label for="social-worker-state" class="label required-field">State</label>
-							</div>
-						</div>
-						<div class="row form-group">
-							<div class="col-sm-12">
-								<input type="text" class="input" required id="social-worker-zip-code" name="zipCode" pattern="\d{5}([ \-]\d{4})?">
-								<label for="social-worker-zip-code" class="label required-field">Zip Code</label>
-							</div>
-						</div>
-
-						<div class="registration-section-header">Mare &amp; You</div>
-
-						<div class="row">
-							<div class="col-sm-24 form-group">
-								<label class="label marg-bottom-xs-5">How did you hear abut MARE?</label>
-							</div>
-							<div class="col-sm-12">
-								<div class="row">
-									<div class="col-sm-12 form-group">
-										<label class="checkbox-inline">
-											<input type="checkbox" name="howDidYouHear" value="Web">Web
-										</label>
-									</div>
-									<div class="col-sm-12 form-group">
-										<label class="checkbox-inline">
-											<input type="checkbox" name="howDidYouHear" value="Wednesday’s Child">Wednesday’s Child
-										</label>
-									</div>
-									<div class="col-sm-12 form-group">
-										<label class="checkbox-inline">
-											<input type="checkbox" name="howDidYouHear" value="Adoption Event">Adoption Event
-										</label>
-									</div>
-									<div class="col-sm-12 form-group">
-										<label class="checkbox-inline">
-											<input type="checkbox" name="howDidYouHear" value="Friend / Family">Friend / Family
-										</label>
-									</div>
-									<div class="col-sm-12 form-group">
-										<label class="checkbox-inline">
-											<input type="checkbox" name="howDidYouHear" value="Newspaper">Newspaper
-										</label>
-									</div>
-									<div class="col-sm-12 form-group">
-										<label class="checkbox-inline">
-											<input type="checkbox" name="howDidYouHear" value="Heart Gallery Display">Heart Gallery Display
-										</label>
-									</div>
-									<div class="col-sm-12 form-group">
-										<label class="checkbox-inline">
-											<input type="checkbox" name="howDidYouHear" value="Social Media">Social Media
-										</label>
-									</div>
-									<div class="col-sm-12 form-group">
-										<label class="checkbox-inline">
-											<input type="checkbox" name="howDidYouHear" value="AdoptMassachusettsKids.org">AdoptMassachusettsKids.org
-										</label>
-									</div>
-									<div class="col-sm-12 form-group">
-										<label class="checkbox-inline">
-											<input type="checkbox" name="howDidYouHear" value="Other" onClick="$('#social-worker-how-did-you-hear').show()">Other
-										</label>
-									</div>
-									<div class="col-sm-12 form-group">
-										<input type="text" style="display:none" class="input" id="social-worker-how-did-you-hear" name="howDidYouHearOther" placeholder="Other...">
-									</div>
+						<section class="social-worker-account-setup-section">
+							<div class="form-section-header">Account Setup</div>
+							<div class="row form-group">
+								<div class="col-sm-12">
+									<input type="text" id="social-worker-first-name" class="input" name="firstName" placeholder="John" data-parsley-error-message="required" required="">
+									<label for="social-worker-first-name" class="label required-field">First Name</label>
 								</div>
 							</div>
-						</div>
+							<div class="row form-group">
+								<div class="col-sm-12">
+									<input type="text" id="social-worker-last-name" class="input" name="lastName" placeholder="Smith" data-parsley-error-message="required" required="">
+									<label for="social-worker-last-name" class="label required-field">Last Name</label>
+								</div>
+							</div>
+							<div class="row form-group">
+								<div class="col-sm-12">
+									<input type="email" id="social-worker-email" class="input" name="email" placeholder="john.smith@gmail.com" data-parsley-trigger="change" data-parsley-error-message="required" required="">
+									<label for="social-worker-email" class="label required-field">Email Address</label>
+								</div>
+							</div>
+							<div class="row form-group">
+								<div class="col-sm-12">
+									<input type="password" id="social-worker-password" class="input" name="password" placeholder="**********" data-parsley-error-message="required" required="">
+									<label for="social-worker-password" class="label required-field">Password</label>
+								</div>
+							</div>
+							<div class="row form-group">
+								<div class="col-sm-12">
+									<input type="password" id="social-worker-confirm-password" class="input" name="confirmPassword" placeholder="**********" data-parsley-equalto="#social-worker-password" data-parsley-error-message="passwords must match" required="">
+									<label for="social-worker-confirm-password" class="label required-field">Confirm Password</label>
+								</div>
+							</div>
+						</section>
+
+						<section class="social-worker-contact-details-section">
+							<div class="form-section-header">Contact Details</div>
+
+							{{!-- <div class="row">
+								<div class="col-sm-12 form-group">
+									<select id="social-worker-position" name="position" class="input position-select">
+									{{#each positions}}
+										<option value="{{_id}}">{{position}}</option>
+									{{/each}}
+									</select>
+									<label for="position" class="label">Position</label>
+								</div>
+							</div> --}}
+							<div class="row">
+								<div class="col-sm-12 form-group">
+									<select id="social-worker-position" name="position" class="input position-select">
+										<option value="adoption worker">adoption worker</option>
+										<option value="recruitment worker">recruitment worker</option>
+										<option value="supervisor">supervisor</option>
+										<option value="administrator">administrator</option>
+										<option value="family worker">family worker</option>
+										<option value="other">other</option>
+									</select>
+									<label for="position" class="label">Position</label>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-24 form-group">
+									<label class="checkbox-inline social-worker-title-checkbox">
+										<input type="checkbox" name="titleDiffersFromPosition" data-parsley-errors-messages-disabled="true" required="">My title differs from the position listed above
+									</label>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-12 form-group social-worker-title-group hidden">
+									<input type="text" id="social-worker-title" class="input" name="socialWorkerTitle" placeholder="my title">
+									<label for="social-worker-title" class="label required-field">Title</label>
+								</div>
+							</div>
+							<div class="row form-group">
+								<div class="col-sm-12">
+									<input type="text" id="social-worker-agency" class="input" name="agency" data-parsley-error-message="required" required="">
+									<label for="social-worker-agency" class="label required-field">Agency</label>
+								</div>
+							</div>
+							<div class="row form-group">
+								<div class="col-sm-12">
+									<input type="text" id="social-worker-work-phone" class="input" name="workPhone" placeholder="(617) 111-1111" data-parsley-error-message="required" required="">
+									<label for="social-worker-work-phone" class="label">Work Phone</label>
+								</div>
+							</div>
+							<div class="row form-group">
+								<div class="col-sm-12">
+									<input type="text" id="social-worker-mobile-phone" class="input" name="mobilePhone" placeholder="(617) 222-2222">
+									<label for="social-worker-mobile-phone" class="label">Mobile Phone</label>
+								</div>
+							</div>
+							<div class="row form-group">
+								<div class="col-sm-12">
+									<select id="social-worker-preferred-phone" class="input social-worker-preferred-phone-select" name="preferredPhone" data-parsley-errors-messages-disabled="true" required="">
+										<option value=""></option>
+										<option value="work">work</option>
+										<option value="mobile">mobile</option>
+									</select>
+									<label for="social-worker-preferred-phone" class="label">Preferred Phone</label>
+								</div>
+							</div>
+							<div class="row form-group">
+								<div class="col-sm-12">
+									<input type="text" id="social-worker-street-1" class="input" name="street1" placeholder="100 Main Street" data-parsley-error-message="required" required="">
+									<label for="social-worker-street-1" class="label required-field">Street 1</label>
+								</div>
+							</div>
+							<div class="row form-group">
+								<div class="col-sm-12">
+									<input type="text" id="social-worker-street-2" class="input" name="street2" placeholder="Suite 1">
+									<label for="social-worker-street-2" class="label">Street 2</label>
+								</div>
+							</div>
+							<div class="row form-group">
+								<div class="col-sm-12">
+									<input type="text" id="social-worker-city" class="input" name="city" placeholder="Boston" data-parsley-error-message="required" required="">
+									<label for="social-worker-city" class="label required-field">City</label>
+								</div>
+							</div>
+							<div class="row form-group">
+								<div class="col-sm-12">
+									<select id="social-worker-state" class="input state-select" name="state">
+									{{#each states}}
+										{{#if defaultSelection}}
+											<option value="{{_id}}" selected="selected">{{state}}</option>
+										{{else}}
+											<option value="{{_id}}">{{state}}</option>
+										{{/if}}
+									{{/each}}
+									</select>
+									<label for="social-worker-state" class="label required-field">State</label>
+								</div>
+							</div>
+							<div class="row form-group">
+								<div class="col-sm-12">
+									<input type="number" id="social-worker-zip-code" class="input" name="zipCode" placeholder="02111" data-parsley-length="[5, 5]" data-parsley-error-message="required" required="">
+									<label for="social-worker-zip-code" class="label required-field">Zip Code</label>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-12 form-group">
+									<select id="social-worker-region" class="input region-select" name="region" data-parsley-errors-messages-disabled="true" required="">
+									<option value=""></option>
+									{{#each regions}}
+										<option value="{{_id}}">{{region}}</option>
+									{{/each}}
+									</select>
+									<label for="region" class="label required-field">Region</label>
+								</div>
+							</div>
+						</section>
+
+						<section class="social-worker-mare-and-you-section">
+							<div class="form-section-header">Mare &amp; You</div>
+							<div class="row form-group">
+								<div class="col-sm-12">
+									<label class="label marg-bottom-xs-5">Would you like to be added to the MARE News email list?</label>
+								</div>
+								<div class="col-sm-12">
+									<label class="radio-inline"><input type="radio" name="mareEmailList" value="yes" checked="checked">Yes</label>
+									<label class="radio-inline"><input type="radio" name="mareEmailList" value="no">No</label>
+								</div>
+							</div>
+							<div class="row form-group">
+								<div class="col-sm-12">
+									<label class="label marg-bottom-xs-5">Would you like to be added to the Adoption Party email list (events held in MA only)?</label>
+								</div>
+								<div class="col-sm-12">
+									<label class="radio-inline"><input type="radio" name="adoptionPartyEmailList" value="yes" checked="checked">Yes</label>
+									<label class="radio-inline"><input type="radio" name="adoptionPartyEmailList" value="no">No</label>
+								</div>
+							</div>
+							<div class="row form-group">
+								<div class="col-sm-12">
+									<label class="label marg-bottom-xs-5">Would you like to be added to the Fundraising Events email list?</label>
+								</div>
+								<div class="col-sm-12">
+									<label class="radio-inline"><input type="radio" name="fundraisingEventsEmailList" value="yes" checked="checked">Yes</label>
+									<label class="radio-inline"><input type="radio" name="fundraisingEventsEmailList" value="no">No</label>
+								</div>
+							</div>
+						</section>
 
 						<button class="register" type="submit">Register</button>
 					</form>
 				</section>
 
-				<section class="prospective-parent-registration hidden">
+				<section class="family-registration hidden">
 					<div class="registration-type-header">Prospective Parent Registration</div>
 					<span class="required required-description">* Required</span>
-					<form action="/register" class="registration-form" method="POST">
-						<input type="hidden" class="registration-type" name="registrationType" value="prospectiveParent">
-						<div class="registration-section-header">Account Setup</div>
-						<div class="row">
-							<div class="col-sm-12 form-group">
-								<input type="email" class="input" required id="email" name="email" pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
-								<label for="email" class="label required-field">Email Address</label>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-sm-12 form-group">
-								<input type="password" class="input" required id="password" name="password">
-								<label for="password" class="label required-field">Password</label>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-sm-12 form-group">
-								<input type="password" class="input" required id="confirm-password" name="confirmPassword">
-								<label for="confirm-password" class="label required-field">Confirm Password</label>
-							</div>
-						</div>
-						<!-- This will end part 1 -->
+					<form enctype="multipart/form-data" action="/register" class="registration-form registration-form--family" method="POST">
+						<input type="hidden" class="registration-type" name="registrationType" value="family">
 
-						<div class="registration-section-header">Contact 1</div>
-
-						<div class="row">
-							<div class="col-sm-12 form-group">
-								<input type="text" class="input" required id="contact1-first-name" name="Contact1FirstName">
-								<label for="contact1-first-name" class="label required-field">First Name</label>
-							</div>
-							<div class="col-sm-12 form-group">
-								<input type="text" class="input" required id="contact1-last-name" name="Contact1LastName">
-								<label for="contact1-last-name" class="label required-field">Last Name</label>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-sm-12 form-group">
-								<input type="email" class="input" required id="contact1-email" name="Contact1Email" pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
-								<label for="contact1-email" class="label required-field">Email Address</label>
-							</div>
-							<div class="col-sm-12 form-group">
-								<input type="text" class="input" required id="contact1-phone" name="Contact1Phone" pattern="^\s*(?:\+?(\d{1,3}))?([-. (]*(\d{3})[-. )]*)?((\d{3})[-. ]*(\d{2,4})(?:[-.x ]*(\d+))?)\s*$">
-								<label for="contact1-phone" class="label required-field">Phone</label>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-sm-12 form-group">
-								<span class="gender-select-text">Gender:</span> &nbsp;&nbsp;
-								<label class="radio-inline"><input type="radio" name="Contact1Gender" value="male"> Male</label>
-								<label class="radio-inline"><input type="radio" name="Contact1Gender" value="female"> Female</label>
-								<label class="radio-inline"><input type="radio" name="Contact1Gender" value="other"> Other</label>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-sm-18">
-								<div class="row">
-									<div class="col-sm-24 form-group">
-										<span class="race-text">Race/Ethnicity (check all that apply):</span>
-									</div>
-								</div>
-								{{#each race}}
-									<div class="col-sm-12 form-group">
-										<label class="checkbox-inline">
-											<input type="checkbox" name="Contact2Race" value="{{race}}">{{race}}
-										</label>
-									</div>
-								{{/each}}
-							</div>
-							<div class="col-sm-6">
-								<div class="form-group">
-									<input type="text" class="input" id="contact1-occupation" name="Contact1Occupation">
-									<label for="contact1-occupation" class="label">Occupation</label>
-								</div>
-								<div class="form-group">
-									<input type="text" class="input" id="contact1-date-of-birth" name="Contact1DateOfBirth" placeholder="DD/MM/YYYY">
-									<label for="contact1-date-of-birth" class="label">Date of Birth</label>
+						<section class="family-account-setup-section">
+							<div class="form-section-header">Account Setup</div>
+							<div class="row">
+								<div class="col-sm-12 form-group">
+									<input type="email" id="family-email" class="input" name="email" placeholder="john.smith@gmail.com" data-parsley-trigger="change" data-parsley-error-message="required" required="">
+									<label for="family-email" class="label required-field">Email Address</label>
 								</div>
 							</div>
-						</div>
-
-						<div class="registration-section-header">Contact 2</div>
-
-						<div class="row">
-							<div class="col-sm-12 form-group">
-								<input type="text" class="input" required id="contact2-first-name" name="Contact2FirstName">
-								<label for="contact2-first-name" class="label required-field">First Name</label>
-							</div>
-							<div class="col-sm-12 form-group">
-								<input type="text" class="input" required id="contact2-last-name" name="Contact2LastName">
-								<label for="contact2-last-name" class="label required-field">Last Name</label>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-sm-12 form-group">
-								<input type="email" class="input" required id="contact2-email" name="Contact2Email" pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
-								<label for="contact2-email" class="label required-field">Email Address</label>
-							</div>
-							<div class="col-sm-12 form-group">
-								<input type="text" class="input" required id="contact2-phone" name="Contact2Phone" pattern="^\s*(?:\+?(\d{1,3}))?([-. (]*(\d{3})[-. )]*)?((\d{3})[-. ]*(\d{2,4})(?:[-.x ]*(\d+))?)\s*$">
-								<label for="contact2-phone" class="label required-field">Phone</label>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-sm-12 form-group">
-								<span class="gender-select-text">Gender:</span> &nbsp;&nbsp;
-								<label class="radio-inline"><input type="radio" name="Contact2Gender" value="male"> Male</label>
-								<label class="radio-inline"><input type="radio" name="Contact2Gender" value="female"> Female</label>
-								<label class="radio-inline"><input type="radio" name="Contact2Gender" value="other"> Other</label>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-sm-18">
-								<div class="row">
-									<div class="col-sm-24 form-group">
-										<span class="race-text">Race/Ethnicity (check all that apply):</span>
-									</div>
-								</div>
-								{{#each race}}
-									<div class="col-sm-12 form-group">
-										<label class="checkbox-inline">
-											<input type="checkbox" name="Contact2Race" value="{{race}}">{{race}}
-										</label>
-									</div>
-								{{/each}}
-							</div>
-							<div class="col-sm-6">
-								<div class="form-group">
-									<input type="text" class="input" id="contact2-occupation" name="Contact2Occupation">
-									<label for="contact2-occupation" class="label">Occupation</label>
-								</div>
-								<div class="form-group">
-									<input type="text" class="input" id="contact2-date-of-birth" name="Contact2DateOfBirth" placeholder="DD/MM/YYYY">
-									<label for="contact2-date-of-birth" class="label">Date of Birth</label>
+							<div class="row">
+								<div class="col-sm-12 form-group">
+									<input type="password" id="family-password" class="input" name="password" placeholder="**********" data-parsley-error-message="required" required="">
+									<label for="family-password" class="label required-field">Password</label>
 								</div>
 							</div>
-						</div>
-
-						<div class="registration-section-header">Family Constellation</div>
-
-						<div class="row form-group">
-							<div class="col-sm-12">
-								<select id="family-constellation" name="familyConstellation" class="input">
-									<option value="id1_fill_in_later">single male</option>
-									<option value="id2_fill_in_later">single gay male</option>
-									<option value="id3_fill_in_later">single straight male</option>
-									<option value="id4_fill_in_later">single female</option>
-									<option value="id5_fill_in_later">single gay female</option>
-									<option value="id6_fill_in_later">single straight female</option>
-									<option value="id7_fill_in_later">female/female couple</option>
-									<option value="id8_fill_in_later">male/male couple</option>
-									<option value="id9_fill_in_later">male/female couple</option>
-								</select>
-								<label for="family-constellation" class="label">Family Constellation</label>
-							</div>
-						</div>
-
-						<div class="registration-section-header">Home Address</div>
-
-						<div class="row">
-							<div class="col-sm-12 form-group">
-								<input type="text" class="input" required id="address-1" name="address1">
-								<label for="address-1" class="label required-field">Address 1</label>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-sm-12 form-group">
-								<input type="text" class="input" id="address-2" name="address2">
-								<label for="address-2" class="label">Address 2</label>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-sm-12 form-group">
-								<input type="text" class="input" required id="city" name="city">
-								<label for="city" class="label required-field">City</label>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-sm-12 form-group">
-								<select id="state" name="state" class="input" required>
-									<option>Alabama</option>
-									<option>Alaska</option>
-									<option>Arizona</option>
-									<option>Arkansas</option>
-									<option>California</option>
-									<option>Colorado</option>
-									<option>Connecticut</option>
-									<option>Delaware</option>
-									<option>District of Columbia</option>
-									<option>Florida</option>
-									<option>Georgia</option>
-									<option>Hawaii</option>
-									<option>Idaho</option>
-									<option>Illinois</option>
-									<option>Indiana</option>
-									<option>Iowa</option>
-									<option>Kansas</option>
-									<option>Kentucky</option>
-									<option>Louisiana</option>
-									<option>Maine</option>
-									<option>Maryland</option>
-									<option>Massachusetts</option>
-									<option>Michigan</option>
-									<option>Minnesota</option>
-									<option>Mississippi</option>
-									<option>Missouri</option>
-									<option>Montana</option>
-									<option>Nebraska</option>
-									<option>Nevada</option>
-									<option>New Hampshire</option>
-									<option>New Jersey</option>
-									<option>New Mexico</option>
-									<option>New York</option>
-									<option>North Carolina</option>
-									<option>North Dakota</option>
-									<option>Ohio</option>
-									<option>Oklahoma</option>
-									<option>Oregon</option>
-									<option>Pennsylvania</option>
-									<option>Rhode Island</option>
-									<option>South Carolina</option>
-									<option>South Dakota</option>
-									<option>Tennessee</option>
-									<option>Texas</option>
-									<option>Utah</option>
-									<option>Vermont</option>
-									<option>Virginia</option>
-									<option>Washington</option>
-									<option>West Virginia</option>
-									<option>Wisconsin</option>
-									<option>Wyoming</option>
-								</select>
-								<label for="state" class="label required-field">State</label>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-sm-12 form-group">
-								<input type="text" class="input" required id="zip-code" name="zipCode" pattern="\d{5}([ \-]\d{4})?">
-								<label for="zip-code" class="label required-field">Zip Code</label>
-							</div>
-						</div>
-						<!-- This will end part 3 -->
-
-
-						<div class="registration-section-header">Homestudy Details</div>
-
-						<div class="homestudy-select row no-margin double-padding">
-							<span class="homestudy-select-text">Have you completed a Homestudy?</span> &nbsp;&nbsp;
-							<label class="radio-inline"><input type="radio" name="homestudy" value="yes" />Yes</label>
-							<label class="radio-inline"><input type="radio" name="homestudy" value="no" />No</label>
-						</div>
-
-						<div class="row">
-							<div class="col-sm-12 form-group">
-								<input type="text" class="input" id="homestudy-date-complete" name="homestudyDateComplete" placeholder="DD/MM/YYYY">
-								<label for="homestudy-date-complete" class="label required-field">Date Homestudy Completed/Updated</label>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-sm-12 form-group">
-								<input type="text" class="input" required id="social-worker-name" name="socialWorkerName">
-								<label for="social-worker-name" class="label required-field">Social Worker Name</label>
-							</div>
-							<div class="col-sm-12 form-group">
-								<input type="text" class="input" required id="social-worker-agency" name="socialWorkerAgency">
-								<label for="social-worker-agency" class="label required-field">Social Worker Agency</label>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-sm-12 form-group">
-								<input type="text" class="input" required id="social-worker-phone" name="socialWorkerPhone" pattern="^\s*(?:\+?(\d{1,3}))?([-. (]*(\d{3})[-. )]*)?((\d{3})[-. ]*(\d{2,4})(?:[-.x ]*(\d+))?)\s*$">
-								<label for="social-worker-phone" class="label required-field">Social Worker Phone Number</label>
-							</div>
-							<div class="col-sm-12 form-group">
-								<input type="text" class="input" required id="social-worker-email" name="socialWorkerEmail">
-								<label for="social-worker-email" class="label required-field">Social Worker Email Address</label>
-							</div>
-						</div>
-
-						<br />
-						<strong>Submit Your Homestudy</strong>
-						<p>To complete your registration as a Massachusetts homestudied family, you must submit your homestudy to us via one of the following methods (choose one):</p>
-						<div class="row">
-							<div class="col-sm-12 form-group">
-								<label class="label radio-inline">
-									<input type="radio" name="HomeStudySubmission" value="mail">
-									Upload PDF or MS Word &reg; format:
-								</label>
-							</div>
-							<div class="col-sm-12">
-								<input id="home-study-file-upload" class="input-inline" placeholder="Choose File" disabled="disabled" />
-								<div class="btn btn-default btn-file-upload">
-								    <span>Upload</span>
-								    <input id="upload-button" type="file" class="file-upload" name="HomeStudyFileUpload" />
+							<div class="row">
+								<div class="col-sm-12 form-group">
+									<input type="password" id="family-confirm-password" class="input" name="confirmPassword" placeholder="**********" data-parsley-equalto="#family-password" data-parsley-error-message="passwords must match" required="">
+									<label for="family-confirm-password" class="label required-field">Confirm Password</label>
 								</div>
 							</div>
-						</div>
-						<div class="row">
-							<div class="col-sm-12 form-group">
-								<label class="label radio-inline">
-									<input type="radio" name="HomeStudySubmission" value="email">
-									Email to web@mareinc.org:
-								</label>
+						</section>
+
+						<section class="family-contact-1-section">
+							<div class="form-section-header">Contact 1</div>
+							<div class="row">
+								<div class="col-sm-12 form-group">
+									<input type="text" id="contact1-first-name" class="input" name="contact1FirstName" placeholder="John" data-parsley-error-message="required" required="">
+									<label for="contact1-first-name" class="label required-field">First Name</label>
+								</div>
+								<div class="col-sm-12 form-group">
+									<input type="text" id="contact1-last-name" class="input" name="contact1LastName" placeholder="Smith" data-parsley-error-message="required" required="">
+									<label for="contact1-last-name" class="label required-field">Last Name</label>
+								</div>
 							</div>
-							<div class="col-sm-12">
-								<a href="mailto:web@mareinc.org" class="btn btn-default">Email</a>
+							<div class="row">
+								<div class="col-sm-12 form-group">
+									<input type="email" id="contact1-email" class="input" name="contact1Email" placeholder="john.smith@gmail.com" data-parsley-trigger="change" data-parsley-error-message="required" required="">
+									<label for="contact1-email" class="label required-field">Email Address</label>
+								</div>
+								<div class="col-sm-12 form-group">
+									<input type="text" id="contact1-mobile" class="input" name="contact1Mobile" placeholder="(617) 111-1111" data-parsley-error-message="required" required="">
+									<label for="contact1-mobile" class="label required-field">Mobile Phone</label>
+								</div>
 							</div>
-						</div>
-						<div class="row">
-							<div class="col-sm-12 form-group">
-								<label class="label radio-inline">
-									<input type="radio" name="HomeStudySubmission" value="fax">
-									Fax to 617-542-1006, Attention: Homestudy Registration
-								</label>
+							<div class="row">
+								<div class="col-sm-12 form-group">
+									<select id="contact1-preferred-communication-method" class="input" name="contact1PreferredCommunicationMethod" data-parsley-errors-messages-disabled="true" required="">
+										<option value=""></option>
+										<option value="email">email</option>
+										<option value="home phone">home</option>
+										<option value="mobile phone">mobile</option>
+									</select>
+									<label for="contact1-preferred-communication-method" class="label required-field">Preferred Contact Method</label>
+								</div>
 							</div>
-						</div>
-						<div class="row">
-							<div class="col-sm-12 form-group">
-								<label class="label radio-inline">
-									<input type="radio" name="HomeStudySubmission" value="mail">
-									<div class="indented-text">
-										Mail to:
-										<div class="indent-text">
-											Massachusetts Adoption Resource Exchange<br />
-											45 Franklin Street<br />
-											5th Floor<br />
-											Boston, MA 02110-1301
+							<div class="row">
+								<div class="col-sm-24 form-group">
+									<span id="contact1-gender-error-container" class="error-container">
+										<span class="gender-select-text required-field">Gender</span> &nbsp;&nbsp;
+										{{#each genders}}
+											<label class="radio-inline"><input type="radio" name="contact1Gender" value="{{_id}}" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#contact1-gender-error-container" required="">{{gender}}</label>
+										{{/each}}
+									</span>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-12">
+									<div class="row">
+										<div class="col-sm-24 form-group">
+											<span class="race-text required-field">Race/Ethnicity (check all that apply)</span>
 										</div>
 									</div>
-								</label>
-							</div>
-						</div>
-
-						<div class="registration-section-header">Family Details</div>
-
-						<div class="row form-group">
-							<div class="col-sm-12">
-								<label for="children-in-home" class="label marg-bottom-xs-5">Total number of children currently living at home:</label>
-							</div>
-							<div class="col-sm-12">
-								<select id="children-in-home" name="childrenInHome" class="input registration-number-select">
-									<option>0</option>
-									<option>1</option>
-									<option>2</option>
-									<option>3</option>
-									<option>4</option>
-									<option>5</option>
-									<option>6</option>
-									<option>7</option>
-									<option>8</option>
-									<option>9</option>
-									<option>10+</option>
-								</select>
-							</div>
-						</div>
-
-						<div class="registration-sub-section-header header-blue">Male Children</div>
-
-						<div class="row form-group">
-							<div class="col-sm-12">
-								<label for="male-children-in-home" class="label marg-bottom-xs-5">Number of <span class="text-blue"> male</span> children in home:</label>
-							</div>
-							<div class="col-sm-12">
-								<select id="male-children-in-home" name="maleChildrenInHome" class="input registration-number-select">
-									<option>0</option>
-									<option>1</option>
-									<option>2</option>
-									<option>3</option>
-									<option>4</option>
-									<option>5</option>
-									<option>6</option>
-									<option>7</option>
-									<option>8</option>
-									<option>9</option>
-									<option>10+</option>
-								</select>
-							</div>
-						</div>
-						<div class="row form-group">
-							<div class="col-sm-12">
-								<label for="male-children-in-home-ages" class="label marg-bottom-xs-5">Ages of <span class="text-blue"> male</span> children (separated by commas):</label>
-							</div>
-							<div class="col-sm-12">
-								<input type="text" class="input " id="male-children-in-home-ages" name="maleChildrenInHomeAges">
-							</div>
-						</div>
-						<div class="row form-group">
-							<div class="col-sm-12">
-								<label for="biological-male-children" class="label marg-bottom-xs-5">Number of biological<span class="text-blue"> male</span> children:</label>
-							</div>
-							<div class="col-sm-12">
-								<select id="biological-male-children" name="biologicalMaleChildren" class="input registration-number-select">
-									<option>0</option>
-									<option>1</option>
-									<option>2</option>
-									<option>3</option>
-									<option>4</option>
-									<option>5</option>
-									<option>6</option>
-									<option>7</option>
-									<option>8</option>
-									<option>9</option>
-									<option>10+</option>
-								</select>
-							</div>
-						</div>
-						<div class="row form-group">
-							<div class="col-sm-12">
-								<label for="adopted-male-children" class="label marg-bottom-xs-5">Number of adopted <span class="text-blue">male</span> children:</label>
-							</div>
-							<div class="col-sm-12">
-								<select id="adopted-male-children" name="adoptedMaleChildren" class="input registration-number-select">
-									<option>0</option>
-									<option>1</option>
-									<option>2</option>
-									<option>3</option>
-									<option>4</option>
-									<option>5</option>
-									<option>6</option>
-									<option>7</option>
-									<option>8</option>
-									<option>9</option>
-									<option>10+</option>
-								</select>
-							</div>
-						</div>
-
-
-						<div class="registration-sub-section-header header-pink">Female Children</div>
-
-						<div class="row form-group">
-							<div class="col-sm-12">
-								<label for="female-children-in-home" class="label marg-bottom-xs-5">Number of <span class="text-pink">female</span> children in home:</label>
-							</div>
-							<div class="col-sm-12">
-								<select id="female-children-in-home" name="femaleChildrenInHome" class="input registration-number-select">
-									<option>0</option>
-									<option>1</option>
-									<option>2</option>
-									<option>3</option>
-									<option>4</option>
-									<option>5</option>
-									<option>6</option>
-									<option>7</option>
-									<option>8</option>
-									<option>9</option>
-									<option>10+</option>
-								</select>
-							</div>
-						</div>
-						<div class="row form-group">
-							<div class="col-sm-12">
-								<label for="female-children-in-home-ages" class="label marg-bottom-xs-5">Ages of <span class="text-pink">female</span> children (separated by commas):</label>
-							</div>
-							<div class="col-sm-12">
-								<input type="text" class="input " id="female-children-in-home-ages" name="femaleChildrenInHomeAges">
-							</div>
-						</div>
-						<div class="row form-group">
-							<div class="col-sm-12">
-								<label for="biological-female-children" class="label marg-bottom-xs-5">Number of biological <span class="text-pink">female</span> children:</label>
-							</div>
-							<div class="col-sm-12">
-								<select id="biological-female-children" name="biologicalFemaleChildren" class="input registration-number-select">
-									<option>0</option>
-									<option>1</option>
-									<option>2</option>
-									<option>3</option>
-									<option>4</option>
-									<option>5</option>
-									<option>6</option>
-									<option>7</option>
-									<option>8</option>
-									<option>9</option>
-									<option>10+</option>
-								</select>
-							</div>
-						</div>
-						<div class="row form-group">
-							<div class="col-sm-12">
-								<label for="adopted-female-children" class="label marg-bottom-xs-5">Number of adopted <span class="text-pink">female</span> children:</label>
-							</div>
-							<div class="col-sm-12">
-								<select id="adopted-female-children" name="adoptedFemaleChildren" class="input registration-number-select">
-									<option>0</option>
-									<option>1</option>
-									<option>2</option>
-									<option>3</option>
-									<option>4</option>
-									<option>5</option>
-									<option>6</option>
-									<option>7</option>
-									<option>8</option>
-									<option>9</option>
-									<option>10+</option>
-								</select>
-							</div>
-						</div>
-
-						<hr class="registration-divider">
-
-						<div class="row form-group">
-							<div class="col-sm-12">
-								<label for="other-adults-in-home" class="label marg-bottom-xs-5">Number of other adults living in home</label>
-							</div>
-							<div class="col-sm-12">
-								<select id="other-adults-in-home" name="otherAdultsInHome" class="input registration-number-select">
-									<option>0</option>
-									<option>1</option>
-									<option>2</option>
-									<option>3</option>
-									<option>4</option>
-									<option>5</option>
-									<option>6</option>
-									<option>7</option>
-									<option>8</option>
-									<option>9</option>
-									<option>10+</option>
-								</select>
-							</div>
-						</div>
-						<div class="row form-group">
-							<div class="col-sm-12">
-								<label for="primary-language-in-home" class="label marg-bottom-xs-5">Primary language spoken at home:</label>
-							</div>
-							<div class="col-sm-12">
-								<input type="text" class="input" id="primary-language-in-home" name="primaryLanguageInHome">
-							</div>
-						</div>
-						<div class="row form-group">
-							<div class="col-sm-12">
-								<label for="other-languages-in-home" class="label marg-bottom-xs-5">Other language(s) spoken at home:</label>
-							</div>
-							<div class="col-sm-12">
-								<input type="text" class="input" id="other-languages-in-home" name="otherLanguagesInHome">
-							</div>
-						</div>
-
-
-						<div class="registration-section-header">Adoption Preferences</div>
-
-						<div class="row form-group">
-							<div class="col-sm-12">
-								<label class="label marg-bottom-xs-5">Gender of children approved for:</label>
-							</div>
-							<div class="col-sm-12">
-								<label class="checkbox-inline">
-									<input type="checkbox" name="approvedChildrenGender" value="male" />Male
-								</label>
-								<label class="checkbox-inline">
-									<input type="checkbox" name="approvedChildrenGender" value="female" />Female
-								</label>
-							</div>
-						</div>
-						<div class="row form-group">
-							<div class="col-sm-12">
-								<label class="label marg-bottom-xs-5">Legal Status</label>
-							</div>
-							<div class="col-sm-12">
-								<label class="checkbox-inline">
-									<input type="checkbox" name="legalStatus" value="free" />Free</label>
-								</label>
-								<label class="checkbox-inline">
-									<input type="checkbox" name="legalStatus" value="legal risk" />Legal Risk
-								</label>
-							</div>
-						</div>
-						<div class="row form-group">
-							<div class="col-sm-12">
-								<label class="label marg-bottom-xs-5">Age Range</label>
-							</div>
-							<div class="col-sm-12">
-								<div class="row">
-									<div class="col-xs-8">
-										<select name="ageRangeTop" class="input registration-number-select inline">
-											<option>0</option>
-											<option>1</option>
-											<option>2</option>
-											<option>3</option>
-											<option>4</option>
-											<option>5</option>
-											<option>6</option>
-											<option>7</option>
-											<option>8</option>
-											<option>9</option>
-											<option>10+</option>
-										</select>
-									</div>
-									<div class="col-xs-4 text-center">To:</div>
-									<div class="col-xs-8">
-										<select name="ageRangeBottom" class="input registration-number-select inline">
-											<option>0</option>
-											<option>1</option>
-											<option>2</option>
-											<option>3</option>
-											<option>4</option>
-											<option>5</option>
-											<option>6</option>
-											<option>7</option>
-											<option>8</option>
-											<option>9</option>
-											<option>10+</option>
-										</select>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="row form-group">
-							<div class="col-sm-12">
-								<label class="label marg-bottom-xs-5">Number of children preferred:</label>
-							</div>
-							<div class="col-sm-12">
-								<select name="numberOfChildrenPrefered" class="input registration-number-select">
-									<option>0</option>
-									<option>1</option>
-									<option>2</option>
-									<option>3</option>
-									<option>4</option>
-									<option>5</option>
-									<option>6</option>
-									<option>7</option>
-									<option>8</option>
-									<option>9</option>
-									<option>10+</option>
-								</select>
-							</div>
-						</div>
-						<div class="row form-group">
-							<div class="col-sm-12">
-								<label class="label marg-bottom-xs-5">Contact with biological siblings?</label>
-							</div>
-							<div class="col-sm-12">
-								<label class="radio-inline"><input type="radio" name="contactBioSiblings" value="yes" />Yes</label>
-								<label class="radio-inline"><input type="radio" name="contactBioSiblings" value="no" />No</label>
-							</div>
-						</div>
-						<div class="row form-group">
-							<div class="col-sm-12">
-								<label class="label marg-bottom-xs-5">Contact with biological parents?</label>
-							</div>
-							<div class="col-sm-12">
-								<label class="radio-inline"><input type="radio" name="contactBioParents" value="yes" />Yes</label>
-								<label class="radio-inline"><input type="radio" name="contactBioParents" value="no" />No</label>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-sm-12 form-group">
-								<label class="label marg-bottom-xs-5">Race/Ethnicity (check all that apply)</label>
-							</div>
-						</div>
-						<div class="row form-group">
-							<div class="col-sm-18 col-sm-offset-3">
-								<div class="row">
-									{{#each race}}
+									<div id="contact1-race-error-container" class="row error-container">
+										{{#each races}}
 										<div class="col-sm-12 form-group">
 											<label class="checkbox-inline">
-												<input type="checkbox" name="AdoptionPrefRace" value="{{race}}">{{race}}
+												<input type="checkbox" name="contact1Race" value="{{_id}}" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#contact1-race-error-container" required="">{{race}}
 											</label>
 										</div>
+										{{/each}}
+									</div>
+								</div>
+								<div class="col-sm-12">
+									<div class="form-group">
+										<input type="text" id="contact1-occupation" class="input" name="contact1Occupation" placeholder="teacher">
+										<label for="contact1-occupation" class="label">Occupation</label>
+									</div>
+									<div class="form-group">
+										<input type="text" class="input" id="contact1-date-of-birth" name="contact1DateOfBirth" data-parsley-error-message="required" required="" placeholder="MM/DD/YYYY">
+										<label for="contact1-date-of-birth" class="label required-field">Date of Birth</label>
+									</div>
+								</div>
+							</div>
+						</section>
+
+						<section class="family-contact-2-section">
+							<div class="form-section-header">Contact 2</div>
+
+							<div class="row">
+								<div class="col-sm-12 form-group">
+									<input type="text" id="contact2-first-name" class="input" name="contact2FirstName" placeholder="Jane">
+									<label for="contact2-first-name" class="label">First Name</label>
+								</div>
+								<div class="col-sm-12 form-group">
+									<input type="text" id="contact2-last-name" class="input" name="contact2LastName" placeholder="Smith">
+									<label for="contact2-last-name" class="label">Last Name</label>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-12 form-group">
+									<input type="email" id="contact2-email" class="input" name="contact2Email" placeholder="jane.smith@gmail.com">
+									<label for="contact2-email" class="label">Email Address</label>
+								</div>
+								<div class="col-sm-12 form-group">
+									<input type="text" id="contact2-phone" class="input" name="contact2Mobile" placeholder="(617) 222-2222">
+									<label for="contact2-phone" class="label">Mobile Phone</label>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-12 form-group">
+									<select id="contact2-preferred-communication-method" class="input" name="contact2PreferredCommunicationMethod">
+										<option value=""></option>
+										<option value="email">email</option>
+										<option value="home phone">home</option>
+										<option value="mobile phone">mobile</option>
+									</select>
+									<label for="contact2-preferred-communication-method" class="label">Preferred Contact Method</label>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-24 form-group">
+									<span class="gender-select-text">Gender:</span> &nbsp;&nbsp;
+									{{#each genders}}
+										<label class="radio-inline"><input type="radio" name="contact2Gender" value="{{_id}}">{{gender}}</label>
 									{{/each}}
 								</div>
 							</div>
-						</div>
-						<div class="row form-group">
-							<div class="col-sm-12">
-								<label class="label marg-bottom-xs-5">Level of physical needs</label>
-							</div>
-							<div class="col-sm-12">
-								<label class="radio-inline"><input type="radio" name="physicalNeeds" value="mild" />Mild</label>
-								<label class="radio-inline"><input type="radio" name="physicalNeeds" value="moderate" />Moderate</label>
-								<label class="radio-inline"><input type="radio" name="physicalNeeds" value="severe" />Severe</label>
-							</div>
-						</div>
-						<div class="row form-group">
-							<div class="col-sm-12">
-								<label class="label marg-bottom-xs-5">Level of emotional needs</label>
-							</div>
-							<div class="col-sm-12">
-								<label class="radio-inline"><input type="radio" name="emotionalNeeds" value="mild" />Mild</label>
-								<label class="radio-inline"><input type="radio" name="emotionalNeeds" value="moderate" />Moderate</label>
-								<label class="radio-inline"><input type="radio" name="emotionalNeeds" value="severe" />Severe</label>
-							</div>
-						</div>
-						<div class="row form-group">
-							<div class="col-sm-12">
-								<label class="label marg-bottom-xs-5">Level of intellectual needs</label>
-							</div>
-							<div class="col-sm-12">
-								<label class="radio-inline"><input type="radio" name="intellectualNeeds" value="mild" />Mild</label>
-								<label class="radio-inline"><input type="radio" name="intellectualNeeds" value="moderate" />Moderate</label>
-								<label class="radio-inline"><input type="radio" name="intellectualNeeds" value="severe" />Severe</label>
-							</div>
-						</div>
-
-						<div class="registration-section-header">Mare &amp; You</div>
-
-						<div class="row">
-							<div class="col-sm-24 form-group">
-								<label class="label marg-bottom-xs-5">How did you hear abut MARE?</label>
-							</div>
-							<div class="col-sm-12">
-								<div class="row">
-									<div class="col-sm-12 form-group">
-										<label class="checkbox-inline">
-											<input type="checkbox" name="howDidYouHear" value="Web">Web
-										</label>
+							<div class="row">
+								<div class="col-sm-12">
+									<div class="row">
+										<div class="col-sm-24 form-group">
+											<span class="race-text">Race/Ethnicity (check all that apply)</span>
+										</div>
 									</div>
-									<div class="col-sm-12 form-group">
-										<label class="checkbox-inline">
-											<input type="checkbox" name="howDidYouHear" value="Wednesday’s Child">Wednesday’s Child
-										</label>
+									<div class="row">
+										{{#each races}}
+										<div class="col-sm-12 form-group">
+											<label class="checkbox-inline">
+												<input type="checkbox" name="contact2Race" value="{{_id}}">{{race}}
+											</label>
+										</div>
+										{{/each}}
 									</div>
-									<div class="col-sm-12 form-group">
-										<label class="checkbox-inline">
-											<input type="checkbox" name="howDidYouHear" value="Adoption Event">Adoption Event
-										</label>
+								</div>
+								<div class="col-sm-12">
+									<div class="form-group">
+										<input type="text" id="contact2-occupation" class="input" name="contact2Occupation" placeholder="police officer">
+										<label for="contact2-occupation" class="label">Occupation</label>
 									</div>
-									<div class="col-sm-12 form-group">
-										<label class="checkbox-inline">
-											<input type="checkbox" name="howDidYouHear" value="Friend / Family">Friend / Family
-										</label>
-									</div>
-									<div class="col-sm-12 form-group">
-										<label class="checkbox-inline">
-											<input type="checkbox" name="howDidYouHear" value="Newspaper">Newspaper
-										</label>
-									</div>
-									<div class="col-sm-12 form-group">
-										<label class="checkbox-inline">
-											<input type="checkbox" name="howDidYouHear" value="Heart Gallery Display">Heart Gallery Display
-										</label>
-									</div>
-									<div class="col-sm-12 form-group">
-										<label class="checkbox-inline">
-											<input type="checkbox" name="howDidYouHear" value="Social Media">Social Media
-										</label>
-									</div>
-									<div class="col-sm-12 form-group">
-										<label class="checkbox-inline">
-											<input type="checkbox" name="howDidYouHear" value="AdoptMassachusettsKids.org">AdoptMassachusettsKids.org
-										</label>
-									</div>
-									<div class="col-sm-12 form-group">
-										<label class="checkbox-inline">
-											<input type="checkbox" name="howDidYouHear" value="Other" onClick="$('#parent-how-did-you-hear').show()">Other
-										</label>
-									</div>
-									<div class="col-sm-12 form-group">
-										<input type="text" style="display:none" class="input" id="parent-how-did-you-hear" name="howDidYouHearOther" placeholder="Other...">
+									<div class="form-group">
+										<input type="text" id="contact2-date-of-birth" class="input" name="contact2DateOfBirth" placeholder="MM/DD/YYYY">
+										<label for="contact2-date-of-birth" class="label">Date of Birth</label>
 									</div>
 								</div>
 							</div>
-						</div>
+						</section>
 
-						<div class="row form-group">
-							<div class="col-sm-12">
-								<label class="label marg-bottom-xs-5">Would you like to be added to the MARE News email list (quarterly):</label>
+						<section class="family-constellation-section">
+
+							<div class="form-section-header">Family Constellation</div>
+
+							<div class="row form-group">
+								<div class="col-sm-12">
+									<select id="family-constellation" class="input" name="familyConstellation" data-parsley-errors-messages-disabled="true" required="">
+										<option value=""></option>
+										{{#each familyConstellations}}
+										<option value="{{_id}}">{{familyConstellation}}</option>
+										{{/each}}
+									</select>
+									<label for="family-constellation" class="label required-field">Family Constellation</label>
+								</div>
 							</div>
-							<div class="col-sm-12">
-								<label class="radio-inline"><input type="radio" name="mareEmailList" value="Yes" />Yes</label>
-								<label class="radio-inline"><input type="radio" name="mareEmailList" value="No" />No</label>
+						</section>
+
+						<section class="family-home-address-section">
+							<div class="form-section-header">Home Address</div>
+
+							<div class="row">
+								<div class="col-sm-12 form-group">
+									<input type="text" id="family-street-1" class="input" name="street1" placeholder="100 Main Street" data-parsley-error-message="required" required="">
+									<label for="family-street-1" class="label required-field">Street 1</label>
+								</div>
 							</div>
-						</div>
-						<div class="row form-group">
-							<div class="col-sm-12">
-								<label class="label marg-bottom-xs-5">Would you like to be added to the Adoption Party email list (events held in MA only):</label>
+							<div class="row">
+								<div class="col-sm-12 form-group">
+									<input type="text" id="family-street-2" class="input" name="street2" placeholder="Suite 1">
+									<label for="family-street-2" class="label">Street 2</label>
+								</div>
 							</div>
-							<div class="col-sm-12">
-								<label class="radio-inline"><input type="radio" name="adoptionPartyEmailList" value="Yes" />Yes</label>
-								<label class="radio-inline"><input type="radio" name="adoptionPartyEmailList" value="No" />No</label>
+							<div class="row">
+								<div class="col-sm-12 form-group">
+									<input type="text" id="city" class="input" name="city" placeholder="Boston" data-parsley-error-message="required" required="">
+									<label for="city" class="label required-field">City</label>
+								</div>
 							</div>
-						</div>
-						<div class="row form-group">
-							<div class="col-sm-12">
-								<label class="label marg-bottom-xs-5">Would you like to receive information on how to create a family profile?</label>
+							<div class="row">
+								<div class="col-sm-12 form-group">
+									<select id="family-state" class="input state-select" name="state">
+									{{#each states}}
+										{{#if defaultSelection}}
+											<option value="{{_id}}" selected="selected">{{state}}</option>
+										{{else}}
+											<option value="{{_id}}">{{state}}</option>
+										{{/if}}
+									{{/each}}
+									</select>
+									<label for="state" class="label required-field">State</label>
+								</div>
 							</div>
-							<div class="col-sm-12">
-								<label class="radio-inline"><input type="radio" name="receiveHowToCreateFamilyProfile" value="Yes" />Yes</label>
-								<label class="radio-inline"><input type="radio" name="receiveHowToCreateFamilyProfile" value="No" />No</label>
+							<div class="row">
+								<div class="col-sm-12 form-group">
+									<input type="number" id="zip-code" class="input" name="zipCode" placeholder="02111" data-parsley-error-message="required" required="">
+									<label for="zip-code" class="label required-field">Zip Code</label>
+								</div>
 							</div>
-						</div>
+							<div class="row">
+								<div class="col-sm-12 form-group">
+									<input type="text" id="home-phone" class="input" name="homePhone" placeholder="(617) 333-3333">
+									<label for="home-phone" class="label">Home Phone</label>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-24 form-group">
+									<label class="label marg-bottom-xs-5">Where are you in the adoption process?</label>
+								</div>
+							</div>
+							<div class="row form-group">
+								<div class="col-sm-16">
+									<div class="row">
+										<div class="col-sm-12 form-group">
+											<label class="checkbox-inline">
+												<input type="checkbox" name="processProgression" value="gatheringInformation">Gathering Information
+											</label>
+										</div>
+										<div class="col-sm-12 form-group">
+											<label class="checkbox-inline">
+												<input type="checkbox" name="processProgression" value="lookingForAgency">Looking for an agency
+											</label>
+										</div>
+										<div class="col-sm-12 form-group">
+											<label class="checkbox-inline">
+												<input type="checkbox" name="processProgression" value="workingWithAgency">Working with an agency
+											</label>
+										</div>
+										<div class="col-sm-12 form-group">
+											<label class="checkbox-inline">
+												<input type="checkbox" name="processProgression" value="MAPPTrainingCompleted">MAPP training completed
+											</label>
+										</div>
+										<div class="col-sm-12 form-group">
+											<label class="checkbox-inline">
+												<input type="checkbox" class="homestudy-completed-checkbox" name="processProgression" value="homestudyCompleted">Homestudy completed
+											</label>
+										</div>
+									</div>
+								</div>
+							</div>
+						</section>
+						<!-- This will end part 3 -->
+
+						<section class="family-homestudy-details-section hidden">
+							<div class="form-section-header">Homestudy Details</div>
+
+							<div class="row">
+								<div class="col-sm-12 form-group">
+									<input type="text" id="homestudy-date-complete" class="input" name="homestudyDateComplete" data-parsley-required="false" data-parsley-error-message="required" placeholder="MM/DD/YYYY">
+									<label for="homestudy-date-complete" class="label required-field">Date Homestudy Completed/Updated</label>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-12 form-group">
+									<input type="text" id="social-worker-name" class="input" name="socialWorkerName" data-parsley-required="false" data-parsley-error-message="required" placeholder="Jim Smith">
+									<label for="social-worker-name" class="label required-field">Social Worker Name</label>
+								</div>
+								<div class="col-sm-12 form-group">
+									<input type="text" id="social-worker-agency" class="input" name="socialWorkerAgency" data-parsley-required="false" data-parsley-error-message="required" placeholder="Jim's Agency">
+									<label for="social-worker-agency" class="label required-field">Social Worker Agency</label>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-12 form-group">
+									<input type="text" id="social-worker-phone" class="input" name="socialWorkerPhone" data-parsley-required="false" data-parsley-error-message="required" placeholder="(617) 444-4444">
+									<label for="social-worker-phone" class="label required-field">Social Worker Phone Number</label>
+								</div>
+								<div class="col-sm-12 form-group">
+									<input type="email" id="social-worker-email" class="input" name="socialWorkerEmail" data-parsley-trigger="change" data-parsley-required="false" data-parsley-error-message="required" placeholder="jim.smith@gmail.com">
+									<label for="social-worker-email" class="label required-field">Social Worker Email Address</label>
+								</div>
+							</div>
+
+							<section class="subheading family-submit-your-homestudy-section">
+								<strong>Submit Your Homestudy</strong>
+								<p>To complete your registration as a Massachusetts homestudied family, you must submit your homestudy to us via one of the following methods (choose one):</p>
+								<div class="row">
+									<div class="col-sm-12 form-group">Upload PDF or Microsoft Word<sup>&reg;</sup> format:</div>
+									<div class="col-sm-12 form-group">
+										<div class="btn btn-default btn-file-upload">
+										    <span>Upload</span>
+										    <input id="upload-button" type="file" class="file-upload" id="homestudyFile_upload" name="homestudyFile_upload">
+										</div>
+										<span class="homestudy-file-text"></span>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-sm-12 form-group">Email to web@mareinc.org:</div>
+									<div class="col-sm-12 form-group">
+										<a href="mailto:web@mareinc.org" class="btn btn-default">Send as email</a>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-sm-12 form-group">Fax to 617-542-1006, Attention: Homestudy Registration</div>
+								</div>
+								<div class="row">
+									<div class="col-sm-12 form-group">
+											<div class="indented-text">
+												Mail to:
+												<div class="indent-text">
+													Massachusetts Adoption Resource Exchange<br />
+													45 Franklin Street<br />
+													5th Floor<br />
+													Boston, MA 02110-1301
+												</div>
+											</div>
+									</div>
+								</div>
+							</section>
+						</section>
+
+						<section class="family-details-section">
+							<div class="form-section-header">Family Details</div>
+
+							<div class="row form-group children-in-home">
+								<div class="col-sm-12">
+									<label for="children-in-home" class="label marg-bottom-xs-5">Total number of children currently living at home</label>
+								</div>
+								<div class="col-sm-12">
+									<select id="children-in-home" name="childrenInHome" class="input form__number-select">
+										<option>0</option>
+										<option>1</option>
+										<option>2</option>
+										<option>3</option>
+										<option>4</option>
+										<option>5</option>
+										<option>6</option>
+										<option>7</option>
+										<option>8+</option>
+									</select>
+								</div>
+							</div>
+
+							<div class="row form-group children-form-heading hidden">
+								<div class="col-sm-24">
+									<div class="label marg-bottom-xs-5">
+										Child
+										<span class="child-number"></span>
+									</div>
+								</div>
+							</div>
+
+							<div class="row form-group children-form hidden">
+								<div class="col-sm-12 form-group">
+									<div class="row">
+										<div class="col-sm-24 form-group">
+											<input type="text" class="input child-form-input" data-name="name">
+											<label class="label marg-bottom-xs-5">Name</label>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-sm-24">
+											<select data-name="gender" class="input registration-number-select child-form-input">
+												<option value=""></option>
+											{{#each genders}}
+												<option value="{{_id}}">{{ gender }}</option>
+											{{/each}}
+											</select>
+											<label class="label marg-bottom-xs-5">Gender</label>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-12 form-group">
+									<div class="row">
+										<div class="col-sm-24 form-group">
+											<input type="text" class="input child-form-input" data-name="birthDate" placeholder="MM/DD/YYYY">
+											<label class="label marg-bottom-xs-5">Date of Birth</label>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-sm-24">
+											<select data-name="type" class="input registration-number-select child-form-input">
+												<option value=""></option>
+											{{#each childTypes}}
+												<option value="{{ _id }}">{{ displayName }}</option>
+											{{/each}}
+											</select>
+											<label class="label marg-bottom-xs-5">Type</label>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<hr class="registration-divider">
+
+							<div class="row form-group">
+								<div class="col-sm-12">
+									<label for="other-adults-in-home" class="label marg-bottom-xs-5">Number of other adults living in home</label>
+								</div>
+								<div class="col-sm-12">
+									<select id="other-adults-in-home" name="otherAdultsInHome" class="input form__number-select">
+										<option>0</option>
+										<option>1</option>
+										<option>2</option>
+										<option>3</option>
+										<option>4</option>
+										<option>5</option>
+										<option>6</option>
+										<option>7</option>
+										<option>8</option>
+										<option>9</option>
+										<option>10+</option>
+									</select>
+								</div>
+							</div>
+							<div class="row form-group">
+								<div class="col-sm-24">
+									<label class="checkbox-inline">
+										<input type="checkbox" name="havePets" value="yes">Have pets in the home
+									</label>
+								</div>
+							</div>
+							<div class="row form-group">
+								<div class="col-sm-12">
+									<label for="primary-language-in-home" class="label marg-bottom-xs-5 required-field">Primary language spoken at home</label>
+								</div>
+								<div class="col-sm-12">
+									<select name="primaryLanguageInHome" class="input form__number-select" data-parsley-errors-messages-disabled="true" required="">
+										<option value=""></option>
+										{{#each languages}}
+											<option value="{{_id}}">{{language}}</option>
+										{{/each}}
+									</select>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-24 form-group">
+									<label class="label marg-bottom-xs-5">Other language(s) spoken at home</label>
+								</div>
+							</div>
+							<div class="row form-group">
+								<div class="col-sm-16">
+									<div class="row">
+									{{#each languages}}
+										<div class="col-sm-12 form-group">
+											<label class="checkbox-inline">
+												<input type="checkbox" name="otherLanguagesInHome" value="{{_id}}">{{language}}
+											</label>
+										</div>
+									{{/each}}
+									</div>
+								</div>
+							</div>
+						</section>
+
+						<section class="family-adoption-preferences-section">
+							<div class="form-section-header">Adoption Preferences</div>
+
+							<div class="row form-group">
+								<div class="col-sm-12">
+									<label class="label marg-bottom-xs-5 required-field">Gender of children preferred</label>
+								</div>
+								<div class="col-sm-12">
+									<div id="preferred-gender-error-container" class="row error-container">
+									{{#each genders}}
+										<div class="col-sm-12 form-group">
+											<label class="checkbox-inline">
+												<input type="checkbox" name="preferredGender" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#preferred-gender-error-container" required="" value="{{_id}}">{{gender}}
+											</label>
+										</div>
+									{{/each}}
+									</div>
+								</div>
+							</div>
+							<div class="row form-group">
+								<div class="col-sm-12">
+									<label class="label marg-bottom-xs-5 required-field">Legal Status</label>
+								</div>
+								<div class="col-sm-12">
+									<div id="preferred-legal-status-error-container" class="row error-container">
+									{{#each legalStatuses}}
+										<div class="col-sm-12 form-group">
+											<label class="checkbox-inline">
+												<input type="checkbox" name="legalStatus" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#preferred-legal-status-error-container" required="" value="{{_id}}">{{legalStatus}}
+											</label>
+										</div>
+									{{/each}}
+									</div>
+								</div>
+							</div>
+							<div class="row form-group">
+								<div class="col-sm-12">
+									<label class="label marg-bottom-xs-5 required-field">Age Range</label>
+								</div>
+								<div class="col-sm-12">
+									<div class="row">
+										<div class="col-xs-8">
+											<select name="ageRangeFrom" class="input form__number-select inline" data-parsley-errors-messages-disabled="true" required="">
+												<option value=""></option>
+												<option value="0">0</option>
+												<option value="1">1</option>
+												<option value="2">2</option>
+												<option value="3">3</option>
+												<option value="4">4</option>
+												<option value="5">5</option>
+												<option value="6">6</option>
+												<option value="7">7</option>
+												<option value="8">8</option>
+												<option value="9">9</option>
+												<option value="10">10</option>
+												<option value="11">11</option>
+												<option value="12">12</option>
+												<option value="13">13</option>
+												<option value="14">14</option>
+												<option value="15">15</option>
+												<option value="16">16</option>
+												<option value="17">17</option>
+											</select>
+										</div>
+										<div class="col-xs-4 text-center">To:</div>
+										<div class="col-xs-8">
+											<select name="ageRangeTo" class="input form__number-select inline" data-parsley-errors-messages-disabled="true" required="">
+												<option value=""></option>
+												<option value="0">0</option>
+												<option value="1">1</option>
+												<option value="2">2</option>
+												<option value="3">3</option>
+												<option value="4">4</option>
+												<option value="5">5</option>
+												<option value="6">6</option>
+												<option value="7">7</option>
+												<option value="8">8</option>
+												<option value="9">9</option>
+												<option value="10">10</option>
+												<option value="11">11</option>
+												<option value="12">12</option>
+												<option value="13">13</option>
+												<option value="14">14</option>
+												<option value="15">15</option>
+												<option value="16">16</option>
+												<option value="17">17</option>
+											</select>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row form-group">
+								<div class="col-sm-12">
+									<label class="label marg-bottom-xs-5 required-field">Number of children preferred</label>
+								</div>
+								<div class="col-sm-12">
+									<select name="numberOfChildrenPrefered" class="input form__number-select" data-parsley-errors-messages-disabled="true" required="">
+										<option value=""></option>
+										<option value="0">0</option>
+										<option value="1">1</option>
+										<option value="2">2</option>
+										<option value="3">3</option>
+										<option value="4">4</option>
+										<option value="5">5</option>
+										<option value="6">6</option>
+										<option value="7">7</option>
+										<option value="8">8</option>
+										<option value="9">9</option>
+										<option value="10">10+</option>
+									</select>
+								</div>
+							</div>
+							<div class="row form-group">
+								<div class="col-sm-12">
+									<label class="label marg-bottom-xs-5 required-field">Would you consider children who have contact with their biological siblings?</label>
+								</div>
+								<div class="col-sm-12">
+									<span id="preferred-sibling-contact-error-container" class="error-container">
+										<label class="radio-inline"><input type="radio" name="contactWithBiologicalSiblings" value="yes" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#preferred-sibling-contact-error-container" required="">Yes</label>
+										<label class="radio-inline"><input type="radio" name="contactWithBiologicalSiblings" value="no">No</label>
+									</span>
+								</div>
+							</div>
+							<div class="row form-group">
+								<div class="col-sm-12">
+									<label class="label marg-bottom-xs-5 required-field">Would you consider children who have contact with their biological parents?</label>
+								</div>
+								<div class="col-sm-12">
+									<span id="preferred-parent-contact-error-container" class="error-container">
+										<label class="radio-inline"><input type="radio" name="contactWithBiologicalParents" value="yes" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#preferred-parent-contact-error-container" required="">Yes</label>
+										<label class="radio-inline"><input type="radio" name="contactWithBiologicalParents" value="no">No</label>
+									</span>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-24 form-group">
+									<label class="label marg-bottom-xs-5 required-field">Race/Ethnicity (check all that apply)</label>
+								</div>
+							</div>
+							<div class="row form-group">
+								<div class="col-sm-16">
+									<div id="preferred-race-error-container" class="row error-container">
+										{{#each races}}
+										<div class="col-sm-12 form-group">
+											<label class="checkbox-inline">
+												<input type="checkbox" name="adoptionPrefRace[]" value="{{_id}}" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#preferred-race-error-container" data-parsley-mincheck="1" required="">{{race}}
+											</label>
+										</div>
+										{{/each}}
+									</div>
+								</div>
+							</div>
+							<div class="row form-group">
+								<div class="col-sm-12">
+									<label class="label marg-bottom-xs-5 required-field">Maximum level of physical needs</label>
+								</div>
+								<div class="col-sm-12">
+									<span id="preferred-maximum-physical-needs-error-container" class="error-container">
+										<label class="radio-inline"><input type="radio" name="maximumPhysicalNeeds" value="none" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#preferred-maximum-physical-needs-error-container" required="">None</label>
+										<label class="radio-inline"><input type="radio" name="maximumPhysicalNeeds" value="mild">Mild</label>
+										<label class="radio-inline"><input type="radio" name="maximumPhysicalNeeds" value="moderate">Moderate</label>
+										<label class="radio-inline"><input type="radio" name="maximumPhysicalNeeds" value="severe">Severe</label>
+									</span>
+								</div>
+							</div>
+							<div class="row form-group">
+								<div class="col-sm-12">
+									<label class="label marg-bottom-xs-5 required-field">Maximum level of emotional needs</label>
+								</div>
+								<div class="col-sm-12">
+									<span id="preferred-maximum-emotional-needs-error-container" class="error-container">
+										<label class="radio-inline"><input type="radio" name="maximumEmotionalNeeds" value="none" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#preferred-maximum-emotional-needs-error-container" required="">None</label>
+										<label class="radio-inline"><input type="radio" name="maximumEmotionalNeeds" value="mild">Mild</label>
+										<label class="radio-inline"><input type="radio" name="maximumEmotionalNeeds" value="moderate">Moderate</label>
+										<label class="radio-inline"><input type="radio" name="maximumEmotionalNeeds" value="severe">Severe</label>
+									</span>
+								</div>
+							</div>
+							<div class="row form-group">
+								<div class="col-sm-12">
+									<label class="label marg-bottom-xs-5 required-field">Maximum level of intellectual needs</label>
+								</div>
+								<div class="col-sm-12">
+									<span id="preferred-maximum-intellectual-needs-error-container" class="error-container">
+										<label class="radio-inline"><input type="radio" name="maximumIntellectualNeeds" value="none" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#preferred-maximum-intellectual-needs-error-container" required="">None</label>
+										<label class="radio-inline"><input type="radio" name="maximumIntellectualNeeds" value="mild">Mild</label>
+										<label class="radio-inline"><input type="radio" name="maximumIntellectualNeeds" value="moderate">Moderate</label>
+										<label class="radio-inline"><input type="radio" name="maximumIntellectualNeeds" value="severe">Severe</label>
+									</span>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-24 form-group">
+									<label class="label marg-bottom-xs-5">Disabilities (check all that apply)</label>
+								</div>
+							</div>
+							<div class="row form-group">
+								<div class="col-sm-16">
+									<div class="row">
+									{{#each disabilities}}
+										<div class="col-sm-12 form-group">
+											<label class="checkbox-inline">
+												<input type="checkbox" name="disabilities" value="{{_id}}">{{disability}}
+											</label>
+										</div>
+									{{/each}}
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-24 form-group">
+									<label class="label marg-bottom-xs-5">Other considerations (check all that apply)</label>
+								</div>
+							</div>
+							<div class="row form-group">
+								<div class="col-sm-16">
+									<div class="row">
+									{{#each otherConsiderations}}
+										<div class="col-sm-12 form-group">
+											<label class="checkbox-inline">
+												<input type="checkbox" name="otherConsiderations" value="{{_id}}">{{otherConsideration}}
+											</label>
+										</div>
+									{{/each}}
+									</div>
+								</div>
+							</div>
+
+						</section>
+
+						<section class="family-mare-and-you-section">
+							<div class="form-section-header">Mare &amp; You</div>
+
+							<div class="row">
+								<div class="col-sm-24 form-group">
+									<label class="label required-field marg-bottom-xs-5">How did you hear about MARE (check all that apply)?</label>
+								</div>
+								<div class="col-sm-16">
+									<div id="family-how-did-you-hear-error-container" class="row error-container">
+										{{#each waysToHearAboutMARE}}
+										<div class="col-sm-12 form-group">
+											<label class="checkbox-inline way-to-hear-about-MARE {{#if other}}other-way-to-hear-about-mare{{/if}}">
+												<input type="checkbox" name="howDidYouHear[]" value="{{_id}}" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#family-how-did-you-hear-error-container" data-parsley-mincheck="1" required="">{{wayToHearAboutMARE}}
+											</label>
+										</div>
+										{{/each}}
+									</div>
+									<div class="row">
+										<div class="col-sm-24 form-group">
+											<input type="text" id="family-how-did-you-hear-other" class="input required-field hidden" name="howDidYouHearOther" data-parsley-required="false" data-parsley-error-message="required" placeholder="other...">
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="row form-group">
+								<div class="col-sm-12">
+									<label class="label marg-bottom-xs-5">Would you like to be added to the MARE News email list?</label>
+								</div>
+								<div class="col-sm-12">
+									<label class="radio-inline"><input type="radio" name="mareEmailList" value="yes" checked="checked">Yes</label>
+									<label class="radio-inline"><input type="radio" name="mareEmailList" value="no">No</label>
+								</div>
+							</div>
+							<div class="row form-group">
+								<div class="col-sm-12">
+									<label class="label marg-bottom-xs-5">Would you like to be added to the Adoption Party email list (events held in MA only)?</label>
+								</div>
+								<div class="col-sm-12">
+									<label class="radio-inline"><input type="radio" name="adoptionPartyEmailList" value="yes" checked="checked">Yes</label>
+									<label class="radio-inline"><input type="radio" name="adoptionPartyEmailList" value="no">No</label>
+								</div>
+							</div>
+
+							<div class="row form-group">
+								<div class="col-sm-24">
+									<label class="checkbox-inline">
+										<input type="checkbox" class="info-packet-toggle" name="infoPacket" value="yes">Please send me a general adoption information packet
+									</label>
+								</div>
+							</div>
+							<div class="row form-group info-packet-details hidden">
+								<div class="col-sm-12 form-group">
+									<select id="info-packet-format" class="input info-packet-select" name="infoPacketFormat">
+											<option value="email" selected="selected">email</option>
+											<option value="mail">mail</option>
+									</select>
+									<label for="info-packet-format" class="label">Preferred Format</label>
+								</div>
+								<div class="col-sm-12 form-group">
+									<select id="info-packet-language" class="input info-packet-select" name="infoPacketLanguage">
+											<option value="English" selected="selected">English</option>
+											<option value="Spanish">Spanish</option>
+									</select>
+									<label for="info-packet-format" class="label">Preferred Language</label>
+								</div>
+							</div>
+						</section>
+
 						<button class="register" type="submit">Register</button>
+
 					</form>
 				</section>
 				{{/if}}

@@ -9,10 +9,11 @@ var MailingList = new keystone.List('Mailing List', {
 
 // Create fields
 MailingList.add({
-	mailingList: { type: Types.Text, label: 'mailing list', required: true, index: true, initial: true }
+	mailingList: { type: Types.Text, label: 'mailing list', required: true, initial: true },
+	siteVisitorAttendees: { type: Types.Relationship, label: 'site visitors', ref: 'Site Visitor', many: true, initial: true },
+	socialWorkerAttendees: { type: Types.Relationship, label: 'social workers', ref: 'Social Worker', many: true, initial: true },
+	familyAttendees: { type: Types.Relationship, label: 'families', ref: 'Family', many: true, initial: true }
 });
-
-MailingList.relationship({ path: 'mailing-lists', ref: 'Prospective Parent or Family', refPath: 'prospectiveParentOrFamily' });
 
 // Define default columns in the admin interface and register the model
 MailingList.defaultColumns = 'mailingList';

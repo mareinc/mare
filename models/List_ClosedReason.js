@@ -9,7 +9,7 @@ var ClosedReason = new keystone.List('Closed Reason', {
 
 // Create fields
 ClosedReason.add({
-	reason: { type: Types.Text, label: 'closed reason', required: true, index: true, initial: true }
+	reason: { type: Types.Text, label: 'closed reason', required: true, initial: true }
 });
 
 // Define default columns in the admin interface and register the model

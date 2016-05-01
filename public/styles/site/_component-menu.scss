@@ -29,137 +29,107 @@ nav ul {
 	padding: 8px 8px 8px 8px;
 }
 
-// .top-nav li:hover > a { 
-//     background-color: $nav-background-color-4;
-//     color: $light-text-color;
-// }
-
 .main-nav {
 	display: none;
-}
 
-@media all and (min-width: 820px) {
-	.main-nav {
+	@media all and (min-width: 655px) {
 		display: block;
 		text-align: center;
 		clear: both;
 		background-color: $nav-background-color-3;
 	}
+}
 
-	.main-nav .nav a {
-		display:block; 
-		background: $nav-background-color-3; 
-		color: $nav-text-color-2; 
-		text-decoration: none;
-		padding: 0.6em 0.3em;
-		text-transform: uppercase;
-		font-size: .8em;
-		position: relative;
-	}
+.main-nav .nav a {
+	position: relative;
+	display: block;
+	background: $nav-background-color-3;
+	color: $nav-text-color-2;
+	text-decoration: none;
+	padding: 0.6em 0.3em;
+	text-transform: uppercase;
+	font-size: .8em;
+}
 
-	.main-nav .nav {
-		vertical-align: top; 
-		display: block;
-		border-radius:6px;
-	}
+.main-nav .nav > li > a {
+	display: flex;
+	height: 100%;
+    justify-content: center;
+    align-items: center;
+}
 
-	.main-nav .nav li {
-		position: relative;
-	}
+.main-nav .nav {
+	display: flex;
+}
 
-	.main-nav .nav > li { 
-		display: inline-block;
-	    margin-right: 10px;
-	}
-
-	.main-nav .nav li:hover > a { 
-	    background-color: $nav-background-color-4;
-	    color: $light-text-color;
-	}
-
-	.main-nav .nav li:hover li a { 
-	    background-color: $nav-background-color-4;
-	    padding: 0.6em 1.5em 0.6em 0.6em;
-	    text-align: left;
-	}
-
-	.main-nav .sub-menu:before { 
-		content: ""; 
-		position: absolute; 
-		height: 0; 
-		width: 0; 
-		border: 5px solid transparent;
-		border-left-color: #d5d5d5;
-		top: 50% ;
-		right:5px;
-	 }
-
-	 .main-nav li:hover > .sub-menu:before {
-		border-left-color: transparent; 
-		border-right-color: #fff;
-		right: 10px; 
-	}
-
-	 /* submenu positioning */
-	.main-nav .nav ul {
-		position: absolute;
-		/* white-space: nowrap; // keeps submenu width restricted by parent width when turned off */
-		z-index: 10;
-		left: -99999em;
-	}
-
-	.main-nav .nav > li:hover > ul {
-		left: auto;
-		min-width: 100%;
-	}
-
-	/* second submenu positioning */
-	.main-nav .nav > li li:hover > ul {
-		top: 0;
-		left: -100%;
-	    width: 100%;
+.main-nav .nav > li {
+	position: relative;
+	flex: 1 1 0;
+	height: 3em;
+	// The height the main navigation elements snap to 2 lines
+	@media all and (min-width: 989px) {
+		height: 2em;
 	}
 }
 
-@media all and (min-width: 850px) {
-	.main-nav .nav > li {
-		margin-right: 15px;
+// The third menu element 'family support services' needs more room than the rest
+.main-nav .nav > li:nth-child(3) {
+	flex: 1.5 1.5 0;
+}
+// Above 800px decrease the width needed for the last 3 menu items
+.main-nav .nav > li:nth-child(n + 5) {
+	@media all and (min-width: 800px) {
+		flex: 1 1 0;
+	}
+}
+// Above 800px increase the width needed for the first 4 menu items
+.main-nav .nav > li:nth-child(-n + 4) {
+	@media all and (min-width: 800px) {
+		flex: 1.5 1.5 0;
 	}
 }
 
-@media all and (min-width: 880px) {
-	.main-nav .nav > li {
-		margin-right: 20px;
-	}
+.main-nav .nav li:hover > a {
+    background-color: $nav-background-color-4;
+    color: $light-text-color;
 }
 
-@media all and (min-width: 910px) {
-	.main-nav .nav > li {
-		margin-right: 25px;
-	}
+.main-nav .nav li:hover li a {
+    background-color: $nav-background-color-4;
+    padding: 0.6em 1.5em 0.6em 0.6em;
+    text-align: left;
 }
 
-@media all and (min-width: 940px) {
-	.main-nav .nav > li {
-		margin-right: 30px;
-	}
+.main-nav .sub-menu:before {
+	content: "";
+	position: absolute;
+	height: 0;
+	width: 0;
+	border: 5px solid transparent;
+	border-left-color: #d5d5d5;
+	top: 50% ;
+	right:5px;
+ }
+
+ .main-nav li:hover > .sub-menu:before {
+	border-left-color: transparent;
+	border-right-color: #fff;
+	right: 10px;
 }
 
-@media all and (min-width: 970px) {
-	.main-nav .nav > li {
-		margin-right: 35px;
-	}
+ /* submenu positioning */
+.main-nav .nav ul {
+	position: absolute;
+	/* white-space: nowrap; // keeps submenu width restricted by parent width when turned off */
+	z-index: 10;
+	left: -99999em;
 }
 
-@media all and (min-width: 1000px) {
-	.main-nav .nav > li {
-		margin-right: 40px;
-	}
+.main-nav .nav > li:hover > ul {
+	left: auto;
+	min-width: 12em;
 }
 
-@media all and (min-width: 1030px) {
-	.main-nav .nav > li {
-		margin-right: 0;
-	    width: 16%;
-	}
+.main-nav .nav > .menu-item--last:hover > ul {
+	right: 0;
 }

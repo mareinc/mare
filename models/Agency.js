@@ -17,17 +17,20 @@ Agency.add({
 	fax: { type: Types.Text, label: 'fax number', initial: true },
 
 	address: {
-		street1: { type: Types.Text, label: 'address line 1', initial: true },
-		street2: { type: Types.Text, label: 'address line 2', initial: true },
+		street1: { type: Types.Text, label: 'street 1', initial: true },
+		street2: { type: Types.Text, label: 'street 2', initial: true },
 		city: { type: Types.Text, label: 'city', initial: true },
-		state: { type: Types.Relationship, label: 'state', ref: 'State', index: true, initial: true },
-		zipCode: { type: Types.Text, label: 'zip code', index: true, initial: true },
+		state: { type: Types.Relationship, label: 'state', ref: 'State', initial: true },
+		zipCode: { type: Types.Text, label: 'zip code', initial: true },
 		region: { type: Types.Relationship, label: 'region', ref: 'Region', initial: true }
 	},
 
 	url: { type: Types.Text, label: 'agency url', initial: true },
-
+	generalInquiryContact: { type: Types.Email, label: 'general inquiry contact', required: true, initial: true }
 });
+
+Agency.relationship({ path: 'agency', ref: 'Inquiry', refPath: 'agency', label: 'inquries' });
+Agency.relationship({ path: 'agencyReferral', ref: 'Inquiry', refPath: 'agencyReferral', label: 'agency referral inquiries' });
 
 // Define default columns in the admin interface and register the model
 Agency.defaultColumns = 'code, name, phone';

@@ -1,0 +1,163 @@
+{{!< default}}
+<div class="main">
+	<div class="content">
+		<div class="content-header">
+			<span class="section-title">Adoption Party</span>
+			<img class="section-image" src="/dist/img/register.png" alt="section-image-placeholder">
+		</div>
+		<div class="content-body">
+			<aside class="sidebar left-sidebar">
+				<aside class="callout">
+					<span class="description">"It feels so good to be a family," says Brady, who's getting used to being called "Mommy."</span>
+					<img class="callout-image" src="/dist/img/success-story-popout.png" alt="callout-image-placeholder">
+					<span class="callout-controls">
+						<div class="callout-type">Success Stories</div>
+						<div class="callout-title">Meet the Whitney Family</div>
+						<div class="learn-more">
+							<span>Learn more</span><span class="icon-double-arrow-right">&gt;&gt;</span>
+						</div>
+					</span>
+				</aside>
+			</aside>
+			<section class="main-column">
+				<div class="page-header">
+					<span class="page-header-text">Adoption Party Social Worker Registration</span>
+				</div>
+
+				<form action="/register" class="registration-form" method="POST">
+					
+					<input type="hidden" name="action" value="register" />
+
+					<div class="row double-padding">
+						<div class="col-sm-24">
+							&lt;Adoption Party Name&gt;
+						</div>
+					</div>
+
+					<div class="row form-group">
+						<div class="col-sm-24">
+							<div class="row">
+								<div class="col-sm-24 form-group">
+									<span class="race-text">The following people will be attending the Party:</span>
+								</div>
+							</div>
+							<div class="col-sm-24 form-group">
+								<label class="radio-inline">
+									<input type="radio" name="peopleAttending" value="Just Me" />Just Me
+								</label>
+							</div>
+							<div class="col-sm-24 form-group">
+								<label class="radio-inline">
+									<input type="radio" name="peopleAttending" value="Me and other people" />Me and other people
+								</label>
+							</div>							
+							<div class="col-sm-24 form-group">
+								<label class="radio-inline">
+									<input type="radio" name="peopleAttending" value="On someone's behalf" />I am submitting this form on someone's behalf
+								</label>
+							</div>														
+						</div>
+					</div>
+					<div class="row form-group">
+						<div class="col-sm-12">
+							<input type="text" class="input" required id="first-name" name="firstName" />
+							<label for="first-name" class="label required-field">First Name</label>
+						</div>
+					</div>
+					<div class="row form-group">
+						<div class="col-sm-12">
+							<input type="text" class="input" required id="last-name" name="lastName" />
+							<label for="last-name" class="label required-field">Last Name</label>
+						</div>
+					</div>
+					<div class="row form-group">
+						<div class="col-sm-12">
+							<input type="text" class="input" required id="email" name="email" />
+							<label for="email" class="label required-field">Email</label>
+						</div>
+					</div>
+					<div class="row form-group">
+						<div class="col-sm-12 form-group">
+							<textarea class="input" id="attending-children" name="attendingChildren" rows="3"></textarea>
+							<label for="attending-children" class="label">Name(s) of Child(ren) (First, last) attending Adoption Party. <br /><em>Children must be registered with MARE.</em></label>
+						</div>
+					</div>
+					<div class="row form-group">
+						<div class="col-sm-12">
+							<input type="text" class="input" id="chaperone" name="chaperone" />
+							<label for="chaperone" class="label">Name of Person Bringing Child(ren)</label>
+						</div>
+					</div>
+					<div class="row form-group">
+						<div class="col-sm-12 form-group">
+							<input type="text" class="input" id="chaperone-email" name="chaperoneEmail" />
+							<label for="chaperone-email" class="label">Their Email Address</label>
+						</div>
+					</div>
+					<div class="row form-group">
+						<div class="col-sm-24">
+							<div class="row">
+								<div class="col-sm-24 form-group">
+									<span class="race-text">Their relationship to child(ren):</span>
+								</div>
+							</div>
+							<div class="col-sm-24 form-group">
+								<label class="radio-inline">
+									<input type="radio" name="chaperoneRelationshipToChildren" value="Foster Parent" />Foster Parent
+								</label>
+							</div>
+							<div class="col-sm-24 form-group">
+								<label class="radio-inline">
+									<input type="radio" name="chaperoneRelationshipToChildren" value="Residential Staff" />Residential Staff
+								</label>
+							</div>							
+							<div class="col-sm-24 form-group">
+								<label class="radio-inline">
+									<input type="radio" name="chaperoneRelationshipToChildren" value="Social Worker" />Social Worker
+								</label>
+							</div>
+							<div class="col-sm-24 form-group">
+								<label class="radio-inline">
+									<input type="radio" name="chaperoneRelationshipToChildren" value="Other" onClick="$('#relationship-other').show()" />Other 
+									<input type="text" id="relationship-other" class="input" style="display:none" name="chaperoneRelationshipToChildrenOther" />
+								</label>
+							</div>														
+						</div>
+					</div>
+					<div class="row form-group">
+						<div class="col-sm-24">
+							<div class="row">
+								<div class="col-sm-24 form-group">
+									<span class="race-text">If not bringing children, I am coming to:</span>
+								</div>
+							</div>
+							<div class="col-sm-24 form-group">
+								<label class="checkbox-inline">
+									<input type="checkbox" name="otherReasonForComing" value="Staff a regional/agency table" />Staff a regional/agency table
+								</label>
+							</div>
+							<div class="col-sm-24 form-group">
+								<label class="checkbox-inline">
+									<input type="checkbox" name="otherReasonForComing" value="Volunteer" />Volunteer
+								</label>
+							</div>														
+						</div>
+					</div>
+					<div class="row form-group">
+						<div class="col-sm-12">
+							<input type="text" class="input" id="your-office-or-agency" name="yourOfficeOrAgency" required />
+							<label for="your-office-or-agency" class="label required-field">Your Office/Agency:</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-24 form-group">
+							<textarea class="input" id="comments" name="comments" rows="5"></textarea>
+							<label for="comments" class="label">Questions or Comments</label>
+						</div>
+					</div>
+					<button class="register" type="submit">Register</button>
+				</form>
+			</section>
+		</div>
+	</div>
+</div>
