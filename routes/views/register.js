@@ -15,8 +15,6 @@ exports = module.exports = function(req, res) {
 		raceOptions			= { other: true },
 		waysToHearOptions	= { other: true };
 
-
-
 	// Fetch all the dynamic data to fill in the form dropdown and selection areas.
 	async.parallel([
 		function(done) { listsService.getAllStates(req, res, done, stateOptions) },
@@ -29,6 +27,7 @@ exports = module.exports = function(req, res) {
 		function(done) { listsService.getAllLanguages(req, res, done) },
 		function(done) { listsService.getAllDisabilities(req, res, done) },
 		function(done) { listsService.getOtherConsiderations(req, res, done) },
+		function(done) { listsService.getChildTypesForWebsite(req, res, done) },
 		function(done) { listsService.getAllWaysToHearAboutMARE(req, res, done, waysToHearOptions) }
 	], function() {
 		// Render the view once all the data has been retrieved

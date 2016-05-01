@@ -778,13 +778,14 @@
 								<div class="col-sm-12 form-group">
 									<div class="row">
 										<div class="col-sm-24 form-group">
-											<input type="text" class="input" name="name">
+											<input type="text" class="input child-form-input" data-name="name">
 											<label class="label marg-bottom-xs-5">Name</label>
 										</div>
 									</div>
 									<div class="row">
 										<div class="col-sm-24">
-											<select name="gender" class="input registration-number-select">
+											<select data-name="gender" class="input registration-number-select child-form-input">
+												<option value=""></option>
 											{{#each genders}}
 												<option value="{{_id}}">{{ gender }}</option>
 											{{/each}}
@@ -796,15 +797,17 @@
 								<div class="col-sm-12 form-group">
 									<div class="row">
 										<div class="col-sm-24 form-group">
-											<input type="text" class="input " name="birthDate" placeholder="MM/DD/YYYY">
+											<input type="text" class="input child-form-input" data-name="birthDate" placeholder="MM/DD/YYYY">
 											<label class="label marg-bottom-xs-5">Date of Birth</label>
 										</div>
 									</div>
 									<div class="row">
 										<div class="col-sm-24">
-											<select name="type" class="input registration-number-select">
-												<option>Biological</option>
-												<option>Adopted</option>
+											<select data-name="type" class="input registration-number-select child-form-input">
+												<option value=""></option>
+											{{#each childTypes}}
+												<option value="{{ _id }}">{{ displayName }}</option>
+											{{/each}}
 											</select>
 											<label class="label marg-bottom-xs-5">Type</label>
 										</div>
