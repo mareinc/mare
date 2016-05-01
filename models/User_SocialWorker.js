@@ -19,7 +19,7 @@ SocialWorker.add('General Information', {
 		full: { type: Types.Text, label: 'name', hidden: true, noedit: true, initial: false }
 	},
 
-	avatar: { type: Types.CloudinaryImage, label: 'avatar', folder: 'users/social workers', select: true, selectPrefix: 'users/social workers', autoCleanup: true }
+	avatar: { type: Types.CloudinaryImage, label: 'avatar', folder: 'users/social workers', selectPrefix: 'users/social workers', autoCleanup: true }
 
 }, 'Contact Information', {
 

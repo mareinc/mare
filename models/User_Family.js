@@ -13,7 +13,7 @@ var Family = new keystone.List('Family', {
 // Create fields
 Family.add('General Information', {
 
-	avatar: { type: Types.CloudinaryImage, label: 'avatar', folder: 'users/families', select: true, selectPrefix: 'users/families', autoCleanup: true },
+	avatar: { type: Types.CloudinaryImage, label: 'avatar', folder: 'users/families', selectPrefix: 'users/families', autoCleanup: true },
 
 	registrationNumber: { type: Number, label: 'registration number', format: false, required: true, initial: true },
 	initialContact: { type: Types.Text, label: 'initial contact', note: 'mm/dd/yyyy', required: true, initial: true },

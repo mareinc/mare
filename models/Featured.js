@@ -19,7 +19,7 @@ Featured.add({
 		target: { type: Types.Relationship, ref: 'Page', label: 'target page', filter: { type: 'aboutUs' }, required: true, initial: true },
 		title: { type: Types.Text, label: 'title', required: true, initial: true },
 		summary: { type: Types.Textarea, label: 'summary', initial: true },
-		image: { type: Types.CloudinaryImage, folder: 'featured/', select: true, selectPrefix: 'featured/', autoCleanup: true },
+		image: { type: Types.CloudinaryImage, folder: 'featured/', selectPrefix: 'featured/', autoCleanup: true },
 		imageStretched: {type: Types.Url, hidden: true },
 		imageScaled: {type: Types.Url, hidden: true },
 		url: { type: Types.Url, noedit: true }
@@ -31,7 +31,7 @@ Featured.add({
 		target: { type: Types.Relationship, ref: 'Success Story', label: 'target page', required: true, initial: true },
 		title: { type: Types.Text, label: 'title', required: true, initial: true },
 		summary: { type: Types.Textarea, label: 'summary', initial: true },
-		image: { type: Types.CloudinaryImage, folder: 'featured/', select: true, selectPrefix: 'featured/', autoCleanup: true },
+		image: { type: Types.CloudinaryImage, folder: 'featured/', selectPrefix: 'featured/', autoCleanup: true },
 		imageStretched: {type: Types.Url, hidden: true},
 		imageScaled: {type: Types.Url, hidden: true},
 		url: { type: Types.Url, noedit: true }
@@ -43,7 +43,7 @@ Featured.add({
 		target: { type: Types.Relationship, ref: 'Event', label: 'target event', required: true, initial: true },
 		title: { type: Types.Text, label: 'title', required: true, initial: true },
 		summary: { type: Types.Textarea, label: 'summary', initial: true },
-		image: { type: Types.CloudinaryImage, folder: 'featured/', select: true, selectPrefix: 'featured/', autoCleanup: true },
+		image: { type: Types.CloudinaryImage, folder: 'featured/', selectPrefix: 'featured/', autoCleanup: true },
 		imageStretched: {type: Types.Url, hidden: true},
 		imageScaled: {type: Types.Url, hidden: true},
 		url: { type: Types.Url, noedit: true }
