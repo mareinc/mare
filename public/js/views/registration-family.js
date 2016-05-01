@@ -28,8 +28,6 @@
 			this.$children  					= this.$('#children-in-home');			
 			this.$childrenQuantity				= this.$('.children-in-home');	
 			this.$childrenForm 					= this.$('.children-form');
-			this.$childrenFormHeadingEntry		= this.$('.children-form-heading-copy');
-			this.$childrenFormEntry				= this.$('.children-form-copy');
 			// Initialize parsley validation on the form
 			this.form = this.$el.parsley();
 
@@ -126,8 +124,8 @@
 			} else {
 				// Hide the child formrs		
 				this.$childrenForm.addClass('hidden');
-				this.$childrenFormHeadingEntry.remove();
-				this.$childrenFormEntry.remove();
+				$('.children-form-heading-copy').remove();
+				$('.children-form-copy').remove();
 			}
 		},
 
@@ -143,8 +141,8 @@
 
 			} else if (currentLength < quantity) {
 				// Add more
-				this.$childrenFormHeadingEntry.remove();
-				this.$childrenFormEntry.remove();
+				$('.children-form-heading-copy').remove();
+				$('.children-form-copy').remove();
 
 				for(var i = quantity; i > 0; i--) {
 
@@ -165,13 +163,13 @@
 					// Set number Label
 					$(newFormHeading).find('.child-number').html('#' + i);
 
-					// Set unique id's
-					$(newFormBody).children().eq(0).attr('for', id + '-name');
-					$(newFormBody).children().eq(1).attr('id', id + '-name');
-					$(newFormBody).children().eq(2).attr('for', id + '-age');
-					$(newFormBody).children().eq(3).attr('id', id + '-age');
-					$(newFormBody).children().eq(4).attr('for', id + '-type');
-					$(newFormBody).children().eq(5).attr('id', id + '-type');
+					// set unique id's for inputs & assign for attribute of associated label
+					var $inputs = $(newFormBody).find('.child-form-input');
+					$inputs.each(function(i, obj) {
+						var uniqueInputId = id + '-' + $(obj).data('name');
+						$(obj).attr('name', uniqueInputId);
+						$(obj).siblings('label').attr('for', uniqueInputId);
+					});
 
 					// Append to male children section and show
 					$(newFormHeading).insertAfter('.children-in-home');

@@ -254,6 +254,15 @@ exports.saveFamily = function saveFamily(user, res, done) {
 
 		numberOfChildren					: user.childrenInHome,
 
+		child1                              : exports.setChild(user, 1),
+		child2                              : exports.setChild(user, 2),
+		child3                              : exports.setChild(user, 3),
+		child4                              : exports.setChild(user, 4),
+		child5                              : exports.setChild(user, 5),
+		child6                              : exports.setChild(user, 6),
+		child7                              : exports.setChild(user, 7),
+		child8                              : exports.setChild(user, 8),
+
 		otherAdultsInHome: {
 			number							: parseInt(user.otherAdultsInHome, 10)
 		},
@@ -297,25 +306,20 @@ exports.saveFamily = function saveFamily(user, res, done) {
 		registeredViaWebsite				: true
 	});
 
-	exports.setChildren(user, newUser, res);
 	console.log(newUser);
 
-	// ANNA: Uncomment this section when you're ready for users to save for real.
-
-	// newUser.save(function(err) {
-	// 	// TODO: if the user requested an email of the info packet, send it
-	// 	// TODO: if the user requested a mail copy of the info packet, add it to an object containing email information before sending it to Diane
-	// 	//       so we can capture all relevant information in one email
-	// 	console.log('new family saved');
-	// 	res.locals.messages.push({ type: 'success', message: 'your account has been successfully created' });
-	// 	done();
-	// }, function(err) {
-	// 	console.log(err);
-	// 	res.locals.messages.push({ type: 'error', message: 'there was an error creating your account' });
-	// 	done();
-	// });
-
-	// ANNA: end section to uncomment
+	newUser.save(function(err) {
+		// TODO: if the user requested an email of the info packet, send it
+		// TODO: if the user requested a mail copy of the info packet, add it to an object containing email information before sending it to Diane
+		//       so we can capture all relevant information in one email
+		console.log('new family saved');
+		res.locals.messages.push({ type: 'success', message: 'your account has been successfully created' });
+		done();
+	}, function(err) {
+		console.log(err);
+		res.locals.messages.push({ type: 'error', message: 'there was an error creating your account' });
+		done();
+	});
 
 	// TODO: on success, send email with social worker information
 	// socialWorkerName: 'Jane Smith',
@@ -463,41 +467,18 @@ exports.getCurrentDate = function getCurrentDate() {
 
 };
 
-exports.setChildren = function setChildren(user, familyObject, res) {
-	// console.log anything you need to check and it will show up in your console output where you ran nodemon keystone
-	console.log('adding children to family object');
+exports.setChild = function setChild(user, i) {
 
-	// ANNA: comments to help you below
+	var childObject = {};
+	
+	if ( user['child' + i + '-name'] ) {
+		childObject.name 		= user['child' + i + '-name']; 
+		childObject.birthDate 	= user['child' + i + '-birthDate'];
+		childObject.gender 		= user['child' + i + '-gender'];
+		childObject.type 		= user['child' + i + '-type'];
+	} 
 
-	// the 'user' parameter is all the information submitted on the form
-	// the 'familyObject' is the current model we're creating before it's been saved
-	// res is the standard node response object
-
-	// NOTE: In order for values to get passed in with the form, each input needs to have a name attribute.  Whatever is stored in name
-	//		 is what you'll use to access that entry in the submitted data object.  Example, if you put name="child1Name" for the name field
-	//		 of the first child, you can access that value using user.child1Name.  You'll need to find a way to add names to each child entry input
-	//		 so you can loop through each to set up the children sections in the model.  One way you can dynamically add these name values is to store
-	//		 the base value in a data attribute, for example, in the form section you're replicating to get all the child sections, instead of name="dateOfBirth"
-	//		 or name="type", use data-name="dateOfBirth" or data-name="type".  Then in your JavaScript code that replicates those sections, you can access
-	//		 the data value using jQuery with $.data('name') to get the value 'dateOfBirth' or 'type'.  From there you can set the actual name of the field by
-	//		 appending child1, child2, child3 etc. in front of it.
-
-	// ANOTHER NOTE: I'm currently not generating the registration number on the fly the way I should be (I'll code that after you finish your stuff), so
-	//				 you should only be able to save a single entry before it complains that you're trying to create a user with a duplicate registrationNumber where
-	//				 dups arent allowed.  To get around this, stay logged in as an administrator (username: admin@keystonejs.com, password: admin), when it takes you
-	//				 to the preferences page, click on the link to take you to the admin panel (I keep this open in a new tab for fast access), navigate to Families under
-	//				 People, and refresh to see your newly created family.  Just delete it after you create it to allow you to create another.
-
-	// 1. check the number of children the user specified
-	var numberOfChildren = user.childrenInHome;
-	console.log(numberOfChildren + ' children in the home');
-	// 2. loop numberOfChildren times (you can skip setting var numberOfChildren = user.childrenInHome and just loop against user.childrenInHome, I just did that to illustrate the steps).
-	for(var i = 0; i <= numberOfChildren; i++) {
-		// familyObject['child' + i + 'Name'] = user['child' + i]['name']; // Not sure if this will work, I took a stab at what I thought the syntax would be
-		// familyObject['child' + i + 'DateOfBith'] = user['child' + i]['birthDate'];
-		// familyObject['child' + i + 'Gender'] = user['child' + i]['gender'];
-		// familyObject['child' + i + 'Type'] = user['child' + i]['type'];
-	}
+	return childObject;
 
 };
 
