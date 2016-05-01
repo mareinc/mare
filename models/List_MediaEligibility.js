@@ -9,7 +9,7 @@ var MediaEligibility = new keystone.List('Media Eligibility', {
 
 // Create fields
 MediaEligibility.add({
-	mediaEligibility: { type: Types.Text, label: 'media eligibility', required: true, index: true, initial: true }
+	mediaEligibility: { type: Types.Text, label: 'media eligibility', required: true, initial: true }
 });
 
 // Define default columns in the admin interface and register the model

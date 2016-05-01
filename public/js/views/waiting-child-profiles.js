@@ -2,144 +2,87 @@
 	'use strict';
 
 	mare.views.WaitingChildProfiles = Backbone.View.extend({
+		// This view controls everything inside the body element, with the exception of areas controlled by sub-views
 		el: 'body',
 
 		events: {
-			'click .media-box'						: 'displayChildDetails',
-			'click .modal__close'					: 'closeModal',
-			'click .profile-navigation__previous'	: 'displayNextChildDetails',
-			'click .profile-navigation__next'		: 'displayNextChildDetails'
+			'click .search'							: 'showGallery',
+			'click .modify-search__button--modify'	: 'handleSearchClick',
+			'click .modify-search__button--clear'	: 'handleResetClick'
 		},
 
-		initialize: function() {
+		initialize: function initialize() {
 			// DOM cache any commonly used elements to improve performance
-			this.$formSelector = $('.registration-type-selector');
+			this.$gallery		= this.$( '.gallery' );
+			this.$searchForm	= this.$( '.gallery-search-form' );
 
-			this.initializeMediaBoxes();
+			// Create a collection to hold all available children data as a base for sorting/filtering
+			mare.collections.allChildren = mare.collections.allChildren || new mare.collections.Children();
+			// Create a collection to hold only the children currently displayed in the gallery
+			mare.collections.galleryChildren = mare.collections.galleryChildren || new mare.collections.Children();
+
+			// Create a promise to resolve once we have data for all children the user is allowed to see
+			mare.promises.childrenDataLoaded = $.Deferred();
+			// Fetch children the current user is allowed to view
+			this.getChildren();
+
+			// Initialize views for the gallery and serach form
+			mare.views.gallery = mare.views.gallery || new mare.views.Gallery();
+			mare.views.gallerySearchForm = mare.views.gallerySearchForm || new mare.views.GallerySearchForm();
+
 		},
 
-		initializeMediaBoxes: function initializeMediaBoxes() {
-			// initialize the photo listing gallery grid
-			$('#grid').mediaBoxes({
-		        boxesToLoadStart: 12,
-		        boxesToLoad: 8,
-
-		        sortContainer: '#sort',
-		        sort: 'a',
-		        getSortData: {
-			        name: '.media-box-name', //When you sort by name, it will only look in the elements with the class "media-box-name"
-			        age: '.media-box-age' //When you sort by age, it will only look in the elements with the class "media-box-age"
-			        // addedDate: '.media-box-added' //When you sort by date added, it will only look in the elements with the class "media-box-date-added"
-			    }
-		    });
-		},
-
-		displayChildDetails: function displayChildDetails(event) {
-			var selectedChild = $(event.currentTarget),
-	    		registrationNumber = selectedChild.data('registration-number');
-
-	    	this.openModal();
-	    	this.getChildData(registrationNumber);
-		},
-
-		displayNextChildDetails: function displayNextChildDetails(event) {
-			var self = this;
-
-	    	var selectedChild = $(event.currentTarget),
-    			registrationNumber = selectedChild.data('registration-number');
-
-	    	$('.modal-container__contents').fadeOut(function() {
-
-	    		self.clearModalContents();
-
-	    		$('.modal-container__loading').fadeIn(function() {
-	    			self.getChildData(registrationNumber);
-	    		});
-
-	    	});
-		},
-
-		openModal: function openModal() {
-			$('.modal__background').fadeIn();
-			$('.modal-container__contents').hide();
-			$('.modal-container__loading').show();
-			$('.modal__container').fadeIn();
-
-			mare.utils.disablePageScrolling();
-		},
-
-		closeModal: function closeModal() {
-			$('.modal__background').fadeOut();
-			$('.modal__container').fadeOut();
-
-			mare.utils.enablePageScrolling();
-
-			this.clearModalContents();
-		},
-
-		clearModalContents: function clearModalContents() {
-			$('.modal-container__contents').html('');
-		},
-
-		initializeModalTabs: function initializeModalTabs() {
-			$('.profile-tabs__tab').removeClass('profile-tabs__tab--selected');
-			$('.profile-tabs__tab').first().addClass('profile-tabs__tab--selected');
-
-			$('.profile-tab__contents').removeClass('profile-tab__contents--selected');
-			$('.profile-tab__contents').first().addClass('profile-tab__contents--selected');
-
-			$('.profile-tabs__tab').on('click', function() {
-				if($(this).hasClass('profile-tabs__tab--selected')) {
-					return;
-				}
-
-				var selectedContentType = $(this).data('tab');
-
-				$('.profile-tabs__tab--selected').removeClass('profile-tabs__tab--selected');
-				$(this).addClass('profile-tabs__tab--selected');
-
-				$('.profile-tab__contents--selected').removeClass('profile-tab__contents--selected');
-				$('[data-contents=' + selectedContentType + ']').addClass('profile-tab__contents--selected');
-
+		/* Hide the gallery search form and show the gallery */
+		showGallery: function showGallery() {
+			// Store a reference to this for insde callbacks where context is lost
+			var view = this;
+			// Fade the search form out and fade the gallery in
+			this.$searchForm.fadeOut(function() {
+				view.$gallery.fadeIn();
+				// Render the gallery
+				mare.views.gallery.render();
 			});
 		},
 
-		getChildData: function(registrationNumber) {
-			var self = this;
-	    	// Submit token to server so it can charge the card
-	        $.ajax({
-	        	dataType: 'json',
-	            url: '/getChildDetails',
-	            type: 'POST',
-	            data: {
-	                registrationNumber: registrationNumber
-	            }
-	     	}).done(function(childDetails) {
-	     		mare.children = mare.children || {};
-	     		mare.children.selectedChild = childDetails.registrationNumber;
+		/* Hide the gallery and show the gallery search form */
+		showSearchForm: function showSearchForm() {
+			// Store a reference to this for insde callbacks where context is lost
+			var view = this;
+			// Fade the gallery out and fade the search form in
+			this.$gallery.fadeOut(function() {
+				view.$searchForm.fadeIn();
+			});
+		},
 
-	     		var selectedChildElement = $('[data-registration-number=' + mare.children.selectedChild + ']');
-	     		var previousChildElement = selectedChildElement.prev();
-	     		var nextChildElement = selectedChildElement.next();
+		/* get all children information the user is allowed to view.  This only includes data to show in the gallery cards, no detailed information
+		   which is fetched as needed to save bandwidth */
+		getChildren: function getChildren() {
+			$.ajax({
+				dataType: 'json',
+				url: '/services/get-children-data',
+				type: 'POST'
+			}).done(function(data) {
 
-	     		childDetails.previousChildRegistrationNumber = previousChildElement.data('registration-number');
-	     		childDetails.nextChildRegistrationNumber = nextChildElement.data('registration-number');
+				// Store all children in a collection for easy access
+				mare.collections.allChildren.add(data);
+				// Store all children in the collecction for the current gallery display as we always start showing the full list
+				mare.collections.galleryChildren.add(data);
+				// Resolve the promise tracking child data loading
+				mare.promises.childrenDataLoaded.resolve();
 
-	     		var source = $("#child-details-template").html();
-				var template = Handlebars.compile(source);
-				var html = template(childDetails);
+			}).fail(function(err) {
+				// TODO: Show an error message instead of the gallery if we failed to fetch the child data
+				console.log(err);
+			});
+		},
+		/* Route to the search form to preserve browser history state */
+		handleSearchClick: function handleSearchClick() {
+			mare.routers.waitingChildProfiles.navigate( 'search', { trigger: true } );
+		},
 
-				$('.modal-container__contents').html(html);
+		resetGallery: function resetGallery() {
 
-				$('.modal-container__loading').fadeOut(function() {
-					$('.modal-container__contents').fadeIn();
-				});
-
-				// self.initializeModalControls();
-				self.initializeModalTabs();
-
-	     	});
-	    }
+		}
 
 	});
 })();

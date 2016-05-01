@@ -9,7 +9,7 @@ var OtherConsideration = new keystone.List('Other Consideration', {
 
 // Create fields
 OtherConsideration.add({
-	otherConsideration: { type: Types.Text, label: 'other consideration', required: true, index: true, initial: true }
+	otherConsideration: { type: Types.Text, label: 'other consideration', required: true, initial: true }
 });
 
 // Define default columns in the admin interface and register the model

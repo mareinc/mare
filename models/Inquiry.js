@@ -12,12 +12,12 @@ var Inquiry = new keystone.List('Inquiry', {
 // Create fields
 Inquiry.add('General Information', {
 
-	takenBy: { type: Types.Relationship, label: 'taken by', ref: 'User', required: true, initial: true },
+	takenBy: { type: Types.Relationship, label: 'taken by', ref: 'Admin', required: true, initial: true },
 	takenOn: { type: Types.Text, label: 'taken on', note: 'mm/dd/yyyy', required: true, initial: true },
 
 	inquirer: { type: Types.Select, label: 'inquirer', options: 'family, social worker', default: 'family', initial: true },
 	inquiryType: { type: Types.Select, label: 'inquiry type', options: 'child inquiry, complaint, family support consultation, general inquiry', required: true, initial: true },
-	inquiryMethod: { type: Types.Relationship, label: 'inquiry method', ref: 'Inquiry Method', required: true, index: true, initial: true },
+	inquiryMethod: { type: Types.Relationship, label: 'inquiry method', ref: 'Inquiry Method', required: true, initial: true },
 
 }, 'Inquiry Details', {
 
@@ -26,10 +26,10 @@ Inquiry.add('General Information', {
 	child: { type: Types.Relationship, label: 'child', ref: 'Child', dependsOn: { inquiryType: ['child inquiry', 'complaint', 'family support consultation'] }, initial: true },
 	childsSocialWorker: { type: Types.Relationship, label: 'child\'s social worker', ref: 'Social Worker', dependsOn: { inquiryType: ['child inquiry', 'complaint', 'family support consultation'] }, noedit: true },
 	previousChildsSocialWorker: { type: Types.Relationship, ref: 'Social Worker', noedit: true, hidden: true },
-	prospectiveParentOrFamily: { type: Types.Relationship, label: 'familiy', ref: 'Prospective Parent or Family', dependsOn: { inquirer: 'family' }, initial: true },
+	family: { type: Types.Relationship, label: 'family', ref: 'Family', dependsOn: { inquirer: 'family' }, initial: true },
 	socialWorker: { type: Types.Relationship, label: 'social worker', ref: 'Social Worker', dependsOn: { inquirer: 'social worker' }, initial: true },
 	onBehalfOfMAREFamily: { type: Types.Boolean, label: 'is the family registered?', default: true, dependsOn: { inquirer: 'social worker' }, initial: true },
-	onBehalfOfFamily: { type: Types.Relationship, label: 'on behalf of', ref: 'Prospective Parent or Family', dependsOn: { inquirer: 'social worker', onBehalfOfMAREFamily: true }, initial: true },
+	onBehalfOfFamily: { type: Types.Relationship, label: 'on behalf of', ref: 'Family', dependsOn: { inquirer: 'social worker', onBehalfOfMAREFamily: true }, initial: true },
 	onBehalfOfFamilyText: { type: Types.Text, label: 'on behalf of', dependsOn: { inquirer: 'social worker', onBehalfOfMAREFamily: false }, initial: true },
 	comments: { type: Types.Textarea, label: 'comments', initial: true }
 
@@ -46,7 +46,7 @@ Inquiry.add('General Information', {
 }, 'Emails Sent', {
 
 	thankYouSentToInquirer: { type: Types.Boolean, label: 'thank you sent to inquirer', noedit: true },
-	emailSentToCSC: { type: Types.Boolean, label: 'email sent to CSC staff', noedit: true },
+	emailSentToCSC: { type: Types.Boolean, label: 'email sent to MARE staff', noedit: true },
 	emailSentToInquirer: { type: Types.Boolean, label: 'information sent to inquirer',  noedit: true },
 	emailSentToChildsSocialWorker: { type: Types.Boolean, label: 'email sent to child\'s social worker', dependsOn: { inquiryType: ['child inquiry', 'complaint', 'family support consultation'] }, noedit: true },
 	emailSentToAgencies: { type: Types.Boolean, label: 'email sent to agencies', dependsOn: { inquiryType: 'general inquiry'}, noedit: true }
@@ -228,7 +228,7 @@ Inquiry.schema.methods.setInquirerEmailRecipient = function(emailAddressInquirer
 	var self = this;
 	// If a family made the inquiry, we need to fetch the email addresses of both contact 1 and contact 2
 	if(self.inquirer === 'family') {
-		keystone.list('Prospective Parent or Family').model.findById(self.prospectiveParentOrFamily)
+		keystone.list('Family').model.findById(self.family)
 				.exec()
 				.then(function(results) {
 					emailAddressInquirer.push(results.contact1.email);
@@ -425,5 +425,5 @@ Inquiry.schema.methods.sendEmailToAgencyContacts = function(emailAddressesAgency
 };
 
 // Define default columns in the admin interface and register the model
-Inquiry.defaultColumns = 'takenOn, takenBy, child, prospectiveParentOrFamily, socialWorker, source';
+Inquiry.defaultColumns = 'takenOn, takenBy, child, family, socialWorker, source';
 Inquiry.register();

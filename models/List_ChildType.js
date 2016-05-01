@@ -9,7 +9,7 @@ var ChildType = new keystone.List('Child Type', {
 
 // Create fields
 ChildType.add({
-	childType: { type: Types.Text, label: 'child type', required: true, index: true, initial: true }
+	childType: { type: Types.Text, label: 'child type', required: true, initial: true }
 });
 
 // Define default columns in the admin interface and register the model

@@ -10,7 +10,7 @@ var EventType = new keystone.List('Event Type', {
 // Create fields
 EventType.add({
 
-	eventType: { type: Types.Text, label: 'event type', required: true, index: true, initial: true }
+	eventType: { type: Types.Text, label: 'event type', required: true, initial: true }
 
 });
 

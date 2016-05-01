@@ -11,7 +11,7 @@ var Form = new keystone.List('Form', {
 // TODO: Try to fix the date time field to either not have milliseconds, or to parse it on save for a cleaner display of default columns
 // Create fields
 Form.add({
-	title: { type: Types.Text, label: 'form name', required: true, index: true, initial: true },
+	title: { type: Types.Text, label: 'form name', required: true, initial: true },
 	url: { type: Types.Url, noedit: true },
 	contact: { type: Types.Relationship, ref: 'User', label: 'contact person', dependsOn: { selectUnregisteredContact: false }, initial: true },
 	selectUnregisteredContact: { type: Types.Boolean, label: 'contact person isn\'t registered with MARE', initial: true },

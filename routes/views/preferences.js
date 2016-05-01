@@ -1,7 +1,6 @@
-var keystone = require('keystone');
-
-// Load model to allow fetching of user data
-var User = keystone.list('User');
+var keystone		= require('keystone'),
+	async			= require('async'),
+	userService		= require('../middleware/service_user');
 
 exports = module.exports = function(req, res) {
     'use strict';
@@ -11,5 +10,12 @@ exports = module.exports = function(req, res) {
 
     var userId = req.user.get('_id');
 
-    view.render('preferences');
+    async.parallel([
+		function(done) { userService.getUserById(req, res, done, userId); }
+	], function() {
+
+		view.render('preferences');
+
+	});
+
 };

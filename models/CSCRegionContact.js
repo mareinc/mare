@@ -7,7 +7,7 @@ var CSCRegionContact = new keystone.List('CSC Region Contact');
 // Create fields
 CSCRegionContact.add({
 
-	cscRegionContact: { type: Types.Relationship, label: 'Employee', ref: 'User', required: true, initial: true },
+	cscRegionContact: { type: Types.Relationship, label: 'Employee', ref: 'Admin', required: true, initial: true },
 	region: { type: Types.Relationship, label: 'Region', ref: 'Region', required: true, initial: true }
 
 });

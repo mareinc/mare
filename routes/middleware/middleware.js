@@ -1,3 +1,5 @@
+/* TODO: move all this middleware into the appropriate files inside the middleware/ directory
+
 /**
  * This file contains the common middleware used by your routes.
  *
@@ -13,8 +15,6 @@ var _ 				= require('underscore'),
 	// Load in Keystone for model references
 	keystone 		= require('keystone'),
 	User 			= keystone.list('User'),
-	SiteUser 		= keystone.list('Site User'),
-	SocialWorker 	= keystone.list('Social Worker'),
 	Child 			= keystone.list('Child'),
 	Gender 			= keystone.list('Gender');
 
@@ -65,19 +65,31 @@ exports.initLocals = function(req, res, next) {
 			{ title: 'Register a Family', href: '/page/register-a-family' },
 			{ title: 'Search for Children & Families', href: '/page/search-for-children-and-families' }
 		]},
+		{ title: 'Events', subMenu: [
+			{ title: 'MARE Adoption Parties & Information Events', href: '/page/mare-adoption-parties-and-information-events'},
+			{ title: 'MAPP Training', href: '/page/mapp-training' },
+			{ title: 'Agency Information Meetings', href: '/page/agency-information-meetings' },
+			{ title: 'Other Opportunities & Trainings', href: '/page/other-opportunities-and-trainings' },
+			{ title: 'Fundraising Events', href: '/page/fundraising-events' }
+		]},
 		{ title: 'Ways to Help', subMenu: [
 			{ title: 'Why give?', href: '/page/why-give' },
 			{ title: 'How you can help', href: '/page/how-you-can-help' },
 			{ title: 'How businesses and organizations can help', href: '/page/how-businesses-and-organizations-can-help' },
 			{ title: 'Experienced families', href: '/page/experienced-families' }
 		]},
-		{ title: 'About Us', subMenu: [
+		{ title: 'About Us', lastMenu: true, subMenu: [
 			{ title: 'Mission & Vision', href: '/page/mission-and-vision'},
 			{ title: 'History', href: '/page/history'},
 			{ title: 'Meet the Staff', href: '/page/meet-the-staff'},
 			{ title: 'Board of Directors', href: '/page/board-of-directors'},
 			{ title: 'MARE in the News', href: '/page/mare-in-the-news'},
-			{ title: 'Annual Report', href: '/page/annual-report'},
+			{ title: 'Adoption Party Family Registration Form', href: '/form/adoption-party-family-registration-form'},
+			{ title: 'Adoption Party Social Worker Registration Form', href: '/form/adoption-party-social-worker-registration-form'},
+			{ title: 'Agency Event Submission Form', href: '/form/agency-event-submission-form'},
+			{ title: 'Car Donation Form', href: '/form/car-donation-form'},
+			{ title: 'Child Registration Form', href: '/form/child-registration-form'},
+			{ title: 'Information Request Form', href: '/form/information-request-form'}
 		]}];
 
 	next();
@@ -157,39 +169,24 @@ exports.logout = function(req, res) {
 	});
 };
 
-// TODO: include an error message for this and other functions in middleware if applicable
-exports.getChildDetails = function(req, res) {
+/* TODO: This should be placed in a date-time.js file, but I wasn't able to get it to register on my first try */
+exports.getAge = function getAge(dateOfBirth) {
 
-	var childData = req.body,
-		registrationNumber = childData['registrationNumber'];
+	var today = new Date();
+	var birthDate = new Date(dateOfBirth);
+	var age = today.getFullYear() - birthDate.getFullYear();
+	var month = today.getMonth() - birthDate.getMonth();
 
-	/* TODO: Fetch only the needed fields instead of grabbing everything */
-	Child.model.find()
-        .where('registrationNumber', registrationNumber)
-        .populate('gender')
-        .exec()
-        .then(function (child) {
+	if (month < 0 || (month === 0 && today.getDate() < birthDate.getDate())) {
+		age--;
+	}
 
-        	var child = child[0];
+	return age;
+};
 
-        	var relevantData = {
-        		name: child.name.first,
-        		age: exports.getAge(child.birthDate),
-        		gender: child.gender.gender,
-        		registrationNumber: child.registrationNumber,
-        		profilePart1: child.profile.part1,
-        		profilePart2: child.profile.part2,
-        		profilePart3: child.profile.part3,
-        		detailImage: child.detailImage,
-        		hasImage: child.image.url.length > 0 ? true : false,
-        		missingImage: exports.getMissingImageLocation(this.hasImage, this.gender),
-        		hasVideo: child.video.length > 0,
-        		video: child.video.replace('watch?v=', 'embed/'),
-        		wednesdaysChild: child.wednesdaysChild
-        	};
-
-        	res.send(relevantData);
-        });
+/* Date objects are easily compared for sorting purposes when converted to milliseconds */
+exports.convertDate = function convertDate(date) {
+	return new Date(date).getTime();
 };
 
 exports.charge = function(req, res) {
@@ -207,33 +204,4 @@ exports.charge = function(req, res) {
             res.send(204);
         }
     });
-};
-
-// TODO: This function is a duplicate of one found in templates/views/helpers/index.js, which is used exclusively
-// 		 for handlebars templates.  Try to consolodate them
-exports.getAge = function(dateOfBirth) {
-	var today = new Date();
-        var birthDate = new Date(dateOfBirth);
-        var age = today.getFullYear() - birthDate.getFullYear();
-        var month = today.getMonth() - birthDate.getMonth();
-
-        if (month < 0 || (month === 0 && today.getDate() < birthDate.getDate())) {
-            age--;
-        }
-
-        return age;
-};
-
-exports.getMissingImageLocation = function(hasImage, gender) {
-
-	if ( hasImage ) {
-		return '';
-	}
-
-	if ( gender === 'female' ) {
-		return '/dist/img/noImageFemale_gallery.png';
-	}
-
-	return '/dist/img/noImageMale_gallery.png';
-
 };

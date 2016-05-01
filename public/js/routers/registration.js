@@ -5,11 +5,11 @@
 
 		// TODO: Split this up based on the form we're showing the user
 		routes: {
-			''				: 'navigateToDefault',
-			'site-user' 	: 'loadSiteUserRegistration',
+			''				: 'loadDefault',
+			'site-visitor' 	: 'loadSiteVisitorRegistration',
 			'social-worker'	: 'loadSocialWorkerRegistration',
 			'family'		: 'loadFamilyRegistration',
-			'*other'		: 'navigateToDefault'
+			'*other'		: 'loadDefault'
 		},
 
 		initialize: function() {
@@ -17,13 +17,13 @@
 			mare.views.registration = mare.views.registration || new mare.views.Registration();
 		},
 
-		loadSiteUserRegistration: function loadSiteUserRegistration() {
+		loadSiteVisitorRegistration: function loadSiteVisitorRegistration() {
 			// Initialize the view for the site user form if it doesn't already exist
 			mare.views.siteVisitorRegistration = mare.views.siteVisitorRegistration || new mare.views.SiteVisitorRegistration();
 			// Update the form selector to match the form we're showing the user
 			mare.views.registration.updateFormSelector('siteVisitor');
 			// Use the view for the reigistraiton page as a whole to display the correct area
-			mare.views.registration.showSiteUserForm();
+			mare.views.registration.showSiteVisitorForm();
 		},
 
 		loadSocialWorkerRegistration: function loadSocialWorkerRegistration() {
@@ -44,8 +44,8 @@
 			mare.views.registration.showFamilyForm();
 		},
 		/* Handle any poorly formed routes or navigation to the registration page without specifying a route by rerouting to the default form */
-		navigateToDefault: function navigateToDefault() {
-			this.navigate( 'site-user', { trigger: true, replace: true } );
+		loadDefault: function loadDefault() {
+			this.navigate( 'site-visitor', { trigger: true, replace: true } );
 		}
 
 	});

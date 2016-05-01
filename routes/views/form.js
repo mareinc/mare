@@ -1,83 +1,55 @@
-var keystone 	= require('keystone'),
-    async = require('async'),
-    Race = keystone.list('Race'),
-    State = keystone.list('State'),
-    Gender = keystone.list('Gender'),
-	Form 		= keystone.list('Form');
+// TODO: break these each into their own routes, combining all these forms is going to be a mess once we start processing their expected actions
+var keystone					= require('keystone'),
+	async						= require('async'),
+	_							= require('underscore'),
+	listsService				= require('../middleware/service_lists'),
+	Form						= keystone.list('Form');
 
 exports = module.exports = function(req, res) {
-    'use strict';
-    
-    var view 	= new keystone.View(req, res),
-    	locals 	= res.locals,
-    	url 	= req.originalUrl.replace("/form/", "");
+	'use strict';
 
-    async.parallel([
-        function(done) {
-            State.model.find().select('state').exec().then(function(states) {
-                locals.states = states;
-                done();
-            })},
-        function(done) {
-            Race.model.find().select('race').exec().then(function(races) {
-                locals.races = races;
-                done();
-            })},
-        function(done) {
-            Gender.model.find().select('gender').exec().then(function(genders) {
-                locals.genders = genders;
-                done();
-            })}
-    ], function() {
-        
-        	switch(url) {
+	var view 	= new keystone.View(req, res),
+		locals 	= res.locals,
+		url 	= req.originalUrl.replace("/form/", "");
 
-			    case "adoption-party-family-registration-form":
-			        view.render('forms/adoption-party.hbs');
-			        break;
+	// objects with additional search parameters
+	var raceOptions			= { other: true },
+		waysToHearOptions	= { other: true };
 
-                case "adoption-party-social-worker-registration-form":
-                //The URL in there now is misspelled... this case catches it. registr(ai)ton.
-			    case "adoption-party-social-worker-registraiton-form":
-			        view.render('forms/adoption-party-social-worker.hbs');
-			        break;
+	async.parallel([
+		function(done) { listsService.getAllStates(req, res, done) },
+		function(done) { listsService.getAllRaces(req, res, done, raceOptions) },
+		function(done) { listsService.getAllGenders(req, res, done) },
+		function(done) { listsService.getAllWaysToHearAboutMARE(req, res, done, waysToHearOptions) }
+	], function() {
 
-                case "agency-event-submission-form":
-                    view.render('forms/agency-event-submission.hbs');
-                    break;
+			switch(url) {
 
-                case "car-donation-form":
-                    view.render('forms/car-donation.hbs');
-                    break;
+				case "adoption-party-family-registration-form":
+					view.render('forms/adoption-party.hbs');
+					break;
 
-                case "child-registration-form":
-                    view.render('forms/child-registration.hbs');
-                    break;
+				case "adoption-party-social-worker-registration-form":
+					view.render('forms/adoption-party-social-worker.hbs');
+					break;
 
-			    default:
+				case "agency-event-submission-form":
+					view.render('forms/agency-event-submission.hbs');
+					break;
 
-                    // Fetch the page with the matching URL
-                    // If it exists, pass the object into the rendering
-                    // TODO: If it doesn't exist, forward to a 404 page
-                    
-                    Form.model.find()
-                        .where('url', req.originalUrl)
-                        .exec()
-                        .then(function (targetForm) {
-                            
-                            locals.targetForm = targetForm[0];
+				case "car-donation-form":
+					view.render('forms/car-donation.hbs');
+					break;
 
-                            // Render the view
-                            view.render('form');
+				case "child-registration-form":
+					view.render('forms/child-registration.hbs');
+					break;
 
-                        });
-                    
-
-			        //view.render('form');
+				 case "information-request-form":
+					view.render('forms/information-request-form.hbs');
+					break;
+				// TODO: Create a custom 404 page
+				default: view.render('404');
 			}
-    });
-
-
-
-
+	});
 };

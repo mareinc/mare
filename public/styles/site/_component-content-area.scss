@@ -1,50 +1,22 @@
 .main {
 	padding-top: 1px;
-}
 
-.content {
-	color: $main-content-color;
+	@media all and (min-width: 660px) { padding-bottom: 3%; }
 }
 
 .main > .content {
 	margin: auto;
 	padding-top: 111px;
+	color: $main-content-color;
 	background-color: $light-background-color;
+
+	@media all and (min-width: 460px) { padding-top: 123px; }
+	@media all and (min-width: 480px) { padding-top: 134px; }
+	@media all and (min-width: 660px) { padding-top: 90px; }
+	@media all and (min-width: 820px) { padding-top: 0; }
 }
 
 .main > .content > .content-body {
 	background-color: $light-background-color;
 	padding: 0 10px 0;
-}
-
-@media all and (min-width: 460px) {
-
-	.main > .content {
-		padding-top: 123px;
-	}
-}
-
-@media all and (min-width: 480px) {
-
-	.main > .content {
-		padding-top: 134px;
-	}
-}
-
-@media all and (min-width: 660px) {
-
-	.main {
-		padding-bottom: 3%;
-	}
-
-	.main > .content {
-		padding-top: 90px;
-	}
-}
-
-@media all and (min-width: 820px) {
-
-	.main > .content {
-		padding-top: 0;
-	}
 }
