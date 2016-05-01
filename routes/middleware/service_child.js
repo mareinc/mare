@@ -10,6 +10,12 @@ exports.getAllChildren = function getAllChildren(req, res, done) {
 
 	Child.model.find()
 				.populate('gender')
+				.populate('race')
+				.populate('language')
+				.populate('disabilities')
+				.populate('otherConsiderations')
+				.populate('recommendedFamilyConstellation')
+				.populate('otherFamilyConstellationConsideration')
 				.populate('status')
 				.populate('legalStatus')
 				.exec()
@@ -48,6 +54,12 @@ exports.getUnrestrictedChildren = function getUnrestrictedChildren(req, res, don
 	Child.model.find()
 				.where('siteVisibility', 'everyone')
 				.populate('gender')
+				.populate('race')
+				.populate('language')
+				.populate('disabilities')
+				.populate('otherConsiderations')
+				.populate('recommendedFamilyConstellation')
+				.populate('otherFamilyConstellationConsideration')
 				.populate('status')
 				.populate('legalStatus')
 				.exec()
@@ -158,16 +170,28 @@ exports.getGalleryData = function getGalleryData(req, res, next) {
 		_.each(locals.children, function(child) {
 
 			var relevantData = {
-	    		name						: child.name.first,
-	    		age							: middleware.getAge(child.birthDate),
-	    		legalStatus					: child.legalStatus.legalStatus,
-	    		ageConverted				: middleware.convertDate(child.birthDate),
-	    		registrationDateConverted	: middleware.convertDate(child.registrationDate),
-	    		registrationNumber			: child.registrationNumber,
-	    		galleryImage				: child.galleryImage,
-	    		detailImage					: child.detailImage,
-	    		hasVideo					: child.video && child.video.length > 0,
-	    		wednesdaysChild				: child.wednesdaysChild
+	    		name									: child.name.first,
+	    		age										: middleware.getAge(child.birthDate),
+	    		ageConverted							: middleware.convertDate(child.birthDate),
+	    		registrationNumber						: child.registrationNumber,
+	    		registrationDateConverted				: middleware.convertDate(child.registrationDate),
+	    		race									: _.pluck(child.race, 'race'),
+	    		language								: _.pluck(child.language, 'language'),
+	    		legalStatus								: child.legalStatus.legalStatus,
+	    		hasContactWithBiologicalSiblings		: child.hasContactWithSiblings,
+	    		hasContactWithBiologicalParents			: child.hasContactWithBirthFamily,
+	    		physicalNeeds							: child.physicalNeeds,
+	    		emotionalNeeds							: child.emotionalNeeds,
+	    		intellectualNeeds						: child.intellectualNeeds,
+	    		disabilities							: _.pluck(child.disabilities, 'disability'),
+	    		otherConsiderations						: _.pluck(child.otherConsiderations, 'otherConsideration'),
+	    		recommendedFamilyConstellation			: _.pluck(child.recommendedFamilyConstellation, 'familyConstellation'),
+	    		otherFamilyConstellationConsideration	: _.pluck(child.otherFamilyConstellationConsideration, 'otherFamilyConstellationConsideration'),
+	    		galleryImage							: child.galleryImage,
+	    		detailImage								: child.detailImage,
+	    		hasVideo								: child.video && child.video.length > 0,
+	    		wednesdaysChild							: child.wednesdaysChild,
+	    		numberOfSiblings						: child.siblingContacts.length
 	    	};
 
 	    	locals.publicChildrenData.push(relevantData);
