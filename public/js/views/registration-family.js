@@ -25,8 +25,7 @@
 			this.$homestudySubmissionSection	= this.$('.family-homestudy-details-section');
 			this.$howDidYouHearOther			= this.$('#family-how-did-you-hear-other');
 			this.$infoPacketDetails				= this.$('.info-packet-details');
-			this.$children  					= this.$('#children-in-home');			
-			this.$childrenQuantity				= this.$('.children-in-home');	
+			this.$childrenInHome 				= this.$('#children-in-home');
 			this.$childrenForm 					= this.$('.children-form');
 			// Initialize parsley validation on the form
 			this.form = this.$el.parsley();
@@ -114,15 +113,14 @@
 		},
 
 		toggleFamilyDetailsForm: function toggleFamilyDetailsForm() {
-			// Toggle male/female in home quantity fields
-			var selectedQuantity = parseInt(this.$children.children('option:selected').html(), 10);
+			// Capture the number of children the user has selected in the dropdown
+			var selectedQuantity = parseInt(this.$childrenInHome.children('option:selected').html(), 10);
 
 			if ( selectedQuantity > 0 ) {
-
 				// Show the appropriate number of child forms
 				this.generateChildDetailInputs(selectedQuantity);
 			} else {
-				// Hide the child formrs		
+				// Hide the child formrs
 				this.$childrenForm.addClass('hidden');
 				$('.children-form-heading-copy').remove();
 				$('.children-form-copy').remove();
@@ -130,55 +128,60 @@
 		},
 
 		generateChildDetailInputs: function generateChildDetailInputs(quantity) {
-
-			var currentLength = this.$('.children-form-heading').length -1;
+			// Count the number of child data groups already shown on the page
+			var currentLength = this.$('.children-form-heading-copy').length;
 
 			if( currentLength > quantity ) {
-				// Remove extra additional child forms					
+				// Remove extra additional child forms
 				for(var i = currentLength; i > quantity; i--) {
 					$('#child' + i + '-form').remove();
+					$('#child' + i + '-form-heading').remove(); // TODO: Include the heading as part of the form to make cleanup easier
 				}
 
-			} else if (currentLength < quantity) {
-				// Add more
-				$('.children-form-heading-copy').remove();
-				$('.children-form-copy').remove();
+			} else {
 
-				for(var i = quantity; i > 0; i--) {
+				// Add sections that aren't already on the page
+				for(var i = currentLength + 1; i <= quantity; i++) {
 
-					var id = 'child' + (i);
+					var id = 'child' + i;
 
 					var newFormHeading = $('<div>', {
-						html: this.$('.children-form-heading').html(),
-						id: id + '-form-heading',
-						class: 'row form-group hidden children-form-heading-copy'
+						html	: this.$('.children-form-heading').html(),
+						id		: id + '-form-heading',
+						class	: 'row form-group hidden children-form-heading-copy'
 					});
 
 					var newFormBody = $('<div>', {
-						html: this.$childrenForm.html(),
-						id: id + '-form',
-						class: 'row form-group hidden children-form-copy'
+						html	: this.$childrenForm.html(),
+						id		: id + '-form',
+						class	: 'row form-group hidden children-form-copy'
 					});
 
 					// Set number Label
 					$(newFormHeading).find('.child-number').html('#' + i);
 
-					// set unique id's for inputs & assign for attribute of associated label
 					var $inputs = $(newFormBody).find('.child-form-input');
+					// set unique id's for inputs & assign for attribute of associated label
 					$inputs.each(function(i, obj) {
 						var uniqueInputId = id + '-' + $(obj).data('name');
 						$(obj).attr('name', uniqueInputId);
 						$(obj).siblings('label').attr('for', uniqueInputId);
 					});
 
-					// Append to male children section and show
-					$(newFormHeading).insertAfter('.children-in-home');
+					// If we're appending the first child group, place it after the children in home selector
+					if(i === 1) {
+						$(newFormHeading).insertAfter('.children-in-home');
+					// For every child gruop except the first, place each after the previous child gorup
+					} else {
+						$(newFormHeading).insertAfter('#child' + (i - 1) + '-form');
+					}
 					$(newFormBody).insertAfter('#' + id + '-form-heading');
 					$('#' + id + '-form-heading').removeClass('hidden');
 					$('#' + id + '-form').removeClass('hidden');
+
 				}
-				
-			}	
+
+			}
 
 		},
 
