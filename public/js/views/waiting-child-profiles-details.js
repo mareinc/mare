@@ -16,7 +16,7 @@
 			this.template = Handlebars.compile(html);
 			// Initialize the details modal once we've fetched the basic child data, this is needed because the details will be appended to the same collection
 			mare.promises.childrenDataLoaded.done(function() {
-				view.collection = mare.collections.children;
+				view.collection = mare.collections.galleryChildren;
 				// Bind event handler for when child details are returned
 				view.on('child-details-loaded', view.render);
 			});

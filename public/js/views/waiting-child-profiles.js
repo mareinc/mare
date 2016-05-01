@@ -16,13 +16,15 @@
 			this.$gallery		= this.$( '.gallery' );
 			this.$searchForm	= this.$( '.gallery-search-form' );
 
+			// Create a collection to hold all available children data as a base for sorting/filtering
+			mare.collections.allChildren = mare.collections.allChildren || new mare.collections.Children();
+			// Create a collection to hold only the children currently displayed in the gallery
+			mare.collections.galleryChildren = mare.collections.galleryChildren || new mare.collections.Children();
+
 			// Create a promise to resolve once we have data for all children the user is allowed to see
 			mare.promises.childrenDataLoaded = $.Deferred();
 			// Fetch children the current user is allowed to view
 			this.getChildren();
-
-			// Create a Backbone collection for filtered children data based on the users search criteria
-			mare.collections.FilteredChildren = mare.collections.FilteredChildren || new mare.collections.Children();
 
 			// Initialize views for the gallery and serach form
 			mare.views.gallery = mare.views.gallery || new mare.views.Gallery();
@@ -60,9 +62,11 @@
 				url: '/services/get-children-data',
 				type: 'POST'
 			}).done(function(data) {
-				// TODO: maybe pull the collection creation into the initialize funciton for better readability
-				// Store the child data in a Backbone collection available from the mare namespace
-				mare.collections.children = mare.collections.children || new mare.collections.Children(data);
+
+				// Store all children in a collection for easy access
+				mare.collections.allChildren.add(data);
+				// Store all children in the collecction for the current gallery display as we always start showing the full list
+				mare.collections.galleryChildren.add(data);
 				// Resolve the promise tracking child data loading
 				mare.promises.childrenDataLoaded.resolve();
 

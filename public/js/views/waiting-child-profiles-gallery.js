@@ -22,7 +22,7 @@
 			mare.views.childDetails = mare.views.childDetails || new mare.views.ChildDetails();
 			// Initialize the gallery once we've fetched the child data needed to display the gallery (this doesn't include child details data)
 			mare.promises.childrenDataLoaded.done(function() {
-				view.collection = mare.collections.children;
+				view.collection = mare.collections.galleryChildren;
 			});
 		},
 
