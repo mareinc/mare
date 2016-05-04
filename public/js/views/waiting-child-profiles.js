@@ -6,9 +6,8 @@
 		el: 'body',
 
 		events: {
-			'click .search'							: 'showGallery',
-			'click .modify-search__button--modify'	: 'handleSearchClick',
-			'click .modify-search__button--clear'	: 'handleResetClick'
+			'click .filters__search-button--modify'	: 'handleSearchClick',
+			'click .filters__search-button--clear'	: 'handleResetClick'
 		},
 
 		initialize: function initialize() {

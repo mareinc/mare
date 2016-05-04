@@ -11,7 +11,7 @@
 			'click .waiting-child-profiles-sort-option'	: 'sortGallery'
 		},
 
-		initialize: function() {
+		initialize: function initialize() {
 			// Store a reference to this for insde callbacks where context is lost
 			var view = this;
 			// Create a hook to access the gallery template
