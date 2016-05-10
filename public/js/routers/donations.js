@@ -4,7 +4,7 @@
 	mare.routers.Donations = Backbone.Router.extend({
 
 		routes: {
-			'.*' : 'loadDonationsPage',
+			'.*' : 'loadDonationsPage'
 		},
 
 		loadDonationsPage: function() {
@@ -14,4 +14,4 @@
 
 	});
 
-})();
+}());

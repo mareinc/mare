@@ -764,53 +764,7 @@
 									</select>
 								</div>
 							</div>
-
-							<div class="row form-group children-form-heading hidden">
-								<div class="col-sm-24">
-									<div class="label marg-bottom-xs-5">
-										Child
-										<span class="child-number"></span>
-									</div>
-								</div>
-							</div>
-
-							<div class="row form-group children-form hidden">
-								<div class="col-sm-12 form-group">
-									<div class="row">
-										<div class="col-sm-24 form-group">
-											<input type="text" class="input" name="name">
-											<label class="label marg-bottom-xs-5">Name</label>
-										</div>
-									</div>
-									<div class="row">
-										<div class="col-sm-24">
-											<select name="gender" class="input registration-number-select">
-											{{#each genders}}
-												<option value="{{_id}}">{{ gender }}</option>
-											{{/each}}
-											</select>
-											<label class="label marg-bottom-xs-5">Gender</label>
-										</div>
-									</div>
-								</div>
-								<div class="col-sm-12 form-group">
-									<div class="row">
-										<div class="col-sm-24 form-group">
-											<input type="text" class="input " name="birthDate" placeholder="MM/DD/YYYY">
-											<label class="label marg-bottom-xs-5">Date of Birth</label>
-										</div>
-									</div>
-									<div class="row">
-										<div class="col-sm-24">
-											<select name="type" class="input registration-number-select">
-												<option>Biological</option>
-												<option>Adopted</option>
-											</select>
-											<label class="label marg-bottom-xs-5">Type</label>
-										</div>
-									</div>
-								</div>
-							</div>
+							<section class="children-in-home-details"></section>
 
 							<hr class="registration-divider">
 
@@ -1182,3 +1136,54 @@
 		</div>
 	</div>
 </div>
+
+<script id="child-in-home" type="text/x-handlebars-template">
+
+	<div class="row form-group \{{ formHeading }} child-details-form">
+		<div class="col-sm-24">
+			<div class="label marg-bottom-xs-5">Child \{{ index }}</div>
+		</div>
+	</div>
+
+	<div class="row form-group \{{ formName }}">
+		<div class="col-sm-12 form-group">
+			<div class="row">
+				<div class="col-sm-24 form-group">
+					<input type="text" class="input child-form-input" name="\{{ name }}">
+					<label for="\{{ name }}" class="label marg-bottom-xs-5">Name</label>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-24">
+					<select class="input registration-number-select child-form-input" name="\{{ gender }}">
+						<option value=""></option>
+					{{#each genders}}
+						<option value="{{_id}}">{{ gender }}</option>
+					{{/each}}
+					</select>
+					<label for="\{{ gender }}" class="label marg-bottom-xs-5">Gender</label>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-12 form-group">
+			<div class="row">
+				<div class="col-sm-24 form-group">
+					<input type="text" class="input child-form-input" placeholder="MM/DD/YYYY" name="\{{ birthDate }}">
+					<label for="\{{ birthDate }}" class="label marg-bottom-xs-5">Date of Birth</label>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-24">
+					<select class="input registration-number-select child-form-input" name="\{{ type }}">
+						<option value=""></option>
+					{{#each childTypes}}
+						<option value="{{ _id }}">{{ displayName }}</option>
+					{{/each}}
+					</select>
+					<label for="\{{ type }}" class="label marg-bottom-xs-5">Type</label>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</script>

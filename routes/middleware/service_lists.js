@@ -10,6 +10,7 @@ var keystone				= require('keystone'),
 	FamilyConstellation		= keystone.list('Family Constellation'),
 	Disability				= keystone.list('Disability'),
 	OtherConsideration		= keystone.list('Other Consideration'),
+	ChildType				= keystone.list('Child Type'),
 	WayToHearAboutMARE		= keystone.list('Way To Hear About MARE');
 
 exports.getAllRegions = function getAllRegions(req, res, done) {
@@ -232,6 +233,28 @@ exports.getOtherConsiderations = function getOtherConsiderations(req, res, done)
 				.then(function (otherConsiderations) {
 
 					locals.otherConsiderations = otherConsiderations;
+					// execute done function if async is used to continue the flow of execution
+					done()
+
+				}, function(err) {
+
+					console.log(err);
+					done();
+
+				});
+};
+
+exports.getChildTypesForWebsite = function getChildTypesForWebsite(req, res, done) {
+
+	req.locals = res.locals || {};
+	var locals = res.locals;
+
+	ChildType.model.find()
+				.where('availableOnWebsite', true)
+				.exec()
+				.then(function (childTypes) {
+
+					locals.childTypes = childTypes;
 					// execute done function if async is used to continue the flow of execution
 					done()
 

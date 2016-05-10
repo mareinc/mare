@@ -4,7 +4,7 @@
 	mare.routers.Forms = Backbone.Router.extend({
 
 		routes: {
-			'.*' : 'loadFormPage',
+			'.*' : 'loadFormPage'
 		},
 
 		loadFormPage: function() {
@@ -13,4 +13,4 @@
 
 	});
 
-})();
+}());

@@ -14,6 +14,10 @@
 		},
 
 		initialize: function() {
+			// Create a hook to access the child in home fields template
+			var childInHomeHtml = $('#child-in-home').html();
+			// Compile the template to be used adding/removing child in home field groups
+			this.template = Handlebars.compile(childInHomeHtml);
 			// DOM cache any commonly used elements to improve performance
 			this.$state							= this.$('#family-state');
 			this.$homestudyCompletionDate		= this.$('#homestudy-date-complete');
@@ -25,11 +29,8 @@
 			this.$homestudySubmissionSection	= this.$('.family-homestudy-details-section');
 			this.$howDidYouHearOther			= this.$('#family-how-did-you-hear-other');
 			this.$infoPacketDetails				= this.$('.info-packet-details');
-			this.$children  					= this.$('#children-in-home');			
-			this.$childrenQuantity				= this.$('.children-in-home');	
+			this.$childrenInHome 				= this.$('#children-in-home');
 			this.$childrenForm 					= this.$('.children-form');
-			this.$childrenFormHeadingEntry		= this.$('.children-form-heading-copy');
-			this.$childrenFormEntry				= this.$('.children-form-copy');
 			// Initialize parsley validation on the form
 			this.form = this.$el.parsley();
 
@@ -116,71 +117,49 @@
 		},
 
 		toggleFamilyDetailsForm: function toggleFamilyDetailsForm() {
-			// Toggle male/female in home quantity fields
-			var selectedQuantity = parseInt(this.$children.children('option:selected').html(), 10);
+			// Capture the number of children the user has selected in the dropdown
+			var selectedQuantity = parseInt(this.$childrenInHome.children('option:selected').html(), 10);
 
 			if ( selectedQuantity > 0 ) {
-
 				// Show the appropriate number of child forms
 				this.generateChildDetailInputs(selectedQuantity);
 			} else {
-				// Hide the child formrs		
+				// Hide the child formrs
 				this.$childrenForm.addClass('hidden');
-				this.$childrenFormHeadingEntry.remove();
-				this.$childrenFormEntry.remove();
+				$('.children-form-heading-copy').remove();
+				$('.children-form-copy').remove();
 			}
 		},
+		// TODO: This needs to be cleaned up a bit, both logic for efficiency and the creation should be handled in a template instead of jQuery.
+		generateChildDetailInputs: function generateChildDetailInputs(selectedNumberOfChildren) {
+			// Count the number of child data groups already shown on the page
+			var currentChildrenDisplayed = this.$('.child-details-form').length;
 
-		generateChildDetailInputs: function generateChildDetailInputs(quantity) {
-
-			var currentLength = this.$('.children-form-heading').length -1;
-
-			if( currentLength > quantity ) {
-				// Remove extra additional child forms					
-				for(var i = currentLength; i > quantity; i--) {
-					$('#child' + i + '-form').remove();
+			if( currentChildrenDisplayed > selectedNumberOfChildren ) {
+				// Remove extra additional child forms
+				for(i = currentChildrenDisplayed; i > selectedNumberOfChildren; i--) {
+					$('.child' + i + '-form').remove();
+					$('.child' + i + '-form-heading').remove(); // TODO: Include the heading as part of the form to make cleanup easier
 				}
 
-			} else if (currentLength < quantity) {
-				// Add more
-				this.$childrenFormHeadingEntry.remove();
-				this.$childrenFormEntry.remove();
+			} else {
+				// Add sections that aren't already on the page
+				for(var i = currentChildrenDisplayed + 1; i <= selectedNumberOfChildren; i++) {
+					// Pass the relevant data through the child in home template to generate to add to the page
+					var html = this.template({ 	index		: i,
+												id			: 'child' + i,
+												formName	: 'child' + i + '-form',
+												formHeading	: 'child' + i + '-form-heading',
+												name		: 'child' + i + '-name',
+												gender		: 'child' + i + '-gender',
+												birthDate	: 'child' + i + '-birthDate',
+												type		: 'child' + i + '-type' });
 
-				for(var i = quantity; i > 0; i--) {
+					this.$('.children-in-home-details').append(html);
 
-					var id = 'child' + (i);
-
-					var newFormHeading = $('<div>', {
-						html: this.$('.children-form-heading').html(),
-						id: id + '-form-heading',
-						class: 'row form-group hidden children-form-heading-copy'
-					});
-
-					var newFormBody = $('<div>', {
-						html: this.$childrenForm.html(),
-						id: id + '-form',
-						class: 'row form-group hidden children-form-copy'
-					});
-
-					// Set number Label
-					$(newFormHeading).find('.child-number').html('#' + i);
-
-					// Set unique id's
-					$(newFormBody).children().eq(0).attr('for', id + '-name');
-					$(newFormBody).children().eq(1).attr('id', id + '-name');
-					$(newFormBody).children().eq(2).attr('for', id + '-age');
-					$(newFormBody).children().eq(3).attr('id', id + '-age');
-					$(newFormBody).children().eq(4).attr('for', id + '-type');
-					$(newFormBody).children().eq(5).attr('id', id + '-type');
-
-					// Append to male children section and show
-					$(newFormHeading).insertAfter('.children-in-home');
-					$(newFormBody).insertAfter('#' + id + '-form-heading');
-					$('#' + id + '-form-heading').removeClass('hidden');
-					$('#' + id + '-form').removeClass('hidden');
 				}
-				
-			}	
+
+			}
 
 		},
 
@@ -199,4 +178,4 @@
 		}
 
 	});
-})();
+}());

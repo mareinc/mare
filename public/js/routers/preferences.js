@@ -4,7 +4,7 @@
 	mare.routers.Preferences = Backbone.Router.extend({
 
 		routes: {
-			'.*' : 'loadPreferencesRouter',
+			'.*' : 'loadPreferencesRouter'
 		},
 
 		loadPreferencesRouter: function() {
@@ -13,4 +13,4 @@
 
 	});
 
-})();
+}());
