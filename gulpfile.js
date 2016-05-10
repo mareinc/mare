@@ -107,29 +107,29 @@ gulp.task('images', function() {
 		.pipe(gulp.dest('public/dist/img'));
 });
 
-// gulp lint
-gulp.task('lint', function () {
+// gulp eslint task
+gulp.task('eslint', function () {
 	return gulp.src(paths['lint-js'])
 		.pipe(eslint()) // eslint() attaches the lint output to the "eslint" property of the file object so it can be used by other modules.
 		.pipe(eslint.format()) // eslint.format() outputs the lint results to the console.  Alternatively use eslint.formatEach() (see Docs).
 		.pipe(eslint.failAfterError()); // To have the process exit with an error code (1) on lint error, return the stream and pipe to failAfterError last.
 });
 
-// Watch Task
+// Watch task
 gulp.task('watch', function() {
 	gulp.watch(paths.css, gulp.series('styles'));
-	gulp.watch(paths.js, gulp.series('scripts'));
+	gulp.watch(paths.js, gulp.series('eslint', 'scripts'));
 	gulp.watch(paths.img, gulp.series('images'));
 });
 
 // Empty out the dist directory to ensure old files don't hang around
 gulp.task('clean', function (cb) {
-		  del(['public/dist/*'], cb);
+	del(['public/dist/*'], cb);
 });
 
 // gulp build task
 gulp.task('build', gulp.parallel('standalone-styles', 'styles', 'standalone-scripts', 'scripts', 'images', 'fonts'));
 
-gulp.task('default', gulp.series('clean', 'lint', 'build', 'watch'));
+gulp.task('default', gulp.series('clean', 'eslint', 'build', 'watch'));
 // task specfically for running on Heroku server when new code is deployed
 gulp.task('heroku', gulp.series('clean', 'build'));
