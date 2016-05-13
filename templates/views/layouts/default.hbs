@@ -7,16 +7,15 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<title>MARE</title>
 		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
-
-		<link rel="stylesheet" href="/dist/mare.min.css">
+		{{!-- This uses the NODE_ENV environment variable to serve either the production uglified CSS, or regular CSS for development.  See helpers in templates/views/helpers/index.js --}}
+		{{{isProductionCSS}}}
+		{{!-- This file provides the default styling for the KeystoneJS Content Editor
+		- only renders when user is logged in and admin--}}
+		{{{isAdminEditorCSS user}}}
 
 		<link rel="stylesheet" href="dist/font-awesome.min.css">
 
 		<script src="/dist/modernizr.custom.min.js"></script>
-
-		{{!-- This file provides the default styling for the KeystoneJS Content Editor
-		- only renders when user is logged in and admin--}}
-		{{{isAdminEditorCSS user}}}
 
 		{{!-- Respond.js IE8 support of HTML5 elements and media queries
 		//- Safely remove this block if you are not targeting IE8 --}}
@@ -220,8 +219,10 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.3.1/backbone-min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.3.5/parsley.min.js"></script>
 		<script src="https://checkout.stripe.com/checkout.js"></script>
-		<script src="/dist/mare.min.js"></script>
-
+		{{!-- This uses the NODE_ENV environment variable to serve either the production uglified JavaScript, or regular JavaScript for development.  See helpers in templates/views/helpers/index.js --}}
+		{{{isProductionJS}}}
+		{{!-- This file provides the necessary JavaScript for the KeystoneJS Content Editor
+		- only renders when user is logged in and admin--}}
 		{{{isAdminEditorJS user}}}
 	</body>
 </html>
