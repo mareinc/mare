@@ -115,10 +115,17 @@ gulp.task('eslint', function () {
 		.pipe(eslint.failAfterError()); // To have the process exit with an error code (1) on lint error, return the stream and pipe to failAfterError last.
 });
 
+// gulp eslint task for watching
+gulp.task('eslint-watch', function () {
+	return gulp.src(paths['lint-js'])
+		.pipe(eslint()) // eslint() attaches the lint output to the "eslint" property of the file object so it can be used by other modules.
+		.pipe(eslint.format()) // eslint.format() outputs the lint results to the console.  Alternatively use eslint.formatEach() (see Docs).
+});
+
 // Watch task
 gulp.task('watch', function() {
 	gulp.watch(paths.css, gulp.series('styles'));
-	gulp.watch(paths.js, gulp.series('eslint', 'scripts'));
+	gulp.watch(paths.js, gulp.series('eslint-watch', 'scripts'));
 	gulp.watch(paths.img, gulp.series('images'));
 });
 
