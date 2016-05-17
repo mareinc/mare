@@ -128,6 +128,7 @@ gulp.task('watch', function() {
 	gulp.watch(paths.css, gulp.series('styles'));
 	gulp.watch(paths.js, gulp.series('eslint-watch', 'scripts'));
 	gulp.watch(paths.img, gulp.series('images'));
+	gulp.watch(paths.tests, gulp.series('test'));
 });
 
 // Empty out the dist directory to ensure old files don't hang around
