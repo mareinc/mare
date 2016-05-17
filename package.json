@@ -44,5 +44,12 @@
     "start": "node keystone.js",
     "postinstall": "gulp heroku"
   },
-  "main": "keystone.js"
+  "main": "keystone.js",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "gulp-mocha": "^2.2.0",
+    "mocha": "^2.4.5",
+    "sinon": "^1.17.4",
+    "sinon-chai": "^2.8.0"
+  }
 }
