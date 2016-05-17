@@ -10,7 +10,8 @@ var gulp 			= require('gulp'),
 	autoprefixer 	= require('gulp-autoprefixer'),
 	imagemin		= require('gulp-imagemin'),
 	gulpIgnore 		= require('gulp-ignore'),
-	eslint			= require('gulp-eslint');
+	eslint			= require('gulp-eslint'),
+	mocha			= require('gulp-mocha');
 
 // path variables
 var paths = {
@@ -23,8 +24,7 @@ var paths = {
 		'public/modules/**/*.css',
 		'public/styles/**/*.scss'],
 	'standalone-css':[
-		'public/styles/font-awesome/*.css'
-	],
+		'public/styles/font-awesome/*.css'],
 	'js':[
 		'public/modules/**/*.js',
 		'public/js/mare.js',
@@ -50,8 +50,9 @@ var paths = {
 		'public/fonts/*.svg',
 		'public/fonts/*.ttf',
 		'public/fonts/*.woff',
-		'public/fonts/*.woff2'
-	]
+		'public/fonts/*.woff2'],
+	'tests':[
+		'public/tests/*.js']
 };
 
 // styles task
@@ -132,6 +133,13 @@ gulp.task('watch', function() {
 // Empty out the dist directory to ensure old files don't hang around
 gulp.task('clean', function (cb) {
 	del(['public/dist/*'], cb);
+});
+
+// Run all the mocha tests
+gulp.task('test', function() {
+	return gulp.src(paths.tests, {read: false})
+		// gulp-mocha needs filepaths so you can't have any plugins before it
+		.pipe(mocha({ reporter: 'nyan' }));
 });
 
 // gulp build task
