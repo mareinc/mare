@@ -21,6 +21,7 @@ $(function() {
     // start the backbone history state for browser navigation through backbone routes
     Backbone.history.start();
     // private function used to handle malformed routes to send a user back to the home page
+    // TODO: See if this is used anywhere
     function goHome() {
 		window.location.href = "/";
 	}

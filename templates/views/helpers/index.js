@@ -139,6 +139,41 @@ module.exports = function() {
 	 *
 	 */
 
+	 /**
+	  * Environment specific helpers
+	  * ==========================
+	  */
+	  // TODO: Combine the two functions below using context to pass CSS or JS. See cloudinaryUrl example below
+	  _helpers.isProductionCSS = function isProductionCSS(context) {
+	  	var output = '';
+
+	  	if(process.env.NODE_ENV && process.env.NODE_ENV === 'production') {
+
+	  		output = cssLinkTemplate({ href: "/dist/mare.min.css" });
+
+	  	} else {
+
+	  		output = cssLinkTemplate({ href: "/dist/mare.css" });
+	  	}
+
+	  	return new hbs.SafeString(output);
+	  };
+
+	  _helpers.isProductionJS = function isProductionJS(context) {
+	  	var output = '';
+
+	  	if(process.env.NODE_ENV && process.env.NODE_ENV === 'production') {
+
+	  		output = scriptTemplate({ src: "/dist/mare.min.js" });
+
+	  	} else {
+
+	  		output = scriptTemplate({ src: "/dist/mare.js" });
+	  	}
+
+	  	return new hbs.SafeString(output);
+	  };
+
 	/**
 	 * KeystoneJS specific helpers
 	 * ===========================

@@ -4,7 +4,7 @@
 	mare.routers.Pages = Backbone.Router.extend({
 
 		routes: {
-			'.*' : 'loadGenericPage',
+			'.*' : 'loadGenericPage'
 		},
 
 		loadGenericPage: function() {
@@ -13,4 +13,4 @@
 
 	});
 
-})();
+}());

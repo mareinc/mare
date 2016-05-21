@@ -35,3 +35,5 @@ newrelic_agent.log
 
 # Ignore the public/dist directory to prevent newly processed code from being checked in with changes
 public/dist/*
+.env_online
+.env_offline

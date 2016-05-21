@@ -4,7 +4,7 @@
 	mare.routers.Home = Backbone.Router.extend({
 
 		routes: {
-			'.*' : 'loadHomePage',
+			'.*' : 'loadHomePage'
 		},
 
 		loadHomePage: function() {
@@ -14,4 +14,4 @@
 
 	});
 
-})();
+}());

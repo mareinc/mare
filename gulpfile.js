@@ -1,18 +1,17 @@
 var gulp 			= require('gulp'),
-	jshint 			= require('gulp-jshint'),
-	jscs 			= require('gulp-jscs'),
-	jshintReporter 	= require('jshint-stylish'),
 	watch 			= require('gulp-watch'),
 	sass 			= require('gulp-sass'),
+	del 			= require('del'),
 	concat 			= require('gulp-concat'),
 	rename			= require('gulp-rename'),
 	uglify			= require('gulp-uglify'),
-	minify			= require('gulp-minify-css'),
+	cleanCSS		= require('gulp-clean-css'),
 	sourcemaps 		= require('gulp-sourcemaps'),
 	autoprefixer 	= require('gulp-autoprefixer'),
 	imagemin		= require('gulp-imagemin'),
-	gulpIgnore 		= require('gulp-ignore');
-	del 			= require('del');
+	gulpIgnore 		= require('gulp-ignore'),
+	eslint			= require('gulp-eslint'),
+	mocha			= require('gulp-mocha');
 
 // path variables
 var paths = {
@@ -25,8 +24,7 @@ var paths = {
 		'public/modules/**/*.css',
 		'public/styles/**/*.scss'],
 	'standalone-css':[
-		'public/styles/font-awesome/*.css'
-	],
+		'public/styles/font-awesome/*.css'],
 	'js':[
 		'public/modules/**/*.js',
 		'public/js/mare.js',
@@ -37,8 +35,13 @@ var paths = {
 		'public/js/main.js'],
 	'standalone-js':[
 		'public/js/lib/standalone-scripts/**/*.js'],
-	'admin-panel-js':[
-		'public/js/lib/**/*.js'],
+	'lint-js':[
+		'public/js/mare.js',
+		'public/js/models/*.js',
+		'public/js/collections/*.js',
+		'public/js/views/*.js',
+		'public/js/routers/*.js',
+		'public/js/main.js'],
 	'img':[
 		'public/images/*',
 		'public/modules/**/*.gif'],
@@ -47,8 +50,9 @@ var paths = {
 		'public/fonts/*.svg',
 		'public/fonts/*.ttf',
 		'public/fonts/*.woff',
-		'public/fonts/*.woff2'
-	]
+		'public/fonts/*.woff2'],
+	'tests':[
+		'public/tests/*.js']
 };
 
 // styles task
@@ -59,7 +63,7 @@ gulp.task('styles', function() {
 		.pipe(autoprefixer())
 		.pipe(concat('mare.css'))
 		.pipe(gulp.dest('public/dist'))
-		.pipe(minify({compatibility: 'ie8'}))
+		.pipe(cleanCSS({compatibility: 'ie8'}))
 		.pipe(rename({suffix: '.min'}))
 		.pipe(sourcemaps.write('.'))
 		.pipe(gulp.dest('public/dist'));
@@ -104,45 +108,44 @@ gulp.task('images', function() {
 		.pipe(gulp.dest('public/dist/img'));
 });
 
-// gulp lint
-gulp.task( 'lint', function() {
-	gulp.src(paths.src)
-		.pipe(jshint())
-		.pipe(jshint.reporter(jshintReporter));
-
+// gulp eslint task
+gulp.task('eslint', function () {
+	return gulp.src(paths['lint-js'])
+		.pipe(eslint()) // eslint() attaches the lint output to the "eslint" property of the file object so it can be used by other modules.
+		.pipe(eslint.format()) // eslint.format() outputs the lint results to the console.  Alternatively use eslint.formatEach() (see Docs).
+		.pipe(eslint.failAfterError()); // To have the process exit with an error code (1) on lint error, return the stream and pipe to failAfterError last.
 });
 
-// Watch Task
+// gulp eslint task for watching
+gulp.task('eslint-watch', function () {
+	return gulp.src(paths['lint-js'])
+		.pipe(eslint()) // eslint() attaches the lint output to the "eslint" property of the file object so it can be used by other modules.
+		.pipe(eslint.format()) // eslint.format() outputs the lint results to the console.  Alternatively use eslint.formatEach() (see Docs).
+});
+
+// Watch task
 gulp.task('watch', function() {
 	gulp.watch(paths.css, gulp.series('styles'));
-	gulp.watch(paths.js, gulp.series('scripts'));
+	gulp.watch(paths.js, gulp.series('eslint-watch', 'scripts'));
 	gulp.watch(paths.img, gulp.series('images'));
+	gulp.watch(paths.tests, gulp.series('test'));
 });
 
 // Empty out the dist directory to ensure old files don't hang around
 gulp.task('clean', function (cb) {
-          del(['public/dist/*'], cb);
+	del(['public/dist/*'], cb);
 });
 
-// gulp watcher for lint
-gulp.task('watch:lint', function () {
-	gulp.src(paths.src)
-		.pipe(watch(paths.src))
-		.pipe(jshint())
-		.pipe(jshint.reporter(jshintReporter));
+// Run all the mocha tests
+gulp.task('test', function() {
+	return gulp.src(paths.tests, {read: false})
+		// gulp-mocha needs filepaths so you can't have any plugins before it
+		.pipe(mocha({ reporter: 'nyan' }));
 });
 
 // gulp build task
 gulp.task('build', gulp.parallel('standalone-styles', 'styles', 'standalone-scripts', 'scripts', 'images', 'fonts'));
 
-gulp.task('default', gulp.series('clean', 'build', 'watch'));
-
-// task built specfically for running on Heroku server when new code is deployed
+gulp.task('default', gulp.series('clean', 'eslint', 'test', 'build', 'watch'));
+// task specfically for running on Heroku server when new code is deployed
 gulp.task('heroku', gulp.series('clean', 'build'));
-
-// gulp jscs
-// TODO: need to adjust src to minified, concatenated js file
-// gulp.task('jscs'), function() {
-// 	gulp.src('public/dist/mare.js')
-// 		.pipe(jscs());
-// }

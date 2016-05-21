@@ -14,6 +14,10 @@
 		},
 
 		initialize: function() {
+			// Create a hook to access the child in home fields template
+			var childInHomeHtml = $('#child-in-home').html();
+			// Compile the template to be used adding/removing child in home field groups
+			this.template = Handlebars.compile(childInHomeHtml);
 			// DOM cache any commonly used elements to improve performance
 			this.$state							= this.$('#family-state');
 			this.$homestudyCompletionDate		= this.$('#homestudy-date-complete');
@@ -126,58 +130,32 @@
 				$('.children-form-copy').remove();
 			}
 		},
-
-		generateChildDetailInputs: function generateChildDetailInputs(quantity) {
+		// TODO: This needs to be cleaned up a bit, both logic for efficiency and the creation should be handled in a template instead of jQuery.
+		generateChildDetailInputs: function generateChildDetailInputs(selectedNumberOfChildren) {
 			// Count the number of child data groups already shown on the page
-			var currentLength = this.$('.children-form-heading-copy').length;
+			var currentChildrenDisplayed = this.$('.child-details-form').length;
 
-			if( currentLength > quantity ) {
+			if( currentChildrenDisplayed > selectedNumberOfChildren ) {
 				// Remove extra additional child forms
-				for(var i = currentLength; i > quantity; i--) {
-					$('#child' + i + '-form').remove();
-					$('#child' + i + '-form-heading').remove(); // TODO: Include the heading as part of the form to make cleanup easier
+				for(i = currentChildrenDisplayed; i > selectedNumberOfChildren; i--) {
+					$('.child' + i + '-form').remove();
+					$('.child' + i + '-form-heading').remove(); // TODO: Include the heading as part of the form to make cleanup easier
 				}
 
 			} else {
-
 				// Add sections that aren't already on the page
-				for(var i = currentLength + 1; i <= quantity; i++) {
+				for(var i = currentChildrenDisplayed + 1; i <= selectedNumberOfChildren; i++) {
+					// Pass the relevant data through the child in home template to generate to add to the page
+					var html = this.template({ 	index		: i,
+												id			: 'child' + i,
+												formName	: 'child' + i + '-form',
+												formHeading	: 'child' + i + '-form-heading',
+												name		: 'child' + i + '-name',
+												gender		: 'child' + i + '-gender',
+												birthDate	: 'child' + i + '-birthDate',
+												type		: 'child' + i + '-type' });
 
-					var id = 'child' + i;
-
-					var newFormHeading = $('<div>', {
-						html	: this.$('.children-form-heading').html(),
-						id		: id + '-form-heading',
-						class	: 'row form-group hidden children-form-heading-copy'
-					});
-
-					var newFormBody = $('<div>', {
-						html	: this.$childrenForm.html(),
-						id		: id + '-form',
-						class	: 'row form-group hidden children-form-copy'
-					});
-
-					// Set number Label
-					$(newFormHeading).find('.child-number').html('#' + i);
-
-					var $inputs = $(newFormBody).find('.child-form-input');
-					// set unique id's for inputs & assign for attribute of associated label
-					$inputs.each(function(i, obj) {
-						var uniqueInputId = id + '-' + $(obj).data('name');
-						$(obj).attr('name', uniqueInputId);
-						$(obj).siblings('label').attr('for', uniqueInputId);
-					});
-
-					// If we're appending the first child group, place it after the children in home selector
-					if(i === 1) {
-						$(newFormHeading).insertAfter('.children-in-home');
-					// For every child gruop except the first, place each after the previous child gorup
-					} else {
-						$(newFormHeading).insertAfter('#child' + (i - 1) + '-form');
-					}
-					$(newFormBody).insertAfter('#' + id + '-form-heading');
-					$('#' + id + '-form-heading').removeClass('hidden');
-					$('#' + id + '-form').removeClass('hidden');
+					this.$('.children-in-home-details').append(html);
 
 				}
 
@@ -200,4 +178,4 @@
 		}
 
 	});
-})();
+}());
