@@ -3,7 +3,7 @@ var keystone 	= require('keystone'),
 
 exports = module.exports = function(req, res) {
     'use strict';
-    
+
     var view 	= new keystone.View(req, res),
     	locals 	= res.locals;
 
@@ -12,14 +12,15 @@ exports = module.exports = function(req, res) {
     // If it doesn't exist, forward to a 404 page
     Event.model.find()
 		.where('url', req.originalUrl)
-		.populate('type')
 		.exec()
 		.then(function (targetEvent) {
-			
+
 			locals.targetEvent = targetEvent[0];
 
-			// Render the view
+			// Set the layout to render with the right sidebar
+			locals['render-with-sidebar'] = true;
+			// Render the view once all the data has been retrieved
     		view.render('event');
 
-		});    
+		});
 };
