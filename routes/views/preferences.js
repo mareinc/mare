@@ -13,7 +13,9 @@ exports = module.exports = function(req, res) {
     async.parallel([
 		function(done) { userService.getUserById(req, res, done, userId); }
 	], function() {
-
+		// Set the layout to render without the right sidebar
+		locals['render-with-sidebar'] = false;
+		// Render the view once all the data has been retrieved
 		view.render('preferences');
 
 	});
