@@ -13,16 +13,6 @@
     @media all and (min-width: 660px) { background-color: #8FCED6; }
 }
 
-.main-column {
-    margin-bottom: 20px;
-
-    @media all and (min-width: 660px) {
-        display: inline-block;
-        width: 75%;
-        padding-left: 10px;
-    }
-}
-
 .section-title {
 	display: block;
     text-align: center;
@@ -118,9 +108,9 @@
 
     @media all and (min-width: 660px) {
         display: inline-block;
-        width: 20%;
+        width: 23%;
         vertical-align: top;
-        padding-right: 10px;
+        padding-left: 10px;
     }
 }
 

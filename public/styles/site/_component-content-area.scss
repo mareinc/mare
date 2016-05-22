@@ -4,9 +4,9 @@
 	@media all and (min-width: 660px) { padding-bottom: 3%; }
 }
 
-.main > .content {
+.content {
 	margin: auto;
-	padding-top: 111px;
+	padding: 111px 0 40px;
 	color: $main-content-color;
 	background-color: $light-background-color;
 
@@ -16,7 +16,21 @@
 	@media all and (min-width: 820px) { padding-top: 0; }
 }
 
-.main > .content > .content-body {
+.content > .content-body {
 	background-color: $light-background-color;
-	padding: 0 10px 0;
+	margin-bottom: 20px;
+
+	@media all and (min-width: 660px) {
+		width: 100%;
+		display: inline-block;
+		padding: 0 10px;
+	}
+}
+
+.content--with-sidebar > .content-body {
+	@media all and (min-width: 660px) {
+		width: 75%;
+		display: inline-block;
+		padding: 0 10px;
+	}
 }
