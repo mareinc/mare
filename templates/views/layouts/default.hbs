@@ -13,7 +13,7 @@
 		- only renders when user is logged in and admin--}}
 		{{{isAdminEditorCSS user}}}
 
-		<link rel="stylesheet" href="dist/font-awesome.min.css">
+		<link rel="stylesheet" href="/dist/font-awesome.min.css">
 
 		<script src="/dist/modernizr.custom.min.js"></script>
 
@@ -26,203 +26,34 @@
 	</head>
 	<body>
 
-		<nav id="mobile-menu" class="hidden">
-			<ul>
-				{{#each mainNav}}
-				<li>
-					{{#if subMenu}}
-						<a href="#">{{ title }}</a>
-						<ul>
-							{{#each subMenu}}
-							<li>
-								{{#if subMenu}}
-								<a href="#">{{ title }}</a>
-								<ul>
-									{{#each subMenu}}
-									<li>
-										<a href="{{ href }}">{{ title }}</a>
-									</li>
-									{{/each}}
-								</ul>
-								{{else}}
-								<a href="{{ href }}">{{ title }}</a>
-								{{/if}}
-							</li>
-							{{/each}}
-						</ul>
-						{{else}}
-						<a href="{{ href }}">{{ title }}</a>
-					{{/if}}
-				</li>
-				{{/each}}
-			</ul>
-		</nav>
-
-		<div class="modal">
-			<div class="modal__background"></div>
-			<div class="modal__container">
-
-				<i class="fa fa-times fa-2x modal__close"></i>
-
-				<div class="modal-container__loading">
-					<img src="/dist/img/loading.gif" alt="loading" class="modal-container__loading-image">
-				</div>
-
-				<div class="modal-container__contents"></div>
-
-			</div>
-		</div>
-
-		<div class="global-header">
-			<div class="content-wrapper">
-				<span class="logo-container">
-					<img src="/dist/img/mare-logo.png" alt="logo">
-					<img src="/dist/img/mare-logo-text.png" alt="logo">
-				</span>
-				<span class="header-navigation-container">
-
-					<nav class="top-nav">
-						<ul class="nav">
-							<li class="top-nav-item home-link"><a href="/">Home</a></li>
-							{{#if user }}
-								<li class="top-nav-item log-out-link"><a href="/logout">Log Out</a></li>
-							{{else}}
-								<li class="top-nav-item log-in-link">
-									<span class="log-in-link-text">Log in</span>
-									<span class="arrow-down"></span>
-									<span class="log-in-container">
-										<form action="/logIn" method="POST">
-											<div class="email-container">
-		          								<input type="email" class="input input-small" required id="email" name="email" pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
-												<label for="email">Email Address</label>
-											</div>
-											<div class="password-container">
-		          								<input type="password" class="input input-small" id="password" name="password">
-		          								<label for="password">Password</label>
-											</div>
-											<div class="login-container">
-												<button type="submit" class="log-in">Log In</button>
-		          								<span class="forgot-password">Forgot your password?</span>
-											</div>
-										</form>
-										<div class="not-registered-details">
-											<div class="register-header">Create an Account</div>
-											<div class="register-body">Whether you're a homestudied family, a social worker, a potential adoptive family, or a supporter, register with us to stay informed and access advanced features of the site.</div>
-											<a href="/register"><button class="register">Register Now</button></a>
-										</div>
-									</span>
-								</li>
-							{{/if}}
-							<li class="top-nav-item donate-link-container"><a href="/donate">Donate</a></li>
-							<li class="top-nav-item hamburger">
-								<a href="#mobile-menu">
-									<img src="/dist/img/hamburger.png">
-								</a>
-							</li>
-						</ul>
-					</nav>
-				</span>
-			</div>
-
-			<nav class="main-nav">
-				<div class="content-wrapper">
-					<ul class="nav">
-						{{#each mainNav}}
-						<li {{#if lastMenu}}class="menu-item--last"{{/if}}>
-							{{#if subMenu}}
-							<a href="#" class="parent main-menu">{{ title }}</a>
-							<ul>
-								{{#each subMenu}}
-								<li>
-									<a href="{{ href }}">{{ title }}</a>
-								</li>
-								{{/each}}
-							</ul>
-							{{else}}
-							<a href="{{ href }}">{{ title }}</a>
-							{{/if}}
-						</li>
-						{{/each}}
-					</ul>
-				</div>
-			</nav>
-		</div>
+		{{> mobile-menu}}
+		{{> modal}}
+		{{> global-header}}
 
 		<div class="body">
 			<div class="content-wrapper">
-				<!--
-					Flash messages allow you to display once-off status messages to users, e.g. form
-					validation errors, success messages, etc
-				-->
-				{{#if messages}}
-				<div id="flash-messages" class="container">
-					{{#if messages.info}}
-					<div class="alert alert-info">
-						{{{flashMessages messages.info}}}
-					</div>
-					{{/if}}
-					{{#if messages.success}}
-					<div class="alert alert-success">
-						{{{flashMessages messages.success}}}
-					</div>
-					{{/if}}
-					{{#if messages.warning}}
-					<div class="alert alert-warning">
-						{{{flashMessages messages.warning}}}
-					</div>
-					{{/if}}
-					{{#if messages.error}}
-					<div class="alert alert-danger">
-						{{{flashMessages messages.error}}}
-					</div>
-					{{/if}}
-				</div>
+				{{!-- Each page has a data value for the type of content area to display, use that to render a partial template which has a placeholder for {{{body}}} --}}
+				{{#if render-with-sidebar}}
+					{{> content-with-sidebar}}
+				{{else}}
+					{{> content-without-sidebar}}
 				{{/if}}
-				<!-- The content block should contain the body of your template's content-->
-				{{{body}}}
 			</div>
 		</div>
 
-		<div class="global-footer">
-			<div class="content-wrapper">
-				<nav class="footer-nav">
-					<span>Contact Us</span>
-					<span>Privacy Policy</span>
-					<span>Non Discrimination Policy</span>
-					<span>Our Partners</span>
-				</nav>
-				<nav class="social-nav">
-					<img src="/dist/img/facebook-icon.png" alt="facebook">
-					<img src="/dist/img/twitter-icon.png" alt="twitter">
-					<img src="/dist/img/pinterest-icon.png" alt="pinterest">
-					<img src="/dist/img/youtube-icon.png" alt="youtube">
-				</nav>
-				<img class="sponsor sponsor-jordans-furniture" src="/dist/img/jordans-furniture-logo.png" alt="jordans furniture">
-				<img class="sponsor sponsor-jack-williams" src="/dist/img/jack-williams-logo.png" alt="jack williams">
-				<div class="contact-info">
-					<span class="address">45 Franklin Street, 5th Floor, Boston, MA 02110-1301</span>
-					<span class="phone">Phone: 617-54-ADOPT (542-3678)</span>
-					<span class="phone">Toll Free: 1-800-882-1176</span>
-					<span class="fax">Fax: 617-542-1006</span>
-				</div>
-				<div class="disclaimer">MARE is partially funded by the Massachusetts Department of Children and Families (DCF)<span class="copyright">&copy; 2015 MARE Inc. All rights reserved.</span></div>
-				</div>
-			</div>
-		</div>
+		{{> global-footer}}
 
-		{{!--
-		//- jQuery 1.11.1 is included by default, and required by the KeystoneJS Content Editor. If you are not targeting IE8, you can upgrade to 2.1.1 (also bundled) for better performance.
-		--}}
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.3.1/backbone-min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.3.5/parsley.min.js"></script>
 		<script src="https://checkout.stripe.com/checkout.js"></script>
-		{{!-- This uses the NODE_ENV environment variable to serve either the production uglified JavaScript, or regular JavaScript for development.  See helpers in templates/views/helpers/index.js --}}
+		{{!-- This uses the NODE_ENV environment variable to serve either the production uglified JavaScript, or regular JavaScript for development.
+			  See helpers in templates/views/helpers/index.js --}}
 		{{{isProductionJS}}}
 		{{!-- This file provides the necessary JavaScript for the KeystoneJS Content Editor
-		- only renders when user is logged in and admin--}}
+			  only renders when user is logged in and admin--}}
 		{{{isAdminEditorJS user}}}
 	</body>
 </html>
