@@ -30,6 +30,9 @@ exports = module.exports = function(req, res) {
 		function(done) { listsService.getChildTypesForWebsite(req, res, done) },
 		function(done) { listsService.getAllWaysToHearAboutMARE(req, res, done, waysToHearOptions) }
 	], function() {
+
+		// Set the layout to render with the right sidebar
+		locals['render-with-sidebar'] = true;
 		// Render the view once all the data has been retrieved
 		view.render('register');
 
