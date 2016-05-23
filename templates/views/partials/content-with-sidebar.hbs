@@ -1,16 +1,16 @@
-<div class="main">
+<section class="content">
 
-	<section class="content content--with-sidebar">
+	{{> content-header}}
 
-		{{> content-header}}
+	<div class="content__main content__main--with-sidebar">
 
-		<section class="content-body">
+		<section class="content__body">
 			{{> flash-messages}}
 			{{{body}}}
 		</section>
 
 		{{> sidebar}}
 
-	</section>
+	</div>
 
-</div>
+</section>
