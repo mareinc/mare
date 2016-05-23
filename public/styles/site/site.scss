@@ -45,22 +45,28 @@ body {
 .body {
 	min-height: 43em;
 	background-color: $main-content-background-color;
+
+	@media all and (min-width: 660px) { padding-bottom: 35px; }
 }
 
 // Component Styles
 // ===========
 @import "_component-button";
 @import "_component-carousel";
+@import "_component-callout";
 @import "_component-content-area";
+@import "_component-content-header";
 @import "_component-featured-items";
 @import "_component-form";
 @import "_component-global-footer";
 @import "_component-global-header";
 @import "_component-menu";
 @import "_component-modal";
+@import "_component-sidebar";
 
 // Page Styles
 // ===========
+@import "_icons.scss";
 @import "_page";
 @import "_page-donations";
 @import "_page-register";
