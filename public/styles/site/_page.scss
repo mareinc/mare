@@ -7,44 +7,6 @@
     height: 100%;
 }
 
-.content-header {
-	margin-bottom: 15px;
-
-    @media all and (min-width: 660px) { background-color: #8FCED6; }
-}
-
-.section-title {
-	display: block;
-    text-align: center;
-    text-transform: uppercase;
-    font-size: 24px;
-    color: #8FCED2;
-    padding: 10px 0;
-    background-color: #3C4573;
-
-    @media all and (min-width: 660px) {
-        display: inline-block;
-        text-transform: none;
-        color: inherit;
-        padding: 0;
-        background-color: inherit;
-        width: 40%;
-    }
-}
-
-.section-image {
-	width: 100%;
-
-    @media all and (min-width: 660px) {
-        display: inline-block;
-        vertical-align: middle;
-        width: 59.4%;
-    }
-    /* small adjustments to ensure image stays snugly against the right side of the header */
-    @media all and (min-width: 775px) { width: 59.5%; }
-    @media all and (min-width: 965px) { width: 59.6%; }
-}
-
 // TODO: Pull section menu into it's own component and only control the visibility in the breakpoint
 .section-menu {
     @media all and (min-width: 660px) {
@@ -101,69 +63,4 @@
 
 .page-header > .question {
 	display: none;
-}
-
-.sidebar {
-    display: none;
-
-    @media all and (min-width: 660px) {
-        display: inline-block;
-        width: 23%;
-        vertical-align: top;
-        padding-left: 10px;
-    }
-}
-
-.callout {
-    @media all and (min-width: 660px) {
-        border-right: 1px solid black;
-        border-bottom: 1px solid black;
-    }
-}
-
-.callout > .description {
-    @media all and (min-width: 660px) {
-        display: block;
-        background-color: #56B8D0;
-        padding: 10px;
-        font-style: italic;
-        font-size: 1.5em;
-        color: #3D3811;
-        line-height: 1.2em;
-    }
-}
-
-.callout-image {
-    @media all and (min-width: 660px) {
-        width: 100%;
-    }
-}
-
-.callout-controls {
-    @media all and (min-width: 660px) {
-        display: block;
-        background-color: #56B8D0;
-        padding: 10px;
-        color: #3D3811;
-        margin-top: -2px;
-    }
-}
-
-.callout-type {
-    @media all and (min-width: 660px) {
-        display: block;
-        font-size: 2em;
-        font-weight: bold;
-        margin-bottom: 5px;
-        line-height: 1.2em;
-    }
-}
-
-.callout-title {
-    @media all and (min-width: 660px) {
-        font-style: italic;
-        font-size: 1.5em;
-        line-height: 1.2em;
-        margin-bottom: 5px;
-    }
 }
