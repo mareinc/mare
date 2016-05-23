@@ -17,6 +17,8 @@
 			this.getPermissions();
 			// Load the view for the waiting child profiles page as a whole
 			mare.views.waitingChildProfiles = mare.views.waitingChildProfiles || new mare.views.WaitingChildProfiles();
+			// Load the view for the right sidebar
+			mare.views.sidebar = mare.views.sidebar || new mare.views.Sidebar();
 		},
 
 		getPermissions: function getPermissions() {
