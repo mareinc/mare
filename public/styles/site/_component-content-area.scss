@@ -1,35 +1,30 @@
-.main {
-	padding-top: 1px;
-
-	@media all and (min-width: 660px) { padding-bottom: 3%; }
-}
-
 .content {
-	margin: auto;
 	padding: 111px 0 40px;
 	color: $main-content-color;
 	background-color: $light-background-color;
-
+	/* All padding changes below account for the height of the fixed position header at < 820px */
 	@media all and (min-width: 460px) { padding-top: 123px; }
 	@media all and (min-width: 480px) { padding-top: 134px; }
-	@media all and (min-width: 660px) { padding-top: 90px; }
+	@media all and (min-width: 660px) { padding-top: 132px; }
 	@media all and (min-width: 820px) { padding-top: 0; }
 }
 
-.content > .content-body {
+.content__main {
+	padding: 0 10px;
+
+	&--with-sidebar {
+		@media all and (min-width: 660px) {
+			display: flex;
+		}
+	}
+}
+
+.content__body {
 	background-color: $light-background-color;
 	margin-bottom: 20px;
 
 	@media all and (min-width: 660px) {
 		width: 100%;
-		display: inline-block;
-		padding: 0 10px;
-	}
-}
-
-.content--with-sidebar > .content-body {
-	@media all and (min-width: 660px) {
-		width: 75%;
 		display: inline-block;
 		padding: 0 10px;
 	}

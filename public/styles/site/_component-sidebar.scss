@@ -1,0 +1,19 @@
+.sidebar {
+	display: none;
+
+	@media all and (min-width: 660px) {
+		align-items: center;
+		flex-direction: column;
+		display: flex;
+		width: 300px;
+		padding: 0 10px;
+	}
+}
+
+.sidebar__item {
+	margin-top: 20px;
+}
+
+.sidebar__button {
+	width: 100%;
+}

@@ -6,6 +6,16 @@
   &--large {
     padding: 10px 15px;
   }
+
+  &--donate {
+    color: $button-text-color-1;
+     background-color: $button-background-color-3;
+  }
+
+  &--have-a-question {
+    color: $button-text-color-light;
+    background-color: $button-background-color-1;
+  }
 }
 
 // TODO: Not sure where most of the stuff below came from, check for use, delete if you're able to
