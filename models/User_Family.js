@@ -297,10 +297,11 @@ Family.add('General Information', {
 
 });
 
-Family.relationship({ path: 'placements', ref: 'Placement', refPath: 'prospectiveParentOrFamily' });
-Family.relationship({ path: 'inquiries', ref: 'Inquiry', refPath: 'prospectiveParentOrFamily' });
-Family.relationship({ path: 'mailing-lists', ref: 'Mailing List', refPath: 'prospectiveParentOrFamilyAttendees' });
-Family.relationship({ path: 'internal-notes', ref: 'Internal Note', refPath: 'prospectiveParentOrFamily' });
+Family.relationship({ ref: 'Placement', refPath: 'prospectiveParentOrFamily', path: 'placements', label: 'placements' });
+Family.relationship({ ref: 'Inquiry', refPath: 'prospectiveParentOrFamily', path: 'inquiries', label: 'inquiries' });
+Family.relationship({ ref: 'Mailing List', refPath: 'prospectiveParentOrFamilyAttendees', path: 'mailing-lists', label: 'mailing lists' });
+Family.relationship({ ref: 'Event', refPath: 'familyAttendees', path: 'events', label: 'events' });
+Family.relationship({ ref: 'Internal Note', refPath: 'prospectiveParentOrFamily', path: 'internal-notes', label: 'internal notes' });
 
 // Displaly associations via the Relationship field type
 // TODO: link inquiries.

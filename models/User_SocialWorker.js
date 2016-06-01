@@ -57,10 +57,11 @@ SocialWorker.add('General Information', {
 
 });
 
-SocialWorker.relationship({ path: 'children', label: 'children', ref: 'Child', refPath: 'adoptionWorker' });
-SocialWorker.relationship({ path: 'my inquiries', label: 'my inquiries', ref: 'Inquiry', refPath: 'socialWorker' });
-SocialWorker.relationship({ path: 'family inquiries', label: 'family inquiries', ref: 'Inquiry', refPath: 'childsSocialWorker' });
-SocialWorker.relationship({ path: 'mailing-lists', ref: 'Mailing List', refPath: 'socialWorkerAttendees' });
+SocialWorker.relationship({ ref: 'Child', refPath: 'adoptionWorker', path: 'children', label: 'children' });
+SocialWorker.relationship({ ref: 'Inquiry', refPath: 'socialWorker', path: 'my inquiries', label: 'my inquiries' });
+SocialWorker.relationship({ ref: 'Inquiry', refPath: 'childsSocialWorker', path: 'family inquiries', label: 'family inquiries' });
+SocialWorker.relationship({ ref: 'Mailing List', refPath: 'socialWorkerAttendees', path: 'mailing-lists', label: 'mailing lists' });
+SocialWorker.relationship({ ref: 'Event', refPath: 'socialWorkerAttendees', path: 'events', label: 'events' });
 
 // Pre Save
 SocialWorker.schema.pre('save', function(next) {

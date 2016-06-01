@@ -53,7 +53,8 @@ SiteVisitor.add('General Information', {
 
 });
 
-SiteVisitor.relationship({ path: 'mailing-lists', ref: 'Mailing List', refPath: 'siteUserAttendees' });
+SiteVisitor.relationship({ ref: 'Mailing List', refPath: 'siteUserAttendees', path: 'mailing-lists', label: 'mailing lists' });
+SiteVisitor.relationship({ ref: 'Event', refPath: 'siteVisitorAttendees', path: 'events', label: 'events' });
 
 // Pre Save
 User.schema.pre('save', function(next) {

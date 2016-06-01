@@ -13,7 +13,7 @@ Slideshow.add({
 	title: { type: Types.Text, label: 'slideshow title', initial: true }
 });
 
-Slideshow.relationship({ path: 'slideshow-items', label: 'slide', ref: 'Slideshow Item', refPath: 'parent' });
+Slideshow.relationship({ ref: 'Slideshow Item', refPath: 'parent', path: 'slideshow-items', label: 'slide' });
 
 // Pre Save
 Slideshow.schema.pre('save', function(next) {

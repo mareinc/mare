@@ -29,8 +29,8 @@ Agency.add({
 	generalInquiryContact: { type: Types.Email, label: 'general inquiry contact', required: true, initial: true }
 });
 
-Agency.relationship({ path: 'agency', ref: 'Inquiry', refPath: 'agency', label: 'inquries' });
-Agency.relationship({ path: 'agencyReferral', ref: 'Inquiry', refPath: 'agencyReferral', label: 'agency referral inquiries' });
+Agency.relationship({ ref: 'Inquiry', refPath: 'agency', path: 'agency', label: 'inquries' });
+Agency.relationship({ ref: 'Inquiry', refPath: 'agencyReferral', path: 'agencyReferral', label: 'agency referral inquiries' });
 
 // Define default columns in the admin interface and register the model
 Agency.defaultColumns = 'code, name, phone';
