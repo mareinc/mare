@@ -11,6 +11,7 @@ var SuccessStory = new keystone.List('Success Story', {
 // Create fields
 SuccessStory.add({
 	heading: { type: Types.Text, label: 'heading', required: true, initial: true },
+	url: { type: Types.Url, label: 'url', noedit: true },
 	subHeading: { type: Types.Text, label: 'sub-heading', initial: true },
 	content: { type: Types.Html, wysiwyg: true, initial: true },
 	image: { type: Types.CloudinaryImage, note: 'needed to display in the sidebar', folder: 'success-stories/', autoCleanup: true },
@@ -22,11 +23,12 @@ SuccessStory.schema.pre('save', function(next) {
 	'use strict';
 
 	this.imageScaled = this._.image.thumbnail(400,250,{ quality: 80 });
+	this.url = '/success-stories/' + this.key;
 
 	next();
 
 });
 
 // Define default columns in the admin interface and register the model
-SuccessStory.defaultColumns = 'heading';
+SuccessStory.defaultColumns = 'heading, url';
 SuccessStory.register();
