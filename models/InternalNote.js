@@ -13,7 +13,7 @@ InternalNotes.add({
 
     child: { type: Types.Relationship, label: 'child', ref: 'Child', initial: true, },
     family: { type: Types.Relationship, label: 'family', ref: 'Family', initial: true },
-    date: { type: Types.Text, label: 'note date', note: 'mm/dd/yyyy', required: true, noedit: true, initial: true, },
+    date: { type: Types.Date, label: 'note date', format: 'MM/DD/YYYY', required: true, noedit: true, initial: true, },
     employee: { type: Types.Relationship, label: 'note creator', ref: 'Admin', required: true, noedit: true, initial: true, },
     note: { type: Types.Textarea, label: 'note', required: true, initial: true, }
 

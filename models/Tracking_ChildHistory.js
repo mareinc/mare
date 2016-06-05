@@ -9,7 +9,7 @@ var ChildHistory = new keystone.List('Child History', {
 
 // Create fields
 ChildHistory.add({
-    date: { type: Types.Text, label: 'date', note: 'mm/dd/yyyy', required: true, noedit: true, initial: true },
+    date: { type: Types.Date, label: 'date', format: 'MM/DD/YYYY', required: true, noedit: true, initial: true },
     field: { type: Types.Text, label: 'field', required: true, noedit: true, initial: true },
     previousValue: { type: Types.Text, label: 'previous value', required: true, noedit: true, initial: true },
     newValue: { type: Types.Text, label: 'new value', required: true, noedit: true, initial: true },

@@ -42,7 +42,7 @@ SiteVisitor.add('General Information', {
 
 	infoPacket: {
 		packet: { type: Types.Select, options: 'English, Spanish, none', label: 'Packet', initial: true },
-		date: { type: Types.Text, label: 'date info packet sent', note: 'mm/dd/yyyy', initial: true },
+		date: { type: Types.Date, label: 'date info packet sent', format: 'MM/DD/YYYY', initial: true },
 		notes: { type: Types.Textarea, label: 'notes', initial: true }
 	}
 

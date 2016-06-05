@@ -16,7 +16,7 @@ Family.add('General Information', {
 	avatar: { type: Types.CloudinaryImage, label: 'avatar', folder: 'users/families', selectPrefix: 'users/families', autoCleanup: true },
 
 	registrationNumber: { type: Number, label: 'registration number', format: false, required: true, initial: true },
-	initialContact: { type: Types.Text, label: 'initial contact', note: 'mm/dd/yyyy', required: true, initial: true },
+	initialContact: { type: Types.Date, label: 'initial contact', format: 'MM/DD/YYYY', required: true, initial: true },
 	flagCalls: { type: Types.Boolean, label: 'flag calls', initial: true },
 	familyConstellation: { type: Types.Relationship, label: 'family constellation', ref: 'Family Constellation', required: true, initial: true },
 	language: { type: Types.Relationship, label: 'language', ref: 'Language', required: true, initial: true },
@@ -42,7 +42,7 @@ Family.add('General Information', {
 		gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', required: true, initial: true },
 		race: { type: Types.Relationship, label: 'race', ref: 'Race', many: true, required: true, initial: true },
 		occupation: { type: Types.Text, label: 'occupation', initial: true },
-		birthDate: { type: Types.Text, label: 'date of birth', note: 'mm/dd/yyyy', required: true, initial: true }
+		birthDate: { type: Types.Date, label: 'date of birth', format: 'MM/DD/YYYY', required: true, initial: true }
 	},
 
 }, 'Contact 2', {
@@ -64,7 +64,7 @@ Family.add('General Information', {
 		gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', initial: true },
 		race: { type: Types.Relationship, label: 'race', ref: 'Race', many: true, initial: true },
 		occupation: { type: Types.Text, label: 'occupation', initial: true },
-		birthDate: { type: Types.Text, label: 'date of birth', note: 'mm/dd/yyyy', initial: true }
+		birthDate: { type: Types.Date, label: 'date of birth', format: 'MM/DD/YYYY', initial: true }
 	}
 
 }, 'Home Contact Information', {
@@ -87,7 +87,7 @@ Family.add('General Information', {
 }, { heading: 'Child 1', dependsOn: { numberOfChildren: ['1', '2', '3', '4', '5', '6', '7', '8+'] } }, {
 	child1: {
 		name: { type: Types.Text, label: 'name', dependsOn: { numberOfChildren: ['1', '2', '3', '4', '5', '6', '7', '8+'] }, initial: true },
-		birthDate: { type: Types.Text, label: 'date of birth', note: 'mm/dd/yyyy', dependsOn: { numberOfChildren: ['1', '2', '3', '4', '5', '6', '7', '8+'] }, initial: true },
+		birthDate: { type: Types.Date, label: 'date of birth', format: 'MM/DD/YYYY', dependsOn: { numberOfChildren: ['1', '2', '3', '4', '5', '6', '7', '8+'] }, initial: true },
 		gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', dependsOn: { numberOfChildren: ['1', '2', '3', '4', '5', '6', '7', '8+'] }, initial: true },
 		type: { type: Types.Relationship, label: 'type', ref: 'Child Type', dependsOn: { numberOfChildren: ['1', '2', '3', '4', '5', '6', '7', '8+'] }, initial: true }
 	},
@@ -95,7 +95,7 @@ Family.add('General Information', {
 }, { heading: 'Child 2', dependsOn: { numberOfChildren: ['2', '3', '4', '5', '6', '7', '8+'] } }, {
 	child2: {
 		name: { type: Types.Text, label: 'name', dependsOn: { numberOfChildren: ['2', '3', '4', '5', '6', '7', '8+'] }, initial: true },
-		birthDate: { type: Types.Text, label: 'date of birth', note: 'mm/dd/yyyy', dependsOn: { numberOfChildren: ['2', '3', '4', '5', '6', '7', '8+'] }, initial: true },
+		birthDate: { type: Types.Date, label: 'date of birth', format: 'MM/DD/YYYY', dependsOn: { numberOfChildren: ['2', '3', '4', '5', '6', '7', '8+'] }, initial: true },
 		gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', dependsOn: { numberOfChildren: ['2', '3', '4', '5', '6', '7', '8+'] }, initial: true },
 		type: { type: Types.Relationship, label: 'type', ref: 'Child Type', dependsOn: { numberOfChildren: ['2', '3', '4', '5', '6', '7', '8+'] }, initial: true }
 	},
@@ -103,7 +103,7 @@ Family.add('General Information', {
 }, { heading: 'Child 3', dependsOn: { numberOfChildren: ['3', '4', '5', '6', '7', '8+'] } }, {
 	child3: {
 		name: { type: Types.Text, label: 'name', dependsOn: { numberOfChildren: ['3', '4', '5', '6', '7', '8+'] }, initial: true },
-		birthDate: { type: Types.Text, label: 'date of birth', note: 'mm/dd/yyyy', dependsOn: { numberOfChildren: ['3', '4', '5', '6', '7', '8+'] }, initial: true },
+		birthDate: { type: Types.Date, label: 'date of birth', format: 'MM/DD/YYYY', dependsOn: { numberOfChildren: ['3', '4', '5', '6', '7', '8+'] }, initial: true },
 		gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', dependsOn: { numberOfChildren: ['3', '4', '5', '6', '7', '8+'] }, initial: true },
 		type: { type: Types.Relationship, label: 'type', ref: 'Child Type', dependsOn: { numberOfChildren: ['3', '4', '5', '6', '7', '8+'] }, initial: true }
 	},
@@ -111,7 +111,7 @@ Family.add('General Information', {
 }, { heading: 'Child 4', dependsOn: { numberOfChildren: ['4', '5', '6', '7', '8+'] } }, {
 	child4: {
 		name: { type: Types.Text, label: 'name', dependsOn: { numberOfChildren: ['4', '5', '6', '7', '8+'] }, initial: true },
-		birthDate: { type: Types.Text, label: 'date of birth', note: 'mm/dd/yyyy', dependsOn: { numberOfChildren: ['4', '5', '6', '7', '8+'] }, initial: true },
+		birthDate: { type: Types.Date, label: 'date of birth', format: 'MM/DD/YYYY', dependsOn: { numberOfChildren: ['4', '5', '6', '7', '8+'] }, initial: true },
 		gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', dependsOn: { numberOfChildren: ['4', '5', '6', '7', '8+'] }, initial: true },
 		type: { type: Types.Relationship, label: 'type', ref: 'Child Type', dependsOn: { numberOfChildren: ['4', '5', '6', '7', '8+'] }, initial: true }
 	},
@@ -119,7 +119,7 @@ Family.add('General Information', {
 }, { heading: 'Child 5', dependsOn: { numberOfChildren: ['5', '6', '7', '8+'] } }, {
 	child5: {
 		name: { type: Types.Text, label: 'name', dependsOn: { numberOfChildren: ['5', '6', '7', '8+'] }, initial: true },
-		birthDate: { type: Types.Text, label: 'date of birth', note: 'mm/dd/yyyy', dependsOn: { numberOfChildren: ['5', '6', '7', '8+'] }, initial: true },
+		birthDate: { type: Types.Date, label: 'date of birth', format: 'MM/DD/YYYY', dependsOn: { numberOfChildren: ['5', '6', '7', '8+'] }, initial: true },
 		gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', dependsOn: { numberOfChildren: ['5', '6', '7', '8+'] }, initial: true },
 		type: { type: Types.Relationship, label: 'type', ref: 'Child Type', dependsOn: { numberOfChildren: ['5', '6', '7', '8+'] }, initial: true }
 	},
@@ -127,7 +127,7 @@ Family.add('General Information', {
 }, { heading: 'Child 6', dependsOn: { numberOfChildren: ['6', '7', '8+'] } }, {
 	child6: {
 		name: { type: Types.Text, label: 'name', dependsOn: { numberOfChildren: ['6', '7', '8+'] }, initial: true },
-		birthDate: { type: Types.Text, label: 'date of birth', note: 'mm/dd/yyyy', dependsOn: { numberOfChildren: ['6', '7', '8+'] }, initial: true },
+		birthDate: { type: Types.Date, label: 'date of birth', format: 'MM/DD/YYYY', dependsOn: { numberOfChildren: ['6', '7', '8+'] }, initial: true },
 		gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', dependsOn: { numberOfChildren: ['6', '7', '8+'] }, initial: true },
 		type: { type: Types.Relationship, label: 'type', ref: 'Child Type', dependsOn: { numberOfChildren: ['6', '7', '8+'] }, initial: true }
 	},
@@ -135,7 +135,7 @@ Family.add('General Information', {
 }, { heading: 'Child 7', dependsOn: { numberOfChildren: ['7', '8+'] } }, {
 	child7: {
 		name: { type: Types.Text, label: 'name', dependsOn: { numberOfChildren: ['7', '8+'] }, initial: true },
-		birthDate: { type: Types.Text, label: 'date of birth', note: 'mm/dd/yyyy', dependsOn: { numberOfChildren: ['7', '8+'] }, initial: true },
+		birthDate: { type: Types.Date, label: 'date of birth', format: 'MM/DD/YYYY', dependsOn: { numberOfChildren: ['7', '8+'] }, initial: true },
 		gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', dependsOn: { numberOfChildren: ['7', '8+'] }, initial: true },
 		type: { type: Types.Relationship, label: 'type', ref: 'Child Type', dependsOn: { numberOfChildren: ['7', '8+'] }, initial: true }
 	},
@@ -143,7 +143,7 @@ Family.add('General Information', {
 }, { heading: 'Child 8', dependsOn: { numberOfChildren: ['8+'] } }, {
 	child8: {
 		name: { type: Types.Text, label: 'name', dependsOn: { numberOfChildren: ['8+'] }, initial: true },
-		birthDate: { type: Types.Text, label: 'date of birth', note: 'mm/dd/yyyy', dependsOn: { numberOfChildren: ['8+'] }, initial: true },
+		birthDate: { type: Types.Date, label: 'date of birth', format: 'MM/DD/YYYY', dependsOn: { numberOfChildren: ['8+'] }, initial: true },
 		gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', dependsOn: { numberOfChildren: ['8+'] }, initial: true },
 		type: { type: Types.Relationship, label: 'type', ref: 'Child Type', dependsOn: { numberOfChildren: ['8+'] }, initial: true }
 	}
@@ -162,26 +162,26 @@ Family.add('General Information', {
 	stages: {
 		gatheringInformation: {
 			started: { type: Types.Boolean, label: 'gathering information', initial: true },
-			date: { type: Types.Text, label: 'date gathering information started', note: 'mm/dd/yyyy', dependsOn: { 'stages.gatheringInformation.started': true }, initial: true }
+			date: { type: Types.Date, label: 'date gathering information started', format: 'MM/DD/YYYY', dependsOn: { 'stages.gatheringInformation.started': true }, initial: true }
 		},
 		lookingForAgency: {
 			started: { type: Types.Boolean, label: 'looking for agency', initial: true },
-			date: { type: Types.Text, label: 'date looking for agency started', note: 'mm/dd/yyyy', dependsOn: { 'stages.lookingForAgency.started': true }, initial: true }
+			date: { type: Types.Date, label: 'date looking for agency started', format: 'MM/DD/YYYY', dependsOn: { 'stages.lookingForAgency.started': true }, initial: true }
 		},
 		workingWithAgency: {
 			started: { type: Types.Boolean, label: 'working with agency', initial: true },
-			date: { type: Types.Text, label: 'date working with agency started', note: 'mm/dd/yyyy', dependsOn: { 'stages.workingWithAgency.started': true }, initial: true }
+			date: { type: Types.Date, label: 'date working with agency started', format: 'MM/DD/YYYY', dependsOn: { 'stages.workingWithAgency.started': true }, initial: true }
 		},
 		MAPPTrainingCompleted: {
 			completed: { type: Types.Boolean, label: 'MAPP training completed', initial: true },
-			date: { type: Types.Text, label: 'date MAPP training completed', note: 'mm/dd/yyyy', dependsOn: { 'stages.MAPPTrainingCompleted.completed': true }, initial: true }
+			date: { type: Types.Date, label: 'date MAPP training completed', format: 'MM/DD/YYYY', dependsOn: { 'stages.MAPPTrainingCompleted.completed': true }, initial: true }
 		}
 	},
 
 	homestudy: {
 		completed: { type: Types.Boolean, label: 'homestudy completed', initial: true },
-		initialDate: { type: Types.Text, label: 'initial date homestudy completed', note: 'mm/dd/yyyy', dependsOn: { 'homestudy.completed': true }, initial: true },
-		mostRecentDate: { type: Types.Text, label: 'most recent update completed', note: 'mm/dd/yyyy', dependsOn: { 'homestudy.completed': true }, initial: true },
+		initialDate: { type: Types.Date, label: 'initial date homestudy completed', format: 'MM/DD/YYYY', dependsOn: { 'homestudy.completed': true }, initial: true },
+		mostRecentDate: { type: Types.Date, label: 'most recent update completed', format: 'MM/DD/YYYY', dependsOn: { 'homestudy.completed': true }, initial: true },
 
 		homestudyFile_upload: {
 			label: 'homestudy file',
@@ -199,23 +199,23 @@ Family.add('General Information', {
 
 	onlineMatching: {
 		started: { type: Types.Boolean, label: 'online matching', initial: true },
-		date: { type: Types.Text, label: 'date online matching started', note: 'mm/dd/yyyy', dependsOn: { 'onlineMatching.started': true }, initial: true }
+		date: { type: Types.Date, label: 'date online matching started', format: 'MM/DD/YYYY', dependsOn: { 'onlineMatching.started': true }, initial: true }
 	},
 
 	registeredWithMARE: {
 		registered: { type: Types.Boolean, label: 'registered with MARE', initial: true },
-		date: { type: Types.Text, label: 'date registered with MARE', note: 'mm/dd/yyyy', dependsOn: { 'registeredWithMARE.registered': true }, initial: true },
+		date: { type: Types.Date, label: 'date registered with MARE', format: 'MM/DD/YYYY', dependsOn: { 'registeredWithMARE.registered': true }, initial: true },
 		status: { type: Types.Relationship, label: 'status', ref: 'Child Status', dependsOn: { 'registeredWithMARE.registered': true }, initial: true }
 	},
 
 	familyProfile: {
 		created: { type: Types.Boolean, label: 'family profile created', initial: true },
-		date: { type: Types.Text, label: 'date family profile created', note: 'mm/dd/yyyy', dependsOn: { 'familyProfile.created': true }, initial: true }
+		date: { type: Types.Date, label: 'date family profile created', format: 'MM/DD/YYYY', dependsOn: { 'familyProfile.created': true }, initial: true }
 	},
 
 	closed: {
 		isClosed: { type: Types.Boolean, label: 'closed', initial: true },
-		date: { type: Types.Text, label: 'date closed', note: 'mm/dd/yyyy', dependsOn: { 'closed.isClosed': true }, initial: true },
+		date: { type: Types.Date, label: 'date closed', format: 'MM/DD/YYYY', dependsOn: { 'closed.isClosed': true }, initial: true },
 		reason: { type: Types.Relationship, label: 'reason', ref: 'Closed Reason', dependsOn: { 'closed.isClosed': true }, initial: true }
 	}
 
@@ -243,7 +243,7 @@ Family.add('General Information', {
 
 	infoPacket: {
 		packet: { type: Types.Select, options: 'English, Spanish, none', label: 'Packet', initial: true },
-		date: { type: Types.Text, label: 'date info packet sent', note: 'mm/dd/yyyy', initial: true },
+		date: { type: Types.Date, label: 'date info packet sent', format: 'MM/DD/YYYY', initial: true },
 		notes: { type: Types.Textarea, label: 'notes', initial: true }
 	}
 
