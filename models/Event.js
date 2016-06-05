@@ -1,7 +1,8 @@
 2/* Fields in old system, missing from the new one
 
 rcs_id ( Recruitment Source ID )  This will be the list of 300+ sources, we don't need it because we're typing a new name
-location ( We break it out into multiple fields which means importing might be a manual process )
+location ( We break it out into multiple fields which means importing might be a manual process if we care about those.
+		   We can possibly have a checkbox for a moved event and a connnect field for the old location )
 directions
 schedule_datetime ( Right now they just track the start date/time )
 
@@ -36,7 +37,7 @@ Event.add({ heading: 'General Information' }, {
 
 	name: { type: Types.Text, label: 'event name', required: true, initial: true },
 	url: { type: Types.Url, label: 'url', noedit: true },
-	isActive: { type: Types.Boolean, label: 'is event active?', initial: true },
+	isActive: { type: Types.Boolean, label: 'is event active?', default: true, initial: true },
 	// type: { type: Types.Relationship, label: 'Event Type', ref: 'Event Type', required: true, initial: true }
 	type: { type: Types.Select, label: 'event type', options: 'MARE adoption parties & information events, MAPP training, agency information meetings, other opportunities & trainings, fundraising events', required: true, initial: true }
 
@@ -50,16 +51,24 @@ Event.add({ heading: 'General Information' }, {
 		zipCode: { type: Types.Text, label: 'zip code', initial: true }
 	},
 
-	contactEmail: { type: Types.Text, label: 'contact person email', required: true, initial: true },
+	contact: { type: Types.Relationship, label: 'contact', ref: 'Admin', initial: true },
+	contactEmail: { type: Types.Text, label: 'contact person email', note: 'only fill out if no contact is selected', initial: true }
 
 }, { heading: 'Details' }, {
 
-	date: { type: Types.Text, label: 'date', note: 'mm/dd/yyyy', required: true, initial: true },
+	date: { type: Types.Date, label: 'date', format: 'MM/DD/YYYY', initial: true },
 	startTime: { type: Types.Text, label: 'start time', required: true, initial: true },
 	endTime: { type: Types.Text, label: 'end time', required: true, initial: true },
 	description: { type: Types.Html, label: 'description', wysiwyg: true, initial: true },
-	isRecurring: { type: Types.Boolean, label: 'recurring event?', initial: true },
-	recurringDuration: { type: Types.Select, label: 'recurs every', options: 'day, week, month', dependsOn: { isRecurring: true }, initial: true }
+	isRecurring: { type: Types.Boolean, label: 'recurring event?', initial: true }
+
+}, 'Attendees', {
+
+	cscAttendees: { type: Types.Relationship, label: 'CSC staff', ref: 'Admin', many: true, initial: true },
+	siteVisitorAttendees: { type: Types.Relationship, label: 'site visitors', ref: 'Site Visitor', many: true, initial: true },
+	socialWorkerAttendees: { type: Types.Relationship, label: 'social workers', ref: 'Social Worker', many: true, initial: true },
+	familyAttendees: { type: Types.Relationship, label: 'families', ref: 'Family', many: true, initial: true },
+	childAttendees: { type: Types.Relationship, label: 'children', ref: 'Child', many: true, initial: true }
 
 }, { heading: 'Notes' }, {
 
