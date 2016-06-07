@@ -94,7 +94,7 @@ SiteVisitor.schema.methods.sendNotificationEmail = function(callback) {
     		templateEngine: require('handlebars'),
     		templateName: 'welcome'
   	}).send({
-		to: ['tommysalsa@gmail.com', 'jared.j.collier@gmail.com'],
+		to: ['jared.j.collier@gmail.com'],
 		from: {
 			name: 'MARE',
 			email: 'info@mareinc.org'
