@@ -151,7 +151,7 @@ Child.add('Display Options', {
 
 });
 
-// Displaly associations via the Relationship field type
+// Set up relationship values to show up at the bottom of the model if any exist
 Child.relationship({ ref: 'Child', refPath: 'siblingContacts', path: 'children', label: 'children' });
 // Child.relationship({ path: 'siblings', ref: 'Sibling', refPath: 'child1' });
 Child.relationship({ ref: 'Placement', refPath: 'child', path: 'placements', label: 'placements' });

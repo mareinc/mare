@@ -3,9 +3,11 @@ var keystone = require('keystone'),
 
 // Create model. Additional options allow menu name to be used what auto-generating URLs
 var Slideshow = new keystone.List('Slideshow', {
+
 	track: true,
 	autokey: { path: 'key', from: 'title', unique: true },
 	map: { name: 'title' }
+
 });
 
 // Create fields

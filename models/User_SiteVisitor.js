@@ -53,6 +53,7 @@ SiteVisitor.add('General Information', {
 
 });
 
+// Set up relationship values to show up at the bottom of the model if any exist
 SiteVisitor.relationship({ ref: 'Mailing List', refPath: 'siteUserAttendees', path: 'mailing-lists', label: 'mailing lists' });
 SiteVisitor.relationship({ ref: 'Event', refPath: 'siteVisitorAttendees', path: 'events', label: 'events' });
 

@@ -29,6 +29,7 @@ Agency.add({
 	generalInquiryContact: { type: Types.Email, label: 'general inquiry contact', required: true, initial: true }
 });
 
+// Set up relationship values to show up at the bottom of the model if any exist
 Agency.relationship({ ref: 'Inquiry', refPath: 'agency', path: 'agency', label: 'inquries' });
 Agency.relationship({ ref: 'Inquiry', refPath: 'agencyReferral', path: 'agencyReferral', label: 'agency referral inquiries' });
 

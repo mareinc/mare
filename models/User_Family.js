@@ -297,6 +297,7 @@ Family.add('General Information', {
 
 });
 
+// Set up relationship values to show up at the bottom of the model if any exist
 Family.relationship({ ref: 'Placement', refPath: 'prospectiveParentOrFamily', path: 'placements', label: 'placements' });
 Family.relationship({ ref: 'Inquiry', refPath: 'prospectiveParentOrFamily', path: 'inquiries', label: 'inquiries' });
 Family.relationship({ ref: 'Mailing List', refPath: 'prospectiveParentOrFamilyAttendees', path: 'mailing-lists', label: 'mailing lists' });

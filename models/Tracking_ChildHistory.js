@@ -9,11 +9,13 @@ var ChildHistory = new keystone.List('Child History', {
 
 // Create fields
 ChildHistory.add({
+
     date: { type: Types.Date, label: 'date', format: 'MM/DD/YYYY', required: true, noedit: true, initial: true },
     field: { type: Types.Text, label: 'field', required: true, noedit: true, initial: true },
     previousValue: { type: Types.Text, label: 'previous value', required: true, noedit: true, initial: true },
     newValue: { type: Types.Text, label: 'new value', required: true, noedit: true, initial: true },
     modifiedBy: { type: Types.Relationship, label: 'modified by', ref: 'Admin', required: true, noedit: true, initial: true }
+
 });
 
 // Define default columns in the admin interface and register the model

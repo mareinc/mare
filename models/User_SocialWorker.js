@@ -57,6 +57,7 @@ SocialWorker.add('General Information', {
 
 });
 
+// Set up relationship values to show up at the bottom of the model if any exist
 SocialWorker.relationship({ ref: 'Child', refPath: 'adoptionWorker', path: 'children', label: 'children' });
 SocialWorker.relationship({ ref: 'Inquiry', refPath: 'socialWorker', path: 'my inquiries', label: 'my inquiries' });
 SocialWorker.relationship({ ref: 'Inquiry', refPath: 'childsSocialWorker', path: 'family inquiries', label: 'family inquiries' });

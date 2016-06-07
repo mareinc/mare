@@ -10,12 +10,14 @@ var SuccessStory = new keystone.List('Success Story', {
 
 // Create fields
 SuccessStory.add({
+
 	heading: { type: Types.Text, label: 'heading', required: true, initial: true },
 	url: { type: Types.Url, label: 'url', noedit: true },
 	subHeading: { type: Types.Text, label: 'sub-heading', initial: true },
 	content: { type: Types.Html, wysiwyg: true, initial: true },
 	image: { type: Types.CloudinaryImage, note: 'needed to display in the sidebar', folder: 'success-stories/', autoCleanup: true },
 	imageScaled: {type: Types.Url, hidden: true }
+
 });
 
 // Pre Save
