@@ -6,10 +6,6 @@
 	padding-bottom: 0.25em;
 }
 
-.info-card p { 
-	margin: 0.5em 0;
-}
-
 .info-card, 
 .card {
 	background-color: #ffffff;
@@ -32,6 +28,7 @@
 	align-self: center;
 	font-size: 18px;
 	margin-right: 3em;
+	margin: 0.5em 3em 0.53em 0;
 }
 
 .card__action {
