@@ -12,33 +12,35 @@
 
 .info-card, 
 .card {
+	background-color: #ffffff;
 	box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
 	border-radius: 2px;
 	padding: 1em 1em 1em 1em;
 	margin-bottom: 1.5em;
 }
 
-.card-title {
+.card__title {
 	display: flex;
 	justify-content: center;
 }
 
-.card-content {
+.card__content {
 	display: flex;
 }
 
-.card-text {
+.card__text {
 	align-self: center;
+	font-size: 18px;
 	margin-right: 3em;
 }
 
-.card-action {
+.card__action {
 	display: flex;
 	justify-content: center;
 	margin-bottom: 1em;
 }
 
-.card-button {
+.card__button {
 	background-color: #FDB127;
 	border: none;
 	padding: 0.75em 1.5em;
