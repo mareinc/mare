@@ -32,8 +32,9 @@
 	text-align: left;
 }
 
-.card__image img {
+.card__image {
 	max-width: 100%;
+	margin: 1em 40px;
 }
 
 .card__action {
@@ -67,7 +68,7 @@
 		margin: 0.5em 3em 0.5em 0;
 	}
 
-	.card__image img {
+	.card__image {
 		max-width: none;
 	}
 
