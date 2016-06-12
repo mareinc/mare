@@ -36,8 +36,10 @@
 	img {
 		float: left;
     	margin-right: 1em;
-    	margin-bottom: 1em;
+    	margin-bottom: 0.5em;
+    	margin-left: 3em;
     	margin-top: 3px;
+
 	}
     
 }
@@ -60,7 +62,6 @@
 
     @media all and ( min-width: 860px ) {
     	margin-left: 2.85714286em; /* 40px / 14px (base font-size) */
-    	max-width: none;
     }
 }
 
