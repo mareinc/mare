@@ -1,35 +1,35 @@
-<h1>{{{ targetStory.heading }}}</h1>
-<div>{{{ targetStory.subHeading }}}</div>
-<div>{{{ targetStory.content }}}</div>
-
-<div class="info-card">
+<div class="card card--info">
 	<p>Over the years, MARE has found permanent, loving families for thousands of children waiting in foster care. Read about a few of these phenomenal families who, in the course of making a difference in a child’s life, also had their own life-changing experiences.</p>
 
 	<p>If you have adopted with MARE’s help and have a success story to share, we want to hear from you. Please email your story and picture to Diane Tomaz, Director of Family Support Services, <a href="mailto:atdianet@MAREinc.org">atdianet@MAREinc.org</a>.</p>
 </div>
 
 <div class="card">
-	<h2 class="card__title">The Wilson Family</h2>
+	<h2 class="card__title">{{ targetStory.heading }}</h2>
 		<div class="card__content">
-			<img class="card__image" src="/dist/img/success-story-popout.png" alt="The Wilson Family">
-			<p class="card__text"> 
-				My husband Derrick and I talked about adoption in December 2008 before we left on our drive to Georgia for our holiday road trip. We went on the Massachusetts Adoption Resource Exchange (MARE) website and inquired via e-mail and couldn’t wait for a response. During the drive we talked and talked about it.... 
-			</p>
+			{{#if targetStory.imageScaled}}
+			<img class="card__image" src="{{ targetStory.imageScaled }}" alt="{{ targetStory.heading }}">
+			{{/if}}
+			<article class="card__text">{{{ targetStory.content }}}</article>
 		</div>
 	<div class="card__action">
-		<button class="card__button">Read Full Story</button>
+		<button class="card__button" data-url="{{ targetStory.url }}">Read Full Story</button>
 	</div>
 </div>
 
+{{#each otherStories}}
+
 <div class="card">
-	<h2 class="card__title">The Wilson Family</h2>
+	<h2 class="card__title">{{ heading }}</h2>
 		<div class="card__content">
-			<img class="card__image" src="/dist/img/success-story-popout.png" alt="The Wilson Family">
-			<p class="card__text"> 
-				My husband Derrick and I talked about adoption in December 2008 before we left on our drive to Georgia for our holiday road trip. We went on the Massachusetts Adoption Resource Exchange (MARE) website and inquired via e-mail and couldn’t wait for a response. During the drive we talked and talked about it.... 
-			</p>
+			{{#if imageScaled}}
+			<img class="card__image" src="{{ imageScaled }}" alt="{{ heading }}">
+			{{/if}}
+			<article class="card__text">{{{ shortContent }}}</article>
 		</div>
 	<div class="card__action">
-		<button class="card__button">Read Full Story</button>
+		<button class="card__button" data-url="{{ url }}">Read Full Story</button>
 	</div>
 </div>
+
+{{/each}}
