@@ -5,22 +5,22 @@
 </div>
 
 <div class="card">
-	<h2 class="card__title">{{ targetStory.heading }}</h2>
-		<div class="card__content">
+	<h1 class="card__title">{{ targetStory.heading }}</h1>
+		<div class="card__content--detail-view">
 			{{#if targetStory.imageScaled}}
 			<img class="card__image" src="{{ targetStory.imageScaled }}" alt="{{ targetStory.heading }}">
 			{{/if}}
 			<article class="card__text">{{{ targetStory.content }}}</article>
 		</div>
 	<div class="card__action">
-		<button class="card__button" data-url="{{ targetStory.url }}">Read Full Story</button>
+		<button class="card__button" data-url="/success-stories/">Back to All Stories</button>
 	</div>
 </div>
 
 {{#each otherStories}}
 
 <div class="card">
-	<h2 class="card__title">{{ heading }}</h2>
+	<h1 class="card__title">{{ heading }}</h1>
 		<div class="card__content">
 			{{#if imageScaled}}
 			<img class="card__image" src="{{ imageScaled }}" alt="{{ heading }}">
