@@ -89,14 +89,14 @@ Child.add('Display Options', {
 	hasPhotolistingPhoto: { type: Types.Boolean, label: 'photolisting photo', initial: true },
 	photolistingPhotoDate: { type: Types.Date, label: 'date of photolisting photo', format: 'MM/DD/YYYY', dependsOn: { hasPhotolistingPhoto: true }, initial: true },
 	isCurrentlyInPhotoListing: { type: Types.Boolean, label: 'currently in photolisting', initial: true },
-	inPhotoListingDate_WIP: { type: Types.Date, label: 'LISA NEEDS TO PICK THE LABEL', format: 'MM/DD/YYYY', dependsOn: {isCurrentlyInPhotoListing: true }, initial: true },
+	dateOfLastPhotoListing: { type: Types.Date, label: 'date of last photolisting', format: 'MM/DD/YYYY', dependsOn: {isCurrentlyInPhotoListing: true }, initial: true },
 	photolistingPageNumber: { type: Number, label: 'photolisting page', format: false, initial: true },
 	previousPhotolistingPageNumber: { type: Number, label: 'previous photolisting page', format: false, initial: true },
 
 	image: { type: Types.CloudinaryImage, folder: 'children/', selectPrefix: 'children/', publicID: 'fileName', autoCleanup: true },
 	galleryImage: {type: Types.Url, hidden: true },
 	detailImage: {type: Types.Url, hidden: true },
-	extranetUrl: { type: Types.Url, label: 'extranet and related profile url', initial: true } // Since this is redudant as this just points the the url where the photo exists (the child's page), we may hide this field.  This must be kept in as it will help us track down the child information in the old system in the event of an issue.
+	extranetUrl: { type: Types.Url, label: 'extranet and related profile url', initial: true } // Since this is redundant as this just points the the url where the photo exists (the child's page), we may hide this field.  This must be kept in as it will help us track down the child information in the old system in the event of an issue.
 
 }, 'Recruitment Options', {
 
