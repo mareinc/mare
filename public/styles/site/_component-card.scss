@@ -47,6 +47,7 @@
 .card__button {
 	background-color: #FDB127;
 	border: none;
+	border-radius: 2px;
 	padding: 0.75em 1.5em;
 	box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12);
 	transition: all .2s ease-out;
@@ -57,7 +58,7 @@
 	}
 }
 
-@media screen and (min-width: 760px ) {
+@media screen and (min-width: 860px ) {
 
 	.card__content {
 		display: flex;
