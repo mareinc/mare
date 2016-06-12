@@ -5,7 +5,7 @@ var keystone = require('keystone'),
 var InternalNotes = new keystone.List('Internal Note', {
     track: true,
     autokey: { path: 'key', from: 'slug', unique: true },
-    defaultSort: 'date'
+    defaultSort: '-date'
 });
 
 // Create fields
