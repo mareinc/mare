@@ -1,3 +1,8 @@
+.card-area {
+	display: flex;
+	flex-wrap: wrap;
+}
+
 .info-card {
 	border-left: 1.5em solid #FDB127;
 	box-shadow: 1px;
@@ -6,6 +11,8 @@
 	padding-bottom: 0.25em;
 }
 
+.nav-card,
+.image-card,
 .info-card, 
 .card {
 	background-color: #ffffff;
@@ -13,6 +20,49 @@
 	border-radius: 2px;
 	padding: 1em 1em 1em 1em;
 	margin-bottom: 1.5em;
+}
+
+.image-card,
+.nav-card {
+	height: 200px;
+	margin: 1.5em 1em;
+	display: block;
+	text-align: center;
+	flex: 1 0 45%;
+}
+
+.nav-card {
+	cursor: pointer;
+
+	&:hover {
+		box-shadow: 0 4px 10px rgba(0,0,0,0.18), 0 5px 11px rgba(0,0,0,0.26);
+	}
+}
+
+.card-circle {
+	height: 50px;
+	width: 50px;
+	border-radius: 50%;
+	margin-left: 45%;
+	display: block;
+	background-color: #FDB127;
+	margin-top: -2.5em;
+}
+
+.card-icon {
+	height: 30px;
+    width: 30px;
+    margin-top: 8px;
+}
+
+.nav-card__title {
+	font-weight: 200;
+	margin-top: 56px;
+}
+
+.nav-card__title--long {
+	font-weight: 200;
+	margin-top: 44px;
 }
 
 .card__title {
@@ -29,6 +79,13 @@
 		display: flex;
 		flex-direction: row; 
 	}
+}
+
+.image-card__image {
+	align-self: center;
+	border-radius: 50%;
+	height: 11em;
+	width: 11em;
 }
 
 .card__content--detail-view {
