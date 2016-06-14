@@ -1,122 +1,61 @@
-.card-area {
-	display: flex;
-	flex-wrap: wrap;
-}
-
-.info-card {
-	border-left: 1.5em solid #FDB127;
-	box-shadow: 1px;
-	padding-left: 1em;
-	padding-top: 0.25em;
-	padding-bottom: 0.25em;
-}
-
-.nav-card,
-.image-card,
-.info-card, 
 .card {
+	display: flex;
+    flex-direction: column;
 	background-color: #ffffff;
 	box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
 	border-radius: 2px;
-	padding: 1em 1em 1em 1em;
+	padding: 1em;
 	margin-bottom: 1.5em;
-}
 
-.image-card,
-.nav-card {
-	height: 200px;
-	margin: 1.5em 1em;
-	display: block;
-	text-align: center;
-	flex: 1 0 45%;
-}
-
-.nav-card {
-	cursor: pointer;
-
-	&:hover {
-		box-shadow: 0 4px 10px rgba(0,0,0,0.18), 0 5px 11px rgba(0,0,0,0.26);
+	&--info {
+		border-left: 1.5em solid #FDB127;
+		box-shadow: 1px;
+		padding-top: 0.25em;
+		padding-bottom: 0.25em;
 	}
-}
-
-.card-circle {
-	height: 50px;
-	width: 50px;
-	border-radius: 50%;
-	margin-left: 45%;
-	display: block;
-	background-color: #FDB127;
-	margin-top: -2.5em;
-}
-
-.card-icon {
-	height: 30px;
-    width: 30px;
-    margin-top: 8px;
-}
-
-.nav-card__title {
-	font-weight: 200;
-	margin-top: 56px;
-}
-
-.nav-card__title--long {
-	font-weight: 200;
-	margin-top: 44px;
 }
 
 .card__title {
 	display: flex;
 	justify-content: center;
+	text-align: center;
 }
 
 .card__content {
 	display: flex;
 	flex-direction: column;
-	align-items: center; 
+	align-items: center;
 
-	@media screen and ( min-width: 860px ) {
+	@media screen and ( min-width: 540px ) {
 		display: flex;
-		flex-direction: row; 
+		flex-direction: row;
 	}
-}
-
-.image-card__image {
-	align-self: center;
-	border-radius: 50%;
-	height: 11em;
-	width: 11em;
-}
-
-.card__content--detail-view {
-	display: block;
-	min-height: 200px;
-
-	img {
-		float: left;
-    	margin-right: 1em;
-    	margin-bottom: 0.5em;
-    	margin-left: 3em;
-    	margin-top: 3px;
-
-	}
-    
 }
 
 .card__text {
-	align-self: center;
 	font-size: 12px;
 	margin-right: 3em;
-	margin: 0.5em 3em;
+	margin: 0.5em 1em 0.5em 3em;
 	text-align: left;
+
+	@media screen and ( min-width: 860px ) {
+		font-size: 15px;
+		margin: 0.5em 3em 0.5em 2.8em; /* 2.8em causes the text to line up with the other success stories images creating a clean line */
+	}
 }
 
 .card__image {
+	align-self: center;
 	width: 12em;
     height: 12em;
+	border-radius: 50%;
 
     @media all and ( min-width: 860px ) {
     	margin-left: 2.85714286em; /* 40px / 14px (base font-size) */
+    }
+
+    &--no-margin {
+    	margin: 0;
     }
 }
 
