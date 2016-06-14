@@ -30,7 +30,7 @@ SuccessStory.add({
 SuccessStory.schema.pre('save', function(next) {
 	'use strict';
 
-	this.imageScaled = this._.image.thumbnail(400,250,{ quality: 80 });
+	this.imageScaled = this._.image.thumbnail(168,168,{ quality: 80 });
 	this.url = '/success-stories/' + this.key;
 
 	// Create an identifying name for file uploads
