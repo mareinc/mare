@@ -11,12 +11,13 @@ $(function() {
     // No default exists due to main routing being handled by the server
 	switch(mare.url.siteArea) {
 		case ''							: mare.routers.home = new mare.routers.Home();									break;
-		case 'page'						: mare.routers.pages = new mare.routers.Pages();								break;
+        case 'donate'                   : mare.routers.donations = new mare.routers.Donations();                        break;
 		case 'form'						: mare.routers.forms = new mare.routers.Forms();								break;
-		case 'waiting-child-profiles'	: mare.routers.waitingChildProfiles = new mare.routers.WaitingChildProfiles();	break;
-		case 'register'					: mare.routers.registration = new mare.routers.Registration();					break;
-		case 'preferences'				: mare.routers.preferences = new mare.routers.Preferences();					break;
-		case 'donate'					: mare.routers.donations = new mare.routers.Donations();
+        case 'page'                     : mare.routers.pages = new mare.routers.Pages();                                break;
+        case 'preferences'              : mare.routers.preferences = new mare.routers.Preferences();                    break;
+        case 'register'                 : mare.routers.registration = new mare.routers.Registration();                  break;
+        case 'success-stories'          : mare.routers.successStory = new mare.routers.SuccessStory();                  break;
+		case 'waiting-child-profiles'	: mare.routers.waitingChildProfiles = new mare.routers.WaitingChildProfiles();
 	}
     // start the backbone history state for browser navigation through backbone routes
     Backbone.history.start();

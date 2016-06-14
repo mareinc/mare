@@ -1,5 +1,6 @@
 var keystone 		= require('keystone'),
-	SuccessStory 	= keystone.list('Success Story');
+	SuccessStory	= keystone.list('Success Story'),
+	_ = require('underscore');
 
 exports = module.exports = function(req, res) {
     'use strict';
@@ -7,20 +8,16 @@ exports = module.exports = function(req, res) {
     var view 	= new keystone.View(req, res),
     	locals 	= res.locals;
 
-    // Fetch the success story with the matching URL
-    // If it exists, pass the object into the rendering
-    // If it doesn't exist, forward to a 404 page
-    SuccessStory.model.find()
-		.where('url', req.originalUrl)
+    /* TODO: Change this to an async function */
+    SuccessStory.model.findOne()
+    	.where('url', req.originalUrl)
 		.exec()
-		.then(function (targetStory) {
-
-			locals.targetStory = targetStory[0];
-
+		.then(function (successStory) {
+			// Find the target story for the current page and store the object in locals.targetStory
+			locals.story = successStory;
 			// Set the layout to render with the right sidebar
 			locals['render-with-sidebar'] = true;
 			// Render the view once all the data has been retrieved
-    		view.render('success-story');
-
+			view.render('success-story');
 		});
 };
