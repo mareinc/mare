@@ -4,15 +4,19 @@
 	<p>If you have adopted with MARE’s help and have a success story to share, we want to hear from you. Please email your story and picture to Diane Tomaz, Director of Family Support Services, <a href="mailto:atdianet@MAREinc.org">atdianet@MAREinc.org</a>.</p>
 </div>
 
+{{#each stories}}
+
 <div class="card">
-	<h1 class="card__title">{{ story.heading }}</h1>
-	{{#if story.imageScaled}}
-	<img class="card__image card__image--no-margin" src="{{ story.imageScaled }}" alt="{{ story.heading }}">
-	{{/if}}
+	<h1 class="card__title">{{ heading }}</h1>
 	<div class="card__content">
-		<article class="card__text">{{{ story.content }}}</article>
+		{{#if imageScaled}}
+		<img class="card__image" src="{{ imageScaled }}" alt="{{ heading }}">
+		{{/if}}
+		<article class="card__text">{{{ shortContent }}}</article>
 	</div>
 	<div class="card__action">
-		<button class="card__button" data-url="/success-stories">Back to All Stories</button>
+		<button class="card__button" data-url="{{ url }}">Read Full Story</button>
 	</div>
 </div>
+
+{{/each}}
