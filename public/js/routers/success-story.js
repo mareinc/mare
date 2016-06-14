@@ -4,10 +4,10 @@
 	mare.routers.SuccessStory = Backbone.Router.extend({
 
 		routes: {
-			'.*' : 'loadSuccessStory'
+			'.*' : 'showDetails'
 		},
 
-		loadSuccessStory: function loadSuccessStory() {
+		showDetails: function showDetails() {
 			// Load the view for the success story
 			mare.views.successStory = mare.views.successStory || new mare.views.SuccessStory();
 		}
