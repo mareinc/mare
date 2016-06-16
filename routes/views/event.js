@@ -1,5 +1,6 @@
 var keystone 	= require('keystone'),
-	Event 		= keystone.list('Event');
+	Event		= keystone.list('Event'),
+	_ 			= require('underscore');
 
 exports = module.exports = function(req, res) {
     'use strict';
@@ -7,20 +8,16 @@ exports = module.exports = function(req, res) {
     var view 	= new keystone.View(req, res),
     	locals 	= res.locals;
 
-    // Fetch the event with the matching URL
-    // If it exists, pass the object into the rendering
-    // If it doesn't exist, forward to a 404 page
-    Event.model.find()
-		.where('url', req.originalUrl)
+    /* TODO: Change this to an async function */
+    Event.model.findOne()
+    	.where('url', req.originalUrl)
 		.exec()
-		.then(function (targetEvent) {
-
-			locals.targetEvent = targetEvent[0];
-
+		.then(function (event) {
+			// Find the target event for the current page and store the object in locals for access during templating
+			locals.story = event;
 			// Set the layout to render with the right sidebar
 			locals['render-with-sidebar'] = true;
 			// Render the view once all the data has been retrieved
-    		view.render('event');
-
+			view.render('event');
 		});
 };
