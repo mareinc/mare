@@ -1,6 +1,12 @@
+.card-group {
+	display: flex;
+	flex-wrap: wrap;
+}
+
 .card {
 	display: flex;
     flex-direction: column;
+    width: 100%;
 	background-color: #ffffff;
 	box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
 	border-radius: 2px;
@@ -12,6 +18,22 @@
 		box-shadow: 1px;
 		padding-top: 0.25em;
 		padding-bottom: 0.25em;
+	}
+
+	&--clickable {
+		cursor: pointer;
+	}
+
+	&--small {
+		@media all and ( min-width: 880px ) {
+			width: 25%;
+		}
+	}
+
+	&--medium {
+		@media all and ( min-width: 880px ) {
+			width: 45%;
+		}
 	}
 }
 
@@ -44,6 +66,17 @@
 	}
 }
 
+.card__icon {
+	align-self: center;
+	position: relative;
+    top: -2.2em;
+	width: 2.5em;
+	height: 2.5em;
+    background-color: #FCCA46;
+    padding: .5em;
+    border-radius: 50%;
+}
+
 .card__image {
 	align-self: center;
 	width: 12em;
@@ -56,6 +89,11 @@
 
     &--no-margin {
     	margin: 0;
+    }
+
+    &--small {
+    	width: 9em;
+    	height: 9em;
     }
 }
 
