@@ -13,7 +13,7 @@ exports = module.exports = function(req, res) {
     	.where('url', req.originalUrl)
 		.exec()
 		.then(function (successStory) {
-			// Find the target story for the current page and store the object in locals.targetStory
+			// Find the target story for the current page and store the object in locals for access during templating
 			locals.story = successStory;
 			// Set the layout to render with the right sidebar
 			locals['render-with-sidebar'] = true;
