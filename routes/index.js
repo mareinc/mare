@@ -44,6 +44,7 @@ exports = module.exports = function(app) {
 	app.get('/'										, routes.views.main);
 	app.get('/page/*'								, routes.views.page);
 	app.get('/form/*'								, routes.views.form);
+	app.get('/events/'								, routes.views.events);
 	app.get('/events/*'								, routes.views.event);
 	app.get('/success-stories'						, routes.views.successStories);
 	app.get('/success-stories/*'					, routes.views.successStory);
