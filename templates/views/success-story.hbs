@@ -6,13 +6,12 @@
 
 <div class="card">
 	<h1 class="card__title">{{ story.heading }}</h1>
-		<div class="card__content--detail-view">
 	{{#if story.imageScaled}}
 	<img class="card__image card__image--no-margin" src="{{ story.imageScaled }}" alt="{{ story.heading }}">
 	{{/if}}
 	<div class="card__content">
 		<article class="card__text">{{{ story.content }}}</article>
-		</div>
+	</div>
 	<div class="card__action">
 		<button class="card__button" data-url="/success-stories">Back to All Stories</button>
 	</div>
