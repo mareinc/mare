@@ -29,7 +29,7 @@ exports = module.exports = function(req, res) {
 				.where('parent', slideshowId)
 				.exec()
 				.then(function (slides) {
-					/* TODO: Can possible remove slide order if I use sortable in the Model.  See DB section of the documentation */
+					/* TODO: Can possibly remove slide order if I use sortable in the Model.  See DB section of the documentation */
 					locals.slides = _.sortBy(slides, function(slide) { return +slide.order; });
 
 				}).then(function() {

@@ -10,7 +10,7 @@ exports = module.exports = function(req, res) {
 
 	var view 	= new keystone.View(req, res),
 		locals 	= res.locals,
-		url 	= req.originalUrl.replace("/form/", "");
+		url 	= req.originalUrl.replace('/form/', '');
 
 	// objects with additional search parameters
 	var raceOptions			= { other: true },
