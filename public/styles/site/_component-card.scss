@@ -12,17 +12,7 @@
 	border-radius: 2px;
 	padding: 1em;
 	margin-bottom: 1.5em;
-
-	&--info {
-		border-left: 1.5em solid #FDB127;
-		box-shadow: 1px;
-		padding-top: 0.25em;
-		padding-bottom: 0.25em;
-	}
-
-	&--clickable {
-		cursor: pointer;
-	}
+	overflow: hidden;
 
 	&--small {
 		@media all and ( min-width: 880px ) {
@@ -34,6 +24,10 @@
 		@media all and ( min-width: 880px ) {
 			width: 45%;
 		}
+	}
+
+	&--clickable {
+		cursor: pointer;
 	}
 }
 
@@ -58,6 +52,14 @@
 	display: flex;
 	flex-wrap: wrap;
 	width: 100%;
+
+	&--border-top {
+
+	}
+
+	&--hidden {
+		height: 0;
+	}
 }
 
 .card__overview {
