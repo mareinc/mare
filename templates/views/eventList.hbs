@@ -1,11 +1,19 @@
-<div class="card card--info">
+<div class="info-card info-card--warning">
 
-	{{> events-general-info}}
-
+	{{#if showMAPPTrainings}} {{> events-mapp-training-info}} {{/if}}
 	{{#if showAdoptionParties}} {{> events-adoption-party-info}} {{/if}}
 
 </div>
 
+{{#if noEvents}}
+
+<div class="info-card info-card--centered info-card--spacious">
+	<div class="info-card__text">
+		<p class="info-card__text">There are no upcoming events, please check back later.</p>
+	</div>
+</div>
+
+{{else}}
 
 <div class="card-group">
 
@@ -43,14 +51,19 @@
 			</section>
 		</div>
 		<section class="card__button-group card__button-group--multiple-buttons">
-			<button class="card__button" data-url="{{ url }}">Read Full Story</button>
+			<button class="card__button" data-url="{{ url }}">View Details</button>
 			{{#if ../user}}
 			<button class="card__button {{#if attended}} card__button--unregister" {{/if}} data-event-id="{{ _id }}">{{#if attended}} Unregister {{else}} Register {{/if}}</button>
 			{{/if}}
 		</section>
 
-		{{#if ../user.isAdmin}}
-		<aside class="card__list-group">
+		<section class="card__content-group card__content-group--border-top card__content-group--hidden">
+			{{{description}}}
+			Contact: {{#if contact.email}} {{ contact.email }} {{else}} {{ contactEmail }} {{/if}}
+		</section>
+
+		{{#if ../isAdmin}}
+		<aside class="card__content-group card__content-group--border-top card__content-group--hidden">
 			<section class="card__list-container">
 				{{#if hasCSCAttendees}}
 				<h4 class="card__list-title">Staff</h4>
@@ -125,4 +138,4 @@
 
 </div>
 
-{{!-- TODO: IF THERE ARE NO EVENTS WE NEED TO DISPLAY A MESSAGE --}}
+{{/if}}

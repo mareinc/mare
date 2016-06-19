@@ -25,7 +25,7 @@ exports = module.exports = function(req, res) {
 
 	switch(targetList) {
 		case 'adoption-parties'		: eventType = 'MARE adoption parties & information events'; locals.showAdoptionParties = true; break;
-		case 'mapp-trainings'		: eventType = 'MAPP trainings'; locals.showMAPPTraining = true; break;
+		case 'mapp-trainings'		: eventType = 'MAPP trainings'; locals.showMAPPTrainings = true; break;
 		case 'fundraising-events'	: eventType = 'fundraising events'; locals.showFundraisingEvents = true; break;
 		case 'agency-info-meetings'	: eventType = 'agency information meetings'; locals.showAgencyInfoMeetings = true; break;
 		case 'other-trainings'		: eventType = 'other opportunities & trainings'; locals.showOtherTrainings = true; break;
@@ -52,7 +52,9 @@ exports = module.exports = function(req, res) {
 		.then(function (events) {
 			// Determine if the user is an administrator. We want to display the event attendees if they are
 			req.user = req.user || {};
-			req.user.isAdmin = req.user && req.user.userType === 'admin' ? true : false;
+			locals.isAdmin = req.user && req.user.userType === 'admin' ? true : false;
+			// If there are no events to display, we need to capture that information for rendering
+			locals.noEvents = events.length > 0 ? false : true;
 			// An array to hold all events for use during templating
 			locals.events = [];
 			// A set of options to define how truncation will be handled
@@ -95,6 +97,7 @@ exports = module.exports = function(req, res) {
 						family.fullName = family.contact1.name.full;
 					}
 				});
+				console.log(event);
 
 				// Store all events in an array on locals to expose them during templating
 				locals.events.push(event);
