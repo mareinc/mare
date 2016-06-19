@@ -17,7 +17,7 @@ exports = module.exports = function(req, res) {
 			locals.stories = [];
 
 			var truncateOptions = {
-				targetLength: 400,
+				targetLength: 400
 			}
 
 			// Loop through all success stories
