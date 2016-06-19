@@ -1,0 +1,128 @@
+<div class="card card--info">
+
+	{{> events-general-info}}
+
+	{{#if showAdoptionParties}} {{> events-adoption-party-info}} {{/if}}
+
+</div>
+
+
+<div class="card-group">
+
+	{{#each events}}
+
+	<div class="card">
+		<h2 class="card__title">{{ name }}</h2>
+		<div class="card__content">
+			<section class="card__content-group">
+				<span class="card__overview">
+					{{#if date}}
+					<img src="../images/icon-wednesdays-child.png" class="card__overview-image">
+					<span class="card__overview-text">{{ date }}</span>
+					{{/if}}
+				</span>
+				<span class="card__overview">
+					{{#if address}}
+					<img src="../images/icon-wednesdays-child.png" class="card__overview-image">
+					<address class="card__overview-text">
+						{{ address.street1 }} {{ address.street2 }}<br>
+						{{ address.city }}, {{ address.state.state }} {{ address.zipCode }}
+					</address>
+					{{/if}}
+				</span>
+				<span class="card__overview">
+					{{#if startTime}}
+					<img src="../images/icon-wednesdays-child.png" class="card__overview-image">
+					<span class="card__overview-text">{{ startTime }} - {{ endTime }}</span>
+					{{/if}}
+				</span>
+				<span class="card__overview">
+					<img src="../images/icon-wednesdays-child.png" class="card__overview-image">
+					<span class="card__overview-text">Click “More Info” below for registration and contact info</span>
+				</span>
+			</section>
+		</div>
+		<section class="card__button-group card__button-group--multiple-buttons">
+			<button class="card__button" data-url="{{ url }}">Read Full Story</button>
+			{{#if ../user}}
+			<button class="card__button {{#if attended}} card__button--unregister" {{/if}} data-event-id="{{ _id }}">{{#if attended}} Unregister {{else}} Register {{/if}}</button>
+			{{/if}}
+		</section>
+
+		{{#if ../user.isAdmin}}
+		<aside class="card__list-group">
+			<section class="card__list-container">
+				{{#if hasCSCAttendees}}
+				<h4 class="card__list-title">Staff</h4>
+				<ul class="card__list">
+				{{/if}}
+					{{#each cscAttendees}}
+					<li class="card__list-item">{{ name.full }}</li>
+					{{/each}}
+				{{#if hasCSCAttendees}}
+				</ul>
+				{{/if}}
+			</section>
+
+			<section class="card__list-container">
+				{{#if hasSocialWorkerAttendees}}
+				<h4 class="card__list-title">Social Workers</h4>
+				<ul class="card__list">
+				{{/if}}
+					{{#each socialWorkerAttendees}}
+					<li class="card__list-item">{{ name.full }}</li>
+					{{/each}}
+				{{#if hasSocialWorkerAttendees}}
+				</ul>
+				{{/if}}
+			</section>
+
+			<section class="card__list-container">
+				{{#if hasChildAttendees}}
+				<h4 class="card__list-title">Children</h4>
+				<ul class="card__list">
+				{{/if}}
+					{{#each childAttendees}}
+					<li class="card__list-item">{{ name.full }}</li>
+					{{/each}}
+				{{#if hasChildAttendees}}
+				</ul>
+				{{/if}}
+			</section>
+
+			<section class="card__list-container">
+				{{#if hasFamilyAttendees}}
+				<h4 class="card__list-title">Families</h4>
+				<ul class="card__list">
+				{{/if}}
+					{{#each familyAttendees}}
+					<li class="card__list-item">{{ fullName }}</li>
+					{{/each}}
+				{{#if hasFamilyAttendees}}
+				</ul>
+				{{/if}}
+			</section>
+
+			<section class="card__list-container">
+				{{#if hasSiteVisitorAttendees}}
+				<h4 class="card__list-title">Site Visitors</h4>
+				<ul class="card__list">
+				{{/if}}
+					{{#each siteVisitorAttendees}}
+					<li class="card__list-item">{{ name.full }}</li>
+					{{/each}}
+				{{#if hasSiteVisitorAttendees}}
+				</ul>
+				{{/if}}
+			</section>
+		</aside>
+
+		{{/if}}
+
+	</div>
+
+	{{/each}}
+
+</div>
+
+{{!-- TODO: IF THERE ARE NO EVENTS WE NEED TO DISPLAY A MESSAGE --}}
