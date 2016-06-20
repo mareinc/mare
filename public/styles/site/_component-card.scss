@@ -12,7 +12,6 @@
 	border-radius: 2px;
 	padding: 1em;
 	margin-bottom: 1.5em;
-	overflow: hidden;
 
 	&--small {
 		@media all and ( min-width: 880px ) {
@@ -52,6 +51,7 @@
 	display: flex;
 	flex-wrap: wrap;
 	width: 100%;
+	overflow: hidden;
 
 	&--border-top {
 
