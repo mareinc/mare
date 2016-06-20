@@ -43,15 +43,53 @@ OutsideContact.add( 'General Information', {
 		zipCode: { type: Types.Text, label: 'zip code', initial: true }
 	}
 
+}, { heading: 'Relationship Maps', hidden: true }, {
+
+	isVolunteer: { type: Types.Boolean, hidden: true, noedit: true }
+
 });
 
 // Pre Save
 OutsideContact.schema.pre('save', function(next) {
 	'use strict';
+
+	var model			= this,
+		mailingLists	= this.type;
+
 	// Populate the full name string for better identification when linking through Relationship field types
 	this.name.full = this.name.first + ' ' + this.name.last;
+	// Reset the isVolunteer flag to allow a fresh check every save
+	this.isVolunteer = false;
 
-	next();
+	// Loop through each of the mailing lists the user should be added to and add them.  Async allows all assignments
+	// to happen in parallel before handling the result.
+	async.each(mailingLists, function(listID, callback) {
+		MailingList.model.findById(listID)
+				.exec()
+				.then(function(result) {
+					// Events have outside contacts who are volunteers listed, we need to capture a reference to which outside contacts are volunteers
+					if(result.mailingList === 'volunteers') {
+						model.isVolunteer = true;
+					}
+
+					callback();
+
+				}, function(err) {
+					console.log(err);
+					callback();
+				});
+
+	}, function(err){
+			// if anything produces an error, err will equal that error
+			if( err ) {
+				// One of the iterations produced an error.  All processing will now stop.
+				console.log('an error occurred saving the outside contact to one or more mailing lists');
+				next();
+			} else {
+				console.log('outside contact saved to all email lists successfully');
+				next();
+			}
+	});
 });
 
 // Post Save
