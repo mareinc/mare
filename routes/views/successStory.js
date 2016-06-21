@@ -1,6 +1,6 @@
 var keystone 		= require('keystone'),
-	SuccessStory	= keystone.list('Success Story'),
-	_ = require('underscore');
+	_				= require('underscore'),
+	SuccessStory	= keystone.list('Success Story');
 
 exports = module.exports = function(req, res) {
     'use strict';
@@ -9,6 +9,7 @@ exports = module.exports = function(req, res) {
     	locals 	= res.locals;
 
     /* TODO: Change this to an async function */
+    /* TODO: Add error handling so the page doesn't hang if we can't find the event */
     SuccessStory.model.findOne()
     	.where('url', req.originalUrl)
 		.exec()
