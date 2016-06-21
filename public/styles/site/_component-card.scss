@@ -47,6 +47,10 @@
 	}
 }
 
+.card__content > p {
+
+}
+
 .card__content-group {
 	display: flex;
 	flex-wrap: wrap;
@@ -55,10 +59,6 @@
 
 	&--border-top {
 
-	}
-
-	&--hidden {
-		height: 0;
 	}
 }
 
