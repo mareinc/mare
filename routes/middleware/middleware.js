@@ -66,11 +66,11 @@ exports.initLocals = function(req, res, next) {
 			{ title: 'Search for Children & Families', href: '/page/search-for-children-and-families' }
 		]},
 		{ title: 'Events', subMenu: [
-			{ title: 'MARE Adoption Parties & Information Events', href: '/page/mare-adoption-parties-and-information-events'},
-			{ title: 'MAPP Training', href: '/page/mapp-training' },
-			{ title: 'Agency Information Meetings', href: '/page/agency-information-meetings' },
-			{ title: 'Other Opportunities & Trainings', href: '/page/other-opportunities-and-trainings' },
-			{ title: 'Fundraising Events', href: '/page/fundraising-events' }
+			{ title: 'MARE Adoption Parties & Information Events', href: '/events/adoption-parties/'},
+			{ title: 'MAPP Training', href: '/events/mapp-trainings/' },
+			{ title: 'Agency Information Meetings', href: '/events/agency-info-meetings/' },
+			{ title: 'Other Opportunities & Trainings', href: '/events/other-trainings/' },
+			{ title: 'Fundraising Events', href: '/events/fundraising-events/' }
 		]},
 		{ title: 'Ways to Help', subMenu: [
 			{ title: 'Why give?', href: '/page/why-give' },
