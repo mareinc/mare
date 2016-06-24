@@ -1,7 +1,7 @@
 (function () {
     'use strict';
 
-    mare.views.SuccessStory = Backbone.View.extend({
+    mare.views.SuccessStories = Backbone.View.extend({
         el: 'body',
 
         events: {

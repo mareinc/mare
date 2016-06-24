@@ -35,6 +35,10 @@ var routes = {
 	views: importRoutes('./views')
 };
 
+// Create arrays of routes for complicated sub-routing
+var eventListRoutes = ['/events/adoption-parties/', '/events/mapp-trainings/', '/events/fundraising-events/', '/events/agency-info-meetings/', '/events/other-trainings/'],
+	eventRoutes		= ['/events/adoption-parties/*', '/events/mapp-trainings/*', '/events/fundraising-events/*', '/events/agency-info-meetings/*', '/events/other-trainings/*'];
+
 // Setup Route Bindings
 exports = module.exports = function(app) {
 
@@ -44,10 +48,11 @@ exports = module.exports = function(app) {
 	app.get('/'										, routes.views.main);
 	app.get('/page/*'								, routes.views.page);
 	app.get('/form/*'								, routes.views.form);
+	app.get(eventListRoutes							, routes.views.eventList);
+	app.get(eventRoutes								, routes.views.event);
 	app.get('/events'								, routes.views.eventCategories);
-	app.get('/events/*'								, routes.views.eventList);
-	app.get('/success-stories'						, routes.views.successStories);
 	app.get('/success-stories/*'					, routes.views.successStory);
+	app.get('/success-stories'						, routes.views.successStories);
 	app.get('/waiting-child-profiles'				, routes.views.waitingChildProfiles);
 	app.get('/register'								, routes.views.register);
 	app.get('/preferences'							, middleware.requireUser, routes.views.preferences);
