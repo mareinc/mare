@@ -15,7 +15,7 @@ var keystone				= require('keystone'),
 
 exports.getAllRegions = function getAllRegions(req, res, done) {
 
-	req.locals = res.locals || {};
+	req.locals = res.locals || {}; /* TODO: This line (which appears in lots of services) might not be needed, check it during refactor */
 	var locals = res.locals;
 
 	Region.model.find()
