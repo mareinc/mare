@@ -22,6 +22,7 @@ var keystone				= require('keystone'),
 	middleware				= require('./middleware/middleware'),
 	registrationMiddleware	= require('./middleware/register'),
 	childService			= require('./middleware/service_child'),
+	eventService			= require('./middleware/service_event'),
 	familyService			= require('./middleware/service_family'),
 	permissionsService		= require('./middleware/service_permissions'),
 	importRoutes			= keystone.importer(__dirname);
@@ -53,7 +54,7 @@ exports = module.exports = function(app) {
 	app.get(eventRoutes								, routes.views.event);
 	app.get('/success-stories/'						, routes.views.successStories);
 	app.get('/success-stories/*'					, routes.views.successStory);
-	app.get('/waiting-child-profiles'				, routes.views.waitingChildProfiles);
+	app.get('/waiting-child-profiles'				, routes.views.waitingChildProfiles); /* TODO: Update to match other routes (end with /).  Follow Registration page example to get Backbone routes working with and without trailing '/' */
 	app.get('/preferences/'							, middleware.requireUser, routes.views.preferences);
 
 	app.get('/register/'							, routes.views.register);
@@ -70,6 +71,7 @@ exports = module.exports = function(app) {
 	app.post('/services/add-bookmark'				, familyService.addChildBookmark);
 	app.post('/services/remove-bookmark'			, familyService.removeChildBookmark);
 	app.post('/services/get-gallery-permissions'	, permissionsService.getGalleryPermissions);
+	app.post('/services/register-for-event'			, eventService.addUser);
 
 	// NOTE: To protect a route so that only admins can see it, use the requireUser middleware:
 	// app.get('/protected', middleware.requireUser, routes.views.protected);
