@@ -28,7 +28,7 @@
     "gulp-uglify": "^1.2.0",
     "gulp-watch": "~4.2.4",
     "handlebars": "~2.0.0",
-	"keystone": "https://github.com:keystonejs/keystone.git#a0d9a42e1c84b7987cbc9ae62eef8a1153d3bd25",
+	"keystone": "https://github.com/keystonejs/keystone.git#a0d9a42e1c84b7987cbc9ae62eef8a1153d3bd25",
     "moment": "~2.10.2",
     "newrelic": "^1.20.0",
     "node-sass": "~3.3.3",
