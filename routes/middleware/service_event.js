@@ -50,8 +50,8 @@ exports.addUser = function addUser(req, res, next) {
 		function(done) { exports.getTargetEventGroup(req, res, done); }
 	], function() {
 		// Store a reference to the array of user IDs that match the current user's type
-		var attendees = locals.event.get(locals.eventGroup);
-		var eventGroup = locals.eventGroup;
+		var attendees = locals.event.get(locals.eventGroup),
+			eventGroup = locals.eventGroup;
 		// Only add the user if they haven't already been saved.  This is unlikely, and would require a bad state in the system,
 		// but the check has been added for an extra layer of safety
 		if(attendees.indexOf(userId) === -1) {
@@ -65,3 +65,31 @@ exports.addUser = function addUser(req, res, next) {
 		}
 	});
 };
+
+exports.removeUser = function removeUser(req, res, next) {
+
+	var locals = res.locals,
+		userId = req.user.get('_id'),
+		eventId = req.body.eventId;
+
+	async.series([
+		function(done) { exports.getEventById(res, done, eventId); },
+		function(done) { exports.getTargetEventGroup(req, res, done); }
+	], function() {
+		// Store a reference to the array of user IDs that match the current user's type
+		var attendees = locals.event.get(locals.eventGroup),
+			eventGroup = locals.eventGroup,
+			userIndex = attendees.indexOf(userId);
+		// Only remove the user if they are attending.  This is unlikely, and would require a bad state in the system,
+		// but the check has been added for an extra layer of safety
+		if(attendees.indexOf(userId) !== -1) {
+			// Remove the user from the group of users in the event that matches their userType
+			attendees.splice(userIndex, userIndex);
+			// Save the event
+			locals.event.save();
+			res.send('the user has been removed successfully');
+		} else {
+			res.send('the user was already removed');
+		}
+	});
+}

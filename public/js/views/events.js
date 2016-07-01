@@ -17,15 +17,33 @@
         },
 
         register: function register() {
-        	console.log('register');
 
-			var eventId = $(event.target).data('event-id');
+			var options = {
+				eventId: $(event.target).data('event-id'),
+				service: 'register-for-event'
+			}
+
+			this.callEventService(options);
+        },
+
+        unregister: function unregister() {
+
+			var options = {
+				eventId: $(event.target).data('event-id'),
+				service: 'unregister-for-event'
+			}
+
+			this.callEventService(options);
+
+        },
+
+		callEventService: function callEventService(options) {
 
 			$.ajax({
-				url: '/services/register-for-event',
+				url: '/services/' + options.service,
 				type: 'POST',
 				data: {
-					eventId: eventId
+					eventId: options.eventId
 				}
 			}).done(function(response) {
 				console.log(response);
@@ -38,11 +56,7 @@
 				// TODO: Show an error message to the user
 				console.log(err);
 			});
-        },
-
-        unregister: function unregister() {
-        	console.log('unregister');
-        }
+		}
 
 	});
 }());
