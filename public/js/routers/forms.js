@@ -9,6 +9,8 @@
 
 		loadFormPage: function() {
 			console.log('loaded forms page router');
+			// Load the view for the right sidebar
+			mare.views.sidebar = mare.views.sidebar || new mare.views.Sidebar();
 		}
 
 	});

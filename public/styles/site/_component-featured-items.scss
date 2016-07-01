@@ -1,20 +1,20 @@
-.main .featured-items {
+.featured-items {
 	margin: 15px 0;
     padding: 0;
 }
 
-.main .featured-items .featured-item {
+.featured-items .featured-item {
     position: relative;
 	display: block;
 	margin-bottom: 15px;
 }
 
-.main .featured-item > a {
+.featured-item > a {
     text-decoration: none;
     color: $dark-text-color;
 }
 
-.main .featured-item img {
+.featured-item img {
     width: 100%;
 }
 
@@ -24,41 +24,41 @@
     margin-top: -3px;
 }
 
-.main .featured-item:nth-child(1) .featured-item-description {
+.featured-item:nth-child(1) .featured-item-description {
 	background-color: $description-background-color-5;
 }
 
-.main .featured-item:nth-child(2) .featured-item-description {
+.featured-item:nth-child(2) .featured-item-description {
 	background-color: $description-background-color-6;
 }
 
-.main .featured-item:nth-child(3) .featured-item-description {
+.featured-item:nth-child(3) .featured-item-description {
 	background-color: $description-background-color-7;
 }
 
-.main .featured-item .featured-item-title,
-.main .featured-item .featured-item-summary,
-.main .featured-item .featured-item-learn-more {
+.featured-item .featured-item-title,
+.featured-item .featured-item-summary,
+.featured-item .featured-item-learn-more {
 	display: block;
 }
 
-.main .featured-item .featured-item-title {
+.featured-item .featured-item-title {
 	text-transform: uppercase;
     font-weight: 600;
     font-size: 1.1em;
     margin-bottom: 5px;
 }
 
-.main .featured-item .featured-item-summary {
+.featured-item .featured-item-summary {
 	font-style: italic;
 	margin-bottom: 5px;
 }
 
-.main .featured-item .featured-item-learn-more {
+.featured-item .featured-item-learn-more {
 
 }
 
-.main .featured-item .featured-item-learn-more:after {
+.featured-item .featured-item-learn-more:after {
 	content: "";
     position: absolute;
     height: 0;
@@ -71,7 +71,7 @@
 
 @media all and (min-width: 660px) {
 
-    .main .featured-items {
+    .featured-items {
 
         .featured-item {
             display: inline-block;

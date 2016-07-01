@@ -1,8 +1,122 @@
-{{!< default}}
-<div class="main">
+<div class="info-card info-card--warning">
 
-  	<h1>{{{ targetEvent.name }}}</h1>
-	<div>{{{ targetEvent.type.eventType }}}</div>
-	<div>{{{ targetEvent.description }}}</div>
+	{{#if showMAPPTrainings}} {{> events-mapp-training-info}} {{/if}}
+	{{#if showAdoptionParties}} {{> events-adoption-party-info}} {{/if}}
+
+	<section class="card__button-group card__button-group--single-button">
+		<button class="card__button events__show-categories-button" data-url="/events">Back to All Events</button>
+	</section>
 
 </div>
+
+{{#if eventMissing}}
+
+<div class="info-card info-card--centered info-card--spacious">
+	<div class="info-card__text">
+		<p class="info-card__text">This event is no longer active.</p>
+	</div>
+</div>
+
+{{else}}
+
+<div class="card">
+	<h2 class="card__title">{{ event.name }}</h2>
+	<div class="card__content">
+		<div class="events__event-description">
+			{{{ event.description }}}
+		</div>
+	</div>
+	<section class="card__content-group">
+		<time class="events__time">{{ event.dateTimeString }}</time>
+		<address class="events__address">
+			{{ event.address.street1 }}<br>
+			{{#if events.address.street2}} {{ event.address.street2 }}<br> {{/if}}
+			{{#if events.address.city}} {{ event.address.city }},{{/if}} {{ event.address.state.state }} {{ event.address.zipCode }}
+		</address>
+	</section>
+	<section class="card__content-group events__contact">
+		{{#if event.contact.name.full}}
+		For more information, {{#if event.contact.phone.work}}call{{else}}contact{{/if}} {{ event.contact.name.full }} at {{#if event.contact.phone.work}} {{ event.contact.phone.work }} {{else}} <a href="mailto:{{ event.contact.email }}" class="events__contact-link">{{ event.contact.email}}</a> {{/if}}
+		{{else}}
+		For more information, contact <a href="mailto:{{ event.contactEmail }}" class="events__contact-link">{{ event.contactEmail}}</a>
+		{{/if}}
+	</section>
+	<section class="card__button-group card__button-group--single-button">
+		{{#if user}}
+		<button class="card__button {{#if event.attended}} card__button--unregister events__unregister-button {{else}} events__register-button {{/if}}" data-event-id="{{ event._id }}">{{#if event.attended}} Unregister {{else}} Register {{/if}}</button>
+		{{/if}}
+	</section>
+
+	{{#if isAdmin}}
+	<aside class="card__content-group card__content-group--border-top hidden">
+		<section class="card__list-container">
+			{{#if event.hasCSCAttendees}}
+			<h4 class="card__list-title">Staff</h4>
+			<ul class="card__list">
+			{{/if}}
+				{{#each event.cscAttendees}}
+				<li class="card__list-item">{{ name.full }}</li>
+				{{/each}}
+			{{#if event.hasCSCAttendees}}
+			</ul>
+			{{/if}}
+		</section>
+
+		<section class="card__list-container">
+			{{#if event.hasSocialWorkerAttendees}}
+			<h4 class="card__list-title">Social Workers</h4>
+			<ul class="card__list">
+			{{/if}}
+				{{#each event.socialWorkerAttendees}}
+				<li class="card__list-item">{{ name.full }}</li>
+				{{/each}}
+			{{#if event.hasSocialWorkerAttendees}}
+			</ul>
+			{{/if}}
+		</section>
+
+		<section class="card__list-container">
+			{{#if event.hasChildAttendees}}
+			<h4 class="card__list-title">Children</h4>
+			<ul class="card__list">
+			{{/if}}
+				{{#each event.childAttendees}}
+				<li class="card__list-item">{{ name.full }}</li>
+				{{/each}}
+			{{#if event.hasChildAttendees}}
+			</ul>
+			{{/if}}
+		</section>
+
+		<section class="card__list-container">
+			{{#if event.hasFamilyAttendees}}
+			<h4 class="card__list-title">Families</h4>
+			<ul class="card__list">
+			{{/if}}
+				{{#each event.familyAttendees}}
+				<li class="card__list-item">{{ fullName }}</li>
+				{{/each}}
+			{{#if event.hasFamilyAttendees}}
+			</ul>
+			{{/if}}
+		</section>
+
+		<section class="card__list-container">
+			{{#if event.hasSiteVisitorAttendees}}
+			<h4 class="card__list-title">Site Visitors</h4>
+			<ul class="card__list">
+			{{/if}}
+				{{#each event.siteVisitorAttendees}}
+				<li class="card__list-item">{{ name.full }}</li>
+				{{/each}}
+			{{#if event.hasSiteVisitorAttendees}}
+			</ul>
+			{{/if}}
+		</section>
+	</aside>
+
+	{{/if}}
+
+</div>
+
+{{/if}}

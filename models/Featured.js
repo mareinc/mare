@@ -20,7 +20,6 @@ Featured.add({
 		title: { type: Types.Text, label: 'title', required: true, initial: true },
 		summary: { type: Types.Textarea, label: 'summary', initial: true },
 		image: { type: Types.CloudinaryImage, folder: 'featured/', selectPrefix: 'featured/', autoCleanup: true },
-		imageStretched: {type: Types.Url, hidden: true },
 		imageScaled: {type: Types.Url, hidden: true },
 		url: { type: Types.Url, noedit: true }
 	}
@@ -70,7 +69,6 @@ Featured.schema.pre('save', function(next) {
 				// self.aboutUs.summary = page[0].content.replace(/<\/?[^>]+(>|$)/g, '');
 				// self.aboutUs.summary = self.aboutUs.summary.substring(0, 200);
 				self.aboutUs.url = page[0].url;
-				self.aboutUs.imageStretched = self._.aboutUs.image.scale(400,250,{ quality: 80 });
 				self.aboutUs.imageScaled = self._.aboutUs.image.thumbnail(400,250,{ quality: 80 });
 
 			}, function(err) {
@@ -84,7 +82,6 @@ Featured.schema.pre('save', function(next) {
 		       		// self.successStory.summary = successStory[0].content.replace(/<\/?[^>]+(>|$)/g, '');
 		       		// self.successStory.summary = self.successStory.summary.substring(0, 200);
 		       		self.successStory.url = '/success-stories/';
-		       		self.successStory.imageStretched = self._.successStory.image.scale(400,250,{ quality: 80 });
 					self.successStory.imageScaled = self._.successStory.image.thumbnail(400,250,{ quality: 80 });
 
 			}, function(err) {
@@ -98,7 +95,6 @@ Featured.schema.pre('save', function(next) {
 					// self.upcomingEvent.summary = event[0].description.replace(/<\/?[^>]+(>|$)/g, '');
 					// self.upcomingEvent.summary = self.upcomingEvent.summary.substring(0, 200);
 					self.upcomingEvent.url = event[0].url;
-					self.upcomingEvent.imageStretched = self._.upcomingEvent.image.scale(400,250,{ quality: 80 });
 					self.upcomingEvent.imageScaled = self._.upcomingEvent.image.thumbnail(400,250,{ quality: 80 });
 
 					next();

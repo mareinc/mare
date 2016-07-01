@@ -42,7 +42,7 @@ SiteVisitor.add('General Information', {
 
 	infoPacket: {
 		packet: { type: Types.Select, options: 'English, Spanish, none', label: 'Packet', initial: true },
-		date: { type: Types.Text, label: 'date info packet sent', note: 'mm/dd/yyyy', initial: true },
+		date: { type: Types.Date, label: 'date info packet sent', format: 'MM/DD/YYYY', initial: true },
 		notes: { type: Types.Textarea, label: 'notes', initial: true }
 	}
 
@@ -53,7 +53,9 @@ SiteVisitor.add('General Information', {
 
 });
 
-SiteVisitor.relationship({ path: 'mailing-lists', ref: 'Mailing List', refPath: 'siteUserAttendees' });
+// Set up relationship values to show up at the bottom of the model if any exist
+SiteVisitor.relationship({ ref: 'Mailing List', refPath: 'siteUserAttendees', path: 'mailing-lists', label: 'mailing lists' });
+SiteVisitor.relationship({ ref: 'Event', refPath: 'siteVisitorAttendees', path: 'events', label: 'events' });
 
 // Pre Save
 User.schema.pre('save', function(next) {
@@ -93,7 +95,7 @@ SiteVisitor.schema.methods.sendNotificationEmail = function(callback) {
     		templateEngine: require('handlebars'),
     		templateName: 'welcome'
   	}).send({
-		to: ['tommysalsa@gmail.com', 'jared.j.collier@gmail.com'],
+		to: ['jared.j.collier@gmail.com'],
 		from: {
 			name: 'MARE',
 			email: 'info@mareinc.org'

@@ -15,6 +15,8 @@
 		initialize: function() {
 			// Load the view for the registration page as a whole
 			mare.views.registration = mare.views.registration || new mare.views.Registration();
+			// Load the view for the right sidebar
+			mare.views.sidebar = mare.views.sidebar || new mare.views.Sidebar();
 		},
 
 		loadSiteVisitorRegistration: function loadSiteVisitorRegistration() {

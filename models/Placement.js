@@ -6,7 +6,8 @@ var Placement = new keystone.List('Placement');
 
 // Create fields
 Placement.add('Placement', {
-    placementDate: { type: Types.Text, label: 'placement date', note: 'mm/dd/yyyy', initial: true },
+
+    placementDate: { type: Types.Date, label: 'placement date', format: 'MM/DD/YYYY', initial: true },
     child: { type: Types.Relationship, label: 'child', ref: 'Child', required: true, initial: true },
     childPlacedWithMAREFamily: { type: Types.Boolean, label: 'child placed with MARE family', initial: true },
     placedWithFamily: { type: Types.Relationship, label: 'family', ref: 'Family', dependsOn: { childPlacedWithMAREFamily: true }, required: true, initial: true },
@@ -42,7 +43,9 @@ Placement.add('Placement', {
     }
 
 }, 'Disruption', {
-    disruptionDate: { type: Types.Text, label: 'disruption date', note: 'mm/dd/yyyy', initial: true }
+
+    disruptionDate: { type: Types.Date, label: 'disruption date', format: 'MM/DD/YYYY', initial: true }
+
 });
 
 // Define default columns in the admin interface and register the model

@@ -33,5 +33,7 @@ exports.create = {
 		mailingList: 'LGBT families'
 	}, {
 		mailingList: 'experienced families'
+	}, {
+		mailingList: 'volunteers'
 	}]
 };

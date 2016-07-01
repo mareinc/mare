@@ -5,31 +5,24 @@ var keystone = require('keystone'),
 var InternalNotes = new keystone.List('Internal Note', {
     track: true,
     autokey: { path: 'key', from: 'slug', unique: true },
-    defaultSort: 'date'
+    defaultSort: '-date'
 });
 
 // Create fields
-InternalNotes.add({
+InternalNotes.add( 'Target', {
 
-    child: { type: Types.Relationship, label: 'child', ref: 'Child', initial: true, },
+    child: { type: Types.Relationship, label: 'child', ref: 'Child', initial: true },
     family: { type: Types.Relationship, label: 'family', ref: 'Family', initial: true },
-    date: { type: Types.Text, label: 'note date', note: 'mm/dd/yyyy', required: true, noedit: true, initial: true, },
-    employee: { type: Types.Relationship, label: 'note creator', ref: 'Admin', required: true, noedit: true, initial: true, },
-    note: { type: Types.Textarea, label: 'note', required: true, initial: true, }
+    socialWorker: { type: Types.Relationship, label: 'social worker', ref: 'Social Worker', initial: true }
 
-});
+}, 'Note Details', {
 
-// Pre Save
-InternalNotes.schema.pre('save', function(next) {
-    'use strict';
+    date: { type: Types.Date, label: 'note date', format: 'MM/DD/YYYY', required: true, noedit: true, initial: true },
+    employee: { type: Types.Relationship, label: 'note creator', ref: 'Admin', required: true, noedit: true, initial: true },
+    note: { type: Types.Textarea, label: 'note', required: true, initial: true }
 
-    // generate an internal ID based on the current highest internal ID
-    // get the employee who is currently logged in and save ID to employee
-
-    // TODO: Assign a registration number if one isn't assigned
-    next();
 });
 
 // Define default columns in the admin interface and register the model
-InternalNotes.defaultColumns = 'date, child, family, note';
+InternalNotes.defaultColumns = 'date, note';
 InternalNotes.register();

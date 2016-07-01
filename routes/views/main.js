@@ -29,7 +29,7 @@ exports = module.exports = function(req, res) {
 				.where('parent', slideshowId)
 				.exec()
 				.then(function (slides) {
-					/* TODO: Can possible remove slide order if I use sortable in the Model.  See DB section of the documentation */
+					/* TODO: Can possibly remove slide order if I use sortable in the Model.  See DB section of the documentation */
 					locals.slides = _.sortBy(slides, function(slide) { return +slide.order; });
 
 				}).then(function() {
@@ -39,6 +39,9 @@ exports = module.exports = function(req, res) {
 
 							locals.featuredItems = featuredItems;
 
+							// Set the layout to render without the right sidebar
+							locals['render-with-sidebar'] = false;
+							// Render the view once all the data has been retrieved
 							view.render('main');
 							// TODO: If the necessary elements don't exist on the page, maybe render
 							//       a blank page to allow logging in and creating them

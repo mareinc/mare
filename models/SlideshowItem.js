@@ -10,6 +10,7 @@ var SlideshowItem = new keystone.List('Slideshow Item', {
 
 // Create fields
 SlideshowItem.add({
+
 	image: { type: Types.CloudinaryImage, folder: 'slideshow/', autoCleanup: true },
 	imageStretched: {type: Types.Url, hidden: true},
 	imageScaled: {type: Types.Url, hidden: true},
@@ -18,6 +19,7 @@ SlideshowItem.add({
 	subHeading: { type: Types.Text, label: 'sub-heading', initial: true },
 	guideLabel: { type: Types.Text, label: 'label', initial: true},
 	order: { type: Types.Number, label: 'order', initial: true }
+
 });
 
 // Pre Save

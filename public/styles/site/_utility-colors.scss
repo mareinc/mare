@@ -1,3 +1,6 @@
+// TODO: The words 'light' and 'dark' should appear at the end of the name, not the beginning for consistency
+// TODO: Alphebetize this list to make it easier to navigate
+
 $header-background-color: #FFFAC2;
 
 $footer-background-color: #FFFBD7;
@@ -23,6 +26,12 @@ $description-background-color-5: #8FCED6;
 $description-background-color-6: #6BADC8;
 $description-background-color-7: #F29F57;
 
+$callout-background-color-1: #56B8D0;
+$callout-background-color-2: #FBB03B;
+
+$callout-text-color-1: #3D3811;
+$callout-text-color-2: #66584D;
+
 $description-text-color: #544A65;
 
 $light-background-color: #FFFFFF;
@@ -42,10 +51,15 @@ $shadow-color-1: #616161;
 
 $required-color: #FF0000;
 
-$button-color-1: #66584D;
-$button-color-2: #404272;
-$button-color-light: #FFFFFF;
-$button-color-dark: #000000;
+$button-background-color-1: #66584D;
+$button-background-color-2: #404272;
+$button-background-color-3: #FBB03B;
+$button-background-color-light: #FFFFFF;
+$button-background-color-dark: #000000;
+
+$button-text-color-1: #66584D;
+$button-text-color-light: #FFFFFF;
+$button-text-color-dark: #000000;
 
 $form-color-1: #3EAAF5;
 $form-color-2: #FF7FAE;

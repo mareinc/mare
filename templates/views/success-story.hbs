@@ -1,0 +1,18 @@
+<div class="card card--info">
+	<p>Over the years, MARE has found permanent, loving families for thousands of children waiting in foster care. Read about a few of these phenomenal families who, in the course of making a difference in a child’s life, also had their own life-changing experiences.</p>
+
+	<p>If you have adopted with MARE’s help and have a success story to share, we want to hear from you. Please email your story and picture to Diane Tomaz, Director of Family Support Services, <a href="mailto:atdianet@MAREinc.org">atdianet@MAREinc.org</a>.</p>
+</div>
+
+<div class="card">
+	<h1 class="card__title">{{ story.heading }}</h1>
+	{{#if story.imageScaled}}
+	<img class="card__image card__image--no-margin" src="{{ story.imageScaled }}" alt="{{ story.heading }}">
+	{{/if}}
+	<div class="card__content">
+		<article class="card__text">{{{ story.content }}}</article>
+	</div>
+	<section class="card__button-group card__button-group--single-button">
+		<button class="card__button" data-url="/success-stories">Back to All Stories</button>
+	</section>
+</div>

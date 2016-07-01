@@ -10,7 +10,7 @@ exports = module.exports = function(req, res) {
 
 	var view 	= new keystone.View(req, res),
 		locals 	= res.locals,
-		url 	= req.originalUrl.replace("/form/", "");
+		url 	= req.originalUrl.replace('/form/', '');
 
 	// objects with additional search parameters
 	var raceOptions			= { other: true },
@@ -23,33 +23,36 @@ exports = module.exports = function(req, res) {
 		function(done) { listsService.getAllWaysToHearAboutMARE(req, res, done, waysToHearOptions) }
 	], function() {
 
-			switch(url) {
+		// Set the layout to render with the right sidebar
+		locals['render-with-sidebar'] = true;
 
-				case "adoption-party-family-registration-form":
-					view.render('forms/adoption-party.hbs');
-					break;
+		switch(url) {
 
-				case "adoption-party-social-worker-registration-form":
-					view.render('forms/adoption-party-social-worker.hbs');
-					break;
+			case "adoption-party-family-registration-form":
+				view.render('forms/adoption-party.hbs');
+				break;
 
-				case "agency-event-submission-form":
-					view.render('forms/agency-event-submission.hbs');
-					break;
+			case "adoption-party-social-worker-registration-form":
+				view.render('forms/adoption-party-social-worker.hbs');
+				break;
 
-				case "car-donation-form":
-					view.render('forms/car-donation.hbs');
-					break;
+			case "agency-event-submission-form":
+				view.render('forms/agency-event-submission.hbs');
+				break;
 
-				case "child-registration-form":
-					view.render('forms/child-registration.hbs');
-					break;
+			case "car-donation-form":
+				view.render('forms/car-donation.hbs');
+				break;
 
-				 case "information-request-form":
-					view.render('forms/information-request-form.hbs');
-					break;
-				// TODO: Create a custom 404 page
-				default: view.render('404');
-			}
+			case "child-registration-form":
+				view.render('forms/child-registration.hbs');
+				break;
+
+			 case "information-request-form":
+				view.render('forms/information-request-form.hbs');
+				break;
+			// TODO: Create a custom 404 page
+			default: view.render('404');
+		}
 	});
 };

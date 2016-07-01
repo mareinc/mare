@@ -1,0 +1,22 @@
+<nav class="main-nav">
+	<div class="content-wrapper">
+		<ul class="nav">
+			{{#each mainNav}}
+			<li {{#if lastMenu}}class="menu-item--last"{{/if}}>
+				{{#if subMenu}}
+				<a href="#" class="parent main-menu">{{ title }}</a>
+				<ul>
+					{{#each subMenu}}
+					<li>
+						<a href="{{ href }}">{{ title }}</a>
+					</li>
+					{{/each}}
+				</ul>
+				{{else}}
+				<a href="{{ href }}">{{ title }}</a>
+				{{/if}}
+			</li>
+			{{/each}}
+		</ul>
+	</div>
+</nav>

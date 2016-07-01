@@ -9,7 +9,12 @@ var Source = new keystone.List('Source', {
 
 // Create fields
 Source.add({
-	source: { type: Types.Text, label: 'source', required: true, initial: true }
+	source: { type: Types.Text, label: 'source', required: true, initial: true },
+	isMediaOutlet: { type: Types.Boolean, label: 'media outlet', initial: true },
+	isActiveMediaOutlet: { type: Types.Boolean, label: 'active media outlet', dependsOn: { isMediaOutlet: true }, initial: true },
+	mediaFrequency: { type: Types.Text, label: 'media frequency', dependsOn: { isMediaOutlet: true }, initial: true },
+	mediaType: { type: Types.Select, options: 'print, web, TV, radio', label: 'media type', dependsOn: { isMediaOutlet: true }, initial: true }
+
 });
 
 // Define default columns in the admin interface and register the model

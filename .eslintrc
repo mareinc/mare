@@ -96,7 +96,7 @@ rules:
   radix: "error"
   vars-on-top: "off"
   wrap-iife: "error"
-  yoda: "off"
+  yoda: "warn"
 
   # Strict
   strict: "off"
