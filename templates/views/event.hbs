@@ -41,14 +41,11 @@
 		For more information, contact <a href="mailto:{{ event.contactEmail }}" class="events__contact-link">{{ event.contactEmail}}</a>
 		{{/if}}
 	</section>
-	<section class="card__button-group card__button-group--single-button">
-		{{#if user}}
-		<button class="card__button {{#if event.attended}} card__button--unregister events__unregister-button {{else}} events__register-button {{/if}}" data-event-id="{{ event._id }}">{{#if event.attended}} Unregister {{else}} Register {{/if}}</button>
-		{{/if}}
-	</section>
 
 	{{#if isAdmin}}
-	<aside class="card__content-group card__content-group--border-top hidden">
+	<hr class="card__content-divider"></hr>
+	<aside class="card__content-group">
+		<h3 class="card__title">Attendees</h3>
 		<section class="card__list-container">
 			{{#if event.hasCSCAttendees}}
 			<h4 class="card__list-title">Staff</h4>
@@ -116,6 +113,12 @@
 	</aside>
 
 	{{/if}}
+
+	<section class="card__button-group card__button-group--single-button">
+		{{#if user}}
+		<button class="card__button {{#if event.attended}} card__button--unregister events__unregister-button {{else}} events__register-button {{/if}}" data-event-id="{{ event._id }}">{{#if event.attended}} Unregister {{else}} Register {{/if}}</button>
+		{{/if}}
+	</section>
 
 </div>
 
