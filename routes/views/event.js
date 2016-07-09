@@ -72,8 +72,11 @@ exports = module.exports = function(req, res) {
 				// Without converting to strings, these were both evaluating to Object which didn't allow for a clean comparison
 				var attendeeID = attendee._id.toString();
 				var userID = req.user._id.toString();
-				// Determine whether the user has already attended the event
-				event.attended = attendeeID === userID ? true : false;
+				// Determine whether the user is already attending the event
+				// We can't break out of the _.each, so only keep checking if true wasn't found
+				if(!event.attending) {
+					event.attending = attendeeID === userID ? true : false;
+				}
 			});
 
 			_.each(event.familyAttendees, function(family) {
