@@ -49,7 +49,7 @@
 		<section class="card__list-container">
 			{{#if event.hasCSCAttendees}}
 			<h4 class="card__list-title">Staff</h4>
-			<ul class="card__list">
+			<ul class="card__list" data-group="admin">
 			{{/if}}
 				{{#each event.cscAttendees}}
 				<li class="card__list-item">{{ name.full }}</li>
@@ -62,7 +62,7 @@
 		<section class="card__list-container">
 			{{#if event.hasSocialWorkerAttendees}}
 			<h4 class="card__list-title">Social Workers</h4>
-			<ul class="card__list">
+			<ul class="card__list" data-group="social worker">
 			{{/if}}
 				{{#each event.socialWorkerAttendees}}
 				<li class="card__list-item">{{ name.full }}</li>
@@ -88,7 +88,7 @@
 		<section class="card__list-container">
 			{{#if event.hasFamilyAttendees}}
 			<h4 class="card__list-title">Families</h4>
-			<ul class="card__list">
+			<ul class="card__list" data-group="family">
 			{{/if}}
 				{{#each event.familyAttendees}}
 				<li class="card__list-item">{{ fullName }}</li>
@@ -101,7 +101,7 @@
 		<section class="card__list-container">
 			{{#if event.hasSiteVisitorAttendees}}
 			<h4 class="card__list-title">Site Visitors</h4>
-			<ul class="card__list">
+			<ul class="card__list" data-group="site visitor">
 			{{/if}}
 				{{#each event.siteVisitorAttendees}}
 				<li class="card__list-item">{{ name.full }}</li>
@@ -116,7 +116,7 @@
 
 	<section class="card__button-group card__button-group--single-button">
 		{{#if user}}
-		<button class="card__button {{#if event.attended}} card__button--unregister events__unregister-button {{else}} events__register-button {{/if}}" data-event-id="{{ event._id }}">{{#if event.attended}} Unregister {{else}} Register {{/if}}</button>
+		<button class="card__button {{#if event.attending}} card__button--unregister events__unregister-button {{else}} events__register-button {{/if}}" data-event-id="{{ event._id }}">{{#if event.attending}} Unregister {{else}} Register {{/if}}</button>
 		{{/if}}
 	</section>
 
