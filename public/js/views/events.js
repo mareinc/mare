@@ -15,7 +15,7 @@
         navigate: function navigate(event) {
         	window.location.href = $(event.currentTarget).data('url');
         },
-
+		// TODO: There's no need to have a separate register and unregister function, simplify this file
         register: function register() {
 			// Store a reference to this for insde callbacks where context is lost
 			var view = this;
@@ -86,29 +86,55 @@
         },
 
 		callEventService: function callEventService(options) {
+			// Store a reference to this for insde callbacks where context is lost
+			var view = this;
 
 			$.ajax({
 				url: '/services/' + options.service,
 				type: 'POST',
+				dataType: 'json',
 				data: {
 					eventId: options.eventId
 				}
 			}).done(function(response) {
-				// resolve the appropriate promise showing that registration for the user has changed
-				if(options.action === 'register') {
-
-					mare.promises.registered.resolve();
-
-				} else if(options.action === 'unregister') {
-
-					mare.promises.unregistered.resolve();
-
-				}
+				// Add the user name to the appropriate list in the DOM
+				view.updateAttendeeList(response);
 
 			}).fail(function(err) {
 				// TODO: Show an error message to the user
 				console.log(err);
 			});
+		},
+
+		updateAttendeeList: function updateAttendeeList(response) {
+			// Grab the list of attendees matching the users type
+			var $group = $('.card__list[data-group*="' + response.group + '"]');
+
+			// resolve the appropriate promise showing that registration for the user has changed
+			if(response.action === 'register') {
+				// Resolve the promise allowing UI actions to reactivate
+				mare.promises.registered.resolve();
+				// Only edit the DOM if the user is an admin as they're the only users that can see the attendees
+				if(response.group === 'admin') {
+					// TODO: this should be in a template
+					// Create the DOM string to add
+					var newUserString = '<li class="card__list-item">' + response.name + '</li>';
+					// Add the users name to the appropriate list
+					$group.append(newUserString);
+				}
+
+			} else if(response.action === 'unregister') {
+				// TODO: This can be cleaned up dramatically by having a separate view for the list component
+				// Resolve the promise allowing UI actions to reactivate
+				mare.promises.unregistered.resolve();
+				// Only edit the DOM if the user is an admin as they're the only users that can see the attendees
+				if(response.group === 'admin') {
+					// Find the DOM element containing the user's name
+					var $userElement = $group.find('.card__list-item').filter(':contains("' + response.name + '")');
+					// Remove the DOM element containing the user's name
+					$userElement.remove();
+				}
+			}
 		},
 
 		bindRegisterButton: function bindRegisterButton() {
