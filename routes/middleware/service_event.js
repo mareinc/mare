@@ -40,9 +40,10 @@ exports.getTargetEventGroup = function getTargetEventGroup(req, res, done) {
  *	Frontend services
  */
 exports.addUser = function addUser(req, res, next) {
-
 	var locals = res.locals,
 		userId = req.user.get('_id'),
+		userName = req.user.get('name.full'),
+		userType = req.user.get('userType'),
 		eventId = req.body.eventId;
 
 	async.series([
@@ -50,18 +51,35 @@ exports.addUser = function addUser(req, res, next) {
 		function(done) { exports.getTargetEventGroup(req, res, done); }
 	], function() {
 		// Store a reference to the array of user IDs that match the current user's type
-		var attendees = locals.event.get(locals.eventGroup),
-			eventGroup = locals.eventGroup;
+		var eventGroup	= locals.eventGroup,
+			attendees	= locals.event.get(eventGroup),
+			userIndex	= attendees.indexOf(userId);
 		// Only add the user if they haven't already been saved.  This is unlikely, and would require a bad state in the system,
 		// but the check has been added for an extra layer of safety
-		if(attendees.indexOf(userId) === -1) {
+		if(userIndex === -1) {
 			// Push the user to the group of users in the event that matches their userType
 			attendees.push(userId);
 			// Save the event
 			locals.event.save();
-			res.send('the user has been added successfully');
+			// Construct useful data for needed UI updates
+			var responseData = {
+				success: true,
+				action: 'register',
+				name: userName,
+				group: userType
+			};
+			// TODO: Consider changing this and all other JSON responses to res.json for added durability
+			res.send(JSON.stringify(responseData));
+
 		} else {
-			res.send('the user is already attending');
+
+			var responseData = {
+				success: false,
+				action: 'register',
+				message: 'You are already attending that event'
+			};
+
+			res.send(JSON.stringify(responseData));
 		}
 	});
 };
@@ -70,6 +88,8 @@ exports.removeUser = function removeUser(req, res, next) {
 
 	var locals = res.locals,
 		userId = req.user.get('_id'),
+		userName = req.user.get('name.full'),
+		userType = req.user.get('userType'),
 		eventId = req.body.eventId;
 
 	async.series([
@@ -77,19 +97,33 @@ exports.removeUser = function removeUser(req, res, next) {
 		function(done) { exports.getTargetEventGroup(req, res, done); }
 	], function() {
 		// Store a reference to the array of user IDs that match the current user's type
-		var attendees = locals.event.get(locals.eventGroup),
-			eventGroup = locals.eventGroup,
-			userIndex = attendees.indexOf(userId);
+		var eventGroup	= locals.eventGroup,
+			attendees	= locals.event.get(eventGroup),
+			userIndex	= attendees.indexOf(userId);
 		// Only remove the user if they are attending.  This is unlikely, and would require a bad state in the system,
 		// but the check has been added for an extra layer of safety
-		if(attendees.indexOf(userId) !== -1) {
+		if(userIndex !== -1) {
 			// Remove the user from the group of users in the event that matches their userType
-			attendees.splice(userIndex, userIndex);
+			attendees.splice(userIndex, 1);
 			// Save the event
 			locals.event.save();
-			res.send('the user has been removed successfully');
+			// Construct useful data for needed UI updates
+			var responseData = {
+				success: true,
+				action: 'unregister',
+				name: userName,
+				group: userType
+			};
+			// TODO: Consider changing this and all other JSON responses to res.json for added durability
+			res.send(JSON.stringify(responseData));
 		} else {
-			res.send('the user was already removed');
+			var responseData = {
+				success: false,
+				action: 'unregister',
+				message: 'You have already been removed from that event'
+			};
+
+			res.send(JSON.stringify(responseData));
 		}
 	});
 }
