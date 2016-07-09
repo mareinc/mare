@@ -146,6 +146,6 @@ gulp.task('test', function() {
 // gulp build task
 gulp.task('build', gulp.parallel('standalone-styles', 'styles', 'standalone-scripts', 'scripts', 'images', 'fonts'));
 
-gulp.task('default', gulp.series('clean', 'eslint', 'test', 'build', 'watch'));
+gulp.task('default', gulp.series('clean', 'eslint-watch', 'test', 'build', 'watch'));
 // task specfically for running on Heroku server when new code is deployed
 gulp.task('heroku', gulp.series('clean', 'build'));

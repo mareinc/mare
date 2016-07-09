@@ -8,7 +8,7 @@
 	flex-direction: column;
 	width: 100%;
 	background-color: #ffffff;
-	box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+	box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
 	border-radius: 2px;
 	padding: 1em;
 	margin-bottom: 1.5em;
@@ -32,6 +32,7 @@
 
 .card__title {
 	display: flex;
+	width: 100%;
 	justify-content: center;
 	text-align: center;
 }
@@ -47,10 +48,6 @@
 	}
 }
 
-.card__content > p {
-
-}
-
 .card__content-group {
 	display: flex;
 	flex-wrap: wrap;
@@ -58,7 +55,7 @@
 	overflow: hidden;
 
 	&--border-top {
-
+		border-top: 1px solid #000;
 	}
 }
 
@@ -122,7 +119,7 @@
 		height: 9em;
 	}
 }
-
+// TODO: This will eventually move into the button component CSS once the registration form is cleaned up
 .card__button-group {
 	display: flex;
 	flex-direction: column;
@@ -140,14 +137,14 @@
 		justify-content: space-around;
 	}
 }
-
+// TODO: This will eventually move into the button component CSS once the registration form is cleaned up
 .card__button {
 	min-width: 10em;
 	background-color: #FDB127;
 	border: none;
 	border-radius: 2px;
 	padding: 0.75em 1.5em;
-	box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12);
+	box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16),0 2px 10px 0 rgba(0, 0, 0, 0.12);
 	transition: background-color, box-shadow .2s ease-out;
 
 	&:nth-child(n + 2) {
@@ -160,6 +157,55 @@
 
 	&:hover {
 		background-color: #F7BE57;
-		box-shadow: 0 5px 11px 0 rgba(0,0,0,0.18),0 4px 15px 0 rgba(0,0,0,0.15);
+		box-shadow: 0 5px 11px 0 rgba(0, 0, 0, 0.18),0 4px 15px 0 rgba(0, 0, 0, 0.15);
 	}
+
+	&--disabled {
+		box-shadow: none;
+		transition: none;
+		opacity: 0.6;
+		background-color: #ffe2ad;
+
+		&:hover {
+			box-shadow: none;
+			transition: none;
+			opacity: 0.6;
+			background-color: #ffe2ad;
+		}
+	}
+}
+
+.card__button-label {
+    text-align: center;
+    margin: 1em 0;
+    font-weight: bold;
+}
+
+.card__list-container {
+    display: flex;
+    width: 50%;
+    flex-direction: column;
+}
+
+.card__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.card__list-title {
+	border-bottom: 1px solid;
+    padding-bottom: .5em;
+    margin-right: 1em;
+}
+
+.card__list-item {
+	padding: 0.3em 0 0 1em;
+color: #a1a5a2;
+}
+
+.card__content-divider {
+	width: 100%;
+	margin: 2em 0 1em;
+	opacity: .5;
 }
