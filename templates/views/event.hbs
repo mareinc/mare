@@ -114,9 +114,15 @@
 
 	{{/if}}
 
+	{{#unless user}}
+	<hr class="card__content-divider"></hr>
+	<label for="register-with-mare-button" class="card__button-label">In order to register for events, you first need to create an account.</label>
+	{{/unless}}
 	<section class="card__button-group card__button-group--single-button">
 		{{#if user}}
 		<button class="card__button {{#if event.attending}} card__button--unregister events__unregister-button {{else}} events__register-button {{/if}}" data-event-id="{{ event._id }}">{{#if event.attending}} Unregister {{else}} Register {{/if}}</button>
+		{{else}}
+		<button id="register-with-mare-button" class="card__button events__create-account-button" data-url="/register">Create an account</button>
 		{{/if}}
 	</section>
 
