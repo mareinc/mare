@@ -1,7 +1,9 @@
-var keystone 	= require('keystone'),
-	_			= require('underscore'),
-	Event		= keystone.list('Event'),
-	Utils		= require('../middleware/utilities');
+var keystone 		= require('keystone'),
+	async			= require('async'),
+	_				= require('underscore'),
+	Event			= keystone.list('Event'),
+	Utils			= require('../middleware/utilities'),
+	sidebarService	= require('../middleware/service_sidebar');
 
 exports = module.exports = function(req, res) {
 	'use strict';
@@ -32,48 +34,54 @@ exports = module.exports = function(req, res) {
 		default							: eventType = '';
 	}
 
-	/* TODO: Change this to an async function */
-	Event.model.find()
-		.where('type', eventType) // Grab only the events matching the target category
-		.where('isActive', true) // We don't want to show inactive events
-		.populate(targetGroup)
-		.populate('address.state')
-		.exec()
-		.then(function (events) {
-			// If there are no events to display, we need to capture that information for rendering
-			locals.noEvents = events.length > 0 ? false : true;
-			// An array to hold all events for use during templating
-			locals.events = [];
-			// A set of options to define how truncation will be handled
-			var truncateOptions = {
-				targetLength: 400
-			}
+	async.parallel([
+		function(done) { // TODO: Pull this into the Event service
+			Event.model.find()
+				.where('type', eventType) // Grab only the events matching the target category
+				.where('isActive', true) // We don't want to show inactive events
+				.populate(targetGroup)
+				.populate('address.state')
+				.exec()
+				.then(function (events) {
+					// If there are no events to display, we need to capture that information for rendering
+					locals.noEvents = events.length > 0 ? false : true;
+					// An array to hold all events for use during templating
+					locals.events = [];
+					// A set of options to define how truncation will be handled
+					var truncateOptions = {
+						targetLength: 400
+					}
 
-			// Loop through all events
-			_.each(events, function(event) {
-				// The list page needs truncated details information to keep the cards they're displayed on small
-				event.shortContent = Utils.truncateText(event.description, truncateOptions);
-				// Determine whether or not address information exists for the event, which is helpful during rendering
-				// street1 is required, so this is enough to tell us if the address has been populated
-				event.hasAddress = event.address && event.address.street1 ? true : false;
+					// Loop through all events
+					_.each(events, function(event) {
+						// The list page needs truncated details information to keep the cards they're displayed on small
+						event.shortContent = Utils.truncateText(event.description, truncateOptions);
+						// Determine whether or not address information exists for the event, which is helpful during rendering
+						// street1 is required, so this is enough to tell us if the address has been populated
+						event.hasAddress = event.address && event.address.street1 ? true : false;
 
-				_.each(event[targetGroup], function(attendee) {
-					// Without converting to strings, these were both evaluating to Object which didn't allow for a clean comparison
-					var attendeeID	= attendee._id.toString(),
-						userID		= req.user._id.toString();
+						_.each(event[targetGroup], function(attendee) {
+							// Without converting to strings, these were both evaluating to Object which didn't allow for a clean comparison
+							var attendeeID	= attendee._id.toString(),
+								userID		= req.user._id.toString();
 
-					// Determine whether the user has already attended the event
-					event.attended = attendeeID === userID ? true : false;
+							// Determine whether the user has already attended the event
+							event.attended = attendeeID === userID ? true : false;
+						});
+
+						// Store all events in an array on locals to expose them during templating
+						locals.events.push(event);
+					});
+
+					done();
+
 				});
-
-				// Store all events in an array on locals to expose them during templating
-				locals.events.push(event);
-			});
-
-			// Set the layout to render with the right sidebar
-			locals['render-with-sidebar'] = true;
-			// Render the view once all the data has been retrieved
-			view.render('eventList');
-
-		});
+		},
+		function(done) { sidebarService.populateSidebar(req, res, done); }
+	], function() {
+		// Set the layout to render with the right sidebar
+		locals['render-with-sidebar'] = true;
+		// Render the view once all the data has been retrieved
+		view.render('eventList');
+	});
 };

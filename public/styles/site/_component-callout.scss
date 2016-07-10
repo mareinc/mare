@@ -43,12 +43,21 @@
     }
 }
 
+.callout__element {
+	&--space-below {
+		margin-bottom: .5em;
+	}
+
+	&--small-text {
+		font-size: .9em;
+	}
+}
+
 .callout__header {
     @media all and (min-width: 660px) {
         display: block;
         font-size: 2em;
         font-weight: bold;
-        margin-bottom: 5px;
         line-height: 1.2em;
     }
 }
@@ -58,6 +67,5 @@
         font-style: italic;
         font-size: 1.5em;
         line-height: 1.2em;
-        margin-bottom: 5px;
     }
 }

@@ -4,11 +4,11 @@
 	<button class="sidebar__item sidebar__button button button--large button--have-a-question">Have a Question?</button>
 
 	<aside class="sidebar__item callout callout--blue callout--success-story">
-		<span class="callout__description">"It feels so good to be a family," says Brady, who's getting used to being called "Mommy."</span>
-		<img class="callout__image" src="/dist/img/success-story-popout.png" alt="success story image">
+		<span class="callout__description">{{ randomSuccessStory.subHeading }}</span>
+		<img class="callout__image" src="{{ randomSuccessStory.imageSidebar }}" alt="success story image">
 		<span class="callout__details">
-			<div class="callout__header">Success Stories</div>
-			<div class="callout__title">Meet the Whitney Family</div>
+			<div class="callout__header callout__element callout__element--space-below">Success Stories</div>
+			<div class="callout__title callout__element callout__element--space-below">{{ randomSuccessStory.heading }}</div>
 			<div class="callout__learn-more">
 				<span>Learn more</span>
 				<i class="fa fa-angle-double-right icon icon--double-right" aria-hidden="true"></i>
@@ -17,12 +17,13 @@
 	</aside>
 
 	<aside class="sidebar__item callout callout--orange callout--event">
-		<img class="callout__image" src="/dist/img/event-popout.png" alt="event image">
+		<img class="callout__image" src="{{ randomEvent.imageSidebar }}" alt="event image">
 		<span class="callout__details">
-			<div class="callout__header">Join Us</div>
-			<div class="callout__title">Walk for Adoption</div>
-			<div class="callout__date">Sunday, May 19</div>
-			<div class="callout__learn-more">
+			<div class="callout__header callout__element callout__element--space-below">Join Us</div>
+			<div class="callout__title callout__element callout__element--space-below">{{ randomEvent.name }}</div>
+			<div class="callout__date callout__element">{{ randomEvent.prettyDate }}</div>
+			<div class="callout__time callout__element callout__element--space-below callout__element--small-text">{{ randomEvent.startTime }} - {{ randomEvent.endTime }}</div>
+			<div class="callout__learn-more callout__element">
 				<span>Learn more</span>
 				<i class="fa fa-angle-double-right icon icon--double-right" aria-hidden="true"></i>
 			</div>

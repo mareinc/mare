@@ -1,6 +1,7 @@
-var keystone		= require('keystone'),
-	async			= require('async'),
-	Event			= keystone.list('Event');
+var keystone	= require('keystone'),
+	async		= require('async'),
+	moment		= require('moment'),
+	Event		= keystone.list('Event');
 
 exports.getEventById = function getEventById(res, done, eventId) {
 
@@ -35,6 +36,23 @@ exports.getTargetEventGroup = function getTargetEventGroup(req, res, done) {
 
 	done();
 }
+
+exports.getRandomEvent = function getRandomEvent(req, res, done) {
+
+	req.locals = res.locals || {};
+	var locals = res.locals;
+
+	// TODO: Handle the error if we get one
+	Event.model.findRandom(function(err, event){
+		// Create a formatted date for display in the UI
+		event.prettyDate = moment(event.date).format('dddd, MMMM Do');
+
+		locals.randomEvent = event;
+		// Execute done function if async is used to continue the flow of execution
+		done();
+	});
+
+};
 
 /*
  *	Frontend services
