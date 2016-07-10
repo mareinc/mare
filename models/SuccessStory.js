@@ -15,8 +15,9 @@ SuccessStory.add({
 	url: { type: Types.Url, label: 'url', noedit: true },
 	subHeading: { type: Types.Text, label: 'sub-heading', initial: true },
 	content: { type: Types.Html, wysiwyg: true, initial: true },
-	image: { type: Types.CloudinaryImage, note: 'needed to display in the sidebar and under other success stories', folder: 'success-stories/', publicID: 'fileName', autoCleanup: true },
-	imageScaled: {type: Types.Url, hidden: true }
+	image: { type: Types.CloudinaryImage, note: 'needed to display in the sidebar, success story page, and home page', folder: 'success-stories/', publicID: 'fileName', autoCleanup: true },
+	imageFeatured: { type: Types.Url, hidden: true },
+	imageSidebar: { type: Types.Url, hidden: true }
 
 /* Container for all system fields (add a heading if any are meant to be visible through the admin UI) */
 }, {
@@ -26,11 +27,23 @@ SuccessStory.add({
 
 });
 
+SuccessStory.schema.statics.findRandom = function(callback) {
+
+  this.count(function(err, count) {
+    if (err) {
+      return callback(err);
+    }
+    var rand = Math.floor(Math.random() * count);
+    this.findOne().skip(rand).exec(callback);
+  }.bind(this));
+ };
+
 // Pre Save
 SuccessStory.schema.pre('save', function(next) {
 	'use strict';
 
-	this.imageScaled = this._.image.thumbnail(168,168,{ quality: 80 });
+	this.imageFeatured = this._.image.thumbnail( 168, 168, { quality: 80 } );
+	this.imageSidebar = this._.image.thumbnail( 216, 196, { quality: 80 } );
 	this.url = '/success-stories/' + this.key;
 
 	// Create an identifying name for file uploads
