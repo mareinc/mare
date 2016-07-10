@@ -4,7 +4,7 @@ var keystone		= require('keystone'),
 	childService	= require('../middleware/service_child'),
 	familyService	= require('../middleware/service_family'),
 	listsService	= require('../middleware/service_lists'),
-	sidebarService	= require('../middleware/service_sidebar');
+	pageService		= require('../middleware/service_page');
 
 exports = module.exports = function(req, res) {
 	'use strict';
@@ -50,7 +50,8 @@ exports = module.exports = function(req, res) {
 		function(done) { listsService.getAllDisabilities(req, res, done) },
 		function(done) { listsService.getOtherConsiderations(req, res, done) },
 		function(done) { listsService.getAllFamilyConstellations(req, res, done) },
-		function(done) { sidebarService.populateSidebar(req, res, done); }
+		function(done) { pageService.populateSidebar(req, res, done); },
+		function(done) { pageService.getSectionHeader(req, res, done, 'Meet the Children'); }
 
 	], function() {
 		// Set the layout to render with the right sidebar
