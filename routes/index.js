@@ -36,6 +36,7 @@ var routes = {
 	views: importRoutes('./views')
 };
 
+/* TODO: See Keystone Slack channel for an abbreviated way to handle these event routes */
 // Create arrays of routes for complicated sub-routing
 var eventListRoutes = ['/events/adoption-parties/', '/events/mapp-trainings/', '/events/fundraising-events/', '/events/agency-info-meetings/', '/events/other-trainings/'],
 	eventRoutes		= ['/events/adoption-parties/*', '/events/mapp-trainings/*', '/events/fundraising-events/*', '/events/agency-info-meetings/*', '/events/other-trainings/*'];
