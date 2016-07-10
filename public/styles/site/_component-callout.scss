@@ -45,7 +45,7 @@
 
 .callout__element {
 	&--space-below {
-		margin-bottom: .5em;
+		margin-bottom: .5rem; // rems to counter changes in text size for elements we're adding space to
 	}
 
 	&--small-text {
