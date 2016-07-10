@@ -39,7 +39,10 @@ Event.add({ heading: 'General Information' }, {
 	url: { type: Types.Url, label: 'url', noedit: true },
 	isActive: { type: Types.Boolean, label: 'is event active?', default: true, initial: true },
 	// type: { type: Types.Relationship, label: 'Event Type', ref: 'Event Type', required: true, initial: true }
-	type: { type: Types.Select, label: 'event type', options: 'MARE adoption parties & information events, MAPP trainings, agency information meetings, other opportunities & trainings, fundraising events', required: true, initial: true }
+	type: { type: Types.Select, label: 'event type', options: 'MARE adoption parties & information events, MAPP trainings, agency information meetings, other opportunities & trainings, fundraising events', required: true, initial: true },
+	image: { type: Types.CloudinaryImage, note: 'needed to display in the sidebar, events page, and home page', folder: 'events/', publicID: 'fileName', autoCleanup: true },
+	imageFeatured: { type: Types.Url, hidden: true },
+	imageSidebar: { type: Types.Url, hidden: true }
 
 }, { heading: 'Address' }, {
 
@@ -74,11 +77,31 @@ Event.add({ heading: 'General Information' }, {
 
 	notes: { type: Types.Text, label: 'notes', initial: true }
 
+/* Container for all system fields (add a heading if any are meant to be visible through the admin UI) */
+}, {
+
+	// system field to store an appropriate file prefix
+	fileName: { type: Types.Text, hidden: true }
+
 });
+
+Event.schema.statics.findRandom = function(callback) {
+
+  this.count(function(err, count) {
+    if (err) {
+      return callback(err);
+    }
+    var rand = Math.floor(Math.random() * count);
+    this.findOne().skip(rand).exec(callback);
+  }.bind(this));
+ };
 
 // Pre Save
 Event.schema.pre('save', function(next) {
 	'use strict';
+
+	this.imageFeatured = this._.image.thumbnail( 168, 168, { quality: 80 } );
+	this.imageSidebar = this._.image.thumbnail( 216, 196, { quality: 80 } );
 
 	var eventType = '';
 
@@ -94,6 +117,9 @@ Event.schema.pre('save', function(next) {
 	//TODO: if eventType.length === 0, I should prevent the save
 
 	this.url = '/events/' + eventType + '/' + this.key;
+
+	// Create an identifying name for file uploads
+	this.fileName = this.key.replace(/-/g, '_');
 
 	next();
 });
