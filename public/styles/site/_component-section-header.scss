@@ -1,0 +1,64 @@
+.section-header {
+	display: flex;
+	flex-direction: column;
+	margin-bottom: 15px;
+
+	@media all and (min-width: 660px) {
+		flex-direction: row;
+	}
+
+	&--considering-adoption {
+		@media all and (min-width: 660px) { background-color: $section-header-background-color-1; }
+	}
+
+	&--meet-the-children {
+		@media all and (min-width: 660px) { background-color: $section-header-background-color-2; }
+	}
+
+	&--family-support-services {
+		@media all and (min-width: 660px) { background-color: $section-header-background-color-3; }
+	}
+
+	&--for-social-workers {
+		@media all and (min-width: 660px) { background-color: $section-header-background-color-4; }
+	}
+
+	&--events {
+		@media all and (min-width: 660px) { background-color: $section-header-background-color-5; }
+	}
+
+	&--ways-to-help {
+		@media all and (min-width: 660px) { background-color: $section-header-background-color-6; }
+	}
+
+	&--about-us {
+		@media all and (min-width: 660px) { background-color: $section-header-background-color-7; }
+	}
+}
+
+.section-header__text {
+	align-self: center;
+	width: 100%;
+	padding: 10px 0;
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 24px;
+    color: $section-header-text-color-1;
+    background-color: $section-header-background-color-8;
+
+    @media all and (min-width: 660px) {
+		width: 40%;
+		padding: 0;
+        color: inherit;
+        background-color: inherit;
+    }
+}
+
+.section-header__image {
+	width: 100%;
+
+    @media all and (min-width: 660px) {
+        width: 60%;
+		height: 60%;
+    }
+}
