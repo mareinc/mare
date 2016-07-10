@@ -59,7 +59,7 @@ exports.initLocals = function(req, res, next) {
 			{ title: 'Other Family Support Services', href: '/page/other-family-support-services' }
 		]},
 		{ title: 'For Social Workers', subMenu: [
-			{ title: 'How MARE Can Help You', href: '/page/how-mare-can-help-you'},
+			{ title: 'How MARE Can Help You', href: '/page/how-mare-can-help-you' },
 			{ title: 'Register a Child', href: '/page/register-a-child' },
 			{ title: 'Attend Events', href: '/page/attend-events' },
 			{ title: 'Register a Family', href: '/page/register-a-family' },
@@ -79,18 +79,51 @@ exports.initLocals = function(req, res, next) {
 			{ title: 'Experienced families', href: '/page/experienced-families' }
 		]},
 		{ title: 'About Us', lastMenu: true, subMenu: [
-			{ title: 'Mission & Vision', href: '/page/mission-and-vision'},
-			{ title: 'History', href: '/page/history'},
-			{ title: 'Meet the Staff', href: '/page/meet-the-staff'},
-			{ title: 'Board of Directors', href: '/page/board-of-directors'},
-			{ title: 'MARE in the News', href: '/page/mare-in-the-news'},
-			{ title: 'Adoption Party Family Registration Form', href: '/form/adoption-party-family-registration-form'},
-			{ title: 'Adoption Party Social Worker Registration Form', href: '/form/adoption-party-social-worker-registration-form'},
-			{ title: 'Agency Event Submission Form', href: '/form/agency-event-submission-form'},
-			{ title: 'Car Donation Form', href: '/form/car-donation-form'},
-			{ title: 'Child Registration Form', href: '/form/child-registration-form'},
-			{ title: 'Information Request Form', href: '/form/information-request-form'}
+			{ title: 'Mission & Vision', href: '/page/mission-and-vision' },
+			{ title: 'History', href: '/page/history' },
+			{ title: 'Meet the Staff', href: '/page/meet-the-staff' },
+			{ title: 'Board of Directors', href: '/page/board-of-directors' },
+			{ title: 'MARE in the News', href: '/page/mare-in-the-news' },
+			{ title: 'Adoption Party Family Registration Form', href: '/form/adoption-party-family-registration-form' },
+			{ title: 'Adoption Party Social Worker Registration Form', href: '/form/adoption-party-social-worker-registration-form' },
+			{ title: 'Agency Event Submission Form', href: '/form/agency-event-submission-form' },
+			{ title: 'Car Donation Form', href: '/form/car-donation-form' },
+			{ title: 'Child Registration Form', href: '/form/child-registration-form' },
+			{ title: 'Information Request Form', href: '/form/information-request-form' }
 		]}];
+
+	locals.pageSectionMapping = {
+		'/page/types-of-adoption' : 'Considering Adoption',
+		'/page/can-i-adopt-a-child-from-foster-care' : 'Considering Adoption',
+		'/page/steps-in-the-process' : 'Considering Adoption',
+		'/page/how-can-mare-help' : 'Considering Adoption',
+
+		'/page/who-are-the-children' : 'Meet the Children',
+		'/waiting-child-profiles' : 'Meet the Children',
+		'/page/other-ways-to-meet-waiting-children' : 'Meet the Children',
+		'/page/for-homestudied-families' : 'Meet the Children',
+
+		'/page/how-does-mare-support-families' : 'Family Support Services',
+		'/page/friend-of-the-family-mentor-program' : 'Family Support Services',
+		'/page/other-family-support-services' : 'Family Support Services',
+
+		'/page/how-mare-can-help-you' : 'For Social Workers',
+		'/page/register-a-child' : 'For Social Workers',
+		'/page/attend-events' : 'For Social Workers',
+		'/page/register-a-family' : 'For Social Workers',
+		'/page/search-for-children-and-families' : 'For Social Workers',
+
+		'/page/why-give' : 'Ways to Help',
+		'/page/how-you-can-help' : 'Ways to Help',
+		'/page/how-businesses-and-organizations-can-help' : 'Ways to Help',
+		'/page/experienced-families' : 'Ways to Help',
+
+		'/page/mission-and-vision' : 'About Us',
+		'/page/history' : 'About Us',
+		'/page/meet-the-staff' : 'About Us',
+		'/page/board-of-directors' : 'About Us',
+		'/page/mare-in-the-news' : 'About Us'
+	};
 
 	next();
 };
