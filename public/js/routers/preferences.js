@@ -3,11 +3,7 @@
 
 	mare.routers.Preferences = Backbone.Router.extend({
 
-		routes: {
-			'.*' : 'loadPreferencesRouter'
-		},
-
-		loadPreferencesRouter: function() {
+		initialize: function initialize() {
 			console.log('loaded preferences page router');
 		}
 
