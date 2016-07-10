@@ -5,17 +5,14 @@
 		el: 'body',
 
 		events: {
-			'click .button--donate'				: 'goToDonatePage',
-			'click .button--have-a-question'	: 'goToHaveAQuestionPage'
+			'click .button--donate'				: 'navigate',
+			'click .button--have-a-question'	: 'navigate'
 		},
 
-		goToDonatePage: function goToDonatePage() {
-			window.open("/donate","_self")
-		},
-
-		goToHaveAQuestionPage: function goToHaveAQuestionPage() {
-			window.open('/form/information-request-form', '_self');
-		}
-
+		navigate: function navigate(event) {
+			$(event.currentTarget);
+        	window.location.href = $(event.currentTarget).data('url');
+        }
+		
 	});
 }());
