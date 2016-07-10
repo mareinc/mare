@@ -1,9 +1,10 @@
 // TODO: break these each into their own routes, combining all these forms is going to be a mess once we start processing their expected actions
-var keystone					= require('keystone'),
-	async						= require('async'),
-	_							= require('underscore'),
-	listsService				= require('../middleware/service_lists'),
-	Form						= keystone.list('Form');
+var keystone		= require('keystone'),
+	async			= require('async'),
+	_				= require('underscore'),
+	Form			= keystone.list('Form'),
+	listsService	= require('../middleware/service_lists'),
+	sidebarService	= require('../middleware/service_sidebar');
 
 exports = module.exports = function(req, res) {
 	'use strict';
@@ -20,9 +21,9 @@ exports = module.exports = function(req, res) {
 		function(done) { listsService.getAllStates(req, res, done) },
 		function(done) { listsService.getAllRaces(req, res, done, raceOptions) },
 		function(done) { listsService.getAllGenders(req, res, done) },
-		function(done) { listsService.getAllWaysToHearAboutMARE(req, res, done, waysToHearOptions) }
+		function(done) { listsService.getAllWaysToHearAboutMARE(req, res, done, waysToHearOptions) },
+		function(done) { sidebarService.populateSidebar(req, res, done); }
 	], function() {
-
 		// Set the layout to render with the right sidebar
 		locals['render-with-sidebar'] = true;
 
