@@ -157,7 +157,7 @@ keystone.set('nav', {
 	'people'			: ['users', 'admins', 'site-visitors', 'families', 'social-workers', 'children', 'outside-contacts'],
 	'images'			: ['featured-items', 'slideshows', 'slideshow-items'],
 	'content pages'		: ['pages'],
-	'content snippets'	: ['success-stories'],
+	'content snippets'	: ['success-stories', 'section-headers'],
 	'events'			: ['events'],
 	'mailing lists'		: ['mailing-lists'],
 	'relationships'		: ['csc-region-contacts', 'csc-email-contacts', 'placements'],
