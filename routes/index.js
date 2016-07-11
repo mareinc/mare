@@ -55,7 +55,7 @@ exports = module.exports = function(app) {
 	app.get(eventRoutes								, routes.views.event);
 	app.get('/success-stories/'						, routes.views.successStories);
 	app.get('/success-stories/*'					, routes.views.successStory);
-	app.get('/waiting-child-profiles'				, routes.views.waitingChildProfiles); /* TODO: Update to match other routes (end with /).  Follow Registration page example to get Backbone routes working with and without trailing '/' */
+	app.get('/waiting-child-profiles/'				, routes.views.waitingChildProfiles);
 	app.get('/preferences/'							, middleware.requireUser, routes.views.preferences);
 
 	app.get('/register/'							, routes.views.register);
