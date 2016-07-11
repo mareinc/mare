@@ -36,6 +36,7 @@ Child.add('Display Options', {
 	status: { type: Types.Relationship, label: 'status', ref: 'Child Status', required: true, initial: true },
 	gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', required: true, initial: true },
 	race: { type: Types.Relationship, label: 'race', ref: 'Race', many: true, required: true, initial: true },
+	raceNotes: { type: Types.Text, label: 'race notes', initial: true },
 	legalStatus: { type: Types.Relationship, label: 'legal status', ref: 'Legal Status', required: true, initial: true },
 	yearEnteredCare: { type: Types.Text, label: 'year entered care', note: 'yyyy', initial: true },
 
@@ -60,6 +61,9 @@ Child.add('Display Options', {
 	intellectualNeedsDescription: { type: Types.Textarea, label: 'description of intellectual needs', dependsOn: { intellectualNeeds: ['mild', 'moderate', 'severe'] }, initial: true },
 
 	disabilities: { type: Types.Relationship, label: 'disabilities', ref: 'Disability', many: true, initial: true },
+
+	healthNotesNew: { type: Types.Textarea, label: 'health notes - new', initial: true },
+	healthNotesOld: { type: Types.Textarea, label: 'health notes - old', initial: true },
 
 	specialNeedsNotes: { type: Types.Textarea, label: 'notes', dependsOn: { physicalNeeds: ['mild', 'moderate', 'severe'], emotionalNeeds: ['mild', 'moderate', 'severe'], intellectualNeeds: ['mild', 'moderate', 'severe'] }, initial: true }
 
