@@ -3,11 +3,7 @@
 
 	mare.routers.Home = Backbone.Router.extend({
 
-		routes: {
-			'.*' : 'loadHomePage'
-		},
-
-		loadHomePage: function() {
+		initialize: function initialize() {
 			// Load the view for the home page
 			mare.views.home = mare.views.home || new mare.views.Home();
 		}

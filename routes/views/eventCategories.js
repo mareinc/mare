@@ -1,6 +1,6 @@
-var keystone		= require('keystone'),
-	async			= require('async'),
-	sidebarService	= require('../middleware/service_sidebar');
+var keystone	= require('keystone'),
+	async		= require('async'),
+	pageService	= require('../middleware/service_page');
 
 exports = module.exports = function(req, res) {
     'use strict';
@@ -9,7 +9,8 @@ exports = module.exports = function(req, res) {
     	locals 	= res.locals;
 
 	async.parallel([
-		function(done) { sidebarService.populateSidebar(req, res, done); }
+		function(done) { pageService.populateSidebar(req, res, done); },
+		function(done) { pageService.getSectionHeader(req, res, done, 'Events'); }
 	], function() {
 		// Set the layout to render with the right sidebar
 		locals['render-with-sidebar'] = true;

@@ -2,7 +2,7 @@ var keystone				= require('keystone'),
 	async					= require('async'),
 	registrationMiddleware	= require('../middleware/register'),
 	listsService			= require('../middleware/service_lists'),
-	sidebarService			= require('../middleware/service_sidebar');
+	pageService				= require('../middleware/service_page');
 
 
 exports = module.exports = function(req, res) {
@@ -30,7 +30,8 @@ exports = module.exports = function(req, res) {
 		function(done) { listsService.getOtherConsiderations(req, res, done) },
 		function(done) { listsService.getChildTypesForWebsite(req, res, done) },
 		function(done) { listsService.getAllWaysToHearAboutMARE(req, res, done, waysToHearOptions) },
-		function(done) { sidebarService.populateSidebar(req, res, done); }
+		function(done) { pageService.populateSidebar(req, res, done); },
+		function(done) { pageService.getSectionHeader(req, res, done, 'Considering Adoption'); }
 	], function() {
 		// Set the layout to render with the right sidebar
 		locals['render-with-sidebar'] = true;

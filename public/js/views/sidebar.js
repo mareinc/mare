@@ -5,17 +5,13 @@
 		el: 'body',
 
 		events: {
-			'click .button--donate'				: 'goToDonatePage',
-			'click .button--have-a-question'	: 'goToHaveAQuestionPage'
+			'click .button--donate'				: 'navigate',
+			'click .button--have-a-question'	: 'navigate'
 		},
-
-		goToDonatePage: function goToDonatePage() {
-			window.open("/donate","_self")
-		},
-
-		goToHaveAQuestionPage: function goToHaveAQuestionPage() {
-			window.open('/form/information-request-form', '_self');
-		}
+		// TODO: Consider making this a utility function since it's used on several pages
+		navigate: function navigate(event) {
+        	window.location.href = $(event.currentTarget).data('url');
+        }
 
 	});
 }());
