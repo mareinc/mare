@@ -5,9 +5,15 @@
 		// This view controls everything inside the element with class 'gallery-search-form'
 		el: '.gallery-search-form',
 
-		events: {},
+		events: {
+			'click .search-form__search-button' : 'showUpdatedGallery'
+		},
 
-		initialize: function() {}
+		initialize: function() {},
+
+		showUpdatedGallery: function showUpdatedGallery() {
+			
+		}
 
 	});
 }());
