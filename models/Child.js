@@ -42,7 +42,7 @@ Child.add('Display Options', {
 
 	hasContactWithSiblings: { type: Types.Boolean, label: 'has contact with siblings?', initial: true },
 	siblingTypeOfContact: { type: Types.Text, label: 'type of contact', initial: true },
-	siblingContacts: { type: Types.Relationship, label: 'siblings to be placed together (comma separated)', ref: 'Child', many: true, initial: true },
+	siblingContacts: { type: Types.Relationship, label: 'siblings to be placed together', ref: 'Child', many: true, initial: true },
 	hasContactWithBirthFamily: { type: Types.Boolean, label: 'has contact with birth family?', initial: true },
 	birthFamilyTypeOfContact: { type: Types.Text, label: 'type of contact', initial: true },
 

@@ -166,6 +166,13 @@ exports.getGalleryData = function getGalleryData(req, res, next) {
 		}
 
 	], function() {
+
+		var needsMap = {
+			'none'		: 0,
+			'mild'		: 1,
+			'moderate'	: 2,
+			'severe'	: 3
+		}
 		// Full child records have been fetched and stored on res.locals
 		_.each(locals.children, function(child) {
 
@@ -175,23 +182,26 @@ exports.getGalleryData = function getGalleryData(req, res, next) {
 	    		ageConverted							: middleware.convertDate(child.birthDate),
 	    		registrationNumber						: child.registrationNumber,
 	    		registrationDateConverted				: middleware.convertDate(child.registrationDate),
+				gender									: child.gender.gender,
 	    		race									: _.pluck(child.race, 'race'),
+				siblingContactsCount					: child.siblingContacts.length,
 	    		language								: _.pluck(child.language, 'language'),
 	    		legalStatus								: child.legalStatus.legalStatus,
-	    		hasContactWithBiologicalSiblings		: child.hasContactWithSiblings,
-	    		hasContactWithBiologicalParents			: child.hasContactWithBirthFamily,
-	    		physicalNeeds							: child.physicalNeeds,
-	    		emotionalNeeds							: child.emotionalNeeds,
-	    		intellectualNeeds						: child.intellectualNeeds,
+	    		hasContactWithBiologicalSiblings		: child.hasContactWithSiblings || false,
+	    		hasContactWithBiologicalParents			: child.hasContactWithBirthFamily || false,
+	    		physicalNeeds							: needsMap[child.physicalNeeds],
+	    		emotionalNeeds							: needsMap[child.emotionalNeeds],
+	    		intellectualNeeds						: needsMap[child.intellectualNeeds],
 	    		disabilities							: _.pluck(child.disabilities, 'disability'),
 	    		otherConsiderations						: _.pluck(child.otherConsiderations, 'otherConsideration'),
 	    		recommendedFamilyConstellation			: _.pluck(child.recommendedFamilyConstellation, 'familyConstellation'),
 	    		otherFamilyConstellationConsideration	: _.pluck(child.otherFamilyConstellationConsideration, 'otherFamilyConstellationConsideration'),
 	    		galleryImage							: child.galleryImage,
 	    		detailImage								: child.detailImage,
-	    		hasVideo								: child.video && child.video.length > 0,
+	    		hasVideo								: child.video && child.video.length > 0 ? true : false,
 	    		wednesdaysChild							: child.wednesdaysChild,
-	    		numberOfSiblings						: child.siblingContacts.length
+	    		numberOfSiblings						: child.siblingContacts.length,
+				updatedAt								: child.updatedAt
 	    	};
 
 	    	locals.publicChildrenData.push(relevantData);
