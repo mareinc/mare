@@ -79,6 +79,7 @@
 }
 
 .profile .details {
+	position: relative;
 	background-color: #fffac2;
 	color: #1B229D;
 }
@@ -89,8 +90,9 @@
 }
 
 .profile .details > .icons {
-	position:relative;
-	top: -20px;
+	position: absolute;
+	top: 10px;
+	right: 10px;
 }
 
 .profile .details > .icons > .badge {
@@ -225,7 +227,7 @@
 	transform-origin: bottom left;
 }
 
-.media-box-container:hover img{
+.media-box-image:hover img{
 	transform: scale(1.1) translate(-10px);
 }
 
@@ -254,7 +256,7 @@
 
 /* Search Form */
 
-.search-form__search-button {
+.gallery-search-form__search-button {
 	color: #FFF;
     background-color: #66584D;
 }

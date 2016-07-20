@@ -11,6 +11,7 @@
 		},
 
 		initialize: function initialize() {
+			var that = this;
 			// DOM cache any commonly used elements to improve performance
 			this.$gallery		= this.$( '.gallery' );
 			this.$searchForm	= this.$( '.gallery-search-form' );
@@ -28,6 +29,11 @@
 			// Initialize views for the gallery and serach form
 			mare.views.gallery = mare.views.gallery || new mare.views.Gallery();
 			mare.views.gallerySearchForm = mare.views.gallerySearchForm || new mare.views.GallerySearchForm();
+
+			// Bind to change events
+			mare.collections.galleryChildren.on('updateComplete', function() {
+				that.navigateToGallery();
+			});
 
 		},
 
@@ -77,6 +83,10 @@
 		/* Route to the search form to preserve browser history state */
 		handleSearchClick: function handleSearchClick() {
 			mare.routers.waitingChildProfiles.navigate( 'search', { trigger: true } );
+		},
+
+		navigateToGallery: function navigateToGallery() {
+			mare.routers.waitingChildProfiles.navigate( 'gallery', { trigger: true } );
 		},
 
 		resetGallery: function resetGallery() {

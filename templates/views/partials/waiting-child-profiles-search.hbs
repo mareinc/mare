@@ -1,0 +1,437 @@
+<section class="gallery-search-form hidden">
+	<div class="page-header">
+		<span class="page-header-text">Search for Children</span>
+	</div>
+	<section class="form-section form-section--general-characteristics">
+		<div class="form-section-header">General Characteristics</div>
+
+		<div class="row form-group">
+			<div class="col-sm-12">
+				<label class="label marg-bottom-xs-5">Gender:</label>
+			</div>
+			<div class="col-sm-12">
+			{{#each genders}}
+				<div class="col-sm-12 form-group">
+					<label class="checkbox-inline">
+						<input type="checkbox" class="select-gender" value="{{ gender }}">{{ gender }}
+					</label>
+				</div>
+			{{/each}}
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-12">
+				<label for="minimum-number-of-siblings" class="label marg-bottom-xs-5">Minimum number of siblings you'd accept:</label>
+			</div>
+			<div class="col-sm-12">
+				<select id="minimum-number-of-siblings" class="input form__number-select">
+					<option value="0">0</option>
+					<option value="1">1</option>
+					<option value="2">2</option>
+					<option value="3">3</option>
+					<option value="4">4</option>
+					<option value="5">5</option>
+					<option value="6">6</option>
+					<option value="7">7</option>
+					<option value="8">8+</option>
+				</select>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-12">
+				<label for="maximum-number-of-siblings" class="label marg-bottom-xs-5">Maximum number of siblings you'd accept:</label>
+			</div>
+			<div class="col-sm-12">
+				<select id="maximum-number-of-siblings" class="input form__number-select">
+					<option value="0">0</option>
+					<option value="1">1</option>
+					<option value="2">2</option>
+					<option value="3">3</option>
+					<option value="4">4</option>
+					<option value="5">5</option>
+					<option value="6">6</option>
+					<option value="7">7</option>
+					<option value="8">8+</option>
+				</select>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-12">
+				<label for="youngest-age" class="label marg-bottom-xs-5">Youngest age acceptable:</label>
+			</div>
+			<div class="col-sm-12">
+				<select id="youngest-age" name="youngestAge" class="input form__number-select">
+					<option value="0">0</option>
+					<option value="1">1</option>
+					<option value="2">2</option>
+					<option value="3">3</option>
+					<option value="4">4</option>
+					<option value="5">5</option>
+					<option value="6">6</option>
+					<option value="7">7</option>
+					<option value="8">8</option>
+					<option value="9">9</option>
+					<option value="10">10</option>
+					<option value="11">11</option>
+					<option value="12">12</option>
+					<option value="13">13</option>
+					<option value="14">14</option>
+					<option value="15">15</option>
+					<option value="16">16</option>
+					<option value="17">17</option>
+				</select>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-12">
+				<label for="oldest-age" class="label marg-bottom-xs-5">Oldest age acceptable:</label>
+			</div>
+			<div class="col-sm-12">
+				<select id="oldest-age" name="oldestAge" class="input form__number-select">
+					<option value="0">0</option>
+					<option value="1">1</option>
+					<option value="2">2</option>
+					<option value="3">3</option>
+					<option value="4">4</option>
+					<option value="5">5</option>
+					<option value="6">6</option>
+					<option value="7">7</option>
+					<option value="8">8</option>
+					<option value="9">9</option>
+					<option value="10">10</option>
+					<option value="11">11</option>
+					<option value="12">12</option>
+					<option value="13">13</option>
+					<option value="14">14</option>
+					<option value="15">15</option>
+					<option value="16">16</option>
+					<option value="17">17</option>
+				</select>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-24">
+				<label class="label marg-bottom-xs-5">Race/Ethnicity:</label>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-16">
+			{{#each races}}
+				<div class="col-sm-12 form-group">
+					<label class="checkbox-inline">
+						<input type="checkbox" class="select-race" value="{{ race }}">{{ race }}
+					</label>
+				</div>
+			{{/each}}
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-12">
+				<label for="primary-language" class="label marg-bottom-xs-5">Primary language:</label>
+			</div>
+			<div class="col-sm-12 form-group">
+				<select id="primary-language" class="input form__number-select">
+					<option value=""></option>
+					{{#each languages}}
+						<option value="{{ language }}">{{ language }}</option>
+					{{/each}}
+				</select>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-12">
+				<label class="label marg-bottom-xs-5">Include children who have contact with their biological siblings:</label>
+			</div>
+			<div class="col-sm-12 form-group">
+				<label class="radio-inline">
+					<input type="radio" name="contactWithBiologicalSiblings" class="select-contact-with-biological-siblings" value="yes">Yes
+				</label>
+				<label class="radio-inline">
+					<input type="radio" name="contactWithBiologicalSiblings" class="select-contact-with-biological-siblings" value="no">No
+				</label>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-12">
+				<label class="label marg-bottom-xs-5">Include children who have contact with their biological parents:</label>
+			</div>
+			<div class="col-sm-12 form-group">
+				<label class="radio-inline">
+					<input type="radio" name="contactWithBiologicalParents" class="select-contact-with-biological-parents" value="yes">Yes
+				</label>
+				<label class="radio-inline">
+					<input type="radio" name="contactWithBiologicalParents" class="select-contact-with-biological-parents" value="no">No
+				</label>
+			</div>
+		</div>
+	</section>
+
+	<section class="form-section form-section--limit-search">
+		<div class="form-section-header">Limit Search</div>
+
+		<div class="row form-group">
+			<div class="col-sm-12">
+				<label class="label marg-bottom-xs-5">Video clips:</label>
+			</div>
+			<div class="col-sm-12 form-group">
+				<label class="checkbox-inline">
+					<input type="checkbox" class="select-video-only" value="yes">Only show profiles with video clips
+				</label>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-12">
+				<label class="label marg-bottom-xs-5">Legally free:</label>
+			</div>
+			<div class="col-sm-12 form-group">
+				<label class="checkbox-inline">
+					<input type="checkbox" class="select-legally-free-only" value="yes">Only show legally free children
+				</label>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-12">
+				<label for="updated-within" class="label marg-bottom-xs-5">Find children whose profiles were updated within the past:</label>
+			</div>
+			<div class="col-sm-12">
+				<select id="updated-within" class="input">
+					<option value="">No restriction</option>
+					<option value="one-week">1 week</option>
+					<option value="two-weeks">2 weeks</option>
+					<option value="three-weeks">3 weeks</option>
+					<option value="four-weeks">4 weeks</option>
+				</select>
+			</div>
+		</div>
+	</section>
+
+	<section class="form-section form-section--disability-levels">
+		<div class="form-section-header">Disability Levels</div>
+
+		<div class="row form-group">
+			<div class="col-sm-24">
+				<label class="label marg-bottom-xs-5">Maximum level of physical needs:</label>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-16 form-group">
+				<div class="col-sm-6 form-group">
+					<label class="radio-inline">
+						<input type="radio" name="maximumPhysicalNeeds" class="select-maximum-physical-needs" value="0">None
+					</label>
+				</div>
+				<div class="col-sm-6 form-group">
+					<label class="radio-inline">
+						<input type="radio" name="maximumPhysicalNeeds" class="select-maximum-physical-needs" value="1">Mild
+					</label>
+				</div>
+				<div class="col-sm-6 form-group">
+					<label class="radio-inline">
+						<input type="radio" name="maximumPhysicalNeeds" class="select-maximum-physical-needs" value="2">Moderate
+					</label>
+				</div>
+				<div class="col-sm-6 form-group">
+					<label class="radio-inline">
+						<input type="radio" name="maximumPhysicalNeeds" class="select-maximum-physical-needs" value="3">Severe
+					</label>
+				</div>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-24">
+				<label class="label marg-bottom-xs-5">Maximum level of emotional needs:</label>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-16 form-group">
+				<div class="col-sm-6 form-group">
+					<label class="radio-inline">
+						<input type="radio" name="maximumEmotionalNeeds" class="select-maximum-emotional-needs" value="0">None
+					</label>
+				</div>
+				<div class="col-sm-6 form-group">
+					<label class="radio-inline">
+						<input type="radio" name="maximumEmotionalNeeds" class="select-maximum-emotional-needs" value="1">Mild
+					</label>
+				</div>
+				<div class="col-sm-6 form-group">
+					<label class="radio-inline">
+						<input type="radio" name="maximumEmotionalNeeds" class="select-maximum-emotional-needs" value="2">Moderate
+					</label>
+				</div>
+				<div class="col-sm-6 form-group">
+					<label class="radio-inline">
+						<input type="radio" name="maximumEmotionalNeeds" class="select-maximum-emotional-needs" value="3">Severe
+					</label>
+				</div>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-24">
+				<label class="label marg-bottom-xs-5">Maximum level of intellectual needs:</label>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-16 form-group">
+				<div class="col-sm-6 form-group">
+					<label class="radio-inline">
+						<input type="radio" name="maximumIntellectualNeeds" class="select-maximum-intellectual-needs" value="0">None
+					</label>
+				</div>
+				<div class="col-sm-6 form-group">
+					<label class="radio-inline">
+						<input type="radio" name="maximumIntellectualNeeds" class="select-maximum-intellectual-needs" value="1">Mild
+					</label>
+				</div>
+				<div class="col-sm-6 form-group">
+					<label class="radio-inline">
+						<input type="radio" name="maximumIntellectualNeeds" class="select-maximum-intellectual-needs" value="2">Moderate
+					</label>
+				</div>
+				<div class="col-sm-6 form-group">
+					<label class="radio-inline">
+						<input type="radio" name="maximumIntellectualNeeds" class="select-maximum-intellectual-needs" value="3">Severe
+					</label>
+				</div>
+			</div>
+		</div>
+			<div class="row">
+				<div class="col-sm-24 form-group">
+					<label class="label marg-bottom-xs-5">Include children with the following disabilities:</label>
+				</div>
+			</div>
+			<div class="row form-group">
+				<div class="col-sm-16">
+				{{#each disabilities}}
+					<div class="col-sm-12 form-group">
+						<label class="checkbox-inline">
+							<input type="checkbox" class="select-disabilities" value="{{ disability }}">{{ disability }}
+						</label>
+					</div>
+				{{/each}}
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-24 form-group">
+					<label class="label marg-bottom-xs-5">Include children with the following considerations:</label>
+				</div>
+			</div>
+			<div class="row form-group">
+				<div class="col-sm-16">
+				{{#each otherConsiderations}}
+					<div class="col-sm-12 form-group">
+						<label class="checkbox-inline">
+							<input type="checkbox" class="select-other-considerations" value="{{ otherConsideration }}">{{ otherConsideration }}
+						</label>
+					</div>
+				{{/each}}
+				</div>
+			</div>
+	</section>
+
+	<section class="form-section form-section--family-profile">
+		<div class="form-section-header">Family Profile</div>
+
+		<div class="row form-group">
+			<div class="col-sm-24">
+				<label class="label marg-bottom-xs-5">Family type:</label>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-24">
+			{{#each familyConstellations}}
+				<div class="col-sm-8 form-group">
+					<label class="radio-inline">
+						<input type="radio" class="select-family-constellation" name="familyConstellation" value="{{ familyConstellation }}">{{ familyConstellation }}
+					</label>
+				</div>
+			{{/each}}
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-12">
+				<label for="number-of-children-in-home" class="label marg-bottom-xs-5">Number of children in home:</label>
+			</div>
+			<div class="col-sm-12">
+				<select id="number-of-children-in-home" class="select-number-of-children-in-home" class="input form__number-select">
+					<option value="0">0</option>
+					<option value="1">1</option>
+					<option value="2">2</option>
+					<option value="3">3</option>
+					<option value="4">4</option>
+					<option value="5">5</option>
+					<option value="6">6</option>
+					<option value="7">7</option>
+					<option value="8">8+</option>
+				</select>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-12">
+				<label for="youngest-child-age-in-home" class="label marg-bottom-xs-5">Age of youngest child in home:</label>
+			</div>
+			<div class="col-sm-12">
+				<select id="youngest-child-age-in-home" class="input form__number-select">
+					<option value="0">0</option>
+					<option value="1">1</option>
+					<option value="2">2</option>
+					<option value="3">3</option>
+					<option value="4">4</option>
+					<option value="5">5</option>
+					<option value="6">6</option>
+					<option value="7">7</option>
+					<option value="8">8</option>
+					<option value="9">9</option>
+					<option value="10">10</option>
+					<option value="11">11</option>
+					<option value="12">12</option>
+					<option value="13">13</option>
+					<option value="14">14</option>
+					<option value="15">15</option>
+					<option value="16">16</option>
+					<option value="17">17</option>
+				</select>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-12">
+				<label for="oldest-child-age-in-home" class="label marg-bottom-xs-5">Age of oldest child in home:</label>
+			</div>
+			<div class="col-sm-12">
+				<select id="oldest-child-age-in-home" class="input form__number-select">
+					<option value="0">0</option>
+					<option value="1">1</option>
+					<option value="2">2</option>
+					<option value="3">3</option>
+					<option value="4">4</option>
+					<option value="5">5</option>
+					<option value="6">6</option>
+					<option value="7">7</option>
+					<option value="8">8</option>
+					<option value="9">9</option>
+					<option value="10">10</option>
+					<option value="11">11</option>
+					<option value="12">12</option>
+					<option value="13">13</option>
+					<option value="14">14</option>
+					<option value="15">15</option>
+					<option value="16">16</option>
+					<option value="17">17</option>
+				</select>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-12 form-group">
+				<label class="label marg-bottom-xs-5">Pets:</label>
+			</div>
+			<div class="col-sm-12 form-group">
+				<label class="checkbox-inline">
+					<input type="checkbox" class="select-pets-in-home" value="yes">Pets in the home
+				</label>
+			</div>
+		</div>
+	</section>
+
+	<button type="submit" class="button button--large gallery-search-form__search-button">Search</button>
+
+</section>
