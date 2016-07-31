@@ -126,14 +126,9 @@
 			var formFields = this.formFields;
 
 			// Clear out all contents of the current gallery collection
-			var model;
-
-			while (model = mare.collections.galleryChildren.first()) {
-				model.destroy();
-			}
+			mare.collections.galleryChildren.reset();
 
 			mare.collections.allChildren.each(function(child) {
-				// console.log('child: ', child);
 				// break out of the current loop if the child's gender wasn't selected (return is needed for this in _.each)
 				if(formFields.genders && formFields.genders.indexOf(child.get('gender')) === -1 ) { return; }
 				// break out of the current loop if the child has less than the min or more then the max specified (return is needed for this in _.each)
@@ -163,44 +158,32 @@
 					console.log(formFields.updatedWithin);
 				}
 
-				// break out of the loop if any of the child's needs exceed the maximum specified by the user (return is neede for this in _.each)
+				// break out of the loop if any of the child's needs exceed the maximum specified by the user (return is needed for this in _.each)
 				if(formFields.maximumPhysicalNeeds !== undefined && child.get('physicalNeeds') > formFields.maximumPhysicalNeeds) { return; }
 				if(formFields.maximumEmotionalNeeds !== undefined && child.get('emotionalNeeds') > formFields.maximumEmotionalNeeds) { return; }
 				if(formFields.maximumIntellectualNeeds !== undefined && child.get('intellectualNeeds') > formFields.maximumIntellectualNeeds) { return; }
-/************************/
-				// break out of the current loop only if none of the child's disabilities match a selected race (return is needed for this in _.each)
+				// break out of the current loop only if none of the child's disabilities match a selected disability (return is needed for this in _.each)
 				// <3 Underscore.js for this one
-				if(formFields.disabilities) {
-					console.log('disabilities: ', child.get('disabilities'));
-					console.log(formFields.disabilities);
-				}
-				// if(formFields.disabilities && _.intersection(formFields.disabilities, child.get('disabilities')).length === 0) { return; }
-
-				if(formFields.otherConsiderations) {
-					console.log('other considerations: ', child.get('otherConsiderations'));
-					console.log(formFields.otherConsiderations);
-				}
-
-				if(formFields.familyConstellation) {
-					console.log('family constellation: ', child.get('recommendedFamilyConstellation'));
-					console.log(formFields.familyConstellation);
-				}
-
-				// console.log('considerations: ', child.get('otherFamilyConstellationConsideration'));
-				// console.log('form - children in home: ', formFields.numberOfChildrenInHome);
-				// console.log('form - youngest: ', formFields.youngestChildAgeInHome);
-				// console.log('form - oldest: ', formFields.oldestChildAgeInHome);
-
-				if(formFields.petsInHome) {
-					console.log('other considerations', child.get('otherFamilyConstellationConsideration'));
-					console.log(formFields.petsInHome);
-				}
+				if(formFields.disabilities &&
+				   _.intersection(formFields.disabilities, child.get('disabilities')).length === 0) { return; }
+				// break out of the current loop only if none of the child's other considerations match a selected consideration (return is needed for this in _.each)
+				// <3 Underscore.js for this one
+				if(formFields.otherConsiderations &&
+				   _.intersection(formFields.otherConsiderations, child.get('otherConsiderations')).length === 0) { return; }
+				// break out of the loop if the recommended family constellation for the child does not contain the one selected by the user (return is needed for this in _.each)
+				if(formFields.familyConstellation !== undefined &&
+				   child.get('recommendedFamilyConstellation').indexOf(formFields.familyConstellation) === -1) { return; }
+				// break out of the loop if any of the other considerations selected don't match the child (return is needed for this in _.each)
+				if(child.get('requiresSiblings') && formFields.numberOfChildrenInHome === 0) { return; }
+				if(child.get('requiresNoSiblings') && formFields.numberOfChildrenInHome > 0) { return; }
+				if(child.get('requiresOlderSibling') && formFields.oldestChildAgeInHome <= child.get('age')) { return; }
+				if(child.get('requiresYoungerSibling') && formFields.youngestChildAgeInHome >= child.get('age')) { return; }
+				if(child.get('noPets') && formFields.petsInHome) { return; }
 				// If the child passes all checks, add them to the collection to display on the gallery
 				mare.collections.galleryChildren.add(child);
 
 			});
-
-			console.log(mare.collections.galleryChildren);
+			// Emit an event to allow the gallery to update it's display now that we have all matching models
 			mare.collections.galleryChildren.trigger('updateComplete');
 
 		}
