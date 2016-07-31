@@ -122,11 +122,10 @@ exports.setNoChildImage = function setNoChildImage(req, res, child) {
 
 exports.getChildByRegistrationNumber = function getChildByRegistrationNumber(req, res, done, registrationNumber) {
 
-	var locals				= res.locals,
-		registrationNumber	= parseInt(registrationNumber);
+	var locals				= res.locals;
 
 		Child.model.find()
-				.where('registrationNumber', registrationNumber)
+				.where('registrationNumber', parseInt(registrationNumber, 10))
 				.exec()
 				.then(function (child) {
 
@@ -175,6 +174,8 @@ exports.getGalleryData = function getGalleryData(req, res, next) {
 		}
 		// Full child records have been fetched and stored on res.locals
 		_.each(locals.children, function(child) {
+			// Create a searchable array for dealing with other family constellation considerations
+			var otherFamilyConstellationConsiderations = _.pluck(child.otherFamilyConstellationConsideration, 'otherFamilyConstellationConsideration');
 
 			var relevantData = {
 	    		name									: child.name.first,
@@ -195,8 +196,12 @@ exports.getGalleryData = function getGalleryData(req, res, next) {
 	    		disabilities							: _.pluck(child.disabilities, 'disability'),
 	    		otherConsiderations						: _.pluck(child.otherConsiderations, 'otherConsideration'),
 	    		recommendedFamilyConstellation			: _.pluck(child.recommendedFamilyConstellation, 'familyConstellation'),
-	    		otherFamilyConstellationConsideration	: _.pluck(child.otherFamilyConstellationConsideration, 'otherFamilyConstellationConsideration'),
-	    		galleryImage							: child.galleryImage,
+				requiresSiblings						: otherFamilyConstellationConsiderations.indexOf('multi-child home') !== -1,
+	    		requiresNoSiblings						: otherFamilyConstellationConsiderations.indexOf('childless home') !== -1,
+				requiresYoungerSibling					: otherFamilyConstellationConsiderations.indexOf('requires younger children') !== -1,
+				requiresOlderSibling					: otherFamilyConstellationConsiderations.indexOf('requires older children') !== -1,
+				noPets									: otherFamilyConstellationConsiderations.indexOf('no pets') !== -1,
+				galleryImage							: child.galleryImage,
 	    		detailImage								: child.detailImage,
 	    		hasVideo								: child.video && child.video.length > 0 ? true : false,
 	    		wednesdaysChild							: child.wednesdaysChild,
