@@ -7,7 +7,7 @@
 
 		events: {
 			'click .filters__search-button--modify'	: 'handleSearchClick',
-			'click .filters__search-button--clear'	: 'handleResetClick'
+			'click .filters__search-button--clear'	: 'resetGallery'
 		},
 
 		initialize: function initialize() {
@@ -33,6 +33,10 @@
 			// Bind to change events
 			mare.collections.galleryChildren.on('updateComplete', function() {
 				that.navigateToGallery();
+			});
+
+			mare.collections.galleryChildren.on('resetComplete', function() {
+				that.showGallery();
 			});
 
 		},
@@ -90,7 +94,16 @@
 		},
 
 		resetGallery: function resetGallery() {
-
+			// Cache the collection for faster access
+			var galleryChildren = mare.collections.galleryChildren;
+			// Clear out the contents of the gallery collection
+			galleryChildren.reset();
+			// Add all children back to the gallery collection for display
+			mare.collections.allChildren.each(function(child) {
+				galleryChildren.add(child);
+			});
+			// Emit an event to allow the gallery to update it's display now that we have all matching models
+			mare.collections.galleryChildren.trigger('resetComplete');
 		}
 
 	});
