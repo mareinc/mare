@@ -24,7 +24,7 @@
 }
 
 .filters__search-button {
-	font-size: .9em;
+	font-size: 0.9em;
 
 	color: $button-text-color-dark;
 	background-color: $button-background-color-light;
@@ -107,11 +107,11 @@
 .profile .details > .age,
 .profile .details > .legal-status {
 	color: #66584D;
-	margin-top: .4em;
+	margin-top: 0.4em;
 }
 
 .profile .details > .view-profile {
-	margin-top: .4em;
+	margin-top: 0.4em;
 }
 
 /* TODO: We've BEM'ed below, now BEM above! */
@@ -133,7 +133,7 @@
 }
 
 .profile-navigation__divider {
-	margin: 0 .1em;
+	margin: 0 0.1em;
 	font-size: 1.2em;
 }
 
@@ -177,7 +177,7 @@
 .profile-details__name {
 	font-size: 1.4em;
 	font-style: italic;
-	margin-bottom: .4em;
+	margin-bottom: 0.4em;
 	font-weight: 400;
 }
 
@@ -232,7 +232,7 @@
 }
 
 .media-box-container {
-	box-shadow: 1px 1px 3px rgba(0,0,0,.75);
+	box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.75);
 }
 
 .media-boxes-load-more-button {
