@@ -122,24 +122,24 @@ exports.setNoChildImage = function setNoChildImage(req, res, child) {
 
 exports.getChildByRegistrationNumber = function getChildByRegistrationNumber(req, res, done, registrationNumber) {
 
-	var locals				= res.locals;
+	var locals = res.locals;
 
-		Child.model.find()
-				.where('registrationNumber', parseInt(registrationNumber, 10))
-				.exec()
-				.then(function (child) {
+	Child.model.find()
+			.where('registrationNumber', parseInt(registrationNumber, 10))
+			.exec()
+			.then(function (child) {
 
-					locals.child = child[0];
-					// execute done function if async is used to continue the flow of execution
-	 				// TODO: if this is used in non-async middleware, done or next should be passed into options and the appropriate one should be executed
-					done();
+				locals.child = child[0];
+				// execute done function if async is used to continue the flow of execution
+ 				// TODO: if this is used in non-async middleware, done or next should be passed into options and the appropriate one should be executed
+				done();
 
-				}, function(err) {
+			}, function(err) {
 
-					console.log(err);
-					done();
+				console.log(err);
+				done();
 
-				});
+			});
 
 };
 
