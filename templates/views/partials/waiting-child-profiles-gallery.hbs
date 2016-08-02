@@ -10,14 +10,13 @@
 			<button class="button filters__search-button filters__search-button--modify">Modify Search</button>
 			<button class="button filters__search-button filters__search-button--clear">Clear Search</button>
 		</div>
-		<div class="media-boxes-drop-down waiting-child-profiles-filter" id="waiting-child-profiles-sort">
-			<div class="media-boxes-drop-down-header"><span class="fa fa-sort-desc"></span>Sort by Most Recent</div>
-			<ul class="media-boxes-drop-down-menu">
-				<li><a class="selected waiting-child-profiles-sort-option" href="#" data-sort-by="date-added" data-sort-ascending="false">Sort by Most Recent</a></li>
-				<li><a class="waiting-child-profiles-sort-option" href="#" data-sort-by="name">Sort by Name</a></li>
-				<li><a class="waiting-child-profiles-sort-option" href="#" data-sort-by="age" data-sort-ascending="false">Sort by Age</a></li>
-			</ul>
-		</div>
+
+		<select class="waiting-child-profiles__gallery-filter waiting-child-profiles-filter">
+			<option value="registered">Sort by Most Recent</option>
+			<option value="name">Sort by Name</option>
+			<option value="age">Sort by Age</option>
+		</select>
+
 		<div class="icon-key">
 			<span class="icon-text-unit filter">
 				<img class="icon-text-unit__icon video" src="/dist/img/video-icon.png">
