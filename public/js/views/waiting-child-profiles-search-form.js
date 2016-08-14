@@ -1,3 +1,5 @@
+// TODO: Remove the complexity in this file by breaking out testing and storing of variables into discrete functions, then update .eslintrc
+
 (function () {
 	'use strict';
 
@@ -129,60 +131,80 @@
 			mare.collections.galleryChildren.reset();
 
 			mare.collections.allChildren.each(function(child) {
+
 				// break out of the current loop if the child's gender wasn't selected (return is needed for this in _.each)
 				if(formFields.genders && formFields.genders.indexOf(child.get('gender')) === -1 ) { return; }
+
 				// break out of the current loop if the child has less than the min or more then the max specified (return is needed for this in _.each)
 				if(formFields.minimumSiblings > child.get('siblingContactsCount') ||
 				   formFields.maximumSiblings < child.get('siblingContactsCount')) { return; }
+
 				// break out of the current loop if the child's age is less than the youngest or more than the oldest specified (return is needed for this in _.each)
 				if(formFields.youngestAge > child.get('age') ||
 				   formFields.oldestAge < child.get('age')) { return; }
+
 				// break out of the current loop only if none of the child's races match a selected race (return is needed for this in _.each)
 				// <3 Underscore.js for this one
 				if(formFields.races && _.intersection(formFields.races, child.get('race')).length === 0) { return; }
+
 				// break out of the current loop only if one of the child's language doesn't match the selected primary language (return is needed for this in _.each)
 				if(formFields.primaryLanguage && child.get('language').indexOf(formFields.primaryLanguage) === -1) { return; }
+
 				// break out of the current loop only if the child having contact with their biological siblings/parents doesn't match the user's selection (return is needed for this in _.each)
 				if(formFields.contactWithBiologicalSiblings === false &&
 				   child.get('hasContactWithBiologicalSiblings') !== false) { return; }
 
 				if(formFields.contactWithBiologicalParents === false &&
 				   child.get('hasContactWithBiologicalParents') !== false) { return; }
+
 				// break out of the current loop if the child doesn't have a video and the user specifies that they should (return is needed for this in _.each)
 				if(formFields.videoOnly && child.get('hasVideo') === false) { return; }
+
 				// break out of the current loop if the child isn't legally free and the user specifies that they should be (return is needed for this in _.each)
 				if(formFields.legallyFreeOnly && child.get('legalStatus') !== 'free') { return; }
 
-				if(formFields.updatedWithin) {
-					console.log('updated at:', child.get('updatedAt'));
-					console.log(formFields.updatedWithin);
+				// only consider when the child was updated if a selection was made in the search criteria
+				if( formFields.updatedWithin ) {
+					var lastUpdated			= new Date(child.get('updatedAt')),
+						restriction			= new Date(formFields.updatedWithin),
+						currentMilliseconds	= new Date().getTime(),
+						cutoffMilliseconds	= parseInt(formFields.updatedWithin, 10),
+						cutoffDate			= new Date(currentMilliseconds - cutoffMilliseconds),
+						isIncluded			= lastUpdated >= cutoffDate;
+
+					// break out of the current loop if the child wasn't updated within the timeframe specified by the user (return is needed for this in _.each)
+					if(!isIncluded) { return; }
 				}
 
 				// break out of the loop if any of the child's needs exceed the maximum specified by the user (return is needed for this in _.each)
 				if(formFields.maximumPhysicalNeeds !== undefined && child.get('physicalNeeds') > formFields.maximumPhysicalNeeds) { return; }
 				if(formFields.maximumEmotionalNeeds !== undefined && child.get('emotionalNeeds') > formFields.maximumEmotionalNeeds) { return; }
 				if(formFields.maximumIntellectualNeeds !== undefined && child.get('intellectualNeeds') > formFields.maximumIntellectualNeeds) { return; }
+
 				// break out of the current loop only if none of the child's disabilities match a selected disability (return is needed for this in _.each)
-				// <3 Underscore.js for this one
 				if(formFields.disabilities &&
 				   _.intersection(formFields.disabilities, child.get('disabilities')).length === 0) { return; }
+
 				// break out of the current loop only if none of the child's other considerations match a selected consideration (return is needed for this in _.each)
-				// <3 Underscore.js for this one
 				if(formFields.otherConsiderations &&
 				   _.intersection(formFields.otherConsiderations, child.get('otherConsiderations')).length === 0) { return; }
+
 				// break out of the loop if the recommended family constellation for the child does not contain the one selected by the user (return is needed for this in _.each)
 				if(formFields.familyConstellation !== undefined &&
 				   child.get('recommendedFamilyConstellation').indexOf(formFields.familyConstellation) === -1) { return; }
+
 				// break out of the loop if any of the other considerations selected don't match the child (return is needed for this in _.each)
 				if(child.get('requiresSiblings') && formFields.numberOfChildrenInHome === 0) { return; }
 				if(child.get('requiresNoSiblings') && formFields.numberOfChildrenInHome > 0) { return; }
 				if(child.get('requiresOlderSibling') && formFields.oldestChildAgeInHome <= child.get('age')) { return; }
 				if(child.get('requiresYoungerSibling') && formFields.youngestChildAgeInHome >= child.get('age')) { return; }
 				if(child.get('noPets') && formFields.petsInHome) { return; }
+
 				// If the child passes all checks, add them to the collection to display on the gallery
 				mare.collections.galleryChildren.add(child);
 
 			});
+
 			// Emit an event to allow the gallery to update it's display now that we have all matching models
 			mare.collections.galleryChildren.trigger('updateComplete');
 
