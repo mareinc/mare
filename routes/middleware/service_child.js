@@ -225,20 +225,18 @@ exports.getChildDetails = function(req, res, next) {
 		registrationNumber = childData['registrationNumber'];
 
 	/* TODO: Fetch only the needed fields instead of grabbing everything */
-	Child.model.find()
+	Child.model.findOne()
         .where('registrationNumber', registrationNumber)
         .populate('gender')
         .exec()
         .then(function (child) {
-
-        	var child = child[0];
 
         	var relevantData = {
         		profilePart1		: child.profile.part1,
         		profilePart2		: child.profile.part2,
         		profilePart3		: child.profile.part3,
         		hasImage			: _.isEmpty(child.image) && child.image.url.length > 0,
-        		video				: child.video && child.video.length > 0 ? child.video.replace('watch?v=', 'embed/') : undefined,
+        		video				: child.video && child.video.length > 0 ? child.video.replace('watch?v=', 'embed/') : undefined
         	};
 
         	res.send(relevantData);
