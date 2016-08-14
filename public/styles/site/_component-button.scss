@@ -1,21 +1,23 @@
 .button {
-  padding: 5px 10px;
-  border-radius: 5px;
-  text-transform: uppercase;
+	padding: 5px 10px;
+	border-radius: 2px;
+	text-transform: uppercase;
+	border-style: none;
+	box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
 
-  &--large {
-    padding: 10px 15px;
-  }
+	&--large {
+		padding: 10px 15px;
+	}
 
-  &--donate {
-    color: $button-text-color-1;
-     background-color: $button-background-color-3;
-  }
+	&--donate {
+		color: $button-text-color-1;
+		background-color: $button-background-color-3;
+	}
 
-  &--have-a-question {
-    color: $button-text-color-light;
-    background-color: $button-background-color-1;
-  }
+	&--have-a-question {
+		color: $button-text-color-light;
+		background-color: $button-background-color-1;
+	}
 }
 
 // TODO: Not sure where most of the stuff below came from, check for use, delete if you're able to

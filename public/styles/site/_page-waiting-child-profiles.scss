@@ -26,8 +26,8 @@
 .filters__search-button {
 	font-size: 0.9em;
 
-	color: $button-text-color-dark;
-	background-color: $button-background-color-light;
+	color: $button-text-color-1;
+	background-color: $button-background-color-3;
 }
 
 .waiting-child-profiles-filter {
@@ -37,6 +37,10 @@
     @media all and (min-width: 500px) {
     	width: 140px;
     }
+}
+
+.waiting-child-profiles__gallery-filter {
+    width: 12em;
 }
 
 .icon-key {
