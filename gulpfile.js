@@ -90,7 +90,7 @@ gulp.task('fonts', function() {
 // scripts task
 gulp.task('scripts', function() {
 	return gulp.src(paths.js)
-		// need to fix this ignore, it's not working
+		// TODO: need to fix this ignore, it's not working
 		.pipe(gulpIgnore.exclude(paths['standalone-js']))
 		.pipe(sourcemaps.init())
 		.pipe(concat('mare.js'))
