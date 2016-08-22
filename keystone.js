@@ -161,6 +161,7 @@ keystone.set('nav', {
 	'events'			: ['events'],
 	'mailing lists'		: ['mailing-lists'],
 	'relationships'		: ['csc-region-contacts', 'csc-email-contacts', 'placements'],
+	'donations'			: ['donations'],
 	'change tracking'	: ['child-histories', 'family-histories'],
 	'lists'				: ['child-statuses', 'child-types', 'city-or-towns', 'closed-reasons', 'communication-methods',
 						   'disabilities', 'email-targets', 'event-types', 'family-constellations', 'genders', 'inquiry-methods',
