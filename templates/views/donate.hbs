@@ -1,107 +1,76 @@
-{{!-- <form onsubmit="return doSomething();" class="donations-form">
-		<select id="donation-amount" name="donationAmount" class="donation-amount" type="radio">
-			<option value="5000">$5.00</option>
-		<option value="1000">$10.00</option>
-		<option value="1500">$15.00</option>
-		<option value="2000">$20.00</option>
-		<option value="2500">$25.00</option>
-		<option value="3000">$30.00</option>
-		<option value="5000">$50.00</option>
-		<option value="other">Other</option>
-		</select>
-		<input type="text" class="input input-small" id="donation-custom-value" name="donationCustomValue" pattern="/^\$?[0-9]+(\.[0-9][0-9])?$/">
-    <input type="submit" value="Submit">
-</form>
+<section class="donations-page">
 
-<button class="donate">Donate</button> --}}
-<div class="donations-header">I give to help children find loving homes</div>
-
-<div id="give-money-machine" class="orange">
-	<ul class="give-money-tiers">
-		<li>
-			<div class="tier-selected">
-				<div class="tier-selected-bg"></div>
-				<div class="tier-selected-description">
-					<p>
-						</p><div class="bar"></div>
-						<div class="description">What does this buy?  That's entirely up to you and your generous ways.</div>
-						<img class="omg" src="/dist/img/omg-description.png" style="display: none;">
-					<p></p>
-				</div>
-			</div>
-			<h3>Other</h3>
-			<span>Give what you can</span>
-		</li>
-		<li>
-			<div class="tier-selected">
-				<div class="tier-selected-bg"></div>
-				<div class="tier-selected-description">
-					<p>
-						</p><div class="bar"></div>
-						<div class="description">Guarantees 5 children will be adopted, and buys them all new school supplies and hand knit sweaters.</div>
-						<img class="omg" src="/dist/img/omg-description.png" style="display: none;">
-					<p></p>
-				</div>
-			</div>
-			<h3>We love you</h3>
-			<span>$100</span>
-		</li>
-		<li class="selected">
-			<div class="tier-selected">
-				<div class="tier-selected-bg"></div>
-				<div class="tier-selected-description">
-					<p>
-						</p><div class="bar"></div>
-						<div class="description">This donation will be used to rent a bus and take 5 children to Disney World with a lucky prospective family.  If all goes well... adoptions!</div>
-						<img class="omg" src="/dist/img/omg-description.png" style="display: none;">
-					<p></p>
-				</div>
-			</div>
-			<h3>Amazing</h3>
-			<span>$20</span>
-		</li>
-		<li>
-			<div class="tier-selected">
-				<div class="tier-selected-bg"></div>
-				<div class="tier-selected-description">
-					<p>
-						</p><div class="bar"></div>
-						<div class="description">Grants one child 100% chance of happiness and buys another child a new hat.</div>
-						<img class="omg" src="/dist/img/omg-description.png" style="display: none;">
-					<p></p>
-				</div>
-			</div>
-			<h3>Better</h3>
-			<span>$10</span>
-		</li>
-		<li>
-			<div class="tier-selected">
-				<div class="tier-selected-bg"></div>
-				<div class="tier-selected-description">
-					<p>
-						</p><div class="bar"></div>
-						<div class="description">Guarantees one child a 75% chance at happiness.</div>
-						<img class="omg" src="/dist/img/omg-description.png" style="display: none;">
-					<p></p>
-				</div>
-			</div>
-			<h3>Good</h3>
-			<span>$5</span>
-		</li>
-	</ul>
-	<div class="give-money-body">
-		<form id="give-money-donate-form" method="post" onsubmit="return donate()">
-			<label id="donate-amount-label" for="donate-amount">I Will Give</label>
-			<input id="donate-amount" name="amount" type="number" value="20">
-			<button id="donate-now" class="donate">Donate Now</button>
-		</form>
-		<ul class="tier-images">
-			<li><img src="http://saturdayplace.org/assets/basics1.gif" alt=""></li>
-			<li><img src="http://saturdayplace.org/assets/supplies1.gif" alt=""></li>
-			<li class="selected"><img src="http://saturdayplace.org/assets/experiences1.gif" alt=""></li>
-			<li><img src="http://saturdayplace.org/assets/programs1.gif" alt=""></li>
-			<li><img src="http://saturdayplace.org/assets/futures1.gif" alt=""></li>
-			<li><img src="/dist/img/omg.gif" alt=""></li>
-		</ul>
+	<div class="donations-page__header-area">
+		<div class="donations-page__header">Donate Now to MARE</div>
+		<div class="donations-page__subheader">Your gift helps MARE find adoptive parents for children in state foster care</div>
 	</div>
-</div>
+
+	<section class="donations-page__selection-group">
+
+		<div class="selection-group__header">
+			<span class="selection-group__number-container">
+				<span class="selection-group__number">1</span>
+			</span>
+			<span class="selection-group__header-text">Guarantee your support to help children in need. Recurring donations are the best way to give steady support</span>
+		</div>
+		<div id="donation-duration-button-group" class="donations__button-group">
+			<button class="toggle-button toggle-button--quarter">Just Once</button>
+			<button class="toggle-button toggle-button--quarter">Monthly</button>
+			<button class="toggle-button toggle-button--quarter">Bi-Annually</button>
+			<button class="toggle-button toggle-button--quarter">Annually</button>
+		</div>
+
+	</section>
+
+	<section class="donations-page__selection-group">
+
+		<div class="selection-group__header">
+			<span class="selection-group__number-container">
+				<span class="selection-group__number">2</span>
+			</span>
+			<span class="selection-group__header-text">Choose desired donation amount</span>
+		</div>
+
+		<div class="selection-group__supporting-text"></div>
+
+		<div id="donation-amount-button-group" class="donations__button-group">
+			<button class="toggle-button toggle-button--sixth">$50</button>
+			<button class="toggle-button toggle-button--sixth">$100</button>
+			<button class="toggle-button toggle-button--sixth">$250</button>
+			<button class="toggle-button toggle-button--sixth">$500</button>
+			<button class="toggle-button toggle-button--sixth">$750</button>
+			<button class="toggle-button toggle-button--sixth">$1,000</button>
+		</div>
+
+		<div class="donations-page__input-group">
+			<label class="donations__input-label" for="donation-amount-input">$</label>
+			<input type="number" step="5" id="donation-amount-input" class="donations__input-field" placeholder="Other Amount">
+		</div>
+
+	</section>
+
+	<button class="donate-button donate-button--disabled">Donate</button>
+
+	<!-- <section class="donations-page__selection-group">
+
+		<div class="selection-group__header">
+			<span class="selection-group__number-container">
+				<span class="selection-group__number">3</span>
+			</span>
+			<span class="selection-group__header-text">My information</span>
+		</div>
+
+	</section>
+
+	<section class="donations-page__selection-group">
+
+		<div class="selection-group__header">
+			<span class="selection-group__number-container">
+				<span class="selection-group__number">4</span>
+			</span>
+			<span class="selection-group__header-text">My gift is in honor/memory of</span>
+		</div>
+
+	</section> -->
+
+</section>
