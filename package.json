@@ -34,7 +34,6 @@
     "node-sass": "~3.3.3",
     "node-sass-middleware": "^0.9.6",
     "q": "^1.4.1",
-    "stripe": "^4.0.0",
     "underscore": "~1.7.0"
   },
   "engines": {
