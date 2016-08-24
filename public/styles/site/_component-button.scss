@@ -1,13 +1,14 @@
 /* TODO: Placed up at the top because this will become the standard button style */
 .donate-button {
 	padding: 1em;
-    border-radius: 2px;
-    border-style: none;
+  border-radius: 2px;
+  border-style: none;
 	background-color: #af4967;
 	color: #fff;
 	margin-left: 1%;
 	margin-right: 1%;
 	box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
+  transition: 0.5s ease;
 
 	&:focus {
 		outline: none;

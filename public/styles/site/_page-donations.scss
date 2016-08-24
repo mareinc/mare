@@ -58,6 +58,7 @@
 	left: 1.8em;
 	margin-top: 0;
 	color: #af4967;
+	transition: 0.5s ease;
 
 	&--selected {
 		color: #fbb03b;
@@ -69,6 +70,7 @@
 	margin-left: 1%;
 	padding: 1em 1em 1em 2.3em;
 	border: 2px solid #af4967;
+	transition: border-color 0.5s ease;
 
 	@media all and (min-width: 480px) {
 		width: 64%;
