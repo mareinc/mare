@@ -36,17 +36,6 @@ exports.create = {
 			isActive: true
 		},
 		name: {
-			first: 'Tom',
-			last: 'Koch'
-		},
-		password: 'TomKoch',
-		email: 'tommysalsa@gmail.com'
-	},{
-		permissions: {
-			isVerified: true,
-			isActive: true
-		},
-		name: {
 			first: 'Guillermo',
 			last: 'Martin'
 		},
