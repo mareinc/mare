@@ -2,8 +2,9 @@
 var keystone			= require('keystone'),
 	Types				= keystone.Field.Types,
 	async				= require('async'),
-	OutsideContactGroup = require('./OutsideContactGroup'); // Done this way because it was throwing a reference error when using keystone.list,
-															// which was due to one filename coming after the other alphabetically
+	// Export to make it available using require.  The keystone.list import throws a ReferenceError when importing a list
+	// that comes later when sorting alphabetically
+	OutsideContactGroup = require('./OutsideContactGroup');
 
 // Create model
 var OutsideContact = new keystone.List('Outside Contact', {

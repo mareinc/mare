@@ -1,9 +1,11 @@
 var keystone 		= require('keystone'),
 	Types 			= keystone.Field.Types,
-	SiteVisitor		= keystone.list('Site Visitor'),
-	SocialWorker	= keystone.list('Social Worker'),
-	Family			= keystone.list('Family'),
-	Admin			= keystone.list('Admin');
+	// Export to make it available using require.  The keystone.list import throws a ReferenceError when importing a list
+	// that comes later when sorting alphabetically
+	SiteVisitor		= require('./User_SiteVisitor'),
+	SocialWorker	= require('./User_SocialWorker'),
+	Family			= require('./User_Family'),
+	Admin			= require('./User_Admin');
 
 // Create model. Additional options allow menu name to be used to auto-generate the URL
 var Donation = new keystone.List('Donation');

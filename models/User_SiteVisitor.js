@@ -1,6 +1,6 @@
 var keystone	= require('keystone'),
 	Types		= keystone.Field.Types,
-	User		= keystone.list('User');
+	User		= require('./User');
 
 // Create model
 var SiteVisitor = new keystone.List('Site Visitor', {
@@ -111,3 +111,7 @@ SiteVisitor.schema.methods.sendNotificationEmail = function(callback) {
 // Define default columns in the admin interface and register the model
 SiteVisitor.defaultColumns = 'name.full, email, permissions.isActive';
 SiteVisitor.register();
+
+// Export to make it available using require.  The keystone.list import throws a ReferenceError when importing a list
+// that comes later when sorting alphabetically
+exports = module.exports = SiteVisitor;

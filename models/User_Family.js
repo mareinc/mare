@@ -1,6 +1,6 @@
 var keystone	= require('keystone'),
 	Types		= keystone.Field.Types,
-	User		= keystone.list('User');
+	User		= require('./User');
 
 // Create model
 var Family = new keystone.List('Family', {
@@ -349,3 +349,7 @@ Family.schema.virtual('canAccessKeystone').get(function() {
 // // Define default columns in the admin interface and register the model
 Family.defaultColumns = 'registrationNumber, contact1.name.full, permissions.isActive';
 Family.register();
+
+// Export to make it available using require.  The keystone.list import throws a ReferenceError when importing a list
+// that comes later when sorting alphabetically
+exports = module.exports = Family;
