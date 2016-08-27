@@ -7,7 +7,8 @@ var Admin = new keystone.List('Admin', {
 	inherits: User,
 	track: true,
 	map: { name: 'name.full' },
-	defaultSort: 'name.full'
+	defaultSort: 'name.full',
+	hidden: false
 });
 
 // Create fields

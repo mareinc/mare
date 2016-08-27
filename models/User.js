@@ -6,7 +6,7 @@ var User = new keystone.List('User', {
 	track: true,
 	autokey: { path: 'key', from: 'email', unique: true },
 	map: { name: 'email' },
-	defaultSort: 'email'
+	hidden: true
 });
 
 // Create fields

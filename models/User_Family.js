@@ -7,7 +7,8 @@ var Family = new keystone.List('Family', {
 	inherits: User,
 	track: true,
 	map: { name: 'contact1.name.full' },
-	defaultSort: 'contact1.name.full'
+	defaultSort: 'contact1.name.full',
+	hidden: false
 });
 
 // Create fields
