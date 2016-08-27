@@ -18,3 +18,5 @@ OutsideContactGroup.relationship({ ref: 'Mailing List', refPath: 'outsideContact
 // Define default columns in the admin interface and register the model
 OutsideContactGroup.defaultColumns = 'name';
 OutsideContactGroup.register();
+
+exports = module.exports = OutsideContactGroup;

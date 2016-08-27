@@ -2,7 +2,8 @@
 var keystone			= require('keystone'),
 	Types				= keystone.Field.Types,
 	async				= require('async'),
-	OutsideContactGroup	= keystone.list('Outside Contact Group');
+	OutsideContactGroup = require('./OutsideContactGroup'); // Done this way because it was throwing a reference error when using keystone.list,
+															// which was due to one filename coming after the other alphabetically
 
 // Create model
 var OutsideContact = new keystone.List('Outside Contact', {
@@ -141,9 +142,9 @@ OutsideContact.schema.post('save', function() {
 });
 
 // Set up relationship values to show up at the bottom of the model if any exist
-OutsideContact.relationship({ ref: 'Outside Contact Group', refPath: 'outsideContacts', path: 'contact-groups', label: 'outside contact groups' });
+OutsideContact.relationship({ ref: 'Outside Contact Group', refPath: 'outsideContacts', path: 'outside-contact-groups', label: 'outside contact groups' });
 OutsideContact.relationship({ ref: 'Mailing List', refPath: 'outsideContactSubscribers', path: 'mailing-lists', label: 'mailing lists' });
 
 // Define default columns in the admin interface and register the model
-OutsideContact.defaultColumns = 'type, name.full, organization';
+OutsideContact.defaultColumns = 'name.full, type, organization';
 OutsideContact.register();
