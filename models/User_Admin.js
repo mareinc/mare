@@ -42,6 +42,7 @@ Admin.add('General Information', {
 
 // Set up relationship values to show up at the bottom of the model if any exist
 Admin.relationship({ ref: 'CSC Region Contact', refPath: 'cscRegionContact', path: 'cscRegionContact', label: 'contact for the following regions' });
+Admin.relationship({ ref: 'Mailing List', refPath: 'adminSubscribers', path: 'mailing-lists', label: 'mailing lists' });
 Admin.relationship({ ref: 'Event', refPath: 'cscAttendees', path: 'events', label: 'events' });
 
 // Pre Save
