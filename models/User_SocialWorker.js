@@ -45,8 +45,7 @@ SocialWorker.add('General Information', {
 		street2: { type: Types.Text, label: 'street 2', initial: true },
 		city: { type: Types.Text, label: 'city', initial: true },
 		state: { type: Types.Relationship, label: 'state', ref: 'State', initial: true },
-		zipCode: { type: Types.Text, label: 'zip code', initial: true },
-		region: { type: Types.Relationship, label: 'region', ref: 'Region', initial: true }
+		zipCode: { type: Types.Text, label: 'zip code', initial: true }
 	},
 
 	title: { type: Types.Text, label: 'title', initial: true },
