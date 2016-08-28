@@ -1,3 +1,4 @@
+// TODO: Check to see if we're using this model, if not, remove it
 var keystone = require('keystone'),
 	Types = keystone.Field.Types;
 

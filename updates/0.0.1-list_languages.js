@@ -1,13 +1,13 @@
 exports.create = {
 	'Language': [{
+		language: 'Chinese'
+	}, {
 		language: 'English'
 	}, {
-		language: 'Spanish'
-	}, {	
 		language: 'Portuguese'
-	}, {	
-		language: 'Chinese'
-	}, {	
+	}, {
+		language: 'Spanish'
+	}, {
 		language: 'other'
 	}]
 };

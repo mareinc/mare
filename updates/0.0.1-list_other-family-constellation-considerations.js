@@ -4,10 +4,10 @@ exports.create = {
 	}, {
 		otherFamilyConstellationConsideration: 'multi-child home'
 	}, {
-		otherFamilyConstellationConsideration: 'requires younger children'
+		otherFamilyConstellationConsideration: 'no pets'
 	}, {
 		otherFamilyConstellationConsideration: 'requires older children'
 	}, {
-		otherFamilyConstellationConsideration: 'no pets'
+		otherFamilyConstellationConsideration: 'requires younger children'
 	}]
 };

@@ -1,15 +1,15 @@
 exports.create = {
 	'Child Status': [{
 		childStatus: 'active'
-	}, {	
-		childStatus: 'on hold'
-	}, {	
-		childStatus: 'withdrawn'
-	}, {	
-		childStatus: 'placed'
-	}, {	
+	}, {
 		childStatus: 'disrupted'
-	}, {	
+	}, {
+		childStatus: 'on hold'
+	}, {
+		childStatus: 'placed'
+	}, {
 		childStatus: 'reunification'
+	}, {
+		childStatus: 'withdrawn'
 	}]
 };

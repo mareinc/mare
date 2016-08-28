@@ -1,9 +1,11 @@
 exports.create = {
 	'Gender': [{
-		gender: 'male'
-	}, {
 		gender: 'female'
 	}, {
+		gender: 'male'
+	}, {
 		gender: 'other'
+	}, {
+		gender: 'transgender'
 	}]
 };
