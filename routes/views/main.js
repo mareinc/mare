@@ -41,6 +41,7 @@ exports = module.exports = function(req, res) {
 
 							// Set the layout to render without the right sidebar
 							locals['render-with-sidebar'] = false;
+							locals['render-home'] = true;
 							// Render the view once all the data has been retrieved
 							view.render('main');
 							// TODO: If the necessary elements don't exist on the page, maybe render

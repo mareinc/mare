@@ -35,6 +35,8 @@
 				{{!-- Each page has a data value for the type of content area to display, use that to render a partial template which has a placeholder for {{{body}}} --}}
 				{{#if render-with-sidebar}}
 					{{> content-with-sidebar}}
+				{{else if render-home}}
+					{{> content-home}}
 				{{else}}
 					{{> content-without-sidebar}}
 				{{/if}}
