@@ -1,7 +1,7 @@
 .global-footer {
-	border-top: 15px solid #3D4573;
+	color: $footer-text-color;
 	background-color: $footer-background-color;
-	padding: 15px;
+	padding: 1.1em;
 }
 
 .global-footer .footer-nav {
@@ -12,7 +12,7 @@
 .global-footer .social-nav {
 	display: inline-block;
 	position: relative;
-    top: -10px;
+	top: -10px;
 }
 
 .global-footer .sponsor-jordans-furniture {
@@ -24,8 +24,8 @@
 }
 
 .global-footer .contact-info {
-    text-align: center;
-    margin-top: 10px;
+	text-align: center;
+	margin-top: 10px;
 }
 
 
@@ -34,8 +34,8 @@
 
 .global-footer .footer-nav > span:after,
 .global-footer .contact-info > span:after {
-    content: " |";
-    margin: 0 2px;
+	content: " |";
+	margin: 0 2px;
 	font-size: 1.2em;
 }
 
@@ -47,10 +47,10 @@
 }
 
 .global-footer .disclaimer {
-    text-align: center;
-    margin-top: 10px;
+	text-align: center;
+	margin-top: 10px;
 }
 
 .global-footer .disclaimer > .copyright {
-    margin-left: 5px;
+	margin-left: 5px;
 }
