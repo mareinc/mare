@@ -91,7 +91,7 @@ Featured.schema.pre('save', function(next) {
 				.exec()
 				.then(function(event) {
 
-					self.upcomingEvent.title = event[0].title;
+					self.upcomingEvent.title = event[0].name;
 					// self.upcomingEvent.summary = event[0].description.replace(/<\/?[^>]+(>|$)/g, '');
 					// self.upcomingEvent.summary = self.upcomingEvent.summary.substring(0, 200);
 					self.upcomingEvent.url = event[0].url;
