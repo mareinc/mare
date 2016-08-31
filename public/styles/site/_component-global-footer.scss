@@ -4,28 +4,36 @@
 	padding: 1.1em;
 }
 
-.global-footer .footer-nav {
-	display: inline-block;
-	color: $footer-text-color;
+.social-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    margin-bottom: 1.5em;
 }
 
 .global-footer .social-nav {
-	display: inline-block;
-	position: relative;
-	top: -10px;
+	display: flex;
+    justify-content: space-between;
+    width: 30%;
 }
 
-.global-footer .sponsor-jordans-furniture {
-	margin-left: 10px;
+.global-footer .sponsor-nav {
+	display: flex;
+    justify-content: space-between;
+    width: 30%;
 }
 
-.global-footer .sponsor-jack-williams {
-	margin-left: 20px;
+.global-footer .footer-nav {
+	display: flex;
+    color: $footer-text-color;
+    width: 70%;
+    justify-content: space-between;
+    margin: 0 auto 2.5em;
 }
 
 .global-footer .contact-info {
 	text-align: center;
-	margin-top: 10px;
+	margin-bottom: 1em;
 }
 
 
