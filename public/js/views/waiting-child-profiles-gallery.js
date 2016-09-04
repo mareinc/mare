@@ -6,9 +6,9 @@
 		el: '.gallery',
 
 		events: {
-			'click .media-box'							: 'displayChildDetails',
-			'click .bookmark'							: 'toggleBookmark',
-			'click .waiting-child-profiles-sort-option'	: 'sortGallery'
+			'click .media-box'								: 'displayChildDetails',
+			'click .bookmark'								: 'toggleBookmark',
+			'change .waiting-child-profiles__gallery-filter': 'sortGallery'
 		},
 
 		initialize: function initialize() {
@@ -23,6 +23,11 @@
 			// Initialize the gallery once we've fetched the child data needed to display the gallery (this doesn't include child details data)
 			mare.promises.childrenDataLoaded.done(function() {
 				view.collection = mare.collections.galleryChildren;
+			});
+
+			// Bind to change events
+			mare.collections.galleryChildren.on('sorted', function() {
+				view.render();
 			});
 		},
 
@@ -44,14 +49,7 @@
 			// initialize the photo listing gallery grid
 			$('#grid').mediaBoxes({
 				boxesToLoadStart: 12,
-				boxesToLoad 	: 8,
-				sortContainer 	: '#waiting-child-profiles-sort',
-				sort: 'a',
-				getSortData: {
-					name		: '.media-box-name', 		// look in the elements with the class "media-box-name" and sort by the innerHTML value
-					age			: '.media-box-age', 		// look in the elements with the class "media-box-age" and sort by the innerHTML value
-					dateAdded	: '.media-box-date-added' 	// look in the elements with the class "media-box-date-added" and sort by the innerHTML value
-				}
+				boxesToLoad 	: 8
 			});
 		},
 
@@ -132,9 +130,9 @@
 
 		sortGallery: function sortGallery(event) {
 			var $currentTarget = $(event.currentTarget);
-			var sortBy = $currentTarget.data('sort-by');
+			var sortBy = $currentTarget.val();
 
-			this.collection.reorder(sortBy);
+			mare.collections.galleryChildren.reorder(sortBy);
 		}
 
 	});

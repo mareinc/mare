@@ -1,7 +1,7 @@
 .content {
 	padding: 111px 0 40px;
 	color: $main-content-color;
-	background-color: $light-background-color;
+	background-color: $main-content-background-color;
 	/* All padding changes below account for the height of the fixed position header at < 820px */
 	@media all and (min-width: 460px) { padding-top: 123px; }
 	@media all and (min-width: 480px) { padding-top: 134px; }
@@ -10,7 +10,8 @@
 }
 
 .content__main {
-	padding: 0 10px;
+	// padding: 0 10px;
+	padding: 0 0 0 0.75em;
 
 	&--with-sidebar {
 		@media all and (min-width: 660px) {
@@ -20,12 +21,12 @@
 }
 
 .content__body {
-	background-color: $light-background-color;
+	background-color: $main-content-background-color;
 	margin-bottom: 20px;
 
 	@media all and (min-width: 660px) {
 		width: 100%;
 		display: inline-block;
-		padding: 0 10px;
+		padding: 0 1.5em 0 0;
 	}
 }

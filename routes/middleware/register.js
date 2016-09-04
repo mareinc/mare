@@ -13,8 +13,8 @@ exports.registerUser = function(req, res, next) {
 		files;
 
 	// Initialize validation checks to failing values to ensure they actually pass all checks
-	res.locals.isEmailInvalid		= true,
-	res.locals.isEmailDuplicate		= true,
+	res.locals.isEmailInvalid		= true;
+	res.locals.isEmailDuplicate		= true;
 	res.locals.isPasswordInvalid	= true;
 	// Capture the registration type which determines which path we take during registration
 	res.locals.registrationType = user.registrationType;
@@ -470,13 +470,13 @@ exports.getCurrentDate = function getCurrentDate() {
 exports.setChild = function setChild(user, i) {
 
 	var childObject = {};
-	
+
 	if ( user['child' + i + '-name'] ) {
-		childObject.name 		= user['child' + i + '-name']; 
+		childObject.name 		= user['child' + i + '-name'];
 		childObject.birthDate 	= user['child' + i + '-birthDate'];
 		childObject.gender 		= user['child' + i + '-gender'];
 		childObject.type 		= user['child' + i + '-type'];
-	} 
+	}
 
 	return childObject;
 

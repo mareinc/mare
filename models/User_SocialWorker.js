@@ -1,13 +1,14 @@
 var keystone	= require('keystone'),
 	Types		= keystone.Field.Types,
-	User		= keystone.list('User');
+	User		= require('./User');
 
 // Create model
 var SocialWorker = new keystone.List('Social Worker', {
 	inherits: User,
 	track: true,
 	map: { name: 'name.full' },
-	defaultSort: 'name.full'
+	defaultSort: 'name.full',
+	hidden: false
 });
 
 // Create fields
@@ -44,8 +45,7 @@ SocialWorker.add('General Information', {
 		street2: { type: Types.Text, label: 'street 2', initial: true },
 		city: { type: Types.Text, label: 'city', initial: true },
 		state: { type: Types.Relationship, label: 'state', ref: 'State', initial: true },
-		zipCode: { type: Types.Text, label: 'zip code', initial: true },
-		region: { type: Types.Relationship, label: 'region', ref: 'Region', initial: true }
+		zipCode: { type: Types.Text, label: 'zip code', initial: true }
 	},
 
 	title: { type: Types.Text, label: 'title', initial: true },
@@ -59,9 +59,9 @@ SocialWorker.add('General Information', {
 
 // Set up relationship values to show up at the bottom of the model if any exist
 SocialWorker.relationship({ ref: 'Child', refPath: 'adoptionWorker', path: 'children', label: 'children' });
-SocialWorker.relationship({ ref: 'Inquiry', refPath: 'socialWorker', path: 'my inquiries', label: 'my inquiries' });
-SocialWorker.relationship({ ref: 'Inquiry', refPath: 'childsSocialWorker', path: 'family inquiries', label: 'family inquiries' });
-SocialWorker.relationship({ ref: 'Mailing List', refPath: 'socialWorkerAttendees', path: 'mailing-lists', label: 'mailing lists' });
+SocialWorker.relationship({ ref: 'Inquiry', refPath: 'socialWorker', path: 'my-inquiries', label: 'my inquiries' });
+SocialWorker.relationship({ ref: 'Inquiry', refPath: 'childsSocialWorker', path: 'family-inquiries', label: 'family inquiries' });
+SocialWorker.relationship({ ref: 'Mailing List', refPath: 'socialWorkerSubscribers', path: 'mailing-lists', label: 'mailing lists' });
 SocialWorker.relationship({ ref: 'Event', refPath: 'socialWorkerAttendees', path: 'events', label: 'events' });
 SocialWorker.relationship({ ref: 'Internal Note', refPath: 'socialWorker', path: 'internal-notes', label: 'internal notes' });
 
@@ -90,3 +90,7 @@ SocialWorker.schema.virtual('canAccessKeystone').get(function() {
 // Define default columns in the admin interface and register the model
 SocialWorker.defaultColumns = 'name.full, phone.work, phone.home, phone.cell, phone.preferred, email, permissions.isActive';
 SocialWorker.register();
+
+// Export to make it available using require.  The keystone.list import throws a ReferenceError when importing a list
+// that comes later when sorting alphabetically
+exports = module.exports = SocialWorker;

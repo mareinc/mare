@@ -10,9 +10,6 @@ $(function() {
 	// Handle basic routing, initializing based on the result
 	// No default exists due to main routing being handled by the server
 
-	// start the backbone history state for browser navigation through backbone routes
-	Backbone.history.start();
-
 	switch(mare.url.siteArea) {
 		case ''							: mare.routers.home = new mare.routers.Home();									break;
 		case 'donate'                   : mare.routers.donations = new mare.routers.Donations();						break;
@@ -24,6 +21,9 @@ $(function() {
 		case 'success-stories'          : mare.routers.successStories = new mare.routers.SuccessStories();				break;
 		case 'waiting-child-profiles'	: mare.routers.waitingChildProfiles = new mare.routers.WaitingChildProfiles();
 	}
+	// start the backbone history state for browser navigation through backbone routes
+	// NOTE: This needs to be below the subrouter initialization to allow for subrouters reroute properly
+	Backbone.history.start();
 	// private function used to handle malformed routes to send a user back to the home page
 	// TODO: See if this is used anywhere
 	function goHome() {

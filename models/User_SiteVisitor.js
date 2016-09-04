@@ -1,13 +1,14 @@
 var keystone	= require('keystone'),
 	Types		= keystone.Field.Types,
-	User		= keystone.list('User');
+	User		= require('./User');
 
 // Create model
 var SiteVisitor = new keystone.List('Site Visitor', {
 	inherits: User,
 	track: true,
 	map: { name: 'name.full' },
-	defaultSort: 'name.full'
+	defaultSort: 'name.full',
+	hidden: false
 });
 
 // Create fields
@@ -54,7 +55,7 @@ SiteVisitor.add('General Information', {
 });
 
 // Set up relationship values to show up at the bottom of the model if any exist
-SiteVisitor.relationship({ ref: 'Mailing List', refPath: 'siteUserAttendees', path: 'mailing-lists', label: 'mailing lists' });
+SiteVisitor.relationship({ ref: 'Mailing List', refPath: 'siteVisitorSubscribers', path: 'mailing-lists', label: 'mailing lists' });
 SiteVisitor.relationship({ ref: 'Event', refPath: 'siteVisitorAttendees', path: 'events', label: 'events' });
 
 // Pre Save
@@ -110,3 +111,7 @@ SiteVisitor.schema.methods.sendNotificationEmail = function(callback) {
 // Define default columns in the admin interface and register the model
 SiteVisitor.defaultColumns = 'name.full, email, permissions.isActive';
 SiteVisitor.register();
+
+// Export to make it available using require.  The keystone.list import throws a ReferenceError when importing a list
+// that comes later when sorting alphabetically
+exports = module.exports = SiteVisitor;

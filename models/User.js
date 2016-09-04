@@ -6,7 +6,7 @@ var User = new keystone.List('User', {
 	track: true,
 	autokey: { path: 'key', from: 'email', unique: true },
 	map: { name: 'email' },
-	defaultSort: 'email'
+	hidden: true
 });
 
 // Create fields
@@ -31,3 +31,7 @@ User.add('Permissions', {
 // Define default columns in the admin interface and register the model
 User.defaultColumns = 'email, permissions.isActive, permissions.isVerified';
 User.register();
+
+// Export to make it available using require.  The keystone.list import throws a ReferenceError when importing a list
+// that comes later when sorting alphabetically
+exports = module.exports = User;

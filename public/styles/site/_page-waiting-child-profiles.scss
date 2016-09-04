@@ -24,10 +24,10 @@
 }
 
 .filters__search-button {
-	font-size: .9em;
+	font-size: 0.9em;
 
-	color: $button-text-color-dark;
-	background-color: $button-background-color-light;
+	color: $button-text-color-1;
+	background-color: $button-background-color-3;
 }
 
 .waiting-child-profiles-filter {
@@ -37,6 +37,10 @@
     @media all and (min-width: 500px) {
     	width: 140px;
     }
+}
+
+.waiting-child-profiles__gallery-filter {
+    width: 12em;
 }
 
 .icon-key {
@@ -79,6 +83,7 @@
 }
 
 .profile .details {
+	position: relative;
 	background-color: #fffac2;
 	color: #1B229D;
 }
@@ -89,8 +94,9 @@
 }
 
 .profile .details > .icons {
-	position:relative;
-	top: -20px;
+	position: absolute;
+	top: 10px;
+	right: 10px;
 }
 
 .profile .details > .icons > .badge {
@@ -105,11 +111,11 @@
 .profile .details > .age,
 .profile .details > .legal-status {
 	color: #66584D;
-	margin-top: .4em;
+	margin-top: 0.4em;
 }
 
 .profile .details > .view-profile {
-	margin-top: .4em;
+	margin-top: 0.4em;
 }
 
 /* TODO: We've BEM'ed below, now BEM above! */
@@ -131,7 +137,7 @@
 }
 
 .profile-navigation__divider {
-	margin: 0 .1em;
+	margin: 0 0.1em;
 	font-size: 1.2em;
 }
 
@@ -175,7 +181,7 @@
 .profile-details__name {
 	font-size: 1.4em;
 	font-style: italic;
-	margin-bottom: .4em;
+	margin-bottom: 0.4em;
 	font-weight: 400;
 }
 
@@ -225,12 +231,12 @@
 	transform-origin: bottom left;
 }
 
-.media-box-container:hover img{
+.media-box-image:hover img{
 	transform: scale(1.1) translate(-10px);
 }
 
 .media-box-container {
-	box-shadow: 1px 1px 3px rgba(0,0,0,.75);
+	box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.75);
 }
 
 .media-boxes-load-more-button {
@@ -254,7 +260,7 @@
 
 /* Search Form */
 
-.search-form__search-button {
+.gallery-search-form__search-button {
 	color: #FFF;
     background-color: #66584D;
 }

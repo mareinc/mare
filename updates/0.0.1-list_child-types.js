@@ -1,9 +1,5 @@
 exports.create = {
 	'Child Type': [{
-		childType			: 'biological',
-		availableOnWebsite	: true,
-		displayName			: 'Biological'
-	}, {
 		childType			: 'adopted - domestic',
 		availableOnWebsite	: false
 	}, {
@@ -13,6 +9,10 @@ exports.create = {
 		childType			: 'adopted - foster care',
 		availableOnWebsite	: true,
 		displayName			: 'Adopted'
+	}, {
+		childType			: 'biological',
+		availableOnWebsite	: true,
+		displayName			: 'Biological'
 	}, {
 		childType			: 'other',
 		availableOnWebsite	: false

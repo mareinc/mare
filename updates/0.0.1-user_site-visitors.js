@@ -12,8 +12,8 @@ exports.create = {
 		email: 'jonny.site@gmail.com',
 		phone: {
 			work: '(617) 100-3000',
-			home: '(617) 300-3001',
-			mobile: '(617) 300-3002'
+			home: '(617) 100-3001',
+			mobile: '(617) 100-3002'
 		},
 		address: {
 			street1: '200 Social Street',

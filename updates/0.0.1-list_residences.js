@@ -1,9 +1,9 @@
 exports.create = {
 	'Residence': [{
-		residence: 'foster home'
-	}, {	
 		residence: 'IFC'
-	}, {	
+	}, {
+		residence: 'foster home'
+	}, {
 		residence: 'residential/group care'
 	}]
 };

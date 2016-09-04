@@ -35,6 +35,8 @@
 				{{!-- Each page has a data value for the type of content area to display, use that to render a partial template which has a placeholder for {{{body}}} --}}
 				{{#if render-with-sidebar}}
 					{{> content-with-sidebar}}
+				{{else if render-home}}
+					{{> content-home}}
 				{{else}}
 					{{> content-without-sidebar}}
 				{{/if}}
@@ -48,7 +50,6 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.3.1/backbone-min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.3.5/parsley.min.js"></script>
-		<script src="https://checkout.stripe.com/checkout.js"></script>
 		{{!-- This uses the NODE_ENV environment variable to serve either the production uglified JavaScript, or regular JavaScript for development.
 			  See helpers in templates/views/helpers/index.js --}}
 		{{{isProductionJS}}}

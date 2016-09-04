@@ -1,0 +1,192 @@
+<section class="social-worker-registration hidden">
+	<div class="registration-type-header">Social Worker Registration</div>
+	<span class="required required-description">* Required</span>
+	<form action="/register" class="registration-form registration-form--social-worker" method="POST">
+		<input type="hidden" class="registration-type" name="registrationType" value="socialWorker">
+
+		<section class="social-worker-account-setup-section">
+			<div class="form-section-header">Account Setup</div>
+			<div class="row form-group">
+				<div class="col-sm-12">
+					<input type="text" id="social-worker-first-name" class="input" name="firstName" placeholder="John" data-parsley-error-message="required" required="">
+					<label for="social-worker-first-name" class="label required-field">First Name</label>
+				</div>
+			</div>
+			<div class="row form-group">
+				<div class="col-sm-12">
+					<input type="text" id="social-worker-last-name" class="input" name="lastName" placeholder="Smith" data-parsley-error-message="required" required="">
+					<label for="social-worker-last-name" class="label required-field">Last Name</label>
+				</div>
+			</div>
+			<div class="row form-group">
+				<div class="col-sm-12">
+					<input type="email" id="social-worker-email" class="input" name="email" placeholder="john.smith@gmail.com" data-parsley-trigger="change" data-parsley-error-message="required" required="">
+					<label for="social-worker-email" class="label required-field">Email Address</label>
+				</div>
+			</div>
+			<div class="row form-group">
+				<div class="col-sm-12">
+					<input type="password" id="social-worker-password" class="input" name="password" placeholder="**********" data-parsley-error-message="required" required="">
+					<label for="social-worker-password" class="label required-field">Password</label>
+				</div>
+			</div>
+			<div class="row form-group">
+				<div class="col-sm-12">
+					<input type="password" id="social-worker-confirm-password" class="input" name="confirmPassword" placeholder="**********" data-parsley-equalto="#social-worker-password" data-parsley-error-message="passwords must match" required="">
+					<label for="social-worker-confirm-password" class="label required-field">Confirm Password</label>
+				</div>
+			</div>
+		</section>
+
+		<section class="social-worker-contact-details-section">
+			<div class="form-section-header">Contact Details</div>
+
+			{{!-- <div class="row">
+				<div class="col-sm-12 form-group">
+					<select id="social-worker-position" name="position" class="input position-select">
+					{{#each positions}}
+						<option value="{{_id}}">{{position}}</option>
+					{{/each}}
+					</select>
+					<label for="position" class="label">Position</label>
+				</div>
+			</div> --}}
+			<div class="row">
+				<div class="col-sm-12 form-group">
+					<select id="social-worker-position" name="position" class="input position-select">
+						<option value="adoption worker">adoption worker</option>
+						<option value="recruitment worker">recruitment worker</option>
+						<option value="supervisor">supervisor</option>
+						<option value="administrator">administrator</option>
+						<option value="family worker">family worker</option>
+						<option value="other">other</option>
+					</select>
+					<label for="position" class="label">Position</label>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-24 form-group">
+					<label class="checkbox-inline social-worker-title-checkbox">
+						<input type="checkbox" name="titleDiffersFromPosition" data-parsley-errors-messages-disabled="true" required="">My title differs from the position listed above
+					</label>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-12 form-group social-worker-title-group hidden">
+					<input type="text" id="social-worker-title" class="input" name="socialWorkerTitle" placeholder="my title">
+					<label for="social-worker-title" class="label required-field">Title</label>
+				</div>
+			</div>
+			<div class="row form-group">
+				<div class="col-sm-12">
+					<input type="text" id="social-worker-agency" class="input" name="agency" data-parsley-error-message="required" required="">
+					<label for="social-worker-agency" class="label required-field">Agency</label>
+				</div>
+			</div>
+			<div class="row form-group">
+				<div class="col-sm-12">
+					<input type="text" id="social-worker-work-phone" class="input" name="workPhone" placeholder="(617) 111-1111" data-parsley-error-message="required" required="">
+					<label for="social-worker-work-phone" class="label">Work Phone</label>
+				</div>
+			</div>
+			<div class="row form-group">
+				<div class="col-sm-12">
+					<input type="text" id="social-worker-mobile-phone" class="input" name="mobilePhone" placeholder="(617) 222-2222">
+					<label for="social-worker-mobile-phone" class="label">Mobile Phone</label>
+				</div>
+			</div>
+			<div class="row form-group">
+				<div class="col-sm-12">
+					<select id="social-worker-preferred-phone" class="input social-worker-preferred-phone-select" name="preferredPhone" data-parsley-errors-messages-disabled="true" required="">
+						<option value=""></option>
+						<option value="work">work</option>
+						<option value="mobile">mobile</option>
+					</select>
+					<label for="social-worker-preferred-phone" class="label">Preferred Phone</label>
+				</div>
+			</div>
+			<div class="row form-group">
+				<div class="col-sm-12">
+					<input type="text" id="social-worker-street-1" class="input" name="street1" placeholder="100 Main Street" data-parsley-error-message="required" required="">
+					<label for="social-worker-street-1" class="label required-field">Street 1</label>
+				</div>
+			</div>
+			<div class="row form-group">
+				<div class="col-sm-12">
+					<input type="text" id="social-worker-street-2" class="input" name="street2" placeholder="Suite 1">
+					<label for="social-worker-street-2" class="label">Street 2</label>
+				</div>
+			</div>
+			<div class="row form-group">
+				<div class="col-sm-12">
+					<input type="text" id="social-worker-city" class="input" name="city" placeholder="Boston" data-parsley-error-message="required" required="">
+					<label for="social-worker-city" class="label required-field">City</label>
+				</div>
+			</div>
+			<div class="row form-group">
+				<div class="col-sm-12">
+					<select id="social-worker-state" class="input state-select" name="state">
+					{{#each states}}
+						{{#if defaultSelection}}
+							<option value="{{_id}}" selected="selected">{{state}}</option>
+						{{else}}
+							<option value="{{_id}}">{{state}}</option>
+						{{/if}}
+					{{/each}}
+					</select>
+					<label for="social-worker-state" class="label required-field">State</label>
+				</div>
+			</div>
+			<div class="row form-group">
+				<div class="col-sm-12">
+					<input type="number" id="social-worker-zip-code" class="input" name="zipCode" placeholder="02111" data-parsley-length="[5, 5]" data-parsley-error-message="required" required="">
+					<label for="social-worker-zip-code" class="label required-field">Zip Code</label>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-12 form-group">
+					<select id="social-worker-region" class="input region-select" name="region" data-parsley-errors-messages-disabled="true" required="">
+					<option value=""></option>
+					{{#each regions}}
+						<option value="{{_id}}">{{region}}</option>
+					{{/each}}
+					</select>
+					<label for="region" class="label required-field">Region</label>
+				</div>
+			</div>
+		</section>
+
+		<section class="social-worker-mare-and-you-section">
+			<div class="form-section-header">Mare &amp; You</div>
+			<div class="row form-group">
+				<div class="col-sm-12">
+					<label class="label marg-bottom-xs-5">Would you like to be added to the MARE News email list?</label>
+				</div>
+				<div class="col-sm-12">
+					<label class="radio-inline"><input type="radio" name="mareEmailList" value="yes" checked="checked">Yes</label>
+					<label class="radio-inline"><input type="radio" name="mareEmailList" value="no">No</label>
+				</div>
+			</div>
+			<div class="row form-group">
+				<div class="col-sm-12">
+					<label class="label marg-bottom-xs-5">Would you like to be added to the Adoption Party email list (events held in MA only)?</label>
+				</div>
+				<div class="col-sm-12">
+					<label class="radio-inline"><input type="radio" name="adoptionPartyEmailList" value="yes" checked="checked">Yes</label>
+					<label class="radio-inline"><input type="radio" name="adoptionPartyEmailList" value="no">No</label>
+				</div>
+			</div>
+			<div class="row form-group">
+				<div class="col-sm-12">
+					<label class="label marg-bottom-xs-5">Would you like to be added to the Fundraising Events email list?</label>
+				</div>
+				<div class="col-sm-12">
+					<label class="radio-inline"><input type="radio" name="fundraisingEventsEmailList" value="yes" checked="checked">Yes</label>
+					<label class="radio-inline"><input type="radio" name="fundraisingEventsEmailList" value="no">No</label>
+				</div>
+			</div>
+		</section>
+
+		<button class="register" type="submit">Register</button>
+	</form>
+</section>

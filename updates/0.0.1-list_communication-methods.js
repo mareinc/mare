@@ -6,8 +6,8 @@ exports.create = {
 	}, {
 		communicationMethod: 'mobile phone'
 	}, {
-		communicationMethod: 'work phone'
-	}, {
 		communicationMethod: 'unknown'
+	}, {
+		communicationMethod: 'work phone'
 	}]
 };

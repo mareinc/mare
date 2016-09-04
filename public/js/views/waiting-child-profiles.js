@@ -7,10 +7,11 @@
 
 		events: {
 			'click .filters__search-button--modify'	: 'handleSearchClick',
-			'click .filters__search-button--clear'	: 'handleResetClick'
+			'click .filters__search-button--clear'	: 'resetGallery'
 		},
 
 		initialize: function initialize() {
+			var that = this;
 			// DOM cache any commonly used elements to improve performance
 			this.$gallery		= this.$( '.gallery' );
 			this.$searchForm	= this.$( '.gallery-search-form' );
@@ -28,6 +29,15 @@
 			// Initialize views for the gallery and serach form
 			mare.views.gallery = mare.views.gallery || new mare.views.Gallery();
 			mare.views.gallerySearchForm = mare.views.gallerySearchForm || new mare.views.GallerySearchForm();
+
+			// Bind to change events
+			mare.collections.galleryChildren.on('updateComplete', function() {
+				that.navigateToGallery();
+			});
+
+			mare.collections.galleryChildren.on('resetComplete', function() {
+				that.showGallery();
+			});
 
 		},
 
@@ -79,8 +89,21 @@
 			mare.routers.waitingChildProfiles.navigate( 'search', { trigger: true } );
 		},
 
-		resetGallery: function resetGallery() {
+		navigateToGallery: function navigateToGallery() {
+			mare.routers.waitingChildProfiles.navigate( 'gallery', { trigger: true } );
+		},
 
+		resetGallery: function resetGallery() {
+			// Cache the collection for faster access
+			var galleryChildren = mare.collections.galleryChildren;
+			// Clear out the contents of the gallery collection
+			galleryChildren.reset();
+			// Add all children back to the gallery collection for display
+			mare.collections.allChildren.each(function(child) {
+				galleryChildren.add(child);
+			});
+			// Emit an event to allow the gallery to update it's display now that we have all matching models
+			mare.collections.galleryChildren.trigger('resetComplete');
 		}
 
 	});

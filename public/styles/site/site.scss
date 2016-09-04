@@ -65,10 +65,11 @@ body {
 @import "_component-modal";
 @import "_component-section-header";
 @import "_component-sidebar";
+@import "_component-toggle-button";
 
 // Page Styles
 // ===========
-@import "_icons.scss";
+@import "_icons.scss"; /* Perhaps these should be above the components */
 @import "_page";
 @import "_page-donations";
 @import "_page-events";

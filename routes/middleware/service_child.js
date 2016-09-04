@@ -122,25 +122,24 @@ exports.setNoChildImage = function setNoChildImage(req, res, child) {
 
 exports.getChildByRegistrationNumber = function getChildByRegistrationNumber(req, res, done, registrationNumber) {
 
-	var locals				= res.locals,
-		registrationNumber	= parseInt(registrationNumber);
+	var locals = res.locals;
 
-		Child.model.find()
-				.where('registrationNumber', registrationNumber)
-				.exec()
-				.then(function (child) {
+	Child.model.find()
+			.where('registrationNumber', parseInt(registrationNumber, 10))
+			.exec()
+			.then(function (child) {
 
-					locals.child = child[0];
-					// execute done function if async is used to continue the flow of execution
-	 				// TODO: if this is used in non-async middleware, done or next should be passed into options and the appropriate one should be executed
-					done();
+				locals.child = child[0];
+				// execute done function if async is used to continue the flow of execution
+ 				// TODO: if this is used in non-async middleware, done or next should be passed into options and the appropriate one should be executed
+				done();
 
-				}, function(err) {
+			}, function(err) {
 
-					console.log(err);
-					done();
+				console.log(err);
+				done();
 
-				});
+			});
 
 };
 
@@ -166,8 +165,17 @@ exports.getGalleryData = function getGalleryData(req, res, next) {
 		}
 
 	], function() {
+
+		var needsMap = {
+			'none'		: 0,
+			'mild'		: 1,
+			'moderate'	: 2,
+			'severe'	: 3
+		}
 		// Full child records have been fetched and stored on res.locals
 		_.each(locals.children, function(child) {
+			// Create a searchable array for dealing with other family constellation considerations
+			var otherFamilyConstellationConsiderations = _.pluck(child.otherFamilyConstellationConsideration, 'otherFamilyConstellationConsideration');
 
 			var relevantData = {
 	    		name									: child.name.first,
@@ -175,23 +183,30 @@ exports.getGalleryData = function getGalleryData(req, res, next) {
 	    		ageConverted							: middleware.convertDate(child.birthDate),
 	    		registrationNumber						: child.registrationNumber,
 	    		registrationDateConverted				: middleware.convertDate(child.registrationDate),
+				gender									: child.gender.gender,
 	    		race									: _.pluck(child.race, 'race'),
+				siblingContactsCount					: child.siblingContacts.length,
 	    		language								: _.pluck(child.language, 'language'),
 	    		legalStatus								: child.legalStatus.legalStatus,
-	    		hasContactWithBiologicalSiblings		: child.hasContactWithSiblings,
-	    		hasContactWithBiologicalParents			: child.hasContactWithBirthFamily,
-	    		physicalNeeds							: child.physicalNeeds,
-	    		emotionalNeeds							: child.emotionalNeeds,
-	    		intellectualNeeds						: child.intellectualNeeds,
+	    		hasContactWithBiologicalSiblings		: child.hasContactWithSiblings || false,
+	    		hasContactWithBiologicalParents			: child.hasContactWithBirthFamily || false,
+	    		physicalNeeds							: needsMap[child.physicalNeeds],
+	    		emotionalNeeds							: needsMap[child.emotionalNeeds],
+	    		intellectualNeeds						: needsMap[child.intellectualNeeds],
 	    		disabilities							: _.pluck(child.disabilities, 'disability'),
 	    		otherConsiderations						: _.pluck(child.otherConsiderations, 'otherConsideration'),
 	    		recommendedFamilyConstellation			: _.pluck(child.recommendedFamilyConstellation, 'familyConstellation'),
-	    		otherFamilyConstellationConsideration	: _.pluck(child.otherFamilyConstellationConsideration, 'otherFamilyConstellationConsideration'),
-	    		galleryImage							: child.galleryImage,
+				requiresSiblings						: otherFamilyConstellationConsiderations.indexOf('multi-child home') !== -1,
+	    		requiresNoSiblings						: otherFamilyConstellationConsiderations.indexOf('childless home') !== -1,
+				requiresYoungerSibling					: otherFamilyConstellationConsiderations.indexOf('requires younger children') !== -1,
+				requiresOlderSibling					: otherFamilyConstellationConsiderations.indexOf('requires older children') !== -1,
+				noPets									: otherFamilyConstellationConsiderations.indexOf('no pets') !== -1,
+				galleryImage							: child.galleryImage,
 	    		detailImage								: child.detailImage,
-	    		hasVideo								: child.video && child.video.length > 0,
+	    		hasVideo								: child.video && child.video.length > 0 ? true : false,
 	    		wednesdaysChild							: child.wednesdaysChild,
-	    		numberOfSiblings						: child.siblingContacts.length
+	    		numberOfSiblings						: child.siblingContacts.length,
+				updatedAt								: child.updatedAt
 	    	};
 
 	    	locals.publicChildrenData.push(relevantData);
@@ -210,20 +225,18 @@ exports.getChildDetails = function(req, res, next) {
 		registrationNumber = childData['registrationNumber'];
 
 	/* TODO: Fetch only the needed fields instead of grabbing everything */
-	Child.model.find()
+	Child.model.findOne()
         .where('registrationNumber', registrationNumber)
         .populate('gender')
         .exec()
         .then(function (child) {
-
-        	var child = child[0];
 
         	var relevantData = {
         		profilePart1		: child.profile.part1,
         		profilePart2		: child.profile.part2,
         		profilePart3		: child.profile.part3,
         		hasImage			: _.isEmpty(child.image) && child.image.url.length > 0,
-        		video				: child.video && child.video.length > 0 ? child.video.replace('watch?v=', 'embed/') : undefined,
+        		video				: child.video && child.video.length > 0 ? child.video.replace('watch?v=', 'embed/') : undefined
         	};
 
         	res.send(relevantData);

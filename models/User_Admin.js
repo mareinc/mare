@@ -1,13 +1,14 @@
 var keystone	= require('keystone'),
 	Types		= keystone.Field.Types,
-	User		= keystone.list('User');
+	User		= require('./User');
 
 // Create model
 var Admin = new keystone.List('Admin', {
 	inherits: User,
 	track: true,
 	map: { name: 'name.full' },
-	defaultSort: 'name.full'
+	defaultSort: 'name.full',
+	hidden: false
 });
 
 // Create fields
@@ -42,6 +43,7 @@ Admin.add('General Information', {
 
 // Set up relationship values to show up at the bottom of the model if any exist
 Admin.relationship({ ref: 'CSC Region Contact', refPath: 'cscRegionContact', path: 'cscRegionContact', label: 'contact for the following regions' });
+Admin.relationship({ ref: 'Mailing List', refPath: 'adminSubscribers', path: 'mailing-lists', label: 'mailing lists' });
 Admin.relationship({ ref: 'Event', refPath: 'cscAttendees', path: 'events', label: 'events' });
 
 // Pre Save
@@ -70,3 +72,7 @@ User.schema.virtual('canAccessKeystone').get(function() {
 // Define default columns in the admin interface and register the model
 Admin.defaultColumns = 'name.full, email, phone.work, permissions.isActive';
 Admin.register();
+
+// Export to make it available using require.  The keystone.list import throws a ReferenceError when importing a list
+// that comes later when sorting alphabetically
+exports = module.exports = Admin;

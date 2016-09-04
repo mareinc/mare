@@ -6,24 +6,26 @@ exports.create = {
 	}, {
 		mediaEligibility: 'Facebook'
 	}, {
-		mediaEligibility: 'Heart Gallery'
+		mediaEligibility: 'heart gallery'
 	}, {
 		mediaEligibility: 'other - text box'
+	}, {
+		mediaEligibility: 'other MARE publications'
+	}, {
+		mediaEligibility: 'other print'
+	}, {
+		mediaEligibility: 'other TV'
+	}, {
+		mediaEligibility: 'Spanish TV'
+	}, {
+		mediaEligibility: 'Spanish other media'
 	}, {
 		mediaEligibility: 'Spanish print'
 	}, {
 		mediaEligibility: 'Sunday\'s Child'
 	}, {
-		mediaEligibility: 'WWK'
-	}, {
 		mediaEligibility: 'Wednesday\'s Child'
 	}, {
-		mediaEligibility: 'other MARE publications'
-	}, {
-		mediaEligibility: 'other TV'
-	}, {
-		mediaEligibility: 'other media'
-	}, {
-		mediaEligibility: 'other print'
+		mediaEligibility: 'WWK'
 	}]
 };
