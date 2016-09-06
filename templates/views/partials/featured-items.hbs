@@ -1,11 +1,11 @@
 {{#each featuredItems}}
 <ul class="featured-items">
 	<li class="featured-item feature-about-us">
-		<a href="{{ aboutUs.url }}" class="cover">
+		<a href="/page/our-services" class="cover">
 			<img src="{{ aboutUs.imageScaled }}" alt="{{ aboutUs.title }}">
 			<div class="featured-item-description">
 				<span class="featured-item-summary">{{ aboutUs.summary }}</span>
-				<span class="featured-item-title">{{ aboutUs.title }}</span>
+				<span class="featured-item-title">Our Services</span>
 			</div>
 		</a>
 	</li>
@@ -19,11 +19,13 @@
 		</a>
 	</li>
 	<li class="featured-item featured-upcoming-event">
-		<img src="{{ upcomingEvent.imageScaled }}" alt="{{ upcomingEvent.title }}">
-		<div class="featured-item-description">
-			<span class="featured-item-summary">{{ upcomingEvent.summary }}</span>
-			<span class="featured-item-title">{{ upcomingEvent.title }}</span>
-		</div>
+		<a href="{{ upcomingEvent.url }}" class="cover">
+			<img src="{{ upcomingEvent.imageScaled }}" alt="{{ upcomingEvent.title }}">
+			<div class="featured-item-description">
+				<span class="featured-item-summary">{{ upcomingEvent.summary }}</span>
+				<span class="featured-item-title">Events</span>
+			</div>
+		</a>
 	</li>
 </ul>
 {{/each}}
