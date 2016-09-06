@@ -15,6 +15,7 @@ exports = module.exports = function(req, res) {
 	], function() {
 		// Set the layout to render without the right sidebar
 		locals['render-with-sidebar'] = false;
+		locals['render-without-header'] = true;
 		// Render the view once all the data has been retrieved
 		view.render('preferences');
 
