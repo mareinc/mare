@@ -53,6 +53,11 @@ exports = module.exports = function(req, res) {
 			 case "information-request-form":
 				view.render('forms/information-request-form.hbs');
 				break;
+
+			case "have-a-question-form":
+				view.render('forms/have-a-question-form.hbs');
+				break;
+
 			// TODO: Create a custom 404 page
 			default: view.render('404');
 		}
