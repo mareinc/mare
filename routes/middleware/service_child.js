@@ -20,6 +20,7 @@ exports.getAllChildren = function getAllChildren(req, res, done) {
 				.populate('legalStatus')
 				.exec()
 				.then(function (children) {
+					// TODO: This filter should happen in a .where() above
 					// Filter out all children who don't have a status of 'active'
 					children = _.filter(children, function(child) {
 						return child.status.childStatus === 'active'
@@ -64,6 +65,7 @@ exports.getUnrestrictedChildren = function getUnrestrictedChildren(req, res, don
 				.populate('legalStatus')
 				.exec()
 				.then(function (children) {
+					// TODO: This filter should happen in a .where() above
 					// Filter out all children who don't have a status of 'active'
 					children = _.filter(children, function(child) {
 						return child.status.childStatus === 'active'
