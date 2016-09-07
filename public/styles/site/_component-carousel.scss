@@ -21,11 +21,10 @@
 .owl-carousel .featured-description {
     cursor: pointer;
     padding: 20px;
-    background-color: $description-background-color-1;
     color: $description-text-color;
     display: block;
     margin-top: -3px;
-    opacity: 0.7;
+    font-weight: 600;
 
     @media all and (min-width: 660px) {
 		position: absolute;
