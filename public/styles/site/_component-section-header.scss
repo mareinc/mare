@@ -8,7 +8,10 @@
 	}
 
 	&--considering-adoption {
-		@media all and (min-width: 660px) { background-color: $section-header-background-color-1; }
+		@media all and (min-width: 660px) {
+			color: $section-header-text-color-2;
+			background-color: $section-header-background-color-1;
+		}
 	}
 
 	&--meet-the-children {
