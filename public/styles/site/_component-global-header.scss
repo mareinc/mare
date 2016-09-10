@@ -17,11 +17,25 @@
 }
 
 .global-header .logo {
-	margin: 1em 0 1em 1em;
 	width: calc(100%/2.2);
+	margin: 1em;
 
-	@media all and (min-width: 360px) {
-		width: inherit;
+	&--vertical {
+		min-width: 10em;
+		max-width: 13em;
+
+		@media all and (min-width: 700px) {
+			display: none;
+		}
+	}
+
+	&--horizontal {
+	    display: none;
+
+	    @media all and (min-width: 700px) {
+	    	display: inline;
+			max-width: 22em;
+	    }
 	}
 }
 
@@ -39,7 +53,7 @@
 	display: flex;
 	height: 2.9em;
 
-	@media all and (min-width: 550px) {
+	@media all and (min-width: 655px) {
 		padding-right: 1.5em;
 	}
 }
