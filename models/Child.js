@@ -282,7 +282,6 @@ Child.schema.methods.addToHistoryEntry = function addToHistoryEntry(fieldBefore,
 	}
 
 	changeHistory.changes += label.toUpperCase() + ': ' + (fieldBefore || 'BLANK') + ' to ' + (field || 'BLANK');
-	console.log(changeHistory);
 }
 
 Child.schema.methods.checkFieldForChanges = function checkFieldForChanges(field, changeHistory, done) {
@@ -317,6 +316,7 @@ Child.schema.methods.checkFieldForChanges = function checkFieldForChanges(field,
 
 	// Date.parse(null) returns NaN, and NaN !== NaN, so the second check is needed
 	} else if(field.type === 'date' && (fieldBefore || fieldAfter) && Date.parse(fieldBefore) !== Date.parse(fieldAfter)) {
+		// convert the values to nicely formatted dates
 		valueBefore = fieldBefore ? moment(fieldBefore).format('MM/DD/YYYY') : '';
 		valueAfter = fieldAfter ? moment(fieldAfter).format('MM/DD/YYYY') : '';
 
