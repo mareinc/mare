@@ -9,8 +9,8 @@ var keystone		= require('keystone'),
 exports = module.exports = function(req, res) {
 	'use strict';
 
-	var view			= new keystone.View(req, res),
-		locals			= res.locals;
+	var view		= new keystone.View(req, res),
+		locals		= res.locals;
 
 	// Set local variables
 	locals.userType	= req.user ? req.user.get('userType') : 'anonymous';
