@@ -3,21 +3,21 @@ var keystone = require('keystone'),
 
 // Create model. Additional options allow menu name to be used what auto-generating URLs
 var FamilyHistory = new keystone.List('Family History', {
-    autokey: { path: 'key', from: 'field', unique: true },
-    map: { name: 'field' }
+    // hidden: true,
+    autokey: { path: 'key', from: 'slug', unique: true },
+    defaultSort: '-date'
 });
 
 // Create fields
 FamilyHistory.add({
 
+    family: { type: Types.Relationship, label: 'family', ref: 'Family', required: true, noedit: true, initial: true },
     date: { type: Types.Date, label: 'date', format: 'MM/DD/YYYY', required: true, noedit: true, initial: true },
-    field: { type: Types.Text, label: 'field', required: true, noedit: true, initial: true },
-    previousValue: { type: Types.Text, label: 'previous value', required: true, noedit: true, initial: true },
-    newValue: { type: Types.Text, label: 'new value', required: true, noedit: true, initial: true },
+    changes: { type: Types.Textarea, label: 'changes', required: true, noedit: true, initial: true },
     modifiedBy: { type: Types.Relationship, label: 'modified by', ref: 'Admin', required: true, noedit: true, initial: true }
 
 });
 
 // Define default columns in the admin interface and register the model
-FamilyHistory.defaultColumns = 'field, previousValue, newValue, modifiedBy';
+FamilyHistory.defaultColumns = 'date, changes, modifiedBy';
 FamilyHistory.register();
