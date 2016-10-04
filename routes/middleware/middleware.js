@@ -163,6 +163,17 @@ exports.requireUser = function(req, res, next) {
 
 };
 
+exports.requireMigrationUser = function(req, res, next) {
+	'use strict';
+
+	if (!req.user || !req.user.canMigrateData) {
+		res.redirect('/');
+	} else {
+		return next();
+	}
+
+};
+
 exports.login = function(req, res, next) {
 	/* TODO: Need to add a check to see if the user is verified and active (see Lisa for details) */
 
