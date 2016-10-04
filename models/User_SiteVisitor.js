@@ -59,7 +59,7 @@ SiteVisitor.relationship({ ref: 'Mailing List', refPath: 'siteVisitorSubscribers
 SiteVisitor.relationship({ ref: 'Event', refPath: 'siteVisitorAttendees', path: 'events', label: 'events' });
 
 // Pre Save
-User.schema.pre('save', function(next) {
+SiteVisitor.schema.pre('save', function(next) {
 	'use strict';
 
 	// Populate the full name string for better identification when linking through Relationship field types
