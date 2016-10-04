@@ -66,6 +66,8 @@ exports = module.exports = function(app) {
 
 	app.get('/donate/'								, routes.views.donate);
 	app.post('/charge'								, middleware.charge);
+	// Custom route used exclusively for the data migration
+	app.get('/migrate-data/'						, middleware.requireMigrationUser, routes.views.dataMigration);
 	// Services for ajax calls
 	app.post('/services/get-children-data'			, childService.getGalleryData);
 	app.post('/services/get-child-details'			, childService.getChildDetails);
