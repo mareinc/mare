@@ -2,105 +2,163 @@
  * Created by Adrian Suciu.
  */
 
-var family_model = require('models/OutsideContact.js');
+var async					= require('async'),
+	keystone				= require('keystone'),
+	Types 					= keystone.Field.Types,
+    OutsideContact			= keystone.list('Outside Contact'),
+    csv2arr					= require('csv-to-array'),
+	dataMigrationService	= require('../service_data-migration'),
+	mailingListsMap			= require('../data-migration-maps/outside-contact-groups');
 
-var columns = ["ocn_id","name","organization","address_1","address_2","city","state","zip","phone","email","contact_type","country","notes"];
-var importArray;
+var columns = ['ocn_id','name','organization','address_1','address_2','city','state','zip','phone','email','contact_type','country','notes'];
+var importArray = [];
 
-var keystone = require('keystone'),
-    OutsideContact = keystone.list('OutsideContact'),
-    csv2arr = require("csv-to-array");
+module.exports.importOutsideContacts = function importOutsideContacts(req, res, done){
 
-module.exports = {
-    importOutsideContactss: function(){
-        csv2arr({
-            file: "db_exports/June14th_Expors/outside_contact.csv",
-            columns: columns
-        }, function (err, array) {
-            if (err) {
-                throw "An error occurred!\n" + err;
-            } else {
-                importArray = array;
+	var self = this,
+		locals = res.locals;
 
-                for (var i=0,_count=importArray.length; i <_count; i++) {
-                    var _outsideContact = importArray[i];
-                    var _splitName = self.splitName(_outsideContact.name);
-                    var _isVolunteer = false;
+    csv2arr({
 
-                    if (_outsideContact.contact_type != null && _outsideContact.contact_type != "") {
-                        _isVolunteer = true;
-                    }
+        file: './migration-data/csv-data/outside_contact.csv',
+        columns: columns
 
-                    // populate instance for Outside Contact object
-                    var newOutsideContact = new OutsideContact.model({
+    }, function (err, array) {
 
-                        type: { type: Types.Relationship, label: 'type of contact', ref: 'Mailing List', many: true, required: true, initial: true },
+        if (err) {
 
-                        // from the outside_contact table get the ocn_id and go to mailing_list_subscription table, where based on the ocn_id, get the mlt_id and then
-                        // go to mailing_list table and get the name associated with the mlt_id, once you have the name, go to the new system and fetch the new hash id
+            throw 'Migration Error - Outside Contacts' + err;
 
-                        name: {
-                            first: _splitName.first,
-                            last: _splitName.last
-                        },
+        } else {
 
-                        organization: _outsideContact.organization,
+            importArray = array;
 
-                        email: _outsideContact.email,
+            for (var i = 1, _count = importArray.length - 1; i <= _count; i++) {
 
-                        phone: {
-                            work: _outsideContact.phone,
-                            preferred: _outsideContact.phone
-                        },
+                var _outsideContact = importArray[i];
+                var _splitName = exports.splitName(_outsideContact.name);
+                var _isVolunteer = false;
 
-                        address: {
-                            street1: _outsideContact.address_1,
-                            street2: _outsideContact.address_2,
-                            city:  _outsideContact.city,
-                            state:  _outsideContact.state,
-                            zipCode:  _outsideContact.zip
-                        },
-
-                        isVolunteer: _isVolunteer
-
-                    });
-
-                    if (shouldBePublished) {
-                        newOutsideContact.state = 'published';
-                    }
-
-                    // call save method on Outside Contact object
-                    newOutsideContact.save(function(err) {
-                        // newOutsideContact object has been saved
-                        if (err) {
-                            throw "[ID#" + _outsideContact.ocn_id +"] an error occured while saving " + newOutsideContact + " object."
-                        }
-                        else {
-                            console.log("[ID#" + _outsideContact.ocn_id + "] outside contact successfully saved!");
-                        }
-                    });
-
+                if (_outsideContact.contact_type) {
+                    _isVolunteer = true;
                 }
+				// Create lookup objects to find ids for each Relationship field
+				var stateValues = { model: 'State', targetField: 'abbreviation', targetValue: _outsideContact.state, returnTarget: 'stateId' };
+
+				async.parallel([
+					function(done) { mailingListsMap.getOutsideContactGroupsMap(req, res, done) },
+					function(done) { dataMigrationService.getModelId(req, res, done, stateValues) }
+				], function() {
+					// ADRIAN: HERE'S WHERE I LEFT OFF, THE MAP WORKS NOW
+					console.log(locals.outsideContactGroupsMap);
+					// populate instance for Outside Contact object
+	                var newOutsideContact = new OutsideContact.model({
+
+	                    // type: { type: Types.Relationship, label: 'type of contact', ref: 'Mailing List', many: true, required: true, initial: true },
+
+	                    // from the outside_contact table get the ocn_id and go to mailing_list_subscription table, where based on the ocn_id, get the mlt_id and then
+	                    // go to mailing_list table and get the name associated with the mlt_id, once you have the name, go to the new system and fetch the new hash id
+
+	                    name: {
+	                        first: _splitName.first,
+	                        last: _splitName.last
+	                    },
+
+	                    organization: _outsideContact.organization,
+
+	                    email: _outsideContact.email,
+
+	                    phone: {
+	                        work: _outsideContact.phone,
+	                        preferred: _outsideContact.phone
+	                    },
+
+	                    address: {
+	                        street1: _outsideContact.address_1,
+	                        street2: _outsideContact.address_2,
+	                        city:  _outsideContact.city,
+	                        state:  locals.stateId,
+	                        zipCode:  _outsideContact.zip
+	                    },
+
+	                    isVolunteer: _isVolunteer
+
+	                });
+
+	                // if (shouldBePublished) {
+	                //     newOutsideContact.state = 'published';
+	                // }
+
+	                // call save method on Outside Contact object
+	                newOutsideContact.save(function(err) {
+	                    // newOutsideContact object has been saved
+	                    if (err) {
+
+							console.log('saving 1');
+	                        throw '[ID#' + _outsideContact.ocn_id + '] an error occured while saving ' + newOutsideContact + ' object.'
+
+						}
+	                    else {
+
+							console.log('saving 2');
+	                        console.log('[ID#' + _outsideContact.ocn_id + '] outside contact successfully saved!');
+
+						}
+	                });
+				});
+
             }
-        })
-    },
-    splitName: function(str) {
-        var _first="";
-        var _last="";
 
-        if (name.indexOf(',') > 0){
-            _last = str.substr(0,str.indexOf(','));
-            _first = str.substr(str.indexOf(',')+1);
+			done();
         }
-        else
-        {
-            _first = str.substr(0,str.indexOf(' '));
-            _last = str.substr(str.indexOf(' ') + 1);
-        }
+    });
+}
 
-        return {
-            first: _first,
-            last: _last
-        }
+exports.fetchMailingLists = function fetchMailingLists(ocn_id) {
+	var mailingListArray = [];
+
+	csv2arr({
+
+        file: './migration-data/csv-data/mailing_list.csv',
+        columns: columns
+
+    }, function(err, array) {
+
+		if (err) {
+
+            throw 'Migration Error - Outside Contacts' + err;
+
+        } else {
+
+			for (var i = 1, _count = array.length - 1; i <= _count; i++) {
+
+				var mailingListItem = array[i];
+
+				if (mailingListItem[4] === ocn_id) {
+
+					mailingListArray.push(mailingListMap[mailingListItem[0]]);
+				}
+			}
+		}
+	});
+}
+
+exports.splitName = function splitName(name) {
+    var _first = '';
+    var _last = '';
+
+    if (name.indexOf(',') > 0){
+        _last = name.substr(0, name.indexOf(','));
+        _first = name.substr(name.indexOf(',') + 1);
+    }
+    else
+    {
+        _first = name.substr(0, name.indexOf(' '));
+        _last = name.substr(name.indexOf(' ') + 1);
+    }
+
+    return {
+        first: _first,
+        last: _last
     }
 }
