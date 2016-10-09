@@ -17,7 +17,5 @@ exports.create = {
 		familyConstellation: 'single straight female'
 	}, {
 		familyConstellation: 'single straight male'
-	}, {
-
 	}]
 };
