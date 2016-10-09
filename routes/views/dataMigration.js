@@ -1,6 +1,6 @@
 var keystone				= require('keystone'),
 	async					= require('async'),
-	dataMigrationService	= require('../middleware/service_data-migration');
+	outsideContactImport	= require('../middleware/data-migration-middleware/outside_contact_model');
 
 exports = module.exports = function(req, res) {
     'use strict';
@@ -8,9 +8,9 @@ exports = module.exports = function(req, res) {
     var view = new keystone.View(req, res),
         locals = res.locals;
 
-    async.parallel([
+    async.series([
+		function(done) { outsideContactImport.importOutsideContacts(req, res, done); }
 		// function(done) { dataMigrationService.migrateChildren(req, res, done); }
-		function(done) { done() }
 	], function() {
 		// Set the layout to render without the right sidebar
 		locals['render-with-sidebar'] = false;
