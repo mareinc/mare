@@ -4,6 +4,7 @@ var keystone 	= require('keystone'),
 	async		= require('async');
 
 exports.checkFieldForChanges = function checkFieldForChanges(field, model, modelBefore, changeHistory, done) {
+
 	var fieldBefore,
 		fieldAfter,
 		valuesBefore = [],
@@ -11,15 +12,10 @@ exports.checkFieldForChanges = function checkFieldForChanges(field, model, model
 		valueBefore = '',
 		value = '';
 
-// parent: string, model, date, boolean
-// grandparent: string, boolean, date, number
-
 	if(field.grandparent) {
-		// TODO: THIS LOGIC NEEDS TO CHANGE TO BE RIGHT (MAYBE)
 		// Keystone converts from undefined to {} in some cases on second save, this fixes the comparison
 		modelBefore[field.grandparent] = modelBefore[field.grandparent] ? modelBefore[field.grandparent] : {};
 		model[field.grandparent] = model[field.grandparent] ? model[field.grandparent] : {};
-
 		// if field.grandparent is set to an empty object, the check for field.parent will return undefined
 		// if this is the case, we can't get the field data without throwing an error
 		fieldBefore = modelBefore[field.grandparent][field.parent] ? modelBefore[field.grandparent][field.parent][field.name] : undefined;
@@ -43,7 +39,7 @@ exports.checkFieldForChanges = function checkFieldForChanges(field, model, model
 		valueBefore = fieldBefore ? fieldBefore : '';
 		valueAfter = fieldAfter ? fieldAfter : '';
 
-		exports.addToHistoryEntry(fieldBefore, fieldAfter, field.label, changeHistory);
+		exports.addToHistoryEntry(valueBefore, valueAfter, field.label, changeHistory);
 
 		done();
 
@@ -85,6 +81,7 @@ exports.checkFieldForChanges = function checkFieldForChanges(field, model, model
 							});
 			},
 			function(done) {
+
 				keystone.list(field.model).model.find()
 							.where('_id').in(fieldAfter)
 							.exec()
@@ -108,12 +105,13 @@ exports.checkFieldForChanges = function checkFieldForChanges(field, model, model
 							});
 			}
 		], function() {
+
 			var valuesBeforeString = valuesBefore.sort().toString().replace(/,/g, ', '),
 				valuesString = values.sort().toString().replace(/,/g, ', ');
 
 			if(valuesBeforeString !== valuesString) {
 
-				model.addToHistoryEntry(valuesBeforeString, valuesString, field.label, changeHistory);
+				exports.addToHistoryEntry(valuesBeforeString, valuesString, field.label, changeHistory);
 			}
 
 			done();
@@ -173,7 +171,7 @@ exports.checkFieldForChanges = function checkFieldForChanges(field, model, model
 			], function() {
 				if(valueBefore !== value) {
 
-					model.addToHistoryEntry(valueBefore, value, field.label, changeHistory);
+					exports.addToHistoryEntry(valueBefore, value, field.label, changeHistory);
 				}
 
 				done();
@@ -186,6 +184,7 @@ exports.checkFieldForChanges = function checkFieldForChanges(field, model, model
 }
 
 exports.addToHistoryEntry = function addToHistoryEntry(fieldBefore, field, label, changeHistory) {
+
 	if(changeHistory.changes !== '') {
 		changeHistory.changes += ' || ';
 	}
@@ -196,5 +195,9 @@ exports.addToHistoryEntry = function addToHistoryEntry(fieldBefore, field, label
 		field = 'false';
 	}
 
-	changeHistory.changes += label.toUpperCase() + ': ' + (fieldBefore || '[empty]') + ' to ' + (field || '[blank]');
+	changeHistory.changes += label.toUpperCase() +
+							 ': ' +
+							 ( fieldBefore || fieldBefore === 0 ? fieldBefore : '[empty]' ) +
+							 ' to ' +
+							 ( field || field === 0 ? field : '[blank]' );
 }
