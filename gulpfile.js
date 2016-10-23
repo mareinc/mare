@@ -43,7 +43,7 @@ var paths = {
 		'public/js/routers/*.js',
 		'public/js/main.js'],
 	'img':[
-		'public/images/*',
+		'public/images/**/*',
 		'public/modules/**/*.gif'],
 	'fonts':[
 		'public/fonts/*.eot',

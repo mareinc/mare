@@ -49,8 +49,7 @@ exports.initLocals = function(req, res, next) {
 		{ title: 'Meet the Children', subMenu: [
 			{ title: 'Who are the Children?', href: '/page/who-are-the-children' },
 			{ title: 'Waiting Child Profiles', href: '/waiting-child-profiles' },
-			{ title: 'Other Ways to Meet Waiting Children', href: '/page/other-ways-to-meet-waiting-children' },
-			{ title: 'For Homestudied Families', href: '/page/for-homestudied-families' }
+			{ title: 'Other Ways to Meet Waiting Children', href: '/page/other-ways-to-meet-waiting-children' }
 		]},
 		{ title: 'Family Support Services', subMenu: [
 			{ title: 'How Does MARE Support Families', href: '/page/how-does-mare-support-families' },
@@ -159,7 +158,7 @@ exports.requireUser = function(req, res, next) {
 		req.flash('error', 'Please sign in to access this page.');
 		res.redirect('/keystone/signin');
 	} else {
-		next();
+		return next();
 	}
 
 };

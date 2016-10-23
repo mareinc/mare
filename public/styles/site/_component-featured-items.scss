@@ -7,8 +7,6 @@
 
     @media all and (min-width: 860px) {
         flex-direction: row;
-        margin-left: 2em;
-        margin-right: 2em;
     }
 }
 
@@ -17,11 +15,10 @@
     flex-direction: column;
     align-items: center;
     width: 100%;
-    padding: 1em;
     margin-bottom: 1em;
     list-style: none;
     background-color: $description-background-color-2;
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23); /* TODO: same as card, maybe make these a card variant */
+    // box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23); /* TODO: same as card, maybe make these a card variant */
 
     @media all and (min-width: 420px) {
         width: 90%;
@@ -52,10 +49,10 @@
 }
 
 .featured-item img {
-    width: 12em;
-    height: 12em;
+    width: 16em;
+    height: 16em;
     border-radius: 50%;
-    margin-bottom: 1em;
+    margin: 1em 0;
 }
 
 .featured-item-description {
@@ -75,8 +72,9 @@
 .featured-item .featured-item-title {
     text-transform: uppercase;
     font-weight: 600;
-    font-size: 1.1em;
+    font-size: 1.2em;
     width: 100%;
+    height: 2.5em;
 }
 
 .featured-item .featured-item-summary {

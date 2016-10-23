@@ -1,6 +1,13 @@
-var keystone	= require('keystone'),
-	Types		= keystone.Field.Types,
-	User		= require('./User');
+require('./Tracking_SocialWorkerHistory'),
+require('./List_State');
+require('./Agency');
+
+var keystone				= require('keystone'),
+	async 					= require('async'),
+	Types					= keystone.Field.Types,
+	SocialWorkerHistory		= keystone.list('Social Worker History'),
+	User					= require('./User');
+	ChangeHistoryMiddleware	= require('../routes/middleware/models_change-history');
 
 // Create model
 var SocialWorker = new keystone.List('Social Worker', {
@@ -35,7 +42,7 @@ SocialWorker.add('General Information', {
 }, 'Social Worker Information', {
 
 	// position: { type: Types.Relationship, label: 'Position', ref: 'Social Worker Position', initial: true },
-	position: { type: Types.Select, options: 'adoption worker, recruitment worker, supervisor, administrator, family worker, other', label: 'Position', initial: true },
+	position: { type: Types.Select, options: 'adoption worker, recruitment worker, supervisor, administrator, family worker, other', label: 'position', initial: true },
 	agency: { type: Types.Relationship, label: 'agency', ref: 'Agency', initial: true },
 	agencyNotListed: { type: Types.Boolean, label: 'agency isn\'t listed', initial: true },
 	agencyText: { type: Types.Text, label: 'agency', dependsOn: { agencyNotListed: true }, initial: true },
@@ -64,17 +71,31 @@ SocialWorker.relationship({ ref: 'Inquiry', refPath: 'childsSocialWorker', path:
 SocialWorker.relationship({ ref: 'Mailing List', refPath: 'socialWorkerSubscribers', path: 'mailing-lists', label: 'mailing lists' });
 SocialWorker.relationship({ ref: 'Event', refPath: 'socialWorkerAttendees', path: 'events', label: 'events' });
 SocialWorker.relationship({ ref: 'Internal Note', refPath: 'socialWorker', path: 'internal-notes', label: 'internal notes' });
+SocialWorker.relationship({ ref: 'Social Worker History', refPath: 'socialWorker', path: 'social-worker-histories', label: 'change history' });
+
+// Post Init - used to store all the values before anything is changed
+SocialWorker.schema.post( 'init', function() {
+	'use strict';
+
+	this._original = this.toObject();
+});
 
 // Pre Save
 SocialWorker.schema.pre('save', function(next) {
 	'use strict';
 
-	// Populate the full name string for better identification when linking through Relationship field types
-	this.name.full = this.name.first + ' ' + this.name.last;
-	// Set the userType for role based page rendering
-	this.userType = 'social worker';
+	var model = this;
 
-	next();
+	async.parallel([
+		function(done) { model.setFullName(done); }, // Create a full name for the child based on their first, middle, and last names
+		function(done) { model.setUserType(done); }, // Create an identifying name for file uploads
+		function(done) { model.setChangeHistory(done); } // Process change history
+	], function() {
+
+		console.log('social worker information updated');
+
+		next();
+	});
 });
 
 /* TODO: VERY IMPORTANT:  Need to fix this to provide the link to access the keystone admin panel again */
@@ -86,6 +107,200 @@ SocialWorker.schema.virtual('canAccessKeystone').get(function() {
 
 	return false;
 });
+
+SocialWorker.schema.methods.setFullName = function(done) {
+	'use strict';
+
+	// Populate the full name string for better identification when linking through Relationship field types
+	this.name.full = this.name.first + ' ' + this.name.last;
+
+	done();
+};
+
+SocialWorker.schema.methods.setUserType = function(done) {
+	'use strict'
+
+	// Set the userType for role based page rendering
+	this.userType = 'social worker';
+
+	done();
+};
+
+SocialWorker.schema.methods.setChangeHistory = function setChangeHistory(done) {
+	'use strict';
+
+	var modelBefore	= this._original,
+		model		= this;
+
+	var changeHistory = new SocialWorkerHistory.model({
+		socialWorker	: this,
+	    date			: Date.now(),
+	    changes			: '',
+	    modifiedBy		: this.updatedBy
+	});
+
+	// if the model is being saved for the first time, mark only that fact in an initial change history record
+	if(!model._original) {
+
+		changeHistory.changes = 'record created';
+
+		console.log('changes: ', changeHistory);
+
+		changeHistory.save(function() {
+			console.log('record created change history saved successfully');
+			done();
+		}, function(err) {
+			console.log(err);
+			console.log('error saving record created change history');
+			done();
+		});
+
+	} else {
+		// Any time a new field is added, it MUST be added to this list in order to be considered for display in change history
+		// Computed fields and fields internal to the object SHOULD NOT be added to this list
+		async.parallel([
+			function(done) {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											parent: 'name',
+											name: 'first',
+											label: 'first name',
+											type: 'string' }, model, modelBefore, changeHistory, done);
+			},
+			function(done) {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											parent: 'name',
+											name: 'last',
+											label: 'last name',
+											type: 'string' }, model, modelBefore, changeHistory, done);
+			},
+			function(done) {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											name: 'email',
+											label: 'email address',
+											type: 'string' }, model, modelBefore, changeHistory, done);
+			},
+			function(done) {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											parent: 'phone',
+											name: 'work',
+											label: 'work phone number',
+											type: 'string' }, model, modelBefore, changeHistory, done);
+			},
+			function(done) {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											parent: 'phone',
+											name: 'mobile',
+											label: 'mobile phone number',
+											type: 'string' }, model, modelBefore, changeHistory, done);
+			},
+			function(done) {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											parent: 'phone',
+											name: 'preferred',
+											label: 'preferred phone',
+											type: 'string' }, model, modelBefore, changeHistory, done);
+			},
+			function(done) {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											name: 'position',
+											label: 'position',
+											type: 'string' }, model, modelBefore, changeHistory, done);
+			},
+			function(done) {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											name: 'agency',
+											targetField: 'name',
+											label: 'agency',
+											type: 'relationship',
+											model: 'Agency' }, model, modelBefore, changeHistory, done);
+			},
+			function(done) {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											name: 'agencyNotListed',
+											label: 'agency isnt listed',
+											type: 'boolean' }, model, modelBefore, changeHistory, done);
+			},
+			function(done) {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											name: 'agencyText',
+											label: 'agency (free text)',
+											type: 'string' }, model, modelBefore, changeHistory, done);
+			},
+			function(done) {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											parent: 'address',
+											name: 'street1',
+											label: 'street 1',
+											type: 'string' }, model, modelBefore, changeHistory, done);
+			},
+			function(done) {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											parent: 'address',
+											name: 'street2',
+											label: 'street 2',
+											type: 'string' }, model, modelBefore, changeHistory, done);
+			},
+			function(done) {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											parent: 'address',
+											name: 'city',
+											label: 'city',
+											type: 'string' }, model, modelBefore, changeHistory, done);
+			},
+			function(done) {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											parent: 'address',
+											name: 'state',
+											targetField: 'state',
+											label: 'state',
+											type: 'relationship',
+											model: 'State' }, model, modelBefore, changeHistory, done);
+			},
+			function(done) {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											parent: 'address',
+											name: 'zipCode',
+											label: 'zip code',
+											type: 'string' }, model, modelBefore, changeHistory, done);
+			},
+			function(done) {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											name: 'title',
+											label: 'title',
+											type: 'string' }, model, modelBefore, changeHistory, done);
+			},
+			function(done) {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											name: 'notes',
+											label: 'notes',
+											type: 'string' }, model, modelBefore, changeHistory, done);
+			},
+			function(done) {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											name: 'bookmarkedChildren',
+											targetParent: 'name',
+											targetField: 'full',
+											label: 'bookmarked children',
+											type: 'relationship',
+											model: 'Child' }, model, modelBefore, changeHistory, done);
+			}
+		], function() {
+			console.log('changes: ', changeHistory);
+			if (changeHistory.changes === '') {
+				done();
+			} else {
+				changeHistory.save(function() {
+					console.log('change history saved successfully');
+					done();
+				}, function(err) {
+					console.log(err);
+					console.log('error saving change history');
+					done();
+				});
+			}
+		});
+	}
+};
 
 // Define default columns in the admin interface and register the model
 SocialWorker.defaultColumns = 'name.full, phone.work, phone.home, phone.cell, phone.preferred, email, permissions.isActive';

@@ -163,7 +163,7 @@ keystone.set('nav', {
 	'mailing lists'		: ['mailing-lists'],
 	'relationships'		: ['csc-region-contacts', 'csc-email-contacts', 'placements'],
 	'donations'			: ['donations'],
-	'change tracking'	: ['child-histories', 'family-histories'],
+	'change tracking'	: ['child-histories', 'family-histories', 'social-worker-histories'],
 	'lists'				: ['child-statuses', 'child-types', 'city-or-towns', 'closed-reasons', 'communication-methods',
 						   'disabilities', 'email-targets', 'event-types', 'family-constellations', 'genders', 'inquiry-methods',
 						   'inquiry-types', 'languages', 'legal-statuses', 'media-eligibilities', 'other-considerations',

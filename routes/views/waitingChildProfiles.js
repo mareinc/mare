@@ -9,8 +9,8 @@ var keystone		= require('keystone'),
 exports = module.exports = function(req, res) {
 	'use strict';
 
-	var view			= new keystone.View(req, res),
-		locals			= res.locals;
+	var view		= new keystone.View(req, res),
+		locals		= res.locals;
 
 	// Set local variables
 	locals.userType	= req.user ? req.user.get('userType') : 'anonymous';
@@ -54,8 +54,8 @@ exports = module.exports = function(req, res) {
 		function(done) { pageService.getSectionHeader(req, res, done, 'Meet the Children'); }
 
 	], function() {
-		// Set the layout to render with the right sidebar
-		locals['render-with-sidebar'] = true;
+		// Set the layout to render without the right sidebar
+		locals['render-with-sidebar'] = false;
 		// Render the view once all the data has been retrieved
 		view.render('waiting-child-profiles');
 

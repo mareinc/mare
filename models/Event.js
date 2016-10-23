@@ -1,27 +1,3 @@
-2/* Fields in old system, missing from the new one
-
-rcs_id ( Recruitment Source ID )  This will be the list of 300+ sources, we don't need it because we're typing a new name
-location ( We break it out into multiple fields which means importing might be a manual process if we care about those.
-		   We can possibly have a checkbox for a moved event and a connnect field for the old location )
-directions
-schedule_datetime ( Right now they just track the start date/time )
-
-   Fields in new system, missing from the old one
-
-url ( location of the event on the site )
-address.street1
-address.street2
-address.city
-address.state
-address.zipCode
-starts ( used to track the event tie more accurately )
-ends ( used to track the event time more accurately )
-contact ( this is a relationship now, but should probably be a text field and maybe include their details, phone, email, etc. )
-recurring
-recurringDuration ( This needs to be more details, every day, every week, every month on the first saturday/sunday/monday, etc. )
-
-   End missing fields */
-
 var keystone = require('keystone'),
 	Types = keystone.Field.Types;
 
