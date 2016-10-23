@@ -17,7 +17,7 @@ User.add('Permissions', {
 		isActive: { type: Boolean, label: 'is active', default: true, noedit: true }
 	}
 
-}, 'General Information', {
+}, 'Login Information', {
 
 	email: { type: Types.Email, label: 'email address', unique: true, required: true, initial: true },
 	password: { type: Types.Password, label: 'password', required: true, initial: true }
