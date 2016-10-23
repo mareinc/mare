@@ -9,6 +9,7 @@ var async					= require('async'),
     csv2arr					= require('csv-to-array'),
 	dataMigrationService	= require('../service_data-migration'),
 	mailingListsMap			= require('../data-migration-maps/outside-contact-groups');
+	// statesMap			= require('../data-migration-maps/states'); // TODO: THIS MAP FILE NEEDS TO BE CREATED
 
 var columns = ['ocn_id','name','organization','address_1','address_2','city','state','zip','phone','email','contact_type','country','notes'];
 var importArray = [];
@@ -42,12 +43,10 @@ module.exports.importOutsideContacts = function importOutsideContacts(req, res, 
                 if (_outsideContact.contact_type) {
                     _isVolunteer = true;
                 }
-				// Create lookup objects to find ids for each Relationship field
-				var stateValues = { model: 'State', targetField: 'abbreviation', targetValue: _outsideContact.state, returnTarget: 'stateId' };
 
 				async.parallel([
 					function(done) { mailingListsMap.getOutsideContactGroupsMap(req, res, done) },
-					function(done) { dataMigrationService.getModelId(req, res, done, stateValues) }
+					// function(done) { statesMap.getStatesMap(req, res, done) } // TODO: THIS CAN BE UNCOMMENTED WHEN THE MAP FILE IS CREATED
 				], function() {
 					// ADRIAN: HERE'S WHERE I LEFT OFF, THE MAP WORKS NOW
 					console.log(locals.outsideContactGroupsMap);
