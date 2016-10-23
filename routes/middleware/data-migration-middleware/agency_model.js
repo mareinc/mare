@@ -1,3 +1,4 @@
+
 /**
  * Created by Adrian Suciu.
  */
@@ -5,12 +6,12 @@
 var async					= require('async'),
 	keystone				= require('keystone'),
 	Types 					= keystone.Field.Types,
-    Agency 					= require('../../../models/Agency'),//keystone.list('Agency'), // NOTE: this may not work, for keystone to access the database using a model reference, you may need the keystone.list('Agency'); syntax here
+    Agency 					= keystone.list('Agency'), // NOTE: this may not work, for keystone to access the database using a model reference, you may need the keystone.list('Agency'); syntax here
     Region					= keystone.list('Region'),
     csv2arr					= require('csv-to-array'),
 	dataMigrationService	= require('../service_data-migration');
-	// statesMap			= require('../data-migration-maps/states'); // TODO: THIS MAP FILE NEEDS TO BE CREATED
-	// regionsMap			= require('../data-migration-maps/regions'); // TODO: THIS MAP FILE NEEDS TO BE CREATED
+	statesMap				= require('../data-migration-maps/states');
+	regionsMap				= require('../data-migration-maps/regions');
 
 var columns = ["agn_id","code","name","address_1","address_2","city","state","zip","phone","fax","url","rgn_id"];
 var importArray;
@@ -32,18 +33,16 @@ module.exports.importAgencies = function importAgencies(req, res, done) {
 			} else {
 				importArray = array;
 
-				for (var i=1,_count=importArray.length; i <_count; i++) {
-					var _agency = importArray[i];
 
-					async.parallel([
-						// function(done) { statesMap.getStatesMap(req, res, done) } // TODO: THIS CAN BE UNCOMMENTED WHEN THE MAP FILE IS CREATED
-						// function(done) { regionsMap.getRegionsMap(req, res, done) } // TODO: THIS CAN BE UNCOMMENTED WHEN THE MAP FILE IS CREATED
-					], function() {
+				async.parallel([
+					function(done) { statesMap.getStatesMap(req, res, done) } ,
+					function(done) { regionsMap.getRegionsMap(req, res, done) }
+				], function() {
+
+					for (var i=1,_count=importArray.length; i <_count; i++) {
+						var _agency = importArray[i];
 
 						console.log('#' + i);
-
-						var x = new Agency.model({});
-						console.log(newAgency);
 
 						// populate instance for agency object
 						var newAgency = new Agency.model({
@@ -58,9 +57,9 @@ module.exports.importAgencies = function importAgencies(req, res, done) {
 								street1: _agency.address_1,
 								street2: _agency.address_2,
 								city: _agency.city,
-								state: locals.stateId, //_agency.state,
+								state: locals.statesMap[_agency.state],
 								zipCode: _agency.zip,
-								region: locals.regionId //_agency.rgn_id
+								region: locals.regionsMap[_agency.rgn_id]
 							},
 
 							url: _agency.url,
@@ -83,11 +82,10 @@ module.exports.importAgencies = function importAgencies(req, res, done) {
 								console.log("[ID#" + _agency.agn_id + "] child successfully saved!");
 							}
 						});
+					}
 
-					});
-
-				}
-			}
+				});
+			}	
 
 		})
 	}

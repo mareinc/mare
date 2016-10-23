@@ -27,6 +27,8 @@ exports.getModelId = function getModelId(req, res, done, options) {
 		.exec()
 		.then(function (model) {
 
+			// console.log(model);
+
 			locals[options.returnTarget] = model._id;
 
 			done();

@@ -9,7 +9,7 @@ var async					= require('async'),
     csv2arr					= require('csv-to-array'),
 	dataMigrationService	= require('../service_data-migration'),
 	mailingListsMap			= require('../data-migration-maps/outside-contact-groups');
-	// statesMap			= require('../data-migration-maps/states'); // TODO: THIS MAP FILE NEEDS TO BE CREATED
+	statesMap				= require('../data-migration-maps/states');
 
 var columns = ['ocn_id','name','organization','address_1','address_2','city','state','zip','phone','email','contact_type','country','notes'];
 var importArray = [];
@@ -46,13 +46,14 @@ module.exports.importOutsideContacts = function importOutsideContacts(req, res, 
 
 				async.parallel([
 					function(done) { mailingListsMap.getOutsideContactGroupsMap(req, res, done) },
-					// function(done) { statesMap.getStatesMap(req, res, done) } // TODO: THIS CAN BE UNCOMMENTED WHEN THE MAP FILE IS CREATED
+					function(done) { statesMap.getStatesMap(req, res, done) } // TODO: THIS CAN BE UNCOMMENTED WHEN THE MAP FILE IS CREATED
 				], function() {
-					// ADRIAN: HERE'S WHERE I LEFT OFF, THE MAP WORKS NOW
-					console.log(locals.outsideContactGroupsMap);
+
+					//console.log(locals.outsideContactGroupsMap);
 					// populate instance for Outside Contact object
 	                var newOutsideContact = new OutsideContact.model({
 
+	                	type: locals.mailingListsMap[_outsideContact.ocn_id],
 	                    // type: { type: Types.Relationship, label: 'type of contact', ref: 'Mailing List', many: true, required: true, initial: true },
 
 	                    // from the outside_contact table get the ocn_id and go to mailing_list_subscription table, where based on the ocn_id, get the mlt_id and then
@@ -76,17 +77,13 @@ module.exports.importOutsideContacts = function importOutsideContacts(req, res, 
 	                        street1: _outsideContact.address_1,
 	                        street2: _outsideContact.address_2,
 	                        city:  _outsideContact.city,
-	                        state:  locals.stateId,
+	                        state:  locals.statesMap[_outsideContact.state],
 	                        zipCode:  _outsideContact.zip
 	                    },
 
 	                    isVolunteer: _isVolunteer
 
 	                });
-
-	                // if (shouldBePublished) {
-	                //     newOutsideContact.state = 'published';
-	                // }
 
 	                // call save method on Outside Contact object
 	                newOutsideContact.save(function(err) {
