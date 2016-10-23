@@ -9,8 +9,8 @@ var async					= require('async'),
     Agency 					= keystone.list('Agency'), // NOTE: this may not work, for keystone to access the database using a model reference, you may need the keystone.list('Agency'); syntax here
     Region					= keystone.list('Region'),
     csv2arr					= require('csv-to-array'),
-	dataMigrationService	= require('../service_data-migration');
-	statesMap				= require('../data-migration-maps/states');
+	dataMigrationService	= require('../service_data-migration'),
+	statesMap				= require('../data-migration-maps/states'),
 	regionsMap				= require('../data-migration-maps/regions');
 
 var columns = ["agn_id","code","name","address_1","address_2","city","state","zip","phone","fax","url","rgn_id"];
