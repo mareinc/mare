@@ -197,7 +197,7 @@ exports.addToHistoryEntry = function addToHistoryEntry(fieldBefore, field, label
 
 	changeHistory.changes += label.toUpperCase() +
 							 ': ' +
-							 ( fieldBefore || fieldBefore === 0 ? fieldBefore : '[empty]' ) +
+							 ( fieldBefore || fieldBefore === 0 ? fieldBefore : '[blank]' ) +
 							 ' to ' +
 							 ( field || field === 0 ? field : '[blank]' );
 }
