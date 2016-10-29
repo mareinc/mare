@@ -10,10 +10,10 @@ exports.getRegionsMap = function getRegionsMap(req, res, done) {
 		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Region', targetField: 'region', targetValue: 'central', returnTarget: 'regionCentral'  }); },
 		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Region', targetField: 'region', targetValue: 'Contracted Agencies', returnTarget: 'regionContractedAgencies'  }); },
 		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Region', targetField: 'region', targetValue: 'northern', returnTarget: 'regionNorthern'  }); },
-		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Region', targetField: 'region', targetValue: 'southern', returnTarget: 'regionWSoutheast'  }); },
+		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Region', targetField: 'region', targetValue: 'southern', returnTarget: 'regionSoutheast'  }); },
 		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Region', targetField: 'region', targetValue: 'Boston', returnTarget: 'regionBoston'  }); },
 		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Region', targetField: 'region', targetValue: 'Metro', returnTarget: 'regionMetro'  }); },
-		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Region', targetField: 'region', targetValue: 'out of state', returnTarget: 'regionWOutofState'  }); },
+		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Region', targetField: 'region', targetValue: 'out of state', returnTarget: 'regionOutofState'  }); },
 		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Region', targetField: 'region', targetValue: 'Private Agency (infant or international)', returnTarget: 'regionWPrivateAgency'  }); }
 		
 	], function() {
@@ -30,7 +30,6 @@ exports.getRegionsMap = function getRegionsMap(req, res, done) {
 			1006: locals.regionMetro,
 			1007: locals.regionOutofState,
 			1008: locals.regionPrivateAgency
-
 		};
 
 		done();

@@ -2,7 +2,20 @@
  * Created by Adrian Suciu.
  */
 
-var child_model = require('models/Child.js');
+var async					= require('async'),
+	keystone				= require('keystone'),
+	Types 					= keystone.Field.Types,
+    Child 					= keystone.list('Child'), // NOTE: this may not work, for keystone to access the database using a model reference, you may need the keystone.list('Agency'); syntax here
+    csv2arr					= require('csv-to-array'),
+	dataMigrationService	= require('../service_data-migration'),
+
+	//mappings
+	childStatusesMap		= require('../data-migration-maps/child-status'),
+	gendersMap 				= require('../data-migration-maps/gender'),
+	langaugesMap 			= require('../data-migration-maps/language'),
+	legalStatusesMap		= require('../data-migration-maps/legal-status'),
+	racesMap 				= require('../data-migration-maps/race')
+	;
 
 var columns = ["chd_id","registered_date","sibling_group_id","first_name","middle_name","last_name","alias","nickname","status",
 	"date_of_birth","gender","rce_id","race_note","legal_status","number_of_siblings","can_place_in_two_parent_home",
@@ -21,12 +34,11 @@ var columns = ["chd_id","registered_date","sibling_group_id","first_name","middl
 	"placement_email","placement_agency","placement_constellation","placement_rce_id"];
 var importArray;
 
-var keystone = require('keystone'),
-	Child = keystone.list('Child'),
-	csv2arr = require("csv-to-array");
+module.exports.importChildren = function importChildren(req, res, done){
 
-module.exports = {
-	importChildren: function(){
+		var self = this,
+			locals = res.locals;
+
 		csv2arr({
 			file: "./migration-data/csv-data/child.csv",
 			columns: columns
@@ -36,119 +48,95 @@ module.exports = {
 			} else {
 				importArray = array;
 
-				for (var i=0,_count=importArray.length; i <_count; i++) {
-					var _child = importArray[i];
+				async.parallel([
+					function(done) { childStatusesMap.getChildStatusesMap(req,res,done) },
+					function(done) { gendersMap.getGendersMap(req, res, done) } ,
+					function(done) { langaugesMap.getLanguagesMap(req,res,done) },
+					function(done) { legalStatusesMap.getLegalStatusesMap(req,res,done) },
+					function(done) { racesMap.getRacesMap(req,res,done) }
+					
+				], function() {
 
-					// populate instance for Child object
-					var newChild = new Child.model({
-						registrationNumber: _child.chd_id,
-						registrationDate: _child.registered_date,
+					for (var i=1,_count=importArray.length; i <_count; i++) {
 
-						// sibling_group_id > wait for Jared
+						// populate instance for Child object
+						var newChild = new Child.model({
+							registrationNumber: _child.chd_id,
+							registrationDate: _child.registered_date,
 
-						name: {
-							first: _child.first_name,
-							middle: _child.middle_name,
-							last: _child.last_name,
-							alias: _child.alias,
-							nickName: _child.nickname,
-							full: _child.first_name + " " + _child.middle_name + " " + _child.last_name
-						},
-						status: _child.status,
-						statusChangeDate: _child.last_status_change_date_time,
-						birthDate: _child.date_of_birth,
-						gender: _child.gender,
-						race: _child.rce_id,
+							name: {
+								first: _child.first_name,
+								middle: _child.middle_name,
+								last: _child.last_name,
+								alias: _child.alias,
+								nickName: _child.nickname,
+								full: _child.first_name + " " + _child.middle_name + " " + _child.last_name
+							},
 
-						// race_note >
+							status: locals.getChildStatusesMap[_child.status], // << fetch from Mappings
 
-						legalStatus: _child.legal_status,
+							statusChangeDate: _child.last_status_change_date_time,
+							birthDate: _child.date_of_birth,
 
-						//	number_of_siblings // not used in the new syste, Jared does a count every time
+							gender: locals.getGendersMap[_child.gender], // << fetch from Mappings
 
-						recommendedFamilyConstellation: _child.can_place_into_two_parent_home,
-						otherFamilyConstellationConsideration: _child.can_place_in_childless_home,
-						physicalNeeds: _child.physical_dst_id,
-						emotionalNeeds: _child.emotional_dst_id,
-						intellectualNeeds: _child.intellectual_dst_id,
-						physicalNeedsDescription: _child.physical_dissability_comment,
-						emotionalNeedsDescription: _child.emotional_dissability_comment,
-						intellectualNeedsDescription: _child.intellectual_dissability_comment,
-						healthNotesOld: _child.health_notes,
-						/*
-						 health_notes		 >
-						 adoption_agc_id 	 > fetch based on parameter???
-						 recruitment_agc_id  > fetch based on parameter???
-						 notes 				 >
-						 listing_date 		 >
-						 */
+							race: locals.getRacesMap[_child.rce_id], // << fetch from Mappings
 
-						hasContactWithSiblings: _child.allow_sibling_contact,
-						siblingTypeOfContact: _child.simbling_contact_note,
-						hasContactWithBirthFamily: _child.allow_birth_family_contact,
-						birthFamilyTypeOfContact: _child.birth_family_contact_note,
+							legalStatus: locals.getLegalStatusesMap[_child.legal_status], // << fetch from Mappings
 
-						// on_media_recruitment_hold
-						// media_recruitment_hold_date
-						// have_media_photo
-						// media_photo_date
+							recommendedFamilyConstellation: _child.can_place_into_two_parent_home,
+							otherFamilyConstellationConsideration: _child.can_place_in_childless_home,
+							physicalNeeds: _child.physical_dst_id,
+							emotionalNeeds: _child.emotional_dst_id,
+							intellectualNeeds: _child.intellectual_dst_id,
+							physicalNeedsDescription: _child.physical_dissability_comment,
+							emotionalNeedsDescription: _child.emotional_dissability_comment,
+							intellectualNeedsDescription: _child.intellectual_dissability_comment,
+							healthNotesOld: _child.health_notes,
 
-						// on_media_location_alert		>
-						// media_location_alert_place	>
+							hasContactWithSiblings: _child.allow_sibling_contact,
+							siblingTypeOfContact: _child.simbling_contact_note,
+							hasContactWithBirthFamily: _child.allow_birth_family_contact,
+							birthFamilyTypeOfContact: _child.birth_family_contact_note,
 
-						hasPhotolistingWriteup: _child.have_photolisting_writeup,
-						photolistingWriteupDate: _child.photolisting_writeup_date,
-						hasPhotolistingPhoto: _child.have_photolisting_photo,
-						photolistingPhotoDate: _child.photolisting_photo_date,
+							hasPhotolistingWriteup: _child.have_photolisting_writeup,
+							photolistingWriteupDate: _child.photolisting_writeup_date,
+							hasPhotolistingPhoto: _child.have_photolisting_photo,
+							photolistingPhotoDate: _child.photolisting_photo_date,
+							isCurrentlyInPhotoListing: isInPhotoListings(_child.photolisting_photo_date),
 
-						// need Jared's input on these ones
-						/*
-						if there is a value in photolisting_date then set in_photolisting to true
+							previousPhotolistingPageNumber: _child.previous_photolisting_page,
+							hasVideoSnapshot: _child.have_video_snapshot,
+							videoSnapshotDate: _child.video_snapshot_date,
+							language: locals.langaugesMap[_child.primary_language],
+							registeredBy: _child.registered_by,
+							extranetUrl: _child.profile_url,
+							onMAREWebsite: _child.is_on_mare_web,
+							onAdoptuskids: _child.is_on_adoptuskids,
+							onOnlineMatching: _child.is_on_online_matching
 
+						});
 
-						 in_photolisting	>
-						 photolisting_date 	>
-						 photolisting_page 	> photolistingPage: {
-						 type: Types.S3File,
-						 s3path: '/child/photolisting-pages',
-						 filename: function(item, filename){
-						 // prefix file name with registration number and the user's name for easier identification
-						 return fileName;
-						 }
+						// call save method on Child object
+						newChild.save(function(err) {
+							// newChild object has been saved
+							if (err) {
+								throw "[ID#" + _child.chd_id +"] an error occured while saving " + newChild + " object."
+							}
+							else {
+								console.log("[ID#" + _child.chd_id + "] child successfully saved!");
+							}
+						});
 
-						 */
-
-						previousPhotolistingPageNumber: _child.previous_photolisting_page,
-						hasVideoSnapshot: _child.have_video_snapshot,
-						videoSnapshotDate: _child.video_snapshot_date,
-						language: _child.primary_language,
-						registeredBy: _child.registered_by,
-						extranetUrl: _child.profile_url,
-						onMAREWebsite: _child.is_on_mare_web,
-						onAdoptuskids: _child.is_on_adoptuskids,
-						onOnlineMatching: _child.is_on_online_matching
-
-					});
-
-					if (shouldBePublished) {
-						newChild.state = 'published';
 					}
 
-					// call save method on Child object
-					newChild.save(function(err) {
-						// newChild object has been saved
-						if (err) {
-							throw "[ID#" + _child.chd_id +"] an error occured while saving " + newChild + " object."
-						}
-						else {
-							console.log("[ID#" + _child.chd_id + "] child successfully saved!");
-						}
-					});
-
-				}
+				});
 			}
 		});
 
 	}
+
+function isInPhotoListings(date) {
+	return (typeof(date) !== "undefined" && date != "") ? true : false;
 }
 
