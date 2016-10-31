@@ -3,7 +3,9 @@ var _ 					= require('underscore'),
 	Agency				= keystone.list('Agency'),
 	ChildStatus			= keystone.list('Child Status'),
 	CityOrTown			= keystone.list('City or Town'),
+	ClosedReasons		= keystone.list('Closed Reason'),
 	Gender				= keystone.list('Gender'),
+	FamilyConstellation = keystone.list('Family Constellation'),
 	Language			= keystone.list('Language'),
 	LegalStatus			= keystone.list('Legal Status'),
 	OutsideContactGroup	= keystone.list('Outside Contact Group'),
@@ -17,10 +19,12 @@ exports.getTargetModel = function getTargetModel(modelName) {
 		switch(modelName) {
 			case 'Agency'				: return Agency;
 			case 'Child Status'			: return ChildStatus;
+			case 'City or Town'			: return CityOrTown;
+			case 'Closed Reason'		: return ClosedReason;
 			case 'Gender'				: return Gender;
+			case 'Family Constellation' : return FamilyConstellation;
 			case 'Language'				: return Language;
 			case 'Legal Status' 		: return LegalStatus;
-			case 'City or Town'			: return CityOrTown;
 			case 'Outside Contact Group': return OutsideContactGroup;
 			case 'Race'					: return Race;
 			case 'Region'				: return Region;

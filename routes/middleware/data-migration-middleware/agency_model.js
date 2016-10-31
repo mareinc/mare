@@ -10,6 +10,8 @@ var async					= require('async'),
     Region					= keystone.list('Region'),
     csv2arr					= require('csv-to-array'),
 	dataMigrationService	= require('../service_data-migration'),
+
+	// mappings
 	statesMap				= require('../data-migration-maps/states'),
 	regionsMap				= require('../data-migration-maps/regions');
 
