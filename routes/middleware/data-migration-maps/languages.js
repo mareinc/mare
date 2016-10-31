@@ -15,8 +15,11 @@ exports.getLanguagesMap = function getLanguagesMap(req, res, done) {
 	], function() {
 
 		locals.languagesMap = {
-			"IN": locals.stateIN,
-			"MA": locals.stateMA
+			"Chinese" : locals.languageChinese,
+			"English" : locals.languageEnglish,
+			"Portuguese" : locals.languagePortugese,
+			"Spanish" : locals.languageSpanish,
+			"other" : locals.languageOther
 		};
 
 		done();
