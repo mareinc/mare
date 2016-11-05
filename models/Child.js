@@ -193,7 +193,6 @@ Child.add('Display Options', {
 
 	// system field to store an appropriate file prefix
 	fileName: { type: Types.Text, hidden: true }
-	// isUpdatingSiblings: { type: Types.Boolean, hidden: true, default: false }
 
 });
 
@@ -213,8 +212,6 @@ Child.schema.post( 'init', function() {
 	'use strict';
 
 	this._original = this.toObject();
-
-	// this.isUpdatingSiblings = false;
 });
 
 Child.schema.pre('save', function( next ) {
@@ -237,13 +234,9 @@ Child.schema.pre('save', function( next ) {
 });
 
 Child.schema.post( 'save', function( next ) {
-	console.log( 'updating: ', this.isUpdatingSiblings );
+
 	// Uses several sub-functions to update all sibling information
-	if( !this.isUpdatingSiblings ) {
-		this.updateSiblingFields();
-	} else {
-		this.isUpdatingSiblings = false;
-	}
+	this.updateSiblingFields();
 });
 
 Child.schema.methods.setImages = function( done ) {
@@ -296,14 +289,24 @@ Child.schema.methods.updateSiblingFields = function() {
 	// get all the siblings who are present before saving but not after (removed siblings)
 	const removedSiblings = siblingsBeforeSave.leftOuterJoin( siblingsAfterSave );
 	// get all the siblings who still remain if we ignore the removed siblings
-	const remainingSiblings = siblingsBeforeSave.leftOuterJoin( removedSiblings );
+	const remainingSiblings = siblingsAfterSave.leftOuterJoin( removedSiblings );
+	// get all the aggregate of all siblings before and after saving
+	const allSiblings = siblingsBeforeSave.union( siblingsAfterSave );
 	// get all the siblings this child must be placed with who are present before saving but not after (removed siblings)
-	const removedSiblingsToBePlacedWith = siblingsToBePlacedWithBeforeSave.leftOuterJoin( siblingsToBePlacedWithAfterSave );
-	// add child to children listed in the siblings field if not already done
+	// const removedSiblingsToBePlacedWith = siblingsToBePlacedWithBeforeSave.leftOuterJoin( siblingsToBePlacedWithAfterSave );
+	// add update children list in the siblings and siblingsToBePlacedWith fields
 	async.series([
 		done => { ChildMiddleware.updateMySiblings( siblingsAfterSave, childId, done ); },
-		done => { ChildMiddleware.updateMyRemovedSiblings( removedSiblings, childId, done ); },
-		done => { ChildMiddleware.updateMyRemainingSiblings( remainingSiblings, removedSiblings, childId, done ); }
+		done => { ChildMiddleware.updateMyRemainingSiblings( remainingSiblings, removedSiblings, childId, done ); },
+		done => {
+			// the first check ensures that a removed sibling doesn't remove all siblings from everyone when the starting sibling count is greater than 3
+			// the second check ensures that if a child has only a single sibling, they will remove eachother
+			if( remainingSiblings.size > 0 || removedSiblings.size === 1 ) {
+				ChildMiddleware.updateMyRemovedSiblings( allSiblings, removedSiblings, childId, done );
+			} else {
+				done();
+			}
+		}
 		// done => { ChildMiddleware.updateMySiblingsToBePlacedWith( addedSiblingsToBePlacedWith, childId, done ); }, // this needs to check the checkbox for the sibling if not checked
 		// done => { ChildMiddleware.updateMyRemovedSiblingsToBePlacedWith( addedSiblingsToBePlacedWith, childId, done ); } // this needs to uncheck the checkbox for sibling if siblings field for them is now empty
 	], function() {
