@@ -37,3 +37,6 @@ newrelic_agent.log
 public/dist/*
 .env_online
 .env_offline
+
+# Ignore Visual Studio Code directory
+.vscode
