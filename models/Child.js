@@ -198,7 +198,6 @@ Child.add('Display Options', {
 
 // Set up relationship values to show up at the bottom of the model if any exist
 Child.relationship({ ref: 'Child', refPath: 'siblings', path: 'children', label: 'all siblings' });
-Child.relationship({ ref: 'Child', refPath: 'siblingsToBePlacedWith', path: 'children', label: 'siblings to be placed with' });
 Child.relationship({ ref: 'Placement', refPath: 'child', path: 'placements', label: 'placements' });
 Child.relationship({ ref: 'Inquiry', refPath: 'child', path: 'inquiries', label: 'inquiries' });
 Child.relationship({ ref: 'Family', refPath: 'bookmarkedChildren', path: 'families', label: 'bookmarked by families' });
@@ -221,6 +220,7 @@ Child.schema.pre('save', function( next ) {
 		( done ) => { this.setImages( done ); }, // Create cloudinary URLs for images sized for various uses
 		( done ) => { this.setFullName( done ); }, // Create a full name for the child based on their first, middle, and last names
 		( done ) => { this.setFileName( done ); }, // Create an identifying name for file uploads
+		( done ) => { this.updateMustBePlacedWithSiblingsCheckbox( done ); }, // If there are no siblings to be placed with, uncheck the box, otherwise check it
 		( done ) => { this.setChangeHistory( done ); } // Process change history
 	], function() {
 
@@ -270,6 +270,18 @@ Child.schema.methods.setFileName = function( done ) {
 	done();
 };
 
+Child.schema.methods.updateMustBePlacedWithSiblingsCheckbox = function( done ) {
+	'use strict';
+
+	if( this.siblingsToBePlacedWith && this.siblingsToBePlacedWith.length > 0 ) {
+    	this.mustBePlacedWithSiblings = true;
+	} else {
+		this.mustBePlacedWithSiblings = false;
+	}
+
+	done();
+}
+
 // Update the siblings field of all siblings listed to include the current child
 Child.schema.methods.updateSiblingFields = function() {
 	'use strict';
@@ -293,7 +305,12 @@ Child.schema.methods.updateSiblingFields = function() {
 	// get all the aggregate of all siblings before and after saving
 	const allSiblings = siblingsBeforeSave.union( siblingsAfterSave );
 	// get all the siblings this child must be placed with who are present before saving but not after (removed siblings)
-	// const removedSiblingsToBePlacedWith = siblingsToBePlacedWithBeforeSave.leftOuterJoin( siblingsToBePlacedWithAfterSave );
+	const removedSiblingsToBePlacedWith = siblingsToBePlacedWithBeforeSave.leftOuterJoin( siblingsToBePlacedWithAfterSave );
+	// get all the siblings to be placed with who still remain if we ignore the removed siblings to be placed with
+	const remainingSiblingsToBePlacedWith = siblingsToBePlacedWithAfterSave.leftOuterJoin( removedSiblingsToBePlacedWith );
+	// get all the aggregate of all siblings to be placed with before and after saving
+	const allSiblingsToBePlacedWith = siblingsToBePlacedWithBeforeSave.union( siblingsToBePlacedWithAfterSave );
+
 	// add update children list in the siblings and siblingsToBePlacedWith fields
 	async.series([
 		done => { ChildMiddleware.updateMySiblings( siblingsAfterSave, childId, done ); },
@@ -306,9 +323,18 @@ Child.schema.methods.updateSiblingFields = function() {
 			} else {
 				done();
 			}
-		}
-		// done => { ChildMiddleware.updateMySiblingsToBePlacedWith( addedSiblingsToBePlacedWith, childId, done ); }, // this needs to check the checkbox for the sibling if not checked
-		// done => { ChildMiddleware.updateMyRemovedSiblingsToBePlacedWith( addedSiblingsToBePlacedWith, childId, done ); } // this needs to uncheck the checkbox for sibling if siblings field for them is now empty
+		},
+		done => { ChildMiddleware.updateMySiblingsToBePlacedWith( siblingsToBePlacedWithAfterSave, childId, done ); },
+		done => { ChildMiddleware.updateMyRemainingSiblingsToBePlacedWith( remainingSiblingsToBePlacedWith, removedSiblingsToBePlacedWith, childId, done ); },
+		done => {
+			// the first check ensures that a removed sibling doesn't remove all siblings from everyone when the starting siblings to be placed with count is greater than 3
+			// the second check ensures that if a child has only a single sibling, they will remove eachother
+			if( remainingSiblingsToBePlacedWith.size > 0 || removedSiblingsToBePlacedWith.size === 1 ) {
+				ChildMiddleware.updateMyRemovedSiblingsToBePlacedWith( allSiblingsToBePlacedWith, removedSiblingsToBePlacedWith, childId, done );
+			} else {
+				done();
+			}
+		},
 	], function() {
 
 		console.log('sibling information updated');
