@@ -35,7 +35,7 @@ exports.checkFieldForChanges = function checkFieldForChanges(field, model, model
 		fieldAfter = model[field.name];
 	}
 
-	if([ 'string', 'boolean', 'number' ].includes(field.type) && fieldBefore !== fieldAfter) {
+	if([ 'string', 'boolean', 'number' ].includes(field.type) && fieldBefore != fieldAfter) {
 		valueBefore = fieldBefore ? fieldBefore : '';
 		valueAfter = fieldAfter ? fieldAfter : '';
 
