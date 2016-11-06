@@ -11,13 +11,13 @@ var async					= require('async'),
 
 	// mappings
 	childStatusesMap		= require('../data-migration-maps/child-status'),
-	closedStatusesMap		= require('../data-migration-maps/closed-reasons'),
-	familyConstellationMap  = require('../data-migration-maps/family-constellations'),
+	closedStatusesMap		= require('../data-migration-maps/closed-reason'),
+	familyConstellationMap  = require('../data-migration-maps/family-constellation'),
 	gendersMap 				= require('../data-migration-maps/gender'),
-	languagesMap			= require('../data-migration-maps/languages'),
+	languagesMap			= require('../data-migration-maps/language'),
 	legalStatusesMap 		= require('../data-migration-maps/legal-status'),
 	racesMap 				= require('../data-migration-maps/race'),
-	statesMap				= require('../data-migration-maps/states')
+	statesMap				= require('../data-migration-maps/state')
 	;
 
 var columns = ["fam_id","old_family_id","listing_date","family_constellation","primary_language","is_home_studied","home_study_date",
@@ -64,8 +64,8 @@ module.exports.importFamilies = function importFamilies(req, res, done) {
 					function(done) { racesMap.getRacesMap(req,res,done) },
 					function(done) { statesMap.getStatesMap(req, res, done) }
 
-					LoadAllRacePreferences();
-					LoadAllSpecialNeeds();
+					// LoadAllRacePreferences();
+					// LoadAllSpecialNeeds();
 					
 
 				], function() {
@@ -285,7 +285,7 @@ function selectAllSpecialNeedsByFamID(famid) {
 
 function oldRaceCodes(raceCode) {
 	var foundRace = "";
-	var oldRaceRecords = {
+	var oldRaceRecords = [
 							["1","AA","African American"],
 							["2","AS","Asian"],
 							["3","CA","Caucasian"],
@@ -301,8 +301,8 @@ function oldRaceCodes(raceCode) {
 							["13","CA/HI","Caucasian/Hispanic"],
 							["14","CA/NA","Caucasian/Nat.Amer."],
 							["15","HI/NA","Hispanic/Nat.Amer."],
-							["16","OTHER","Other- DO NOT USE"],
-						};
+							["16","OTHER","Other- DO NOT USE"]
+	];
 
 	for (var i=0; i < oldRaceRecords; i++) {
 		if (oldRaceRecords[i][0] == raceCode) {
@@ -316,7 +316,7 @@ function oldRaceCodes(raceCode) {
 
 function oldSpecialNeedCodes(needCode) {
 	var foundNeed = "";
-	var oldNeedCode = {
+	var oldNeedCode = [
 		["70","Autism"],
 		["20","Cerebral Palsy"],
 		["10","Down Syndrome"],
@@ -324,7 +324,7 @@ function oldSpecialNeedCodes(needCode) {
 		["40","Hearing Impairment"],
 		["30","HIV/AIDS"],
 		["50","Visual Impairment"]
-	};
+	];
 
 	for (var i=0; i < oldNeedCode; i++) {
 		if (oldNeedCode[i][0] == needCode) {

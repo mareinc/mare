@@ -12,8 +12,8 @@ var async					= require('async'),
 	dataMigrationService	= require('../service_data-migration'),
 
 	// mappings
-	statesMap				= require('../data-migration-maps/states'),
-	regionsMap				= require('../data-migration-maps/regions');
+	statesMap				= require('../data-migration-maps/state'),
+	regionsMap				= require('../data-migration-maps/region');
 
 var columns = ["agn_id","code","name","address_1","address_2","city","state","zip","phone","fax","url","rgn_id"];
 var importArray;

@@ -8,8 +8,8 @@ var async					= require('async'),
     OutsideContact			= keystone.list('Outside Contact'),
     csv2arr					= require('csv-to-array'),
 	dataMigrationService	= require('../service_data-migration'),
-	mailingListsMap			= require('../data-migration-maps/outside-contact-groups');
-	statesMap				= require('../data-migration-maps/states');
+	mailingListsMap			= require('../data-migration-maps/outside-contact-group');
+	statesMap				= require('../data-migration-maps/state');
 
 var columns = ['ocn_id','name','organization','address_1','address_2','city','state','zip','phone','email','contact_type','country','notes'];
 var importArray = [];

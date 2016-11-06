@@ -12,7 +12,7 @@ var async					= require('async'),
 	//mappings
 	childStatusesMap		= require('../data-migration-maps/child-status'),
 	gendersMap 				= require('../data-migration-maps/gender'),
-	langaugesMap 			= require('../data-migration-maps/language'),
+	languagesMap 			= require('../data-migration-maps/language'),
 	legalStatusesMap		= require('../data-migration-maps/legal-status'),
 	racesMap 				= require('../data-migration-maps/race')
 	;
@@ -51,7 +51,7 @@ module.exports.importChildren = function importChildren(req, res, done){
 				async.parallel([
 					function(done) { childStatusesMap.getChildStatusesMap(req,res,done) },
 					function(done) { gendersMap.getGendersMap(req, res, done) } ,
-					function(done) { langaugesMap.getLanguagesMap(req,res,done) },
+					function(done) { languagesMap.getLanguagesMap(req,res,done) },
 					function(done) { legalStatusesMap.getLegalStatusesMap(req,res,done) },
 					function(done) { racesMap.getRacesMap(req,res,done) }
 					
@@ -108,7 +108,7 @@ module.exports.importChildren = function importChildren(req, res, done){
 							previousPhotolistingPageNumber: _child.previous_photolisting_page,
 							hasVideoSnapshot: _child.have_video_snapshot,
 							videoSnapshotDate: _child.video_snapshot_date,
-							language: locals.langaugesMap[_child.primary_language],
+							language: locals.languagesMap[_child.primary_language],
 							registeredBy: _child.registered_by,
 							extranetUrl: _child.profile_url,
 							onMAREWebsite: _child.is_on_mare_web,

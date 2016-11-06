@@ -16,7 +16,7 @@ exports.getClosedReasonsMap = function getClosedReasonsMap(req, res, done) {
 		locals.closedReasonsMap = {
 			"Family request" : locals.closedStatusFamilyRequest,
 			"No Contact" : locals.closedStatusNoContact,
-			"no longer pursuing adoption" : locals.closedStatusNoLongerPursuingAdoption
+			"no longer pursuing adoption" : locals.closedStatusNoLongerPursuingAdoption,
 			"unregistered family placed" : locals.closedStatusUnregisteredFamilyPlaced
 		};
 
