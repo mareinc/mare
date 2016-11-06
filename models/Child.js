@@ -16,18 +16,20 @@ require('./List_Region');
 require('./Event');
 require('./List_MediaEligibility');
 
-var keystone				= require('keystone'),
+const keystone				= require('keystone'),
 	async 					= require('async'),
 	_ 						= require('underscore'),
 	moment					= require('moment'),
 	Types					= keystone.Field.Types,
 	ChildHistory			= keystone.list('Child History'),
 	ChangeHistoryMiddleware = require('../routes/middleware/models_change-history');
+	ChildMiddleware			= require('../routes/middleware/models_child');
+	UtilitiesMiddleware		= require('../routes/middleware/utilities');
 
 
 
 // Create model
-var Child = new keystone.List('Child', {
+const Child = new keystone.List('Child', {
 	track: true,
 	autokey: { path: 'key', from: 'registrationNumber', unique: true },
 	map: { name: 'name.full' },
@@ -196,7 +198,6 @@ Child.add('Display Options', {
 
 // Set up relationship values to show up at the bottom of the model if any exist
 Child.relationship({ ref: 'Child', refPath: 'siblings', path: 'children', label: 'all siblings' });
-Child.relationship({ ref: 'Child', refPath: 'siblingsToBePlacedWith', path: 'children', label: 'siblings to be placed with' });
 Child.relationship({ ref: 'Placement', refPath: 'child', path: 'placements', label: 'placements' });
 Child.relationship({ ref: 'Inquiry', refPath: 'child', path: 'inquiries', label: 'inquiries' });
 Child.relationship({ ref: 'Family', refPath: 'bookmarkedChildren', path: 'families', label: 'bookmarked by families' });
@@ -212,20 +213,20 @@ Child.schema.post( 'init', function() {
 	this._original = this.toObject();
 });
 
-// Pre Save
-Child.schema.pre('save', function(next) {
+Child.schema.pre('save', function( next ) {
 	'use strict';
 
-	var model = this;
-
 	async.parallel([
-		function(done) { model.setImages(done); }, // Create cloudinary URLs for images sized for various uses
-		function(done) { model.setFullName(done); }, // Create a full name for the child based on their first, middle, and last names
-		function(done) { model.setFileName(done); }, // Create an identifying name for file uploads
-		function(done) { model.setChangeHistory(done); } // Process change history
+		( done ) => { this.setImages( done ); }, // Create cloudinary URLs for images sized for various uses
+		( done ) => { this.setFullName( done ); }, // Create a full name for the child based on their first, middle, and last names
+		( done ) => { this.setFileName( done ); }, // Create an identifying name for file uploads
+		( done ) => { this.updateMustBePlacedWithSiblingsCheckbox( done ); }, // If there are no siblings to be placed with, uncheck the box, otherwise check it
+		( done ) => { this.updateGroupBio( done ); },
+		( done ) => { this.setChangeHistory( done ); } // Process change history
 	], function() {
 
-		console.log('sibling information updated');
+		console.log('child information updated');
+
 		// TODO: Assign a registration number if one isn't assigned
 		// TODO: MAKE RESIGRATION NUMBER NOEDIT.  THIS IS DEPENDENT ON BEING ABLE TO ASSIGN IT ON PRE-SAVE AS IT'S REQUIRED
 		next();
@@ -233,7 +234,13 @@ Child.schema.pre('save', function(next) {
 	});
 });
 
-Child.schema.methods.setImages = function(done) {
+Child.schema.post( 'save', function( next ) {
+
+	// Uses several sub-functions to update all sibling information
+	this.updateSiblingFields();
+});
+
+Child.schema.methods.setImages = function( done ) {
 	'use strict';
 
 	// TODO: Play with lowering quality to 0 and doubling the image size as an optimization technique
@@ -243,11 +250,11 @@ Child.schema.methods.setImages = function(done) {
 	done();
 };
 // TODO: Better handled with a virtual
-Child.schema.methods.setFullName = function(done) {
+Child.schema.methods.setFullName = function( done ) {
 	'use strict';
 
 	// Build the name string for better identification when linking through Relationship field types
-	var firstName   = this.name.first,
+	const firstName   = this.name.first,
 		middleName  = (this.name.middle && this.name.middle.length > 0) ? ' ' + this.name.middle : '',
 		lastName    = (this.name.last && this.name.last.length > 0) ? ' ' + this.name.last : ''
 
@@ -256,7 +263,7 @@ Child.schema.methods.setFullName = function(done) {
 	done();
 };
 // TODO: Better handled with a virtual
-Child.schema.methods.setFileName = function(done) {
+Child.schema.methods.setFileName = function( done ) {
 	'use strict';
 
 	this.fileName = this.registrationNumber + '_' + this.name.first.toLowerCase();
@@ -264,13 +271,97 @@ Child.schema.methods.setFileName = function(done) {
 	done();
 };
 
-Child.schema.methods.setChangeHistory = function setChangeHistory(done) {
+Child.schema.methods.updateMustBePlacedWithSiblingsCheckbox = function( done ) {
 	'use strict';
 
-	var modelBefore	= this._original,
-		model = this;
+	if( this.siblingsToBePlacedWith && this.siblingsToBePlacedWith.length > 0 ) {
+    	this.mustBePlacedWithSiblings = true;
+	} else {
+		this.mustBePlacedWithSiblings = false;
+	}
 
-	var changeHistory = new ChildHistory.model({
+	done();
+}
+
+Child.schema.methods.updateGroupBio = function( done ) {
+	'use strict';
+
+	if( !this.siblingsToBePlacedWith || this.siblingsToBePlacedWith.length === 0 ) {
+		this.groupProfile = this.groupProfile || {};
+		this.groupProfile.part1 = '';
+		this.groupProfile.part2 = '';
+		this.groupProfile.part3 = '';
+	}
+
+	done();
+}
+
+// Update the siblings field of all siblings listed to include the current child
+Child.schema.methods.updateSiblingFields = function() {
+	'use strict';
+
+	const siblingsArrayBeforeSave				= this._original ? this._original.siblings.map( sibling => sibling.toString() ) : [], // this handles the model being saved for the first time
+		  siblingsArrayAfterSave				= this.siblings.map( sibling => sibling.toString() ),
+		  siblingsToBePlacedWithArrayBeforeSave	= this._original ? this._original.siblingsToBePlacedWith.map( sibling => sibling.toString() ) : [],
+		  siblingsToBePlacedWithArrayAfterSave	= this.siblingsToBePlacedWith.map( sibling => sibling.toString() ),
+		  
+		  siblingsBeforeSave					= new Set( siblingsArrayBeforeSave ),
+		  siblingsAfterSave						= new Set( siblingsArrayAfterSave ),
+		  siblingsToBePlacedWithBeforeSave		= new Set( siblingsToBePlacedWithArrayBeforeSave ),
+		  siblingsToBePlacedWithAfterSave		= new Set( siblingsToBePlacedWithArrayAfterSave ),
+
+		  childId								= this._id.toString();
+
+	// get all the siblings who are present before saving but not after (removed siblings)
+	const removedSiblings = siblingsBeforeSave.leftOuterJoin( siblingsAfterSave );
+	// get all the siblings who still remain if we ignore the removed siblings
+	const remainingSiblings = siblingsAfterSave.leftOuterJoin( removedSiblings );
+	// get all the aggregate of all siblings before and after saving
+	const allSiblings = siblingsBeforeSave.union( siblingsAfterSave );
+	// get all the siblings this child must be placed with who are present before saving but not after (removed siblings)
+	const removedSiblingsToBePlacedWith = siblingsToBePlacedWithBeforeSave.leftOuterJoin( siblingsToBePlacedWithAfterSave );
+	// get all the siblings to be placed with who still remain if we ignore the removed siblings to be placed with
+	const remainingSiblingsToBePlacedWith = siblingsToBePlacedWithAfterSave.leftOuterJoin( removedSiblingsToBePlacedWith );
+	// get all the aggregate of all siblings to be placed with before and after saving
+	const allSiblingsToBePlacedWith = siblingsToBePlacedWithBeforeSave.union( siblingsToBePlacedWithAfterSave );
+
+	// add update children list in the siblings and siblingsToBePlacedWith fields
+	async.series([
+		done => { ChildMiddleware.updateMySiblings( siblingsAfterSave, childId, done ); },
+		done => { ChildMiddleware.updateMyRemainingSiblings( remainingSiblings, removedSiblings, childId, done ); },
+		done => {
+			// the first check ensures that a removed sibling doesn't remove all siblings from everyone when the starting sibling count is greater than 3
+			// the second check ensures that if a child has only a single sibling, they will remove eachother
+			if( remainingSiblings.size > 0 || removedSiblings.size === 1 ) {
+				ChildMiddleware.updateMyRemovedSiblings( allSiblings, removedSiblings, childId, done );
+			} else {
+				done();
+			}
+		},
+		done => { ChildMiddleware.updateMySiblingsToBePlacedWith( siblingsToBePlacedWithAfterSave, childId, this.get('groupProfile'), done ); },
+		done => { ChildMiddleware.updateMyRemainingSiblingsToBePlacedWith( remainingSiblingsToBePlacedWith, removedSiblingsToBePlacedWith, childId, done ); },
+		done => {
+			// the first check ensures that a removed sibling doesn't remove all siblings from everyone when the starting siblings to be placed with count is greater than 3
+			// the second check ensures that if a child has only a single sibling, they will remove eachother
+			if( remainingSiblingsToBePlacedWith.size > 0 || removedSiblingsToBePlacedWith.size === 1 ) {
+				ChildMiddleware.updateMyRemovedSiblingsToBePlacedWith( allSiblingsToBePlacedWith, removedSiblingsToBePlacedWith, childId, done );
+			} else {
+				done();
+			}
+		},
+	], function() {
+
+		console.log('sibling information updated');
+	});
+};
+
+Child.schema.methods.setChangeHistory = function( done ) {
+	'use strict';
+
+	const modelBefore	= this._original,
+		model 			= this;
+
+	const changeHistory = new ChildHistory.model({
 		child		: this,
 	    date		: Date.now(),
 	    changes		: '',
@@ -285,7 +376,7 @@ Child.schema.methods.setChangeHistory = function setChangeHistory(done) {
 		console.log('changes: ', changeHistory);
 
 		changeHistory.save(function() {
-			console.log('record created change history saved successfully');
+			console.log('record created - change history saved successfully');
 			done();
 		}, function(err) {
 			console.log(err);
