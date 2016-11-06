@@ -221,6 +221,7 @@ Child.schema.pre('save', function( next ) {
 		( done ) => { this.setFullName( done ); }, // Create a full name for the child based on their first, middle, and last names
 		( done ) => { this.setFileName( done ); }, // Create an identifying name for file uploads
 		( done ) => { this.updateMustBePlacedWithSiblingsCheckbox( done ); }, // If there are no siblings to be placed with, uncheck the box, otherwise check it
+		( done ) => { this.updateGroupBio( done ); },
 		( done ) => { this.setChangeHistory( done ); } // Process change history
 	], function() {
 
@@ -282,6 +283,19 @@ Child.schema.methods.updateMustBePlacedWithSiblingsCheckbox = function( done ) {
 	done();
 }
 
+Child.schema.methods.updateGroupBio = function( done ) {
+	'use strict';
+
+	if( !this.siblingsToBePlacedWith || this.siblingsToBePlacedWith.length === 0 ) {
+		this.groupProfile = this.groupProfile || {};
+		this.groupProfile.part1 = '';
+		this.groupProfile.part2 = '';
+		this.groupProfile.part3 = '';
+	}
+
+	done();
+}
+
 // Update the siblings field of all siblings listed to include the current child
 Child.schema.methods.updateSiblingFields = function() {
 	'use strict';
@@ -324,7 +338,7 @@ Child.schema.methods.updateSiblingFields = function() {
 				done();
 			}
 		},
-		done => { ChildMiddleware.updateMySiblingsToBePlacedWith( siblingsToBePlacedWithAfterSave, childId, done ); },
+		done => { ChildMiddleware.updateMySiblingsToBePlacedWith( siblingsToBePlacedWithAfterSave, childId, this.get('groupProfile'), done ); },
 		done => { ChildMiddleware.updateMyRemainingSiblingsToBePlacedWith( remainingSiblingsToBePlacedWith, removedSiblingsToBePlacedWith, childId, done ); },
 		done => {
 			// the first check ensures that a removed sibling doesn't remove all siblings from everyone when the starting siblings to be placed with count is greater than 3
