@@ -69,6 +69,7 @@ exports = module.exports = function(app) {
 	// Services for ajax calls
 	app.post('/services/get-children-data'			, childService.getGalleryData);
 	app.post('/services/get-child-details'			, childService.getChildDetails);
+	app.post('/services/get-sibling-group-details'	, childService.getSiblingGroupDetails);
 	app.post('/services/add-bookmark'				, familyService.addChildBookmark);
 	app.post('/services/remove-bookmark'			, familyService.removeChildBookmark);
 	app.post('/services/get-gallery-permissions'	, permissionsService.getGalleryPermissions);
