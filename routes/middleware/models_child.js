@@ -4,8 +4,47 @@ var keystone 	        = require( 'keystone' ),
 	async		        = require( 'async' ),
     UtilitiesMiddleware	= require('./utilities');
 
-// TODO: the siblings update functions and siblings to be placed with update functions are nearly identical.  If when fixing issue #57, they can be merged, do so
-//       issue #57: https://github.com/autoboxer/MARE/issues/57
+/* takes in an array of child ids and returns an array of their registration numbers */
+exports.getRegistrationNumbersById = ( idsArray, registrationNumbersArray, done ) => {
+
+    keystone.list( 'Child' ).model.find()
+            .where( '_id' ).in( idsArray )
+            .exec()
+            .then( children => {
+
+                for( child of children ) {
+                    registrationNumbersArray.push( child.get( 'registrationNumber' ) );
+                };
+
+                done();
+            }, err => {
+
+                console.log( err );
+
+				done();
+            });
+};
+
+/* takes in an array of child ids and returns an array of their first names */
+exports.getFirstNamesById = ( idsArray, namesArray, done ) => {
+
+    keystone.list( 'Child' ).model.find()
+            .where( '_id' ).in( idsArray )
+            .exec()
+            .then( children => {
+
+                for( child of children ) {
+                    namesArray.push( child.name.first );
+                };
+
+                done();
+            }, err => {
+
+                console.log( err );
+
+				done();
+            });
+};
 
 /* updates sibling fields for chidren listed as siblings by adding missing entries */
 exports.updateMySiblings = ( mySiblings, childId, done ) => {
@@ -169,17 +208,18 @@ exports.updateMySiblingsToBePlacedWith = ( mySiblings, childId, groupProfile, si
 						child.groupProfile.part3 !== groupProfile.part3 ||
                         child.siblingGroupImage.secure_url !== siblingGroupImage.secure_url ||
                         child.siblingGroupVideo !== siblingGroupVideo ) {
+                        // TODO: possibly simplify this with an Object.assign
                         // update the child to be placed with with the shared bio information
                         child.groupProfile.part1   	= newGroupProfilePart1;
                         child.groupProfile.part2	= newGroupProfilePart2;
                         child.groupProfile.part3	= newGroupProfilePart3;
                         // update the child to be placed with with the group image and video
-                        child.siblingGroupImage.secure_url  = siblingGroupImage.secure_url;
+                        child.siblingGroupImage  = Object.assign( {}, siblingGroupImage );
                         child.siblingGroupVideo     = siblingGroupVideo;
                         // add any new siblings to the child
-						child.siblingsToBePlacedWith.push( ...siblingsToAdd );
+                        child.siblingsToBePlacedWith.push( ...siblingsToAdd );
                         // save the child
-						child.save();
+                        child.save();
 					}
 				});
 
