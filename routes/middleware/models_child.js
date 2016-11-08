@@ -130,7 +130,7 @@ exports.updateMyRemovedSiblings = ( allSiblings, removedSiblings, childId, done 
 };
 
 /* updates sibling fields for chidren listed as siblings by adding missing entries */
-exports.updateMySiblingsToBePlacedWith = ( mySiblings, childId, groupProfile, done ) => {
+exports.updateMySiblingsToBePlacedWith = ( mySiblings, childId, groupProfile, siblingGroupImage, siblingGroupVideo, done ) => {
 
     // create the group profile object based on what was passed in
     const newGroupProfile = groupProfile || {};
@@ -166,11 +166,16 @@ exports.updateMySiblingsToBePlacedWith = ( mySiblings, childId, groupProfile, do
 					if( siblingsToAdd.size > 0 ||
 						child.groupProfile.part1 !== groupProfile.part1 ||
 						child.groupProfile.part2 !== groupProfile.part2 ||
-						child.groupProfile.part3 !== groupProfile.part3 ) {
+						child.groupProfile.part3 !== groupProfile.part3 ||
+                        child.siblingGroupImage.secure_url !== siblingGroupImage.secure_url ||
+                        child.siblingGroupVideo !== siblingGroupVideo ) {
                         // update the child to be placed with with the shared bio information
                         child.groupProfile.part1   	= newGroupProfilePart1;
                         child.groupProfile.part2	= newGroupProfilePart2;
                         child.groupProfile.part3	= newGroupProfilePart3;
+                        // update the child to be placed with with the group image and video
+                        child.siblingGroupImage.secure_url  = siblingGroupImage.secure_url;
+                        child.siblingGroupVideo     = siblingGroupVideo;
                         // add any new siblings to the child
 						child.siblingsToBePlacedWith.push( ...siblingsToAdd );
                         // save the child
