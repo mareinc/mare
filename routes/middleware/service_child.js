@@ -35,7 +35,7 @@ exports.getAllChildren = function getAllChildren(req, res, done) {
 			    		child.registrationDateConverted	= middleware.convertDate(child.registrationDate);
 					});
 
-					locals.children = children;
+					locals.allChildren = children;
 					// execute done function if async is used to continue the flow of execution
 					done()
 
@@ -81,7 +81,7 @@ exports.getUnrestrictedChildren = function getUnrestrictedChildren(req, res, don
 
 					});
 
-					locals.children = children;
+					locals.allChildren = children;
 					// execute done function if async is used to continue the flow of execution
 					done()
 
@@ -148,99 +148,244 @@ exports.getChildByRegistrationNumber = function getChildByRegistrationNumber(req
 /* Expose the child data for the gallery view to the front-end via an API call */
 exports.getGalleryData = function getGalleryData(req, res, next) {
 
-	var locals = res.locals;
-	// Set local variables
-	locals.publicChildrenData = [];
-	locals.userType	= req.user ? req.user.get('userType') : 'anonymous';
-	locals.targetChildren = locals.userType === 'anonymous' || locals.userType === 'site visitor' ? 'unrestricted' : 'all';
-
+	let locals				= res.locals;
+	// create an array to store all children we fetch from the database
+	locals.allChildren		= [];
+	// create sets to store the individual children and sibling groups
+	locals.soloChildren		= new Set();
+	locals.siblingGroups	= new Set(); // format: Set( { ids: Set(), children: []}, ... )
+	// variables to determine what children the user has access to
+	locals.userType			= req.user ? req.user.get('userType') : 'anonymous';
+	locals.targetChildren	= locals.userType === 'anonymous' || locals.userType === 'site visitor' ? 'unrestricted' : 'all';
 
 	async.series([
-		function(done) {
-
-			if(locals.targetChildren === 'all') {
-				exports.getAllChildren(req, res, done);
-			} else {
-				exports.getUnrestrictedChildren(req, res, done);
-			}
+		done => {
+			// fetch the appropriate set of children based on the user's permissions
+			locals.targetChildren === 'all' ? exports.getAllChildren( req, res, done )
+											: exports.getUnrestrictedChildren( req, res, done );
 
 		}
-
+	// once we have the returned children
 	], function() {
-
-		var needsMap = {
-			'none'		: 0,
-			'mild'		: 1,
-			'moderate'	: 2,
-			'severe'	: 3
-		}
-		// Full child records have been fetched and stored on res.locals
-		_.each(locals.children, function(child) {
-			// Create a searchable array for dealing with other family constellation considerations
-			var otherFamilyConstellationConsiderations = _.pluck(child.otherFamilyConstellationConsideration, 'otherFamilyConstellationConsideration');
-
-			var relevantData = {
-	    		name									: child.name.first,
-	    		age										: middleware.getAge(child.birthDate),
-	    		ageConverted							: middleware.convertDate(child.birthDate),
-	    		registrationNumber						: child.registrationNumber,
-	    		registrationDateConverted				: middleware.convertDate(child.registrationDate),
-				gender									: child.gender.gender,
-	    		race									: _.pluck(child.race, 'race'),
-				siblingContactsCount					: child.siblingContacts.length,
-	    		language								: _.pluck(child.language, 'language'),
-	    		legalStatus								: child.legalStatus.legalStatus,
-	    		hasContactWithBiologicalSiblings		: child.hasContactWithSiblings || false,
-	    		hasContactWithBiologicalParents			: child.hasContactWithBirthFamily || false,
-	    		physicalNeeds							: needsMap[child.physicalNeeds],
-	    		emotionalNeeds							: needsMap[child.emotionalNeeds],
-	    		intellectualNeeds						: needsMap[child.intellectualNeeds],
-	    		disabilities							: _.pluck(child.disabilities, 'disability'),
-	    		otherConsiderations						: _.pluck(child.otherConsiderations, 'otherConsideration'),
-	    		recommendedFamilyConstellation			: _.pluck(child.recommendedFamilyConstellation, 'familyConstellation'),
-				requiresSiblings						: otherFamilyConstellationConsiderations.indexOf('multi-child home') !== -1,
-	    		requiresNoSiblings						: otherFamilyConstellationConsiderations.indexOf('childless home') !== -1,
-				requiresYoungerSibling					: otherFamilyConstellationConsiderations.indexOf('requires younger children') !== -1,
-				requiresOlderSibling					: otherFamilyConstellationConsiderations.indexOf('requires older children') !== -1,
-				noPets									: otherFamilyConstellationConsiderations.indexOf('no pets') !== -1,
-				galleryImage							: child.galleryImage,
-	    		detailImage								: child.detailImage,
-	    		hasVideo								: child.video && child.video.length > 0 ? true : false,
-	    		wednesdaysChild							: child.wednesdaysChild,
-	    		numberOfSiblings						: child.siblingContacts.length,
-				updatedAt								: child.updatedAt
-	    	};
-
-	    	locals.publicChildrenData.push(relevantData);
-
-		});
-
-		res.send(locals.publicChildrenData);
-
+		// assign each child to the solo child set or the sibling group set
+		exports.assignChildren( locals.allChildren, locals );
+		// map out the relevant information for solo children
+		exports.getRelevantChildInformation( [ ...locals.soloChildren ], locals );
+		// map out the relevant information for sibling groups
+		exports.getRelevantSiblingGroupInformation( [ ...locals.siblingGroups], locals );
+		// return the child and group information
+		res.send( { soloChildren: locals.soloChildrenToReturn, siblingGroups: locals.siblingGroupsToReturn } );
 	});
-};
+}
 
-// TODO: include an error message for this and other functions in middleware if applicable
-exports.getChildDetails = function(req, res, next) {
+exports.assignChildren = ( children, locals ) => {
+	// loop through each child records to determine whether they belong to a sibling group or by themselves
+	for( let child of children ) {
+		// if the child is solo
+		if( !child.mustBePlacedWithSiblings ) {
+			// add the child to the solo children set
+			locals.soloChildren.add( child );
+		// if the child is part of a group
+		} else {
+			// create a variable to store whether a matching group exists
+			let hasMatch = false;
+			// get the child's id
+			const childId = child.get( '_id' ).toString();
+			// loop through the existing sibling groups
+			for( let group of locals.siblingGroups ) {
+				// if the child's id is recognized as part of an existing group
+				if( group.ids.has( childId ) ) {
+					// note that we found a matching group
+					hasMatch = true;
+					// add the child object to that group
+					group.children.push( child );
+				}
+			}
+			// if the child isn't part of an existing group
+			if( !hasMatch ) {
+				// store the childs siblings to be placed with as an array of strings
+                const siblingIdsArray = child.siblingsToBePlacedWith ? child.siblingsToBePlacedWith.map( sibling => sibling.toString() ) : [];
+				// create a set including the current child's id, as well as the ids of the siblings they must be placed with
+				const ids = new Set( [ childId, ...siblingIdsArray ] );
+				// create an array with the current child
+				const children = [ child ];
+				// create a new object with the group information
+				const newChildGroup = { ids, children };
+				// add the new sibling group object to the set of groups
+				locals.siblingGroups.add( newChildGroup );
+			}
+		}
+	}
+}
+
+exports.getRelevantChildInformation = ( children, locals ) => {
+	// create a mapping for the emotional, intellectual, and physical needs
+	const needsMap = {
+		'none'		: 0,
+		'mild'		: 1,
+		'moderate'	: 2,
+		'severe'	: 3
+	};
+
+	locals.soloChildrenToReturn = children.map( child => {
+		// Create a searchable array for dealing with other family constellation considerations
+		var otherFamilyConstellationConsiderations = _.pluck(child.otherFamilyConstellationConsideration, 'otherFamilyConstellationConsideration');
+
+		return {
+			name									: child.name.first,
+			age										: middleware.getAge(child.birthDate),
+			ageConverted							: middleware.convertDate(child.birthDate),
+			registrationNumber						: child.registrationNumber,
+			registrationDateConverted				: middleware.convertDate(child.registrationDate),
+			gender									: child.gender.gender,
+			race									: _.pluck(child.race, 'race'),
+			siblingContactsCount					: child.siblingsToBePlacedWith.length,
+			language								: _.pluck(child.language, 'language'),
+			legalStatus								: child.legalStatus.legalStatus,
+			hasContactWithBiologicalSiblings		: child.hasContactWithSiblings || false,
+			hasContactWithBiologicalParents			: child.hasContactWithBirthFamily || false,
+			physicalNeeds							: needsMap[child.physicalNeeds],
+			emotionalNeeds							: needsMap[child.emotionalNeeds],
+			intellectualNeeds						: needsMap[child.intellectualNeeds],
+			disabilities							: _.pluck(child.disabilities, 'disability'),
+			otherConsiderations						: _.pluck(child.otherConsiderations, 'otherConsideration'),
+			recommendedFamilyConstellation			: _.pluck(child.recommendedFamilyConstellation, 'familyConstellation'),
+			requiresSiblings						: otherFamilyConstellationConsiderations.indexOf('multi-child home') !== -1,
+			requiresNoSiblings						: otherFamilyConstellationConsiderations.indexOf('childless home') !== -1,
+			requiresYoungerSibling					: otherFamilyConstellationConsiderations.indexOf('requires younger children') !== -1,
+			requiresOlderSibling					: otherFamilyConstellationConsiderations.indexOf('requires older children') !== -1,
+			noPets									: otherFamilyConstellationConsiderations.indexOf('no pets') !== -1,
+			galleryImage							: child.galleryImage,
+			detailImage								: child.detailImage,
+			hasVideo								: child.video && child.video.length > 0 ? true : false,
+			wednesdaysChild							: child.wednesdaysChild,
+			numberOfSiblings						: child.siblings.length,
+			updatedAt								: child.updatedAt
+		};
+	});
+}
+
+exports.getRelevantSiblingGroupInformation = ( siblingGroups, locals ) => {
+	// create a mapping for the emotional, intellectual, and physical needs
+	const needsMap = {
+		'none'		: 0,
+		'mild'		: 1,
+		'moderate'	: 2,
+		'severe'	: 3
+	};
+
+	locals.siblingGroupsToReturn = siblingGroups.map( group => {
+		// cache the children array from the group for faster lookups
+		const children = group.children;
+		// Create a searchable array for dealing with other family constellation considerations
+		// map will return an array of arrays, one from each child, flatten will turn them into a single array
+		const otherFamilyConstellationConsiderations = _.flatten( children.map( child => {
+			// pulls all values listed into an array and returns it for the current child
+			return _.pluck( child.otherFamilyConstellationConsideration, 'otherFamilyConstellationConsideration' );
+		}));
+
+		const namesArray				= children.map( child => child.name.first );
+		const agesArray					= children.map( child => middleware.getAge( child.birthDate ) );
+		const registrationNumbersArray	= children.map( child => child.registrationNumber );
+		const legalStatusesArray		= _.uniq( children.map( child => child.legalStatus.legalStatus ) );
+
+		return {
+			names									: namesArray,
+			namesString								: middleware.getArrayAsList( namesArray ),
+			ages									: agesArray,
+			agesString								: middleware.getArrayAsList( agesArray ),
+			agesConverted							: children.map( child => middleware.convertDate( child.birthDate ) ),
+			registrationNumbers						: registrationNumbersArray,
+			registrationNumbersString				: middleware.getArrayAsList( registrationNumbersArray ),
+			registrationDatesConverted				: children.map( child => middleware.convertDate( child.registrationDate ) ),
+			genders									: _.uniq( children.map( child => child.gender.gender ) ),
+			races									: _.uniq( _.flatten( children.map( child => _.pluck(child.race, 'race') ) ) ),
+			siblingContactsCount					: children[0].siblingsToBePlacedWith.length,		
+			languages								: _.uniq( _.flatten( children.map( child => _.pluck(child.language, 'language') ) ) ),
+			legalStatuses							: legalStatusesArray,
+			legalStatusesString						: middleware.getArrayAsList( legalStatusesArray ),
+			hasContactWithBiologicalSiblings		: _.uniq( children.map( child => child.hasContactWithSiblings || false ) ),
+			hasContactWithBiologicalParents			: _.uniq( children.map( child => child.hasContactWithBirthFamily || false ) ),
+			physicalNeeds							: _.uniq( children.map( child => needsMap[child.physicalNeeds] ) ),
+			emotionalNeeds							: _.uniq( children.map( child => needsMap[child.emotionalNeeds] ) ),
+			intellectualNeeds						: _.uniq( children.map( child => needsMap[child.intellectualNeeds] ) ),
+			disabilities							: _.uniq( _.flatten( children.map( child => _.pluck(child.disabilities, 'disability') ) ) ),
+			otherConsiderations						: _.uniq( _.flatten( children.map( child => _.pluck(child.otherConsiderations, 'otherConsideration') ) ) ),
+			recommendedFamilyConstellations			: _.uniq( _.flatten( children.map( child => _.pluck(child.recommendedFamilyConstellation, 'familyConstellation') ) ) ),
+			requiresSiblings						: _.uniq( children.map( child => otherFamilyConstellationConsiderations.indexOf('multi-child home') !== -1 ) ),
+			requiresNoSiblings						: _.uniq( children.map( child => otherFamilyConstellationConsiderations.indexOf('childless home') !== -1 ) ),
+			requiresYoungerSibling					: _.uniq( children.map( child => otherFamilyConstellationConsiderations.indexOf('requires younger children') !== -1 ) ),
+			requiresOlderSibling					: _.uniq( children.map( child => otherFamilyConstellationConsiderations.indexOf('requires older children') !== -1 ) ),
+			noPets									: _.uniq( children.map( child => otherFamilyConstellationConsiderations.indexOf('no pets') !== -1 ) ),
+			galleryImage							: children[0].siblingGroupGalleryImage,
+			detailImage								: children[0].siblingGroupDetailImage,
+			hasVideo								: _.uniq( children.map( child => child.siblingGroupVideo && child.siblingGroupVideo.length > 0 ? true : false ) ), // Need to add a group video
+			wednesdaysChild							: _.uniq( children.map( child => child.wednesdaysChild ) ),
+			numberOfSiblings						: _.uniq( children.map( child => child.siblings.length ) ), // TODO: Ask Lisa if the number of siblings between children can vary (think half siblings)
+			updatedAt								: _.uniq( children.map( child => child.updatedAt ) )
+		};
+	});
+}
+
+exports.getChildDetails = ( req, res, next ) => {
 
 	var childData = req.body,
 		registrationNumber = childData['registrationNumber'];
 
 	/* TODO: Fetch only the needed fields instead of grabbing everything */
 	Child.model.findOne()
-        .where('registrationNumber', registrationNumber)
-        .populate('gender')
+        .where( 'registrationNumber', registrationNumber )
+        .populate( 'gender' )
         .exec()
-        .then(function (child) {
+        .then( child => {
 
         	var relevantData = {
         		profilePart1		: child.profile.part1,
         		profilePart2		: child.profile.part2,
         		profilePart3		: child.profile.part3,
-        		hasImage			: _.isEmpty(child.image) && child.image.url.length > 0,
-        		video				: child.video && child.video.length > 0 ? child.video.replace('watch?v=', 'embed/') : undefined
+        		hasImage			: _.isEmpty( child.image ) && child.image.url.length > 0,
+        		video				: child.video && child.video.length > 0 ? child.video.replace( 'watch?v=', 'embed/' ) : undefined
         	};
 
-        	res.send(relevantData);
-        });
+        	res.send( relevantData );
+
+        }, function( err ) {
+
+			console.log( err );
+
+			done();
+		});
 };
+
+exports.getSiblingGroupDetails = ( req, res, next ) => {
+	// the group data is stored in each child record, so we can use a single child to populate everything
+	var childData = req.body,
+		registrationNumber = childData[ 'registrationNumber' ];
+
+	/* TODO: Fetch only the needed fields instead of grabbing everything */
+	Child.model.findOne()
+        .where( 'registrationNumber', registrationNumber )
+        .populate( 'gender' )
+        .exec()
+        .then( child => {
+
+        	var relevantData = {
+        		profilePart1		: child.groupProfile.part1,
+        		profilePart2		: child.groupProfile.part2,
+        		profilePart3		: child.groupProfile.part3,
+        		hasImage			: _.isEmpty( child.siblingGroupImage ) && child.siblingGroupImage.url.length > 0,
+        		video				: child.siblingGroupVideo && child.siblingGroupVideo.length > 0 ? child.siblingGroupVideo.replace('watch?v=', 'embed/') : undefined
+        	};
+
+        	res.send( relevantData );
+
+        }, function( err ) {
+
+			console.log( err );
+
+			done();
+		});
+};
+
+// update the images with the no image group photo
+// ASK LISA IF WE WANT A GROUP PHOTO FIELD
