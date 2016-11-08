@@ -46,7 +46,8 @@ Child.add('Display Options', {
 	registrationNumber: { type: Number, label: 'registration number', format: false, required: true, initial: true },
 	registrationDate: { type: Types.Date, label: 'registration date', format: 'MM/DD/YYYY', required: true, initial: true },
 
-	video: { type: Types.Url, label: 'Video' },
+	video: { type: Types.Url, label: 'video', dependsOn: { mustBePlacedWithSiblings: false } },
+	siblingGroupVideo: { type: Types.Url, label: 'sibling group video', dependsOn: { mustBePlacedWithSiblings: true } },
 
 	name: {
 		first: { type: Types.Text, label: 'first name', required: true, initial: true },
@@ -133,10 +134,13 @@ Child.add('Display Options', {
 	photolistingPageNumber: { type: Number, label: 'photolisting page', format: false, initial: true },
 	previousPhotolistingPageNumber: { type: Number, label: 'previous photolisting page', format: false, initial: true },
 
-	image: { type: Types.CloudinaryImage, folder: 'children/', selectPrefix: 'children/', publicID: 'fileName', autoCleanup: true },
-	galleryImage: {type: Types.Url, hidden: true },
-	detailImage: {type: Types.Url, hidden: true },
-	extranetUrl: { type: Types.Url, label: 'extranet and related profile url', initial: true } // Since this is redundant as this just points the the url where the photo exists (the child's page), we may hide this field.  This must be kept in as it will help us track down the child information in the old system in the event of an issue.
+	image: { type: Types.CloudinaryImage, label: 'image', folder: 'children/', selectPrefix: 'children/', publicID: 'fileName', dependsOn: { mustBePlacedWithSiblings: false }, autoCleanup: true },
+	galleryImage: { type: Types.Url, hidden: true },
+	detailImage: { type: Types.Url, hidden: true },
+	siblingGroupImage: { type: Types.CloudinaryImage, label: 'sibling group image', folder: 'sibling-groups/', selectPrefix: 'sibling-groups/', publicID: 'fileName', dependsOn: { mustBePlacedWithSiblings: true }, autoCleanup: true },
+	siblingGroupGalleryImage: { type: Types.Url, hidden: true },
+	siblingGroupDetailImage: { type: Types.Url, hidden: true },
+	extranetUrl: { type: Types.Url, label: 'extranet and related profile url', initial: true } // TODO: Since this is redundant as this just points the the url where the photo exists (the child's page), we may hide this field.  This must be kept in as it will help us track down the child information in the old system in the event of an issue.
 
 }, 'Recruitment Options', {
 
@@ -235,7 +239,6 @@ Child.schema.pre('save', function( next ) {
 });
 
 Child.schema.post( 'save', function( next ) {
-
 	// Uses several sub-functions to update all sibling information
 	this.updateSiblingFields();
 });
@@ -244,8 +247,11 @@ Child.schema.methods.setImages = function( done ) {
 	'use strict';
 
 	// TODO: Play with lowering quality to 0 and doubling the image size as an optimization technique
-	this.galleryImage = this._.image.thumbnail(430,430,{ quality: 60 });
-	this.detailImage = this._.image.thumbnail(200,200,{ quality: 60 });
+	this.galleryImage = this._.image.thumbnail( 430, 430, { quality: 60 } );
+	this.detailImage = this._.image.thumbnail( 200, 200, { quality: 60 } );
+
+	this.siblingGroupGalleryImage = this._.image.thumbnail( 430, 430, { quality: 60 } );
+	this.siblingGroupDetailImage = this._.image.thumbnail( 200, 200, { quality: 60 } );
 
 	done();
 };
@@ -255,8 +261,8 @@ Child.schema.methods.setFullName = function( done ) {
 
 	// Build the name string for better identification when linking through Relationship field types
 	const firstName   = this.name.first,
-		middleName  = (this.name.middle && this.name.middle.length > 0) ? ' ' + this.name.middle : '',
-		lastName    = (this.name.last && this.name.last.length > 0) ? ' ' + this.name.last : ''
+		  middleName  = (this.name.middle && this.name.middle.length > 0) ? ' ' + this.name.middle : '',
+		  lastName    = (this.name.last && this.name.last.length > 0) ? ' ' + this.name.last : ''
 
 	this.name.full = firstName + middleName + lastName;
 
@@ -338,7 +344,7 @@ Child.schema.methods.updateSiblingFields = function() {
 				done();
 			}
 		},
-		done => { ChildMiddleware.updateMySiblingsToBePlacedWith( siblingsToBePlacedWithAfterSave, childId, this.get('groupProfile'), done ); },
+		done => { ChildMiddleware.updateMySiblingsToBePlacedWith( siblingsToBePlacedWithAfterSave, childId, this.get( 'groupProfile' ), this.get( 'siblingGroupImage' ), this.get( 'siblingGroupVideo' ), done ); },
 		done => { ChildMiddleware.updateMyRemainingSiblingsToBePlacedWith( remainingSiblingsToBePlacedWith, removedSiblingsToBePlacedWith, childId, done ); },
 		done => {
 			// the first check ensures that a removed sibling doesn't remove all siblings from everyone when the starting siblings to be placed with count is greater than 3
@@ -359,13 +365,13 @@ Child.schema.methods.setChangeHistory = function( done ) {
 	'use strict';
 
 	const modelBefore	= this._original,
-		model 			= this;
+		  model 		= this;
 
 	const changeHistory = new ChildHistory.model({
-		child		: this,
-	    date		: Date.now(),
-	    changes		: '',
-	    modifiedBy	: this.updatedBy
+		  child			: this,
+	      date			: Date.now(),
+	      changes		: '',
+	      modifiedBy	: this.updatedBy
 	});
 
 	// if the model is being saved for the first time, mark only that fact in an initial change history record
@@ -411,6 +417,12 @@ Child.schema.methods.setChangeHistory = function( done ) {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											name: 'video',
 											label: 'video',
+											type: 'string' }, model, modelBefore, changeHistory, done);
+			},
+			function(done) {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											name: 'siblingGroupVideo',
+											label: 'sibling group video',
 											type: 'string' }, model, modelBefore, changeHistory, done);
 			},
 			function(done) {
@@ -801,6 +813,13 @@ Child.schema.methods.setChangeHistory = function( done ) {
 											parent: 'image',
 											name: 'secure_url',
 											label: 'image',
+											type: 'string' }, model, modelBefore, changeHistory, done);
+			},
+			function(done) {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											parent: 'siblingGroupImage',
+											name: 'secure_url',
+											label: 'sibling group image',
 											type: 'string' }, model, modelBefore, changeHistory, done);
 			},
 			function(done) {
