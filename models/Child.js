@@ -137,7 +137,7 @@ Child.add('Display Options', {
 	image: { type: Types.CloudinaryImage, label: 'image', folder: 'children/', selectPrefix: 'children/', publicID: 'fileName', dependsOn: { mustBePlacedWithSiblings: false }, autoCleanup: true },
 	galleryImage: { type: Types.Url, hidden: true },
 	detailImage: { type: Types.Url, hidden: true },
-	siblingGroupImage: { type: Types.CloudinaryImage, label: 'sibling group image', folder: 'sibling-groups/', selectPrefix: 'sibling-groups/', publicID: 'fileName', dependsOn: { mustBePlacedWithSiblings: true }, autoCleanup: true },
+	siblingGroupImage: { type: Types.CloudinaryImage, label: 'sibling group image', folder: 'sibling-groups/', selectPrefix: 'sibling-groups/', publicID: 'siblingGroupFileName', dependsOn: { mustBePlacedWithSiblings: true }, autoCleanup: true },
 	siblingGroupGalleryImage: { type: Types.Url, hidden: true },
 	siblingGroupDetailImage: { type: Types.Url, hidden: true },
 	extranetUrl: { type: Types.Url, label: 'extranet and related profile url', initial: true } // TODO: Since this is redundant as this just points the the url where the photo exists (the child's page), we may hide this field.  This must be kept in as it will help us track down the child information in the old system in the event of an issue.
@@ -196,7 +196,8 @@ Child.add('Display Options', {
 }, {
 
 	// system field to store an appropriate file prefix
-	fileName: { type: Types.Text, hidden: true }
+	fileName: { type: Types.Text, hidden: true },
+	siblingGroupFileName: { type: Types.Text, hidden: true }
 
 });
 
@@ -224,6 +225,7 @@ Child.schema.pre('save', function( next ) {
 		( done ) => { this.setImages( done ); }, // Create cloudinary URLs for images sized for various uses
 		( done ) => { this.setFullName( done ); }, // Create a full name for the child based on their first, middle, and last names
 		( done ) => { this.setFileName( done ); }, // Create an identifying name for file uploads
+		( done ) => { this.setSiblingGroupFileName( done ); }, // Create an identifying name for sibling group file uploads
 		( done ) => { this.updateMustBePlacedWithSiblingsCheckbox( done ); }, // If there are no siblings to be placed with, uncheck the box, otherwise check it
 		( done ) => { this.updateGroupBio( done ); },
 		( done ) => { this.setChangeHistory( done ); } // Process change history
@@ -275,6 +277,29 @@ Child.schema.methods.setFileName = function( done ) {
 	this.fileName = this.registrationNumber + '_' + this.name.first.toLowerCase();
 
 	done();
+};
+
+Child.schema.methods.setSiblingGroupFileName = function( done ) {
+	'use strict';
+
+	let idsArray = [ ...this.get( 'siblingsToBePlacedWith' ) ];
+	idsArray.push( this.get( '_id' ) );
+
+	let registrationNumbersArray = [];
+	let namesArray = [];
+
+	async.parallel([
+		done => { ChildMiddleware.getRegistrationNumbersById( idsArray, registrationNumbersArray, done ); },
+		done => { ChildMiddleware.getFirstNamesById( idsArray, namesArray, done ); }
+	], () => {
+
+		const idsString = registrationNumbersArray.join( '_' );
+		const namesString = namesArray.join( '_' );
+
+		this.siblingGroupFileName = `${ idsString }_${ namesString }`;
+
+		done();
+	});
 };
 
 Child.schema.methods.updateMustBePlacedWithSiblingsCheckbox = function( done ) {
@@ -354,7 +379,7 @@ Child.schema.methods.updateSiblingFields = function() {
 			} else {
 				done();
 			}
-		},
+		}
 	], function() {
 
 		console.log('sibling information updated');
