@@ -252,8 +252,8 @@ Child.schema.methods.setImages = function( done ) {
 	this.galleryImage = this._.image.thumbnail( 430, 430, { quality: 60 } );
 	this.detailImage = this._.image.thumbnail( 200, 200, { quality: 60 } );
 
-	this.siblingGroupGalleryImage = this._.image.thumbnail( 430, 430, { quality: 60 } );
-	this.siblingGroupDetailImage = this._.image.thumbnail( 200, 200, { quality: 60 } );
+	this.siblingGroupGalleryImage = this._.siblingGroupImage.thumbnail( 240, 144, { quality: 60 } );
+	this.siblingGroupDetailImage = this._.siblingGroupImage.thumbnail( 120, 72, { quality: 60 } );
 
 	done();
 };
