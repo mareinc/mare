@@ -220,6 +220,26 @@ exports.convertDate = function convertDate(date) {
 	return new Date(date).getTime();
 };
 
+/* Converts an array to a string like 'element1, element2, and element3' */
+exports.getArrayAsList = function getArrayAsList( array ) {
+	// store the length of the array to determine the separator word
+	const arrayLength = array.length;
+	// creates a variable for the delimeter value
+	let delimeter = arrayLength > 2 ? ', and ' : ' and ';
+	// convert the array to a string separated by commas
+	let returnString = array.join(',');
+	// findn the index of the last comma
+	const lastComma = returnString.lastIndexOf(',');
+	// replace the last comma
+	if(lastComma !== -1 ) {
+		returnString = returnString.substring( 0, lastComma ) + delimeter + returnString.substring( lastComma + 1 );
+	}
+	// add space after all remaining commas
+	returnString = returnString.replace(',', ', ');
+
+	return returnString;
+}
+
 exports.charge = function(req, res) {
 	// var stripeToken = req.body.stripeToken;
     // var amount = 1000;
