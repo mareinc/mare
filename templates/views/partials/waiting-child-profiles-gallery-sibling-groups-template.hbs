@@ -1,0 +1,39 @@
+<script id="gallery-sibling-groups-template" type="text/x-handlebars-template">
+
+	<div id="sibling-groups-grid" class="profiles">
+		\{{#each []}}
+			<div class="media-box sibling-group-media-box" data-registration-numbers="\{{ registrationNumbers }}">
+				<div class="profile">
+					<div class="media-box-image">
+						<div data-thumbnail=\{{ galleryImage }}></div>
+					</div>
+
+					<div class="media-box-content details">
+						<div class="name">{{ namesString }}</div>
+						<div class="age">Ages \{{ agesString }}</div>
+						<div class="legal-status">Status: \{{ legalStatusesString }}</div>
+						<div class="icons">
+						\{{#if hasVideo}}
+							<img class="badge" src="/dist/img/video-icon.png">
+						\{{/if}}
+						\{{#if wednesdaysChild}}
+							<img class="badge" src="/dist/img/wednesdays-child-icon.png">
+						\{{/if}}
+						</div>
+						<div class="view-profile">
+							<span>View Profile</span>
+							<span class="icon-double-arrow-right">&gt;&gt;</span>
+						</div>
+					\{{#if ../canBookmarkChildren}}
+						<span class="bookmark \{{#if isBookmarked}}bookmark--active\{{/if}}">
+							<i class="fa \{{#if isBookmarked}} fa-minus-square-o bookmark__icon--active \{{else}} fa-plus-square-o \{{/if}} bookmark__icon "></i>
+							<span class="bookmark__text">Bookmark</span>
+						</span>
+					\{{/if}}
+					</div>
+				</div>
+			</div>
+		\{{/each}}
+	</div>
+
+</script>
