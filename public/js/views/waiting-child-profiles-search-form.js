@@ -110,22 +110,22 @@
 
 			var formFields = this.formFields;
 
-			if(formFields.genders.length === 0) { delete formFields.genders; }
-			if(formFields.races.length === 0) { delete formFields.races; }
-			if(formFields.primaryLanguages.length === 0) { delete formFields.primaryLanguages }
-			if(formFields.contactWithBiologicalSiblings !== false) { delete formFields.contactWithBiologicalSiblings; }
-			if(formFields.contactWithBiologicalParents !== false) { delete formFields.contactWithBiologicalParents; }
-			if(!formFields.videoOnly) { delete formFields.videoOnly; }
-			if(!formFields.legallyFreeOnly) { delete formFields.legallyFreeOnly; }
-			if(formFields.updatedWithin === '') { delete formFields.updatedWithin; }
-			if(formFields.maximumPhysicalNeeds === 3) { delete formFields.maximumPhysicalNeeds; }
-			if(formFields.maximumEmotionalNeeds === 3) { delete formFields.maximumEmotionalNeeds; }
-			if(formFields.maximumIntellectualNeeds === 3) { delete formFields.maximumIntellectualNeeds; }
-			if(formFields.disabilities.length === 0) { delete formFields.disabilities; }
-			if(formFields.otherConsiderations.length === 0) { delete formFields.otherConsiderations; }
-			if(!formFields.familyConstellation) { delete formFields.familyConstellation; }
-			if(formFields.gendersOfChildrenInHome.length === 0) { delete formFields.gendersOfChildrenInHome; }
-			if(!formFields.petsInHome) { delete formFields.petsInHome; }
+			if(formFields.genders.length === 0)						{ delete formFields.genders; }
+			if(formFields.races.length === 0)						{ delete formFields.races; }
+			if(formFields.primaryLanguages.length === 0)			{ delete formFields.primaryLanguages }
+			if(formFields.contactWithBiologicalSiblings !== false)	{ delete formFields.contactWithBiologicalSiblings; }
+			if(formFields.contactWithBiologicalParents !== false)	{ delete formFields.contactWithBiologicalParents; }
+			if(!formFields.videoOnly)								{ delete formFields.videoOnly; }
+			if(!formFields.legallyFreeOnly)							{ delete formFields.legallyFreeOnly; }
+			if(formFields.updatedWithin === '')						{ delete formFields.updatedWithin; }
+			if(formFields.maximumPhysicalNeeds === 3)				{ delete formFields.maximumPhysicalNeeds; }
+			if(formFields.maximumEmotionalNeeds === 3)				{ delete formFields.maximumEmotionalNeeds; }
+			if(formFields.maximumIntellectualNeeds === 3)			{ delete formFields.maximumIntellectualNeeds; }
+			if(formFields.disabilities.length === 0)				{ delete formFields.disabilities; }
+			if(formFields.otherConsiderations.length === 0)			{ delete formFields.otherConsiderations; }
+			if(!formFields.familyConstellation)						{ delete formFields.familyConstellation; }
+			if(formFields.gendersOfChildrenInHome.length === 0)		{ delete formFields.gendersOfChildrenInHome; }
+			if(!formFields.petsInHome)								{ delete formFields.petsInHome; }
 
 		},
 
