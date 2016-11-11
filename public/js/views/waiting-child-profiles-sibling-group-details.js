@@ -71,79 +71,80 @@
 			siblingGroupModel.set('previousIndex', previousIndex);
 			siblingGroupModel.set('nextIndex', nextIndex);
 		},
-// TODO
-		getSiblingGroupByRegistrationNumber: function getSiblingGroupByRegistrationNumber(registrationNumber) {
+
+		getSiblingGroupByRegistrationNumber: function getSiblingGroupByRegistrationNumber( registrationNumber ) {
 			// Find the child with the matching registration number and store it in siblingGroupModel
-			var siblingGroupModel = this.collection.find(function(siblingGroup) {
-				return siblingGroup.get('registrationNumber') === registrationNumber;
+			var siblingGroupModel = this.collection.find( function( siblingGroup ) {
+				return siblingGroup.get( 'registrationNumbers' ).indexOf( registrationNumber ) !== -1;
 			});
 			// Return the matching child model
 			return siblingGroupModel;
 		},
 
-		getSiblingGroupByIndex: function getSiblingGroupByIndex(index) {
+		getSiblingGroupByIndex: function getSiblingGroupByIndex( index ) {
 			// Fetch the child at the specified index in the children collection
-			return this.collection.at(index);
+			return this.collection.at( index );
 
 		},
 
 		/* When a child card is clicked, display detailed information for that child in a modal window */
-		handleGalleryClick: function handleGalleryClick(event) {
+		handleGalleryClick: function handleGalleryClick( event ) {
 			// Store a reference to this for insde callbacks where context is lost
 			var view = this;
 
-			var selectedSiblingGroup	= $(event.currentTarget),
-				registrationNumber		= selectedSiblingGroup.data('registration-number'),
-				siblingGroupModel		= this.getSiblingGroupByRegistrationNumber(registrationNumber);
+			var selectedSiblingGroup	= $( event.currentTarget ),
+				registrationNumbers		= selectedSiblingGroup.data( 'registration-numbers' ),
+				firstRegistrationNumber	= parseInt( registrationNumbers.split( ',' )[ 0 ], 10 ),
+				siblingGroupModel		= this.getSiblingGroupByRegistrationNumber( firstRegistrationNumber );
 			// Open the modal immediately with a loading indicator to keep the site feeling snappy
 			this.openModal();
 			// Fetch the child details information
-			this.getDetails(siblingGroupModel);
+			this.getDetails( siblingGroupModel, firstRegistrationNumber );
 		},
 
-		handleNavClick: function handleNavClick(event) {
+		handleNavClick: function handleNavClick( event ) {
 			// This event is called from a click event so the view context is lost, we need to explicitly call all functions
 			mare.views.siblingGroupDetails.unbindEvents();
 
-			var selectedSiblingGroup = $(event.currentTarget),
-				index = selectedSiblingGroup.data('child-index');
+			var selectedSiblingGroup = $( event.currentTarget ),
+				index = selectedSiblingGroup.data( 'child-index' );
 
-			var siblingGroup = mare.views.siblingGroupDetails.getSiblingGroupByIndex(index);
+			var siblingGroup = mare.views.siblingGroupDetails.getSiblingGroupByIndex( index );
 			// Fade displayed child details if any are shown, and display the loading indicator
-			$('.modal-container__contents').fadeOut(function() {
-				$('.modal-container__loading').fadeIn(function() {
-					mare.views.siblingGroupDetails.getDetails(siblingGroup);
+			$('.modal-container__contents').fadeOut( function() {
+				$('.modal-container__loading').fadeIn( function() {
+					mare.views.siblingGroupDetails.getDetails( siblingGroup );
 				});
 			});
 		},
 
 		/* Make a call to fetch data for the current child to show detailed information for */
-		getDetails: function getDetails(siblingGroupModel) {
+		getDetails: function getDetails( siblingGroupModel, targetRegistrationNumber ) {
 			// Store a reference to this for insde callbacks where context is lost
 			var view = this;
 			// Submit a request to the service layer to fetch child data if we don't have it
-			if(!siblingGroupModel.get('hasDetails')) {
+			if( !siblingGroupModel.get( 'hasDetails' ) ) {
 				$.ajax({
 					dataType: 'json',
 					url: '/services/get-sibling-group-details',
 					type: 'POST',
 					data: {
-						registrationNumber: siblingGroupModel.get('registrationNumber')
+						registrationNumber: targetRegistrationNumber
 					}
-				}).done(function(siblingGroupDetails) {
+				}).done( function( siblingGroupDetails ) {
 					// Append the new fields to the child model and set a flag so fetch the same child information a second time
-					siblingGroupModel.set(siblingGroupDetails);
-					siblingGroupModel.set('hasDetails', true);
+					siblingGroupModel.set( siblingGroupDetails );
+					siblingGroupModel.set( 'hasDetails', true );
 					// Emit an event when we have new child details to render
-					view.trigger('sibling-group-details-loaded', siblingGroupModel);
+					view.trigger( 'sibling-group-details-loaded', siblingGroupModel );
 
-				}).fail(function(err) {
+				}).fail( function( err ) {
 					// TODO: Show an error message to the user
-					console.log(err);
+					console.log( err );
 				});
 			} else {
 				// We already have the child details but still want to show the child so announce that we have the child details
-				view.trigger('sibling-group-details-loaded', siblingGroupModel);
+				view.trigger( 'sibling-group-details-loaded', siblingGroupModel );
 			}
 		},
 
