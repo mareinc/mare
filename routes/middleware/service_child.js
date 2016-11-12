@@ -4,81 +4,81 @@ var keystone		= require('keystone'),
 	middleware		= require('./middleware'),
 	Child			= keystone.list('Child');
 	familyService	= require('./service_family'),
+// TODO: combine the below two functions, the only difference in the filter in the find()
+exports.getAllChildren = ( req, res, done ) => {
 
-exports.getAllChildren = function getAllChildren(req, res, done) {
-
-	var locals = res.locals;
+	let locals = res.locals;
 
 	Child.model.find()
-				.populate('gender')
-				.populate('race')
-				.populate('language')
-				.populate('disabilities')
-				.populate('otherConsiderations')
-				.populate('recommendedFamilyConstellation')
-				.populate('otherFamilyConstellationConsideration')
-				.populate('status')
-				.populate('legalStatus')
+				.populate( 'gender' )
+				.populate( 'race' )
+				.populate( 'language' )
+				.populate( 'disabilities' )
+				.populate( 'otherConsiderations' )
+				.populate( 'recommendedFamilyConstellation' )
+				.populate( 'otherFamilyConstellationConsideration' )
+				.populate( 'status' )
+				.populate( 'legalStatus' )
 				.exec()
-				.then(function (children) {
+				.then( children => {
 					// TODO: This filter should happen in a .where() above
 					// Filter out all children who don't have a status of 'active'
-					children = _.filter(children, function(child) {
-						return child.status.childStatus === 'active'
+					children = _.filter( children, child => {
+						return child.status.childStatus === 'active';
 					});
 
-					_.each(children, function(child) {
+					_.each( children, child => {
 						// adjust the image to the blank male/female image if needed
-						exports.setNoChildImage(req, res, child);
+						exports.setNoChildImage( req, res, child );
 						// set extra information needed for rendering the child to the page
-						child.age						= middleware.getAge(child.birthDate);
-			    		child.ageConverted				= middleware.convertDate(child.birthDate);
-			    		child.registrationDateConverted	= middleware.convertDate(child.registrationDate);
+						child.age						= middleware.getAge( child.birthDate );
+			    		child.ageConverted				= middleware.convertDate( child.birthDate );
+			    		child.registrationDateConverted	= middleware.convertDate( child.registrationDate );
 					});
 
 					locals.allChildren = children;
 					// execute done function if async is used to continue the flow of execution
 					done()
 
-				}, function(err) {
+				}, err => {
 
-					console.log(err);
+					console.log( err );
 					// execute done function if async is used to continue the flow of execution
 					done();
 
 				});
 };
 
-exports.getUnrestrictedChildren = function getUnrestrictedChildren(req, res, done) {
+exports.getUnrestrictedChildren = ( req, res, done ) => {
 
 	var locals = res.locals;
 
 	Child.model.find()
-				.where('siteVisibility', 'everyone')
-				.populate('gender')
-				.populate('race')
-				.populate('language')
-				.populate('disabilities')
-				.populate('otherConsiderations')
-				.populate('recommendedFamilyConstellation')
-				.populate('otherFamilyConstellationConsideration')
-				.populate('status')
-				.populate('legalStatus')
+				.where( 'siteVisibility', 'everyone' )
+				.populate( 'gender' )
+				.populate( 'race' )
+				.populate( 'language' )
+				.populate( 'disabilities' )
+				.populate( 'otherConsiderations' )
+				.populate( 'recommendedFamilyConstellation' )
+				.populate( 'otherFamilyConstellationConsideration' )
+				.populate( 'status' )
+				.populate( 'legalStatus' )
 				.exec()
-				.then(function (children) {
+				.then( children => {
 					// TODO: This filter should happen in a .where() above
 					// Filter out all children who don't have a status of 'active'
-					children = _.filter(children, function(child) {
-						return child.status.childStatus === 'active'
+					children = _.filter( children, child => {
+						return child.status.childStatus === 'active';
 					});
 
-					_.each(children, function(child) {
+					_.each(children, child => {
 						// adjust the image to the blank male/female image if needed
-						exports.setNoChildImage(req, res, child);
+						exports.setNoChildImage( req, res, child );
 						// set extra information needed for rendering the child to the page
-						child.age						= middleware.getAge(child.birthDate);
-			    		child.ageConverted				= middleware.convertDate(child.birthDate);
-			    		child.registrationDateConverted	= middleware.convertDate(child.registrationDate);
+						child.age						= middleware.getAge( child.birthDate );
+			    		child.ageConverted				= middleware.convertDate( child.birthDate );
+			    		child.registrationDateConverted	= middleware.convertDate( child.registrationDate );
 
 					});
 
@@ -86,9 +86,9 @@ exports.getUnrestrictedChildren = function getUnrestrictedChildren(req, res, don
 					// execute done function if async is used to continue the flow of execution
 					done()
 
-				}, function(err) {
+				}, err => {
 
-					console.log(err);
+					console.log( err );
 					// execute done function if async is used to continue the flow of execution
 					done();
 
@@ -99,22 +99,22 @@ exports.getUnrestrictedChildren = function getUnrestrictedChildren(req, res, don
  *	1. No image was uploaded for the child
  *	2. The child has been identified as legal risk
  */
-exports.setNoChildImage = function setNoChildImage(req, res, child) {
+exports.setNoChildImage = ( req, res, child ) => {
 	// Constant definitions.  TODO: Change these to const instead of var once support for ES2015 improves
-	var NO_IMAGE_MALE_GALLERY = 'images/no-image-male_gallery.png',
-		NO_IMAGE_MALE_DETAILS = 'images/no-image-male_detail.png',
-		NO_IMAGE_FEMALE_GALLERY = 'images/no-image-female_gallery.png',
-		NO_IMAGE_FEMALE_DETAILS = 'images/no-image-female_detail.png';
+	const NO_IMAGE_MALE_GALLERY = 'images/no-image-male_gallery.png';
+	const NO_IMAGE_MALE_DETAILS = 'images/no-image-male_detail.png';
+	const NO_IMAGE_FEMALE_GALLERY = 'images/no-image-female_gallery.png';
+	const NO_IMAGE_FEMALE_DETAILS = 'images/no-image-female_detail.png';
 	// If there's no image or if the child has been identified as legal risk set the correct picture for males/females
 
-	if(child.image.url === undefined || child.legalStatus.legalStatus === 'legal risk') {
+	if( child.image.url === undefined || child.legalStatus.legalStatus === 'legal risk' ) {
 
-		if(child.gender.gender === 'male') {
+		if( child.gender.gender === 'male' ) {
 
 			child.detailImage = NO_IMAGE_MALE_DETAILS;
 			child.galleryImage = NO_IMAGE_MALE_GALLERY;
 
-		} else if(child.gender.gender === 'female') {
+		} else if( child.gender.gender === 'female' ) {
 
 			child.detailImage = NO_IMAGE_FEMALE_DETAILS;
 			child.galleryImage = NO_IMAGE_FEMALE_GALLERY;
@@ -122,24 +122,26 @@ exports.setNoChildImage = function setNoChildImage(req, res, child) {
 		}
 	}
 };
+// TODO: combine the below two functions, and adjust the calling code to pass and accept arrays
+exports.getChildByRegistrationNumber = ( req, res, done, registrationNumber ) => {
 
-exports.getChildByRegistrationNumber = function getChildByRegistrationNumber(req, res, done, registrationNumber) {
-
-	var locals = res.locals;
+	let locals = res.locals;
+	// convert the number as a string to a number
+	const targetRegistrationNumber = parseInt( registrationDate, 10 );
 
 	Child.model.find()
-			.where('registrationNumber', parseInt(registrationNumber, 10))
+			.where('registrationNumber', targetRegistrationNumber )
 			.exec()
-			.then(function (child) {
+			.then( child => {
 
-				locals.child = child[0];
+				locals.child = child[ 0 ];
 				// execute done function if async is used to continue the flow of execution
  				// TODO: if this is used in non-async middleware, done or next should be passed into options and the appropriate one should be executed
 				done();
 
-			}, function(err) {
+			}, err => {
 
-				console.log(err);
+				console.log( err );
 				done();
 
 			});
@@ -147,7 +149,7 @@ exports.getChildByRegistrationNumber = function getChildByRegistrationNumber(req
 };
 
 /* Expose the child data for the gallery view to the front-end via an API call */
-exports.getGalleryData = function getGalleryData(req, res, next) {
+exports.getGalleryData = ( req, res, next ) => {
 
 	let locals				= res.locals;
 	// create an array to store all children we fetch from the database
@@ -185,6 +187,7 @@ exports.getGalleryData = function getGalleryData(req, res, next) {
 				done();
 
 			} else {
+
 				done();
 			}
 		},
@@ -252,39 +255,39 @@ exports.getRelevantChildInformation = ( children, locals ) => {
 
 	locals.soloChildrenToReturn = children.map( child => {
 		// Create a searchable array for dealing with other family constellation considerations
-		var otherFamilyConstellationConsiderations = _.pluck(child.otherFamilyConstellationConsideration, 'otherFamilyConstellationConsideration');
+		var otherFamilyConstellationConsiderations = _.pluck( child.otherFamilyConstellationConsideration, 'otherFamilyConstellationConsideration' );
 
 		return {
-			name									: child.name.first,
-			age										: middleware.getAge(child.birthDate),
-			ageConverted							: middleware.convertDate(child.birthDate),
-			registrationNumber						: child.registrationNumber,
-			registrationDateConverted				: middleware.convertDate(child.registrationDate),
-			gender									: child.gender.gender,
-			race									: _.pluck(child.race, 'race'),
-			siblingContactsCount					: child.siblingsToBePlacedWith.length,
-			language								: _.pluck(child.language, 'language'),
-			legalStatus								: child.legalStatus.legalStatus,
-			hasContactWithBiologicalSiblings		: child.hasContactWithSiblings || false,
-			hasContactWithBiologicalParents			: child.hasContactWithBirthFamily || false,
-			physicalNeeds							: needsMap[child.physicalNeeds],
-			emotionalNeeds							: needsMap[child.emotionalNeeds],
-			intellectualNeeds						: needsMap[child.intellectualNeeds],
-			disabilities							: _.pluck(child.disabilities, 'disability'),
-			otherConsiderations						: _.pluck(child.otherConsiderations, 'otherConsideration'),
-			recommendedFamilyConstellation			: _.pluck(child.recommendedFamilyConstellation, 'familyConstellation'),
-			requiresSiblings						: otherFamilyConstellationConsiderations.indexOf('multi-child home') !== -1,
-			requiresNoSiblings						: otherFamilyConstellationConsiderations.indexOf('childless home') !== -1,
-			requiresYoungerSibling					: otherFamilyConstellationConsiderations.indexOf('requires younger children') !== -1,
-			requiresOlderSibling					: otherFamilyConstellationConsiderations.indexOf('requires older children') !== -1,
-			noPets									: otherFamilyConstellationConsiderations.indexOf('no pets') !== -1,
-			galleryImage							: child.galleryImage,
+			age										: middleware.getAge( child.birthDate ),
+			ageConverted							: middleware.convertDate( child.birthDate ),
 			detailImage								: child.detailImage,
+			disabilities							: _.pluck( child.disabilities, 'disability' ),
+			emotionalNeeds							: needsMap[child.emotionalNeeds],
+			galleryImage							: child.galleryImage,
+			gender									: child.gender.gender,
+			hasContactWithBiologicalParents			: child.hasContactWithBirthFamily || false,
+			hasContactWithBiologicalSiblings		: child.hasContactWithSiblings || false,
 			hasVideo								: child.video && child.video.length > 0 ? true : false,
-			wednesdaysChild							: child.wednesdaysChild,
+			intellectualNeeds						: needsMap[ child.intellectualNeeds ],
+			isBookmarked							: child.isBookmarked,
+			language								: _.pluck( child.language, 'language' ),
+			legalStatus								: child.legalStatus.legalStatus,
+			name									: child.name.first,
+			noPets									: otherFamilyConstellationConsiderations.indexOf( 'no pets' ) !== -1,
 			numberOfSiblings						: child.siblings.length,
+			otherConsiderations						: _.pluck( child.otherConsiderations, 'otherConsideration' ),
+			physicalNeeds							: needsMap[child.physicalNeeds],
+			race									: _.pluck( child.race, 'race' ),
+			recommendedFamilyConstellation			: _.pluck( child.recommendedFamilyConstellation, 'familyConstellation' ),
+			registrationDateConverted				: middleware.convertDate( child.registrationDate ),
+			registrationNumber						: child.registrationNumber,
+			requiresNoSiblings						: otherFamilyConstellationConsiderations.indexOf( 'childless home' ) !== -1,
+			requiresOlderSibling					: otherFamilyConstellationConsiderations.indexOf( 'requires older children' ) !== -1,
+			requiresSiblings						: otherFamilyConstellationConsiderations.indexOf( 'multi-child home' ) !== -1,
+			requiresYoungerSibling					: otherFamilyConstellationConsiderations.indexOf( 'requires younger children' ) !== -1,
+			siblingContactsCount					: child.siblingsToBePlacedWith.length,
 			updatedAt								: child.updatedAt,
-			isBookmarked							: child.isBookmarked
+			wednesdaysChild							: child.wednesdaysChild
 		};
 	});
 }
@@ -314,48 +317,49 @@ exports.getRelevantSiblingGroupInformation = ( siblingGroups, locals ) => {
 		const legalStatusesArray		= _.uniq( children.map( child => child.legalStatus.legalStatus ) );
 
 		return {
-			names									: namesArray,
-			namesString								: middleware.getArrayAsList( namesArray ),
+			
 			ages									: agesArray,
-			agesString								: middleware.getArrayAsList( agesArray ),
 			agesConverted							: children.map( child => middleware.convertDate( child.birthDate ) ),
-			registrationNumbers						: registrationNumbersArray,
-			registrationNumbersString				: middleware.getArrayAsList( registrationNumbersArray ),
-			registrationDatesConverted				: children.map( child => middleware.convertDate( child.registrationDate ) ),
+			agesString								: middleware.getArrayAsList( agesArray ),
+			detailImage								: children[ 0 ].siblingGroupDetailImage,
+			disabilities							: _.uniq( _.flatten( children.map( child => _.pluck( child.disabilities, 'disability' ) ) ) ),
+			emotionalNeeds							: _.uniq( children.map( child => needsMap[ child.emotionalNeeds ] ) ),
+			galleryImage							: children[ 0 ].siblingGroupGalleryImage,
 			genders									: _.uniq( children.map( child => child.gender.gender ) ),
-			races									: _.uniq( _.flatten( children.map( child => _.pluck(child.race, 'race' ) ) ) ),
-			siblingContactsCount					: children[0].siblingsToBePlacedWith.length,		
+			hasContactWithBiologicalParents			: _.uniq( children.map( child => child.hasContactWithBirthFamily || false ) ),
+			hasContactWithBiologicalSiblings		: _.uniq( children.map( child => child.hasContactWithSiblings || false ) ),
+			hasVideo								: _.uniq( children.map( child => child.siblingGroupVideo && child.siblingGroupVideo.length > 0 ? true : false ) ), // Need to add a group video
+			intellectualNeeds						: _.uniq( children.map( child => needsMap[ child.intellectualNeeds ] ) ),
+			isBookmarked							: children.map( child => child.isBookmarked === true ).indexOf( true ) > 0 ? true : false, // set to true if any of the children have true for isBookmarked
 			languages								: _.uniq( _.flatten( children.map( child => _.pluck(child.language, 'language' ) ) ) ),
 			legalStatuses							: legalStatusesArray,
 			legalStatusesString						: middleware.getArrayAsList( legalStatusesArray ),
-			hasContactWithBiologicalSiblings		: _.uniq( children.map( child => child.hasContactWithSiblings || false ) ),
-			hasContactWithBiologicalParents			: _.uniq( children.map( child => child.hasContactWithBirthFamily || false ) ),
-			physicalNeeds							: _.uniq( children.map( child => needsMap[ child.physicalNeeds ] ) ),
-			emotionalNeeds							: _.uniq( children.map( child => needsMap[ child.emotionalNeeds ] ) ),
-			intellectualNeeds						: _.uniq( children.map( child => needsMap[ child.intellectualNeeds ] ) ),
-			disabilities							: _.uniq( _.flatten( children.map( child => _.pluck( child.disabilities, 'disability' ) ) ) ),
-			otherConsiderations						: _.uniq( _.flatten( children.map( child => _.pluck( child.otherConsiderations, 'otherConsideration' ) ) ) ),
-			recommendedFamilyConstellations			: _.uniq( _.flatten( children.map( child => _.pluck( child.recommendedFamilyConstellation, 'familyConstellation' ) ) ) ),
-			requiresSiblings						: _.uniq( children.map( child => otherFamilyConstellationConsiderations.indexOf( 'multi-child home' ) !== -1 ) ),
-			requiresNoSiblings						: _.uniq( children.map( child => otherFamilyConstellationConsiderations.indexOf( 'childless home' ) !== -1 ) ),
-			requiresYoungerSibling					: _.uniq( children.map( child => otherFamilyConstellationConsiderations.indexOf( 'requires younger children' ) !== -1 ) ),
-			requiresOlderSibling					: _.uniq( children.map( child => otherFamilyConstellationConsiderations.indexOf( 'requires older children' ) !== -1 ) ),
+			names									: namesArray,
+			namesString								: middleware.getArrayAsList( namesArray ),
 			noPets									: _.uniq( children.map( child => otherFamilyConstellationConsiderations.indexOf( 'no pets' ) !== -1 ) ),
-			galleryImage							: children[ 0 ].siblingGroupGalleryImage,
-			detailImage								: children[ 0 ].siblingGroupDetailImage,
-			hasVideo								: _.uniq( children.map( child => child.siblingGroupVideo && child.siblingGroupVideo.length > 0 ? true : false ) ), // Need to add a group video
-			wednesdaysChild							: _.uniq( children.map( child => child.wednesdaysChild ) ),
 			numberOfSiblings						: _.uniq( children.map( child => child.siblings.length ) ), // TODO: Ask Lisa if the number of siblings between children can vary (think half siblings)
+			otherConsiderations						: _.uniq( _.flatten( children.map( child => _.pluck( child.otherConsiderations, 'otherConsideration' ) ) ) ),
+			physicalNeeds							: _.uniq( children.map( child => needsMap[ child.physicalNeeds ] ) ),
+			races									: _.uniq( _.flatten( children.map( child => _.pluck(child.race, 'race' ) ) ) ),
+			recommendedFamilyConstellations			: _.uniq( _.flatten( children.map( child => _.pluck( child.recommendedFamilyConstellation, 'familyConstellation' ) ) ) ),
+			registrationDatesConverted				: children.map( child => middleware.convertDate( child.registrationDate ) ),
+			registrationNumbers						: registrationNumbersArray,
+			registrationNumbersString				: middleware.getArrayAsList( registrationNumbersArray ),	
+			requiresNoSiblings						: _.uniq( children.map( child => otherFamilyConstellationConsiderations.indexOf( 'childless home' ) !== -1 ) ),
+			requiresSiblings						: _.uniq( children.map( child => otherFamilyConstellationConsiderations.indexOf( 'multi-child home' ) !== -1 ) ),
+			requiresOlderSibling					: _.uniq( children.map( child => otherFamilyConstellationConsiderations.indexOf( 'requires older children' ) !== -1 ) ),
+			requiresYoungerSibling					: _.uniq( children.map( child => otherFamilyConstellationConsiderations.indexOf( 'requires younger children' ) !== -1 ) ),	
+			siblingContactsCount					: children[ 0 ].siblingsToBePlacedWith.length,
 			updatedAt								: _.uniq( children.map( child => child.updatedAt ) ),
-			isBookmarked							: children.map( child => child.isBookmarked === true ).indexOf( true ) > 0 ? true : false
+			wednesdaysChild							: _.uniq( children.map( child => child.wednesdaysChild ) )
 		};
 	});
 }
 
 exports.getChildDetails = ( req, res, next ) => {
 
-	var childData = req.body,
-		registrationNumber = childData[ 'registrationNumber' ];
+	const childData = req.body,
+	const registrationNumber = childData[ 'registrationNumber' ];
 
 	/* TODO: Fetch only the needed fields instead of grabbing everything */
 	Child.model.findOne()
@@ -364,17 +368,17 @@ exports.getChildDetails = ( req, res, next ) => {
         .exec()
         .then( child => {
 
-        	var relevantData = {
+        	const relevantData = {
+				hasImage			: _.isEmpty( child.image ) && child.image.url.length > 0,
         		profilePart1		: child.profile.part1,
         		profilePart2		: child.profile.part2,
         		profilePart3		: child.profile.part3,
-        		hasImage			: _.isEmpty( child.image ) && child.image.url.length > 0,
         		video				: child.video && child.video.length > 0 ? child.video.replace( 'watch?v=', 'embed/' ) : undefined
         	};
 
         	res.send( relevantData );
 
-        }, function( err ) {
+        }, err => {
 
 			console.log( err );
 
@@ -384,8 +388,8 @@ exports.getChildDetails = ( req, res, next ) => {
 
 exports.getSiblingGroupDetails = ( req, res, next ) => {
 	// the group data is stored in each child record, so we can use a single child to populate everything
-	var childData = req.body,
-		registrationNumber = childData[ 'registrationNumber' ];
+	const childData = req.body;
+	const registrationNumber = childData[ 'registrationNumber' ];
 
 	/* TODO: Fetch only the needed fields instead of grabbing everything */
 	Child.model.findOne()
@@ -394,23 +398,20 @@ exports.getSiblingGroupDetails = ( req, res, next ) => {
         .exec()
         .then( child => {
 
-        	var relevantData = {
+        	const relevantData = {
+				hasImage			: _.isEmpty( child.siblingGroupImage ) && child.siblingGroupImage.url.length > 0,
         		profilePart1		: child.groupProfile.part1,
         		profilePart2		: child.groupProfile.part2,
         		profilePart3		: child.groupProfile.part3,
-        		hasImage			: _.isEmpty( child.siblingGroupImage ) && child.siblingGroupImage.url.length > 0,
         		video				: child.siblingGroupVideo && child.siblingGroupVideo.length > 0 ? child.siblingGroupVideo.replace('watch?v=', 'embed/') : undefined
         	};
 
         	res.send( relevantData );
 
-        }, function( err ) {
+        }, err => {
 
 			console.log( err );
 
 			done();
 		});
 };
-
-// update the images with the no image group photo
-// ASK LISA IF WE WANT A GROUP PHOTO FIELD
