@@ -26,7 +26,7 @@
 						</div>
 					<!-- determining whether to add the block below based on whether the user is allowed to bookmark children needs to happen server-side -->
 					{{#if canBookmarkChildren}}
-						<span class="bookmark \{{#if isBookmarked}}bookmark--active\{{/if}}">
+						<span class="bookmark child-bookmark \{{#if isBookmarked}}bookmark--active\{{/if}}">
 							<i class="fa \{{#if isBookmarked}} fa-minus-square-o bookmark__icon--active \{{else}} fa-plus-square-o \{{/if}} bookmark__icon"></i>
 							<span class="bookmark__text">Bookmark</span>
 						</span>
