@@ -22,12 +22,12 @@ var keystone				= require('keystone'),
 	ChangeHistoryMiddleware	= require('../routes/middleware/models_change-history');
 
 // Create model
-var Family = new keystone.List('Family', {
-	inherits: User,
-	track: true,
-	map: { name: 'contact1.name.full' },
-	defaultSort: 'contact1.name.full',
-	hidden: false
+var Family = new keystone.List( 'Family', {
+	inherits	: User,
+	track		: true,
+	map			: { name: 'contact1.name.full' },
+	defaultSort	: 'contact1.name.full',
+	hidden		: false
 });
 
 // Create fields
@@ -313,7 +313,8 @@ Family.add('General Information', {
 
 }, 'User Selections', {
 
-	bookmarkedChildren: { type: Types.Relationship, label: 'bookmarked children', ref: 'Child', many: true, noedit: true }
+	bookmarkedChildren: { type: Types.Relationship, label: 'bookmarked children', ref: 'Child', many: true, noedit: true },
+	bookmarkedSiblingGroups: { type: Types.Relationship, label: 'bookmarked sibling group children', ref: 'Child', many: true, noedit: true }
 
 });
 
@@ -333,23 +334,20 @@ Family.schema.post( 'init', function() {
 });
 
 // Pre Save
-Family.schema.pre('save', function(next) {
+Family.schema.pre( 'save', function( next ) {
 	'use strict';
 
 	// TODO: Assign a registration number if one isn't assigned
-
-	var model = this;
-
 	async.parallel([
-		function(done) { model.setFullName(done); }, // Create a full name for the child based on their first, middle, and last names
-		function(done) { model.setFileName(done); }, // Create an identifying name for file uploads
-		function(done) { model.setUserType(done); }, // All user types that can log in derive from the User model, this allows us to identify users better
-		// function(done) { model.setRegistrationNumber }, // TODO: this should be the next highest available reg. number with self call on fail up to x times
-		function(done) { model.setChangeHistory(done); } // Process change history
+		done => { this.setFullName( done ); }, // Create a full name for the child based on their first, middle, and last names
+		done => { this.setFileName( done ); }, // Create an identifying name for file uploads
+		done => { this.setUserType( done ); }, // All user types that can log in derive from the User model, this allows us to identify users better
+		// function( done ) { this.setRegistrationNumber }, // TODO: this should be the next highest available reg. number with self call on fail up to x times
+		done => { this.setChangeHistory( done ); } // Process change history
 
-	], function() {
+	], () => {
 
-		console.log('family information updated');
+		console.log( 'family information updated' );
 
 		next();
 
@@ -360,27 +358,27 @@ Family.schema.pre('save', function(next) {
 /* 						  Changing names or reworking this file changed the check in node_modules/keystone/templates/views/signin.jade
 /*						  for user.isAdmin on line 14 */
 // Provide access to Keystone
-Family.schema.virtual('canAccessKeystone').get(function() {
+Family.schema.virtual( 'canAccessKeystone' ).get( function() {
 	'use strict';
 
 	return false;
 });
 
-Family.schema.methods.setFullName = function(done) {
+Family.schema.methods.setFullName = function( done ) {
 	'use strict';
 
 	this.contact1.name.full = this.contact1.name.first + ' ' + this.contact1.name.last;
 
 	// if both the first and last names are set for the second contact, set the full name to 'first last'
-	// if only the first name is set, set the full name to the first name
-	// if only the last name is set, set the full name to the last name
-	// if neither the first nor the last name have been entered, set the full name to an empty string
-	if(this.contact2.name.first && this.contact2.name.first.length > 0 && this.contact2.name.last && this.contact2.name.last.length > 0) {
+	if(this.contact2.name.first && this.contact2.name.first.length > 0 && this.contact2.name.last && this.contact2.name.last.length > 0 ) {
 		this.contact2.name.full = this.contact2.name.first + ' ' + this.contact2.name.last;
-	} else if(this.contact2.name.first && this.contact2.name.first.length > 0 && (!this.contact2.name.last || !this.contact2.name.last.length > 0)) {
+	// if only the first name is set, set the full name to the first name
+	} else if( this.contact2.name.first && this.contact2.name.first.length > 0 && ( !this.contact2.name.last || !this.contact2.name.last.length > 0 ) ) {
 		this.contact2.name.full = this.contact2.name.first;
-	} else if((!this.contact2.name.first || !this.contact2.name.first.length > 0) && this.contact2.name.last && this.contact2.name.last.length > 0) {
+	// if only the last name is set, set the full name to the last name
+	} else if(( !this.contact2.name.first || !this.contact2.name.first.length > 0 ) && this.contact2.name.last && this.contact2.name.last.length > 0 ) {
 		this.contact2.name.full = this.contact2.name.last;
+	// if neither the first nor the last name have been entered, set the full name to an empty string
 	} else {
 		this.contact2.name.full = '';
 	}
@@ -389,7 +387,7 @@ Family.schema.methods.setFullName = function(done) {
 };
 
 // TODO: Better handled with a virtual
-Family.schema.methods.setFileName = function(done) {
+Family.schema.methods.setFileName = function( done ) {
 	'use strict';
 
 	// Create an identifying name for file uploads
@@ -398,7 +396,7 @@ Family.schema.methods.setFileName = function(done) {
 	done();
 };
 
-Family.schema.methods.setUserType = function(done) {
+Family.schema.methods.setUserType = function( done ) {
 	'use strict'
 
 	// Set the userType for role based page rendering
@@ -407,7 +405,7 @@ Family.schema.methods.setUserType = function(done) {
 	done();
 };
 
-Family.schema.methods.setChangeHistory = function setChangeHistory(done) {
+Family.schema.methods.setChangeHistory = function setChangeHistory( done ) {
 	'use strict';
 
 	var modelBefore	= this._original,
@@ -421,17 +419,15 @@ Family.schema.methods.setChangeHistory = function setChangeHistory(done) {
 	});
 
 	// if the model is being saved for the first time, mark only that fact in an initial change history record
-	if(!model._original) {
+	if( !model._original ) {
 
 		changeHistory.changes = 'record created';
 
-		console.log('changes: ', changeHistory);
-
-		changeHistory.save(function() {
-			console.log('record created change history saved successfully');
+		changeHistory.save( () => {
+			console.log( 'record created change history saved successfully' );
 			done();
-		}, function(err) {
-			console.log(err);
+		}, err => {
+			console.log( err );
 			console.log('error saving record created change history');
 			done();
 		});
@@ -442,25 +438,25 @@ Family.schema.methods.setChangeHistory = function setChangeHistory(done) {
 		async.parallel([
 			// avatar: { type: Types.CloudinaryImage, label: 'avatar', folder: 'users/families', selectPrefix: 'users/families', autoCleanup: true },
 
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											name: 'registrationNumber',
 											label: 'registration number',
 											type: 'number' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											name: 'initialContact',
 											label: 'initial contact',
 											type: 'date' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											name: 'flagCalls',
 											label: 'flag calls',
 											type: 'boolean' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											name: 'familyConstellation',
 											targetField: 'familyConstellation',
@@ -468,7 +464,7 @@ Family.schema.methods.setChangeHistory = function setChangeHistory(done) {
 											type: 'relationship',
 											model: 'Family Constellation' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											name: 'language',
 											targetField: 'language',
@@ -476,7 +472,7 @@ Family.schema.methods.setChangeHistory = function setChangeHistory(done) {
 											type: 'relationship',
 											model: 'Language' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											name: 'otherLanguages',
 											targetField: 'language',
@@ -484,7 +480,7 @@ Family.schema.methods.setChangeHistory = function setChangeHistory(done) {
 											type: 'relationship',
 											model: 'Language' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											grandparent: 'contact1',
 											parent: 'name',
@@ -492,7 +488,7 @@ Family.schema.methods.setChangeHistory = function setChangeHistory(done) {
 											label: 'contact 1 - first name',
 											type: 'string' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											grandparent: 'contact1',
 											parent: 'name',
@@ -500,7 +496,7 @@ Family.schema.methods.setChangeHistory = function setChangeHistory(done) {
 											label: 'contact 1 - last name',
 											type: 'string' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											grandparent: 'contact1',
 											parent: 'phone',
@@ -508,7 +504,7 @@ Family.schema.methods.setChangeHistory = function setChangeHistory(done) {
 											label: 'contact 1 - work phone number',
 											type: 'string' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											grandparent: 'contact1',
 											parent: 'phone',
@@ -516,21 +512,21 @@ Family.schema.methods.setChangeHistory = function setChangeHistory(done) {
 											label: 'contact 1 - mobile phone number',
 											type: 'string' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'contact1',
 											name: 'email',
 											label: 'contact 1 - email address',
 											type: 'string' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'contact1',
 											name: 'preferredCommunicationMethod',
 											label: 'contact 1 - preferred communication method',
 											type: 'string' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'contact1',
 											name: 'gender',
@@ -539,7 +535,7 @@ Family.schema.methods.setChangeHistory = function setChangeHistory(done) {
 											type: 'relationship',
 											model: 'Gender' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'contact1',
 											name: 'race',
@@ -548,21 +544,21 @@ Family.schema.methods.setChangeHistory = function setChangeHistory(done) {
 											type: 'relationship',
 											model: 'Race' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'contact1',
 											name: 'occupation',
 											label: 'contact 1 - occupation',
 											type: 'string' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'contact1',
 											name: 'birthDate',
 											label: 'contact 1 - date of birth',
 											type: 'date' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											grandparent: 'contact2',
 											parent: 'name',
@@ -570,7 +566,7 @@ Family.schema.methods.setChangeHistory = function setChangeHistory(done) {
 											label: 'contact 2 - first name',
 											type: 'string' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											grandparent: 'contact2',
 											parent: 'name',
@@ -578,7 +574,7 @@ Family.schema.methods.setChangeHistory = function setChangeHistory(done) {
 											label: 'contact 2 - last name',
 											type: 'string' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											grandparent: 'contact2',
 											parent: 'phone',
@@ -586,7 +582,7 @@ Family.schema.methods.setChangeHistory = function setChangeHistory(done) {
 											label: 'contact 2 - work phone number',
 											type: 'string' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											grandparent: 'contact2',
 											parent: 'phone',
@@ -594,21 +590,21 @@ Family.schema.methods.setChangeHistory = function setChangeHistory(done) {
 											label: 'contact 2 - mobile phone number',
 											type: 'string' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'contact2',
 											name: 'email',
 											label: 'contact 2 - email address',
 											type: 'string' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'contact2',
 											name: 'preferredCommunicationMethod',
 											label: 'contact 2 - preferred communication method',
 											type: 'string' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'contact2',
 											name: 'gender',
@@ -617,7 +613,7 @@ Family.schema.methods.setChangeHistory = function setChangeHistory(done) {
 											type: 'relationship',
 											model: 'Gender' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'contact2',
 											name: 'race',
@@ -626,42 +622,42 @@ Family.schema.methods.setChangeHistory = function setChangeHistory(done) {
 											type: 'relationship',
 											model: 'Race' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'contact2',
 											name: 'occupation',
 											label: 'contact 2 - occupation',
 											type: 'string' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'contact2',
 											name: 'birthDate',
 											label: 'contact 2 - date of birth',
 											type: 'date' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'address',
 											name: 'street1',
 											label: 'street 1',
 											type: 'string' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'address',
 											name: 'street2',
 											label: 'street 2',
 											type: 'string' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'address',
 											name: 'city',
 											label: 'city',
 											type: 'string' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'address',
 											name: 'state',
@@ -670,14 +666,14 @@ Family.schema.methods.setChangeHistory = function setChangeHistory(done) {
 											type: 'relationship',
 											model: 'State' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'address',
 											name: 'zipCode',
 											label: 'zip code',
 											type: 'string' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'address',
 											name: 'region',
@@ -686,33 +682,33 @@ Family.schema.methods.setChangeHistory = function setChangeHistory(done) {
 											type: 'relationship',
 											model: 'Region' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											name: 'homePhone',
 											label: 'home phone number',
 											type: 'string' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											name: 'numberOfChildren',
 											label: 'number of children',
 											type: 'string' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'child1',
 											name: 'name',
 											label: 'child 1 - name',
 											type: 'string' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'child1',
 											name: 'birthDate',
 											label: 'child 1 - date of birth',
 											type: 'date' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'child1',
 											name: 'gender',
@@ -721,7 +717,7 @@ Family.schema.methods.setChangeHistory = function setChangeHistory(done) {
 											type: 'relationship',
 											model: 'Gender' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'child1',
 											name: 'type',
@@ -730,21 +726,21 @@ Family.schema.methods.setChangeHistory = function setChangeHistory(done) {
 											type: 'relationship',
 											model: 'Child Type' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'child2',
 											name: 'name',
 											label: 'child 2 - name',
 											type: 'string' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'child2',
 											name: 'birthDate',
 											label: 'child 2 - date of birth',
 											type: 'date' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'child2',
 											name: 'gender',
@@ -753,7 +749,7 @@ Family.schema.methods.setChangeHistory = function setChangeHistory(done) {
 											type: 'relationship',
 											model: 'Gender' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'child2',
 											name: 'type',
@@ -762,21 +758,21 @@ Family.schema.methods.setChangeHistory = function setChangeHistory(done) {
 											type: 'relationship',
 											model: 'Child Type' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'child3',
 											name: 'name',
 											label: 'child 3 - name',
 											type: 'string' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'child3',
 											name: 'birthDate',
 											label: 'child 3 - date of birth',
 											type: 'date' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'child3',
 											name: 'gender',
@@ -785,7 +781,7 @@ Family.schema.methods.setChangeHistory = function setChangeHistory(done) {
 											type: 'relationship',
 											model: 'Gender' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'child3',
 											name: 'type',
@@ -794,21 +790,21 @@ Family.schema.methods.setChangeHistory = function setChangeHistory(done) {
 											type: 'relationship',
 											model: 'Child Type' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'child4',
 											name: 'name',
 											label: 'child 4 - name',
 											type: 'string' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'child4',
 											name: 'birthDate',
 											label: 'child 4 - date of birth',
 											type: 'date' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'child4',
 											name: 'gender',
@@ -817,7 +813,7 @@ Family.schema.methods.setChangeHistory = function setChangeHistory(done) {
 											type: 'relationship',
 											model: 'Gender' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'child4',
 											name: 'type',
@@ -826,21 +822,21 @@ Family.schema.methods.setChangeHistory = function setChangeHistory(done) {
 											type: 'relationship',
 											model: 'Child Type' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'child5',
 											name: 'name',
 											label: 'child 5 - name',
 											type: 'string' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'child5',
 											name: 'birthDate',
 											label: 'child 5 - date of birth',
 											type: 'date' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'child5',
 											name: 'gender',
@@ -849,7 +845,7 @@ Family.schema.methods.setChangeHistory = function setChangeHistory(done) {
 											type: 'relationship',
 											model: 'Gender' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'child5',
 											name: 'type',
@@ -858,21 +854,21 @@ Family.schema.methods.setChangeHistory = function setChangeHistory(done) {
 											type: 'relationship',
 											model: 'Child Type' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'child6',
 											name: 'name',
 											label: 'child 6 - name',
 											type: 'string' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'child6',
 											name: 'birthDate',
 											label: 'child 6 - date of birth',
 											type: 'date' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'child6',
 											name: 'gender',
@@ -881,7 +877,7 @@ Family.schema.methods.setChangeHistory = function setChangeHistory(done) {
 											type: 'relationship',
 											model: 'Gender' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'child6',
 											name: 'type',
@@ -890,21 +886,21 @@ Family.schema.methods.setChangeHistory = function setChangeHistory(done) {
 											type: 'relationship',
 											model: 'Child Type' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'child7',
 											name: 'name',
 											label: 'child 7 - name',
 											type: 'string' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'child7',
 											name: 'birthDate',
 											label: 'child 7 - date of birth',
 											type: 'date' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'child7',
 											name: 'gender',
@@ -913,7 +909,7 @@ Family.schema.methods.setChangeHistory = function setChangeHistory(done) {
 											type: 'relationship',
 											model: 'Gender' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'child7',
 											name: 'type',
@@ -922,21 +918,21 @@ Family.schema.methods.setChangeHistory = function setChangeHistory(done) {
 											type: 'relationship',
 											model: 'Child Type' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'child8',
 											name: 'name',
 											label: 'child 8 - name',
 											type: 'string' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'child8',
 											name: 'birthDate',
 											label: 'child 8 - date of birth',
 											type: 'date' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'child8',
 											name: 'gender',
@@ -945,7 +941,7 @@ Family.schema.methods.setChangeHistory = function setChangeHistory(done) {
 											type: 'relationship',
 											model: 'Gender' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'child8',
 											name: 'type',
@@ -954,27 +950,27 @@ Family.schema.methods.setChangeHistory = function setChangeHistory(done) {
 											type: 'relationship',
 											model: 'Child Type' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'otherAdultsInHome',
 											name: 'number',
 											label: 'number of other adults living in the home',
 											type: 'number' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'otherAdultsInHome',
 											name: 'relationships',
 											label: 'relationships of other adults living in the home',
 											type: 'string' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											name: 'havePetsInHome',
 											label: 'have pets in the home',
 											type: 'boolean' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											grandparent: 'stages',
 											parent: 'gatheringInformation',
@@ -982,7 +978,7 @@ Family.schema.methods.setChangeHistory = function setChangeHistory(done) {
 											label: 'gathering information',
 											type: 'boolean' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											grandparent: 'stages',
 											parent: 'gatheringInformation',
@@ -990,7 +986,7 @@ Family.schema.methods.setChangeHistory = function setChangeHistory(done) {
 											label: 'date gathering information started',
 											type: 'date' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											grandparent: 'stages',
 											parent: 'lookingForAgency',
@@ -998,7 +994,7 @@ Family.schema.methods.setChangeHistory = function setChangeHistory(done) {
 											label: 'looking for agency',
 											type: 'boolean' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											grandparent: 'stages',
 											parent: 'lookingForAgency',
@@ -1006,7 +1002,7 @@ Family.schema.methods.setChangeHistory = function setChangeHistory(done) {
 											label: 'date looking for agency started',
 											type: 'date' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											grandparent: 'stages',
 											parent: 'workingWithAgency',
@@ -1014,7 +1010,7 @@ Family.schema.methods.setChangeHistory = function setChangeHistory(done) {
 											label: 'working with agency',
 											type: 'boolean' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											grandparent: 'stages',
 											parent: 'workingWithAgency',
@@ -1022,7 +1018,7 @@ Family.schema.methods.setChangeHistory = function setChangeHistory(done) {
 											label: 'date working with agency started',
 											type: 'date' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											grandparent: 'stages',
 											parent: 'MAPPTrainingCompleted',
@@ -1030,7 +1026,7 @@ Family.schema.methods.setChangeHistory = function setChangeHistory(done) {
 											label: 'MAPP training completed',
 											type: 'boolean' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											grandparent: 'stages',
 											parent: 'MAPPTrainingCompleted',
@@ -1038,21 +1034,21 @@ Family.schema.methods.setChangeHistory = function setChangeHistory(done) {
 											label: 'date MAPP training completed',
 											type: 'date' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'homestudy',
 											name: 'completed',
 											label: 'homestudy completed',
 											type: 'boolean' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'homestudy',
 											name: 'initialDate',
 											label: 'initial date homestudy completed',
 											type: 'date' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'homestudy',
 											name: 'mostRecentDate',
@@ -1074,35 +1070,35 @@ Family.schema.methods.setChangeHistory = function setChangeHistory(done) {
 				// 	}
 				// }
 
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'onlineMatching',
 											name: 'started',
 											label: 'online matching',
 											type: 'boolean' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'onlineMatching',
 											name: 'date',
 											label: 'date online matching started',
 											type: 'date' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'registeredWithMARE',
 											name: 'registered',
 											label: 'registered with MARE',
 											type: 'boolean' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'registeredWithMARE',
 											name: 'date',
 											label: 'date registered with MARE',
 											type: 'date' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'registeredWithMARE',
 											name: 'status',
@@ -1111,35 +1107,35 @@ Family.schema.methods.setChangeHistory = function setChangeHistory(done) {
 											type: 'relationship',
 											model: 'Child Status' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'familyProfile',
 											name: 'created',
 											label: 'family profile created',
 											type: 'boolean' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'familyProfile',
 											name: 'date',
 											label: 'date family profile created',
 											type: 'date' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'closed',
 											name: 'isClosed',
 											label: 'closed',
 											type: 'boolean' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'closed',
 											name: 'date',
 											label: 'date closed',
 											type: 'date' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'closed',
 											name: 'reason',
@@ -1148,7 +1144,7 @@ Family.schema.methods.setChangeHistory = function setChangeHistory(done) {
 											type: 'relationship',
 											model: 'Closed Reason' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											name: 'socialWorker',
 											targetParent: 'name',
@@ -1157,102 +1153,102 @@ Family.schema.methods.setChangeHistory = function setChangeHistory(done) {
 											type: 'relationship',
 											model: 'Social Worker' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											name: 'socialWorkerNotListed',
 											label: 'social worker isn\'t listed',
 											type: 'boolean' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											name: 'socialWorkerText',
 											label: 'social worker (text)',
 											type: 'string' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'familyServices',
 											name: 'mentee',
 											label: 'mentee',
 											type: 'boolean' }, model, modelBefore, changeHistory, done);
-			},function(done) {
+			},done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'familyServices',
 											name: 'mentor',
 											label: 'mentor',
 											type: 'boolean' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'familyServices',
 											name: 'mediaSpokesperson',
 											label: 'media spokesperson',
 											type: 'boolean' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'familyServices',
 											name: 'eventPresenterOrSpokesperson',
 											label: 'event presenter/spokesperson',
 											type: 'boolean' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'familyServices',
 											name: 'communityOutreach',
 											label: 'community outreach',
 											type: 'boolean' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'familyServices',
 											name: 'fundraising',
 											label: 'fundraising',
 											type: 'boolean' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'familyServices',
 											name: 'MARESupportGroupLeader',
 											label: 'MARE support group leader',
 											type: 'boolean' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'familyServices',
 											name: 'MARESupportGroupParticipant',
 											label: 'MARE support group participant',
 											type: 'boolean' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'familyServices',
 											name: 'receivesConsultationServices',
 											label: 'receives consultation services',
 											type: 'boolean' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'infoPacket',
 											name: 'packet',
 											label: 'info packet language',
 											type: 'string' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'infoPacket',
 											name: 'date',
 											label: 'date info packet sent',
 											type: 'date' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'infoPacket',
 											name: 'notes',
 											label: 'info packet notes',
 											type: 'string' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											name: 'mailingLists',
 											targetField: 'mailingList',
@@ -1260,7 +1256,7 @@ Family.schema.methods.setChangeHistory = function setChangeHistory(done) {
 											type: 'relationship',
 											model: 'Mailing List' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'matchingPreferences',
 											name: 'gender',
@@ -1269,7 +1265,7 @@ Family.schema.methods.setChangeHistory = function setChangeHistory(done) {
 											type: 'relationship',
 											model: 'Gender' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'matchingPreferences',
 											name: 'legalStatus',
@@ -1278,7 +1274,7 @@ Family.schema.methods.setChangeHistory = function setChangeHistory(done) {
 											type: 'relationship',
 											model: 'Legal Status' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											grandparent: 'matchingPreferences',
 											parent: 'adoptionAges',
@@ -1286,7 +1282,7 @@ Family.schema.methods.setChangeHistory = function setChangeHistory(done) {
 											label: 'matching preference - adoption age from',
 											type: 'number' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											grandparent: 'matchingPreferences',
 											parent: 'adoptionAges',
@@ -1294,28 +1290,28 @@ Family.schema.methods.setChangeHistory = function setChangeHistory(done) {
 											label: 'matching preference - adoption age to',
 											type: 'number' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'matchingPreferences',
 											name: 'numberOfChildrenToAdopt',
 											label: 'matching preference - number of children to adopt',
 											type: 'number' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'matchingPreferences',
 											name: 'siblingContact',
 											label: 'matching preference - contact with siblings',
 											type: 'boolean' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'matchingPreferences',
 											name: 'birthFamilyContact',
 											label: 'matching preference - contact with birth parents',
 											type: 'boolean' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'matchingPreferences',
 											name: 'race',
@@ -1324,7 +1320,7 @@ Family.schema.methods.setChangeHistory = function setChangeHistory(done) {
 											type: 'relationship',
 											model: 'Race' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											grandparent: 'matchingPreferences',
 											parent: 'maxNeeds',
@@ -1332,7 +1328,7 @@ Family.schema.methods.setChangeHistory = function setChangeHistory(done) {
 											label: 'matching preference - maximum physical needs',
 											type: 'string' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											grandparent: 'matchingPreferences',
 											parent: 'maxNeeds',
@@ -1340,7 +1336,7 @@ Family.schema.methods.setChangeHistory = function setChangeHistory(done) {
 											label: 'matching preference - maximum intellectual needs',
 											type: 'string' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											grandparent: 'matchingPreferences',
 											parent: 'maxNeeds',
@@ -1348,7 +1344,7 @@ Family.schema.methods.setChangeHistory = function setChangeHistory(done) {
 											label: 'matching preference - maximum emotional needs',
 											type: 'string' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'matchingPreferences',
 											name: 'disabilities',
@@ -1357,7 +1353,7 @@ Family.schema.methods.setChangeHistory = function setChangeHistory(done) {
 											type: 'relationship',
 											model: 'Disability' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'matchingPreferences',
 											name: 'otherConsiderations',
@@ -1366,7 +1362,7 @@ Family.schema.methods.setChangeHistory = function setChangeHistory(done) {
 											type: 'relationship',
 											model: 'Other Consideration' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											name: 'heardAboutMAREFrom',
 											targetField: 'wayToHearAboutMARE',
@@ -1374,20 +1370,20 @@ Family.schema.methods.setChangeHistory = function setChangeHistory(done) {
 											type: 'relationship',
 											model: 'Way To Hear About MARE' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											name: 'heardAboutMAREOther',
 											label: 'heard about mare from (other)',
 											type: 'string' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											name: 'registeredViaWebsite',
 											label: 'registered through the website',
 											type: 'boolean' }, model, modelBefore, changeHistory, done);
 			},
 			// fileName: { type: Types.Text, hidden: true }
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											name: 'bookmarkedChildren',
 											targetParent: 'name',
@@ -1395,18 +1391,31 @@ Family.schema.methods.setChangeHistory = function setChangeHistory(done) {
 											label: 'bookmarked children',
 											type: 'relationship',
 											model: 'Child' }, model, modelBefore, changeHistory, done);
+			},
+			done => {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											name: 'bookmarkedSiblingGroups',
+											targetParent: 'name',
+											targetField: 'full',
+											label: 'bookmarked sibling group children',
+											type: 'relationship',
+											model: 'Child' }, model, modelBefore, changeHistory, done);
 			}
-		], function() {
-			console.log('changes: ', changeHistory);
-			if (changeHistory.changes === '') {
+
+		], () => {
+
+			if ( changeHistory.changes === '' ) {
+
 				done();
+
 			} else {
-				changeHistory.save(function() {
+
+				changeHistory.save( () => {
 					console.log('change history saved successfully');
 					done();
-				}, function(err) {
-					console.log(err);
-					console.log('error saving change history');
+				}, err => {
+					console.log( err );
+					console.log( 'error saving change history' );
 					done();
 				});
 			}
