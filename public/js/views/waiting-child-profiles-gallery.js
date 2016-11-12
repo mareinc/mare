@@ -2,9 +2,9 @@
 	'use strict';
 
 	mare.views.Gallery = Backbone.View.extend({
-		// This view controls everything inside the element with class 'gallery'
+		// this view controls everything inside the element with class 'gallery'
 		el: '.gallery',
-
+		// bind standard events to functions within the view
 		events: {
 			'click .child-media-box'						: 'displayChildDetails',
 			'click .sibling-group-media-box'				: 'displaySiblingGroupDetails',
@@ -13,6 +13,7 @@
 			'change .waiting-child-profiles__gallery-filter': 'sortGallery'
 		},
 
+		/* initialize the gallery view */
 		initialize: function initialize() {
 			// Store a reference to this for insde callbacks where context is lost
 			var view							= this;
@@ -37,6 +38,7 @@
 			});
 		},
 
+		/* render the view onto the page */
 		render: function render() {
 			// Store a reference to this for insde callbacks where context is lost
 			var view = this;
@@ -52,6 +54,7 @@
 				view.initializeMediaBoxes();
 			});
 		},
+
 		/* ititializes the media box plugin that drives the images in the gallery */
 		initializeMediaBoxes: function initializeMediaBoxes() {
 			// initialize the photo listing children gallery grid
@@ -66,19 +69,19 @@
 			});
 		},
 
-		/* When a child card is clicked, pass the request to the subview in charge of the details modal */
+		/* pass the request for child details to the subview in charge of the details modal */
 		displayChildDetails: function displayChildDetails( event ) {
 
 			mare.views.childDetails.handleGalleryClick( event );
 		},
 
-		/* When a sibling group card is clicked, pass the request to the subview in charge of the details modal */
+		/* pass the request for sibling group detials to the subview in charge of the details modal */
 		displaySiblingGroupDetails: function displayChildDetails( event ) {
 
 			mare.views.siblingGroupDetails.handleGalleryClick( event );
 		},
 
-		/* Determine how to handle a click on the bookmark button based on the current state of the bookmark */
+		/* determine how to handle a click on the bookmark element */
 		toggleChildBookmark: function toggleChildBookmark( event ) {
 
 			event.stopPropagation();
@@ -107,6 +110,7 @@
 			}
 		},
 
+		/* determine how to handle a click on the bookmark element */
 		toggleSiblingGroupBookmark: function toggleSiblingGroupBookmark( event ) {
 
 			event.stopPropagation();
@@ -135,6 +139,7 @@
 			}
 		},
 
+		/* make a call to the server to bookmark the child */
 		addChildBookmark: function addChildBookmark( registrationNumber, $currentTarget ) {
 
 			$.ajax({
@@ -156,6 +161,7 @@
 
 		},
 
+		/* make a call to the server to remove the bookmark for the child, then modify the view */
 		removeChildBookmark: function removeChildBookmark( registrationNumber, $currentTarget ) {
 
 			$.ajax({
@@ -177,6 +183,7 @@
 
 		},
 
+		/* make a call to the server to add bookmarks for all children in the sibling group, then modify the view */
 		addSiblingGroupBookmark: function addSiblingGroupBookmark( registrationNumbers, $currentTarget ) {
 
 			$.ajax({
@@ -197,6 +204,7 @@
 			});
 		},
 
+		/* make a call to the server to remove bookmarks for all children in the sibling group, then modify the view */
 		removeSiblingGroupBookmark: function removeSiblingGroupBookmark( registrationNumbers, $currentTarget ) {
 
 			$.ajax({
@@ -217,6 +225,7 @@
 			});
 		},
 
+		/* sort the children in the gallery */
 		sortGallery: function sortGallery( event ) {
 			var $currentTarget = $( event.currentTarget );
 			var sortBy = $currentTarget.val();
