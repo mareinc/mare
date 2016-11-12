@@ -1,8 +1,9 @@
-var keystone	= require('keystone'),
-	_			= require('underscore'),
-	async		= require('async'),
-	middleware	= require('./middleware'),
-	Child		= keystone.list('Child');
+var keystone		= require('keystone'),
+	_				= require('underscore'),
+	async			= require('async'),
+	middleware		= require('./middleware'),
+	Child			= keystone.list('Child');
+	familyService	= require('./service_family'),
 
 exports.getAllChildren = function getAllChildren(req, res, done) {
 
@@ -164,9 +165,31 @@ exports.getGalleryData = function getGalleryData(req, res, next) {
 			locals.targetChildren === 'all' ? exports.getAllChildren( req, res, done )
 											: exports.getUnrestrictedChildren( req, res, done );
 
-		}
+		},
+		// TODO: these familyService functions are for social workers too, they belong in a page level service instead
+		done => { familyService.setGalleryPermissions( req, res, done ); },
+		done => { locals.canBookmarkChildren ? familyService.getBookmarkedChildren( req, res, done ) : done(); },
+		done => {
+			if( locals.bookmarkedChildren && locals.bookmarkedChildren.length > 0 ) {
+				// Loop through each child model and set a property to show they've already been bookmarked by the user during templating
+				_.each( locals.allChildren, function( child ) {
+					// Get the child id to compare with the array of currently bookmarked child ids
+					const childId = child.get( '_id' ).toString();
+					// The bookmarked children come back as Objects, and need to be converted to strings for comparison
+					// TODO: think about doing the mapping inside the getBookmarkedChildren function
+					const bookmarkedChildrenArray = locals.bookmarkedChildren.map( childId => childId.toString() );
+					// Set the property for use during templating to show if the child has already been bookmarked
+					child.isBookmarked = locals.bookmarkedChildren.indexOf( childId ) !== -1 ? true : false;
+				});
+
+				done();
+
+			} else {
+				done();
+			}
+		},
 	// once we have the returned children
-	], function() {
+	], () => {
 		// assign each child to the solo child set or the sibling group set
 		exports.assignChildren( locals.allChildren, locals );
 		// map out the relevant information for solo children
@@ -260,7 +283,8 @@ exports.getRelevantChildInformation = ( children, locals ) => {
 			hasVideo								: child.video && child.video.length > 0 ? true : false,
 			wednesdaysChild							: child.wednesdaysChild,
 			numberOfSiblings						: child.siblings.length,
-			updatedAt								: child.updatedAt
+			updatedAt								: child.updatedAt,
+			isBookmarked							: child.isBookmarked
 		};
 	});
 }
