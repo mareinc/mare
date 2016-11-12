@@ -1,25 +1,25 @@
-require('./Tracking_FamilyHistory');
-require('./List_FamilyConstellation');
-require('./List_Language');
-require('./List_Gender');
-require('./List_Race');
-require('./List_State');
-require('./List_Region');
-require('./List_ChildType');
-require('./List_ChildStatus');
-require('./List_ClosedReason');
-require('./User_SocialWorker');
-require('./MailingList');
-require('./List_LegalStatus');
-require('./List_Disability');
-require('./List_OtherConsideration');
+require( './Tracking_FamilyHistory' );
+require( './List_FamilyConstellation' );
+require( './List_Language' );
+require( './List_Gender' );
+require( './List_Race' );
+require( './List_State' );
+require( './List_Region' );
+require( './List_ChildType' );
+require( './List_ChildStatus' );
+require( './List_ClosedReason' );
+require( './User_SocialWorker' );
+require( './MailingList' );
+require( './List_LegalStatus' );
+require( './List_Disability' );
+require( './List_OtherConsideration' );
 
-var keystone				= require('keystone'),
-	async 					= require('async'),
+var keystone				= require( 'keystone' ),
+	async 					= require( 'async' ),
 	Types					= keystone.Field.Types,
-	FamilyHistory			= keystone.list('Family History'),
-	User					= require('./User'),
-	ChangeHistoryMiddleware	= require('../routes/middleware/models_change-history');
+	FamilyHistory			= keystone.list( 'Family History' ),
+	User					= require( './User' ),
+	ChangeHistoryMiddleware	= require( '../routes/middleware/models_change-history' );
 
 // Create model
 var Family = new keystone.List( 'Family', {
@@ -31,7 +31,7 @@ var Family = new keystone.List( 'Family', {
 });
 
 // Create fields
-Family.add('General Information', {
+Family.add( 'General Information', {
 
 	avatar: { type: Types.CloudinaryImage, label: 'avatar', folder: 'users/families', selectPrefix: 'users/families', autoCleanup: true },
 
@@ -208,9 +208,9 @@ Family.add('General Information', {
 			dependsOn: { 'homestudy.completed': true },
 			type: Types.S3File,
 			s3path: '/family/homestudy',
-			filename: function(item, filename){
-				console.log('item');
-				console.log(item);
+			filename: function( item, filename ) {
+				console.log( 'item' );
+				console.log( item );
 				// prefix file name with registration number and name for easier identification
 				return item.fileName;
 			}
@@ -319,12 +319,12 @@ Family.add('General Information', {
 });
 
 // Set up relationship values to show up at the bottom of the model if any exist
-Family.relationship({ ref: 'Placement', refPath: 'placedWithFamily', path: 'placements', label: 'placements' });
-Family.relationship({ ref: 'Inquiry', refPath: 'family', path: 'inquiries', label: 'inquiries' });
-Family.relationship({ ref: 'Mailing List', refPath: 'familySubscribers', path: 'mailing-lists', label: 'mailing lists' });
-Family.relationship({ ref: 'Event', refPath: 'familyAttendees', path: 'events', label: 'events' });
-Family.relationship({ ref: 'Internal Note', refPath: 'family', path: 'internal-notes', label: 'internal notes' });
-Family.relationship({ ref: 'Family History', refPath: 'family', path: 'family-histories', label: 'change history' });
+Family.relationship( { ref: 'Placement', refPath: 'placedWithFamily', path: 'placements', label: 'placements' } );
+Family.relationship( { ref: 'Inquiry', refPath: 'family', path: 'inquiries', label: 'inquiries' } );
+Family.relationship( { ref: 'Mailing List', refPath: 'familySubscribers', path: 'mailing-lists', label: 'mailing lists' } );
+Family.relationship( { ref: 'Event', refPath: 'familyAttendees', path: 'events', label: 'events' } );
+Family.relationship( { ref: 'Internal Note', refPath: 'family', path: 'internal-notes', label: 'internal notes' } );
+Family.relationship( { ref: 'Family History', refPath: 'family', path: 'family-histories', label: 'change history' } );
 
 // Post Init - used to store all the values before anything is changed
 Family.schema.post( 'init', function() {
@@ -370,7 +370,7 @@ Family.schema.methods.setFullName = function( done ) {
 	this.contact1.name.full = this.contact1.name.first + ' ' + this.contact1.name.last;
 
 	// if both the first and last names are set for the second contact, set the full name to 'first last'
-	if(this.contact2.name.first && this.contact2.name.first.length > 0 && this.contact2.name.last && this.contact2.name.last.length > 0 ) {
+	if( this.contact2.name.first && this.contact2.name.first.length > 0 && this.contact2.name.last && this.contact2.name.last.length > 0 ) {
 		this.contact2.name.full = this.contact2.name.first + ' ' + this.contact2.name.last;
 	// if only the first name is set, set the full name to the first name
 	} else if( this.contact2.name.first && this.contact2.name.first.length > 0 && ( !this.contact2.name.last || !this.contact2.name.last.length > 0 ) ) {
@@ -428,7 +428,7 @@ Family.schema.methods.setChangeHistory = function setChangeHistory( done ) {
 			done();
 		}, err => {
 			console.log( err );
-			console.log('error saving record created change history');
+			console.log( 'error saving record created change history' );
 			done();
 		});
 
@@ -1411,7 +1411,7 @@ Family.schema.methods.setChangeHistory = function setChangeHistory( done ) {
 			} else {
 
 				changeHistory.save( () => {
-					console.log('change history saved successfully');
+					console.log( 'change history saved successfully' );
 					done();
 				}, err => {
 					console.log( err );
