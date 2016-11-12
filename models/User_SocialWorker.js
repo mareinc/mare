@@ -60,7 +60,8 @@ SocialWorker.add( 'General Information', {
 
 }, 'User Selections', {
 
-	bookmarkedChildren: { type: Types.Relationship, label: 'bookmarked children', ref: 'Child', many: true, noedit: true }
+	bookmarkedChildren: { type: Types.Relationship, label: 'bookmarked children', ref: 'Child', many: true, noedit: true },
+	bookmarkedSiblingGroups: { type: Types.Relationship, label: 'bookmarked sibling group children', ref: 'Child', many: true, noedit: true }
 
 });
 
@@ -279,6 +280,15 @@ SocialWorker.schema.methods.setChangeHistory = function setChangeHistory( done )
 											targetParent: 'name',
 											targetField: 'full',
 											label: 'bookmarked children',
+											type: 'relationship',
+											model: 'Child' }, model, modelBefore, changeHistory, done);
+			},
+			done => {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											name: 'bookmarkedSiblingGroups',
+											targetParent: 'name',
+											targetField: 'full',
+											label: 'bookmarked sibling group children',
 											type: 'relationship',
 											model: 'Child' }, model, modelBefore, changeHistory, done);
 			}
