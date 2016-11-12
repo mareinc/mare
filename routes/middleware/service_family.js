@@ -95,13 +95,9 @@ exports.removeChildBookmark = function removeChildBookmark(req, res, next) {
 			bookmarkIndex		= bookmarkedChildren.indexOf(childId);
 		// Only remove the bookmark if it has already been saved.  This is unlikely, and would require a bad state in the system,
 		// but the check has been added for an extra layer of safety
-		console.log('1')
-		console.log(bookmarkedChildren);
 		if(bookmarkedChildren.indexOf(childId) !== -1) {
 			bookmarkedChildren.splice(bookmarkIndex, 1);
 		}
-		console.log('2');
-		console.log(bookmarkedChildren);
 
 		locals.user.update({ bookmarkedChildren: bookmarkedChildren }, { multi: false }, function (err, raw) {
 			if (err) {
