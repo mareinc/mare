@@ -71,6 +71,8 @@ exports = module.exports = app => {
 	app.post( '/services/get-sibling-group-details'		, childService.getSiblingGroupDetails );
 	app.post( '/services/add-child-bookmark'			, familyService.addChildBookmark );
 	app.post( '/services/remove-child-bookmark'			, familyService.removeChildBookmark );
+	app.post( '/services/add-sibling-group-bookmark'	, familyService.addSiblingGroupBookmark );
+	app.post( '/services/remove-sibling-group-bookmark'	, familyService.removeSiblingGroupBookmark );
 	app.post( '/services/get-gallery-permissions'		, permissionsService.getGalleryPermissions );
 	app.post( '/services/register-for-event'			, eventService.addUser );
 	app.post( '/services/unregister-for-event'			, eventService.removeUser );
