@@ -323,30 +323,31 @@ exports.getRelevantSiblingGroupInformation = ( siblingGroups, locals ) => {
 			registrationNumbersString				: middleware.getArrayAsList( registrationNumbersArray ),
 			registrationDatesConverted				: children.map( child => middleware.convertDate( child.registrationDate ) ),
 			genders									: _.uniq( children.map( child => child.gender.gender ) ),
-			races									: _.uniq( _.flatten( children.map( child => _.pluck(child.race, 'race') ) ) ),
+			races									: _.uniq( _.flatten( children.map( child => _.pluck(child.race, 'race' ) ) ) ),
 			siblingContactsCount					: children[0].siblingsToBePlacedWith.length,		
-			languages								: _.uniq( _.flatten( children.map( child => _.pluck(child.language, 'language') ) ) ),
+			languages								: _.uniq( _.flatten( children.map( child => _.pluck(child.language, 'language' ) ) ) ),
 			legalStatuses							: legalStatusesArray,
 			legalStatusesString						: middleware.getArrayAsList( legalStatusesArray ),
 			hasContactWithBiologicalSiblings		: _.uniq( children.map( child => child.hasContactWithSiblings || false ) ),
 			hasContactWithBiologicalParents			: _.uniq( children.map( child => child.hasContactWithBirthFamily || false ) ),
-			physicalNeeds							: _.uniq( children.map( child => needsMap[child.physicalNeeds] ) ),
-			emotionalNeeds							: _.uniq( children.map( child => needsMap[child.emotionalNeeds] ) ),
-			intellectualNeeds						: _.uniq( children.map( child => needsMap[child.intellectualNeeds] ) ),
-			disabilities							: _.uniq( _.flatten( children.map( child => _.pluck(child.disabilities, 'disability') ) ) ),
-			otherConsiderations						: _.uniq( _.flatten( children.map( child => _.pluck(child.otherConsiderations, 'otherConsideration') ) ) ),
-			recommendedFamilyConstellations			: _.uniq( _.flatten( children.map( child => _.pluck(child.recommendedFamilyConstellation, 'familyConstellation') ) ) ),
-			requiresSiblings						: _.uniq( children.map( child => otherFamilyConstellationConsiderations.indexOf('multi-child home') !== -1 ) ),
-			requiresNoSiblings						: _.uniq( children.map( child => otherFamilyConstellationConsiderations.indexOf('childless home') !== -1 ) ),
-			requiresYoungerSibling					: _.uniq( children.map( child => otherFamilyConstellationConsiderations.indexOf('requires younger children') !== -1 ) ),
-			requiresOlderSibling					: _.uniq( children.map( child => otherFamilyConstellationConsiderations.indexOf('requires older children') !== -1 ) ),
-			noPets									: _.uniq( children.map( child => otherFamilyConstellationConsiderations.indexOf('no pets') !== -1 ) ),
-			galleryImage							: children[0].siblingGroupGalleryImage,
-			detailImage								: children[0].siblingGroupDetailImage,
+			physicalNeeds							: _.uniq( children.map( child => needsMap[ child.physicalNeeds ] ) ),
+			emotionalNeeds							: _.uniq( children.map( child => needsMap[ child.emotionalNeeds ] ) ),
+			intellectualNeeds						: _.uniq( children.map( child => needsMap[ child.intellectualNeeds ] ) ),
+			disabilities							: _.uniq( _.flatten( children.map( child => _.pluck( child.disabilities, 'disability' ) ) ) ),
+			otherConsiderations						: _.uniq( _.flatten( children.map( child => _.pluck( child.otherConsiderations, 'otherConsideration' ) ) ) ),
+			recommendedFamilyConstellations			: _.uniq( _.flatten( children.map( child => _.pluck( child.recommendedFamilyConstellation, 'familyConstellation' ) ) ) ),
+			requiresSiblings						: _.uniq( children.map( child => otherFamilyConstellationConsiderations.indexOf( 'multi-child home' ) !== -1 ) ),
+			requiresNoSiblings						: _.uniq( children.map( child => otherFamilyConstellationConsiderations.indexOf( 'childless home' ) !== -1 ) ),
+			requiresYoungerSibling					: _.uniq( children.map( child => otherFamilyConstellationConsiderations.indexOf( 'requires younger children' ) !== -1 ) ),
+			requiresOlderSibling					: _.uniq( children.map( child => otherFamilyConstellationConsiderations.indexOf( 'requires older children' ) !== -1 ) ),
+			noPets									: _.uniq( children.map( child => otherFamilyConstellationConsiderations.indexOf( 'no pets' ) !== -1 ) ),
+			galleryImage							: children[ 0 ].siblingGroupGalleryImage,
+			detailImage								: children[ 0 ].siblingGroupDetailImage,
 			hasVideo								: _.uniq( children.map( child => child.siblingGroupVideo && child.siblingGroupVideo.length > 0 ? true : false ) ), // Need to add a group video
 			wednesdaysChild							: _.uniq( children.map( child => child.wednesdaysChild ) ),
 			numberOfSiblings						: _.uniq( children.map( child => child.siblings.length ) ), // TODO: Ask Lisa if the number of siblings between children can vary (think half siblings)
-			updatedAt								: _.uniq( children.map( child => child.updatedAt ) )
+			updatedAt								: _.uniq( children.map( child => child.updatedAt ) ),
+			isBookmarked							: children.map( child => child.isBookmarked === true ).indexOf( true ) > 0 ? true : false
 		};
 	});
 }
@@ -354,7 +355,7 @@ exports.getRelevantSiblingGroupInformation = ( siblingGroups, locals ) => {
 exports.getChildDetails = ( req, res, next ) => {
 
 	var childData = req.body,
-		registrationNumber = childData['registrationNumber'];
+		registrationNumber = childData[ 'registrationNumber' ];
 
 	/* TODO: Fetch only the needed fields instead of grabbing everything */
 	Child.model.findOne()
