@@ -148,6 +148,31 @@ exports.getChildByRegistrationNumber = ( req, res, done, registrationNumber ) =>
 
 };
 
+exports.getChildrenByRegistrationNumbers = ( req, res, done, registrationNumbers ) => {
+
+	let locals = res.locals;
+	// convert the array of numbers as strings to an array of numbers
+	const targetRegistrationNumbers = registrationNumbers.map( registrationNumber => parseInt( registrationNumber, 10 ) );
+
+	Child.model.find()
+			.where( 'registrationNumber' ).in( targetRegistrationNumbers )
+			.exec()
+			.then( children => {
+
+				locals.children = children;
+				// execute done function if async is used to continue the flow of execution
+ 				// TODO: if this is used in non-async middleware, done or next should be passed into options and the appropriate one should be executed
+				done();
+
+			}, err => {
+
+				console.log( err );
+				done();
+
+			});
+
+};
+
 /* Expose the child data for the gallery view to the front-end via an API call */
 exports.getGalleryData = ( req, res, next ) => {
 
@@ -156,7 +181,7 @@ exports.getGalleryData = ( req, res, next ) => {
 	locals.allChildren		= [];
 	// create sets to store the individual children and sibling groups
 	locals.soloChildren		= new Set();
-	locals.siblingGroups	= new Set(); // format: Set( { ids: Set(), children: []}, ... )
+	locals.siblingGroups	= new Set(); // format: Set( { ids: Set(), children: [] }, ... )
 	// variables to determine what children the user has access to
 	locals.userType			= req.user ? req.user.get('userType') : 'anonymous';
 	locals.targetChildren	= locals.userType === 'anonymous' || locals.userType === 'site visitor' ? 'unrestricted' : 'all';
@@ -330,7 +355,7 @@ exports.getRelevantSiblingGroupInformation = ( siblingGroups, locals ) => {
 			hasContactWithBiologicalSiblings		: _.uniq( children.map( child => child.hasContactWithSiblings || false ) ),
 			hasVideo								: _.uniq( children.map( child => child.siblingGroupVideo && child.siblingGroupVideo.length > 0 ? true : false ) ), // Need to add a group video
 			intellectualNeeds						: _.uniq( children.map( child => needsMap[ child.intellectualNeeds ] ) ),
-			isBookmarked							: children.map( child => child.isBookmarked === true ).indexOf( true ) > 0 ? true : false, // set to true if any of the children have true for isBookmarked
+			isBookmarked							: children.map( child => child.isBookmarked === true ).indexOf( true ) !== -1 ? true : false, // set to true if any of the children have true for isBookmarked
 			languages								: _.uniq( _.flatten( children.map( child => _.pluck(child.language, 'language' ) ) ) ),
 			legalStatuses							: legalStatusesArray,
 			legalStatusesString						: middleware.getArrayAsList( legalStatusesArray ),
@@ -358,7 +383,7 @@ exports.getRelevantSiblingGroupInformation = ( siblingGroups, locals ) => {
 
 exports.getChildDetails = ( req, res, next ) => {
 
-	const childData = req.body,
+	const childData = req.body;
 	const registrationNumber = childData[ 'registrationNumber' ];
 
 	/* TODO: Fetch only the needed fields instead of grabbing everything */
