@@ -8,7 +8,8 @@
 		events: {
 			'click .child-media-box'						: 'displayChildDetails',
 			'click .sibling-group-media-box'				: 'displaySiblingGroupDetails',
-			'click .bookmark'								: 'toggleBookmark',
+			'click .child-bookmark'							: 'toggleChildBookmark',
+			'click .sibling-group-bookmark'					: 'toggleSiblingGroupBookmark',
 			'change .waiting-child-profiles__gallery-filter': 'sortGallery'
 		},
 
@@ -48,20 +49,16 @@
 
 				view.$( '.profiles-container' ).html( childrenHtml + siblingGroupsHtml );
 				// Once the html is rendered to the page, initialize the gallery display plugin
-				view.initializeChildrenMediaBoxes();
-				view.initializeSiblingGroupsMediaBoxes();
+				view.initializeMediaBoxes();
 			});
 		},
-
-		initializeChildrenMediaBoxes: function initializeChildrenMediaBoxes() {
+		/* ititializes the media box plugin that drives the images in the gallery */
+		initializeMediaBoxes: function initializeMediaBoxes() {
 			// initialize the photo listing children gallery grid
 			$( '#children-grid' ).mediaBoxes({
 				boxesToLoadStart: 12,
 				boxesToLoad 	: 8
 			});
-		},
-		
-		initializeSiblingGroupsMediaBoxes: function initializeSiblingGroupMediaBoxes() {
 			// initialize the photo listing sibling group gallery grid
 			$( '#sibling-groups-grid' ).mediaBoxes({
 				boxesToLoadStart: 12,
@@ -71,16 +68,19 @@
 
 		/* When a child card is clicked, pass the request to the subview in charge of the details modal */
 		displayChildDetails: function displayChildDetails( event ) {
+
 			mare.views.childDetails.handleGalleryClick( event );
 		},
 
 		/* When a sibling group card is clicked, pass the request to the subview in charge of the details modal */
 		displaySiblingGroupDetails: function displayChildDetails( event ) {
+
 			mare.views.siblingGroupDetails.handleGalleryClick( event );
 		},
 
 		/* Determine how to handle a click on the bookmark button based on the current state of the bookmark */
-		toggleBookmark: function toggleBookmark( event ) {
+		toggleChildBookmark: function toggleChildBookmark( event ) {
+
 			event.stopPropagation();
 			// DOM cache the current target for performance
 			var $currentTarget = $( event.currentTarget );
@@ -96,21 +96,49 @@
 			} else if( $currentTarget.hasClass( 'bookmark--active' ) ) {
 
 				$currentTarget.addClass( 'bookmark--disabled' );
-				this.removeBookmark( registrationNumber, $currentTarget );
+				this.removeChildBookmark( registrationNumber, $currentTarget );
 
 			// if the child is not currently bookmarked, add them
 			} else {
 
 				$currentTarget.addClass( 'bookmark--disabled' );
-				this.addBookmark( registrationNumber, $currentTarget );
+				this.addChildBookmark( registrationNumber, $currentTarget );
 
 			}
 		},
 
-		addBookmark: function addBookmark( registrationNumber, $currentTarget ) {
+		toggleSiblingGroupBookmark: function toggleSiblingGroupBookmark( event ) {
+
+			event.stopPropagation();
+			// DOM cache the current target for performance
+			var $currentTarget = $( event.currentTarget );
+			// Get the child's registration number to match them in the database
+			var registrationNumbers = $currentTarget.closest( '.media-box' ).data( 'registration-numbers' );
+
+			// if we are currently saving the users attempt to toggle the bookmark and the server hasn't processed the change yet, ignore the click event
+			if( $currentTarget.hasClass( 'bookmark--disabled' ) ) {
+
+				return;
+
+			// if the child is currently bookmarked, remove them
+			} else if( $currentTarget.hasClass( 'bookmark--active' ) ) {
+
+				$currentTarget.addClass( 'bookmark--disabled' );
+				this.removeSiblingGroupBookmark( registrationNumbers, $currentTarget );
+
+			// if the child is not currently bookmarked, add them
+			} else {
+
+				$currentTarget.addClass( 'bookmark--disabled' );
+				this.addSiblingGroupBookmark( registrationNumbers, $currentTarget );
+
+			}
+		},
+
+		addChildBookmark: function addChildBookmark( registrationNumber, $currentTarget ) {
 
 			$.ajax({
-				url: '/services/add-bookmark',
+				url: '/services/add-child-bookmark',
 				type: 'POST',
 				data: {
 					registrationNumber: registrationNumber
@@ -128,10 +156,10 @@
 
 		},
 
-		removeBookmark: function removeBookmark( registrationNumber, $currentTarget ) {
+		removeChildBookmark: function removeChildBookmark( registrationNumber, $currentTarget ) {
 
 			$.ajax({
-				url: '/services/remove-bookmark',
+				url: '/services/remove-child-bookmark',
 				type: 'POST',
 				data: {
 					registrationNumber: registrationNumber
@@ -147,6 +175,46 @@
 				console.log( err );
 			});
 
+		},
+
+		addSiblingGroupBookmark: function addSiblingGroupBookmark( registrationNumbers, $currentTarget ) {
+
+			$.ajax({
+				url: '/services/add-sibling-group-bookmark',
+				type: 'POST',
+				data: {
+					registrationNumbers: registrationNumbers
+				}
+			}).done( function( response ) {
+				// Once the bookmark has been saved successfully, change the icon, re-enable the bookmark, and show it as active
+				$currentTarget.children( '.bookmark__icon' ).removeClass( 'fa-plus-square-o' ).addClass( 'fa-minus-square-o' );
+				$currentTarget.removeClass( 'bookmark--disabled' );
+				$currentTarget.addClass( 'bookmark--active' );
+
+			}).fail( function( err ) {
+				// TODO: Show an error message to the user
+				console.log( err );
+			});
+		},
+
+		removeSiblingGroupBookmark: function removeSiblingGroupBookmark( registrationNumbers, $currentTarget ) {
+
+			$.ajax({
+				url: '/services/remove-sibling-group-bookmark',
+				type: 'POST',
+				data: {
+					registrationNumbers: registrationNumbers
+				}
+			}).done( function( response ) {
+				// Once the bookmark has been removed successfully, change the icon, re-enable the bookmark, and show it as inactive
+				$currentTarget.children( '.bookmark__icon' ).removeClass( 'fa-minus-square-o' ).addClass( 'fa-plus-square-o' );
+				$currentTarget.removeClass( 'bookmark--disabled' );
+				$currentTarget.removeClass( 'bookmark--active' );
+
+			}).fail( function( err ) {
+				// TODO: Show an error message to the user
+				console.log( err );
+			});
 		},
 
 		sortGallery: function sortGallery( event ) {
