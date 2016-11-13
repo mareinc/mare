@@ -507,6 +507,12 @@ Child.schema.methods.setChangeHistory = function( done ) {
 			},
 			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
+											name: 'isVisibleInGallery',
+											label: 'child is visible in the gallery',
+											type: 'boolean' }, model, modelBefore, changeHistory, done);
+			},
+			done => {
+				ChangeHistoryMiddleware.checkFieldForChanges({
 											name: 'registrationDate',
 											label: 'registration date',
 											type: 'date' }, model, modelBefore, changeHistory, done);
