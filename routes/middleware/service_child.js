@@ -127,7 +127,7 @@ exports.getChildByRegistrationNumber = ( req, res, done, registrationNumber ) =>
 
 	let locals = res.locals;
 	// convert the number as a string to a number
-	const targetRegistrationNumber = parseInt( registrationDate, 10 );
+	const targetRegistrationNumber = parseInt( registrationNumber, 10 );
 
 	Child.model.find()
 			.where('registrationNumber', targetRegistrationNumber )
