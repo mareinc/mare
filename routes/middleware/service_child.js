@@ -24,7 +24,7 @@ exports.getAllChildren = ( req, res, done ) => {
 					// TODO: This filter should happen in a .where() above
 					// Filter out all children who don't have a status of 'active'
 					children = _.filter( children, child => {
-						return child.status.childStatus === 'active';
+						return child.status.childStatus === 'active' && child.isVisibleInGallery;
 					});
 
 					_.each( children, child => {
@@ -69,7 +69,7 @@ exports.getUnrestrictedChildren = ( req, res, done ) => {
 					// TODO: This filter should happen in a .where() above
 					// Filter out all children who don't have a status of 'active'
 					children = _.filter( children, child => {
-						return child.status.childStatus === 'active';
+						return child.status.childStatus === 'active' && child.isVisibleInGallery;
 					});
 
 					_.each(children, child => {
