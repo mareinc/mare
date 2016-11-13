@@ -310,3 +310,23 @@ exports.updateMyRemovedSiblingsToBePlacedWith = ( allSiblings, removedSiblings, 
                 done();
             });
 };
+
+exports.updateBookmarksToRemoveByStatus = ( statusId, bookmarkedChildrenToRemove, childId, done ) => {
+
+    keystone.list('Child Status').model.findById( statusId )
+			.exec()
+			.then( status => {
+
+				if( status.childStatus !== 'active' ) {
+					bookmarkedChildrenToRemove.push( childId );
+				}
+
+				done();
+
+			}, err => {
+
+				console.log( err );
+
+				done();
+			});	
+}
