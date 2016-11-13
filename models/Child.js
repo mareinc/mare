@@ -46,9 +46,6 @@ Child.add('Display Options', {
 	registrationNumber: { type: Number, label: 'registration number', format: false, required: true, initial: true },
 	registrationDate: { type: Types.Date, label: 'registration date', format: 'MM/DD/YYYY', required: true, initial: true },
 
-	video: { type: Types.Url, label: 'video', dependsOn: { mustBePlacedWithSiblings: false } },
-	siblingGroupVideo: { type: Types.Url, label: 'sibling group video', dependsOn: { mustBePlacedWithSiblings: true } },
-
 	name: {
 		first: { type: Types.Text, label: 'first name', required: true, initial: true },
 		middle: { type: Types.Text, label: 'middle name', initial: true },
@@ -140,6 +137,8 @@ Child.add('Display Options', {
 	siblingGroupImage: { type: Types.CloudinaryImage, label: 'sibling group image', folder: 'sibling-groups/', selectPrefix: 'sibling-groups/', publicID: 'siblingGroupFileName', dependsOn: { mustBePlacedWithSiblings: true }, autoCleanup: true },
 	siblingGroupGalleryImage: { type: Types.Url, hidden: true },
 	siblingGroupDetailImage: { type: Types.Url, hidden: true },
+	video: { type: Types.Url, label: 'video', dependsOn: { mustBePlacedWithSiblings: false } },
+	siblingGroupVideo: { type: Types.Url, label: 'sibling group video', dependsOn: { mustBePlacedWithSiblings: true } },
 	extranetUrl: { type: Types.Url, label: 'extranet and related profile url', initial: true } // TODO: Since this is redundant as this just points the the url where the photo exists (the child's page), we may hide this field.  This must be kept in as it will help us track down the child information in the old system in the event of an issue.
 
 }, 'Recruitment Options', {
