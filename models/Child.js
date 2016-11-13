@@ -39,7 +39,8 @@ const Child = new keystone.List('Child', {
 // Create fields
 Child.add('Display Options', {
 
-	siteVisibility: { type: Types.Select, label: 'child is visible to', options: 'everyone, registered social workers and families', required: true, initial: true }
+	siteVisibility: { type: Types.Select, label: 'child is visible to', options: 'everyone, registered social workers and families', required: true, initial: true },
+	isVisibleInGallery: { type: Types.Boolean, label: 'child is visible in the gallery', initial: true }
 
 }, 'Child Information', {
 
