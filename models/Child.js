@@ -24,9 +24,9 @@ const keystone				= require('keystone'),
 	ChildHistory			= keystone.list('Child History'),
 	ChangeHistoryMiddleware = require('../routes/middleware/models_change-history');
 	ChildMiddleware			= require('../routes/middleware/models_child');
+	FamilyMiddleware		= require('../routes/middleware/models_family');
+	SocialWorkerMiddleware	= require('../routes/middleware/models_social-worker');
 	UtilitiesMiddleware		= require('../routes/middleware/utilities');
-
-
 
 // Create model
 const Child = new keystone.List('Child', {
@@ -242,9 +242,12 @@ Child.schema.pre('save', function( next ) {
 	});
 });
 
-Child.schema.post( 'save', function( next ) {
-	// Uses several sub-functions to update all sibling information
-	this.updateSiblingFields();
+Child.schema.post( 'save', function() {
+
+	// update all sibling information
+	this.updateSiblingFields(),
+	// update saved bookmarks for families and social workers in the event of a status change or sibling group change
+	this.updateBookmarks()
 });
 
 Child.schema.methods.setImages = function( done ) {
@@ -384,9 +387,77 @@ Child.schema.methods.updateSiblingFields = function() {
 		}
 	], function() {
 
-		console.log('sibling information updated');
+		console.log( 'sibling information updated' );
+
+		done();
 	});
 };
+
+Child.schema.methods.updateBookmarks = function() {
+	'use strict';
+
+	const siblingsArrayBeforeSave				= this._original ? this._original.siblings.map( sibling => sibling.toString() ) : [], // this handles the model being saved for the first time
+		  siblingsArrayAfterSave				= this.siblings.map( sibling => sibling.toString() ),
+		  siblingsToBePlacedWithArrayBeforeSave	= this._original ? this._original.siblingsToBePlacedWith.map( sibling => sibling.toString() ) : [],
+		  siblingsToBePlacedWithArrayAfterSave	= this.siblingsToBePlacedWith.map( sibling => sibling.toString() ),
+
+		  siblingsBeforeSave					= new Set( siblingsArrayBeforeSave ),
+		  siblingsAfterSave						= new Set( siblingsArrayAfterSave ),
+		  siblingsToBePlacedWithBeforeSave		= new Set( siblingsToBePlacedWithArrayBeforeSave ),
+		  siblingsToBePlacedWithAfterSave		= new Set( siblingsToBePlacedWithArrayAfterSave ),
+
+		  childId								= this._id.toString();
+
+	// get all the siblings who are present before saving but not after (removed siblings)
+	const removedSiblings = siblingsBeforeSave.leftOuterJoin( siblingsAfterSave );
+	// get all the siblings who still remain if we ignore the removed siblings
+	const remainingSiblings = siblingsAfterSave.leftOuterJoin( removedSiblings );
+	// get all the aggregate of all siblings before and after saving
+	const allSiblings = siblingsBeforeSave.union( siblingsAfterSave );
+	// get all the siblings this child must be placed with who are present before saving but not after
+	const removedSiblingsToBePlacedWith = siblingsToBePlacedWithBeforeSave.leftOuterJoin( siblingsToBePlacedWithAfterSave );
+	// get all the siblings to be placed with who still remain if we ignore the removed siblings to be placed with
+	const remainingSiblingsToBePlacedWith = siblingsToBePlacedWithAfterSave.leftOuterJoin( removedSiblingsToBePlacedWith );
+	// get all the aggregate of all siblings to be placed with before and after saving
+	const allSiblingsToBePlacedWith = siblingsToBePlacedWithBeforeSave.union( siblingsToBePlacedWithAfterSave );
+
+	// arrays to store the ids of the children who's bookmarks are invalid and must be removed
+	let bookmarkedChildrenToRemove = [],
+		bookmarkedSiblingsToRemove = [];
+
+	async.series([
+		// mark the current child for removal as a child bookmark if they are no longer active
+		done => {
+			ChildMiddleware.updateBookmarksToRemoveByStatus( this.get( 'status' ), bookmarkedChildrenToRemove, childId, done );
+		},
+		done => {
+			// if the child needs to be placed with siblings
+			if( this.mustBePlacedWithSiblings ) {
+				// mark the current child for removal as a child bookmark
+				bookmarkedChildrenToRemove.push( childId );
+				// mark all siblings to be placed with for removal as child bookmarks
+				bookmarkedChildrenToRemove.concat( [ ...remainingSiblingsToBePlacedWith ] );
+				// mark all removed siblings to be placed with for removal as sibling bookmarks
+				bookmarkedSiblingsToRemove.concat( [ ...removedSiblingsToBePlacedWith ] );
+			// if the child doesn't need to be placed with siblings, but did prior to saving
+			} else if( this._original.mustBePlacedWithSiblings ) {
+				// mark the current child for removal as a sibling bookmark
+				bookmarkedSiblingsToRemove.push( childId );
+				// mark all removed siblings to be placed with for removal as sibling bookmarks
+				bookmarkedSiblingsToRemove.concat( [ ...removedSiblingsToBePlacedWith ] );
+			}
+
+			done();
+		}
+	], () => {
+		// remove all marked child bookmarks from families and social workers
+		FamilyMiddleware.removeChildBookmarks( bookmarkedChildrenToRemove );
+		SocialWorkerMiddleware.removeChildBookmarks( bookmarkedChildrenToRemove );
+		// remove all marked sibling bookmarks from families and social workers
+		FamilyMiddleware.removeSiblingBookmarks( bookmarkedSiblingsToRemove );
+		SocialWorkerMiddleware.removeSiblingBookmarks( bookmarkedSiblingsToRemove );
+	});
+}
 
 Child.schema.methods.setChangeHistory = function( done ) {
 	'use strict';
