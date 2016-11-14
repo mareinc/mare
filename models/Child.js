@@ -158,6 +158,8 @@ Child.add('Display Options', {
 
 	wednesdaysChild: { type: Types.Boolean, label: 'Wednesday\'s Child?', initial: true },
 	wednesdaysChildDate: { type: Types.Date, label: 'date of Wednesday\'s Child', format: 'MM/DD/YYYY', dependsOn: { wednesdaysChild: true }, initial: true },
+	wednesdaysChildVideo: { type: Types.Url, label: 'video', dependsOn: { wednesdaysChild: true, mustBePlacedWithSiblings: false } },
+	wednesdaysChildSiblingGroupVideo: { type: Types.Url, label: 'sibling group video', dependsOn: { wednesdaysChild: true, mustBePlacedWithSiblings: true } },
 
 	coalitionMeeting: { type: Types.Boolean, label: 'coalition meeting', initial: true },
 	coalitionMeetingDate: { type: Types.Date, label: 'date of coalition meeting', format: 'MM/DD/YYYY', dependsOn: { coalitionMeeting: true }, initial: true },
