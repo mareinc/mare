@@ -67,7 +67,7 @@
 		</div>
 
 		<div class="profile-details__video-container">
-			<iframe src=\{{video}} frameborder="0" allowfullscreen class="profile-details__video"></iframe>
+			<iframe src=\{{ video }} frameborder="0" allowfullscreen class="profile-details__video"></iframe>
 		</div>
 
 		<div class="detailed-profile__footer">You can help bring me closer to finding "a place to call HOME" by filling out the <a href="/form/information-request-form">MARE Information Request Form</a>. They will be glad to help you get more information about me.</div>
@@ -77,7 +77,19 @@
 
 	\{{#if wednesdaysChild}}
 	<div class="profile-tab__contents" data-contents="wednesdays-child">
-		<span>Wednesday's Child content will go here</span>
+		
+		<div class="profile__basic-info">
+			<div class="profile-details__name">\{{ name }}</div>
+			<div class="profile-details__age">Age \{{ age }}</div>
+			<div class="profile-details__registration-number">Registration # \{{ registrationNumber }}</div>
+		</div>
+
+		<div class="profile-details__video-container">
+			<iframe src=\{{ wednesdaysChildVideo }} frameborder="0" allowfullscreen class="profile-details__wednesdays-child-video"></iframe>
+		</div>
+
+		<div class="detailed-profile__footer">You can help bring me closer to finding "a place to call HOME" by filling out the <a href="/form/information-request-form">MARE Information Request Form</a>. They will be glad to help you get more information about me.</div>
+
 	</div>
 	\{{/if}}
 
