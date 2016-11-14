@@ -101,24 +101,43 @@ exports.getUnrestrictedChildren = ( req, res, done ) => {
  */
 exports.setNoChildImage = ( req, res, child ) => {
 	// Constant definitions.  TODO: Change these to const instead of var once support for ES2015 improves
-	const NO_IMAGE_MALE_GALLERY = 'images/no-image-male_gallery.png';
-	const NO_IMAGE_MALE_DETAILS = 'images/no-image-male_detail.png';
-	const NO_IMAGE_FEMALE_GALLERY = 'images/no-image-female_gallery.png';
-	const NO_IMAGE_FEMALE_DETAILS = 'images/no-image-female_detail.png';
-	// If there's no image or if the child has been identified as legal risk set the correct picture for males/females
-
-	if( child.image.url === undefined || child.legalStatus.legalStatus === 'legal risk' ) {
-
-		if( child.gender.gender === 'male' ) {
-
-			child.detailImage = NO_IMAGE_MALE_DETAILS;
-			child.galleryImage = NO_IMAGE_MALE_GALLERY;
-
-		} else if( child.gender.gender === 'female' ) {
-
-			child.detailImage = NO_IMAGE_FEMALE_DETAILS;
-			child.galleryImage = NO_IMAGE_FEMALE_GALLERY;
-
+	const NO_IMAGE_MALE_GALLERY				= 'images/no-image-male_gallery.png',
+		  NO_IMAGE_MALE_DETAILS				= 'images/no-image-male_details.png',
+		  NO_IMAGE_FEMALE_GALLERY			= 'images/no-image-female_gallery.png',
+		  NO_IMAGE_FEMALE_DETAILS			= 'images/no-image-female_details.png',
+		  NO_IMAGE_OTHER_GALLERY			= 'images/no-image-other_gallery.png',
+		  NO_IMAGE_OTHER_DETAILS			= 'images/no-image-other_details.png',
+		  NO_IMAGE_SIBLING_GROUP_GALLERY	= 'images/no-image-sibling-group_gallery.png',
+		  NO_IMAGE_SIBLING_GROUP_DETAILS	= 'images/no-image-sibling-group_details.png';
+	
+	// if the child is part of a sibling group
+	if( child.mustBePlacedWithSiblings ) {
+		// and is missing an image or is legal risk
+		if( !child.siblingGroupImage.secure_url || child.legalStatus.legalStatus === 'legal risk' ) {
+			// set the images to the placeholders for sibling groups
+			child.siblingGroupDetailImage = NO_IMAGE_SIBLING_GROUP_DETAILS;
+			child.siblingGroupGalleryImage = NO_IMAGE_SIBLING_GROUP_GALLERY;
+		}
+	// if the child is not part of a sibling group
+	} else {
+		// and is missing an image or is legal risk
+		if( !child.image.secure_url || child.legalStatus.legalStatus === 'legal risk' ) {
+			// and the child is male
+			if( child.gender.gender === 'male' ) {
+				// set the images to the placeholder for male children
+				child.detailImage = NO_IMAGE_MALE_DETAILS;
+				child.galleryImage = NO_IMAGE_MALE_GALLERY;
+			// but if the child is female
+			} else if( child.gender.gender === 'female' ) {
+				// set the images to the placeholder for female children
+				child.detailImage = NO_IMAGE_FEMALE_DETAILS;
+				child.galleryImage = NO_IMAGE_FEMALE_GALLERY;
+			// but if the child is neither male nor female
+			} else {
+				// set the images to the placeholder for transgender/other children
+				child.detailImage = NO_IMAGE_OTHER_DETAILS;
+				child.galleryImage = NO_IMAGE_OTHER_GALLERY;
+			}
 		}
 	}
 };
@@ -326,6 +345,9 @@ exports.getRelevantSiblingGroupInformation = ( siblingGroups, locals ) => {
 		'severe'	: 3
 	};
 
+	const NO_IMAGE_SIBLING_GROUP_GALLERY	= 'images/no-image-sibling-group_gallery',
+		  NO_IMAGE_SIBLING_GROUP_DETAILS	= 'images/no-image-sibling-group_details';
+
 	locals.siblingGroupsToReturn = siblingGroups.map( group => {
 		// cache the children array from the group for faster lookups
 		const children = group.children;
@@ -346,10 +368,10 @@ exports.getRelevantSiblingGroupInformation = ( siblingGroups, locals ) => {
 			ages									: agesArray,
 			agesConverted							: children.map( child => middleware.convertDate( child.birthDate ) ),
 			agesString								: middleware.getArrayAsList( agesArray ),
-			detailImage								: children[ 0 ].siblingGroupDetailImage,
+			detailImage								: _.uniq( children.map( child => child.siblingGroupDetailImage ) ).indexOf( NO_IMAGE_SIBLING_GROUP_DETAILS ) !== -1 ? NO_IMAGE_SIBLING_GROUP_DETAILS : children[ 0 ].siblingGroupDetailImage,
 			disabilities							: _.uniq( _.flatten( children.map( child => _.pluck( child.disabilities, 'disability' ) ) ) ),
 			emotionalNeeds							: _.uniq( children.map( child => needsMap[ child.emotionalNeeds ] ) ),
-			galleryImage							: children[ 0 ].siblingGroupGalleryImage,
+			galleryImage							:  _.uniq( children.map( child => child.siblingGroupGalleryImage ) ).indexOf( NO_IMAGE_SIBLING_GROUP_DETAILS ) !== -1 ? NO_IMAGE_SIBLING_GROUP_DETAILS : children[ 0 ].siblingGroupGalleryImage,
 			genders									: _.uniq( children.map( child => child.gender.gender ) ),
 			hasContactWithBiologicalParents			: _.uniq( children.map( child => child.hasContactWithBirthFamily || false ) ),
 			hasContactWithBiologicalSiblings		: _.uniq( children.map( child => child.hasContactWithSiblings || false ) ),
