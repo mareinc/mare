@@ -355,7 +355,7 @@ exports.getRelevantSiblingGroupInformation = ( siblingGroups, locals ) => {
 			hasContactWithBiologicalSiblings		: _.uniq( children.map( child => child.hasContactWithSiblings || false ) ),
 			hasVideo								: _.uniq( children.map( child => child.siblingGroupVideo && child.siblingGroupVideo.length > 0 ? true : false ) ), // Need to add a group video
 			intellectualNeeds						: _.uniq( children.map( child => needsMap[ child.intellectualNeeds ] ) ),
-			isBookmarked							: children.map( child => child.isBookmarked === true ).indexOf( true ) !== -1 ? true : false, // set to true if any of the children have true for isBookmarked
+			isBookmarked							: children.map( child => child.isBookmarked ).indexOf( true ) !== -1 ? true : false, // set to true if any of the children have true for isBookmarked
 			languages								: _.uniq( _.flatten( children.map( child => _.pluck(child.language, 'language' ) ) ) ),
 			legalStatuses							: legalStatusesArray,
 			legalStatusesString						: middleware.getArrayAsList( legalStatusesArray ),
@@ -376,7 +376,7 @@ exports.getRelevantSiblingGroupInformation = ( siblingGroups, locals ) => {
 			requiresYoungerSibling					: _.uniq( children.map( child => otherFamilyConstellationConsiderations.indexOf( 'requires younger children' ) !== -1 ) ),	
 			siblingContactsCount					: children[ 0 ].siblingsToBePlacedWith.length,
 			updatedAt								: _.uniq( children.map( child => child.updatedAt ) ),
-			wednesdaysChild							: _.uniq( children.map( child => child.wednesdaysChild ) )
+			wednesdaysChild							: children.map( child => child.wednesdaysChild ).indexOf( true ) !== -1 ? true : false
 		};
 	});
 }
@@ -394,11 +394,12 @@ exports.getChildDetails = ( req, res, next ) => {
         .then( child => {
 
         	const relevantData = {
-				hasImage			: _.isEmpty( child.image ) && child.image.url.length > 0,
-        		profilePart1		: child.profile.part1,
-        		profilePart2		: child.profile.part2,
-        		profilePart3		: child.profile.part3,
-        		video				: child.video && child.video.length > 0 ? child.video.replace( 'watch?v=', 'embed/' ) : undefined
+				hasImage				: _.isEmpty( child.image ) && child.image.url.length > 0,
+        		profilePart1			: child.profile.part1,
+        		profilePart2			: child.profile.part2,
+        		profilePart3			: child.profile.part3,
+        		video					: child.video && child.video.length > 0 ? child.video.replace( 'watch?v=', 'embed/' ) : undefined,
+				wednesdaysChildVideo	: child.wednesdaysChildVideo && child.wednesdaysChildVideo.length > 0 ? child.wednesdaysChildVideo.replace( 'watch?v=', 'embed/' ) : undefined
         	};
 
         	res.send( relevantData );
@@ -424,11 +425,12 @@ exports.getSiblingGroupDetails = ( req, res, next ) => {
         .then( child => {
 
         	const relevantData = {
-				hasImage			: _.isEmpty( child.siblingGroupImage ) && child.siblingGroupImage.url.length > 0,
-        		profilePart1		: child.groupProfile.part1,
-        		profilePart2		: child.groupProfile.part2,
-        		profilePart3		: child.groupProfile.part3,
-        		video				: child.siblingGroupVideo && child.siblingGroupVideo.length > 0 ? child.siblingGroupVideo.replace('watch?v=', 'embed/') : undefined
+				hasImage				: _.isEmpty( child.siblingGroupImage ) && child.siblingGroupImage.url.length > 0,
+        		profilePart1			: child.groupProfile.part1,
+        		profilePart2			: child.groupProfile.part2,
+        		profilePart3			: child.groupProfile.part3,
+        		video					: child.siblingGroupVideo && child.siblingGroupVideo.length > 0 ? child.siblingGroupVideo.replace('watch?v=', 'embed/') : undefined,
+				wednesdaysChildVideo	: child.wednesdaysChildSiblingGroupVideo && child.wednesdaysChildSiblingGroupVideo.length > 0 ? child.wednesdaysChildSiblingGroupVideo.replace( 'watch?v=', 'embed/' ) : undefined
         	};
 
         	res.send( relevantData );
