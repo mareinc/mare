@@ -1,33 +1,33 @@
-var keystone 	= require('keystone'),
-	_			= require('underscore'),
-	moment		= require('moment'),
-	async		= require('async');
+var keystone 	= require( 'keystone' ),
+	_			= require( 'underscore' ),
+	moment		= require( 'moment' ),
+	async		= require( 'async' );
 
-exports.checkFieldForChanges = function checkFieldForChanges(field, model, modelBefore, changeHistory, done) {
+exports.checkFieldForChanges = ( field, model, modelBefore, changeHistory, done ) => {
 
-	var fieldBefore,
+	let fieldBefore,
 		fieldAfter,
 		valuesBefore = [],
 		values = [],
 		valueBefore = '',
 		value = '';
 
-	if(field.grandparent) {
+	if( field.grandparent ) {
 		// Keystone converts from undefined to {} in some cases on second save, this fixes the comparison
-		modelBefore[field.grandparent] = modelBefore[field.grandparent] ? modelBefore[field.grandparent] : {};
-		model[field.grandparent] = model[field.grandparent] ? model[field.grandparent] : {};
+		modelBefore[ field.grandparent ] = modelBefore[ field.grandparent ] ? modelBefore[ field.grandparent ] : {};
+		model[ field.grandparent ] = model[ field.grandparent ] ? model[ field.grandparent ] : {};
 		// if field.grandparent is set to an empty object, the check for field.parent will return undefined
 		// if this is the case, we can't get the field data without throwing an error
-		fieldBefore = modelBefore[field.grandparent][field.parent] ? modelBefore[field.grandparent][field.parent][field.name] : undefined;
-		fieldAfter = model[field.grandparent][field.parent] ? model[field.grandparent][field.parent][field.name] : undefined;
+		fieldBefore = modelBefore[ field.grandparent ][ field.parent ] ? modelBefore[ field.grandparent ][ field.parent ][ field.name ] : undefined;
+		fieldAfter = model[ field.grandparent ][ field.parent ] ? model[ field.grandparent ][ field.parent ][ field.name ] : undefined;
 
-	} else if(field.parent) {
+	} else if( field.parent ) {
 		// Keystone converts from undefined to {} in some cases on second save, this fixes the comparison
-		modelBefore[field.parent] = modelBefore[field.parent] ? modelBefore[field.parent] : {};
-		model[field.parent] = model[field.parent] ? model[field.parent] : {};
+		modelBefore[ field.parent ] = modelBefore[ field.parent ] ? modelBefore[ field.parent ] : {};
+		model[ field.parent ] = model[ field.parent ] ? model[ field.parent ] : {};
 
-		fieldBefore = modelBefore[field.parent][field.name];
-		fieldAfter = model[field.parent][field.name];
+		fieldBefore = modelBefore[ field.parent ][ field.name ];
+		fieldAfter = model[ field.parent ][ field.name ];
 
 	} else {
 
@@ -35,143 +35,143 @@ exports.checkFieldForChanges = function checkFieldForChanges(field, model, model
 		fieldAfter = model[field.name];
 	}
 
-	if([ 'string', 'boolean', 'number' ].includes(field.type) && fieldBefore != fieldAfter) {
+	if( [ 'string', 'boolean', 'number' ].includes( field.type ) && fieldBefore !== fieldAfter && ( !!fieldBefore || !!fieldAfter ) ) {
 		valueBefore = fieldBefore ? fieldBefore : '';
 		valueAfter = fieldAfter ? fieldAfter : '';
 
-		exports.addToHistoryEntry(valueBefore, valueAfter, field.label, changeHistory);
+		exports.addToHistoryEntry( valueBefore, valueAfter, field.label, changeHistory );
 
 		done();
 
 	// Date.parse(null) returns NaN, and NaN !== NaN, so the second check is needed
-	} else if(field.type === 'date' && (fieldBefore || fieldAfter) && Date.parse(fieldBefore) !== Date.parse(fieldAfter)) {
+	} else if( field.type === 'date' && ( fieldBefore || fieldAfter ) && Date.parse( fieldBefore ) !== Date.parse( fieldAfter ) ) {
 		// convert the values to nicely formatted dates
-		valueBefore = fieldBefore ? moment(fieldBefore).format('MM/DD/YYYY') : '';
-		valueAfter = fieldAfter ? moment(fieldAfter).format('MM/DD/YYYY') : '';
+		valueBefore = fieldBefore ? moment(fieldBefore).format( 'MM/DD/YYYY' ) : '';
+		valueAfter = fieldAfter ? moment(fieldAfter).format( 'MM/DD/YYYY' ) : '';
 
-		exports.addToHistoryEntry(valueBefore, valueAfter, field.label, changeHistory);
+		exports.addToHistoryEntry( valueBefore, valueAfter, field.label, changeHistory );
 
 		done();
 	// handle multi: true in Relationship fields
-	} else if(field.type === 'relationship' && (Array.isArray(fieldBefore) || Array.isArray(fieldAfter))) {
+	} else if( field.type === 'relationship' && ( Array.isArray( fieldBefore ) || Array.isArray( fieldAfter ) ) ) {
 
 		async.parallel([
-			function(done) {
+			done => {
 
-				keystone.list(field.model).model.find()
-							.where('_id').in(fieldBefore)
-							.exec()
-							.then(function (models) {
+				keystone.list( field.model ).model.find()
+							.where( '_id' ).in( fieldBefore )
+							.exec(  )
+							.then( models => {
 
-								_.each(models, function(model) {
-									if(field.targetParent) {
-										valuesBefore.push(model[field.targetParent][field.targetField]);
+								_.each( models, model => {
+									if( field.targetParent ) {
+										valuesBefore.push( model[ field.targetParent ][ field.targetField ] );
 									} else {
-										valuesBefore.push(model[field.targetField]);
+										valuesBefore.push( model[ field.targetField ] );
 									}
 								});
 
 								// execute done function if async is used to continue the flow of execution
 								done();
 
-							}, function(err) {
+							}, err => {
 
-								console.log(err);
+								console.log( err );
 								done();
 							});
 			},
-			function(done) {
+			done => {
 
-				keystone.list(field.model).model.find()
-							.where('_id').in(fieldAfter)
+				keystone.list( field.model ).model.find()
+							.where( '_id' ).in( fieldAfter )
 							.exec()
-							.then(function (models) {
+							.then( models => {
 
-								_.each(models, function(model) {
-									if(field.targetParent) {
-										values.push(model[field.targetParent][field.targetField]);
+								_.each( models, model => {
+									if( field.targetParent ) {
+										values.push( model[ field.targetParent ][ field.targetField ] );
 									} else {
-										values.push(model[field.targetField]);
+										values.push( model[ field.targetField ] );
 									}
 								});
 
 								// execute done function if async is used to continue the flow of execution
 								done();
 
-							}, function(err) {
+							}, err => {
 
-								console.log(err);
+								console.log( err );
 								done();
 							});
 			}
-		], function() {
+		], () => {
 
-			var valuesBeforeString = valuesBefore.sort().toString().replace(/,/g, ', '),
-				valuesString = values.sort().toString().replace(/,/g, ', ');
+			var valuesBeforeString = valuesBefore.sort().toString().replace( /,/g, ', ' ),
+				valuesString = values.sort().toString().replace( /,/g, ', ' );
 
-			if(valuesBeforeString !== valuesString) {
+			if( valuesBeforeString !== valuesString ) {
 
-				exports.addToHistoryEntry(valuesBeforeString, valuesString, field.label, changeHistory);
+				exports.addToHistoryEntry( valuesBeforeString, valuesString, field.label, changeHistory );
 			}
 
 			done();
 
 		});
 
-	} else if(field.type === 'relationship' && (!Array.isArray(fieldBefore) && !Array.isArray(fieldAfter))) {
+	} else if( field.type === 'relationship' && ( !Array.isArray( fieldBefore ) && !Array.isArray( fieldAfter ) ) ) {
 
-		if(!fieldBefore && !fieldAfter) {
+		if( !fieldBefore && !fieldAfter ) {
 			done();
 		} else {
 			async.parallel([
-				function(done) {
-					if(!fieldBefore) {
+				done => {
+					if( !fieldBefore ) {
 						done();
 					} else {
-						keystone.list(field.model).model.findById(fieldBefore)
+						keystone.list( field.model ).model.findById( fieldBefore )
 									.exec()
-									.then(function (model) {
+									.then( model => {
 
-										if(field.targetParent) {
-											valueBefore = model[field.targetParent][field.targetField];
+										if( field.targetParent ) {
+											valueBefore = model[ field.targetParent ][ field.targetField ];
 										} else {
-											valueBefore = model[field.targetField];
+											valueBefore = model[ field.targetField ];
 										}
 
 										done();
-									}, function(err) {
+									}, err => {
 
-										console.log(err);
+										console.log( err );
 										done();
 									});
 					}
 				},
-				function(done) {
-					if(!fieldAfter) {
+				done => {
+					if( !fieldAfter ) {
 						done();
 					} else {
-						keystone.list(field.model).model.findById(fieldAfter)
+						keystone.list( field.model ).model.findById( fieldAfter )
 									.exec()
-									.then(function (model) {
+									.then( model => {
 
-										if(field.targetParent) {
-											value = model[field.targetParent][field.targetField];
+										if( field.targetParent ) {
+											value = model[ field.targetParent ][ field.targetField ];
 										} else {
-											value = model[field.targetField];
+											value = model[ field.targetField ];
 										}
 
 										done();
-									}, function(err) {
+									}, err => {
 
-										console.log(err);
+										console.log( err );
 										done();
 									});
 					}
 				}
-			], function() {
-				if(valueBefore !== value) {
+			], () => {
+				if( valueBefore !== value ) {
 
-					exports.addToHistoryEntry(valueBefore, value, field.label, changeHistory);
+					exports.addToHistoryEntry( valueBefore, value, field.label, changeHistory );
 				}
 
 				done();
@@ -183,15 +183,17 @@ exports.checkFieldForChanges = function checkFieldForChanges(field, model, model
 	}
 }
 
-exports.addToHistoryEntry = function addToHistoryEntry(fieldBefore, field, label, changeHistory) {
+exports.addToHistoryEntry = ( fieldBefore, field, label, changeHistory ) => {
 
-	if(changeHistory.changes !== '') {
+	if( changeHistory.changes !== '' ) {
 		changeHistory.changes += ' || ';
 	}
-	if(fieldBefore === false) {
+
+	if( fieldBefore === false ) {
 		fieldBefore = 'false';
 	}
-	if(field === false) {
+
+	if( field === false ) {
 		field = 'false';
 	}
 

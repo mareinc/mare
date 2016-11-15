@@ -1,77 +1,81 @@
-var keystone				= require('keystone'),
-	_						= require('underscore'),
-	Region 					= keystone.list('Region'),
-	Position				= keystone.list('Social Worker Position'),
-	Race					= keystone.list('Race'),
-	State					= keystone.list('State'),
-	Gender					= keystone.list('Gender'),
-	LegalStatus				= keystone.list('Legal Status'),
-	Language				= keystone.list('Language'),
-	FamilyConstellation		= keystone.list('Family Constellation'),
-	Disability				= keystone.list('Disability'),
-	OtherConsideration		= keystone.list('Other Consideration'),
-	ChildType				= keystone.list('Child Type'),
-	WayToHearAboutMARE		= keystone.list('Way To Hear About MARE');
+var keystone				= require( 'keystone' ),
+	_						= require( 'underscore' ),
+	Region 					= keystone.list( 'Region' ),
+	Position				= keystone.list( 'Social Worker Position' ),
+	Race					= keystone.list( 'Race' ),
+	State					= keystone.list( 'State' ),
+	Gender					= keystone.list( 'Gender' ),
+	LegalStatus				= keystone.list( 'Legal Status' ),
+	Language				= keystone.list( 'Language' ),
+	FamilyConstellation		= keystone.list( 'Family Constellation' ),
+	Disability				= keystone.list( 'Disability' ),
+	OtherConsideration		= keystone.list( 'Other Consideration' ),
+	ChildStatus				= keystone.list( 'Child Status' ),
+	ChildType				= keystone.list( 'Child Type' ),
+	WayToHearAboutMARE		= keystone.list( 'Way To Hear About MARE' );
 
-exports.getAllRegions = function getAllRegions(req, res, done) {
+exports.getAllRegions = ( req, res, done ) => {
 
 	req.locals = res.locals || {}; /* TODO: This line (which appears in lots of services) might not be needed, check it during refactor */
-	var locals = res.locals;
+	
+	let locals = res.locals;
 
 	Region.model.find()
 				.exec()
-				.then(function (regions) {
+				.then( regions => {
 
 					locals.regions = regions;
 					// execute done function if async is used to continue the flow of execution
 					done()
 
-				}, function(err) {
+				}, err => {
 
-					console.log(err);
+					console.log( err );
 					done();
 
 				});
 };
 
-exports.getAllSocialWorkerPositions = function getAllSocialWorkerPositions(req, res, done) {
+exports.getAllSocialWorkerPositions = ( req, res, done ) => {
 
 	req.locals = res.locals || {};
-	var locals = res.locals;
+	
+	let locals = res.locals;
 
 	Position.model.find()
 				.exec()
-				.then(function (positions) {
+				.then( positions => {
 
 					locals.positions = positions;
 					// execute done function if async is used to continue the flow of execution
 					done()
 
-				}, function(err) {
+				}, err => {
 
-					console.log(err);
+					console.log( err );
 					done();
 
 				});
 };
 
-exports.getAllRaces = function getAllRaces(req, res, done, options) {
+exports.getAllRaces = ( req, res, done, options ) => {
 
 	req.locals = res.locals || {};
-	var locals = res.locals;
+	
+	let locals = res.locals;
 
 	Race.model.find()
 				.exec()
-				.then(function (races) {
+				.then( races => {
 					// If there is a value of 'other' in the list, which should appear at the bottom of any
 					// dropdown lists on the site, add an appropriate attribute
-					if(options && options.other) {
+					if( options && options.other ) {
 
-						_.each(races, function(race) {
-							if(race.race === 'other') {
+						for( let race of races ) {
+							if( race.race === 'other' ) {
 								race.other = true;
 							}
-						});
+						};
 
 					}
 
@@ -79,30 +83,31 @@ exports.getAllRaces = function getAllRaces(req, res, done, options) {
 					// execute done function if async is used to continue the flow of execution
 					done()
 
-				}, function(err) {
+				}, err => {
 
-					console.log(err);
+					console.log( err );
 					done();
 
 				});
 };
 
-exports.getAllStates = function getAllStates(req, res, done, options) {
+exports.getAllStates = ( req, res, done, options ) => {
 
 	req.locals = res.locals || {};
-	var locals = res.locals;
+	
+	let locals = res.locals;
 
 	State.model.find()
 				.exec()
-				.then(function (states) {
+				.then( states => {
 					// If there is a default value which should appear selected when a dropdown menu is first rendered add an appropriate attribute
-					if(options && options.default) {
+					if( options && options.default ) {
 
-						_.each(states, function(state) {
+						for( let state of states ) {
 							if(state.state === options.default) {
 								state.defaultSelection = true;
 							}
-						});
+						};
 
 					}
 
@@ -110,179 +115,187 @@ exports.getAllStates = function getAllStates(req, res, done, options) {
 					// execute done function if async is used to continue the flow of execution
 					done()
 
-				}, function(err) {
+				}, err => {
 
-					console.log(err);
+					console.log( err );
 					done();
 
 				});
 };
 
-exports.getAllGenders = function getAllGenders(req, res, done) {
+exports.getAllGenders = ( req, res, done ) => {
 
 	req.locals = res.locals || {};
-	var locals = res.locals;
+	
+	let locals = res.locals;
 
 	Gender.model.find()
 				.exec()
-				.then(function (genders) {
+				.then( genders => {
 
 					locals.genders = genders;
 					// execute done function if async is used to continue the flow of execution
 					done()
 
-				}, function(err) {
+				}, err => {
 
-					console.log(err);
+					console.log( err );
 					done();
 
 				});
 };
 
-exports.getAllLegalStatuses = function getAllLegalStatuses(req, res, done) {
+exports.getAllLegalStatuses = ( req, res, done ) => {
 
 	req.locals = res.locals || {};
-	var locals = res.locals;
+	
+	let locals = res.locals;
 
 	LegalStatus.model.find()
 				.exec()
-				.then(function (legalStatuses) {
+				.then( legalStatuses => {
 
 					locals.legalStatuses = legalStatuses;
 					// execute done function if async is used to continue the flow of execution
 					done()
 
-				}, function(err) {
+				}, err => {
 
-					console.log(err);
+					console.log( err );
 					done();
 
 				});
 };
 
-exports.getAllLanguages = function getAllLanguages(req, res, done) {
+exports.getAllLanguages = ( req, res, done ) => {
 
 	req.locals = res.locals || {};
-	var locals = res.locals;
+	
+	let locals = res.locals;
 
 	Language.model.find()
 				.exec()
-				.then(function (languages) {
+				.then( languages => {
 
 					locals.languages = languages;
 					// execute done function if async is used to continue the flow of execution
 					done()
 
-				}, function(err) {
+				}, err => {
 
-					console.log(err);
+					console.log( err );
 					done();
 
 				});
 };
 
-exports.getAllFamilyConstellations = function getAllFamilyConstellations(req, res, done) {
+exports.getAllFamilyConstellations = ( req, res, done ) => {
 
 	req.locals = res.locals || {};
-	var locals = res.locals;
+	
+	let locals = res.locals;
 
 	FamilyConstellation.model.find()
 				.exec()
-				.then(function (familyConstellations) {
+				.then( familyConstellations => {
 
 					locals.familyConstellations = familyConstellations;
 					// execute done function if async is used to continue the flow of execution
 					done()
 
-				}, function(err) {
+				}, err => {
 
-					console.log(err);
+					console.log( err );
 					done();
 
 				});
 };
 
-exports.getAllDisabilities = function getAllDisabilities(req, res, done) {
+exports.getAllDisabilities = ( req, res, done ) => {
 
 	req.locals = res.locals || {};
-	var locals = res.locals;
+	
+	let locals = res.locals;
 
 	Disability.model.find()
 				.exec()
-				.then(function (disabilities) {
+				.then( disabilities => {
 
 					locals.disabilities = disabilities;
 					// execute done function if async is used to continue the flow of execution
 					done()
 
-				}, function(err) {
+				}, err => {
 
-					console.log(err);
+					console.log( err );
 					done();
 
 				});
 };
 
-exports.getOtherConsiderations = function getOtherConsiderations(req, res, done) {
+exports.getOtherConsiderations = ( req, res, done ) => {
 
 	req.locals = res.locals || {};
-	var locals = res.locals;
+	
+	let locals = res.locals;
 
 	OtherConsideration.model.find()
 				.exec()
-				.then(function (otherConsiderations) {
+				.then( otherConsiderations => {
 
 					locals.otherConsiderations = otherConsiderations;
 					// execute done function if async is used to continue the flow of execution
 					done()
 
-				}, function(err) {
+				}, err => {
 
-					console.log(err);
+					console.log( err );
 					done();
 
 				});
 };
 
-exports.getChildTypesForWebsite = function getChildTypesForWebsite(req, res, done) {
+exports.getChildTypesForWebsite = ( req, res, done ) => {
 
 	req.locals = res.locals || {};
-	var locals = res.locals;
+	
+	let locals = res.locals;
 
 	ChildType.model.find()
 				.where('availableOnWebsite', true)
 				.exec()
-				.then(function (childTypes) {
+				.then( childTypes => {
 
 					locals.childTypes = childTypes;
 					// execute done function if async is used to continue the flow of execution
 					done()
 
-				}, function(err) {
+				}, err => {
 
-					console.log(err);
+					console.log( err );
 					done();
 
 				});
 };
 
-exports.getAllWaysToHearAboutMARE = function getAllWaysToHearAboutMARE(req, res, done, options) {
+exports.getAllWaysToHearAboutMARE = ( req, res, done, options ) => {
 
 	req.locals = res.locals || {};
-	var locals = res.locals;
+	
+	let locals = res.locals;
 
 	WayToHearAboutMARE.model.find()
 				.exec()
-				.then(function (waysToHearAboutMARE) {
+				.then( waysToHearAboutMARE => {
 					// If there is a value of 'other' in the list, which should appear at the bottom of any
 					// dropdown lists on the site, add an appropriate attribute
-					if(options && options.other) {
+					if( options && options.other ) {
 
-						_.each(waysToHearAboutMARE, function(wayToHearAboutMARE) {
-							if(wayToHearAboutMARE.wayToHearAboutMARE === 'other') {
+						for( let wayToHearAboutMARE of waysToHearAboutMARE ) {
+							if( wayToHearAboutMARE.wayToHearAboutMARE === 'other' ) {
 								wayToHearAboutMARE.other = true;
 							}
-						});
+						};
 
 					}
 
@@ -290,9 +303,9 @@ exports.getAllWaysToHearAboutMARE = function getAllWaysToHearAboutMARE(req, res,
 					// execute done function if async is used to continue the flow of execution
 					done()
 
-				}, function(err) {
+				}, err => {
 
-					console.log(err);
+					console.log( err );
 					done();
 
 				});

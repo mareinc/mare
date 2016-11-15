@@ -20,6 +20,8 @@
 			mare.collections.allChildren = mare.collections.allChildren || new mare.collections.Children();
 			// Create a collection to hold only the children currently displayed in the gallery
 			mare.collections.galleryChildren = mare.collections.galleryChildren || new mare.collections.Children();
+			// Create a collection to hold only the sibling groups currently displayed in the gallery
+			mare.collections.gallerySiblingGroups = mare.collections.gallerySiblingGroups || new mare.collections.SiblingGroups();
 
 			// Create a promise to resolve once we have data for all children the user is allowed to see
 			mare.promises.childrenDataLoaded = $.Deferred();
@@ -70,12 +72,13 @@
 				dataType: 'json',
 				url: '/services/get-children-data',
 				type: 'POST'
-			}).done(function(data) {
-
+			}).done(function( children ) {
 				// Store all children in a collection for easy access
-				mare.collections.allChildren.add(data);
+				mare.collections.allChildren.add( children.soloChildren );
 				// Store all children in the collecction for the current gallery display as we always start showing the full list
-				mare.collections.galleryChildren.add(data);
+				mare.collections.galleryChildren.add( children.soloChildren );
+				// Store all the sibling groups for the current gallery display
+				mare.collections.gallerySiblingGroups.add( children.siblingGroups );
 				// Resolve the promise tracking child data loading
 				mare.promises.childrenDataLoaded.resolve();
 

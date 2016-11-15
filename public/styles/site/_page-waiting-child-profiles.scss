@@ -209,7 +209,8 @@
 	margin-right: 15em;
 }
 
-.profile-details__video-container {
+.profile-details__video-container,
+.profile-details__wednesdays-child-video-container {
 	position: relative;
 	width: 100%;
 	height: 0;
@@ -217,7 +218,8 @@
 	margin-bottom: 1.5em;
 }
 
-.profile-details__video {
+.profile-details__video,
+.profile-details__wednesdays-child-video {
 	position: absolute;
 	top: 0;
 	left: 0;

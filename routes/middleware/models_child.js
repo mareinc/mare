@@ -4,8 +4,47 @@ var keystone 	        = require( 'keystone' ),
 	async		        = require( 'async' ),
     UtilitiesMiddleware	= require('./utilities');
 
-// TODO: the siblings update functions and siblings to be placed with update functions are nearly identical.  If when fixing issue #57, they can be merged, do so
-//       issue #57: https://github.com/autoboxer/MARE/issues/57
+/* takes in an array of child ids and returns an array of their registration numbers */
+exports.getRegistrationNumbersById = ( idsArray, registrationNumbersArray, done ) => {
+
+    keystone.list( 'Child' ).model.find()
+            .where( '_id' ).in( idsArray )
+            .exec()
+            .then( children => {
+
+                for( child of children ) {
+                    registrationNumbersArray.push( child.get( 'registrationNumber' ) );
+                };
+
+                done();
+            }, err => {
+
+                console.log( err );
+
+				done();
+            });
+};
+
+/* takes in an array of child ids and returns an array of their first names */
+exports.getFirstNamesById = ( idsArray, namesArray, done ) => {
+
+    keystone.list( 'Child' ).model.find()
+            .where( '_id' ).in( idsArray )
+            .exec()
+            .then( children => {
+
+                for( child of children ) {
+                    namesArray.push( child.name.first );
+                };
+
+                done();
+            }, err => {
+
+                console.log( err );
+
+				done();
+            });
+};
 
 /* updates sibling fields for chidren listed as siblings by adding missing entries */
 exports.updateMySiblings = ( mySiblings, childId, done ) => {
@@ -130,7 +169,7 @@ exports.updateMyRemovedSiblings = ( allSiblings, removedSiblings, childId, done 
 };
 
 /* updates sibling fields for chidren listed as siblings by adding missing entries */
-exports.updateMySiblingsToBePlacedWith = ( mySiblings, childId, groupProfile, done ) => {
+exports.updateMySiblingsToBePlacedWith = ( mySiblings, childId, groupProfile, siblingGroupImage, siblingGroupVideo, wednesdaysChildSiblingGroup, wednesdaysChildSiblingGroupDate, wednesdaysChildSiblingGroupVideo, done ) => {
 
     // create the group profile object based on what was passed in
     const newGroupProfile = groupProfile || {};
@@ -162,19 +201,32 @@ exports.updateMySiblingsToBePlacedWith = ( mySiblings, childId, groupProfile, do
                     const siblingsToAdd = currentSiblings.rightOuterJoin( newSiblings );
 					// ensures that the group profile object exists
 					child.groupProfile = child.groupProfile || {};
-                    // if there are siblings to add to the child
+                    // if there are siblings to add to the child or any shared sibling group data fields have changed
 					if( siblingsToAdd.size > 0 ||
 						child.groupProfile.part1 !== groupProfile.part1 ||
 						child.groupProfile.part2 !== groupProfile.part2 ||
-						child.groupProfile.part3 !== groupProfile.part3 ) {
+						child.groupProfile.part3 !== groupProfile.part3 ||
+                        child.siblingGroupImage.secure_url !== siblingGroupImage.secure_url || // when checking that the objects are different, we only need to test a single attribute
+                        child.siblingGroupVideo !== siblingGroupVideo ||
+                        child.wednesdaysChildSiblingGroup !== wednesdaysChildSiblingGroup ||
+                        child.wednesdaysChildSiblingGroupDate.toString() !== wednesdaysChildSiblingGroupDate.toString() ||
+                        child.wednesdaysChildSiblingGroupVideo !== wednesdaysChildSiblingGroupVideo ) {
+                        // TODO: possibly simplify this with an Object.assign
                         // update the child to be placed with with the shared bio information
                         child.groupProfile.part1   	= newGroupProfilePart1;
                         child.groupProfile.part2	= newGroupProfilePart2;
                         child.groupProfile.part3	= newGroupProfilePart3;
+                        // update the child to be placed with, with the group image and video
+                        child.siblingGroupImage     = Object.assign( {}, siblingGroupImage );
+                        child.siblingGroupVideo     = siblingGroupVideo;
+                        // update the group wednesday's child fields
+                        child.wednesdaysChildSiblingGroup       = wednesdaysChildSiblingGroup;
+                        child.wednesdaysChildSiblingGroupDate   = wednesdaysChildSiblingGroupDate;
+                        child.wednesdaysChildSiblingGroupVideo  = wednesdaysChildSiblingGroupVideo;
                         // add any new siblings to the child
-						child.siblingsToBePlacedWith.push( ...siblingsToAdd );
+                        child.siblingsToBePlacedWith.push( ...siblingsToAdd );
                         // save the child
-						child.save();
+                        child.save();
 					}
 				});
 
@@ -265,3 +317,23 @@ exports.updateMyRemovedSiblingsToBePlacedWith = ( allSiblings, removedSiblings, 
                 done();
             });
 };
+
+exports.updateBookmarksToRemoveByStatus = ( statusId, bookmarkedChildrenToRemove, childId, done ) => {
+
+    keystone.list('Child Status').model.findById( statusId )
+			.exec()
+			.then( status => {
+
+				if( status.childStatus !== 'active' ) {
+					bookmarkedChildrenToRemove.push( childId );
+				}
+
+				done();
+
+			}, err => {
+
+				console.log( err );
+
+				done();
+			});	
+}

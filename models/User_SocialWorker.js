@@ -1,25 +1,25 @@
-require('./Tracking_SocialWorkerHistory'),
-require('./List_State');
-require('./Agency');
+require( './Tracking_SocialWorkerHistory' ),
+require( './List_State' );
+require( './Agency' );
 
-var keystone				= require('keystone'),
-	async 					= require('async'),
+var keystone				= require( 'keystone' ),
+	async 					= require( 'async' ),
 	Types					= keystone.Field.Types,
-	SocialWorkerHistory		= keystone.list('Social Worker History'),
-	User					= require('./User');
-	ChangeHistoryMiddleware	= require('../routes/middleware/models_change-history');
+	SocialWorkerHistory		= keystone.list( 'Social Worker History' ),
+	User					= require( './User' );
+	ChangeHistoryMiddleware	= require( '../routes/middleware/models_change-history' );
 
 // Create model
-var SocialWorker = new keystone.List('Social Worker', {
-	inherits: User,
-	track: true,
-	map: { name: 'name.full' },
-	defaultSort: 'name.full',
-	hidden: false
+var SocialWorker = new keystone.List( 'Social Worker', {
+	inherits	: User,
+	track		: true,
+	map			: { name: 'name.full' },
+	defaultSort	: 'name.full',
+	hidden		: false
 });
 
 // Create fields
-SocialWorker.add('General Information', {
+SocialWorker.add( 'General Information', {
 
 	name: {
 		first: { type: Types.Text, label: 'first name', required: true, initial: true },
@@ -60,18 +60,19 @@ SocialWorker.add('General Information', {
 
 }, 'User Selections', {
 
-	bookmarkedChildren: { type: Types.Relationship, label: 'bookmarked children', ref: 'Child', many: true, noedit: true }
+	bookmarkedChildren: { type: Types.Relationship, label: 'bookmarked children', ref: 'Child', many: true, noedit: true },
+	bookmarkedSiblings: { type: Types.Relationship, label: 'bookmarked sibling group children', ref: 'Child', many: true, noedit: true }
 
 });
 
 // Set up relationship values to show up at the bottom of the model if any exist
-SocialWorker.relationship({ ref: 'Child', refPath: 'adoptionWorker', path: 'children', label: 'children' });
-SocialWorker.relationship({ ref: 'Inquiry', refPath: 'socialWorker', path: 'my-inquiries', label: 'my inquiries' });
-SocialWorker.relationship({ ref: 'Inquiry', refPath: 'childsSocialWorker', path: 'family-inquiries', label: 'family inquiries' });
-SocialWorker.relationship({ ref: 'Mailing List', refPath: 'socialWorkerSubscribers', path: 'mailing-lists', label: 'mailing lists' });
-SocialWorker.relationship({ ref: 'Event', refPath: 'socialWorkerAttendees', path: 'events', label: 'events' });
-SocialWorker.relationship({ ref: 'Internal Note', refPath: 'socialWorker', path: 'internal-notes', label: 'internal notes' });
-SocialWorker.relationship({ ref: 'Social Worker History', refPath: 'socialWorker', path: 'social-worker-histories', label: 'change history' });
+SocialWorker.relationship( { ref: 'Child', refPath: 'adoptionWorker', path: 'children', label: 'children' } );
+SocialWorker.relationship( { ref: 'Inquiry', refPath: 'socialWorker', path: 'my-inquiries', label: 'my inquiries' } );
+SocialWorker.relationship( { ref: 'Inquiry', refPath: 'childsSocialWorker', path: 'family-inquiries', label: 'family inquiries' } );
+SocialWorker.relationship( { ref: 'Mailing List', refPath: 'socialWorkerSubscribers', path: 'mailing-lists', label: 'mailing lists' } );
+SocialWorker.relationship( { ref: 'Event', refPath: 'socialWorkerAttendees', path: 'events', label: 'events' } );
+SocialWorker.relationship( { ref: 'Internal Note', refPath: 'socialWorker', path: 'internal-notes', label: 'internal notes' } );
+SocialWorker.relationship( { ref: 'Social Worker History', refPath: 'socialWorker', path: 'social-worker-histories', label: 'change history' } );
 
 // Post Init - used to store all the values before anything is changed
 SocialWorker.schema.post( 'init', function() {
@@ -87,12 +88,12 @@ SocialWorker.schema.pre('save', function(next) {
 	var model = this;
 
 	async.parallel([
-		function(done) { model.setFullName(done); }, // Create a full name for the child based on their first, middle, and last names
-		function(done) { model.setUserType(done); }, // Create an identifying name for file uploads
-		function(done) { model.setChangeHistory(done); } // Process change history
-	], function() {
+		done => { model.setFullName(done); }, // Create a full name for the child based on their first, middle, and last names
+		done => { model.setUserType(done); }, // Create an identifying name for file uploads
+		done => { model.setChangeHistory(done); } // Process change history
+	], () => {
 
-		console.log('social worker information updated');
+		console.log( 'social worker information updated' );
 
 		next();
 	});
@@ -102,22 +103,22 @@ SocialWorker.schema.pre('save', function(next) {
 /* 						  Changing names or reworking this file changed the check in node_modules/keystone/templates/views/signin.jade
 /*						  for user.isAdmin on line 14 */
 // Provide access to Keystone
-SocialWorker.schema.virtual('canAccessKeystone').get(function() {
+SocialWorker.schema.virtual( 'canAccessKeystone' ).get( function() {
 	'use strict';
 
 	return false;
 });
 
-SocialWorker.schema.methods.setFullName = function(done) {
+SocialWorker.schema.methods.setFullName = function( done ) {
 	'use strict';
 
 	// Populate the full name string for better identification when linking through Relationship field types
-	this.name.full = this.name.first + ' ' + this.name.last;
+	this.name.full = `${ this.name.first } ${ this.name.last }`;
 
 	done();
 };
 
-SocialWorker.schema.methods.setUserType = function(done) {
+SocialWorker.schema.methods.setUserType = function( done ) {
 	'use strict'
 
 	// Set the userType for role based page rendering
@@ -126,7 +127,7 @@ SocialWorker.schema.methods.setUserType = function(done) {
 	done();
 };
 
-SocialWorker.schema.methods.setChangeHistory = function setChangeHistory(done) {
+SocialWorker.schema.methods.setChangeHistory = function setChangeHistory( done ) {
 	'use strict';
 
 	var modelBefore	= this._original,
@@ -140,18 +141,16 @@ SocialWorker.schema.methods.setChangeHistory = function setChangeHistory(done) {
 	});
 
 	// if the model is being saved for the first time, mark only that fact in an initial change history record
-	if(!model._original) {
+	if( !model._original ) {
 
 		changeHistory.changes = 'record created';
 
-		console.log('changes: ', changeHistory);
-
-		changeHistory.save(function() {
+		changeHistory.save( () => {
 			console.log('record created change history saved successfully');
 			done();
-		}, function(err) {
-			console.log(err);
-			console.log('error saving record created change history');
+		}, err => {			
+			console.log( err );
+			console.log( 'error saving record created change history' );
 			done();
 		});
 
@@ -159,54 +158,54 @@ SocialWorker.schema.methods.setChangeHistory = function setChangeHistory(done) {
 		// Any time a new field is added, it MUST be added to this list in order to be considered for display in change history
 		// Computed fields and fields internal to the object SHOULD NOT be added to this list
 		async.parallel([
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'name',
 											name: 'first',
 											label: 'first name',
 											type: 'string' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'name',
 											name: 'last',
 											label: 'last name',
 											type: 'string' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											name: 'email',
 											label: 'email address',
 											type: 'string' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'phone',
 											name: 'work',
 											label: 'work phone number',
 											type: 'string' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'phone',
 											name: 'mobile',
 											label: 'mobile phone number',
 											type: 'string' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'phone',
 											name: 'preferred',
 											label: 'preferred phone',
 											type: 'string' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											name: 'position',
 											label: 'position',
 											type: 'string' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											name: 'agency',
 											targetField: 'name',
@@ -214,40 +213,40 @@ SocialWorker.schema.methods.setChangeHistory = function setChangeHistory(done) {
 											type: 'relationship',
 											model: 'Agency' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											name: 'agencyNotListed',
 											label: 'agency isnt listed',
 											type: 'boolean' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											name: 'agencyText',
 											label: 'agency (free text)',
 											type: 'string' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'address',
 											name: 'street1',
 											label: 'street 1',
 											type: 'string' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'address',
 											name: 'street2',
 											label: 'street 2',
 											type: 'string' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'address',
 											name: 'city',
 											label: 'city',
 											type: 'string' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'address',
 											name: 'state',
@@ -256,26 +255,26 @@ SocialWorker.schema.methods.setChangeHistory = function setChangeHistory(done) {
 											type: 'relationship',
 											model: 'State' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'address',
 											name: 'zipCode',
 											label: 'zip code',
 											type: 'string' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											name: 'title',
 											label: 'title',
 											type: 'string' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											name: 'notes',
 											label: 'notes',
 											type: 'string' }, model, modelBefore, changeHistory, done);
 			},
-			function(done) {
+			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											name: 'bookmarkedChildren',
 											targetParent: 'name',
@@ -283,18 +282,28 @@ SocialWorker.schema.methods.setChangeHistory = function setChangeHistory(done) {
 											label: 'bookmarked children',
 											type: 'relationship',
 											model: 'Child' }, model, modelBefore, changeHistory, done);
+			},
+			done => {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											name: 'bookmarkedSiblings',
+											targetParent: 'name',
+											targetField: 'full',
+											label: 'bookmarked sibling group children',
+											type: 'relationship',
+											model: 'Child' }, model, modelBefore, changeHistory, done);
 			}
-		], function() {
-			console.log('changes: ', changeHistory);
-			if (changeHistory.changes === '') {
+
+		], () => {
+
+			if ( changeHistory.changes === '' ) {
 				done();
 			} else {
-				changeHistory.save(function() {
-					console.log('change history saved successfully');
+				changeHistory.save( () => {
+					console.log( 'change history saved successfully' );
 					done();
-				}, function(err) {
-					console.log(err);
-					console.log('error saving change history');
+				}, err => {
+					console.log( err );
+					console.log( 'error saving change history' );
 					done();
 				});
 			}
