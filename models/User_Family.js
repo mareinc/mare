@@ -1156,7 +1156,7 @@ Family.schema.methods.setChangeHistory = function setChangeHistory( done ) {
 			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											name: 'socialWorkerNotListed',
-											label: 'social worker isn\'t listed',
+											label: 'social worker isnt listed',
 											type: 'boolean' }, model, modelBefore, changeHistory, done);
 			},
 			done => {
