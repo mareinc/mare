@@ -379,7 +379,17 @@ Child.schema.methods.updateSiblingFields = function() {
 				done();
 			}
 		},
-		done => { ChildMiddleware.updateMySiblingsToBePlacedWith( siblingsToBePlacedWithAfterSave, childId, this.get( 'groupProfile' ), this.get( 'siblingGroupImage' ), this.get( 'siblingGroupVideo' ), done ); },
+		done => {
+			ChildMiddleware.updateMySiblingsToBePlacedWith( siblingsToBePlacedWithAfterSave,
+															childId,
+															this.get( 'groupProfile' ),
+															this.get( 'siblingGroupImage' ),
+															this.get( 'siblingGroupVideo' ),
+															this.get( 'wednesdaysChildSiblingGroup' ),
+															this.get( 'wednesdaysChildSiblingGroupDate' ),
+															this.get( 'wednesdaysChildSiblingGroupVideo' ),
+															done );
+		},
 		done => { ChildMiddleware.updateMyRemainingSiblingsToBePlacedWith( remainingSiblingsToBePlacedWith, removedSiblingsToBePlacedWith, childId, done ); },
 		done => {
 			// the first check ensures that a removed sibling doesn't remove all siblings from everyone when the starting siblings to be placed with count is greater than 3
