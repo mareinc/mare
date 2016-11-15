@@ -169,7 +169,7 @@ exports.updateMyRemovedSiblings = ( allSiblings, removedSiblings, childId, done 
 };
 
 /* updates sibling fields for chidren listed as siblings by adding missing entries */
-exports.updateMySiblingsToBePlacedWith = ( mySiblings, childId, groupProfile, siblingGroupImage, siblingGroupVideo, done ) => {
+exports.updateMySiblingsToBePlacedWith = ( mySiblings, childId, groupProfile, siblingGroupImage, siblingGroupVideo, wednesdaysChildSiblingGroup, wednesdaysChildSiblingGroupDate, wednesdaysChildSiblingGroupVideo, done ) => {
 
     // create the group profile object based on what was passed in
     const newGroupProfile = groupProfile || {};
@@ -201,21 +201,28 @@ exports.updateMySiblingsToBePlacedWith = ( mySiblings, childId, groupProfile, si
                     const siblingsToAdd = currentSiblings.rightOuterJoin( newSiblings );
 					// ensures that the group profile object exists
 					child.groupProfile = child.groupProfile || {};
-                    // if there are siblings to add to the child
+                    // if there are siblings to add to the child or any shared sibling group data fields have changed
 					if( siblingsToAdd.size > 0 ||
 						child.groupProfile.part1 !== groupProfile.part1 ||
 						child.groupProfile.part2 !== groupProfile.part2 ||
 						child.groupProfile.part3 !== groupProfile.part3 ||
                         child.siblingGroupImage.secure_url !== siblingGroupImage.secure_url || // when checking that the objects are different, we only need to test a single attribute
-                        child.siblingGroupVideo !== siblingGroupVideo ) {
+                        child.siblingGroupVideo !== siblingGroupVideo ||
+                        child.wednesdaysChildSiblingGroup !== wednesdaysChildSiblingGroup ||
+                        child.wednesdaysChildSiblingGroupDate !== wednesdaysChildSiblingGroupDate ||
+                        child.wednesdaysChildSiblingGroupVideo !== wednesdaysChildSiblingGroupVideo ) {
                         // TODO: possibly simplify this with an Object.assign
                         // update the child to be placed with with the shared bio information
                         child.groupProfile.part1   	= newGroupProfilePart1;
                         child.groupProfile.part2	= newGroupProfilePart2;
                         child.groupProfile.part3	= newGroupProfilePart3;
-                        // update the child to be placed with with the group image and video
-                        child.siblingGroupImage  = Object.assign( {}, siblingGroupImage );
+                        // update the child to be placed with, with the group image and video
+                        child.siblingGroupImage     = Object.assign( {}, siblingGroupImage );
                         child.siblingGroupVideo     = siblingGroupVideo;
+                        // update the group wednesday's child fields
+                        child.wednesdaysChildSiblingGroup       = wednesdaysChildSiblingGroup;
+                        child.wednesdaysChildSiblingGroupDate   = wednesdaysChildSiblingGroupDate;
+                        child.wednesdaysChildSiblingGroupVideo  = wednesdaysChildSiblingGroupVideo;
                         // add any new siblings to the child
                         child.siblingsToBePlacedWith.push( ...siblingsToAdd );
                         // save the child
