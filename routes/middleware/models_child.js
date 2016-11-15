@@ -209,7 +209,7 @@ exports.updateMySiblingsToBePlacedWith = ( mySiblings, childId, groupProfile, si
                         child.siblingGroupImage.secure_url !== siblingGroupImage.secure_url || // when checking that the objects are different, we only need to test a single attribute
                         child.siblingGroupVideo !== siblingGroupVideo ||
                         child.wednesdaysChildSiblingGroup !== wednesdaysChildSiblingGroup ||
-                        child.wednesdaysChildSiblingGroupDate !== wednesdaysChildSiblingGroupDate ||
+                        child.wednesdaysChildSiblingGroupDate.toString() !== wednesdaysChildSiblingGroupDate.toString() ||
                         child.wednesdaysChildSiblingGroupVideo !== wednesdaysChildSiblingGroupVideo ) {
                         // TODO: possibly simplify this with an Object.assign
                         // update the child to be placed with with the shared bio information
