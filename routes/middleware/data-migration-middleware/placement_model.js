@@ -2,7 +2,13 @@
  * Created by Adrian Suciu.
  */
 
-var event_model = require('models/Placement.js');
+var async					= require('async'),
+	keystone				= require('keystone'),
+	Types 					= keystone.Field.Types,
+	Placement   			= keystone.list('Placement'),
+    csv2arr					= require('csv-to-array'),
+	dataMigrationService	= require('../service_data-migration')
+	;
 
 var columns = ["fpl_id","fam_id","chd_id","chd_first_name","chd_last_name","status","status_change_date","comment"];
 var columns_child = ["chd_id","registered_date","sibling_group_id","first_name","middle_name","last_name","alias","nickname","status",
@@ -30,27 +36,31 @@ var columns_family = ["fam_id","old_family_id","listing_date","family_constellat
 	"social_worker_agc_id","flag_calls","notes"];
 var importArray;
 
-var keystone = require('keystone'),
-	Placement = keystone.list('Placement'),
-	csv2arr = require("csv-to-array");
+module.exports.importPlacements = function importPlacements(req, res, done) {
 
-module.exports = {
-	importPlacements : function(){
-		csv2arr({
-			file: "db_exports/June14th_Expors/family_placement.csv",
-			columns: columns
-		}, function (err, array) {
-			if (err) {
-				throw "An error occurred!\n" + err;
-			} else {
-				var allChildren = self.preloadChildren();
-				var allFamilies = self.preloadFamilies();
-				importArray = array;
+	var self = this,
+		locals = res.locals;
+
+	csv2arr({
+		file: "./migration-data/csv-data/family_placement.csv",
+		columns: columns
+	}, function (err, array) {
+		if (err) {
+			throw "An error occurred!\n" + err;
+		} else {
+			var allChildren;
+			var allFamilies;
+			importArray = array;
+
+			async.parallel([
+				allChildren = preloadChildren();
+				allFamilies = preloadFamilies();
+			], function() {
 
 				for (var i=0,_count=importArray.length; i <_count; i++) {
 					var _placement = importArray[i];
-					var _relatedChildObj = self.fetchChild(_placement.chd_id, allChildren);
-					var _relatedFamilyObj = self.fetchFamily(_placement.fam_id, allFamilies);
+					var _relatedChildObj = fetchChild(_placement.chd_id, allChildren);
+					var _relatedFamilyObj = fetchFamily(_placement.fam_id, allFamilies);
 
 
 					if (typeof(_relatedChildObj) != "undefined" && _relatedChildObj != null){
@@ -60,19 +70,20 @@ module.exports = {
 
 							placementDate: _relatedChildObj.placement_placed_date,
 							child: _placement.chd_id,
+
 							childPlacedWithMAREFamily: _placement.,
+
 							placedWithFamily: _relatedChildObj.placement_fam_id,
 							familyAgency: _relatedChildObj.placement_agency,
 							constellation: _relatedChildObj.placement_constellation,
 							race: _relatedChildObj.placement_rce_id,
+
 							source: _placement.,
 							/*
 							* Based on the child_id fetch the rcs_id from placement_source, once you have the id go to recruitment_source and get
 							* the name property > go to the new table check for the smae string and return the hashed _id
 							*
 							* */
-
-							//notes: _placement.,//no notes in the old system
 
 							family: {
 								name: _relatedChildObj.placement_family_name,
@@ -84,14 +95,10 @@ module.exports = {
 									state: _relatedChildObj.placement_state,
 									zipCode: _relatedChildObj.placement_zip,
 									country: _relatedChildObj.placement_country
-									//region: _relatedChildObj., //not in the old system
 								},
 
 								phone: {
-									//work: _relatedFamilyObj., //{ type: Types.Text, label: 'work phone number', dependsOn: { childPlacedWithMAREFamily: false }, initial: true },
 									home: _relatedFamilyObj.placement_home_phone,
-									//mobile: _relatedFamilyObj., //{ type: Types.Text, label: 'mobile phone number', dependsOn: { childPlacedWithMAREFamily: false }, initial: true },
-									//preferred: _relatedFamilyObj.,//{ type: Types.Select, label: 'preferred phone', options: 'work, home, mobile', dependsOn: { childPlacedWithMAREFamily: false }, initial: true }
 								},
 
 								email:  _relatedFamilyObj.placement_email
@@ -100,10 +107,6 @@ module.exports = {
 							disruptionDate: _relatedFamilyObj.placement_disruption_date
 
 						});
-
-						if (shouldBePublished) {
-							newEvent.state = 'published';
-						}
 
 						// call save method on Event object
 						newEvent.save(function(err) {
@@ -119,70 +122,71 @@ module.exports = {
 					}
 
 				}
+			})
+		}
+	})
+
+}
+
+module.exports.preloadChildren = function preloadChildren(){
+	var allChildren = []
+
+	csv2arr({
+		file: "./migration-data/csv-data/child.csv",
+		columns: columns_child
+	}, function (err, array) {
+		if (err) {
+			throw "An error occurred!\n" + err;
+		} else {
+			importArray = array;
+
+			for (var i=0,_count=importArray.length; i <_count; i++) {
+				allChildren.push(importArray[i]);
 			}
-		})
 
-	},
-	preloadChildren : function(){
-		var allChildren = []
+			return allChildren;
+		}
+	})
 
-		csv2arr({
-			file: "db_exports/June14th_Expors/child.csv",
-			columns: columns_child
-		}, function (err, array) {
-			if (err) {
-				throw "An error occurred!\n" + err;
-			} else {
-				importArray = array;
+}
+module.exports.preloadFamilies = function preloadFamilies() {
+	var allFamilies = [];
+	csv2arr({
+		file: "./migration-data/csv-data/family.csv",
+		columns: columns_family
+	}, function (err, array) {
+		if (err) {
+			throw "An error occurred!\n" + err;
+		} else {
+			importArray = array;
 
-				for (var i=0,_count=importArray.length; i <_count; i++) {
-					allChildren.push(importArray[i]);
-				}
-
-				return allChildren;
+			for (var i=0,_count=importArray.length; i <_count; i++) {
+				allFamilies.push(importArray[i]);
 			}
-		})
 
-	},
-	preloadFamilies: function() {
-		var allFamilies = [];
-		csv2arr({
-			file: "db_exports/June14th_Expors/family.csv",
-			columns: columns_family
-		}, function (err, array) {
-			if (err) {
-				throw "An error occurred!\n" + err;
-			} else {
-				importArray = array;
+			return allFamilies;
+		}
+	});
+}
+module.exports.fetchChild = function fetchChild(id, haystack){
 
-				for (var i=0,_count=importArray.length; i <_count; i++) {
-					allFamilies.push(importArray[i]);
-				}
+	for (var i=0,_count=haystack.length; i <_count; i++) {
+		var _child = importArray[i];
 
-				return allFamilies;
-			}
-		});
-	},
-	fetchChild : function(id, haystack){
+		if (_child.chd_id == id) {
+			return _child[i];
+		}
+	}
 
-		for (var i=0,_count=haystack.length; i <_count; i++) {
-			var _child = importArray[i];
+}
+module.exports.fetchFamily = function fetchFamily(id, haystack){
 
-			if (_child.chd_id == id) {
-				return _child[i];
-			}
+	for (var i=0,_count=haystack.length; i <_count; i++) {
+		var _family = importArray[i];
+
+		if (_family.fam_id == id) {
+			return _family;
 		}
 
-	},
-	fetchFamily: function(id, haystack){
-
-		for (var i=0,_count=haystack.length; i <_count; i++) {
-			var _family = importArray[i];
-
-			if (_family.fam_id == id) {
-				return _family;
-			}
-
-		}
 	}
 }

@@ -2,23 +2,27 @@
  * Created by Adrian Suciu.
  */
 
-var family_model = require('models/MailingList.js');
+var async                   = require('async'),
+    keystone                = require('keystone'),
+    Types                   = keystone.Field.Types,
+    MailingList             = keystone.list('MailingList'),
+    csv2arr                 = require('csv-to-array'),
+    dataMigrationService    = require('../service_data-migration')
+    ;
 
 var ml_coluns = ["mlt_id","name"]
 var mls_columns = ["mls_id","mlt_id","fam_id","agc_id","ocn_id"];
 var importArray;
 
-var keystone = require('keystone'),
-    MailingList = keystone.list('MailingList'),
-    csv2arr = require("csv-to-array");
+module.exports.importMailingLists = function importMailingLists(req, res, done) {
 
-module.exports = {
-    importMailingList: function(){
+    var self = this,
+        locals = res.locals;
 
-        var allMLS = self.loadMailingSubscriptions();
+        var allMLS = loadMailingSubscriptions();
 
         csv2arr({
-            file: "db_exports/June14th_Expors/mailing_list.csv",
+            file: "./migration-data/csv-data/mailing_list.csv",
             columns: ml_columns
         }, function (err, array) {
             if (err) {
@@ -28,7 +32,7 @@ module.exports = {
 
                 for (var i=0,_count=importArray.length; i <_count; i++) {
                     var _mailinglist = importArray[i];
-                    var _mailingListSubscribers = self.fetchMailingListSubscriptions(_mailinglist.mlt_id, allMLS);
+                    var _mailingListSubscribers = fetchMailingListSubscriptions(_mailinglist.mlt_id, allMLS);
 
                     for (var j=0,_len=_mailingListSubscribers.length; j < _len; j++) {
 
@@ -42,10 +46,6 @@ module.exports = {
                             outsideContactSubscribers:  _mailingListSubscribers[j]['ocn_id']
 
                         });
-
-                        if (shouldBePublished) {
-                            newMailingList.state = 'published';
-                        }
 
                         // call save method on Mailing List object
                         newMailingList.save(function (err) {
@@ -61,11 +61,13 @@ module.exports = {
                 }
             }
         })
-    },
-    loadMailingSubscriptions: function(){
+    }
+}
+
+function loadMailingSubscriptions(){
         var allMailingListsSubscriptions = [];
         csv2arr({
-            file: "db_exports/June14th_Expors/mailing_list_subscription.csv",
+            file: "./migration-data/csv-data/mailing_list_subscription.csv",
             columns: mls_columns
         }, function (err, array) {
             if (err) {
@@ -82,34 +84,37 @@ module.exports = {
                 return allMailingListsSubscriptions;
             }
         })
-    },
-    fetchMailingListSubscriptions: function(id, haystack){
+    }
 
-        var resultArray = [];
+function fetchMailingListSubscriptions(id, haystack){
 
-        for (var i=0,_count=haystack.length; i <_count; i++) {
-            var _newMailingListItem = new Object();
-            var _mailinglist = importArray[i];
+    var resultArray = [];
 
-            if (_mailinglist.mlt_id == id) {
-                newMailingListItem['fam_id'] = fetchFamIdEquivalent(_mailinglist.fam_id);
-                newMailingListItem['agc_id'] = fetchAgencyIdEquivalent(_mailinglist.agc_id);
-                newMailingListItem['ocn_id'] = fetchOutsideContactIdEquivalent(_mailinglist.ocn_id);
-            }
+    for (var i=0,_count=haystack.length; i <_count; i++) {
+        var _newMailingListItem = new Object();
+        var _mailinglist = importArray[i];
 
-            resultArray.push(_newMailingListItem);
+        if (_mailinglist.mlt_id == id) {
+            newMailingListItem['fam_id'] = fetchFamIdEquivalent(_mailinglist.fam_id);
+            newMailingListItem['agc_id'] = fetchAgencyIdEquivalent(_mailinglist.agc_id);
+            newMailingListItem['ocn_id'] = fetchOutsideContactIdEquivalent(_mailinglist.ocn_id);
         }
 
-        return resultArray;
-
-    },
-    fetchFamIdEquivalent: function(id) {
-        // fetch the related id for the same thing from the new database
-    },
-    fetchAgencyIdEquivalent: function(id) {
-        // fetch the related id for the same thing from the new database
-    },
-    fetchOutsideContactIdEquivalent: function(id) {
-        // fetch the related id for the same thing from the new database
+        resultArray.push(_newMailingListItem);
     }
+
+    return resultArray;
+
+}
+
+function fetchFamIdEquivalent(id) {
+    // fetch the related id for the same thing from the new database
+}
+
+function fetchAgencyIdEquivalent(id) {
+    // fetch the related id for the same thing from the new database
+}
+
+function fetchOutsideContactIdEquivalent(id) {
+    // fetch the related id for the same thing from the new database
 }
