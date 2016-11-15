@@ -5,70 +5,78 @@
  *
  */
 
-
-var event_model = require('models/Event.js');
+var async					= require('async'),
+	keystone				= require('keystone'),
+	Types 					= keystone.Field.Types,
+	Event  					= keystone.list('Event'),
+    csv2arr					= require('csv-to-array'),
+	dataMigrationService	= require('../service_data-migration')
+	;
 
 var columns = ["evt_id","rcs_id","schedule_datetime","location","directions","notes","is_active"];
+var columnsRecruitment = ["rcs_id","name","is_media_outlet","is_media_outlet_active","media_frequency","media_type"];
+var columnsEventAttendees = ["eva_id","evt_id","type","fam_id","chd_id","agc_id","chd_brought_by_type","chd_brought_by_agc_id","chd_brought_by_name","chd_notes","chd_first_name","chd_last_name","chd_siblings","chd_race","chd_dob","chd_status","fam_rgn_id","fam_is_home_studied","fam_others","fam_source","fam_registration_type","agc_first_name","agc_last_name","agc_agency","agc_phone","agc_others","agc_assignments"];
+
 var importArray;
+var recruitmentSourceArray;
+var eventAttendeesArray;
 
-var keystone = require('keystone'),
-	Event = keystone.list('Event'),
-	csv2arr = require("csv-to-array");
+module.exports.importEvents = function importEvents(req, res, done) {
 
-module.exports = {
-	importEventModels : function(){
-		csv2arr({
-			file: "db_exports/June14th_Expors/event.csv",
-			columns: columns
-		}, function (err, array) {
-			if (err) {
-				throw "An error occurred!\n" + err;
-			} else {
-				importArray = array;
+	var self = this,
+		locals = res.locals;
+
+	csv2arr({
+		file: "./migration-data/csv-data/event.csv",
+		columns: columns
+	}, function (err, array) {
+		if (err) {
+			throw "An error occurred!\n" + err;
+		} else {
+
+			importArray = array;
+
+			async.parallel([
+				loadRecruitmentSources(),
+				loadEventAttendees()
+			], function() {
 
 				for (var i=0,_count=importArray.length; i <_count; i++) {
 					var _event = importArray[i];
+					var _name = findRecordInArray(_event.rcs_id, recruitmentSourceArray, 0, 1);
+
+					var _dateTimeArray = splitDateTime(_event.schedule_datetime);
 
 					// populate instance for Event object
 					var newEvent = new Event.model({
 
-						// name: _event., // map to recruiment_source via the rcs_id on the event table and fetch the name field value
-						// url: _event., //not needed
+						name: _event._name, // map to recruiment_source via the rcs_id on the event table and fetch the name field value
 						isActive: _event.is_active,
-						//type: _event., // not needed
-						/* Jared will add a checkbox that says the event comes from the old system and i should dump location under a new location textbox
-						 address: {
-						 street1: _event.address_1,
-						 street2: _event.address_2,
-						 city: _event.city,
-						 state: _event.state,
-						 zipCode: _event.zip,
-						 region: _event.rgn_id
-						 },
+						/* Jared will add a checkbox that says the event comes from the old system and i should dump location under a new location textbox */
+						address: {
+							street1: _event.address_1,
+							street2: _event.address_2,
+							city: _event.city,
+							state: _event.state,
+							zipCode: _event.zip,
+							region: _event.rgn_id
+						},
 
-						 contact: _event., // same generic user from the user_admin table (be careful there is a relationship here)
-						 //contactEmail: _event., // this is not needed
+						contact: _event., // same generic user from the user_admin table (be careful there is a relationship here)
 
-						 date: _event., // take the date and split it and the tie goes to startime, and then add 2 hours for the endtime
-						 startTime: _event.,
-						 endTime: _event.,
+						date: _dateTimeArray[0], // take the date and split it and the time goes to startime, and then add 2 hours for the endtime
+						startTime: _dateTimeArray[1],
+						endTime: increaseHours(_dateTimeArray[1]),
 
-						 // description: _event., // not needed
-						 //cscAttendees: _event., // not needed
-
-						 // siteVisitorAttendees: _event., // not needed
-						 socialWorkerAttendees: _event., // get it from event_attendees table under agc_id col
-						 familyAttendees: _event., // get it from event_attendees table under fam_id col
-						 childAttendees: _event., // get it from event_attendees table under chd_id col
-						 outsideContactAttendees: _event. // so if not in social workers table they should be a n outside contact
-						 */
+						// PROBLEM !!! >>> I the old Database we have more than one entry for this agc_id
+						socialWorkerAttendees: _event., // get it from event_attendees table under agc_id col
+						familyAttendees: _event., // get it from event_attendees table under fam_id col
+						childAttendees: _event., // get it from event_attendees table under chd_id col
+						outsideContactAttendees: _event. // so if not in social workers table they should be a n outside contact
+						
 						notes: _event.notes
 
 					});
-
-					if (shouldBePublished) {
-						newEvent.state = 'published';
-					}
 
 					// call save method on Event object
 					newEvent.save(function(err) {
@@ -83,7 +91,58 @@ module.exports = {
 
 				}
 			}
-		})
+		}
+	})
 
+}
+
+function loadRecruitmentSources(){
+	csv2arr({
+		file: "./migration-data/csv-data/recruiment_source.csv",
+		columns: columnsRecruitment
+	}, function (err, array) {
+		if (err) {
+			throw "An error occurred!\n" + err;
+		} else {
+
+			recruitmentSourceArray = array;
+		}
+	});
+}
+
+function loadEventAttendees(){
+	csv2arr({
+		file: "./migration-data/csv-data/event_attendees.csv",
+		columns: columnsEventAttendees
+	}, function (err, array) {
+		if (err) {
+			throw "An error occurred!\n" + err;
+		} else {
+
+			eventAttendeesArray = array;
+		}
+	});
+}
+
+function findRecordInArray(needle, haystack, comparatorFieldIndex, returnFieldIndex) {
+	var _found = "";
+	for (var i=0; i<haystack.length; i++) {
+		if (haystack[i][comparatorFieldIndex] == needle) {
+			_found = haystack[i][returnFieldIndex];
+			break;
+		}
 	}
+
+	return _found;
+}
+
+function splitDateTime(dateTime) {
+	return dateTime.split(" ");
+}
+
+function increaseHours(time) {
+	var timeComponents = time.replace(" AM","").replace(" PM", "").split(":");
+	timeComponents[0] = parseInt(timeComponents[0]) + 2;
+
+	return timeComponents.join(":");
 }
