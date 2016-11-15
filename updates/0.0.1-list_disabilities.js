@@ -4,7 +4,7 @@ exports.create = {
 	}, {
 		disability: 'autism spectrum'
 	}, {
-		disability: 'cerebral paulsey'
+		disability: 'cerebral palsy'
 	}, {
 		disability: 'down syndrome'
 	}, {

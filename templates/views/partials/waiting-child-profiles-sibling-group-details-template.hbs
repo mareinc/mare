@@ -1,4 +1,4 @@
-<script id="child-details-template" type="text/x-handlebars-template">
+<script id="sibling-group-details-template" type="text/x-handlebars-template">
 
 	<div class="profile__profile-navigation">
 		\{{#if hasPrevious}}
@@ -31,17 +31,17 @@
 		<img class="profile__profile-picture" src=\{{ detailImage }}>
 
 		<div class="profile__basic-info">
-			<div class="profile-details__name">\{{ name }}</div>
-			<div class="profile-details__age">Age \{{ age }}</div>
-			<div class="profile-details__registration-number">Registration # \{{ registrationNumber }}</div>
+			<div class="profile-details__name">\{{ names }}</div>
+			<div class="profile-details__age">Age \{{ ages }}</div>
+			<div class="profile-details__registration-number">Registration # \{{ registrationNumbersString }}</div>
 		</div>
 
 		<div class="profile__detailed-child-info">
 			<div class="detailed-child-info__introduction">
-				<div class="detailed-child-info__header">Hi! My name is \{{ name }}.</div>
+				<div class="detailed-child-info__header">Hi! Our names are \{{ names }}.</div>
 			</div>
 			<div class="detailed-child-info__part-1">
-				<div class="detailed-child-info__header">Let me tell you more about myself...</div>
+				<div class="detailed-child-info__header">Let us tell you more about ourselves...</div>
 				<div class="detailed-child-info__body">\{{ profilePart1 }}</div>
 			</div>
 			<div class="detailed-child-info__part-2">
@@ -49,21 +49,23 @@
 				<div class="detailed-child-info__body">\{{ profilePart2 }}</div>
 			</div>
 			<div class="detailed-child-info__part-3">
-				<div class="detailed-child-info__header">If I could have my own special wish...</div>
+				<div class="detailed-child-info__header">If we could have our own special wish...</div>
 				<div class="detailed-child-info__body">\{{ profilePart3 }}</div>
 			</div>
 		</div>
 
-		<div class="detailed-profile__footer">You can help bring me closer to finding "a place to call HOME" by filling out the <a href="/form/information-request-form">MARE Information Request Form</a>. They will be glad to help you get more information about me.</div>
+		<div class="detailed-profile__footer">
+			<span class="detailed-profile__footer-text">You can help bring us closer to finding "a place to call HOME" by filling out the <a href="/form/information-request-form">MARE Information Request Form</a>. They will be glad to help you get more information about us.</span>
+		</div>
 	</div>
 
 	\{{#if hasVideo}}
 	<div class="profile-tab__contents" data-contents="video">
 
 		<div class="profile__basic-info">
-			<div class="profile-details__name">\{{ name }}</div>
-			<div class="profile-details__age">Age \{{ age }}</div>
-			<div class="profile-details__registration-number">Registration # \{{ registrationNumber }}</div>
+			<div class="profile-details__name">\{{ names }}</div>
+			<div class="profile-details__age">Age \{{ ages }}</div>
+			<div class="profile-details__registration-number">Registration # \{{ registrationNumbersString }}</div>
 		</div>
 
 		<div class="profile-details__video-container">
@@ -79,12 +81,12 @@
 	<div class="profile-tab__contents" data-contents="wednesdays-child">
 		
 		<div class="profile__basic-info">
-			<div class="profile-details__name">\{{ name }}</div>
-			<div class="profile-details__age">Age \{{ age }}</div>
-			<div class="profile-details__registration-number">Registration # \{{ registrationNumber }}</div>
+			<div class="profile-details__name">\{{ names }}</div>
+			<div class="profile-details__age">Age \{{ ages }}</div>
+			<div class="profile-details__registration-number">Registration # \{{ registrationNumbersString }}</div>
 		</div>
 
-		<div class="profile-details__video-container">
+		<div class="profile-details__wednesdays-child-video-container">
 			<iframe src=\{{ wednesdaysChildVideo }} frameborder="0" allowfullscreen class="profile-details__wednesdays-child-video"></iframe>
 		</div>
 

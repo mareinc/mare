@@ -126,16 +126,19 @@
 			</div>
 		</div>
 		<div class="row form-group">
-			<div class="col-sm-12">
-				<label for="primary-language" class="label marg-bottom-xs-5">Primary language:</label>
+			<div class="col-sm-24">
+				<label class="label marg-bottom-xs-5">Primary language:</label>
 			</div>
-			<div class="col-sm-12 form-group">
-				<select id="primary-language" class="input form__number-select">
-					<option value=""></option>
-					{{#each languages}}
-						<option value="{{ language }}">{{ language }}</option>
-					{{/each}}
-				</select>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-16">
+			{{#each languages}}
+				<div class="col-sm-12 form-group">
+					<label class="checkbox-inline">
+						<input type="checkbox" class="select-primary-language" value="{{ language }}">{{ language }}
+					</label>
+				</div>
+			{{/each}}
 			</div>
 		</div>
 		<div class="row form-group">

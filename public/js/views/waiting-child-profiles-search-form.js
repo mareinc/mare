@@ -30,7 +30,7 @@
 				youngestAge						: $('#youngest-age').val(),
 				oldestAge						: $('#oldest-age').val(),
 				races							: $('.select-race:checked'),
-				primaryLanguage					: $('#primary-language').val(),
+				primaryLanguages				: $('.select-primary-language:checked'),
 				contactWithBiologicalSiblings	: $('.select-contact-with-biological-siblings:checked').val(),
 				contactWithBiologicalParents	: $('.select-contact-with-biological-parents:checked').val(),
 				videoOnly						: $('.select-video-only:checked').length > 0,
@@ -54,6 +54,7 @@
 
 			var gendersArray					= [],
 				raceArray						= [],
+				primaryLanguagesArray			= [],
 				disabilityArray					= [],
 				otherConsiderationsArray		= [],
 				gendersOfChildrenInHomeArray	= [],
@@ -65,6 +66,10 @@
 
 			_.each(formFields.races, function(race) {
 				raceArray.push(race.getAttribute('value'));
+			});
+
+			_.each(formFields.primaryLanguages, function(language) {
+				primaryLanguagesArray.push(language.getAttribute('value'));
 			});
 
 			_.each(formFields.disabilities, function(disability) {
@@ -81,6 +86,7 @@
 
 			formFields.genders					= gendersArray;
 			formFields.races					= raceArray;
+			formFields.primaryLanguages			= primaryLanguagesArray;
 			formFields.disabilities				= disabilityArray;
 			formFields.otherConsiderations		= otherConsiderationsArray;
 			formFields.gendersOfChildrenInHome	= gendersOfChildrenInHomeArray;
@@ -104,22 +110,22 @@
 
 			var formFields = this.formFields;
 
-			if(formFields.genders.length === 0) { delete formFields.genders; }
-			if(formFields.races.length === 0) { delete formFields.races; }
-			if(formFields.primaryLanguage === '') { delete formFields.primaryLanguage; }
-			if(formFields.contactWithBiologicalSiblings !== false) { delete formFields.contactWithBiologicalSiblings; }
-			if(formFields.contactWithBiologicalParents !== false) { delete formFields.contactWithBiologicalParents; }
-			if(!formFields.videoOnly) { delete formFields.videoOnly; }
-			if(!formFields.legallyFreeOnly) { delete formFields.legallyFreeOnly; }
-			if(formFields.updatedWithin === '') { delete formFields.updatedWithin; }
-			if(formFields.maximumPhysicalNeeds === 3) { delete formFields.maximumPhysicalNeeds; }
-			if(formFields.maximumEmotionalNeeds === 3) { delete formFields.maximumEmotionalNeeds; }
-			if(formFields.maximumIntellectualNeeds === 3) { delete formFields.maximumIntellectualNeeds; }
-			if(formFields.disabilities.length === 0) { delete formFields.disabilities; }
-			if(formFields.otherConsiderations.length === 0) { delete formFields.otherConsiderations; }
-			if(!formFields.familyConstellation) { delete formFields.familyConstellation; }
-			if(formFields.gendersOfChildrenInHome.length === 0) { delete formFields.gendersOfChildrenInHome; }
-			if(!formFields.petsInHome) { delete formFields.petsInHome; }
+			if(formFields.genders.length === 0)						{ delete formFields.genders; }
+			if(formFields.races.length === 0)						{ delete formFields.races; }
+			if(formFields.primaryLanguages.length === 0)			{ delete formFields.primaryLanguages }
+			if(formFields.contactWithBiologicalSiblings !== false)	{ delete formFields.contactWithBiologicalSiblings; }
+			if(formFields.contactWithBiologicalParents !== false)	{ delete formFields.contactWithBiologicalParents; }
+			if(!formFields.videoOnly)								{ delete formFields.videoOnly; }
+			if(!formFields.legallyFreeOnly)							{ delete formFields.legallyFreeOnly; }
+			if(formFields.updatedWithin === '')						{ delete formFields.updatedWithin; }
+			if(formFields.maximumPhysicalNeeds === 3)				{ delete formFields.maximumPhysicalNeeds; }
+			if(formFields.maximumEmotionalNeeds === 3)				{ delete formFields.maximumEmotionalNeeds; }
+			if(formFields.maximumIntellectualNeeds === 3)			{ delete formFields.maximumIntellectualNeeds; }
+			if(formFields.disabilities.length === 0)				{ delete formFields.disabilities; }
+			if(formFields.otherConsiderations.length === 0)			{ delete formFields.otherConsiderations; }
+			if(!formFields.familyConstellation)						{ delete formFields.familyConstellation; }
+			if(formFields.gendersOfChildrenInHome.length === 0)		{ delete formFields.gendersOfChildrenInHome; }
+			if(!formFields.petsInHome)								{ delete formFields.petsInHome; }
 
 		},
 
@@ -147,8 +153,8 @@
 				// <3 Underscore.js for this one
 				if(formFields.races && _.intersection(formFields.races, child.get('race')).length === 0) { return; }
 
-				// break out of the current loop only if one of the child's language doesn't match the selected primary language (return is needed for this in _.each)
-				if(formFields.primaryLanguage && child.get('language').indexOf(formFields.primaryLanguage) === -1) { return; }
+				// break out of the current loop only if the child's primary language doesn't match a selected race (return is needed for this in _.each)
+				if(formFields.primaryLanguages && formFields.primaryLanguages.indexOf(child.get('language')) === -1 ) { return; }
 
 				// break out of the current loop only if the child having contact with their biological siblings/parents doesn't match the user's selection (return is needed for this in _.each)
 				if(formFields.contactWithBiologicalSiblings === false &&
