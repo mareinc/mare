@@ -156,10 +156,13 @@ Child.add('Display Options', {
 	onOnlineMatching: { type: Types.Boolean, label: 'online matching website', initial: true },
 	onOnlineMatchingDate: { type: Types.Date, label: 'date on online matching', format: 'MM/DD/YYYY', dependsOn: { onOnlineMatching: true }, initial: true },
 
-	wednesdaysChild: { type: Types.Boolean, label: 'Wednesday\'s Child?', initial: true },
-	wednesdaysChildDate: { type: Types.Date, label: 'date of Wednesday\'s Child', format: 'MM/DD/YYYY', dependsOn: { wednesdaysChild: true }, initial: true },
-	wednesdaysChildVideo: { type: Types.Url, label: 'wednesday\'s child video', dependsOn: { wednesdaysChild: true, mustBePlacedWithSiblings: false } },
-	wednesdaysChildSiblingGroupVideo: { type: Types.Url, label: 'wednesday\'s child sibling group video', dependsOn: { wednesdaysChild: true, mustBePlacedWithSiblings: true } },
+	wednesdaysChild: { type: Types.Boolean, label: 'Wednesday\'s Child?', dependsOn: { mustBePlacedWithSiblings: false }, initial: true },
+	wednesdaysChildDate: { type: Types.Date, label: 'date of Wednesday\'s Child', format: 'MM/DD/YYYY', dependsOn: { mustBePlacedWithSiblings: false, wednesdaysChild: true }, initial: true },
+	wednesdaysChildVideo: { type: Types.Url, label: 'wednesday\'s child video', dependsOn: { mustBePlacedWithSiblings: false, wednesdaysChild: true } },
+
+	wednesdaysChildSiblingGroup: { type: Types.Boolean, label: 'Wednesday\'s Child for sibling group?', dependsOn: { mustBePlacedWithSiblings: false }, initial: true },
+	wednesdaysChildSiblingGroupDate: { type: Types.Date, label: 'date of sibling group\'s Wednesday\'s Child', format: 'MM/DD/YYYY', dependsOn: { mustBePlacedWithSiblings: true, wednesdaysChild: true }, initial: true },
+	wednesdaysChildSiblingGroupVideo: { type: Types.Url, label: 'wednesday\'s child sibling group video', dependsOn: { mustBePlacedWithSiblings: true, wednesdaysChild: true } },
 
 	coalitionMeeting: { type: Types.Boolean, label: 'coalition meeting', initial: true },
 	coalitionMeetingDate: { type: Types.Date, label: 'date of coalition meeting', format: 'MM/DD/YYYY', dependsOn: { coalitionMeeting: true }, initial: true },
