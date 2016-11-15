@@ -158,11 +158,11 @@ Child.add('Display Options', {
 
 	wednesdaysChild: { type: Types.Boolean, label: 'Wednesday\'s Child?', dependsOn: { mustBePlacedWithSiblings: false }, initial: true },
 	wednesdaysChildDate: { type: Types.Date, label: 'date of Wednesday\'s Child', format: 'MM/DD/YYYY', dependsOn: { mustBePlacedWithSiblings: false, wednesdaysChild: true }, initial: true },
-	wednesdaysChildVideo: { type: Types.Url, label: 'wednesday\'s child video', dependsOn: { mustBePlacedWithSiblings: false, wednesdaysChild: true } },
+	wednesdaysChildVideo: { type: Types.Url, label: 'Wednesday\'s Child video', dependsOn: { mustBePlacedWithSiblings: false, wednesdaysChild: true } },
 
 	wednesdaysChildSiblingGroup: { type: Types.Boolean, label: 'Wednesday\'s Child for sibling group?', dependsOn: { mustBePlacedWithSiblings: true }, initial: true },
 	wednesdaysChildSiblingGroupDate: { type: Types.Date, label: 'date of sibling group\'s Wednesday\'s Child', format: 'MM/DD/YYYY', dependsOn: { mustBePlacedWithSiblings: true, wednesdaysChildSiblingGroup: true }, initial: true },
-	wednesdaysChildSiblingGroupVideo: { type: Types.Url, label: 'wednesday\'s child sibling group video', dependsOn: { mustBePlacedWithSiblings: true, wednesdaysChildSiblingGroup: true } },
+	wednesdaysChildSiblingGroupVideo: { type: Types.Url, label: 'Wednesday\'s Child sibling group video', dependsOn: { mustBePlacedWithSiblings: true, wednesdaysChildSiblingGroup: true } },
 
 	coalitionMeeting: { type: Types.Boolean, label: 'coalition meeting', initial: true },
 	coalitionMeetingDate: { type: Types.Date, label: 'date of coalition meeting', format: 'MM/DD/YYYY', dependsOn: { coalitionMeeting: true }, initial: true },
@@ -693,7 +693,7 @@ Child.schema.methods.setChangeHistory = function( done ) {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											name: 'city',
 											targetField: 'cityOrTown',
-											label: 'city/town of child\'s current location',
+											label: 'city or town of childs current location',
 											type: 'relationship',
 											model: 'City or Town' }, model, modelBefore, changeHistory, done);
 			},
@@ -988,25 +988,37 @@ Child.schema.methods.setChangeHistory = function( done ) {
 			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											name: 'wednesdaysChild',
-											label: 'wednesdays child',
+											label: 'wednesdays child?',
 											type: 'boolean' }, model, modelBefore, changeHistory, done);
 			},
 			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											name: 'wednesdaysChildDate',
-											label: 'wednesdays child date',
+											label: 'date of wednesdays child',
 											type: 'date' }, model, modelBefore, changeHistory, done);
 			},
 			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											name: 'wednesdaysChildVideo',
-											label: 'wednesday\'s child video',
+											label: 'wednesdays child video',
 											type: 'string' }, model, modelBefore, changeHistory, done);
 			},
 			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
+											name: 'wednesdaysChildSiblingGroup',
+											label: 'wednesdays child for sibling group?',
+											type: 'boolean' }, model, modelBefore, changeHistory, done);
+			},
+			done => {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											name: 'wednesdaysChildSiblingGroupDate',
+											label: 'date of sibling groups wednesdays child',
+											type: 'date' }, model, modelBefore, changeHistory, done);
+			},
+			done => {
+				ChangeHistoryMiddleware.checkFieldForChanges({
 											name: 'wednesdaysChildSiblingGroupVideo',
-											label: 'wednesday\'s child sibling group video',
+											label: 'wednesdays child sibling group video',
 											type: 'string' }, model, modelBefore, changeHistory, done);
 			},
 			done => {
