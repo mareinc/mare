@@ -2,6 +2,17 @@
  * Created by Adrian Suciu.
  */
 
+
+/*
+!!!
+!!! MOVE THE comment FOR ALL OF THESE INTO THE inquiry_model.js UNDER comments
+!!!
+*/
+
+
+
+
+
 var async                   = require('async'),
     keystone                = require('keystone'),
     Types                   = keystone.Field.Types,
@@ -22,7 +33,7 @@ module.exports.importInternalNotes = function importInternalNotes(req, res, done
             allCalls = self.preloadCalls();
 
         csv2arr({
-            file: "./migration-data/csv-data/agency.csv",
+            file: "./migration-data/csv-data/call_note.csv",
             columns: columns
         }, function (err, array) {
             if (err) {
@@ -57,10 +68,6 @@ module.exports.importInternalNotes = function importInternalNotes(req, res, done
                                 note: {type: Types.Textarea, label: 'note', required: true, initial: true}
 
                             });
-
-                            if (shouldBePublished) {
-                                newInternalNote.state = 'published';
-                            }
 
                             // call save method on Internal Note object
                             newInternalNote.save(function (err) {
