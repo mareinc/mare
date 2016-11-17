@@ -204,6 +204,11 @@ Child.add('Display Options', {
 	fileName: { type: Types.Text, hidden: true },
 	siblingGroupFileName: { type: Types.Text, hidden: true }
 
+/* Container for data migration fields ( these should be kept until after phase 2 and the old system is phased out completely ) */
+}, {
+	// system field to store an appropriate file prefix
+	oldId: { type: Types.Text, hidden: true }
+
 });
 
 // Set up relationship values to show up at the bottom of the model if any exist
