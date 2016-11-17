@@ -51,6 +51,11 @@ OutsideContact.add( 'General Information', {
 
 	isVolunteer: { type: Types.Boolean, hidden: true, noedit: true }
 
+/* Container for data migration fields ( these should be kept until after phase 2 and the old system is phased out completely ) */
+}, {
+	// system field to store an appropriate file prefix
+	oldId: { type: Types.Text, hidden: true }
+
 });
 
 // Pre Save
