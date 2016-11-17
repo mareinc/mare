@@ -299,7 +299,7 @@ exports.populateContactsArrays = ( locals, done ) => {
 		} else if( person.agc_id !== '' ) {
 			// find the matching social worker or volunteer in the new system, if there is no match, an empty array
 			//     will be assigned
-			const socialWorkerObject = locals.newSocialWorkers.filter( socialWorker => socialWorker.oldId === person.agc_id );
+			const socialWorkerObject = locals.newSocialWorkers.filter( socialWorker => socialWorker.get( 'oldId' ) === person.agc_id );
 			const volunteerObject = locals.newVolunteers.filter( volunteer => volunteer.get( '_oldId' ) === person.agc_id );
 			// if we've found a social worker
 			if( socialWorkerObject.length > 0 ) {
