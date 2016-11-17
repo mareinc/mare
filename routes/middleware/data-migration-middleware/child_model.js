@@ -113,7 +113,18 @@ module.exports.importChildren = function importChildren(req, res, done){
 							extranetUrl: _child.profile_url,
 							onMAREWebsite: _child.is_on_mare_web,
 							onAdoptuskids: _child.is_on_adoptuskids,
-							onOnlineMatching: _child.is_on_online_matching
+							onOnlineMatching: _child.is_on_online_matching,
+
+							image: fetchImage(_child.chd_id),
+							siblingGroupImage: fetchImage(_child.chd_id)
+
+							/*
+							Create a function that goes and looks for a childs image in the folder of picture based on the child_id + "-" 
+							and from there on populate image: if the length of the image file is the biggest then call the fetchImage function
+							and add the local path of the image into simblingGroupImage field (the longer file is a definitely the longest in name) 
+							if it's smallest then add the image path to the image field.
+
+							*/
 
 						});
 

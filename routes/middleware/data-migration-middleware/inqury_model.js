@@ -11,6 +11,34 @@ var inquiry_model = require('models/Inquiry.js');
 // if the fam_id is showing then we do the same thing with the family
 
 // var coluns = ["exf_id","chd_id","created_datetime"] // ext_automativ_inquiry_history
+
+// NOTES Nov-15-2016
+/*
+
+For every chd_id we go to child.csv and we find the recruitment_agc_id
+Next go to agency_contact.csv and find the agency contact based on the agc_id column and the recruitment_agc_id found earlier
+Next based on the cll_id in the ext_inquiry.csv file find the record in call.csv and from here we will pick out the fam_id and the rcs_id
+Next from family.csv select the family base don the found fam_id
+Next from recruitment_source.csv select the recruitment_source.csv name column correspondingt with the rcs_id found
+
+If under call.csv the inquiry type is a:
+C = Child Inquiry
+G = General Inquiry
+L = Complaint
+
+
+
+From ext_inquiry.csv, for every chd_id we go to call.csv and we find which fam_id called about the child and which rcs_id was assigned to this call.
+Next get the name from recruitment_source.csv based on the rcs_id
+Next from the call_child.csv file based on the cll_id get the chd_id
+Next go to the child.csv file and based on the chd_id get the recruitment_agc_id
+Next go to agency_contact.csv and based on the recruitment_agc_id found earlier, look it up in the agc_id column 
+
+*/
+
+
+
+
 var columns = ["exi_id","exf_id","chd_id","primary_match","on_behalf_of","inquiry_type","inquiry_status","inquiry_sent_datetime","cll_id","cll_import_datetime"];
 var importArray;
 
@@ -21,7 +49,7 @@ var keystone = require('keystone'),
 module.exports = {
     importInquiries: function(){
         csv2arr({
-            file: "db_exports/June14th_Expors/ext_inquiry.csv",
+            file: "./migration-data/csv-data/ext_inquiry.csv",
             columns: columns
         }, function (err, array) {
             if (err) {
@@ -33,7 +61,7 @@ module.exports = {
                     var _inquiry = importArray[i];
 
                     // populate instance for Inquiry object
-                    var newInquiry = new Inquiry.model({
+                   var newInquiry = new Inquiry.model({
 
                         takenBy: { type: Types.Relationship, label: 'taken by', ref: 'Admin', required: true, initial: true },
                         takenOn: { type: Types.Date, label: 'taken on', format: 'MM/DD/YYYY', required: true, initial: true }, // call > call_date

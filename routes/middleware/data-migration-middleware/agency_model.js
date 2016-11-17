@@ -44,7 +44,7 @@ module.exports.importAgencies = function importAgencies(req, res, done) {
 					for (var i=1,_count=importArray.length; i <_count; i++) {
 						var _agency = importArray[i];
 
-						console.log('#' + i);
+						// console.log('#' + i);
 
 						// populate instance for agency object
 						var newAgency = new Agency.model({
@@ -70,7 +70,7 @@ module.exports.importAgencies = function importAgencies(req, res, done) {
 						});
 
 
-						console.log('#2');
+						// console.log('#2');
 
 						// call save method on Child object
 						newAgency.save(function(err) {
