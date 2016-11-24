@@ -46,7 +46,7 @@ Inquiry.add('General Information', {
 }, 'Emails Sent', {
 
 	thankYouSentToInquirer: { type: Types.Boolean, label: 'thank you sent to inquirer', noedit: true },
-	emailSentToCSC: { type: Types.Boolean, label: 'email sent to MARE staff', noedit: true },
+	emailSentToStaff: { type: Types.Boolean, label: 'email sent to MARE staff', noedit: true },
 	emailSentToInquirer: { type: Types.Boolean, label: 'information sent to inquirer',  noedit: true },
 	emailSentToChildsSocialWorker: { type: Types.Boolean, label: 'email sent to child\'s social worker', dependsOn: { inquiryType: ['child inquiry', 'complaint', 'family support consultation'] }, noedit: true },
 	emailSentToAgencies: { type: Types.Boolean, label: 'email sent to agencies', dependsOn: { inquiryType: 'general inquiry'}, noedit: true }
@@ -61,7 +61,7 @@ Inquiry.schema.pre('save', function(next) {
 	var self							= this,
 		emailAddressInquirer			= [],
 		emailAddressSocialWorker		= [],
-		emailAddressesCSC				= [],
+		emailAddressesStaff				= [],
 		emailAddressesAgencyContacts	= [];
 
 	async.series([
@@ -88,29 +88,29 @@ Inquiry.schema.pre('save', function(next) {
 				}
 			},
 			function(done) {
-				console.log('3.  getting CSC email addresses');
-				if(!self.emailSentToCSC) {
+				console.log('3.  getting staff email addresses');
+				if(!self.emailSentToStaff) {
 					if(self.inquiryType === 'general inquiry') {
-						emailAddressesCSC = ['jared.j.collier@gmail.com'];
-						// emailAddressesCSC = ['dtomaz@mareinc.org'];
-						console.log('3a. no CSC email sent, but it\'s a general inquiry - hardcode CSC email address');
+						emailAddressesStaff = ['jared.j.collier@gmail.com'];
+						// emailAddressesStaff = ['dtomaz@mareinc.org'];
+						console.log('3a. no staff email sent, but it\'s a general inquiry - hardcode staff email address');
 						done();
 					} else {
-						self.setCSCEmailRecipients(emailAddressesCSC, done);
-						console.log('3a. no CSC email sent and not a general inquiry - CSC email addresses calculated and set');
+						self.setStaffEmailRecipients(emailAddressesStaff, done);
+						console.log('3a. no staff email sent and not a general inquiry - staff email addresses calculated and set');
 					}
 				} else {
-					console.log('3b. email already sent - CSC email address setting aborted');
+					console.log('3b. email already sent - staff email address setting aborted');
 					done();
 				}
 			},
 			function(done) {
-				console.log('4.  sending CSC emails');
-				if(!self.emailSentToCSC) {
-					self.sendEmailToCSC(emailAddressesCSC, done);
-					console.log('4a. no CSC email sent yet - CSC emails sent');
+				console.log('4.  sending staff emails');
+				if(!self.emailSentToStaff) {
+					self.sendEmailToStaff(emailAddressesStaff, done);
+					console.log('4a. no staff email sent yet - staff emails sent');
 				} else {
-					console.log('4b. email already sent or checkbox not checked - CSC email send aborted');
+					console.log('4b. email already sent or checkbox not checked - staff email send aborted');
 					done();
 				}
 			},
@@ -254,30 +254,30 @@ Inquiry.schema.methods.setInquirerEmailRecipient = function(emailAddressInquirer
 
 };
 
-Inquiry.schema.methods.setCSCEmailRecipients = function(emailAddressesCSC, done) {
+Inquiry.schema.methods.setStaffEmailRecipients = function(emailAddressesStaff, done) {
 	var self = this,
 		region;
 	// The region we want to match on is stored in the agency we calculated from the child's social worker.  Get the agency record.
 	keystone.list('Child').model.findById(self.child)
 			.exec()
 			.then(function(child) {
-				// Use the region information in the child record to match to one or more CSC region contacts, which hold a region and CSC staff user mapping
+				// Use the region information in the child record to match to one or more CSC region contacts, which hold a region and staff user mapping
 				keystone.list('CSC Region Contact').model.find()
 						.where('region', child.region)
 						.populate('cscRegionContact')			// We need the information for the contact, not just their ID
 						.exec()
-						.then(function(CSCRegionContacts) {
-							// Loop through the region contacts models and extract the email addresses from the cscRegionContact field which maps to a CSC staff member
-							_.each(CSCRegionContacts, function(CSCRegionContacts) {
-								emailAddressesCSC.push(CSCRegionContacts.cscRegionContact.email);
+						.then(function( cscRegionContacts ) {
+							// Loop through the region contacts models and extract the email addresses from the cscRegionContact field which maps to a staff member
+							_.each( cscRegionContacts, function( cscRegionContacts ) {
+								emailAddressesStaff.push( cscRegionContacts.cscRegionContact.email );
 							});
 							done();
-						}, function(err) {
-							console.log(err);
+						}, function( err ) {
+							console.log( err );
 							done();
 						});
-			}, function(err) {
-				console.log(err);
+			}, function( err ) {
+				console.log( err );
 				done();
 			})
 };
@@ -311,24 +311,24 @@ Inquiry.schema.methods.setAgencyEmailRecipients = function(emailAddressesAgencyC
 			});
 };
 
-Inquiry.schema.methods.sendEmailToCSC = function(emailAddressesCSC, done) {
+Inquiry.schema.methods.sendEmailToStaff = function(emailAddressesStaff, done) {
 	var self = this;
 	//Find the email template in templates/emails/
 	new keystone.Email({
-		templateExt 		: 'hbs',
+		templateExt 	: 'hbs',
 		templateEngine 	: require('handlebars'),
-		templateName 	: 'inquiry-csc-email'
+		templateName 	: 'inquiry-staff-email'
 	}).send({
-		to: emailAddressesCSC,
+		to: emailAddressesStaff,
 		from: {
 			name 	: 'MARE',
 			email 	: 'info@mareinc.org'
 		},
-		subject: 'csc email'
+		subject: 'staff email'
 	}, function() {
 		// Once the email(s) have been successfully sent, we want to make a note of it using the thankYouSentToInquirer field to ensure a repeat email doesn't go out
-		console.log('csc email sent successfully, checking the checkbox in this model');
-		self.emailSentToCSC = true;
+		console.log('staff email sent successfully, checking the checkbox in this model');
+		self.emailSentToStaff = true;
 		done();
 	});
 
