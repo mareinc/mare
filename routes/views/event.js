@@ -16,7 +16,7 @@ exports = module.exports = function(req, res) {
 		targetGroup;	// Used to map to the different attendee groups to simplify searching for whether the user is attending
 
 	switch(userType) {
-		case 'admin'			: targetGroup = 'cscAttendees'; break;
+		case 'admin'			: targetGroup = 'staffAttendees'; break;
 		case 'family'			: targetGroup = 'familyAttendees'; break;
 		case 'social worker'	: targetGroup = 'socialWorkerAttendees'; break;
 		case 'site visitor'		: targetGroup = 'siteVisitorAttendees'; break;
@@ -47,7 +47,7 @@ exports = module.exports = function(req, res) {
 				.populate('familyAttendees')
 				.populate('socialWorkerAttendees')
 				.populate('siteVisitorAttendees')
-				.populate('cscAttendees')
+				.populate('staffAttendees')
 				.populate('address.state')
 				.exec()
 				.then(function (event) {
@@ -65,7 +65,7 @@ exports = module.exports = function(req, res) {
 					event.hasAddress = event.address && event.address.street1 ? true : false;
 					// Store data on whether any attendees exist for the each group
 					// We need this to know whether we should render headers for each list during templating
-					event.hasCSCAttendees			= event.cscAttendees.length > 0 ? true : false;
+					event.hasStaffAttendees			= event.staffAttendees.length > 0 ? true : false;
 					event.hasFamilyAttendees		= event.familyAttendees.length > 0 ? true : false;
 					event.hasSocialWorkerAttendees	= event.socialWorkerAttendees.length > 0 ? true : false;
 					event.hasSiteVisitorAttendees	= event.siteVisitorAttendees.length > 0 ? true : false;
