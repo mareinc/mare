@@ -1,11 +1,11 @@
 exports.create = {
 	'Email Target': [{
-		cscEmailTarget: 'family registration'
+		staffEmailTarget: 'family registration'
 	}, {
-		cscEmailTarget: 'general inquiry'
+		staffEmailTarget: 'general inquiry'
 	}, {
-		cscEmailTarget: 'site visitor registration'
+		staffEmailTarget: 'site visitor registration'
 	}, {
-		cscEmailTarget: 'social worker registration'
+		staffEmailTarget: 'social worker registration'
 	}]
 };
