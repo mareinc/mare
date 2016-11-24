@@ -1,5 +1,5 @@
 exports.create = {
-	'Email Target': [{
+	'Staff Email Target': [{
 		staffEmailTarget: 'family registration'
 	}, {
 		staffEmailTarget: 'general inquiry'
