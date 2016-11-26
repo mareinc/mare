@@ -58,129 +58,128 @@ Inquiry.add('General Information', {
 Inquiry.schema.pre('save', function(next) {
 	'use strict';
 
-	var self							= this,
-		emailAddressInquirer			= [],
+	let emailAddressInquirer			= [],
 		emailAddressSocialWorker		= [],
 		emailAddressesStaff				= [],
 		emailAddressesAgencyContacts	= [];
 
 	async.series([
-		function(done) {
-			console.log('1. setting social worker');
-			if(self.inquiryType !== 'general inquiry') {
-				self.setChildsSocialWorker(done);
-				console.log('1a. not a general inquiry - social worker set');
+		done => {
+			console.log( '1. setting social worker' );
+			if( this.inquiryType !== 'general inquiry' ) {
+				this.setChildsSocialWorker( done );
+				console.log( '1a. not a general inquiry - setting social worker' );
 			} else {
-				console.log('1b. general inquiry - abort setting social worker');
+				console.log( '1b. general inquiry - abort setting social worker' );
 				done();
 			}
 		},
-			function(done) {
-				console.log('2.  setting agency');
+			done => {
+				console.log( '2.  setting agency' );
 				// if it's a general inquiry, don't attempt to set the agency
 				// if it's not a general inquiry and either the previous social worker value wasn't set, or the social worker was changed, recalculate the agency
-		if(self.inquiryType !== 'general inquiry' && (!self.previousChildsSocialWorker || self.previousChildsSocialWorker.toString() !== self.childsSocialWorker.toString())) {
-					self.setAgency(done);
-					console.log('2a. not a general inquiry and either social worker was never set or the social worker field has changed - agency set');
+				if( this.inquiryType !== 'general inquiry' && ( !this.previousChildsSocialWorker || this.previousChildsSocialWorker.toString() !== this.childsSocialWorker.toString() ) ) {
+					this.setAgency( done );
+					console.log( '2a. not a general inquiry and either social worker was never set or the social worker field has changed - agency set' );
 				} else {
-					console.log('2b. general inquiry or either social worker was never set or the social worker field has changed - agency setting aborted');
+					console.log( '2b. general inquiry or either social worker was never set or the social worker field has changed - agency setting aborted' );
 					done();
 				}
 			},
-			function(done) {
-				console.log('3.  getting staff email addresses');
-				if(!self.emailSentToStaff) {
-					if(self.inquiryType === 'general inquiry') {
-						emailAddressesStaff = ['jared.j.collier@gmail.com'];
-						// emailAddressesStaff = ['dtomaz@mareinc.org'];
-						console.log('3a. no staff email sent, but it\'s a general inquiry - hardcode staff email address');
+			done => {
+				console.log( '3.  getting staff email addresses' );
+				if( !this.emailSentToStaff ) {
+					if( this.inquiryType === 'general inquiry' ) {
+						emailAddressesStaff = [ 'jared.j.collier@gmail.com' ];
+						// emailAddressesStaff = ['dtomaz@mareinc.org']; // TODO: this will need to be a check to see who is marked as the correct contact for these emails
+						console.log( '3a. no staff email sent, but it\'s a general inquiry - hardcode staff email address' );
 						done();
 					} else {
-						self.setStaffEmailRecipients(emailAddressesStaff, done);
-						console.log('3a. no staff email sent and not a general inquiry - staff email addresses calculated and set');
+						this.setStaffEmailRecipients( emailAddressesStaff, done );
+						console.log( '3a. no staff email sent and not a general inquiry - staff email addresses calculated and set' );
 					}
 				} else {
-					console.log('3b. email already sent - staff email address setting aborted');
+					console.log( '3b. email already sent - staff email address setting aborted' );
 					done();
 				}
 			},
-			function(done) {
-				console.log('4.  sending staff emails');
-				if(!self.emailSentToStaff) {
-					self.sendEmailToStaff(emailAddressesStaff, done);
-					console.log('4a. no staff email sent yet - staff emails sent');
+			done => {
+				console.log( '4.  sending staff emails' );
+				if( !this.emailSentToStaff ) {
+					this.sendEmailToStaff( emailAddressesStaff, done );
+					console.log( '4a. no staff email sent yet - staff emails sent' );
 				} else {
-					console.log('4b. email already sent or checkbox not checked - staff email send aborted');
+					console.log( '4b. email already sent or checkbox not checked - staff email send aborted' );
 					done();
 				}
 			},
-			function(done) {
-				console.log('5.  getting inquirer email address');
-				if((!self.thankYouSentToInquirer && self.thankInquirer === true) || (!self.emailSentToInquirer && self.inquiryAccepted === true )) {
-					self.setInquirerEmailRecipient(emailAddressInquirer, done);
-					console.log('5a. either no email sent and thank you checkbox checked or no email to inquirer sent and inquiry accepted - inquirer email address set');
+			done => {
+				console.log( '5.  getting inquirer email address' );
+				if( ( !this.thankYouSentToInquirer && this.thankInquirer === true ) || (!this.emailSentToInquirer && this.inquiryAccepted === true ) ) {
+					this.setInquirerEmailRecipient( emailAddressInquirer, done );
+					console.log( '5a. either no email sent and thank you checkbox checked or no email to inquirer sent and inquiry accepted - inquirer email address set' );
 				} else {
-					console.log('5b. email already sent or checkbox not checked and email to inquirer already sent or inquiry not yet accepted - inquirer email address setting aborted');
+					console.log( '5b. email already sent or checkbox not checked and email to inquirer already sent or inquiry not yet accepted - inquirer email address setting aborted' );
 					done();
 				}
 			},
-			function(done) {
-				console.log('6.  sending thank you email to inquirer');
-				if(!self.thankYouSentToInquirer && self.thankInquirer === true) {
-					self.sendThankYouToInquirer(emailAddressInquirer, done);
-					console.log('6a. no thank you sent and checkbox is checked - inquirer thank you sent');
+			done => {
+				console.log( '6.  sending thank you email to inquirer' );
+				if( !this.thankYouSentToInquirer && this.thankInquirer === true ) {
+					this.sendThankYouToInquirer( emailAddressInquirer, done );
+					console.log( '6a. no thank you sent and checkbox is checked - inquirer thank you sent' );
 				} else {
-					console.log('6b. thank you already sent or checkbox not checked - inquirer thank you aborted');
+					console.log( '6b. thank you already sent or checkbox not checked - inquirer thank you aborted' );
 					done();
 				}
 			},
-			function(done) {
-				console.log('7.  sending informational email to inquirer');
-				if(!self.emailSentToInquirer && self.inquiryAccepted === true) {
-					self.sendEmailToInquirer(emailAddressInquirer, done);
-					console.log('7a. no email sent and inquiry accepted - inquirer email sent');
+			done => {
+				console.log( '7.  sending informational email to inquirer' );
+				if( !this.emailSentToInquirer && this.inquiryAccepted === true ) {
+					this.sendEmailToInquirer( emailAddressInquirer, done );
+					console.log( '7a. no email sent and inquiry accepted - inquirer email sent' );
 				} else {
-					console.log('7b. email already sent or inquiry not accepted - inquirer email aborted');
+					console.log( '7b. email already sent or inquiry not accepted - inquirer email aborted' );
 					done();
 				}
 			},
-			function(done) {
-				console.log('8.  getting social worker email address');
-				if(!self.emailSentToChildsSocialWorker && self.inquiryAccepted === true && self.inquiryType !== 'general inquiry') {
-					self.setSocialWorkerEmailRecipient(emailAddressSocialWorker, done);
-					console.log('8a. no email already sent, inquiry accepted, and not a general inquiry - social worker email address set');
+			done => {
+				console.log( '8.  getting social worker email address' );
+				if( !this.emailSentToChildsSocialWorker && this.inquiryAccepted === true && this.inquiryType !== 'general inquiry' ) {
+					this.setSocialWorkerEmailRecipient( emailAddressSocialWorker, done );
+					console.log( '8a. no email already sent, inquiry accepted, and not a general inquiry - social worker email address set' );
 				} else {
-					console.log('8b. email already sent, inquiry not accepted, or general inquiry - social worker email address setting aborted');
+					console.log( '8b. email already sent, inquiry not accepted, or general inquiry - social worker email address setting aborted' );
 					done();
 				}
 			},
-			function(done) {
-				console.log('9.  sending social worker email');
-				if(!self.emailSentToChildsSocialWorker && self.inquiryAccepted === true && self.inquiryType !== 'general inquiry') {
-					self.sendEmailToChildsSocialWorker(emailAddressSocialWorker, done);
-					console.log('9a. no confirmation sent, inquiry accepted, and not a general inquiry - social worker email sent');
+			done => {
+				console.log( '9.  sending social worker email' );
+				if( !this.emailSentToChildsSocialWorker && this.inquiryAccepted === true && this.inquiryType !== 'general inquiry' ) {
+					this.sendEmailToChildsSocialWorker( emailAddressSocialWorker, done );
+					console.log( '9a. no confirmation sent, inquiry accepted, and not a general inquiry - social worker email sent' );
 				} else {
-					console.log('9b. confirmation already sent, inquiry not accepted, or general inquiry - social worker email send aborted');
+					console.log( '9b. confirmation already sent, inquiry not accepted, or general inquiry - social worker email send aborted' );
 					done();
 				}
 			},
-			function(done) {
-				console.log('10.  getting agency contact email addresses');
-				if(!self.emailSentToAgencies && self.inquiryAccepted === true && self.inquiryType === 'general inquiry') {
-					self.setAgencyEmailRecipients(emailAddressesAgencyContacts, done);
-					console.log('10a. no Agency emails sent, inquiry accepted and is a general inquiry - Agency contact email addresses set');
+			done => {
+				console.log( '10.  getting agency contact email addresses' );
+				if( !this.emailSentToAgencies && this.inquiryAccepted === true && this.inquiryType === 'general inquiry' ) {
+					this.setAgencyEmailRecipients( emailAddressesAgencyContacts, done );
+					console.log( '10a. no Agency emails sent, inquiry accepted and is a general inquiry - Agency contact email addresses set' );
 				} else {
-					console.log('10b. email already sent, inquiry not accepted, or not a general inquiry - Agency contact email address setting aborted');
+					console.log( '10b. email already sent, inquiry not accepted, or not a general inquiry - Agency contact email address setting aborted' );
 					done();
 				}
 			},
-			function(done) {
-				console.log('11.  sending agency contact email');
-				if(!self.emailSentToAgencies && self.inquiryAccepted === true && self.inquiryType === 'general inquiry') {
-					self.sendEmailToAgencyContacts(emailAddressesAgencyContacts, done);
-					console.log('11a. no confirmation sent, inquiry accepted, and is a general inquiry - agency contact email sent');
+			done => {
+				console.log( '11.  sending agency contact email' );
+				if( !this.emailSentToAgencies && this.inquiryAccepted === true && this.inquiryType === 'general inquiry') {
+					this.sendEmailToAgencyContacts( emailAddressesAgencyContacts, done );
+					console.log( '11a. no confirmation sent, inquiry accepted, and is a general inquiry - agency contact email sent' );
 				} else {
-					console.log('11b. confirmation already sent, inquiry not accepted, or not a general inquiry - agency contact email send aborted');
+					console.log( '11b. confirmation already sent, inquiry not accepted, or not a general inquiry - agency contact email send aborted' );
 					done();
 				}
 			}
@@ -189,134 +188,141 @@ Inquiry.schema.pre('save', function(next) {
 	});
 });
 
-Inquiry.schema.methods.setChildsSocialWorker = function(done) {
-	var self = this;
+Inquiry.schema.methods.setChildsSocialWorker = function( done ) {
 	// Fetch the social worker the child is associated with and save it to the childsSocialWorkerField field
-	keystone.list('Child').model.findById(self.child)
+	keystone.list('Child').model.findById( this.child )
 			.exec()
-			.then(function(result) {
-				self.childsSocialWorker = result.adoptionWorker;	// Set the childsSocialWorker field based on the selected child
+			.then( result => {
+
+				this.childsSocialWorker = result.adoptionWorker;	// Set the childsSocialWorker field based on the selected child
 				done();
 
-			}, function(err) {
+			}, err => {
+
 				console.log(err);
 				done();
 			});
 
 };
 
-Inquiry.schema.methods.setAgency = function(done) {
-	var self = this;
+Inquiry.schema.methods.setAgency = function( done ) {
 	// Fetch the agency the social worker is associated with at the time of the inquiry and save it to the agency field
-	keystone.list('Social Worker').model.findById(self.childsSocialWorker)
+	keystone.list('Social Worker').model.findById( this.childsSocialWorker )
 			.exec()
-			.then(function(result) {
-
-				self.agency  					= result.agency;	// Set the agency field based on the selected social worker
-				self.previousChildsSocialWorker = result._id		// Set the previousChildsSocialWorker to allow for tracking to changes in the social worker bound to the inquiry
+			.then( result => {
+				// if the child doesn't have a social worker listed, ignore setting the agency and previous social worker
+				if( !result ) {
+					console.log( 'no social worker was set for the child, so no agency could be found' );
+				} else {
+					this.agency  					= result.agency;	// Set the agency field based on the selected social worker
+					this.previousChildsSocialWorker = result._id		// Set the previousChildsSocialWorker to allow for tracking to changes in the social worker bound to the inquiry
+				}
 
 				done();
 
-			}, function(err) {
-				console.log(err);
+			}, err => {
+
+				console.log( err );
 				done();
 			});
 
 };
 
-Inquiry.schema.methods.setInquirerEmailRecipient = function(emailAddressInquirer, done) {
-	var self = this;
+Inquiry.schema.methods.setInquirerEmailRecipient = function( emailAddressInquirer, done ) {
 	// If a family made the inquiry, we need to fetch the email addresses of both contact 1 and contact 2
-	if(self.inquirer === 'family') {
-		keystone.list('Family').model.findById(self.family)
+	if( this.inquirer === 'family' ) {
+
+		keystone.list('Family').model.findById( this.family )
 				.exec()
-				.then(function(results) {
-					emailAddressInquirer.push(results.contact1.email);
+				.then( result => {
+					emailAddressInquirer.push( result.contact1.email );
 					done();
-				}, function(err) {
+				}, err => {
 					done();
 				});
 	// If a social worker made the inquiry, we need to fetch their email address
-	} else if(self.inquirer === 'social worker') {
-		keystone.list('Social Worker').model.findById(self.socialWorker)
+	} else if(this.inquirer === 'social worker') {
+
+		keystone.list('Social Worker').model.findById( this.socialWorker )
 				.exec()
-				.then(function(results) {
-					emailAddressInquirer.push(results.email);
+				.then(function(result) {
+					emailAddressInquirer.push( result.email );
 					done();
-				}, function(err) {
+				}, err => {
 					console.log(err);
 					done();
 				});
 	} else {
-		console.error('an unexpected value was present for the inquirer field which prevented an email from being sent to the inquirer');
+
+		console.error( 'an unexpected value was present for the inquirer field which prevented an email from being sent to the inquirer' );
 		done();
 	}
 
 };
 
-Inquiry.schema.methods.setStaffEmailRecipients = function(emailAddressesStaff, done) {
-	var self = this,
-		region;
+Inquiry.schema.methods.setStaffEmailRecipients = function( emailAddressesStaff, done ) {
+	let region;
 	// The region we want to match on is stored in the agency we calculated from the child's social worker.  Get the agency record.
-	keystone.list('Child').model.findById(self.child)
+	keystone.list('Child').model.findById( this.child )
 			.exec()
-			.then(function(child) {
+			.then( child => {
 				// Use the region information in the child record to match to one or more CSC region contacts, which hold a region and staff user mapping
-				keystone.list('CSC Region Contact').model.find()
-						.where('region', child.region)
-						.populate('cscRegionContact')			// We need the information for the contact, not just their ID
+				keystone.list( 'CSC Region Contact' ).model.find()
+						.where( 'region', child.region )
+						.populate( 'cscRegionContact' )			// We need the information for the contact, not just their ID
 						.exec()
-						.then(function( cscRegionContacts ) {
+						.then( cscRegionContacts => {
 							// Loop through the region contacts models and extract the email addresses from the cscRegionContact field which maps to a staff member
-							_.each( cscRegionContacts, function( cscRegionContacts ) {
-								emailAddressesStaff.push( cscRegionContacts.cscRegionContact.email );
-							});
+							for( cscRegionContact of cscRegionContacts ) {
+								emailAddressesStaff.push( cscRegionContact.cscRegionContact.email );
+							};
+
 							done();
-						}, function( err ) {
+
+						}, err => {
 							console.log( err );
 							done();
 						});
-			}, function( err ) {
+			}, err => {
 				console.log( err );
 				done();
 			})
 };
 
-Inquiry.schema.methods.setSocialWorkerEmailRecipient = function(emailAddressSocialWorker, done) {
-	var self = this;
+Inquiry.schema.methods.setSocialWorkerEmailRecipient = function( emailAddressSocialWorker, done ) {
 	// If a family made the inquiry, we need to fetch the email addresses of both contact 1 and contact 2
-	keystone.list('Social Worker').model.findById(self.childsSocialWorker)
+	keystone.list( 'Social Worker' ).model.findById( this.childsSocialWorker )
 			.exec()
-			.then(function(results) {
-				emailAddressSocialWorker.push(results.email);
+			.then( results => {
+				emailAddressSocialWorker.push( results.email );
 				done();
-			}, function(err) {
+			}, err => {
+				console.log( err );
 				done();
 			});
 };
 
-Inquiry.schema.methods.setAgencyEmailRecipients = function(emailAddressesAgencyContacts, done) {
-	var self = this;
+Inquiry.schema.methods.setAgencyEmailRecipients = function( emailAddressesAgencyContacts, done ) {
 	// If a family made the inquiry, we need to fetch the email addresses of both contact 1 and contact 2
-	keystone.list('Agency').model.find(self.agencyReferral)
-			.where({ _id: { $in: self.agencyReferral } })
+	keystone.list( 'Agency' ).model.find( this.agencyReferral )
+			.where( { _id: { $in: this.agencyReferral } } )
 			.exec()
-			.then(function(agencyContacts) {
-				_.each(agencyContacts, function(agencyContact) {
-					emailAddressesAgencyContacts.push(agencyContact.generalInquiryContact);
-				});
+			.then( agencyContacts => {
+				for( agencyContact of agencyContacts ) {
+					emailAddressesAgencyContacts.push( agencyContact.generalInquiryContact );
+				};
 				done();
-			}, function(err) {
+			}, err => {
+				console.log( err );
 				done();
 			});
 };
 
-Inquiry.schema.methods.sendEmailToStaff = function(emailAddressesStaff, done) {
-	var self = this;
+Inquiry.schema.methods.sendEmailToStaff = function( emailAddressesStaff, done ) {
 	//Find the email template in templates/emails/
 	new keystone.Email({
 		templateExt 	: 'hbs',
-		templateEngine 	: require('handlebars'),
+		templateEngine 	: require( 'handlebars' ),
 		templateName 	: 'inquiry-staff-email'
 	}).send({
 		to: emailAddressesStaff,
@@ -325,21 +331,20 @@ Inquiry.schema.methods.sendEmailToStaff = function(emailAddressesStaff, done) {
 			email 	: 'info@mareinc.org'
 		},
 		subject: 'staff email'
-	}, function() {
+	}, () => {
 		// Once the email(s) have been successfully sent, we want to make a note of it using the thankYouSentToInquirer field to ensure a repeat email doesn't go out
-		console.log('staff email sent successfully, checking the checkbox in this model');
-		self.emailSentToStaff = true;
+		console.log( 'staff email sent successfully, checking the checkbox in this model' );
+		this.emailSentToStaff = true;
 		done();
 	});
 
 };
 
-Inquiry.schema.methods.sendThankYouToInquirer = function(emailAddressInquirer, done) {
-	var self = this;
+Inquiry.schema.methods.sendThankYouToInquirer = function( emailAddressInquirer, done ) {
 	//Find the email template in templates/emails/
 	new keystone.Email({
-		templateExt 		: 'hbs',
-		templateEngine 	: require('handlebars'),
+		templateExt 	: 'hbs',
+		templateEngine 	: require( 'handlebars' ),
 		templateName 	: 'inquiry-inquirer-thank-you'
 	}).send({
 		to: emailAddressInquirer,
@@ -348,21 +353,20 @@ Inquiry.schema.methods.sendThankYouToInquirer = function(emailAddressInquirer, d
 			email 	: 'info@mareinc.org'
 		},
 		subject: 'thank you for your inquiry'
-	}, function() {
+	}, () => {
 		// Once the email(s) have been successfully sent, we want to make a note of it using the thankYouSentToInquirer field to ensure a repeat email doesn't go out
-		console.log('thank you email sent successfully, checking the checkbox in this model');
-		self.thankYouSentToInquirer = true;
+		console.log( 'thank you email sent successfully, checking the checkbox in this model' );
+		this.thankYouSentToInquirer = true;
 		done();
 	});
 
 };
 
-Inquiry.schema.methods.sendEmailToInquirer = function(emailAddressInquirer, done) {
-	var self = this;
+Inquiry.schema.methods.sendEmailToInquirer = function( emailAddressInquirer, done ) {
 	//Find the email template in templates/emails/
 	new keystone.Email({
-		templateExt 		: 'hbs',
-		templateEngine 	: require('handlebars'),
+		templateExt 	: 'hbs',
+		templateEngine 	: require( 'handlebars' ),
 		templateName 	: 'inquiry-inquirer-email'
 	}).send({
 		to: emailAddressInquirer,
@@ -371,21 +375,20 @@ Inquiry.schema.methods.sendEmailToInquirer = function(emailAddressInquirer, done
 			email 	: 'info@mareinc.org'
 		},
 		subject: 'inquiry information - inquirer'
-	}, function() {
+	}, () => {
 		// Once the email(s) have been successfully sent, we want to make a note of it using the thankYouSentToInquirer field to ensure a repeat email doesn't go out
-		console.log('inquirer email sent successfully, checking the checkbox in this model');
-		self.emailSentToInquirer = true;
+		console.log( 'inquirer email sent successfully, checking the checkbox in this model' );
+		this.emailSentToInquirer = true;
 		done();
 	});
 
 };
 
-Inquiry.schema.methods.sendEmailToChildsSocialWorker = function(emailAddressSocialWorker, done) {
-	var self = this;
+Inquiry.schema.methods.sendEmailToChildsSocialWorker = function( emailAddressSocialWorker, done ) {
 	//Find the email template in templates/emails/
 	new keystone.Email({
-		templateExt 		: 'hbs',
-		templateEngine 	: require('handlebars'),
+		templateExt 	: 'hbs',
+		templateEngine 	: require( 'handlebars' ),
 		templateName 	: 'inquiry-social-worker-email'
 	}).send({
 		to: emailAddressSocialWorker,
@@ -394,20 +397,19 @@ Inquiry.schema.methods.sendEmailToChildsSocialWorker = function(emailAddressSoci
 			email 	: 'info@mareinc.org'
 		},
 		subject: 'inquiry information - social worker'
-	}, function() {
+	}, () => {
 		// Once the email(s) have been successfully sent, we want to make a note of it using the thankYouSentToInquirer field to ensure a repeat email doesn't go out
-		console.log('social worker email sent successfully, checking the checkbox in this model');
-		self.emailSentToChildsSocialWorker = true;
+		console.log( 'social worker email sent successfully, checking the checkbox in this model' );
+		this.emailSentToChildsSocialWorker = true;
 		done();
 	});
 };
 
-Inquiry.schema.methods.sendEmailToAgencyContacts = function(emailAddressesAgencyContacts, done) {
-	var self = this;
+Inquiry.schema.methods.sendEmailToAgencyContacts = function( emailAddressesAgencyContacts, done ) {
 	//Find the email template in templates/emails/
 	new keystone.Email({
-		templateExt 		: 'hbs',
-		templateEngine 	: require('handlebars'),
+		templateExt 	: 'hbs',
+		templateEngine 	: require( 'handlebars' ),
 		templateName 	: 'inquiry-agency-contact-email'
 	}).send({
 		to: emailAddressesAgencyContacts,
@@ -416,10 +418,10 @@ Inquiry.schema.methods.sendEmailToAgencyContacts = function(emailAddressesAgency
 			email 	: 'info@mareinc.org'
 		},
 		subject: 'inquiry information - agency contact'
-	}, function() {
+	}, () => {
 		// Once the email(s) have been successfully sent, we want to make a note of it using the thankYouSentToInquirer field to ensure a repeat email doesn't go out
-		console.log('agency contact email sent successfully, checking the checkbox in this model');
-		self.emailSentToAgencies = true;
+		console.log( 'agency contact email sent successfully, checking the checkbox in this model' );
+		this.emailSentToAgencies = true;
 		done();
 	});
 };
