@@ -1,4 +1,6 @@
 .donations-page {
+	display: flex;
+    flex-direction: column;
 	margin: 2em;
 }
 
@@ -23,6 +25,11 @@
 	display: flex;
 	align-items: center;
 	margin-bottom: 2em;
+}
+
+.donations__button-group {
+	display: flex;
+    justify-content: space-between;
 }
 
 .selection-group__number-container {
@@ -79,6 +86,11 @@
 	&--selected {
 		border-color: #fbb03b;
 	}
+}
+
+.donation-buttons {
+    display: flex;
+    justify-content: space-between;
 }
 
 .paypal-donation-form {

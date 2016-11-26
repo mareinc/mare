@@ -37,19 +37,21 @@ exports.checkFieldForChanges = ( field, model, modelBefore, changeHistory, done 
 
 	if( [ 'string', 'boolean', 'number' ].includes( field.type ) && fieldBefore !== fieldAfter && ( !!fieldBefore || !!fieldAfter ) ) {
 		valueBefore = fieldBefore ? fieldBefore : '';
-		valueAfter = fieldAfter ? fieldAfter : '';
+		value = fieldAfter ? fieldAfter : '';
 
-		exports.addToHistoryEntry( valueBefore, valueAfter, field.label, changeHistory );
+		exports.addToHistoryEntry( valueBefore, value, field.label, changeHistory );
 
 		done();
 
-	// Date.parse(null) returns NaN, and NaN !== NaN, so the second check is needed
-	} else if( field.type === 'date' && ( fieldBefore || fieldAfter ) && Date.parse( fieldBefore ) !== Date.parse( fieldAfter ) ) {
+	// Date.parse( null ) returns NaN, and NaN !== NaN, so the second check is needed
+	} else if( field.type === 'date' && ( fieldBefore || fieldAfter ) ) {
 		// convert the values to nicely formatted dates
 		valueBefore = fieldBefore ? moment(fieldBefore).format( 'MM/DD/YYYY' ) : '';
-		valueAfter = fieldAfter ? moment(fieldAfter).format( 'MM/DD/YYYY' ) : '';
-
-		exports.addToHistoryEntry( valueBefore, valueAfter, field.label, changeHistory );
+		value = fieldAfter ? moment(fieldAfter).format( 'MM/DD/YYYY' ) : '';
+		// not a part of the check above because Date.parse( fieldBefore ) !== Date.parse( fieldAfter ), even if they have the same date ( I think the milliseconds are appearing different )
+		if( valueBefore !== value ) {
+			exports.addToHistoryEntry( valueBefore, value, field.label, changeHistory );
+		}
 
 		done();
 	// handle multi: true in Relationship fields

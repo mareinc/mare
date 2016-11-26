@@ -15,7 +15,7 @@ exports = module.exports = function(req, res) {
 		targetGroup;	// Used to map to the different attendee groups to simplify searching for whether the user is attending
 
 	switch(userType) {
-		case 'admin'			: targetGroup = 'cscAttendees'; break;
+		case 'admin'			: targetGroup = 'staffAttendees'; break;
 		case 'family'			: targetGroup = 'familyAttendees'; break;
 		case 'social worker'	: targetGroup = 'socialWorkerAttendees'; break;
 		case 'site visitor'		: targetGroup = 'siteVisitorAttendees'; break;
