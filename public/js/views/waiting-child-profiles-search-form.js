@@ -153,8 +153,9 @@
 				// <3 Underscore.js for this one
 				if( formFields.races && _.intersection( formFields.races, child.get( 'race' )).length === 0 ) { return; }
 
-				// break out of the current loop only if the child's primary language doesn't match a selected race ( return is needed for this in _.each )
-				if( formFields.primaryLanguages && formFields.primaryLanguages.indexOf( child.get( 'language' ) ) === -1 ) { return; }
+				// break out of the current loop only if none of the child's languages match a selected primary language ( return is needed for this in _.each )
+				// <3 Underscore.js for this one
+				if( formFields.primaryLanguages && _.intersection( formFields.primaryLanguages, child.get( 'language' )).length === 0 ) { return; }
 
 				// break out of the current loop only if the child having contact with their biological siblings/parents doesn't match the user's selection ( return is needed for this in _.each )
 				if( formFields.contactWithBiologicalSiblings === false &&
@@ -181,18 +182,20 @@
 					// break out of the current loop if the child wasn't updated within the timeframe specified by the user ( return is needed for this in _.each )
 					if( !isIncluded ) { return; }
 				}
-
+				// TODO: are these !== undefined checks necessary?
 				// break out of the loop if any of the child's needs exceed the maximum specified by the user ( return is needed for this in _.each )
 				if( formFields.maximumPhysicalNeeds !== undefined && child.get( 'physicalNeeds' ) > formFields.maximumPhysicalNeeds ) { return; }
 				if( formFields.maximumEmotionalNeeds !== undefined && child.get( 'emotionalNeeds' ) > formFields.maximumEmotionalNeeds ) { return; }
 				if( formFields.maximumIntellectualNeeds !== undefined && child.get( 'intellectualNeeds' ) > formFields.maximumIntellectualNeeds ) { return; }
 
-				// break out of the current loop only if none of the child's disabilities match a selected disability ( return is needed for this in _.each )
+				// break out of the current loop only if the child has disabilities and none match a selected disability ( return is needed for this in _.each )
 				if( formFields.disabilities &&
+					child.get( 'disabilities' ).length > 0 &&
 				   _.intersection( formFields.disabilities, child.get( 'disabilities' ) ).length === 0 ) { return; }
 
 				// break out of the current loop only if none of the child's other considerations match a selected consideration ( return is needed for this in _.each )
 				if( formFields.otherConsiderations &&
+					child.get( 'otherConsiderations' ).length > 0 &&
 				   _.intersection( formFields.otherConsiderations, child.get( 'otherConsiderations' ) ).length === 0 ) { return; }
 
 				// break out of the loop if the recommended family constellation for the child does not contain the one selected by the user ( return is needed for this in _.each )
