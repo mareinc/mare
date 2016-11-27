@@ -1,78 +1,98 @@
-// TODO: The words 'light' and 'dark' should appear at the end of the name, not the beginning for consistency
 // TODO: Alphebetize this list to make it easier to navigate
 
-$header-background-color: #3F4472;
+$corn-flower-blue   : rgba( 61, 69, 115, 1 );
+$tufts-blue         : rgba( 74, 123, 204, 1 );
+$carolina-blue      : rgba( 159, 185, 231, 1 );
+$tonys-pink         : rgba( 241, 163, 141, 1 );
+$pastel-violet      : rgba( 201, 145, 213, 1 );
+$light-coral        : rgba( 238, 128, 125, 1 );
+$ronchi             : rgba( 240, 187, 81, 1 );
+$corvette           : rgba( 249, 212, 162, 1 );
+$deep-cove          : rgba( 12, 13, 60, 1 );
+$wenge              : rgba( 102, 88, 77, 1 );
+$my-sin             : rgba( 251, 176, 59, 1 );
+$matrix             : rgb(180, 96, 97);
+$athens-gray        : rgb(238, 239, 243);
+$french-pass        : rgb(196, 233, 252);
+$white              : rgb(255, 255, 255);
+$black              : rgb(0, 0, 0);
+$light-gray         : rgb(213, 213, 213);
+$ruddy              : rgb(255, 0, 0);
 
-$footer-background-color: #3F4473;
-$footer-text-color: #D5D5D5;
 
-$nav-background-color-1: #66584D;
-$nav-background-color-2: #FBB03B;
-$nav-background-color-3: #3D4573;
-$nav-background-color-4: #0C0D3C;
 
-$nav-text-color-1: #66584D;
-$nav-text-color-2: #FFFFFF;
-$nav-text-color-3: #404272;
+$header-background-color                : $corn-flower-blue;
 
-$main-content-background-color: #EEEFF3;
-$main-content-color: #66584D;
+$footer-background-color                : $corn-flower-blue;
+$footer-text-color                      : $light-gray;
 
-$description-background-color-1: #FFFFFF;
-$description-background-color-2: #C4E9FC;
+$nav-background-color-1                 : $wenge;
+$nav-background-color-2                 : $my-sin;
+$nav-background-color-3                 : $corn-flower-blue;
+$nav-background-color-4                 : $deep-cove;
 
-$section-header-background-color-1: #4A7BCC;
-$section-header-background-color-2: #9FB9E7;
-$section-header-background-color-3: #F1A38D;
-$section-header-background-color-4: #C991D5;
-$section-header-background-color-5: #EE807D;
-$section-header-background-color-6: #F0BB51;
-$section-header-background-color-7: #F9D4A2;
-$section-header-background-color-8: #3D4573;
+$nav-text-color-1                       : $wenge;
+$nav-text-color-2                       : $white;
+$nav-text-color-3                       : $corn-flower-blue;
 
-$section-header-text-color-1: #8FCED2;
-$section-header-text-color-2: #FFFFFF;
+$main-content-background-color          : $athens-gray;
+$main-content-color                     : $wenge;
 
-$callout-background-color-1: #56B8D0;
-$callout-background-color-2: #FBB03B;
+$description-background-color-1         : $white;
+$description-background-color-2         : $french-pass;
 
-$callout-text-color-1: #3D3811;
-$callout-text-color-2: #66584D;
+$section-header-background-color-1      : $tufts-blue;
+$section-header-background-color-2      : $carolina-blue;
+$section-header-background-color-3      : $tonys-pink;
+$section-header-background-color-4      : $pastel-violet;
+$section-header-background-color-5      : $light-coral;
+$section-header-background-color-6      : $ronchi;
+$section-header-background-color-7      : $corvette;
+$section-header-background-color-8      : $corn-flower-blue;
 
-$description-text-color: #FFFFFF;
+$section-header-text-color-1            : #8FCED2;
+$section-header-text-color-2            : $white;
 
-$light-background-color: #FFFFFF;
-$dark-background-color: #000000;
+$callout-background-color-1             : #56B8D0;
+$callout-background-color-2             : $my-sin;
 
-$light-border-color: #FFFFFF;
-$dark-border-color: #000000;
+$callout-text-color-1                   : #3D3811;
+$callout-text-color-2                   : $wenge;
 
-$light-text-color: #FFFFFF;
-$dark-text-color: #000000;
+$description-text-color                 : $white;
 
-$border-color-1: #99918E;
-$border-color-2: #66584D;
-$border-color-3: #B97A42;
+$background-color-light                 : $white;
+$background-color-dark                  : $black;
 
-$shadow-color-1: #616161;
+$border-color-light                     : $white;
+$border-color-dark                      : $black;
 
-$required-color: #FF0000;
+$text-color-light                       : $white;
+$text-color-dark                        : $black;
 
-$button-background-color-1: #66584D;
-$button-background-color-2: #404272;
-$button-background-color-3: #FBB03B;
-$button-background-color-4: #B46061;
-$button-background-color-light: #FFFFFF;
-$button-background-color-dark: #000000;
+$border-color-1                         : #99918E;
+$border-color-2                         : $wenge;
+$border-color-3                         : #B97A42;
 
-$button-text-color-1: #66584D;
-$button-text-color-light: #FFFFFF;
-$button-text-color-dark: #000000;
+$shadow-color-1                         : #616161;
 
-$form-color-1: #3EAAF5;
-$form-color-2: #FF7FAE;
-$form-color-3: #D5D5D5;
+$required-color                         : $ruddy;
 
-$modal-color-1: #3D4674;
+$button-background-color-1              : $wenge;
+$button-background-color-2              : $corn-flower-blue;
+$button-background-color-3              : $my-sin;
+$button-background-color-4              : #B46061;
+$button-background-color-light          : $white;
+$button-background-color-dark           : $black;
+
+$button-text-color-1                    : $wenge;
+$button-text-color-light                : $white;
+$button-text-color-dark                 : $black;
+
+$form-color-1                           : #3EAAF5;
+$form-color-2                           : #FF7FAE;
+$form-color-3                           : $light-gray;
+
+$modal-color-1                          : #3D4674;
 
 // TODO: Sass up the arrow colors
