@@ -70,24 +70,6 @@ label {
     margin: 10px 0 5px;
 }
 
-/* TODO: Change class names to signify that these are buttons */
-.register,
-.log-in {
-	padding: 10px 15px;
-	border-radius: 5px;
-	color: $light-text-color;
-    text-transform: uppercase;
-    margin: 0 0 10px;
-}
-
-.register {
-	background-color: $button-background-color-1;
-}
-
-.log-in {
-	background-color: $button-background-color-2;
-}
-
 .header-blue {
 	color: $form-color-1;
 	border-bottom: 1px solid $form-color-1;
