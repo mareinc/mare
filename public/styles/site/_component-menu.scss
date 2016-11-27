@@ -25,7 +25,7 @@ nav ul {
 
 .top-nav li > a {
 	text-decoration: none;
-	color: $dark-text-color;
+	color: $text-color-dark;
 	padding: 8px 8px 8px 8px;
 }
 
@@ -70,11 +70,6 @@ nav ul {
 .main-nav .nav > li {
 	position: relative;
 	flex: 1 1 0;
-	height: 3em;
-	// The height the main navigation elements snap to 2 lines
-	@media all and (min-width: 989px) {
-		height: 2em;
-	}
 }
 
 // The third menu element 'family support services' needs more room than the rest
@@ -96,7 +91,7 @@ nav ul {
 
 .main-nav .nav li:hover > a {
     background-color: $nav-background-color-4;
-    color: $light-text-color;
+    color: $text-color-light;
 }
 
 .main-nav .nav li:hover li a {
