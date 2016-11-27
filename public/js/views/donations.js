@@ -83,11 +83,11 @@
 		},
 
 		enableDonateButton: function enableDonateButton() {
-			$('.donate-button').removeClass('donate-button--disabled');
+			$('.donate-button').removeClass('button--disabled');
 		},
 
 		disableDonateButton: function disableDonateButton() {
-			$('.donate-button').addClass('donate-button--disabled');
+			$('.donate-button').addClass('button--disabled');
 		},
 
 		clearDonationAmountInput: function clearDonationAmountInput() {
