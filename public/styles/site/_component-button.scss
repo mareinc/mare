@@ -18,6 +18,10 @@
 		width: 9em;
 	}
 
+	&--large {
+		width: 11em;
+	}
+
 	&--brown {
 		color: $button-text-color-light;
 		background-color: $button-background-color-1;
