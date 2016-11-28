@@ -51,11 +51,19 @@
 			});
 			// when the details view sends an event to trigger updating the child bookmark, send the request to the server
 			mare.collections.galleryChildren.on( 'childBookmarkUpdateNeeded', function( registrationNumber, action ) {
-				action === 'add' ? view.addChildBookmark( registrationNumber ) : view.removeChildBookmark( registrationNumber );
+				if( action === 'add' ) {
+					view.addChildBookmark( registrationNumber );
+				} else if( action === 'remove' ) {
+					view.removeChildBookmark( registrationNumber );
+				}
 			});
 			// when the details view sends an event to trigger updating the sibling group bookmark, send the request to the server
 			mare.collections.galleryChildren.on( 'siblingGroupBookmarkUpdateNeeded', function( registrationNumbers, action ) {
-				action === 'add' ? view.addSiblingGroupBookmark( registrationNumbers ) : view.removeSiblingGroupBookmark( registrationNumbers );
+				if( action === 'add' ) {
+					view.addSiblingGroupBookmark( registrationNumbers );
+				} else if( action === 'remove' ) {
+					view.removeSiblingGroupBookmark( registrationNumbers );
+				}
 			});
 		},
 
@@ -287,7 +295,7 @@
 					targetButton.children( '.bookmark__icon' ).removeClass( 'fa-minus-square-o' ).addClass( 'fa-plus-square-o' );
 					targetButton.removeClass( 'bookmark--active' );
 					break;
-			};
+			}
 
 			targetButton.removeClass( 'bookmark--disabled' );
 		},
@@ -308,7 +316,7 @@
 					targetButton.children( '.bookmark__icon' ).removeClass( 'fa-minus-square-o' ).addClass( 'fa-plus-square-o' );
 					targetButton.removeClass( 'bookmark--active' );
 					break;
-			};
+			}
 
 			targetButton.removeClass( 'bookmark--disabled' );
 		},

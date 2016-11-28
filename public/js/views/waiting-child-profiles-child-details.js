@@ -254,7 +254,7 @@
 					targetButton.html( 'Bookmark' );
 					targetButton.removeClass( 'button--active' );
 					break;
-			};
+			}
 
 			targetButton.removeClass( 'button--disabled' );
 		}
