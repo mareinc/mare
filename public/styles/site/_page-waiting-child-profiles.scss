@@ -8,33 +8,20 @@
 }
 
 .filters {
-	display: block;
-	margin-bottom: 15px;
-
-	@media all and (min-width: 500px) {
-		display: flex;
-		justify-content: flex-start;
-		align-items: flex-start;
-    	flex-direction: column;
-	}
+	display: flex;
+	margin-bottom: 1em;
+	flex-direction: column;
 }
 
 .filters__search {
-    margin-bottom: 10px;
-}
-
-.filters__search-button {
-	font-size: 0.9em;
-
-	color: $button-text-color-1;
-	background-color: $button-background-color-3;
+    margin: 2em 0;
 }
 
 .waiting-child-profiles-filter {
-	margin-bottom: 15px;
+	margin-bottom: 1em;
     width: 90%;
 
-    @media all and (min-width: 500px) {
+    @media all and ( min-width: 31.25em ) {	/* 500px / 16px = 31.25em */
     	width: 140px;
     }
 }
@@ -44,11 +31,13 @@
 }
 
 .icon-key {
-	display: block;
-	margin-top: 15px;
+	display: flex;
+    justify-content: space-around;
+    margin-top: 1em;
+	width: 19.75em;							/* 300px / 14px = 19.75em */
+	align-self: center;
 
-	@media all and (min-width: 500px) {
-		width: 300px;
+	@media all and ( min-width: 31.25em ) {	/* 500px / 16px = 31.25em */
 		margin-top: 0;
 		align-self: flex-end;
 	}
