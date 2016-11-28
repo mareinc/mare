@@ -54,7 +54,20 @@
 			</div>
 		</div>
 
-		<div class="detailed-profile__footer">You can help bring me closer to finding "a place to call HOME" by filling out the <a href="/form/information-request-form">MARE Information Request Form</a>. They will be glad to help you get more information about me.</div>
+		<div class="profile__footer">You can help bring me closer to finding "a place to call HOME" by filling out the <a href="/form/information-request-form">MARE Information Request Form</a>. They will be glad to help you get more information about me.</div>
+		
+		<!-- determining whether to add the block below based on whether the user is allowed to bookmark children needs to happen server-side -->
+		{{#if canBookmarkChildren}}
+		<div class="button-group button-group--horizontal button-group--space-around profile__button-group">
+			\{{#if isBookmarked}}
+			<button class="button button--yellow button--large child-inquiry-button button--active">Bookmark</button>
+			\{{else}}
+			<button class="button button--yellow button--large child-inquiry-button">Remove Bookmark</button>
+			\{{/if}}
+			<button class="button button--yellow button--large child-bookmark-button">Inquire</button>
+		</div>
+		{{/if}}
+
 	</div>
 
 	\{{#if hasVideo}}
@@ -71,6 +84,18 @@
 		</div>
 
 		<div class="detailed-profile__footer">You can help bring me closer to finding "a place to call HOME" by filling out the <a href="/form/information-request-form">MARE Information Request Form</a>. They will be glad to help you get more information about me.</div>
+
+		<!-- determining whether to add the block below based on whether the user is allowed to bookmark children needs to happen server-side -->
+		{{#if canBookmarkChildren}}
+		<div class="button-group button-group--horizontal button-group--space-around profile__button-group">
+			\{{#if isBookmarked}}
+			<button class="button button--yellow button--large child-inquiry-button button--active">Bookmark</button>
+			\{{else}}
+			<button class="button button--yellow button--large child-inquiry-button">Remove Bookmark</button>
+			\{{/if}}
+			<button class="button button--yellow button--large child-bookmark-button">Inquire</button>
+		</div>
+		{{/if}}
 
 	</div>
 	\{{/if}}
@@ -89,6 +114,18 @@
 		</div>
 
 		<div class="detailed-profile__footer">You can help bring me closer to finding "a place to call HOME" by filling out the <a href="/form/information-request-form">MARE Information Request Form</a>. They will be glad to help you get more information about me.</div>
+
+		<!-- determining whether to add the block below based on whether the user is allowed to bookmark children needs to happen server-side -->
+		{{#if canBookmarkChildren}}
+		<div class="button-group button-group--horizontal button-group--space-around profile__button-group">
+			\{{#if isBookmarked}}
+			<button class="button button--yellow button--large child-inquiry-button button--active">Bookmark</button>
+			\{{else}}
+			<button class="button button--yellow button--large child-inquiry-button">Remove Bookmark</button>
+			\{{/if}}
+			<button class="button button--yellow button--large child-bookmark-button">Inquire</button>
+		</div>
+		{{/if}}
 
 	</div>
 	\{{/if}}
