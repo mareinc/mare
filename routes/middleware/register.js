@@ -75,6 +75,7 @@ exports.registerUser = function(req, res, next) {
 			    res.locals.files = req.files;
 
 				async.series([
+					function(done) { exports.getNextRegistrationNumber(res, done); },
 					function(done) { exports.saveFamily(user, res, done); },
 					function(done) { exports.getUserID(user, res.locals.userModel, res, done); },
 					function(done) { exports.uploadFile(res.locals.userModel, 'homestudy', 'homestudyFile_upload', res.locals.files.homestudyFile_upload, res, done); },
@@ -186,12 +187,14 @@ exports.saveSocialWorker = function saveSocialWorker(user, res, done) {
 
 exports.saveFamily = function saveFamily(user, res, done) {
 
-	var newUser = new Family.model({
+	let locals = res.locals;
+
+	let newUser = new Family.model({
 
 		isActive							: true,
 		email								: user.email,
 		password							: user.password,
-		registrationNumber					: exports.getNextRegistrationNumber(),
+		registrationNumber					: locals.newRegistrationNumber,
 
 		initialContact						: exports.getCurrentDate(),
 		familyConstellation					: user.familyConstellation,
@@ -313,11 +316,11 @@ exports.saveFamily = function saveFamily(user, res, done) {
 		// TODO: if the user requested a mail copy of the info packet, add it to an object containing email information before sending it to Diane
 		//       so we can capture all relevant information in one email
 		console.log('new family saved');
-		res.locals.messages.push({ type: 'success', message: 'your account has been successfully created' });
+		res.locals.messages.push( { type: 'success', message: 'your account has been successfully created' } );
 		done();
-	}, function(err) {
-		console.log(err);
-		res.locals.messages.push({ type: 'error', message: 'there was an error creating your account' });
+	}, function( err ) {
+		console.log( err );
+		res.locals.messages.push( { type: 'error', message: 'there was an error creating your account' } );
 		done();
 	});
 
@@ -375,7 +378,7 @@ exports.getUserID = function getUserID(user, userModel, res, done) {
 	});
 
 };
-
+// TODO: URGENT, this will break across environments, need to find a better way to bind to mailing lists
 exports.addToMailingLists = function addToMailingLists(user, res, done) {
 	res.locals.mailingLists = {
 		news			: '5692fcc6eb0d8a13f5f5ecc7',
@@ -454,8 +457,26 @@ exports.uploadFile = function uploadFile(userModel, targetFieldPrefix, targetFie
 				});
 };
 
-exports.getNextRegistrationNumber = function getNextRegistrationNumber() {
-	return '12345';
+exports.getNextRegistrationNumber = function getNextRegistrationNumber( res, done ) {
+
+	let locals = res.locals;
+	
+	Family.model.find()
+			.exec()
+			.then( families => {
+				// get an array of registration numbers
+				const registrationNumbers = families.map( family => family.get( 'registrationNumber' ) );
+				// get the largets registration number
+				locals.newRegistrationNumber = Math.max( ...registrationNumbers ) + 1;
+
+				done();
+
+			}, err => {
+				console.log( 'error fetching next registration number' );
+				console.log( err );
+
+				done();
+			});
 };
 
 exports.getCurrentDate = function getCurrentDate() {
