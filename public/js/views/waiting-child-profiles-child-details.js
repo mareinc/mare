@@ -20,18 +20,24 @@
 				// Bind event handler for when child details are returned
 				view.on( 'child-details-loaded', view.render );
 			});
+			// when we get a response from the server that the bookmark for a child has successfully updated, update the view
+			mare.collections.galleryChildren.on( 'childBookmarkUpdated', function( registrationNumber, action ) {
+				view.updateBookmarkButton( registrationNumber, action );
+			});
 		},
-
+		// events need to be bound every time the modal is opened, so they can't be put in an event block
 		bindEvents: function bindEvents() {
   			$( '.modal__close' ).click( this.closeModal );
 			$( '.profile-navigation__previous' ).click( this.handleNavClick );
 			$( '.profile-navigation__next' ).click( this.handleNavClick );
+			$( '.child-bookmark-button' ).click( this.broadcastBookmarkUpdateEvent );
 		},
-
+		// events need to be unbound every time the modal is closed
 		unbindEvents: function unbindEvents() {
 			$( '.modal__close' ).unbind( 'click' );
 			$( '.profile-navigation__previous' ).unbind( 'click' );
 			$( '.profile-navigation__next' ).unbind( 'click' );
+			$( '.child-bookmark-button' ).unbind( 'click' );
 			$( '.profile-tabs__tab' ).unbind( 'click' );
 		},
 
@@ -119,7 +125,7 @@
 
 		/* Make a call to fetch data for the current child to show detailed information for */
 		getDetails: function getDetails( childModel ) {
-			// Store a reference to this for insde callbacks where context is lost
+			// Store a reference to this for inside callbacks where context is lost
 			var view = this;
 			// Submit a request to the service layer to fetch child data if we don't have it
 			if( !childModel.get( 'hasDetails' )) {
@@ -131,7 +137,7 @@
 						registrationNumber: childModel.get( 'registrationNumber' )
 					}
 				}).done( function( childDetails ) {
-					// Append the new fields to the child model and set a flag so fetch the same child information a second time
+					// Append the new fields to the child model and set a flag to fetch the same child information a second time
 					childModel.set( childDetails );
 					childModel.set( 'hasDetails', true );
 					// Emit an event when we have new child details to render
@@ -202,6 +208,55 @@
 				$( '[data-contents=' + selectedContentType + ']' ).addClass( 'profile-tab__contents--selected' );
 
 			});
+		},
+
+		/* toggle whether the child is bookmarked */
+		broadcastBookmarkUpdateEvent: function broadcastBookmarkUpdateEvent( event ) {
+			// DOM cache the current target for performance
+			var $currentTarget = $( event.currentTarget );
+			// Get the child's registration number to match them in the database
+			var registrationNumber = $currentTarget.data( 'registration-number' );
+
+			// if we are currently saving the users attempt to toggle the bookmark and the server hasn't processed the change yet, ignore the click event
+			if( $currentTarget.hasClass( 'button--disabled' ) ) {
+
+				return;
+
+			// if the child is currently bookmarked, remove them
+			} else if( $currentTarget.hasClass( 'button--active' ) ) {
+
+				$currentTarget.addClass( 'button--disabled' );
+				// send an event that the bookmark needs to be updated
+				mare.collections.galleryChildren.trigger( 'childBookmarkUpdateNeeded', registrationNumber, 'remove' );
+
+			// if the child is not currently bookmarked, add them
+			} else {
+
+				$currentTarget.addClass( 'button--disabled' );
+				// send an event that the bookmark needs to be updated
+				mare.collections.galleryChildren.trigger( 'childBookmarkUpdateNeeded', registrationNumber, 'add' );
+
+			}
+		},
+
+		updateBookmarkButton: function updateBookmarkButton( registrationNumber, action ) {
+
+			var targetButton = $('.child-bookmark-button[data-registration-number="' + registrationNumber + '"]')
+
+			switch( action ) {
+				case 'add':
+					// change the icon from a plus to a minus
+					targetButton.html( 'Remove Bookmark' );
+					targetButton.addClass( 'button--active' );
+					break;
+				case 'remove':
+					// change the icon from a minus to a plus
+					targetButton.html( 'Bookmark' );
+					targetButton.removeClass( 'button--active' );
+					break;
+			};
+
+			targetButton.removeClass( 'button--disabled' );
 		}
 
 	});
