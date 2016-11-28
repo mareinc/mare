@@ -133,7 +133,7 @@
 
 			var formFields = this.formFields;
 
-			// Clear out all contents of the current gallery collection
+			// clear out all contents of the current gallery collection
 			mare.collections.galleryChildren.reset();
 
 			mare.collections.allChildren.each( function( child ) {
@@ -209,12 +209,12 @@
 				if( child.get( 'requiresYoungerSibling' ) && formFields.youngestChildAgeInHome >= child.get( 'age' ) ) { return; }
 				if( child.get( 'noPets' ) && formFields.petsInHome ) { return; }
 
-				// If the child passes all checks, add them to the collection to display on the gallery
+				// if the child passes all checks, add them to the collection to display on the gallery
 				mare.collections.galleryChildren.add( child );
 
 			});
 
-			// Emit an event to allow the gallery to update it's display now that we have all matching models
+			// emit an event to allow the gallery to update it's display now that we have all matching models
 			mare.collections.galleryChildren.trigger( 'updateComplete' );
 
 		}
