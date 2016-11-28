@@ -62,6 +62,7 @@ exports.registerUser = function(req, res, next) {
 			} else if (res.locals.registrationType === 'socialWorker') {
 
 				async.series([
+					function(done) { exports.getMailingLists( res, done ); },
 					function(done) { exports.saveSocialWorker(user, res, done); },
 					function(done) { exports.getUserID(user, res.locals.userModel, res, done); },
 					function(done) { exports.addToMailingLists(user, res, done); }
@@ -75,6 +76,7 @@ exports.registerUser = function(req, res, next) {
 			    res.locals.files = req.files;
 
 				async.series([
+					function(done) { exports.getMailingLists( res, done ); },
 					function(done) { exports.getNextRegistrationNumber(res, done); },
 					function(done) { exports.saveFamily(user, res, done); },
 					function(done) { exports.getUserID(user, res.locals.userModel, res, done); },
@@ -380,16 +382,11 @@ exports.getUserID = function getUserID(user, userModel, res, done) {
 };
 // TODO: URGENT, this will break across environments, need to find a better way to bind to mailing lists
 exports.addToMailingLists = function addToMailingLists(user, res, done) {
-	res.locals.mailingLists = {
-		news			: '5692fcc6eb0d8a13f5f5ecc7',
-		adoptionParties	: '569806f50151ac0300616ca0',
-		fundraising		: '5692fcc6eb0d8a13f5f5ecc8'
-	};
 
 	res.locals.requestedMailingLists = [];
 
 	if(user.mareEmailList === 'yes') { res.locals.requestedMailingLists.push('news'); }
-	if(user.adoptionPartyEmailList === 'yes') { res.locals.requestedMailingLists.push('adoptionParties'); }
+	if(user.adoptionPartyEmailList === 'yes') { res.locals.requestedMailingLists.push('adoption parties'); }
 	if(user.fundraisingEventsEmailList === 'yes') { res.locals.requestedMailingLists.push('fundraising'); }
 	// Loop through each of the mailing lists the user should be added to and add them.  Async allows all assignments
 	// to happen in parallel before handling the result.
@@ -399,9 +396,9 @@ exports.addToMailingLists = function addToMailingLists(user, res, done) {
 				.then(function(result) {
 
 					if(res.locals.registrationType === 'socialWorker') {
-						result.socialWorkerAttendees.push(res.locals.newUserID);
+						result.socialWorkerSubscribers.push(res.locals.newUserID);
 					} else if (res.locals.registrationType === 'family') {
-						result.familyAttendees.push(res.locals.newUserID);
+						result.familySubscribers.push(res.locals.newUserID);
 					}
 
 					result.save(function(err) {
@@ -455,6 +452,28 @@ exports.uploadFile = function uploadFile(userModel, targetFieldPrefix, targetFie
 					console.log(err);
 					done();
 				});
+};
+
+exports.getMailingLists = function getMailingLists( res, done ) {
+
+	locals = res.locals;
+	res.locals.mailingLists = {};
+
+	MailingList.model.find()
+			.where( 'mailingList' ).in( [ 'news', 'adoption parties', 'fundraising' ] )
+			.exec()
+			.then( mailingLists => {
+
+				mailingLists.map( mailingList => {
+					res.locals.mailingLists[ mailingList.get( 'mailingList' ) ] = mailingList.get( '_id' );
+				});
+
+				done();
+
+			}, err => {
+				console.log( err );
+				done();
+			});
 };
 
 exports.getNextRegistrationNumber = function getNextRegistrationNumber( res, done ) {
