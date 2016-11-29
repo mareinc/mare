@@ -30,7 +30,6 @@ const keystone				= require('keystone'),
 
 // Create model
 const Child = new keystone.List('Child', {
-	track: true,
 	autokey: { path: 'key', from: 'registrationNumber', unique: true },
 	map: { name: 'name.full' },
 	defaultSort: 'name.full'
@@ -228,14 +227,15 @@ Child.schema.post( 'init', function() {
 Child.schema.pre('save', function( next ) {
 	'use strict';
 
-	async.parallel([
-		( done ) => { this.setImages( done ); }, // Create cloudinary URLs for images sized for various uses
-		( done ) => { this.setFullName( done ); }, // Create a full name for the child based on their first, middle, and last names
-		( done ) => { this.setFileName( done ); }, // Create an identifying name for file uploads
-		( done ) => { this.setSiblingGroupFileName( done ); }, // Create an identifying name for sibling group file uploads
-		( done ) => { this.updateMustBePlacedWithSiblingsCheckbox( done ); }, // If there are no siblings to be placed with, uncheck the box, otherwise check it
-		( done ) => { this.updateGroupBio( done ); },
-		( done ) => { this.setChangeHistory( done ); } // Process change history
+	async.series([
+		done => { this.setImages( done ); }, // Create cloudinary URLs for images sized for various uses
+		done => { this.setFullName( done ); }, // Create a full name for the child based on their first, middle, and last names
+		done => { this.setFileName( done ); }, // Create an identifying name for file uploads
+		done => { this.setSiblingGroupFileName( done ); }, // Create an identifying name for sibling group file uploads
+		done => { this.updateMustBePlacedWithSiblingsCheckbox( done ); }, // If there are no siblings to be placed with, uncheck the box, otherwise check it
+		done => { this.updateGroupBio( done ); },
+		done => { ChangeHistoryMiddleware.setUpdatedby( this, done ); }, // we need this id in case the family was created via the website and udpatedBy is empty
+		done => { this.setChangeHistory( done ); } // Process change history
 	], function() {
 
 		console.log( 'child information updated' );
