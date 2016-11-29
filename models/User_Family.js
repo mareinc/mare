@@ -24,7 +24,7 @@ var keystone				= require( 'keystone' ),
 // Create model
 var Family = new keystone.List( 'Family', {
 	inherits	: User,
-	track		: true,
+	autokey		: { path: 'key', from: 'registrationNumber', unique: true },
 	map			: { name: 'contact1.name.full' },
 	defaultSort	: 'contact1.name.full',
 	hidden		: false
@@ -338,11 +338,12 @@ Family.schema.pre( 'save', function( next ) {
 	'use strict';
 
 	// TODO: Assign a registration number if one isn't assigned
-	async.parallel([
+	async.series([
 		done => { this.setFullName( done ); }, // Create a full name for the child based on their first, middle, and last names
 		done => { this.setFileName( done ); }, // Create an identifying name for file uploads
 		done => { this.setUserType( done ); }, // All user types that can log in derive from the User model, this allows us to identify users better
 		// function( done ) { this.setRegistrationNumber }, // TODO: this should be the next highest available reg. number with self call on fail up to x times
+		done => { ChangeHistoryMiddleware.setUpdatedby( this, done ); }, // we need this id in case the family was created via the website and udpatedBy is empty
 		done => { this.setChangeHistory( done ); } // Process change history
 
 	], () => {
