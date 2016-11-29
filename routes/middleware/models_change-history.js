@@ -183,7 +183,7 @@ exports.checkFieldForChanges = ( field, model, modelBefore, changeHistory, done 
 	} else {
 		done();
 	}
-}
+};
 
 exports.addToHistoryEntry = ( fieldBefore, field, label, changeHistory ) => {
 
@@ -204,4 +204,32 @@ exports.addToHistoryEntry = ( fieldBefore, field, label, changeHistory ) => {
 							 ( fieldBefore || fieldBefore === 0 ? fieldBefore : '[blank]' ) +
 							 ' to ' +
 							 ( field || field === 0 ? field : '[blank]' );
-}
+};
+
+/* if the model is created via the website, there is no updatedBy.  In these cases we need to populate it with the website bot's id */
+exports.setUpdatedby = ( targetModel, done ) => {
+	// if the user was created using the website	
+	if( !targetModel.updatedBy ) {
+		keystone.list( 'Admin' ).model.find()
+				.exec()
+				.then( admins => {
+					// since we can't filter on elements on an object in a .which(), we do it in a loop here instead
+					for( admin of admins ) {
+						if( admin.name.full === 'Website Bot' ) {
+							// set the updatedBy field to the id of the website bot
+							targetModel.updatedBy = admin.get( '_id' );
+						}
+					}
+					
+					done();
+				}, err => {
+
+					console.log( err );
+					done();
+				});
+	// otherwise, if the user was created using the admin UI
+	} else {
+		// move on as the updatedBy field is already set
+		done();
+	}
+};
