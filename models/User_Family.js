@@ -305,7 +305,7 @@ Family.add( 'General Information', {
 
 }, 'Registration Details', {
 
-	registeredViaWebsite: { type: Types.Boolean, label: 'registered through the website', noedit: true, initial: true }
+	registeredViaWebsite: { type: Types.Boolean, label: 'registered through the website', noedit: true }
 
 }, {
 
