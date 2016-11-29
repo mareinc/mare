@@ -43,7 +43,7 @@ Child.add('Display Options', {
 
 }, 'Child Information', {
 
-	registrationNumber: { type: Number, label: 'registration number', format: false, required: true, initial: true },
+	registrationNumber: { type: Number, label: 'registration number', format: false, noedit: true },
 	registrationDate: { type: Types.Date, label: 'registration date', format: 'MM/DD/YYYY', required: true, initial: true },
 
 	name: {
@@ -234,6 +234,7 @@ Child.schema.pre('save', function( next ) {
 		done => { this.setSiblingGroupFileName( done ); }, // Create an identifying name for sibling group file uploads
 		done => { this.updateMustBePlacedWithSiblingsCheckbox( done ); }, // If there are no siblings to be placed with, uncheck the box, otherwise check it
 		done => { this.updateGroupBio( done ); },
+		done => { this.setRegistrationNumber( done ) }, // Set the registration number to the next highest available
 		done => { ChangeHistoryMiddleware.setUpdatedby( this, done ); }, // we need this id in case the family was created via the website and udpatedBy is empty
 		done => { this.setChangeHistory( done ); } // Process change history
 	], function() {
@@ -336,6 +337,31 @@ Child.schema.methods.updateGroupBio = function( done ) {
 
 	done();
 }
+
+Child.schema.methods.setRegistrationNumber = function( done ) {
+	// If the registration number is already set ( which will happen during the data migration and creating from the website ), ignore setting it
+	if( this.registrationNumber ) {
+		done();
+	} else {
+		// get all children
+		keystone.list( 'Child' ).model.find()
+				.exec()
+				.then( children => {
+					// get an array of registration numbers
+					const registrationNumbers = children.map( child => child.get( 'registrationNumber' ) );
+					// get the largest registration number
+					this.registrationNumber = Math.max( ...registrationNumbers ) + 1;
+
+					done();
+
+				}, err => {
+					console.log( 'error setting registration number' );
+					console.log( err );
+
+					done();
+				});
+	}
+};
 
 // Update the siblings field of all siblings listed to include the current child
 Child.schema.methods.updateSiblingFields = function() {
