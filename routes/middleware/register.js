@@ -485,13 +485,13 @@ exports.getNextRegistrationNumber = function getNextRegistrationNumber( res, don
 			.then( families => {
 				// get an array of registration numbers
 				const registrationNumbers = families.map( family => family.get( 'registrationNumber' ) );
-				// get the largets registration number
+				// get the largest registration number
 				locals.newRegistrationNumber = Math.max( ...registrationNumbers ) + 1;
 
 				done();
 
 			}, err => {
-				console.log( 'error fetching next registration number' );
+				console.log( 'error setting registration number' );
 				console.log( err );
 
 				done();
