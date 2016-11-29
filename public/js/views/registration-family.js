@@ -30,7 +30,7 @@
 			this.$howDidYouHearOther			= this.$('#family-how-did-you-hear-other');
 			this.$infoPacketDetails				= this.$('.info-packet-details');
 			this.$childrenInHome 				= this.$('#children-in-home');
-			this.$childrenForm 					= this.$('.children-form');
+			this.$childrenInHomeDetails 		= this.$('.children-in-home-details');
 			// Initialize parsley validation on the form
 			this.form = this.$el.parsley();
 
@@ -124,10 +124,13 @@
 				// Show the appropriate number of child forms
 				this.generateChildDetailInputs(selectedQuantity);
 			} else {
-				// Hide the child formrs
-				this.$childrenForm.addClass('hidden');
-				$('.children-form-heading-copy').remove();
-				$('.children-form-copy').remove();
+				// Count the number of child data groups already shown on the page
+				var currentChildrenDisplayed = this.$('.child-details-form').length;
+				// Remove extra additional child forms
+				for( var i = 1; i <= currentChildrenDisplayed; i++ ) {
+					$('.child' + i + '-form').remove();
+					$('.child' + i + '-form-heading').remove(); // TODO: Include the heading as part of the form to make cleanup easier
+				}
 			}
 		},
 		// TODO: This needs to be cleaned up a bit, both logic for efficiency and the creation should be handled in a template instead of jQuery.
@@ -137,7 +140,7 @@
 
 			if( currentChildrenDisplayed > selectedNumberOfChildren ) {
 				// Remove extra additional child forms
-				for(i = currentChildrenDisplayed; i > selectedNumberOfChildren; i--) {
+				for( var i = currentChildrenDisplayed; i > selectedNumberOfChildren; i-- ) {
 					$('.child' + i + '-form').remove();
 					$('.child' + i + '-form-heading').remove(); // TODO: Include the heading as part of the form to make cleanup easier
 				}
