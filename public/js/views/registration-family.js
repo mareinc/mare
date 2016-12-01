@@ -136,18 +136,19 @@
 		// TODO: This needs to be cleaned up a bit, both logic for efficiency and the creation should be handled in a template instead of jQuery.
 		generateChildDetailInputs: function generateChildDetailInputs(selectedNumberOfChildren) {
 			// Count the number of child data groups already shown on the page
-			var currentChildrenDisplayed = this.$('.child-details-form').length;
+			var currentChildrenDisplayed = this.$('.child-details-form').length,
+				i;
 
 			if( currentChildrenDisplayed > selectedNumberOfChildren ) {
 				// Remove extra additional child forms
-				for( var i = currentChildrenDisplayed; i > selectedNumberOfChildren; i-- ) {
+				for( i = currentChildrenDisplayed; i > selectedNumberOfChildren; i-- ) {
 					$('.child' + i + '-form').remove();
 					$('.child' + i + '-form-heading').remove(); // TODO: Include the heading as part of the form to make cleanup easier
 				}
 
 			} else {
 				// Add sections that aren't already on the page
-				for(var i = currentChildrenDisplayed + 1; i <= selectedNumberOfChildren; i++) {
+				for( i = currentChildrenDisplayed + 1; i <= selectedNumberOfChildren; i++ ) {
 					// Pass the relevant data through the child in home template to generate to add to the page
 					var html = this.template({ 	index		: i,
 												id			: 'child' + i,
