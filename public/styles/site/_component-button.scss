@@ -3,7 +3,7 @@
 	padding: 1em;
 	border-radius: 2px;
 	border-style: none;
-	margin-left: 1%;
+	margin-left: 1%; /* these are here because buttons in button groups squish together // TODO: find a better way */
 	margin-right: 1%;
 	min-width: 8em;
 	/*box-shadow: 0 5px 11px 0 rgba(0, 0, 0, 0.18), 0 4px 15px 0 rgba(0, 0, 0, 0.15);*/
