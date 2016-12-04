@@ -33,11 +33,11 @@
 			mare.views.gallerySearchForm = mare.views.gallerySearchForm || new mare.views.GallerySearchForm();
 
 			// Bind to change events
-			mare.collections.galleryChildren.on('updateComplete', function() {
+			mare.collections.galleryChildren.on( 'updateComplete', function() {
 				that.navigateToGallery();
 			});
 
-			mare.collections.galleryChildren.on('resetComplete', function() {
+			mare.collections.galleryChildren.on( 'resetComplete', function() {
 				that.showGallery();
 			});
 
@@ -48,7 +48,7 @@
 			// Store a reference to this for insde callbacks where context is lost
 			var view = this;
 			// Fade the search form out and fade the gallery in
-			this.$searchForm.fadeOut(function() {
+			this.$searchForm.fadeOut( function() {
 				view.$gallery.fadeIn();
 				// Render the gallery
 				mare.views.gallery.render();
@@ -60,7 +60,7 @@
 			// Store a reference to this for insde callbacks where context is lost
 			var view = this;
 			// Fade the gallery out and fade the search form in
-			this.$gallery.fadeOut(function() {
+			this.$gallery.fadeOut( function() {
 				view.$searchForm.fadeIn();
 			});
 		},
@@ -72,7 +72,7 @@
 				dataType: 'json',
 				url: '/services/get-children-data',
 				type: 'POST'
-			}).done(function( children ) {
+			}).done( function( children ) {
 				// Store all children in a collection for easy access
 				mare.collections.allChildren.add( children.soloChildren );
 				// Store all children in the collecction for the current gallery display as we always start showing the full list
@@ -82,9 +82,9 @@
 				// Resolve the promise tracking child data loading
 				mare.promises.childrenDataLoaded.resolve();
 
-			}).fail(function(err) {
+			}).fail( function( err ) {
 				// TODO: Show an error message instead of the gallery if we failed to fetch the child data
-				console.log(err);
+				console.log( err );
 			});
 		},
 		/* Route to the search form to preserve browser history state */
@@ -102,11 +102,11 @@
 			// Clear out the contents of the gallery collection
 			galleryChildren.reset();
 			// Add all children back to the gallery collection for display
-			mare.collections.allChildren.each(function(child) {
-				galleryChildren.add(child);
+			mare.collections.allChildren.each( function( child ) {
+				galleryChildren.add( child );
 			});
 			// Emit an event to allow the gallery to update it's display now that we have all matching models
-			mare.collections.galleryChildren.trigger('resetComplete');
+			mare.collections.galleryChildren.trigger( 'resetComplete' );
 		}
 
 	});

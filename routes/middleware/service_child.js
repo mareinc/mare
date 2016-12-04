@@ -202,7 +202,7 @@ exports.getGalleryData = ( req, res, next ) => {
 	locals.soloChildren		= new Set();
 	locals.siblingGroups	= new Set(); // format: Set( { ids: Set(), children: [] }, ... )
 	// variables to determine what children the user has access to
-	locals.userType			= req.user ? req.user.get('userType') : 'anonymous';
+	locals.userType			= req.user ? req.user.get( 'userType' ) : 'anonymous';
 	locals.targetChildren	= locals.userType === 'anonymous' || locals.userType === 'site visitor' ? 'unrestricted' : 'all';
 
 	async.series([

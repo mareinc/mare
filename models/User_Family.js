@@ -24,7 +24,7 @@ var keystone				= require( 'keystone' ),
 // Create model
 var Family = new keystone.List( 'Family', {
 	inherits	: User,
-	track		: true,
+	autokey		: { path: 'key', from: 'registrationNumber', unique: true },
 	map			: { name: 'contact1.name.full' },
 	defaultSort	: 'contact1.name.full',
 	hidden		: false
@@ -35,7 +35,7 @@ Family.add( 'General Information', {
 
 	avatar: { type: Types.CloudinaryImage, label: 'avatar', folder: 'users/families', selectPrefix: 'users/families', autoCleanup: true },
 
-	registrationNumber: { type: Number, label: 'registration number', format: false, required: true, initial: true },
+	registrationNumber: { type: Number, label: 'registration number', format: false, noedit: true },
 	initialContact: { type: Types.Date, label: 'initial contact', format: 'MM/DD/YYYY', required: true, initial: true },
 	flagCalls: { type: Types.Boolean, label: 'flag calls', initial: true },
 	familyConstellation: { type: Types.Relationship, label: 'family constellation', ref: 'Family Constellation', required: true, initial: true },
@@ -305,7 +305,7 @@ Family.add( 'General Information', {
 
 }, 'Registration Details', {
 
-	registeredViaWebsite: { type: Types.Boolean, label: 'registered through the website', noedit: true, initial: true }
+	registeredViaWebsite: { type: Types.Boolean, label: 'registered through the website', noedit: true }
 
 }, {
 
@@ -343,11 +343,12 @@ Family.schema.pre( 'save', function( next ) {
 	'use strict';
 
 	// TODO: Assign a registration number if one isn't assigned
-	async.parallel([
+	async.series([
 		done => { this.setFullName( done ); }, // Create a full name for the child based on their first, middle, and last names
 		done => { this.setFileName( done ); }, // Create an identifying name for file uploads
 		done => { this.setUserType( done ); }, // All user types that can log in derive from the User model, this allows us to identify users better
-		// function( done ) { this.setRegistrationNumber }, // TODO: this should be the next highest available reg. number with self call on fail up to x times
+		done => { this.setRegistrationNumber( done ) }, // Set the registration number to the next highest available
+		done => { ChangeHistoryMiddleware.setUpdatedby( this, done ); }, // we need this id in case the family was created via the website and udpatedBy is empty
 		done => { this.setChangeHistory( done ); } // Process change history
 
 	], () => {
@@ -408,6 +409,31 @@ Family.schema.methods.setUserType = function( done ) {
 	this.userType = 'family';
 
 	done();
+};
+
+Family.schema.methods.setRegistrationNumber = function( done ) {
+	// If the registration number is already set ( which will happen during the data migration and creating from the website ), ignore setting it
+	if( this.registrationNumber ) {
+		done();
+	} else {
+		// get all families
+		keystone.list( 'Family' ).model.find()
+				.exec()
+				.then( families => {
+					// get an array of registration numbers
+					const registrationNumbers = families.map( family => family.get( 'registrationNumber' ) );
+					// get the largest registration number
+					this.registrationNumber = Math.max( ...registrationNumbers ) + 1;
+
+					done();
+
+				}, err => {
+					console.log( 'error setting registration number' );
+					console.log( err );
+
+					done();
+				});
+	}
 };
 
 Family.schema.methods.setChangeHistory = function setChangeHistory( done ) {

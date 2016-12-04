@@ -46,7 +46,7 @@
 .global-header .top-nav {
 	display: flex;
 	background-color: $nav-background-color-1;
-	color: $light-text-color;
+	color: $text-color-light;
 }
 
 .global-header .top-nav ul {
@@ -90,7 +90,7 @@
 
 .global-header .top-nav a,
 .global-header .top-nav a:visited {
-	color: $light-text-color;
+	color: $text-color-light;
 }
 
 .site-nav {
@@ -128,7 +128,7 @@
 .log-in-container {
 	display: none; /* TODO: deal with this using a hidden class instead */
 	position: absolute;
-	background-color: $light-background-color;
+	background-color: $background-color-light;
 	color: $nav-text-color-1;
 	padding: 10px;
 	border: 1px solid $border-color-2;
@@ -145,16 +145,18 @@
 	top: -5px;
 }
 
-.log-in-container .log-in {
-	margin: 10px 0; /* TODO: Did this quick, make sure it's not overriding too much */
+.log-in-container .log-in,
+.log-in-container .register {
+	margin: 1em 0;
 }
 
 .log-in-container .forgot-password {
-	float: right;
-	width: 50%;
-	font-size: .8em;
 	position: relative;
 	top: 16px;
+	float: right;
+	width: 49%;
+	font-size: 0.8em;
+	text-align: center;
 	color: $nav-text-color-3;
 }
 

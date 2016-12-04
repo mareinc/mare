@@ -5,7 +5,7 @@
     bottom: 0;
     left: 0;
     right: 0;
-    background-color: $dark-background-color;
+    background-color: $background-color-dark;
     opacity: .6;
     z-index: 100;
 }
@@ -14,7 +14,7 @@
 	display: none;
 	position: fixed;
     z-index: 200;
-    background-color: $light-background-color;
+    background-color: $background-color-light;
     left: 0;
     top: 0;
     width: 100%;
@@ -38,7 +38,7 @@
     padding: .5em .6em;
     color: $modal-color-1;
     cursor: pointer;
-    background-color: $light-background-color;
+    background-color: $background-color-light;
 }
 
 .modal-container__loading {

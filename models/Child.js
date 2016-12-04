@@ -30,7 +30,6 @@ const keystone				= require('keystone'),
 
 // Create model
 const Child = new keystone.List('Child', {
-	track: true,
 	autokey: { path: 'key', from: 'registrationNumber', unique: true },
 	map: { name: 'name.full' },
 	defaultSort: 'name.full'
@@ -44,7 +43,7 @@ Child.add('Display Options', {
 
 }, 'Child Information', {
 
-	registrationNumber: { type: Number, label: 'registration number', format: false, required: true, initial: true },
+	registrationNumber: { type: Number, label: 'registration number', format: false, noedit: true },
 	registrationDate: { type: Types.Date, label: 'registration date', format: 'MM/DD/YYYY', required: true, initial: true },
 
 	name: {
@@ -138,14 +137,14 @@ Child.add('Display Options', {
 	siblingGroupImage: { type: Types.CloudinaryImage, label: 'sibling group image', folder: 'sibling-groups/', selectPrefix: 'sibling-groups/', publicID: 'siblingGroupFileName', dependsOn: { mustBePlacedWithSiblings: true }, autoCleanup: true },
 	siblingGroupGalleryImage: { type: Types.Url, hidden: true },
 	siblingGroupDetailImage: { type: Types.Url, hidden: true },
-	video: { type: Types.Url, label: 'video', dependsOn: { mustBePlacedWithSiblings: false } },
-	siblingGroupVideo: { type: Types.Url, label: 'sibling group video', dependsOn: { mustBePlacedWithSiblings: true } },
 	extranetUrl: { type: Types.Url, label: 'extranet and related profile url', initial: true } // TODO: Since this is redundant as this just points the the url where the photo exists (the child's page), we may hide this field.  This must be kept in as it will help us track down the child information in the old system in the event of an issue.
 
 }, 'Recruitment Options', {
 
 	hasVideoSnapshot: { type: Types.Boolean, label: 'video snapshot', initial: true },
 	videoSnapshotDate: { type: Types.Date, label: 'date of video snapshot', format: 'MM/DD/YYYY', dependsOn: { hasVideoSnapshot: true }, initial: true },
+	video: { type: Types.Url, label: 'video', dependsOn: { hasVideoSnapshot: true, mustBePlacedWithSiblings: false } },
+	siblingGroupVideo: { type: Types.Url, label: 'sibling group video', dependsOn: { hasVideoSnapshot: true, mustBePlacedWithSiblings: true } },
 
 	onMAREWebsite: { type: Types.Boolean, label: 'MARE website', initial: true },
 	onMAREWebsiteDate: { type: Types.Date, label: 'date on MARE website', format: 'MM/DD/YYYY', dependsOn: { onMAREWebsite: true }, initial: true },
@@ -233,14 +232,16 @@ Child.schema.post( 'init', function() {
 Child.schema.pre('save', function( next ) {
 	'use strict';
 
-	async.parallel([
-		( done ) => { this.setImages( done ); }, // Create cloudinary URLs for images sized for various uses
-		( done ) => { this.setFullName( done ); }, // Create a full name for the child based on their first, middle, and last names
-		( done ) => { this.setFileName( done ); }, // Create an identifying name for file uploads
-		( done ) => { this.setSiblingGroupFileName( done ); }, // Create an identifying name for sibling group file uploads
-		( done ) => { this.updateMustBePlacedWithSiblingsCheckbox( done ); }, // If there are no siblings to be placed with, uncheck the box, otherwise check it
-		( done ) => { this.updateGroupBio( done ); },
-		( done ) => { this.setChangeHistory( done ); } // Process change history
+	async.series([
+		done => { this.setImages( done ); }, // Create cloudinary URLs for images sized for various uses
+		done => { this.setFullName( done ); }, // Create a full name for the child based on their first, middle, and last names
+		done => { this.setFileName( done ); }, // Create an identifying name for file uploads
+		done => { this.setSiblingGroupFileName( done ); }, // Create an identifying name for sibling group file uploads
+		done => { this.updateMustBePlacedWithSiblingsCheckbox( done ); }, // If there are no siblings to be placed with, uncheck the box, otherwise check it
+		done => { this.updateGroupBio( done ); },
+		done => { this.setRegistrationNumber( done ) }, // Set the registration number to the next highest available
+		done => { ChangeHistoryMiddleware.setUpdatedby( this, done ); }, // we need this id in case the family was created via the website and udpatedBy is empty
+		done => { this.setChangeHistory( done ); } // Process change history
 	], function() {
 
 		console.log( 'child information updated' );
@@ -341,6 +342,31 @@ Child.schema.methods.updateGroupBio = function( done ) {
 
 	done();
 }
+
+Child.schema.methods.setRegistrationNumber = function( done ) {
+	// If the registration number is already set ( which will happen during the data migration and creating from the website ), ignore setting it
+	if( this.registrationNumber ) {
+		done();
+	} else {
+		// get all children
+		keystone.list( 'Child' ).model.find()
+				.exec()
+				.then( children => {
+					// get an array of registration numbers
+					const registrationNumbers = children.map( child => child.get( 'registrationNumber' ) );
+					// get the largest registration number
+					this.registrationNumber = Math.max( ...registrationNumbers ) + 1;
+
+					done();
+
+				}, err => {
+					console.log( 'error setting registration number' );
+					console.log( err );
+
+					done();
+				});
+	}
+};
 
 // Update the siblings field of all siblings listed to include the current child
 Child.schema.methods.updateSiblingFields = function() {

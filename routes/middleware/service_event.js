@@ -28,7 +28,7 @@ exports.getTargetEventGroup = function getTargetEventGroup(req, res, done) {
 	var locals = res.locals;
 
 	switch(req.user.userType) {
-		case 'admin'			: locals.eventGroup = 'cscAttendees'; break;
+		case 'admin'			: locals.eventGroup = 'staffAttendees'; break;
 		case 'social worker'	: locals.eventGroup = 'socialWorkerAttendees'; break;
 		case 'site visitor'		: locals.eventGroup = 'siteVisitorAttendees'; break;
 		case 'family'			: locals.eventGroup = 'familyAttendees';

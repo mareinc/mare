@@ -27,15 +27,15 @@
 				dataType: 'json',
 				url: '/services/get-gallery-permissions',
 				type: 'POST'
-			}).done(function(permissions) {
+			}).done( function( permissions ) {
 				// Store the permissions on the namespace to allow us to access them in all views and subviews for this page
 				mare.permissions.gallery = permissions;
 				// Resolve the promise tracking permissions loading
 				mare.promises.permissionsLoaded.resolve();
 
-			}).fail(function(err) {
+			}).fail( function( err ) {
 				// TODO: Show an error message if we failed to fetch the permissions
-				console.log(err);
+				console.log( err );
 			});
 		},
 

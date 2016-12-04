@@ -1,96 +1,76 @@
 /* TODO: Placed up at the top because this will become the standard button style */
-.donate-button {
+.button {
 	padding: 1em;
-  border-radius: 2px;
-  border-style: none;
-	background-color: #af4967;
-	color: #fff;
-	margin-left: 1%;
+	border-radius: 2px;
+	border-style: none;
+	margin-left: 1%; /* these are here because buttons in button groups squish together // TODO: find a better way */
 	margin-right: 1%;
-	// box-shadow: 0 5px 11px 0 rgba(0, 0, 0, 0.18), 0 4px 15px 0 rgba(0, 0, 0, 0.15);
-  transition: 0.5s ease;
+	min-width: 8em;
+	/*box-shadow: 0 5px 11px 0 rgba(0, 0, 0, 0.18), 0 4px 15px 0 rgba(0, 0, 0, 0.15);*/
+	transition: 0.5s ease;
+	font-size: 0.9em;
 
 	&:focus {
 		outline: none;
 	}
 
-	&--disabled {
-		color: #aaa;
-		background-color: #e0e0e0;
-		// box-shadow: 0 5px 11px 0 rgba(0, 0, 0, 0.18), 0 4px 15px 0 rgba(0, 0, 0, 0.15);
-		cursor: default;
+	&--medium {
+		width: 9em;
 	}
-}
-
-.button {
-	padding: 5px 10px;
-	border-radius: 2px;
-	text-transform: uppercase;
-	border-style: none;
-	// box-shadow: 0 5px 11px 0 rgba(0, 0, 0, 0.18), 0 4px 15px 0 rgba(0, 0, 0, 0.15);
 
 	&--large {
-		padding: 10px 15px;
+		width: 11em;
 	}
 
-	&--donate {
+	&--brown {
 		color: $button-text-color-light;
+		background-color: $button-background-color-1;
+	}
+
+	&--blue {
+		color: $button-text-color-light;
+		background-color: $button-background-color-2;
+	}
+
+	&--yellow {
+		color: $button-text-color-1;
 		background-color: $button-background-color-3;
 	}
 
-	&--have-a-question {
+	&--red {
 		color: $button-text-color-light;
 		background-color: $button-background-color-4;
 	}
+
+	&--uppercase {
+		text-transform: uppercase;
+	}
+
+	&--disabled {
+		color: #aaa;
+		background-color: #e0e0e0;
+		cursor: default;
+	}
+
+	& a {
+		text-decoration: none;
+		color: inherit;
+	}
 }
 
-// TODO: Not sure where most of the stuff below came from, check for use, delete if you're able to
-[role="button"] {
-  cursor: pointer;
+// TODO: The elements below can be phased out during the final round of technical debt fixing
+.file-upload-button {
+	max-width: 9em;
+    text-align: center;
 }
-.btn {
-  display: inline-block;
-  margin-bottom: 0;
-  font-weight: normal;
-  text-align: center;
-  vertical-align: middle;
-  -ms-touch-action: manipulation;
-      touch-action: manipulation;
-  cursor: pointer;
-  background-image: none;
-  border: 1px solid transparent;
-  white-space: nowrap;
-  padding: 4px 12px;
-  font-size: 14px;
-  line-height: 1.42857143;
-  text-decoration:none;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
-.btn-default {
-  color: #000000;
-  border-color: #999999;
-  /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ffffff+0,c8c8c8+100 */
-  background: #ffffff; /* Old browsers */
-  background: -moz-linear-gradient(top,  #ffffff 0%, #c8c8c8 100%); /* FF3.6-15 */
-  background: -webkit-linear-gradient(top,  #ffffff 0%,#c8c8c8 100%); /* Chrome10-25,Safari5.1-6 */
-  background: linear-gradient(to bottom,  #ffffff 0%,#c8c8c8 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#c8c8c8',GradientType=0 ); /* IE6-9 */
-}
-.btn-file-upload {
-    position: relative;
-    overflow: hidden;
-}
-.btn-file-upload input.file-upload {
-    position: absolute;
-    top: 0;
-    right: 0;
-    margin: 0;
-    padding: 0;
-    font-size: 20px;
-    cursor: pointer;
-    opacity: 0;
-    filter: alpha(opacity=0);
+.file-upload-button input.file-upload {
+	position: absolute;
+	top: 0;
+	right: 0;
+	margin: 0;
+	padding: 0;
+	font-size: 20px;
+	cursor: pointer;
+	opacity: 0;
+	filter: alpha(opacity=0);
 }

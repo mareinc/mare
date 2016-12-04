@@ -42,7 +42,7 @@ Event.add({ heading: 'General Information' }, {
 
 }, 'Attendees', {
 
-	cscAttendees: { type: Types.Relationship, label: 'CSC staff', ref: 'Admin', many: true, initial: true },
+	staffAttendees: { type: Types.Relationship, label: 'staff', ref: 'Admin', many: true, initial: true },
 	siteVisitorAttendees: { type: Types.Relationship, label: 'site visitors', ref: 'Site Visitor', many: true, initial: true },
 	socialWorkerAttendees: { type: Types.Relationship, label: 'social workers', ref: 'Social Worker', many: true, initial: true },
 	familyAttendees: { type: Types.Relationship, label: 'families', ref: 'Family', many: true, initial: true },
