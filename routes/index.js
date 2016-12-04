@@ -48,7 +48,11 @@ exports = module.exports = app => {
 	// Views
 	app.get( '/'										, routes.views.main );
 	app.get( '/page/*'									, routes.views.page );
-	app.get( '/form/*'									, routes.views.form );
+	app.get( '/forms/agency-event-submission-form'		, routes.views.form_agencyEventSubmission );
+	app.get( '/forms/car-donation-form'					, routes.views.form_carDonation );
+	app.get( '/forms/child-registration-form'			, routes.views.form_childRegistration );
+	app.get( '/forms/information-request-form'			, routes.views.form_informationRequest );
+	app.get( '/forms/have-a-question-form'				, routes.views.form_haveAQuestion );
 	app.get( '/events/'									, routes.views.eventCategories );
 	app.get( eventListRoutes							, routes.views.eventList );
 	app.get( eventRoutes								, routes.views.event );
