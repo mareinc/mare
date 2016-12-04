@@ -54,7 +54,7 @@
 			</div>
 		</div>
 
-		<div class="profile__footer">You can help bring me closer to finding "a place to call HOME" by filling out the <a href="/form/information-request-form">MARE Information Request Form</a>. They will be glad to help you get more information about me.</div>
+		<div class="profile__footer">You can help bring me closer to finding "a place to call HOME" by filling out the <a href="/forms/information-request-form">MARE Information Request Form</a>. They will be glad to help you get more information about me.</div>
 		
 		<!-- determining whether to add the block below based on whether the user is allowed to bookmark children needs to happen server-side -->
 		{{#if canBookmarkChildren}}
@@ -64,7 +64,9 @@
 			\{{else}}
 			<button class="button button--yellow button--large child-bookmark-button" data-registration-number="\{{ registrationNumber }}">Bookmark</button>
 			\{{/if}}
-			<button class="button button--yellow button--large child-inquiry-button">Inquire</button>
+			<a href="/forms/information-request-form?registrationNumber=\{{ registrationNumber }}">
+				<button class="button button--yellow button--large child-inquiry-button">Inquire</button>
+			</a>
 		</div>
 		{{/if}}
 
@@ -83,7 +85,7 @@
 			<iframe src=\{{ video }} frameborder="0" allowfullscreen class="profile-details__video"></iframe>
 		</div>
 
-		<div class="detailed-profile__footer">You can help bring me closer to finding "a place to call HOME" by filling out the <a href="/form/information-request-form">MARE Information Request Form</a>. They will be glad to help you get more information about me.</div>
+		<div class="detailed-profile__footer">You can help bring me closer to finding "a place to call HOME" by filling out the <a href="/forms/information-request-form">MARE Information Request Form</a>. They will be glad to help you get more information about me.</div>
 
 		<!-- determining whether to add the block below based on whether the user is allowed to bookmark children needs to happen server-side -->
 		{{#if canBookmarkChildren}}
@@ -93,7 +95,9 @@
 			\{{else}}
 			<button class="button button--yellow button--large child-bookmark-button" data-registration-number="\{{ registrationNumber }}">Bookmark</button>
 			\{{/if}}
-			<button class="button button--yellow button--large child-inquiry-button">Inquire</button>
+			<a href="/forms/information-request-form?registrationNumber=\{{ registrationNumber }}">
+				<button class="button button--yellow button--large child-inquiry-button">Inquire</button>
+			</a>
 		</div>
 		{{/if}}
 
@@ -113,7 +117,7 @@
 			<iframe src=\{{ wednesdaysChildVideo }} frameborder="0" allowfullscreen class="profile-details__wednesdays-child-video"></iframe>
 		</div>
 
-		<div class="detailed-profile__footer">You can help bring me closer to finding "a place to call HOME" by filling out the <a href="/form/information-request-form">MARE Information Request Form</a>. They will be glad to help you get more information about me.</div>
+		<div class="detailed-profile__footer">You can help bring me closer to finding "a place to call HOME" by filling out the <a href="/forms/information-request-form">MARE Information Request Form</a>. They will be glad to help you get more information about me.</div>
 
 		<!-- determining whether to add the block below based on whether the user is allowed to bookmark children needs to happen server-side -->
 		{{#if canBookmarkChildren}}
@@ -123,7 +127,9 @@
 			\{{else}}
 			<button class="button button--yellow button--large child-bookmark-button" data-registration-number="\{{ registrationNumber }}">Bookmark</button>
 			\{{/if}}
-			<button class="button button--yellow button--large child-inquiry-button">Inquire</button>
+			<a href="/forms/information-request-form?registrationNumber=\{{ registrationNumber }}">
+				<button class="button button--yellow button--large child-inquiry-button">Inquire</button>
+			</a>
 		</div>
 		{{/if}}
 
