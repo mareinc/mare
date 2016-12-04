@@ -3,7 +3,7 @@
 </div>
 
 
-<form action="/informationrequest" class="info-request-form registration-form" method="POST">
+<form action="/submit-information-request-form" class="info-request-form registration-form" method="POST">
 	<input type="hidden" name="action" value="requestInformation" />
 
 	<div class="form-section-header">Request Information</div>
@@ -17,19 +17,19 @@
 			</div>
 			<div class="col-sm-24 form-group">
 				<label class="checkbox-inline">
-					<input type="checkbox" name="interest" value="Information about a specific child(ren)">Information about a specific child(ren)
+					<input type="checkbox" name="interest">Information about a specific child(ren)
 				</label>
 			</div>
 			<div class="col-sm-24 form-group">
 				<label class="checkbox-inline">
-					<input type="checkbox" name="interest" value="General adoption information">General adoption information
+					<input type="checkbox" name="interest">General adoption information
 				</label>
 			</div>
 		</div>
 	</div>
 	<div class="row">
 		<div class="col-sm-12 form-group">
-			<input type="text" class="input" id="child-registration-number" name="childRegistrationNumber" required />
+			<input type="text" class="input" id="child-registration-number" name="childRegistrationNumber" value="{{ registrationNumber }}" required />
 			<label for="child-registration-number" class="label required-field">Child(ren)'s' Registration Number</label>
 		</div>
 	</div>
@@ -88,9 +88,9 @@
 		</div>
 		<div class="col-sm-6 form-group">
 			<select id="contact1-phone-type" name="contact1PhoneType" class="input" required>
-				<option value="Cell">Cell</option>
-				<option value="Work">Work</option>
-				<option value="Phone">Phone</option>
+				<option value="mobile" selected="selected">Cell</option>
+				<option value="work" selected="selected">Work</option>
+				<option value="home" selected="selected">Home</option>
 			</select>
 			<label for="contact1-phone-type" class="label required-field">Specify Type</label>
 		</div>
