@@ -4,7 +4,7 @@
  * This file can't be debugged further until the imports for Child, Family, and Outside Contact are working
  *     as we rely on they _oldId field being populated for each
  *
- * NOTE: note of the csv fetch functions strip out their header rows.  This can be done with .splice() when
+ * NOTE: note for the csv fetch functions to strip out the header rows.  This can be done with .splice() when
  *       we revisit the file
  */
 
