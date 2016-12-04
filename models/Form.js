@@ -30,7 +30,7 @@ Form.schema.pre('save', function(next) {
 	// TODO: check if the unregistered contact email belongs to a user
 	// and change the binding for registered contact
 
-	this.url = '/form/' + this.key;
+	this.url = '/forms/' + this.key;
 	next();
 });
 
