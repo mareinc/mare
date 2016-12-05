@@ -1,66 +1,66 @@
 <div class="page-header">
 	<span class="page-header-text">Agency Event Submission</span>
 </div>
-<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. In gravida ultricies tempor.
-Aenean sodales rutrum urna in porta. Vestibulum in mi non risus mattis imperdiet eget ac metus.</p>
+<div class="form-intro">
+	Please note that MARE will review submissions and only post applicable events.  We will let you know if we are unable to post your event.
+</div>
 
-<p>Please note that MARE will review submissions and only post applicable events.<br />
-   We will let you know if we are unable to post your event.</p>
+<section class="agency-event-submission-form">
 
- <br />
+	<form action="/register" class="registration-form form--agency-event-submission" method="POST">
 
-<form action="/register" class="registration-form" method="POST">
+		<input type="hidden" name="action" value="eventSubmission">
 
-	<input type="hidden" name="action" value="eventSubmission" />
+		<div class="row form-group">
+			<div class="col-sm-12">
+				<input type="text" class="input" id="event-name" name="eventName" data-parsley-error-message="required" required="">
+				<label for="event-name" class="label required-field">Event Name</label>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-12">
+				<input type="text" class="input" id="event-date" name="eventDate" placeholder="DD/MM/YYYY" data-parsley-pattern="(0[1-9]|1[012])\/(0[1-9]|[12][0-9]|3[01])\/20\d\d" data-parsley-error-message="must match DD/MM/YYYY" required="">
+				<label for="levent-date" class="label required-field">Date</label>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-12">
+				<input type="text" class="input" id="event-time" name="eventTime" placeholder="4:00pm" data-parsley-error-message="required" required="">
+				<label for="event-time" class="label required-field">Time</label>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-12">
+				<input type="text" class="input" id="event-place" name="eventPlace" data-parsley-error-message="required" required="">
+				<label for="event-place" class="label required-field">Place</label>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-12">
+				<textarea class="input" id="event-details" name="eventDetails" rows="4" data-parsley-error-message="required" required=""></textarea>
+				<label for="event-details" class="label required-field">Details</label>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-12">
+				<input type="text" class="input" id="event-contact-person" name="eventContactPerson" placeholder="John Smith" data-parsley-error-message="required" required="">
+				<label for="event-contact-person" class="label required-field">Contact Person</label>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-12">
+				<input type="text" class="input" id="event-contact-person-phone" name="eventContactPersonPhone" placeholder="(617) 111-1111" data-parsley-error-message="required" required="">
+				<label for="event-contact-person-phone" class="label required-field">Contact Person Phone</label>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-12">
+				<input type="text" class="input" id="event-contact-person-email" name="eventContactPersonEmail" placeholder="john.smith@gmail.com" data-parsley-type="email" data-parsley-trigger="change" data-parsley-error-message="valid email required" required="">
+				<label for="event-contact-person-email" class="label required-field">Contact Person Email</label>
+			</div>
+		</div>
 
-	<div class="row form-group">
-		<div class="col-sm-12">
-			<input type="text" class="input" id="event-name" name="eventName" required />
-			<label for="event-name" class="label required-field">Event</label>
-		</div>
-	</div>
-	<div class="row form-group">
-		<div class="col-sm-6">
-			<input type="text" class="input" id="event-date" name="eventDate" required placeholder="DD/MM/YYYY" />
-			<label for="levent-date" class="label required-field">Date</label>
-		</div>
-	</div>
-	<div class="row form-group">
-		<div class="col-sm-12">
-			<input type="text" class="input" id="event-time" name="eventTime" required />
-			<label for="event-time" class="label required-field">Time</label>
-		</div>
-	</div>
-	<div class="row form-group">
-		<div class="col-sm-12">
-			<input type="text" class="input" id="event-place" name="eventPlace" required />
-			<label for="event-place" class="label required-field">Place</label>
-		</div>
-	</div>
-	<div class="row form-group">
-		<div class="col-sm-12">
-			<textarea class="input" id="event-details" name="eventDetails" rows="4" required></textarea>
-			<label for="event-details" class="label required-field">Details</label>
-		</div>
-	</div>
-	<div class="row form-group">
-		<div class="col-sm-12">
-			<input type="text" class="input" id="event-contact-person" name="eventContactPerson" required />
-			<label for="event-contact-person" class="label required-field">Contact Person</label>
-		</div>
-	</div>
-	<div class="row form-group">
-		<div class="col-sm-12">
-			<input type="text" class="input" id="event-contact-person-phone" name="eventContactPersonPhone" required />
-			<label for="event-contact-person-phone" class="label required-field">Contact Person Phone</label>
-		</div>
-	</div>
-	<div class="row form-group">
-		<div class="col-sm-12">
-			<input type="text" class="input" id="event-contact-person-email" name="eventContactPersonEmail" required />
-			<label for="event-contact-person-email" class="label required-field">Contact Person Email</label>
-		</div>
-	</div>
+		<button class="button button--blue register" type="submit">Submit</button>
+	</form>
 
-	<button class="button button--blue register" type="submit">Submit</button>
-</form>
+</section>
