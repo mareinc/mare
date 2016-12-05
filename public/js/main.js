@@ -9,17 +9,25 @@ $(function() {
 	mare.views.mobileMenu = mare.views.mobileMenu || new mare.views.MobileMenu();
 	// Handle basic routing, initializing based on the result
 	// No default exists due to main routing being handled by the server
-
-	switch(mare.url.siteArea) {
-		case ''							: mare.routers.home = new mare.routers.Home();									break;
-		case 'donate'                   : mare.routers.donations = new mare.routers.Donations();						break;
-		case 'events'                   : mare.routers.events = new mare.routers.Events();								break;
-		case 'form'						: mare.routers.forms = new mare.routers.Forms();								break;
-		case 'page'                     : mare.routers.pages = new mare.routers.Pages();								break;
-		case 'preferences'              : mare.routers.preferences = new mare.routers.Preferences();					break;
-		case 'register'                 : mare.routers.registration = new mare.routers.Registration();					break;
-		case 'success-stories'          : mare.routers.successStories = new mare.routers.SuccessStories();				break;
-		case 'waiting-child-profiles'	: mare.routers.waitingChildProfiles = new mare.routers.WaitingChildProfiles();
+	// TODO: ensure mangled urls route to the home page
+	switch( mare.url.siteArea ) {
+		case ''										: mare.routers.home = new mare.routers.Home();												break;
+		case 'donate'                   			: mare.routers.donations = new mare.routers.Donations();									break;
+		case 'events'                   			: mare.routers.events = new mare.routers.Events();											break;
+		case 'forms' :
+			switch( mare.url.page ) {
+				case 'agency-event-submission-form'	: mare.routers.form_agencyEventSubmission = new mare.routers.Form_AgencyEventSubmission();	break;
+				case 'car-donation-form'			: mare.routers.form_carDonation = new mare.routers.Form_CarDonation();						break;
+				case 'child-registration-form'		: mare.routers.form_childRegistration = new mare.routers.Form_ChildRegistration();			break;
+				case 'have-a-question-form'			: mare.routers.form_haveAQuestion = new mare.routers.Form_HaveAQuestion();					break;
+				case 'information-request-form'		: mare.routers.form_informationRequest = new mare.routers.Form_InformationRequest();
+			}
+			break;
+		case 'page'                     			: mare.routers.pages = new mare.routers.Pages();											break;
+		case 'preferences'              			: mare.routers.preferences = new mare.routers.Preferences();								break;
+		case 'register'                 			: mare.routers.registration = new mare.routers.Registration();								break;
+		case 'success-stories'          			: mare.routers.successStories = new mare.routers.SuccessStories();							break;
+		case 'waiting-child-profiles'				: mare.routers.waitingChildProfiles = new mare.routers.WaitingChildProfiles();
 	}
 	// start the backbone history state for browser navigation through backbone routes
 	// NOTE: This needs to be below the subrouter initialization to allow for subrouters reroute properly
