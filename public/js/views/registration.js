@@ -19,7 +19,7 @@
 		changeForm: function changeForm() {
 			this.currentForm = this.$formSelector.val();
 
-			switch(this.currentForm) {
+			switch( this.currentForm ) {
 				case 'siteVisitor'			: mare.routers.registration.navigate( 'site-visitor', { trigger: true } ); break;
 				case 'socialWorker'			: mare.routers.registration.navigate( 'social-worker', { trigger: true } ); break;
 				case 'prospectiveParent'	: mare.routers.registration.navigate( 'family', { trigger: true } ); break;
@@ -27,8 +27,8 @@
 			}
 		},
 
-		updateFormSelector: function updateFormSelector(selection) {
-			this.$formSelector.val(selection);
+		updateFormSelector: function updateFormSelector( selection ) {
+			this.$formSelector.val( selection );
 		},
 
 		showSiteVisitorForm: function showSiteVisitorForm() {

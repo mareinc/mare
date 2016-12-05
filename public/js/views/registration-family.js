@@ -2,7 +2,7 @@
 	'use strict';
 
 	mare.views.FamilyRegistration = Backbone.View.extend({
-		el: '.registration-form--family',
+		el: '.form--family-registration',
 
 		events: {
 			'change .other-way-to-hear-about-mare'	: 'toggleOtherWayToHearTextField',

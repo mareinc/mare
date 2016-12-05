@@ -42,6 +42,7 @@ const eventListRoutes	= [ '/events/adoption-parties/', '/events/mapp-trainings/'
 const eventRoutes		= [ '/events/adoption-parties/*', '/events/mapp-trainings/*', '/events/fundraising-events/*', '/events/agency-info-meetings/*', '/events/other-trainings/*' ];
 
 // Setup Route Bindings
+// TODO: in order to handle bad rountes, we need a catch here instead of on the client side
 exports = module.exports = app => {
 	'use strict';
 
