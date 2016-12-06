@@ -55,7 +55,7 @@ exports.getRandomEvent = function getRandomEvent(req, res, done) {
 };
 
 /*
- *	Frontend services
+ *	frontend services
  */
 exports.addUser = function addUser(req, res, next) {
 	var locals = res.locals,
@@ -144,4 +144,70 @@ exports.removeUser = function removeUser(req, res, next) {
 			res.send(JSON.stringify(responseData));
 		}
 	});
-}
+};
+
+/*
+ *  event creation - through agency event submission form
+ */
+exports.submitEvent = function submitEvent( req, res, next ) {
+
+	const locals	= res.locals;
+	const event		= req.body;
+	// attempt to create an event
+	var isEventCreated = new Promise( ( resolve, reject ) => {
+		exports.createEvent( locals, event, resolve, reject );
+	});
+	// if we're successful in creating it
+	isEventCreated.then( result => {
+		// create a success flash message
+		req.flash( 'success', {
+					title: 'Your event has been submitted',
+					detail: 'once your event has been approved by the MARE staff, you will receive a notification email.  If you don\'t receive an email within 5 business days, please contact [some mare contact] for a status update.'} );
+		// reload the form to display the flash message
+		res.redirect( '/forms/agency-event-submission-form' );
+	});
+	// if we're not successful in creating it
+	isEventCreated.catch(error => {
+		// create an error flash message
+		req.flash( 'error', {
+					title: 'Something went wrong while creating your event.',
+					detail: 'We are looking into the issue and will email a status update once it\'s resolved' } );
+		// reload the form to display the flash message
+		res.redirect( '/forms/agency-event-submission-form' );	
+	});
+
+};
+// create and save a new event model
+exports.createEvent = function createEvent( locals, event, resolve, reject ) {
+	// create a new event using the form data we received
+	const newEvent = new Event.model({
+
+		name: event.name,
+		type: 'MARE adoption parties & information events',	
+		address: {
+			street1: event.street1,
+			street2: event.street2,
+			city: event.city,
+			state: event.state,
+			zipCode: event.zipCode
+		},
+		contactEmail: event.contactEmail,
+		date: event.date,
+		startTime: event.startTime,
+		endTime: event.endTime,
+		description: event.description,
+		isActive: false,
+		createdViaWebsite: true
+
+	});
+
+	newEvent.save( err => {
+		// if the event was created successfully, resolve the event creation promise
+		resolve();
+
+	}, err => {
+		// if there was an error saving the event, reject the event creation promise
+		console.log( err );
+		reject();
+	});
+};
