@@ -53,6 +53,10 @@ Event.add({ heading: 'General Information' }, {
 
 	notes: { type: Types.Text, label: 'notes', initial: true }
 
+}, 'Creation Details', {
+	// this is used to determine whether we should send an automatic email to the creator when their event becomes active
+	createdViaWebsite: { type: Types.Boolean, label: 'created through the website', noedit: true }
+
 /* Container for all system fields (add a heading if any are meant to be visible through the admin UI) */
 }, {
 
@@ -90,7 +94,7 @@ Event.schema.pre('save', function(next) {
     	default: eventType = '';
 	}
 
-	//TODO: if eventType.length === 0, I should prevent the save
+	// TODO: if eventType.length === 0, I should prevent the save
 
 	this.url = '/events/' + eventType + '/' + this.key;
 
