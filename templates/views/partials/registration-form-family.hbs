@@ -10,7 +10,7 @@
 			<div class="form-section-header">Account Setup</div>
 			<div class="row">
 				<div class="col-sm-12 form-group">
-					<input type="email" id="family-email" class="input" name="email" placeholder="john.smith@gmail.com" data-parsley-trigger="change" data-parsley-error-message="required" required="">
+					<input type="email" id="family-email" class="input" name="email" placeholder="john.smith@gmail.com" data-parsley-type="email" data-parsley-trigger="change" data-parsley-error-message="valid email required" required="">
 					<label for="family-email" class="label required-field">Email Address</label>
 				</div>
 			</div>
@@ -42,7 +42,7 @@
 			</div>
 			<div class="row">
 				<div class="col-sm-12 form-group">
-					<input type="email" id="contact1-email" class="input" name="contact1Email" placeholder="john.smith@gmail.com" data-parsley-trigger="change" data-parsley-error-message="required" required="">
+					<input type="email" id="contact1-email" class="input" name="contact1Email" placeholder="john.smith@gmail.com" data-parsley-type="email" data-parsley-trigger="change" data-parsley-error-message="valid email required" required="">
 					<label for="contact1-email" class="label required-field">Email Address</label>
 				</div>
 				<div class="col-sm-12 form-group">
@@ -116,7 +116,7 @@
 			</div>
 			<div class="row">
 				<div class="col-sm-12 form-group">
-					<input type="email" id="contact2-email" class="input" name="contact2Email" placeholder="jane.smith@gmail.com">
+					<input type="email" id="contact2-email" class="input" name="contact2Email" placeholder="jane.smith@gmail.com" data-parsley-type="email" data-parsley-trigger="change" data-parsley-required="false" data-parsley-error-message="valid email required">
 					<label for="contact2-email" class="label">Email Address</label>
 				</div>
 				<div class="col-sm-12 form-group">
@@ -301,7 +301,7 @@
 					<label for="social-worker-phone" class="label required-field">Social Worker Phone Number</label>
 				</div>
 				<div class="col-sm-12 form-group">
-					<input type="email" id="social-worker-email" class="input" name="socialWorkerEmail" data-parsley-trigger="change" data-parsley-required="false" data-parsley-error-message="required" placeholder="jim.smith@gmail.com">
+					<input type="email" id="social-worker-email" class="input" name="socialWorkerEmail" placeholder="jim.smith@gmail.com" data-parsley-type="email" data-parsley-trigger="change" data-parsley-required="false" data-parsley-error-message="valid email required">
 					<label for="social-worker-email" class="label required-field">Social Worker Email Address</label>
 				</div>
 			</div>
