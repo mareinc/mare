@@ -81,6 +81,8 @@ exports = module.exports = app => {
 	app.post( '/services/get-gallery-permissions'		, permissionsService.getGalleryPermissions );
 	app.post( '/services/register-for-event'			, eventService.addUser );
 	app.post( '/services/unregister-for-event'			, eventService.removeUser );
+	// Services for form submissions
+	app.post( '/submit-agency-event'					, eventService.submitEvent );
 
 	// NOTE: To protect a route so that only admins can see it, use the requireUser middleware:
 	// app.get('/protected', middleware.requireUser, routes.views.protected);
