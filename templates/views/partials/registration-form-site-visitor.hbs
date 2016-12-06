@@ -1,11 +1,11 @@
 <section class="site-visitor-registration">
 	<form action="/register" class="registration-form form--site-visitor-registration" method="POST">
 		<section class="site-visitor-registration-section">
-			<div class="registration-type-header">Site Visitor Registration</div>
+			<div class="form-type-header">Site Visitor Registration</div>
 			<span class="required required-description">* Required</span>
 
 			<input type="hidden" class="registration-type" name="registrationType" value="siteVisitor">
-			<input type="hidden" name="action" value="register">
+			<input type="hidden" name="action" value="register"> <!-- is this needed?  It exists on all forms -->
 			<div class="row form-group">
 				<div class="col-sm-12">
 					<input type="text" id="site-visitor-first-name" class="input" name="firstName" placeholder="John" data-parsley-error-message="required" required="">
