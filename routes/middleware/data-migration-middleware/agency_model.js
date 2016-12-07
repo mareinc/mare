@@ -3,37 +3,37 @@
  * Created by Adrian Suciu.
  */
 
-var async					= require('async'),
-	keystone				= require('keystone'),
-	Types 					= keystone.Field.Types,
-    Agency 					= keystone.list('Agency'), // NOTE: this may not work, for keystone to access the database using a model reference, you may need the keystone.list('Agency'); syntax here
-    Region					= keystone.list('Region'),
-    csv2arr					= require('csv-to-array'),
-	dataMigrationService	= require('../service_data-migration'),
+const async					= require( 'async' );
+const keystone				= require( 'keystone' );
+const Types 				= keystone.Field.Types;
+const Agency 				= keystone.list( 'Agency' );
+const Region				= keystone.list( 'Region' );
+const csv2arr				= require( 'csv-to-array' );
+const dataMigrationService	= require( '../service_data-migration' );
 
-	// mappings
-	statesMap				= require('../data-migration-maps/state'),
-	regionsMap				= require('../data-migration-maps/region');
+// id mappings between systems
+const statesMap				= require( '../data-migration-maps/state' );
+const regionsMap			= require( '../data-migration-maps/region' );
 
-var columns = ["agn_id","code","name","address_1","address_2","city","state","zip","phone","fax","url","rgn_id"];
-var importArray;
+// agency import file
+const importFile			= require( '../../../migration-data/csv-data/agency.csv' );
+const columns = [ 'agn_id', 'code', 'name', 'address_1', 'address_2', 'city', 'state', 'zip', 'phone', 'fax', 'url', 'rgn_id' ];
 
-module.exports.importAgencies = function importAgencies(req, res, done) {
-
-		var self = this,
-			locals = res.locals;
-
+/* the import function for agencies */
+module.exports.importAgencies = ( req, res, done ) => {
+		// create a reference to locals where variables shared across functions will be bound
+		let locals = res.locals;
+		// fetch all the agency data from the exported csv file
 		csv2arr({
-
-			file: "./migration-data/csv-data/agency.csv",
+			file: importFile,
 			columns: columns
+		}, ( err, array ) => {
 
-		}, function (err, array) {
-
-			if (err) {
-				throw "An error occurred!\n" + err;
+			if( err ) {
+				throw `An error occurred!
+					   ${ err }`;
 			} else {
-				importArray = array;
+				locals.importArray = array;
 
 
 				async.parallel([
@@ -41,8 +41,8 @@ module.exports.importAgencies = function importAgencies(req, res, done) {
 					function(done) { regionsMap.getRegionsMap(req, res, done) }
 				], function() {
 
-					for (var i=1,_count=importArray.length; i <_count; i++) {
-						var _agency = importArray[i];
+					for (var i=1,_count=locals.importArray.length; i <_count; i++) {
+						var _agency = locals.importArray[i];
 
 						// console.log('#' + i);
 
@@ -89,6 +89,6 @@ module.exports.importAgencies = function importAgencies(req, res, done) {
 				});
 			}	
 
-		})
+		});
 	}
 
