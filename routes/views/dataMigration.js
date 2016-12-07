@@ -16,10 +16,10 @@ exports = module.exports = function(req, res) {
 
     async.series([
 		// function(done) { outsideContactImport.importOutsideContacts( req, res, done ); },
-		// function(done) { agenciesImport.importAgencies( req, res, done ); },
+		function(done) { agenciesImport.importAgencies( req, res, done ); },
 		// function(done) { childrenImport.importChildren( req, res, done ); },
 		// function(done) { familiesImport.importFamilies( req, res, done ); },
-		function(done) { eventsImport.importEvents( req, res, done ); }
+		// function(done) { eventsImport.importEvents( req, res, done ); }
 		
 	], function() {
 		// Set the layout to render without the right sidebar
