@@ -16,9 +16,9 @@ const csv2arr				= require( 'csv-to-array' );
 const dataMigrationService	= require( '../service_data-migration' );
 
 // define all the column names for each data set we'll be fetching
-var columns = [ 'evt_id', 'rcs_id', 'schedule_datetime', 'location', 'directions', 'notes', 'is_active' ];
-var columnsRecruitment = [ 'rcs_id', 'name', 'is_media_outlet', 'is_media_outlet_active', 'media_frequency', 'media_type' ];
-var columnsEventAttendees = [ 'eva_id', 'evt_id', 'type', 'fam_id', 'chd_id', 'agc_id', 'chd_brought_by_type', 'chd_brought_by_agc_id', 'chd_brought_by_name', 'chd_notes', 'chd_first_name', 'chd_last_name', 'chd_siblings', 'chd_race', 'chd_dob', 'chd_status', 'fam_rgn_id', 'fam_is_home_studied', 'fam_others', 'fam_source', 'fam_registration_type', 'agc_first_name', 'agc_last_name', 'agc_agency', 'agc_phone', 'agc_others', 'agc_assignments' ];
+const columns = [ 'evt_id', 'rcs_id', 'schedule_datetime', 'location', 'directions', 'notes', 'is_active' ];
+const columnsRecruitment = [ 'rcs_id', 'name', 'is_media_outlet', 'is_media_outlet_active', 'media_frequency', 'media_type' ];
+const columnsEventAttendees = [ 'eva_id', 'evt_id', 'type', 'fam_id', 'chd_id', 'agc_id', 'chd_brought_by_type', 'chd_brought_by_agc_id', 'chd_brought_by_name', 'chd_notes', 'chd_first_name', 'chd_last_name', 'chd_siblings', 'chd_race', 'chd_dob', 'chd_status', 'fam_rgn_id', 'fam_is_home_studied', 'fam_others', 'fam_source', 'fam_registration_type', 'agc_first_name', 'agc_last_name', 'agc_agency', 'agc_phone', 'agc_others', 'agc_assignments' ];
 
 /* the import function for events and event attendees */
 module.exports.importEvents = ( req, res, done ) => {
@@ -41,7 +41,8 @@ module.exports.importEvents = ( req, res, done ) => {
 		}, ( err, array ) => {
 			// process any errors that occur while fetching the file
 			if ( err ) {
-				throw "An error occurred!\n" + err;
+				throw `An error occurred!
+					   ${ err }`;
 			// if there are no errors
 			} else {
 				// NOTE: I stopped working here as we're missing information to proceed, but I don't know what this importArray is used for
@@ -209,7 +210,7 @@ exports.getMigrationAdmin = ( locals, done ) => {
 
 	keystone.list( 'Admin' ).model
 					.findOne()									// there will only be on matching entry
-					.where( 'name.full', 'Migration Admin' )	// match the user based on the full name field
+					.where( 'name.full', 'Migration Bot' )		// match the user based on the full name field
 					.exec()
 					.then( admin => {
 						// store the migration admin user in locals for use in other functions
