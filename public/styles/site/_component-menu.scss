@@ -36,15 +36,15 @@ nav ul {
 		display: block;
 		text-align: center;
 		clear: both;
-		background-color: $nav-background-color-3;
-		margin: 0 1em;
+		background-color: $nav-background-color-5;
+		padding: 0 1em;
 	}
 }
 
 .main-nav .nav a {
 	position: relative;
 	display: block;
-	background: $nav-background-color-3;
+	background: $nav-background-color-5;
 	color: $nav-text-color-2;
 	text-decoration: none;
 	padding: 0.7em 0.4em;
@@ -90,12 +90,12 @@ nav ul {
 }
 
 .main-nav .nav li:hover > a {
-    background-color: $nav-background-color-4;
+    background-color: $nav-background-color-3;
     color: $text-color-light;
 }
 
 .main-nav .nav li:hover li a {
-    background-color: $nav-background-color-4;
+    background-color: $nav-background-color-3;
     padding: 0.6em 1.5em 0.6em 0.6em;
     text-align: left;
 }
