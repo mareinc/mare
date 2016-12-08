@@ -69,7 +69,7 @@ Featured.schema.pre('save', function(next) {
 				// self.aboutUs.summary = page[0].content.replace(/<\/?[^>]+(>|$)/g, '');
 				// self.aboutUs.summary = self.aboutUs.summary.substring(0, 200);
 				self.aboutUs.url = page[0].url;
-				self.aboutUs.imageScaled = self._.aboutUs.image.thumbnail(400,250,{ quality: 80 });
+				self.aboutUs.imageScaled = self._.aboutUs.image.thumbnail(400,330,{ quality: 80 });
 
 			}, function(err) {
 				console.log(err);
@@ -82,7 +82,7 @@ Featured.schema.pre('save', function(next) {
 		       		// self.successStory.summary = successStory[0].content.replace(/<\/?[^>]+(>|$)/g, '');
 		       		// self.successStory.summary = self.successStory.summary.substring(0, 200);
 		       		self.successStory.url = '/success-stories/';
-					self.successStory.imageScaled = self._.successStory.image.thumbnail(400,250,{ quality: 80 });
+					self.successStory.imageScaled = self._.successStory.image.thumbnail(400,330,{ quality: 80 });
 
 			}, function(err) {
 				console.log(err);
@@ -95,7 +95,7 @@ Featured.schema.pre('save', function(next) {
 					// self.upcomingEvent.summary = event[0].description.replace(/<\/?[^>]+(>|$)/g, '');
 					// self.upcomingEvent.summary = self.upcomingEvent.summary.substring(0, 200);
 					self.upcomingEvent.url = event[0].url;
-					self.upcomingEvent.imageScaled = self._.upcomingEvent.image.thumbnail(400,250,{ quality: 80 });
+					self.upcomingEvent.imageScaled = self._.upcomingEvent.image.thumbnail(400,330,{ quality: 80 });
 
 					next();
 			})
