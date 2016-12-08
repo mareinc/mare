@@ -3,9 +3,11 @@
 $corn-flower-blue   : rgba( 61, 69, 115, 1 );
 $tufts-blue         : rgba( 74, 123, 204, 1 );
 $carolina-blue      : rgba( 159, 185, 231, 1 );
+$fuzzy-wuzzy-brown  : rgba( 202, 98, 99, 1 );
 $tonys-pink         : rgba( 241, 163, 141, 1 );
 $pastel-violet      : rgba( 201, 145, 213, 1 );
 $light-coral        : rgba( 238, 128, 125, 1 );
+$mariner            : rgba( 70, 91, 146, 1 );
 $ronchi             : rgba( 240, 187, 81, 1 );
 $corvette           : rgba( 249, 212, 162, 1 );
 $deep-cove          : rgba( 12, 13, 60, 1 );
@@ -30,6 +32,7 @@ $nav-background-color-1                 : $wenge;
 $nav-background-color-2                 : $my-sin;
 $nav-background-color-3                 : $corn-flower-blue;
 $nav-background-color-4                 : $deep-cove;
+$nav-background-color-5                 : $mariner;
 
 $nav-text-color-1                       : $wenge;
 $nav-text-color-2                       : $white;
@@ -61,9 +64,13 @@ $callout-text-color-2                   : $wenge;
 
 $description-text-color                 : $white;
 
+$background-color-1                     : $mariner;
+$background-color-2                     : $fuzzy-wuzzy-brown;
+$background-color-3                     : $my-sin;
 $background-color-light                 : $white;
 $background-color-dark                  : $black;
 
+$border-color-1                         : $carolina-blue;
 $border-color-light                     : $white;
 $border-color-dark                      : $black;
 
