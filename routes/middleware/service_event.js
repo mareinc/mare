@@ -183,7 +183,7 @@ exports.createEvent = function createEvent( locals, event, resolve, reject ) {
 	const newEvent = new Event.model({
 
 		name: event.name,
-		type: 'MARE adoption parties & information events',	
+		type: event.eventType,	
 		address: {
 			street1: event.street1,
 			street2: event.street2,
