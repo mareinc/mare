@@ -10,7 +10,8 @@ var EventType = new keystone.List('Event Type', {
 // Create fields
 EventType.add({
 
-	eventType: { type: Types.Text, label: 'event type', required: true, initial: true }
+	eventType: { type: Types.Text, label: 'event type', required: true, initial: true },
+	availableOnWebsite: { type: Types.Boolean, label: 'available on website', note: 'this affects the event submission form', initial: true }
 
 });
 
