@@ -1,8 +1,8 @@
-var keystone = require('keystone'),
-	Types = keystone.Field.Types;
+const keystone			= require( 'keystone' );
+const Types				= keystone.Field.Types;
 
 // Create model. Additional options allow menu name to be used what auto-generating URLs
-var Featured = new keystone.List('Featured Item', {
+var Featured = new keystone.List( 'Featured Item', {
 	track: true,
 	autokey: { path: 'key', from: 'title', unique: true },
 	map: { name: 'title' }
@@ -17,10 +17,9 @@ Featured.add({
 
 	aboutUs: {
 		target: { type: Types.Relationship, ref: 'Page', label: 'target page', filter: { type: 'aboutUs' }, required: true, initial: true },
-		title: { type: Types.Text, label: 'title', required: true, initial: true },
-		summary: { type: Types.Textarea, label: 'summary', initial: true },
 		image: { type: Types.CloudinaryImage, folder: 'featured/', selectPrefix: 'featured/', autoCleanup: true },
-		imageScaled: {type: Types.Url, hidden: true },
+		title: { type: Types.Text, hidden: true, noedit: true },
+		imageScaled: { type: Types.Url, hidden: true },
 		url: { type: Types.Url, noedit: true }
 	}
 
@@ -28,11 +27,9 @@ Featured.add({
 
 	successStory: {
 		target: { type: Types.Relationship, ref: 'Success Story', label: 'target page', required: true, initial: true },
-		title: { type: Types.Text, label: 'title', required: true, initial: true },
-		summary: { type: Types.Textarea, label: 'summary', initial: true },
 		image: { type: Types.CloudinaryImage, folder: 'featured/', selectPrefix: 'featured/', autoCleanup: true },
-		imageStretched: {type: Types.Url, hidden: true},
-		imageScaled: {type: Types.Url, hidden: true},
+		title: { type: Types.Text, hidden: true, noedit: true },
+		imageScaled: { type: Types.Url, hidden: true },
 		url: { type: Types.Url, noedit: true }
 	}
 
@@ -40,64 +37,56 @@ Featured.add({
 
 	upcomingEvent: {
 		target: { type: Types.Relationship, ref: 'Event', label: 'target event', required: true, initial: true },
-		title: { type: Types.Text, label: 'title', required: true, initial: true },
-		summary: { type: Types.Textarea, label: 'summary', initial: true },
 		image: { type: Types.CloudinaryImage, folder: 'featured/', selectPrefix: 'featured/', autoCleanup: true },
-		imageStretched: {type: Types.Url, hidden: true},
-		imageScaled: {type: Types.Url, hidden: true},
+		title: { type: Types.Text, hidden: true, noedit: true },
+		imageScaled: { type: Types.Url, hidden: true },
 		url: { type: Types.Url, noedit: true }
 	}
 });
 
 // Pre Save
-Featured.schema.pre('save', function(next) {
+Featured.schema.pre( 'save', function(next) {
 	'use strict';
 
-	var self = this;
-
-	// TODO: These need to truncate to 250 characters (to the nearest word)
-	self.aboutUs.summary = self.aboutUs.summary.substring(0, 250);
-	self.successStory.summary = self.successStory.summary.substring(0, 250);
-	self.upcomingEvent.summary = self.upcomingEvent.summary.substring(0, 250);
-	// TODO: These should append an elipses if the summary was truncated
-	keystone.list('Page').model.find()
-			.where('_id', this.aboutUs.target)
+	keystone.list( 'Page' ).model.find()
+			.where( '_id', this.aboutUs.target )
 			.exec()
-			.then(function(page) {
+			.then( page => {
 
-				self.aboutUs.title = page[0].title;
-				// self.aboutUs.summary = page[0].content.replace(/<\/?[^>]+(>|$)/g, '');
-				// self.aboutUs.summary = self.aboutUs.summary.substring(0, 200);
-				self.aboutUs.url = page[0].url;
-				self.aboutUs.imageScaled = self._.aboutUs.image.thumbnail(300,350,{ quality: 100 });
+				this.aboutUs.title = page[ 0 ].title;
+				this.aboutUs.url = page[ 0 ].url;
+				this.aboutUs.imageScaled = this._.aboutUs.image.thumbnail( 300,350,{ quality: 100 } );
 
-			}, function(err) {
-				console.log(err);
-			}).then(keystone.list('Success Story').model.find()
-				.where('_id', this.successStory.target)
+			}, err => {
+
+				console.log( err );
+
+			}).then( keystone.list( 'Success Story' ).model.find()
+				.where( '_id', this.successStory.target )
 				.exec()
-				.then(function(successStory) {
+				.then( successStory => {
 
-		       		self.successStory.title = successStory[0].heading;
-		       		// self.successStory.summary = successStory[0].content.replace(/<\/?[^>]+(>|$)/g, '');
-		       		// self.successStory.summary = self.successStory.summary.substring(0, 200);
-		       		self.successStory.url = '/success-stories/';
-					self.successStory.imageScaled = self._.successStory.image.thumbnail(300,350,{ quality: 100 });
+		       		this.successStory.title = successStory[ 0 ].heading;
+		       		this.successStory.url = '/success-stories/';
+					this.successStory.imageScaled = this._.successStory.image.thumbnail( 300,350,{ quality: 100 } );
 
-			}, function(err) {
-				console.log(err);
-			}).then(keystone.list('Event').model.find()
-				.where('_id', this.upcomingEvent.target)
+			}, err => {
+
+				console.log( err );
+
+			}).then( keystone.list( 'Event' ).model.find()
+				.where( '_id', this.upcomingEvent.target )
 				.exec()
-				.then(function(event) {
+				.then( event => {
 
-					self.upcomingEvent.title = event[0].name;
-					// self.upcomingEvent.summary = event[0].description.replace(/<\/?[^>]+(>|$)/g, '');
-					// self.upcomingEvent.summary = self.upcomingEvent.summary.substring(0, 200);
-					self.upcomingEvent.url = event[0].url;
-					self.upcomingEvent.imageScaled = self._.upcomingEvent.image.thumbnail(300,350,{ quality: 100 });
+					this.upcomingEvent.title = event[ 0 ].name;
+					this.upcomingEvent.url = event[ 0 ].url;
+					this.upcomingEvent.imageScaled = this._.upcomingEvent.image.thumbnail( 300,350,{ quality: 100 } );
 
 					next();
+			}, err => {
+
+				console.log( err );
 			})
 		));
 	});
