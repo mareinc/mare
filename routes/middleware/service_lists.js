@@ -289,8 +289,7 @@ exports.getEventTypesForWebsite = ( req, res, done ) => {
 				.where( 'availableOnWebsite', true )
 				.exec()
 				.then( eventTypes => {
-					console.log('here');
-console.log(eventTypes);
+
 					locals.eventTypes = eventTypes;
 					// execute done function if async is used to continue the flow of execution
 					done()
