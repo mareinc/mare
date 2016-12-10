@@ -1,8 +1,9 @@
-var keystone 		= require('keystone'),
-	async			= require('async'),
-	_				= require('underscore'),
-	Event			= keystone.list('Event'),
-	Utils			= require('../middleware/utilities'),
+var keystone 	= require('keystone'),
+	async		= require('async'),
+	_			= require('underscore'),
+	moment		= require('moment'),
+	Event		= keystone.list('Event'),
+	Utils		= require('../middleware/utilities'),
 	pageService	= require('../middleware/service_page');
 
 exports = module.exports = function(req, res) {
@@ -70,6 +71,9 @@ exports = module.exports = function(req, res) {
 
 							// Determine whether the user has already attended the event
 							event.attended = attendeeID === userID ? true : false;
+
+							// Pull the date and time into a string for easier templating
+							event.dateString = moment(event.date).format('dddd MMMM Do, YYYY');
 						});
 
 						// Store all events in an array on locals to expose them during templating
