@@ -9,6 +9,7 @@
 				<span class="arrow-down"></span>
 				<span class="log-in-container">
 					<form action="/logIn" method="POST">
+						<input type="hidden" name="target" value="{{ loginTarget }}" hidden>
 						<div class="email-container">
 								<input type="email" class="input input-small" required id="email" name="email" pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
 							<label for="email">Email Address</label>
