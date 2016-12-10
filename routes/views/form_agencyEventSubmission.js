@@ -14,7 +14,8 @@ exports = module.exports = ( req, res ) => {
 	const stateOptions	= { default: 'Massachusetts' };
 
 	async.parallel([
-		done => { listsService.getAllStates( req, res, done, stateOptions ) },
+		done => { listsService.getAllStates( req, res, done, stateOptions ); },
+		done => { listsService.getEventTypesForWebsite( req, res, done ); },
 		done => { pageService.populateSidebar( req, res, done ); },
 		done => { pageService.getSectionHeader( req, res, done, 'About Us' ); }
 	], () => {
