@@ -7,6 +7,7 @@
         events: {
             'click .events__category-card'			: 'navigate',
             'click .events__show-categories-button'	: 'navigate',
+			'click .events__create-event-button'	: 'navigate',
             'click .events__show-details-button'	: 'navigate',
 			'click .events__create-account-button'	: 'navigate',
             'click .events__register-button'		: 'register',
@@ -14,7 +15,7 @@
         },
 
         navigate: function navigate( event ) {
-        	window.location.href = $(event.currentTarget).data( 'url' );
+        	window.location.href = $( event.currentTarget ).data( 'url' );
         },
 		// TODO: There's no need to have a separate register and unregister function, simplify this file
         register: function register() {
