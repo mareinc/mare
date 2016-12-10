@@ -12,6 +12,7 @@ var keystone				= require( 'keystone' ),
 	OtherConsideration		= keystone.list( 'Other Consideration' ),
 	ChildStatus				= keystone.list( 'Child Status' ),
 	ChildType				= keystone.list( 'Child Type' ),
+	EventType				= keystone.list( 'Event Type' ),
 	WayToHearAboutMARE		= keystone.list( 'Way To Hear About MARE' );
 
 exports.getAllRegions = ( req, res, done ) => {
@@ -277,6 +278,30 @@ exports.getChildTypesForWebsite = ( req, res, done ) => {
 
 				});
 };
+
+exports.getEventTypesForWebsite = ( req, res, done ) => {
+
+	req.locals = res.locals || {};
+	
+	let locals = res.locals;
+
+	EventType.model.find()
+				.where( 'availableOnWebsite', true )
+				.exec()
+				.then( eventTypes => {
+					console.log('here');
+console.log(eventTypes);
+					locals.eventTypes = eventTypes;
+					// execute done function if async is used to continue the flow of execution
+					done()
+
+				}, err => {
+
+					console.log( err );
+					done();
+
+				});
+}
 
 exports.getAllWaysToHearAboutMARE = ( req, res, done, options ) => {
 
