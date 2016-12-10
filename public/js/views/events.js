@@ -13,7 +13,7 @@
             'click .events__register-button'		: 'register',
             'click .events__unregister-button'		: 'unregister'
         },
-
+		// TODO: consider putting this in a more global space since it's used for button navigation
         navigate: function navigate( event ) {
         	window.location.href = $( event.currentTarget ).data( 'url' );
         },
