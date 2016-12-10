@@ -47,28 +47,28 @@ exports = module.exports = app => {
 	'use strict';
 
 	// Views
-	app.get( '/'										, routes.views.main );
-	app.get( '/page/*'									, routes.views.page );
-	app.get( '/forms/agency-event-submission-form'		, routes.views.form_agencyEventSubmission );
-	app.get( '/forms/car-donation-form'					, routes.views.form_carDonation );
-	app.get( '/forms/child-registration-form'			, routes.views.form_childRegistration );
-	app.get( '/forms/information-request-form'			, routes.views.form_informationRequest );
-	app.get( '/forms/have-a-question-form'				, routes.views.form_haveAQuestion );
-	app.get( '/events/'									, routes.views.eventCategories );
-	app.get( eventListRoutes							, routes.views.eventList );
-	app.get( eventRoutes								, routes.views.event );
-	app.get( '/success-stories/'						, routes.views.successStories );
-	app.get( '/success-stories/*'						, routes.views.successStory );
-	app.get( '/waiting-child-profiles/'					, routes.views.waitingChildProfiles );
+	app.get( '/'										, middleware.setLoginTarget, routes.views.main );
+	app.get( '/page/*'									, middleware.setLoginTarget, routes.views.page );
+	app.get( '/forms/agency-event-submission-form'		, middleware.setLoginTarget, routes.views.form_agencyEventSubmission );
+	app.get( '/forms/car-donation-form'					, middleware.setLoginTarget, routes.views.form_carDonation );
+	app.get( '/forms/child-registration-form'			, middleware.setLoginTarget, routes.views.form_childRegistration );
+	app.get( '/forms/information-request-form'			, middleware.setLoginTarget, routes.views.form_informationRequest );
+	app.get( '/forms/have-a-question-form'				, middleware.setLoginTarget, routes.views.form_haveAQuestion );
+	app.get( '/events/'									, middleware.setLoginTarget, routes.views.eventCategories );
+	app.get( eventListRoutes							, middleware.setLoginTarget, routes.views.eventList );
+	app.get( eventRoutes								, middleware.setLoginTarget, routes.views.event );
+	app.get( '/success-stories/'						, middleware.setLoginTarget, routes.views.successStories );
+	app.get( '/success-stories/*'						, middleware.setLoginTarget, routes.views.successStory );
+	app.get( '/waiting-child-profiles/'					, middleware.setLoginTarget, routes.views.waitingChildProfiles );
 	app.get( '/preferences/'							, middleware.requireUser, routes.views.preferences );
 
-	app.get( '/register/'								, routes.views.register );
+	app.get( '/register/'								, middleware.setLoginTarget, routes.views.register );
 	app.post( '/register'								, registrationMiddleware.registerUser );
 
 	app.get( '/logout/'									, middleware.logout );
 	app.post('/login'									, middleware.login );
 
-	app.get( '/donate/'									, routes.views.donate );
+	app.get( '/donate/'									, middleware.setLoginTarget, routes.views.donate );
 	app.post( '/charge'									, middleware.charge );
 	// Services for ajax calls
 	app.post( '/services/get-children-data'				, childService.getGalleryData );
