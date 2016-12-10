@@ -10,7 +10,6 @@
 exports.create = {
 	Admin: [{
 		permissions: {
-			isVerified: true,
 			isActive: true
 		},
 		name: {
@@ -21,7 +20,6 @@ exports.create = {
 		email: 'admin@keystonejs.com'
 	},{
 		permissions: {
-			isVerified: true,
 			isActive: true
 		},
 		name: {
@@ -32,18 +30,6 @@ exports.create = {
 		email: 'jared.j.collier@gmail.com'
 	},{
 		permissions: {
-			isVerified: true,
-			isActive: true
-		},
-		name: {
-			first: 'Guillermo',
-			last: 'Martin'
-		},
-		password: 'GuillermoMartin',
-		email: 'guillermo.mare@gmail.com'
-	},{
-		permissions: {
-			isVerified: true,
 			isActive: true
 		},
 		name: {
