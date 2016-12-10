@@ -31,7 +31,14 @@ var Family = new keystone.List( 'Family', {
 });
 
 // Create fields
-Family.add( 'General Information', {
+Family.add( 'Permissions', {
+
+	permissions: {
+		isVerified: { type: Boolean, label: 'has a verified email address', default: false, noedit: true },
+		isActive: { type: Boolean, label: 'is active', default: false }
+	}
+
+},  'General Information', {
 
 	avatar: { type: Types.CloudinaryImage, label: 'avatar', folder: 'users/families', selectPrefix: 'users/families', autoCleanup: true },
 

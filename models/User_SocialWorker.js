@@ -18,7 +18,14 @@ var SocialWorker = new keystone.List( 'Social Worker', {
 });
 
 // Create fields
-SocialWorker.add( 'General Information', {
+SocialWorker.add( 'Permissions', {
+
+	permissions: {
+		isVerified: { type: Boolean, label: 'has a verified email address', default: false, noedit: true },
+		isActive: { type: Boolean, label: 'is active', default: false }
+	}
+
+}, 'General Information', {
 
 	name: {
 		first: { type: Types.Text, label: 'first name', required: true, initial: true },
