@@ -36,21 +36,24 @@ exports.getTargetEventGroup = function getTargetEventGroup(req, res, done) {
 
 	done();
 }
-
+/* fetches a random event for the sidebar, which has restrictions as to what can be shown */
 exports.getRandomEvent = function getRandomEvent(req, res, done) {
 
 	req.locals = res.locals || {};
 	var locals = res.locals;
 
 	// TODO: Handle the error if we get one
-	Event.model.findRandom(function(err, event){
-		// Create a formatted date for display in the UI
-		event.prettyDate = moment(event.date).format('dddd, MMMM Do');
+	Event.model.findRandom({
+			type: { $in: ['MARE adoption parties & information events', 'fundraising events'] },
+			isActive: true
+		}, (err, event) => {
 
-		locals.randomEvent = event;
-		// Execute done function if async is used to continue the flow of execution
-		done();
-	});
+			locals.randomEvent = event[ 0 ];
+			// Create a formatted date for display in the UI
+			locals.randomEvent.prettyDate = moment(locals.randomEvent.date).format('dddd, MMMM Do');
+			// Execute done function if async is used to continue the flow of execution
+			done();
+		});
 
 };
 
