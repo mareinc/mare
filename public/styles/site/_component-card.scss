@@ -133,14 +133,6 @@
 	@media all and (min-width: 400px) {
 		flex-direction: row;
 	}
-
-	&--single-button {
-		justify-content: center;
-	}
-
-	&--multiple-buttons {
-		justify-content: space-around;
-	}
 }
 // TODO: This will eventually move into the button component CSS once the registration form is cleaned up
 .card__button {
