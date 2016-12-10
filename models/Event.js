@@ -1,5 +1,6 @@
 var keystone = require('keystone'),
-	Types = keystone.Field.Types;
+	Types = keystone.Field.Types,
+	random = require('mongoose-simple-random');
 
 // Create model. Additional options allow event name to be used what auto-generating URLs
 var Event = new keystone.List('Event', {
@@ -65,17 +66,6 @@ Event.add({ heading: 'General Information' }, {
 
 });
 
-Event.schema.statics.findRandom = function(callback) {
-
-  this.count(function(err, count) {
-    if (err) {
-      return callback(err);
-    }
-    var rand = Math.floor(Math.random() * count);
-    this.findOne().skip(rand).exec(callback);
-  }.bind(this));
- };
-
 // Pre Save
 Event.schema.pre('save', function(next) {
 	'use strict';
@@ -103,6 +93,8 @@ Event.schema.pre('save', function(next) {
 
 	next();
 });
+
+Event.schema.plugin(random);
 
 // Define default columns in the admin interface and register the model
 Event.defaultColumns = 'name, url, starts, ends, isActive';
