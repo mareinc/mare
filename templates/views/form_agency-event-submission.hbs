@@ -16,6 +16,16 @@
 		<section class="form-section">
 			<div class="form-section-header">Event Details</div>
 
+			<div class="row">
+				<div class="col-sm-12 form-group">
+					<select id="event-type" class="input event-type-select" name="eventType">
+					{{#each eventTypes}}
+						<option value="{{ eventType }}">{{ eventType }}</option>
+					{{/each}}
+					</select>
+					<label for="eventType" class="label required-field">Event Type</label>
+				</div>
+			</div>
 			<div class="row form-group">
 				<div class="col-sm-12">
 					<input type="text" class="input" id="name" name="name" data-parsley-error-message="required" required="">
@@ -71,7 +81,7 @@
 			</div>
 			<div class="row">
 				<div class="col-sm-12 form-group">
-					<select id="family-state" class="input state-select" name="state">
+					<select id="state" class="input state-select" name="state">
 					{{#each states}}
 						{{#if defaultSelection}}
 							<option value="{{_id}}" selected="selected">{{state}}</option>
