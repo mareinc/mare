@@ -51,9 +51,11 @@ exports = module.exports = function(req, res) {
 				.populate('address.state')
 				.exec()
 				.then(function (event) {
-					// Determine if the user is an administrator. We want to display the event attendees if they are
 					req.user = req.user || {};
+					// determine if the user is an administrator. We want to display the event attendees if they are
 					locals.isAdmin = req.user && req.user.userType === 'admin' ? true : false;
+					// determine if the user is a social worker.  We want to allow them to create events if they are
+					locals.isSocialWorker = req.user && req.user.userType === 'social worker' ? true : false;
 					// If there are no events to display, we need to capture that information for rendering
 					locals.eventMissing = _.isEmpty(event);
 					// Find the target event for the current page and store the object in locals for access during templating

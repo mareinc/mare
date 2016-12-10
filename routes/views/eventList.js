@@ -43,6 +43,9 @@ exports = module.exports = function(req, res) {
 				.populate('address.state')
 				.exec()
 				.then(function (events) {
+					req.user = req.user || {};
+					// determine if the user is a social worker.  We want to allow them to create events if they are
+					locals.isSocialWorker = req.user && req.user.userType === 'social worker' ? true : false;
 					// If there are no events to display, we need to capture that information for rendering
 					locals.noEvents = events.length > 0 ? false : true;
 					// An array to hold all events for use during templating
