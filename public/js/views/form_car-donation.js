@@ -2,15 +2,13 @@
 	'use strict';
 
 	mare.views.Form_CarDonation = Backbone.View.extend({
-		el: '.form-name',
+		el: '.form--car-donation',
 
 		initialize: function() {
-			// DOM cache any commonly used elements to improve performance
-
 			// Initialize parsley validation on the form
 			this.form = this.$el.parsley();
 			
-			// this.form.on( 'field:validated', this.validateForm );
+			this.form.on( 'field:validated', this.validateForm );
 		},
 
 		validateForm: function validateForm() {
