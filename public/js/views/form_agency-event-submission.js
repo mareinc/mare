@@ -5,8 +5,6 @@
 		el: '.form--agency-event-submission',
 
 		initialize: function() {
-			// DOM cache any commonly used elements to improve performance
-
 			// Initialize parsley validation on the form
 			this.form = this.$el.parsley();
 			
