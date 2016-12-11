@@ -24,6 +24,7 @@ const registrationMiddleware	= require( './middleware/register' );
 const childService				= require( './middleware/service_child' );
 const eventService				= require( './middleware/service_event' );
 const familyService				= require( './middleware/service_family' );
+const formService				= require( './middleware/service_form' );
 const permissionsService		= require( './middleware/service_permissions' );
 const importRoutes				= keystone.importer( __dirname );
 
@@ -83,6 +84,7 @@ exports = module.exports = app => {
 	app.post( '/services/unregister-for-event'			, eventService.removeUser );
 	// Services for form submissions
 	app.post( '/submit-agency-event'					, eventService.submitEvent );
+	app.post( '/submit-car-donation'					, formService.submitCarDonation );
 
 	// NOTE: To protect a route so that only admins can see it, use the requireUser middleware:
 	// app.get('/protected', middleware.requireUser, routes.views.protected);
