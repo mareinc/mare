@@ -8,3 +8,10 @@ exports.submitCarDonation = function submitCarDonation( req, res, next ) {
 		// reload the form to display the flash message
 		res.redirect( '/forms/car-donation-form' );
 }
+
+exports.submitQuestion = function submitQuestion( req, res, next ) {
+	// TODO: fill in the email submissions for car donation when handling the email system tasks
+	req.flash( 'info', { title: 'Emails will be sent once that portion of the system is built out' } );
+		// reload the form to display the flash message
+		res.redirect( '/forms/have-a-question-form' );
+}
