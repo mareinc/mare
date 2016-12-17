@@ -19,6 +19,12 @@ exports = module.exports = ( req, res ) => {
 
 	async.series([
 		done => { familyService.setGalleryPermissions( req, res, done ); },
+		done => { listsService.getAllGenders( req, res, done ) },
+		done => { listsService.getAllRaces( req, res, done ) },
+		done => { listsService.getAllLanguages( req, res, done ) },
+		done => { listsService.getAllDisabilities( req, res, done ) },
+		done => { listsService.getOtherConsiderations( req, res, done ) },
+		done => { listsService.getAllFamilyConstellations( req, res, done ) },
 		done => { pageService.populateSidebar( req, res, done ); },
 		done => { pageService.getSectionHeader( req, res, done, 'Meet the Children' ); }
 

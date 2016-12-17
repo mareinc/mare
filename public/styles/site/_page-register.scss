@@ -1,7 +1,3 @@
-.register-intro {
-	margin: 0 0 10px;
-}
-
 .registration-type {
 	margin: 0 0 10px;
 }
@@ -15,7 +11,7 @@
 	display: inline;
 }
 
-.registration-type-header,
+.form-type-header,
 .form-section-header,
 .form-section-sub-header {
 	text-transform: uppercase;
@@ -68,24 +64,6 @@ label {
 
 .state-select {
     margin: 10px 0 5px;
-}
-
-/* TODO: Change class names to signify that these are buttons */
-.register,
-.log-in {
-	padding: 10px 15px;
-	border-radius: 5px;
-	color: $light-text-color;
-    text-transform: uppercase;
-    margin: 0 0 10px;
-}
-
-.register {
-	background-color: $button-background-color-1;
-}
-
-.log-in {
-	background-color: $button-background-color-2;
 }
 
 .header-blue {

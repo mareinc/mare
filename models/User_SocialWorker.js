@@ -12,14 +12,20 @@ var keystone				= require( 'keystone' ),
 // Create model
 var SocialWorker = new keystone.List( 'Social Worker', {
 	inherits	: User,
-	track		: true,
 	map			: { name: 'name.full' },
 	defaultSort	: 'name.full',
 	hidden		: false
 });
 
 // Create fields
-SocialWorker.add( 'General Information', {
+SocialWorker.add( 'Permissions', {
+
+	permissions: {
+		isVerified: { type: Boolean, label: 'has a verified email address', default: false, noedit: true },
+		isActive: { type: Boolean, label: 'is active', default: false }
+	}
+
+}, 'General Information', {
 
 	name: {
 		first: { type: Types.Text, label: 'first name', required: true, initial: true },
@@ -87,9 +93,10 @@ SocialWorker.schema.pre('save', function(next) {
 
 	var model = this;
 
-	async.parallel([
+	async.series([
 		done => { model.setFullName(done); }, // Create a full name for the child based on their first, middle, and last names
 		done => { model.setUserType(done); }, // Create an identifying name for file uploads
+		done => { ChangeHistoryMiddleware.setUpdatedby( this, done ); }, // we need this id in case the family was created via the website and udpatedBy is empty
 		done => { model.setChangeHistory(done); } // Process change history
 	], () => {
 

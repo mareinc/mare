@@ -2,7 +2,7 @@
 	'use strict';
 
 	mare.views.SiteVisitorRegistration = Backbone.View.extend({
-		el: '.registration-form--site-visitor',
+		el: '.form--site-visitor-registration',
 
 		events: {
 			'change .other-way-to-hear-about-mare'	: 'toggleOtherWayToHearTextField',

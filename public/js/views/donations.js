@@ -8,7 +8,8 @@
 		events: {
 			'keyup .donations-page__input-group'	: 'handleOtherDonationAmount',
 			'click .toggle-button'					: 'toggleButton',
-			'click .donate'							: 'donate'
+			'click .donate'							: 'donate',
+			'click .donate-car-button'				: 'navigate'
 		},
 
 		initialize: function initialize() {
@@ -19,6 +20,11 @@
 			this.$donationAmountInputField		= $('#donation-amount-input');
 
 		},
+
+		// TODO: consider putting this in a more global space since it's used for button navigation
+        navigate: function navigate( event ) {
+        	window.location.href = $( event.currentTarget ).data( 'url' );
+        },
 
 		toggleButton: function toggleButton(event) {
 
@@ -83,11 +89,11 @@
 		},
 
 		enableDonateButton: function enableDonateButton() {
-			$('.donate-button').removeClass('donate-button--disabled');
+			$('.donate-button').removeClass('button--disabled');
 		},
 
 		disableDonateButton: function disableDonateButton() {
-			$('.donate-button').addClass('donate-button--disabled');
+			$('.donate-button').addClass('button--disabled');
 		},
 
 		clearDonationAmountInput: function clearDonationAmountInput() {

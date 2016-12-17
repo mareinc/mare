@@ -1,3 +1,8 @@
+// TODO: Rework bookmarking to separate out the event broadcasting and the reaction to the events.  With bookmark capability
+//		 in the details section as well, this got a little ugly and can be cleaned up and simplified
+//		 1: send the event that an update is needed
+//		 2: make the ajax call to update and send an event on success or failure
+//		 3: respond to the event by updating the classes
 (function () {
 	'use strict';
 
@@ -35,6 +40,30 @@
 			// Bind to change events
 			mare.collections.galleryChildren.on( 'sorted', function() {
 				view.render();
+			});
+			// when we get a response from the server that the bookmark for a child has successfully updated, update the view
+			mare.collections.galleryChildren.on( 'childBookmarkUpdated', function( registrationNumber, action ) {
+				view.updateChildBookmarkView( registrationNumber, action );
+			});
+			// when we get a response from the server that the bookmark for a group of siblings successfully updated, update the view
+			mare.collections.galleryChildren.on( 'siblingGroupBookmarkUpdated', function( registrationNumbers, action ) {
+				view.updateSiblingGroupBookmarkView( registrationNumbers, action );
+			});
+			// when the details view sends an event to trigger updating the child bookmark, send the request to the server
+			mare.collections.galleryChildren.on( 'childBookmarkUpdateNeeded', function( registrationNumber, action ) {
+				if( action === 'add' ) {
+					view.addChildBookmark( registrationNumber );
+				} else if( action === 'remove' ) {
+					view.removeChildBookmark( registrationNumber );
+				}
+			});
+			// when the details view sends an event to trigger updating the sibling group bookmark, send the request to the server
+			mare.collections.galleryChildren.on( 'siblingGroupBookmarkUpdateNeeded', function( registrationNumbers, action ) {
+				if( action === 'add' ) {
+					view.addSiblingGroupBookmark( registrationNumbers );
+				} else if( action === 'remove' ) {
+					view.removeSiblingGroupBookmark( registrationNumbers );
+				}
 			});
 		},
 
@@ -83,7 +112,7 @@
 
 		/* determine how to handle a click on the bookmark element */
 		toggleChildBookmark: function toggleChildBookmark( event ) {
-
+			// TODO: see if this is needed
 			event.stopPropagation();
 			// DOM cache the current target for performance
 			var $currentTarget = $( event.currentTarget );
@@ -99,13 +128,13 @@
 			} else if( $currentTarget.hasClass( 'bookmark--active' ) ) {
 
 				$currentTarget.addClass( 'bookmark--disabled' );
-				this.removeChildBookmark( registrationNumber, $currentTarget );
+				this.removeChildBookmark( registrationNumber );
 
 			// if the child is not currently bookmarked, add them
 			} else {
 
 				$currentTarget.addClass( 'bookmark--disabled' );
-				this.addChildBookmark( registrationNumber, $currentTarget );
+				this.addChildBookmark( registrationNumber );
 
 			}
 		},
@@ -128,19 +157,19 @@
 			} else if( $currentTarget.hasClass( 'bookmark--active' ) ) {
 
 				$currentTarget.addClass( 'bookmark--disabled' );
-				this.removeSiblingGroupBookmark( registrationNumbers, $currentTarget );
+				this.removeSiblingGroupBookmark( registrationNumbers );
 
 			// if the child is not currently bookmarked, add them
 			} else {
 
 				$currentTarget.addClass( 'bookmark--disabled' );
-				this.addSiblingGroupBookmark( registrationNumbers, $currentTarget );
+				this.addSiblingGroupBookmark( registrationNumbers );
 
 			}
 		},
-
+		// TODO: combine the add / remove calls here and for siblings
 		/* make a call to the server to bookmark the child */
-		addChildBookmark: function addChildBookmark( registrationNumber, $currentTarget ) {
+		addChildBookmark: function addChildBookmark( registrationNumber ) {
 
 			$.ajax({
 				url: '/services/add-child-bookmark',
@@ -149,10 +178,15 @@
 					registrationNumber: registrationNumber
 				}
 			}).done( function( response ) {
-				// Once the bookmark has been saved successfully, change the icon, re-enable the bookmark, and show it as active
-				$currentTarget.children( '.bookmark__icon' ).removeClass( 'fa-plus-square-o' ).addClass( 'fa-minus-square-o' );
-				$currentTarget.removeClass( 'bookmark--disabled' );
-				$currentTarget.addClass( 'bookmark--active' );
+				// update the isBookmarked field for the target child model
+				mare.collections.galleryChildren.each( function( child ) {
+					if( child.get( 'registrationNumber' ) === registrationNumber ) {
+						child.set( 'isBookmarked', true );
+					}
+				});
+				// emit an event on the collection showing that the child's bookmark has been updated
+				// this is bound to the collection so other views bound to the same data ( the details modal ) can respond
+				mare.collections.galleryChildren.trigger( 'childBookmarkUpdated', registrationNumber, 'add' );
 
 			}).fail( function( err ) {
 				// TODO: Show an error message to the user
@@ -162,7 +196,7 @@
 		},
 
 		/* make a call to the server to remove the bookmark for the child, then modify the view */
-		removeChildBookmark: function removeChildBookmark( registrationNumber, $currentTarget ) {
+		removeChildBookmark: function removeChildBookmark( registrationNumber ) {
 
 			$.ajax({
 				url: '/services/remove-child-bookmark',
@@ -171,10 +205,16 @@
 					registrationNumber: registrationNumber
 				}
 			}).done( function( response ) {
-				// Once the bookmark has been removed successfully, change the icon, re-enable the bookmark, and show it as inactive
-				$currentTarget.children( '.bookmark__icon' ).removeClass( 'fa-minus-square-o' ).addClass( 'fa-plus-square-o' );
-				$currentTarget.removeClass( 'bookmark--disabled' );
-				$currentTarget.removeClass( 'bookmark--active' );
+				// update the isBookmarked field for the target child model
+				mare.collections.galleryChildren.each( function( child ) {
+					if( child.get( 'registrationNumber' ) === registrationNumber ) {
+						child.set( 'isBookmarked', false );
+					}
+				});
+				// TODO: the following event and all like it should trigger off the isBookmarked attribute changing
+				// emit an event on the collection showing that the child's bookmark has been updated
+				// this is bound to the collection so other views bound to the same data ( the details modal ) can respond
+				mare.collections.galleryChildren.trigger( 'childBookmarkUpdated', registrationNumber, 'remove' );
 
 			}).fail( function( err ) {
 				// TODO: Show an error message to the user
@@ -184,7 +224,7 @@
 		},
 
 		/* make a call to the server to add bookmarks for all children in the sibling group, then modify the view */
-		addSiblingGroupBookmark: function addSiblingGroupBookmark( registrationNumbers, $currentTarget ) {
+		addSiblingGroupBookmark: function addSiblingGroupBookmark( registrationNumbers ) {
 
 			$.ajax({
 				url: '/services/add-sibling-group-bookmark',
@@ -193,10 +233,17 @@
 					registrationNumbers: registrationNumbers
 				}
 			}).done( function( response ) {
-				// Once the bookmark has been saved successfully, change the icon, re-enable the bookmark, and show it as active
-				$currentTarget.children( '.bookmark__icon' ).removeClass( 'fa-plus-square-o' ).addClass( 'fa-minus-square-o' );
-				$currentTarget.removeClass( 'bookmark--disabled' );
-				$currentTarget.addClass( 'bookmark--active' );
+				// create an array from the string of registration numbers in the sibling group
+				var registrationNumbersArray = registrationNumbers.split( ',' );
+				// update the isBookmarked field for the target siblingGroup model
+				mare.collections.gallerySiblingGroups.each( function( siblingGroup ) {
+					if( _.intersection( registrationNumbersArray, siblingGroup.get( 'registrationNumbers' ).length > 0 ) ) {
+						siblingGroup.set( 'isBookmarked', true );
+					}
+				});
+				// emit an event on the collection showing that the sibling group's bookmark has been updated
+				// this is bound to the collection so other views bound to the same data ( the details modal ) can respond
+				mare.collections.galleryChildren.trigger( 'siblingGroupBookmarkUpdated', registrationNumbers, 'add' );
 
 			}).fail( function( err ) {
 				// TODO: Show an error message to the user
@@ -205,7 +252,7 @@
 		},
 
 		/* make a call to the server to remove bookmarks for all children in the sibling group, then modify the view */
-		removeSiblingGroupBookmark: function removeSiblingGroupBookmark( registrationNumbers, $currentTarget ) {
+		removeSiblingGroupBookmark: function removeSiblingGroupBookmark( registrationNumbers ) {
 
 			$.ajax({
 				url: '/services/remove-sibling-group-bookmark',
@@ -214,15 +261,64 @@
 					registrationNumbers: registrationNumbers
 				}
 			}).done( function( response ) {
-				// Once the bookmark has been removed successfully, change the icon, re-enable the bookmark, and show it as inactive
-				$currentTarget.children( '.bookmark__icon' ).removeClass( 'fa-minus-square-o' ).addClass( 'fa-plus-square-o' );
-				$currentTarget.removeClass( 'bookmark--disabled' );
-				$currentTarget.removeClass( 'bookmark--active' );
+				// create an array from the string of registration numbers in the sibling group
+				var registrationNumbersArray = registrationNumbers.split( ',' );
+				// update the isBookmarked field for the target siblingGroup model
+				mare.collections.gallerySiblingGroups.each( function( siblingGroup ) {
+					if( _.intersection( registrationNumbersArray, siblingGroup.get( 'registrationNumbers' ).length > 0 ) ) {
+						siblingGroup.set( 'isBookmarked', false );
+					}
+				});
+				// emit an event on the collection showing that the sibling group's bookmark has been updated
+				// this is bound to the collection so other views bound to the same data ( the details modal ) can respond
+				mare.collections.galleryChildren.trigger( 'siblingGroupBookmarkUpdated', registrationNumbers, 'remove' );
 
 			}).fail( function( err ) {
 				// TODO: Show an error message to the user
 				console.log( err );
 			});
+		},
+		// TODO: this can be combined with the handler for sibling groups below
+		updateChildBookmarkView: function updateChildBookmarkView( registrationNumber, action ) {
+
+			var targetChild = $( '.media-boxes-container' ).find( "[data-registration-number='" + registrationNumber + "']" );
+			var targetButton = targetChild.find( '.bookmark' );
+
+			switch( action ) {
+				case 'add':
+					// change the icon from a plus to a minus
+					targetButton.children( '.bookmark__icon' ).removeClass( 'fa-plus-square-o' ).addClass( 'fa-minus-square-o' );
+					targetButton.addClass( 'bookmark--active' );
+					break;
+				case 'remove':
+					// change the icon from a minus to a plus
+					targetButton.children( '.bookmark__icon' ).removeClass( 'fa-minus-square-o' ).addClass( 'fa-plus-square-o' );
+					targetButton.removeClass( 'bookmark--active' );
+					break;
+			}
+
+			targetButton.removeClass( 'bookmark--disabled' );
+		},
+
+		updateSiblingGroupBookmarkView: function updateSiblingGroupBookmarkView( registrationNumbers, action ) {
+
+			var targetSiblingGroup = $( '.media-boxes-container' ).find( "[data-registration-numbers='" + registrationNumbers + "']" );
+			var targetButton = targetSiblingGroup.find( '.bookmark' );
+
+			switch( action ) {
+				case 'add':
+				// change the icon from a plus to a minus
+					targetButton.children( '.bookmark__icon' ).removeClass( 'fa-plus-square-o' ).addClass( 'fa-minus-square-o' );
+					targetButton.addClass( 'bookmark--active' );
+					break;
+				case 'remove':
+					// change the icon from a minus to a plus
+					targetButton.children( '.bookmark__icon' ).removeClass( 'fa-minus-square-o' ).addClass( 'fa-plus-square-o' );
+					targetButton.removeClass( 'bookmark--active' );
+					break;
+			}
+
+			targetButton.removeClass( 'bookmark--disabled' );
 		},
 
 		/* sort the children in the gallery */

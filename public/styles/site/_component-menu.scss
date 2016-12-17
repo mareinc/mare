@@ -25,7 +25,7 @@ nav ul {
 
 .top-nav li > a {
 	text-decoration: none;
-	color: $dark-text-color;
+	color: $text-color-dark;
 	padding: 8px 8px 8px 8px;
 }
 
@@ -36,15 +36,15 @@ nav ul {
 		display: block;
 		text-align: center;
 		clear: both;
-		background-color: $nav-background-color-3;
-		margin: 0 1em;
+		background-color: $nav-background-color-5;
+		padding: 0 1em;
 	}
 }
 
 .main-nav .nav a {
 	position: relative;
 	display: block;
-	background: $nav-background-color-3;
+	background: $nav-background-color-5;
 	color: $nav-text-color-2;
 	text-decoration: none;
 	padding: 0.7em 0.4em;
@@ -70,11 +70,6 @@ nav ul {
 .main-nav .nav > li {
 	position: relative;
 	flex: 1 1 0;
-	height: 3em;
-	// The height the main navigation elements snap to 2 lines
-	@media all and (min-width: 989px) {
-		height: 2em;
-	}
 }
 
 // The third menu element 'family support services' needs more room than the rest
@@ -95,12 +90,12 @@ nav ul {
 }
 
 .main-nav .nav li:hover > a {
-    background-color: $nav-background-color-4;
-    color: $light-text-color;
+    background-color: $nav-background-color-3;
+    color: $text-color-light;
 }
 
 .main-nav .nav li:hover li a {
-    background-color: $nav-background-color-4;
+    background-color: $nav-background-color-3;
     padding: 0.6em 1.5em 0.6em 0.6em;
     text-align: left;
 }
@@ -111,14 +106,14 @@ nav ul {
 	height: 0;
 	width: 0;
 	border: 5px solid transparent;
-	border-left-color: #d5d5d5;
+	border-left-color: $border-color-7;
 	top: 50% ;
 	right:5px;
  }
 
  .main-nav li:hover > .sub-menu:before {
 	border-left-color: transparent;
-	border-right-color: #fff;
+	border-right-color: $border-color-light;
 	right: 10px;
 }
 

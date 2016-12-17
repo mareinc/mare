@@ -17,7 +17,6 @@
     width: 100%;
     margin-bottom: 1em;
     list-style: none;
-    background-color: $description-background-color-2;
     // box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23); /* TODO: same as card, maybe make these a card variant */
 
     @media all and (min-width: 420px) {
@@ -45,40 +44,37 @@
     flex-direction: column;
     align-items: center;
     text-decoration: none;
-    color: $dark-text-color;
+    color: $text-color-dark;
 }
 
-.featured-item img {
-    width: 16em;
-    height: 16em;
-    border-radius: 50%;
-    margin: 1em 0;
-}
-
-.featured-item-description {
+.featured-item .featured-item-title-container {
     display: flex;
-    flex-grow: 1;
-    flex-direction: column;
-    padding: 15px;
-    text-align: center;
-}
-
-.featured-item .featured-item-title,
-.featured-item .featured-item-summary {
-	display: block;
+    align-items: center;
+    justify-content: center;
     width: 100%;
+    height: 20%;
+
+    &--blue {
+        background-color: $background-color-1;
+    }
+
+    &--red {
+        background-color: $background-color-2;
+    }
+
+    &--yellow {
+        background-color: $background-color-3;
+    }
 }
 
 .featured-item .featured-item-title {
     text-transform: uppercase;
     font-weight: 600;
     font-size: 1.2em;
-    width: 100%;
-    height: 2.5em;
+    color: $text-color-light;
 }
 
-.featured-item .featured-item-summary {
-    flex-grow: 1;
-	font-style: italic;
-	margin-bottom: 1em;
+.featured-item img {
+    width: 100%;
+    height: 80%;
 }

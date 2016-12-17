@@ -2,29 +2,26 @@
 <ul class="featured-items">
 	<li class="featured-item feature-about-us">
 		<a href="/page/our-services" class="cover">
-			<img src="{{ aboutUs.imageScaled }}" alt="{{ aboutUs.title }}">
-			<div class="featured-item-description">
-				<span class="featured-item-summary">{{ aboutUs.summary }}</span>
+			<div class="featured-item-title-container featured-item-title-container--blue">
 				<span class="featured-item-title">Our Services</span>
 			</div>
+			<img src="{{ aboutUs.imageScaled }}" alt="{{ aboutUs.title }}">
 		</a>
 	</li>
 	<li class="featured-item featured-success-story">
 		<a href="{{ successStory.url }}" class="cover">
-			<img src="{{ successStory.imageScaled }}" alt="{{ successStory.title }}">
-			<div class="featured-item-description">
-				<span class="featured-item-summary">{{ successStory.summary }}</span>
-				<span class="featured-item-title">{{ successStory.title }}</span>
+			<div class="featured-item-title-container featured-item-title-container--red">
+				<span class="featured-item-title">Success Stories</span>
 			</div>
+			<img src="{{ successStory.imageScaled }}" alt="{{ successStory.title }}">
 		</a>
 	</li>
 	<li class="featured-item featured-upcoming-event">
 		<a href="{{ upcomingEvent.url }}" class="cover">
-			<img src="{{ upcomingEvent.imageScaled }}" alt="{{ upcomingEvent.title }}">
-			<div class="featured-item-description">
-				<span class="featured-item-summary">{{ upcomingEvent.summary }}</span>
+			<div class="featured-item-title-container featured-item-title-container--yellow">
 				<span class="featured-item-title">Events</span>
 			</div>
+			<img src="{{ upcomingEvent.imageScaled }}" alt="{{ upcomingEvent.title }}">
 		</a>
 	</li>
 </ul>

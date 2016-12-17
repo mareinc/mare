@@ -3,8 +3,11 @@
 	{{#if showMAPPTrainings}} {{> events-mapp-training-info}} {{/if}}
 	{{#if showAdoptionParties}} {{> events-adoption-party-info}} {{/if}}
 
-	<section class="card__button-group card__button-group--single-button">
+	<section class="card__button-group button-group--space-around">
 		<button class="card__button events__show-categories-button" data-url="/events">Back to All Events</button>
+		{{#if isSocialWorker}}
+		<button class="card__button events__create-event-button" data-url="/forms/agency-event-submission-form">Create Event</button>
+		{{/if}}
 	</section>
 
 </div>
@@ -47,14 +50,14 @@
 	<aside class="card__content-group">
 		<h3 class="card__title">Attendees</h3>
 		<section class="card__list-container">
-			{{#if event.hasCSCAttendees}}
+			{{#if event.hasStaffAttendees}}
 			<h4 class="card__list-title">Staff</h4>
 			<ul class="card__list" data-group="admin">
 			{{/if}}
-				{{#each event.cscAttendees}}
+				{{#each event.staffAttendees}}
 				<li class="card__list-item">{{ name.full }}</li>
 				{{/each}}
-			{{#if event.hasCSCAttendees}}
+			{{#if event.hasStaffAttendees}}
 			</ul>
 			{{/if}}
 		</section>
@@ -118,7 +121,7 @@
 	<hr class="card__content-divider"></hr>
 	<label for="register-with-mare-button" class="card__button-label">In order to register for events, you first need to create an account.</label>
 	{{/unless}}
-	<section class="card__button-group card__button-group--single-button">
+	<section class="card__button-group button-group--space-around">
 		{{#if user}}
 		<button class="card__button {{#if event.attending}} card__button--unregister events__unregister-button {{else}} events__register-button {{/if}}" data-event-id="{{ event._id }}">{{#if event.attending}} Unregister {{else}} Register {{/if}}</button>
 		{{else}}

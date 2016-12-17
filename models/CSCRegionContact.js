@@ -1,14 +1,14 @@
-var keystone = require('keystone'),
-	Types = keystone.Field.Types;
+var keystone	= require( 'keystone' ),
+	Types		= keystone.Field.Types;
 
 // Create model. Additional options allow menu name to be used what auto-generating URLs
-var CSCRegionContact = new keystone.List('CSC Region Contact');
+var CSCRegionContact = new keystone.List( 'CSC Region Contact' );
 
 // Create fields
 CSCRegionContact.add({
 
-	cscRegionContact: { type: Types.Relationship, label: 'Employee', ref: 'Admin', required: true, initial: true },
-	region: { type: Types.Relationship, label: 'Region', ref: 'Region', required: true, initial: true }
+	cscRegionContact: { type: Types.Relationship, label: 'CSC region contact', ref: 'Admin', required: true, initial: true },
+	region: { type: Types.Relationship, label: 'region', ref: 'Region', required: true, initial: true }
 
 });
 

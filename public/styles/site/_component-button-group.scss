@@ -1,0 +1,19 @@
+.button-group {
+    display: flex;
+
+    &--horizontal {
+        flex-direction: row;
+    }
+
+    &--vertical {
+        flex-direction: column;
+    }
+
+    &--space-between {
+        justify-content: space-between;
+    }
+
+    &--space-around {
+        justify-content: space-around;
+    }
+}

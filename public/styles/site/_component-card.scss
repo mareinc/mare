@@ -7,7 +7,7 @@
 	display: flex;
 	flex-direction: column;
 	width: 100%;
-	background-color: #ffffff;
+	background-color: $background-color-light;
 	// box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
 	border-radius: 2px;
 	padding: 1em;
@@ -55,7 +55,7 @@
 	overflow: hidden;
 
 	&--border-top {
-		border-top: 1px solid #000;
+		border-top: 1px solid $background-color-dark;
 	}
 }
 
@@ -67,6 +67,11 @@
 	@media all and (min-width: 780px) {
 		width: 50%;
 	}
+}
+
+.card__overview-icon {
+	width: 1em;
+    text-align: center;
 }
 
 .card__overview-text {
@@ -90,7 +95,7 @@
 	align-self: center;
 	position: relative;
 	top: -2.2em;
-	background-color: #FCCA46;
+	background-color: $background-color-4;
 	padding: .5em;
 	border-radius: 50%;
 }
@@ -128,19 +133,11 @@
 	@media all and (min-width: 400px) {
 		flex-direction: row;
 	}
-
-	&--single-button {
-		justify-content: center;
-	}
-
-	&--multiple-buttons {
-		justify-content: space-around;
-	}
 }
 // TODO: This will eventually move into the button component CSS once the registration form is cleaned up
 .card__button {
 	min-width: 10em;
-	background-color: #FDB127;
+	background-color: $background-color-5;
 	border: none;
 	border-radius: 2px;
 	padding: 0.75em 1.5em;
@@ -156,7 +153,7 @@
 	}
 
 	&:hover {
-		background-color: #F7BE57;
+		background-color: $background-color-6;
 		// box-shadow: 0 5px 11px 0 rgba(0, 0, 0, 0.18),0 4px 15px 0 rgba(0, 0, 0, 0.15);
 	}
 
@@ -164,13 +161,13 @@
 		box-shadow: none;
 		transition: none;
 		opacity: 0.6;
-		background-color: #ffe2ad;
+		background-color: $background-color-7;
 
 		&:hover {
 			box-shadow: none;
 			transition: none;
 			opacity: 0.6;
-			background-color: #ffe2ad;
+			background-color: $background-color-7;
 		}
 	}
 }
@@ -201,7 +198,7 @@
 
 .card__list-item {
 	padding: 0.3em 0 0 1em;
-color: #a1a5a2;
+	color: $text-color-1;
 }
 
 .card__content-divider {

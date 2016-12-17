@@ -16,7 +16,7 @@ exports = module.exports = function(req, res) {
 		targetGroup;	// Used to map to the different attendee groups to simplify searching for whether the user is attending
 
 	switch(userType) {
-		case 'admin'			: targetGroup = 'cscAttendees'; break;
+		case 'admin'			: targetGroup = 'staffAttendees'; break;
 		case 'family'			: targetGroup = 'familyAttendees'; break;
 		case 'social worker'	: targetGroup = 'socialWorkerAttendees'; break;
 		case 'site visitor'		: targetGroup = 'siteVisitorAttendees'; break;
@@ -47,13 +47,15 @@ exports = module.exports = function(req, res) {
 				.populate('familyAttendees')
 				.populate('socialWorkerAttendees')
 				.populate('siteVisitorAttendees')
-				.populate('cscAttendees')
+				.populate('staffAttendees')
 				.populate('address.state')
 				.exec()
 				.then(function (event) {
-					// Determine if the user is an administrator. We want to display the event attendees if they are
 					req.user = req.user || {};
+					// determine if the user is an administrator. We want to display the event attendees if they are
 					locals.isAdmin = req.user && req.user.userType === 'admin' ? true : false;
+					// determine if the user is a social worker.  We want to allow them to create events if they are
+					locals.isSocialWorker = req.user && req.user.userType === 'social worker' ? true : false;
 					// If there are no events to display, we need to capture that information for rendering
 					locals.eventMissing = _.isEmpty(event);
 					// Find the target event for the current page and store the object in locals for access during templating
@@ -65,7 +67,7 @@ exports = module.exports = function(req, res) {
 					event.hasAddress = event.address && event.address.street1 ? true : false;
 					// Store data on whether any attendees exist for the each group
 					// We need this to know whether we should render headers for each list during templating
-					event.hasCSCAttendees			= event.cscAttendees.length > 0 ? true : false;
+					event.hasStaffAttendees			= event.staffAttendees.length > 0 ? true : false;
 					event.hasFamilyAttendees		= event.familyAttendees.length > 0 ? true : false;
 					event.hasSocialWorkerAttendees	= event.socialWorkerAttendees.length > 0 ? true : false;
 					event.hasSiteVisitorAttendees	= event.siteVisitorAttendees.length > 0 ? true : false;

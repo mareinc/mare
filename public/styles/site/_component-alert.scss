@@ -1,0 +1,24 @@
+.alert {
+    margin: 1em;
+    padding: 1em;
+    border: 1px solid;
+    border-radius: 3px;
+}
+
+.alert-success {
+    border-color: $flash-message-color-1;
+    background-color: $flash-message-color-2;
+    color: $flash-message-color-3;
+}
+
+.alert-info {
+    border-color: $flash-message-color-4;
+    background-color: $flash-message-color-5;
+    color: $flash-message-color-6;
+}
+
+.alert-danger {
+    border-color: $flash-message-color-7;
+    background-color: $flash-message-color-8;
+    color: $flash-message-color-9;
+}

@@ -1,5 +1,6 @@
 var keystone = require('keystone'),
-	Types = keystone.Field.Types;
+	Types = keystone.Field.Types,
+	random = require('mongoose-simple-random');
 
 // Create model. Additional options allow event name to be used what auto-generating URLs
 var Event = new keystone.List('Event', {
@@ -15,7 +16,7 @@ Event.add({ heading: 'General Information' }, {
 	url: { type: Types.Url, label: 'url', noedit: true },
 	isActive: { type: Types.Boolean, label: 'is event active?', default: true, initial: true },
 	// type: { type: Types.Relationship, label: 'Event Type', ref: 'Event Type', required: true, initial: true }
-	type: { type: Types.Select, label: 'event type', options: 'MARE adoption parties & information events, MAPP trainings, agency information meetings, other opportunities & trainings, fundraising events', required: true, initial: true },
+	type: { type: Types.Select, label: 'event type', options: 'MARE adoption parties & information events, MAPP trainings, agency information meetings, other opportunities & trainings, fundraising events', required: true, initial: true }, // TODO: this fixes an issue in pre-save which can be updated to fetch the live results and not hardcode this list.
 	image: { type: Types.CloudinaryImage, note: 'needed to display in the sidebar, events page, and home page', folder: 'events/', publicID: 'fileName', autoCleanup: true },
 	imageFeatured: { type: Types.Url, hidden: true },
 	imageSidebar: { type: Types.Url, hidden: true }
@@ -42,7 +43,7 @@ Event.add({ heading: 'General Information' }, {
 
 }, 'Attendees', {
 
-	cscAttendees: { type: Types.Relationship, label: 'CSC staff', ref: 'Admin', many: true, initial: true },
+	staffAttendees: { type: Types.Relationship, label: 'staff', ref: 'Admin', many: true, initial: true },
 	siteVisitorAttendees: { type: Types.Relationship, label: 'site visitors', ref: 'Site Visitor', many: true, initial: true },
 	socialWorkerAttendees: { type: Types.Relationship, label: 'social workers', ref: 'Social Worker', many: true, initial: true },
 	familyAttendees: { type: Types.Relationship, label: 'families', ref: 'Family', many: true, initial: true },
@@ -53,6 +54,10 @@ Event.add({ heading: 'General Information' }, {
 
 	notes: { type: Types.Text, label: 'notes', initial: true }
 
+}, 'Creation Details', {
+	// this is used to determine whether we should send an automatic email to the creator when their event becomes active
+	createdViaWebsite: { type: Types.Boolean, label: 'created through the website', noedit: true }
+
 /* Container for all system fields (add a heading if any are meant to be visible through the admin UI) */
 }, {
 
@@ -60,17 +65,6 @@ Event.add({ heading: 'General Information' }, {
 	fileName: { type: Types.Text, hidden: true }
 
 });
-
-Event.schema.statics.findRandom = function(callback) {
-
-  this.count(function(err, count) {
-    if (err) {
-      return callback(err);
-    }
-    var rand = Math.floor(Math.random() * count);
-    this.findOne().skip(rand).exec(callback);
-  }.bind(this));
- };
 
 // Pre Save
 Event.schema.pre('save', function(next) {
@@ -90,7 +84,7 @@ Event.schema.pre('save', function(next) {
     	default: eventType = '';
 	}
 
-	//TODO: if eventType.length === 0, I should prevent the save
+	// TODO: if eventType.length === 0, I should prevent the save
 
 	this.url = '/events/' + eventType + '/' + this.key;
 
@@ -99,6 +93,8 @@ Event.schema.pre('save', function(next) {
 
 	next();
 });
+
+Event.schema.plugin(random);
 
 // Define default columns in the admin interface and register the model
 Event.defaultColumns = 'name, url, starts, ends, isActive';
