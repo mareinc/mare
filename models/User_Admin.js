@@ -12,7 +12,13 @@ var Admin = new keystone.List('Admin', {
 });
 
 // Create fields
-Admin.add('General Information', {
+Admin.add( 'Permissions', {
+
+	permissions: {
+		isActive: { type: Boolean, label: 'is active', default: true, noedit: true }
+	}
+
+}, 'General Information', {
 
 	name: {
 		first: { type: Types.Text, label: 'first name', required: true, initial: true },

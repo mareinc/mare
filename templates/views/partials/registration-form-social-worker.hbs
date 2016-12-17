@@ -1,7 +1,7 @@
 <section class="social-worker-registration hidden">
-	<div class="registration-type-header">Social Worker Registration</div>
+	<div class="form-type-header">Social Worker Registration</div>
 	<span class="required required-description">* Required</span>
-	<form action="/register" class="registration-form registration-form--social-worker" method="POST">
+	<form action="/register" class="registration-form form--social-worker-registration" method="POST">
 		<input type="hidden" class="registration-type" name="registrationType" value="socialWorker">
 
 		<section class="social-worker-account-setup-section">
@@ -20,7 +20,7 @@
 			</div>
 			<div class="row form-group">
 				<div class="col-sm-12">
-					<input type="email" id="social-worker-email" class="input" name="email" placeholder="john.smith@gmail.com" data-parsley-trigger="change" data-parsley-error-message="required" required="">
+					<input type="email" id="social-worker-email" class="input" name="email" placeholder="john.smith@gmail.com" data-parsley-type="email" data-parsley-trigger="change" data-parsley-error-message="valid email required" required="">
 					<label for="social-worker-email" class="label required-field">Email Address</label>
 				</div>
 			</div>

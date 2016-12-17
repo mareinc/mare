@@ -10,14 +10,7 @@ var User = new keystone.List('User', {
 });
 
 // Create fields
-User.add('Permissions', {
-
-	permissions: {
-		isVerified: { type: Boolean, label: 'has a verified email address', default: false, noedit: true },
-		isActive: { type: Boolean, label: 'is active', default: true, noedit: true }
-	}
-
-}, 'Login Information', {
+User.add('Login Information', {
 
 	email: { type: Types.Email, label: 'email address', unique: true, required: true, initial: true },
 	password: { type: Types.Password, label: 'password', required: true, initial: true }
@@ -29,7 +22,7 @@ User.add('Permissions', {
 });
 
 // Define default columns in the admin interface and register the model
-User.defaultColumns = 'email, permissions.isActive, permissions.isVerified';
+User.defaultColumns = 'email';
 User.register();
 
 // Export to make it available using require.  The keystone.list import throws a ReferenceError when importing a list

@@ -54,3 +54,32 @@ exports.getUserById = function getUserById(req, res, done, options) {
 
 				});
 };
+
+exports.checkUserActiveStatus = function( email, locals, done ) {
+	
+	User.model.findOne()
+		.where( 'email', email )
+		.exec()
+		.then( user => {
+			// if a user with the current email doesn't exist
+			if( !user ) {
+				// exit the login process and let the user know their email or password is invalid
+				locals.userStatus = 'nonexistent';
+			// if the user exists but isn't active yet
+			} else if( user.permissions.isActive === false ) {
+				// exit the login process and let the user know their account isn't active yet
+				locals.userStatus = 'inactive';
+			// if the user exists and is active
+			} else {
+				// let the system attempt to log the user in
+				locals.userStatus = 'active';
+			}
+
+			done();
+
+		}, err => {
+
+			console.log( err );
+			done();
+		});
+}

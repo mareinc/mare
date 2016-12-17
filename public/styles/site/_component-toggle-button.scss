@@ -3,8 +3,8 @@
     padding: 1em;
     border-radius: 2px;
     border-style: none;
-	background-color: #af4967;
-	color: #fff;
+	background-color: $background-color-9;
+	color: $text-color-light;
 	margin-left: 1%;
 	margin-right: 1%;
 	box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
@@ -17,14 +17,14 @@
 
 	&--toggled {
 		cursor: default;
-		background-color: #fbb03b;
+		background-color: $background-color-10;
 		box-shadow: none;
 	}
 	// Handles sizing the toggle button to allow for four buttons on the screen at large sizes
 	&--quarter {
 
 		width: 47%;
-		margin-bottom: .5em;
+		margin-bottom: 0.5em;
 
 		@media all and (min-width: 800px) {
 			width: 22%;

@@ -26,8 +26,8 @@ SlideshowItem.add({
 SlideshowItem.schema.pre('save', function(next) {
 	'use strict';
 
-	this.imageStretched = this._.image.scale(1100,400,{ quality: 40 });
-	this.imageScaled = this._.image.thumbnail(1100,400,{ quality: 40 });
+	this.imageStretched = this._.image.scale(1050,500,{ quality: 80 });
+	this.imageScaled = this._.image.thumbnail(1050,500,{ quality: 80 });
 	// TODO: Consider formatting the order to 0,0
 
 	next();

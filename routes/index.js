@@ -24,6 +24,7 @@ const registrationMiddleware	= require( './middleware/register' );
 const childService				= require( './middleware/service_child' );
 const eventService				= require( './middleware/service_event' );
 const familyService				= require( './middleware/service_family' );
+const formService				= require( './middleware/service_form' );
 const permissionsService		= require( './middleware/service_permissions' );
 const importRoutes				= keystone.importer( __dirname );
 
@@ -42,33 +43,34 @@ const eventListRoutes	= [ '/events/adoption-parties/', '/events/mapp-trainings/'
 const eventRoutes		= [ '/events/adoption-parties/*', '/events/mapp-trainings/*', '/events/fundraising-events/*', '/events/agency-info-meetings/*', '/events/other-trainings/*' ];
 
 // Setup Route Bindings
+// TODO: in order to handle bad rountes, we need a catch here instead of on the client side
 exports = module.exports = app => {
 	'use strict';
 
 	// Views
-	app.get( '/'										, routes.views.main );
-	app.get( '/page/*'									, routes.views.page );
-	app.get( '/forms/agency-event-submission-form'		, routes.views.form_agencyEventSubmission );
-	app.get( '/forms/car-donation-form'					, routes.views.form_carDonation );
-	app.get( '/forms/child-registration-form'			, routes.views.form_childRegistration );
-	app.get( '/forms/information-request-form'			, routes.views.form_informationRequest );
-	app.get( '/forms/have-a-question-form'				, routes.views.form_haveAQuestion );
-	app.get( '/events/'									, routes.views.eventCategories );
-	app.get( eventListRoutes							, routes.views.eventList );
-	app.get( eventRoutes								, routes.views.event );
-	app.get( '/success-stories/'						, routes.views.successStories );
-	app.get( '/success-stories/*'						, routes.views.successStory );
-	app.get( '/waiting-child-profiles/'					, routes.views.waitingChildProfiles );
+	app.get( '/'										, middleware.setLoginTarget, routes.views.main );
+	app.get( '/page/*'									, middleware.setLoginTarget, routes.views.page );
+	app.get( '/forms/agency-event-submission-form'		, middleware.setLoginTarget, routes.views.form_agencyEventSubmission );
+	app.get( '/forms/car-donation-form'					, middleware.setLoginTarget, routes.views.form_carDonation );
+	app.get( '/forms/child-registration-form'			, middleware.setLoginTarget, routes.views.form_childRegistration );
+	app.get( '/forms/information-request-form'			, middleware.setLoginTarget, routes.views.form_informationRequest );
+	app.get( '/forms/have-a-question-form'				, middleware.setLoginTarget, routes.views.form_haveAQuestion );
+	app.get( '/events/'									, middleware.setLoginTarget, routes.views.eventCategories );
+	app.get( eventListRoutes							, middleware.setLoginTarget, routes.views.eventList );
+	app.get( eventRoutes								, middleware.setLoginTarget, routes.views.event );
+	app.get( '/success-stories/'						, middleware.setLoginTarget, routes.views.successStories );
+	app.get( '/success-stories/*'						, middleware.setLoginTarget, routes.views.successStory );
+	app.get( '/waiting-child-profiles/'					, middleware.setLoginTarget, routes.views.waitingChildProfiles );
 	app.get( '/preferences/'							, middleware.requireUser, routes.views.preferences );
 
-	app.get( '/register/'								, routes.views.register );
+	app.get( '/register/'								, middleware.setLoginTarget, routes.views.register );
 	app.post( '/register'								, registrationMiddleware.registerUser );
 
 	app.get( '/logout/'									, middleware.logout );
 	app.post('/login'									, middleware.login );
 
-	app.get('/donate/'								, routes.views.donate);
-	app.post('/charge'								, middleware.charge);
+	app.get( '/donate/'									, middleware.setLoginTarget, routes.views.donate );
+	app.post( '/charge'									, middleware.charge );
 	// Custom route used exclusively for the data migration
 	app.get('/migrate-data/'						, middleware.requireMigrationUser, routes.views.dataMigration);
 	// Services for ajax calls
@@ -82,6 +84,10 @@ exports = module.exports = app => {
 	app.post( '/services/get-gallery-permissions'		, permissionsService.getGalleryPermissions );
 	app.post( '/services/register-for-event'			, eventService.addUser );
 	app.post( '/services/unregister-for-event'			, eventService.removeUser );
+	// Services for form submissions
+	app.post( '/submit-agency-event'					, eventService.submitEvent );
+	app.post( '/submit-car-donation'					, formService.submitCarDonation );
+	app.post( '/submit-question'						, formService.submitQuestion );
 
 	// NOTE: To protect a route so that only admins can see it, use the requireUser middleware:
 	// app.get('/protected', middleware.requireUser, routes.views.protected);
