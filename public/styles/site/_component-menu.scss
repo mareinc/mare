@@ -106,14 +106,14 @@ nav ul {
 	height: 0;
 	width: 0;
 	border: 5px solid transparent;
-	border-left-color: #d5d5d5;
+	border-left-color: $border-color-7;
 	top: 50% ;
 	right:5px;
  }
 
  .main-nav li:hover > .sub-menu:before {
 	border-left-color: transparent;
-	border-right-color: #fff;
+	border-right-color: $border-color-light;
 	right: 10px;
 }
 

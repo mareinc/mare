@@ -6,19 +6,19 @@
 }
 
 .alert-success {
-    border-color: #a5e2a5;
-    background-color: #b6e8b6;
-    color: #008000;
+    border-color: $flash-message-color-1;
+    background-color: $flash-message-color-2;
+    color: $flash-message-color-3;
 }
 
 .alert-info {
-    border-color: #b1b1f9;
-    background-color: #b5b5ff;
-    color: #0000ff;
+    border-color: $flash-message-color-4;
+    background-color: $flash-message-color-5;
+    color: $flash-message-color-6;
 }
 
 .alert-danger {
-    border-color: #ffc3c3;
-    background-color: #eab9b9;
-    color: #712f2f;
+    border-color: $flash-message-color-7;
+    background-color: $flash-message-color-8;
+    color: $flash-message-color-9;
 }

@@ -3,7 +3,7 @@
 	height: 0;
 	border-left: 5px solid transparent;
 	border-right: 5px solid transparent;
-	border-bottom: 5px solid #000;
+	border-bottom: 5px solid $border-color-dark;
 }
 
 .arrow-down {
@@ -11,7 +11,7 @@
 	height: 0;
 	border-left: 5px solid transparent;
 	border-right: 5px solid transparent;
-	border-top: 5px solid #000;
+	border-top: 5px solid $border-color-dark;
 }
 
 .arrow-right {
@@ -19,7 +19,7 @@
 	height: 0;
 	border-top: 5px solid transparent;
 	border-bottom: 5px solid transparent;
-	border-left: 5px solid #000;
+	border-left: 5px solid $border-color-dark;
 }
 
 .arrow-left {
@@ -27,7 +27,7 @@
 	height: 0;
 	border-top: 5px solid transparent;
 	border-bottom: 5px solid transparent;
-	border-right: 5px solid #000;
+	border-right: 5px solid $border-color-dark;
 }
 
 .inline {
