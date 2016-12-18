@@ -65,125 +65,131 @@ Inquiry.schema.pre('save', function(next) {
 
 	async.series([
 		done => {
-			console.log( '1. setting social worker' );
+			console.log( '1. attemting to set social worker' );
 			if( this.inquiryType !== 'general inquiry' ) {
-				this.setChildsSocialWorker( done );
 				console.log( '1a. not a general inquiry - setting social worker' );
+				this.setChildsSocialWorker( done );
 			} else {
 				console.log( '1b. general inquiry - abort setting social worker' );
 				done();
 			}
 		},
-			done => {
-				console.log( '2.  setting agency' );
-				// if it's a general inquiry, don't attempt to set the agency
-				// if it's not a general inquiry and either the previous social worker value wasn't set, or the social worker was changed, recalculate the agency
-				if( this.inquiryType !== 'general inquiry' && ( !this.previousChildsSocialWorker || this.previousChildsSocialWorker.toString() !== this.childsSocialWorker.toString() ) ) {
-					this.setAgency( done );
-					console.log( '2a. not a general inquiry and either social worker was never set or the social worker field has changed - agency set' );
-				} else {
-					console.log( '2b. general inquiry or either social worker was never set or the social worker field has changed - agency setting aborted' );
-					done();
-				}
-			},
-			done => {
-				console.log( '3.  getting staff email addresses' );
-				if( !this.emailSentToStaff ) {
-					if( this.inquiryType === 'general inquiry' ) {
-						emailAddressesStaff = [ 'jared.j.collier@gmail.com' ];
-						// emailAddressesStaff = ['dtomaz@mareinc.org']; // TODO: this will need to be a check to see who is marked as the correct contact for these emails
-						console.log( '3a. no staff email sent, but it\'s a general inquiry - hardcode staff email address' );
-						done();
-					} else {
-						this.setStaffEmailRecipients( emailAddressesStaff, done );
-						console.log( '3a. no staff email sent and not a general inquiry - staff email addresses calculated and set' );
-					}
-				} else {
-					console.log( '3b. email already sent - staff email address setting aborted' );
-					done();
-				}
-			},
-			done => {
-				console.log( '4.  sending staff emails' );
-				if( !this.emailSentToStaff ) {
-					this.sendEmailToStaff( emailAddressesStaff, done );
-					console.log( '4a. no staff email sent yet - staff emails sent' );
-				} else {
-					console.log( '4b. email already sent or checkbox not checked - staff email send aborted' );
-					done();
-				}
-			},
-			done => {
-				console.log( '5.  getting inquirer email address' );
-				if( ( !this.thankYouSentToInquirer && this.thankInquirer === true ) || (!this.emailSentToInquirer && this.inquiryAccepted === true ) ) {
-					this.setInquirerEmailRecipient( emailAddressInquirer, done );
-					console.log( '5a. either no email sent and thank you checkbox checked or no email to inquirer sent and inquiry accepted - inquirer email address set' );
-				} else {
-					console.log( '5b. email already sent or checkbox not checked and email to inquirer already sent or inquiry not yet accepted - inquirer email address setting aborted' );
-					done();
-				}
-			},
-			done => {
-				console.log( '6.  sending thank you email to inquirer' );
-				if( !this.thankYouSentToInquirer && this.thankInquirer === true ) {
-					this.sendThankYouToInquirer( emailAddressInquirer, done );
-					console.log( '6a. no thank you sent and checkbox is checked - inquirer thank you sent' );
-				} else {
-					console.log( '6b. thank you already sent or checkbox not checked - inquirer thank you aborted' );
-					done();
-				}
-			},
-			done => {
-				console.log( '7.  sending informational email to inquirer' );
-				if( !this.emailSentToInquirer && this.inquiryAccepted === true ) {
-					this.sendEmailToInquirer( emailAddressInquirer, done );
-					console.log( '7a. no email sent and inquiry accepted - inquirer email sent' );
-				} else {
-					console.log( '7b. email already sent or inquiry not accepted - inquirer email aborted' );
-					done();
-				}
-			},
-			done => {
-				console.log( '8.  getting social worker email address' );
-				if( !this.emailSentToChildsSocialWorker && this.inquiryAccepted === true && this.inquiryType !== 'general inquiry' ) {
-					this.setSocialWorkerEmailRecipient( emailAddressSocialWorker, done );
-					console.log( '8a. no email already sent, inquiry accepted, and not a general inquiry - social worker email address set' );
-				} else {
-					console.log( '8b. email already sent, inquiry not accepted, or general inquiry - social worker email address setting aborted' );
-					done();
-				}
-			},
-			done => {
-				console.log( '9.  sending social worker email' );
-				if( !this.emailSentToChildsSocialWorker && this.inquiryAccepted === true && this.inquiryType !== 'general inquiry' ) {
-					this.sendEmailToChildsSocialWorker( emailAddressSocialWorker, done );
-					console.log( '9a. no confirmation sent, inquiry accepted, and not a general inquiry - social worker email sent' );
-				} else {
-					console.log( '9b. confirmation already sent, inquiry not accepted, or general inquiry - social worker email send aborted' );
-					done();
-				}
-			},
-			done => {
-				console.log( '10.  getting agency contact email addresses' );
-				if( !this.emailSentToAgencies && this.inquiryAccepted === true && this.inquiryType === 'general inquiry' ) {
-					this.setAgencyEmailRecipients( emailAddressesAgencyContacts, done );
-					console.log( '10a. no Agency emails sent, inquiry accepted and is a general inquiry - Agency contact email addresses set' );
-				} else {
-					console.log( '10b. email already sent, inquiry not accepted, or not a general inquiry - Agency contact email address setting aborted' );
-					done();
-				}
-			},
-			done => {
-				console.log( '11.  sending agency contact email' );
-				if( !this.emailSentToAgencies && this.inquiryAccepted === true && this.inquiryType === 'general inquiry') {
-					this.sendEmailToAgencyContacts( emailAddressesAgencyContacts, done );
-					console.log( '11a. no confirmation sent, inquiry accepted, and is a general inquiry - agency contact email sent' );
-				} else {
-					console.log( '11b. confirmation already sent, inquiry not accepted, or not a general inquiry - agency contact email send aborted' );
-					done();
-				}
+		done => {
+			console.log( '2.  setting agency' );
+			// if it's a general inquiry, don't attempt to set the agency
+			// if it's not a general inquiry and either the previous social worker value wasn't set, or the social worker was changed, recalculate the agency
+			if( this.inquiryType !== 'general inquiry' && ( !this.previousChildsSocialWorker || this.previousChildsSocialWorker.toString() !== this.childsSocialWorker.toString() ) ) {
+				this.setAgency( done );
+				console.log( '2a. not a general inquiry and either social worker was never set or the social worker field has changed - agency set' );
+			} else {
+				console.log( '2b. general inquiry or either social worker was never set or the social worker field has changed - agency setting aborted' );
+				done();
 			}
+		},
+		done => {
+			console.log( '3.  getting staff email addresses' );
+			if( !this.emailSentToStaff ) {
+				if( this.inquiryType === 'general inquiry' ) {
+					emailAddressesStaff = [ 'jared.j.collier@gmail.com' ];
+					// emailAddressesStaff = ['dtomaz@mareinc.org']; // TODO: this will need to be a check to see who is marked as the correct contact for these emails
+					console.log( '3a. no staff email sent, but it\'s a general inquiry - hardcode staff email address' );
+					done();
+				} else {
+					this.setStaffEmailRecipients( emailAddressesStaff, done );
+					console.log( '3a. no staff email sent and not a general inquiry - staff email addresses calculated and set' );
+				}
+			} else {
+				console.log( '3b. email already sent - staff email address setting aborted' );
+				done();
+			}
+		},
+		done => {
+			console.log( '4.  sending staff emails' );
+			if( !this.emailSentToStaff ) {
+				this.sendEmailToStaff( emailAddressesStaff, done );
+				console.log( '4a. no staff email was sent, so we sent it' );
+			} else {
+				console.log( '4b. email already sent or checkbox not checked - staff email send aborted' );
+				done();
+			}
+		},
+		done => {
+			console.log( '5.  getting inquirer email address' );
+			if( ( !this.thankYouSentToInquirer && this.thankInquirer === true ) || (!this.emailSentToInquirer && this.inquiryAccepted === true ) ) {
+				this.setInquirerEmailRecipient( emailAddressInquirer, done );
+				console.log( '5a. either no email sent and thank you checkbox checked or no email to inquirer sent and inquiry accepted - inquirer email address set' );
+			} else {
+				console.log( '5b. email already sent or checkbox not checked and email to inquirer already sent or inquiry not yet accepted - inquirer email address setting aborted' );
+				done();
+			}
+		},
+		done => {
+			console.log( '6.  sending thank you email to inquirer' );
+			if( !this.thankYouSentToInquirer && this.thankInquirer === true ) {
+				this.sendThankYouToInquirer( emailAddressInquirer, done );
+				console.log( '6a. no thank you sent and checkbox is checked - inquirer thank you sent' );
+			} else {
+				console.log( '6b. thank you already sent or checkbox not checked - inquirer thank you aborted' );
+				done();
+			}
+		},
+		done => {
+			console.log( '7.  sending informational email to inquirer' );
+			if( !this.emailSentToInquirer && this.inquiryAccepted === true ) {
+				this.sendEmailToInquirer( emailAddressInquirer, done );
+				console.log( '7a. no email sent and inquiry accepted - inquirer email sent' );
+			} else {
+				console.log( '7b. email already sent or inquiry not accepted - inquirer email aborted' );
+				done();
+			}
+		},
+		done => {
+			console.log( '8.  getting social worker email address' );
+			if( !this.emailSentToChildsSocialWorker && this.inquiryAccepted === true && this.inquiryType !== 'general inquiry' ) {
+				this.setSocialWorkerEmailRecipient( emailAddressSocialWorker, done );
+				console.log( '8a. no email already sent, inquiry accepted, and not a general inquiry - social worker email address set' );
+			} else {
+				console.log( '8b. email already sent, inquiry not accepted, or general inquiry - social worker email address setting aborted' );
+				done();
+			}
+		},
+		done => {
+			console.log( '9.  sending social worker email' );
+			if( !this.emailSentToChildsSocialWorker && this.inquiryAccepted === true && this.inquiryType !== 'general inquiry' ) {
+				this.sendEmailToChildsSocialWorker( emailAddressSocialWorker, done );
+				console.log( '9a. no confirmation sent, inquiry accepted, and not a general inquiry - social worker email sent' );
+			} else {
+				console.log( '9b. confirmation already sent, inquiry not accepted, or general inquiry - social worker email send aborted' );
+				done();
+			}
+		},
+		done => {
+			console.log( '10.  getting agency contact email addresses' );
+			if( !this.emailSentToAgencies && this.inquiryAccepted === true && this.inquiryType === 'general inquiry' ) {
+				this.setAgencyEmailRecipients( emailAddressesAgencyContacts, done );
+				console.log( '10a. no Agency emails sent, inquiry accepted and is a general inquiry - Agency contact email addresses set' );
+			} else {
+				console.log( '10b. email already sent, inquiry not accepted, or not a general inquiry - Agency contact email address setting aborted' );
+				done();
+			}
+		},
+		done => {
+			console.log( '11.  sending agency contact email' );
+			if( !this.emailSentToAgencies && this.inquiryAccepted === true && this.inquiryType === 'general inquiry') {
+				this.sendEmailToAgencyContacts( emailAddressesAgencyContacts, done );
+				console.log( '11a. no confirmation sent, inquiry accepted, and is a general inquiry - agency contact email sent' );
+			} else {
+				console.log( '11b. confirmation already sent, inquiry not accepted, or not a general inquiry - agency contact email send aborted' );
+				done();
+			}
+		}
 	], function() {
+
+		console.log( 'emailAddressInquirer: ', emailAddressInquirer );
+		console.log( 'emailAddressSocialWorker: ', emailAddressSocialWorker );
+		console.log( 'emailAddressesStaff: ', emailAddressesStaff );
+		console.log( 'emailAddressesAgencyContacts: ', emailAddressesAgencyContacts );
+
 		next();
 	});
 });
@@ -195,6 +201,7 @@ Inquiry.schema.methods.setChildsSocialWorker = function( done ) {
 			.then( result => {
 
 				this.childsSocialWorker = result.adoptionWorker;	// Set the childsSocialWorker field based on the selected child
+				console.log( 'child social worker set' );
 				done();
 
 			}, err => {
@@ -216,6 +223,8 @@ Inquiry.schema.methods.setAgency = function( done ) {
 				} else {
 					this.agency  					= result.agency;	// Set the agency field based on the selected social worker
 					this.previousChildsSocialWorker = result._id		// Set the previousChildsSocialWorker to allow for tracking to changes in the social worker bound to the inquiry
+					console.log( 'agency set' );
+					console.log( 'child\'s previous social worker set' );
 				}
 
 				done();
@@ -236,6 +245,7 @@ Inquiry.schema.methods.setInquirerEmailRecipient = function( emailAddressInquire
 				.exec()
 				.then( result => {
 					emailAddressInquirer.push( result.contact1.email );
+					console.log( 'inquirer email address set to contact 1\'s email for the inquiring family' );
 					done();
 				}, err => {
 					done();
@@ -247,6 +257,7 @@ Inquiry.schema.methods.setInquirerEmailRecipient = function( emailAddressInquire
 				.exec()
 				.then(function(result) {
 					emailAddressInquirer.push( result.email );
+					console.log( 'inquirer email address set to inquiring social worker\'s email' );
 					done();
 				}, err => {
 					console.log(err);
@@ -275,6 +286,7 @@ Inquiry.schema.methods.setStaffEmailRecipients = function( emailAddressesStaff, 
 							// Loop through the region contacts models and extract the email addresses from the cscRegionContact field which maps to a staff member
 							for( cscRegionContact of cscRegionContacts ) {
 								emailAddressesStaff.push( cscRegionContact.cscRegionContact.email );
+								console.log( 'staff email address set' );
 							};
 
 							done();
@@ -295,6 +307,7 @@ Inquiry.schema.methods.setSocialWorkerEmailRecipient = function( emailAddressSoc
 			.exec()
 			.then( results => {
 				emailAddressSocialWorker.push( results.email );
+				console.log( 'social worker\'s email address set' );
 				done();
 			}, err => {
 				console.log( err );
@@ -310,6 +323,7 @@ Inquiry.schema.methods.setAgencyEmailRecipients = function( emailAddressesAgency
 			.then( agencyContacts => {
 				for( agencyContact of agencyContacts ) {
 					emailAddressesAgencyContacts.push( agencyContact.generalInquiryContact );
+					console.log( 'agency email address set' );
 				};
 				done();
 			}, err => {
@@ -336,6 +350,9 @@ Inquiry.schema.methods.sendEmailToStaff = function( emailAddressesStaff, done ) 
 		console.log( 'staff email sent successfully, checking the checkbox in this model' );
 		this.emailSentToStaff = true;
 		done();
+	}, err => {
+		console.log( err );
+		done();
 	});
 
 };
@@ -357,6 +374,9 @@ Inquiry.schema.methods.sendThankYouToInquirer = function( emailAddressInquirer, 
 		// Once the email(s) have been successfully sent, we want to make a note of it using the thankYouSentToInquirer field to ensure a repeat email doesn't go out
 		console.log( 'thank you email sent successfully, checking the checkbox in this model' );
 		this.thankYouSentToInquirer = true;
+		done();
+	}, err => {
+		console.log( err );
 		done();
 	});
 
@@ -380,6 +400,9 @@ Inquiry.schema.methods.sendEmailToInquirer = function( emailAddressInquirer, don
 		console.log( 'inquirer email sent successfully, checking the checkbox in this model' );
 		this.emailSentToInquirer = true;
 		done();
+	}, err => {
+		console.log( err );
+		done();
 	});
 
 };
@@ -402,6 +425,9 @@ Inquiry.schema.methods.sendEmailToChildsSocialWorker = function( emailAddressSoc
 		console.log( 'social worker email sent successfully, checking the checkbox in this model' );
 		this.emailSentToChildsSocialWorker = true;
 		done();
+	}, err => {
+		console.log( err );
+		done();
 	});
 };
 
@@ -422,6 +448,9 @@ Inquiry.schema.methods.sendEmailToAgencyContacts = function( emailAddressesAgenc
 		// Once the email(s) have been successfully sent, we want to make a note of it using the thankYouSentToInquirer field to ensure a repeat email doesn't go out
 		console.log( 'agency contact email sent successfully, checking the checkbox in this model' );
 		this.emailSentToAgencies = true;
+		done();
+	}, err => {
+		console.log( err );
 		done();
 	});
 };
