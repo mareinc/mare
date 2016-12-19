@@ -345,7 +345,9 @@ Inquiry.schema.methods.sendEmailToStaff = function( emailAddressesStaff, done ) 
 			email 	: 'info@mareinc.org'
 		},
 		subject: 'staff email'
-	}, () => {
+	}, ( success, error ) => {
+		console.log( 'success: ', success );
+		console.log( 'error: ', error );
 		// Once the email(s) have been successfully sent, we want to make a note of it using the thankYouSentToInquirer field to ensure a repeat email doesn't go out
 		console.log( 'staff email sent successfully, checking the checkbox in this model' );
 		this.emailSentToStaff = true;
