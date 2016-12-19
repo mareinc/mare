@@ -350,9 +350,6 @@ Inquiry.schema.methods.sendEmailToStaff = function( emailAddressesStaff, done ) 
 		console.log( 'staff email sent successfully, checking the checkbox in this model' );
 		this.emailSentToStaff = true;
 		done();
-	}, err => {
-		console.log( err );
-		done();
 	});
 
 };
@@ -374,9 +371,6 @@ Inquiry.schema.methods.sendThankYouToInquirer = function( emailAddressInquirer, 
 		// Once the email(s) have been successfully sent, we want to make a note of it using the thankYouSentToInquirer field to ensure a repeat email doesn't go out
 		console.log( 'thank you email sent successfully, checking the checkbox in this model' );
 		this.thankYouSentToInquirer = true;
-		done();
-	}, err => {
-		console.log( err );
 		done();
 	});
 
@@ -400,9 +394,6 @@ Inquiry.schema.methods.sendEmailToInquirer = function( emailAddressInquirer, don
 		console.log( 'inquirer email sent successfully, checking the checkbox in this model' );
 		this.emailSentToInquirer = true;
 		done();
-	}, err => {
-		console.log( err );
-		done();
 	});
 
 };
@@ -425,9 +416,6 @@ Inquiry.schema.methods.sendEmailToChildsSocialWorker = function( emailAddressSoc
 		console.log( 'social worker email sent successfully, checking the checkbox in this model' );
 		this.emailSentToChildsSocialWorker = true;
 		done();
-	}, err => {
-		console.log( err );
-		done();
 	});
 };
 
@@ -448,9 +436,6 @@ Inquiry.schema.methods.sendEmailToAgencyContacts = function( emailAddressesAgenc
 		// Once the email(s) have been successfully sent, we want to make a note of it using the thankYouSentToInquirer field to ensure a repeat email doesn't go out
 		console.log( 'agency contact email sent successfully, checking the checkbox in this model' );
 		this.emailSentToAgencies = true;
-		done();
-	}, err => {
-		console.log( err );
 		done();
 	});
 };
