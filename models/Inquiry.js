@@ -342,7 +342,7 @@ Inquiry.schema.methods.sendEmailToStaff = function( emailAddressesStaff, done ) 
 		to: emailAddressesStaff,
 		from: {
 			name 	: 'MARE',
-			email 	: 'info@mareinc.org'
+			email 	: 'admin@adoptions.io'
 		},
 		subject: 'staff email'
 	}, ( success, error ) => {
@@ -366,7 +366,7 @@ Inquiry.schema.methods.sendThankYouToInquirer = function( emailAddressInquirer, 
 		to: emailAddressInquirer,
 		from: {
 			name 	: 'MARE',
-			email 	: 'info@mareinc.org'
+			email 	: 'admin@adoptions.io'
 		},
 		subject: 'thank you for your inquiry'
 	}, () => {
@@ -388,9 +388,9 @@ Inquiry.schema.methods.sendEmailToInquirer = function( emailAddressInquirer, don
 		to: emailAddressInquirer,
 		from: {
 			name 	: 'MARE',
-			email 	: 'info@mareinc.org'
+			email 	: 'admin@adoptions.io'
 		},
-		subject: 'inquiry information - inquirer'
+		subject: 'inquiry information for inquirer'
 	}, () => {
 		// Once the email(s) have been successfully sent, we want to make a note of it using the thankYouSentToInquirer field to ensure a repeat email doesn't go out
 		console.log( 'inquirer email sent successfully, checking the checkbox in this model' );
@@ -410,9 +410,9 @@ Inquiry.schema.methods.sendEmailToChildsSocialWorker = function( emailAddressSoc
 		to: emailAddressSocialWorker,
 		from: {
 			name 	: 'MARE',
-			email 	: 'info@mareinc.org'
+			email 	: 'admin@adoptions.io'
 		},
-		subject: 'inquiry information - social worker'
+		subject: 'inquiry information for social worker'
 	}, () => {
 		// Once the email(s) have been successfully sent, we want to make a note of it using the thankYouSentToInquirer field to ensure a repeat email doesn't go out
 		console.log( 'social worker email sent successfully, checking the checkbox in this model' );
@@ -431,9 +431,9 @@ Inquiry.schema.methods.sendEmailToAgencyContacts = function( emailAddressesAgenc
 		to: emailAddressesAgencyContacts,
 		from: {
 			name 	: 'MARE',
-			email 	: 'info@mareinc.org'
+			email 	: 'admin@adoptions.io'
 		},
-		subject: 'inquiry information - agency contact'
+		subject: 'inquiry information for agency contact'
 	}, () => {
 		// Once the email(s) have been successfully sent, we want to make a note of it using the thankYouSentToInquirer field to ensure a repeat email doesn't go out
 		console.log( 'agency contact email sent successfully, checking the checkbox in this model' );
