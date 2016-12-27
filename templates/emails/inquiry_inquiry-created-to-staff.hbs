@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>MARE Agency STAFF Inquiry</title>
+<title>inquiry details</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 </head>
 <body style="margin: 0; padding: 0;">
@@ -13,7 +13,7 @@
 					<tr>
 						<td align="center" bgcolor="#3D4573" style="padding: 40px 0 30px 0; color: #ffffff; font-size: 28px; font-weight: bold; font-family: Arial, sans-serif;">
 							<table border="0" cellpadding="0" cellspacing="0">
-									<img src="/dist/img/mare-logo.png" alt="MARE Logo" width="500" height="106" style="display: block;" />
+									<img src="/templates/emails/mare-logo.png" alt="MARE Logo" width="500" height="106" style="display: block;" />
 							</table>
 						</td>
 					</tr>
@@ -22,17 +22,17 @@
 							<table border="0" cellpadding="0" cellspacing="0" width="100%">
 								<tr>
 									<td style="color: #153643; font-family: Arial, sans-serif; font-size: 24px;">
-										<b>Notice of Family Inquiry</b>
+										<b>Notice of {{ inquiry.inquiryType }}</b>
 									</td>
 								</tr>
 								<tr>
 									<td style="color: #153643; font-family: Arial, sans-serif; font-size: 15px;">
-											Date of Inquiry: 12/14/2015
+											Date of Inquiry: {{ inquiryData.takenOn }}
 									</td>
 								</tr>
 								<tr>
 									<td style="padding: 20px 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">
-										MARE has received a telephone or web inquiry regarding Jayden. This agency social worker has been given the contact information of the social worker listed below and been asked to follow up with him/her. If you would like more information, please feel free to be proactive and contact the agency social worker directly.
+										MARE has received a telephone or web inquiry regarding {{ inquiryData.child.name.full }}. This agency social worker has been given the contact information of the social worker listed below and been asked to follow up with him/her. If you would like more information, please feel free to be proactive and contact the agency social worker directly.
 									</td>
 								</tr>
 								<tr>
