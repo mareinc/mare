@@ -73,20 +73,21 @@ module.exports.importPlacements = function importPlacements(req, res, done) {
 					done();
 				},
 				function(done) {
-					converter.fromFile("./migration-data/csv-data/family_race_preference.csv",function(err,array){
+					converter.fromFile("./migration-data/csv-data/family.csv",function(err,array){
 						if (err) {
 							throw "An error occurred!\n" + err;
 						} else {
+							importArray = array;
 
-							importArrayFamRacePref = array;
+							for (var i=0,_count=importArray.length; i <_count; i++) {
+								allFamilies.push(importArray[i]);
+							}
 						}
 					});
 
 					done();
 				}
-
-				// allChildren = preloadChildren(),
-				// allFamilies = preloadFamilies()
+				
 			], function() {
 
 				for (var i=0,_count=importArray.length; i <_count; i++) {

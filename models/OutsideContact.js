@@ -16,11 +16,11 @@ var OutsideContact = new keystone.List('Outside Contact', {
 // Create fields
 OutsideContact.add( 'General Information', {
 
-	type: { type: Types.Relationship, label: 'type of contact', ref: 'Outside Contact Group', many: true, initial: true },
+	type: { type: Types.Relationship, label: 'type of contact', ref: 'Outside Contact Group', many: true, required: true, initial: true },
 
 	name: {
-		first: { type: Types.Text, label: 'first name', initial: true },
-		last: { type: Types.Text, label: 'last name', initial: true },
+		first: { type: Types.Text, label: 'first name', required: true, initial: true },
+		last: { type: Types.Text, label: 'last name', required: true, initial: true },
 		full: { type: Types.Text, label: 'name', hidden: true, noedit: true, initial: false }
 	},
 
@@ -34,7 +34,7 @@ OutsideContact.add( 'General Information', {
 	phone: {
 		work: { type: Types.Text, label: 'work phone number', initial: true },
 		mobile: { type: Types.Text, label: 'mobile phone number', initial: true },
-		preferred: { type: Types.Text, label: 'preferred phone', options: 'work, mobile', initial: true }
+		preferred: { type: Types.Text, label: 'preferred phone', options: 'work, mobile', required: true, initial: true }
 	}
 
 }, 'Address', {
