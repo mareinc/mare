@@ -2,7 +2,7 @@ exports.create = {
 	'Staff Email Target': [{
 		staffEmailTarget: 'family registration'
 	}, {
-		staffEmailTarget: 'general inquiry'
+		staffEmailTarget: 'general inquiries'
 	}, {
 		staffEmailTarget: 'site visitor registration'
 	}, {
