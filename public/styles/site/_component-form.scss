@@ -1,4 +1,9 @@
-// Handle messed up styles on all forms pages entered through the WYSIWYG editor
+/* styles for the forms/* pages */
+.form-intro {
+	margin: 0 0 10px;
+}
+
+// TODO: Handle messed up styles on all forms pages entered through the WYSIWYG editor
 form > div {
     clear: both;
 }

@@ -193,7 +193,6 @@ exports.saveFamily = function saveFamily(user, res, done) {
 
 	let newUser = new Family.model({
 
-		isActive							: true,
 		email								: user.email,
 		password							: user.password,
 		registrationNumber					: locals.newRegistrationNumber,

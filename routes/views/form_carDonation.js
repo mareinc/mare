@@ -13,13 +13,11 @@ exports = module.exports = ( req, res ) => {
 
 	const locals 				= res.locals;
 	// objects with additional search parameters
-	const raceOptions			= { other: true };
-	const waysToHearOptions		= { other: true };
-	// TODO: check all these list service fetches to see which are neede for this form
+	const stateOptions		= { default: 'Massachusetts' };
+	const waysToHearOptions	= { other: true };
+
 	async.parallel([
-		done => { listsService.getAllStates( req, res, done ) },
-		done => { listsService.getAllRaces( req, res, done, raceOptions ) },
-		done => { listsService.getAllGenders( req, res, done ) },
+		done => { listsService.getAllStates( req, res, done, stateOptions ) },
 		done => { listsService.getAllWaysToHearAboutMARE( req, res, done, waysToHearOptions ) },
 		done => { pageService.populateSidebar( req, res, done ); },
 		done => { pageService.getSectionHeader( req, res, done, 'About Us' ); }

@@ -2,7 +2,7 @@
 	'use strict';
 
 	mare.views.SocialWorkerRegistration = Backbone.View.extend({
-		el: '.registration-form--social-worker',
+		el: '.form--social-worker-registration',
 
 		events: {
 			'change .social-worker-title-checkbox': 'toggleSocialWorkerTitleTextField'

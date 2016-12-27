@@ -11,11 +11,14 @@
  */
 
 var _ 				= require('underscore'),
-	// Load in Keystone for model references
+	async			= require( 'async' );
+	// load in Keystone for model references
 	keystone 		= require('keystone'),
 	User 			= keystone.list('User'),
 	Child 			= keystone.list('Child'),
 	Gender 			= keystone.list('Gender');
+	// load in middleware
+	UserMiddleware	= require( './service_user' );
 
 /**
 	Initialises the standard view locals
@@ -82,8 +85,6 @@ exports.initLocals = function(req, res, next) {
 			{ title: 'Meet the Staff', href: '/page/meet-the-staff' },
 			{ title: 'Board of Directors', href: '/page/board-of-directors' },
 			{ title: 'MARE in the News', href: '/page/mare-in-the-news' },
-			{ title: 'Adoption Party Family Registration Form', href: '/forms/adoption-party-family-registration-form' },
-			{ title: 'Adoption Party Social Worker Registration Form', href: '/forms/adoption-party-social-worker-registration-form' },
 			{ title: 'Agency Event Submission Form', href: '/forms/agency-event-submission-form' },
 			{ title: 'Car Donation Form', href: '/forms/car-donation-form' },
 			{ title: 'Child Registration Form', href: '/forms/child-registration-form' },
@@ -155,8 +156,8 @@ exports.requireUser = function(req, res, next) {
 	'use strict';
 
 	if (!req.user) {
-		req.flash('error', 'Please sign in to access this page.');
-		res.redirect('/keystone/signin');
+		res.locals.messages.push( { type: 'error', message: 'Please sign in to access this page.' } );
+		res.redirect('/');
 	} else {
 		return next();
 	}
@@ -174,31 +175,58 @@ exports.requireMigrationUser = function(req, res, next) {
 
 };
 
-exports.login = function(req, res, next) {
-	/* TODO: Need to add a check to see if the user is verified and active (see Lisa for details) */
+exports.setLoginTarget = function( req, res, next ) {
+
+	let locals = res.locals;
+	// set the target page for a user logging in while on this page
+	locals.loginTarget = req.originalUrl;
+	next();
+};
+
+exports.login = function( req, res, next ) {
+
+	let locals = res.locals;
 
 	if (!req.body.email || !req.body.password) {
 		/* TODO: Need a better message for the user, flash messages won't work because page reloads are stupid */
-		req.flash('error', 'Please enter your username and password.');
+		res.locals.messages.push( { type: 'error', message: 'Please enter your username and password.' } );
 		return next();
 	}
 
-	var onSuccess = function() {
-		if (req.body.target && !/join|signin/.test(req.body.target)) {
-			console.log('[signin] - Set target as [' + req.body.target + '].');
-			res.redirect(req.body.target);
-		} else {
-			res.redirect('/preferences');
+	async.series([
+		done => { UserMiddleware.checkUserActiveStatus( req.body.email, locals, done ); }
+	], () =>{
+
+		if( locals.userStatus === 'nonexistent' ) {
+
+			res.locals.messages.push( { type: 'error', message: 'Your username or password is incorrect, please try again.' } );
+			res.redirect( req.body.target );
+
+		} else if( locals.userStatus === 'inactive' ) {
+
+			res.locals.messages.push( { type: 'error', message: 'Your account is not active yet, you will receive an email what your account has been reviewed' } );
+			res.redirect( req.body.target );
+
+		} else if( locals.userStatus === 'active' ) {
+			// TODO: you can add a target to the signin of the current page and it will always route correctly back to where the user was
+			var onSuccess = function() {
+				if ( req.body.target && !/join|signin/.test( req.body.target ) ) {
+					console.log( `signin target is: ${ req.body.target }` );
+					res.redirect( req.body.target );
+				} else {
+					res.redirect( '/preferences' );
+				}
+			}
+
+			var onFail = function() {
+				/* TODO: Need a better message for the user, flash messages won't work because page reloads are stupid */
+				req.flash( { type: 'error', message: 'Your username or password is incorrect, please try again.' } );
+				return next();
+			}
+
+			keystone.session.signin( { email: req.body.email, password: req.body.password }, req, res, onSuccess, onFail );
 		}
-	}
-
-	var onFail = function() {
-		/* TODO: Need a better message for the user, flash messages won't work because page reloads are stupid */
-		req.flash('error', 'Your username or password were incorrect, please try again.');
-		return next();
-	}
-
-	keystone.session.signin({ email: req.body.email, password: req.body.password }, req, res, onSuccess, onFail);
+	})
 }
 
 exports.logout = function(req, res) {

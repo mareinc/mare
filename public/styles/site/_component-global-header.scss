@@ -7,6 +7,7 @@
 	min-width: 320px;
 	box-shadow: 0px 0px 10px $shadow-color-1;
 	-ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=180, Color='#616161')";
+	border-bottom: 0.5em solid $border-color-1;
 
 	/* TODO: Check to see if this works for clearing the IE-8 -ms-filter style */
 	@media all and (min-width: 820px) {
@@ -116,7 +117,7 @@
 
 .log-in-link > .arrow-down {
 	position: absolute;
-	border-top-color: #fff;
+	border-top-color: $border-color-light;
 	right: 2px;
 	top: 16px;
 

@@ -1,23 +1,43 @@
 // TODO: Alphebetize this list to make it easier to navigate
 /* these color names came from the Sip Mac app, and are just meant to provide clean distinction between values */
-$corn-flower-blue   : rgba( 61, 69, 115, 1 );
-$tufts-blue         : rgba( 74, 123, 204, 1 );
-$carolina-blue      : rgba( 159, 185, 231, 1 );
-$tonys-pink         : rgba( 241, 163, 141, 1 );
-$pastel-violet      : rgba( 201, 145, 213, 1 );
-$light-coral        : rgba( 238, 128, 125, 1 );
-$ronchi             : rgba( 240, 187, 81, 1 );
-$corvette           : rgba( 249, 212, 162, 1 );
-$deep-cove          : rgba( 12, 13, 60, 1 );
-$wenge              : rgba( 102, 88, 77, 1 );
-$my-sin             : rgba( 251, 176, 59, 1 );
-$matrix             : rgba( 180, 96, 97, 1 );
-$athens-gray        : rgba( 238, 239, 243, 1 );
-$french-pass        : rgba( 196, 233, 252, 1 );
 $white              : rgba( 255, 255, 255, 1 );
-$black              : rgba( 0, 0, 0, 1 );
+$athens-gray        : rgba( 238, 239, 243, 1 );
+$gainsboro			: rgba( 221, 221, 221, 1 );
 $light-gray         : rgba( 213, 213, 213, 1 );
+$gray-chateau		: rgba( 161, 165, 162, 1 );
+$gray				: rgba( 153, 145, 142, 1 );
+$storm-dust			: rgba( 97, 97, 97, 1 );
+$french-pass        : rgba( 196, 233, 252, 1 );
+$carolina-blue      : rgba( 159, 185, 231, 1 );
+$morning-glory		: rgba( 143, 206, 210, 1 );
+$viking				: rgba( 86, 184, 208, 1 );
+$picton-blue		: rgba( 62, 170, 245, 1 );
+$tufts-blue         : rgba( 74, 123, 204, 1 );
+$mariner            : rgba( 70, 91, 146, 1 );
+$corn-flower-blue   : rgba( 61, 69, 115, 1 );
+$torea-bay			: rgba( 27, 34, 157, 1 );
+$deep-cove          : rgba( 12, 13, 60, 1 );
+$pastel-violet      : rgba( 201, 145, 213, 1 );
+$beeswax			: rgba( 255, 250, 194, 1 );
+$caramel			: rgba( 255, 226, 173, 1 );
+$corvette           : rgba( 249, 212, 162, 1 );
+$saffron-mango		: rgba( 247, 190, 87, 1 );
+$cournikova			: rgba( 252, 202, 70, 1 );
+$ronchi             : rgba( 240, 187, 81, 1 );
+$my-sin             : rgba( 251, 176, 59, 1 );
+$supernova			: rgba( 253, 177, 39, 1 );
+$tonys-pink         : rgba( 241, 163, 141, 1 );
+$tickle-me-pink		: rgba( 255, 127, 174, 1 );
+$light-coral        : rgba( 238, 128, 125, 1 );
+$brady-punch		: rgba( 185, 122, 66, 1 );
+$fuzzy-wuzzy-brown  : rgba( 202, 98, 99, 1 );
+$matrix             : rgba( 180, 96, 97, 1 );
+$cadillac			: rgba( 175, 73, 103, 1 );
 $ruddy              : rgba( 255, 0, 0, 1 );
+$wenge              : rgba( 102, 88, 77, 1 );
+$bronze-olive		: rgba( 90, 77, 41, 1 );
+$camouflage			: rgba( 61, 56, 17, 1 );
+$black              : rgba( 0, 0, 0, 1 );
 
 
 
@@ -30,6 +50,7 @@ $nav-background-color-1                 : $wenge;
 $nav-background-color-2                 : $my-sin;
 $nav-background-color-3                 : $corn-flower-blue;
 $nav-background-color-4                 : $deep-cove;
+$nav-background-color-5                 : $mariner;
 
 $nav-text-color-1                       : $wenge;
 $nav-text-color-2                       : $white;
@@ -50,49 +71,86 @@ $section-header-background-color-6      : $ronchi;
 $section-header-background-color-7      : $corvette;
 $section-header-background-color-8      : $corn-flower-blue;
 
-$section-header-text-color-1            : #8FCED2;
+$section-header-text-color-1            : $morning-glory;
 $section-header-text-color-2            : $white;
 
-$callout-background-color-1             : #56B8D0;
+$callout-background-color-1             : $viking;
 $callout-background-color-2             : $my-sin;
 
-$callout-text-color-1                   : #3D3811;
+$callout-text-color-1                   : $camouflage;
 $callout-text-color-2                   : $wenge;
 
 $description-text-color                 : $white;
 
+$background-color-1                     : $mariner;
+$background-color-2                     : $fuzzy-wuzzy-brown;
+$background-color-3                     : $my-sin;
+$background-color-4                     : $cournikova;
+$background-color-5                     : $supernova;
+$background-color-6						: $saffron-mango;
+$background-color-7						: $caramel;
+$background-color-8						: $carolina-blue;
+$background-color-9						: $cadillac;
+$background-color-10					: $my-sin;
+$background-color-11					: $gainsboro;
+$background-color-12					: $beeswax;
 $background-color-light                 : $white;
 $background-color-dark                  : $black;
 
-$border-color-light                     : $white;
-$border-color-dark                      : $black;
-
+$text-color-1							: $gray-chateau;
+$text-color-2							: $bronze-olive;
+$text-color-3							: $corn-flower-blue;
+$text-color-4							: $cadillac;
+$text-color-5							: $my-sin;
+$text-color-6							: $torea-bay;
+$text-color-7							: $wenge;
 $text-color-light                       : $white;
 $text-color-dark                        : $black;
 
-$border-color-1                         : #99918E;
+$border-color-1                         : $carolina-blue;
 $border-color-2                         : $wenge;
-$border-color-3                         : #B97A42;
+$border-color-3                         : $brady-punch;
+$border-color-4                         : $gray;
+$border-color-5							: $supernova;
+$border-color-6							: $ruddy;
+$border-color-7							: $light-gray;
+$border-color-8							: $corn-flower-blue;
+$border-color-9							: $cadillac;
+$border-color-10						: $my-sin;
+$border-color-light                     : $white;
+$border-color-dark                      : $black;
 
-$shadow-color-1                         : #616161;
+$shadow-color-1                         : $storm-dust;
 
 $required-color                         : $ruddy;
 
 $button-background-color-1              : $wenge;
 $button-background-color-2              : $corn-flower-blue;
 $button-background-color-3              : $my-sin;
-$button-background-color-4              : #B46061;
+$button-background-color-4              : $matrix;
+$button-background-color-5              : $gainsboro;
 $button-background-color-light          : $white;
 $button-background-color-dark           : $black;
 
 $button-text-color-1                    : $wenge;
+$button-text-color-2                    : $light-gray;
 $button-text-color-light                : $white;
 $button-text-color-dark                 : $black;
 
-$form-color-1                           : #3EAAF5;
-$form-color-2                           : #FF7FAE;
+$form-color-1                           : $picton-blue;
+$form-color-2                           : $tickle-me-pink;
 $form-color-3                           : $light-gray;
 
-$modal-color-1                          : #3D4674;
+$modal-color-1                          : $corn-flower-blue;
+
+$flash-message-color-1                  : #a5e2a5;
+$flash-message-color-2                  : #b6e8b6;
+$flash-message-color-3                  : #008000;
+$flash-message-color-4                  : #b1b1f9;
+$flash-message-color-5                  : #b5b5ff;
+$flash-message-color-6                  : #0000ff;
+$flash-message-color-7                  : #ffc3c3;
+$flash-message-color-8                  : #eab9b9;
+$flash-message-color-9                  : #712f2f;
 
 // TODO: Sass up the arrow colors
