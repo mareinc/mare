@@ -11,20 +11,18 @@ var async					= require('async'),
 	mailingListsMap			= require('../data-migration-maps/outside-contact-group');
 	statesMap				= require('../data-migration-maps/state');
 
-var columns = ['ocn_id','name','organization','address_1','address_2','city','state','zip','phone','email','contact_type','country','notes'];
+// var columns = ['ocn_id','name','organization','address_1','address_2','city','state','zip','phone','email','contact_type','country','notes'];
 var importArray = [];
 
-module.exports.importOutsideContacts = function importOutsideContacts(req, res, done){
+//Converter Class 
+var Converter = require("csvtojson").Converter;
+var converter = new Converter({});
 
-	var self = this,
-		locals = res.locals;
+module.exports.importOutsideContacts = ( req, res, done ) => {
+	// create a reference to locals where variables shared across functions will be bound
+	let locals = res.locals;
 
-    csv2arr({
-
-        file: './migration-data/csv-data/outside_contact.csv',
-        columns: columns
-
-    }, function (err, array) {
+	converter.fromFile("./migration-data/csv-data/outside_contact.csv",function(err,array){
 
         if (err) {
 
@@ -32,80 +30,81 @@ module.exports.importOutsideContacts = function importOutsideContacts(req, res, 
 
         } else {
 
-            importArray = array;
+            locals.importArray = array;
 
-            for (var i = 1, _count = importArray.length - 1; i <= _count; i++) {
+			async.parallel([
+				function(done) { mailingListsMap.getOutsideContactGroupsMap(req, res, done) },
+				function(done) { statesMap.getStatesMap(req, res, done) } 
+			], function() {
 
-                var _outsideContact = importArray[i];
-                var _splitName = exports.splitName(_outsideContact.name);
-                var _isVolunteer = false;
+				for (var i = 1, _count = locals.importArray.length - 1; i <= _count; i++) {
 
-                if (_outsideContact.contact_type) {
-                    _isVolunteer = true;
-                }
+					let _outsideContact = locals.importArray[i];
+					let _splitName = exports.splitName(_outsideContact.name);
+					let _isVolunteer = false;
 
-				async.parallel([
-					function(done) { mailingListsMap.getOutsideContactGroupsMap(req, res, done) },
-					function(done) { statesMap.getStatesMap(req, res, done) } // TODO: THIS CAN BE UNCOMMENTED WHEN THE MAP FILE IS CREATED
-				], function() {
+					if (_outsideContact.contact_type) {
+						_isVolunteer = true;
+					}
 
-					//console.log(locals.outsideContactGroupsMap);
 					// populate instance for Outside Contact object
-	                var newOutsideContact = new OutsideContact.model({
+					let newOutsideContact = new OutsideContact.model({
 
-	                	type: locals.mailingListsMap[_outsideContact.ocn_id],
-	                    // type: { type: Types.Relationship, label: 'type of contact', ref: 'Mailing List', many: true, required: true, initial: true },
+						type: locals.outsideContactGroupsMap[_outsideContact.ocn_id],
+						// type: { type: Types.Relationship, label: 'type of contact', ref: 'Mailing List', many: true, required: true, initial: true },
 
-	                    // from the outside_contact table get the ocn_id and go to mailing_list_subscription table, where based on the ocn_id, get the mlt_id and then
-	                    // go to mailing_list table and get the name associated with the mlt_id, once you have the name, go to the new system and fetch the new hash id
+						// from the outside_contact table get the ocn_id and go to mailing_list_subscription table, where based on the ocn_id, get the mlt_id and then
+						// go to mailing_list table and get the name associated with the mlt_id, once you have the name, go to the new system and fetch the new hash id
 
-	                    name: {
-	                        first: _splitName.first,
-	                        last: _splitName.last
-	                    },
+						name: {
+							first: _splitName.first,
+							last: _splitName.last
+						},
 
-	                    organization: _outsideContact.organization,
+						organization: _outsideContact.organization,
 
-	                    email: _outsideContact.email,
+						email: _outsideContact.email,
 
-	                    phone: {
-	                        work: _outsideContact.phone,
-	                        preferred: _outsideContact.phone
-	                    },
+						phone: {
+							work: _outsideContact.phone,
+							preferred: _outsideContact.phone
+						},
 
-	                    address: {
-	                        street1: _outsideContact.address_1,
-	                        street2: _outsideContact.address_2,
-	                        city:  _outsideContact.city,
-	                        state:  locals.statesMap[_outsideContact.state],
-	                        zipCode:  _outsideContact.zip
-	                    },
+						address: {
+							street1: _outsideContact.address_1,
+							street2: _outsideContact.address_2,
+							city:  _outsideContact.city,
+							state:  locals.statesMap[_outsideContact.state],
+							zipCode:  _outsideContact.zip
+						},
 
-	                    isVolunteer: _isVolunteer
+						isVolunteer: _isVolunteer,
+						oldId: _outsideContact.ocn_id
 
-	                });
+					});
 
-	                // call save method on Outside Contact object
-	                newOutsideContact.save(function(err) {
-	                    // newOutsideContact object has been saved
-	                    if (err) {
+					newOutsideContact.save(function(err) {
+						if (err) {
 
-							console.log('saving 1');
-	                        throw '[ID#' + _outsideContact.ocn_id + '] an error occured while saving ' + newOutsideContact + ' object.'
+							console.log('================================');
+							console.log(err);
+							console.log('[ID#' + _outsideContact.ocn_id + '] an error occured while saving the newly created object.');
+							console.log(newOutsideContact);
+							throw '[ID#' + _outsideContact.ocn_id + '] an error occured while saving ' + newOutsideContact + ' object.'
 
 						}
-	                    else {
+						else {
 
 							console.log('saving 2');
-	                        console.log('[ID#' + _outsideContact.ocn_id + '] outside contact successfully saved!');
+							console.log('[ID#' + _outsideContact.ocn_id + '] outside contact successfully saved!');
 
 						}
-	                });
-				});
+					});
+				}
 
-            }
+				done();
 
-			done();
+			});
         }
     });
 }
@@ -113,12 +112,7 @@ module.exports.importOutsideContacts = function importOutsideContacts(req, res, 
 exports.fetchMailingLists = function fetchMailingLists(ocn_id) {
 	var mailingListArray = [];
 
-	csv2arr({
-
-        file: './migration-data/csv-data/mailing_list.csv',
-        columns: columns
-
-    }, function(err, array) {
+	converter.fromFile("./migration-data/csv-data/mailing_list.csv",function(err,array){
 
 		if (err) {
 
@@ -128,7 +122,7 @@ exports.fetchMailingLists = function fetchMailingLists(ocn_id) {
 
 			for (var i = 1, _count = array.length - 1; i <= _count; i++) {
 
-				var mailingListItem = array[i];
+				let mailingListItem = array[i];
 
 				if (mailingListItem[4] === ocn_id) {
 
@@ -143,15 +137,20 @@ exports.splitName = function splitName(name) {
     var _first = '';
     var _last = '';
 
-    if (name.indexOf(',') > 0){
-        _last = name.substr(0, name.indexOf(','));
-        _first = name.substr(name.indexOf(',') + 1);
-    }
-    else
-    {
-        _first = name.substr(0, name.indexOf(' '));
-        _last = name.substr(name.indexOf(' ') + 1);
-    }
+	if (name) {
+
+		if (name.indexOf(',') > 0){
+			_last = name.substr(0, name.indexOf(','));
+			_first = name.substr(name.indexOf(',') + 1);
+		}
+		else
+		{
+			_first = name.substr(0, name.indexOf(' '));
+			_last = name.substr(name.indexOf(' ') + 1);
+		}
+
+	}
+    
 
     return {
         first: _first,

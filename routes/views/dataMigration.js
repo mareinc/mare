@@ -5,6 +5,7 @@ const childrenImport		= require( '../middleware/data-migration-middleware/child_
 const eventsImport			= require( '../middleware/data-migration-middleware/event_model' );
 const familiesImport		= require( '../middleware/data-migration-middleware/family_model' );
 const outsideContactImport	= require( '../middleware/data-migration-middleware/outside_contact_model' );
+const socialWorkerImport	= require( '../middleware/data-migration-middleware/user_socialworker_model' );
 	
 
 exports = module.exports = function(req, res) {
@@ -15,10 +16,12 @@ exports = module.exports = function(req, res) {
     let locals = res.locals;
 
     async.series([
-		// function(done) { outsideContactImport.importOutsideContacts( req, res, done ); },
-		function(done) { agenciesImport.importAgencies( req, res, done ); },
-		// function(done) { childrenImport.importChildren( req, res, done ); },
-		// function(done) { familiesImport.importFamilies( req, res, done ); },
+		// function(done) { agenciesImport.importAgencies( req, res, done ); }, 			  // 1
+		// function(done) { outsideContactImport.importOutsideContacts( req, res, done ); }   // 2
+		// function(done) { socialWorkerImport.importSocialWorker( req, res, done ); }        // 3
+		// function(done) { childrenImport.importChildren( req, res, done ); },				  // 4
+
+		function(done) { familiesImport.importFamilies( req, res, done ); },				  // 5
 		// function(done) { eventsImport.importEvents( req, res, done ); }
 		
 	], function() {

@@ -15,10 +15,14 @@ const Event  				= keystone.list( 'Event' );
 const csv2arr				= require( 'csv-to-array' );
 const dataMigrationService	= require( '../service_data-migration' );
 
+//Converter Class 
+var Converter = require("csvtojson").Converter;
+var converter = new Converter({});
+
 // define all the column names for each data set we'll be fetching
-const columns = [ 'evt_id', 'rcs_id', 'schedule_datetime', 'location', 'directions', 'notes', 'is_active' ];
-const columnsRecruitment = [ 'rcs_id', 'name', 'is_media_outlet', 'is_media_outlet_active', 'media_frequency', 'media_type' ];
-const columnsEventAttendees = [ 'eva_id', 'evt_id', 'type', 'fam_id', 'chd_id', 'agc_id', 'chd_brought_by_type', 'chd_brought_by_agc_id', 'chd_brought_by_name', 'chd_notes', 'chd_first_name', 'chd_last_name', 'chd_siblings', 'chd_race', 'chd_dob', 'chd_status', 'fam_rgn_id', 'fam_is_home_studied', 'fam_others', 'fam_source', 'fam_registration_type', 'agc_first_name', 'agc_last_name', 'agc_agency', 'agc_phone', 'agc_others', 'agc_assignments' ];
+// const columns = [ 'evt_id', 'rcs_id', 'schedule_datetime', 'location', 'directions', 'notes', 'is_active' ];
+// const columnsRecruitment = [ 'rcs_id', 'name', 'is_media_outlet', 'is_media_outlet_active', 'media_frequency', 'media_type' ];
+// const columnsEventAttendees = [ 'eva_id', 'evt_id', 'type', 'fam_id', 'chd_id', 'agc_id', 'chd_brought_by_type', 'chd_brought_by_agc_id', 'chd_brought_by_name', 'chd_notes', 'chd_first_name', 'chd_last_name', 'chd_siblings', 'chd_race', 'chd_dob', 'chd_status', 'fam_rgn_id', 'fam_is_home_studied', 'fam_others', 'fam_source', 'fam_registration_type', 'agc_first_name', 'agc_last_name', 'agc_agency', 'agc_phone', 'agc_others', 'agc_assignments' ];
 
 /* the import function for events and event attendees */
 module.exports.importEvents = ( req, res, done ) => {
@@ -35,10 +39,12 @@ module.exports.importEvents = ( req, res, done ) => {
 		done => { exports.getMigrationAdmin( locals, done ); }		// fetch the migration admin user which will be used to populate the 'contact' field in events we create as events in the old system didn't have contacts
 	], () => {
 		// fetch all the event data from the exported csv file
-		csv2arr({
-			file: './migration-data/csv-data/event.csv',
-			columns: columns
-		}, ( err, array ) => {
+
+		converter.fromFile("./migration-data/csv-data/event.csv",function(err,array){
+		// csv2arr({
+		// 	file: './migration-data/csv-data/event.csv',
+		// 	columns: columns
+		// }, ( err, array ) => {
 			// process any errors that occur while fetching the file
 			if ( err ) {
 				throw `An error occurred!
@@ -228,10 +234,11 @@ exports.getMigrationAdmin = ( locals, done ) => {
 /* fetch all the recruitment source data from the exported csv file */
 exports.loadRecruitmentSources = ( locals, done ) => {
 
-	csv2arr({
-		file: './migration-data/csv-data/recruitment_source.csv',
-		columns: columnsRecruitment
-	},  ( err, array ) => {
+	converter.fromFile("./migration-data/csv-data/recruitment_source.csv",function(err,array){
+	// csv2arr({
+	// 	file: './migration-data/csv-data/recruitment_source.csv',
+	// 	columns: columnsRecruitment
+	// },  ( err, array ) => {
 		// if an error occurred while fetching
 		if ( err ) {
 			// thow an error
@@ -250,10 +257,11 @@ exports.loadRecruitmentSources = ( locals, done ) => {
 /* fetch all the event attendee data from the exported csv file */
 exports.loadEventAttendees = ( locals, done ) => {
 
-	csv2arr({
-		file: "./migration-data/csv-data/event_attendee.csv",
-		columns: columnsEventAttendees
-	}, ( err, array ) => {
+	converter.fromFile("./migration-data/csv-data/event_attendee.csv",function(err,array){
+	// csv2arr({
+	// 	file: "./migration-data/csv-data/event_attendee.csv",
+	// 	columns: columnsEventAttendees
+	// }, ( err, array ) => {
 		// if an error occurred while fetching
 		if ( err ) {
 			// thow an error

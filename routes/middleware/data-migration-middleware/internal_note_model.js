@@ -9,10 +9,6 @@
 !!!
 */
 
-
-
-
-
 var async                   = require('async'),
     keystone                = require('keystone'),
     Types                   = keystone.Field.Types,
@@ -20,10 +16,15 @@ var async                   = require('async'),
     csv2arr                 = require('csv-to-array'),
     dataMigrationService    = require('../service_data-migration')
     ;
+
+//Converter Class 
+var Converter = require("csvtojson").Converter;
+var converter = new Converter({});
+
 // this is the call_note table which relates to call table
-var columns = ["cln_id","cll_id","comment","created_by","created_datetime","updated_by","updated_datetime"];
-var columns_call = ["cll_id","agc_id","fam_id","taken_by","call_date","inquiry_type","inquiry_method","rcs_id",
-                    "recruitment_agc_id","confirm_print_date","generate_letter","scheduled_print_date","last_print_date","generate_confirmation","family"];
+// var columns = ["cln_id","cll_id","comment","created_by","created_datetime","updated_by","updated_datetime"];
+// var columns_call = ["cll_id","agc_id","fam_id","taken_by","call_date","inquiry_type","inquiry_method","rcs_id",
+//                     "recruitment_agc_id","confirm_print_date","generate_letter","scheduled_print_date","last_print_date","generate_confirmation","family"];
 var importArray;
 
 module.exports.importInternalNotes = function importInternalNotes(req, res, done) {
@@ -31,11 +32,13 @@ module.exports.importInternalNotes = function importInternalNotes(req, res, done
         var self = this,
             locals = res.locals,
             allCalls = self.preloadCalls();
+        
+        converter.fromFile("./migration-data/csv-data/call_note.csv",function(err,array){
 
-        csv2arr({
-            file: "./migration-data/csv-data/call_note.csv",
-            columns: columns
-        }, function (err, array) {
+        // csv2arr({
+        //     file: "./migration-data/csv-data/call_note.csv",
+        //     columns: columns
+        // }, function (err, array) {
             if (err) {
                 throw "An error occurred!\n" + err;
             } else {
@@ -91,10 +94,12 @@ module.exports.importInternalNotes = function importInternalNotes(req, res, done
 
 function preloadCalls(){
     var _allCalls = [];
-    csv2arr({
-        file: "./migration-data/csv-data/call.csv",
-        columns: columns_call
-    }, function (err, array) {
+
+    converter.fromFile("./migration-data/csv-data/call.csv",function(err,array){
+    // csv2arr({
+    //     file: "./migration-data/csv-data/call.csv",
+    //     columns: columns_call
+    // }, function (err, array) {
         if (err) {
             throw "An error occurred!\n" + err;
         } else {

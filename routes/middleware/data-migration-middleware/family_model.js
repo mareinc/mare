@@ -5,7 +5,7 @@
 var async					= require('async'),
 	keystone				= require('keystone'),
 	Types 					= keystone.Field.Types,
-    Family 					= keystone.list('Family'), // NOTE: this may not work, for keystone to access the database using a model reference, you may need the keystone.list('Agency'); syntax here
+    Family 					= keystone.list('Family'),
     csv2arr					= require('csv-to-array'),
 	dataMigrationService	= require('../service_data-migration'),
 
@@ -20,18 +20,23 @@ var async					= require('async'),
 	statesMap				= require('../data-migration-maps/state')
 	;
 
-var columns = ["fam_id","old_family_id","listing_date","family_constellation","primary_language","is_home_studied","home_study_date",
-	"is_registered","registered_date","status","last_status_change_date","address_1","address_2","city","state","zip","country",
-	"home_phone","fax","info_pack","info_pack_sent_date","info_pack_notes","is_gathering_info","gathering_info_date",
-	"is_looking_for_agency","looking_for_agency_date","is_working_with_agency","working_with_agency_date","mapp_training_date",
-	"is_closed","closed_date","closed_reason","has_family_profile","family_profile_date","online_matching_date","accept_male",
-	"accept_female","accept_legal_risk","accept_sibling_contact","accept_birth_family_contact","number_of_children_to_adopt",
-	"adoption_ages_from","adoption_ages_to","max_physical_dst_id","max_intellectual_dst_id","max_emotional_dst_id",
-	"social_worker_agc_id","flag_calls","notes"];
 
-var columns_family_race_preference = ["frp_id","fam_id","rce_id"];
+//Converter Class 
+var Converter = require("csvtojson").Converter;
+var converter = new Converter({});
 
-var columns_family_special_need = ["fsn_id","fam_id","spn_id"];
+// var columns = ["fam_id","old_family_id","listing_date","family_constellation","primary_language","is_home_studied","home_study_date",
+// 	"is_registered","registered_date","status","last_status_change_date","address_1","address_2","city","state","zip","country",
+// 	"home_phone","fax","info_pack","info_pack_sent_date","info_pack_notes","is_gathering_info","gathering_info_date",
+// 	"is_looking_for_agency","looking_for_agency_date","is_working_with_agency","working_with_agency_date","mapp_training_date",
+// 	"is_closed","closed_date","closed_reason","has_family_profile","family_profile_date","online_matching_date","accept_male",
+// 	"accept_female","accept_legal_risk","accept_sibling_contact","accept_birth_family_contact","number_of_children_to_adopt",
+// 	"adoption_ages_from","adoption_ages_to","max_physical_dst_id","max_intellectual_dst_id","max_emotional_dst_id",
+// 	"social_worker_agc_id","flag_calls","notes"];
+
+// var columns_family_race_preference = ["frp_id","fam_id","rce_id"];
+
+// var columns_family_special_need = ["fsn_id","fam_id","spn_id"];
 
 var importArray;
 var importArrayFamRacePref;
@@ -39,13 +44,9 @@ var importArrayFamSpecNeed;
 
 module.exports.importFamilies = function importFamilies(req, res, done) {
 	var self = this,
-			locals = res.locals;
+		locals = res.locals;
 
-		csv2arr({
-			file: "./migration-data/csv-data/family.csv",
-			columns: columns
-		}, 
-		function (err, array) {
+	converter.fromFile("./migration-data/csv-data/family.csv",function(err,array){
 
 			if (err) {
 				throw "An error occurred!\n" + err;
@@ -62,11 +63,32 @@ module.exports.importFamilies = function importFamilies(req, res, done) {
 					function(done) { languagesMap.getLanguagesMap(req, res, done) },
 					function(done) { legalStatusesMap.getLegalStatusesMap(req, res, done) },
 					function(done) { racesMap.getRacesMap(req,res,done) },
-					function(done) { statesMap.getStatesMap(req, res, done) }
+					function(done) { statesMap.getStatesMap(req, res, done) },
+					function(done) {
+						converter.fromFile("./migration-data/csv-data/family_race_preference.csv",function(err,array){
+							if (err) {
+								throw "An error occurred!\n" + err;
+							} else {
 
-					// LoadAllRacePreferences();
-					// LoadAllSpecialNeeds();
-					
+								importArrayFamRacePref = array;
+							}
+						});
+
+						done();
+					},
+					function(done) {
+						converter.fromFile("./migration-data/csv-data/family_special_need.csv",function(err,array){
+							if (err) {
+								throw "An error occurred!\n" + err;
+							} else {
+
+								importArrayFamSpecNeed = array;
+							}
+						});
+
+						done();
+					}
+		
 
 				], function() {
 
@@ -74,17 +96,17 @@ module.exports.importFamilies = function importFamilies(req, res, done) {
 
 					for (var i=1,_count=importArray.length; i <_count; i++) {
 
-						var _family = importArray[i];
+						let _family = importArray[i];
 
 						console.log("Family object: ", _family);
 
-						var matchingPrefGender = "";
-						var primaryLanguage = "";
-						var otherLanguages = "";
-						var splitLanguages = [];
-						var familySelectedLanguages = [];
-						var familySelectedRaces = [];
-						var familySpecialNeeds = [];
+						let matchingPrefGender = "";
+						let primaryLanguage = "";
+						let otherLanguages = "";
+						let splitLanguages = [];
+						let familySelectedLanguages = [];
+						let familySelectedRaces = [];
+						let familySpecialNeeds = [];
 
 
 						if (_family.accept_male != "") {
@@ -95,20 +117,28 @@ module.exports.importFamilies = function importFamilies(req, res, done) {
 
 						splitLanguages = SplitLanguages(_family.primary_language);
 
-						primaryLanguage = locals.getLanguagesMap[splitLanguages["primary"]];
+						primaryLanguage = locals.languagesMap[splitLanguages["primary"]];
 
-						otherLanguages = splitLanguages["others"].split(",");
+						otherLanguages = splitLanguages["others"] ? splitLanguages["others"].split(",") : "";
+
 						for (var j=0; j < otherLanguages.length; j++) {
-							familySelectedLanguages.push(locals.getRacesMap[otherLanguages[j]]);
+							familySelectedLanguages.push(locals.racesMap[otherLanguages[j]]);
 						}
 						
 						familySelectedRaces = selectAllRacePrefsByFamID(_family.fam_id);
 						familySpecialNeeds = selectAllSpecialNeedsByFamID(_family.fam_id);
 
-						console.log("Matching pref gender: ", matchingPrefGender);
+						console.log(locals.familyConstellationsMap[_family.family_constellation]);
+						console.log(locals.childStatusesMap[_family.status]);
+						console.log(locals.statesMap[_family.state]);
+						console.log(locals.closedReasonsMap[_family.closed_reason]);
+						console.log(locals.gendersMap[matchingPrefGender]);
+						console.log(locals.legalStatusesMap[_family.accept_legal_risk]);
+						console.log(familySelectedRaces);
+						console.log(familySpecialNeeds);
 
 						// populate instance for Family object
-						var newFamily = new Family.model({
+						let newFamily = new Family.model({
 
 							registrationNumber: _family.fam_id,
 
@@ -117,7 +147,7 @@ module.exports.importFamilies = function importFamilies(req, res, done) {
 							initialContact: _family.listing_date,
 
 							flagCalls: _family.flag_calls,
-							familyConstellation: locals.getFamilyConstellationsMap[_family.family_constellation],
+							familyConstellation: locals.familyConstellationsMap[_family.family_constellation],
 
 							/*
 							* primary_language can contain multiple languages in text form, so in this case look for these separator characters: ", / \ space"
@@ -136,14 +166,14 @@ module.exports.importFamilies = function importFamilies(req, res, done) {
 							registeredWithMARE: {
 								registered: _family.is_registered,
 								date: _family.registered_date,
-								status: locals.getChildStatusesMap[_family.status]
+								status: locals.childStatusesMap[_family.status]
 							},
 
 							address: {
 								street1: _family.address_1,
 								street2: _family.address_2,
 								city: _family.city,
-								state: locals.getStatesMap[_family.state],
+								state: locals.statesMap[_family.state],
 								zipCode: _family.zip
 							},
 
@@ -177,7 +207,7 @@ module.exports.importFamilies = function importFamilies(req, res, done) {
 							closed: {
 								isClosed: _family.is_closed,
 								date: _family.closed_date,
-								reason: locals.getClosedReasonsMap[_family.closed_reason]
+								reason: locals.closedReasonsMap[_family.closed_reason]
 							},
 
 							familyProfile: {
@@ -191,8 +221,8 @@ module.exports.importFamilies = function importFamilies(req, res, done) {
 							},
 
 							matchingPreferences: {
-								gender: loacals.getGendersMap[matchingPrefGender],
-								legalStatus: locals.getLegalStatusesMap[_family.accept_legal_risk],
+								gender: locals.gendersMap[matchingPrefGender],
+								legalStatus: locals.legalStatusesMap[_family.accept_legal_risk],
 
 								adoptionAges: {
 									from: _family.adoption_ages_from,
@@ -234,6 +264,9 @@ module.exports.importFamilies = function importFamilies(req, res, done) {
 						newFamily.save(function(err) {
 							// newChild object has been saved
 							if (err) {
+								console.log(err);
+								console.log("[ID#" + _family.chd_id +"] an error occured while saving Family object.");
+								console.log(newFamily);
 								throw "[ID#" + _family.chd_id +"] an error occured while saving " + newFamily + " object."
 							}
 							else {
@@ -250,13 +283,17 @@ module.exports.importFamilies = function importFamilies(req, res, done) {
 	}
 
 function SplitLanguages(languages) {
-	var arrayOfLanguages = languages.replace(/,/g, " ").replace(/\\/g, " ").replace(/\//g, " ").split(" ");
+	var arrayOfLanguages;
 
-	return { "primary" : arrayOfLanguages[0].toString(), "others": arrayOfLanguages.splice(1, arrayOfLanguages.length-1).join(",") }
+	if (languages && languages.length > 0) {
+		arrayOfLanguages = languages.replace(/,/g, " ").replace(/\\/g, " ").replace(/\//g, " ").split(" ");
+	}
+
+	return arrayOfLanguages ? { "primary" : arrayOfLanguages[0].toString(), "others": arrayOfLanguages.splice(1, arrayOfLanguages.length-1).join(",") } : languages;
 }
 
 function SplitRaceIDs(raceids) {
-	return raceids.replace(/ /g, "").split(",");
+	return raceids ? raceids.replace(/ /g, "").split(",") : "";
 }
 
 function selectAllRacePrefsByFamID(famid) {
@@ -336,34 +373,24 @@ function oldSpecialNeedCodes(needCode) {
 	return foundNeed;
 }
 
-function LoadAllRacePreferences() {
-	csv2arr({
-			file: "./migration-data/csv-data/family_race_preference.csv",
-			columns: columns_family_race_preference
-		}, 
-		function (err, array) {
+// function LoadAllRacePreferences() {
+// 	converter.fromFile("./migration-data/csv-data/family_race_preference.csv",function(err,array){
+// 			if (err) {
+// 				throw "An error occurred!\n" + err;
+// 			} else {
 
-			if (err) {
-				throw "An error occurred!\n" + err;
-			} else {
+// 				importArrayFamRacePref = array;
+// 			}
+// 		});
+// }
 
-				importArrayFamRacePref = array;
-			}
-		});
-}
+// function LoadAllSpecialNeeds() {
+// 	converter.fromFile("./migration-data/csv-data/family_special_need.csv",function(err,array){
+// 			if (err) {
+// 				throw "An error occurred!\n" + err;
+// 			} else {
 
-function LoadAllSpecialNeeds() {
-	csv2arr({
-			file: "./migration-data/csv-data/family_special_need.csv",
-			columns: columns_family_special_need
-		}, 
-		function (err, array) {
-
-			if (err) {
-				throw "An error occurred!\n" + err;
-			} else {
-
-				importArrayFamSpecNeed = array;
-			}
-		});
-}
+// 				importArrayFamSpecNeed = array;
+// 			}
+// 		});
+// }

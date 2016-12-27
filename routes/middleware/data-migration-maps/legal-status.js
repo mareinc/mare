@@ -11,7 +11,7 @@ exports.getLegalStatusesMap = function getLegalStatusesMap(req, res, done) {
 		
 	], function() {
 
-		locals.racesMap = {
+		locals.legalStatusesMap = {
 			"F" : locals.legalStatusFree,
 			"R" : locals.legalStatusLegalRisk
 		};

@@ -5,132 +5,237 @@
 var async					= require('async'),
 	keystone				= require('keystone'),
 	Types 					= keystone.Field.Types,
-	SocialWorker   			= keystone.list('User_SocialWorker'),
+	Agency					= keystone.list('Agency'),
+	SocialWorker   			= keystone.list('Social Worker'),
     csv2arr					= require('csv-to-array'),
-	dataMigrationService	= require('../service_data-migration')
+	dataMigrationService	= require('../service_data-migration'),
+	statesMap				= require('../data-migration-maps/state')
 	;
 
-var columns = ["agn_id","code","name","address_1","address_2","city","state","zip","phone","fax","url","rgn_id"];
-var columns_agency_contact = ["agc_id","agn_id","first_name","last_name","phone","phone_ext","fax","email","is_active","notes"];
+// var columns = ["agn_id","code","name","address_1","address_2","city","state","zip","phone","fax","url","rgn_id"];
+// var columns_agency_contact = ["agc_id","agn_id","first_name","last_name","phone","phone_ext","fax","email","is_active","notes"];
 var importArray;
+var _allExistingSocialWorkers;
 
-module.exports.importSocialWorker = function importSocialWorker(req, res, done) {
+//Converter Class 
+var Converter = require("csvtojson").Converter;
+var converter = new Converter({});
+var converter2 = new Converter({});
+
+module.exports.importSocialWorker = (req, res, done) => {
+
 
     var self = this,
         locals = res.locals;
 
-	csv2arr({
-		file: "./migration-data/csv-data/agency.csv",
-		columns: columns
-	}, function (err, array) {
+		converter.fromFile("./migration-data/csv-data/agency.csv", function(err,array) {
+
 		if (err) {
 			throw "An error occurred!\n" + err;
 		} else {
-			var _allExistingSocialWorkers = loadAllSocialWorker();
+			
 			importArray = array;
 
-			for (var i=0,_count=importArray.length; i <_count; i++) {
-				var _socialWorker = importArray[i];
-				var _allSocialWorkersForAgency = fetchSocialWorker(_socialWorker.agn_id, _allExistingSocialWorkers);
+			async.parallel([
+				function loadAllSocialWorkers(callback) {
+					let allSocialWorkers = [];
+					let _localImportArray = [];
 
-				for (var j=0, _len=_allSocialWorkersForAgency.length; j < _len; j++) {
-					var _currentSocialWorker = _allSocialWorkersForAgency[j];
+					converter2.fromFile("./migration-data/csv-data/agency_contact.csv",function(err,array){
 
-					// populate instance for SocialWorker object
-					var newSocialWorker = new Agency.model({
-
-						name: {
-							first: _currentSocialWorker.first_name,
-							last: _currentSocialWorker.last_name,
-							//full: _socialWorker. // do not worry about it it is automatically generated
-						},
-
-						// avatar:,
-
-						email: _currentSocialWorker.email,
-
-						phone: {
-							work: _currentSocialWorker.phone
-							// mobile: _socialWorker.,
-							// preferred: _socialWorker.
-						},
-
-						//position: _socialWorker., // no worries
-						agency: _socialWorker.agn_id,
-						//agencyNotListed: _socialWorker.,
-						agencyText: _socialWorker., // ???
-
-						address: {
-							street1: _socialWorker.address_1,
-							street2: _socialWorker.address_2,
-							city: _socialWorker.city,
-							state: _socialWorker.state,
-							zipCode: _socialWorker.zip,
-							region: _socialWorker.rgn_id
-						},
-
-						// title: _socialWorker.,
-						notes: _currentSocialWorker.notes
-
-						//bookmarkedChildren: _socialWorker. // no worries only for the new system
-					});
-
-					// call save method on SocialWorker object
-					newSocialWorker.save(function (err) {
-						// newSocialWorker object has been saved
 						if (err) {
-							throw "[ID#" + _socialWorker.agn_id + "] an error occured while saving " + newSocialWorker + " object."
+							throw "An error occurred!\n" + err;
+						} else {
+							_localImportArray = array;
+
+							for (var i=1,_count=_localImportArray.length; i <_count; i++) {
+								allSocialWorkers.push(_localImportArray[i])
+							}
+
+							_allExistingSocialWorkers = allSocialWorkers;
 						}
-						else {
-							console.log("[ID#" + _socialWorker.agn_id + "] child successfully saved!");
-						}
-					});
+
+						callback(null, self.processData());
+					})
+				},
+				function(done) { statesMap.getStatesMap(req, res, done) } 
+
+			], function(err, results) {
+				
+				for (var i=1,_count=importArray.length; i <_count; i++) {
+					let _socialWorkerAgency = importArray[i];
+					let _allSocialWorkersForAgency = self.fetchSocialWorker(_socialWorkerAgency.agn_id, _allExistingSocialWorkers);
+
+					for (var j=0, _len=_allSocialWorkersForAgency.length; j < _len; j++) {
+						let _currentSocialWorker = _allSocialWorkersForAgency[j];
+
+						console.log('find the new ID based on the name of the agency');
+						console.log(_socialWorkerAgency.name);
+
+						// Agency.model.find()
+						// 	.where('name', _socialWorkerAgency.name)
+						// 	.exec()
+						// 	.then(function (model) {
+						// 		let _newAgencyID = model[0]._id;
+
+						// 		// populate instance for SocialWorker object
+						// 		let newSocialWorker = new SocialWorker.model({
+
+						// 			name: {
+						// 				first: _currentSocialWorker.first_name,
+						// 				last: _currentSocialWorker.last_name
+						// 			},
+
+						// 			email: _currentSocialWorker.email,
+
+						// 			phone: {
+						// 				work: _currentSocialWorker.phone
+						// 			},
+
+						// 			agency: _newAgencyID, // this needs to get the newly created agency ID
+									
+						// 			address: {
+						// 				street1: _socialWorker.address_1,
+						// 				street2: _socialWorker.address_2,
+						// 				city: _socialWorker.city,
+						// 				state: locals.statesMap[_socialWorker.state],
+						// 				zipCode: _socialWorker.zip,
+						// 				region: _socialWorker.rgn_id
+						// 			},
+
+						// 			notes: _currentSocialWorker.notes,
+						// 			oldId: _currentSocialWorker.agc_id
+						// 		});
+
+						// 		// call save method on SocialWorker object
+						// 		newSocialWorker.save(function (err) {
+						// 			// newSocialWorker object has been saved
+						// 			if (err) {
+						// 				console.log('================================');
+						// 				console.log(err);
+						// 				console.log('[ID#' + _socialWorker.ocn_id + '] an error occured while saving the newly created object.');
+						// 				console.log(newSocialWorker);
+						// 				throw "[ID#" + _socialWorker.agn_id + "] an error occured while saving " + newSocialWorker + " object."
+						// 			}
+						// 			else {
+						// 				console.log("[ID#" + _socialWorker.agn_id + "] child successfully saved!");
+						// 			}
+						// 		});
+
+						// 		done();
+
+						// 	}, function(err) {
+
+						// 		console.log(err);
+
+						// 		done();
+
+						// 	});
+
+
+
+						// populate instance for SocialWorker object
+						let newSocialWorker = new SocialWorker.model({
+
+							name: {
+								first: _currentSocialWorker.first_name,
+								last: _currentSocialWorker.last_name,
+								//full: _socialWorker. // do not worry about it it is automatically generated
+							},
+
+							// avatar:,
+
+							email: _currentSocialWorker.email,
+
+							phone: {
+								work: _currentSocialWorker.phone
+								// mobile: _socialWorker.,
+								// preferred: _socialWorker.
+							},
+
+							//position: _socialWorker., // no worries
+							agency: _socialWorker.agn_id, // this needs to get the newly created agency ID
+
+							//agencyNotListed: _socialWorker.,
+							//agencyText: _socialWorker., // ???
+
+							address: {
+								street1: _socialWorker.address_1,
+								street2: _socialWorker.address_2,
+								city: _socialWorker.city,
+								state: locals.statesMap[_socialWorker.state],
+								zipCode: _socialWorker.zip,
+								region: _socialWorker.rgn_id
+							},
+
+							// title: _socialWorker.,
+							notes: _currentSocialWorker.notes,
+							oldId: _currentSocialWorker.agc_id
+
+							//bookmarkedChildren: _socialWorker. // no worries only for the new system
+						});
+
+						// call save method on SocialWorker object
+						newSocialWorker.save(function (err) {
+							// newSocialWorker object has been saved
+							if (err) {
+								console.log('================================');
+								console.log(err);
+								console.log('[ID#' + _socialWorker.ocn_id + '] an error occured while saving the newly created object.');
+								console.log(newSocialWorker);
+								throw "[ID#" + _socialWorker.agn_id + "] an error occured while saving " + newSocialWorker + " object."
+							}
+							else {
+								console.log("[ID#" + _socialWorker.agn_id + "] child successfully saved!");
+							}
+						});
+					}
 				}
-			}
+
+			});
+
 		}
 	})
 },
-	//returns an array of all social workers that are under a specific agency that has the psased id
-module.exports.fetchSocialWorker = function fetchSocialWorker(id, haystack){
+
+exports.processData = function processData() {
+	console.log("Process data!");
+}
+
+//returns an array of all social workers that are under a specific agency that has the psased id
+exports.fetchSocialWorker = (id, haystack) => {
 	var agencySocialWorkers = [];
 
-	for (var i=0,_count=haystack.length; i <_count; i++) {
-		var _socialWorker = importArray[i];
-		var _socialWorkerContactDetails = new Object();
+	if (id && haystack) {
+		for (var i=0,_count=haystack.length; i <_count; i++) {
+			var _socialWorker = haystack[i];
 
-		if (_socialWorker[i].agn_id == id) {
-			_socialWorkerContactDetails["first_name"] = _socialWorker.first_name;
-			_socialWorkerContactDetails["last_name"] = _socialWorker.last_name;
-			_socialWorkerContactDetails["phone"] = _socialWorker.phone;
-			_socialWorkerContactDetails["email"] = _socialWorker.email;
-			_socialWorkerContactDetails["notes"] = _socialWorker.notes;
+			if (_socialWorker && _socialWorker.agn_id == id) {
+				agencySocialWorkers.push(_socialWorker);
+			}
 
-			agencySocialWorkers.push(_socialWorkerContactDetails)
 		}
-
 	}
 
 	return agencySocialWorkers;
-
 }
 
-module.exports.loadAllSocialWorker = function loadAllSocialWorker() {
-	var allSocialWorkers = [];
+exports.loadAllSocialWorkers = function loadAllSocialWorkers() {
+	let allSocialWorkers = [];
+	let _localImportArray = [];
 
-	csv2arr({
-		file: "./migration-data/csv-data/agency_contact.csv",
-		columns: columns
-	}, function (err, array) {
+	converter2.fromFile("./migration-data/csv-data/agency_contact.csv",function(err,array){
+
 		if (err) {
 			throw "An error occurred!\n" + err;
 		} else {
-			importArray = array;
+			_localImportArray = array;
 
-			for (var i=0,_count=importArray.length; i <_count; i++) {
-				allSocialWorkers.push(importArray[i])
+			for (var i=0,_count=_localImportArray.length; i <_count; i++) {
+				allSocialWorkers.push(_localImportArray[i])
 			}
 
-			return allSocialWorkers;
+			_allExistingSocialWorkers = allSocialWorkers;
 		}
 	})
 }

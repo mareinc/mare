@@ -35,7 +35,11 @@ exports.getOutsideContactGroupsMap = function getOutsideContactGroupsMap(req, re
 		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Outside Contact Group', targetField: 'name', targetValue: 'former board of directors', returnTarget: 'formerBoardofDirectorsList' }); },
 		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Outside Contact Group', targetField: 'name', targetValue: 'statewide recruitment', returnTarget: 'statewideRecruitmentList' }); },
 		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Outside Contact Group', targetField: 'name', targetValue: 'AUKFY 2015', returnTarget: 'AUKFY2015List' }); }
-	], function() {
+	], function(err, results) {
+
+		if (err) {
+			console.log(`Error ${err}`);
+		}
 
 		locals.outsideContactGroupsMap = {
 			1: locals.adoptionPartyList,

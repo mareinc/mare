@@ -36,10 +36,11 @@ Next go to agency_contact.csv and based on the recruitment_agc_id found earlier,
 
 */
 
+//Converter Class 
+var Converter = require("csvtojson").Converter;
+var converter = new Converter({});
 
-
-
-var columns = ["exi_id","exf_id","chd_id","primary_match","on_behalf_of","inquiry_type","inquiry_status","inquiry_sent_datetime","cll_id","cll_import_datetime"];
+// var columns = ["exi_id","exf_id","chd_id","primary_match","on_behalf_of","inquiry_type","inquiry_status","inquiry_sent_datetime","cll_id","cll_import_datetime"];
 var importArray;
 
 var keystone = require('keystone'),
@@ -48,10 +49,8 @@ var keystone = require('keystone'),
 
 module.exports = {
     importInquiries: function(){
-        csv2arr({
-            file: "./migration-data/csv-data/ext_inquiry.csv",
-            columns: columns
-        }, function (err, array) {
+        
+        converter.fromFile("./migration-data/csv-data/ext_inquiry.csv",function(err,array){
             if (err) {
                 throw "An error occurred!\n" + err;
             } else {

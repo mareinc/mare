@@ -6,7 +6,7 @@ exports.getRacesMap = function getRacesMap(req, res, done) {
 	var locals = res.locals;
 
 	async.parallel([
-function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Race', targetField: 'race', targetValue: 'African American', returnTarget: 'raceAfricanAmerican'  }); },
+		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Race', targetField: 'race', targetValue: 'African American', returnTarget: 'raceAfricanAmerican'  }); },
 		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Race', targetField: 'race', targetValue: 'Asian', returnTarget: 'raceAsian'  }); },
 		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Race', targetField: 'race', targetValue: 'Caucasian', returnTarget: 'raceCaucasian'  }); },
 		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Race', targetField: 'race', targetValue: 'Hispanic', returnTarget: 'raceHispanic'  }); },

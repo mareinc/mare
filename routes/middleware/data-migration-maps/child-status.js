@@ -22,7 +22,7 @@ exports.getChildStatusesMap = function getChildStatusesMap(req, res, done) {
 			"H": locals.languageOnHold,
 			"P": locals.languagePlaced,
 			"R": locals.languageReunification,
-			"W": locals.withdrawn
+			"W": locals.languageWithdrawn
 		};
 
 		done();

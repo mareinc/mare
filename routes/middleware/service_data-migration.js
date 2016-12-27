@@ -20,7 +20,7 @@ exports.getTargetModel = function getTargetModel(modelName) {
 			case 'Agency'				: return Agency;
 			case 'Child Status'			: return ChildStatus;
 			case 'City or Town'			: return CityOrTown;
-			case 'Closed Reason'		: return ClosedReason;
+			case 'Closed Reason'		: return ClosedReasons;
 			case 'Gender'				: return Gender;
 			case 'Family Constellation' : return FamilyConstellation;
 			case 'Language'				: return Language;
@@ -40,14 +40,16 @@ exports.getModelId = function getModelId(req, res, done, options) {
 	var locals = res.locals,
 		targetModel = exports.getTargetModel(options.model);
 
-	targetModel.model.findOne()
+	targetModel.model.find()
 		.where(options.targetField, options.targetValue)
 		.exec()
 		.then(function (model) {
 
-			// console.log(model);
+			console.log("======================================");
 
-			locals[options.returnTarget] = model._id;
+			console.log(model);
+
+			locals[options.returnTarget] = model[0]._id;
 
 			done();
 

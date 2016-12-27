@@ -10,7 +10,8 @@ exports.getLanguagesMap = function getLanguagesMap(req, res, done) {
 		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Language', targetField: 'language', targetValue: 'English', returnTarget: 'languageEnglish'  }); },
 		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Language', targetField: 'language', targetValue: 'Portuguese', returnTarget: 'languagePortugese'  }); },
 		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Language', targetField: 'language', targetValue: 'Spanish', returnTarget: 'languageSpanish'  }); },
-		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Language', targetField: 'language', targetValue: 'other', returnTarget: 'languageOther'  }); }
+		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Language', targetField: 'language', targetValue: 'other', returnTarget: 'languageOther'  }); },
+		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Language', targetField: 'language', targetValue: 'ASL', returnTarget: 'languageASL'  }); }
 		
 	], function() {
 
@@ -19,7 +20,8 @@ exports.getLanguagesMap = function getLanguagesMap(req, res, done) {
 			"English" : locals.languageEnglish,
 			"Portuguese" : locals.languagePortugese,
 			"Spanish" : locals.languageSpanish,
-			"other" : locals.languageOther
+			"other" : locals.languageOther,
+			"ASL" : locals.languageASL
 		};
 
 		done();

@@ -38,31 +38,31 @@ const Child = new keystone.List('Child', {
 // Create fields
 Child.add('Display Options', {
 
-	siteVisibility: { type: Types.Select, label: 'child is visible to', options: 'everyone, registered social workers and families', required: true, initial: true },
+	siteVisibility: { type: Types.Select, label: 'child is visible to', options: 'everyone, registered social workers and families', initial: true },
 	isVisibleInGallery: { type: Types.Boolean, label: 'child is visible in the gallery', initial: true }
 
 }, 'Child Information', {
 
 	registrationNumber: { type: Number, label: 'registration number', format: false, noedit: true },
-	registrationDate: { type: Types.Date, label: 'registration date', format: 'MM/DD/YYYY', required: true, initial: true },
+	registrationDate: { type: Types.Date, label: 'registration date', format: 'MM/DD/YYYY', initial: true },
 
 	name: {
-		first: { type: Types.Text, label: 'first name', required: true, initial: true },
+		first: { type: Types.Text, label: 'first name', initial: true },
 		middle: { type: Types.Text, label: 'middle name', initial: true },
-		last: { type: Types.Text, label: 'last name', required: true, initial: true },
+		last: { type: Types.Text, label: 'last name', initial: true },
 		alias: { type: Types.Text, label: 'alias', initial: true },
 		nickName: { type: Types.Text, label: 'nickname', initial: true },
 		full: { type: Types.Text, label: 'name', hidden: true, noedit: true, initial: false }
 	},
 
-	birthDate: { type: Types.Date, label: 'date of birth', format: 'MM/DD/YYYY', required: true, initial: true },
-	language: { type: Types.Relationship, label: 'language', ref: 'Language', many: true, required: true, initial: true },
+	birthDate: { type: Types.Date, label: 'date of birth', format: 'MM/DD/YYYY', initial: true },
+	language: { type: Types.Relationship, label: 'language', ref: 'Language', many: true, initial: true },
 	statusChangeDate: { type: Types.Date, label: 'status change date', format: 'MM/DD/YYYY', initial: true }, // TODO: Logic needed, see line 14 of https://docs.google.com/spreadsheets/d/1Opb9qziX2enTehJx5K1J9KAT7v-j2yAdqwyQUMSsFwc/edit#gid=1235141373
-	status: { type: Types.Relationship, label: 'status', ref: 'Child Status', required: true, initial: true },
-	gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', required: true, initial: true },
-	race: { type: Types.Relationship, label: 'race', ref: 'Race', many: true, required: true, initial: true },
+	status: { type: Types.Relationship, label: 'status', ref: 'Child Status', initial: true },
+	gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', initial: true },
+	race: { type: Types.Relationship, label: 'race', ref: 'Race', many: true, initial: true },
 	raceNotes: { type: Types.Text, label: 'race notes', initial: true },
-	legalStatus: { type: Types.Relationship, label: 'legal status', ref: 'Legal Status', required: true, initial: true },
+	legalStatus: { type: Types.Relationship, label: 'legal status', ref: 'Legal Status', initial: true },
 	yearEnteredCare: { type: Types.Text, label: 'year entered care', note: 'yyyy', initial: true },
 
 	hasContactWithSiblings: { type: Types.Boolean, label: 'has contact with siblings?', initial: true },
@@ -76,15 +76,15 @@ Child.add('Display Options', {
 	residence: { type: Types.Relationship, label: 'where does the child presently live?', ref: 'Residence', initial: true },
 	city: { type: Types.Relationship, label: 'city/town of child\'s current location', ref: 'City or Town', initial: true },
 	careFacilityName: { type: Types.Text, label: 'name of residential/group care facility', initial: true },
-	dateMovedToResidence: { type: Types.Date, label: 'date moved to current residence', format: 'MM/DD/YYYY', required: true, initial: true }
+	dateMovedToResidence: { type: Types.Date, label: 'date moved to current residence', format: 'MM/DD/YYYY', initial: true }
 
 }, 'Special Needs', {
 
-	physicalNeeds: { type: Types.Select, label: 'physical needs', options: 'none, mild, moderate, severe', required: true, initial: true },
+	physicalNeeds: { type: Types.Select, label: 'physical needs', options: 'none, mild, moderate, severe', initial: true },
 	physicalNeedsDescription: { type: Types.Textarea, label: 'description of physical needs', dependsOn: { physicalNeeds: ['mild', 'moderate', 'severe'] }, initial: true },
-	emotionalNeeds: { type: Types.Select, label: 'emotional needs', options: 'none, mild, moderate, severe', required: true, initial: true },
+	emotionalNeeds: { type: Types.Select, label: 'emotional needs', options: 'none, mild, moderate, severe', initial: true },
 	emotionalNeedsDescription: { type: Types.Textarea, label: 'description of emotional needs', dependsOn: { emotionalNeeds: ['mild', 'moderate', 'severe'] }, initial: true },
-	intellectualNeeds: { type: Types.Select, label: 'intellectual needs', options: 'none, mild, moderate, severe', required: true, initial: true },
+	intellectualNeeds: { type: Types.Select, label: 'intellectual needs', options: 'none, mild, moderate, severe', initial: true },
 	intellectualNeedsDescription: { type: Types.Textarea, label: 'description of intellectual needs', dependsOn: { intellectualNeeds: ['mild', 'moderate', 'severe'] }, initial: true },
 
 	disabilities: { type: Types.Relationship, label: 'disabilities', ref: 'Disability', many: true, initial: true },
@@ -97,14 +97,14 @@ Child.add('Display Options', {
 }, 'Placement Considerations', {
 
 	// TODO: NEEDS TO BE PLURAL BEFORE SAVE, FIX ACROSS THE CODEBASE
-	recommendedFamilyConstellation: { type: Types.Relationship, label: 'recommended family constellations', ref: 'Family Constellation', many: true, required: true, initial: true },
+	recommendedFamilyConstellation: { type: Types.Relationship, label: 'recommended family constellations', ref: 'Family Constellation', many: true, initial: true },
 	// TODO: NEEDS TO BE PLURAL BEFORE SAVE, FIX ACROSS THE CODEBASE
 	otherFamilyConstellationConsideration: { type: Types.Relationship, label: 'other family constellation consideration', ref: 'Other Family Constellation Consideration', many: true, initial: true },
 	otherConsiderations: { type: Types.Relationship, label: 'other considerations', ref: 'Other Consideration', many: true, initial: true }
 
 }, 'Agency Information', {
 
-	registeredBy: { type: Types.Select, label: 'registered by', options: 'unknown, adoption worker, recruitment worker', required: true, initial: true },
+	registeredBy: { type: Types.Select, label: 'registered by', options: 'unknown, adoption worker, recruitment worker', initial: true },
 	adoptionWorker: { type: Types.Relationship, label: 'adoption worker', ref: 'Social Worker', filters: { position: 'adoption worker' }, initial: true },
 	recruitmentWorker: { type: Types.Relationship, label: 'recruitment worker', ref: 'Social Worker', filters: { position: 'recruitment worker' }, initial: true },
 	region: { type: Types.Relationship, label: 'region', ref: 'Region', initial: true }

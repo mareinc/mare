@@ -30,7 +30,7 @@ SocialWorker.add( 'General Information', {
 
 }, 'Contact Information', {
 
-	email: { type: Types.Email, label: 'email address', unique: true, required: true, initial: true },
+	email: { type: Types.Email, label: 'email address', unique: true, initial: true },
 
 	phone: {
 		work: { type: Types.Text, label: 'work phone number', initial: true },

@@ -10,41 +10,45 @@ var async					= require('async'),
 	dataMigrationService	= require('../service_data-migration')
 	;
 
-var columns = ["fpl_id","fam_id","chd_id","chd_first_name","chd_last_name","status","status_change_date","comment"];
-var columns_child = ["chd_id","registered_date","sibling_group_id","first_name","middle_name","last_name","alias","nickname","status",
-	"date_of_birth","gender","rce_id","race_note","legal_status","number_of_siblings","can_place_in_two_parent_home",
-	"can_place_with_two_females","can_place_with_two_males","can_place_with_single_female","can_place_with_single_male",
-	"can_place_in_childless_home","can_place_in_multi_child_home","require_older_children","require_younger_children",
-	"physical_dst_id","emotional_dst_id","intellectual_dst_id","physical_disability_comment","emotional_disability_comment",
-	"intellectual_disability_comment","in_therapy","health_notes","adoption_agc_id","recruitment_agc_id","notes","listing_date",
-	"allow_sibling_contact","sibling_contact_note","allow_birth_family_contact","birth_family_contact_note","have_media_documentation",
-	"on_media_recruitment_hold","media_recruitment_hold_date","have_media_photo","media_photo_date","on_media_location_alert",
-	"media_location_alert_place","have_photolisting_writeup","photolisting_writeup_date","have_photolisting_photo",
-	"photolisting_photo_date","in_photolisting","photolisting_date","photolisting_page","previous_photolisting_page",
-	"have_video_snapshot","video_snapshot_date","referral_packet_request_date","referral_packet_send_date","primary_language",
-	"registered_by","last_status_change_datetime","profile_url","is_on_mare_web","is_on_adoptuskids","is_on_online_matching",
-	"placement_placed_date","placement_disruption_date","placement_fam_id","placement_family_name","placement_address_1",
-	"placement_address_2","placement_city","placement_state","placement_zip","placement_home_phone","placement_country",
-	"placement_email","placement_agency","placement_constellation","placement_rce_id"];
-var columns_family = ["fam_id","old_family_id","listing_date","family_constellation","primary_language","is_home_studied","home_study_date",
-	"is_registered","registered_date","status","last_status_change_date","address_1","address_2","city","state","zip","country",
-	"home_phone","fax","info_pack","info_pack_sent_date","info_pack_notes","is_gathering_info","gathering_info_date",
-	"is_looking_for_agency","looking_for_agency_date","is_working_with_agency","working_with_agency_date","mapp_training_date",
-	"is_closed","closed_date","closed_reason","has_family_profile","family_profile_date","online_matching_date","accept_male",
-	"accept_female","accept_legal_risk","accept_sibling_contact","accept_birth_family_contact","number_of_children_to_adopt",
-	"adoption_ages_from","adoption_ages_to","max_physical_dst_id","max_intellectual_dst_id","max_emotional_dst_id",
-	"social_worker_agc_id","flag_calls","notes"];
+//Converter Class 
+var Converter = require("csvtojson").Converter;
+var converter = new Converter({});
+
+// var columns = ["fpl_id","fam_id","chd_id","chd_first_name","chd_last_name","status","status_change_date","comment"];
+// var columns_child = ["chd_id","registered_date","sibling_group_id","first_name","middle_name","last_name","alias","nickname","status",
+// 	"date_of_birth","gender","rce_id","race_note","legal_status","number_of_siblings","can_place_in_two_parent_home",
+// 	"can_place_with_two_females","can_place_with_two_males","can_place_with_single_female","can_place_with_single_male",
+// 	"can_place_in_childless_home","can_place_in_multi_child_home","require_older_children","require_younger_children",
+// 	"physical_dst_id","emotional_dst_id","intellectual_dst_id","physical_disability_comment","emotional_disability_comment",
+// 	"intellectual_disability_comment","in_therapy","health_notes","adoption_agc_id","recruitment_agc_id","notes","listing_date",
+// 	"allow_sibling_contact","sibling_contact_note","allow_birth_family_contact","birth_family_contact_note","have_media_documentation",
+// 	"on_media_recruitment_hold","media_recruitment_hold_date","have_media_photo","media_photo_date","on_media_location_alert",
+// 	"media_location_alert_place","have_photolisting_writeup","photolisting_writeup_date","have_photolisting_photo",
+// 	"photolisting_photo_date","in_photolisting","photolisting_date","photolisting_page","previous_photolisting_page",
+// 	"have_video_snapshot","video_snapshot_date","referral_packet_request_date","referral_packet_send_date","primary_language",
+// 	"registered_by","last_status_change_datetime","profile_url","is_on_mare_web","is_on_adoptuskids","is_on_online_matching",
+// 	"placement_placed_date","placement_disruption_date","placement_fam_id","placement_family_name","placement_address_1",
+// 	"placement_address_2","placement_city","placement_state","placement_zip","placement_home_phone","placement_country",
+// 	"placement_email","placement_agency","placement_constellation","placement_rce_id"];
+// var columns_family = ["fam_id","old_family_id","listing_date","family_constellation","primary_language","is_home_studied","home_study_date",
+// 	"is_registered","registered_date","status","last_status_change_date","address_1","address_2","city","state","zip","country",
+// 	"home_phone","fax","info_pack","info_pack_sent_date","info_pack_notes","is_gathering_info","gathering_info_date",
+// 	"is_looking_for_agency","looking_for_agency_date","is_working_with_agency","working_with_agency_date","mapp_training_date",
+// 	"is_closed","closed_date","closed_reason","has_family_profile","family_profile_date","online_matching_date","accept_male",
+// 	"accept_female","accept_legal_risk","accept_sibling_contact","accept_birth_family_contact","number_of_children_to_adopt",
+// 	"adoption_ages_from","adoption_ages_to","max_physical_dst_id","max_intellectual_dst_id","max_emotional_dst_id",
+// 	"social_worker_agc_id","flag_calls","notes"];
 var importArray;
+var allChildren = [];
+var allFamilies = [];
 
 module.exports.importPlacements = function importPlacements(req, res, done) {
 
 	var self = this,
 		locals = res.locals;
 
-	csv2arr({
-		file: "./migration-data/csv-data/family_placement.csv",
-		columns: columns
-	}, function (err, array) {
+	converter.fromFile("./migration-data/csv-data/family_placement.csv",function(err,array){
+
 		if (err) {
 			throw "An error occurred!\n" + err;
 		} else {
@@ -53,8 +57,36 @@ module.exports.importPlacements = function importPlacements(req, res, done) {
 			importArray = array;
 
 			async.parallel([
-				allChildren = preloadChildren();
-				allFamilies = preloadFamilies();
+				function(done) {
+					converter.fromFile("./migration-data/csv-data/child.csv",function(err,array){
+						if (err) {
+							throw "An error occurred!\n" + err;
+						} else {
+							importArray = array;
+
+							for (var i=0,_count=importArray.length; i <_count; i++) {
+								allChildren.push(importArray[i]);
+							}
+						}
+					})
+
+					done();
+				},
+				function(done) {
+					converter.fromFile("./migration-data/csv-data/family_race_preference.csv",function(err,array){
+						if (err) {
+							throw "An error occurred!\n" + err;
+						} else {
+
+							importArrayFamRacePref = array;
+						}
+					});
+
+					done();
+				}
+
+				// allChildren = preloadChildren(),
+				// allFamilies = preloadFamilies()
 			], function() {
 
 				for (var i=0,_count=importArray.length; i <_count; i++) {
@@ -112,6 +144,9 @@ module.exports.importPlacements = function importPlacements(req, res, done) {
 						newEvent.save(function(err) {
 							// newEvent object has been saved
 							if (err) {
+								console.log(err);
+								console.log("[ID#" + _event.evt_id +"] an error occured while saving object.");
+								console.log(newEvent);
 								throw "[ID#" + _event.evt_id +"] an error occured while saving " + newEvent + " object."
 							}
 							else {
@@ -128,46 +163,43 @@ module.exports.importPlacements = function importPlacements(req, res, done) {
 
 }
 
-module.exports.preloadChildren = function preloadChildren(){
-	var allChildren = []
+// module.exports.preloadChildren = function preloadChildren(){
+// 	var allChildren = []
 
-	csv2arr({
-		file: "./migration-data/csv-data/child.csv",
-		columns: columns_child
-	}, function (err, array) {
-		if (err) {
-			throw "An error occurred!\n" + err;
-		} else {
-			importArray = array;
+// 	converter.fromFile("./migration-data/csv-data/child.csv",function(err,array){
+// 		if (err) {
+// 			throw "An error occurred!\n" + err;
+// 		} else {
+// 			importArray = array;
 
-			for (var i=0,_count=importArray.length; i <_count; i++) {
-				allChildren.push(importArray[i]);
-			}
+// 			for (var i=0,_count=importArray.length; i <_count; i++) {
+// 				allChildren.push(importArray[i]);
+// 			}
 
-			return allChildren;
-		}
-	})
+// 			return allChildren;
+// 		}
+// 	})
 
-}
-module.exports.preloadFamilies = function preloadFamilies() {
-	var allFamilies = [];
-	csv2arr({
-		file: "./migration-data/csv-data/family.csv",
-		columns: columns_family
-	}, function (err, array) {
-		if (err) {
-			throw "An error occurred!\n" + err;
-		} else {
-			importArray = array;
+// }
+// module.exports.preloadFamilies = function preloadFamilies() {
+// 	var allFamilies = [];
 
-			for (var i=0,_count=importArray.length; i <_count; i++) {
-				allFamilies.push(importArray[i]);
-			}
+// 	converter.fromFile("./migration-data/csv-data/family.csv",function(err,array){
 
-			return allFamilies;
-		}
-	});
-}
+// 		if (err) {
+// 			throw "An error occurred!\n" + err;
+// 		} else {
+// 			importArray = array;
+
+// 			for (var i=0,_count=importArray.length; i <_count; i++) {
+// 				allFamilies.push(importArray[i]);
+// 			}
+
+// 			return allFamilies;
+// 		}
+// 	});
+// }
+
 module.exports.fetchChild = function fetchChild(id, haystack){
 
 	for (var i=0,_count=haystack.length; i <_count; i++) {
@@ -179,6 +211,7 @@ module.exports.fetchChild = function fetchChild(id, haystack){
 	}
 
 }
+
 module.exports.fetchFamily = function fetchFamily(id, haystack){
 
 	for (var i=0,_count=haystack.length; i <_count; i++) {

@@ -11,6 +11,7 @@
     "browserify": "^13.1.1",
     "cloudinary": "~1.4.6",
     "csv-to-array": "^1.0.2",
+    "dateformat": "^2.0.0",
     "del": "^2.2.2",
     "dotenv": "^2.0.0",
     "express-handlebars": "~3.0.0",
@@ -48,6 +49,7 @@
   "main": "keystone.js",
   "devDependencies": {
     "chai": "^3.5.0",
+    "csvtojson": "^1.0.3",
     "mocha": "^3.2.0",
     "sinon": "^1.17.6",
     "sinon-chai": "^2.8.0"

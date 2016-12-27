@@ -26,7 +26,7 @@ Agency.add({
 	},
 
 	url: { type: Types.Text, label: 'agency url', initial: true },
-	generalInquiryContact: { type: Types.Email, label: 'general inquiry contact', required: true, initial: true }
+	generalInquiryContact: { type: Types.Email, label: 'general inquiry contact', initial: true }
 });
 
 // Set up relationship values to show up at the bottom of the model if any exist

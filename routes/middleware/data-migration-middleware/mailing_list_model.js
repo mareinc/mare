@@ -10,8 +10,12 @@ var async                   = require('async'),
     dataMigrationService    = require('../service_data-migration')
     ;
 
-var ml_coluns = ["mlt_id","name"]
-var mls_columns = ["mls_id","mlt_id","fam_id","agc_id","ocn_id"];
+//Converter Class 
+var Converter = require("csvtojson").Converter;
+var converter = new Converter({});
+
+// var ml_coluns = ["mlt_id","name"]
+// var mls_columns = ["mls_id","mlt_id","fam_id","agc_id","ocn_id"];
 var importArray;
 
 module.exports.importMailingLists = function importMailingLists(req, res, done) {
@@ -21,10 +25,11 @@ module.exports.importMailingLists = function importMailingLists(req, res, done) 
 
         var allMLS = loadMailingSubscriptions();
 
-        csv2arr({
-            file: "./migration-data/csv-data/mailing_list.csv",
-            columns: ml_columns
-        }, function (err, array) {
+        converter.fromFile("./migration-data/csv-data/mailing_list.csv",function(err,array){
+        // csv2arr({
+        //     file: "./migration-data/csv-data/mailing_list.csv",
+        //     columns: ml_columns
+        // }, function (err, array) {
             if (err) {
                 throw "An error occurred!\n" + err;
             } else {
@@ -66,10 +71,12 @@ module.exports.importMailingLists = function importMailingLists(req, res, done) 
 
 function loadMailingSubscriptions(){
         var allMailingListsSubscriptions = [];
-        csv2arr({
-            file: "./migration-data/csv-data/mailing_list_subscription.csv",
-            columns: mls_columns
-        }, function (err, array) {
+
+        converter.fromFile("./migration-data/csv-data/mailing_list_subscription.csv",function(err,array){
+        // csv2arr({
+        //     file: "./migration-data/csv-data/mailing_list_subscription.csv",
+        //     columns: mls_columns
+        // }, function (err, array) {
             if (err) {
                 throw "An error occurred!\n" + err;
             } else {
