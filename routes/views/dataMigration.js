@@ -16,12 +16,12 @@ exports = module.exports = function(req, res) {
     let locals = res.locals;
 
     async.series([
-		// function(done) { agenciesImport.importAgencies( req, res, done ); }, 			  // 1
+		function(done) { agenciesImport.importAgencies( req, res, done ); }, 			  // 1
 		// function(done) { outsideContactImport.importOutsideContacts( req, res, done ); }   // 2
 		// function(done) { socialWorkerImport.importSocialWorker( req, res, done ); }        // 3
 		// function(done) { childrenImport.importChildren( req, res, done ); },				  // 4
 
-		function(done) { familiesImport.importFamilies( req, res, done ); },				  // 5
+		// function(done) { familiesImport.importFamilies( req, res, done ); },				  // 5
 		// function(done) { eventsImport.importEvents( req, res, done ); }
 		
 	], function() {
