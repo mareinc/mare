@@ -20,6 +20,8 @@ exports = module.exports = ( req, res ) => {
 		done => { listsService.getAllStates( req, res, done ) },
 		done => { listsService.getAllRaces( req, res, done, raceOptions ) },
 		done => { listsService.getAllGenders( req, res, done ) },
+		done => { listsService.getAllLanguages( req, res, done ) },
+		done => { listsService.getAllLegalStatuses( req, res, done ) },
 		done => { listsService.getAllWaysToHearAboutMARE( req, res, done, waysToHearOptions ) },
 		done => { pageService.populateSidebar( req, res, done ); },
 		done => { pageService.getSectionHeader( req, res, done, 'About Us' ); }

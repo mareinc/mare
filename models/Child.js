@@ -16,17 +16,16 @@ require('./List_Region');
 require('./Event');
 require('./List_MediaEligibility');
 
-const keystone				= require('keystone'),
-	async 					= require('async'),
-	_ 						= require('underscore'),
-	moment					= require('moment'),
-	Types					= keystone.Field.Types,
-	ChildHistory			= keystone.list('Child History'),
-	ChangeHistoryMiddleware = require('../routes/middleware/models_change-history');
-	ChildMiddleware			= require('../routes/middleware/models_child');
-	FamilyMiddleware		= require('../routes/middleware/models_family');
-	SocialWorkerMiddleware	= require('../routes/middleware/models_social-worker');
-	UtilitiesMiddleware		= require('../routes/middleware/utilities');
+const keystone					= require('keystone'),
+	  async 					= require('async'),
+	  _ 						= require('underscore'),
+	  Types						= keystone.Field.Types,
+	  ChildHistory				= keystone.list('Child History'),
+	  ChangeHistoryMiddleware	= require('../routes/middleware/models_change-history'),
+	  ChildMiddleware			= require('../routes/middleware/models_child'),
+	  FamilyMiddleware			= require('../routes/middleware/models_family'),
+	  SocialWorkerMiddleware	= require('../routes/middleware/models_social-worker'),
+	  UtilitiesMiddleware		= require('../routes/middleware/utilities');
 
 // Create model
 const Child = new keystone.List('Child', {

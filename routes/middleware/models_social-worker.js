@@ -1,4 +1,4 @@
-var keystone 	        = require( 'keystone' );
+var keystone = require( 'keystone' );
 
 /* take in an array of child ids and returns an array of their registration numbers */
 exports.removeChildBookmarks = bookmarkedChildrenToRemove => {
