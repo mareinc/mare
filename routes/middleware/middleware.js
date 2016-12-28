@@ -178,7 +178,8 @@ exports.login = function( req, res, next ) {
 
 	if (!req.body.email || !req.body.password) {
 		/* TODO: Need a better message for the user, flash messages won't work because page reloads are stupid */
-		res.locals.messages.push( { type: 'error', message: 'Please enter your username and password.' } );
+		req.flash( 'error', { title: 'Something went wrong',
+							  detail: 'Please enter your username and password.' } );
 		return next();
 	}
 
@@ -187,13 +188,14 @@ exports.login = function( req, res, next ) {
 	], () =>{
 
 		if( locals.userStatus === 'nonexistent' ) {
-
-			res.locals.messages.push( { type: 'error', message: 'Your username or password is incorrect, please try again.' } );
+			req.flash( 'error', { title: 'Something went wrong',
+							  detail: 'Your username or password is incorrect, please try again.' } );
 			res.redirect( req.body.target );
 
 		} else if( locals.userStatus === 'inactive' ) {
-
-			res.locals.messages.push( { type: 'error', message: 'Your account is not active yet, you will receive an email what your account has been reviewed' } );
+			// TODO: we need to figure out if they were once active, or change the message to handle that case as well
+			req.flash( 'error', { title: 'Something went wrong',
+							  detail: 'Your account is not active yet, you will receive an email what your account has been reviewed.' } );
 			res.redirect( req.body.target );
 
 		} else if( locals.userStatus === 'active' ) {
