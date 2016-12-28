@@ -37,27 +37,40 @@ exports.getTargetModel = function getTargetModel(modelName) {
 exports.getModelId = function getModelId(req, res, done, options) {
 	'use strict';
 
-	var locals = res.locals,
-		targetModel = exports.getTargetModel(options.model);
+	let locals = res.locals,
+		targetModel = exports.getTargetModel( options.model );
 
 	targetModel.model.find()
-		.where(options.targetField, options.targetValue)
+		.where( options.targetField, options.targetValue )
 		.exec()
-		.then(function (model) {
+		.then( function( model ) {
 
-			console.log("======================================");
-
-			console.log(model);
-
-			locals[options.returnTarget] = model[0]._id;
-
+			locals[ options.returnTarget ] = model[ 0 ]._id;
 			done();
 
-		}, function(err) {
+		}, function( err ) {
 
 			console.log(err);
-
 			done();
-
 		});
 };
+
+exports.getModelMap = function( done, options ) {
+	'use strict';
+
+	const targetModel = exports.getTargetModel( options.model );
+	// store map in a variable as a performance improvement to prevent an object chain lookup for each iteration
+	let map = options.map;
+
+	targetModel.model.find()
+		.exec()
+		.then( function( models ) {
+
+			for( let model of models ) {
+				// uses the passed in map object to bind the id in the old system ( key ) to the id in the new system ( value )
+				map[ model.oldId ] = model._id;
+			}
+
+			done();
+		});
+}
