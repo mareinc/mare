@@ -18,10 +18,6 @@ exports.getRegionsMap = function getRegionsMap(req, res, done) {
 		
 	], function(err, results) {
 
-		console.log("returning locals " + results)
-
-		var test = locals;
-
 		locals.regionsMap = {
 			
 			1000: locals.regionWestern,
