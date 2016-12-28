@@ -105,7 +105,7 @@ keystone.set('locals', {
 // Setup common locals for your emails. The following are required by Keystone's
 // default email templates, you may remove them if you're using your own.
 keystone.set('email locals', {
-	logo_src: '/templates/emails/mare-logo.png',
+	logo_src: '/public/dist/img/mare-logo.png',
 	logo_width: 194,
 	logo_height: 76,
 	theme: {
