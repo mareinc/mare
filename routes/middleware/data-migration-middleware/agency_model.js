@@ -1,4 +1,3 @@
-
 /**
  * Created by Adrian Suciu.
  */
@@ -15,77 +14,77 @@ const statesMap				= require( '../data-migration-maps/state' );
 const regionsMap			= require( '../data-migration-maps/region' );
 
 // agency import file
-const columns = [ 'agn_id', 'code', 'name', 'address_1', 'address_2', 'city', 'state', 'zip', 'phone', 'fax', 'url', 'rgn_id' ];
+// const columns = [ 'agn_id', 'code', 'name', 'address_1', 'address_2', 'city', 'state', 'zip', 'phone', 'fax', 'url', 'rgn_id' ];
 
-//Converter Class 
-var Converter = require("csvtojson").Converter;
-var converter = new Converter({});
+// migration file location
+const csvFilePath = './migration-data/csv-data/agency.csv';
+const csv = require( 'csvtojson' );
 
 /* the import function for agencies */
 module.exports.importAgencies = ( req, res, done ) => {
-		// create a reference to locals where variables shared across functions will be bound
-		let locals = res.locals;
+	// create a reference to locals where variables shared across functions will be bound
+	let locals = res.locals;
 
-		converter.fromFile("./migration-data/csv-data/agency.csv",function(err,array){
+	async.parallel([
+		function( done ) { statesMap.getStatesMap( req, res, done ) } ,
+		function( done ) { regionsMap.getRegionsMap( req, res, done ) }
+	], function() {
 
-			if( err ) {
-				throw `An error occurred!
-					   ${ err }`;
-			} else {
-				locals.importArray = array;
+		let remainingRecords = 0;
 
-				async.parallel([
-					function(done) { statesMap.getStatesMap(req, res, done) } ,
-					function(done) { regionsMap.getRegionsMap(req, res, done) }
-				], function() {
+		csv().fromFile( csvFilePath )
+			.on( 'json', ( agency, index ) => {	// this will fire once per row of data in the file
+				// increment the counter keeping track of how many records we still need to process
+				remainingRecords++;
+				
+				// 1002 is the id from region.csv for "others" and 1007 is for "out of state"
+				let region = locals.regionsMap[ agency.rgn_id ] ?	// if the region is an expected value
+							 locals.regionsMap[ agency.rgn_id ] :	// use the id from the old system to get the id in the new system
+							 agency.state === 'MA' ?				// otherwise, if the state is Massachusetts
+							 locals.regionsMap[ 1002 ] :			// set the region to 'others'
+							 locals.regionsMap[ 1007 ] 				// if the state is not Massachusetts, set the region to 'out of state'
 
-					for (var i=1,_count=locals.importArray.length; i <_count; i++) {
-						let _agency = locals.importArray[i];
-						
-						// 1002 is the id from region.csv for "others" and 1007 is for "out of state"
-						let _region = locals.regionsMap[_agency.rgn_id] ? locals.regionsMap[_agency.rgn_id] : _agency.state === 'MA' ? locals.regionsMap[1002] : locals.regionsMap[1007] 
+				let newAgency = new Agency.model({
 
-						let newAgency = new Agency.model({
+					oldId: agency.agn_id,
+					code: agency.code,
+					name: agency.name,
 
-							code: _agency.code,
-							name: _agency.name,
+					phone: agency.phone,
+					fax: agency.fax,
 
-							phone: _agency.phone,
-							fax: _agency.fax,
+					address: {
+						street1: agency.address_1,
+						street2: agency.address_2,
+						city: agency.city,
+						state: locals.statesMap[ agency.state ],
+						zipCode: agency.zip,	// ERROR: this is converting to a number and stripping leading 0's
+						region: region
+					},
 
-							address: {
-								street1: _agency.address_1,
-								street2: _agency.address_2,
-								city: _agency.city,
-								state: locals.statesMap[_agency.state],
-								zipCode: _agency.zip,
-								region: _region
-							},
+					url: agency.url,
+					generalInquiryContact: agency.generalInquiryContact // ERROR: this doesn't exist in the agency.csv, but is required, you'll need to fetch it from the correct import file
+				});
 
-							url: _agency.url,
-							generalInquiryContact: _agency.generalInquiryContact
-
-						});
-
-						newAgency.save(function(err) {
-							if (err) {
-								console.log('#3');
-								console.log("[ID#" + _agency.agn_id +"] an error occured while saving " + newAgency + " object.");
-								throw "[ID#" + _agency.agn_id +"] an error occured while saving " + newAgency + " object."
-							}
-							else {
-								console.log('#4');
-								console.log("[ID#" + _agency.agn_id + "] child successfully saved!");
-							}
-						});
+				newAgency.save(function(err) {
+					if (err) {
+						console.log( `[ID#${ agency.agn_id }] an error occured while saving ${ newAgency.code } object.` );
+						// throw `[ID#${ agency.agn_id }] an error occured while saving ${ newAgency } object.`
+					}
+					else {
+						console.log( `[ID#${ agency.agn_id }] agency successfully saved!` );
 					}
 
-					console.log('Execution Finished?!');
-
+					// decrement the counter keeping track of how many records we still need to process
+					remainingRecords--;
+					// if there are no more records to process call done to move to the next migration file
+					if( remainingRecords === 0 ) {
+						done();
+					}
 				});
-			}	
-
-		});
-	}
-
-
+			})
+			.on( 'end', () => {
+				console.log( `end` ); // this should never execute but should stay for better debugging
+			});
+	});	
+};
