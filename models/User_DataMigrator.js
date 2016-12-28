@@ -8,6 +8,16 @@ var DataMigrator = new keystone.List('Data Migrator', {
 	hidden: false
 });
 
+// Create fields
+DataMigrator.add( 'Permissions', {
+
+	permissions: {
+		isVerified: { type: Boolean, label: 'has a verified email address', default: true, noedit: true },
+		isActive: { type: Boolean, label: 'is active', default: true }
+	}
+
+});
+
 // Pre Save
 DataMigrator.schema.pre('save', function(next) {
 	'use strict';
@@ -18,14 +28,14 @@ DataMigrator.schema.pre('save', function(next) {
 });
 
 // Provide access to Keystone
-DataMigrator.schema.virtual('canAccessKeystone').get(function() {
+DataMigrator.schema.virtual( 'canAccessKeystone' ).get(function() {
 	'use strict';
 
 	return false;
 });
 
 // Provides access to data migration middleware
-DataMigrator.schema.virtual('canMigrateData').get(function() {
+DataMigrator.schema.virtual( 'canMigrateData' ).get(function() {
 	'use strict';
 
 	return true;
