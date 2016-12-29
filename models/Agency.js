@@ -26,7 +26,7 @@ Agency.add({
 	},
 
 	url: { type: Types.Text, label: 'agency url', initial: true },
-	generalInquiryContact: { type: Types.Email, label: 'general inquiry contact', required: true, initial: true }
+	generalInquiryContact: { type: Types.Email, label: 'general inquiry contact', initial: true }
 
 /* Container for data migration fields ( these should be kept until after phase 2 and the old system is phased out completely ) */
 }, {
