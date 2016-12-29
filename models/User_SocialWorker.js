@@ -12,6 +12,7 @@ var keystone				= require( 'keystone' ),
 // Create model
 var SocialWorker = new keystone.List( 'Social Worker', {
 	inherits	: User,
+	track: true,
 	map			: { name: 'name.full' },
 	defaultSort	: 'name.full',
 	hidden		: false
@@ -170,6 +171,20 @@ SocialWorker.schema.methods.setChangeHistory = function setChangeHistory( done )
 		// Any time a new field is added, it MUST be added to this list in order to be considered for display in change history
 		// Computed fields and fields internal to the object SHOULD NOT be added to this list
 		async.parallel([
+			done => {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											parent: 'permissions',
+											name: 'isVerified',
+											label: 'is verified',
+											type: 'boolean' }, model, modelBefore, changeHistory, done);
+			},
+			done => {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											parent: 'permissions',
+											name: 'isActive',
+											label: 'is active',
+											type: 'boolean' }, model, modelBefore, changeHistory, done);
+			},
 			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'name',

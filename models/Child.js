@@ -29,6 +29,7 @@ const keystone					= require('keystone'),
 
 // Create model
 const Child = new keystone.List('Child', {
+	track: true,
 	autokey: { path: 'key', from: 'registrationNumber', unique: true },
 	map: { name: 'name.full' },
 	defaultSort: 'name.full'
