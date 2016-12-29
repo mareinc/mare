@@ -131,7 +131,7 @@ Child.add('Display Options', {
 	photolistingPageNumber: { type: Number, label: 'photolisting page', format: false, initial: true },
 	previousPhotolistingPageNumber: { type: Number, label: 'previous photolisting page', format: false, initial: true },
 
-	image: { type: Types.CloudinaryImage, label: 'image', folder: 'children/', selectPrefix: 'children/', publicID: 'fileName', dependsOn: { mustBePlacedWithSiblings: false }, autoCleanup: true },
+	image: { type: Types.CloudinaryImage, label: 'image', folder: 'children/', select: true, selectPrefix: 'children/', publicID: 'fileName', dependsOn: { mustBePlacedWithSiblings: false }, autoCleanup: true },
 	galleryImage: { type: Types.Url, hidden: true },
 	detailImage: { type: Types.Url, hidden: true },
 	siblingGroupImage: { type: Types.CloudinaryImage, label: 'sibling group image', folder: 'sibling-groups/', selectPrefix: 'sibling-groups/', publicID: 'siblingGroupFileName', dependsOn: { mustBePlacedWithSiblings: true }, autoCleanup: true },
