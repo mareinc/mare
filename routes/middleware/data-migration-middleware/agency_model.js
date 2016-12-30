@@ -62,8 +62,7 @@ module.exports.importAgencies = ( req, res, done ) => {
 						region: region
 					},
 
-					url: agency.url,
-					generalInquiryContact: agency.generalInquiryContact // ERROR: this doesn't exist in the agency.csv, but is required, you'll need to fetch it from the correct import file
+					url: agency.url
 				});
 
 				newAgency.save(function(err) {
