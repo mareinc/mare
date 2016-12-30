@@ -2,16 +2,16 @@
  * Created by Adrian Suciu.
  */
 
-var async					= require('async'),
-	keystone				= require('keystone'),
+var async					= require( 'async' ),
+	keystone				= require( 'keystone' ),
 	Types 					= keystone.Field.Types,
-	Agency					= keystone.list('Agency'),
-	SocialWorker   			= keystone.list('Social Worker');
+	Agency					= keystone.list( 'Agency' ),
+	SocialWorker   			= keystone.list( 'Social Worker' );
 
 // migration file location
 const csvFilePath = './migration-data/csv-data/agency_contact.csv';
 const csv = require( 'csvtojson' );
-// create an array to hold all social workers.  This is create here to be available to multiple functions below
+// create an array to hold all social workers.  This is created here to be available to multiple functions below
 let socialWorkers = [];
 
 module.exports.importSocialWorker = (req, res, done) => {
