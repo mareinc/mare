@@ -58,7 +58,7 @@ module.exports.importAgencies = ( req, res, done ) => {
 						street2: agency.address_2,
 						city: agency.city,
 						state: locals.statesMap[ agency.state ],
-						zipCode: agency.zip,	// ERROR: this is converting to a number and stripping leading 0's
+						zipCode: (agency.zip.length > 4) ? agency.zip : '0' + agency.zip,
 						region: region
 					},
 
@@ -78,7 +78,7 @@ module.exports.importAgencies = ( req, res, done ) => {
 					// decrement the counter keeping track of how many records we still need to process
 					remainingRecords--;
 					// if there are no more records to process call done to move to the next migration file
-					if( remainingRecords === 0 ) {
+ 					if( remainingRecords === 0 ) {
 						done();
 					}
 				});

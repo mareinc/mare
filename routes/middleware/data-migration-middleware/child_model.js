@@ -8,7 +8,6 @@ var async					= require('async'),
 	keystone				= require('keystone'),
 	Types 					= keystone.Field.Types,
     Child 					= keystone.list('Child'), // NOTE: this may not work, for keystone to access the database using a model reference, you may need the keystone.list('Agency'); syntax here
-    csv2arr					= require('csv-to-array'),
 	dataMigrationService	= require('../service_data-migration'),
 
 	//mappings
@@ -39,132 +38,142 @@ var converter = new Converter({});
 // 	"placement_placed_date","placement_disruption_date","placement_fam_id","placement_family_name","placement_address_1",
 // 	"placement_address_2","placement_city","placement_state","placement_zip","placement_home_phone","placement_country",
 // 	"placement_email","placement_agency","placement_constellation","placement_rce_id"];
-var importArray;
+
 var childImagesArray = [];
+
+// migration file location
+const csvFilePath = './migration-data/csv-data/child.csv';
+const csv = require( 'csvtojson' );
 
 module.exports.importChildren = function importChildren(req, res, done){
 
 	var self = this,
 		locals = res.locals;
 
-	converter.fromFile("./migration-data/csv-data/child.csv",function(err,array){
-
-			if (err) {
-				throw "An error occurred!\n" + err;
-			} else {
-				importArray = array;
-
-				async.parallel([
-					function(done) { childStatusesMap.getChildStatusesMap(req,res,done) },
-					function(done) { gendersMap.getGendersMap(req, res, done) } ,
-					function(done) { languagesMap.getLanguagesMap(req,res,done) },
-					function(done) { legalStatusesMap.getLegalStatusesMap(req,res,done) },
-					function(done) { racesMap.getRacesMap(req,res,done) },
-					function loadAllChildImageNames(done) {
-						fileSystem.readdir('./migration-data/child_images/', (err, files) => {
-							files.forEach(file => {
-								console.log(file);
-								
-								childImagesArray.push(file);
-							});
-						});
-
-						done();
-					}
-					
-				], function() {
-
-					for (var i=1,_count=importArray.length; i <_count; i++) {
-						let _child = importArray[i];
-						let newBirthDate = parseDate(_child.date_of_birth);
-
-						// populate instance for Child object
-						let newChild = new Child.model({
-							registrationNumber: _child.chd_id,
-							registrationDate: _child.registered_date,
-
-							name: {
-								first: _child.first_name,
-								middle: _child.middle_name,
-								last: _child.last_name,
-								alias: _child.alias,
-								nickName: _child.nickname,
-								full: _child.first_name + " " + _child.middle_name + " " + _child.last_name
-							},
-
-							status: locals.childStatusesMap[_child.status], // << fetch from Mappings
-
-							statusChangeDate: _child.last_status_change_date_time,
-							birthDate: newBirthDate,
-
-							gender: locals.gendersMap[_child.gender], // << fetch from Mappings
-
-							race: locals.racesMap[_child.rce_id], // << fetch from Mappings
-
-							legalStatus: locals.legalStatusesMap[_child.legal_status], // << fetch from Mappings
-
-							recommendedFamilyConstellation: _child.can_place_into_two_parent_home,
-							otherFamilyConstellationConsideration: _child.can_place_in_childless_home,
-							physicalNeeds: _child.physical_dst_id,
-							emotionalNeeds: _child.emotional_dst_id,
-							intellectualNeeds: _child.intellectual_dst_id,
-							physicalNeedsDescription: _child.physical_dissability_comment,
-							emotionalNeedsDescription: _child.emotional_dissability_comment,
-							intellectualNeedsDescription: _child.intellectual_dissability_comment,
-							healthNotesOld: _child.health_notes,
-
-							hasContactWithSiblings: _child.allow_sibling_contact,
-							siblingTypeOfContact: _child.simbling_contact_note,
-							hasContactWithBirthFamily: _child.allow_birth_family_contact,
-							birthFamilyTypeOfContact: _child.birth_family_contact_note,
-
-							hasPhotolistingWriteup: _child.have_photolisting_writeup,
-							photolistingWriteupDate: _child.photolisting_writeup_date,
-							hasPhotolistingPhoto: _child.have_photolisting_photo,
-							photolistingPhotoDate: _child.photolisting_photo_date,
-							isCurrentlyInPhotoListing: isInPhotoListings(_child.photolisting_photo_date),
-
-							previousPhotolistingPageNumber: _child.previous_photolisting_page,
-							hasVideoSnapshot: _child.have_video_snapshot,
-							videoSnapshotDate: _child.video_snapshot_date,
-							language: locals.languagesMap[_child.primary_language],
-							registeredBy: _child.registered_by,
-							extranetUrl: _child.profile_url,
-							onMAREWebsite: _child.is_on_mare_web,
-							onAdoptuskids: _child.is_on_adoptuskids,
-							onOnlineMatching: _child.is_on_online_matching,
-
-							image: fetchImage(_child.chd_id),
-							siblingGroupImage: fetchImage(_child.chd_id)
-
-							/*
-							Create a function that goes and looks for a childs image in the folder of picture based on the child_id + "-" 
-							and from there on populate image: if the length of the image file is the biggest then call the fetchImage function
-							and add the local path of the image into simblingGroupImage field (the longer file is a definitely the longest in name) 
-							if it's smallest then add the image path to the image field.
-
-							*/
-
-						});
-
-						// call save method on Child object
-						newChild.save(function(err) {
-							// newChild object has been saved
-							if (err) {
-								console.log("[ID#" + _child.chd_id +"] an error occured while saving child object.");
-								console.log(newChild);
-								throw "[ID#" + _child.chd_id +"] an error occured while saving " + newChild + " object."
-							}
-							else {
-								console.log("[ID#" + _child.chd_id + "] child successfully saved!");
-							}
-						});
-
-					}
-
+		async.parallel([
+			function(done) { childStatusesMap.getChildStatusesMap(req,res,done) },
+			function(done) { gendersMap.getGendersMap(req, res, done) } ,
+			function(done) { languagesMap.getLanguagesMap(req,res,done) },
+			function(done) { legalStatusesMap.getLegalStatusesMap(req,res,done) },
+			function(done) { racesMap.getRacesMap(req,res,done) },
+			function loadAllChildImageNames(done) {
+				fileSystem.readdir('./migration-data/child_images/', (err, files) => {
+					files.forEach(file => {
+						console.log(file);
+						
+						childImagesArray.push(file);
+					});
 				});
+
+				done();
 			}
+			
+		], function() {
+
+			let remainingRecords = 0;
+
+			csv().fromFile( csvFilePath )
+				.on( 'json', ( child, index ) => {	// this will fire once per row of data in the file
+					// increment the counter keeping track of how many records we still need to process
+					remainingRecords++;
+
+					let newBirthDate = parseDate(child.date_of_birth);
+
+					// populate instance for Child object
+					let newChild = new Child.model({
+						registrationNumber: child.chd_id,
+						registrationDate: child.registered_date,
+
+						name: {
+							first: child.first_name,
+							middle: child.middle_name,
+							last: child.last_name,
+							alias: child.alias,
+							nickName: child.nickname,
+							full: child.first_name + " " + child.middle_name + " " + child.last_name
+						},
+
+						status: locals.childStatusesMap[child.status], // << fetch from Mappings
+
+						statusChangeDate: child.last_status_change_date_time,
+						birthDate: newBirthDate,
+
+						gender: locals.gendersMap[child.gender], // << fetch from Mappings
+
+						race: locals.racesMap[child.rce_id], // << fetch from Mappings
+
+						legalStatus: locals.legalStatusesMap[child.legal_status], // << fetch from Mappings
+
+						recommendedFamilyConstellation: child.can_place_into_two_parent_home,
+						otherFamilyConstellationConsideration: child.can_place_inchildless_home,
+						physicalNeeds: child.physical_dst_id,
+						emotionalNeeds: child.emotional_dst_id,
+						intellectualNeeds: child.intellectual_dst_id,
+						physicalNeedsDescription: child.physical_dissability_comment,
+						emotionalNeedsDescription: child.emotional_dissability_comment,
+						intellectualNeedsDescription: child.intellectual_dissability_comment,
+						healthNotesOld: child.health_notes,
+
+						hasContactWithSiblings: child.allow_sibling_contact,
+						siblingTypeOfContact: child.simbling_contact_note,
+						hasContactWithBirthFamily: child.allow_birth_family_contact,
+						birthFamilyTypeOfContact: child.birth_family_contact_note,
+
+						hasPhotolistingWriteup: child.have_photolisting_writeup,
+						photolistingWriteupDate: child.photolisting_writeup_date,
+						hasPhotolistingPhoto: child.have_photolisting_photo,
+						photolistingPhotoDate: child.photolisting_photo_date,
+						isCurrentlyInPhotoListing: isInPhotoListings(child.photolisting_photo_date),
+
+						previousPhotolistingPageNumber: child.previous_photolisting_page,
+						hasVideoSnapshot: child.have_video_snapshot,
+						videoSnapshotDate: child.video_snapshot_date,
+						language: locals.languagesMap[child.primary_language],
+						registeredBy: child.registered_by,
+						extranetUrl: child.profile_url,
+						onMAREWebsite: child.is_on_mare_web,
+						onAdoptuskids: child.is_on_adoptuskids,
+						onOnlineMatching: child.is_on_online_matching,
+
+						image: fetchImage(child.chd_id),
+						siblingGroupImage: fetchImage(child.chd_id)
+
+						/*
+						Create a function that goes and looks for a childs image in the folder of picture based on the child_id + "-" 
+						and from there on populate image: if the length of the image file is the biggest then call the fetchImage function
+						and add the local path of the image into simblingGroupImage field (the longer file is a definitely the longest in name) 
+						if it's smallest then add the image path to the image field.
+
+						*/
+
+					});
+
+					// call save method on Child object
+					newChild.save(function(err) {
+
+						if (err) {
+							console.log( `[ID#${ child.chd_id  }] an error occured while saving ${ newChild.code } object.` );
+							// throw `[ID#${ agency.agn_id }] an error occured while saving ${ newAgency } object.`
+						}
+						else {
+							console.log( `[ID#${ child.chd_id  }] agency successfully saved!` );
+						}
+						
+						// decrement the counter keeping track of how many records we still need to process
+						remainingRecords--;
+						// if there are no more records to process call done to move to the next migration file
+						if( remainingRecords === 0 ) {
+							done();
+						}
+					});
+
+				})
+				.on( 'end', () => {
+					console.log( `end` ); // this should never execute but should stay for better debugging
+				});
+
 		});
+
 
 	}
 

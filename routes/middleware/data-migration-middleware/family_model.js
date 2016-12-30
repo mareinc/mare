@@ -25,20 +25,22 @@ var async					= require('async'),
 var Converter = require("csvtojson").Converter;
 var converter = new Converter({});
 
-// var columns = ["fam_id","old_family_id","listing_date","family_constellation","primary_language","is_home_studied","home_study_date",
+// var columns = ["fam_id","oldfamily_id","listing_date","family_constellation","primary_language","is_home_studied","home_study_date",
 // 	"is_registered","registered_date","status","last_status_change_date","address_1","address_2","city","state","zip","country",
 // 	"home_phone","fax","info_pack","info_pack_sent_date","info_pack_notes","is_gathering_info","gathering_info_date",
 // 	"is_looking_for_agency","looking_for_agency_date","is_working_with_agency","working_with_agency_date","mapp_training_date",
-// 	"is_closed","closed_date","closed_reason","has_family_profile","family_profile_date","online_matching_date","accept_male",
-// 	"accept_female","accept_legal_risk","accept_sibling_contact","accept_birth_family_contact","number_of_children_to_adopt",
+// 	"is_closed","closed_date","closed_reason","hasfamily_profile","family_profile_date","online_matching_date","accept_male",
+// 	"accept_female","accept_legal_risk","accept_sibling_contact","accept_birthfamily_contact","number_of_children_to_adopt",
 // 	"adoption_ages_from","adoption_ages_to","max_physical_dst_id","max_intellectual_dst_id","max_emotional_dst_id",
 // 	"social_worker_agc_id","flag_calls","notes"];
 
-// var columns_family_race_preference = ["frp_id","fam_id","rce_id"];
+// var columnsfamily_race_preference = ["frp_id","fam_id","rce_id"];
 
-// var columns_family_special_need = ["fsn_id","fam_id","spn_id"];
+// var columnsfamily_special_need = ["fsn_id","fam_id","spn_id"];
 
-var importArray;
+const csvFilePath = './migration-data/csv-data/family.csv';
+const csv = require( 'csvtojson' );
+
 var importArrayFamRacePref;
 var importArrayFamSpecNeed;
 
@@ -46,241 +48,224 @@ module.exports.importFamilies = function importFamilies(req, res, done) {
 	var self = this,
 		locals = res.locals;
 
-	converter.fromFile("./migration-data/csv-data/family.csv",function(err,array){
+		async.parallel([
 
-			if (err) {
-				throw "An error occurred!\n" + err;
-			} else {
+			function(done) { childStatusesMap.getChildStatusesMap(req,res,done) },
+			function(done) { closedStatusesMap.getClosedReasonsMap(req,res,done) },					
+			function(done) { familyConstellationMap.getFamilyConstellationsMap(req, res, done) },
+			function(done) { gendersMap.getGendersMap(req, res, done) } ,
+			function(done) { languagesMap.getLanguagesMap(req, res, done) },
+			function(done) { legalStatusesMap.getLegalStatusesMap(req, res, done) },
+			function(done) { racesMap.getRacesMap(req,res,done) },
+			function(done) { statesMap.getStatesMap(req, res, done) },
+			function(done) {
+				converter.fromFile("./migration-data/csv-data/family_race_preference.csv",function(err,array){
+					if (err) {
+						throw "An error occurred!\n" + err;
+					} else {
 
-				importArray = array;
-
-				async.parallel([
-
-					function(done) { childStatusesMap.getChildStatusesMap(req,res,done) },
-					function(done) { closedStatusesMap.getClosedReasonsMap(req,res,done) },					
-					function(done) { familyConstellationMap.getFamilyConstellationsMap(req, res, done) },
-					function(done) { gendersMap.getGendersMap(req, res, done) } ,
-					function(done) { languagesMap.getLanguagesMap(req, res, done) },
-					function(done) { legalStatusesMap.getLegalStatusesMap(req, res, done) },
-					function(done) { racesMap.getRacesMap(req,res,done) },
-					function(done) { statesMap.getStatesMap(req, res, done) },
-					function(done) {
-						converter.fromFile("./migration-data/csv-data/family_race_preference.csv",function(err,array){
-							if (err) {
-								throw "An error occurred!\n" + err;
-							} else {
-
-								importArrayFamRacePref = array;
-							}
-						});
-
-						done();
-					},
-					function(done) {
-						converter.fromFile("./migration-data/csv-data/family_special_need.csv",function(err,array){
-							if (err) {
-								throw "An error occurred!\n" + err;
-							} else {
-
-								importArrayFamSpecNeed = array;
-							}
-						});
-
-						done();
+						importArrayFamRacePref = array;
 					}
-		
-
-				], function() {
-
-					console.log("Family model reached!");
-
-					for (var i=1,_count=importArray.length; i <_count; i++) {
-
-						let _family = importArray[i];
-
-						console.log("Family object: ", _family);
-
-						let matchingPrefGender = "";
-						let primaryLanguage = "";
-						let otherLanguages = "";
-						let splitLanguages = [];
-						let familySelectedLanguages = [];
-						let familySelectedRaces = [];
-						let familySpecialNeeds = [];
-
-
-						if (_family.accept_male != "") {
-							matchingPrefGender = _family.accept_male;
-						} else if (_family.accept_female != "") {
-							matchingPrefGender = _family.accept_female;
-						}
-
-						splitLanguages = SplitLanguages(_family.primary_language);
-
-						primaryLanguage = locals.languagesMap[splitLanguages["primary"]];
-
-						otherLanguages = splitLanguages["others"] ? splitLanguages["others"].split(",") : "";
-
-						for (var j=0; j < otherLanguages.length; j++) {
-							familySelectedLanguages.push(locals.racesMap[otherLanguages[j]]);
-						}
-						
-						familySelectedRaces = selectAllRacePrefsByFamID(_family.fam_id);
-						familySpecialNeeds = selectAllSpecialNeedsByFamID(_family.fam_id);
-
-						console.log(locals.familyConstellationsMap[_family.family_constellation]);
-						console.log(locals.childStatusesMap[_family.status]);
-						console.log(locals.statesMap[_family.state]);
-						console.log(locals.closedReasonsMap[_family.closed_reason]);
-						console.log(locals.gendersMap[matchingPrefGender]);
-						console.log(locals.legalStatusesMap[_family.accept_legal_risk]);
-						console.log(familySelectedRaces);
-						console.log(familySpecialNeeds);
-
-						// populate instance for Family object
-						let newFamily = new Family.model({
-
-							registrationNumber: _family.fam_id,
-
-							// old_family_id > Give this table name to Jared
-
-							initialContact: _family.listing_date,
-
-							flagCalls: _family.flag_calls,
-							familyConstellation: locals.familyConstellationsMap[_family.family_constellation],
-
-							/*
-							* primary_language can contain multiple languages in text form, so in this case look for these separator characters: ", / \ space"
-							* the first one is the language and the other ones are going into the otherLanguages as relationship matched ids 
-							* and as comma separated values
-							*/
-
-							language: primaryLanguage,
-							otherLanguages: familySelectedLanguages, // < needs thorough testing
-
-							homestudy: {
-								completed: _family.is_home_studied,
-								initialDate: _family.home_study_date
-							},
-
-							registeredWithMARE: {
-								registered: _family.is_registered,
-								date: _family.registered_date,
-								status: locals.childStatusesMap[_family.status]
-							},
-
-							address: {
-								street1: _family.address_1,
-								street2: _family.address_2,
-								city: _family.city,
-								state: locals.statesMap[_family.state],
-								zipCode: _family.zip
-							},
-
-							homePhone: _family.home_phone,
-
-							infoPacket: {
-								packet: _family.info_pack,
-								date: _family.info_pack_sent_date,
-								notes: _family.info_pack_notes
-							},
-
-							stages: {
-								gatheringInformation: {
-									started: _family.is_gathering_info,
-									date: _family.gathering_info_date
-								},
-								lookingForAgency: {
-									started: _family.is_looking_for_agency,
-									date: _family.looking_for_agency_date
-								},
-								workingWithAgency: {
-									started: _family.is_working_with_agency,
-									date: _family.working_with_agency_date
-								},
-								MAPPTrainingCompleted: {
-									completed: _family.is_mapp_training_completed,
-									date: _family.mapp_training_date
-								}
-							},
-
-							closed: {
-								isClosed: _family.is_closed,
-								date: _family.closed_date,
-								reason: locals.closedReasonsMap[_family.closed_reason]
-							},
-
-							familyProfile: {
-								created: _family.has_family_profile,
-								date: _family.family_profile_date
-							},
-
-							onlineMatching: {
-								started: _family.Matching,
-								date: _family.online_matching_date
-							},
-
-							matchingPreferences: {
-								gender: locals.gendersMap[matchingPrefGender],
-								legalStatus: locals.legalStatusesMap[_family.accept_legal_risk],
-
-								adoptionAges: {
-									from: _family.adoption_ages_from,
-									to: _family.adoption_ages_to
-								},
-
-								numberOfChildrenToAdopt: _family.number_of_children_to_adopt,
-								siblingContact: _family.accept_sibling_contact,
-								birthFamilyContact: _family.accept_birth_family_contact,
-								
-								// go to family_race_preferences and select all rce_id based on the fam_id split and then search for thene equivalent 
-								// hash ids in the new system look at list_race table in the new system
-								race: familySelectedRaces, 
-								
-								maxNeeds: {
-									physical: _family.max_physical_dst_id,
-									intellectual: _family.max_intellectual_dst_id,
-									emotional: _family.max_emotional_dst_id
-								},
-
-								socialWorker: _family.social_worker_agc_id,
-
-								disabilities: familySpecialNeeds
-								/*
-								* so using the fam_id go to family_special_need table and get the list of all the special needs for that family id,
-								* get the text for the special need and look it up in the new system,
-								* get the hash for it and create an array of hashes if more than one
-								*
-								* */
-								// otherConsiderations: _family. // no mapping
-
-							}
-
-						});
-
-						console.log("Family object", newFamily);
-
-						// call save method on Child object
-						newFamily.save(function(err) {
-							// newChild object has been saved
-							if (err) {
-								console.log(err);
-								console.log("[ID#" + _family.chd_id +"] an error occured while saving Family object.");
-								console.log(newFamily);
-								throw "[ID#" + _family.chd_id +"] an error occured while saving " + newFamily + " object."
-							}
-							else {
-								console.log("[ID#" + _family.chd_id + "] child successfully saved!");
-							}
-						});
-
-					}
-
 				});
+
+				done();
+			},
+			function(done) {
+				converter.fromFile("./migration-data/csv-data/family_special_need.csv",function(err,array){
+					if (err) {
+						throw "An error occurred!\n" + err;
+					} else {
+
+						importArrayFamSpecNeed = array;
+					}
+				});
+
+				done();
 			}
 
+
+		], function() {
+
+			let remainingRecords = 0;
+
+			csv().fromFile( csvFilePath )
+				.on( 'json', ( family, index ) => {	// this will fire once per row of data in the file
+					// increment the counter keeping track of how many records we still need to process
+					remainingRecords++;
+
+					let matchingPrefGender = "";
+					let primaryLanguage = "";
+					let otherLanguages = "";
+					let splitLanguages = [];
+					let familySelectedLanguages = [];
+					let familySelectedRaces = [];
+					let familySpecialNeeds = [];
+
+
+					if (family.accept_male != "") {
+						matchingPrefGender = family.accept_male;
+					} else if (family.accept_female != "") {
+						matchingPrefGender = family.accept_female;
+					}
+
+					splitLanguages = SplitLanguages(family.primary_language);
+
+					primaryLanguage = locals.languagesMap[splitLanguages["primary"]];
+
+					otherLanguages = splitLanguages["others"] ? splitLanguages["others"].split(",") : "";
+
+					for (var j=0; j < otherLanguages.length; j++) {
+						familySelectedLanguages.push(locals.racesMap[otherLanguages[j]]);
+					}
+					
+					familySelectedRaces = selectAllRacePrefsByFamID(family.fam_id);
+					familySpecialNeeds = selectAllSpecialNeedsByFamID(family.fam_id);
+
+					// populate instance for Family object
+					let newFamily = new Family.model({
+
+						registrationNumber: family.fam_id,
+
+						// oldfamily_id > Give this table name to Jared
+
+						initialContact: family.listing_date,
+
+						flagCalls: family.flag_calls,
+						familyConstellation: locals.familyConstellationsMap[family.family_constellation],
+
+						/*
+						* primary_language can contain multiple languages in text form, so in this case look for these separator characters: ", / \ space"
+						* the first one is the language and the other ones are going into the otherLanguages as relationship matched ids 
+						* and as comma separated values
+						*/
+
+						language: primaryLanguage,
+						otherLanguages: familySelectedLanguages, // < needs thorough testing
+
+						homestudy: {
+							completed: family.is_home_studied,
+							initialDate: family.home_study_date
+						},
+
+						registeredWithMARE: {
+							registered: family.is_registered,
+							date: family.registered_date,
+							status: locals.childStatusesMap[family.status]
+						},
+
+						address: {
+							street1: family.address_1,
+							street2: family.address_2,
+							city: family.city,
+							state: locals.statesMap[family.state],
+							zipCode: (family.zip.length > 4) ? family.zip : '0' + family.zip
+						},
+
+						homePhone: family.home_phone,
+
+						infoPacket: {
+							packet: family.info_pack,
+							date: family.info_pack_sent_date,
+							notes: family.info_pack_notes
+						},
+
+						stages: {
+							gatheringInformation: {
+								started: family.is_gathering_info,
+								date: family.gathering_info_date
+							},
+							lookingForAgency: {
+								started: family.is_looking_for_agency,
+								date: family.looking_for_agency_date
+							},
+							workingWithAgency: {
+								started: family.is_working_with_agency,
+								date: family.working_with_agency_date
+							},
+							MAPPTrainingCompleted: {
+								completed: family.is_mapp_training_completed,
+								date: family.mapp_training_date
+							}
+						},
+
+						closed: {
+							isClosed: family.is_closed,
+							date: family.closed_date,
+							reason: locals.closedReasonsMap[family.closed_reason]
+						},
+
+						familyProfile: {
+							created: family.hasfamily_profile,
+							date: family.family_profile_date
+						},
+
+						onlineMatching: {
+							started: family.Matching,
+							date: family.online_matching_date
+						},
+
+						matchingPreferences: {
+							gender: locals.gendersMap[matchingPrefGender],
+							legalStatus: locals.legalStatusesMap[family.accept_legal_risk],
+
+							adoptionAges: {
+								from: family.adoption_ages_from,
+								to: family.adoption_ages_to
+							},
+
+							numberOfChildrenToAdopt: family.number_of_children_to_adopt,
+							siblingContact: family.accept_sibling_contact,
+							birthFamilyContact: family.accept_birthfamily_contact,
+							
+							// go to family_race_preferences and select all rce_id based on the fam_id split and then search for thene equivalent 
+							// hash ids in the new system look at list_race table in the new system
+							race: familySelectedRaces, 
+							
+							maxNeeds: {
+								physical: family.max_physical_dst_id,
+								intellectual: family.max_intellectual_dst_id,
+								emotional: family.max_emotional_dst_id
+							},
+
+							socialWorker: family.social_worker_agc_id,
+
+							disabilities: familySpecialNeeds
+							/*
+							* so using the fam_id go to family_special_need table and get the list of all the special needs for that family id,
+							* get the text for the special need and look it up in the new system,
+							* get the hash for it and create an array of hashes if more than one
+							*
+							* */
+							// otherConsiderations: family. // no mapping
+
+						}
+
+					});
+
+					// call save method on Child object
+					newFamily.save(function(err) {
+						if (err) {
+							console.log( `[ID#${ family.chd_id }] an error occured while saving ${ newFamily.code } object.` );
+							console.log(family);
+						}
+						else {
+							console.log( `[ID#${ family.chd_id }] agency successfully saved!` );
+						}
+
+						// decrement the counter keeping track of how many records we still need to process
+						remainingRecords--;
+						// if there are no more records to process call done to move to the next migration file
+						if( remainingRecords === 0 ) {
+							done();
+						}
+					});
+				})
+				.on( 'end', () => {
+					console.log( `end` ); // this should never execute but should stay for better debugging
+				});
+			
 		});
-	}
+}
 
 function SplitLanguages(languages) {
 	var arrayOfLanguages;
