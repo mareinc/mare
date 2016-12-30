@@ -47,6 +47,6 @@ exports.create = {
 			last: 'Bot'
 		},
 		password: 'VN9uiE&geNx/wgC@woBjMvZqBvnibX9bouXgz4gJD4HrEh.uH/JoQD6hJddnGJyH',
-		email: 'jared.j.collier@gmail.com'
+		email: 'junit83@gmail.com'
 	}]
 };
