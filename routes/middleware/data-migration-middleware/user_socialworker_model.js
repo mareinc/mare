@@ -2,11 +2,11 @@
 // NOT DONE: we need a helper function that will analyze zip code in any format and add back leading zeros while converting it to a string
 // NOT DONE: we need to figure out a better solution to the email field.  The placeholders are temporary until Lisa weighs in
 
-var async					= require( 'async' ),
-	keystone				= require( 'keystone' ),
-	Types 					= keystone.Field.Types,
-	Agency					= keystone.list( 'Agency' ),
-	SocialWorker   			= keystone.list( 'Social Worker' );
+var async			= require( 'async' ),
+	keystone		= require( 'keystone' ),
+	Types 			= keystone.Field.Types,
+	Agency			= keystone.list( 'Agency' ),
+	SocialWorker   	= keystone.list( 'Social Worker' );
 
 // migration file location
 const csvFilePath = './migration-data/csv-data/agency_contact.csv';
