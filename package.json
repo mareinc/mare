@@ -9,7 +9,7 @@
   "dependencies": {
     "async": "^2.1.4",
     "browserify": "^13.1.1",
-    "cloudinary": "~1.4.6",
+    "cloudinary": "~1.5.0",
     "csv-to-array": "^1.0.2",
     "dateformat": "^2.0.0",
     "del": "^2.2.2",
