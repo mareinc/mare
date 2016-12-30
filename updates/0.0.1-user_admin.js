@@ -38,5 +38,15 @@ exports.create = {
 		},
 		password: 'LisaFunaro',
 		email: 'lisafd4@gmail.com'
+	},{
+		permissions: {
+			isActive: true
+		},
+		name: {
+			first: 'Website',
+			last: 'Bot'
+		},
+		password: 'VN9uiE&geNx/wgC@woBjMvZqBvnibX9bouXgz4gJD4HrEh.uH/JoQD6hJddnGJyH',
+		email: 'jared.j.collier@gmail.com'
 	}]
 };
