@@ -6,6 +6,8 @@ const eventsImport			= require( '../middleware/data-migration-middleware/event_m
 const familiesImport		= require( '../middleware/data-migration-middleware/family_model' );
 const outsideContactImport	= require( '../middleware/data-migration-middleware/outside_contact_model' );
 const socialWorkerImport	= require( '../middleware/data-migration-middleware/user_socialworker_model' );
+// id mappings between systems
+const statesMap				= require( '../middleware/data-migration-maps/state' );
 	
 
 exports = module.exports = function(req, res) {
@@ -16,13 +18,13 @@ exports = module.exports = function(req, res) {
     let locals = res.locals;
 
     async.series([
-		// function(done) { agenciesImport.importAgencies( req, res, done ); }, 			  // 1
-		// function(done) { outsideContactImport.importOutsideContacts( req, res, done ); }   // 2
-		function(done) { socialWorkerImport.importSocialWorker( req, res, done ); }        // 3
-		// function(done) { childrenImport.importChildren( req, res, done ); },				  // 4
-
-		function(done) { familiesImport.importFamilies( req, res, done ); },				  // 5
-		// function(done) { eventsImport.importEvents( req, res, done ); }
+		done => { statesMap.getStatesMap(req, res, done) },
+		// done => { agenciesImport.importAgencies( req, res, done ); }, 			  // 1
+		// done => { outsideContactImport.importOutsideContacts( req, res, done ); }   // 2
+		done => { socialWorkerImport.importSocialWorker( req, res, done ); }        // 3
+		// done => { childrenImport.importChildren( req, res, done ); },				  // 4
+		// done => { familiesImport.importFamilies( req, res, done ); },				  // 5
+		// done => { eventsImport.importEvents( req, res, done ); }
 		
 	], function() {
 		// Set the layout to render without the right sidebar
