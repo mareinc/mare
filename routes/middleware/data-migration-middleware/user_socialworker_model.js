@@ -1,6 +1,6 @@
-/**
- * Created by Adrian Suciu.
- */
+// MISSING FIELD: position.  This is needed when binding models to social workers
+// NOT DONE: we need a helper function that will analyze zip code in any format and add back leading zeros while converting it to a string
+// NOT DONE: we need to figure out a better solution to the email field.  The placeholders are temporary until Lisa weighs in
 
 var async					= require( 'async' ),
 	keystone				= require( 'keystone' ),
@@ -15,8 +15,9 @@ const csv = require( 'csvtojson' );
 let socialWorkers = [];
 
 module.exports.importSocialWorker = ( req, res, done ) => {
-
+	// fetch all records from the agency contacts csv file
 	csv().fromFile( csvFilePath )
+		// hold off processing until the whole file has been parsed into an array of objects
 		.on( 'end_parsed', socialWorkersArray => {
 			// populate the social workers our generator keys off of
 			socialWorkers = socialWorkersArray;
@@ -59,9 +60,10 @@ module.exports.createSocialWorkerRecord = socialWorker => {
 				 });
 		}
 	], () => {
-		// populate instance for SocialWorker object
+
+		// populate fields new SocialWorker object
 		let newSocialWorker = new SocialWorker.model({
-			// every social worker needs a password, this will generate one we can easily determine while still being unique
+			// every social worker needs a password, this will generate one we can easily determine at a later date while still being unique
 			password: `${ socialWorker.first_name }_${ socialWorker.last_name }_${ socialWorker.agc_id }`,
 
 			permissions: {
@@ -97,11 +99,13 @@ module.exports.createSocialWorkerRecord = socialWorker => {
 
 
 		newSocialWorker.save(function( err ) {
+			// if we run into an error
 			if( err ) {
-				console.log( `[ID#${ socialWorker.agc_id }] an error occured while saving ${ socialWorker.first_name } ${ socialWorker.last_name }.` );
-			} else {
-				console.log( `[ID#${ socialWorker.agc_id }] ${ socialWorker.first_name } ${ socialWorker.last_name } successfully saved!` );
+				// halt execution by throwing an error
+				throw `[ID#${ socialWorker.agc_id }] an error occured while saving ${ socialWorker.first_name } ${ socialWorker.last_name }.`;
 			}
+			// if no error has been thrown, log the success message
+			console.log( `[ID#${ socialWorker.agc_id }] ${ socialWorker.first_name } ${ socialWorker.last_name } successfully saved!` );
 			// fire off the next iteration of our generator now that the record has been saved
 			socialWorkerGenerator.next();
 		});
