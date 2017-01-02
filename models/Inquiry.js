@@ -78,12 +78,13 @@ Inquiry.schema.pre( 'save', function( next ) {
 		emailAddressesStaff				: [],
 		emailAddressesAgencyContacts	: []
 	};
-	// TODO: we can make this more efficient by putting checks for inquiry type on each of these fetch functions
+	// NOTE: all checks for whether to run each function below exist within the functions themselves
 	async.series([
 		done => { inquiryMiddleware.getChild( inquiryData, done ); },						// child inquiries only
 		done => { inquiryMiddleware.getChildsSocialWorker( inquiryData, done ); },			// child inquiries only
 		done => { inquiryMiddleware.getCSCRegionContacts( inquiryData, done ); },			// child inquiries only
-		done => { inquiryMiddleware.getOnBehalfOfFamily( this.onBehalfOfMAREFamily, inquiryData, done ); }, // child inquiries by social workers only
+		done => { inquiryMiddleware.getOnBehalfOfFamily( this, inquiryData, done ); }, 		// child inquiries by social workers only
+		done => { inquiryMiddleware.getOnBehalfOfFamilyState( inquiryData, done ); },		// child inquiries by social workers only
 		done => { inquiryMiddleware.getAgencyContacts( inquiryData, done ); },				// general inquiries only
 		done => { inquiryMiddleware.getInquirer( inquiryData, done ); },					// all inquiries
 		done => { inquiryMiddleware.getInquirerState( inquiryData, done ); },				// all inquiries
