@@ -13,7 +13,7 @@ exports.getChild = ( inquiryData, done ) => {
 		done();
 	}
 	// for all other inquiry types, get the child record
-	keystone.list('Child').model.findById( inquiryData.childId )
+	keystone.list( 'Child' ).model.findById( inquiryData.childId )
 			.populate( 'status' )
 			.exec()
 			.then( child => {
@@ -63,6 +63,66 @@ exports.getCSCRegionContacts = ( inquiryData, done ) => {
 			.exec()
 			.then( cscRegionContacts => {
 				inquiryData.cscRegionContacts = cscRegionContacts;
+				done();
+			}, err => {
+				console.log( err );
+				done();
+			});
+};
+
+exports.getOnBehalfOfFamily = ( inquiry, inquiryData, done ) => {
+	// if this isn't a child inquiry, the user won't be presented with the on behalf of family field
+	if( !inquiryData.child ) {
+		console.log( `mising child data - no on behalf of family field to populate` );
+		done();
+	}
+	// there won't be a field to populate unless it's a social worker making the inquiry
+	if( inquiryData.inquirerType !== 'social worker' ) {
+		console.log( `inquirer isn't a social worker - no on behalf of field to fetch` );
+		done();
+	}
+	// if the family isn't in the MARE system
+	if( !inquiry.onBehalfOfMAREFamily ) {
+		// fetch the contents of the free text field instead of trying to look up an existing model
+		inquiryData.onBehalfOfFamily = inquiry.onBehalfOfFamilyText;
+		// take note of whether the field was populated
+		if( inquiryData.onBehalfOfFamily.length > 0 ) {
+			inquiryData.hasOnBehalfOfFamily = true;
+			inquiryData.hasOnBehalfOfFamilyText = true;
+		}
+		done();
+	}
+	// fetch the family record
+	keystone.list( 'Family' ).model.findById( inquiry.onBehalfOfFamily )
+			.exec()
+			.then( family => {
+				// store the family in the inquiryData object
+				inquiryData.onBehalfOfFamily = family;
+				// take note of whether the on behalf of family record was found
+				if( family ) {
+					inquiryData.hasOnBehalfOfFamilyModel = true;
+					inquiryData.hasOnBehalfOfFamily = true;
+				}
+				done();
+			}, err => {
+				console.log( err );
+				done();
+			});
+};
+
+exports.getOnBehalfOfFamilyState = ( inquiryData, done ) => {
+	// if the on behalf of family isn't in the MARE system or hasn't been filled out
+	if( typeof inquiryData.onBehalfOfFamily !== 'object' ) {
+		console.log( `on behalf of family isn't a record in the system - no on behalf of family state field to fetch` );
+		done();
+	}
+	// TODO - CRITICAL: what if the state field is missing?  We need to check all middleware for reliance on non-required fields
+	// fetch the family record
+	keystone.list( 'State' ).model.findById( inquiryData.onBehalfOfFamily.address.state )
+			.exec()
+			.then( state => {
+				// store the family in the inquiryData object
+				inquiryData.onBehalfOfFamilyState = state;
 				done();
 			}, err => {
 				console.log( err );
@@ -240,7 +300,7 @@ exports.setAgencyContactEmail = ( inquiryData, done ) => {
 };
 
 exports.formatEmailFields = ( inquiryData, done ) => {
-	// TODO: see if require('moment') can be moved to the top of the file and still work in this function
+	// TODO: see if require( 'moment' ) can be moved to the top of the file and still work in this function
 	// format the takenOn date for better display in the email
 	// this is needed because requiring moment at the top of the file doesn't expose it here for some reason
 	inquiryData.takenOn = require( 'moment' )( this.takenOn ).format( 'dddd MMMM Do, YYYY' );
