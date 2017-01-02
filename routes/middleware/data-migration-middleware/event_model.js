@@ -15,6 +15,14 @@ const Event  				= keystone.list( 'Event' );
 const csv2arr				= require( 'csv-to-array' );
 const dataMigrationService	= require( '../service_data-migration' );
 
+// id mappings between systems
+const statesMap				= require( '../data-migration-maps/state' );
+const regionsMap			= require( '../data-migration-maps/region' );
+
+// migration file location
+const csvFilePath = './migration-data/csv-data/event.csv';
+const csv = require( 'csvtojson' );
+
 //Converter Class 
 var Converter = require("csvtojson").Converter;
 var converter = new Converter({});
@@ -36,83 +44,96 @@ module.exports.importEvents = ( req, res, done ) => {
 		done => { exports.getNewVolunteers( locals, done ); },		// fetch all volunteers in the new system using the volunteer hash we fetched above and store them as locals.newVolunteers
 		done => { exports.getNewFamilies( locals, done ); },		// fetch all the families in the new system and store them as locals.newFamiliesArray
 		done => { exports.getNewChildren( locals, done ); },		// fetch all the children in the new system ad store them as locals.newChildren
-		done => { exports.getMigrationAdmin( locals, done ); }		// fetch the migration admin user which will be used to populate the 'contact' field in events we create as events in the old system didn't have contacts
+		done => { exports.getMigrationAdmin( locals, done ); },		// fetch the migration admin user which will be used to populate the 'contact' field in events we create as events in the old system didn't have contacts
+		done => { statesMap.getStatesMap( req, res, done ) },
+		done => { regionsMap.getRegionsMap( req, res, done ) }
+
 	], () => {
 		// fetch all the event data from the exported csv file
 
-		converter.fromFile("./migration-data/csv-data/event.csv",function(err,array){
-		// csv2arr({
-		// 	file: './migration-data/csv-data/event.csv',
-		// 	columns: columns
-		// }, ( err, array ) => {
-			// process any errors that occur while fetching the file
-			if ( err ) {
-				throw `An error occurred!
-					   ${ err }`;
-			// if there are no errors
-			} else {
-				// NOTE: I stopped working here as we're missing information to proceed, but I don't know what this importArray is used for
-				locals.importArray = array;
-				// load needed recruitment source and attendee information from additional csv files, and use that information to populate our attendees arrays for each save
-				async.series([
-					done => exports.loadRecruitmentSources( locals, done ),
-					done => exports.loadEventAttendees( locals, done ),
-					done => exports.populateContactsArrays( locals, done )
-				], () => {
+		// NOTE: I stopped working here as we're missing information to proceed, but I don't know what this importArray is used for
+		locals.importArray = array;
+		// load needed recruitment source and attendee information from additional csv files, and use that information to populate our attendees arrays for each save
+		async.series([
+			done => exports.loadRecruitmentSources( locals, done ),
+			done => exports.loadEventAttendees( locals, done ),
+			done => exports.populateContactsArrays( locals, done )
+		], () => {
 
-					for ( let i = 0, _count = locals.importArray.length; i <_count; i++ ) {
+			let remainingRecords = 0;
 
-						let _event	= locals.importArray[ i ],
-							_name	= exports.findRecordInArray( _event.rcs_id, locals.recruitmentSourceArray, 0, 1 );
+			csv().fromFile( csvFilePath )
+				.on( 'json', ( _event, index ) => {	// this will fire once per row of data in the file
+					// increment the counter keeping track of how many records we still need to process
+					remainingRecords++;
 
-						var _dateTimeArray = exports.splitDateTime( _event.schedule_datetime );
+					// 1002 is the id from region.csv for "others" and 1007 is for "out of state"
+					let region = locals.regionsMap[ _event.rgn_id ] ?	// if the region is an expected value
+								locals.regionsMap[ _event.rgn_id ] :	// use the id from the old system to get the id in the new system
+								_event.state === 'MA' ?				// otherwise, if the state is Massachusetts
+								locals.regionsMap[ 1002 ] :			// set the region to 'others'
+								locals.regionsMap[ 1007 ] 				// if the state is not Massachusetts, set the region to 'out of state'
 
-						// populate instance for Event object
-						var newEvent = new Event.model({
+					let _name	= exports.findRecordInArray( _event.rcs_id, locals.recruitmentSourceArray, 0, 1 );
 
-							name					: _event._name, // map to recruiment_source via the rcs_id on the event table and fetch the name field value
-							isActive				: _event.is_active,
-							/* Jared will add a checkbox that says the event comes from the old system and i should dump location under a new location textbox */
-							address: {
-								street1				: _event.address_1,
-								street2				: _event.address_2,
-								city				: _event.city,
-								state				: _event.state,
-								zipCode				: _event.zip,
-								region				: _event.rgn_id
-							},
+					var _dateTimeArray = exports.splitDateTime( _event.schedule_datetime );
 
-							contact					: migrationAdminId, // same generic user from the user_admin table (be careful there is a relationship here)
+					// populate instance for Event object
+					var newEvent = new Event.model({
 
-							date					: _dateTimeArray[ 0 ], // take the date and split it and the time goes to startime, and then add 2 hours for the endtime
-							startTime				: _dateTimeArray[ 1 ],
-							endTime					: exports.increaseHours( _dateTimeArray[ 1 ] ),
+						name					: _event._name, // map to recruiment_source via the rcs_id on the event table and fetch the name field value
+						isActive				: _event.is_active,
+						/* Jared will add a checkbox that says the event comes from the old system and i should dump location under a new location textbox */
+						address: {
+							street1				: _event.address_1,
+							street2				: _event.address_2,
+							city				: _event.city,
+							state				: locals.statesMap[ _event.state ],
+							zipCode				: (_event.zip.length > 4) ? _event.zip : '0' + _event.zip,
+							region				: region
+						},
 
-							socialWorkerAttendees	: locals.newSocialWorkers,
-							familyAttendees			: locals.newFamilies,
-							childAttendees			: locals.newChildren,
-							outsideContactAttendees	: locals.newVolunteers,
-							
-							notes					: _event.notes
+						contact					: migrationAdminId, // same generic user from the user_admin table (be careful there is a relationship here)
 
-						});
+						date					: _dateTimeArray[ 0 ], // take the date and split it and the time goes to startime, and then add 2 hours for the endtime
+						startTime				: _dateTimeArray[ 1 ],
+						endTime					: exports.increaseHours( _dateTimeArray[ 1 ] ),
 
-						// call save method on Event object
-						newEvent.save( err => {
-							// newEvent object has been saved
-							if ( err ) {
-								throw `'[ ID# ${ _event.evt_id} ] an error occurred while saving ${ newEvent } object`;
-							}
-							else {
-								console.log( `[ ID# ${ _event.evt_id } ] event successfully saved!`);
-							}
-						});
-					}
+						socialWorkerAttendees	: locals.newSocialWorkers,
+						familyAttendees			: locals.newFamilies,
+						childAttendees			: locals.newChildren,
+						outsideContactAttendees	: locals.newVolunteers,
+						
+						notes					: _event.notes
+
+					});
+
+					// call save method on Event object
+					newEvent.save( err => {
+						if (err) {
+							console.log( `[ID#${ _event.evt_i }] an error occured while saving ${ newEvent.code } object.` );
+							// throw `[ID#${ agency.agn_id }] an error occured while saving ${ newAgency } object.`
+						}
+						else {
+							console.log( `[ID#${ _event.evt_i }] agency successfully saved!` );
+						}
+
+						// decrement the counter keeping track of how many records we still need to process
+						remainingRecords--;
+						// if there are no more records to process call done to move to the next migration file
+						if( remainingRecords === 0 ) {
+							done();
+						}
+					});
+				})
+				.on( 'end', () => {
+					console.log( `end` ); // this should never execute but should stay for better debugging
 				});
-			}
+			
 		});
-	}
-)};
+			
+	});
+}
 
 /* get the _id value for the Outside Contact Group entry with the name 'volunteers' */
 exports.getVolunteerHash = ( locals, done ) => {
