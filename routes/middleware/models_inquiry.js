@@ -14,6 +14,7 @@ exports.getChild = ( inquiryData, done ) => {
 	}
 	// for all other inquiry types, get the child record
 	keystone.list('Child').model.findById( inquiryData.childId )
+			.populate( 'status' )
 			.exec()
 			.then( child => {
 				// store the child in the inquiryData object
@@ -49,6 +50,45 @@ exports.getChildsSocialWorker = ( inquiryData, done ) => {
 			});  
 };
 
+exports.getCSCRegionContacts = ( inquiryData, done ) => {
+	// if we didn't fetch the child record, we can't get the CSC contact based on their region
+	if( !inquiryData.child ) {
+		console.log( `mising child data - can't fetch child's social worker` );
+		done();
+	}
+	// Use the region information in the child record to fetch the CSC region contacts
+	keystone.list( 'CSC Region Contact' ).model.find()
+			.where( 'region', inquiryData.child.region )
+			.populate( 'cscRegionContact' ) // We need the information for the contact, not just their ID
+			.exec()
+			.then( cscRegionContacts => {
+				inquiryData.cscRegionContacts = cscRegionContacts;
+				done();
+			}, err => {
+				console.log( err );
+				done();
+			});
+};
+
+exports.getAgencyContacts = ( inquiryData, done ) => {
+	// if it's not a general inquiry, we shouldn't get the agency contacts
+	if( !inquiryData.inquiryType !== 'general inquiry' ) {
+		console.log( `not a general inquiry - not fetching agency contacts` );
+		done();
+	}
+	// If a general inquiry has been accepted, we need to send an email to the agency
+	keystone.list( 'Agency' ).model.find()
+			.where( { _id: { $in: inquiryData.agencyReferralIds } } )
+			.exec()
+			.then( agencies => {
+				inquiryData.agencyContacts = agencies;
+				done();
+			}, err => {
+				console.log( err );
+				done();
+			});
+};
+
 exports.getInquirer = ( inquiryData, done ) => {
 	// set the model target depending on which user type made the inquiry
 	const userType = inquiryData.inquirerType === 'family' ? 'Family' : 'Social Worker';
@@ -67,19 +107,13 @@ exports.getInquirer = ( inquiryData, done ) => {
 			});
 };
 
-exports.getCSCRegionContacts = ( inquiryData, done ) => {
-	// if we didn't fetch the child record, we can't get the CSC contact based on their region
-	if( !inquiryData.child ) {
-		console.log( `mising child data - can't fetch child's social worker` );
-		done();
-	}
-	// Use the region information in the child record to fetch the CSC region contacts
-	keystone.list( 'CSC Region Contact' ).model.find()
-			.where( 'region', inquiryData.child.region )
-			.populate( 'cscRegionContact' ) // We need the information for the contact, not just their ID
+exports.getInquirerState = ( inquiryData, done ) => {
+
+	keystone.list( 'State' ).model.findById( inquiryData.inquirer.address.state )
 			.exec()
-			.then( cscRegionContacts => {
-				inquiryData.cscRegionContacts = cscRegionContacts;
+			.then( state => {
+				// store the inquirer in the inquiryData object
+				inquiryData.inquirerState = state;
 				done();
 			}, err => {
 				console.log( err );
@@ -111,13 +145,42 @@ exports.getStaffInquiryContact = ( inquiryData, done ) => {
 			});
 };
 
-exports.getAgencyContacts = ( inquiryData, done ) => {
-	// If a general inquiry has been accepted, we need to send an email to the agency
-	keystone.list( 'Agency' ).model.find()
-			.where( { _id: { $in: inquiryData.agencyReferralIds } } )
+exports.getSource = ( sourceId, inquiryData, done ) => {
+
+	keystone.list( 'Source' ).model.findOne()
+			.where( '_id', sourceId )
 			.exec()
-			.then( agencies => {
-				inquiryData.agencyContacts = agencies;
+			.then( source => {
+				inquiryData.source = source.source;
+				done();
+			}, err => {
+				console.log( err );
+				done();
+			});
+
+};
+
+exports.getMethod = ( methodId, inquiryData, done ) => {
+
+	keystone.list( 'Inquiry Method' ).model.findOne()
+			.where( '_id', methodId )
+			.exec()
+			.then( method => {
+				inquiryData.method = method.inquiryMethod;
+				done();
+			}, err => {
+				console.log( err );
+				done();
+			});
+};
+
+exports.getInquiryTakenBy = ( employeeId, inquiryData, done ) => {
+
+	keystone.list( 'Admin' ).model.findOne()
+			.where( '_id', employeeId )
+			.exec()
+			.then( employee => {
+				inquiryData.takenBy = employee.name.full;
 				done();
 			}, err => {
 				console.log( err );
