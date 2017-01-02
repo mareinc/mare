@@ -35,7 +35,7 @@ SectionHeader.schema.pre('save', function(next) {
 	this.headerImage = this._.originalImage.thumbnail(644,166,{ quality: 80 });
 	// Create an identifying name for file uploads
 	this.fileName = this.key.replace(/-/g, '_');
-console.log(this);
+
 	next();
 });
 

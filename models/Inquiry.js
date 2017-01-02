@@ -18,7 +18,7 @@ Inquiry.add( 'General Information', {
 
 	inquirer: { type: Types.Select, label: 'inquirer', options: 'family, social worker', default: 'family', initial: true },
 	inquiryType: { type: Types.Select, label: 'inquiry type', options: 'child inquiry, complaint, family support consultation, general inquiry', required: true, initial: true },
-	inquiryMethod: { type: Types.Relationship, label: 'inquiry method', ref: 'Inquiry Method', required: true, initial: true },
+	inquiryMethod: { type: Types.Relationship, label: 'inquiry method', ref: 'Inquiry Method', required: true, initial: true }
 
 }, 'Inquiry Details', {
 
@@ -61,7 +61,7 @@ Inquiry.add( 'General Information', {
 
 // TODO: Dig into the async npm module.  There's a function called auto you should look into which will determine what to call based on each functions dependencies
 // Pre Save
-Inquiry.schema.pre('save', function( next ) {
+Inquiry.schema.pre( 'save', function( next ) {
 	'use strict';
 
 	// create an object to store all calculated inquiry data for populating emails
@@ -72,19 +72,26 @@ Inquiry.schema.pre('save', function( next ) {
 		familyId						: this.family,
 		socialWorkerId					: this.socialWorker,
 		agencyReferralIds				: this.agencyReferrals,
+		isFamilyRegistered				: this.onBehalfOfMAREFamily ? 'yes' : 'no',
 		emailAddressInquirer			: [],
 		emailAddressChildsSocialWorker	: [],
 		emailAddressesStaff				: [],
 		emailAddressesAgencyContacts	: []
 	};
-
+	// NOTE: all checks for whether to run each function below exist within the functions themselves
 	async.series([
-		done => { inquiryMiddleware.getChild( inquiryData, done ); },
-		done => { inquiryMiddleware.getChildsSocialWorker( inquiryData, done ); },
-		done => { inquiryMiddleware.getInquirer( inquiryData, done ); },
-		done => { inquiryMiddleware.getCSCRegionContacts( inquiryData, done ); },
-		done => { inquiryMiddleware.getStaffInquiryContact( inquiryData, done ); },
-		done => { inquiryMiddleware.getAgencyContacts( inquiryData, done ); },
+		done => { inquiryMiddleware.getChild( inquiryData, done ); },						// child inquiries only
+		done => { inquiryMiddleware.getChildsSocialWorker( inquiryData, done ); },			// child inquiries only
+		done => { inquiryMiddleware.getCSCRegionContacts( inquiryData, done ); },			// child inquiries only
+		done => { inquiryMiddleware.getOnBehalfOfFamily( this, inquiryData, done ); }, 		// child inquiries by social workers only
+		done => { inquiryMiddleware.getOnBehalfOfFamilyState( inquiryData, done ); },		// child inquiries by social workers only
+		done => { inquiryMiddleware.getAgencyContacts( inquiryData, done ); },				// general inquiries only
+		done => { inquiryMiddleware.getInquirer( inquiryData, done ); },					// all inquiries
+		done => { inquiryMiddleware.getInquirerState( inquiryData, done ); },				// all inquiries
+		done => { inquiryMiddleware.getStaffInquiryContact( inquiryData, done ); },			// all inquiries
+		done => { inquiryMiddleware.getSource( this.source, inquiryData, done ); },			// all inquiries
+		done => { inquiryMiddleware.getMethod( this.inquiryMethod, inquiryData, done ); },	// all inquiries
+		done => { inquiryMiddleware.getInquiryTakenBy( this.takenBy, inquiryData, done ); },// all inquiries
 
 		done => { this.setDerivedFields( inquiryData, done ); },
 		done => { inquiryMiddleware.setStaffEmail( inquiryData, done ); },

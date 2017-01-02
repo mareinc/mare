@@ -14,5 +14,5 @@ State.add({
 });
 
 // Define default columns in the admin interface and register the model
-State.defaultColumns = 'state';
+State.defaultColumns = 'state, abbreviation';
 State.register();
