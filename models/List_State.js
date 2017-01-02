@@ -9,9 +9,10 @@ var State = new keystone.List('State', {
 
 // Create fields
 State.add({
-	state: { type: Types.Text, label: 'state', required: true, initial: true }
+	state: { type: Types.Text, label: 'state', required: true, initial: true },
+	abbreviation: { type: Types.Text, label: 'abbreviation', required: true, initial: true }
 });
 
 // Define default columns in the admin interface and register the model
-State.defaultColumns = 'state';
+State.defaultColumns = 'state, abbreviation';
 State.register();
