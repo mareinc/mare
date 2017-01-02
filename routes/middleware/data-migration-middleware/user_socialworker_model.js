@@ -89,7 +89,7 @@ module.exports.createSocialWorkerRecord = socialWorker => {
 				street2: agency.address.street2,
 				city: agency.address.city,
 				state: agency.address.state,
-				zipCode: agency.address.zipCode,
+				zipCode: (agency.address.zipCode.length > 4) ? agency.address.zipCode : '0' + agency.address.zipCode,
 				region: agency.address.region
 			},
 

@@ -10,88 +10,89 @@ var async                   = require('async'),
     dataMigrationService    = require('../service_data-migration')
     ;
 
+// migration file location
+const csvFilePath = './migration-data/csv-data/mailing_list.csv';
+const csv = require( 'csvtojson' );
+
 //Converter Class 
 var Converter = require("csvtojson").Converter;
 var converter = new Converter({});
 
 // var ml_coluns = ["mlt_id","name"]
 // var mls_columns = ["mls_id","mlt_id","fam_id","agc_id","ocn_id"];
-var importArray;
 
-module.exports.importMailingLists = function importMailingLists(req, res, done) {
+module.exports.importMailingLists = (req, res, done) => {
 
-    var self = this,
-        locals = res.locals;
+    let locals = res.locals;
 
-        var allMLS = loadMailingSubscriptions();
+	async.parallel([
+		function loadMailingSubscriptions(done){
+            let importArray;
+            
+            converter.fromFile("./migration-data/csv-data/mailing_list_subscription.csv",function(err,array){
+                if (err) {
+                    throw "An error occurred!\n" + err;
+                } else {
+                    importArray = array
+                    var resultArray = [];
 
-        converter.fromFile("./migration-data/csv-data/mailing_list.csv",function(err,array){
-        // csv2arr({
-        //     file: "./migration-data/csv-data/mailing_list.csv",
-        //     columns: ml_columns
-        // }, function (err, array) {
-            if (err) {
-                throw "An error occurred!\n" + err;
-            } else {
-                importArray = array;
-
-                for (var i=0,_count=importArray.length; i <_count; i++) {
-                    var _mailinglist = importArray[i];
-                    var _mailingListSubscribers = fetchMailingListSubscriptions(_mailinglist.mlt_id, allMLS);
-
-                    for (var j=0,_len=_mailingListSubscribers.length; j < _len; j++) {
-
-
-                        // populate instance for Mailing List object
-                        var newMailingList = new MailingList.model({
-
-                            mailingList: _mailinglist.name,
-                            socialWorkerSubscribers:  _mailingListSubscribers[j]['agc_id'],
-                            familySubscribers: _mailingListSubscribers[j]['fam_id'],
-                            outsideContactSubscribers:  _mailingListSubscribers[j]['ocn_id']
-
-                        });
-
-                        // call save method on Mailing List object
-                        newMailingList.save(function (err) {
-                            // newMailingList object has been saved
-                            if (err) {
-                                throw "[ID#" + _mailinglist.agn_id + "] an error occured while saving " + newMailingList + " object."
-                            }
-                            else {
-                                console.log("[ID#" + _mailinglist.agn_id + "] child successfully saved!");
-                            }
-                        });
+                    for (var i=0,_count=importArray.length; i <_count; i++) {
+                        allMailingListsSubscriptions.push(importArray[i]);
                     }
                 }
-            }
-        })
-    }
+
+                done();
+            })
+        }
+	], function() {
+
+		let remainingRecords = 0;
+
+		csv().fromFile( csvFilePath )
+			.on( 'json', ( _mailinglist, index ) => {	// this will fire once per row of data in the file
+				// increment the counter keeping track of how many records we still need to process
+				remainingRecords++;
+
+                var _mailingListSubscribers = fetchMailingListSubscriptions(_mailinglist.mlt_id, allMLS);
+
+                for (var j=0,_len=_mailingListSubscribers.length; j < _len; j++) {
+
+                    // populate instance for Mailing List object
+                    var newMailingList = new MailingList.model({
+
+                        mailingList: _mailinglist.name,
+                        socialWorkerSubscribers:  _mailingListSubscribers[j]['agc_id'],
+                        familySubscribers: _mailingListSubscribers[j]['fam_id'],
+                        outsideContactSubscribers:  _mailingListSubscribers[j]['ocn_id']
+
+                    });
+
+                    // call save method on Mailing List object
+                    newMailingList.save(function (err) {
+                        if (err) {
+							console.log( `[ID#${ _mailinglist.agn_id  }] an error occured while saving ${ newMailingList.code } object.` );
+							// throw `[ID#${ agency.agn_id }] an error occured while saving ${ newAgency } object.`
+						}
+						else {
+							console.log( `[ID#${ _mailinglist.agn_id  }] agency successfully saved!` );
+						}
+						
+						// decrement the counter keeping track of how many records we still need to process
+						remainingRecords--;
+						// if there are no more records to process call done to move to the next migration file
+						if( remainingRecords === 0 ) {
+							done();
+						}
+                    });
+                }
+            })
+            .on( 'end', () => {
+                console.log( `end` ); // this should never execute but should stay for better debugging
+            });
+    });
 }
 
-function loadMailingSubscriptions(){
-        var allMailingListsSubscriptions = [];
 
-        converter.fromFile("./migration-data/csv-data/mailing_list_subscription.csv",function(err,array){
-        // csv2arr({
-        //     file: "./migration-data/csv-data/mailing_list_subscription.csv",
-        //     columns: mls_columns
-        // }, function (err, array) {
-            if (err) {
-                throw "An error occurred!\n" + err;
-            } else {
-                importArray = array
-                var resultArray = [];
-
-                for (var i=0,_count=importArray.length; i <_count; i++) {
-
-                    allMailingListsSubscriptions.push(importArray[i]);
-                }
-
-                return allMailingListsSubscriptions;
-            }
-        })
-    }
 
 function fetchMailingListSubscriptions(id, haystack){
 
@@ -99,7 +100,7 @@ function fetchMailingListSubscriptions(id, haystack){
 
     for (var i=0,_count=haystack.length; i <_count; i++) {
         var _newMailingListItem = new Object();
-        var _mailinglist = importArray[i];
+        var _mailinglist = haystack[i];
 
         if (_mailinglist.mlt_id == id) {
             newMailingListItem['fam_id'] = fetchFamIdEquivalent(_mailinglist.fam_id);
@@ -116,12 +117,27 @@ function fetchMailingListSubscriptions(id, haystack){
 
 function fetchFamIdEquivalent(id) {
     // fetch the related id for the same thing from the new database
+    dataMigrationService.getModelId(req, res, done, { 
+        model: 'Family', 
+        targetField: '_id', 
+        targetValue: id, 
+        returnTarget: 'familyID' });
 }
 
 function fetchAgencyIdEquivalent(id) {
     // fetch the related id for the same thing from the new database
+    dataMigrationService.getModelId(req, res, done, { 
+        model: 'Agency', 
+        targetField: '_id', 
+        targetValue: id, 
+        returnTarget: 'agencyID' });
 }
 
 function fetchOutsideContactIdEquivalent(id) {
     // fetch the related id for the same thing from the new database
+    dataMigrationService.getModelId(req, res, done, { 
+        model: 'Family', 
+        targetField: '_id', 
+        targetValue: id, 
+        returnTarget: 'familyID' });
 }
