@@ -4,6 +4,7 @@ const agenciesImport		= require( '../middleware/data-migration-middleware/agency
 const childrenImport		= require( '../middleware/data-migration-middleware/child_model' );
 const eventsImport			= require( '../middleware/data-migration-middleware/event_model' );
 const familiesImport		= require( '../middleware/data-migration-middleware/family_model' );
+const placementsImport		= require( '../middleware/data-migration-middleware/placement_model' );
 const outsideContactImport	= require( '../middleware/data-migration-middleware/outside_contact_model' );
 const socialWorkerImport	= require( '../middleware/data-migration-middleware/user_socialworker_model' );
 // id mappings between systems
@@ -18,12 +19,13 @@ exports = module.exports = function(req, res) {
     let locals = res.locals;
 
     async.series([
-		done => { statesMap.getStatesMap(req, res, done) },
+		// done => { statesMap.getStatesMap(req, res, done) },
 		// done => { agenciesImport.importAgencies( req, res, done ); }, 			  // 1
 		// done => { outsideContactImport.importOutsideContacts( req, res, done ); }   // 2
-		done => { socialWorkerImport.importSocialWorker( req, res, done ); }        // 3
+		// done => { socialWorkerImport.importSocialWorker( req, res, done ); }        // 3
 		// done => { childrenImport.importChildren( req, res, done ); },				  // 4
 		// done => { familiesImport.importFamilies( req, res, done ); },				  // 5
+		done => { familiesImport.importPlacements( req, res, done ); },				  // 6
 		// done => { eventsImport.importEvents( req, res, done ); }
 		
 	], function() {
