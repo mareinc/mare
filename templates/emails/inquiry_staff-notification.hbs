@@ -35,48 +35,55 @@
 									<td>
 
 										<!-- requested information about -->
+										{{#if inquiryData.hasChild}}
 										<table border="0" cellpadding="0" cellspacing="0" width="100%">	
 											<tr>
 												<td valign="bottom" width="100%" style="padding: 20px 0 10px 0; color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;"><b>Requested Information About:</b></td>
 											</tr>	
 										</table>
+										{{/if}}
 											
 										<table border="0" cellpadding="0" cellspacing="0" width="100%">
 											<!-- taken by -->
+											{{#if inquiryData.hasChild}}
 											<tr>
 												<td valign="bottom" align="left" width="30%" style="padding: 20px 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">
 													<b>Reg. Number:</b>
 												</td>
 												<td valign="bottom" align="left" width="70%" style="padding: 20px 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">{{ inquiryData.child.registrationNumber }}</td>
 											</tr>
-											<!-- taken by -->
 											<tr>
 												<td valign="bottom" align="left" width="30%" style="color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">
-													<b>Child:</b>
+													<b>Name:</b>
 												</td>
 												<td valign="bottom" align="left" width="70%" style="color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">{{ inquiryData.child.name.full }}</td>
 											</tr>
-											<!-- taken by -->
 											<tr>
 												<td valign="bottom" align="left" width="30%" style="color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">
 													<b>Status:</b>
 												</td>
 												<td valign="bottom" align="left" width="70%" style="color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">{{ inquiryData.child.status.childStatus }}</td>
 											</tr>
-											<!-- taken by -->
 											<tr>
 												<td valign="bottom" align="left" width="30%" style="color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">
 													<b>Photolisting Page:</b>
 												</td>
 												<td valign="bottom" align="left" width="70%" style="color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">{{ inquiryData.child.photolistingPageNumber }}</td>
 											</tr>
+											{{/if}}
+											
 											<!-- inquiry by -->
 											<tr>
 												<td valign="top" align="left" width="30%" style="padding: 20px 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">
 													<b>Inquiry By:</b>
 												</td>
 												<td valign="bottom" align="left" width="70%" style="padding: 20px 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">
-													{{ inquiryData.inquirer.name.full }}
+													{{#if inquiryData.isFamilyInquiry}}
+														{{ inquiryData.inquirer.contact1.name.full }}
+													{{/if}}
+													{{#if inquiryData.isSocialWorkerInquiry}}
+														{{ inquiryData.inquirer.name.full }}
+													{{/if}}
 													<br/>
 													{{ inquiryData.inquirer.address.street1 }}
 													<br/>
@@ -117,6 +124,30 @@
 											</tr>
 											{{/if}}
 
+											<!-- agency contacts -->
+											{{#if inquiryData.hasAgencyContacts}}
+											{{#each inquiryData.agencyContacts}}
+											<tr>
+												<td valign="bottom" align="left" width="30%" style="padding: 20px 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">
+													<b>Agency Code:</b>
+												</td>
+												<td valign="bottom" align="left" width="70%" style="padding: 20px 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">{{ code }}</td>
+											</tr>
+											<tr>
+												<td valign="bottom" align="left" width="30%" style="color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">
+													<b>Agency Name:</b>
+												</td>
+												<td valign="bottom" align="left" width="70%" style="color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">{{ name }}</td>
+											</tr>
+											<tr>
+												<td valign="bottom" align="left" width="30%" style="color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">
+													<b>Agency Contact:</b>
+												</td>
+												<td valign="bottom" align="left" width="70%" style="color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">{{ generalInquiryContact }}</td>
+											</tr>
+											{{/each}}
+											{{/if}}
+
 											<!-- taken by -->
 											<tr>
 												<td valign="bottom" align="left" width="30%" style="padding: 20px 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">
@@ -133,11 +164,23 @@
 												<td valign="bottom" width="70%" style="padding: 20px 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">{{ inquiryData.source }}</td>
 											</tr>
 										</table>
+
+										<!-- comments -->
+										{{#if inquiry.comments}}
+										<table border="0" cellpadding="0" cellspacing="0" width="100%">	
+											<tr>
+												<td valign="bottom" width="100%" style="padding: 20px 0 10px 0; color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;"><b>Comments:</b></td>
+											</tr>
+											<tr>
+												<td valign="bottom" width="100%" style="color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">{{ inquiry.comments }}</td>
+											</tr>
+										</table>
+										{{/if}}
 									</td>
 								</tr>
 								
 								<tr>
-									<td style="padding: 20px 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">
+									<td style="padding: 40px 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">
 										You are receiving this because the inquiry must be entered into the old system for reporting purposes.</a>
 									</td>
 								</tr>

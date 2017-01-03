@@ -1,23 +1,15 @@
 var keystone = require( 'keystone' );
 
 exports.sendInquiryCreatedEmailToStaff = ( inquiry, inquiryData, done ) => {
-	// every template for inquiries begins this way
-	let templateTarget = 'inquiry';
-	// continue to build out the template name based on the inquirer type
-	templateTarget += inquiryData.inquirerType === 'family' ? '_family' : '_social-worker';
-	// continue to build out the template name based on the inquiry type
-	templateTarget += inquiryData.inquiryType === 'child inquiry' ? '-child-inquiry-created' :
-					  inquiryData.inquiryType === 'complaint' ? '-complaint-created' :
-					  inquiryData.inquiryType === 'family support consultation' ? '-family-support-consultation-created' :
-					  '-general-inquiry-created';
-	// all notification emails to staff end this way
-	templateTarget += '-to-staff';
-
+	// if this is a data migration run, don't send any emails
+	if( process.env.MIGRATION ) {
+		return done();
+	}
 	// find the email template in templates/emails/
 	new keystone.Email({
 		templateExt 	: 'hbs',
 		templateEngine 	: require( 'handlebars' ),
-		templateName 	: templateTarget
+		templateName 	: 'inquiry_staff-notification'
 	}).send({
 		to: inquiryData.emailAddressesStaff,
 		from: {
@@ -28,8 +20,7 @@ exports.sendInquiryCreatedEmailToStaff = ( inquiry, inquiryData, done ) => {
 		inquiry: inquiry,
 		inquiryData: inquiryData
 	// TODO: we should be handling success/failure better, possibly with a flash message if we can make it appear in the model screen
-	// TODO: once we figure out what gets stored at arguments[0], we can use an arrow function here with parameters and not need the explicit function() syntax
-	}, function( err, message ) {
+	}, ( err, message ) => {
 		// log any errors
 		if( err ) {
 			console.log( `error sending staff email: ${ err }` );
@@ -37,9 +28,9 @@ exports.sendInquiryCreatedEmailToStaff = ( inquiry, inquiryData, done ) => {
 		}
 		// the response object is stored as the 0th element of the returned message
 		const response = message ? message[ 0 ] : undefined;
-
-		if( response && [ 'rejected', 'invalid' ].includes( response.status ) ) {
-			console.log( `staff notification email failed to send: ${ arguments[ 1 ] }` );
+		// if the email failed to send, or an error occurred ( which is does, rarely ) causing the response message to be empty
+		if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
+			console.log( `staff notification email failed to send: ${ message }` );
 			console.log( `error: ${ err }` );
 			done();
 		}
@@ -53,6 +44,10 @@ exports.sendInquiryCreatedEmailToStaff = ( inquiry, inquiryData, done ) => {
 };
 
 exports.sendThankYouEmailToInquirer = ( inquiry, inquiryData, done ) => {
+	// if this is a data migration run, don't send any emails
+	if( process.env.MIGRATION ) {
+		return done();
+	}
 	// find the email template in templates/emails/
 	new keystone.Email({
 		templateExt 	: 'hbs',
@@ -64,16 +59,16 @@ exports.sendThankYouEmailToInquirer = ( inquiry, inquiryData, done ) => {
 			name 	: 'MARE',
 			email 	: 'admin@adoptions.io'
 		},
-		subject: 'thank you for your inquiry',
+		subject: 'your inquiry has been received',
 		inquiry: inquiry,
 		inquiryData: inquiryData
-	}, function() {
-		// the first element is an array with the 0th element being the response object
-		const response = arguments[ 1 ] ? arguments[ 1 ][ 0 ] : undefined;
-
-		if( response && [ 'rejected', 'invalid' ].includes( response.status ) ) {
-			console.log( `thank you to inquirer email failed to send: ${ arguments[ 1 ] }` )
-			console.log( `error: ${ error }` );
+	}, ( err, message ) => {
+		// the response object is stored as the 0th element of the returned message
+		const response = message ? message[ 0 ] : undefined;
+		// if the email failed to send, or an error occurred ( which is does, rarely ) causing the response message to be empty
+		if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
+			console.log( `thank you to inquirer email failed to send: ${ message }` );
+			console.log( `error: ${ err }` );
 			done();
 		}
 
@@ -85,7 +80,48 @@ exports.sendThankYouEmailToInquirer = ( inquiry, inquiryData, done ) => {
 
 };
 
+exports.sendThankYouEmailToFamilyOnBehalfOfInquirer = ( inquiry, inquiryData, done ) => {
+	// if this is a data migration run, don't send any emails
+	if( process.env.MIGRATION ) {
+		return done();
+	}
+	// find the email template in templates/emails/
+	new keystone.Email({
+		templateExt 	: 'hbs',
+		templateEngine 	: require( 'handlebars' ),
+		templateName 	: 'inquiry_thank-you-to-family-on-behalf-of-social-worker'
+	}).send({
+		to: inquiryData.emailAddressFamilyOnBehalfOf,
+		from: {
+			name 	: 'MARE',
+			email 	: 'admin@adoptions.io'
+		},
+		subject: 'your inquiry has been received',
+		inquiry: inquiry,
+		inquiryData: inquiryData
+	}, ( err, message ) => {
+		// the response object is stored as the 0th element of the returned message
+		const response = message ? message[ 0 ] : undefined;
+		// if the email failed to send, or an error occurred ( which is does, rarely ) causing the response message to be empty
+		if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
+			console.log( `thank you to family on behalf of inquirer email failed to send: ${ message }` );
+			console.log( `error: ${ err }` );
+			done();
+		}
+
+		console.log( `thank you to family on behalf of inquirer email sent successfully` );
+		// mark the inquiry thank you email as having been sent to prevent it being sent in the future
+		inquiry.thankYouSentToFamilyOnBehalfOfInquirer = true;
+		done();
+	});
+
+};
+
 exports.sendInquiryAcceptedEmailToInquirer = ( inquiry, inquiryData, done ) => {
+	// if this is a data migration run, don't send any emails
+	if( process.env.MIGRATION ) {
+		return done();
+	}
 	// find the email template in templates/emails/
 	new keystone.Email({
 		templateExt 	: 'hbs',
@@ -118,6 +154,10 @@ exports.sendInquiryAcceptedEmailToInquirer = ( inquiry, inquiryData, done ) => {
 };
 
 exports.sendInquiryAcceptedEmailToChildsSocialWorker = ( inquiry, inquiryData, done ) => {
+	// if this is a data migration run, don't send any emails
+	if( process.env.MIGRATION ) {
+		return done();
+	}
 	// find the email template in templates/emails/
 	new keystone.Email({
 		templateExt 	: 'hbs',
@@ -149,6 +189,10 @@ exports.sendInquiryAcceptedEmailToChildsSocialWorker = ( inquiry, inquiryData, d
 };
 
 exports.sendInquiryAcceptedEmailToAgencyContacts = ( inquiry, inquiryData, done ) => {
+	// if this is a data migration run, don't send any emails
+	if( process.env.MIGRATION ) {
+		return done();
+	}
 	// find the email template in templates/emails/
 	new keystone.Email({
 		templateExt 	: 'hbs',

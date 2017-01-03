@@ -16,6 +16,12 @@ MailingList.add({
 	familySubscribers: { type: Types.Relationship, label: 'families', ref: 'Family', many: true, initial: true },
 	outsideContactGroupSubscribers: { type: Types.Relationship, label: 'outside contact groups', ref: 'Outside Contact Group', many: true, initial: true },
 	outsideContactSubscribers: { type: Types.Relationship, label: 'outside contacts', ref: 'Outside Contact', many: true, initial: true }
+
+/* Container for data migration fields ( these should be kept until after phase 2 and the old system is phased out completely ) */
+}, {
+	// system field to store an appropriate file prefix
+	oldId: { type: Types.Text, hidden: true }
+
 });
 
 // Define default columns in the admin interface and register the model
