@@ -146,6 +146,7 @@ Inquiry.schema.pre( 'save', function( next ) {
 			}
 		},
 		done => {
+			// TODO: do we need to check that we have a social worker saved to prevent the app from crashing?
 			if( !this.emailSentToChildsSocialWorker && this.inquiryAccepted === true && this.inquiryType !== 'general inquiry' ) {
 				inquiryEmailMiddleware.sendInquiryAcceptedEmailToChildsSocialWorker( this, inquiryData, done );
 			} else {
@@ -154,6 +155,7 @@ Inquiry.schema.pre( 'save', function( next ) {
 			}
 		},
 		done => {
+			// TODO: do we need to check that we have agency contacts saved to prevent the app from crashing?
 			if( !this.emailSentToAgencies && this.inquiryAccepted === true && this.inquiryType === 'general inquiry') {
 				inquiryEmailMiddleware.sendInquiryAcceptedEmailToAgencyContacts( this, inquiryData, done );
 			} else {
