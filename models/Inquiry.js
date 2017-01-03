@@ -48,6 +48,7 @@ Inquiry.add( 'General Information', {
 
 	emailSentToStaff: { type: Types.Boolean, label: 'notification email sent to MARE staff', noedit: true },
 	thankYouSentToInquirer: { type: Types.Boolean, label: 'thank you sent to inquirer', noedit: true },
+	thankYouSentToFamilyOnBehalfOfInquirer: { type: Types.Boolean, label: 'thank you sent to family on behalf of inquiring social worker', dependsOn: { inquirer: 'social worker', onBehalfOfMAREFamily: true }, noedit: true },
 	emailSentToInquirer: { type: Types.Boolean, label: 'inquiry accepted information sent to inquirer',  noedit: true },
 	emailSentToChildsSocialWorker: { type: Types.Boolean, label: 'inquiry accepted email sent to child\'s social worker', dependsOn: { inquiryType: ['child inquiry', 'complaint', 'family support consultation'] }, noedit: true },
 	emailSentToAgencies: { type: Types.Boolean, label: 'inquiry accepted email sent to agency contacts', dependsOn: { inquiryType: 'general inquiry' }, noedit: true }
@@ -67,6 +68,7 @@ Inquiry.schema.pre( 'save', function( next ) {
 	// create an object to store all calculated inquiry data for populating emails
 	let inquiryData = {
 		inquiryType						: this.inquiryType,
+		isGeneralInquiry				: this.inquiryType === 'general inquiry',
 		inquirerType					: this.inquirer,
 		isFamilyInquiry					: this.inquirer === 'family',
 		isSocialWorkerInquiry			: this.inquirer === 'social worker',
@@ -76,6 +78,7 @@ Inquiry.schema.pre( 'save', function( next ) {
 		agencyReferralIds				: this.agencyReferrals,
 		isFamilyRegistered				: this.onBehalfOfMAREFamily ? 'yes' : 'no',
 		emailAddressInquirer			: [],
+		emailAddressFamilyOnBehalfOf	: [],
 		emailAddressChildsSocialWorker	: [],
 		emailAddressesStaff				: [],
 		emailAddressesAgencyContacts	: []
@@ -114,6 +117,14 @@ Inquiry.schema.pre( 'save', function( next ) {
 				inquiryEmailMiddleware.sendThankYouEmailToInquirer( this, inquiryData, done );
 			} else {
 				console.log( `thank you already sent or 'send thank you to inquirer' checkbox not checked - no thank you email sent to inquirer` );
+				done();
+			}
+		},
+		done => {
+			if( !this.thankYouSentToFamilyOnBehalfOfInquirer && this.thankInquirer === true && inquiryData.onBehalfOfFamily ) {
+				inquiryEmailMiddleware.sendThankYouEmailToFamilyOnBehalfOfInquirer( this, inquiryData, done );
+			} else {
+				console.log( `thank you already sent or 'send thank you to inquirer' checkbox not checked - no thank you email sent to family on behalf of inquirer` );
 				done();
 			}
 		},
