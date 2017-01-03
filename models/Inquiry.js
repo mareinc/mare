@@ -68,6 +68,8 @@ Inquiry.schema.pre( 'save', function( next ) {
 	let inquiryData = {
 		inquiryType						: this.inquiryType,
 		inquirerType					: this.inquirer,
+		isFamilyInquiry					: this.inquirer === 'family',
+		isSocialWorkerInquiry			: this.inquirer === 'social worker',
 		childId							: this.child,
 		familyId						: this.family,
 		socialWorkerId					: this.socialWorker,
@@ -80,11 +82,11 @@ Inquiry.schema.pre( 'save', function( next ) {
 	};
 	// NOTE: all checks for whether to run each function below exist within the functions themselves
 	async.series([
-		done => { inquiryMiddleware.getChild( inquiryData, done ); },						// child inquiries only
-		done => { inquiryMiddleware.getChildsSocialWorker( inquiryData, done ); },			// child inquiries only
-		done => { inquiryMiddleware.getCSCRegionContacts( inquiryData, done ); },			// child inquiries only
-		done => { inquiryMiddleware.getOnBehalfOfFamily( this, inquiryData, done ); }, 		// child inquiries by social workers only
-		done => { inquiryMiddleware.getOnBehalfOfFamilyState( inquiryData, done ); },		// child inquiries by social workers only
+		done => { inquiryMiddleware.getChild( inquiryData, done ); },						// all inquiries except general inquiries
+		done => { inquiryMiddleware.getChildsSocialWorker( inquiryData, done ); },			// all inquiries except general inquiries
+		done => { inquiryMiddleware.getCSCRegionContacts( inquiryData, done ); },			// all inquiries except general inquiries
+		done => { inquiryMiddleware.getOnBehalfOfFamily( this, inquiryData, done ); }, 		// social worker inquiries only
+		done => { inquiryMiddleware.getOnBehalfOfFamilyState( inquiryData, done ); },		// social worker inquiries only
 		done => { inquiryMiddleware.getAgencyContacts( inquiryData, done ); },				// general inquiries only
 		done => { inquiryMiddleware.getInquirer( inquiryData, done ); },					// all inquiries
 		done => { inquiryMiddleware.getInquirerState( inquiryData, done ); },				// all inquiries
