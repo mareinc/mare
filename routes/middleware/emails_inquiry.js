@@ -1,23 +1,12 @@
 var keystone = require( 'keystone' );
 
 exports.sendInquiryCreatedEmailToStaff = ( inquiry, inquiryData, done ) => {
-	// every template for inquiries begins this way
-	let templateTarget = 'inquiry';
-	// continue to build out the template name based on the inquirer type
-	templateTarget += inquiryData.inquirerType === 'family' ? '_family' : '_social-worker';
-	// continue to build out the template name based on the inquiry type
-	templateTarget += inquiryData.inquiryType === 'child inquiry' ? '-child-inquiry-created' :
-					  inquiryData.inquiryType === 'complaint' ? '-complaint-created' :
-					  inquiryData.inquiryType === 'family support consultation' ? '-family-support-consultation-created' :
-					  '-general-inquiry-created';
-	// all notification emails to staff end this way
-	templateTarget += '-to-staff';
 
 	// find the email template in templates/emails/
 	new keystone.Email({
 		templateExt 	: 'hbs',
 		templateEngine 	: require( 'handlebars' ),
-		templateName 	: templateTarget
+		templateName 	: 'inquiry_staff-notification'
 	}).send({
 		to: inquiryData.emailAddressesStaff,
 		from: {
@@ -28,8 +17,7 @@ exports.sendInquiryCreatedEmailToStaff = ( inquiry, inquiryData, done ) => {
 		inquiry: inquiry,
 		inquiryData: inquiryData
 	// TODO: we should be handling success/failure better, possibly with a flash message if we can make it appear in the model screen
-	// TODO: once we figure out what gets stored at arguments[0], we can use an arrow function here with parameters and not need the explicit function() syntax
-	}, function( err, message ) {
+	}, ( err, message ) => {
 		// log any errors
 		if( err ) {
 			console.log( `error sending staff email: ${ err }` );
@@ -37,9 +25,9 @@ exports.sendInquiryCreatedEmailToStaff = ( inquiry, inquiryData, done ) => {
 		}
 		// the response object is stored as the 0th element of the returned message
 		const response = message ? message[ 0 ] : undefined;
-
-		if( response && [ 'rejected', 'invalid' ].includes( response.status ) ) {
-			console.log( `staff notification email failed to send: ${ arguments[ 1 ] }` );
+		// if the email failed to send, or an error occurred ( which is does, rarely ) causing the response message to be empty
+		if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
+			console.log( `staff notification email failed to send: ${ message }` );
 			console.log( `error: ${ err }` );
 			done();
 		}
