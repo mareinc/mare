@@ -108,6 +108,7 @@ exports.getOnBehalfOfFamily = ( inquiry, inquiryData, done ) => {
 						// take note of whether the field was populated for including conditional sections of the email
 						inquiryData.hasOnBehalfOfFamilyModel = true;
 						inquiryData.hasOnBehalfOfFamily = true;
+						inquiryData.emailAddressFamilyOnBehalfOf.push( family.contact1.email );
 					}
 					done();
 				}, err => {
