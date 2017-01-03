@@ -52,22 +52,55 @@ exports.sendThankYouEmailToInquirer = ( inquiry, inquiryData, done ) => {
 			name 	: 'MARE',
 			email 	: 'admin@adoptions.io'
 		},
-		subject: 'thank you for your inquiry',
+		subject: 'your inquiry has been received',
 		inquiry: inquiry,
 		inquiryData: inquiryData
-	}, function() {
-		// the first element is an array with the 0th element being the response object
-		const response = arguments[ 1 ] ? arguments[ 1 ][ 0 ] : undefined;
-
-		if( response && [ 'rejected', 'invalid' ].includes( response.status ) ) {
-			console.log( `thank you to inquirer email failed to send: ${ arguments[ 1 ] }` )
-			console.log( `error: ${ error }` );
+	}, ( err, message ) => {
+		// the response object is stored as the 0th element of the returned message
+		const response = message ? message[ 0 ] : undefined;
+		// if the email failed to send, or an error occurred ( which is does, rarely ) causing the response message to be empty
+		if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
+			console.log( `thank you to inquirer email failed to send: ${ message }` );
+			console.log( `error: ${ err }` );
 			done();
 		}
 
 		console.log( `thank you to inquirer email sent successfully` );
 		// mark the inquiry thank you email as having been sent to prevent it being sent in the future
 		inquiry.thankYouSentToInquirer = true;
+		done();
+	});
+
+};
+
+exports.sendThankYouEmailToFamilyOnBehalfOfInquirer = ( inquiry, inquiryData, done ) => {
+	// find the email template in templates/emails/
+	new keystone.Email({
+		templateExt 	: 'hbs',
+		templateEngine 	: require( 'handlebars' ),
+		templateName 	: 'inquiry_thank-you-to-family-on-behalf-of-social-worker'
+	}).send({
+		to: inquiryData.emailAddressFamilyOnBehalfOf,
+		from: {
+			name 	: 'MARE',
+			email 	: 'admin@adoptions.io'
+		},
+		subject: 'your inquiry has been received',
+		inquiry: inquiry,
+		inquiryData: inquiryData
+	}, ( err, message ) => {
+		// the response object is stored as the 0th element of the returned message
+		const response = message ? message[ 0 ] : undefined;
+		// if the email failed to send, or an error occurred ( which is does, rarely ) causing the response message to be empty
+		if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
+			console.log( `thank you to family on behalf of inquirer email failed to send: ${ message }` );
+			console.log( `error: ${ err }` );
+			done();
+		}
+
+		console.log( `thank you to family on behalf of inquirer email sent successfully` );
+		// mark the inquiry thank you email as having been sent to prevent it being sent in the future
+		inquiry.thankYouSentToFamilyOnBehalfOfInquirer = true;
 		done();
 	});
 
