@@ -61,9 +61,9 @@ module.exports.importMailingLists = (req, res, done) => {
                     var newMailingList = new MailingList.model({
 
                         mailingList: _mailinglist.name,
-                        socialWorkerSubscribers:  _mailingListSubscribers[j]['agc_id'],
+                        socialWorkerSubscribers: _mailingListSubscribers[j]['agc_id'],
                         familySubscribers: _mailingListSubscribers[j]['fam_id'],
-                        outsideContactSubscribers:  _mailingListSubscribers[j]['ocn_id']
+                        outsideContactSubscribers: _mailingListSubscribers[j]['ocn_id']
 
                     });
 
@@ -117,27 +117,54 @@ function fetchMailingListSubscriptions(id, haystack){
 
 function fetchFamIdEquivalent(id) {
     // fetch the related id for the same thing from the new database
-    dataMigrationService.getModelId(req, res, done, { 
-        model: 'Family', 
-        targetField: '_id', 
-        targetValue: id, 
-        returnTarget: 'familyID' });
+    async.series([
+        dataMigrationService.getModelId(req, res, done, { 
+            model: 'Family', 
+            targetField: '_id', 
+            targetValue: id, 
+            returnTarget: 'familyID' })
+	], function() {
+
+		return locals.familyID;
+
+		done();
+	});
+    
 }
 
 function fetchAgencyIdEquivalent(id) {
     // fetch the related id for the same thing from the new database
-    dataMigrationService.getModelId(req, res, done, { 
-        model: 'Agency', 
-        targetField: '_id', 
-        targetValue: id, 
-        returnTarget: 'agencyID' });
+    async.series([
+        dataMigrationService.getModelId(req, res, done, { 
+            model: 'Agency', 
+            targetField: '_id', 
+            targetValue: id, 
+            returnTarget: 'agencyID' })
+	], function() {
+
+		return locals.agencyID;
+
+		done();
+	});
+    
 }
 
 function fetchOutsideContactIdEquivalent(id) {
     // fetch the related id for the same thing from the new database
-    dataMigrationService.getModelId(req, res, done, { 
-        model: 'Family', 
-        targetField: '_id', 
-        targetValue: id, 
-        returnTarget: 'familyID' });
+    async.series([
+        dataMigrationService.getModelId(req, res, done, { 
+            model: 'Family', 
+            targetField: '_id', 
+            targetValue: id, 
+            returnTarget: 'outsideContactID' })
+	], function() {
+
+		return locals.outsideContactID;
+
+		done();
+	});
+    
 }
+
+
+locals.familyID

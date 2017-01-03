@@ -23,7 +23,7 @@ var async					= require('async'),
 var Converter = require("csvtojson").Converter;
 var converter = new Converter({});
 
-// var columns = ["chd_id","registered_date","sibling_group_id","first_name","middle_name","last_name","alias","nickname","status",
+// ["chd_id","registered_date","sibling_group_id","first_name","middle_name","last_name","alias","nickname","status",
 // 	"date_of_birth","gender","rce_id","race_note","legal_status","number_of_siblings","can_place_in_two_parent_home",
 // 	"can_place_with_two_females","can_place_with_two_males","can_place_with_single_female","can_place_with_single_male",
 // 	"can_place_in_childless_home","can_place_in_multi_child_home","require_older_children","require_younger_children",

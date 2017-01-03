@@ -6,13 +6,11 @@ var async					= require('async'),
 	keystone				= require('keystone'),
 	Types 					= keystone.Field.Types,
     OutsideContact			= keystone.list('Outside Contact'),
-    csv2arr					= require('csv-to-array'),
 	dataMigrationService	= require('../service_data-migration'),
 	mailingListsMap			= require('../data-migration-maps/outside-contact-group');
 	statesMap				= require('../data-migration-maps/state');
 
-// var columns = ['ocn_id','name','organization','address_1','address_2','city','state','zip','phone','email','contact_type','country','notes'];
-// var importArray = [];
+// ['ocn_id','name','organization','address_1','address_2','city','state','zip','phone','email','contact_type','country','notes'];
 
 //Converter Class 
 var Converter = require("csvtojson").Converter;
@@ -37,7 +35,6 @@ module.exports.importOutsideContacts = ( req, res, done ) => {
 				// increment the counter keeping track of how many records we still need to process
 				remainingRecords++;
 
-				// let _outsideContact = locals.importArray[i];
 				let _splitName = exports.splitName(outsideContact.name);
 				let _isVolunteer = false;
 

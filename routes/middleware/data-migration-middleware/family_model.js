@@ -157,7 +157,7 @@ module.exports.importFamilies = function importFamilies(req, res, done) {
 							street1: family.address_1,
 							street2: family.address_2,
 							city: family.city,
-							state: locals.statesMap[family.state],
+							state: locals.statesMap[ family.state ],
 							zipCode: (family.zip.length > 4) ? family.zip : '0' + family.zip
 						},
 
@@ -357,25 +357,3 @@ function oldSpecialNeedCodes(needCode) {
 
 	return foundNeed;
 }
-
-// function LoadAllRacePreferences() {
-// 	converter.fromFile("./migration-data/csv-data/family_race_preference.csv",function(err,array){
-// 			if (err) {
-// 				throw "An error occurred!\n" + err;
-// 			} else {
-
-// 				importArrayFamRacePref = array;
-// 			}
-// 		});
-// }
-
-// function LoadAllSpecialNeeds() {
-// 	converter.fromFile("./migration-data/csv-data/family_special_need.csv",function(err,array){
-// 			if (err) {
-// 				throw "An error occurred!\n" + err;
-// 			} else {
-
-// 				importArrayFamSpecNeed = array;
-// 			}
-// 		});
-// }

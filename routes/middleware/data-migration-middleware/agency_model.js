@@ -13,8 +13,7 @@ const dataMigrationService	= require( '../service_data-migration' );
 const statesMap				= require( '../data-migration-maps/state' );
 const regionsMap			= require( '../data-migration-maps/region' );
 
-// agency import file
-// const columns = [ 'agn_id', 'code', 'name', 'address_1', 'address_2', 'city', 'state', 'zip', 'phone', 'fax', 'url', 'rgn_id' ];
+// [ 'agn_id', 'code', 'name', 'address_1', 'address_2', 'city', 'state', 'zip', 'phone', 'fax', 'url', 'rgn_id' ];
 
 // migration file location
 const csvFilePath = './migration-data/csv-data/agency.csv';

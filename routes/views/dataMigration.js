@@ -22,17 +22,17 @@ exports = module.exports = function(req, res) {
     let locals = res.locals;
 
     async.series([
-		// done => { statesMap.getStatesMap(req, res, done) },
+		done => { statesMap.getStatesMap(req, res, done) },
 		// done => { agenciesImport.importAgencies( req, res, done ); }, 			   // 1
 		// done => { outsideContactImport.importOutsideContacts( req, res, done ); }   // 2
 		// done => { socialWorkerImport.importSocialWorker( req, res, done ); }        // 3
 		// done => { childrenImport.importChildren( req, res, done ); },			   // 4
-		// done => { familiesImport.importFamilies( req, res, done ); },			   // 5
+		done => { familiesImport.importFamilies( req, res, done ); },			   // 5
 		// done => { placementsImport.importPlacements( req, res, done ); },		   // 6
 		// done => { inquiriesImport.importInquiries( req, res, done ); },		       // 7
 		// done => { eventsImport.importEvents( req, res, done ); }					   // 8
 		// done => { mailingListsImport.importMailingLists( req, res, done ); }		   // 9
-		done => { internalNotesImport.importInternalNotes( req, res, done ); }		 // 10
+		// done => { internalNotesImport.importInternalNotes( req, res, done ); }	   // 10
 		
 	], function() {
 		// Set the layout to render without the right sidebar
