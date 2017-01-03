@@ -1,0 +1,172 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Thank you for your inquiry</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+</head>
+<body style="margin: 0; padding: 0;">
+	<table border="0" cellpadding="0" cellspacing="0" width="100%">	
+		<tr>
+			<td style="padding: 10px 0 30px 0;">
+				<table align="center" border="0" cellpadding="0" cellspacing="0" width="600" style="border: 1px solid #cccccc; border-collapse: collapse;">
+					<tr>
+						<td align="center" bgcolor="#3D4573" style="padding: 40px 0 30px 0; color: #ffffff; font-size: 28px; font-weight: bold; font-family: Arial, sans-serif;">
+							<table border="0" cellpadding="0" cellspacing="0">
+									<img src="mare-logo.png" alt="MARE Logo" width="500" height="106" style="display: block;" />
+							</table>
+						</td>
+					</tr>
+					<tr>
+						<td bgcolor="#ffffff" style="padding: 40px 30px 40px 30px;">
+							<table border="0" cellpadding="0" cellspacing="0" width="100%">
+								<tr>
+									<td style="color: #153643; font-family: Arial, sans-serif; font-size: 24px;">
+										<b>Thank you for your inquiry!</b>
+									</td>
+								</tr>
+								<tr>
+									<td style="padding: 20px 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">
+										on <b>{{ inquiryData.takenOn }}</b>, <b>{{ inquiryData.inquirer.name.full }}</b> created an inquiry on your behalf.  Please check the details below, if the inquiry was made in error, or details are wrong or missing, please contact <i>some email address</i>.  Your inquiry will be reviewed by MARE staff who will help to make a determination of what should happen next.  If your inquiry is either accepted or rejected, you will be notified by email.  Typically inquiries are processed in three to five business days, if you don't hear from us by then, please feel free to reach out at <i>some email address</i>
+									</td>
+								</tr>
+								<tr>
+									<td style="line-height:10px;">&nbsp;</td>
+								</tr>
+								<tr>
+									<td>
+
+										<!-- requested information about -->
+										{{#if inquiryData.hasChild}}
+										<table border="0" cellpadding="0" cellspacing="0" width="100%">	
+											<tr>
+												<td valign="bottom" width="100%" style="padding: 20px 0 10px 0; color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;"><b>Requested Information About:</b></td>
+											</tr>	
+										</table>
+										{{/if}}
+											
+										<table border="0" cellpadding="0" cellspacing="0" width="100%">
+											<!-- taken by -->
+											{{#if inquiryData.hasChild}}
+											<tr>
+												<td valign="bottom" align="left" width="30%" style="padding: 20px 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">
+													<b>Reg. Number:</b>
+												</td>
+												<td valign="bottom" align="left" width="70%" style="padding: 20px 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">{{ inquiryData.child.registrationNumber }}</td>
+											</tr>
+											<tr>
+												<td valign="bottom" align="left" width="30%" style="color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">
+													<b>Name:</b>
+												</td>
+												<td valign="bottom" align="left" width="70%" style="color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">{{ inquiryData.child.name.full }}</td>
+											</tr>
+											<tr>
+												<td valign="bottom" align="left" width="30%" style="color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">
+													<b>Status:</b>
+												</td>
+												<td valign="bottom" align="left" width="70%" style="color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">{{ inquiryData.child.status.childStatus }}</td>
+											</tr>
+											<tr>
+												<td valign="bottom" align="left" width="30%" style="color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">
+													<b>Photolisting Page:</b>
+												</td>
+												<td valign="bottom" align="left" width="70%" style="color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">{{ inquiryData.child.photolistingPageNumber }}</td>
+											</tr>
+											{{/if}}
+											
+											<!-- inquiry by -->
+											<tr>
+												<td valign="top" align="left" width="30%" style="padding: 20px 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">
+													<b>Inquiry By:</b>
+												</td>
+												<td valign="bottom" align="left" width="70%" style="padding: 20px 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">
+													{{#if inquiryData.isFamilyInquiry}}
+														{{ inquiryData.inquirer.contact1.name.full }}
+													{{/if}}
+													{{#if inquiryData.isSocialWorkerInquiry}}
+														{{ inquiryData.inquirer.name.full }}
+													{{/if}}
+													<br/>
+													{{ inquiryData.inquirer.address.street1 }}
+													<br/>
+													{{ inquiryData.inquirer.address.street2 }}
+													<br/>
+													{{ inquiryData.inquirer.address.city }}, {{ inquiryData.inquirerState.abbreviation }} {{ inquiryData.inquirer.address.zipCode }}
+													<br/>
+													{{ inquiryData.inquirer.contact1.mobile }}
+													<br/>
+													{{ inquiryData.inquirer.contact1.work }}
+												</td>
+											</tr>
+
+											<!-- inquiry on behalf of family -->
+											{{#if inquiryData.hasOnBehalfOfFamily}}
+											<tr>
+												<td valign="top" align="left" width="30%" style="padding: 20px 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">
+													<b>Inquiry On Behalf Of:</b>
+												</td>
+												{{#if inquiryData.hasOnBehalfOfFamilyText}}
+												<td valign="bottom" align="left" width="70%" style="padding: 20px 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">{{ inquiryData.onBehalfOfFamily }}</td>
+												{{/if}}
+												{{#if inquiryData.hasOnBehalfOfFamilyModel}}
+												<td valign="bottom" align="left" width="70%" style="padding: 20px 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">
+													{{ inquiryData.onBehalfOfFamily.contact1.name.full }}
+													<br/>
+													{{ inquiryData.onBehalfOfFamily.address.street1 }}
+													<br/>
+													{{ inquiryData.onBehalfOfFamily.address.street2 }}
+													<br/>
+													{{ inquiryData.onBehalfOfFamily.address.city }}, {{ inquiryData.onBehalfOfFamilyState.abbreviation }} {{ inquiryData.onBehalfOfFamily.address.zipCode }}
+													<br/>
+													{{ inquiryData.onBehalfOfFamily.contact1.mobile }}
+													<br/>
+													{{ inquiryData.onBehalfOfFamily.contact1.work }}
+												</td>
+												{{/if}}
+											</tr>
+											{{/if}}
+
+											<!-- taken by -->
+											<tr>
+												<td valign="bottom" align="left" width="30%" style="padding: 20px 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">
+													<b>Taken By:</b>
+												</td>
+												<td valign="bottom" align="left" width="70%" style="padding: 20px 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">{{ inquiryData.takenBy }}</td>
+											</tr>
+
+											<!-- source -->
+											<tr>
+												<td valign="bottom" width="30%" style="padding: 20px 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">
+													<b>Source:</b>
+												</td>
+												<td valign="bottom" width="70%" style="padding: 20px 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">{{ inquiryData.source }}</td>
+											</tr>
+										</table>
+									</td>
+								</tr>
+								
+							</table>
+						</td>
+					</tr>
+					<tr>
+						<td bgcolor="#3D4573" style="padding: 30px 30px 30px 30px;">
+							<table border="0" cellpadding="0" cellspacing="0" width="100%">
+								<tr>
+									<td align="center" style="color: #ffffff; font-family: Arial, sans-serif; font-size: 14px;" width="100%">
+										Massachusetts Adoption Resource Exchange | <a href="http://mareinc.org/" style="color: #ffffff; text-decoration:none;"><font color="#fffbd7"><b>mareinc.org</b></font></a> 
+										<br/><br/>
+										45 Franklin Street, 5th Floor, 
+										<br>Boston, MA 022110
+										<br/>
+										(617) 542-3678
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+</body>
+</html>
