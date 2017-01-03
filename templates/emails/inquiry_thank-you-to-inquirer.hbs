@@ -26,13 +26,8 @@
 									</td>
 								</tr>
 								<tr>
-									<td style="color: #153643; font-family: Arial, sans-serif; font-size: 15px;">
-											Date of Inquiry: 12/14/2015
-									</td>
-								</tr>
-								<tr>
 									<td style="padding: 20px 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">
-										MARE has received a telephone or web inquiry regarding Jayden. This agency social worker has been given the contact information of the social worker listed below and been asked to follow up with him/her. If you would like more information, please feel free to be proactive and contact the agency social worker directly.
+										MARE has received your <b>{{ inquiryData.method }}</b> inquiry from <b>{{ inquiryData.takenOn }}</b>.  Your inquiry will be reviewed by MARE staff who will help to make a determination of what should happen next.  If your inquiry is either accepted or rejected, you will be notified by email.  Typically inquiries are processed in three to five business days, if you don't hear from us by then, please feel free to reach out at <i>some email address</i>
 									</td>
 								</tr>
 								<tr>
@@ -42,100 +37,123 @@
 									<td>
 
 										<!-- requested information about -->
+										{{#if inquiryData.hasChild}}
 										<table border="0" cellpadding="0" cellspacing="0" width="100%">	
 											<tr>
-												<td valign="bottom" width="100%" style="padding: 20px 0 10px 0; color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;"><b>Reuested Information About:</b></td>
+												<td valign="bottom" width="100%" style="padding: 20px 0 10px 0; color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;"><b>Requested Information About:</b></td>
 											</tr>	
 										</table>
-
-										<!-- requested information about -->
-										<table border="0" cellpadding="0" cellspacing="0" width="100%">	
+										{{/if}}
+											
+										<table border="0" cellpadding="0" cellspacing="0" width="100%">
+											<!-- taken by -->
+											{{#if inquiryData.hasChild}}
 											<tr>
-												<td valign="bottom" align="left" width="25%" style="padding: 0 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px; text-decoration: underline;">Reg. Number</td>
-												<td valign="bottom" align="left" width="25%" style="padding: 0 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px; text-decoration: underline;">Child</td>
-												<td valign="bottom" align="left" width="25%" style="padding: 0 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px; text-decoration: underline;">Staus</td>
-												<td valign="bottom" align="left" width="25%" style="padding: 0 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px; text-decoration: underline;">Photolisting Page</td>
+												<td valign="bottom" align="left" width="30%" style="padding: 20px 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">
+													<b>Reg. Number:</b>
+												</td>
+												<td valign="bottom" align="left" width="70%" style="padding: 20px 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">{{ inquiryData.child.registrationNumber }}</td>
 											</tr>
 											<tr>
-												<td valign="bottom" align="left" width="25%" style="padding: 0 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px; ">5554</td>
-												<td valign="bottom" align="left" width="25%" style="padding: 0 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px; ">Jordan, Jayden</td>
-												<td valign="bottom" align="left" width="25%" style="padding: 0 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px; ">Active</td>
-												<td valign="bottom" align="left" width="25%" style="padding: 0 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px; "></td>
-											</tr>	
-										</table>
+												<td valign="bottom" align="left" width="30%" style="color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">
+													<b>Name:</b>
+												</td>
+												<td valign="bottom" align="left" width="70%" style="color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">{{ inquiryData.child.name.full }}</td>
+											</tr>
+											<tr>
+												<td valign="bottom" align="left" width="30%" style="color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">
+													<b>Status:</b>
+												</td>
+												<td valign="bottom" align="left" width="70%" style="color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">{{ inquiryData.child.status.childStatus }}</td>
+											</tr>
+											<tr>
+												<td valign="bottom" align="left" width="30%" style="color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">
+													<b>Photolisting Page:</b>
+												</td>
+												<td valign="bottom" align="left" width="70%" style="color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">{{ inquiryData.child.photolistingPageNumber }}</td>
+											</tr>
+											{{/if}}
 											
-										<table border="0" cellpadding="0" cellspacing="0" width="100%">	
 											<!-- inquiry by -->
 											<tr>
-												<td valign="top" align="left" width="25%" style="padding: 20px 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">
+												<td valign="top" align="left" width="30%" style="padding: 20px 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">
 													<b>Inquiry By:</b>
 												</td>
-												<td valign="bottom" align="left" width="75%" style="padding: 20px 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">
-													Edge-Mattos, Courtney
+												<td valign="bottom" align="left" width="70%" style="padding: 20px 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">
+													{{#if inquiryData.isFamilyInquiry}}
+														{{ inquiryData.inquirer.contact1.name.full }}
+													{{/if}}
+													{{#if inquiryData.isSocialWorkerInquiry}}
+														{{ inquiryData.inquirer.name.full }}
+													{{/if}}
 													<br/>
-													Community Care Services/JRI
+													{{ inquiryData.inquirer.address.street1 }}
 													<br/>
-													132 South Main St
+													{{ inquiryData.inquirer.address.street2 }}
 													<br/>
-													Berkley, MA 02780
+													{{ inquiryData.inquirer.address.city }}, {{ inquiryData.inquirerState.abbreviation }} {{ inquiryData.inquirer.address.zipCode }}
 													<br/>
-													(508) 821-7774
+													{{ inquiryData.inquirer.contact1.mobile }}
+													<br/>
+													{{ inquiryData.inquirer.contact1.work }}
 												</td>
 											</tr>
+
+											<!-- inquiry on behalf of family -->
+											{{#if inquiryData.hasOnBehalfOfFamily}}
+											<tr>
+												<td valign="top" align="left" width="30%" style="padding: 20px 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">
+													<b>Inquiry On Behalf Of:</b>
+												</td>
+												{{#if inquiryData.hasOnBehalfOfFamilyText}}
+												<td valign="bottom" align="left" width="70%" style="padding: 20px 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">{{ inquiryData.onBehalfOfFamily }}</td>
+												{{/if}}
+												{{#if inquiryData.hasOnBehalfOfFamilyModel}}
+												<td valign="bottom" align="left" width="70%" style="padding: 20px 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">
+													{{ inquiryData.onBehalfOfFamily.contact1.name.full }}
+													<br/>
+													{{ inquiryData.onBehalfOfFamily.address.street1 }}
+													<br/>
+													{{ inquiryData.onBehalfOfFamily.address.street2 }}
+													<br/>
+													{{ inquiryData.onBehalfOfFamily.address.city }}, {{ inquiryData.onBehalfOfFamilyState.abbreviation }} {{ inquiryData.onBehalfOfFamily.address.zipCode }}
+													<br/>
+													{{ inquiryData.onBehalfOfFamily.contact1.mobile }}
+													<br/>
+													{{ inquiryData.onBehalfOfFamily.contact1.work }}
+												</td>
+												{{/if}}
+											</tr>
+											{{/if}}
 
 											<!-- taken by -->
 											<tr>
-												<td valign="bottom" align="left" width="25%" style="padding: 10px 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">
-														<b>Taken By:</b>
-													</td>
-												<td valign="bottom" align="left" width="75%" style="padding: 10px 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">Anna Collins</td>
-											</tr>
-
-											<!-- on behalf of -->
-											<tr>
-												<td valign="bottom" width="25%" style="padding: 0 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">
-													<b>On Behalf Of:</b>
+												<td valign="bottom" align="left" width="30%" style="padding: 20px 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">
+													<b>Taken By:</b>
 												</td>
-
-												<td valign="bottom" width="75%" style="padding: 0 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">Cooney-Cram</td>					
+												<td valign="bottom" align="left" width="70%" style="padding: 20px 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">{{ inquiryData.takenBy }}</td>
 											</tr>
 
 											<!-- source -->
 											<tr>
-												<td valign="bottom" width="25%" style="padding: 0 0 20px 0; color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">
+												<td valign="bottom" width="30%" style="padding: 20px 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">
 													<b>Source:</b>
 												</td>
-												<td valign="bottom" width="75%" style="padding: 0 0 20px 0; color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">MARE On-line Matching- SW</td>
+												<td valign="bottom" width="70%" style="padding: 20px 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">{{ inquiryData.source }}</td>
 											</tr>
 										</table>
 
-							
+										<!-- comments -->
+										{{#if inquiry.comments}}
 										<table border="0" cellpadding="0" cellspacing="0" width="100%">	
-											<!-- inquiry by -->
 											<tr>
-												<td valign="top" align="left" width="25%" style="padding: 0 0 20px 0; color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">
-													<b>Referred To:</b>
-												</td>
-												<td valign="bottom" align="left" width="75%" style="padding: 0 0 20px 0; color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">
-														Dumont, Richard
-														<br/>
-														DCF-Western Regional
-														<br/>
-														140 High Street
-														<br/>
-														5th floor
-														<br/>
-														Springfield, MA 01105
-												</td>
+												<td valign="bottom" width="100%" style="padding: 20px 0 10px 0; color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;"><b>Comments:</b></td>
+											</tr>
+											<tr>
+												<td valign="bottom" width="100%" style="color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">{{ inquiry.comments }}</td>
 											</tr>
 										</table>
-
-									</td>
-								</tr>
-								
-								<tr>
-									<td style="padding: 0 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">
-										Thank you for your attention, and please contact the MARE office if you have any questions.</a>
+										{{/if}}
 									</td>
 								</tr>
 							</table>
