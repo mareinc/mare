@@ -116,7 +116,6 @@ exports.getOnBehalfOfFamily = ( inquiry, inquiryData, done ) => {
 				console.log( err );
 				done();
 			});
-	}
 };
 
 exports.getOnBehalfOfFamilyState = ( inquiryData, done ) => {
@@ -159,7 +158,6 @@ exports.getAgencyContacts = ( inquiryData, done ) => {
 				console.log( err );
 				done();
 			});
-	}
 };
 
 exports.getInquirer = ( inquiryData, done ) => {
