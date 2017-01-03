@@ -120,7 +120,7 @@ function fetchFamIdEquivalent(id) {
     async.series([
         dataMigrationService.getModelId(req, res, done, { 
             model: 'Family', 
-            targetField: '_id', 
+            targetField: 'oldId', 
             targetValue: id, 
             returnTarget: 'familyID' })
 	], function() {
@@ -137,7 +137,7 @@ function fetchAgencyIdEquivalent(id) {
     async.series([
         dataMigrationService.getModelId(req, res, done, { 
             model: 'Agency', 
-            targetField: '_id', 
+            targetField: 'oldId', 
             targetValue: id, 
             returnTarget: 'agencyID' })
 	], function() {
@@ -153,8 +153,8 @@ function fetchOutsideContactIdEquivalent(id) {
     // fetch the related id for the same thing from the new database
     async.series([
         dataMigrationService.getModelId(req, res, done, { 
-            model: 'Family', 
-            targetField: '_id', 
+            model: 'Outside Contact', 
+            targetField: 'oldId', 
             targetValue: id, 
             returnTarget: 'outsideContactID' })
 	], function() {
@@ -165,6 +165,3 @@ function fetchOutsideContactIdEquivalent(id) {
 	});
     
 }
-
-
-locals.familyID

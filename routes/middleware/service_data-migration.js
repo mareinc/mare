@@ -22,6 +22,7 @@ exports.getTargetModel = function getTargetModel(modelName) {
 			case 'City or Town'			: return CityOrTown;
 			case 'Closed Reason'		: return ClosedReasons;
 			case 'Gender'				: return Gender;
+			//add family here
 			case 'Family Constellation' : return FamilyConstellation;
 			case 'Language'				: return Language;
 			case 'Legal Status' 		: return LegalStatus;

@@ -22,7 +22,7 @@ exports = module.exports = function(req, res) {
     let locals = res.locals;
 
     async.series([
-		done => { statesMap.getStatesMap(req, res, done) },
+		// done => { statesMap.getStatesMap(req, res, done) },
 		// done => { agenciesImport.importAgencies( req, res, done ); }, 			   // 1
 		// done => { outsideContactImport.importOutsideContacts( req, res, done ); }   // 2
 		// done => { socialWorkerImport.importSocialWorker( req, res, done ); }        // 3
