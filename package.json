@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "async": "^2.1.4",
-    "browserify": "^13.1.1",
+    "browserify": "^13.3.0",
     "cloudinary": "~1.5.0",
     "del": "^2.2.2",
     "dotenv": "^2.0.0",
