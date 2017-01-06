@@ -14,8 +14,7 @@ SectionHeader.add('Site Area', {
     target: { type: Types.Select, label: 'header for site area', options: 'Considering Adoption, Meet the Children, Family Support Services, For Social Workers, Events, Ways to Help, About Us', unique: true, required: true, initial: true }
 
 }, 'Details', {
-	// TODO: The image isn't being saved with the fileName value, instead it's a random hash.  This needs to be fixed
-    originalImage: { type: Types.CloudinaryImage, label: 'family name', note: '644px by 166px', folder: 'sectionHeaders/', publicId: 'fileName', autoCleanup: true },
+    originalImage: { type: Types.CloudinaryImage, label: 'family name', note: '644px by 166px', folder: 'section-headers/', select: true, selectPrefix: 'section-headers/', publicId: 'fileName', autoCleanup: true }, // TODO: add publicID attribute for better naming in Cloudinary
 	headerImage: {type: Types.Url, hidden: true },
 	header: { type: Types.Text, label: 'header text', required: true, initial: true }
 
