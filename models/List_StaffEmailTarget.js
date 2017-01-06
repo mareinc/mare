@@ -8,7 +8,7 @@ var StaffEmailTarget = new keystone.List('Staff Email Target', {
 
 // Create fields
 StaffEmailTarget.add({
-	staffEmailTarget: { type: Types.Text, label: 'staff email target', note: 'a MARE employee will be matched with this as the primary email recipient', required: true, initial: true }
+	staffEmailTarget: { type: Types.Text, label: 'staff email target', note: 'a MARE employee will be matched with this as the primary email recipient', required: true, noedit: true, initial: true }
 });
 
 // Define default columns in the admin interface and register the model

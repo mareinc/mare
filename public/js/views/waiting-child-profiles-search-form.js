@@ -41,7 +41,7 @@
 				maximumIntellectualNeeds		: $( '.select-maximum-intellectual-needs:checked' ).val(),
 				disabilities					: $( '.select-disabilities:checked' ),
 				otherConsiderations				: $( '.select-other-considerations:checked' ),
-				familyConstellation				: $( '.select-family-constellation:checked' ).val(),
+				familyConstellation				: $( '.select-family-constellation:checked' ),
 				numberOfChildrenInHome			: $( '.select-number-of-children-in-home' ).val(),
 				gendersOfChildrenInHome			: $( '.select-genders-of-children-in-home:checked' ),
 				youngestChildAgeInHome			: $( '#youngest-child-age-in-home' ).val(),
@@ -57,6 +57,7 @@
 				primaryLanguagesArray			= [],
 				disabilityArray					= [],
 				otherConsiderationsArray		= [],
+				familyConstellationArray		= [],
 				gendersOfChildrenInHomeArray	= [],
 				formFields						= this.formFields;
 
@@ -80,6 +81,10 @@
 				otherConsiderationsArray.push( consideration.getAttribute( 'value' ) );
 			});
 
+			_.each( formFields.familyConstellation, function( constellation ) {
+				familyConstellationArray.push( constellation.getAttribute( 'value' ) );
+			});
+
 			_.each( formFields.gendersOfChildrenInHome, function( gender ) {
 				gendersOfChildrenInHomeArray.push( gender.getAttribute( 'value' ) );
 			});
@@ -89,6 +94,7 @@
 			formFields.primaryLanguages			= primaryLanguagesArray;
 			formFields.disabilities				= disabilityArray;
 			formFields.otherConsiderations		= otherConsiderationsArray;
+			formFields.familyConstellation		= familyConstellationArray;
 			formFields.gendersOfChildrenInHome	= gendersOfChildrenInHomeArray;
 
 			formFields.minimumSiblings			= parseInt( formFields.minimumSiblings, 10 );
@@ -123,7 +129,7 @@
 			if( formFields.maximumIntellectualNeeds === 3 )				{ delete formFields.maximumIntellectualNeeds; }
 			if( formFields.disabilities.length === 0 )					{ delete formFields.disabilities; }
 			if( formFields.otherConsiderations.length === 0 )			{ delete formFields.otherConsiderations; }
-			if( !formFields.familyConstellation )						{ delete formFields.familyConstellation; }
+			if( formFields.familyConstellation.length === 0 )			{ delete formFields.familyConstellation; }
 			if( formFields.gendersOfChildrenInHome.length === 0 )		{ delete formFields.gendersOfChildrenInHome; }
 			if( !formFields.petsInHome )								{ delete formFields.petsInHome; }
 
@@ -199,8 +205,9 @@
 				   _.intersection( formFields.otherConsiderations, child.get( 'otherConsiderations' ) ).length === 0 ) { return; }
 
 				// break out of the loop if the recommended family constellation for the child does not contain the one selected by the user ( return is needed for this in _.each )
-				if( formFields.familyConstellation !== undefined &&
-				   child.get( 'recommendedFamilyConstellation' ).indexOf( formFields.familyConstellation ) === -1 ) { return; }
+				if( formFields.familyConstellation &&
+				   child.get( 'recommendedFamilyConstellation' ).length > 0 &&
+				_.intersection( formFields.familyConstellation, child.get( 'recommendedFamilyConstellation' ) ).length === 0 ) { return; }
 
 				// break out of the loop if any of the other considerations selected don't match the child ( return is needed for this in _.each )
 				if( child.get( 'requiresSiblings' ) && formFields.numberOfChildrenInHome === 0 ) { return; }

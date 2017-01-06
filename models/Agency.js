@@ -4,8 +4,8 @@ var keystone = require('keystone'),
 // Create model. Additional options allow menu name to be used what auto-generating URLs
 var Agency = new keystone.List('Agency', {
 	track: true,
-	autokey: { path: 'key', from: 'name', unique: true },
-	map: { name: 'name' }
+	autokey: { path: 'key', from: 'code', unique: true },
+	map: { name: 'code' }
 });
 
 // Create fields
@@ -26,7 +26,13 @@ Agency.add({
 	},
 
 	url: { type: Types.Text, label: 'agency url', initial: true },
-	generalInquiryContact: { type: Types.Email, label: 'general inquiry contact', required: true, initial: true }
+	generalInquiryContact: { type: Types.Email, label: 'general inquiry contact', initial: true }
+
+/* Container for data migration fields ( these should be kept until after phase 2 and the old system is phased out completely ) */
+}, {
+	// system field to store an appropriate file prefix
+	oldId: { type: Types.Text, hidden: true }
+
 });
 
 // Set up relationship values to show up at the bottom of the model if any exist

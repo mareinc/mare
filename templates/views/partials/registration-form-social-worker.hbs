@@ -67,13 +67,13 @@
 			<div class="row">
 				<div class="col-sm-24 form-group">
 					<label class="checkbox-inline social-worker-title-checkbox">
-						<input type="checkbox" name="titleDiffersFromPosition" data-parsley-errors-messages-disabled="true" required="">My title differs from the position listed above
+						<input type="checkbox" name="titleDiffersFromPosition">My title differs from the position listed above
 					</label>
 				</div>
 			</div>
 			<div class="row">
 				<div class="col-sm-12 form-group social-worker-title-group hidden">
-					<input type="text" id="social-worker-title" class="input" name="socialWorkerTitle" placeholder="my title">
+					<input type="text" id="social-worker-title" class="input" name="socialWorkerTitle" data-parsley-required="false" data-parsley-error-message="required" placeholder="my title">
 					<label for="social-worker-title" class="label required-field">Title</label>
 				</div>
 			</div>
@@ -86,7 +86,7 @@
 			<div class="row form-group">
 				<div class="col-sm-12">
 					<input type="text" id="social-worker-work-phone" class="input" name="workPhone" placeholder="(617) 111-1111" data-parsley-error-message="required" required="">
-					<label for="social-worker-work-phone" class="label">Work Phone</label>
+					<label for="social-worker-work-phone" class="label required-field">Work Phone</label>
 				</div>
 			</div>
 			<div class="row form-group">
@@ -102,7 +102,7 @@
 						<option value="work">work</option>
 						<option value="mobile">mobile</option>
 					</select>
-					<label for="social-worker-preferred-phone" class="label">Preferred Phone</label>
+					<label for="social-worker-preferred-phone" class="label required-field">Preferred Phone</label>
 				</div>
 			</div>
 			<div class="row form-group">

@@ -1,9 +1,9 @@
-var keystone	= require('keystone'),
+var keystone	= require( 'keystone' ),
 	Types		= keystone.Field.Types,
-	User		= require('./User');
+	User		= require( './User' );
 
 // Create model
-var Admin = new keystone.List('Admin', {
+var Admin = new keystone.List( 'Admin', {
 	inherits: User,
 	track: true,
 	map: { name: 'name.full' },
@@ -15,6 +15,7 @@ var Admin = new keystone.List('Admin', {
 Admin.add( 'Permissions', {
 
 	permissions: {
+		isVerified: { type: Boolean, label: 'has a verified email address', default: true, noedit: true, hidden: true },
 		isActive: { type: Boolean, label: 'is active', default: true, noedit: true }
 	}
 
@@ -53,10 +54,8 @@ Admin.relationship({ ref: 'Mailing List', refPath: 'adminSubscribers', path: 'ma
 Admin.relationship({ ref: 'Event', refPath: 'staffAttendees', path: 'events', label: 'events' });
 
 // Pre Save
-Admin.schema.pre('save', function(next) {
+Admin.schema.pre( 'save', function( next ) {
 	'use strict';
-	// All administrator accounts are considered verified by default
-	this.isVerified = true;
 	// Populate the full name string for better identification when linking through Relationship field types
 	this.name.full = this.name.first + ' ' + this.name.last;
 	// Set the userType for role based page rendering
@@ -69,7 +68,7 @@ Admin.schema.pre('save', function(next) {
 /* 						  Changing names or reworking this file changed the check in node_modules/keystone/templates/views/signin.jade
 /*						  for user.isAdmin on line 14 */
 // Provide access to Keystone
-User.schema.virtual('canAccessKeystone').get(function() {
+User.schema.virtual( 'canAccessKeystone' ).get( () => {
 	'use strict';
 
 	return true;

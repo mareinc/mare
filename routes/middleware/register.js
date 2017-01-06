@@ -253,7 +253,7 @@ exports.saveFamily = function saveFamily(user, res, done) {
 
 		homestudy: {
 			completed						: !user.processProgression ? false : user.processProgression.indexOf('homestudyCompleted') !== -1 ? true : false,
-			initialDate						: !user.processProgression ? false : user.processProgression.indexOf('homestudyCompleted') !== -1 ? user.homestudyDateComplete : undefined
+			initialDate						: !user.processProgression ? undefined : user.processProgression.indexOf('homestudyCompleted') !== -1 ? user.homestudyDateComplete : undefined
 		},
 
 		numberOfChildren					: user.childrenInHome,

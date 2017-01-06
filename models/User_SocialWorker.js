@@ -12,6 +12,7 @@ var keystone				= require( 'keystone' ),
 // Create model
 var SocialWorker = new keystone.List( 'Social Worker', {
 	inherits	: User,
+	track: true,
 	map			: { name: 'name.full' },
 	defaultSort	: 'name.full',
 	hidden		: false
@@ -36,8 +37,6 @@ SocialWorker.add( 'Permissions', {
 	avatar: { type: Types.CloudinaryImage, label: 'avatar', folder: 'users/social workers', selectPrefix: 'users/social workers', autoCleanup: true }
 
 }, 'Contact Information', {
-
-	email: { type: Types.Email, label: 'email address', unique: true, required: true, initial: true },
 
 	phone: {
 		work: { type: Types.Text, label: 'work phone number', initial: true },
@@ -68,6 +67,11 @@ SocialWorker.add( 'Permissions', {
 
 	bookmarkedChildren: { type: Types.Relationship, label: 'bookmarked children', ref: 'Child', many: true, noedit: true },
 	bookmarkedSiblings: { type: Types.Relationship, label: 'bookmarked sibling group children', ref: 'Child', many: true, noedit: true }
+
+/* Container for data migration fields ( these should be kept until after phase 2 and the old system is phased out completely ) */
+}, {
+	// system field to store an appropriate file prefix
+	oldId: { type: Types.Text, hidden: true }
 
 });
 
@@ -165,6 +169,20 @@ SocialWorker.schema.methods.setChangeHistory = function setChangeHistory( done )
 		// Any time a new field is added, it MUST be added to this list in order to be considered for display in change history
 		// Computed fields and fields internal to the object SHOULD NOT be added to this list
 		async.parallel([
+			done => {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											parent: 'permissions',
+											name: 'isVerified',
+											label: 'is verified',
+											type: 'boolean' }, model, modelBefore, changeHistory, done);
+			},
+			done => {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											parent: 'permissions',
+											name: 'isActive',
+											label: 'is active',
+											type: 'boolean' }, model, modelBefore, changeHistory, done);
+			},
 			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'name',

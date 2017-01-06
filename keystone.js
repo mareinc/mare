@@ -79,8 +79,8 @@ keystone.set('cloudinary secure', true);
 // turns out to be undefined. Email works when I commented these out.
 // See node_modules/keystone/index.js. That file already loads all of these
 // .env variables. Probably dont need to set theme here.
-//keystone.set('mandrill api key', process.env.MANDRILL_APIKEY);
-//keystone.set('mandrill username', process.env.MANDRILL_USERNAME);
+keystone.set('mandrill api key', process.env.MANDRILL_APIKEY);
+keystone.set('mandrill username', process.env.MANDRILL_USERNAME);
 
 // S3 configuration for hosted file storage
 keystone.set('s3 config', { bucket: process.env.S3_BUCKET_NAME, key: process.env.S3_KEY, secret: process.env.S3_SECRET });
@@ -105,7 +105,7 @@ keystone.set('locals', {
 // Setup common locals for your emails. The following are required by Keystone's
 // default email templates, you may remove them if you're using your own.
 keystone.set('email locals', {
-	logo_src: '/images/logo-email.gif',
+	logo_src: '/public/dist/img/mare-logo.png',
 	logo_width: 194,
 	logo_height: 76,
 	theme: {
@@ -128,14 +128,14 @@ keystone.set('email locals', {
 });
 
 keystone.set('email rules', [{
-	find: '/images/',
+	find: '/templates/emails/',
 	replace: (function() {
 		'use strict';
 
-		if (keystone.get('env') === 'development') { return 'http://development.adoptions.io/images'; }
-		if (keystone.get('env') === 'staging') { return 'http://staging.adoptions.io/images'; }
-		if (keystone.get('env') === 'production') { return 'http://adoptions.io/images'; }
-		return (keystone.get('host') || 'http://localhost:') + (keystone.get('port') || '3000/images');
+		if (keystone.get('env') === 'development') { return 'http://development.adoptions.io/templates/emails/'; }
+		if (keystone.get('env') === 'staging') { return 'http://staging.adoptions.io/templates/emails/'; }
+		if (keystone.get('env') === 'production') { return 'http://adoptions.io/templates/emails/'; }
+		return (keystone.get('host') || 'http://localhost:') + (keystone.get('port') || '3000') + '/templates/emails/';
 	})()
 }, {
 	find: '/keystone/',

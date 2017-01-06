@@ -24,6 +24,7 @@ var keystone				= require( 'keystone' ),
 // Create model
 var Family = new keystone.List( 'Family', {
 	inherits	: User,
+	track		: true,
 	autokey		: { path: 'key', from: 'registrationNumber', unique: true },
 	map			: { name: 'contact1.name.full' },
 	defaultSort	: 'contact1.name.full',
@@ -323,6 +324,11 @@ Family.add( 'Permissions', {
 	bookmarkedChildren: { type: Types.Relationship, label: 'bookmarked children', ref: 'Child', many: true, noedit: true },
 	bookmarkedSiblings: { type: Types.Relationship, label: 'bookmarked sibling group children', ref: 'Child', many: true, noedit: true }
 
+/* Container for data migration fields ( these should be kept until after phase 2 and the old system is phased out completely ) */
+}, {
+	// system field to store an appropriate file prefix
+	oldId: { type: Types.Text, hidden: true }
+
 });
 
 // Set up relationship values to show up at the bottom of the model if any exist
@@ -470,7 +476,20 @@ Family.schema.methods.setChangeHistory = function setChangeHistory( done ) {
 		// Computed fields and fields internal to the object SHOULD NOT be added to this list
 		async.parallel([
 			// avatar: { type: Types.CloudinaryImage, label: 'avatar', folder: 'users/families', selectPrefix: 'users/families', autoCleanup: true },
-
+			done => {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											parent: 'permissions',
+											name: 'isVerified',
+											label: 'is verified',
+											type: 'boolean' }, model, modelBefore, changeHistory, done);
+			},
+			done => {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											parent: 'permissions',
+											name: 'isActive',
+											label: 'is active',
+											type: 'boolean' }, model, modelBefore, changeHistory, done);
+			},
 			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											name: 'registrationNumber',

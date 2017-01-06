@@ -16,20 +16,20 @@ require('./List_Region');
 require('./Event');
 require('./List_MediaEligibility');
 
-const keystone				= require('keystone'),
-	async 					= require('async'),
-	_ 						= require('underscore'),
-	moment					= require('moment'),
-	Types					= keystone.Field.Types,
-	ChildHistory			= keystone.list('Child History'),
-	ChangeHistoryMiddleware = require('../routes/middleware/models_change-history');
-	ChildMiddleware			= require('../routes/middleware/models_child');
-	FamilyMiddleware		= require('../routes/middleware/models_family');
-	SocialWorkerMiddleware	= require('../routes/middleware/models_social-worker');
-	UtilitiesMiddleware		= require('../routes/middleware/utilities');
+const keystone					= require('keystone'),
+	  async 					= require('async'),
+	  _ 						= require('underscore'),
+	  Types						= keystone.Field.Types,
+	  ChildHistory				= keystone.list('Child History'),
+	  ChangeHistoryMiddleware	= require('../routes/middleware/models_change-history'),
+	  ChildMiddleware			= require('../routes/middleware/models_child'),
+	  FamilyMiddleware			= require('../routes/middleware/models_family'),
+	  SocialWorkerMiddleware	= require('../routes/middleware/models_social-worker'),
+	  UtilitiesMiddleware		= require('../routes/middleware/utilities');
 
 // Create model
 const Child = new keystone.List('Child', {
+	track: true,
 	autokey: { path: 'key', from: 'registrationNumber', unique: true },
 	map: { name: 'name.full' },
 	defaultSort: 'name.full'
@@ -152,10 +152,7 @@ Child.add('Display Options', {
 	onAdoptuskids: { type: Types.Boolean, label: 'Adoptuskids website', initial: true },
 	onAdoptuskidsDate: { type: Types.Date, label: 'date on Adoptuskids', format: 'MM/DD/YYYY', dependsOn: { onAdoptuskids: true }, initial: true },
 
-	onOnlineMatching: { type: Types.Boolean, label: 'online matching website', initial: true },
-	onOnlineMatchingDate: { type: Types.Date, label: 'date on online matching', format: 'MM/DD/YYYY', dependsOn: { onOnlineMatching: true }, initial: true },
-
-	wednesdaysChild: { type: Types.Boolean, label: 'Wednesday\'s Child?', dependsOn: { mustBePlacedWithSiblings: false }, initial: true },
+	wednesdaysChild: { type: Types.Boolean, label: 'Wednesday\'s Child', dependsOn: { mustBePlacedWithSiblings: false }, initial: true },
 	wednesdaysChildDate: { type: Types.Date, label: 'date of Wednesday\'s Child', format: 'MM/DD/YYYY', dependsOn: { mustBePlacedWithSiblings: false, wednesdaysChild: true }, initial: true },
 	wednesdaysChildVideo: { type: Types.Url, label: 'Wednesday\'s Child video', dependsOn: { mustBePlacedWithSiblings: false, wednesdaysChild: true } },
 
@@ -202,6 +199,11 @@ Child.add('Display Options', {
 	// system field to store an appropriate file prefix
 	fileName: { type: Types.Text, hidden: true },
 	siblingGroupFileName: { type: Types.Text, hidden: true }
+
+/* Container for data migration fields ( these should be kept until after phase 2 and the old system is phased out completely ) */
+}, {
+	// system field to store an appropriate file prefix
+	oldId: { type: Types.Text, hidden: true }
 
 });
 
@@ -1007,18 +1009,6 @@ Child.schema.methods.setChangeHistory = function( done ) {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											name: 'onAdoptuskidsDate',
 											label: 'date on adoptuskids',
-											type: 'date' }, model, modelBefore, changeHistory, done);
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'onOnlineMatching',
-											label: 'on online matching',
-											type: 'boolean' }, model, modelBefore, changeHistory, done);
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'onOnlineMatchingDate',
-											label: 'date on online matching',
 											type: 'date' }, model, modelBefore, changeHistory, done);
 			},
 			done => {

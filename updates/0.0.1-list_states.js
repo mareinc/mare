@@ -1,105 +1,156 @@
 exports.create = {
 	'State': [{
-		state: 'AE'
+		state: 'AE',
+		abbreviation: 'AE'
 	}, {
-		state: 'Alabama'
+		state: 'Alabama',
+		abbreviation: 'AL'
 	}, {
-		state: 'Alaska'
+		state: 'Alaska',
+		abbreviation: 'AK'
 	}, {
-		state: 'Arizona'
+		state: 'Arizona',
+		abbreviation: 'AZ'
 	}, {
-		state: 'Arkansas'
+		state: 'Arkansas',
+		abbreviation: 'AR'
 	}, {
-		state: 'California'
+		state: 'California',
+		abbreviation: 'CA'
 	}, {
-		state: 'Colorado'
+		state: 'Colorado',
+		abbreviation: 'CO'
 	}, {
-		state: 'Connecticut'
+		state: 'Connecticut',
+		abbreviation: 'CT'
 	}, {
-		state: 'Delaware'
+		state: 'Delaware',
+		abbreviation: 'DE'
 	}, {
-		state: 'Florida'
+		state: 'Florida',
+		abbreviation: 'FL'
 	}, {
-		state: 'Georgia'
+		state: 'Georgia',
+		abbreviation: 'GA'
 	}, {
-		state: 'Hawaii'
+		state: 'Hawaii',
+		abbreviation: 'HI'
 	}, {
-		state: 'Idaho'
+		state: 'Idaho',
+		abbreviation: 'ID'
 	}, {
-		state: 'Illinois'
+		state: 'Illinois',
+		abbreviation: 'IL'
 	}, {
-		state: 'Indiana'
+		state: 'Indiana',
+		abbreviation: 'IN'
 	}, {
-		state: 'Iowa'
+		state: 'Iowa',
+		abbreviation: 'IA'
 	}, {
-		state: 'Kansas'
+		state: 'Kansas',
+		abbreviation: 'KS'
 	}, {
-		state: 'Kentucky'
+		state: 'Kentucky',
+		abbreviation: 'KY'
 	}, {
-		state: 'Louisiana'
+		state: 'Louisiana',
+		abbreviation: 'LA'
 	}, {
-		state: 'Maine'
+		state: 'Maine',
+		abbreviation: 'ME'
 	}, {
-		state: 'Maryland'
+		state: 'Maryland',
+		abbreviation: 'MD'
 	}, {
-		state: 'Massachusetts'
+		state: 'Massachusetts',
+		abbreviation: 'MA'
 	}, {
-		state: 'Michigan'
+		state: 'Michigan',
+		abbreviation: 'MI'
 	}, {
-		state: 'Minnesota'
+		state: 'Minnesota',
+		abbreviation: 'MN'
 	}, {
-		state: 'Mississippi'
+		state: 'Mississippi',
+		abbreviation: 'MS'
 	}, {
-		state: 'Missouri'
+		state: 'Missouri',
+		abbreviation: 'MO'
 	}, {
-		state: 'Montana'
+		state: 'Montana',
+		abbreviation: 'MT'
 	}, {
-		state: 'Nebraska'
+		state: 'Nebraska',
+		abbreviation: 'NE'
 	}, {
-		state: 'Nevada'
+		state: 'Nevada',
+		abbreviation: 'NV'
 	}, {
-		state: 'New Hampshire'
+		state: 'New Hampshire',
+		abbreviation: 'NH'
 	}, {
-		state: 'New Jersey'
+		state: 'New Jersey',
+		abbreviation: 'NJ'
 	}, {
-		state: 'New Mexico'
+		state: 'New Mexico',
+		abbreviation: 'NM'
 	}, {
-		state: 'New York'
+		state: 'New York',
+		abbreviation: 'NY'
 	}, {
-		state: 'North Carolina'
+		state: 'North Carolina',
+		abbreviation: 'NC'
 	}, {
-		state: 'North Dakota'
+		state: 'North Dakota',
+		abbreviation: 'ND'
 	}, {
-		state: 'Ohio'
+		state: 'Ohio',
+		abbreviation: 'OH'
 	}, {
-		state: 'Oklahoma'
+		state: 'Oklahoma',
+		abbreviation: 'OK'
 	}, {
-		state: 'Oregon'
+		state: 'Oregon',
+		abbreviation: 'OR'
 	}, {
-		state: 'Pennsylvania'
+		state: 'Pennsylvania',
+		abbreviation: 'PA'
 	}, {
-		state: 'Rhode Island'
+		state: 'Rhode Island',
+		abbreviation: 'RI'
 	}, {
-		state: 'South Carolina'
+		state: 'South Carolina',
+		abbreviation: 'SC'
 	}, {
-		state: 'South Dakota'
+		state: 'South Dakota',
+		abbreviation: 'SD'
 	}, {
-		state: 'Tennessee'
+		state: 'Tennessee',
+		abbreviation: 'TN'
 	}, {
-		state: 'Texas'
+		state: 'Texas',
+		abbreviation: 'TX'
 	}, {
-		state: 'Utah'
+		state: 'Utah',
+		abbreviation: 'UT'
 	}, {
-		state: 'Vermont'
+		state: 'Vermont',
+		abbreviation: 'VT'
 	}, {
-		state: 'Virginia'
+		state: 'Virginia',
+		abbreviation: 'VA'
 	}, {
-		state: 'Washington'
+		state: 'Washington',
+		abbreviation: 'WA'
 	}, {
-		state: 'West Virginia'
+		state: 'West Virginia',
+		abbreviation: 'WV'
 	}, {
-		state: 'Wisconsin'
+		state: 'Wisconsin',
+		abbreviation: 'WI'
 	}, {
-		state: 'Wyoming'
+		state: 'Wyoming',
+		abbreviation: 'WY'
 	}]
 };
