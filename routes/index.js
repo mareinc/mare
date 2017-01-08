@@ -69,7 +69,7 @@ exports = module.exports = app => {
 	// registration
 	app.get( '/register/'								, middleware.setLoginTarget, routes.views.register );
 	app.post( '/register'								, registrationMiddleware.registerUser );
-	app.get( '/verify-registration'						, routes.views.verifyRegistration );
+	// app.get( '/verify-registration'						, routes.views.verifyRegistration );
 	// login / logout
 	app.get( '/logout/'									, middleware.logout );
 	app.post('/login'									, middleware.login );
