@@ -37,7 +37,7 @@
 								<tr>
 									<td style="line-height:10px;">&nbsp;</td>
 								</tr>
-								{{#unless isSiteVisitor}}
+								{{#if isFamily}}
 								<tr>
 									<td style="padding: 0 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 16px; line-height: 20px;">
 										If you are a Massachusetts family with an approved homestudy to adopt from foster care and have uploaded your homestudy, we will compare your families’ preferences with the needs of the children registered with MARE and forward your homestudy to the child’s social worker. This is an opportunity to have your family’s preferences shared with workers across the state for consideration for specific children.
@@ -46,7 +46,7 @@
 								<tr>
 									<td style="line-height:10px;">&nbsp;</td>
 								</tr>
-								{{/unless}}
+								{{/if}}
 								<tr>
 									<td style="padding: 0 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 16px; line-height: 20px;">
 										If you have any questions about your registration as a {{ userType }}, contact <a href="mailto:{{ staffContactEmail }}?Subject={{ emailSubject }}" style="text-decoration: none;">{{ staffContactEmail }}</a>.
