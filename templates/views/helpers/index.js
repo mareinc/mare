@@ -312,23 +312,23 @@ module.exports = function() {
 		return html;
 	};
 
-		// special helper to ensure that we always have a valid page url set even if
-		// the link is disabled, will default to page 1
-		_helpers.paginationPreviousUrl = function paginationPreviousUrl(previousPage, totalPages){
-			if(previousPage === false){
-				previousPage = 1;
-			}
-			return _helpers.pageUrl(previousPage);
-		};
+	// special helper to ensure that we always have a valid page url set even if
+	// the link is disabled, will default to page 1
+	_helpers.paginationPreviousUrl = function paginationPreviousUrl(previousPage, totalPages){
+		if(previousPage === false){
+			previousPage = 1;
+		}
+		return _helpers.pageUrl(previousPage);
+	};
 
-		// special helper to ensure that we always have a valid next page url set
-		// even if the link is disabled, will default to totalPages
-		_helpers.paginationNextUrl = function paginationNextUrl(nextPage, totalPages){
-			if(nextPage === false){
-				nextPage = totalPages;
-			}
-			return _helpers.pageUrl(nextPage);
-		};
+	// special helper to ensure that we always have a valid next page url set
+	// even if the link is disabled, will default to totalPages
+	_helpers.paginationNextUrl = function paginationNextUrl(nextPage, totalPages){
+		if(nextPage === false){
+			nextPage = totalPages;
+		}
+		return _helpers.pageUrl(nextPage);
+	};
 
 
 	//  ### Flash Message Helper

@@ -1,8 +1,7 @@
-// TODO: break these each into their own routes, combining all these forms is going to be a mess once we start processing their expected actions
-var keystone		= require( 'keystone' ),
-	async			= require( 'async' ),
-	listsService	= require( '../middleware/service_lists' ),
-	pageService		= require( '../middleware/service_page' );
+const keystone		= require( 'keystone' );
+const async			= require( 'async' );
+const listsService	= require( '../middleware/service_lists' );
+const pageService	= require( '../middleware/service_page' );
 
 exports = module.exports = ( req, res ) => {
 	'use strict';

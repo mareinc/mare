@@ -49,6 +49,7 @@ exports.getFirstNamesById = ( idsArray, namesArray, done ) => {
 /* updates sibling fields for chidren listed as siblings by adding missing entries */
 exports.updateMySiblings = ( mySiblings, childId, done ) => {
 
+    // TODO: change this and all Array.from(...) to use the ES6 spread operator
 	// Fetch all siblings who were added
 	keystone.list( 'Child' ).model.find()
 			.where( '_id' ).in( Array.from( mySiblings ) )

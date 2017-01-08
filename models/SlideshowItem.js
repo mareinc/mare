@@ -11,7 +11,7 @@ var SlideshowItem = new keystone.List('Slideshow Item', {
 // Create fields
 SlideshowItem.add({
 
-	image: { type: Types.CloudinaryImage, folder: 'slideshow/', autoCleanup: true },
+	image: { type: Types.CloudinaryImage, folder: 'slideshow/', select: true, selectPrefix: 'slideshow/', autoCleanup: true }, // TODO: add publicID attribute for better naming in Cloudinary
 	imageStretched: {type: Types.Url, hidden: true},
 	imageScaled: {type: Types.Url, hidden: true},
 	parent: { type: Types.Relationship, label: 'slideshow', ref: 'Slideshow', initial: true },

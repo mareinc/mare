@@ -16,8 +16,6 @@ var keystone				= require( 'keystone' ),
 	WayToHearAboutMARE		= keystone.list( 'Way To Hear About MARE' );
 
 exports.getAllRegions = ( req, res, done ) => {
-
-	req.locals = res.locals || {}; /* TODO: This line (which appears in lots of services) might not be needed, check it during refactor */
 	
 	let locals = res.locals;
 
@@ -38,8 +36,6 @@ exports.getAllRegions = ( req, res, done ) => {
 };
 
 exports.getAllSocialWorkerPositions = ( req, res, done ) => {
-
-	req.locals = res.locals || {};
 	
 	let locals = res.locals;
 
@@ -60,8 +56,6 @@ exports.getAllSocialWorkerPositions = ( req, res, done ) => {
 };
 
 exports.getAllRaces = ( req, res, done, options ) => {
-
-	req.locals = res.locals || {};
 	
 	let locals = res.locals;
 
@@ -93,8 +87,6 @@ exports.getAllRaces = ( req, res, done, options ) => {
 };
 
 exports.getAllStates = ( req, res, done, options ) => {
-
-	req.locals = res.locals || {};
 	
 	let locals = res.locals;
 
@@ -125,8 +117,6 @@ exports.getAllStates = ( req, res, done, options ) => {
 };
 
 exports.getAllGenders = ( req, res, done ) => {
-
-	req.locals = res.locals || {};
 	
 	let locals = res.locals;
 
@@ -147,8 +137,6 @@ exports.getAllGenders = ( req, res, done ) => {
 };
 
 exports.getAllLegalStatuses = ( req, res, done ) => {
-
-	req.locals = res.locals || {};
 	
 	let locals = res.locals;
 
@@ -169,8 +157,6 @@ exports.getAllLegalStatuses = ( req, res, done ) => {
 };
 
 exports.getAllLanguages = ( req, res, done ) => {
-
-	req.locals = res.locals || {};
 	
 	let locals = res.locals;
 
@@ -191,8 +177,6 @@ exports.getAllLanguages = ( req, res, done ) => {
 };
 
 exports.getAllFamilyConstellations = ( req, res, done ) => {
-
-	req.locals = res.locals || {};
 	
 	let locals = res.locals;
 
@@ -213,8 +197,6 @@ exports.getAllFamilyConstellations = ( req, res, done ) => {
 };
 
 exports.getAllDisabilities = ( req, res, done ) => {
-
-	req.locals = res.locals || {};
 	
 	let locals = res.locals;
 
@@ -235,8 +217,6 @@ exports.getAllDisabilities = ( req, res, done ) => {
 };
 
 exports.getOtherConsiderations = ( req, res, done ) => {
-
-	req.locals = res.locals || {};
 	
 	let locals = res.locals;
 
@@ -257,8 +237,6 @@ exports.getOtherConsiderations = ( req, res, done ) => {
 };
 
 exports.getChildTypesForWebsite = ( req, res, done ) => {
-
-	req.locals = res.locals || {};
 	
 	let locals = res.locals;
 
@@ -280,8 +258,6 @@ exports.getChildTypesForWebsite = ( req, res, done ) => {
 };
 
 exports.getEventTypesForWebsite = ( req, res, done ) => {
-
-	req.locals = res.locals || {};
 	
 	let locals = res.locals;
 
@@ -303,8 +279,6 @@ exports.getEventTypesForWebsite = ( req, res, done ) => {
 }
 
 exports.getAllWaysToHearAboutMARE = ( req, res, done, options ) => {
-
-	req.locals = res.locals || {};
 	
 	let locals = res.locals;
 

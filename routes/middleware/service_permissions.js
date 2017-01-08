@@ -5,8 +5,7 @@ var keystone	= require('keystone'),
 
 exports.getGalleryPermissions = function getGalleryPermissions(req, res, next) {
 
-	req.locals = res.locals || {};
-	var locals = res.locals;
+	let locals = res.locals;
 
 	// Set local variables
 	locals.userType	= req.user ? req.user.get('userType') : 'anonymous';

@@ -74,11 +74,6 @@ keystone.set('cloudinary folders', true);
 keystone.set('cloudinary secure', true);
 
 // Mandrill configuration
-// Tom Koch:
-// Commenting these out because further into the app, MANDRILL_APIKEY
-// turns out to be undefined. Email works when I commented these out.
-// See node_modules/keystone/index.js. That file already loads all of these
-// .env variables. Probably dont need to set theme here.
 keystone.set('mandrill api key', process.env.MANDRILL_APIKEY);
 keystone.set('mandrill username', process.env.MANDRILL_USERNAME);
 
