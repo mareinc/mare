@@ -1,42 +1,42 @@
-var keystone				= require('keystone'),
-	async					= require('async'),
-	registrationMiddleware	= require('../middleware/register'),
-	listsService			= require('../middleware/service_lists'),
-	pageService				= require('../middleware/service_page');
+const keystone					= require( 'keystone' );
+const async						= require( 'async' );
+const registrationMiddleware	= require( '../middleware/service_register' );
+const listsService				= require( '../middleware/service_lists' );
+const pageService				= require( '../middleware/service_page' );
 
 
-exports = module.exports = function(req, res) {
+exports = module.exports = ( req, res ) => {
 	'use strict';
 
-	var view 	= new keystone.View(req, res),
-		locals 	= res.locals;
+	const view 		= new keystone.View( req, res );
+	const locals 	= res.locals;
 
 	// objects with additional search parameters
-	var stateOptions		= { default: 'Massachusetts' },
-		raceOptions			= { other: true },
-		waysToHearOptions	= { other: true };
+	const stateOptions		= { default: 'Massachusetts' };
+	const raceOptions		= { other: true };
+	const waysToHearOptions	= { other: true };
 
 	// Fetch all the dynamic data to fill in the form dropdown and selection areas.
 	async.parallel([
-		function(done) { listsService.getAllStates(req, res, done, stateOptions) },
-		function(done) { listsService.getAllRaces(req, res, done, raceOptions) },
-		function(done) { listsService.getAllGenders(req, res, done) },
-		function(done) { listsService.getAllRegions(req, res, done) },
-		function(done) { listsService.getAllSocialWorkerPositions(req, res, done) },
-		function(done) { listsService.getAllFamilyConstellations(req, res, done) },
-		function(done) { listsService.getAllLegalStatuses(req, res, done) },
-		function(done) { listsService.getAllLanguages(req, res, done) },
-		function(done) { listsService.getAllDisabilities(req, res, done) },
-		function(done) { listsService.getOtherConsiderations(req, res, done) },
-		function(done) { listsService.getChildTypesForWebsite(req, res, done) },
-		function(done) { listsService.getAllWaysToHearAboutMARE(req, res, done, waysToHearOptions) },
-		function(done) { pageService.populateSidebar(req, res, done); },
-		function(done) { pageService.getSectionHeader(req, res, done, 'Considering Adoption'); }
-	], function() {
+		done => { listsService.getAllStates( req, res, done, stateOptions ); },
+		done => { listsService.getAllRaces( req, res, done, raceOptions ); },
+		done => { listsService.getAllGenders( req, res, done ); },
+		done => { listsService.getAllRegions( req, res, done ); },
+		done => { listsService.getAllSocialWorkerPositions( req, res, done ); },
+		done => { listsService.getAllFamilyConstellations( req, res, done ); },
+		done => { listsService.getAllLegalStatuses( req, res, done ); },
+		done => { listsService.getAllLanguages( req, res, done ); },
+		done => { listsService.getAllDisabilities( req, res, done ); },
+		done => { listsService.getOtherConsiderations( req, res, done ); },
+		done => { listsService.getChildTypesForWebsite( req, res, done ); },
+		done => { listsService.getAllWaysToHearAboutMARE( req, res, done, waysToHearOptions ); },
+		done => { pageService.populateSidebar( req, res, done ); },
+		done => { pageService.getSectionHeader( req, res, done, 'Considering Adoption' ); }
+	], () => {
 		// Set the layout to render with the right sidebar
-		locals['render-with-sidebar'] = true;
+		locals[ 'render-with-sidebar' ] = true;
 		// Render the view once all the data has been retrieved
-		view.render('register');
+		view.render( 'register' );
 
 	});
 };

@@ -144,6 +144,7 @@ exports.getAgencyContacts = ( inquiryData, done ) => {
 		console.log( `not a general inquiry - not fetching agency contacts` );
 		return done();
 	}
+	// TODO: look at Child model for a cleaner way to do the $in with ES6 spread operator
 	// If a general inquiry has been accepted, we need to send an email to the agency
 	keystone.list( 'Agency' ).model.find()
 			.where( { _id: { $in: inquiryData.agencyReferralIds } } )

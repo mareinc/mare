@@ -39,8 +39,7 @@ exports.getTargetEventGroup = function getTargetEventGroup(req, res, done) {
 /* fetches a random event for the sidebar, which has restrictions as to what can be shown */
 exports.getRandomEvent = function getRandomEvent(req, res, done) {
 
-	req.locals = res.locals || {};
-	var locals = res.locals;
+	let locals = res.locals;
 
 	// TODO: Handle the error if we get one
 	Event.model.findRandom({
