@@ -77,7 +77,7 @@ exports = module.exports = app => {
 	app.get( '/donate/'									, middleware.setLoginTarget, routes.views.donate );
 	app.post( '/charge'									, middleware.charge );
 	// Custom route used exclusively for the data migration
-	app.get('/migrate-data/'							, middleware.requireMigrationUser, routes.views.dataMigration);
+	app.get('/migrate-data/'							, middleware.requireMigrationUser, routes.views.dataMigration );
 	// user management / preferences
 	app.get( '/preferences/'							, middleware.requireUser, routes.views.preferences );
 	// services for ajax calls
