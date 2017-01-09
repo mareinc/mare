@@ -12,7 +12,6 @@ const async					= require( 'async' );
 const keystone				= require( 'keystone' );
 const Types 				= keystone.Field.Types;
 const Event  				= keystone.list( 'Event' );
-const csv2arr				= require( 'csv-to-array' );
 const dataMigrationService	= require( '../service_data-migration' );
 
 // id mappings between systems

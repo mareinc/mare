@@ -6,7 +6,6 @@ var async					= require('async'),
 	keystone				= require('keystone'),
 	Types 					= keystone.Field.Types,
     Family 					= keystone.list('Family'),
-    csv2arr					= require('csv-to-array'),
 	dataMigrationService	= require('../service_data-migration'),
 
 	// mappings

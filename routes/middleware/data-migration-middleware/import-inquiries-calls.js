@@ -240,8 +240,7 @@ const inquiriesGenerator = exports.generateInquiries();
 // var importArray;
 
 // var keystone = require('keystone'),
-//     Inquiry = keystone.list('Inquiry'),
-//     csv2arr = require("csv-to-array");
+//     Inquiry = keystone.list('Inquiry');
 
 // module.exports = {
 //     importInquiries: function(){

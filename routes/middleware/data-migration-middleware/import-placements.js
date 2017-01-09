@@ -6,7 +6,6 @@ var async					= require('async'),
 	keystone				= require('keystone'),
 	Types 					= keystone.Field.Types,
 	Placement   			= keystone.list('Placement'),
-    csv2arr					= require('csv-to-array'),
 	dataMigrationService	= require('../service_data-migration');
 
 // id mappings between systems

@@ -6,9 +6,7 @@ var async                   = require('async'),
     keystone                = require('keystone'),
     Types                   = keystone.Field.Types,
     MailingList             = keystone.list('Mailing List'),
-    csv2arr                 = require('csv-to-array'),
-    dataMigrationService    = require('../service_data-migration')
-    ;
+    dataMigrationService    = require('../service_data-migration');
 
 // migration file location
 const csvFilePath = './migration-data/csv-data/mailing_list.csv';

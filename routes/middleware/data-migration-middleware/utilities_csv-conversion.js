@@ -1,8 +1,8 @@
 const csv				= require( 'csvtojson' );
 // migration file locations
-const agenciesFilePath				= './migration-data/csv-data/agency.csv';
+const agenciesFilePath			= './migration-data/csv-data/agency.csv';
 const outsideContactsFilePath 	= './migration-data/csv-data/outside_contact.csv';
-const inquiriesFilePath				= './migration-data/csv-data/ext_inquiry.csv';
+const inquiriesFilePath			= './migration-data/csv-data/ext_inquiry.csv';
 
 exports.fetchAgencies = ( resolve, reject ) => {
 	
