@@ -24,7 +24,7 @@ exports = module.exports = ( req, res ) => {
     const locals = res.locals;
 	// create a namespace for all migration data needed for the import
 	// this makes clearing memory much easier
-	locals.migrationData = locals.migration || {
+	locals.migration = locals.migration || {
 		maps: {},
 		data: {}
 	};
@@ -33,8 +33,8 @@ exports = module.exports = ( req, res ) => {
 		done => { statesMap.getStatesMap(req, res, done); },
 		done => { regionsMap.getRegionsMap( req, res, done ); },
 		done => { outsideContactGroupsMap.getOutsideContactGroupsMap( req, res, done ) },
-		// done => { agenciesImport.importAgencies( req, res, done ); },
-		done => { outsideContactImport.importOutsideContacts( req, res, done ); },
+		done => { agenciesImport.importAgencies( req, res, done ); },
+		// done => { outsideContactImport.importOutsideContacts( req, res, done ); },
 		// done => { socialWorkerImport.importSocialWorkers( req, res, done ); },
 		// done => { childrenImport.importChildren( req, res, done ); },
 		// done => { familiesImport.importFamilies( req, res, done ); },
