@@ -24,7 +24,6 @@ OutsideContact.add( 'General Information', {
 
 }, 'Contact Information', {
 
-	// email: { type: Types.Email, label: 'email address', unique: true, required: true, initial: true },
 	email: { type: Types.Email, label: 'email address', unique: true, initial: true },
 
 	phone: {
