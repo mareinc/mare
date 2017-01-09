@@ -70,10 +70,12 @@ module.exports.generateAgencies = function* generateAgencies() {
 		if( remainingRecords === 0 ) {
 
 			const resultsMessage = `finished creating ${ totalRecords } agencies in the new system`;
+			// store the results of this run for display after the run
 			migrationResults.push({
 				dataSet: 'Agencies',
 				results: resultsMessage
 			});
+			
 			console.log( resultsMessage );
 			// return control to the data migration view
 			return agencyImportComplete();

@@ -1,3 +1,5 @@
+/* NOTE: probably not needed as this stuff can be handled with single model fetches */
+
 var dataMigrationService	= require('../service_data-migration'),
 	async					= require('async');
 

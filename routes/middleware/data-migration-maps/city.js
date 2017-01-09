@@ -1,3 +1,5 @@
+/* NOTE: probably not needed as the cities are a 1 to 1 mapping between systems */
+
 var dataMigrationService	= require('../service_data-migration'),
 	async					= require('async');
 

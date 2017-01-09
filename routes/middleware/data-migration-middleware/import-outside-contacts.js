@@ -15,6 +15,8 @@ let outsideContactGroupsMap,
 	statesMap;
 // expose done to be available to all functions below
 let outsideContactsImportComplete;
+// expose the array storing progress through the migration run
+let migrationResults;
 
 module.exports.importOutsideContacts = ( req, res, done ) => {
 	// expose the maps we'll need for this import
@@ -22,6 +24,8 @@ module.exports.importOutsideContacts = ( req, res, done ) => {
 	statesMap				= res.locals.statesMap;
 	// expose done to our generator
 	outsideContactsImportComplete = done;
+	// expose our migration results array
+	migrationResults = res.locals.migrationResults;
 
 	// create a promise for converting the outside contacts CSV file to JSON
 	const outsideContactsLoaded = new Promise( ( resolve, reject ) => {
@@ -50,8 +54,8 @@ module.exports.generateOutsideContacts = function* generateOutsideContacts() {
 	let totalRecords			= outsideContacts.length,
 		remainingRecords 		= totalRecords,
 		batchCount				= 500, // number of records to be process simultaneously
-		outsideContactNumber	= 0; // keeps track of the current outside contact group number being processed.  Used for batch processing
-	// loop through each outside contact group object we need to create a record for
+		outsideContactNumber	= 0; // keeps track of the current outside contact number being processed.  Used for batch processing
+	// loop through each outside contact object we need to create a record for
 	for( let outsideContact of outsideContacts ) {
 		// increment the outsideContactNumber
 		outsideContactNumber++;
@@ -66,7 +70,15 @@ module.exports.generateOutsideContacts = function* generateOutsideContacts() {
 		console.log(remainingRecords);
 		// if there are no more records to process call done to move to the next migration file
 		if( remainingRecords === 0 ) {
-			console.log( `finished creating ${ totalRecords } outside contacts in the new system` );
+
+			const resultsMessage = `finished creating ${ totalRecords } outside contacts in the new system`;
+			// store the results of this run for display after the run
+			migrationResults.push({
+				dataSet: 'Outside Contacts',
+				results: resultsMessage
+			});
+
+			console.log( resultsMessage );
 			// return control to the data migration view
 			return outsideContactsImportComplete();
 		}
@@ -85,23 +97,14 @@ module.exports.createOutsideContactRecord = ( outsideContact, pauseUntilSaved ) 
 	// populate instance for Outside Contact object
 	let newOutsideContact = new OutsideContact.model({
 
-		type: outsideContactGroupsMap[ outsideContact.contact_type ],
+		type: outsideContactGroupsMap[ outsideContact.contact_type ], // WRONG: contact_type doesn't map to anything we currently have, type in the new system maps to one or more mailing lists
 		// type: { type: Types.Relationship, label: 'type of contact', ref: 'Mailing List', many: true, required: true, initial: true },
 
 		// from the outside_contact table get the ocn_id and go to mailing_list_subscription table, where based on the ocn_id, get the mlt_id and then
 		// go to mailing_list table and get the name associated with the mlt_id, once you have the name, go to the new system and fetch the new hash id
-// WRONG: can't handle a single name
-		// name: {
-		// 	first: _splitName.first,
-		// 	last: _splitName.last
-		// },
-		name: {
-			first: outsideContact.name,
-			last: 'Last'
-		},
 
+		name: outsideContact.name,
 		organization: outsideContact.organization, // WRONG: missing some id's (#2 for example)
-
 		email: outsideContact.email,
 
 		phone: {
@@ -117,7 +120,7 @@ module.exports.createOutsideContactRecord = ( outsideContact, pauseUntilSaved ) 
 			zipCode: utilityFunctions.padZipCode( outsideContact.zip ) // WRONG SOMETIMES: 6 DIGITS???
 		},
 
-		isVolunteer: _isVolunteer, // WRONG
+		isVolunteer: _isVolunteer, // WRONG: there was no volunteer mailing list in the old system, should this always be false?
 		oldId: outsideContact.ocn_id
 
 	});
@@ -140,52 +143,3 @@ module.exports.createOutsideContactRecord = ( outsideContact, pauseUntilSaved ) 
 
 // instantiates the generator used to create outside contact records at a regulated rate
 const outsideContactsGenerator = exports.generateOutsideContacts();
-
-// exports.fetchMailingLists = function fetchMailingLists(ocn_id) {
-// 	var mailingListArray = [];
-
-// 	converter.fromFile("./migration-data/csv-data/mailing_list.csv",function(err,array){
-
-// 		if (err) {
-
-//             throw 'Migration Error - Outside Contacts' + err;
-
-//         } else {
-
-// 			for (var i = 1, _count = array.length - 1; i <= _count; i++) {
-
-// 				let mailingListItem = array[i];
-
-// 				if (mailingListItem[4] === ocn_id) {
-
-// 					mailingListArray.push(mailingListMap[mailingListItem[0]]);
-// 				}
-// 			}
-// 		}
-// 	});
-// }
-
-// exports.splitName = function splitName(name) {
-//     var _first = '';
-//     var _last = '';
-
-// 	if (name) {
-
-// 		if (name.indexOf(',') > 0){
-// 			_last = name.substr(0, name.indexOf(','));
-// 			_first = name.substr(name.indexOf(',') + 1);
-// 		}
-// 		else
-// 		{
-// 			_first = name.substr(0, name.indexOf(' '));
-// 			_last = name.substr(name.indexOf(' ') + 1);
-// 		}
-
-// 	}
-    
-
-//     return {
-//         first: _first,
-//         last: _last
-//     }
-// }
