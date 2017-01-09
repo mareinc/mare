@@ -1,14 +1,3 @@
-/**
- * Created by Adrian Suciu.
- */
-
-var Agency			= keystone.list( 'Agency' ),
-    Inquiry         = keystone.list( 'Inquiry' ),
-    Child			= keystone.list( 'Child' ),
-	Call   	        = keystone.list( 'Call' ),
-    Family   	    = keystone.list( 'Family' ),
-	SocialWorker   	= keystone.list( 'Social Worker' );
-
 // look at ext_inquiry > ext_family > cll_id from the call table
 
 // from ext_inquiry table go through each item and based on the cll_id go to the call table
@@ -23,7 +12,7 @@ var Agency			= keystone.list( 'Agency' ),
 For every chd_id we go to child.csv and we find the recruitment_agc_id
 Next go to agency_contact.csv and find the agency contact based on the agc_id column and the recruitment_agc_id found earlier
 Next based on the cll_id in the ext_inquiry.csv file find the record in call.csv and from here we will pick out the fam_id and the rcs_id
-Next from family.csv select the family base don the found fam_id
+Next from family.csv select the family based on the found fam_id
 Next from recruitment_source.csv select the recruitment_source.csv name column correspondingt with the rcs_id found
 
 If under call.csv the inquiry type is a:
@@ -38,33 +27,46 @@ assigned to this call.
 Next get the name from recruitment_source.csv based on the rcs_id
 Next from the call_child.csv file based on the cll_id get the chd_id
 Next go to the child.csv file and based on the chd_id get the recruitment_agc_id
-Next go to agency_contact.csv and based on the recruitment_agc_id found earlier, look it up in the agc_id column 
+Next go to agency_contact.csv and based on the recruitment_agc_id found earlier, look it up in the agc_id column
 
 */
 
-// migration file location
-const csvFilePath = './migration-data/csv-data/ext_inquiry.csv';
-const csv = require( 'csvtojson' );
-// create an array to hold all social workers.  This is created here to be available to multiple functions below
+const Agency					= keystone.list( 'Agency' );
+const Inquiry					= keystone.list( 'Inquiry' );
+const Child						= keystone.list( 'Child' );
+// const Call						= keystone.list( 'Call' );
+const Family					= keystone.list( 'Family' );
+const SocialWorker				= keystone.list( 'Social Worker' );
+// csv conversion middleware
+const CSVConversionMiddleware	= require( './utilities_csv-conversion' );
+// model fetching middleware
+const ModelFetchingMiddleware	= require( './utilities_model-fetch' );
+
+// create an array to hold all inquiries.  This is created here to be available to multiple functions below
 let inquiries = [];
 
-module.exports.importInquiry = ( req, res, done ) => {
-	// fetch all records from the agency contacts csv file
-	csv().fromFile( csvFilePath )
-		// hold off processing until the whole file has been parsed into an array of objects
-		.on( 'end_parsed', inquiriesArray => {
-			// populate the social workers our generator keys off of
-			inquiries = inquiriesArray;
-			// kick off the first run of our generator
-			inquiriesGenerator.next();
-		})
+module.exports.importInquiries = ( req, res, done ) => {
+	// create a promise for converting the inquiries CSV file to JSON
+	const gettingInquiries = new Promise( ( resolve, reject ) => {
+		// attempt to convert the inquiries
+		CSVConversionMiddleware.fetchInquiries( resolve, reject, inquiries )
+	});
+	// if the inquiries file was successfully converted
+	gettingInquiries.then( () => {
+		// kick off the first run of our generator
+		inquiriesGenerator.next();
+	// if there was an error converting the inquiries file
+	}).catch( reason => {
+		console.error( `error converting inquiries to JSON` );
+	});
 }
 
 /* a generator to allow us to control the processing of each record */
 module.exports.generateInquiries = function* generateInquiries() {
+	console.log( `creating inquiries in the new system` );
 	// create a monitor variable to assess how many records we still need to process
 	let remainingRecords = inquiries.length;
-	// loop through each social worker object we need to create a record for
+	// loop through each inquiry object we need to create a record for
 	for( let inquiry of inquiries ) {
 		// pause after each call to createInquiryRecord and don't resume until next() is called
 		yield exports.createInquiryRecord( inquiry );
@@ -79,57 +81,57 @@ module.exports.generateInquiries = function* generateInquiries() {
 
 // a function paired with the generator to create a record and request the generator to process the next once finished
 module.exports.createInquiryRecord = inquiry => {
-	// create a placeholder for the agency we're going to fetch related to the current social worker
-	let child = undefined;
-    let call = undefined;
-    let family = undefined;
-    let recruitmentSource = undefined;
-    let socialWorker = undefined;
+	// create placeholders for the child, call, family, recruitment source, and social worker we're going to fetch related to the current inquiry
+	let child,
+		call,
+		family,
+		recruitmentSource,
+		socialWorker;
 	
 	async.series([
 		// fetch the agency associated with the social worker before attempting to create the record
-        done => {
-            converter.fromFile("./migration-data/csv-data/call.csv",function(err,array){
+		done => {
+			converter.fromFile("./migration-data/csv-data/call.csv",function(err,array){
 
-                if (err) {
-                    throw 'An error occured while reading call.csv file: ' + err;
-                } else {
-                    for (var i = 1, _count = array.length - 1; i <= _count; i++) {
-                        if (inquiry.cll_id == array[i].cll_id) {
-                            call = array[i];
-                        }
-                    }
-                }
+				if (err) {
+					throw 'An error occured while reading call.csv file: ' + err;
+				} else {
+					for (var i = 1, _count = array.length - 1; i <= _count; i++) {
+						if (inquiry.cll_id == array[i].cll_id) {
+							call = array[i];
+						}
+					}
+				}
 
-                done();
-            });
+				done();
+			});
 
-        },
-        done => {
-            converter.fromFile("./migration-data/csv-data/recruitment_source.csv",function(err,array){
-                if (err) {
-                    throw 'An error occured while reading call.csv file: ' + err;
-                } else {
-                    for (var i = 1, _count = array.length - 1; i <= _count; i++) {
-                        if (inquiry.rcs_id == array[i].rcs_id) {
-                            recruitmentSource = array[i];
-                        }
-                    }
-                }
+		},
+		done => {
+			converter.fromFile("./migration-data/csv-data/recruitment_source.csv",function(err,array){
+				if (err) {
+					throw 'An error occured while reading call.csv file: ' + err;
+				} else {
+					for (var i = 1, _count = array.length - 1; i <= _count; i++) {
+						if (inquiry.rcs_id == array[i].rcs_id) {
+							recruitmentSource = array[i];
+						}
+					}
+				}
 
-                done();
-            });
+				done();
+			});
 
-        },
-        done => {
-            Agency.model.findOne()
-                .where( 'oldId', inquiry.chd_id )
-                .exec()
-                .then( retrievedChild => {
-                    child = retrievedChild;
-                    done();
-                });
-        },
+		},
+		done => {
+			Agency.model.findOne()
+				.where( 'oldId', inquiry.chd_id )
+				.exec()
+				.then( retrievedChild => {
+					child = retrievedChild;
+					done();
+				});
+		},
 		done => {
 			Child.model.findOne()
 				.where( 'oldId', inquiry.chd_id )
@@ -139,69 +141,69 @@ module.exports.createInquiryRecord = inquiry => {
 					done();
 				 });
 		},
-        done => {
-            Family.model.findOne()
-                .where( 'oldId', call.fam_id )
-                .exec()
-                .then( retrievedFamily => {
-                    family = retrievedFamily;
-                    done();
-                });
-        },
-        done => {
-            SocialWorker.model.findOne()
-                .where( 'oldId', child.cll_id )
-                .exec()
-                .then( retrievedSocialWorker => {
-                    socialWorker = retrievedSocialWorker;
-                    done();
-                });
-        }
+		done => {
+			Family.model.findOne()
+				.where( 'oldId', call.fam_id )
+				.exec()
+				.then( retrievedFamily => {
+					family = retrievedFamily;
+					done();
+				});
+		},
+		done => {
+			SocialWorker.model.findOne()
+				.where( 'oldId', child.cll_id )
+				.exec()
+				.then( retrievedSocialWorker => {
+					socialWorker = retrievedSocialWorker;
+					done();
+				});
+		}
 
 	], () => {
 
 		var newInquiry = new Inquiry.model({
 
-            takenBy: ,
-            // { type: Types.Relationship, label: 'taken by', ref: 'Admin', required: true, initial: true },
-            takenOn: call.call_date,
+			takenBy: '',
+			// { type: Types.Relationship, label: 'taken by', ref: 'Admin', required: true, initial: true },
+			takenOn: call.call_date,
 
-            inquirer: ,
-            // { type: Types.Select, label: 'inquirer', options: 'family, social worker', default: 'family', initial: true }, //
-            inquiryType: call.inquiry_type,
-            inquiryMethod: call.inquiry_method,
+			inquirer: '',
+			// { type: Types.Select, label: 'inquirer', options: 'family, social worker', default: 'family', initial: true }, //
+			inquiryType: call.inquiry_type,
+			inquiryMethod: call.inquiry_method,
 
-            source: recruitmentSource.name, // need some mapping here but I don't know where to look for this localy
-            // { type: Types.Relationship, label: 'source', ref: 'Source', required: true, initial: true },
+			source: recruitmentSource.name, // need some mapping here but I don't know where to look for this localy
+			// { type: Types.Relationship, label: 'source', ref: 'Source', required: true, initial: true },
 
-            child: child._id,
-            //childsSocialWorker: // not needed - autmatically generated
-            //previousChildsSocialWorker: // not needed - automatically generated
+			child: child._id,
+			//childsSocialWorker: // not needed - autmatically generated
+			//previousChildsSocialWorker: // not needed - automatically generated
 
-            family: family._id,
-            socialWorker: socialWorker._id,
-            onBehalfOfMAREFamily: ,
-            // { type: Types.Boolean, label: 'is the family registered?', default: true, dependsOn: { inquirer: 'social worker' }, initial: true },
-            onBehalfOfFamily: ,
-            // { type: Types.Relationship, label: 'on behalf of', ref: 'Family', dependsOn: { inquirer: 'social worker', onBehalfOfMAREFamily: true }, initial: true },
-            onBehalfOfFamilyText: inquiry.on_behalf_of,
-            comments: ,
-            // { type: Types.Textarea, label: 'comments', initial: true },
+			family: family._id,
+			socialWorker: socialWorker._id,
+			onBehalfOfMAREFamily: '',
+			// { type: Types.Boolean, label: 'is the family registered?', default: true, dependsOn: { inquirer: 'social worker' }, initial: true },
+			onBehalfOfFamily: '',
+			// { type: Types.Relationship, label: 'on behalf of', ref: 'Family', dependsOn: { inquirer: 'social worker', onBehalfOfMAREFamily: true }, initial: true },
+			onBehalfOfFamilyText: inquiry.on_behalf_of,
+			comments: '',
+			// { type: Types.Textarea, label: 'comments', initial: true },
 
-            agency: ,
-            // { type: Types.Relationship, label: 'agency at time of inquiry', ref: 'Agency', dependsOn: { inquiryType: ['child inquiry', 'complaint', 'family support consultation'] }, noedit: true },
-            agencyReferral: family.refferal_source,
-            
-            thankInquirer: true,
-            inquiryAccepted: true,
+			agency: '',
+			// { type: Types.Relationship, label: 'agency at time of inquiry', ref: 'Agency', dependsOn: { inquiryType: ['child inquiry', 'complaint', 'family support consultation'] }, noedit: true },
+			agencyReferral: family.refferal_source,
+			
+			thankInquirer: true,
+			inquiryAccepted: true,
 
-            thankYouSentToInquirer: true,
-            emailSentToCSC: true,
-            emailSentToInquirer: true,
-            emailSentToChildsSocialWorker: true,
-            emailSentToAgencies: true
+			thankYouSentToInquirer: true,
+			emailSentToCSC: true,
+			emailSentToInquirer: true,
+			emailSentToChildsSocialWorker: true,
+			emailSentToAgencies: true
 
-        });
+		});
 
 
 		newInquiry.save(function( err ) {
@@ -219,14 +221,14 @@ module.exports.createInquiryRecord = inquiry => {
 };
 
 function findCall(id, haystack) {
-    for (var i=0; i < haystack.length; i++) {
-        if (haystack[i].cll_id == id) {
-            return haystack[i];
-        }
-    }
+	for (var i=0; i < haystack.length; i++) {
+		if (haystack[i].cll_id == id) {
+			return haystack[i];
+		}
+	}
 }
 
-// instantiates the generator used to create social worker records one at a time ( preventing a memory leak issue )
+// instantiates the generator used to create inquiry records one at a time ( preventing a memory leak issue )
 const inquiriesGenerator = exports.generateInquiries();
 
 // //Converter Class 
@@ -243,7 +245,7 @@ const inquiriesGenerator = exports.generateInquiries();
 
 // module.exports = {
 //     importInquiries: function(){
-        
+		
 //         converter.fromFile("./migration-data/csv-data/ext_inquiry.csv",function(err,array){
 //             if (err) {
 //                 throw "An error occurred!\n" + err;
@@ -312,9 +314,3 @@ const inquiriesGenerator = exports.generateInquiries();
 //         })
 //     }
 // }
-
-
-
-
-
-

@@ -5,7 +5,7 @@
 var async                   = require('async'),
     keystone                = require('keystone'),
     Types                   = keystone.Field.Types,
-    MailingList             = keystone.list('MailingList'),
+    MailingList             = keystone.list('Mailing List'),
     csv2arr                 = require('csv-to-array'),
     dataMigrationService    = require('../service_data-migration')
     ;

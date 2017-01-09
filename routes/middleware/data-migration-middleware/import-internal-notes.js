@@ -5,7 +5,7 @@
 var async                   = require('async'),
     keystone                = require('keystone'),
     Types                   = keystone.Field.Types,
-    InternalNote            = keystone.list('InternalNote'),
+    InternalNote            = keystone.list('Internal Note'),
     dataMigrationService    = require('../service_data-migration')
     ;
 

@@ -2,19 +2,19 @@
 // NOT DONE: we need a helper function that will analyze zip code in any format and add back leading zeros while converting it to a string
 // NOT DONE: we need to figure out a better solution to the email field.  The placeholders are temporary until Lisa weighs in
 
-var async			= require( 'async' ),
-	keystone		= require( 'keystone' ),
-	Types 			= keystone.Field.Types,
-	Agency			= keystone.list( 'Agency' ),
-	SocialWorker   	= keystone.list( 'Social Worker' );
+const async			= require( 'async' );
+const keystone		= require( 'keystone' );
+const Types 		= keystone.Field.Types;
+const Agency		= keystone.list( 'Agency' );
+const SocialWorker  = keystone.list( 'Social Worker' );
 
 // migration file location
-const csvFilePath = './migration-data/csv-data/agency_contact.csv';
-const csv = require( 'csvtojson' );
+const csvFilePath	= './migration-data/csv-data/agency_contact.csv';
+const csv			= require( 'csvtojson' );
 // create an array to hold all social workers.  This is created here to be available to multiple functions below
 let socialWorkers = [];
 
-module.exports.importSocialWorker = ( req, res, done ) => {
+module.exports.importSocialWorkers = ( req, res, done ) => {
 	// fetch all records from the agency contacts csv file
 	csv().fromFile( csvFilePath )
 		// hold off processing until the whole file has been parsed into an array of objects
