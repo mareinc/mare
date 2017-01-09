@@ -30,7 +30,7 @@ OutsideContact.add( 'General Information', {
 	phone: {
 		work: { type: Types.Text, label: 'work phone number', initial: true },
 		mobile: { type: Types.Text, label: 'mobile phone number', initial: true },
-		preferred: { type: Types.Text, label: 'preferred phone', options: 'work, mobile', required: true, initial: true }
+		preferred: { type: Types.Select, label: 'preferred phone', options: 'work, mobile', initial: true }
 	}
 
 }, 'Address', {
