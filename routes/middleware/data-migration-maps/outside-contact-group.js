@@ -1,78 +1,48 @@
-var dataMigrationService	= require('../service_data-migration'),
-	async					= require('async');
+var dataMigrationService	= require( '../service_data-migration' ),
+	async					= require( 'async' );
 
-exports.getOutsideContactGroupsMap = function getOutsideContactGroupsMap(req, res, done) {
+exports.getOutsideContactGroupsMap = ( req, res, done ) => {
+
+	console.log( `fetching outside contact groups map` );
 
 	var locals = res.locals;
+	// create an area in locals for the states map
+	locals.migration.maps.outsideContactGroups = {};
 
 	async.parallel([
-		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Outside Contact Group', targetField: 'name', targetValue: 'adoption parties', returnTarget: 'adoptionPartyList'  }); },
-		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Outside Contact Group', targetField: 'name', targetValue: 'family pages', returnTarget: 'familyPagesList' }); },
-		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Outside Contact Group', targetField: 'name', targetValue: 'photolisting pages', returnTarget: 'photolistingPagesListList' }); },
-		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Outside Contact Group', targetField: 'name', targetValue: 'newsletters', returnTarget: 'NewslettersList' }); },
-		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Outside Contact Group', targetField: 'name', targetValue: 'e-mail single parent matching', returnTarget: 'emailSingleParentMatchingList' }); },
-		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Outside Contact Group', targetField: 'name', targetValue: 'contracted adoption workers', returnTarget: 'contractedAdoptionWorkersList' }); },
-		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Outside Contact Group', targetField: 'name', targetValue: 'DCF adoption workers', returnTarget: 'DCFAdoptionWorkersList' }); },
-		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Outside Contact Group', targetField: 'name', targetValue: 'video libraries', returnTarget: 'videoLibrariesList' }); },
-		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Outside Contact Group', targetField: 'name', targetValue: 'non-DCF/contracted contacts', returnTarget: 'nonDCFContractedContactsList' }); },
-		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Outside Contact Group', targetField: 'name', targetValue: 'board of directors', returnTarget: 'boardOfDirectorsList' }); },
-		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Outside Contact Group', targetField: 'name', targetValue: 'Boston coalition', returnTarget: 'bostonCoalitionList' }); },
-		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Outside Contact Group', targetField: 'name', targetValue: 'DCF area/reg. dir. & APMs', returnTarget: 'DCFAreaRegDirAndAPMsList' }); },
-		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Outside Contact Group', targetField: 'name', targetValue: 'honorary board of directors', returnTarget: 'honoraryBoardofDirectorsList' }); },
-		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Outside Contact Group', targetField: 'name', targetValue: 'out of country newsletters', returnTarget: 'outOfCountryNewslettersList' }); },
-		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Outside Contact Group', targetField: 'name', targetValue: 'DCF adoption supervisors', returnTarget: 'DCFAdoptionSupervisorsList' }); },
-		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Outside Contact Group', targetField: 'name', targetValue: 'contracted adoption sups', returnTarget: 'contractedAdoptionSupsList' }); },
-		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Outside Contact Group', targetField: 'name', targetValue: 'contracted exec. directors', returnTarget: 'contractedExecDirectorsList' }); },
-		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Outside Contact Group', targetField: 'name', targetValue: 'adoption mixer families 2002', returnTarget: 'adoptionMixerFamilies2002List' }); },
-		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Outside Contact Group', targetField: 'name', targetValue: 'e-mail newsletter', returnTarget: 'emailNewsletterList' }); },
-		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Outside Contact Group', targetField: 'name', targetValue: 'Heart Gallery 2005', returnTarget: 'heartGallery2005List' }); },
-		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Outside Contact Group', targetField: 'name', targetValue: 'e-mail adoption parties', returnTarget: 'emailAdoptionPartiesList' }); },
-		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Outside Contact Group', targetField: 'name', targetValue: 'fundraising', returnTarget: 'fundraisingList' }); },
-		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Outside Contact Group', targetField: 'name', targetValue: 'single parent matching night', returnTarget: 'singleParentMatchingNightList' }); },
-		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Outside Contact Group', targetField: 'name', targetValue: 'Heart Gallery photographers', returnTarget: 'heartGalleryPhotographersList' }); },
-		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Outside Contact Group', targetField: 'name', targetValue: 'Latino families', returnTarget: 'latinoFamiliesList' }); },
-		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Outside Contact Group', targetField: 'name', targetValue: '2007 family follow-up project', returnTarget: 'familyFollowupProjectList2007' }); },
-		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Outside Contact Group', targetField: 'name', targetValue: 'former board of directors', returnTarget: 'formerBoardofDirectorsList' }); },
-		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Outside Contact Group', targetField: 'name', targetValue: 'statewide recruitment', returnTarget: 'statewideRecruitmentList' }); },
-		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Outside Contact Group', targetField: 'name', targetValue: 'AUKFY 2015', returnTarget: 'AUKFY2015List' }); }
-	], function(err, results) {
+		done => { dataMigrationService.getModelId( { model: 'Outside Contact Group', field: 'name', value: 'adoption parties', mapTo: [ 1 ], namespace: locals.migration.maps.outsideContactGroups }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'Outside Contact Group', field: 'name', value: 'family pages', mapTo: [ 3 ], namespace: locals.migration.maps.outsideContactGroups }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'Outside Contact Group', field: 'name', value: 'photolisting pages', mapTo: [ 4 ], namespace: locals.migration.maps.outsideContactGroups }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'Outside Contact Group', field: 'name', value: 'newsletters', mapTo: [ 5 ], namespace: locals.migration.maps.outsideContactGroups }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'Outside Contact Group', field: 'name', value: 'e-mail single parent matching', mapTo: [ 7 ], namespace: locals.migration.maps.outsideContactGroups }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'Outside Contact Group', field: 'name', value: 'contracted adoption workers', mapTo: [ 10 ], namespace: locals.migration.maps.outsideContactGroups }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'Outside Contact Group', field: 'name', value: 'DCF adoption workers', mapTo: [ 11 ], namespace: locals.migration.maps.outsideContactGroups }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'Outside Contact Group', field: 'name', value: 'video libraries', mapTo: [ 12 ], namespace: locals.migration.maps.outsideContactGroups }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'Outside Contact Group', field: 'name', value: 'non-DCF/contracted contacts', mapTo: [ 16 ], namespace: locals.migration.maps.outsideContactGroups }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'Outside Contact Group', field: 'name', value: 'board of directors', mapTo: [ 32 ], namespace: locals.migration.maps.outsideContactGroups }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'Outside Contact Group', field: 'name', value: 'Boston coalition', mapTo: [ 33 ], namespace: locals.migration.maps.outsideContactGroups }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'Outside Contact Group', field: 'name', value: 'DCF area/reg. dir. & APMs', mapTo: [ 35 ], namespace: locals.migration.maps.outsideContactGroups }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'Outside Contact Group', field: 'name', value: 'honorary board of directors', mapTo: [ 36 ], namespace: locals.migration.maps.outsideContactGroups }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'Outside Contact Group', field: 'name', value: 'out of country newsletters', mapTo: [ 38 ], namespace: locals.migration.maps.outsideContactGroups }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'Outside Contact Group', field: 'name', value: 'DCF adoption supervisors', mapTo: [ 39 ], namespace: locals.migration.maps.outsideContactGroups }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'Outside Contact Group', field: 'name', value: 'contracted adoption sups', mapTo: [ 40 ], namespace: locals.migration.maps.outsideContactGroups }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'Outside Contact Group', field: 'name', value: 'contracted exec. directors', mapTo: [ 41 ], namespace: locals.migration.maps.outsideContactGroups }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'Outside Contact Group', field: 'name', value: 'adoption mixer families 2002', mapTo: [ 42 ], namespace: locals.migration.maps.outsideContactGroups }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'Outside Contact Group', field: 'name', value: 'e-mail newsletter', mapTo: [ 43 ], namespace: locals.migration.maps.outsideContactGroups }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'Outside Contact Group', field: 'name', value: 'Heart Gallery 2005', mapTo: [ 1001 ], namespace: locals.migration.maps.outsideContactGroups }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'Outside Contact Group', field: 'name', value: 'e-mail adoption parties', mapTo: [ 1002 ], namespace: locals.migration.maps.outsideContactGroups }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'Outside Contact Group', field: 'name', value: 'fundraising', mapTo: [ 1003 ], namespace: locals.migration.maps.outsideContactGroups }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'Outside Contact Group', field: 'name', value: 'single parent matching night', mapTo: [ 1004 ], namespace: locals.migration.maps.outsideContactGroups }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'Outside Contact Group', field: 'name', value: 'Heart Gallery photographers', mapTo: [ 1005 ], namespace: locals.migration.maps.outsideContactGroups }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'Outside Contact Group', field: 'name', value: 'Latino families', mapTo: [ 1006 ], namespace: locals.migration.maps.outsideContactGroups }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'Outside Contact Group', field: 'name', value: '2007 family follow-up project', mapTo: [ 1007 ], namespace: locals.migration.maps.outsideContactGroups }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'Outside Contact Group', field: 'name', value: 'former board of directors', mapTo: [ 1008 ], namespace: locals.migration.maps.outsideContactGroups }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'Outside Contact Group', field: 'name', value: 'statewide recruitment', mapTo: [ 1010 ], namespace: locals.migration.maps.outsideContactGroups }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'Outside Contact Group', field: 'name', value: 'AUKFY 2015', mapTo: [ 1011 ], namespace: locals.migration.maps.outsideContactGroups }, done ); }
+	
+	], () => {
 
-		if (err) {
-			console.log(`Error ${err}`);
-		}
-
-		locals.outsideContactGroupsMap = {
-			1: locals.adoptionPartyList,
-			3: locals.familyPagesList,
-			4: locals.photolistingPagesListList,
-			5: locals.NewslettersList,
-			7: locals.emailSingleParentMatchingList,
-			10: locals.contractedAdoptionWorkersList,
-			11: locals.DCFAdoptionWorkersList,
-			12: locals.videoLibrariesList,
-			16: locals.nonDCFContractedContactsList,
-			32: locals.boardOfDirectorsList,
-			33: locals.bostonCoalitionList,
-			35: locals.DCFAreaRegDirAndAPMsList,
-			36: locals.honoraryBoardofDirectorsList,
-			38: locals.outOfCountryNewslettersList,
-			39: locals.DCFAdoptionSupervisorsList,
-			40: locals.contractedAdoptionSupsList,
-			41: locals.contractedExecDirectorsList,
-			42: locals.adoptionMixerFamilies2002List,
-			43: locals.emailNewsletterList,
-			1001: locals.heartGallery2005List,
-			1002: locals.emailAdoptionPartiesList,
-			1003: locals.fundraisingList,
-			1004: locals.singleParentMatchingNightList,
-			1005: locals.heartGalleryPhotographersList,
-			1006: locals.latinoFamiliesList,
-			1007: locals.familyFollowupProjectList2007,
-			1008: locals.formerBoardofDirectorsList,
-			1010: locals.statewideRecruitmentList,
-			1011: locals.AUKFY2015List
-		};
-
+		console.log( `outside contact groups map set` );
 		done();
 	});
 }
