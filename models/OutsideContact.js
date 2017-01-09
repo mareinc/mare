@@ -18,11 +18,7 @@ OutsideContact.add( 'General Information', {
 
 	type: { type: Types.Relationship, label: 'type of contact', ref: 'Outside Contact Group', many: true, required: true, initial: true },
 
-	name: {
-		first: { type: Types.Text, label: 'first name', required: true, initial: true },
-		last: { type: Types.Text, label: 'last name', required: true, initial: true },
-		full: { type: Types.Text, label: 'name', hidden: true, noedit: true, initial: false }
-	},
+	name: { type: Types.Text, label: 'name', required: true, initial: true },
 
 	organization: { type: Types.Text, label: 'organization', initial: true }
 
@@ -64,8 +60,6 @@ OutsideContact.schema.pre('save', function(next) {
 	var model			= this,
 		contactGroups	= this.type;
 
-	// Populate the full name string for better identification when linking through Relationship field types
-	this.name.full = this.name.first + ' ' + this.name.last;
 	// Reset the isVolunteer flag to allow a fresh check every save
 	this.isVolunteer = false;
 
