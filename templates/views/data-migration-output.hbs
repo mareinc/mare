@@ -1,6 +1,11 @@
 <section class="data-migration-output-page">
 
-	<div class="data-migration-output-page__header">Data Migration Results:</div>
-	<section class="data-migration-output-page__results"></section>
+	<h2 class="data-migration-output-page__header">Data Migration Results:</h2>
+	<section class="data-migration-output-page__results">
+		{{#each migrationResults}}
+			<h3>{{ dataSet }}</h3>
+			<div class="data-migration-output-page__result">{{ results }}</div>
+		{{/each}}
+	</section>
 
 </section>

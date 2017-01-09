@@ -28,6 +28,8 @@ exports = module.exports = ( req, res ) => {
 		maps: {},
 		data: {}
 	};
+	// array to store progress messages
+	locals.migrationResults = [];
 
     async.series([
 		done => { statesMap.getStatesMap(req, res, done); },

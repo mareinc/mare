@@ -14,6 +14,8 @@ let statesMap,
 	regionsMap;
 // expose done to be available to all functions below
 let agencyImportComplete;
+// expose the array storing progress through the migration run
+let migrationResults;
 
 module.exports.importAgencies = ( req, res, done ) => {
 	// expose the maps we'll need for this import
@@ -21,6 +23,8 @@ module.exports.importAgencies = ( req, res, done ) => {
 	regionsMap	= res.locals.migration.maps.regions;
 	// expose done to our generator
 	agencyImportComplete = done;
+	// expose our migration results array
+	migrationResults = res.locals.migrationResults;
 
 	// create a promise for converting the agencies CSV file to JSON
 	const agenciesLoaded = new Promise( ( resolve, reject ) => {
@@ -64,7 +68,13 @@ module.exports.generateAgencies = function* generateAgencies() {
 		remainingRecords--;
 		// if there are no more records to process call done to move to the next migration file
 		if( remainingRecords === 0 ) {
-			console.log( `finished creating ${ totalRecords } agencies in the new system` );
+
+			const resultsMessage = `finished creating ${ totalRecords } agencies in the new system`;
+			migrationResults.push({
+				dataSet: 'Agencies',
+				results: resultsMessage
+			});
+			console.log( resultsMessage );
 			// return control to the data migration view
 			return agencyImportComplete();
 		}
