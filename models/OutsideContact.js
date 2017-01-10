@@ -9,18 +9,18 @@ var keystone			= require('keystone'),
 // Create model
 var OutsideContact = new keystone.List('Outside Contact', {
 	autokey: { path: 'key', from: 'slug', unique: true },
-	map: { name: 'name.full' },
-	defaultSort: 'name.full'
+	map: { name: 'name' },
+	defaultSort: 'name'
 });
 
 // Create fields
 OutsideContact.add( 'General Information', {
 
-	type: { type: Types.Relationship, label: 'type of contact', ref: 'Outside Contact Group', many: true, required: true, initial: true },
-
 	name: { type: Types.Text, label: 'name', required: true, initial: true },
 
-	organization: { type: Types.Text, label: 'organization', initial: true }
+	organization: { type: Types.Text, label: 'organization', initial: true },
+
+	groups: { type: Types.Relationship, label: 'groups', ref: 'Outside Contact Group', many: true, required: true, initial: true }
 
 }, 'Contact Information', {
 
@@ -42,7 +42,7 @@ OutsideContact.add( 'General Information', {
 		zipCode: { type: Types.Text, label: 'zip code', initial: true }
 	}
 
-}, { heading: 'Relationship Maps', hidden: true }, {
+}, {
 
 	isVolunteer: { type: Types.Boolean, hidden: true, noedit: true }
 
@@ -54,35 +54,35 @@ OutsideContact.add( 'General Information', {
 });
 
 // Pre Save
-OutsideContact.schema.pre('save', function(next) {
+OutsideContact.schema.pre( 'save', function( next ) {
 	'use strict';
 
 	var model			= this,
-		contactGroups	= this.type;
+		contactGroups	= this.groups;
 
 	// Reset the isVolunteer flag to allow a fresh check every save
 	this.isVolunteer = false;
 
 	// Loop through each of the outside contact groups the user should be added to and mark the outside contact as a volunteer
 	// if they are part of the 'volunteers' outside contact group
-	async.each(contactGroups, function(listID, callback) {
+	async.each( contactGroups, ( listID, callback ) => {
 
-		OutsideContactGroup.model.findById(listID)
+		OutsideContactGroup.model.findById( listID )
 				.exec()
-				.then(function(result) {
+				.then( result => {
 					// Events have outside contacts who are volunteers listed, we need to capture a reference to which outside contacts are volunteers
-					if(result.name === 'volunteers') {
-						model.isVolunteer = true;
+					if( result.name === 'volunteers' ) {
+						this.isVolunteer = true;
 					}
 
 					callback();
 
-				}, function(err) {
-					console.log(err);
+				}, err => {
+					console.log( err );
 					callback();
 				});
 
-	}, function(err){
+	}, err => {
 			// if anything produces an error, err will equal that error
 			if( err ) {
 				// One of the iterations produced an error.  All processing will now stop.
@@ -95,56 +95,9 @@ OutsideContact.schema.pre('save', function(next) {
 	});
 });
 
-// Post Save
-OutsideContact.schema.post('save', function() {
-	'use strict';
-
-	var model			= this,
-		contactGroups	= this.type;
-
-	// Loop through each of the outside contact groups the user should be added to and add them.  Async allows all assignments
-	// to happen in parallel before handling the result.
-	async.each(contactGroups, function(listID, callback) {
-		console.log('listID 2:', listID);
-		OutsideContactGroup.model.findById(listID)
-				.exec()
-				.then(function(result) {
-					// Use the model _id to determine if they are already part of the outside contact group
-					var inList = result.outsideContacts.indexOf(model._id) !== -1;
-					// Add the model to the list only if they aren't already included
-					if( !inList ) {
-						result.outsideContacts.push(model._id);
-						result.save(function(err) {
-							console.log('outside contact saved to ' +  result.name + ' group');
-							callback();
-						}, function(err) {
-							console.log(err);
-							callback();
-						});
-					} else {
-						callback();
-					}
-
-				}, function(err) {
-					console.log(err);
-					callback();
-				});
-
-	}, function(err){
-			// if anything produces an error, err will equal that error
-			if( err ) {
-				// One of the iterations produced an error.  All processing will now stop.
-				console.log('an error occurred saving the outside contact to one or more outside contact groups');
-			} else {
-				console.log('outside contact saved to all outside contact groups successfully');
-			}
-	});
-});
-
 // Set up relationship values to show up at the bottom of the model if any exist
-OutsideContact.relationship({ ref: 'Outside Contact Group', refPath: 'outsideContacts', path: 'outside-contact-groups', label: 'outside contact groups' });
 OutsideContact.relationship({ ref: 'Mailing List', refPath: 'outsideContactSubscribers', path: 'mailing-lists', label: 'mailing lists' });
 
 // Define default columns in the admin interface and register the model
-OutsideContact.defaultColumns = 'name.full, type, organization';
+OutsideContact.defaultColumns = 'name, type, organization';
 OutsideContact.register();

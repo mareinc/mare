@@ -9,11 +9,11 @@ var OutsideContactGroup = new keystone.List('Outside Contact Group', {
 
 // Create fields
 OutsideContactGroup.add({
-	name: { type: Types.Text, label: 'group name', required: true, initial: true },
-	outsideContacts: { type: Types.Relationship, label: 'outside contacts', ref: 'Outside Contact', many: true, initial: true }
+	name: { type: Types.Text, label: 'group name', required: true, initial: true }
 });
 
 OutsideContactGroup.relationship({ ref: 'Mailing List', refPath: 'outsideContactGroupSubscribers', path: 'mailing-lists', label: 'mailing lists' });
+OutsideContactGroup.relationship({ ref: 'Outside Contact', refPath: 'groups', path: 'outside-contacts', label: 'outside contact members' });
 
 // Define default columns in the admin interface and register the model
 OutsideContactGroup.defaultColumns = 'name';
