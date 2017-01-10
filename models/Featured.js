@@ -17,7 +17,7 @@ Featured.add({
 
 	aboutUs: {
 		target: { type: Types.Relationship, ref: 'Page', label: 'target page', filter: { type: 'aboutUs' }, required: true, initial: true },
-		image: { type: Types.CloudinaryImage, folder: 'featured/', selectPrefix: 'featured/', autoCleanup: true },
+		image: { type: Types.CloudinaryImage, folder: 'featured/', select: true, selectPrefix: 'featured/', autoCleanup: true }, // TODO: add publicID attribute for better naming in Cloudinary
 		title: { type: Types.Text, hidden: true, noedit: true },
 		imageScaled: { type: Types.Url, hidden: true },
 		url: { type: Types.Url, noedit: true }
@@ -27,7 +27,7 @@ Featured.add({
 
 	successStory: {
 		target: { type: Types.Relationship, ref: 'Success Story', label: 'target page', required: true, initial: true },
-		image: { type: Types.CloudinaryImage, folder: 'featured/', selectPrefix: 'featured/', autoCleanup: true },
+		image: { type: Types.CloudinaryImage, folder: 'featured/', select: true, selectPrefix: 'featured/', autoCleanup: true }, // TODO: add publicID attribute for better naming in Cloudinary
 		title: { type: Types.Text, hidden: true, noedit: true },
 		imageScaled: { type: Types.Url, hidden: true },
 		url: { type: Types.Url, noedit: true }
@@ -37,7 +37,7 @@ Featured.add({
 
 	upcomingEvent: {
 		target: { type: Types.Relationship, ref: 'Event', label: 'target event', required: true, initial: true },
-		image: { type: Types.CloudinaryImage, folder: 'featured/', selectPrefix: 'featured/', autoCleanup: true },
+		image: { type: Types.CloudinaryImage, folder: 'featured/', select: true, selectPrefix: 'featured/', autoCleanup: true }, // TODO: add publicID attribute for better naming in Cloudinary
 		title: { type: Types.Text, hidden: true, noedit: true },
 		imageScaled: { type: Types.Url, hidden: true },
 		url: { type: Types.Url, noedit: true }

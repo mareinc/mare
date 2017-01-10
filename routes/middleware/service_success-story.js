@@ -4,8 +4,7 @@ var keystone		= require('keystone'),
 
 	exports.getRandomStory = function getRandomStory(req, res, done) {
 
-		req.locals = res.locals || {};
-		var locals = res.locals;
+		let locals = res.locals;
 
 		// TODO: Handle the error if we get one
 		SuccessStory.model.findRandom(function(err, successStory){

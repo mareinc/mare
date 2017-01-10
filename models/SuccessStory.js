@@ -15,7 +15,7 @@ SuccessStory.add({
 	url: { type: Types.Url, label: 'url', noedit: true },
 	subHeading: { type: Types.Text, label: 'sub-heading', initial: true },
 	content: { type: Types.Html, wysiwyg: true, initial: true },
-	image: { type: Types.CloudinaryImage, note: 'needed to display in the sidebar, success story page, and home page', folder: 'success-stories/', publicID: 'fileName', autoCleanup: true },
+	image: { type: Types.CloudinaryImage, note: 'needed to display in the sidebar, success story page, and home page', folder: 'success-stories/', select: true, selectPrefix: 'success-stories/', publicID: 'fileName', autoCleanup: true },
 	imageFeatured: { type: Types.Url, hidden: true },
 	imageSidebar: { type: Types.Url, hidden: true }
 
