@@ -6,6 +6,8 @@ exports.create = {
 	}, {
 		name: 'adoption parties'
 	}, {
+		name: 'agencies'
+	}, {
 		name: 'African American families'
 	}, {
 		name: 'AUKFY 2015'
@@ -50,13 +52,19 @@ exports.create = {
 	}, {
 		name: 'LGBT families'
 	}, {
+		name: 'libraries'
+	}, {
 		name: 'newsletters'
 	}, {
 		name: 'non-DCF/contracted contacts'
 	}, {
+		name: 'other'
+	}, {
 		name: 'out of country newsletters'
 	}, {
 		name: 'photolisting pages'
+	}, {
+		name: 'religious organizations'
 	}, {
 		name: 'single parent matching night'
 	}, {
