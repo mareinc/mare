@@ -1,30 +1,28 @@
-// TODO: You've got the isVolunteer action happening pre-save and the contact group addition happening post-save.  Can we consolidate?
-var keystone			= require('keystone'),
-	Types				= keystone.Field.Types,
-	async				= require('async'),
-	// Export to make it available using require.  The keystone.list import throws a ReferenceError when importing a list
-	// that comes later when sorting alphabetically
-	OutsideContactGroup = require('./OutsideContactGroup');
+const keystone	= require( 'keystone' );
+const Types		= keystone.Field.Types;
+const async		= require( 'async' );
+// Export to make it available using require.  The keystone.list import throws a ReferenceError when importing a list that comes later when sorting alphabetically
+const OutsideContactGroup = require( './OutsideContactGroup' );
 
 // Create model
-var OutsideContact = new keystone.List('Outside Contact', {
-	autokey: { path: 'key', from: 'slug', unique: true },
-	map: { name: 'name' },
-	defaultSort: 'name'
+var OutsideContact = new keystone.List( 'Outside Contact', {
+	autokey: { path: 'key', from: 'identifyingName', unique: true },
+	map: { name: 'identifyingName' },
+	defaultSort: 'identifyingName'
 });
 
 // Create fields
 OutsideContact.add( 'General Information', {
 
-	name: { type: Types.Text, label: 'name', required: true, initial: true },
-
+	name: { type: Types.Text, label: 'name', initial: true },
 	organization: { type: Types.Text, label: 'organization', initial: true },
+	identifyingName: { type: Types.Text, label: 'identifying name', hidden: true, noedit: true, initial: false },
 
 	groups: { type: Types.Relationship, label: 'groups', ref: 'Outside Contact Group', many: true, required: true, initial: true }
 
 }, 'Contact Information', {
 
-	email: { type: Types.Email, label: 'email address', unique: true, initial: true },
+	email: { type: Types.Email, label: 'email address', initial: true },
 
 	phone: {
 		work: { type: Types.Text, label: 'work phone number', initial: true },
@@ -57,20 +55,45 @@ OutsideContact.add( 'General Information', {
 OutsideContact.schema.pre( 'save', function( next ) {
 	'use strict';
 
-	var model			= this,
-		contactGroups	= this.groups;
+	async.parallel([
+		done => { this.setIdentifyingName( done ); },
+		done => { this.setVolunteerStatus( done ); }	
+	], () => {
+		console.log( 'outside contact information updated' );
+		next();
+	});
+});
 
-	// Reset the isVolunteer flag to allow a fresh check every save
-	this.isVolunteer = false;
+OutsideContact.schema.methods.setIdentifyingName = function( done ) {
+	'use strict';
 
-	// Loop through each of the outside contact groups the user should be added to and mark the outside contact as a volunteer
+	// if only the name is populated, it becomes the identifying name
+	if( this.name && !this.organization ) {
+		this.identifyingName = `${ this.name }`;
+	// otherwise, if only the organization is populated, it becomes the identifying name
+	} else if( !this.name && this.organization ) {
+		this.identifyingName = `${ this.organization }`;
+	// otherwise, both must be populated, and the identifying name becomes 'name - organization'
+	} else {
+		this.identifyingName = `${ this.name } - ${ this.organization }`
+	}
+
+	done();
+};
+
+OutsideContact.schema.methods.setVolunteerStatus = function( done ) {
+	// get all the contact groups
+	var contactGroups	= this.groups;
+	// reset the isVolunteer flag to allow a fresh check every save
+	this.isVolunteer	= false;
+	// loop through each of the outside contact groups the user should be added to and mark the outside contact as a volunteer
 	// if they are part of the 'volunteers' outside contact group
 	async.each( contactGroups, ( listID, callback ) => {
 
 		OutsideContactGroup.model.findById( listID )
 				.exec()
 				.then( result => {
-					// Events have outside contacts who are volunteers listed, we need to capture a reference to which outside contacts are volunteers
+					// events have outside contacts who are volunteers listed, we need to capture a reference to which outside contacts are volunteers
 					if( result.name === 'volunteers' ) {
 						this.isVolunteer = true;
 					}
@@ -78,26 +101,26 @@ OutsideContact.schema.pre( 'save', function( next ) {
 					callback();
 
 				}, err => {
-					console.log( err );
+					console.error( err );
 					callback();
 				});
 
 	}, err => {
-			// if anything produces an error, err will equal that error
+
 			if( err ) {
-				// One of the iterations produced an error.  All processing will now stop.
-				console.log('an error occurred saving the outside contact\'s volunteer status');
-				next();
+				// one of the iterations produced an error.  All processing will now stop.
+				console.error('an error occurred saving the outside contact\'s volunteer status');
+				done();
 			} else {
 				console.log('outside contact volunteer status saved successfully');
-				next();
+				done();
 			}
 	});
-});
+};
 
 // Set up relationship values to show up at the bottom of the model if any exist
 OutsideContact.relationship({ ref: 'Mailing List', refPath: 'outsideContactSubscribers', path: 'mailing-lists', label: 'mailing lists' });
 
 // Define default columns in the admin interface and register the model
-OutsideContact.defaultColumns = 'name, type, organization';
+OutsideContact.defaultColumns = 'identifyingName, groups';
 OutsideContact.register();
