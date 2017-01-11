@@ -15,6 +15,7 @@ const socialWorkerImport		= require( '../middleware/data-migration-middleware/im
 const statesMap					= require( '../middleware/data-migration-maps/state' );
 const regionsMap				= require( '../middleware/data-migration-maps/region' );
 const outsideContactGroupsMap	= require( '../middleware/data-migration-maps/outside-contact-group' );
+const mailingListsMap			= require( '../middleware/data-migration-maps/mailing-list' );
 
 exports = module.exports = ( req, res ) => {
     'use strict';
@@ -34,9 +35,10 @@ exports = module.exports = ( req, res ) => {
     async.series([
 		done => { statesMap.getStatesMap(req, res, done); },
 		done => { regionsMap.getRegionsMap( req, res, done ); },
-		done => { outsideContactGroupsMap.getOutsideContactGroupsMap( req, res, done ) },
-		done => { agenciesImport.importAgencies( req, res, done ); },
-		// done => { outsideContactImport.importOutsideContacts( req, res, done ); },
+		done => { outsideContactGroupsMap.getOutsideContactGroupsMap( req, res, done ); },
+		done => { mailingListsMap.getMailingListsMap( req, res, done ); },
+		// done => { agenciesImport.importAgencies( req, res, done ); },
+		done => { outsideContactImport.importOutsideContacts( req, res, done ); },
 		// done => { socialWorkerImport.importSocialWorkers( req, res, done ); },
 		// done => { childrenImport.importChildren( req, res, done ); },
 		// done => { familiesImport.importFamilies( req, res, done ); },
