@@ -8,6 +8,14 @@ exports.getModelId = ( options, done ) => {
 		.where( options.field, options.value )
 		.exec()
 		.then( model => {
+
+			// if no model was found
+			if( !model ) {
+				// log the issue
+				console.error( `model matching ${ options.value } couldn't be found` );
+				// and move on
+				done();
+			}
 			// loop through each passed in value to map to this model
 			for( let id of options.mapTo ) {
 				// and store a reference on the namespace
