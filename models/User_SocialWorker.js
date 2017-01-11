@@ -12,7 +12,7 @@ var keystone				= require( 'keystone' ),
 // Create model
 var SocialWorker = new keystone.List( 'Social Worker', {
 	inherits	: User,
-	track: true,
+	track		: true,
 	map			: { name: 'name.full' },
 	defaultSort	: 'name.full',
 	hidden		: false
@@ -96,7 +96,7 @@ SocialWorker.schema.pre('save', function(next) {
 	'use strict';
 
 	var model = this;
-
+	// TODO: get rid of model = this and all model references.  You'll need to verify all functionality still works
 	async.series([
 		done => { model.setFullName(done); }, // Create a full name for the child based on their first, middle, and last names
 		done => { model.setUserType(done); }, // Create an identifying name for file uploads
