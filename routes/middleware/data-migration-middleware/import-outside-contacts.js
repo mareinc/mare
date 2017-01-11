@@ -1,10 +1,10 @@
 /* PREREQUISITE: mailing lists: outside contacts are automatically added to mailing lists post-save */
 
-const keystone				= require( 'keystone' );
-const async					= require( 'async' );
-const OutsideContact		= keystone.list( 'Outside Contact' );
+const keystone					= require( 'keystone' );
+const async						= require( 'async' );
+const OutsideContact			= keystone.list( 'Outside Contact' );
 // utility middleware
-const utilityFunctions		= require( './utilities_functions' );
+const utilityFunctions			= require( './utilities_functions' );
 // csv conversion middleware
 const CSVConversionMiddleware	= require( './utilities_csv-conversion' );
 
@@ -20,8 +20,8 @@ let migrationResults;
 
 module.exports.importOutsideContacts = ( req, res, done ) => {
 	// expose the maps we'll need for this import
-	outsideContactGroupsMap	= res.locals.outsideContactGroupsMap;
-	statesMap				= res.locals.statesMap;
+	outsideContactGroupsMap	= res.locals.migration.maps.outsideContactGroups;
+	statesMap				= res.locals.migration.maps.states;
 	// expose done to our generator
 	outsideContactsImportComplete = done;
 	// expose our migration results array
@@ -40,7 +40,8 @@ module.exports.importOutsideContacts = ( req, res, done ) => {
 		outsideContactsGenerator.next();
 	// if there was an error converting the outside contacts file
 	}).catch( reason => {
-		console.error( `error processing outside contacts` );
+		console.exception( `error processing outside contacts` );
+		console.error( reason );
 		// aborting the import
 		return done();
 	});
@@ -61,13 +62,14 @@ module.exports.generateOutsideContacts = function* generateOutsideContacts() {
 		outsideContactNumber++;
 		// if we've hit a multiple of batchCount, pause execution to let the current records process
 		if( outsideContactNumber % batchCount === 0 ) {
+			console.log( 'pausing' );
 			yield exports.createOutsideContactRecord( outsideContact, true );
 		} else {
 			exports.createOutsideContactRecord( outsideContact, false );
 		}
 		// decrement the counter keeping track of how many records we still need to process
 		remainingRecords--;
-		console.log(remainingRecords);
+		console.log( remainingRecords );
 		// if there are no more records to process call done to move to the next migration file
 		if( remainingRecords === 0 ) {
 
@@ -87,18 +89,10 @@ module.exports.generateOutsideContacts = function* generateOutsideContacts() {
 
 module.exports.createOutsideContactRecord = ( outsideContact, pauseUntilSaved ) => {
 
-	// let _splitName = exports.splitName( outsideContact.name );
-	let _isVolunteer = false;
-
-	if ( outsideContact.contact_type ) {
-		_isVolunteer = true;
-	}
-
 	// populate instance for Outside Contact object
 	let newOutsideContact = new OutsideContact.model({
 
-		type: outsideContactGroupsMap[ outsideContact.contact_type ], // WRONG: contact_type doesn't map to anything we currently have, type in the new system maps to one or more mailing lists
-		// type: { type: Types.Relationship, label: 'type of contact', ref: 'Mailing List', many: true, required: true, initial: true },
+		groups: outsideContactGroupsMap[ outsideContact.contact_type ],
 
 		// from the outside_contact table get the ocn_id and go to mailing_list_subscription table, where based on the ocn_id, get the mlt_id and then
 		// go to mailing_list table and get the name associated with the mlt_id, once you have the name, go to the new system and fetch the new hash id
@@ -120,7 +114,6 @@ module.exports.createOutsideContactRecord = ( outsideContact, pauseUntilSaved ) 
 			zipCode: utilityFunctions.padZipCode( outsideContact.zip ) // WRONG SOMETIMES: 6 DIGITS???
 		},
 
-		isVolunteer: _isVolunteer, // WRONG: there was no volunteer mailing list in the old system, should this always be false?
 		oldId: outsideContact.ocn_id
 
 	});
@@ -132,9 +125,10 @@ module.exports.createOutsideContactRecord = ( outsideContact, pauseUntilSaved ) 
 			throw `[ocn_id: ${ outsideContact.ocn_id }] an error occured while saving outside contact`;
 		}
 		
-		// fire off the next iteration of our generator after pausing for a second
+		// fire off the next iteration of our generator after pausing
 		if( pauseUntilSaved ) {
 			setTimeout( () => {
+				console.log( 'unpausing' );
 				outsideContactsGenerator.next();
 			}, 2000 );
 		}
