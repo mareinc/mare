@@ -1,7 +1,6 @@
 const keystone			= require( 'keystone' );
 const async				= require( 'async' );
 const Agency 			= keystone.list( 'Agency' );
-const Region			= keystone.list( 'Region' );
 // utility middleware
 const utilityFunctions	= require( './utilities_functions' );
 // csv conversion middleware
