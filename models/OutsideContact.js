@@ -59,7 +59,6 @@ OutsideContact.schema.pre( 'save', function( next ) {
 		done => { this.setIdentifyingName( done ); },
 		done => { this.setVolunteerStatus( done ); }	
 	], () => {
-		console.log( 'outside contact information updated' );
 		next();
 	});
 });
@@ -88,39 +87,28 @@ OutsideContact.schema.methods.setVolunteerStatus = function( done ) {
 	this.isVolunteer	= false;
 	// loop through each of the outside contact groups the user should be added to and mark the outside contact as a volunteer
 	// if they are part of the 'volunteers' outside contact group
-	async.each( contactGroups, ( listID, callback ) => {
+	OutsideContactGroup.model.find()
+			.where( { _id: { $in: contactGroups } } )
+			.exec()
+			.then( outsideContactGroups => {
+				// create an array from just the names of each outside contact group
+				const OutsideContactGroupNames = outsideContactGroups.map( outsideContactGroup => outsideContactGroup.get( 'name' ) );
+				// events have outside contacts who are volunteers listed, we need to capture a reference to which outside contacts are volunteers
+				if( OutsideContactGroupNames.includes( 'volunteers' ) ) {
+					this.isVolunteer = true;
+				}
 
-		OutsideContactGroup.model.findById( listID )
-				.exec()
-				.then( result => {
-					// events have outside contacts who are volunteers listed, we need to capture a reference to which outside contacts are volunteers
-					if( result.name === 'volunteers' ) {
-						this.isVolunteer = true;
-					}
-
-					callback();
-
-				}, err => {
-					console.error( err );
-					callback();
-				});
-
-	}, err => {
-
-			if( err ) {
-				// one of the iterations produced an error.  All processing will now stop.
-				console.error('an error occurred saving the outside contact\'s volunteer status');
 				done();
-			} else {
-				console.log('outside contact volunteer status saved successfully');
+
+			}, err => {
+				console.error( err );
 				done();
-			}
-	});
+			});
 };
 
 // Set up relationship values to show up at the bottom of the model if any exist
 OutsideContact.relationship({ ref: 'Mailing List', refPath: 'outsideContactSubscribers', path: 'mailing-lists', label: 'mailing lists' });
 
 // Define default columns in the admin interface and register the model
-OutsideContact.defaultColumns = 'identifyingName, groups';
+OutsideContact.defaultColumns = 'identifyingName, address.city, address.state, groups';
 OutsideContact.register();
