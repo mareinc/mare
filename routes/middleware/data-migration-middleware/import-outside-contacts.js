@@ -62,14 +62,12 @@ module.exports.generateOutsideContacts = function* generateOutsideContacts() {
 		outsideContactNumber++;
 		// if we've hit a multiple of batchCount, pause execution to let the current records process
 		if( outsideContactNumber % batchCount === 0 ) {
-			console.log( 'pausing' );
 			yield exports.createOutsideContactRecord( outsideContact, true );
 		} else {
 			exports.createOutsideContactRecord( outsideContact, false );
 		}
 		// decrement the counter keeping track of how many records we still need to process
 		remainingRecords--;
-		console.log( remainingRecords );
 		// if there are no more records to process call done to move to the next migration file
 		if( remainingRecords === 0 ) {
 
@@ -128,9 +126,8 @@ module.exports.createOutsideContactRecord = ( outsideContact, pauseUntilSaved ) 
 		// fire off the next iteration of our generator after pausing
 		if( pauseUntilSaved ) {
 			setTimeout( () => {
-				console.log( 'unpausing' );
 				outsideContactsGenerator.next();
-			}, 2000 );
+			}, 1000 );
 		}
 	});
 };
