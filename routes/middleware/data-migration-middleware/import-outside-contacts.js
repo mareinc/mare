@@ -41,7 +41,7 @@ module.exports.importOutsideContacts = ( req, res, done ) => {
 	// if there was an error converting the outside contacts file
 	}).catch( reason => {
 		console.exception( `error processing outside contacts` );
-		console.error( reason );
+		console.exception( reason );
 		// aborting the import
 		return done();
 	});
@@ -96,7 +96,7 @@ module.exports.createOutsideContactRecord = ( outsideContact, pauseUntilSaved ) 
 		// go to mailing_list table and get the name associated with the mlt_id, once you have the name, go to the new system and fetch the new hash id
 
 		name: outsideContact.name,
-		organization: outsideContact.organization, // WRONG: missing some id's (#2 for example)
+		organization: outsideContact.organization,
 		email: outsideContact.email,
 
 		phone: {
@@ -109,7 +109,7 @@ module.exports.createOutsideContactRecord = ( outsideContact, pauseUntilSaved ) 
 			street2: outsideContact.address_2,
 			city: outsideContact.city,
 			state: statesMap[ outsideContact.state ],
-			zipCode: utilityFunctions.padZipCode( outsideContact.zip ) // WRONG SOMETIMES: 6 DIGITS???
+			zipCode: utilityFunctions.padZipCode( outsideContact.zip )
 		},
 
 		oldId: outsideContact.ocn_id

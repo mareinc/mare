@@ -38,7 +38,8 @@ module.exports.importAgencies = ( req, res, done ) => {
 		agenciesGenerator.next();
 	// if there was an error converting the agencies file
 	}).catch( reason => {
-		console.error( `error processing agencies` );
+		console.exception( `error processing agencies` );
+		console.exception( reason );
 		// aborting the import
 		return done();
 	});
