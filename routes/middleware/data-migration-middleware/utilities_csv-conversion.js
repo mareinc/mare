@@ -3,6 +3,7 @@ const csv				= require( 'csvtojson' );
 const agenciesFilePath			= './migration-data/csv-data/agency.csv';
 const outsideContactsFilePath 	= './migration-data/csv-data/outside_contact.csv';
 const inquiriesFilePath			= './migration-data/csv-data/ext_inquiry.csv';
+const socialWorkersFilePath		= './migration-data/csv-data/agency_contact.csv';
 
 exports.fetchAgencies = ( resolve, reject ) => {
 	
@@ -54,6 +55,24 @@ exports.fetchInquiries = ( resolve, reject ) => {
 		})
 		.on( 'error', err => {
 			console.error( `error fetching inquiries or converting to JSON => ${ err }` );
+			reject();
+		});
+}
+
+exports.fetchSocialWorkers = ( resolve, reject ) => {
+	
+	console.log( `fetching social workers from CSV` );
+
+	// fetch all records from the extranet social worker csv file
+	csv().fromFile( socialWorkersFilePath )
+		// wait until the whole file has been parsed into an array of objects
+		.on( 'end_parsed', socialWorkersArray => {
+			console.log( `social workers fetched` );
+			// resolve the promise with the array of social worker objects
+			resolve( socialWorkersArray );
+		})
+		.on( 'error', err => {
+			console.error( `error fetching social workers or converting to JSON => ${ err }` );
 			reject();
 		});
 }
