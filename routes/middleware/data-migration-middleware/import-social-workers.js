@@ -1,66 +1,104 @@
 // MISSING FIELD: position.  This is needed when binding models to social workers
-// NOT DONE: we need a helper function that will analyze zip code in any format and add back leading zeros while converting it to a string
 // NOT DONE: we need to figure out a better solution to the email field.  The placeholders are temporary until Lisa weighs in
 
 const async			= require( 'async' );
 const keystone		= require( 'keystone' );
 const Types 		= keystone.Field.Types;
-const Agency		= keystone.list( 'Agency' );
 const SocialWorker  = keystone.list( 'Social Worker' );
+// utility middleware
+const utilityFunctions			= require( './utilities_functions' );
+const utilityModelFetch			= require( './utilities_model-fetch' );
+// csv conversion middleware
+const CSVConversionMiddleware	= require( './utilities_csv-conversion' );
 
-// migration file location
-const csvFilePath	= './migration-data/csv-data/agency_contact.csv';
-const csv			= require( 'csvtojson' );
 // create an array to hold all social workers.  This is created here to be available to multiple functions below
-let socialWorkers = [];
+let socialWorkers;
+// expose done to be available to all functions below
+let socialWorkerImportComplete;
+// expose the array storing progress through the migration run
+let migrationResults;
 
 module.exports.importSocialWorkers = ( req, res, done ) => {
-	// fetch all records from the agency contacts csv file
-	csv().fromFile( csvFilePath )
-		// hold off processing until the whole file has been parsed into an array of objects
-		.on( 'end_parsed', socialWorkersArray => {
-			// populate the social workers our generator keys off of
-			socialWorkers = socialWorkersArray;
-			// kick off the first run of our generator
-			socialWorkerGenerator.next();
-		})
+	// expose done to our generator
+	socialWorkerImportComplete = done;
+	// expose our migration results array
+	migrationResults = res.locals.migrationResults;
+
+	// create a promise for converting the social workers CSV file to JSON
+	const socialWorkersLoaded = new Promise( ( resolve, reject ) => {
+		// attempt to convert the social workers
+		CSVConversionMiddleware.fetchSocialWorkers( resolve, reject );
+	});
+	// if the file was successfully converted, it will return the array of social workers
+	socialWorkersLoaded.then( socialWorkersArray => {
+		// store the social workers in a variable accessible throughout this file
+		socialWorkers = socialWorkersArray;
+		// kick off the first run of our generator
+		socialWorkerGenerator.next();
+	// if there was an error converting the social workers file
+	}).catch( reason => {
+		console.exception( `error processing social workers` );
+		console.exception( reason );
+		// aborting the import
+		return done();
+	});
 }
 
 /* a generator to allow us to control the processing of each record */
 module.exports.generateSocialWorkers = function* generateSocialWorkers() {
-	// create a monitor variable to assess how many records we still need to process
-	let remainingRecords = socialWorkers.length;
+	// used for debugging unique key entries
+	console.log( `getting duplicates` );
+	const dupes = utilityFunctions.getDuplicates( 'email', socialWorkers );
+	console.log( `${ dupes.length } duplicate social worker emails found, no errors expected` );
+
+	console.log( `creating social workers in the new system` );
+	// create monitor variables to assess how many records we still need to process
+	let totalRecords			= socialWorkers.length,
+		remainingRecords 		= totalRecords,
+		batchCount				= 50, // number of records to be process simultaneously
+		socialWorkerNumber		= 0; // keeps track of the current social worker number being processed.  Used for batch processing
 	// loop through each social worker object we need to create a record for
 	for( let socialWorker of socialWorkers ) {
-		// pause after each call to createSocialWorkerRecord and don't resume until next() is called
-		yield exports.createSocialWorkerRecord( socialWorker );
+		// increment the socialWorkerNumber
+		socialWorkerNumber++;
+		// if we've hit a multiple of batchCount, pause execution to let the current records process
+		if( socialWorkerNumber % batchCount === 0 ) {
+			console.log( 'pausing' );
+			yield exports.createSocialWorkerRecord( socialWorker, true );
+		} else {
+			exports.createSocialWorkerRecord( socialWorker, false );
+		}
 		// decrement the counter keeping track of how many records we still need to process
 		remainingRecords--;
+		console.log( `remaining: ${ remainingRecords }` );
 		// if there are no more records to process call done to move to the next migration file
 		if( remainingRecords === 0 ) {
-			done();
+
+			const resultsMessage = `finished creating ${ totalRecords } social workers in the new system`;
+			// store the results of this run for display after the run
+			migrationResults.push({
+				dataSet: 'Social Workers',
+				results: resultsMessage
+			});
+
+			console.log( resultsMessage );
+			// return control to the data migration view
+			return socialWorkerImportComplete();
 		}
 	}
 }
 
 // a function paired with the generator to create a record and request the generator to process the next once finished
-module.exports.createSocialWorkerRecord = socialWorker => {
-	// create a placeholder for the agency we're going to fetch related to the current social worker
-	let agency = undefined;
+module.exports.createSocialWorkerRecord = ( socialWorker, pauseUntilSaved ) => {
 	
-	async.series([
-		// fetch the agency associated with the social worker before attempting to create the record
-		done => {
-			Agency.model.findOne()
-				.where( 'oldId', socialWorker.agn_id )
-				.exec()
-				.then( retrievedAgency => {
-					agency = retrievedAgency;
-					done();
-				 });
-		}
-	], () => {
-
+	// create a placeholder for the agency we're going to fetch related to the current social worker
+	let agency;
+	// create a promise for fetching the agency associated with the social worker
+	const agencyLoaded = new Promise( ( resolve, reject ) => {
+		utilityModelFetch.getAgencyById( resolve, reject, socialWorker.agn_id );
+	});
+	// once we've fetched the agency
+	agencyLoaded.then( agency => {
 		// populate fields new SocialWorker object
 		let newSocialWorker = new SocialWorker.model({
 			// every social worker needs a password, this will generate one we can easily determine at a later date while still being unique
@@ -82,14 +120,14 @@ module.exports.createSocialWorkerRecord = socialWorker => {
 				work: socialWorker.phone
 			},
 
-			agency: agency._id,
+			agency: agency.get( '_id' ),
 			
 			address: {
 				street1: agency.address.street1,
 				street2: agency.address.street2,
 				city: agency.address.city,
 				state: agency.address.state,
-				zipCode: (agency.address.zipCode.length > 4) ? agency.address.zipCode : '0' + agency.address.zipCode,
+				zipCode: utilityFunctions.padZipCode( agency.address.zipCode ),
 				region: agency.address.region
 			},
 
@@ -97,18 +135,27 @@ module.exports.createSocialWorkerRecord = socialWorker => {
 			oldId: socialWorker.agc_id
 		});
 
-
-		newSocialWorker.save(function( err ) {
+		newSocialWorker.save( ( err, savedModel ) => {
 			// if we run into an error
 			if( err ) {
 				// halt execution by throwing an error
-				throw `[ID#${ socialWorker.agc_id }] an error occured while saving ${ socialWorker.first_name } ${ socialWorker.last_name }.`;
+ 				throw `[acg_id: ${ socialWorker.agc_id }] an error occured while saving ${ socialWorker.first_name } ${ socialWorker.last_name }.`;
 			}
-			// if no error has been thrown, log the success message
-			console.log( `[ID#${ socialWorker.agc_id }] ${ socialWorker.first_name } ${ socialWorker.last_name } successfully saved!` );
-			// fire off the next iteration of our generator now that the record has been saved
-			socialWorkerGenerator.next();
+
+			// fire off the next iteration of our generator after pausing
+			if( pauseUntilSaved ) {
+				setTimeout( () => {
+					console.log( 'unpausing' );
+					socialWorkerGenerator.next();
+				}, 5000 );
+			}
 		});
+
+	}).catch( reason => {
+		console.exception( `error processing social worker agency` );
+		console.exception( reason );
+		// aborting the import
+		return done();
 	});
 };
 
