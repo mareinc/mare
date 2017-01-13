@@ -36,6 +36,7 @@ Agency.add({
 });
 
 // Set up relationship values to show up at the bottom of the model if any exist
+Agency.relationship({ ref: 'Social Worker', refPath: 'agency', path: 'agency', label: 'agency contacts' });
 Agency.relationship({ ref: 'Inquiry', refPath: 'agency', path: 'agency', label: 'inquries' });
 Agency.relationship({ ref: 'Inquiry', refPath: 'agencyReferral', path: 'agencyReferral', label: 'agency referral inquiries' });
 
