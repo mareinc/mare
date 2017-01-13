@@ -22,3 +22,24 @@ module.exports.padZipCode = ( zipCode ) => {
 	// return the new zipCode string
 	return zipCodeString;
 }
+
+/* find and list duplicate entries for the passed in field in the given data set array */
+module.exports.getDuplicates = ( field, modelArray ) => {
+
+	let values = [],
+		duplicates = [];
+
+	for( let model of modelArray ) {
+
+		if( !model[ field ].trim() ) { continue; }
+
+		if(!values.includes( model[ field ].toLowerCase() ) ) {
+			values.push( model[ field ].toLowerCase() );
+		} else {
+			duplicates.push( model[ field ].toLowerCase() );
+		}
+	}
+
+	// return the array of duplicate field values
+	return duplicates;
+}
