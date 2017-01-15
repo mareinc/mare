@@ -1,29 +1,25 @@
-var dataMigrationService	= require('../service_data-migration'),
-	async					= require('async');
+var dataMigrationService	= require( '../service_data-migration' ),
+	async					= require( 'async' );
 
-exports.getLanguagesMap = function getLanguagesMap(req, res, done) {
+exports.getLanguagesMap = ( req, res, done ) => {
+
+	console.log( `fetching languages map` );
 
 	var locals = res.locals;
+	// create an area in locals for the languages map
+	locals.migration.maps.languages = {};
 
 	async.parallel([
-		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Language', targetField: 'language', targetValue: 'Chinese', returnTarget: 'languageChinese'  }); },
-		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Language', targetField: 'language', targetValue: 'English', returnTarget: 'languageEnglish'  }); },
-		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Language', targetField: 'language', targetValue: 'Portuguese', returnTarget: 'languagePortugese'  }); },
-		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Language', targetField: 'language', targetValue: 'Spanish', returnTarget: 'languageSpanish'  }); },
-		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Language', targetField: 'language', targetValue: 'other', returnTarget: 'languageOther'  }); },
-		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Language', targetField: 'language', targetValue: 'ASL', returnTarget: 'languageASL'  }); }
+		done => { dataMigrationService.getModelId( { model: 'Language', field: 'language', value: 'Chinese', mapTo: [ 'Chinese' ], namespace: locals.migration.maps.languages }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'Language', field: 'language', value: 'English', mapTo: [ 'English' ], namespace: locals.migration.maps.languages }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'Language', field: 'language', value: 'Portuguese', mapTo: [ 'Portuguese' ], namespace: locals.migration.maps.languages }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'Language', field: 'language', value: 'Spanish', mapTo: [ 'Spanish' ], namespace: locals.migration.maps.languages }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'Language', field: 'language', value: 'other', mapTo: [ 'other' ], namespace: locals.migration.maps.languages }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'Language', field: 'language', value: 'ASL', mapTo: [ 'ASL' ], namespace: locals.migration.maps.languages }, done ); }
 		
-	], function() {
+	], () => {
 
-		locals.languagesMap = {
-			"Chinese" : locals.languageChinese,
-			"English" : locals.languageEnglish,
-			"Portuguese" : locals.languagePortugese,
-			"Spanish" : locals.languageSpanish,
-			"other" : locals.languageOther,
-			"ASL" : locals.languageASL
-		};
-
+		console.log( `languages map set` );
 		done();
 	});
-}
+};
