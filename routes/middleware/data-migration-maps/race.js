@@ -1,39 +1,25 @@
-var dataMigrationService	= require('../service_data-migration'),
-	async					= require('async');
+var dataMigrationService	= require( '../service_data-migration' ),
+	async					= require( 'async' );
 
-exports.getRacesMap = function getRacesMap(req, res, done) {
+exports.getRacesMap = ( req, res, done ) => {
+
+	console.log( `fetching races map` );
 
 	var locals = res.locals;
+	// create an area in locals for the races map
+	locals.migration.maps.races = {};
 
 	async.parallel([
-		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Race', targetField: 'race', targetValue: 'African American', returnTarget: 'raceAfricanAmerican'  }); },
-		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Race', targetField: 'race', targetValue: 'Asian', returnTarget: 'raceAsian'  }); },
-		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Race', targetField: 'race', targetValue: 'Caucasian', returnTarget: 'raceCaucasian'  }); },
-		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Race', targetField: 'race', targetValue: 'Hispanic', returnTarget: 'raceHispanic'  }); },
-		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Race', targetField: 'race', targetValue: 'Native American', returnTarget: 'raceNativeAmerican'  }); },
-		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Race', targetField: 'race', targetValue: 'other', returnTarget: 'raceOther'  }); }
+		done => { dataMigrationService.getModelId( { model: 'Race', field: 'race', value: 'African American', mapTo: [ 1, 6, 7, 8, 9 ], namespace: locals.migration.maps.races }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'Race', field: 'race', value: 'Asian', mapTo: [ 2, 6, 10, 11, 12 ], namespace: locals.migration.maps.races }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'Race', field: 'race', value: 'Caucasian', mapTo: [ 3, 7, 10, 13, 14 ], namespace: locals.migration.maps.races }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'Race', field: 'race', value: 'Hispanic', mapTo: [ 4, 8, 11, 13, 15 ], namespace: locals.migration.maps.races }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'Race', field: 'race', value: 'Native American', mapTo: [ 5, 9, 12, 14, 15 ], namespace: locals.migration.maps.races }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'Race', field: 'race', value: 'other', mapTo: [ 16 ], namespace: locals.migration.maps.races }, done ); }
 		
-	], function() {
+	], () => {
 
-		locals.racesMap = {
-			"1" : locals.raceAfricanAmerican,
-			"2" : locals.raceAsian,
-			"3" : locals.raceCaucasian,
-			"4" : locals.raceHispanic,
-			"5" : locals.raceNativeAmerican,
-			// "6" : "African American/Asian",
-			// "7" : "African American/Cauc.",
-			// "8" : "African American/Hispanic",
-			// "9" : "African American/Nat.Amer",
-			// "10": "Asian/Cauc.",
-			// "11": "Asian/Hispanic",
-			// "12": "Asian/Nati.Amer.",
-			// "13": "Caucasian/Hispanic",
-			// "14": "Caucasian/Nat.Amer.",
-			// "15": "Hispanic/Nat.Amer.",
-			"16": locals.raceOther
-		};
-
+		console.log( `races map set` );
 		done();
 	});
-}
+};
