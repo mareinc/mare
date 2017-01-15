@@ -1,21 +1,21 @@
-var dataMigrationService	= require('../service_data-migration'),
-	async					= require('async');
+var dataMigrationService	= require( '../service_data-migration' ),
+	async					= require( 'async' );
 
-exports.getLegalStatusesMap = function getLegalStatusesMap(req, res, done) {
+exports.getLegalStatusesMap = ( req, res, done ) => {
+
+	console.log( `fetching legal statuses map` );
 
 	var locals = res.locals;
+	// create an area in locals for the legal statuses map
+	locals.migration.maps.legalStatuses = {};
 
 	async.parallel([
-		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Legal Status', targetField: 'legalStatus', targetValue: 'free', returnTarget: 'legalStatusFree'  }); },
-		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Legal Status', targetField: 'legalStatus', targetValue: 'legal risk', returnTarget: 'legalStatusLegalRisk'  }); }
+		done => { dataMigrationService.getModelId( { model: 'Legal Status', field: 'legalStatus', value: 'free', mapTo: [ 'F' ], namespace: locals.migration.maps.legalStatuses }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'Legal Status', field: 'legalStatus', value: 'legal risk', mapTo: [ 'R' ], namespace: locals.migration.maps.legalStatuses }, done ); }
 		
-	], function() {
+	], () => {
 
-		locals.legalStatusesMap = {
-			"F" : locals.legalStatusFree,
-			"R" : locals.legalStatusLegalRisk
-		};
-
+		console.log( `legal statuses map set` );
 		done();
 	});
-}
+};
