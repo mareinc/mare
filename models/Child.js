@@ -56,7 +56,7 @@ Child.add('Display Options', {
 	},
 
 	birthDate: { type: Types.Date, label: 'date of birth', format: 'MM/DD/YYYY', required: true, initial: true },
-	language: { type: Types.Relationship, label: 'language', ref: 'Language', many: true, required: true, initial: true },
+	languages: { type: Types.Relationship, label: 'languages', ref: 'Language', many: true, required: true, initial: true },
 	statusChangeDate: { type: Types.Date, label: 'status change date', format: 'MM/DD/YYYY', initial: true }, // TODO: Logic needed, see line 14 of https://docs.google.com/spreadsheets/d/1Opb9qziX2enTehJx5K1J9KAT7v-j2yAdqwyQUMSsFwc/edit#gid=1235141373
 	status: { type: Types.Relationship, label: 'status', ref: 'Child Status', required: true, initial: true },
 	gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', required: true, initial: true },
@@ -76,7 +76,7 @@ Child.add('Display Options', {
 	residence: { type: Types.Relationship, label: 'where does the child presently live?', ref: 'Residence', initial: true },
 	city: { type: Types.Relationship, label: 'city/town of child\'s current location', ref: 'City or Town', initial: true },
 	careFacilityName: { type: Types.Text, label: 'name of residential/group care facility', initial: true },
-	dateMovedToResidence: { type: Types.Date, label: 'date moved to current residence', format: 'MM/DD/YYYY', required: true, initial: true }
+	dateMovedToResidence: { type: Types.Date, label: 'date moved to current residence', format: 'MM/DD/YYYY', initial: true }
 
 }, 'Special Needs', {
 
@@ -129,7 +129,7 @@ Child.add('Display Options', {
 	isCurrentlyInPhotoListing: { type: Types.Boolean, label: 'currently in photolisting', initial: true },
 	dateOfLastPhotoListing: { type: Types.Date, label: 'date of last photolisting', format: 'MM/DD/YYYY', dependsOn: {isCurrentlyInPhotoListing: true }, initial: true },
 	photolistingPageNumber: { type: Number, label: 'photolisting page', format: false, initial: true },
-	previousPhotolistingPageNumber: { type: Number, label: 'previous photolisting page', format: false, initial: true },
+	previousPhotolistingPageNumbers: { type: Types.Text, label: 'previous photolisting pages', initial: true },
 
 	image: { type: Types.CloudinaryImage, label: 'image', folder: 'children/', select: true, selectPrefix: 'children/', publicID: 'fileName', dependsOn: { mustBePlacedWithSiblings: false }, autoCleanup: true },
 	galleryImage: { type: Types.Url, hidden: true },
@@ -232,19 +232,17 @@ Child.schema.pre('save', function( next ) {
 	async.series([
 		done => { this.setImages( done ); }, // Create cloudinary URLs for images sized for various uses
 		done => { this.setFullName( done ); }, // Create a full name for the child based on their first, middle, and last names
+		done => { this.setRegistrationNumber( done ) }, // Set the registration number to the next highest available
 		done => { this.setFileName( done ); }, // Create an identifying name for file uploads
 		done => { this.setSiblingGroupFileName( done ); }, // Create an identifying name for sibling group file uploads
 		done => { this.updateMustBePlacedWithSiblingsCheckbox( done ); }, // If there are no siblings to be placed with, uncheck the box, otherwise check it
 		done => { this.updateGroupBio( done ); },
-		done => { this.setRegistrationNumber( done ) }, // Set the registration number to the next highest available
 		done => { ChangeHistoryMiddleware.setUpdatedby( this, done ); }, // we need this id in case the family was created via the website and udpatedBy is empty
 		done => { this.setChangeHistory( done ); } // Process change history
 	], function() {
 
 		console.log( 'child information updated' );
 
-		// TODO: Assign a registration number if one isn't assigned
-		// TODO: MAKE RESIGRATION NUMBER NOEDIT.  THIS IS DEPENDENT ON BEING ABLE TO ASSIGN IT ON PRE-SAVE AS IT'S REQUIRED
 		next();
 
 	});
@@ -339,7 +337,7 @@ Child.schema.methods.updateGroupBio = function( done ) {
 
 	done();
 }
-
+// TODO ( CRITICAL ): ON DEV, THIS NEEDS TO GO ABOVE SET FILE NAME FUNCTIONS
 Child.schema.methods.setRegistrationNumber = function( done ) {
 	// If the registration number is already set ( which will happen during the data migration and creating from the website ), ignore setting it
 	if( this.registrationNumber ) {
@@ -615,9 +613,9 @@ Child.schema.methods.setChangeHistory = function( done ) {
 			},
 			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'language',
+											name: 'languages',
 											targetField: 'language',
-											label: 'language',
+											label: 'languages',
 											type: 'relationship',
 											model: 'Language' }, model, modelBefore, changeHistory, done);
 			},
@@ -951,9 +949,9 @@ Child.schema.methods.setChangeHistory = function( done ) {
 			},
 			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'previousPhotolistingPageNumber',
+											name: 'previousPhotolistingPageNumbers',
 											label: 'previous photolisting page number',
-											type: 'number' }, model, modelBefore, changeHistory, done);
+											type: 'string' }, model, modelBefore, changeHistory, done);
 			},
 			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
