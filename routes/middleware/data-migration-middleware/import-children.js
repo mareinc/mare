@@ -202,7 +202,7 @@ module.exports.createChildRecord = ( child, pauseUntilSaved ) => {
 			isCurrentlyInPhotoListing: child.in_photolisting === 'Y', // Check this as 'Y' or 'N'
 			dateOfLastPhotoListing: child.photolisting_date ? new Date( child.photolisting_date ) : undefined,
 			photolistingPageNumber: child.photolisting_page,
-			previousPhotolistingPageNumber: child.previous_photolisting_page,
+			previousPhotolistingPageNumbers: child.previous_photolisting_page,
 			extranetUrl: child.profile_url,
 
 			// Recruitment Options	
