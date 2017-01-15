@@ -90,9 +90,7 @@ Child.add('Display Options', {
 	disabilities: { type: Types.Relationship, label: 'disabilities', ref: 'Disability', many: true, initial: true },
 
 	healthNotesNew: { type: Types.Textarea, label: 'health notes - new', initial: true },
-	healthNotesOld: { type: Types.Textarea, label: 'health notes - old', initial: true },
-
-	specialNeedsNotes: { type: Types.Textarea, label: 'notes', dependsOn: { physicalNeeds: ['mild', 'moderate', 'severe'], emotionalNeeds: ['mild', 'moderate', 'severe'], intellectualNeeds: ['mild', 'moderate', 'severe'] }, initial: true }
+	healthNotesOld: { type: Types.Textarea, label: 'health notes - old', initial: true }
 
 }, 'Placement Considerations', {
 
@@ -799,12 +797,6 @@ Child.schema.methods.setChangeHistory = function( done ) {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											name: 'healthNotesOld',
 											label: 'new health notes',
-											type: 'string' }, model, modelBefore, changeHistory, done);
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'specialNeedsNotes',
-											label: 'special needs notes',
 											type: 'string' }, model, modelBefore, changeHistory, done);
 			},
 			done => {
