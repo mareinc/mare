@@ -1,25 +1,23 @@
-var dataMigrationService	= require('../service_data-migration'),
-	async					= require('async');
+var dataMigrationService	= require( '../service_data-migration' ),
+	async					= require( 'async' );
 
-exports.getGendersMap = function getGendersMap(req, res, done) {
+exports.getGendersMap = ( req, res, done ) => {
+
+	console.log( `fetching genders map` );
 
 	var locals = res.locals;
+	// create an area in locals for the genders map
+	locals.migration.maps.genders = {};
 
 	async.parallel([
-		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Gender', targetField: 'gender', targetValue: 'female', returnTarget: 'raceFemale'  }); },
-		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Gender', targetField: 'gender', targetValue: 'male', returnTarget: 'raceMale'  }); },
-		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Gender', targetField: 'gender', targetValue: 'other', returnTarget: 'raceOther'  }); },
-		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Gender', targetField: 'gender', targetValue: 'transgender', returnTarget: 'raceTransgender'  }); }
+		done => { dataMigrationService.getModelId( { model: 'Gender', field: 'gender', value: 'female', mapTo: [ 'F' ], namespace: locals.migration.maps.genders }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'Gender', field: 'gender', value: 'male', mapTo: [ 'M' ], namespace: locals.migration.maps.genders }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'Gender', field: 'gender', value: 'other', mapTo: [ 'O' ], namespace: locals.migration.maps.genders }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'Gender', field: 'gender', value: 'transgender', mapTo: [ 'T' ], namespace: locals.migration.maps.genders }, done ); }
 		
-	], function() {
+	], () => {
 
-		locals.gendersMap = {
-			"F": locals.raceFemale,
-			"M": locals.raceMale,
-			"O": locals.raceOther,
-			"T": locals.raceTransgender
-		};
-
+		console.log( `genders map set` );
 		done();
 	});
-}
+};
