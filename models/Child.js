@@ -63,7 +63,7 @@ Child.add('Display Options', {
 	race: { type: Types.Relationship, label: 'race', ref: 'Race', many: true, required: true, initial: true },
 	raceNotes: { type: Types.Text, label: 'race notes', initial: true },
 	legalStatus: { type: Types.Relationship, label: 'legal status', ref: 'Legal Status', required: true, initial: true },
-	yearEnteredCare: { type: Types.Text, label: 'year entered care', note: 'yyyy', initial: true },
+	yearEnteredCare: { type: Types.Text, label: 'year entered care', note: 'yyyy - required', initial: true },
 
 	hasContactWithSiblings: { type: Types.Boolean, label: 'has contact with siblings?', initial: true },
 	siblingTypeOfContact: { type: Types.Text, label: 'type of contact', initial: true },
