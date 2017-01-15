@@ -4,6 +4,7 @@ const agenciesFilePath			= './migration-data/csv-data/agency.csv';
 const outsideContactsFilePath 	= './migration-data/csv-data/outside_contact.csv';
 const inquiriesFilePath			= './migration-data/csv-data/ext_inquiry.csv';
 const socialWorkersFilePath		= './migration-data/csv-data/agency_contact.csv';
+const childrenFilePath			= './migration-data/csv-data/child.csv';
 
 exports.fetchAgencies = ( resolve, reject ) => {
 	
@@ -21,7 +22,7 @@ exports.fetchAgencies = ( resolve, reject ) => {
 			console.error( `error fetching agencies or converting to JSON => ${ err }` );
 			reject();
 		});
-}
+};
 
 exports.fetchOutsideContacts = ( resolve, reject ) => {
 	
@@ -39,7 +40,7 @@ exports.fetchOutsideContacts = ( resolve, reject ) => {
 			console.error( `error fetching outside contacts or converting to JSON => ${ err }` );
 			reject();
 		});
-}
+};
 
 exports.fetchInquiries = ( resolve, reject ) => {
 	
@@ -57,7 +58,7 @@ exports.fetchInquiries = ( resolve, reject ) => {
 			console.error( `error fetching inquiries or converting to JSON => ${ err }` );
 			reject();
 		});
-}
+};
 
 exports.fetchSocialWorkers = ( resolve, reject ) => {
 	
@@ -75,4 +76,22 @@ exports.fetchSocialWorkers = ( resolve, reject ) => {
 			console.error( `error fetching social workers or converting to JSON => ${ err }` );
 			reject();
 		});
-}
+};
+
+exports.fetchChildren = ( resolve, reject ) => {
+	
+	console.log( `fetching children from CSV` );
+
+	// fetch all records from the children csv file
+	csv().fromFile( childrenFilePath )
+		// wait until the whole file has been parsed into an array of objects
+		.on( 'end_parsed', childrenArray => {
+			console.log( `children fetched` );
+			// resolve the promise with the array of child objects
+			resolve( childrenArray );
+		})
+		.on( 'error', err => {
+			console.error( `error fetching children or converting to JSON => ${ err }` );
+			reject();
+		});
+};
