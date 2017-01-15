@@ -1,30 +1,25 @@
+var dataMigrationService	= require( '../service_data-migration' ),
+	async					= require( 'async' );
 
-var dataMigrationService	= require('../service_data-migration'),
-	async					= require('async');
+exports.getChildStatusesMap = ( req, res, done ) => {
 
-exports.getChildStatusesMap = function getChildStatusesMap(req, res, done) {
+	console.log( `fetching child statuses map` );
 
 	var locals = res.locals;
+	// create an area in locals for the child statuses map
+	locals.migration.maps.childStatuses = {};
 
 	async.parallel([
-		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Child Status', targetField: 'childStatus', targetValue: 'active', returnTarget: 'languageActive'  }); },
-		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Child Status', targetField: 'childStatus', targetValue: 'disrupted', returnTarget: 'languageDisrupted'  }); },
-		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Child Status', targetField: 'childStatus', targetValue: 'on hold', returnTarget: 'languageOnHold'  }); },
-		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Child Status', targetField: 'childStatus', targetValue: 'placed', returnTarget: 'languagePlaced'  }); },
-		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Child Status', targetField: 'childStatus', targetValue: 'reunification', returnTarget: 'languageReunification'  }); },
-		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Child Status', targetField: 'childStatus', targetValue: 'withdrawn', returnTarget: 'languageWithdrawn'  }); }
-		
-	], function() {
+		done => { dataMigrationService.getModelId( { model: 'Child Status', field: 'childStatus', value: 'active', mapTo: [ 'A' ], namespace: locals.migration.maps.childStatuses }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'Child Status', field: 'childStatus', value: 'disrupted', mapTo: [ 'D' ], namespace: locals.migration.maps.childStatuses }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'Child Status', field: 'childStatus', value: 'on hold', mapTo: [ 'H' ], namespace: locals.migration.maps.childStatuses }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'Child Status', field: 'childStatus', value: 'placed', mapTo: [ 'P' ], namespace: locals.migration.maps.childStatuses }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'Child Status', field: 'childStatus', value: 'reunification', mapTo: [ 'R' ], namespace: locals.migration.maps.childStatuses }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'Child Status', field: 'childStatus', value: 'withdrawn', mapTo: [ 'W' ], namespace: locals.migration.maps.childStatuses }, done ); }
+	
+	], () => {
 
-		locals.childStatusesMap = {
-			"A": locals.languageActive,
-			"D": locals.languageDisrupted,
-			"H": locals.languageOnHold,
-			"P": locals.languagePlaced,
-			"R": locals.languageReunification,
-			"W": locals.languageWithdrawn
-		};
-
+		console.log( `child statuses map set` );
 		done();
 	});
-}
+};
