@@ -40,8 +40,8 @@ module.exports.importOutsideContacts = ( req, res, done ) => {
 		outsideContactsGenerator.next();
 	// if there was an error converting the outside contacts file
 	}).catch( reason => {
-		console.exception( `error processing outside contacts` );
-		console.exception( reason );
+		console.error( `error processing outside contacts` );
+		console.error( reason );
 		// aborting the import
 		return done();
 	});

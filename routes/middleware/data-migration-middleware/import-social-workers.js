@@ -37,12 +37,12 @@ module.exports.importSocialWorkers = ( req, res, done ) => {
 		socialWorkerGenerator.next();
 	// if there was an error converting the social workers file
 	}).catch( reason => {
-		console.exception( `error processing social workers` );
-		console.exception( reason );
+		console.error( `error processing social workers` );
+		console.error( reason );
 		// aborting the import
 		return done();
 	});
-}
+};
 
 /* a generator to allow us to control the processing of each record */
 module.exports.generateSocialWorkers = function* generateSocialWorkers() {
@@ -99,7 +99,7 @@ module.exports.createSocialWorkerRecord = ( socialWorker, pauseUntilSaved ) => {
 	});
 	// once we've fetched the agency
 	agencyLoaded.then( agency => {
-		// populate fields new SocialWorker object
+		// populate fields of a new SocialWorker object
 		let newSocialWorker = new SocialWorker.model({
 			// every social worker needs a password, this will generate one we can easily determine at a later date while still being unique
 			password: `${ socialWorker.first_name }_${ socialWorker.last_name }_${ socialWorker.agc_id }`,
@@ -139,7 +139,7 @@ module.exports.createSocialWorkerRecord = ( socialWorker, pauseUntilSaved ) => {
 			// if we run into an error
 			if( err ) {
 				// halt execution by throwing an error
- 				throw `[acg_id: ${ socialWorker.agc_id }] an error occured while saving ${ socialWorker.first_name } ${ socialWorker.last_name }.`;
+ 				throw `[agc_id: ${ socialWorker.agc_id }] an error occured while saving ${ socialWorker.first_name } ${ socialWorker.last_name }.`;
 			}
 
 			// fire off the next iteration of our generator after pausing
@@ -152,12 +152,12 @@ module.exports.createSocialWorkerRecord = ( socialWorker, pauseUntilSaved ) => {
 		});
 
 	}).catch( reason => {
-		console.exception( `error processing social worker agency` );
-		console.exception( reason );
+		console.error( `error processing social worker agency` );
+		console.error( reason );
 		// aborting the import
 		return done();
 	});
 };
 
-// instantiates the generator used to create social worker records one at a time ( preventing a memory leak issue )
+// instantiates the generator used to create social worker records at a regulated rate
 const socialWorkerGenerator = exports.generateSocialWorkers();

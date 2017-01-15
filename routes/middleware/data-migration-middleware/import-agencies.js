@@ -35,11 +35,11 @@ module.exports.importAgencies = ( req, res, done ) => {
 		// store the agencies in a variable accessible throughout this file
 		agencies = agenciesArray;
 		// kick off the first run of our generator
-		agenciesGenerator.next();
+		agencyGenerator.next();
 	// if there was an error converting the agencies file
 	}).catch( reason => {
-		console.exception( `error processing agencies` );
-		console.exception( reason );
+		console.error( `error processing agencies` );
+		console.error( reason );
 		// aborting the import
 		return done();
 	});
@@ -81,7 +81,7 @@ module.exports.generateAgencies = function* generateAgencies() {
 			return agencyImportComplete();
 		}
 	}
-}
+};
 
 /* the import function for agencies */
 module.exports.createAgencyRecord = ( agency, pauseUntilSaved ) => {		
@@ -121,11 +121,11 @@ module.exports.createAgencyRecord = ( agency, pauseUntilSaved ) => {
 		// fire off the next iteration of our generator after pausing for a second
 		if( pauseUntilSaved ) {
 			setTimeout( () => {
-				agenciesGenerator.next();
+				agencyGenerator.next();
 			}, 1000 );
 		}
 	});
 };
 
 // instantiates the generator used to create agency records at a regulated rate
-const agenciesGenerator = exports.generateAgencies();
+const agencyGenerator = exports.generateAgencies();
