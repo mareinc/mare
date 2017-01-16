@@ -1,10 +1,11 @@
-const csv				= require( 'csvtojson' );
+const csv						= require( 'csvtojson' );
 // migration file locations
 const agenciesFilePath			= './migration-data/csv-data/agency.csv';
 const outsideContactsFilePath 	= './migration-data/csv-data/outside_contact.csv';
 const inquiriesFilePath			= './migration-data/csv-data/ext_inquiry.csv';
 const socialWorkersFilePath		= './migration-data/csv-data/agency_contact.csv';
 const childrenFilePath			= './migration-data/csv-data/child.csv';
+const childDisabilitiesFilePath	= './migration-data/csv-data/child_special_need.csv';
 
 exports.fetchAgencies = ( resolve, reject ) => {
 	
@@ -92,6 +93,24 @@ exports.fetchChildren = ( resolve, reject ) => {
 		})
 		.on( 'error', err => {
 			console.error( `error fetching children or converting to JSON => ${ err }` );
+			reject();
+		});
+};
+
+exports.fetchChildDisabilities = ( resolve, reject ) => {
+	
+	console.log( `fetching child disabilities from CSV` );
+
+	// fetch all records from the child disabilities csv file
+	csv().fromFile( childDisabilitiesFilePath )
+		// wait until the whole file has been parsed into an array of objects
+		.on( 'end_parsed', disabilitiesArray => {
+			console.log( `child disabilities fetched` );
+			// resolve the promise with the array of disability objects
+			resolve( disabilitiesArray );
+		})
+		.on( 'error', err => {
+			console.error( `error fetching child disabilities or converting to JSON => ${ err }` );
 			reject();
 		});
 };
