@@ -1,7 +1,6 @@
 // MISSING FIELD: position.  This is needed when binding models to social workers
 // NOT DONE: we need to figure out a better solution to the email field.  The placeholders are temporary until Lisa weighs in
 
-const async			= require( 'async' );
 const keystone		= require( 'keystone' );
 const Types 		= keystone.Field.Types;
 const SocialWorker  = keystone.list( 'Social Worker' );

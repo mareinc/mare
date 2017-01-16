@@ -1,7 +1,6 @@
 // const fileSystem			= require( 'fs' );
 // const formatDate			= require( 'dateformat' );
 const keystone				= require( 'keystone' );
-const async					= require( 'async' );
 const Child 				= keystone.list( 'Child' );
 // utility middleware
 const utilityFunctions			= require( './utilities_functions' );
@@ -17,7 +16,7 @@ let childStatusesMap,
 	languagesMap,
 	legalStatusesMap,
 	racesMap,
-	disabilitiesMap,
+	disabilityStatusesMap,
 	familyConstellationsMap,
 	otherFamilyConstellationConsiderationsMap;
 // expose done to be available to all functions below
@@ -32,7 +31,7 @@ module.exports.importChildren = ( req, res, done ) => {
 	languagesMap								= res.locals.migration.maps.languages;
 	legalStatusesMap							= res.locals.migration.maps.legalStatuses;
 	racesMap									= res.locals.migration.maps.races;
-	disabilitiesMap								= res.locals.migration.maps.disabilities;
+	disabilityStatusesMap						= res.locals.migration.maps.disabilityStatuses;
 	familyConstellationsMap						= res.locals.migration.maps.familyConstellations;
 	otherFamilyConstellationConsiderationsMap	= res.locals.migration.maps.otherFamilyConstellationConsiderations;
 	// expose done to our generator
@@ -175,11 +174,11 @@ module.exports.createChildRecord = ( child, pauseUntilSaved ) => {
 			birthFamilyTypeOfContact: child.birth_family_contact_note,
 
 			// Special Needs
-			physicalNeeds: disabilitiesMap[ child.physical_dst_id ],
+			physicalNeeds: disabilityStatusesMap[ child.physical_dst_id ],
 			physicalNeedsDescription: child.physical_disability_comment,
-			emotionalNeeds: disabilitiesMap[ child.emotional_dst_id ],
+			emotionalNeeds: disabilityStatusesMap[ child.emotional_dst_id ],
 			emotionalNeedsDescription: child.emotional_disability_comment,
-			intellectualNeeds: disabilitiesMap[ child.intellectual_dst_id ],
+			intellectualNeeds: disabilityStatusesMap[ child.intellectual_dst_id ],
 			intellectualNeedsDescription: child.intellectual_disability_comment,
 			healthNotesOld: child.health_notes,
 

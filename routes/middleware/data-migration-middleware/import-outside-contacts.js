@@ -1,7 +1,4 @@
-/* PREREQUISITE: mailing lists: outside contacts are automatically added to mailing lists post-save */
-
 const keystone					= require( 'keystone' );
-const async						= require( 'async' );
 const OutsideContact			= keystone.list( 'Outside Contact' );
 // utility middleware
 const utilityFunctions			= require( './utilities_functions' );
@@ -54,7 +51,7 @@ module.exports.generateOutsideContacts = function* generateOutsideContacts() {
 	// create monitor variables to assess how many records we still need to process
 	let totalRecords			= outsideContacts.length,
 		remainingRecords 		= totalRecords,
-		batchCount				= 500, // number of records to be process simultaneously
+		batchCount				= 100, // number of records to be process simultaneously
 		outsideContactNumber	= 0; // keeps track of the current outside contact number being processed.  Used for batch processing
 	// loop through each outside contact object we need to create a record for
 	for( let outsideContact of outsideContacts ) {
