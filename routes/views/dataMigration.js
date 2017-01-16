@@ -1,16 +1,17 @@
 const keystone									= require( 'keystone' );
 const async										= require( 'async' );
 const agenciesImport							= require( '../middleware/data-migration-middleware/import-agencies' );
-const childrenImport							= require( '../middleware/data-migration-middleware/import-children' );
-const eventsImport								= require( '../middleware/data-migration-middleware/import-events' );
-const inquiriesExtranetImport					= require( '../middleware/data-migration-middleware/import-inquiries-extranet' );
-const inquiriesCallImport						= require( '../middleware/data-migration-middleware/import-inquiries-calls');
-const internalNotesImport						= require( '../middleware/data-migration-middleware/import-internal-notes' );
-const familiesImport							= require( '../middleware/data-migration-middleware/import-families' );
-const mailingListsImport    					= require( '../middleware/data-migration-middleware/import-mailing-lists');
-const placementsImport							= require( '../middleware/data-migration-middleware/import-placements' );
 const outsideContactImport						= require( '../middleware/data-migration-middleware/import-outside-contacts' );
 const socialWorkerImport						= require( '../middleware/data-migration-middleware/import-social-workers' );
+const childrenImport							= require( '../middleware/data-migration-middleware/import-children' );
+const childDisabilitiesImport					= require( '../middleware/data-migration-middleware/import-child-disabilities' );
+// const eventsImport								= require( '../middleware/data-migration-middleware/import-events' );
+// const inquiriesExtranetImport					= require( '../middleware/data-migration-middleware/import-inquiries-extranet' );
+// const inquiriesCallImport						= require( '../middleware/data-migration-middleware/import-inquiries-calls');
+// const internalNotesImport						= require( '../middleware/data-migration-middleware/import-internal-notes' );
+// const familiesImport							= require( '../middleware/data-migration-middleware/import-families' );
+// const mailingListsImport    					= require( '../middleware/data-migration-middleware/import-mailing-lists');
+// const placementsImport							= require( '../middleware/data-migration-middleware/import-placements' );
 // id mappings between systems
 const statesMap									= require( '../middleware/data-migration-maps/state' );
 const regionsMap								= require( '../middleware/data-migration-maps/region' );
@@ -21,9 +22,10 @@ const gendersMap 								= require( '../middleware/data-migration-maps/gender' )
 const languagesMap 								= require( '../middleware/data-migration-maps/language' );
 const legalStatusesMap							= require( '../middleware/data-migration-maps/legal-status' );
 const racesMap 									= require( '../middleware/data-migration-maps/race' );
-const disabilitiesMap							= require( '../middleware/data-migration-maps/disability' );
+const disabilityStatusesMap						= require( '../middleware/data-migration-maps/disability-status' );
 const familyConstellationsMap					= require( '../middleware/data-migration-maps/family-constellation' );
 const otherFamilyConstellationConsiderationsMap	= require( '../middleware/data-migration-maps/other-family-constellation-consideration' );
+const disabilitiesMap							= require( '../middleware/data-migration-maps/disability' );
 
 exports = module.exports = ( req, res ) => {
     'use strict';
@@ -50,17 +52,18 @@ exports = module.exports = ( req, res ) => {
 		done => { languagesMap.getLanguagesMap( req, res, done ); },
 		done => { legalStatusesMap.getLegalStatusesMap( req, res, done ); },
 		done => { racesMap.getRacesMap( req, res, done ); },
-		done => { disabilitiesMap.getDisabilitiesMap( req, res, done ); },
+		done => { disabilityStatusesMap.getDisabilityStatusesMap( req, res, done ); },
 		done => { familyConstellationsMap.getFamilyConstellationsMap( req, res, done ); },
 		done => { otherFamilyConstellationConsiderationsMap.getOtherFamilyConstellationConsiderationsMap( req, res, done ); },
+		done => { disabilitiesMap.getDisabilitiesMap( req, res, done ); },
 		// done => { agenciesImport.importAgencies( req, res, done ); },
 		// done => { outsideContactImport.importOutsideContacts( req, res, done ); },
 		// done => { socialWorkerImport.importSocialWorkers( req, res, done ); },
-		done => { childrenImport.importChildren( req, res, done ); }, // PRE: TURN OFF SIBLING CHECKS, POST: TURN OFF CHANGE HISTORY
-		// done => { children__disabilitiesImport.importDisabilities( req, res, don ); },
-		// done => { children__mediaOutletImport.importMediaOutlets( req, res, done ); },
-		// done => { children__siblingsImport.importSiblings( req, res, done ); },
-		// done => { children__internalNotesImport.importInternalNotes( req, res, done ); }
+		// done => { childrenImport.importChildren( req, res, done ); }, // PRE: TURN OFF SIBLING CHECKS, POST: TURN OFF CHANGE HISTORY
+		done => { childDisabilitiesImport.appendDisabilities( req, res, done ); },
+		// done => { childMediaOutletsImport.appendMediaOutlets( req, res, done ); },
+		// done => { childSiblingsImport.appendSiblings( req, res, done ); },
+		// done => { childInternalNotesImport.importInternalNotes( req, res, done ); }
 		// done => { familiesImport.importFamilies( req, res, done ); },
 		// done => { placementsImport.importPlacements( req, res, done ); },
 		// done => { inquiriesExtranetImport.importInquiries( req, res, done ); },
