@@ -1,5 +1,4 @@
 const keystone			= require( 'keystone' );
-const async				= require( 'async' );
 const Agency 			= keystone.list( 'Agency' );
 // utility middleware
 const utilityFunctions	= require( './utilities_functions' );
@@ -52,7 +51,7 @@ module.exports.generateAgencies = function* generateAgencies() {
 	// create monitor variables to assess how many records we still need to process
 	let totalRecords		= agencies.length,
 		remainingRecords 	= totalRecords,
-		batchCount			= 500, // number of records to be process simultaneously
+		batchCount			= 100, // number of records to be process simultaneously
 		agencyNumber		= 0; // keeps track of the current agency number being processed.  Used for batch processing
 	// loop through each agency object we need to create a record for
 	for( let agency of agencies ) {
@@ -90,10 +89,17 @@ module.exports.createAgencyRecord = ( agency, pauseUntilSaved ) => {
 					agency.state === 'MA' ?	regionsMap[ 1002 ] : // otherwise, if the state is Massachusetts, set the region to 'other'
 					regionsMap[ 1007 ]; // if the state is not Massachusetts, set the region to 'out of state'
 
+	if( !agency.code.startsWith ) {
+		var x = 1;
+	}
+	// agency codes need to be prefixed by the state, then a dash
+	let code = agency.code.startsWith( agency.state ) ? agency.code.replace( agency.state, `${ agency.state }-` ) :
+			   `${ agency.state }-${ agency.code }`;
+
 	let newAgency = new Agency.model({
 
 		oldId: agency.agn_id,
-		code: agency.code,
+		code: code,
 		name: agency.name,
 
 		phone: agency.phone,
