@@ -122,8 +122,12 @@ module.exports.updateChildRecord = ( ids, pauseUntilSaved ) => {
 	Promise.all( [ childLoaded, siblingsLoaded ] ).then( children => {
 
 		const [ child, siblingIds ] = children;
-		// append other ids to first child
-		child.siblings = siblingIds
+		// append other ids to first child as siblings
+		child.siblings = siblingIds;
+		// check the 'must be placed together' checkbox
+		child.mustBePlacedWithSiblings = true;
+		// append other ids to first child as siblings to be placed with
+		child.siblingsToBePlacedWith = siblingIds;
 		// save first child
 		child.save( ( err, savedModel ) => {
 			// if we run into an error
