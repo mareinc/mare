@@ -60,18 +60,19 @@ exports = module.exports = ( req, res ) => {
 		// done => { agenciesImport.importAgencies( req, res, done ); },
 		// done => { outsideContactImport.importOutsideContacts( req, res, done ); },
 		// done => { socialWorkerImport.importSocialWorkers( req, res, done ); },
-		// done => { childrenImport.importChildren( req, res, done ); }, // PRE: TURN OFF SIBLING CHECKS, POST: TURN OFF EVERYTHING PRE AND POST
-		// done => { childDisabilitiesImport.appendDisabilities( req, res, done ); },
+		// done => { childrenImport.importChildren( req, res, done ); }, // PRE: TURN OFF SIBLING CHECKS,
+		// done => { childDisabilitiesImport.appendDisabilities( req, res, done ); }, // PRE: TURN OFF EVERYTHING PRE AND POST
 		done => { childSiblingsImport.appendSiblings( req, res, done ); }, // PRE: TURN ON SIBLING CHECKS
-		// done => { childMediaOutletsImport.appendMediaOutlets( req, res, done ); },
-		// done => { childInternalNotesImport.importInternalNotes( req, res, done ); }
+		//// done => { childMediaOutletsImport.appendMediaOutlets( req, res, done ); },
+		//// done => { childInternalNotesImport.importInternalNotes( req, res, done ); }
 		// done => { familiesImport.importFamilies( req, res, done ); },
-		// done => { placementsImport.importPlacements( req, res, done ); },
+		// done => { placementsImport.importPlacements( req, res, done ); }, // These are in the child records
 		// done => { inquiriesExtranetImport.importInquiries( req, res, done ); },
 		// done => { inquiriesCallImport.importInquiries( req, res, done ); },
 		// done => { eventsImport.importEvents( req, res, done ); },
 		// done => { mailingListsImport.importMailingLists( req, res, done ); },
 		// done => { internalNotesImport.importInternalNotes( req, res, done ); },
+		// done => { sourcesImport.importSources( req, res, done ); }
 		
 	], () => {
 		// Set the layout to render without the right sidebar
