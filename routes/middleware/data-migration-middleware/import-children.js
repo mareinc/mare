@@ -122,9 +122,12 @@ module.exports.createChildRecord = ( child, pauseUntilSaved ) => {
 	if( child.require_younger_children === 'Y' ) { otherFamilyConstellationConsiderations.push( otherFamilyConstellationConsiderationsMap[ 'requires younger children' ] ); }
 	if( child.require_older_children === 'Y' ) { otherFamilyConstellationConsiderations.push( otherFamilyConstellationConsiderationsMap[ 'requires older children' ] ); }
 
-	if( child.primary_language ) { languages.push( languagesMap[ child.primary_language ] ); }
+	if( child.primary_language ) {
+		languages.push( languagesMap[ child.primary_language ] );
+	} else {
+		languages.push( languagesMap[ 'English' ] );
+	}
 	// grab the IDs of the social worker associated with the child
-	// NOTE: What happens if neither are populated, the promise will reject and the child won't save :(
 	let adoptionWorkerId = child.adoption_agc_id,
 		recruitmentWorkerId = child.recruitment_agc_id;
 	// create a promise for fetching the adoption worker associated with the child
@@ -169,7 +172,6 @@ module.exports.createChildRecord = ( child, pauseUntilSaved ) => {
 
 			hasContactWithSiblings: child.allow_sibling_contact === 'Y',
 			siblingTypeOfContact: child.sibling_contact_note,
-			mustBePlacedWithSiblings: !!child.sibling_group_id,
 			hasContactWithBirthFamily: child.allow_birth_family_contact === 'Y',
 			birthFamilyTypeOfContact: child.birth_family_contact_note,
 
