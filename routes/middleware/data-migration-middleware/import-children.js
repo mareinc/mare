@@ -1,5 +1,4 @@
 // const fileSystem			= require( 'fs' );
-// const formatDate			= require( 'dateformat' );
 const keystone				= require( 'keystone' );
 const Child 				= keystone.list( 'Child' );
 // utility middleware
@@ -123,9 +122,30 @@ module.exports.createChildRecord = ( child, pauseUntilSaved ) => {
 	if( child.require_older_children === 'Y' ) { otherFamilyConstellationConsiderations.push( otherFamilyConstellationConsiderationsMap[ 'requires older children' ] ); }
 
 	if( child.primary_language ) {
-		languages.push( languagesMap[ child.primary_language ] );
+		let languagesArray = child.primary_language.replace( '/', ', ' )
+												   .replace( ' and', ',' )
+												   .replace( ' &', ',')
+												   .replace( '?', '')
+												   .replace( '.', '' )
+												   .replace( ' (limited)', '' )
+												   .replace( 'some ', '' )
+												   .replace( 'Some ', '' )
+												   .replace( 'learning ', '' )
+												   .replace( 'Learning ', '' )
+												   .replace( 'little ', '' )
+												   .replace( 'Currently ', '' )
+												   .replace( 'exposed to ', '' )
+												   .replace( 'Exposed to ', '' )
+												   .replace( ' speaking ff', '' )
+												   .replace( ' foster home', '' )
+												   .replace( 'english spanish', 'english, spanish' )
+												   .split( ', ' );
+
+		for( let language of languagesArray ) {
+			languages.push( languagesMap[ language.toLowerCase().trim() ] );
+		}
 	} else {
-		languages.push( languagesMap[ 'English' ] );
+		languages.push( languagesMap[ 'english' ] );
 	}
 	// grab the IDs of the social worker associated with the child
 	let adoptionWorkerId = child.adoption_agc_id,
@@ -149,7 +169,7 @@ module.exports.createChildRecord = ( child, pauseUntilSaved ) => {
 
 			// Display Options
 			siteVisibility: child.legal_status === 'R' ? 'registered social workers and families' : 'everyone',
-			isVisibleInGallery: child.is_on_mare_web === 'Y',
+			isVisibleInGallery: child.is_on_mare_web === 'Y', // active and legally free is the real check, ignore this current field check
 
 			// Child Information
 			registrationNumber: parseInt( child.chd_id, 10 ),
@@ -166,7 +186,7 @@ module.exports.createChildRecord = ( child, pauseUntilSaved ) => {
 			statusChangeDate: new Date( child.last_status_change_datetime ),
 			status: childStatusesMap[ child.status ],
 			gender: gendersMap[ child.gender ],
-			race: racesMap[ child.rce_id ], // NOTE: should this be an array of ids
+			race: racesMap[ child.rce_id ],
 			raceNotes: child.race_note,
 			legalStatus: legalStatusesMap[ child.legal_status ],
 
