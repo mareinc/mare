@@ -26,7 +26,9 @@ Agency.add({
 	},
 
 	url: { type: Types.Text, label: 'agency url', initial: true },
-	generalInquiryContact: { type: Types.Email, label: 'general inquiry contact', initial: true }
+	MAREgeneralInquiryContact: { type: Types.Boolean, label: 'is agency contact in the MARE system', default: true, initial: true },
+	generalInquiryContact: { type: Types.Relationship, label: 'general inquiry contact', ref: 'Social Worker', dependsOn: { MAREgeneralInquiryContact: true }, initial: true },
+	generalInquiryContactText: { type: Types.Email, label: 'general inquiry contact email', dependsOn: { MAREgeneralInquiryContact: false }, initial: true }
 
 /* Container for data migration fields ( these should be kept until after phase 2 and the old system is phased out completely ) */
 }, {
