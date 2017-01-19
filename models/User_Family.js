@@ -334,6 +334,7 @@ Family.add( 'Permissions', {
 // Set up relationship values to show up at the bottom of the model if any exist
 Family.relationship( { ref: 'Placement', refPath: 'placedWithFamily', path: 'placements', label: 'placements' } );
 Family.relationship( { ref: 'Inquiry', refPath: 'family', path: 'inquiries', label: 'inquiries' } );
+Family.relationship( { ref: 'Match', refPath: 'family', path: 'matches', label: 'matches' } );
 Family.relationship( { ref: 'Mailing List', refPath: 'familySubscribers', path: 'mailing-lists', label: 'mailing lists' } );
 Family.relationship( { ref: 'Event', refPath: 'familyAttendees', path: 'events', label: 'events' } );
 Family.relationship( { ref: 'Internal Note', refPath: 'family', path: 'internal-notes', label: 'internal notes' } );
