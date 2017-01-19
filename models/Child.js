@@ -39,7 +39,8 @@ const Child = new keystone.List('Child', {
 Child.add('Display Options', {
 
 	siteVisibility: { type: Types.Select, label: 'child is visible to', options: 'everyone, registered social workers and families', required: true, initial: true },
-	isVisibleInGallery: { type: Types.Boolean, label: 'child is visible in the gallery', initial: true }
+	isVisibleInGallery: { type: Types.Boolean, label: 'child is visible on MARE web', initial: true },
+	visibleInGalleryDate: { type: Types.Date, label: 'date added to MARE web', format: 'MM/DD/YYYY', dependsOn: {isVisibleInGallery: true }, initial: true }
 
 }, 'Child Information', {
 
@@ -147,9 +148,6 @@ Child.add('Display Options', {
 	video: { type: Types.Url, label: 'video', dependsOn: { hasVideoSnapshot: true, mustBePlacedWithSiblings: false } },
 	siblingGroupVideo: { type: Types.Url, label: 'sibling group video', dependsOn: { hasVideoSnapshot: true, mustBePlacedWithSiblings: true } },
 
-	onMAREWebsite: { type: Types.Boolean, label: 'MARE website', initial: true },
-	onMAREWebsiteDate: { type: Types.Date, label: 'date on MARE website', format: 'MM/DD/YYYY', dependsOn: { onMAREWebsite: true }, initial: true },
-
 	onAdoptuskids: { type: Types.Boolean, label: 'Adoptuskids website', initial: true },
 	onAdoptuskidsDate: { type: Types.Date, label: 'date on Adoptuskids', format: 'MM/DD/YYYY', dependsOn: { onAdoptuskids: true }, initial: true },
 
@@ -212,11 +210,13 @@ Child.add('Display Options', {
 Child.relationship( { ref: 'Child', refPath: 'siblings', path: 'children', label: 'all siblings' } );
 Child.relationship( { ref: 'Placement', refPath: 'child', path: 'placements', label: 'placements' } );
 Child.relationship( { ref: 'Inquiry', refPath: 'child', path: 'inquiries', label: 'inquiries' } );
+Child.relationship( { ref: 'Match', refPath: 'child', path: 'matches', label: 'matches' } );
 Child.relationship( { ref: 'Family', refPath: 'bookmarkedChildren', path: 'families', label: 'bookmarked by families' } );
 Child.relationship( { ref: 'Family', refPath: 'bookmarkedSiblingGroups', path: 'families', label: 'sibling group bookmarked by families' } );
 Child.relationship( { ref: 'Social Worker', refPath: 'bookmarkedChildren', path: 'social-workers', label: 'bookmarked by social workers' } );
 Child.relationship( { ref: 'Social Worker', refPath: 'bookmarkedSiblingGroups', path: 'social-workers', label: 'sibling group bookmarked by social workers' } );
 Child.relationship( { ref: 'Event', refPath: 'childAttendees', path: 'events', label: 'events' } );
+Child.relationship( { ref: 'Media Feature', refPath: 'child', path: 'media-features', label: 'media features' } );
 Child.relationship( { ref: 'Internal Note', refPath: 'child', path: 'internal-notes', label: 'internal notes' } );
 Child.relationship( { ref: 'Child History', refPath: 'child', path: 'child-histories', label: 'change history' } );
 
