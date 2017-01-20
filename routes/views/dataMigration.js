@@ -46,6 +46,7 @@ exports = module.exports = ( req, res ) => {
 	locals.migrationResults = [];
 
     async.series([
+		// map setup
 		done => { mediaTypesMap.getMediaTypesMap( req, res, done ); },
 		done => { statesMap.getStatesMap( req, res, done); },
 		done => { regionsMap.getRegionsMap( req, res, done ); },
@@ -60,23 +61,52 @@ exports = module.exports = ( req, res ) => {
 		done => { familyConstellationsMap.getFamilyConstellationsMap( req, res, done ); },
 		done => { otherFamilyConstellationConsiderationsMap.getOtherFamilyConstellationConsiderationsMap( req, res, done ); },
 		done => { disabilitiesMap.getDisabilitiesMap( req, res, done ); },
-		done => { sourcesImport.importSources( req, res, done ); },
+		// data import
+		// done => { sourcesImport.importSources( req, res, done ); },
 		// done => { agenciesImport.importAgencies( req, res, done ); },
+			// agency contacts // NOTE: there are sometimes multiple contacts for an agency
 		// done => { outsideContactImport.importOutsideContacts( req, res, done ); },
 		// done => { socialWorkerImport.importSocialWorkers( req, res, done ); },
-		// done => { childrenImport.importChildren( req, res, done ); }, // PRE: TURN OFF SIBLING CHECKS,
-		// done => { childDisabilitiesImport.appendDisabilities( req, res, done ); }, // PRE: TURN OFF EVERYTHING PRE AND POST
-		// done => { childSiblingsImport.appendSiblings( req, res, done ); }, // PRE: TURN ON SIBLING CHECKS
-		//// done => { childMediaOutletsImport.appendMediaOutlets( req, res, done ); },
+		// IMPORTANT: NEED TO CHANGE THE CHILD PRE / POST SAVE HERE
+		// done => { childrenImport.importChildren( req, res, done ); },
+		// IMPORTANT: NEED TO CHANGE THE CHILD PRE / POST SAVE HERE
+		// done => { childDisabilitiesImport.appendDisabilities( req, res, done ); },
+		// IMPORTANT: NEED TO CHANGE THE CHILD PRE / POST SAVE HERE
+		// done => { childSiblingsImport.appendSiblings( req, res, done ); },
+		
+		//// done => { childMediaOutletsImport.appendMediaOutlets( req, res, done ); }, // NOTE: media eligibility?
+			// media feature
+			// media feature child
 		//// done => { childInternalNotesImport.importInternalNotes( req, res, done ); }
 		// done => { familiesImport.importFamilies( req, res, done ); },
+			// family backup?
+			// family child
+			// family contact
+			// family race preference
+			// family special needed
+			// family support service
+			// ext family
+			// ext family race preference
+			// recruitment checklist
+			// file attachment
+			// placement source
 		// done => { placementsImport.importPlacements( req, res, done ); }, // These are in the child records
+			// family placement
+			// pending match
+			// pending termination
+			// pending termination item
 		// done => { inquiriesExtranetImport.importInquiries( req, res, done ); },
 		// done => { inquiriesCallImport.importInquiries( req, res, done ); },
+			// ext automatic inquiry history
+			// call agency
+			// call child
+			// call note
 		// done => { eventsImport.importEvents( req, res, done ); },
+			// event attendee
 		// done => { mailingListsImport.importMailingLists( req, res, done ); },
-		// done => { internalNotesImport.importInternalNotes( req, res, done ); },
-		// done => { sourcesImport.importSources( req, res, done ); }
+			// mailing list subscription
+		// done => { internalNotesImport.importInternalNotes( req, res, done ); }
+
 		
 	], () => {
 		// Set the layout to render without the right sidebar
