@@ -1,5 +1,6 @@
 const keystone									= require( 'keystone' );
 const async										= require( 'async' );
+const sourcesImport								= require( '../middleware/data-migration-middleware/import-sources' );
 const agenciesImport							= require( '../middleware/data-migration-middleware/import-agencies' );
 const outsideContactImport						= require( '../middleware/data-migration-middleware/import-outside-contacts' );
 const socialWorkerImport						= require( '../middleware/data-migration-middleware/import-social-workers' );
@@ -14,6 +15,7 @@ const childSiblingsImport						= require( '../middleware/data-migration-middlewa
 // const mailingListsImport    					= require( '../middleware/data-migration-middleware/import-mailing-lists');
 // const placementsImport							= require( '../middleware/data-migration-middleware/import-placements' );
 // id mappings between systems
+const mediaTypesMap								= require( '../middleware/data-migration-maps/media-type' );
 const statesMap									= require( '../middleware/data-migration-maps/state' );
 const regionsMap								= require( '../middleware/data-migration-maps/region' );
 const outsideContactGroupsMap					= require( '../middleware/data-migration-maps/outside-contact-group' );
@@ -44,7 +46,8 @@ exports = module.exports = ( req, res ) => {
 	locals.migrationResults = [];
 
     async.series([
-		done => { statesMap.getStatesMap(req, res, done); },
+		done => { mediaTypesMap.getMediaTypesMap( req, res, done ); },
+		done => { statesMap.getStatesMap( req, res, done); },
 		done => { regionsMap.getRegionsMap( req, res, done ); },
 		done => { outsideContactGroupsMap.getOutsideContactGroupsMap( req, res, done ); },
 		done => { mailingListsMap.getMailingListsMap( req, res, done ); },
@@ -57,12 +60,13 @@ exports = module.exports = ( req, res ) => {
 		done => { familyConstellationsMap.getFamilyConstellationsMap( req, res, done ); },
 		done => { otherFamilyConstellationConsiderationsMap.getOtherFamilyConstellationConsiderationsMap( req, res, done ); },
 		done => { disabilitiesMap.getDisabilitiesMap( req, res, done ); },
+		done => { sourcesImport.importSources( req, res, done ); },
 		// done => { agenciesImport.importAgencies( req, res, done ); },
 		// done => { outsideContactImport.importOutsideContacts( req, res, done ); },
 		// done => { socialWorkerImport.importSocialWorkers( req, res, done ); },
 		// done => { childrenImport.importChildren( req, res, done ); }, // PRE: TURN OFF SIBLING CHECKS,
 		// done => { childDisabilitiesImport.appendDisabilities( req, res, done ); }, // PRE: TURN OFF EVERYTHING PRE AND POST
-		done => { childSiblingsImport.appendSiblings( req, res, done ); }, // PRE: TURN ON SIBLING CHECKS
+		// done => { childSiblingsImport.appendSiblings( req, res, done ); }, // PRE: TURN ON SIBLING CHECKS
 		//// done => { childMediaOutletsImport.appendMediaOutlets( req, res, done ); },
 		//// done => { childInternalNotesImport.importInternalNotes( req, res, done ); }
 		// done => { familiesImport.importFamilies( req, res, done ); },
