@@ -13,12 +13,12 @@ Source.add({
 	type: { type: Types.Select, options: 'event, media', label: 'source type', required: true, initial: true },
 	isActive: { type: Types.Boolean, label: 'is source active', initial: true },
 	mediaFrequency: { type: Types.Text, label: 'media frequency', dependsOn: { type: 'media' }, initial: true },
-	mediaType: { type: Types.Select, options: 'print, web, TV, radio', label: 'media type', dependsOn: { type: 'media' }, initial: true }
+	mediaType: { type: Types.Relationship, ref: 'Media Type', label: 'media type', dependsOn: { type: 'media' }, initial: true }
 
 });
 
 Source.relationship( { ref: 'Media Feature', refPath: 'source', path: 'media-features', label: 'media features' } );
 
 // Define default columns in the admin interface and register the model
-Source.defaultColumns = 'source, type, isActive';
+Source.defaultColumns = 'source, type, mediaType, isActive';
 Source.register();
