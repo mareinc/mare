@@ -169,7 +169,7 @@ module.exports.createChildRecord = ( child, pauseUntilSaved ) => {
 
 			// Display Options
 			siteVisibility: child.legal_status === 'R' ? 'registered social workers and families' : 'everyone',
-			isVisibleInGallery: child.is_on_mare_web === 'Y', // active and legally free is the real check, ignore this current field check
+			isVisibleInGallery: child.status === 'A' && child.legal_status === 'F',
 
 			// Child Information
 			registrationNumber: parseInt( child.chd_id, 10 ),
@@ -229,7 +229,6 @@ module.exports.createChildRecord = ( child, pauseUntilSaved ) => {
 			// Recruitment Options	
 			hasVideoSnapshot: child.have_video_snapshot === 'Y',
 			videoSnapshotDate: child.video_snapshot_date ? new Date( child.video_snapshot_date ) : undefined,
-			onMAREWebsite: child.is_on_mare_web === 'Y',
 			onAdoptuskids: child.is_on_adoptuskids === 'Y',
 			
 			// onAdoptuskidsDate: 'not done', // NOT IN THE OLD SYSTEM, see notes for field below, we can determine it based on the date
