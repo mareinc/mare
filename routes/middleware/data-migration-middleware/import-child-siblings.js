@@ -8,7 +8,7 @@ const CSVConversionMiddleware	= require( './utilities_csv-conversion' );
 // create an array to hold all children.  This is created here to be available to multiple functions below
 let children;
 // create an map to hold the sibling groups
-let siblingGroups = {};
+let siblingGroupMap = {};
 // expose done to be available to all functions below
 let childSiblingsImportComplete;
 // expose the array storing progress through the migration run
@@ -52,13 +52,13 @@ module.exports.buildSiblingGroupMap = () => {
 
 			const registrationNumber = parseInt( child.chd_id, 10 );
 
-			if( siblingGroups[ siblingGroupId ] ) {
+			if( siblingGroupMap[ siblingGroupId ] ) {
 				// add the registration number for the current child
-				siblingGroups[ siblingGroupId ].push( registrationNumber );
+				siblingGroupMap[ siblingGroupId ].push( registrationNumber );
 			} else {
 				let siblingArray = [ registrationNumber ];
 				// create an entry containing a set with the one child's registration number
-				siblingGroups[ siblingGroupId ] = siblingArray;
+				siblingGroupMap[ siblingGroupId ] = siblingArray;
 			}
 		}
 	}
@@ -69,23 +69,23 @@ module.exports.generateSiblings = function* generateSiblings() {
 
 	console.log( `appending siblings to children in the new system` );
 	// create monitor variables to assess how many records we still need to process
-	let totalRecords			= Object.keys( siblingGroups ).length,
+	let totalRecords			= Object.keys( siblingGroupMap ).length,
 		remainingRecords 		= totalRecords,
 		batchCount				= 100, // number of records to be process simultaneously
 		siblingGroupNumber		= 0; // keeps track of the current child number being processed.  Used for batch processing
 	// loop through each child object we need to append to each record
-	for( let key in siblingGroups ) {
+	for( let key in siblingGroupMap ) {
 		// increment the siblingGroupNumber
 		siblingGroupNumber++;
 		// if we've hit a multiple of batchCount, pause execution to let the current records process
 		if( siblingGroupNumber % batchCount === 0 ) {
-			yield exports.updateChildRecord( siblingGroups[ key ], true );
+			yield exports.updateChildRecord( siblingGroupMap[ key ], true );
 		} else {
-			exports.updateChildRecord( siblingGroups[ key ], false );
+			exports.updateChildRecord( siblingGroupMap[ key ], false );
 		}
 		// decrement the counter keeping track of how many records we still need to process
 		remainingRecords--;
-		console.log( `sibling groups remaining: ${ remainingRecords }` );
+
 		// if there are no more records to process call done to move to the next migration file
 		if( remainingRecords === 0 ) {
 
@@ -107,15 +107,14 @@ module.exports.generateSiblings = function* generateSiblings() {
 module.exports.updateChildRecord = ( ids, pauseUntilSaved ) => {
 
 	const [ childRegistrationNumber, ...siblingRegistrationNumbers ] = ids;
-	// promise fetch first child
-	// create a promise for converting the child CSV file to JSON
+	// create a promise
 	const childLoaded = new Promise( ( resolve, reject ) => {
-		// attempt to convert the children
+		// for fetching the first child
 		utilityModelFetch.getChildByRegistrationNumber( resolve, reject, childRegistrationNumber );
 	});
-	// promise fetch _ids from other children
+	// create a promise
 	const siblingsLoaded = new Promise( ( resolve, reject ) => {
-		// attempt to convert the children
+		// for fetching the _ids from other children
 		utilityModelFetch.getChildIdsByRegistrationNumbers( resolve, reject, siblingRegistrationNumbers );
 	});
 	// when both resolve
