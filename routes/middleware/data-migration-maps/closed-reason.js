@@ -1,25 +1,22 @@
-var dataMigrationService	= require('../service_data-migration'),
-	async					= require('async');
+var dataMigrationService	= require( '../service_data-migration' ),
+	async					= require( 'async' );
 
-exports.getClosedReasonsMap = function getClosedReasonsMap(req, res, done) {
+exports.getClosedReasonsMap = ( req, res, done ) => {
+
+	console.log( `fetching closed reasons map` );
 
 	var locals = res.locals;
+	// create an area in locals for the closed reasons map
+	locals.migration.maps.closedReasons = {};
 
 	async.parallel([
-		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Closed Reason', targetField: 'reason', targetValue: 'family request', returnTarget: 'closedStatusFamilyRequest'  }); },
-		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Closed Reason', targetField: 'reason', targetValue: 'no contact', returnTarget: 'closedStatusNoContact'  }); },
-		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Closed Reason', targetField: 'reason', targetValue: 'no longer pursuing adoption', returnTarget: 'closedStatusNoLongerPursuingAdoption'  }); },
-		function(done) { dataMigrationService.getModelId(req, res, done, { model: 'Closed Reason', targetField: 'reason', targetValue: 'unregistered family placed', returnTarget: 'closedStatusUnregisteredFamilyPlaced'  }); }
+		done => { dataMigrationService.getModelId( { model: 'Closed Reason', field: 'reason', value: 'no longer pursuing adoption', mapTo: [ 1 ], namespace: locals.migration.maps.closedReasons }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'Closed Reason', field: 'reason', value: 'no contact', mapTo: [ 2 ], namespace: locals.migration.maps.closedReasons }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'Closed Reason', field: 'reason', value: 'family request', mapTo: [ 3 ], namespace: locals.migration.maps.closedReasons }, done ); }
 		
-	], function() {
+	], () => {
 
-		locals.closedReasonsMap = {
-			"Family request" : locals.closedStatusFamilyRequest,
-			"No Contact" : locals.closedStatusNoContact,
-			"no longer pursuing adoption" : locals.closedStatusNoLongerPursuingAdoption,
-			"unregistered family placed" : locals.closedStatusUnregisteredFamilyPlaced
-		};
-
+		console.log( `closed reasons map set` );
 		done();
 	});
-}
+};
