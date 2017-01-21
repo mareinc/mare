@@ -2,7 +2,9 @@ const keystone	= require( 'keystone' );
 const Types		= keystone.Field.Types;
 
 // Create model. Additional options allow menu name to be used what auto-generating URLs
-var MediaFeature = new keystone.List( 'Media Feature' );
+var MediaFeature = new keystone.List( 'Media Feature', {
+	defaultSort: '-date'
+});
 
 // Create fields
 MediaFeature.add( 'Media Feature', {
