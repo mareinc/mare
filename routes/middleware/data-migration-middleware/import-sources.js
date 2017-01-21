@@ -1,7 +1,5 @@
 const keystone			= require( 'keystone' );
 const Source 			= keystone.list( 'Source' );
-// utility middleware
-const utilityFunctions	= require( './utilities_functions' );
 // csv conversion middleware
 const CSVConversionMiddleware	= require( './utilities_csv-conversion' );
 

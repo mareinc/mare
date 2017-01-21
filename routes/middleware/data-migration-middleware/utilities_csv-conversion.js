@@ -1,6 +1,7 @@
 const csv						= require( 'csvtojson' );
 // migration file locations
 const sourcesFilePath			= './migration-data/csv-data/recruitment_source.csv';
+const mediaFeaturesFilePath		= './migration-data/csv-data/media_feature.csv';
 const agenciesFilePath			= './migration-data/csv-data/agency.csv';
 const agencyContactsFilePath	= './migration-data/csv-data/agency_contact.csv';
 const outsideContactsFilePath 	= './migration-data/csv-data/outside_contact.csv';
@@ -23,6 +24,24 @@ exports.fetchSources = ( resolve, reject ) => {
 		})
 		.on( 'error', err => {
 			console.error( `error fetching sources or converting to JSON => ${ err }` );
+			reject();
+		});
+};
+
+exports.fetchMediaFeatures = ( resolve, reject ) => {
+	
+	console.log( `fetching media features from CSV` );
+
+	// fetch all records from the media features csv file
+	csv().fromFile( mediaFeaturesFilePath )
+		// wait until the whole file has been parsed into an array of objects
+		.on( 'end_parsed', mediaFeaturesArray => {
+			console.log( `media features fetched` );
+			// resolve the promise with the array of source objects
+			resolve( mediaFeaturesArray );
+		})
+		.on( 'error', err => {
+			console.error( `error fetching media features or converting to JSON => ${ err }` );
 			reject();
 		});
 };
