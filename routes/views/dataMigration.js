@@ -68,9 +68,9 @@ exports = module.exports = ( req, res ) => {
 		done => { disabilitiesMap.getDisabilitiesMap( req, res, done ); },
 		done => { closedReasonsMap.getClosedReasonsMap( req, res, done ); },
 		// data import
-		// done => { sourcesImport.importSources( req, res, done ); },						// done
+		done => { sourcesImport.importSources( req, res, done ); },						// done
 		// done => { agenciesImport.importAgencies( req, res, done ); },					// done
-		done => { agencyContactsImport.appendAgencyContacts( req, res, done ); },			// not done // Get Lisa the list of agencies with mutiple contacts
+		// done => { agencyContactsImport.appendAgencyContacts( req, res, done ); },			// not done // Get Lisa the list of agencies with mutiple contacts
 		// done => { outsideContactImport.importOutsideContacts( req, res, done ); },		// done
 		// done => { socialWorkerImport.importSocialWorkers( req, res, done ); },			// done
 		// IMPORTANT: NEED TO CHANGE THE CHILD PRE / POST SAVE HERE
