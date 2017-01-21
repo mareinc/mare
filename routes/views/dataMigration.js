@@ -19,6 +19,7 @@ const closedReasonsMap							= require( '../middleware/data-migration-maps/close
 
 // data imports
 const sourcesImport								= require( '../middleware/data-migration-middleware/import-sources' );
+const mediaFeaturesImport						= require( '../middleware/data-migration-middleware/import-media-features' );
 const agenciesImport							= require( '../middleware/data-migration-middleware/import-agencies' );
 const agencyContactsImport						= require( '../middleware/data-migration-middleware/import-agency-contacts' );
 const outsideContactImport						= require( '../middleware/data-migration-middleware/import-outside-contacts' );
@@ -68,9 +69,10 @@ exports = module.exports = ( req, res ) => {
 		done => { disabilitiesMap.getDisabilitiesMap( req, res, done ); },
 		done => { closedReasonsMap.getClosedReasonsMap( req, res, done ); },
 		// data import
-		done => { sourcesImport.importSources( req, res, done ); },						// done
+		// done => { sourcesImport.importSources( req, res, done ); },						// done
+		done => { mediaFeaturesImport.importMediaFeatures( req, res, done ); },			// not done
 		// done => { agenciesImport.importAgencies( req, res, done ); },					// done
-		// done => { agencyContactsImport.appendAgencyContacts( req, res, done ); },			// not done // Get Lisa the list of agencies with mutiple contacts
+		// done => { agencyContactsImport.appendAgencyContacts( req, res, done ); },		// done
 		// done => { outsideContactImport.importOutsideContacts( req, res, done ); },		// done
 		// done => { socialWorkerImport.importSocialWorkers( req, res, done ); },			// done
 		// IMPORTANT: NEED TO CHANGE THE CHILD PRE / POST SAVE HERE
@@ -78,10 +80,11 @@ exports = module.exports = ( req, res ) => {
 		// IMPORTANT: NEED TO CHANGE THE CHILD PRE / POST SAVE HERE
 		// done => { childDisabilitiesImport.appendDisabilities( req, res, done ); },		// done
 		// IMPORTANT: NEED TO CHANGE THE CHILD PRE / POST SAVE HERE
-		// done => { childSiblingsImport.appendSiblings( req, res, done ); },				// done
-		
+		// done => { childSiblingsImport.appendSiblings( req, res, done ); },				// done		
 		// done => { childMediaOutletsImport.appendMediaOutlets( req, res, done ); }, 		// not done NOTE: media eligibility?
-			// media feature																// not done
+																							
+																							// 30 left below
+
 			// media feature child															// not done
 		// done => { childInternalNotesImport.importInternalNotes( req, res, done ); }		// not done
 		// done => { familiesImport.importFamilies( req, res, done ); },					// not done
