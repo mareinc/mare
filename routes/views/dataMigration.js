@@ -1,20 +1,6 @@
 const keystone									= require( 'keystone' );
 const async										= require( 'async' );
-const sourcesImport								= require( '../middleware/data-migration-middleware/import-sources' );
-const agenciesImport							= require( '../middleware/data-migration-middleware/import-agencies' );
-const outsideContactImport						= require( '../middleware/data-migration-middleware/import-outside-contacts' );
-const socialWorkerImport						= require( '../middleware/data-migration-middleware/import-social-workers' );
-const childrenImport							= require( '../middleware/data-migration-middleware/import-children' );
-const childDisabilitiesImport					= require( '../middleware/data-migration-middleware/import-child-disabilities' );
-const childSiblingsImport						= require( '../middleware/data-migration-middleware/import-child-siblings' );
-// const eventsImport								= require( '../middleware/data-migration-middleware/import-events' );
-// const inquiriesExtranetImport					= require( '../middleware/data-migration-middleware/import-inquiries-extranet' );
-// const inquiriesCallImport						= require( '../middleware/data-migration-middleware/import-inquiries-calls');
-// const internalNotesImport						= require( '../middleware/data-migration-middleware/import-internal-notes' );
-// const familiesImport							= require( '../middleware/data-migration-middleware/import-families' );
-// const mailingListsImport    					= require( '../middleware/data-migration-middleware/import-mailing-lists');
-// const placementsImport							= require( '../middleware/data-migration-middleware/import-placements' );
-// id mappings between systems
+// mappings used across imports
 const mediaTypesMap								= require( '../middleware/data-migration-maps/media-type' );
 const statesMap									= require( '../middleware/data-migration-maps/state' );
 const regionsMap								= require( '../middleware/data-migration-maps/region' );
@@ -29,6 +15,25 @@ const disabilityStatusesMap						= require( '../middleware/data-migration-maps/d
 const familyConstellationsMap					= require( '../middleware/data-migration-maps/family-constellation' );
 const otherFamilyConstellationConsiderationsMap	= require( '../middleware/data-migration-maps/other-family-constellation-consideration' );
 const disabilitiesMap							= require( '../middleware/data-migration-maps/disability' );
+const closedReasonsMap							= require( '../middleware/data-migration-maps/closed-reason' );
+
+// data imports
+const sourcesImport								= require( '../middleware/data-migration-middleware/import-sources' );
+const agenciesImport							= require( '../middleware/data-migration-middleware/import-agencies' );
+const agencyContactsImport						= require( '../middleware/data-migration-middleware/import-agency-contacts' );
+const outsideContactImport						= require( '../middleware/data-migration-middleware/import-outside-contacts' );
+const socialWorkerImport						= require( '../middleware/data-migration-middleware/import-social-workers' );
+const childrenImport							= require( '../middleware/data-migration-middleware/import-children' );
+const childDisabilitiesImport					= require( '../middleware/data-migration-middleware/import-child-disabilities' );
+const childSiblingsImport						= require( '../middleware/data-migration-middleware/import-child-siblings' );
+const familiesImport							= require( '../middleware/data-migration-middleware/import-families' );
+// const eventsImport								= require( '../middleware/data-migration-middleware/import-events' );
+// const inquiriesExtranetImport					= require( '../middleware/data-migration-middleware/import-inquiries-extranet' );
+// const inquiriesCallImport						= require( '../middleware/data-migration-middleware/import-inquiries-calls');
+// const internalNotesImport						= require( '../middleware/data-migration-middleware/import-internal-notes' );
+// const mailingListsImport    					= require( '../middleware/data-migration-middleware/import-mailing-lists');
+// const placementsImport							= require( '../middleware/data-migration-middleware/import-placements' );
+// id mappings between systems
 
 exports = module.exports = ( req, res ) => {
     'use strict';
@@ -61,51 +66,52 @@ exports = module.exports = ( req, res ) => {
 		done => { familyConstellationsMap.getFamilyConstellationsMap( req, res, done ); },
 		done => { otherFamilyConstellationConsiderationsMap.getOtherFamilyConstellationConsiderationsMap( req, res, done ); },
 		done => { disabilitiesMap.getDisabilitiesMap( req, res, done ); },
+		done => { closedReasonsMap.getClosedReasonsMap( req, res, done ); },
 		// data import
-		// done => { sourcesImport.importSources( req, res, done ); },
-		// done => { agenciesImport.importAgencies( req, res, done ); },
-			// agency contacts // NOTE: there are sometimes multiple contacts for an agency
-		// done => { outsideContactImport.importOutsideContacts( req, res, done ); },
-		// done => { socialWorkerImport.importSocialWorkers( req, res, done ); },
+		// done => { sourcesImport.importSources( req, res, done ); },						// done
+		// done => { agenciesImport.importAgencies( req, res, done ); },					// done
+		done => { agencyContactsImport.appendAgencyContacts( req, res, done ); },			// not done // Get Lisa the list of agencies with mutiple contacts
+		// done => { outsideContactImport.importOutsideContacts( req, res, done ); },		// done
+		// done => { socialWorkerImport.importSocialWorkers( req, res, done ); },			// done
 		// IMPORTANT: NEED TO CHANGE THE CHILD PRE / POST SAVE HERE
-		// done => { childrenImport.importChildren( req, res, done ); },
+		// done => { childrenImport.importChildren( req, res, done ); },					// done
 		// IMPORTANT: NEED TO CHANGE THE CHILD PRE / POST SAVE HERE
-		// done => { childDisabilitiesImport.appendDisabilities( req, res, done ); },
+		// done => { childDisabilitiesImport.appendDisabilities( req, res, done ); },		// done
 		// IMPORTANT: NEED TO CHANGE THE CHILD PRE / POST SAVE HERE
-		// done => { childSiblingsImport.appendSiblings( req, res, done ); },
+		// done => { childSiblingsImport.appendSiblings( req, res, done ); },				// done
 		
-		//// done => { childMediaOutletsImport.appendMediaOutlets( req, res, done ); }, // NOTE: media eligibility?
-			// media feature
-			// media feature child
-		//// done => { childInternalNotesImport.importInternalNotes( req, res, done ); }
-		// done => { familiesImport.importFamilies( req, res, done ); },
-			// family backup?
-			// family child
-			// family contact
-			// family race preference
-			// family special needed
-			// family support service
-			// ext family
-			// ext family race preference
-			// recruitment checklist
-			// file attachment
-			// placement source
-		// done => { placementsImport.importPlacements( req, res, done ); }, // These are in the child records
-			// family placement
-			// pending match
-			// pending termination
-			// pending termination item
-		// done => { inquiriesExtranetImport.importInquiries( req, res, done ); },
-		// done => { inquiriesCallImport.importInquiries( req, res, done ); },
-			// ext automatic inquiry history
-			// call agency
-			// call child
-			// call note
-		// done => { eventsImport.importEvents( req, res, done ); },
-			// event attendee
-		// done => { mailingListsImport.importMailingLists( req, res, done ); },
-			// mailing list subscription
-		// done => { internalNotesImport.importInternalNotes( req, res, done ); }
+		// done => { childMediaOutletsImport.appendMediaOutlets( req, res, done ); }, 		// not done NOTE: media eligibility?
+			// media feature																// not done
+			// media feature child															// not done
+		// done => { childInternalNotesImport.importInternalNotes( req, res, done ); }		// not done
+		// done => { familiesImport.importFamilies( req, res, done ); },					// not done
+			// family backup?																// not done
+			// family child																	// not done
+			// family contact																// not done
+			// family race preference														// not done
+			// family special needed														// not done
+			// family support service														// not done
+			// ext family																	// not done
+			// ext family race preference													// not done
+			// recruitment checklist														// not done
+			// file attachment																// not done
+			// placement source																// not done
+		// done => { placementsImport.importPlacements( req, res, done ); }, 				// not done These are in the child records
+			// family placement																// not done
+			// pending match																// not done
+			// pending termination															// not done
+			// pending termination item														// not done
+		// done => { inquiriesExtranetImport.importInquiries( req, res, done ); },			// not done
+		// done => { inquiriesCallImport.importInquiries( req, res, done ); },				// not done
+			// ext automatic inquiry history												// not done
+			// call agency																	// not done
+			// call child																	// not done
+			// call note																	// not done
+		// done => { eventsImport.importEvents( req, res, done ); },						// not done
+			// event attendee																// not done
+		// done => { mailingListsImport.importMailingLists( req, res, done ); },			// not done
+			// mailing list subscription													// not done
+		// done => { internalNotesImport.importInternalNotes( req, res, done ); }			// not done
 
 		
 	], () => {
