@@ -15,6 +15,11 @@ Source.add({
 	mediaFrequency: { type: Types.Text, label: 'media frequency', dependsOn: { type: 'media' }, initial: true },
 	mediaType: { type: Types.Relationship, ref: 'Media Type', label: 'media type', dependsOn: { type: 'media' }, initial: true }
 
+/* Container for data migration fields ( these should be kept until after phase 2 and the old system is phased out completely ) */
+}, {
+	// system field to store an appropriate file prefix
+	oldId: { type: Types.Text, hidden: true }
+
 });
 
 Source.relationship( { ref: 'Media Feature', refPath: 'source', path: 'media-features', label: 'media features' } );
