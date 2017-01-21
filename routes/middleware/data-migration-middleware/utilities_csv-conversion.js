@@ -2,11 +2,30 @@ const csv						= require( 'csvtojson' );
 // migration file locations
 const sourcesFilePath			= './migration-data/csv-data/recruitment_source.csv';
 const agenciesFilePath			= './migration-data/csv-data/agency.csv';
+const agencyContactsFilePath	= './migration-data/csv-data/agency_contact.csv';
 const outsideContactsFilePath 	= './migration-data/csv-data/outside_contact.csv';
 const inquiriesFilePath			= './migration-data/csv-data/ext_inquiry.csv';
 const socialWorkersFilePath		= './migration-data/csv-data/agency_contact.csv';
 const childrenFilePath			= './migration-data/csv-data/child.csv';
 const childDisabilitiesFilePath	= './migration-data/csv-data/child_special_need.csv';
+
+exports.fetchSources = ( resolve, reject ) => {
+	
+	console.log( `fetching sources from CSV` );
+
+	// fetch all records from the sources csv file
+	csv().fromFile( sourcesFilePath )
+		// wait until the whole file has been parsed into an array of objects
+		.on( 'end_parsed', sourcesArray => {
+			console.log( `sources fetched` );
+			// resolve the promise with the array of source objects
+			resolve( sourcesArray );
+		})
+		.on( 'error', err => {
+			console.error( `error fetching sources or converting to JSON => ${ err }` );
+			reject();
+		});
+};
 
 exports.fetchAgencies = ( resolve, reject ) => {
 	
@@ -22,6 +41,24 @@ exports.fetchAgencies = ( resolve, reject ) => {
 		})
 		.on( 'error', err => {
 			console.error( `error fetching agencies or converting to JSON => ${ err }` );
+			reject();
+		});
+};
+
+exports.fetchAgencyContacts = ( resolve, reject ) => {
+	
+	console.log( `fetching agency contacts from CSV` );
+
+	// fetch all records from the agency contact csv file
+	csv().fromFile( agencyContactsFilePath )
+		// wait until the whole file has been parsed into an array of objects
+		.on( 'end_parsed', agencyContactArray => {
+			console.log( `agencies fetched` );
+			// resolve the promise with the array of agency contact objects
+			resolve( agencyContactArray );
+		})
+		.on( 'error', err => {
+			console.error( `error fetching agency contacts or converting to JSON => ${ err }` );
 			reject();
 		});
 };
@@ -112,24 +149,6 @@ exports.fetchChildDisabilities = ( resolve, reject ) => {
 		})
 		.on( 'error', err => {
 			console.error( `error fetching child disabilities or converting to JSON => ${ err }` );
-			reject();
-		});
-};
-
-exports.fetchSources = ( resolve, reject ) => {
-	
-	console.log( `fetching sources from CSV` );
-
-	// fetch all records from the sources csv file
-	csv().fromFile( sourcesFilePath )
-		// wait until the whole file has been parsed into an array of objects
-		.on( 'end_parsed', sourcesArray => {
-			console.log( `sources fetched` );
-			// resolve the promise with the array of source objects
-			resolve( sourcesArray );
-		})
-		.on( 'error', err => {
-			console.error( `error fetching sources or converting to JSON => ${ err }` );
 			reject();
 		});
 };
