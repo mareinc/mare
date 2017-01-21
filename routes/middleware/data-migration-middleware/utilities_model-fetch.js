@@ -1,8 +1,32 @@
 /* functions to fetch model information for use during the migration */
 
+const Source		= keystone.list( 'Source' );
 const Agency		= keystone.list( 'Agency' );
 const SocialWorker	= keystone.list( 'Social Worker' );
 const Child			= keystone.list( 'Child' );
+
+module.exports.getSourceById = ( resolve, reject, sourceId ) => {
+
+	Source.model.findOne()
+		.where( 'oldId', sourceId )
+		.exec()
+		.then( retrievedSource => {
+			// if no source was found
+			if( !retrievedSource ) {
+				// log the issue
+				console.error( `error fetching source by oldId ${ sourceId }` );
+				// and reject the promise
+				reject();
+			}
+			// otherwise, accept the promise and pass back the retrieved source
+			resolve( retrievedSource );
+
+		}, err => {
+
+			console.error( `error in getSourceById() ${ err }` );
+			reject();
+		});
+};
 
 module.exports.getAgencyById = ( resolve, reject, agencyId ) => {
 
