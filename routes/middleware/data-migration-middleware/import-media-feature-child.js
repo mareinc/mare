@@ -102,7 +102,7 @@ module.exports.updateMediaFeatureRecord = ( mediaFeatureChild, pauseUntilSaved )
             if( err ) {
                 // halt execution by throwing an error
                 console.log( `error: ${ err }` );
-                throw `[csn_id: ${ childDisability.csn_id }] an error occured while saving a child's disability.`;
+                throw `[mfc_id: ${ mediaFeature.mfc_id }] an error occured while saving a media feature's child.`;
             }
 
             // fire off the next iteration of our generator after saving
