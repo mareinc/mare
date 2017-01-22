@@ -4,6 +4,7 @@ const Source		= keystone.list( 'Source' );
 const Agency		= keystone.list( 'Agency' );
 const SocialWorker	= keystone.list( 'Social Worker' );
 const Child			= keystone.list( 'Child' );
+const MediaFeature	= keystone.list( 'Media Feature' );
 
 module.exports.getSourceById = ( resolve, reject, sourceId ) => {
 
@@ -122,6 +123,29 @@ module.exports.getChildIdsByRegistrationNumbers = ( resolve, reject, registratio
 		}, err => {
 
 			console.error( `error in getChildIdsByRegistrationNumbers() ${ err }` );
+			reject();
+		});
+};
+
+module.exports.getMediaFeatureById = ( resolve, reject, mediaFeatureId ) => {
+
+	MediaFeature.model.findOne()
+		.where( 'oldId', mediaFeatureId )
+		.exec()
+		.then( retrievedMediaFeature => {
+			// if no media feature was found
+			if( !retrievedMediaFeature ) {
+				// log the issue
+				console.error( `error fetching media feature by ID ${ mediaFeatureId }` );
+				// and resolve the promise with an undefined value
+				resolve( undefined );
+			}
+			// otherwise, accept the promise and pass back the retrieved media feature
+			resolve( retrievedMediaFeature );
+
+		}, err => {
+
+			console.error( `error in getMediaFeatureById() ${ err }` );
 			reject();
 		});
 };
