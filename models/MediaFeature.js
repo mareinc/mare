@@ -14,6 +14,11 @@ MediaFeature.add( 'Media Feature', {
 	notes: { type: Types.Textarea, label: 'notes', initial: true },
 	children: { type: Types.Relationship, label: 'children', ref: 'Child', many: true, initial: true }
 
+/* Container for data migration fields ( these should be kept until after phase 2 and the old system is phased out completely ) */
+}, {
+	// system field to store an appropriate file prefix
+	oldId: { type: Types.Text, hidden: true }
+
 });
 
 // Define default columns in the admin interface and register the model
