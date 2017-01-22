@@ -81,31 +81,33 @@ module.exports.generateChildDisabilities = function* generateChildDisabilities()
 // a function paired with the generator to append data to a record and request the generator to process the next once finished
 module.exports.updateChildRecord = ( childDisability, pauseUntilSaved ) => {
 
+	// create a promise
+	const childLoaded = new Promise( ( resolve, reject ) => {
+		// for fetching the first child
+		utilityModelFetch.getChildByRegistrationNumber( resolve, reject, childDisability.chd_id );
+	});
 	// populate disability field of the child specified in the disability record
-	Child.model.findOne()
-		.where( 'registrationNumber', childDisability.chd_id )
-		.exec()
-		.then( child => {
-			// find the disability id using the disabilities map
-			let newDisability = disabilitiesMap[ childDisability.spn_id ];
-			// add the disability to the child's disabilities array
-			child.disabilities.push( newDisability );
+	childLoaded.then( child => {
+		// find the disability id using the disabilities map
+		let newDisability = disabilitiesMap[ childDisability.spn_id ];
+		// add the disability to the child's disabilities array
+		child.disabilities.push( newDisability );
 
-			// save the child record
-			child.save( ( err, savedModel ) => {
-				// if we run into an error
-				if( err ) {
-					// halt execution by throwing an error
-					console.log( `error: ${ err }` );
-					throw `[csn_id: ${ childDisability.csn_id }] an error occured while saving a child's disability.`;
-				}
+		// save the child record
+		child.save( ( err, savedModel ) => {
+			// if we run into an error
+			if( err ) {
+				// halt execution by throwing an error
+				console.log( `error: ${ err }` );
+				throw `[csn_id: ${ childDisability.csn_id }] an error occured while saving a child's disability.`;
+			}
 
-				// fire off the next iteration of our generator after saving
-				if( pauseUntilSaved ) {
-					childDisabilityGenerator.next();
-				}
-			});
+			// fire off the next iteration of our generator after saving
+			if( pauseUntilSaved ) {
+				childDisabilityGenerator.next();
+			}
 		});
+	});
 };
 
 // instantiates the generator used to create child records at a regulated rate
