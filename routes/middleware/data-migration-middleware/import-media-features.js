@@ -95,7 +95,9 @@ module.exports.createMediaFeatureRecord = ( mediaFeature, pauseUntilSaved ) => {
 
 			source: source.get( '_id' ),
 			date: mediaFeature.schedule_date,
-			notes: mediaFeatureNotes
+			notes: mediaFeatureNotes,
+
+			oldId: mediaFeature.mft_id
 
 		});
 
