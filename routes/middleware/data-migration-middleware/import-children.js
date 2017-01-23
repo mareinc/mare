@@ -79,6 +79,7 @@ module.exports.generateChildren = function* generateChildren() {
 		}
 		// decrement the counter keeping track of how many records we still need to process
 		remainingRecords--;
+		console.log( `children remaining: ${ remainingRecords }` );
 		// if there are no more records to process call done to move to the next migration file
 		if( remainingRecords === 0 ) {
 

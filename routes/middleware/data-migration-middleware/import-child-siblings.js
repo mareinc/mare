@@ -7,7 +7,7 @@ const CSVConversionMiddleware	= require( './utilities_csv-conversion' );
 
 // create an array to hold all children.  This is created here to be available to multiple functions below
 let children;
-// create an map to hold the sibling groups
+// create an object to hold the sibling groups
 let siblingGroupMap = {};
 // expose done to be available to all functions below
 let childSiblingsImportComplete;

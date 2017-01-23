@@ -1,5 +1,7 @@
 const keystone				= require( 'keystone' );
 const Child 				= keystone.list( 'Child' );
+// utility middleware
+const utilityModelFetch			= require( './utilities_model-fetch' );
 // csv conversion middleware
 const CSVConversionMiddleware	= require( './utilities_csv-conversion' );
 
