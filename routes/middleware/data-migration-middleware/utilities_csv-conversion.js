@@ -10,6 +10,7 @@ const socialWorkersFilePath			= './migration-data/csv-data/agency_contact.csv';
 const childrenFilePath				= './migration-data/csv-data/child.csv';
 const childDisabilitiesFilePath		= './migration-data/csv-data/child_special_need.csv';
 const mediaFeatureChildrenFilePath	= './migration-data/csv-data/media_feature_child.csv';
+const mediaEligibilitiesFilePath	= './migration-data/csv-data/media_eligibility.csv';
 
 exports.fetchSources = ( resolve, reject ) => {
 	
@@ -187,6 +188,24 @@ exports.fetchMediaFeatureChildren = ( resolve, reject ) => {
 		})
 		.on( 'error', err => {
 			console.error( `error fetching media feature children or converting to JSON => ${ err }` );
+			reject();
+		});
+};
+
+exports.fetchMediaEligibilities = ( resolve, reject ) => {
+	
+	console.log( `fetching media eligibilities from CSV` );
+
+	// fetch all records from the media eligibilities csv file
+	csv().fromFile( mediaEligibilitiesFilePath )
+		// wait until the whole file has been parsed into an array of objects
+		.on( 'end_parsed', mediaEligibilitiesArray => {
+			console.log( `media eligibilities fetched` );
+			// resolve the promise with the array of disability objects
+			resolve( mediaEligibilitiesArray );
+		})
+		.on( 'error', err => {
+			console.error( `error fetching media eligibilities or converting to JSON => ${ err }` );
 			reject();
 		});
 };
