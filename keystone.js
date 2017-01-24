@@ -160,7 +160,7 @@ keystone.set('nav', {
 	'donations'			: [ 'donations' ],
 	'change tracking'	: [ 'child-histories', 'family-histories', 'social-worker-histories' ],
 	'lists'				: [ 'child-statuses', 'child-types', 'city-or-towns', 'closed-reasons', 'communication-methods',
-						    'disabilities', 'event-types', 'family-constellations', 'genders', 'inquiry-methods',
+						    'disabilities', 'event-types', 'family-constellations', 'family-statuses', 'genders', 'inquiry-methods',
 						    'inquiry-types', 'languages', 'legal-statuses', 'match-determinations', 'media-eligibilities',
 						    'other-considerations', 'other-family-constellation-considerations', 'races', 'regions', 'residences',
 						    'social-worker-positions', 'sources', 'staff-email-targets', 'states', 'way-to-hear-about-mares' ]
