@@ -1,1495 +1,1495 @@
 exports.create = {
 	'City or Town': [{
-		cityOrTown: 'ABINGTON',
+		cityOrTown: 'Abington',
 		areaOffice: 'Plymouth Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'ACTON',
+		cityOrTown: 'Acton',
 		areaOffice: 'Framingham Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'ACUSHNET',
+		cityOrTown: 'Acushnet',
 		areaOffice: 'New Bedford Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'ADAMS',
+		cityOrTown: 'Adams',
 		areaOffice: 'Pittsfield Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'AGAWAM',
+		cityOrTown: 'Agawam',
 		areaOffice: 'Holyoke Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'ALFORD',
+		cityOrTown: 'Alford',
 		areaOffice: 'Pittsfield Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'ALLSTON',
+		cityOrTown: 'Allston',
 		areaOffice: 'Dimock Street Area Office',
-		region: 'Boston'
+		textRegion: 'Boston'
 	}, {
-		cityOrTown: 'AMESBURY',
+		cityOrTown: 'Amesbury',
 		areaOffice: 'Haverhill Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'AMHERST',
+		cityOrTown: 'Amherst',
 		areaOffice: 'Greenfield/Northampton Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'ANDOVER',
+		cityOrTown: 'Andover',
 		areaOffice: 'Lawrence Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'AQUINNAH',
+		cityOrTown: 'Aquinnah',
 		areaOffice: 'Cape & Islands Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'ARLINGTON',
+		cityOrTown: 'Arlington',
 		areaOffice: 'Arlington Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'ASHBURNHAM',
+		cityOrTown: 'Ashburnham',
 		areaOffice: 'North Central Area Office',
-		region: 'central'
+		textRegion: 'central'
 	}, {
-		cityOrTown: 'ASHBY',
+		cityOrTown: 'Ashby',
 		areaOffice: 'North Central Area Office',
-		region: 'central'
+		textRegion: 'central'
 	}, {
-		cityOrTown: 'ASHFIELD',
+		cityOrTown: 'Ashfield',
 		areaOffice: 'Greenfield/Northampton Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'ASHLAND',
+		cityOrTown: 'Ashland',
 		areaOffice: 'Framingham Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'ATHOL',
+		cityOrTown: 'Athol',
 		areaOffice: 'Greenfield/Northampton Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'ATTLEBORO',
+		cityOrTown: 'Attleboro',
 		areaOffice: 'Taunton Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'AUBURN',
+		cityOrTown: 'Auburn',
 		areaOffice: 'Worcester East Area Office',
-		region: 'central'
+		textRegion: 'central'
 	}, {
-		cityOrTown: 'AVON',
+		cityOrTown: 'Avon',
 		areaOffice: 'Brockton Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'AYER',
+		cityOrTown: 'Ayer',
 		areaOffice: 'North Central Area Office',
-		region: 'central'
+		textRegion: 'central'
 	}, {
-		cityOrTown: 'BARNSTABLE',
+		cityOrTown: 'Barnstable',
 		areaOffice: 'Cape & Islands Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'BARRE',
+		cityOrTown: 'Barre',
 		areaOffice: 'Worcester West Area Office',
-		region: 'central'
+		textRegion: 'central'
 	}, {
-		cityOrTown: 'BECKET',
+		cityOrTown: 'Becket',
 		areaOffice: 'Pittsfield Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'BEDFORD',
+		cityOrTown: 'Bedford',
 		areaOffice: 'Framingham Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'BELCHERTOWN',
+		cityOrTown: 'Belchertown',
 		areaOffice: 'Van Wart Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'BELLINGHAM',
+		cityOrTown: 'Bellingham',
 		areaOffice: 'South Central/Blackstone Valley Area Office',
-		region: 'central'
+		textRegion: 'central'
 	}, {
-		cityOrTown: 'BELMONT',
+		cityOrTown: 'Belmont',
 		areaOffice: 'Arlington Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'BERKLEY',
+		cityOrTown: 'Berkley',
 		areaOffice: 'Taunton Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'BERLIN',
+		cityOrTown: 'Berlin',
 		areaOffice: 'Worcester East Area Office',
-		region: 'central'
+		textRegion: 'central'
 	}, {
-		cityOrTown: 'BERNARDSTON',
+		cityOrTown: 'Bernardston',
 		areaOffice: 'Greenfield/Northampton Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'BEVERLY',
+		cityOrTown: 'Beverly',
 		areaOffice: 'Cape Ann Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'BILLERICA',
+		cityOrTown: 'Billerica',
 		areaOffice: 'Lowell Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'BLACKSTONE',
+		cityOrTown: 'Blackstone',
 		areaOffice: 'South Central/Blackstone Valley Area Office',
-		region: 'central'
+		textRegion: 'central'
 	}, {
-		cityOrTown: 'BLANDFORD',
+		cityOrTown: 'Blandford',
 		areaOffice: 'Holyoke Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'BOLTON',
+		cityOrTown: 'Bolton',
 		areaOffice: 'Worcester East Area Office',
-		region: 'central'
+		textRegion: 'central'
 	}, {
-		cityOrTown: 'BOSTON - Brighton',
+		cityOrTown: 'Boston - Brighton',
 		areaOffice: 'Dimock Street Area Office',
-		region: 'Boston'
+		textRegion: 'Boston'
 	}, {
-		cityOrTown: 'BOSTON - Mission Hill/Roxbury',
+		cityOrTown: 'Boston - Mission Hill/Roxbury',
 		areaOffice: 'Dimock Street Area Office',
-		region: 'Boston'
+		textRegion: 'Boston'
 	}, {
-		cityOrTown: 'BOSTON- Jamaica Plain',
+		cityOrTown: 'Boston- Jamaica Plain',
 		areaOffice: 'Dimock Street Area Office',
-		region: 'Boston'
+		textRegion: 'Boston'
 	}, {
-		cityOrTown: 'BOSTON - Charlestown',
+		cityOrTown: 'Boston - Charlestown',
 		areaOffice: 'Harbor Area Office',
-		region: 'Boston'
+		textRegion: 'Boston'
 	}, {
-		cityOrTown: 'BOSTON - East Boston',
+		cityOrTown: 'Boston - East Boston',
 		areaOffice: 'Harbor Area Office',
-		region: 'Boston'
+		textRegion: 'Boston'
 	}, {
-		cityOrTown: 'BOSTON - Dorchester - Center',
+		cityOrTown: 'Boston - Dorchester - Center',
 		areaOffice: 'Hyde Park Area Office',
-		region: 'Boston'
+		textRegion: 'Boston'
 	}, {
-		cityOrTown: 'BOSTON - Dorchester - Grove Hall, Uphams Corner*02122, 02210, 02122',
+		cityOrTown: 'Boston - Dorchester - Grove Hall, Uphams Corner*02122, 02210, 02122',
 		areaOffice: 'Park Street Area Office',
-		region: 'Boston'
+		textRegion: 'Boston'
 	}, {
-		cityOrTown: 'BOSTON - Dorchester - Four Corners*',
+		cityOrTown: 'Boston - Dorchester - Four Corners*',
 		areaOffice: 'Park Street Area Office',
-		region: 'Boston'
+		textRegion: 'Boston'
 	}, {
-		cityOrTown: 'BOSTON - Fenway, Back Bay, Kenmore 02108-02114',
+		cityOrTown: 'Boston - Fenway, Back Bay, Kenmore 02108-02114',
 		areaOffice: 'Harbor Area Office',
-		region: 'Boston'
+		textRegion: 'Boston'
 	}, {
-		cityOrTown: 'BOURNE',
+		cityOrTown: 'Bourne',
 		areaOffice: 'Cape & Islands Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'BOURNEDALE',
+		cityOrTown: 'Bournedale',
 		areaOffice: 'Cape & Islands Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'BOXBOROUGH',
+		cityOrTown: 'Boxborough',
 		areaOffice: 'Framingham Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'BOXFORD',
+		cityOrTown: 'Boxford',
 		areaOffice: 'Haverhill Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'BOYLSTON',
+		cityOrTown: 'Boylston',
 		areaOffice: 'Worcester East Area Office',
-		region: 'central'
+		textRegion: 'central'
 	}, {
-		cityOrTown: 'BRADFORD',
+		cityOrTown: 'Bradford',
 		areaOffice: 'Haverhill Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'BRAINTREE',
+		cityOrTown: 'Braintree',
 		areaOffice: 'Coastal Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'BREWSTER',
+		cityOrTown: 'Brewster',
 		areaOffice: 'Cape & Islands Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'BRIDGEWATER',
+		cityOrTown: 'Bridgewater',
 		areaOffice: 'Brockton Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'BRIMFIELD',
+		cityOrTown: 'Brimfield',
 		areaOffice: 'South Central/Blackstone Valley Area Office',
-		region: 'central'
+		textRegion: 'central'
 	}, {
-		cityOrTown: 'BROCKTON',
+		cityOrTown: 'Brockton',
 		areaOffice: 'Brockton Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'BROOKFIELD',
+		cityOrTown: 'Brookfield',
 		areaOffice: 'Worcester West Area Office',
-		region: 'central'
+		textRegion: 'central'
 	}, {
-		cityOrTown: 'BROOKLINE',
+		cityOrTown: 'Brookline',
 		areaOffice: 'Dimock Street Area Office',
-		region: 'Boston'
+		textRegion: 'Boston'
 	}, {
-		cityOrTown: 'BUCKLAND',
+		cityOrTown: 'Buckland',
 		areaOffice: 'Greenfield/Northampton Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'BURLINGTON',
+		cityOrTown: 'Burlington',
 		areaOffice: 'Cambridge/Somerville Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'CAMBRIDGE',
+		cityOrTown: 'Cambridge',
 		areaOffice: 'Cambridge/Somerville Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'CANTON',
+		cityOrTown: 'Canton',
 		areaOffice: 'Arlington Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'CARLISLE',
+		cityOrTown: 'Carlisle',
 		areaOffice: 'Framingham Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'CARVER',
+		cityOrTown: 'Carver',
 		areaOffice: 'Plymouth Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'CHARLEMONT',
+		cityOrTown: 'Charlemont',
 		areaOffice: 'Greenfield/Northampton Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'CHARLTON',
+		cityOrTown: 'Charlton',
 		areaOffice: 'South Central/Blackstone Valley Area Office',
-		region: 'central'
+		textRegion: 'central'
 	}, {
-		cityOrTown: 'CHATHAM',
+		cityOrTown: 'Chatham',
 		areaOffice: 'Cape & Islands Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'CHELMSFORD',
+		cityOrTown: 'Chelmsford',
 		areaOffice: 'Lowell Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'CHELSEA',
+		cityOrTown: 'Chelsea',
 		areaOffice: 'Harbor Area Office',
-		region: 'Boston'
+		textRegion: 'Boston'
 	}, {
-		cityOrTown: 'CHESHIRE',
+		cityOrTown: 'Cheshire',
 		areaOffice: 'Pittsfield Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'CHESTER',
+		cityOrTown: 'Chester',
 		areaOffice: 'Holyoke Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'CHESTERFIELD',
+		cityOrTown: 'Chesterfield',
 		areaOffice: 'Greenfield/Northampton Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'CHICOPEE',
+		cityOrTown: 'Chicopee',
 		areaOffice: 'Van Wart Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'CHILMARK',
+		cityOrTown: 'Chilmark',
 		areaOffice: 'Cape & Islands Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'CLARKSBURG',
+		cityOrTown: 'Clarksburg',
 		areaOffice: 'Pittsfield Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'CLINTON',
+		cityOrTown: 'Clinton',
 		areaOffice: 'Worcester East Area Office',
-		region: 'central'
+		textRegion: 'central'
 	}, {
-		cityOrTown: 'COHASSET',
+		cityOrTown: 'Cohasset',
 		areaOffice: 'Coastal Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'COLRAIN',
+		cityOrTown: 'Colrain',
 		areaOffice: 'Greenfield/Northampton Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'CONCORD',
+		cityOrTown: 'Concord',
 		areaOffice: 'Framingham Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'CONWAY',
+		cityOrTown: 'Conway',
 		areaOffice: 'Greenfield/Northampton Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'CUMMINGTON',
+		cityOrTown: 'Cummington',
 		areaOffice: 'Greenfield/Northampton Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'DALTON',
+		cityOrTown: 'Dalton',
 		areaOffice: 'Pittsfield Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'DANVERS',
+		cityOrTown: 'Danvers',
 		areaOffice: 'Cape Ann Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'DARTMOUTH',
+		cityOrTown: 'Dartmouth',
 		areaOffice: 'New Bedford Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'DEDHAM',
+		cityOrTown: 'Dedham',
 		areaOffice: 'Arlington Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'DEERFIELD',
+		cityOrTown: 'Deerfield',
 		areaOffice: 'Greenfield/Northampton Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'DENNIS',
+		cityOrTown: 'Dennis',
 		areaOffice: 'Cape & Islands Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'DIGHTON',
+		cityOrTown: 'Dighton',
 		areaOffice: 'Taunton Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'DOUGLAS',
+		cityOrTown: 'Douglas',
 		areaOffice: 'South Central/Blackstone Valley Area Office',
-		region: 'central'
+		textRegion: 'central'
 	}, {
-		cityOrTown: 'DOVER',
+		cityOrTown: 'Dover',
 		areaOffice: 'Framingham Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'DRACUT',
+		cityOrTown: 'Dracut',
 		areaOffice: 'Lowell Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'DUDLEY',
+		cityOrTown: 'Dudley',
 		areaOffice: 'South Central/Blackstone Valley Area Office',
-		region: 'central'
+		textRegion: 'central'
 	}, {
-		cityOrTown: 'DUNSTABLE',
+		cityOrTown: 'Dunstable',
 		areaOffice: 'Lowell Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'DUXBURY',
+		cityOrTown: 'Duxbury',
 		areaOffice: 'Plymouth Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'EAST BRIDGEWATER',
+		cityOrTown: 'East Bridgewater',
 		areaOffice: 'Brockton Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'EAST BROOKFIELD',
+		cityOrTown: 'East Brookfield',
 		areaOffice: 'Worcester West Area Office',
-		region: 'central'
+		textRegion: 'central'
 	}, {
-		cityOrTown: 'EAST LONGMEADOW',
+		cityOrTown: 'East Longmeadow',
 		areaOffice: 'Springfield Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'EAST SPRINGFIELD',
+		cityOrTown: 'East Springfield',
 		areaOffice: 'Van Wart Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'EASTHAM',
+		cityOrTown: 'Eastham',
 		areaOffice: 'Cape & Islands Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'EASTHAMPTON',
+		cityOrTown: 'Easthampton',
 		areaOffice: 'Greenfield/Northampton Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'EASTON',
+		cityOrTown: 'Easton',
 		areaOffice: 'Brockton Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'EDGARTOWN',
+		cityOrTown: 'Edgartown',
 		areaOffice: 'Cape & Islands Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'EGREMONT',
+		cityOrTown: 'Egremont',
 		areaOffice: 'Pittsfield Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'ERVING',
+		cityOrTown: 'Erving',
 		areaOffice: 'Greenfield/Northampton Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'ESSEX',
+		cityOrTown: 'Essex',
 		areaOffice: 'Cape Ann Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'EVERETT',
+		cityOrTown: 'Everett',
 		areaOffice: 'Malden Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'FAIRHAVEN',
+		cityOrTown: 'Fairhaven',
 		areaOffice: 'New Bedford Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'FALL RIVER',
+		cityOrTown: 'Fall River',
 		areaOffice: 'Fall River Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'FALMOUTH',
+		cityOrTown: 'Falmouth',
 		areaOffice: 'Cape & Islands Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'FITCHBURG',
+		cityOrTown: 'Fitchburg',
 		areaOffice: 'North Central Area Office',
-		region: 'central'
+		textRegion: 'central'
 	}, {
-		cityOrTown: 'FLORIDA',
+		cityOrTown: 'Florida',
 		areaOffice: 'Pittsfield Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'FOXBOROUGH',
+		cityOrTown: 'Foxborough',
 		areaOffice: 'Arlington Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'FRAMINGHAM',
+		cityOrTown: 'Framingham',
 		areaOffice: 'Framingham Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'FRANKLIN',
+		cityOrTown: 'Franklin',
 		areaOffice: 'South Central/Blackstone Valley Area Office',
-		region: 'central'
+		textRegion: 'central'
 	}, {
-		cityOrTown: 'FREETOWN',
+		cityOrTown: 'Freetown',
 		areaOffice: 'Fall River Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'GARDNER',
+		cityOrTown: 'Gardner',
 		areaOffice: 'North Central Area Office',
-		region: 'central'
+		textRegion: 'central'
 	}, {
-		cityOrTown: 'GAY HEAD',
+		cityOrTown: 'Gay Head',
 		areaOffice: 'Cape & Islands Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'GEORGETOWN',
+		cityOrTown: 'Georgetown',
 		areaOffice: 'Haverhill Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'GILL',
+		cityOrTown: 'Gill',
 		areaOffice: 'Greenfield/Northampton Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'GLOUCESTER',
+		cityOrTown: 'Gloucester',
 		areaOffice: 'Cape Ann Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'GOSHEN',
+		cityOrTown: 'Goshen',
 		areaOffice: 'Greenfield/Northampton Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'GOSNOLD',
+		cityOrTown: 'Gosnold',
 		areaOffice: 'Cape & Islands Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'GRAFTON',
+		cityOrTown: 'Grafton',
 		areaOffice: 'Worcester East Area Office',
-		region: 'central'
+		textRegion: 'central'
 	}, {
-		cityOrTown: 'GRANBY',
+		cityOrTown: 'Granby',
 		areaOffice: 'Van Wart Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'GRANVILLE',
+		cityOrTown: 'Granville',
 		areaOffice: 'Holyoke Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'GREAT BARRINGTON',
+		cityOrTown: 'Great Barrington',
 		areaOffice: 'Pittsfield Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'GREENFIELD',
+		cityOrTown: 'Greenfield',
 		areaOffice: 'Greenfield/Northampton Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'GROTON',
+		cityOrTown: 'Groton',
 		areaOffice: 'North Central Area Office',
-		region: 'central'
+		textRegion: 'central'
 	}, {
-		cityOrTown: 'GROVELAND',
+		cityOrTown: 'Groveland',
 		areaOffice: 'Haverhill Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'HADLEY',
+		cityOrTown: 'Hadley',
 		areaOffice: 'Greenfield/Northampton Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'HALIFAX',
+		cityOrTown: 'Halifax',
 		areaOffice: 'Plymouth Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'HAMILTON',
+		cityOrTown: 'Hamilton',
 		areaOffice: 'Cape Ann Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'HAMPDEN',
+		cityOrTown: 'Hampden',
 		areaOffice: 'Van Wart Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'HANCOCK',
+		cityOrTown: 'Hancock',
 		areaOffice: 'Pittsfield Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'HANOVER',
+		cityOrTown: 'Hanover',
 		areaOffice: 'Plymouth Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'HANSON',
+		cityOrTown: 'Hanson',
 		areaOffice: 'Plymouth Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'HARDWICK',
+		cityOrTown: 'Hardwick',
 		areaOffice: 'Worcester West Area Office',
-		region: 'central'
+		textRegion: 'central'
 	}, {
-		cityOrTown: 'HARVARD',
+		cityOrTown: 'Harvard',
 		areaOffice: 'Worcester East Area Office',
-		region: 'central'
+		textRegion: 'central'
 	}, {
-		cityOrTown: 'HARWICH',
+		cityOrTown: 'Harwich',
 		areaOffice: 'Cape & Islands Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'HATFIELD',
+		cityOrTown: 'Hatfield',
 		areaOffice: 'Greenfield/Northampton Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'HAVERHILL',
+		cityOrTown: 'Haverhill',
 		areaOffice: 'Haverhill Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'HAWLEY',
+		cityOrTown: 'Hawley',
 		areaOffice: 'Greenfield/Northampton Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'HEATH',
+		cityOrTown: 'Heath',
 		areaOffice: 'Greenfield/Northampton Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'HINGHAM',
+		cityOrTown: 'Hingham',
 		areaOffice: 'Coastal Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'HINSDALE',
+		cityOrTown: 'Hinsdale',
 		areaOffice: 'Pittsfield Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'HOLBROOK',
+		cityOrTown: 'Holbrook',
 		areaOffice: 'Brockton Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'HOLDEN',
+		cityOrTown: 'Holden',
 		areaOffice: 'Worcester West Area Office',
-		region: 'central'
+		textRegion: 'central'
 	}, {
-		cityOrTown: 'HOLLAND',
+		cityOrTown: 'Holland',
 		areaOffice: 'South Central/Blackstone Valley Area Office',
-		region: 'central'
+		textRegion: 'central'
 	}, {
-		cityOrTown: 'HOLLISTON',
+		cityOrTown: 'Holliston',
 		areaOffice: 'Framingham Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'HOLYOKE',
+		cityOrTown: 'Holyoke',
 		areaOffice: 'Holyoke Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'HOPEDALE',
+		cityOrTown: 'Hopedale',
 		areaOffice: 'South Central/Blackstone Valley Area Office',
-		region: 'central'
+		textRegion: 'central'
 	}, {
-		cityOrTown: 'HOPKINTON',
+		cityOrTown: 'Hopkinton',
 		areaOffice: 'Framingham Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'HUBBARDSTON',
+		cityOrTown: 'Hubbardston',
 		areaOffice: 'Worcester West Area Office',
-		region: 'central'
+		textRegion: 'central'
 	}, {
-		cityOrTown: 'HUDSON',
+		cityOrTown: 'Hudson',
 		areaOffice: 'Framingham Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'HULL',
+		cityOrTown: 'Hull',
 		areaOffice: 'Coastal Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'HYDE PARK',
+		cityOrTown: 'Hyde Park',
 		areaOffice: 'Hyde Park Area Office',
-		region: 'Boston'
+		textRegion: 'Boston'
 	}, {
-		cityOrTown: 'HUNTINGTON',
+		cityOrTown: 'Huntington',
 		areaOffice: 'Holyoke Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'HYANNIS',
+		cityOrTown: 'Hyannis',
 		areaOffice: 'Cape & Islands Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'IPSWICH',
+		cityOrTown: 'Ipswich',
 		areaOffice: 'Haverhill Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'KINGSTON',
+		cityOrTown: 'Kingston',
 		areaOffice: 'Plymouth Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'LAKEVILLE',
+		cityOrTown: 'Lakeville',
 		areaOffice: 'Plymouth Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'LANCASTER',
+		cityOrTown: 'Lancaster',
 		areaOffice: 'Worcester East Area Office',
-		region: 'central'
+		textRegion: 'central'
 	}, {
-		cityOrTown: 'LANESBOROUGH',
+		cityOrTown: 'Lanesborough',
 		areaOffice: 'Pittsfield Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'LAWRENCE',
+		cityOrTown: 'Lawrence',
 		areaOffice: 'Lawrence Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'LEE',
+		cityOrTown: 'Lee',
 		areaOffice: 'Pittsfield Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'LEICESTER',
+		cityOrTown: 'Leicester',
 		areaOffice: 'Worcester West Area Office',
-		region: 'central'
+		textRegion: 'central'
 	}, {
-		cityOrTown: 'LENOX',
+		cityOrTown: 'Lenox',
 		areaOffice: 'Pittsfield Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'LEOMINSTER',
+		cityOrTown: 'Leominster',
 		areaOffice: 'North Central Area Office',
-		region: 'central'
+		textRegion: 'central'
 	}, {
-		cityOrTown: 'LEVERETT',
+		cityOrTown: 'Leverett',
 		areaOffice: 'Greenfield/Northampton Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'LEXINGTON',
+		cityOrTown: 'Lexington',
 		areaOffice: 'Arlington Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'LEYDEN',
+		cityOrTown: 'Leyden',
 		areaOffice: 'Greenfield/Northampton Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'LINCOLN',
+		cityOrTown: 'Lincoln',
 		areaOffice: 'Framingham Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'LITTLETON',
+		cityOrTown: 'Littleton',
 		areaOffice: 'Framingham Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'LONGMEADOW',
+		cityOrTown: 'Longmeadow',
 		areaOffice: 'Springfield Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'LOWELL',
+		cityOrTown: 'Lowell',
 		areaOffice: 'Lowell Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'LUDLOW',
+		cityOrTown: 'Ludlow',
 		areaOffice: 'Van Wart Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'LUNENBURG',
+		cityOrTown: 'Lunenburg',
 		areaOffice: 'North Central Area Office',
-		region: 'central'
+		textRegion: 'central'
 	}, {
-		cityOrTown: 'LYNN',
+		cityOrTown: 'Lynn',
 		areaOffice: 'Lynn Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'LYNNFIELD',
+		cityOrTown: 'Lynnfield',
 		areaOffice: 'Lynn Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'MALDEN',
+		cityOrTown: 'Malden',
 		areaOffice: 'Malden Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'MANCHESTER',
+		cityOrTown: 'Manchester',
 		areaOffice: 'Cape Ann Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'MANSFIELD',
+		cityOrTown: 'Mansfield',
 		areaOffice: 'Taunton Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'MARBLEHEAD',
+		cityOrTown: 'Marblehead',
 		areaOffice: 'Cape Ann Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'MARION',
+		cityOrTown: 'Marion',
 		areaOffice: 'Plymouth Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'MARLBOROUGH',
+		cityOrTown: 'Marlborough',
 		areaOffice: 'Framingham Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'MARSHFIELD',
+		cityOrTown: 'Marshfield',
 		areaOffice: 'Plymouth Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'MASHPEE',
+		cityOrTown: 'Mashpee',
 		areaOffice: 'Cape & Islands Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'MATTAPOISETT',
+		cityOrTown: 'Mattapoisett',
 		areaOffice: 'Plymouth Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'MAYNARD',
+		cityOrTown: 'Maynard',
 		areaOffice: 'Framingham Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'MEDFIELD',
+		cityOrTown: 'Medfield',
 		areaOffice: 'Arlington Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'MEDFORD',
+		cityOrTown: 'Medford',
 		areaOffice: 'Malden Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'MEDWAY',
+		cityOrTown: 'Medway',
 		areaOffice: 'South Central/Blackstone Valley Area Office',
-		region: 'central'
+		textRegion: 'central'
 	}, {
-		cityOrTown: 'MELROSE',
+		cityOrTown: 'Melrose',
 		areaOffice: 'Malden Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'MENDON',
+		cityOrTown: 'Mendon',
 		areaOffice: 'South Central/Blackstone Valley Area Office',
-		region: 'central'
+		textRegion: 'central'
 	}, {
-		cityOrTown: 'MERRIMAC',
+		cityOrTown: 'Merrimac',
 		areaOffice: 'Haverhill Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'METHUEN',
+		cityOrTown: 'Methuen',
 		areaOffice: 'Lawrence Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'MIDDLEBOROUGH',
+		cityOrTown: 'Middleborough',
 		areaOffice: 'Plymouth Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'MIDDLEFIELD',
+		cityOrTown: 'Middlefield',
 		areaOffice: 'Greenfield/Northampton Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'MIDDLETON',
+		cityOrTown: 'Middleton',
 		areaOffice: 'Cape Ann Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'MILFORD',
+		cityOrTown: 'Milford',
 		areaOffice: 'South Central/Blackstone Valley Area Office',
-		region: 'central'
+		textRegion: 'central'
 	}, {
-		cityOrTown: 'MILLBURY',
+		cityOrTown: 'Millbury',
 		areaOffice: 'Worcester East Area Office',
-		region: 'central'
+		textRegion: 'central'
 	}, {
-		cityOrTown: 'MILLIS',
+		cityOrTown: 'Millis',
 		areaOffice: 'Arlington Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'MILLVILLE',
+		cityOrTown: 'Millville',
 		areaOffice: 'South Central/Blackstone Valley Area Office',
-		region: 'central'
+		textRegion: 'central'
 	}, {
-		cityOrTown: 'MILTON',
+		cityOrTown: 'Milton',
 		areaOffice: 'Coastal Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'MONROE',
+		cityOrTown: 'Monroe',
 		areaOffice: 'Pittsfield Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'MONSON',
+		cityOrTown: 'Monson',
 		areaOffice: 'Van Wart Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'MONTAGUE',
+		cityOrTown: 'montague',
 		areaOffice: 'Greenfield/Northampton Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'MONTEREY',
+		cityOrTown: 'Monterey',
 		areaOffice: 'Pittsfield Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'MONTGOMERY',
+		cityOrTown: 'Montgomery',
 		areaOffice: 'Holyoke Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'MOUNT WASHINGTON',
+		cityOrTown: 'Mount Washington',
 		areaOffice: 'Pittsfield Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'NAHANT',
+		cityOrTown: 'Nahant',
 		areaOffice: 'Lynn Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'NANTUCKET',
+		cityOrTown: 'Nantucket',
 		areaOffice: 'Cape & Islands Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'NATICK',
+		cityOrTown: 'Natick',
 		areaOffice: 'Framingham Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'NEEDHAM',
+		cityOrTown: 'Needham',
 		areaOffice: 'Arlington Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'NEW ASHFORD',
+		cityOrTown: 'New Ashford',
 		areaOffice: 'Pittsfield Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'NEW BEDFORD',
+		cityOrTown: 'New Bedford',
 		areaOffice: 'New Bedford Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'NEW BRAINTREE',
+		cityOrTown: 'New Braintree',
 		areaOffice: 'Worcester West Area Office',
-		region: 'central'
+		textRegion: 'central'
 	}, {
-		cityOrTown: 'NEW MARLBOROUGH',
+		cityOrTown: 'New Marlborough',
 		areaOffice: 'Pittsfield Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'NEW SALEM',
+		cityOrTown: 'New Salem',
 		areaOffice: 'Greenfield/Northampton Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'NEWBURY',
+		cityOrTown: 'Newbury',
 		areaOffice: 'Haverhill Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'NEWBURYPORT',
+		cityOrTown: 'Newburyport',
 		areaOffice: 'Haverhill Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'NEWTON',
+		cityOrTown: 'Newton',
 		areaOffice: 'Arlington Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'NORFOLK',
+		cityOrTown: 'Norfolk',
 		areaOffice: 'Arlington Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'NORTH ADAMS',
+		cityOrTown: 'North Adams',
 		areaOffice: 'Pittsfield Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'NORTH ANDOVER',
+		cityOrTown: 'North Andover',
 		areaOffice: 'Lawrence Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'NORTH ATTLEBOROUGH',
+		cityOrTown: 'North Attleborough',
 		areaOffice: 'Taunton Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'NORTH BROOKFIELD',
+		cityOrTown: 'North Brookfield',
 		areaOffice: 'Worcester West Area Office',
-		region: 'central'
+		textRegion: 'central'
 	}, {
-		cityOrTown: 'NORTH EASTON',
+		cityOrTown: 'North Easton',
 		areaOffice: 'Brockton Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'NORTH READING',
+		cityOrTown: 'North Reading',
 		areaOffice: 'Malden Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'NORTHAMPTON',
+		cityOrTown: 'Northampton',
 		areaOffice: 'Greenfield/Northampton Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'NORTHBOROUGH',
+		cityOrTown: 'Northborough',
 		areaOffice: 'Framingham Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'NORTHBRIDGE',
+		cityOrTown: 'Northbridge',
 		areaOffice: 'South Central/Blackstone Valley Area Office',
-		region: 'central'
+		textRegion: 'central'
 	}, {
-		cityOrTown: 'NORTHFIELD',
+		cityOrTown: 'Northfield',
 		areaOffice: 'Greenfield/Northampton Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'NORTON',
+		cityOrTown: 'Norton',
 		areaOffice: 'Taunton Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'NORWELL',
+		cityOrTown: 'Norwell',
 		areaOffice: 'Coastal Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'NORWOOD',
+		cityOrTown: 'Norwood',
 		areaOffice: 'Arlington Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'OAK BLUFFS',
+		cityOrTown: 'Oak Bluffs',
 		areaOffice: 'Cape & Islands Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'OAKHAM',
+		cityOrTown: 'Oakham',
 		areaOffice: 'Worcester West Area Office',
-		region: 'central'
+		textRegion: 'central'
 	}, {
-		cityOrTown: 'ORANGE',
+		cityOrTown: 'Orange',
 		areaOffice: 'Greenfield/Northampton Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'ORLEANS',
+		cityOrTown: 'Orleans',
 		areaOffice: 'Cape & Islands Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'OTIS',
+		cityOrTown: 'Otis',
 		areaOffice: 'Pittsfield Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'OXFORD',
+		cityOrTown: 'Oxford',
 		areaOffice: 'South Central/Blackstone Valley Area Office',
-		region: 'central'
+		textRegion: 'central'
 	}, {
-		cityOrTown: 'PALMER',
+		cityOrTown: 'palmer',
 		areaOffice: 'Van Wart Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'PAXTON',
+		cityOrTown: 'Paxton',
 		areaOffice: 'Worcester West Area Office',
-		region: 'central'
+		textRegion: 'central'
 	}, {
-		cityOrTown: 'PEABODY',
+		cityOrTown: 'Peabody',
 		areaOffice: 'Cape Ann Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'PELHAM',
+		cityOrTown: 'Pelham',
 		areaOffice: 'Greenfield/Northampton Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'PEMBROKE',
+		cityOrTown: 'Pembroke',
 		areaOffice: 'Plymouth Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'PEPPERELL',
+		cityOrTown: 'Pepperell',
 		areaOffice: 'Lowell Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'PERU',
+		cityOrTown: 'Peru',
 		areaOffice: 'Pittsfield Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'PETERSHAM',
+		cityOrTown: 'Petersham',
 		areaOffice: 'Greenfield/Northampton Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'PHILLIPSTON',
+		cityOrTown: 'Phillipston',
 		areaOffice: 'Greenfield/Northampton Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'PITTSFIELD',
+		cityOrTown: 'Pittsfield',
 		areaOffice: 'Pittsfield Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'PLAINFIELD',
+		cityOrTown: 'Plainfield',
 		areaOffice: 'Greenfield/Northampton Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'PLAINVILLE',
+		cityOrTown: 'Plainville',
 		areaOffice: 'Arlington Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'PLYMOUTH',
+		cityOrTown: 'Plymouth',
 		areaOffice: 'Plymouth Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'PLYMPTON',
+		cityOrTown: 'Plympton',
 		areaOffice: 'Plymouth Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'PRINCETON',
+		cityOrTown: 'Princeton',
 		areaOffice: 'Worcester West Area Office',
-		region: 'central'
+		textRegion: 'central'
 	}, {
-		cityOrTown: 'PROVINCETOWN',
+		cityOrTown: 'Provincetown',
 		areaOffice: 'Cape & Islands Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'QUINCY',
+		cityOrTown: 'Quincy',
 		areaOffice: 'Coastal Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'RANDOLPH',
+		cityOrTown: 'Randolph',
 		areaOffice: 'Coastal Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'RAYNHAM',
+		cityOrTown: 'Raynham',
 		areaOffice: 'Taunton Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'READING',
+		cityOrTown: 'Reading',
 		areaOffice: 'Malden Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'REHOBOTH',
+		cityOrTown: 'Rehoboth',
 		areaOffice: 'Taunton Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'REVERE',
+		cityOrTown: 'Revere',
 		areaOffice: 'Harbor Area Office',
-		region: 'Boston'
+		textRegion: 'Boston'
 	}, {
-		cityOrTown: 'RICHMOND',
+		cityOrTown: 'Richmond',
 		areaOffice: 'Pittsfield Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'ROCHESTER',
+		cityOrTown: 'Rochester',
 		areaOffice: 'Plymouth Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'ROCKLAND',
+		cityOrTown: 'Rockland',
 		areaOffice: 'Plymouth Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'ROCKPORT',
+		cityOrTown: 'Rockport',
 		areaOffice: 'Cape Ann Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'ROWE',
+		cityOrTown: 'Rowe',
 		areaOffice: 'Greenfield/Northampton Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'ROWLEY',
+		cityOrTown: 'Rowley',
 		areaOffice: 'Haverhill Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'ROXBURY/MISSION HILL',
+		cityOrTown: 'Roxbury/Mission Hill',
 		areaOffice: 'Dimock Street Area Office',
-		region: 'Boston'
+		textRegion: 'Boston'
 	}, {
-		cityOrTown: 'ROYALSTON',
+		cityOrTown: 'Royalston',
 		areaOffice: 'Greenfield/Northampton Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'RUSSELL',
+		cityOrTown: 'Russell',
 		areaOffice: 'Holyoke Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'RUTLAND',
+		cityOrTown: 'Rutland',
 		areaOffice: 'Worcester West Area Office',
-		region: 'central'
+		textRegion: 'central'
 	}, {
-		cityOrTown: 'SAGAMORE',
+		cityOrTown: 'Sagamore',
 		areaOffice: 'Cape & Islands Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'SALEM',
+		cityOrTown: 'Salem',
 		areaOffice: 'Cape Ann Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'SALISBURY',
+		cityOrTown: 'Salisbury',
 		areaOffice: 'Haverhill Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'SANDISFIELD',
+		cityOrTown: 'Sandisfield',
 		areaOffice: 'Pittsfield Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'SANDWICH',
+		cityOrTown: 'Sandwich',
 		areaOffice: 'Cape & Islands Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'SAUGUS',
+		cityOrTown: 'Saugus',
 		areaOffice: 'Lynn Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'SAVOY',
+		cityOrTown: 'Savoy',
 		areaOffice: 'Pittsfield Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'SCITUATE',
+		cityOrTown: 'Scituate',
 		areaOffice: 'Coastal Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'SEEKONK',
+		cityOrTown: 'Seekonk',
 		areaOffice: 'Taunton Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'SHARON',
+		cityOrTown: 'Sharon',
 		areaOffice: 'Arlington Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'SHEFFIELD',
+		cityOrTown: 'Sheffield',
 		areaOffice: 'Pittsfield Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'SHELBURNE',
+		cityOrTown: 'Shelburne',
 		areaOffice: 'Greenfield/Northampton Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'SHERBORN',
+		cityOrTown: 'Sherborn',
 		areaOffice: 'Framingham Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'SHIRLEY',
+		cityOrTown: 'Shirley',
 		areaOffice: 'Lowell Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'SHREWSBURY',
+		cityOrTown: 'Shrewsbury',
 		areaOffice: 'Worcester East Area Office',
-		region: 'central'
+		textRegion: 'central'
 	}, {
-		cityOrTown: 'SHUTESBURY',
+		cityOrTown: 'Shutesbury',
 		areaOffice: 'Greenfield/Northampton Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'SOMERSET',
+		cityOrTown: 'Somerset',
 		areaOffice: 'Fall River Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'SOMERVILLE',
+		cityOrTown: 'Somerville',
 		areaOffice: 'Cambridge/Somerville Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'SOUTH EASTON',
+		cityOrTown: 'South Easton',
 		areaOffice: 'Brockton Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'SOUTH HADLEY',
+		cityOrTown: 'South Hadley',
 		areaOffice: 'Van Wart Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'SOUTHAMPTON',
+		cityOrTown: 'Southampton',
 		areaOffice: 'Holyoke Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'SOUTHBOROUGH',
+		cityOrTown: 'Southborough',
 		areaOffice: 'Framingham Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'SOUTHBRIDGE',
+		cityOrTown: 'Southbridge',
 		areaOffice: 'South Central/Blackstone Valley Area Office',
-		region: 'central'
+		textRegion: 'central'
 	}, {
-		cityOrTown: 'SOUTHWICK',
+		cityOrTown: 'Southwick',
 		areaOffice: 'Holyoke Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'SPENCER',
+		cityOrTown: 'Spencer',
 		areaOffice: 'Worcester West Area Office',
-		region: 'central'
+		textRegion: 'central'
 	}, {
-		cityOrTown: 'SPRINGFIELD, EAST**',
+		cityOrTown: 'Springfield, East**',
 		areaOffice: 'Van Wart Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'SPRINGFIELD, WEST**',
+		cityOrTown: 'Springfield, West**',
 		areaOffice: 'Holyoke Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'STERLING',
+		cityOrTown: 'Sterling',
 		areaOffice: 'Worcester East Area Office',
-		region: 'central'
+		textRegion: 'central'
 	}, {
-		cityOrTown: 'STOCKBRIDGE',
+		cityOrTown: 'Stockbridge',
 		areaOffice: 'Pittsfield Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'STONEHAM',
+		cityOrTown: 'Stoneham',
 		areaOffice: 'Malden Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'STOUGHTON',
+		cityOrTown: 'Stoughton',
 		areaOffice: 'Brockton Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'STOW',
+		cityOrTown: 'Stow',
 		areaOffice: 'Framingham Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'STURBRIDGE',
+		cityOrTown: 'Sturbridge',
 		areaOffice: 'South Central/Blackstone Valley Area Office',
-		region: 'central'
+		textRegion: 'central'
 	}, {
-		cityOrTown: 'SUNDERLAND',
+		cityOrTown: 'Sunderland',
 		areaOffice: 'Greenfield/Northampton Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'SUDBURY',
+		cityOrTown: 'Sudbury',
 		areaOffice: 'Framingham Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'SUTTON',
+		cityOrTown: 'Sutton',
 		areaOffice: 'South Central/Blackstone Valley Area Office',
-		region: 'central'
+		textRegion: 'central'
 	}, {
-		cityOrTown: 'SWAMPSCOTT',
+		cityOrTown: 'Swampscott',
 		areaOffice: 'Lynn Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'SWANSEA',
+		cityOrTown: 'Swansea',
 		areaOffice: 'Fall River Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'TAUNTON',
+		cityOrTown: 'Taunton',
 		areaOffice: 'Taunton Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'TEMPLETON',
+		cityOrTown: 'Templeton',
 		areaOffice: 'North Central Area Office',
-		region: 'central'
+		textRegion: 'central'
 	}, {
-		cityOrTown: 'TEWKSBURY',
+		cityOrTown: 'Tewksbury',
 		areaOffice: 'Lowell Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'TISBURY',
+		cityOrTown: 'Tisbury',
 		areaOffice: 'Cape & Islands Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'TOLLAND',
+		cityOrTown: 'Tolland',
 		areaOffice: 'Holyoke Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'TOPSFIELD',
+		cityOrTown: 'Topsfield',
 		areaOffice: 'Haverhill Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'TOWNSEND',
+		cityOrTown: 'Townsend',
 		areaOffice: 'North Central Area Office',
-		region: 'central'
+		textRegion: 'central'
 	}, {
-		cityOrTown: 'TRURO',
+		cityOrTown: 'Truro',
 		areaOffice: 'Cape & Islands Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'TYNGSBOROUGH',
+		cityOrTown: 'Tyngsborough',
 		areaOffice: 'Lowell Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'TYRINGHAM',
+		cityOrTown: 'Tyringham',
 		areaOffice: 'Pittsfield Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'UPTON',
+		cityOrTown: 'Upton',
 		areaOffice: 'South Central/Blackstone Valley Area Office',
-		region: 'central'
+		textRegion: 'central'
 	}, {
-		cityOrTown: 'UXBRIDGE',
+		cityOrTown: 'Uxbridge',
 		areaOffice: 'South Central/Blackstone Valley Area Office',
-		region: 'central'
+		textRegion: 'central'
 	}, {
-		cityOrTown: 'WAKEFIELD',
+		cityOrTown: 'Wakefield',
 		areaOffice: 'Malden Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'WALES',
+		cityOrTown: 'Wales',
 		areaOffice: 'South Central/Blackstone Valley Area Office',
-		region: 'central'
+		textRegion: 'central'
 	}, {
-		cityOrTown: 'WALPOLE',
+		cityOrTown: 'Walpole',
 		areaOffice: 'Arlington Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'WALTHAM',
+		cityOrTown: 'Waltham',
 		areaOffice: 'Arlington Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'WARE',
+		cityOrTown: 'Ware',
 		areaOffice: 'Van Wart Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'WAREHAM',
+		cityOrTown: 'Wareham',
 		areaOffice: 'Plymouth Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'WARREN',
+		cityOrTown: 'Warren',
 		areaOffice: 'Worcester West Area Office',
-		region: 'central'
+		textRegion: 'central'
 	}, {
-		cityOrTown: 'WARWICK',
+		cityOrTown: 'Warwick',
 		areaOffice: 'Greenfield/Northampton Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'WASHINGTON',
+		cityOrTown: 'Washington',
 		areaOffice: 'Pittsfield Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'WATERTOWN',
+		cityOrTown: 'Watertown',
 		areaOffice: 'Arlington Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'WAYLAND',
+		cityOrTown: 'Wayland',
 		areaOffice: 'Framingham Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'WEBSTER',
+		cityOrTown: 'Webster',
 		areaOffice: 'South Central/Blackstone Valley Area Office',
-		region: 'central'
+		textRegion: 'central'
 	}, {
-		cityOrTown: 'WELLESLEY',
+		cityOrTown: 'Wellesley',
 		areaOffice: 'Arlington Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'WELLFLEET',
+		cityOrTown: 'Wellfleet',
 		areaOffice: 'Cape & Islands Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'WENDELL',
+		cityOrTown: 'Wendell',
 		areaOffice: 'Greenfield/Northampton Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'WENHAM',
+		cityOrTown: 'Wenham',
 		areaOffice: 'Cape Ann Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'WEST BOYLSTON',
+		cityOrTown: 'West Boylston',
 		areaOffice: 'North Central Area Office',
-		region: 'central'
+		textRegion: 'central'
 	}, {
-		cityOrTown: 'WEST BRIDGEWATER',
+		cityOrTown: 'West Bridgewater',
 		areaOffice: 'Brockton Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'WEST BROOKFIELD',
+		cityOrTown: 'West Brookfield',
 		areaOffice: 'Worcester West Area Office',
-		region: 'central'
+		textRegion: 'central'
 	}, {
-		cityOrTown: 'WEST NEWBURY',
+		cityOrTown: 'West Newbury',
 		areaOffice: 'Haverhill Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'WEST SPRINGFIELD',
+		cityOrTown: 'West Springfield',
 		areaOffice: 'Holyoke Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'WEST STOCKBRIDGE',
+		cityOrTown: 'West Stockbridge',
 		areaOffice: 'Pittsfield Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'WEST TISBURY',
+		cityOrTown: 'West Tisbury',
 		areaOffice: 'Cape & Islands Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'WESTBOROUGH',
+		cityOrTown: 'Westborough',
 		areaOffice: 'Framingham Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'WESTFIELD',
+		cityOrTown: 'Westfield',
 		areaOffice: 'Holyoke Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'WESTFORD',
+		cityOrTown: 'Westford',
 		areaOffice: 'Lowell Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'WESTHAMPTON',
+		cityOrTown: 'Westhampton',
 		areaOffice: 'Greenfield/Northampton Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'WESTMINSTER',
+		cityOrTown: 'Westminster',
 		areaOffice: 'North Central Area Office',
-		region: 'central'
+		textRegion: 'central'
 	}, {
-		cityOrTown: 'WESTON',
+		cityOrTown: 'Weston',
 		areaOffice: 'Arlington Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'WESTPORT',
+		cityOrTown: 'Westport',
 		areaOffice: 'Fall River Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'WESTWOOD',
+		cityOrTown: 'Westwood',
 		areaOffice: 'Arlington Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'WEYMOUTH',
+		cityOrTown: 'Weymouth',
 		areaOffice: 'Coastal Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'WHATELY',
+		cityOrTown: 'Whately',
 		areaOffice: 'Greenfield/Northampton Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'WHITINSVILLE',
+		cityOrTown: 'Whitinsville',
 		areaOffice: 'South Central/Blackstone Valley Area Office',
-		region: 'central'
+		textRegion: 'central'
 	}, {
-		cityOrTown: 'WHITMAN',
+		cityOrTown: 'Whitman',
 		areaOffice: 'Plymouth Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'WILBRAHAM',
+		cityOrTown: 'Wilbraham',
 		areaOffice: 'Van Wart Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'WILLIAMSBURG',
+		cityOrTown: 'Williamsburg',
 		areaOffice: 'Greenfield/Northampton Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'WILLIAMSTOWN',
+		cityOrTown: 'Williamstown',
 		areaOffice: 'Pittsfield Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'WILMINGTON',
+		cityOrTown: 'Wilmington',
 		areaOffice: 'Cambridge/Somerville Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'WINCHENDON',
+		cityOrTown: 'Winchendon',
 		areaOffice: 'North Central Area Office',
-		region: 'central'
+		textRegion: 'central'
 	}, {
-		cityOrTown: 'WINCHESTER',
+		cityOrTown: 'Winchester',
 		areaOffice: 'Cambridge/Somerville Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'WINDSOR',
+		cityOrTown: 'Windsor',
 		areaOffice: 'Pittsfield Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'WINTHROP',
+		cityOrTown: 'Winthrop',
 		areaOffice: 'Harbor Area Office',
-		region: 'Boston'
+		textRegion: 'Boston'
 	}, {
-		cityOrTown: 'WOBURN',
+		cityOrTown: 'Woburn',
 		areaOffice: 'Cambridge/Somerville Area Office',
-		region: 'northern'
+		textRegion: 'northern'
 	}, {
-		cityOrTown: 'WORCESTER',
+		cityOrTown: 'Worcester',
 		areaOffice: 'Worcester East & West Area Offices',
-		region: 'central'
+		textRegion: 'central'
 	}, {
-		cityOrTown: 'WORONOCO',
+		cityOrTown: 'Woronoco',
 		areaOffice: 'Holyoke Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'WORTHINGTON',
+		cityOrTown: 'Worthington',
 		areaOffice: 'Greenfield/Northampton Area Office',
-		region: 'western'
+		textRegion: 'western'
 	}, {
-		cityOrTown: 'WRENTHAM',
+		cityOrTown: 'Wrentham',
 		areaOffice: 'Arlington Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}, {
-		cityOrTown: 'YARMOUTH',
+		cityOrTown: 'Yarmouth',
 		areaOffice: 'Cape & Islands Area Office',
-		region: 'southern'
+		textRegion: 'southern'
 	}]
 };
