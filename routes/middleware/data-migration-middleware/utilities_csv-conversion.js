@@ -11,6 +11,7 @@ const childrenFilePath				= './migration-data/csv-data/child.csv';
 const childDisabilitiesFilePath		= './migration-data/csv-data/child_special_need.csv';
 const mediaFeatureChildrenFilePath	= './migration-data/csv-data/media_feature_child.csv';
 const mediaEligibilitiesFilePath	= './migration-data/csv-data/media_eligibility.csv';
+const familiesFilePath				= './migration-data/csv-data/family.csv';
 
 exports.fetchSources = ( resolve, reject ) => {
 	
@@ -206,6 +207,24 @@ exports.fetchMediaEligibilities = ( resolve, reject ) => {
 		})
 		.on( 'error', err => {
 			console.error( `error fetching media eligibilities or converting to JSON => ${ err }` );
+			reject();
+		});
+};
+
+exports.fetchFamilies = ( resolve, reject ) => {
+	
+	console.log( `fetching families from CSV` );
+
+	// fetch all records from the families csv file
+	csv().fromFile( familiesFilePath )
+		// wait until the whole file has been parsed into an array of objects
+		.on( 'end_parsed', familiesArray => {
+			console.log( `families fetched` );
+			// resolve the promise with the array of disability objects
+			resolve( familiesArray );
+		})
+		.on( 'error', err => {
+			console.error( `error fetching families or converting to JSON => ${ err }` );
 			reject();
 		});
 };
