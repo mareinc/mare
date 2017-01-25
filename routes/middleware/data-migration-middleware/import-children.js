@@ -1,8 +1,6 @@
-// const fileSystem			= require( 'fs' );
 const keystone				= require( 'keystone' );
 const Child 				= keystone.list( 'Child' );
 // utility middleware
-const utilityFunctions			= require( './utilities_functions' );
 const utilityModelFetch			= require( './utilities_model-fetch' );
 // csv conversion middleware
 const CSVConversionMiddleware	= require( './utilities_csv-conversion' );
@@ -309,7 +307,7 @@ const childGenerator = exports.generateChildren();
 // health_notes
 // adoption_agc_id // NOTE: references Social Worker
 // recruitment_agc_id // NOTE: references Social Worker
-// notes // NOTE: does this become an internal note entry?  DO THIS!!!
+// notes // NOTE: does this become an internal note entry?  WE CHECKED, THIS IS INTERNAL NOTES
 // listing_date // NOTE: possibly year entered care since the fields are near eachother in the old system.  NO IT'S NOT, WE NEED TO CIRCLE BACK ON THIS FIELD!!!  Figure it out at the next meeting.  It's not online matching date
 // allow_sibling_contact
 // sibling_contact_note
@@ -332,8 +330,8 @@ const childGenerator = exports.generateChildren();
 // previous_photolisting_page
 // have_video_snapshot
 // video_snapshot_date
-// referral_packet_request_date // Add to child model
-// referral_packet_send_date // Add to child model
+// referral_packet_request_date // FROM LISA: IGNORE THESE
+// referral_packet_send_date // FROM LISA: IGNORE THESE
 // primary_language
 // registered_by
 // last_status_change_datetime
@@ -347,14 +345,4 @@ const childGenerator = exports.generateChildren();
 
 // matched in mare database => went into all the registered families, matched against all the families.  This should go right above video snapshot.  A checkbox with a date box ( conditional ).  It would be nice to have multiple dates in there.  This should be a non-editable text field that appends the new text date to it whenever the thing is run via a button on the website.  In the interim, can we add a third field which is a just a text field where Lisa will put the families they determine are true matches and enter them here.  Pitch to Lisa a 'match' model to link to Child / Family.
 
-// add referral packet fields ( 2 ) to match the old system.
-
-// specialNeedsNotes NEEDS TO BE REMOVED FROM THE NEW SYSTEM
-
-// Region for child should be a non-editable field that is drawn from the agency.  Child => Social Worker => Agency
-
-// Add an Agency field to the Child record that has a link to the agency.  This goes at the top with Region below it
-
-// CHECK THAT ADOPTION PARTIES CAN ONLY PULL FROM ADOPTION PARTY EVENTS.  REMOVE THE FIELD BECAUSE THERE WILL BE A RELATIONSHIP AT THE BOTTOM OF THE RECORD FOR EVENTS
-
-// dateMovedToResidence needs to be non-required
+// add referral packet fields ( 2 ) to match the old system. // FROM LISA: IGNORE THESE
