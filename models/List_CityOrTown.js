@@ -28,7 +28,9 @@ CityOrTown.schema.pre('save', function( next ) {
 				regionsMap[ region.get( 'region' ) ] = region.get( '_id' );
 			}
 
-			this.region = regionsMap[ this.textRegion ];
+			if( this.textRegion ) {
+				this.region = regionsMap[ this.textRegion ];
+			}
 
 			next();
 		});
