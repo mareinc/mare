@@ -528,16 +528,16 @@ Child.schema.methods.setChangeHistory = function( done ) {
 	// if the model is being saved for the first time, mark only that fact in an initial change history record
 	if(!model._original) {
 
-		changeHistory.changes = 'record created';
+		changeHistory.changes = 'record migrated';
 
 		console.log('changes: ', changeHistory);
 
 		changeHistory.save( () => {
-			console.log( 'record created - change history saved successfully' );
+			console.log( 'record migrated - change history saved successfully' );
 			done();
 		}, err => {
 			console.log( err );
-			console.log( 'error saving record created change history' );
+			console.log( 'error saving record migrated change history' );
 			done();
 		});
 
