@@ -77,7 +77,7 @@ SocialWorker.add( 'Permissions', {
 
 // Set up relationship values to show up at the bottom of the model if any exist
 SocialWorker.relationship( { ref: 'Child', refPath: 'adoptionWorker', path: 'children', label: 'children' } );
-SocialWorker.relationsihp( { ref: 'Family', refPath: 'socialWorker', path: 'families', label: 'families' } );
+SocialWorker.relationship( { ref: 'Family', refPath: 'socialWorker', path: 'families', label: 'families' } );
 SocialWorker.relationship( { ref: 'Inquiry', refPath: 'socialWorker', path: 'my-inquiries', label: 'my inquiries' } );
 SocialWorker.relationship( { ref: 'Inquiry', refPath: 'childsSocialWorker', path: 'family-inquiries', label: 'family inquiries' } );
 SocialWorker.relationship( { ref: 'Mailing List', refPath: 'socialWorkerSubscribers', path: 'mailing-lists', label: 'mailing lists' } );
