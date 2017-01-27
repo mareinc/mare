@@ -8,7 +8,6 @@ exports.getModelId = ( options, done ) => {
 		.where( options.field, options.value )
 		.exec()
 		.then( model => {
-
 			// if no model was found
 			if( !model ) {
 				// log the issue
@@ -31,22 +30,31 @@ exports.getModelId = ( options, done ) => {
 		});
 };
 
-exports.getModelMap = function( done, options ) {
-	'use strict';
+exports.mapModelFields = function( options, done ) {
+	'use strict'
 
-	const targetModel = exports.getTargetModel( options.model );
-	// store map in a variable as a performance improvement to prevent an object chain lookup for each iteration
-	let map = options.map;
+	keystone.list( options.model ).model.find()
+			.populate( options.populateField )
+			.exec()
+			.then( models => {
+				// if no models were found
+				if( !models ) {
+					// log the issue
+					console.error( `models matching ${ options.model } couldn't be found` );
+					// and move on
+					return done();
+				}
+				// loop over each returned model
+				for( let model of models ) {
+					// and save the key / value pair specified in the passed in options
+					options.namespace[ model[ options.keyField ] ] = model[ options.valueField ];
+				}
+				
+				done();
 
-	targetModel.model.find()
-		.exec()
-		.then( function( models ) {
+			}, err => {
 
-			for( let model of models ) {
-				// uses the passed in map object to bind the id in the old system ( key ) to the id in the new system ( value )
-				map[ model.oldId ] = model._id;
-			}
-
+			console.error( `error in mapModelFields() ${ err }` );
 			done();
 		});
 }
