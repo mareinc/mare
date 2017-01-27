@@ -122,7 +122,11 @@ module.exports.createFamilyRecord = ( family, pauseUntilSaved ) => {
 	// if the record has a primary language listed
 	if( family.primary_language ) {
 		// split the string on commas to create an array of languages
-		let allLanguagesArray = child.primary_language.split( ', ' );
+		let allLanguagesArray = family.primary_language.trim().replace( '/', ',' )
+														.replace( 'Haitian Creole/Eng', 'french, english' ) // This has to be done since the space is used as a delimeter in some cases
+													   .replace( '-', ',' )
+													   .replace( ' ', ',' )
+													   .split( ',' ); // redo to get dash handling back, add break on space ( 'english spanish' ) and / ( French/English )
 		// store the first language as the primary and all other languages in other
 		const [ primary, ...other ] = allLanguagesArray;
 		// map the primary language listed to the _id value in the new system
@@ -142,11 +146,14 @@ module.exports.createFamilyRecord = ( family, pauseUntilSaved ) => {
 	if( !family.family_constellation ) {
 		console.log( 'break here' );
 	}
+	if( !primaryLanguage ) {
+		console.log( 'break here' );
+	}
 
 	// populate instance for Family object
 	let newFamily = new Family.model({
 		// every family needs an email, this will generate a placeholder which will be updated during the family contacts import
-		email: `placeholder${ family.fam_id }@email.com`,
+		email: `placeholder0${ family.fam_id }@email.com`,
 		// every family needs a password, this will generate a placeholder which will be updated during the family contacts import
 		password: `${ family.fam_id }`,
 
