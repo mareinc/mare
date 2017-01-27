@@ -167,7 +167,7 @@ exports.requireUser = function(req, res, next) {
 exports.requireMigrationUser = function(req, res, next) {
 	'use strict';
 
-	if (!req.user || !req.user.canMigrateData) {
+	if (!req.user || !req.user.permissions.canMigrate) {
 		res.redirect('/');
 	} else {
 		return next();
