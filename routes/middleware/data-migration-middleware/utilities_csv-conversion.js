@@ -12,6 +12,7 @@ const childDisabilitiesFilePath		= './migration-data/csv-data/child_special_need
 const mediaFeatureChildrenFilePath	= './migration-data/csv-data/media_feature_child.csv';
 const mediaEligibilitiesFilePath	= './migration-data/csv-data/media_eligibility.csv';
 const familiesFilePath				= './migration-data/csv-data/family.csv';
+const familyRacePreferencesFilePath	= './migration-data/csv-data/family_race_preference.csv';
 
 exports.fetchSources = ( resolve, reject ) => {
 	
@@ -225,6 +226,24 @@ exports.fetchFamilies = ( resolve, reject ) => {
 		})
 		.on( 'error', err => {
 			console.error( `error fetching families or converting to JSON => ${ err }` );
+			reject();
+		});
+};
+
+exports.fetchFamilyRacePreferences = ( resolve, reject ) => {
+	
+	console.log( `fetching family race preferences from CSV` );
+
+	// fetch all records from the family race preferences csv file
+	csv().fromFile( familyRacePreferencesFilePath )
+		// wait until the whole file has been parsed into an array of objects
+		.on( 'end_parsed', familyRacePreferencesArray => {
+			console.log( `family race preferences fetched` );
+			// resolve the promise with the array of disability objects
+			resolve( familyRacePreferencesArray );
+		})
+		.on( 'error', err => {
+			console.error( `error fetching family race preferences or converting to JSON => ${ err }` );
 			reject();
 		});
 };
