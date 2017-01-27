@@ -36,6 +36,7 @@ const mediaFeatureChildImport					= require( '../middleware/data-migration-middl
 const familiesImport							= require( '../middleware/data-migration-middleware/import-families' );
 const familySocialWorkersImport					= require( '../middleware/data-migration-middleware/import-family-social-workers' );
 const familyRacePreferencesImport				= require( '../middleware/data-migration-middleware/import-family-race-preferences' );
+const familyDisabilityPreferencesImport			= require( '../middleware/data-migration-middleware/import-family-disability-preferences' );
 // const eventsImport								= require( '../middleware/data-migration-middleware/import-events' );
 // const inquiriesExtranetImport					= require( '../middleware/data-migration-middleware/import-inquiries-extranet' );
 // const inquiriesCallImport						= require( '../middleware/data-migration-middleware/import-inquiries-calls');
@@ -81,30 +82,30 @@ exports = module.exports = ( req, res ) => {
 
 		// data import
 
-		// done => { sourcesImport.importSources( req, res, done ); },							// done
-		// done => { mediaFeaturesImport.importMediaFeatures( req, res, done ); },				// done
-		// done => { agenciesImport.importAgencies( req, res, done ); },						// done
-		// done => { outsideContactImport.importOutsideContacts( req, res, done ); },			// done
-		// done => { socialWorkerImport.importSocialWorkers( req, res, done ); },				// done
-		// done => { agencyContactsImport.appendAgencyContacts( req, res, done ); },			// done
+		// done => { sourcesImport.importSources( req, res, done ); },											// done
+		// done => { mediaFeaturesImport.importMediaFeatures( req, res, done ); },								// done
+		// done => { agenciesImport.importAgencies( req, res, done ); },										// done
+		// done => { outsideContactImport.importOutsideContacts( req, res, done ); },							// done
+		// done => { socialWorkerImport.importSocialWorkers( req, res, done ); },								// done
+		// done => { agencyContactsImport.appendAgencyContacts( req, res, done ); },							// done
 		// IMPORTANT: NEED TO CHANGE THE CHILD PRE / POST SAVE HERE
 		// IMPORTANT: NEED TO CHANGE FIRST CHANGE HISTORY RECORD TO READ 'DATE IMPORTED FROM THE OLD SYSTEM'
-		// done => { childrenImport.importChildren( req, res, done ); },						// done
+		// done => { childrenImport.importChildren( req, res, done ); },										// done
 		// IMPORTANT: NEED TO CHANGE THE CHILD PRE / POST SAVE HERE
-		// done => { childMediaEligibilityImport.appendMediaEligibilities( req, res, done ); },	// done
-		// done => { childDisabilitiesImport.appendDisabilities( req, res, done ); },			// done
+		// done => { childMediaEligibilityImport.appendMediaEligibilities( req, res, done ); },				// done
+		// done => { childDisabilitiesImport.appendDisabilities( req, res, done ); },							// done
 		// IMPORTANT: NEED TO CHANGE THE CHILD PRE / POST SAVE HERE
-		// done => { childSiblingsImport.appendSiblings( req, res, done ); },					// done
-		// done => { mediaFeatureChildImport.appendChildren( req, res, done ); },				// done
+		// done => { childSiblingsImport.appendSiblings( req, res, done ); },									// done
+		// done => { mediaFeatureChildImport.appendChildren( req, res, done ); },								// done
 
-																								// 30 left undone below
+																								// 26 left undone below
 
 		// done => { childInternalNotesImport.importInternalNotes( req, res, done ); }			// not done
 		// IMPORTANT: NEED TO CHANGE THE FAMILY PRE / POST SAVE HERE
-		// done => { familiesImport.importFamilies( req, res, done ); },						// done
-		// done => { familySocialWorkersImport.appendFamilySocialWorkers( req, res, done ); },		// done
-		done => { familyRacePreferencesImport.appendFamilyRacePreferences( req, res, done ); },	// not done
-			// family special needed															// not done
+		// done => { familiesImport.importFamilies( req, res, done ); },									// done
+		// done => { familySocialWorkersImport.appendFamilySocialWorkers( req, res, done ); },				// done
+		// done => { familyRacePreferencesImport.appendFamilyRacePreferences( req, res, done ); },			// done
+		done => { familyDisabilityPreferencesImport.appendFamilyDisabilityPreferences( req, res, done ); },	// not done
 			// family support service															// not done
 			// family child																		// not done
 			// family contact																	// not done
