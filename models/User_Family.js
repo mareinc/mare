@@ -101,7 +101,7 @@ Family.add( 'Permissions', {
 		street1: { type: Types.Text, label: 'street 1', required: true, initial: true },
 		street2: { type: Types.Text, label: 'street 2', initial: true },
 		city: { type: Types.Text, label: 'city', required: true, initial: true },
-		state: { type: Types.Relationship, label: 'state', ref: 'State', required: true, initial: true },
+		state: { type: Types.Relationship, label: 'state', ref: 'State', initial: true }, // was required: data migration change ( undo if possible )
 		zipCode: { type: Types.Text, label: 'zip code', initial: true }, // was required: data migration change ( undo if possible )
 		region: { type: Types.Relationship, label: 'region', ref: 'Region', initial: true }
 	},
