@@ -1,358 +1,341 @@
-/**
- * Created by Adrian Suciu.
- */
+const keystone					= require( 'keystone' );
+const Family 					= keystone.list( 'Family' );
+// utility middleware
+const utilityFunctions			= require( './utilities_functions' );
+const utilityModelFetch			= require( './utilities_model-fetch' );
+// csv conversion middleware
+const CSVConversionMiddleware	= require( './utilities_csv-conversion' );
 
-var async					= require('async'),
-	keystone				= require('keystone'),
-	Types 					= keystone.Field.Types,
-    Family 					= keystone.list('Family'),
-	dataMigrationService	= require('../service_data-migration'),
+// create an array to hold all families.  This is created here to be available to multiple functions below
+let families;
+// create references to the maps that we stored on locals.  These are bound here to be available to multiple functions below since res can't be passed to the generator
+let statesMap,
+	gendersMap,
+	languagesMap,
+	legalStatusesMap,
+	racesMap,
+	disabilityStatusesMap,
+	disabilitiesMap,
+	familyConstellationsMap,
+	closedReasonsMap,
+	familyStatusesMap,
+	cityRegionsMap;
 
-	// mappings
-	childStatusesMap		= require('../data-migration-maps/child-status'),
-	closedStatusesMap		= require('../data-migration-maps/closed-reason'),
-	familyConstellationMap  = require('../data-migration-maps/family-constellation'),
-	gendersMap 				= require('../data-migration-maps/gender'),
-	languagesMap			= require('../data-migration-maps/language'),
-	legalStatusesMap 		= require('../data-migration-maps/legal-status'),
-	racesMap 				= require('../data-migration-maps/race'),
-	statesMap				= require('../data-migration-maps/state')
-	;
+// expose done to be available to all functions below
+let familyImportComplete;
+// expose the array storing progress through the migration run
+let migrationResults;
 
+module.exports.importFamilies = ( req, res, done ) => {
+	// expose the maps we'll need for this import
+	statesMap				= res.locals.migration.maps.states;
+	gendersMap				= res.locals.migration.maps.genders;
+	languagesMap			= res.locals.migration.maps.languages;
+	legalStatusesMap		= res.locals.migration.maps.legalStatuses;
+	racesMap				= res.locals.migration.maps.races;
+	disabilityStatusesMap	= res.locals.migration.maps.disabilityStatuses;
+	disabilitiesMap			= res.locals.migration.maps.disabilities;
+	familyConstellationsMap	= res.locals.migration.maps.familyConstellations;
+	closedReasonsMap		= res.locals.migration.maps.closedReasons;
+	familyStatusesMap		= res.locals.migration.maps.familyStatuses;
+	cityRegionsMap			= res.locals.migration.maps.cityRegions;
+	// expose done to our generator
+	familyImportComplete = done;
+	// expose our migration results array
+	migrationResults = res.locals.migrationResults;
 
-//Converter Class 
-var Converter = require("csvtojson").Converter;
-var converter = new Converter({});
+	// create a promise for converting the families CSV file to JSON
+	const familiesLoaded = new Promise( ( resolve, reject ) => {
+		// attempt to convert the families
+		CSVConversionMiddleware.fetchFamilies( resolve, reject );
+	});
+	// if the file was successfully converted, it will return the array of families
+	familiesLoaded.then( familiesArray => {
+		// store the families in a variable accessible throughout this file
+		families = familiesArray;
+		// kick off the first run of our generator
+		familyGenerator.next();
+	// if there was an error converting the families file
+	}).catch( reason => {
+		console.error( `error processing families` );
+		console.error( reason );
+		// aborting the import
+		return done();
+	});
+};
 
-// var columns = ["fam_id","oldfamily_id","listing_date","family_constellation","primary_language","is_home_studied","home_study_date",
-// 	"is_registered","registered_date","status","last_status_change_date","address_1","address_2","city","state","zip","country",
-// 	"home_phone","fax","info_pack","info_pack_sent_date","info_pack_notes","is_gathering_info","gathering_info_date",
-// 	"is_looking_for_agency","looking_for_agency_date","is_working_with_agency","working_with_agency_date","mapp_training_date",
-// 	"is_closed","closed_date","closed_reason","hasfamily_profile","family_profile_date","online_matching_date","accept_male",
-// 	"accept_female","accept_legal_risk","accept_sibling_contact","accept_birthfamily_contact","number_of_children_to_adopt",
-// 	"adoption_ages_from","adoption_ages_to","max_physical_dst_id","max_intellectual_dst_id","max_emotional_dst_id",
-// 	"social_worker_agc_id","flag_calls","notes"];
+/* a generator to allow us to control the processing of each record */
+module.exports.generateFamilies = function* generateFamilies() {
 
-// var columnsfamily_race_preference = ["frp_id","fam_id","rce_id"];
+	console.log( `creating families in the new system` );
+	// create monitor variables to assess how many records we still need to process
+	let totalRecords			= families.length,
+		remainingRecords 		= totalRecords,
+		batchCount				= 100, // number of records to be process simultaneously
+		familyNumber			= 0; // keeps track of the current family number being processed.  Used for batch processing
+	// loop through each family object we need to create a record for
+	for( let family of families ) {
+		// increment the familyNumber
+		familyNumber++;
+		// if we've hit a multiple of batchCount, pause execution to let the current records process
+		if( familyNumber % batchCount === 0 ) {
+			yield exports.createFamilyRecord( family, true );
+		} else {
+			exports.createFamilyRecord( family, false );
+		}
+		// decrement the counter keeping track of how many records we still need to process
+		remainingRecords--;
+		console.log( `families remaining: ${ remainingRecords }` );
+		// if there are no more records to process call done to move to the next migration file
+		if( remainingRecords === 0 ) {
 
-// var columnsfamily_special_need = ["fsn_id","fam_id","spn_id"];
+			const resultsMessage = `finished creating ${ totalRecords } families in the new system`;
+			// store the results of this run for display after the run
+			migrationResults.push({
+				dataSet: 'Families',
+				results: resultsMessage
+			});
 
-const csvFilePath = './migration-data/csv-data/family.csv';
-const csv = require( 'csvtojson' );
+			console.log( resultsMessage );
+			// return control to the data migration view
+			return familyImportComplete();
+		}
+	}
+};
 
-var importArrayFamRacePref;
-var importArrayFamSpecNeed;
+// a function paired with the generator to create a record and request the generator to process the next once finished
+module.exports.createFamilyRecord = ( family, pauseUntilSaved ) => {
 
-module.exports.importFamilies = function importFamilies(req, res, done) {
-	var self = this,
-		locals = res.locals;
+	// create variables to hold the primary language _id and all other language _ids
+	let primaryLanguage,
+		otherLanguagesArray = [],
+		// set gender matching preferences
+		matchingGenderPreferences = [],
+		// set legal status matching preferences with a default of wanting to see legally free kids
+		matchingLegalStatusPreferences = [ legalStatusesMap[ 'F' ] ];
 
-		async.parallel([
+	if( family.accept_female === 'Y' ) { matchingGenderPreferences.push( gendersMap[ 'F' ] ); }
+	if( family.accept_male === 'Y' ) { matchingGenderPreferences.push( gendersMap[ 'M' ] ); }
 
-			function(done) { childStatusesMap.getChildStatusesMap(req,res,done) },
-			function(done) { closedStatusesMap.getClosedReasonsMap(req,res,done) },					
-			function(done) { familyConstellationMap.getFamilyConstellationsMap(req, res, done) },
-			function(done) { gendersMap.getGendersMap(req, res, done) } ,
-			function(done) { languagesMap.getLanguagesMap(req, res, done) },
-			function(done) { legalStatusesMap.getLegalStatusesMap(req, res, done) },
-			function(done) { racesMap.getRacesMap(req,res,done) },
-			function(done) { statesMap.getStatesMap(req, res, done) },
-			function(done) {
-				converter.fromFile("./migration-data/csv-data/family_race_preference.csv",function(err,array){
-					if (err) {
-						throw "An error occurred!\n" + err;
-					} else {
+	if( family.accept_legal_risk === 'Y' ) { matchingLegalStatusPreferences.push( legalStatusesMap[ 'R' ] ); }
+	
+	// if the record has a primary language listed
+	if( family.primary_language ) {
+		// split the string on commas to create an array of languages
+		let allLanguagesArray = child.primary_language.split( ', ' );
+		// store the first language as the primary and all other languages in other
+		const [ primary, ...other ] = allLanguagesArray;
+		// map the primary language listed to the _id value in the new system
+		primaryLanguage = languagesMap[ primary.toLowerCase().trim() ];
+		// loop through the other languages if any exist
+		for( let language of other ) {
+			// map each language to the _id value in the new system and push it to the other languages array
+			otherLanguagesArray.push( languagesMap[ language.toLowerCase().trim() ] );
+		}
+	// if the record doesn't have a primary language listed
+	} else {
+		// default the primary language to English
+		primaryLanguage = languagesMap[ 'english' ];
+	}
 
-						importArrayFamRacePref = array;
-					}
-				});
+	// tests for missing required things
+	if( !family.family_constellation ) {
+		console.log( 'break here' );
+	}
 
-				done();
+	// populate instance for Family object
+	let newFamily = new Family.model({
+		// every family needs an email, this will generate a placeholder which will be updated during the family contacts import
+		email: `placeholder${ family.fam_id }@email.com`,
+		// every family needs a password, this will generate a placeholder which will be updated during the family contacts import
+		password: `${ family.fam_id }`,
+
+		permissions: {
+			// base isVerified on a valid email address when importing family contacts
+			isActive: family.status === 'A' || family.status === 'H'
+		},
+
+		registrationNumber: family.fam_id,
+		initialContact: family.listing_date ? new Date( family.listing_date ) : undefined,
+		flagCalls: family.flag_calls === 'Y',
+		familyConstellation: familyConstellationsMap[ family.family_constellation ],	// this is required in the new system
+
+		language: primaryLanguage,
+		otherLanguages: otherLanguagesArray,
+
+		address: {
+			street1: family.address_1,
+			street2: family.address_2,
+			city: family.city,
+			state: statesMap[ family.state ],
+			zipCode: utilityFunctions.padZipCode( family.zip ),
+			region: cityRegionsMap[ family.city ]
+		},
+
+		homePhone: family.home_phone,
+
+		numberOfChildren: 0, // This will be updated in the family child import
+
+		stages: {
+			gatheringInformation: {
+				started: family.is_gathering_info === 'Y',
+				date: family.gathering_info_date ? new Date( family.gathering_info_date ) : undefined
 			},
-			function(done) {
-				converter.fromFile("./migration-data/csv-data/family_special_need.csv",function(err,array){
-					if (err) {
-						throw "An error occurred!\n" + err;
-					} else {
+			lookingForAgency: {
+				started: family.is_looking_for_agency === 'Y',
+				date: family.looking_for_agency_date ? new Date( family.looking_for_agency_date ) : undefined
+			},
+			workingWithAgency: {
+				started: family.is_working_with_agency === 'Y',
+				date: family.working_with_agency_date ? new Date( family.working_with_agency_date ) : undefined
+			},
+			MAPPTrainingCompleted: {
+				completed: !!family.mapp_training_date,	// no match for this
+				date: family.mapp_training_date ? new Date( family.mapp_training_date ) : undefined
+			}
+		},
 
-						importArrayFamSpecNeed = array;
-					}
-				});
+		homestudy: {
+			completed: family.is_home_studied === 'Y',
+			initialDate: family.home_study_date ? new Date( family.home_study_date ) : undefined,
+			mostRecentDate: family.home_study_date ? new Date( family.home_study_date ) : undefined // This is correct per Lisa, it's not in the old system
+		},
 
-				done();
+		onlineMatching: { // This may come out if the new system handles this funtionality correctly
+			started: !!family.online_matching_date, // this comes from the extranet in the old system
+			date: family.online_matching_date ? new Date( family.online_matching_date ) : undefined
+		},
+
+		registeredWithMARE: {
+			registered: family.is_registered === 'Y',
+			date: family.registered_date ? new Date( family.registered_date ) : undefined,
+			status: familyStatusesMap[ family.status ]
+		},
+
+		familyProfile: {
+			created: family.has_family_profile === 'Y',
+			date: family.family_profile_date ? new Date( family.family_profile_date ) : undefined
+		},
+
+		closed: {
+			isClosed: family.is_closed === 'Y',
+			date: family.closed_date ? new Date( family.closed_date ) : undefined,
+			reason: closedReasonsMap[ family.closed_reason ]
+		},
+
+		// socialWorker: undefined, // Handled in a future import
+
+		// familyServices: { // THESE ALL COME FROM FAMILY SUPPORT SERVICE IMPORT, THE LAST ONE CAN BE IGNORED, THE SECOND TO LAST HAS A LINEUP
+		// 	mentee: 'asdf',
+		// 	mentor: 'asdf',
+		// 	mediaSpokesperson: 'asdf',
+		// 	eventPresenterOrSpokesperson: 'asdf',
+		// 	communityOutreach: 'asdf',
+		// 	fundraising: 'asdf',
+		// 	MARESupportGroupLeader: 'asdf',
+		// 	MARESupportGroupParticipant: 'asdf',
+		// 	receivesConsultationServices: 'asdf'
+		// },
+	
+		infoPacket: { // English/Electronic, English/Hardcopy, Spanish/Electronic, Spanish/Hardcopy, None
+			packet: family.info_pack === 'EE' || family.info_pack === 'EH' ? 'English' :
+					family.info_pack === 'SE' || family.info_pack === 'SH' ? 'Spanish' :
+					'none',
+			date: family.info_pack_sent_date ? new Date( family.info_pack_sent_date ) : undefined,
+			notes: family.info_pack_notes
+		},
+
+		matchingPreferences: {
+			gender: matchingGenderPreferences,
+			legalStatus: matchingLegalStatusPreferences,
+
+			adoptionAges: {
+				from: family.adoption_ages_from ? parseInt( family.adoption_ages_from, 10 ) : undefined,
+				to: family.adoption_ages_to ? parseInt( family.adoption_ages_to, 10 ) : undefined
+			},
+
+			numberOfChildrenToAdopt: family.number_of_children_to_adopt ? parseInt( family.number_of_children_to_adopt, 10 ) : undefined,
+			siblingContact: family.accept_sibling_contact === 'Y',
+			birthFamilyContact: family.accept_birth_family_contact === 'Y',
+			
+			// race: undefined, // Handled in the family race preference import
+			
+			maxNeeds: { // if these don't exist, we'll need a default value
+				physical: disabilityStatusesMap[ family.max_physical_dst_id ]  || 'none',
+				intellectual: disabilityStatusesMap[ family.max_intellectual_dst_id ] || 'none',
+				emotional: disabilityStatusesMap[ family.max_emotional_dst_id ] || 'none'
 			}
 
-
-		], function() {
-
-			let remainingRecords = 0;
-
-			csv().fromFile( csvFilePath )
-				.on( 'json', ( family, index ) => {	// this will fire once per row of data in the file
-					// increment the counter keeping track of how many records we still need to process
-					remainingRecords++;
-
-					let matchingPrefGender = "";
-					let primaryLanguage = "";
-					let otherLanguages = "";
-					let splitLanguages = [];
-					let familySelectedLanguages = [];
-					let familySelectedRaces = [];
-					let familySpecialNeeds = [];
-
-
-					if (family.accept_male != "") {
-						matchingPrefGender = family.accept_male;
-					} else if (family.accept_female != "") {
-						matchingPrefGender = family.accept_female;
-					}
-
-					splitLanguages = SplitLanguages(family.primary_language);
-
-					primaryLanguage = locals.languagesMap[splitLanguages["primary"]];
-
-					otherLanguages = splitLanguages["others"] ? splitLanguages["others"].split(",") : "";
-
-					for (var j=0; j < otherLanguages.length; j++) {
-						familySelectedLanguages.push(locals.racesMap[otherLanguages[j]]);
-					}
-					
-					familySelectedRaces = selectAllRacePrefsByFamID(family.fam_id);
-					familySpecialNeeds = selectAllSpecialNeedsByFamID(family.fam_id);
-
-					// populate instance for Family object
-					let newFamily = new Family.model({
-
-						registrationNumber: family.fam_id,
-
-						// oldfamily_id > Give this table name to Jared
-
-						initialContact: family.listing_date,
-
-						flagCalls: family.flag_calls,
-						familyConstellation: locals.familyConstellationsMap[family.family_constellation],
-
-						/*
-						* primary_language can contain multiple languages in text form, so in this case look for these separator characters: ", / \ space"
-						* the first one is the language and the other ones are going into the otherLanguages as relationship matched ids 
-						* and as comma separated values
-						*/
-
-						language: primaryLanguage,
-						otherLanguages: familySelectedLanguages, // < needs thorough testing
-
-						homestudy: {
-							completed: family.is_home_studied,
-							initialDate: family.home_study_date
-						},
-
-						registeredWithMARE: {
-							registered: family.is_registered,
-							date: family.registered_date,
-							status: locals.childStatusesMap[family.status]
-						},
-
-						address: {
-							street1: family.address_1,
-							street2: family.address_2,
-							city: family.city,
-							state: locals.statesMap[ family.state ],
-							zipCode: (family.zip.length > 4) ? family.zip : '0' + family.zip
-						},
-
-						homePhone: family.home_phone,
-
-						infoPacket: {
-							packet: family.info_pack,
-							date: family.info_pack_sent_date,
-							notes: family.info_pack_notes
-						},
-
-						stages: {
-							gatheringInformation: {
-								started: family.is_gathering_info,
-								date: family.gathering_info_date
-							},
-							lookingForAgency: {
-								started: family.is_looking_for_agency,
-								date: family.looking_for_agency_date
-							},
-							workingWithAgency: {
-								started: family.is_working_with_agency,
-								date: family.working_with_agency_date
-							},
-							MAPPTrainingCompleted: {
-								completed: family.is_mapp_training_completed,
-								date: family.mapp_training_date
-							}
-						},
-
-						closed: {
-							isClosed: family.is_closed,
-							date: family.closed_date,
-							reason: locals.closedReasonsMap[family.closed_reason]
-						},
-
-						familyProfile: {
-							created: family.hasfamily_profile,
-							date: family.family_profile_date
-						},
-
-						onlineMatching: {
-							started: family.Matching,
-							date: family.online_matching_date
-						},
-
-						matchingPreferences: {
-							gender: locals.gendersMap[matchingPrefGender],
-							legalStatus: locals.legalStatusesMap[family.accept_legal_risk],
-
-							adoptionAges: {
-								from: family.adoption_ages_from,
-								to: family.adoption_ages_to
-							},
-
-							numberOfChildrenToAdopt: family.number_of_children_to_adopt,
-							siblingContact: family.accept_sibling_contact,
-							birthFamilyContact: family.accept_birthfamily_contact,
-							
-							// go to family_race_preferences and select all rce_id based on the fam_id split and then search for thene equivalent 
-							// hash ids in the new system look at list_race table in the new system
-							race: familySelectedRaces, 
-							
-							maxNeeds: {
-								physical: family.max_physical_dst_id,
-								intellectual: family.max_intellectual_dst_id,
-								emotional: family.max_emotional_dst_id
-							},
-
-							socialWorker: family.social_worker_agc_id,
-
-							disabilities: familySpecialNeeds
-							/*
-							* so using the fam_id go to family_special_need table and get the list of all the special needs for that family id,
-							* get the text for the special need and look it up in the new system,
-							* get the hash for it and create an array of hashes if more than one
-							*
-							* */
-							// otherConsiderations: family. // no mapping
-
-						}
-
-					});
-
-					// call save method on Child object
-					newFamily.save(function(err) {
-						if (err) {
-							console.log( `[ID#${ family.chd_id }] an error occured while saving ${ newFamily.code } object.` );
-							console.log(family);
-						}
-						else {
-							console.log( `[ID#${ family.chd_id }] agency successfully saved!` );
-						}
-
-						// decrement the counter keeping track of how many records we still need to process
-						remainingRecords--;
-						// if there are no more records to process call done to move to the next migration file
-						if( remainingRecords === 0 ) {
-							done();
-						}
-					});
-				})
-				.on( 'end', () => {
-					console.log( `end` ); // this should never execute but should stay for better debugging
-				});
-			
-		});
-}
-
-function SplitLanguages(languages) {
-	var arrayOfLanguages;
-
-	if (languages && languages.length > 0) {
-		arrayOfLanguages = languages.replace(/,/g, " ").replace(/\\/g, " ").replace(/\//g, " ").split(" ");
-	}
-
-	return arrayOfLanguages ? { "primary" : arrayOfLanguages[0].toString(), "others": arrayOfLanguages.splice(1, arrayOfLanguages.length-1).join(",") } : languages;
-}
-
-function SplitRaceIDs(raceids) {
-	return raceids ? raceids.replace(/ /g, "").split(",") : "";
-}
-
-function selectAllRacePrefsByFamID(famid) {
-	var racePrefs = [];
-
-	for (var i=0; i < importArrayFamRacePref; i++) {
-		if (importArrayFamRacePref[i][1] == famid) {
-			racePrefs.push(oldRaceCodes(importArrayFamRacePref[i][2]));	
+			// disabilities: undefined // Handled in the family special need import
 		}
-	}
 
-	return racePrefs;
-}
+	});
 
-function selectAllSpecialNeedsByFamID(famid) {
-	var specNeeds = [];
-
-	for (var i=0; i < importArrayFamSpecNeed; i++) {
-		if (importArrayFamSpecNeed[i][1] == famid) {
-			specNeeds.push(oldSpecialNeedCodes(importArrayFamSpecNeed[i][2]));	
+	newFamily.save( ( err, savedModel ) => {
+		// if we run into an error
+		if( err ) {
+			// halt execution by throwing an error
+			console.log( `error: ${ err }` );
+			throw `[registration number: ${ family.fam_id }] an error occured while saving family record.`;
 		}
-	}
 
-	return specNeeds;
-}
-
-function oldRaceCodes(raceCode) {
-	var foundRace = "";
-	var oldRaceRecords = [
-							["1","AA","African American"],
-							["2","AS","Asian"],
-							["3","CA","Caucasian"],
-							["4","HI","Hispanic"],
-							["5","NA","Native American"],
-							["6","AA/AS","African American/Asian"],
-							["7","AA/CA","African American/Cauc."],
-							["8","AA/HI","African American/Hispanic"],
-							["9","AA/NA","African American/Nat.Amer"],
-							["10","AS/CA","Asian/Cauc."],
-							["11","AS/HI","Asian/Hispanic"],
-							["12","AS/NA","Asian/Nati.Amer."],
-							["13","CA/HI","Caucasian/Hispanic"],
-							["14","CA/NA","Caucasian/Nat.Amer."],
-							["15","HI/NA","Hispanic/Nat.Amer."],
-							["16","OTHER","Other- DO NOT USE"]
-	];
-
-	for (var i=0; i < oldRaceRecords; i++) {
-		if (oldRaceRecords[i][0] == raceCode) {
-			foundRace = oldRaceRecords[i][2];
-			break;
+		// fire off the next iteration of our generator after pausing
+		if( pauseUntilSaved ) {
+			familyGenerator.next();
 		}
-	}
+	});
+};
 
-	return foundRace;
-}
+// instantiates the generator used to create family records at a regulated rate
+const familyGenerator = exports.generateFamilies();
 
-function oldSpecialNeedCodes(needCode) {
-	var foundNeed = "";
-	var oldNeedCode = [
-		["70","Autism"],
-		["20","Cerebral Palsy"],
-		["10","Down Syndrome"],
-		["60","Fetal Alcohol Syndrome"],
-		["40","Hearing Impairment"],
-		["30","HIV/AIDS"],
-		["50","Visual Impairment"]
-	];
-
-	for (var i=0; i < oldNeedCode; i++) {
-		if (oldNeedCode[i][0] == needCode) {
-			foundNeed = oldNeedCode[i][1];
-			break;
-		}
-	}
-
-	return foundNeed;
-}
+// accept_birth_family_contact:"N"
+// accept_female:"N"
+// accept_legal_risk:"Y"
+// accept_male:"N"
+// accept_sibling_contact:"N"
+// address_1:"10 Oxbow Rd"
+// address_2:""
+// adoption_ages_from:""
+// adoption_ages_to:""
+// city:"Wayland"
+// closed_date:""
+// closed_reason:""
+// country:""					// FROM LISA: DON'T USE
+// fam_id:11
+// family_constellation:"UUU"
+// family_profile_date:""
+// fax:""						// FROM LISA: DON'T USE
+// flag_calls:"N"
+// gathering_info_date:""
+// has_family_profile:"N"
+// home_phone:"508-358-5071"
+// home_study_date:"7/1/1991 12:00:00 AM"
+// info_pack:"EH"
+// info_pack_notes:""
+// info_pack_sent_date:"1/1/2001 12:00:00 AM"
+// is_closed:"N"
+// is_gathering_info:"N"
+// is_home_studied:"Y"
+// is_looking_for_agency:"N"
+// is_registered:"N"
+// is_working_with_agency:"N"
+// last_status_change_date:""		// FROM LISA: IGNORE THIS FIELD, WE WON'T USE IT
+// listing_date:""					// FROM LISA: initial contact in the new system
+// looking_for_agency_date:""
+// mapp_training_date:""
+// max_emotional_dst_id:10
+// max_intellectual_dst_id:10
+// max_physical_dst_id:10
+//***** notes:"12/9/02 removed from regular Newsletter mailing list; added to Newsletter e-mail list (SM)\r\n\r\nDonor 3-20-03\r\n\r\n6/13/13- My wife and I are the adoptive parents of a then 11-year-old boy from Longmeadow who passed through six foster homes before landing with us. He is now 32, still with challenges of focus and persistence, but with great talents and possibilities (currently he's a cook at an inn in Brookline and has passed the exam to do apartment rentals). For several years Tony was part of Kim Stevens's outreach team of adopted kids speaking to various groups and testifying at the State House. My wife (a filmmaker) and I did a video for Kim of their activities.\r\n \r\nIn 2001 I wrote a novel for middle-grade children called PARENTS WANTED, winner of the Milkweed Prize for Children's Literature. It's the story of being adopted told from a 12-year-old's point of view. It relied on stories and experiences with our son Tony, while not breaching the privacy of his past families. A recent email from MARE prompted me ..."
+								// ? this is the initial change history.
+// number_of_children_to_adopt:""
+// old_family_id:""				// IGNORE
+// online_matching_date:""
+// primary_language:""
+// registered_date:""
+//***** social_worker_agc_id:364		// need to append this in a future import
+// state:"MA"
+// status:""
+// working_with_agency_date:""
+// zip:1778
