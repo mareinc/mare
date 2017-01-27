@@ -353,7 +353,7 @@ Family.schema.pre( 'save', function( next ) {
 
 	// TODO: Assign a registration number if one isn't assigned
 	async.series([
-		done => { this.setFullName( done ); }, // Create a full name for the child based on their first, middle, and last names
+		done => { this.setFullName( done ); }, // Create a full name for the family based on their first, middle, and last names
 		done => { this.setFileName( done ); }, // Create an identifying name for file uploads
 		done => { this.setUserType( done ); }, // All user types that can log in derive from the User model, this allows us to identify users better
 		done => { this.setRegistrationNumber( done ) }, // Set the registration number to the next highest available
