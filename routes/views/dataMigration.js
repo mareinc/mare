@@ -1,5 +1,6 @@
 const keystone									= require( 'keystone' );
 const async										= require( 'async' );
+
 // mappings used across imports
 const mediaTypesMap								= require( '../middleware/data-migration-maps/media-type' );
 const statesMap									= require( '../middleware/data-migration-maps/state' );
@@ -34,13 +35,13 @@ const childSiblingsImport						= require( '../middleware/data-migration-middlewa
 const mediaFeatureChildImport					= require( '../middleware/data-migration-middleware/import-media-feature-child' );
 const familiesImport							= require( '../middleware/data-migration-middleware/import-families' );
 const familySocialWorkersImport					= require( '../middleware/data-migration-middleware/import-family-social-workers' );
+const familyRacePreferencesImport				= require( '../middleware/data-migration-middleware/import-family-race-preferences' );
 // const eventsImport								= require( '../middleware/data-migration-middleware/import-events' );
 // const inquiriesExtranetImport					= require( '../middleware/data-migration-middleware/import-inquiries-extranet' );
 // const inquiriesCallImport						= require( '../middleware/data-migration-middleware/import-inquiries-calls');
 // const internalNotesImport						= require( '../middleware/data-migration-middleware/import-internal-notes' );
 // const mailingListsImport    					= require( '../middleware/data-migration-middleware/import-mailing-lists');
 // const placementsImport							= require( '../middleware/data-migration-middleware/import-placements' );
-// id mappings between systems
 
 exports = module.exports = ( req, res ) => {
     'use strict';
@@ -99,15 +100,14 @@ exports = module.exports = ( req, res ) => {
 																								// 30 left undone below
 
 		// done => { childInternalNotesImport.importInternalNotes( req, res, done ); }			// not done
+		// IMPORTANT: NEED TO CHANGE THE FAMILY PRE / POST SAVE HERE
 		// done => { familiesImport.importFamilies( req, res, done ); },						// done
-		done => { familySocialWorkersImport.appendFamilySocialWorkers( req, res, done ); }		// not done
-			// family social worker ( in family record )										// not done
-			// family backup?																	// not done
-			// family child																		// not done
-			// family contact																	// not done
-			// family race preference															// not done
+		// done => { familySocialWorkersImport.appendFamilySocialWorkers( req, res, done ); },		// done
+		done => { familyRacePreferencesImport.appendFamilyRacePreferences( req, res, done ); },	// not done
 			// family special needed															// not done
 			// family support service															// not done
+			// family child																		// not done
+			// family contact																	// not done
 			// ext family																		// not done
 			// ext family race preference														// not done
 			// recruitment checklist															// not done
