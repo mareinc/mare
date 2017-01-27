@@ -32,6 +32,8 @@ SystemBot.schema.pre('save', function( next ) {
 	'use strict';
 	// Set the userType for role based page rendering
 	this.userType = 'system bot';
+	// Populate the full name string for better identification
+	this.name.full = `${ this.name.first } ${ this.name.last }`;
 
 	next();
 });
