@@ -14,9 +14,11 @@ const racesMap 									= require( '../middleware/data-migration-maps/race' );
 const disabilityStatusesMap						= require( '../middleware/data-migration-maps/disability-status' );
 const familyConstellationsMap					= require( '../middleware/data-migration-maps/family-constellation' );
 const otherFamilyConstellationConsiderationsMap	= require( '../middleware/data-migration-maps/other-family-constellation-consideration' );
+const mediaEligibilitiesMap						= require( '../middleware/data-migration-maps/media-eligibility' );
 const disabilitiesMap							= require( '../middleware/data-migration-maps/disability' );
 const closedReasonsMap							= require( '../middleware/data-migration-maps/closed-reason' );
-const mediaEligibilitiesMap						= require( '../middleware/data-migration-maps/media-eligibility' );
+const familyStatusesMap							= require( '../middleware/data-migration-maps/family-status' );
+const cityRegionsMap							= require( '../middleware/data-migration-maps/city-region' );
 
 // data imports
 const sourcesImport								= require( '../middleware/data-migration-middleware/import-sources' );
@@ -69,17 +71,22 @@ exports = module.exports = ( req, res ) => {
 		done => { disabilityStatusesMap.getDisabilityStatusesMap( req, res, done ); },
 		done => { familyConstellationsMap.getFamilyConstellationsMap( req, res, done ); },
 		done => { otherFamilyConstellationConsiderationsMap.getOtherFamilyConstellationConsiderationsMap( req, res, done ); },
+		done => { mediaEligibilitiesMap.getMediaEligibilitiesMap( req, res, done ); },
 		done => { disabilitiesMap.getDisabilitiesMap( req, res, done ); },
 		done => { closedReasonsMap.getClosedReasonsMap( req, res, done ); },
-		done => { mediaEligibilitiesMap.getMediaEligibilitiesMap( req, res, done ); },
+		done => { familyStatusesMap.getFamilyStatusesMap( req, res, done ); },
+		done => { cityRegionsMap.getCityRegionsMap( req, res, done ); },
+
 		// data import
+
 		// done => { sourcesImport.importSources( req, res, done ); },							// done
 		// done => { mediaFeaturesImport.importMediaFeatures( req, res, done ); },				// done
 		// done => { agenciesImport.importAgencies( req, res, done ); },						// done
-		// done => { agencyContactsImport.appendAgencyContacts( req, res, done ); },			// done
 		// done => { outsideContactImport.importOutsideContacts( req, res, done ); },			// done
 		// done => { socialWorkerImport.importSocialWorkers( req, res, done ); },				// done
+		// done => { agencyContactsImport.appendAgencyContacts( req, res, done ); },			// done
 		// IMPORTANT: NEED TO CHANGE THE CHILD PRE / POST SAVE HERE
+		// IMPORTANT: NEED TO CHANGE FIRST CHANGE HISTORY RECORD TO READ 'DATE IMPORTED FROM THE OLD SYSTEM'
 		// done => { childrenImport.importChildren( req, res, done ); },						// done
 		// IMPORTANT: NEED TO CHANGE THE CHILD PRE / POST SAVE HERE
 		// done => { childMediaEligibilityImport.appendMediaEligibilities( req, res, done ); },	// done
@@ -87,10 +94,12 @@ exports = module.exports = ( req, res ) => {
 		// IMPORTANT: NEED TO CHANGE THE CHILD PRE / POST SAVE HERE
 		// done => { childSiblingsImport.appendSiblings( req, res, done ); },					// done
 		// done => { mediaFeatureChildImport.appendChildren( req, res, done ); },				// done
-																								// 29 left below
+
+																								// 30 left undone below
 
 		// done => { childInternalNotesImport.importInternalNotes( req, res, done ); }			// not done
-		// done => { familiesImport.importFamilies( req, res, done ); },						// not done
+		done => { familiesImport.importFamilies( req, res, done ); },						// not done
+			// family social worker ( in family record )										// not done
 			// family backup?																	// not done
 			// family child																		// not done
 			// family contact																	// not done
