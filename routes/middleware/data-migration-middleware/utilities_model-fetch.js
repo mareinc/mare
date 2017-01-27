@@ -2,6 +2,7 @@
 
 const Source		= keystone.list( 'Source' );
 const Agency		= keystone.list( 'Agency' );
+const Family		= keystone.list( 'Family' );
 const SocialWorker	= keystone.list( 'Social Worker' );
 const Child			= keystone.list( 'Child' );
 const MediaFeature	= keystone.list( 'Media Feature' );
@@ -146,6 +147,29 @@ module.exports.getMediaFeatureById = ( resolve, reject, mediaFeatureId ) => {
 		}, err => {
 
 			console.error( `error in getMediaFeatureById() ${ err }` );
+			reject();
+		});
+};
+
+module.exports.getFamilyById = ( resolve, reject, familyId ) => {
+
+	Family.model.findOne()
+		.where( 'registrationNumber', familyId )
+		.exec()
+		.then( retrievedFamily => {
+			// if no family was found
+			if( !retrievedFamily ) {
+				// log the issue
+				console.error( `error fetching family by registrationNumber ${ familyId }` );
+				// and resolve the promise with an undefined value
+				resolve( undefined );
+			}
+			// otherwise, accept the promise and pass back the retrieved family
+			resolve( retrievedFamily );
+
+		}, err => {
+
+			console.error( `error in getFamilyById() ${ err }` );
 			reject();
 		});
 };
