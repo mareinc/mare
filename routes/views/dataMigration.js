@@ -33,6 +33,7 @@ const childDisabilitiesImport					= require( '../middleware/data-migration-middl
 const childSiblingsImport						= require( '../middleware/data-migration-middleware/import-child-siblings' );
 const mediaFeatureChildImport					= require( '../middleware/data-migration-middleware/import-media-feature-child' );
 const familiesImport							= require( '../middleware/data-migration-middleware/import-families' );
+const familySocialWorkersImport					= require( '../middleware/data-migration-middleware/import-family-social-workers' );
 // const eventsImport								= require( '../middleware/data-migration-middleware/import-events' );
 // const inquiriesExtranetImport					= require( '../middleware/data-migration-middleware/import-inquiries-extranet' );
 // const inquiriesCallImport						= require( '../middleware/data-migration-middleware/import-inquiries-calls');
@@ -98,7 +99,8 @@ exports = module.exports = ( req, res ) => {
 																								// 30 left undone below
 
 		// done => { childInternalNotesImport.importInternalNotes( req, res, done ); }			// not done
-		done => { familiesImport.importFamilies( req, res, done ); },						// not done
+		// done => { familiesImport.importFamilies( req, res, done ); },						// done
+		done => { familySocialWorkersImport.appendFamilySocialWorkers( req, res, done ); }		// not done
 			// family social worker ( in family record )										// not done
 			// family backup?																	// not done
 			// family child																		// not done
