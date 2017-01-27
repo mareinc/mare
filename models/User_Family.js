@@ -44,7 +44,7 @@ Family.add( 'Permissions', {
 	avatar: { type: Types.CloudinaryImage, label: 'avatar', folder: 'users/families', select: true, selectPrefix: 'users/families', autoCleanup: true }, // TODO: add publicID attribute for better naming in Cloudinary
 
 	registrationNumber: { type: Number, label: 'registration number', format: false, noedit: true },
-	initialContact: { type: Types.Date, label: 'initial contact', format: 'MM/DD/YYYY', required: true, initial: true },
+	initialContact: { type: Types.Date, label: 'initial contact', format: 'MM/DD/YYYY', initial: true }, // was required: data migration change ( undo if possible )
 	flagCalls: { type: Types.Boolean, label: 'flag calls', initial: true },
 	familyConstellation: { type: Types.Relationship, label: 'family constellation', ref: 'Family Constellation', required: true, initial: true },
 	language: { type: Types.Relationship, label: 'language', ref: 'Language', required: true, initial: true },
@@ -55,8 +55,8 @@ Family.add( 'Permissions', {
 	contact1: {
 
 		name: {
-			first: { type: Types.Text, label: 'first name', required: true, initial: true },
-			last: { type: Types.Text, label: 'last name', required: true, initial: true },
+			first: { type: Types.Text, label: 'first name', initial: true }, // was required: data migration change ( undo if possible )
+			last: { type: Types.Text, label: 'last name', initial: true }, // was required: data migration change ( undo if possible )
 			full: { type: Types.Text, label: 'name', hidden: true, noedit: true, initial: false }
 		},
 
@@ -66,11 +66,11 @@ Family.add( 'Permissions', {
 		},
 
 		email: { type: Types.Email, label: 'email address', initial: true },
-		preferredCommunicationMethod: { type: Types.Select, label: 'preferred communication method', options: 'email, home phone, mobile phone, work phone, unknown', required: true, initial: true },
-		gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', required: true, initial: true },
+		preferredCommunicationMethod: { type: Types.Select, label: 'preferred communication method', options: 'email, home phone, mobile phone, work phone, unknown', initial: true }, // was required: data migration change ( undo if possible )
+		gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', initial: true }, // was required: data migration change ( undo if possible )
 		race: { type: Types.Relationship, label: 'race', ref: 'Race', many: true, required: true, initial: true },
 		occupation: { type: Types.Text, label: 'occupation', initial: true },
-		birthDate: { type: Types.Date, label: 'date of birth', format: 'MM/DD/YYYY', required: true, initial: true }
+		birthDate: { type: Types.Date, label: 'date of birth', format: 'MM/DD/YYYY', initial: true } // was required: data migration change ( undo if possible )
 	}
 
 }, 'Contact 2', {
