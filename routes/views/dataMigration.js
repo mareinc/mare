@@ -37,6 +37,7 @@ const familiesImport							= require( '../middleware/data-migration-middleware/i
 const familySocialWorkersImport					= require( '../middleware/data-migration-middleware/import-family-social-workers' );
 const familyRacePreferencesImport				= require( '../middleware/data-migration-middleware/import-family-race-preferences' );
 const familyDisabilityPreferencesImport			= require( '../middleware/data-migration-middleware/import-family-disability-preferences' );
+const familySupportServicesImport				= require( '../middleware/data-migration-middleware/import-family-support-services' );
 // const eventsImport								= require( '../middleware/data-migration-middleware/import-events' );
 // const inquiriesExtranetImport					= require( '../middleware/data-migration-middleware/import-inquiries-extranet' );
 // const inquiriesCallImport						= require( '../middleware/data-migration-middleware/import-inquiries-calls');
@@ -98,15 +99,15 @@ exports = module.exports = ( req, res ) => {
 		// done => { childSiblingsImport.appendSiblings( req, res, done ); },									// done
 		// done => { mediaFeatureChildImport.appendChildren( req, res, done ); },								// done
 
-																								// 26 left undone below
+																								// 25 left undone below
 
 		// done => { childInternalNotesImport.importInternalNotes( req, res, done ); }			// not done
 		// IMPORTANT: NEED TO CHANGE THE FAMILY PRE / POST SAVE HERE
 		// done => { familiesImport.importFamilies( req, res, done ); },									// done
 		// done => { familySocialWorkersImport.appendFamilySocialWorkers( req, res, done ); },				// done
 		// done => { familyRacePreferencesImport.appendFamilyRacePreferences( req, res, done ); },			// done
-		done => { familyDisabilityPreferencesImport.appendFamilyDisabilityPreferences( req, res, done ); },	// not done
-			// family support service															// not done
+		// done => { familyDisabilityPreferencesImport.appendFamilyDisabilityPreferences( req, res, done ); },	// done
+		done => { familySupportServicesImport.appendFamilySupportServices( req, res, done ); },															// not done
 			// family child																		// not done
 			// family contact																	// not done
 			// ext family																		// not done
