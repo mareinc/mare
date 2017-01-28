@@ -229,20 +229,6 @@ module.exports.createFamilyRecord = ( family, pauseUntilSaved ) => {
 			date: family.closed_date ? new Date( family.closed_date ) : undefined,
 			reason: closedReasonsMap[ family.closed_reason ]
 		},
-
-		// socialWorker: undefined, // Handled in a future import
-
-		// familyServices: { // THESE ALL COME FROM FAMILY SUPPORT SERVICE IMPORT, THE LAST ONE CAN BE IGNORED, THE SECOND TO LAST HAS A LINEUP
-		// 	mentee: 'asdf',
-		// 	mentor: 'asdf',
-		// 	mediaSpokesperson: 'asdf',
-		// 	eventPresenterOrSpokesperson: 'asdf',
-		// 	communityOutreach: 'asdf',
-		// 	fundraising: 'asdf',
-		// 	MARESupportGroupLeader: 'asdf',
-		// 	MARESupportGroupParticipant: 'asdf',
-		// 	receivesConsultationServices: 'asdf'
-		// },
 	
 		infoPacket: { // English/Electronic, English/Hardcopy, Spanish/Electronic, Spanish/Hardcopy, None
 			packet: family.info_pack === 'EE' || family.info_pack === 'EH' ? 'English' :
@@ -265,15 +251,11 @@ module.exports.createFamilyRecord = ( family, pauseUntilSaved ) => {
 			siblingContact: family.accept_sibling_contact === 'Y',
 			birthFamilyContact: family.accept_birth_family_contact === 'Y',
 			
-			// race: undefined, // Handled in the family race preference import
-			
 			maxNeeds: { // if these don't exist, we'll need a default value
 				physical: disabilityStatusesMap[ family.max_physical_dst_id ]  || 'none',
 				intellectual: disabilityStatusesMap[ family.max_intellectual_dst_id ] || 'none',
 				emotional: disabilityStatusesMap[ family.max_emotional_dst_id ] || 'none'
 			}
-
-			// disabilities: undefined // Handled in the family special need import
 		}
 
 	});
@@ -296,53 +278,7 @@ module.exports.createFamilyRecord = ( family, pauseUntilSaved ) => {
 // instantiates the generator used to create family records at a regulated rate
 const familyGenerator = exports.generateFamilies();
 
-// accept_birth_family_contact:"N"
-// accept_female:"N"
-// accept_legal_risk:"Y"
-// accept_male:"N"
-// accept_sibling_contact:"N"
-// address_1:"10 Oxbow Rd"
-// address_2:""
-// adoption_ages_from:""
-// adoption_ages_to:""
-// city:"Wayland"
-// closed_date:""
-// closed_reason:""
-// country:""					// FROM LISA: DON'T USE
-// fam_id:11
-// family_constellation:"UUU"
-// family_profile_date:""
-// fax:""						// FROM LISA: DON'T USE
-// flag_calls:"N"
-// gathering_info_date:""
-// has_family_profile:"N"
-// home_phone:"508-358-5071"
-// home_study_date:"7/1/1991 12:00:00 AM"
-// info_pack:"EH"
-// info_pack_notes:""
-// info_pack_sent_date:"1/1/2001 12:00:00 AM"
-// is_closed:"N"
-// is_gathering_info:"N"
-// is_home_studied:"Y"
-// is_looking_for_agency:"N"
-// is_registered:"N"
-// is_working_with_agency:"N"
-// last_status_change_date:""		// FROM LISA: IGNORE THIS FIELD, WE WON'T USE IT
-// listing_date:""					// FROM LISA: initial contact in the new system
-// looking_for_agency_date:""
-// mapp_training_date:""
-// max_emotional_dst_id:10
-// max_intellectual_dst_id:10
-// max_physical_dst_id:10
+
 //***** notes:"12/9/02 removed from regular Newsletter mailing list; added to Newsletter e-mail list (SM)\r\n\r\nDonor 3-20-03\r\n\r\n6/13/13- My wife and I are the adoptive parents of a then 11-year-old boy from Longmeadow who passed through six foster homes before landing with us. He is now 32, still with challenges of focus and persistence, but with great talents and possibilities (currently he's a cook at an inn in Brookline and has passed the exam to do apartment rentals). For several years Tony was part of Kim Stevens's outreach team of adopted kids speaking to various groups and testifying at the State House. My wife (a filmmaker) and I did a video for Kim of their activities.\r\n \r\nIn 2001 I wrote a novel for middle-grade children called PARENTS WANTED, winner of the Milkweed Prize for Children's Literature. It's the story of being adopted told from a 12-year-old's point of view. It relied on stories and experiences with our son Tony, while not breaching the privacy of his past families. A recent email from MARE prompted me ..."
-								// ? this is the initial change history.
-// number_of_children_to_adopt:""
-// old_family_id:""				// IGNORE
-// online_matching_date:""
-// primary_language:""
-// registered_date:""
-//***** social_worker_agc_id:364		// need to append this in a future import
-// state:"MA"
-// status:""
-// working_with_agency_date:""
-// zip:1778
+
+// this is the initial change history.
