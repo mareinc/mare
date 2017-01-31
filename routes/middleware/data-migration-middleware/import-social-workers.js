@@ -47,8 +47,12 @@ module.exports.importSocialWorkers = ( req, res, done ) => {
 module.exports.generateSocialWorkers = function* generateSocialWorkers() {
 	// used for debugging unique key entries
 	console.log( `getting duplicates` );
+
 	const dupes = utilityFunctions.getDuplicates( 'email', socialWorkers );
-	console.log( `${ dupes.length } duplicate social worker emails found, no errors expected` );
+
+	dupes.length === 0 ?
+		console.log( `0 duplicate social worker emails found, no errors expected` ) :
+		console.log( `${ dupes.length } duplicate social worker emails found, get ready for a bumpy ride` );
 
 	console.log( `creating social workers in the new system` );
 	// create monitor variables to assess how many records we still need to process
@@ -113,7 +117,7 @@ module.exports.createSocialWorkerRecord = ( socialWorker, pauseUntilSaved ) => {
 				last: socialWorker.last_name
 			},
 			// TODO: every social worker needs an email address, this is just a placeholder until Lisa tells us how to handle these records
-			email: socialWorker.email.toLowerCase() || `placeholder${ socialWorker.agc_id }@email.com`,
+			email: socialWorker.email ? socialWorker.email.toLowerCase() : `placeholder${ socialWorker.agc_id }@email.com`,
 
 			phone: {
 				work: socialWorker.phone
