@@ -38,6 +38,7 @@ const familySocialWorkersImport					= require( '../middleware/data-migration-mid
 const familyRacePreferencesImport				= require( '../middleware/data-migration-middleware/import-family-race-preferences' );
 const familyDisabilityPreferencesImport			= require( '../middleware/data-migration-middleware/import-family-disability-preferences' );
 const familySupportServicesImport				= require( '../middleware/data-migration-middleware/import-family-support-services' );
+const familyContactsImport						= require( '../middleware/data-migration-middleware/import-family-contacts' );
 // const eventsImport								= require( '../middleware/data-migration-middleware/import-events' );
 // const inquiriesExtranetImport					= require( '../middleware/data-migration-middleware/import-inquiries-extranet' );
 // const inquiriesCallImport						= require( '../middleware/data-migration-middleware/import-inquiries-calls');
@@ -99,27 +100,27 @@ exports = module.exports = ( req, res ) => {
 		// done => { childSiblingsImport.appendSiblings( req, res, done ); },									// done
 		// done => { mediaFeatureChildImport.appendChildren( req, res, done ); },								// done
 
-																								// 25 left undone below
+																											// 19 left undone below
 
-		// done => { childInternalNotesImport.importInternalNotes( req, res, done ); }			// not done
+		// done => { childInternalNotesImport.importInternalNotes( req, res, done ); }							// not done
 		// IMPORTANT: NEED TO CHANGE THE FAMILY PRE / POST SAVE HERE
 		// done => { familiesImport.importFamilies( req, res, done ); },									// done
 		// done => { familySocialWorkersImport.appendFamilySocialWorkers( req, res, done ); },				// done
 		// done => { familyRacePreferencesImport.appendFamilyRacePreferences( req, res, done ); },			// done
 		// done => { familyDisabilityPreferencesImport.appendFamilyDisabilityPreferences( req, res, done ); },	// done
-		done => { familySupportServicesImport.appendFamilySupportServices( req, res, done ); },															// not done
+		// done => { familySupportServicesImport.appendFamilySupportServices( req, res, done ); },	// done
+		done => { familyContactsImport.appendFamilyContacts( req, res, done ); },				// not done													// not done
 			// family child																		// not done
-			// family contact																	// not done
-			// ext family																		// not done
-			// ext family race preference														// not done
-			// recruitment checklist															// not done
+			// ext family																		// not done // FROM LISA: IGNORE
+			// ext family race preference														// not done // FROM LISA: IGNORE
+			// recruitment checklist															// not done // both child and family, old system has dates
 			// file attachment																	// not done
 			// placement source																	// not done
 		// done => { placementsImport.importPlacements( req, res, done ); }, 					// not done These are in the child records
 			// family placement																	// not done
-			// pending match																	// not done
-			// pending termination																// not done
-			// pending termination item															// not done
+			// pending match																	// not done // FROM LISA: IGNORE
+			// pending termination																// not done // FROM LISA: IGNORE
+			// pending termination item															// not done // FROM LISA: IGNORE
 		// done => { inquiriesExtranetImport.importInquiries( req, res, done ); },				// not done
 		// done => { inquiriesCallImport.importInquiries( req, res, done ); },					// not done
 			// ext automatic inquiry history													// not done
