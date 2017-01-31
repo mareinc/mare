@@ -15,6 +15,7 @@ const familiesFilePath						= './migration-data/csv-data/family.csv';
 const familyRacePreferencesFilePath			= './migration-data/csv-data/family_race_preference.csv';
 const familyDisabilityPreferencesFilePath	= './migration-data/csv-data/family_special_need.csv';
 const familySupportServicesFilePath			= './migration-data/csv-data/family_support_service.csv';
+const familyContactsFilePath				= './migration-data/csv-data/family_contact.csv';
 
 exports.fetchSources = ( resolve, reject ) => {
 	
@@ -282,6 +283,24 @@ exports.fetchFamilySupportServices = ( resolve, reject ) => {
 		})
 		.on( 'error', err => {
 			console.error( `error fetching family support services or converting to JSON => ${ err }` );
+			reject();
+		});
+};
+
+exports.fetchFamilyContacts = ( resolve, reject ) => {
+	
+	console.log( `fetching family contacts from CSV` );
+
+	// fetch all records from the family contacts csv file
+	csv().fromFile( familyContactsFilePath )
+		// wait until the whole file has been parsed into an array of objects
+		.on( 'end_parsed', familyContactsArray => {
+			console.log( `family contacts fetched` );
+			// resolve the promise with the array of family disability preference objects
+			resolve( familyContactsArray );
+		})
+		.on( 'error', err => {
+			console.error( `error fetching family contacts or converting to JSON => ${ err }` );
 			reject();
 		});
 };
