@@ -20,6 +20,7 @@ const disabilitiesMap							= require( '../middleware/data-migration-maps/disabi
 const closedReasonsMap							= require( '../middleware/data-migration-maps/closed-reason' );
 const familyStatusesMap							= require( '../middleware/data-migration-maps/family-status' );
 const cityRegionsMap							= require( '../middleware/data-migration-maps/city-region' );
+const childTypesMap								= require( '../middleware/data-migration-maps/child-type' );
 
 // data imports
 const sourcesImport								= require( '../middleware/data-migration-middleware/import-sources' );
@@ -39,6 +40,7 @@ const familyRacePreferencesImport				= require( '../middleware/data-migration-mi
 const familyDisabilityPreferencesImport			= require( '../middleware/data-migration-middleware/import-family-disability-preferences' );
 const familySupportServicesImport				= require( '../middleware/data-migration-middleware/import-family-support-services' );
 const familyContactsImport						= require( '../middleware/data-migration-middleware/import-family-contacts' );
+const familyChildrenImport						= require( '../middleware/data-migration-middleware/import-family-children' );
 // const eventsImport								= require( '../middleware/data-migration-middleware/import-events' );
 // const inquiriesExtranetImport					= require( '../middleware/data-migration-middleware/import-inquiries-extranet' );
 // const inquiriesCallImport						= require( '../middleware/data-migration-middleware/import-inquiries-calls');
@@ -81,6 +83,7 @@ exports = module.exports = ( req, res ) => {
 		done => { closedReasonsMap.getClosedReasonsMap( req, res, done ); },
 		done => { familyStatusesMap.getFamilyStatusesMap( req, res, done ); },
 		done => { cityRegionsMap.getCityRegionsMap( req, res, done ); },
+		done => { childTypesMap.getChildTypesMap( req, res, done ); },
 
 		// data import
 
@@ -100,27 +103,23 @@ exports = module.exports = ( req, res ) => {
 		// done => { childSiblingsImport.appendSiblings( req, res, done ); },									// done
 		// done => { mediaFeatureChildImport.appendChildren( req, res, done ); },								// done
 
-																											// 19 left undone below
+																											// 16 left undone below
 
 		// done => { childInternalNotesImport.importInternalNotes( req, res, done ); }							// not done
 		// IMPORTANT: NEED TO CHANGE THE FAMILY PRE / POST SAVE HERE
 		// done => { familiesImport.importFamilies( req, res, done ); },									// done
+		// IMPORTANT: NEED TO CHANGE THE FAMILY PRE / POST SAVE HERE
 		// done => { familySocialWorkersImport.appendFamilySocialWorkers( req, res, done ); },				// done
 		// done => { familyRacePreferencesImport.appendFamilyRacePreferences( req, res, done ); },			// done
 		// done => { familyDisabilityPreferencesImport.appendFamilyDisabilityPreferences( req, res, done ); },	// done
 		// done => { familySupportServicesImport.appendFamilySupportServices( req, res, done ); },	// done
-		done => { familyContactsImport.appendFamilyContacts( req, res, done ); },				// not done													// not done
-			// family child																		// not done
-			// ext family																		// not done // FROM LISA: IGNORE
-			// ext family race preference														// not done // FROM LISA: IGNORE
+		// done => { familyContactsImport.appendFamilyContacts( req, res, done ); },				// done
+		done => { familyChildrenImport.appendFamilyChildren( req, res, done ); },				// done
 			// recruitment checklist															// not done // both child and family, old system has dates
 			// file attachment																	// not done
 			// placement source																	// not done
 		// done => { placementsImport.importPlacements( req, res, done ); }, 					// not done These are in the child records
 			// family placement																	// not done
-			// pending match																	// not done // FROM LISA: IGNORE
-			// pending termination																// not done // FROM LISA: IGNORE
-			// pending termination item															// not done // FROM LISA: IGNORE
 		// done => { inquiriesExtranetImport.importInquiries( req, res, done ); },				// not done
 		// done => { inquiriesCallImport.importInquiries( req, res, done ); },					// not done
 			// ext automatic inquiry history													// not done
@@ -132,6 +131,8 @@ exports = module.exports = ( req, res ) => {
 		// done => { mailingListsImport.importMailingLists( req, res, done ); },				// not done
 			// mailing list subscription														// not done
 		// done => { internalNotesImport.importInternalNotes( req, res, done ); }				// not done
+
+		// IMPORTANT: I think family backup is family history
 
 		
 	], () => {
