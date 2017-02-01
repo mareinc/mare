@@ -56,7 +56,7 @@ module.exports.buildContactMap = () => {
 		const familyId = familyContact.fam_id;
 	 	// and use the id as a key, and add each support service's _id in a key object
 		if( familyId ) {
-
+			// TODO: possibly remove this setting as it's a 1-1 lineup and this is just adds extra compute time up front
 			let newContact = {
 				index							: familyContact.contact_index,
 				firstName						: familyContact.first_name,
