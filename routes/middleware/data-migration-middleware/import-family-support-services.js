@@ -31,7 +31,7 @@ module.exports.appendFamilySupportServices = ( req, res, done ) => {
 		// store the family support services in a variable accessible throughout this file
 		familySupportServices = familySupportServicesArray;
 		// call the function to build the sibling map
-		exports.buildSupportSerivceMap();
+		exports.buildSupportServiceMap();
 		// kick off the first run of our generator
 		familySupportServiceGenerator.next();
 	// if there was an error converting the family support services file
@@ -43,7 +43,7 @@ module.exports.appendFamilySupportServices = ( req, res, done ) => {
 	});
 };
 
-module.exports.buildSupportSerivceMap = () => {
+module.exports.buildSupportServiceMap = () => {
 	// load all family support services
 	for( let familySupportService of familySupportServices ) {
 		// for each family support service, get the family id
@@ -57,9 +57,9 @@ module.exports.buildSupportSerivceMap = () => {
 
 			} else {
 
-				let newSupportSerivceSet = new Set( [ familySupportService.ssv_id ] );
+				let newSupportServiceSet = new Set( [ familySupportService.ssv_id ] );
 				// create an entry containing a set with the one support service
-				newFamilySupportServicesMap[ familyId ] = newSupportSerivceSet;
+				newFamilySupportServicesMap[ familyId ] = newSupportServiceSet;
 			}
 		}
 	}
@@ -117,32 +117,17 @@ module.exports.updateFamilyRecord = ( ids, familyId, pauseUntilSaved ) => {
 
 	familyLoaded.then( family => {
 
-		// from Lisa: THE LAST ONE CAN BE IGNORED, THE SECOND TO LAST HAS A LINEUP
-		family.familyServices.mentee						= supportServiceIds.indexOf( 10 ) !== -1,
-		family.familyServices.mentor						= supportServiceIds.indexOf( 20 ) !== -1,
-		family.familyServices.mediaSpokesperson				= supportServiceIds.indexOf( 30 ) !== -1, // ?
-		family.familyServices.eventPresenterOrSpokesperson	= supportServiceIds.indexOf( 40 ) !== -1, // ?
-		family.familyServices.communityOutreach				= supportServiceIds.indexOf( 100 ) !== -1,
-		family.familyServices.fundraising					= supportServiceIds.indexOf( 110 ) !== -1,
-		family.familyServices.MARESupportGroupLeader		= supportServiceIds.indexOf( 80 ) !== -1,
-		family.familyServices.MARESupportGroupParticipant	= supportServiceIds.indexOf( 90 ) !== -1,
-		family.familyServices.receivesConsultationServices	= supportServiceIds.indexOf( 60 ) !== -1 // ?
-
-// old => new
-// 		'Mentee' => 'mentee'
-// 		'Mentor' => 'mentor'
-// 		'Media' => 'media spokesperson'
-// 		'Event presenter' => 'event presenter/spokesperson'
-// 		'Community Outreach' => 'community outreach'
-// 		'Fundraising' => 'fundraising'
-// 		'MARE support group leader' => 'MARE support group leader'
-// 		'MARE support group participant' => 'MARE support group participant'
-// 		'Receive consultation' => 'receives consultation services'
-
-// old options with no home:
-
-// "50","Provide consultation"
-// "70","Receive resource/referral"
+		family.familyServices.mentee						= supportServiceIds.indexOf( 10 ) !== -1;
+		family.familyServices.mentor						= supportServiceIds.indexOf( 20 ) !== -1;
+		family.familyServices.mediaSpokesperson				= supportServiceIds.indexOf( 30 ) !== -1;
+		family.familyServices.eventPresenterOrSpokesperson	= supportServiceIds.indexOf( 40 ) !== -1;
+		family.familyServices.communityOutreach				= supportServiceIds.indexOf( 100 ) !== -1;
+		family.familyServices.fundraising					= supportServiceIds.indexOf( 110 ) !== -1;
+		family.familyServices.MARESupportGroupLeader		= supportServiceIds.indexOf( 80 ) !== -1;
+		family.familyServices.MARESupportGroupParticipant	= supportServiceIds.indexOf( 90 ) !== -1;
+		family.familyServices.receivesConsultationServices	= supportServiceIds.indexOf( 50 ) !== -1 ||
+															  supportServiceIds.indexOf( 60 ) !== -1 ||
+															  supportServiceIds.indexOf( 70 ) !== -1;
 
 		// save the updated family record
 		family.save( ( err, savedModel ) => {
