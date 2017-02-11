@@ -43,3 +43,34 @@ module.exports.getDuplicates = ( field, models ) => {
 	// return the array of duplicate field values
 	return duplicates;
 }
+
+/* find and list duplicate entries for the passed in field in the given data set array */
+module.exports.getDuplicateDetails = ( field, identifier, models ) => {
+
+	let values = {},
+		duplicates = {};
+
+	for( let model of models ) {
+
+		if( !model[ field ].trim() ) { continue; }
+
+		const fieldData = model[ field ].toLowerCase();
+
+		if( !values[ fieldData ] ) {
+			values[ fieldData ] = [ model[ identifier ] ];
+		} else {
+			values[ fieldData ].push( model[ identifier ] );
+		}
+	}
+
+	for( let key in values ) {
+		if( values[ key ].length > 1 ) {
+			duplicates[ key ] = values[ key ];
+		}
+	}
+
+	console.log( duplicates );
+
+	// return the array of duplicate field values
+	return duplicates;
+}
