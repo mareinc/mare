@@ -91,7 +91,7 @@ module.exports.generateFamilyContacts = function* generateFamilyContacts() {
 	// used for debugging unique key entries
 	console.log( `getting duplicates` );
 
-	const dupes = utilityFunctions.getDuplicates( 'email', familyContacts );
+	const dupes = utilityFunctions.getDuplicateDetails( 'email', 'fam_id', familyContacts );
 
 	dupes.length === 0 ?
 		console.log( `0 duplicate family contact emails found, no errors expected` ) :

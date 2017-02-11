@@ -80,7 +80,7 @@ module.exports.generateFamilyChildren = function* generateFamilyChildren() {
 		remainingRecords 			= totalRecords,
 		batchCount					= 100, // number of records to be process simultaneously
 		familyChildrenGroupNumber	= 0; // keeps track of the current family children group number being processed.  Used for batch processing
-	// loop through each family chilren object we need to create a record for
+	// loop through each family children group object we need to create a record for
 	for( let key in newFamilyChildrenMap ) {
 		// increment the familyChildrenGroupNumber
 		familyChildrenGroupNumber++;

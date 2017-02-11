@@ -203,7 +203,7 @@ module.exports.createChildRecord = ( child, pauseUntilSaved ) => {
 			intellectualNeedsDescription: child.intellectual_disability_comment,
 			healthNotesOld: child.health_notes,
 
-			// Placement Considerations	
+			// Placement Considerations
 			recommendedFamilyConstellation: recommendedFamilyConstellations,
 			otherFamilyConstellationConsideration: otherFamilyConstellationConsiderations,
 
@@ -219,7 +219,7 @@ module.exports.createChildRecord = ( child, pauseUntilSaved ) => {
 			photolistingWriteupDate: child.photolisting_writeup_date,
 			hasPhotolistingPhoto: child.have_photolisting_photo === 'Y',
 			photolistingPhotoDate: child.photolisting_photo_date ? new Date( child.photolisting_photo_date ) : undefined,
-			isCurrentlyInPhotoListing: child.in_photolisting === 'Y', // Check this as 'Y' or 'N'
+			isCurrentlyInPhotoListing: child.in_photolisting === 'Y',
 			dateOfLastPhotoListing: child.photolisting_date ? new Date( child.photolisting_date ) : undefined,
 			photolistingPageNumber: child.photolisting_page,
 			previousPhotolistingPageNumbers: child.previous_photolisting_page,
@@ -241,8 +241,8 @@ module.exports.createChildRecord = ( child, pauseUntilSaved ) => {
 			// coalitionMeetingDate: 'not done', // IGNORE, ROLLED INTO MATCHING EVENT
 			// matchingEvent: 'not done', // see recruitment checklist, link through the media outlets // see media outlet report.  NOTE: this is combined with coalition meeting in the old system, but info should go here
 			// matchingEventDate: 'not done', // see recruitment checklist, link through the media outlets // see media outlet report.  NOTE: this is combined with coalition meeting in the old system, but info should go here
-			// adoptionParties: 'not done', // REMOVE, SEE NOTES AT BOTTOM OF FILE
-			// mediaEligibility: 'not done', // Need a map, all 300+ sources need to map to the categories in the new system, Lisa has an intern working on this
+			// adoptionParties: 'remove field',
+			// mediaEligibility: 'done in another import',
 			locationAlert: child.on_media_location_alert === 'Y',
 			place: child.media_location_alert_place
 		});
@@ -303,7 +303,7 @@ const childGenerator = exports.generateChildren();
 // physical_disability_comment
 // emotional_disability_comment
 // intellectual_disability_comment
-// in_therapy // NOTE: There's no field for this ( Y / N ), Lisa says we don't need it, it's not really used in the old system
+// in_therapy // IGNORE: Lisa says we don't need it, it's not really used in the old system
 // health_notes
 // adoption_agc_id // NOTE: references Social Worker
 // recruitment_agc_id // NOTE: references Social Worker

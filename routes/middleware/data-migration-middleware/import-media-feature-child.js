@@ -92,7 +92,7 @@ module.exports.updateMediaFeatureRecord = ( mediaFeatureChild, pauseUntilSaved )
 
     Promise.all( [ childLoaded, mediaFeatureLoaded ] ).then( values => {
 
-        const [ child, mediaFeature ] = values;
+		const [ child, mediaFeature ] = values;
 
         mediaFeature.children.push( child.get( '_id' ) );
 
