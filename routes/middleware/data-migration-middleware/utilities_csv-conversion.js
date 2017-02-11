@@ -17,6 +17,7 @@ const familyDisabilityPreferencesFilePath	= './migration-data/csv-data/family_sp
 const familySupportServicesFilePath			= './migration-data/csv-data/family_support_service.csv';
 const familyContactsFilePath				= './migration-data/csv-data/family_contact.csv';
 const familyChildrenFilePath				= './migration-data/csv-data/family_child.csv';
+const recruitmentChecklistsFilePath			= './migration-data/csv-data/recruitment_checklist.csv';
 
 exports.fetchSources = ( resolve, reject ) => {
 	
@@ -308,7 +309,7 @@ exports.fetchFamilyContacts = ( resolve, reject ) => {
 
 exports.fetchFamilyChildren = ( resolve, reject ) => {
 	
-	console.log( `fetching family contacts from CSV` );
+	console.log( `fetching family children from CSV` );
 
 	// fetch all records from the family children csv file
 	csv().fromFile( familyChildrenFilePath )
@@ -320,6 +321,24 @@ exports.fetchFamilyChildren = ( resolve, reject ) => {
 		})
 		.on( 'error', err => {
 			console.error( `error fetching family children or converting to JSON => ${ err }` );
+			reject();
+		});
+};
+
+exports.fetchRecruitmentChecklistItems = ( resolve, reject ) => {
+		
+	console.log( `fetching recruitment checklists from CSV` );
+
+	// fetch all records from the recruitment checklists csv file
+	csv().fromFile( recruitmentChecklistsFilePath )
+		// wait until the whole file has been parsed into an array of objects
+		.on( 'end_parsed', recruitmentChecklistsArray => {
+			console.log( `recruitment checklists fetched` );
+			// resolve the promise with the array of family disability preference objects
+			resolve( recruitmentChecklistsArray );
+		})
+		.on( 'error', err => {
+			console.error( `error fetching recruitment checklists or converting to JSON => ${ err }` );
 			reject();
 		});
 };
