@@ -104,7 +104,7 @@ module.exports.generateFamilyContacts = function* generateFamilyContacts() {
 		remainingRecords 			= totalRecords,
 		batchCount					= 100, // number of records to be process simultaneously
 		familyContactNumber			= 0; // keeps track of the current family contactsnumber being processed.  Used for batch processing
-	// loop through each family contactsobject we need to create a record for
+	// loop through each family contact object we need to create a record for
 	for( let key in newFamilyContactsMap ) {
 		// increment the familyContactNumber
 		familyContactNumber++;
@@ -116,7 +116,7 @@ module.exports.generateFamilyContacts = function* generateFamilyContacts() {
 		}
 		// decrement the counter keeping track of how many records we still need to process
 		remainingRecords--;
-		console.log( `family contactsgroups remaining: ${ remainingRecords }` );
+		console.log( `family contact groups remaining: ${ remainingRecords }` );
 		// if there are no more records to process call done to move to the next migration file
 		if( remainingRecords === 0 ) {
 
@@ -142,7 +142,7 @@ module.exports.updateFamilyRecord = ( contacts, familyId, pauseUntilSaved ) => {
 	// create a promise
 	const familyLoaded = new Promise( ( resolve, reject ) => {
 		// for fetching the family
-		utilityModelFetch.getFamilyById( resolve, reject, familyId );
+		utilityModelFetch.getFamilyByRegistrationNumber( resolve, reject, familyId );
 	});
 
 	familyLoaded.then( family => {

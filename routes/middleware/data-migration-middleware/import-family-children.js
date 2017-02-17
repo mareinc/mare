@@ -118,7 +118,7 @@ module.exports.updateFamilyRecord = ( children, familyId, pauseUntilSaved ) => {
 	// create a promise
 	const familyLoaded = new Promise( ( resolve, reject ) => {
 		// for fetching the family
-		utilityModelFetch.getFamilyById( resolve, reject, familyId );
+		utilityModelFetch.getFamilyByRegistrationNumber( resolve, reject, familyId );
 	});
 
 	familyLoaded.then( family => {

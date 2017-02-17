@@ -151,16 +151,16 @@ module.exports.getMediaFeatureById = ( resolve, reject, mediaFeatureId ) => {
 		});
 };
 
-module.exports.getFamilyById = ( resolve, reject, familyId ) => {
+module.exports.getFamilyByRegistrationNumber = ( resolve, reject, registrationNumber ) => {
 
 	Family.model.findOne()
-		.where( 'registrationNumber', familyId )
+		.where( 'registrationNumber', registrationNumber )
 		.exec()
 		.then( retrievedFamily => {
 			// if no family was found
 			if( !retrievedFamily ) {
 				// log the issue
-				console.error( `error fetching family by registrationNumber ${ familyId }` );
+				console.error( `error fetching family by registrationNumber ${ registrationNumber }` );
 				// and resolve the promise with an undefined value
 				resolve( undefined );
 			}
@@ -169,7 +169,7 @@ module.exports.getFamilyById = ( resolve, reject, familyId ) => {
 
 		}, err => {
 
-			console.error( `error in getFamilyById() ${ err }` );
+			console.error( `error in getFamilyByRegistrationNumber() ${ err }` );
 			reject();
 		});
 };

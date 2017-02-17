@@ -18,6 +18,7 @@ const familySupportServicesFilePath			= './migration-data/csv-data/family_suppor
 const familyContactsFilePath				= './migration-data/csv-data/family_contact.csv';
 const familyChildrenFilePath				= './migration-data/csv-data/family_child.csv';
 const recruitmentChecklistsFilePath			= './migration-data/csv-data/recruitment_checklist.csv';
+const placementsFilePath					= './migration-data/csv-data/family_placement.csv';
 
 exports.fetchSources = ( resolve, reject ) => {
 	
@@ -46,7 +47,7 @@ exports.fetchMediaFeatures = ( resolve, reject ) => {
 		// wait until the whole file has been parsed into an array of objects
 		.on( 'end_parsed', mediaFeaturesArray => {
 			console.log( `media features fetched` );
-			// resolve the promise with the array of source objects
+			// resolve the promise with the array of media feature objects
 			resolve( mediaFeaturesArray );
 		})
 		.on( 'error', err => {
@@ -172,7 +173,7 @@ exports.fetchChildDisabilities = ( resolve, reject ) => {
 		// wait until the whole file has been parsed into an array of objects
 		.on( 'end_parsed', disabilitiesArray => {
 			console.log( `child disabilities fetched` );
-			// resolve the promise with the array of disability objects
+			// resolve the promise with the array of child disability objects
 			resolve( disabilitiesArray );
 		})
 		.on( 'error', err => {
@@ -190,7 +191,7 @@ exports.fetchMediaFeatureChildren = ( resolve, reject ) => {
 		// wait until the whole file has been parsed into an array of objects
 		.on( 'end_parsed', mediaFeatureChildrenArray => {
 			console.log( `media feature children fetched` );
-			// resolve the promise with the array of disability objects
+			// resolve the promise with the array of media feature child objects
 			resolve( mediaFeatureChildrenArray );
 		})
 		.on( 'error', err => {
@@ -208,7 +209,7 @@ exports.fetchMediaEligibilities = ( resolve, reject ) => {
 		// wait until the whole file has been parsed into an array of objects
 		.on( 'end_parsed', mediaEligibilitiesArray => {
 			console.log( `media eligibilities fetched` );
-			// resolve the promise with the array of disability objects
+			// resolve the promise with the array of media eligibility objects
 			resolve( mediaEligibilitiesArray );
 		})
 		.on( 'error', err => {
@@ -226,7 +227,7 @@ exports.fetchFamilies = ( resolve, reject ) => {
 		// wait until the whole file has been parsed into an array of objects
 		.on( 'end_parsed', familiesArray => {
 			console.log( `families fetched` );
-			// resolve the promise with the array of disability objects
+			// resolve the promise with the array of family objects
 			resolve( familiesArray );
 		})
 		.on( 'error', err => {
@@ -244,7 +245,7 @@ exports.fetchFamilyRacePreferences = ( resolve, reject ) => {
 		// wait until the whole file has been parsed into an array of objects
 		.on( 'end_parsed', familyRacePreferencesArray => {
 			console.log( `family race preferences fetched` );
-			// resolve the promise with the array of disability objects
+			// resolve the promise with the array of family race objects
 			resolve( familyRacePreferencesArray );
 		})
 		.on( 'error', err => {
@@ -280,7 +281,7 @@ exports.fetchFamilySupportServices = ( resolve, reject ) => {
 		// wait until the whole file has been parsed into an array of objects
 		.on( 'end_parsed', familySupportServicesArray => {
 			console.log( `family support services fetched` );
-			// resolve the promise with the array of family disability preference objects
+			// resolve the promise with the array of family support service objects
 			resolve( familySupportServicesArray );
 		})
 		.on( 'error', err => {
@@ -298,7 +299,7 @@ exports.fetchFamilyContacts = ( resolve, reject ) => {
 		// wait until the whole file has been parsed into an array of objects
 		.on( 'end_parsed', familyContactsArray => {
 			console.log( `family contacts fetched` );
-			// resolve the promise with the array of family disability preference objects
+			// resolve the promise with the array of family contacts objects
 			resolve( familyContactsArray );
 		})
 		.on( 'error', err => {
@@ -316,7 +317,7 @@ exports.fetchFamilyChildren = ( resolve, reject ) => {
 		// wait until the whole file has been parsed into an array of objects
 		.on( 'end_parsed', familyChildrenArray => {
 			console.log( `family children fetched` );
-			// resolve the promise with the array of family disability preference objects
+			// resolve the promise with the array of family children objects
 			resolve( familyChildrenArray );
 		})
 		.on( 'error', err => {
@@ -334,11 +335,29 @@ exports.fetchRecruitmentChecklistItems = ( resolve, reject ) => {
 		// wait until the whole file has been parsed into an array of objects
 		.on( 'end_parsed', recruitmentChecklistsArray => {
 			console.log( `recruitment checklists fetched` );
-			// resolve the promise with the array of family disability preference objects
+			// resolve the promise with the array of recruitment checklist objects
 			resolve( recruitmentChecklistsArray );
 		})
 		.on( 'error', err => {
 			console.error( `error fetching recruitment checklists or converting to JSON => ${ err }` );
+			reject();
+		});
+};
+
+exports.fetchPlacements = ( resolve, reject ) => {
+		
+	console.log( `fetching placements from CSV` );
+
+	// fetch all records from the placements csv file
+	csv().fromFile( placementsFilePath )
+		// wait until the whole file has been parsed into an array of objects
+		.on( 'end_parsed', placementsArray => {
+			console.log( `placements fetched` );
+			// resolve the promise with the array of placement objects
+			resolve( placementsArray );
+		})
+		.on( 'error', err => {
+			console.error( `error fetching placements or converting to JSON => ${ err }` );
 			reject();
 		});
 };

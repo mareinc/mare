@@ -43,13 +43,12 @@ const familyDisabilityPreferencesImport			= require( '../middleware/data-migrati
 const familySupportServicesImport				= require( '../middleware/data-migration-middleware/import-family-support-services' );
 const familyContactsImport						= require( '../middleware/data-migration-middleware/import-family-contacts' );
 const familyChildrenImport						= require( '../middleware/data-migration-middleware/import-family-children' );
-// const familyRecruitmentChecklistImport			= require( '../middleware/data-migration-middleware/import-family-recruitment-checklists' );
+const placementsImport							= require( '../middleware/data-migration-middleware/import-placements' );
 // const eventsImport								= require( '../middleware/data-migration-middleware/import-events' );
 // const inquiriesExtranetImport					= require( '../middleware/data-migration-middleware/import-inquiries-extranet' );
 // const inquiriesCallImport						= require( '../middleware/data-migration-middleware/import-inquiries-calls');
 // const internalNotesImport						= require( '../middleware/data-migration-middleware/import-internal-notes' );
 // const mailingListsImport    					= require( '../middleware/data-migration-middleware/import-mailing-lists');
-// const placementsImport							= require( '../middleware/data-migration-middleware/import-placements' );
 
 exports = module.exports = ( req, res ) => {
     'use strict';
@@ -107,8 +106,8 @@ exports = module.exports = ( req, res ) => {
 		
 		// IMPORTANT: NEED TO CHANGE THE CHILD PRE / POST SAVE HERE
 		// done => { childSiblingsImport.appendSiblings( req, res, done ); },									// done
-	// done => { childRecruitmentChecklistImport.appendChildRecruitmentChecklists( req, res ,done ); },		// not done // DON'T NEED TO DO
-		done => { childMediaFeaturesImport.appendMediaFeatures( req, res, done ); },							// done
+		// done => { childRecruitmentChecklistImport.appendChildRecruitmentChecklists( req, res ,done ); },		// not done // DON'T NEED TO DO
+		// done => { childMediaFeaturesImport.appendMediaFeatures( req, res, done ); },							// not done
 		// done => { mediaFeatureChildImport.appendChildren( req, res, done ); },								// done
 		
 		// IMPORTANT: NEED TO CHANGE THE FAMILY PRE / POST SAVE HERE
@@ -121,11 +120,11 @@ exports = module.exports = ( req, res ) => {
 		// done => { familySupportServicesImport.appendFamilySupportServices( req, res, done ); },				// done
 		// done => { familyContactsImport.appendFamilyContacts( req, res, done ); },							// done
 		// done => { familyChildrenImport.appendFamilyChildren( req, res, done ); },							// done
-	// done => { familyRecruitmentChecklistImport.appendFamilyRecruitmentChecklists( req, res ,done );		// not done // DON'T NEED TO DO
+		// done => { familyRecruitmentChecklistImport.appendFamilyRecruitmentChecklists( req, res ,done );		// not done // DON'T NEED TO DO
 
 		// 13 left undone below
 
-		// done => { placementsImport.importPlacements( req, res, done ); }, 									// not done family_placement.  Apparently I said these are in the child records also, but I'm not seeing it now, 
+		done => { placementsImport.importPlacements( req, res, done ); }, 										// not done family_placement.  Apparently I said these are in the child records also, but I'm not seeing it now, 
 		// placement source																						// not done
 		// done => { inquiriesCallImport.importInquiries( req, res, done ); },									// not done
 			// call agency																						// not done

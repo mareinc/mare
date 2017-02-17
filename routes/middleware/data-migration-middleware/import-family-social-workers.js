@@ -84,7 +84,7 @@ module.exports.createFamilyRecord = ( family, pauseUntilSaved ) => {
 	// create a promise
 	const familyLoaded = new Promise( ( resolve, reject ) => {
 		// for fetching the family
-		utilityModelFetch.getFamilyById( resolve, reject, family.fam_id );
+		utilityModelFetch.getFamilyByRegistrationNumber( resolve, reject, family.fam_id );
 	});
 	// create a promise
 	const socialWorkerLoaded = new Promise( ( resolve, reject ) => {
