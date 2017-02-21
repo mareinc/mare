@@ -19,6 +19,7 @@ const familyContactsFilePath				= './migration-data/csv-data/family_contact.csv'
 const familyChildrenFilePath				= './migration-data/csv-data/family_child.csv';
 const recruitmentChecklistsFilePath			= './migration-data/csv-data/recruitment_checklist.csv';
 const placementsFilePath					= './migration-data/csv-data/family_placement.csv';
+const eventsFilePath						= './migration-data/csv-data/event.csv';
 
 exports.fetchSources = ( resolve, reject ) => {
 	
@@ -358,6 +359,24 @@ exports.fetchPlacements = ( resolve, reject ) => {
 		})
 		.on( 'error', err => {
 			console.error( `error fetching placements or converting to JSON => ${ err }` );
+			reject();
+		});
+};
+
+exports.fetchEvents = ( resolve, reject ) => {
+	
+	console.log( `fetching events from CSV` );
+
+	// fetch all records from the events csv file
+	csv().fromFile( eventsFilePath )
+		// wait until the whole file has been parsed into an array of objects
+		.on( 'end_parsed', eventsArray => {
+			console.log( `events fetched` );
+			// resolve the promise with the array of event objects
+			resolve( eventsArray );
+		})
+		.on( 'error', err => {
+			console.error( `error fetching events or converting to JSON => ${ err }` );
 			reject();
 		});
 };
