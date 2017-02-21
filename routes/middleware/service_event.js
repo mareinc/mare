@@ -194,8 +194,9 @@ exports.createEvent = function createEvent( locals, event, resolve, reject ) {
 			zipCode: event.zipCode
 		},
 		contactEmail: event.contactEmail,
-		date: event.date,
+		startDate: event.startDate,
 		startTime: event.startTime,
+		endDate: event.endDate,
 		endTime: event.endTime,
 		description: event.description,
 		isActive: false,
