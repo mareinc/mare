@@ -44,7 +44,7 @@ const familySupportServicesImport				= require( '../middleware/data-migration-mi
 const familyContactsImport						= require( '../middleware/data-migration-middleware/import-family-contacts' );
 const familyChildrenImport						= require( '../middleware/data-migration-middleware/import-family-children' );
 const placementsImport							= require( '../middleware/data-migration-middleware/import-placements' );
-// const eventsImport								= require( '../middleware/data-migration-middleware/import-events' );
+const eventsImport								= require( '../middleware/data-migration-middleware/import-events' );
 // const inquiriesExtranetImport					= require( '../middleware/data-migration-middleware/import-inquiries-extranet' );
 // const inquiriesCallImport						= require( '../middleware/data-migration-middleware/import-inquiries-calls');
 // const internalNotesImport						= require( '../middleware/data-migration-middleware/import-internal-notes' );
@@ -124,13 +124,13 @@ exports = module.exports = ( req, res ) => {
 
 		// 13 left undone below
 
-		done => { placementsImport.importPlacements( req, res, done ); }, 										// not done family_placement.  Apparently I said these are in the child records also, but I'm not seeing it now, 
+		// done => { placementsImport.importPlacements( req, res, done ); }, 									// not done family_placement.  TODO: Get details to Brian so he can help you track down the field matches 
 		// placement source																						// not done
 		// done => { inquiriesCallImport.importInquiries( req, res, done ); },									// not done
 			// call agency																						// not done
 			// call child																						// not done
 			// call note																						// not done
-		// done => { eventsImport.importEvents( req, res, done ); },											// not done
+		done => { eventsImport.importEvents( req, res, done ); },											// not done
 			// event attendee																					// not done
 		// done => { mailingListsImport.importMailingLists( req, res, done ); },								// not done
 			// mailing list subscription																		// not done
