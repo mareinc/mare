@@ -2,7 +2,7 @@ const keystone	= require( 'keystone' );
 const Types		= keystone.Field.Types;
 const async		= require( 'async' );
 // Export to make it available using require.  The keystone.list import throws a ReferenceError when importing a list that comes later when sorting alphabetically
-const OutsideContactGroup = require( './OutsideContactGroup' );
+const ContactGroup = require( './ContactGroup' );
 
 // Create model
 var OutsideContact = new keystone.List( 'Outside Contact', {
@@ -18,7 +18,7 @@ OutsideContact.add( 'General Information', {
 	organization: { type: Types.Text, label: 'organization', initial: true },
 	identifyingName: { type: Types.Text, label: 'identifying name', hidden: true, noedit: true, initial: false },
 
-	groups: { type: Types.Relationship, label: 'groups', ref: 'Outside Contact Group', many: true, required: true, initial: true }
+	contactGroups: { type: Types.Relationship, label: 'contact groups', ref: 'Contact Group', many: true, required: true, initial: true }
 
 }, 'Contact Information', {
 
@@ -82,19 +82,19 @@ OutsideContact.schema.methods.setIdentifyingName = function( done ) {
 
 OutsideContact.schema.methods.setVolunteerStatus = function( done ) {
 	// get all the contact groups
-	var contactGroups	= this.groups;
+	var contactGroups	= this.contactGroups;
 	// reset the isVolunteer flag to allow a fresh check every save
 	this.isVolunteer	= false;
-	// loop through each of the outside contact groups the user should be added to and mark the outside contact as a volunteer
-	// if they are part of the 'volunteers' outside contact group
-	OutsideContactGroup.model.find()
+	// loop through each of the contact groups the user should be added to and mark the outside contact as a volunteer
+	// if they are part of the 'volunteers' contact group
+	ContactGroup.model.find()
 			.where( { _id: { $in: contactGroups } } )
 			.exec()
-			.then( outsideContactGroups => {
-				// create an array from just the names of each outside contact group
-				const OutsideContactGroupNames = outsideContactGroups.map( outsideContactGroup => outsideContactGroup.get( 'name' ) );
+			.then( contactGroups => {
+				// create an array from just the names of each contact group
+				const contactGroupNames = contactGroups.map( contactGroup => contactGroup.get( 'name' ) );
 				// events have outside contacts who are volunteers listed, we need to capture a reference to which outside contacts are volunteers
-				if( OutsideContactGroupNames.includes( 'volunteers' ) ) {
+				if( contactGroupNames.includes( 'volunteers' ) ) {
 					this.isVolunteer = true;
 				}
 
