@@ -60,8 +60,14 @@ exports = module.exports = function(req, res) {
 					locals.eventMissing = _.isEmpty(event);
 					// Find the target event for the current page and store the object in locals for access during templating
 					locals.event = event;
+					// Check to see if the event spans multiple days
+					var multidayEvent = event.startDate.getTime() !== event.endDate.getTime();
 					// Pull the date and time into a string for easier templating
-					event.dateTimeString = moment(event.date).format('dddd MMMM Do, YYYY') + ' from ' + event.startTime + ' - ' + event.endTime;
+					if( multidayEvent ) {
+						event.dateTimeString = moment( event.startDate ).format( 'dddd MMMM Do, YYYY' ) + ' at ' + event.startTime + ' to ' + moment( event.endDate ).format( 'dddd MMMM Do, YYYY' ) + ' at ' + event.endTime;
+					} else {
+						event.dateTimeString = moment(event.startDate).format('dddd MMMM Do, YYYY') + ' from ' + event.startTime + ' - ' + event.endTime;
+					}
 					// Determine whether or not address information exists for the event, which is helpful during rendering
 					// street1 is required, so this is enough to tell us if the address has been populated
 					event.hasAddress = event.address && event.address.street1 ? true : false;

@@ -9,6 +9,9 @@ var keystone				= require( 'keystone' ),
 	User					= require( './User' );
 	ChangeHistoryMiddleware	= require( '../routes/middleware/models_change-history' );
 
+// Export to make it available using require.  The keystone.list import throws a ReferenceError when importing a list that comes later when sorting alphabetically
+const ContactGroup = require( './ContactGroup' );
+
 // Create model
 var SocialWorker = new keystone.List( 'Social Worker', {
 	inherits	: User,
@@ -34,7 +37,9 @@ SocialWorker.add( 'Permissions', {
 		full: { type: Types.Text, label: 'name', hidden: true, noedit: true, initial: false }
 	},
 
-	avatar: { type: Types.CloudinaryImage, label: 'avatar', folder: 'users/social workers', select: true, selectPrefix: 'users/social workers', autoCleanup: true } // TODO: add publicID attribute for better naming in Cloudinary
+	avatar: { type: Types.CloudinaryImage, label: 'avatar', folder: 'users/social workers', select: true, selectPrefix: 'users/social workers', autoCleanup: true }, // TODO: add publicID attribute for better naming in Cloudinary
+
+	contactGroups: { type: Types.Relationship, label: 'contact groups', ref: 'Contact Group', many: true, initial: true }
 
 }, 'Contact Information', {
 

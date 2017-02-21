@@ -21,6 +21,9 @@ var keystone				= require( 'keystone' ),
 	User					= require( './User' ),
 	ChangeHistoryMiddleware	= require( '../routes/middleware/models_change-history' );
 
+// Export to make it available using require.  The keystone.list import throws a ReferenceError when importing a list that comes later when sorting alphabetically
+const ContactGroup = require( './ContactGroup' );
+
 // Create model
 var Family = new keystone.List( 'Family', {
 	inherits	: User,
@@ -48,7 +51,9 @@ Family.add( 'Permissions', {
 	flagCalls: { type: Types.Boolean, label: 'flag calls', initial: true },
 	familyConstellation: { type: Types.Relationship, label: 'family constellation', ref: 'Family Constellation', required: true, initial: true },
 	language: { type: Types.Relationship, label: 'language', ref: 'Language', required: true, initial: true },
-	otherLanguages: { type: Types.Relationship, label: 'other languages', ref: 'Language', many: true, initial: true }
+	otherLanguages: { type: Types.Relationship, label: 'other languages', ref: 'Language', many: true, initial: true },
+
+	contactGroups: { type: Types.Relationship, label: 'contact groups', ref: 'Contact Group', many: true, initial: true }
 
 }, 'Contact 1', {
 

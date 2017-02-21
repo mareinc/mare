@@ -72,8 +72,14 @@ exports = module.exports = function(req, res) {
 							// Determine whether the user has already attended the event
 							event.attended = attendeeID === userID ? true : false;
 						});
+						// Check to see if the event spans multiple days
+						var multidayEvent = event.startDate.getTime() !== event.endDate.getTime();
 						// Pull the date and time into a string for easier templating
-						event.dateString = moment(event.date).format('dddd MMMM Do, YYYY');
+						if( multidayEvent ) {
+							event.dateString = moment( event.startDate ).format( 'dddd MMMM Do, YYYY' ) + ' to ' + moment( event.endDate ).format( 'dddd MMMM Do, YYYY' );
+						} else {
+							event.dateString = moment(event.startDate).format('dddd MMMM Do, YYYY');
+						}
 						// Store all events in an array on locals to expose them during templating
 						locals.events.push(event);
 					});

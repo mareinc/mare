@@ -1,5 +1,5 @@
 exports.create = {
-	'Outside Contact Group': [{
+	'Contact Group': [{
 		name: '2007 family follow-up project'
 	}, {
 		name: 'adoption mixer families 2002'
