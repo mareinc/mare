@@ -24,10 +24,10 @@ Event.add({ heading: 'General Information' }, {
 }, { heading: 'Address' }, {
 
 	address: {
-	    street1: { type: Types.Text, label: 'street 1', required: true, initial: true },
+	    street1: { type: Types.Text, label: 'street 1', initial: true },
 		street2: { type: Types.Text, label: 'street 2', initial: true },
-		city: { type: Types.Text, label: 'city', required: true, initial: true },
-		state: { type: Types.Relationship, label: 'state', ref: 'State', required: true, initial: true },
+		city: { type: Types.Text, label: 'city', initial: true },
+		state: { type: Types.Relationship, label: 'state', ref: 'State', initial: true },
 		zipCode: { type: Types.Text, label: 'zip code', initial: true }
 	},
 
@@ -36,8 +36,9 @@ Event.add({ heading: 'General Information' }, {
 
 }, { heading: 'Details' }, {
 
-	date: { type: Types.Date, label: 'date', format: 'MM/DD/YYYY', initial: true },
+	startDate: { type: Types.Date, label: 'start date', format: 'MM/DD/YYYY', required: true, initial: true },
 	startTime: { type: Types.Text, label: 'start time', required: true, initial: true },
+	endDate: { type: Types.Date, label: 'end date', format: 'MM/DD/YYYY', required: true, initial: true },
 	endTime: { type: Types.Text, label: 'end time', required: true, initial: true },
 	description: { type: Types.Html, label: 'description', wysiwyg: true, initial: true }
 
