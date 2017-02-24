@@ -126,6 +126,8 @@ module.exports.createEventRecord = ( event, pauseUntilSaved ) => {
 
 			// this is used to determine whether we should send an automatic email to the creator when their event becomes active
 			createdViaWebsite: false,
+
+			oldId: event.evt_id
 		});
 
 		newEvent.save( ( err, savedModel ) => {
