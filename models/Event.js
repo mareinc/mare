@@ -65,6 +65,11 @@ Event.add({ heading: 'General Information' }, {
 	// system field to store an appropriate file prefix
 	fileName: { type: Types.Text, hidden: true }
 
+/* Container for data migration fields ( these should be kept until after phase 2 and the old system is phased out completely ) */
+}, {
+	// system field to store an appropriate file prefix
+	oldId: { type: Types.Text, hidden: true }
+
 });
 
 // Pre Save
