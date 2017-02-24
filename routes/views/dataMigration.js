@@ -45,6 +45,7 @@ const familyContactsImport						= require( '../middleware/data-migration-middlew
 const familyChildrenImport						= require( '../middleware/data-migration-middleware/import-family-children' );
 const placementsImport							= require( '../middleware/data-migration-middleware/import-placements' );
 const eventsImport								= require( '../middleware/data-migration-middleware/import-events' );
+const eventAttendeeImport						= require( '../middleware/data-migration-middleware/import-event-attendees' );
 // const inquiriesExtranetImport					= require( '../middleware/data-migration-middleware/import-inquiries-extranet' );
 // const inquiriesCallImport						= require( '../middleware/data-migration-middleware/import-inquiries-calls');
 // const internalNotesImport						= require( '../middleware/data-migration-middleware/import-internal-notes' );
@@ -130,8 +131,8 @@ exports = module.exports = ( req, res ) => {
 			// call agency																						// not done
 			// call child																						// not done
 			// call note																						// not done
-		done => { eventsImport.importEvents( req, res, done ); },											// not done
-			// event attendee																					// not done
+		// done => { eventsImport.importEvents( req, res, done ); },											// done
+		done => { eventAttendeeImport.appendEventAttendees( req, res, done ); },										// not done
 		// done => { mailingListsImport.importMailingLists( req, res, done ); },								// not done
 			// mailing list subscription																		// not done
 		// IMPORTANT: I think family backup is family internal notes

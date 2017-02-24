@@ -20,6 +20,7 @@ const familyChildrenFilePath				= './migration-data/csv-data/family_child.csv';
 const recruitmentChecklistsFilePath			= './migration-data/csv-data/recruitment_checklist.csv';
 const placementsFilePath					= './migration-data/csv-data/family_placement.csv';
 const eventsFilePath						= './migration-data/csv-data/event.csv';
+const eventAttendeesFilePath				= './migration-data/csv-data/event_attendee.csv';
 
 exports.fetchSources = ( resolve, reject ) => {
 	
@@ -377,6 +378,24 @@ exports.fetchEvents = ( resolve, reject ) => {
 		})
 		.on( 'error', err => {
 			console.error( `error fetching events or converting to JSON => ${ err }` );
+			reject();
+		});
+};
+
+exports.fetchEventAttendees = ( resolve, reject ) => {
+	
+	console.log( `fetching event attendees from CSV` );
+
+	// fetch all records from the event attendees csv file
+	csv().fromFile( eventAttendeesFilePath )
+		// wait until the whole file has been parsed into an array of objects
+		.on( 'end_parsed', eventAttendeesArray => {
+			console.log( `eventAttendees fetched` );
+			// resolve the promise with the array of event objects
+			resolve( eventAttendeesArray );
+		})
+		.on( 'error', err => {
+			console.error( `error fetching event attendees or converting to JSON => ${ err }` );
 			reject();
 		});
 };

@@ -6,6 +6,7 @@ const Family		= keystone.list( 'Family' );
 const SocialWorker	= keystone.list( 'Social Worker' );
 const Child			= keystone.list( 'Child' );
 const MediaFeature	= keystone.list( 'Media Feature' );
+const Event			= keystone.list( 'Event' );
 
 module.exports.getSourceById = ( resolve, reject, sourceId ) => {
 
@@ -72,6 +73,35 @@ module.exports.getSocialWorkerById = ( resolve, reject, socialWorkerId ) => {
 		}, err => {
 
 			console.error( `error in getSocialWorkerById() ${ err }` );
+			reject();
+		});
+};
+
+module.exports.getSocialWorkerIdsByOldIds = ( resolve, reject, oldIds ) => {
+
+	SocialWorker.model.find()
+		.where( { 'oldId': { $in: oldIds } } )
+		.exec()
+		.then( retrievedSocialWorkers => {
+			// if no social workers were found
+			if( retrievedSocialWorkers.length === 0 ) {
+				// log the issue
+				console.error( `error fetching social worker IDs by old ids ${ oldIds }` );
+				// and resolve the promise with an undefined value
+				resolve( undefined );
+			}
+
+			let socialWorkerIds = [];
+
+			for( socialWorker of retrievedSocialWorkers ) {
+				socialWorkerIds.push( socialWorker._id );
+			}
+			// otherwise, accept the promise and pass back the retrieved social worker IDs
+			resolve( socialWorkerIds );
+
+		}, err => {
+
+			console.error( `error in getSocialWorkerIdsByOldIds() ${ err }` );
 			reject();
 		});
 };
@@ -170,6 +200,58 @@ module.exports.getFamilyByRegistrationNumber = ( resolve, reject, registrationNu
 		}, err => {
 
 			console.error( `error in getFamilyByRegistrationNumber() ${ err }` );
+			reject();
+		});
+};
+
+module.exports.getFamilyIdsByRegistrationNumbers = ( resolve, reject, registrationNumbers ) => {
+
+	Family.model.find()
+		.where( { 'registrationNumber': { $in: registrationNumbers } } )
+		.exec()
+		.then( retrievedFamilies => {
+			// if no families were found
+			if( retrievedFamilies.length === 0 ) {
+				// log the issue
+				console.error( `error fetching family IDs by registration numbers ${ registrationNumbers }` );
+				// and resolve the promise with an undefined value
+				resolve( undefined );
+			}
+
+			let familyIds = [];
+
+			for( family of retrievedFamilies ) {
+				familyIds.push( family._id );
+			}
+			// otherwise, accept the promise and pass back the retrieved family IDs
+			resolve( familyIds );
+
+		}, err => {
+
+			console.error( `error in getFamilyIdsByRegistrationNumbers() ${ err }` );
+			reject();
+		});
+};
+
+module.exports.getEventById = ( resolve, reject, eventId ) => {
+
+	Event.model.findOne()
+		.where( 'oldId', eventId )
+		.exec()
+		.then( retrievedEvent => {
+			// if no event was found
+			if( !retrievedEvent ) {
+				// log the issue
+				console.error( `error fetching event by oldId ${ eventId }` );
+				// and reject the promise
+				reject();
+			}
+			// otherwise, accept the promise and pass back the retrieved event
+			resolve( retrievedEvent );
+
+		}, err => {
+
+			console.error( `error in getEventById() ${ err }` );
 			reject();
 		});
 };
