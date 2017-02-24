@@ -5,7 +5,7 @@ const async										= require( 'async' );
 const mediaTypesMap								= require( '../middleware/data-migration-maps/media-type' );
 const statesMap									= require( '../middleware/data-migration-maps/state' );
 const regionsMap								= require( '../middleware/data-migration-maps/region' );
-const outsideContactGroupsMap					= require( '../middleware/data-migration-maps/outside-contact-group' );
+const contactGroupsMap							= require( '../middleware/data-migration-maps/outside-contact-group' );
 const mailingListsMap							= require( '../middleware/data-migration-maps/mailing-list' );
 const childStatusesMap							= require( '../middleware/data-migration-maps/child-status' );
 const gendersMap 								= require( '../middleware/data-migration-maps/gender' );
@@ -70,7 +70,7 @@ exports = module.exports = ( req, res ) => {
 		done => { mediaTypesMap.getMediaTypesMap( req, res, done ); },
 		done => { statesMap.getStatesMap( req, res, done); },
 		done => { regionsMap.getRegionsMap( req, res, done ); },
-		done => { outsideContactGroupsMap.getOutsideContactGroupsMap( req, res, done ); },
+		done => { contactGroupsMap.getContactGroupsMap( req, res, done ); },
 		done => { mailingListsMap.getMailingListsMap( req, res, done ); },
 		done => { childStatusesMap.getChildStatusesMap( req, res, done ); },
 		done => { gendersMap.getGendersMap( req, res, done ); },

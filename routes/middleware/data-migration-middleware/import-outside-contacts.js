@@ -8,7 +8,7 @@ const CSVConversionMiddleware	= require( './utilities_csv-conversion' );
 // create an array to hold all outside contacts.  This is created here to be available to multiple functions below
 let outsideContacts;
 // create references to the maps that we stored on locals.  These are bound here to be available to multiple functions below since res can't be passed to the generator
-let outsideContactGroupsMap,
+let contactGroupsMap,
 	statesMap;
 // expose done to be available to all functions below
 let outsideContactsImportComplete;
@@ -17,7 +17,7 @@ let migrationResults;
 
 module.exports.importOutsideContacts = ( req, res, done ) => {
 	// expose the maps we'll need for this import
-	outsideContactGroupsMap	= res.locals.migration.maps.outsideContactGroups;
+	contactGroupsMap	= res.locals.migration.maps.contactGroups;
 	statesMap				= res.locals.migration.maps.states;
 	// expose done to our generator
 	outsideContactsImportComplete = done;
@@ -88,7 +88,7 @@ module.exports.createOutsideContactRecord = ( outsideContact, pauseUntilSaved ) 
 	// populate instance for Outside Contact object
 	let newOutsideContact = new OutsideContact.model({
 
-		groups: outsideContactGroupsMap[ outsideContact.contact_type ],
+		groups: contactGroupsMap[ outsideContact.contact_type ],
 
 		// from the outside_contact table get the ocn_id and go to mailing_list_subscription table, where based on the ocn_id, get the mlt_id and then
 		// go to mailing_list table and get the name associated with the mlt_id, once you have the name, go to the new system and fetch the new hash id
