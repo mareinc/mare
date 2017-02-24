@@ -51,15 +51,15 @@ module.exports.getDuplicateDetails = ( field, identifier, models ) => {
 		duplicates = {};
 
 	for( let model of models ) {
+		// convert any numbers to strings, then normalize the field contents
+		const fieldString = model[ field ].toString().toLowerCase().trim();
 
-		if( !model[ field ].trim() ) { continue; }
+		if( !fieldString ) { continue; }
 
-		const fieldData = model[ field ].toLowerCase();
-
-		if( !values[ fieldData ] ) {
-			values[ fieldData ] = [ model[ identifier ] ];
+		if( !values[ fieldString ] ) {
+			values[ fieldString ] = [ model[ identifier ] ];
 		} else {
-			values[ fieldData ].push( model[ identifier ] );
+			values[ fieldString ].push( model[ identifier ] );
 		}
 	}
 
