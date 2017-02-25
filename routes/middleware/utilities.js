@@ -4,7 +4,7 @@ const _ = require( 'underscore' );
 /* A place for generic utility functions for data processing and other common tasks */
 exports.truncateText = ( text, options ) => {
     // If the text is empty, return an empty string
-    if( text.length === 0 ) {
+    if( !text || text.length === 0 ) {
         return '';
     }
     // Remove leading and trailing whitespace
