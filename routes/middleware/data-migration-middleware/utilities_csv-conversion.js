@@ -1,5 +1,6 @@
 const csv									= require( 'csvtojson' );
 // migration file locations
+const adminFilePath							= './migration-data/csv-data/app_user.csv';
 const sourcesFilePath						= './migration-data/csv-data/recruitment_source.csv';
 const mediaFeaturesFilePath					= './migration-data/csv-data/media_feature.csv';
 const agenciesFilePath						= './migration-data/csv-data/agency.csv';
@@ -21,6 +22,25 @@ const recruitmentChecklistsFilePath			= './migration-data/csv-data/recruitment_c
 const placementsFilePath					= './migration-data/csv-data/family_placement.csv';
 const eventsFilePath						= './migration-data/csv-data/event.csv';
 const eventAttendeesFilePath				= './migration-data/csv-data/event_attendee.csv';
+const callInquiriesFilePath					= './migration-data/csv-data/call.csv';
+
+exports.fetchAdmins = ( resolve, reject ) => {
+	
+	console.log( `fetching admin from CSV` );
+
+	// fetch all records from the admin csv file
+	csv().fromFile( adminFilePath )
+		// wait until the whole file has been parsed into an array of objects
+		.on( 'end_parsed', adminArray => {
+			console.log( `admin fetched` );
+			// resolve the promise with the array of admin objects
+			resolve( adminArray );
+		})
+		.on( 'error', err => {
+			console.error( `error fetching admin or converting to JSON => ${ err }` );
+			reject();
+		});
+};
 
 exports.fetchSources = ( resolve, reject ) => {
 	
@@ -396,6 +416,24 @@ exports.fetchEventAttendees = ( resolve, reject ) => {
 		})
 		.on( 'error', err => {
 			console.error( `error fetching event attendees or converting to JSON => ${ err }` );
+			reject();
+		});
+};
+
+exports.fetchCallInquiries = ( resolve, reject ) => {
+	
+	console.log( `fetching call inquiries from CSV` );
+
+	// fetch all records from the call inquiries csv file
+	csv().fromFile( callInquiriesFilePath )
+		// wait until the whole file has been parsed into an array of objects
+		.on( 'end_parsed', inquiriesArray => {
+			console.log( `callInquiries fetched` );
+			// resolve the promise with the array of event objects
+			resolve( inquiriesArray );
+		})
+		.on( 'error', err => {
+			console.error( `error fetching call inquiries or converting to JSON => ${ err }` );
 			reject();
 		});
 };
