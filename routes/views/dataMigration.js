@@ -23,6 +23,7 @@ const cityRegionsMap							= require( '../middleware/data-migration-maps/city-re
 const childTypesMap								= require( '../middleware/data-migration-maps/child-type' );
 
 // data imports
+const adminImport								= require( '../middleware/data-migration-middleware/import-admin' );
 const sourcesImport								= require( '../middleware/data-migration-middleware/import-sources' );
 const mediaFeaturesImport						= require( '../middleware/data-migration-middleware/import-media-features' );
 const agenciesImport							= require( '../middleware/data-migration-middleware/import-agencies' );
@@ -47,7 +48,7 @@ const placementsImport							= require( '../middleware/data-migration-middleware
 const eventsImport								= require( '../middleware/data-migration-middleware/import-events' );
 const eventAttendeeImport						= require( '../middleware/data-migration-middleware/import-event-attendees' );
 // const inquiriesExtranetImport					= require( '../middleware/data-migration-middleware/import-inquiries-extranet' );
-// const inquiriesCallImport						= require( '../middleware/data-migration-middleware/import-inquiries-calls');
+const inquiriesCallImport						= require( '../middleware/data-migration-middleware/import-inquiries-calls');
 // const internalNotesImport						= require( '../middleware/data-migration-middleware/import-internal-notes' );
 // const mailingListsImport    					= require( '../middleware/data-migration-middleware/import-mailing-lists');
 
@@ -90,6 +91,7 @@ exports = module.exports = ( req, res ) => {
 
 		// data import
 
+		done => { adminImport.importAdmin( req, res, done ); },													// not done
 		// done => { sourcesImport.importSources( req, res, done ); },											// done
 		// done => { mediaFeaturesImport.importMediaFeatures( req, res, done ); },								// done
 		// done => { agenciesImport.importAgencies( req, res, done ); },										// done
@@ -127,12 +129,12 @@ exports = module.exports = ( req, res ) => {
 
 		// done => { placementsImport.importPlacements( req, res, done ); }, 									// not done family_placement.  TODO: Get details to Brian so he can help you track down the field matches 
 		// placement source																						// not done
-		// done => { inquiriesCallImport.importInquiries( req, res, done ); },									// not done
+// done => { inquiriesCallImport.importInquiries( req, res, done ); },									// not done
 			// call agency																						// not done
 			// call child																						// not done
 			// call note																						// not done
 		// done => { eventsImport.importEvents( req, res, done ); },											// done
-		done => { eventAttendeeImport.appendEventAttendees( req, res, done ); },										// not done
+		// done => { eventAttendeeImport.appendEventAttendees( req, res, done ); },								// done
 		// done => { mailingListsImport.importMailingLists( req, res, done ); },								// not done
 			// mailing list subscription																		// not done
 		// IMPORTANT: I think family backup is family internal notes
