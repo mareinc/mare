@@ -43,28 +43,6 @@ module.exports.appendAgencyContacts = ( req, res, done ) => {
 	});
 };
 
-// module.exports.buildAgencyMap = () => {
-// 	// load all agency contacts
-// 	for( let agencyContact of agencyContacts ) {
-// 		// for each contact, get the agency id
-// 		const agencyId = agencyContact.agn_id;
-// 	 	// and use the id as a key, and add each agency id in a key object
-// 		if( agencyId ) {
-
-// 			const id = agencyContact.agc_id;
-
-// 			if( agencyMap[ agencyId ] ) {
-// 				// add the registration number for the current agency
-// 				agencyMap[ agencyId ].push( id );
-// 			} else {
-// 				let agenciesArray = [ id ];
-// 				// create an entry containing an array with the one agency id
-// 				agencyMap[ agencyId ] = agenciesArray;
-// 			}
-// 		}
-// 	}
-// };
-
 module.exports.buildAgencyMap = () => {
 	// load all agency contacts
 	for( let agencyContact of agencyContacts ) {
@@ -89,12 +67,6 @@ module.exports.generateAgencyContacts = function* generateAgencyContacts() {
 		agencyNumber		= 0; // keeps track of the current agency contact number being processed.  Used for batch processing
 	// loop through each agency contact object we need to create a record for
 	for( let key in agencyMap ) {
-		// var responseMessage = [];
-		// const [ ...contactIds ] = agencyMap[ key ];
-
-		// if( contactIds.length > 1 ) {
-		// 	responseMessage.push( `${ key }, ${ contactIds.length }|` );
-		// }
 		// increment the agencyNumber
 		agencyNumber++;
 		// if we've hit a multiple of batchCount, pause execution to let the current records process
@@ -121,11 +93,6 @@ module.exports.generateAgencyContacts = function* generateAgencyContacts() {
 			return agencyContactImportComplete();
 		}
 	}
-
-	// migrationResults.push({
-	// 	dataSet: 'agencies with multiple contacts',
-	// 	results: responseMessage
-	// });
 
 	return agencyContactImportComplete();
 };
