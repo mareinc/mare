@@ -21,6 +21,7 @@ const closedReasonsMap							= require( '../middleware/data-migration-maps/close
 const familyStatusesMap							= require( '../middleware/data-migration-maps/family-status' );
 const cityRegionsMap							= require( '../middleware/data-migration-maps/city-region' );
 const childTypesMap								= require( '../middleware/data-migration-maps/child-type' );
+const inquiryMethodsMap							= require( '../middleware/data-migration-maps/inquiry-method' );
 
 // data imports
 const adminImport								= require( '../middleware/data-migration-middleware/import-admin' );
@@ -48,7 +49,10 @@ const placementsImport							= require( '../middleware/data-migration-middleware
 const eventsImport								= require( '../middleware/data-migration-middleware/import-events' );
 const eventAttendeeImport						= require( '../middleware/data-migration-middleware/import-event-attendees' );
 // const inquiriesExtranetImport					= require( '../middleware/data-migration-middleware/import-inquiries-extranet' );
-const inquiriesCallImport						= require( '../middleware/data-migration-middleware/import-inquiries-calls');
+const inquiriesImport							= require( '../middleware/data-migration-middleware/import-inquiries');
+const inquiryAgenciesImport						= require( '../middleware/data-migration-middleware/import-inquiry-agencies' );
+const inquiryChildrenImport						= require( '../middleware/data-migration-middleware/import-inquiry-children' );
+const inquiryNotesImport						= require( '../middleware/data-migration-middleware/import-inquiry-notes' );
 // const internalNotesImport						= require( '../middleware/data-migration-middleware/import-internal-notes' );
 // const mailingListsImport    					= require( '../middleware/data-migration-middleware/import-mailing-lists');
 
@@ -88,10 +92,11 @@ exports = module.exports = ( req, res ) => {
 		done => { familyStatusesMap.getFamilyStatusesMap( req, res, done ); },
 		done => { cityRegionsMap.getCityRegionsMap( req, res, done ); },
 		done => { childTypesMap.getChildTypesMap( req, res, done ); },
+		done => { inquiryMethodsMap.getInquiryMethodsMap( req, res, done ); },
 
 		// data import
 
-		done => { adminImport.importAdmin( req, res, done ); },													// not done
+		// done => { adminImport.importAdmin( req, res, done ); },												// done
 		// done => { sourcesImport.importSources( req, res, done ); },											// done
 		// done => { mediaFeaturesImport.importMediaFeatures( req, res, done ); },								// done
 		// done => { agenciesImport.importAgencies( req, res, done ); },										// done
@@ -129,10 +134,11 @@ exports = module.exports = ( req, res ) => {
 
 		// done => { placementsImport.importPlacements( req, res, done ); }, 									// not done family_placement.  TODO: Get details to Brian so he can help you track down the field matches 
 		// placement source																						// not done
-// done => { inquiriesCallImport.importInquiries( req, res, done ); },									// not done
-			// call agency																						// not done
-			// call child																						// not done
-			// call note																						// not done
+		// IMPORTANT: NEED TO TURN OFF EMAIL PRE SAVE HOOKS
+		done => { inquiriesImport.importInquiries( req, res, done ); },									// not done
+		done => { inquiryAgenciesImport.appendInquiryAgencies( req, res, done ); },								// not done
+		done => { inquiryChildrenImport.appendInquiryChildren( req, res, done ); },								// not done, call child
+		done => { inquiryNotesImport.appendInquiryNotes( req, res, done ); },									// not done, call note
 		// done => { eventsImport.importEvents( req, res, done ); },											// done
 		// done => { eventAttendeeImport.appendEventAttendees( req, res, done ); },								// done
 		// done => { mailingListsImport.importMailingLists( req, res, done ); },								// not done
