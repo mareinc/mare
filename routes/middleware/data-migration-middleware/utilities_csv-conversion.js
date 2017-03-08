@@ -23,6 +23,9 @@ const placementsFilePath					= './migration-data/csv-data/family_placement.csv';
 const eventsFilePath						= './migration-data/csv-data/event.csv';
 const eventAttendeesFilePath				= './migration-data/csv-data/event_attendee.csv';
 const callInquiriesFilePath					= './migration-data/csv-data/call.csv';
+const inquiryAgenciesFilePath				= './migration-data/csv-data/call_agency.csv';
+const inquiryChildrenFilePath				= './migration-data/csv-data/call_child.csv';
+const inquiryNotesFilePath					= './migration-data/csv-data/call_note.csv';
 
 exports.fetchAdmins = ( resolve, reject ) => {
 	
@@ -428,12 +431,66 @@ exports.fetchCallInquiries = ( resolve, reject ) => {
 	csv().fromFile( callInquiriesFilePath )
 		// wait until the whole file has been parsed into an array of objects
 		.on( 'end_parsed', inquiriesArray => {
-			console.log( `callInquiries fetched` );
+			console.log( `call inquiries fetched` );
 			// resolve the promise with the array of event objects
 			resolve( inquiriesArray );
 		})
 		.on( 'error', err => {
 			console.error( `error fetching call inquiries or converting to JSON => ${ err }` );
+			reject();
+		});
+};
+
+exports.fetchInquiryAgencies = ( resolve, reject ) => {
+	
+	console.log( `fetching inquiry agencies from CSV` );
+
+	// fetch all records from the inquiry agencies csv file
+	csv().fromFile( inquiryAgenciesFilePath )
+		// wait until the whole file has been parsed into an array of objects
+		.on( 'end_parsed', inquiryAgenciesArray => {
+			console.log( `inquiry agencies fetched` );
+			// resolve the promise with the array of event objects
+			resolve( inquiryAgenciesArray );
+		})
+		.on( 'error', err => {
+			console.error( `error fetching inquiry agencies or converting to JSON => ${ err }` );
+			reject();
+		});
+};
+
+exports.fetchInquiryChildren = ( resolve, reject ) => {
+	
+	console.log( `fetching inquiry children from CSV` );
+
+	// fetch all records from the inquiry children csv file
+	csv().fromFile( inquiryChildrenFilePath )
+		// wait until the whole file has been parsed into an array of objects
+		.on( 'end_parsed', inquiryChildrenArray => {
+			console.log( `inquiry children fetched` );
+			// resolve the promise with the array of event objects
+			resolve( inquiryChildrenArray );
+		})
+		.on( 'error', err => {
+			console.error( `error fetching inquiry children or converting to JSON => ${ err }` );
+			reject();
+		});
+};
+
+exports.fetchInquiryNotes = ( resolve, reject ) => {
+	
+	console.log( `fetching inquiry notes from CSV` );
+
+	// fetch all records from the inquiry notes csv file
+	csv().fromFile( inquiryNotesFilePath )
+		// wait until the whole file has been parsed into an array of objects
+		.on( 'end_parsed', inquiryNotesArray => {
+			console.log( `inquiry notes fetched` );
+			// resolve the promise with the array of event objects
+			resolve( inquiryNotesArray );
+		})
+		.on( 'error', err => {
+			console.error( `error fetching inquiry notes or converting to JSON => ${ err }` );
 			reject();
 		});
 };
