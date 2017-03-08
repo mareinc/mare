@@ -105,7 +105,7 @@ module.exports.createEventRecord = ( event, pauseUntilSaved ) => {
 
 	// create a promise
 	const sourceLoaded = new Promise( ( resolve, reject ) => {
-		// for fetching the first child
+		// for fetching the recruitment source
 		utilityModelFetch.getSourceById( resolve, reject, event.rcs_id );
 	});
 	// populate disability field of the child specified in the disability record
