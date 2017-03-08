@@ -1,5 +1,7 @@
 /* functions to fetch model information for use during the migration */
 
+// TODO: for all these, you need to check string input, and if so, trim then check each for existence
+
 const Source		= keystone.list( 'Source' );
 const Agency		= keystone.list( 'Agency' );
 const Family		= keystone.list( 'Family' );
@@ -7,6 +9,8 @@ const SocialWorker	= keystone.list( 'Social Worker' );
 const Child			= keystone.list( 'Child' );
 const MediaFeature	= keystone.list( 'Media Feature' );
 const Event			= keystone.list( 'Event' );
+const Admin			= keystone.list( 'Admin' );
+const Inquiry		= keystone.list( 'Inquiry' );
 
 module.exports.getSourceById = ( resolve, reject, sourceId ) => {
 
@@ -54,7 +58,40 @@ module.exports.getAgencyById = ( resolve, reject, agencyId ) => {
 		});
 };
 
+module.exports.getAgencyIdsByOldIds = ( resolve, reject, oldIds ) => {
+
+	Agency.model.find()
+		.where( { 'oldId': { $in: oldIds } } )
+		.exec()
+		.then( retrievedAgencies => {
+			// if no agencies were found
+			if( retrievedAgencies.length === 0 ) {
+				// log the issue
+				console.error( `error fetching agency IDs by old ids ${ oldIds }` );
+				// and resolve the promise with an undefined value
+				resolve( undefined );
+			}
+
+			let agencyIds = [];
+
+			for( agency of retrievedAgencies ) {
+				agencyIds.push( agency._id );
+			}
+			// otherwise, accept the promise and pass back the retrieved agency IDs
+			resolve( agencyIds );
+
+		}, err => {
+
+			console.error( `error in getAgencyIdsByOldIds() ${ err }` );
+			reject();
+		});
+};
+
 module.exports.getSocialWorkerById = ( resolve, reject, socialWorkerId ) => {
+
+	if( !socialWorkerId ) {
+		return resolve( undefined );
+	}
 
 	SocialWorker.model.findOne()
 		.where( 'oldId', socialWorkerId )
@@ -183,6 +220,10 @@ module.exports.getMediaFeatureById = ( resolve, reject, mediaFeatureId ) => {
 
 module.exports.getFamilyByRegistrationNumber = ( resolve, reject, registrationNumber ) => {
 
+	if( !registrationNumber ) {
+		return resolve( undefined );
+	}
+
 	Family.model.findOne()
 		.where( 'registrationNumber', registrationNumber )
 		.exec()
@@ -252,6 +293,52 @@ module.exports.getEventById = ( resolve, reject, eventId ) => {
 		}, err => {
 
 			console.error( `error in getEventById() ${ err }` );
+			reject();
+		});
+};
+
+module.exports.getAdminById = ( resolve, reject, adminId ) => {
+
+	Admin.model.findOne()
+		.where( 'oldId', adminId )
+		.exec()
+		.then( retrievedAdmin => {
+			// if no admin was found
+			if( !retrievedAdmin ) {
+				// log the issue
+				console.error( `error fetching admin by oldId ${ adminId }` );
+				// and reject the promise
+				reject();
+			}
+			// otherwise, accept the promise and pass back the retrieved admin
+			resolve( retrievedAdmin );
+
+		}, err => {
+
+			console.error( `error in getAdminById() ${ err }` );
+			reject();
+		});
+};
+
+module.exports.getInquiryById = ( resolve, reject, inquiryId ) => {
+
+	Inquiry.model.findOne()
+		.where( 'oldId', inquiryId )
+		.exec()
+		.then( retrievedInquiry => {
+			// if no inquiry was found
+			if( !retrievedInquiry ) {
+				// log the issue
+				console.error( `error fetching inquiry by oldId ${ inquiryId }` );
+				// and reject the promise
+				reject();
+			}
+			// otherwise, accept the promise and pass back the retrieved inquiry
+			resolve( retrievedInquiry );
+
+		}, err => {
+
+			console.error( `error in getInquiryById() ${ err }` );
 			reject();
 		});
 };
