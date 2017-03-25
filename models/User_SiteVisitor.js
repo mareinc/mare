@@ -13,9 +13,10 @@ var SiteVisitor = new keystone.List('Site Visitor', {
 // Create fields
 SiteVisitor.add( 'Permissions', {
 
+	isActive: { type: Boolean, label: 'is active', default: true },
+
 	permissions: {
-		isVerified: { type: Boolean, label: 'has a verified email address', default: false, noedit: true },
-		isActive: { type: Boolean, label: 'is active', default: true }
+		isVerified: { type: Boolean, label: 'has a verified email address', default: false, noedit: true }
 	}
 
 }, 'General Information', {
@@ -87,7 +88,7 @@ SiteVisitor.schema.virtual('canAccessKeystone').get(function() {
 });
 
 // Define default columns in the admin interface and register the model
-SiteVisitor.defaultColumns = 'name.full, email, permissions.isActive';
+SiteVisitor.defaultColumns = 'name.full, email, isActive';
 SiteVisitor.register();
 
 // Export to make it available using require.  The keystone.list import throws a ReferenceError when importing a list

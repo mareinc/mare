@@ -37,9 +37,10 @@ var Family = new keystone.List( 'Family', {
 // Create fields
 Family.add( 'Permissions', {
 
+	isActive: { type: Boolean, label: 'is active', default: false },
+
 	permissions: {
 		isVerified: { type: Boolean, label: 'has a verified email address', default: false, noedit: true },
-		isActive: { type: Boolean, label: 'is active', default: false },
 		isHomestudyVerified: { type: Boolean, label: 'homestudy verified', initial: true },
 		homestudyVerifiedDate: { type: Types.Date, label: 'homestudy verified on', format: 'MM/DD/YYYY', noedit: true }
 	}
@@ -1500,7 +1501,7 @@ Family.schema.methods.setChangeHistory = function setChangeHistory( done ) {
 };
 
 // Define default columns in the admin interface and register the model
-Family.defaultColumns = 'registrationNumber, contact1.name.full, permissions.isActive';
+Family.defaultColumns = 'registrationNumber, contact1.name.full, isActive';
 Family.register();
 
 // Export to make it available using require.  The keystone.list import throws a ReferenceError when importing a list

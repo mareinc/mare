@@ -1,15 +1,15 @@
-var keystone	= require('keystone'),
+var keystone	= require( 'keystone' ),
 	Types		= keystone.Field.Types;
 
 // Create model
-var User = new keystone.List('User', {
+var User = new keystone.List( 'User', {
 	autokey: { path: 'key', from: 'email', unique: true },
 	map: { name: 'email' },
 	hidden: true
 });
 
 // Create fields
-User.add('Login Information', {
+User.add( 'Login Information', {
 
 	email: { type: Types.Email, label: 'email address', unique: true, required: true, initial: true },
 	password: { type: Types.Password, label: 'password', required: true, initial: true }
