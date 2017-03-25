@@ -52,7 +52,7 @@ const paths = {
 		'public/fonts/*.woff',
 		'public/fonts/*.woff2' ],
 	'tests':[
-		'public/tests/*.js' ]
+		'tests/*.js' ]
 };
 
 // styles task
