@@ -3,7 +3,6 @@ Types = keystone.Field.Types;
 
 // Create model
 var SectionHeader = new keystone.List('Section Header', {
-	track: true,
 	autokey: { path: 'key', from: 'target', unique: true },
 	map: { name: 'target' }
 });

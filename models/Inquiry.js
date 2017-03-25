@@ -6,14 +6,13 @@ const keystone					= require( 'keystone' ),
 
 // Create model. Additional options allow menu name to be used to auto-generate the URL
 var Inquiry = new keystone.List( 'Inquiry', {
-	track: true,
 	defaultSort: 'takenOn'
 });
 
 // Create fields
 Inquiry.add( 'General Information', {
 
-	takenBy: { type: Types.Relationship, label: 'taken by', ref: 'Admin', required: true, initial: true },
+	takenBy: { type: Types.Relationship, label: 'taken by', ref: 'Admin', filters: { isActive: true }, required: true, initial: true },
 	takenOn: { type: Types.Date, label: 'taken on', format: 'MM/DD/YYYY', required: true, initial: true },
 
 	inquirer: { type: Types.Select, label: 'inquirer', options: 'family, social worker', default: 'family', initial: true },
@@ -22,15 +21,15 @@ Inquiry.add( 'General Information', {
 
 }, 'Inquiry Details', {
 
-	source: { type: Types.Relationship, label: 'source', ref: 'Source', required: true, initial: true },
+	source: { type: Types.Relationship, label: 'source', ref: 'Source', filters: { isActive: true }, required: true, initial: true },
 
-	child: { type: Types.Relationship, label: 'child', ref: 'Child', dependsOn: { inquiryType: ['child inquiry', 'complaint', 'family support consultation'] }, initial: true },
+	child: { type: Types.Relationship, label: 'child', ref: 'Child', dependsOn: { inquiryType: ['child inquiry', 'complaint', 'family support consultation'] }, many: true, initial: true },
 	childsSocialWorker: { type: Types.Relationship, label: 'child\'s social worker', ref: 'Social Worker', dependsOn: { inquiryType: ['child inquiry', 'complaint', 'family support consultation'] }, noedit: true },
 	previousChildsSocialWorker: { type: Types.Relationship, ref: 'Social Worker', noedit: true, hidden: true },
-	family: { type: Types.Relationship, label: 'family', ref: 'Family', dependsOn: { inquirer: 'family' }, initial: true },
-	socialWorker: { type: Types.Relationship, label: 'social worker', ref: 'Social Worker', dependsOn: { inquirer: 'social worker' }, initial: true },
+	family: { type: Types.Relationship, label: 'family', ref: 'Family', dependsOn: { inquirer: 'family' }, filters: { isActive: true }, initial: true },
+	socialWorker: { type: Types.Relationship, label: 'social worker', ref: 'Social Worker', dependsOn: { inquirer: 'social worker' }, filters: { isActive: true }, initial: true },
 	onBehalfOfMAREFamily: { type: Types.Boolean, label: 'is the family registered?', default: true, dependsOn: { inquirer: 'social worker' }, initial: true },
-	onBehalfOfFamily: { type: Types.Relationship, label: 'on behalf of', ref: 'Family', dependsOn: { inquirer: 'social worker', onBehalfOfMAREFamily: true }, initial: true },
+	onBehalfOfFamily: { type: Types.Relationship, label: 'on behalf of', ref: 'Family', dependsOn: { inquirer: 'social worker', onBehalfOfMAREFamily: true }, filters: { isActive: true }, initial: true },
 	onBehalfOfFamilyText: { type: Types.Text, label: 'on behalf of', dependsOn: { inquirer: 'social worker', onBehalfOfMAREFamily: false }, initial: true },
 	comments: { type: Types.Textarea, label: 'comments', initial: true }
 
@@ -41,7 +40,6 @@ Inquiry.add( 'General Information', {
 
 }, 'Confirmation', {
 
-	thankInquirer: { type: Types.Boolean, label: 'send thank you to inquirer' },
 	inquiryAccepted: { type: Types.Boolean, label: 'inquiry accepted' }
 
 }, 'Emails Sent', {
@@ -114,18 +112,18 @@ Inquiry.schema.pre( 'save', function( next ) {
 			}
 		},
 		done => {
-			if( !this.thankYouSentToInquirer && this.thankInquirer === true ) {
+			if( !this.thankYouSentToInquirer ) {
 				inquiryEmailMiddleware.sendThankYouEmailToInquirer( this, inquiryData, done );
 			} else {
-				console.log( `thank you already sent or 'send thank you to inquirer' checkbox not checked - no thank you email sent to inquirer` );
+				console.log( `thank you already sent - no thank you email sent to inquirer` );
 				done();
 			}
 		},
 		done => {
-			if( !this.thankYouSentToFamilyOnBehalfOfInquirer && this.thankInquirer === true && inquiryData.onBehalfOfFamily ) {
+			if( !this.thankYouSentToFamilyOnBehalfOfInquirer && inquiryData.onBehalfOfFamily ) {
 				inquiryEmailMiddleware.sendThankYouEmailToFamilyOnBehalfOfInquirer( this, inquiryData, done );
 			} else {
-				console.log( `thank you already sent or 'send thank you to inquirer' checkbox not checked - no thank you email sent to family on behalf of inquirer` );
+				console.log( `thank you already sent - no thank you email sent to family on behalf of inquirer` );
 				done();
 			}
 		},

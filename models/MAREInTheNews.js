@@ -1,20 +1,20 @@
-var keystone = require( 'keystone' ),
-	Types = keystone.Field.Types;
+var keystone	= require( 'keystone' ),
+	Types		= keystone.Field.Types;
 
 // Create model. Additional options allow menu name to be used what auto-generating URLs
-var SuccessStory = new keystone.List( 'Success Story', {
+var MAREInTheNews = new keystone.List( 'MARE in the News', {
 	autokey: { path: 'key', from: 'heading', unique: true },
 	map: { name: 'heading' }
 });
 
 // Create fields
-SuccessStory.add({
+MAREInTheNews.add({
 
 	heading: { type: Types.Text, label: 'heading', required: true, initial: true },
 	url: { type: Types.Url, label: 'url', noedit: true },
 	subHeading: { type: Types.Text, label: 'sub-heading', initial: true },
 	content: { type: Types.Html, wysiwyg: true, initial: true },
-	image: { type: Types.CloudinaryImage, note: 'needed to display in the sidebar, success story page, and home page', folder: 'success-stories/', select: true, selectPrefix: 'success-stories/', publicID: 'fileName', autoCleanup: true },
+	image: { type: Types.CloudinaryImage, note: 'needed to display in the sidebar, MARE in the news page, and the home page', folder: 'mare-in-the-news/', select: true, selectPrefix: 'mare-in-the-news/', publicID: 'fileName', autoCleanup: true },
 	imageFeatured: { type: Types.Url, hidden: true },
 	imageSidebar: { type: Types.Url, hidden: true }
 
@@ -26,27 +26,26 @@ SuccessStory.add({
 
 });
 
-SuccessStory.schema.statics.findRandom = function( callback ) {
+MAREInTheNews.schema.statics.findRandom = function( callback ) {
 
-	this.count(function( err, count ) {
-	
+	this.count( function( err, count ) {
 		if ( err ) {
-		return callback( err );
+			return callback( err );
 		}
-		
+    
 		var rand = Math.floor( Math.random() * count );
-		this.findOne().skip( rand ).exec( callback );
-	
+  		this.findOne().skip( rand ).exec( callback );
+
 	}.bind( this ) );
 };
 
 // Pre Save
-SuccessStory.schema.pre( 'save', function(next) {
+MAREInTheNews.schema.pre( 'save', function(next) {
 	'use strict';
 
-	this.imageFeatured = this._.image.thumbnail( 168, 168, { quality: 80 } );
-	this.imageSidebar = this._.image.thumbnail( 216, 196, { quality: 80 } );
-	this.url = '/success-stories/' + this.key;
+	this.imageFeatured	= this._.image.thumbnail( 168, 168, { quality: 80 } );
+	this.imageSidebar	= this._.image.thumbnail( 216, 196, { quality: 80 } );
+	this.url = '/mare-in-the-news/' + this.key;
 
 	// Create an identifying name for file uploads
 	this.fileName = this.key.replace( /-/g, '_' );
@@ -56,5 +55,5 @@ SuccessStory.schema.pre( 'save', function(next) {
 });
 
 // Define default columns in the admin interface and register the model
-SuccessStory.defaultColumns = 'heading, url';
-SuccessStory.register();
+MAREInTheNews.defaultColumns = 'heading, url';
+MAREInTheNews.register();

@@ -24,9 +24,10 @@ var SocialWorker = new keystone.List( 'Social Worker', {
 // Create fields
 SocialWorker.add( 'Permissions', {
 
+	isActive: { type: Boolean, label: 'is active', default: false },
+
 	permissions: {
-		isVerified: { type: Boolean, label: 'has a verified email address', default: false, noedit: true },
-		isActive: { type: Boolean, label: 'is active', default: false }
+		isVerified: { type: Boolean, label: 'has a verified email address', default: false, noedit: true }
 	}
 
 }, 'General Information', {
@@ -343,7 +344,7 @@ SocialWorker.schema.methods.setChangeHistory = function setChangeHistory( done )
 };
 
 // Define default columns in the admin interface and register the model
-SocialWorker.defaultColumns = 'name.full, phone.work, phone.home, phone.cell, phone.preferred, email, permissions.isActive';
+SocialWorker.defaultColumns = 'name.full, phone.work, phone.home, phone.cell, phone.preferred, email, isActive';
 SocialWorker.register();
 
 // Export to make it available using require.  The keystone.list import throws a ReferenceError when importing a list

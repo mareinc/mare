@@ -1,21 +1,21 @@
-var keystone	= require('keystone'),
-	async		= require('async'),
-	_			= require('underscore'),
-	moment		= require('moment'),
-	Event		= keystone.list('Event'),
-	Utils		= require('../middleware/utilities'),
-	pageService	= require('../middleware/service_page');
+const keystone		= require( 'keystone' ),
+	  async			= require( 'async' ),
+	  _				= require( 'underscore' ),
+	  moment		= require( 'moment' ),
+	  Event			= keystone.list( 'Event' ),
+	  Utils			= require( '../middleware/utilities' ),
+	  pageService	= require( '../middleware/service_page' );
 
-exports = module.exports = function(req, res) {
+exports = module.exports = ( req, res ) => {
     'use strict';
 
-    var view 		= new keystone.View(req, res),
+    let view 		= new keystone.View( req, res ),
     	locals 		= res.locals,
     	userType	= req.user ? req.user.userType : '', // Knowing the type of user visiting the page will allow us to display extra relevant information
 		eventType, 		// Used to map the url to the stored event for determining which group the event belongs to so we can show the correct preamble
 		targetGroup;	// Used to map to the different attendee groups to simplify searching for whether the user is attending
 
-	switch(userType) {
+	switch( userType ) {
 		case 'admin'			: targetGroup = 'staffAttendees'; break;
 		case 'family'			: targetGroup = 'familyAttendees'; break;
 		case 'social worker'	: targetGroup = 'socialWorkerAttendees'; break;
@@ -25,10 +25,10 @@ exports = module.exports = function(req, res) {
 
 	// Use the URL stored in the request object to determine what event type we need to list out
 	/* TODO: Handle this with the functions in Utils, similar to how the parent router is parsing the url */
-	var targetList = req.originalUrl.replace('/events/', '');
-	targetList = targetList.replace(/\/.*/, '/');
+	let targetList = req.originalUrl.replace( '/events/', '' );
+	targetList = targetList.replace( /\/.*/, '/' );
 
-	switch(targetList) {
+	switch( targetList ) {
 		case 'adoption-parties/'		: eventType = 'MARE adoption parties & information events'; locals.showAdoptionParties = true; break;
 		case 'mapp-trainings/'			: eventType = 'MAPP trainings'; locals.showMAPPTrainings = true; break;
 		case 'fundraising-events/'		: eventType = 'fundraising events'; locals.showFundraisingEvents = true; break;
@@ -37,27 +37,31 @@ exports = module.exports = function(req, res) {
 		default							: eventType = '';
 	}
 
+	// track whether it is an event users can register for through the site
+	locals.canRegister = eventType === 'MARE adoption parties & information events' ||
+						 eventType === 'fundraising events';
+
 	/* TODO: Add error handling so the page doesn't hang if we can't find the event */
-	async.parallel([
-		function(done) { // TODO: Pull this into the Event service
+	async.parallel( [
+		done => { // TODO: Pull this into the Event service
 			Event.model.findOne()
-		    	.where('url', req.originalUrl)
-				.populate('contact') // The contact is a relationship field, so just the ID is stored.  Force the request to fetch the referenced contact model
-				.populate('childAttendees')
-				.populate('familyAttendees')
-				.populate('socialWorkerAttendees')
-				.populate('siteVisitorAttendees')
-				.populate('staffAttendees')
-				.populate('address.state')
+		    	.where( 'url', req.originalUrl )
+				.populate( 'contact' ) // The contact is a relationship field, so just the ID is stored.  Force the request to fetch the referenced contact model
+				.populate( 'childAttendees' )
+				.populate( 'familyAttendees' )
+				.populate( 'socialWorkerAttendees' )
+				.populate( 'siteVisitorAttendees' )
+				.populate( 'staffAttendees' )
+				.populate( 'address.state' )
 				.exec()
-				.then(function (event) {
+				.then( event => {
 					req.user = req.user || {};
 					// determine if the user is an administrator. We want to display the event attendees if they are
 					locals.isAdmin = req.user && req.user.userType === 'admin' ? true : false;
 					// determine if the user is a social worker.  We want to allow them to create events if they are
 					locals.isSocialWorker = req.user && req.user.userType === 'social worker' ? true : false;
 					// If there are no events to display, we need to capture that information for rendering
-					locals.eventMissing = _.isEmpty(event);
+					locals.eventMissing = _.isEmpty( event );
 					// Find the target event for the current page and store the object in locals for access during templating
 					locals.event = event;
 					// Check to see if the event spans multiple days
@@ -79,25 +83,25 @@ exports = module.exports = function(req, res) {
 					event.hasSiteVisitorAttendees	= event.siteVisitorAttendees.length > 0 ? true : false;
 					event.hasChildAttendees			= event.childAttendees.length > 0 ? true : false;
 
-					_.each(event[targetGroup], function(attendee) {
+					_.each( event[ targetGroup ], attendee => {
 						// Without converting to strings, these were both evaluating to Object which didn't allow for a clean comparison
-						var attendeeID = attendee._id.toString();
-						var userID = req.user._id.toString();
+						const attendeeID = attendee._id.toString();
+						const userID = req.user._id.toString();
 						// Determine whether the user is already attending the event
 						// We can't break out of the _.each, so only keep checking if true wasn't found
-						if(!event.attending) {
+						if( !event.attending ) {
 							event.attending = attendeeID === userID ? true : false;
 						}
 					});
 
-					_.each(event.familyAttendees, function(family) {
+					_.each( event.familyAttendees, family => {
 						// if the targetGroup is families, we need to prettify the attendee name
-						var contact2Exists = family.contact2.name.full.length > 0 ? true : false;
-						var sameLastName = family.contact1.name.last === family.contact2.name.last ? true : false;
+						const contact2Exists	= family.contact2.name.full.length > 0 ? true : false;
+						const sameLastName		= family.contact1.name.last === family.contact2.name.last ? true : false;
 
-						if(contact2Exists && sameLastName) {
+						if( contact2Exists && sameLastName ) {
 							family.fullName = family.contact1.name.first + ' and ' + family.contact2.name.full;
-						} else if(contact2Exists && !sameLastName) {
+						} else if( contact2Exists && !sameLastName ) {
 							family.fullName = family.contact1.name.full + ' and ' + family.contact2.name.full;
 						} else {
 							family.fullName = family.contact1.name.full;
@@ -107,12 +111,12 @@ exports = module.exports = function(req, res) {
 					done();
 				});
 		},
-		function(done) { pageService.populateSidebar(req, res, done); },
-		function(done) { pageService.getSectionHeader(req, res, done, 'Events'); }
-	], function() {
+		done => { pageService.populateSidebar( req, res, done ); },
+		done => { pageService.getSectionHeader( req, res, done, 'Events' ); }
+	], () => {
 		// Set the layout to render with the right sidebar
-		locals['render-with-sidebar'] = true;
+		locals[ 'render-with-sidebar' ] = true;
 		// Render the view once all the data has been retrieved
-		view.render('event');
+		view.render( 'event' );
 	});
 };

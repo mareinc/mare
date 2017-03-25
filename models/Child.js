@@ -29,7 +29,6 @@ const keystone					= require( 'keystone' ),
 
 // Create model
 const Child = new keystone.List('Child', {
-	track: true,
 	autokey: { path: 'key', from: 'registrationNumber', unique: true },
 	map: { name: 'name.full' },
 	defaultSort: 'name.full'
@@ -104,10 +103,10 @@ Child.add('Display Options', {
 }, 'Agency Information', {
 
 	registeredBy: { type: Types.Select, label: 'registered by', options: 'unknown, adoption worker, recruitment worker', required: true, initial: true },
-	adoptionWorker: { type: Types.Relationship, label: 'adoption worker', ref: 'Social Worker', filters: { position: 'adoption worker' }, initial: true },
+	adoptionWorker: { type: Types.Relationship, label: 'adoption worker', ref: 'Social Worker', filters: { position: 'adoption worker', isActive: true }, initial: true },
 	adoptionWorkerAgency: { type: Types.Relationship, label: `adoption worker's agency`, ref: 'Agency', noedit: true },
 	adoptionWorkerAgencyRegion: { type: Types.Relationship, label: `adoption worker's region`, ref: 'Region', noedit: true },
-	recruitmentWorker: { type: Types.Relationship, label: 'recruitment worker', ref: 'Social Worker', filters: { position: 'recruitment worker' }, initial: true },
+	recruitmentWorker: { type: Types.Relationship, label: 'recruitment worker', ref: 'Social Worker', filters: { position: 'recruitment worker', isActive: true }, initial: true },
 	recruitmentWorkerAgency: { type: Types.Relationship, label: `recruitment worker's agency`, ref: 'Agency', noedit: true },
 	recruitmentWorkerAgencyRegion: { type: Types.Relationship, label: `recruitment worker's region`, ref: 'Region', noedit: true },
 
@@ -165,7 +164,7 @@ Child.add('Display Options', {
 	matchingEvent: { type: Types.Boolean, label: 'matching event', initial: true },
 	matchingEventDate: { type: Types.Date, label: 'date of matching event', format: 'MM/DD/YYYY', dependsOn: { matchingEvent: true }, initial: true },
 
-	adoptionParties: { type: Types.Relationship, label: 'adoption parties', ref: 'Event', filters: { type: 'adoption party' }, many: true, initial: true },
+	adoptionParties: { type: Types.Relationship, label: 'adoption parties', ref: 'Event', filters: { type: 'adoption party', isActive: true }, many: true, initial: true },
 
 	mediaEligibility: { type: Types.Relationship, label: 'media eligibility', ref: 'Media Eligibility', many: true, initial: true },
 	otherMediaDescription: { type: Types.Textarea, label: 'description', note: 'only fill out if \'other\' is selected for media eligibility' , initial: true }, // TODO: THIS DOESN'T WORK BECAUSE IT REFERENCES A RELATIONSHIP FIELD SO ALL WE HAVE IS THE _id, MAKE IT WORK!
