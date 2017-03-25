@@ -60,7 +60,9 @@
 		<section class="card__button-group button-group--space-around">
 			<button class="card__button events__show-details-button" data-url="{{ url }}">View Details</button>
 			{{#if ../user}}
+			{{#if ../canRegister}}
 			<button class="card__button {{#if attended}} card__button--unregister events__unregister-button {{else}} events__register-button {{/if}}" data-event-id="{{ _id }}">{{#if attended}} Unregister {{else}} Register {{/if}}</button>
+			{{/if}}
 			{{/if}}
 		</section>
 
