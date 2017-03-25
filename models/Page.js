@@ -3,7 +3,6 @@ var keystone = require('keystone'),
 
 // Create model. Additional options allow menu name to be used what auto-generating URLs
 var Page = new keystone.List('Page', {
-	track: true,
 	autokey: { path: 'key', from: 'title', unique: true },
 	map: { name: 'title' },
 	defaultSort: 'title'

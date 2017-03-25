@@ -1,9 +1,8 @@
-var keystone = require('keystone'),
+var keystone = require( 'keystone' ),
 	Types = keystone.Field.Types;
 
 // Create model. Additional options allow menu name to be used what auto-generating URLs
-var SuccessStory = new keystone.List('Success Story', {
-	track: true,
+var SuccessStory = new keystone.List( 'Success Story', {
 	autokey: { path: 'key', from: 'heading', unique: true },
 	map: { name: 'heading' }
 });
@@ -27,19 +26,22 @@ SuccessStory.add({
 
 });
 
-SuccessStory.schema.statics.findRandom = function(callback) {
+SuccessStory.schema.statics.findRandom = function( callback ) {
 
-  this.count(function(err, count) {
-    if (err) {
-      return callback(err);
-    }
-    var rand = Math.floor(Math.random() * count);
-    this.findOne().skip(rand).exec(callback);
-  }.bind(this));
- };
+	this.count(function( err, count ) {
+	
+		if ( err ) {
+		return callback( err );
+		}
+		
+		var rand = Math.floor( Math.random() * count );
+		this.findOne().skip( rand ).exec( callback );
+	
+	}.bind( this ) );
+};
 
 // Pre Save
-SuccessStory.schema.pre('save', function(next) {
+SuccessStory.schema.pre( 'save', function(next) {
 	'use strict';
 
 	this.imageFeatured = this._.image.thumbnail( 168, 168, { quality: 80 } );
@@ -47,7 +49,7 @@ SuccessStory.schema.pre('save', function(next) {
 	this.url = '/success-stories/' + this.key;
 
 	// Create an identifying name for file uploads
-	this.fileName = this.key.replace(/-/g, '_');
+	this.fileName = this.key.replace( /-/g, '_' );
 
 	next();
 

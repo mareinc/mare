@@ -5,7 +5,6 @@ var keystone	= require('keystone'),
 // Create model
 var SiteVisitor = new keystone.List('Site Visitor', {
 	inherits: User,
-	track: true,
 	map: { name: 'name.full' },
 	defaultSort: 'name.full',
 	hidden: false

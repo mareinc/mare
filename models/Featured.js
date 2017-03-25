@@ -3,7 +3,6 @@ const Types				= keystone.Field.Types;
 
 // Create model. Additional options allow menu name to be used what auto-generating URLs
 var Featured = new keystone.List( 'Featured Item', {
-	track: true,
 	autokey: { path: 'key', from: 'title', unique: true },
 	map: { name: 'title' }
 });
@@ -36,7 +35,7 @@ Featured.add({
 }, 'Upcoming Event', {
 
 	upcomingEvent: {
-		target: { type: Types.Relationship, ref: 'Event', label: 'target event', required: true, initial: true },
+		target: { type: Types.Relationship, ref: 'Event', label: 'target event', filters: { isActive: true }, required: true, initial: true },
 		image: { type: Types.CloudinaryImage, folder: 'featured/', select: true, selectPrefix: 'featured/', autoCleanup: true }, // TODO: add publicID attribute for better naming in Cloudinary
 		title: { type: Types.Text, hidden: true, noedit: true },
 		imageScaled: { type: Types.Url, hidden: true },
