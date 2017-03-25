@@ -73,6 +73,8 @@ exports = module.exports = app => {
 	// login / logout
 	app.get( '/logout/'									, middleware.logout );
 	app.post('/login'									, middleware.login );
+	// MARE in the news
+	app.get( '/mare-in-the-news/*'						, routes.views.mareInTheNews );
 	// donations
 	app.get( '/donate/'									, middleware.setLoginTarget, routes.views.donate );
 	app.post( '/charge'									, middleware.charge );
