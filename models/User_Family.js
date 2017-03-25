@@ -39,7 +39,9 @@ Family.add( 'Permissions', {
 
 	permissions: {
 		isVerified: { type: Boolean, label: 'has a verified email address', default: false, noedit: true },
-		isActive: { type: Boolean, label: 'is active', default: false }
+		isActive: { type: Boolean, label: 'is active', default: false },
+		isHomestudyVerified: { type: Boolean, label: 'homestudy verified', initial: true },
+		homestudyVerifiedDate: { type: Types.Date, label: 'homestudy verified on', format: 'MM/DD/YYYY', noedit: true }
 	}
 
 },  'General Information', {
@@ -254,7 +256,7 @@ Family.add( 'Permissions', {
 
 }, 'Social Worker Information', {
 
-	socialWorker: { type: Types.Relationship, label: 'social worker', ref: 'Social Worker', initial: true },
+	socialWorker: { type: Types.Relationship, label: 'social worker', ref: 'Social Worker', filters: { isActive: true }, initial: true },
 	socialWorkerNotListed: { type: Types.Boolean, label: 'social worker isn\'t listed', initial: true },
 	socialWorkerText: { type: Types.Text, label: 'social worker', dependsOn: { socialWorkerNotListed: true }, initial: true }
 
@@ -356,8 +358,8 @@ Family.schema.post( 'init', function() {
 Family.schema.pre( 'save', function( next ) {
 	'use strict';
 
-	// TODO: Assign a registration number if one isn't assigned
 	async.series([
+		done => { this.setHomestudyVerifiedDate( done ); }, // Update the homestudy verified date
 		done => { this.setFullName( done ); }, // Create a full name for the family based on their first, middle, and last names
 		done => { this.setFileName( done ); }, // Create an identifying name for file uploads
 		done => { this.setUserType( done ); }, // All user types that can log in derive from the User model, this allows us to identify users better
@@ -383,6 +385,22 @@ Family.schema.virtual( 'canAccessKeystone' ).get( function() {
 
 	return false;
 });
+
+Family.schema.methods.setHomestudyVerifiedDate = function ( done ) {
+	'use strict';
+
+	// if the isHomestudyVerified checkbox isn't checked
+	if( !this.permissions.isHomestudyVerified ) {
+		// clear the date
+		this.permissions.homestudyVerifiedDate = undefined;
+	// if the isHomestudyVerified checkbox wasn't checked, but is now
+	} else if( !this._original.permissions.isHomestudyVerified && this.permissions.isHomestudyVerified ) {
+		// update the date
+		this.permissions.homestudyVerifiedDate = new Date();
+	}
+
+	done();
+};
 
 Family.schema.methods.setFullName = function( done ) {
 	'use strict';
