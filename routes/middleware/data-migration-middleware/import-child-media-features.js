@@ -15,6 +15,8 @@ let childMediaFeatureGroupMap = {};
 let childMediaFeatureGroupsImportComplete;
 // expose the array storing progress through the migration run
 let migrationResults;
+// create an array to store problems during the import
+let importErrors = [];
 
 module.exports.appendMediaFeatures = ( req, res, done ) => {
 	// expose done to our generator

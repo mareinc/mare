@@ -13,6 +13,8 @@ let siblingGroupMap = {};
 let childSiblingsImportComplete;
 // expose the array storing progress through the migration run
 let migrationResults;
+// create an array to store problems during the import
+let importErrors = [];
 
 module.exports.appendSiblings = ( req, res, done ) => {
 	// expose done to our generator

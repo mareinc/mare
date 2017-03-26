@@ -20,6 +20,8 @@ let childStatusesMap,
 let childImportComplete;
 // expose the array storing progress through the migration run
 let migrationResults;
+// create an array to store problems during the import
+let importErrors = [];
 
 module.exports.importChildren = ( req, res, done ) => {
 	// expose the maps we'll need for this import

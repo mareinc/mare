@@ -25,6 +25,8 @@ let statesMap,
 let familyImportComplete;
 // expose the array storing progress through the migration run
 let migrationResults;
+// create an array to store problems during the import
+let importErrors = [];
 
 module.exports.importFamilies = ( req, res, done ) => {
 	// expose the maps we'll need for this import
