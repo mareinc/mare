@@ -1,3 +1,5 @@
+// TODO: add permissions.isVerifiable to the import.  They can only have verified their email address if they have one
+
 const keystone					= require( 'keystone' );
 const Family 					= keystone.list( 'Family' );
 // utility middleware
