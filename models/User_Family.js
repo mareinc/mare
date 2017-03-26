@@ -453,10 +453,15 @@ Family.schema.methods.setRegistrationNumber = function( done ) {
 		keystone.list( 'Family' ).model.find()
 				.exec()
 				.then( families => {
-					// get an array of registration numbers
-					const registrationNumbers = families.map( family => family.get( 'registrationNumber' ) );
-					// get the largest registration number
-					this.registrationNumber = Math.max( ...registrationNumbers ) + 1;
+					// if this is the first family to be created
+					if( !families ) {
+						this.registrationNumber = 1;
+					} else {
+						// get an array of registration numbers
+						const registrationNumbers = families.map( family => family.get( 'registrationNumber' ) );
+						// get the largest registration number
+						this.registrationNumber = Math.max( ...registrationNumbers ) + 1;
+					}
 
 					done();
 
