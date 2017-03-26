@@ -97,9 +97,16 @@
 		},
 
 		toggleHomestudySubmission: function toggleHomestudySubmission() {
-			var selectedOption = this.$state.children('option:selected');
+			var selectedOption	= this.$state.children('option:selected'),
+				selectedHTML	= selectedOption.html();
 
-			if(selectedOption.html() === 'Massachusetts') {
+			if( selectedHTML === 'Connecticut' ||
+				selectedHTML === 'Massachusetts' ||
+				selectedHTML === 'Maine' ||
+				selectedHTML === 'New Hampshire' ||
+				selectedHTML === 'New York' ||
+				selectedHTML === 'Rhode Island' ||
+				selectedHTML === 'Vermont' ) {
 				// Show the homestudy section of the form
 				this.$homestudySection.show();
 			} else {
