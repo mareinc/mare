@@ -1,8 +1,6 @@
 exports.create = {
 	'System Bot': [{
-		permissions: {
-			isActive: true
-		},
+		isActive: true,
 		name: {
 			first: 'Migration',
 			last: 'Bot'
