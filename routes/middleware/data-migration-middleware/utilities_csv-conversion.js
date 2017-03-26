@@ -26,6 +26,7 @@ const callInquiriesFilePath					= './migration-data/csv-data/call.csv';
 const inquiryAgenciesFilePath				= './migration-data/csv-data/call_agency.csv';
 const inquiryChildrenFilePath				= './migration-data/csv-data/call_child.csv';
 const inquiryNotesFilePath					= './migration-data/csv-data/call_note.csv';
+const mailingListAttendeesFilePath			= './migration-data/csv-data/mailing_list_subscription.csv';
 
 exports.fetchAdmins = ( resolve, reject ) => {
 	
@@ -491,6 +492,24 @@ exports.fetchInquiryNotes = ( resolve, reject ) => {
 		})
 		.on( 'error', err => {
 			console.error( `error fetching inquiry notes or converting to JSON => ${ err }` );
+			reject();
+		});
+};
+
+exports.fetchMailingListAttendees = ( resolve, reject ) => {
+	
+	console.log( `fetching mailing list attendees from CSV` );
+
+	// fetch all records from the mailing list attendees csv file
+	csv().fromFile( mailingListAttendeesFilePath )
+		// wait until the whole file has been parsed into an array of objects
+		.on( 'end_parsed', mailingListAttendeesArray => {
+			console.log( `mailing list attendees fetched` );
+			// resolve the promise with the array of event objects
+			resolve( mailingListAttendeesArray );
+		})
+		.on( 'error', err => {
+			console.error( `error fetching mailing list attendees or converting to JSON => ${ err }` );
 			reject();
 		});
 };
