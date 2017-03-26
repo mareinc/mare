@@ -107,9 +107,10 @@ module.exports.createSocialWorkerRecord = ( socialWorker, pauseUntilSaved ) => {
 			// every social worker needs a password, this will generate one we can easily determine at a later date while still being unique
 			password: `${ socialWorker.first_name }_${ socialWorker.last_name }_${ socialWorker.agc_id }`,
 
+			isActive: socialWorker.is_active === 'Y' ? true : false,
+			
 			permissions: {
 				isVerified: socialWorker.email ? true : false,			// they can only have verified their email address if they have one
-				isActive: socialWorker.is_active === 'Y' ? true : false
 			},
 
 			name: {
