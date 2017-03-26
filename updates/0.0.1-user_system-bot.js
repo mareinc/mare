@@ -8,9 +8,7 @@ exports.create = {
 		password: 'VEbDV*ctV6EyxCFPUVdV6MKAvopxs^28h)w4vwgCZZvfBd}Bn#',
 		email: 'jared.collier@yahoo.com'
 	},{
-		permissions: {
-			isActive: true
-		},
+		isActive: true,
 		name: {
 			first: 'Website',
 			last: 'Bot'
