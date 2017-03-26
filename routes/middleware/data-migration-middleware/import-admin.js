@@ -87,9 +87,10 @@ module.exports.createAdminRecord = ( admin, pauseUntilSaved ) => {
 
 		password: admin.password_hash, // need to decrypt this to make the logins usable
 
+		isActive: false,
+
 		permissions: {
-			isVerified: admin.email ? true : false, // they can only have verified their email address if they have one
-			isActive: false
+			isVerified: admin.email ? true : false // they can only have verified their email address if they have one
 		},
 
 		name: {
