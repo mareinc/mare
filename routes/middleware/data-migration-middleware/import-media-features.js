@@ -11,6 +11,8 @@ let mediaFeatures;
 let mediaFeatureImportComplete;
 // expose the array storing progress through the migration run
 let migrationResults;
+// create an array to store problems during the import
+let importErrors = [];
 
 module.exports.importMediaFeatures = ( req, res, done ) => {
 	// expose done to our generator
@@ -63,6 +65,8 @@ module.exports.generateMediaFeatures = function* generateMediaFeatures() {
 		// if there are no more records to process call done to move to the next migration file
 		if( remainingRecords === 0 ) {
 
+			console.log( `the following records weren't saved correctly: ${ importErrors }` );
+
 			const resultsMessage = `finished creating ${ totalRecords } media features in the new system`;
 			// store the results of this run for display after the run
 			migrationResults.push({
@@ -104,8 +108,8 @@ module.exports.createMediaFeatureRecord = ( mediaFeature, pauseUntilSaved ) => {
 		newMediaFeature.save( ( err, savedModel ) => {
 			// if we run into an error
 			if( err ) {
-				// halt execution by throwing an error
-				throw `[mft_id: ${ mediaFeature.mft_id }] an error occured while saving media feature`;
+				// store a reference to the entry that caused the error
+				importErrors.push( { id: mediaFeature.mft_id, error: err } );
 			}
 			
 			// fire off the next iteration of our generator after pausing for a second

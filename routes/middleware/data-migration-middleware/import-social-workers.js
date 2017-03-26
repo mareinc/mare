@@ -16,6 +16,8 @@ let socialWorkers;
 let socialWorkerImportComplete;
 // expose the array storing progress through the migration run
 let migrationResults;
+// create an array to store problems during the import
+let importErrors = [];
 
 module.exports.importSocialWorkers = ( req, res, done ) => {
 	// expose done to our generator
@@ -76,6 +78,8 @@ module.exports.generateSocialWorkers = function* generateSocialWorkers() {
 		console.log( `social workers remaining: ${ remainingRecords }` );
 		// if there are no more records to process call done to move to the next migration file
 		if( remainingRecords === 0 ) {
+
+			console.log( `the following records weren't saved correctly: ${ importErrors }` );
 
 			const resultsMessage = `finished creating ${ totalRecords } social workers in the new system`;
 			// store the results of this run for display after the run
@@ -142,8 +146,8 @@ module.exports.createSocialWorkerRecord = ( socialWorker, pauseUntilSaved ) => {
 		newSocialWorker.save( ( err, savedModel ) => {
 			// if we run into an error
 			if( err ) {
-				// halt execution by throwing an error
- 				throw `[agc_id: ${ socialWorker.agc_id }] an error occured while saving ${ socialWorker.first_name } ${ socialWorker.last_name }.`;
+				// store a reference to the entry that caused the error
+				importErrors.push( { id: socialWorker.agc_id, error: err } );
 			}
 
 			// fire off the next iteration of our generator after pausing

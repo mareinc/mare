@@ -13,8 +13,8 @@ let mailingListsMap;
 let mailingListAttendeeImportComplete;
 // expose the array storing progress through the migration run
 let migrationResults;
-// create a container for records that didn't save properly
-let unsavedMailingListAttendees = [];
+// create an array to store problems during the import
+let importErrors = [];
 
 module.exports.importMailingListAttendees = ( req, res, done ) => {
 	// expose the map we'll need for this import
@@ -100,7 +100,8 @@ module.exports.generateMailingListAttendees = function* generateMailingListAtten
 		console.log( `inquiries remaining: ${ remainingRecords }` );
 		// if there are no more records to process call done to move to the next migration file
 		if( remainingRecords === 0 ) {
-			console.log( `the following records weren't saved correctly: ${ unsavedInquiries }` );
+			
+			console.log( `the following records weren't saved correctly: ${ importErrors }` );
 
 			const resultsMessage = `finished creating ${ totalRecords } inquiries in the new system`;
 			// store the results of this run for display after the run
@@ -184,6 +185,10 @@ module.exports.createInquiryRecord = ( inquiry, pauseUntilSaved ) => {
 		// store the retrieved admin social worker, and family in local variables
 		const [ admin, socialWorker, family, source ] = values;
 
+
+// TODO: LEFT OFF AT LEAST HERE BUT CHECK THE WHOLE FILE
+
+
 		let newInquiry = new Inquiry.model({
 
 			takenBy: admin.get( '_id' ),
@@ -224,9 +229,8 @@ module.exports.createInquiryRecord = ( inquiry, pauseUntilSaved ) => {
 		newInquiry.save( ( err, savedModel ) => {
 			// if we run into an error
 			if( err ) {
-				// halt execution by throwing an error
-				// throw `[cll_id: ${ inquiry.cll_id }] an error occured while saving inquiry`;
-				unsavedInquiries.push( inquiry.cll_id );
+				// store a reference to the entry that caused the error
+				importErrors.push( { id: inquiry.cll_id, error: err } );
 			}
 			
 			// fire off the next iteration of our generator after pausing for a second

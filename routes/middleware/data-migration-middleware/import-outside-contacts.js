@@ -14,6 +14,8 @@ let contactGroupsMap,
 let outsideContactsImportComplete;
 // expose the array storing progress through the migration run
 let migrationResults;
+// create an array to store problems during the import
+let importErrors = [];
 
 module.exports.importOutsideContacts = ( req, res, done ) => {
 	// expose the maps we'll need for this import
@@ -69,6 +71,8 @@ module.exports.generateOutsideContacts = function* generateOutsideContacts() {
 		// if there are no more records to process call done to move to the next migration file
 		if( remainingRecords === 0 ) {
 
+			console.log( `the following records weren't saved correctly: ${ importErrors }` );
+
 			const resultsMessage = `finished creating ${ totalRecords } outside contacts in the new system`;
 			// store the results of this run for display after the run
 			migrationResults.push({
@@ -117,8 +121,8 @@ module.exports.createOutsideContactRecord = ( outsideContact, pauseUntilSaved ) 
 	newOutsideContact.save( ( err, savedModel ) => {
 		// if we run into an error
 		if( err ) {
-			// halt execution by throwing an error
-			throw `[ocn_id: ${ outsideContact.ocn_id }] an error occured while saving outside contact`;
+			// store a reference to the entry that caused the error
+			importErrors.push( { id: outsideContact.ocn_id, error: err } );
 		}
 		
 		// fire off the next iteration of our generator after pausing

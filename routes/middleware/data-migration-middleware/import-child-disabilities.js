@@ -69,6 +69,8 @@ module.exports.generateChildDisabilities = function* generateChildDisabilities()
 		// if there are no more records to process call done to move to the next migration file
 		if( remainingRecords === 0 ) {
 
+			console.log( `the following records weren't saved correctly: ${ importErrors }` );
+
 			const resultsMessage = `finished appending ${ totalRecords } disabilities to children in the new system`;
 			// store the results of this run for display after the run
 			migrationResults.push({
@@ -102,9 +104,8 @@ module.exports.updateChildRecord = ( childDisability, pauseUntilSaved ) => {
 		child.save( ( err, savedModel ) => {
 			// if we run into an error
 			if( err ) {
-				// halt execution by throwing an error
-				console.log( `error: ${ err }` );
-				throw `[csn_id: ${ childDisability.csn_id }] an error occured while saving a child's disability.`;
+				// store a reference to the entry that caused the error
+				importErrors.push( { id: childDisability.csn_id, error: err } );
 			}
 
 			// fire off the next iteration of our generator after saving

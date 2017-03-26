@@ -68,6 +68,8 @@ module.exports.generateAdmin = function* generateAdmin() {
 		// if there are no more records to process call done to move to the next migration file
 		if( remainingRecords === 0 ) {
 
+			console.log( `the following records weren't saved correctly: ${ importErrors }` );
+
 			const resultsMessage = `finished creating ${ totalRecords } admin in the new system`;
 			// store the results of this run for display after the run
 			migrationResults.push({
@@ -115,8 +117,8 @@ module.exports.createAdminRecord = ( admin, pauseUntilSaved ) => {
 	newAdmin.save( ( err, savedModel ) => {
 		// if we run into an error
 		if( err ) {
-			// halt execution by throwing an error
-			throw `[admin: ${ admin.usr_id }] an error occured while saving ${ admin.first_name } ${ admin.last_name }.`;
+			// store a reference to the entry that caused the error
+			importErrors.push( { id: admin.usr_id, error: err } );
 		}
 
 		// fire off the next iteration of our generator after pausing

@@ -98,6 +98,8 @@ module.exports.generateChildRecruitmentChecklistItems = function* generateChildR
 		// if there are no more records to process call done to move to the next migration file
 		if( remainingRecords === 0 ) {
 
+			console.log( `the following records weren't saved correctly: ${ importErrors }` );
+
 			const resultsMessage = `finished appending ${ totalRecords } child recruitment checklists in the new system`;
 			// store the results of this run for display after the run
 			migrationResults.push({
@@ -136,10 +138,8 @@ module.exports.updateChildRecord = ( recruitmentChecklistItems, childRegistratio
 		child.save( ( err, savedModel ) => {
 			// if we run into an error
 			if( err ) {
-				console.log( `registration number: ${ child.registrationNumber }` );
-				// halt execution by throwing an error
-				console.log( `error: ${ err }` );
-				throw `[registration number: ${ child.get( 'registrationNumber' ) }] an error occured while appending a recruitment checklist group to the child record.`;
+				// store a reference to the entry that caused the error
+				importErrors.push( { id: child.get( 'registrationNumber' ), error: err } );
 			}
 
 			// fire off the next iteration of our generator after pausing

@@ -106,6 +106,8 @@ module.exports.generateEventAttendees = function* generateEventAttendees() {
 		// if there are no more records to process call done to move to the next migration file
 		if( remainingRecords === 0 ) {
 
+			console.log( `the following records weren't saved correctly: ${ importErrors }` );
+
 			const resultsMessage = `finished appending ${ totalRecords } event attendee groups in the new system`;
 			// store the results of this run for display after the run
 			migrationResults.push({
@@ -165,9 +167,8 @@ module.exports.updateEventRecord = ( attendees, eventId, pauseUntilSaved ) => {
 		event.save( ( err, savedModel ) => {
 			// if we run into an error
 			if( err ) {
-				// halt execution by throwing an error
-				console.log( `error: ${ err }` );
-				throw `[event name: ${ event.get( 'name' ) }] an error occured while appending an attendee to the event record.`;
+				// store a reference to the entry that caused the error
+				importErrors.push( { id: event.get( 'name' ), error: err } );
 			}
 
 			// fire off the next iteration of our generator after pausing

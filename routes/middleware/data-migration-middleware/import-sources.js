@@ -11,6 +11,8 @@ let mediaTypesMap;
 let sourceImportComplete;
 // expose the array storing progress through the migration run
 let migrationResults;
+// create an array to store problems during the import
+let importErrors = [];
 
 module.exports.importSources = ( req, res, done ) => {
 	// expose the maps we'll need for this import
@@ -64,6 +66,8 @@ module.exports.generateSources = function* generateSources() {
 		// if there are no more records to process call done to move to the next migration file
 		if( remainingRecords === 0 ) {
 
+			console.log( `the following records weren't saved correctly: ${ importErrors }` );
+
 			const resultsMessage = `finished creating ${ totalRecords } sources in the new system`;
 			// store the results of this run for display after the run
 			migrationResults.push({
@@ -96,8 +100,8 @@ module.exports.createSourceRecord = ( source, pauseUntilSaved ) => {
 	newSource.save( ( err, savedModel ) => {
 		// if we run into an error
 		if( err ) {
-			// halt execution by throwing an error
-			throw `[rcs_id: ${ source.rcs_id }] an error occured while saving source`;
+			// store a reference to the entry that caused the error
+			importErrors.push( { id: source.rcs_id, error: err } );
 		}
 		
 		// fire off the next iteration of our generator after pausing for a second

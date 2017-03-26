@@ -66,6 +66,8 @@ module.exports.generateFamilies = function* generateFamilies() {
 		// if there are no more records to process call done to move to the next migration file
 		if( remainingRecords === 0 ) {
 
+			console.log( `the following records weren't saved correctly: ${ importErrors }` );
+
 			const resultsMessage = `finished creating ${ totalRecords } families in the new system`;
 			// store the results of this run for display after the run
 			migrationResults.push({
@@ -103,9 +105,8 @@ module.exports.createFamilyRecord = ( family, pauseUntilSaved ) => {
 		family.save( ( err, savedModel ) => {
 			// if we run into an error
 			if( err ) {
-				// halt execution by throwing an error
-				console.log( `error: ${ err }` );
-				throw `[registration number: ${ family.get( 'registrationNumber' ) }] an error occured while appending a social worker to the family record.`;
+				// store a reference to the entry that caused the error
+				importErrors.push( { id: familiy.get( 'registrationNumber' ), error: err } );
 			}
 
 			// fire off the next iteration of our generator after pausing

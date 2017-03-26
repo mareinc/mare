@@ -124,6 +124,8 @@ module.exports.generateFamilyContacts = function* generateFamilyContacts() {
 		// if there are no more records to process call done to move to the next migration file
 		if( remainingRecords === 0 ) {
 
+			console.log( `the following records weren't saved correctly: ${ importErrors }` );
+
 			const resultsMessage = `finished appending ${ totalRecords } family contact groups in the new system`;
 			// store the results of this run for display after the run
 			migrationResults.push({
@@ -215,9 +217,8 @@ module.exports.updateFamilyRecord = ( contacts, familyId, pauseUntilSaved ) => {
 				console.log( `registration number: ${ family.registrationNumber }` );
 				console.log( `contact 1 email: ${ family.contact1.email ? family.contact1.email.toLowerCase() : '' }` );
 				console.log( `contact 2 email: ${ family.contact2.email ? family.contact2.email.toLowerCase() : '' }` );
-				// halt execution by throwing an error
-				console.log( `error: ${ err }` );
-				throw `[registration number: ${ family.get( 'registrationNumber' ) }] an error occured while appending a contact group to the family record.`;
+				// store a reference to the entry that caused the error
+				importErrors.push( { id: familiy.get( 'registrationNumber' ), error: err } );
 			}
 
 			// fire off the next iteration of our generator after pausing

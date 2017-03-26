@@ -12,6 +12,8 @@ let placements;
 let importPlacementsComplete;
 // expose the array storing progress through the migration run
 let migrationResults;
+// create an array to store problems during the import
+let importErrors = [];
 
 module.exports.importPlacements = ( req, res, done ) => {
 	// expose done to our generator
@@ -64,6 +66,8 @@ module.exports.generatePlacements = function* generatePlacements() {
 		console.log( `placements remaining: ${ remainingRecords }` );
 		// if there are no more records to process call done to move to the next migration file
 		if( remainingRecords === 0 ) {
+
+			console.log( `the following records weren't saved correctly: ${ importErrors }` );
 
 			const resultsMessage = `finished creating ${ totalRecords } placements in the new system`;
 			// store the results of this run for display after the run
@@ -125,9 +129,8 @@ module.exports.createPlacementRecord = ( placement, pauseUntilSaved ) => {
 		newPlacement.save( ( err, savedModel ) => {
 			// if we run into an error
 			if( err ) {
-				// halt execution by throwing an error
-				console.log( `error: ${ err }` );
-				throw `[placement id: ${ placement.fpl_id }] an error occured while creating a placement.`;
+				// store a reference to the entry that caused the error
+				importErrors.push( { id: placement.fpl_id, error: err } );
 			}
 
 			// fire off the next iteration of our generator after pausing

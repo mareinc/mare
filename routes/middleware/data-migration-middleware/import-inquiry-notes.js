@@ -92,6 +92,8 @@ module.exports.generateInquiryNotes = function* generateInquiryNotes() {
 		// if there are no more records to process call done to move to the next migration file
 		if( remainingRecords === 0 ) {
 
+			console.log( `the following records weren't saved correctly: ${ importErrors }` );
+
 			const resultsMessage = `finished appending ${ totalRecords } inquiry note groups in the new system`;
 			// store the results of this run for display after the run
 			migrationResults.push({
@@ -123,9 +125,8 @@ module.exports.updateInquiryRecord = ( noteIds, inquiryId, pauseUntilSaved ) => 
 		inquiry.save( ( err, savedModel ) => {
 			// if we run into an error
 			if( err ) {
-				// halt execution by throwing an error
-				console.log( `error: ${ err }` );
-				throw `[inquiry id: ${ inquiry.get( '_id' ) }] an error occured while appending a note to the inquiry record.`;
+				// store a reference to the entry that caused the error
+				importErrors.push( { id: inquiry.get( '_id' ), error: err } );
 			}
 
 			// fire off the next iteration of our generator after pausing
