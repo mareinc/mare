@@ -203,7 +203,15 @@ exports.getGalleryData = ( req, res, next ) => {
 	locals.siblingGroups	= new Set(); // format: Set( { ids: Set(), children: [] }, ... )
 	// variables to determine what children the user has access to
 	locals.userType			= req.user ? req.user.get( 'userType' ) : 'anonymous';
-	locals.targetChildren	= locals.userType === 'anonymous' || locals.userType === 'site visitor' ? 'unrestricted' : 'all';
+	// anonymous users, site visitors, and families without a verified homestudy have access only to unrestricted children
+	if( locals.userType === 'anonymous' ||
+		locals.userType === 'site visitor' ||
+		( locals.userType === 'family' && !req.user.permissions.isHomestudyVerified ) ) {
+		locals.targetChildren = 'unrestricted';
+	// families with a verified homestudy and social workers have access to all children
+	} else {
+		locals.targetChildren = 'all';
+	}
 
 	async.series([
 		done => {
