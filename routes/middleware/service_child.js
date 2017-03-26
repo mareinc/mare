@@ -206,7 +206,7 @@ exports.getGalleryData = ( req, res, next ) => {
 	// anonymous users, site visitors, and families without a verified homestudy have access only to unrestricted children
 	if( locals.userType === 'anonymous' ||
 		locals.userType === 'site visitor' ||
-		( locals.userType === 'family' && !req.user.permissions.isHomestudyVerified ) ) {
+		( locals.userType === 'family' && !req.user.permissions.canViewAllChildren ) ) {
 		locals.targetChildren = 'unrestricted';
 	// families with a verified homestudy and social workers have access to all children
 	} else {
