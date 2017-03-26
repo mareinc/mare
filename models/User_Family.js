@@ -18,6 +18,7 @@ var keystone				= require( 'keystone' ),
 	async 					= require( 'async' ),
 	Types					= keystone.Field.Types,
 	FamilyHistory			= keystone.list( 'Family History' ),
+	State					= keystone.list( 'State' ),
 	User					= require( './User' ),
 	ChangeHistoryMiddleware	= require( '../routes/middleware/models_change-history' );
 
@@ -42,7 +43,8 @@ Family.add( 'Permissions', {
 	permissions: {
 		isVerified: { type: Boolean, label: 'has a verified email address', default: false, noedit: true },
 		isHomestudyVerified: { type: Boolean, label: 'homestudy verified', initial: true },
-		homestudyVerifiedDate: { type: Types.Date, label: 'homestudy verified on', format: 'MM/DD/YYYY', noedit: true }
+		homestudyVerifiedDate: { type: Types.Date, label: 'homestudy verified on', format: 'MM/DD/YYYY', noedit: true },
+		canViewAllChildren: { type: Boolean, default: false, hidden: true, noedit: true }
 	}
 
 },  'General Information', {
@@ -361,6 +363,7 @@ Family.schema.pre( 'save', function( next ) {
 
 	async.series([
 		done => { this.setHomestudyVerifiedDate( done ); }, // Update the homestudy verified date
+		done => { this.setGalleryViewingPermissions( done ); }, // Determine whether the family can view all children or just the publicly visible ones
 		done => { this.setFullName( done ); }, // Create a full name for the family based on their first, middle, and last names
 		done => { this.setFileName( done ); }, // Create an identifying name for file uploads
 		done => { this.setUserType( done ); }, // All user types that can log in derive from the User model, this allows us to identify users better
@@ -401,6 +404,31 @@ Family.schema.methods.setHomestudyVerifiedDate = function ( done ) {
 	}
 
 	done();
+};
+
+Family.schema.methods.setGalleryViewingPermissions = function( done ) {
+	'use strict';
+
+	let state;
+
+	async.series([
+		done => { 
+			State.model.findById( this.address.state )
+				.exec()
+				.then( stateObject => {
+					state = stateObject.abbreviation;
+					done();
+				});
+			}
+	], () => {
+		if( this.permissions.isHomestudyVerified && [ 'MA', 'NH', 'CT', 'ME', 'VT', 'RI', 'NY' ].includes( state ) ) {
+			this.permissions.canViewAllChildren = true;
+		} else {
+			this.permissions.canViewAllChildren = false;
+		}
+
+		done();
+	});
 };
 
 Family.schema.methods.setFullName = function( done ) {
