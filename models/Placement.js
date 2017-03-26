@@ -8,7 +8,7 @@ var Placement = new keystone.List( 'Placement' );
 Placement.add( 'Placement', {
 
 	placementDate: { type: Types.Date, label: 'placement date', format: 'MM/DD/YYYY', initial: true },
-	familyAgency: { type: Types.Relationship, label: 'family\'s agency', ref: 'Agency', dependsOn: { isUnregisteredFamily: false }, initial: true },
+	familyAgency: { type: Types.Relationship, label: 'family\'s agency', ref: 'Agency', dependsOn: { isUnregisteredFamily: false }, filters: { isActive: true }, initial: true },
 	constellation: { type: Types.Relationship, label: 'constellation', ref: 'Family Constellation', dependsOn: { isUnregisteredFamily: true }, initial: true },
 	race: { type: Types.Relationship, label: 'race', ref: 'Race', dependsOn: { isUnregisteredFamily: true }, many: true, initial: true },
 	source: { type: Types.Relationship, label: 'sources', ref: 'Source', filters: { isActive: true }, initial: true },

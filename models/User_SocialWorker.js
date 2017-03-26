@@ -54,7 +54,7 @@ SocialWorker.add( 'Permissions', {
 
 	// position: { type: Types.Relationship, label: 'Position', ref: 'Social Worker Position', initial: true },
 	position: { type: Types.Select, options: 'adoption worker, recruitment worker, supervisor, administrator, family worker, other', label: 'position', initial: true },
-	agency: { type: Types.Relationship, label: 'agency', ref: 'Agency', initial: true },
+	agency: { type: Types.Relationship, label: 'agency', ref: 'Agency', filters: { isActive: true }, initial: true },
 	agencyNotListed: { type: Types.Boolean, label: 'agency isn\'t listed', initial: true },
 	agencyText: { type: Types.Text, label: 'agency', dependsOn: { agencyNotListed: true }, initial: true },
 
