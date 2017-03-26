@@ -157,10 +157,7 @@ module.exports.createFamilyRecord = ( family, pauseUntilSaved ) => {
 		// every family needs a password, this will generate a placeholder which will be updated during the family contacts import
 		password: `${ family.fam_id }`,
 
-		permissions: {
-			// base isVerified on a valid email address when importing family contacts
-			isActive: family.status === 'A' || family.status === 'H'
-		},
+		isActive: family.status === 'A' || family.status === 'H',
 
 		registrationNumber: family.fam_id,
 		initialContact: family.listing_date ? new Date( family.listing_date ) : undefined,
