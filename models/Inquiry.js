@@ -36,7 +36,7 @@ Inquiry.add( 'General Information', {
 }, 'Agency', {
 
 	agency: { type: Types.Relationship, label: 'agency at time of inquiry', ref: 'Agency', dependsOn: { inquiryType: ['child inquiry', 'complaint', 'family support consultation'] }, noedit: true },
-	agencyReferrals: { type: Types.Relationship, label: 'agency referrals', ref: 'Agency', dependsOn: { inquiryType: 'general inquiry' }, many: true, initial: true }
+	agencyReferrals: { type: Types.Relationship, label: 'agency referrals', ref: 'Agency', dependsOn: { inquiryType: 'general inquiry' }, filters: { isActive: true }, many: true, initial: true }
 
 }, 'Confirmation', {
 
