@@ -17,11 +17,11 @@ Donation.add({
 	amount: { type: Types.Money, format: '$0,0.00', label: 'amount', required: true, initial: true },
 
 	isRegistered: { type: Types.Boolean, label: 'is a registered user', default: true, required: true, initial: true },
-	userType: { type: Types.Select, label: 'user type', options: 'site visitor, social worker, family, admin', dependsOn: { isRegistered: true }, initial: true },
-	siteVisitor: { type: Types.Relationship, label: 'donation from', dependsOn: { isRegistered: true, userType: 'site visitor' }, ref: 'Site Visitor', initial: true },
-	socialWorker: { type: Types.Relationship, label: 'donation from', dependsOn: { isRegistered: true, userType: 'social worker' }, ref: 'Social Worker', initial: true },
-	family: { type: Types.Relationship, label: 'donation from', dependsOn: { isRegistered: true, userType: 'family' }, ref: 'Family', initial: true },
-	admin: { type: Types.Relationship, label: 'donation from', dependsOn: { isRegistered: true, userType: 'admin' }, ref: 'Admin', initial: true },
+	userType: { type: Types.Select, label: 'user type', options: 'site visitor, social worker, family, admin', dependsOn: { isRegistered: true }, filters: { isActive: true }, initial: true },
+	siteVisitor: { type: Types.Relationship, label: 'donation from', ref: 'Site Visitor', dependsOn: { isRegistered: true, userType: 'site visitor' }, filters: { isActive: true }, initial: true },
+	socialWorker: { type: Types.Relationship, label: 'donation from', ref: 'Social Worker', dependsOn: { isRegistered: true, userType: 'social worker' }, filters: { isActive: true }, initial: true },
+	family: { type: Types.Relationship, label: 'donation from', ref: 'Family', dependsOn: { isRegistered: true, userType: 'family' }, filters: { isActive: true }, initial: true },
+	admin: { type: Types.Relationship, label: 'donation from', ref: 'Admin', dependsOn: { isRegistered: true, userType: 'admin' }, filters: { isActive: true }, initial: true },
 	unregisteredUser: { type: Types.Text, label: 'donation from', dependsOn: { isRegistered: false }, initial: true },
 	name: { type: Types.Text, label: 'name', hidden: true, noedit: true, initial: false }
 

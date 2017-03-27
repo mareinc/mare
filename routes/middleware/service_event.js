@@ -47,7 +47,7 @@ exports.getRandomEvent = function getRandomEvent(req, res, done) {
 			isActive: true
 		}, (err, event) => {
 
-			locals.randomEvent = event[ 0 ];
+			locals.randomEvent = event ? event[ 0 ] : {};
 			// Create a formatted date for display in the UI
 			locals.randomEvent.prettyDate = moment(locals.randomEvent.date).format('dddd, MMMM Do');
 			// Execute done function if async is used to continue the flow of execution
@@ -194,8 +194,9 @@ exports.createEvent = function createEvent( locals, event, resolve, reject ) {
 			zipCode: event.zipCode
 		},
 		contactEmail: event.contactEmail,
-		date: event.date,
+		startDate: event.startDate,
 		startTime: event.startTime,
+		endDate: event.endDate,
 		endTime: event.endTime,
 		description: event.description,
 		isActive: false,

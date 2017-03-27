@@ -1,5 +1,6 @@
 exports.create = {
 	'Site Visitor': [{
+		isActive: true,
 		permissions: {
 			isVerified: true
 		},

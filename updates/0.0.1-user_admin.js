@@ -9,9 +9,7 @@
 
 exports.create = {
 	Admin: [{
-		permissions: {
-			isActive: true
-		},
+		isActive: true,
 		name: {
 			first: 'Admin',
 			last: 'User'
@@ -19,9 +17,7 @@ exports.create = {
 		password: 'admin',
 		email: 'admin@keystonejs.com'
 	},{
-		permissions: {
-			isActive: true
-		},
+		isActive: true,
 		name: {
 			first: 'Jared',
 			last: 'Collier'
@@ -29,24 +25,12 @@ exports.create = {
 		password: 'JaredCollier',
 		email: 'jared.j.collier@gmail.com'
 	},{
-		permissions: {
-			isActive: true
-		},
+		isActive: true,
 		name: {
 			first: 'Lisa',
 			last: 'Funaro'
 		},
 		password: 'LisaFunaro',
 		email: 'lisafd4@gmail.com'
-	},{
-		permissions: {
-			isActive: true
-		},
-		name: {
-			first: 'Website',
-			last: 'Bot'
-		},
-		password: 'VN9uiE&geNx/wgC@woBjMvZqBvnibX9bouXgz4gJD4HrEh.uH/JoQD6hJddnGJyH',
-		email: 'junit83@gmail.com'
 	}]
 };

@@ -63,8 +63,7 @@ exports.initLocals = function(req, res, next) {
 			{ title: 'How MARE Can Help You', href: '/page/how-mare-can-help-you' },
 			{ title: 'Register a Child', href: '/page/register-a-child' },
 			{ title: 'Attend Events', href: '/page/attend-events' },
-			{ title: 'Register a Family', href: '/page/register-a-family' },
-			{ title: 'Search for Children & Families', href: '/page/search-for-children-and-families' }
+			{ title: 'Register a Family', href: '/page/register-a-family' }
 		]},
 		{ title: 'Events', subMenu: [
 			{ title: 'MARE Adoption Parties & Information Events', href: '/events/adoption-parties/'},

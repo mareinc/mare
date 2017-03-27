@@ -3,13 +3,15 @@ var keystone = require('keystone'),
 
 // Create model. Additional options allow menu name to be used what auto-generating URLs
 var Agency = new keystone.List('Agency', {
-	track: true,
 	autokey: { path: 'key', from: 'code', unique: true },
 	map: { name: 'code' }
 });
 
 // Create fields
 Agency.add({
+
+	isActive: { type: Boolean, label: 'is active', default: true },
+
 	code: { type: Types.Text, label: 'agency code', required: true, initial: true },
 	name: { type: Types.Text, label: 'agency name', required: true, initial: true },
 
@@ -26,7 +28,9 @@ Agency.add({
 	},
 
 	url: { type: Types.Text, label: 'agency url', initial: true },
-	generalInquiryContact: { type: Types.Email, label: 'general inquiry contact', initial: true }
+	MAREgeneralInquiryContact: { type: Types.Boolean, label: 'is agency contact in the MARE system', default: true, initial: true },
+	generalInquiryContact: { type: Types.Relationship, label: 'general inquiry contact', ref: 'Social Worker', dependsOn: { MAREgeneralInquiryContact: true }, filters: { isActive: true }, initial: true },
+	generalInquiryContactText: { type: Types.Email, label: 'general inquiry contact email', dependsOn: { MAREgeneralInquiryContact: false }, initial: true }
 
 /* Container for data migration fields ( these should be kept until after phase 2 and the old system is phased out completely ) */
 }, {
@@ -36,6 +40,7 @@ Agency.add({
 });
 
 // Set up relationship values to show up at the bottom of the model if any exist
+// TODO: set up a relationship for Social Workers as agency contacts.  This doesn't seem to work as Social Worker extends User
 Agency.relationship({ ref: 'Inquiry', refPath: 'agency', path: 'agency', label: 'inquries' });
 Agency.relationship({ ref: 'Inquiry', refPath: 'agencyReferral', path: 'agencyReferral', label: 'agency referral inquiries' });
 

@@ -2,7 +2,7 @@ const keystone				= require( 'keystone' );
 const utilitiesMiddleware   = require( './utilities' );
 
 exports.sendRegistrationConfirmationEmailToStaff = ( user, registrationStaffContact, done ) => {
-	// if this is a data migration run, don't send any emails
+	// do nothing if sending of the email is not currently allowed
 	if( process.env.MIGRATION === 'true' ) {
 		return done();
 	}
@@ -45,8 +45,8 @@ exports.sendRegistrationConfirmationEmailToStaff = ( user, registrationStaffCont
 };
 
 exports.sendThankYouEmailToUser = ( staffContactName, staffContactEmail, userEmail, userType, verificationCode, host, done ) => {
-	// if this is a data migration run, don't send any emails
-	if( process.env.MIGRATION === 'true' ) {
+	// do nothing if sending of the email is not currently allowed
+	if( process.env.MIGRATION === 'true' || process.env.SEND_REGISTRATION_THANK_YOU_EMAILS === 'false' ) {
 		return done();
 	}
 	// find the email template in templates/emails/

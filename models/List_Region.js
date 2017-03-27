@@ -1,8 +1,8 @@
-var keystone = require('keystone'),
-	Types = keystone.Field.Types;
+const keystone = require('keystone');
+const Types = keystone.Field.Types;
 
 // Create model. Additional options allow menu name to be used what auto-generating URLs
-var Region = new keystone.List('Region', {
+const Region = new keystone.List( 'Region', {
 	autokey: { path: 'key', from: 'Region', unique: true },
 	map: { name: 'region' }
 });
@@ -14,6 +14,7 @@ Region.add({
 
 // Displaly associations via the Relationship field type
 Region.relationship({ path: 'region', ref: 'CSC Region Contact', label: 'CSC contacts', refPath: 'region' });
+Region.relationship({ path: 'region', ref: 'City or Town', label: 'cities and towns', refPath: 'region' });
 
 // Define default columns in the admin interface and register the model
 Region.defaultColumns = 'region';

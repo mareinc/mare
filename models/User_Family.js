@@ -18,8 +18,12 @@ var keystone				= require( 'keystone' ),
 	async 					= require( 'async' ),
 	Types					= keystone.Field.Types,
 	FamilyHistory			= keystone.list( 'Family History' ),
+	State					= keystone.list( 'State' ),
 	User					= require( './User' ),
 	ChangeHistoryMiddleware	= require( '../routes/middleware/models_change-history' );
+
+// Export to make it available using require.  The keystone.list import throws a ReferenceError when importing a list that comes later when sorting alphabetically
+const ContactGroup = require( './ContactGroup' );
 
 // Create model
 var Family = new keystone.List( 'Family', {
@@ -34,9 +38,13 @@ var Family = new keystone.List( 'Family', {
 // Create fields
 Family.add( 'Permissions', {
 
+	isActive: { type: Boolean, label: 'is active', default: false },
+
 	permissions: {
 		isVerified: { type: Boolean, label: 'has a verified email address', default: false, noedit: true },
-		isActive: { type: Boolean, label: 'is active', default: false }
+		isHomestudyVerified: { type: Boolean, label: 'homestudy verified', initial: true },
+		homestudyVerifiedDate: { type: Types.Date, label: 'homestudy verified on', format: 'MM/DD/YYYY', noedit: true },
+		canViewAllChildren: { type: Boolean, default: false, hidden: true, noedit: true }
 	}
 
 },  'General Information', {
@@ -44,19 +52,21 @@ Family.add( 'Permissions', {
 	avatar: { type: Types.CloudinaryImage, label: 'avatar', folder: 'users/families', select: true, selectPrefix: 'users/families', autoCleanup: true }, // TODO: add publicID attribute for better naming in Cloudinary
 
 	registrationNumber: { type: Number, label: 'registration number', format: false, noedit: true },
-	initialContact: { type: Types.Date, label: 'initial contact', format: 'MM/DD/YYYY', required: true, initial: true },
+	initialContact: { type: Types.Date, label: 'initial contact', format: 'MM/DD/YYYY', initial: true }, // was required: data migration change ( undo if possible )
 	flagCalls: { type: Types.Boolean, label: 'flag calls', initial: true },
 	familyConstellation: { type: Types.Relationship, label: 'family constellation', ref: 'Family Constellation', required: true, initial: true },
 	language: { type: Types.Relationship, label: 'language', ref: 'Language', required: true, initial: true },
-	otherLanguages: { type: Types.Relationship, label: 'other languages', ref: 'Language', many: true, initial: true }
+	otherLanguages: { type: Types.Relationship, label: 'other languages', ref: 'Language', many: true, initial: true },
+
+	contactGroups: { type: Types.Relationship, label: 'contact groups', ref: 'Contact Group', many: true, initial: true }
 
 }, 'Contact 1', {
 
 	contact1: {
 
 		name: {
-			first: { type: Types.Text, label: 'first name', required: true, initial: true },
-			last: { type: Types.Text, label: 'last name', required: true, initial: true },
+			first: { type: Types.Text, label: 'first name', initial: true }, // was required: data migration change ( undo if possible )
+			last: { type: Types.Text, label: 'last name', initial: true }, // was required: data migration change ( undo if possible )
 			full: { type: Types.Text, label: 'name', hidden: true, noedit: true, initial: false }
 		},
 
@@ -66,11 +76,11 @@ Family.add( 'Permissions', {
 		},
 
 		email: { type: Types.Email, label: 'email address', initial: true },
-		preferredCommunicationMethod: { type: Types.Select, label: 'preferred communication method', options: 'email, home phone, mobile phone, work phone, unknown', required: true, initial: true },
-		gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', required: true, initial: true },
+		preferredCommunicationMethod: { type: Types.Select, label: 'preferred communication method', options: 'email, home phone, mobile phone, work phone, unknown', initial: true }, // was required: data migration change ( undo if possible )
+		gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', initial: true }, // was required: data migration change ( undo if possible )
 		race: { type: Types.Relationship, label: 'race', ref: 'Race', many: true, required: true, initial: true },
 		occupation: { type: Types.Text, label: 'occupation', initial: true },
-		birthDate: { type: Types.Date, label: 'date of birth', format: 'MM/DD/YYYY', required: true, initial: true }
+		birthDate: { type: Types.Date, label: 'date of birth', format: 'MM/DD/YYYY', initial: true } // was required: data migration change ( undo if possible )
 	}
 
 }, 'Contact 2', {
@@ -101,8 +111,8 @@ Family.add( 'Permissions', {
 		street1: { type: Types.Text, label: 'street 1', required: true, initial: true },
 		street2: { type: Types.Text, label: 'street 2', initial: true },
 		city: { type: Types.Text, label: 'city', required: true, initial: true },
-		state: { type: Types.Relationship, label: 'state', ref: 'State', required: true, initial: true },
-		zipCode: { type: Types.Text, label: 'zip code', required: true, initial: true },
+		state: { type: Types.Relationship, label: 'state', ref: 'State', initial: true }, // was required: data migration change ( undo if possible )
+		zipCode: { type: Types.Text, label: 'zip code', initial: true }, // was required: data migration change ( undo if possible )
 		region: { type: Types.Relationship, label: 'region', ref: 'Region', initial: true }
 	},
 
@@ -249,7 +259,7 @@ Family.add( 'Permissions', {
 
 }, 'Social Worker Information', {
 
-	socialWorker: { type: Types.Relationship, label: 'social worker', ref: 'Social Worker', initial: true },
+	socialWorker: { type: Types.Relationship, label: 'social worker', ref: 'Social Worker', filters: { isActive: true }, initial: true },
 	socialWorkerNotListed: { type: Types.Boolean, label: 'social worker isn\'t listed', initial: true },
 	socialWorkerText: { type: Types.Text, label: 'social worker', dependsOn: { socialWorkerNotListed: true }, initial: true }
 
@@ -334,6 +344,7 @@ Family.add( 'Permissions', {
 // Set up relationship values to show up at the bottom of the model if any exist
 Family.relationship( { ref: 'Placement', refPath: 'placedWithFamily', path: 'placements', label: 'placements' } );
 Family.relationship( { ref: 'Inquiry', refPath: 'family', path: 'inquiries', label: 'inquiries' } );
+Family.relationship( { ref: 'Match', refPath: 'family', path: 'matches', label: 'matches' } );
 Family.relationship( { ref: 'Mailing List', refPath: 'familySubscribers', path: 'mailing-lists', label: 'mailing lists' } );
 Family.relationship( { ref: 'Event', refPath: 'familyAttendees', path: 'events', label: 'events' } );
 Family.relationship( { ref: 'Internal Note', refPath: 'family', path: 'internal-notes', label: 'internal notes' } );
@@ -350,9 +361,10 @@ Family.schema.post( 'init', function() {
 Family.schema.pre( 'save', function( next ) {
 	'use strict';
 
-	// TODO: Assign a registration number if one isn't assigned
 	async.series([
-		done => { this.setFullName( done ); }, // Create a full name for the child based on their first, middle, and last names
+		done => { this.setHomestudyVerifiedDate( done ); }, // Update the homestudy verified date
+		done => { this.setGalleryViewingPermissions( done ); }, // Determine whether the family can view all children or just the publicly visible ones
+		done => { this.setFullName( done ); }, // Create a full name for the family based on their first, middle, and last names
 		done => { this.setFileName( done ); }, // Create an identifying name for file uploads
 		done => { this.setUserType( done ); }, // All user types that can log in derive from the User model, this allows us to identify users better
 		done => { this.setRegistrationNumber( done ) }, // Set the registration number to the next highest available
@@ -377,6 +389,47 @@ Family.schema.virtual( 'canAccessKeystone' ).get( function() {
 
 	return false;
 });
+
+Family.schema.methods.setHomestudyVerifiedDate = function ( done ) {
+	'use strict';
+
+	// if the isHomestudyVerified checkbox isn't checked
+	if( !this.permissions.isHomestudyVerified ) {
+		// clear the date
+		this.permissions.homestudyVerifiedDate = undefined;
+	// if the isHomestudyVerified checkbox wasn't checked, but is now
+	} else if( !this._original.permissions.isHomestudyVerified && this.permissions.isHomestudyVerified ) {
+		// update the date
+		this.permissions.homestudyVerifiedDate = new Date();
+	}
+
+	done();
+};
+
+Family.schema.methods.setGalleryViewingPermissions = function( done ) {
+	'use strict';
+
+	let state;
+
+	async.series([
+		done => { 
+			State.model.findById( this.address.state )
+				.exec()
+				.then( stateObject => {
+					state = stateObject.abbreviation;
+					done();
+				});
+			}
+	], () => {
+		if( this.permissions.isHomestudyVerified && [ 'MA', 'NH', 'CT', 'ME', 'VT', 'RI', 'NY' ].includes( state ) ) {
+			this.permissions.canViewAllChildren = true;
+		} else {
+			this.permissions.canViewAllChildren = false;
+		}
+
+		done();
+	});
+};
 
 Family.schema.methods.setFullName = function( done ) {
 	'use strict';
@@ -428,10 +481,15 @@ Family.schema.methods.setRegistrationNumber = function( done ) {
 		keystone.list( 'Family' ).model.find()
 				.exec()
 				.then( families => {
-					// get an array of registration numbers
-					const registrationNumbers = families.map( family => family.get( 'registrationNumber' ) );
-					// get the largest registration number
-					this.registrationNumber = Math.max( ...registrationNumbers ) + 1;
+					// if this is the first family to be created
+					if( !families ) {
+						this.registrationNumber = 1;
+					} else {
+						// get an array of registration numbers
+						const registrationNumbers = families.map( family => family.get( 'registrationNumber' ) );
+						// get the largest registration number
+						this.registrationNumber = Math.max( ...registrationNumbers ) + 1;
+					}
 
 					done();
 
@@ -1476,7 +1534,7 @@ Family.schema.methods.setChangeHistory = function setChangeHistory( done ) {
 };
 
 // Define default columns in the admin interface and register the model
-Family.defaultColumns = 'registrationNumber, contact1.name.full, permissions.isActive';
+Family.defaultColumns = 'registrationNumber, contact1.name.full, isActive';
 Family.register();
 
 // Export to make it available using require.  The keystone.list import throws a ReferenceError when importing a list

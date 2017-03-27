@@ -1,5 +1,6 @@
 exports.create = {
 	'Social Worker': [{
+		isActive: true,
 		permissions: {
 			isVerified: true
 		},

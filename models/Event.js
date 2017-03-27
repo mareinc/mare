@@ -4,7 +4,6 @@ var keystone = require('keystone'),
 
 // Create model. Additional options allow event name to be used what auto-generating URLs
 var Event = new keystone.List('Event', {
-	track: true,
 	autokey: { path: 'key', from: 'name', unique: true },
 	map: { name: 'name' }
 });
@@ -24,30 +23,31 @@ Event.add({ heading: 'General Information' }, {
 }, { heading: 'Address' }, {
 
 	address: {
-	    street1: { type: Types.Text, label: 'street 1', required: true, initial: true },
+	    street1: { type: Types.Text, label: 'street 1', initial: true },
 		street2: { type: Types.Text, label: 'street 2', initial: true },
-		city: { type: Types.Text, label: 'city', required: true, initial: true },
-		state: { type: Types.Relationship, label: 'state', ref: 'State', required: true, initial: true },
+		city: { type: Types.Text, label: 'city', initial: true },
+		state: { type: Types.Relationship, label: 'state', ref: 'State', initial: true },
 		zipCode: { type: Types.Text, label: 'zip code', initial: true }
 	},
 
-	contact: { type: Types.Relationship, label: 'contact', ref: 'Admin', initial: true },
-	contactEmail: { type: Types.Text, label: 'contact person email', note: 'only fill out if no contact is selected', initial: true }
+	contact: { type: Types.Relationship, label: 'contact', ref: 'Admin', filters: { isActive: true }, initial: true },
+	contactEmail: { type: Types.Email, label: 'contact person email', note: 'only fill out if no contact is selected', initial: true }
 
 }, { heading: 'Details' }, {
 
-	date: { type: Types.Date, label: 'date', format: 'MM/DD/YYYY', initial: true },
+	startDate: { type: Types.Date, label: 'start date', format: 'MM/DD/YYYY', required: true, initial: true },
 	startTime: { type: Types.Text, label: 'start time', required: true, initial: true },
+	endDate: { type: Types.Date, label: 'end date', format: 'MM/DD/YYYY', required: true, initial: true },
 	endTime: { type: Types.Text, label: 'end time', required: true, initial: true },
 	description: { type: Types.Html, label: 'description', wysiwyg: true, initial: true }
 
 }, 'Attendees', {
 
-	staffAttendees: { type: Types.Relationship, label: 'staff', ref: 'Admin', many: true, initial: true },
-	siteVisitorAttendees: { type: Types.Relationship, label: 'site visitors', ref: 'Site Visitor', many: true, initial: true },
-	socialWorkerAttendees: { type: Types.Relationship, label: 'social workers', ref: 'Social Worker', many: true, initial: true },
-	familyAttendees: { type: Types.Relationship, label: 'families', ref: 'Family', many: true, initial: true },
-	childAttendees: { type: Types.Relationship, label: 'children', ref: 'Child', many: true, initial: true },
+	staffAttendees: { type: Types.Relationship, label: 'staff', ref: 'Admin', filters: { isActive: true }, many: true, initial: true },
+	siteVisitorAttendees: { type: Types.Relationship, label: 'site visitors', ref: 'Site Visitor', filters: { isActive: true }, many: true, initial: true },
+	socialWorkerAttendees: { type: Types.Relationship, label: 'social workers', ref: 'Social Worker', filters: { isActive: true }, many: true, initial: true },
+	familyAttendees: { type: Types.Relationship, label: 'families', ref: 'Family', filters: { isActive: true }, many: true, initial: true },
+	childAttendees: { type: Types.Relationship, label: 'children', ref: 'Child', filters: { isActive: true }, many: true, initial: true },
 	outsideContactAttendees: { type: Types.Relationship, label: 'volunteers', filters: { isVolunteer: true }, ref: 'Outside Contact', many: true, initial: true}
 
 }, { heading: 'Notes' }, {
@@ -64,7 +64,15 @@ Event.add({ heading: 'General Information' }, {
 	// system field to store an appropriate file prefix
 	fileName: { type: Types.Text, hidden: true }
 
+/* Container for data migration fields ( these should be kept until after phase 2 and the old system is phased out completely ) */
+}, {
+	// system field to store an appropriate file prefix
+	oldId: { type: Types.Text, hidden: true }
+
 });
+
+// Set up relationship values to show up at the bottom of the model if any exist
+Event.relationship( { ref: 'Event Attendee', refPath: 'event', path: 'event', label: 'attendees' } );
 
 // Pre Save
 Event.schema.pre('save', function(next) {

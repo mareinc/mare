@@ -9,10 +9,13 @@ var keystone				= require( 'keystone' ),
 	User					= require( './User' );
 	ChangeHistoryMiddleware	= require( '../routes/middleware/models_change-history' );
 
+// Export to make it available using require.  The keystone.list import throws a ReferenceError when importing a list that comes later when sorting alphabetically
+const ContactGroup = require( './ContactGroup' );
+
 // Create model
 var SocialWorker = new keystone.List( 'Social Worker', {
 	inherits	: User,
-	track: true,
+	track		: true,
 	map			: { name: 'name.full' },
 	defaultSort	: 'name.full',
 	hidden		: false
@@ -21,9 +24,10 @@ var SocialWorker = new keystone.List( 'Social Worker', {
 // Create fields
 SocialWorker.add( 'Permissions', {
 
+	isActive: { type: Boolean, label: 'is active', default: false },
+
 	permissions: {
-		isVerified: { type: Boolean, label: 'has a verified email address', default: false, noedit: true },
-		isActive: { type: Boolean, label: 'is active', default: false }
+		isVerified: { type: Boolean, label: 'has a verified email address', default: false, noedit: true }
 	}
 
 }, 'General Information', {
@@ -34,7 +38,9 @@ SocialWorker.add( 'Permissions', {
 		full: { type: Types.Text, label: 'name', hidden: true, noedit: true, initial: false }
 	},
 
-	avatar: { type: Types.CloudinaryImage, label: 'avatar', folder: 'users/social workers', select: true, selectPrefix: 'users/social workers', autoCleanup: true } // TODO: add publicID attribute for better naming in Cloudinary
+	avatar: { type: Types.CloudinaryImage, label: 'avatar', folder: 'users/social workers', select: true, selectPrefix: 'users/social workers', autoCleanup: true }, // TODO: add publicID attribute for better naming in Cloudinary
+
+	contactGroups: { type: Types.Relationship, label: 'contact groups', ref: 'Contact Group', many: true, initial: true }
 
 }, 'Contact Information', {
 
@@ -48,7 +54,7 @@ SocialWorker.add( 'Permissions', {
 
 	// position: { type: Types.Relationship, label: 'Position', ref: 'Social Worker Position', initial: true },
 	position: { type: Types.Select, options: 'adoption worker, recruitment worker, supervisor, administrator, family worker, other', label: 'position', initial: true },
-	agency: { type: Types.Relationship, label: 'agency', ref: 'Agency', initial: true },
+	agency: { type: Types.Relationship, label: 'agency', ref: 'Agency', filters: { isActive: true }, initial: true },
 	agencyNotListed: { type: Types.Boolean, label: 'agency isn\'t listed', initial: true },
 	agencyText: { type: Types.Text, label: 'agency', dependsOn: { agencyNotListed: true }, initial: true },
 
@@ -77,6 +83,7 @@ SocialWorker.add( 'Permissions', {
 
 // Set up relationship values to show up at the bottom of the model if any exist
 SocialWorker.relationship( { ref: 'Child', refPath: 'adoptionWorker', path: 'children', label: 'children' } );
+SocialWorker.relationship( { ref: 'Family', refPath: 'socialWorker', path: 'families', label: 'families' } );
 SocialWorker.relationship( { ref: 'Inquiry', refPath: 'socialWorker', path: 'my-inquiries', label: 'my inquiries' } );
 SocialWorker.relationship( { ref: 'Inquiry', refPath: 'childsSocialWorker', path: 'family-inquiries', label: 'family inquiries' } );
 SocialWorker.relationship( { ref: 'Mailing List', refPath: 'socialWorkerSubscribers', path: 'mailing-lists', label: 'mailing lists' } );
@@ -96,7 +103,7 @@ SocialWorker.schema.pre('save', function(next) {
 	'use strict';
 
 	var model = this;
-
+	// TODO: get rid of model = this and all model references.  You'll need to verify all functionality still works
 	async.series([
 		done => { model.setFullName(done); }, // Create a full name for the child based on their first, middle, and last names
 		done => { model.setUserType(done); }, // Create an identifying name for file uploads
@@ -337,7 +344,7 @@ SocialWorker.schema.methods.setChangeHistory = function setChangeHistory( done )
 };
 
 // Define default columns in the admin interface and register the model
-SocialWorker.defaultColumns = 'name.full, phone.work, phone.home, phone.cell, phone.preferred, email, permissions.isActive';
+SocialWorker.defaultColumns = 'name.full, phone.work, phone.home, phone.cell, phone.preferred, email, isActive';
 SocialWorker.register();
 
 // Export to make it available using require.  The keystone.list import throws a ReferenceError when importing a list

@@ -5,7 +5,6 @@ var keystone	= require( 'keystone' ),
 // Create model
 var Admin = new keystone.List( 'Admin', {
 	inherits: User,
-	track: true,
 	map: { name: 'name.full' },
 	defaultSort: 'name.full',
 	hidden: false
@@ -14,9 +13,10 @@ var Admin = new keystone.List( 'Admin', {
 // Create fields
 Admin.add( 'Permissions', {
 
+	isActive: { type: Boolean, label: 'is active', default: true, noedit: true },
+
 	permissions: {
-		isVerified: { type: Boolean, label: 'has a verified email address', default: true, noedit: true, hidden: true },
-		isActive: { type: Boolean, label: 'is active', default: true, noedit: true }
+		isVerified: { type: Boolean, label: 'has a verified email address', default: true, noedit: true, hidden: true }
 	}
 
 }, 'General Information', {
@@ -45,6 +45,11 @@ Admin.add( 'Permissions', {
 		state: { type: Types.Relationship, label: 'state', ref: 'State', initial: true },
 		zipCode: { type: Types.Text, label: 'zip code', initial: true }
 	}
+
+/* Container for data migration fields ( these should be kept until after phase 2 and the old system is phased out completely ) */
+}, {
+
+	oldId: { type: Types.Text, hidden: true }
 
 });
 
@@ -75,7 +80,7 @@ User.schema.virtual( 'canAccessKeystone' ).get( () => {
 });
 
 // Define default columns in the admin interface and register the model
-Admin.defaultColumns = 'name.full, email, phone.work, permissions.isActive';
+Admin.defaultColumns = 'name.full, email, phone.work, isActive';
 Admin.register();
 
 // Export to make it available using require.  The keystone.list import throws a ReferenceError when importing a list

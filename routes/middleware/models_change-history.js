@@ -210,14 +210,14 @@ exports.addToHistoryEntry = ( fieldBefore, field, label, changeHistory ) => {
 exports.setUpdatedby = ( targetModel, done ) => {
 	// if the user was created using the website	
 	if( !targetModel.updatedBy ) {
-		keystone.list( 'Admin' ).model.find()
+		keystone.list( 'System Bot' ).model.find()
 				.exec()
-				.then( admins => {
-					// since we can't filter on elements on an object in a .which(), we do it in a loop here instead
-					for( admin of admins ) {
-						if( admin.name.full === 'Website Bot' ) {
+				.then( bots => {
+					// since we can't filter on members of an object in a .where(), we do it in a loop here instead
+					for( bot of bots ) {
+						if( bot.name.full === 'Website Bot' ) {
 							// set the updatedBy field to the id of the website bot
-							targetModel.updatedBy = admin.get( '_id' );
+							targetModel.updatedBy = bot.get( '_id' );
 						}
 					}
 					
