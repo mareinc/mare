@@ -1,7 +1,7 @@
 var keystone = require( 'keystone' );
 
 exports.sendInquiryCreatedEmailToStaff = ( inquiry, inquiryData, done ) => {
-	// if this is a data migration run, don't send any emails
+	// if sending of the email is currently allowed
 	if( process.env.MIGRATION === 'true' ) {
 		return done();
 	}
@@ -44,8 +44,8 @@ exports.sendInquiryCreatedEmailToStaff = ( inquiry, inquiryData, done ) => {
 };
 
 exports.sendThankYouEmailToInquirer = ( inquiry, inquiryData, done ) => {
-	// if this is a data migration run, don't send any emails
-	if( process.env.MIGRATION === 'true' ) {
+	// do nothing if sending of the email is not currently allowed
+	if( process.env.MIGRATION === 'true' || process.env.SEND_INQUIRY_RECEIVED_EMAILS === 'false' ) {
 		return done();
 	}
 	// find the email template in templates/emails/
@@ -86,8 +86,8 @@ exports.sendThankYouEmailToInquirer = ( inquiry, inquiryData, done ) => {
 };
 
 exports.sendThankYouEmailToFamilyOnBehalfOfInquirer = ( inquiry, inquiryData, done ) => {
-	// if this is a data migration run, don't send any emails
-	if( process.env.MIGRATION === 'true' ) {
+	// do nothing if sending of the email is not currently allowed
+	if( process.env.MIGRATION === 'true' || process.env.SEND_INQUIRY_RECEIVED_ON_BEHALF_OF_EMAILS === 'false' ) {
 		return done();
 	}
 	// find the email template in templates/emails/
@@ -128,8 +128,8 @@ exports.sendThankYouEmailToFamilyOnBehalfOfInquirer = ( inquiry, inquiryData, do
 };
 
 exports.sendInquiryAcceptedEmailToInquirer = ( inquiry, inquiryData, done ) => {
-	// if this is a data migration run, don't send any emails
-	if( process.env.MIGRATION === 'true' ) {
+	// do nothing if sending of the email is not currently allowed
+	if( process.env.MIGRATION === 'true' || process.env.SEND_INQUIRY_ACCEPTED_EMAILS === 'false' ) {
 		return done();
 	}
 	// find the email template in templates/emails/
@@ -168,8 +168,8 @@ exports.sendInquiryAcceptedEmailToInquirer = ( inquiry, inquiryData, done ) => {
 };
 
 exports.sendInquiryAcceptedEmailToFamilyOnBehalfOfInquirer = ( inquiry, inquiryData, done ) => {
-	// if this is a data migration run, don't send any emails
-	if( process.env.MIGRATION === 'true' ) {
+	// do nothing if sending of the email is not currently allowed
+	if( process.env.MIGRATION === 'true' || process.env.SEND_INQUIRY_ACCEPTED_ON_BEHALF_OF_EMAILS === 'false' ) {
 		return done();
 	}
 	// find the email template in templates/emails/
@@ -208,8 +208,8 @@ exports.sendInquiryAcceptedEmailToFamilyOnBehalfOfInquirer = ( inquiry, inquiryD
 };
 
 exports.sendInquiryAcceptedEmailToChildsSocialWorker = ( inquiry, inquiryData, done ) => {
-	// if this is a data migration run, don't send any emails
-	if( process.env.MIGRATION === 'true' ) {
+	// do nothing if sending of the email is not currently allowed
+	if( process.env.MIGRATION === 'true' || process.env.SEND_CHILD_INQUIRY_ACCEPTED_EMAILS_TO_CHILDS_SOCIAL_WORKER === 'false' ) {
 		return done();
 	}
 	// find the email template in templates/emails/
@@ -248,8 +248,8 @@ exports.sendInquiryAcceptedEmailToChildsSocialWorker = ( inquiry, inquiryData, d
 };
 
 exports.sendInquiryAcceptedEmailToAgencyContacts = ( inquiry, inquiryData, done ) => {
-	// if this is a data migration run, don't send any emails
-	if( process.env.MIGRATION === 'true' ) {
+	// do nothing if sending of the email is not currently allowed
+	if( process.env.MIGRATION === 'true' || process.env.SEND_GENERAL_INQUIRY_ACCEPTED_EMAILS_TO_AGENCY_CONTACTS === 'false' ) {
 		return done();
 	}
 	// find the email template in templates/emails/
