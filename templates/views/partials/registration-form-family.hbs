@@ -247,7 +247,7 @@
 					<div class="row">
 						<div class="col-sm-12 form-group">
 							<label class="checkbox-inline">
-								<input type="checkbox" name="processProgression" value="gatheringInformation">Gathering Information
+								<input type="checkbox" id="gathering-information-checkbox" name="processProgression" value="gatheringInformation">Gathering Information
 							</label>
 						</div>
 						<div class="col-sm-12 form-group">
@@ -434,14 +434,14 @@
 
 			<div class="row form-group">
 				<div class="col-sm-12">
-					<label class="label marg-bottom-xs-5 required-field">Gender of children preferred</label>
+					<label class="label marg-bottom-xs-5 preferred-gender-label">Gender of children preferred</label>
 				</div>
 				<div class="col-sm-12">
 					<div id="preferred-gender-error-container" class="row error-container">
 					{{#each genders}}
 						<div class="col-sm-12 form-group">
 							<label class="checkbox-inline">
-								<input type="checkbox" name="preferredGender" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#preferred-gender-error-container" required="" value="{{_id}}">{{gender}}
+								<input type="checkbox" name="preferredGender" class="preferred-gender" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#preferred-gender-error-container" data-parsley-required="false" value="{{_id}}">{{gender}}
 							</label>
 						</div>
 					{{/each}}
@@ -450,14 +450,14 @@
 			</div>
 			<div class="row form-group">
 				<div class="col-sm-12">
-					<label class="label marg-bottom-xs-5 required-field">Legal Status</label>
+					<label class="label marg-bottom-xs-5 legal-status-label">Legal Status</label>
 				</div>
 				<div class="col-sm-12">
 					<div id="preferred-legal-status-error-container" class="row error-container">
 					{{#each legalStatuses}}
 						<div class="col-sm-12 form-group">
 							<label class="checkbox-inline">
-								<input type="checkbox" name="legalStatus" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#preferred-legal-status-error-container" required="" value="{{_id}}">{{legalStatus}}
+								<input type="checkbox" name="legalStatus" class="legal-status" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#preferred-legal-status-error-container" data-parsley-required="false" value="{{_id}}">{{legalStatus}}
 							</label>
 						</div>
 					{{/each}}
@@ -466,12 +466,12 @@
 			</div>
 			<div class="row form-group">
 				<div class="col-sm-12">
-					<label class="label marg-bottom-xs-5 required-field">Age Range</label>
+					<label class="label marg-bottom-xs-5 age-range-label">Age Range</label>
 				</div>
 				<div class="col-sm-12">
 					<div class="row">
 						<div class="col-xs-8">
-							<select name="ageRangeFrom" class="input form__number-select inline" data-parsley-errors-messages-disabled="true" required="">
+							<select name="ageRangeFrom" class="input form__number-select inline age-range-from" data-parsley-errors-messages-disabled="true" data-parsley-required="false">
 								<option value=""></option>
 								<option value="0">0</option>
 								<option value="1">1</option>
@@ -495,7 +495,7 @@
 						</div>
 						<div class="col-xs-4 text-center">To:</div>
 						<div class="col-xs-8">
-							<select name="ageRangeTo" class="input form__number-select inline" data-parsley-errors-messages-disabled="true" required="">
+							<select name="ageRangeTo" class="input form__number-select inline age-range-to" data-parsley-errors-messages-disabled="true" data-parsley-required="false">
 								<option value=""></option>
 								<option value="0">0</option>
 								<option value="1">1</option>
@@ -522,10 +522,10 @@
 			</div>
 			<div class="row form-group">
 				<div class="col-sm-12">
-					<label class="label marg-bottom-xs-5 required-field">Number of children preferred</label>
+					<label class="label marg-bottom-xs-5 number-of-children-preferred-label">Number of children preferred</label>
 				</div>
 				<div class="col-sm-12">
-					<select name="numberOfChildrenPrefered" class="input form__number-select" data-parsley-errors-messages-disabled="true" required="">
+					<select name="numberOfChildrenPrefered" class="input form__number-select number-of-children-preferred" data-parsley-errors-messages-disabled="true" data-parsley-required="false">
 						<option value=""></option>
 						<option value="0">0</option>
 						<option value="1">1</option>
@@ -543,29 +543,29 @@
 			</div>
 			<div class="row form-group">
 				<div class="col-sm-12">
-					<label class="label marg-bottom-xs-5 required-field">Would you consider children who have contact with their biological siblings?</label>
+					<label class="label marg-bottom-xs-5 contact-with-biological-siblings-label">Would you consider children who have contact with their biological siblings?</label>
 				</div>
 				<div class="col-sm-12">
 					<span id="preferred-sibling-contact-error-container" class="error-container">
-						<label class="radio-inline"><input type="radio" name="contactWithBiologicalSiblings" value="yes" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#preferred-sibling-contact-error-container" required="">Yes</label>
+						<label class="radio-inline"><input type="radio" name="contactWithBiologicalSiblings" class="contact-with-biological-siblings" value="yes" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#preferred-sibling-contact-error-container" data-parsley-required="false">Yes</label>
 						<label class="radio-inline"><input type="radio" name="contactWithBiologicalSiblings" value="no">No</label>
 					</span>
 				</div>
 			</div>
 			<div class="row form-group">
 				<div class="col-sm-12">
-					<label class="label marg-bottom-xs-5 required-field">Would you consider children who have contact with their biological parents?</label>
+					<label class="label marg-bottom-xs-5 contact-with-biological-parents-label">Would you consider children who have contact with their biological parents?</label>
 				</div>
 				<div class="col-sm-12">
 					<span id="preferred-parent-contact-error-container" class="error-container">
-						<label class="radio-inline"><input type="radio" name="contactWithBiologicalParents" value="yes" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#preferred-parent-contact-error-container" required="">Yes</label>
+						<label class="radio-inline"><input type="radio" name="contactWithBiologicalParents" class="contact-with-biological-parents" value="yes" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#preferred-parent-contact-error-container" data-parsley-required="false">Yes</label>
 						<label class="radio-inline"><input type="radio" name="contactWithBiologicalParents" value="no">No</label>
 					</span>
 				</div>
 			</div>
 			<div class="row">
 				<div class="col-sm-24 form-group">
-					<label class="label marg-bottom-xs-5 required-field">Race/Ethnicity (check all that apply)</label>
+					<label class="label marg-bottom-xs-5 race-label">Race/Ethnicity (check all that apply)</label>
 				</div>
 			</div>
 			<div class="row form-group">
@@ -574,7 +574,7 @@
 						{{#each races}}
 						<div class="col-sm-12 form-group">
 							<label class="checkbox-inline">
-								<input type="checkbox" name="adoptionPrefRace[]" value="{{_id}}" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#preferred-race-error-container" data-parsley-mincheck="1" required="">{{race}}
+								<input type="checkbox" name="adoptionPrefRace[]" class="race" value="{{_id}}" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#preferred-race-error-container" data-parsley-mincheck="1" data-parsley-required="false">{{race}}
 							</label>
 						</div>
 						{{/each}}
@@ -583,11 +583,11 @@
 			</div>
 			<div class="row form-group">
 				<div class="col-sm-12">
-					<label class="label marg-bottom-xs-5 required-field">Maximum level of physical needs</label>
+					<label class="label marg-bottom-xs-5 maximum-physical-needs-label">Maximum level of physical needs</label>
 				</div>
 				<div class="col-sm-12">
 					<span id="preferred-maximum-physical-needs-error-container" class="error-container">
-						<label class="radio-inline"><input type="radio" name="maximumPhysicalNeeds" value="none" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#preferred-maximum-physical-needs-error-container" required="">None</label>
+						<label class="radio-inline"><input type="radio" name="maximumPhysicalNeeds" class="maximum-physical-needs" value="none" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#preferred-maximum-physical-needs-error-container" data-parsley-required="false">None</label>
 						<label class="radio-inline"><input type="radio" name="maximumPhysicalNeeds" value="mild">Mild</label>
 						<label class="radio-inline"><input type="radio" name="maximumPhysicalNeeds" value="moderate">Moderate</label>
 						<label class="radio-inline"><input type="radio" name="maximumPhysicalNeeds" value="severe">Severe</label>
@@ -596,11 +596,11 @@
 			</div>
 			<div class="row form-group">
 				<div class="col-sm-12">
-					<label class="label marg-bottom-xs-5 required-field">Maximum level of emotional needs</label>
+					<label class="label marg-bottom-xs-5 maximum-emotional-needs-label">Maximum level of emotional needs</label>
 				</div>
 				<div class="col-sm-12">
 					<span id="preferred-maximum-emotional-needs-error-container" class="error-container">
-						<label class="radio-inline"><input type="radio" name="maximumEmotionalNeeds" value="none" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#preferred-maximum-emotional-needs-error-container" required="">None</label>
+						<label class="radio-inline"><input type="radio" name="maximumEmotionalNeeds" class="maximum-emotional-needs" value="none" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#preferred-maximum-emotional-needs-error-container" data-parsley-required="false">None</label>
 						<label class="radio-inline"><input type="radio" name="maximumEmotionalNeeds" value="mild">Mild</label>
 						<label class="radio-inline"><input type="radio" name="maximumEmotionalNeeds" value="moderate">Moderate</label>
 						<label class="radio-inline"><input type="radio" name="maximumEmotionalNeeds" value="severe">Severe</label>
@@ -609,11 +609,11 @@
 			</div>
 			<div class="row form-group">
 				<div class="col-sm-12">
-					<label class="label marg-bottom-xs-5 required-field">Maximum level of intellectual needs</label>
+					<label class="label marg-bottom-xs-5 maximum-intellectual-needs-label">Maximum level of intellectual needs</label>
 				</div>
 				<div class="col-sm-12">
 					<span id="preferred-maximum-intellectual-needs-error-container" class="error-container">
-						<label class="radio-inline"><input type="radio" name="maximumIntellectualNeeds" value="none" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#preferred-maximum-intellectual-needs-error-container" required="">None</label>
+						<label class="radio-inline"><input type="radio" name="maximumIntellectualNeeds" class="maximum-intellectual-needs" value="none" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#preferred-maximum-intellectual-needs-error-container" data-parsley-required="false">None</label>
 						<label class="radio-inline"><input type="radio" name="maximumIntellectualNeeds" value="mild">Mild</label>
 						<label class="radio-inline"><input type="radio" name="maximumIntellectualNeeds" value="moderate">Moderate</label>
 						<label class="radio-inline"><input type="radio" name="maximumIntellectualNeeds" value="severe">Severe</label>
