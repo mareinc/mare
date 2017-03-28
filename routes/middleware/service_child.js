@@ -12,7 +12,7 @@ exports.getAllChildren = ( req, res, done ) => {
 	Child.model.find()
 				.populate( 'gender' )
 				.populate( 'race' )
-				.populate( 'language' )
+				.populate( 'languages' )
 				.populate( 'disabilities' )
 				.populate( 'otherConsiderations' )
 				.populate( 'recommendedFamilyConstellation' )
@@ -57,7 +57,7 @@ exports.getUnrestrictedChildren = ( req, res, done ) => {
 				.where( 'siteVisibility', 'everyone' )
 				.populate( 'gender' )
 				.populate( 'race' )
-				.populate( 'language' )
+				.populate( 'languages' )
 				.populate( 'disabilities' )
 				.populate( 'otherConsiderations' )
 				.populate( 'recommendedFamilyConstellation' )
@@ -322,7 +322,7 @@ exports.getRelevantChildInformation = ( children, locals ) => {
 			hasVideo								: child.video && child.video.length > 0 ? true : false,
 			intellectualNeeds						: needsMap[ child.intellectualNeeds ],
 			isBookmarked							: child.isBookmarked,
-			language								: _.pluck( child.language, 'language' ),
+			language								: _.pluck( child.languages, 'language' ),
 			legalStatus								: child.legalStatus.legalStatus,
 			name									: child.name.first,
 			noPets									: otherFamilyConstellationConsiderations.indexOf( 'no pets' ) !== -1,
@@ -386,7 +386,7 @@ exports.getRelevantSiblingGroupInformation = ( siblingGroups, locals ) => {
 			hasVideo								: _.uniq( children.map( child => child.siblingGroupVideo && child.siblingGroupVideo.length > 0 ? true : false ) ), // Need to add a group video
 			intellectualNeeds						: _.uniq( children.map( child => needsMap[ child.intellectualNeeds ] ) ),
 			isBookmarked							: children.map( child => child.isBookmarked ).indexOf( true ) !== -1 ? true : false, // set to true if any of the children have true for isBookmarked
-			languages								: _.uniq( _.flatten( children.map( child => _.pluck(child.language, 'language' ) ) ) ),
+			languages								: _.uniq( _.flatten( children.map( child => _.pluck(child.languages, 'language' ) ) ) ),
 			legalStatuses							: legalStatusesArray,
 			legalStatusesString						: middleware.getArrayAsList( legalStatusesArray ),
 			names									: namesArray,
