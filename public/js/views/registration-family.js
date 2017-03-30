@@ -7,11 +7,11 @@
 		events: {
 			'change .other-way-to-hear-about-mare'	: 'toggleOtherWayToHearTextField',
 			'change #family-state'					: 'toggleHomestudySubmission',
-			'change .homestudy-completed-checkbox'	: 'toggleHomestudySection',
+			'change #homestudy-completed-checkbox'	: 'toggleHomestudySection',
 			'change #upload-button'					: 'uploadForm',
 			'change .info-packet-toggle'			: 'toggleInfoPacketDetailsSection',
 			'change #children-in-home'				: 'toggleFamilyDetailsForm',
-			'change #gathering-information-checkbox': 'toggleAdoptionPreferencesSection'
+			'change .adoption-preferences-trigger'	: 'checkAdoptionPreferences'
 		},
 
 		initialize: function() {
@@ -162,40 +162,88 @@
 				}
 			}
 		},
-		/* toggles form validation on the adoption preferences fields.  They are only required when 'gathering information' is checked */
-		toggleAdoptionPreferencesSection: function toggleAdoptionPreferencesSection() {
-			// toggle the required-field class on the label to hide/show the red * after it
-			this.$preferredGenderLabel.toggleClass( 'required-field' );
-			this.$legalStatusLabel.toggleClass( 'required-field' );
-			this.$ageRangeLabel.toggleClass( 'required-field' );
-			this.$numberOfChildrenPreferredLabel.toggleClass( 'required-field' );
-			this.$contactWithBiologicalSiblingsLabel.toggleClass( 'required-field' );
-			this.$raceLabel.toggleClass( 'required-field' );
-			this.$maximumPhysicalNeedsLabel.toggleClass( 'required-field' );
-			this.$maximumEmotionalNeedsLabel.toggleClass( 'required-field' );
-			this.$maximumIntellectualNeedsLabel.toggleClass( 'required-field' );
-			// toggle the required class on the input text to display the red text during form validation
-			this.$preferredGender.toggleClass( 'required' );
-			this.$legalStatus.toggleClass( 'required' );
-			this.$ageRangeFrom.toggleClass( 'required' );
-			this.$ageRangeTo.toggleClass( 'required' );
-			this.$numberOfChildrenPreferred.toggleClass( 'required' );
-			this.$contactWithBiologicalSiblings.toggleClass( 'required' );
-			this.$race.toggleClass( 'required' );
-			this.$maximumPhysicalNeeds.toggleClass( 'required' );
-			this.$maximumEmotionalNeeds.toggleClass( 'required' );
-			this.$maximumIntellectualNeeds.toggleClass( 'required' );
-			// toggle the required attribute needed to hide/show the red background during form validation
-			this.$gatheringInformationCheckbox.is( ':checked' ) ? this.$preferredGender.attr( 'required', 'true' ) 				: this.$preferredGender.attr( 'required', 'false' );
-			this.$gatheringInformationCheckbox.is( ':checked' ) ? this.$legalStatus.attr( 'required', 'true' )					: this.$legalStatus.attr( 'required', 'false' );
-			this.$gatheringInformationCheckbox.is( ':checked' ) ? this.$ageRangeFrom.attr( 'required', 'true' )					: this.$ageRangeFrom.attr( 'required', 'false' );
-			this.$gatheringInformationCheckbox.is( ':checked' ) ? this.$ageRangeTo.attr( 'required', 'true' )					: this.$ageRangeTo.attr( 'required', 'false' );
-			this.$gatheringInformationCheckbox.is( ':checked' ) ? this.$numberOfChildrenPreferred.attr( 'required', 'true' )	: this.$numberOfChildrenPreferred.attr( 'required', 'false' );
-			this.$gatheringInformationCheckbox.is( ':checked' ) ? this.$contactWithBiologicalSiblings.attr( 'required', 'true' ): this.$contactWithBiologicalSiblings.attr( 'required', 'false' );
-			this.$gatheringInformationCheckbox.is( ':checked' ) ? this.$race.attr( 'required', 'true' )							: this.$race.attr( 'required', 'false' );
-			this.$gatheringInformationCheckbox.is( ':checked' ) ? this.$maximumPhysicalNeeds.attr( 'required', 'true' )			: this.$maximumPhysicalNeeds.attr( 'required', 'false' );
-			this.$gatheringInformationCheckbox.is( ':checked' ) ? this.$maximumEmotionalNeeds.attr( 'required', 'true' )		: this.$maximumEmotionalNeeds.attr( 'required', 'false' );
-			this.$gatheringInformationCheckbox.is( ':checked' ) ? this.$maximumIntellectualNeeds.attr( 'required', 'true' )		: this.$maximumIntellectualNeeds.attr( 'required', 'false' );
+		/* check the 'where are you in the adoption process' checkboxes to determine whether to require the adoption preferences fields */
+		checkAdoptionPreferences: function checkAdoptionPreferences() {
+			// check the 'where are you in the adoption process' checkboxes to determine whether to require the adoption preferences fields
+			var workingWithAgency = document.getElementById( 'working-with-agency-checkbox' ).checked;
+			var mappTrainingCompleted = document.getElementById( 'mapp-training-completed-checkbox' ).checked;
+			var homestudyCompleted = document.getElementById( 'homestudy-completed-checkbox' ).checked;
+			// determine whether the adoption preferences section of the form should be required
+			if( workingWithAgency || mappTrainingCompleted || homestudyCompleted ) {
+				this.makeAdoptionPreferencesRequired();
+			} else {
+				this.makeAdoptionPreferencesNotRequired();
+			}
+		},
+		/* adds form validation on the adoption preferences fields.  They are only required when 'gathering information' is checked */
+		makeAdoptionPreferencesRequired: function makeAdoptionPreferencesRequired() {
+			// add the necessary form label attributes to show or hide the required * indicator
+			this.$preferredGenderLabel.addClass( 'required-field' );
+			this.$legalStatusLabel.addClass( 'required-field' );
+			this.$ageRangeLabel.addClass( 'required-field' );
+			this.$numberOfChildrenPreferredLabel.addClass( 'required-field' );
+			this.$contactWithBiologicalSiblingsLabel.addClass( 'required-field' );
+			this.$raceLabel.addClass( 'required-field' );
+			this.$maximumPhysicalNeedsLabel.addClass( 'required-field' );
+			this.$maximumEmotionalNeedsLabel.addClass( 'required-field' );
+			this.$maximumIntellectualNeedsLabel.addClass( 'required-field' );
+			// add the required class on the input text to display the red text during form validation
+			this.$preferredGender.addClass( 'required' );
+			this.$legalStatus.addClass( 'required' );
+			this.$ageRangeFrom.addClass( 'required' );
+			this.$ageRangeTo.addClass( 'required' );
+			this.$numberOfChildrenPreferred.addClass( 'required' );
+			this.$contactWithBiologicalSiblings.addClass( 'required' );
+			this.$race.addClass( 'required' );
+			this.$maximumPhysicalNeeds.addClass( 'required' );
+			this.$maximumEmotionalNeeds.addClass( 'required' );
+			this.$maximumIntellectualNeeds.addClass( 'required' );
+			// add the required attribute needed to hide/show the red background during form validation
+			this.$preferredGender.attr( 'required', true );
+			this.$legalStatus.attr( 'required', true );
+			this.$ageRangeFrom.attr( 'required', true );
+			this.$ageRangeTo.attr( 'required', true );
+			this.$numberOfChildrenPreferred.attr( 'required', true );
+			this.$contactWithBiologicalSiblings.attr( 'required', true );
+			this.$race.attr( 'required', true );
+			this.$maximumPhysicalNeeds.attr( 'required', true );
+			this.$maximumEmotionalNeeds.attr( 'required', true );
+			this.$maximumIntellectualNeeds.attr( 'required', true );
+		},
+		/* removes form validation on the adoption preferences fields.  They are only required when 'gathering information' is checked */
+		makeAdoptionPreferencesNotRequired: function makeAdoptionPreferencesNotRequired() {
+			// add the necessary form label attributes to show or hide the required * indicator
+			this.$preferredGenderLabel.removeClass( 'required-field' );
+			this.$legalStatusLabel.removeClass( 'required-field' );
+			this.$ageRangeLabel.removeClass( 'required-field' );
+			this.$numberOfChildrenPreferredLabel.removeClass( 'required-field' );
+			this.$contactWithBiologicalSiblingsLabel.removeClass( 'required-field' );
+			this.$raceLabel.removeClass( 'required-field' );
+			this.$maximumPhysicalNeedsLabel.removeClass( 'required-field' );
+			this.$maximumEmotionalNeedsLabel.removeClass( 'required-field' );
+			this.$maximumIntellectualNeedsLabel.removeClass( 'required-field' );
+			// add the required class on the input text to display the red text during form validation
+			this.$preferredGender.removeClass( 'required' );
+			this.$legalStatus.removeClass( 'required' );
+			this.$ageRangeFrom.removeClass( 'required' );
+			this.$ageRangeTo.removeClass( 'required' );
+			this.$numberOfChildrenPreferred.removeClass( 'required' );
+			this.$contactWithBiologicalSiblings.removeClass( 'required' );
+			this.$race.removeClass( 'required' );
+			this.$maximumPhysicalNeeds.removeClass( 'required' );
+			this.$maximumEmotionalNeeds.removeClass( 'required' );
+			this.$maximumIntellectualNeeds.removeClass( 'required' );
+			// add the required attribute needed to hide/show the red background during form validation
+			this.$preferredGender.attr( 'required', false );
+			this.$legalStatus.attr( 'required', false );
+			this.$ageRangeFrom.attr( 'required', false );
+			this.$ageRangeTo.attr( 'required', false );
+			this.$numberOfChildrenPreferred.attr( 'required', false );
+			this.$contactWithBiologicalSiblings.attr( 'required', false );
+			this.$race.attr( 'required', false );
+			this.$maximumPhysicalNeeds.attr( 'required', false );
+			this.$maximumEmotionalNeeds.attr( 'required', false );
+			this.$maximumIntellectualNeeds.attr( 'required', false );
 		},
 		// TODO: This needs to be cleaned up a bit, both logic for efficiency and the creation should be handled in a template instead of jQuery.
 		generateChildDetailInputs: function generateChildDetailInputs(selectedNumberOfChildren) {
