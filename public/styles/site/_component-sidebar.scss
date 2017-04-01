@@ -2,24 +2,40 @@
 	display: none;
 
 	@media all and (min-width: 660px) {
+		border-radius: 2px;
 		display: flex;
 		flex-direction: column;
-		width: 300px;
-		background-color: $background-color-8;
-		// box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
-		border-radius: 2px;
-		padding: 1em;
 		margin-left: 1.5em;
+		padding: 0 1em 1em 1em;
+		width: 450px;
 	}
 }
 
 .sidebar__item {
+	background-color: $white;
+	box-shadow: 0 0 24px 0 $light-gray;
 	display: flex;
     flex-direction: column;
-    align-items: center;
 	margin-top: 2em;
+	padding: 0.75em;
+
+	&:first-child {
+		margin-top: 0;
+	}
+}
+
+.sidebar__links {
+	display: flex;
+	justify-content: center;
+	margin-top: 1em;
 }
 
 .sidebar__button {
 	width: 100%;
+}
+
+.sidebar__separator {
+	color: $robin-blue;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
 }

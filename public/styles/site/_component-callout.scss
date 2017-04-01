@@ -5,27 +5,25 @@
 .callout__description {
     @media all and (min-width: 660px) {
         display: block;
-        padding: 10px;
-        font-style: italic;
-        font-size: 1.5em;
-        line-height: 1.2em;
+        line-height: 1.3;
+        font-size: 1em;
+        padding: 0 0 1em 0;
     }
 }
 
 .callout__image {
     @media all and (min-width: 660px) {
-        width: 13.5em;
-        height: 13.5em;
-        border-radius: 50%;
+       height: auto;
+       max-width: 400px;
+       width: 100%;
     }
 }
 
 .callout__details {
     @media all and (min-width: 660px) {
         display: flex;
-        padding: 1em;
         flex-direction: column;
-        align-items: center;
+        padding: 1.5em 0.25em 1em 0.25em;
     }
 }
 
@@ -39,21 +37,23 @@
 	}
 }
 
+// this should only be used for the top sidebar element
+// aka Meet the Children
 .callout__header {
     @media all and (min-width: 660px) {
         display: block;
-        font-size: 1.5em;
-        text-align: center;
-        font-weight: bold;
+        font-size: 1.125em;
+        font-weight: 400;
         line-height: 1.2em;
+        text-align: center;
     }
 }
 
-.callout__title {
+.callout__link {
     @media all and (min-width: 660px) {
-        font-style: italic;
-        font-size: 1.5em;
+        font-size: 1em;
         line-height: 1.2em;
-        text-align: center;
+        padding-right: 0.25em;
+        text-align: right;
     }
 }

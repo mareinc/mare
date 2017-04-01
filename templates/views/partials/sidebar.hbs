@@ -1,26 +1,36 @@
 <aside class="sidebar">
 
-	<button class="sidebar__item sidebar__button button button--yellow button--donate"
-		data-url="/donate">Donate Now</button>
-	<button class="sidebar__item sidebar__button button button--red button--have-a-question"
-		data-url="/forms/have-a-question-form">Have a Question?</button>
-
-	<aside class="sidebar__item callout callout--blue callout--success-story">
-		<img class="callout__image" src="{{ randomSuccessStory.imageSidebar }}" alt="success story image">
+	<!-- Meet the Children -->
+	<aside class="sidebar__item callout">	
+		<img class="callout__image" src="../images/temp-children.png" alt="success story image">	
 		<span class="callout__details">
-			<div class="callout__header callout__element callout__element--space-below">Success Story</div>
-			<div class="callout__title callout__element callout__element--space-below">{{ randomSuccessStory.heading }}</div>
+			<a href="/waiting-child-profiles" class="callout__header link">Meet the Children</a>
 		</span>
 	</aside>
 
-	<aside class="sidebar__item callout callout--orange callout--event">
+	<!-- Success Story -->
+	<aside class="sidebar__item callout">	
+		<img class="callout__image" src="{{ randomSuccessStory.imageSidebar }}" alt="success story image">	
+		<span class="callout__details">
+			<!-- TODO: limit the content to three lines with a trailing ellipses-->
+			<div class="callout__description">{{{randomSuccessStory.content}}}</div>
+			<a href="{{ randomSuccessStory.url }}" class="link callout__link">{{ randomSuccessStory.heading }}</a>
+		</span>
+	</aside>
+
+	<!-- Event -->
+	<aside class="sidebar__item callout">
 		<img class="callout__image" src="{{ randomEvent.imageSidebar }}" alt="event image">
 		<span class="callout__details">
-			<div class="callout__header callout__element callout__element--space-below">Join Us</div>
-			<div class="callout__title callout__element callout__element--space-below">{{ randomEvent.name }}</div>
-			<div class="callout__date callout__element">{{ randomEvent.prettyDate }}</div>
-			<div class="callout__time callout__element callout__element--space-below callout__element--small-text">{{ randomEvent.startTime }} - {{ randomEvent.endTime }}</div>
+			<!-- TODO: limit the content to three lines with a trailing ellipses -->
+			<!-- TODO: figure out if we need the date/time in the description -->
+			<div class="callout__description">{{{randomEvent.description}}} </div>
+			<a href="{{ randomEvent.url }}" class="link callout__link">{{ randomEvent.name }}</a>
 		</span>
+	</aside>
+
+	<aside class="sidebar__links">
+		<a class="link" href="#0" data-url="/forms/have-a-question-form">Have a Question?</a> <span class="sidebar__separator">|</span> <a class="link" href="#0" data-url="/donate">Donate Now</a>		
 	</aside>
 
 </aside>
