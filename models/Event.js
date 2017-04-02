@@ -1,6 +1,8 @@
-var keystone = require('keystone'),
-	Types = keystone.Field.Types,
-	random = require('mongoose-simple-random');
+const keystone			= require( 'keystone' );
+const Types				= keystone.Field.Types;
+const async 			= require( 'async' );
+const random			= require( 'mongoose-simple-random' );
+const SourceMiddleware	= require( '../routes/middleware/models_source' );
 
 // Create model. Additional options allow event name to be used what auto-generating URLs
 var Event = new keystone.List('Event', {
@@ -16,6 +18,8 @@ Event.add({ heading: 'General Information' }, {
 	isActive: { type: Types.Boolean, label: 'is event active?', default: true, initial: true },
 	// type: { type: Types.Relationship, label: 'Event Type', ref: 'Event Type', required: true, initial: true }
 	type: { type: Types.Select, label: 'event type', options: 'MARE adoption parties & information events, MAPP trainings, agency information meetings, other opportunities & trainings, fundraising events', required: true, initial: true }, // TODO: this fixes an issue in pre-save which can be updated to fetch the live results and not hardcode this list.
+	shouldCreateSource: { type: Types.Boolean, label: 'create source from this event', initial: true },
+	source: { type: Types.Relationship, label: 'source', ref: 'Source', dependsOn: { shouldCreateSource: true }, noedit: true, initial: true },
 	image: { type: Types.CloudinaryImage, note: 'needed to display in the sidebar, events page, and home page', folder: 'events/', select: true, selectPrefix: 'events/', publicID: 'fileName', autoCleanup: true },
 	imageFeatured: { type: Types.Url, hidden: true },
 	imageSidebar: { type: Types.Url, hidden: true }
@@ -75,15 +79,35 @@ Event.add({ heading: 'General Information' }, {
 Event.relationship( { ref: 'Event Attendee', refPath: 'event', path: 'event', label: 'attendees' } );
 
 // Pre Save
-Event.schema.pre('save', function(next) {
+Event.schema.pre( 'save', function( next ) {
+	'use strict';
+
+	async.parallel([
+		done => { this.updateImageFields( done ); },
+		done => { this.setUrl( done ); },
+		done => { this.setFileName( done ); },
+		done => { this.shouldCreateSource ? this.setSourceField( done ) : done(); }
+	], () => {
+		
+		next();
+	});
+});
+// TODO: turn these fields into virtuals and update the templates that rely on it
+Event.schema.methods.updateImageFields = function( done ) {
 	'use strict';
 
 	this.imageFeatured = this._.image.thumbnail( 168, 168, { quality: 80 } );
 	this.imageSidebar = this._.image.thumbnail( 216, 196, { quality: 80 } );
 
-	var eventType = '';
+	done();
+};
 
-	switch(this.type) {
+Event.schema.methods.setUrl = function( done ) {
+	'use strict';
+	
+	let eventType;
+
+	switch( this.type ) {
 		case 'MARE adoption parties & information events': eventType = 'adoption-parties'; break
 		case 'MAPP trainings': eventType = 'mapp-trainings'; break;
     	case 'fundraising events': eventType = 'fundraising-events'; break;
@@ -91,19 +115,52 @@ Event.schema.pre('save', function(next) {
     	case 'other opportunities & trainings': eventType = 'other-trainings'; break;
     	default: eventType = '';
 	}
-
-	// TODO: if eventType.length === 0, I should prevent the save
-
+	// TODO: if !eventType.length, I should prevent the save
 	this.url = '/events/' + eventType + '/' + this.key;
 
+	done();
+};
+
+Event.schema.methods.setFileName = function( done ) {
+	'use strict';
 	// Create an identifying name for file uploads
-	this.fileName = this.key.replace(/-/g, '_');
+	this.fileName = this.key.replace( /-/g, '_' );
 
-	next();
-});
+	done();
+};
 
-Event.schema.plugin(random);
+Event.schema.methods.setSourceField = function( done ) {
+	'use strict';
+	// create a reference to the model for use after the new source promise resolves
+	let model = this;
+	// if the source is already set, update it, otherwise create it
+	let newSource = this.source
+					? SourceMiddleware.updateSource( this.source, this.name )
+					: SourceMiddleware.createSource( this.name );
+	// respond to the promise returned from the source middleware
+	newSource.then( id => {
+		// record the successful creation of the source from this event
+		console.log( `source successfully saved from ${ model.name }` );
+		// update the source relationship field with the id of the newly created source
+		model.source = id;
+
+		done();
+	})
+	.catch( reason => {
+		// record the failure to create 
+		console.log( `source save error from ${ model.name }: ${ reason }` );
+		done();
+	});
+};
+
+Event.schema.plugin( random );
 
 // Define default columns in the admin interface and register the model
 Event.defaultColumns = 'name, url, starts, ends, isActive';
 Event.register();
+
+// link to a source as a relationship
+// if linked, find it by _id and update it
+// if not linked, create the source
+
+// run linking script as part of the migration
