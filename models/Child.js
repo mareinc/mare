@@ -250,7 +250,6 @@ Child.schema.pre('save', function( next ) {
 });
 
 Child.schema.post( 'save', function() {
-
 	// update all sibling information
 	this.updateSiblingFields();
 	// update saved bookmarks for families and social workers in the event of a status change or sibling group change
@@ -284,7 +283,7 @@ Child.schema.methods.setFullName = function( done ) {
 };
 
 Child.schema.methods.setRegistrationNumber = function( done ) {
-	// If the registration number is already set ( which will happen during the data migration and creating from the website ), ignore setting it
+	// If the registration number is already set ( which will happen during the data migration ), ignore setting it
 	if( this.registrationNumber ) {
 		done();
 	} else {
@@ -312,7 +311,7 @@ Child.schema.methods.setRegistrationNumber = function( done ) {
 				});
 	}
 };
-
+// TODO: this is weird and ugly, use native promises
 Child.schema.methods.setAgencyFields = function( done ) {
 
 	async.series([
