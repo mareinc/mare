@@ -4,14 +4,16 @@
 }
 
 .card {
+	background-color: $white;
+	box-shadow: 0 0 24px 0 $light-gray;
 	display: flex;
 	flex-direction: column;
-	width: 100%;
-	background-color: $background-color-light;
-	// box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
-	border-radius: 2px;
-	padding: 1em;
-	margin-bottom: 1.5em;
+	margin-bottom: 2em;
+	padding: 2em;	
+
+	&--sidebar {
+		padding: 0.75em;
+	}
 
 	&--small {
 		@media all and ( min-width: 880px ) {
@@ -80,15 +82,19 @@
 }
 
 .card__text {
-	font-size: 12px;
 	margin-right: 3em;
-	margin: 0.5em 1em 0.5em 3em;
+	margin: 0.5em 3em 0.5em 2.8em; /* 2.8em causes the text to line up with the other success stories images creating a clean line */
 	text-align: left;
 
-	@media all and ( min-width: 860px ) {
-		font-size: 15px;
-		margin: 0.5em 3em 0.5em 2.8em; /* 2.8em causes the text to line up with the other success stories images creating a clean line */
+	&--sidebar {
+		@media all and (min-width: 660px) {
+		    display: flex;
+		    flex-direction: column;
+		    margin: 0;
+		    padding: 1.5em 0.25em 1em 0.25em;
+		}
 	}
+
 }
 
 .card__icon-container {
@@ -205,4 +211,15 @@
 	width: 100%;
 	margin: 2em 0 1em;
 	opacity: .5;
+}
+
+.card__trailing-links {
+	display: flex;
+	justify-content: center;
+}
+
+.card__link-separator {
+	color: $robin-blue;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
 }

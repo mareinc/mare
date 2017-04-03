@@ -1,36 +1,37 @@
 <aside class="sidebar">
 
 	<!-- Meet the Children -->
-	<aside class="sidebar__item callout">	
-		<img class="callout__image" src="../images/temp-children.png" alt="success story image">	
-		<span class="callout__details">
-			<a href="/waiting-child-profiles" class="callout__header link">Meet the Children</a>
+	<aside class="card card--sidebar">	
+		<img class="sidebar__image" src="../images/temp-children.png" alt="success story image">	
+		<span class="card__text card__text--sidebar">
+			<a href="/waiting-child-profiles" class="sidebar__header link">Meet the Children</a>
 		</span>
 	</aside>
 
 	<!-- Success Story -->
-	<aside class="sidebar__item callout">	
-		<img class="callout__image" src="{{ randomSuccessStory.imageSidebar }}" alt="success story image">	
-		<span class="callout__details">
+	<aside class="card card--sidebar">	
+		<img class="sidebar__image" src="{{ randomSuccessStory.imageSidebar }}" alt="success story image">	
+		<span class="card__text card__text--sidebar">
 			<!-- TODO: limit the content to three lines with a trailing ellipses-->
-			<div class="callout__description">{{{randomSuccessStory.content}}}</div>
-			<a href="{{ randomSuccessStory.url }}" class="link callout__link">{{ randomSuccessStory.heading }}</a>
+			<div class="sidebar__description">{{{randomSuccessStory.content}}}</div>
+			<a href="{{ randomSuccessStory.url }}" class="link sidebar__link">{{ randomSuccessStory.heading }}</a>
 		</span>
 	</aside>
 
 	<!-- Event -->
-	<aside class="sidebar__item callout">
-		<img class="callout__image" src="{{ randomEvent.imageSidebar }}" alt="event image">
-		<span class="callout__details">
+	<aside class="card card--sidebar">
+		<img class="sidebar__image" src="{{ randomEvent.imageSidebar }}" alt="event image">
+		<span class="card__text card__text--sidebar">
 			<!-- TODO: limit the content to three lines with a trailing ellipses -->
-			<!-- TODO: figure out if we need the date/time in the description -->
-			<div class="callout__description">{{{randomEvent.description}}} </div>
-			<a href="{{ randomEvent.url }}" class="link callout__link">{{ randomEvent.name }}</a>
+			<!-- TODO: do we need the date/time in the description? -->
+			<div class="sidebar__description">{{{randomEvent.description}}} </div>
+			<a href="{{ randomEvent.url }}" class="link sidebar__link">{{ randomEvent.name }}</a>
 		</span>
 	</aside>
 
-	<aside class="sidebar__links">
-		<a class="link" href="#0" data-url="/forms/have-a-question-form">Have a Question?</a> <span class="sidebar__separator">|</span> <a class="link" href="#0" data-url="/donate">Donate Now</a>		
+	<!-- Have a question and Donate links -->
+	<aside class="card__trailing-links">
+		<a class="link" href="#0" data-url="/forms/have-a-question-form">Have a Question?</a> <span class="card__link-separator">|</span> <a class="link" href="#0" data-url="/donate">Donate Now</a>		
 	</aside>
 
 </aside>
