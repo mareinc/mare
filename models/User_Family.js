@@ -504,7 +504,7 @@ Family.schema.methods.setRegistrationNumber = function( done ) {
 
 Family.schema.methods.setChangeHistory = function setChangeHistory( done ) {
 	'use strict';
-
+	// TODO: terrible use and reuse of variables below, check this and other models with change history
 	var modelBefore	= this._original,
 		model		= this;
 

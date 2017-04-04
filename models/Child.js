@@ -38,7 +38,7 @@ const Child = new keystone.List('Child', {
 Child.add('Display Options', {
 
 	siteVisibility: { type: Types.Select, label: 'child is visible to', options: 'everyone, registered social workers and families', required: true, initial: true },
-	isVisibleInGallery: { type: Types.Boolean, label: 'child is visible on MARE web', initial: true },
+	isVisibleInGallery: { type: Types.Boolean, label: 'child is visible on MARE web', note: 'this will make the child visible to everyone', initial: true },
 	visibleInGalleryDate: { type: Types.Date, label: 'date added to MARE web', format: 'MM/DD/YYYY', dependsOn: {isVisibleInGallery: true }, initial: true }
 
 }, 'Child Information', {
@@ -250,7 +250,6 @@ Child.schema.pre('save', function( next ) {
 });
 
 Child.schema.post( 'save', function() {
-
 	// update all sibling information
 	this.updateSiblingFields();
 	// update saved bookmarks for families and social workers in the event of a status change or sibling group change
@@ -284,7 +283,7 @@ Child.schema.methods.setFullName = function( done ) {
 };
 
 Child.schema.methods.setRegistrationNumber = function( done ) {
-	// If the registration number is already set ( which will happen during the data migration and creating from the website ), ignore setting it
+	// If the registration number is already set ( which will happen during the data migration ), ignore setting it
 	if( this.registrationNumber ) {
 		done();
 	} else {
@@ -292,10 +291,15 @@ Child.schema.methods.setRegistrationNumber = function( done ) {
 		keystone.list( 'Child' ).model.find()
 				.exec()
 				.then( children => {
-					// get an array of registration numbers
-					const registrationNumbers = children.map( child => child.get( 'registrationNumber' ) );
-					// get the largest registration number
-					this.registrationNumber = Math.max( ...registrationNumbers ) + 1;
+					// if this is the first family to be created
+					if( !families ) {
+						this.registrationNumber = 1;
+					} else {
+						// get an array of registration numbers
+						const registrationNumbers = children.map( child => child.get( 'registrationNumber' ) );
+						// get the largest registration number
+						this.registrationNumber = Math.max( ...registrationNumbers ) + 1;
+					}
 
 					done();
 
@@ -307,7 +311,7 @@ Child.schema.methods.setRegistrationNumber = function( done ) {
 				});
 	}
 };
-
+// TODO: this is weird and ugly, use native promises
 Child.schema.methods.setAgencyFields = function( done ) {
 
 	async.series([

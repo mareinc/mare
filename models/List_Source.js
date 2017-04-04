@@ -22,6 +22,7 @@ Source.add({
 
 });
 
+Source.relationship( { ref: 'Event', refPath: 'source', path: 'events', label: 'source for this event' } );
 Source.relationship( { ref: 'Media Feature', refPath: 'source', path: 'media-features', label: 'media features' } );
 
 // Define default columns in the admin interface and register the model

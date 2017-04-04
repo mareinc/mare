@@ -16,7 +16,8 @@ MAREInTheNews.add({
 	content: { type: Types.Html, wysiwyg: true, initial: true },
 	image: { type: Types.CloudinaryImage, note: 'needed to display in the sidebar, MARE in the news page, and the home page', folder: 'mare-in-the-news/', select: true, selectPrefix: 'mare-in-the-news/', publicID: 'fileName', autoCleanup: true },
 	imageFeatured: { type: Types.Url, hidden: true },
-	imageSidebar: { type: Types.Url, hidden: true }
+	imageSidebar: { type: Types.Url, hidden: true },
+	video: { type: Types.Url, label: 'video', initial: true }
 
 /* Container for all system fields (add a heading if any are meant to be visible through the admin UI) */
 }, {
