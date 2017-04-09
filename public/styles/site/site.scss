@@ -23,7 +23,9 @@ html {
 body {
 	font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
 	font-size: $font-size-base;
-	margin: 150px 0 0 0;	// TODO: refactor this when we figure out the height of the header... 
+	// TODO: refactor this as we figure out the height of the header 
+	// 		 when expanded, the header will push down the main page content
+	margin: 150px 0 0 0;	
 	min-width: 320px;
 }
 

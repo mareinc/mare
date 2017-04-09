@@ -71,8 +71,9 @@ nav ul {
 	    	}
 		}
 		.main-nav__items--submenu {
-			left: auto;
-			min-width: 12em;
+			left: 0;
+			// TODO: padding = $('.main-nav__link.active').offset().left
+			// do this in the javascript
 		}
 	}
 
