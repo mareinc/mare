@@ -1,20 +1,13 @@
 /* TODO: IE8 nastiness at the bottom, be sure to test it */
 .global-header {
 	background-color: $header-background-color;
-	position: fixed;
-	z-index: 10;
-	width: 100%;
+	// height: 150px; // TODO: come back to this...
 	min-width: 320px;
-	box-shadow: 0px 0px 10px $shadow-color-1;
 	-ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=180, Color='#616161')";
-	border-bottom: 0.5em solid $border-color-1;
-
-	/* TODO: Check to see if this works for clearing the IE-8 -ms-filter style */
-	@media all and (min-width: 820px) {
-		position: relative;
-		box-shadow: none;
-		-ms-filter: none;
-	}
+	position: fixed;
+	top: 0;
+	width: 100%;
+	z-index: 10;
 }
 
 .global-header .logo {
@@ -66,11 +59,7 @@
 
 .global-header .top-nav .donate-link-container {
 	background-color: $nav-background-color-2;
-	border-bottom-left-radius: 5px;
-	border-bottom-right-radius: 5px;
-	text-transform: uppercase;
 	color: $nav-text-color-1;
-	font-weight: 600;
 	height: calc(100%/2.5);
 	align-items: center;
 	position: absolute;
@@ -97,7 +86,6 @@
 .site-nav {
 	margin-top: 30px;
 	margin-left: 4%;
-	font-style: italic;
 	font-size: 1.1em;
 }
 

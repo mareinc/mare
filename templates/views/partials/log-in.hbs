@@ -1,0 +1,22 @@
+<span class="log-in-container">
+	<form action="/logIn" method="POST">
+		<input type="hidden" name="target" value="{{ loginTarget }}" hidden>
+		<div class="email-container">
+				<input type="email" class="input input-small" required id="email" name="email" pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
+			<label for="email">Email Address</label>
+		</div>
+		<div class="password-container">
+				<input type="password" class="input input-small" id="password" name="password">
+				<label for="password">Password</label>
+		</div>
+		<div class="login-container">
+			<button type="submit" class="button button--blue button--uppercase log-in">Log In</button>
+				<span class="forgot-password">Forgot your password?</span>
+		</div>
+	</form>
+	<div class="not-registered-details">
+		<div class="register-header">Create an Account</div>
+		<div class="register-body">Whether you're a homestudied family, a social worker, a potential adoptive family, or a supporter, register with us to stay informed and access advanced features of the site.</div>
+		<a href="/register"><button class="button button--brown button--uppercase register">Register Now</button></a>
+	</div>
+</span>

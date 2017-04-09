@@ -1,7 +1,7 @@
 // TODO: Alphebetize this list to make it easier to navigate
 /* these color names came from the Sip Mac app, and are just meant to provide clean distinction between values */
 $white              : rgba( 255, 255, 255, 1 );
-$athens-gray        : rgba( 238, 239, 243, 1 );
+$ash-gray			: rgba( 244, 244, 244, 1 );
 $gainsboro			: rgba( 221, 221, 221, 1 );
 $light-gray         : rgba( 213, 213, 213, 1 );
 $gray-chateau		: rgba( 161, 165, 162, 1 );
@@ -39,12 +39,12 @@ $wenge              : rgba( 102, 88, 77, 1 );
 $bronze-olive		: rgba( 90, 77, 41, 1 );
 $camouflage			: rgba( 61, 56, 17, 1 );
 $black              : rgba( 0, 0, 0, 1 );
+$mare-blue			: rgba( 46, 78, 135, 1 );
+$teal 				: rgba( 29, 176, 177, 1 );
 
+$header-background-color                : $mare-blue;
 
-
-$header-background-color                : $corn-flower-blue;
-
-$footer-background-color                : $corn-flower-blue;
+$footer-background-color                : $mare-blue;
 $footer-text-color                      : $light-gray;
 
 $nav-background-color-1                 : $wenge;
@@ -52,12 +52,13 @@ $nav-background-color-2                 : $my-sin;
 $nav-background-color-3                 : $corn-flower-blue;
 $nav-background-color-4                 : $deep-cove;
 $nav-background-color-5                 : $mariner;
+$nav-underline-color                 	: $teal;
 
 $nav-text-color-1                       : $wenge;
 $nav-text-color-2                       : $white;
 $nav-text-color-3                       : $corn-flower-blue;
 
-$main-content-background-color          : $athens-gray;
+$main-content-background-color          : $ash-gray;
 $main-content-color                     : $wenge;
 
 $description-background-color-1         : $white;

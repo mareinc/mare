@@ -33,103 +33,83 @@ nav ul {
 	display: none;
 
 	@media all and (min-width: 655px) {
-		display: block;
-		text-align: center;
-		clear: both;
-		background-color: $nav-background-color-5;
-		padding: 0 1em;
+		display: flex;		
+		justify-content: space-around;
 	}
 }
 
-.main-nav .nav a {
-	position: relative;
-	display: block;
-	background: $nav-background-color-5;
-	color: $nav-text-color-2;
-	text-decoration: none;
-	padding: 0.7em 0.4em;
-	text-transform: uppercase;
-	font-size: 0.85em;
-
-	&:hover {
-		font-weight: 600;
-	}
-}
-
-.main-nav .nav > li > a {
+.main-nav__items {
 	display: flex;
+	list-style: none;
+	margin: 0;
+	padding:0;
+
+	&--submenu {
+		align-items: flex-start;
+		background: $mare-blue;
+		flex-direction: column;
+		left: -99999em;
+		position: absolute;
+		width: 100%;
+		z-index: 10;
+	}
+}
+
+.main-nav__item {
+	flex-grow: 1;
+	flex-shrink: 0;
+
+	// TODO: handle this on click
+	&:hover {
+		.main-nav__link {
+			border-bottom: 5px solid $nav-underline-color;
+	    	padding-bottom: 5px;
+
+	    	&--submenu {
+	    		border-bottom: none;
+	    		padding: 1em;
+	    	}
+		}
+		.main-nav__items--submenu {
+			left: auto;
+			min-width: 12em;
+		}
+	}
+
+	&--submenu {
+		align-items: center;
+		display: flex;
+
+		// TODO: handle this on click
+		&:hover {
+			.main-nav__hover-indicator {
+				display: block;
+			}
+		}
+	}
+}
+
+.main-nav__hover-indicator {
+	background-color: $nav-underline-color;
+	display: none;
+	height: 5px;
+	width: 10px;
+}
+
+.main-nav__link {
+    align-items: center;
+    color: $nav-text-color-2;
+	display: flex;
+    font-size: 0.75em;
 	height: 100%;
     justify-content: center;
-    align-items: center;
-}
+    padding: 0.7em 0.4em;
+    position: relative;
+    text-decoration: none;
+    transition: font ease-in-out 0.6s;
 
-.main-nav .nav {
-	display: flex;
-}
+    @media all and (min-width: 850px) {
+    	font-size: 1em;
+    }
 
-.main-nav .nav > li {
-	position: relative;
-	flex: 1 1 0;
-}
-
-// The third menu element 'family support services' needs more room than the rest
-.main-nav .nav > li:nth-child(3) {
-	flex: 1.5 1.5 0;
-}
-// Above 800px decrease the width needed for the last 3 menu items
-.main-nav .nav > li:nth-child(n + 5) {
-	@media all and (min-width: 800px) {
-		flex: 1 1 0;
-	}
-}
-// Above 800px increase the width needed for the first 4 menu items
-.main-nav .nav > li:nth-child(-n + 4) {
-	@media all and (min-width: 800px) {
-		flex: 1.5 1.5 0;
-	}
-}
-
-.main-nav .nav li:hover > a {
-    background-color: $nav-background-color-3;
-    color: $text-color-light;
-}
-
-.main-nav .nav li:hover li a {
-    background-color: $nav-background-color-3;
-    padding: 0.6em 1.5em 0.6em 0.6em;
-    text-align: left;
-}
-
-.main-nav .sub-menu:before {
-	content: "";
-	position: absolute;
-	height: 0;
-	width: 0;
-	border: 5px solid transparent;
-	border-left-color: $border-color-7;
-	top: 50% ;
-	right:5px;
- }
-
- .main-nav li:hover > .sub-menu:before {
-	border-left-color: transparent;
-	border-right-color: $border-color-light;
-	right: 10px;
-}
-
- /* submenu positioning */
-.main-nav .nav ul {
-	position: absolute;
-	/* white-space: nowrap; // keeps submenu width restricted by parent width when turned off */
-	z-index: 10;
-	left: -99999em;
-}
-
-.main-nav .nav > li:hover > ul {
-	left: auto;
-	min-width: 12em;
-}
-
-.main-nav .nav > .menu-item--last:hover > ul {
-	right: 0;
 }

@@ -23,13 +23,13 @@ html {
 body {
 	font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
 	font-size: $font-size-base;
-	margin: 0;
+	margin: 150px 0 0 0;
 	min-width: 320px;
 }
 
 .content-wrapper {
 	max-width: 1080px;
-	margin: 0 auto;
+	width: 100%;
 }
 
 .body {
