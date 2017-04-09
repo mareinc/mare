@@ -21,10 +21,11 @@ html {
 }
 
 body {
-	margin: 0;
+	font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
 	font-size: $font-size-base;
 	font-weight: lighter;
 	min-width: 320px;
+	margin: 0;
 }
 
 .content-wrapper {
@@ -39,14 +40,18 @@ body {
 	@media all and (min-width: 660px) { padding-bottom: 35px; }
 }
 
+p {
+	margin: 0;
+}
+
 // Component Styles
 // ===========
 @import "_component-alert";
 @import "_component-button";
+@import "_component-link";
 @import "_component-button-group";
 @import "_component-carousel";
 @import "_component-card";
-@import "_component-callout";
 @import "_component-content-area";
 @import "_component-featured-items";
 @import "_component-form";
