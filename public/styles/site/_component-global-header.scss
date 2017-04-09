@@ -1,7 +1,8 @@
 /* TODO: IE8 nastiness at the bottom, be sure to test it */
 .global-header {
 	background-color: $header-background-color;
-	// height: 150px; // TODO: come back to this...
+	// TODO: come back to this...
+	// height: 150px; 
 	min-width: 320px;
 	-ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=180, Color='#616161')";
 	position: fixed;
