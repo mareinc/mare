@@ -32,7 +32,7 @@ nav ul {
 .main-nav {
 	display: none;
 
-	@media all and (min-width: 655px) {
+	@media all and (min-width: 655px) {		
 		display: flex;		
 		justify-content: space-around;
 	}
@@ -60,7 +60,7 @@ nav ul {
 	flex-shrink: 0;
 
 	// TODO: handle this on click
-	&:hover {
+	&.active {
 		.main-nav__link {
 			border-bottom: 5px solid $nav-underline-color;
 	    	padding-bottom: 5px;
@@ -72,8 +72,6 @@ nav ul {
 		}
 		.main-nav__items--submenu {
 			left: 0;
-			// TODO: padding = $('.main-nav__link.active').offset().left
-			// do this in the javascript
 		}
 	}
 
@@ -81,18 +79,18 @@ nav ul {
 		align-items: center;
 		display: flex;
 
-		// TODO: handle this on click
 		&:hover {
 			.main-nav__hover-indicator {
-				display: block;
+				visibility: visible;
 			}
 		}
 	}
 }
 
+// TODO: make it so that the nav items do NOT jump right
 .main-nav__hover-indicator {
 	background-color: $nav-underline-color;
-	display: none;
+	visibility: hidden;
 	height: 5px;
 	width: 10px;
 }
