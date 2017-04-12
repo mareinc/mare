@@ -13,6 +13,10 @@
 		initialize: function() {
 			// DOM cache any commonly used elements to improve performance
 			this.$logInContainer = $('.log-in-container');
+			$(window).on("resize", this.resizeMenu);
+
+			// TODO: adjust opacity of the menu on window scroll
+			// $(window).on("scroll", this.toggleMenuOpacity);
 		},
 
 		logIn: function logIn() {
@@ -23,22 +27,60 @@
 			event.stopPropagation();
 		},
 
+		// align the submenu with the selected menu item above
+		// TODO: debounce this 
+		resizeMenu: function resizeMenu(event) {
+			
+			var $selectedMenuItem 	= $('.active'),
+				$submenu 			= $('.main-nav__items--submenu'),
+
+				// TODO: figure out if we want the hover indicators to move when the alignment does
+				$hoverIndicator		= $('.main-nav__hover-indicator');
+
+			// remove any previous adjustments to submenu 
+			$submenu.removeClass('main-nav__items--right');
+			$submenu.removeAttr('style');
+
+			// TODO: figure out if we want the hover indicators to move when the alignment does
+			$hoverIndicator.removeClass('main-nav__hover-indicator--right');
+
+			// if a menu item is selected
+			if( $selectedMenuItem.length > 0 ) {
+				
+				// determine placement of selected the menu item
+				var distFromLeft 	= $selectedMenuItem.offset().left,
+					width			= $selectedMenuItem.outerWidth(),
+					distFromRight	= $(window).outerWidth() - (distFromLeft + width);
+				
+				// if there's not enough room for the submenu to the right, apply right padding and style 
+				if( distFromRight < 250 ) {
+					$submenu.addClass('main-nav__items--right');
+					$submenu.css('padding-right', distFromRight);
+
+					// TODO: figure out if we want the hover indicators to move when the alignment does
+					$hoverIndicator.addClass('main-nav__hover-indicator--right');
+				} 
+
+				// otherwise, set the left padding of the submenu
+				else {
+					$submenu.css('padding-left', distFromLeft);
+				}
+			}
+		},
+
 		toggleMenuExpand: function toggleMenuExpand(event) {
-			// remove previously active class
-			$('.active').removeClass('active');
+			// find current target 
+			var $target 	= $(event.currentTarget),
+				$active 	= $('.active'),
+				isActive 	= $target.hasClass('active');
 
-			// add active class to this menu element
-			var $target = $(event.currentTarget);
-			$target.addClass('active');
+			$active.removeClass('active');
 
-			// calculate the left padding of the submenu
-			var distFromLeft = $target.offset().left;
+			if( !isActive ) {
+				$target.addClass('active');
 
-			// set the left padding of the submenu
-			$target.children('.main-nav__items--submenu').css('padding-left', distFromLeft);
-
-			// TODO: if there is not enough room to show the menus underneath, 
-			// align right and give more space for the items...
+				this.resizeMenu(event);
+			}
 
 			// TODO: figure out how to keep the active class on even when the page refreshes?
 			

@@ -31,6 +31,7 @@ nav ul {
 
 .main-nav {
 	display: none;
+	padding: 0 0.25em;
 
 	@media all and (min-width: 655px) {		
 		display: flex;		
@@ -46,20 +47,23 @@ nav ul {
 
 	&--submenu {
 		align-items: flex-start;
-		background: $mare-blue;
+		background-color: $header-background-color;
 		flex-direction: column;
 		left: -99999em;
 		position: absolute;
 		width: 100%;
 		z-index: 10;
 	}
+
+	&--right {
+		align-items: flex-end;
+	}
 }
 
 .main-nav__item {
 	flex-grow: 1;
-	flex-shrink: 0;
+	flex-shrink: 0;	
 
-	// TODO: handle this on click
 	&.active {
 		.main-nav__link {
 			border-bottom: 5px solid $nav-underline-color;
@@ -87,12 +91,16 @@ nav ul {
 	}
 }
 
-// TODO: make it so that the nav items do NOT jump right
 .main-nav__hover-indicator {
 	background-color: $nav-underline-color;
 	visibility: hidden;
 	height: 5px;
 	width: 10px;
+
+	// TODO: figure out if we want the hover indicators to move when the alignment does
+	&--right {
+		order: 1;
+	}
 }
 
 .main-nav__link {

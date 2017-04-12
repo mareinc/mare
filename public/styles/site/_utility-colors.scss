@@ -41,8 +41,9 @@ $camouflage			: rgba( 61, 56, 17, 1 );
 $black              : rgba( 0, 0, 0, 1 );
 $mare-blue			: rgba( 46, 78, 135, 1 );
 $teal 				: rgba( 29, 176, 177, 1 );
+$mare-transparent	: rgba( 46, 78, 135, 0.9 );
 
-$header-background-color                : $mare-blue;
+$header-background-color                : $mare-transparent;
 
 $footer-background-color                : $mare-blue;
 $footer-text-color                      : $light-gray;
