@@ -482,7 +482,7 @@ Family.schema.methods.setRegistrationNumber = function( done ) {
 				.exec()
 				.then( families => {
 					// if this is the first family to be created
-					if( !families ) {
+					if( families.length === 0 ) {
 						this.registrationNumber = 1;
 					} else {
 						// get an array of registration numbers
