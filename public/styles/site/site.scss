@@ -23,8 +23,9 @@ html {
 body {
 	font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
 	font-size: $font-size-base;
-	margin: 0;
+	font-weight: lighter;
 	min-width: 320px;
+	margin: 0;
 }
 
 .content-wrapper {

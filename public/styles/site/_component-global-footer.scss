@@ -1,68 +1,204 @@
 .global-footer {
-	color: $footer-text-color;
 	background-color: $footer-background-color;
-	padding: 1.1em;
+	padding: 3em 0 2em 0;
+
+	@media screen and (min-width: 660px) {
+		padding: 3em 0 0 0;
+	}
 }
 
-.social-container {
-    display: flex;
-    align-items: center;
+.footer-row {
+	display: flex;
+	flex-direction: column;
+
+	@media screen and (min-width: 660px) {
+		align-items: center;
+		flex-direction: row-reverse;
+		justify-content: center;
+		padding: 0 2em 2em;
+    }
+}
+
+.social-nav {
+	display: flex;
     justify-content: space-around;
-    margin-bottom: 1.5em;
+    font-size: 2em;
+    margin-bottom: 1em;
+
+	@media screen and (min-width: 660px) {
+		margin-bottom: 0;
+    }
 }
 
-.global-footer .social-nav {
-	display: flex;
-    justify-content: space-between;
-    width: 30%;
+.social-icon {
+	background-color: #fff;
+	border-radius: 50%;
+	box-shadow: 0 0 24px $dark-gray;
+	padding: 0.5em;
+	height: 2em;
+	width: 2em;
+	text-align: center;
+
+	&--facebook {
+		color: $facebook;
+	}
+
+	&--twitter {
+		color: $twitter;
+	}
+
+	&--youtube {
+		color: $youtube;
+	}
+
+	@media screen and (min-width: 660px) {
+		margin-right: 1em;
+
+		&:last-child {
+			margin-right: 0;
+		}
+    }
 }
 
-.global-footer .sponsor-nav {
-	display: flex;
-    justify-content: space-between;
-    width: 30%;
-}
-
-.global-footer .footer-nav {
-	display: flex;
+.footer-links {	
     color: $footer-text-color;
-    width: 70%;
-    justify-content: space-between;
-    margin: 0 auto 2.5em;
+    margin-bottom: 2.5em;
+
+    @media screen and (min-width: 660px) {
+    	align-items: flex-start;
+    	display: flex;
+    	flex-direction: column;
+    	flex-grow: 1;
+    	flex-wrap: wrap;
+    	margin: 0 1em 0 0;
+    }
+
+    @media screen and (min-width: 775px) {
+    	align-items: center;
+    	flex-direction: row;
+    }
+
 }
 
-.global-footer .contact-info {
-	text-align: center;
-	margin-bottom: 1em;
+.footer-links__row {
+	display: block;
+
+	@media screen and (min-width: 660px) {
+		display: flex;
+		align-items: center;
+	}
 }
 
-.global-footer__link {
-    text-decoration: none;
-    color: $text-color-light;
+.footer-link {
+	border-bottom: 1px solid $dark-blue;
+	color: $text-color-light;
     cursor: pointer;
+    display: block;
+    font-size: 1.2em;
+    padding: 1em 2em;
+    text-decoration: none;
+
+    &:hover {
+    	background-color: $dark-blue;
+    }
+
+    @media screen and (min-width: 660px) {
+    	border-bottom: none;
+    	font-size: 1em;
+    	font-weight: bold;    	
+    	line-height: 2;
+    	padding: 0;
+    }
 }
 
-// THIS IS WHERE YOU LEFT OFF, FIX FOR FOOTER-NAV
+.footer-link__separator {
+	display: none;
 
-.global-footer .footer-nav > span:after,
-.global-footer .contact-info > span:after {
-	content: " |";
-	margin: 0 2px;
-	font-size: 1.2em;
+	@media screen and (min-width: 660px) {
+		display: block;
+		padding: 0 0.5em;
+		font-size: 1em;
+	}
+
+	&--show-at-large {
+		display: none;
+
+		@media screen and (min-width: 775px) {
+			display: block;
+		}
+	}
+	
 }
 
-.global-footer .footer-nav > span:after,
-.global-footer .contact-info > span:last-child:after {
-	content: "";
-	margin: 0;
-	font-size: 1em;
-}
-
-.global-footer .disclaimer {
+.contact-info {
+	color: $text-color-light;
+	font-size: 1.1em;
+	line-height: 1.5;
+	margin-bottom: 2.5em;
 	text-align: center;
-	margin-top: 10px;
+
+	@media screen and (min-width: 660px) {
+		text-align: left;
+		display: flex;
+		font-size: 1em;
+		margin: 0 0 0 2em;
+	}
 }
 
-.global-footer .disclaimer > .copyright {
+.contact-item {
+	display: flex;
+	flex-direction: column;
+	margin-bottom: 1em;
+
+	@media screen and (min-width: 660px) {
+		padding-right: 2em;
+
+		&:last-child {
+			padding-right: 0;
+		}
+	}
+}
+
+.sponsor-nav {
+	display: flex;
+	justify-content: center;
+	margin-bottom: 2.5em;
+
+	@media screen and (min-width: 660px) {
+		margin-bottom: 0;
+	}
+}
+
+.sponsor {
+	padding-right: 1em;
+
+	&:last-child {
+		padding-right: 0;
+	}
+
+	@media screen and (min-width: 660px) {
+		padding-right: 2em;
+
+		&:last-child {
+			padding-right: 0;
+		}
+	}
+}
+
+.disclaimer {
+	color: $text-color-light;
+	font-size: 0.85em;
+	line-height: 1.5;
+	padding: 0 3em;
+
+	@media screen and (min-width: 660px) {
+		flex-grow: 1;
+		font-size: 1em;
+		line-height: 1.2;
+		padding: 0;
+	}
+}
+
+.disclaimer > .copyright {
 	margin-left: 5px;
 }
