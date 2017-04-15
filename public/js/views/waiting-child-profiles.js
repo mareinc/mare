@@ -6,8 +6,9 @@
 		el: 'body',
 
 		events: {
-			'click .filters__search-button--modify'	: 'handleSearchClick',
-			'click .filters__search-button--clear'	: 'resetGallery'
+			'click .filters__search-button--modify'				: 'handleSearchClick',
+			'click .filters__search-button--clear'				: 'resetGallery',
+			'click .filters__search-button--show-saved-children': 'showSavedChildren'
 		},
 
 		initialize: function initialize() {
@@ -104,6 +105,21 @@
 			// Add all children back to the gallery collection for display
 			mare.collections.allChildren.each( function( child ) {
 				galleryChildren.add( child );
+			});
+			// Emit an event to allow the gallery to update it's display now that we have all matching models
+			mare.collections.galleryChildren.trigger( 'resetComplete' );
+		},
+
+		showSavedChildren: function showSavedChildren() {
+			// Cache the collection for faster access
+			var galleryChildren = mare.collections.galleryChildren;
+			// Clear out the contents of the gallery collection
+			galleryChildren.reset();
+			// Add all bookmarked children back to the gallery collection for display
+			mare.collections.allChildren.each( function( child ) {
+				if( child.get( 'isBookmarked' ) ) {
+					galleryChildren.add( child );
+				}
 			});
 			// Emit an event to allow the gallery to update it's display now that we have all matching models
 			mare.collections.galleryChildren.trigger( 'resetComplete' );
