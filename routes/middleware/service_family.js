@@ -9,8 +9,8 @@ var keystone		= require( 'keystone' ),
 exports.setGalleryPermissions = ( req, res, done ) => {
 
 	let locals		= res.locals;
-
-	const userType	= locals.userType;
+	// variables to determine what features the user has access to
+	const userType	= locals.userType = req.user ? req.user.get( 'userType' ) : 'anonymous';
 
 	locals.canBookmarkChildren = userType === 'social worker' || userType === 'family' ? true : false;
 	locals.canSearchForChildren = userType === 'social worker' || userType === 'family' ? true : false;
