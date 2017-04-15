@@ -10,6 +10,9 @@
 		<div class="button-group button-group--horizontal filters__search">
 			<button class="button button--medium button--yellow filters__search-button filters__search-button--modify">Modify Search</button>
 			<button class="button button--medium button--yellow filters__search-button filters__search-button--clear">Clear Search</button>
+			{{#if canBookmarkChildren}}
+			<button class="button button--medium button--yellow filters__search-button filters__search-button--show-saved-children {{#unless hasBookmarkedChildren}}hidden{{/unless}}">Show Saved</button>
+			{{/if}}
 		</div>
 
 		<select class="waiting-child-profiles__gallery-filter waiting-child-profiles-filter">
