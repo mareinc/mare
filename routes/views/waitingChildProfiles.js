@@ -11,9 +11,12 @@ exports = module.exports = ( req, res ) => {
 
 	let view		= new keystone.View( req, res ),
 		locals		= res.locals;
+	// store user type for calculating gallery permissions
+	locals.userType = req.user ? req.user.get( 'userType' ) : 'anonymous';
 	
 	async.series( [
 		done => { familyService.setGalleryPermissions( req, res, done ); },
+		done => { familyService.checkForBookmarkedChildren( req, res, done ); },
 		done => { listsService.getAllGenders( req, res, done ) },
 		done => { listsService.getAllRaces( req, res, done ) },
 		done => { listsService.getAllLanguages( req, res, done ) },
@@ -28,7 +31,5 @@ exports = module.exports = ( req, res ) => {
 		locals[ 'render-with-sidebar' ] = false;
 		// render the view once all the data has been retrieved
 		view.render( 'waiting-child-profiles' );
-
 	});
-
 };

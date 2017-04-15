@@ -9,11 +9,24 @@ var keystone		= require( 'keystone' ),
 exports.setGalleryPermissions = ( req, res, done ) => {
 
 	let locals		= res.locals;
-	// variables to determine what features the user has access to
-	const userType	= locals.userType = req.user ? req.user.get( 'userType' ) : 'anonymous';
+	// variables to determine what features the user has access to.  Don't overwrite it if it's already set
+	const userType	= locals.userType = locals.userType || req.user ? req.user.get( 'userType' ) : 'anonymous';
 
 	locals.canBookmarkChildren = userType === 'social worker' || userType === 'family' ? true : false;
 	locals.canSearchForChildren = userType === 'social worker' || userType === 'family' ? true : false;
+
+	done();
+};
+
+exports.checkForBookmarkedChildren = ( req, res, done ) => {
+
+	let locals = res.locals;
+	// store the bookmarked children and sibling groups
+	const bookmarkedChildren = req.user.get( 'bookmarkedChildren' );
+	const bookmarkedSiblings = req.user.get( 'bookmarkedSiblings' );
+	// store whether or not the user has any bookmarked children or siblings
+	locals.hasBookmarkedChildren = ( bookmarkedChildren && bookmarkedChildren.length > 0 ) ||
+								   ( bookmarkedSiblings && bookmarkedSiblings.length > 0 );
 
 	done();
 };
@@ -22,7 +35,6 @@ exports.setGalleryPermissions = ( req, res, done ) => {
 exports.getBookmarkedChildren = ( req, res, done ) => {
 
 	let locals = res.locals;
-
 	// Fetch the user if it has already been retrieved
 	if( locals.user === undefined ) {
 
@@ -44,7 +56,7 @@ exports.getBookmarkedChildren = ( req, res, done ) => {
 
 		locals.bookmarkedChildren = locals.user.get( 'bookmarkedChildren' );
 		locals.bookmarkedChildren.push( ...locals.user.get( 'bookmarkedSiblings' ) );
-
+		
 		done();
 	}
 };
