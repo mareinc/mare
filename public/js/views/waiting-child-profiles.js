@@ -6,8 +6,9 @@
 		el: 'body',
 
 		events: {
-			'click .filters__search-button--modify'	: 'handleSearchClick',
-			'click .filters__search-button--clear'	: 'resetGallery'
+			'click .filters__search-button--modify'				: 'handleSearchClick',
+			'click .filters__search-button--clear'				: 'resetGallery',
+			'click .filters__search-button--show-saved-children': 'showSavedChildrenAndSiblingGroups'
 		},
 
 		initialize: function initialize() {
@@ -20,6 +21,8 @@
 			mare.collections.allChildren = mare.collections.allChildren || new mare.collections.Children();
 			// Create a collection to hold only the children currently displayed in the gallery
 			mare.collections.galleryChildren = mare.collections.galleryChildren || new mare.collections.Children();
+			// Create a collection to hold all available sibling group data as a base for sorting/filtering
+			mare.collections.allSiblingGroups = mare.collections.allSiblingGroups || new mare.collections.SiblingGroups();
 			// Create a collection to hold only the sibling groups currently displayed in the gallery
 			mare.collections.gallerySiblingGroups = mare.collections.gallerySiblingGroups || new mare.collections.SiblingGroups();
 
@@ -73,13 +76,15 @@
 				url: '/services/get-children-data',
 				type: 'POST'
 			}).done( function( children ) {
-				// Store all children in a collection for easy access
+				// store all children in a collection for easy access
 				mare.collections.allChildren.add( children.soloChildren );
-				// Store all children in the collecction for the current gallery display as we always start showing the full list
+				// store all children in the collecction for the current gallery display as we always start showing the full list
 				mare.collections.galleryChildren.add( children.soloChildren );
-				// Store all the sibling groups for the current gallery display
+				// store all sibling groups for easy access
+				mare.collections.allSiblingGroups.add( children.siblingGroups );
+				// Store all sibling groups for the current gallery display
 				mare.collections.gallerySiblingGroups.add( children.siblingGroups );
-				// Resolve the promise tracking child data loading
+				// resolve the promise tracking child data loading
 				mare.promises.childrenDataLoaded.resolve();
 
 			}).fail( function( err ) {
@@ -87,7 +92,7 @@
 				console.log( err );
 			});
 		},
-		/* Route to the search form to preserve browser history state */
+		/* route to the search form to preserve browser history state */
 		handleSearchClick: function handleSearchClick() {
 			mare.routers.waitingChildProfiles.navigate( 'search', { trigger: true } );
 		},
@@ -97,17 +102,51 @@
 		},
 
 		resetGallery: function resetGallery() {
-			// Cache the collection for faster access
+			// cache the collection for faster access
 			var galleryChildren = mare.collections.galleryChildren;
-			// Clear out the contents of the gallery collection
+			// clear out the contents of the gallery collection
 			galleryChildren.reset();
-			// Add all children back to the gallery collection for display
+			// add all children back to the gallery collection for display
 			mare.collections.allChildren.each( function( child ) {
 				galleryChildren.add( child );
 			});
-			// Emit an event to allow the gallery to update it's display now that we have all matching models
+			// emit an event to allow the gallery to update it's display now that we have all matching models
 			mare.collections.galleryChildren.trigger( 'resetComplete' );
-		}
+		},
 
+		showSavedChildrenAndSiblingGroups: function showSavedChildrenAndSiblingGroups() {
+
+			this.showSavedChildren();
+			this.showSavedSiblingGroups();
+			// emit an event to allow the gallery to update it's display now that we have all matching models
+			// TODO: since we're now resetting both children and sibling groups, emitting the event off the gallery children collection is no longer appropriate
+			mare.collections.galleryChildren.trigger( 'resetComplete' );
+		},
+
+		showSavedChildren: function showSavedChildren() {
+			// cache the collection for faster access
+			var galleryChildren = mare.collections.galleryChildren;
+			// clear out the contents of the gallery collection
+			galleryChildren.reset();
+			// add all bookmarked children back to the gallery collection for display
+			mare.collections.allChildren.each( function( child ) {
+				if( child.get( 'isBookmarked' ) ) {
+					galleryChildren.add( child );
+				}
+			});
+		},
+
+		showSavedSiblingGroups: function showSavedSiblingGroups() {
+			// cache the collection for faster access
+			var gallerySiblingGroups = mare.collections.gallerySiblingGroups;
+			// clear out the contents of the gallery collection
+			gallerySiblingGroups.reset();
+			// add all bookmarked sibling groups back to the gallery collection for display
+			mare.collections.allSiblingGroups.each( function( siblingGroup ) {
+				if( siblingGroup.get( 'isBookmarked' ) ) {
+					gallerySiblingGroups.add( siblingGroup );
+				}
+			});
+		}
 	});
 }());

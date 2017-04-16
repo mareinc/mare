@@ -29,7 +29,7 @@ exports.getAllChildren = ( req, res, done ) => {
 
 					_.each( children, child => {
 						// adjust the image to the blank male/female image if needed
-						exports.setNoChildImage( req, res, child );
+						exports.setNoChildImage( req, res, child, locals.targetChildren === 'all' );
 						// set extra information needed for rendering the child to the page
 						child.age						= middleware.getAge( child.birthDate );
 			    		child.ageConverted				= middleware.convertDate( child.birthDate );
@@ -52,9 +52,10 @@ exports.getAllChildren = ( req, res, done ) => {
 exports.getUnrestrictedChildren = ( req, res, done ) => {
 
 	var locals = res.locals;
-
-	Child.model.find()
-				.where( 'siteVisibility', 'everyone' )
+	// find all children who are active, and are either visible to everyone or have the 'child is visible on MARE web' checkbox checked
+	Child.model.find({ $or: [
+						{ 'siteVisibility': 'everyone' },
+						{ 'isVisibleInGallery': true } ] } )
 				.populate( 'gender' )
 				.populate( 'race' )
 				.populate( 'languages' )
@@ -66,15 +67,14 @@ exports.getUnrestrictedChildren = ( req, res, done ) => {
 				.populate( 'legalStatus' )
 				.exec()
 				.then( children => {
-					// TODO: This filter should happen in a .where() above
 					// Filter out all children who don't have a status of 'active'
 					children = _.filter( children, child => {
-						return child.status.childStatus === 'active' && child.isVisibleInGallery;
+						return child.status.childStatus === 'active';
 					});
-
-					_.each(children, child => {
+					// loop through each child
+					_.each( children, child => {
 						// adjust the image to the blank male/female image if needed
-						exports.setNoChildImage( req, res, child );
+						exports.setNoChildImage( req, res, child, locals.targetChildren === 'all' );
 						// set extra information needed for rendering the child to the page
 						child.age						= middleware.getAge( child.birthDate );
 			    		child.ageConverted				= middleware.convertDate( child.birthDate );
@@ -98,9 +98,10 @@ exports.getUnrestrictedChildren = ( req, res, done ) => {
 /* Sets the images for display in the gallery to a blank male/female face in the following cases:
  *	1. No image was uploaded for the child
  *	2. The child has been identified as legal risk
+ *  3. The child is not visible to everyone, and the user wouldn't have permission to see them without the 'child is visible on MARE web' checkbox being checked
  */
-exports.setNoChildImage = ( req, res, child ) => {
-	// Constant definitions.  TODO: Change these to const instead of var once support for ES2015 improves
+exports.setNoChildImage = ( req, res, child, canViewAllChildren ) => {
+
 	const NO_IMAGE_MALE_GALLERY				= 'images/no-image-male_gallery.png',
 		  NO_IMAGE_MALE_DETAILS				= 'images/no-image-male_details.png',
 		  NO_IMAGE_FEMALE_GALLERY			= 'images/no-image-female_gallery.png',
@@ -108,8 +109,7 @@ exports.setNoChildImage = ( req, res, child ) => {
 		  NO_IMAGE_OTHER_GALLERY			= 'images/no-image-other_gallery.png',
 		  NO_IMAGE_OTHER_DETAILS			= 'images/no-image-other_details.png',
 		  NO_IMAGE_SIBLING_GROUP_GALLERY	= 'images/no-image-sibling-group_gallery.png',
-		  NO_IMAGE_SIBLING_GROUP_DETAILS	= 'images/no-image-sibling-group_details.png';
-	
+		  NO_IMAGE_SIBLING_GROUP_DETAILS	= 'images/no-image-sibling-group_details.png';	
 	// if the child is part of a sibling group
 	if( child.mustBePlacedWithSiblings ) {
 		// and is missing an image or is legal risk
@@ -120,8 +120,10 @@ exports.setNoChildImage = ( req, res, child ) => {
 		}
 	// if the child is not part of a sibling group
 	} else {
-		// and is missing an image or is legal risk
-		if( !child.image.secure_url || child.legalStatus.legalStatus === 'legal risk' ) {
+		if( !child.image.secure_url								// and is missing an image
+			|| child.legalStatus.legalStatus === 'legal risk' 	// or is legal risk
+			|| ( child.siteVisibility !== 'everyone' 			// or if the child is not visible to everyone
+			 	&& !canViewAllChildren ) ) {					// 	and the user wouldn't have permission without the 'child is visible on MARE web' checkbox being checked
 			// and the child is male
 			if( child.gender.gender === 'male' ) {
 				// set the images to the placeholder for male children
@@ -425,6 +427,7 @@ exports.getChildDetails = ( req, res, next ) => {
 
         	const relevantData = {
 				hasImage				: _.isEmpty( child.image ) && child.image.url.length > 0,
+				quote					: child.profile.quote,
         		profilePart1			: child.profile.part1,
         		profilePart2			: child.profile.part2,
         		profilePart3			: child.profile.part3,
@@ -456,6 +459,7 @@ exports.getSiblingGroupDetails = ( req, res, next ) => {
 
         	const relevantData = {
 				hasImage				: _.isEmpty( child.siblingGroupImage ) && child.siblingGroupImage.url.length > 0,
+				quote					: child.groupProfile.quote,
         		profilePart1			: child.groupProfile.part1,
         		profilePart2			: child.groupProfile.part2,
         		profilePart3			: child.groupProfile.part3,

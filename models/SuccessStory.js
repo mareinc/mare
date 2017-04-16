@@ -13,10 +13,11 @@ SuccessStory.add({
 	heading: { type: Types.Text, label: 'heading', required: true, initial: true },
 	url: { type: Types.Url, label: 'url', noedit: true },
 	subHeading: { type: Types.Text, label: 'sub-heading', initial: true },
-	content: { type: Types.Html, wysiwyg: true, initial: true },
+	content: { type: Types.Html, wysiwyg: true, note: 'do not add images or video, instead use the fields below', initial: true },
 	image: { type: Types.CloudinaryImage, note: 'needed to display in the sidebar, success story page, and home page', folder: 'success-stories/', select: true, selectPrefix: 'success-stories/', publicID: 'fileName', autoCleanup: true },
 	imageFeatured: { type: Types.Url, hidden: true },
-	imageSidebar: { type: Types.Url, hidden: true }
+	imageSidebar: { type: Types.Url, hidden: true },
+	video: { type: Types.Url, label: 'video', initial: true }
 
 /* Container for all system fields (add a heading if any are meant to be visible through the admin UI) */
 }, {

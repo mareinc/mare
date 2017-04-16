@@ -31,26 +31,23 @@
 		<img class="profile__profile-picture" src=\{{ detailImage }}>
 
 		<div class="profile__basic-info">
-			<div class="profile-details__name">\{{ names }}</div>
-			<div class="profile-details__age">Age \{{ ages }}</div>
+			<div class="profile-details__name">\{{ namesString }}</div>
+			<div class="profile-details__age">Age \{{ agesString }}</div>
 			<div class="profile-details__registration-number">Registration # \{{ registrationNumbersString }}</div>
 		</div>
 
 		<div class="profile__detailed-child-info">
 			<div class="detailed-child-info__introduction">
-				<div class="detailed-child-info__header">Hi! Our names are \{{ names }}.</div>
+				<div class="detailed-child-info__header">Hi! Our names are \{{ namesString }} and \{{ quote }}</div>
 			</div>
 			<div class="detailed-child-info__part-1">
-				<div class="detailed-child-info__header">Let us tell you more about ourselves...</div>
-				<div class="detailed-child-info__body">\{{ profilePart1 }}</div>
+				<div class="detailed-child-info__text">\{{ profilePart1 }}</div>
 			</div>
 			<div class="detailed-child-info__part-2">
-				<div class="detailed-child-info__header">And here’s what others say...</div>
-				<div class="detailed-child-info__body">\{{ profilePart2 }}</div>
+				<div class="detailed-child-info__text">\{{ profilePart2 }}</div>
 			</div>
 			<div class="detailed-child-info__part-3">
-				<div class="detailed-child-info__header">If we could have our own special wish...</div>
-				<div class="detailed-child-info__body">\{{ profilePart3 }}</div>
+				<div class="detailed-child-info__text">\{{ profilePart3 }}</div>
 			</div>
 		</div>
 

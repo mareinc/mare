@@ -482,7 +482,7 @@ Family.schema.methods.setRegistrationNumber = function( done ) {
 				.exec()
 				.then( families => {
 					// if this is the first family to be created
-					if( !families ) {
+					if( families.length === 0 ) {
 						this.registrationNumber = 1;
 					} else {
 						// get an array of registration numbers
@@ -504,7 +504,7 @@ Family.schema.methods.setRegistrationNumber = function( done ) {
 
 Family.schema.methods.setChangeHistory = function setChangeHistory( done ) {
 	'use strict';
-
+	// TODO: terrible use and reuse of variables below, check this and other models with change history
 	var modelBefore	= this._original,
 		model		= this;
 

@@ -159,8 +159,9 @@
 
 .profile__profile-picture {
 	width: 200px;
-	position: absolute;
-	right: 1em;
+    float: right;
+    margin-left: 1em;
+    margin-bottom: 1em;
 }
 
 .profile__basic-info {
