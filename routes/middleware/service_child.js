@@ -426,6 +426,7 @@ exports.getChildDetails = ( req, res, next ) => {
 
         	const relevantData = {
 				hasImage				: _.isEmpty( child.image ) && child.image.url.length > 0,
+				quote					: child.profile.quote,
         		profilePart1			: child.profile.part1,
         		profilePart2			: child.profile.part2,
         		profilePart3			: child.profile.part3,
@@ -457,6 +458,7 @@ exports.getSiblingGroupDetails = ( req, res, next ) => {
 
         	const relevantData = {
 				hasImage				: _.isEmpty( child.siblingGroupImage ) && child.siblingGroupImage.url.length > 0,
+				quote					: child.groupProfile.quote,
         		profilePart1			: child.groupProfile.part1,
         		profilePart2			: child.groupProfile.part2,
         		profilePart3			: child.groupProfile.part3,
