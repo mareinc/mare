@@ -10,7 +10,7 @@ exports.setGalleryPermissions = ( req, res, done ) => {
 
 	let locals		= res.locals;
 	// variables to determine what features the user has access to.  Don't overwrite it if it's already set
-	const userType	= locals.userType = locals.userType || req.user ? req.user.get( 'userType' ) : 'anonymous';
+	const userType = locals.userType || ( req.user ? req.user.get( 'userType' ) : 'anonymous' );
 
 	locals.canBookmarkChildren = userType === 'social worker' || userType === 'family' ? true : false;
 	locals.canSearchForChildren = userType === 'social worker' || userType === 'family' ? true : false;
@@ -22,8 +22,8 @@ exports.checkForBookmarkedChildren = ( req, res, done ) => {
 
 	let locals = res.locals;
 	// store the bookmarked children and sibling groups
-	const bookmarkedChildren = req.user.get( 'bookmarkedChildren' );
-	const bookmarkedSiblings = req.user.get( 'bookmarkedSiblings' );
+	const bookmarkedChildren = req.user ? req.user.get( 'bookmarkedChildren' ) : [];
+	const bookmarkedSiblings = req.user ? req.user.get( 'bookmarkedSiblings' ) : [];
 	// store whether or not the user has any bookmarked children or siblings
 	locals.hasBookmarkedChildren = ( bookmarkedChildren && bookmarkedChildren.length > 0 ) ||
 								   ( bookmarkedSiblings && bookmarkedSiblings.length > 0 );
