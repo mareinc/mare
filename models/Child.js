@@ -809,6 +809,18 @@ Child.schema.methods.setChangeHistory = function( done ) {
 			},
 			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
+											name: 'socialNeeds',
+											label: 'social needs',
+											type: 'string' }, model, modelBefore, changeHistory, done );
+			},
+			done => {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											name: 'socialNeedsDescription',
+											label: 'social needs description',
+											type: 'string' }, model, modelBefore, changeHistory, done );
+			},
+			done => {
+				ChangeHistoryMiddleware.checkFieldForChanges({
 											name: 'disabilities',
 											targetField: 'disability',
 											label: 'disabilities',
