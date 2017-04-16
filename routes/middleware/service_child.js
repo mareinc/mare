@@ -98,6 +98,7 @@ exports.getUnrestrictedChildren = ( req, res, done ) => {
 /* Sets the images for display in the gallery to a blank male/female face in the following cases:
  *	1. No image was uploaded for the child
  *	2. The child has been identified as legal risk
+ *  3. The child is not visible to everyone, and the user wouldn't have permission to see them without the 'child is visible on MARE web' checkbox being checked
  */
 exports.setNoChildImage = ( req, res, child, canViewAllChildren ) => {
 
