@@ -9,7 +9,7 @@
     		this.sortByDateRegistered(); // Set the default comparator on the collection to order by how recently the child was registered
     	},
 		// TODO: update based on Lisa's input
-		reorder: function reorder(sortBy) {
+		reorder: function reorder( sortBy ) {
 
 			switch(sortBy) {
 				case 'registered'	: this.sortByDateRegistered(); break;
@@ -18,14 +18,14 @@
 				default				: this.sortByDateRegistered(); break;
 			}
 
-			this.trigger('sorted');
+			this.trigger( 'sorted' );
 
 		},
 		// TODO: update based on Lisa's input
 		sortByDateRegistered: function sortByDateRegistered() {
 
-			this.comparator = function comparator(child) {
-				return -child.get('registrationDateConverted');
+			this.comparator = function comparator( child ) {
+				return -child.get( 'registrationDateConverted' );
 			}
 
 			this.sort();
@@ -45,6 +45,5 @@
 			this.sort();
 
 		}
-
     });
 }());

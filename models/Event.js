@@ -16,13 +16,16 @@ Event.add({ heading: 'General Information' }, {
 	name: { type: Types.Text, label: 'event name', required: true, initial: true },
 	url: { type: Types.Url, label: 'url', noedit: true },
 	isActive: { type: Types.Boolean, label: 'is event active?', default: true, initial: true },
+	shouldCreateSource: { type: Types.Boolean, label: 'create source from this event', initial: true },
 	// type: { type: Types.Relationship, label: 'Event Type', ref: 'Event Type', required: true, initial: true }
 	type: { type: Types.Select, label: 'event type', options: 'MARE adoption parties & information events, MAPP trainings, agency information meetings, other opportunities & trainings, fundraising events', required: true, initial: true }, // TODO: this fixes an issue in pre-save which can be updated to fetch the live results and not hardcode this list.
-	shouldCreateSource: { type: Types.Boolean, label: 'create source from this event', initial: true },
 	source: { type: Types.Relationship, label: 'source', ref: 'Source', dependsOn: { shouldCreateSource: true }, noedit: true, initial: true },
 	image: { type: Types.CloudinaryImage, note: 'needed to display in the sidebar, events page, and home page', folder: 'events/', select: true, selectPrefix: 'events/', publicID: 'fileName', autoCleanup: true },
 	imageFeatured: { type: Types.Url, hidden: true },
-	imageSidebar: { type: Types.Url, hidden: true }
+	imageSidebar: { type: Types.Url, hidden: true },
+
+	areBuddiesAllowed: { type: Types.Boolean, label: 'buddies allowed', initial: true },
+	isMatchingEvent: { type: Types.Boolean, label: 'matching event', initial: true }
 
 }, { heading: 'Address' }, {
 

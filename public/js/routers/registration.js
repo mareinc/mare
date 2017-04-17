@@ -6,9 +6,9 @@
 		// TODO: Split this up based on the form we're showing the user
 		routes: {
 			''				: 'loadDefault',
+			'family'		: 'loadFamilyRegistration',
 			'site-visitor' 	: 'loadSiteVisitorRegistration',
 			'social-worker'	: 'loadSocialWorkerRegistration',
-			'family'		: 'loadFamilyRegistration',
 			'*other'		: 'loadDefault'
 		},
 
@@ -47,7 +47,7 @@
 		},
 		/* Handle any poorly formed routes or navigation to the registration page without specifying a route by rerouting to the default form */
 		loadDefault: function loadDefault() {
-			this.navigate( 'site-visitor', { trigger: true, replace: true } );
+			this.navigate( 'family', { trigger: true, replace: true } );
 		}
 
 	});

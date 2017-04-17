@@ -75,10 +75,10 @@
 			// use the promise bound to both data to delay rendering until we have them
 			$.when( mare.promises.permissionsLoaded, mare.promises.childrenDataLoaded ).then( function() {
 				// Pass the collection data through the gallery template to generate the HTML to be added to the gallery
-				var childrenHtml		= view.childrenTemplate( view.childrenCollection.toJSON() );
 				var siblingGroupsHtml	= view.siblingGroupsTemplate( view.siblingGroupsCollection.toJSON() );
+				var childrenHtml		= view.childrenTemplate( view.childrenCollection.toJSON() );
 
-				view.$( '.profiles-container' ).html( childrenHtml + siblingGroupsHtml );
+				view.$( '.profiles-container' ).html( siblingGroupsHtml + childrenHtml );
 				// Once the html is rendered to the page, initialize the gallery display plugin
 				view.initializeMediaBoxes();
 			});
