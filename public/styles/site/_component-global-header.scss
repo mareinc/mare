@@ -16,103 +16,37 @@
 	margin: 1em;
 
 	&--vertical {
+		display: none;
 		min-width: 10em;
 		max-width: 13em;
 
-		@media all and (min-width: 700px) {
+		@media all and (min-width: 655px) {
+	    	display: inline;
+	    }
+
+		@media all and (min-width: 765px) {
 			display: none;
 		}
 	}
 
 	&--horizontal {
-	    display: none;
+	    width: 20em;
 
-	    @media all and (min-width: 700px) {
+	    @media all and (min-width: 655px) {
+	    	display: none;
+	    	max-width: 22em;
+	    }
+
+	    @media all and (min-width: 765px) {
 	    	display: inline;
-			max-width: 22em;
 	    }
 	}
-}
-
-.global-header .header-navigation-container {
-	float: right;
-}
-
-.global-header .top-nav {
-	display: flex;
-	background-color: $nav-background-color-1;
-	color: $text-color-light;
-}
-
-.global-header .top-nav ul {
-	display: flex;
-	height: 2.9em;
-
-	@media all and (min-width: 655px) {
-		padding-right: 1.5em;
-	}
-}
-
-.global-header .top-nav li {
-	display: flex;
-	padding: 0.25em 0.75em 0.5em 0.75em;
-}
-
-.global-header .top-nav .donate-link-container {
-	background-color: $nav-background-color-2;
-	color: $nav-text-color-1;
-	height: calc(100%/2.5);
-	align-items: center;
-	position: absolute;
-	right: 2em;
-	top: 2.9em;
-
-	@media all and (min-width: 420px) {
-		height: 3.5em;
-	}
-
-	@media all and (min-width: 560px) {
-		position: inherit;
-		right: inherit;
-		top: inherit;
-		box-shadow: 5px 5px 10px -2px;
-	}
-}
-
-.global-header .top-nav a,
-.global-header .top-nav a:visited {
-	color: $text-color-light;
 }
 
 .site-nav {
 	margin-top: 30px;
 	margin-left: 4%;
 	font-size: 1.1em;
-}
-
-.log-in-link {
-	position: relative;
-
-	@media all and (min-width: 440px) {
-		margin-right: 1em;
-	}
-}
-
-.log-in-link-text {
-	align-self: center;
-	padding-right: 0.8em;
-	cursor: pointer;
-}
-
-.log-in-link > .arrow-down {
-	position: absolute;
-	border-top-color: $border-color-light;
-	right: 2px;
-	top: 16px;
-
-	@media all and (min-width: 440px) {
-		right: 5px;
-	}
 }
 
 .log-in-container {
@@ -159,16 +93,9 @@
 	margin: 5px 0;
 }
 
-.global-header .top-nav .home-link {
-	display: none;
-
-	@media all and (min-width: 420px) {
-		display: inherit;
-	}
-}
-
 // TODO: put these in the correct place
 .global-header .top-nav .hamburger {
+	display: block;
 
 	@media all and (min-width: 655px) {
 		display: none;
