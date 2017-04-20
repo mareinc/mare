@@ -106,6 +106,11 @@ nav ul {
 	}
 }
 
+// TODO: find a better way to target this...
+.main-nav__item.active .main-nav__items--right  .main-nav__link--submenu {
+	padding-right: 0;
+}
+
 .main-nav__item {
 	flex-grow: 1;
 	flex-shrink: 0;	
@@ -128,27 +133,7 @@ nav ul {
 
 	&--submenu {
 		align-items: center;
-		display: flex;
-
-		// TODO: rethink the indicator on hover
-		&:hover {
-			.main-nav__hover-indicator {
-				visibility: visible;
-			}
-		}
-	}
-}
-
-// TODO: rethink the indicator on hover
-.main-nav__hover-indicator {
-	background-color: $nav-underline-color;
-	visibility: hidden;
-	height: 5px;
-	width: 10px;
-
-	// TODO: figure out if we want the hover indicators to move when the alignment does
-	&--right {
-		order: 1;
+		display: flex;		
 	}
 }
 
@@ -166,6 +151,12 @@ nav ul {
 
     @media all and (min-width: 850px) {
     	font-size: 1em;
+    }
+
+    &--submenu {
+    	&:hover {
+			color: $teal;
+		}
     }
 
 }

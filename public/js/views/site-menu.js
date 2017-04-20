@@ -42,30 +42,26 @@
 			
 			var $selectedMenuItem 	= $('.active'),
 				$submenu 			= $('.main-nav__items--submenu'),
-				$hoverIndicator		= $('.main-nav__hover-indicator'),
 				$mainNav 			= $('.main-nav__items');
 
 			// remove any previous adjustments to submenu 
 			$submenu.removeClass('main-nav__items--right');
-			$submenu.removeAttr('style');
-			$hoverIndicator.removeClass('main-nav__hover-indicator--right');
+			$submenu.removeAttr('style');			
 
 			// if a menu item is selected
 			if( $selectedMenuItem.length > 0 ) {
 				
 				// determine placement of selected the menu item
-				// TODO: rethink the indicator
-				var indicatorWidth 	= $hoverIndicator.outerWidth(),
-					distFromLeft 	= $selectedMenuItem.offset().left - indicatorWidth,
-					width			= $selectedMenuItem.outerWidth(),
-					distFromRight	= $(window).outerWidth() - (distFromLeft + width + indicatorWidth);
-				
+				var distFromLeft 		= $selectedMenuItem.offset().left,
+					width 				= $selectedMenuItem.children('.main-nav__link').width(),
+					widthPlusPadding	= $selectedMenuItem.children('.main-nav__link').outerWidth(),
+					padding 			= width - widthPlusPadding,
+					distFromRight		= $(window).width() - (distFromLeft + width) + padding/2;
+
 				// if there's not enough room for the submenu to the right, apply right padding and style 
 				if( distFromRight < 250 ) {
 					$submenu.addClass('main-nav__items--right');
 					$submenu.css('padding-right', distFromRight);
-
-					$hoverIndicator.addClass('main-nav__hover-indicator--right');
 				} 
 
 				// otherwise, set the left padding of the submenu
