@@ -1,23 +1,21 @@
 <nav class="main-nav">
-	<div class="content-wrapper">
-		<ul class="main-nav__items">
-			{{#each mainNav}}
-			<li class="main-nav__item">
-				{{#if subMenu}}
-				<a class="main-nav__link" href="#">{{ title }}</a>
-				<ul class="main-nav__items main-nav__items--submenu">
-					{{#each subMenu}}
-					<li class="main-nav__item main-nav__item--submenu">
-						<div class="main-nav__hover-indicator"></div>
-						<a class="main-nav__link main-nav__link--submenu" href="{{ href }}">{{ title }}</a>
-					</li>
-					{{/each}}
-				</ul>
-				{{else}}
-				<a class="main-nav__link" href="{{ href }}">{{ title }}</a>
-				{{/if}}
-			</li>
-			{{/each}}
-		</ul>
-	</div>
+	<ul class="main-nav__items">
+		{{#each mainNav}}
+		<li class="main-nav__item">
+			{{#if subMenu}}
+			<a class="main-nav__link" href="#">{{ title }}</a>
+			<ul class="main-nav__items main-nav__items--submenu">
+				{{#each subMenu}}
+				<li class="main-nav__item main-nav__item--submenu">
+					<div class="main-nav__hover-indicator"></div>
+					<a class="main-nav__link main-nav__link--submenu" href="{{ href }}">{{ title }}</a>
+				</li>
+				{{/each}}
+			</ul>
+			{{else}}
+			<a class="main-nav__link" href="{{ href }}">{{ title }}</a>
+			{{/if}}
+		</li>
+		{{/each}}
+	</ul>
 </nav>

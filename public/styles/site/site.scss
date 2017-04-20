@@ -21,7 +21,7 @@ html {
 }
 
 body {
-	font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+	font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
 	font-size: $font-size-base;
 	// font-weight: lighter;  // removed until the font is fixed
 	min-width: 320px;
@@ -29,7 +29,8 @@ body {
 }
 
 .content-wrapper {
-	width: 100%;
+	max-width: 1200px;
+	margin: 0 auto;
 }
 
 .body {
@@ -43,16 +44,16 @@ body {
 
 	// the mobile menu is replaced with the desktop menu 
 	@media all and (min-width: 655px) {
-		margin-top: 149px;
+		margin-top: 151px;
 	}
 
 	// the logo collapses, header gets larger
 	@media all and (min-width: 765px) {
-		margin-top: 118px;
+		margin-top: 120px;
 	}
 
 	@media all and (min-width: 850px) {
-		margin-top: 127px;
+		margin-top: 128px;
 	}
 }
 

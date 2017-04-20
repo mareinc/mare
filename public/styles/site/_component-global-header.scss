@@ -7,8 +7,13 @@
 	-ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=180, Color='#616161')";
 	position: fixed;
 	top: 0;
+	transition: box-shadow 200ms ease-in-out;
 	width: 100%;
 	z-index: 10;
+
+	&--shadow {
+	    box-shadow: 0 4px 5px 0 $lightest-gray, 0 1px 10px 0 $light-gray, 0 2px 4px -1px $medium-gray;
+	}
 }
 
 .global-header .logo {

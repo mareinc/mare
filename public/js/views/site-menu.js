@@ -14,13 +14,22 @@
 			// DOM cache any commonly used elements to improve performance
 			this.$logInContainer = $('.log-in-container');
 			$(window).on("resize", this.resizeMenu);
-
-			// TODO: adjust opacity of the menu on window scroll
-			// $(window).on("scroll", this.toggleMenuOpacity);
+			$(window).on('scroll', this.toggleBoxShadow);
 		},
 
 		logIn: function logIn() {
 			this.$logInContainer.toggle();
+		},
+
+		// TODO: debounce this ?
+		toggleBoxShadow: function toggleBoxShadow() {
+			var scroll = $(window).scrollTop();
+		    if (scroll > 0) {
+		        $('.global-header').addClass('global-header--shadow');
+		    }
+		    else {
+		        $('.global-header').removeClass('global-header--shadow');
+		    }
 		},
 
 		fixClickPropagation: function fixClickPropagation(event) {
@@ -28,36 +37,34 @@
 		},
 
 		// align the submenu with the selected menu item above
-		// TODO: debounce this 
+		// TODO: debounce this ?
 		resizeMenu: function resizeMenu(event) {
 			
 			var $selectedMenuItem 	= $('.active'),
 				$submenu 			= $('.main-nav__items--submenu'),
-
-				// TODO: figure out if we want the hover indicators to move when the alignment does
-				$hoverIndicator		= $('.main-nav__hover-indicator');
+				$hoverIndicator		= $('.main-nav__hover-indicator'),
+				$mainNav 			= $('.main-nav__items');
 
 			// remove any previous adjustments to submenu 
 			$submenu.removeClass('main-nav__items--right');
 			$submenu.removeAttr('style');
-
-			// TODO: figure out if we want the hover indicators to move when the alignment does
 			$hoverIndicator.removeClass('main-nav__hover-indicator--right');
 
 			// if a menu item is selected
 			if( $selectedMenuItem.length > 0 ) {
 				
 				// determine placement of selected the menu item
-				var distFromLeft 	= $selectedMenuItem.offset().left,
+				// TODO: rethink the indicator
+				var indicatorWidth 	= $hoverIndicator.outerWidth(),
+					distFromLeft 	= $selectedMenuItem.offset().left - indicatorWidth,
 					width			= $selectedMenuItem.outerWidth(),
-					distFromRight	= $(window).outerWidth() - (distFromLeft + width);
+					distFromRight	= $(window).outerWidth() - (distFromLeft + width + indicatorWidth);
 				
 				// if there's not enough room for the submenu to the right, apply right padding and style 
 				if( distFromRight < 250 ) {
 					$submenu.addClass('main-nav__items--right');
 					$submenu.css('padding-right', distFromRight);
 
-					// TODO: figure out if we want the hover indicators to move when the alignment does
 					$hoverIndicator.addClass('main-nav__hover-indicator--right');
 				} 
 
@@ -72,8 +79,18 @@
 			// find current target 
 			var $target 	= $(event.currentTarget),
 				$active 	= $('.active'),
-				isActive 	= $target.hasClass('active');
+				isActive 	= $target.hasClass('active'),
+				$navItems 	= $('.main-nav__items');
 
+			if( $active.children('.main-nav__items--submenu').outerHeight() > 0 ) {
+				// if the active menu item is expanded, remove the fade in transition
+				$('.main-nav__items').removeClass('main-nav__items--transition');
+			} else {
+				// otherwise, add the transitoin
+				$('.main-nav__items').addClass('main-nav__items--transition');
+			}
+
+			//remove the currently active class
 			$active.removeClass('active');
 
 			if( !isActive ) {
