@@ -1,13 +1,21 @@
 /* TODO: IE8 nastiness at the bottom, be sure to test it */
 .global-header {
 	background-color: $header-background-color;
-	// TODO: come back to this...
-	// height: 150px; 
+	// TODO replace this with the actual image we want to use...
+	background: linear-gradient( 
+					rgba(46, 78, 135, 0.9), 
+					rgba(46, 78, 135, 0.9)
+				), 
+				url('https://res.cloudinary.com/autoboxer/image/upload/c_thumb,f_auto,g_faces,h_500,q_80,w_1050/v1481206281/slideshow/o7isd8oy3peu1mslssfv.jpg') center center no-repeat;
+	background-size: cover;
 	min-width: 320px;
 	-ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=180, Color='#616161')";
+	// TODO: only be fixed when the page is scrolled past the height of the header 
 	position: fixed;
 	top: 0;
 	transition: box-shadow 200ms ease-in-out;
+	// TODO: think about a nice cubic-bezier here
+	transition: height 400ms ease-in-out;
 	width: 100%;
 	z-index: 10;
 

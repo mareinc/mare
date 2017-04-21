@@ -5,9 +5,9 @@
 		el: '.global-header',		// I changed this... why did I have to change this?
 
 		events: {
-			'click .log-in-link'		: 'logIn',
-			'click .log-in-container'	: 'fixClickPropagation', // TODO: This is a hacky mess, change the top nav for better markup and JavaScript
-			'click .main-nav__item'		: 'toggleMenuExpand'
+			'click .log-in-link'			: 'logIn',
+			'click .log-in-container'		: 'fixClickPropagation', // TODO: This is a hacky mess, change the top nav for better markup and JavaScript
+			'click .main-nav__item--main'	: 'toggleMenuExpand'
 		},
 
 		initialize: function() {
@@ -15,6 +15,11 @@
 			this.$logInContainer = $('.log-in-container');
 			$(window).on("resize", this.resizeMenu);
 			$(window).on('scroll', this.toggleBoxShadow);
+
+			// initialize global header height so that height will transition on first menu open
+			// TODO: fix this so that if we start at a smaller width and increase, it doesn't get messed up
+			$('.global-header').css('height', $('.global-header').outerHeight());
+			$('.global-header').data('height', 0);
 		},
 
 		logIn: function logIn() {
@@ -22,6 +27,8 @@
 		},
 
 		// TODO: debounce this ?
+		// TODO: make this smarter so that the position goes from fixed to relative(?)
+		//  	 when the body is scrolled past the height of the header 
 		toggleBoxShadow: function toggleBoxShadow() {
 			var scroll = $(window).scrollTop();
 		    if (scroll > 0) {
@@ -36,31 +43,47 @@
 			event.stopPropagation();
 		},
 
+		// set timeout for header transition to avoid odd gaps/spacing
+		finishTransition: function finishTransition() {
+			setTimeout(function(){
+			  	$('.in-transition').removeClass('in-transition');
+			}, 400); // 400ms = duration of header transition
+		},
+
 		// align the submenu with the selected menu item above
-		// TODO: debounce this ?
 		resizeMenu: function resizeMenu(event) {
+
+			// if we're already in transition, return
+			if($('.in-transition').length > 0) {
+				return;
+			}
 			
-			var $selectedMenuItem 	= $('.active'),
+			var $currentMenuItem 	= $('.active'),
 				$submenu 			= $('.main-nav__items--submenu'),
-				$mainNav 			= $('.main-nav__items');
+				$header 			= $('.global-header'),
+				heightOffset 		= $header.data('height');
+
+			// set in transition indicator
+			$currentMenuItem.addClass('in-transition');
 
 			// remove any previous adjustments to submenu 
 			$submenu.removeClass('main-nav__items--right');
 			$submenu.removeAttr('style');			
 
 			// if a menu item is selected
-			if( $selectedMenuItem.length > 0 ) {
+			if( $currentMenuItem.length > 0 ) {
 				
 				// determine placement of selected the menu item
-				var distFromLeft 		= $selectedMenuItem.offset().left,
-					width 				= $selectedMenuItem.children('.main-nav__link').width(),
-					widthPlusPadding	= $selectedMenuItem.children('.main-nav__link').outerWidth(),
+				var distFromLeft 		= $currentMenuItem.offset().left,
+					width 				= $currentMenuItem.children('.main-nav__link').width(),
+					widthPlusPadding	= $currentMenuItem.children('.main-nav__link').outerWidth(),
 					padding 			= width - widthPlusPadding,
 					distFromRight		= $(window).width() - (distFromLeft + width) + padding/2;
 
 				// if there's not enough room for the submenu to the right, apply right padding and style 
 				if( distFromRight < 250 ) {
 					$submenu.addClass('main-nav__items--right');
+					// TODO: figure this out when flex-grow comes into play and submenu is too far right
 					$submenu.css('padding-right', distFromRight);
 				} 
 
@@ -68,31 +91,52 @@
 				else {
 					$submenu.css('padding-left', distFromLeft);
 				}
+
+				var collapsedHeaderHeight = $header.outerHeight() - heightOffset,
+					selectedSubmenuHeight = $currentMenuItem.children('.main-nav__items--submenu').outerHeight();
+
+				// set the global heder height
+				var height = collapsedHeaderHeight + selectedSubmenuHeight;
+				$header.css('height', height);
+				$header.data('height', selectedSubmenuHeight);
 			}
+
+			this.finishTransition();
+			
 		},
 
 		toggleMenuExpand: function toggleMenuExpand(event) {
-			// find current target 
-			var $target 	= $(event.currentTarget),
-				$active 	= $('.active'),
-				isActive 	= $target.hasClass('active'),
-				$navItems 	= $('.main-nav__items');
 
-			if( $active.children('.main-nav__items--submenu').outerHeight() > 0 ) {
-				// if the active menu item is expanded, remove the fade in transition
-				$('.main-nav__items').removeClass('main-nav__items--transition');
-			} else {
-				// otherwise, add the transitoin
-				$('.main-nav__items').addClass('main-nav__items--transition');
+			// if we're already in transition, return
+			if($('.in-transition').length > 0) {
+				return;
 			}
 
-			//remove the currently active class
-			$active.removeClass('active');
+			// find current target 
+			var $current 	= $(event.currentTarget),
+				$previous 	= $('.active'),
+				isPrevious 	= $current.hasClass('active'),
+				$header 	= $('.global-header'),
+				activeHeight 	= $previous.children('.main-nav__items--submenu').outerHeight();
 
-			if( !isActive ) {
-				$target.addClass('active');
+			//remove the currently active class
+			$previous.removeClass('active');
+
+			// if the current menu item !== previous menu item, resize for submenu 
+			if( !isPrevious ) {
+				$current.addClass('active');
 
 				this.resizeMenu(event);
+			} else {
+				// set in transition indicator
+				$current.addClass('in-transition');
+
+				// reset header height 
+				var height = $header.outerHeight() - activeHeight;
+				$header.css('height', height);
+				$header.data('height', 0);
+
+				this.finishTransition();
 			}
 
 			// TODO: figure out how to keep the active class on even when the page refreshes?
