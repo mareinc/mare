@@ -25,13 +25,18 @@
 			this.LARGESCREEN_MENU_HEIGHT 		= 128;	// desktop header height
 
 			// DOM cache any commonly used elements to improve performance
-			this.$logInContainer = $('.log-in-container');
-			$(window).on('resize', this.resizeMenu.bind(this));
-			$(window).on('scroll', this.toggleFixedMenu);
+			this.$logInContainer 	= $('.log-in-container');
+			this.$header 			= $('.global-header');
+			this.$body 				= $('.body');
+			this.$window 			= $(window);
+			this.$submenu 			= $('.main-nav__items--submenu');
+
+			this.$window.on('resize', this.resizeMenu.bind(this));
+			this.$window.on('scroll', this.toggleFixedMenu.bind(this));
 
 			// initialize global header height so that height will transition on first menu open
-			$('.global-header').css('height', this.findBaseHeaderHeight());
-			$('.global-header').data('height', 0);
+			this.$header.css('height', this.findBaseHeaderHeight());
+			this.$header.data('height', 0);
 		},
 
 		logIn: function logIn() {
@@ -39,17 +44,18 @@
 		},
 
 		toggleFixedMenu: function toggleFixedMenu() {
-			var scroll = $(window).scrollTop();				
-			var height = $('.global-header').outerHeight();
+			var scroll = this.$window.scrollTop(),
+				height = this.$header.outerHeight();
+
 		    if (scroll > 0) {
-		        $('.global-header').addClass('global-header--fixed');
+		        this.$header.addClass('global-header--fixed');
 		        if( (height - scroll) > 0) {
-		        	$('.body').css('margin-top', height);
+		        	this.$body.css('margin-top', height);
 		        }
 		    }
 		    else {
-		        $('.global-header').removeClass('global-header--fixed');
-		        $('.body').removeAttr('style');
+		        this.$header.removeClass('global-header--fixed');
+		        this.$body.removeAttr('style');
 		    }
 		},
 
@@ -67,7 +73,7 @@
 		// return header height based on window width
 		findBaseHeaderHeight: function findBaseHeaderHeight() {
 
-			var windowWidth = $(window).outerWidth(),
+			var windowWidth = this.$window.outerWidth(),
 				headerHeight = 0;
 
 			if( windowWidth < this.SMALLSCREEN_WIDTH ) {
@@ -92,16 +98,14 @@
 			}
 			
 			var $currentMenuItem 	= $('.active'),
-				$submenu 			= $('.main-nav__items--submenu'),
-				$header 			= $('.global-header'),
-				heightBuffer 		= $header.data('height');
+				heightBuffer 		= this.$header.data('height');
 
 			// set in transition indicator
 			$currentMenuItem.addClass('in-transition');
 
 			// remove any previous adjustments to submenu 
-			$submenu.removeClass('main-nav__items--right');
-			$submenu.removeAttr('style');		
+			this.$submenu.removeClass('main-nav__items--right');
+			this.$submenu.removeAttr('style');		
 
 			// if a menu item is selected
 			if( $currentMenuItem.length > 0 ) {
@@ -111,26 +115,26 @@
 					width 				= $currentMenuItem.children('.main-nav__link').width(),
 					widthPlusPadding	= $currentMenuItem.children('.main-nav__link').outerWidth(),
 					padding 			= width - widthPlusPadding,
-					distFromRight		= $(window).width() - (distFromLeft + width) + padding/2;
+					distFromRight		= this.$window.width() - (distFromLeft + width) + padding/2;
 
 				// if there's not enough room for the submenu to the right, apply right padding and style 
 				if( distFromRight < 250 ) {
-					$submenu.addClass('main-nav__items--right');
+					this.$submenu.addClass('main-nav__items--right');
 					// TODO: figure this out when flex-grow comes into play and submenu is too far right
-					$submenu.css('padding-right', distFromRight);
+					this.$submenu.css('padding-right', distFromRight);
 				} 
 
 				// otherwise, set the left padding of the submenu
 				else {
-					$submenu.css('padding-left', distFromLeft);
+					this.$submenu.css('padding-left', distFromLeft);
 				}
 
 				var selectedSubmenuHeight = $currentMenuItem.children('.main-nav__items--submenu').outerHeight();
 
 				// set the global heder height
 				var height = this.findBaseHeaderHeight() + selectedSubmenuHeight;
-				$header.css('height', height);
-				$header.data('height', selectedSubmenuHeight);
+				this.$header.css('height', height);
+				this.$header.data('height', selectedSubmenuHeight);
 			}
 
 			if(event.type === 'resize') {
@@ -153,7 +157,6 @@
 			var $current 		= $(event.currentTarget),
 				$previous 		= $('.active'),
 				isPrevious 		= $current.hasClass('active'),
-				$header 		= $('.global-header'),
 				activeHeight 	= $previous.children('.main-nav__items--submenu').outerHeight();
 
 			//remove the currently active class
@@ -169,10 +172,10 @@
 				$current.addClass('in-transition');
 
 				// set menu height 
-				$header.css('height', this.findBaseHeaderHeight());
+				this.$header.css('height', this.findBaseHeaderHeight());
 
 				// remove submenu buffer	
-				$header.data('height', 0);
+				this.$header.data('height', 0);
 
 				this.finishTransition();
 			}
