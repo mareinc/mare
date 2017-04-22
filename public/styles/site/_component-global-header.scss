@@ -10,8 +10,6 @@
 	background-size: cover;
 	min-width: 320px;
 	-ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=180, Color='#616161')";
-	// TODO: only be fixed when the page is scrolled past the height of the header 
-	position: fixed;
 	top: 0;
 	transition: box-shadow 200ms ease-in-out;
 	// TODO: think about a nice cubic-bezier here
@@ -19,9 +17,11 @@
 	width: 100%;
 	z-index: 10;
 
-	&--shadow {
-	    box-shadow: 0 4px 5px 0 $lightest-gray, 0 1px 10px 0 $light-gray, 0 2px 4px -1px $medium-gray;
+	&--fixed {
+		box-shadow: 0 4px 5px 0 $lightest-gray, 0 1px 10px 0 $light-gray, 0 2px 4px -1px $medium-gray;
+		position: fixed;
 	}
+
 }
 
 .global-header .logo {

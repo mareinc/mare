@@ -11,14 +11,26 @@
 		},
 
 		initialize: function() {
+
+			// screen width breakpoints (same as _component-menu.scss)
+			this.EXTRASMALLSCREEN_WIDTH			= 0;	// mobile breakpoint
+			this.SMALLSCREEN_WIDTH				= 655;	// small breakpoint
+			this.MEDIUMSCREEN_WIDTH				= 765;	// medium breakpoint
+			this.LARGESCREEN_WIDTH				= 850;	// desktop breakpoint
+
+			// menu heights @ above breakpoints (same as _component-menu.scss)
+			this.EXTRASMALLSCREEN_MENU_HEIGHT 	= 91; 	// mobile header height
+			this.SMALLSCREEN_MENU_HEIGHT 		= 151; 	// small header height
+			this.MEDIUMSCREEN_MENU_HEIGHT 		= 120;	// medium header height
+			this.LARGESCREEN_MENU_HEIGHT 		= 128;	// desktop header height
+
 			// DOM cache any commonly used elements to improve performance
 			this.$logInContainer = $('.log-in-container');
-			$(window).on("resize", this.resizeMenu);
-			$(window).on('scroll', this.toggleBoxShadow);
+			$(window).on('resize', this.resizeMenu.bind(this));
+			$(window).on('scroll', this.toggleFixedMenu);
 
 			// initialize global header height so that height will transition on first menu open
-			// TODO: fix this so that if we start at a smaller width and increase, it doesn't get messed up
-			$('.global-header').css('height', $('.global-header').outerHeight());
+			$('.global-header').css('height', this.findBaseHeaderHeight());
 			$('.global-header').data('height', 0);
 		},
 
@@ -26,16 +38,18 @@
 			this.$logInContainer.toggle();
 		},
 
-		// TODO: debounce this ?
-		// TODO: make this smarter so that the position goes from fixed to relative(?)
-		//  	 when the body is scrolled past the height of the header 
-		toggleBoxShadow: function toggleBoxShadow() {
-			var scroll = $(window).scrollTop();
+		toggleFixedMenu: function toggleFixedMenu() {
+			var scroll = $(window).scrollTop();				
+			var height = $('.global-header').outerHeight();
 		    if (scroll > 0) {
-		        $('.global-header').addClass('global-header--shadow');
+		        $('.global-header').addClass('global-header--fixed');
+		        if( (height - scroll) > 0) {
+		        	$('.body').css('margin-top', height);
+		        }
 		    }
 		    else {
-		        $('.global-header').removeClass('global-header--shadow');
+		        $('.global-header').removeClass('global-header--fixed');
+		        $('.body').removeAttr('style');
 		    }
 		},
 
@@ -50,6 +64,25 @@
 			}, 400); // 400ms = duration of header transition
 		},
 
+		// return header height based on window width
+		findBaseHeaderHeight: function findBaseHeaderHeight() {
+
+			var windowWidth = $(window).outerWidth(),
+				headerHeight = 0;
+
+			if( windowWidth < this.SMALLSCREEN_WIDTH ) {
+				headerHeight = this.EXTRASMALLSCREEN_MENU_HEIGHT;
+			} else if( windowWidth >= this.SMALLSCREEN_WIDTH && windowWidth < this.MEDIUMSCREEN_WIDTH ) {
+				headerHeight = this.SMALLSCREEN_MENU_HEIGHT;
+			} else if( windowWidth >= this.MEDIUMSCREEN_WIDTH && windowWidth < this.LARGESCREEN_WIDTH ) {
+				headerHeight = this.MEDIUMSCREEN_MENU_HEIGHT;
+			} else if( windowWidth >= this.LARGESCREEN_WIDTH ) {
+				headerHeight = this.LARGESCREEN_MENU_HEIGHT;
+			}
+
+			return headerHeight;
+		},
+
 		// align the submenu with the selected menu item above
 		resizeMenu: function resizeMenu(event) {
 
@@ -61,14 +94,14 @@
 			var $currentMenuItem 	= $('.active'),
 				$submenu 			= $('.main-nav__items--submenu'),
 				$header 			= $('.global-header'),
-				heightOffset 		= $header.data('height');
+				heightBuffer 		= $header.data('height');
 
 			// set in transition indicator
 			$currentMenuItem.addClass('in-transition');
 
 			// remove any previous adjustments to submenu 
 			$submenu.removeClass('main-nav__items--right');
-			$submenu.removeAttr('style');			
+			$submenu.removeAttr('style');		
 
 			// if a menu item is selected
 			if( $currentMenuItem.length > 0 ) {
@@ -92,16 +125,20 @@
 					$submenu.css('padding-left', distFromLeft);
 				}
 
-				var collapsedHeaderHeight = $header.outerHeight() - heightOffset,
-					selectedSubmenuHeight = $currentMenuItem.children('.main-nav__items--submenu').outerHeight();
+				var selectedSubmenuHeight = $currentMenuItem.children('.main-nav__items--submenu').outerHeight();
 
 				// set the global heder height
-				var height = collapsedHeaderHeight + selectedSubmenuHeight;
+				var height = this.findBaseHeaderHeight() + selectedSubmenuHeight;
 				$header.css('height', height);
 				$header.data('height', selectedSubmenuHeight);
 			}
 
-			this.finishTransition();
+			if(event.type === 'resize') {
+				// this is a resize event, we want to resize right away
+			  	$('.in-transition').removeClass('in-transition');
+			} else {
+			  	this.finishTransition();	
+			}		
 			
 		},
 
@@ -113,10 +150,10 @@
 			}
 
 			// find current target 
-			var $current 	= $(event.currentTarget),
-				$previous 	= $('.active'),
-				isPrevious 	= $current.hasClass('active'),
-				$header 	= $('.global-header'),
+			var $current 		= $(event.currentTarget),
+				$previous 		= $('.active'),
+				isPrevious 		= $current.hasClass('active'),
+				$header 		= $('.global-header'),
 				activeHeight 	= $previous.children('.main-nav__items--submenu').outerHeight();
 
 			//remove the currently active class
@@ -131,9 +168,10 @@
 				// set in transition indicator
 				$current.addClass('in-transition');
 
-				// reset header height 
-				var height = $header.outerHeight() - activeHeight;
-				$header.css('height', height);
+				// set menu height 
+				$header.css('height', this.findBaseHeaderHeight());
+
+				// remove submenu buffer	
 				$header.data('height', 0);
 
 				this.finishTransition();

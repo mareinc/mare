@@ -36,25 +36,6 @@ body {
 .body {
 	background-color: $main-content-background-color;
 	min-height: 43em;
-	// TODO: refactor the top margin as we figure out the height of the header 
-	// 		 when expanded, the header will push down the main page content
-	margin-top: 91px;
-
-	@media all and (min-width: 660px) { padding-bottom: 35px; }
-
-	// the mobile menu is replaced with the desktop menu 
-	@media all and (min-width: 655px) {
-		margin-top: 151px;
-	}
-
-	// the logo collapses, header gets larger
-	@media all and (min-width: 765px) {
-		margin-top: 120px;
-	}
-
-	@media all and (min-width: 850px) {
-		margin-top: 128px;
-	}
 }
 
 p {
