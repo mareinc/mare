@@ -8,14 +8,13 @@
 			// initialize the mobile menu attached to the hamburger icon
 			this.$el.mmenu({
 				"extensions": [
-					"border-full",
-					"effect-slide-menu",
-					"effect-slide-panels-0",
-					"pageshadow",
-					"theme-dark"
+					"border-full",				
+					"theme-white",
+					"fullscreen",
+					"popup"
 				],
 				"offCanvas": {
-					"position": "right"
+					"position": "left"
 				},
 				"counters": true,
 				"navbars": [

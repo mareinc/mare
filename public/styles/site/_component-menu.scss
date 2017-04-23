@@ -48,6 +48,11 @@ nav ul {
 	border-radius: 3px;
 	cursor: pointer;
 	padding: 0.75em 3em;
+	transition: background 100ms ease-in-out;
+
+	&:hover {
+		background-color: $hover-teal;
+	}
 
 	&--extra-space-left {
 		margin-left: 2em;
@@ -55,6 +60,10 @@ nav ul {
 
 	&--green {
 		background-color: $green;
+
+		&:hover {
+			background-color: $hover-green;
+		}
 	}  
 
 	&--relative {

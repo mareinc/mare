@@ -13,10 +13,10 @@
 		initialize: function() {
 
 			// screen width breakpoints (same as _component-menu.scss)
-			this.EXTRASMALLSCREEN_WIDTH			= 0;	// mobile breakpoint
-			this.SMALLSCREEN_WIDTH				= 655;	// small breakpoint
-			this.MEDIUMSCREEN_WIDTH				= 765;	// medium breakpoint
-			this.LARGESCREEN_WIDTH				= 850;	// desktop breakpoint
+			this.EXTRASMALLSCREEN_WIDTH			= 0;	// mobile breakpoint, mobile menu
+			this.SMALLSCREEN_WIDTH				= 655;	// small breakpoint, menu items appear and logo is on two lines
+			this.MEDIUMSCREEN_WIDTH				= 765;	// medium breakpoint, logo collapses to one line
+			this.LARGESCREEN_WIDTH				= 850;	// desktop breakpoint, font size increases 
 
 			// menu heights @ above breakpoints (same as _component-menu.scss)
 			this.EXTRASMALLSCREEN_MENU_HEIGHT 	= 91; 	// mobile header height
@@ -65,7 +65,12 @@
 
 		// set timeout for header transition to avoid odd gaps/spacing
 		finishTransition: function finishTransition() {
+			var _this = this;
 			setTimeout(function(){
+				// TODO: make it so that, if the page is scrolled, adjusting the height of 
+				// 		 the mobile menu will not make the page jump to the top...	for some reason
+				// 		 when we call toggleMenuExpand from here the scrolltop is already 0...
+				// _this.toggleMenuExpand();
 			  	$('.in-transition').removeClass('in-transition');
 			}, 400); // 400ms = duration of header transition
 		},
@@ -105,7 +110,7 @@
 
 			// remove any previous adjustments to submenu 
 			this.$submenu.removeClass('main-nav__items--right');
-			this.$submenu.removeAttr('style');		
+			this.$submenu.removeAttr('style');
 
 			// if a menu item is selected
 			if( $currentMenuItem.length > 0 ) {
@@ -129,10 +134,9 @@
 					this.$submenu.css('padding-left', distFromLeft);
 				}
 
-				var selectedSubmenuHeight = $currentMenuItem.children('.main-nav__items--submenu').outerHeight();
+				var selectedSubmenuHeight 	= $currentMenuItem.children('.main-nav__items--submenu').outerHeight(),
+					height 					= this.findBaseHeaderHeight() + selectedSubmenuHeight;
 
-				// set the global heder height
-				var height = this.findBaseHeaderHeight() + selectedSubmenuHeight;
 				this.$header.css('height', height);
 				this.$header.data('height', selectedSubmenuHeight);
 			}
