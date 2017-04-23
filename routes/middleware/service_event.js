@@ -169,7 +169,7 @@ exports.submitEvent = function submitEvent( req, res, next ) {
 		res.redirect( '/forms/agency-event-submission-form' );
 	});
 	// if we're not successful in creating it
-	isEventCreated.catch(error => {
+	isEventCreated.catch( error => {
 		// create an error flash message
 		req.flash( 'error', {
 					title: 'Something went wrong while creating your event.',
