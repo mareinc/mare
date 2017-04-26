@@ -1,8 +1,9 @@
 (function () {
 	'use strict';
 
+	// TODO: rename this to GlobalMenu
 	mare.views.SiteMenu = Backbone.View.extend({
-		el: '.global-header',		// I changed this... why did I have to change this?
+		el: '.global-header', 	
 
 		events: {
 			'click .log-in-link'			: 'logIn',
@@ -31,8 +32,8 @@
 			this.$window 			= $(window);
 			this.$submenu 			= $('.main-nav__items--submenu');
 
-			this.$window.on('resize', this.resizeMenu.bind(this));
-			this.$window.on('scroll', this.toggleFixedMenu.bind(this));
+			this.$window.on('resize', this.resizeMenu.bind(this)); 			// TODO: convert to event listener, move emit elsewhere
+			this.$window.on('scroll', this.toggleFixedMenu.bind(this)); 	// TODO: convert to event listener, move emit elsewhere
 
 			// initialize global header height so that height will transition on first menu open
 			this.$header.css('height', this.findBaseHeaderHeight());
@@ -65,12 +66,10 @@
 
 		// set timeout for header transition to avoid odd gaps/spacing
 		finishTransition: function finishTransition() {
-			var _this = this;
 			setTimeout(function(){
 				// TODO: make it so that, if the page is scrolled, adjusting the height of 
-				// 		 the mobile menu will not make the page jump to the top...	for some reason
-				// 		 when we call toggleMenuExpand from here the scrolltop is already 0...
-				// _this.toggleMenuExpand();
+				// 		 the header will not make the page jump to the top... for some reason
+				// 		 by now the scrolltop is already 0...
 			  	$('.in-transition').removeClass('in-transition');
 			}, 400); // 400ms = duration of header transition
 		},
@@ -102,8 +101,10 @@
 				return;
 			}
 			
-			var $currentMenuItem 	= $('.active'),
-				heightBuffer 		= this.$header.data('height');
+			var $currentMenuItem 		= $('.active'),
+				heightBuffer 			= this.$header.data('height'),
+				height 					= this.findBaseHeaderHeight(),
+				selectedSubmenuHeight 	= 0;
 
 			// set in transition indicator
 			$currentMenuItem.addClass('in-transition');
@@ -125,7 +126,6 @@
 				// if there's not enough room for the submenu to the right, apply right padding and style 
 				if( distFromRight < 250 ) {
 					this.$submenu.addClass('main-nav__items--right');
-					// TODO: figure this out when flex-grow comes into play and submenu is too far right
 					this.$submenu.css('padding-right', distFromRight);
 				} 
 
@@ -134,12 +134,13 @@
 					this.$submenu.css('padding-left', distFromLeft);
 				}
 
-				var selectedSubmenuHeight 	= $currentMenuItem.children('.main-nav__items--submenu').outerHeight(),
-					height 					= this.findBaseHeaderHeight() + selectedSubmenuHeight;
+				selectedSubmenuHeight 	+= $currentMenuItem.children('.main-nav__items--submenu').outerHeight();
+				height 					+= selectedSubmenuHeight;		
+			} 
 
-				this.$header.css('height', height);
-				this.$header.data('height', selectedSubmenuHeight);
-			}
+			// set header height and offset
+			this.$header.css('height', height);
+			this.$header.data('height', selectedSubmenuHeight);
 
 			if(event.type === 'resize') {
 				// this is a resize event, we want to resize right away
