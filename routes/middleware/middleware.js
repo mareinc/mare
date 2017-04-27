@@ -43,6 +43,7 @@ exports.initLocals = function(req, res, next) {
 
 	// Create the main menu navigation.
 	locals.mainNav = [
+
 		{ title: 'Considering Adoption?', subMenu: [
 			{ title: 'Types of Adoption', href: '/page/types-of-adoption' },
 			{ title: 'Can I adopt a Child from Foster Care?', href: '/page/can-i-adopt-a-child-from-foster-care' },
@@ -90,8 +91,9 @@ exports.initLocals = function(req, res, next) {
 			{ title: 'Child Registration Form', href: '/forms/child-registration-form' },
 			{ title: 'Information Request Form', href: '/forms/information-request-form' }
 		]}];
-
+	// TODO: this and all reference to sectionHeader code will need to be removed when section headers are removed.
 	locals.pageSectionMapping = {
+
 		'/page/types-of-adoption' : 'Considering Adoption',
 		'/page/can-i-adopt-a-child-from-foster-care' : 'Considering Adoption',
 		'/page/steps-in-the-process' : 'Considering Adoption',
@@ -100,7 +102,6 @@ exports.initLocals = function(req, res, next) {
 		'/page/who-are-the-children' : 'Meet the Children',
 		'/waiting-child-profiles' : 'Meet the Children',
 		'/page/other-ways-to-meet-waiting-children' : 'Meet the Children',
-		'/page/for-homestudied-families' : 'Meet the Children',
 
 		'/page/how-does-mare-support-families' : 'Family Support Services',
 		'/page/friend-of-the-family-mentor-program' : 'Family Support Services',
@@ -110,7 +111,6 @@ exports.initLocals = function(req, res, next) {
 		'/page/register-a-child' : 'For Social Workers',
 		'/page/attend-events' : 'For Social Workers',
 		'/page/register-a-family' : 'For Social Workers',
-		'/page/search-for-children-and-families' : 'For Social Workers',
 
 		'/page/why-give' : 'Ways to Help',
 		'/page/how-you-can-help' : 'Ways to Help',
@@ -121,8 +121,17 @@ exports.initLocals = function(req, res, next) {
 		'/page/history' : 'About Us',
 		'/page/meet-the-staff' : 'About Us',
 		'/page/board-of-directors' : 'About Us',
-		'/page/mare-in-the-news' : 'About Us'
+		'/page/mare-in-the-news' : 'About Us',
+		'/page/annual-report' : 'About Us'
 	};
+	// based on the url from the requested page, fetch the navigation object for the site section
+	locals.currentSection = locals.mainNav.find( ( section ) => {
+		return section.subMenu.find( ( menuItem ) => {
+			return menuItem.href === req.url;
+		});
+	});
+	// mark the navigation section as selected to allow us to display an active marker during templating
+	locals.currentSection.selected = true;
 
 	next();
 };

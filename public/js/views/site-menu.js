@@ -1,7 +1,7 @@
 (function () {
 	'use strict';
 
-	// TODO: rename this to GlobalMenu
+	// TODO: rename this to global header, and rename the file as well
 	mare.views.SiteMenu = Backbone.View.extend({
 		el: '.global-header', 	
 
