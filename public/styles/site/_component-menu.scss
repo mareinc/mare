@@ -31,24 +31,24 @@ nav ul {
 	color: $text-color-light;
 	cursor: pointer;
 	display: none;
-	margin-left: 1em;
-
+	
 	&:first-child {
 		margin-left: 0;
 	}
 
 	@media all and (min-width: 655px) {
 		display: flex;
+		margin-left: 1em;
 	}
 }
 
 .top-nav__button {
 	align-items: center;
 	background-color: $teal;
-	border-radius: 3px;
 	cursor: pointer;
 	padding: 0.75em 3em;
 	transition: background 100ms ease-in-out;
+	width: 100%;
 
 	&:hover {
 		background-color: $hover-teal;
@@ -68,6 +68,11 @@ nav ul {
 
 	&--relative {
 		position: relative;
+	}
+
+	@media all and (min-width: 655px) {
+		border-radius: 3px;
+		width: inherit;
 	}
 }
 
