@@ -131,7 +131,9 @@ exports.initLocals = function(req, res, next) {
 		});
 	});
 	// mark the navigation section as selected to allow us to display an active marker during templating
-	locals.currentSection.selected = true;
+	if( locals.currentSection ) {
+		locals.currentSection.selected = true;
+	}
 
 	next();
 };
