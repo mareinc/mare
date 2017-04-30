@@ -21,9 +21,9 @@
 
 			// menu heights @ above breakpoints (same as _component-menu.scss)
 			this.EXTRASMALLSCREEN_MENU_HEIGHT 	= 91; 	// mobile header height
-			this.SMALLSCREEN_MENU_HEIGHT 		= 151; 	// small header height
-			this.MEDIUMSCREEN_MENU_HEIGHT 		= 120;	// medium header height
-			this.LARGESCREEN_MENU_HEIGHT 		= 128;	// desktop header height
+			this.SMALLSCREEN_MENU_HEIGHT 		= 135; 	// small header height
+			this.MEDIUMSCREEN_MENU_HEIGHT 		= 125;	// medium header height
+			this.LARGESCREEN_MENU_HEIGHT 		= 135;	// desktop header height
 
 			// DOM cache any commonly used elements to improve performance
 			this.$logInContainer 	= $('.log-in-container');
@@ -154,7 +154,7 @@
 		toggleMenuExpand: function toggleMenuExpand(event) {
 
 			// if we're already in transition, return
-			if($('.in-transition').length > 0) {
+			if( this.$('.in-transition').length > 0 ) { 
 				return;
 			}
 
