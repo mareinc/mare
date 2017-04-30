@@ -14,8 +14,7 @@
 			this.$el.mmenu({
 				"extensions": [
 					"border-full",				
-					"fullscreen",
-					"popup"
+					"fullscreen"
 				],
 				"offCanvas": {
 					"position": "left"

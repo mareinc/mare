@@ -31,6 +31,14 @@ body {
 .content-wrapper {
 	max-width: 1200px;
 	margin: 0 auto;
+
+	&--mobile-centered {
+		text-align: center;
+
+		@media all and (min-width: 655px) {	
+			text-align: inherit;
+		}	
+	}
 }
 
 .body {

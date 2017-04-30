@@ -28,12 +28,6 @@
   overflow: hidden;
   padding: 0;}
 
-  @media all and (min-width: 655px) {
-    #mobile-menu {
-      display: none !important; 
-    }
-  }
-
   /* TODO: make this max-width: 80px; when mm-subopened is applied... */
   .mm-logo {
     max-width: 132px;
@@ -1530,42 +1524,3 @@ html.mm-opening .mm-menu.mm-front, html.mm-opening .mm-menu.mm-next {
     display: none; }
 .mm-menu.mm-tileview .mm-listview {
   margin: 0; }
-
-  /*
-  jQuery.mmenu popup extension CSS
-*/
-
-.mm-menu.mm-popup
-{
-  transition: opacity 300ms ease-in-out;
-  opacity: 0;
-  height: 100%;
-
-  top: 50%;
-  left: 50%;
-  bottom: auto;
-  right: auto;
-  z-index: 2;
-  
-  transform: translate3d( -50%, -50%, 0 );
-
-  &.mm-opened
-  {
-    ~ .mm-slideout
-    {
-      transform: none !important;
-      z-index: 0;
-    }
-    ~ #mm-blocker
-    {
-      transition-delay: 0s !important;
-      z-index: 1;
-    }
-  }
-}
-html.mm-opening .mm-menu.mm-popup
-{
-  opacity: 1;
-}
-
-

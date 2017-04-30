@@ -25,7 +25,6 @@
 }
 
 .global-header .logo {
-	width: calc(100%/2.2);
 	margin: 1em;
 
 	&--vertical {
@@ -53,6 +52,16 @@
 	    @media all and (min-width: 765px) {
 	    	display: inline;
 	    }
+	}
+
+}
+
+.logo-offset-left {
+	/* offset for width of hamburger menu */
+	margin-left: -24px;
+
+	@media all and (min-width: 655px) {
+		margin-left: 0;	
 	}
 }
 
@@ -109,6 +118,7 @@
 // TODO: put these in the correct place
 .global-header .top-nav .hamburger {
 	display: block;
+	padding-left: 1em;
 
 	@media all and (min-width: 655px) {
 		display: none;
