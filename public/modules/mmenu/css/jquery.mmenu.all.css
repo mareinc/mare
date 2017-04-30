@@ -133,8 +133,7 @@ li.mm-vertical.mm-opened > .mm-panel {
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
-    font-size: 21px;
-    font-weight: 200; }
+    font-size: 21px; }
   .mm-navbar .mm-btn {
     box-sizing: border-box;
     width: 40px;
@@ -173,7 +172,6 @@ li.mm-vertical.mm-opened > .mm-panel {
 .mm-listview {
   font: inherit;
   font-size: 15px;
-  font-weight: 300;
   line-height: 30px; }
   .mm-listview a,
   .mm-listview a:hover {
@@ -310,7 +308,6 @@ li.mm-vertical.mm-opened > .mm-panel {
     border-color: #FFFFFF; }
   .mm-menu .mm-navbar .mm-prev:after {
     content: 'Back';
-    font-weight: 300;
     font-size: 15px;
     padding-left: 20px; }
   .mm-menu .mm-listview {
@@ -588,12 +585,12 @@ html.mm-opened.mm-dragging #mm-blocker {
 
 /* TODO: make this a SVG */
 .mm-close:after {
-  display: inline-block;
-  font: normal normal normal 14px/1 FontAwesome;
-  font-size: 21px;
-  text-rendering: auto;
-  -webkit-font-smoothing: antialiased;
-  content: "\f00d"; }
+  background: url('/dist/img/icon-close.svg');
+  content: '';
+  display: block;
+  height: 19px;
+  margin-top: 9px;
+  width: 19px; }
 
 .mm-navbar[class*="mm-navbar-content-"] > * {
   box-sizing: border-box;
