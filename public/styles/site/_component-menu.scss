@@ -126,6 +126,7 @@ nav ul {
 	flex-grow: 1;
 	flex-shrink: 0;	
 
+	// TODO: rethink this for when another menu item is underlined... 
 	&.active {
 		.main-nav__link {
 			border-bottom: 5px solid $nav-underline-color;
@@ -169,5 +170,10 @@ nav ul {
 			color: $teal;
 		}
     }
+
+	&.underlined {
+		border-bottom: 5px solid $nav-underline-color;
+		padding-bottom: 5px;
+	}
 
 }

@@ -21,9 +21,9 @@
 
 			// menu heights @ above breakpoints (same as _component-menu.scss)
 			this.EXTRASMALLSCREEN_MENU_HEIGHT 	= 91; 	// mobile header height
-			this.SMALLSCREEN_MENU_HEIGHT 		= 135; 	// small header height
-			this.MEDIUMSCREEN_MENU_HEIGHT 		= 125;	// medium header height
-			this.LARGESCREEN_MENU_HEIGHT 		= 135;	// desktop header height
+			this.SMALLSCREEN_MENU_HEIGHT 		= 132; 	// small header height
+			this.MEDIUMSCREEN_MENU_HEIGHT 		= 122;	// medium header height
+			this.LARGESCREEN_MENU_HEIGHT 		= 128;	// desktop header height
 
 			// DOM cache any commonly used elements to improve performance
 			this.$logInContainer 	= $('.log-in-container');
