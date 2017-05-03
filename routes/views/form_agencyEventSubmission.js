@@ -15,8 +15,7 @@ exports = module.exports = ( req, res ) => {
 	async.parallel([
 		done => { listsService.getAllStates( req, res, done, stateOptions ); },
 		done => { listsService.getEventTypesForWebsite( req, res, done ); },
-		done => { pageService.populateSidebar( req, res, done ); },
-		done => { pageService.getSectionHeader( req, res, done, 'About Us' ); }
+		done => { pageService.populateSidebar( req, res, done ); }
 	], () => {
 		// Set the layout to render with the right sidebar
 		locals[ 'render-with-sidebar' ] = true;

@@ -30,8 +30,7 @@ exports = module.exports = ( req, res ) => {
 		done => { listsService.getOtherConsiderations( req, res, done ); },
 		done => { listsService.getChildTypesForWebsite( req, res, done ); },
 		done => { listsService.getAllWaysToHearAboutMARE( req, res, done, waysToHearOptions ); },
-		done => { pageService.populateSidebar( req, res, done ); },
-		done => { pageService.getSectionHeader( req, res, done, 'Considering Adoption' ); }
+		done => { pageService.populateSidebar( req, res, done ); }
 	], () => {
 		// Set the layout to render with the right sidebar
 		locals[ 'render-with-sidebar' ] = true;

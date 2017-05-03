@@ -9,10 +9,6 @@ exports = module.exports = function(req, res) {
         locals = res.locals;
 
     // TODO: add code for a logged in user showing their previous donations/donation dates
-	async.parallel([
-		function(done) { pageService.getSectionHeader(req, res, done, 'Ways to Help'); }
-	], function() {
-	    // Render the view once all the data has been retrieved
-	    view.render('donate');
-	});
+	
+	view.render('donate');
 };

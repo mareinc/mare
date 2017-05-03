@@ -20,8 +20,7 @@ exports = module.exports = ( req, res ) => {
 		done => { listsService.getAllLanguages( req, res, done ) },
 		done => { listsService.getAllLegalStatuses( req, res, done ) },
 		done => { listsService.getAllWaysToHearAboutMARE( req, res, done, waysToHearOptions ) },
-		done => { pageService.populateSidebar( req, res, done ); },
-		done => { pageService.getSectionHeader( req, res, done, 'About Us' ); }
+		done => { pageService.populateSidebar( req, res, done ); }
 	], () => {
 		// Set the layout to render with the right sidebar
 		locals[ 'render-with-sidebar' ] = true;
