@@ -16,7 +16,7 @@ var _ 				= require('underscore'),
 	keystone 		= require('keystone'),
 	User 			= keystone.list('User'),
 	Child 			= keystone.list('Child'),
-	Gender 			= keystone.list('Gender');
+	Gender 			= keystone.list('Gender'),
 	// load in middleware
 	UserMiddleware	= require( './service_user' );
 
@@ -90,39 +90,6 @@ exports.initLocals = function(req, res, next) {
 			{ title: 'Child Registration Form', href: '/forms/child-registration-form' },
 			{ title: 'Information Request Form', href: '/forms/information-request-form' }
 		]}];
-
-	locals.pageSectionMapping = {
-		'/page/types-of-adoption' : 'Considering Adoption',
-		'/page/can-i-adopt-a-child-from-foster-care' : 'Considering Adoption',
-		'/page/steps-in-the-process' : 'Considering Adoption',
-		'/page/how-can-mare-help' : 'Considering Adoption',
-
-		'/page/who-are-the-children' : 'Meet the Children',
-		'/waiting-child-profiles' : 'Meet the Children',
-		'/page/other-ways-to-meet-waiting-children' : 'Meet the Children',
-		'/page/for-homestudied-families' : 'Meet the Children',
-
-		'/page/how-does-mare-support-families' : 'Family Support Services',
-		'/page/friend-of-the-family-mentor-program' : 'Family Support Services',
-		'/page/other-family-support-services' : 'Family Support Services',
-
-		'/page/how-mare-can-help-you' : 'For Social Workers',
-		'/page/register-a-child' : 'For Social Workers',
-		'/page/attend-events' : 'For Social Workers',
-		'/page/register-a-family' : 'For Social Workers',
-		'/page/search-for-children-and-families' : 'For Social Workers',
-
-		'/page/why-give' : 'Ways to Help',
-		'/page/how-you-can-help' : 'Ways to Help',
-		'/page/how-businesses-and-organizations-can-help' : 'Ways to Help',
-		'/page/experienced-families' : 'Ways to Help',
-
-		'/page/mission-and-vision' : 'About Us',
-		'/page/history' : 'About Us',
-		'/page/meet-the-staff' : 'About Us',
-		'/page/board-of-directors' : 'About Us',
-		'/page/mare-in-the-news' : 'About Us'
-	};
 
 	next();
 };
