@@ -1,12 +1,12 @@
 /* TODO: IE8 nastiness at the bottom, be sure to test it */
 .global-header {
-	background-color: $header-background-color;
-	// TODO replace this with the actual image we want to use...
+	background-color: $header-background-color;	
+	// TODO: use custom header background image (url) for each menu section
 	background: linear-gradient( 
 					rgba(46, 78, 135, 0.9), 
 					rgba(46, 78, 135, 0.9)
 				), 
-				url('https://res.cloudinary.com/autoboxer/image/upload/c_thumb,f_auto,g_faces,h_500,q_80,w_1050/v1481206281/slideshow/o7isd8oy3peu1mslssfv.jpg') center center no-repeat;
+				url('../images/familysupportservices.jpg') center center no-repeat;
 	background-size: cover;
 	min-width: 320px;
 	-ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=180, Color='#616161')";

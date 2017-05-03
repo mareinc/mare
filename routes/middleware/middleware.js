@@ -43,7 +43,7 @@ exports.initLocals = function(req, res, next) {
 
 	// Create the main menu navigation.
 	locals.mainNav = [
-
+		// TODO: add custom header background image for each menu item
 		{ title: 'Considering Adoption?', subMenu: [
 			{ title: 'Types of Adoption', href: '/page/types-of-adoption' },
 			{ title: 'Can I adopt a Child from Foster Care?', href: '/page/can-i-adopt-a-child-from-foster-care' },
