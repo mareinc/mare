@@ -118,7 +118,7 @@ nav ul {
 }
 
 // TODO: find a better way to target this (if there is one)
-.main-nav__item.active .main-nav__items--right  .main-nav__link--submenu {
+.main-nav__item--active .main-nav__items--right  .main-nav__link--submenu {
 	padding-right: 0;
 }
 
@@ -126,10 +126,9 @@ nav ul {
 	flex-grow: 1;
 	flex-shrink: 0;	
 
-	// TODO: rethink this for when another menu item is underlined... 
-	&.active {
+	&--active {
 		.main-nav__link {
-			border-bottom: 5px solid $nav-underline-color;
+			border-bottom: 5px solid $nav-underline-color-2;
 	    	padding-bottom: 5px;
 
 	    	&--submenu {
@@ -167,11 +166,11 @@ nav ul {
 
     &--submenu {
     	&:hover {
-			color: $teal;
+			color: $nav-hover-color;
 		}
     }
 
-	&.underlined {
+	&--underlined {
 		border-bottom: 5px solid $nav-underline-color;
 		padding-bottom: 5px;
 	}

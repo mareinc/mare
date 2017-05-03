@@ -101,7 +101,7 @@
 				return;
 			}
 			
-			var $currentMenuItem 		= $('.active'),
+			var $currentMenuItem 		= $('.main-nav__item--active'),
 				heightBuffer 			= this.$header.data('height'),
 				height 					= this.findBaseHeaderHeight(),
 				selectedSubmenuHeight 	= 0;
@@ -160,16 +160,16 @@
 
 			// find current target 
 			var $current 		= $(event.currentTarget),
-				$previous 		= $('.active'),
-				isPrevious 		= $current.hasClass('active'),
+				$previous 		= $('.main-nav__item--active'),
+				isPrevious 		= $current.hasClass('main-nav__item--active'),
 				activeHeight 	= $previous.children('.main-nav__items--submenu').outerHeight();
 
 			//remove the currently active class
-			$previous.removeClass('active');
+			$previous.removeClass('main-nav__item--active');
 
 			// if the current menu item !== previous menu item, resize for submenu 
 			if( !isPrevious ) {
-				$current.addClass('active');
+				$current.addClass('main-nav__item--active');
 
 				this.resizeMenu(event);
 			} else {
