@@ -45,6 +45,9 @@
 			this.$logo = $('.mm-logo');
 			this.$panel = $('.mm-panel');
 			this.$navbar = $('.mm-navbar-size-2');
+
+			// remove the title from the landing page of the mobile menu
+			this.adjustMobileMenu();			
 		},
 
 		initLogoSize: function initLogoSize() {
@@ -57,7 +60,11 @@
 			this.$logo.toggleClass('mm-logo--smaller');
 			this.$panel.toggleClass('mm-panel--less-top');
 			this.$navbar.toggleClass('mm-navbar-size-2--shorter');
-		}
+		},
+
+		adjustMobileMenu: function adjustMobileMenu() {
+            this.$('#mm-1 .mm-navbar').remove();
+        }
 
 	});
 }());
