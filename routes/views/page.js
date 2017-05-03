@@ -14,8 +14,7 @@ exports = module.exports = function(req, res) {
 
     async.parallel([
 		function(done) { pageService.getPageByUrl(req, res, done, req.originalUrl); },
-		function(done) { pageService.populateSidebar(req, res, done); },
-		function(done) { pageService.getPageSectionHeader(req, res, done); }
+		function(done) { pageService.populateSidebar(req, res, done); }
 	], function() {
         // Set the layout to render with the right sidebar
         locals['render-with-sidebar'] = true;

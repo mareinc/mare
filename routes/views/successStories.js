@@ -34,8 +34,7 @@ exports = module.exports = function(req, res) {
 
 				});
 		},
-		function(done) { pageService.populateSidebar(req, res, done); },
-		function(done) { pageService.getSectionHeader(req, res, done, 'Considering Adoption'); }
+		function(done) { pageService.populateSidebar(req, res, done); }
 	], function() {
 		// Set the layout to render with the right sidebar
 		locals['render-with-sidebar'] = true;
