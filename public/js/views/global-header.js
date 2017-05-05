@@ -1,8 +1,13 @@
+// TODO: everything for resizing the header is handled through JavaScript, causing jank on the page.  This should be rewritten to use
+//       a pure CSS solution with transitions.  The main difficulty is that the background image for the header extends into the menu.
+//       Check all commits references #238 for a view into what the menu used to be like, as well as all changes made.
+//       In fixing this issue, the resize watcher, as well as all subsequent function calls will need to be removed
+
 (function () {
 	'use strict';
 
 	// TODO: rename this to global header, and rename the file as well
-	mare.views.SiteMenu = Backbone.View.extend({
+	mare.views.GlobalHeader = Backbone.View.extend({
 		el: '.global-header', 	
 
 		events: {
@@ -33,7 +38,7 @@
 			this.$submenu 			= $('.main-nav__items--submenu');
 
 			this.$window.on('resize', this.resizeMenu.bind(this)); 			// TODO: convert to event listener, move emit elsewhere
-			this.$window.on('scroll', this.toggleFixedMenu.bind(this)); 	// TODO: convert to event listener, move emit elsewhere
+			// this.$window.on('scroll', this.toggleFixedMenu.bind(this)); 	// TODO: convert to event listener, move emit elsewhere
 
 			// initialize global header height so that height will transition on first menu open
 			this.$header.css('height', this.findBaseHeaderHeight());
@@ -42,22 +47,6 @@
 
 		logIn: function logIn() {
 			this.$logInContainer.toggle();
-		},
-
-		toggleFixedMenu: function toggleFixedMenu() {
-			var scroll = this.$window.scrollTop(),
-				height = this.$header.outerHeight();
-
-		    if (scroll > 0) {
-		        this.$header.addClass('global-header--fixed');
-		        if( (height - scroll) > 0) {
-		        	this.$body.css('margin-top', height);
-		        }
-		    }
-		    else {
-		        this.$header.removeClass('global-header--fixed');
-		        this.$body.removeAttr('style');
-		    }
 		},
 
 		fixClickPropagation: function fixClickPropagation(event) {
@@ -152,6 +141,8 @@
 		},
 
 		toggleMenuExpand: function toggleMenuExpand(event) {
+
+			// JARED: step one, add a class to the menu as a whole
 
 			// if we're already in transition, return
 			if( this.$('.in-transition').length > 0 ) { 
