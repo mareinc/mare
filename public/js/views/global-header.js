@@ -25,13 +25,15 @@
 			this.EXTRASMALLSCREEN_WIDTH			= 0;	// mobile breakpoint, mobile menu
 			this.SMALLSCREEN_WIDTH				= 655;	// small breakpoint, menu items appear and logo is on two lines
 			this.MEDIUMSCREEN_WIDTH				= 765;	// medium breakpoint, logo collapses to one line
+			this.MEDIUMLARGESCREEN_WIDTH		= 800;	// medium large breakpoint, logo size increases
 			this.LARGESCREEN_WIDTH				= 850;	// desktop breakpoint, font size increases 
 
 			// menu heights @ above breakpoints (same as _component-menu.scss)
 			this.EXTRASMALLSCREEN_MENU_HEIGHT 	= 91; 	// mobile header height
 			this.SMALLSCREEN_MENU_HEIGHT 		= 132; 	// small header height
-			this.MEDIUMSCREEN_MENU_HEIGHT 		= 122;	// medium header height
-			this.LARGESCREEN_MENU_HEIGHT 		= 128;	// desktop header height
+			this.MEDIUMSCREEN_MENU_HEIGHT 		= 119;	// medium header height
+			this.MEDIUMLARGESCREEN_MENU_HEIGHT	= 128;	// medium large header height
+			this.LARGESCREEN_MENU_HEIGHT 		= 134;	// desktop header height
 
 			// DOM cache any commonly used elements to improve performance
 			this.$logInContainer 	= $( '.log-in-container' );
@@ -64,8 +66,10 @@
 				headerHeight = this.EXTRASMALLSCREEN_MENU_HEIGHT;
 			} else if( windowWidth >= this.SMALLSCREEN_WIDTH && windowWidth < this.MEDIUMSCREEN_WIDTH ) {
 				headerHeight = this.SMALLSCREEN_MENU_HEIGHT;
-			} else if( windowWidth >= this.MEDIUMSCREEN_WIDTH && windowWidth < this.LARGESCREEN_WIDTH ) {
+			} else if( windowWidth >= this.MEDIUMSCREEN_WIDTH && windowWidth < this.MEDIUMLARGESCREEN_WIDTH ) {
 				headerHeight = this.MEDIUMSCREEN_MENU_HEIGHT;
+			} else if( windowWidth >= this.MEDIUMLARGESCREEN_WIDTH && windowWidth < this.LARGESCREEN_WIDTH ) {
+				headerHeight = this.MEDIUMLARGESCREEN_MENU_HEIGHT;
 			} else {
 				headerHeight = this.LARGESCREEN_MENU_HEIGHT;
 			}
@@ -132,8 +136,6 @@
 		},
 
 		toggleMenuExpand: function toggleMenuExpand( event ) {
-
-			// JARED: step one, add a class to the menu as a whole
 
 			// if we're already in transition, return
 			if( this.$( '.in-transition' ).length > 0 ) { 

@@ -25,8 +25,7 @@
 
 	&--vertical {
 		display: none;
-		min-width: 10em;
-		max-width: 13em;
+		width: 10em;
 
 		@media all and (min-width: 655px) {
 	    	display: inline;
@@ -38,16 +37,20 @@
 	}
 
 	&--horizontal {
-	    width: 20em;
+	    width: 17em;
 
 	    @media all and (min-width: 655px) {
 	    	display: none;
-	    	max-width: 22em;
 	    }
 
 	    @media all and (min-width: 765px) {
 	    	display: inline;
+			width: 19em;
 	    }
+
+		@media all and (min-width: 800px) {
+			width: 22em;
+		}
 	}
 
 }
