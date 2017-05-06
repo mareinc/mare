@@ -176,7 +176,7 @@ exports.login = function( req, res, next ) {
 					console.log( `signin target is: ${ req.body.target }` );
 					res.redirect( req.body.target );
 				} else {
-					res.redirect( '/preferences' );
+					res.redirect( '/' );
 				}
 			}
 
@@ -193,11 +193,10 @@ exports.login = function( req, res, next ) {
 
 exports.logout = function(req, res) {
 
-	var view = new keystone.View(req, res),
-		locals = res.locals;
+	var view = new keystone.View( req, res );
 
 	keystone.session.signout(req, res, function() {
-		res.redirect('/');
+		req.query.redirectTarget ? res.redirect( req.query.redirectTarget ) : res.redirect('/');
 	});
 };
 

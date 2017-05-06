@@ -13,6 +13,7 @@
 		events: {
 			'click .top-nav__button--log-in'	: 'showLogInModal',
 			'click .top-nav__button--log-out'	: 'logOut',
+			'click .top-nav__button--donate'	: 'donate',
 			'click .main-nav__item--main'		: 'toggleMenuExpand'
 		},
 
@@ -178,7 +179,12 @@
 
 		logOut: function logOut() {
 
-			window.location.href = '/logout';
+			window.location.href = '/logout?redirectTarget=/' + mare.url.redirect;
+		},
+
+		donate: function donate() {
+
+			window.location.href = '/donate';
 		}
 	});
 }());
