@@ -50,6 +50,16 @@ p {
 	margin: 0;
 }
 
+// Page Styles
+// ===========
+@import "_icons.scss";
+@import "_page";
+@import "_page-donations";
+@import "_page-events";
+@import "_page-register";
+@import "_page-waiting-child-profiles";
+@import "_page-wysiwyg.scss";
+
 // Component Styles
 // ===========
 @import "_component-alert";
@@ -68,16 +78,6 @@ p {
 @import "_component-modal";
 @import "_component-sidebar";
 @import "_component-toggle-button";
-
-// Page Styles
-// ===========
-@import "_icons.scss"; /* Perhaps these should be above the components */
-@import "_page";
-@import "_page-donations";
-@import "_page-events";
-@import "_page-register";
-@import "_page-waiting-child-profiles";
-@import "_page-wysiwyg.scss";
 
 // Trumps
 // ===========

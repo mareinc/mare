@@ -67,50 +67,6 @@
 	font-size: 1.1em;
 }
 
-.log-in-container {
-	display: none; /* TODO: deal with this using a hidden class instead */
-	position: absolute;
-	background-color: $background-color-light;
-	color: $nav-text-color-1;
-	padding: 10px;
-	border: 1px solid $border-color-2;
-	border-bottom-left-radius: 5px;
-	border-bottom-right-radius: 5px;
-	right: 0;
-	top: 35px;
-	z-index: 10;
-}
-
-.log-in-container label {
-	font-size: .8em;
-	position: relative;
-	top: -5px;
-}
-
-.log-in-container .log-in,
-.log-in-container .register {
-	margin: 1em 0;
-}
-
-.log-in-container .forgot-password {
-	position: relative;
-	top: 16px;
-	float: right;
-	width: 49%;
-	font-size: 0.8em;
-	text-align: center;
-	color: $nav-text-color-3;
-}
-
-.log-in-container .register-header {
-	font-size: 1.4em;
-	color: $nav-text-color-3;
-}
-
-.log-in-container .register-body {
-	margin: 5px 0;
-}
-
 // TODO: put these in the correct place
 .global-header .top-nav .hamburger {
 	display: block;

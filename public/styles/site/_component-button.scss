@@ -42,6 +42,11 @@
 		background-color: $button-background-color-4;
 	}
 
+	&--teal {
+		color: $button-text-color-light;
+		background-color: $button-background-color-6;
+	}
+
 	&--uppercase {
 		text-transform: uppercase;
 	}

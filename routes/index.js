@@ -48,26 +48,26 @@ exports = module.exports = app => {
 	'use strict';
 
 	// home page
-	app.get( '/'										, middleware.setLoginTarget, routes.views.main );
+	app.get( '/'										, routes.views.main );
 	// MARE staff generated pages
-	app.get( '/page/*'									, middleware.setLoginTarget, routes.views.page );
+	app.get( '/page/*'									, routes.views.page );
 	// forms
-	app.get( '/forms/agency-event-submission-form'		, middleware.setLoginTarget, routes.views.form_agencyEventSubmission );
-	app.get( '/forms/car-donation-form'					, middleware.setLoginTarget, routes.views.form_carDonation );
-	app.get( '/forms/child-registration-form'			, middleware.setLoginTarget, routes.views.form_childRegistration );
-	app.get( '/forms/information-request-form'			, middleware.setLoginTarget, routes.views.form_informationRequest );
-	app.get( '/forms/have-a-question-form'				, middleware.setLoginTarget, routes.views.form_haveAQuestion );
+	app.get( '/forms/agency-event-submission-form'		, routes.views.form_agencyEventSubmission );
+	app.get( '/forms/car-donation-form'					, routes.views.form_carDonation );
+	app.get( '/forms/child-registration-form'			, routes.views.form_childRegistration );
+	app.get( '/forms/information-request-form'			, routes.views.form_informationRequest );
+	app.get( '/forms/have-a-question-form'				, routes.views.form_haveAQuestion );
 	// events
-	app.get( '/events/'									, middleware.setLoginTarget, routes.views.eventCategories );
-	app.get( eventListRoutes							, middleware.setLoginTarget, routes.views.eventList );
-	app.get( eventRoutes								, middleware.setLoginTarget, routes.views.event );
+	app.get( '/events/'									, routes.views.eventCategories );
+	app.get( eventListRoutes							, routes.views.eventList );
+	app.get( eventRoutes								, routes.views.event );
 	// success stories
-	app.get( '/success-stories/'						, middleware.setLoginTarget, routes.views.successStories );
-	app.get( '/success-stories/*'						, middleware.setLoginTarget, routes.views.successStory );
+	app.get( '/success-stories/'						, routes.views.successStories );
+	app.get( '/success-stories/*'						, routes.views.successStory );
 	// gallery
-	app.get( '/waiting-child-profiles/'					, middleware.setLoginTarget, routes.views.waitingChildProfiles );
+	app.get( '/waiting-child-profiles/'					, routes.views.waitingChildProfiles );
 	// registration
-	app.get( '/register/'								, middleware.setLoginTarget, routes.views.register );
+	app.get( '/register/'								, routes.views.register );
 	app.post( '/register'								, registrationMiddleware.registerUser );
 	// app.get( '/verify-registration'						, routes.views.verifyRegistration );
 	// login / logout
@@ -76,10 +76,10 @@ exports = module.exports = app => {
 	// MARE in the news
 	app.get( '/mare-in-the-news/*'						, routes.views.mareInTheNews );
 	// donations
-	app.get( '/donate/'									, middleware.setLoginTarget, routes.views.donate );
+	app.get( '/donate/'									, routes.views.donate );
 	app.post( '/charge'									, middleware.charge );
-	// user management / preferences
-	app.get( '/preferences/'							, middleware.requireUser, routes.views.preferences );
+	// user account management
+	app.get( '/account/'								, middleware.requireUser, routes.views.account );
 	// services for ajax calls
 	app.post( '/services/get-children-data'				, childService.getGalleryData );
 	app.post( '/services/get-child-details'				, childService.getChildDetails );

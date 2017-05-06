@@ -128,7 +128,7 @@
 			// Store a reference to this for inside callbacks where context is lost
 			var view = this;
 			// Submit a request to the service layer to fetch child data if we don't have it
-			if( !childModel.get( 'hasDetails' )) {
+			if( !childModel.get( 'hasDetails' ) ) {
 				$.ajax({
 					dataType: 'json',
 					url: '/services/get-child-details',
@@ -153,8 +153,10 @@
 			}
 		},
 
+		/* TODO: all modal functions below mirror the calls made in waiting-child-profiles-child-details.js.  Both files need to use
+				 a modal.js Backbone view which should handle all this.
+
 		/* Open the modal container */
-		// TODO: This should be moved to a more appropriate location that's accessible to all pages
 		openModal: function openModal() {
 			$( '.modal__background' ).fadeIn();
 			$( '.modal-container__contents' ).hide();
@@ -165,7 +167,6 @@
 		},
 
 		/* Close the modal container */
-		// TODO: This should be moved to a more appropriate location that's accessible to all pages
 		closeModal: function closeModal() {
 			// This event is called from a click event so the view context is lost, we need to explicitly call all functions
 			mare.views.childDetails.unbindEvents();
@@ -179,7 +180,6 @@
 		},
 
 		/* Clear out the current contents of the modal */
-		// TODO: This should be moved to a more appropriate location that's accessible to all pages
 		clearModalContents: function clearModalContents() {
 			$( '.modal-container__contents' ).html( '' );
 		},

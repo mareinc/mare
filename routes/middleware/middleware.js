@@ -143,14 +143,6 @@ exports.requireUser = function(req, res, next) {
 
 };
 
-exports.setLoginTarget = function( req, res, next ) {
-
-	let locals = res.locals;
-	// set the target page for a user logging in while on this page
-	locals.loginTarget = req.originalUrl;
-	next();
-};
-
 exports.login = function( req, res, next ) {
 
 	let locals = res.locals;

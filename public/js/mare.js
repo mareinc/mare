@@ -21,6 +21,13 @@
 				mare.url.protocol	= window.location.protocol;
 				mare.url.siteArea	= pathArray[ 0 ];
 				mare.url.page		= pathArray[ 1 ];
+				mare.url.target		= pathArray[ 2 ];
+
+				// Store redirect information for log in / log out actions
+				mare.url.redirect = '';
+				mare.url.redirect += mare.url.siteArea ? mare.url.siteArea : '';
+				mare.url.redirect += mare.url.page ? '/' + mare.url.page : '';
+				mare.url.redirect += mare.url.target ? '/' + mare.url.target : '';
         	},
 
 			bindTouch: function bindTouch() {
