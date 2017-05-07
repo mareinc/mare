@@ -1,54 +1,20 @@
 /* TODO: clean this page up and consider the comment headers and prefixes from this article:
 		 https://unboxed.co/blog/structuring-and-managing-css */
 
+/* TODO: consider following rules to not put CSS in settings (utility_) or tools.  That means moving
+		 second section of color definitions to the components themselves (or elements if necessary) */
+
 @import "_utility-colors";
 @import "_utility-variables";
 @import "_utility-classes";
 @import "_grid";
 
-// Site Styles
+// Generic Styles
+@import "_generic";
+
+// Element Styles
 // ===========
-html {
-	-webkit-box-sizing: border-box;
-	-moz-box-sizing: border-box;
-	box-sizing: border-box;
-}
-
-*, *:before, *:after {
-	-webkit-box-sizing: inherit;
-	-moz-box-sizing: inherit;
-	box-sizing: inherit;
-}
-
-body {
-	font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-	font-size: $font-size-base;
-	// font-weight: lighter;  // removed until the font is fixed
-	min-width: 320px;
-	margin: 0;
-}
-
-.content-wrapper {
-	max-width: 1200px;
-	margin: 0 auto;
-
-	&--mobile-centered {
-		text-align: center;
-
-		@media all and (min-width: 655px) {	
-			text-align: inherit;
-		}	
-	}
-}
-
-.body {
-	background-color: $main-content-background-color;
-	min-height: 43em;
-}
-
-p {
-	margin: 0;
-}
+@import "_elements";
 
 // Page Styles
 // ===========
@@ -64,10 +30,10 @@ p {
 // ===========
 @import "_component-alert";
 @import "_component-button";
-@import "_component-link";
 @import "_component-button-group";
 @import "_component-carousel";
 @import "_component-card";
+@import "_component-contact-card";
 @import "_component-content-area";
 @import "_component-featured-items";
 @import "_component-form";
@@ -82,5 +48,6 @@ p {
 // Trumps
 // ===========
 @import "_trumps-mmenu";
+@import "_trumps-media-boxes";
 @import "_trumps";
 
