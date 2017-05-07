@@ -4,17 +4,43 @@
 }
 
 .card {
+	display: flex;
 	background-color: $white;
 	box-shadow: 0 0 24px 0 $light-gray;
-	display: flex;
-	flex-direction: column;
-	margin-bottom: 2em;
-	padding: 2em;	
-	width: 100%;
 
-	&--less-padding {
+	&--vertical {
+		flex-direction: column;
+	}
+
+	&--horizontal {
+		flex-direction: row;
+	}
+
+	&--small-padding {
 		padding: 0.75em;
 	}
+
+	&--medium-padding {
+		padding: 1em;
+	}
+
+	&--large-padding {
+		padding: 1.5em;
+	}
+
+	&--clickable {
+		cursor: pointer;
+	}
+}
+
+.card {
+	// background-color: $white;
+	// box-shadow: 0 0 24px 0 $light-gray;
+	// display: flex;
+	// flex-direction: column;
+	// margin-bottom: 2em;
+	// padding: 2em;	
+	// width: 100%;
 
 	&--small {
 		@media all and ( min-width: 880px ) {
@@ -27,12 +53,43 @@
 			width: 45%;
 		}
 	}
+}
 
-	&--clickable {
-		cursor: pointer;
+.card__image {
+	width: 100%;
+}
+
+.card__image-text {
+	display: flex;
+	flex-direction: column;
+	margin: 0;
+	padding: 1.5em 0.25em 1em 0.25em;
+}
+
+.card__image-title {
+	&--large {
+		font-size: 1.125em;
+	}
+
+	&--centered {
+		text-align: center;
+	}
+
+	&--right-aligned {
+		text-align: right;
 	}
 }
 
+.card__image-description {
+	line-height: 1.3em;
+	padding-bottom: 1em;
+
+	&--centered {
+		text-align: center;
+	}
+}
+
+/* not optimized below this line */
 .card__title {
 	display: flex;
 	width: 100%;
@@ -82,20 +139,11 @@
 	align-self: center;
 }
 
+/* NOTE: replace instances with .card__image-text */
 .card__text {
 	margin-right: 3em;
 	margin: 0.5em 3em 0.5em 2.8em; /* 2.8em causes the text to line up with the other success stories images creating a clean line */
 	text-align: left;
-
-	&--sidebar {
-		@media all and (min-width: 660px) {
-		    display: flex;
-		    flex-direction: column;
-		    margin: 0;
-		    padding: 1.5em 0.25em 1em 0.25em;
-		}
-	}
-
 }
 
 .card__icon-container {
@@ -112,25 +160,25 @@
 	height: 1.5em;
 }
 
-.card__image {
-	align-self: center;
-	width: 12em;
-	height: 12em;
-	border-radius: 50%;
+// .card__image {
+// 	align-self: center;
+// 	width: 12em;
+// 	height: 12em;
+// 	border-radius: 50%;
 
-	@media all and ( min-width: 860px ) {
-		margin-left: 2.85714286em; /* 40px / 14px (base font-size) */
-	}
+// 	@media all and ( min-width: 860px ) {
+// 		margin-left: 2.85714286em; /* 40px / 14px (base font-size) */
+// 	}
 
-	&--no-margin {
-		margin: 0;
-	}
+// 	&--no-margin {
+// 		margin: 0;
+// 	}
 
-	&--small {
-		width: 9em;
-		height: 9em;
-	}
-}
+// 	&--small {
+// 		width: 9em;
+// 		height: 9em;
+// 	}
+// }
 // TODO: This will eventually move into the button component CSS once the registration form is cleaned up
 .card__button-group {
 	display: flex;
@@ -212,15 +260,4 @@
 	width: 100%;
 	margin: 2em 0 1em;
 	opacity: .5;
-}
-
-.card__trailing-links {
-	display: flex;
-	justify-content: center;
-}
-
-.card__link-separator {
-	color: $robin-blue;
-    padding-left: 0.5em;
-    padding-right: 0.5em;
 }
