@@ -42,7 +42,7 @@
 		align-self: flex-end;
 	}
 }
-
+/* TODO: make this its own component */
 .icon-text-unit {
 	display: inline-block;
 	margin-left: 10px;
@@ -57,6 +57,7 @@
 	vertical-align: middle;
 }
 
+/* TODO: name these better and allow them to be reused for the staff gallery as well
 /* Profile contents */
 .profiles-container {
 	border-top: 1px solid $border-color-dark;
@@ -65,46 +66,6 @@
 
 .profiles {
 	margin-top: 15px;
-}
-
-.profile {
-	cursor: pointer;
-}
-
-.profile .details {
-	position: relative;
-	background-color: $background-color-12;
-	color: $text-color-6;
-}
-
-.profile .details > .name {
-	font-size: 1.4em;
-	font-style: italic;
-}
-
-.profile .details > .icons {
-	position: absolute;
-	top: 10px;
-	right: 10px;
-}
-
-.profile .details > .icons > .badge {
-	float: right;
-	width: 20px;
-}
-
-.profile .details > .icons > .badge + .badge {
-	margin-right: 6px;
-}
-
-.profile .details > .age,
-.profile .details > .legal-status {
-	color: $text-color-7;
-	margin-top: 0.4em;
-}
-
-.profile .details > .view-profile {
-	margin-top: 0.4em;
 }
 
 /* TODO: We've BEM'ed below, now BEM above! */
@@ -221,6 +182,7 @@
     margin: 2em 0;
 }
 
+/* TODO: possibly put these in the media-boxes trumps file
 /* hover effect on the image */
 .media-box-image img{
 	transition: all 0.3s ease-in-out;
@@ -243,11 +205,6 @@
 	display: inline-block;
 	margin-top: 10px;
 	font-family: sans-serif;
-	transition: all .2s ease-in-out;
-
-	&:hover {
-		transform: scale(1.1);
-	}
 
 	&--active {
 		color: $text-color-7;
