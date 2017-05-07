@@ -3,7 +3,7 @@
 		{{#each mainNav}}
 		<li class="main-nav__item main-nav__item--main">
 			{{#if subMenu}}
-			<a class="main-nav__link {{#if selected}}main-nav__link--underlined{{/if}}" href="#">{{ title }}</a>
+			<span class="main-nav__link {{#if selected}}main-nav__link--underlined{{/if}}">{{ title }}</span>
 			<ul class="main-nav__items main-nav__items--submenu">
 				{{#each subMenu}}
 				<li class="main-nav__item main-nav__item--submenu">
