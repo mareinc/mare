@@ -1,37 +1,39 @@
 <aside class="sidebar">
 
 	<!-- Meet the Children -->
-	<aside class="card card--less-padding">	
-		<img class="sidebar__image" src="../images/temp-children.png" alt="success story image">	
-		<span class="card__text card__text--sidebar">
-			<a href="/waiting-child-profiles" class="sidebar__header link">Meet the Children</a>
+	<aside class="card card--vertical card--small-padding sidebar__card">	
+		<img class="card__image" src="../images/temp-children.png" alt="success story image">	
+		<span class="card__image-text">
+			<a href="/waiting-child-profiles" class="card__image-title card__image-title--large card__image-title--centered">Meet the Children</a>
 		</span>
 	</aside>
 
 	<!-- Success Story -->
-	<aside class="card card--less-padding">	
-		<img class="sidebar__image" src="{{ randomSuccessStory.imageSidebar }}" alt="success story image">	
-		<span class="card__text card__text--sidebar">
+	<aside class="card card--vertical card--small-padding sidebar__card">	
+		<img class="card__image" src="{{ randomSuccessStory.imageSidebar }}" alt="success story image">	
+		<span class="card__image-text">
 			<!-- TODO: limit the content to three lines with a trailing ellipses-->
-			<div class="sidebar__description">{{{randomSuccessStory.content}}}</div>
-			<a href="{{ randomSuccessStory.url }}" class="link sidebar__link">{{ randomSuccessStory.heading }}</a>
+			<div class="card__image-description">{{{randomSuccessStory.content}}}</div>
+			<a href="{{ randomSuccessStory.url }}" class="card__image-title card__image-title--right-aligned">{{ randomSuccessStory.heading }}</a>
 		</span>
 	</aside>
 
 	<!-- Event -->
-	<aside class="card card--less-padding">
-		<img class="sidebar__image" src="{{ randomEvent.imageSidebar }}" alt="event image">
-		<span class="card__text card__text--sidebar">
+	<aside class="card card--vertical card--small-padding sidebar__card">
+		<img class="card__image" src="{{ randomEvent.imageSidebar }}" alt="event image">
+		<span class="card__image-text">
 			<!-- TODO: limit the content to three lines with a trailing ellipses -->
 			<!-- TODO: do we need the date/time in the description? -->
-			<div class="sidebar__description">{{{randomEvent.description}}} </div>
-			<a href="{{ randomEvent.url }}" class="link sidebar__link">{{ randomEvent.name }}</a>
+			<div class="card__image-description">{{{randomEvent.description}}} </div>
+			<a href="{{ randomEvent.url }}" class="card__image-title card__image-title--right-aligned">{{ randomEvent.name }}</a>
 		</span>
 	</aside>
 
 	<!-- Have a question and Donate links -->
-	<aside class="card__trailing-links">
-		<a class="link" href="#0" data-url="/forms/have-a-question-form">Have a Question?</a> <span class="card__link-separator">|</span> <a class="link" href="#0" data-url="/donate">Donate Now</a>		
+	<aside class="links">
+		<a href="#" data-url="/forms/have-a-question-form">Have a Question?</a>
+		<span class="link-separator">|</span>
+		<a class="link" href="#" data-url="/donate">Donate Now</a>		
 	</aside>
 
 </aside>
