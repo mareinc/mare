@@ -1,5 +1,4 @@
 /* TODO: BEM all the things, then Sass all the things.  Also, ITCSS all the filename things  */
-/* TODO: Bring breakpoint code under each selector */
 /* TODO: Sass up the styles even more with nested selectors */
 
 .gallery,
@@ -9,7 +8,6 @@
 
 .filters {
 	display: flex;
-	margin-bottom: 1em;
 	flex-direction: column;
 }
 
@@ -59,11 +57,6 @@
 
 /* TODO: name these better and allow them to be reused for the staff gallery as well
 /* Profile contents */
-.profiles-container {
-	border-top: 1px solid $border-color-dark;
-	padding-bottom: 15px;
-}
-
 .profiles {
 	margin-top: 15px;
 }
