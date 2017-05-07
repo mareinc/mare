@@ -8,23 +8,24 @@
   		className: 'log-in-container',
 
 		initialize: function initialize() {
-			// sets the log in target so Express knows what page to route to after handling the log in request
-			this.loginTarget = '/';
 			// create a hook to access the log in modal contents template
 			var html = $( '#log-in-template' ).html();
 			// compile the template to be used during rendering/repainting the log in modal
 			this.template = Handlebars.compile( html );
-			// render the modal to be available when it's requested
-			this.render();
+		},
+		// events need to be bound every time the modal is opened, so they can't be put in an event block
+		bindEvents: function bindEvents() {
 			// bind an event to allow closing of the modal
 			$( '.modal__close' ).click( this.closeModal );
-			// TODO: this adds a class to the modal to adjust it's size.  This should be handled by passing in a size option to a modal view on initialization
-			$( '.modal__container' ).addClass( 'modal__container--small' );
+		},
+		// events need to be unbound every time the modal is closed
+		unbindEvents: function unbindEvents() {
+
 		},
 
 		render: function render() {
 			// Pass the child model to through the template we stored during initialization
-			var html = this.template( { redirectTarget: mare.url.redirect } );
+			var html = this.template( { target: mare.url.redirect } );
 			this.$el.html( html );
 			// Render the contents area and tabs
 			$( '.modal-container__contents' ).html( this.$el );
@@ -44,19 +45,32 @@
 
 		/* Open the modal container */
 		openModal: function openModal() {
+			// populate the modal with the log in template
+			this.render();
+			// TODO: this adds a class to the modal to adjust it's size.  This should be handled by passing in a size option to a modal view on initialization
+			$( '.modal__container' ).addClass( 'modal__container--small' );
+
 			$( '.modal__background' ).fadeIn();
 			$( '.modal__container' ).fadeIn();
 
 			mare.utils.disablePageScrolling();
+			// Bind click events for the newly rendered elements
+			this.bindEvents();
 		},
 
 		/* Close the modal container */
 		closeModal: function closeModal() {
 
 			$( '.modal__background' ).fadeOut();
-			$( '.modal__container' ).fadeOut();
+			$( '.modal__container' ).fadeOut( function() {
+				// TODO: this removes a class from the modal to adjust it's size.  This should be handled in the modal view once it's created
+				// wait until the modal has finished fading out before changing the modal size by removing this class
+				$( this ).removeClass( 'modal__container--small' );
+			});
 
 			mare.utils.enablePageScrolling();
+			// This event is called from a click event so the view context is lost, we need to explicitly call all functions
+			mare.views.childDetails.unbindEvents();
 		}
 	});
 }());

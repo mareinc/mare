@@ -163,6 +163,7 @@ nav ul {
     position: relative;
     text-decoration: none;
     transition: border 200ms ease-in-out;
+	cursor: pointer;
 
     @media all and (min-width: 850px) {
     	font-size: 1em;

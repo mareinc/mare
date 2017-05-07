@@ -19,7 +19,7 @@
 
 		initialize: function() {
 
-			// Initialize a subview for the details modals
+			// Initialize a subview for the log in modal
 			mare.views.logIn					= mare.views.logIn || new mare.views.LogIn();
 
 			// screen width breakpoints (same as _component-menu.scss)
@@ -179,7 +179,7 @@
 
 		logOut: function logOut() {
 
-			window.location.href = '/logout?redirectTarget=/' + mare.url.redirect;
+			window.location.href = '/logout?target=/' + mare.url.redirect;
 		},
 
 		donate: function donate() {

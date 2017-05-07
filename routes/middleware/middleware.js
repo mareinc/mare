@@ -182,8 +182,8 @@ exports.login = function( req, res, next ) {
 
 			var onFail = function() {
 				/* TODO: Need a better message for the user, flash messages won't work because page reloads are stupid */
-				req.flash( { type: 'error', message: 'Your username or password is incorrect, please try again.' } );
-				return next();
+				req.flash( 'error', { title: 'Your username or password is incorrect, please try again.' } );
+				req.body.target ? res.redirect( req.body.target ) : res.redirect( '/' );
 			}
 
 			keystone.session.signin( { email: req.body.email, password: req.body.password }, req, res, onSuccess, onFail );
@@ -193,10 +193,10 @@ exports.login = function( req, res, next ) {
 
 exports.logout = function(req, res) {
 
-	var view = new keystone.View( req, res );
+	// var view = new keystone.View( req, res );
 
 	keystone.session.signout(req, res, function() {
-		req.query.redirectTarget ? res.redirect( req.query.redirectTarget ) : res.redirect('/');
+		req.query.target ? res.redirect( req.query.target ) : res.redirect( '/' );
 	});
 };
 

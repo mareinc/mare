@@ -168,8 +168,6 @@
 
 		/* Close the modal container */
 		closeModal: function closeModal() {
-			// This event is called from a click event so the view context is lost, we need to explicitly call all functions
-			mare.views.childDetails.unbindEvents();
 
 			$( '.modal__background' ).fadeOut();
 			$( '.modal__container' ).fadeOut();
@@ -177,6 +175,8 @@
 			mare.utils.enablePageScrolling();
 			// This event is called from a click event so the view context is lost, we need to explicitly call all functions
 			mare.views.childDetails.clearModalContents();
+			// This event is called from a click event so the view context is lost, we need to explicitly call all functions
+			mare.views.childDetails.unbindEvents();
 		},
 
 		/* Clear out the current contents of the modal */
