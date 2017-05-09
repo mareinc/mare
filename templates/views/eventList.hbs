@@ -1,9 +1,9 @@
-<div class="info-card info-card--warning">
+<div class="card card--vertical card--large-padding">
 
 	{{#if showMAPPTrainings}} {{> events-mapp-training-info}} {{/if}}
 	{{#if showAdoptionParties}} {{> events-adoption-party-info}} {{/if}}
 
-	<section class="card__button-group button-group--space-around">
+	<section class="button-group button-group--horizontal button-group--space-around button-group--large-margin-above button-group--small-margin-below">
 		<button class="card__button events__show-categories-button" data-url="/events">Back to All Events</button>
 		{{#if isSocialWorker}}
 		<button class="card__button events__create-event-button" data-url="/forms/agency-event-submission-form">Create Event</button>
@@ -14,19 +14,21 @@
 
 {{#if noEvents}}
 
-<div class="info-card info-card--centered info-card--spacious">
-	<div class="info-card__text">
-		<p class="info-card__text">There are no upcoming events, please check back later.</p>
+<section class="card-list">
+	<div class="card card--large-padding">
+		<div class="card__details card__details--centered">
+			<p class="card__details__body">There are no upcoming events, please check back later.</p>
+		</div>
 	</div>
-</div>
+</section>
 
 {{else}}
 
-<div class="card-group">
+<div class="card-list">
 
 	{{#each events}}
 
-	<div class="card">
+	<div class="card card--vertical card--medium-padding">
 		<h2 class="card__title">{{ name }}</h2>
 		<div class="card__content">
 			<section class="card__content-group">
@@ -57,7 +59,7 @@
 				</span>
 			</section>
 		</div>
-		<section class="card__button-group button-group--space-around">
+		<section class="button-group button-group--horizontal button-group--space-around button-group--large-margin-above button-group--small-margin-below">
 			<button class="card__button events__show-details-button" data-url="{{ url }}">View Details</button>
 			{{#if ../canRegister}}
 			{{#if ../user}}
