@@ -1,19 +1,43 @@
 .button-group {
-    display: flex;
+	display: flex;
 
-    &--horizontal {
-        flex-direction: row;
-    }
+	&--horizontal {
+		flex-direction: row;
+	}
 
-    &--vertical {
-        flex-direction: column;
-    }
+	&--vertical {
+		flex-direction: column;
+	}
 
-    &--space-between {
-        justify-content: space-between;
-    }
+	&--space-between {
+		justify-content: space-between;
+	}
 
-    &--space-around {
-        justify-content: space-around;
-    }
+	&--space-around {
+		justify-content: space-around;
+	}
+
+	&--small-margin-above {
+		margin-top: 0.75em;
+	}
+
+	&--medium-margin-above {
+		margin-top: 1em;
+	}
+
+	&--large-margin-above {
+		margin-top: 1.5em;
+	}
+
+	&--small-margin-above {
+		margin-bottom: 0.75em;
+	}
+
+	&--medium-margin-above {
+		margin-bottom: 1em;
+	}
+
+	&--large-margin-above {
+		margin-bottom: 1.5em;
+	}
 }
