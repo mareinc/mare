@@ -11,10 +11,6 @@
 	flex-direction: column;
 }
 
-.filters__search {
-    margin: 2em 0;
-}
-
 .waiting-child-profiles-filter {
 	margin-bottom: 1em;
     width: 90%;
@@ -53,12 +49,6 @@
 
 .icon-text-unit__text {
 	vertical-align: middle;
-}
-
-/* TODO: name these better and allow them to be reused for the staff gallery as well
-/* Profile contents */
-.profiles {
-	margin-top: 15px;
 }
 
 /* TODO: We've BEM'ed below, now BEM above! */
@@ -169,10 +159,6 @@
 	left: 0;
 	width: 100%;
 	height: 100%;
-}
-
-.profile__button-group {
-    margin: 2em 0;
 }
 
 /* TODO: possibly put these in the media-boxes trumps file
