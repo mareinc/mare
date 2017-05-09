@@ -85,6 +85,11 @@
 			if( $( '.in-transition' ).length > 0 ) {
 				return;
 			}
+
+			// close the mobile menu if the page exceeds mobile width
+			if( this.$window.outerWidth() >= this.SMALLSCREEN_WIDTH && $('#mobile-menu').hasClass('mm-opened') ) {
+				$('#mobile-menu').data('mmenu').close();				
+			}
 			
 			var $currentMenuItem 		= $( '.main-nav__item--active' ),
 				heightBuffer 			= this.$header.data( 'height' ),
