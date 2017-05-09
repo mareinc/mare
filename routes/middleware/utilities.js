@@ -65,6 +65,29 @@ exports.getReadableStringFromArray = ({ array, delimiter = 'and' }) => {
     }
 };
 
+/* takes in the object containing the field to be modified, the name of the content field, and any modification specification */
+exports.modifyWYSIWYGContent = ( object, content, options ) => {
+	
+	options.forEach( option => {
+
+		switch( option.action ) {
+
+			case 'add more links':
+			
+				console.log( `add 'em in` );
+				
+				break;
+
+			case 'add classes':
+				// NOTE: This will fail when confronted with WYSIWYG content that already has ids/classes/attributes attached.  To handle
+				// more complex cases, this will need to be changed to a regular expression match
+				object[ content ] = object[ content ].replace( `<${option.element}`, `<${option.element} class="${option.classesToAdd}"`);
+
+				break;
+		}
+	});
+};
+
 /* add functionality to ES6 Set type for finding the union of two sets */
 /* { a, b, c }, { b, c, d } => { a, b, c, d } */
 Set.prototype.union = function( setB ) {
