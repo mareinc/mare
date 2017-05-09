@@ -1,22 +1,50 @@
-<div class="card card--info">
-	<p>Over the years, MARE has found permanent, loving families for thousands of children waiting in foster care. Read about a few of these phenomenal families who, in the course of making a difference in a child’s life, also had their own life-changing experiences.</p>
+<div class="card card--vertical card--large-padding">
+	<div class="card-details">
+		<div class="card-details__header">MARE Success Stories</div>
+		<div class="card-details__body">
+			<p class="card-details__paragraph">Over the years, MARE has found permanent, loving families
+				for thousands of children waiting in foster care. Read about a few of these phenomenal
+				families who, in the course of making a difference in a child’s life, also had their own
+				life-changing experiences.</p>
 
-	<p>If you have adopted with MARE’s help and have a success story to share, we want to hear from you. Please email your story and picture to Diane Tomaz, Director of Family Support Services, <a href="mailto:dianet@MAREinc.org">dianet@MAREinc.org</a>.</p>
-</div>
-
-{{#each stories}}
-
-<div class="card">
-	<h1 class="card__title">{{ heading }}</h1>
-	<div class="card__content">
-		{{#if imageFeatured}}
-		<img class="card__image" src="{{ imageFeatured }}" alt="{{ heading }}">
-		{{/if}}
-		<article class="card__text">{{{ shortContent }}}</article>
+			<p class="card-details__paragraph">If you have adopted with MARE’s help and have a success
+				story to share, we want to hear from you. Please email your story and picture to Diane
+				Tomaz, Director of Family Support Services, <a href="mailto:dianet@MAREinc.org">dianet@MAREinc.org</a>.</p>
+		</div>
 	</div>
-	<section class="card__button-group button-group--space-around">
-		<button class="card__button" data-url="{{ url }}">Read Full Story</button>
-	</section>
 </div>
 
-{{/each}}
+<section class="card-list">
+
+	{{#each stories}}
+
+	<div class="card card--vertical">
+		<div class="card__columns">
+			<div class="card__column card__column--left">
+				{{#if imageFeatured}}
+				<img class="card__image" src="{{ imageFeatured }}" alt="{{ heading }}">
+				{{/if}}
+				<div class="card__image-text">
+					{{!-- TODO: add a caption to the success story to display in this slot --}}
+					<span class="card__image-title">{{ caption }}</span>
+				</div>
+			</div>
+			<div class="card__column card__column--right">
+				<div class="card__details">
+
+					<span class="card-details__top-bar"></span>
+					<div class="card-details__header">{{ heading }}</div>
+					<div class="card-details__body">
+						{{{ shortContent }}}
+					</div>
+				</div>
+			</div>
+		</div>
+		<section class="button-group button-group--horizontal button-group--space-around button-group--large-margin-above button-group--small-margin-below">
+			<button class="button button--medium button--teal success-story__button" data-url="{{ url }}">Read Full Story</button>
+		</section>
+	</div>
+
+	{{/each}}
+
+</section>
