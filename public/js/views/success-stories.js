@@ -5,12 +5,11 @@
         el: 'body',
 
         events: {
-            'click .card__button'	: 'loadSuccessStory'
+            'click .success-story__button'	: 'navigate'
         },
 
-        loadSuccessStory: function(event) {
-        	window.location.href = $(event.target).data('url');
+        navigate: function navigate( event ) {
+        	window.location.href = $( event.target ).data( 'url' );
         }
-
     });
 }());
