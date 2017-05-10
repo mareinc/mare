@@ -59,20 +59,6 @@
 }
 
 .card {
-	// background-color: $white;
-	// box-shadow: 0 0 24px 0 $light-gray;
-	// display: flex;
-	// flex-direction: column;
-	// margin-bottom: 2em;
-	// padding: 2em;	
-	// width: 100%;
-
-	&--small {
-		@media all and ( min-width: 880px ) {
-			width: 25%;
-		}
-	}
-
 	&--medium {
 		@media all and ( min-width: 880px ) {
 			width: 45%;
@@ -123,6 +109,14 @@
 	&--centered {
 		align-items: center;
 		justify-content: center;
+	}
+
+	&--horizontal {
+		flex-direction: row;
+	}
+
+	&--vertical {
+		flex-direction: column;
 	}
 }
 
@@ -219,73 +213,6 @@
 .card__icon {
 	width: 1.5em;
 	height: 1.5em;
-}
-
-// .card__image {
-// 	align-self: center;
-// 	width: 12em;
-// 	height: 12em;
-// 	border-radius: 50%;
-
-// 	@media all and ( min-width: 860px ) {
-// 		margin-left: 2.85714286em; /* 40px / 14px (base font-size) */
-// 	}
-
-// 	&--no-margin {
-// 		margin: 0;
-// 	}
-
-// 	&--small {
-// 		width: 9em;
-// 		height: 9em;
-// 	}
-// }
-// TODO: This will eventually move into the button component CSS once the registration form is cleaned up
-// .card__button-group {
-// 	display: flex;
-// 	flex-direction: column;
-// 	margin: 2em 1em 1em 1em;
-
-// 	@media all and (min-width: 400px) {
-// 		flex-direction: row;
-// 	}
-// }
-// TODO: This will eventually move into the button component CSS once the registration form is cleaned up
-.card__button {
-	min-width: 10em;
-	background-color: $background-color-5;
-	border: none;
-	border-radius: 2px;
-	padding: 0.75em 1.5em;
-	// box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16),0 2px 10px 0 rgba(0, 0, 0, 0.12);
-	transition: background-color, box-shadow .2s ease-out;
-
-	&:nth-child(n + 2) {
-		margin-top: 1.5em;
-
-		@media all and (min-width: 400px) {
-			margin-top: 0;
-		}
-	}
-
-	&:hover {
-		background-color: $background-color-6;
-		// box-shadow: 0 5px 11px 0 rgba(0, 0, 0, 0.18),0 4px 15px 0 rgba(0, 0, 0, 0.15);
-	}
-
-	&--disabled {
-		box-shadow: none;
-		transition: none;
-		opacity: 0.6;
-		background-color: $background-color-7;
-
-		&:hover {
-			box-shadow: none;
-			transition: none;
-			opacity: 0.6;
-			background-color: $background-color-7;
-		}
-	}
 }
 
 .card__button-label {

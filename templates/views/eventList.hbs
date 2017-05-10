@@ -4,9 +4,9 @@
 	{{#if showAdoptionParties}} {{> events-adoption-party-info}} {{/if}}
 
 	<section class="button-group button-group--horizontal button-group--space-around button-group--large-margin-above button-group--small-margin-below">
-		<button class="card__button events__show-categories-button" data-url="/events">Back to All Events</button>
+		<button class="button button--large button--teal events__show-categories-button" data-url="/events">Back to All Events</button>
 		{{#if isSocialWorker}}
-		<button class="card__button events__create-event-button" data-url="/forms/agency-event-submission-form">Create Event</button>
+		<button class="button button--large button--teal events__create-event-button" data-url="/forms/agency-event-submission-form">Create Event</button>
 		{{/if}}
 	</section>
 
@@ -60,10 +60,10 @@
 			</section>
 		</div>
 		<section class="button-group button-group--horizontal button-group--space-around button-group--large-margin-above button-group--small-margin-below">
-			<button class="card__button events__show-details-button" data-url="{{ url }}">View Details</button>
+			<button class="button button--large button--teal events__show-details-button" data-url="{{ url }}">View Details</button>
 			{{#if ../canRegister}}
 			{{#if ../user}}
-			<button class="card__button {{#if attended}} card__button--unregister events__unregister-button {{else}} events__register-button {{/if}}" data-event-id="{{ _id }}">{{#if attended}} Unregister {{else}} Register {{/if}}</button>
+			<button class="button button--large button--teal {{#if attended}} events__unregister-button {{else}} events__register-button {{/if}}" data-event-id="{{ _id }}">{{#if attended}} Unregister {{else}} Register {{/if}}</button>
 			{{/if}}
 			{{/if}}
 		</section>
