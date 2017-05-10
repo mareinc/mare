@@ -33,21 +33,12 @@
 .donations__button-group {
 	display: flex;
     justify-content: space-between;
-	margin-top: 2em;
-
-	// find something like flex:wrap here...
+	// TODO: find something like flex:wrap here... make responsive
 }
 
 .selection-group__number {
 	font-size: 1.5em; /* 24px */
 	margin-right: 0.5em;
-}
-
-.donations-page__input-group {
-	display: flex;
-    align-items: center;
-	position: relative;
-    margin-top: 2em;
 }
 
 .donations__input-label {

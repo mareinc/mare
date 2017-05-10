@@ -1,6 +1,10 @@
 .button-group {
 	display: flex;
 
+	&--relative {
+		position: relative;
+	}
+
 	&--horizontal {
 		flex-direction: row;
 	}
