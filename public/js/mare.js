@@ -56,15 +56,15 @@
 			disablePageScrolling: function disablePageScrolling() {
 				$( 'html, body' ).addClass( 'scrolling-disabled' );
 			},
-			// TODO: Once the button code is fixed, this should bind to the .button--disabled class
+
 			enableButton: function enableButton( $button ) {
 				$button.removeAttr( 'disabled' );
-				$button.removeClass( 'card__button--disabled' );
+				$button.removeClass( 'button--disabled' );
 			},
-			// TODO: Once the button code is fixed, this should bind to the .button--disabled class
+
 			disableButton: function disableButton( $button ) {
 				$button.attr( 'disabled', 'disabled' );
-				$button.addClass( 'card__button--disabled' );
+				$button.addClass( 'button--disabled' );
 			}
 		}
 	};
