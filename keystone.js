@@ -153,7 +153,7 @@ keystone.set('nav', {
 						   'contact-groups', 'system-bots' ],
 	'images'			: [ 'featured-items', 'slideshows', 'slideshow-items' ],
 	'content pages'		: [ 'pages' ],
-	'content snippets'	: [ 'success-stories', 'section-headers' ],
+	'content snippets'	: [ 'success-stories' ],
 	'events'			: [ 'events' ],
 	'mailing lists'		: [ 'mailing-lists' ],
 	'relationships'		: [ 'csc-region-contacts', 'staff-email-contacts', 'matches', 'media-features', 'placements' ],

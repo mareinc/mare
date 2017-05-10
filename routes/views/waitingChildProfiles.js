@@ -23,8 +23,7 @@ exports = module.exports = ( req, res ) => {
 		done => { listsService.getAllDisabilities( req, res, done ) },
 		done => { listsService.getOtherConsiderations( req, res, done ) },
 		done => { listsService.getAllFamilyConstellations( req, res, done ) },
-		done => { pageService.populateSidebar( req, res, done ); },
-		done => { pageService.getSectionHeader( req, res, done, 'Meet the Children' ); }
+		done => { pageService.populateSidebar( req, res, done ); }
 
 	], () => {
 		// set the layout to render without the right sidebar

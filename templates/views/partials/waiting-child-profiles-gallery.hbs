@@ -1,36 +1,55 @@
 <section class="gallery">
-	<div class="page-header">
-		<span class="page-header-text">Waiting Child Profiles</span>
-	</div>
+	<section class="card card--vertical card--large-padding">
+		<div class="card-details">
+			<div class="card-details__header">Waiting Child Profiles</div>
+			<div class="card-details__body">
+				<p class="card-details__paragraph">This is a partial listing of the children in Massachusetts who are available for
+					adoption. Children must be legally free for adoption to be listed online. For a more complete listing of over 500
+					children in Massachusetts who are available for adoption, please visit one of the many public libraries that carry
+					the MARE Photolisting® Book. You can also see the complete Photolisting® Book at the Jordan’s Furniture stores in
+					Reading, Avon, Natick, and Nashua, NH.</p>
 
-	<section class="filters">
+				<p class="card-details__paragraph">For more information on any of the children featured below, please complete the
+					<a href="/forms/information-request-form">Information Request Form</a> or call MARE at 617-54-ADOPT (617-542-3678)
+					or 1-800-882-1176.</p>
 
-		<div class="filters__modify-search-explanation">Your search results are displayed below.</div>
-
-		<div class="button-group button-group--horizontal filters__search">
-			<button class="button button--medium button--yellow filters__search-button filters__search-button--modify">Modify Search</button>
-			<button class="button button--medium button--yellow filters__search-button filters__search-button--clear">Clear Search</button>
-			{{#if canBookmarkChildren}}
-			<button class="button button--medium button--yellow filters__search-button filters__search-button--show-saved-children {{#unless hasBookmarkedChildren}}hidden{{/unless}}">Show Saved</button>
-			{{/if}}
+				<p class="card-details__paragraph">All waiting children have experienced some degree of abuse, neglect and loss. These
+					experiences can impact their health, development and daily functioning to varying degrees. This site respects the
+					privacy of all children and does not list their medical or mental health issues, nor does it fully capture the children's
+					strengths! Photolistings are merely introductions to children. To have a full understanding of a child, MARE will give
+					you contact information for the child's social worker.</p>
+			</div>
 		</div>
+		<!-- TODO: this section still needs to be redone once design is discussed with Anna -->
+		<section class="filters">
 
-		<select class="waiting-child-profiles__gallery-filter waiting-child-profiles-filter">
-			<option value="registered">Sort by Most Recent</option>
-			<option value="name">Sort by Name</option>
-			<option value="age">Sort by Age</option>
-		</select>
+			<div class="button-group button-group--horizontal button-group--large-margin-above button-group--small-margin-below">
+				<button class="button button--medium button--teal filters__search-button filters__search-button--modify">Modify Search</button>
+				<button class="button button--medium button--teal filters__search-button filters__search-button--clear">Clear Search</button>
+				{{#if canBookmarkChildren}}
+				<button class="button button--medium button--teal filters__search-button filters__search-button--show-saved-children {{#unless hasBookmarkedChildren}}hidden{{/unless}}">Show Saved</button>
+				{{/if}}
+			</div>
 
-		<div class="icon-key">
-			<span class="icon-text-unit filter">
-				<img class="icon-text-unit__icon video" src="/dist/img/video-icon.png">
-				<span class="icon-text-unit__text">Video Profile</span>
-			</span>
-			<span class="icon-text-unit filter">
-				<img class="icon-text-unit__icon wednesdays-child" src="/dist/img/wednesdays-child-icon.png">
-				<span class="icon-text-unit__text">Wednesday's Child</span>
-			</span>
-		</div>
+			<select class="waiting-child-profiles__gallery-filter waiting-child-profiles-filter">
+				<option value="registered">Sort by Most Recent</option>
+				<option value="name">Sort by Name</option>
+				<option value="age">Sort by Age</option>
+			</select>
+
+			<div class="filters__modify-search-explanation">Your search results are displayed below.</div>
+
+			<div class="icon-key">
+				<span class="icon-text-unit filter">
+					<img class="icon-text-unit__icon video" src="/dist/img/video-icon.png">
+					<span class="icon-text-unit__text">Video Profile</span>
+				</span>
+				<span class="icon-text-unit filter">
+					<img class="icon-text-unit__icon wednesdays-child" src="/dist/img/wednesdays-child-icon.png">
+					<span class="icon-text-unit__text">Wednesday's Child</span>
+				</span>
+			</div>
+		</section>
 	</section>
 	<section class="profiles-container"></section>
 </section>

@@ -1,72 +1,63 @@
-<section class="donations-page">
+<section class="donations-page card card--large-padding">
 
 	<div class="donations-page__header-area">
-		<div class="donations-page__header">Donate Now to MARE</div>
+		<div class="donations-page__header">Donate</div>
 		<div class="donations-page__subheader">Your gift helps MARE find adoptive parents for children in state foster care</div>
 	</div>
 
 	<section class="donations-page__selection-group">
 
-		<div class="selection-group__header">
-			<span class="selection-group__number-container">
-				<span class="selection-group__number">1</span>
-			</span>
+		<span class="selection-group__number">1.</span>
+		<div class="selection-group__content">
 			<span class="selection-group__header-text">Guarantee your support to help children in need. Recurring donations are the best way to give steady support</span>
-		</div>
-		<div id="donation-duration-button-group" class="donations__button-group">
-			<button class="toggle-button toggle-button--quarter">Just Once</button>
-			<button class="toggle-button toggle-button--quarter">Monthly</button>
-			<button class="toggle-button toggle-button--quarter">Bi-Annually</button>
-			<button class="toggle-button toggle-button--quarter">Annually</button>
+			<div id="donation-duration-button-group" class="button-group button-group--space-between button-group--large-margin-above">
+				<button class="toggle-button toggle-button--quarter">Just Once</button>
+				<button class="toggle-button toggle-button--quarter">Monthly</button>
+				<button class="toggle-button toggle-button--quarter">Bi-Annually</button>
+				<button class="toggle-button toggle-button--quarter">Annually</button>
+			</div>
 		</div>
 
 	</section>
 
 	<section class="donations-page__selection-group">
 
-		<div class="selection-group__header">
-			<span class="selection-group__number-container">
-				<span class="selection-group__number">2</span>
-			</span>
+		<span class="selection-group__number">2.</span>	
+		<div class="selection-group__content">
 			<span class="selection-group__header-text">Choose desired donation amount</span>
-		</div>
+			<div class="selection-group__supporting-text"></div>
+			<div id="donation-amount-button-group" class="button-group button-group--space-between button-group--large-margin-above">
+				<button class="toggle-button toggle-button--sixth">$50</button>
+				<button class="toggle-button toggle-button--sixth">$100</button>
+				<button class="toggle-button toggle-button--sixth">$250</button>
+				<button class="toggle-button toggle-button--sixth">$500</button>
+				<button class="toggle-button toggle-button--sixth">$750</button>
+				<button class="toggle-button toggle-button--sixth">$1,000</button>
+			</div>
 
-		<div class="selection-group__supporting-text"></div>
-
-		<div id="donation-amount-button-group" class="donations__button-group">
-			<button class="toggle-button toggle-button--sixth">$50</button>
-			<button class="toggle-button toggle-button--sixth">$100</button>
-			<button class="toggle-button toggle-button--sixth">$250</button>
-			<button class="toggle-button toggle-button--sixth">$500</button>
-			<button class="toggle-button toggle-button--sixth">$750</button>
-			<button class="toggle-button toggle-button--sixth">$1,000</button>
-		</div>
-
-		<div class="donations-page__input-group">
-			<label class="donations__input-label" for="donation-amount-input">$</label>
-			<input type="number" step="5" id="donation-amount-input" class="donations__input-field" placeholder="Other Amount">
+			<div class="button-group button-group--relative button-group--large-margin-above">
+				<label class="donations__input-label" for="donation-amount-input">$</label>
+				<input type="number" step="5" id="donation-amount-input" class="donations__input-field donations__input-field--more-padding-left" placeholder="Other Amount">
+			</div>
 		</div>
 
 	</section>
 
 	<section class="donations-page__selection-group">
 
-		<div class="selection-group__header">
-			<span class="selection-group__number-container">
-				<span class="selection-group__number">3</span>
-			</span>
-			<span class="selection-group__header-text">If you'd like your donation to honor someone else</span>
-		</div>
-
-		<div class="donations-page__input-group">	
-			<input type="text" id="donation-in-honor-of-input" class="donations__input-field" placeholder="In Honor / Memory Of">
+		<span class="selection-group__number">3.</span>
+		<div class="selection-group__content">
+			<span class="selection-group__header-text">(optional) Dedicate your donation to honor someone else</span>
+			<div class="button-group button-group--large-margin-above">	
+				<input type="text" id="donation-in-honor-of-input" class="donations__input-field donations__input-field--longer" placeholder="In Honor / Memory Of">
+			</div>
 		</div>
 
 	</section>
 
-	<div class="donation-buttons">
-		<button class="button button--yellow button--disabled donate-button">Donate</button>
-		<button class="button button--yellow donate-car-button" data-url="/forms/car-donation-form">Donate a Car</button>
+	<div class="donation-buttons"> <!-- TODO: replace this with a button groupdonation-buttons ... using the group to center -->
+		<button class="button button--teal button--disabled donate-button">Donate</button>
+		<button class="button button--teal donate-car-button" data-url="/forms/car-donation-form">Donate a Car</button>
 	</div>
 
 </section>

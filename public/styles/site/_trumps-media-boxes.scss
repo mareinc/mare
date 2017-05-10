@@ -1,0 +1,13 @@
+// TODO: append our own classes to the media box elements 
+//	      rather than targeting the existing media box classes
+// 		  documentation: https://codecanyon.net/item/media-boxes-portfolio-responsive-grid/5683020
+
+.media-box-container {
+	overflow: inherit;
+	background-color: $white;
+	box-shadow: 0 0 24px 0 $light-gray;
+}
+
+.media-box-image {
+    width: 100% !important;
+}

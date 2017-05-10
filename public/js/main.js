@@ -5,7 +5,7 @@ $(function() {
 	// Ensure touch events are handled appropriately
 	mare.utils.bindTouch();
 	// Every route needs to initialize views for scaffolded areas like the header and the navigation
-	mare.views.siteMenu = mare.views.siteMenu || new mare.views.SiteMenu();
+	mare.views.globalHeader = mare.views.globalHeader || new mare.views.GlobalHeader();
 	mare.views.mobileMenu = mare.views.mobileMenu || new mare.views.MobileMenu();
 	// Handle basic routing, initializing based on the result
 	// No default exists due to main routing being handled by the server
@@ -24,13 +24,13 @@ $(function() {
 			}
 			break;
 		case 'page'                     			: mare.routers.pages = new mare.routers.Pages();											break;
-		case 'preferences'              			: mare.routers.preferences = new mare.routers.Preferences();								break;
+		case 'account'              				: mare.routers.account = new mare.routers.Account();										break;
 		case 'register'                 			: mare.routers.registration = new mare.routers.Registration();								break;
 		case 'success-stories'          			: mare.routers.successStories = new mare.routers.SuccessStories();							break;
 		case 'waiting-child-profiles'				: mare.routers.waitingChildProfiles = new mare.routers.WaitingChildProfiles();
 	}
 	// start the backbone history state for browser navigation through backbone routes
-	// NOTE: This needs to be below the subrouter initialization to allow for subrouters reroute properly
+	// NOTE: This needs to be below the subrouter initialization to allow for subrouters to reroute properly
 	Backbone.history.start();
 	// private function used to handle malformed routes to send a user back to the home page
 	// TODO: See if this is used anywhere

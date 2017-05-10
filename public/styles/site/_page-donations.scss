@@ -1,7 +1,7 @@
 .donations-page {
 	display: flex;
     flex-direction: column;
-	margin: 2em;
+	font-weight: 300;
 }
 
 .donations-page__header-area {
@@ -9,54 +9,40 @@
 }
 
 .donations-page__header {
+	/* TODO: move the font styles into a centralized, utility file */
 	font-size: 24px;
 }
 
 .donations-page__subheader {
-	font-size: 18px;
-	margin-top: 1em;
+	font-size: 15px;
+	margin-top: 0.5em;
 }
 
 .donations-page__selection-group {
 	margin-bottom: 3em;
-}
-
-.selection-group__header {
 	display: flex;
-	align-items: center;
-	margin-bottom: 2em;
 }
 
-.donations__button-group {
-	display: flex;
-    justify-content: space-between;
+.selection-group__content {
+	margin-top: 0.25em;
+	width: 100%;
 }
 
-.selection-group__number-container {
-	display: inline-flex;
-	justify-content: center;
-	align-items: center;
-	background-color: $background-color-11;
-	border-radius: 50%;
-	width: 2em;
-	height: 2em;
-	margin-right: 1em;
-	flex-shrink: 0;
+.selection-group__header-text {
+	margin-bottom: 1em;
 }
 
-.donations-page__input-group {
-	display: flex;
-    align-items: center;
-	position: relative;
-    margin-top: 2em;
+.selection-group__number {
+	font-size: 1.5em; /* 24px */
+	margin-right: 0.5em;
 }
 
 .donations__input-label {
 	position: absolute;
 	top: 1.1em;
-	left: 1.8em;
+	left: 1em;
 	margin-top: 0;
-	color: $text-color-4;
+	color: $text-color-3;
 	transition: 0.5s ease;
 
 	&--selected {
@@ -66,9 +52,8 @@
 
 .donations__input-field {
 	width: 97.5%;
-	margin-left: 1%;
-	padding: 1em 1em 1em 2.3em;
-	border: 2px solid $border-color-9;
+	padding: 1em;
+	border: 2px solid $border-color-2;
 	transition: border-color 0.5s ease;
 
 	@media all and (min-width: 480px) {
@@ -83,8 +68,16 @@
 		outline: none;
 	}
 
+	&--more-padding-left {
+		padding-left: 2em;
+	}
+
 	&--selected {
-		border-color: $border-color-10;
+		border-color: $border-color-4;
+	}
+
+	&--longer {
+		width: 100%;
 	}
 }
 

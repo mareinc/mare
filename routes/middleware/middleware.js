@@ -16,7 +16,7 @@ var _ 				= require('underscore'),
 	keystone 		= require('keystone'),
 	User 			= keystone.list('User'),
 	Child 			= keystone.list('Child'),
-	Gender 			= keystone.list('Gender');
+	Gender 			= keystone.list('Gender'),
 	// load in middleware
 	UserMiddleware	= require( './service_user' );
 
@@ -43,6 +43,7 @@ exports.initLocals = function(req, res, next) {
 
 	// Create the main menu navigation.
 	locals.mainNav = [
+		// TODO: add custom header background image for each menu item
 		{ title: 'Considering Adoption?', subMenu: [
 			{ title: 'Types of Adoption', href: '/page/types-of-adoption' },
 			{ title: 'Can I adopt a Child from Foster Care?', href: '/page/can-i-adopt-a-child-from-foster-care' },
@@ -91,38 +92,16 @@ exports.initLocals = function(req, res, next) {
 			{ title: 'Information Request Form', href: '/forms/information-request-form' }
 		]}];
 
-	locals.pageSectionMapping = {
-		'/page/types-of-adoption' : 'Considering Adoption',
-		'/page/can-i-adopt-a-child-from-foster-care' : 'Considering Adoption',
-		'/page/steps-in-the-process' : 'Considering Adoption',
-		'/page/how-can-mare-help' : 'Considering Adoption',
-
-		'/page/who-are-the-children' : 'Meet the Children',
-		'/waiting-child-profiles' : 'Meet the Children',
-		'/page/other-ways-to-meet-waiting-children' : 'Meet the Children',
-		'/page/for-homestudied-families' : 'Meet the Children',
-
-		'/page/how-does-mare-support-families' : 'Family Support Services',
-		'/page/friend-of-the-family-mentor-program' : 'Family Support Services',
-		'/page/other-family-support-services' : 'Family Support Services',
-
-		'/page/how-mare-can-help-you' : 'For Social Workers',
-		'/page/register-a-child' : 'For Social Workers',
-		'/page/attend-events' : 'For Social Workers',
-		'/page/register-a-family' : 'For Social Workers',
-		'/page/search-for-children-and-families' : 'For Social Workers',
-
-		'/page/why-give' : 'Ways to Help',
-		'/page/how-you-can-help' : 'Ways to Help',
-		'/page/how-businesses-and-organizations-can-help' : 'Ways to Help',
-		'/page/experienced-families' : 'Ways to Help',
-
-		'/page/mission-and-vision' : 'About Us',
-		'/page/history' : 'About Us',
-		'/page/meet-the-staff' : 'About Us',
-		'/page/board-of-directors' : 'About Us',
-		'/page/mare-in-the-news' : 'About Us'
-	};
+	// based on the url from the requested page, fetch the navigation object for the site section
+	locals.currentSection = locals.mainNav.find( ( section ) => {
+		return section.subMenu.find( ( menuItem ) => {
+			return menuItem.href === req.url;
+		});
+	});
+	// mark the navigation section as selected to allow us to display an active marker during templating
+	if( locals.currentSection ) {
+		locals.currentSection.selected = true;
+	}
 
 	next();
 };
@@ -175,14 +154,6 @@ exports.requireMigrationUser = function(req, res, next) {
 
 };
 
-exports.setLoginTarget = function( req, res, next ) {
-
-	let locals = res.locals;
-	// set the target page for a user logging in while on this page
-	locals.loginTarget = req.originalUrl;
-	next();
-};
-
 exports.login = function( req, res, next ) {
 
 	let locals = res.locals;
@@ -216,14 +187,14 @@ exports.login = function( req, res, next ) {
 					console.log( `signin target is: ${ req.body.target }` );
 					res.redirect( req.body.target );
 				} else {
-					res.redirect( '/preferences' );
+					res.redirect( '/' );
 				}
 			}
 
 			var onFail = function() {
 				/* TODO: Need a better message for the user, flash messages won't work because page reloads are stupid */
-				req.flash( { type: 'error', message: 'Your username or password is incorrect, please try again.' } );
-				return next();
+				req.flash( 'error', { title: 'Your username or password is incorrect, please try again.' } );
+				req.body.target ? res.redirect( req.body.target ) : res.redirect( '/' );
 			}
 
 			keystone.session.signin( { email: req.body.email, password: req.body.password }, req, res, onSuccess, onFail );
@@ -233,11 +204,10 @@ exports.login = function( req, res, next ) {
 
 exports.logout = function(req, res) {
 
-	var view = new keystone.View(req, res),
-		locals = res.locals;
+	// var view = new keystone.View( req, res );
 
 	keystone.session.signout(req, res, function() {
-		res.redirect('/');
+		req.query.target ? res.redirect( req.query.target ) : res.redirect( '/' );
 	});
 };
 

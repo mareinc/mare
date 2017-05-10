@@ -1,185 +1,79 @@
-/* TODO: IE8 nastiness at the bottom, be sure to test it */
 .global-header {
-	background-color: $header-background-color;
 	position: fixed;
-	z-index: 10;
-	width: 100%;
-	min-width: 320px;
-	box-shadow: 0px 0px 10px $shadow-color-1;
-	-ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=180, Color='#616161')";
-	border-bottom: 0.5em solid $border-color-1;
+	top: 0;
 
-	/* TODO: Check to see if this works for clearing the IE-8 -ms-filter style */
-	@media all and (min-width: 820px) {
-		position: relative;
-		box-shadow: none;
-		-ms-filter: none;
-	}
+	background-color: $header-background-color;	
+	// TODO: use custom header background image (url) for each menu section
+	background: linear-gradient( 
+					rgba(46, 78, 135, 0.9), 
+					rgba(46, 78, 135, 0.9)
+				), 
+				url('../images/familysupportservices.jpg') center center no-repeat;
+	background-size: cover;
+	min-width: 320px;
+	transition: box-shadow 200ms ease-in-out;
+	// TODO: think about a nice cubic-bezier here
+	transition: height 400ms ease-in-out;
+	width: 100%;
+	z-index: 10;
+
+	box-shadow: 0 4px 5px 0 $lightest-gray, 0 1px 10px 0 $light-gray, 0 2px 4px -1px $medium-gray;
 }
 
 .global-header .logo {
-	width: calc(100%/2.2);
 	margin: 1em;
 
 	&--vertical {
-		min-width: 10em;
-		max-width: 13em;
+		display: none;
+		width: 10em;
 
-		@media all and (min-width: 700px) {
+		@media all and (min-width: 655px) {
+	    	display: inline;
+	    }
+
+		@media all and (min-width: 765px) {
 			display: none;
 		}
 	}
 
 	&--horizontal {
-	    display: none;
+	    width: 17em;
 
-	    @media all and (min-width: 700px) {
-	    	display: inline;
-			max-width: 22em;
+	    @media all and (min-width: 655px) {
+	    	display: none;
 	    }
+
+	    @media all and (min-width: 765px) {
+	    	display: inline;
+			width: 19em;
+	    }
+
+		@media all and (min-width: 800px) {
+			width: 22em;
+		}
 	}
+
 }
 
-.global-header .header-navigation-container {
-	float: right;
-}
-
-.global-header .top-nav {
-	display: flex;
-	background-color: $nav-background-color-1;
-	color: $text-color-light;
-}
-
-.global-header .top-nav ul {
-	display: flex;
-	height: 2.9em;
+.logo-offset-left {
+	/* offset for width of hamburger menu */
+	margin-left: -24px;
 
 	@media all and (min-width: 655px) {
-		padding-right: 1.5em;
+		margin-left: 0;	
 	}
-}
-
-.global-header .top-nav li {
-	display: flex;
-	padding: 0.25em 0.75em 0.5em 0.75em;
-}
-
-.global-header .top-nav .donate-link-container {
-	background-color: $nav-background-color-2;
-	border-bottom-left-radius: 5px;
-	border-bottom-right-radius: 5px;
-	text-transform: uppercase;
-	color: $nav-text-color-1;
-	font-weight: 600;
-	height: calc(100%/2.5);
-	align-items: center;
-	position: absolute;
-	right: 2em;
-	top: 2.9em;
-
-	@media all and (min-width: 420px) {
-		height: 3.5em;
-	}
-
-	@media all and (min-width: 560px) {
-		position: inherit;
-		right: inherit;
-		top: inherit;
-		box-shadow: 5px 5px 10px -2px;
-	}
-}
-
-.global-header .top-nav a,
-.global-header .top-nav a:visited {
-	color: $text-color-light;
 }
 
 .site-nav {
 	margin-top: 30px;
 	margin-left: 4%;
-	font-style: italic;
 	font-size: 1.1em;
-}
-
-.log-in-link {
-	position: relative;
-
-	@media all and (min-width: 440px) {
-		margin-right: 1em;
-	}
-}
-
-.log-in-link-text {
-	align-self: center;
-	padding-right: 0.8em;
-	cursor: pointer;
-}
-
-.log-in-link > .arrow-down {
-	position: absolute;
-	border-top-color: $border-color-light;
-	right: 2px;
-	top: 16px;
-
-	@media all and (min-width: 440px) {
-		right: 5px;
-	}
-}
-
-.log-in-container {
-	display: none; /* TODO: deal with this using a hidden class instead */
-	position: absolute;
-	background-color: $background-color-light;
-	color: $nav-text-color-1;
-	padding: 10px;
-	border: 1px solid $border-color-2;
-	border-bottom-left-radius: 5px;
-	border-bottom-right-radius: 5px;
-	right: 0;
-	top: 35px;
-	z-index: 10;
-}
-
-.log-in-container label {
-	font-size: .8em;
-	position: relative;
-	top: -5px;
-}
-
-.log-in-container .log-in,
-.log-in-container .register {
-	margin: 1em 0;
-}
-
-.log-in-container .forgot-password {
-	position: relative;
-	top: 16px;
-	float: right;
-	width: 49%;
-	font-size: 0.8em;
-	text-align: center;
-	color: $nav-text-color-3;
-}
-
-.log-in-container .register-header {
-	font-size: 1.4em;
-	color: $nav-text-color-3;
-}
-
-.log-in-container .register-body {
-	margin: 5px 0;
-}
-
-.global-header .top-nav .home-link {
-	display: none;
-
-	@media all and (min-width: 420px) {
-		display: inherit;
-	}
 }
 
 // TODO: put these in the correct place
 .global-header .top-nav .hamburger {
+	display: block;
+	padding-left: 1em;
 
 	@media all and (min-width: 655px) {
 		display: none;

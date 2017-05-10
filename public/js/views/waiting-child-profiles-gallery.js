@@ -105,7 +105,7 @@
 		},
 
 		/* pass the request for sibling group detials to the subview in charge of the details modal */
-		displaySiblingGroupDetails: function displayChildDetails( event ) {
+		displaySiblingGroupDetails: function displaySiblingGroupDetails( event ) {
 
 			mare.views.siblingGroupDetails.handleGalleryClick( event );
 		},

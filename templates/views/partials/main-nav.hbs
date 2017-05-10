@@ -1,22 +1,20 @@
 <nav class="main-nav">
-	<div class="content-wrapper">
-		<ul class="nav">
-			{{#each mainNav}}
-			<li {{#if lastMenu}}class="menu-item--last"{{/if}}>
-				{{#if subMenu}}
-				<a href="#" class="parent main-menu">{{ title }}</a>
-				<ul>
-					{{#each subMenu}}
-					<li>
-						<a href="{{ href }}">{{ title }}</a>
-					</li>
-					{{/each}}
-				</ul>
-				{{else}}
-				<a href="{{ href }}">{{ title }}</a>
-				{{/if}}
-			</li>
-			{{/each}}
-		</ul>
-	</div>
+	<ul class="main-nav__items">
+		{{#each mainNav}}
+		<li class="main-nav__item main-nav__item--main">
+			{{#if subMenu}}
+			<span class="main-nav__link {{#if selected}}main-nav__link--underlined{{/if}}">{{ title }}</span>
+			<ul class="main-nav__items main-nav__items--submenu">
+				{{#each subMenu}}
+				<li class="main-nav__item main-nav__item--submenu">
+					<a class="main-nav__link main-nav__link--submenu" href="{{ href }}">{{ title }}</a>
+				</li>
+				{{/each}}
+			</ul>
+			{{else}}
+			<a class="main-nav__link" href="{{ href }}">{{ title }}</a>
+			{{/if}}
+		</li>
+		{{/each}}
+	</ul>
 </nav>

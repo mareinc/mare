@@ -1,28 +1,27 @@
 <script id="gallery-children-template" type="text/x-handlebars-template">
 
-	<div id="children-grid" class="profiles">
+	<div id="children-grid" class="card-grid">
 		\{{#each []}}
 			<div class="media-box child-media-box" data-registration-number="\{{ registrationNumber }}">
-				<div class="profile">
-					<div class="media-box-image">
+				<div class="contact-card card--medium-padding card--clickable">
+					<div class="media-box-image card__image">
 						<div data-thumbnail=\{{ galleryImage }}></div>
 					</div>
 
-					<div class="media-box-content details">
-						<div class="name">\{{ name }}</div>
-						<div class="age">Age \{{ age }}</div>
-						<div class="legal-status">Status: \{{ legalStatus }}</div>
-						<div class="icons">
+					<div class="media-box-content card__image-text contact-card__details">
+						<div class="contact-card__details-row contact-card__name">\{{ name }}</div>
+						<div class="contact-card__details-row">
+							<span>Age \{{ age }}</span>
+							<span class="contact-card__details-divider">|</span>
+							<span>Status: \{{ legalStatus }}</span>
+						</div>
+						<div class="contact-card__icons">
 						\{{#if hasVideo}}
-							<img class="badge" src="/dist/img/video-icon.png">
+							<img class="contact-card__icon" src="/dist/img/video-icon.png">
 						\{{/if}}
 						\{{#if wednesdaysChild}}
-							<img class="badge" src="/dist/img/wednesdays-child-icon.png">
+							<img class="contact-card__icon" src="/dist/img/wednesdays-child-icon.png">
 						\{{/if}}
-						</div>
-						<div class="view-profile">
-							<span>View Profile</span>
-							<i class="fa fa-angle-double-right" aria-hidden="true"></i>
 						</div>
 					<!-- determining whether to add the block below based on whether the user is allowed to bookmark children needs to happen server-side -->
 					{{#if canBookmarkChildren}}

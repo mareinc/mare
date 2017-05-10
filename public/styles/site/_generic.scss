@@ -1,0 +1,37 @@
+html {
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+*, *:before, *:after {
+	-webkit-box-sizing: inherit;
+	-moz-box-sizing: inherit;
+	box-sizing: inherit;
+}
+
+body {
+	font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+	font-size: $font-size-base;
+	// font-weight: lighter;  // removed until the font is fixed
+	min-width: 320px;
+	margin: 0;
+}
+
+.content-wrapper {
+	max-width: 1200px;
+	margin: 0 auto;
+
+	&--mobile-centered {
+		text-align: center;
+
+		@media all and (min-width: 655px) {	
+			text-align: inherit;
+		}	
+	}
+}
+/* TODO: perhaps a more descriptive name */
+.body {
+	background-color: $main-content-background-color;
+	min-height: 43em;
+}

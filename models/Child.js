@@ -81,25 +81,25 @@ Child.add('Display Options', {
 }, 'Special Needs', {
 
 	physicalNeeds: { type: Types.Select, label: 'physical needs', options: 'none, mild, moderate, severe', required: true, initial: true },
-	physicalNeedsDescription: { type: Types.Textarea, label: 'description of physical needs', dependsOn: { physicalNeeds: ['mild', 'moderate', 'severe'] }, initial: true },
+	physicalNeedsDescription: { type: Types.Textarea, label: 'description of physical needs', initial: true },
 	emotionalNeeds: { type: Types.Select, label: 'emotional needs', options: 'none, mild, moderate, severe', required: true, initial: true },
-	emotionalNeedsDescription: { type: Types.Textarea, label: 'description of emotional needs', dependsOn: { emotionalNeeds: ['mild', 'moderate', 'severe'] }, initial: true },
+	emotionalNeedsDescription: { type: Types.Textarea, label: 'description of emotional needs', initial: true },
 	intellectualNeeds: { type: Types.Select, label: 'intellectual needs', options: 'none, mild, moderate, severe', required: true, initial: true },
-	intellectualNeedsDescription: { type: Types.Textarea, label: 'description of intellectual needs', dependsOn: { intellectualNeeds: ['mild', 'moderate', 'severe'] }, initial: true },
+	intellectualNeedsDescription: { type: Types.Textarea, label: 'description of intellectual needs', initial: true },
 	socialNeeds: { type: Types.Select, label: 'social needs', options: 'none, mild, moderate, severe', required: true, initial: true },
-	socialNeedsDescription: { type: Types.Textarea, label: 'description of social needs', dependsOn: { socialNeeds: ['mild', 'moderate', 'severe'] }, initial: true },
+	socialNeedsDescription: { type: Types.Textarea, label: 'description of social needs', initial: true },
+
+	aspirations: { type: Types.Textarea, label: 'interests, talents, and aspirations', initial: true },
+
+	schoolLife: { type: Types.Textarea, label: 'school life', initial: true },
+	familyLife: { type: Types.Textarea, label: 'family life', initial: true },
+	personality: { type: Types.Textarea, label: 'personality', initial: true },
+	otherRecruitmentConsiderations: { type: Types.Textarea, label: 'other recruitment considerations', initial: true },
 
 	disabilities: { type: Types.Relationship, label: 'disabilities', ref: 'Disability', many: true, initial: true },
 
 	healthNotesNew: { type: Types.Textarea, label: 'health notes - new', initial: true },
 	healthNotesOld: { type: Types.Textarea, label: 'health notes - old', initial: true }
-
-}, 'New Fields That Need a Home', {
-
-	schoolLife: { type: Types.Textarea, label: 'school life', initial: true },
-	familyLife: { type: Types.Textarea, label: 'family life', initial: true },
-	personality: { type: Types.Textarea, label: 'personality', initial: true },
-	otherRecruitmentConsiderations: { type: Types.Textarea, label: 'other recruitment considerations', initial: true }
 
 }, 'Placement Considerations', {
 
@@ -123,15 +123,15 @@ Child.add('Display Options', {
 
 	profile: {
 		quote: { type: Types.Textarea, label: 'personal quote', dependsOn: { mustBePlacedWithSiblings: false }, initial: true },
-		part1: { type: Types.Textarea, label: 'let me tell you more about myself...', dependsOn: { mustBePlacedWithSiblings: false }, note: 'Age, Race, Interests, Hobbies, Strengths', initial: true },
-		part2: { type: Types.Textarea, label: 'and here\'s what others say...', dependsOn: { mustBePlacedWithSiblings: false }, note: 'Physical, Social, Emotional and Academic Functioning', initial: true },
-		part3: { type: Types.Textarea, label: 'if I could have my own special wish...', dependsOn: { mustBePlacedWithSiblings: false }, note: 'Legal Status, Sibling/Family Contact, Family Constellation and Placement requirements', initial: true }
+		part1: { type: Types.Textarea, label: '1st paragraph', dependsOn: { mustBePlacedWithSiblings: false }, note: 'Age, Race, Interests, Hobbies, Strengths', initial: true },
+		part2: { type: Types.Textarea, label: '2nd paragraph', dependsOn: { mustBePlacedWithSiblings: false }, note: 'Physical, Social, Emotional and Academic Functioning', initial: true },
+		part3: { type: Types.Textarea, label: '3rd paragraph', dependsOn: { mustBePlacedWithSiblings: false }, note: 'Legal Status, Sibling/Family Contact, Family Constellation and Placement requirements', initial: true }
 	},
 	groupProfile: {
 		quote: { type: Types.Textarea, label: 'group quote', dependsOn: { mustBePlacedWithSiblings: true }, initial: true },
-		part1: { type: Types.Textarea, label: 'let us tell you more about ourselves...', dependsOn: { mustBePlacedWithSiblings: true }, note: 'Age, Race, Interests, Hobbies, Strengths', initial: true },
-		part2: { type: Types.Textarea, label: 'and here\'s what others say...', dependsOn: { mustBePlacedWithSiblings: true }, note: 'Physical, Social, Emotional and Academic Functioning', initial: true },
-		part3: { type: Types.Textarea, label: 'if we could have our own special wish...', dependsOn: { mustBePlacedWithSiblings: true }, note: 'Legal Status, Sibling/Family Contact, Family Constellation and Placement requirements', initial: true }
+		part1: { type: Types.Textarea, label: '1st paragraph', dependsOn: { mustBePlacedWithSiblings: true }, note: 'Age, Race, Interests, Hobbies, Strengths', initial: true },
+		part2: { type: Types.Textarea, label: '2nd paragraph', dependsOn: { mustBePlacedWithSiblings: true }, note: 'Physical, Social, Emotional and Academic Functioning', initial: true },
+		part3: { type: Types.Textarea, label: '3rd paragraph', dependsOn: { mustBePlacedWithSiblings: true }, note: 'Legal Status, Sibling/Family Contact, Family Constellation and Placement requirements', initial: true }
 	},
 
 	hasPhotolistingWriteup: { type: Types.Boolean, label: 'photolisting writeup', initial: true },

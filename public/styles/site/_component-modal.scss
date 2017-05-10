@@ -21,13 +21,20 @@
     height: 100%;
     min-width: 320px;
 
-    @media screen and (min-width: 500px) {
+    @media screen and ( min-width: 500px ) {
 	    width: 500px;
 	    height: 575px;
 	    left: 50%;
 	    top: 50%;
 	    margin-left: -250px;
 	    margin-top: -287.5px;
+	}
+
+	&--small {
+
+		@media screen and ( min-width: 500px ) {
+			height: 26em;
+		}
 	}
 }
 
@@ -56,6 +63,62 @@
 .modal-container__contents {
 	position: relative;
 	height: 100%;
-	padding: 1em;
+	padding-top: 25vh;
 	overflow-y: auto;
+
+	@media screen and ( min-width: 500px ) {
+		padding: 1em;
+	}
+}
+
+/* TODO: move these styles to a more appropriate place once the modal content areas are broken out better */
+.log-in-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+	height: 100%;
+}
+
+.log-in-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+	width: 100%;
+	color: #5C5B5C;
+}
+
+.log-in-form__header-container {
+	margin-bottom: 2em;
+	border-bottom: 3px solid $border-color-11;
+}
+
+.log-in-form__header {
+	display: flex;
+    font-size: 2em;
+    padding: .5em 2em;
+	font-weight: 300;
+}
+
+.log-in-form__input-container {
+	margin-bottom: 1em;
+}
+
+.log-in-form__label {
+	font-size: 0.9em;
+	position: relative;
+}
+
+.log-in-form__forgot-password {
+	position: relative;
+    bottom: 1.3em;
+    left: 13.2em;
+}
+
+.log-in-form__log-in-button {
+	margin-bottom: 1em;
+}
+
+.log-in-form__register {
+	font-size: 0.8em;
+	text-decoration: none;
 }

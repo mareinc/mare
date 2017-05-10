@@ -23,8 +23,7 @@ exports = module.exports = ( req, res ) => {
 					done();
 				});
 		},
-		done => { pageService.populateSidebar( req, res, done ); },
-		done => { pageService.getSectionHeader( req, res, done, 'Considering Adoption' ); }
+		done => { pageService.populateSidebar( req, res, done ); }
 	], () => {
 		// Set the layout to render with the right sidebar
 		locals[ 'render-with-sidebar' ] = true;

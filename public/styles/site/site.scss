@@ -1,72 +1,24 @@
 /* TODO: clean this page up and consider the comment headers and prefixes from this article:
 		 https://unboxed.co/blog/structuring-and-managing-css */
 
+/* TODO: consider following rules to not put CSS in settings (utility_) or tools.  That means moving
+		 second section of color definitions to the components themselves (or elements if necessary) */
+
 @import "_utility-colors";
 @import "_utility-variables";
 @import "_utility-classes";
 @import "_grid";
 
-// Site Styles
+// Generic Styles
+@import "_generic";
+
+// Element Styles
 // ===========
-html {
-	-webkit-box-sizing: border-box;
-	-moz-box-sizing: border-box;
-	box-sizing: border-box;
-}
-
-*, *:before, *:after {
-	-webkit-box-sizing: inherit;
-	-moz-box-sizing: inherit;
-	box-sizing: inherit;
-}
-
-body {
-	font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-	font-size: $font-size-base;
-	// font-weight: lighter;  // removed until the font is fixed
-	min-width: 320px;
-	margin: 0;
-}
-
-.content-wrapper {
-	max-width: 1080px;
-	margin: 0 auto;
-}
-
-.body {
-	min-height: 43em;
-	background-color: $main-content-background-color;
-
-	@media all and (min-width: 660px) { padding-bottom: 35px; }
-}
-
-p {
-	margin: 0;
-}
-
-// Component Styles
-// ===========
-@import "_component-alert";
-@import "_component-button";
-@import "_component-link";
-@import "_component-button-group";
-@import "_component-carousel";
-@import "_component-card";
-@import "_component-content-area";
-@import "_component-featured-items";
-@import "_component-form";
-@import "_component-global-footer";
-@import "_component-global-header";
-@import "_component-info-card";
-@import "_component-menu";
-@import "_component-modal";
-@import "_component-section-header";
-@import "_component-sidebar";
-@import "_component-toggle-button";
+@import "_elements";
 
 // Page Styles
 // ===========
-@import "_icons.scss"; /* Perhaps these should be above the components */
+@import "_icons.scss";
 @import "_page";
 @import "_page-donations";
 @import "_page-events";
@@ -74,6 +26,27 @@ p {
 @import "_page-waiting-child-profiles";
 @import "_page-wysiwyg.scss";
 
+// Component Styles
+// ===========
+@import "_component-alert";
+@import "_component-button";
+@import "_component-button-group";
+@import "_component-carousel";
+@import "_component-card";
+@import "_component-contact-card";
+@import "_component-content-area";
+@import "_component-featured-items";
+@import "_component-form";
+@import "_component-global-footer";
+@import "_component-global-header";
+@import "_component-menu";
+@import "_component-modal";
+@import "_component-sidebar";
+@import "_component-toggle-button";
+
 // Trumps
 // ===========
+@import "_trumps-mmenu";
+@import "_trumps-media-boxes";
 @import "_trumps";
+

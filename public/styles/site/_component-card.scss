@@ -1,31 +1,39 @@
+.card-grid {
+	margin-top: 1em;
+}
+
+.card-list {
+	margin-top: 1em;
+}
+
 .card-group {
 	display: flex;
 	flex-wrap: wrap;
 }
 
 .card {
+	display: flex;
 	background-color: $white;
 	box-shadow: 0 0 24px 0 $light-gray;
-	display: flex;
-	flex-direction: column;
-	margin-bottom: 2em;
-	padding: 2em;	
-	width: 100%;
 
-	&--less-padding {
+	&--vertical {
+		flex-direction: column;
+	}
+
+	&--horizontal {
+		flex-direction: row;
+	}
+
+	&--small-padding {
 		padding: 0.75em;
 	}
 
-	&--small {
-		@media all and ( min-width: 880px ) {
-			width: 25%;
-		}
+	&--medium-padding {
+		padding: 1em;
 	}
 
-	&--medium {
-		@media all and ( min-width: 880px ) {
-			width: 45%;
-		}
+	&--large-padding {
+		padding: 2em;
 	}
 
 	&--clickable {
@@ -33,6 +41,106 @@
 	}
 }
 
+.card__columns {
+	display: flex;
+	flex-direction: row;
+}
+
+.card__column {
+	padding: 1em;
+
+	&--left {
+		width: 30%;
+	}
+
+	&--right {
+		width: 70%;
+	}
+}
+
+.card {
+	&--medium {
+		@media all and ( min-width: 880px ) {
+			width: 45%;
+		}
+	}
+}
+
+.card__image {
+	width: 100%;
+}
+
+.card__image-text {
+	display: flex;
+	flex-direction: column;
+	margin: 0;
+	padding: 1.5em 0.25em 1em 0.25em;
+}
+
+.card__image-title {
+	&--large {
+		font-size: 1.125em;
+	}
+
+	&--centered {
+		text-align: center;
+	}
+
+	&--right-aligned {
+		text-align: right;
+	}
+}
+
+.card__image-description {
+	line-height: 1.3em;
+	padding-bottom: 1em;
+
+	&--centered {
+		text-align: center;
+	}
+}
+
+.card__details {
+	position: relative;
+	display: flex;
+	width: 100%;
+	height: 100%;
+
+	&--centered {
+		align-items: center;
+		justify-content: center;
+	}
+
+	&--horizontal {
+		flex-direction: row;
+	}
+
+	&--vertical {
+		flex-direction: column;
+	}
+}
+
+.card-details__top-bar {
+	display: inline-block;
+	width: 5em;
+    border-top: .5em solid $teal;
+    margin-bottom: 1em;
+}
+
+.card-details__header {
+	font-size: 1.5em;
+}
+
+.card-details__body {
+	font-size: 0.9em;
+}
+
+.card-details__paragraph {
+	margin-top: 1em;
+}
+
+
+/* not optimized below this line */
 .card__title {
 	display: flex;
 	width: 100%;
@@ -48,6 +156,10 @@
 	@media all and ( min-width: 540px ) {
 		display: flex;
 		flex-direction: row;
+	}
+
+	&--centered {
+		text-align: center;
 	}
 }
 
@@ -82,20 +194,11 @@
 	align-self: center;
 }
 
+/* NOTE: replace instances with .card__image-text */
 .card__text {
 	margin-right: 3em;
 	margin: 0.5em 3em 0.5em 2.8em; /* 2.8em causes the text to line up with the other success stories images creating a clean line */
 	text-align: left;
-
-	&--sidebar {
-		@media all and (min-width: 660px) {
-		    display: flex;
-		    flex-direction: column;
-		    margin: 0;
-		    padding: 1.5em 0.25em 1em 0.25em;
-		}
-	}
-
 }
 
 .card__icon-container {
@@ -110,73 +213,6 @@
 .card__icon {
 	width: 1.5em;
 	height: 1.5em;
-}
-
-.card__image {
-	align-self: center;
-	width: 12em;
-	height: 12em;
-	border-radius: 50%;
-
-	@media all and ( min-width: 860px ) {
-		margin-left: 2.85714286em; /* 40px / 14px (base font-size) */
-	}
-
-	&--no-margin {
-		margin: 0;
-	}
-
-	&--small {
-		width: 9em;
-		height: 9em;
-	}
-}
-// TODO: This will eventually move into the button component CSS once the registration form is cleaned up
-.card__button-group {
-	display: flex;
-	flex-direction: column;
-	margin: 2em 1em 1em 1em;
-
-	@media all and (min-width: 400px) {
-		flex-direction: row;
-	}
-}
-// TODO: This will eventually move into the button component CSS once the registration form is cleaned up
-.card__button {
-	min-width: 10em;
-	background-color: $background-color-5;
-	border: none;
-	border-radius: 2px;
-	padding: 0.75em 1.5em;
-	// box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16),0 2px 10px 0 rgba(0, 0, 0, 0.12);
-	transition: background-color, box-shadow .2s ease-out;
-
-	&:nth-child(n + 2) {
-		margin-top: 1.5em;
-
-		@media all and (min-width: 400px) {
-			margin-top: 0;
-		}
-	}
-
-	&:hover {
-		background-color: $background-color-6;
-		// box-shadow: 0 5px 11px 0 rgba(0, 0, 0, 0.18),0 4px 15px 0 rgba(0, 0, 0, 0.15);
-	}
-
-	&--disabled {
-		box-shadow: none;
-		transition: none;
-		opacity: 0.6;
-		background-color: $background-color-7;
-
-		&:hover {
-			box-shadow: none;
-			transition: none;
-			opacity: 0.6;
-			background-color: $background-color-7;
-		}
-	}
 }
 
 .card__button-label {
@@ -212,15 +248,4 @@
 	width: 100%;
 	margin: 2em 0 1em;
 	opacity: .5;
-}
-
-.card__trailing-links {
-	display: flex;
-	justify-content: center;
-}
-
-.card__link-separator {
-	color: $robin-blue;
-    padding-left: 0.5em;
-    padding-right: 0.5em;
 }

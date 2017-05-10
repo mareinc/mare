@@ -1,19 +1,48 @@
 .button-group {
-    display: flex;
+	display: flex;
 
-    &--horizontal {
-        flex-direction: row;
-    }
+	&--relative {
+		position: relative;
+	}
 
-    &--vertical {
-        flex-direction: column;
-    }
+	&--horizontal {
+		flex-direction: row;
+	}
 
-    &--space-between {
-        justify-content: space-between;
-    }
+	&--vertical {
+		flex-direction: column;
+	}
 
-    &--space-around {
-        justify-content: space-around;
-    }
+	&--space-between {
+		justify-content: space-between;
+	}
+
+	&--space-around {
+		justify-content: space-around;
+	}
+
+	&--small-margin-above {
+		margin-top: 0.75em;
+	}
+
+	/* use these */
+	&--medium-margin-above {
+		margin-top: 1em;
+	}
+
+	&--large-margin-above {
+		margin-top: 2em;
+	}
+
+	&--small-margin-below {
+		margin-bottom: 0.75em;
+	}
+
+	&--medium-margin-below {
+		margin-bottom: 1em;
+	}
+
+	&--large-margin-below {
+		margin-bottom: 2em;
+	}
 }

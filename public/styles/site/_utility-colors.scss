@@ -1,7 +1,7 @@
 // TODO: Alphebetize this list to make it easier to navigate
 /* these color names came from the Sip Mac app, and are just meant to provide clean distinction between values */
 $white              : rgba( 255, 255, 255, 1 );
-$athens-gray        : rgba( 238, 239, 243, 1 );
+$ash-gray			: rgba( 244, 244, 244, 1 );
 $gainsboro			: rgba( 221, 221, 221, 1 );
 $light-gray         : rgba( 213, 213, 213, 1 );
 $gray-chateau		: rgba( 161, 165, 162, 1 );
@@ -9,10 +9,8 @@ $gray				: rgba( 153, 145, 142, 1 );
 $storm-dust			: rgba( 97, 97, 97, 1 );
 $french-pass        : rgba( 196, 233, 252, 1 );
 $carolina-blue      : rgba( 159, 185, 231, 1 );
-$morning-glory		: rgba( 143, 206, 210, 1 );
 $viking				: rgba( 86, 184, 208, 1 );
 $picton-blue		: rgba( 62, 170, 245, 1 );
-$tufts-blue         : rgba( 74, 123, 204, 1 );
 $mariner            : rgba( 70, 91, 146, 1 );
 $facebook			: rgba( 59, 89, 152, 1 );
 $twitter			: rgba( 0, 172, 237, 1 );
@@ -22,18 +20,13 @@ $robin-blue			: rgba( 74, 144, 226, 1);
 $corn-flower-blue   : rgba( 61, 69, 115, 1 );
 $torea-bay			: rgba( 27, 34, 157, 1 );
 $deep-cove          : rgba( 12, 13, 60, 1 );
-$pastel-violet      : rgba( 201, 145, 213, 1 );
 $beeswax			: rgba( 255, 250, 194, 1 );
 $caramel			: rgba( 255, 226, 173, 1 );
-$corvette           : rgba( 249, 212, 162, 1 );
 $saffron-mango		: rgba( 247, 190, 87, 1 );
 $cournikova			: rgba( 252, 202, 70, 1 );
-$ronchi             : rgba( 240, 187, 81, 1 );
 $my-sin             : rgba( 251, 176, 59, 1 );
 $supernova			: rgba( 253, 177, 39, 1 );
-$tonys-pink         : rgba( 241, 163, 141, 1 );
 $tickle-me-pink		: rgba( 255, 127, 174, 1 );
-$light-coral        : rgba( 238, 128, 125, 1 );
 $brady-punch		: rgba( 185, 122, 66, 1 );
 $fuzzy-wuzzy-brown  : rgba( 202, 98, 99, 1 );
 $matrix             : rgba( 180, 96, 97, 1 );
@@ -44,41 +37,44 @@ $bronze-olive		: rgba( 90, 77, 41, 1 );
 $camouflage			: rgba( 61, 56, 17, 1 );
 $dark-gray			: rgba( 49, 49, 49, 1 );
 $black              : rgba( 0, 0, 0, 1 );
-$dark-blue			: rgba( 8, 23, 71, 1 );
-$mare-blue			: rgba( 46, 78, 135, 1);
+// redesign colors:
+$mare-blue			: rgba( 46, 78, 135, 1 );
+$teal 				: rgba( 29, 176, 177, 1 );
+$green				: rgba( 180, 204, 142, 1 );
 
-$header-background-color                : $corn-flower-blue;
+$dark-blue			: rgba( 8, 23, 71, 1 );
+$hover-green 		: rgba( 127, 163, 79, 1 );
+$hover-teal 		: rgba( 3, 121, 122, 1 );
+$hover-blue 		: rgba( 97, 132, 212, 1 );
+
+// TODO: find better names for these box shadow colors
+$lightest-gray 		: rgba( 0, 0, 0, 0.14 );
+$light-gray 		: rgba( 0, 0, 0, 0.12 );
+$medium-gray 		: rgba( 0, 0, 0, 0.2 );
+
+$header-background-color                : $mare-blue;
 
 $footer-background-color                : $mare-blue;
 $footer-text-color                      : $light-gray;
 
 $nav-background-color-1                 : $wenge;
-$nav-background-color-2                 : $my-sin;
+$nav-background-color-2                 : $teal;
 $nav-background-color-3                 : $corn-flower-blue;
 $nav-background-color-4                 : $deep-cove;
 $nav-background-color-5                 : $mariner;
+$nav-underline-color                 	: $teal;
+$nav-underline-color-2                 	: $green;
+$nav-hover-color                 	    : $green;
 
 $nav-text-color-1                       : $wenge;
 $nav-text-color-2                       : $white;
 $nav-text-color-3                       : $corn-flower-blue;
 
-$main-content-background-color          : $athens-gray;
+$main-content-background-color          : $ash-gray;
 $main-content-color                     : $wenge;
 
 $description-background-color-1         : $white;
 $description-background-color-2         : $french-pass;
-
-$section-header-background-color-1      : $tufts-blue;
-$section-header-background-color-2      : $carolina-blue;
-$section-header-background-color-3      : $tonys-pink;
-$section-header-background-color-4      : $pastel-violet;
-$section-header-background-color-5      : $light-coral;
-$section-header-background-color-6      : $ronchi;
-$section-header-background-color-7      : $corvette;
-$section-header-background-color-8      : $corn-flower-blue;
-
-$section-header-text-color-1            : $morning-glory;
-$section-header-text-color-2            : $white;
 
 $callout-background-color-1             : $viking;
 $callout-background-color-2             : $my-sin;
@@ -104,25 +100,26 @@ $background-color-light                 : $white;
 $background-color-dark                  : $black;
 
 $text-color-1							: $gray-chateau;
-$text-color-2							: $bronze-olive;
-$text-color-3							: $corn-flower-blue;
-$text-color-4							: $cadillac;
-$text-color-5							: $my-sin;
+$text-color-2							: $teal;
+$text-color-3							: $green;
+$text-color-4							: $hover-teal;
+$text-color-5							: $hover-green;
 $text-color-6							: $torea-bay;
 $text-color-7							: $wenge;
 $text-color-light                       : $white;
 $text-color-dark                        : $black;
 
-$border-color-1                         : $carolina-blue;
-$border-color-2                         : $wenge;
-$border-color-3                         : $brady-punch;
-$border-color-4                         : $gray;
+$border-color-1                         : $teal;
+$border-color-2                         : $green;
+$border-color-3                         : $hover-teal;
+$border-color-4                         : $hover-green;
 $border-color-5							: $supernova;
 $border-color-6							: $ruddy;
 $border-color-7							: $light-gray;
 $border-color-8							: $corn-flower-blue;
 $border-color-9							: $cadillac;
 $border-color-10						: $my-sin;
+$border-color-11                        : $teal;
 $border-color-light                     : $white;
 $border-color-dark                      : $black;
 
@@ -130,11 +127,12 @@ $shadow-color-1                         : $storm-dust;
 
 $required-color                         : $ruddy;
 
-$button-background-color-1              : $wenge;
-$button-background-color-2              : $corn-flower-blue;
-$button-background-color-3              : $my-sin;
-$button-background-color-4              : $matrix;
+$button-background-color-1              : $teal;
+$button-background-color-2              : $green;
+$button-background-color-3              : $hover-teal;
+$button-background-color-4              : $hover-green;
 $button-background-color-5              : $gainsboro;
+$button-background-color-6              : $teal;
 $button-background-color-light          : $white;
 $button-background-color-dark           : $black;
 
