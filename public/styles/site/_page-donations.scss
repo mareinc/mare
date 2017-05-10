@@ -1,6 +1,7 @@
 .donations-page {
 	display: flex;
     flex-direction: column;
+	font-weight: 300;
 }
 
 .donations-page__header-area {
@@ -8,12 +9,13 @@
 }
 
 .donations-page__header {
+	/* TODO: move the font styles into a centralized, utility file */
 	font-size: 24px;
 }
 
 .donations-page__subheader {
-	font-size: 18px;
-	margin-top: 1em;
+	font-size: 15px;
+	margin-top: 0.5em;
 }
 
 .donations-page__selection-group {
