@@ -398,7 +398,7 @@ Family.schema.methods.setHomestudyVerifiedDate = function ( done ) {
 		// clear the date
 		this.permissions.homestudyVerifiedDate = undefined;
 	// if the isHomestudyVerified checkbox wasn't checked, but is now
-	} else if( !this._original.permissions.isHomestudyVerified && this.permissions.isHomestudyVerified ) {
+	} else if( ( this._original && !this._original.permissions.isHomestudyVerified ) && this.permissions.isHomestudyVerified ) {
 		// update the date
 		this.permissions.homestudyVerifiedDate = new Date();
 	}
