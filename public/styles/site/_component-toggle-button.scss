@@ -3,11 +3,10 @@
     padding: 1em;
     border-radius: 2px;
     border-style: none;
-	background-color: $background-color-9;
+	background-color: $button-background-color-2;
 	color: $text-color-light;
 	margin-left: 1%;
 	margin-right: 1%;
-	box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
 	transition: color 0.5s ease,
 				background-color 0.5s ease;
 
@@ -15,9 +14,17 @@
 		outline: none;
 	}
 
+	&:first-child {
+		margin-left: 0;
+	}
+
+	&:last-child {
+		margin-right: 0;
+	}
+
 	&--toggled {
 		cursor: default;
-		background-color: $background-color-10;
+		background-color: $button-background-color-4;
 		box-shadow: none;
 	}
 	// Handles sizing the toggle button to allow for four buttons on the screen at large sizes

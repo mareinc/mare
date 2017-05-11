@@ -1,6 +1,10 @@
 .button-group {
 	display: flex;
 
+	&--relative {
+		position: relative;
+	}
+
 	&--horizontal {
 		flex-direction: row;
 	}
@@ -21,23 +25,24 @@
 		margin-top: 0.75em;
 	}
 
+	/* use these */
 	&--medium-margin-above {
 		margin-top: 1em;
 	}
 
 	&--large-margin-above {
-		margin-top: 1.5em;
+		margin-top: 2em;
 	}
 
-	&--small-margin-above {
+	&--small-margin-below {
 		margin-bottom: 0.75em;
 	}
 
-	&--medium-margin-above {
+	&--medium-margin-below {
 		margin-bottom: 1em;
 	}
 
-	&--large-margin-above {
-		margin-bottom: 1.5em;
+	&--large-margin-below {
+		margin-bottom: 2em;
 	}
 }
