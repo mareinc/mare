@@ -30,11 +30,8 @@ exports = module.exports = ( req, res ) => {
 				.then( successStories => {
 					// An array to hold all success stories
 					locals.stories = [];
-
-					var truncateOptions = {
-						targetLength: 400
-					}
-
+					// set how the text will be truncated for short content displays
+					const truncateOptions = { targetLength: 400 }
 					// Loop through all success stories
 					_.each( successStories, successStory => {
 						successStory.shortContent = Utils.truncateText( successStory.content, truncateOptions );

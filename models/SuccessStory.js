@@ -17,6 +17,7 @@ SuccessStory.add({
 	image: { type: Types.CloudinaryImage, note: 'needed to display in the sidebar, success story page, and home page', folder: 'success-stories/', select: true, selectPrefix: 'success-stories/', publicID: 'fileName', autoCleanup: true },
 	imageFeatured: { type: Types.Url, hidden: true },
 	imageSidebar: { type: Types.Url, hidden: true },
+	imageCaption: { type: Types.Text, label: 'image caption', initial: true },
 	video: { type: Types.Url, label: 'video', initial: true }
 
 /* Container for all system fields (add a heading if any are meant to be visible through the admin UI) */
