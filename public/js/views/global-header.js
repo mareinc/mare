@@ -19,7 +19,7 @@
 
 		initialize: function() {
 
-			// Initialize a subview for the log in modal
+			// Initialize a view for the log in modal if it doesn't already exist
 			mare.views.logIn					= mare.views.logIn || new mare.views.LogIn();
 
 			// screen width breakpoints (same as _component-menu.scss)
@@ -176,7 +176,7 @@
 			}			
 		},
 
-		/* pass the request for opening the modal to the subview in charge of the modal */
+		/* pass the request for opening the modal to the view in charge of the modal */
 		showLogInModal: function showLogInModal( event ) {
 
 			mare.views.logIn.openModal( event );
