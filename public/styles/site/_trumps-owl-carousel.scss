@@ -1,0 +1,9 @@
+.owl-carousel .owl-item img {
+	width: 100%;
+	max-width: default;
+}
+
+// temporary owl carousel loading gif override that was lost when preparing for production
+.owl-item.loading{
+	background: url(img/owl-carousel/AjaxLoader.gif) no-repeat center center
+}
