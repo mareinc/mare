@@ -27,8 +27,6 @@
 				content.push( "<a class='top-nav__link top-nav__item top-nav__button top-nav__button--log-in'>Log In</a>" );
 			}
 
-			console.log( content );
-
 			// Initialize a view for the log in modal if it doesn't already exist
 			mare.views.logIn = mare.views.logIn || new mare.views.LogIn();
 
