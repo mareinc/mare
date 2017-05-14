@@ -36,6 +36,10 @@
 		padding: 2em;
 	}
 
+	&--small-margin-below {
+		margin-bottom: 1em;
+	}
+
 	&--clickable {
 		cursor: pointer;
 	}
@@ -75,6 +79,22 @@
 	flex-direction: column;
 	margin: 0;
 	padding: 1.5em 0.25em 1em 0.25em;
+
+	&--smaller {
+		font-size: 0.8em;
+	}
+
+	&--italic {
+		font-style: italic;
+	}
+
+	&--small-padding-top {
+		padding-top: 1em;
+	}
+
+	&--centered {
+		text-align: center;
+	}
 }
 
 .card__image-title {
@@ -213,12 +233,6 @@
 .card__icon {
 	width: 1.5em;
 	height: 1.5em;
-}
-
-.card__button-label {
-    text-align: center;
-    margin: 1em 0;
-    font-weight: bold;
 }
 
 .card__list-container {

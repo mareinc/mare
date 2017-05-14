@@ -1,11 +1,11 @@
-<div id="owl-demo" class="owl-carousel">
+<div id="slideshow" class="owl-carousel">
 	{{#each slides}}
 	<div class="item">
 		<img class="lazyOwl" data-src="{{ imageScaled }}" alt="{{ heading }}">
-		<span class="featured-description hidden">
-			<div class="featured-header">{{ heading }}</div>
-			<div class="featured-tagline">{{ subHeading }}</div>
-			<div class="featured-learn-more">{{ guideLabel }}</div>
+		<span class="slideshow__description hidden">
+			<div class="slideshow__header">{{ heading }}</div>
+			<div class="slideshow__tagline">{{ subHeading }}</div>
+			<div class="slideshow__learn-more">{{ guideLabel }}</div>
 		</span>
 	</div>
 	{{/each}}

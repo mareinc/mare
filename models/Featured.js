@@ -54,7 +54,7 @@ Featured.schema.pre( 'save', function(next) {
 
 				this.aboutUs.title = page[ 0 ].title;
 				this.aboutUs.url = page[ 0 ].url;
-				this.aboutUs.imageScaled = this._.aboutUs.image.thumbnail( 300,350,{ quality: 100 } );
+				this.aboutUs.imageScaled = this._.aboutUs.image.thumbnail( 300,300,{ quality: 100 } );
 
 			}, err => {
 
@@ -67,7 +67,7 @@ Featured.schema.pre( 'save', function(next) {
 
 		       		this.successStory.title = successStory[ 0 ].heading;
 		       		this.successStory.url = '/success-stories/';
-					this.successStory.imageScaled = this._.successStory.image.thumbnail( 300,350,{ quality: 100 } );
+					this.successStory.imageScaled = this._.successStory.image.thumbnail( 300,300,{ quality: 100 } );
 
 			}, err => {
 
@@ -80,7 +80,7 @@ Featured.schema.pre( 'save', function(next) {
 
 					this.upcomingEvent.title = event[ 0 ].name;
 					this.upcomingEvent.url = event[ 0 ].url;
-					this.upcomingEvent.imageScaled = this._.upcomingEvent.image.thumbnail( 300,350,{ quality: 100 } );
+					this.upcomingEvent.imageScaled = this._.upcomingEvent.image.thumbnail( 300,300,{ quality: 100 } );
 
 					next();
 			}, err => {
