@@ -148,9 +148,7 @@ exports.removeUser = function removeUser(req, res, next) {
 	});
 };
 
-/*
- *  event creation - through agency event submission form
- */
+/* event creation submitted through the agency event submission form */
 exports.submitEvent = function submitEvent( req, res, next ) {
 
 	const locals	= res.locals;

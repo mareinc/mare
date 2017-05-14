@@ -88,8 +88,6 @@ exports.initLocals = function(req, res, next) {
 			{ title: 'Board of Directors', href: '/page/board-of-directors' },
 			{ title: 'MARE in the News', href: '/page/mare-in-the-news' },
 			{ title: 'Annual Report', href: '/page/annual-report' },
-			{ title: 'Agency Event Submission Form', href: '/forms/agency-event-submission-form' },
-			{ title: 'Car Donation Form', href: '/forms/car-donation-form' },
 			{ title: 'Child Registration Form', href: '/forms/child-registration-form' },
 			{ title: 'Information Request Form', href: '/forms/information-request-form' }
 		]}];
