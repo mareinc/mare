@@ -67,7 +67,11 @@ module.exports.generatePlacements = function* generatePlacements() {
 		// if there are no more records to process call done to move to the next migration file
 		if( remainingRecords === 0 ) {
 
-			console.log( `the following records weren't saved correctly: ${ importErrors }` );
+			console.log( `the following records weren't saved correctly:` );
+
+			importErrors.forEach( error => {
+				console.log( error )
+			});
 
 			const resultsMessage = `finished creating ${ totalRecords } placements in the new system`;
 			// store the results of this run for display after the run
@@ -130,7 +134,7 @@ module.exports.createPlacementRecord = ( placement, pauseUntilSaved ) => {
 			// if we run into an error
 			if( err ) {
 				// store a reference to the entry that caused the error
-				importErrors.push( { id: placement.fpl_id, error: err } );
+				importErrors.push( { id: placement.fpl_id, error: err.err } );
 			}
 
 			// fire off the next iteration of our generator after pausing

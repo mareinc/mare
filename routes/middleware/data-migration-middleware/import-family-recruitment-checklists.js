@@ -99,7 +99,11 @@ module.exports.generateFamilyRecruitmentChecklistItems = function* generateFamil
 		// if there are no more records to process call done to move to the next migration file
 		if( remainingRecords === 0 ) {
 
-			console.log( `the following records weren't saved correctly: ${ importErrors }` );
+			console.log( `the following records weren't saved correctly:` );
+
+			importErrors.forEach( error => {
+				console.log( error )
+			});
 
 			const resultsMessage = `finished appending ${ totalRecords } family recruitment checklists in the new system`;
 			// store the results of this run for display after the run
@@ -140,7 +144,7 @@ module.exports.updateFamilyRecord = ( recruitmentChecklistItems, familyRegistrat
 			// if we run into an error
 			if( err ) {
 				// store a reference to the entry that caused the error
-				importErrors.push( { id: family.get( 'registrationNumber' ), error: err } );
+				importErrors.push( { id: family.get( 'registrationNumber' ), error: err.err } );
 			}
 
 			// fire off the next iteration of our generator after pausing

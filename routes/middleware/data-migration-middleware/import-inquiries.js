@@ -69,7 +69,11 @@ module.exports.generateInquiries = function* generateInquiries() {
 		// if there are no more records to process call done to move to the next migration file
 		if( remainingRecords === 0 ) {
 			
-			console.log( `the following records weren't saved correctly: ${ importErrors }` );
+			console.log( `the following records weren't saved correctly:` );
+
+			importErrors.forEach( error => {
+				console.log( error )
+			});
 
 			const resultsMessage = `finished creating ${ totalRecords } inquiries in the new system`;
 			// store the results of this run for display after the run
@@ -194,7 +198,7 @@ module.exports.createInquiryRecord = ( inquiry, pauseUntilSaved ) => {
 			// if we run into an error
 			if( err ) {
 				// store a reference to the entry that caused the error
-				importErrors.push( { id: inquiry.cll_id, error: err } );
+				importErrors.push( { id: inquiry.cll_id, error: err.err } );
 			}
 			
 			// fire off the next iteration of our generator after pausing for a second

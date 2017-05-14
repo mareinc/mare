@@ -83,7 +83,11 @@ module.exports.generateAgencyContacts = function* generateAgencyContacts() {
 		// if there are no more records to process call done to move to the next migration file
 		if( remainingRecords === 0 ) {
 
-			console.log( `the following records weren't saved correctly: ${ importErrors }` );
+			console.log( `the following records weren't saved correctly:` );
+
+			importErrors.forEach( error => {
+				console.log( error )
+			});
 
 			const resultsMessage = `finished creating ${ totalRecords } agency contacts in the new system`;
 			// store the results of this run for display after the run
@@ -122,7 +126,7 @@ module.exports.updateAgencyRecord = ( agencyId, agencyContactId, pauseUntilSaved
 			// if we run into an error
 			if( err ) {
 				// store a reference to the entry that caused the error
-				importErrors.push( { id: agencyContactId, error: err } );
+				importErrors.push( { id: agencyContactId, error: err.err } );
 			}
 
 			// fire off the next iteration of our generator after pausing

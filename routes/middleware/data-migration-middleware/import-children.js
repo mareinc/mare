@@ -83,7 +83,11 @@ module.exports.generateChildren = function* generateChildren() {
 		// if there are no more records to process call done to move to the next migration file
 		if( remainingRecords === 0 ) {
 
-			console.log( `the following records weren't saved correctly: ${ importErrors }` );
+			console.log( `the following records weren't saved correctly:` );
+
+			importErrors.forEach( error => {
+				console.log( error )
+			});
 
 			const resultsMessage = `finished creating ${ totalRecords } children in the new system`;
 			// store the results of this run for display after the run
@@ -205,6 +209,7 @@ module.exports.createChildRecord = ( child, pauseUntilSaved ) => {
 			emotionalNeedsDescription: child.emotional_disability_comment,
 			intellectualNeeds: disabilityStatusesMap[ child.intellectual_dst_id ],
 			intellectualNeedsDescription: child.intellectual_disability_comment,
+			socialNeeds: 'none',
 			healthNotesOld: child.health_notes,
 
 			// Placement Considerations
@@ -255,7 +260,7 @@ module.exports.createChildRecord = ( child, pauseUntilSaved ) => {
 			// if we run into an error
 			if( err ) {
 				// store a reference to the entry that caused the error
-				importErrors.push( { id: child.chd_id, error: err } );
+				importErrors.push( { id: child.chd_id, error: err.err } );
 			}
 
 			// fire off the next iteration of our generator after pausing

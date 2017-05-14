@@ -57,7 +57,6 @@ module.exports.generateAdmin = function* generateAdmin() {
 		adminNumber++;
 		// if we've hit a multiple of batchCount, pause execution to let the current records process
 		if( adminNumber % batchCount === 0 ) {
-			console.log( 'pausing' );
 			yield exports.createAdminRecord( admin, true );
 		} else {
 			exports.createAdminRecord( admin, false );
@@ -68,7 +67,11 @@ module.exports.generateAdmin = function* generateAdmin() {
 		// if there are no more records to process call done to move to the next migration file
 		if( remainingRecords === 0 ) {
 
-			console.log( `the following records weren't saved correctly: ${ importErrors }` );
+			console.log( `the following records weren't saved correctly:` );
+
+			importErrors.forEach( error => {
+				console.log( error )
+			});
 
 			const resultsMessage = `finished creating ${ totalRecords } admin in the new system`;
 			// store the results of this run for display after the run
@@ -118,12 +121,11 @@ module.exports.createAdminRecord = ( admin, pauseUntilSaved ) => {
 		// if we run into an error
 		if( err ) {
 			// store a reference to the entry that caused the error
-			importErrors.push( { id: admin.usr_id, error: err } );
+			importErrors.push( { id: admin.usr_id, error: err.err } );
 		}
 
 		// fire off the next iteration of our generator after pausing
 		if( pauseUntilSaved ) {
-			console.log( 'unpausing' );
 			adminGenerator.next();
 		}
 	});
