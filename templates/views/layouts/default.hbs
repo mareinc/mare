@@ -38,17 +38,20 @@
 		{{> global-header}}
 
 		<div class="body">
+			{{!-- Each page has a data value for the type of content area to display, use that to render a partial template which has a placeholder for {{{body}}} --}}
+			{{#if render-with-sidebar}}
 			<div class="content-wrapper">
-				{{!-- Each page has a data value for the type of content area to display, use that to render a partial template which has a placeholder for {{{body}}} --}}
-				{{#if render-with-sidebar}}
-					{{> content-with-sidebar}}
+				{{> content-with-sidebar}}
+			</div>
+			{{else}}
+				{{#if render-homepage}}
+				{{> content-without-sidebar}}
 				{{else}}
-					{{#if render-without-header}}
-						{{> content-empty}}
-					{{else}}
-						{{> content-without-sidebar}}
-					{{/if}}
+				<div class="content-wrapper">
+					{{> content-without-sidebar}}
+				</div>
 				{{/if}}
+			{{/if}}
 			</div>
 		</div>
 

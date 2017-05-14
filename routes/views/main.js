@@ -40,8 +40,8 @@ exports = module.exports = function(req, res) {
 							locals.featuredItems = featuredItems;
 
 							// Set the layout to render without the right sidebar and without a header
-							locals['render-with-sidebar'] = false;
-							locals['render-without-header'] = true;
+							locals[ 'render-with-sidebar' ] = false;
+							locals[ 'render-homepage' ] = true;
 							// Render the view once all the data has been retrieved
 							view.render('main');
 							// TODO: If the necessary elements don't exist on the page, maybe render
