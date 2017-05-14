@@ -65,10 +65,10 @@
 }
 
 .featured-item__title {
-    text-transform: uppercase;
-    font-weight: 600;
-    font-size: 1.2em;
     color: $text-color-light;
+    font-size: 1.6875em; /* 27px */
+    font-weight: 300;
+
 }
 
 .featured-item__image {
