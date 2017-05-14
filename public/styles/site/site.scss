@@ -31,7 +31,7 @@
 @import "_component-alert";
 @import "_component-button";
 @import "_component-button-group";
-@import "_component-carousel";
+@import "_component-slideshow";
 @import "_component-card";
 @import "_component-contact-card";
 @import "_component-content-area";
@@ -39,6 +39,7 @@
 @import "_component-form";
 @import "_component-global-footer";
 @import "_component-global-header";
+@import "_component-links";
 @import "_component-menu";
 @import "_component-modal";
 @import "_component-sidebar";
@@ -46,7 +47,8 @@
 
 // Trumps
 // ===========
-@import "_trumps-mmenu";
-@import "_trumps-media-boxes";
 @import "_trumps";
+@import "_trumps-media-boxes";
+@import "_trumps-mmenu";
+@import "_trumps-owl-carousel";
 

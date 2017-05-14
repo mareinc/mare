@@ -78,9 +78,6 @@ Event.add({ heading: 'General Information' }, {
 
 });
 
-// Set up relationship values to show up at the bottom of the model if any exist
-Event.relationship( { ref: 'Event Attendee', refPath: 'event', path: 'event', label: 'attendees' } );
-
 // Pre Save
 Event.schema.pre( 'save', function( next ) {
 	'use strict';

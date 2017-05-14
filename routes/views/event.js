@@ -37,9 +37,20 @@ exports = module.exports = ( req, res ) => {
 		default							: eventType = '';
 	}
 
+	req.user = req.user || {};
+	// determine if the user is an administrator. We want to display the event attendees if they are
+	locals.isAdmin = req.user && req.user.userType === 'admin' ? true : false;
+	// determine if the user is a social worker.  We want to allow them to create events if they are
+	locals.isSocialWorker = req.user && req.user.userType === 'social worker' ? true : false;
+
 	// track whether it is an event users can register for through the site
 	locals.canRegister = eventType === 'MARE adoption parties & information events' ||
 						 eventType === 'fundraising events';
+	
+	locals.canSubmitEvent = locals.isSocialWorker && 
+							( eventType === 'MAPP trainings' ||
+							  eventType === 'agency information meetings' ||
+							  eventType === 'other opportunities & trainings' );
 
 	/* TODO: Add error handling so the page doesn't hang if we can't find the event */
 	async.parallel( [
@@ -55,11 +66,6 @@ exports = module.exports = ( req, res ) => {
 				.populate( 'address.state' )
 				.exec()
 				.then( event => {
-					req.user = req.user || {};
-					// determine if the user is an administrator. We want to display the event attendees if they are
-					locals.isAdmin = req.user && req.user.userType === 'admin' ? true : false;
-					// determine if the user is a social worker.  We want to allow them to create events if they are
-					locals.isSocialWorker = req.user && req.user.userType === 'social worker' ? true : false;
 					// If there are no events to display, we need to capture that information for rendering
 					locals.eventMissing = _.isEmpty( event );
 					// Find the target event for the current page and store the object in locals for access during templating

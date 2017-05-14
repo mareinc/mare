@@ -13,4 +13,12 @@
 
 .sidebar__card {
     margin-bottom: 2em;
+
+	&--small-margin-bottom {
+		margin-bottom: 1em;
+	}
+}
+
+.sidebar__bottom-links {
+	margin-bottom: 1em;
 }

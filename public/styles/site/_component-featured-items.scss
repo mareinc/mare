@@ -2,7 +2,6 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-	margin: 1em 0;
     padding: 0;
 
     @media all and (min-width: 860px) {
@@ -10,15 +9,15 @@
     }
 }
 
-.featured-items .featured-item {
+.featured-item {
     display: flex;
+    position: relative;
     flex-direction: column;
     align-items: center;
     width: 100%;
     margin-bottom: 1em;
     list-style: none;
-    // box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23); /* TODO: same as card, maybe make these a card variant */
-
+    
     @media all and (min-width: 420px) {
         width: 90%;
         margin-left: 5%;
@@ -39,7 +38,7 @@
     }
 }
 
-.featured-item > a {
+.featured-item__link {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -47,34 +46,26 @@
     color: $text-color-dark;
 }
 
-.featured-item .featured-item-title-container {
+.featured-item__title-container {
     display: flex;
+    position: absolute;
     align-items: center;
     justify-content: center;
     width: 100%;
     height: 20%;
-
-    &--blue {
-        background-color: $background-color-1;
-    }
-
-    &--red {
-        background-color: $background-color-2;
-    }
-
-    &--yellow {
-        background-color: $background-color-3;
-    }
+    background-color: $teal;
+    opacity: 0.8;
 }
 
-.featured-item .featured-item-title {
+.featured-item__title {
     text-transform: uppercase;
     font-weight: 600;
     font-size: 1.2em;
     color: $text-color-light;
 }
 
-.featured-item img {
-    width: 100%;
-    height: 80%;
+.featured-item__image {
+    width: 95%;
+    height: 95%;
+    margin-top: 2.5%;
 }

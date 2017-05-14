@@ -13,13 +13,13 @@
 		<img class="card__image" src="{{ randomSuccessStory.imageSidebar }}" alt="success story image">	
 		<span class="card__image-text">
 			<!-- TODO: limit the content to three lines with a trailing ellipses-->
-			<div class="card__image-description">{{{randomSuccessStory.content}}}</div>
+			<div class="card__image-description">{{{randomSuccessStory.shortContent}}}</div>
 			<a href="{{ randomSuccessStory.url }}" class="card__image-title card__image-title--right-aligned">{{ randomSuccessStory.heading }}</a>
 		</span>
 	</aside>
 
 	<!-- Event -->
-	<aside class="card card--vertical card--small-padding sidebar__card">
+	<aside class="card card--vertical card--small-padding sidebar__card sidebar__card--small-margin-bottom">
 		<img class="card__image" src="{{ randomEvent.imageSidebar }}" alt="event image">
 		<span class="card__image-text">
 			<!-- TODO: limit the content to three lines with a trailing ellipses -->
@@ -30,7 +30,7 @@
 	</aside>
 
 	<!-- Have a question and Donate links -->
-	<aside class="links">
+	<aside class="links sidebar__bottom-links">
 		<a href="#" data-url="/forms/have-a-question-form">Have a Question?</a>
 		<span class="link-separator">|</span>
 		<a class="link" href="#" data-url="/donate">Donate Now</a>		

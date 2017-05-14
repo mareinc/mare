@@ -1,27 +1,27 @@
 {{#each featuredItems}}
 <ul class="featured-items">
-	<li class="featured-item feature-about-us">
-		<a href="/page/our-services" class="cover">
-			<div class="featured-item-title-container featured-item-title-container--blue">
-				<span class="featured-item-title">Our Services</span>
+	<li class="featured-item card">
+		<a href="/page/our-services" class="featured-item__link cover">
+			<div class="featured-item__title-container">
+				<span class="featured-item__title">Our Services</span>
 			</div>
-			<img src="{{ aboutUs.imageScaled }}" alt="{{ aboutUs.title }}">
+			<img src="{{ aboutUs.imageScaled }}" alt="{{ aboutUs.title }}" class="featured-item__image">
 		</a>
 	</li>
-	<li class="featured-item featured-success-story">
-		<a href="{{ successStory.url }}" class="cover">
-			<div class="featured-item-title-container featured-item-title-container--red">
-				<span class="featured-item-title">Success Stories</span>
+	<li class="featured-item card">
+		<a href="{{ successStory.url }}" class="featured-item__link cover">
+			<div class="featured-item__title-container">
+				<span class="featured-item__title">Success Stories</span>
 			</div>
-			<img src="{{ successStory.imageScaled }}" alt="{{ successStory.title }}">
+			<img src="{{ successStory.imageScaled }}" alt="{{ successStory.title }}" class="featured-item__image">
 		</a>
 	</li>
-	<li class="featured-item featured-upcoming-event">
-		<a href="{{ upcomingEvent.url }}" class="cover">
-			<div class="featured-item-title-container featured-item-title-container--yellow">
-				<span class="featured-item-title">Events</span>
+	<li class="featured-item card">
+		<a href="{{ upcomingEvent.url }}" class="featured-item__link cover">
+			<div class="featured-item__title-container">
+				<span class="featured-item__title">Events</span>
 			</div>
-			<img src="{{ upcomingEvent.imageScaled }}" alt="{{ upcomingEvent.title }}">
+			<img src="{{ upcomingEvent.imageScaled }}" alt="{{ upcomingEvent.title }}" class="featured-item__image">
 		</a>
 	</li>
 </ul>

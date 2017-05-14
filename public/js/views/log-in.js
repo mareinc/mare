@@ -69,8 +69,11 @@
 			});
 
 			mare.utils.enablePageScrolling();
+			/* TODO: this doesn't belong in modal, emit an event on close so the child details view can respond to it appropriatly */
 			// This event is called from a click event so the view context is lost, we need to explicitly call all functions
-			mare.views.childDetails.unbindEvents();
+			if( mare.views.childDetails ) {
+				mare.views.childDetails.unbindEvents();
+			}
 		}
 	});
 }());

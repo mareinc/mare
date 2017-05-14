@@ -24,10 +24,9 @@
 				{{#if imageFeatured}}
 				<img class="card__image" src="{{ imageFeatured }}" alt="{{ heading }}">
 				{{/if}}
-				<div class="card__image-text">
-					{{!-- TODO: add a caption to the success story to display in this slot --}}
-					<span class="card__image-title">{{ caption }}</span>
-				</div>
+				{{#if imageCaption}}
+				<div class="card__image-text card__image-text--centered card__image-text--smaller card__image-text--italic card__image-text--small-padding-top">{{ imageCaption }}</div>
+				{{/if}}
 			</div>
 			<div class="card__column card__column--right">
 				<div class="card__details card__details--vertical">
