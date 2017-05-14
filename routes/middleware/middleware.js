@@ -38,8 +38,10 @@ exports.initLocals = function(req, res, next) {
 	locals.navLinks = [
 		{ label: 'Home', key: 'home', href: '/' }
 	];
-
+	// store a reference to the logged in user object if one exists
 	locals.user = req.user;
+	// store whether the user is logged in
+	locals.isLoggedIn = !!req.user;
 
 	// Create the main menu navigation.
 	locals.mainNav = [

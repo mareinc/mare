@@ -1,4 +1,4 @@
-//TODO: Clean this up with async
+//TODO: Clean this up with async, it's very brittle now
 
 var keystone = require('keystone'),
 	_ = require('underscore');
