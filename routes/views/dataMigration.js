@@ -96,15 +96,16 @@ exports = module.exports = ( req, res ) => {
 
 		// data import
 
-		// done => { adminImport.importAdmin( req, res, done ); },												// done
-		// done => { sourcesImport.importSources( req, res, done ); },											// done
-		// done => { mediaFeaturesImport.importMediaFeatures( req, res, done ); },								// done
-		// done => { agenciesImport.importAgencies( req, res, done ); },										// done
-		// done => { outsideContactImport.importOutsideContacts( req, res, done ); },							// done
-		// done => { socialWorkerImport.importSocialWorkers( req, res, done ); },								// done
-		// done => { agencyContactsImport.appendAgencyContacts( req, res, done ); },							// done
-		
-		// IMPORTANT: NEED TO CHANGE THE CHILD PRE / POST SAVE HERE
+		done => { adminImport.importAdmin( req, res, done ); },
+		// done => { sourcesImport.importSources( req, res, done ); },	// there's no countdown during creation like the newer imports
+		// done => { mediaFeaturesImport.importMediaFeatures( req, res, done ); }, // notes have markup in them, probably need to strip this out (check display of content)
+		// done => { agenciesImport.importAgencies( req, res, done ); },
+		// done => { outsideContactImport.importOutsideContacts( req, res, done ); },
+		// done => { socialWorkerImport.importSocialWorkers( req, res, done ); }, // there's a 5s pause per 50 workers, is this necessary?
+		// done => { agencyContactsImport.appendAgencyContacts( req, res, done ); }, // there are failures in fetching the social worker records
+
+		// IMPORTANT: need to comment out the following in pre-save: setImages, setRegistrationNumber, updateMustBePlacedWithSiblingsCheckbox, updateGroupBio
+		// IMPORTANT: need to comment out the post-save block
 		// IMPORTANT: NEED TO CHANGE FIRST CHANGE HISTORY RECORD TO READ 'DATE IMPORTED FROM THE OLD SYSTEM'
 		// done => { childrenImport.importChildren( req, res, done ); },										// done
 		
@@ -135,13 +136,13 @@ exports = module.exports = ( req, res ) => {
 		// done => { placementsImport.importPlacements( req, res, done ); }, 									// not done family_placement.  TODO: Get details to Brian so he can help you track down the field matches 
 		// placement source																						// not done
 		// IMPORTANT: NEED TO TURN OFF EMAIL PRE SAVE HOOKS
-		done => { inquiriesImport.importInquiries( req, res, done ); },									// not done
-		done => { inquiryAgenciesImport.appendInquiryAgencies( req, res, done ); },								// not done
-		done => { inquiryChildrenImport.appendInquiryChildren( req, res, done ); },								// not done, call child
-		done => { inquiryNotesImport.appendInquiryNotes( req, res, done ); },									// not done, call note
+		// done => { inquiriesImport.importInquiries( req, res, done ); },									// not done
+		// done => { inquiryAgenciesImport.appendInquiryAgencies( req, res, done ); },								// not done
+		// done => { inquiryChildrenImport.appendInquiryChildren( req, res, done ); },								// not done, call child
+		// done => { inquiryNotesImport.appendInquiryNotes( req, res, done ); },									// not done, call note
 		// done => { eventsImport.importEvents( req, res, done ); },											// done
 		// done => { eventAttendeeImport.appendEventAttendees( req, res, done ); },								// done
-		done => { mailingListAttendeesImport.importMailingListAttendees( req, res, done ); },					// not done
+		// done => { mailingListAttendeesImport.importMailingListAttendees( req, res, done ); },					// not done
 		// IMPORTANT: I think family backup is family internal notes
 		// done => { familyInternalNotesImport.importInternalNotes( req, res, done ); }							// not done
 		// done => { childInternalNotesImport.importInternalNotes( req, res, done ); }							// not done
@@ -151,7 +152,6 @@ exports = module.exports = ( req, res ) => {
 	], () => {
 		// Set the layout to render without the right sidebar
 		locals[ 'render-with-sidebar' ] = false;
-		locals[ 'render-without-header' ] = true;
 		// Render the view once all the data has been retrieved
 		view.render( 'data-migration-output' );
 
