@@ -17,7 +17,7 @@ exports.getMailingListsMap = ( req, res, done ) => {
 		done => { dataMigrationService.getModelId( { model: 'Mailing List', field: 'mailingList', value: 'e-mail single parent matching', mapTo: [ 7 ], namespace: locals.migration.maps.mailingLists }, done ); },
 		done => { dataMigrationService.getModelId( { model: 'Mailing List', field: 'mailingList', value: 'contracted adoption workers', mapTo: [ 10 ], namespace: locals.migration.maps.mailingLists }, done ); },
 		done => { dataMigrationService.getModelId( { model: 'Mailing List', field: 'mailingList', value: 'DCF adoption workers', mapTo: [ 11 ], namespace: locals.migration.maps.mailingLists }, done ); },
-		done => { dataMigrationService.getModelId( { model: 'Mailing List', field: 'mailingList', value: 'video libraries', mapTo: [ 12 ], namespace: locals.migration.maps.mailingLists }, done ); },
+		// done => { dataMigrationService.getModelId( { model: 'Mailing List', field: 'mailingList', value: 'video libraries', mapTo: [ 12 ], namespace: locals.migration.maps.mailingLists }, done ); },
 		done => { dataMigrationService.getModelId( { model: 'Mailing List', field: 'mailingList', value: 'non-DCF/contracted contacts', mapTo: [ 16 ], namespace: locals.migration.maps.mailingLists }, done ); },
 		done => { dataMigrationService.getModelId( { model: 'Mailing List', field: 'mailingList', value: 'board of directors', mapTo: [ 32 ], namespace: locals.migration.maps.mailingLists }, done ); },
 		done => { dataMigrationService.getModelId( { model: 'Mailing List', field: 'mailingList', value: 'Boston coalition', mapTo: [ 33 ], namespace: locals.migration.maps.mailingLists }, done ); },
