@@ -1,0 +1,2 @@
+"aps_id","notification_sender_name","notification_sender_email","notification_reply_to_name","notification_reply_to_email","smtp_server_ip","smtp_server_port","use_smtp_authentication","smtp_user_name","smtp_password","failed_notification_recipient_name","failed_notification_recipient_email","inq_import_fam_rcs_id","inq_import_agc_rcs_id"
+"1","MARE Notifications","notifications@mareinc.org","MARE Notifications","notifications@mareinc.org","smtp-relay.gmail.com","587","N","","","Brian Huyser","huyserb@SymmetricTech.com","1000","1020"
