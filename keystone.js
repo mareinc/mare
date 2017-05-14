@@ -44,12 +44,12 @@ keystone.init({
 	'wysiwyg menubar': true,
 	'wysiwyg skin': 'lightgray',
 	'wysiwyg additional buttons': 'searchreplace visualchars,' +
-	 	' charmap ltr rtl pagebreak paste, forecolor backcolor,' +
-	 	' emoticons media image, preview print, fontselect fontsizeselect',
+	 	' charmap ltr rtl pagebreak paste,' +
+	 	' emoticons media image, preview print',
 	'wysiwyg additional plugins': 'advlist, anchor,' +
 		' autolink, autosave, charmap, contextmenu,' +
 		' directionality, emoticons, hr, media, pagebreak,' +
-		' paste, preview, print, searchreplace, table, template, textcolor,' +
+		' paste, preview, print, searchreplace, table, template' +
 		' visualblocks, visualchars, wordcount',
 	'wysiwyg cloudinary images': true,
 
