@@ -207,18 +207,19 @@ exports.addToHistoryEntry = ( fieldBefore, field, label, changeHistory ) => {
 };
 
 /* if the model is created via the website, there is no updatedBy.  In these cases we need to populate it with the migration bot's id */
+/* TODO: see if we can remove this function after the migration */
 exports.setUpdatedby = ( targetModel, done ) => {
 	// if the user was created using the website	
 	if( !targetModel.updatedBy ) {
-		keystone.list( 'System Bot' ).model.find()
+		keystone.list( 'Admin' ).model.find()
 				.exec()
-				.then( bots => {
+				.then( admins => {
 					// since we can't filter on members of an object in a .where(), we do it in a loop here instead
-					for( bot of bots ) {
-						if( bot.name.full === 'Migration Bot' ) {
+					for( admin of admins ) {
+						if( admin.name.full === 'Migration Bot' ) {
 
 							// set the updatedBy field to the id of the migration bot
-							targetModel.updatedBy = bot.get( '_id' );
+							targetModel.updatedBy = admin.get( '_id' );
 						}
 					}
 					
