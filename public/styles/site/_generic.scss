@@ -35,3 +35,12 @@ body {
 	background-color: $main-content-background-color;
 	min-height: 43em;
 }
+
+h1,
+h2 {
+	font-weight: normal;
+}
+
+label {
+	margin: 0;
+}
