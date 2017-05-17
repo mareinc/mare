@@ -1,70 +1,58 @@
 .steps-in-the-process {
-    margin: 2em 0;
+    margin: 6em 0 2em 0;
     width: 100%;
 }
 
 .step-in-the-process {
-    align-items: flex-end;
-    border-right: 2px solid $light-gray;
+    align-items: flex-start;
+    border-left: 2px solid $light-gray;
     display: flex;
     flex-direction: column;
-    padding: 1em 2em;
-    margin: 2em 0;
-    text-align: right;
-    width: calc(50% + 2px); /* 2px to account for the border-right so that it lines up with the border-left */ 
+    margin-bottom: 2em;
+    margin-left: 1em;
+    padding: 0 2em 4em 2em;
+    position: relative;
+    text-align: left;
 
-    &:nth-child(2n+1) {
-        align-items: flex-start;
-        border-right: none;
-        border-left: 2px solid $light-gray;
-        margin-bottom: 0.25em;
+    @media all and (min-width: 900px) {
         margin-left: 50%;
-        margin-top: 0.25em;
-        text-align: left;
+        padding: 0 2em 2em 2em;
         width: 50%;
+    }   
 
-        &:before {
-            content: "";
-            height: 15px;
-            border-radius: 50%;
-            width: 15px;
-            background-color: #2e4e87;
-            left: -36px;
-            top: -36px;
-            position: relative;
+    // every other child (2, 4, 6, 8) to be left aligned at Desktop widths
+    &:nth-child(2n + 2) {
+        
+        @media all and (min-width: 900px) {
+            align-items: flex-end;
+            border-left: none;
+            border-right: 2px solid $light-gray;
+            margin-left: 0;
+            text-align: right;
+            width: calc(50% + 2px); /* 2px to account for the border-right so that it lines up with the border-left */ 
+
+            // TODO: figure out a better selector for this
+            .step-in-the-process__marker {
+                left: auto;
+                right: -9px;
+            }
         }
 
-        &:after {
-            content: "";
-            height: 15px;
-            border-radius: 50%;
-            width: 15px;
-            background-color: #2e4e87;
-            left: -36px;
-            bottom: -33px;
-            position: relative;
-        }
     }
-
-    &:last-child {
-        &:after {
-            content: none;
-        }
-    }
-
 }
 
 .step-in-the-process__number {
     align-items: center;
     background: #2e4e87;
-    border-radius: 16px;
+    border-radius: 1em; /* 16px */
     color: white;
     display: flex;
     font-size: 0.75em;
-    height: 2em;
+    height: 2em; /* 32px */
     justify-content: center;
+    margin-top: 1em;
     text-transform: uppercase;
-    width: 5em;
+    width: 5em; /* 80px */
 }
 
 .step-in-the-process__title {
@@ -75,13 +63,26 @@
     padding: 0.5em 0;
 }
 
-.step-in-the-process__description {
-
-}
-
 .step-in-the-process__image {
     height: 100px;
-    margin-left: -10px;
-    margin-right: -10px;
-    width: 100px;
+
+    /* TODO: remove extra 10px whitespace around each of the Steps in the Process images  */
+
+    /*   
+       top: -60px       = minus (1/2 image height + 10px) (10px of extra whitespace around top of image)
+       right: -10px     = minus 10px (10px of extra whitespace around right of image)
+       bottom: 0        = minus 10px (10px of extra whitespace aorund bottom of image)
+       left: -10px      = minus 10px (10px of extra whitespace around left of image)
+     */
+    margin: -60px -10px 0 -10px; 
+}
+
+.step-in-the-process__marker {
+    background-color: #2e4e87;
+    border-radius: 50%;
+    height: 15px;
+    left: -8px;
+    position: absolute;
+    top: -22px;
+    width: 15px;
 }
