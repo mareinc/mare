@@ -9,7 +9,7 @@
 			'keyup .donations__input-field'	: 'handleOtherDonationAmount',
 			'click .toggle-button'			: 'toggleButton',
 			'click .donate'					: 'donate',
-			'click .donate-car-button'		: 'navigate'
+			'click #donate-car-button'		: 'navigate'
 		},
 
 		initialize: function initialize() {
@@ -90,11 +90,11 @@
 		},
 
 		enableDonateButton: function enableDonateButton() {
-			$( '.donate-button' ).removeClass( 'button--disabled' );
+			$( '#donate-button' ).removeClass( 'button--disabled' );
 		},
 
 		disableDonateButton: function disableDonateButton() {
-			$( '.donate-button' ).addClass( 'button--disabled' );
+			$( '#donate-button' ).addClass( 'button--disabled' );
 		},
 
 		clearDonationAmountInput: function clearDonationAmountInput() {
