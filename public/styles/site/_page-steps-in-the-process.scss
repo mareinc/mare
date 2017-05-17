@@ -9,10 +9,23 @@
     display: flex;
     flex-direction: column;
     margin-bottom: 2em;
-    margin-left: 1em;
+    margin-left: 2em;
     padding: 0 2em 4em 2em;
     position: relative;
     text-align: left;
+
+    // downward facing arrow underneath border
+    &:after {
+        border-top: 2px solid $light-gray;
+        border-left: 2px solid $light-gray;
+        bottom: 0;
+        content: '';
+        height: 12px;
+        left: -7px; /* (1/2 width) + (1/2 border-width) */
+        position: absolute;
+        transform: rotate(-134deg);
+        width: 12px;
+    }
 
     @media all and (min-width: 900px) {
         margin-left: 50%;
@@ -22,7 +35,13 @@
 
     // every other child (2, 4, 6, 8) to be left aligned at Desktop widths
     &:nth-child(2n + 2) {
-        
+
+        // downward facing arrow underneath border
+        &:after {
+            left: auto;
+            right: -7px; /* (1/2 width) + (1/2 border-width) */
+        }
+            
         @media all and (min-width: 900px) {
             align-items: flex-end;
             border-left: none;
@@ -39,6 +58,14 @@
         }
 
     }
+
+    &:last-child {
+        // no downward facing arrow after last child 
+        &:after {
+            content: none;
+        }
+    }
+
 }
 
 .step-in-the-process__number {
