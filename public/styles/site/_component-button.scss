@@ -39,7 +39,21 @@
 
 	&--teal {
 		color: $button-text-color-light;
-		background-color: $button-background-color-6;
+		background-color: $button-background-color-1;
+
+		&:hover {
+			background-color: $button-background-color-3;
+		}
+	}
+
+	&--green {
+		color: $button-text-color-light;
+		background-color: $button-background-color-2;
+
+		&:hover {
+			background-color: $button-background-color-4;
+		}
+	
 	}
 
 	&--uppercase {
