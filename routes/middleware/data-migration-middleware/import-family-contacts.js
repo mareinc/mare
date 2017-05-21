@@ -165,8 +165,8 @@ module.exports.updateFamilyRecord = ( contacts, familyId, pauseUntilSaved ) => {
 			console.log( 'uh oh, need to make this non-required in the family model' );
 		}
 
-		const contact1 = contactsArray.filter( contact => contact.index === 1 )[0];
-		const contact2 = contactsArray.filter( contact => contact.index === 2 )[0];
+		const contact1 = contactsArray.filter( contact => contact.index === '1' )[0];
+		const contact2 = contactsArray.filter( contact => contact.index === '2' )[0];
 
 		if( contact1 ) {
 
@@ -222,7 +222,7 @@ module.exports.updateFamilyRecord = ( contacts, familyId, pauseUntilSaved ) => {
 				console.log( `contact 1 email: ${ family.contact1.email ? family.contact1.email.toLowerCase() : '' }` );
 				console.log( `contact 2 email: ${ family.contact2.email ? family.contact2.email.toLowerCase() : '' }` );
 				// store a reference to the entry that caused the error
-				importErrors.push( { id: familiy.get( 'registrationNumber' ), error: err.err } );
+				importErrors.push( { id: family.get( 'registrationNumber' ), error: err.err } );
 			}
 
 			// fire off the next iteration of our generator after pausing

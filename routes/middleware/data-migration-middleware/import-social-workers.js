@@ -68,7 +68,6 @@ module.exports.generateSocialWorkers = function* generateSocialWorkers() {
 		socialWorkerNumber++;
 		// if we've hit a multiple of batchCount, pause execution to let the current records process
 		if( socialWorkerNumber % batchCount === 0 ) {
-			console.log( 'pausing' );
 			yield exports.createSocialWorkerRecord( socialWorker, true );
 		} else {
 			exports.createSocialWorkerRecord( socialWorker, false );
@@ -157,7 +156,6 @@ module.exports.createSocialWorkerRecord = ( socialWorker, pauseUntilSaved ) => {
 			// fire off the next iteration of our generator after pausing
 			if( pauseUntilSaved ) {
 				setTimeout( () => {
-					console.log( 'unpausing' );
 					socialWorkerGenerator.next();
 				}, 5000 );
 			}

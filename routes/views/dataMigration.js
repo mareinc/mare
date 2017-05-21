@@ -96,39 +96,41 @@ exports = module.exports = ( req, res ) => {
 
 		// data import
 
-		done => { adminImport.importAdmin( req, res, done ); },
+		// done => { adminImport.importAdmin( req, res, done ); },
 		// done => { sourcesImport.importSources( req, res, done ); },	// there's no countdown during creation like the newer imports
 		// done => { mediaFeaturesImport.importMediaFeatures( req, res, done ); }, // notes have markup in them, probably need to strip this out (check display of content)
 		// done => { agenciesImport.importAgencies( req, res, done ); },
 		// done => { outsideContactImport.importOutsideContacts( req, res, done ); },
-		// done => { socialWorkerImport.importSocialWorkers( req, res, done ); }, // there's a 5s pause per 50 workers, is this necessary?
-		// done => { agencyContactsImport.appendAgencyContacts( req, res, done ); }, // there are failures in fetching the social worker records
+		// done => { socialWorkerImport.importSocialWorkers( req, res, done ); },
+		// done => { agencyContactsImport.appendAgencyContacts( req, res, done ); },
 
 		// IMPORTANT: need to comment out the following in pre-save: setImages, setRegistrationNumber, updateMustBePlacedWithSiblingsCheckbox, updateGroupBio
 		// IMPORTANT: need to comment out the post-save block
-		// IMPORTANT: NEED TO CHANGE FIRST CHANGE HISTORY RECORD TO READ 'DATE IMPORTED FROM THE OLD SYSTEM'
-		// done => { childrenImport.importChildren( req, res, done ); },										// done
+		// done => { childrenImport.importChildren( req, res, done ); },
 		
-		// IMPORTANT: NEED TO CHANGE THE CHILD PRE / POST SAVE HERE
-		// done => { childMediaEligibilitiesImport.appendMediaEligibilities( req, res, done ); },				// done
-		// done => { childDisabilitiesImport.appendDisabilities( req, res, done ); },							// done
+		// IMPORTANT: comment out the entire rest of the pre-save hook
+		// done => { childMediaEligibilitiesImport.appendMediaEligibilities( req, res, done ); },
+		// done => { childDisabilitiesImport.appendDisabilities( req, res, done ); },
 		
-		// IMPORTANT: NEED TO CHANGE THE CHILD PRE / POST SAVE HERE
-		// done => { childSiblingsImport.appendSiblings( req, res, done ); },									// done
+		// IMPORTANT: uncomment the pre-save hook and make only the following functions active: setSiblingGroupFileName, updateMustBePlacedWithSiblingsCheckbox, updateGroupBio
+		// IMPORTANT: uncomment the post-save hook and make only the following function active: updateSiblingFields
+		// done => { childSiblingsImport.appendSiblings( req, res, done ); }, // there's no countdown during creation like the newer imports
 		// done => { childRecruitmentChecklistImport.appendChildRecruitmentChecklists( req, res ,done ); },		// not done // DON'T NEED TO DO
-		// done => { childMediaFeaturesImport.appendMediaFeatures( req, res, done ); },							// not done
-		// done => { mediaFeatureChildImport.appendChildren( req, res, done ); },								// done
+		// done => { childMediaFeaturesImport.appendMediaFeatures( req, res, done ); },							// not done // DON'T THINK WE NEED TO DO, CHECK ON THIS
+		// IMPORTANT: the child pre/post save hooks can be restored
+		// done => { mediaFeatureChildImport.appendChildren( req, res, done ); },
 		
-		// IMPORTANT: NEED TO CHANGE THE FAMILY PRE / POST SAVE HERE
-		// done => { familiesImport.importFamilies( req, res, done ); },										// done
+		// IMPORTANT: comment out the following in pre-save: setHomestudyVerifiedDate, setGalleryViewingPermissions, setFullName, setFileName
+		// done => { familiesImport.importFamilies( req, res, done ); },
 		
-		// IMPORTANT: NEED TO CHANGE THE FAMILY PRE / POST SAVE HERE
-		// done => { familySocialWorkersImport.appendFamilySocialWorkers( req, res, done ); },					// done
-		// done => { familyRacePreferencesImport.appendFamilyRacePreferences( req, res, done ); },				// done
-		// done => { familyDisabilityPreferencesImport.appendFamilyDisabilityPreferences( req, res, done ); },	// done
-		// done => { familySupportServicesImport.appendFamilySupportServices( req, res, done ); },				// done
-		// done => { familyContactsImport.appendFamilyContacts( req, res, done ); },							// done
-		// done => { familyChildrenImport.appendFamilyChildren( req, res, done ); },							// done
+		// IMPORTANT: comment out the entire pre-save hook
+		// done => { familySocialWorkersImport.appendFamilySocialWorkers( req, res, done ); },
+		// done => { familyRacePreferencesImport.appendFamilyRacePreferences( req, res, done ); },
+		// done => { familyDisabilityPreferencesImport.appendFamilyDisabilityPreferences( req, res, done ); },
+		// done => { familySupportServicesImport.appendFamilySupportServices( req, res, done ); },
+		// done => { familyContactsImport.appendFamilyContacts( req, res, done ); },
+		// IMPORTANT: uncomment the pre-save hook and make only the following functions active: setGalleryViewingPermissions, setFullName, setFileName
+		// done => { familyChildrenImport.appendFamilyChildren( req, res, done ); },
 		// done => { familyRecruitmentChecklistImport.appendFamilyRecruitmentChecklists( req, res ,done );		// not done // DON'T NEED TO DO
 
 		// 13 left undone below
@@ -140,8 +142,8 @@ exports = module.exports = ( req, res ) => {
 		// done => { inquiryAgenciesImport.appendInquiryAgencies( req, res, done ); },								// not done
 		// done => { inquiryChildrenImport.appendInquiryChildren( req, res, done ); },								// not done, call child
 		// done => { inquiryNotesImport.appendInquiryNotes( req, res, done ); },									// not done, call note
-		// done => { eventsImport.importEvents( req, res, done ); },											// done
-		// done => { eventAttendeeImport.appendEventAttendees( req, res, done ); },								// done
+		done => { eventsImport.importEvents( req, res, done ); },
+		done => { eventAttendeeImport.appendEventAttendees( req, res, done ); },
 		// done => { mailingListAttendeesImport.importMailingListAttendees( req, res, done ); },					// not done
 		// IMPORTANT: I think family backup is family internal notes
 		// done => { familyInternalNotesImport.importInternalNotes( req, res, done ); }							// not done

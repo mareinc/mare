@@ -281,8 +281,3 @@ module.exports.createFamilyRecord = ( family, pauseUntilSaved ) => {
 
 // instantiates the generator used to create family records at a regulated rate
 const familyGenerator = exports.generateFamilies();
-
-
-//***** notes:"12/9/02 removed from regular Newsletter mailing list; added to Newsletter e-mail list (SM)\r\n\r\nDonor 3-20-03\r\n\r\n6/13/13- My wife and I are the adoptive parents of a then 11-year-old boy from Longmeadow who passed through six foster homes before landing with us. He is now 32, still with challenges of focus and persistence, but with great talents and possibilities (currently he's a cook at an inn in Brookline and has passed the exam to do apartment rentals). For several years Tony was part of Kim Stevens's outreach team of adopted kids speaking to various groups and testifying at the State House. My wife (a filmmaker) and I did a video for Kim of their activities.\r\n \r\nIn 2001 I wrote a novel for middle-grade children called PARENTS WANTED, winner of the Milkweed Prize for Children's Literature. It's the story of being adopted told from a 12-year-old's point of view. It relied on stories and experiences with our son Tony, while not breaching the privacy of his past families. A recent email from MARE prompted me ..."
-
-// this is the initial change history.
