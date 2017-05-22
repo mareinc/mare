@@ -18,7 +18,7 @@
 
 	{{#each stories}}
 
-	<div class="card card--vertical">
+	<div class="card card--vertical card--medium-padding">
 		<div class="card__columns">
 			<div class="card__column card__column--left">
 				{{#if imageFeatured}}
@@ -39,8 +39,8 @@
 				</div>
 			</div>
 		</div>
-		<section class="button-group button-group--horizontal button-group--space-around button-group--large-margin-above button-group--small-margin-below">
-			<button class="button button--medium button--teal success-story__button" data-url="{{ url }}">Read Full Story</button>
+		<section class="button-group button-group--horizontal button-group--space-around button-group--small-margin-below">
+			<a class="link-arrow--right" href="{{ url }}">Read Full Story</a>
 		</section>
 	</div>
 

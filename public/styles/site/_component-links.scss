@@ -4,7 +4,34 @@
 }
 
 .link-separator {
-	color: $robin-blue;
+	color: $link-color;
     padding-left: 0.5em;
     padding-right: 0.5em;
+}
+
+.link-arrow {
+
+	&--left {
+		&:before {
+			border: solid $link-color;
+			border-width: 0 2px 2px 0;
+			content: '';
+			display: inline-block;
+			padding: 4px;
+			margin-right: 4px;
+			transform: rotate(135deg);
+		}
+	}	
+
+	&--right {
+		&:after {
+			border: solid $link-color;
+			border-width: 0 2px 2px 0;
+			content: '';
+			display: inline-block;
+			padding: 4px;
+			margin-left: 4px;
+			transform: rotate(-45deg);
+		}	
+	}
 }
