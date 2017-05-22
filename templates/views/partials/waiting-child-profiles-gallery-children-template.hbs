@@ -5,6 +5,7 @@
 			<div class="media-box child-media-box" data-registration-number="\{{ registrationNumber }}">
 				<div class="contact-card card--medium-padding card--clickable">
 					<div class="media-box-image card__image">
+						<!-- REDESIGN TODO: center the image thumbnail -->
 						<div data-thumbnail=\{{ galleryImage }}></div>
 					</div>
 
@@ -17,10 +18,10 @@
 						</div>
 						<div class="contact-card__icons">
 						\{{#if hasVideo}}
-							<img class="contact-card__icon" src="/dist/img/video-icon.png">
+							<img class="contact-card__icon" src="/dist/img/icon-video.png">
 						\{{/if}}
 						\{{#if wednesdaysChild}}
-							<img class="contact-card__icon" src="/dist/img/wednesdays-child-icon.png">
+							<img class="contact-card__icon" src="/dist/img/icon-wednesdays-child.png">
 						\{{/if}}
 						</div>
 					<!-- determining whether to add the block below based on whether the user is allowed to bookmark children needs to happen server-side -->

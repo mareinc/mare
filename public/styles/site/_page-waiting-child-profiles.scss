@@ -43,6 +43,7 @@
 }
 
 .icon-text-unit__icon {
+	margin-right: 5px;
 	vertical-align:middle;
 	width: 20px;
 }
@@ -163,14 +164,6 @@
 
 /* TODO: possibly put these in the media-boxes trumps file
 /* hover effect on the image */
-.media-box-image img{
-	transition: all 0.3s ease-in-out;
-	transform-origin: bottom left;
-}
-
-.media-box-image:hover img{
-	transform: scale(1.1) translate(-10px);
-}
 
 .media-box-container {
 	box-shadow: none;
