@@ -13,7 +13,7 @@ const Admin			= keystone.list( 'Admin' );
 const Inquiry		= keystone.list( 'Inquiry' );
 
 module.exports.getSourceById = ( resolve, reject, sourceId ) => {
-
+	/* TODO: short circuit the fetch here by just resolving if there are no oldIds */
 	Source.model.findOne()
 		.where( 'oldId', sourceId )
 		.exec()
@@ -36,7 +36,7 @@ module.exports.getSourceById = ( resolve, reject, sourceId ) => {
 };
 
 module.exports.getAgencyById = ( resolve, reject, agencyId ) => {
-
+	/* TODO: short circuit the fetch here by just resolving if there are no oldIds */
 	Agency.model.findOne()
 		.where( 'oldId', agencyId )
 		.exec()
@@ -59,7 +59,7 @@ module.exports.getAgencyById = ( resolve, reject, agencyId ) => {
 };
 
 module.exports.getAgencyIdsByOldIds = ( resolve, reject, oldIds ) => {
-
+	/* TODO: short circuit the fetch here by just resolving if there are no oldIds */
 	Agency.model.find()
 		.where( { 'oldId': { $in: oldIds } } )
 		.exec()
@@ -115,7 +115,7 @@ module.exports.getSocialWorkerById = ( resolve, reject, socialWorkerId ) => {
 };
 
 module.exports.getSocialWorkerIdsByOldIds = ( resolve, reject, oldIds ) => {
-
+	/* TODO: short circuit the fetch here by just resolving if there are no oldIds */
 	SocialWorker.model.find()
 		.where( { 'oldId': { $in: oldIds } } )
 		.exec()
@@ -144,7 +144,7 @@ module.exports.getSocialWorkerIdsByOldIds = ( resolve, reject, oldIds ) => {
 };
 
 module.exports.getChildByRegistrationNumber = ( resolve, reject, registrationNumber ) => {
-
+	/* TODO: short circuit the fetch here by just resolving if there are no oldIds */
 	Child.model.findOne()
 		.where( 'registrationNumber', registrationNumber )
 		.exec()
@@ -167,7 +167,7 @@ module.exports.getChildByRegistrationNumber = ( resolve, reject, registrationNum
 };
 
 module.exports.getChildIdsByRegistrationNumbers = ( resolve, reject, registrationNumbers ) => {
-
+	/* TODO: short circuit the fetch here by just resolving if there are no oldIds */
 	Child.model.find()
 		.where( { 'registrationNumber': { $in: registrationNumbers } } )
 		.exec()
@@ -196,7 +196,7 @@ module.exports.getChildIdsByRegistrationNumbers = ( resolve, reject, registratio
 };
 
 module.exports.getMediaFeatureById = ( resolve, reject, mediaFeatureId ) => {
-
+	/* TODO: short circuit the fetch here by just resolving if there are no oldIds */
 	MediaFeature.model.findOne()
 		.where( 'oldId', mediaFeatureId )
 		.exec()
@@ -246,7 +246,7 @@ module.exports.getFamilyByRegistrationNumber = ( resolve, reject, registrationNu
 };
 
 module.exports.getFamilyIdsByRegistrationNumbers = ( resolve, reject, registrationNumbers ) => {
-
+	/* TODO: short circuit the fetch here by just resolving if there are no oldIds */
 	Family.model.find()
 		.where( { 'registrationNumber': { $in: registrationNumbers } } )
 		.exec()
@@ -275,7 +275,7 @@ module.exports.getFamilyIdsByRegistrationNumbers = ( resolve, reject, registrati
 };
 
 module.exports.getEventById = ( resolve, reject, eventId ) => {
-
+	/* TODO: short circuit the fetch here by just resolving if there are no oldIds */
 	Event.model.findOne()
 		.where( 'oldId', eventId )
 		.exec()
@@ -298,7 +298,7 @@ module.exports.getEventById = ( resolve, reject, eventId ) => {
 };
 
 module.exports.getAdminById = ( resolve, reject, adminId ) => {
-
+	/* TODO: short circuit the fetch here by just resolving if there are no oldIds */
 	Admin.model.findOne()
 		.where( 'oldId', adminId )
 		.exec()
@@ -321,7 +321,7 @@ module.exports.getAdminById = ( resolve, reject, adminId ) => {
 };
 
 module.exports.getInquiryById = ( resolve, reject, inquiryId ) => {
-
+	/* TODO: short circuit the fetch here by just resolving if there are no oldIds */
 	Inquiry.model.findOne()
 		.where( 'oldId', inquiryId )
 		.exec()

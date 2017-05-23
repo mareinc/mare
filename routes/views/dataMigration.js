@@ -142,7 +142,7 @@ exports = module.exports = ( req, res ) => {
 		// done => { inquiryAgenciesImport.appendInquiryAgencies( req, res, done ); },								// not done
 		// done => { inquiryChildrenImport.appendInquiryChildren( req, res, done ); },								// not done, call child
 		// done => { inquiryNotesImport.appendInquiryNotes( req, res, done ); },									// not done, call note
-		done => { eventsImport.importEvents( req, res, done ); },
+		// done => { eventsImport.importEvents( req, res, done ); },
 		done => { eventAttendeeImport.appendEventAttendees( req, res, done ); },
 		// done => { mailingListAttendeesImport.importMailingListAttendees( req, res, done ); },					// not done
 		// IMPORTANT: I think family backup is family internal notes

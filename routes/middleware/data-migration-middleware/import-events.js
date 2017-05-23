@@ -43,14 +43,6 @@ module.exports.importEvents = ( req, res, done ) => {
 
 /* a generator to allow us to control the processing of each record */
 module.exports.generateEvents = function* generateEvents() {
-	// used for debugging unique key entries
-	console.log( `getting duplicates` );
-
-	const dupes = utilityFunctions.getDuplicateDetails( 'rcs_id', 'schedule_datetime', events );
-
-	dupes.length === 0 ?
-		console.log( `0 duplicate event names found, no errors expected` ) :
-		console.log( `${ dupes.length } duplicate event names found, get ready for a bumpy ride` );
 
 	console.log( `creating events in the new system` );
 	// create monitor variables to assess how many records we still need to process
@@ -94,7 +86,7 @@ module.exports.generateEvents = function* generateEvents() {
 	}
 };
 
-/* the import function for agencies */
+/* the import function for events */
 module.exports.createEventRecord = ( event, pauseUntilSaved ) => {
 
 	const eventDateTime = new Date( event.schedule_datetime );
@@ -102,12 +94,12 @@ module.exports.createEventRecord = ( event, pauseUntilSaved ) => {
 	const eventStartString = eventDateTime.toLocaleTimeString();
 	const eventEnd = eventDateTime.setHours( eventDateTime.getHours() + 1 );
 	const eventEndString = new Date( eventEnd ).toLocaleTimeString();
-	const eventStartTime = eventStartString.substr( 0, eventStartString.lastIndexOf(':') ) + eventStartString.substr( eventStartString.lastIndexOf( ':' ) + 4 ).toLowerCase();
-	const eventEndTime = eventEndString.substr( 0, eventEndString.lastIndexOf(':') ) + eventEndString.substr( eventEndString.lastIndexOf( ':' ) + 4 ).toLowerCase();
+	const eventStartTime = eventStartString.substr( 0, eventStartString.lastIndexOf( ':' ) ) + eventStartString.substr( eventStartString.lastIndexOf( ':' ) + 4 ).toLowerCase();
+	const eventEndTime = eventEndString.substr( 0, eventEndString.lastIndexOf( ':' ) ) + eventEndString.substr( eventEndString.lastIndexOf( ':' ) + 4 ).toLowerCase();
 
 	let eventPostfix = '';
 
-	if( [ 5, 93, 1076, 1077, 1078 ].includes( event.rcs_id ) ) {
+	if( [ '5', '93', '1076', '1077', '1078' ].includes( event.rcs_id ) ) {
 		eventPostfix += ` - ${ eventStartDate }`;
 	}
 
