@@ -23,33 +23,37 @@
 		<!-- TODO: this section still needs to be redone once design is discussed with Anna -->
 		<section class="filters">
 
-			<div class="button-group button-group--horizontal button-group--large-margin-above button-group--small-margin-below">
+			<div class="button-group button-group--horizontal button-group--large-margin-above button-group--large-margin-below">
 				<button class="button button--medium button--teal filters__search-button filters__search-button--modify">Modify Search</button>
 				<button class="button button--medium button--teal filters__search-button filters__search-button--clear">Clear Search</button>
 				{{#if canBookmarkChildren}}
+				<!-- REDESIGN TODO: remove left margin on button... might affect other buttons -->
 				<button class="button button--medium button--teal filters__search-button filters__search-button--show-saved-children {{#unless hasBookmarkedChildren}}hidden{{/unless}}">Show Saved</button>
 				{{/if}}
 			</div>
 
-			<select class="waiting-child-profiles__gallery-filter waiting-child-profiles-filter">
-				<option value="registered">Sort by Most Recent</option>
-				<option value="name">Sort by Name</option>
-				<option value="age">Sort by Age</option>
-			</select>
-
 			<div class="filters__modify-search-explanation">Your search results are displayed below.</div>
-
-			<div class="icon-key">
-				<span class="icon-text-unit filter">
-					<img class="icon-text-unit__icon video" src="/dist/img/icon-video.png">
-					<span class="icon-text-unit__text">Video Profile</span>
-				</span>
-				<span class="icon-text-unit filter">
-					<img class="icon-text-unit__icon wednesdays-child" src="/dist/img/icon-wednesdays-child.png">
-					<span class="icon-text-unit__text">Wednesday's Child</span>
-				</span>
-			</div>
 		</section>
 	</section>
+
+	<div class="button-group button-group--space-between button-group--medium-margin-above button-group--medium-margin-below button-group--wrap">
+		<select class="waiting-child-profiles__gallery-filter waiting-child-profiles-filter">
+			<option value="registered">Sort by Most Recent</option>
+			<option value="name">Sort by Name</option>
+			<option value="age">Sort by Age</option>
+		</select>
+
+		<div class="icon-key">
+			<span class="icon-text-unit filter">
+				<img class="icon-text-unit__icon video" src="/dist/img/icon-video.png">
+				<span class="icon-text-unit__text">Video Profile</span>
+			</span>
+			<span class="icon-text-unit filter">
+				<img class="icon-text-unit__icon wednesdays-child" src="/dist/img/icon-wednesdays-child.png">
+				<span class="icon-text-unit__text">Wednesday's Child</span>
+			</span>
+		</div>
+	</div>
+
 	<section class="profiles-container"></section>
 </section>
