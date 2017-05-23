@@ -514,7 +514,7 @@ exports.uploadFile = ( req, res, userModel, targetFieldPrefix, targetField, file
 
 exports.getMailingLists = ( req, res, done ) => {
 
-	locals = res.locals;
+	let locals = res.locals;
 	res.locals.mailingLists = {};
 
 	MailingList.model.find()
@@ -539,6 +539,7 @@ exports.getNextRegistrationNumber = ( req, res, done ) => {
 	let locals = res.locals;
 	
 	Family.model.find()
+			.select( 'registrationNumber' )
 			.exec()
 			.then( families => {
 				// get an array of registration numbers
@@ -558,15 +559,15 @@ exports.getNextRegistrationNumber = ( req, res, done ) => {
 // TODO: why do we need this, saving a Date object in any Types.Date field should work just fine
 exports.getCurrentDate = () => {
 
-	var date = new Date();
+	const date = new Date();
 
-	var formattedDate = ( date.getMonth() + 1 ) + '/' + date.getDate() + '/' +  date.getFullYear();
+	const formattedDate = ( date.getMonth() + 1 ) + '/' + date.getDate() + '/' +  date.getFullYear();
 	return formattedDate;
 };
 
 exports.setChild = ( user, i ) => {
 
-	var childObject = {};
+	let childObject = {};
 
 	if ( user[ 'child' + i + '-name' ] ) {
 		childObject.name 		= user[ 'child' + i + '-name' ];

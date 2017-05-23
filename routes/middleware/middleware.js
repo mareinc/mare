@@ -49,7 +49,7 @@ exports.initLocals = function(req, res, next) {
 		{ title: 'Considering Adoption?', subMenu: [
 			{ title: 'Types of Adoption', href: '/page/types-of-adoption' },
 			{ title: 'Can I adopt a Child from Foster Care?', href: '/page/can-i-adopt-a-child-from-foster-care' },
-			{ title: 'Steps in the Process', href: '/page/steps-in-the-process' },
+			{ title: 'Steps in the Process', href: '/steps-in-the-process' },
 			{ title: 'How Can MARE Help?', href: '/page/how-can-mare-help' }
 		]},
 		{ title: 'Meet the Children', subMenu: [

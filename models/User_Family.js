@@ -458,8 +458,10 @@ Family.schema.methods.setFileName = function( done ) {
 	'use strict';
 
 	// Create an identifying name for file uploads
-	this.fileName = this.registrationNumber + '_' + this.contact1.name.first.toLowerCase();
-
+	this.fileName = this.contact1.name.first ?
+					`${ this.registrationNumber }_${ this.contact1.name.first.toLowerCase() }` :
+					`${ this.registrationNumber }_`;
+					
 	done();
 };
 

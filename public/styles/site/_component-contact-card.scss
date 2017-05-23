@@ -1,13 +1,12 @@
 .contact-card__details {
+    font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
     padding-top: 0.5em;
-}
-
-.contact-card__details-row {
-    padding: 0.5em 0;
 }
 
 .contact-card__name {
     font-size: 1.4em;
+    font-weight: 300;
+    line-height: 1.6em;
 }
 
 .contact-card__details-divider {

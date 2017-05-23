@@ -20,6 +20,10 @@
 		flex-direction: column;
 	}
 
+	&--vertically-centered {
+		align-items: center;
+	}
+
 	&--horizontal {
 		flex-direction: row;
 	}
@@ -148,24 +152,37 @@
 }
 
 .card-details__header {
-	font-size: 1.5em;
+	font-size: 1.6875em;
+	font-weight: 300;
 }
 
 .card-details__body {
-	font-size: 0.9em;
+	font-size: 1em;
+	line-height: 1.3em;
 }
 
 .card-details__paragraph {
 	margin-top: 1em;
 }
 
+.card__subheading {
+	display: flex;	
+	width: 75%;
+
+	&--centered {
+		text-align: center;
+	}
+
+}
+
 
 /* not optimized below this line */
 .card__title {
 	display: flex;
-	width: 100%;
+	font-weight: 300;
 	justify-content: center;
 	text-align: center;
+	width: 100%;
 }
 
 .card__content {

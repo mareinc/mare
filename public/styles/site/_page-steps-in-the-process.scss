@@ -1,0 +1,115 @@
+.steps-in-the-process {
+    margin: 6em 0 2em 0;
+    width: 100%;
+}
+
+.step-in-the-process {
+    align-items: flex-start;
+    border-left: 2px solid $light-gray;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 2em;
+    margin-left: 2em;
+    padding: 0 2em 4em 2em;
+    position: relative;
+    text-align: left;
+
+    // downward facing arrow underneath border
+    &:after {
+        border-top: 2px solid $light-gray;
+        border-left: 2px solid $light-gray;
+        bottom: 0;
+        content: '';
+        height: 12px;
+        left: -7px; /* (1/2 width) + (1/2 border-width) */
+        position: absolute;
+        transform: rotate(-134deg);
+        width: 12px;
+    }
+
+    @media all and (min-width: 900px) {
+        margin-left: 50%;
+        padding: 0 2em 2em 2em;
+        width: 50%;
+    }   
+
+    // every other child (2, 4, 6, 8) to be left aligned at Desktop widths
+    &:nth-child(2n + 2) {
+
+        // downward facing arrow underneath border
+        &:after {
+            left: auto;
+            right: -7px; /* (1/2 width) + (1/2 border-width) */
+        }
+            
+        @media all and (min-width: 900px) {
+            align-items: flex-end;
+            border-left: none;
+            border-right: 2px solid $light-gray;
+            margin-left: 0;
+            text-align: right;
+            width: calc(50% + 2px); /* 2px to account for the border-right so that it lines up with the border-left */ 
+
+            // TODO: figure out a better selector for this
+            .step-in-the-process__marker {
+                left: auto;
+                right: -9px;
+            }
+        }
+
+    }
+
+    &:last-child {
+        // no downward facing arrow after last child 
+        &:after {
+            content: none;
+        }
+    }
+
+}
+
+.step-in-the-process__number {
+    align-items: center;
+    background: #2e4e87;
+    border-radius: 1em; /* 16px */
+    color: white;
+    display: flex;
+    font-size: 0.75em;
+    height: 2em; /* 32px */
+    justify-content: center;
+    margin-top: 1em;
+    text-transform: uppercase;
+    width: 5em; /* 80px */
+}
+
+.step-in-the-process__title {
+    color: $mare-blue;
+    font-weight: 300;
+    font-size: 1.3125em; /* 21px */
+    margin: 0;
+    padding: 0.5em 0;
+}
+
+.step-in-the-process__image {
+    height: 100px;
+
+    /* TODO: remove extra 10px whitespace around each of the Steps in the Process images  */
+
+    /*   
+       top: -60px       = minus (1/2 image height + 10px) (10px of extra whitespace around top of image)
+       right: -10px     = minus 10px (10px of extra whitespace around right of image)
+       bottom: 0        = minus 10px (10px of extra whitespace aorund bottom of image)
+       left: -10px      = minus 10px (10px of extra whitespace around left of image)
+     */
+    margin: -60px -10px 0 -10px; 
+}
+
+.step-in-the-process__marker {
+    background-color: #2e4e87;
+    border-radius: 50%;
+    height: 15px;
+    left: -8px;
+    position: absolute;
+    top: -22px;
+    width: 15px;
+}

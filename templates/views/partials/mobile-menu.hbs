@@ -26,7 +26,11 @@
 				<a href="{{ href }}">{{ title }}</a>
 			{{/if}}
 		</li>
-		{{/each}}
-		<!-- TODO: if the person is logged in, show the profile page here -->
+		{{/each}}		
+		{{#if user}}
+		<li>
+			<a href="/account">My Profile</a>
+		</li>
+		{{/if}}
 	</ul>
 </nav>

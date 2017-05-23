@@ -12,7 +12,6 @@
 }
 
 .waiting-child-profiles-filter {
-	margin-bottom: 1em;
     width: 90%;
 
     @media all and ( min-width: 31.25em ) {	/* 500px / 16px = 31.25em */
@@ -28,12 +27,10 @@
 	display: flex;
     justify-content: space-around;
     margin-top: 1em;
-	width: 19.75em;							/* 300px / 14px = 19.75em */ // TODO: possibly switch to rem units since the 14px switch is hard to follow
 	align-self: center;
 
 	@media all and ( min-width: 31.25em ) {	/* 500px / 16px = 31.25em */
 		margin-top: 0;
-		align-self: flex-end;
 	}
 }
 /* TODO: make this its own component */
@@ -43,6 +40,7 @@
 }
 
 .icon-text-unit__icon {
+	margin-right: 5px;
 	vertical-align:middle;
 	width: 20px;
 }
@@ -163,14 +161,6 @@
 
 /* TODO: possibly put these in the media-boxes trumps file
 /* hover effect on the image */
-.media-box-image img{
-	transition: all 0.3s ease-in-out;
-	transform-origin: bottom left;
-}
-
-.media-box-image:hover img{
-	transform: scale(1.1) translate(-10px);
-}
 
 .media-box-container {
 	box-shadow: none;

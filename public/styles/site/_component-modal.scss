@@ -27,12 +27,12 @@
     min-width: 320px;
 
     @media screen and ( min-width: 655px ) {
-	    width: 500px;
-	    height: 575px;
+	    width: 600px;
+	    height: 600px;
 	    left: 50%;
 	    top: 50%;
-	    margin-left: -250px;
-	    margin-top: -287.5px;
+	    margin-left: -300px;
+	    margin-top: -300px;
 	}
 
 	&--small {
@@ -40,6 +40,8 @@
 		@media screen and ( min-width: 655px ) {
 			height: 26em;
 		}
+
+		margin-top: -13em;
 	}
 }
 

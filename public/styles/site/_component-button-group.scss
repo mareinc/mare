@@ -5,6 +5,10 @@
 		position: relative;
 	}
 
+	&--wrap {
+		flex-wrap: wrap;
+	}
+
 	&--horizontal {
 		flex-direction: row;
 	}
