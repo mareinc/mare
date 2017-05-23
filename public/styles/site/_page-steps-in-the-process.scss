@@ -38,7 +38,6 @@
 
         // downward facing arrow underneath border
         &:after {
-            left: auto;
             right: -7px; /* (1/2 width) + (1/2 border-width) */
         }
             
@@ -54,6 +53,10 @@
             .step-in-the-process__marker {
                 left: auto;
                 right: -9px;
+            }
+
+            &:after {
+                left: auto;
             }
         }
 
