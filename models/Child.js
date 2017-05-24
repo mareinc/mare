@@ -264,7 +264,7 @@ Child.schema.post( 'save', function() {
 	// update all sibling information
 	this.updateSiblingFields();
 	// update saved bookmarks for families and social workers in the event of a status change or sibling group change
-	this.updateBookmarks();
+	// this.updateBookmarks();
 });
 
 Child.schema.methods.setImages = function( done ) {
