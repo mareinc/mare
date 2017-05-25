@@ -148,11 +148,16 @@ exports.saveSiteVisitor = ( req, res, user, done ) => {
 	newUser.save( ( err, model ) => {
 		if( err ) {
 			console.log( err );
-			locals.messages.push( { type: `error`, message: `there was an error creating your account` } );
+			// create an error flash message
+			req.flash( 'error', {
+					title: 'There was an error creating your account',
+					detail: 'If this error persists, please notify MARE' } );
+					
 			return done();
 		}
 
-		locals.messages.push( { type: `success`, message: `Congratulations, your account has been successfully created` } );
+		// create a success flash message
+		req.flash( 'success', { title: 'Your account has been successfully created' } );
 		// create a new random code for the user to verify their account with
 		const verificationCode = randomString.generate( { length: 35, charset: 'alphanumeric' } );
 		// store the user type found in the returned model
@@ -212,10 +217,16 @@ exports.saveSocialWorker = ( req, res, user, done ) => {
 	newUser.save( ( err, model ) => {
 		if( err ) {
 			console.log( err );
-			locals.messages.push( { type: `error`, message: `there was an error creating your account` });
+			// create an error flash message
+			req.flash( 'error', {
+					title: 'There was an error creating your account',
+					detail: 'If this error persists, please notify MARE' } );
 		} else {
 			console.log( `new social worker saved` );
-			locals.messages.push( { type: `success`, message: `your social worker account has been successfully created` } );
+			// create a success flash message
+			req.flash( 'success', {
+					title: 'Your account has been successfully created',
+					detail: 'Please not that it can take several days for your account to be reviewed and activated.  You will receive an email once MARE has had a chance to review your information.' } );
 		}
 		done();
 	});
@@ -323,7 +334,7 @@ exports.saveFamily = ( req, res, user, done ) => {
 				to							: user.ageRangeTo
 			},
 
-			numberOfChildrenToAdopt			: parseInt( user.numberOfChildrenPrefered, 10 ),
+			numberOfChildrenToAdopt			: user.numberOfChildrenPrefered ? parseInt( user.numberOfChildrenPrefered, 10 ) : 0,
 			siblingContact					: user.contactWithBiologicalSiblings === 'yes' ? true : false,
 			birthFamilyContact				: user.contactWithBiologicalParents === 'yes' ? true : false,
 			race							: user.adoptionPrefRace,
@@ -347,13 +358,19 @@ exports.saveFamily = ( req, res, user, done ) => {
 	newUser.save( ( err, model ) => {
 		if( err ) {
 			console.log( err );
-			locals.messages.push( { type: `error`, message: `there was an error creating your account` } );
+			// create an error flash message
+			req.flash( 'error', {
+					title: 'There was an error creating your account',
+					detail: 'If this error persists, please notify MARE' } );
 		} else {
 			// TODO: if the user requested an email of the info packet, send it
 			// TODO: if the user requested a mail copy of the info packet, add it to an object containing email information before sending it to Diane
 			//       so we can capture all relevant information in one email
 			console.log( `new family saved` );
-			locals.messages.push( { type: `success`, message: `your account has been successfully created` } );
+			// create a success flash message
+			req.flash( 'success', {
+					title: 'Your account has been successfully created',
+					detail: 'Please not that it can take several days for your account to be reviewed and activated.  You will receive an email once MARE has had a chance to review your information.' } );
 		}
 		
 		done();
@@ -489,7 +506,7 @@ exports.addToMailingLists = ( req, res, user, done ) => {
 			}
 	});
 };
-
+/* TODO: if there's no file to save, we shouldn't be fetching a model, create a short circuit check */
 exports.uploadFile = ( req, res, userModel, targetFieldPrefix, targetField, file, done ) => {
 
 	// TODO: however this will be done, we need to check to see if the file object is stored, if not, we can ignore this whole function
