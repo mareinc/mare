@@ -152,7 +152,7 @@ exports.saveSiteVisitor = ( req, res, user, done ) => {
 			req.flash( 'error', {
 					title: 'There was an error creating your account',
 					detail: 'If this error persists, please notify MARE' } );
-					
+
 			return done();
 		}
 
@@ -226,7 +226,7 @@ exports.saveSocialWorker = ( req, res, user, done ) => {
 			// create a success flash message
 			req.flash( 'success', {
 					title: 'Your account has been successfully created',
-					detail: 'Please not that it can take several days for your account to be reviewed and activated.  You will receive an email once MARE has had a chance to review your information.' } );
+					detail: 'Please note that it can take several days for your account to be reviewed and activated.  You will receive an email once MARE has had a chance to review your information.' } );
 		}
 		done();
 	});
@@ -370,7 +370,7 @@ exports.saveFamily = ( req, res, user, done ) => {
 			// create a success flash message
 			req.flash( 'success', {
 					title: 'Your account has been successfully created',
-					detail: 'Please not that it can take several days for your account to be reviewed and activated.  You will receive an email once MARE has had a chance to review your information.' } );
+					detail: 'Please note that it can take several days for your account to be reviewed and activated.  You will receive an email once MARE has had a chance to review your information.' } );
 		}
 		
 		done();
