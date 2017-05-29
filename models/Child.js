@@ -241,14 +241,14 @@ Child.schema.pre('save', function( next ) {
 	'use strict';
 
 	async.series([
-		// done => { this.setImages( done ); }, // Create cloudinary URLs for images sized for various uses
+		done => { this.setImages( done ); }, // Create cloudinary URLs for images sized for various uses
 		done => { this.setFullName( done ); }, // Create a full name for the child based on their first, middle, and last names
-		// done => { this.setRegistrationNumber( done ); }, // Set the registration number to the next highest available
+		done => { this.setRegistrationNumber( done ); }, // Set the registration number to the next highest available
 		done => { this.setAgencyFields( done ); }, // Set the adoption and recruitment workers' agency and region
 		done => { this.setFileName( done ); }, // Create an identifying name for file uploads
 		done => { this.setSiblingGroupFileName( done ); }, // Create an identifying name for sibling group file uploads
-		// done => { this.updateMustBePlacedWithSiblingsCheckbox( done ); }, // If there are no siblings to be placed with, uncheck the box, otherwise check it
-		// done => { this.updateGroupBio( done ); },
+		done => { this.updateMustBePlacedWithSiblingsCheckbox( done ); }, // If there are no siblings to be placed with, uncheck the box, otherwise check it
+		done => { this.updateGroupBio( done ); },
 		done => { ChangeHistoryMiddleware.setUpdatedby( this, done ); }, // we need this id in case the family was created via the website and udpatedBy is empty
 		done => { this.setChangeHistory( done ); } // Process change history
 	], function() {
@@ -260,12 +260,12 @@ Child.schema.pre('save', function( next ) {
 	});
 });
 
-// Child.schema.post( 'save', function() {
-// 	// update all sibling information
-// 	this.updateSiblingFields();
-// 	// update saved bookmarks for families and social workers in the event of a status change or sibling group change
-// 	this.updateBookmarks();
-// });
+Child.schema.post( 'save', function() {
+	// update all sibling information
+	this.updateSiblingFields();
+	// update saved bookmarks for families and social workers in the event of a status change or sibling group change
+	// this.updateBookmarks();
+});
 
 Child.schema.methods.setImages = function( done ) {
 	'use strict';
