@@ -55,13 +55,29 @@ exports.registerUser = ( req, res, next ) => {
 		done => { exports.checkForDuplicateEmail( req, res, user.email, done ); },
 		done => { exports.validatePassword( req, res, user.password, user.confirmPassword, done ); }
 	], () => {
-		if( locals.isEmailInvalid ) { locals.messages.push( { type: 'error', message: 'email is invalid' } ); }
-		if( locals.isEmailDuplicate ) { locals.messages.push( { type: 'error', message: 'email already exists in the system' } ); }
-		if( locals.isPasswordInvalid ) { locals.messages.push( { type: 'error', message: 'passwords don\'t match' } ); }
+		// create an error flash messages if a problem was encountered
+		if( locals.isEmailInvalid ) {
+			hasError = true;
+			req.flash( `error`, {
+					title: `There was a problem creating your account`,
+					detail: `The email address you're trying to use is invalid` } );
+		}
 
-		console.log( locals.messages );
+		if( locals.isEmailDuplicate ) {
+			hasError = true;
+			req.flash( `error`, {
+					title: `There was a problem creating your account`,
+					detail: `The email address you're trying to use already exists in the system` } );
+		}
+
+		if( locals.isPasswordInvalid ) {
+			hasError = true;
+			req.flash( `error`, {
+					title: `There was a problem creating your account`,
+					detail: `The passwords you entered don't match` } );
+		}
 		// TODO: Add check for required fields
-		if( locals.messages.length > 0 ) {
+		if( locals.isEmailInvalid || locals.isEmailDuplicate || locals.isPasswordInvalid ) {
 			// TODO: send the error messages as flash messages
 			res.redirect( 303, locals.redirectPath );
 		} else {
@@ -155,7 +171,6 @@ exports.saveSiteVisitor = ( req, res, user, done ) => {
 
 			return done();
 		}
-
 		// create a success flash message
 		req.flash( 'success', { title: 'Your account has been successfully created' } );
 		// create a new random code for the user to verify their account with
@@ -221,13 +236,16 @@ exports.saveSocialWorker = ( req, res, user, done ) => {
 			req.flash( 'error', {
 					title: 'There was an error creating your account',
 					detail: 'If this error persists, please notify MARE' } );
-		} else {
-			console.log( `new social worker saved` );
-			// create a success flash message
-			req.flash( 'success', {
-					title: 'Your account has been successfully created',
-					detail: 'Please note that it can take several days for your account to be reviewed and activated.  You will receive an email once MARE has had a chance to review your information.' } );
+
+			return done();
 		}
+
+		console.log( `new social worker saved` );
+		// create a success flash message
+		req.flash( 'success', {
+				title: 'Your account has been successfully created',
+				detail: 'Please note that it can take several days for your account to be reviewed and activated.  You will receive an email once MARE has had a chance to review your information.' } );
+		
 		done();
 	});
 };
@@ -362,16 +380,17 @@ exports.saveFamily = ( req, res, user, done ) => {
 			req.flash( 'error', {
 					title: 'There was an error creating your account',
 					detail: 'If this error persists, please notify MARE' } );
-		} else {
-			// TODO: if the user requested an email of the info packet, send it
-			// TODO: if the user requested a mail copy of the info packet, add it to an object containing email information before sending it to Diane
-			//       so we can capture all relevant information in one email
-			console.log( `new family saved` );
-			// create a success flash message
-			req.flash( 'success', {
-					title: 'Your account has been successfully created',
-					detail: 'Please note that it can take several days for your account to be reviewed and activated.  You will receive an email once MARE has had a chance to review your information.' } );
+			
+			return done();
 		}
+		// TODO: if the user requested an email of the info packet, send it
+		// TODO: if the user requested a mail copy of the info packet, add it to an object containing email information before sending it to Diane
+		//       so we can capture all relevant information in one email
+		console.log( `new family saved` );
+		// create a success flash message
+		req.flash( 'success', {
+				title: 'Your account has been successfully created',
+				detail: 'Please note that it can take several days for your account to be reviewed and activated.  You will receive an email once MARE has had a chance to review your information.' } );
 		
 		done();
 	});
@@ -471,7 +490,10 @@ exports.addToMailingLists = ( req, res, user, done ) => {
 		MailingList.model.findById( res.locals.mailingLists[ listName ] )
 				.exec()
 				.then( result => {
-
+					
+					if( !result ) {
+						callback( `The mailing list you're trying to subscribe to doesn't exist, aborting save.` );
+					}
 					if( res.locals.registrationType === 'socialWorker' ) {
 						result.socialWorkerSubscribers.push( res.locals.newUserID );
 					} else if ( res.locals.registrationType === 'family' ) {
@@ -479,37 +501,40 @@ exports.addToMailingLists = ( req, res, user, done ) => {
 					}
 
 					result.save( ( err, model ) => {
-						if( err ) {
-							console.log( err );
-						} else {
-							console.log( `user saved to ${ listName } list` );
-						}
 
-						callback();
+						err ? callback( 'error saving the mailing list model with the new user' ) : callback();
 					});
 
 				}, err => {
-					console.log( err );
-					callback();
+					callback( 'error fetching mailing list model to save user to' );
 				});
 
 	}, err => {
 			// if any of the file processing produced an error, err would equal that error
 			if( err ) {
-				// One of the iterations produced an error.
-				// All processing will now stop.
-				console.log( `an error occurred saving the user to one or more mailing lists: ${ err }` );
+				// One of the iterations produced an error
+				// all processing will now stop
+				console.log( err );
+
+				req.flash( `info`, {
+					title: `There was a problem adding you to the requested mailing lists`,
+					detail: `Please notify MARE and we will work to resolve this issue as quickly as possible` } );
+
 				done();
 			} else {
-				console.log( `user saved to all email lists successfully` );
+				console.log( `user saved to email lists successfully` );
 				done();
 			}
 	});
 };
 /* TODO: if there's no file to save, we shouldn't be fetching a model, create a short circuit check */
 exports.uploadFile = ( req, res, userModel, targetFieldPrefix, targetField, file, done ) => {
+	// exit this function if there's no file to upload
+	if( !file ) {
+		console.log( 'uploadFile - no file to upload, exiting early' );
+		return done();
+	}
 
-	// TODO: however this will be done, we need to check to see if the file object is stored, if not, we can ignore this whole function
 	userModel.model.findById( res.locals.newUserID )
 				.exec()
 				.then( user => {
