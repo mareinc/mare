@@ -480,7 +480,7 @@ exports.addToMailingLists = ( req, res, user, done ) => {
 
 	res.locals.requestedMailingLists = [];
 
-	if( user.mareEmailList === 'yes' ) { res.locals.requestedMailingLists.push( 'news' ); }
+	if( user.mareEmailList === 'yes' ) { res.locals.requestedMailingLists.push( 'e-mail newsletter' ); }
 	if( user.adoptionPartyEmailList === 'yes' ) { res.locals.requestedMailingLists.push( 'adoption parties' ); }
 	if( user.fundraisingEventsEmailList === 'yes' ) { res.locals.requestedMailingLists.push( 'fundraising' ); }
 	// Loop through each of the mailing lists the user should be added to and add them.  Async allows all assignments
@@ -560,7 +560,7 @@ exports.getMailingLists = ( req, res, done ) => {
 	res.locals.mailingLists = {};
 
 	MailingList.model.find()
-			.where( 'mailingList' ).in( [ 'news', 'adoption parties', 'fundraising' ] )
+			.where( 'mailingList' ).in( [ 'e-mail newsletter', 'adoption parties', 'fundraising' ] )
 			.exec()
 			.then( mailingLists => {
 

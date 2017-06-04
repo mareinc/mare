@@ -185,7 +185,6 @@ SocialWorker.schema.methods.setChangeHistory = function setChangeHistory( done )
 			},
 			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
-											parent: 'permissions',
 											name: 'isActive',
 											label: 'is active',
 											type: 'boolean' }, model, modelBefore, changeHistory, done);
