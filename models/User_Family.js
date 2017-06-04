@@ -392,7 +392,6 @@ Family.schema.virtual( 'canAccessKeystone' ).get( function() {
 
 Family.schema.methods.setHomestudyVerifiedDate = function ( done ) {
 	'use strict';
-	console.log('setHomestudyVerifiedDate - start');
 
 	// if the isHomestudyVerified checkbox isn't checked
 	if( !this.permissions.isHomestudyVerified ) {
@@ -404,14 +403,11 @@ Family.schema.methods.setHomestudyVerifiedDate = function ( done ) {
 		this.permissions.homestudyVerifiedDate = new Date();
 	}
 
-	console.log('setHomestudyVerifiedDate - end');
-
 	done();
 };
 
 Family.schema.methods.setGalleryViewingPermissions = function( done ) {
 	'use strict';
-	console.log('setGalleryViewingPermissions - start');
 
 	let state;
 
@@ -420,26 +416,26 @@ Family.schema.methods.setGalleryViewingPermissions = function( done ) {
 			State.model.findById( this.address.state )
 				.exec()
 				.then( stateObject => {
+
 					state = stateObject.abbreviation;
-					console.log('setGalleryViewingPermissions - found id');
 					done();
 				});
 			}
 	], () => {
-		console.log('setGalleryViewingPermissions - post fetch');
+
 		if( this.permissions.isHomestudyVerified && [ 'MA', 'NH', 'CT', 'ME', 'VT', 'RI', 'NY' ].includes( state ) ) {
 			this.permissions.canViewAllChildren = true;
 		} else {
 			this.permissions.canViewAllChildren = false;
 		}
-		console.log('setGalleryViewingPermissions - end');
+
 		done();
 	});
 };
 
 Family.schema.methods.setFullName = function( done ) {
 	'use strict';
-	console.log('setFullName - start');
+
 	this.contact1.name.full = this.contact1.name.first + ' ' + this.contact1.name.last;
 
 	// if both the first and last names are set for the second contact, set the full name to 'first last'
@@ -455,44 +451,41 @@ Family.schema.methods.setFullName = function( done ) {
 	} else {
 		this.contact2.name.full = '';
 	}
-	console.log('setFullName - end');
+
 	done();
 };
 
 // TODO: Better handled with a virtual
 Family.schema.methods.setFileName = function( done ) {
 	'use strict';
-	console.log('setFileName - start');
+
 	// Create an identifying name for file uploads
 	this.fileName = this.contact1.name.first ?
 					`${ this.registrationNumber }_${ this.contact1.name.first.toLowerCase() }` :
 					`${ this.registrationNumber }_`;
-	console.log('setFileName - end');				
+			
 	done();
 };
 
 Family.schema.methods.setUserType = function( done ) {
 	'use strict'
-	console.log('setUserType - start');
+
 	// Set the userType for role based page rendering
 	this.userType = 'family';
-	console.log('setUserType - end');
+
 	done();
 };
 
 Family.schema.methods.setRegistrationNumber = function( done ) {
-	console.log('setRegistrationNumber - start');
+
 	// If the registration number is already set ( which will happen during the data migration and creating from the website ), ignore setting it
 	if( this.registrationNumber ) {
-		console.log('setRegistrationNumber - registration number already set');
 		done();
 	} else {
-		console.log('setRegistrationNumber - registration number doesn\'t exist');
 		// get all families
 		keystone.list( 'Family' ).model.find()
 				.exec()
 				.then( families => {
-					console.log('setRegistrationNumber - families fetched');
 					// if this is the first family to be created
 					if( families.length === 0 ) {
 						this.registrationNumber = 1;
@@ -502,7 +495,7 @@ Family.schema.methods.setRegistrationNumber = function( done ) {
 						// get the largest registration number
 						this.registrationNumber = Math.max( ...registrationNumbers ) + 1;
 					}
-					console.log('setRegistrationNumber - end');
+					
 					done();
 
 				}, err => {
@@ -516,11 +509,11 @@ Family.schema.methods.setRegistrationNumber = function( done ) {
 
 Family.schema.methods.setChangeHistory = function setChangeHistory( done ) {
 	'use strict';
-	console.log('setChangeHistory - start');
+
 	// TODO: terrible use and reuse of variables below, check this and other models with change history
 	var modelBefore	= this._original,
 		model		= this;
-	console.log('setChangeHistory - updated by: ' + this.updatedBy );
+
 	var changeHistory = new FamilyHistory.model({
 		family		: this,
 	    date		: Date.now(),
@@ -530,7 +523,7 @@ Family.schema.methods.setChangeHistory = function setChangeHistory( done ) {
 
 	// if the model is being saved for the first time, mark only that fact in an initial change history record
 	if( !model._original ) {
-		console.log('setChangeHistory - new record, saving history');
+
 		changeHistory.changes = 'record created';
 
 		changeHistory.save( () => {
@@ -543,7 +536,6 @@ Family.schema.methods.setChangeHistory = function setChangeHistory( done ) {
 		});
 
 	} else {
-		console.log('setChangeHistory - not new record, checking all fields for changes');
 		// Any time a new field is added, it MUST be added to this list in order to be considered for display in change history
 		// Computed fields and fields internal to the object SHOULD NOT be added to this list
 		async.parallel([
@@ -1527,13 +1519,13 @@ Family.schema.methods.setChangeHistory = function setChangeHistory( done ) {
 			}
 
 		], () => {
-			console.log('setChangeHistory - all fields checked for changes');
+
 			if ( changeHistory.changes === '' ) {
-				console.log('setChangeHistory - no changes, end');
+
 				done();
 
 			} else {
-				console.log('setChangeHistory - changes, saving history entry');
+
 				changeHistory.save( () => {
 					console.log( 'change history saved successfully' );
 					done();

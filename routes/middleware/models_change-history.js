@@ -218,9 +218,9 @@ exports.setUpdatedby = ( targetModel, done ) => {
 					console.log('setUpdatedby - admins retrieved');
 					// since we can't filter on members of an object in a .where(), we do it in a loop here instead
 					for( admin of admins ) {
-						console.log('setUpdatedby - found website bot, setting updated by');
+						
 						if( admin.name.full === 'Website Bot' ) {
-
+							console.log('setUpdatedby - found website bot, setting updated by');
 							// set the updatedBy field to the id of the website bot
 							targetModel.updatedBy = admin.get( '_id' );
 						}
