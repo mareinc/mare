@@ -39,8 +39,8 @@
     "underscore": "~1.8.3"
   },
   "engines": {
-    "node": "^8.0.0",
-    "npm": "^5.0.0"
+    "node": "^6.2.2",
+    "npm": "^3.9.5"
   },
   "scripts": {
     "start": "node keystone.js",
