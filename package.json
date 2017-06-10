@@ -15,12 +15,12 @@
     "express-handlebars": "~3.0.0",
     "gulp": "gulpjs/gulp#4.0",
     "gulp-autoprefixer": "^4.0.0",
-    "gulp-clean-css": "^3.4.0",
+    "gulp-clean-css": "^3.4.1",
     "gulp-concat": "^2.6.1",
     "gulp-eslint": "^3.0.1",
     "gulp-filter": "^5.0.0",
     "gulp-ignore": "^2.0.2",
-    "gulp-imagemin": "^3.2.0",
+    "gulp-imagemin": "^3.3.0",
     "gulp-mocha": "^4.3.1",
     "gulp-rename": "^1.2.2",
     "gulp-sass": "^3.1.0",
@@ -31,7 +31,7 @@
     "keystone": "https://github.com/keystonejs/keystone.git#c38b366c7b1bf01448c8ece7c36e1bb6eb195186",
     "moment": "~2.18.1",
     "mongoose-simple-random": "^0.4.1",
-    "newrelic": "^1.39.1",
+    "newrelic": "^1.40.0",
     "node-sass": "^4.5.3",
     "node-sass-middleware": "^0.11.0",
     "q": "^1.5.0",
@@ -48,9 +48,9 @@
   },
   "main": "keystone.js",
   "devDependencies": {
-    "chai": "^4.0.0",
+    "chai": "^4.0.2",
     "mocha": "^3.4.2",
-    "sinon": "^2.3.2",
+    "sinon": "^2.3.4",
     "sinon-chai": "^2.10.0"
   }
 }
