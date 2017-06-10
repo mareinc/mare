@@ -3,12 +3,12 @@ var keystone = require( 'keystone' );
 // TODO: these functions are also in models_social-worker.js middleware, they should be combined
 /* take in an array of child ids and returns an array of their registration numbers */
 exports.removeChildBookmarks = bookmarkedChildrenToRemove => {
-    console.time( 'family - remove child bookmarks' );
+
     keystone.list( 'Family' ).model.find()
             .where( 'bookmarkedChildren' ).in( bookmarkedChildrenToRemove )
             .exec()
             .then( families => {
-                console.timeEnd( 'family - remove child bookmarks' );
+
                 for( let family of families ) {  
                     // get the current list of bookmarked children
                     let bookmarkedChildren	= family.get( 'bookmarkedChildren' );
@@ -32,11 +32,11 @@ exports.removeChildBookmarks = bookmarkedChildrenToRemove => {
 };
 
 exports.removeSiblingBookmarks = bookmarkedSiblingsToRemove => {
-    console.time( 'family - remove sibling bookmarks' );
+
     keystone.list( 'Family' ).model.find()
             .exec()
             .then( families => {
-                console.timeEnd( 'family - remove sibling bookmarks' );
+
                 for( let family of families ) {  
                     // get the current list of bookmarked children
                     let bookmarkedSiblings	= family.get( 'bookmarkedSiblings' );
