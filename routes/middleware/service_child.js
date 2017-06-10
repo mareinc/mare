@@ -1,9 +1,12 @@
-var keystone		= require('keystone'),
-	_				= require('underscore'),
-	async			= require('async'),
-	middleware		= require('./middleware'),
-	Child			= keystone.list('Child');
-	familyService	= require('./service_family'),
+const keystone		= require( 'keystone' );
+const _				= require( 'underscore' );
+const async			= require( 'async' );
+const middleware	= require( './middleware' );
+const Child			= keystone.list( 'Child' );
+const ChildStatus	= keystone.list( 'Child Status' );
+const familyService	= require( './service_family' );
+const userService	= require( './service_user' );
+
 // TODO: combine the below two functions, the only difference in the filter in the find()
 exports.getAllChildren = ( req, res, done ) => {
 
@@ -476,3 +479,164 @@ exports.getSiblingGroupDetails = ( req, res, next ) => {
 			done();
 		});
 };
+
+exports.registerChild = ( req, res, next ) => {
+	// extract the child details submitted through the req object
+	const child = req.body;
+	// store a reference to locals to allow access to globally available data
+	const locals = res.locals;
+	// set the redirect path to navigate to after processing is complete
+	locals.redirectPath = '/forms/child-registration-form';
+	// fetch the id for the active child status
+	const fetchActiveChildStatusId		= exports.fetchChildStatusId( 'active' );
+	const siblingRegistrationNumbers	= exports.parseRegistrationNumbers( child.registrationNumbers );
+	const fetchSiblingIds				= exports.fetchSiblingIdsByRegistrationNumbers( siblingRegistrationNumbers );
+
+	Promise.all([ fetchActiveChildStatusId, fetchSiblingIds ]).then( values => {
+		// assign local variables to the values returned by the promises
+		const [ childStatusId, siblingIds ] = values;
+
+		// create a new Child model
+		const newChild = new Child.model({
+
+			siteVisibility: 'registered social workers and families', // TODO: note to update this needs to be sent to the staff
+			isVisibleInGallery: false,
+
+			registeredBy: 'unknown', // TODO: note to update this needs to be sent to the staff
+			registrationDate: new Date(),
+
+			name: {
+				first: child.firstName,
+				last: child.lastName,
+				alias: child.alias,
+				nickName: child.nickName
+			},
+
+			birthDate: new Date( child.dateOfBirth ),
+			languages: child.languages,
+			status: childStatusId,
+			gender: child.gender,
+			race: child.race,
+			legalStatus: child.legalStatus,
+			yearEnteredCare: child.yearEnteredCare,
+
+			hasContactWithSiblings: child.isSiblingContactNeeded.toLowerCase() === 'yes',
+			siblingTypeOfContact: child.siblingContactDescription,
+			siblings: siblingIds,
+			mustBePlacedWithSiblings: child.isPartOfSiblingGroup,
+			siblingsToBePlacedWith: child.isPartOfSiblingGroup ? siblingIds : [],
+			hasContactWithBirthFamily: child.isFamilyContactNeeded.toLowerCase() === 'yes',
+			birthFamilyTypeOfContact: child.familyContactDescription,
+
+			residence: child.currentResidence,
+			isOutsideMassachusetts: child.isNotMACityOrTown ,
+			city: child.isNotMACityOrTown ? undefined: child.MACityOrTown,
+			cityText: child.isNotMACityOrTown ? child.nonMACityOrTown : '',
+			
+			careFacilityName: child.careFacility,
+
+			physicalNeeds: 'none', // TODO: need to send as email for them to review and change
+			physicalNeedsDescription: child.physicalNeeds,
+			emotionalNeeds: 'none', // TODO: need to send as email for them to review and change
+			emotionalNeedsDescription: child.emotionalNeeds,
+			intellectualNeeds: 'none', // TODO: need to send as email for them to review and change
+			intellectualNeedsDescription: child.intellectualNeeds,
+			socialNeeds: 'none', // TODO: need to send as email for them to review and change
+			socialNeedsDescription: child.socialNeeds,
+
+			aspirations: child.aspirations,
+
+			schoolLife: child.schoolLife,
+			familyLife: child.familyLife,
+			personality: child.personality,
+			otherRecruitmentConsiderations: child.otherRecruitmentConsiderations,
+
+			disabilities: child.disabilities,
+			// TODO: not required in model anymore, is this because it's not required on the form now?
+			recommendedFamilyConstellation: child.recommendedFamilyConstellations,
+			otherFamilyConstellationConsideration: child.otherFamilyConstellationConsiderations,
+			otherConsiderations: child.otherConsiderations
+		});
+
+		newChild.save( ( err, model ) => {
+
+			if( err ) {
+				console.log( err );
+				// create an error flash message
+				req.flash( 'error', {
+						title: `There was an error registering your child`,
+						detail: `If this error persists, please notify MARE` } );
+			} else {
+				// TODO: if the user requested an email of the info packet, send it
+				// TODO: if the user requested a mail copy of the info packet, add it to an object containing email information before sending it to Diane
+				//       so we can capture all relevant information in one email
+				console.log( `new child saved` );
+				// create a success flash message
+				req.flash( 'success', {
+						title: `Congratulations, your child record has been successfully registered.`,
+						detail: `Please note that it can take several days for the child's account to be reviewed and activated.` } );
+			}
+			
+			res.redirect( 303, locals.redirectPath );
+		});
+	});
+};
+
+exports.parseRegistrationNumbers = registrationNumbersString => {
+	// if no siblings were listed
+	if( !registrationNumbersString || registrationNumbersString.length === 0 ) {
+		// return an empty array to populate the siblings field correclty
+		return [];
+	} 
+	// pull each registration number into an array based on splitting on commas
+	// TODO: might want to make this more robust by splitting on ; and spaces as well
+	let siblingRegistrationNumbersArray = registrationNumbersString.split( ',' );
+	// remove any leading or trailing whitespace from each id value
+	_.each( siblingRegistrationNumbersArray, siblingRegistrationNumbers => {
+		siblingRegistrationNumbers.trim();
+	});
+	// return only the unique entries in case the same id was entered multiple times
+	return _.uniq( siblingRegistrationNumbersArray );
+};
+
+exports.fetchChildStatusId = status => {
+
+	return new Promise( ( resolve, reject ) => {
+		ChildStatus.model.findOne()
+				.where( 'childStatus', status )
+				.exec()
+				.then( status => {
+
+					status ? resolve( status.get( '_id' ) ) : resolve();
+
+				}, err => {
+
+					reject();
+
+				});
+	});
+};
+
+exports.fetchSiblingIdsByRegistrationNumbers = registrationNumbers => {
+
+	return new Promise( ( resolve, reject ) => {
+
+		if( registrationNumbers.length === 0 ) {
+			return resolve( [] );
+		}
+
+		Child.model.find()
+				.select( '_id' )
+				.where( { registrationNumber: { $in: registrationNumbers } } )
+				.exec()
+				.then( children => {
+
+					status ? resolve( status.get( '_id' ) ) : resolve();
+
+				}, err => {
+
+					reject();
+
+				});
+	});
+}
