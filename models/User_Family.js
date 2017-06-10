@@ -463,7 +463,7 @@ Family.schema.methods.setFileName = function( done ) {
 	this.fileName = this.contact1.name.first ?
 					`${ this.registrationNumber }_${ this.contact1.name.first.toLowerCase() }` :
 					`${ this.registrationNumber }_`;
-			
+
 	done();
 };
 
@@ -480,10 +480,14 @@ Family.schema.methods.setRegistrationNumber = function( done ) {
 
 	// If the registration number is already set ( which will happen during the data migration and creating from the website ), ignore setting it
 	if( this.registrationNumber ) {
+
 		done();
 	} else {
 		// get all families
-		keystone.list( 'Family' ).model.find()
+		keystone.list( 'Family' ).model
+				.find()
+				.select( 'registrationNumber' )
+				.lean()
 				.exec()
 				.then( families => {
 					// if this is the first family to be created
@@ -491,15 +495,16 @@ Family.schema.methods.setRegistrationNumber = function( done ) {
 						this.registrationNumber = 1;
 					} else {
 						// get an array of registration numbers
-						const registrationNumbers = families.map( family => family.get( 'registrationNumber' ) );
+						const registrationNumbers = families.map( family => family.registrationNumber );
 						// get the largest registration number
 						this.registrationNumber = Math.max( ...registrationNumbers ) + 1;
 					}
-					
+
 					done();
 
 				}, err => {
 					console.log( 'error setting registration number' );
+
 					console.log( err );
 
 					done();
@@ -523,15 +528,17 @@ Family.schema.methods.setChangeHistory = function setChangeHistory( done ) {
 
 	// if the model is being saved for the first time, mark only that fact in an initial change history record
 	if( !model._original ) {
-
+		
 		changeHistory.changes = 'record created';
 
 		changeHistory.save( () => {
 			console.log( 'record created change history saved successfully' );
+
 			done();
 		}, err => {
 			console.log( err );
 			console.log( 'error saving record created change history' );
+
 			done();
 		});
 
@@ -1527,10 +1534,12 @@ Family.schema.methods.setChangeHistory = function setChangeHistory( done ) {
 
 				changeHistory.save( () => {
 					console.log( 'change history saved successfully' );
+
 					done();
 				}, err => {
 					console.log( err );
 					console.log( 'error saving change history' );
+
 					done();
 				});
 			}

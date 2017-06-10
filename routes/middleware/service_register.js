@@ -108,7 +108,6 @@ exports.registerUser = ( req, res, next ) => {
 
 				async.series([
 					done => { exports.getMailingLists( req, res, done ); },
-					done => { exports.getNextRegistrationNumber( req, res, done ); },
 					done => { exports.saveFamily( req, res, user, done ); },
 					done => { exports.getUserID( req, res, user, locals.userModel, done ); },
 					done => { exports.uploadFile( req, res, locals.userModel, 'homestudy', 'homestudyFile_upload', locals.files.homestudyFile_upload, done ); },
@@ -380,7 +379,7 @@ exports.saveFamily = ( req, res, user, done ) => {
 			req.flash( 'error', {
 					title: 'There was an error creating your account',
 					detail: 'If this error persists, please notify MARE' } );
-			
+
 			return done();
 		}
 		// TODO: if the user requested an email of the info packet, send it
@@ -391,7 +390,7 @@ exports.saveFamily = ( req, res, user, done ) => {
 		req.flash( 'success', {
 				title: 'Your account has been successfully created',
 				detail: 'Please note that it can take several days for your account to be reviewed and activated.  You will receive an email once MARE has had a chance to review your information.' } );
-		
+
 		done();
 	});
 }
@@ -444,10 +443,11 @@ exports.getUserID = ( req, res, user, userModel, done ) => {
 	let locals = res.locals;
 
 	const email = user.email;
-	// TODO: this exec() is suspicious and different from all my others, it warrants further testing
+	// TODO: see if we can optimize this with select() and lean(), also, can we ES6ify without a context issue
 	userModel.model.findOne( { email: email } )
 			.exec(function ( err, user ) {
 				locals.newUserID = user._id;
+
 				done();
 			});
 
@@ -523,15 +523,18 @@ exports.addToMailingLists = ( req, res, user, done ) => {
 				done();
 			} else {
 				console.log( `user saved to email lists successfully` );
+
 				done();
 			}
 	});
 };
 /* TODO: if there's no file to save, we shouldn't be fetching a model, create a short circuit check */
 exports.uploadFile = ( req, res, userModel, targetFieldPrefix, targetField, file, done ) => {
+
 	// exit this function if there's no file to upload
 	if( !file ) {
 		console.log( 'uploadFile - no file to upload, exiting early' );
+
 		return done();
 	}
 
@@ -545,11 +548,13 @@ exports.uploadFile = ( req, res, userModel, targetFieldPrefix, targetField, file
 
 					user.save( ( err, model ) => {
 						console.log( `file saved for the user` );
+
 						done();
 					});
 
 				}, err => {
 					console.log( `error fetching user to save file attachment: ${ err }` );
+
 					done();
 				});
 };
@@ -572,32 +577,11 @@ exports.getMailingLists = ( req, res, done ) => {
 
 			}, err => {
 				console.log( err );
-				done();
-			});
-};
-
-exports.getNextRegistrationNumber = ( req, res, done ) => {
-
-	let locals = res.locals;
-	
-	Family.model.find()
-			.select( 'registrationNumber' )
-			.exec()
-			.then( families => {
-				// get an array of registration numbers
-				const registrationNumbers = families.map( family => family.get( 'registrationNumber' ) );
-				// get the largest registration number
-				locals.newRegistrationNumber = Math.max( ...registrationNumbers ) + 1;
-
-				done();
-
-			}, err => {
-				console.log( 'error setting registration number' );
-				console.log( err );
 
 				done();
 			});
 };
+
 // TODO: why do we need this, saving a Date object in any Types.Date field should work just fine
 exports.getCurrentDate = () => {
 
