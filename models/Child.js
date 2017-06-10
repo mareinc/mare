@@ -219,7 +219,7 @@ Child.add('Display Options', {
 });
 
 // Set up relationship values to show up at the bottom of the model if any exist
-Child.relationship( { ref: 'Child', refPath: 'siblings', path: 'children', label: 'all siblings' } );
+Child.relationship( { ref: 'Child', refPath: 'siblings', path: 'children', label: 'siblings' } );
 Child.relationship( { ref: 'Placement', refPath: 'child', path: 'placements', label: 'placements' } );
 Child.relationship( { ref: 'Inquiry', refPath: 'child', path: 'inquiries', label: 'inquiries' } );
 Child.relationship( { ref: 'Match', refPath: 'child', path: 'matches', label: 'matches' } );
@@ -266,7 +266,7 @@ Child.schema.post( 'save', function() {
 	// update all sibling information
 	this.updateSiblingFields();
 	// update saved bookmarks for families and social workers in the event of a status change or sibling group change
-	// this.updateBookmarks();
+	this.updateBookmarks();
 });
 
 Child.schema.methods.setImages = function( done ) {
@@ -507,8 +507,10 @@ Child.schema.methods.updateBookmarks = function() {
 		done => {
 			// if the child needs to be placed with siblings
 			if( this.mustBePlacedWithSiblings ) {
-				// mark the current child for removal as a child bookmark
-				bookmarkedChildrenToRemove.push( childId );
+				// mark the current child for removal as a child bookmark unless they're already marked
+				if( !bookmarkedChildrenToRemove.includes( childId ) ) {
+					bookmarkedChildrenToRemove.push( childId );
+				}
 				// mark all siblings to be placed with for removal as child bookmarks
 				bookmarkedChildrenToRemove.concat( [ ...remainingSiblingsToBePlacedWith ] );
 				// mark all removed siblings to be placed with for removal as sibling bookmarks
@@ -524,12 +526,18 @@ Child.schema.methods.updateBookmarks = function() {
 			done();
 		}
 	], () => {
-		// remove all marked child bookmarks from families and social workers
-		FamilyMiddleware.removeChildBookmarks( bookmarkedChildrenToRemove );
-		SocialWorkerMiddleware.removeChildBookmarks( bookmarkedChildrenToRemove );
-		// remove all marked sibling bookmarks from families and social workers
-		FamilyMiddleware.removeSiblingBookmarks( bookmarkedSiblingsToRemove );
-		SocialWorkerMiddleware.removeSiblingBookmarks( bookmarkedSiblingsToRemove );
+		// if any child bookmarks need to be removed
+		if( bookmarkedChildrenToRemove.length > 0 ) {
+			// remove them from families and social workers
+			FamilyMiddleware.removeChildBookmarks( bookmarkedChildrenToRemove );
+			SocialWorkerMiddleware.removeChildBookmarks( bookmarkedChildrenToRemove );
+		}
+		// if any sibling bookmarks need to be removed
+		if( bookmarkedSiblingsToRemove.length > 0 ) {
+			// remove them from families and social workers
+			FamilyMiddleware.removeSiblingBookmarks( bookmarkedSiblingsToRemove );
+			SocialWorkerMiddleware.removeSiblingBookmarks( bookmarkedSiblingsToRemove );
+		}
 	});
 };
 
