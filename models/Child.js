@@ -74,7 +74,9 @@ Child.add('Display Options', {
 	birthFamilyTypeOfContact: { type: Types.Text, label: 'type of contact', initial: true },
 
 	residence: { type: Types.Relationship, label: 'where does the child presently live?', ref: 'Residence', initial: true },
-	city: { type: Types.Relationship, label: 'city/town of child\'s current location', ref: 'City or Town', initial: true },
+	city: { type: Types.Relationship, label: 'city/town of child\'s current location', ref: 'City or Town', dependsOn: { isOutsideMassachusetts: false }, initial: true },
+	isOutsideMassachusetts: { type: Types.Boolean, label: 'is outside Massachusetts', initial: true },
+	cityText: { type: Types.Text, label: 'city/town of child\'s current location', dependsOn: { isOutsideMassachusetts: true }, initial: true },
 	careFacilityName: { type: Types.Text, label: 'name of residential/group care facility', initial: true },
 	dateMovedToResidence: { type: Types.Date, label: 'date moved to current residence', format: 'MM/DD/YYYY', initial: true }
 
@@ -237,7 +239,7 @@ Child.schema.post( 'init', function() {
 	this._original = this.toObject();
 });
 
-Child.schema.pre('save', function( next ) {
+Child.schema.pre( 'save', function( next ) {
 	'use strict';
 
 	async.series([
@@ -294,20 +296,24 @@ Child.schema.methods.setFullName = function( done ) {
 };
 
 Child.schema.methods.setRegistrationNumber = function( done ) {
+
 	// If the registration number is already set ( which will happen during the data migration ), ignore setting it
 	if( this.registrationNumber ) {
 		done();
 	} else {
 		// get all children
-		keystone.list( 'Child' ).model.find()
+		keystone.list( 'Child' ).model
+				.find()
+				.select( 'registrationNumber' )
+				.lean()
 				.exec()
 				.then( children => {
-					// if this is the first family to be created
+					// if this is the first child to be created
 					if( children.length === 0 ) {
 						this.registrationNumber = 1;
 					} else {
 						// get an array of registration numbers
-						const registrationNumbers = children.map( child => child.get( 'registrationNumber' ) );
+						const registrationNumbers = children.map( child => child.registrationNumber );
 						// get the largest registration number
 						this.registrationNumber = Math.max( ...registrationNumbers ) + 1;
 					}
@@ -449,6 +455,7 @@ Child.schema.methods.updateSiblingFields = function() {
 			if( remainingSiblingsToBePlacedWith.size > 0 || removedSiblingsToBePlacedWith.size === 1 ) {
 				ChildMiddleware.updateMyRemovedSiblingsToBePlacedWith( allSiblingsToBePlacedWith, removedSiblingsToBePlacedWith, childId, done );
 			} else {
+
 				done();
 			}
 		}
@@ -540,16 +547,18 @@ Child.schema.methods.setChangeHistory = function( done ) {
 	});
 
 	// if the model is being saved for the first time, mark only that fact in an initial change history record
-	if(!model._original) {
+	if( !model._original ) {
 
 		changeHistory.changes = 'record created';
 
 		changeHistory.save( () => {
 			console.log( 'record created - change history saved successfully' );
+
 			done();
 		}, err => {
 			console.log( err );
 			console.log( 'error saving record created change history' );
+
 			done();
 		});
 
@@ -753,9 +762,21 @@ Child.schema.methods.setChangeHistory = function( done ) {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											name: 'city',
 											targetField: 'cityOrTown',
-											label: 'city or town of childs current location',
+											label: 'city or town of child\'s current location',
 											type: 'relationship',
 											model: 'City or Town' }, model, modelBefore, changeHistory, done );
+			},
+			done => {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											name: 'isOutsideMassachusetts',
+											label: 'is outside Massachusetts',
+											type: 'boolean' }, model, modelBefore, changeHistory, done );
+			},
+			done => {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											name: 'cityText',
+											label: 'city or town of child\'s current location (text)',
+											type: 'string' }, model, modelBefore, changeHistory, done );
 			},
 			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
@@ -1161,17 +1182,19 @@ Child.schema.methods.setChangeHistory = function( done ) {
 		], () => {
 
 			if (changeHistory.changes === '') {
-
+	
 				done();
 
 			} else {
 
 				changeHistory.save( () => {
 					console.log( 'change history saved successfully' );
+
 					done();
 				}, err => {
 					console.log( err );
 					console.log( 'error saving change history' );
+
 					done();
 				});
 			}
