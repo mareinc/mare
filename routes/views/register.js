@@ -27,7 +27,7 @@ exports = module.exports = ( req, res ) => {
 		done => { listsService.getAllLegalStatuses( req, res, done ); },
 		done => { listsService.getAllLanguages( req, res, done ); },
 		done => { listsService.getAllDisabilities( req, res, done ); },
-		done => { listsService.getOtherConsiderations( req, res, done ); },
+		done => { listsService.getAllOtherConsiderations( req, res, done ); },
 		done => { listsService.getChildTypesForWebsite( req, res, done ); },
 		done => { listsService.getAllWaysToHearAboutMARE( req, res, done, waysToHearOptions ); },
 		done => { pageService.populateSidebar( req, res, done ); }
