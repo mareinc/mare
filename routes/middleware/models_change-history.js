@@ -208,31 +208,31 @@ exports.addToHistoryEntry = ( fieldBefore, field, label, changeHistory ) => {
 
 /* if the model is created via the website, there is no updatedBy.  In these cases we need to populate it with the website bot's id */
 exports.setUpdatedby = ( targetModel, done ) => {
-
 	// if the user was created using the website	
 	if( !targetModel.updatedBy ) {
 
-		keystone.list( 'Admin' ).model.find()
+		keystone.list( 'Admin' ).model
+				.find()
+				.where( 'name.full' ).equals( 'Website Bot' )
+				.select( '_id name' )
+				.lean()
 				.exec()
-				.then( admins => {
-
-					// since we can't filter on members of an object in a .where(), we do it in a loop here instead
-					for( admin of admins ) {
-
-						if( admin.name.full === 'Website Bot' ) {
-							// set the updatedBy field to the id of the website bot
-							targetModel.updatedBy = admin.get( '_id' );
-						}
-					}
+				.then( adminArray => {
+					// destructure the single returned admin from the returned array
+					const [ websiteBot ] = adminArray; 
+					// set the updatedBy field to the id of the website bot
+					targetModel.updatedBy = websiteBot._id;
 
 					done();
 				}, err => {
 
 					console.log( err );
+
 					done();
 				});
 	// otherwise, if the user was created using the admin UI
 	} else {
+		// TODO: move this check to the top to match other functions and make more readable
 		// move on as the updatedBy field is already set
 		done();
 	}
