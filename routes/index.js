@@ -97,6 +97,7 @@ exports = module.exports = app => {
 	app.post( '/submit-agency-event'					, eventService.submitEvent );
 	app.post( '/submit-car-donation'					, formService.submitCarDonation );
 	app.post( '/submit-question'						, formService.submitQuestion );
+	app.post( '/register-child'							, childService.registerChild );
 
 	// NOTE: To protect a route so that only admins can see it, use the requireUser middleware:
 	// app.get('/protected', middleware.requireUser, routes.views.protected);
