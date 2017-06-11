@@ -4,7 +4,8 @@ var keystone = require( 'keystone' );
 /* take in an array of child ids and returns an array of their registration numbers */
 exports.removeChildBookmarks = bookmarkedChildrenToRemove => {
 
-    keystone.list( 'Family' ).model.find()
+    keystone.list( 'Family' ).model
+            .find()
             .where( 'bookmarkedChildren' ).in( bookmarkedChildrenToRemove )
             .exec()
             .then( families => {
@@ -33,7 +34,9 @@ exports.removeChildBookmarks = bookmarkedChildrenToRemove => {
 
 exports.removeSiblingBookmarks = bookmarkedSiblingsToRemove => {
 
-    keystone.list( 'Family' ).model.find()
+    keystone.list( 'Family' ).model
+            .find()
+            .where( 'bookmarkedSiblings' ).in( bookmarkedSiblingsToRemove )
             .exec()
             .then( families => {
 

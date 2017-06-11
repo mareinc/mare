@@ -241,7 +241,7 @@ Child.schema.post( 'init', function() {
 
 Child.schema.pre( 'save', function( next ) {
 	'use strict';
-
+	// TODO: remove non-asynchronous calls from the async.series
 	async.series([
 		done => { this.setImages( done ); }, // Create cloudinary URLs for images sized for various uses
 		done => { this.setFullName( done ); }, // Create a full name for the child based on their first, middle, and last names
@@ -339,7 +339,7 @@ Child.schema.methods.setAgencyFields = function( done ) {
 
 	});
 }
-// TODO: Better handled with a virtual
+
 Child.schema.methods.setFileName = function( done ) {
 	'use strict';
 
