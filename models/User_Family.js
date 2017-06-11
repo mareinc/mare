@@ -54,7 +54,7 @@ Family.add( 'Permissions', {
 	registrationNumber: { type: Number, label: 'registration number', format: false, noedit: true },
 	initialContact: { type: Types.Date, label: 'initial contact', format: 'MM/DD/YYYY', initial: true }, // was required: data migration change ( undo if possible )
 	flagCalls: { type: Types.Boolean, label: 'flag calls', initial: true },
-	familyConstellation: { type: Types.Relationship, label: 'family constellation', ref: 'Family Constellation', required: true, initial: true },
+	familyConstellation: { type: Types.Relationship, label: 'family constellation', ref: 'Family Constellation', initial: true },
 	language: { type: Types.Relationship, label: 'language', ref: 'Language', required: true, initial: true },
 	otherLanguages: { type: Types.Relationship, label: 'other languages', ref: 'Language', many: true, initial: true },
 
@@ -549,6 +549,18 @@ Family.schema.methods.setChangeHistory = function setChangeHistory( done ) {
 			// avatar: { type: Types.CloudinaryImage, label: 'avatar', folder: 'users/families', select: true, selectPrefix: 'users/families', autoCleanup: true },
 			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
+											name: 'email',
+											label: 'email address',
+											type: 'string' }, model, modelBefore, changeHistory, done);
+			},
+			done => {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											name: 'isActive',
+											label: 'is active',
+											type: 'boolean' }, model, modelBefore, changeHistory, done);
+			},
+			done => {
+				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'permissions',
 											name: 'isVerified',
 											label: 'is verified',
@@ -556,9 +568,31 @@ Family.schema.methods.setChangeHistory = function setChangeHistory( done ) {
 			},
 			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'isActive',
-											label: 'is active',
+											parent: 'permissions',
+											name: 'isHomestudyVerified',
+											label: 'is homestudy verified',
 											type: 'boolean' }, model, modelBefore, changeHistory, done);
+			},
+			done => {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											parent: 'permissions',
+											name: 'homestudyVerifiedDate',
+											label: 'homestudy verified date',
+											type: 'date' }, model, modelBefore, changeHistory, done);
+			},
+			done => {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											parent: 'permissions',
+											name: 'canViewAllChildren',
+											label: 'can view all children',
+											type: 'boolean' }, model, modelBefore, changeHistory, done);
+			},
+			done => {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											parent: 'avatar',
+											name: 'secure_url',
+											label: 'avatar',
+											type: 'string' }, model, modelBefore, changeHistory, done );
 			},
 			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
@@ -601,6 +635,14 @@ Family.schema.methods.setChangeHistory = function setChangeHistory( done ) {
 											label: 'other languages',
 											type: 'relationship',
 											model: 'Language' }, model, modelBefore, changeHistory, done);
+			},
+			done => {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											name: 'contactGroups',
+											targetField: 'name',
+											label: 'contact groups',
+											type: 'relationship',
+											model: 'Contact Group' }, model, modelBefore, changeHistory, done );
 			},
 			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
