@@ -183,7 +183,9 @@ Child.add('Display Options', {
 	otherMediaDescription: { type: Types.Textarea, label: 'description', note: 'only fill out if \'other\' is selected for media eligibility' , initial: true }, // TODO: THIS DOESN'T WORK BECAUSE IT REFERENCES A RELATIONSHIP FIELD SO ALL WE HAVE IS THE _id, MAKE IT WORK!
 
 	locationAlert: { type: Types.Boolean, label: 'location alert', initial: true },
-	place: { type: Types.Text, label: 'place', initial: true, dependsOn: { locationAlert: true } }
+	place: { type: Types.Text, label: 'place', initial: true, dependsOn: { locationAlert: true } },
+
+	communicationsCollateral: { type: Types.Boolean, label: 'communications collateral', initial: true }
 
 }, 'Attachments', {
 
@@ -577,12 +579,6 @@ Child.schema.methods.setChangeHistory = function( done ) {
 
 			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'registrationNumber',
-											label: 'registration number',
-											type: 'number' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
 											name: 'siteVisibility',
 											label: 'site visibility',
 											type: 'string' }, model, modelBefore, changeHistory, done );
@@ -595,21 +591,21 @@ Child.schema.methods.setChangeHistory = function( done ) {
 			},
 			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'registrationDate',
-											label: 'registration date',
+											name: 'visibleInGalleryDate',
+											label: 'visible in gallery date',
 											type: 'date' }, model, modelBefore, changeHistory, done );
 			},
 			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'video',
-											label: 'video',
-											type: 'string' }, model, modelBefore, changeHistory, done );
+											name: 'registrationNumber',
+											label: 'registration number',
+											type: 'number' }, model, modelBefore, changeHistory, done );
 			},
 			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'siblingGroupVideo',
-											label: 'sibling group video',
-											type: 'string' }, model, modelBefore, changeHistory, done );
+											name: 'registrationDate',
+											label: 'registration date',
+											type: 'date' }, model, modelBefore, changeHistory, done );
 			},
 			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
@@ -848,6 +844,36 @@ Child.schema.methods.setChangeHistory = function( done ) {
 			},
 			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
+											name: 'aspirations',
+											label: 'interests, talents, and aspirations',
+											type: 'string' }, model, modelBefore, changeHistory, done );
+			},
+			done => {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											name: 'schoolLife',
+											label: 'school life',
+											type: 'string' }, model, modelBefore, changeHistory, done );
+			},
+			done => {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											name: 'family life',
+											label: 'family life',
+											type: 'string' }, model, modelBefore, changeHistory, done );
+			},
+			done => {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											name: 'personality',
+											label: 'personality',
+											type: 'string' }, model, modelBefore, changeHistory, done );
+			},
+			done => {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											name: 'otherRecruitmentConsiderations',
+											label: 'other recruitment considerations',
+											type: 'string' }, model, modelBefore, changeHistory, done );
+			},
+			done => {
+				ChangeHistoryMiddleware.checkFieldForChanges({
 											name: 'disabilities',
 											targetField: 'disability',
 											label: 'disabilities',
@@ -949,43 +975,57 @@ Child.schema.methods.setChangeHistory = function( done ) {
 			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'profile',
+											name: 'quote',
+											label: 'personal quote',
+											type: 'string' }, model, modelBefore, changeHistory, done );
+			},
+			done => {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											parent: 'profile',
 											name: 'part1',
-											label: 'profile part 1',
+											label: 'profile 1st paragraph',
 											type: 'string' }, model, modelBefore, changeHistory, done );
 			},
 			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'profile',
 											name: 'part2',
-											label: 'profile part 2',
+											label: 'profile 2nd paragraph',
 											type: 'string' }, model, modelBefore, changeHistory, done );
 			},
 			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'profile',
 											name: 'part3',
-											label: 'profile part 3',
+											label: 'profile 3rd paragraph',
+											type: 'string' }, model, modelBefore, changeHistory, done );
+			},
+			done => {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											parent: 'groupProfile',
+											name: 'quote',
+											label: 'group quote',
 											type: 'string' }, model, modelBefore, changeHistory, done );
 			},
 			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'groupProfile',
 											name: 'part1',
-											label: 'group profile part 1',
+											label: 'group profile 1st paragraph',
 											type: 'string' }, model, modelBefore, changeHistory, done );
 			},
 			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'groupProfile',
 											name: 'part2',
-											label: 'group profile part 2',
+											label: 'group profile 2nd paragraph',
 											type: 'string' }, model, modelBefore, changeHistory, done );
 			},
 			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'groupProfile',
 											name: 'part3',
-											label: 'group profile part 3',
+											label: 'group profile 3rd paragraph',
 											type: 'string' }, model, modelBefore, changeHistory, done );
 			},
 			done => {
@@ -1067,6 +1107,18 @@ Child.schema.methods.setChangeHistory = function( done ) {
 											name: 'videoSnapshotDate',
 											label: 'date of video snapshop',
 											type: 'date' }, model, modelBefore, changeHistory, done );
+			},
+			done => {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											name: 'video',
+											label: 'video',
+											type: 'string' }, model, modelBefore, changeHistory, done );
+			},
+			done => {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											name: 'siblingGroupVideo',
+											label: 'sibling group video',
+											type: 'string' }, model, modelBefore, changeHistory, done );
 			},
 			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
@@ -1185,8 +1237,13 @@ Child.schema.methods.setChangeHistory = function( done ) {
 											name: 'place',
 											label: 'place',
 											type: 'string' }, model, modelBefore, changeHistory, done );
+			},
+			done => {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											name: 'communicationsCollateral',
+											label: 'communications collateral',
+											type: 'boolean' }, model, modelBefore, changeHistory, done );
 			}
-
 		], () => {
 
 			if (changeHistory.changes === '') {
