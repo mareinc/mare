@@ -60,9 +60,9 @@ Featured.schema.pre( 'save', function( next ) {
 		  successStoryOptions	= { id: this.successStory.target, targetModel: 'Success Story', field: 'successStory', title: 'heading', url: '/success-stories/' },
 		  eventOptions			= { id: this.event.target, targetModel: 'Event', field: 'event', title: 'name' };
 	// call updateFields for each of the three main model sections and receive a promise back for each
-	const aboutUsUpdated		= this.updateFields( aboutUsOptions );
-	const successStoryUpdated	= this.updateFields( successStoryOptions );
-	const eventUpdated			= this.updateFields( eventOptions );
+	const aboutUsUpdated		= this.updateFields( aboutUsOptions ),
+		  successStoryUpdated	= this.updateFields( successStoryOptions ),
+		  eventUpdated			= this.updateFields( eventOptions );
 	// once all three model sections have been updated
 	Promise.all( [ aboutUsUpdated, successStoryUpdated, eventUpdated ] ).then( () => {
 		// create identifying names for file uploads
@@ -95,7 +95,7 @@ Featured.schema.methods.setFileNames = function setFileNames() {
 Featured.schema.methods.updateFields = function updateFields( { id, targetModel, field, title, url } ) {
 	// return a promise for cleaner asynchronous processing
 	return new Promise( ( resolve, reject ) => {
-		// if selection was made, we won't have an _id, abort execution and resolve with an undefined value
+		// if no selection was made, we won't have an _id, abort execution and resolve with an undefined value
 		if( !id ) {
 			return resolve();
 		}
@@ -113,7 +113,7 @@ Featured.schema.methods.updateFields = function updateFields( { id, targetModel,
 					this[ field ].url = url ? url : model.get( 'url' );
 					// this may be confusing, but it's the same as this._.aboutUs.image.thumbnail(...) if field were 'aboutUs'
 					this[ field ].imageScaled = this._[ field ].image.thumbnail( 640,640,{ quality: 100 } );
-					// resolve with the _id of model for easy refetching further down the line
+					// resolve with the _id of the model for easy refetching further down the line
 					resolve( model.get( '_id' ) );
 
 				}, err => {

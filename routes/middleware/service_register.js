@@ -444,6 +444,7 @@ exports.getUserID = ( req, res, user, userModel, done ) => {
 
 	const email = user.email;
 	// TODO: see if we can optimize this with select() and lean(), also, can we ES6ify without a context issue
+	// TODO: can most likely move the email match to a .where() to make it more readable.  Examples throughout the code
 	userModel.model.findOne( { email: email } )
 			.exec(function ( err, user ) {
 				locals.newUserID = user._id;
