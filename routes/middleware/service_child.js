@@ -322,9 +322,9 @@ exports.getRelevantChildInformation = ( children, locals ) => {
 			emotionalNeeds							: needsMap[child.emotionalNeeds],
 			galleryImage							: child.galleryImage,
 			gender									: child.gender.gender,
-			hasContactWithBiologicalParents			: child.hasContactWithBirthFamily || false,
-			hasContactWithBiologicalSiblings		: child.hasContactWithSiblings || false,
-			hasVideo								: child.video && child.video.length > 0 ? true : false,
+			hasContactWithBiologicalParents			: child.hasContactWithBirthFamily || false, // TODO: is the || false needed?
+			hasContactWithBiologicalSiblings		: child.hasContactWithSiblings || false, // TODO: is the || false needed?
+			hasVideo								: child.video && child.video.length > 0 ? true : false, // TODO: is the ? true : false necessary?
 			intellectualNeeds						: needsMap[ child.intellectualNeeds ],
 			isBookmarked							: child.isBookmarked,
 			language								: _.pluck( child.languages, 'language' ),
@@ -386,9 +386,9 @@ exports.getRelevantSiblingGroupInformation = ( siblingGroups, locals ) => {
 			emotionalNeeds							: _.uniq( children.map( child => needsMap[ child.emotionalNeeds ] ) ),
 			galleryImage							:  _.uniq( children.map( child => child.siblingGroupGalleryImage ) ).indexOf( NO_IMAGE_SIBLING_GROUP_DETAILS ) !== -1 ? NO_IMAGE_SIBLING_GROUP_DETAILS : children[ 0 ].siblingGroupGalleryImage,
 			genders									: _.uniq( children.map( child => child.gender.gender ) ),
-			hasContactWithBiologicalParents			: _.uniq( children.map( child => child.hasContactWithBirthFamily || false ) ),
-			hasContactWithBiologicalSiblings		: _.uniq( children.map( child => child.hasContactWithSiblings || false ) ),
-			hasVideo								: _.uniq( children.map( child => child.siblingGroupVideo && child.siblingGroupVideo.length > 0 ? true : false ) ), // Need to add a group video
+			hasContactWithBiologicalParents			: _.uniq( children.map( child => child.hasContactWithBirthFamily || false ) ), // TODO: is the || false needed?
+			hasContactWithBiologicalSiblings		: _.uniq( children.map( child => child.hasContactWithSiblings || false ) ), // TODO: is the || false needed?
+			hasVideo								: children.filter( child => child.siblingGroupVideo && child.siblingGroupVideo.length > 0 ).length > 0,
 			intellectualNeeds						: _.uniq( children.map( child => needsMap[ child.intellectualNeeds ] ) ),
 			isBookmarked							: children.map( child => child.isBookmarked ).indexOf( true ) !== -1 ? true : false, // set to true if any of the children have true for isBookmarked
 			languages								: _.uniq( _.flatten( children.map( child => _.pluck(child.languages, 'language' ) ) ) ),
