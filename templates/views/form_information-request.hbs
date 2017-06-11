@@ -31,10 +31,10 @@
 
 		<div class="row">
 			<div class="col-sm-12 form-group">
-				<label for="child-registration-number" class="label required-field">Child's/Childrens' Registration Number (comma separated)</label>
+				<label for="child-registration-number" class="label">Child Registration Number(s) (comma separated)</label>
 			</div>
 			<div class="col-sm-12 form-group">
-				<input type="text" class="input" id="child-registration-number" name="childRegistrationNumber" value="{{ registrationNumber }}" required />
+				<input type="text" class="input" id="child-registration-number" name="childRegistrationNumber" value="{{ registrationNumber }}">
 			</div>
 		</div>
 		<div class="row form-group">
@@ -77,17 +77,17 @@
 
 		<div class="row">
 			<div class="col-sm-12 col-md-6 form-group">
-				<input type="text" class="input" id="contact1-first-name" name="contact1FirstName" required />
+				<input type="text" class="input" id="contact1-first-name" name="contact1FirstName">
 				<label for="contact1-first-name" class="label required-field">First Name</label>
 			</div>
 			<div class="col-sm-12 col-md-6 form-group">
-				<input type="text" class="input" id="contact1-last-name" name="contact1LastName" required />
+				<input type="text" class="input" id="contact1-last-name" name="contact1LastName">
 				<label for="contact1-last-name" class="label required-field">Last Name</label>
 			</div>
 		</div>
 		<div class="row">
 			<div class="col-sm-6 form-group">
-				<input type="text" class="input" id="contact1-primary-phone" name="contact1PrimaryPhone" required />
+				<input type="text" class="input" id="contact1-primary-phone" name="contact1PrimaryPhone">
 				<label for="contact1-primary-phone" class="label required-field">Primary Phone</label>
 			</div>
 			<div class="col-sm-6 form-group">
@@ -101,7 +101,7 @@
 		</div>
 		<div class="row">
 			<div class="col-sm-6 form-group">
-				<input type="text" class="input" id="contact1-other-phone" name="contact1OtherPhone" required />
+				<input type="text" class="input" id="contact1-other-phone" name="contact1OtherPhone">
 				<label for="contact1-other-phone" class="label required-field">Other Phone</label>
 			</div>
 		</div>
@@ -184,18 +184,18 @@
 
 		<div class="row">
 			<div class="col-sm-12 col-md-6 form-group">
-				<input type="text" class="input" id="contact2-first-name" name="contact2FirstName" required />
-				<label for="contact2-first-name" class="label required-field">First Name</label>
+				<input type="text" class="input" id="contact2-first-name" name="contact2FirstName">
+				<label for="contact2-first-name" class="label">First Name</label>
 			</div>
 			<div class="col-sm-12 col-md-6 form-group">
-				<input type="text" class="input" id="contact2-last-name" name="contact2LastName" required />
-				<label for="contact2-last-name" class="label required-field">Last Name</label>
+				<input type="text" class="input" id="contact2-last-name" name="contact2LastName">
+				<label for="contact2-last-name" class="label">Last Name</label>
 			</div>
 		</div>
 		<div class="row">
 			<div class="col-sm-6 form-group">
-				<input type="text" class="input" id="contact2-primary-phone" name="contact2PrimaryPhone" required />
-				<label for="contact2-primary-phone" class="label required-field">Primary Phone</label>
+				<input type="text" class="input" id="contact2-primary-phone" name="contact2PrimaryPhone">
+				<label for="contact2-primary-phone" class="label">Primary Phone</label>
 			</div>
 			<div class="col-sm-6 form-group">
 				<select id="contact2-phone-type" name="contact2PhoneType" class="input" required>
@@ -203,13 +203,13 @@
 					<option value="Work">Work</option>
 					<option value="Phone">Phone</option>
 				</select>
-				<label for="contact2-phone-type" class="label required-field">Specify Type</label>
+				<label for="contact2-phone-type" class="label">Specify Type</label>
 			</div>
 		</div>
 		<div class="row">
 			<div class="col-sm-12 form-group">
 				<input type="email" class="input" required id="contact2-email" name="contact2Email" pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
-				<label for="contact2-email" class="label required-field">Email</label>
+				<label for="contact2-email" class="label">Email</label>
 			</div>
 		</div>
 		<div class="row double-padding">
@@ -255,30 +255,30 @@
 
 		<div class="row">
 			<div class="col-sm-12 col-md-6 form-group">
-				<input type="text" class="input" id="social-worker-first-name" name="socialWorkerFirstName" required />
-				<label for="social-worker-first-name" class="label required-field">First Name</label>
+				<input type="text" class="input" id="social-worker-first-name" name="socialWorkerFirstName">
+				<label for="social-worker-first-name" class="label">First Name</label>
 			</div>
 			<div class="col-sm-12 col-md-6 form-group">
-				<input type="text" class="input" id="social-worker-last-name" name="socialWorkerLastName" required />
-				<label for="social-worker-last-name" class="label required-field">Last Name</label>
+				<input type="text" class="input" id="social-worker-last-name" name="socialWorkerLastName">
+				<label for="social-worker-last-name" class="label">Last Name</label>
 			</div>
 		</div>
 		<div class="row">
 			<div class="col-sm-12 form-group">
 				<input type="text" class="input" required id="social-worker-agency" name="socialWorkerAgency">
-				<label for="social-worker-agency" class="label required-field">Agency</label>
+				<label for="social-worker-agency" class="label">Agency</label>
 			</div>
 		</div>
 		<div class="row">
 			<div class="col-sm-12 form-group">
 				<input type="email" class="input" required id="social-worker-email" name="socialWorkerEmail" pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
-				<label for="social-worker-email" class="label required-field">Email</label>
+				<label for="social-worker-email" class="label">Email</label>
 			</div>
 		</div>
 		<div class="row">
 			<div class="col-sm-6 form-group">
-				<input type="text" class="input" id="social-worker-phone" name="socialWorkerPhone" required />
-				<label for="social-worker-phone" class="label required-field">Phone</label>
+				<input type="text" class="input" id="social-worker-phone" name="socialWorkerPhone">
+				<label for="social-worker-phone" class="label">Phone</label>
 			</div>
 		</div>
 
