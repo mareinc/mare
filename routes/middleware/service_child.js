@@ -1,18 +1,21 @@
-const keystone		= require( 'keystone' );
-const _				= require( 'underscore' );
-const async			= require( 'async' );
-const middleware	= require( './middleware' );
-const Child			= keystone.list( 'Child' );
-const ChildStatus	= keystone.list( 'Child Status' );
-const familyService	= require( './service_family' );
-const userService	= require( './service_user' );
+const keystone		= require( 'keystone' ),
+	  _				= require( 'underscore' ),
+	  async			= require( 'async' ),
+	  middleware	= require( './middleware' ),
+	  Child			= keystone.list( 'Child' ),
+	  ChildStatus	= keystone.list( 'Child Status' ),
+	  familyService	= require( './service_family' ),
+	  listsService	= require( './service_lists' ),
+	  userService	= require( './service_user' );
 
 // TODO: combine the below two functions, the only difference in the filter in the find()
-exports.getAllChildren = ( req, res, done ) => {
+exports.getAllChildren = ( req, res, done, fieldsToSelect ) => {
 
 	let locals = res.locals;
 
 	Child.model.find()
+				.select( fieldsToSelect )
+				.where( 'status').equals( locals.activeChildStatusId )
 				.populate( 'gender' )
 				.populate( 'race' )
 				.populate( 'languages' )
@@ -24,12 +27,7 @@ exports.getAllChildren = ( req, res, done ) => {
 				.populate( 'legalStatus' )
 				.exec()
 				.then( children => {
-					// TODO: This filter should happen in a .where() above
-					// Filter out all children who don't have a status of 'active'
-					children = _.filter( children, child => {
-						return child.status.childStatus === 'active' && child.isVisibleInGallery;
-					});
-
+					// loop through each child
 					_.each( children, child => {
 						// adjust the image to the blank male/female image if needed
 						exports.setNoChildImage( req, res, child, locals.targetChildren === 'all' );
@@ -52,13 +50,16 @@ exports.getAllChildren = ( req, res, done ) => {
 				});
 };
 
-exports.getUnrestrictedChildren = ( req, res, done ) => {
+exports.getUnrestrictedChildren = ( req, res, done, fieldsToSelect ) => {
 
 	var locals = res.locals;
+	
 	// find all children who are active, and are either visible to everyone or have the 'child is visible on MARE web' checkbox checked
-	Child.model.find({ $or: [
-						{ 'siteVisibility': 'everyone' },
-						{ 'isVisibleInGallery': true } ] } )
+	Child.model.find( { $or: [
+					{ 'siteVisibility': 'everyone' },
+					{ 'isVisibleInGallery': true } ] } )
+				.select( fieldsToSelect )
+				.where( 'status').equals( locals.activeChildStatusId )
 				.populate( 'gender' )
 				.populate( 'race' )
 				.populate( 'languages' )
@@ -70,10 +71,6 @@ exports.getUnrestrictedChildren = ( req, res, done ) => {
 				.populate( 'legalStatus' )
 				.exec()
 				.then( children => {
-					// Filter out all children who don't have a status of 'active'
-					children = _.filter( children, child => {
-						return child.status.childStatus === 'active';
-					});
 					// loop through each child
 					_.each( children, child => {
 						// adjust the image to the blank male/female image if needed
@@ -217,12 +214,20 @@ exports.getGalleryData = ( req, res, next ) => {
 	} else {
 		locals.targetChildren = 'all';
 	}
+	// create a string with the fields to select from each child (this speeds up the queries)
+	const fieldsToSelect = `gender race languages disabilities otherConsiderations recommendedFamilyConstellation
+							otherFamilyConstellationConsideration status legalStatus birthDate registrationDate
+							image siblingGroupImage siblingGroupDetailImage siblingGroupGalleryImage siteVisibility
+							detailImage galleryImage emotionalNeeds hasContactWithBirthFamily hasContactWithSiblings
+							video intellectualNeeds isBookmarked name siblings physicalNeeds registrationNumber
+							siblingsToBePlacedWith updatedAt wednesdaysChild mustBePlacedWithSiblings siblingGroupVideo`;
 
 	async.series([
+		done => { listsService.getChildStatusIdByName( req, res, done, 'active' ) },
 		done => {
 			// fetch the appropriate set of children based on the user's permissions
-			locals.targetChildren === 'all' ? exports.getAllChildren( req, res, done )
-											: exports.getUnrestrictedChildren( req, res, done );
+			locals.targetChildren === 'all' ? exports.getAllChildren( req, res, done, fieldsToSelect )
+											: exports.getUnrestrictedChildren( req, res, done, fieldsToSelect );
 
 		},
 		// TODO: these familyService functions are for social workers too, they belong in a page level service instead
