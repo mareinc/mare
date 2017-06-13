@@ -371,3 +371,24 @@ exports.getAllCitiesAndTowns = ( req, res, done ) => {
 
 				});
 };
+
+exports.getChildStatusIdByName = ( req, res, done, name ) => {
+	let locals = res.locals;
+
+	ChildStatus.model.findOne()
+				.where( 'childStatus' ).equals( name )
+				.lean()
+				.exec()
+				.then( status => {
+
+					locals.activeChildStatusId = status._id;
+					// execute done function if async is used to continue the flow of execution
+					done()
+
+				}, err => {
+
+					console.log( err );
+					done();
+
+				});
+ };
