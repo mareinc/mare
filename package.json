@@ -7,7 +7,7 @@
     "url": "https://github.com/autoboxer/MARE.git"
   },
   "dependencies": {
-    "async": "^2.4.1",
+    "async": "^2.5.0",
     "browserify": "^14.3.0",
     "cloudinary": "~1.9.0",
     "del": "^3.0.0",
@@ -15,7 +15,7 @@
     "express-handlebars": "~3.0.0",
     "gulp": "gulpjs/gulp#4.0",
     "gulp-autoprefixer": "^4.0.0",
-    "gulp-clean-css": "^3.4.1",
+    "gulp-clean-css": "^3.6.0",
     "gulp-concat": "^2.6.1",
     "gulp-eslint": "^3.0.1",
     "gulp-filter": "^5.0.0",
@@ -48,9 +48,9 @@
   },
   "main": "keystone.js",
   "devDependencies": {
-    "chai": "^4.0.2",
+    "chai": "^4.1.0",
     "mocha": "^3.4.2",
-    "sinon": "^2.3.4",
-    "sinon-chai": "^2.10.0"
+    "sinon": "^2.3.8",
+    "sinon-chai": "^2.11.0"
   }
 }
