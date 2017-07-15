@@ -95,5 +95,6 @@ exports = module.exports = app => {
 	// services for form submissions
 	app.post( '/submit-agency-event'					, eventService.submitEvent );
 	app.post( '/submit-question'						, formService.submitQuestion );
+	app.post( '/submit-information-request'				, formService.submitInformationRequest );
 	app.post( '/register-child'							, childService.registerChild );
 };
