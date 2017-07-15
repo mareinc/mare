@@ -4,7 +4,6 @@
 	mare.views.Form_InformationRequest = Backbone.View.extend({
 		el: '.form--information-request',
 
-		// TODO: show registration numbers only for child registration
 		events: {
 			'change .interest': 'toggleChildRegistrationNumbersInput'
 		},
