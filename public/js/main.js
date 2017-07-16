@@ -25,7 +25,7 @@ $(function() {
 		case 'page'                     			: mare.routers.pages = new mare.routers.Pages();											break;
 		case 'account'              				: mare.routers.account = new mare.routers.Account();										break;
 		case 'register'                 			: mare.routers.registration = new mare.routers.Registration();								break;
-		case 'steps-in-the-process'					: mare.routers.stepsInTheProcess = new mare.routers.StepsInTheProcess();
+		case 'steps-in-the-process'					: mare.routers.stepsInTheProcess = new mare.routers.StepsInTheProcess();					break;
 		case 'success-stories'          			: mare.routers.successStories = new mare.routers.SuccessStories();							break;
 		case 'waiting-child-profiles'				: mare.routers.waitingChildProfiles = new mare.routers.WaitingChildProfiles();
 	}
