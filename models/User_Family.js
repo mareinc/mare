@@ -54,7 +54,7 @@ Family.add( 'Permissions', {
 	registrationNumber: { type: Number, label: 'registration number', format: false, noedit: true },
 	initialContact: { type: Types.Date, label: 'initial contact', format: 'MM/DD/YYYY', initial: true }, // was required: data migration change ( undo if possible )
 	flagCalls: { type: Types.Boolean, label: 'flag calls', initial: true },
-	familyConstellation: { type: Types.Relationship, label: 'family constellation', ref: 'Family Constellation', required: true, initial: true },
+	familyConstellation: { type: Types.Relationship, label: 'family constellation', ref: 'Family Constellation', initial: true },
 	language: { type: Types.Relationship, label: 'language', ref: 'Language', required: true, initial: true },
 	otherLanguages: { type: Types.Relationship, label: 'other languages', ref: 'Language', many: true, initial: true },
 
@@ -416,11 +416,13 @@ Family.schema.methods.setGalleryViewingPermissions = function( done ) {
 			State.model.findById( this.address.state )
 				.exec()
 				.then( stateObject => {
+
 					state = stateObject.abbreviation;
 					done();
 				});
 			}
 	], () => {
+
 		if( this.permissions.isHomestudyVerified && [ 'MA', 'NH', 'CT', 'ME', 'VT', 'RI', 'NY' ].includes( state ) ) {
 			this.permissions.canViewAllChildren = true;
 		} else {
@@ -461,7 +463,7 @@ Family.schema.methods.setFileName = function( done ) {
 	this.fileName = this.contact1.name.first ?
 					`${ this.registrationNumber }_${ this.contact1.name.first.toLowerCase() }` :
 					`${ this.registrationNumber }_`;
-					
+
 	done();
 };
 
@@ -475,12 +477,17 @@ Family.schema.methods.setUserType = function( done ) {
 };
 
 Family.schema.methods.setRegistrationNumber = function( done ) {
+
 	// If the registration number is already set ( which will happen during the data migration and creating from the website ), ignore setting it
 	if( this.registrationNumber ) {
+
 		done();
 	} else {
 		// get all families
-		keystone.list( 'Family' ).model.find()
+		keystone.list( 'Family' ).model
+				.find()
+				.select( 'registrationNumber' )
+				.lean()
 				.exec()
 				.then( families => {
 					// if this is the first family to be created
@@ -488,7 +495,7 @@ Family.schema.methods.setRegistrationNumber = function( done ) {
 						this.registrationNumber = 1;
 					} else {
 						// get an array of registration numbers
-						const registrationNumbers = families.map( family => family.get( 'registrationNumber' ) );
+						const registrationNumbers = families.map( family => family.registrationNumber );
 						// get the largest registration number
 						this.registrationNumber = Math.max( ...registrationNumbers ) + 1;
 					}
@@ -497,6 +504,7 @@ Family.schema.methods.setRegistrationNumber = function( done ) {
 
 				}, err => {
 					console.log( 'error setting registration number' );
+
 					console.log( err );
 
 					done();
@@ -506,6 +514,7 @@ Family.schema.methods.setRegistrationNumber = function( done ) {
 
 Family.schema.methods.setChangeHistory = function setChangeHistory( done ) {
 	'use strict';
+
 	// TODO: terrible use and reuse of variables below, check this and other models with change history
 	var modelBefore	= this._original,
 		model		= this;
@@ -528,6 +537,7 @@ Family.schema.methods.setChangeHistory = function setChangeHistory( done ) {
 		}, err => {
 			console.log( err );
 			console.log( 'error saving record migrated change history' );
+
 			done();
 		});
 
@@ -538,6 +548,18 @@ Family.schema.methods.setChangeHistory = function setChangeHistory( done ) {
 			// avatar: { type: Types.CloudinaryImage, label: 'avatar', folder: 'users/families', select: true, selectPrefix: 'users/families', autoCleanup: true },
 			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
+											name: 'email',
+											label: 'email address',
+											type: 'string' }, model, modelBefore, changeHistory, done);
+			},
+			done => {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											name: 'isActive',
+											label: 'is active',
+											type: 'boolean' }, model, modelBefore, changeHistory, done);
+			},
+			done => {
+				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'permissions',
 											name: 'isVerified',
 											label: 'is verified',
@@ -546,9 +568,30 @@ Family.schema.methods.setChangeHistory = function setChangeHistory( done ) {
 			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'permissions',
-											name: 'isActive',
-											label: 'is active',
+											name: 'isHomestudyVerified',
+											label: 'is homestudy verified',
 											type: 'boolean' }, model, modelBefore, changeHistory, done);
+			},
+			done => {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											parent: 'permissions',
+											name: 'homestudyVerifiedDate',
+											label: 'homestudy verified date',
+											type: 'date' }, model, modelBefore, changeHistory, done);
+			},
+			done => {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											parent: 'permissions',
+											name: 'canViewAllChildren',
+											label: 'can view all children',
+											type: 'boolean' }, model, modelBefore, changeHistory, done);
+			},
+			done => {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											parent: 'avatar',
+											name: 'secure_url',
+											label: 'avatar',
+											type: 'string' }, model, modelBefore, changeHistory, done );
 			},
 			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
@@ -591,6 +634,14 @@ Family.schema.methods.setChangeHistory = function setChangeHistory( done ) {
 											label: 'other languages',
 											type: 'relationship',
 											model: 'Language' }, model, modelBefore, changeHistory, done);
+			},
+			done => {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											name: 'contactGroups',
+											targetField: 'name',
+											label: 'contact groups',
+											type: 'relationship',
+											model: 'Contact Group' }, model, modelBefore, changeHistory, done );
 			},
 			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
@@ -1524,10 +1575,12 @@ Family.schema.methods.setChangeHistory = function setChangeHistory( done ) {
 
 				changeHistory.save( () => {
 					console.log( 'change history saved successfully' );
+
 					done();
 				}, err => {
 					console.log( err );
 					console.log( 'error saving change history' );
+
 					done();
 				});
 			}

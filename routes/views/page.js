@@ -1,25 +1,48 @@
-var keystone 	= require('keystone'),
-	async		= require('async'),
-	pageService	= require('../middleware/service_page');
+const keystone 	    = require( 'keystone' ),
+	  async		    = require( 'async' ),
+	  pageService	= require( '../middleware/service_page' );
 
-exports = module.exports = function(req, res) {
+exports = module.exports = function( req, res ) {
     'use strict';
 
-    var view 	= new keystone.View(req, res),
-    	locals 	= res.locals;
+    let view 	= new keystone.View( req, res ),
+        locals 	= res.locals;
+    // create a container for any additional page actions to render after the content
+    locals.pageActions = {};
+    // create a placeholder for any buttons that may render after the content
+    locals.pageActions.buttons = [];
 
-    // Fetch the page with the matching URL
-    // If it exists, pass the object into the rendering
+    // fetch the page with the matching URL
+    // if it exists, pass the object into the rendering
     // TODO: If it doesn't exist, forward to a 404 page
 
     async.parallel([
-		function(done) { pageService.getPageByUrl(req, res, done, req.originalUrl); },
-		function(done) { pageService.populateSidebar(req, res, done); }
-	], function() {
-        // Set the layout to render with the right sidebar
-        locals['render-with-sidebar'] = true;
-        // Render the view once all the data has been retrieved
-		view.render('page');
+		done => { pageService.getPageByUrl(req, res, done, req.originalUrl); },
+		done => { pageService.populateSidebar(req, res, done); }
+	], () => {
+        // set the layout to render with the right sidebar
+        locals[ 'render-with-sidebar' ] = true;
+        // if the user requested the 'Register a child' page, specify that it should render a button after the content
+        if( locals.targetPage.get( 'key' ) === 'register-a-child' ) {
+            // specify that it should render a button after the content
+            locals.pageActions.hasButtons = true;
+            // set the button contents
+            locals.pageActions.buttons.push( { text: 'Register a Child', target: '/forms/child-registration-form' } );
+        // otherwise, if the user requested the 'Register a family' page, specify that it should render a button after the content
+        } else if( locals.targetPage.get( 'key' ) === 'register-a-family' ) {
+            // specify that it should render a button after the content
+            locals.pageActions.hasButtons = true;
+            // set the button contents
+            locals.pageActions.buttons.push( { text: 'Register a Family', target: '/forms/family-registration-form' } );
+        // otherwise, if the user requested any page in the 'Considering Adoption section
+        } else if( locals.currentSection.title === 'Considering Adoption?' ) {
+            // specify that it should render a button after the content
+            locals.pageActions.hasButtons = true;
+            // set the button contents
+            locals.pageActions.buttons.push( { text: 'Request Adoption Information', target: '/forms/information-request-form' } );
+        }
+        // render the view once all the data has been retrieved
+		view.render( 'page' );
 
 	});
 };

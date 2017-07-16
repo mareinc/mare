@@ -7,7 +7,8 @@ const SourceMiddleware	= require( '../routes/middleware/models_source' );
 // Create model. Additional options allow event name to be used what auto-generating URLs
 var Event = new keystone.List('Event', {
 	autokey: { path: 'key', from: 'name', unique: true },
-	map: { name: 'name' }
+	map: { name: 'name' },
+	defaultSort: '-startDate'
 });
 
 // Create fields
@@ -54,7 +55,7 @@ Event.add({ heading: 'General Information' }, {
 	siteVisitorAttendees: { type: Types.Relationship, label: 'site visitors', ref: 'Site Visitor', filters: { isActive: true }, many: true, initial: true },
 	socialWorkerAttendees: { type: Types.Relationship, label: 'social workers', ref: 'Social Worker', filters: { isActive: true }, many: true, initial: true },
 	familyAttendees: { type: Types.Relationship, label: 'families', ref: 'Family', filters: { isActive: true }, many: true, initial: true },
-	childAttendees: { type: Types.Relationship, label: 'children', ref: 'Child', filters: { isActive: true }, many: true, initial: true },
+	childAttendees: { type: Types.Relationship, label: 'children', ref: 'Child', many: true, initial: true },
 	outsideContactAttendees: { type: Types.Relationship, label: 'volunteers', filters: { isVolunteer: true }, ref: 'Outside Contact', many: true, initial: true}
 
 }, { heading: 'Notes' }, {

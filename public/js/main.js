@@ -17,8 +17,7 @@ $(function() {
 		case 'forms' :
 			switch( mare.url.page ) {
 				case 'agency-event-submission-form'	: mare.routers.form_agencyEventSubmission = new mare.routers.Form_AgencyEventSubmission();	break;
-				case 'car-donation-form'			: mare.routers.form_carDonation = new mare.routers.Form_CarDonation();						break;
-				case 'child-registration-form'		: mare.routers.form_childRegistration = new mare.routers.Form_ChildRegistration();			break;
+				case 'child-registration-form'		: mare.routers.childRegistration = new mare.routers.ChildRegistration();					break;
 				case 'have-a-question-form'			: mare.routers.form_haveAQuestion = new mare.routers.Form_HaveAQuestion();					break;
 				case 'information-request-form'		: mare.routers.form_informationRequest = new mare.routers.Form_InformationRequest();
 			}
@@ -26,6 +25,7 @@ $(function() {
 		case 'page'                     			: mare.routers.pages = new mare.routers.Pages();											break;
 		case 'account'              				: mare.routers.account = new mare.routers.Account();										break;
 		case 'register'                 			: mare.routers.registration = new mare.routers.Registration();								break;
+		case 'steps-in-the-process'					: mare.routers.stepsInTheProcess = new mare.routers.StepsInTheProcess();
 		case 'success-stories'          			: mare.routers.successStories = new mare.routers.SuccessStories();							break;
 		case 'waiting-child-profiles'				: mare.routers.waitingChildProfiles = new mare.routers.WaitingChildProfiles();
 	}

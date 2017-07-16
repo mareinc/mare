@@ -2,16 +2,16 @@
 // TODO: event submission is currently handled in the events middleware, we might want to migrate that here
 const keystone	= require('keystone');
 
-exports.submitCarDonation = function submitCarDonation( req, res, next ) {
-	// TODO: fill in the email submissions for car donation when handling the email system tasks
+exports.submitInformationRequest = function submitInformationRequest( req, res, next ) {
+	// TODO: fill in the email submissions for have a question form when handling the email system tasks
 	req.flash( 'info', { title: 'Emails will be sent once that portion of the system is built out' } );
 		// reload the form to display the flash message
-		res.redirect( '/forms/car-donation-form' );
-}
+		res.redirect( '/forms/information-request-form' );
+};
 
 exports.submitQuestion = function submitQuestion( req, res, next ) {
-	// TODO: fill in the email submissions for car donation when handling the email system tasks
+	// TODO: fill in the email submissions for have a question form when handling the email system tasks
 	req.flash( 'info', { title: 'Emails will be sent once that portion of the system is built out' } );
 		// reload the form to display the flash message
 		res.redirect( '/forms/have-a-question-form' );
-}
+};

@@ -176,18 +176,24 @@ SocialWorker.schema.methods.setChangeHistory = function setChangeHistory( done )
 		// Any time a new field is added, it MUST be added to this list in order to be considered for display in change history
 		// Computed fields and fields internal to the object SHOULD NOT be added to this list
 		async.parallel([
+
 			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
-											parent: 'permissions',
-											name: 'isVerified',
-											label: 'is verified',
+											name: 'email',
+											label: 'email address',
+											type: 'string' }, model, modelBefore, changeHistory, done);
+			},		
+			done => {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											name: 'isActive',
+											label: 'is active',
 											type: 'boolean' }, model, modelBefore, changeHistory, done);
 			},
 			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'permissions',
-											name: 'isActive',
-											label: 'is active',
+											name: 'isVerified',
+											label: 'is verified',
 											type: 'boolean' }, model, modelBefore, changeHistory, done);
 			},
 			done => {
@@ -206,9 +212,18 @@ SocialWorker.schema.methods.setChangeHistory = function setChangeHistory( done )
 			},
 			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'email',
-											label: 'email address',
-											type: 'string' }, model, modelBefore, changeHistory, done);
+											parent: 'avatar',
+											name: 'secure_url',
+											label: 'avatar',
+											type: 'string' }, model, modelBefore, changeHistory, done );
+			},
+			done => {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											name: 'contactGroups',
+											targetField: 'name',
+											label: 'contact groups',
+											type: 'relationship',
+											model: 'Contact Group' }, model, modelBefore, changeHistory, done );
 			},
 			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({

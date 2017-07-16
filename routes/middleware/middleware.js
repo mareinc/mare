@@ -87,9 +87,7 @@ exports.initLocals = function(req, res, next) {
 			{ title: 'Meet the Staff', href: '/page/meet-the-staff' },
 			{ title: 'Board of Directors', href: '/page/board-of-directors' },
 			{ title: 'MARE in the News', href: '/page/mare-in-the-news' },
-			{ title: 'Annual Report', href: '/page/annual-report' },
-			{ title: 'Child Registration Form', href: '/forms/child-registration-form' },
-			{ title: 'Information Request Form', href: '/forms/information-request-form' }
+			{ title: 'Annual Report', href: '/page/annual-report' }
 		]}];
 
 	// based on the url from the requested page, fetch the navigation object for the site section

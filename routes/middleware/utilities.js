@@ -1,7 +1,13 @@
+/* A place for generic utility functions for data processing and other common tasks */
+
 const _ = require( 'underscore' );
 
+/* remove any HTML style tags from text */
+exports.stripTags = text => {
+	return text.replace( /(<([^>]+)>)/ig, '' );
+}
+
 // TODO: add in a failure case similar to getReadableStringFromArray()
-/* A place for generic utility functions for data processing and other common tasks */
 exports.truncateText = ( text, options ) => {
 	// If the text is empty, return an empty string
 	if( !text || text.length === 0 ) {

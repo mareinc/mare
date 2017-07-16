@@ -21,7 +21,7 @@ exports = module.exports = ( req, res ) => {
 		done => { listsService.getAllRaces( req, res, done ) },
 		done => { listsService.getAllLanguages( req, res, done ) },
 		done => { listsService.getAllDisabilities( req, res, done ) },
-		done => { listsService.getOtherConsiderations( req, res, done ) },
+		done => { listsService.getAllOtherConsiderations( req, res, done ) },
 		done => { listsService.getAllFamilyConstellations( req, res, done ) },
 		done => { pageService.populateSidebar( req, res, done ); }
 

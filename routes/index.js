@@ -53,7 +53,6 @@ exports = module.exports = app => {
 	app.get( '/page/*'									, routes.views.page );
 	// forms
 	app.get( '/forms/agency-event-submission-form'		, routes.views.form_agencyEventSubmission );
-	app.get( '/forms/car-donation-form'					, routes.views.form_carDonation );
 	app.get( '/forms/child-registration-form'			, routes.views.form_childRegistration );
 	app.get( '/forms/information-request-form'			, routes.views.form_informationRequest );
 	app.get( '/forms/have-a-question-form'				, routes.views.form_haveAQuestion );
@@ -97,9 +96,7 @@ exports = module.exports = app => {
 	app.post( '/services/unregister-for-event'			, eventService.removeUser );
 	// services for form submissions
 	app.post( '/submit-agency-event'					, eventService.submitEvent );
-	app.post( '/submit-car-donation'					, formService.submitCarDonation );
 	app.post( '/submit-question'						, formService.submitQuestion );
-
-	// NOTE: To protect a route so that only admins can see it, use the requireUser middleware:
-	// app.get('/protected', middleware.requireUser, routes.views.protected);
+	app.post( '/submit-information-request'				, formService.submitInformationRequest );
+	app.post( '/register-child'							, childService.registerChild );
 };
