@@ -24,14 +24,22 @@ exports = module.exports = function( req, res ) {
         locals[ 'render-with-sidebar' ] = true;
         // if the user requested the 'Register a child' page, specify that it should render a button after the content
         if( locals.targetPage.get( 'key' ) === 'register-a-child' ) {
+            // specify that it should render a button after the content
             locals.pageActions.hasButtons = true;
             // set the button contents
             locals.pageActions.buttons.push( { text: 'Register a Child', target: '/forms/child-registration-form' } );
         // otherwise, if the user requested the 'Register a family' page, specify that it should render a button after the content
         } else if( locals.targetPage.get( 'key' ) === 'register-a-family' ) {
+            // specify that it should render a button after the content
             locals.pageActions.hasButtons = true;
             // set the button contents
             locals.pageActions.buttons.push( { text: 'Register a Family', target: '/forms/family-registration-form' } );
+        // otherwise, if the user requested any page in the 'Considering Adoption section
+        } else if( locals.currentSection.title === 'Considering Adoption?' ) {
+            // specify that it should render a button after the content
+            locals.pageActions.hasButtons = true;
+            // set the button contents
+            locals.pageActions.buttons.push( { text: 'Request Adoption Information', target: '/forms/information-request-form' } );
         }
         // render the view once all the data has been retrieved
 		view.render( 'page' );
