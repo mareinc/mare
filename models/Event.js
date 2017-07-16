@@ -7,7 +7,8 @@ const SourceMiddleware	= require( '../routes/middleware/models_source' );
 // Create model. Additional options allow event name to be used what auto-generating URLs
 var Event = new keystone.List('Event', {
 	autokey: { path: 'key', from: 'name', unique: true },
-	map: { name: 'name' }
+	map: { name: 'name' },
+	defaultSort: '-startDate'
 });
 
 // Create fields
