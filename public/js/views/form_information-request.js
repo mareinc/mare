@@ -29,9 +29,11 @@
 			// get the selected interest radio button value
 			var selectedInterest = this.$( '.interest:checked' ).val();
 			// if the selected interest is child info, show the information packet section, otherwise hide it
-			selectedInterest === 'child info'
-				? this.$childRegistrationNumbersContainer.removeClass( 'hidden' )
-				: this.$childRegistrationNumbersContainer.addClass( 'hidden' );
+			if( selectedInterest === 'child info' ) {
+				this.$childRegistrationNumbersContainer.removeClass( 'hidden' );
+			} else {
+				this.$childRegistrationNumbersContainer.addClass( 'hidden' );
+			}
 		}
 
 	});
