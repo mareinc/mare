@@ -121,28 +121,28 @@ module.exports.createSocialWorkerRecord = ( socialWorker, pauseUntilSaved ) => {
 			},
 
 			name: {
-				first: socialWorker.first_name,
-				last: socialWorker.last_name
+				first: socialWorker.first_name.trim(),
+				last: socialWorker.last_name.trim()
 			},
 			// TODO: every social worker needs an email address, this is just a placeholder until Lisa tells us how to handle these records
-			email: socialWorker.email ? socialWorker.email.toLowerCase() : `placeholder${ socialWorker.agc_id }@email.com`,
+			email: socialWorker.email.trim() ? socialWorker.email.trim().toLowerCase() : `placeholder${ socialWorker.agc_id }@email.com`,
 
 			phone: {
-				work: socialWorker.phone
+				work: socialWorker.phone.trim()
 			},
 
 			agency: agency.get( '_id' ),
 			
 			address: {
-				street1: agency.address.street1,
-				street2: agency.address.street2,
-				city: agency.address.city,
-				state: agency.address.state,
+				street1: agency.address.street1.trim(),
+				street2: agency.address.street2.trim(),
+				city: agency.address.city.trim(),
+				state: agency.address.state.trim(),
 				zipCode: utilityFunctions.padZipCode( agency.address.zipCode ),
-				region: agency.address.region
+				region: agency.address.region.trim()
 			},
 
-			notes: socialWorker.notes,
+			notes: socialWorker.notes.trim(),
 			oldId: socialWorker.agc_id
 		});
 

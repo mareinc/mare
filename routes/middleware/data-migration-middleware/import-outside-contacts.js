@@ -101,19 +101,19 @@ module.exports.createOutsideContactRecord = ( outsideContact, pauseUntilSaved ) 
 		// from the outside_contact table get the ocn_id and go to mailing_list_subscription table, where based on the ocn_id, get the mlt_id and then
 		// go to mailing_list table and get the name associated with the mlt_id, once you have the name, go to the new system and fetch the new hash id
 
-		name: outsideContact.name,
-		organization: outsideContact.organization,
-		email: outsideContact.email,
+		name: outsideContact.name.trim(),
+		organization: outsideContact.organization.trim(),
+		email: outsideContact.email.trim(),
 
 		phone: {
-			work: outsideContact.phone,
+			work: outsideContact.phone.trim(),
 			preferred: 'work'
 		},
 
 		address: {
-			street1: outsideContact.address_1,
-			street2: outsideContact.address_2,
-			city: outsideContact.city,
+			street1: outsideContact.address_1.trim(),
+			street2: outsideContact.address_2.trim(),
+			city: outsideContact.city.trim(),
 			state: statesMap[ outsideContact.state ],
 			zipCode: utilityFunctions.padZipCode( outsideContact.zip )
 		},

@@ -176,12 +176,12 @@ module.exports.createFamilyRecord = ( family, pauseUntilSaved ) => {
 		otherLanguages: otherLanguagesArray,
 
 		address: {
-			street1: family.address_1,
-			street2: family.address_2,
-			city: family.city,
+			street1: family.address_1.trim(),
+			street2: family.address_2.trim(),
+			city: family.city.trim(),
 			state: statesMap[ family.state ],
 			zipCode: utilityFunctions.padZipCode( family.zip ),
-			region: cityRegionsMap[ family.city ]
+			region: cityRegionsMap[ family.city.trim() ]
 		},
 
 		homePhone: family.home_phone,
@@ -240,7 +240,7 @@ module.exports.createFamilyRecord = ( family, pauseUntilSaved ) => {
 					family.info_pack === 'SE' || family.info_pack === 'SH' ? 'Spanish' :
 					'none',
 			date: family.info_pack_sent_date ? new Date( family.info_pack_sent_date ) : undefined,
-			notes: family.info_pack_notes
+			notes: family.info_pack_notes.trim()
 		},
 
 		matchingPreferences: {

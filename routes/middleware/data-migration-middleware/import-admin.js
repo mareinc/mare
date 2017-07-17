@@ -97,20 +97,20 @@ module.exports.createAdminRecord = ( admin, pauseUntilSaved ) => {
 		isActive: false,
 
 		permissions: {
-			isVerified: admin.email ? true : false // they can only have verified their email address if they have one
+			isVerified: admin.email.trim() ? true : false // they can only have verified their email address if they have one
 		},
 
 		name: {
-			first: admin.first_name,
-			last: admin.last_name
+			first: admin.first_name.trim(),
+			last: admin.last_name.trim()
 		},
 		// TODO: every admin needs an email address, this is just a placeholder until Lisa tells us how to handle these records
-		email: admin.email && admin.email !== 'x@x.com'
-					? admin.email.toLowerCase()
+		email: admin.email.trim() && admin.email !== 'x@x.com' // several admin are set to x@x.com when no email is given/known, which breaks the import
+					? admin.email.trim().toLowerCase()
 					: `admin${ admin.usr_id }@email.com`,
 
 		phone: {
-			work: `(617) 542 3678 x${ admin.phone_ext }`,
+			work: `(617) 542 3678 x${ admin.phone_ext.trim() }`,
 			preferred: 'work'
 		},
 

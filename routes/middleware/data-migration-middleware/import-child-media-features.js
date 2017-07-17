@@ -208,7 +208,7 @@ module.exports.updateChildRecord = ( childMediaFeatureGroupIds, childOldId, paus
 		// `matching event`	// lots of potential matches ( see above )
 		// `adoption parties`	// lots of potential matches.  See recruitment_source.csv
 
-		console.log( `stop here` );
+		console.log( `stop here` ); // NOTE: no idea what this means
 
 		// save the child record
 		child.save( ( err, savedModel ) => {

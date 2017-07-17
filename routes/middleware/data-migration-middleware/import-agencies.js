@@ -108,22 +108,22 @@ module.exports.createAgencyRecord = ( agency, pauseUntilSaved ) => {
 	let newAgency = new Agency.model({
 
 		oldId: agency.agn_id,
-		code: code,
-		name: agency.name,
+		code: code.trim(),
+		name: agency.name.trim(),
 
-		phone: agency.phone,
-		fax: agency.fax,
+		phone: agency.phone.trim(),
+		fax: agency.fax.trim(),
 
 		address: {
-			street1: agency.address_1,
-			street2: agency.address_2,
-			city: agency.city,
+			street1: agency.address_1.trim(),
+			street2: agency.address_2.trim(),
+			city: agency.city.trim(),
 			state: statesMap[ agency.state ],
 			zipCode: utilityFunctions.padZipCode( agency.zip ),
-			region: region
+			region: region.trim()
 		},
 
-		url: agency.url
+		url: agency.url.trim()
 	});
 
 	newAgency.save( ( err, savedModel ) => {

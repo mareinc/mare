@@ -91,10 +91,10 @@ module.exports.createSourceRecord = ( source, pauseUntilSaved ) => {
 
 	let newSource = new Source.model({
 
-		source: source.name,
+		source: source.name.trim(),
 		type: source.is_media_outlet === 'Y' ? 'media' : 'event',
 		isActive: source.is_media_outlet_active === 'Y' ? true : false,
-		mediaFrequency: source.media_frequency,
+		mediaFrequency: source.media_frequency.trim(),
 		mediaType: source.media_type ? mediaTypesMap[ source.media_type ] : undefined,
 
 		oldId: source.rcs_id
