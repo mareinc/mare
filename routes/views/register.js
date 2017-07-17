@@ -23,7 +23,6 @@ exports = module.exports = ( req, res ) => {
 		done => { listsService.getAllGenders( req, res, done ); },
 		done => { listsService.getAllRegions( req, res, done ); },
 		done => { listsService.getAllSocialWorkerPositions( req, res, done ); },
-		done => { listsService.getAllFamilyConstellations( req, res, done ); },
 		done => { listsService.getAllLegalStatuses( req, res, done ); },
 		done => { listsService.getAllLanguages( req, res, done ); },
 		done => { listsService.getAllDisabilities( req, res, done ); },

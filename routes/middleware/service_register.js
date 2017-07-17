@@ -260,7 +260,6 @@ exports.saveFamily = ( req, res, user, done ) => {
 		registrationNumber					: locals.newRegistrationNumber,
 
 		initialContact						: exports.getCurrentDate(),
-		familyConstellation					: user.familyConstellation,
 		language							: user.primaryLanguageInHome,
 		otherLanguages						: user.otherLanguagesInHome,
 
