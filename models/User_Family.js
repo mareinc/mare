@@ -78,7 +78,7 @@ Family.add( 'Permissions', {
 		email: { type: Types.Email, label: 'email address', initial: true },
 		preferredCommunicationMethod: { type: Types.Select, label: 'preferred communication method', options: 'email, home phone, mobile phone, work phone, unknown', initial: true }, // was required: data migration change ( undo if possible )
 		gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', initial: true }, // was required: data migration change ( undo if possible )
-		race: { type: Types.Relationship, label: 'race', ref: 'Race', many: true, required: true, initial: true },
+		race: { type: Types.Relationship, label: 'race', ref: 'Race', many: true, initial: true }, // was required: data migration change ( undo if possible )
 		occupation: { type: Types.Text, label: 'occupation', initial: true },
 		birthDate: { type: Types.Date, label: 'date of birth', format: 'MM/DD/YYYY', initial: true } // was required: data migration change ( undo if possible )
 	}
