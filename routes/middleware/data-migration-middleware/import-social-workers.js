@@ -52,7 +52,7 @@ module.exports.generateSocialWorkers = function* generateSocialWorkers() {
 
 	const dupes = utilityFunctions.getDuplicates( 'email', socialWorkers );
 
-	dupes.length === 0 ?
+	Object.keys( dupes ).length === 0 ?
 		console.log( `0 duplicate social worker emails found, no errors expected` ) :
 		console.log( `${ dupes.length } duplicate social worker emails found, get ready for a bumpy ride` );
 

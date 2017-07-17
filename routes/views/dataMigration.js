@@ -123,12 +123,12 @@ exports = module.exports = ( req, res ) => {
 		// IMPORTANT: comment out the following in pre-save: setHomestudyVerifiedDate, setGalleryViewingPermissions, setFullName, setFileName
 		// done => { familiesImport.importFamilies( req, res, done ); },
 		
-		// IMPORTANT: comment out the entire pre-save hook
+		// IMPORTANT: comment out the entire pre-save hook (THIS IS WRONG AND SHOULD BE REVIEWED ON NEXT RUN)
 		// done => { familySocialWorkersImport.appendFamilySocialWorkers( req, res, done ); },
 		// done => { familyRacePreferencesImport.appendFamilyRacePreferences( req, res, done ); },
 		// done => { familyDisabilityPreferencesImport.appendFamilyDisabilityPreferences( req, res, done ); },
 		// done => { familySupportServicesImport.appendFamilySupportServices( req, res, done ); },
-		// done => { familyContactsImport.appendFamilyContacts( req, res, done ); },
+		done => { familyContactsImport.appendFamilyContacts( req, res, done ); },
 		// IMPORTANT: uncomment the pre-save hook and make only the following functions active: setGalleryViewingPermissions, setFullName, setFileName
 		// done => { familyChildrenImport.appendFamilyChildren( req, res, done ); },
 		// done => { familyRecruitmentChecklistImport.appendFamilyRecruitmentChecklists( req, res ,done );		// not done // DON'T NEED TO DO
@@ -143,7 +143,7 @@ exports = module.exports = ( req, res ) => {
 		// done => { inquiryChildrenImport.appendInquiryChildren( req, res, done ); },								// not done, call child
 		// done => { inquiryNotesImport.appendInquiryNotes( req, res, done ); },									// not done, call note
 		// done => { eventsImport.importEvents( req, res, done ); },
-		done => { eventAttendeeImport.appendEventAttendees( req, res, done ); },
+		// done => { eventAttendeeImport.appendEventAttendees( req, res, done ); },
 		// done => { mailingListAttendeesImport.importMailingListAttendees( req, res, done ); },					// not done
 		// IMPORTANT: I think family backup is family internal notes
 		// done => { familyInternalNotesImport.importInternalNotes( req, res, done ); }							// not done

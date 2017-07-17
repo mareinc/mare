@@ -78,7 +78,7 @@ Family.add( 'Permissions', {
 		email: { type: Types.Email, label: 'email address', initial: true },
 		preferredCommunicationMethod: { type: Types.Select, label: 'preferred communication method', options: 'email, home phone, mobile phone, work phone, unknown', initial: true }, // was required: data migration change ( undo if possible )
 		gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', initial: true }, // was required: data migration change ( undo if possible )
-		race: { type: Types.Relationship, label: 'race', ref: 'Race', many: true, required: true, initial: true },
+		race: { type: Types.Relationship, label: 'race', ref: 'Race', many: true, initial: true }, // was required: data migration change ( undo if possible )
 		occupation: { type: Types.Text, label: 'occupation', initial: true },
 		birthDate: { type: Types.Date, label: 'date of birth', format: 'MM/DD/YYYY', initial: true } // was required: data migration change ( undo if possible )
 	}
@@ -362,18 +362,18 @@ Family.schema.pre( 'save', function( next ) {
 	'use strict';
 
 	async.series([
-		done => { this.setHomestudyVerifiedDate( done ); }, // Update the homestudy verified date
-		done => { this.setGalleryViewingPermissions( done ); }, // Determine whether the family can view all children or just the publicly visible ones
+		// done => { this.setHomestudyVerifiedDate( done ); }, // Update the homestudy verified date
+		// done => { this.setGalleryViewingPermissions( done ); }, // Determine whether the family can view all children or just the publicly visible ones
 		done => { this.setFullName( done ); }, // Create a full name for the family based on their first, middle, and last names
 		done => { this.setFileName( done ); }, // Create an identifying name for file uploads
 		done => { this.setUserType( done ); }, // All user types that can log in derive from the User model, this allows us to identify users better
-		done => { this.setRegistrationNumber( done ) }, // Set the registration number to the next highest available
-		done => { ChangeHistoryMiddleware.setUpdatedby( this, done ); }, // we need this id in case the family was created via the website and udpatedBy is empty
-		done => { this.setChangeHistory( done ); } // Process change history
+		// done => { this.setRegistrationNumber( done ) } // Set the registration number to the next highest available
+		// done => { ChangeHistoryMiddleware.setUpdatedby( this, done ); }, // we need this id in case the family was created via the website and udpatedBy is empty
+		// done => { this.setChangeHistory( done ); } // Process change history
 
 	], () => {
 
-		console.log( 'family information updated' );
+		// console.log( 'family information updated' );
 
 		next();
 

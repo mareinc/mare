@@ -97,7 +97,7 @@ module.exports.generateFamilyContacts = function* generateFamilyContacts() {
 
 	const dupes = utilityFunctions.getDuplicateDetails( 'email', 'fam_id', familyContacts );
 
-	dupes.length === 0 ?
+	Object.keys( dupes ).length === 0 ?
 		console.log( `0 duplicate family contact emails found, no errors expected` ) :
 		console.log( `${ dupes.length } duplicate family contact emails found, get ready for a bumpy ride` );
 
@@ -161,12 +161,8 @@ module.exports.updateFamilyRecord = ( contacts, familyId, pauseUntilSaved ) => {
 			console.log( 'too many contacts in this family' );
 		}
 
-		if( family.rce_id ) {
-			console.log( 'uh oh, need to make this non-required in the family model' );
-		}
-
-		const contact1 = contactsArray.filter( contact => contact.index === '1' )[0];
-		const contact2 = contactsArray.filter( contact => contact.index === '2' )[0];
+		const contact1 = contactsArray.filter( contact => contact.index === '1' )[ 0 ];
+		const contact2 = contactsArray.filter( contact => contact.index === '2' )[ 0 ];
 
 		if( contact1 ) {
 
@@ -177,16 +173,16 @@ module.exports.updateFamilyRecord = ( contacts, familyId, pauseUntilSaved ) => {
 											  contact1.preferredCommunicationMethod === 'U' ? 'unknown' :
 											  undefined;
 
-			family.contact1.name.first						= contact1.firstName,
-			family.contact1.name.last						= contact1.lastName,
-			family.contact1.phone.work						= `${ contact1.workPhone } ${ contact1.workPhoneExt }`,
-			family.contact1.phone.mobile					= contact1.cellPhone,
+			family.contact1.name.first						= contact1.firstName.trim(),
+			family.contact1.name.last						= contact1.lastName.trim(),
+			family.contact1.phone.work						= `${ contact1.workPhone.trim() } ${ contact1.workPhoneExt.trim() }`,
+			family.contact1.phone.mobile					= contact1.cellPhone.trim(),
 			family.contact1.email							= contact1.email ? contact1.email : undefined,
 			family.contact1.preferredCommunicationMethod	= preferredCommunicationMethod,
 			family.contact1.gender							= gendersMap[ contact1.gender ],
 			family.contact1.race							= racesMap[ contact1.raceId ],
-			family.contact1.occupation						= contact1.occupation,
-			family.contact1.birthDate						= contact1.dateOfBirth ? new Date( contact1.dateOfBirth ) : undefined
+			family.contact1.occupation						= contact1.occupation.trim(),
+			family.contact1.birthDate						= contact1.dateOfBirth.trim() ? new Date( contact1.dateOfBirth ) : undefined
 		}
 
 		if( contact2 ) {
@@ -198,16 +194,16 @@ module.exports.updateFamilyRecord = ( contacts, familyId, pauseUntilSaved ) => {
 											  contact2.preferredCommunicationMethod === 'U' ? 'unknown' :
 											  undefined;
 
-			family.contact2.name.first						= contact2.firstName,
-			family.contact2.name.last						= contact2.lastName,
-			family.contact2.phone.work						= `${ contact2.workPhone } ${ contact2.workPhoneExt }`,
-			family.contact2.phone.mobile					= contact2.cellPhone,
+			family.contact2.name.first						= contact2.firstName.trim(),
+			family.contact2.name.last						= contact2.lastName.trim(),
+			family.contact2.phone.work						= `${ contact2.workPhone.trim() } ${ contact2.workPhoneExt.trim() }`,
+			family.contact2.phone.mobile					= contact2.cellPhone.trim(),
 			family.contact2.email							= contact2.email ? contact2.email : undefined,
 			family.contact2.preferredCommunicationMethod	= preferredCommunicationMethod,
 			family.contact2.gender							= gendersMap[ contact2.gender ],
 			family.contact2.race							= racesMap[ contact2.raceId ],
-			family.contact2.occupation						= contact2.occupation,
-			family.contact2.birthDate						= contact2.dateOfBirth ? new Date( contact2.dateOfBirth ) : undefined
+			family.contact2.occupation						= contact2.occupation.trim(),
+			family.contact2.birthDate						= contact2.dateOfBirth.trim() ? new Date( contact2.dateOfBirth ) : undefined
 		}
 
 		family.email = family.contact1.email ? family.contact1.email.toLowerCase() :
@@ -222,7 +218,7 @@ module.exports.updateFamilyRecord = ( contacts, familyId, pauseUntilSaved ) => {
 				console.log( `contact 1 email: ${ family.contact1.email ? family.contact1.email.toLowerCase() : '' }` );
 				console.log( `contact 2 email: ${ family.contact2.email ? family.contact2.email.toLowerCase() : '' }` );
 				// store a reference to the entry that caused the error
-				importErrors.push( { id: family.get( 'registrationNumber' ), error: err.err } );
+				importErrors.push( { id: family.get( 'registrationNumber' ), contact1: contact1.fmc_id, contact2: contact2.fmc_id, error: err.err } );
 			}
 
 			// fire off the next iteration of our generator after pausing
