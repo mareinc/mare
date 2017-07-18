@@ -31,7 +31,7 @@
     "keystone": "https://github.com/keystonejs/keystone.git#c38b366c7b1bf01448c8ece7c36e1bb6eb195186",
     "moment": "~2.18.1",
     "mongoose-simple-random": "^0.4.1",
-    "newrelic": "^1.40.0",
+    "newrelic": "^2.0.0",
     "node-sass": "^4.5.3",
     "node-sass-middleware": "^0.11.0",
     "q": "^1.5.0",
