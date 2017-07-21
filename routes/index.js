@@ -59,7 +59,6 @@ exports = module.exports = app => {
 	// steps in the process
 	app.get( '/steps-in-the-process'					, routes.views.stepsInTheProcess );
 	// events
-	app.get( '/events/'									, routes.views.eventCategories );
 	app.get( eventListRoutes							, routes.views.eventList );
 	app.get( eventRoutes								, routes.views.event );
 	// success stories
