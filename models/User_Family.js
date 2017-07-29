@@ -1,3 +1,4 @@
+// TODO: check these to see what can be removed, possibly mailing lists as they're only used in the relationship section at the bottom of the model
 require( './Tracking_FamilyHistory' );
 require( './List_FamilyConstellation' );
 require( './List_Language' );
@@ -78,7 +79,7 @@ Family.add( 'Permissions', {
 		email: { type: Types.Email, label: 'email address', initial: true },
 		preferredCommunicationMethod: { type: Types.Select, label: 'preferred communication method', options: 'email, home phone, mobile phone, work phone, unknown', initial: true }, // was required: data migration change ( undo if possible )
 		gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', initial: true }, // was required: data migration change ( undo if possible )
-		race: { type: Types.Relationship, label: 'race', ref: 'Race', many: true, initial: true }, // was required: data migration change ( undo if possible )
+		race: { type: Types.Relationship, label: 'race', ref: 'Race', many: true, required: true, initial: true }, // was required: data migration change ( undo if possible )
 		occupation: { type: Types.Text, label: 'occupation', initial: true },
 		birthDate: { type: Types.Date, label: 'date of birth', format: 'MM/DD/YYYY', initial: true } // was required: data migration change ( undo if possible )
 	}
@@ -285,10 +286,6 @@ Family.add( 'Permissions', {
 		notes: { type: Types.Textarea, label: 'notes', initial: true }
 	}
 
-}, 'Mailing Lists', {
-
-	mailingLists: { type: Types.Relationship, label: 'add to the following mailing lists', ref: 'Mailing List', many: true, initial: true }
-
 }, 'Matching Preferences', {
 
 	matchingPreferences: {
@@ -478,9 +475,9 @@ Family.schema.methods.setUserType = function( done ) {
 
 Family.schema.methods.setRegistrationNumber = function( done ) {
 
-	// If the registration number is already set ( which will happen during the data migration and creating from the website ), ignore setting it
+	// If the registration number is already set ( which will happen during the data migration and creating from the website )
 	if( this.registrationNumber ) {
-
+		// ignore setting it and return from the asynchronous function
 		done();
 	} else {
 		// get all families
@@ -1411,14 +1408,6 @@ Family.schema.methods.setChangeHistory = function setChangeHistory( done ) {
 											name: 'notes',
 											label: 'info packet notes',
 											type: 'string' }, model, modelBefore, changeHistory, done);
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'mailingLists',
-											targetField: 'mailingList',
-											label: 'mailing lists',
-											type: 'relationship',
-											model: 'Mailing List' }, model, modelBefore, changeHistory, done);
 			},
 			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
