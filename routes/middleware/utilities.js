@@ -1,6 +1,7 @@
 /* A place for generic utility functions for data processing and other common tasks */
 
-const _ = require( 'underscore' );
+const _			= require( 'underscore' ),
+	  crypto	= require( 'crypto' );
 
 /* remove any HTML style tags from text */
 exports.stripTags = text => {
@@ -99,6 +100,11 @@ exports.modifyWYSIWYGContent = ( object, content, options ) => {
 				break;
 		}
 	});
+};
+/* generates a random string to be used as a temporary password */
+exports.generateAlphanumericHash = ( length ) => {
+	// because it's a hex encoding, each unit will be two characters long, so we must divide by 2
+	return crypto.randomBytes( Math.ceil( length / 2 ) ).toString( 'hex' );
 };
 
 /* add functionality to ES6 Set type for finding the union of two sets */
