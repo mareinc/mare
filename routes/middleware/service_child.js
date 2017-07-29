@@ -1,12 +1,11 @@
 const keystone		= require( 'keystone' ),
 	  _				= require( 'underscore' ),
 	  async			= require( 'async' ),
-	  middleware	= require( './middleware' ),
 	  Child			= keystone.list( 'Child' ),
 	  ChildStatus	= keystone.list( 'Child Status' ),
+	  middleware	= require( './middleware' ),
 	  familyService	= require( './service_family' ),
-	  listsService	= require( './service_lists' ),
-	  userService	= require( './service_user' );
+	  listsService	= require( './service_lists' );
 
 // TODO: combine the below two functions, the only difference in the filter in the find()
 exports.getAllChildren = ( req, res, done, fieldsToSelect ) => {
@@ -485,6 +484,66 @@ exports.getSiblingGroupDetails = ( req, res, next ) => {
 		});
 };
 
+exports.parseRegistrationNumbers = registrationNumbersString => {
+	// if no siblings were listed
+	if( !registrationNumbersString || registrationNumbersString.length === 0 ) {
+		// return an empty array to populate the siblings field correclty
+		return [];
+	} 
+	// pull each registration number into an array based on splitting on commas
+	// TODO: might want to make this more robust by splitting on ; and spaces as well
+	let siblingRegistrationNumbersArray = registrationNumbersString.split( ',' );
+	// remove any leading or trailing whitespace from each id value
+	_.each( siblingRegistrationNumbersArray, siblingRegistrationNumbers => {
+		siblingRegistrationNumbers.trim();
+	});
+	// return only the unique entries in case the same id was entered multiple times
+	return _.uniq( siblingRegistrationNumbersArray );
+};
+
+exports.fetchChildStatusId = status => {
+
+	return new Promise( ( resolve, reject ) => {
+		ChildStatus.model.findOne()
+				.where( 'childStatus', status )
+				.exec()
+				.then( status => {
+
+					status ? resolve( status.get( '_id' ) ) : resolve();
+
+				}, err => {
+
+					reject();
+
+				});
+	});
+};
+
+exports.fetchSiblingIdsByRegistrationNumbers = registrationNumbers => {
+
+	return new Promise( ( resolve, reject ) => {
+
+		if( registrationNumbers.length === 0 ) {
+			return resolve( [] );
+		}
+
+		Child.model.find()
+				.select( '_id' )
+				.where( { registrationNumber: { $in: registrationNumbers } } )
+				.exec()
+				.then( children => {
+
+					status ? resolve( status.get( '_id' ) ) : resolve();
+
+				}, err => {
+
+					reject();
+
+				});
+	});
+};
+
+/* called when a social worker attempts to register a family */
 exports.registerChild = ( req, res, next ) => {
 	// extract the child details submitted through the req object
 	const child = req.body;
@@ -493,9 +552,9 @@ exports.registerChild = ( req, res, next ) => {
 	// set the redirect path to navigate to after processing is complete
 	locals.redirectPath = '/forms/child-registration-form';
 	// fetch the id for the active child status
-	const fetchActiveChildStatusId		= exports.fetchChildStatusId( 'active' );
-	const siblingRegistrationNumbers	= exports.parseRegistrationNumbers( child.registrationNumbers );
-	const fetchSiblingIds				= exports.fetchSiblingIdsByRegistrationNumbers( siblingRegistrationNumbers );
+	const fetchActiveChildStatusId		= childService.fetchChildStatusId( 'active' );
+	const siblingRegistrationNumbers	= childService.parseRegistrationNumbers( child.registrationNumbers );
+	const fetchSiblingIds				= childService.fetchSiblingIdsByRegistrationNumbers( siblingRegistrationNumbers );
 
 	Promise.all([ fetchActiveChildStatusId, fetchSiblingIds ]).then( values => {
 		// assign local variables to the values returned by the promises
@@ -572,9 +631,6 @@ exports.registerChild = ( req, res, next ) => {
 						title: `There was an error registering your child`,
 						detail: `If this error persists, please notify MARE` } );
 			} else {
-				// TODO: if the user requested an email of the info packet, send it
-				// TODO: if the user requested a mail copy of the info packet, add it to an object containing email information before sending it to Diane
-				//       so we can capture all relevant information in one email
 				console.log( `new child saved` );
 				// create a success flash message
 				req.flash( 'success', {
@@ -586,62 +642,3 @@ exports.registerChild = ( req, res, next ) => {
 		});
 	});
 };
-
-exports.parseRegistrationNumbers = registrationNumbersString => {
-	// if no siblings were listed
-	if( !registrationNumbersString || registrationNumbersString.length === 0 ) {
-		// return an empty array to populate the siblings field correclty
-		return [];
-	} 
-	// pull each registration number into an array based on splitting on commas
-	// TODO: might want to make this more robust by splitting on ; and spaces as well
-	let siblingRegistrationNumbersArray = registrationNumbersString.split( ',' );
-	// remove any leading or trailing whitespace from each id value
-	_.each( siblingRegistrationNumbersArray, siblingRegistrationNumbers => {
-		siblingRegistrationNumbers.trim();
-	});
-	// return only the unique entries in case the same id was entered multiple times
-	return _.uniq( siblingRegistrationNumbersArray );
-};
-
-exports.fetchChildStatusId = status => {
-
-	return new Promise( ( resolve, reject ) => {
-		ChildStatus.model.findOne()
-				.where( 'childStatus', status )
-				.exec()
-				.then( status => {
-
-					status ? resolve( status.get( '_id' ) ) : resolve();
-
-				}, err => {
-
-					reject();
-
-				});
-	});
-};
-
-exports.fetchSiblingIdsByRegistrationNumbers = registrationNumbers => {
-
-	return new Promise( ( resolve, reject ) => {
-
-		if( registrationNumbers.length === 0 ) {
-			return resolve( [] );
-		}
-
-		Child.model.find()
-				.select( '_id' )
-				.where( { registrationNumber: { $in: registrationNumbers } } )
-				.exec()
-				.then( children => {
-
-					status ? resolve( status.get( '_id' ) ) : resolve();
-
-				}, err => {
-
-					reject();
-
-				});
-	});
-}
