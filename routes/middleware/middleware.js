@@ -1,4 +1,5 @@
-/* TODO: move all this middleware into the appropriate files inside the middleware/ directory
+/* TODO: move all this middleware into the appropriate files inside the middleware/ directory,
+         also, check for unused junk code
 
 /**
  * This file contains the common middleware used by your routes.
@@ -11,12 +12,9 @@
  */
 
 var _ 				= require('underscore'),
-	async			= require( 'async' );
+	async			= require( 'async' ),
 	// load in Keystone for model references
 	keystone 		= require('keystone'),
-	User 			= keystone.list('User'),
-	Child 			= keystone.list('Child'),
-	Gender 			= keystone.list('Gender'),
 	// load in middleware
 	UserMiddleware	= require( './service_user' );
 

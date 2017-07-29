@@ -245,7 +245,7 @@
 			this.$maximumEmotionalNeeds.attr( 'required', false );
 			this.$maximumIntellectualNeeds.attr( 'required', false );
 		},
-		// TODO: This needs to be cleaned up a bit, both logic for efficiency and the creation should be handled in a template instead of jQuery.
+		// TODO: This needs to be cleaned up a bit, both logic for efficiency and the creation should be handled in a template instead of jQuery.  An identical function exists in form_social-worker-family-registration.js as well
 		generateChildDetailInputs: function generateChildDetailInputs( selectedNumberOfChildren ) {
 			// Count the number of child data groups already shown on the page
 			var currentChildrenDisplayed = this.$( '.child-details-form' ).length,
@@ -276,7 +276,6 @@
 				}
 
 			}
-
 		},
 
 		uploadForm: function uploadForm( event ) {
@@ -292,6 +291,5 @@
 			$( '.bs-callout-info' ).toggleClass( 'hidden', !ok );
 			$( '.bs-callout-warning' ).toggleClass( 'hidden', ok );
 		}
-
 	});
 }());
