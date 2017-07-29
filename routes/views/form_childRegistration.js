@@ -11,8 +11,7 @@ exports = module.exports = ( req, res ) => {
 	const locals 			= res.locals;
 	// objects with additional search parameters
 	const raceOptions		= { other: true };
-	const waysToHearOptions	= { other: true };
-	// TODO: check all these list service fetches to see which are needed for this form
+	// fetch all needed data prior to rendering
 	async.parallel([
 		done => { listsService.getAllCitiesAndTowns( req, res, done ) },
 		done => { listsService.getAllDisabilities( req, res, done ) },
@@ -25,13 +24,12 @@ exports = module.exports = ( req, res ) => {
 		done => { listsService.getAllLegalStatuses( req, res, done ) },
 		done => { listsService.getAllOtherConsiderations( req, res, done ) },
 		done => { listsService.getAllOtherFamilyConstellationConsiderations( req, res, done ) },
-		done => { listsService.getAllWaysToHearAboutMARE( req, res, done, waysToHearOptions ) },
 		done => { pageService.populateSidebar( req, res, done ); }
 	], () => {
 		// Set the layout to render with the right sidebar
 		locals[ 'render-with-sidebar' ] = true;
 		// Render the view once all the data has been retrieved
-		view.render( 'form_child-registration.hbs' );
+		view.render( 'form_social-worker-child-registration.hbs' );
 		
 	}, err => {
 
