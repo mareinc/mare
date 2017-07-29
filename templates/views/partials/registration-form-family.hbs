@@ -19,8 +19,6 @@
 					<input type="password" id="family-password" class="input" name="password" placeholder="**********" data-parsley-error-message="required" required="">
 					<label for="family-password" class="label required-field">Password</label>
 				</div>
-			</div>
-			<div class="row">
 				<div class="col-sm-12 form-group">
 					<input type="password" id="family-confirm-password" class="input" name="confirmPassword" placeholder="**********" data-parsley-equalto="#family-password" data-parsley-error-message="passwords must match" required="">
 					<label for="family-confirm-password" class="label required-field">Confirm Password</label>
@@ -181,8 +179,6 @@
 					<input type="text" id="family-street-1" class="input" name="street1" placeholder="100 Main Street" data-parsley-error-message="required" required="">
 					<label for="family-street-1" class="label required-field">Street 1</label>
 				</div>
-			</div>
-			<div class="row">
 				<div class="col-sm-12 form-group">
 					<input type="text" id="family-street-2" class="input" name="street2" placeholder="Suite 1">
 					<label for="family-street-2" class="label">Street 2</label>
@@ -193,8 +189,6 @@
 					<input type="text" id="city" class="input" name="city" placeholder="Boston" data-parsley-error-message="required" required="">
 					<label for="city" class="label required-field">City</label>
 				</div>
-			</div>
-			<div class="row">
 				<div class="col-sm-12 form-group">
 					<select id="family-state" class="input state-select" name="state">
 					{{#each states}}
@@ -213,8 +207,6 @@
 					<input type="number" id="zip-code" class="input" name="zipCode" placeholder="02111" data-parsley-error-message="required" required="">
 					<label for="zip-code" class="label required-field">Zip Code</label>
 				</div>
-			</div>
-			<div class="row">
 				<div class="col-sm-12 form-group">
 					<input type="text" id="home-phone" class="input" name="homePhone" placeholder="(617) 333-3333">
 					<label for="home-phone" class="label">Home Phone</label>
@@ -642,7 +634,7 @@
 
 		</section>
 
-		<section class="family-mare-and-you-section">
+		<section class="social-worker-mare-and-you-section">
 			<div class="form-section-header">Mare &amp; You</div>
 
 			<div class="row">
@@ -667,48 +659,19 @@
 				</div>
 			</div>
 
+			{{#each mailingLists }}
+			{{#if showOnFamilyRegistrationPage}}
 			<div class="row form-group">
 				<div class="col-sm-12">
-					<label class="label marg-bottom-xs-5">Would you like to be added to the MARE News email list?</label>
+					<label class="label marg-bottom-xs-5">{{ displayText }}</label>
 				</div>
 				<div class="col-sm-12">
-					<label class="radio-inline"><input type="radio" name="mareEmailList" value="yes" checked="checked">Yes</label>
-					<label class="radio-inline"><input type="radio" name="mareEmailList" value="no">No</label>
+					<label class="radio-inline"><input type="radio" name="mailingLists[{{@index}}]" value={{ _id }} checked="checked">Yes</label>
+					<label class="radio-inline"><input type="radio" name="mailingLists[{{@index}}]" value="">No</label>
 				</div>
 			</div>
-			<div class="row form-group">
-				<div class="col-sm-12">
-					<label class="label marg-bottom-xs-5">Would you like to be added to the Adoption Party email list (events held in MA only)?</label>
-				</div>
-				<div class="col-sm-12">
-					<label class="radio-inline"><input type="radio" name="adoptionPartyEmailList" value="yes" checked="checked">Yes</label>
-					<label class="radio-inline"><input type="radio" name="adoptionPartyEmailList" value="no">No</label>
-				</div>
-			</div>
-
-			<div class="row form-group">
-				<div class="col-sm-24">
-					<label class="checkbox-inline">
-						<input type="checkbox" class="info-packet-toggle" name="infoPacket" value="yes">Please send me a general adoption information packet
-					</label>
-				</div>
-			</div>
-			<div class="row form-group info-packet-details hidden">
-				<div class="col-sm-12 form-group">
-					<select id="info-packet-format" class="input info-packet-select" name="infoPacketFormat">
-							<option value="email" selected="selected">email</option>
-							<option value="mail">mail</option>
-					</select>
-					<label for="info-packet-format" class="label">Preferred Format</label>
-				</div>
-				<div class="col-sm-12 form-group">
-					<select id="info-packet-language" class="input info-packet-select" name="infoPacketLanguage">
-							<option value="English" selected="selected">English</option>
-							<option value="Spanish">Spanish</option>
-					</select>
-					<label for="info-packet-format" class="label">Preferred Language</label>
-				</div>
-			</div>
+			{{/if}}
+			{{/each}}
 		</section>
 
 		<button class="button button--blue register" type="submit">Register</button>
@@ -716,54 +679,4 @@
 	</form>
 </section>
 
-<!-- client side template for rendering child details sections -->
-<script id="child-in-home" type="text/x-handlebars-template">
-
-	<div class="row form-group \{{ formHeading }} child-details-form">
-		<div class="col-sm-24">
-			<div class="label marg-bottom-xs-5">Child \{{ index }}</div>
-		</div>
-	</div>
-
-	<div class="row form-group \{{ formName }}">
-		<div class="col-sm-12 form-group">
-			<div class="row">
-				<div class="col-sm-24 form-group">
-					<input type="text" class="input child-form-input" name="\{{ name }}">
-					<label for="\{{ name }}" class="label marg-bottom-xs-5">Name</label>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-sm-24">
-					<select class="input registration-number-select child-form-input" name="\{{ gender }}">
-						<option value=""></option>
-					{{#each genders}}
-						<option value="{{_id}}">{{ gender }}</option>
-					{{/each}}
-					</select>
-					<label for="\{{ gender }}" class="label marg-bottom-xs-5">Gender</label>
-				</div>
-			</div>
-		</div>
-		<div class="col-sm-12 form-group">
-			<div class="row">
-				<div class="col-sm-24 form-group">
-					<input type="text" class="input child-form-input" placeholder="MM/DD/YYYY" name="\{{ birthDate }}">
-					<label for="\{{ birthDate }}" class="label marg-bottom-xs-5">Date of Birth</label>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-sm-24">
-					<select class="input registration-number-select child-form-input" name="\{{ type }}">
-						<option value=""></option>
-					{{#each childTypes}}
-						<option value="{{ _id }}">{{ displayName }}</option>
-					{{/each}}
-					</select>
-					<label for="\{{ type }}" class="label marg-bottom-xs-5">Type</label>
-				</div>
-			</div>
-		</div>
-	</div>
-
-</script>
+{{> client-template_child-details}}
