@@ -18,15 +18,15 @@
  * http://expressjs.com/api.html#app.VERB
  */
 
-const keystone					= require( 'keystone' );
-const middleware				= require( './middleware/middleware' );
-const registrationMiddleware	= require( './middleware/service_register' );
-const childService				= require( './middleware/service_child' );
-const eventService				= require( './middleware/service_event' );
-const familyService				= require( './middleware/service_family' );
-const formService				= require( './middleware/service_form' );
-const permissionsService		= require( './middleware/service_permissions' );
-const importRoutes				= keystone.importer( __dirname );
+const keystone					= require( 'keystone' ),
+	  childService				= require( './middleware/service_child' ),
+	  eventService				= require( './middleware/service_event' ),
+	  familyService				= require( './middleware/service_family' ),
+	  formService				= require( './middleware/service_form' ),
+	  middleware				= require( './middleware/middleware' ),
+	  permissionsService		= require( './middleware/service_permissions' ),
+	  registrationMiddleware	= require( './middleware/service_register' ),
+	  importRoutes				= keystone.importer( __dirname );
 
 // Common Middleware
 keystone.pre( 'routes', middleware.initLocals );
@@ -54,6 +54,7 @@ exports = module.exports = app => {
 	// forms
 	app.get( '/forms/agency-event-submission-form'		, routes.views.form_agencyEventSubmission );
 	app.get( '/forms/child-registration-form'			, routes.views.form_childRegistration );
+	app.get( '/forms/family-registration-form'			, routes.views.form_familyRegistration );
 	app.get( '/forms/information-request-form'			, routes.views.form_informationRequest );
 	app.get( '/forms/have-a-question-form'				, routes.views.form_haveAQuestion );
 	// steps in the process
@@ -95,5 +96,6 @@ exports = module.exports = app => {
 	app.post( '/submit-agency-event'					, eventService.submitEvent );
 	app.post( '/submit-question'						, formService.submitQuestion );
 	app.post( '/submit-information-request'				, formService.submitInformationRequest );
-	app.post( '/register-child'							, childService.registerChild );
+	app.post( '/social-worker-register-child'			, childService.registerChild );
+	app.post( '/social-worker-register-family'			, familyService.registerFamily );
 };
