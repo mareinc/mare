@@ -4,7 +4,6 @@ require('./List_ChildStatus');
 require( './List_Gender' );
 require( './List_Race' );
 require( './List_LegalStatus' );
-require( './Child' );
 require( './List_Residence' );
 require( './List_CityOrTown' );
 require( './List_Disability' );
