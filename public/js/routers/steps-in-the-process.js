@@ -4,9 +4,8 @@
 	mare.routers.StepsInTheProcess = Backbone.Router.extend({
 
 		initialize: function initialize() {
+			// create a view for the steps in the process page
 			mare.views.stepsInTheProcess = mare.views.stepsInTheProcess || new mare.views.StepsInTheProcess();
-			// Load the view for the right sidebar
-			mare.views.sidebar = mare.views.sidebar || new mare.views.Sidebar();
 		}
 
 	});
