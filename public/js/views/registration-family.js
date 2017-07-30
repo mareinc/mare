@@ -9,7 +9,6 @@
 			'change #family-state'					: 'toggleHomestudySubmission',
 			'change #homestudy-completed-checkbox'	: 'toggleHomestudySection',
 			'change #upload-button'					: 'uploadForm',
-			'change .info-packet-toggle'			: 'toggleInfoPacketDetailsSection',
 			'change #children-in-home'				: 'toggleFamilyDetailsForm',
 			'change .adoption-preferences-trigger'	: 'checkAdoptionPreferences'
 		},
@@ -29,7 +28,6 @@
 			this.$homestudySection						= this.$( '.family-submit-your-homestudy-section' );
 			this.$homestudySubmissionSection			= this.$( '.family-homestudy-details-section' );
 			this.$howDidYouHearOther					= this.$( '#family-how-did-you-hear-other' );
-			this.$infoPacketDetails						= this.$( '.info-packet-details' );
 			this.$childrenInHome 						= this.$( '#children-in-home' );
 			this.$childrenInHomeDetails 				= this.$( '.children-in-home-details' );
 			this.$gatheringInformationCheckbox			= this.$( '#gathering-information-checkbox' );
@@ -138,11 +136,6 @@
 				this.$( '[name=HomeStudySubmission]' ).attr( 'checked', false );
 				this.$( '#homestudy-file-upload' ).val( '' );
 			}
-		},
-
-		toggleInfoPacketDetailsSection: function toggleInfoPacketDetailsSection() {
-			// Hide/show the hidden information packet section via the hidden class
-			this.$infoPacketDetails.toggleClass( 'hidden' );
 		},
 
 		toggleFamilyDetailsForm: function toggleFamilyDetailsForm() {

@@ -7,7 +7,6 @@
 		events: {
 			// 'change #is-not-MA-city-or-town-checkbox' 	: 'toggleCityOrTownSelect', // TODO: add this when city/town is added to the form for MA residents
 			'change #upload-button'					: 'uploadForm',
-			'change .info-packet-toggle'			: 'toggleInfoPacketDetailsSection',
 			'change #children-in-home'				: 'toggleFamilyDetailsForm',
 			'change .adoption-preferences-trigger'	: 'checkAdoptionPreferences'
 		},
@@ -26,7 +25,6 @@
 			this.$socialWorkerEmail						= this.$( '#social-worker-email' );
 			this.$homestudySection						= this.$( '.family-submit-your-homestudy-section' );
 			this.$homestudySubmissionSection			= this.$( '.family-homestudy-details-section' );
-			this.$infoPacketDetails						= this.$( '.info-packet-details' );
 			this.$childrenInHome 						= this.$( '#children-in-home' );
 			this.$childrenInHomeDetails 				= this.$( '.children-in-home-details' );
 
@@ -73,11 +71,6 @@
 				this.$socialWorkerPhone.attr( 'data-parsley-required', 'true' );
 				this.$socialWorkerEmail.attr( 'data-parsley-required', 'true' );
 			}
-		},
-
-		toggleInfoPacketDetailsSection: function toggleInfoPacketDetailsSection() {
-			// Hide/show the hidden information packet section via the hidden class
-			this.$infoPacketDetails.toggleClass( 'hidden' );
 		},
 
 		toggleFamilyDetailsForm: function toggleFamilyDetailsForm() {
