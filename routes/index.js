@@ -53,8 +53,8 @@ exports = module.exports = app => {
 	app.get( '/page/*'									, routes.views.page );
 	// forms
 	app.get( '/forms/agency-event-submission-form'		, routes.views.form_agencyEventSubmission );
-	app.get( '/forms/child-registration-form'			, routes.views.form_childRegistration );
-	app.get( '/forms/family-registration-form'			, routes.views.form_familyRegistration );
+	app.get( '/forms/child-registration-form'			, middleware.requireUsersOfType( ['social worker, admin'] ), routes.views.form_childRegistration );
+	app.get( '/forms/family-registration-form'			, middleware.requireUsersOfType( ['social worker, admin'] ), routes.views.form_familyRegistration );
 	app.get( '/forms/information-request-form'			, routes.views.form_informationRequest );
 	app.get( '/forms/have-a-question-form'				, routes.views.form_haveAQuestion );
 	// steps in the process

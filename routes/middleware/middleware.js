@@ -134,9 +134,18 @@ exports.requireUser = function(req, res, next) {
 		res.locals.messages.push( { type: 'error', message: 'Please sign in to access this page.' } );
 		res.redirect('/');
 	} else {
-		return next();
+		next();
 	}
 
+};
+
+exports.requireUsersOfType = function( userTypesArray ) {
+	return ( req, res, next ) => {
+
+		// restrict users here
+
+		next();
+	}
 };
 
 exports.login = function( req, res, next ) {
