@@ -24,10 +24,10 @@ exports = module.exports = function( req, res ) {
 	], () => {
         // set the layout to render with the right sidebar
         locals[ 'render-with-sidebar' ] = true;
-        // if the user requested the 'Register a child' page, specify that it should render a button after the content
+        // if the user requested the 'Register a child' page
         if( locals.targetPage.get( 'key' ) === 'register-a-child' ) {
             // if the user is logged in as a social worker
-            if( locals.user.userType === 'social worker' ) {
+            if( locals.user && locals.user.userType === 'social worker' ) {
                 // specify that it should render a button after the content
                 locals.pageActions.hasButtons = true;
                 // set the button contents
@@ -37,10 +37,10 @@ exports = module.exports = function( req, res ) {
                 // set the section contents
                 locals.pageActions.sections.push( `You must be logged in as a social worker to register a child.  If you're a social worker, you can <a href="/register#social-worker">register here</a>.` );
             }
-        // otherwise, if the user requested the 'Register a family' page, specify that it should render a button after the content
+        // otherwise, if the user requested the 'Register a family' page
         } else if( locals.targetPage.get( 'key' ) === 'register-a-family' ) {
             // if the user is logged in as a social worker
-            if( locals.user.userType === 'social worker' ) {
+            if( locals.user && locals.user.userType === 'social worker' ) {
                 // specify that it should render a button after the content
                 locals.pageActions.hasButtons = true;
                 // set the button contents

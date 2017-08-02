@@ -135,7 +135,6 @@ exports.requireUser = function(req, res, next) {
 		// allow the next middleware function to process by calling next()
 		next();
 	}
-
 };
 
 exports.login = function( req, res, next ) {
