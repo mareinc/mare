@@ -39,7 +39,7 @@ exports.registerUser = ( req, res, next ) => {
 
 	fetchDuplicateEmail.then( isEmailDuplicate => {
 		// set flash messages for any errors with the email/password information submitted
-		setInitialErrorMessages( isEmailValid, isEmailDuplicate, isPasswordValid );
+		exports.setInitialErrorMessages( req, isEmailValid, isEmailDuplicate, isPasswordValid );
 		// if initial errors exist, prevent additional processing, alert the user via the flash messages above
 		if( !isEmailValid || isEmailDuplicate || !isPasswordValid ) {
 			// and redirect to the appropriate page 
@@ -510,7 +510,7 @@ exports.validatePassword = ( password, confirmPassword ) => {
 };
 
 /* create error flash messages if a problem was encountered */
-exports.setInitialErrorMessages = ( isEmailValid, isEmailDuplicate, isPasswordValid ) => {
+exports.setInitialErrorMessages = ( req, isEmailValid, isEmailDuplicate, isPasswordValid ) => {
 	if( !isEmailValid ) {
 		req.flash( `error`, {
 				title: `There was a problem creating your account`,
