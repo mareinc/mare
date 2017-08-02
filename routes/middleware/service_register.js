@@ -33,29 +33,13 @@ exports.registerUser = ( req, res, next ) => {
 	}
 
 	// check for conditions that will prevent saving the model
-	const isEmailValid			= exports.validateEmail( user.email );
+	const isEmailValid			= exports.validateEmail( user.email );			// returns true/false
 	const fetchDuplicateEmail	= exports.checkForDuplicateEmail( user.email ); // returns a promise
-	const isPasswordValid		= exports.validatePassword( user.password, user.confirmPassword );
+	const isPasswordValid		= exports.validatePassword( user.password, user.confirmPassword ); // returns true/false
 
 	fetchDuplicateEmail.then( isEmailDuplicate => {
-		// create an error flash messages if a problem was encountered to let the user know what the problem was
-		if( !isEmailValid ) {
-			req.flash( `error`, {
-					title: `There was a problem creating your account`,
-					detail: `The email address you're trying to use is invalid` } );
-		}
-
-		if( isEmailDuplicate ) {
-			req.flash( `error`, {
-					title: `There was a problem creating your account`,
-					detail: `The email address you're trying to use already exists in the system` } );
-		}
-
-		if( !isPasswordValid ) {
-			req.flash( `error`, {
-					title: `There was a problem creating your account`,
-					detail: `The passwords you entered don't match` } );
-		}
+		// set flash messages for any errors with the email/password information submitted
+		setInitialErrorMessages( isEmailValid, isEmailDuplicate, isPasswordValid );
 		// if initial errors exist, prevent additional processing, alert the user via the flash messages above
 		if( !isEmailValid || isEmailDuplicate || !isPasswordValid ) {
 			// and redirect to the appropriate page 
@@ -485,8 +469,7 @@ exports.saveFamily = user => {
 	});
 };
 
-/* New user data validation functions */
-// Return true if the submitted email is valid
+/* Return true if the submitted email is valid */
 exports.validateEmail = email => {
 
 	// a string to validate that an email is valid
@@ -494,7 +477,8 @@ exports.validateEmail = email => {
 	// return a check against the passed in email
 	return emailPattern.test( email );
 };
-// Return true if the submitted email already exists in the system for a user of any type
+
+/* Return true if the submitted email already exists in the system for a user of any type */
 exports.checkForDuplicateEmail = email => {
 	
 	// return a promise for cleaner asynchronous processing
@@ -519,10 +503,31 @@ exports.checkForDuplicateEmail = email => {
 	});
 }
 
-// Return true if the submitted 'password' and 'confirm password' match
+/* Return true if the submitted 'password' and 'confirm password' match */
 exports.validatePassword = ( password, confirmPassword ) => {
 
 	return password === confirmPassword;
+};
+
+/* create error flash messages if a problem was encountered */
+exports.setInitialErrorMessages = ( isEmailValid, isEmailDuplicate, isPasswordValid ) => {
+	if( !isEmailValid ) {
+		req.flash( `error`, {
+				title: `There was a problem creating your account`,
+				detail: `The email address you're trying to use is invalid` } );
+	}
+
+	if( isEmailDuplicate ) {
+		req.flash( `error`, {
+				title: `There was a problem creating your account`,
+				detail: `The email address you're trying to use already exists in the system` } );
+	}
+
+	if( !isPasswordValid ) {
+		req.flash( `error`, {
+				title: `There was a problem creating your account`,
+				detail: `The passwords you entered don't match` } );
+	}
 };
 
 /* returns an array of staff email contacts */
