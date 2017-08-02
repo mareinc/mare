@@ -162,7 +162,10 @@
 }
 
 .card-details__paragraph {
-	margin-top: 1em;
+
+	&:not( :first-child ) {
+		margin-top: 1em;
+	}
 }
 
 .card__subheading {

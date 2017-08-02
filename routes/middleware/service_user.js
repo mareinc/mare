@@ -1,4 +1,4 @@
-var keystone		= require('keystone'),
+const keystone		= require('keystone'),
 	User			= keystone.list('User'),
 	Admin			= keystone.list('Admin'),
 	SiteVisitor		= keystone.list('Site Visitor'),

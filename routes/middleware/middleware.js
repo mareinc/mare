@@ -1,4 +1,5 @@
-/* TODO: move all this middleware into the appropriate files inside the middleware/ directory
+/* TODO: move all this middleware into the appropriate files inside the middleware/ directory,
+         also, check for unused junk code
 
 /**
  * This file contains the common middleware used by your routes.
@@ -11,12 +12,9 @@
  */
 
 var _ 				= require('underscore'),
-	async			= require( 'async' );
+	async			= require( 'async' ),
 	// load in Keystone for model references
 	keystone 		= require('keystone'),
-	User 			= keystone.list('User'),
-	Child 			= keystone.list('Child'),
-	Gender 			= keystone.list('Gender'),
 	// load in middleware
 	UserMiddleware	= require( './service_user' );
 
@@ -32,8 +30,6 @@ exports.initLocals = function(req, res, next) {
 	'use strict';
 
 	var locals = res.locals;
-	// a messages object used to display errors, warnings, or informational messages to the user after they've taken an action on the site
-	locals.messages = [];
 
 	locals.navLinks = [
 		{ label: 'Home', key: 'home', href: '/' }
@@ -125,20 +121,20 @@ exports.flashMessages = function(req, res, next) {
 };
 
 
-/**
-	Prevents people from accessing protected pages when they're not signed in
- */
-
+/* Prevents people from accessing protected pages when they're not signed in */
 exports.requireUser = function(req, res, next) {
 	'use strict';
-
-	if (!req.user) {
-		res.locals.messages.push( { type: 'error', message: 'Please sign in to access this page.' } );
+	// if there is no req.user object, the user isn't signed in
+	if ( !req.user ) {
+		// create a flash message to display for them
+		req.flash( 'error', { title: 'please sign in to access this page' } );
+		// and redirect them to the home page
 		res.redirect('/');
+	// otherwise, the user must be signed in
 	} else {
-		return next();
+		// allow the next middleware function to process by calling next()
+		next();
 	}
-
 };
 
 exports.requireMigrationUser = function(req, res, next) {
@@ -156,7 +152,7 @@ exports.login = function( req, res, next ) {
 
 	let locals = res.locals;
 
-	if (!req.body.email || !req.body.password) {
+	if ( !req.body.email || !req.body.password ) {
 		/* TODO: Need a better message for the user, flash messages won't work because page reloads are stupid */
 		req.flash( 'error', { title: 'Something went wrong',
 							  detail: 'Please enter your username and password.' } );
@@ -170,20 +166,20 @@ exports.login = function( req, res, next ) {
 		if( locals.userStatus === 'nonexistent' ) {
 			req.flash( 'error', { title: 'Something went wrong',
 							  detail: 'Your username or password is incorrect, please try again.' } );
-			res.redirect( req.body.target );
+			res.redirect( req.body.target || '/' );
 
 		} else if( locals.userStatus === 'inactive' ) {
 			// TODO: we need to figure out if they were once active, or change the message to handle that case as well
 			req.flash( 'error', { title: 'Something went wrong',
 							  detail: 'Your account is not active yet, you will receive an email what your account has been reviewed.' } );
-			res.redirect( req.body.target );
+			res.redirect( req.body.target || '/' );
 
 		} else if( locals.userStatus === 'active' ) {
 			// TODO: you can add a target to the signin of the current page and it will always route correctly back to where the user was
 			var onSuccess = function() {
-				if ( req.body.target && !/join|signin/.test( req.body.target ) ) {
+				if ( req.body.target && !/join|signin/.test( req.body.target ) ) { // TODO: I don't think this is needed anymore
 					console.log( `signin target is: ${ req.body.target }` );
-					res.redirect( req.body.target );
+					res.redirect( req.body.target || '/' );
 				} else {
 					res.redirect( '/' );
 				}
@@ -210,14 +206,14 @@ exports.logout = function(req, res) {
 };
 
 /* TODO: This should be placed in a date-time.js file, but I wasn't able to get it to register on my first try */
-exports.getAge = function getAge(dateOfBirth) {
+exports.getAge = function getAge( dateOfBirth ) {
 
 	var today = new Date();
-	var birthDate = new Date(dateOfBirth);
+	var birthDate = new Date( dateOfBirth );
 	var age = today.getFullYear() - birthDate.getFullYear();
 	var month = today.getMonth() - birthDate.getMonth();
 
-	if (month < 0 || (month === 0 && today.getDate() < birthDate.getDate())) {
+	if ( month < 0 || ( month === 0 && today.getDate() < birthDate.getDate() ) ) {
 		age--;
 	}
 
@@ -225,8 +221,8 @@ exports.getAge = function getAge(dateOfBirth) {
 };
 
 /* Date objects are easily compared for sorting purposes when converted to milliseconds */
-exports.convertDate = function convertDate(date) {
-	return new Date(date).getTime();
+exports.convertDate = function convertDate( date ) {
+	return new Date( date ).getTime();
 };
 
 /* Converts an array to a string like 'element1, element2, and element3' */
@@ -249,7 +245,7 @@ exports.getArrayAsList = function getArrayAsList( array ) {
 	return returnString;
 }
 
-exports.charge = function(req, res) {
+exports.charge = function( req, res ) {
 	// var stripeToken = req.body.stripeToken;
     // var amount = 1000;
 	//

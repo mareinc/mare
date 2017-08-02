@@ -1,28 +1,20 @@
-const keystone		= require( 'keystone' );
-const async			= require( 'async' );
-const listsService	= require( '../middleware/service_lists' );
-const pageService	= require( '../middleware/service_page' );
+const keystone		= require( 'keystone' ),
+	  async			= require( 'async' ),
+	  listsService	= require( '../middleware/service_lists' ),
+	  pageService	= require( '../middleware/service_page' );
 
 exports = module.exports = ( req, res ) => {
 	'use strict';
 
-	const view 				= new keystone.View( req, res );
-
-	const locals 			= res.locals;
-	// objects with additional search parameters
-	const raceOptions		= { other: true };
-	const waysToHearOptions	= { other: true };
-	// TODO: check all these list service fetches to see which are needed for this form
+	const view 		= new keystone.View( req, res ),
+		  locals 	= res.locals;
+	// TODO: this async call and all others will need to be replaced once the service functions are rewritten to use native promises
 	async.parallel([
-		done => { listsService.getAllStates( req, res, done ) },
-		done => { listsService.getAllRaces( req, res, done, raceOptions ) },
-		done => { listsService.getAllGenders( req, res, done ) },
-		done => { listsService.getAllWaysToHearAboutMARE( req, res, done, waysToHearOptions ) },
 		done => { pageService.populateSidebar( req, res, done ); }
 	], () => {
-		// Set the layout to render with the right sidebar
+		// set the layout to render with the right sidebar
 		locals[ 'render-with-sidebar' ] = true;
-		// Render the view once all the data has been retrieved
+		// render the view once all the data has been retrieved
 		view.render( 'form_have-a-question.hbs' );
 
 	}, err => {

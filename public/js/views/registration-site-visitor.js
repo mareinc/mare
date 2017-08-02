@@ -5,14 +5,12 @@
 		el: '.form--site-visitor-registration',
 
 		events: {
-			'change .other-way-to-hear-about-mare'	: 'toggleOtherWayToHearTextField',
-			'change .info-packet-toggle'			: 'toggleInfoPacketDetailsSection'
+			'change .other-way-to-hear-about-mare': 'toggleOtherWayToHearTextField'
 		},
 
 		initialize: function() {
 			// DOM cache any commonly used elements to improve performance
 			this.$howDidYouHearOther 	= this.$('#site-visitor-how-did-you-hear-other');
-			this.$infoPacketDetails		= this.$('.info-packet-details');
 			// Initialize parsley validation on the form
 			this.form = this.$el.parsley();
 			// Bind the hidden 'other' text box for use in binding/unbinding validation
@@ -38,11 +36,6 @@
 				// Add validation binding
 				this.$howDidYouHearOther.attr('data-parsley-required', 'true');
 			}
-		},
-
-		toggleInfoPacketDetailsSection: function toggleInfoPacketDetailsSection() {
-			// Hide/show the hidden information packet section via the hidden class
-			this.$infoPacketDetails.toggleClass('hidden');
 		},
 
 		validateForm: function validateForm() {

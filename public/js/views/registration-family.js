@@ -9,7 +9,6 @@
 			'change #family-state'					: 'toggleHomestudySubmission',
 			'change #homestudy-completed-checkbox'	: 'toggleHomestudySection',
 			'change #upload-button'					: 'uploadForm',
-			'change .info-packet-toggle'			: 'toggleInfoPacketDetailsSection',
 			'change #children-in-home'				: 'toggleFamilyDetailsForm',
 			'change .adoption-preferences-trigger'	: 'checkAdoptionPreferences'
 		},
@@ -29,7 +28,6 @@
 			this.$homestudySection						= this.$( '.family-submit-your-homestudy-section' );
 			this.$homestudySubmissionSection			= this.$( '.family-homestudy-details-section' );
 			this.$howDidYouHearOther					= this.$( '#family-how-did-you-hear-other' );
-			this.$infoPacketDetails						= this.$( '.info-packet-details' );
 			this.$childrenInHome 						= this.$( '#children-in-home' );
 			this.$childrenInHomeDetails 				= this.$( '.children-in-home-details' );
 			this.$gatheringInformationCheckbox			= this.$( '#gathering-information-checkbox' );
@@ -140,11 +138,6 @@
 			}
 		},
 
-		toggleInfoPacketDetailsSection: function toggleInfoPacketDetailsSection() {
-			// Hide/show the hidden information packet section via the hidden class
-			this.$infoPacketDetails.toggleClass( 'hidden' );
-		},
-
 		toggleFamilyDetailsForm: function toggleFamilyDetailsForm() {
 			// Capture the number of children the user has selected in the dropdown
 			var selectedQuantity = parseInt( this.$childrenInHome.children( 'option:selected' ).html(), 10 );
@@ -245,7 +238,7 @@
 			this.$maximumEmotionalNeeds.attr( 'required', false );
 			this.$maximumIntellectualNeeds.attr( 'required', false );
 		},
-		// TODO: This needs to be cleaned up a bit, both logic for efficiency and the creation should be handled in a template instead of jQuery.
+		// TODO: This needs to be cleaned up a bit, both logic for efficiency and the creation should be handled in a template instead of jQuery.  An identical function exists in form_social-worker-family-registration.js as well
 		generateChildDetailInputs: function generateChildDetailInputs( selectedNumberOfChildren ) {
 			// Count the number of child data groups already shown on the page
 			var currentChildrenDisplayed = this.$( '.child-details-form' ).length,
@@ -276,7 +269,6 @@
 				}
 
 			}
-
 		},
 
 		uploadForm: function uploadForm( event ) {
@@ -292,6 +284,5 @@
 			$( '.bs-callout-info' ).toggleClass( 'hidden', !ok );
 			$( '.bs-callout-warning' ).toggleClass( 'hidden', ok );
 		}
-
 	});
 }());

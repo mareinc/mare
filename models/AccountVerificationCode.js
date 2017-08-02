@@ -3,7 +3,9 @@ var keystone = require( 'keystone' ),
 
 // Create model. Additional options allow menu name to be used what auto-generating URLs
 var AccountVerificationCode = new keystone.List( 'Account Verification Code', {
-	hidden: false
+	hidden: false, // TODO: do we want to hide this model?
+	map: { name: 'code' },
+	defaultSort: '-dateSent'
 });
 
 // Create fields

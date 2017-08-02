@@ -1,8 +1,8 @@
- const keystone     = require( 'keystone' );
- const SocialWorker = keystone.list( 'Social Worker' );
+const keystone            = require( 'keystone' ),
+	  SocialWorker        = keystone.list( 'Social Worker' );
  
- // TODO: this implementation is ugly, it needs to be rewritten in a non-crappy way
- exports.getSocialWorkerById = ( id, container, field, done ) => { 
+// TODO: this implementation is ugly, it needs to be rewritten in a non-crappy way
+exports.getSocialWorkerById = ( id, container, field, done ) => { 
     // if the id isn't set
 	if( !id ) {
         // return control to the calling context
@@ -17,4 +17,4 @@
             // return control to the parent context
             done();
         });
- }
+};

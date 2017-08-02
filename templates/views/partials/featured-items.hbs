@@ -3,7 +3,7 @@
 	<li class="featured-item card">
 		<a href="/page/our-services" class="featured-item__link cover">
 			<div class="featured-item__title-container">
-				<span class="featured-item__title">Our Services</span>
+				<span class="featured-item__title">{{ aboutUs.title }}</span>
 			</div>
 			<img src="{{ aboutUs.imageScaled }}" alt="{{ aboutUs.title }}" class="featured-item__image">
 		</a>
@@ -11,7 +11,7 @@
 	<li class="featured-item card">
 		<a href="{{ successStory.url }}" class="featured-item__link cover">
 			<div class="featured-item__title-container">
-				<span class="featured-item__title">Success Stories</span>
+				<span class="featured-item__title">{{ successStory.title }}</span>
 			</div>
 			<img src="{{ successStory.imageScaled }}" alt="{{ successStory.title }}" class="featured-item__image">
 		</a>
@@ -19,7 +19,7 @@
 	<li class="featured-item card">
 		<a href="{{ event.url }}" class="featured-item__link cover">
 			<div class="featured-item__title-container">
-				<span class="featured-item__title">Events</span>
+				<span class="featured-item__title">{{ event.title }}</span>
 			</div>
 			<img src="{{ event.imageScaled }}" alt="{{ event.title }}" class="featured-item__image">
 		</a>

@@ -28,7 +28,7 @@
 		toggleChildRegistrationNumbersInput: function toggleChildRegistrationNumbersInput() {
 			// get the selected interest radio button value
 			var selectedInterest = this.$( '.interest:checked' ).val();
-			// if the selected interest is child info, show the information packet section, otherwise hide it
+			// if the selected interest is child info, show the registration number input, otherwise hide it
 			if( selectedInterest === 'child info' ) {
 				this.$childRegistrationNumbersContainer.removeClass( 'hidden' );
 			} else {

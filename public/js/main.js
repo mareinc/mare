@@ -18,6 +18,7 @@ $(function() {
 			switch( mare.url.page ) {
 				case 'agency-event-submission-form'	: mare.routers.form_agencyEventSubmission = new mare.routers.Form_AgencyEventSubmission();	break;
 				case 'child-registration-form'		: mare.routers.childRegistration = new mare.routers.ChildRegistration();					break;
+				case 'family-registration-form'		: mare.routers.familyRegistration = new mare.routers.FamilyRegistration();					break;
 				case 'have-a-question-form'			: mare.routers.form_haveAQuestion = new mare.routers.Form_HaveAQuestion();					break;
 				case 'information-request-form'		: mare.routers.form_informationRequest = new mare.routers.Form_InformationRequest();
 			}
