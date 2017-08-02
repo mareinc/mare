@@ -32,7 +32,7 @@
     "keystone": "https://github.com/keystonejs/keystone.git#c38b366c7b1bf01448c8ece7c36e1bb6eb195186",
     "moment": "~2.18.1",
     "mongoose-simple-random": "^0.4.1",
-    "newrelic": "^2.0.0",
+    "newrelic": "^2.0.2",
     "node-sass": "^4.5.3",
     "node-sass-middleware": "^0.11.0",
     "q": "^1.5.0",
@@ -49,8 +49,8 @@
   "main": "keystone.js",
   "devDependencies": {
     "chai": "^4.1.0",
-    "mocha": "^3.4.2",
-    "sinon": "^2.3.8",
-    "sinon-chai": "^2.11.0"
+    "mocha": "^3.5.0",
+    "sinon": "^2.4.1",
+    "sinon-chai": "^2.12.0"
   }
 }
