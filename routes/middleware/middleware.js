@@ -30,8 +30,6 @@ exports.initLocals = function(req, res, next) {
 	'use strict';
 
 	var locals = res.locals;
-	// a messages object used to display errors, warnings, or informational messages to the user after they've taken an action on the site
-	locals.messages = [];
 
 	locals.navLinks = [
 		{ label: 'Home', key: 'home', href: '/' }
@@ -123,29 +121,21 @@ exports.flashMessages = function(req, res, next) {
 };
 
 
-/**
-	Prevents people from accessing protected pages when they're not signed in
- */
-
+/* Prevents people from accessing protected pages when they're not signed in */
 exports.requireUser = function(req, res, next) {
 	'use strict';
-
-	if (!req.user) {
-		res.locals.messages.push( { type: 'error', message: 'Please sign in to access this page.' } );
+	// if there is no req.user object, the user isn't signed in
+	if ( !req.user ) {
+		// create a flash message to display for them
+		req.flash( 'error', { title: 'please sign in to access this page' } );
+		// and redirect them to the home page
 		res.redirect('/');
+	// otherwise, the user must be signed in
 	} else {
+		// allow the next middleware function to process by calling next()
 		next();
 	}
 
-};
-
-exports.requireUsersOfType = function( userTypesArray ) {
-	return ( req, res, next ) => {
-
-		// restrict users here
-
-		next();
-	}
 };
 
 exports.login = function( req, res, next ) {
