@@ -1,16 +1,16 @@
 /* functions to fetch model information for use during the migration */
 
 // TODO: for all these, you need to check string input, and if so, trim then check each for existence
-
-const Source		= keystone.list( 'Source' );
-const Agency		= keystone.list( 'Agency' );
-const Family		= keystone.list( 'Family' );
-const SocialWorker	= keystone.list( 'Social Worker' );
-const Child			= keystone.list( 'Child' );
-const MediaFeature	= keystone.list( 'Media Feature' );
-const Event			= keystone.list( 'Event' );
-const Admin			= keystone.list( 'Admin' );
-const Inquiry		= keystone.list( 'Inquiry' );
+const keystone		= require( 'keystone' ),
+	  Source		= keystone.list( 'Source' ),
+	  Agency		= keystone.list( 'Agency' ),
+	  Family		= keystone.list( 'Family' ),
+	  SocialWorker	= keystone.list( 'Social Worker' ),
+	  Child			= keystone.list( 'Child' ),
+	  MediaFeature	= keystone.list( 'Media Feature' ),
+	  Event			= keystone.list( 'Event' ),
+	  Admin			= keystone.list( 'Admin' ),
+	  Inquiry		= keystone.list( 'Inquiry' );
 
 module.exports.getSourceById = ( resolve, reject, sourceId ) => {
 	/* TODO: short circuit the fetch here by just resolving if there are no oldIds */

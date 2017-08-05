@@ -180,7 +180,7 @@ module.exports.updateFamilyRecord = ( contacts, familyId, pauseUntilSaved ) => {
 			family.contact1.email							= contact1.email ? contact1.email : undefined,
 			family.contact1.preferredCommunicationMethod	= preferredCommunicationMethod,
 			family.contact1.gender							= gendersMap[ contact1.gender ],
-			family.contact1.race							= racesMap[ contact1.raceId ],
+			family.contact1.race							= contact1.raceId ? racesMap[ contact1.raceId ] : racesMap[ 17 ], // if the race id exists, set it, otherwise, set it to 'unknown'
 			family.contact1.occupation						= contact1.occupation.trim(),
 			family.contact1.birthDate						= contact1.dateOfBirth.trim() ? new Date( contact1.dateOfBirth ) : undefined
 		}
@@ -201,7 +201,7 @@ module.exports.updateFamilyRecord = ( contacts, familyId, pauseUntilSaved ) => {
 			family.contact2.email							= contact2.email ? contact2.email : undefined,
 			family.contact2.preferredCommunicationMethod	= preferredCommunicationMethod,
 			family.contact2.gender							= gendersMap[ contact2.gender ],
-			family.contact2.race							= racesMap[ contact2.raceId ],
+			family.contact2.race							= contact2.raceId ? racesMap[ contact2.raceId ] : racesMap[ 17 ],
 			family.contact2.occupation						= contact2.occupation.trim(),
 			family.contact2.birthDate						= contact2.dateOfBirth.trim() ? new Date( contact2.dateOfBirth ) : undefined
 		}

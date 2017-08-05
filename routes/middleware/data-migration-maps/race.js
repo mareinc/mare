@@ -15,7 +15,8 @@ exports.getRacesMap = ( req, res, done ) => {
 		done => { dataMigrationService.getModelId( { model: 'Race', field: 'race', value: 'Caucasian', mapTo: [ 3, 7, 10, 13, 14 ], namespace: locals.migration.maps.races }, done ); },
 		done => { dataMigrationService.getModelId( { model: 'Race', field: 'race', value: 'Hispanic', mapTo: [ 4, 8, 11, 13, 15 ], namespace: locals.migration.maps.races }, done ); },
 		done => { dataMigrationService.getModelId( { model: 'Race', field: 'race', value: 'Native American', mapTo: [ 5, 9, 12, 14, 15 ], namespace: locals.migration.maps.races }, done ); },
-		done => { dataMigrationService.getModelId( { model: 'Race', field: 'race', value: 'other', mapTo: [ 16 ], namespace: locals.migration.maps.races }, done ); }
+		done => { dataMigrationService.getModelId( { model: 'Race', field: 'race', value: 'other', mapTo: [ 16 ], namespace: locals.migration.maps.races }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'Race', field: 'race', value: 'unknown', mapTo: [ 17 ], namespace: locals.migration.maps.races }, done ); } // 17 doesn't exist, it's just a placeholder to let us access the value in the new system
 		
 	], () => {
 
