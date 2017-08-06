@@ -660,34 +660,6 @@ exports.uploadFile = ( userModel, targetFieldPrefix, targetField, file ) => {
 	// 			});
 };
 
-exports.getMailingLists = ( mailingListsArray ) => {
-
-	// create a map to hold all retrieved mailing list data
-	let mailingListMap = new Map();
-
-	return new Promise( ( resolve, reject ) => {
-		// fetch the three target mailing lists from the database
-		// TODO: this is a little brittle as it can break when the name of any of the lists changes.
-		//       We could try embedding the ids into the form itself
-		MailingList.model.find()
-				.where( 'mailingList' ).in( mailingListsArray )
-				.exec()
-				.then( mailingLists => {
-					// loop through the returned mailing list objects and store them in the map with a key equal to the name and a value equal to the database id
-					for( let mailingList of mailingLists ) {
-						mailingListMap.set( mailingList.get( 'mailingList' ), malingList.get( '_id' ) );
-					}
-
-					resolve( mailingListMap );
-
-				}, err => {
-					console.log( `error fetching mailing lists: ${ err }` );
-
-					reject();
-				});
-	});
-};
-
 // TODO: why do we need this, saving a Date object in any Types.Date field should work just fine
 exports.getCurrentDate = () => {
 
