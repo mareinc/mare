@@ -1,0 +1,13 @@
+{{#if pageActions}}
+    {{#if pageActions.hasButtons}}
+        <section class="button-group button-group--horizontal button-group--space-around button-group--large-margin-above button-group--small-margin-below">			
+        {{#each pageActions.buttons}}
+            <button class="button button--large button--teal page__action-button" data-url={{ target }}>{{ text }}</button>
+        {{/each}}
+        </section>
+    {{/if}}
+    {{#each pageActions.sections}}
+        <p>&nbsp;</p>
+        <p>{{{ this }}}</p>
+    {{/each}}
+{{/if}}

@@ -11,8 +11,6 @@
 					<input type="text" id="site-visitor-first-name" class="input" name="firstName" placeholder="John" data-parsley-error-message="required" required="">
 					<label for="site-visitor-first-name" class="label required-field">First Name</label>
 				</div>
-			</div>
-			<div class="row form-group">
 				<div class="col-sm-12">
 					<input type="text" id="site-visitor-last-name" class="input" name="lastName" placeholder="Smith" data-parsley-error-message="required" required="">
 					<label for="site-visitor-last-name" class="label required-field">Last Name</label>
@@ -29,8 +27,6 @@
 					<input type="password" id="site-visitor-password" class="input" name="password" placeholder="**********" data-parsley-error-message="required" required="">
 					<label for="site-visitor-password" class="label required-field">Password</label>
 				</div>
-			</div>
-			<div class="row form-group">
 				<div class="col-sm-12">
 					<input type="password" id="site-visitor-confirm-password" class="input" name="confirmPassword" placeholder="**********" data-parsley-equalto="#site-visitor-password" data-parsley-error-message="passwords must match" required="">
 					<label for="site-visitor-confirm-password" class="label required-field">Confirm Password</label>
@@ -43,17 +39,29 @@ for events on the MARE site faster and easier.</div>
 					<input type="text" id="site-visitor-street-1" class="input" name="street1" placeholder="100 Main Street">
 					<label for="site-visitor-street-1" class="label">Street 1</label>
 				</div>
-			</div>
-			<div class="row form-group">
 				<div class="col-sm-12">
 					<input type="text" id="site-visitor-street-2" class="input" name="street2" placeholder="Suite 1">
 					<label for="site-visitor-street-2" class="label">Street 2</label>
 				</div>
 			</div>
 			<div class="row form-group">
-				<div class="col-sm-12">
-					<input type="text" id="site-visitor-city" class="input" name="city" placeholder="Boston">
-					<label for="site-visitor-city" class="label">City</label>
+				<div class="col-sm-12 form-group ma-city-container">
+					<select id="ma-city" class="input" name="city" data-parsley-trigger="change" data-parsley-errors-messages-disabled="true" required="">
+						<option value=""></option>
+						{{#each citiesAndTowns}}
+						<option value="{{ _id }}">{{ cityOrTown }}</option>
+						{{/each}}
+					</select>
+					<label for="ma-city" class="label required-field">City</label>
+				</div>
+				<div class="col-sm-12 form-group non-ma-city-container hidden">
+					<input type="text" id="non-ma-city" class="input" name="nonMACity" placeholder="Boston" data-parsley-error-message="required" data-parsley-required="false">
+					<label for="non-ma-city" class="label required-field">City</label>
+				</div>
+				<div class="col-sm-12 form-group">
+					<label class="checkbox-inline">
+						<input type="checkbox" id="is-not-MA-city-checkbox" name="isNotMACity">I live outside MA
+					</label>
 				</div>
 			</div>
 			<div class="row form-group">
@@ -81,8 +89,6 @@ for events on the MARE site faster and easier.</div>
 					<input type="text" id="site-visitor-home-phone" class="input" name="homePhone" placeholder="(617) 111-1111">
 					<label for="site-visitor-home-phone" class="label">Home Phone</label>
 				</div>
-			</div>
-			<div class="row form-group">
 				<div class="col-sm-12">
 					<input type="text" id="site-visitor-work-phone" class="input" name="workPhone" placeholder="(617) 222-2222">
 					<label for="site-visitor-work-phone" class="label">Work Phone</label>
@@ -93,8 +99,6 @@ for events on the MARE site faster and easier.</div>
 					<input type="text" id="site-visitor-mobile-phone" class="input" name="mobilePhone" placeholder="(617) 333-3333">
 					<label for="site-visitor-mobile-phone" class="label">Mobile Phone</label>
 				</div>
-			</div>
-			<div class="row form-group">
 				<div class="col-sm-12">
 					<select id="site-visitor-preferred-phone" class="input site-visitor-preferred-phone-select" name="preferredPhone">
 						<option value=""></option>
@@ -132,29 +136,19 @@ for events on the MARE site faster and easier.</div>
 				</div>
 			</div>
 
+			{{#each mailingLists }}
+			{{#if showOnSiteVisitorRegistrationPage}}
 			<div class="row form-group">
-				<div class="col-sm-24">
-					<label class="checkbox-inline">
-						<input type="checkbox" class="info-packet-toggle" name="infoPacket" value="yes">Please send me a general adoption information packet
-					</label>
+				<div class="col-sm-12">
+					<label class="label marg-bottom-xs-5">{{ displayText }}</label>
+				</div>
+				<div class="col-sm-12">
+					<label class="radio-inline"><input type="radio" name="mailingLists[{{@index}}]" value={{ _id }} checked="checked">Yes</label>
+					<label class="radio-inline"><input type="radio" name="mailingLists[{{@index}}]" value="">No</label>
 				</div>
 			</div>
-			<div class="row form-group info-packet-details hidden">
-				<div class="col-sm-12 form-group">
-					<select id="info-packet-format" class="input info-packet-select" name="infoPacketFormat">
-							<option value="email" selected="selected">email</option>
-							<option value="mail">mail</option>
-					</select>
-					<label for="info-packet-format" class="label">Preferred Format</label>
-				</div>
-				<div class="col-sm-12 form-group">
-					<select id="info-packet-language" class="input info-packet-select" name="infoPacketLanguage">
-							<option value="English" selected="selected">English</option>
-							<option value="Spanish">Spanish</option>
-					</select>
-					<label for="info-packet-format" class="label">Preferred Language</label>
-				</div>
-			</div>
+			{{/if}}
+			{{/each}}
 
 			<button class="button button--blue register" type="submit">Register</button>
 		</section>

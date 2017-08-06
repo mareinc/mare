@@ -18,15 +18,15 @@
  * http://expressjs.com/api.html#app.VERB
  */
 
-const keystone					= require( 'keystone' );
-const middleware				= require( './middleware/middleware' );
-const registrationMiddleware	= require( './middleware/service_register' );
-const childService				= require( './middleware/service_child' );
-const eventService				= require( './middleware/service_event' );
-const familyService				= require( './middleware/service_family' );
-const formService				= require( './middleware/service_form' );
-const permissionsService		= require( './middleware/service_permissions' );
-const importRoutes				= keystone.importer( __dirname );
+const keystone					= require( 'keystone' ),
+	  childService				= require( './middleware/service_child' ),
+	  eventService				= require( './middleware/service_event' ),
+	  familyService				= require( './middleware/service_family' ),
+	  formService				= require( './middleware/service_form' ),
+	  middleware				= require( './middleware/middleware' ),
+	  permissionsService		= require( './middleware/service_permissions' ),
+	  registrationMiddleware	= require( './middleware/service_register' ),
+	  importRoutes				= keystone.importer( __dirname );
 
 // Common Middleware
 keystone.pre( 'routes', middleware.initLocals );
@@ -44,6 +44,7 @@ const eventRoutes		= [ '/events/adoption-parties/*', '/events/mapp-trainings/*',
 
 // Setup Route Bindings
 // TODO: in order to handle bad rountes, we need a catch here instead of on the client side
+// TODO: clean up these routes to use cleaner paths and route parameters instead of just wildcards
 exports = module.exports = app => {
 	'use strict';
 
@@ -53,14 +54,13 @@ exports = module.exports = app => {
 	app.get( '/page/*'									, routes.views.page );
 	// forms
 	app.get( '/forms/agency-event-submission-form'		, routes.views.form_agencyEventSubmission );
-	app.get( '/forms/car-donation-form'					, routes.views.form_carDonation );
 	app.get( '/forms/child-registration-form'			, routes.views.form_childRegistration );
+	app.get( '/forms/family-registration-form'			, routes.views.form_familyRegistration );
 	app.get( '/forms/information-request-form'			, routes.views.form_informationRequest );
 	app.get( '/forms/have-a-question-form'				, routes.views.form_haveAQuestion );
 	// steps in the process
 	app.get( '/steps-in-the-process'					, routes.views.stepsInTheProcess );
 	// events
-	app.get( '/events/'									, routes.views.eventCategories );
 	app.get( eventListRoutes							, routes.views.eventList );
 	app.get( eventRoutes								, routes.views.event );
 	// success stories
@@ -95,9 +95,8 @@ exports = module.exports = app => {
 	app.post( '/services/unregister-for-event'			, eventService.removeUser );
 	// services for form submissions
 	app.post( '/submit-agency-event'					, eventService.submitEvent );
-	app.post( '/submit-car-donation'					, formService.submitCarDonation );
 	app.post( '/submit-question'						, formService.submitQuestion );
-
-	// NOTE: To protect a route so that only admins can see it, use the requireUser middleware:
-	// app.get('/protected', middleware.requireUser, routes.views.protected);
+	app.post( '/submit-information-request'				, formService.submitInformationRequest );
+	app.post( '/social-worker-register-child'			, childService.registerChild );
+	app.post( '/social-worker-register-family'			, familyService.registerFamily );
 };

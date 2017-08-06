@@ -7,34 +7,34 @@
 	<div class="form-type-header">Information Request Form</div>
 	<span class="required required-description">* Required</span>
 
-	<form action="/submit-information-request-form" class="form--information-request" method="POST">
+	<form action="/submit-information-request" class="form--information-request" method="POST">
 
 		<div class="form-section-header">Requested Information</div>
-		<br />
+
 		<div class="row">
 			<div class="col-sm-12 form-group">
-				<span class="required-field">I am interested in:</span>
+				<span class="required-field">I am interested in</span>
 			</div>
-			<div class="col-sm-12 form-group">
+			<div id="interest-error-container" class="error-container col-sm-12 form-group">
 				<div class="col-sm-24 form-group">
 					<label class="radio-inline">
-						<input type="radio" name="interest">Information about a specific child or children
+						<input type="radio" name="interest" class="interest" value="child info" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#interest-error-container" required="">Information about a specific child or children
 					</label>
 				</div>
 				<div class="col-sm-24 form-group">
 					<label class="radio-inline">
-						<input type="radio" name="interest">General adoption information
+						<input type="radio" name="interest" class="interest" value="general info" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#interest-error-container" required="">General adoption information
 					</label>
 				</div>
 			</div>
 		</div>
 
-		<div class="row">
+		<div class="row child-registration-numbers-container hidden">
 			<div class="col-sm-12 form-group">
-				<label for="child-registration-number" class="label required-field">Child's/Childrens' Registration Number (comma separated)</label>
+				<label for="child-registration-numbers" class="label">Child Registration Number(s) (comma separated)</label>
 			</div>
 			<div class="col-sm-12 form-group">
-				<input type="text" class="input" id="child-registration-number" name="childRegistrationNumber" value="{{ registrationNumber }}" required />
+				<input type="text" class="input" id="child-registration-numbers" name="childRegistrationNumbers" value="{{ registrationNumber }}">
 			</div>
 		</div>
 		<div class="row form-group">
@@ -44,25 +44,27 @@
 						<span class="required-field">Where are you in the adoption process?</span>
 					</div>
 				</div>
-				<div class="col-sm-24 form-group">
-					<label class="radio-inline">
-						<input type="radio" name="whereInAdoptionProcess" value="Gathering Information">Gathering Information
-					</label>
-				</div>
-				<div class="col-sm-24 form-group">
-					<label class="radio-inline">
-						<input type="radio" name="whereInAdoptionProcess" value="Enrolled in MAPP">Enrolled in MAPP
-					</label>
-				</div>
-				<div class="col-sm-24 form-group">
-					<label class="radio-inline">
-						<input type="radio" name="whereInAdoptionProcess" value="Completing homestudy">Completing homestudy
-					</label>
-				</div>
-				<div class="col-sm-24 form-group">
-					<label class="radio-inline">
-						<input type="radio" name="whereInAdoptionProcess" value="Homestudy complete/waiting to be matched">Homestudy complete/waiting to be matched
-					</label>
+				<div id="adoption-process-error-container" class="col-sm-24 form-group error-container">
+					<div class="col-sm-24 form-group">
+						<label class="radio-inline">
+							<input type="radio" name="whereInAdoptionProcess" value="Gathering Information" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#adoption-process-error-container" required="">Gathering Information
+						</label>
+					</div>
+					<div class="col-sm-24 form-group">
+						<label class="radio-inline">
+							<input type="radio" name="whereInAdoptionProcess" value="Enrolled in MAPP" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#adoption-process-error-container" required="">Enrolled in MAPP
+						</label>
+					</div>
+					<div class="col-sm-24 form-group">
+						<label class="radio-inline">
+							<input type="radio" name="whereInAdoptionProcess" value="Completing homestudy" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#adoption-process-error-container" required="">Completing homestudy
+						</label>
+					</div>
+					<div class="col-sm-24 form-group">
+						<label class="radio-inline">
+							<input type="radio" name="whereInAdoptionProcess" value="Homestudy complete/waiting to be matched" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#adoption-process-error-container" required="">Homestudy complete/waiting to be matched
+						</label>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -76,44 +78,43 @@
 		<div class="form-section-header">Contact 1 Information</div>
 
 		<div class="row">
-			<div class="col-sm-12 col-md-6 form-group">
-				<input type="text" class="input" id="contact1-first-name" name="contact1FirstName" required />
+			<div class="col-sm-12 form-group">
+				<input type="text" class="input" id="contact1-first-name" name="contact1FirstName"  data-parsley-error-message="required" required="">
 				<label for="contact1-first-name" class="label required-field">First Name</label>
 			</div>
-			<div class="col-sm-12 col-md-6 form-group">
-				<input type="text" class="input" id="contact1-last-name" name="contact1LastName" required />
+			<div class="col-sm-12 form-group">
+				<input type="text" class="input" id="contact1-last-name" name="contact1LastName"  data-parsley-error-message="required" required="">
 				<label for="contact1-last-name" class="label required-field">Last Name</label>
 			</div>
 		</div>
 		<div class="row">
-			<div class="col-sm-6 form-group">
-				<input type="text" class="input" id="contact1-primary-phone" name="contact1PrimaryPhone" required />
+			<div class="col-sm-12 form-group">
+				<input type="text" class="input" id="contact1-primary-phone" name="contact1PrimaryPhone"  data-parsley-error-message="required" required="">
 				<label for="contact1-primary-phone" class="label required-field">Primary Phone</label>
 			</div>
-			<div class="col-sm-6 form-group">
-				<select id="contact1-phone-type" name="contact1PhoneType" class="input" required>
-					<option value="mobile" selected="selected">Cell</option>
-					<option value="work" selected="selected">Work</option>
-					<option value="home" selected="selected">Home</option>
+			<div class="col-sm-12 form-group">
+				<select id="contact1-phone-type" name="contact1PhoneType" class="input" data-parsley-errors-messages-disabled="true" required="">
+					<option value=""></option>
+					<option value="mobile">Cell</option>
+					<option value="work">Work</option>
+					<option value="home">Home</option>
 				</select>
 				<label for="contact1-phone-type" class="label required-field">Specify Type</label>
 			</div>
 		</div>
 		<div class="row">
-			<div class="col-sm-6 form-group">
-				<input type="text" class="input" id="contact1-other-phone" name="contact1OtherPhone" required />
-				<label for="contact1-other-phone" class="label required-field">Other Phone</label>
-			</div>
-		</div>
-		<div class="row">
 			<div class="col-sm-12 form-group">
-				<input type="email" class="input" required id="contact1-email" name="contact1Email" pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
+				<input type="text" class="input" id="contact1-other-phone" name="contact1OtherPhone">
+				<label for="contact1-other-phone" class="label">Other Phone</label>
+			</div>
+			<div class="col-sm-12 form-group">
+				<input type="email" class="input" id="contact1-email" name="contact1Email" data-parsley-type="email" data-parsley-trigger="change" data-parsley-error-message="valid email required" required="">
 				<label for="contact1-email" class="label required-field">Email</label>
 			</div>
 		</div>
 		<div class="row double-padding">
 			<div class="col-sm-24">
-				<span class="gender-select-text">Gender:</span> &nbsp;&nbsp;
+				<span class="gender-select-text">Gender</span> &nbsp;&nbsp;
 				{{#each genders}}
 					<label class="radio-inline"><input type="radio" name="Contact1Gender" value="{{_id}}">{{gender}}</label>
 				{{/each}}
@@ -123,7 +124,7 @@
 			<div class="col-sm-24">
 				<div class="row">
 					<div class="col-sm-24 form-group">
-						<span>Ethnicity:</span>
+						<span>Ethnicity</span>
 					</div>
 				</div>
 				<div class="col-sm-16 col-md-12">
@@ -143,78 +144,51 @@
 			</div>
 		</div>
 		<div class="row form-group">
-			<div class="col-sm-6">
-				<input type="text" class="input" id="contact1-date-of-birth" name="Contact1DateOfBirth" placeholder="DD/MM/YYYY">
+			<div class="col-sm-12">
+				<input type="text" class="input" id="contact1-date-of-birth" name="Contact1DateOfBirth" placeholder="DD/MM/YYYY" data-parsley-error-message="required" required="">
 				<label for="contact1-date-of-birth" class="label required-field">Date of Birth</label>
 			</div>
 		</div>
-		<div class="row form-group">
-			<div class="col-sm-12">
-				<input type="text" class="input" required id="contact1-address1" name="contact1Address1">
-				<label for="contact1-address1" class="label required-field">Address 1</label>
-			</div>
-		</div>
-		<div class="row form-group">
-			<div class="col-sm-12">
-				<input type="text" class="input" required id="contact1-address2" name="contact1Address2">
-				<label for="contact1-address2" class="label required-field">Address 2</label>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-sm-6 form-group">
-				<input type="text" class="input" required id="contact1-city" name="contact1City">
-				<label for="contact1-city" class="label required-field">City</label>
-			</div>
-			<div class="col-sm-6 form-group">
-				<select id="contact1-state" name="contact1State" class="input" required>
-				{{#each states}}
-					<option value="{{_id}}">{{state}}</option>
-				{{/each}}
-				</select>
-				<label for="contact1-state" class="label required-field">State</label>
-			</div>
-			<div class="col-sm-6 form-group">
-				<input type="text" class="input" required id="contact1-zip" name="contact1Zip" pattern="\d{5}([ \-]\d{4})?">
-				<label for="contact1-zip" class="label required-field">Zip Code</label>
-			</div>
-		</div>
-
 
 		<div class="form-section-header">Contact 2 Information</div>
 
 		<div class="row">
-			<div class="col-sm-12 col-md-6 form-group">
-				<input type="text" class="input" id="contact2-first-name" name="contact2FirstName" required />
-				<label for="contact2-first-name" class="label required-field">First Name</label>
+			<div class="col-sm-12 form-group">
+				<input type="text" class="input" id="contact2-first-name" name="contact2FirstName">
+				<label for="contact2-first-name" class="label">First Name</label>
 			</div>
-			<div class="col-sm-12 col-md-6 form-group">
-				<input type="text" class="input" id="contact2-last-name" name="contact2LastName" required />
-				<label for="contact2-last-name" class="label required-field">Last Name</label>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-sm-6 form-group">
-				<input type="text" class="input" id="contact2-primary-phone" name="contact2PrimaryPhone" required />
-				<label for="contact2-primary-phone" class="label required-field">Primary Phone</label>
-			</div>
-			<div class="col-sm-6 form-group">
-				<select id="contact2-phone-type" name="contact2PhoneType" class="input" required>
-					<option value="Cell">Cell</option>
-					<option value="Work">Work</option>
-					<option value="Phone">Phone</option>
-				</select>
-				<label for="contact2-phone-type" class="label required-field">Specify Type</label>
+			<div class="col-sm-12 form-group">
+				<input type="text" class="input" id="contact2-last-name" name="contact2LastName">
+				<label for="contact2-last-name" class="label">Last Name</label>
 			</div>
 		</div>
 		<div class="row">
 			<div class="col-sm-12 form-group">
-				<input type="email" class="input" required id="contact2-email" name="contact2Email" pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
-				<label for="contact2-email" class="label required-field">Email</label>
+				<input type="text" class="input" id="contact2-primary-phone" name="contact2PrimaryPhone">
+				<label for="contact2-primary-phone" class="label">Primary Phone</label>
+			</div>
+			<div class="col-sm-12 form-group">
+				<select id="contact2-phone-type" name="contact2PhoneType" class="input">
+					<option value="Cell">Cell</option>
+					<option value="Work">Work</option>
+					<option value="Phone">Phone</option>
+				</select>
+				<label for="contact2-phone-type" class="label">Specify Type</label>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-12 form-group">
+				<input type="text" class="input" id="contact2-other-phone" name="contact2OtherPhone">
+				<label for="contact2-other-phone" class="label">Other Phone</label>
+			</div>
+			<div class="col-sm-12 form-group">
+				<input type="email" class="input" id="contact2-email" name="contact2Email" pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
+				<label for="contact2-email" class="label">Email</label>
 			</div>
 		</div>
 		<div class="row double-padding">
 			<div class="col-sm-24">
-				<span class="gender-select-text">Gender:</span> &nbsp;&nbsp;
+				<span class="gender-select-text">Gender</span> &nbsp;&nbsp;
 				{{#each genders}}
 					<label class="radio-inline"><input type="radio" name="Contact2Gender" value="{{_id}}">{{gender}}</label>
 				{{/each}}
@@ -224,7 +198,7 @@
 			<div class="col-sm-24">
 				<div class="row">
 					<div class="col-sm-24 form-group">
-						<span>Ethnicity:</span>
+						<span>Ethnicity</span>
 					</div>
 				</div>
 				<div class="col-sm-16 col-md-12">
@@ -244,44 +218,91 @@
 			</div>
 		</div>
 		<div class="row form-group">
-			<div class="col-sm-6">
+			<div class="col-sm-12">
 				<input type="text" class="input" id="contact2-date-of-birth" name="Contact2DateOfBirth" placeholder="DD/MM/YYYY">
 				<label for="contact2-date-of-birth" class="label">Date of Birth</label>
 			</div>
 		</div>
 
+		<div class="form-section-header">Home Address</div>
+
+		<div class="row form-group">
+			<div class="col-sm-12">
+				<input type="text" class="input" id="address1" name="Address1" data-parsley-error-message="required" required="">
+				<label for="address1" class="label required-field">Address 1</label>
+			</div>
+			<div class="col-sm-12">
+				<input type="text" class="input" id="address2" name="Address2" data-parsley-error-message="required" required="">
+				<label for="address2" class="label required-field">Address 2</label>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-12 form-group ma-city-container">
+				<select id="ma-city" class="input" name="MACity" data-parsley-trigger="change" data-parsley-errors-messages-disabled="true" required="">
+					<option value=""></option>
+					{{#each citiesAndTowns}}
+					<option value="{{_id}}">{{cityOrTown}}</option>
+					{{/each}}
+				</select>
+				<label for="ma-city" class="label required-field">City</label>
+			</div>
+			<div class="col-sm-12 form-group non-ma-city-container hidden">
+				<input type="text" id="non-ma-city" class="input" name="nonMACity" data-parsley-error-message="required" data-parsley-required="false">
+				<label for="non-ma-city" class="label required-field">City</label>
+			</div>
+			<div class="col-sm-12 form-group">
+				<label class="checkbox-inline">
+					<input type="checkbox" id="is-not-MA-city-checkbox" name="isNotMACity">I live outside MA
+				</label>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-12 form-group">
+				<select id="state" name="State" class="input">
+				{{#each states}}
+					{{#if defaultSelection}}
+						<option value="{{_id}}" selected="selected">{{state}}</option>
+					{{else}}
+						<option value="{{_id}}">{{state}}</option>
+					{{/if}}
+				{{/each}}
+				</select>
+				<label for="state" class="label required-field">State</label>
+			</div>
+			<div class="col-sm-12 form-group">
+				<input type="text" class="input" id="zipCode" name="Zip" pattern="\d{5}([ \-]\d{4})?" data-parsley-error-message="required" required="">
+				<label for="zipCode" class="label required-field">Zip Code</label>
+			</div>
+		</div>
 
 		<div class="form-section-header">Social Worker Information</div>
 
 		<div class="row">
-			<div class="col-sm-12 col-md-6 form-group">
-				<input type="text" class="input" id="social-worker-first-name" name="socialWorkerFirstName" required />
-				<label for="social-worker-first-name" class="label required-field">First Name</label>
+			<div class="col-sm-12 form-group">
+				<input type="text" class="input" id="social-worker-first-name" name="socialWorkerFirstName">
+				<label for="social-worker-first-name" class="label">First Name</label>
 			</div>
-			<div class="col-sm-12 col-md-6 form-group">
-				<input type="text" class="input" id="social-worker-last-name" name="socialWorkerLastName" required />
-				<label for="social-worker-last-name" class="label required-field">Last Name</label>
+			<div class="col-sm-12 form-group">
+				<input type="text" class="input" id="social-worker-last-name" name="socialWorkerLastName">
+				<label for="social-worker-last-name" class="label">Last Name</label>
 			</div>
 		</div>
 		<div class="row">
 			<div class="col-sm-12 form-group">
-				<input type="text" class="input" required id="social-worker-agency" name="socialWorkerAgency">
-				<label for="social-worker-agency" class="label required-field">Agency</label>
+				<input type="email" class="input" id="social-worker-email" name="socialWorkerEmail" pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
+				<label for="social-worker-email" class="label">Email</label>
+			</div>
+			<div class="col-sm-12 form-group">
+				<input type="text" class="input" id="social-worker-phone" name="socialWorkerPhone">
+				<label for="social-worker-phone" class="label">Phone</label>
 			</div>
 		</div>
 		<div class="row">
 			<div class="col-sm-12 form-group">
-				<input type="email" class="input" required id="social-worker-email" name="socialWorkerEmail" pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
-				<label for="social-worker-email" class="label required-field">Email</label>
+				<input type="text" class="input" id="social-worker-agency" name="socialWorkerAgency">
+				<label for="social-worker-agency" class="label">Agency</label>
 			</div>
 		</div>
-		<div class="row">
-			<div class="col-sm-6 form-group">
-				<input type="text" class="input" id="social-worker-phone" name="socialWorkerPhone" required />
-				<label for="social-worker-phone" class="label required-field">Phone</label>
-			</div>
-		</div>
-
 
 		<div class="form-section-header">Mare &amp; You</div>
 
@@ -312,7 +333,7 @@
 			<div class="col-sm-24">
 				<div class="row">
 					<div class="col-xs-3">
-						<label class="radio-inline"><input type="radio" name="receiveMareMoment" value="Yes">Yes</label>
+						<label class="radio-inline"><input type="radio" name="receiveMareMoment" value="Yes" checked="checked">Yes</label>
 					</div>
 					<div class="col-xs-3">
 						<label class="radio-inline"><input type="radio" name="receiveMareMoment" value="No">No</label>
@@ -322,30 +343,15 @@
 		</div>
 		<div class="row form-group">
 			<div class="col-sm-24 form-group">
-				<label class="label marg-bottom-xs-5">I would like to be notified about upcoming adoption events in MA:</label>
+				<label class="label marg-bottom-xs-5">I would like to be notified about upcoming adoption events in MA</label>
 			</div>
 			<div class="col-sm-24">
 				<div class="row">
 					<div class="col-xs-3">
-						<label class="radio-inline"><input type="radio" name="receiveUpcomingEvents" value="Yes">Yes</label>
+						<label class="radio-inline"><input type="radio" name="receiveUpcomingEvents" value="Yes" checked="checked">Yes</label>
 					</div>
 					<div class="col-xs-3">
 						<label class="radio-inline"><input type="radio" name="receiveUpcomingEvents" value="No">No</label>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="row form-group">
-			<div class="col-sm-24 form-group">
-				<label class="label marg-bottom-xs-5">For Massachusetts Families only: I would like to receive a General Adoption Information Packet:</label>
-			</div>
-			<div class="col-sm-24">
-				<div class="row">
-					<div class="col-xs-3">
-						<label class="radio-inline"><input type="radio" name="receiveInfoPacket" value="Yes">Yes</label>
-					</div>
-					<div class="col-xs-3">
-						<label class="radio-inline"><input type="radio" name="receiveInfoPacket" value="No">No</label>
 					</div>
 				</div>
 			</div>

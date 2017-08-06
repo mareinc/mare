@@ -1,10 +1,8 @@
-var keystone 	            = require( 'keystone' ),
-	_			            = require( 'underscore' ),
-	moment		            = require( 'moment' ),
-	async		            = require( 'async' ),
-	socialWorkerMiddlware   = require( './service_social-worker' ),
-	agencyMiddleware        = require( './service_agency' ),
-	UtilitiesMiddleware	    = require('./utilities');
+const keystone 	            	= require( 'keystone' ),
+	  _			            	= require( 'underscore' ),
+	  async		            	= require( 'async' ),
+	  socialWorkerMiddleware	= require( './service_social-worker' ),
+	  agencyMiddleware			= require( './service_agency' );
 
 /* takes in an array of child ids and returns an array of their registration numbers */
 exports.getRegistrationNumbersById = ( idsArray, registrationNumbersArray, done ) => {
@@ -346,8 +344,8 @@ exports.setAgencyFields = ( child, done ) => {
 	let models = {};
 
 	async.series([
-		done => { socialWorkerMiddlware.getSocialWorkerById( child.adoptionWorker, models, 'adoptionWorker', done ); },
-		done => { socialWorkerMiddlware.getSocialWorkerById( child.recruitmentWorker, models, 'recruitmentWorker', done ); },
+		done => { socialWorkerMiddleware.getSocialWorkerById( child.adoptionWorker, models, 'adoptionWorker', done ); },
+		done => { socialWorkerMiddleware.getSocialWorkerById( child.recruitmentWorker, models, 'recruitmentWorker', done ); },
 		done => { models.adoptionWorker ? agencyMiddleware.getAgencyById( models.adoptionWorker.agency, models, 'adoptionWorkerAgency', done ) : done(); },
 		done => { models.recruitmentWorker ? agencyMiddleware.getAgencyById( models.recruitmentWorker.agency, models, 'recruitmentWorkerAgency', done ) : done(); }
 	], () => {

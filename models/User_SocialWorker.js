@@ -61,7 +61,9 @@ SocialWorker.add( 'Permissions', {
 	address: {
 	    street1: { type: Types.Text, label: 'street 1', initial: true },
 		street2: { type: Types.Text, label: 'street 2', initial: true },
-		city: { type: Types.Text, label: 'city', initial: true },
+		city: { type: Types.Relationship, label: 'city', ref: 'City or Town', dependsOn: { isOutsideMassachusetts: false }, initial: true },
+		isOutsideMassachusetts: { type: Types.Boolean, label: 'is outside Massachusetts', initial: true },
+		cityText: { type: Types.Text, label: 'city', dependsOn: { isOutsideMassachusetts: true }, initial: true },
 		state: { type: Types.Relationship, label: 'state', ref: 'State', initial: true },
 		zipCode: { type: Types.Text, label: 'zip code', initial: true }
 	},
@@ -107,7 +109,7 @@ SocialWorker.schema.pre('save', function(next) {
 	async.series([
 		done => { model.setFullName(done); }, // Create a full name for the child based on their first, middle, and last names
 		done => { model.setUserType(done); }, // Create an identifying name for file uploads
-		done => { ChangeHistoryMiddleware.setUpdatedby( this, done ); }, // we need this id in case the family was created via the website and udpatedBy is empty
+		done => { ChangeHistoryMiddleware.setUpdatedby( this, done ); }, // we need this id in case the family was created via the website and udpatedBy is undefined
 		done => { model.setChangeHistory(done); } // Process change history
 	], () => {
 
@@ -176,18 +178,24 @@ SocialWorker.schema.methods.setChangeHistory = function setChangeHistory( done )
 		// Any time a new field is added, it MUST be added to this list in order to be considered for display in change history
 		// Computed fields and fields internal to the object SHOULD NOT be added to this list
 		async.parallel([
+
 			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
-											parent: 'permissions',
-											name: 'isVerified',
-											label: 'is verified',
+											name: 'email',
+											label: 'email address',
+											type: 'string' }, model, modelBefore, changeHistory, done);
+			},		
+			done => {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											name: 'isActive',
+											label: 'is active',
 											type: 'boolean' }, model, modelBefore, changeHistory, done);
 			},
 			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'permissions',
-											name: 'isActive',
-											label: 'is active',
+											name: 'isVerified',
+											label: 'is verified',
 											type: 'boolean' }, model, modelBefore, changeHistory, done);
 			},
 			done => {
@@ -206,9 +214,18 @@ SocialWorker.schema.methods.setChangeHistory = function setChangeHistory( done )
 			},
 			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'email',
-											label: 'email address',
-											type: 'string' }, model, modelBefore, changeHistory, done);
+											parent: 'avatar',
+											name: 'secure_url',
+											label: 'avatar',
+											type: 'string' }, model, modelBefore, changeHistory, done );
+			},
+			done => {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											name: 'contactGroups',
+											targetField: 'name',
+											label: 'contact groups',
+											type: 'relationship',
+											model: 'Contact Group' }, model, modelBefore, changeHistory, done );
 			},
 			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
@@ -275,8 +292,24 @@ SocialWorker.schema.methods.setChangeHistory = function setChangeHistory( done )
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'address',
 											name: 'city',
+											targetField: 'cityOrTown',
 											label: 'city',
-											type: 'string' }, model, modelBefore, changeHistory, done);
+											type: 'relationship',
+											model: 'City or Town' }, model, modelBefore, changeHistory, done );
+			},
+			done => {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											parent: 'address',
+											name: 'isOutsideMassachusetts',
+											label: 'is outside Massachusetts',
+											type: 'boolean' }, model, modelBefore, changeHistory, done );
+			},
+			done => {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											parent: 'address',
+											name: 'cityText',
+											label: 'city (text)',
+											type: 'string' }, model, modelBefore, changeHistory, done );
 			},
 			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({

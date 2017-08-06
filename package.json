@@ -7,20 +7,21 @@
     "url": "https://github.com/autoboxer/MARE.git"
   },
   "dependencies": {
-    "async": "^2.4.1",
+    "async": "^2.5.0",
     "browserify": "^14.3.0",
     "cloudinary": "~1.9.0",
-    "del": "^2.2.2",
+    "crypto": "0.0.3",
+    "del": "^3.0.0",
     "dotenv": "^4.0.0",
     "express-handlebars": "~3.0.0",
     "gulp": "gulpjs/gulp#4.0",
     "gulp-autoprefixer": "^4.0.0",
-    "gulp-clean-css": "^3.4.0",
+    "gulp-clean-css": "^3.7.0",
     "gulp-concat": "^2.6.1",
     "gulp-eslint": "^3.0.1",
-    "gulp-filter": "^5.0.0",
+    "gulp-filter": "^5.0.1",
     "gulp-ignore": "^2.0.2",
-    "gulp-imagemin": "^3.2.0",
+    "gulp-imagemin": "^3.3.0",
     "gulp-mocha": "^4.3.1",
     "gulp-rename": "^1.2.2",
     "gulp-sass": "^3.1.0",
@@ -31,16 +32,15 @@
     "keystone": "https://github.com/keystonejs/keystone.git#c38b366c7b1bf01448c8ece7c36e1bb6eb195186",
     "moment": "~2.18.1",
     "mongoose-simple-random": "^0.4.1",
-    "newrelic": "^1.39.1",
+    "newrelic": "^2.0.2",
     "node-sass": "^4.5.3",
     "node-sass-middleware": "^0.11.0",
     "q": "^1.5.0",
-    "randomstring": "^1.1.5",
     "underscore": "~1.8.3"
   },
   "engines": {
-    "node": "^6.2.2",
-    "npm": "^3.9.5"
+    "node": "^6.11.2",
+    "npm": "^3.10.10"
   },
   "scripts": {
     "start": "node keystone.js",
@@ -48,9 +48,9 @@
   },
   "main": "keystone.js",
   "devDependencies": {
-    "chai": "^3.5.0",
-    "mocha": "^3.4.1",
-    "sinon": "^2.3.0",
-    "sinon-chai": "^2.10.0"
+    "chai": "^4.1.1",
+    "mocha": "^3.5.0",
+    "sinon": "^3.0.0",
+    "sinon-chai": "^2.12.0"
   }
 }

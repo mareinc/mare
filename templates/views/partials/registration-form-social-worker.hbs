@@ -11,8 +11,6 @@
 					<input type="text" id="social-worker-first-name" class="input" name="firstName" placeholder="John" data-parsley-error-message="required" required="">
 					<label for="social-worker-first-name" class="label required-field">First Name</label>
 				</div>
-			</div>
-			<div class="row form-group">
 				<div class="col-sm-12">
 					<input type="text" id="social-worker-last-name" class="input" name="lastName" placeholder="Smith" data-parsley-error-message="required" required="">
 					<label for="social-worker-last-name" class="label required-field">Last Name</label>
@@ -29,8 +27,6 @@
 					<input type="password" id="social-worker-password" class="input" name="password" placeholder="**********" data-parsley-error-message="required" required="">
 					<label for="social-worker-password" class="label required-field">Password</label>
 				</div>
-			</div>
-			<div class="row form-group">
 				<div class="col-sm-12">
 					<input type="password" id="social-worker-confirm-password" class="input" name="confirmPassword" placeholder="**********" data-parsley-equalto="#social-worker-password" data-parsley-error-message="passwords must match" required="">
 					<label for="social-worker-confirm-password" class="label required-field">Confirm Password</label>
@@ -76,9 +72,7 @@
 					<input type="text" id="social-worker-title" class="input" name="socialWorkerTitle" data-parsley-required="false" data-parsley-error-message="required" placeholder="my title">
 					<label for="social-worker-title" class="label required-field">Title</label>
 				</div>
-			</div>
-			<div class="row form-group">
-				<div class="col-sm-12">
+				<div class="col-sm-12 form-group">
 					<input type="text" id="social-worker-agency" class="input" name="agency" data-parsley-error-message="required" required="">
 					<label for="social-worker-agency" class="label required-field">Agency</label>
 				</div>
@@ -88,8 +82,6 @@
 					<input type="text" id="social-worker-work-phone" class="input" name="workPhone" placeholder="(617) 111-1111" data-parsley-error-message="required" required="">
 					<label for="social-worker-work-phone" class="label required-field">Work Phone</label>
 				</div>
-			</div>
-			<div class="row form-group">
 				<div class="col-sm-12">
 					<input type="text" id="social-worker-mobile-phone" class="input" name="mobilePhone" placeholder="(617) 222-2222">
 					<label for="social-worker-mobile-phone" class="label">Mobile Phone</label>
@@ -110,17 +102,29 @@
 					<input type="text" id="social-worker-street-1" class="input" name="street1" placeholder="100 Main Street" data-parsley-error-message="required" required="">
 					<label for="social-worker-street-1" class="label required-field">Street 1</label>
 				</div>
-			</div>
-			<div class="row form-group">
 				<div class="col-sm-12">
 					<input type="text" id="social-worker-street-2" class="input" name="street2" placeholder="Suite 1">
 					<label for="social-worker-street-2" class="label">Street 2</label>
 				</div>
 			</div>
 			<div class="row form-group">
-				<div class="col-sm-12">
-					<input type="text" id="social-worker-city" class="input" name="city" placeholder="Boston" data-parsley-error-message="required" required="">
-					<label for="social-worker-city" class="label required-field">City</label>
+				<div class="col-sm-12 form-group ma-city-container">
+					<select id="ma-city" class="input" name="city" data-parsley-trigger="change" data-parsley-errors-messages-disabled="true" required="">
+						<option value=""></option>
+						{{#each citiesAndTowns}}
+						<option value="{{ _id }}">{{ cityOrTown }}</option>
+						{{/each}}
+					</select>
+					<label for="ma-city" class="label required-field">City</label>
+				</div>
+				<div class="col-sm-12 form-group non-ma-city-container hidden">
+					<input type="text" id="non-ma-city" class="input" name="nonMACity" placeholder="Boston" data-parsley-error-message="required" data-parsley-required="false">
+					<label for="non-ma-city" class="label required-field">City</label>
+				</div>
+				<div class="col-sm-12 form-group">
+					<label class="checkbox-inline">
+						<input type="checkbox" id="is-not-MA-city-checkbox" name="isNotMACity">I live outside MA
+					</label>
 				</div>
 			</div>
 			<div class="row form-group">
@@ -142,8 +146,6 @@
 					<input type="number" id="social-worker-zip-code" class="input" name="zipCode" placeholder="02111" data-parsley-length="[5, 5]" data-parsley-error-message="required" required="">
 					<label for="social-worker-zip-code" class="label required-field">Zip Code</label>
 				</div>
-			</div>
-			<div class="row">
 				<div class="col-sm-12 form-group">
 					<select id="social-worker-region" class="input region-select" name="region" data-parsley-errors-messages-disabled="true" required="">
 					<option value=""></option>
@@ -158,33 +160,19 @@
 
 		<section class="social-worker-mare-and-you-section">
 			<div class="form-section-header">Mare &amp; You</div>
+			{{#each mailingLists }}
+			{{#if showOnSocialWorkerRegistrationPage}}
 			<div class="row form-group">
 				<div class="col-sm-12">
-					<label class="label marg-bottom-xs-5">Would you like to be added to the MARE News email list?</label>
+					<label class="label marg-bottom-xs-5">{{ displayText }}</label>
 				</div>
 				<div class="col-sm-12">
-					<label class="radio-inline"><input type="radio" name="mareEmailList" value="yes" checked="checked">Yes</label>
-					<label class="radio-inline"><input type="radio" name="mareEmailList" value="no">No</label>
+					<label class="radio-inline"><input type="radio" name="mailingLists[{{@index}}]" value={{ _id }} checked="checked">Yes</label>
+					<label class="radio-inline"><input type="radio" name="mailingLists[{{@index}}]" value="">No</label>
 				</div>
 			</div>
-			<div class="row form-group">
-				<div class="col-sm-12">
-					<label class="label marg-bottom-xs-5">Would you like to be added to the Adoption Party email list (events held in MA only)?</label>
-				</div>
-				<div class="col-sm-12">
-					<label class="radio-inline"><input type="radio" name="adoptionPartyEmailList" value="yes" checked="checked">Yes</label>
-					<label class="radio-inline"><input type="radio" name="adoptionPartyEmailList" value="no">No</label>
-				</div>
-			</div>
-			<div class="row form-group">
-				<div class="col-sm-12">
-					<label class="label marg-bottom-xs-5">Would you like to be added to the Fundraising Events email list?</label>
-				</div>
-				<div class="col-sm-12">
-					<label class="radio-inline"><input type="radio" name="fundraisingEventsEmailList" value="yes" checked="checked">Yes</label>
-					<label class="radio-inline"><input type="radio" name="fundraisingEventsEmailList" value="no">No</label>
-				</div>
-			</div>
+			{{/if}}
+			{{/each}}
 		</section>
 
 		<button class="button button--blue register" type="submit">Register</button>

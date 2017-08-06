@@ -1,3 +1,4 @@
+// TODO: check these to see what can be removed, possibly mailing lists as they're only used in the relationship section at the bottom of the model
 require( './Tracking_FamilyHistory' );
 require( './List_FamilyConstellation' );
 require( './List_Language' );
@@ -54,7 +55,7 @@ Family.add( 'Permissions', {
 	registrationNumber: { type: Number, label: 'registration number', format: false, noedit: true },
 	initialContact: { type: Types.Date, label: 'initial contact', format: 'MM/DD/YYYY', initial: true }, // was required: data migration change ( undo if possible )
 	flagCalls: { type: Types.Boolean, label: 'flag calls', initial: true },
-	familyConstellation: { type: Types.Relationship, label: 'family constellation', ref: 'Family Constellation', required: true, initial: true },
+	familyConstellation: { type: Types.Relationship, label: 'family constellation', ref: 'Family Constellation', initial: true },
 	language: { type: Types.Relationship, label: 'language', ref: 'Language', required: true, initial: true },
 	otherLanguages: { type: Types.Relationship, label: 'other languages', ref: 'Language', many: true, initial: true },
 
@@ -78,7 +79,7 @@ Family.add( 'Permissions', {
 		email: { type: Types.Email, label: 'email address', initial: true },
 		preferredCommunicationMethod: { type: Types.Select, label: 'preferred communication method', options: 'email, home phone, mobile phone, work phone, unknown', initial: true }, // was required: data migration change ( undo if possible )
 		gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', initial: true }, // was required: data migration change ( undo if possible )
-		race: { type: Types.Relationship, label: 'race', ref: 'Race', many: true, required: true, initial: true },
+		race: { type: Types.Relationship, label: 'race', ref: 'Race', many: true, required: true, initial: true }, // was required: data migration change ( undo if possible )
 		occupation: { type: Types.Text, label: 'occupation', initial: true },
 		birthDate: { type: Types.Date, label: 'date of birth', format: 'MM/DD/YYYY', initial: true } // was required: data migration change ( undo if possible )
 	}
@@ -110,7 +111,9 @@ Family.add( 'Permissions', {
 	address: {
 		street1: { type: Types.Text, label: 'street 1', required: true, initial: true },
 		street2: { type: Types.Text, label: 'street 2', initial: true },
-		city: { type: Types.Text, label: 'city', required: true, initial: true },
+		city: { type: Types.Relationship, label: 'city', ref: 'City or Town', dependsOn: { isOutsideMassachusetts: false }, initial: true },
+		isOutsideMassachusetts: { type: Types.Boolean, label: 'is outside Massachusetts', initial: true },
+		cityText: { type: Types.Text, label: 'city', dependsOn: { isOutsideMassachusetts: true }, initial: true },
 		state: { type: Types.Relationship, label: 'state', ref: 'State', initial: true }, // was required: data migration change ( undo if possible )
 		zipCode: { type: Types.Text, label: 'zip code', initial: true }, // was required: data migration change ( undo if possible )
 		region: { type: Types.Relationship, label: 'region', ref: 'Region', initial: true }
@@ -285,10 +288,6 @@ Family.add( 'Permissions', {
 		notes: { type: Types.Textarea, label: 'notes', initial: true }
 	}
 
-}, 'Mailing Lists', {
-
-	mailingLists: { type: Types.Relationship, label: 'add to the following mailing lists', ref: 'Mailing List', many: true, initial: true }
-
 }, 'Matching Preferences', {
 
 	matchingPreferences: {
@@ -368,7 +367,7 @@ Family.schema.pre( 'save', function( next ) {
 		done => { this.setFileName( done ); }, // Create an identifying name for file uploads
 		done => { this.setUserType( done ); }, // All user types that can log in derive from the User model, this allows us to identify users better
 		done => { this.setRegistrationNumber( done ) }, // Set the registration number to the next highest available
-		done => { ChangeHistoryMiddleware.setUpdatedby( this, done ); }, // we need this id in case the family was created via the website and udpatedBy is empty
+		done => { ChangeHistoryMiddleware.setUpdatedby( this, done ); }, // we need this id in case the family was created via the website and udpatedBy is undefined
 		done => { this.setChangeHistory( done ); } // Process change history
 
 	], () => {
@@ -416,11 +415,13 @@ Family.schema.methods.setGalleryViewingPermissions = function( done ) {
 			State.model.findById( this.address.state )
 				.exec()
 				.then( stateObject => {
+
 					state = stateObject.abbreviation;
 					done();
 				});
 			}
 	], () => {
+
 		if( this.permissions.isHomestudyVerified && [ 'MA', 'NH', 'CT', 'ME', 'VT', 'RI', 'NY' ].includes( state ) ) {
 			this.permissions.canViewAllChildren = true;
 		} else {
@@ -461,7 +462,7 @@ Family.schema.methods.setFileName = function( done ) {
 	this.fileName = this.contact1.name.first ?
 					`${ this.registrationNumber }_${ this.contact1.name.first.toLowerCase() }` :
 					`${ this.registrationNumber }_`;
-					
+
 	done();
 };
 
@@ -475,12 +476,17 @@ Family.schema.methods.setUserType = function( done ) {
 };
 
 Family.schema.methods.setRegistrationNumber = function( done ) {
-	// If the registration number is already set ( which will happen during the data migration and creating from the website ), ignore setting it
+
+	// If the registration number is already set ( which will happen during the data migration and creating from the website )
 	if( this.registrationNumber ) {
+		// ignore setting it and return from the asynchronous function
 		done();
 	} else {
 		// get all families
-		keystone.list( 'Family' ).model.find()
+		keystone.list( 'Family' ).model
+				.find()
+				.select( 'registrationNumber' )
+				.lean()
 				.exec()
 				.then( families => {
 					// if this is the first family to be created
@@ -488,7 +494,7 @@ Family.schema.methods.setRegistrationNumber = function( done ) {
 						this.registrationNumber = 1;
 					} else {
 						// get an array of registration numbers
-						const registrationNumbers = families.map( family => family.get( 'registrationNumber' ) );
+						const registrationNumbers = families.map( family => family.registrationNumber );
 						// get the largest registration number
 						this.registrationNumber = Math.max( ...registrationNumbers ) + 1;
 					}
@@ -497,6 +503,7 @@ Family.schema.methods.setRegistrationNumber = function( done ) {
 
 				}, err => {
 					console.log( 'error setting registration number' );
+
 					console.log( err );
 
 					done();
@@ -506,6 +513,7 @@ Family.schema.methods.setRegistrationNumber = function( done ) {
 
 Family.schema.methods.setChangeHistory = function setChangeHistory( done ) {
 	'use strict';
+
 	// TODO: terrible use and reuse of variables below, check this and other models with change history
 	var modelBefore	= this._original,
 		model		= this;
@@ -519,15 +527,17 @@ Family.schema.methods.setChangeHistory = function setChangeHistory( done ) {
 
 	// if the model is being saved for the first time, mark only that fact in an initial change history record
 	if( !model._original ) {
-
+		
 		changeHistory.changes = 'record created';
 
 		changeHistory.save( () => {
 			console.log( 'record created change history saved successfully' );
+
 			done();
 		}, err => {
 			console.log( err );
 			console.log( 'error saving record created change history' );
+
 			done();
 		});
 
@@ -538,6 +548,18 @@ Family.schema.methods.setChangeHistory = function setChangeHistory( done ) {
 			// avatar: { type: Types.CloudinaryImage, label: 'avatar', folder: 'users/families', select: true, selectPrefix: 'users/families', autoCleanup: true },
 			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
+											name: 'email',
+											label: 'email address',
+											type: 'string' }, model, modelBefore, changeHistory, done);
+			},
+			done => {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											name: 'isActive',
+											label: 'is active',
+											type: 'boolean' }, model, modelBefore, changeHistory, done);
+			},
+			done => {
+				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'permissions',
 											name: 'isVerified',
 											label: 'is verified',
@@ -546,9 +568,30 @@ Family.schema.methods.setChangeHistory = function setChangeHistory( done ) {
 			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'permissions',
-											name: 'isActive',
-											label: 'is active',
+											name: 'isHomestudyVerified',
+											label: 'is homestudy verified',
 											type: 'boolean' }, model, modelBefore, changeHistory, done);
+			},
+			done => {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											parent: 'permissions',
+											name: 'homestudyVerifiedDate',
+											label: 'homestudy verified date',
+											type: 'date' }, model, modelBefore, changeHistory, done);
+			},
+			done => {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											parent: 'permissions',
+											name: 'canViewAllChildren',
+											label: 'can view all children',
+											type: 'boolean' }, model, modelBefore, changeHistory, done);
+			},
+			done => {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											parent: 'avatar',
+											name: 'secure_url',
+											label: 'avatar',
+											type: 'string' }, model, modelBefore, changeHistory, done );
 			},
 			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
@@ -591,6 +634,14 @@ Family.schema.methods.setChangeHistory = function setChangeHistory( done ) {
 											label: 'other languages',
 											type: 'relationship',
 											model: 'Language' }, model, modelBefore, changeHistory, done);
+			},
+			done => {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											name: 'contactGroups',
+											targetField: 'name',
+											label: 'contact groups',
+											type: 'relationship',
+											model: 'Contact Group' }, model, modelBefore, changeHistory, done );
 			},
 			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
@@ -766,8 +817,24 @@ Family.schema.methods.setChangeHistory = function setChangeHistory( done ) {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'address',
 											name: 'city',
+											targetField: 'cityOrTown',
 											label: 'city',
-											type: 'string' }, model, modelBefore, changeHistory, done);
+											type: 'relationship',
+											model: 'City or Town' }, model, modelBefore, changeHistory, done );
+			},
+			done => {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											parent: 'address',
+											name: 'isOutsideMassachusetts',
+											label: 'is outside Massachusetts',
+											type: 'boolean' }, model, modelBefore, changeHistory, done );
+			},
+			done => {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											parent: 'address',
+											name: 'cityText',
+											label: 'city (text)',
+											type: 'string' }, model, modelBefore, changeHistory, done );
 			},
 			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
@@ -1362,14 +1429,6 @@ Family.schema.methods.setChangeHistory = function setChangeHistory( done ) {
 			},
 			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'mailingLists',
-											targetField: 'mailingList',
-											label: 'mailing lists',
-											type: 'relationship',
-											model: 'Mailing List' }, model, modelBefore, changeHistory, done);
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'matchingPreferences',
 											name: 'gender',
 											targetField: 'gender',
@@ -1524,10 +1583,12 @@ Family.schema.methods.setChangeHistory = function setChangeHistory( done ) {
 
 				changeHistory.save( () => {
 					console.log( 'change history saved successfully' );
+
 					done();
 				}, err => {
 					console.log( err );
 					console.log( 'error saving change history' );
+
 					done();
 				});
 			}

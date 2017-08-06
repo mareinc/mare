@@ -1,7 +1,8 @@
-var keystone	= require('keystone'),
-	async		= require('async'),
-	moment		= require('moment'),
-	Event		= keystone.list('Event');
+var keystone	= require( 'keystone' ),
+	async		= require( 'async' ),
+	moment		= require( 'moment' ),
+	Event		= keystone.list( 'Event' ),
+	Utils		= require( './utilities' );
 
 exports.getEventById = function getEventById(res, done, eventId) {
 
@@ -43,13 +44,19 @@ exports.getRandomEvent = function getRandomEvent(req, res, done) {
 
 	// TODO: Handle the error if we get one
 	Event.model.findRandom({
-			type: { $in: ['MARE adoption parties & information events', 'fundraising events'] },
+			type: { $in: [ 'MARE adoption parties & information events', 'fundraising events' ] },
 			isActive: true
-		}, (err, event) => {
+		}, ( err, event ) => {
 
 			locals.randomEvent = event ? event[ 0 ] : {};
 			// Create a formatted date for display in the UI
-			locals.randomEvent.prettyDate = moment(locals.randomEvent.date).format('dddd, MMMM Do');
+			locals.randomEvent.prettyDate = moment( locals.randomEvent.date ).format( 'dddd, MMMM Do' );
+			// remove HTML tags from the description
+			// NOTE: if this needs to be used for more than just the sidebar, we may need to relocate the call or create additional truncated text variants
+			// set how the text will be truncated for short content displays
+			const truncateOptions = { targetLength: 100 };
+			// create a truncated content element for a nicer display in summary cards
+			locals.randomEvent.shortDescription = Utils.truncateText( Utils.stripTags( locals.randomEvent.description ), truncateOptions );
 			// Execute done function if async is used to continue the flow of execution
 			done();
 		});

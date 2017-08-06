@@ -2,7 +2,7 @@
 
 	<!-- Meet the Children -->
 	<aside class="card card--vertical card--small-padding sidebar__card">	
-		<img class="card__image" src="../images/temp-children.png" alt="success story image">	
+		<img class="card__image" src="../images/temp-children.png" alt="meet the children">	
 		<span class="card__image-text">
 			<a href="/waiting-child-profiles" class="card__image-title card__image-title--large card__image-title--centered">Meet the Children</a>
 		</span>
@@ -24,16 +24,16 @@
 		<span class="card__image-text">
 			<!-- TODO: limit the content to three lines with a trailing ellipses -->
 			<!-- TODO: do we need the date/time in the description? -->
-			<div class="card__image-description">{{{randomEvent.description}}} </div>
+			<div class="card__image-description">{{{randomEvent.shortDescription}}} </div>
 			<a href="{{ randomEvent.url }}" class="card__image-title card__image-title--right-aligned link-arrow--right">{{ randomEvent.name }}</a>
 		</span>
 	</aside>
 
 	<!-- Have a question and Donate links -->
 	<aside class="links sidebar__bottom-links">
-		<a href="#" data-url="/forms/have-a-question-form">Have a Question?</a>
+		<a href="/forms/have-a-question-form">Have a Question?</a>
 		<span class="link-separator">|</span>
-		<a class="link" href="#" data-url="/donate">Donate Now</a>		
+		<a class="link" href="/donate">Donate Now</a>		
 	</aside>
 
 </aside>

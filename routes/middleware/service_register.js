@@ -2,560 +2,670 @@
 //		 but we might want to find a better separation of concerns for fetching model data, modifying models, and utility functions to make
 //		 all these middleware files more readable and maintainable.  This involves a review of every middleware function.
 
-// TODO: consider converting all done() to return done() for safety reasons
-const keystone 						= require( 'keystone' );
-const async 						= require( 'async' );
-const _ 							= require( 'underscore' );
-const randomString					= require( 'randomstring' );
-const User							= keystone.list( 'User' );
-const SiteVisitor 					= keystone.list( 'Site Visitor' );
-const SocialWorker 					= keystone.list( 'Social Worker' );
-const Family						= keystone.list( 'Family' );
-const StaffEmailContact				= keystone.List( 'Staff Email Contact' );
-const MailingList					= keystone.list( 'Mailing List' );
-const AccountVerificationCode		= keystone.list( 'Account Verification Code' );
-const registrationEmailMiddleware	= require( './emails_register' );
-const staffEmailTargetMiddleware	= require( './service_staff-email-target' );
-const staffEmailContactMiddleware	= require( './service_staff-email-contact' );
+// TODO: a lot of this functionality is needed for social worker child/family registration and should potentially be broken out and placed in more
+//		 appropriate files
+
+const keystone 						= require( 'keystone' ),
+	  User							= keystone.list( 'User' ),
+	  SiteVisitor 					= keystone.list( 'Site Visitor' ),
+	  SocialWorker 					= keystone.list( 'Social Worker' ),
+	  Family						= keystone.list( 'Family' ),
+	  MailingList					= keystone.list( 'Mailing List' ),
+	  AccountVerificationCode		= keystone.list( 'Account Verification Code' ),
+	  registrationEmailMiddleware	= require( './emails_register' ),
+	  staffEmailTargetMiddleware	= require( './service_staff-email-target' ),
+	  staffEmailContactMiddleware	= require( './service_staff-email-contact' ),
+	  utilities						= require( './utilities' );
 
 exports.registerUser = ( req, res, next ) => {
-
+	// extract the submitted user information
 	const user = req.body;
-
-	let locals = res.locals;
+	// store the registration type which determines which path we take during registration
+	const registrationType = user.registrationType;
+	// create a variable to hold the redirect path to take the user to a target page after processing is complete
+	let redirectPath;
 	
-	let files;
-
-	// Initialize validation checks to failing values to ensure they actually pass all checks
-	locals.isEmailInvalid		= true;
-	locals.isEmailDuplicate		= true;
-	locals.isPasswordInvalid	= true;
-	// Capture the registration type which determines which path we take during registration
-	locals.registrationType = user.registrationType;
-	// TODO: add default case and error handling
-	// Set the user type and redirect URL for use throughout the registration process
-	switch( locals.registrationType ) {
-		case 'siteVisitor':
-			locals.userModel = SiteVisitor;
-			locals.redirectPath = '/register#site-visitor';
-			break;
-		case 'socialWorker':
-			locals.userModel = SocialWorker;
-			locals.redirectPath = '/register#social-worker';
-			break;
-		case 'family':
-			locals.userModel = Family;
-			locals.redirectPath = '/register#family';
+	// set the redirect URL for use throughout the registration process
+	switch( registrationType ) {
+		case 'siteVisitor'	: redirectPath = '/register#site-visitor'; break;
+		case 'socialWorker'	: redirectPath = '/register#social-worker'; break;
+		case 'family'		: redirectPath = '/register#family'; break;
 	}
-	// TODO: Remove this line, it's just for debugging
-	console.log( `registration type: ${ locals.registrationType }` );
 
-	async.parallel([
-		done => { exports.validateEmail( req, res, user.email, done ); },
-		done => { exports.checkForDuplicateEmail( req, res, user.email, done ); },
-		done => { exports.validatePassword( req, res, user.password, user.confirmPassword, done ); }
-	], () => {
-		if( locals.isEmailInvalid ) { locals.messages.push( { type: 'error', message: 'email is invalid' } ); }
-		if( locals.isEmailDuplicate ) { locals.messages.push( { type: 'error', message: 'email already exists in the system' } ); }
-		if( locals.isPasswordInvalid ) { locals.messages.push( { type: 'error', message: 'passwords don\'t match' } ); }
+	// check for conditions that will prevent saving the model
+	const isEmailValid			= exports.validateEmail( user.email );			// returns true/false
+	const fetchDuplicateEmail	= exports.checkForDuplicateEmail( user.email ); // returns a promise
+	const isPasswordValid		= exports.validatePassword( user.password, user.confirmPassword ); // returns true/false
 
-		console.log( locals.messages );
-		// TODO: Add check for required fields
-		if( locals.messages.length > 0 ) {
-			// TODO: send the error messages as flash messages
-			res.redirect( 303, locals.redirectPath );
+	fetchDuplicateEmail.then( isEmailDuplicate => {
+		// set flash messages for any errors with the email/password information submitted
+		exports.setInitialErrorMessages( req, isEmailValid, isEmailDuplicate, isPasswordValid );
+		// if initial errors exist, prevent additional processing, alert the user via the flash messages above
+		if( !isEmailValid || isEmailDuplicate || !isPasswordValid ) {
+			// and redirect to the appropriate page 
+			res.redirect( 303, redirectPath );
+		// if there were no initial errors, proceed with creating the account
 		} else {
-			if( locals.registrationType === 'siteVisitor' ) {
-
-				async.series([
-					done => { exports.saveSiteVisitor( req, res, user, done ); }
-				], () => {
-					res.redirect( 303, locals.redirectPath );
-					 // TODO: Post a success or error flash message
+			if( registrationType === 'siteVisitor' ) {
+				// save the site visitor model using the submitted user details
+				exports.saveSiteVisitor( user ).then( newSiteVisitor => {
+					// if the new site visitor model was saved successfully
+					// create a success flash message
+					req.flash( 'success', { title: 'Your account has been successfully created' } );
+					// create a new random code for the user to verify their account with
+					const verificationCode = utilities.generateAlphanumericHash( 35 );
+					// store the database id of the newly created user
+					const userId = newSiteVisitor.get( '_id' );
+					// store the user type found in the returned model
+					const userType = newSiteVisitor.userType;
+					// store the host name to link to the verification code in the thank you email
+					const host = req.headers.host;
+					// store the array of mailing list ids the user has opted into
+					const mailingListIds = user.mailingLists;
+					// create a new verification code model in the database to allow users to verify their accounts
+					const createVerificationRecord = exports.createNewVerificationModel( verificationCode, userId );
+					// fetch contact info for the staff contact for site visitor registration
+					const fetchRegistrationStaffContactInfo = exports.getRegistrationStaffContactInfo( 'site visitor' );
+					// once the contact info has been fetched
+					Promise.all( [ createVerificationRecord, fetchRegistrationStaffContactInfo ] ).then( values => {
+						// assign local variables to the values returned by the promises
+						const [ verificationRecord, staffContactInfo ] = values;
+						// send the thank you email to the user
+						const thankYouEmailSentToUser = registrationEmailMiddleware.sendThankYouEmailToUser( staffContactInfo, user.email, userType, verificationCode, host );
+						// TODO: need to send a notification email to the appropriate staff member as well ( check with Lisa to see if this is needed )
+						// add the user to any mailing lists they've opted into
+						const userAddedToMailingLists = exports.addToMailingLists( newSiteVisitor, mailingListIds, registrationType );
+						// if there was an error sending the thank you email to the new site visitor
+						thankYouEmailSentToUser.catch( reason => {
+							// log the reason the promise was rejected
+							console.error( reason );
+						});
+						// if there was an error adding the new site visitor to the target mailing lists
+						userAddedToMailingLists.catch( reason => {
+							// log the reason the promise was rejected
+							console.error( reason );
+						});
+						// redirect the user back to the appropriate page
+						res.redirect( 303, redirectPath );
+					// if there was an error saving the verification model or fetching the the registration staff contact info
+					}).catch( reason => {
+						// log the reason the promise was rejected
+						console.error( reason );
+						// redirect the user back to the appropriate page
+						res.redirect( 303, redirectPath );
+					});
+				})
+				// if there was an error saving the new site visitor
+				.catch( () => {
+					// create an error flash message to send back to the user
+					req.flash( 'error', {
+						title: 'There was an error creating your account',
+						detail: 'If this error persists, please contact MARE for assistance' } );
+					// redirect the user back to the appropriate page
+					res.redirect( 303, redirectPath );
 				});
 
-			} else if( locals.registrationType === 'socialWorker' ) {
-
-				async.series([
-					done => { exports.getMailingLists( req, res, done ); },
-					done => { exports.saveSocialWorker( req, res, user, done ); },
-					done => { exports.getUserID( req, res, user, locals.userModel, done ); },
-					done => { exports.addToMailingLists( req, res, user, done ); }
-				], () => {
-					res.redirect( 303, locals.redirectPath );
-					 // TODO: Post a success or error flash message
+			} else if( registrationType === 'socialWorker' ) {
+				// save the social worker model
+				exports.saveSocialWorker( user ).then( newSocialWorker => {
+					// if the new social worker model was saved successfully
+					req.flash( 'success', {
+						title: 'Your account has been successfully created',
+						detail: 'Please note that it can take several days for your account to be reviewed and activated.  You will receive an email once MARE has had a chance to review your information.' } );
+					// create a new random code for the user to verify their account with
+					const verificationCode = utilities.generateAlphanumericHash( 35 );
+					// store the database id of the newly created user
+					const userId = newSocialWorker.get( '_id' );
+					// store the user type found in the returned model
+					const userType = newSocialWorker.userType;
+					// store the host name to link to the verification code in the thank you email
+					const host = req.headers.host;
+					// store the array of mailing list ids the user has opted into
+					const mailingListIds = user.mailingLists;
+					// create a new verification code model in the database to allow users to verify their accounts
+					const createVerificationRecord = exports.createNewVerificationModel( verificationCode, userId );
+					// fetch contact info for the staff contact for social worker registration
+					const fetchRegistrationStaffContactInfo = exports.getRegistrationStaffContactInfo( 'social worker' );
+					// once the contact info has been fetched
+					Promise.all( [ createVerificationRecord, fetchRegistrationStaffContactInfo ] ).then( values => {
+						// assign local variables to the values returned by the promises
+						const [ verificationRecord, staffContactInfo ] = values;
+						// send the thank you email to the user
+						const thankYouEmailSentToUser = registrationEmailMiddleware.sendThankYouEmailToUser( staffContactInfo, user.email, userType, verificationCode, host );
+						// TODO: need to send a notification email to the appropriate staff member as well ( check with Lisa to see if this is needed )
+						// add the user to any mailing lists they've opted into
+						const userAddedToMailingLists = exports.addToMailingLists( newSocialWorker, mailingListIds, registrationType );
+						// if there was an error sending the thank you email to the new social worker
+						thankYouEmailSentToUser.catch( reason => {
+							// log the reason the promise was rejected
+							console.error( reason );
+						});
+						// if there was an error adding the new social worker to the target mailing lists
+						userAddedToMailingLists.catch( reason => {
+							// log the reason the promise was rejected
+							console.error( reason );
+						});
+						// redirect the user back to the appropriate page
+						res.redirect( 303, redirectPath );
+					// if there was an error saving the verification model or fetching the the registration staff contact info
+					}).catch( reason => {
+						// log the reason the promise was rejected
+						console.error( reason );
+						// redirect the user back to the appropriate page
+						res.redirect( 303, redirectPath );
+					});
+				})
+				// if there was an error saving the new social worker
+				.catch( () => {
+					// create an error flash message to send back to the user
+					req.flash( 'error', {
+						title: 'There was an error creating your account',
+						detail: 'If this error persists, please contact MARE for assistance' } );
+					
+					res.redirect( 303, redirectPath );
 				});
 
-			} else if ( locals.registrationType === 'family' ) {
+			} else if ( registrationType === 'family' ) {
 				// Store any uploaded files
-			    locals.files = req.files;
-
-				async.series([
-					done => { exports.getMailingLists( req, res, done ); },
-					done => { exports.getNextRegistrationNumber( req, res, done ); },
-					done => { exports.saveFamily( req, res, user, done ); },
-					done => { exports.getUserID( req, res, user, locals.userModel, done ); },
-					done => { exports.uploadFile( req, res, locals.userModel, 'homestudy', 'homestudyFile_upload', locals.files.homestudyFile_upload, done ); },
-					done => { exports.addToMailingLists( req, res, user, done ); }
-				], () => {
-					res.redirect( 303, locals.redirectPath );
-					 // TODO: Post a success or error flash message
+				// TODO: these still need to be handled
+				const files = req.files;
+				// save the family model
+				exports.saveFamily( user ).then( newFamily => {
+					// if the new family model was saved successfully
+					req.flash( 'success', {
+						title: 'Your account has been successfully created',
+						detail: 'Please note that it can take several days for your account to be reviewed and activated.  You will receive an email once MARE has had a chance to review your information.' } );
+					// create a new random code for the user to verify their account with
+					const verificationCode = utilities.generateAlphanumericHash( 35 );
+					// store the database id of the newly created user
+					const userId = newFamily.get( '_id' );
+					// store the user type found in the returned model
+					const userType = newFamily.userType;
+					// store the host name to link to the verification code in the thank you email
+					const host = req.headers.host;
+					// store the array of mailing list ids the user has opted into
+					const mailingListIds = user.mailingLists;
+					// create a new verification code model in the database to allow users to verify their accounts
+					const createVerificationRecord = exports.createNewVerificationModel( verificationCode, userId );
+					// fetch contact info for the staff contact for family registration
+					const fetchRegistrationStaffContactInfo = exports.getRegistrationStaffContactInfo( 'family' );
+					// once the contact info has been fetched
+					Promise.all( [ createVerificationRecord, fetchRegistrationStaffContactInfo ] ).then( values => {
+						// assign local variables to the values returned by the promises
+						const [ verificationRecord, staffContactInfo ] = values;
+						// send the thank you email to the user
+						const thankYouEmailSentToUser = registrationEmailMiddleware.sendThankYouEmailToUser( staffContactInfo, user.email, userType, verificationCode, host );
+						// TODO: need to send a notification email to the appropriate staff member as well ( check with Lisa to see if this is needed )
+						// add the user to any mailing lists they've opted into
+						const userAddedToMailingLists = exports.addToMailingLists( newFamily, mailingListIds, registrationType );
+						// save any submitted files and append them to the newly created user
+						const userFilesUploaded = exports.uploadFile( newFamily, 'homestudy', 'homestudyFile_upload', files.homestudyFile_upload );
+						// if there was an error sending the thank you email to the new family
+						thankYouEmailSentToUser.catch( reason => {
+							// log the reason the promise was rejected
+							console.error( reason );
+						});
+						// if there was an error adding the new family to the target mailing lists
+						userAddedToMailingLists.catch( reason => {
+							// log the reason the promise was rejected
+							console.error( reason );
+						});
+						// if there was an error uploading the files to the new user
+						userFilesUploaded.catch( reason => {
+							// log the reason the promise was rejected
+							console.error( reason );
+						});
+						// redirect the user back to the appropriate page
+						res.redirect( 303, redirectPath );
+					// if there was an error saving the verification model or fetching the the registration staff contact info
+					}).catch( reason => {
+						// log the reason the promise was rejected
+						console.error( reason );
+						// redirect the user back to the appropriate page
+						res.redirect( 303, redirectPath );
+					});
+				})
+				// if there was an error saving the new family
+				.catch( () => {
+					// create an error flash message to send back to the user
+					req.flash( 'error', {
+						title: 'There was an error creating your account',
+						detail: 'If this error persists, please contact MARE for assistance' } );
+					
+					res.redirect( 303, redirectPath );
 				});
 			}
 		}
-	});
-
-};
-
-exports.saveSiteVisitor = ( req, res, user, done ) => {
-
-	let locals = res.locals;
-
-	var newUser = new SiteVisitor.model({
-
-		name: {
-			first			: user.firstName,
-			last			: user.lastName
-		},
-
-		password			: user.password,
-		email				: user.email,
-
-		phone: {
-			work			: user.workPhone,
-			home			: user.homePhone,
-			mobile			: user.mobilePhone,
-			preferred 		: user.preferredPhone
-		},
-
-		address: {
-			street1			: user.street1,
-			street2			: user.street2,
-			city			: user.city,
-			state			: user.state,
-			zipCode			: user.zipCode
-		},
-
-		infoPacket: {
-			packet			: user.infoPacket === 'yes' ? user.infoPacketLanguage : 'none'
-		},
-
-		heardAboutMAREFrom 	: user.howDidYouHear,
-		heardAboutMAREOther	: user.howDidYouHearOther
-
-	});
-	// TODO: revisit this to see which function errors are processed through and clean up the handlers below
-	newUser.save( ( err, model ) => {
-		if( err ) {
-			console.log( err );
-			locals.messages.push( { type: `error`, message: `there was an error creating your account` } );
-			return done();
-		}
-
-		locals.messages.push( { type: `success`, message: `Congratulations, your account has been successfully created` } );
-		// create a new random code for the user to verify their account with
-		const verificationCode = randomString.generate( { length: 35, charset: 'alphanumeric' } );
-		// store the user type found in the returned model
-		const userType = model.userType;
-		// store the host name to link to the verification code in the thank you email
-		const host = req.headers.host;
-
-		async.series([
-			// create a verification code record for the newly created user
-			done => { exports.createNewVerificationCodeRecord( verificationCode, newUser._id, done ); },
-			done => { exports.getRegistrationStaffContactInfo( req, res, 'site visitor', done ) },
-			done => { registrationEmailMiddleware.sendThankYouEmailToUser( locals.staffContactName, locals.staffContactEmail, user.email, userType, verificationCode, host, done ); }
-		], () => {
-			// TODO: if the user requested an email of the info packet, send it
-			// TODO: if the user requested a mail copy of the info packet, add it to an object containing email information before sending it to Diane
-			//       so we can capture all relevant information in one email
-			done();
-		});
-	});
-};
-
-exports.saveSocialWorker = ( req, res, user, done ) => {
-
-	let locals = res.locals;
-
-	const newUser = new SocialWorker.model({
-
-		name: {
-			first			: user.firstName,
-			last			: user.lastName
-		},
-
-		password			: user.password,
-		email				: user.email,
-		agencyNotListed		: true,
-		agencyText			: user.agency,
-		title				: user.titleDiffersFromPosition ? user.socialWorkerTitle : user.position,
-		position			: user.position,
-
-		phone: {
-			work			: user.workPhone,
-			mobile			: user.mobilePhone,
-			preferred 		: user.preferredPhone
-		},
-
-		address: {
-			street1			: user.street1,
-			street2			: user.street2,
-			city			: user.city,
-			state			: user.state,
-			zipCode			: user.zipCode,
-			region 			: user.region
-		}
-
-	});
-
-	newUser.save( ( err, model ) => {
-		if( err ) {
-			console.log( err );
-			locals.messages.push( { type: `error`, message: `there was an error creating your account` });
-		} else {
-			console.log( `new social worker saved` );
-			locals.messages.push( { type: `success`, message: `your social worker account has been successfully created` } );
-		}
-		done();
-	});
-};
-
-exports.saveFamily = ( req, res, user, done ) => {
-
-	let locals = res.locals;
-
-	const newUser = new Family.model({
-
-		email								: user.email,
-		password							: user.password,
-		registrationNumber					: locals.newRegistrationNumber,
-
-		initialContact						: exports.getCurrentDate(),
-		familyConstellation					: user.familyConstellation,
-		language							: user.primaryLanguageInHome,
-		otherLanguages						: user.otherLanguagesInHome,
-
-		contact1: {
-
-			name: {
-				first						: user.contact1FirstName,
-				last						: user.contact1LastName
-			},
-
-			phone: {
-				mobile						: user.contact1Mobile
-			},
-
-			email							: user.contact1Email,
-			preferredCommunicationMethod	: user.contact1PreferredCommunicationMethod,
-			gender							: user.contact1Gender,
-			race							: user.contact1Race,
-			occupation						: user.contact1Occupation,
-			birthDate						: user.contact1DateOfBirth
-		},
-
-		contact2: {
-			name: {
-				first						: user.contact2FirstName,
-				last						: user.contact2LastName
-			},
-
-			phone: {
-				mobile						: user.contact2Mobile
-			},
-
-			email							: user.contact2Email,
-			preferredCommunicationMethod	: user.contact2PreferredCommunicationMethod,
-			gender							: user.contact2Gender,
-			race							: user.contact2Race,
-			occupation						: user.contact2Occupation,
-			birthDate						: user.contact2DateOfBirth
-		},
-
-		address: {
-			street1							: user.street1,
-			street2							: user.street2,
-			city							: user.city,
-			state							: user.state,
-			zipCode							: user.zipCode
-		},
-
-		homePhone							: user.homePhone,
-
-		stages 								: exports.getStages( user ),
-
-		homestudy: {
-			completed						: !user.processProgression ? false : user.processProgression.indexOf( 'homestudyCompleted' ) !== -1 ? true : false,
-			initialDate						: !user.processProgression ? undefined : user.processProgression.indexOf( 'homestudyCompleted' ) !== -1 ? user.homestudyDateComplete : undefined
-		},
-
-		numberOfChildren					: user.childrenInHome,
-
-		child1                              : exports.setChild( user, 1 ),
-		child2                              : exports.setChild( user, 2 ),
-		child3                              : exports.setChild( user, 3 ),
-		child4                              : exports.setChild( user, 4 ),
-		child5                              : exports.setChild( user, 5 ),
-		child6                              : exports.setChild( user, 6 ),
-		child7                              : exports.setChild( user, 7 ),
-		child8                              : exports.setChild( user, 8 ),
-
-		otherAdultsInHome: {
-			number							: parseInt( user.otherAdultsInHome, 10 )
-		},
-
-		havePetsInHome						: user.havePets === 'yes' ? true : false,
-
-		socialWorkerNotListed				: true,
-		socialWorkerText					: user.socialWorkerName,
-
-		infoPacket: {
-			packet							: user.infoPacket === 'yes' ? user.infoPacketLanguage : 'none'
-		},
-
-		matchingPreferences: {
-			gender							: user.preferredGender,
-			legalStatus						: user.legalStatus,
-
-			adoptionAges: {
-				from						: user.ageRangeFrom,
-				to							: user.ageRangeTo
-			},
-
-			numberOfChildrenToAdopt			: parseInt( user.numberOfChildrenPrefered, 10 ),
-			siblingContact					: user.contactWithBiologicalSiblings === 'yes' ? true : false,
-			birthFamilyContact				: user.contactWithBiologicalParents === 'yes' ? true : false,
-			race							: user.adoptionPrefRace,
-
-			maxNeeds: {
-				physical					: user.maximumPhysicalNeeds ? user.maximumPhysicalNeeds : 'none',
-				intellectual				: user.maximumIntellectualNeeds ? user.maximumIntellectualNeeds : 'none',
-				emotional					: user.maximumEmotionalNeeds ? user.maximumEmotionalNeeds : 'none'
-			},
-
-			disabilities					: user.disabilities,
-			otherConsiderations				: user.otherConsiderations
-		},
-
-		heardAboutMAREFrom					: user.howDidYouHear,
-		heardAboutMAREOther					: user.howDidYouHearOther,
-
-		registeredViaWebsite				: true
-	});
-
-	newUser.save( ( err, model ) => {
-		if( err ) {
-			console.log( err );
-			locals.messages.push( { type: `error`, message: `there was an error creating your account` } );
-		} else {
-			// TODO: if the user requested an email of the info packet, send it
-			// TODO: if the user requested a mail copy of the info packet, add it to an object containing email information before sending it to Diane
-			//       so we can capture all relevant information in one email
-			console.log( `new family saved` );
-			locals.messages.push( { type: `success`, message: `your account has been successfully created` } );
-		}
+	})
+	.catch( reason => {
 		
-		done();
+		req.flash( `error`, {
+					title: `There was a problem creating your account`,
+					detail: `If the problem persists, please contact MARE for assistance` } );
+		
+		res.redirect( 303, redirectPath );
+	});
+};
+
+exports.saveSiteVisitor = user => {
+
+	return new Promise( ( resolve, reject ) => {
+		// create a new site visitor model with the passed in data
+		let newUser = new SiteVisitor.model({
+
+			name: {
+				first					: user.firstName,
+				last					: user.lastName
+			},
+
+			password					: user.password,
+			email						: user.email,
+
+			phone: {
+				work					: user.workPhone,
+				home					: user.homePhone,
+				mobile					: user.mobilePhone,
+				preferred 				: user.preferredPhone
+			},
+
+			address: {
+				street1					: user.street1,
+				street2					: user.street2,
+				isOutsideMassachusetts	: user.isNotMACity,
+				city					: user.isNotMACity ? undefined : user.MACity,
+				cityText				: user.isNotMACity ? user.nonMACity : '',
+				state					: user.state,
+				zipCode					: user.zipCode
+			},
+
+			heardAboutMAREFrom 			: user.howDidYouHear,
+			heardAboutMAREOther			: user.howDidYouHearOther
+
+		});
+
+		newUser.save( ( err, model ) => {
+			// if there was an issue saving the new site visitor
+			if( err ) {
+				// reject the promise with a descriptive message
+				return reject( `there was an error saving the new site visitor model ${ err }` );
+			}
+			// resolve the promise with the newly saved site visitor model
+			resolve( model );
+		});
+	});
+};
+
+exports.saveSocialWorker = user => {
+ 
+	return new Promise( ( resolve, reject ) => {
+
+		const newUser = new SocialWorker.model({
+
+			name: {
+				first					: user.firstName,
+				last					: user.lastName
+			},
+
+			password					: user.password,
+			email						: user.email,
+			agencyNotListed				: true,
+			agencyText					: user.agency,
+			title						: user.titleDiffersFromPosition ? user.socialWorkerTitle : user.position,
+			position					: user.position,
+
+			phone: {
+				work					: user.workPhone,
+				mobile					: user.mobilePhone,
+				preferred 				: user.preferredPhone
+			},
+
+			address: {
+				street1					: user.street1,
+				street2					: user.street2,
+				isOutsideMassachusetts	: user.isNotMACity,
+				city					: user.isNotMACity ? undefined : user.MACity,
+				cityText				: user.isNotMACity ? user.nonMACity : '',
+				state					: user.state,
+				zipCode					: user.zipCode,
+				region 					: user.region
+			}
+
+		});
+
+		newUser.save( ( err, model ) => {
+			// if there was an issue saving the new site visitor
+			if( err ) {
+				// reject the promise with a descriptive message
+				return reject( `there was an error saving the new social worker model ${ err }` );
+			}
+			// resolve the promise with the newly saved site visitor model
+			resolve( model );
+		});
+	});
+};
+
+exports.saveFamily = user => {
+
+	return new Promise( ( resolve, reject ) => {
+		
+		const newUser = new Family.model({
+
+			email								: user.email,
+			password							: user.password,
+
+			initialContact						: exports.getCurrentDate(),
+			language							: user.primaryLanguageInHome,
+			otherLanguages						: user.otherLanguagesInHome,
+
+			contact1: {
+
+				name: {
+					first						: user.contact1FirstName,
+					last						: user.contact1LastName
+				},
+
+				phone: {
+					mobile						: user.contact1Mobile
+				},
+
+				email							: user.contact1Email,
+				preferredCommunicationMethod	: user.contact1PreferredCommunicationMethod,
+				gender							: user.contact1Gender,
+				race							: user.contact1Race,
+				occupation						: user.contact1Occupation,
+				birthDate						: user.contact1DateOfBirth
+			},
+
+			contact2: {
+				name: {
+					first						: user.contact2FirstName,
+					last						: user.contact2LastName
+				},
+
+				phone: {
+					mobile						: user.contact2Mobile
+				},
+
+				email							: user.contact2Email,
+				preferredCommunicationMethod	: user.contact2PreferredCommunicationMethod,
+				gender							: user.contact2Gender,
+				race							: user.contact2Race,
+				occupation						: user.contact2Occupation,
+				birthDate						: user.contact2DateOfBirth
+			},
+
+			address: {
+				street1							: user.street1,
+				street2							: user.street2,
+				isOutsideMassachusetts			: user.isNotMACity,
+				city							: user.isNotMACity ? undefined: user.MACity,
+				cityText						: user.isNotMACity ? user.nonMACity : '',
+				state							: user.state,
+				zipCode							: user.zipCode
+			},
+
+			homePhone							: user.homePhone,
+
+			stages 								: exports.getStages( user ),
+
+			homestudy: {
+				completed						: !user.processProgression ? false : user.processProgression.indexOf( 'homestudyCompleted' ) !== -1 ? true : false,
+				initialDate						: !user.processProgression ? undefined : user.processProgression.indexOf( 'homestudyCompleted' ) !== -1 ? user.homestudyDateComplete : undefined
+			},
+
+			numberOfChildren					: user.childrenInHome,
+
+			child1                              : exports.setChild( user, 1 ),
+			child2                              : exports.setChild( user, 2 ),
+			child3                              : exports.setChild( user, 3 ),
+			child4                              : exports.setChild( user, 4 ),
+			child5                              : exports.setChild( user, 5 ),
+			child6                              : exports.setChild( user, 6 ),
+			child7                              : exports.setChild( user, 7 ),
+			child8                              : exports.setChild( user, 8 ),
+
+			otherAdultsInHome: {
+				number							: parseInt( user.otherAdultsInHome, 10 )
+			},
+
+			havePetsInHome						: user.havePets === 'yes' ? true : false,
+
+			socialWorkerNotListed				: true,
+			socialWorkerText					: user.socialWorkerName,
+
+			matchingPreferences: {
+				gender							: user.preferredGender,
+				legalStatus						: user.legalStatus,
+
+				adoptionAges: {
+					from						: user.ageRangeFrom,
+					to							: user.ageRangeTo
+				},
+
+				numberOfChildrenToAdopt			: user.numberOfChildrenPrefered ? parseInt( user.numberOfChildrenPrefered, 10 ) : 0,
+				siblingContact					: user.contactWithBiologicalSiblings === 'yes' ? true : false,
+				birthFamilyContact				: user.contactWithBiologicalParents === 'yes' ? true : false,
+				race							: user.adoptionPrefRace,
+
+				maxNeeds: {
+					physical					: user.maximumPhysicalNeeds ? user.maximumPhysicalNeeds : 'none',
+					intellectual				: user.maximumIntellectualNeeds ? user.maximumIntellectualNeeds : 'none',
+					emotional					: user.maximumEmotionalNeeds ? user.maximumEmotionalNeeds : 'none'
+				},
+
+				disabilities					: user.disabilities,
+				otherConsiderations				: user.otherConsiderations
+			},
+
+			heardAboutMAREFrom					: user.howDidYouHear,
+			heardAboutMAREOther					: user.howDidYouHearOther,
+
+			registeredViaWebsite				: true
+		});
+
+		newUser.save( ( err, model ) => {
+			// if there was an issue saving the new site visitor
+			if( err ) {
+				// reject the promise with a description
+				return reject( `there was an error saving the new family model ${ err }` );
+			}
+			// resolve the promise with the newly saved site visitor model
+			resolve( model );
+		});
+	});
+};
+
+/* Return true if the submitted email is valid */
+exports.validateEmail = email => {
+
+	// a string to validate that an email is valid
+	var emailPattern = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/;
+	// return a check against the passed in email
+	return emailPattern.test( email );
+};
+
+/* Return true if the submitted email already exists in the system for a user of any type */
+exports.checkForDuplicateEmail = email => {
+	
+	// return a promise for cleaner asynchronous processing
+	return new Promise( ( resolve, reject ) => {
+		// TODO: this exec() is suspicious and different from all my others, it warrants further testing
+		// All user types inherit from the User model, so checking User will allow us to accurately check for duplicates
+		User.model.findOne()
+			.where( 'email', email )
+			.exec( ( err, user ) => {
+				// if we've found a user with the same email, it's a duplicate
+				const isEmailDuplicate = user ? true : false;
+
+				resolve( isEmailDuplicate );
+
+			}, function( err ) {
+
+				console.log( `error testing for duplicate email in registration` );
+				console.log( err );
+
+				reject();
+			});
 	});
 }
 
-/* New user data validation functions */
-// Return true if the submitted email is valid
-exports.validateEmail = ( req, res, email, done ) => {
+/* Return true if the submitted 'password' and 'confirm password' match */
+exports.validatePassword = ( password, confirmPassword ) => {
 
-	let locals = res.locals;
-
-	var emailPattern = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/; // A string to validate that an email is valid
-	locals.isEmailInvalid = !emailPattern.test( email ); // We want to know if the email is invalid, so we need to take the inverse of the test result
-
-	done();
-};
-// Return true if the submitted email already exists in the system for a user of any type
-exports.checkForDuplicateEmail = ( req, res, email, done ) => {
-
-	let locals = res.locals;
-	// TODO: this exec() is suspicious and different from all my others, it warrants further testing
-	// All user types inherit from the User model, so checking User will allow us to accurately check for duplicates
-	User.model.findOne()
-		.where( 'email', email )
-		.exec( ( err, user ) => {
-
-			locals.isEmailDuplicate = user ? true : false;
-			done();
-
-		}, function( err ) {
-
-			console.log( `error testing for duplicate email in registration` );
-			console.log( err );
-			done();
-
-		});
-}
-
-// Return true if the submitted 'password' and 'confirm password' match
-exports.validatePassword = ( req, res, password, confirmPassword, done ) => {
-
-	let locals = res.locals;
-
-	locals.isPasswordInvalid = password !== confirmPassword;
-	done();
-
+	return password === confirmPassword;
 };
 
-exports.getUserID = ( req, res, user, userModel, done ) => {
-
-	let locals = res.locals;
-
-	const email = user.email;
-	// TODO: this exec() is suspicious and different from all my others, it warrants further testing
-	userModel.model.findOne( { email: email } )
-			.exec(function ( err, user ) {
-				locals.newUserID = user._id;
-				done();
-			});
-
-};
-
-/* sets an array of staff email contacts on locals.staffContactEmails */
-exports.getRegistrationStaffContactInfo = ( req, res, userType, done ) => {
-
-	let locals = res.locals;
-
-	const emailTarget = userType === 'site visitor' ? 'site visitor registration' :
-						userType === 'social worker' ? 'social worker registration' :
-						userType === 'family' ? 'family registration' :
-						undefined;
-
-	if( !emailTarget ) {
-		console.error( `unknown user type, staff email contact couldn't be fetched` );
+/* create error flash messages if a problem was encountered */
+exports.setInitialErrorMessages = ( req, isEmailValid, isEmailDuplicate, isPasswordValid ) => {
+	if( !isEmailValid ) {
+		req.flash( `error`, {
+				title: `There was a problem creating your account`,
+				detail: `The email address you're trying to use is invalid` } );
 	}
 
-	async.series([
-		done => { staffEmailTargetMiddleware.getTargetId( req, res, emailTarget, done ); },
-		done => { staffEmailContactMiddleware.getContact( req, res, locals.emailTargetId, done ); } // TODO: this is kludgy and wrong, it was nearly impossible to create a readable comma separated list of links in the template with more than one address, so we're only fetching one contact
-	], () => {
-		done();
+	if( isEmailDuplicate ) {
+		req.flash( `error`, {
+				title: `There was a problem creating your account`,
+				detail: `The email address you're trying to use already exists in the system` } );
+	}
+
+	if( !isPasswordValid ) {
+		req.flash( `error`, {
+				title: `There was a problem creating your account`,
+				detail: `The passwords you entered don't match` } );
+	}
+};
+
+/* returns an array of staff email contacts */
+exports.getRegistrationStaffContactInfo = userType => {
+
+	return new Promise( ( resolve, reject ) => {
+		// use the user type to get the staff email target role responsible for handling registration questions
+		const emailTarget = userType === 'site visitor' ? 'site visitor registration' :
+							userType === 'social worker' ? 'social worker registration' :
+							userType === 'family' ? 'family registration' :
+							undefined;
+		// if the user type was unrecognized, the email target can't be set
+		if( !emailTarget ) {
+			// reject the promise with details of the issue
+			return reject( `unknown user type, staff email contact couldn't be fetched` );
+		}
+		// TODO: it was nearly impossible to create a readable comma separated list of links in the template with more than one address,
+		// 	     so we're only fetching one contact when we should fetch them all
+		// get the database id of the admin contact set to handle registration questions for the target user type
+		staffEmailTargetMiddleware.getTargetId( emailTarget ).then( targetId => {
+			// get the contact details of the admin contact set to thandle registration questions for the target user type
+			staffEmailContactMiddleware.getContact( targetId ).then( contactInfo => {
+				// resolve the promise with the full name and email address of the contact
+				resolve( contactInfo );
+			}).catch( reason => {
+				// reject the promise with the reason for the rejection
+				reject( reason );
+			});
+		// if there was a problem fetching the email target id
+		}).catch( reason => {
+			// reject the promise with the reason for the rejection
+			reject( reason );
+		});
 	});
 }
 
-// TODO: URGENT, this will break across environments, need to find a better way to bind to mailing lists
-exports.addToMailingLists = ( req, res, user, done ) => {
+/* add the passed in user to the emails specified in the mailingListIds array using registrationType to find the target field */
+exports.addToMailingLists = ( user, mailingListIds, registrationType ) => {
 
-	res.locals.requestedMailingLists = [];
-
-	if( user.mareEmailList === 'yes' ) { res.locals.requestedMailingLists.push( 'news' ); }
-	if( user.adoptionPartyEmailList === 'yes' ) { res.locals.requestedMailingLists.push( 'adoption parties' ); }
-	if( user.fundraisingEventsEmailList === 'yes' ) { res.locals.requestedMailingLists.push( 'fundraising' ); }
-	// Loop through each of the mailing lists the user should be added to and add them.  Async allows all assignments
-	// to happen in parallel before handling the result.
-	async.each( res.locals.requestedMailingLists, ( listName, callback ) => {
-
-		MailingList.model.findById( res.locals.mailingLists[ listName ] )
-				.exec()
-				.then( result => {
-
-					if( res.locals.registrationType === 'socialWorker' ) {
-						result.socialWorkerSubscribers.push( res.locals.newUserID );
-					} else if ( res.locals.registrationType === 'family' ) {
-						result.familySubscribers.push( res.locals.newUserID );
-					}
-
-					result.save( ( err, model ) => {
-						if( err ) {
-							console.log( err );
-						} else {
-							console.log( `user saved to ${ listName } list` );
-						}
-
-						callback();
-					});
-
-				}, err => {
-					console.log( err );
-					callback();
-				});
-
-	}, err => {
-			// if any of the file processing produced an error, err would equal that error
-			if( err ) {
-				// One of the iterations produced an error.
-				// All processing will now stop.
-				console.log( `an error occurred saving the user to one or more mailing lists: ${ err }` );
-				done();
-			} else {
-				console.log( `user saved to all email lists successfully` );
-				done();
-			}
+	return new Promise( ( resolve, reject ) => {
+		// filter out any invalid strings.  False values from form submissions will result in an empty string
+		const validMailingListIds = mailingListIds.filter( ( mailingListId ) => mailingListId !== "" );
+		// if there were no mailing lists the user opted into
+		if( !validMailingListIds || validMailingListIds.length === 0 ) {
+			return resolve();
+		}
+		// create an array to hold promises for adding the user asynchronously to each mailing list
+		let addUserToMailingLists = [];
+		// loop through each mailing list id
+		for( let mailingListId of validMailingListIds ) {
+			// create a promise around adding the user to the current mailing list and push it to the array
+			addUserToMailingLists.push( exports.addToMailingList( user, mailingListId, registrationType ) );
+		}
+		// once the user has been added to all mailing lists
+		Promise.all( addUserToMailingLists ).then( values => {
+			// resolve the promise
+			resolve();
+		// if any error were encountered
+		}).catch( reason => {
+			// reject the promise with the reason
+			reject( reason );
+		});
 	});
 };
+/* add the passed in user to a specified mailing list using registrationType to find the target field */
+exports.addToMailingList = ( user, mailingListId, registrationType ) => {
 
-exports.uploadFile = ( req, res, userModel, targetFieldPrefix, targetField, file, done ) => {
+	return new Promise( ( resolve, reject ) => {
 
-	// TODO: however this will be done, we need to check to see if the file object is stored, if not, we can ignore this whole function
-	userModel.model.findById( res.locals.newUserID )
-				.exec()
-				.then( user => {
-					console.log( 'file' );
-					console.log( file );
-
-					user[ targetFieldPrefix ][ targetField ] = file;
-
-					user.save( ( err, model ) => {
-						console.log( `file saved for the user` );
-						done();
-					});
-
-				}, err => {
-					console.log( `error fetching user to save file attachment: ${ err }` );
-					done();
-				});
-};
-
-exports.getMailingLists = ( req, res, done ) => {
-
-	let locals = res.locals;
-	res.locals.mailingLists = {};
-
-	MailingList.model.find()
-			.where( 'mailingList' ).in( [ 'news', 'adoption parties', 'fundraising' ] )
+		MailingList.model
+			.findById( mailingListId )
 			.exec()
-			.then( mailingLists => {
-
-				mailingLists.map( mailingList => {
-					res.locals.mailingLists[ mailingList.get( 'mailingList' ) ] = mailingList.get( '_id' );
+			.then( mailingList => {
+				// if the mailing list wasn't found
+				if( !mailingList ) {
+					// reject the promise with the id of the list the user couldn't be added to
+					reject( `error fetching mailing list: ${ mailingListId }` );
+				}
+				// add the user id to the correct Relationship field in the mailing list based on what type of user they are
+				switch( registrationType ) {
+					case 'siteVisitor'	: mailingList.siteVisitorSubscribers.push( user.get( '_id' ) ); break;
+					case 'socialWorker'	: mailingList.socialWorkerSubscribers.push( user.get( '_id' ) ); break;
+					case 'family'		: mailingList.familySubscribers.push( user.get( '_id' ) );
+				}
+				// attempt to save the updated mailing list
+				mailingList.save( ( err, model ) => {
+					// if there was an error saving the updated mailing list model
+					if( err ) {
+						// reject the promise with details about the failure
+						return reject( `error saving user ${ user.get( '_id' ) } to mailing list ${ model.mailingList }` );
+					}
+					// if there was no error, resolve the promise
+					resolve();
 				});
-
-				done();
-
-			}, err => {
-				console.log( err );
-				done();
 			});
+	});
+};
+/* TODO: if there's no file to save, we shouldn't be fetching a model, create a short circuit check */
+exports.uploadFile = ( userModel, targetFieldPrefix, targetField, file ) => {
+
+	// TODO: placeholder until the file upload has been fixed
+	return new Promise( ( resolve, reject ) => {
+		resolve();
+	});
+	// // exit this function if there's no file to upload
+	// if( !file ) {
+	// 	console.log( 'uploadFile - no file to upload, exiting early' );
+
+	// 	return done();
+	// }
+
+	// userModel.model.findById( res.locals.newUserID )
+	// 			.exec()
+	// 			.then( user => {
+	// 				console.log( 'file' );
+	// 				console.log( file );
+
+	// 				user[ targetFieldPrefix ][ targetField ] = file;
+
+	// 				user.save( ( err, model ) => {
+	// 					console.log( `file saved for the user` );
+
+	// 					done();
+	// 				});
+
+	// 			}, err => {
+	// 				console.log( `error fetching user to save file attachment: ${ err }` );
+
+	// 				done();
+	// 			});
 };
 
-exports.getNextRegistrationNumber = ( req, res, done ) => {
-
-	let locals = res.locals;
-	
-	Family.model.find()
-			.select( 'registrationNumber' )
-			.exec()
-			.then( families => {
-				// get an array of registration numbers
-				const registrationNumbers = families.map( family => family.get( 'registrationNumber' ) );
-				// get the largest registration number
-				locals.newRegistrationNumber = Math.max( ...registrationNumbers ) + 1;
-
-				done();
-
-			}, err => {
-				console.log( 'error setting registration number' );
-				console.log( err );
-
-				done();
-			});
-};
 // TODO: why do we need this, saving a Date object in any Types.Date field should work just fine
 exports.getCurrentDate = () => {
 
@@ -617,16 +727,23 @@ exports.getStages = family => {
 	return stages;
 };
 
-exports.createNewVerificationCodeRecord = ( verificationCode, userId, done ) => {
+exports.createNewVerificationModel = ( verificationCode, userId ) => {
 	
-	var newVerificationCodeRecord = new AccountVerificationCode.model({
-		code	: verificationCode,
-		user	: userId,
-		dateSent: new Date()
-	});
-
-	newVerificationCodeRecord.save( ( err, model ) => {
-		console.log( `verification code entry created` );
-		done();
+	return new Promise( ( resolve, reject ) => {
+		// create the new verification model
+		var newVerificationCodeModel = new AccountVerificationCode.model({
+			code	: verificationCode,
+			user	: userId,
+			dateSent: new Date()
+		});
+		// attempt to save the new verification model
+		newVerificationCodeModel.save( ( err, model ) => {
+			// if the model saved successfully, resolve the promise, returning the newly saved model
+			resolve( model );
+		// if there was an error saving the new model to the database
+		}, err => {
+			// reject the promise with the reason for the rejection
+            reject( `error saving the new verification code model for user ${ userId }: ${ err }` );
+		});
 	});
 };

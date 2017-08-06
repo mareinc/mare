@@ -1,0 +1,51 @@
+<!-- client side template for rendering child details sections -->
+<script id="child-in-home" type="text/x-handlebars-template">
+
+	<div class="row form-group \{{ formHeading }} child-details-form">
+		<div class="col-sm-24">
+			<div class="label marg-bottom-xs-5">Child \{{ index }}</div>
+		</div>
+	</div>
+
+	<div class="row form-group \{{ formName }}">
+		<div class="col-sm-12 form-group">
+			<div class="row">
+				<div class="col-sm-24 form-group">
+					<input type="text" class="input child-form-input" name="\{{ name }}" data-parsley-error-message="required" required="">
+					<label for="\{{ name }}" class="label marg-bottom-xs-5 required-field">Name</label>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-24">
+					<select class="input registration-number-select child-form-input" name="\{{ gender }}" data-parsley-errors-messages-disabled="true" required="">
+						<option value=""></option>
+					{{#each genders}}
+						<option value="{{_id}}">{{ gender }}</option>
+					{{/each}}
+					</select>
+					<label for="\{{ gender }}" class="label marg-bottom-xs-5 required-field">Gender</label>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-12 form-group">
+			<div class="row">
+				<div class="col-sm-24 form-group">
+					<input type="text" class="input child-form-input" placeholder="MM/DD/YYYY" name="\{{ birthDate }}" data-parsley-error-message="required" required="">
+					<label for="\{{ birthDate }}" class="label marg-bottom-xs-5 required-field">Date of Birth</label>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-24">
+					<select class="input registration-number-select child-form-input" name="\{{ type }}" data-parsley-errors-messages-disabled="true" required="">
+						<option value=""></option>
+					{{#each childTypes}}
+						<option value="{{ _id }}">{{ displayName }}</option>
+					{{/each}}
+					</select>
+					<label for="\{{ type }}" class="label marg-bottom-xs-5 required-field">Type</label>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</script>

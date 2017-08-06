@@ -1,0 +1,615 @@
+<div class="page-header">
+	<span class="page-header-text">Family Registration</span>
+</div>
+
+<div class="form-intro">We are pleased that you are interested in registering your homestudied family with MARE.
+	Only Massachusetts families with completed and approved homestudies can be registered with MARE through this form.
+	Once registered, their criteria will be compared with the needs of the children registered with MARE to identify
+	potential matches. When matches are identified, MARE will forward their homestudy to the child’s social worker.
+	Follow-up on such referrals is at the discretion of the child’s social worker. There is no fee for this service.</div>
+
+<div class="form-intro">If the family is not yet homestudied and would like to request information, please request that
+	they fill out the <a href="/forms/information-request-form">Information Request Form</a>.</div>
+
+<div class="form-intro">Click <a href="#">here [link to form needed]</a> to download the Family Registration Form for you to print, complete and fax to MARE
+	at 617-542-1006.</div>
+
+<section class="family-registration-form">
+
+	<div class="form-type-header">Register a Family</div>
+	<span class="required required-description">* Required</span>
+
+	<form enctype="multipart/form-data" action="/social-worker-register-family" class="form--family-registration" method="POST">
+		<input type="hidden" class="registration-type" name="registrationType" value="family">
+		
+		<section class="family-contact-1-section">
+			<div class="form-section-header">Contact 1</div>
+			<div class="row">
+				<div class="col-sm-12 form-group">
+					<input type="text" id="contact1-first-name" class="input" name="contact1FirstName" placeholder="John" data-parsley-error-message="required" required="">
+					<label for="contact1-first-name" class="label required-field">First Name</label>
+				</div>
+				<div class="col-sm-12 form-group">
+					<input type="text" id="contact1-last-name" class="input" name="contact1LastName" placeholder="Smith" data-parsley-error-message="required" required="">
+					<label for="contact1-last-name" class="label required-field">Last Name</label>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-12 form-group">
+					<input type="email" id="contact1-email" class="input" name="contact1Email" placeholder="john.smith@gmail.com" data-parsley-type="email" data-parsley-trigger="change" data-parsley-error-message="valid email required" required="">
+					<label for="contact1-email" class="label required-field">Email Address</label>
+				</div>
+				<div class="col-sm-12 form-group">
+					<input type="text" id="contact1-mobile" class="input" name="contact1Mobile" placeholder="(617) 111-1111" data-parsley-error-message="required" required="">
+					<label for="contact1-mobile" class="label required-field">Mobile Phone</label>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-12 form-group">
+					<select id="contact1-preferred-communication-method" class="input" name="contact1PreferredCommunicationMethod" data-parsley-errors-messages-disabled="true" required="">
+						<option value=""></option>
+						<option value="email">email</option>
+						<option value="home phone">home</option>
+						<option value="mobile phone">mobile</option>
+					</select>
+					<label for="contact1-preferred-communication-method" class="label required-field">Preferred Contact Method</label>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-24 form-group">
+					<span id="contact1-gender-error-container" class="error-container">
+						<span class="gender-select-text required-field">Gender</span> &nbsp;&nbsp;
+						{{#each genders}}
+							<label class="radio-inline"><input type="radio" name="contact1Gender" value="{{_id}}" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#contact1-gender-error-container" required="">{{gender}}</label>
+						{{/each}}
+					</span>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="row">
+						<div class="col-sm-24 form-group">
+							<span class="required-field">Race/Ethnicity (check all that apply)</span>
+						</div>
+					</div>
+					<div id="contact1-race-error-container" class="row error-container">
+						{{#each races}}
+						<div class="col-sm-12 form-group">
+							<label class="checkbox-inline">
+								<input type="checkbox" name="contact1Race" value="{{_id}}" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#contact1-race-error-container" required="">{{race}}
+							</label>
+						</div>
+						{{/each}}
+					</div>
+				</div>
+				<div class="col-sm-12">
+					<div class="form-group">
+						<input type="text" id="contact1-occupation" class="input" name="contact1Occupation" placeholder="teacher">
+						<label for="contact1-occupation" class="label">Occupation</label>
+					</div>
+					<div class="form-group">
+						<input type="text" class="input" id="contact1-date-of-birth" name="contact1DateOfBirth" data-parsley-error-message="required" required="" placeholder="MM/DD/YYYY">
+						<label for="contact1-date-of-birth" class="label required-field">Date of Birth</label>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<section class="family-contact-2-section">
+			<div class="form-section-header">Contact 2</div>
+
+			<div class="row">
+				<div class="col-sm-12 form-group">
+					<input type="text" id="contact2-first-name" class="input" name="contact2FirstName" placeholder="Jane">
+					<label for="contact2-first-name" class="label">First Name</label>
+				</div>
+				<div class="col-sm-12 form-group">
+					<input type="text" id="contact2-last-name" class="input" name="contact2LastName" placeholder="Smith">
+					<label for="contact2-last-name" class="label">Last Name</label>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-12 form-group">
+					<input type="email" id="contact2-email" class="input" name="contact2Email" placeholder="jane.smith@gmail.com" data-parsley-type="email" data-parsley-trigger="change" data-parsley-required="false" data-parsley-error-message="valid email required">
+					<label for="contact2-email" class="label">Email Address</label>
+				</div>
+				<div class="col-sm-12 form-group">
+					<input type="text" id="contact2-phone" class="input" name="contact2Mobile" placeholder="(617) 222-2222">
+					<label for="contact2-phone" class="label">Mobile Phone</label>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-12 form-group">
+					<select id="contact2-preferred-communication-method" class="input" name="contact2PreferredCommunicationMethod">
+						<option value=""></option>
+						<option value="email">email</option>
+						<option value="home phone">home</option>
+						<option value="mobile phone">mobile</option>
+					</select>
+					<label for="contact2-preferred-communication-method" class="label">Preferred Contact Method</label>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-24 form-group">
+					<span class="gender-select-text">Gender:</span> &nbsp;&nbsp;
+					{{#each genders}}
+						<label class="radio-inline"><input type="radio" name="contact2Gender" value="{{_id}}">{{gender}}</label>
+					{{/each}}
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="row">
+						<div class="col-sm-24 form-group">
+							<span>Race/Ethnicity (check all that apply)</span>
+						</div>
+					</div>
+					<div class="row">
+						{{#each races}}
+						<div class="col-sm-12 form-group">
+							<label class="checkbox-inline">
+								<input type="checkbox" name="contact2Race" value="{{_id}}">{{race}}
+							</label>
+						</div>
+						{{/each}}
+					</div>
+				</div>
+				<div class="col-sm-12">
+					<div class="form-group">
+						<input type="text" id="contact2-occupation" class="input" name="contact2Occupation" placeholder="police officer">
+						<label for="contact2-occupation" class="label">Occupation</label>
+					</div>
+					<div class="form-group">
+						<input type="text" id="contact2-date-of-birth" class="input" name="contact2DateOfBirth" placeholder="MM/DD/YYYY">
+						<label for="contact2-date-of-birth" class="label">Date of Birth</label>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<section class="family-home-address-section">
+			<div class="form-section-header">Home Address</div>
+
+			<div class="row">
+				<div class="col-sm-12 form-group">
+					<input type="text" id="family-street-1" class="input" name="street1" placeholder="100 Main Street" data-parsley-error-message="required" required="">
+					<label for="family-street-1" class="label required-field">Street 1</label>
+				</div>
+				<div class="col-sm-12 form-group">
+					<input type="text" id="family-street-2" class="input" name="street2" placeholder="Suite 1">
+					<label for="family-street-2" class="label">Street 2</label>
+				</div>
+			</div>
+			<div class="row form-group">
+				<div class="col-sm-12 form-group ma-city-container">
+					<select id="ma-city" class="input" name="MACity" data-parsley-trigger="change" data-parsley-errors-messages-disabled="true" required="">
+						<option value=""></option>
+						{{#each citiesAndTowns}}
+						<option value="{{_id}}">{{cityOrTown}}</option>
+						{{/each}}
+					</select>
+					<label for="ma-city" class="label required-field">City</label>
+				</div>
+				<div class="col-sm-12 form-group non-ma-city-container hidden">
+					<input type="text" id="non-ma-city" class="input" name="nonMACity" placeholder="Boston" data-parsley-error-message="required" data-parsley-required="false">
+					<label for="non-ma-city" class="label required-field">City</label>
+				</div>
+				<div class="col-sm-12 form-group">
+					<label class="checkbox-inline">
+						<input type="checkbox" id="is-not-MA-city-checkbox" name="isNotMACity">Family lives outside MA
+					</label>
+				</div>
+			</div>
+			<div class="row form-group">
+				<div class="col-sm-12 form-group">
+					<select id="family-state" class="input state-select" name="state">
+					{{#each states}}
+						{{#if defaultSelection}}
+							<option value="{{_id}}" selected="selected">{{state}}</option>
+						{{/if}}
+					{{/each}}
+					</select>
+					<label for="state" class="label required-field">State</label>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-12 form-group">
+					<input type="number" id="zip-code" class="input" name="zipCode" placeholder="02111" data-parsley-error-message="required" required="">
+					<label for="zip-code" class="label required-field">Zip Code</label>
+				</div>
+				<div class="col-sm-12 form-group">
+					<input type="text" id="home-phone" class="input" name="homePhone" placeholder="(617) 333-3333">
+					<label for="home-phone" class="label">Home Phone</label>
+				</div>
+			</div>
+		</section>
+		<!-- This will end part 3 -->
+
+		<section class="family-homestudy-details-section">
+			<div class="form-section-header">Homestudy Details</div>
+
+			<div class="row">
+				<div class="col-sm-12 form-group">
+					<input type="text" id="homestudy-date-complete" class="input" name="homestudyDateComplete" data-parsley-required="true" data-parsley-error-message="required" placeholder="MM/DD/YYYY">
+					<label for="homestudy-date-complete" class="label required-field">Date Homestudy Completed/Updated</label>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-12 form-group">
+					<input type="text" id="social-worker-name" class="input" name="socialWorkerName" data-parsley-required="true" data-parsley-error-message="required" placeholder="Jim Smith">
+					<label for="social-worker-name" class="label required-field">Social Worker Name</label>
+				</div>
+				<div class="col-sm-12 form-group">
+					<input type="text" id="social-worker-agency" class="input" name="socialWorkerAgency" data-parsley-required="true" data-parsley-error-message="required" placeholder="Jim's Agency">
+					<label for="social-worker-agency" class="label required-field">Social Worker Agency</label>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-12 form-group">
+					<input type="text" id="social-worker-phone" class="input" name="socialWorkerPhone" data-parsley-required="true" data-parsley-error-message="required" placeholder="(617) 444-4444">
+					<label for="social-worker-phone" class="label required-field">Social Worker Phone Number</label>
+				</div>
+				<div class="col-sm-12 form-group">
+					<input type="email" id="social-worker-email" class="input" name="socialWorkerEmail" placeholder="jim.smith@gmail.com" data-parsley-type="email" data-parsley-trigger="change" data-parsley-required="true" data-parsley-error-message="valid email required">
+					<label for="social-worker-email" class="label required-field">Social Worker Email Address</label>
+				</div>
+			</div>
+
+			<section class="subheading family-submit-your-homestudy-section">
+				<strong>Submit Your Homestudy</strong>
+				<p>To complete your registration as a Massachusetts homestudied family, you must submit your homestudy to us via one of the following methods (choose one):</p>
+				<div class="row">
+					<div class="col-sm-12 form-group">Upload PDF or Microsoft Word<sup>&reg;</sup> format:</div>
+					<div class="col-sm-12 form-group">
+						<div class="button button--medium button--brown file-upload-button">
+						    <span>Upload</span>
+						    <input id="upload-button" type="file" class="file-upload" id="homestudyFile_upload" name="homestudyFile_upload">
+						</div>
+						<span class="homestudy-file-text"></span>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-12 form-group">Email to web@mareinc.org:</div>
+					<div class="col-sm-12 form-group">
+						<div class="button button--medium button--brown"><a href="mailto:web@mareinc.org">Send as email</a></div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-12 form-group">Fax to 617-542-1006, Attention: Homestudy Registration</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-12 form-group">
+							<div class="indented-text">
+								Mail to:
+								<div class="indent-text">
+									Massachusetts Adoption Resource Exchange<br />
+									45 Franklin Street<br />
+									5th Floor<br />
+									Boston, MA 02110-1301
+								</div>
+							</div>
+					</div>
+				</div>
+			</section>
+		</section>
+
+		<section class="family-details-section">
+			<div class="form-section-header">Family Details</div>
+
+			<div class="row form-group children-in-home">
+				<div class="col-sm-12">
+					<label for="children-in-home" class="label marg-bottom-xs-5">Total number of children currently living at home</label>
+				</div>
+				<div class="col-sm-12">
+					<select id="children-in-home" name="childrenInHome" class="input form__number-select">
+						<option>0</option>
+						<option>1</option>
+						<option>2</option>
+						<option>3</option>
+						<option>4</option>
+						<option>5</option>
+						<option>6</option>
+						<option>7</option>
+						<option>8+</option>
+					</select>
+				</div>
+			</div>
+			<section class="children-in-home-details"></section>
+
+			<hr class="registration-divider">
+
+			<div class="row form-group">
+				<div class="col-sm-12">
+					<label for="other-adults-in-home" class="label marg-bottom-xs-5">Number of other adults living in home</label>
+				</div>
+				<div class="col-sm-12">
+					<select id="other-adults-in-home" name="otherAdultsInHome" class="input form__number-select">
+						<option>0</option>
+						<option>1</option>
+						<option>2</option>
+						<option>3</option>
+						<option>4</option>
+						<option>5</option>
+						<option>6</option>
+						<option>7</option>
+						<option>8</option>
+						<option>9</option>
+						<option>10+</option>
+					</select>
+				</div>
+			</div>
+			<div class="row form-group">
+				<div class="col-sm-24">
+					<label class="checkbox-inline">
+						<input type="checkbox" name="havePets" value="yes">Have pets in the home
+					</label>
+				</div>
+			</div>
+			<div class="row form-group">
+				<div class="col-sm-12">
+					<label for="primary-language-in-home" class="label marg-bottom-xs-5 required-field">Primary language spoken at home</label>
+				</div>
+				<div class="col-sm-12">
+					<select name="primaryLanguageInHome" class="input form__number-select" data-parsley-errors-messages-disabled="true" required="">
+						<option value=""></option>
+						{{#each languages}}
+							<option value="{{_id}}">{{language}}</option>
+						{{/each}}
+					</select>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-24 form-group">
+					<label class="label marg-bottom-xs-5">Other language(s) spoken at home</label>
+				</div>
+			</div>
+			<div class="row form-group">
+				<div class="col-sm-16">
+					<div class="row">
+					{{#each languages}}
+						<div class="col-sm-12 form-group">
+							<label class="checkbox-inline">
+								<input type="checkbox" name="otherLanguagesInHome" value="{{_id}}">{{language}}
+							</label>
+						</div>
+					{{/each}}
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<section class="family-adoption-preferences-section">
+			<div class="form-section-header">Adoption Preferences</div>
+
+			<div class="row form-group">
+				<div class="col-sm-12">
+					<label class="label marg-bottom-xs-5 preferred-gender-label required-field">Gender of children preferred</label>
+				</div>
+				<div class="col-sm-12">
+					<div id="preferred-gender-error-container" class="row error-container">
+					{{#each genders}}
+						<div class="col-sm-12 form-group">
+							<label class="checkbox-inline">
+								<input type="checkbox" name="preferredGender" value="{{_id}}" class="preferred-gender required" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#preferred-gender-error-container" data-parsley-required="true" required="">{{gender}}
+							</label>
+						</div>
+					{{/each}}
+					</div>
+				</div>
+			</div>
+			<div class="row form-group">
+				<div class="col-sm-12">
+					<label class="label marg-bottom-xs-5 legal-status-label required-field">Legal Status</label>
+				</div>
+				<div class="col-sm-12">
+					<div id="preferred-legal-status-error-container" class="row error-container">
+					{{#each legalStatuses}}
+						<div class="col-sm-12 form-group">
+							<label class="checkbox-inline">
+								<input type="checkbox" name="legalStatus" value="{{_id}}" class="legal-status required" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#preferred-legal-status-error-container" data-parsley-required="true" required="">{{legalStatus}}
+							</label>
+						</div>
+					{{/each}}
+					</div>
+				</div>
+			</div>
+			<div class="row form-group">
+				<div class="col-sm-12">
+					<label class="label marg-bottom-xs-5 age-range-label required-field">Age Range</label>
+				</div>
+				<div class="col-sm-12">
+					<div class="row">
+						<div class="col-xs-8">
+							<select name="ageRangeFrom" class="input form__number-select inline age-range-from" data-parsley-errors-messages-disabled="true" data-parsley-required="true" required="">
+								<option value=""></option>
+								<option value="0">0</option>
+								<option value="1">1</option>
+								<option value="2">2</option>
+								<option value="3">3</option>
+								<option value="4">4</option>
+								<option value="5">5</option>
+								<option value="6">6</option>
+								<option value="7">7</option>
+								<option value="8">8</option>
+								<option value="9">9</option>
+								<option value="10">10</option>
+								<option value="11">11</option>
+								<option value="12">12</option>
+								<option value="13">13</option>
+								<option value="14">14</option>
+								<option value="15">15</option>
+								<option value="16">16</option>
+								<option value="17">17</option>
+							</select>
+						</div>
+						<div class="col-xs-4 text-center">To:</div>
+						<div class="col-xs-8">
+							<select name="ageRangeTo" class="input form__number-select inline age-range-to" data-parsley-errors-messages-disabled="true" data-parsley-required="true" required="">
+								<option value=""></option>
+								<option value="0">0</option>
+								<option value="1">1</option>
+								<option value="2">2</option>
+								<option value="3">3</option>
+								<option value="4">4</option>
+								<option value="5">5</option>
+								<option value="6">6</option>
+								<option value="7">7</option>
+								<option value="8">8</option>
+								<option value="9">9</option>
+								<option value="10">10</option>
+								<option value="11">11</option>
+								<option value="12">12</option>
+								<option value="13">13</option>
+								<option value="14">14</option>
+								<option value="15">15</option>
+								<option value="16">16</option>
+								<option value="17">17</option>
+							</select>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row form-group">
+				<div class="col-sm-12">
+					<label class="label marg-bottom-xs-5 number-of-children-preferred-label required-field">Number of children preferred</label>
+				</div>
+				<div class="col-sm-12">
+					<select name="numberOfChildrenPrefered" class="input form__number-select number-of-children-preferred" data-parsley-errors-messages-disabled="true" data-parsley-required="true" required="">
+						<option value=""></option>
+						<option value="0">0</option>
+						<option value="1">1</option>
+						<option value="2">2</option>
+						<option value="3">3</option>
+						<option value="4">4</option>
+						<option value="5">5</option>
+						<option value="6">6</option>
+						<option value="7">7</option>
+						<option value="8">8</option>
+						<option value="9">9</option>
+						<option value="10">10+</option>
+					</select>
+				</div>
+			</div>
+			<div class="row form-group">
+				<div class="col-sm-12">
+					<label class="label marg-bottom-xs-5 contact-with-biological-siblings-label required-field">Would they consider children who have contact with their biological siblings?</label>
+				</div>
+				<div class="col-sm-12">
+					<span id="preferred-sibling-contact-error-container" class="error-container">
+						<label class="radio-inline"><input type="radio" name="contactWithBiologicalSiblings" class="contact-with-biological-siblings required" value="yes" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#preferred-sibling-contact-error-container" data-parsley-required="true" required="">Yes</label>
+						<label class="radio-inline"><input type="radio" name="contactWithBiologicalSiblings" value="no">No</label>
+					</span>
+				</div>
+			</div>
+			<div class="row form-group">
+				<div class="col-sm-12">
+					<label class="label marg-bottom-xs-5 contact-with-biological-parents-label">Would they consider children who have contact with their biological parents?</label>
+				</div>
+				<div class="col-sm-12">
+					<span id="preferred-parent-contact-error-container" class="error-container">
+						<label class="radio-inline"><input type="radio" name="contactWithBiologicalParents" class="contact-with-biological-parents" value="yes" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#preferred-parent-contact-error-container" data-parsley-required="false">Yes</label>
+						<label class="radio-inline"><input type="radio" name="contactWithBiologicalParents" value="no">No</label>
+					</span>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-24 form-group">
+					<label class="label marg-bottom-xs-5 race-label required-field">Race/Ethnicity (check all that apply)</label>
+				</div>
+			</div>
+			<div class="row form-group">
+				<div class="col-sm-16">
+					<div id="preferred-race-error-container" class="row error-container">
+						{{#each races}}
+						<div class="col-sm-12 form-group">
+							<label class="checkbox-inline">
+								<input type="checkbox" name="adoptionPrefRace[]" class="race required" value="{{_id}}" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#preferred-race-error-container" data-parsley-mincheck="1" data-parsley-required="true" required="">{{race}}
+							</label>
+						</div>
+						{{/each}}
+					</div>
+				</div>
+			</div>
+			<div class="row form-group">
+				<div class="col-sm-12">
+					<label class="label marg-bottom-xs-5 maximum-physical-needs-label required-field">Maximum level of physical needs</label>
+				</div>
+				<div class="col-sm-12">
+					<span id="preferred-maximum-physical-needs-error-container" class="error-container">
+						<label class="radio-inline"><input type="radio" name="maximumPhysicalNeeds" class="maximum-physical-needs required" value="none" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#preferred-maximum-physical-needs-error-container" data-parsley-required="true" required="">None</label>
+						<label class="radio-inline"><input type="radio" name="maximumPhysicalNeeds" value="mild">Mild</label>
+						<label class="radio-inline"><input type="radio" name="maximumPhysicalNeeds" value="moderate">Moderate</label>
+						<label class="radio-inline"><input type="radio" name="maximumPhysicalNeeds" value="severe">Severe</label>
+					</span>
+				</div>
+			</div>
+			<div class="row form-group">
+				<div class="col-sm-12">
+					<label class="label marg-bottom-xs-5 maximum-emotional-needs-label required-field">Maximum level of emotional needs</label>
+				</div>
+				<div class="col-sm-12">
+					<span id="preferred-maximum-emotional-needs-error-container" class="error-container">
+						<label class="radio-inline"><input type="radio" name="maximumEmotionalNeeds" class="maximum-emotional-needs required" value="none" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#preferred-maximum-emotional-needs-error-container" data-parsley-required="true" required="">None</label>
+						<label class="radio-inline"><input type="radio" name="maximumEmotionalNeeds" value="mild">Mild</label>
+						<label class="radio-inline"><input type="radio" name="maximumEmotionalNeeds" value="moderate">Moderate</label>
+						<label class="radio-inline"><input type="radio" name="maximumEmotionalNeeds" value="severe">Severe</label>
+					</span>
+				</div>
+			</div>
+			<div class="row form-group">
+				<div class="col-sm-12">
+					<label class="label marg-bottom-xs-5 maximum-intellectual-needs-label required-field">Maximum level of intellectual needs</label>
+				</div>
+				<div class="col-sm-12">
+					<span id="preferred-maximum-intellectual-needs-error-container" class="error-container">
+						<label class="radio-inline"><input type="radio" name="maximumIntellectualNeeds" class="maximum-intellectual-needs required" value="none" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#preferred-maximum-intellectual-needs-error-container" data-parsley-required="true" required="">None</label>
+						<label class="radio-inline"><input type="radio" name="maximumIntellectualNeeds" value="mild">Mild</label>
+						<label class="radio-inline"><input type="radio" name="maximumIntellectualNeeds" value="moderate">Moderate</label>
+						<label class="radio-inline"><input type="radio" name="maximumIntellectualNeeds" value="severe">Severe</label>
+					</span>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-24 form-group">
+					<label class="label marg-bottom-xs-5">Disabilities (check all that apply)</label>
+				</div>
+			</div>
+			<div class="row form-group">
+				<div class="col-sm-16">
+					<div class="row">
+					{{#each disabilities}}
+						<div class="col-sm-12 form-group">
+							<label class="checkbox-inline">
+								<input type="checkbox" name="disabilities" value="{{_id}}">{{disability}}
+							</label>
+						</div>
+					{{/each}}
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-24 form-group">
+					<label class="label marg-bottom-xs-5">Other considerations (check all that apply)</label>
+				</div>
+			</div>
+			<div class="row form-group">
+				<div class="col-sm-16">
+					<div class="row">
+					{{#each otherConsiderations}}
+						<div class="col-sm-12 form-group">
+							<label class="checkbox-inline">
+								<input type="checkbox" name="otherConsiderations" value="{{_id}}">{{otherConsideration}}
+							</label>
+						</div>
+					{{/each}}
+					</div>
+				</div>
+			</div>
+
+		</section>
+
+		<button class="button button--blue register" type="submit">Submit</button>
+	</form>
+</section>
+
+{{> client-template_child-details}}

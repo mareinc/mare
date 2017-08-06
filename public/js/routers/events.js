@@ -4,9 +4,8 @@
 	mare.routers.Events = Backbone.Router.extend({
 
 		initialize: function initialize() {
+			// load the view for the events pages
 			mare.views.events = mare.views.events || new mare.views.Events();
-			// Load the view for the right sidebar
-			mare.views.sidebar = mare.views.sidebar || new mare.views.Sidebar();
 		}
 
 	});

@@ -1,23 +1,23 @@
-var keystone		= require('keystone'),
-	User			= keystone.list('User'),
-	Admin			= keystone.list('Admin'),
-	SiteVisitor		= keystone.list('Site Visitor'),
-	SocialWorker	= keystone.list('Social Worker'),
-	Family			= keystone.list('Family');
+const keystone		= require('keystone'),
+	  User			= keystone.list('User'),
+	  Admin			= keystone.list('Admin'),
+	  SiteVisitor	= keystone.list('Site Visitor'),
+	  SocialWorker	= keystone.list('Social Worker'),
+	  Family		= keystone.list('Family');
 
 /* Root through the passed in options and get/set the necessary information on res.locals for processing by each service request */
 exports.exposeGlobalOptions = function exposeGlobalOptions(req, res, options) {
 
-	res.locals.targetModel = exports.getTargetModel(req, res, options.userType);
+	res.locals.targetModel = exports.getTargetModel( options.userType );
 
 };
 /* We're using one generic function to capture data for all user types.  This requires a user to pass in a userType
    in an options object in order to fetch anything but base Users */
-exports.getTargetModel = function getTargetModel(req, res, userType) {
+exports.getTargetModel = userType => {
 
-	var targetModel;
+	let targetModel;
 
-	switch(userType) {
+	switch( userType ) {
 		case 'User'				: targetModel = User; break;
 		case 'Admin'			: targetModel = Admin; break;
 		case 'Site Visitor'		: targetModel = SiteVisitor; break;
@@ -82,4 +82,30 @@ exports.checkUserActiveStatus = function( email, locals, done ) {
 			console.log( err );
 			done();
 		});
+};
+
+/* gets the ID of any user type (except families) based on their full name */
+exports.getUserByFullName = ( name, userType ) => {
+	// bind targetModel to the appropriate keystone model type based on the passed in userType
+	const targetModel = exports.getTargetModel( userType );
+
+	return new Promise( ( resolve, reject ) => {
+
+		targetModel.model.findOne()
+			.where( 'name.full', name )
+			.exec()
+			.then( user => {
+				// if a user with the current email doesn't exist
+				if( !user ) {
+					return reject();
+				}
+				// if the user exists, resolve the promise, returning the user object
+				resolve( user );
+			// if there was an error finding the user
+			}, err => {
+				// log the error for debugging purposes
+				console.error( `error fetching user by name: ${ name } - ${ err }` );
+				reject();
+			});
+	});
 }
