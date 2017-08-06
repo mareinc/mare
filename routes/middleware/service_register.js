@@ -254,30 +254,32 @@ exports.saveSiteVisitor = user => {
 		let newUser = new SiteVisitor.model({
 
 			name: {
-				first			: user.firstName,
-				last			: user.lastName
+				first					: user.firstName,
+				last					: user.lastName
 			},
 
-			password			: user.password,
-			email				: user.email,
+			password					: user.password,
+			email						: user.email,
 
 			phone: {
-				work			: user.workPhone,
-				home			: user.homePhone,
-				mobile			: user.mobilePhone,
-				preferred 		: user.preferredPhone
+				work					: user.workPhone,
+				home					: user.homePhone,
+				mobile					: user.mobilePhone,
+				preferred 				: user.preferredPhone
 			},
 
 			address: {
-				street1			: user.street1,
-				street2			: user.street2,
-				city			: user.city,
-				state			: user.state,
-				zipCode			: user.zipCode
+				street1					: user.street1,
+				street2					: user.street2,
+				isOutsideMassachusetts	: user.isNotMACity,
+				city					: user.isNotMACity ? undefined : user.MACity,
+				cityText				: user.isNotMACity ? user.nonMACity : '',
+				state					: user.state,
+				zipCode					: user.zipCode
 			},
 
-			heardAboutMAREFrom 	: user.howDidYouHear,
-			heardAboutMAREOther	: user.howDidYouHearOther
+			heardAboutMAREFrom 			: user.howDidYouHear,
+			heardAboutMAREOther			: user.howDidYouHearOther
 
 		});
 
@@ -300,30 +302,32 @@ exports.saveSocialWorker = user => {
 		const newUser = new SocialWorker.model({
 
 			name: {
-				first			: user.firstName,
-				last			: user.lastName
+				first					: user.firstName,
+				last					: user.lastName
 			},
 
-			password			: user.password,
-			email				: user.email,
-			agencyNotListed		: true,
-			agencyText			: user.agency,
-			title				: user.titleDiffersFromPosition ? user.socialWorkerTitle : user.position,
-			position			: user.position,
+			password					: user.password,
+			email						: user.email,
+			agencyNotListed				: true,
+			agencyText					: user.agency,
+			title						: user.titleDiffersFromPosition ? user.socialWorkerTitle : user.position,
+			position					: user.position,
 
 			phone: {
-				work			: user.workPhone,
-				mobile			: user.mobilePhone,
-				preferred 		: user.preferredPhone
+				work					: user.workPhone,
+				mobile					: user.mobilePhone,
+				preferred 				: user.preferredPhone
 			},
 
 			address: {
-				street1			: user.street1,
-				street2			: user.street2,
-				city			: user.city,
-				state			: user.state,
-				zipCode			: user.zipCode,
-				region 			: user.region
+				street1					: user.street1,
+				street2					: user.street2,
+				isOutsideMassachusetts	: user.isNotMACity,
+				city					: user.isNotMACity ? undefined : user.MACity,
+				cityText				: user.isNotMACity ? user.nonMACity : '',
+				state					: user.state,
+				zipCode					: user.zipCode,
+				region 					: user.region
 			}
 
 		});
@@ -393,7 +397,9 @@ exports.saveFamily = user => {
 			address: {
 				street1							: user.street1,
 				street2							: user.street2,
-				city							: user.city,
+				isOutsideMassachusetts			: user.isNotMACity,
+				city							: user.isNotMACity ? undefined: user.MACity,
+				cityText						: user.isNotMACity ? user.nonMACity : '',
 				state							: user.state,
 				zipCode							: user.zipCode
 			},
