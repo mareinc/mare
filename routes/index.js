@@ -44,6 +44,7 @@ const eventRoutes		= [ '/events/adoption-parties/*', '/events/mapp-trainings/*',
 
 // Setup Route Bindings
 // TODO: in order to handle bad rountes, we need a catch here instead of on the client side
+// TODO: clean up these routes to use cleaner paths and route parameters instead of just wildcards
 exports = module.exports = app => {
 	'use strict';
 

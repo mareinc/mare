@@ -546,9 +546,9 @@ exports.registerChild = ( req, res, next ) => {
 			birthFamilyTypeOfContact: child.familyContactDescription,
 
 			residence: child.currentResidence,
-			isOutsideMassachusetts: child.isNotMACityOrTown ,
-			city: child.isNotMACityOrTown ? undefined: child.MACityOrTown,
-			cityText: child.isNotMACityOrTown ? child.nonMACityOrTown : '',
+			isOutsideMassachusetts: child.isNotMACity,
+			city: child.isNotMACity ? undefined : child.MACity,
+			cityText: child.isNotMACity ? child.nonMACity : '',
 			
 			careFacilityName: child.careFacility,
 
