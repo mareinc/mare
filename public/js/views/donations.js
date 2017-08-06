@@ -8,8 +8,7 @@
 		events: {
 			'keyup .donations__input-field'	: 'handleOtherDonationAmount',
 			'click .toggle-button'			: 'toggleButton',
-			'click .donate'					: 'donate',
-			'click #donate-car-button'		: 'navigate'
+			'click .donate'					: 'donate'
 		},
 
 		initialize: function initialize() {

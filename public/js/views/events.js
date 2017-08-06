@@ -6,7 +6,6 @@
 
         events: {
             'click .events__category-card'			: 'navigate',
-            'click .events__show-categories-button'	: 'navigate',
 			'click .events__create-event-button'	: 'navigate',
             'click .events__show-details-button'	: 'navigate',
 			'click .events__create-account-button'	: 'navigate',

@@ -4,8 +4,8 @@ const keystone	= require( 'keystone' );
 const Source	= keystone.list( 'Source' );
 
 exports.createSource = ( sourceName ) => {
-	// create a promise around the creation of the new source
-	let createSource = new Promise( ( resolve, reject ) => {
+	// return a promise around the creation of the new source
+	return new Promise( ( resolve, reject ) => {
 		// create a new source
 		var newSource = new Source.model({
 			source: sourceName,
@@ -22,13 +22,11 @@ exports.createSource = ( sourceName ) => {
 			reject( `error saving the new source model` );
 		});
 	});
-	// return the promise to allow the calling function to process the results
-	return createSource;
 };
 
 exports.updateSource = ( sourceId, sourceName ) => {
-	// create a promise around the updating of the existing source record
-	let updateSource = new Promise( ( resolve, reject ) => {
+	// return a promise around the updating of the existing source record
+	return new Promise( ( resolve, reject ) => {
 		// fetch the source record
 		Source.model.findById( sourceId )
 			.exec()
@@ -56,6 +54,4 @@ exports.updateSource = ( sourceId, sourceName ) => {
 				reject( `error fetching the source model to update` );
 			});
 	});
-	// return the promise to allow the calling function to process the results
-	return updateSource;
 }

@@ -50,11 +50,11 @@
 			},
 
 			enablePageScrolling: function enablePageScrolling() {
-				$( 'html, body' ).removeClass( 'scrolling-disabled' );
+				$( 'body' ).removeClass( 'scrolling-disabled' );
 			},
 
 			disablePageScrolling: function disablePageScrolling() {
-				$( 'html, body' ).addClass( 'scrolling-disabled' );
+				$( 'body' ).addClass( 'scrolling-disabled' );
 			},
 
 			enableButton: function enableButton( $button ) {

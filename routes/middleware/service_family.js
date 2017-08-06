@@ -1,10 +1,12 @@
-var keystone		= require( 'keystone' ),
-	async			= require( 'async' ),
-	User			= keystone.list( 'User' ),
-	Family			= keystone.list( 'Family' ),
-	Child			= keystone.list( 'Child' ),
-	childService	= require( './service_child' ),
-	userService		= require( './service_user' );
+const keystone						= require( 'keystone' ),
+	  async							= require( 'async' ),
+	  childService					= require( './service_child' ),
+	  userService 					= require( './service_user' ),
+	  registrationService			= require( './service_register' ),
+	  registrationEmailMiddleware	= require( './emails_register' ),
+	  staffEmailTargetMiddleware	= require( './service_staff-email-target' ),
+	  staffEmailContactMiddleware	= require( './service_staff-email-contact' ),
+	  utilities         			= require( './utilities' );
 
 exports.setGalleryPermissions = ( req, res, done ) => {
 
@@ -158,7 +160,7 @@ exports.addSiblingGroupBookmark = ( req, res, next ) => {
 
 		});
 	});
-}
+};
 
 exports.removeSiblingGroupBookmark = ( req, res, next ) => {
 
@@ -192,4 +194,114 @@ exports.removeSiblingGroupBookmark = ( req, res, next ) => {
 
 		});
 	});
-}
+};
+
+/* called when a social worker attempts to register a family */
+exports.registerFamily = ( req, res, next ) => {
+    // extract the submitted user information
+	const family = req.body;
+	// set the account email to the email for contact 1
+	family.email = family.contact1Email;
+	// generate a random password hash
+	family.password = family.confirmPassword = utilities.generateAlphanumericHash( 20 );
+	// families must have their MAPP training completed before this form is submitted, so specify where they are in the process
+	family.processProgression = [ 'MAPPTrainingCompleted', 'workingWithAgency', 'lookingForAgency', 'gatheringInformation' ];
+    // extract the submitted user information
+	const user = req.body;
+	// set the redirect URL for use throughout the registration process
+	let redirectPath = '/forms/family-registration-form';
+	// check for conditions that will prevent saving the model
+	const isEmailValid			= registrationService.validateEmail( family.email );
+	const fetchDuplicateEmail	= registrationService.checkForDuplicateEmail( family.email ); // returns a promise
+
+	fetchDuplicateEmail.then( isEmailDuplicate => {
+		// create an error flash messages if a problem was encountered to let the user know what the problem was
+		if( !isEmailValid ) {
+			req.flash( `error`, {
+					title: `There was a problem creating the family account`,
+					detail: `The email address you've listed for contact 1 is invalid` } );
+		}
+
+		if( isEmailDuplicate ) {
+			req.flash( `error`, {
+					title: `There was a problem creating the family account`,
+					detail: `The email address you're trying to use already exists in the system` } );
+        }
+                
+		// if initial errors exist, prevent additional processing, alert the user via the flash messages above
+		if( !isEmailValid || isEmailDuplicate ) {
+			// and redirect to the appropriate page 
+			res.redirect( 303, redirectPath );
+		// if there were no initial errors, proceed with creating the account
+		} else {
+            // Store any uploaded files
+            // TODO: these still need to be handled
+            const files = req.files;
+            // save the family model
+            registrationService.saveFamily( user ).then( newFamily => {
+                // if the new family model was saved successfully
+                req.flash( 'success', {
+                    title: 'The family account has been successfully created',
+                    detail: 'Please note that it can take several days for the account to be reviewed and activated.  The person specified in Contact 1 will receive an email once MARE has had a chance to review their information.' } );
+                // create a new random code for the user to verify their account with
+                const verificationCode = utilities.generateAlphanumericHash( 35 );
+                // store the database id of the newly created user
+                const userId = newFamily.get( '_id' );
+                // store the user type found in the returned model
+                const userType = newFamily.userType;
+                // store the host name to link to the verification code in the thank you email
+                const host = req.headers.host;
+                // create a new verification code model in the database to allow users to verify their accounts
+                const createVerificationRecord = registrationService.createNewVerificationModel( verificationCode, userId );
+                // fetch contact info for the staff contact for family registration
+                const fetchRegistrationStaffContactInfo = registrationService.getRegistrationStaffContactInfo( 'family' );
+                // once the contact info has been fetched
+                Promise.all( [ createVerificationRecord, fetchRegistrationStaffContactInfo ] ).then( values => {
+                    // assign local variables to the values returned by the promises
+                    const [ verificationRecord, staffContactInfo ] = values;
+                    // send the thank you email to the user
+                    const thankYouEmailSentToUser = registrationEmailMiddleware.sendThankYouEmailToUser( staffContactInfo, user.email, userType, verificationCode, host );
+                    // TODO: need to send a notification email to the appropriate staff member as well ( check with Lisa to see if this is needed )
+
+                    // save any submitted files and append them to the newly created user
+                    const userFilesUploaded = registrationService.uploadFile( newFamily, 'homestudy', 'homestudyFile_upload', files.homestudyFile_upload );
+                    // if there was an error sending the thank you email to the new family
+                    thankYouEmailSentToUser.catch( reason => {
+                        // log the reason the promise was rejected
+                        console.error( reason );
+                    });
+                    // if there was an error uploading the files to the new user
+                    userFilesUploaded.catch( reason => {
+                        // log the reason the promise was rejected
+                        console.error( reason );
+                    });
+                    // redirect the user back to the appropriate page
+                    res.redirect( 303, redirectPath );
+                // if there was an error saving the verification model or fetching the the registration staff contact info
+                }).catch( reason => {
+                    // log the reason the promise was rejected
+                    console.error( reason );
+                    // redirect the user back to the appropriate page
+                    res.redirect( 303, redirectPath );
+                });
+            })
+            // if there was an error saving the new family
+            .catch( () => {
+                // create an error flash message to send back to the user
+                req.flash( 'error', {
+                    title: 'There was an error creating the family account',
+                    detail: 'If this error persists, please contact MARE for assistance' } );
+                
+                res.redirect( 303, redirectPath );
+            });
+		}
+	})
+	.catch( reason => {
+		
+		req.flash( `error`, {
+					title: `There was a problem creating the family account`,
+					detail: `If the problem persists, please contact MARE for assistance` } );
+		
+		res.redirect( 303, redirectPath );
+	});
+};

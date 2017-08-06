@@ -4,7 +4,6 @@ require('./List_ChildStatus');
 require( './List_Gender' );
 require( './List_Race' );
 require( './List_LegalStatus' );
-require( './Child' );
 require( './List_Residence' );
 require( './List_CityOrTown' );
 require( './List_Disability' );
@@ -74,7 +73,9 @@ Child.add('Display Options', {
 	birthFamilyTypeOfContact: { type: Types.Text, label: 'type of contact', initial: true },
 
 	residence: { type: Types.Relationship, label: 'where does the child presently live?', ref: 'Residence', initial: true },
-	city: { type: Types.Relationship, label: 'city/town of child\'s current location', ref: 'City or Town', initial: true },
+	city: { type: Types.Relationship, label: 'city/town of child\'s current location', ref: 'City or Town', dependsOn: { isOutsideMassachusetts: false }, initial: true },
+	isOutsideMassachusetts: { type: Types.Boolean, label: 'is outside Massachusetts', initial: true },
+	cityText: { type: Types.Text, label: 'city/town of child\'s current location', dependsOn: { isOutsideMassachusetts: true }, initial: true },
 	careFacilityName: { type: Types.Text, label: 'name of residential/group care facility', initial: true },
 	dateMovedToResidence: { type: Types.Date, label: 'date moved to current residence', format: 'MM/DD/YYYY', initial: true }
 
@@ -181,7 +182,9 @@ Child.add('Display Options', {
 	otherMediaDescription: { type: Types.Textarea, label: 'description', note: 'only fill out if \'other\' is selected for media eligibility' , initial: true }, // TODO: THIS DOESN'T WORK BECAUSE IT REFERENCES A RELATIONSHIP FIELD SO ALL WE HAVE IS THE _id, MAKE IT WORK!
 
 	locationAlert: { type: Types.Boolean, label: 'location alert', initial: true },
-	place: { type: Types.Text, label: 'place', initial: true, dependsOn: { locationAlert: true } }
+	place: { type: Types.Text, label: 'place', initial: true, dependsOn: { locationAlert: true } },
+
+	communicationsCollateral: { type: Types.Boolean, label: 'communications collateral', initial: true }
 
 }, 'Attachments', {
 
@@ -217,7 +220,7 @@ Child.add('Display Options', {
 });
 
 // Set up relationship values to show up at the bottom of the model if any exist
-Child.relationship( { ref: 'Child', refPath: 'siblings', path: 'children', label: 'all siblings' } );
+Child.relationship( { ref: 'Child', refPath: 'siblings', path: 'children', label: 'siblings' } );
 Child.relationship( { ref: 'Placement', refPath: 'child', path: 'placements', label: 'placements' } );
 Child.relationship( { ref: 'Inquiry', refPath: 'child', path: 'inquiries', label: 'inquiries' } );
 Child.relationship( { ref: 'Match', refPath: 'child', path: 'matches', label: 'matches' } );
@@ -237,18 +240,18 @@ Child.schema.post( 'init', function() {
 	this._original = this.toObject();
 });
 
-Child.schema.pre('save', function( next ) {
+Child.schema.pre( 'save', function( next ) {
 	'use strict';
-
+	// TODO: remove non-asynchronous calls from the async.series
 	async.series([
-		// done => { this.setImages( done ); }, // Create cloudinary URLs for images sized for various uses
+		done => { this.setImages( done ); }, // Create cloudinary URLs for images sized for various uses
 		done => { this.setFullName( done ); }, // Create a full name for the child based on their first, middle, and last names
-		// done => { this.setRegistrationNumber( done ); }, // Set the registration number to the next highest available
+		done => { this.setRegistrationNumber( done ); }, // Set the registration number to the next highest available
 		done => { this.setAgencyFields( done ); }, // Set the adoption and recruitment workers' agency and region
 		done => { this.setFileName( done ); }, // Create an identifying name for file uploads
 		done => { this.setSiblingGroupFileName( done ); }, // Create an identifying name for sibling group file uploads
-		// done => { this.updateMustBePlacedWithSiblingsCheckbox( done ); }, // If there are no siblings to be placed with, uncheck the box, otherwise check it
-		// done => { this.updateGroupBio( done ); },
+		done => { this.updateMustBePlacedWithSiblingsCheckbox( done ); }, // If there are no siblings to be placed with, uncheck the box, otherwise check it
+		done => { this.updateGroupBio( done ); },
 		done => { ChangeHistoryMiddleware.setUpdatedby( this, done ); }, // we need this id in case the family was created via the website and udpatedBy is empty
 		done => { this.setChangeHistory( done ); } // Process change history
 	], function() {
@@ -260,12 +263,12 @@ Child.schema.pre('save', function( next ) {
 	});
 });
 
-// Child.schema.post( 'save', function() {
-// 	// update all sibling information
-// 	this.updateSiblingFields();
-// 	// update saved bookmarks for families and social workers in the event of a status change or sibling group change
-// 	this.updateBookmarks();
-// });
+Child.schema.post( 'save', function() {
+	// update all sibling information
+	this.updateSiblingFields();
+	// update saved bookmarks for families and social workers in the event of a status change or sibling group change
+	this.updateBookmarks();
+});
 
 Child.schema.methods.setImages = function( done ) {
 	'use strict';
@@ -274,8 +277,8 @@ Child.schema.methods.setImages = function( done ) {
 	this.galleryImage = this._.image.thumbnail( 430, 430, { quality: 60 } );
 	this.detailImage = this._.image.thumbnail( 200, 200, { quality: 60 } );
 
-	this.siblingGroupGalleryImage = this._.siblingGroupImage.thumbnail( 240, 144, { quality: 60 } );
-	this.siblingGroupDetailImage = this._.siblingGroupImage.thumbnail( 120, 72, { quality: 60 } );
+	this.siblingGroupGalleryImage = this._.siblingGroupImage.thumbnail( 430, 430, { quality: 60 } );
+	this.siblingGroupDetailImage = this._.siblingGroupImage.thumbnail( 200, 200, { quality: 60 } );
 
 	done();
 };
@@ -294,20 +297,24 @@ Child.schema.methods.setFullName = function( done ) {
 };
 
 Child.schema.methods.setRegistrationNumber = function( done ) {
+
 	// If the registration number is already set ( which will happen during the data migration ), ignore setting it
 	if( this.registrationNumber ) {
 		done();
 	} else {
 		// get all children
-		keystone.list( 'Child' ).model.find()
+		keystone.list( 'Child' ).model
+				.find()
+				.select( 'registrationNumber' )
+				.lean()
 				.exec()
 				.then( children => {
-					// if this is the first family to be created
+					// if this is the first child to be created
 					if( children.length === 0 ) {
 						this.registrationNumber = 1;
 					} else {
 						// get an array of registration numbers
-						const registrationNumbers = children.map( child => child.get( 'registrationNumber' ) );
+						const registrationNumbers = children.map( child => child.registrationNumber );
 						// get the largest registration number
 						this.registrationNumber = Math.max( ...registrationNumbers ) + 1;
 					}
@@ -333,7 +340,7 @@ Child.schema.methods.setAgencyFields = function( done ) {
 
 	});
 }
-// TODO: Better handled with a virtual
+
 Child.schema.methods.setFileName = function( done ) {
 	'use strict';
 
@@ -449,6 +456,7 @@ Child.schema.methods.updateSiblingFields = function() {
 			if( remainingSiblingsToBePlacedWith.size > 0 || removedSiblingsToBePlacedWith.size === 1 ) {
 				ChildMiddleware.updateMyRemovedSiblingsToBePlacedWith( allSiblingsToBePlacedWith, removedSiblingsToBePlacedWith, childId, done );
 			} else {
+
 				done();
 			}
 		}
@@ -500,8 +508,10 @@ Child.schema.methods.updateBookmarks = function() {
 		done => {
 			// if the child needs to be placed with siblings
 			if( this.mustBePlacedWithSiblings ) {
-				// mark the current child for removal as a child bookmark
-				bookmarkedChildrenToRemove.push( childId );
+				// mark the current child for removal as a child bookmark unless they're already marked
+				if( !bookmarkedChildrenToRemove.includes( childId ) ) {
+					bookmarkedChildrenToRemove.push( childId );
+				}
 				// mark all siblings to be placed with for removal as child bookmarks
 				bookmarkedChildrenToRemove.concat( [ ...remainingSiblingsToBePlacedWith ] );
 				// mark all removed siblings to be placed with for removal as sibling bookmarks
@@ -517,12 +527,18 @@ Child.schema.methods.updateBookmarks = function() {
 			done();
 		}
 	], () => {
-		// remove all marked child bookmarks from families and social workers
-		FamilyMiddleware.removeChildBookmarks( bookmarkedChildrenToRemove );
-		SocialWorkerMiddleware.removeChildBookmarks( bookmarkedChildrenToRemove );
-		// remove all marked sibling bookmarks from families and social workers
-		FamilyMiddleware.removeSiblingBookmarks( bookmarkedSiblingsToRemove );
-		SocialWorkerMiddleware.removeSiblingBookmarks( bookmarkedSiblingsToRemove );
+		// if any child bookmarks need to be removed
+		if( bookmarkedChildrenToRemove.length > 0 ) {
+			// remove them from families and social workers
+			FamilyMiddleware.removeChildBookmarks( bookmarkedChildrenToRemove );
+			SocialWorkerMiddleware.removeChildBookmarks( bookmarkedChildrenToRemove );
+		}
+		// if any sibling bookmarks need to be removed
+		if( bookmarkedSiblingsToRemove.length > 0 ) {
+			// remove them from families and social workers
+			FamilyMiddleware.removeSiblingBookmarks( bookmarkedSiblingsToRemove );
+			SocialWorkerMiddleware.removeSiblingBookmarks( bookmarkedSiblingsToRemove );
+		}
 	});
 };
 
@@ -540,16 +556,18 @@ Child.schema.methods.setChangeHistory = function( done ) {
 	});
 
 	// if the model is being saved for the first time, mark only that fact in an initial change history record
-	if(!model._original) {
+	if( !model._original ) {
 
 		changeHistory.changes = 'record created';
 
 		changeHistory.save( () => {
 			console.log( 'record created - change history saved successfully' );
+
 			done();
 		}, err => {
 			console.log( err );
 			console.log( 'error saving record created change history' );
+
 			done();
 		});
 
@@ -558,12 +576,6 @@ Child.schema.methods.setChangeHistory = function( done ) {
 		// Computed fields and fields internal to the object SHOULD NOT be added to this list
 		async.parallel([
 
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'registrationNumber',
-											label: 'registration number',
-											type: 'number' }, model, modelBefore, changeHistory, done );
-			},
 			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											name: 'siteVisibility',
@@ -578,21 +590,21 @@ Child.schema.methods.setChangeHistory = function( done ) {
 			},
 			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'registrationDate',
-											label: 'registration date',
+											name: 'visibleInGalleryDate',
+											label: 'visible in gallery date',
 											type: 'date' }, model, modelBefore, changeHistory, done );
 			},
 			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'video',
-											label: 'video',
-											type: 'string' }, model, modelBefore, changeHistory, done );
+											name: 'registrationNumber',
+											label: 'registration number',
+											type: 'number' }, model, modelBefore, changeHistory, done );
 			},
 			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'siblingGroupVideo',
-											label: 'sibling group video',
-											type: 'string' }, model, modelBefore, changeHistory, done );
+											name: 'registrationDate',
+											label: 'registration date',
+											type: 'date' }, model, modelBefore, changeHistory, done );
 			},
 			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
@@ -753,9 +765,21 @@ Child.schema.methods.setChangeHistory = function( done ) {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											name: 'city',
 											targetField: 'cityOrTown',
-											label: 'city or town of childs current location',
+											label: 'city or town of child\'s current location',
 											type: 'relationship',
 											model: 'City or Town' }, model, modelBefore, changeHistory, done );
+			},
+			done => {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											name: 'isOutsideMassachusetts',
+											label: 'is outside Massachusetts',
+											type: 'boolean' }, model, modelBefore, changeHistory, done );
+			},
+			done => {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											name: 'cityText',
+											label: 'city or town of child\'s current location (text)',
+											type: 'string' }, model, modelBefore, changeHistory, done );
 			},
 			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
@@ -815,6 +839,36 @@ Child.schema.methods.setChangeHistory = function( done ) {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											name: 'socialNeedsDescription',
 											label: 'social needs description',
+											type: 'string' }, model, modelBefore, changeHistory, done );
+			},
+			done => {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											name: 'aspirations',
+											label: 'interests, talents, and aspirations',
+											type: 'string' }, model, modelBefore, changeHistory, done );
+			},
+			done => {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											name: 'schoolLife',
+											label: 'school life',
+											type: 'string' }, model, modelBefore, changeHistory, done );
+			},
+			done => {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											name: 'family life',
+											label: 'family life',
+											type: 'string' }, model, modelBefore, changeHistory, done );
+			},
+			done => {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											name: 'personality',
+											label: 'personality',
+											type: 'string' }, model, modelBefore, changeHistory, done );
+			},
+			done => {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											name: 'otherRecruitmentConsiderations',
+											label: 'other recruitment considerations',
 											type: 'string' }, model, modelBefore, changeHistory, done );
 			},
 			done => {
@@ -920,43 +974,57 @@ Child.schema.methods.setChangeHistory = function( done ) {
 			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'profile',
+											name: 'quote',
+											label: 'personal quote',
+											type: 'string' }, model, modelBefore, changeHistory, done );
+			},
+			done => {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											parent: 'profile',
 											name: 'part1',
-											label: 'profile part 1',
+											label: 'profile 1st paragraph',
 											type: 'string' }, model, modelBefore, changeHistory, done );
 			},
 			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'profile',
 											name: 'part2',
-											label: 'profile part 2',
+											label: 'profile 2nd paragraph',
 											type: 'string' }, model, modelBefore, changeHistory, done );
 			},
 			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'profile',
 											name: 'part3',
-											label: 'profile part 3',
+											label: 'profile 3rd paragraph',
+											type: 'string' }, model, modelBefore, changeHistory, done );
+			},
+			done => {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											parent: 'groupProfile',
+											name: 'quote',
+											label: 'group quote',
 											type: 'string' }, model, modelBefore, changeHistory, done );
 			},
 			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'groupProfile',
 											name: 'part1',
-											label: 'group profile part 1',
+											label: 'group profile 1st paragraph',
 											type: 'string' }, model, modelBefore, changeHistory, done );
 			},
 			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'groupProfile',
 											name: 'part2',
-											label: 'group profile part 2',
+											label: 'group profile 2nd paragraph',
 											type: 'string' }, model, modelBefore, changeHistory, done );
 			},
 			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
 											parent: 'groupProfile',
 											name: 'part3',
-											label: 'group profile part 3',
+											label: 'group profile 3rd paragraph',
 											type: 'string' }, model, modelBefore, changeHistory, done );
 			},
 			done => {
@@ -1038,6 +1106,18 @@ Child.schema.methods.setChangeHistory = function( done ) {
 											name: 'videoSnapshotDate',
 											label: 'date of video snapshop',
 											type: 'date' }, model, modelBefore, changeHistory, done );
+			},
+			done => {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											name: 'video',
+											label: 'video',
+											type: 'string' }, model, modelBefore, changeHistory, done );
+			},
+			done => {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											name: 'siblingGroupVideo',
+											label: 'sibling group video',
+											type: 'string' }, model, modelBefore, changeHistory, done );
 			},
 			done => {
 				ChangeHistoryMiddleware.checkFieldForChanges({
@@ -1156,22 +1236,29 @@ Child.schema.methods.setChangeHistory = function( done ) {
 											name: 'place',
 											label: 'place',
 											type: 'string' }, model, modelBefore, changeHistory, done );
+			},
+			done => {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											name: 'communicationsCollateral',
+											label: 'communications collateral',
+											type: 'boolean' }, model, modelBefore, changeHistory, done );
 			}
-
 		], () => {
 
 			if (changeHistory.changes === '') {
-
+	
 				done();
 
 			} else {
 
 				changeHistory.save( () => {
 					console.log( 'change history saved successfully' );
+
 					done();
 				}, err => {
 					console.log( err );
 					console.log( 'error saving change history' );
+
 					done();
 				});
 			}

@@ -1,21 +1,31 @@
-// TODO: big departure from how I wrote everything, but no fetching middleware should put anything on locals if it can be helped.
-//       Instead, we should return the values from the fetch function and the calling function can determine what to do with the result
+const keystone			= require( 'keystone' ),
+      StaffEmailContact = keystone.list( 'Staff Email Contact' );
 
-const StaffEmailContact = keystone.list( 'Staff Email Contact' );
+exports.getContact = targetId => {
 
-exports.getContact = ( req, res, targetId, done ) => {
+    return new Promise( ( resolve, reject ) => {
 
-    let locals = res.locals;
-
-    StaffEmailContact.model.findOne()
-			.where( 'emailTarget', targetId )
+        StaffEmailContact.model
+            .findOne()
+            .select( 'staffEmailContact' )
+            .where( 'emailTarget', targetId )
             .populate( 'staffEmailContact' )
-			.exec()
-			.then( staffContact => {
-
-                locals.staffContactEmail = staffContact.staffEmailContact.get( 'email' );
-                locals.staffContactName = staffContact.staffEmailContact.name.full;
-
-                done();
-			});
+            .exec()
+            .then( staffContact => {
+                // if no matching staff contact was found in the database
+                if( !staffContact ) {
+                    // reject the promise with the reason for the rejection
+                    return reject( `no staff contact found for the provided id: ${ targetId }` );
+                }
+                // resolve the promise with an object containing the name and email address of the target contact
+                resolve({
+                    name: staffContact.staffEmailContact.name.full,
+                    email: staffContact.staffEmailContact.get( 'email' )
+                });
+            // if there was an error fetching data from the database
+            }, err => {
+                // reject the promise with the reason for the rejection
+                reject( `error fetching staff email contact for ${ targetId }` );
+            });
+    });
 }

@@ -10,14 +10,16 @@ exports = module.exports = ( req, res ) => {
 
 	const locals 			= res.locals;
 	// objects with additional search parameters
+	const stateOptions		= { default: 'Massachusetts' };
 	const raceOptions		= { other: true };
 	const waysToHearOptions	= { other: true };
 	// TODO: check all these list service fetches to see which are neede for this form
 	async.parallel([
-		done => { listsService.getAllStates( req, res, done ) },
-		done => { listsService.getAllRaces( req, res, done, raceOptions ) },
-		done => { listsService.getAllGenders( req, res, done ) },
-		done => { listsService.getAllWaysToHearAboutMARE( req, res, done, waysToHearOptions ) },
+		done => { listsService.getAllCitiesAndTowns( req, res, done ); },
+		done => { listsService.getAllGenders( req, res, done ); },
+		done => { listsService.getAllRaces( req, res, done, raceOptions ); },
+		done => { listsService.getAllStates( req, res, done, stateOptions ); },
+		done => { listsService.getAllWaysToHearAboutMARE( req, res, done, waysToHearOptions ); },
 		done => { pageService.populateSidebar( req, res, done ); }
 	], () => {
 		// Set the layout to render with the right sidebar

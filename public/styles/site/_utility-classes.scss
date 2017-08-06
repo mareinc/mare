@@ -30,13 +30,8 @@
 	border-right: 5px solid $border-color-dark;
 }
 
-.inline {
-	display: inline;
-}
-.inline-block {
-	display: inline-block;
-}
+.text-left { text-align:left; }
+.text-center { text-align:center; }
+.text-right { text-align:right; }
 
-.text-left {text-align:left;}
-.text-center {text-align:center;}
-.text-right {text-align:right;}
+.protected-image { pointer-events: none; }

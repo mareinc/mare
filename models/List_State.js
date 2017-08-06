@@ -4,7 +4,8 @@ var keystone = require('keystone'),
 // Create model. Additional options allow menu name to be used what auto-generating URLs
 var State = new keystone.List('State', {
 	autokey: { path: 'key', from: 'state', unique: true },
-	map: { name: 'state' }
+	map: { name: 'state' },
+	defaultSort: 'state'
 });
 
 // Create fields

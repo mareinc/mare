@@ -1,19 +1,22 @@
-var keystone				= require( 'keystone' ),
-	_						= require( 'underscore' ),
-	Region 					= keystone.list( 'Region' ),
-	Position				= keystone.list( 'Social Worker Position' ),
-	Race					= keystone.list( 'Race' ),
-	State					= keystone.list( 'State' ),
-	Gender					= keystone.list( 'Gender' ),
-	LegalStatus				= keystone.list( 'Legal Status' ),
-	Language				= keystone.list( 'Language' ),
-	FamilyConstellation		= keystone.list( 'Family Constellation' ),
-	Disability				= keystone.list( 'Disability' ),
-	OtherConsideration		= keystone.list( 'Other Consideration' ),
-	ChildStatus				= keystone.list( 'Child Status' ),
-	ChildType				= keystone.list( 'Child Type' ),
-	EventType				= keystone.list( 'Event Type' ),
-	WayToHearAboutMARE		= keystone.list( 'Way To Hear About MARE' );
+const keystone								= require( 'keystone' );
+const _										= require( 'underscore' );
+const Region 								= keystone.list( 'Region' );
+const Position								= keystone.list( 'Social Worker Position' );
+const Race									= keystone.list( 'Race' );
+const State									= keystone.list( 'State' );
+const Gender								= keystone.list( 'Gender' );
+const LegalStatus							= keystone.list( 'Legal Status' );
+const Language								= keystone.list( 'Language' );
+const FamilyConstellation					= keystone.list( 'Family Constellation' );
+const Disability							= keystone.list( 'Disability' );
+const OtherConsideration					= keystone.list( 'Other Consideration' );
+const OtherFamilyConstellationConsideration	= keystone.list( 'Other Family Constellation Consideration' );
+const ChildStatus							= keystone.list( 'Child Status' );
+const ChildType								= keystone.list( 'Child Type' );
+const CityOrTown							= keystone.list( 'City or Town' );
+const EventType								= keystone.list( 'Event Type' );
+const Residence								= keystone.list( 'Residence' );
+const WayToHearAboutMARE					= keystone.list( 'Way To Hear About MARE' );
 
 exports.getAllRegions = ( req, res, done ) => {
 	
@@ -216,7 +219,7 @@ exports.getAllDisabilities = ( req, res, done ) => {
 				});
 };
 
-exports.getOtherConsiderations = ( req, res, done ) => {
+exports.getAllOtherConsiderations = ( req, res, done ) => {
 	
 	let locals = res.locals;
 
@@ -308,3 +311,84 @@ exports.getAllWaysToHearAboutMARE = ( req, res, done, options ) => {
 
 				});
 };
+
+exports.getAllResidences = ( req, res, done ) => {
+
+	let locals = res.locals;
+
+	Residence.model.find()
+				.exec()
+				.then( residences => {
+
+					locals.residences = residences;
+					// execute done function if async is used to continue the flow of execution
+					done()
+
+				}, err => {
+
+					console.log( err );
+					done();
+
+				});
+};
+
+exports.getAllOtherFamilyConstellationConsiderations = ( req, res, done ) => {
+
+	let locals = res.locals;
+
+	OtherFamilyConstellationConsideration.model.find()
+				.exec()
+				.then( otherFamilyConstellationConsiderations => {
+
+					locals.otherFamilyConstellationConsiderations = otherFamilyConstellationConsiderations;
+					// execute done function if async is used to continue the flow of execution
+					done()
+
+				}, err => {
+
+					console.log( err );
+					done();
+
+				});
+};
+
+exports.getAllCitiesAndTowns = ( req, res, done ) => {
+	
+	let locals = res.locals;
+
+	CityOrTown.model.find()
+				.exec()
+				.then( citiesAndTowns => {
+
+					locals.citiesAndTowns = citiesAndTowns;
+					// execute done function if async is used to continue the flow of execution
+					done()
+
+				}, err => {
+
+					console.log( err );
+					done();
+
+				});
+};
+
+exports.getChildStatusIdByName = ( req, res, done, name ) => {
+	let locals = res.locals;
+
+	ChildStatus.model.findOne()
+				.where( 'childStatus' ).equals( name )
+				.lean()
+				.exec()
+				.then( status => {
+
+					locals.activeChildStatusId = status._id;
+					// execute done function if async is used to continue the flow of execution
+					done()
+
+				}, err => {
+
+					console.log( err );
+					done();
+
+				});
+ };
