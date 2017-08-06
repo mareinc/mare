@@ -13,17 +13,17 @@ exports = module.exports = ( req, res ) => {
 	const raceOptions		= { other: true };
 	// fetch all needed data prior to rendering
 	async.parallel([
-		done => { listsService.getAllCitiesAndTowns( req, res, done ) },
-		done => { listsService.getAllDisabilities( req, res, done ) },
-		done => { listsService.getAllStates( req, res, done ) },
+		done => { listsService.getAllCitiesAndTowns( req, res, done ); },
+		done => { listsService.getAllDisabilities( req, res, done ); },
+		done => { listsService.getAllStates( req, res, done ); },
 		done => { listsService.getAllRaces( req, res, done, raceOptions ) },
-		done => { listsService.getAllResidences( req, res, done ) },
-		done => { listsService.getAllFamilyConstellations( req, res, done ) },
-		done => { listsService.getAllGenders( req, res, done ) },
-		done => { listsService.getAllLanguages( req, res, done ) },
-		done => { listsService.getAllLegalStatuses( req, res, done ) },
-		done => { listsService.getAllOtherConsiderations( req, res, done ) },
-		done => { listsService.getAllOtherFamilyConstellationConsiderations( req, res, done ) },
+		done => { listsService.getAllResidences( req, res, done ); },
+		done => { listsService.getAllFamilyConstellations( req, res, done ); },
+		done => { listsService.getAllGenders( req, res, done ); },
+		done => { listsService.getAllLanguages( req, res, done ); },
+		done => { listsService.getAllLegalStatuses( req, res, done ); },
+		done => { listsService.getAllOtherConsiderations( req, res, done ); },
+		done => { listsService.getAllOtherFamilyConstellationConsiderations( req, res, done ); },
 		done => { pageService.populateSidebar( req, res, done ); }
 	], () => {
 		// Set the layout to render with the right sidebar

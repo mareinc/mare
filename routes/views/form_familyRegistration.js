@@ -15,14 +15,14 @@ exports = module.exports = ( req, res ) => {
 	const waysToHearOptions	= { other: true };
 	// fetch all needed data prior to rendering
 	async.parallel([
-		done => { listsService.getAllCitiesAndTowns( req, res, done ) },
-		done => { listsService.getAllDisabilities( req, res, done ) },
-		done => { listsService.getAllStates( req, res, done, stateOptions ) },
-		done => { listsService.getAllRaces( req, res, done, raceOptions ) },
-		done => { listsService.getAllGenders( req, res, done ) },
-		done => { listsService.getAllLanguages( req, res, done ) },
-		done => { listsService.getAllLegalStatuses( req, res, done ) },
-		done => { listsService.getAllOtherConsiderations( req, res, done ) },
+		done => { listsService.getAllCitiesAndTowns( req, res, done ); },
+		done => { listsService.getAllDisabilities( req, res, done ); },
+		done => { listsService.getAllStates( req, res, done, stateOptions ); },
+		done => { listsService.getAllRaces( req, res, done, raceOptions ); },
+		done => { listsService.getAllGenders( req, res, done ); },
+		done => { listsService.getAllLanguages( req, res, done ); },
+		done => { listsService.getAllLegalStatuses( req, res, done ); },
+		done => { listsService.getAllOtherConsiderations( req, res, done ); },
 		done => { listsService.getChildTypesForWebsite( req, res, done ); },
 		done => { pageService.populateSidebar( req, res, done ); }
 	], () => {

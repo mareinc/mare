@@ -18,7 +18,7 @@ exports = module.exports = ( req, res ) => {
 	// fetch all the dynamic data to fill in the form dropdown and selection areas.
 	async.parallel([
 		done => { listsService.getChildTypesForWebsite( req, res, done ); },
-		done => { listsService.getAllCitiesAndTowns( req, res, done ) },
+		done => { listsService.getAllCitiesAndTowns( req, res, done ); },
 		done => { listsService.getAllDisabilities( req, res, done ); },
 		done => { listsService.getAllGenders( req, res, done ); },
 		done => { listsService.getAllLanguages( req, res, done ); },
