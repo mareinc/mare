@@ -1,7 +1,7 @@
 const keystone				= require( 'keystone' ),
 	  utilitiesMiddleware   = require( './utilities' );
-
-exports.sendRegistrationConfirmationEmailToStaff = ( user, registrationStaffContact ) => {
+/* TODO: registrationStaffContact can either be determined before and passed in, or found in this function */
+exports.sendRegistrationConfirmationEmailToStaff = ( user ) => {
 	/* 	Information in email to staff:
 			child's name and registration number
 			a link to the child model in keystone
@@ -65,8 +65,8 @@ exports.sendRegistrationConfirmationEmailToStaff = ( user, registrationStaffCont
 		});
 	});
 };
-
-exports.sendRegistrationConfirmationEmailToSocialWorker = ( user, registrationStaffContact ) => {
+/* TODO: registrationStaffContact can either be determined before and passed in, or found in this function */
+exports.sendRegistrationConfirmationEmailToSocialWorker = ( user ) => {
 
 	return new Promise( ( resolve, reject ) => {
 		// do nothing if sending of the email is not currently allowed

@@ -574,7 +574,7 @@ exports.registerChild = ( req, res, next ) => {
 			otherConsiderations: child.otherConsiderations
 		});
 
-		newChild.save( ( err, model ) => {
+		newChild.save( ( err, child ) => {
 
 			if( err ) {
 				console.error( `error saving social registered child: ${ err }` );
@@ -591,8 +591,8 @@ exports.registerChild = ( req, res, next ) => {
 						title: `Congratulations, your child record has been successfully registered.`,
 						detail: `Please note that it can take several days for the child's account to be reviewed and activated.` } );
 				// attempt to send relevant emails and store the returned promises
-				let staffEmailSent = socialWorkerChildRegistrationService.sendRegistrationConfirmationEmailToStaff();
-				let socialWorkerEmailSent = socialWorkerChildRegistrationService.sendRegistrationConfirmationEmailToSocialWorker();
+				let staffEmailSent = socialWorkerChildRegistrationService.sendRegistrationConfirmationEmailToStaff( child );
+				let socialWorkerEmailSent = socialWorkerChildRegistrationService.sendRegistrationConfirmationEmailToSocialWorker( child );
 				// if all emails sent successfully
 				Promise.all( [ staffEmailSent, socialWorkerEmailSent ] ).then( () => {
 					// redirect the user to the appropriate page
