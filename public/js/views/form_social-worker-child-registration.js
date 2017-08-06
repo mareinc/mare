@@ -11,12 +11,12 @@
 
 		initialize: function() {
 			// DOM cache commonly used elements
-			this.$MACityContainer		= $( '.ma-city-container' );
-			this.$NonMACityContainer	= $( '.non-ma-city-container' );
-			this.$MACity				= $( '#ma-city' );
-			this.$NonMACity				= $( '#non-ma-city' );
-			this.$siblingNamesContainer	= $( '.sibling-names-container' );
-			this.$siblingNames			= $( '#sibling-names' );
+			this.$MACityContainer		= this.$( '.ma-city-container' );
+			this.$NonMACityContainer	= this.$( '.non-ma-city-container' );
+			this.$MACity				= this.$( '#ma-city' );
+			this.$NonMACity				= this.$( '#non-ma-city' );
+			this.$siblingNamesContainer	= this.$( '.sibling-names-container' );
+			this.$siblingNames			= this.$( '#sibling-names' );
 
 			// Initialize parsley validation on the form
 			this.form = this.$el.parsley();
