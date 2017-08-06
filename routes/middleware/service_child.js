@@ -1,11 +1,13 @@
-const keystone		= require( 'keystone' ),
-	  _				= require( 'underscore' ),
-	  async			= require( 'async' ),
-	  Child			= keystone.list( 'Child' ),
-	  ChildStatus	= keystone.list( 'Child Status' ),
-	  middleware	= require( './middleware' ),
-	  familyService	= require( './service_family' ),
-	  listsService	= require( './service_lists' );
+const keystone								= require( 'keystone' ),
+	  _										= require( 'underscore' ),
+	  async									= require( 'async' ),
+	  Child									= keystone.list( 'Child' ),
+	  ChildStatus							= keystone.list( 'Child Status' ),
+	  middleware							= require( './middleware' ),
+	  familyService							= require( './service_family' ),
+	  listsService							= require( './service_lists' ),
+	  userService							= require( './service_user' ),
+	  socialWorkerChildRegistrationService	= require( './emails_social-worker-child-registration' );
 
 // TODO: combine the below two functions, the only difference in the filter in the find()
 exports.getAllChildren = ( req, res, done, fieldsToSelect ) => {
@@ -484,23 +486,6 @@ exports.getSiblingGroupDetails = ( req, res, next ) => {
 		});
 };
 
-exports.parseRegistrationNumbers = registrationNumbersString => {
-	// if no siblings were listed
-	if( !registrationNumbersString || registrationNumbersString.length === 0 ) {
-		// return an empty array to populate the siblings field correclty
-		return [];
-	} 
-	// pull each registration number into an array based on splitting on commas
-	// TODO: might want to make this more robust by splitting on ; and spaces as well
-	let siblingRegistrationNumbersArray = registrationNumbersString.split( ',' );
-	// remove any leading or trailing whitespace from each id value
-	_.each( siblingRegistrationNumbersArray, siblingRegistrationNumbers => {
-		siblingRegistrationNumbers.trim();
-	});
-	// return only the unique entries in case the same id was entered multiple times
-	return _.uniq( siblingRegistrationNumbersArray );
-};
-
 exports.fetchChildStatusId = status => {
 
 	return new Promise( ( resolve, reject ) => {
@@ -508,30 +493,6 @@ exports.fetchChildStatusId = status => {
 				.where( 'childStatus', status )
 				.exec()
 				.then( status => {
-
-					status ? resolve( status.get( '_id' ) ) : resolve();
-
-				}, err => {
-
-					reject();
-
-				});
-	});
-};
-
-exports.fetchSiblingIdsByRegistrationNumbers = registrationNumbers => {
-
-	return new Promise( ( resolve, reject ) => {
-
-		if( registrationNumbers.length === 0 ) {
-			return resolve( [] );
-		}
-
-		Child.model.find()
-				.select( '_id' )
-				.where( { registrationNumber: { $in: registrationNumbers } } )
-				.exec()
-				.then( children => {
 
 					status ? resolve( status.get( '_id' ) ) : resolve();
 
@@ -552,21 +513,16 @@ exports.registerChild = ( req, res, next ) => {
 	// set the redirect path to navigate to after processing is complete
 	locals.redirectPath = '/forms/child-registration-form';
 	// fetch the id for the active child status
-	const fetchActiveChildStatusId		= childService.fetchChildStatusId( 'active' );
-	const siblingRegistrationNumbers	= childService.parseRegistrationNumbers( child.registrationNumbers );
-	const fetchSiblingIds				= childService.fetchSiblingIdsByRegistrationNumbers( siblingRegistrationNumbers );
-
-	Promise.all([ fetchActiveChildStatusId, fetchSiblingIds ]).then( values => {
-		// assign local variables to the values returned by the promises
-		const [ childStatusId, siblingIds ] = values;
-
+	const fetchActiveChildStatusId		= exports.fetchChildStatusId( 'active' );
+	
+	fetchActiveChildStatusId.then( activeChildStatusId => {
 		// create a new Child model
 		const newChild = new Child.model({
 
-			siteVisibility: 'registered social workers and families', // TODO: note to update this needs to be sent to the staff
+			siteVisibility: 'registered social workers and families',
 			isVisibleInGallery: false,
 
-			registeredBy: 'unknown', // TODO: note to update this needs to be sent to the staff
+			registeredBy: 'unknown',
 			registrationDate: new Date(),
 
 			name: {
@@ -578,7 +534,7 @@ exports.registerChild = ( req, res, next ) => {
 
 			birthDate: new Date( child.dateOfBirth ),
 			languages: child.languages,
-			status: childStatusId,
+			status: activeChildStatusId,
 			gender: child.gender,
 			race: child.race,
 			legalStatus: child.legalStatus,
@@ -586,26 +542,23 @@ exports.registerChild = ( req, res, next ) => {
 
 			hasContactWithSiblings: child.isSiblingContactNeeded.toLowerCase() === 'yes',
 			siblingTypeOfContact: child.siblingContactDescription,
-			siblings: siblingIds,
-			mustBePlacedWithSiblings: child.isPartOfSiblingGroup,
-			siblingsToBePlacedWith: child.isPartOfSiblingGroup ? siblingIds : [],
 			hasContactWithBirthFamily: child.isFamilyContactNeeded.toLowerCase() === 'yes',
 			birthFamilyTypeOfContact: child.familyContactDescription,
 
 			residence: child.currentResidence,
-			isOutsideMassachusetts: child.isNotMACityOrTown ,
-			city: child.isNotMACityOrTown ? undefined: child.MACityOrTown,
-			cityText: child.isNotMACityOrTown ? child.nonMACityOrTown : '',
+			isOutsideMassachusetts: child.isNotMACity,
+			city: child.isNotMACity ? undefined : child.MACity,
+			cityText: child.isNotMACity ? child.nonMACity : '',
 			
 			careFacilityName: child.careFacility,
 
-			physicalNeeds: 'none', // TODO: need to send as email for them to review and change
+			physicalNeeds: 'none',
 			physicalNeedsDescription: child.physicalNeeds,
-			emotionalNeeds: 'none', // TODO: need to send as email for them to review and change
+			emotionalNeeds: 'none',
 			emotionalNeedsDescription: child.emotionalNeeds,
-			intellectualNeeds: 'none', // TODO: need to send as email for them to review and change
+			intellectualNeeds: 'none',
 			intellectualNeedsDescription: child.intellectualNeeds,
-			socialNeeds: 'none', // TODO: need to send as email for them to review and change
+			socialNeeds: 'none',
 			socialNeedsDescription: child.socialNeeds,
 
 			aspirations: child.aspirations,
@@ -616,29 +569,40 @@ exports.registerChild = ( req, res, next ) => {
 			otherRecruitmentConsiderations: child.otherRecruitmentConsiderations,
 
 			disabilities: child.disabilities,
-			// TODO: not required in model anymore, is this because it's not required on the form now?
 			recommendedFamilyConstellation: child.recommendedFamilyConstellations,
 			otherFamilyConstellationConsideration: child.otherFamilyConstellationConsiderations,
 			otherConsiderations: child.otherConsiderations
 		});
 
-		newChild.save( ( err, model ) => {
+		newChild.save( ( err, child ) => {
 
 			if( err ) {
-				console.log( err );
+				console.error( `error saving social registered child: ${ err }` );
 				// create an error flash message
 				req.flash( 'error', {
 						title: `There was an error registering your child`,
 						detail: `If this error persists, please notify MARE` } );
+				// redirect the user to the appropriate page
+				res.redirect( 303, locals.redirectPath );
 			} else {
 				console.log( `new child saved` );
 				// create a success flash message
 				req.flash( 'success', {
 						title: `Congratulations, your child record has been successfully registered.`,
 						detail: `Please note that it can take several days for the child's account to be reviewed and activated.` } );
+				// attempt to send relevant emails and store the returned promises
+				let staffEmailSent = socialWorkerChildRegistrationService.sendRegistrationConfirmationEmailToStaff( child );
+				let socialWorkerEmailSent = socialWorkerChildRegistrationService.sendRegistrationConfirmationEmailToSocialWorker( child );
+				// if all emails sent successfully
+				Promise.all( [ staffEmailSent, socialWorkerEmailSent ] ).then( () => {
+					// redirect the user to the appropriate page
+					res.redirect( 303, locals.redirectPath );
+				// if there was an error sending emails
+				}).catch( reason => {
+					// redirect the user back to the appropriate page
+					res.redirect( 303, redirectPath );
+				});
 			}
-			
-			res.redirect( 303, locals.redirectPath );
 		});
 	});
 };

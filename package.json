@@ -20,7 +20,7 @@
     "gulp-clean-css": "^3.7.0",
     "gulp-concat": "^2.6.1",
     "gulp-eslint": "^3.0.1",
-    "gulp-filter": "^5.0.0",
+    "gulp-filter": "^5.0.1",
     "gulp-ignore": "^2.0.2",
     "gulp-imagemin": "^3.3.0",
     "gulp-mocha": "^4.3.1",
@@ -49,9 +49,9 @@
   },
   "main": "keystone.js",
   "devDependencies": {
-    "chai": "^4.1.0",
+    "chai": "^4.1.1",
     "mocha": "^3.5.0",
-    "sinon": "^2.4.1",
+    "sinon": "^3.0.0",
     "sinon-chai": "^2.12.0"
   }
 }

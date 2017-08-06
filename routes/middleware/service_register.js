@@ -254,30 +254,32 @@ exports.saveSiteVisitor = user => {
 		let newUser = new SiteVisitor.model({
 
 			name: {
-				first			: user.firstName,
-				last			: user.lastName
+				first					: user.firstName,
+				last					: user.lastName
 			},
 
-			password			: user.password,
-			email				: user.email,
+			password					: user.password,
+			email						: user.email,
 
 			phone: {
-				work			: user.workPhone,
-				home			: user.homePhone,
-				mobile			: user.mobilePhone,
-				preferred 		: user.preferredPhone
+				work					: user.workPhone,
+				home					: user.homePhone,
+				mobile					: user.mobilePhone,
+				preferred 				: user.preferredPhone
 			},
 
 			address: {
-				street1			: user.street1,
-				street2			: user.street2,
-				city			: user.city,
-				state			: user.state,
-				zipCode			: user.zipCode
+				street1					: user.street1,
+				street2					: user.street2,
+				isOutsideMassachusetts	: user.isNotMACity,
+				city					: user.isNotMACity ? undefined : user.MACity,
+				cityText				: user.isNotMACity ? user.nonMACity : '',
+				state					: user.state,
+				zipCode					: user.zipCode
 			},
 
-			heardAboutMAREFrom 	: user.howDidYouHear,
-			heardAboutMAREOther	: user.howDidYouHearOther
+			heardAboutMAREFrom 			: user.howDidYouHear,
+			heardAboutMAREOther			: user.howDidYouHearOther
 
 		});
 
@@ -300,30 +302,32 @@ exports.saveSocialWorker = user => {
 		const newUser = new SocialWorker.model({
 
 			name: {
-				first			: user.firstName,
-				last			: user.lastName
+				first					: user.firstName,
+				last					: user.lastName
 			},
 
-			password			: user.password,
-			email				: user.email,
-			agencyNotListed		: true,
-			agencyText			: user.agency,
-			title				: user.titleDiffersFromPosition ? user.socialWorkerTitle : user.position,
-			position			: user.position,
+			password					: user.password,
+			email						: user.email,
+			agencyNotListed				: true,
+			agencyText					: user.agency,
+			title						: user.titleDiffersFromPosition ? user.socialWorkerTitle : user.position,
+			position					: user.position,
 
 			phone: {
-				work			: user.workPhone,
-				mobile			: user.mobilePhone,
-				preferred 		: user.preferredPhone
+				work					: user.workPhone,
+				mobile					: user.mobilePhone,
+				preferred 				: user.preferredPhone
 			},
 
 			address: {
-				street1			: user.street1,
-				street2			: user.street2,
-				city			: user.city,
-				state			: user.state,
-				zipCode			: user.zipCode,
-				region 			: user.region
+				street1					: user.street1,
+				street2					: user.street2,
+				isOutsideMassachusetts	: user.isNotMACity,
+				city					: user.isNotMACity ? undefined : user.MACity,
+				cityText				: user.isNotMACity ? user.nonMACity : '',
+				state					: user.state,
+				zipCode					: user.zipCode,
+				region 					: user.region
 			}
 
 		});
@@ -393,7 +397,9 @@ exports.saveFamily = user => {
 			address: {
 				street1							: user.street1,
 				street2							: user.street2,
-				city							: user.city,
+				isOutsideMassachusetts			: user.isNotMACity,
+				city							: user.isNotMACity ? undefined: user.MACity,
+				cityText						: user.isNotMACity ? user.nonMACity : '',
 				state							: user.state,
 				zipCode							: user.zipCode
 			},
@@ -658,34 +664,6 @@ exports.uploadFile = ( userModel, targetFieldPrefix, targetField, file ) => {
 
 	// 				done();
 	// 			});
-};
-
-exports.getMailingLists = ( mailingListsArray ) => {
-
-	// create a map to hold all retrieved mailing list data
-	let mailingListMap = new Map();
-
-	return new Promise( ( resolve, reject ) => {
-		// fetch the three target mailing lists from the database
-		// TODO: this is a little brittle as it can break when the name of any of the lists changes.
-		//       We could try embedding the ids into the form itself
-		MailingList.model.find()
-				.where( 'mailingList' ).in( mailingListsArray )
-				.exec()
-				.then( mailingLists => {
-					// loop through the returned mailing list objects and store them in the map with a key equal to the name and a value equal to the database id
-					for( let mailingList of mailingLists ) {
-						mailingListMap.set( mailingList.get( 'mailingList' ), malingList.get( '_id' ) );
-					}
-
-					resolve( mailingListMap );
-
-				}, err => {
-					console.log( `error fetching mailing lists: ${ err }` );
-
-					reject();
-				});
-	});
 };
 
 // TODO: why do we need this, saving a Date object in any Types.Date field should work just fine

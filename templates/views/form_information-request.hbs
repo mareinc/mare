@@ -78,21 +78,21 @@
 		<div class="form-section-header">Contact 1 Information</div>
 
 		<div class="row">
-			<div class="col-sm-12 col-md-6 form-group">
+			<div class="col-sm-12 form-group">
 				<input type="text" class="input" id="contact1-first-name" name="contact1FirstName"  data-parsley-error-message="required" required="">
 				<label for="contact1-first-name" class="label required-field">First Name</label>
 			</div>
-			<div class="col-sm-12 col-md-6 form-group">
+			<div class="col-sm-12 form-group">
 				<input type="text" class="input" id="contact1-last-name" name="contact1LastName"  data-parsley-error-message="required" required="">
 				<label for="contact1-last-name" class="label required-field">Last Name</label>
 			</div>
 		</div>
 		<div class="row">
-			<div class="col-sm-6 form-group">
+			<div class="col-sm-12 form-group">
 				<input type="text" class="input" id="contact1-primary-phone" name="contact1PrimaryPhone"  data-parsley-error-message="required" required="">
 				<label for="contact1-primary-phone" class="label required-field">Primary Phone</label>
 			</div>
-			<div class="col-sm-6 form-group">
+			<div class="col-sm-12 form-group">
 				<select id="contact1-phone-type" name="contact1PhoneType" class="input" data-parsley-errors-messages-disabled="true" required="">
 					<option value=""></option>
 					<option value="mobile">Cell</option>
@@ -103,12 +103,10 @@
 			</div>
 		</div>
 		<div class="row">
-			<div class="col-sm-6 form-group">
+			<div class="col-sm-12 form-group">
 				<input type="text" class="input" id="contact1-other-phone" name="contact1OtherPhone">
 				<label for="contact1-other-phone" class="label">Other Phone</label>
 			</div>
-		</div>
-		<div class="row">
 			<div class="col-sm-12 form-group">
 				<input type="email" class="input" id="contact1-email" name="contact1Email" data-parsley-type="email" data-parsley-trigger="change" data-parsley-error-message="valid email required" required="">
 				<label for="contact1-email" class="label required-field">Email</label>
@@ -151,63 +149,25 @@
 				<label for="contact1-date-of-birth" class="label required-field">Date of Birth</label>
 			</div>
 		</div>
-		<div class="row form-group">
-			<div class="col-sm-12">
-				<input type="text" class="input" id="contact1-address1" name="contact1Address1" data-parsley-error-message="required" required="">
-				<label for="contact1-address1" class="label required-field">Address 1</label>
-			</div>
-		</div>
-		<div class="row form-group">
-			<div class="col-sm-12">
-				<input type="text" class="input" id="contact1-address2" name="contact1Address2" data-parsley-error-message="required" required="">
-				<label for="contact1-address2" class="label required-field">Address 2</label>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-sm-6 form-group">
-				<input type="text" class="input" id="contact1-city" name="contact1City" data-parsley-error-message="required" required="">
-				<label for="contact1-city" class="label required-field">City</label>
-			</div>
-			<div class="col-sm-6 form-group">
-				<select id="contact1-state" name="contact1State" class="input">
-				{{#each states}}
-					{{#if defaultSelection}}
-						<option value="{{_id}}" selected="selected">{{state}}</option>
-					{{else}}
-						<option value="{{_id}}">{{state}}</option>
-					{{/if}}
-				{{/each}}
-				{{!-- {{#each states}}
-					<option value="{{_id}}">{{state}}</option>
-				{{/each}} --}}
-				</select>
-				<label for="contact1-state" class="label required-field">State</label>
-			</div>
-			<div class="col-sm-6 form-group">
-				<input type="text" class="input" id="contact1-zip" name="contact1Zip" pattern="\d{5}([ \-]\d{4})?" data-parsley-error-message="required" required="">
-				<label for="contact1-zip" class="label required-field">Zip Code</label>
-			</div>
-		</div>
-
 
 		<div class="form-section-header">Contact 2 Information</div>
 
 		<div class="row">
-			<div class="col-sm-12 col-md-6 form-group">
+			<div class="col-sm-12 form-group">
 				<input type="text" class="input" id="contact2-first-name" name="contact2FirstName">
 				<label for="contact2-first-name" class="label">First Name</label>
 			</div>
-			<div class="col-sm-12 col-md-6 form-group">
+			<div class="col-sm-12 form-group">
 				<input type="text" class="input" id="contact2-last-name" name="contact2LastName">
 				<label for="contact2-last-name" class="label">Last Name</label>
 			</div>
 		</div>
 		<div class="row">
-			<div class="col-sm-6 form-group">
+			<div class="col-sm-12 form-group">
 				<input type="text" class="input" id="contact2-primary-phone" name="contact2PrimaryPhone">
 				<label for="contact2-primary-phone" class="label">Primary Phone</label>
 			</div>
-			<div class="col-sm-6 form-group">
+			<div class="col-sm-12 form-group">
 				<select id="contact2-phone-type" name="contact2PhoneType" class="input">
 					<option value="Cell">Cell</option>
 					<option value="Work">Work</option>
@@ -217,6 +177,10 @@
 			</div>
 		</div>
 		<div class="row">
+			<div class="col-sm-12 form-group">
+				<input type="text" class="input" id="contact2-other-phone" name="contact2OtherPhone">
+				<label for="contact2-other-phone" class="label">Other Phone</label>
+			</div>
 			<div class="col-sm-12 form-group">
 				<input type="email" class="input" id="contact2-email" name="contact2Email" pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
 				<label for="contact2-email" class="label">Email</label>
@@ -254,23 +218,83 @@
 			</div>
 		</div>
 		<div class="row form-group">
-			<div class="col-sm-6">
+			<div class="col-sm-12">
 				<input type="text" class="input" id="contact2-date-of-birth" name="Contact2DateOfBirth" placeholder="DD/MM/YYYY">
 				<label for="contact2-date-of-birth" class="label">Date of Birth</label>
 			</div>
 		</div>
 
+		<div class="form-section-header">Home Address</div>
+
+		<div class="row form-group">
+			<div class="col-sm-12">
+				<input type="text" class="input" id="address1" name="Address1" data-parsley-error-message="required" required="">
+				<label for="address1" class="label required-field">Address 1</label>
+			</div>
+			<div class="col-sm-12">
+				<input type="text" class="input" id="address2" name="Address2" data-parsley-error-message="required" required="">
+				<label for="address2" class="label required-field">Address 2</label>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-12 form-group ma-city-container">
+				<select id="ma-city" class="input" name="MACity" data-parsley-trigger="change" data-parsley-errors-messages-disabled="true" required="">
+					<option value=""></option>
+					{{#each citiesAndTowns}}
+					<option value="{{_id}}">{{cityOrTown}}</option>
+					{{/each}}
+				</select>
+				<label for="ma-city" class="label required-field">City</label>
+			</div>
+			<div class="col-sm-12 form-group non-ma-city-container hidden">
+				<input type="text" id="non-ma-city" class="input" name="nonMACity" data-parsley-error-message="required" data-parsley-required="false">
+				<label for="non-ma-city" class="label required-field">City</label>
+			</div>
+			<div class="col-sm-12 form-group">
+				<label class="checkbox-inline">
+					<input type="checkbox" id="is-not-MA-city-checkbox" name="isNotMACity">I live outside MA
+				</label>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-12 form-group">
+				<select id="state" name="State" class="input">
+				{{#each states}}
+					{{#if defaultSelection}}
+						<option value="{{_id}}" selected="selected">{{state}}</option>
+					{{else}}
+						<option value="{{_id}}">{{state}}</option>
+					{{/if}}
+				{{/each}}
+				</select>
+				<label for="state" class="label required-field">State</label>
+			</div>
+			<div class="col-sm-12 form-group">
+				<input type="text" class="input" id="zipCode" name="Zip" pattern="\d{5}([ \-]\d{4})?" data-parsley-error-message="required" required="">
+				<label for="zipCode" class="label required-field">Zip Code</label>
+			</div>
+		</div>
 
 		<div class="form-section-header">Social Worker Information</div>
 
 		<div class="row">
-			<div class="col-sm-12 col-md-6 form-group">
+			<div class="col-sm-12 form-group">
 				<input type="text" class="input" id="social-worker-first-name" name="socialWorkerFirstName">
 				<label for="social-worker-first-name" class="label">First Name</label>
 			</div>
-			<div class="col-sm-12 col-md-6 form-group">
+			<div class="col-sm-12 form-group">
 				<input type="text" class="input" id="social-worker-last-name" name="socialWorkerLastName">
 				<label for="social-worker-last-name" class="label">Last Name</label>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-12 form-group">
+				<input type="email" class="input" id="social-worker-email" name="socialWorkerEmail" pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
+				<label for="social-worker-email" class="label">Email</label>
+			</div>
+			<div class="col-sm-12 form-group">
+				<input type="text" class="input" id="social-worker-phone" name="socialWorkerPhone">
+				<label for="social-worker-phone" class="label">Phone</label>
 			</div>
 		</div>
 		<div class="row">
@@ -279,19 +303,6 @@
 				<label for="social-worker-agency" class="label">Agency</label>
 			</div>
 		</div>
-		<div class="row">
-			<div class="col-sm-12 form-group">
-				<input type="email" class="input" id="social-worker-email" name="socialWorkerEmail" pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
-				<label for="social-worker-email" class="label">Email</label>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-sm-6 form-group">
-				<input type="text" class="input" id="social-worker-phone" name="socialWorkerPhone">
-				<label for="social-worker-phone" class="label">Phone</label>
-			</div>
-		</div>
-
 
 		<div class="form-section-header">Mare &amp; You</div>
 

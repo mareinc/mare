@@ -1,9 +1,9 @@
 const keystone		= require('keystone'),
-	User			= keystone.list('User'),
-	Admin			= keystone.list('Admin'),
-	SiteVisitor		= keystone.list('Site Visitor'),
-	SocialWorker	= keystone.list('Social Worker'),
-	Family			= keystone.list('Family');
+	  User			= keystone.list('User'),
+	  Admin			= keystone.list('Admin'),
+	  SiteVisitor	= keystone.list('Site Visitor'),
+	  SocialWorker	= keystone.list('Social Worker'),
+	  Family		= keystone.list('Family');
 
 /* Root through the passed in options and get/set the necessary information on res.locals for processing by each service request */
 exports.exposeGlobalOptions = function exposeGlobalOptions(req, res, options) {
@@ -83,3 +83,29 @@ exports.checkUserActiveStatus = function( email, locals, done ) {
 			done();
 		});
 };
+
+/* gets the ID of any user type (except families) based on their full name */
+exports.getUserByFullName = ( name, userType ) => {
+	// bind targetModel to the appropriate keystone model type based on the passed in userType
+	const targetModel = exports.getTargetModel( userType );
+
+	return new Promise( ( resolve, reject ) => {
+
+		targetModel.model.findOne()
+			.where( 'name.full', name )
+			.exec()
+			.then( user => {
+				// if a user with the current email doesn't exist
+				if( !user ) {
+					return reject();
+				}
+				// if the user exists, resolve the promise, returning the user object
+				resolve( user );
+			// if there was an error finding the user
+			}, err => {
+				// log the error for debugging purposes
+				console.error( `error fetching user by name: ${ name } - ${ err }` );
+				reject();
+			});
+	});
+}
