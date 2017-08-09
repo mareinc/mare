@@ -1,11 +1,11 @@
-var keystone 		= require('keystone'),
-	Types 			= keystone.Field.Types,
-	// Export to make it available using require.  The keystone.list import throws a ReferenceError when importing a list
-	// that comes later when sorting alphabetically
-	SiteVisitor		= require('./User_SiteVisitor'),
-	SocialWorker	= require('./User_SocialWorker'),
-	Family			= require('./User_Family'),
-	Admin			= require('./User_Admin');
+const keystone 		= require( 'keystone' ),
+	  Types 		= keystone.Field.Types,
+	  // export to make it available using require.  The keystone.list import throws a ReferenceError when importing a list
+	  // that comes later when sorting alphabetically
+	  SiteVisitor	= require( './User_SiteVisitor' ),
+	  SocialWorker	= require( './User_SocialWorker' ),
+	  Family		= require( './User_Family' ),
+	  Admin			= require( './User_Admin' );
 
 // Create model. Additional options allow menu name to be used to auto-generate the URL
 var Donation = new keystone.List('Donation');
@@ -23,56 +23,62 @@ Donation.add({
 	family: { type: Types.Relationship, label: 'donation from', ref: 'Family', dependsOn: { isRegistered: true, userType: 'family' }, filters: { isActive: true }, initial: true },
 	admin: { type: Types.Relationship, label: 'donation from', ref: 'Admin', dependsOn: { isRegistered: true, userType: 'admin' }, filters: { isActive: true }, initial: true },
 	unregisteredUser: { type: Types.Text, label: 'donation from', dependsOn: { isRegistered: false }, initial: true },
-	name: { type: Types.Text, label: 'name', hidden: true, noedit: true, initial: false }
-
+	name: { type: Types.Text, label: 'name', hidden: true, noedit: true, initial: false },
+	onBehalfOf: { type: Types.Text, label: 'on behalf of', initial: true }
 });
 
 // Pre Save
-Donation.schema.pre('save', function(next) {
+Donation.schema.pre( 'save', function( next ) {
 	'use strict';
 
-	var targetUserType,
+	let targetUserType,
 		targetId;
 
-	if(this.isRegistered) {
-		switch(this.userType) {
-			case 'site visitor': targetUserType = SiteVisitor; targetId = this.siteVisitor; break;
-			case 'social worker': targetUserType = SocialWorker; targetId = this.socialWorker; break;
-			case 'family': targetUserType = Family; targetId = this.family; break;
-			case 'admin': targetUserType = Admin; targetId = this.admin;
+	if( this.isRegistered ) {
+
+		switch( this.userType ) {
+			case 'site visitor'	: targetUserType = SiteVisitor;		targetId = this.siteVisitor; break;
+			case 'social worker': targetUserType = SocialWorker;	targetId = this.socialWorker; break;
+			case 'family'		: targetUserType = Family;			targetId = this.family; break;
+			case 'admin'		: targetUserType = Admin;			targetId = this.admin;
 		}
+		// if there's no targetId, the user type was set, but no user was selected
+		if( !targetId ) {
+			// clear out the field, which will be populated if the model was saved with a user, then the user was deleted
+			this.name = '';
+			// continue execution without fetching the user
+			return next();
+		}
+		// fetch the target user model
+		targetUserType.model
+			.findById( targetId )
+			.exec()
+			.then( user => {
+				// If the user has a name, they aren't a family.  Use this info to pull the correct name
+				if( user.name ) {
+					this.name = user.name.full;
+				// if the user doesn't have a name, they're a family and a combination of the contact names should be used to populate the name field
+				} else {
+					// TODO: This functionality is identical to that in event, pull both out and put them in the model as a virtual
+					// if the targetGroup is families, we need to prettify the attendee name
+					const contact2Exists	= user.contact2.name.full.length > 0;
+					const sameLastName		= user.contact1.name.last === user.contact2.name.last;
 
-		var model = this;
-
-		targetUserType.model.findById(targetId)
-				.exec()
-				.then(function(user) {
-					console.log('user:',typeof user);
-					console.log('user.name:',user.name);
-					// If the user has a name, they aren't a family.  Use this info to pull the correct name
-					if(user.name) {
-						model.name = user.name.full;
+					if( contact2Exists && sameLastName ) {
+						this.name = user.contact1.name.first + ' and ' + user.contact2.name.full;
+					} else if( contact2Exists && !sameLastName ) {
+						this.name = user.contact1.name.full + ' and ' + user.contact2.name.full;
 					} else {
-						// TODO: This functionality is identical to that in event, pull both out and put them in the model as a virtual
-						// if the targetGroup is families, we need to prettify the attendee name
-						var contact2Exists = user.contact2.name.full.length > 0 ? true : false;
-						var sameLastName = user.contact1.name.last === user.contact2.name.last ? true : false;
-
-						if(contact2Exists && sameLastName) {
-							model.name = user.contact1.name.first + ' and ' + user.contact2.name.full;
-						} else if(contact2Exists && !sameLastName) {
-							model.name = user.contact1.name.full + ' and ' + user.contact2.name.full;
-						} else {
-							model.name = user.contact1.name.full;
-						}
+						this.name = user.contact1.name.full;
 					}
+				}
 
-					next();
+				next();
 
-				}, function(err) {
-					console.log(err);
-					next();
-				});
+			}, err => {
+				console.error( err );
+				next();
+			});
 	} else {
 
 		this.name = this.unregisteredUser;
