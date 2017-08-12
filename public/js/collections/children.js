@@ -11,15 +11,14 @@
 
 		reorder: function reorder( sortBy ) {
 
-			switch(sortBy) {
+			switch( sortBy ) {
 				case 'registered'	: this.sortByDateRegistered(); break;
 				case 'name'			: this.sortByName(); break;
 				case 'age'			: this.sortByAge(); break;
 				default				: this.sortByDateRegistered(); break;
 			}
 
-			this.trigger('sorted');
-
+			this.trigger( 'sorted' );
 		},
 
 		sortByDateRegistered: function sortByDateRegistered() {

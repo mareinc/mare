@@ -232,7 +232,7 @@ exports.getGalleryData = ( req, res, next ) => {
 
 		},
 		// TODO: these familyService functions are for social workers too, they belong in a page level service instead
-		done => { familyService.setGalleryPermissions( req, res, done ); },
+		done => { familyService.setGalleryPermissions( req, res ); done(); },
 		done => { locals.canBookmarkChildren ? familyService.getBookmarkedChildren( req, res, done ) : done(); },
 		done => {
 			if( locals.bookmarkedChildren && locals.bookmarkedChildren.length > 0 ) {
@@ -591,8 +591,8 @@ exports.registerChild = ( req, res, next ) => {
 						title: `Congratulations, your child record has been successfully registered.`,
 						detail: `Please note that it can take several days for the child's account to be reviewed and activated.` } );
 				// attempt to send relevant emails and store the returned promises
-				let staffEmailSent = socialWorkerChildRegistrationService.sendRegistrationConfirmationEmailToStaff( child );
-				let socialWorkerEmailSent = socialWorkerChildRegistrationService.sendRegistrationConfirmationEmailToSocialWorker( child );
+				let staffEmailSent			= socialWorkerChildRegistrationService.sendRegistrationConfirmationEmailToStaff( child );
+				let socialWorkerEmailSent	= socialWorkerChildRegistrationService.sendRegistrationConfirmationEmailToSocialWorker( child );
 				// if all emails sent successfully
 				Promise.all( [ staffEmailSent, socialWorkerEmailSent ] ).then( () => {
 					// redirect the user to the appropriate page
@@ -604,5 +604,102 @@ exports.registerChild = ( req, res, next ) => {
 				});
 			}
 		});
+	});
+};
+
+// ------------------------------------------------------------------------------------------ //
+
+// TODO: these functions below are copies of functions above built with async.  They're rewritten with Promises
+//		 and will replace the functions above once async has been removed
+
+// ------------------------------------------------------------------------------------------ //
+
+/* fetch a single child by their registration number */
+exports.getChildByRegistrationNumberNew = registrationNumber => {
+
+	return new Promise( ( resolve, reject ) => {
+		// convert the registration number to a number if it isn't already
+		const targetRegistrationNumber = parseInt( registrationNumber, 10 );
+
+		// if no registration number was passed in, or the number is invalid
+		if( !registrationNumber
+			|| typeof registrationNumber !== 'number'
+			|| typeof registrationNumber !== 'string'
+			|| ( typeof registrationNumber === 'string' && registrationNumber.length === 0 )
+			|| ( typeof registrationNumber === 'number' && Number.isNaN( targetRegistrationNumber ) ) ) {
+				// log an error for debugging purposes
+				console.error( `the registration number was either not provided or invalid
+								number: ${ registrationNumber }
+								type: ${ typeof registrationNumber }` );
+				// reject the promise
+				reject();
+		}
+		// attempt to find a single child matching the passed in registration number
+		Child.model.findOne()
+			.where( 'registrationNumber' ).equals( targetRegistrationNumber )
+			.lean()
+			.exec()
+			// if the database fetch executed successfully
+			.then( child => {
+				// if the target child could not be found
+				if( !child ) {
+					// log an error for debugging purposes
+					console.error( `no child matching registration number '${ registrationNumber } could be found` );
+					// reject the promise
+					return reject();
+				}
+				// if the target child was found, resolve the promise with the lean version of the object
+				resolve( child );
+			// if there was an error fetching from the database
+			}, err => {
+				// log an error for debugging purposes
+				console.error( `error fetching child matching registration number ${ registrationNumber } - ${ err }` );
+				// and reject the promise
+				reject();
+			});
+	});
+};
+
+/* fetch multiple children based on a passed in array of registration numbers */
+exports.getChildrenByRegistrationNumbersNew = registrationNumbers => {
+
+	return new Promise( ( resolve, reject ) => {
+		// if either the registraton numbers were not an array or if no registration numbers were passed in
+		if( !registrationNumber
+			|| Array.isArray( registrationNumbers )
+			|| ( Array.isArray( registrationNumbers ) && registrationNumbers.length === 0 ) ) {
+				// log an error for debugging purposes
+				console.error( `the registration numbers were either not provided not an array
+								number: ${ registrationNumbers }
+								type: ${ typeof registrationNumbers }` );
+				// reject the promise
+				reject();
+		}
+
+		// convert the array of numbers as strings to an array of numbers
+		const targetRegistrationNumbers = registrationNumbers.map( registrationNumber => parseInt( registrationNumber, 10 ) );
+
+		// attempt to find all children matching the passed in registration numbers
+		Child.model.find()
+			.where( 'registrationNumber' ).in( targetRegistrationNumbers )
+			.lean()
+			.exec()
+			.then( children => {
+				// if the target child could not be found
+				if( !children || children.length === 0 ) { // TODO: see if we need to check for existence
+					// log an error for debugging purposes
+					console.error( `no children matching registration numbers '${ registrationNumbers.join( ', ' ) } could be found` );
+					// reject the promise
+					return reject();
+				}
+				// if the target child was found, resolve the promise with the lean version of the object
+				resolve( children );
+			// if there was an error fetching from the database
+			}, err => {
+				// log an error for debugging purposes
+				console.error( `error fetching children matching registration numbers ${ registrationNumbers.join( ', ' ) } - ${ err }` );
+				// and reject the promise
+				reject();
+			});
 	});
 };

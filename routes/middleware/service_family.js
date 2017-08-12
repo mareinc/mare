@@ -8,7 +8,7 @@ const keystone						= require( 'keystone' ),
 	  staffEmailContactMiddleware	= require( './service_staff-email-contact' ),
 	  utilities         			= require( './utilities' );
 
-exports.setGalleryPermissions = ( req, res, done ) => {
+exports.setGalleryPermissions = ( req, res ) => {
 
 	let locals		= res.locals;
 	// variables to determine what features the user has access to.  Don't overwrite it if it's already set
@@ -16,11 +16,9 @@ exports.setGalleryPermissions = ( req, res, done ) => {
 
 	locals.canBookmarkChildren = userType === 'social worker' || userType === 'family' ? true : false;
 	locals.canSearchForChildren = userType === 'social worker' || userType === 'family' ? true : false;
-
-	done();
 };
 
-exports.checkForBookmarkedChildren = ( req, res, done ) => {
+exports.checkForBookmarkedChildren = ( req, res ) => {
 
 	let locals = res.locals;
 	// store the bookmarked children and sibling groups
@@ -29,8 +27,6 @@ exports.checkForBookmarkedChildren = ( req, res, done ) => {
 	// store whether or not the user has any bookmarked children or siblings
 	locals.hasBookmarkedChildren = ( bookmarkedChildren && bookmarkedChildren.length > 0 ) ||
 								   ( bookmarkedSiblings && bookmarkedSiblings.length > 0 );
-
-	done();
 };
 
 /* If the user type is capable of bookmarking children on the site, retrieve any that are already bookmarked */

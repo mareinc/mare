@@ -71,11 +71,12 @@ exports = module.exports = app => {
 	// registration
 	app.get( '/register/'								, routes.views.register );
 	app.post( '/register'								, registrationMiddleware.registerUser );
-	// app.get( '/verify-registration'						, routes.views.verifyRegistration );
 	// login / logout
 	app.get( '/logout/'									, middleware.logout );
 	app.post('/login'									, middleware.login );
+	// TODO: decide if both the mare in the news routes are needed
 	// MARE in the news
+	app.get( '/mare-in-the-news/'						, routes.views.mareInTheNews );
 	app.get( '/mare-in-the-news/*'						, routes.views.mareInTheNews );
 	// donations
 	app.get( '/donate/'									, routes.views.donate );
