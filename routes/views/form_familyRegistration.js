@@ -1,38 +1,62 @@
-const keystone		= require( 'keystone' );
-const async			= require( 'async' );
-const listsService	= require( '../middleware/service_lists' );
-const pageService	= require( '../middleware/service_page' );
+const keystone		= require( 'keystone' ),
+	  listsService	= require( '../middleware/service_lists' ),
+	  pageService	= require( '../middleware/service_page' );
 
 exports = module.exports = ( req, res ) => {
 	'use strict';
 
-	const view 				= new keystone.View( req, res );
-	const locals 			= res.locals;
+	const view 				= new keystone.View( req, res ),
+		  locals 			= res.locals;
 
 	// objects with additional search parameters
-	const stateOptions		= { default: 'Massachusetts' };
-	const raceOptions		= { other: true };
-	const waysToHearOptions	= { other: true };
-	// fetch all needed data prior to rendering
-	async.parallel([
-		done => { listsService.getAllCitiesAndTowns( req, res, done ); },
-		done => { listsService.getAllDisabilities( req, res, done ); },
-		done => { listsService.getAllStates( req, res, done, stateOptions ); },
-		done => { listsService.getAllRaces( req, res, done, raceOptions ); },
-		done => { listsService.getAllGenders( req, res, done ); },
-		done => { listsService.getAllLanguages( req, res, done ); },
-		done => { listsService.getAllLegalStatuses( req, res, done ); },
-		done => { listsService.getAllOtherConsiderations( req, res, done ); },
-		done => { listsService.getChildTypesForWebsite( req, res, done ); },
-		done => { pageService.populateSidebar( req, res, done ); }
-	], () => {
-		// set the layout to render with the right sidebar
-		locals[ 'render-with-sidebar' ] = true;
-		// render the view once all the data has been retrieved
-		view.render( 'form_social-worker-family-registration.hbs' );
-		
-	}, err => {
+	const stateOptions		= { default: 'Massachusetts' },
+		  raceOptions		= { other: true };
 
-		console.log( err );
-	});
+	// fetch all data needed to render this page
+	let fetchCitiesAndTowns			= listsService.getAllCitiesAndTowns(),
+		fetchDisabilities			= listsService.getAllDisabilities(),
+		fetchGenders				= listsService.getAllGenders(),
+		fetchLanguages				= listsService.getAllLanguages(),
+		fetchLegalStatuses			= listsService.getAllLegalStatuses(),
+		fetchOtherConsiderations	= listsService.getAllOtherConsiderations(),
+		fetchRaces					= listsService.getAllRaces( raceOptions ),
+		fetchStates					= listsService.getAllStates( stateOptions ),
+		fetchChildTypes				= listsService.getChildTypesForWebsite(),
+		fetchSidebarItems			= pageService.populateSidebar();
+	
+		Promise.all( [ fetchCitiesAndTowns, fetchDisabilities, fetchGenders, fetchLanguages, fetchLegalStatuses,
+					   fetchOtherConsiderations, fetchRaces, fetchStates, fetchChildTypes, fetchSidebarItems ] )
+			.then( values => {
+				// assign local variables to the values returned by the promises
+				const [ citiesAndTowns, disabilities, genders, languages, legalStatuses,
+						otherConsiderations, races, states, childTypes, sidebarItems ] = values;
+				// the sidebar items are a success story and event in an array, assign local variables to the two objects
+				const [ randomSuccessStory, randomEvent ] = sidebarItems;
+				
+				// assign properties to locals for access during templating
+				locals.citiesAndTowns		= citiesAndTowns;
+				locals.disabilities			= disabilities;
+				locals.genders				= genders;
+				locals.languages			= languages;
+				locals.legalStatuses		= legalStatuses;
+				locals.otherConsiderations	= otherConsiderations;
+				locals.races				= races;
+				locals.states				= states;
+				locals.childTypes			= childTypes;
+				locals.randomSuccessStory	= randomSuccessStory;
+				locals.randomEvent			= randomEvent;
+
+				// set the layout to render with the right sidebar
+				locals[ 'render-with-sidebar' ] = true;
+				// render the view using the form_social-worker-family-registration.hbs template
+				view.render( 'form_social-worker-family-registration' );
+			})
+			.catch( () => {
+				// log an error for debugging purposes
+				console.error( `there was an error loading data for the social worker family registration form` );
+				// set the layout to render with the right sidebar
+				locals[ 'render-with-sidebar' ] = true;
+				// render the view using the form_social-worker-family-registration.hbs template
+				view.render( 'form_social-worker-family-registration' );
+			});
 };

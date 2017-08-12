@@ -8,22 +8,24 @@ exports.fetchSlideshow = ( { title = 'Main Page Slideshow' } ) => {
 	return new Promise( ( resolve, reject ) => {
 		// fetch the model specified in the field using it's _id value
 		Slideshow.model
-				.findOne()
-				.where( 'title', title )
-				.exec()
-				.then( slideshow => {
-					// if we can't find the slideshow, abort execution and resolve with an undefined value
-					if( !slideshow ) {
-						console.log( `unable to load the slideshow: ${ title }` );
-						return resolve();
-					}					
-					// resolve with the _id of slideshow for easy access furthur down the line
-					resolve( slideshow.get( '_id' ) );
+			.findOne()
+			.where( 'title', title )
+			.exec()
+			.then( slideshow => {
+				// if we can't find the slideshow, abort execution and resolve with an undefined value
+				if( !slideshow ) {
+					console.log( `no slideshow was found matching the title: ${ title }` );
+					return resolve();
+				}					
+				// resolve with the slideshow
+				resolve( slideshow );
 
-				}, err => {
-					// if there was an error while fetching the model, reject the promise and return the error 
-					reject( err );
-				});
+			}, () => {
+				// log the error for debugging purposes
+				console.error( `error fetching the slideshow: ${ title }` );
+				// if there was an error while fetching the model, reject the promise and return the error 
+				reject();
+			});
 	});
 };
 
@@ -32,21 +34,22 @@ exports.fetchSlides = ( { slideshowId } ) => {
 	return new Promise( ( resolve, reject ) => {
 
 		SlideshowItem.model.find()
-				.where( 'parent', slideshowId )
-				.exec()
-				.then( slides => {
-					// if we can't find the slides, abort execution and resolve with an undefined value
-					if( !slides ) {
-						console.log( `unable to load the slideshow slides` );
-						return resolve();
-					}
-					// resolve with the slides for easy access furthur down the line
-					resolve( slides );
+			.where( 'parent', slideshowId )
+			.exec()
+			.then( slides => {
+				// if we can't find the slides, abort execution and resolve with an undefined value
+				if( !slides ) {
+					console.log( `no slides were found for slideshow with id: ${ slideshowId }` );
+					return resolve();
+				}
+				// resolve with the slides for easy access furthur down the line
+				resolve( slides );
 
-				}, err => {
-					// if there was an error while fetching the model, reject the promise and return the error 
-					reject( err );
-				});
-
+			}, () => {
+				// log the error for debugging purposes
+				console.error( `error fetching the slides for slideshow with id: ${ slideshowId }` );
+				// if there was an error while fetching the model, reject the promise and return the error 
+				reject();
+			});
 	});
 }

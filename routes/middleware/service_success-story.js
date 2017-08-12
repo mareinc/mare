@@ -1,23 +1,76 @@
 const keystone		= require( 'keystone' );
-const async			= require( 'async' );
-const SuccessStory	= keystone.list( 'Success Story' );
-const Utils			= require( './utilities' );
+	  async			= require( 'async' );
+	  Utils			= require( './utilities' );
+	  SuccessStory	= keystone.list( 'Success Story' );
 
-exports.getRandomStory = ( req, res, done ) => {
+exports.getRandomStory = () => {
 
-	let locals = res.locals;
-
-	// TODO: Handle the error if we get one
-	SuccessStory.model.findRandom( ( err, successStory ) => {
-		// NOTE: if this needs to be used for more than just the sidebar, we may need to relocate the call or create additional truncated text variants
-		// set how the text will be truncated for short content displays
-		const truncateOptions = { targetLength: 200 }
-		// create a truncated content element for a nicer display in summary cards
-		successStory.shortContent = Utils.truncateText( successStory.content, truncateOptions );
-
-		locals.randomSuccessStory = successStory;
-		// execute done function if async is used to continue the flow of execution
-		done();
+	return new Promise( ( resolve, reject ) => {
+		// use a function added to the Success Story model to find a single random story
+		SuccessStory.model
+			.findRandom( ( err, successStory ) => {
+				// if there was an error
+				if ( err ) {
+					// log the error for debugging purposes
+					console.error( `error fetching random success story - ${ err }` );
+					// reject the promise
+					return reject();
+				}
+				// if there was no error, resolve the promise with the returned success story
+				resolve( successStory );
+			});
 	});
+};
 
+exports.getAllSuccessStories = () => {
+
+	return new Promise( ( resolve, reject ) => {
+		// use a function added to the Success Story model to find a single random story
+		SuccessStory.model
+			.find()
+			.exec()
+			.then( successStories => {
+				// if no success stories could not be found
+				if( successStories.length === 0 ) {
+					// log an error for debugging purposes
+					console.error( `no success stories could be found` );
+					// reject the promise
+					return reject();
+				}
+				// if success stories were returned, resolve with the array
+				resolve( successStories );
+			// if an error was encountered fetching from the database
+			}, err => {
+				// log the error for debugging purposes
+				console.error( `error fetching all success stories - ${ err }` );
+				// reject the promise
+				reject();
+			});
+	});
+};
+
+exports.getSuccessStoryByUrl = url => {
+
+	return new Promise( ( resolve, reject ) => {
+		// attempt to find a single success story matching the passed in url
+		SuccessStory.model
+			.findOne()
+			.where( 'url', url )
+			.exec()
+			.then( successStory => {
+				// if the target success story could not be found
+				if( !successStory ) {
+					// log an error for debugging purposes
+					console.error( `no success story matching url '${ url } could be found` );
+				}
+				// if the target success story was found, resolve the promise with the success story
+				resolve( successStory );
+			// if there was an error fetching from the database
+			}, err => {
+				// log an error for debugging purposes
+				console.error( `error fetching success story matching url ${ url } - ${ err }` );
+				// and reject the promise
+				reject();
+			});
+		});
 };
