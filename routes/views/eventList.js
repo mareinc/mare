@@ -1,27 +1,21 @@
 const keystone 		= require( 'keystone' ),
-	  async			= require( 'async' ),
-	  _				= require( 'underscore' ),
 	  moment		= require( 'moment' ),
-	  Event			= keystone.list( 'Event' ),
 	  Utils			= require( '../middleware/utilities' ),
+	  eventService	= require( '../middleware/service_event' ),
 	  pageService	= require( '../middleware/service_page' );
 
 exports = module.exports = ( req, res ) => {
 	'use strict';
 
-	let view		= new keystone.View( req, res ),
-		locals		= res.locals,
-		userType	= req.user ? req.user.userType : '', // Knowing the type of user visiting the page will allow us to display extra relevant information
-		eventType, 		// Used to map the url to the stored event for determining which subset of events to show
-		targetGroup;	// Used to map to the different attendee groups to simplify searching for whether the user is attending
+	const view		= new keystone.View( req, res ),
+		  locals	= res.locals,
+		  userType	= req.user ? req.user.userType : ''; // knowing the type of user visiting the page will allow us to display extra relevant information
+	
+	// used to map the url to the stored event for determining which subset of events to show
+	let eventType;
 
-	switch( userType ) {
-		case 'admin'			: targetGroup = 'staffAttendees'; break;
-		case 'family'			: targetGroup = 'familyAttendees'; break;
-		case 'social worker'	: targetGroup = 'socialWorkerAttendees'; break;
-		case 'site visitor'		: targetGroup = 'siteVisitorAttendees'; break;
-		default					: targetGroup = '';
-	}
+	// find the field the user belongs to in the event model based on their user type
+	const eventGroup = eventService.getEventGroup( userType );
 
 	// Use the URL stored in the request object to determine what event type we need to list out
 	const targetList = req.originalUrl.replace( '/events/', '' );
@@ -35,9 +29,8 @@ exports = module.exports = ( req, res ) => {
 		default							: eventType = '';
 	}
 
-	req.user = req.user || {};
 	// determine if the user is a social worker.  We want to allow them to create events if they are
-	locals.isSocialWorker = req.user && req.user.userType === 'social worker' ? true : false;
+	locals.isSocialWorker = userType === 'social worker';
 
 	// track whether it is an event users can register for through the site
 	locals.canRegister = eventType === 'MARE adoption parties & information events' ||
@@ -48,61 +41,65 @@ exports = module.exports = ( req, res ) => {
 							  eventType === 'agency information meetings' ||
 							  eventType === 'other opportunities & trainings' );
 
-	async.parallel( [
-		done => { // TODO: Pull this into the Event service
-			Event.model.find()
-				.where( 'type', eventType ) // Grab only the events matching the target category
-				.where( 'isActive', true ) // We don't want to show inactive events
-				.populate( targetGroup )
-				.populate( 'address.state' )
-				.exec()
-				.then( events => {
-					// If there are no events to display, we need to capture that information for rendering
-					locals.noEvents = events.length > 0 ? false : true;
-					// An array to hold all events for use during templating
-					locals.events = [];
-					// A set of options to define how truncation will be handled
-					var truncateOptions = {
-						targetLength: 400
-					}
+	// fetch all data needed to render this page
+	let fetchEvents			= eventService.getActiveEventsByEventType( eventType, eventGroup ),
+		fetchSidebarItems	= pageService.populateSidebar();
 
-					// Loop through all events
-					_.each(events, event => {
-						// The list page needs truncated details information to keep the cards they're displayed on small
-						event.shortContent = Utils.truncateText( event.description, truncateOptions );
-						// Determine whether or not address information exists for the event, which is helpful during rendering
-						// street1 is required, so this is enough to tell us if the address has been populated
-						event.hasAddress = event.address && event.address.street1 ? true : false;
+	Promise.all( [ fetchEvents, fetchSidebarItems ] )
+		.then( values => {
+			// assign local variables to the values returned by the promises
+			const [ events, sidebarItems ] = values;
+			// the sidebar items are a success story and event in an array, assign local variables to the two objects
+			const [ randomSuccessStory, randomEvent ] = sidebarItems;
 
-						_.each(event[ targetGroup ], function( attendee ) {
-							// Without converting to strings, these were both evaluating to Object which didn't allow for a clean comparison
-							var attendeeID	= attendee._id.toString(),
-								userID		= req.user._id.toString();
+			// options to define how truncation will be handled
+			const truncateOptions = { targetLength: 400 }
 
-							// Determine whether the user has already attended the event
-							event.attended = attendeeID === userID ? true : false;
-						});
-						// Check to see if the event spans multiple days
-						var multidayEvent = event.startDate.getTime() !== event.endDate.getTime();
-						// Pull the date and time into a string for easier templating
-						if( multidayEvent ) {
-							event.dateString = moment( event.startDate ).format( 'dddd MMMM Do, YYYY' ) + ' to ' + moment( event.endDate ).format( 'dddd MMMM Do, YYYY' );
-						} else {
-							event.dateString = moment( event.startDate ).format( 'dddd MMMM Do, YYYY' );
-						}
-						// Store all events in an array on locals to expose them during templating
-						locals.events.push( event );
-					});
+			// loop through all the events
+			for( let event of events ) {
+				// the list page needs truncated details information to keep the cards they're displayed on small
+				event.shortContent = Utils.truncateText( event.description, truncateOptions );
+				// determine whether or not address information exists for the event, which is helpful during rendering
+				// street1 is required, so this is enough to tell us if the address has been populated
+				event.hasAddress = event.address && event.address.street1 ? true : false;
 
-					done();
+				for( let attendee of event[ eventGroup ] ) {
+					// without converting to strings, these were both evaluating to Object which didn't allow for a clean comparison
+					var attendeeID	= attendee._id.toString(),
+						userID		= req.user._id.toString();
 
-				});
-		},
-		done => { pageService.populateSidebar( req, res, done ); }
-	], () => {
-		// Set the layout to render with the right sidebar
-		locals[ 'render-with-sidebar' ] = true;
-		// Render the view once all the data has been retrieved
-		view.render( 'eventList' );
-	});
+					// determine whether the user has already attended the event
+					event.attended = attendeeID === userID ? true : false;
+				};
+
+				// check to see if the event spans multiple days
+				const multidayEvent = event.startDate.getTime() !== event.endDate.getTime();
+				
+				// Pull the date and time into a string for easier templating
+				if( multidayEvent ) {
+					event.dateString = moment( event.startDate ).format( 'dddd MMMM Do, YYYY' ) + ' to ' + moment( event.endDate ).format( 'dddd MMMM Do, YYYY' );
+				} else {
+					event.dateString = moment( event.startDate ).format( 'dddd MMMM Do, YYYY' );
+				}
+			};
+
+			// assign properties to locals for access during templating
+			locals.events				= events;
+			locals.hasNoEvents			= events.length === 0;
+			locals.randomSuccessStory	= randomSuccessStory;
+			locals.randomEvent			= randomEvent;
+
+			// set the layout to render with the right sidebar
+			locals[ 'render-with-sidebar' ] = true;
+			// render the view using the eventList.hbs template
+			view.render( 'eventList' );
+		})
+		.catch( () => {
+			// log an error for debugging purposes
+			console.error( `there was an error loading data for the event list page` );	
+			// set the layout to render with the right sidebar
+			locals[ 'render-with-sidebar' ] = true;
+			// render the view using the eventList.hbs template
+			view.render( 'eventList' );
+		});
 };

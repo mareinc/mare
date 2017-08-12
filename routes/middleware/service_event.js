@@ -4,155 +4,253 @@ var keystone	= require( 'keystone' ),
 	Event		= keystone.list( 'Event' ),
 	Utils		= require( './utilities' );
 
-exports.getEventById = function getEventById(res, done, eventId) {
+exports.getEventById = eventId => {
 
-	var locals = res.locals;
+	return new Promise( ( resolve, reject ) => {
+		Event.model
+			.findById( eventId )
+			.exec()
+			.then( event => {
+				// if the target event could not be found
+				if( !event ) {
+					// log an error for debugging purposes
+					console.error( `no event matching id '${ eventId } could be found` );
+					// reject the promise
+					return reject();
+				}
 
-	Event.model.findById(eventId)
-				.exec()
-				.then(function (event) {
-
-					locals.event = event;
-					// execute done function if async is used to continue the flow of execution
-					done();
-
-				}, function(err) {
-
-					console.log(err);
-					done();
-
-				});
+				// if the target event was found, resolve the promise with the event
+				resolve( event );
+			// if there was an error fetching from the database
+			}, err => {
+				// log an error for debugging purposes
+				console.error( `error fetching event matching id ${ eventId } - ${ err }` );
+				// and reject the promise
+				reject();
+			});
+	});
+};
+/* TODO: this is not reusable, but is needed to show a single event page.  Consider adding populate and possibly
+		 building other elements of the Mongoose query dynamically using passed in options */
+exports.getEventByUrl = url => {
+	
+	return new Promise( ( resolve, reject ) => {
+		// attempt to find a single event matching the passed in url, and populate some of the Relationship fields
+		Event.model.findOne()
+			.where( 'url', url )
+			.populate( 'contact' )
+			.populate( 'childAttendees' )
+			.populate( 'familyAttendees' )
+			.populate( 'socialWorkerAttendees' )
+			.populate( 'siteVisitorAttendees' )
+			.populate( 'staffAttendees' )
+			.populate( 'address.state' )
+			.exec()
+			.then( event => {
+				// if the target event could not be found
+				if( !event ) {
+					// log an error for debugging purposes
+					console.error( `no event matching '${ name } could be found` );
+				}
+				// if the target event was found, resolve the promise with the event
+				resolve( event );
+			// if there was an error fetching from the database
+			}, err => {
+				// log an error for debugging purposes
+				console.error( `error fetching event matching url ${ url } - ${ err }` );
+				// and reject the promise
+				reject();
+			});
+		});
 };
 
-exports.getTargetEventGroup = function getTargetEventGroup(req, res, done) {
+/* TODO: this is not reusable, but is needed to show a events category page.  Consider adding populate and possibly
+		 building other elements of the Mongoose query dynamically using passed in options */
+exports.getActiveEventsByEventType = ( eventType, eventGroup ) => {
+			
+	return new Promise( ( resolve, reject ) => {
 
-	var locals = res.locals;
+		Event.model.find()
+			.where( 'type', eventType ) // grab only the events matching the target category
+			.where( 'isActive', true ) // we don't want to show inactive events
+			.populate( eventGroup )
+			.populate( 'address.state' )
+			.exec()
+			.then( events => {
+				// if no active events matching the passed in eventType could not be found
+				if( events.length === 0 ) {
+					// log an error for debugging purposes
+					console.error( `no active events matching '${ eventType } could be found` );
+				}
+				// resolve the promise with the events
+				resolve( events );
+			// if there was an error fetching from the database
+			}, err => {
+				// log an error for debugging purposes
+				console.error( `error fetching active events matching ${ eventType } - ${ err }` );
+				// and reject the promise
+				reject();
+			});
+		});			
+};
 
-	switch(req.user.userType) {
-		case 'admin'			: locals.eventGroup = 'staffAttendees'; break;
-		case 'social worker'	: locals.eventGroup = 'socialWorkerAttendees'; break;
-		case 'site visitor'		: locals.eventGroup = 'siteVisitorAttendees'; break;
-		case 'family'			: locals.eventGroup = 'familyAttendees';
+exports.getEventGroup = userType => {
+
+	switch( userType ) {
+		case 'admin'			: return 'staffAttendees';
+		case 'social worker'	: return 'socialWorkerAttendees';
+		case 'site visitor'		: return 'siteVisitorAttendees';
+		case 'family'			: return 'familyAttendees';
 	}
-
-	done();
 }
+
 /* fetches a random event for the sidebar, which has restrictions as to what can be shown */
-exports.getRandomEvent = function getRandomEvent(req, res, done) {
+exports.getRandomEvent = () => {
 
-	let locals = res.locals;
-
-	// TODO: Handle the error if we get one
-	Event.model.findRandom({
-			type: { $in: [ 'MARE adoption parties & information events', 'fundraising events' ] },
-			isActive: true
-		}, ( err, event ) => {
-
-			locals.randomEvent = event ? event[ 0 ] : {};
-			// Create a formatted date for display in the UI
-			locals.randomEvent.prettyDate = moment( locals.randomEvent.date ).format( 'dddd, MMMM Do' );
-			// remove HTML tags from the description
-			// NOTE: if this needs to be used for more than just the sidebar, we may need to relocate the call or create additional truncated text variants
-			// set how the text will be truncated for short content displays
-			const truncateOptions = { targetLength: 100 };
-			// create a truncated content element for a nicer display in summary cards
-			locals.randomEvent.shortDescription = Utils.truncateText( Utils.stripTags( locals.randomEvent.description ), truncateOptions );
-			// Execute done function if async is used to continue the flow of execution
-			done();
-		});
-
+	return new Promise( ( resolve, reject ) => {
+		// query the database for a single random active event of the appprpriate type
+		Event.model
+			.findRandom({
+				type: { $in: [ 'MARE adoption parties & information events', 'fundraising events' ] },
+				isActive: true
+			}, ( err, event ) => {
+				// if there was an error
+				if ( err ) {
+					// log the error for debugging purposes
+					console.error( `error fetching random event - ${ err }` );
+					// reject the promise
+					return reject();
+				}
+				// the single random event will be the 0th element in the returned array
+				const randomEvent = event ? event[ 0 ] : {}; // TODO: make sure an empty response comes back as undefined instead of an empty array
+				// resolve the promise with the random event
+				resolve( randomEvent );
+			});
+	});
 };
 
 /*
  *	frontend services
  */
-exports.addUser = function addUser(req, res, next) {
-	var locals = res.locals,
-		userId = req.user.get('_id'),
-		userName = req.user.get('name.full'),
-		userType = req.user.get('userType'),
-		eventId = req.body.eventId;
+exports.addUser = ( req, res, next ) => {
+	
+	const locals	= res.locals,
+		  userId	= req.user.get( '_id' ),
+		  userName	= req.user.get( 'name.full' ),
+		  userType	= req.user.get( 'userType' ),
+		  eventId	= req.body.eventId;
 
-	async.series([
-		function(done) { exports.getEventById(res, done, eventId); },
-		function(done) { exports.getTargetEventGroup(req, res, done); }
-	], function() {
-		// Store a reference to the array of user IDs that match the current user's type
-		var eventGroup	= locals.eventGroup,
-			attendees	= locals.event.get(eventGroup),
-			userIndex	= attendees.indexOf(userId);
-		// Only add the user if they haven't already been saved.  This is unlikely, and would require a bad state in the system,
-		// but the check has been added for an extra layer of safety
-		if(userIndex === -1) {
-			// Push the user to the group of users in the event that matches their userType
-			attendees.push(userId);
-			// Save the event
-			locals.event.save();
-			// Construct useful data for needed UI updates
-			var responseData = {
-				success: true,
-				action: 'register',
-				name: userName,
-				group: userType
-			};
-			// TODO: Consider changing this and all other JSON responses to res.json for added durability
-			res.send(JSON.stringify(responseData));
+	// fetch the field the user should be added to based on their user type
+	const eventGroup = exports.getEventGroup( userType );
+	// fetch the event the user should be added to
+	let fetchEvent = exports.getEventById( eventId );
+		
+	fetchEvent
+		.then( event => {
+			// get the array of user IDs already in the field the user should be added to, and get the index of the user
+			const attendees	= event.get( eventGroup ),
+				  userIndex	= attendees.indexOf( userId );
+			// if the user is not already added
+			if( userIndex === -1 ) {
+				// add them to the attendees list
+				attendees.push( userId );
+				// save the updated event model to the database
+				event.save();
+				// construct useful data for needed UI updates
+				var responseData = {
+					success: true,
+					action: 'register',
+					name: userName,
+					group: userType
+				};
+				// send the response data base to the user as JSON
+				res.json( responseData );
 
-		} else {
-
+			} else {
+				// construct useful data for needed UI updates
+				var responseData = {
+					success: false,
+					action: 'register',
+					message: 'You are already attending that event'
+				};
+				// send the response data base to the user as JSON
+				res.json( responseData );
+			}
+		})
+		.catch( () => {
+			// log an error for debugging purposes
+			console.error( `there was an error adding the user to the event with id ${ req.body.eventId }` );	
+			
+			// construct useful data for needed UI updates
 			var responseData = {
 				success: false,
 				action: 'register',
-				message: 'You are already attending that event'
+				message: 'An error occurred when adding you to the event'
 			};
-
-			res.send(JSON.stringify(responseData));
-		}
-	});
+			// send the response data base to the user as JSON
+			res.json( responseData );
+		});
 };
 
-exports.removeUser = function removeUser(req, res, next) {
+exports.removeUser = ( req, res, next ) => {
 
-	var locals = res.locals,
-		userId = req.user.get('_id'),
-		userName = req.user.get('name.full'),
-		userType = req.user.get('userType'),
-		eventId = req.body.eventId;
+	const locals	= res.locals,
+		  userId	= req.user.get( '_id' ),
+		  userName	= req.user.get( 'name.full' ),
+		  userType	= req.user.get( 'userType' ),
+		  eventId	= req.body.eventId;
 
-	async.series([
-		function(done) { exports.getEventById(res, done, eventId); },
-		function(done) { exports.getTargetEventGroup(req, res, done); }
-	], function() {
-		// Store a reference to the array of user IDs that match the current user's type
-		var eventGroup	= locals.eventGroup,
-			attendees	= locals.event.get(eventGroup),
-			userIndex	= attendees.indexOf(userId);
-		// Only remove the user if they are attending.  This is unlikely, and would require a bad state in the system,
-		// but the check has been added for an extra layer of safety
-		if(userIndex !== -1) {
-			// Remove the user from the group of users in the event that matches their userType
-			attendees.splice(userIndex, 1);
-			// Save the event
-			locals.event.save();
-			// Construct useful data for needed UI updates
-			var responseData = {
-				success: true,
-				action: 'unregister',
-				name: userName,
-				group: userType
-			};
-			// TODO: Consider changing this and all other JSON responses to res.json for added durability
-			res.send(JSON.stringify(responseData));
-		} else {
+	// fetch the field the user should be added to based on their user type
+	const eventGroup = exports.getEventGroup( userType );
+	// fetch the event the user should be added to
+	let fetchEvent = exports.getEventById( eventId );
+
+	fetchEvent
+		.then( event => {
+			// get the array of user IDs already in the field the user should be added to, and get the index of the user
+			const attendees	= event.get( eventGroup ),
+				userIndex	= attendees.indexOf( userId );
+
+			// if the user exists in the group
+			if(userIndex !== -1) {
+				// remove them from the attendees list
+				attendees.splice( userIndex, 1 );
+				// save the updated event model
+				event.save();
+				// construct useful data for needed UI updates
+				var responseData = {
+					success: true,
+					action: 'unregister',
+					name: userName,
+					group: userType
+				};
+				// send the response data base to the user as JSON
+				res.json( responseData );
+
+			} else {
+				// construct useful data for needed UI updates
+				var responseData = {
+					success: false,
+					action: 'unregister',
+					message: 'You have already been removed from that event'
+				};
+				// send the response data base to the user as JSON
+				res.json( responseData );
+			}
+		})
+		.catch( () => {
+			// log an error for debugging purposes
+			console.error( `there was an error removing the user from the event with id ${ req.body.eventId }` );	
+			
+			// construct useful data for needed UI updates
 			var responseData = {
 				success: false,
-				action: 'unregister',
-				message: 'You have already been removed from that event'
+				action: 'register',
+				message: 'An error occurred when removing you from the event'
 			};
-
-			res.send(JSON.stringify(responseData));
-		}
-	});
+			// send the response data base to the user as JSON
+			res.json( responseData );
+		});
 };
 
 /* event creation submitted through the agency event submission form */

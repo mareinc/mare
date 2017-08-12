@@ -54,7 +54,7 @@ Inquiry.add( 'General Information', {
 
 /* Container for data migration fields ( these should be kept until after phase 2 and the old system is phased out completely ) */
 }, {
-	// system field to store an appropriate file prefix
+	// system field to store a map to the id in the old MARE system
 	oldId: { type: Types.Text, hidden: true }
 
 });

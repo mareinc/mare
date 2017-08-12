@@ -1,28 +1,45 @@
-const keystone		= require( 'keystone' );
-const async			= require( 'async' );
-const listsService	= require( '../middleware/service_lists' );
-const pageService	= require( '../middleware/service_page' );
+const keystone		= require( 'keystone' ),
+	  listsService	= require( '../middleware/service_lists' ),
+	  pageService	= require( '../middleware/service_page' );
 
 exports = module.exports = ( req, res ) => {
 	'use strict';
 
-	const view 			= new keystone.View( req, res );
-
-	const locals 		= res.locals;
-	// objects with additional search parameters
+	const view 			= new keystone.View( req, res ),
+		  locals 		= res.locals;
+	
+		  // objects with additional search parameters
 	const stateOptions	= { default: 'Massachusetts' };
 
-	async.parallel([
-		done => { listsService.getAllStates( req, res, done, stateOptions ); },
-		done => { listsService.getEventTypesForWebsite( req, res, done ); },
-		done => { pageService.populateSidebar( req, res, done ); }
-	], () => {
-		// Set the layout to render with the right sidebar
-		locals[ 'render-with-sidebar' ] = true;
-		// Render the view once all the data has been retrieved
-		view.render( 'form_agency-event-submission.hbs' );
-	}, err => {
+	// fetch all data needed to render this page
+	let fetchStates			= listsService.getAllStates( stateOptions ),
+		fetchEventTypes		= listsService.getEventTypesForWebsite(),
+		fetchSidebarItems	= pageService.populateSidebar();
 
-		console.log( err );
-	});
+	Promise.all( [ fetchStates, fetchEventTypes, fetchSidebarItems ] )
+		.then( values => {
+			// assign local variables to the values returned by the promises
+			const [ states, eventTypes, sidebarItems ] = values;
+			// the sidebar items are a success story and event in an array, assign local variables to the two objects
+			const [ randomSuccessStory, randomEvent ] = sidebarItems;
+			
+			// assign properties to locals for access during templating
+			locals.states				= states;
+			locals.eventTypes			= eventTypes;
+			locals.randomSuccessStory	= randomSuccessStory;
+			locals.randomEvent			= randomEvent;
+			
+			// Set the layout to render with the right sidebar
+			locals[ 'render-with-sidebar' ] = true;
+			// render the view using the form_agency-event-submission.hbs template
+			view.render( 'form_agency-event-submission' );
+		})
+		.catch( () => {
+			// log an error for debugging purposes
+			console.error( `there was an error loading data for the agency event submission form` );
+			// Set the layout to render with the right sidebar
+			locals[ 'render-with-sidebar' ] = true;
+			// render the view using the form_agency-event-submission.hbs template
+			view.render( 'form_agency-event-submission' );
+		});
 };
