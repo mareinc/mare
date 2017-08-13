@@ -54,9 +54,7 @@ exports.getUserDonations = ( donationGroup, userID ) => {
 					// log an error for debugging purposes
 					console.error( `no donations could be found` );
                 }
-                
-                console.log('Donations in service_donation:')
-                console.log(donations);
+
 				// resolve the promise with the donations
 				resolve( donations );
 			// if there was an error fetching from the database
