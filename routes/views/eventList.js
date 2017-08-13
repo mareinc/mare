@@ -43,7 +43,7 @@ exports = module.exports = ( req, res ) => {
 
 	// fetch all data needed to render this page
 	let fetchEvents			= eventService.getActiveEventsByEventType( eventType, eventGroup ),
-		fetchSidebarItems	= pageService.populateSidebar();
+		fetchSidebarItems	= pageService.getSidebarItems();
 
 	Promise.all( [ fetchEvents, fetchSidebarItems ] )
 		.then( values => {

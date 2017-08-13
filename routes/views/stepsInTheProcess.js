@@ -13,7 +13,7 @@ exports = module.exports = ( req, res ) => {
 	};
 
 	// fetch all data needed to render this page
-	let fetchSidebarItems = pageService.populateSidebar();
+	let fetchSidebarItems = pageService.getSidebarItems();
 
 	fetchSidebarItems
 		.then( sidebarItems => {

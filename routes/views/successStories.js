@@ -27,7 +27,7 @@ exports = module.exports = ( req, res ) => {
 
 	// fetch all data needed to render this page
 	let fetchSuccessStories = successStoryService.getAllSuccessStories(),
-		fetchSidebarItems	= pageService.populateSidebar();
+		fetchSidebarItems	= pageService.getSidebarItems();
 
 	Promise.all( [ fetchSuccessStories, fetchSidebarItems ] )
 		.then( values => {
