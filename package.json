@@ -10,7 +10,7 @@
     "async": "^2.5.0",
     "browserify": "^14.3.0",
     "cloudinary": "~1.9.0",
-    "crypto": "0.0.3",
+    "crypto": "1.0.1",
     "del": "^3.0.0",
     "dotenv": "^4.0.0",
     "express-handlebars": "~3.0.0",
@@ -32,7 +32,7 @@
     "keystone": "https://github.com/keystonejs/keystone.git#c38b366c7b1bf01448c8ece7c36e1bb6eb195186",
     "moment": "~2.18.1",
     "mongoose-simple-random": "^0.4.1",
-    "newrelic": "^2.0.2",
+    "newrelic": "^2.1.0",
     "node-sass": "^4.5.3",
     "node-sass-middleware": "^0.11.0",
     "q": "^1.5.0",
@@ -50,7 +50,7 @@
   "devDependencies": {
     "chai": "^4.1.1",
     "mocha": "^3.5.0",
-    "sinon": "^3.0.0",
+    "sinon": "^3.2.0",
     "sinon-chai": "^2.12.0"
   }
 }

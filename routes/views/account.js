@@ -1,28 +1,38 @@
-const keystone		= require( 'keystone' ),
-	  moment		= require( 'moment' ),
-	  userService	= require( '../middleware/service_user' ),
-	  eventService	= require( '../middleware/service_event' );
+const keystone			= require( 'keystone' ),
+	  moment			= require( 'moment' ),
+	  userService		= require( '../middleware/service_user' ),
+	  eventService		= require( '../middleware/service_event' ),
+	  donationService	= require( '../middleware/service_donation' );
 
 exports = module.exports = ( req, res ) => {
     'use strict';
 
-    const view		= new keystone.View( req, res ),		  
-		  locals	= res.locals,
-		  userId	= req.user.get( '_id' ),
-		  userType	= req.user.userType; // knowing the type of user visiting the page will allow us to display the correct sections for their account
+	const
+		view			= new keystone.View( req, res ),		  
+		locals			= res.locals,
+		userType		= req.user ? req.user.userType : '', // knowing the type of user visiting the page will allow us to display extra relevant information
+		userID			= req.user ? req.user._id : '',
 
-	// find the field the user belongs to in the event model based on their user type
-	const eventGroup = eventService.getEventGroup( userType );
+		// find the field the user belongs to in the event model based on their user type
+		eventGroup		= eventService.getEventGroup( userType ),
+		donationGroup	= donationService.getDonationsGroup( userType ),
+	
+		// fetch all data needed to render this page
+		fetchEvents		= eventService.getAllActiveEvents( eventGroup ),
+		fetchDonations	= donationService.getUserDonations( donationGroup, userID )
+	;
 
-	// TODO: the getActiveEventsByUserId query will need to be updated to filter results based on the user id.
-	//  	 The user id will be in the field stored in the eventGroup variable
-	// fetch all data needed to render this page
-	let fetchEvents = eventService.getActiveEventsByUserId( userId, eventGroup );
+	// assign properties to locals for access during templating
+	locals.user = req.user;
 
-	Promise.all( [ fetchEvents ] )
+
+	Promise.all( [ fetchEvents, fetchDonations ] )
 		.then( values => {
 			// assign local variables to the values returned by the promises
-			const [ events ] = values;
+			const [ events, donations ] = values;
+
+			// options to define how truncation will be handled
+			const truncateOptions = { targetLength: 400 }
 
 			// loop through all the events
 			for( let event of events ) {
@@ -42,9 +52,10 @@ exports = module.exports = ( req, res ) => {
 			}
 
 			// assign properties to locals for access during templating
-			locals.user			= req.user;
-			locals.events		= events;
-			locals.hasNoEvents	= events.length === 0;
+			locals.events						= events;
+			locals.hasNoEvents					= events.length === 0;
+			locals.donations					= donations;
+			locals.hasNoDonations				= donations.length === 0;
 
 			// set the layout to render without the right sidebar
 			locals[ 'render-with-sidebar' ] = false;
@@ -53,7 +64,7 @@ exports = module.exports = ( req, res ) => {
 		})
 		.catch( err => {
 			// log an error for debugging purposes
-			console.error( `there was an error loading data for the account page - ${ err }` );	
+			console.error( `there was an error loading event data for the account page - ${err}` );	
 			// set the layout to render without the right sidebar
 			locals[ 'render-with-sidebar' ] = false;
 			// render the view using the account.hbs template
