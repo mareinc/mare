@@ -22,7 +22,7 @@ exports = module.exports = ( req, res ) => {
 		fetchRaces					= listsService.getAllRaces( raceOptions ),
 		fetchStates					= listsService.getAllStates( stateOptions ),
 		fetchChildTypes				= listsService.getChildTypesForWebsite(),
-		fetchSidebarItems			= pageService.populateSidebar();
+		fetchSidebarItems			= pageService.getSidebarItems();
 	
 		Promise.all( [ fetchCitiesAndTowns, fetchDisabilities, fetchGenders, fetchLanguages, fetchLegalStatuses,
 					   fetchOtherConsiderations, fetchRaces, fetchStates, fetchChildTypes, fetchSidebarItems ] )

@@ -32,7 +32,7 @@ exports.getPageByUrl = url => {
 		});
 };
 
-exports.populateSidebar = () => {
+exports.getSidebarItems = () => {
 
 	return new Promise( ( resolve, reject ) => {
 		// set how the text will be truncated for short content displays

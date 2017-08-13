@@ -8,7 +8,7 @@ exports = module.exports = ( req, res ) => {
 		  locals 	= res.locals;
 	
 	// fetch all data needed to render this page
-	let fetchSidebarItems = pageService.populateSidebar();
+	let fetchSidebarItems = pageService.getSidebarItems();
     
 	fetchSidebarItems
 		.then( sidebarItems => {

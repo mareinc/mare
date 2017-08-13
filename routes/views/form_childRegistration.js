@@ -24,7 +24,7 @@ exports = module.exports = ( req, res ) => {
 		fetchRaces									= listsService.getAllRaces( raceOptions ),
 		fetchResidences								= listsService.getAllResidences(),
 		fetchStates									= listsService.getAllStates( stateOptions ),
-		fetchSidebarItems							= pageService.populateSidebar();
+		fetchSidebarItems							= pageService.getSidebarItems();
 
 	Promise.all( [ fetchCitiesAndTowns, fetchDisabilities, fetchFamilyConstellations, fetchGenders,fetchLanguages,
 				   fetchLegalStatuses, fetchOtherConsiderations, fetchOtherFamilyConstellationConsiderations,
