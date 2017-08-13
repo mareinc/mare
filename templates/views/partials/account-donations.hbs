@@ -1,10 +1,14 @@
 <script id="account-donations" type="text/x-handlebars-template">
 
-    <h2>User donations:</h2>
+    <h2>Your Donations:</h2>
+    {{#if donations}}
     <ul>
         {{#each donations}}
-        <li>{{name}}</li>
+        <li>You donated <b>{{currency amount}}</b> {{#if onBehalfOf}} on behalf of {{onBehalfOf}} {{/if}}on {{date}}</li>
         {{/each}}
     </ul>
+    {{else}}
+    <p>You haven't made any donations. Why don't you <a href="/donate">make one now!</a></p>
+    {{/if}}
 
 </script>

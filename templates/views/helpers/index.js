@@ -34,6 +34,19 @@ module.exports = function() {
 		}
 	};
 
+	// converts unformatted number into currency
+	// 12345 -> $1,2345.00 || 1234567.89 -> $1,234,567.89
+	_helpers.currency = function currency( num ) {
+		var formattedNumber =
+			num
+				.toFixed(2)
+				.toString()
+				.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+		;
+
+		return '$' + formattedNumber;
+	};
+
 	/**
 	 * Port of Ghost helpers to support cross-theming
 	 * ==============================================

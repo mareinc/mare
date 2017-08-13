@@ -5,7 +5,8 @@
 		el: 'body',
 
         events: {
-            'click .account-sidebar__section' : 'navigate'
+            'click .account-sidebar__section'   : 'navigate',
+            'click .account-link--donate'       : 'donate'
         },
 
 		// TODO: consider putting this in a more global space since it's used for button navigation
@@ -13,6 +14,10 @@
             var selectedSection = $( event.currentTarget ).data( 'url' );
 
             mare.routers.account.navigate( selectedSection, { trigger: true } );
+        },
+
+        donate: function donate() {
+            window.location.href = '/donate';
         },
 
         openSection: function openSection( section ) {
