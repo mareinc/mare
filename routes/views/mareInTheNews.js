@@ -10,7 +10,7 @@ exports = module.exports = ( req, res ) => {
 	
 	// fetch all data needed to render this page
 	let fetchMAREInTheNewsStory	= mareInTheNewsService.getMAREInTheNewsByUrl( req.originalUrl ),
-		fetchSidebarItems		= pageService.populateSidebar();
+		fetchSidebarItems		= pageService.getSidebarItems();
 
 	Promise.all( [ fetchMAREInTheNewsStory, fetchSidebarItems ] )
 		.then( values => {
