@@ -1,8 +1,22 @@
-<div class="main">
+<div class="content__main content__main--with-sidebar">
 
-  	<h1>Welcome to the account of {{ user.name.first }} {{ user.name.last }}</h1>
-  	<h2>Type of user: {{ user.userType }}</h2>
-  	<h2>User email: {{ user.email }}</h2>
+	<aside class="sidebar sidebar--slim">
+		<button class="account-sidebar__section" data-url="info">My Information</button>
+		<button class="account-sidebar__section" data-url="email-list">Email Lists</button>
+		<button class="account-sidebar__section" data-url="events">Events</button>
+		<button class="account-sidebar__section" data-url="donations">Donation History</button>
+		<button class="account-sidebar__section" data-url="children">Children</button>
+	</aside>
+				
+	<section class="content__body">
+		<div id="account-current-section" class="card card--vertical card--large-padding">
+		</div>
+	</section>
 
-	<a href="/keystone">Sign in to Admin Panel</a>
 </div>
+
+{{> account-info}}
+{{> account-email-list}}
+{{> account-events}}
+{{> account-donations}}
+{{> account-children}}
