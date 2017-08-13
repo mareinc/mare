@@ -470,6 +470,7 @@ exports.getAllCitiesAndTowns = () => {
 		// query the database for all cities and towns
 		CityOrTown.model
 			.find()
+			.sort( { cityOrTown: 1 } )
 			.exec()
 			.then( citiesAndTowns => {
 				// if no cities or towns could not be found
