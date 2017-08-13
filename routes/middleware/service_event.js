@@ -94,7 +94,7 @@ exports.getActiveEventsByEventType = ( eventType, eventGroup ) => {
 		});			
 };
 
-exports.getAllActiveEvents = ( eventGroup ) => {
+exports.getActiveEventsByUserId = ( userId, eventGroup ) => {
 			
 	return new Promise( ( resolve, reject ) => {
 
@@ -107,19 +107,18 @@ exports.getAllActiveEvents = ( eventGroup ) => {
 				// if no active events could be found
 				if( events.length === 0 ) {
 					// log an error for debugging purposes
-					console.error( `no active events could be found` );
+					console.error( `no active events could be found for user with id: ${ userId }` );
 				}
 				// resolve the promise with the events
 				resolve( events );
 			// if there was an error fetching from the database
 			}, err => {
 				// log an error for debugging purposes
-				console.error( `error fetching active events - ${ err }` );
+				console.error( `error fetching active events for user with id ${ userId } - ${ err }` );
 				// and reject the promise
 				reject();
 			});
-		})
-	;
+		});
 };
 
 exports.getEventGroup = userType => {
