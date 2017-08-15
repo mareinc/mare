@@ -1,6 +1,5 @@
 const stripe = require('stripe')
       moment = require('moment')
-      q      = requrie('q')
       donation = require('../models/Donation');
 
 
@@ -9,6 +8,7 @@ const stripe = require('stripe')
 *   Define subscription plan types as per stripe API: https://stripe.com/docs/api#create_plan
 */
 const plan_types = {
+    
     monthly: {
         id: 'monthly',
         interval: 'month'
@@ -65,40 +65,42 @@ function createPlan(customer,amount,plan_type){
 
 exports = module.exports = {
 
-    oneTimeCharge: (stripeToken, email, amount) =>{
+    oneTimeCharge: (stripeToken, email, amount) => {
 
-        var deferred = q.defer(); //start q promise
+        return new Promise( (resolve, reject) => {
 
-        createStripeCustomer(stripeToken, email)
-        .then((customer) => createCharge(customer,amount))
-        .then((charge) =>{
-            //Log the customer has been charged x 
-            deferred.resolve();
+                createStripeCustomer(stripeToken, email)
+                .then((customer) => createCharge(customer,amount))
+                .then( (charge) => {
+                    //Log the customer has been charged x 
+                    resolve();
+                })
+                .catch( (error) => {
+                    //Log the error 
+                    reject();   
+                });
         })
-        .catch( (error) =>{
-            //Log the error 
-            deferred.reject();   
-        });
+        
 
-        return deferred.promise; //end q promise
     },
 
     recurringCharge: (stripeToken, email, amount, plan_type) =>{
 
-        var deferred = q.defer(); //start q promise
+        return new Promise( (resolve,reject) => {
 
-        createStripeCustomer(stripeToken, email)
-        .then((customer) => createPlan(customer,amount,plan_type))
-        .then((plan) =>{
-            //Log the plan has been created and is ready to be used
-            deferred.resolve();
-        })
-        .catch( (error) =>{
-            //Log the error 
-            deferred.reject();   
+                createStripeCustomer(stripeToken, email)
+                .then( (customer) => createPlan(customer,amount,plan_type))
+                .then( (plan) => {
+                    //Log the plan has been created and is ready to be used
+                    resolve();
+                })
+                .catch( (error) => {
+                    //Log the error 
+                    reject();   
+                });
         });
+        
 
-        return deferred.promise; //end q promise
     }
 
-}
+};
