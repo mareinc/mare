@@ -57,6 +57,8 @@ exports = module.exports = ( req, res ) => {
 			locals.donations					= donations;
 			locals.hasNoDonations				= donations.length === 0;
 
+			locals.mare.url = mare.url;
+
 			// set the layout to render without the right sidebar
 			locals[ 'render-with-sidebar' ] = false;
 			// render the view using the account.hbs template

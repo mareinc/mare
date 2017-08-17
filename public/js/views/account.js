@@ -5,27 +5,18 @@
 		el: 'body',
 
         events: {
-            'click .account-sidebar__section'   : 'navigate',
-            'click .account-link--donate'       : 'donate'
-        },
-
-		// TODO: consider putting this in a more global space since it's used for button navigation
-        navigate: function navigate( event ) {
-            var selectedSection = $( event.currentTarget ).data( 'url' );
-
-            mare.routers.account.navigate( selectedSection, { trigger: true } );
-        },
-
-        donate: function donate() {
-            window.location.href = '/donate';
+            'change .mobile-account-nav'    : 'dropdownNavigation'
         },
 
         openSection: function openSection( section ) {
             var
                 currentSectionContainer = this.$( '#account-current-section' ),
-                thisSection,
-                sectionHTML
+                thisSection
             ;
+
+            // TODO: Set currentSection and pass in to template
+            this.currentSection = section;
+            // TODO: Set currentSection and pass in to template
 
             currentSectionContainer.empty();
             
@@ -39,10 +30,11 @@
 
             // Compile the template based on section
             this.template = Handlebars.compile( thisSection );
+            currentSectionContainer.html( this.template() );
+        },
 
-            sectionHTML = this.template();
-
-            currentSectionContainer.append( sectionHTML );
+        dropdownNavigation: function dropdownNavigation( e ) {
+            window.location.href = e.currentTarget.value;
         }
     });
 }());
