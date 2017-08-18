@@ -15,7 +15,7 @@
             ;
 
             // TODO: Set currentSection and pass in to template
-            this.currentSection = section;
+            this.currentSection = mare.url.route;
             // TODO: Set currentSection and pass in to template
 
             currentSectionContainer.empty();
