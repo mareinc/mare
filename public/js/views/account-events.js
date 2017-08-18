@@ -22,8 +22,8 @@
 			// hide the section
 			this.$el.hide();
 			// remove the contents of the view
-			// NOTE: if any events are bound to DOM elements, they should be explicitly removed here as well
 			this.$el.empty();
+			// NOTE: if any events are bound to DOM elements, they should be explicitly removed here as well
 		},
 
 		show: function show() {

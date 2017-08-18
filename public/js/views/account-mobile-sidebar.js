@@ -22,11 +22,6 @@
 			this.$el.html( html );
 		},
 
-		changeSection: function changeSection( event ) {
-			// this.updateDropdownMenu();
-			this.announceSelectionChange( event );
-		},
-
 		announceSelectionChange: function announceSelectionChange( event ) {
 			// trigger an event so the router knows to update the url
 			this.trigger( 'changeSection', event.currentTarget.value );
