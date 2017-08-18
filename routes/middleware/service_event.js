@@ -121,7 +121,7 @@ exports.getActiveEventsByUserId = ( userId, eventGroup ) => {
 		});
 };
 
-exports.getAllActiveEvents = ( eventGroup ) => {
+exports.getAllActiveEvents = eventGroup => {
 			
 	return new Promise( ( resolve, reject ) => {
 

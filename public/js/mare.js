@@ -23,7 +23,6 @@
 				mare.url.siteArea	= pathArray[ 0 ];
 				mare.url.page		= pathArray[ 1 ];
 				mare.url.target		= pathArray[ 2 ];
-				mare.url.route		= href.slice( href.indexOf( '#' ) + 1 );
 
 				// store redirect information for log in / log out actions
 				mare.url.redirect = '';
@@ -67,6 +66,15 @@
 			disableButton: function disableButton( $button ) {
 				$button.attr( 'disabled', 'disabled' );
 				$button.addClass( 'button--disabled' );
+			},
+
+			registerHandlebarsHelpers: function registerHandlebarsHelpers() {
+				Handlebars.registerHelper( 'ifeq', function( a, b, opts ) {
+					if( a === b )
+						return opts.fn( this );
+					else
+						return opts.inverse( this );
+				});
 			}
 		}
 	};

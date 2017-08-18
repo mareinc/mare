@@ -15,21 +15,16 @@ exports = module.exports = ( req, res ) => {
 
 		// find the field the user belongs to in the event model based on their user type
 		eventGroup		= eventService.getEventGroup( userType ),
-		donationGroup	= donationService.getDonationsGroup( userType ),
 	
 		// fetch all data needed to render this page
-		fetchEvents		= eventService.getAllActiveEvents( eventGroup ),
-		fetchDonations	= donationService.getUserDonations( donationGroup, userID )
+		fetchEvents		= eventService.getAllActiveEvents( eventGroup );
 	;
 
 	// assign properties to locals for access during templating
 	locals.user = req.user;
 
-
-	Promise.all( [ fetchEvents, fetchDonations ] )
-		.then( values => {
-			// assign local variables to the values returned by the promises
-			const [ events, donations ] = values;
+	fetchEvents
+		.then( events => {
 
 			// options to define how truncation will be handled
 			const truncateOptions = { targetLength: 400 }
@@ -52,12 +47,8 @@ exports = module.exports = ( req, res ) => {
 			}
 
 			// assign properties to locals for access during templating
-			locals.events						= events;
-			locals.hasNoEvents					= events.length === 0;
-			locals.donations					= donations;
-			locals.hasNoDonations				= donations.length === 0;
-
-			locals.mare.url = mare.url;
+			locals.events		= events;
+			locals.hasNoEvents	= events.length === 0;
 
 			// set the layout to render without the right sidebar
 			locals[ 'render-with-sidebar' ] = false;
@@ -66,11 +57,10 @@ exports = module.exports = ( req, res ) => {
 		})
 		.catch( err => {
 			// log an error for debugging purposes
-			console.error( `there was an error loading event data for the account page - ${err}` );	
+			console.error( `there was an error loading data for the account page - ${ err }` );	
 			// set the layout to render without the right sidebar
 			locals[ 'render-with-sidebar' ] = false;
 			// render the view using the account.hbs template
 			view.render( 'account' );
-		})
-	;
+		});
 };

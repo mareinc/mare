@@ -1,32 +1,28 @@
 <div class="content__main content__main--with-sidebar account-page">
 
-	<select class="mobile-account-nav" name="mobile-account-nav">
-		<option value="#info">My Information</option>
-		<option value="#email-list">Email Lists</option>
-		<option value="#events">Events</option>
-		<option value="#donations">Donation History</option>
-		<option value="#children">Children</option>
-	</select>
+	<span class="mobile-account-nav-container"></span>
 
-	<aside class="sidebar sidebar--slim account-nav">
-		<a href="#info" class="button button--teal account-nav__link {{#ifeq currentSetion 'info' }}.account-nav__link--active{{/ifeq}}">My Information</a>
-		<a href="#email-list" class="button button--teal account-nav__link {{#ifeq currentSetion 'email-list' }}.account-nav__link--active{{/ifeq}}">Email Lists</a>
-		<a href="#events" class="button button--teal account-nav__link {{#ifeq currentSetion 'events' }}.account-nav__link--active{{/ifeq}}">Events</a>
-		<a href="#donations" class="button button--teal account-nav__link {{#ifeq currentSetion 'donations' }}.account-nav__link--active{{/ifeq}}">Donation History</a>
-		<a href="#children" class="button button--teal account-nav__link {{#ifeq currentSetion 'children' }}.account-nav__link--active{{/ifeq}}">Children</a>
-		{{#ifeq user.userType 'admin'}}<a href="/keystone" class="button button--green account-nav__link account-nav__link--admin">Admin</a>{{/ifeq}}
-	</aside>
+	<aside class="sidebar sidebar--slim account-nav"></aside>
 				
 	<section class="content__body">
 		<div id="account-current-section" class="card card--vertical card--large-padding account-current-section">
 		</div>
+
+		<div class="account-info-container"></div>
+		<div class="account-children-container"></div>
+		<div class="account-email-list-container"></div>
+		<div class="account-events-container"></div>
+
 	</section>
 
 </div>
 
-{{!-- Sub-section partials --}}
+{{!-- navigation partials --}}
+{{> account-mobile-sidebar}}
+{{> account-sidebar}}
+
+{{!-- sub-section partials --}}
 {{> account-info}}
 {{> account-email-list}}
 {{> account-events}}
-{{> account-donations}}
 {{> account-children}}

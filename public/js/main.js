@@ -1,14 +1,16 @@
 $(function() {
 	'use strict';
-	// Extract useful url information and store it on the mare namespace
+	// extract useful url information and store it on the mare namespace
 	mare.utils.storeUrlInfo();
-	// Ensure touch events are handled appropriately
+	// ensure touch events are handled appropriately
 	mare.utils.bindTouch();
-	// Every route needs to initialize views for scaffolded areas like the header and the navigation
+	// every route needs to initialize views for scaffolded areas like the header and the navigation
 	mare.views.globalHeader = mare.views.globalHeader || new mare.views.GlobalHeader();
 	mare.views.mobileMenu = mare.views.mobileMenu || new mare.views.MobileMenu();
-	// Handle basic routing, initializing based on the result
-	// No default exists due to main routing being handled by the server
+	// register Handlebars helpers
+	mare.utils.registerHandlebarsHelpers();
+	// handle basic routing, initializing based on the result
+	// no default exists due to main routing being handled by the server
 	// TODO: ensure mangled urls route to the home page
 	switch( mare.url.siteArea ) {
 		case ''										: mare.routers.home = new mare.routers.Home();												break;
