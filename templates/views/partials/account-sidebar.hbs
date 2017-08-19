@@ -6,7 +6,7 @@
         <li class="button button--teal account-nav__link \{{#ifeq selectedRoute 'events' }}account-nav__link--active\{{/ifeq}}" data-section="events">Events</li>
         <li class="button button--teal account-nav__link \{{#ifeq selectedRoute 'children' }}account-nav__link--active\{{/ifeq}}" data-section="children">Children</li>
         {{#ifeq user.userType 'admin'}}
-        <li href="/keystone" class="button button--green account-nav__link account-nav__link--admin">Admin</li>
+        <a href="/keystone"><li class="button button--green account-nav__link account-nav__link--admin">Admin Panel</li></a>
         {{/ifeq}}
     </ul>
 
