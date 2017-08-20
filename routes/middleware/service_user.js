@@ -108,4 +108,4 @@ exports.getUserByFullName = ( name, userType ) => {
 				reject();
 			});
 	});
-}
+};

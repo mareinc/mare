@@ -19,8 +19,8 @@
 
 		initialize: function() {
 
-			// Initialize a view for the log in modal if it doesn't already exist
-			mare.views.logIn					= mare.views.logIn || new mare.views.LogIn();
+			// initialize a view for the log in modal if it doesn't already exist
+			mare.views.logIn = mare.views.logIn || new mare.views.LogIn();
 
 			// screen width breakpoints (same as _component-menu.scss)
 			this.EXTRASMALLSCREEN_WIDTH			= 0;	// mobile breakpoint, mobile menu

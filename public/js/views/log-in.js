@@ -16,11 +16,11 @@
 		// events need to be bound every time the modal is opened, so they can't be put in an event block
 		bindEvents: function bindEvents() {
 			// bind an event to allow closing of the modal
-			$( '.modal__close' ).click( this.closeModal );
+			$( '.modal__close' ).click( this.closeModal.bind( this ) );
 		},
 		// events need to be unbound every time the modal is closed
 		unbindEvents: function unbindEvents() {
-
+			$( '.modal__close' ).unbind( 'click' );
 		},
 
 		render: function render() {
@@ -49,13 +49,18 @@
 			this.render();
 			// TODO: this adds a class to the modal to adjust it's size.  This should be handled by passing in a size option to a modal view on initialization
 			$( '.modal__container' ).addClass( 'modal__container--small' );
+			$( '.modal-container__contents' ).addClass( 'modal-container__contents--vertically-centered' );
 
 			$( '.modal__background' ).fadeIn();
 			$( '.modal__container' ).fadeIn();
 
 			mare.utils.disablePageScrolling();
 			// Bind click events for the newly rendered elements
-			this.bindEvents();
+			if( mare.views.childDetails ) {
+				mare.views.childDetails.bindEvents();
+			} else {
+				this.bindEvents();
+			}
 		},
 
 		/* Close the modal container */
@@ -73,6 +78,8 @@
 			// This event is called from a click event so the view context is lost, we need to explicitly call all functions
 			if( mare.views.childDetails ) {
 				mare.views.childDetails.unbindEvents();
+			} else {
+				this.unbindEvents();
 			}
 		}
 	});
