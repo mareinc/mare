@@ -623,21 +623,17 @@ exports.getChildByRegistrationNumberNew = registrationNumber => {
 
 		// if no registration number was passed in, or the number is invalid
 		if( !registrationNumber
-			|| typeof registrationNumber !== 'number'
-			|| typeof registrationNumber !== 'string'
-			|| ( typeof registrationNumber === 'string' && registrationNumber.length === 0 )
-			|| ( typeof registrationNumber === 'number' && Number.isNaN( targetRegistrationNumber ) ) ) {
+			|| ( typeof registrationNumber !== 'number' && typeof registrationNumber !== 'string' )
+			|| ( typeof registrationNumber === 'number' && Number.isNaN( targetRegistrationNumber ) )
+			|| ( typeof registrationNumber === 'string' && registrationNumber.length === 0 ) ) {
 				// log an error for debugging purposes
-				console.error( `the registration number was either not provided or invalid
-								number: ${ registrationNumber }
-								type: ${ typeof registrationNumber }` );
+				console.error( `the registration number was either not provided or invalid - number: ${ registrationNumber }` );
 				// reject the promise
 				reject();
 		}
 		// attempt to find a single child matching the passed in registration number
 		Child.model.findOne()
 			.where( 'registrationNumber' ).equals( targetRegistrationNumber )
-			.lean()
 			.exec()
 			// if the database fetch executed successfully
 			.then( child => {
@@ -665,8 +661,8 @@ exports.getChildrenByRegistrationNumbersNew = registrationNumbers => {
 
 	return new Promise( ( resolve, reject ) => {
 		// if either the registraton numbers were not an array or if no registration numbers were passed in
-		if( !registrationNumber
-			|| Array.isArray( registrationNumbers )
+		if( !registrationNumbers
+			|| !Array.isArray( registrationNumbers )
 			|| ( Array.isArray( registrationNumbers ) && registrationNumbers.length === 0 ) ) {
 				// log an error for debugging purposes
 				console.error( `the registration numbers were either not provided not an array
@@ -682,7 +678,6 @@ exports.getChildrenByRegistrationNumbersNew = registrationNumbers => {
 		// attempt to find all children matching the passed in registration numbers
 		Child.model.find()
 			.where( 'registrationNumber' ).in( targetRegistrationNumbers )
-			.lean()
 			.exec()
 			.then( children => {
 				// if the target child could not be found
