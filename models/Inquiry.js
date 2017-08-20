@@ -15,7 +15,7 @@ Inquiry.add( 'General Information', {
 	takenBy: { type: Types.Relationship, label: 'taken by', ref: 'Admin', filters: { isActive: true }, required: true, initial: true },
 	takenOn: { type: Types.Date, label: 'taken on', format: 'MM/DD/YYYY', required: true, initial: true },
 
-	inquirer: { type: Types.Select, label: 'inquirer', options: 'family, social worker', default: 'family', initial: true },
+	inquirer: { type: Types.Select, label: 'inquirer', options: 'site visitor, family, social worker', default: 'family', initial: true },
 	inquiryType: { type: Types.Select, label: 'inquiry type', options: 'child inquiry, complaint, family support consultation, general inquiry', required: true, initial: true },
 	inquiryMethod: { type: Types.Relationship, label: 'inquiry method', ref: 'Inquiry Method', required: true, initial: true }
 
@@ -26,6 +26,7 @@ Inquiry.add( 'General Information', {
 	child: { type: Types.Relationship, label: 'child', ref: 'Child', dependsOn: { inquiryType: ['child inquiry', 'complaint', 'family support consultation'] }, many: true, initial: true },
 	childsSocialWorker: { type: Types.Relationship, label: 'child\'s social worker', ref: 'Social Worker', dependsOn: { inquiryType: ['child inquiry', 'complaint', 'family support consultation'] }, noedit: true },
 	previousChildsSocialWorker: { type: Types.Relationship, ref: 'Social Worker', noedit: true, hidden: true },
+	siteVisitor: { type: Types.Relationship, label: 'site visitor', ref: 'Site Visitor', dependsOn: { inquirer: 'site visitor' }, filters: { isActive: true }, initial: true },
 	family: { type: Types.Relationship, label: 'family', ref: 'Family', dependsOn: { inquirer: 'family' }, filters: { isActive: true }, initial: true },
 	socialWorker: { type: Types.Relationship, label: 'social worker', ref: 'Social Worker', dependsOn: { inquirer: 'social worker' }, filters: { isActive: true }, initial: true },
 	onBehalfOfMAREFamily: { type: Types.Boolean, label: 'is the family registered?', default: true, dependsOn: { inquirer: 'social worker' }, initial: true },
@@ -69,9 +70,11 @@ Inquiry.schema.pre( 'save', function( next ) {
 		inquiryType						: this.inquiryType,
 		isGeneralInquiry				: this.inquiryType === 'general inquiry',
 		inquirerType					: this.inquirer,
+		isSiteVisitor					: this.inquirer === 'site visitor',
 		isFamilyInquiry					: this.inquirer === 'family',
 		isSocialWorkerInquiry			: this.inquirer === 'social worker',
 		childId							: this.child,
+		siteVisitorId					: this.siteVisitor,
 		familyId						: this.family,
 		socialWorkerId					: this.socialWorker,
 		agencyReferralIds				: this.agencyReferrals,
@@ -190,5 +193,5 @@ Inquiry.schema.methods.setDerivedFields = function( inquiryData, done ) {
 }
 
 // Define default columns in the admin interface and register the model
-Inquiry.defaultColumns = 'takenOn, takenBy, child, family, socialWorker, source';
+Inquiry.defaultColumns = 'takenOn, takenBy, child, family, socialWorker, siteVisitor, source';
 Inquiry.register();
