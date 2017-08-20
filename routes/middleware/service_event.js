@@ -94,6 +94,61 @@ exports.getActiveEventsByEventType = ( eventType, eventGroup ) => {
 		});			
 };
 
+exports.getActiveEventsByUserId = ( userId, eventGroup ) => {
+			
+	return new Promise( ( resolve, reject ) => {
+
+		Event.model.find()
+			.where( 'isActive', true ) // we don't want to show inactive events
+			.populate( eventGroup )
+			.populate( 'address.state' )
+			.exec()
+			.then( events => {
+				// if no active events could be found
+				if( events.length === 0 ) {
+					// log an error for debugging purposes
+					console.error( `no active events could be found for user with id: ${ userId }` );
+				}
+				// resolve the promise with the events
+				resolve( events );
+			// if there was an error fetching from the database
+			}, err => {
+				// log an error for debugging purposes
+				console.error( `error fetching active events for user with id ${ userId } - ${ err }` );
+				// and reject the promise
+				reject();
+			});
+		});
+};
+
+exports.getAllActiveEvents = eventGroup => {
+			
+	return new Promise( ( resolve, reject ) => {
+
+		Event.model.find()
+			.where( 'isActive', true ) // we don't want to show inactive events
+			.populate( eventGroup )
+			.populate( 'address.state' )
+			.exec()
+			.then( events => {
+				// if no active events could be found
+				if( events.length === 0 ) {
+					// log an error for debugging purposes
+					console.error( `no active events could be found` );
+				}
+				// resolve the promise with the events
+				resolve( events );
+			// if there was an error fetching from the database
+			}, err => {
+				// log an error for debugging purposes
+				console.error( `error fetching active events - ${ err }` );
+				// and reject the promise
+				reject();
+			});
+		})
+	;
+};
+
 exports.getEventGroup = userType => {
 
 	switch( userType ) {

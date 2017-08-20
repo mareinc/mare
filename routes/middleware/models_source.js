@@ -18,8 +18,10 @@ exports.createSource = ( sourceName ) => {
 			resolve( newSource.get( '_id' ) );
 		// if an error occurs while saving the new source
 		}, err => {
-			// reject the promise, returning the full error object
-			reject( `error saving the new source model` );
+			// log the error for debugging purposes
+			console.error( `error saving the new source model` );
+			// reject the promise
+			reject();
 		});
 	});
 };
@@ -45,13 +47,18 @@ exports.updateSource = ( sourceId, sourceName ) => {
 						resolve( sourceId );
 					// but if there was an error while saving the source
 					}, err => {
-						// reject the promise with an explanation of why
-						reject( `error saving the updated source model` );
+						// log the error for debugging purposes
+						console.error( `error saving the updated source model` );
+						// reject the promise
+						reject();
 					});
 				}
 			// TODO [ IMPORTANT ]: add error handling for all find() and findById() calls throughout the codebase
 			}, err => {
-				reject( `error fetching the source model to update` );
+				// log the error for debugging purposes
+				console.error( `error fetching the source model to update` );
+				// reject the promise
+				reject();
 			});
 	});
 }

@@ -26,6 +26,7 @@ const keystone					= require( 'keystone' ),
 	  middleware				= require( './middleware/middleware' ),
 	  permissionsService		= require( './middleware/service_permissions' ),
 	  registrationMiddleware	= require( './middleware/service_register' ),
+	  accountMiddleware			= require( './middleware/service_account' ),
 	  importRoutes				= keystone.importer( __dirname );
 
 // Common Middleware
@@ -85,6 +86,7 @@ exports = module.exports = app => {
 	app.get('/migrate-data/'							, middleware.requireMigrationUser, routes.views.dataMigration );
 	// user account management
 	app.get( '/account/'								, middleware.requireUser, routes.views.account );
+	app.post( '/account-update'							, accountMiddleware.updateUser );
 	// services for ajax calls
 	app.post( '/services/get-children-data'				, childService.getGalleryData );
 	app.post( '/services/get-child-details'				, childService.getChildDetails );

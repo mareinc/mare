@@ -1,0 +1,54 @@
+.account-page {
+    flex-direction: column;
+
+	@media all and (min-width: 660px) {
+        flex-direction: row;
+	}
+}
+
+.mobile-account-nav-container {
+    margin: 0 0 1em;
+    width: 100%;
+
+	@media all and (min-width: 660px) {
+        display: none;
+	}
+}
+
+.sidebar.account-nav {
+    padding: 0;
+}
+
+.account-nav__link {
+    display: flex;
+    justify-content: space-between;
+
+    &.button { // To override button-specific styling
+        border-radius: 0;
+        margin: 0;
+    }
+
+	&:not(&--admin) {
+        &:after {
+            content: '→';
+            display: block;
+            height: 1em;
+            opacity: 0;
+            transform: translateX(-200%);
+            transition: .3s all;
+            width: 1em;
+        }
+
+        &:hover,
+        &.account-nav__link--active {
+            &:after {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+	}
+}
+
+.account-current-section__title {
+    margin-top: 0;
+}
