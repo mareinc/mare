@@ -1,8 +1,7 @@
-const keystone			= require( 'keystone' );
-const Types				= keystone.Field.Types;
-const async 			= require( 'async' );
-const random			= require( 'mongoose-simple-random' );
-const SourceMiddleware	= require( '../routes/middleware/models_source' );
+const keystone			= require( 'keystone' ),
+	  Types				= keystone.Field.Types,
+	  random			= require( 'mongoose-simple-random' ),
+	  SourceMiddleware	= require( '../routes/middleware/models_source' );
 
 // Create model. Additional options allow event name to be used what auto-generating URLs
 var Event = new keystone.List('Event', {
@@ -83,27 +82,31 @@ Event.add({ heading: 'General Information' }, {
 Event.schema.pre( 'save', function( next ) {
 	'use strict';
 
-	async.parallel([
-		done => { this.updateImageFields( done ); },
-		done => { this.setUrl( done ); },
-		done => { this.setFileName( done ); },
-		done => { this.shouldCreateSource ? this.setSourceField( done ) : done(); }
-	], () => {
-		
+	this.updateImageFields();
+	this.setUrl();
+	this.setFileName();
+
+	let setSourceField = this.setSourceField();
+	
+	setSourceField.then( sourceId => {
+
+		this.source = sourceId;
+		next();
+	})
+	.catch( () => {
+
 		next();
 	});
 });
 // TODO: turn these fields into virtuals and update the templates that rely on it
-Event.schema.methods.updateImageFields = function( done ) {
+Event.schema.methods.updateImageFields = function() {
 	'use strict';
 
 	this.imageFeatured = this._.image.thumbnail( 168, 168, { quality: 80 } );
 	this.imageSidebar = this._.image.thumbnail( 216, 196, { quality: 80 } );
-
-	done();
 };
 
-Event.schema.methods.setUrl = function( done ) {
+Event.schema.methods.setUrl = function() {
 	'use strict';
 	
 	let eventType;
@@ -118,39 +121,48 @@ Event.schema.methods.setUrl = function( done ) {
 	}
 	// TODO: if !eventType.length, I should prevent the save
 	this.url = '/events/' + eventType + '/' + this.key;
-
-	done();
 };
 
-Event.schema.methods.setFileName = function( done ) {
+Event.schema.methods.setFileName = function() {
 	'use strict';
 	// Create an identifying name for file uploads
 	this.fileName = this.key.replace( /-/g, '_' );
-
-	done();
 };
 
-Event.schema.methods.setSourceField = function( done ) {
+Event.schema.methods.setSourceField = function() {
 	'use strict';
-	// create a reference to the model for use after the new source promise resolves
-	let model = this;
-	// if the source is already set, update it, otherwise create it
-	let newSource = this.source
-					? SourceMiddleware.updateSource( this.source, this.name )
-					: SourceMiddleware.createSource( this.name );
-	// respond to the promise returned from the source middleware
-	newSource.then( id => {
-		// record the successful creation of the source from this event
-		console.log( `source successfully saved from ${ model.name }` );
-		// update the source relationship field with the id of the newly created source
-		model.source = id;
 
-		done();
+	return new Promise( ( resolve, reject ) => {
+		// if no source is meant to be created from this event
+		if( !this.shouldCreateSource ) {
+			// log the info for debugging purposes
+			console.info( `no source creation needed` );
+			// resolve the promise
+			return resolve();
+		}
+		// create a reference to the model for use after the new source promise resolves
+		// let model = this;
+		// if the source is already set, update it, otherwise create it
+		let newSource = this.source
+						? SourceMiddleware.updateSource( this.source, this.name )
+						: SourceMiddleware.createSource( this.name );
+		// respond to the promise returned from the source middleware
+		newSource.then( id => {
+			// record the successful creation of the source from this event
+			console.info( `source successfully saved from ${ this.name }` );
+			// update the source relationship field with the id of the newly created source
+			resolve( id );
+		})
+		.catch( () => {
+			// log the error for debugging purposes
+			console.error( `error saving source from ${ this.name }` );
+			// reject the promise
+			reject();
+		});
 	})
-	.catch( reason => {
-		// record the failure to create 
-		console.log( `source save error from ${ model.name }: ${ reason }` );
-		done();
+	.catch( () => {
+		// reject the promise
+		reject();
 	});
 };
 
@@ -159,9 +171,3 @@ Event.schema.plugin( random );
 // Define default columns in the admin interface and register the model
 Event.defaultColumns = 'name, url, starts, ends, isActive';
 Event.register();
-
-// link to a source as a relationship
-// if linked, find it by _id and update it
-// if not linked, create the source
-
-// run linking script as part of the migration

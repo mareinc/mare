@@ -1,22 +1,23 @@
 const keystone								= require( 'keystone' ),
 	  _										= require( 'underscore' ),
-	  Region 								= keystone.list( 'Region' ),
-	  Position								= keystone.list( 'Social Worker Position' ),
-	  Race									= keystone.list( 'Race' ),
-	  State									= keystone.list( 'State' ),
+	  CityOrTown							= keystone.list( 'City or Town' ),
+	  ChildStatus							= keystone.list( 'Child Status' ),
+	  ChildType								= keystone.list( 'Child Type' ),
+	  Disability							= keystone.list( 'Disability' ),
+	  EventType								= keystone.list( 'Event Type' ),
+	  FamilyConstellation					= keystone.list( 'Family Constellation' ),
 	  Gender								= keystone.list( 'Gender' ),
 	  InquiryMethod							= keystone.list( 'Inquiry Method' ),
 	  LegalStatus							= keystone.list( 'Legal Status' ),
 	  Language								= keystone.list( 'Language' ),
-	  FamilyConstellation					= keystone.list( 'Family Constellation' ),
-	  Disability							= keystone.list( 'Disability' ),
 	  OtherConsideration					= keystone.list( 'Other Consideration' ),
 	  OtherFamilyConstellationConsideration	= keystone.list( 'Other Family Constellation Consideration' ),
-	  ChildStatus							= keystone.list( 'Child Status' ),
-	  ChildType								= keystone.list( 'Child Type' ),
-	  CityOrTown							= keystone.list( 'City or Town' ),
-	  EventType								= keystone.list( 'Event Type' ),
+	  Position								= keystone.list( 'Social Worker Position' ),
+	  Race									= keystone.list( 'Race' ),
+	  Region 								= keystone.list( 'Region' ),
 	  Residence								= keystone.list( 'Residence' ),
+	  Source								= keystone.list( 'Source' ),
+	  State									= keystone.list( 'State' ),
 	  WayToHearAboutMARE					= keystone.list( 'Way To Hear About MARE' );
 
 exports.getAllRegions = () => {
@@ -470,6 +471,7 @@ exports.getAllCitiesAndTowns = () => {
 		// query the database for all cities and towns
 		CityOrTown.model
 			.find()
+			.sort( { cityOrTown: 1 } )
 			.exec()
 			.then( citiesAndTowns => {
 				// if no cities or towns could not be found
@@ -495,31 +497,32 @@ exports.getChildStatusIdByName = ( req, res, done, name ) => {
 
 	let locals = res.locals;
 
-	ChildStatus.model.findOne()
-				.where( 'childStatus' ).equals( name )
-				.lean()
-				.exec()
-				.then( status => {
+	ChildStatus.model
+		.findOne()
+		.where( 'childStatus' ).equals( name )
+		.lean()
+		.exec()
+		.then( status => {
 
-					locals.activeChildStatusId = status._id;
-					// execute done function if async is used to continue the flow of execution
-					done()
+			locals.activeChildStatusId = status._id;
+			// execute done function if async is used to continue the flow of execution
+			done()
 
-				}, err => {
+		}, err => {
 
-					console.log( err );
-					done();
+			console.log( err );
+			done();
 
-				});
+		});
  };
 
 exports.getInquiryMethodByName = name => {
 
 	return new Promise( ( resolve, reject ) => {
 		// attempt to find a single inquiry method matching the passed in name
-		InquiryMethod.model.findOne()
+		InquiryMethod.model
+			.findOne()
 			.where( 'inquiryMethod' ).equals( name )
-			.lean()
 			.exec()
 			.then( inquiryMethod => {
 				// if the target inquiry method could not be found
@@ -540,3 +543,31 @@ exports.getInquiryMethodByName = name => {
 			});
 	});
 };
+
+exports.getSourceByName = name => {
+	
+		return new Promise( ( resolve, reject ) => {
+			// attempt to find a single source matching the passed in name
+			Source.model
+				.findOne()
+				.where( 'source' ).equals( name )
+				.exec()
+				.then( source => {
+					// if the target source could not be found
+					if( !source ) {
+						// log an error for debugging purposes
+						console.error( `no source matching name '${ name } could be found` );
+						// reject the promise
+						return reject();
+					}
+					// if the target source was found, resolve the promise with the lean version of the object
+					resolve( source );
+				// if there was an error fetching from the database
+				}, err => {
+					// log an error for debugging purposes
+					console.error( `error fetching source matching ${ name } - ${ err }` );
+					// and reject the promise
+					reject();
+				});
+		});
+	};

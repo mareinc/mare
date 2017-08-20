@@ -1,12 +1,8 @@
-const stripe = require('stripe')
-      moment = require('moment')
-      donation = require('../models/Donation');
+const stripe = require( 'stripe' ),
+      moment = require( 'moment' ),
+      donation = require( '../models/Donation' );
 
-
-
-/*
-*   Define subscription plan types as per stripe API: https://stripe.com/docs/api#create_plan
-*/
+/* define subscription plan types as per stripe API: https://stripe.com/docs/api#create_plan */
 const plan_types = {
     
     monthly: {
@@ -22,26 +18,23 @@ const plan_types = {
     semiannual: {
         id: 'semiannual',
         interval: 'month',
-        interval_count: '6'  /*interval_count: The number of intervals between each subscription billing. 
-                                               For example, interval=month and interval_count=3 bills every 3 months.
-                                               Maximum of one year interval allowed (1 year, 12 months, or 52 weeks).*/
+        interval_count: '6'  /* interval_count: The number of intervals between each subscription billing. 
+                                                For example, interval = month and interval_count = 3 bills every 3 months.
+                                                Maximum of one year interval allowed (1 year, 12 months, or 52 weeks).*/
     }
 };
 
-
-
-//Some helper functions
-function createStripeCustomer(stripeToken, email){
+// some helper functions
+function createStripeCustomer( stripeToken, email ) {
     
-    //Create stripe customer
+    // create stripe customer
     return stripe.customers.create({
             email: email, 
             source: stripeToken
     });
 }
 
-
-function createCharge(customer, amount){
+function createCharge( customer, amount ) {
 
     return stripe.charges.create({
         amount: amount,
@@ -50,7 +43,7 @@ function createCharge(customer, amount){
     });
 }
 
-function createPlan(customer,amount,plan_type){
+function createPlan( customer, amount, plan_type ) {
 
     return stripe.plans.create({
         amount: amount,
@@ -58,49 +51,72 @@ function createPlan(customer,amount,plan_type){
         id: plan_type.id,
         currency: 'usd',
         interval: plan_type.interval,
-        interval_count: (plan_type.interval_count)? plan_type.interval_count: 1
+        interval_count: plan_type.interval_count ? plan_type.interval_count : 1
     });
 }
 
+function oneTimeCharge( stripeToken, email, amount ) {
+    
+    return new Promise( ( resolve, reject ) => {
 
+            createStripeCustomer( stripeToken, email )
+            .then( customer => createCharge( customer,amount ) )
+            .then( charge => {
+                // log the customer has been charged x 
+                resolve();
+            })
+            .catch( error => {
+                // log the error 
+                reject();   
+            });
+    });
+}
+
+function recurringCharge( stripeToken, email, amount, plan_type ) {
+    
+    return new Promise( ( resolve,reject ) => {
+
+            createStripeCustomer( stripeToken, email )
+            .then( customer => createPlan( customer,amount,plan_type ) )
+            .then( plan => {
+                //Log the plan has been created and is ready to be used
+                resolve();
+            })
+            .catch( error => {
+                //Log the error 
+                reject();   
+            });
+    });
+}
+
+function getAllDonations() {
+    
+    return new Promise( ( resolve, reject ) => {
+
+        Donation.model
+            .find()
+            .exec()
+            .then( donations => {
+                // if no donations could be found
+                if( donations.length === 0 ) {
+                    // log an error for debugging purposes
+                    console.error( `no donations could be found` );
+                }
+                // resolve the promise with the donations
+                resolve( donations );
+            // if there was an error fetching from the database
+            }, err => {
+                // log an error for debugging purposes
+                console.error( `error fetching donations - ${ err }` );
+                // and reject the promise
+                reject();
+            });
+    });
+}
+/* revealing module pattern to expose public methods */
 exports = module.exports = {
 
-    oneTimeCharge: (stripeToken, email, amount) => {
-
-        return new Promise( (resolve, reject) => {
-
-                createStripeCustomer(stripeToken, email)
-                .then((customer) => createCharge(customer,amount))
-                .then( (charge) => {
-                    //Log the customer has been charged x 
-                    resolve();
-                })
-                .catch( (error) => {
-                    //Log the error 
-                    reject();   
-                });
-        })
-        
-
-    },
-
-    recurringCharge: (stripeToken, email, amount, plan_type) =>{
-
-        return new Promise( (resolve,reject) => {
-
-                createStripeCustomer(stripeToken, email)
-                .then( (customer) => createPlan(customer,amount,plan_type))
-                .then( (plan) => {
-                    //Log the plan has been created and is ready to be used
-                    resolve();
-                })
-                .catch( (error) => {
-                    //Log the error 
-                    reject();   
-                });
-        });
-        
-
-    }
-
-};
+    oneTimeCharge: oneTimeCharge,
+    recurringCharge: recurringCharge,
+    getAllDonations: getAllDonations
+}
