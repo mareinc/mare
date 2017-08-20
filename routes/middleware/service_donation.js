@@ -1,6 +1,6 @@
 const stripe = require( 'stripe' ),
       moment = require( 'moment' ),
-      donation = require( '../models/Donation' );
+      Donation = require( '../../models/Donation' );
 
 /* define subscription plan types as per stripe API: https://stripe.com/docs/api#create_plan */
 const plan_types = {
