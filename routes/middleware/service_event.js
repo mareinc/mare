@@ -32,12 +32,12 @@ exports.getEventById = eventId => {
 };
 /* TODO: this is not reusable, but is needed to show a single event page.  Consider adding populate and possibly
 		 building other elements of the Mongoose query dynamically using passed in options */
-exports.getEventByUrl = url => {
+exports.getEventByKey = key => {
 	
 	return new Promise( ( resolve, reject ) => {
-		// attempt to find a single event matching the passed in url, and populate some of the Relationship fields
+		// attempt to find a single event matching the passed in key, and populate some of the Relationship fields
 		Event.model.findOne()
-			.where( 'url', url )
+			.where( 'key', key )
 			.populate( 'contact' )
 			.populate( 'childAttendees' )
 			.populate( 'familyAttendees' )
@@ -45,6 +45,7 @@ exports.getEventByUrl = url => {
 			.populate( 'siteVisitorAttendees' )
 			.populate( 'staffAttendees' )
 			.populate( 'address.state' )
+			.lean()
 			.exec()
 			.then( event => {
 				// if the target event could not be found
@@ -57,7 +58,7 @@ exports.getEventByUrl = url => {
 			// if there was an error fetching from the database
 			}, err => {
 				// log an error for debugging purposes
-				console.error( `error fetching event matching url ${ url } - ${ err }` );
+				console.error( `error fetching event matching key ${ key } - ${ err }` );
 				// and reject the promise
 				reject();
 			});

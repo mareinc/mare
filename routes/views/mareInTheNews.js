@@ -7,9 +7,11 @@ exports = module.exports = ( req, res ) => {
 
     const view 		= new keystone.View( req, res ),
 		  locals 	= res.locals;
+	// extract request object parameters into local constants
+	const { key } = req.params;
 	
 	// fetch all data needed to render this page
-	let fetchMAREInTheNewsStory	= mareInTheNewsService.getMAREInTheNewsByUrl( req.originalUrl ),
+	let fetchMAREInTheNewsStory	= mareInTheNewsService.getMAREInTheNewsByKey( key ),
 		fetchSidebarItems		= pageService.getSidebarItems();
 
 	Promise.all( [ fetchMAREInTheNewsStory, fetchSidebarItems ] )

@@ -7,7 +7,9 @@ exports = module.exports = ( req, res ) => {
     'use strict';
 
     const view 		= new keystone.View( req, res );
-    const locals 	= res.locals;
+	const locals 	= res.locals;
+	// extract request object parameters into local constants
+	const { key } = req.params;
 
 	// set options specifying how the WYSIWYG editor content (in HTML format) should be modified before templating
 	const WYSIWYGModificationOptions = [{
@@ -23,7 +25,7 @@ exports = module.exports = ( req, res ) => {
 	}];
 
 	// fetch all data needed to render this page
-	let fetchSuccessStory 	= successStoryService.getSuccessStoryByUrl( req.originalUrl ),
+	let fetchSuccessStory 	= successStoryService.getSuccessStoryByKey( key ),
 		fetchSidebarItems	= pageService.getSidebarItems();
 
 	Promise.all( [ fetchSuccessStory, fetchSidebarItems ] )

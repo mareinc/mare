@@ -5,18 +5,19 @@ const keystone				= require( 'keystone' ),
 	  eventService			= require( './service_event' ),
 	  successStoryService	= require( './service_success-story' );
 
-exports.getPageByUrl = url => {
+exports.getPageByKey = key => {
 
 	return new Promise( ( resolve, reject ) => {
-		// query the database a single page model matching the passes in url
+		// query the database a single page model matching the passes in key
 		Page.model.findOne()
-			.where( 'url', url )
+			.where( 'key', key )
+			.lean()
 			.exec()
 			.then( page => {
 				// if the target page could not be found
 				if( !page ) {
 					// log an error for debugging purposes
-					console.error( `no page matching url '${ url } could be found` );
+					console.error( `no page matching key '${ key } could be found` );
 					// reject the promise
 					return reject();
 				}
@@ -25,7 +26,7 @@ exports.getPageByUrl = url => {
 				// if there was an error fetching from the database
 				}, err => {
 					// log an error for debugging purposes
-					console.error( `error fetching page matching url ${ url } - ${ err }` );
+					console.error( `error fetching page matching url ${ key } - ${ err }` );
 					// and reject the promise
 					reject();
 				});

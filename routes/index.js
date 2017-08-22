@@ -38,13 +38,8 @@ var routes = {
 	views: importRoutes( './views' )
 };
 
-/* TODO: try to find a less verbose way to handle these event routes */
-// Create arrays of routes for complicated sub-routing
-const eventListRoutes	= [ '/events/adoption-parties/', '/events/mapp-trainings/', '/events/fundraising-events/', '/events/agency-info-meetings/', '/events/other-trainings/' ];
-const eventRoutes		= [ '/events/adoption-parties/*', '/events/mapp-trainings/*', '/events/fundraising-events/*', '/events/agency-info-meetings/*', '/events/other-trainings/*' ];
-
 // Setup Route Bindings
-// TODO: in order to handle bad rountes, we need a catch here instead of on the client side
+// TODO: in order to handle bad routes, we need a catch here instead of on the client side
 // TODO: clean up these routes to use cleaner paths and route parameters instead of just wildcards
 exports = module.exports = app => {
 	'use strict';
@@ -52,7 +47,7 @@ exports = module.exports = app => {
 	// home page
 	app.get( '/'										, routes.views.main );
 	// MARE staff generated pages
-	app.get( '/page/*'									, routes.views.page );
+	app.get( '/page/:key'								, routes.views.page );
 	// forms
 	app.get( '/forms/agency-event-submission-form'		, routes.views.form_agencyEventSubmission );
 	app.get( '/forms/child-registration-form'			, routes.views.form_childRegistration );
@@ -62,29 +57,30 @@ exports = module.exports = app => {
 	// steps in the process
 	app.get( '/steps-in-the-process'					, routes.views.stepsInTheProcess );
 	// events
-	app.get( eventListRoutes							, routes.views.eventList );
-	app.get( eventRoutes								, routes.views.event );
+	app.get( '/events/:category'						, routes.views.eventList );
+	app.get( '/events/:category/:key'					, routes.views.event );
 	// success stories
-	app.get( '/success-stories/'						, routes.views.successStories );
-	app.get( '/success-stories/*'						, routes.views.successStory );
+	app.get( '/success-stories'							, routes.views.successStories );
+	app.get( '/success-story/:key'						, routes.views.successStory );
 	// gallery
-	app.get( '/waiting-child-profiles/'					, routes.views.waitingChildProfiles );
+	app.get( '/waiting-child-profiles'					, routes.views.waitingChildProfiles );
 	// registration
-	app.get( '/register/'								, routes.views.register );
+	app.get( '/register'								, routes.views.register );
 	app.post( '/register'								, registrationMiddleware.registerUser );
 	// login / logout
-	app.get( '/logout/'									, middleware.logout );
+	app.get( '/logout'									, middleware.logout );
 	app.post('/login'									, middleware.login );
 	// TODO: decide if both the mare in the news routes are needed
 	// MARE in the news
-	app.get( '/mare-in-the-news/'						, routes.views.mareInTheNews );
-	app.get( '/mare-in-the-news/*'						, routes.views.mareInTheNews );
+	app.get( '/mare-in-the-news'						, routes.views.mareInTheNews );
+	app.get( '/mare-in-the-news/:key'					, routes.views.mareInTheNews );
 	// donations
-	app.get( '/donate/'									, routes.views.donate );
+	app.get( '/donate'									, routes.views.donate );
 	app.post( '/charge'									, middleware.charge );
 	// user account management
-	app.get( '/account/'								, middleware.requireUser, routes.views.account );
+	app.get( '/account'									, middleware.requireUser, routes.views.account );
 	app.post( '/account-update'							, accountMiddleware.updateUser );
+	/* TODO: all these routes below need to be moved and prefixed with appropriate REST verbs like put */
 	// services for ajax calls
 	app.post( '/services/get-children-data'				, childService.getGalleryData );
 	app.post( '/services/get-child-details'				, childService.getChildDetails );

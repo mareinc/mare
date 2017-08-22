@@ -6,7 +6,9 @@ exports = module.exports = function( req, res ) {
 
 	const view 	    = new keystone.View( req, res ),
 		  locals 	= res.locals;
-	
+	// extract request object parameters into local constants
+	const { key } = req.params;
+
 	// create a container for any additional page actions to render after the content
 	let pageActions = {
 		buttons: [], // placeholder for any buttons that may render in a button group after the content
@@ -14,7 +16,7 @@ exports = module.exports = function( req, res ) {
 	};
 
 	// fetch all data needed to render this page
-	let fetchPage			= pageService.getPageByUrl( req.originalUrl ),
+	let fetchPage			= pageService.getPageByKey( key ),
 		fetchSidebarItems	= pageService.getSidebarItems();
 
 	Promise.all( [ fetchPage, fetchSidebarItems ] )
@@ -25,7 +27,7 @@ exports = module.exports = function( req, res ) {
 			const [ randomSuccessStory, randomEvent ] = sidebarItems;
  
 			// if the user requested the 'Register a child' page
-			if( page.get( 'key' ) === 'register-a-child' ) {
+			if( page.key === 'register-a-child' ) {
 				// if the user is logged in as a social worker
 				if( locals.user && locals.user.userType === 'social worker' ) {
 					// specify that it should render a button after the content
@@ -38,7 +40,7 @@ exports = module.exports = function( req, res ) {
 					pageActions.sections.push( `You must be logged in as a social worker to register a child.  If you're a social worker, you can <a href="/register#social-worker">register here</a>.` );
 				}
 			// otherwise, if the user requested the 'Register a family' page
-			} else if( page.get( 'key' ) === 'register-a-family' ) {
+			} else if( page.key === 'register-a-family' ) {
 				// if the user is logged in as a social worker
 				if( locals.user && locals.user.userType === 'social worker' ) {
 					// specify that it should render a button after the content

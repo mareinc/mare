@@ -22,7 +22,7 @@ $(function() {
 				case 'child-registration-form'		: mare.routers.childRegistration = new mare.routers.ChildRegistration();					break;
 				case 'family-registration-form'		: mare.routers.familyRegistration = new mare.routers.FamilyRegistration();					break;
 				case 'have-a-question-form'			: mare.routers.form_haveAQuestion = new mare.routers.Form_HaveAQuestion();					break;
-				case 'information-request-form'		: mare.routers.form_informationRequest = new mare.routers.Form_InformationRequest();
+				case 'information-request-form'		: mare.routers.form_informationRequest = new mare.routers.Form_InformationRequest();		break;
 			}
 			break;
 		case 'page'                     			: mare.routers.pages = new mare.routers.Pages();											break;
@@ -30,7 +30,8 @@ $(function() {
 		case 'register'                 			: mare.routers.registration = new mare.routers.Registration();								break;
 		case 'steps-in-the-process'					: mare.routers.stepsInTheProcess = new mare.routers.StepsInTheProcess();					break;
 		case 'success-stories'          			: mare.routers.successStories = new mare.routers.SuccessStories();							break;
-		case 'waiting-child-profiles'				: mare.routers.waitingChildProfiles = new mare.routers.WaitingChildProfiles();
+		case 'success-story'						: mare.routers.successStories = new mare.routers.SuccessStories();							break;
+		case 'waiting-child-profiles'				: mare.routers.waitingChildProfiles = new mare.routers.WaitingChildProfiles();				break;
 	}
 	// start the backbone history state for browser navigation through backbone routes
 	// NOTE: This needs to be below the subrouter initialization to allow for subrouters to reroute properly

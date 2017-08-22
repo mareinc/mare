@@ -49,26 +49,27 @@ exports.getAllSuccessStories = () => {
 	});
 };
 
-exports.getSuccessStoryByUrl = url => {
+exports.getSuccessStoryByKey = key => {
 
 	return new Promise( ( resolve, reject ) => {
-		// attempt to find a single success story matching the passed in url
+		// attempt to find a single success story matching the passed in key
 		SuccessStory.model
 			.findOne()
-			.where( 'url', url )
+			.where( 'key', key )
+			.lean()
 			.exec()
 			.then( successStory => {
 				// if the target success story could not be found
 				if( !successStory ) {
 					// log an error for debugging purposes
-					console.error( `no success story matching url '${ url } could be found` );
+					console.error( `no success story matching key '${ key } could be found` );
 				}
 				// if the target success story was found, resolve the promise with the success story
 				resolve( successStory );
 			// if there was an error fetching from the database
 			}, err => {
 				// log an error for debugging purposes
-				console.error( `error fetching success story matching url ${ url } - ${ err }` );
+				console.error( `error fetching success story matching key ${ key } - ${ err }` );
 				// and reject the promise
 				reject();
 			});
