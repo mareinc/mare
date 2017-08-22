@@ -77,6 +77,10 @@
 	/* TODO: this will only work for modal--small contents, need to move it or adjust to work across the board */
 	&--vertically-centered {
 		padding-top: 15em;
+
+		@media all and ( min-width: 655px ) {
+			padding-top: 0;
+		}
 	}
 }
 
