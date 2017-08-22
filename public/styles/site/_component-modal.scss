@@ -1,11 +1,7 @@
+/* TODO: the modal contents should be broken out into their own component/page files */
 .modal {
 	position: fixed;
-	left: -100vw;
 	z-index: 100;
-
-	@media all and ( min-width: 655px ) {
-		left: 0;
-	}
 }
 
 .modal__background {
@@ -24,7 +20,8 @@
     background-color: $background-color-light;
     width: 100%;
     height: 100%;
-    min-width: 320px;
+	min-width: 320px;
+	padding: 1.5em 0 1em 1em;
 
     @media screen and ( min-width: 655px ) {
 	    width: 600px;
@@ -39,42 +36,51 @@
 
 		@media screen and ( min-width: 655px ) {
 			height: 26em;
+			margin-top: -13em;
 		}
+	}
 
-		margin-top: -13em;
+	&--hidden {
+		display: none;
 	}
 }
 
 .modal__close {
 	z-index: 10;
 	position: absolute;
+	top: 0;
     right: 0;
-    padding: .5em .6em;
+    padding: 0.6em;
     color: $modal-color-1;
     cursor: pointer;
     background-color: $background-color-light;
 }
 
 .modal-container__loading {
-	position: absolute;
-	top: 0;
-	bottom: 0;
-	left: 0;
-	right: 0;
+	position: relative;
+	height: 100%;
 }
 
 .modal-container__loading-image {
-	margin-top: 25%;
+	position: absolute;
+	top: calc( 50% - 50px );
+	left: calc( 50% - 50px );
+	width: 100px;
+	height: 100px;
 }
 
 .modal-container__contents {
 	position: relative;
 	height: 100%;
-	padding-top: 25vh;
+	padding: 1em;
 	overflow-y: auto;
+	/* TODO: this will only work for modal--small contents, need to move it or adjust to work across the board */
+	&--vertically-centered {
+		padding-top: 15em;
 
-	@media screen and ( min-width: 655px ) {
-		padding: 1em;
+		@media all and ( min-width: 655px ) {
+			padding-top: 0;
+		}
 	}
 }
 

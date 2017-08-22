@@ -409,7 +409,7 @@ exports.saveFamily = user => {
 			stages 								: exports.getStages( user ),
 
 			homestudy: {
-				completed						: !user.processProgression ? false : user.processProgression.indexOf( 'homestudyCompleted' ) !== -1 ? true : false,
+				completed						: !user.processProgression ? false : user.processProgression.indexOf( 'homestudyCompleted' ) !== -1,
 				initialDate						: !user.processProgression ? undefined : user.processProgression.indexOf( 'homestudyCompleted' ) !== -1 ? user.homestudyDateComplete : undefined
 			},
 
@@ -428,7 +428,7 @@ exports.saveFamily = user => {
 				number							: parseInt( user.otherAdultsInHome, 10 )
 			},
 
-			havePetsInHome						: user.havePets === 'yes' ? true : false,
+			havePetsInHome						: user.havePets === 'yes',
 
 			socialWorkerNotListed				: true,
 			socialWorkerText					: user.socialWorkerName,
@@ -443,8 +443,8 @@ exports.saveFamily = user => {
 				},
 
 				numberOfChildrenToAdopt			: user.numberOfChildrenPrefered ? parseInt( user.numberOfChildrenPrefered, 10 ) : 0,
-				siblingContact					: user.contactWithBiologicalSiblings === 'yes' ? true : false,
-				birthFamilyContact				: user.contactWithBiologicalParents === 'yes' ? true : false,
+				siblingContact					: user.contactWithBiologicalSiblings === 'yes',
+				birthFamilyContact				: user.contactWithBiologicalParents === 'yes',
 				race							: user.adoptionPrefRace,
 
 				maxNeeds: {
@@ -495,7 +495,7 @@ exports.checkForDuplicateEmail = email => {
 			.where( 'email', email )
 			.exec( ( err, user ) => {
 				// if we've found a user with the same email, it's a duplicate
-				const isEmailDuplicate = user ? true : false;
+				const isEmailDuplicate = user;
 
 				resolve( isEmailDuplicate );
 

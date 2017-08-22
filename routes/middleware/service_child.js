@@ -244,7 +244,7 @@ exports.getGalleryData = ( req, res, next ) => {
 					// TODO: think about doing the mapping inside the getBookmarkedChildren function
 					const bookmarkedChildrenArray = locals.bookmarkedChildren.map( childId => childId.toString() );
 					// Set the property for use during templating to show if the child has already been bookmarked
-					child.isBookmarked = locals.bookmarkedChildren.indexOf( childId ) !== -1 ? true : false;
+					child.isBookmarked = locals.bookmarkedChildren.indexOf( childId ) !== -1;
 				});
 
 				done();
@@ -328,9 +328,9 @@ exports.getRelevantChildInformation = ( children, locals ) => {
 			emotionalNeeds							: needsMap[child.emotionalNeeds],
 			galleryImage							: child.galleryImage,
 			gender									: child.gender.gender,
-			hasContactWithBiologicalParents			: child.hasContactWithBirthFamily || false, // TODO: is the || false needed?
-			hasContactWithBiologicalSiblings		: child.hasContactWithSiblings || false, // TODO: is the || false needed?
-			hasVideo								: child.video && child.video.length > 0 ? true : false, // TODO: is the ? true : false necessary?
+			hasContactWithBiologicalParents			: child.hasContactWithBirthFamily,
+			hasContactWithBiologicalSiblings		: child.hasContactWithSiblings,
+			hasVideo								: child.video && child.video.length > 0,
 			intellectualNeeds						: needsMap[ child.intellectualNeeds ],
 			isBookmarked							: child.isBookmarked,
 			language								: _.pluck( child.languages, 'language' ),
@@ -392,11 +392,11 @@ exports.getRelevantSiblingGroupInformation = ( siblingGroups, locals ) => {
 			emotionalNeeds							: _.uniq( children.map( child => needsMap[ child.emotionalNeeds ] ) ),
 			galleryImage							:  _.uniq( children.map( child => child.siblingGroupGalleryImage ) ).indexOf( NO_IMAGE_SIBLING_GROUP_DETAILS ) !== -1 ? NO_IMAGE_SIBLING_GROUP_DETAILS : children[ 0 ].siblingGroupGalleryImage,
 			genders									: _.uniq( children.map( child => child.gender.gender ) ),
-			hasContactWithBiologicalParents			: _.uniq( children.map( child => child.hasContactWithBirthFamily || false ) ), // TODO: is the || false needed?
-			hasContactWithBiologicalSiblings		: _.uniq( children.map( child => child.hasContactWithSiblings || false ) ), // TODO: is the || false needed?
+			hasContactWithBiologicalParents			: _.uniq( children.map( child => child.hasContactWithBirthFamily ) ),
+			hasContactWithBiologicalSiblings		: _.uniq( children.map( child => child.hasContactWithSiblings ) ),
 			hasVideo								: children.filter( child => child.siblingGroupVideo && child.siblingGroupVideo.length > 0 ).length > 0,
 			intellectualNeeds						: _.uniq( children.map( child => needsMap[ child.intellectualNeeds ] ) ),
-			isBookmarked							: children.map( child => child.isBookmarked ).indexOf( true ) !== -1 ? true : false, // set to true if any of the children have true for isBookmarked
+			isBookmarked							: children.map( child => child.isBookmarked ).indexOf( true ) !== -1, // set to true if any of the children have true for isBookmarked
 			languages								: _.uniq( _.flatten( children.map( child => _.pluck(child.languages, 'language' ) ) ) ),
 			legalStatuses							: legalStatusesArray,
 			legalStatusesString						: middleware.getArrayAsList( legalStatusesArray ),
@@ -417,7 +417,7 @@ exports.getRelevantSiblingGroupInformation = ( siblingGroups, locals ) => {
 			requiresYoungerSibling					: _.uniq( children.map( child => otherFamilyConstellationConsiderations.indexOf( 'requires younger children' ) !== -1 ) ),	
 			siblingContactsCount					: children[ 0 ].siblingsToBePlacedWith.length,
 			updatedAt								: _.uniq( children.map( child => child.updatedAt ) ),
-			wednesdaysChild							: children.map( child => child.wednesdaysChild ).indexOf( true ) !== -1 ? true : false
+			wednesdaysChild							: children.map( child => child.wednesdaysChild ).indexOf( true ) !== -1
 		};
 	});
 }

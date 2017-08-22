@@ -27,7 +27,7 @@
 		},
 		// events need to be bound every time the modal is opened, so they can't be put in an event block
 		bindEvents: function bindEvents() {
-  			$( '.modal__close' ).click( this.closeModal );
+  			$( '.modal__close' ).click( this.closeModal.bind( this ) );
 			$( '.profile-navigation__previous' ).click( this.handleNavClick );
 			$( '.profile-navigation__next' ).click( this.handleNavClick );
 			$( '.child-bookmark-button' ).click( this.broadcastBookmarkUpdateEvent );
@@ -153,7 +153,7 @@
 			}
 		},
 
-		/* TODO: all modal functions below mirror the calls made in waiting-child-profiles-child-details.js.  Both files need to use
+		/* TODO: all modal functions below mirror the calls made in waiting-child-profiles-sibling-group-details.js.  Both files need to use
 				 a modal.js Backbone view which should handle all this.
 
 		/* Open the modal container */
@@ -173,10 +173,10 @@
 			$( '.modal__container' ).fadeOut();
 
 			mare.utils.enablePageScrolling();
-			// This event is called from a click event so the view context is lost, we need to explicitly call all functions
-			mare.views.childDetails.clearModalContents();
-			// This event is called from a click event so the view context is lost, we need to explicitly call all functions
-			mare.views.childDetails.unbindEvents();
+
+			this.clearModalContents();
+
+			this.unbindEvents();
 		},
 
 		/* Clear out the current contents of the modal */

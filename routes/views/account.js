@@ -33,7 +33,7 @@ exports = module.exports = ( req, res ) => {
 			for( let event of events ) {
 				// determine whether or not address information exists for the event, which is helpful during rendering
 				// street1 is required, so this is enough to tell us if the address has been populated
-				event.hasAddress = event.address && event.address.street1 ? true : false;
+				event.hasAddress = event.address && event.address.street1;
 
 				// check to see if the event spans multiple days
 				const multidayEvent = event.startDate.getTime() !== event.endDate.getTime();

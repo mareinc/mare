@@ -1,4 +1,4 @@
-/* TODO: if the screen is expanded while the modal is open, then shrunk to < 655px again, the modal disappears.  Only JavaScript can fix this */
+/* TODO: this file needs some serious work, what it controls (opening/closing handled elseware) needs to be looked at */
 ( function () {
 	'use strict';
 
@@ -15,16 +15,16 @@
 		initialize: function() {
 			/* TODO: these are sharing classes with the top nav, they should either be made more generic, or renamed to be specific to the mobile menu */
 			/* TODO: donation clicks for the global header are handled in Backbone instead of an href, it should be consistent one way or the other across the two views */
-			var content = [ "<a class='top-nav__link top-nav__item top-nav__button top-nav__button--green' href='/donate'>Donate</a>" ];
+			var content = [ '<a class="top-nav__link top-nav__item top-nav__button top-nav__button--green" href="/donate">Donate</a>' ];
 			
 			// store whether the user is logged in.  This is passed as a data attribute on the mobile menu because the menu is rendered client-side instead of server-side
 			var isLoggedIn = this.$el.data( 'is-logged-in' );
 
 			// push the correct markup into the content to display at the bottom of the mobile menu
 			if( isLoggedIn ) {
-				content.push( "<a class='top-nav__link top-nav__item top-nav__button top-nav__button--log-out'>Log Out</a>" );
+				content.push( '<a class="top-nav__link top-nav__item top-nav__button top-nav__button--log-out">Log Out</a>' );
 			} else {
-				content.push( "<a class='top-nav__link top-nav__item top-nav__button top-nav__button--log-in'>Log In</a>" );
+				content.push( '<a class="top-nav__link top-nav__item top-nav__button top-nav__button--log-in">Log In</a>' );
 			}
 
 			// Initialize a view for the log in modal if it doesn't already exist
@@ -86,6 +86,11 @@
 		showLogInModal: function showLogInModal( event ) {
 
 			mare.views.logIn.openModal( event );
+			this.closeMenu();
+		},
+
+		closeMenu: function closeMenu() {
+			this.$( '.mm-close' ).click()
 		},
 
 		logOut: function logOut() {

@@ -27,7 +27,7 @@
 		},
 		// events need to be bound every time the modal is opened, so they can't be put in an event block
 		bindEvents: function bindEvents() {
-  			$( '.modal__close' ).click( this.closeModal );
+  			$( '.modal__close' ).click( this.closeModal.bind( this ) );
 			$( '.profile-navigation__previous' ).click( this.handleNavClick );
 			$( '.profile-navigation__next' ).click( this.handleNavClick );
 			$( '.sibling-group-bookmark-button' ).click(  this.broadcastBookmarkUpdateEvent );
@@ -168,15 +168,15 @@
 		/* Close the modal container */
 		// TODO: This should be moved to a more appropriate location that's accessible to all pages
 		closeModal: function closeModal() {
-			// This event is called from a click event so the view context is lost, we need to explicitly call all functions
-			mare.views.siblingGroupDetails.unbindEvents();
+
+			this.unbindEvents();
 
 			$('.modal__background').fadeOut();
 			$('.modal__container').fadeOut();
 
 			mare.utils.enablePageScrolling();
-			// This event is called from a click event so the view context is lost, we need to explicitly call all functions
-			mare.views.siblingGroupDetails.clearModalContents();
+
+			this.clearModalContents();
 		},
 
 		/* Clear out the current contents of the modal */

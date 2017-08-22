@@ -9,23 +9,22 @@ exports = module.exports = ( req, res ) => {
 
 	const view		= new keystone.View( req, res ),
 		  locals	= res.locals,
-		  userType	= req.user ? req.user.userType : ''; // knowing the type of user visiting the page will allow us to display extra relevant information
-	
+		  userType	= req.user ? req.user.userType : undefined; // knowing the type of user visiting the page will allow us to display extra relevant information
+	// extract request object parameters into local constants
+	const { category } = req.params;
+
 	// used to map the url to the stored event for determining which subset of events to show
 	let eventType;
 
 	// find the field the user belongs to in the event model based on their user type
 	const eventGroup = eventService.getEventGroup( userType );
 
-	// Use the URL stored in the request object to determine what event type we need to list out
-	const targetList = req.originalUrl.replace( '/events/', '' );
-
-	switch( targetList ) {
-		case 'adoption-parties/'		: eventType = 'MARE adoption parties & information events'; locals.showAdoptionParties = true; break;
-		case 'mapp-trainings/'			: eventType = 'MAPP trainings'; locals.showMAPPTrainings = true; break;
-		case 'fundraising-events/'		: eventType = 'fundraising events'; locals.showFundraisingEvents = true; break;
-		case 'agency-info-meetings/'	: eventType = 'agency information meetings'; locals.showAgencyInfoMeetings = true; break;
-		case 'other-trainings/'			: eventType = 'other opportunities & trainings'; locals.showOtherTrainings = true; break;
+	switch( category ) {
+		case 'adoption-parties'			: eventType = 'MARE adoption parties & information events'; locals.showAdoptionParties = true; break;
+		case 'mapp-trainings'			: eventType = 'MAPP trainings'; locals.showMAPPTrainings = true; break;
+		case 'fundraising-events'		: eventType = 'fundraising events'; locals.showFundraisingEvents = true; break;
+		case 'agency-info-meetings'		: eventType = 'agency information meetings'; locals.showAgencyInfoMeetings = true; break;
+		case 'other-trainings'			: eventType = 'other opportunities & trainings'; locals.showOtherTrainings = true; break;
 		default							: eventType = '';
 	}
 
@@ -61,7 +60,7 @@ exports = module.exports = ( req, res ) => {
 				event.shortContent = Utils.truncateText( event.description, truncateOptions );
 				// determine whether or not address information exists for the event, which is helpful during rendering
 				// street1 is required, so this is enough to tell us if the address has been populated
-				event.hasAddress = event.address && event.address.street1 ? true : false;
+				event.hasAddress = event.address && event.address.street1;
 
 				for( let attendee of event[ eventGroup ] ) {
 					// without converting to strings, these were both evaluating to Object which didn't allow for a clean comparison
@@ -69,7 +68,7 @@ exports = module.exports = ( req, res ) => {
 						userID		= req.user._id.toString();
 
 					// determine whether the user has already attended the event
-					event.attended = attendeeID === userID ? true : false;
+					event.attended = attendeeID === userID;
 				};
 
 				// check to see if the event spans multiple days

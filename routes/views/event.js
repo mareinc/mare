@@ -10,26 +10,22 @@ exports = module.exports = ( req, res ) => {
     const view 		= new keystone.View( req, res ),
     	  locals 	= res.locals,
     	  userType	= req.user ? req.user.userType : ''; // knowing the type of user visiting the page will allow us to display extra relevant information
-	
+	// extract request object parameters into local constants
+	const { category, key } = req.params;
+
 	// used to map the url to the stored event for determining which group the event belongs to so we can show the correct preamble
 	let eventType;
 	
 	// find the field the user belongs to in the event model based on their user type
 	const eventGroup = eventService.getEventGroup( userType );
-
-	// use the URL stored in the request object to determine what event type we need to show
-	/* TODO: Handle this with the functions in Utils, similar to how the parent router is parsing the url */
-	let targetList = req.originalUrl.replace( '/events/', '' );
-	// remove everything from the url after the event area
-	targetList = targetList.replace( /\/.*/, '/' );
-
-	switch( targetList ) {
-		case 'adoption-parties/'		: eventType = 'MARE adoption parties & information events'; locals.showAdoptionParties = true; break;
-		case 'mapp-trainings/'			: eventType = 'MAPP trainings'; locals.showMAPPTrainings = true; break;
-		case 'fundraising-events/'		: eventType = 'fundraising events'; locals.showFundraisingEvents = true; break;
-		case 'agency-info-meetings/'	: eventType = 'agency information meetings'; locals.showAgencyInfoMeetings = true; break;
-		case 'other-trainings/'			: eventType = 'other opportunities & trainings'; locals.showOtherTrainings = true; break;
-		default							: eventType = '';
+	// TODO: these locals bindings can be removed and the ifeq handlebars helper can be used instead.  Need to update in eventList.js as well
+	switch( category ) {
+		case 'adoption-parties'			: eventType = 'MARE adoption parties & information events'; locals.showAdoptionParties = true; break;
+		case 'mapp-trainings'			: eventType = 'MAPP trainings'; locals.showMAPPTrainings = true; break;
+		case 'fundraising-events'		: eventType = 'fundraising events'; locals.showFundraisingEvents = true; break;
+		case 'agency-info-meetings'		: eventType = 'agency information meetings'; locals.showAgencyInfoMeetings = true; break;
+		case 'other-trainings'			: eventType = 'other opportunities & trainings'; locals.showOtherTrainings = true; break;
+		default							: eventType = ''; /* TODO: test this to see if it's needed or if it messes everything up with a bad url.  Most likely need to redirect or show an error page.  Check eventList.js as well */
 	}
 
 	// determine if the user is an administrator. We want to display the event attendees if they are
@@ -47,7 +43,7 @@ exports = module.exports = ( req, res ) => {
 							  eventType === 'other opportunities & trainings' );
 
 	// fetch all data needed to render this page
-	let fetchEvent			= eventService.getEventByUrl( req.originalUrl ),
+	let fetchEvent			= eventService.getEventByKey( key ),
 		fetchSidebarItems	= pageService.getSidebarItems();
 	
 	Promise.all( [ fetchEvent, fetchSidebarItems ] )
@@ -61,22 +57,22 @@ exports = module.exports = ( req, res ) => {
 			const multidayEvent = event.startDate.getTime() !== event.endDate.getTime();
 			// pull the date and time into a string for easier templating
 			if( multidayEvent ) {
-				event.dateTimeString = moment( event.startDate ).format( 'dddd MMMM Do, YYYY' ) + ' at ' + event.startTime + ' to ' + moment( event.endDate ).format( 'dddd MMMM Do, YYYY' ) + ' at ' + event.endTime;
+				event.dateTimeString = `${ moment( event.startDate ).format( 'dddd MMMM Do, YYYY' ) } at ${ event.startTime } to ${ moment( event.endDate ).format( 'dddd MMMM Do, YYYY' ) } at ${ event.endTime }`;
 			} else {
-				event.dateTimeString = moment(event.startDate).format('dddd MMMM Do, YYYY') + ' from ' + event.startTime + ' - ' + event.endTime;
+				event.dateTimeString = `${ moment( event.startDate ).format( 'dddd MMMM Do, YYYY' ) } from ${ event.startTime } - ${ event.endTime }`;
 			}
 			
 			// determine whether or not address information exists for the event, street1 is required, so this
 			// is enough to tell us if the address has been populated
-			event.hasAddress = event.address && event.address.street1 ? true : false;
+			event.hasAddress = event.address && event.address.street1;
 			
 			// store data on whether any attendees exist for each group
 			// NOTE: used to determine whether we should render headers for each list during templating
-			event.hasStaffAttendees			= event.staffAttendees.length > 0 ? true : false;
-			event.hasFamilyAttendees		= event.familyAttendees.length > 0 ? true : false;
-			event.hasSocialWorkerAttendees	= event.socialWorkerAttendees.length > 0 ? true : false;
-			event.hasSiteVisitorAttendees	= event.siteVisitorAttendees.length > 0 ? true : false;
-			event.hasChildAttendees			= event.childAttendees.length > 0 ? true : false;
+			event.hasStaffAttendees			= event.staffAttendees.length > 0;
+			event.hasFamilyAttendees		= event.familyAttendees.length > 0;
+			event.hasSocialWorkerAttendees	= event.socialWorkerAttendees.length > 0;
+			event.hasSiteVisitorAttendees	= event.siteVisitorAttendees.length > 0;
+			event.hasChildAttendees			= event.childAttendees.length > 0;
 
 			for( let attendee of event[ eventGroup ] ) {
 				// without converting to strings, these were both evaluating to Object which didn't allow for a clean comparison
@@ -91,8 +87,8 @@ exports = module.exports = ( req, res ) => {
 
 			for( let family of event.familyAttendees ) {
 				// if the eventGroup is families, we need to prettify the attendee name
-				const hasContact2		= family.contact2.name.full.length > 0 ? true : false;
-				const hasSameLastName	= family.contact1.name.last === family.contact2.name.last ? true : false;
+				const hasContact2		= family.contact2.name.full.length > 0;
+				const hasSameLastName	= family.contact1.name.last === family.contact2.name.last;
 
 				if( hasContact2 && hasSameLastName ) {
 					family.fullName = family.contact1.name.first + ' and ' + family.contact2.name.full;

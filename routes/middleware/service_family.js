@@ -14,8 +14,8 @@ exports.setGalleryPermissions = ( req, res ) => {
 	// variables to determine what features the user has access to.  Don't overwrite it if it's already set
 	const userType = locals.userType || ( req.user ? req.user.get( 'userType' ) : 'anonymous' );
 
-	locals.canBookmarkChildren = userType === 'social worker' || userType === 'family' ? true : false;
-	locals.canSearchForChildren = userType === 'social worker' || userType === 'family' ? true : false;
+	locals.canBookmarkChildren = userType === 'social worker' || userType === 'family';
+	locals.canSearchForChildren = userType === 'social worker' || userType === 'family';
 };
 
 exports.checkForBookmarkedChildren = ( req, res ) => {
