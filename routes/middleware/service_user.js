@@ -123,7 +123,7 @@ exports.getUserByIdNew = ( id, targetModel ) => {
 					// log the error for debugging purposes
 					console.error( `error fetching user by id ${ id }` );
 					// reject the promise
-					reject();
+					return reject();
 
 				}
 				// if the user was found, resolve the promise with the user object
