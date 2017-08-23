@@ -2,22 +2,22 @@
 	'use strict';
 
 	mare.views.SiblingGroupDetails = Backbone.View.extend({
-		// This view controls the content of the modal window, create an element to insert into the modal
+		// this view controls the content of the modal window, create an element to insert into the modal
 		tagName: 'section',
-		// Give the container for our view a class we can hook into
+		// give the container for our view a class we can hook into
   		className: 'sibling-group-details',
 
 		initialize: function initialize() {
-			// Store a reference to this for insde callbacks where context is lost
+			// store a reference to this for insde callbacks where context is lost
 			var view = this;
-			// Create a hook to access the gallery template
+			// create a hook to access the gallery template
 			var html = $('#sibling-group-details-template').html();
-			// Compile the template to be used during rendering/repainting the gallery
+			// compile the template to be used during rendering/repainting the gallery
 			this.template = Handlebars.compile(html);
-			// Initialize the details modal once we've fetched the basic child data, this is needed because the details will be appended to the same collection
+			// initialize the details modal once we've fetched the basic child data, this is needed because the details will be appended to the same collection
 			mare.promises.childrenDataLoaded.done(function() {
 				view.collection = mare.collections.gallerySiblingGroups;
-				// Bind event handler for when child details are returned
+				// bind event handler for when child details are returned
 				view.on('sibling-group-details-loaded', view.render);
 			});
 			// when we get a response from the server that the bookmark for a sibling group has successfully updated, update the view
@@ -28,8 +28,8 @@
 		// events need to be bound every time the modal is opened, so they can't be put in an event block
 		bindEvents: function bindEvents() {
   			$( '.modal__close' ).click( this.closeModal.bind( this ) );
-			$( '.profile-navigation__previous' ).click( this.handleNavClick );
-			$( '.profile-navigation__next' ).click( this.handleNavClick );
+			$( '.profile-navigation__previous' ).click( this.handleNavClick.bind( this ) );
+			$( '.profile-navigation__next' ).click( this.handleNavClick.bind( this ) );
 			$( '.sibling-group-bookmark-button' ).click(  this.broadcastBookmarkUpdateEvent );
 		},
 		// events need to be unbound every time the modal is closed
@@ -42,36 +42,36 @@
 		},
 
 		render: function render(siblingGroupModel) {
-			// Depending on the order of the collection, the next and previous differs per rendering
+			// depending on the order of the collection, the next and previous differs per rendering
 			this.setNavigation(siblingGroupModel);
-			// Pass the child model to through the template we stored during initialization
+			// pass the child model to through the template we stored during initialization
 			var html = this.template(siblingGroupModel.toJSON());
 			this.$el.html(html);
-			// Render the contents area and tabs
+			// render the contents area and tabs
 			$('.modal-container__contents').html(this.$el);
-			// Remove the loading indicator and display the details content
+			// remove the loading indicator and display the details content
 			$('.modal-container__loading').fadeOut(function() {
 				$('.modal-container__contents').fadeIn();
 			});
-			// Set a data attribute with the displayed child's id for use in next/prev navigation
+			// set a data attribute with the displayed child's id for use in next/prev navigation
 			this.$el.attr('data-registration-number', siblingGroupModel.get('registrationNumber'));
-			// Set up the modal tab click events
+			// set up the modal tab click events
 			this.initializeModalTabs();
-			// Bind click events for the newly rendered elements
+			// bind click events for the newly rendered elements
 			this.bindEvents();
 
 		},
 
 		setNavigation: function setNavigation(siblingGroupModel) {
-			// Get the index of the current child model in the children collection
+			// get the index of the current child model in the children collection
 			var siblingGroupIndex = this.collection.indexOf(siblingGroupModel);
-			// Check to see if there are children to navigate to before and after the currently displayed child
+			// check to see if there are children to navigate to before and after the currently displayed child
 			var hasPrevious = siblingGroupIndex > 0;
 			var hasNext = siblingGroupIndex !== this.collection.length - 1;
-			// Set the index of the previous/next child for easy access in the collection
+			// set the index of the previous/next child for easy access in the collection
 			var previousIndex = hasPrevious ? siblingGroupIndex - 1 : undefined;
 			var nextIndex = hasNext ? siblingGroupIndex + 1 : undefined;
-			// Set whether there are previous and next children, as well as their indices, so we have the information during rendering
+			// set whether there are previous and next children, as well as their indices, so we have the information during rendering
 			siblingGroupModel.set('hasPrevious', hasPrevious);
 			siblingGroupModel.set('hasNext', hasNext);
 			siblingGroupModel.set('previousIndex', previousIndex);
@@ -79,83 +79,85 @@
 		},
 
 		getSiblingGroupByRegistrationNumber: function getSiblingGroupByRegistrationNumber( registrationNumber ) {
-			// Find the child with the matching registration number and store it in siblingGroupModel
+			// find the child with the matching registration number and store it in siblingGroupModel
 			var siblingGroupModel = this.collection.find( function( siblingGroup ) {
 				return siblingGroup.get( 'registrationNumbers' ).indexOf( registrationNumber ) !== -1;
 			});
-			// Return the matching child model
+			// return the matching child model
 			return siblingGroupModel;
 		},
 
 		getSiblingGroupByIndex: function getSiblingGroupByIndex( index ) {
-			// Fetch the child at the specified index in the children collection
+			// fetch the child at the specified index in the children collection
 			return this.collection.at( index );
 
 		},
 
-		/* When a child card is clicked, display detailed information for that child in a modal window */
+		/* when a child card is clicked, display detailed information for that child in a modal window */
 		handleGalleryClick: function handleGalleryClick( event ) {
-			// Store a reference to this for insde callbacks where context is lost
+			// store a reference to this for insde callbacks where context is lost
 			var view = this;
 
 			var selectedSiblingGroup	= $( event.currentTarget ),
 				registrationNumbers		= selectedSiblingGroup.data( 'registration-numbers' ),
 				firstRegistrationNumber	= parseInt( registrationNumbers.split( ',' )[ 0 ], 10 ),
-				siblingGroupModel		= this.getSiblingGroupByRegistrationNumber( firstRegistrationNumber );
-			// Open the modal immediately with a loading indicator to keep the site feeling snappy
+				siblingGroup			= this.getSiblingGroupByRegistrationNumber( firstRegistrationNumber );
+			// open the modal immediately with a loading indicator to keep the site feeling snappy
 			this.openModal();
-			// Fetch the child details information
-			this.getDetails( siblingGroupModel, firstRegistrationNumber );
+			// fetch the child details information
+			this.getDetails( siblingGroup );
 		},
 
 		handleNavClick: function handleNavClick( event ) {
-			// This event is called from a click event so the view context is lost, we need to explicitly call all functions
-			mare.views.siblingGroupDetails.unbindEvents();
+			// store a reference to the view for callback functions that lose context
+			var view = this;
+
+			this.unbindEvents();
 
 			var selectedSiblingGroup = $( event.currentTarget ),
 				index = selectedSiblingGroup.data( 'child-index' );
 
-			var siblingGroup = mare.views.siblingGroupDetails.getSiblingGroupByIndex( index );
-			// Fade displayed child details if any are shown, and display the loading indicator
+			var siblingGroup = this.getSiblingGroupByIndex( index );
+			// fade displayed child details if any are shown, and display the loading indicator
 			$('.modal-container__contents').fadeOut( function() {
 				$('.modal-container__loading').fadeIn( function() {
-					mare.views.siblingGroupDetails.getDetails( siblingGroup );
+					view.getDetails( siblingGroup );
 				});
 			});
 		},
 
-		/* Make a call to fetch data for the current child to show detailed information for */
+		/* make a call to fetch data for the current child to show detailed information for */
 		getDetails: function getDetails( siblingGroupModel, targetRegistrationNumber ) {
-			// Store a reference to this for insde callbacks where context is lost
+			// store a reference to this for insde callbacks where context is lost
 			var view = this;
-			// Submit a request to the service layer to fetch child data if we don't have it
+			// submit a request to the service layer to fetch child data if we don't have it
 			if( !siblingGroupModel.get( 'hasDetails' ) ) {
 				$.ajax({
 					dataType: 'json',
 					url: '/services/get-sibling-group-details',
 					type: 'POST',
 					data: {
-						registrationNumber: targetRegistrationNumber
+						registrationNumber: siblingGroupModel.get( 'registrationNumbers' )[ 0 ]
 					}
 				}).done( function( siblingGroupDetails ) {
-					// Append the new fields to the child model and set a flag so fetch the same child information a second time
+					// append the new fields to the child model and set a flag so fetch the same child information a second time
 					siblingGroupModel.set( siblingGroupDetails );
 					siblingGroupModel.set( 'hasDetails', true );
-					// Emit an event when we have new child details to render
+					// emit an event when we have new child details to render
 					view.trigger( 'sibling-group-details-loaded', siblingGroupModel );
 
 				}).fail( function( err ) {
-					// TODO: Show an error message to the user
+					// TODO: show an error message to the user
 					console.log( err );
 				});
 			} else {
-				// We already have the child details but still want to show the child so announce that we have the child details
+				// we already have the child details but still want to show the child so announce that we have the child details
 				view.trigger( 'sibling-group-details-loaded', siblingGroupModel );
 			}
 		},
 
-		/* Open the modal container */
-		// TODO: This should be moved to a more appropriate location that's accessible to all pages
+		/* open the modal container */
+		// TODO: this should be moved to a more appropriate location that's accessible to all pages
 		openModal: function openModal() {
 			$('.modal__background').fadeIn();
 			$('.modal-container__contents').hide();
@@ -165,8 +167,8 @@
 			mare.utils.disablePageScrolling();
 		},
 
-		/* Close the modal container */
-		// TODO: This should be moved to a more appropriate location that's accessible to all pages
+		/* close the modal container */
+		// TODO: this should be moved to a more appropriate location that's accessible to all pages
 		closeModal: function closeModal() {
 
 			this.unbindEvents();
@@ -179,8 +181,8 @@
 			this.clearModalContents();
 		},
 
-		/* Clear out the current contents of the modal */
-		// TODO: This should be moved to a more appropriate location that's accessible to all pages
+		/* clear out the current contents of the modal */
+		// TODO: this should be moved to a more appropriate location that's accessible to all pages
 		clearModalContents: function clearModalContents() {
 			$('.modal-container__contents').html('');
 		},
@@ -215,7 +217,7 @@
 		broadcastBookmarkUpdateEvent: function broadcastBookmarkUpdateEvent( event ) {
 			// DOM cache the current target for performance
 			var $currentTarget = $( event.currentTarget );
-			// Get the sibling group's registration numbers to match them in the database
+			// get the sibling group's registration numbers to match them in the database
 			var registrationNumbers = $currentTarget.data( 'registration-numbers' );
 
 			// if we are currently saving the users attempt to toggle the bookmark and the server hasn't processed the change yet, ignore the click event
@@ -259,6 +261,5 @@
 
 			targetButton.removeClass( 'button--disabled' );
 		}
-
 	});
 }());
