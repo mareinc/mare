@@ -79,7 +79,7 @@ exports = module.exports = app => {
 	app.post( '/charge'									, middleware.charge );
 	// user account management
 	app.get( '/account'									, middleware.requireUser, routes.views.account );
-	app.post( '/account-update'							, accountMiddleware.updateUser );
+	app.put( '/account/user-info'						, accountMiddleware.updateUser );
 	/* TODO: all these routes below need to be moved and prefixed with appropriate REST verbs like put */
 	// services for ajax calls
 	app.post( '/services/get-children-data'				, childService.getGalleryData );
