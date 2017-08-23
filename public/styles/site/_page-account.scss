@@ -6,7 +6,7 @@
 	}
 }
 
-.mobile-account-nav-container {
+.mobile-account-nav {
     margin: 0 0 1em;
     width: 100%;
 
@@ -19,7 +19,12 @@
     padding: 0;
 }
 
+.sidebar-list {
+    margin: 0;
+}
+
 .account-nav__link {
+    cursor: pointer;
     display: flex;
     justify-content: space-between;
 

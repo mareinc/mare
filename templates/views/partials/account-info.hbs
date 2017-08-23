@@ -2,75 +2,17 @@
 
     <h1 class="account-current-section__title">Account Information</h1>
 
-    <h2>current section is \{{ currentSection }}</h2>
-
-    {{!-- TODO: since PUT requests don't make much sense with forms, we might want to remove this form container --}}
-
-    <form class="user-info-form">
-        <div class="row form-group">
-            <div class="col-sm-12">
-                <label class="label" for="first-name">First Name:</label>
-                <input class="input" type="text" id="first-name" name="firstName" value="{{ user.name.first }}" placeholder="First Name">
-            </div>
-
-            <div class="col-sm-12">
-                <label class="label" for="last-name">Last Name:</label>
-                <input class="input" type="text" id="last-name" name="lastName" value="{{ user.name.last }}" placeholder="Last Name">
-            </div>
-        </div>
-        <div class="row form-group">
-            <div class="col-sm-12">
-                <label class="label" for="email">Email:</label>
-                <input class="input" type="text" id="email" name="email" value="{{ user.email }}" placeholder="Email">
-            </div>
-
-        </div>
-        <div class="row form-group">
-            <div class="col-sm-8">
-                <label class="label" for="home-phone">Home Number:</label>
-                <input class="input" type="text" id="home-phone" name="homePhone" value="{{ user.phone.home }}" placeholder="000-000-0000">
-            </div>
-            <div class="col-sm-8">
-                <label class="label" for="home-phone">Mobile Number:</label>
-                <input class="input" type="text" id="mobile-phone" name="mobilePhone" value="{{ user.phone.mobile }}" placeholder="000-000-0000">
-            </div>
-            <div class="col-sm-8">
-                <label class="label" for="home-phone">Work Number:</label>
-                <input class="input" type="text" id="work-phone" name="workPhone" value="{{ user.phone.work }}" placeholder="000-000-0000">
-            </div>
-        </div>
-        <div class="row form-group">
-            <div class="col-sm-12">
-                <label class="label" for="street-1">Address Line 1:</label>
-                <input class="input" type="text" id="address-1" name="address1" value="{{ user.address.street1 }}" placeholder="Address Line 1">
-            </div>
-
-            <div class="col-sm-12">
-                <label class="label" for="street-2">Address Line 2:</label>
-                <input class="input" type="text" id="address-2" name="address2" value="{{ user.address.street2 }}" placeholder="Address Line 2">
-            </div>
-        </div>
-        <div class="row form-group">
-            <div class="col-sm-12">
-                <label class="label" for="zip-code">Zip Code:</label>
-                <input class="input" type="text" id="zip-code" name="zipCode" value="{{ user.address.zipCode }}" placeholder="Zip Code">
-            </div>
-            <div class="col-sm-12">
-                <label class="checkbox-inline">
-                    <input type="checkbox" id="is-massachusetts-resident" name="isMassachusettsResident">Massachusetts Resident
-                </label>
-            </div>
-        </div>
-        <div class="row form-group">
-            <div class="col-sm-12">
-                <button class="button button--blue save-button">Save</button>
-            </div>
-        </div>
-    </form>
+    {{#ifeq user.userType 'admin'}}{{> account-info-form-admin }}{{/ifeq}}
+    {{#ifeq user.userType 'family'}}{{> account-info-form-family }}{{/ifeq}}
+    {{#ifeq user.userType 'social worker'}}{{> account-info-form-social-worker }}{{/ifeq}}
+    {{#ifeq user.userType 'site visitor'}}{{> account-info-form-site-visitor }}{{/ifeq}}
 
     {{!-- TODO: REMOVE --}}
     {{!-- TODO: REMOVE --}}
     {{!-- TODO: REMOVE --}}
+    <hr>
+    <hr>
+    <hr>
     {{user}}
     {{!-- TODO: REMOVE --}}
     {{!-- TODO: REMOVE --}}
