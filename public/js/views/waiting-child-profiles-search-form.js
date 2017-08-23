@@ -28,8 +28,8 @@
 
 			this.formFields = {
 				genders							: $( '.select-gender:checked' ),
-				minimumSiblings					: $( '#minimum-number-of-siblings' ).val(),
-				maximumSiblings					: $( '#maximum-number-of-siblings' ).val(),
+				minimumChildren					: $( '#minimum-number-of-children' ).val(),
+				maximumChildren					: $( '#maximum-number-of-children' ).val(),
 				youngestAge						: $( '#youngest-age' ).val(),
 				oldestAge						: $( '#oldest-age' ).val(),
 				races							: $( '.select-race:checked' ),
@@ -101,8 +101,8 @@
 			formFields.familyConstellation		= familyConstellationArray;
 			formFields.gendersOfChildrenInHome	= gendersOfChildrenInHomeArray;
 
-			formFields.minimumSiblings			= parseInt( formFields.minimumSiblings, 10 );
-			formFields.maximumSiblings			= parseInt( formFields.maximumSiblings, 10 );
+			formFields.minimumChildren			= parseInt( formFields.minimumChildren, 10 );
+			formFields.maximumChildren			= parseInt( formFields.maximumChildren, 10 );
 			formFields.youngestAge				= parseInt( formFields.youngestAge, 10 );
 			formFields.oldestAge				= parseInt( formFields.oldestAge, 10 );
 			formFields.maximumPhysicalNeeds		= formFields.maximumPhysicalNeeds !== undefined ? parseInt( formFields.maximumPhysicalNeeds, 10 ) : 3;
@@ -151,10 +151,6 @@
 
 				// break out of the current loop if the child's gender wasn't selected ( return is needed for this in _.each )
 				if( formFields.genders && formFields.genders.indexOf( child.get( 'gender' ) ) === -1 ) { return; }
-
-				// break out of the current loop if the child has less than the min or more then the max specified ( return is needed for this in _.each )
-				if( formFields.minimumSiblings > child.get( 'siblingContactsCount' ) ||
-				   formFields.maximumSiblings < child.get( 'siblingContactsCount' ) ) { return; }
 
 				// break out of the current loop if the child's age is less than the youngest or more than the oldest specified ( return is needed for this in _.each )
 				if( formFields.youngestAge > child.get( 'age' ) ||
@@ -238,8 +234,8 @@
 				if( formFields.genders && _.difference( siblingGroup.get( 'genders' ), formFields.genders ).length > 0 ) { return; }
 
 				// break out of the current loop if the sibling group has less than the min or more then the max specified ( return is needed for this in _.each )
-				if( formFields.minimumSiblings > siblingGroup.get( 'siblingContactsCount' ) ||
-					formFields.maximumSiblings < siblingGroup.get( 'siblingContactsCount' ) ) { return; }
+				if( formFields.minimumChildren > siblingGroup.get( 'siblingToBePlacedWithCount' ) + 1 ||
+					formFields.maximumChildren < siblingGroup.get( 'siblingToBePlacedWithCount' ) + 1 ) { return; }
 
 				// break out of the current loop if the sibling group's age is less than the youngest or more than the oldest specified ( return is needed for this in _.each )
 				if( formFields.youngestAge < _.min( siblingGroup.get( 'ages' ) ) ||
