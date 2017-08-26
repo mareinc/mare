@@ -2,7 +2,7 @@
 		<section class="family-account-setup-section">
 			<div class="row form-group">
 				<div class="col-sm-12">
-					<input type="email" id="family-email" class="input" name="email" placeholder="john.smith@gmail.com" value="{{user.email}}">
+					<input type="email" id="family-email" class="input" name="email" placeholder="john.smith@gmail.com" value="{{ user.email}}">
 					<label for="family-email" class="label">Email Address</label>
 				</div>
 			</div>
@@ -22,21 +22,21 @@
 			<div class="form-section-header">Contact 1</div>
 			<div class="row form-group">
 				<div class="col-sm-12">
-					<input type="text" id="contact1-first-name" class="input" name="contact1FirstName" placeholder="John" value="{{user.contact1.name.first}}">
+					<input type="text" id="contact1-first-name" class="input" name="contact1FirstName" placeholder="John" value="{{ user.contact1.name.first}}">
 					<label for="contact1-first-name" class="label">First Name</label>
 				</div>
 				<div class="col-sm-12">
-					<input type="text" id="contact1-last-name" class="input" name="contact1LastName" placeholder="Smith" value="{{user.contact1.name.last}}">
+					<input type="text" id="contact1-last-name" class="input" name="contact1LastName" placeholder="Smith" value="{{ user.contact1.name.last}}">
 					<label for="contact1-last-name" class="label">Last Name</label>
 				</div>
 			</div>
 			<div class="row form-group">
 				<div class="col-sm-12">
-					<input type="email" id="contact1-email" class="input" name="contact1Email" placeholder="john.smith@gmail.com" value="{{user.contact1.email}}">
+					<input type="email" id="contact1-email" class="input" name="contact1Email" placeholder="john.smith@gmail.com" value="{{ user.contact1.email}}">
 					<label for="contact1-email" class="label">Email Address</label>
 				</div>
 				<div class="col-sm-12">
-					<input type="text" id="contact1-mobile" class="input" name="contact1Mobile" placeholder="(617) 111-1111" value="{{user.contact1.phone.mobile}}">
+					<input type="text" id="contact1-mobile" class="input" name="contact1Mobile" placeholder="(617) 111-1111" value="{{ user.contact1.phone.mobile}}">
 					<label for="contact1-mobile" class="label">Mobile Phone</label>
 				</div>
 			</div>
@@ -56,7 +56,8 @@
 					<span id="contact1-gender-error-container" class="error-container">
 						<span class="gender-select-text">Gender</span> &nbsp;&nbsp;
 						{{#each genders}}
-							<label class="radio-inline"><input type="radio" name="contact1Gender" value="{{_id}} {{#ifeq user.contact1.gender _id }}checked{{/ifeq}}">{{gender}}</label>
+							<div>{{ user.contact1.gender }}</div>
+							<label class="radio-inline"><input type="radio" name="contact1Gender" value="{{ _id }}" {{#ifeq ../user.contact1.gender _id }}checked="checked"{{/ifeq}}>{{ gender }}</label>
 						{{/each}}
 					</span>
 				</div>
@@ -72,7 +73,7 @@
 						{{#each races}}
 						<div class="col-sm-12 form-group">
 							<label class="checkbox-inline">
-								<input type="checkbox" name="contact1Race" value="{{_id}}" {{#ifeq user.contact1.race _id }}checked{{/ifeq}}>{{race}}
+								<input type="checkbox" name="contact1Race" value="{{ _id }}" {{#ifincludes ../user.contact1.race _id }}checked="checked"{{/ifincludes}}>{{ race }}
 							</label>
 						</div>
 						{{/each}}
@@ -80,7 +81,7 @@
 				</div>
 				<div class="col-sm-12">
 					<div class="form-group">
-						<input type="text" id="contact1-occupation" class="input" name="contact1Occupation" placeholder="teacher" value="{{user.contact1.occupation}}">
+						<input type="text" id="contact1-occupation" class="input" name="contact1Occupation" placeholder="teacher" value="{{ user.contact1.occupation }}">
 						<label for="contact1-occupation" class="label">Occupation</label>
 					</div>
 				</div>
@@ -92,21 +93,21 @@
 
 			<div class="row form-group">
 				<div class="col-sm-12">
-					<input type="text" id="contact2-first-name" class="input" name="contact2FirstName" placeholder="Jane" value="{{user.contact2.name.first}}">
+					<input type="text" id="contact2-first-name" class="input" name="contact2FirstName" placeholder="Jane" value="{{ user.contact2.name.first }}">
 					<label for="contact2-first-name" class="label">First Name</label>
 				</div>
 				<div class="col-sm-12">
-					<input type="text" id="contact2-last-name" class="input" name="contact2LastName" placeholder="Smith" value="{{user.contact2.name.last}}">
+					<input type="text" id="contact2-last-name" class="input" name="contact2LastName" placeholder="Smith" value="{{ user.contact2.name.last }}">
 					<label for="contact2-last-name" class="label">Last Name</label>
 				</div>
 			</div>
 			<div class="row form-group">
 				<div class="col-sm-12">
-					<input type="email" id="contact2-email" class="input" name="contact2Email" placeholder="jane.smith@gmail.com" value="{{user.contact2.email}}">
+					<input type="email" id="contact2-email" class="input" name="contact2Email" placeholder="jane.smith@gmail.com" value="{{ user.contact2.email }}">
 					<label for="contact2-email" class="label">Email Address</label>
 				</div>
 				<div class="col-sm-12">
-					<input type="text" id="contact2-phone" class="input" name="contact2Mobile" placeholder="(617) 222-2222" value="{{user.contact2.phone.mobile}}">
+					<input type="text" id="contact2-phone" class="input" name="contact2Mobile" placeholder="(617) 222-2222" value="{{ user.contact2.phone.mobile }}">
 					<label for="contact2-phone" class="label">Mobile Phone</label>
 				</div>
 			</div>
@@ -125,7 +126,7 @@
 				<div class="col-sm-24">
 					<span class="gender-select-text">Gender:</span> &nbsp;&nbsp;
 					{{#each genders}}
-						<label class="radio-inline"><input type="radio" name="contact2Gender" value="{{_id}}">{{gender}}</label>
+						<label class="radio-inline"><input type="radio" name="contact2Gender" value="{{ _id }}">{{ gender }}</label>
 					{{/each}}
 				</div>
 			</div>
@@ -140,7 +141,7 @@
 						{{#each races}}
 						<div class="col-sm-12 form-group">
 							<label class="checkbox-inline">
-								<input type="checkbox" name="contact2Race" value="{{_id}}">{{race}}
+								<input type="checkbox" name="contact2Race" value="{{ _id }}">{{ race }}
 							</label>
 						</div>
 						{{/each}}
@@ -148,7 +149,7 @@
 				</div>
 				<div class="col-sm-12">
 					<div class="form-group">
-						<input type="text" id="contact2-occupation" class="input" name="contact2Occupation" placeholder="police officer" value="{{user.contact2.occupation}}">
+						<input type="text" id="contact2-occupation" class="input" name="contact2Occupation" placeholder="police officer" value="{{ user.contact2.occupation }}">
 						<label for="contact2-occupation" class="label">Occupation</label>
 					</div>
 				</div>
@@ -160,11 +161,11 @@
 
 			<div class="row form-group">
 				<div class="col-sm-12">
-					<input type="text" id="family-street-1" class="input" name="street1" placeholder="100 Main Street" value="{{user.address.street1}}">
+					<input type="text" id="family-street-1" class="input" name="street1" placeholder="100 Main Street" value="{{ user.address.street1 }}">
 					<label for="family-street-1" class="label">Street 1</label>
 				</div>
 				<div class="col-sm-12">
-					<input type="text" id="family-street-2" class="input" name="street2" placeholder="Suite 1" value="{{user.address.street2}}">
+					<input type="text" id="family-street-2" class="input" name="street2" placeholder="Suite 1" value="{{ user.address.street2 }}">
 					<label for="family-street-2" class="label">Street 2</label>
 				</div>
 			</div>
@@ -179,12 +180,12 @@
 					<label for="ma-city" class="label">City</label>
 				</div>
 				<div class="col-sm-12 form-group non-ma-city-container hidden">
-					<input type="text" id="non-ma-city" class="input" name="nonMACity" placeholder="Boston" value="{{user.address.city}}">
+					<input type="text" id="non-ma-city" class="input" name="nonMACity" placeholder="Boston" value="{{ user.address.city }}">
 					<label for="non-ma-city" class="label">City</label>
 				</div>
 				<div class="col-sm-12 form-group">
 					<label class="checkbox-inline">
-						<input type="checkbox" id="is-not-MA-city-checkbox" name="isNotMACity" value="{{user.address.isOutsideMassachusetts}}">I live outside MA
+						<input type="checkbox" id="is-not-MA-city-checkbox" name="isNotMACity" value="{{ user.address.isOutsideMassachusetts }}">I live outside MA
 					</label>
 				</div>
 			</div>
@@ -193,9 +194,9 @@
 					<select id="family-state" class="input state-select" name="state">
 					{{#each states}}
 						{{#if defaultSelection}}
-							<option value="{{_id}}" selected="selected">{{state}}</option>
+							<option value="{{ _id }}" selected="selected">{{ state }}</option>
 						{{else}}
-							<option value="{{_id}}">{{state}}</option>
+							<option value="{{ _id }}">{{ state }}</option>
 						{{/if}}
 					{{/each}}
 					</select>
@@ -204,11 +205,11 @@
 			</div>
 			<div class="row form-group">
 				<div class="col-sm-12">
-					<input type="number" id="zip-code" class="input" name="zipCode" placeholder="02111" value="{{user.address.zipCode}}">
+					<input type="number" id="zip-code" class="input" name="zipCode" placeholder="02111" value="{{ user.address.zipCode }}">
 					<label for="zip-code" class="label">Zip Code</label>
 				</div>
 				<div class="col-sm-12">
-					<input type="text" id="home-phone" class="input" name="homePhone" placeholder="(617) 333-3333" value="{{user.homePhone}}">
+					<input type="text" id="home-phone" class="input" name="homePhone" placeholder="(617) 333-3333" value="{{ user.homePhone }}">
 					<label for="home-phone" class="label">Home Phone</label>
 				</div>
 			</div>
@@ -222,27 +223,27 @@
 					<div class="row form-group">
 						<div class="col-sm-12 form-group">
 							<label class="checkbox-inline">
-								<input type="checkbox" id="gathering-information-checkbox" class="adoption-preferences-trigger" name="processProgression" value="{{user.stages.gatheringInformation}}">Gathering Information
+								<input type="checkbox" id="gathering-information-checkbox" class="adoption-preferences-trigger" name="processProgression" value="{{ user.stages.gatheringInformation }}">Gathering Information
 							</label>
 						</div>
 						<div class="col-sm-12 form-group">
 							<label class="checkbox-inline">
-								<input type="checkbox" id="looking-for-agency-checkbox" class="adoption-preferences-trigger" name="processProgression" value="{{user.stages.lookingForAgency}}">Looking for an agency
+								<input type="checkbox" id="looking-for-agency-checkbox" class="adoption-preferences-trigger" name="processProgression" value="{{ user.stages.lookingForAgency }}">Looking for an agency
 							</label>
 						</div>
 						<div class="col-sm-12 form-group">
 							<label class="checkbox-inline">
-								<input type="checkbox" id="working-with-agency-checkbox" class="adoption-preferences-trigger" name="processProgression" value="{{user.stages.workingWithAgency}}">Working with an agency
+								<input type="checkbox" id="working-with-agency-checkbox" class="adoption-preferences-trigger" name="processProgression" value="{{ user.stages.workingWithAgency }}">Working with an agency
 							</label>
 						</div>
 						<div class="col-sm-12 form-group">
 							<label class="checkbox-inline">
-								<input type="checkbox" id="mapp-training-completed-checkbox" class="adoption-preferences-trigger" name="processProgression" value="{{user.stages.MAPPTrainingCompleted}}">MAPP training completed
+								<input type="checkbox" id="mapp-training-completed-checkbox" class="adoption-preferences-trigger" name="processProgression" value="{{ user.stages.MAPPTrainingCompleted }}">MAPP training completed
 							</label>
 						</div>
 						<div class="col-sm-12 form-group">
 							<label class="checkbox-inline">
-								<input type="checkbox" id="homestudy-completed-checkbox" class="adoption-preferences-trigger" name="processProgression" value="{{user.homestudy.completed}}">Homestudy completed
+								<input type="checkbox" id="homestudy-completed-checkbox" class="adoption-preferences-trigger" name="processProgression" value="{{ user.homestudy.completed }}">Homestudy completed
 							</label>
 						</div>
 					</div>
@@ -366,7 +367,7 @@
 			<div class="row form-group">
 				<div class="col-sm-24">
 					<label class="checkbox-inline">
-						<input type="checkbox" name="havePets" value="{{user.havePetsInHome}}">Have pets in the home
+						<input type="checkbox" name="havePets" value="{{ user.havePetsInHome }}">Have pets in the home
 					</label>
 				</div>
 			</div>
@@ -378,7 +379,7 @@
 					<select name="primaryLanguageInHome" class="input form__number-select">
 						<option value=""></option>
 						{{#each languages}}
-							<option value="{{_id}}">{{language}}</option>
+							<option value="{{ _id }}">{{ language }}</option>
 						{{/each}}
 					</select>
 				</div>
@@ -394,7 +395,7 @@
 					{{#each languages}}
 						<div class="col-sm-12 form-group">
 							<label class="checkbox-inline">
-								<input type="checkbox" name="otherLanguagesInHome" value="{{_id}}">{{language}}
+								<input type="checkbox" name="otherLanguagesInHome" value="{{ _id }}">{{ language }}
 							</label>
 						</div>
 					{{/each}}
@@ -415,7 +416,7 @@
 					{{#each genders}}
 						<div class="col-sm-12 form-group">
 							<label class="checkbox-inline">
-								<input type="checkbox" name="preferredGender" class="preferred-gender" value="{{_id}}">{{gender}}
+								<input type="checkbox" name="preferredGender" class="preferred-gender" value="{{ _id }}">{{ gender }}
 							</label>
 						</div>
 					{{/each}}
@@ -431,7 +432,7 @@
 					{{#each legalStatuses}}
 						<div class="col-sm-12">
 							<label class="checkbox-inline">
-								<input type="checkbox" name="legalStatus" class="legal-status" value="{{_id}}">{{legalStatus}}
+								<input type="checkbox" name="legalStatus" class="legal-status" value="{{ _id }}">{{ legalStatus }}
 							</label>
 						</div>
 					{{/each}}
@@ -551,7 +552,7 @@
 						{{#each races}}
 						<div class="col-sm-12 form-group">
 							<label class="checkbox-inline">
-								<input type="checkbox" name="adoptionPrefRace[]" class="race" value="{{_id}}">{{race}}
+								<input type="checkbox" name="adoptionPrefRace[]" class="race" value="{{ _id }}">{{ race }}
 							</label>
 						</div>
 						{{/each}}
@@ -608,7 +609,7 @@
 					{{#each disabilities}}
 						<div class="col-sm-12 form-group">
 							<label class="checkbox-inline">
-								<input type="checkbox" name="disabilities" value="{{_id}}">{{disability}}
+								<input type="checkbox" name="disabilities" value="{{ _id }}">{{ disability }}
 							</label>
 						</div>
 					{{/each}}
@@ -626,7 +627,7 @@
 					{{#each otherConsiderations}}
 						<div class="col-sm-12 form-group">
 							<label class="checkbox-inline">
-								<input type="checkbox" name="otherConsiderations" value="{{_id}}">{{otherConsideration}}
+								<input type="checkbox" name="otherConsiderations" value="{{ _id }}">{{ otherConsideration }}
 							</label>
 						</div>
 					{{/each}}

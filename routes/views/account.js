@@ -36,9 +36,6 @@ exports = module.exports = ( req, res ) => {
 		fetchChildTypes				= listsService.getChildTypesForWebsite()
 	;
 
-	// assign properties to locals for access during templating
-	locals.user = req.user;
-
 	Promise.all( [ fetchEvents, fetchCitiesAndTowns, fetchDisabilities, fetchGenders, fetchLanguages, fetchLegalStatuses,
 		fetchOtherConsiderations, fetchRaces, fetchStates, fetchChildTypes ] )
 		.then( values => {
@@ -68,6 +65,7 @@ exports = module.exports = ( req, res ) => {
 			}
 
 			// assign properties to locals for access during templating
+			locals.user					= req.user;
 			locals.events				= events;
 			locals.hasNoEvents			= events.length === 0;
 			locals.citiesAndTowns		= citiesAndTowns;
