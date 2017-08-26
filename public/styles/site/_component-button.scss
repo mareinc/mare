@@ -22,6 +22,10 @@
 		width: 11em;
 	}
 
+	&--thin {
+		padding: 0.5em;
+	}
+
 	&--brown {
 		color: $button-text-color-light;
 		background-color: $button-background-color-1;
@@ -86,5 +90,5 @@
 	font-size: 20px;
 	cursor: pointer;
 	opacity: 0;
-	filter: alpha(opacity=0);
+	filter: alpha( opacity = 0 );
 }
