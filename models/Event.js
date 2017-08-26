@@ -153,9 +153,9 @@ Event.schema.methods.setSourceField = function() {
 			// update the source relationship field with the id of the newly created source
 			resolve( id );
 		})
-		.catch( () => {
+		.catch( err => {
 			// log the error for debugging purposes
-			console.error( `error saving source from ${ this.name }` );
+			console.error( `error saving source from ${ this.name } - ${ err }` );
 			// reject the promise
 			reject();
 		});

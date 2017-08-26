@@ -36,9 +36,9 @@ exports = module.exports = ( req, res ) => {
 			// render the view using the steps-in-the-process.hbs template
 			view.render( 'steps-in-the-process' );
 		})
-		.catch( () => {
+		.catch( err => {
 			// log an error for debugging purposes
-			console.error( `there was an error loading data for the steps in the process page` );
+			console.error( `there was an error loading data for the steps in the process page - ${ err }` );
 			// set the layout to render with the right sidebar
 			locals[ 'render-with-sidebar' ] = true;
 			// render the view using the steps-in-the-process.hbs template
