@@ -26,7 +26,7 @@
 					<label for="contact1-first-name" class="label">First Name</label>
 				</div>
 				<div class="col-sm-12">
-					<input type="text" id="contact1-last-name" class="input" name="contact1LastName" placeholder="Smith" value="{{user.contact1.name.las}}">
+					<input type="text" id="contact1-last-name" class="input" name="contact1LastName" placeholder="Smith" value="{{user.contact1.name.last}}">
 					<label for="contact1-last-name" class="label">Last Name</label>
 				</div>
 			</div>
@@ -44,9 +44,9 @@
 				<div class="col-sm-12">
 					<select id="contact1-preferred-communication-method" class="input" name="contact1PreferredCommunicationMethod">
 						<option value=""></option>
-						<option value="email">email</option>
-						<option value="home phone">home</option>
-						<option value="mobile phone">mobile</option>
+						<option {{#ifeq user.contact1.preferredCommunicationMethod 'email' }}selected{{/ifeq}} value="email">email</option>
+						<option {{#ifeq user.contact1.preferredCommunicationMethod 'home phone' }}selected{{/ifeq}} value="home phone">home</option>
+						<option {{#ifeq user.contact1.preferredCommunicationMethod 'mobile phone' }}selected{{/ifeq}} value="mobile phone">mobile</option>
 					</select>
 					<label for="contact1-preferred-communication-method" class="label">Preferred Contact Method</label>
 				</div>
@@ -56,7 +56,7 @@
 					<span id="contact1-gender-error-container" class="error-container">
 						<span class="gender-select-text">Gender</span> &nbsp;&nbsp;
 						{{#each genders}}
-							<label class="radio-inline"><input type="radio" name="contact1Gender" value="{{_id}}">{{gender}}</label>
+							<label class="radio-inline"><input type="radio" name="contact1Gender" value="{{_id}} {{#ifeq user.contact1.gender _id }}checked{{/ifeq}}">{{gender}}</label>
 						{{/each}}
 					</span>
 				</div>
@@ -72,7 +72,7 @@
 						{{#each races}}
 						<div class="col-sm-12 form-group">
 							<label class="checkbox-inline">
-								<input type="checkbox" name="contact1Race" value="{{_id}}">{{race}}
+								<input type="checkbox" name="contact1Race" value="{{_id}}" {{#ifeq user.contact1.race _id }}checked{{/ifeq}}>{{race}}
 							</label>
 						</div>
 						{{/each}}
@@ -114,9 +114,9 @@
 				<div class="col-sm-12">
 					<select id="contact2-preferred-communication-method" class="input" name="contact2PreferredCommunicationMethod">
 						<option value=""></option>
-						<option value="email">email</option>
-						<option value="home phone">home</option>
-						<option value="mobile phone">mobile</option>
+						<option {{#ifeq user.contact2.preferredCommunicationMethod 'email' }}selected{{/ifeq}} value="email">email</option>
+						<option {{#ifeq user.contact2.preferredCommunicationMethod 'home phone' }}selected{{/ifeq}} value="home phone">home</option>
+						<option {{#ifeq user.contact2.preferredCommunicationMethod 'mobile phone' }}selected{{/ifeq}} value="mobile phone">mobile</option>
 					</select>
 					<label for="contact2-preferred-communication-method" class="label">Preferred Contact Method</label>
 				</div>
