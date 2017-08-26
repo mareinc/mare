@@ -26,11 +26,40 @@ module.exports = function() {
 
 	// standard hbs equality check, pass in two values from template
 	// {{#ifeq keyToCheck data.myKey}} [requires an else blockin template regardless]
-	_helpers.ifeq = function ifeq(a, b, options) {
-		if (a == b) {
-			return options.fn(this);
+	_helpers.ifeq = function ifeq( a, b, options ) {
+
+		if( a instanceof Object && !( a instanceof Array ) &&
+		    b instanceof Object && !( b instanceof Array ) ) {
+				if( a.toString() === b.toString() ) {
+					return options.fn( this );
+				} else {
+					return options.inverse( this );
+				}
+		} else if( Object.is( a, b ) ) {
+			return options.fn( this );
 		} else {
-			return options.inverse(this);
+			return options.inverse( this );
+		}
+	};
+
+	_helpers.ifincludes = function ifincludes( a, b, options ) {
+
+		if( !( a instanceof Array ) ) {
+			return options.inverse( this );
+		} else {
+			let success = false;
+
+			for( let entry of a ) {
+				if( entry.toString() === b.toString() ) {
+					success = true;
+				}
+			}
+
+			if( success ) {
+				return options.fn( this );
+			} else {
+				return options.inverse( this );
+			}
 		}
 	};
 
