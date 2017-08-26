@@ -25,9 +25,9 @@ exports = module.exports = function(req, res) {
 			// render the view using the donate.hbs template
 			view.render( 'donate' );
 		})
-		.catch( () => {
+		.catch( err => {
 			// log an error for debugging purposes
-			console.error( `there was an error loading data for the donation page` );	
+			console.error( `there was an error loading data for the donation page ${ err }` );	
 			// set the layout to render with the right sidebar
 			locals[ 'render-with-sidebar' ] = true;
 			// render the view using the donate.hbs template
