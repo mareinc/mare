@@ -1,8 +1,7 @@
-var keystone	= require( 'keystone' ),
-	async		= require( 'async' ),
-	moment		= require( 'moment' ),
-	Event		= keystone.list( 'Event' ),
-	Utils		= require( './utilities' );
+const keystone	= require( 'keystone' ),
+	  async		= require( 'async' ),
+	  moment	= require( 'moment' ),
+	  Event		= keystone.list( 'Event' );
 
 exports.getEventById = eventId => {
 
@@ -45,7 +44,6 @@ exports.getEventByKey = key => {
 			.populate( 'siteVisitorAttendees' )
 			.populate( 'staffAttendees' )
 			.populate( 'address.state' )
-			.lean()
 			.exec()
 			.then( event => {
 				// if the target event could not be found
@@ -76,6 +74,7 @@ exports.getActiveEventsByEventType = ( eventType, eventGroup ) => {
 			.where( 'isActive', true ) // we don't want to show inactive events
 			.populate( eventGroup )
 			.populate( 'address.state' )
+			.lean()
 			.exec()
 			.then( events => {
 				// if no active events matching the passed in eventType could not be found
@@ -103,6 +102,7 @@ exports.getActiveEventsByUserId = ( userId, eventGroup ) => {
 			.where( 'isActive', true ) // we don't want to show inactive events
 			.populate( eventGroup )
 			.populate( 'address.state' )
+			.lean()
 			.exec()
 			.then( events => {
 				// if no active events could be found
@@ -157,6 +157,7 @@ exports.getEventGroup = userType => {
 		case 'social worker'	: return 'socialWorkerAttendees';
 		case 'site visitor'		: return 'siteVisitorAttendees';
 		case 'family'			: return 'familyAttendees';
+		default					: return ''; // needed to show events to anonymous users
 	}
 }
 

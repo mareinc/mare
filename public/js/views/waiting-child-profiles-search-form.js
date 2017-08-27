@@ -238,8 +238,8 @@
 					formFields.maximumChildren < siblingGroup.get( 'siblingToBePlacedWithCount' ) + 1 ) { return; }
 
 				// break out of the current loop if the sibling group's age is less than the youngest or more than the oldest specified ( return is needed for this in _.each )
-				if( formFields.youngestAge < _.min( siblingGroup.get( 'ages' ) ) ||
-					formFields.oldestAge > _.max( siblingGroup.get( 'ages' ) ) ) { return; }
+				if( formFields.youngestAge > _.max( siblingGroup.get( 'ages' ) ) ||
+					formFields.oldestAge < _.min( siblingGroup.get( 'ages' ) ) ) { return; }
 
 				// break out of the current loop only if none of the sibling group's races match a selected race ( return is needed for this in _.each )
 				// <3 Underscore.js for this one
@@ -302,10 +302,10 @@
 					_.difference( siblingGroup.get( 'recommendedFamilyConstellation' ), formFields.familyConstellation ).length > 0 ) { return; }
 
 				// break out of the loop if any of the other considerations selected don't match the sibling group ( return is needed for this in _.each )
-				if( siblingGroup.get( 'requiresSiblings' ).indexOf( true ) !== -1 && formFields.numberOfChildrenInHome === 0 ) { return; }
-				if( siblingGroup.get( 'requiresNoSiblings' ).indexOf( true ) !== -1 && formFields.numberOfChildrenInHome > 0 ) { return; }
-				if( siblingGroup.get( 'requiresOlderSibling' ).indexOf( true ) !== -1 && formFields.oldestChildAgeInHome <= _.max( siblingGroup.get( 'age' ) ) ) { return; }
-				if( siblingGroup.get( 'requiresYoungerSibling' ).indexOf( true ) !== -1 && formFields.youngestChildAgeInHome >= _.min( siblingGroup.get( 'age' ) ) ) { return; }
+				// if( siblingGroup.get( 'requiresSiblings' ).indexOf( true ) !== -1 && formFields.numberOfChildrenInHome === 0 ) { return; }
+				// if( siblingGroup.get( 'requiresNoSiblings' ).indexOf( true ) !== -1 && formFields.numberOfChildrenInHome > 0 ) { return; }
+				// if( siblingGroup.get( 'requiresOlderSibling' ).indexOf( true ) !== -1 && formFields.oldestChildAgeInHome <= _.max( siblingGroup.get( 'age' ) ) ) { return; }
+				// if( siblingGroup.get( 'requiresYoungerSibling' ).indexOf( true ) !== -1 && formFields.youngestChildAgeInHome >= _.min( siblingGroup.get( 'age' ) ) ) { return; }
 				if( siblingGroup.get( 'noPets' ).indexOf( true ) !== -1 && formFields.petsInHome ) { return; }
 				// if the sibling group passes all checks, add them to the collection to display on the gallery
 				mare.collections.gallerySiblingGroups.add( siblingGroup );
