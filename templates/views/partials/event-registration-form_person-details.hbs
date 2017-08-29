@@ -11,17 +11,17 @@
 			\{{#ifeq personType 'adult'}}<div class="col-sm-12 form-group">\{{/ifeq}}
 			\{{#ifeq personType 'child'}}<div class="col-sm-10 form-group">\{{/ifeq}}
 				<input type="text" class="input" id="\{{ personType }}-first-name-\{{ count }}" name="\{{ personType }}FirstName[]">
-				<label for="\{{ personType }}-first-name-\{{ count }}" class="label">First Name</label>
+				<label for="\{{ personType }}-first-name-\{{ count }}" class="label required-field">First Name</label>
 			</div>
 			\{{#ifeq personType 'adult'}}<div class="col-sm-12 form-group">\{{/ifeq}}
 			\{{#ifeq personType 'child'}}<div class="col-sm-10 form-group">\{{/ifeq}}
 				<input type="text" class="input" id="\{{ personType }}-last-name-\{{ count }}" name="\{{ personType }}LastName[]">
-				<label for="\{{ personType }}-last-name-\{{ count }}" class="label">Last Name</label>
+				<label for="\{{ personType }}-last-name-\{{ count }}" class="label required-field">Last Name</label>
 			</div>
 			\{{#ifeq personType 'child'}}
 			<div class="col-sm-4 form-group">
 				<input type="text" class="input" id="\{{ personType }}-age-\{{ count }}" name="\{{ personType }}Age[]">
-				<label for="\{{ personType }}-age-\{{ count }}" class="label">Age</label>
+				<label for="\{{ personType }}-age-\{{ count }}" class="label required-field">Age</label>
 			</div>
 			\{{/ifeq}}
 		</div>

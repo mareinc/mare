@@ -59,11 +59,17 @@ exports = module.exports = ( req, res ) => {
 
 			// check to see if the event spans multiple days
 			const multidayEvent = event.startDate.getTime() !== event.endDate.getTime();
+
+			const startDate = moment( event.startDate ).format( 'dddd MMMM Do, YYYY' ),
+				  endDate	= moment( event.endDate ).format( 'dddd MMMM Do, YYYY' );
+
 			// pull the date and time into a string for easier templating
 			if( multidayEvent ) {
-				event.displayDate = `${ moment( event.startDate ).format( 'dddd MMMM Do, YYYY' ) } at ${ event.startTime } to ${ moment( event.endDate ).format( 'dddd MMMM Do, YYYY' ) } at ${ event.endTime }`;
+				event.displayDate = `${ startDate } to ${ endDate }`;
+				event.displayDateAndTime = `${ startDate } at ${ event.startTime } to ${ endDate } at ${ event.endTime }`;
 			} else {
-				event.displayDate = `${ moment( event.startDate ).format( 'dddd MMMM Do, YYYY' ) } from ${ event.startTime } - ${ event.endTime }`;
+				event.displayDate = `${ startDate }`;
+				event.displayDateAndTime = `${ startDate } from ${ event.startTime } - ${ event.endTime }`;
 			}
 			
 			// determine whether or not address information exists for the event, street1 is required, so this
@@ -115,6 +121,7 @@ exports = module.exports = ( req, res ) => {
 			locals.displayName			= req.user ? req.user.displayName : undefined;
 			locals.hasChildren			= registeredChildren.length > 0;
 			locals.registeredChildren	= registeredChildren;
+			locals.redirectPath			= req.url;
 
 			// set the layout to render with the right sidebar
 			locals[ 'render-with-sidebar' ] = true;

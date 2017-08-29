@@ -1,18 +1,22 @@
 <!-- client side template for rendering the event registration form in a modal -->
 <script id="event-registration-form-template" type="text/x-handlebars-template">
+
 <section class="event-registration-form">
     <div class="modal-form__header">
         <div class="modal-form-header__text"> {{!-- should be h1 etc --}}
-            {{ event.name }}
+            \{{ eventName }}
         </div>
         <div class="modal-form__subheader"> {{!-- should be h3 etc --}}
-            {{ event.displayDate }}
+            \{{ eventDate }}
         </div>
     </div>
     <div class="modal-form__key">
         <span class="required required-description">* Required</span>
     </div>
-    <form action="/register-family-for-event" class="modal-form--register-family-for-event" method="POST">
+    <form action="/events/register/\{{ eventId }}" class="modal-form--event-registration" method="POST">
+        <input type="hidden" name="eventName" value="\{{ eventName }}">
+        <input type="hidden" name="redirectPath" value="{{ redirectPath }}">
+        
         <section class="form-section">
             <div class="row form-group">
                 <div class="col-sm-24 form-group">
@@ -52,6 +56,7 @@
             <div class="row form-group">
                 <div class="col-sm-24 form-group">
                     <select id="source" class="input source-select" name="source">
+                        <option value=""></option>
                         <option value="website">Website</option>
                         <option value="other">Other</option>
                     </select>
@@ -61,15 +66,18 @@
             <div class="row form-group">
                 <div class="col-sm-24 form-group">
                     <select id="where-in-the-process" class="input where-in-the-process-select" name="where-in-the-process">
-                        <option value="first">first</option>
-                        <option value="second">second</option>
+                        <option value=""></option>
+                        <option value="gathering information">gathering information</option>
+                        <option value="looking for agency">looking for agency</option>
+                        <option value="working with agency">working with agency</option>
+                        <option value="MAPP training completed">MAPP training completed</option>
                     </select>
                     <label for="where-in-the-process" class="label required-field">Where are you in the adoption process?</label>
                 </div>
             </div>
             <div class="row form-group">
                 <div class="col-sm-24 form-group">
-                    <input type="textarea" class="input" id="questions-or-comments" name="questionsOrComments">
+                    <input type="textarea" class="input" rows="4" id="questions-or-comments" name="questionsOrComments">
                     <label for="name" class="label">Questions or comments</label>
                 </div>
             </div>
@@ -80,6 +88,7 @@
         <button class="button button--blue" type="submit">Register</button>
     </form>
 </section>
+
 </script>
 
 {{> event-registration-form_person-details}}

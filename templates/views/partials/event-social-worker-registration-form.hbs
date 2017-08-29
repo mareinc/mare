@@ -15,7 +15,7 @@
 		<span class="required required-description">* Required</span>
 	</div>
 
-	<form action="/register-family-for-event" class="modal-form--register-family-for-event" method="POST">
+	<form action="/events/register/\{{ eventId }}" class="modal-form--register-for-event" method="POST">
 
 		<section class="form-section">
 
@@ -71,11 +71,11 @@
 
 			<div class="row form-group">
 				<div class="col-sm-24 form-group">
-					<select id="where-in-the-process" class="input where-in-the-process-select" name="where-in-the-process">
-						<option value="first">first</option>
-						<option value="second">second</option>
+					<select id="attendance-capacity" class="input attendance-capacity-select" name="attendance-capacity">
+						<option value="volunteer">volunteer</option>
+						<option value="other">other</option>
 					</select>
-					<label for="where-in-the-process" class="label required-field">Where are you in the adoption process?</label>
+					<label for="attendance-capacity" class="label required-field">If not bringing children, I'm attending to</label>
 				</div>
 			</div>
 

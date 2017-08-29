@@ -83,13 +83,12 @@ exports = module.exports = ( req, res ) => {
 
 				// check to see if the event spans multiple days
 				const multidayEvent = event.startDate.getTime() !== event.endDate.getTime();
+
+				const startDate	= moment( event.startDate ).format( 'dddd MMMM Do, YYYY' ),
+					  endDate	= moment( event.endDate ).format( 'dddd MMMM Do, YYYY' );
 				
-				// Pull the date and time into a string for easier templating
-				if( multidayEvent ) {
-					event.displayDate = moment( event.startDate ).format( 'dddd MMMM Do, YYYY' ) + ' to ' + moment( event.endDate ).format( 'dddd MMMM Do, YYYY' );
-				} else {
-					event.displayDate = moment( event.startDate ).format( 'dddd MMMM Do, YYYY' );
-				}
+				// pull the date and into a string for easier templating
+				event.displayDate = multidayEvent ? `${ startDate } to ${ endDate }` : startDate;
 			};
 
 			// assign properties to locals for access during templating
@@ -100,6 +99,7 @@ exports = module.exports = ( req, res ) => {
 			locals.displayName			= req.user ? req.user.displayName : '';
 			locals.hasChildren			= registeredChildren.length > 0;
 			locals.registeredChildren	= registeredChildren;
+			locals.redirectPath			= req.url;
 
 			// set the layout to render with the right sidebar
 			locals[ 'render-with-sidebar' ] = true;
