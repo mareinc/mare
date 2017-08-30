@@ -136,7 +136,16 @@
 		<section class="button-group button-group--horizontal button-group--space-around button-group--large-margin-above button-group--small-margin-below">
 			{{#if canRegister}}
 			{{#if user}}
-			<button class="button button--large button--teal {{#if event.attending}} events__unregister-button {{else}} events__register-button {{/if}}" data-event-id="{{ event._id }}">{{#if event.attending}} Unregister {{else}} Register {{/if}}</button>
+			{{!-- TODO: this handling of unregistering through forms was only done for consistency in flash messaging and NEEDS to be reworked --}}
+			{{#if event.attending}}
+			<form action="/events/unregister/{{ event._id }}" class="modal-form--event-registration" method="POST">
+				<input type="hidden" name="eventName" value="{{ event.name }}">
+				<input type="hidden" name="redirectPath" value="{{ redirectPath }}">
+				<button class="button button--large button--teal events__unregister-button" type="submit">Unregister</button>
+			</form>
+			{{else}}
+			<button class="button button--large button--teal events__register-button">Register</button>
+			{{/if}}
 			{{else}}
 			<button id="register-with-mare-button" class="button button--large button--teal events__create-account-button" data-url="/register">Create an account</button>
 			{{/if}}

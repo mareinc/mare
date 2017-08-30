@@ -65,7 +65,16 @@
 			<button class="button button--large button--teal events__show-details-button" data-url="{{ url }}">View Details</button>
 			{{#if ../canRegister}}
 			{{#if ../user}}
-			<button class="button button--large button--teal {{#if attended}} events__unregister-button {{else}} events__register-button {{/if}}" data-event-id="{{ _id }}">{{#if attended}} Unregister {{else}} Register {{/if}}</button>
+			{{!-- TODO: this handling of unregistering through forms was only done for consistency in flash messaging and NEEDS to be reworked --}}
+			{{#if attended}}
+			<form action="/events/unregister/{{ _id }}" class="modal-form--event-registration" method="POST">
+				<input type="hidden" name="eventName" value="{{ name }}">
+				<input type="hidden" name="redirectPath" value="{{ ../redirectPath }}">
+				<button class="button button--large button--teal events__unregister-button" type="submit">Unregister</button>
+			</form>
+			{{else}}
+			<button class="button button--large button--teal events__register-button">Register</button>
+			{{/if}}
 			{{/if}}
 			{{/if}}
 		</section>

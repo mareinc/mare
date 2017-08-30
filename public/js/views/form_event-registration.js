@@ -47,7 +47,7 @@
 		},
 		
 		render: function render( event ) {
-			// DOM cache the event parent and extract the name and date from it's data attributes
+			// DOM cache the event parent and extract important information from it's data attributes
 			var $event		= $( event.currentTarget ).closest( '.event' ),
 				eventId		= $event.data( 'event-id' ),
 				eventName	= $event.data( 'event-name' ),

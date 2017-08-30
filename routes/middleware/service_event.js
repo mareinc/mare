@@ -380,7 +380,14 @@ exports.createEvent = event => {
 	});
 };
 
-exports.register = ( eventId, eventDetails, user ) => {
+exports.register = ( eventId, userId ) => {
+	// TODO: this will be implemented post-launch
+	return new Promise( ( resolve, reject ) => {
+		resolve();
+	});
+}
+
+exports.unregister = ( eventId, userId ) => {
 	// TODO: this will be implemented post-launch
 	return new Promise( ( resolve, reject ) => {
 		resolve();
