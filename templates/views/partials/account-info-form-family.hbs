@@ -56,7 +56,7 @@
 					<span id="contact1-gender-error-container" class="error-container">
 						<span class="gender-select-text">Gender:</span> &nbsp;&nbsp;
 						{{#each genders}}
-							<label class="radio-inline"><input type="radio" name="contact1Gender" value="{{ _id }}" {{#ifincludes ../user.contact1.gender _id }}checked="checked"{{/ifincludes}}>{{ gender }}</label>
+							<label class="radio-inline"><input type="radio" name="contact1Gender" value="{{ _id }}" {{#ifeq ../user.contact1.gender _id }}checked="checked"{{/ifeq}}>{{ gender }}</label>
 						{{/each}}
 					</span>
 				</div>
@@ -125,7 +125,7 @@
 				<div class="col-sm-24">
 					<span class="gender-select-text">Gender:</span> &nbsp;&nbsp;
 					{{#each genders}}
-						<label class="radio-inline"><input type="radio" name="contact2Gender" value="{{ _id }}">{{ gender }}</label>
+						<label class="radio-inline"><input type="radio" name="contact2Gender" value="{{ _id }}" {{#ifeq ../user.contact2.gender _id }}checked="checked"{{/ifeq}}>{{ gender }}</label>
 					{{/each}}
 				</div>
 			</div>
@@ -173,7 +173,7 @@
 					<select id="ma-city" class="input" name="city">
 						<option value=""></option>
 						{{#each citiesAndTowns}}
-						<option value="{{ _id }}" {{#ifincludes ../user.city _id }}selected{{/ifincludes}}>{{ cityOrTown }}</option>
+						<option value="{{ _id }}" {{#ifeq ../user.address.city _id}}selected="selected"{{/ifeq}}>{{ cityOrTown }}</option>
 						{{/each}}
 					</select>
 					<label for="ma-city" class="label">City</label>
@@ -184,7 +184,7 @@
 				</div>
 				<div class="col-sm-12 form-group">
 					<label class="checkbox-inline">
-						<input type="checkbox" id="is-not-MA-city-checkbox" name="isNotMACity" value="{{ user.address.isOutsideMassachusetts }}">I live outside MA
+						<input type="checkbox" id="is-not-MA-city-checkbox" name="isNotMACity" value="{{ user.address.isOutsideMassachusetts }}" {{#if user.address.isOutsideMassachusetts}}checked="checked"{{/if}}>I live outside MA
 					</label>
 				</div>
 			</div>
@@ -222,27 +222,27 @@
 					<div class="row form-group">
 						<div class="col-sm-12 form-group">
 							<label class="checkbox-inline">
-								<input type="checkbox" id="gathering-information-checkbox" class="adoption-preferences-trigger" name="processProgression" value="{{user.stages.gatheringInformation}} {{#ifeq user.stages.gatheringInformation.started 'true'}}checked="checked"{{/ifeq}}">Gathering Information
+								<input type="checkbox" id="gathering-information-checkbox" class="adoption-preferences-trigger" name="processProgression" value="{{user.stages.gatheringInformation.started}}" {{#if user.stages.gatheringInformation.started }}checked="checked"{{/if}}>Gathering Information
 							</label>
 						</div>
 						<div class="col-sm-12 form-group">
 							<label class="checkbox-inline">
-								<input type="checkbox" id="looking-for-agency-checkbox" class="adoption-preferences-trigger" name="processProgression" value="{{user.stages.lookingForAgency}} {{#ifeq user.stages.lookingForAgency.started 'true'}}checked="checked"{{/ifeq}}">Looking for an agency
+								<input type="checkbox" id="looking-for-agency-checkbox" class="adoption-preferences-trigger" name="processProgression" value="{{user.stages.lookingForAgency.started}} {{#if user.stages.lookingForAgency.started }}checked="checked"{{/if}}>Looking for an agency
 							</label>
 						</div>
 						<div class="col-sm-12 form-group">
 							<label class="checkbox-inline">
-								<input type="checkbox" id="working-with-agency-checkbox" class="adoption-preferences-trigger" name="processProgression" value="{{user.stages.workingWithAgency}} {{#ifeq user.stages.workingWithAgency.started 'true'}}checked="checked"{{/ifeq}}">Working with an agency
+								<input type="checkbox" id="working-with-agency-checkbox" class="adoption-preferences-trigger" name="processProgression" value="{{user.stages.workingWithAgency.started}} {{#if user.stages.workingWithAgency.started }}checked="checked"{{/if}}>Working with an agency
 							</label>
 						</div>
 						<div class="col-sm-12 form-group">
 							<label class="checkbox-inline">
-								<input type="checkbox" id="mapp-training-completed-checkbox" class="adoption-preferences-trigger" name="processProgression" value="{{user.stages.MAPPTrainingCompleted}} {{#ifeq user.stages.MAPPTrainingCompleted.started 'true'}}checked="checked"{{/ifeq}}">MAPP training completed
+								<input type="checkbox" id="mapp-training-completed-checkbox" class="adoption-preferences-trigger" name="processProgression" value="{{user.stages.MAPPTrainingCompleted.started}}" {{#if user.stages.MAPPTrainingCompleted.started }}checked="checked"{{/if}}>MAPP training completed
 							</label>
 						</div>
 						<div class="col-sm-12 form-group">
 							<label class="checkbox-inline">
-								<input type="checkbox" id="homestudy-completed-checkbox" class="adoption-preferences-trigger" name="processProgression" value="{{ user.homestudy.completed }}">Homestudy completed
+								<input type="checkbox" id="homestudy-completed-checkbox" class="adoption-preferences-trigger" name="processProgression" value="{{ user.homestudy.completed }}" {{#if user.homestudy.completed }}checked="checked"{{/if}}>Homestudy completed
 							</label>
 						</div>
 					</div>
@@ -366,7 +366,7 @@
 			<div class="row form-group">
 				<div class="col-sm-24">
 					<label class="checkbox-inline">
-						<input type="checkbox" name="havePets" value="{{ user.havePetsInHome }}">Have pets in the home
+						<input type="checkbox" name="havePets" value="{{ user.havePetsInHome }}" {{#if user.havePetsInHome}}checked="checked"{{/if}}>Have pets in the home
 					</label>
 				</div>
 			</div>
@@ -378,7 +378,7 @@
 					<select name="primaryLanguageInHome" class="input form__number-select">
 						<option value=""></option>
 						{{#each languages}}
-							<option value="{{_id}}" {{#ifincludes ../user.language _id}}selected{{/ifincludes}}>{{language}}</option>
+							<option value="{{_id}}" {{#ifeq ../user.language _id}}selected="selected"{{/ifeq}}>{{language}}</option>
 						{{/each}}
 					</select>
 				</div>
@@ -415,7 +415,7 @@
 					{{#each genders}}
 						<div class="col-sm-12 form-group">
 							<label class="checkbox-inline">
-								<input type="checkbox" name="preferredGender" class="preferred-gender" value="{{_id}}" {{#ifincludes ../user.matchingPreferences.gender _id}}selected{{/ifincludes}}>{{gender}}
+								<input type="checkbox" name="preferredGender" class="preferred-gender" value="{{_id}}" {{#ifincludes ../user.matchingPreferences.gender _id}}checked="checked"{{/ifincludes}}>{{gender}}
 							</label>
 						</div>
 					{{/each}}
@@ -431,7 +431,7 @@
 					{{#each legalStatuses}}
 						<div class="col-sm-12">
 							<label class="checkbox-inline">
-								<input type="checkbox" name="legalStatus" class="legal-status" value="{{_id}}" {{#ifincludes ../user.matchingPreferences.legalStatus _id}}selected{{/ifincludes}}>{{legalStatus}}
+								<input type="checkbox" name="legalStatus" class="legal-status" value="{{_id}}" {{#ifincludes ../user.matchingPreferences.legalStatus _id}}checked="checked"{{/ifincludes}}>{{legalStatus}}
 							</label>
 						</div>
 					{{/each}}
@@ -447,50 +447,50 @@
 						<div class="col-xs-8">
 							<select name="ageRangeFrom" class="input form__number-select inline age-range-from">
                                 {{!-- TODO: Find ...adoptionAges FROM value --}}
-								<option {{#ifeq user.matchingPreferences.adoptionAges.from '' }}selected{{/ifeq}} value=""></option>
-								<option {{#ifeq user.matchingPreferences.adoptionAges.from '0' }}selected{{/ifeq}} value="0">0</option>
-								<option {{#ifeq user.matchingPreferences.adoptionAges.from '1' }}selected{{/ifeq}} value="1">1</option>
-								<option {{#ifeq user.matchingPreferences.adoptionAges.from '2' }}selected{{/ifeq}} value="2">2</option>
-								<option {{#ifeq user.matchingPreferences.adoptionAges.from '3' }}selected{{/ifeq}} value="3">3</option>
-								<option {{#ifeq user.matchingPreferences.adoptionAges.from '4' }}selected{{/ifeq}} value="4">4</option>
-								<option {{#ifeq user.matchingPreferences.adoptionAges.from '5' }}selected{{/ifeq}} value="5">5</option>
-								<option {{#ifeq user.matchingPreferences.adoptionAges.from '6' }}selected{{/ifeq}} value="6">6</option>
-								<option {{#ifeq user.matchingPreferences.adoptionAges.from '7' }}selected{{/ifeq}} value="7">7</option>
-								<option {{#ifeq user.matchingPreferences.adoptionAges.from '8' }}selected{{/ifeq}} value="8">8</option>
-								<option {{#ifeq user.matchingPreferences.adoptionAges.from '9' }}selected{{/ifeq}} value="9">9</option>
-								<option {{#ifeq user.matchingPreferences.adoptionAges.from '10' }}selected{{/ifeq}} value="10">10</option>
-								<option {{#ifeq user.matchingPreferences.adoptionAges.from '11' }}selected{{/ifeq}} value="11">11</option>
-								<option {{#ifeq user.matchingPreferences.adoptionAges.from '12' }}selected{{/ifeq}} value="12">12</option>
-								<option {{#ifeq user.matchingPreferences.adoptionAges.from '13' }}selected{{/ifeq}} value="13">13</option>
-								<option {{#ifeq user.matchingPreferences.adoptionAges.from '14' }}selected{{/ifeq}} value="14">14</option>
-								<option {{#ifeq user.matchingPreferences.adoptionAges.from '15' }}selected{{/ifeq}} value="15">15</option>
-								<option {{#ifeq user.matchingPreferences.adoptionAges.from '16' }}selected{{/ifeq}} value="16">16</option>
-								<option {{#ifeq user.matchingPreferences.adoptionAges.from '17' }}selected{{/ifeq}} value="17">17</option>
+								<option value=""></option>
+								<option {{#ifeq user.matchingPreferences.adoptionAges.from 0 }}selected="selected"{{/ifeq}} value="0">0</option>
+								<option {{#ifeq user.matchingPreferences.adoptionAges.from 1 }}selected="selected"{{/ifeq}} value="1">1</option>
+								<option {{#ifeq user.matchingPreferences.adoptionAges.from 2 }}selected="selected"{{/ifeq}} value="2">2</option>
+								<option {{#ifeq user.matchingPreferences.adoptionAges.from 3 }}selected="selected"{{/ifeq}} value="3">3</option>
+								<option {{#ifeq user.matchingPreferences.adoptionAges.from 4 }}selected="selected"{{/ifeq}} value="4">4</option>
+								<option {{#ifeq user.matchingPreferences.adoptionAges.from 5 }}selected="selected"{{/ifeq}} value="5">5</option>
+								<option {{#ifeq user.matchingPreferences.adoptionAges.from 6 }}selected="selected"{{/ifeq}} value="6">6</option>
+								<option {{#ifeq user.matchingPreferences.adoptionAges.from 7 }}selected="selected"{{/ifeq}} value="7">7</option>
+								<option {{#ifeq user.matchingPreferences.adoptionAges.from 8 }}selected="selected"{{/ifeq}} value="8">8</option>
+								<option {{#ifeq user.matchingPreferences.adoptionAges.from 9 }}selected="selected"{{/ifeq}} value="9">9</option>
+								<option {{#ifeq user.matchingPreferences.adoptionAges.from 10 }}selected="selected"{{/ifeq}} value="10">10</option>
+								<option {{#ifeq user.matchingPreferences.adoptionAges.from 11 }}selected="selected"{{/ifeq}} value="11">11</option>
+								<option {{#ifeq user.matchingPreferences.adoptionAges.from 12 }}selected="selected"{{/ifeq}} value="12">12</option>
+								<option {{#ifeq user.matchingPreferences.adoptionAges.from 13 }}selected="selected"{{/ifeq}} value="13">13</option>
+								<option {{#ifeq user.matchingPreferences.adoptionAges.from 14 }}selected="selected"{{/ifeq}} value="14">14</option>
+								<option {{#ifeq user.matchingPreferences.adoptionAges.from 15 }}selected="selected"{{/ifeq}} value="15">15</option>
+								<option {{#ifeq user.matchingPreferences.adoptionAges.from 16 }}selected="selected"{{/ifeq}} value="16">16</option>
+								<option {{#ifeq user.matchingPreferences.adoptionAges.from 17 }}selected="selected"{{/ifeq}} value="17">17</option>
 							</select>
 						</div>
 						<div class="col-xs-4 text-center">To:</div>
 						<div class="col-xs-8">
 							<select name="ageRangeTo" class="input form__number-select inline age-range-to">
                                 {{!-- TODO: Find ...adoptionAges TO value --}}
-								<option {{#ifeq user.matchingPreferences.adoptionAges.to '' }}selected{{/ifeq}} value=""></option>
-								<option {{#ifeq user.matchingPreferences.adoptionAges.to '0' }}selected{{/ifeq}} value="0">0</option>
-								<option {{#ifeq user.matchingPreferences.adoptionAges.to '1' }}selected{{/ifeq}} value="1">1</option>
-								<option {{#ifeq user.matchingPreferences.adoptionAges.to '2' }}selected{{/ifeq}} value="2">2</option>
-								<option {{#ifeq user.matchingPreferences.adoptionAges.to '3' }}selected{{/ifeq}} value="3">3</option>
-								<option {{#ifeq user.matchingPreferences.adoptionAges.to '4' }}selected{{/ifeq}} value="4">4</option>
-								<option {{#ifeq user.matchingPreferences.adoptionAges.to '5' }}selected{{/ifeq}} value="5">5</option>
-								<option {{#ifeq user.matchingPreferences.adoptionAges.to '6' }}selected{{/ifeq}} value="6">6</option>
-								<option {{#ifeq user.matchingPreferences.adoptionAges.to '7' }}selected{{/ifeq}} value="7">7</option>
-								<option {{#ifeq user.matchingPreferences.adoptionAges.to '8' }}selected{{/ifeq}} value="8">8</option>
-								<option {{#ifeq user.matchingPreferences.adoptionAges.to '9' }}selected{{/ifeq}} value="9">9</option>
-								<option {{#ifeq user.matchingPreferences.adoptionAges.to '10' }}selected{{/ifeq}} value="10">10</option>
-								<option {{#ifeq user.matchingPreferences.adoptionAges.to '11' }}selected{{/ifeq}} value="11">11</option>
-								<option {{#ifeq user.matchingPreferences.adoptionAges.to '12' }}selected{{/ifeq}} value="12">12</option>
-								<option {{#ifeq user.matchingPreferences.adoptionAges.to '13' }}selected{{/ifeq}} value="13">13</option>
-								<option {{#ifeq user.matchingPreferences.adoptionAges.to '14' }}selected{{/ifeq}} value="14">14</option>
-								<option {{#ifeq user.matchingPreferences.adoptionAges.to '15' }}selected{{/ifeq}} value="15">15</option>
-								<option {{#ifeq user.matchingPreferences.adoptionAges.to '16' }}selected{{/ifeq}} value="16">16</option>
-								<option {{#ifeq user.matchingPreferences.adoptionAges.to '17' }}selected{{/ifeq}} value="17">17</option>
+								<option value=""></option>
+								<option {{#ifeq user.matchingPreferences.adoptionAges.to 0 }}selected="selected"{{/ifeq}} value="0">0</option>
+								<option {{#ifeq user.matchingPreferences.adoptionAges.to 1 }}selected="selected"{{/ifeq}} value="1">1</option>
+								<option {{#ifeq user.matchingPreferences.adoptionAges.to 2 }}selected="selected"{{/ifeq}} value="2">2</option>
+								<option {{#ifeq user.matchingPreferences.adoptionAges.to 3 }}selected="selected"{{/ifeq}} value="3">3</option>
+								<option {{#ifeq user.matchingPreferences.adoptionAges.to 4 }}selected="selected"{{/ifeq}} value="4">4</option>
+								<option {{#ifeq user.matchingPreferences.adoptionAges.to 5 }}selected="selected"{{/ifeq}} value="5">5</option>
+								<option {{#ifeq user.matchingPreferences.adoptionAges.to 6 }}selected="selected"{{/ifeq}} value="6">6</option>
+								<option {{#ifeq user.matchingPreferences.adoptionAges.to 7 }}selected="selected"{{/ifeq}} value="7">7</option>
+								<option {{#ifeq user.matchingPreferences.adoptionAges.to 8 }}selected="selected"{{/ifeq}} value="8">8</option>
+								<option {{#ifeq user.matchingPreferences.adoptionAges.to 9 }}selected="selected"{{/ifeq}} value="9">9</option>
+								<option {{#ifeq user.matchingPreferences.adoptionAges.to 10 }}selected="selected"{{/ifeq}} value="10">10</option>
+								<option {{#ifeq user.matchingPreferences.adoptionAges.to 11 }}selected="selected"{{/ifeq}} value="11">11</option>
+								<option {{#ifeq user.matchingPreferences.adoptionAges.to 12 }}selected="selected"{{/ifeq}} value="12">12</option>
+								<option {{#ifeq user.matchingPreferences.adoptionAges.to 13 }}selected="selected"{{/ifeq}} value="13">13</option>
+								<option {{#ifeq user.matchingPreferences.adoptionAges.to 14 }}selected="selected"{{/ifeq}} value="14">14</option>
+								<option {{#ifeq user.matchingPreferences.adoptionAges.to 15 }}selected="selected"{{/ifeq}} value="15">15</option>
+								<option {{#ifeq user.matchingPreferences.adoptionAges.to 16 }}selected="selected"{{/ifeq}} value="16">16</option>
+								<option {{#ifeq user.matchingPreferences.adoptionAges.to 17 }}selected="selected"{{/ifeq}} value="17">17</option>
 							</select>
 						</div>
 					</div>
@@ -504,17 +504,17 @@
                     {{!-- TODO: Find number of children in matching preferences --}}
 					<select name="numberOfChildrenPrefered" class="input form__number-select number-of-children-preferred">
 						<option value=""></option>
-						<option {{#ifeq user.matchingPreferences.numberOfChildrenToAdopt '0' }}selected{{/ifeq}} value="0">0</option>
-						<option {{#ifeq user.matchingPreferences.numberOfChildrenToAdopt '1' }}selected{{/ifeq}} value="1">1</option>
-						<option {{#ifeq user.matchingPreferences.numberOfChildrenToAdopt '2' }}selected{{/ifeq}} value="2">2</option>
-						<option {{#ifeq user.matchingPreferences.numberOfChildrenToAdopt '3' }}selected{{/ifeq}} value="3">3</option>
-						<option {{#ifeq user.matchingPreferences.numberOfChildrenToAdopt '4' }}selected{{/ifeq}} value="4">4</option>
-						<option {{#ifeq user.matchingPreferences.numberOfChildrenToAdopt '5' }}selected{{/ifeq}} value="5">5</option>
-						<option {{#ifeq user.matchingPreferences.numberOfChildrenToAdopt '6' }}selected{{/ifeq}} value="6">6</option>
-						<option {{#ifeq user.matchingPreferences.numberOfChildrenToAdopt '7' }}selected{{/ifeq}} value="7">7</option>
-						<option {{#ifeq user.matchingPreferences.numberOfChildrenToAdopt '8' }}selected{{/ifeq}} value="8">8</option>
-						<option {{#ifeq user.matchingPreferences.numberOfChildrenToAdopt '9' }}selected{{/ifeq}} value="9">9</option>
-						<option {{#ifeq user.matchingPreferences.numberOfChildrenToAdopt '10+' }}selected{{/ifeq}} value="10">10+</option>
+						<option {{#ifeq user.matchingPreferences.numberOfChildrenToAdopt 0 }}selected="selected"{{/ifeq}} value="0">0</option>
+						<option {{#ifeq user.matchingPreferences.numberOfChildrenToAdopt 1 }}selected="selected"{{/ifeq}} value="1">1</option>
+						<option {{#ifeq user.matchingPreferences.numberOfChildrenToAdopt 2 }}selected="selected"{{/ifeq}} value="2">2</option>
+						<option {{#ifeq user.matchingPreferences.numberOfChildrenToAdopt 3 }}selected="selected"{{/ifeq}} value="3">3</option>
+						<option {{#ifeq user.matchingPreferences.numberOfChildrenToAdopt 4 }}selected="selected"{{/ifeq}} value="4">4</option>
+						<option {{#ifeq user.matchingPreferences.numberOfChildrenToAdopt 5 }}selected="selected"{{/ifeq}} value="5">5</option>
+						<option {{#ifeq user.matchingPreferences.numberOfChildrenToAdopt 6 }}selected="selected"{{/ifeq}} value="6">6</option>
+						<option {{#ifeq user.matchingPreferences.numberOfChildrenToAdopt 7 }}selected="selected"{{/ifeq}} value="7">7</option>
+						<option {{#ifeq user.matchingPreferences.numberOfChildrenToAdopt 8 }}selected="selected"{{/ifeq}} value="8">8</option>
+						<option {{#ifeq user.matchingPreferences.numberOfChildrenToAdopt 9 }}selected="selected"{{/ifeq}} value="9">9</option>
+						<option {{#ifeq user.matchingPreferences.numberOfChildrenToAdopt 10 }}selected="selected"{{/ifeq}} value="10">10+</option>
 					</select>
 				</div>
 			</div>
@@ -551,7 +551,7 @@
 						{{#each races}}
 						<div class="col-sm-12 form-group">
 							<label class="checkbox-inline">
-								<input type="checkbox" name="adoptionPrefRace[]" class="race" value="{{ _id }}">{{ race }}
+								<input type="checkbox" name="adoptionPrefRace[]" class="race" value="{{ _id }}" {{#ifincludes ../user.matchingPreferences.race _id }}checked="checked"{{/ifincludes}}>{{ race }}
 							</label>
 						</div>
 						{{/each}}
@@ -564,10 +564,10 @@
 				</div>
 				<div class="col-sm-12">
 					<span id="preferred-maximum-physical-needs-error-container" class="error-container">
-						<label class="radio-inline"><input type="radio" name="maximumPhysicalNeeds" class="maximum-physical-needs" value="none">None</label>
-						<label class="radio-inline"><input type="radio" name="maximumPhysicalNeeds" value="mild">Mild</label>
-						<label class="radio-inline"><input type="radio" name="maximumPhysicalNeeds" value="moderate">Moderate</label>
-						<label class="radio-inline"><input type="radio" name="maximumPhysicalNeeds" value="severe">Severe</label>
+						<label class="radio-inline"><input type="radio" name="maximumPhysicalNeeds" class="maximum-physical-needs" value="none" {{#ifeq user.matchingPreferences.maxNeeds.physical 'none'}}checked="checked"{{/ifeq}}>None</label>
+						<label class="radio-inline"><input type="radio" name="maximumPhysicalNeeds" value="mild" {{#ifeq user.matchingPreferences.maxNeeds.physical 'mild'}}checked="checked"{{/ifeq}}>Mild</label>
+						<label class="radio-inline"><input type="radio" name="maximumPhysicalNeeds" value="moderate" {{#ifeq user.matchingPreferences.maxNeeds.physical 'moderate'}}checked="checked"{{/ifeq}}>Moderate</label>
+						<label class="radio-inline"><input type="radio" name="maximumPhysicalNeeds" value="severe" {{#ifeq user.matchingPreferences.maxNeeds.physical 'severe'}}checked="checked"{{/ifeq}}>Severe</label>
 					</span>
 				</div>
 			</div>
@@ -577,10 +577,10 @@
 				</div>
 				<div class="col-sm-12">
 					<span id="preferred-maximum-emotional-needs-error-container" class="error-container">
-						<label class="radio-inline"><input type="radio" name="maximumEmotionalNeeds" class="maximum-emotional-needs" value="none">None</label>
-						<label class="radio-inline"><input type="radio" name="maximumEmotionalNeeds" value="mild">Mild</label>
-						<label class="radio-inline"><input type="radio" name="maximumEmotionalNeeds" value="moderate">Moderate</label>
-						<label class="radio-inline"><input type="radio" name="maximumEmotionalNeeds" value="severe">Severe</label>
+						<label class="radio-inline"><input type="radio" name="maximumEmotionalNeeds" class="maximum-emotional-needs" value="none" {{#ifeq user.matchingPreferences.maxNeeds.emotional 'none'}}checked="checked"{{/ifeq}}>None</label>
+						<label class="radio-inline"><input type="radio" name="maximumEmotionalNeeds" value="mild" {{#ifeq user.matchingPreferences.maxNeeds.emotional 'mild'}}checked="checked"{{/ifeq}}>Mild</label>
+						<label class="radio-inline"><input type="radio" name="maximumEmotionalNeeds" value="moderate" {{#ifeq user.matchingPreferences.maxNeeds.emotional 'moderate'}}checked="checked"{{/ifeq}}>Moderate</label>
+						<label class="radio-inline"><input type="radio" name="maximumEmotionalNeeds" value="severe" {{#ifeq user.matchingPreferences.maxNeeds.emotional 'severe'}}checked="checked"{{/ifeq}}>Severe</label>
 					</span>
 				</div>
 			</div>
@@ -590,10 +590,10 @@
 				</div>
 				<div class="col-sm-12">
 					<span id="preferred-maximum-intellectual-needs-error-container" class="error-container">
-						<label class="radio-inline"><input type="radio" name="maximumIntellectualNeeds" class="maximum-intellectual-needs" value="none">None</label>
-						<label class="radio-inline"><input type="radio" name="maximumIntellectualNeeds" value="mild">Mild</label>
-						<label class="radio-inline"><input type="radio" name="maximumIntellectualNeeds" value="moderate">Moderate</label>
-						<label class="radio-inline"><input type="radio" name="maximumIntellectualNeeds" value="severe">Severe</label>
+						<label class="radio-inline"><input type="radio" name="maximumIntellectualNeeds" class="maximum-intellectual-needs" value="none" {{#ifeq user.matchingPreferences.maxNeeds.intellectual 'none'}}checked="checked"{{/ifeq}}>None</label>
+						<label class="radio-inline"><input type="radio" name="maximumIntellectualNeeds" value="mild" {{#ifeq user.matchingPreferences.maxNeeds.intellectual 'mild'}}checked="checked"{{/ifeq}}>Mild</label>
+						<label class="radio-inline"><input type="radio" name="maximumIntellectualNeeds" value="moderate" {{#ifeq user.matchingPreferences.maxNeeds.intellectual 'moderate'}}checked="checked"{{/ifeq}}>Moderate</label>
+						<label class="radio-inline"><input type="radio" name="maximumIntellectualNeeds" value="severe" {{#ifeq user.matchingPreferences.maxNeeds.intellectual 'severe'}}checked="checked"{{/ifeq}}>Severe</label>
 					</span>
 				</div>
 			</div>
@@ -608,7 +608,7 @@
 					{{#each disabilities}}
 						<div class="col-sm-12 form-group">
 							<label class="checkbox-inline">
-								<input type="checkbox" name="disabilities" value="{{ _id }}">{{ disability }}
+								<input type="checkbox" name="disabilities" value="{{ _id }}" {{#ifincludes ../user.matchingPreferences.disabilities _id }}checked="checked"{{/ifincludes}}>{{ disability }}
 							</label>
 						</div>
 					{{/each}}
@@ -626,7 +626,7 @@
 					{{#each otherConsiderations}}
 						<div class="col-sm-12 form-group">
 							<label class="checkbox-inline">
-								<input type="checkbox" name="otherConsiderations" value="{{ _id }}">{{ otherConsideration }}
+								<input type="checkbox" name="otherConsiderations" value="{{ _id }}" {{#ifincludes ../user.matchingPreferences.otherConsiderations _id }}checked="checked"{{/ifincludes}}>{{ otherConsideration }}
 							</label>
 						</div>
 					{{/each}}
