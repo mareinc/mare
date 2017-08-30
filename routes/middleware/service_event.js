@@ -1,8 +1,7 @@
-var keystone	= require( 'keystone' ),
-	async		= require( 'async' ),
-	moment		= require( 'moment' ),
-	Event		= keystone.list( 'Event' ),
-	Utils		= require( './utilities' );
+const keystone	= require( 'keystone' ),
+	  async		= require( 'async' ),
+	  moment	= require( 'moment' ),
+	  Event		= keystone.list( 'Event' );
 
 exports.getEventById = eventId => {
 
@@ -45,7 +44,6 @@ exports.getEventByKey = key => {
 			.populate( 'siteVisitorAttendees' )
 			.populate( 'staffAttendees' )
 			.populate( 'address.state' )
-			.lean()
 			.exec()
 			.then( event => {
 				// if the target event could not be found
@@ -76,6 +74,7 @@ exports.getActiveEventsByEventType = ( eventType, eventGroup ) => {
 			.where( 'isActive', true ) // we don't want to show inactive events
 			.populate( eventGroup )
 			.populate( 'address.state' )
+			.lean()
 			.exec()
 			.then( events => {
 				// if no active events matching the passed in eventType could not be found
@@ -103,6 +102,7 @@ exports.getActiveEventsByUserId = ( userId, eventGroup ) => {
 			.where( 'isActive', true ) // we don't want to show inactive events
 			.populate( eventGroup )
 			.populate( 'address.state' )
+			.lean()
 			.exec()
 			.then( events => {
 				// if no active events could be found
@@ -157,6 +157,7 @@ exports.getEventGroup = userType => {
 		case 'social worker'	: return 'socialWorkerAttendees';
 		case 'site visitor'		: return 'siteVisitorAttendees';
 		case 'family'			: return 'familyAttendees';
+		default					: return ''; // needed to show events to anonymous users
 	}
 }
 
@@ -188,147 +189,145 @@ exports.getRandomEvent = () => {
 /*
  *	frontend services
  */
-exports.addUser = ( req, res, next ) => {
+// exports.addUser = ( req, res, next ) => {
 	
-	const locals	= res.locals,
-		  userId	= req.user.get( '_id' ),
-		  userName	= req.user.get( 'name.full' ),
-		  userType	= req.user.get( 'userType' ),
-		  eventId	= req.body.eventId;
+// 	const userId	= req.user.get( '_id' ),
+// 		  userName	= req.user.get( 'name.full' ),
+// 		  userType	= req.user.get( 'userType' ),
+// 		  eventId	= req.body.eventId;
 
-	// fetch the field the user should be added to based on their user type
-	const eventGroup = exports.getEventGroup( userType );
-	// fetch the event the user should be added to
-	let fetchEvent = exports.getEventById( eventId );
+// 	// fetch the field the user should be added to based on their user type
+// 	const eventGroup = exports.getEventGroup( userType );
+// 	// fetch the event the user should be added to
+// 	let fetchEvent = exports.getEventById( eventId );
 		
-	fetchEvent
-		.then( event => {
-			// get the array of user IDs already in the field the user should be added to, and get the index of the user
-			const attendees	= event.get( eventGroup ),
-				  userIndex	= attendees.indexOf( userId );
-			// if the user is not already added
-			if( userIndex === -1 ) {
-				// add them to the attendees list
-				attendees.push( userId );
-				// save the updated event model to the database
-				event.save();
-				// construct useful data for needed UI updates
-				var responseData = {
-					success: true,
-					action: 'register',
-					name: userName,
-					group: userType
-				};
-				// send the response data base to the user as JSON
-				res.json( responseData );
+// 	fetchEvent
+// 		.then( event => {
+// 			// get the array of user IDs already in the field the user should be added to, and get the index of the user
+// 			const attendees	= event.get( eventGroup ),
+// 				  userIndex	= attendees.indexOf( userId );
+// 			// if the user is not already added
+// 			if( userIndex === -1 ) {
+// 				// add them to the attendees list
+// 				attendees.push( userId );
+// 				// save the updated event model to the database
+// 				event.save();
+// 				// construct useful data for needed UI updates
+// 				var responseData = {
+// 					success: true,
+// 					action: 'register',
+// 					name: userName,
+// 					group: userType
+// 				};
+// 				// send the response data base to the user as JSON
+// 				res.json( responseData );
 
-			} else {
-				// construct useful data for needed UI updates
-				var responseData = {
-					success: false,
-					action: 'register',
-					message: 'You are already attending that event'
-				};
-				// send the response data base to the user as JSON
-				res.json( responseData );
-			}
-		})
-		.catch( () => {
-			// log an error for debugging purposes
-			console.error( `there was an error adding the user to the event with id ${ req.body.eventId }` );	
+// 			} else {
+// 				// construct useful data for needed UI updates
+// 				var responseData = {
+// 					success: false,
+// 					action: 'register',
+// 					message: 'You are already attending that event'
+// 				};
+// 				// send the response data base to the user as JSON
+// 				res.json( responseData );
+// 			}
+// 		})
+// 		.catch( () => {
+// 			// log an error for debugging purposes
+// 			console.error( `there was an error adding the user to the event with id ${ req.body.eventId }` );	
 			
-			// construct useful data for needed UI updates
-			var responseData = {
-				success: false,
-				action: 'register',
-				message: 'An error occurred when adding you to the event'
-			};
-			// send the response data base to the user as JSON
-			res.json( responseData );
-		});
-};
+// 			// construct useful data for needed UI updates
+// 			var responseData = {
+// 				success: false,
+// 				action: 'register',
+// 				message: 'An error occurred when adding you to the event'
+// 			};
+// 			// send the response data base to the user as JSON
+// 			res.json( responseData );
+// 		});
+// };
 
-exports.removeUser = ( req, res, next ) => {
+// exports.removeUser = ( req, res, next ) => {
 
-	const locals	= res.locals,
-		  userId	= req.user.get( '_id' ),
-		  userName	= req.user.get( 'name.full' ),
-		  userType	= req.user.get( 'userType' ),
-		  eventId	= req.body.eventId;
+// 	const locals	= res.locals,
+// 		  userId	= req.user.get( '_id' ),
+// 		  userName	= req.user.get( 'name.full' ),
+// 		  userType	= req.user.get( 'userType' ),
+// 		  eventId	= req.body.eventId;
 
-	// fetch the field the user should be added to based on their user type
-	const eventGroup = exports.getEventGroup( userType );
-	// fetch the event the user should be added to
-	let fetchEvent = exports.getEventById( eventId );
+// 	// fetch the field the user should be added to based on their user type
+// 	const eventGroup = exports.getEventGroup( userType );
+// 	// fetch the event the user should be added to
+// 	let fetchEvent = exports.getEventById( eventId );
 
-	fetchEvent
-		.then( event => {
-			// get the array of user IDs already in the field the user should be added to, and get the index of the user
-			const attendees	= event.get( eventGroup ),
-				userIndex	= attendees.indexOf( userId );
+// 	fetchEvent
+// 		.then( event => {
+// 			// get the array of user IDs already in the field the user should be added to, and get the index of the user
+// 			const attendees	= event.get( eventGroup ),
+// 				userIndex	= attendees.indexOf( userId );
 
-			// if the user exists in the group
-			if(userIndex !== -1) {
-				// remove them from the attendees list
-				attendees.splice( userIndex, 1 );
-				// save the updated event model
-				event.save();
-				// construct useful data for needed UI updates
-				var responseData = {
-					success: true,
-					action: 'unregister',
-					name: userName,
-					group: userType
-				};
-				// send the response data base to the user as JSON
-				res.json( responseData );
+// 			// if the user exists in the group
+// 			if(userIndex !== -1) {
+// 				// remove them from the attendees list
+// 				attendees.splice( userIndex, 1 );
+// 				// save the updated event model
+// 				event.save();
+// 				// construct useful data for needed UI updates
+// 				var responseData = {
+// 					success: true,
+// 					action: 'unregister',
+// 					name: userName,
+// 					group: userType
+// 				};
+// 				// send the response data base to the user as JSON
+// 				res.json( responseData );
 
-			} else {
-				// construct useful data for needed UI updates
-				var responseData = {
-					success: false,
-					action: 'unregister',
-					message: 'You have already been removed from that event'
-				};
-				// send the response data base to the user as JSON
-				res.json( responseData );
-			}
-		})
-		.catch( () => {
-			// log an error for debugging purposes
-			console.error( `there was an error removing the user from the event with id ${ req.body.eventId }` );	
+// 			} else {
+// 				// construct useful data for needed UI updates
+// 				var responseData = {
+// 					success: false,
+// 					action: 'unregister',
+// 					message: 'You have already been removed from that event'
+// 				};
+// 				// send the response data base to the user as JSON
+// 				res.json( responseData );
+// 			}
+// 		})
+// 		.catch( () => {
+// 			// log an error for debugging purposes
+// 			console.error( `there was an error removing the user from the event with id ${ req.body.eventId }` );	
 			
-			// construct useful data for needed UI updates
-			var responseData = {
-				success: false,
-				action: 'register',
-				message: 'An error occurred when removing you from the event'
-			};
-			// send the response data base to the user as JSON
-			res.json( responseData );
-		});
-};
+// 			// construct useful data for needed UI updates
+// 			var responseData = {
+// 				success: false,
+// 				action: 'register',
+// 				message: 'An error occurred when removing you from the event'
+// 			};
+// 			// send the response data base to the user as JSON
+// 			res.json( responseData );
+// 		});
+// };
 
 /* event creation submitted through the agency event submission form */
 exports.submitEvent = function submitEvent( req, res, next ) {
 
-	const locals	= res.locals;
-	const event		= req.body;
+	const event = req.body;
+
 	// attempt to create an event
-	var isEventCreated = new Promise( ( resolve, reject ) => {
-		exports.createEvent( locals, event, resolve, reject );
-	});
+	let createEvent = exports.createEvent( event );
+
 	// if we're successful in creating it
-	isEventCreated.then( result => {
+	createEvent.then( result => {
 		// create a success flash message
 		req.flash( 'success', {
 					title: 'Your event has been submitted',
 					detail: 'once your event has been approved by the MARE staff, you will receive a notification email.  If you don\'t receive an email within 5 business days, please contact [some mare contact] for a status update.'} );
 		// reload the form to display the flash message
 		res.redirect( '/forms/agency-event-submission-form' );
-	});
 	// if we're not successful in creating it
-	isEventCreated.catch( error => {
+	})
+	.catch( error => {
 		// create an error flash message
 		req.flash( 'error', {
 					title: 'Something went wrong while creating your event.',
@@ -338,38 +337,59 @@ exports.submitEvent = function submitEvent( req, res, next ) {
 	});
 
 };
+
 // create and save a new event model
-exports.createEvent = function createEvent( locals, event, resolve, reject ) {
-	// create a new event using the form data we received
-	const newEvent = new Event.model({
+exports.createEvent = event => {
 
-		name: event.name,
-		type: event.eventType,	
-		address: {
-			street1: event.street1,
-			street2: event.street2,
-			city: event.city,
-			state: event.state,
-			zipCode: event.zipCode
-		},
-		contactEmail: event.contactEmail,
-		startDate: event.startDate,
-		startTime: event.startTime,
-		endDate: event.endDate,
-		endTime: event.endTime,
-		description: event.description,
-		isActive: false,
-		createdViaWebsite: true
+	return new Promise( ( resolve, reject ) => {
+		// create a new event using the form data we received
+		const newEvent = new Event.model({
 
-	});
+			name: event.name,
+			type: event.eventType,	
+			address: {
+				street1: event.street1,
+				street2: event.street2,
+				city: event.city,
+				state: event.state,
+				zipCode: event.zipCode
+			},
+			contactEmail: event.contactEmail,
+			startDate: event.startDate,
+			startTime: event.startTime,
+			endDate: event.endDate,
+			endTime: event.endTime,
+			description: event.description,
+			isActive: false,
+			createdViaWebsite: true
 
-	newEvent.save( err => {
-		// if the event was created successfully, resolve the event creation promise
-		resolve();
+		});
 
-	}, err => {
-		// if there was an error saving the event, reject the event creation promise
-		console.log( err );
-		reject();
+		newEvent.save( err => {
+			// log a message that the event was created
+			console.log( `new event successfully created` );
+			// if the event was created successfully, resolve the event creation promise
+			resolve();
+
+		}, err => {
+			// log an error for debugging purposes
+			console.error( `there was an error creating the new event - ${ err }` );
+			// reject the promise
+			reject();
+		});
 	});
 };
+
+exports.register = ( eventId, userId ) => {
+	// TODO: this will be implemented post-launch
+	return new Promise( ( resolve, reject ) => {
+		resolve();
+	});
+}
+
+exports.unregister = ( eventId, userId ) => {
+	// TODO: this will be implemented post-launch
+	return new Promise( ( resolve, reject ) => {
+		resolve();
+	});
+}

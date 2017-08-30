@@ -1,6 +1,6 @@
 // TODO: everything for resizing the header is handled through JavaScript, causing jank on the page.  This should be rewritten to use
 //       a pure CSS solution with transitions.  The main difficulty is that the background image for the header extends into the menu.
-//       Check all commits references #238 for a view into what the menu used to be like, as well as all changes made.
+//       Check all commits referencing #238 for a view into what the menu used to be like, as well as all changes made.
 //       In fixing this issue, the resize watcher, as well as all subsequent function calls will need to be removed
 
 (function () {
@@ -54,7 +54,7 @@
 		finishTransition: function finishTransition() {
 			setTimeout( function(){
 			  	$( '.in-transition' ).removeClass( 'in-transition' );
-			}, 400 ); // 400ms = duration of header transition
+			}, 400 ); // 400ms is the duration of the header transition
 		},
 
 		// return header height based on window width
@@ -154,7 +154,7 @@
 				isPrevious 		= $current.hasClass( 'main-nav__item--active' ),
 				activeHeight 	= $previous.children( '.main-nav__items--submenu' ).outerHeight();
 
-			//remove the currently active class
+			// remove the currently active class
 			$previous.removeClass( 'main-nav__item--active' );
 
 			// if the current menu item !== previous menu item, resize for submenu 

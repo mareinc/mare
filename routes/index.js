@@ -27,6 +27,7 @@ const keystone					= require( 'keystone' ),
 	  permissionsService		= require( './middleware/service_permissions' ),
 	  registrationMiddleware	= require( './middleware/service_register' ),
 	  accountMiddleware			= require( './middleware/service_account' ),
+	  eventMiddleware			= require( './middleware/middleware_event' ),
 	  importRoutes				= keystone.importer( __dirname );
 
 // Common Middleware
@@ -48,6 +49,7 @@ exports = module.exports = app => {
 	app.get( '/'										, routes.views.main );
 	// MARE staff generated pages
 	app.get( '/page/:key'								, routes.views.page );
+	/* TODO: combine all these into /forms/:key and handle the service calls in middleware */
 	// forms
 	app.get( '/forms/agency-event-submission-form'		, routes.views.form_agencyEventSubmission );
 	app.get( '/forms/child-registration-form'			, routes.views.form_childRegistration );
@@ -57,8 +59,10 @@ exports = module.exports = app => {
 	// steps in the process
 	app.get( '/steps-in-the-process'					, routes.views.stepsInTheProcess );
 	// events
-	app.get( '/events/:category'						, routes.views.eventList );
+	app.get( '/events/:category'						, routes.views.events );
 	app.get( '/events/:category/:key'					, routes.views.event );
+	app.post( '/events/register/:eventId'				, eventMiddleware.register );
+	app.post( '/events/unregister/:eventId'				, eventMiddleware.unregister );
 	// success stories
 	app.get( '/success-stories'							, routes.views.successStories );
 	app.get( '/success-story/:key'						, routes.views.successStory );
@@ -90,8 +94,8 @@ exports = module.exports = app => {
 	app.post( '/services/add-sibling-group-bookmark'	, familyService.addSiblingGroupBookmark );
 	app.post( '/services/remove-sibling-group-bookmark'	, familyService.removeSiblingGroupBookmark );
 	app.post( '/services/get-gallery-permissions'		, permissionsService.getGalleryPermissions );
-	app.post( '/services/register-for-event'			, eventService.addUser );
-	app.post( '/services/unregister-for-event'			, eventService.removeUser );
+	// app.post( '/services/register-for-event'			, eventService.addUser ); // TODO: I'm leaving these commented out so I don't forget they exist when I need to implement adding/removing users to an event automatically
+	// app.post( '/services/unregister-for-event'			, eventService.removeUser ); // TODO: I'm leaving these commented out so I don't forget they exist when I need to implement adding/removing users to an event automatically
 	// services for form submissions
 	app.post( '/submit-agency-event'					, eventService.submitEvent );
 	app.post( '/submit-question'						, formService.submitQuestion );

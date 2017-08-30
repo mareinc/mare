@@ -36,9 +36,9 @@ exports = module.exports = ( req, res ) => {
 			// render the view using the main.hbs template
 			view.render( 'main' );
 		})
-		.catch( () => {
+		.catch( err => {
 			// log an error for debugging purposes
-			console.error( `there was an error loading data for the homepage` );
+			console.error( `there was an error loading data for the homepage - ${ err }` );
 			
 			// set the layout to render without the right sidebar and without a wrapper needed for the full width slideshow
 			locals[ 'render-with-sidebar' ] = false;

@@ -577,7 +577,7 @@ exports.registerChild = ( req, res, next ) => {
 		newChild.save( ( err, child ) => {
 
 			if( err ) {
-				console.error( `error saving social registered child: ${ err }` );
+				console.error( `error saving social registered child - ${ err }` );
 				// create an error flash message
 				req.flash( 'error', {
 						title: `There was an error registering your child`,

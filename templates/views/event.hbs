@@ -1,7 +1,10 @@
 <div class="card card--vertical card--large-padding">
 
-	{{#if showMAPPTrainings}} {{> events-mapp-training-info}} {{/if}}
-	{{#if showAdoptionParties}} {{> events-adoption-party-info}} {{/if}}
+	{{#ifeq category 'mapp-trainings'}} {{> events-mapp-training-info}} {{/ifeq}}
+	{{#ifeq category 'adoption-parties'}} {{> events-adoption-party-info}} {{/ifeq}}
+	{{#ifeq category 'fundraising-events'}} {{> events-fundraising-events-info}} {{/ifeq}}
+	{{#ifeq category 'agency-info-meetings'}} {{> events-agency-info-meetings-info}} {{/ifeq}}
+	{{#ifeq category 'other-trainings'}} {{> events-other-trainings-info}} {{/ifeq}}
 
 	{{#if canSubmitEvent}}
 	<section class="button-group button-group--horizontal button-group--space-around button-group--large-margin-above button-group--small-margin-below">	
@@ -14,32 +17,38 @@
 {{#if isEventMissing}}
 
 <section class="card-list">
+
 	<div class="card card--large-padding">
 		<div class="card__details card__details--centered">
 			<p class="card__details__body">This event is no longer active.</p>
 		</div>
 	</div>
+
 </section>
 
 {{else}}
 
 <section class="card-list">
 
-	<div class="card card--vertical card--medium-padding">
+	<div class="card card--vertical card--medium-padding event" data-event-name="{{ event.name }}" data-event-date="{{ event.displayDate }}" data-event-id="{{ event._id }}">
+		
 		<h2 class="card__title">{{ event.name }}</h2>
+		
 		<div class="card__content">
 			<div class="events__event-description">
 				{{{ event.description }}}
 			</div>
 		</div>
+		
 		<section class="card__content-group">
-			<time class="events__time">{{ event.dateTimeString }}</time>
+			<time class="events__time">{{ event.displayDateAndTime }}</time>
 			<address class="events__address">
 				{{ event.address.street1 }}<br>
 				{{#if events.address.street2}} {{ event.address.street2 }}<br> {{/if}}
 				{{#if events.address.city}} {{ event.address.city }},{{/if}} {{ event.address.state.state }} {{ event.address.zipCode }}
 			</address>
 		</section>
+		
 		<section class="card__content-group events__contact">
 			{{#if event.contact.name.full}}
 			For more information, {{#if event.contact.phone.work}}call{{else}}contact{{/if}} {{ event.contact.name.full }} at {{#if event.contact.phone.work}} {{ event.contact.phone.work }} {{else}} <a href="mailto:{{ event.contact.email }}" class="events__contact-link">{{ event.contact.email}}</a> {{/if}}
@@ -48,7 +57,7 @@
 			{{/if}}
 		</section>
 
-		{{#if isAdmin}}
+		{{#ifeq userType 'admin'}}
 		<hr class="card__content-divider"></hr>
 		<aside class="card__content-group">
 			<h3 class="card__title">Attendees</h3>
@@ -118,7 +127,7 @@
 			</section>
 		</aside>
 
-		{{/if}}
+		{{/ifeq}}
 
 		{{#unless user}}
 		<hr class="card__content-divider"></hr>
@@ -127,7 +136,16 @@
 		<section class="button-group button-group--horizontal button-group--space-around button-group--large-margin-above button-group--small-margin-below">
 			{{#if canRegister}}
 			{{#if user}}
-			<button class="button button--large button--teal {{#if event.attending}} events__unregister-button {{else}} events__register-button {{/if}}" data-event-id="{{ event._id }}">{{#if event.attending}} Unregister {{else}} Register {{/if}}</button>
+			{{!-- TODO: this handling of unregistering through forms was only done for consistency in flash messaging and NEEDS to be reworked --}}
+			{{#if event.attending}}
+			<form action="/events/unregister/{{ event._id }}" class="modal-form--event-registration" method="POST">
+				<input type="hidden" name="eventName" value="{{ event.name }}">
+				<input type="hidden" name="redirectPath" value="{{ redirectPath }}">
+				<button class="button button--large button--teal events__unregister-button" type="submit">Unregister</button>
+			</form>
+			{{else}}
+			<button class="button button--large button--teal events__register-button">Register</button>
+			{{/if}}
 			{{else}}
 			<button id="register-with-mare-button" class="button button--large button--teal events__create-account-button" data-url="/register">Create an account</button>
 			{{/if}}
@@ -135,7 +153,10 @@
 		</section>
 
 	</div>
-
 </section>
 
 {{/if}}
+
+{{#ifeq userType 'site visitor'}}{{> event-registration-form}}{{/ifeq}}
+{{#ifeq userType 'family'}}{{> event-registration-form}}{{/ifeq}}
+{{#ifeq userType 'social worker'}}{{> event-social-worker-registration-form}}{{/ifeq}}

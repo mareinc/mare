@@ -48,9 +48,9 @@ exports = module.exports = ( req, res ) => {
 			// render the view using the waiting-child-profiles.hbs template
 			view.render( 'waiting-child-profiles' );
 		})
-		.catch( () => {
+		.catch( err => {
 			// log an error for debugging purposes
-			console.error( `there was an error loading data for the waiting child profiles page` );
+			console.error( `there was an error loading data for the waiting child profiles page - ${ err }` );
 			// set the layout to render without the right sidebar
 			locals[ 'render-with-sidebar' ] = false;
 			// render the view using the waiting-child-profiles.hbs template

@@ -50,7 +50,7 @@ exports.sendRegistrationConfirmationEmailToStaff = user => {
 		}, ( err, message ) => {
 			// log any errors
 			if( err ) {
-				console.error( `social worker child registration email to MARE staff failed to send: ${ err }` );
+				console.error( `social worker child registration email to MARE staff failed to send - ${ err }` );
 				reject();
 			}
 			// the response object is stored as the 0th element of the returned message
