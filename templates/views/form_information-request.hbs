@@ -37,6 +37,8 @@
 				<input type="text" class="input" id="child-registration-numbers" name="childRegistrationNumbers" value="{{ registrationNumber }}">
 			</div>
 		</div>
+
+		{{#unless isLoggedIn}}
 		<div class="row form-group">
 			<div class="col-sm-24">
 				<div class="row">
@@ -232,8 +234,8 @@
 				<label for="address1" class="label required-field">Address 1</label>
 			</div>
 			<div class="col-sm-12">
-				<input type="text" class="input" id="address2" name="Address2" data-parsley-error-message="required" required="">
-				<label for="address2" class="label required-field">Address 2</label>
+				<input type="text" class="input" id="address2" name="Address2">
+				<label for="address2" class="label">Address 2</label>
 			</div>
 		</div>
 		<div class="row form-group">
@@ -326,40 +328,13 @@
 				</div>
 			</div>
 		</div>
-		<div class="row form-group">
-			<div class="col-sm-24 form-group">
-				<label class="label marg-bottom-xs-5">I would like to receive the MARE Moment (monthly e-newsletter)</label>
-			</div>
-			<div class="col-sm-24">
-				<div class="row">
-					<div class="col-xs-3">
-						<label class="radio-inline"><input type="radio" name="receiveMareMoment" value="Yes" checked="checked">Yes</label>
-					</div>
-					<div class="col-xs-3">
-						<label class="radio-inline"><input type="radio" name="receiveMareMoment" value="No">No</label>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="row form-group">
-			<div class="col-sm-24 form-group">
-				<label class="label marg-bottom-xs-5">I would like to be notified about upcoming adoption events in MA</label>
-			</div>
-			<div class="col-sm-24">
-				<div class="row">
-					<div class="col-xs-3">
-						<label class="radio-inline"><input type="radio" name="receiveUpcomingEvents" value="Yes" checked="checked">Yes</label>
-					</div>
-					<div class="col-xs-3">
-						<label class="radio-inline"><input type="radio" name="receiveUpcomingEvents" value="No">No</label>
-					</div>
-				</div>
-			</div>
-		</div>
+
+		{{/unless}}
+
 		<div class="row form-group">
 			<div class="col-sm-24">
-				<textarea class="input" id="comments" name="comments" rows="5"></textarea>
-				<label for="comments" class="label">Questions or Comments</label>
+				<textarea class="input" id="inquiry" name="inquiry" rows="8"></textarea>
+				<label for="inquiry" class="label">Your Inquiry</label>
 			</div>
 		</div>
 		<button class="button button--blue" type="submit">Submit</button>

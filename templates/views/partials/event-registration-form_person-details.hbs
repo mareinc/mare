@@ -1,0 +1,31 @@
+<!-- client side template for rendering the event registration form in a modal -->
+<script id="event-registration-form_person-details-template" type="text/x-handlebars-template">
+
+	<div class="col-sm-24 attending-\{{ personType }} \{{ personType }}-\{{ count }}">
+
+		<div class="col-sm-24">
+			<div class="label marg-bottom-xs-5">\{{ personType }} \{{ count }}</div>
+		</div>
+
+		<div class="row form-group">
+			\{{#ifeq personType 'adult'}}<div class="col-sm-12 form-group">\{{/ifeq}}
+			\{{#ifeq personType 'child'}}<div class="col-sm-10 form-group">\{{/ifeq}}
+				<input type="text" class="input" id="\{{ personType }}-first-name-\{{ count }}" name="\{{ personType }}FirstName[]">
+				<label for="\{{ personType }}-first-name-\{{ count }}" class="label required-field">First Name</label>
+			</div>
+			\{{#ifeq personType 'adult'}}<div class="col-sm-12 form-group">\{{/ifeq}}
+			\{{#ifeq personType 'child'}}<div class="col-sm-10 form-group">\{{/ifeq}}
+				<input type="text" class="input" id="\{{ personType }}-last-name-\{{ count }}" name="\{{ personType }}LastName[]">
+				<label for="\{{ personType }}-last-name-\{{ count }}" class="label required-field">Last Name</label>
+			</div>
+			\{{#ifeq personType 'child'}}
+			<div class="col-sm-4 form-group">
+				<input type="text" class="input" id="\{{ personType }}-age-\{{ count }}" name="\{{ personType }}Age[]">
+				<label for="\{{ personType }}-age-\{{ count }}" class="label required-field">Age</label>
+			</div>
+			\{{/ifeq}}
+		</div>
+	
+	</div>
+
+</script>

@@ -17,6 +17,10 @@
 
 			<div class="row">
 				<div class="col-sm-12 form-group">
+					<input type="text" class="input" id="name" name="name" data-parsley-error-message="required" required="">
+					<label for="name" class="label required-field">Event Name</label>
+				</div>
+				<div class="col-sm-12 form-group">
 					<select id="event-type" class="input event-type-select" name="eventType">
 					{{#each eventTypes}}
 						<option value="{{ eventType }}">{{ eventType }}</option>
@@ -25,38 +29,28 @@
 					<label for="eventType" class="label required-field">Event Type</label>
 				</div>
 			</div>
-			<div class="row form-group">
-				<div class="col-sm-12">
-					<input type="text" class="input" id="name" name="name" data-parsley-error-message="required" required="">
-					<label for="name" class="label required-field">Event Name</label>
-				</div>
-			</div>
-			<div class="row form-group">
-				<div class="col-sm-12">
+			<div class="row">
+				<div class="col-sm-12 form-group">
 					<input type="text" class="input" id="start-date" name="startDate" placeholder="DD/MM/YYYY" data-parsley-pattern="(0[1-9]|1[012])\/(0[1-9]|[12][0-9]|3[01])\/20\d\d" data-parsley-error-message="must match DD/MM/YYYY" required="">
-					<label for="start-date" class="label required-field">Date</label>
+					<label for="start-date" class="label required-field">Start Date</label>
+				</div>
+				<div class="col-sm-12 form-group">
+					<input type="text" class="input" id="end-date" name="endDate" placeholder="DD/MM/YYYY" data-parsley-pattern="(0[1-9]|1[012])\/(0[1-9]|[12][0-9]|3[01])\/20\d\d" data-parsley-error-message="must match DD/MM/YYYY" required="">
+					<label for="end-date" class="label required-field">End Date</label>
 				</div>
 			</div>
-			<div class="row form-group">
-				<div class="col-sm-12">
+			<div class="row">
+				<div class="col-sm-12 form-group">
 					<input type="text" class="input" id="start-time" name="startTime" placeholder="4:00pm" data-parsley-error-message="required" required="">
 					<label for="start-time" class="label required-field">Start Time</label>
 				</div>
-			</div>
-			<div class="row form-group">
-				<div class="col-sm-12">
-					<input type="text" class="input" id="end-date" name="endDate" placeholder="DD/MM/YYYY" data-parsley-pattern="(0[1-9]|1[012])\/(0[1-9]|[12][0-9]|3[01])\/20\d\d" data-parsley-error-message="must match DD/MM/YYYY" required="">
-					<label for="end-date" class="label required-field">Date</label>
-				</div>
-			</div>
-			<div class="row form-group">
-				<div class="col-sm-12">
+				<div class="col-sm-12 form-group">
 					<input type="text" class="input" id="end-time" name="endTime" placeholder="5:30pm" data-parsley-error-message="required" required="">
 					<label for="end-time" class="label required-field">End Time</label>
 				</div>
 			</div>
-			<div class="row form-group">
-				<div class="col-sm-12">
+			<div class="row">
+				<div class="col-sm-12 form-group">
 					<textarea class="input" id="description" name="description" rows="4" data-parsley-error-message="required" required=""></textarea>
 					<label for="description" class="label required-field">Description</label>
 				</div>
@@ -71,8 +65,6 @@
 					<input type="text" id="family-street-1" class="input" name="street1" placeholder="100 Main Street" data-parsley-error-message="required" required="">
 					<label for="family-street-1" class="label required-field">Street 1</label>
 				</div>
-			</div>
-			<div class="row">
 				<div class="col-sm-12 form-group">
 					<input type="text" id="family-street-2" class="input" name="street2" placeholder="Suite 1">
 					<label for="family-street-2" class="label">Street 2</label>
@@ -83,8 +75,6 @@
 					<input type="text" id="city" class="input" name="city" placeholder="Boston" data-parsley-error-message="required" required="">
 					<label for="city" class="label required-field">City</label>
 				</div>
-			</div>
-			<div class="row">
 				<div class="col-sm-12 form-group">
 					<select id="state" class="input state-select" name="state">
 					{{#each states}}
@@ -109,20 +99,18 @@
 		<section class="form-section">
 			<div class="form-section-header">Contact Information</div>
 
-			<div class="row form-group">
-				<div class="col-sm-12">
+			<div class="row">
+				<div class="col-sm-12 form-group">
 					<input type="text" class="input" id="contact" name="contact" placeholder="John Smith" data-parsley-error-message="required" required="">
 					<label for="contact" class="label required-field">Name</label>
 				</div>
-			</div>
-			<div class="row form-group">
-				<div class="col-sm-12">
+				<div class="col-sm-12 form-group">
 					<input type="text" class="input" id="contact-phone" name="contactPhone" placeholder="(617) 111-1111" data-parsley-error-message="required" required="">
 					<label for="contact-phone" class="label required-field">Phone Number</label>
 				</div>
 			</div>
-			<div class="row form-group">
-				<div class="col-sm-12">
+			<div class="row">
+				<div class="col-sm-12 form-group">
 					<input type="text" class="input" id="contact-email" name="contactEmail" placeholder="john.smith@gmail.com" data-parsley-type="email" data-parsley-trigger="change" data-parsley-error-message="valid email required" required="">
 					<label for="contact-email" class="label required-field">Email</label>
 				</div>

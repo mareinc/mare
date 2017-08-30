@@ -82,7 +82,7 @@ exports.initLocals = function(req, res, next) {
 			{ title: 'History', href: '/page/history' },
 			{ title: 'Meet the Staff', href: '/page/meet-the-staff' },
 			{ title: 'Board of Directors', href: '/page/board-of-directors' },
-			{ title: 'MARE in the News', href: '/page/mare-in-the-news' },
+			{ title: 'MARE in the News', href: '/mare-in-the-news' },
 			{ title: 'Annual Report', href: '/page/annual-report' }
 		]}];
 
@@ -167,7 +167,6 @@ exports.login = function( req, res, next ) {
 			// TODO: you can add a target to the signin of the current page and it will always route correctly back to where the user was
 			var onSuccess = function() {
 				if ( req.body.target && !/join|signin/.test( req.body.target ) ) { // TODO: I don't think this is needed anymore
-					console.log( `signin target is: ${ req.body.target }` );
 					res.redirect( req.body.target || '/' );
 				} else {
 					res.redirect( '/' );

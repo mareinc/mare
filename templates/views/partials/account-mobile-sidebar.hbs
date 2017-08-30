@@ -1,0 +1,13 @@
+<script id="account-mobile-sidebar" type="text/x-handlebars-template">
+
+    <select class="mobile-account-nav" name="mobile-account-nav">
+        <option value="info" \{{#ifeq selectedRoute 'info' }}selected="selected"\{{/ifeq}}>My Information</option>
+        <option value="email-list" \{{#ifeq selectedRoute 'email-list' }}selected="selected"\{{/ifeq}}>Email Lists</option>
+        <option value="events" \{{#ifeq selectedRoute 'events' }}selected="selected"\{{/ifeq}}>Events</option>
+        <option value="children" \{{#ifeq selectedRoute 'children' }}selected="selected"\{{/ifeq}}>Children</option>
+        {{#ifeq user.userType 'admin'}}
+        <option value="admin">Admin</option>
+        {{/ifeq}}
+    </select>
+
+</script>

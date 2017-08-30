@@ -1,27 +1,32 @@
 const keystone		= require( 'keystone' ),
 	  MailingList	= keystone.list( 'Mailing List' );
 
-exports.getRegistrationMailingLists = ( req, res, done ) => {
+exports.getRegistrationMailingLists = () => {
 
-	var locals = res.locals;
+	return new Promise( ( resolve, reject ) => {
 
-	MailingList.model
-		.find( { $or: [
-					{ 'showOnSiteVisitorRegistrationPage': true },
-					{ 'showOnSocialWorkerRegistrationPage': true },
-					{ 'showOnFamilyRegistrationPage': true } ] } )
-		// .select( ' ' )
-		.exec()
-		.then( mailingLists => {
-			// store the returned mailing lists on locals for templating
-			locals.mailingLists = mailingLists;
-			// execute done function if async is used to continue the flow of execution
-			done()
-
-		}, err => {
-
-			console.log( err );
-			done();
-
-		});
+		MailingList.model
+			.find( { $or: [
+						{ 'showOnSiteVisitorRegistrationPage': true },
+						{ 'showOnSocialWorkerRegistrationPage': true },
+						{ 'showOnFamilyRegistrationPage': true } ] } )
+			.exec()
+			.then( mailingLists => {
+				// if no mailing lists could not be found
+				if( mailingLists.length === 0 ) {
+					// log an error for debugging purposes
+					console.error( `no mailing lists could be found` );
+					// reject the promise
+					return reject();
+				}
+				// if mailing lists were successfully returned, resolve with the array
+				resolve( mailingLists );
+			// if an error was encountered fetching from the database
+			}, err => {
+				// log the error for debugging purposes
+				console.error( `error fetching the mailing lists for the registration page - ${ err }` );
+				// reject the promise
+				reject();
+			});
+	});
 };

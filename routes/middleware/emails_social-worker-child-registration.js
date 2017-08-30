@@ -1,7 +1,7 @@
 const keystone				= require( 'keystone' ),
 	  utilitiesMiddleware   = require( './utilities' );
 /* TODO: registrationStaffContact can either be determined before and passed in, or found in this function */
-exports.sendRegistrationConfirmationEmailToStaff = ( user ) => {
+exports.sendRegistrationConfirmationEmailToStaff = user => {
 	/* 	Information in email to staff:
 			child's name and registration number
 			a link to the child model in keystone
@@ -50,7 +50,7 @@ exports.sendRegistrationConfirmationEmailToStaff = ( user ) => {
 		}, ( err, message ) => {
 			// log any errors
 			if( err ) {
-				console.error( `social worker child registration email to MARE staff failed to send: ${ err }` );
+				console.error( `social worker child registration email to MARE staff failed to send - ${ err }` );
 				reject();
 			}
 			// the response object is stored as the 0th element of the returned message

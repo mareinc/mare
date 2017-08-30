@@ -1,16 +1,15 @@
-var keystone 		= require('keystone'),
-	Types 			= keystone.Field.Types,
-	// Export to make it available using require.  The keystone.list import throws a ReferenceError when importing a list
-	// that comes later when sorting alphabetically
-	SiteVisitor		= require('./User_SiteVisitor'),
-	SocialWorker	= require('./User_SocialWorker'),
-	Family			= require('./User_Family'),
-	Admin			= require('./User_Admin');
+const keystone 		= require( 'keystone' ),
+	  Types 		= keystone.Field.Types,
+	  // the keystone.list import throws a ReferenceError when importing a list that comes later when sorting alphabetically
+	  SiteVisitor	= require( './User_SiteVisitor' ),
+	  SocialWorker	= require( './User_SocialWorker' ),
+	  Family		= require( './User_Family' ),
+	  Admin			= require( './User_Admin' );
 
-// Create model. Additional options allow menu name to be used to auto-generate the URL
-var Donation = new keystone.List('Donation');
+// create model
+var Donation = new keystone.List( 'Donation' );
 
-// Create fields
+// create fields
 Donation.add({
 
 	date: { type: Types.Date, label: 'date', format: 'MM/DD/YYYY', required: true, initial: true },
@@ -23,58 +22,69 @@ Donation.add({
 	family: { type: Types.Relationship, label: 'donation from', ref: 'Family', dependsOn: { isRegistered: true, userType: 'family' }, filters: { isActive: true }, initial: true },
 	admin: { type: Types.Relationship, label: 'donation from', ref: 'Admin', dependsOn: { isRegistered: true, userType: 'admin' }, filters: { isActive: true }, initial: true },
 	unregisteredUser: { type: Types.Text, label: 'donation from', dependsOn: { isRegistered: false }, initial: true },
-	name: { type: Types.Text, label: 'name', hidden: true, noedit: true, initial: false }
-
+	name: { type: Types.Text, label: 'name', hidden: true, noedit: true, initial: false },
+	onBehalfOf: { type: Types.Text, label: 'on behalf of', initial: true }
 });
 
-// Pre Save
-Donation.schema.pre('save', function(next) {
+// presave hook
+Donation.schema.pre( 'save', function( next ) {
 	'use strict';
 
-	var targetUserType,
+	let targetUserType,
 		targetId;
 
-	if(this.isRegistered) {
-		switch(this.userType) {
-			case 'site visitor': targetUserType = SiteVisitor; targetId = this.siteVisitor; break;
-			case 'social worker': targetUserType = SocialWorker; targetId = this.socialWorker; break;
-			case 'family': targetUserType = Family; targetId = this.family; break;
-			case 'admin': targetUserType = Admin; targetId = this.admin;
+	// if the user is registered in the system
+	if( this.isRegistered ) {
+		// set variables to allow us to fetch the user
+		switch( this.userType ) {
+			case 'site visitor'	: targetUserType = SiteVisitor; 	targetId = this.siteVisitor; break;
+			case 'social worker': targetUserType = SocialWorker; 	targetId = this.socialWorker; break;
+			case 'family'		: targetUserType = Family; 			targetId = this.family; break;
+			case 'admin'		: targetUserType = Admin; 			targetId = this.admin;
 		}
+		// attempt to fetch the user who made the donation by their _id
+		targetUserType.model
+			.findById( targetId )
+			.exec()
+			.then( user => {
+				// if the user has a name, they're not a family
+				if( user.name ) {
+					// store the name of the user's name
+					this.name = user.name.full;
+				// otherwise, if they're a family
+				} else {
+					// TODO: This functionality is identical to that in event, pull both out and put them in the model as a virtual
+					// check to see if a second contact has been filled out
+					const contact2Exists = user.contact2.name.full.length > 0;
+					// check to see if both contacts share a last name
+					const sameLastName = user.contact1.name.last === user.contact2.name.last;
 
-		var model = this;
-
-		targetUserType.model.findById(targetId)
-				.exec()
-				.then(function(user) {
-					console.log('user:',typeof user);
-					console.log('user.name:',user.name);
-					// If the user has a name, they aren't a family.  Use this info to pull the correct name
-					if(user.name) {
-						model.name = user.name.full;
+					// if there's a second contact and they both contacts share a last name
+					if( contact2Exists && sameLastName ) {
+						// set the name to both first names, then the last name: John Smith + Jane Smith = John and Jane Smith
+						model.name = user.contact1.name.first + ' and ' + user.contact2.name.full;
+					// if there's a second contact, but the contacts have different last names
+					} else if( contact2Exists && !sameLastName ) {
+						// set the name to the two names appended: John Smith + Jane Doe = John Smith and Jane Doe
+						model.name = user.contact1.name.full + ' and ' + user.contact2.name.full;
+					// if there's no second contact
 					} else {
-						// TODO: This functionality is identical to that in event, pull both out and put them in the model as a virtual
-						// if the targetGroup is families, we need to prettify the attendee name
-						var contact2Exists = user.contact2.name.full.length > 0 ? true : false;
-						var sameLastName = user.contact1.name.last === user.contact2.name.last ? true : false;
-
-						if(contact2Exists && sameLastName) {
-							model.name = user.contact1.name.first + ' and ' + user.contact2.name.full;
-						} else if(contact2Exists && !sameLastName) {
-							model.name = user.contact1.name.full + ' and ' + user.contact2.name.full;
-						} else {
-							model.name = user.contact1.name.full;
-						}
+						// set the name to contact 1's full name
+						model.name = user.contact1.name.full;
 					}
+				}
+				// allow further processing beyond this middleware
+				next();
 
-					next();
-
-				}, function(err) {
-					console.log(err);
-					next();
-				});
+			}, err => {
+				// log the error for debugging purposes
+				console.error( `an error occurred fetching the user model to set the donator name - ${ err }` );
+				// allow further processing beyond this middleware
+				next();
+			});
+	// if the user is not registered in the system
 	} else {
-
+		// set the name to whatever was filled out in the free text field
 		this.name = this.unregisteredUser;
 	}
 });
