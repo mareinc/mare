@@ -1,0 +1,94 @@
+<!-- client side template for rendering the event registration form in a modal -->
+<script id="event-registration-form-template" type="text/x-handlebars-template">
+
+<section class="event-registration-form">
+    <div class="modal-form__header">
+        <div class="modal-form-header__text"> {{!-- should be h1 etc --}}
+            \{{ eventName }}
+        </div>
+        <div class="modal-form__subheader"> {{!-- should be h3 etc --}}
+            \{{ eventDate }}
+        </div>
+    </div>
+    <div class="modal-form__key">
+        <span class="required required-description">* Required</span>
+    </div>
+    <form action="/events/register/\{{ eventId }}" class="modal-form--event-registration" method="POST">
+        <input type="hidden" name="eventName" value="\{{ eventName }}">
+        <input type="hidden" name="redirectPath" value="{{ redirectPath }}">
+        
+        <section class="form-section">
+            <div class="row form-group">
+                <div class="col-sm-24 form-group">
+                    <input type="text" class="input" id="name" name="name" value="{{ displayName }}" disabled="disabled">
+                    <label for="name" class="label">Registration For</label>
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-sm-12 form-group">
+                    <select id="number-of-adults" class="input number-of-adults-select" name="numberOfAdults">
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                    <label for="number-of-adults" class="label required-field">Number of adults attending</label>
+                </div>
+            </div>
+            <section class="adults-attending-container"></section>
+            
+            <div class="row form-group">
+                <div class="col-sm-12 form-group">
+                    <select id="number-of-children" class="input number-of-children-select" name="numberOfChildren">
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                    <label for="number-of-children" class="label required-field">Number of children attending</label>
+                </div>
+            </div>
+            <section class="children-attending-container"></section>
+            <div class="row form-group">
+                <div class="col-sm-24 form-group">
+                    <select id="source" class="input source-select" name="source">
+                        <option value=""></option>
+                        <option value="website">Website</option>
+                        <option value="other">Other</option>
+                    </select>
+                    <label for="source" class="label required-field">How did you hear about this event?</label>
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-sm-24 form-group">
+                    <select id="where-in-the-process" class="input where-in-the-process-select" name="where-in-the-process">
+                        <option value=""></option>
+                        <option value="gathering information">gathering information</option>
+                        <option value="looking for agency">looking for agency</option>
+                        <option value="working with agency">working with agency</option>
+                        <option value="MAPP training completed">MAPP training completed</option>
+                    </select>
+                    <label for="where-in-the-process" class="label required-field">Where are you in the adoption process?</label>
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-sm-24 form-group">
+                    <input type="textarea" class="input" rows="4" id="questions-or-comments" name="questionsOrComments">
+                    <label for="name" class="label">Questions or comments</label>
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-sm-24 form-group">By submitting this form you give permission for the likeness of all registered attendees to be captured and used by MARE. For more details view full legal disclosure.</div>
+            </div>
+        </section>
+        <button class="button button--blue" type="submit">Register</button>
+    </form>
+</section>
+
+</script>
+
+{{> event-registration-form_person-details}}

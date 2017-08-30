@@ -1,3 +1,4 @@
+/* TODO: this should be moved to service_user.js */
 var keystone	= require('keystone'),
 	_			= require('underscore'),
 	async		= require('async'),

@@ -80,6 +80,12 @@ User.schema.virtual( 'canAccessKeystone' ).get( () => {
 	return true;
 });
 
+Admin.schema.virtual( 'displayName' ).get( function() {
+	'use strict';
+
+	return `${ this.name.first } ${ this.name.last }`;
+});
+
 // Define default columns in the admin interface and register the model
 Admin.defaultColumns = 'name.full, email, phone.work, isActive';
 Admin.register();

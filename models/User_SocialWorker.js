@@ -129,6 +129,12 @@ SocialWorker.schema.virtual( 'canAccessKeystone' ).get( function() {
 	return false;
 });
 
+SocialWorker.schema.virtual( 'displayName' ).get( function() {
+	'use strict';
+
+	return `${ this.name.first } ${ this.name.last }`;
+});
+
 SocialWorker.schema.methods.setFullName = function( done ) {
 	'use strict';
 

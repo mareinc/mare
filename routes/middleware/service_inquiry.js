@@ -98,7 +98,7 @@ exports.createChildInquiry = ( { inquiry, user } ) => {
 					// if there was an issue saving the new inquiry
 					if( err ) {
 						// log the error for debugging purposes and reject the promise
-						console.error( `there was an error saving the new inquiry model ${ err }` );
+						console.error( `there was an error saving the new inquiry model - ${ err }` );
 						return reject();
 					}
 					// if the inquiry was saved successfully, resolve the promise with the newly saved inquiry model
@@ -153,7 +153,7 @@ exports.createGeneralInquiry = ( { inquiry, user } ) => {
 				// if there was an issue saving the new inquiry
 				if( err ) {
 					// log the error for debugging purposes and reject the promise
-					console.error( `there was an error saving the new inquiry model ${ err }` );
+					console.error( `there was an error saving the new inquiry model - ${ err }` );
 					return reject();
 				}
 				// if the inquiry was saved successfully, resolve the promise with the newly saved inquiry model

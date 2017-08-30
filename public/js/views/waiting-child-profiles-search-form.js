@@ -28,8 +28,8 @@
 
 			this.formFields = {
 				genders							: $( '.select-gender:checked' ),
-				minimumSiblings					: $( '#minimum-number-of-siblings' ).val(),
-				maximumSiblings					: $( '#maximum-number-of-siblings' ).val(),
+				minimumChildren					: $( '#minimum-number-of-children' ).val(),
+				maximumChildren					: $( '#maximum-number-of-children' ).val(),
 				youngestAge						: $( '#youngest-age' ).val(),
 				oldestAge						: $( '#oldest-age' ).val(),
 				races							: $( '.select-race:checked' ),
@@ -101,8 +101,8 @@
 			formFields.familyConstellation		= familyConstellationArray;
 			formFields.gendersOfChildrenInHome	= gendersOfChildrenInHomeArray;
 
-			formFields.minimumSiblings			= parseInt( formFields.minimumSiblings, 10 );
-			formFields.maximumSiblings			= parseInt( formFields.maximumSiblings, 10 );
+			formFields.minimumChildren			= parseInt( formFields.minimumChildren, 10 );
+			formFields.maximumChildren			= parseInt( formFields.maximumChildren, 10 );
 			formFields.youngestAge				= parseInt( formFields.youngestAge, 10 );
 			formFields.oldestAge				= parseInt( formFields.oldestAge, 10 );
 			formFields.maximumPhysicalNeeds		= formFields.maximumPhysicalNeeds !== undefined ? parseInt( formFields.maximumPhysicalNeeds, 10 ) : 3;
@@ -151,10 +151,6 @@
 
 				// break out of the current loop if the child's gender wasn't selected ( return is needed for this in _.each )
 				if( formFields.genders && formFields.genders.indexOf( child.get( 'gender' ) ) === -1 ) { return; }
-
-				// break out of the current loop if the child has less than the min or more then the max specified ( return is needed for this in _.each )
-				if( formFields.minimumSiblings > child.get( 'siblingContactsCount' ) ||
-				   formFields.maximumSiblings < child.get( 'siblingContactsCount' ) ) { return; }
 
 				// break out of the current loop if the child's age is less than the youngest or more than the oldest specified ( return is needed for this in _.each )
 				if( formFields.youngestAge > child.get( 'age' ) ||
@@ -238,12 +234,12 @@
 				if( formFields.genders && _.difference( siblingGroup.get( 'genders' ), formFields.genders ).length > 0 ) { return; }
 
 				// break out of the current loop if the sibling group has less than the min or more then the max specified ( return is needed for this in _.each )
-				if( formFields.minimumSiblings > siblingGroup.get( 'siblingContactsCount' ) ||
-					formFields.maximumSiblings < siblingGroup.get( 'siblingContactsCount' ) ) { return; }
+				if( formFields.minimumChildren > siblingGroup.get( 'siblingToBePlacedWithCount' ) + 1 ||
+					formFields.maximumChildren < siblingGroup.get( 'siblingToBePlacedWithCount' ) + 1 ) { return; }
 
 				// break out of the current loop if the sibling group's age is less than the youngest or more than the oldest specified ( return is needed for this in _.each )
-				if( formFields.youngestAge < _.min( siblingGroup.get( 'ages' ) ) ||
-					formFields.oldestAge > _.max( siblingGroup.get( 'ages' ) ) ) { return; }
+				if( formFields.youngestAge > _.max( siblingGroup.get( 'ages' ) ) ||
+					formFields.oldestAge < _.min( siblingGroup.get( 'ages' ) ) ) { return; }
 
 				// break out of the current loop only if none of the sibling group's races match a selected race ( return is needed for this in _.each )
 				// <3 Underscore.js for this one
@@ -306,10 +302,10 @@
 					_.difference( siblingGroup.get( 'recommendedFamilyConstellation' ), formFields.familyConstellation ).length > 0 ) { return; }
 
 				// break out of the loop if any of the other considerations selected don't match the sibling group ( return is needed for this in _.each )
-				if( siblingGroup.get( 'requiresSiblings' ).indexOf( true ) !== -1 && formFields.numberOfChildrenInHome === 0 ) { return; }
-				if( siblingGroup.get( 'requiresNoSiblings' ).indexOf( true ) !== -1 && formFields.numberOfChildrenInHome > 0 ) { return; }
-				if( siblingGroup.get( 'requiresOlderSibling' ).indexOf( true ) !== -1 && formFields.oldestChildAgeInHome <= _.max( siblingGroup.get( 'age' ) ) ) { return; }
-				if( siblingGroup.get( 'requiresYoungerSibling' ).indexOf( true ) !== -1 && formFields.youngestChildAgeInHome >= _.min( siblingGroup.get( 'age' ) ) ) { return; }
+				// if( siblingGroup.get( 'requiresSiblings' ).indexOf( true ) !== -1 && formFields.numberOfChildrenInHome === 0 ) { return; }
+				// if( siblingGroup.get( 'requiresNoSiblings' ).indexOf( true ) !== -1 && formFields.numberOfChildrenInHome > 0 ) { return; }
+				// if( siblingGroup.get( 'requiresOlderSibling' ).indexOf( true ) !== -1 && formFields.oldestChildAgeInHome <= _.max( siblingGroup.get( 'age' ) ) ) { return; }
+				// if( siblingGroup.get( 'requiresYoungerSibling' ).indexOf( true ) !== -1 && formFields.youngestChildAgeInHome >= _.min( siblingGroup.get( 'age' ) ) ) { return; }
 				if( siblingGroup.get( 'noPets' ).indexOf( true ) !== -1 && formFields.petsInHome ) { return; }
 				// if the sibling group passes all checks, add them to the collection to display on the gallery
 				mare.collections.gallerySiblingGroups.add( siblingGroup );
