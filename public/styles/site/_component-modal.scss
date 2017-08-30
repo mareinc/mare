@@ -21,7 +21,7 @@
     width: 100%;
     height: 100%;
 	min-width: 320px;
-	padding: 1.5em 0 1em 1em;
+	padding: 2.5em 0 1em 1em;
 
     @media screen and ( min-width: 655px ) {
 	    width: 600px;
@@ -48,9 +48,8 @@
 .modal__close {
 	z-index: 10;
 	position: absolute;
-	top: 0;
-    right: 0;
-    padding: 0.6em;
+	top: 0.5em;
+    right: 0.5em;
     color: $modal-color-1;
     cursor: pointer;
     background-color: $background-color-light;
@@ -134,4 +133,33 @@
 .log-in-form__register {
 	font-size: 0.8em;
 	text-decoration: none;
+}
+
+/* TODO: move these styles for modal forms to a more appropriate place */
+
+.modal-form__header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 3em;
+}
+
+.modal-form-header__text {
+    font-size: 2em;
+    font-weight: 300;
+    text-align: center;
+    width: 100%;
+    display: inline-block;
+	border-bottom: 3px solid rgb(51, 183, 184);
+	margin-bottom: 0.5em;
+	padding-bottom: 0.5em;
+	
+	@media all and ( min-width: 655px ) {
+		width: 80%;
+	}
+}
+
+.modal-form__subheader {
+    font-size: 1.1em;
+    font-weight: 300;
 }

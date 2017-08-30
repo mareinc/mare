@@ -348,7 +348,7 @@ exports.getRelevantChildInformation = ( children, locals ) => {
 			requiresOlderSibling					: otherFamilyConstellationConsiderations.indexOf( 'requires older children' ) !== -1,
 			requiresSiblings						: otherFamilyConstellationConsiderations.indexOf( 'multi-child home' ) !== -1,
 			requiresYoungerSibling					: otherFamilyConstellationConsiderations.indexOf( 'requires younger children' ) !== -1,
-			siblingContactsCount					: child.siblingsToBePlacedWith.length,
+			siblingToBePlacedWithCount				: child.siblingsToBePlacedWith.length, /* TODO: do we need to return this? */
 			updatedAt								: child.updatedAt,
 			wednesdaysChild							: child.wednesdaysChild
 		};
@@ -415,7 +415,7 @@ exports.getRelevantSiblingGroupInformation = ( siblingGroups, locals ) => {
 			requiresSiblings						: _.uniq( children.map( child => otherFamilyConstellationConsiderations.indexOf( 'multi-child home' ) !== -1 ) ),
 			requiresOlderSibling					: _.uniq( children.map( child => otherFamilyConstellationConsiderations.indexOf( 'requires older children' ) !== -1 ) ),
 			requiresYoungerSibling					: _.uniq( children.map( child => otherFamilyConstellationConsiderations.indexOf( 'requires younger children' ) !== -1 ) ),	
-			siblingContactsCount					: children[ 0 ].siblingsToBePlacedWith.length,
+			siblingToBePlacedWithCount				: children[ 0 ].siblingsToBePlacedWith.length,
 			updatedAt								: _.uniq( children.map( child => child.updatedAt ) ),
 			wednesdaysChild							: children.map( child => child.wednesdaysChild ).indexOf( true ) !== -1
 		};
@@ -577,7 +577,7 @@ exports.registerChild = ( req, res, next ) => {
 		newChild.save( ( err, child ) => {
 
 			if( err ) {
-				console.error( `error saving social registered child: ${ err }` );
+				console.error( `error saving social registered child - ${ err }` );
 				// create an error flash message
 				req.flash( 'error', {
 						title: `There was an error registering your child`,

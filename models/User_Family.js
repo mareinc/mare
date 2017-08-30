@@ -389,6 +389,28 @@ Family.schema.virtual( 'canAccessKeystone' ).get( function() {
 	return false;
 });
 
+Family.schema.virtual( 'displayName' ).get( function() {
+	'use strict';
+
+	const contact2Exists = this.contact2.name.first.length > 0;
+	// check to see if both contacts share a last name
+	const sameLastName = this.contact1.name.last === this.contact2.name.last;
+
+	// if there's a second contact and they both contacts share a last name
+	if( contact2Exists && sameLastName ) {
+		// set the name to both first names, then the last name: John Smith + Jane Smith = John and Jane Smith
+		return `${ this.contact1.name.first } and ${ this.contact2.name.first } ${ this.contact1.name.last }`;
+	// if there's a second contact, but the contacts have different last names
+	} else if( contact2Exists && !sameLastName ) {
+		// set the name to the two names appended: John Smith + Jane Doe = John Smith and Jane Doe
+		return `${ this.contact1.name.first } ${ this.contact1.name.last } and ${ this.contact2.name.first } ${ this.contact2.name.last }`;
+	// if there's no second contact
+	} else {
+		// set the name to contact 1's full name
+		return `${ this.contact1.name.first } ${ this.contact1.name.last }`;
+	}
+});
+
 Family.schema.methods.setHomestudyVerifiedDate = function ( done ) {
 	'use strict';
 
@@ -431,15 +453,16 @@ Family.schema.methods.setGalleryViewingPermissions = function( done ) {
 		done();
 	});
 };
-
+/* TODO: a lot of the checks in the else if don't need ot be there, clean this up
+	     the whole thing could probably be `${ this.contact2.name.first } ${ this.contact2.name.last }`*/
 Family.schema.methods.setFullName = function( done ) {
 	'use strict';
 
-	this.contact1.name.full = this.contact1.name.first + ' ' + this.contact1.name.last;
+	this.contact1.name.full = `${ this.contact1.name.first } ${ this.contact1.name.last }`;
 
 	// if both the first and last names are set for the second contact, set the full name to 'first last'
 	if( this.contact2.name.first && this.contact2.name.first.length > 0 && this.contact2.name.last && this.contact2.name.last.length > 0 ) {
-		this.contact2.name.full = this.contact2.name.first + ' ' + this.contact2.name.last;
+		this.contact2.name.full = `${ this.contact2.name.first } ${ this.contact2.name.last }`;
 	// if only the first name is set, set the full name to the first name
 	} else if( this.contact2.name.first && this.contact2.name.first.length > 0 && ( !this.contact2.name.last || !this.contact2.name.last.length > 0 ) ) {
 		this.contact2.name.full = this.contact2.name.first;

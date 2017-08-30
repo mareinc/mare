@@ -2,22 +2,22 @@
 	'use strict';
 
 	mare.views.ChildDetails = Backbone.View.extend({
-		// This view controls the content of the modal window, create an element to insert into the modal
+		// this view controls the content of the modal window, create an element to insert into the modal
 		tagName: 'section',
-		// Give the container for our view a class we can hook into
+		// give the container for our view a class we can hook into
   		className: 'child-details',
 
 		initialize: function initialize() {
-			// Store a reference to this for insde callbacks where context is lost
+			// store a reference to this for insde callbacks where context is lost
 			var view = this;
-			// Create a hook to access the gallery template
+			// create a hook to access the gallery template
 			var html = $( '#child-details-template' ).html();
-			// Compile the template to be used during rendering/repainting the gallery
+			// compile the template to be used during rendering/repainting the gallery
 			this.template = Handlebars.compile( html );
-			// Initialize the details modal once we've fetched the basic child data, this is needed because the details will be appended to the same collection
+			// initialize the details modal once we've fetched the basic child data, this is needed because the details will be appended to the same collection
 			mare.promises.childrenDataLoaded.done( function() {
 				view.collection = mare.collections.galleryChildren;
-				// Bind event handler for when child details are returned
+				// bind event handler for when child details are returned
 				view.on( 'child-details-loaded', view.render );
 			});
 			// when we get a response from the server that the bookmark for a child has successfully updated, update the view
@@ -28,8 +28,8 @@
 		// events need to be bound every time the modal is opened, so they can't be put in an event block
 		bindEvents: function bindEvents() {
   			$( '.modal__close' ).click( this.closeModal.bind( this ) );
-			$( '.profile-navigation__previous' ).click( this.handleNavClick );
-			$( '.profile-navigation__next' ).click( this.handleNavClick );
+			$( '.profile-navigation__previous' ).click( this.handleNavClick.bind( this ) );
+			$( '.profile-navigation__next' ).click( this.handleNavClick.bind( this ) );
 			$( '.child-bookmark-button' ).click( this.broadcastBookmarkUpdateEvent );
 		},
 		// events need to be unbound every time the modal is closed
@@ -42,36 +42,36 @@
 		},
 
 		render: function render( childModel ) {
-			// Depending on the order of the collection, the next and previous differs per rendering
+			// depending on the order of the collection, the next and previous differs per rendering
 			this.setNavigation( childModel );
-			// Pass the child model to through the template we stored during initialization
+			// pass the child model to through the template we stored during initialization
 			var html = this.template( childModel.toJSON() );
 			this.$el.html( html );
-			// Render the contents area and tabs
+			// render the contents area and tabs
 			$( '.modal-container__contents' ).html( this.$el );
-			// Remove the loading indicator and display the details content
+			// remove the loading indicator and display the details content
 			$( '.modal-container__loading' ).fadeOut( function() {
 				$( '.modal-container__contents' ).fadeIn();
 			});
-			// Set a data attribute with the displayed child's id for use in next/prev navigation
+			// set a data attribute with the displayed child's id for use in next/prev navigation
 			this.$el.attr( 'data-registration-number', childModel.get( 'registrationNumber' ) );
-			// Set up the modal tab click events
+			// set up the modal tab click events
 			this.initializeModalTabs();
-			// Bind click events for the newly rendered elements
+			// bind click events for the newly rendered elements
 			this.bindEvents();
 
 		},
 
 		setNavigation: function setNavigation( childModel ) {
-			// Get the index of the current child model in the children collection
+			// get the index of the current child model in the children collection
 			var childIndex = this.collection.indexOf( childModel );
-			// Check to see if there are children to navigate to before and after the currently displayed child
+			// check to see if there are children to navigate to before and after the currently displayed child
 			var hasPrevious = childIndex > 0;
 			var hasNext = childIndex !== this.collection.length - 1;
-			// Set the index of the previous/next child for easy access in the collection
+			// set the index of the previous/next child for easy access in the collection
 			var previousIndex = hasPrevious ? childIndex - 1 : undefined;
 			var nextIndex = hasNext ? childIndex + 1 : undefined;
-			// Set whether there are previous and next children, as well as their indices, so we have the information during rendering
+			// set whether there are previous and next children, as well as their indices, so we have the information during rendering
 			childModel.set( 'hasPrevious', hasPrevious );
 			childModel.set( 'hasNext', hasNext );
 			childModel.set( 'previousIndex', previousIndex );
@@ -79,55 +79,57 @@
 		},
 
 		getChildByRegistrationNumber: function getChildByRegistrationNumber( registrationNumber ) {
-			// Find the child with the matching registration number and store it in childModel
+			// find the child with the matching registration number and store it in childModel
 			var childModel = this.collection.find( function( child ) {
 				return child.get( 'registrationNumber' ) === registrationNumber;
 			});
-			// Return the matching child model
+			// return the matching child model
 			return childModel;
 		},
 
 		getChildByIndex: function getChildByIndex( index ) {
-			// Fetch the child at the specified index in the children collection
+			// fetch the child at the specified index in the children collection
 			return this.collection.at( index );
 
 		},
 
-		/* When a child card is clicked, display detailed information for that child in a modal window */
+		/* when a child card is clicked, display detailed information for that child in a modal window */
 		handleGalleryClick: function handleGalleryClick( event ) {
-			// Store a reference to this for insde callbacks where context is lost
+			// store a reference to this for insde callbacks where context is lost
 			var view = this;
 
 			var selectedChild		= $( event.currentTarget ),
 				registrationNumber	= selectedChild.data( 'registration-number' ),
 				childModel			= this.getChildByRegistrationNumber( registrationNumber );
-			// Open the modal immediately with a loading indicator to keep the site feeling snappy
+			// open the modal immediately with a loading indicator to keep the site feeling snappy
 			this.openModal();
-			// Fetch the child details information
+			// fetch the child details information
 			this.getDetails( childModel );
 		},
 
 		handleNavClick: function handleNavClick( event ) {
-			// This event is called from a click event so the view context is lost, we need to explicitly call all functions
-			mare.views.childDetails.unbindEvents();
+			// store a reference to the view for callback functions that lose context
+			var view = this;
+
+			this.unbindEvents();
 
 			var selectedChild = $( event.currentTarget ),
 				index = selectedChild.data( 'child-index' );
 
-			var child = mare.views.childDetails.getChildByIndex( index );
-			// Fade displayed child details if any are shown, and display the loading indicator
+			var child = this.getChildByIndex( index );
+			// fade displayed child details if any are shown, and display the loading indicator
 			$( '.modal-container__contents' ).fadeOut( function() {
 				$( '.modal-container__loading' ).fadeIn( function() {
-					mare.views.childDetails.getDetails( child );
+					view.getDetails( child );
 				});
 			});
 		},
 
-		/* Make a call to fetch data for the current child to show detailed information for */
+		/* make a call to fetch data for the current child to show detailed information for */
 		getDetails: function getDetails( childModel ) {
-			// Store a reference to this for inside callbacks where context is lost
+			// store a reference to this for inside callbacks where context is lost
 			var view = this;
-			// Submit a request to the service layer to fetch child data if we don't have it
+			// submit a request to the service layer to fetch child data if we don't have it
 			if( !childModel.get( 'hasDetails' ) ) {
 				$.ajax({
 					dataType: 'json',
@@ -137,18 +139,18 @@
 						registrationNumber: childModel.get( 'registrationNumber' )
 					}
 				}).done( function( childDetails ) {
-					// Append the new fields to the child model and set a flag to fetch the same child information a second time
+					// append the new fields to the child model and set a flag to fetch the same child information a second time
 					childModel.set( childDetails );
 					childModel.set( 'hasDetails', true );
-					// Emit an event when we have new child details to render
+					// emit an event when we have new child details to render
 					view.trigger( 'child-details-loaded', childModel );
 
 				}).fail( function( err ) {
-					// TODO: Show an error message to the user
+					// TODO: show an error message to the user
 					console.log( err );
 				});
 			} else {
-				// We already have the child details but still want to show the child so announce that we have the child details
+				// we already have the child details but still want to show the child so announce that we have the child details
 				view.trigger( 'child-details-loaded', childModel );
 			}
 		},
@@ -156,7 +158,7 @@
 		/* TODO: all modal functions below mirror the calls made in waiting-child-profiles-sibling-group-details.js.  Both files need to use
 				 a modal.js Backbone view which should handle all this.
 
-		/* Open the modal container */
+		/* open the modal container */
 		openModal: function openModal() {
 			$( '.modal__background' ).fadeIn();
 			$( '.modal-container__contents' ).hide();
@@ -166,7 +168,7 @@
 			mare.utils.disablePageScrolling();
 		},
 
-		/* Close the modal container */
+		/* close the modal container */
 		closeModal: function closeModal() {
 
 			$( '.modal__background' ).fadeOut();
@@ -179,7 +181,7 @@
 			this.unbindEvents();
 		},
 
-		/* Clear out the current contents of the modal */
+		/* clear out the current contents of the modal */
 		clearModalContents: function clearModalContents() {
 			$( '.modal-container__contents' ).html( '' );
 		},
@@ -214,7 +216,7 @@
 		broadcastBookmarkUpdateEvent: function broadcastBookmarkUpdateEvent( event ) {
 			// DOM cache the current target for performance
 			var $currentTarget = $( event.currentTarget );
-			// Get the child's registration number to match them in the database
+			// get the child's registration number to match them in the database
 			var registrationNumber = $currentTarget.data( 'registration-number' );
 
 			// if we are currently saving the users attempt to toggle the bookmark and the server hasn't processed the change yet, ignore the click event
@@ -258,6 +260,5 @@
 
 			targetButton.removeClass( 'button--disabled' );
 		}
-
 	});
 }());

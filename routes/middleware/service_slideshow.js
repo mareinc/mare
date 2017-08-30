@@ -45,9 +45,9 @@ exports.fetchSlides = ( { slideshowId } ) => {
 				// resolve with the slides for easy access furthur down the line
 				resolve( slides );
 
-			}, () => {
+			}, err => {
 				// log the error for debugging purposes
-				console.error( `error fetching the slides for slideshow with id: ${ slideshowId }` );
+				console.error( `error fetching the slides for slideshow with id: ${ slideshowId } - ${ err }` );
 				// if there was an error while fetching the model, reject the promise and return the error 
 				reject();
 			});

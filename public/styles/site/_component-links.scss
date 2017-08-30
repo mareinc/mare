@@ -4,7 +4,7 @@
 }
 
 .link-separator {
-	color: $link-color;
+	color: $link-color-1;
     padding-left: 0.5em;
     padding-right: 0.5em;
 }
@@ -13,7 +13,7 @@
 
 	&--left {
 		&:before {
-			border: solid $link-color;
+			border: solid $link-color-1;
 			border-width: 0 2px 2px 0;
 			content: '';
 			display: inline-block;
@@ -25,7 +25,7 @@
 
 	&--right {
 		&:after {
-			border: solid $link-color;
+			border: solid $link-color-1;
 			border-width: 0 2px 2px 0;
 			content: '';
 			display: inline-block;
@@ -33,5 +33,13 @@
 			margin-left: 4px;
 			transform: rotate(-45deg);
 		}	
+	}
+}
+
+.link {
+	color: $link-color-1;
+
+	&--remove {
+		color: $link-color-2;
 	}
 }

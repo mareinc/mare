@@ -34,10 +34,10 @@ $(function() {
 		case 'waiting-child-profiles'				: mare.routers.waitingChildProfiles = new mare.routers.WaitingChildProfiles();				break;
 	}
 	// start the backbone history state for browser navigation through backbone routes
-	// NOTE: This needs to be below the subrouter initialization to allow for subrouters to reroute properly
+	// NOTE: this needs to be below the subrouter initialization to allow for subrouters to reroute properly
 	Backbone.history.start();
 	// private function used to handle malformed routes to send a user back to the home page
-	// TODO: See if this is used anywhere
+	// TODO: see if this is used anywhere
 	function goHome() {
 		window.location.href = "/";
 	}
