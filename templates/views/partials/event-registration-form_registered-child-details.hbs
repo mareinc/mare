@@ -3,9 +3,11 @@
 
 	<div class="col-sm-24 form-group attending-registered-child">
 
-		<div class="row form-group">
-            <div class="col-sm-12 form-group">
-    			<input type="text" class="input registered-child-input" name="registeredChildName[]" value="\{{ childName }}" disabled="disabled">
+		<div class="row">
+            <div class="col-sm-12">
+				{{!-- the disabled input is for display purposes, but won't submit because it is disabled.  The hidden input is needed to submit each child's id --}}
+				<input type="text" class="hidden" name="registeredChildren[]" value="\{{ childId }}">
+    			<input type="text" class="input registered-child-input" value="\{{ childName }}" disabled="disabled">
                 <span class="remove-registered-child link link--remove">x</span>
             </div>
 		</div>

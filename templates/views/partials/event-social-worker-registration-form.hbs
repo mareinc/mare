@@ -23,19 +23,19 @@
 
 			<div class="row form-group">
 				<div class="col-sm-24 form-group">
-					<input type="text" class="input" id="name" name="name" value="{{ displayName }}" disabled="disabled">
+					<input type="text" class="input" id="name" value="{{ displayName }}" disabled="disabled">
 					<label for="name" class="label">Registration For</label>
 				</div>
 			</div>
 			{{#if hasChildren}}
 			<div class="row form-group">
 				<div class="col-sm-12 form-group">
-					<select id="mare-registered-children" class="input mare-registered-children-select" name="mareChildren">
+					<select id="registered-children" class="input registered-children-select">
 						{{#each registeredChildren}}
 						<option value="{{ _id }}">{{ name.full }}</option>
 						{{/each}}
 					</select>
-					<label for="mare-registered-children" class="label required-field">Registered Children</label>
+					<label for="registered-children" class="label required-field">Registered Children</label>
 				</div>
 				<div class="col-sm-12 form-group">
 					<button class="button button--large button--thin button--teal add-registered-child">Add Child</button>
@@ -43,7 +43,7 @@
 			</div>
 			{{/if}}
 
-			<section class="registered-children-container row"></section>
+			<section class="registered-children-container row form-group"></section>
 			
 			<div class="row form-group">
 				<div class="col-sm-12 form-group">
@@ -59,7 +59,7 @@
 				</div>
 			</div>
 
-			<section class="children-attending-container"></section>
+			<section class="unregistered-children-container"></section>
 
 			<div class="row form-group">
 				<div class="col-sm-24 form-group">
@@ -79,7 +79,7 @@
 
 			<div class="row form-group">
 				<div class="col-sm-24 form-group">
-					<select id="attendance-capacity" class="input attendance-capacity-select" name="attendance-capacity">
+					<select id="attendance-capacity" class="input attendance-capacity-select" name="attendanceCapacity">
 						<option value=""></option>
 						<option value="volunteer">volunteer</option>
 						<option value="tableStaff">staff a regional/agency table</option>

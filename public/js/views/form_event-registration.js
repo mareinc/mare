@@ -76,7 +76,7 @@
 			// NOTE: for some reason non-submit button presses were triggering a new page to load, this prevents that behavior
 			event.preventDefault();
 			// get the currently selected child from the dropdown menu
-			var selectedChild       = this.$( '.mare-registered-children-select option:selected' ),
+			var selectedChild       = this.$( '.registered-children-select option:selected' ),
 				selectedChildId     = selectedChild.val(),
 				selectedChildName   = selectedChild.html();
 			// generate the html for the new child using the child's details
@@ -152,11 +152,11 @@
 			// if we're meant to append adults
 			if( options.type === 'adult' ) {
 				// append the newly generated markup to the adults section
-				this.$( '.adults-attending-container' ).append( html );
+				this.$( '.adults-container' ).append( html );
 			// otherwise, if we're meant to append children
 			} else if (options.type === 'child' ) {
 				// append the newly generated markup to the children section
-				this.$( '.children-attending-container' ).append( html );
+				this.$( '.unregistered-children-container' ).append( html );
 			}
 		},
 		
