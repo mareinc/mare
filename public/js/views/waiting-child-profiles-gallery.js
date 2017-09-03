@@ -1,4 +1,4 @@
-// TODO: Rework bookmarking to separate out the event broadcasting and the reaction to the events.  With bookmark capability
+// TODO: rework bookmarking to separate out the event broadcasting and the reaction to the events.  With bookmark capability
 //		 in the details section as well, this got a little ugly and can be cleaned up and simplified
 //		 1: send the event that an update is needed
 //		 2: make the ajax call to update and send an event on success or failure
@@ -20,24 +20,24 @@
 
 		/* initialize the gallery view */
 		initialize: function initialize() {
-			// Store a reference to this for insde callbacks where context is lost
+			// store a reference to this for insde callbacks where context is lost
 			var view							= this;
-			// Create a hook to access the gallery template
+			// create a hook to access the gallery template
 			var galleryChildrenHtml				= $( '#gallery-children-template' ).html();
 			var gallerySiblingGroupsHtml		= $( '#gallery-sibling-groups-template' ).html();
-			// Compile the templates to be used during rendering/repainting the gallery
+			// compile the templates to be used during rendering/repainting the gallery
 			this.childrenTemplate				= Handlebars.compile( galleryChildrenHtml );
 			this.siblingGroupsTemplate			= Handlebars.compile( gallerySiblingGroupsHtml )
-			// Initialize a subview for the details modals
+			// initialize a subview for the details modals
 			mare.views.childDetails				= mare.views.childDetails || new mare.views.ChildDetails();
 			mare.views.siblingGroupDetails		= mare.views.siblingGroupDetails || new mare.views.SiblingGroupDetails();
-			// Initialize the gallery once we've fetched the child data needed to display the gallery (this doesn't include child details data)
+			// initialize the gallery once we've fetched the child data needed to display the gallery (this doesn't include child details data)
 			mare.promises.childrenDataLoaded.done( function() {
 				view.childrenCollection			= mare.collections.galleryChildren;
 				view.siblingGroupsCollection	= mare.collections.gallerySiblingGroups;
 			});
 
-			// Bind to change events
+			// bind to change events
 			mare.collections.galleryChildren.on( 'sorted', function() {
 				view.render();
 			});
@@ -69,17 +69,17 @@
 
 		/* render the view onto the page */
 		render: function render() {
-			// Store a reference to this for insde callbacks where context is lost
+			// store a reference to this for insde callbacks where context is lost
 			var view = this;
-			// The gallery can't render until we have the user permissions and the child data is loaded
+			// the gallery can't render until we have the user permissions and the child data is loaded
 			// use the promise bound to both data to delay rendering until we have them
 			$.when( mare.promises.permissionsLoaded, mare.promises.childrenDataLoaded ).then( function() {
-				// Pass the collection data through the gallery template to generate the HTML to be added to the gallery
+				// pass the collection data through the gallery template to generate the HTML to be added to the gallery
 				var siblingGroupsHtml	= view.siblingGroupsTemplate( view.siblingGroupsCollection.toJSON() );
 				var childrenHtml		= view.childrenTemplate( view.childrenCollection.toJSON() );
 
 				view.$( '.profiles-container' ).html( siblingGroupsHtml + childrenHtml );
-				// Once the html is rendered to the page, initialize the gallery display plugin
+				// once the html is rendered to the page, initialize the gallery display plugin
 				view.initializeMediaBoxes();
 			});
 		},
@@ -116,7 +116,7 @@
 			event.stopPropagation();
 			// DOM cache the current target for performance
 			var $currentTarget = $( event.currentTarget );
-			// Get the child's registration number to match them in the database
+			// get the child's registration number to match them in the database
 			var registrationNumber = $currentTarget.closest( '.media-box' ).data( 'registration-number' );
 
 			// if we are currently saving the users attempt to toggle the bookmark and the server hasn't processed the change yet, ignore the click event
@@ -145,7 +145,7 @@
 			event.stopPropagation();
 			// DOM cache the current target for performance
 			var $currentTarget = $( event.currentTarget );
-			// Get the child's registration number to match them in the database
+			// get the child's registration number to match them in the database
 			var registrationNumbers = $currentTarget.closest( '.media-box' ).data( 'registration-numbers' );
 
 			// if we are currently saving the users attempt to toggle the bookmark and the server hasn't processed the change yet, ignore the click event

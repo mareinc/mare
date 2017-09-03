@@ -1,6 +1,6 @@
 var keystone = require( 'keystone' );
 
-/* Fetch the child record targeted in the inquiry */
+/* fetch the child record targeted in the inquiry */
 exports.getChild = ( inquiryData, done ) => {  
 	// there won't be a child record in general inquiries
 	if( inquiryData.inquiryType === 'general inquiry' ) {
@@ -60,10 +60,10 @@ exports.getCSCRegionContacts = ( inquiryData, done ) => {
 		console.log( `mising child data - can't fetch CSC region contact` );
 		return done();
 	}
-	// Use the region information in the child record to fetch the CSC region contacts
+	// use the region information in the child record to fetch the CSC region contacts
 	keystone.list( 'CSC Region Contact' ).model.find()
 			.where( 'region', inquiryData.child.region )
-			.populate( 'cscRegionContact' ) // We need the information for the contact, not just their ID
+			.populate( 'cscRegionContact' ) // we need the information for the contact, not just their ID
 			.exec()
 			.then( cscRegionContacts => {
 				inquiryData.cscRegionContacts = cscRegionContacts;

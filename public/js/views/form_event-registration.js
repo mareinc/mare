@@ -165,8 +165,6 @@
 		/* open the modal container */
 		openModal: function openModal() {
 			
-			// TODO: this adds a class to the modal to adjust it's size.  This should be handled by passing in a size option to a modal view on initialization
-			$( '.modal__container' ).addClass( 'modal__container--large' );
 			$( '.modal__background' ).fadeIn();
 			$( '.modal__container' ).fadeIn();
 			
@@ -178,11 +176,7 @@
 		/* close the modal container */
 		closeModal: function closeModal() {
 			$( '.modal__background' ).fadeOut();
-			$( '.modal__container' ).fadeOut( function() {
-				// TODO: this removes a class from the modal to adjust it's size.  This should be handled in the modal view once it's created
-				// wait until the modal has finished fading out before changing the modal size by removing this class
-				$( this ).removeClass( 'modal__container--large' );
-			});
+			$( '.modal__container' ).fadeOut();
 			
 			mare.utils.enablePageScrolling();
 			/* TODO: move this to a modal component and emit an event on close so the child details view can respond to it appropriatly */

@@ -1,10 +1,10 @@
-// TODO: Remove the complexity in this file by breaking out testing and storing of variables into discrete functions, then update .eslintrc
+// TODO: remove the complexity in this file by breaking out testing and storing of variables into discrete functions, then update .eslintrc
 
 (function () {
 	'use strict';
 
 	mare.views.GallerySearchForm = Backbone.View.extend({
-		// This view controls everything inside the element with class 'gallery-search-form'
+		// this view controls everything inside the element with class 'gallery-search-form'
 		el: '.gallery-search-form',
 
 		events: {

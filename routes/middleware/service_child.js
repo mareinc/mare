@@ -96,7 +96,7 @@ exports.getUnrestrictedChildren = ( req, res, done, fieldsToSelect ) => {
 				});
 };
 
-/* Sets the images for display in the gallery to a blank male/female face in the following cases:
+/* sets the images for display in the gallery to a blank male/female face in the following cases:
  *	1. No image was uploaded for the child
  *	2. The child has been identified as legal risk
  *  3. The child is not visible to everyone, and the user wouldn't have permission to see them without the 'child is visible on MARE web' checkbox being checked
@@ -236,14 +236,14 @@ exports.getGalleryData = ( req, res, next ) => {
 		done => { locals.canBookmarkChildren ? familyService.getBookmarkedChildren( req, res, done ) : done(); },
 		done => {
 			if( locals.bookmarkedChildren && locals.bookmarkedChildren.length > 0 ) {
-				// Loop through each child model and set a property to show they've already been bookmarked by the user during templating
+				// loop through each child model and set a property to show they've already been bookmarked by the user during templating
 				_.each( locals.allChildren, function( child ) {
-					// Get the child id to compare with the array of currently bookmarked child ids
+					// get the child id to compare with the array of currently bookmarked child ids
 					const childId = child.get( '_id' ).toString();
-					// The bookmarked children come back as Objects, and need to be converted to strings for comparison
+					// the bookmarked children come back as Objects, and need to be converted to strings for comparison
 					// TODO: think about doing the mapping inside the getBookmarkedChildren function
 					const bookmarkedChildrenArray = locals.bookmarkedChildren.map( childId => childId.toString() );
-					// Set the property for use during templating to show if the child has already been bookmarked
+					// set the property for use during templating to show if the child has already been bookmarked
 					child.isBookmarked = locals.bookmarkedChildren.indexOf( childId ) !== -1;
 				});
 
@@ -317,7 +317,7 @@ exports.getRelevantChildInformation = ( children, locals ) => {
 	};
 
 	locals.soloChildrenToReturn = children.map( child => {
-		// Create a searchable array for dealing with other family constellation considerations
+		// create a searchable array for dealing with other family constellation considerations
 		var otherFamilyConstellationConsiderations = _.pluck( child.otherFamilyConstellationConsideration, 'otherFamilyConstellationConsideration' );
 
 		return {
@@ -427,7 +427,7 @@ exports.getChildDetails = ( req, res, next ) => {
 	const childData = req.body;
 	const registrationNumber = childData[ 'registrationNumber' ];
 
-	/* TODO: Fetch only the needed fields instead of grabbing everything */
+	/* TODO: fetch only the needed fields instead of grabbing everything */
 	Child.model.findOne()
         .where( 'registrationNumber', registrationNumber )
         .populate( 'gender' )
@@ -459,7 +459,7 @@ exports.getSiblingGroupDetails = ( req, res, next ) => {
 	const childData = req.body;
 	const registrationNumber = childData[ 'registrationNumber' ];
 
-	/* TODO: Fetch only the needed fields instead of grabbing everything */
+	/* TODO: fetch only the needed fields instead of grabbing everything */
 	Child.model.findOne()
         .where( 'registrationNumber', registrationNumber )
         .populate( 'gender' )

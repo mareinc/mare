@@ -6,7 +6,8 @@
     	model: mare.models.SiblingGroup,
 
     	initialize: function initialize() {
-    		this.sortByDateRegistered(); // Set the default comparator on the collection to order by how recently the child was registered
+			// set the default comparator on the collection to order by how recently the child was registered
+    		this.sortByDateRegistered();
     	},
 		// TODO: update based on Lisa's input
 		reorder: function reorder( sortBy ) {
