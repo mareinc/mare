@@ -1,8 +1,6 @@
 exports.create = {
 	'Disability': [{
-		disability: 'HIV/AIDS'
-	}, {
-		disability: 'autism spectrum'
+		disability: 'autism spectrum disorder'
 	}, {
 		disability: 'cerebral palsy'
 	}, {
@@ -10,9 +8,9 @@ exports.create = {
 	}, {
 		disability: 'fetal alcohol syndrome'
 	}, {
-		disability: 'hearing impairment'
+		disability: 'hearing loss'
 	}, {
-		disability: 'non-ambulatory'
+		disability: 'wheelchair dependent'
 	}, {
 		disability: 'visual impairment'
 	}]
