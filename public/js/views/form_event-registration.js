@@ -5,6 +5,10 @@
 		tagName: 'section',
 		// give the container for our view a class we can hook into
 		className: 'event-registration-container',
+
+		events: {
+			'change .source-select': 'checkOtherSourceField'
+		},
 		
 		initialize: function initialize() {     
 			// create a hook to access the event registration modal contents template
@@ -157,6 +161,25 @@
 			} else if (options.type === 'child' ) {
 				// append the newly generated markup to the children section
 				this.$( '.unregistered-children-container' ).append( html );
+			}
+		},
+
+		checkOtherSourceField: function checkOtherSourceField( event ) {
+			// if other is selected
+			if( event.currentTarget.value === 'other' ) {
+				// show the 'other source' field and its label
+				$( '.other-source' ).removeClass( 'hidden' );
+				$( '.other-source-label' ).removeClass( 'hidden' );
+			// otherwise
+			} else {
+				// hide the 'other source' field and its label
+				$( '.other-source' ).addClass( 'hidden' );
+				$( '.other-source-label' ).addClass( 'hidden' );
+			}
+			// if the 'other source' field is hidden
+			if( $( '.other-source' ).hasClass( 'hidden' ) ) {
+				// clear out the input box since it's not part of the form submission
+				$( '.other-source' ).val( '' );
 			}
 		},
 		
