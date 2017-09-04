@@ -44,7 +44,6 @@
 				maximumEmotionalNeeds			: $( '.select-maximum-emotional-needs:checked' ).val(),
 				maximumIntellectualNeeds		: $( '.select-maximum-intellectual-needs:checked' ).val(),
 				disabilities					: $( '.select-disabilities:checked' ),
-				otherConsiderations				: $( '.select-other-considerations:checked' ),
 				familyConstellation				: $( '.select-family-constellation:checked' ),
 				numberOfChildrenInHome			: $( '.select-number-of-children-in-home' ).val(),
 				gendersOfChildrenInHome			: $( '.select-genders-of-children-in-home:checked' ),
@@ -60,7 +59,6 @@
 				raceArray						= [],
 				primaryLanguagesArray			= [],
 				disabilityArray					= [],
-				otherConsiderationsArray		= [],
 				familyConstellationArray		= [],
 				gendersOfChildrenInHomeArray	= [],
 				formFields						= this.formFields;
@@ -81,10 +79,6 @@
 				disabilityArray.push( disability.getAttribute( 'value' ) );
 			});
 
-			_.each( formFields.otherConsiderations, function( consideration ) {
-				otherConsiderationsArray.push( consideration.getAttribute( 'value' ) );
-			});
-
 			_.each( formFields.familyConstellation, function( constellation ) {
 				familyConstellationArray.push( constellation.getAttribute( 'value' ) );
 			});
@@ -97,7 +91,6 @@
 			formFields.races					= raceArray;
 			formFields.primaryLanguages			= primaryLanguagesArray;
 			formFields.disabilities				= disabilityArray;
-			formFields.otherConsiderations		= otherConsiderationsArray;
 			formFields.familyConstellation		= familyConstellationArray;
 			formFields.gendersOfChildrenInHome	= gendersOfChildrenInHomeArray;
 
@@ -134,7 +127,6 @@
 			if( formFields.maximumEmotionalNeeds === 3 )				{ delete formFields.maximumEmotionalNeeds; }
 			if( formFields.maximumIntellectualNeeds === 3 )				{ delete formFields.maximumIntellectualNeeds; }
 			if( formFields.disabilities.length === 0 )					{ delete formFields.disabilities; }
-			if( formFields.otherConsiderations.length === 0 )			{ delete formFields.otherConsiderations; }
 			if( formFields.familyConstellation.length === 0 )			{ delete formFields.familyConstellation; }
 			if( formFields.gendersOfChildrenInHome.length === 0 )		{ delete formFields.gendersOfChildrenInHome; }
 			if( !formFields.petsInHome )								{ delete formFields.petsInHome; }
@@ -199,11 +191,6 @@
 				if( formFields.disabilities &&
 					child.get( 'disabilities' ).length > 0 &&
 				   _.intersection( formFields.disabilities, child.get( 'disabilities' ) ).length === 0 ) { return; }
-
-				// break out of the current loop only if none of the child's other considerations match a selected consideration ( return is needed for this in _.each )
-				if( formFields.otherConsiderations &&
-					child.get( 'otherConsiderations' ).length > 0 &&
-				   _.intersection( formFields.otherConsiderations, child.get( 'otherConsiderations' ) ).length === 0 ) { return; }
 
 				// break out of the loop if the recommended family constellation for the child does not contain the one selected by the user ( return is needed for this in _.each )
 				if( formFields.familyConstellation &&
@@ -340,11 +327,6 @@
 				if( formFields.disabilities &&
 					siblingGroup.get( 'disabilities' ).length > 0 &&
 					_.difference( siblingGroup.get( 'disabilities' ), formFields.disabilities ).length > 0 ) { return; }
-
-				// break out of the current loop only if none of the sibling group's other considerations match a selected consideration ( return is needed for this in _.each )
-				if( formFields.otherConsiderations &&
-					siblingGroup.get( 'otherConsiderations' ).length > 0 &&
-					_.difference( siblingGroup.get( 'otherConsiderations' ), formFields.otherConsiderations ).length > 0 ) { return; }
 
 				// break out of the loop if the recommended family constellation for the sibling group does not contain the one selected by the user ( return is needed for this in _.each )
 				if( formFields.familyConstellation &&

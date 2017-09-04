@@ -298,38 +298,22 @@
 				</div>
 			</div>
 		</div>
-			<div class="row">
-				<div class="col-sm-24 form-group">
-					<label class="label marg-bottom-xs-5">Include children with the following disabilities:</label>
-				</div>
+		<div class="row">
+			<div class="col-sm-24 form-group">
+				<label class="label marg-bottom-xs-5">Include children with the following disabilities:</label>
 			</div>
-			<div class="row form-group">
-				<div class="col-sm-16">
-				{{#each disabilities}}
-					<div class="col-sm-12 form-group">
-						<label class="checkbox-inline">
-							<input type="checkbox" class="select-disabilities" value="{{ disability }}" checked>{{ disability }}
-						</label>
-					</div>
-				{{/each}}
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-16">
+			{{#each disabilities}}
+				<div class="col-sm-12 form-group">
+					<label class="checkbox-inline">
+						<input type="checkbox" class="select-disabilities" value="{{ disability }}" checked>{{ disability }}
+					</label>
 				</div>
+			{{/each}}
 			</div>
-			<div class="row">
-				<div class="col-sm-24 form-group">
-					<label class="label marg-bottom-xs-5">Include children with the following considerations:</label>
-				</div>
-			</div>
-			<div class="row form-group">
-				<div class="col-sm-16">
-				{{#each otherConsiderations}}
-					<div class="col-sm-12 form-group">
-						<label class="checkbox-inline">
-							<input type="checkbox" class="select-other-considerations" value="{{ otherConsideration }}" checked>{{ otherConsideration }}
-						</label>
-					</div>
-				{{/each}}
-				</div>
-			</div>
+		</div>
 	</section>
 
 	<section class="form-section form-section--family-profile">
