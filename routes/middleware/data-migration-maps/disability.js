@@ -10,7 +10,6 @@ exports.getDisabilitiesMap = ( req, res, done ) => {
 	locals.migration.maps.disabilities = {};
 
 	async.parallel([
-		done => { dataMigrationService.getModelId( { model: 'Disability', field: 'disability', value: 'HIV/AIDS', mapTo: [ 30 ], namespace: locals.migration.maps.disabilities }, done ); },
 		done => { dataMigrationService.getModelId( { model: 'Disability', field: 'disability', value: 'autism spectrum', mapTo: [ 70 ], namespace: locals.migration.maps.disabilities }, done ); },
 		done => { dataMigrationService.getModelId( { model: 'Disability', field: 'disability', value: 'cerebral palsy', mapTo: [ 20 ], namespace: locals.migration.maps.disabilities }, done ); },
 		done => { dataMigrationService.getModelId( { model: 'Disability', field: 'disability', value: 'down syndrome', mapTo: [ 10 ], namespace: locals.migration.maps.disabilities }, done ); },
