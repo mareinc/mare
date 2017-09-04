@@ -345,9 +345,9 @@ exports.getRelevantChildInformation = ( children, locals ) => {
 			registrationDateConverted				: middleware.convertDate( child.registrationDate ),
 			registrationNumber						: child.registrationNumber,
 			requiresNoSiblings						: otherFamilyConstellationConsiderations.indexOf( 'childless home' ) !== -1,
-			requiresOlderSibling					: otherFamilyConstellationConsiderations.indexOf( 'requires older children' ) !== -1,
+			olderChildrenAcceptable					: otherFamilyConstellationConsiderations.indexOf( 'older children acceptable' ) !== -1,
 			requiresSiblings						: otherFamilyConstellationConsiderations.indexOf( 'multi-child home' ) !== -1,
-			requiresYoungerSibling					: otherFamilyConstellationConsiderations.indexOf( 'requires younger children' ) !== -1,
+			youngerChildrenAcceptable				: otherFamilyConstellationConsiderations.indexOf( 'younger children acceptable' ) !== -1,
 			siblingToBePlacedWithCount				: child.siblingsToBePlacedWith.length, /* TODO: do we need to return this? */
 			updatedAt								: child.updatedAt,
 			wednesdaysChild							: child.wednesdaysChild
@@ -413,8 +413,8 @@ exports.getRelevantSiblingGroupInformation = ( siblingGroups, locals ) => {
 			registrationNumbersString				: middleware.getArrayAsList( registrationNumbersArray ),	
 			requiresNoSiblings						: _.uniq( children.map( child => otherFamilyConstellationConsiderations.indexOf( 'childless home' ) !== -1 ) ),
 			requiresSiblings						: _.uniq( children.map( child => otherFamilyConstellationConsiderations.indexOf( 'multi-child home' ) !== -1 ) ),
-			requiresOlderSibling					: _.uniq( children.map( child => otherFamilyConstellationConsiderations.indexOf( 'requires older children' ) !== -1 ) ),
-			requiresYoungerSibling					: _.uniq( children.map( child => otherFamilyConstellationConsiderations.indexOf( 'requires younger children' ) !== -1 ) ),	
+			olderChildrenAcceptable					: _.uniq( children.map( child => otherFamilyConstellationConsiderations.indexOf( 'older children acceptable' ) !== -1 ) ),
+			youngerChildrenAcceptable				: _.uniq( children.map( child => otherFamilyConstellationConsiderations.indexOf( 'younger children acceptable' ) !== -1 ) ),	
 			siblingToBePlacedWithCount				: children[ 0 ].siblingsToBePlacedWith.length,
 			updatedAt								: _.uniq( children.map( child => child.updatedAt ) ),
 			wednesdaysChild							: children.map( child => child.wednesdaysChild ).indexOf( true ) !== -1
