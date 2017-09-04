@@ -37,8 +37,7 @@ exports.sendRegistrationConfirmationEmailToStaff = ( user, registrationStaffCont
 		}
 
 		console.log( `staff notification email sent successfully` );
-		// mark the staff notification email as having been sent to prevent it being sent in the future
-		// inquiry.emailSentToStaff = true;
+
 		done();
 	});
 
@@ -90,8 +89,7 @@ exports.sendThankYouEmailToUser = ( staffContactName, staffContactEmail, userEma
 				// reject the promise with details
 				return reject( `thank you to new registered user email failed to send: ${ message }.  Error: ${ err }` );
 			}
-			// mark the inquiry thank you email as having been sent to prevent it being sent in the future
-			// inquiry.thankYouSentToInquirer = true;
+
 			resolve();
 		});
 	});

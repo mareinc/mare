@@ -18,12 +18,12 @@
 			this.$siblingNamesContainer	= this.$( '.sibling-names-container' );
 			this.$siblingNames			= this.$( '#sibling-names' );
 
-			// Initialize parsley validation on the form
+			// initialize parsley validation on the form
 			this.form = this.$el.parsley();
-			// Bind the city form elements individually to allow for binding/unbinding parsley validation
+			// bind the city form elements individually to allow for binding/unbinding parsley validation
 			this.MACityValidator 		= this.$MACity.parsley();
 			this.nonMACityValidator		= this.$NonMACity.parsley();
-			// Bind the sibling names textbox individually to allow for binding/unbinding parsley validation
+			// bind the sibling names textbox individually to allow for binding/unbinding parsley validation
 			this.siblingNamesValidator	= this.$siblingNames.parsley();
 			// triggers parsley validation when the form is submitted
 			this.form.on( 'field:validated', this.validateForm );

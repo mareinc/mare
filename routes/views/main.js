@@ -25,7 +25,7 @@ exports = module.exports = ( req, res ) => {
 			return slideshowService.fetchSlides( { slideshowId: slideshow.get( '_id' ) } );
 		})
 		.then( slides => {
-			/* TODO: Can possibly remove slide order if I use sortable in the Model.  See DB section of the documentation */
+			/* TODO: can possibly remove slide order if I use sortable in the Model.  See DB section of the documentation */
 			// assign properties to locals for access during templating
 			locals.slides = _.sortBy( slides, slide => +slide.order ); // organize the slides in the order specified in the models, low to high
 

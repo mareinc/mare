@@ -1,4 +1,4 @@
-// TODO: This is a big one.  Review all middleware and come up with a better division of labor.  All email sending in email_ middleware
+// TODO: this is a big one.  Review all middleware and come up with a better division of labor.  All email sending in email_ middleware
 //		 but we might want to find a better separation of concerns for fetching model data, modifying models, and utility functions to make
 //		 all these middleware files more readable and maintainable.  This involves a review of every middleware function.
 
