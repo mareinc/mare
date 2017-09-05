@@ -6,7 +6,8 @@
 
 		events: {
 			'change #is-not-MA-city-checkbox' 		: 'toggleCitySelect',
-			'change .social-worker-title-checkbox'	: 'toggleSocialWorkerTitleTextField'
+			'change .social-worker-title-checkbox'	: 'toggleSocialWorkerTitleTextField',
+			'submit'								: 'disableRegistrationButton'
 		},
 
 		initialize: function() {
@@ -81,6 +82,10 @@
 				// if it was already validated, we need to clear out the check so the form can be submitted
 				this.MACityValidator.reset();
 			}
+		},
+
+		disableRegistrationButton: function disableDonateButton() {
+			this.$( '.register' ).attr( 'disabled', 'disabled' );
 		},
 
 		validateForm: function validateForm() {

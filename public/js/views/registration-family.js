@@ -11,7 +11,8 @@
 			'change #homestudy-completed-checkbox'	: 'toggleHomestudySection',
 			'change #upload-button'					: 'uploadForm',
 			'change #children-in-home'				: 'toggleFamilyDetailsForm',
-			'change .adoption-preferences-trigger'	: 'checkAdoptionPreferences'
+			'change .adoption-preferences-trigger'	: 'checkAdoptionPreferences',
+			'submit'								: 'disableRegistrationButton'
 		},
 
 		initialize: function() {
@@ -324,6 +325,10 @@
 			var filename = filepath.substr( filepath.lastIndexOf( '\\' ) + 1 );
 			// show the file name to the user as a point of reference after they've selected the file they wish to upload
 			this.$( '.homestudy-file-text' ).html( filename );
+		},
+
+		disableRegistrationButton: function disableDonateButton() {
+			this.$( '.register' ).attr( 'disabled', 'disabled' );
 		},
 
 		validateForm: function validateForm() {
