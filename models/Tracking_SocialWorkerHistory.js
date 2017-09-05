@@ -12,7 +12,7 @@ var SocialWorkerHistory = new keystone.List('Social Worker History', {
 SocialWorkerHistory.add({
 
     socialWorker: { type: Types.Relationship, label: 'social worker', ref: 'Social Worker', required: true, noedit: true, initial: true },
-    date: { type: Types.Date, label: 'date', format: 'MM/DD/YYYY', required: true, noedit: true, initial: true },
+    date: { type: Types.Date, label: 'date', format: 'MM/DD/YYYY', default: Date.now, required: true, noedit: true },
     changes: { type: Types.Textarea, label: 'changes', required: true, noedit: true, initial: true },
     modifiedBy: { type: Types.Relationship, label: 'modified by', ref: 'Admin', required: true, noedit: true, initial: true }
 
