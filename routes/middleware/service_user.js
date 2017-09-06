@@ -5,13 +5,13 @@ const keystone		= require('keystone'),
 	  SocialWorker	= keystone.list('Social Worker'),
 	  Family		= keystone.list('Family');
 
-/* Root through the passed in options and get/set the necessary information on res.locals for processing by each service request */
-exports.exposeGlobalOptions = function exposeGlobalOptions(req, res, options) {
+/* root through the passed in options and get/set the necessary information on res.locals for processing by each service request */
+exports.exposeGlobalOptions = function exposeGlobalOptions( req, res, options ) {
 
 	res.locals.targetModel = exports.getTargetModel( options.userType );
 
 };
-/* We're using one generic function to capture data for all user types.  This requires a user to pass in a userType
+/* we're using one generic function to capture data for all user types.  This requires a user to pass in a userType
    in an options object in order to fetch anything but base Users */
 exports.getTargetModel = userType => {
 
@@ -30,9 +30,9 @@ exports.getTargetModel = userType => {
 
 };
 
-/* Get a user of any type by their _id value in the database */
+/* get a user of any type by their _id value in the database */
 exports.getUserById = function getUserById(req, res, done, options) {
-	// Several options need to be available in callback functions, expose them globally via res.locals
+	// several options need to be available in callback functions, expose them globally via res.locals
 	exports.exposeGlobalOptions(req, res, options);
 
 	var locals		= res.locals,

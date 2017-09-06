@@ -6,8 +6,8 @@ exports.create = {
 	}, {
 		otherFamilyConstellationConsideration: 'no pets'
 	}, {
-		otherFamilyConstellationConsideration: 'requires older children'
+		otherFamilyConstellationConsideration: 'older children acceptable'
 	}, {
-		otherFamilyConstellationConsideration: 'requires younger children'
+		otherFamilyConstellationConsideration: 'younger children acceptable'
 	}]
 };

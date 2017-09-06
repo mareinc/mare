@@ -1,23 +1,3 @@
-/**
- * This file is where you define your application routes and controllers.
- *
- * Start by including the middleware you want to run for every request;
- * you can attach middleware to the pre('routes') and pre('render') events.
- *
- * For simplicity, the default setup for route controllers is for each to be
- * in its own file, and we import all the files in the /routes/views directory.
- *
- * Each of these files is a route controller, and is responsible for all the
- * processing that needs to happen for the route (e.g. loading data, handling
- * form submissions, rendering the view template, etc).
- *
- * Bind each route pattern your application should respond to in the function
- * that is exported from this module, following the examples below.
- *
- * See the Express application routing documentation for more information:
- * http://expressjs.com/api.html#app.VERB
- */
-
 const keystone					= require( 'keystone' ),
 	  childService				= require( './middleware/service_child' ),
 	  eventService				= require( './middleware/service_event' ),
@@ -30,18 +10,18 @@ const keystone					= require( 'keystone' ),
 	  eventMiddleware			= require( './middleware/middleware_event' ),
 	  importRoutes				= keystone.importer( __dirname );
 
-// Common Middleware
+// common middleware
 keystone.pre( 'routes', middleware.initLocals );
 keystone.pre( 'render', middleware.flashMessages );
 
-// Import Route Controllers
+// import route controllers
 var routes = {
 	views: importRoutes( './views' )
 };
 
-// Setup Route Bindings
+// setup route bindings
 // TODO: in order to handle bad routes, we need a catch here instead of on the client side
-// TODO: clean up these routes to use cleaner paths and route parameters instead of just wildcards
+// TODO: clean up these routes to call middleware ( where views aren't appropriate ) which then calls services, instead of services directly
 exports = module.exports = app => {
 	'use strict';
 

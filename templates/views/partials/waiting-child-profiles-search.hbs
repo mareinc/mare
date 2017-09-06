@@ -298,38 +298,22 @@
 				</div>
 			</div>
 		</div>
-			<div class="row">
-				<div class="col-sm-24 form-group">
-					<label class="label marg-bottom-xs-5">Include children with the following disabilities:</label>
-				</div>
+		<div class="row">
+			<div class="col-sm-24 form-group">
+				<label class="label marg-bottom-xs-5">Include children with the following disabilities:</label>
 			</div>
-			<div class="row form-group">
-				<div class="col-sm-16">
-				{{#each disabilities}}
-					<div class="col-sm-12 form-group">
-						<label class="checkbox-inline">
-							<input type="checkbox" class="select-disabilities" value="{{ disability }}" checked>{{ disability }}
-						</label>
-					</div>
-				{{/each}}
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-16">
+			{{#each disabilities}}
+				<div class="col-sm-12 form-group">
+					<label class="checkbox-inline">
+						<input type="checkbox" class="select-disabilities" value="{{ disability }}" checked>{{ disability }}
+					</label>
 				</div>
+			{{/each}}
 			</div>
-			<div class="row">
-				<div class="col-sm-24 form-group">
-					<label class="label marg-bottom-xs-5">Include children with the following considerations:</label>
-				</div>
-			</div>
-			<div class="row form-group">
-				<div class="col-sm-16">
-				{{#each otherConsiderations}}
-					<div class="col-sm-12 form-group">
-						<label class="checkbox-inline">
-							<input type="checkbox" class="select-other-considerations" value="{{ otherConsideration }}" checked>{{ otherConsideration }}
-						</label>
-					</div>
-				{{/each}}
-				</div>
-			</div>
+		</div>
 	</section>
 
 	<section class="form-section form-section--family-profile">
@@ -344,8 +328,8 @@
 			<div class="col-sm-16">
 			{{#each familyConstellations}}
 				<div class="col-sm-12 form-group">
-					<label class="checkbox-inline">
-						<input type="checkbox" class="select-family-constellation" value="{{ familyConstellation }}">{{ familyConstellation }}
+					<label class="radio-inline">
+						<input type="radio" class="select-family-constellation" name="familyConstellation" value="{{ familyConstellation }}">{{ familyConstellation }}
 					</label>
 				</div>
 			{{/each}}
@@ -357,6 +341,7 @@
 			</div>
 			<div class="col-sm-12">
 				<select id="number-of-children-in-home" class="select-number-of-children-in-home" class="input form__number-select">
+					<option value=""></option>
 					<option value="0">0</option>
 					<option value="1">1</option>
 					<option value="2">2</option>
@@ -375,6 +360,7 @@
 			</div>
 			<div class="col-sm-12">
 				<select id="youngest-child-age-in-home" class="input form__number-select">
+					<option value=""></option>
 					<option value="0">0</option>
 					<option value="1">1</option>
 					<option value="2">2</option>
@@ -402,6 +388,7 @@
 			</div>
 			<div class="col-sm-12">
 				<select id="oldest-child-age-in-home" class="input form__number-select">
+					<option value=""></option>
 					<option value="0">0</option>
 					<option value="1">1</option>
 					<option value="2">2</option>

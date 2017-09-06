@@ -5,6 +5,10 @@
 		tagName: 'section',
 		// give the container for our view a class we can hook into
 		className: 'event-registration-container',
+
+		events: {
+			'change .source-select': 'checkOtherSourceField'
+		},
 		
 		initialize: function initialize() {     
 			// create a hook to access the event registration modal contents template
@@ -76,7 +80,7 @@
 			// NOTE: for some reason non-submit button presses were triggering a new page to load, this prevents that behavior
 			event.preventDefault();
 			// get the currently selected child from the dropdown menu
-			var selectedChild       = this.$( '.mare-registered-children-select option:selected' ),
+			var selectedChild       = this.$( '.registered-children-select option:selected' ),
 				selectedChildId     = selectedChild.val(),
 				selectedChildName   = selectedChild.html();
 			// generate the html for the new child using the child's details
@@ -152,11 +156,30 @@
 			// if we're meant to append adults
 			if( options.type === 'adult' ) {
 				// append the newly generated markup to the adults section
-				this.$( '.adults-attending-container' ).append( html );
+				this.$( '.adults-container' ).append( html );
 			// otherwise, if we're meant to append children
 			} else if (options.type === 'child' ) {
 				// append the newly generated markup to the children section
-				this.$( '.children-attending-container' ).append( html );
+				this.$( '.unregistered-children-container' ).append( html );
+			}
+		},
+
+		checkOtherSourceField: function checkOtherSourceField( event ) {
+			// if other is selected
+			if( event.currentTarget.value === 'other' ) {
+				// show the 'other source' field and its label
+				$( '.other-source' ).removeClass( 'hidden' );
+				$( '.other-source-label' ).removeClass( 'hidden' );
+			// otherwise
+			} else {
+				// hide the 'other source' field and its label
+				$( '.other-source' ).addClass( 'hidden' );
+				$( '.other-source-label' ).addClass( 'hidden' );
+			}
+			// if the 'other source' field is hidden
+			if( $( '.other-source' ).hasClass( 'hidden' ) ) {
+				// clear out the input box since it's not part of the form submission
+				$( '.other-source' ).val( '' );
 			}
 		},
 		
@@ -165,8 +188,6 @@
 		/* open the modal container */
 		openModal: function openModal() {
 			
-			// TODO: this adds a class to the modal to adjust it's size.  This should be handled by passing in a size option to a modal view on initialization
-			$( '.modal__container' ).addClass( 'modal__container--large' );
 			$( '.modal__background' ).fadeIn();
 			$( '.modal__container' ).fadeIn();
 			
@@ -178,11 +199,7 @@
 		/* close the modal container */
 		closeModal: function closeModal() {
 			$( '.modal__background' ).fadeOut();
-			$( '.modal__container' ).fadeOut( function() {
-				// TODO: this removes a class from the modal to adjust it's size.  This should be handled in the modal view once it's created
-				// wait until the modal has finished fading out before changing the modal size by removing this class
-				$( this ).removeClass( 'modal__container--large' );
-			});
+			$( '.modal__container' ).fadeOut();
 			
 			mare.utils.enablePageScrolling();
 			/* TODO: move this to a modal component and emit an event on close so the child details view can respond to it appropriatly */

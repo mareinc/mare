@@ -29,7 +29,7 @@ const ContactGroup = require( './ContactGroup' );
 // Create model
 var Family = new keystone.List( 'Family', {
 	inherits	: User,
-	track		: true,
+	track		: true, // needed for change history updated by assignment
 	autokey		: { path: 'key', from: 'registrationNumber', unique: true },
 	map			: { name: 'contact1.name.full' },
 	defaultSort	: 'contact1.name.full',

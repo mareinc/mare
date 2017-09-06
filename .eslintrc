@@ -148,7 +148,7 @@ rules:
   max-len: "off"
   max-nested-callbacks: "off"
   max-params: "off"
-  max-statements: ["error", 50]
+  max-statements: ["error", 60]
   new-cap: "off"
   new-parens: "off"
   newline-after-var: "off"

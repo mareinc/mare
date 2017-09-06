@@ -4,10 +4,10 @@
 <section class="event-social-worker-registration-form">
 	<div class="modal-form__header">
 		<div class="modal-form-header__text"> {{!-- should be h1 etc --}}
-			{{ event.name }}
+			\{{ eventName }}
 		</div>
 		<div class="modal-form__subheader"> {{!-- should be h3 etc --}}
-			{{ event.displayDate }}
+			\{{ eventDate }}
 		</div>
 	</div>
 
@@ -16,24 +16,26 @@
 	</div>
 
 	<form action="/events/register/\{{ eventId }}" class="modal-form--register-for-event" method="POST">
+		<input type="hidden" name="eventName" value="\{{ eventName }}">
+        <input type="hidden" name="redirectPath" value="{{ redirectPath }}">
 
 		<section class="form-section">
 
 			<div class="row form-group">
 				<div class="col-sm-24 form-group">
-					<input type="text" class="input" id="name" name="name" value="{{ displayName }}" disabled="disabled">
+					<input type="text" class="input" id="name" value="{{ displayName }}" disabled="disabled">
 					<label for="name" class="label">Registration For</label>
 				</div>
 			</div>
 			{{#if hasChildren}}
 			<div class="row form-group">
 				<div class="col-sm-12 form-group">
-					<select id="mare-registered-children" class="input mare-registered-children-select" name="mareChildren">
+					<select id="registered-children" class="input registered-children-select">
 						{{#each registeredChildren}}
 						<option value="{{ _id }}">{{ name.full }}</option>
 						{{/each}}
 					</select>
-					<label for="mare-registered-children" class="label required-field">Registered Children</label>
+					<label for="registered-children" class="label required-field">Registered Children</label>
 				</div>
 				<div class="col-sm-12 form-group">
 					<button class="button button--large button--thin button--teal add-registered-child">Add Child</button>
@@ -41,7 +43,7 @@
 			</div>
 			{{/if}}
 
-			<section class="registered-children-container row"></section>
+			<section class="registered-children-container row form-group"></section>
 			
 			<div class="row form-group">
 				<div class="col-sm-12 form-group">
@@ -57,23 +59,34 @@
 				</div>
 			</div>
 
-			<section class="children-attending-container"></section>
+			<section class="unregistered-children-container"></section>
 
 			<div class="row form-group">
 				<div class="col-sm-24 form-group">
 					<select id="source" class="input source-select" name="source">
-						<option value="website">Website</option>
-						<option value="other">Other</option>
+						<option value=""></option>
+						<option value="websiteOrEmail">website/email</option>
+						<option value="television">television</option>
+						<option value="radio">radio</option>
+						<option value="socialMedia">social media</option>
+						<option value="friend">friend</option>
+						<option value="professional">professional</option>
+						<option value="other">other</option>
 					</select>
 					<label for="source" class="label required-field">How did you hear about this event?</label>
+				</div>
+				<div class="col-sm-24 form-group">
+					<input type="text" id="other-source" class="input hidden other-source" name="otherSource">
+					<label for="other-source" class="label hidden other-source-label">Details</label>
 				</div>
 			</div>
 
 			<div class="row form-group">
 				<div class="col-sm-24 form-group">
-					<select id="attendance-capacity" class="input attendance-capacity-select" name="attendance-capacity">
+					<select id="attendance-capacity" class="input attendance-capacity-select" name="attendanceCapacity">
+						<option value=""></option>
 						<option value="volunteer">volunteer</option>
-						<option value="other">other</option>
+						<option value="tableStaff">staff a regional/agency table</option>
 					</select>
 					<label for="attendance-capacity" class="label required-field">If not bringing children, I'm attending to</label>
 				</div>
@@ -81,7 +94,7 @@
 
 			<div class="row form-group">
 				<div class="col-sm-24 form-group">
-					<input type="textarea" class="input" id="questions-or-comments" name="questionsOrComments">
+					<textarea id="questions-or-comments" class="input" rows="4" name="questionsOrComments"></textarea>
 					<label for="name" class="label">Questions or comments</label>
 				</div>
 			</div>
