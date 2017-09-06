@@ -19,5 +19,5 @@ FamilyHistory.add({
 });
 
 // Define default columns in the admin interface and register the model
-FamilyHistory.defaultColumns = 'date, changes, modifiedBy';
+FamilyHistory.defaultColumns = 'date|10%, changes|65%, modifiedBy|15%';
 FamilyHistory.register();
