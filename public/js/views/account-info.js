@@ -5,14 +5,18 @@
 		el: '.account-info-container',
 
 		events: {
-			'click .save-button': 'updateUserInfo'
+			'click .save-button': 'updateUserInfo',
+			'change .social-worker-title-checkbox'	: 'toggleSocialWorkerTitleTextField'
 		},
 
 		initialize: function initialize() {
 			// create a hook to access the section templates
-			var html = $( '#account-info' ).html();
+			var html 						= $( '#account-info' ).html();
 			// compile the templates to be used during rendering/repainting the different sections
-			this.template = Handlebars.compile( html );
+			this.template 					= Handlebars.compile( html );
+			// DOM cache any commonly used elements to improve performance
+			this.$socialWorkerTitle			= this.$( '#social-worker-title' );
+			this.$socialWorkerTitleGroup	= this.$( '.social-worker-title-group' );
 		},
 
 		render: function render() {
@@ -20,6 +24,16 @@
 			var html = this.template();
 			// render the template to the page
 			this.$el.html( html );
+		},
+
+		toggleSocialWorkerTitleTextField: function toggleSocialWorkerTitleTextField() {
+			// Hide/show the hidden 'other' field via the hidden class
+			this.$socialWorkerTitleGroup.toggleClass( 'hidden' );
+
+			if( this.$socialWorkerTitleGroup.hasClass( 'hidden' ) ) {
+				// Clear out the input box since it's hidden and not part of the form submission
+				this.$socialWorkerTitle.val( '' );
+			}
 		},
 
 		hide: function hide() {
