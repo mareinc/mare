@@ -18,6 +18,23 @@
 			this.$donationAmountInputLabel		= $( '.donations__input-label' );
 			this.$donationAmountInputField		= $( '#donation-amount-input' );
 
+			//Variables needed to setup donations
+			this._donationAmount 				= 0;
+			this._donationFreq 					= '';
+
+			/*this.stripeHandler = stripeCheckout.configure({
+				key: window.stripeKey,
+				//image: '' if needed for logo
+				locale: auto,
+				token: function(token) {
+					//send the token to the server for the charge 
+				}
+			}); 
+
+			//popstate to close stripe handler
+			window.addEventListener('popstate', function(){
+				this.stripeHandler.close();
+			});*/
 		},
 
 		// TODO: put this in a global util file since it's duplicated across multiple views
@@ -35,7 +52,11 @@
 			$target.addClass( 'toggle-button--toggled' );
 
 			if( $buttonGroup.is( '[id=donation-amount-button-group]' ) ) {
+				this._donationAmount = Number($target.text());
 				this.clearDonationAmountInput();
+			}
+			else if($buttonGroup.is('[id=donation-duration-button-group]')){
+				this._donationFreq = $target.text();
 			}
 
 			this.checkForRequiredInfo();
@@ -79,6 +100,8 @@
 				// create an outline to show it's the selection
 				this.$donationAmountInputLabel.addClass( 'donations__input-label--selected' );
 				this.$donationAmountInputField.addClass( 'donations__input-field--selected' );
+
+				this._donationAmount = Number(this.$donationAmountInputField.val());
 			} else {
 				// remove the class that adds the outline
 				this.$donationAmountInputLabel.removeClass( 'donations__input-label--selected' );
@@ -102,6 +125,15 @@
 		},
 
 		donate: function donate() {
+
+			/*this.stripeHandler.open({
+				name: 'MARE',
+				description: 'some description',
+				zipCode: true,
+				amount: this._donationAmount
+			});*/
+
+			console.log(this._donationAmount, this._donationFreq);
 
 			return false;
 		}
