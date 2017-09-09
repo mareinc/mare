@@ -1,7 +1,9 @@
 const keystone	= require( 'keystone' ),
-	  stripe	= require( 'stripe' ),
 	  moment	= require( 'moment' ),
 	  Donation	= keystone.list( 'Donation' );
+
+const stripeKey = keystone.get('stripe keys').privKey;
+const stripe = require('stripe')(stripeKey);
 
 /* define subscription plan types as per stripe API: https://stripe.com/docs/api#create_plan */
 const plan_types = {
