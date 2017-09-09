@@ -28,17 +28,17 @@
 			<span class="selection-group__header-text">Choose desired donation amount</span>
 			<div class="selection-group__supporting-text"></div>
 			<div id="donation-amount-button-group" class="button-group button-group--space-between button-group--large-margin-above">
-				<button class="toggle-button toggle-button--sixth">$50</button>
-				<button class="toggle-button toggle-button--sixth">$100</button>
-				<button class="toggle-button toggle-button--sixth">$250</button>
-				<button class="toggle-button toggle-button--sixth">$500</button>
-				<button class="toggle-button toggle-button--sixth">$750</button>
-				<button class="toggle-button toggle-button--sixth">$1,000</button>
+				<button class="toggle-button toggle-button--sixth" data-value="50">$50</button>
+				<button class="toggle-button toggle-button--sixth" data-value="100">$100</button>
+				<button class="toggle-button toggle-button--sixth" data-value="250">$250</button>
+				<button class="toggle-button toggle-button--sixth" data-value="500">$500</button>
+				<button class="toggle-button toggle-button--sixth" data-value="750">$750</button>
+				<button class="toggle-button toggle-button--sixth" data-value="1000">$1,000</button>
 			</div>
 
 			<div class="button-group button-group--relative button-group--large-margin-above">
 				<label class="donations__input-label" for="donation-amount-input">$</label>
-				<input type="number" step="5" id="donation-amount-input" class="donations__input-field donations__input-field--more-padding-left" placeholder="Other Amount">
+				<input type="number" step="5" id="donation-amount-input" class="donations__input-field donations__input-field--more-padding-left" placeholder="Other Amount" min="0">
 			</div>
 		</div>
 

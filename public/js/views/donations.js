@@ -6,9 +6,10 @@
 		el: 'body',
 
 		events: {
-			'keyup .donations__input-field'	: 'handleOtherDonationAmount',
-			'click .toggle-button'			: 'toggleButton',
-			'click .donate'					: 'donate'
+			'keyup .donations__input-field'		: 'handleOtherDonationAmount',
+			'change .donations__input-field'	: 'handleOtherDonationAmount',
+			'click .toggle-button'				: 'toggleButton',
+			'click .donate'						: 'donate'
 		},
 
 		initialize: function initialize() {
@@ -52,7 +53,8 @@
 			$target.addClass( 'toggle-button--toggled' );
 
 			if( $buttonGroup.is( '[id=donation-amount-button-group]' ) ) {
-				this._donationAmount = Number($target.text());
+				//remove $ from button text
+				this._donationAmount = Number($target.data('value'));
 				this.clearDonationAmountInput();
 			}
 			else if($buttonGroup.is('[id=donation-duration-button-group]')){
@@ -113,10 +115,12 @@
 
 		enableDonateButton: function enableDonateButton() {
 			$( '#donate-button' ).removeClass( 'button--disabled' );
+			$('#donate-button').addClass('donate');
 		},
 
 		disableDonateButton: function disableDonateButton() {
 			$( '#donate-button' ).addClass( 'button--disabled' );
+			$('#donate-button').removeClass('donate');
 		},
 
 		clearDonationAmountInput: function clearDonationAmountInput() {
