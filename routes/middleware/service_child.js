@@ -96,11 +96,22 @@ exports.getUnrestrictedChildren = ( req, res, done, fieldsToSelect ) => {
 				});
 };
 
-/* sets the images for display in the gallery to a blank male/female face in the following cases:
- *	1. No image was uploaded for the child
- *	2. The child has been identified as legal risk
- *  3. The child is not visible to everyone, and the user wouldn't have permission to see them without the 'child is visible on MARE web' checkbox being checked
- */
+/* display the blank male/female/other image in the gallery in the following cases:
+	1. No image was uploaded for the child
+	2. The child has been identified as legal risk
+	3. The child is not visible to everyone, and the user wouldn't have permission to see them without the 'child is visible on MARE web' checkbox being checked
+
+	all other children will display their pictures normally
+*/
+
+/* display the blank sibling group image in the gallery in the following cases:
+
+	1. No image was uploaded for the sibling group
+	2. Any of the children have been identified as legal risk
+	3. Any of the children are not visible to everyone, and the user wouldn't have permission to see them without the 'child is visible on MARE web' checkbox being checked
+
+	all other sibling groups will display their pictures normally
+*/
 exports.setNoChildImage = ( req, res, child, canViewAllChildren ) => {
 
 	const NO_IMAGE_MALE_GALLERY				= 'images/no-image-male_gallery.png',
@@ -114,7 +125,10 @@ exports.setNoChildImage = ( req, res, child, canViewAllChildren ) => {
 	// if the child is part of a sibling group
 	if( child.mustBePlacedWithSiblings ) {
 		// and is missing an image or is legal risk
-		if( !child.siblingGroupImage.secure_url || child.legalStatus.legalStatus === 'legal risk' ) {
+		if( !child.siblingGroupImage.secure_url
+			|| child.legalStatus.legalStatus === 'legal risk'
+			|| ( child.siteVisibility !== 'everyone'
+				&& !canViewAllChildren ) ) {
 			// set the images to the placeholders for sibling groups
 			child.siblingGroupDetailImage = NO_IMAGE_SIBLING_GROUP_DETAILS;
 			child.siblingGroupGalleryImage = NO_IMAGE_SIBLING_GROUP_GALLERY;
@@ -206,12 +220,12 @@ exports.getGalleryData = ( req, res, next ) => {
 	locals.siblingGroups	= new Set(); // format: Set( { ids: Set(), children: [] }, ... )
 	// variables to determine what children the user has access to
 	locals.userType			= req.user ? req.user.get( 'userType' ) : 'anonymous';
-	// anonymous users, site visitors, and families without a verified homestudy have access only to unrestricted children
+	// anonymous users, site visitors, and families without a verified homestudy ( or from a state other than MA, NH, CT, ME, VT, RI, or NY ) have access only to unrestricted children
 	if( locals.userType === 'anonymous' ||
 		locals.userType === 'site visitor' ||
 		( locals.userType === 'family' && !req.user.permissions.canViewAllChildren ) ) {
 		locals.targetChildren = 'unrestricted';
-	// families with a verified homestudy and social workers have access to all children
+	// families with a verified homestudy ( from MA, NH, CT, ME, VT, RI, or NY ) and social workers have access to all children
 	} else {
 		locals.targetChildren = 'all';
 	}
@@ -513,7 +527,7 @@ exports.registerChild = ( req, res, next ) => {
 	// set the redirect path to navigate to after processing is complete
 	locals.redirectPath = '/forms/child-registration-form';
 	// fetch the id for the active child status
-	const fetchActiveChildStatusId		= exports.fetchChildStatusId( 'active' );
+	const fetchActiveChildStatusId = exports.fetchChildStatusId( 'active' );
 	
 	fetchActiveChildStatusId.then( activeChildStatusId => {
 		// create a new Child model

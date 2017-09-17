@@ -6,7 +6,8 @@
 
 		events: {
 			'change #is-not-MA-city-checkbox' 		: 'toggleCitySelect',
-			'change .other-way-to-hear-about-mare'	: 'toggleOtherWayToHearTextField'
+			'change .other-way-to-hear-about-mare'	: 'toggleOtherWayToHearTextField',
+			'submit'								: 'disableRegistrationButton'
 		},
 
 		initialize: function() {
@@ -15,7 +16,7 @@
 			this.$NonMACityContainer	= this.$( '.non-ma-city-container' );
 			this.$MACity				= this.$( '#ma-city' );
 			this.$NonMACity				= this.$( '#non-ma-city' );
-			this.$howDidYouHearOther 	= this.$('#site-visitor-how-did-you-hear-other');
+			this.$howDidYouHearOther 	= this.$( '#site-visitor-how-did-you-hear-other' );
 			// initialize parsley validation on the form
 			this.form = this.$el.parsley();
 			// bind the city form elements individually to allow for binding/unbinding parsley validation
@@ -26,7 +27,7 @@
 			// DOM cache the Parsley validation message for the hidden 'other' field for use in binding/unbinding validation
 			this.$howDidYouHearOtherErrorMessage	= this.$howDidYouHearOther.next();
 
-			this.form.on('field:validated', this.validateForm);
+			this.form.on( 'field:validated', this.validateForm );
 		},
 
 		toggleOtherWayToHearTextField: function toggleOtherWayToHearTextField() {
@@ -80,6 +81,10 @@
 				// if it was already validated, we need to clear out the check so the form can be submitted
 				this.MACityValidator.reset();
 			}
+		},
+
+		disableRegistrationButton: function disableDonateButton() {
+			this.$( '.register' ).attr( 'disabled', 'disabled' );
 		},
 
 		validateForm: function validateForm() {

@@ -44,7 +44,7 @@
 				maximumEmotionalNeeds			: $( '.select-maximum-emotional-needs:checked' ).val(),
 				maximumIntellectualNeeds		: $( '.select-maximum-intellectual-needs:checked' ).val(),
 				disabilities					: $( '.select-disabilities:checked' ),
-				familyConstellation				: $( '.select-family-constellation:checked' ),
+				familyConstellation				: $( '.select-family-constellation:checked' ).val(),
 				numberOfChildrenInHome			: $( '.select-number-of-children-in-home' ).val(),
 				gendersOfChildrenInHome			: $( '.select-genders-of-children-in-home:checked' ),
 				youngestChildAgeInHome			: $( '#youngest-child-age-in-home' ).val(),
@@ -59,7 +59,6 @@
 				raceArray						= [],
 				primaryLanguagesArray			= [],
 				disabilityArray					= [],
-				familyConstellationArray		= [],
 				gendersOfChildrenInHomeArray	= [],
 				formFields						= this.formFields;
 
@@ -79,10 +78,6 @@
 				disabilityArray.push( disability.getAttribute( 'value' ) );
 			});
 
-			_.each( formFields.familyConstellation, function( constellation ) {
-				familyConstellationArray.push( constellation.getAttribute( 'value' ) );
-			});
-
 			_.each( formFields.gendersOfChildrenInHome, function( gender ) {
 				gendersOfChildrenInHomeArray.push( gender.getAttribute( 'value' ) );
 			});
@@ -91,7 +86,6 @@
 			formFields.races					= raceArray;
 			formFields.primaryLanguages			= primaryLanguagesArray;
 			formFields.disabilities				= disabilityArray;
-			formFields.familyConstellation		= familyConstellationArray;
 			formFields.gendersOfChildrenInHome	= gendersOfChildrenInHomeArray;
 
 			formFields.minimumChildren			= parseInt( formFields.minimumChildren, 10 );
@@ -127,7 +121,6 @@
 			if( formFields.maximumEmotionalNeeds === 3 )				{ delete formFields.maximumEmotionalNeeds; }
 			if( formFields.maximumIntellectualNeeds === 3 )				{ delete formFields.maximumIntellectualNeeds; }
 			if( formFields.disabilities.length === 0 )					{ delete formFields.disabilities; }
-			if( formFields.familyConstellation.length === 0 )			{ delete formFields.familyConstellation; }
 			if( formFields.gendersOfChildrenInHome.length === 0 )		{ delete formFields.gendersOfChildrenInHome; }
 			if( !formFields.petsInHome )								{ delete formFields.petsInHome; }
 		},
@@ -192,10 +185,10 @@
 					child.get( 'disabilities' ).length > 0 &&
 				   _.intersection( formFields.disabilities, child.get( 'disabilities' ) ).length === 0 ) { return; }
 
-				// break out of the loop if the recommended family constellation for the child does not contain the one selected by the user ( return is needed for this in _.each )
+				// break out of the loop if the recommended family constellation for the child does not contain the one selected by the user
 				if( formFields.familyConstellation &&
-				   child.get( 'recommendedFamilyConstellation' ).length > 0 &&
-				_.intersection( formFields.familyConstellation, child.get( 'recommendedFamilyConstellation' ) ).length === 0 ) { return; }
+					child.get( 'recommendedFamilyConstellation' ).length > 0 &&
+					child.get( 'recommendedFamilyConstellation' ).indexOf( formFields.familyConstellation ) === -1 ) { return; }
 				
 				// determine if selections were made about the family, if not, don't use it to restrict search results
 				var numberOfChildrenInHomeSelected	= formFields.numberOfChildrenInHome !== '',
@@ -328,11 +321,11 @@
 					siblingGroup.get( 'disabilities' ).length > 0 &&
 					_.difference( siblingGroup.get( 'disabilities' ), formFields.disabilities ).length > 0 ) { return; }
 
-				// break out of the loop if the recommended family constellation for the sibling group does not contain the one selected by the user ( return is needed for this in _.each )
+				// break out of the loop if the recommended family constellation for the sibling group does not contain the one selected by the user				
 				if( formFields.familyConstellation &&
 					siblingGroup.get( 'recommendedFamilyConstellations' ).length > 0 &&
-					_.difference( siblingGroup.get( 'recommendedFamilyConstellation' ), formFields.familyConstellation ).length > 0 ) { return; }
-				// determine if selections were made about the family, if not, don't use it to restrict search results
+					siblingGroup.get( 'recommendedFamilyConstellations' ).indexOf( formFields.familyConstellation ) === -1 ) { return; }
+					// determine if selections were made about the family, if not, don't use it to restrict search results
 				var numberOfChildrenInHomeSelected	= formFields.numberOfChildrenInHome !== '',
 					oldestChildAgeInHomeSelected	= formFields.oldestChildAgeInHome !== '',
 					youngestChildAgeInHomeSelected	= formFields.youngestChildAgeInHome !== '';
