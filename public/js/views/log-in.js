@@ -63,7 +63,7 @@
 			}
 		},
 
-		/* Close the modal container */
+		/* close the modal container */
 		closeModal: function closeModal() {
 
 			$( '.modal__background' ).fadeOut();

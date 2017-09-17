@@ -12,7 +12,7 @@ var AccountVerificationCode = new keystone.List( 'Account Verification Code', {
 AccountVerificationCode.add({
 	code: { type: Types.Text, label: 'code', required: true, noedit: true, initial: true },
     user: { type: Types.Relationship, label: 'user', ref: 'User', required: true, noedit: true, initial: true },
-	dateSent: { type: Types.Date, label: 'date sent', format: 'MM/DD/YYYY', required: true, noedit: true, initial: true }
+	dateSent: { type: Types.Date, label: 'date sent', format: 'MM/DD/YYYY', default: Date.now, required: true, noedit: true }
 });
 
 // Define default columns in the admin interface and register the model

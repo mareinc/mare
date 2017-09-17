@@ -11,7 +11,8 @@
 			'change #homestudy-completed-checkbox'	: 'toggleHomestudySection',
 			'change #upload-button'					: 'uploadForm',
 			'change #children-in-home'				: 'toggleFamilyDetailsForm',
-			'change .adoption-preferences-trigger'	: 'checkAdoptionPreferences'
+			'change .adoption-preferences-trigger'	: 'checkAdoptionPreferences',
+			'submit'								: 'disableRegistrationButton'
 		},
 
 		initialize: function() {
@@ -113,47 +114,47 @@
 		},
 
 		toggleOtherWayToHearTextField: function toggleOtherWayToHearTextField() {
-			// Hide/show the hidden 'other' field via the hidden class
+			// hide/show the hidden 'other' field via the hidden class
 			this.$howDidYouHearOther.toggleClass( 'hidden' );
 
 			if( this.$howDidYouHearOther.hasClass( 'hidden' ) ) {
-				// Clear out the input box since it's hidden and not part of the form submission
+				// clear out the input box since it's hidden and not part of the form submission
 				this.$howDidYouHearOther.val( '' );
-				// Remove the validation binding
+				// remove the validation binding
 				this.$howDidYouHearOther.attr( 'data-parsley-required', 'false' );
-				// Reset validation on the field.  If it was already validated, we need to clear out the check so the form can be submitted
+				// reset validation on the field.  If it was already validated, we need to clear out the check so the form can be submitted
 				this.howDidYouHearOtherValidator.reset();
 			} else {
-				// Add validation binding
+				// add validation binding
 				this.$howDidYouHearOther.attr( 'data-parsley-required', 'true' );
 			}
 		},
 
 		toggleHomestudySection: function toggleHomestudySection() {
-			// Hide/show the hidden homestudy section via the hidden class
+			// hide/show the hidden homestudy section via the hidden class
 			this.$homestudySubmissionSection.toggleClass( 'hidden' );
 
 			if( this.$homestudySubmissionSection.hasClass( 'hidden' ) ) {
-				// Clear out the homestudy input fields since the section is hidden and not part of the form submission
+				// clear out the homestudy input fields since the section is hidden and not part of the form submission
 				this.$homestudyCompletionDate.val( '' );
 				this.$socialWorkerName.val( '' );
 				this.$socialWorkerAgency.val( '' );
 				this.$socialWorkerPhone.val( '' );
 				this.$socialWorkerEmail.val( '' );
-				// Remove validation bindings
+				// remove validation bindings
 				this.$homestudyCompletionDate.attr( 'data-parsley-required', 'false' );
 				this.$socialWorkerName.attr( 'data-parsley-required', 'false' );
 				this.$socialWorkerAgency.attr( 'data-parsley-required', 'false' );
 				this.$socialWorkerPhone.attr( 'data-parsley-required', 'false' );
 				this.$socialWorkerEmail.attr( 'data-parsley-required', 'false' );
-				// Reset validation on the fields.  If they were already validated, we need to clear out the checks so the form can be submitted
+				// reset validation on the fields.  If they were already validated, we need to clear out the checks so the form can be submitted
 				this.homestudyCompletionDateValidator.reset();
 				this.socialWorkerNameValidator.reset();
 				this.socialWorkerAgencyValidator.reset();
 				this.socialWorkerPhoneValidator.reset();
 				this.socialWorkerEmailValidator.reset();
 			} else {
-				// Add validation binding
+				// add validation binding
 				this.$homestudyCompletionDate.attr( 'data-parsley-required', 'true' );
 				this.$socialWorkerName.attr( 'data-parsley-required', 'true' );
 				this.$socialWorkerAgency.attr( 'data-parsley-required', 'true' );
@@ -173,7 +174,7 @@
 				selectedHTML === 'New York' ||
 				selectedHTML === 'Rhode Island' ||
 				selectedHTML === 'Vermont' ) {
-				// Show the homestudy section of the form
+				// show the homestudy section of the form
 				this.$homestudySection.show();
 			} else {
 				// hide the homestudy section of the form
@@ -285,7 +286,7 @@
 			this.$maximumEmotionalNeeds.attr( 'required', false );
 			this.$maximumIntellectualNeeds.attr( 'required', false );
 		},
-		// TODO: This needs to be cleaned up a bit, both logic for efficiency and the creation should be handled in a template instead of jQuery.  An identical function exists in form_social-worker-family-registration.js as well
+		// TODO: this needs to be cleaned up a bit, both logic for efficiency and the creation should be handled in a template instead of jQuery.  An identical function exists in form_social-worker-family-registration.js as well
 		generateChildDetailInputs: function generateChildDetailInputs( selectedNumberOfChildren ) {
 			// count the number of child data groups already shown on the page
 			var currentChildrenDisplayed = this.$( '.child-details-form' ).length,
@@ -295,7 +296,7 @@
 				// remove extra additional child forms
 				for( i = currentChildrenDisplayed; i > selectedNumberOfChildren; i-- ) {
 					$( '.child' + i + '-form' ).remove();
-					$( '.child' + i + '-form-heading' ).remove(); // TODO: Include the heading as part of the form to make cleanup easier
+					$( '.child' + i + '-form-heading' ).remove(); // TODO: include the heading as part of the form to make cleanup easier
 				}
 
 			} else {
@@ -324,6 +325,10 @@
 			var filename = filepath.substr( filepath.lastIndexOf( '\\' ) + 1 );
 			// show the file name to the user as a point of reference after they've selected the file they wish to upload
 			this.$( '.homestudy-file-text' ).html( filename );
+		},
+
+		disableRegistrationButton: function disableDonateButton() {
+			this.$( '.register' ).attr( 'disabled', 'disabled' );
 		},
 
 		validateForm: function validateForm() {

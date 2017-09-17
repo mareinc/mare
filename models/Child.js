@@ -28,6 +28,7 @@ const keystone					= require( 'keystone' ),
 
 // Create model
 const Child = new keystone.List('Child', {
+	track		: true, // needed for change history updated by assignment
 	autokey: { path: 'key', from: 'registrationNumber', unique: true },
 	map: { name: 'name.full' },
 	defaultSort: 'name.full'
@@ -184,7 +185,8 @@ Child.add('Display Options', {
 	locationAlert: { type: Types.Boolean, label: 'location alert', initial: true },
 	place: { type: Types.Text, label: 'place', initial: true, dependsOn: { locationAlert: true } },
 
-	communicationsCollateral: { type: Types.Boolean, label: 'communications collateral', initial: true }
+	communicationsCollateral: { type: Types.Boolean, label: 'communications collateral', initial: true },
+	communicationsCollateralDetails: { type: Types.Text, label: 'details', dependsOn: { communicationsCollateral: true }, initial: true }
 
 }, 'Attachments', {
 
@@ -1242,6 +1244,12 @@ Child.schema.methods.setChangeHistory = function( done ) {
 											name: 'communicationsCollateral',
 											label: 'communications collateral',
 											type: 'boolean' }, model, modelBefore, changeHistory, done );
+			},
+			done => {
+				ChangeHistoryMiddleware.checkFieldForChanges({
+											name: 'communicationsCollateralDetails',
+											label: 'communications collateral details',
+											type: 'string' }, model, modelBefore, changeHistory, done );
 			}
 		], () => {
 

@@ -8,7 +8,7 @@ exports = module.exports = ( req, res ) => {
 	const view 			= new keystone.View( req, res ),
 		  locals 		= res.locals;
 	
-		  // objects with additional search parameters
+	// objects with additional search parameters
 	const stateOptions	= { default: 'Massachusetts' };
 
 	// fetch all data needed to render this page
@@ -29,7 +29,7 @@ exports = module.exports = ( req, res ) => {
 			locals.randomSuccessStory	= randomSuccessStory;
 			locals.randomEvent			= randomEvent;
 			
-			// Set the layout to render with the right sidebar
+			// set the layout to render with the right sidebar
 			locals[ 'render-with-sidebar' ] = true;
 			// render the view using the form_agency-event-submission.hbs template
 			view.render( 'form_agency-event-submission' );
@@ -37,7 +37,7 @@ exports = module.exports = ( req, res ) => {
 		.catch( err => {
 			// log an error for debugging purposes
 			console.error( `there was an error loading data for the agency event submission form - ${ err }` );
-			// Set the layout to render with the right sidebar
+			// set the layout to render with the right sidebar
 			locals[ 'render-with-sidebar' ] = true;
 			// render the view using the form_agency-event-submission.hbs template
 			view.render( 'form_agency-event-submission' );
