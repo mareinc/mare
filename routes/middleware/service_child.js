@@ -16,7 +16,8 @@ exports.getAllChildren = ( req, res, done, fieldsToSelect ) => {
 
 	Child.model.find()
 				.select( fieldsToSelect )
-				.where( 'status').equals( locals.activeChildStatusId )
+				.where( 'isVisibleInGallery' ).equals( true )
+				.where( 'status' ).equals( locals.activeChildStatusId )
 				.populate( 'gender' )
 				.populate( 'race' )
 				.populate( 'languages' )
@@ -56,11 +57,11 @@ exports.getUnrestrictedChildren = ( req, res, done, fieldsToSelect ) => {
 	var locals = res.locals;
 	
 	// find all children who are active, and are either visible to everyone or have the 'child is visible on MARE web' checkbox checked
-	Child.model.find( { $or: [
-					{ 'siteVisibility': 'everyone' },
-					{ 'isVisibleInGallery': true } ] } )
+	Child.model.find()
 				.select( fieldsToSelect )
-				.where( 'status').equals( locals.activeChildStatusId )
+				.where( 'siteVisibility' ).equals( 'everyone' )
+				.where( 'isVisibleInGallery' ).equals( true )
+				.where( 'status' ).equals( locals.activeChildStatusId )
 				.populate( 'gender' )
 				.populate( 'race' )
 				.populate( 'languages' )
@@ -275,7 +276,7 @@ exports.getGalleryData = ( req, res, next ) => {
 		// map out the relevant information for solo children
 		exports.getRelevantChildInformation( [ ...locals.soloChildren ], locals );
 		// map out the relevant information for sibling groups
-		exports.getRelevantSiblingGroupInformation( [ ...locals.siblingGroups], locals );
+		exports.getRelevantSiblingGroupInformation( [ ...locals.siblingGroups ], locals );
 		// return the child and group information
 		res.send( { soloChildren: locals.soloChildrenToReturn, siblingGroups: locals.siblingGroupsToReturn } );
 	});
