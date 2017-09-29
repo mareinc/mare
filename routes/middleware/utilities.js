@@ -102,7 +102,7 @@ exports.modifyWYSIWYGContent = ( object, content, options ) => {
 	});
 };
 /* generates a random string to be used as a temporary password */
-exports.generateAlphanumericHash = ( length ) => {
+exports.generateAlphanumericHash = length => {
 	// because it's a hex encoding, each unit will be two characters long, so we must divide by 2
 	return crypto.randomBytes( Math.ceil( length / 2 ) ).toString( 'hex' );
 };
