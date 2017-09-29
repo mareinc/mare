@@ -35,8 +35,12 @@
 			$socialWorkerTitleGroup.toggleClass( 'hidden' );
 
 			if( $socialWorkerTitleGroup.hasClass( 'hidden' ) ) {
+				// Store 
+				this.storedSocialWorkerTitle = $socialWorkerTitle.val();
 				// Clear out the input box since it's hidden and not part of the form submission
 				$socialWorkerTitle.val( '' );
+			} else {
+				$socialWorkerTitle.val( this.storedSocialWorkerTitle );
 			}
 		},
 
