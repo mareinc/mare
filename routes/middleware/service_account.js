@@ -80,6 +80,8 @@ exports.updateUser = ( req, res, next ) => {
 				res.json( update );
 			}
 		});
+
+		res.redirect( 303, '/account#info' );
 	})
 	.catch( () => {
 		// log the error for debugging purposes

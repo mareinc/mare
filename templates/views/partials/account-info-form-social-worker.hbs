@@ -1,4 +1,4 @@
-	<div action="/register" class="registration-div form--social-worker-registration" method="POST">
+	<form action="/account/user-info" class="registration-form form--social-worker-registration" method="PUT"></form>
 		<input type="hidden" class="registration-type" name="registrationType" value="socialWorker">
 
 		<section class="social-worker-account-setup-section">
@@ -54,7 +54,7 @@
 				</div>
 			</div>
 			<div class="row">
-				<div class="col-sm-12 form-group social-worker-title-group hidden">
+				<div class="col-sm-12 form-group social-worker-title-group {{#ifeq user.title 'false'}}hidden{{/ifeq}}">
 					<input type="text" id="social-worker-title" class="input" name="socialWorkerTitle" placeholder="my title" value="{{user.title}}">
 					<label for="social-worker-title" class="label">Title</label>
 				</div>
@@ -152,5 +152,5 @@
 			{{/each}}
 		</section>
 
-		<button class="button button--blue register" type="submit">Register</button>
-	</div>
+		<button class="button button--blue submit" type="submit">Submit</button>
+	</form>

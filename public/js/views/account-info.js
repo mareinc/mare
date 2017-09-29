@@ -5,8 +5,9 @@
 		el: '.account-info-container',
 
 		events: {
-			'click .save-button': 'updateUserInfo',
-			'change .social-worker-title-checkbox'	: 'toggleSocialWorkerTitleTextField'
+			'click .save-button'					: 'updateUserInfo',
+			'change .social-worker-title-checkbox'	: 'toggleSocialWorkerTitleTextField',
+			'submit'								: 'disableSubmitButton'
 		},
 
 		initialize: function initialize() {
@@ -14,9 +15,6 @@
 			var html 						= $( '#account-info' ).html();
 			// compile the templates to be used during rendering/repainting the different sections
 			this.template 					= Handlebars.compile( html );
-			// DOM cache any commonly used elements to improve performance
-			this.$socialWorkerTitle			= this.$( '#social-worker-title' );
-			this.$socialWorkerTitleGroup	= this.$( '.social-worker-title-group' );
 		},
 
 		render: function render() {
@@ -27,12 +25,18 @@
 		},
 
 		toggleSocialWorkerTitleTextField: function toggleSocialWorkerTitleTextField() {
-			// Hide/show the hidden 'other' field via the hidden class
-			this.$socialWorkerTitleGroup.toggleClass( 'hidden' );
+			// DOM cache any commonly used elements to improve performance
+			var 
+				$socialWorkerTitle		= this.$( '#social-worker-title' ),
+				$socialWorkerTitleGroup	= this.$( '.social-worker-title-group' )
+			;
 
-			if( this.$socialWorkerTitleGroup.hasClass( 'hidden' ) ) {
+			// Hide/show the hidden 'other' field via the hidden class
+			$socialWorkerTitleGroup.toggleClass( 'hidden' );
+
+			if( $socialWorkerTitleGroup.hasClass( 'hidden' ) ) {
 				// Clear out the input box since it's hidden and not part of the form submission
-				this.$socialWorkerTitle.val( '' );
+				$socialWorkerTitle.val( '' );
 			}
 		},
 
@@ -95,6 +99,10 @@
 
 			// return an object containing only the fields that are not undefined
 			return _.omit( formData, _.isUndefined );
+		},
+
+		disableSubmitButton: function disableDonateButton() {
+			this.$( '.submit' ).attr( 'disabled', 'disabled' );
 		}
 	});
 }());

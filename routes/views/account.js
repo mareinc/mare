@@ -4,7 +4,8 @@ const keystone			= require( 'keystone' ),
 	  eventService		= require( '../middleware/service_event' ),
 	  donationService	= require( '../middleware/service_donation' ),
 	  listsService		= require( '../middleware/service_lists' ),
-	  pageService		= require( '../middleware/service_page' );
+	  pageService		= require( '../middleware/service_page' ),
+	  mailingListService		= require( '../middleware/service_mailing-list' );
 
 exports = module.exports = ( req, res ) => {
     'use strict';
@@ -33,16 +34,17 @@ exports = module.exports = ( req, res ) => {
 		fetchOtherConsiderations	= listsService.getAllOtherConsiderations(),
 		fetchRaces					= listsService.getAllRaces( raceOptions ),
 		fetchStates					= listsService.getAllStates( stateOptions ),
-		fetchChildTypes				= listsService.getChildTypesForWebsite()
+		fetchChildTypes				= listsService.getChildTypesForWebsite(),
+		fetchMailingLists			= mailingListService.getRegistrationMailingLists()
 	;
 
 	Promise.all( [ fetchEvents, fetchCitiesAndTowns, fetchDisabilities, fetchGenders, fetchLanguages, fetchLegalStatuses,
-		fetchOtherConsiderations, fetchRaces, fetchStates, fetchChildTypes ] )
+		fetchOtherConsiderations, fetchRaces, fetchStates, fetchChildTypes, fetchMailingLists ] )
 		.then( values => {
 
 			// assign local variables to the values returned by the promises
 			const [ events, citiesAndTowns, disabilities, genders, languages, legalStatuses,
-				otherConsiderations, races, states, childTypes ] = values;
+				otherConsiderations, races, states, childTypes, mailingLists ] = values;
 
 			// options to define how truncation will be handled
 			const truncateOptions = { targetLength: 400 };
@@ -77,6 +79,7 @@ exports = module.exports = ( req, res ) => {
 			locals.races				= races;
 			locals.states				= states;
 			locals.childTypes			= childTypes;
+			locals.mailingLists			= mailingLists;
 
 			// set the layout to render without the right sidebar
 			locals[ 'render-with-sidebar' ] = false;
