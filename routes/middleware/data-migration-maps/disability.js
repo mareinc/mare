@@ -10,11 +10,11 @@ exports.getDisabilitiesMap = ( req, res, done ) => {
 	locals.migration.maps.disabilities = {};
 
 	async.parallel([
-		done => { dataMigrationService.getModelId( { model: 'Disability', field: 'disability', value: 'autism spectrum', mapTo: [ 70 ], namespace: locals.migration.maps.disabilities }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'Disability', field: 'disability', value: 'autism spectrum disorder', mapTo: [ 70 ], namespace: locals.migration.maps.disabilities }, done ); },
 		done => { dataMigrationService.getModelId( { model: 'Disability', field: 'disability', value: 'cerebral palsy', mapTo: [ 20 ], namespace: locals.migration.maps.disabilities }, done ); },
 		done => { dataMigrationService.getModelId( { model: 'Disability', field: 'disability', value: 'down syndrome', mapTo: [ 10 ], namespace: locals.migration.maps.disabilities }, done ); },
 		done => { dataMigrationService.getModelId( { model: 'Disability', field: 'disability', value: 'fetal alcohol syndrome', mapTo: [ 60 ], namespace: locals.migration.maps.disabilities }, done ); },
-		done => { dataMigrationService.getModelId( { model: 'Disability', field: 'disability', value: 'hearing impairment', mapTo: [ 40 ], namespace: locals.migration.maps.disabilities }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'Disability', field: 'disability', value: 'hearing loss', mapTo: [ 40 ], namespace: locals.migration.maps.disabilities }, done ); },
 		done => { dataMigrationService.getModelId( { model: 'Disability', field: 'disability', value: 'visual impairment', mapTo: [ 50 ], namespace: locals.migration.maps.disabilities }, done ); }
 	
 	], () => {
