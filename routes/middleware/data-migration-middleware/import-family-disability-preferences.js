@@ -28,10 +28,8 @@ module.exports.appendFamilyDisabilityPreferences = ( req, res, done ) => {
 	migrationResults = res.locals.migrationResults;
 
 	// create a promise for converting the family disability preferences CSV file to JSON
-	const familyDisabilityPreferencesLoaded = new Promise( ( resolve, reject ) => {
-		// attempt to convert the family disability preferences
-		CSVConversionMiddleware.fetchFamilyDisabilityPreferences( resolve, reject );
-	});
+	const familyDisabilityPreferencesLoaded = CSVConversionMiddleware.fetchFamilyDisabilityPreferences();
+
 	// if the file was successfully converted, it will return the array of family disability preferences
 	familyDisabilityPreferencesLoaded.then( familyDisabilityPreferencesArray => {
 		// store the family disability preferences in a variable accessible throughout this file

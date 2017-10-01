@@ -24,10 +24,8 @@ module.exports.appendChildRecruitmentChecklistItems = ( req, res, done ) => {
 	migrationResults = res.locals.migrationResults;
 
 	// create a promise for converting the recruitment checklists CSV file to JSON
-	const recruitmentChecklistItemsLoaded = new Promise( ( resolve, reject ) => {
-		// attempt to convert the recruitment checklists
-		CSVConversionMiddleware.fetchRecruitmentChecklistItems( resolve, reject );
-	});
+	const recruitmentChecklistItemsLoaded = CSVConversionMiddleware.fetchRecruitmentChecklistItems();
+
 	// if the file was successfully converted, it will return the array of recruitment checklists
 	recruitmentChecklistItemsLoaded.then( recruitmentChecklistItemsArray => {
 		// store the recruitment checklists in a variable accessible throughout this file

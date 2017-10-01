@@ -25,10 +25,8 @@ module.exports.importMailingListAttendees = ( req, res, done ) => {
 	migrationResults = res.locals.migrationResults;
 
 	// create a promise for converting the mailing list attendees CSV file to JSON
-	const mailingListAttendeesLoaded = new Promise( ( resolve, reject ) => {
-		// attempt to convert the mailing list attendees
-		CSVConversionMiddleware.fetchMailingListAttendees( resolve, reject );
-	});
+	const mailingListAttendeesLoaded = CSVConversionMiddleware.fetchMailingListAttendees();
+
 	// if the file was successfully converted, it will return the array of mailing list attendees
 	mailingListAttendeesLoaded.then( mailingListAttendeesArray => {
 		// store the mailing list attendees in a variable accessible throughout this file

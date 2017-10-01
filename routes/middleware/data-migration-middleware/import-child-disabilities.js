@@ -25,10 +25,8 @@ module.exports.appendDisabilities = ( req, res, done ) => {
 	migrationResults = res.locals.migrationResults;
 
 	// create a promise for converting the child disabilities CSV file to JSON
-	const childDisabilitiesLoaded = new Promise( ( resolve, reject ) => {
-		// attempt to convert the child disabilities
-		CSVConversionMiddleware.fetchChildDisabilities( resolve, reject );
-	});
+	const childDisabilitiesLoaded = CSVConversionMiddleware.fetchChildDisabilities();
+
 	// if the file was successfully converted, it will return the array of child disabilities
 	childDisabilitiesLoaded.then( childDisabilitiesArray => {
 		// store the child disabilities in a variable accessible throughout this file

@@ -28,10 +28,8 @@ module.exports.appendFamilyRacePreferences = ( req, res, done ) => {
 	migrationResults = res.locals.migrationResults;
 
 	// create a promise for converting the family race preferences CSV file to JSON
-	const familyRacePreferencesLoaded = new Promise( ( resolve, reject ) => {
-		// attempt to convert the family race preferences
-		CSVConversionMiddleware.fetchFamilyRacePreferences( resolve, reject );
-	});
+	const familyRacePreferencesLoaded = CSVConversionMiddleware.fetchFamilyRacePreferences();
+
 	// if the file was successfully converted, it will return the array of family race preferences
 	familyRacePreferencesLoaded.then( familyRacePreferencesArray => {
 		// store the family race preferences in a variable accessible throughout this file

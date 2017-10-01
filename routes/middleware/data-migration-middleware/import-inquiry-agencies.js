@@ -24,10 +24,8 @@ module.exports.appendInquiryAgencies = ( req, res, done ) => {
 	migrationResults = res.locals.migrationResults;
 
 	// create a promise for converting the inquiry agencies CSV file to JSON
-	const inquiryAgenciesLoaded = new Promise( ( resolve, reject ) => {
-		// attempt to convert the inquiry agencies
-		CSVConversionMiddleware.fetchInquiryAgencies( resolve, reject );
-	});
+	const inquiryAgenciesLoaded = CSVConversionMiddleware.fetchInquiryAgencies();
+
 	// if the file was successfully converted, it will return the array of inquiry agencies
 	inquiryAgenciesLoaded.then( inquiryAgenciesArray => {
 		// store the inquiry agencies in a variable accessible throughout this file

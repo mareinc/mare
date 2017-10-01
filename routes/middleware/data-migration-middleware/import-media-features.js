@@ -21,10 +21,8 @@ module.exports.importMediaFeatures = ( req, res, done ) => {
 	migrationResults = res.locals.migrationResults;
 
 	// create a promise for converting the media features CSV file to JSON
-	const mediaFeaturesLoaded = new Promise( ( resolve, reject ) => {
-		// attempt to convert the media features
-		CSVConversionMiddleware.fetchMediaFeatures( resolve, reject );
-	});
+	const mediaFeaturesLoaded = CSVConversionMiddleware.fetchMediaFeatures();
+
 	// if the file was successfully converted, it will return the array of media features
 	mediaFeaturesLoaded.then( mediaFeaturesArray => {
 		// store the media features in a variable accessible throughout this file

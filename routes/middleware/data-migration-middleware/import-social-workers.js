@@ -26,10 +26,8 @@ module.exports.importSocialWorkers = ( req, res, done ) => {
 	migrationResults = res.locals.migrationResults;
 
 	// create a promise for converting the social workers CSV file to JSON
-	const socialWorkersLoaded = new Promise( ( resolve, reject ) => {
-		// attempt to convert the social workers
-		CSVConversionMiddleware.fetchSocialWorkers( resolve, reject );
-	});
+	const socialWorkersLoaded = CSVConversionMiddleware.fetchSocialWorkers();
+
 	// if the file was successfully converted, it will return the array of social workers
 	socialWorkersLoaded.then( socialWorkersArray => {
 		// store the social workers in a variable accessible throughout this file

@@ -49,10 +49,8 @@ let inquiries = [];
 
 module.exports.importInquiries = ( req, res, done ) => {
 	// create a promise for converting the inquiries CSV file to JSON
-	const getInquiries = new Promise( ( resolve, reject ) => {
-		// attempt to convert the inquiries
-		CSVConversionMiddleware.fetchInquiries( resolve, reject );
-	});
+	const getInquiries = CSVConversionMiddleware.fetchInquiries();
+
 	// if the file was successfully converted, it will return the array of inquiries
 	getInquiries.then( inquiriesArray => {
 		// store the inquiries in a variable accessible throughout this file

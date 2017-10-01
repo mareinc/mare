@@ -23,10 +23,8 @@ module.exports.importSources = ( req, res, done ) => {
 	migrationResults = res.locals.migrationResults;
 
 	// create a promise for converting the sources CSV file to JSON
-	const sourcesLoaded = new Promise( ( resolve, reject ) => {
-		// attempt to convert the sources
-		CSVConversionMiddleware.fetchSources( resolve, reject );
-	});
+	const sourcesLoaded = CSVConversionMiddleware.fetchSources();
+
 	// if the file was successfully converted, it will return the array of sources
 	sourcesLoaded.then( sourcesArray => {
 		// store the sources in a variable accessible throughout this file

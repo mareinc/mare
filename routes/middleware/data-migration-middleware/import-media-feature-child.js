@@ -21,10 +21,8 @@ module.exports.appendChildren = ( req, res, done ) => {
 	migrationResults = res.locals.migrationResults;
 
 	// create a promise for converting the media feature children CSV file to JSON
-	const mediaFeatureChildrenLoaded = new Promise( ( resolve, reject ) => {
-		// attempt to convert the media feature children
-		CSVConversionMiddleware.fetchMediaFeatureChildren( resolve, reject );
-	});
+	const mediaFeatureChildrenLoaded = CSVConversionMiddleware.fetchMediaFeatureChildren();
+
 	// if the file was successfully converted, it will return the array of media feature children
 	mediaFeatureChildrenLoaded.then( mediaFeatureChildrenArray => {
 		// store the media feature children in a variable accessible throughout this file

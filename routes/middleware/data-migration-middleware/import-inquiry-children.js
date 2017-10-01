@@ -24,10 +24,8 @@ module.exports.appendInquiryChildren = ( req, res, done ) => {
 	migrationResults = res.locals.migrationResults;
 
 	// create a promise for converting the inquiry children CSV file to JSON
-	const inquiryChildrenLoaded = new Promise( ( resolve, reject ) => {
-		// attempt to convert the inquiry children
-		CSVConversionMiddleware.fetchInquiryChildren( resolve, reject );
-	});
+	const inquiryChildrenLoaded = CSVConversionMiddleware.fetchInquiryChildren();
+
 	// if the file was successfully converted, it will return the array of inquiry children
 	inquiryChildrenLoaded.then( inquiryChildrenArray => {
 		// store the inquiry children in a variable accessible throughout this file

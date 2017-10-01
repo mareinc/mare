@@ -24,10 +24,8 @@ module.exports.appendFamilySupportServices = ( req, res, done ) => {
 	migrationResults = res.locals.migrationResults;
 
 	// create a promise for converting the family support services CSV file to JSON
-	const familySupportServicesLoaded = new Promise( ( resolve, reject ) => {
-		// attempt to convert the family support services
-		CSVConversionMiddleware.fetchFamilySupportServices( resolve, reject );
-	});
+	const familySupportServicesLoaded = CSVConversionMiddleware.fetchFamilySupportServices();
+
 	// if the file was successfully converted, it will return the array of family support services
 	familySupportServicesLoaded.then( familySupportServicesArray => {
 		// store the family support services in a variable accessible throughout this file

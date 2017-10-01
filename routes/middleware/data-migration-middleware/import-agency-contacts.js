@@ -24,10 +24,8 @@ module.exports.appendAgencyContacts = ( req, res, done ) => {
 	migrationResults = res.locals.migrationResults;
 
 	// create a promise for converting the agency contacts CSV file to JSON
-	const agencyContactsLoaded = new Promise( ( resolve, reject ) => {
-		// attempt to convert the agency contacts
-		CSVConversionMiddleware.fetchAgencyContacts( resolve, reject );
-	});
+	const agencyContactsLoaded = CSVConversionMiddleware.fetchAgencyContacts();
+
 	// if the file was successfully converted, it will return the array of agency contacts
 	agencyContactsLoaded.then( agencyContactsArray => {
 		// store the agency contacts in a variable accessible throughout this file

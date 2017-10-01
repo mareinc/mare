@@ -28,10 +28,8 @@ module.exports.appendEventAttendees = ( req, res, done ) => {
 	migrationResults = res.locals.migrationResults;
 
 	// create a promise for converting the event attendees CSV file to JSON
-	const eventAttendeesLoaded = new Promise( ( resolve, reject ) => {
-		// attempt to convert the event attendees
-		CSVConversionMiddleware.fetchEventAttendees( resolve, reject );
-	});
+	const eventAttendeesLoaded = CSVConversionMiddleware.fetchEventAttendees();
+
 	// if the file was successfully converted, it will return the array of event attendees
 	eventAttendeesLoaded.then( eventAttendeesArray => {
 		// store the event attendees in a variable accessible throughout this file

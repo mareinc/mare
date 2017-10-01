@@ -24,10 +24,8 @@ module.exports.appendInquiryNotes = ( req, res, done ) => {
 	migrationResults = res.locals.migrationResults;
 
 	// create a promise for converting the inquiry notes CSV file to JSON
-	const inquiryNotesLoaded = new Promise( ( resolve, reject ) => {
-		// attempt to convert the inquiry notes
-		CSVConversionMiddleware.fetchInquiryNotes( resolve, reject );
-	});
+	const inquiryNotesLoaded = CSVConversionMiddleware.fetchInquiryNotes();
+
 	// if the file was successfully converted, it will return the array of inquiry notes
 	inquiryNotesLoaded.then( inquiryNotesArray => {
 		// store the inquiry notes in a variable accessible throughout this file

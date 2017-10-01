@@ -28,10 +28,8 @@ module.exports.appendFamilyChildren = ( req, res, done ) => {
 	migrationResults = res.locals.migrationResults;
 
 	// create a promise for converting the family children CSV file to JSON
-	const familyChildrenLoaded = new Promise( ( resolve, reject ) => {
-		// attempt to convert the family children
-		CSVConversionMiddleware.fetchFamilyChildren( resolve, reject );
-	});
+	const familyChildrenLoaded = CSVConversionMiddleware.fetchFamilyChildren();
+
 	// if the file was successfully converted, it will return the array of family children
 	familyChildrenLoaded.then( familyChildrenArray => {
 		// store the family children in a variable accessible throughout this file

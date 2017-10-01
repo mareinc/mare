@@ -32,10 +32,8 @@ module.exports.appendFamilyContacts = ( req, res, done ) => {
 	migrationResults = res.locals.migrationResults;
 
 	// create a promise for converting the family contacts CSV file to JSON
-	const familyContactsLoaded = new Promise( ( resolve, reject ) => {
-		// attempt to convert the family contacts
-		CSVConversionMiddleware.fetchFamilyContacts( resolve, reject );
-	});
+	const familyContactsLoaded = CSVConversionMiddleware.fetchFamilyContacts();
+
 	// if the file was successfully converted, it will return the array of family contacts
 	familyContactsLoaded.then( familyContactsArray => {
 		// store the family contacts in a variable accessible throughout this file

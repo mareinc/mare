@@ -27,10 +27,8 @@ module.exports.importOutsideContacts = ( req, res, done ) => {
 	migrationResults = res.locals.migrationResults;
 
 	// create a promise for converting the outside contacts CSV file to JSON
-	const outsideContactsLoaded = new Promise( ( resolve, reject ) => {
-		// attempt to convert the outside contacts
-		CSVConversionMiddleware.fetchOutsideContacts( resolve, reject );
-	});
+	const outsideContactsLoaded = CSVConversionMiddleware.fetchOutsideContacts();
+	
 	// if the file was successfully converted, it will return the array of outside contacts
 	outsideContactsLoaded.then( outsideContactsArray => {
 		// store the outside contacts in a variable accessible throughout this file

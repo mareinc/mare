@@ -25,10 +25,8 @@ module.exports.appendMediaFeatures = ( req, res, done ) => {
 	migrationResults = res.locals.migrationResults;
 
 	// // create a promise for converting the media features CSV file to JSON
-	// const mediaFeaturesLoaded = new Promise( ( resolve, reject ) => {
-	// 	// attempt to convert the media features
-	// 	CSVConversionMiddleware.fetchMediaFeatures( resolve, reject );
-	// });
+	// const mediaFeaturesLoaded = CSVConversionMiddleware.fetchMediaFeatures();
+
 	// if the files were successfully converted, they will return individual arrays
 	// mediaFeaturesLoaded.then( mediaFeaturesArray => {
 	// 	// store the media features in a variable accessible throughout this file
@@ -37,10 +35,7 @@ module.exports.appendMediaFeatures = ( req, res, done ) => {
 	// 	exports.buildLatestMediaFeaturesMap();
 
 		// create a promise for converting the child media features CSV file to JSON
-		const childMediaFeaturesLoaded = new Promise( ( resolve, reject ) => {
-			// attempt to convert the media feature children
-			CSVConversionMiddleware.fetchMediaFeatureChildren( resolve, reject );
-		});
+		const childMediaFeaturesLoaded = CSVConversionMiddleware.fetchMediaFeatureChildren();
 
 		childMediaFeaturesLoaded.then( childMediaFeaturesArray => {
 			// store the child media features in a variable accessible throughout this file

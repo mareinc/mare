@@ -27,10 +27,8 @@ module.exports.appendMediaEligibilities = ( req, res, done ) => {
 	migrationResults = res.locals.migrationResults;
 
 	// create a promise for converting the media eligibilities CSV file to JSON
-	const mediaEligibilitiesLoaded = new Promise( ( resolve, reject ) => {
-		// attempt to convert the media eligibilities
-		CSVConversionMiddleware.fetchMediaEligibilities( resolve, reject );
-	});
+	const mediaEligibilitiesLoaded = CSVConversionMiddleware.fetchMediaEligibilities();
+
 	// if the file was successfully converted, it will return the array of media eligibilities
 	mediaEligibilitiesLoaded.then( mediaEligibilitiesArray => {
 		// store the media eligibilities in a variable accessible throughout this file

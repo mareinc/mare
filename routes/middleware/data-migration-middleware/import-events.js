@@ -22,10 +22,8 @@ module.exports.importEvents = ( req, res, done ) => {
 	migrationResults = res.locals.migrationResults;
 
 	// create a promise for converting the events CSV file to JSON
-	const eventsLoaded = new Promise( ( resolve, reject ) => {
-		// attempt to convert the events
-		CSVConversionMiddleware.fetchEvents( resolve, reject );
-	});
+	const eventsLoaded = CSVConversionMiddleware.fetchEvents();
+
 	// if the file was successfully converted, it will return the array of events
 	eventsLoaded.then( eventsArray => {
 		// store the events in a variable accessible throughout this file

@@ -23,10 +23,8 @@ module.exports.importAdmin = ( req, res, done ) => {
 	migrationResults = res.locals.migrationResults;
 
 	// create a promise for converting the admin CSV file to JSON
-	const adminsLoaded = new Promise( ( resolve, reject ) => {
-		// attempt to convert the admin
-		CSVConversionMiddleware.fetchAdmins( resolve, reject );
-	});
+	const adminsLoaded = CSVConversionMiddleware.fetchAdmins();
+	
 	// if the file was successfully converted, it will return the array of admin
 	adminsLoaded.then( adminArray => {
 		// store the admin in a variable accessible throughout this file
