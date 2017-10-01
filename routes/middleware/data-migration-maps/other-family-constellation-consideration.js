@@ -13,8 +13,8 @@ exports.getOtherFamilyConstellationConsiderationsMap = ( req, res, done ) => {
 		done => { dataMigrationService.getModelId( { model: 'Other Family Constellation Consideration', field: 'otherFamilyConstellationConsideration', value: 'childless home', mapTo: [ 'childless home' ], namespace: locals.migration.maps.otherFamilyConstellationConsiderations }, done ); },
 		done => { dataMigrationService.getModelId( { model: 'Other Family Constellation Consideration', field: 'otherFamilyConstellationConsideration', value: 'multi-child home', mapTo: [ 'multi-child home' ], namespace: locals.migration.maps.otherFamilyConstellationConsiderations }, done ); },
 		done => { dataMigrationService.getModelId( { model: 'Other Family Constellation Consideration', field: 'otherFamilyConstellationConsideration', value: 'no pets', mapTo: [ 'no pets' ], namespace: locals.migration.maps.otherFamilyConstellationConsiderations }, done ); },
-		done => { dataMigrationService.getModelId( { model: 'Other Family Constellation Consideration', field: 'otherFamilyConstellationConsideration', value: 'requires younger children', mapTo: [ 'requires younger children' ], namespace: locals.migration.maps.otherFamilyConstellationConsiderations }, done ); },
-		done => { dataMigrationService.getModelId( { model: 'Other Family Constellation Consideration', field: 'otherFamilyConstellationConsideration', value: 'requires older children', mapTo: [ 'requires older children' ], namespace: locals.migration.maps.otherFamilyConstellationConsiderations }, done ); }
+		done => { dataMigrationService.getModelId( { model: 'Other Family Constellation Consideration', field: 'otherFamilyConstellationConsideration', value: 'younger children acceptable', mapTo: [ 'requires younger children' ], namespace: locals.migration.maps.otherFamilyConstellationConsiderations }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'Other Family Constellation Consideration', field: 'otherFamilyConstellationConsideration', value: 'older children acceptable', mapTo: [ 'requires older children' ], namespace: locals.migration.maps.otherFamilyConstellationConsiderations }, done ); }
 		
 	], () => {
 
