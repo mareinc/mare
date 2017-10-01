@@ -6,15 +6,17 @@
 
 		events: {
 			'click .save-button'					: 'updateUserInfo',
-			'change .social-worker-title-checkbox'	: 'toggleSocialWorkerTitleTextField',
-			'submit'								: 'disableSubmitButton'
+			'change .social-worker-title-checkbox'	: 'toggleSocialWorkerTitleTextField'
 		},
 
 		initialize: function initialize() {
+			// DOM cache any commonly used elements to improve performance
+			this.$socialWorkerTitle			= this.$( '#social-worker-title' );
+			this.$socialWorkerTitleGroup	= this.$( '.social-worker-title-group' );
 			// create a hook to access the section templates
-			var html 						= $( '#account-info' ).html();
+			var html 		= $( '#account-info' ).html();
 			// compile the templates to be used during rendering/repainting the different sections
-			this.template 					= Handlebars.compile( html );
+			this.template 	= Handlebars.compile( html );
 		},
 
 		render: function render() {
@@ -25,22 +27,17 @@
 		},
 
 		toggleSocialWorkerTitleTextField: function toggleSocialWorkerTitleTextField() {
-			// DOM cache any commonly used elements to improve performance
-			var 
-				$socialWorkerTitle		= this.$( '#social-worker-title' ),
-				$socialWorkerTitleGroup	= this.$( '.social-worker-title-group' )
-			;
+			// hide/show the hidden 'other' field via the hidden class
+			this.$socialWorkerTitleGroup.toggleClass( 'hidden' );
 
-			// Hide/show the hidden 'other' field via the hidden class
-			$socialWorkerTitleGroup.toggleClass( 'hidden' );
-
-			if( $socialWorkerTitleGroup.hasClass( 'hidden' ) ) {
-				// Store 
-				this.storedSocialWorkerTitle = $socialWorkerTitle.val();
-				// Clear out the input box since it's hidden and not part of the form submission
-				$socialWorkerTitle.val( '' );
+			if( this.$socialWorkerTitleGroup.hasClass( 'hidden' ) ) {
+				// store the social worker title to reset the header when the account section is selected again
+				this.storedSocialWorkerTitle = this.$socialWorkerTitle.val();
+				// clear out the input box since it's hidden and not part of the form submission
+				this.$socialWorkerTitle.val( '' );
 			} else {
-				$socialWorkerTitle.val( this.storedSocialWorkerTitle );
+				// if the title group isn't hidden, reset the header with the cached title value
+				this.$socialWorkerTitle.val( this.storedSocialWorkerTitle );
 			}
 		},
 
@@ -66,7 +63,7 @@
 			// send a put request to the server with the updated user information
 			$.ajax({
 				type: 'PUT',
-				url: "account/user-info",
+				url: 'account/user-info',
 				data: data,
 				success: function( user ) {
 					console.log( user );
@@ -75,38 +72,22 @@
 		},
 
 		fetchFormData: function fetchFormData() {
-			// fetch all the values stored in the form
-			var firstName				= $( '#first-name' ).val(),
-				lastName				= $( '#last-name' ).val(),
-				email					= $( '#email' ).val(),
-				homePhone				= $( '#home-phone' ).val(),
-				mobilePhone				= $( '#mobile-phone' ).val(),
-				workPhone				= $( '#work-phone' ).val(),
-				address1				= $( '#address-1' ).val(),
-				address2				= $( '#address-2' ).val(),
-				zipCode					= $( '#zip-code' ).val(),
-				isMassachusettsResident	= $( '#is-massachusetts-resident' ).is( ':checked' );
-
-			// store the values in an object
+			// store all the values in the form as an object
 			var formData = {
-				firstName				: firstName,
-				lastName				: lastName,
-				email					: email,
-				homePhone				: homePhone,
-				mobilePhone				: mobilePhone,
-				workPhone				: workPhone,
-				address1				: address1,
-				address2				: address2,
-				zipCode					: zipCode,
-				isMassachusettsResident	: isMassachusettsResident
-			}
+				firstName				: $( '#first-name' ).val(),
+				lastName				: $( '#last-name' ).val(),
+				email					: $( '#email' ).val(),
+				homePhone				: $( '#home-phone' ).val(),
+				mobilePhone				: $( '#mobile-phone' ).val(),
+				workPhone				: $( '#work-phone' ).val(),
+				address1				: $( '#address-1' ).val(),
+				address2				: $( '#address-2' ).val(),
+				zipCode					: $( '#zip-code' ).val(),
+				isMassachusettsResident	: $( '#is-massachusetts-resident' ).is( ':checked' )
+			};
 
 			// return an object containing only the fields that are not undefined
 			return _.omit( formData, _.isUndefined );
-		},
-
-		disableSubmitButton: function disableDonateButton() {
-			this.$( '.submit' ).attr( 'disabled', 'disabled' );
 		}
 	});
 }());
