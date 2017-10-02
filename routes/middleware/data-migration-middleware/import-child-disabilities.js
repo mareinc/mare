@@ -90,11 +90,8 @@ module.exports.generateChildDisabilities = function* generateChildDisabilities()
 // a function paired with the generator to append data to a record and request the generator to process the next once finished
 module.exports.updateChildRecord = ( childDisability, pauseUntilSaved ) => {
 
-	// create a promise
-	const childLoaded = new Promise( ( resolve, reject ) => {
-		// for fetching the first child
-		utilityModelFetch.getChildByRegistrationNumber( resolve, reject, childDisability.chd_id );
-	});
+	// fetch the first child
+	const childLoaded = utilityModelFetch.getChildByRegistrationNumber( childDisability.chd_id );
 	// populate disability field of the child specified in the disability record
 	childLoaded.then( child => {
 		// find the disability id using the disabilities map

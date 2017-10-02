@@ -110,9 +110,8 @@ module.exports.updateAgencyRecord = ( agencyId, agencyContactId, pauseUntilSaved
 		utilityModelFetch.getAgencyById( resolve, reject, agencyId );
 	});	
 	// create a promise for fetching the current agency contact record
-	const agencyContactLoaded = new Promise( ( resolve, reject ) => {
-		utilityModelFetch.getSocialWorkerById( resolve, reject, agencyContactId );
-	});
+	const agencyContactLoaded = utilityModelFetch.getSocialWorkerById( agencyContactId );
+
 	// when both resolve
 	Promise.all( [ agencyLoaded, agencyContactLoaded ] ).then( values => {
 		// store the retrieved agency and agency contact in local variables

@@ -118,11 +118,8 @@ module.exports.updateChildRecord = ( ids, childOldId, pauseUntilSaved ) => {
 
 	const mediaEligibilityIds = Array.from( ids );
 
-	// create a promise
-	const childLoaded = new Promise( ( resolve, reject ) => {
-		// for fetching the child
-		utilityModelFetch.getChildByRegistrationNumber( resolve, reject, childOldId );
-	});
+	// fetch the child
+	const childLoaded = utilityModelFetch.getChildByRegistrationNumber( childOldId );
 	
 	// when the promise resolves
 	childLoaded.then( child => {

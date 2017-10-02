@@ -122,11 +122,8 @@ module.exports.updateFamilyRecord = ( recruitmentChecklistItems, familyRegistrat
 
 	const recruitmentChecklistItemsArray = Array.from( recruitmentChecklistItems );
 
-	// create a promise
-	const familyLoaded = new Promise( ( resolve, reject ) => {
-		// for fetching the family
-		utilityModelFetch.getFamilyByRegistrationNumber( resolve, reject, familyRegistrationNumber );
-	});
+	// fetch the family
+	const familyLoaded = utilityModelFetch.getFamilyByRegistrationNumber( familyRegistrationNumber );
 
 	familyLoaded.then( family => {
 		// create an array from the recruitment checklist actions associated with the current family

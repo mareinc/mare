@@ -113,11 +113,8 @@ module.exports.generateSiblings = function* generateSiblings() {
 module.exports.updateChildRecord = ( ids, pauseUntilSaved ) => {
 
 	const [ childRegistrationNumber, ...siblingRegistrationNumbers ] = ids;
-	// create a promise
-	const childLoaded = new Promise( ( resolve, reject ) => {
-		// for fetching the first child
-		utilityModelFetch.getChildByRegistrationNumber( resolve, reject, childRegistrationNumber );
-	});
+	// fetch the first child
+	const childLoaded = utilityModelFetch.getChildByRegistrationNumber( childRegistrationNumber );
 	// create a promise
 	const siblingsLoaded = new Promise( ( resolve, reject ) => {
 		// for fetching the _ids from other children

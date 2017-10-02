@@ -121,11 +121,8 @@ module.exports.updateChildRecord = ( recruitmentChecklistItems, childRegistratio
 
 	const recruitmentChecklistItemsArray = Array.from( recruitmentChecklistItems );
 
-	// create a promise
-	const childLoaded = new Promise( ( resolve, reject ) => {
-		// for fetching the child
-		utilityModelFetch.getChildByRegistrationNumber( resolve, reject, childRegistrationNumber );
-	});
+	// fetch the child
+	const childLoaded = utilityModelFetch.getChildByRegistrationNumber( childRegistrationNumber );
 
 	childLoaded.then( child => {
 		// create an array from the recruitment checklist actions associated with the current child

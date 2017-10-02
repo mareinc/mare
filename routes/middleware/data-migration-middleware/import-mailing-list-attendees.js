@@ -167,16 +167,10 @@ module.exports.createInquiryRecord = ( inquiry, pauseUntilSaved ) => {
 		// for fetching the admin who created the inquiry
 		utilityModelFetch.getAdminById( resolve, reject, inquiry.taken_by );
 	});
-	// create a promise
-	const socialWorkerLoaded = new Promise( ( resolve, reject ) => {
-		// for fetching the social worker responsible for the inquiry
-		utilityModelFetch.getSocialWorkerById( resolve, reject, inquiry.agc_id );
-	});
-	// create a promise
-	const familyLoaded = new Promise( ( resolve, reject ) => {
-		// for fetching the family responsible for the inquiry
-		utilityModelFetch.getFamilyByRegistrationNumber( resolve, reject, inquiry.fam_id );
-	});
+	// fetch the social worker
+	const socialWorkerLoaded = utilityModelFetch.getSocialWorkerById( inquiry.agc_id );
+	// fetch the family
+	const familyLoaded = utilityModelFetch.getFamilyByRegistrationNumber( inquiry.fam_id );
 	// create a promise
 	const sourceLoaded = new Promise( ( resolve, reject ) => {
 		// for fetching the recruitment source

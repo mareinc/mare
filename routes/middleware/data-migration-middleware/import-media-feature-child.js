@@ -85,11 +85,8 @@ module.exports.generateMediaFeatureChildren = function* generateMediaFeatureChil
 
 // a function paired with the generator to append data to a record and request the generator to process the next once finished
 module.exports.updateMediaFeatureRecord = ( mediaFeatureChild, pauseUntilSaved ) => {
-    // create a promise
-	const childLoaded = new Promise( ( resolve, reject ) => {
-		// for fetching the first child
-		utilityModelFetch.getChildByRegistrationNumber( resolve, reject, mediaFeatureChild.chd_id );
-	});
+    // fetch the first child
+	const childLoaded = utilityModelFetch.getChildByRegistrationNumber( mediaFeatureChild.chd_id );
 	// create a promise
 	const mediaFeatureLoaded = new Promise( ( resolve, reject ) => {
 		// for fetching the _ids from other children

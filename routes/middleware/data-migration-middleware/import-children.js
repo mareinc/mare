@@ -156,18 +156,13 @@ module.exports.createChildRecord = ( child, pauseUntilSaved ) => {
 	let adoptionWorkerId = child.adoption_agc_id,
 		recruitmentWorkerId = child.recruitment_agc_id;
 	// create a promise for fetching the adoption worker associated with the child
-	const adoptionWorkerLoaded = new Promise( ( resolve, reject ) => {
-		utilityModelFetch.getSocialWorkerById( resolve, reject, adoptionWorkerId );
-	});
+	const adoptionWorkerLoaded = utilityModelFetch.getSocialWorkerById( adoptionWorkerId );
 	// create a promise for fetching the recruitment worker associated with the child
-	const recruitmentWorkerLoaded = new Promise( ( resolve, reject ) => {
-		utilityModelFetch.getSocialWorkerById( resolve, reject, recruitmentWorkerId );
-	});
+	const recruitmentWorkerLoaded = utilityModelFetch.getSocialWorkerById( recruitmentWorkerId );
 	// once we've fetched the child's social worker
 	Promise.all( [ adoptionWorkerLoaded, recruitmentWorkerLoaded ] ).then( socialWorkers => {
 		// destructure the adoption worker and recruitment worker from the returned promises in local variables
-		const adoptionWorker = socialWorkers[ 0 ];
-		const recruitmentWorker = socialWorkers[ 1 ];
+		const [ adoptionWorker, recruitmentWorker ] = socialWorkers;
 
 		// populate fields of a new Child object
 		let newChild = new Child.model({

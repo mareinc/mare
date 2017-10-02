@@ -87,16 +87,10 @@ module.exports.generateFamilies = function* generateFamilies() {
 // a function paired with the generator to create a record and request the generator to process the next once finished
 module.exports.createFamilyRecord = ( family, pauseUntilSaved ) => {
 
-	// create a promise
-	const familyLoaded = new Promise( ( resolve, reject ) => {
-		// for fetching the family
-		utilityModelFetch.getFamilyByRegistrationNumber( resolve, reject, family.fam_id );
-	});
-	// create a promise
-	const socialWorkerLoaded = new Promise( ( resolve, reject ) => {
-		// for fetching the family's social worker
-		utilityModelFetch.getSocialWorkerById( resolve, reject, family.social_worker_agc_id );
-	});
+	// fetch the family
+	const familyLoaded = utilityModelFetch.getFamilyByRegistrationNumber( family.fam_id );
+	// fetch the family's social worker
+	const socialWorkerLoaded = utilityModelFetch.getSocialWorkerById( family.social_worker_agc_id );
 
 	Promise.all( [ familyLoaded, socialWorkerLoaded ] ).then( values => {
 		// store the retrieved family and family social worker in local variables

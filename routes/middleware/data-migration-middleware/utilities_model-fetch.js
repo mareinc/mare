@@ -87,31 +87,36 @@ module.exports.getAgencyIdsByOldIds = ( resolve, reject, oldIds ) => {
 		});
 };
 
-module.exports.getSocialWorkerById = ( resolve, reject, socialWorkerId ) => {
+module.exports.getSocialWorkerById = socialWorkerId => {
 
-	if( !socialWorkerId ) {
-		return resolve( undefined );
-	}
+	return new Promise( ( resolve, reject ) => {
+		if( !socialWorkerId ) {
+			return resolve( undefined );
+		}
+	
+		SocialWorker.model
+			.findOne()
+			.where( 'oldId', socialWorkerId )
+			.exec()
+			.then( retrievedSocialWorker => {
+				// if no social worker was found
+				if( !retrievedSocialWorker ) {
+					// log the issue
+					console.error( `error fetching social worker by oldId ${ socialWorkerId }` );
+					// and resolve the promise with an undefined value
+					resolve( undefined );
+				}
+				// otherwise, accept the promise and pass back the retrieved social worker
+				resolve( retrievedSocialWorker );
+	
+			}, err => {
+	
+				console.error( `error in getSocialWorkerById() ${ err }` );
+				reject();
+			});
+	});
 
-	SocialWorker.model.findOne()
-		.where( 'oldId', socialWorkerId )
-		.exec()
-		.then( retrievedSocialWorker => {
-			// if no social worker was found
-			if( !retrievedSocialWorker ) {
-				// log the issue
-				console.error( `error fetching social worker by oldId ${ socialWorkerId }` );
-				// and resolve the promise with an undefined value
-				resolve( undefined );
-			}
-			// otherwise, accept the promise and pass back the retrieved social worker
-			resolve( retrievedSocialWorker );
-
-		}, err => {
-
-			console.error( `error in getSocialWorkerById() ${ err }` );
-			reject();
-		});
+	
 };
 
 module.exports.getSocialWorkerIdsByOldIds = ( resolve, reject, oldIds ) => {
@@ -143,27 +148,36 @@ module.exports.getSocialWorkerIdsByOldIds = ( resolve, reject, oldIds ) => {
 		});
 };
 
-module.exports.getChildByRegistrationNumber = ( resolve, reject, registrationNumber ) => {
-	/* TODO: short circuit the fetch here by just resolving if there are no oldIds */
-	Child.model.findOne()
-		.where( 'registrationNumber', registrationNumber )
-		.exec()
-		.then( retrievedChild => {
-			// if no child was found
-			if( !retrievedChild ) {
-				// log the issue
-				console.error( `error fetching child by registration number ${ registrationNumber }` );
-				// and resolve the promise with an undefined value
-				resolve( undefined );
-			}
-			// otherwise, accept the promise and pass back the retrieved child
-			resolve( retrievedChild );
+module.exports.getChildByRegistrationNumber = registrationNumber => {
 
-		}, err => {
+	return new Promise( ( resolve, reject ) => {
+		// if no registration number was passed in
+		if( !registrationNumber ) {
+			// resolve the promise on the spot
+			return resolve();
+		}
 
-			console.error( `error in getChildByRegistrationNumber() ${ err }` );
-			reject();
-		});
+		Child.model
+			.findOne()
+			.where( 'registrationNumber', registrationNumber )
+			.exec()
+			.then( retrievedChild => {
+				// if no child was found
+				if( !retrievedChild ) {
+					// log the issue
+					console.error( `error fetching child by registration number ${ registrationNumber }` );
+					// and resolve the promise with an undefined value
+					resolve( undefined );
+				}
+				// otherwise, accept the promise and pass back the retrieved child
+				resolve( retrievedChild );
+
+			}, err => {
+
+				console.error( `error in getChildByRegistrationNumber() ${ err }` );
+				reject();
+			});
+	});
 };
 
 module.exports.getChildIdsByRegistrationNumbers = ( resolve, reject, registrationNumbers ) => {
@@ -218,31 +232,35 @@ module.exports.getMediaFeatureById = ( resolve, reject, mediaFeatureId ) => {
 		});
 };
 
-module.exports.getFamilyByRegistrationNumber = ( resolve, reject, registrationNumber ) => {
+module.exports.getFamilyByRegistrationNumber = registrationNumber => {
 
-	if( !registrationNumber ) {
-		return resolve( undefined );
-	}
+	return new Promise( ( resolve, reject ) => {
 
-	Family.model.findOne()
-		.where( 'registrationNumber', registrationNumber )
-		.exec()
-		.then( retrievedFamily => {
-			// if no family was found
-			if( !retrievedFamily ) {
-				// log the issue
-				console.error( `error fetching family by registrationNumber ${ registrationNumber }` );
-				// and resolve the promise with an undefined value
-				resolve( undefined );
-			}
-			// otherwise, accept the promise and pass back the retrieved family
-			resolve( retrievedFamily );
+		if( !registrationNumber ) {
+			return resolve( undefined );
+		}
 
-		}, err => {
+		Family.model
+			.findOne()
+			.where( 'registrationNumber', registrationNumber )
+			.exec()
+			.then( retrievedFamily => {
+				// if no family was found
+				if( !retrievedFamily ) {
+					// log the issue
+					console.error( `error fetching family by registrationNumber ${ registrationNumber }` );
+					// and resolve the promise with an undefined value
+					resolve( undefined );
+				}
+				// otherwise, accept the promise and pass back the retrieved family
+				resolve( retrievedFamily );
 
-			console.error( `error in getFamilyByRegistrationNumber() ${ err }` );
-			reject();
-		});
+			}, err => {
+
+				console.error( `error in getFamilyByRegistrationNumber() ${ err }` );
+				reject();
+			});
+	});
 };
 
 module.exports.getFamilyIdsByRegistrationNumbers = ( resolve, reject, registrationNumbers ) => {

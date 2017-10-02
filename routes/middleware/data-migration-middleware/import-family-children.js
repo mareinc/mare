@@ -121,11 +121,8 @@ module.exports.updateFamilyRecord = ( children, familyId, pauseUntilSaved ) => {
 
 	const childrenArray = Array.from( children );
 
-	// create a promise
-	const familyLoaded = new Promise( ( resolve, reject ) => {
-		// for fetching the family
-		utilityModelFetch.getFamilyByRegistrationNumber( resolve, reject, familyId );
-	});
+	// fetch the family
+	const familyLoaded = utilityModelFetch.getFamilyByRegistrationNumber( familyId );
 
 	familyLoaded.then( family => {
 		// keep track of the current child we're adding to the family
