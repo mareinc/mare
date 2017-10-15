@@ -35,7 +35,7 @@
     "node-sass": "^4.5.3",
     "node-sass-middleware": "^0.11.0",
     "q": "^1.5.0",
-    "stripe": "^4.24.0",
+    "stripe": "^5.0.0",
     "underscore": "~1.8.3"
   },
   "engines": {
