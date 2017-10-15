@@ -37,8 +37,8 @@ const Child = new keystone.List('Child', {
 // Create fields
 Child.add('Display Options', {
 
-	siteVisibility: { type: Types.Select, label: 'child is visible to', options: 'everyone, registered social workers and families', required: true, initial: true },
-	isVisibleInGallery: { type: Types.Boolean, label: 'child is visible on MARE web', note: 'this will make the child visible to everyone', initial: true },
+	siteVisibility: { type: Types.Select, label: 'child is visible to', options: 'everyone, only registered social workers and families', required: true, initial: true },
+	isVisibleInGallery: { type: Types.Boolean, label: 'activate child profile on website to group selected', note: 'authorized staff only', initial: true },
 	visibleInGalleryDate: { type: Types.Date, label: 'date added to MARE web', format: 'MM/DD/YYYY', dependsOn: {isVisibleInGallery: true }, initial: true }
 
 }, 'Child Information', {

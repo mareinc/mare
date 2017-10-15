@@ -199,13 +199,11 @@
 					requiresNoSiblings			= child.get( 'requiresNoSiblings' ),
 					olderChildrenAcceptable		= child.get( 'olderChildrenAcceptable' ),
 					youngerChildrenAcceptable	= child.get( 'youngerChildrenAcceptable' ),
-					noPets						= child.get( 'noPets' ),
-				// keep track of whether there are no other family constellation considerations listed for the child
+					// keep track of whether there are no other family constellation considerations listed for the child
 					hasOtherFamilyConstellationConsiderations = requiresSiblings
-															 || requiresNoSiblings
-															 || youngerChildrenAcceptable
-															 || olderChildrenAcceptable
-															 || noPets;
+															|| requiresNoSiblings
+															|| youngerChildrenAcceptable
+															|| olderChildrenAcceptable;
 				// assume that the family doesn't match with the child
 				var otherFamilyConstellationConsiderationsMatch = false;
 				/* NOTE: this logic is meant to be inclusive, so any matches on the child will add them to the search results */
@@ -238,15 +236,11 @@
 							otherFamilyConstellationConsiderationsMatch = true;
 						}
 					}
-					// if thie child requires no pets and the family has no pets, they should be included in the search results
-					if( noPets ) {
-						if( !formFields.petsInHome ) {
-							otherFamilyConstellationConsiderationsMatch = true;
-						}
-					}
 				}
 				// break out of the loop if none of the other considerations selected match the sibling group ( return is needed for this in _.each )
 				if( !otherFamilyConstellationConsiderationsMatch ) { return; }
+				// if the child requires no pets and the family has pets, they should be be excluded from the search results
+				if( formFields.petsInHome && child.get( 'noPets' ) ) { return; }
 				// if the child passes all checks, add them to the collection to display on the gallery
 				mare.collections.galleryChildren.add( child );
 			});
@@ -325,7 +319,7 @@
 				if( formFields.familyConstellation &&
 					siblingGroup.get( 'recommendedFamilyConstellations' ).length > 0 &&
 					siblingGroup.get( 'recommendedFamilyConstellations' ).indexOf( formFields.familyConstellation ) === -1 ) { return; }
-					// determine if selections were made about the family, if not, don't use it to restrict search results
+				// determine if selections were made about the family, if not, don't use it to restrict search results
 				var numberOfChildrenInHomeSelected	= formFields.numberOfChildrenInHome !== '',
 					oldestChildAgeInHomeSelected	= formFields.oldestChildAgeInHome !== '',
 					youngestChildAgeInHomeSelected	= formFields.youngestChildAgeInHome !== '';
@@ -334,13 +328,11 @@
 					requiresNoSiblings			= siblingGroup.get( 'requiresNoSiblings' ).indexOf( true ) !== -1,
 					olderChildrenAcceptable		= siblingGroup.get( 'olderChildrenAcceptable' ).indexOf( true ) !== -1,
 					youngerChildrenAcceptable	= siblingGroup.get( 'youngerChildrenAcceptable' ).indexOf( true ) !== -1,
-					noPets						= siblingGroup.get( 'noPets' ).indexOf( true ) !== -1,
 					// keep track of whether there are no other family constellation considerations listed for any of the siblings
 					hasOtherFamilyConstellationConsiderations = requiresSiblings
 															 || requiresNoSiblings
 															 || youngerChildrenAcceptable
-															 || olderChildrenAcceptable
-															 || noPets;
+															 || olderChildrenAcceptable;
 				// assume that the family doesn't match with the sibling group
 				var otherFamilyConstellationConsiderationsMatch = false;
 				/* NOTE: this logic is meant to be inclusive, so any matches on any of the siblings needs will add them to the search results */
@@ -373,13 +365,9 @@
 							otherFamilyConstellationConsiderationsMatch = true;
 						}
 					}
-					// if any siblings require no pets and the family has no pets, they should be included in the search results
-					if( noPets ) {
-						if( !formFields.petsInHome ) {
-							otherFamilyConstellationConsiderationsMatch = true;
-						}
-					}
-				}	
+				}
+				// if any siblings require no pets and the family has pets, they should be excluded from the search results
+				if( formFields.petsInHome && siblingGroup.get( 'noPets' ).indexOf( true ) !== -1 ) { return; }
 				// break out of the loop if none of the other considerations selected match the sibling group ( return is needed for this in _.each )
 				if( !otherFamilyConstellationConsiderationsMatch ) { return; }
 				// if the sibling group passes all checks, add them to the collection to display on the gallery
