@@ -15,27 +15,27 @@
     "express-handlebars": "~3.0.0",
     "gulp": "gulpjs/gulp#4.0",
     "gulp-autoprefixer": "^4.0.0",
-    "gulp-clean-css": "^3.7.0",
+    "gulp-clean-css": "^3.9.0",
     "gulp-concat": "^2.6.1",
     "gulp-eslint": "^3.0.1",
     "gulp-filter": "^5.0.1",
     "gulp-ignore": "^2.0.2",
-    "gulp-imagemin": "^3.3.0",
+    "gulp-imagemin": "^3.4.0",
     "gulp-mocha": "^4.3.1",
     "gulp-rename": "^1.2.2",
     "gulp-sass": "^3.1.0",
-    "gulp-sourcemaps": "^2.6.0",
+    "gulp-sourcemaps": "^2.6.1",
     "gulp-uglify": "^3.0.0",
     "gulp-watch": "~4.3.11",
     "handlebars": "~4.0.10",
     "keystone": "https://github.com/keystonejs/keystone.git#c38b366c7b1bf01448c8ece7c36e1bb6eb195186",
-    "moment": "~2.18.1",
+    "moment": "~2.19.1",
     "mongoose-simple-random": "^0.4.1",
-    "newrelic": "^2.1.0",
+    "newrelic": "^2.2.2",
     "node-sass": "^4.5.3",
     "node-sass-middleware": "^0.11.0",
     "q": "^1.5.0",
-    "stripe": "^4.24.0",
+    "stripe": "^5.1.1",
     "underscore": "~1.8.3"
   },
   "engines": {
@@ -48,9 +48,9 @@
   },
   "main": "keystone.js",
   "devDependencies": {
-    "chai": "^4.1.1",
-    "mocha": "^3.5.0",
-    "sinon": "^3.2.1",
-    "sinon-chai": "^2.13.0"
+    "chai": "^4.1.2",
+    "mocha": "^4.0.1",
+    "sinon": "^4.0.1",
+    "sinon-chai": "^2.14.0"
   }
 }
