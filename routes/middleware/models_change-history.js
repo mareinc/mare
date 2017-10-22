@@ -212,24 +212,22 @@ exports.setUpdatedby = ( targetModel, done ) => {
 	if( !targetModel.updatedBy ) {
 
 		keystone.list( 'Admin' ).model
-				.find()
-				.where( 'name.full' ).equals( 'Website Bot' )
-				.select( '_id name' )
-				.lean()
-				.exec()
-				.then( adminArray => {
-					// destructure the single returned admin from the returned array
-					const [ websiteBot ] = adminArray; 
-					// set the updatedBy field to the id of the website bot
-					targetModel.updatedBy = websiteBot._id;
+			.findOne()
+			.where( 'name.full' ).equals( 'Website Bot' )
+			.select( '_id name' )
+			.lean()
+			.exec()
+			.then( websiteBot => {
+				// set the updatedBy field to the id of the website bot
+				targetModel.updatedBy = websiteBot._id;
 
-					done();
-				}, err => {
+				done();
+			}, err => {
 
-					console.log( err );
+				console.log( err );
 
-					done();
-				});
+				done();
+			});
 	// otherwise, if the user was created using the admin UI
 	} else {
 		// TODO: move this check to the top to match other functions and make more readable
