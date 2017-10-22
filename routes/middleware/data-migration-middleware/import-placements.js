@@ -1,3 +1,10 @@
+/* IMPORTANT NOTE: THIS FILE IS NOT COMPLETE, AND WAS CHECKED IN AS A PARTIAL IMPLEMENTATION
+ * 
+ * NOTE: still trying to figure out how to match specific placements with placement sources.  It appears
+ * 		 placement sources are linked to children, but not placements, and placements are linked to children
+ * 		 and are missing placement sources
+ */
+
 const keystone					= require( 'keystone' );
 const Placement 				= keystone.list( 'Placement' );
 // utility middleware
@@ -6,10 +13,10 @@ const utilityModelFetch			= require( './utilities_model-fetch' );
 // csv conversion middleware
 const CSVConversionMiddleware	= require( './utilities_csv-conversion' );
 
-// create an array to hold all placements.  This is created here to be available to multiple functions below
+// create an array to hold all placements.  These are created here to be available to multiple functions below
 let placements;
 // expose done to be available to all functions below
-let importPlacementsComplete;
+let placementsImportComplete;
 // expose the array storing progress through the migration run
 let migrationResults;
 // create an array to store problems during the import
@@ -17,21 +24,55 @@ let importErrors = [];
 
 module.exports.importPlacements = ( req, res, done ) => {
 	// expose done to our generator
-	importPlacementsComplete = done;
+	placementsImportComplete = done;
 	// expose our migration results array
 	migrationResults = res.locals.migrationResults;
 
 	// create a promise for converting the placements CSV file to JSON
-	const placementsLoaded = new Promise( ( resolve, reject ) => {
-		// attempt to convert the placements
-		CSVConversionMiddleware.fetchPlacements( resolve, reject );
-	});
+	const placementsLoaded = CSVConversionMiddleware.fetchPlacements();
+	// create a promise for converting the placement source CSV file to JSON
+	const placementSourcesLoaded = CSVConversionMiddleware.fetchPlacementSources();
+
+	// TODO: need to load recruitment sources
+
+	// TODO: in the main part, need to fetch the child by old id
+	// TODO: in the main part, need to fetch the family by old id
+
 	// if the file was successfully converted, it will return the array of placements
-	placementsLoaded.then( placementsArray => {
-		// store the placements in a variable accessible throughout this file
-		placements = placementsArray;
+	Promise.all( [ placementsLoaded, placementSourcesLoaded ] ).then( values => {
+		// store the retrieved placements and placement sources in local variables
+		const [ placementsArray, placementSourcesArray ] = values;
+
+		const placements = new Map()
+
+		for( let placement of placementsArray ) {
+			if( placements.has( placement.chd_id ) ) {
+				placements.get( placement.chd_id ).placements.push( placement );
+			} else {
+				placements.set( placement.chd_id, { sources: [], placements: [ placement ] } );
+			}
+		}
+
+		for( let placementSource of placementSourcesArray ) {
+			if( placements.has( placementSource.chd_id ) ) {
+				placements.get( placementSource.chd_id ).sources.push( placementSource );
+			} else {
+				placements.set( placementSource.chd_id, { sources: [ placementSource ], placements: [] } );
+			}
+		}
+
+		let badCount = 0;
+
+		for( let [ key, placement ] of placements ) {
+			if( placement.sources.length !== placement.placements.length ) {
+				console.log( `${ key } - sources: ${ placement.sources.length }, placements: ${ placement.placements.length }` );
+				badCount++;
+			}
+		}
+		console.log( `${ badCount } entries with number of sources and placements that don't match` );
 		// kick off the first run of our generator
-		placementGenerator.next();
+		// placementGenerator.next();
+		var x = 10;
 	// if there was an error converting the placements file
 	}).catch( reason => {
 		console.error( `error processing placements` );
@@ -90,29 +131,10 @@ module.exports.generatePlacements = function* generatePlacements() {
 // a function paired with the generator to create a record and request the generator to process the next once finished
 module.exports.createPlacementRecord = ( placement, pauseUntilSaved ) => {
 
-	// create a promise for fetching the child
-	const childLoaded = new Promise( ( resolve, reject ) => {
-		// if the placement doesn't have a child listed
-		if( !placement.chd_id ) {
-			// resolve the promise on the spot
-			resolve();
-		// otherwise, use the child id to fetch their record in the new system
-		} else {
-			utilityModelFetch.getChildByRegistrationNumber( resolve, reject, placement.chd_id );
-		}
-	});
-	// create a promise for fetching the family
-	const familyLoaded = new Promise( ( resolve, reject ) => {
-		// if the placement doesn't have a family listed
-		if ( !placement.fam_id ) {
-			// resolve the promise on the spot
-			resolve();
-		// otherwise, use the family id to fetch their record in the new system
-		} else {
-			// for fetching the _ids from other children
-			utilityModelFetch.getFamilyByRegistrationNumber( resolve, reject, placement.fam_id );
-		}
-	});
+	// fetch the child
+	const childLoaded = utilityModelFetch.getChildByRegistrationNumber( placement.chd_id );
+	// fetch the family
+	const familyLoaded = utilityModelFetch.getFamilyByRegistrationNumber( placement.fam_id );
 
 	Promise.all( [ childLoaded, familyLoaded ] ).then( values => {
 
