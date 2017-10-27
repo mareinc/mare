@@ -89,6 +89,12 @@ SiteVisitor.schema.virtual('canAccessKeystone').get(function() {
 	return false;
 });
 
+SiteVisitor.schema.virtual( 'displayName' ).get( function() {
+	'use strict';
+
+	return `${ this.name.first } ${ this.name.last }`;
+});
+
 // Define default columns in the admin interface and register the model
 SiteVisitor.defaultColumns = 'name.full, email, isActive';
 SiteVisitor.register();

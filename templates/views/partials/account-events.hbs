@@ -1,0 +1,14 @@
+<script id="account-events" type="text/x-handlebars-template">
+
+    <h1 class="account-current-section__title">Upcoming Events:</h1>
+
+    <ul>
+        {{#each events}}
+        <li>
+            <img style="height: 75px; width: 75px;" src="{{image.url}}" alt="{{name}}">
+            <a href="{{url}}">{{name}}</a>
+        </li>
+        {{/each}}
+    </ul>
+
+</script>

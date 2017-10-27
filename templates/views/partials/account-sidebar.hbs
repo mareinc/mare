@@ -1,0 +1,13 @@
+<script id="account-sidebar" type="text/x-handlebars-template">
+
+    <ul class="sidebar-list">
+        <li class="button button--teal account-nav__link \{{#ifeq selectedRoute 'info' }}account-nav__link--active\{{/ifeq}}" data-section="info">My Information</li>
+        <li class="button button--teal account-nav__link \{{#ifeq selectedRoute 'email-list' }}account-nav__link--active\{{/ifeq}}" data-section="email-list">Email Lists</li>
+        <li class="button button--teal account-nav__link \{{#ifeq selectedRoute 'events' }}account-nav__link--active\{{/ifeq}}" data-section="events">Events</li>
+        <li class="button button--teal account-nav__link \{{#ifeq selectedRoute 'children' }}account-nav__link--active\{{/ifeq}}" data-section="children">Children</li>
+        {{#ifeq user.userType 'admin'}}
+        <a href="/keystone"><li class="button button--green account-nav__link account-nav__link--admin">Admin Panel</li></a>
+        {{/ifeq}}
+    </ul>
+
+</script>

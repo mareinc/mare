@@ -1,4 +1,4 @@
-// TODO: This is a big one.  Review all middleware and come up with a better division of labor.  All email sending in email_ middleware
+// TODO: this is a big one.  Review all middleware and come up with a better division of labor.  All email sending in email_ middleware
 //		 but we might want to find a better separation of concerns for fetching model data, modifying models, and utility functions to make
 //		 all these middleware files more readable and maintainable.  This involves a review of every middleware function.
 
@@ -166,7 +166,7 @@ exports.registerUser = ( req, res, next ) => {
 				});
 
 			} else if ( registrationType === 'family' ) {
-				// Store any uploaded files
+				// store any uploaded files
 				// TODO: these still need to be handled
 				const files = req.files;
 				// save the family model
@@ -409,7 +409,7 @@ exports.saveFamily = user => {
 			stages 								: exports.getStages( user ),
 
 			homestudy: {
-				completed						: !user.processProgression ? false : user.processProgression.indexOf( 'homestudyCompleted' ) !== -1 ? true : false,
+				completed						: !user.processProgression ? false : user.processProgression.indexOf( 'homestudyCompleted' ) !== -1,
 				initialDate						: !user.processProgression ? undefined : user.processProgression.indexOf( 'homestudyCompleted' ) !== -1 ? user.homestudyDateComplete : undefined
 			},
 
@@ -428,7 +428,7 @@ exports.saveFamily = user => {
 				number							: parseInt( user.otherAdultsInHome, 10 )
 			},
 
-			havePetsInHome						: user.havePets === 'yes' ? true : false,
+			havePetsInHome						: user.havePets === 'yes',
 
 			socialWorkerNotListed				: true,
 			socialWorkerText					: user.socialWorkerName,
@@ -443,8 +443,8 @@ exports.saveFamily = user => {
 				},
 
 				numberOfChildrenToAdopt			: user.numberOfChildrenPrefered ? parseInt( user.numberOfChildrenPrefered, 10 ) : 0,
-				siblingContact					: user.contactWithBiologicalSiblings === 'yes' ? true : false,
-				birthFamilyContact				: user.contactWithBiologicalParents === 'yes' ? true : false,
+				siblingContact					: user.contactWithBiologicalSiblings === 'yes',
+				birthFamilyContact				: user.contactWithBiologicalParents === 'yes',
 				race							: user.adoptionPrefRace,
 
 				maxNeeds: {
@@ -475,7 +475,7 @@ exports.saveFamily = user => {
 	});
 };
 
-/* Return true if the submitted email is valid */
+/* return true if the submitted email is valid */
 exports.validateEmail = email => {
 
 	// a string to validate that an email is valid
@@ -484,7 +484,7 @@ exports.validateEmail = email => {
 	return emailPattern.test( email );
 };
 
-/* Return true if the submitted email already exists in the system for a user of any type */
+/* return true if the submitted email already exists in the system for a user of any type */
 exports.checkForDuplicateEmail = email => {
 	
 	// return a promise for cleaner asynchronous processing
@@ -495,7 +495,7 @@ exports.checkForDuplicateEmail = email => {
 			.where( 'email', email )
 			.exec( ( err, user ) => {
 				// if we've found a user with the same email, it's a duplicate
-				const isEmailDuplicate = user ? true : false;
+				const isEmailDuplicate = user;
 
 				resolve( isEmailDuplicate );
 
@@ -509,7 +509,7 @@ exports.checkForDuplicateEmail = email => {
 	});
 }
 
-/* Return true if the submitted 'password' and 'confirm password' match */
+/* return true if the submitted 'password' and 'confirm password' match */
 exports.validatePassword = ( password, confirmPassword ) => {
 
 	return password === confirmPassword;

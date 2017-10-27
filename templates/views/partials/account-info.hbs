@@ -1,0 +1,76 @@
+<script id="account-info" type="text/x-handlebars-template">
+
+    <h1 class="account-current-section__title">Account Information</h1>
+
+    <h2>current section is \{{ currentSection }}</h2>
+    <form enctype="multipart/form-data" action="/account-update" method="POST">
+        <div class="row form-group">
+            <div class="col-sm-12">
+                <label class="label" for="account-info-first-name">First Name:</label>
+                <input class="input" type="text" id="account-info-first-name" value="{{user.name.first}}" placeholder="First Name">
+            </div>
+
+            <div class="col-sm-12">
+                <label class="label" for="account-info-last-name">Last Name:</label>
+                <input class="input" type="text" id="account-info-last-name" value="{{user.name.last}}" placeholder="Last Name">
+            </div>
+        </div>
+        <div class="row form-group">
+            <div class="col-sm-12">
+                <label class="label" for="account-info-email">Email:</label>
+                <input class="input" type="text" id="account-info-email" value="{{user.email}}" placeholder="Email">
+            </div>
+
+        </div>
+        <div class="row form-group">
+            <div class="col-sm-8">
+                <label class="label" for="account-info-home-phone">Home Number:</label>
+                <input class="input" type="text" id="account-info-home-phone" value="{{user.phone.home}}" placeholder="000-000-0000">
+            </div>
+            <div class="col-sm-8">
+                <label class="label" for="account-info-home-phone">Mobile Number:</label>
+                <input class="input" type="text" id="account-info-mobile-phone" value="{{user.phone.mobile}}" placeholder="000-000-0000">
+            </div>
+            <div class="col-sm-8">
+                <label class="label" for="account-info-home-phone">Work Number:</label>
+                <input class="input" type="text" id="account-info-work-phone" value="{{user.phone.work}}" placeholder="000-000-0000">
+            </div>
+        </div>
+        <div class="row form-group">
+            <div class="col-sm-12">
+                <label class="label" for="account-info-street-1">Address Line 1:</label>
+                <input class="input" type="text" id="account-info-address-1" value="{{user.address.street1}}" placeholder="Address Line 1">
+            </div>
+
+            <div class="col-sm-12">
+                <label class="label" for="account-info-street-2">Address Line 2:</label>
+                <input class="input" type="text" id="account-info-address-2" value="{{user.address.street2}}" placeholder="Address Line 2">
+            </div>
+        </div>
+        <div class="row form-group">
+            <div class="col-sm-12">
+                <label class="label" for="account-info-zip">Zip Code:</label>
+                <input class="input" type="text" id="account-info-zip" value="{{user.address.zipCode}}" placeholder="Zip Code">
+            </div>
+            <div class="col-sm-12">
+                <label class="checkbox-inline">
+                    <input type="checkbox" id="account-info-massachusetts-resident" value="{{user.address.isOutsideMassachusetts}}">Massachusetts Resident
+                </label>
+            </div>
+        </div>
+        <div class="row form-group">
+            <div class="col-sm-12">
+                <button class="button button--blue register" type="submit">Register</button>
+            </div>
+        </div>
+    </form>
+
+    {{!-- TODO: REMOVE --}}
+    {{!-- TODO: REMOVE --}}
+    {{!-- TODO: REMOVE --}}
+    {{user}}
+    {{!-- TODO: REMOVE --}}
+    {{!-- TODO: REMOVE --}}
+    {{!-- TODO: REMOVE --}}
+    
+</script>

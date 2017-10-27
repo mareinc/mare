@@ -1,8 +1,28 @@
-<div class="main">
+<div class="content__main content__main--with-sidebar account-page">
 
-  	<h1>Welcome to the account of {{ user.name.first }} {{ user.name.last }}</h1>
-  	<h2>Type of user: {{ user.userType }}</h2>
-  	<h2>User email: {{ user.email }}</h2>
+	<span class="mobile-account-nav-container"></span>
 
-	<a href="/keystone">Sign in to Admin Panel</a>
+	<aside class="sidebar sidebar--slim account-nav"></aside>
+				
+	<section class="content__body">
+		<div id="account-current-section" class="card card--vertical card--large-padding account-current-section">
+		</div>
+
+		<div class="account-info-container"></div>
+		<div class="account-children-container"></div>
+		<div class="account-email-list-container"></div>
+		<div class="account-events-container"></div>
+
+	</section>
+
 </div>
+
+{{!-- navigation partials --}}
+{{> account-mobile-sidebar}}
+{{> account-sidebar}}
+
+{{!-- sub-section partials --}}
+{{> account-info}}
+{{> account-email-list}}
+{{> account-events}}
+{{> account-children}}

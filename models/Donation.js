@@ -1,16 +1,15 @@
 const keystone 		= require( 'keystone' ),
 	  Types 		= keystone.Field.Types,
-	  // export to make it available using require.  The keystone.list import throws a ReferenceError when importing a list
-	  // that comes later when sorting alphabetically
+	  // the keystone.list import throws a ReferenceError when importing a list that comes later when sorting alphabetically
 	  SiteVisitor	= require( './User_SiteVisitor' ),
 	  SocialWorker	= require( './User_SocialWorker' ),
 	  Family		= require( './User_Family' ),
 	  Admin			= require( './User_Admin' );
 
-// Create model. Additional options allow menu name to be used to auto-generate the URL
-var Donation = new keystone.List('Donation');
+// create model
+var Donation = new keystone.List( 'Donation' );
 
-// Create fields
+// create fields
 Donation.add({
 
 	date: { type: Types.Date, label: 'date', format: 'MM/DD/YYYY', required: true, initial: true },
@@ -27,60 +26,65 @@ Donation.add({
 	onBehalfOf: { type: Types.Text, label: 'on behalf of', initial: true }
 });
 
-// Pre Save
+// presave hook
 Donation.schema.pre( 'save', function( next ) {
 	'use strict';
 
 	let targetUserType,
 		targetId;
 
+	// if the user is registered in the system
 	if( this.isRegistered ) {
-
+		// set variables to allow us to fetch the user
 		switch( this.userType ) {
-			case 'site visitor'	: targetUserType = SiteVisitor;		targetId = this.siteVisitor; break;
-			case 'social worker': targetUserType = SocialWorker;	targetId = this.socialWorker; break;
-			case 'family'		: targetUserType = Family;			targetId = this.family; break;
-			case 'admin'		: targetUserType = Admin;			targetId = this.admin;
+			case 'site visitor'	: targetUserType = SiteVisitor; 	targetId = this.siteVisitor; break;
+			case 'social worker': targetUserType = SocialWorker; 	targetId = this.socialWorker; break;
+			case 'family'		: targetUserType = Family; 			targetId = this.family; break;
+			case 'admin'		: targetUserType = Admin; 			targetId = this.admin;
 		}
-		// if there's no targetId, the user type was set, but no user was selected
-		if( !targetId ) {
-			// clear out the field, which will be populated if the model was saved with a user, then the user was deleted
-			this.name = '';
-			// continue execution without fetching the user
-			return next();
-		}
-		// fetch the target user model
+		// attempt to fetch the user who made the donation by their _id
 		targetUserType.model
 			.findById( targetId )
 			.exec()
 			.then( user => {
-				// If the user has a name, they aren't a family.  Use this info to pull the correct name
+				// if the user has a name, they're not a family
 				if( user.name ) {
+					// store the name of the user's name
 					this.name = user.name.full;
-				// if the user doesn't have a name, they're a family and a combination of the contact names should be used to populate the name field
+				// otherwise, if they're a family
 				} else {
 					// TODO: This functionality is identical to that in event, pull both out and put them in the model as a virtual
-					// if the targetGroup is families, we need to prettify the attendee name
-					const contact2Exists	= user.contact2.name.full.length > 0;
-					const sameLastName		= user.contact1.name.last === user.contact2.name.last;
+					// check to see if a second contact has been filled out
+					const contact2Exists = user.contact2.name.full.length > 0;
+					// check to see if both contacts share a last name
+					const sameLastName = user.contact1.name.last === user.contact2.name.last;
 
+					// if there's a second contact and they both contacts share a last name
 					if( contact2Exists && sameLastName ) {
-						this.name = user.contact1.name.first + ' and ' + user.contact2.name.full;
+						// set the name to both first names, then the last name: John Smith + Jane Smith = John and Jane Smith
+						model.name = user.contact1.name.first + ' and ' + user.contact2.name.full;
+					// if there's a second contact, but the contacts have different last names
 					} else if( contact2Exists && !sameLastName ) {
-						this.name = user.contact1.name.full + ' and ' + user.contact2.name.full;
+						// set the name to the two names appended: John Smith + Jane Doe = John Smith and Jane Doe
+						model.name = user.contact1.name.full + ' and ' + user.contact2.name.full;
+					// if there's no second contact
 					} else {
-						this.name = user.contact1.name.full;
+						// set the name to contact 1's full name
+						model.name = user.contact1.name.full;
 					}
 				}
-
+				// allow further processing beyond this middleware
 				next();
 
 			}, err => {
-				console.error( err );
+				// log the error for debugging purposes
+				console.error( `an error occurred fetching the user model to set the donator name - ${ err }` );
+				// allow further processing beyond this middleware
 				next();
 			});
+	// if the user is not registered in the system
 	} else {
-
+		// set the name to whatever was filled out in the free text field
 		this.name = this.unregisteredUser;
 	}
 });
