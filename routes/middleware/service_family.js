@@ -8,19 +8,17 @@ const keystone						= require( 'keystone' ),
 	  staffEmailContactMiddleware	= require( './service_staff-email-contact' ),
 	  utilities         			= require( './utilities' );
 
-exports.setGalleryPermissions = ( req, res, done ) => {
+exports.setGalleryPermissions = ( req, res ) => {
 
 	let locals		= res.locals;
 	// variables to determine what features the user has access to.  Don't overwrite it if it's already set
 	const userType = locals.userType || ( req.user ? req.user.get( 'userType' ) : 'anonymous' );
 
-	locals.canBookmarkChildren = userType === 'social worker' || userType === 'family' ? true : false;
-	locals.canSearchForChildren = userType === 'social worker' || userType === 'family' ? true : false;
-
-	done();
+	locals.canBookmarkChildren = userType === 'social worker' || userType === 'family';
+	locals.canSearchForChildren = userType === 'social worker' || userType === 'family';
 };
 
-exports.checkForBookmarkedChildren = ( req, res, done ) => {
+exports.checkForBookmarkedChildren = ( req, res ) => {
 
 	let locals = res.locals;
 	// store the bookmarked children and sibling groups
@@ -29,8 +27,6 @@ exports.checkForBookmarkedChildren = ( req, res, done ) => {
 	// store whether or not the user has any bookmarked children or siblings
 	locals.hasBookmarkedChildren = ( bookmarkedChildren && bookmarkedChildren.length > 0 ) ||
 								   ( bookmarkedSiblings && bookmarkedSiblings.length > 0 );
-
-	done();
 };
 
 /* If the user type is capable of bookmarking children on the site, retrieve any that are already bookmarked */
@@ -63,9 +59,8 @@ exports.getBookmarkedChildren = ( req, res, done ) => {
 	}
 };
 
-/*
- *	Frontend services
- */
+/* Frontend services */
+
 exports.addChildBookmark = ( req, res, next ) => {
 
 	let locals					= res.locals;
@@ -80,7 +75,7 @@ exports.addChildBookmark = ( req, res, next ) => {
 
 		const childId				= locals.child.get( '_id' );
 		const bookmarkedChildren	= locals.user.get( 'bookmarkedChildren' );
-		// Only add the bookmark if it hasn't already been saved.  This is unlikely, and would require a bad state in the system,
+		// only add the bookmark if it hasn't already been saved.  This is unlikely, and would require a bad state in the system,
 		// but the check has been added for an extra layer of safety
 		if( bookmarkedChildren.indexOf( childId ) === -1 ) {
 			bookmarkedChildren.push( childId );
@@ -112,7 +107,7 @@ exports.removeChildBookmark = ( req, res, next ) => {
 		const childId				= locals.child.get( '_id' );
 		const bookmarkedChildren	= locals.user.get( 'bookmarkedChildren' );
 		const bookmarkIndex			= bookmarkedChildren.indexOf( childId );
-		// Only remove the bookmark if it has already been saved.  This is unlikely, and would require a bad state in the system,
+		// only remove the bookmark if it has already been saved.  This is unlikely, and would require a bad state in the system,
 		// but the check has been added for an extra layer of safety
 		if( bookmarkedChildren.indexOf( childId ) !== -1 ) {
 			bookmarkedChildren.splice( bookmarkIndex, 1 );
@@ -144,7 +139,7 @@ exports.addSiblingGroupBookmark = ( req, res, next ) => {
 		const childIds				= locals.children.map( child => child.get( '_id' ).toString() );
 		const bookmarkedSiblings	= locals.user.get( 'bookmarkedSiblings' );
 
-		// Only add the bookmark if it hasn't already been saved.  This is unlikely, and would require a bad state in the system, but the check has been added for an extra layer of safety
+		// only add the bookmark if it hasn't already been saved.  This is unlikely, and would require a bad state in the system, but the check has been added for an extra layer of safety
 		for ( childId of childIds ) {
 			if( bookmarkedSiblings.indexOf( childId ) === -1 ) {
 				bookmarkedSiblings.push( childId );
@@ -179,7 +174,7 @@ exports.removeSiblingGroupBookmark = ( req, res, next ) => {
 
 		for( childId of childIds ) {
 			const bookmarkIndex = bookmarkedSiblings.indexOf( childId );
-			// Only remove the bookmark if it has already been saved.  This is unlikely, and would require a bad state in the system, but the check has been added for an extra layer of safety
+			// only remove the bookmark if it has already been saved.  This is unlikely, and would require a bad state in the system, but the check has been added for an extra layer of safety
 			if( bookmarkedSiblings.indexOf( childId ) !== -1 ) {
 				bookmarkedSiblings.splice( bookmarkIndex, 1 );
 			}

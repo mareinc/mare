@@ -57,7 +57,7 @@ Featured.schema.pre( 'save', function( next ) {
 
 	// create objects of values to pass into the updateFieldsFunction
 	const aboutUsOptions		= { id: this.aboutUs.target, targetModel: 'Page', field: 'aboutUs' },
-		  successStoryOptions	= { id: this.successStory.target, targetModel: 'Success Story', field: 'successStory', url: '/success-stories/' },
+		  successStoryOptions	= { id: this.successStory.target, targetModel: 'Success Story', field: 'successStory', url: '/success-stories' },
 		  eventOptions			= { id: this.event.target, targetModel: 'Event', field: 'event' };
 	// call updateFields for each of the three main model sections and receive a promise back for each
 	const aboutUsUpdated		= this.updateFields( aboutUsOptions ),
@@ -71,7 +71,7 @@ Featured.schema.pre( 'save', function( next ) {
 		next();
 	});
 });
-
+/* TODO: it seems we're setting the file name for each to their key value.  Perhaps could simplify this task by just referencing 'key' */
 Featured.schema.methods.setFileNames = function setFileNames() {
 	'use strict';
 	// generate a readable file name for each featured item

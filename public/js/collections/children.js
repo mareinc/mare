@@ -6,20 +6,20 @@
     	model: mare.models.Child,
 
     	initialize: function initialize() {
-    		this.sortByDateRegistered(); // Set the default comparator on the collection to order by how recently the child was registered
+			// set the default comparator on the collection to order by how recently the child was registered
+    		this.sortByDateRegistered();
     	},
 
 		reorder: function reorder( sortBy ) {
 
-			switch(sortBy) {
+			switch( sortBy ) {
 				case 'registered'	: this.sortByDateRegistered(); break;
 				case 'name'			: this.sortByName(); break;
 				case 'age'			: this.sortByAge(); break;
 				default				: this.sortByDateRegistered(); break;
 			}
 
-			this.trigger('sorted');
-
+			this.trigger( 'sorted' );
 		},
 
 		sortByDateRegistered: function sortByDateRegistered() {

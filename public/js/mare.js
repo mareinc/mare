@@ -13,17 +13,18 @@
         utils: {
 
         	storeUrlInfo: function storeUrlInfo() {
-				var host		= window.location.host;
-				var pathName	=  window.location.pathname.substr( 1 ); // get the pathname without the leading '/'
-				var pathArray	= pathName.split( '/' );
+				var host		= window.location.host,
+					pathName	=  window.location.pathname.substr( 1 ), // get the pathname without the leading '/'
+					pathArray	= pathName.split( '/' ),
+					href		= window.location.href;
 
-				// Store relevant url information in mare namespace
+				// store relevant url information in mare namespace
 				mare.url.protocol	= window.location.protocol;
 				mare.url.siteArea	= pathArray[ 0 ];
 				mare.url.page		= pathArray[ 1 ];
 				mare.url.target		= pathArray[ 2 ];
 
-				// Store redirect information for log in / log out actions
+				// store redirect information for log in / log out actions
 				mare.url.redirect = '';
 				mare.url.redirect += mare.url.siteArea ? mare.url.siteArea : '';
 				mare.url.redirect += mare.url.page ? '/' + mare.url.page : '';
@@ -31,7 +32,7 @@
         	},
 
 			bindTouch: function bindTouch() {
-				// Bind adding of 'hover' class to tap vs hover depending on whether it is a touch enabled device
+				// bind adding of 'hover' class to tap vs hover depending on whether it is a touch enabled device
 				if( Modernizr.touch ) {
 					$( '.nav li' ).unbind('mouseenter mouseleave');
 					$( '.nav li a.parent' ).unbind( 'click' );
@@ -65,6 +66,15 @@
 			disableButton: function disableButton( $button ) {
 				$button.attr( 'disabled', 'disabled' );
 				$button.addClass( 'button--disabled' );
+			},
+
+			registerHandlebarsHelpers: function registerHandlebarsHelpers() {
+				Handlebars.registerHelper( 'ifeq', function( a, b, opts ) {
+					if( a === b )
+						return opts.fn( this );
+					else
+						return opts.inverse( this );
+				});
 			}
 		}
 	};

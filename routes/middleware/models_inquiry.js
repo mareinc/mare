@@ -1,6 +1,6 @@
 var keystone = require( 'keystone' );
 
-/* Fetch the child record targeted in the inquiry */
+/* fetch the child record targeted in the inquiry */
 exports.getChild = ( inquiryData, done ) => {  
 	// there won't be a child record in general inquiries
 	if( inquiryData.inquiryType === 'general inquiry' ) {
@@ -60,10 +60,10 @@ exports.getCSCRegionContacts = ( inquiryData, done ) => {
 		console.log( `mising child data - can't fetch CSC region contact` );
 		return done();
 	}
-	// Use the region information in the child record to fetch the CSC region contacts
+	// use the region information in the child record to fetch the CSC region contacts
 	keystone.list( 'CSC Region Contact' ).model.find()
 			.where( 'region', inquiryData.child.region )
-			.populate( 'cscRegionContact' ) // We need the information for the contact, not just their ID
+			.populate( 'cscRegionContact' ) // we need the information for the contact, not just their ID
 			.exec()
 			.then( cscRegionContacts => {
 				inquiryData.cscRegionContacts = cscRegionContacts;
@@ -144,6 +144,11 @@ exports.getAgencyContacts = ( inquiryData, done ) => {
 		console.log( `not a general inquiry - not fetching agency contacts` );
 		return done();
 	}
+	// if there are no agency contacts bound to the inquiry, don't attempt to fetch any
+	if( !inquiryData.agencyContacts ) {
+		console.log( `no agency referrals specified - not fetching agency contacts` );
+		return done();
+	}
 	// TODO: look at Child model for a cleaner way to do the $in with ES6 spread operator
 	// If a general inquiry has been accepted, we need to send an email to the agency
 	keystone.list( 'Agency' ).model.find()
@@ -163,9 +168,15 @@ exports.getAgencyContacts = ( inquiryData, done ) => {
 
 exports.getInquirer = ( inquiryData, done ) => {
 	// set the model target depending on which user type made the inquiry
-	const userType = inquiryData.inquirerType === 'family' ? 'Family' : 'Social Worker';
+	const userType = inquiryData.inquirerType === 'site visitor' ? 'Site Visitor'
+				   : inquiryData.inquirerType === 'family' ? 'Family'
+				   : 'Social Worker'
+				   ;
 	// set the inquirer id based on which user type made the inquiry
-	const userId = inquiryData.inquirerType === 'family' ? inquiryData.familyId : inquiryData.socialWorkerId;
+	const userId = inquiryData.inquirerType === 'site visitor' ? inquiryData.siteVisitorId
+				 : inquiryData.inquirerType === 'family' ? inquiryData.familyId
+				 : inquiryData.socialWorkerId;
+				 
 	// use the target model type and id to fetch the inquirer record
 	keystone.list( userType ).model.findById( userId )
 			.exec()

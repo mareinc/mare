@@ -16,7 +16,8 @@ exports.getAllChildren = ( req, res, done, fieldsToSelect ) => {
 
 	Child.model.find()
 				.select( fieldsToSelect )
-				.where( 'status').equals( locals.activeChildStatusId )
+				.where( 'isVisibleInGallery' ).equals( true )
+				.where( 'status' ).equals( locals.activeChildStatusId )
 				.populate( 'gender' )
 				.populate( 'race' )
 				.populate( 'languages' )
@@ -56,11 +57,11 @@ exports.getUnrestrictedChildren = ( req, res, done, fieldsToSelect ) => {
 	var locals = res.locals;
 	
 	// find all children who are active, and are either visible to everyone or have the 'child is visible on MARE web' checkbox checked
-	Child.model.find( { $or: [
-					{ 'siteVisibility': 'everyone' },
-					{ 'isVisibleInGallery': true } ] } )
+	Child.model.find()
 				.select( fieldsToSelect )
-				.where( 'status').equals( locals.activeChildStatusId )
+				.where( 'siteVisibility' ).equals( 'everyone' )
+				.where( 'isVisibleInGallery' ).equals( true )
+				.where( 'status' ).equals( locals.activeChildStatusId )
 				.populate( 'gender' )
 				.populate( 'race' )
 				.populate( 'languages' )
@@ -96,11 +97,22 @@ exports.getUnrestrictedChildren = ( req, res, done, fieldsToSelect ) => {
 				});
 };
 
-/* Sets the images for display in the gallery to a blank male/female face in the following cases:
- *	1. No image was uploaded for the child
- *	2. The child has been identified as legal risk
- *  3. The child is not visible to everyone, and the user wouldn't have permission to see them without the 'child is visible on MARE web' checkbox being checked
- */
+/* display the blank male/female/other image in the gallery in the following cases:
+	1. No image was uploaded for the child
+	2. The child has been identified as legal risk
+	3. The child is not visible to everyone, and the user wouldn't have permission to see them without the 'child is visible on MARE web' checkbox being checked
+
+	all other children will display their pictures normally
+*/
+
+/* display the blank sibling group image in the gallery in the following cases:
+
+	1. No image was uploaded for the sibling group
+	2. Any of the children have been identified as legal risk
+	3. Any of the children are not visible to everyone, and the user wouldn't have permission to see them without the 'child is visible on MARE web' checkbox being checked
+
+	all other sibling groups will display their pictures normally
+*/
 exports.setNoChildImage = ( req, res, child, canViewAllChildren ) => {
 
 	const NO_IMAGE_MALE_GALLERY				= 'images/no-image-male_gallery.png',
@@ -114,7 +126,10 @@ exports.setNoChildImage = ( req, res, child, canViewAllChildren ) => {
 	// if the child is part of a sibling group
 	if( child.mustBePlacedWithSiblings ) {
 		// and is missing an image or is legal risk
-		if( !child.siblingGroupImage.secure_url || child.legalStatus.legalStatus === 'legal risk' ) {
+		if( !child.siblingGroupImage.secure_url
+			|| child.legalStatus.legalStatus === 'legal risk'
+			|| ( child.siteVisibility !== 'everyone'
+				&& !canViewAllChildren ) ) {
 			// set the images to the placeholders for sibling groups
 			child.siblingGroupDetailImage = NO_IMAGE_SIBLING_GROUP_DETAILS;
 			child.siblingGroupGalleryImage = NO_IMAGE_SIBLING_GROUP_GALLERY;
@@ -206,12 +221,12 @@ exports.getGalleryData = ( req, res, next ) => {
 	locals.siblingGroups	= new Set(); // format: Set( { ids: Set(), children: [] }, ... )
 	// variables to determine what children the user has access to
 	locals.userType			= req.user ? req.user.get( 'userType' ) : 'anonymous';
-	// anonymous users, site visitors, and families without a verified homestudy have access only to unrestricted children
+	// anonymous users, site visitors, and families without a verified homestudy ( or from a state other than MA, NH, CT, ME, VT, RI, or NY ) have access only to unrestricted children
 	if( locals.userType === 'anonymous' ||
 		locals.userType === 'site visitor' ||
 		( locals.userType === 'family' && !req.user.permissions.canViewAllChildren ) ) {
 		locals.targetChildren = 'unrestricted';
-	// families with a verified homestudy and social workers have access to all children
+	// families with a verified homestudy ( from MA, NH, CT, ME, VT, RI, or NY ) and social workers have access to all children
 	} else {
 		locals.targetChildren = 'all';
 	}
@@ -232,19 +247,19 @@ exports.getGalleryData = ( req, res, next ) => {
 
 		},
 		// TODO: these familyService functions are for social workers too, they belong in a page level service instead
-		done => { familyService.setGalleryPermissions( req, res, done ); },
+		done => { familyService.setGalleryPermissions( req, res ); done(); },
 		done => { locals.canBookmarkChildren ? familyService.getBookmarkedChildren( req, res, done ) : done(); },
 		done => {
 			if( locals.bookmarkedChildren && locals.bookmarkedChildren.length > 0 ) {
-				// Loop through each child model and set a property to show they've already been bookmarked by the user during templating
+				// loop through each child model and set a property to show they've already been bookmarked by the user during templating
 				_.each( locals.allChildren, function( child ) {
-					// Get the child id to compare with the array of currently bookmarked child ids
+					// get the child id to compare with the array of currently bookmarked child ids
 					const childId = child.get( '_id' ).toString();
-					// The bookmarked children come back as Objects, and need to be converted to strings for comparison
+					// the bookmarked children come back as Objects, and need to be converted to strings for comparison
 					// TODO: think about doing the mapping inside the getBookmarkedChildren function
 					const bookmarkedChildrenArray = locals.bookmarkedChildren.map( childId => childId.toString() );
-					// Set the property for use during templating to show if the child has already been bookmarked
-					child.isBookmarked = locals.bookmarkedChildren.indexOf( childId ) !== -1 ? true : false;
+					// set the property for use during templating to show if the child has already been bookmarked
+					child.isBookmarked = locals.bookmarkedChildren.indexOf( childId ) !== -1;
 				});
 
 				done();
@@ -261,7 +276,7 @@ exports.getGalleryData = ( req, res, next ) => {
 		// map out the relevant information for solo children
 		exports.getRelevantChildInformation( [ ...locals.soloChildren ], locals );
 		// map out the relevant information for sibling groups
-		exports.getRelevantSiblingGroupInformation( [ ...locals.siblingGroups], locals );
+		exports.getRelevantSiblingGroupInformation( [ ...locals.siblingGroups ], locals );
 		// return the child and group information
 		res.send( { soloChildren: locals.soloChildrenToReturn, siblingGroups: locals.siblingGroupsToReturn } );
 	});
@@ -317,7 +332,7 @@ exports.getRelevantChildInformation = ( children, locals ) => {
 	};
 
 	locals.soloChildrenToReturn = children.map( child => {
-		// Create a searchable array for dealing with other family constellation considerations
+		// create a searchable array for dealing with other family constellation considerations
 		var otherFamilyConstellationConsiderations = _.pluck( child.otherFamilyConstellationConsideration, 'otherFamilyConstellationConsideration' );
 
 		return {
@@ -328,9 +343,9 @@ exports.getRelevantChildInformation = ( children, locals ) => {
 			emotionalNeeds							: needsMap[child.emotionalNeeds],
 			galleryImage							: child.galleryImage,
 			gender									: child.gender.gender,
-			hasContactWithBiologicalParents			: child.hasContactWithBirthFamily || false, // TODO: is the || false needed?
-			hasContactWithBiologicalSiblings		: child.hasContactWithSiblings || false, // TODO: is the || false needed?
-			hasVideo								: child.video && child.video.length > 0 ? true : false, // TODO: is the ? true : false necessary?
+			hasContactWithBiologicalParents			: child.hasContactWithBirthFamily,
+			hasContactWithBiologicalSiblings		: child.hasContactWithSiblings,
+			hasVideo								: child.video && child.video.length > 0,
 			intellectualNeeds						: needsMap[ child.intellectualNeeds ],
 			isBookmarked							: child.isBookmarked,
 			language								: _.pluck( child.languages, 'language' ),
@@ -345,10 +360,10 @@ exports.getRelevantChildInformation = ( children, locals ) => {
 			registrationDateConverted				: middleware.convertDate( child.registrationDate ),
 			registrationNumber						: child.registrationNumber,
 			requiresNoSiblings						: otherFamilyConstellationConsiderations.indexOf( 'childless home' ) !== -1,
-			requiresOlderSibling					: otherFamilyConstellationConsiderations.indexOf( 'requires older children' ) !== -1,
+			olderChildrenAcceptable					: otherFamilyConstellationConsiderations.indexOf( 'older children acceptable' ) !== -1,
 			requiresSiblings						: otherFamilyConstellationConsiderations.indexOf( 'multi-child home' ) !== -1,
-			requiresYoungerSibling					: otherFamilyConstellationConsiderations.indexOf( 'requires younger children' ) !== -1,
-			siblingContactsCount					: child.siblingsToBePlacedWith.length,
+			youngerChildrenAcceptable				: otherFamilyConstellationConsiderations.indexOf( 'younger children acceptable' ) !== -1,
+			siblingToBePlacedWithCount				: child.siblingsToBePlacedWith.length, /* TODO: do we need to return this? */
 			updatedAt								: child.updatedAt,
 			wednesdaysChild							: child.wednesdaysChild
 		};
@@ -392,11 +407,11 @@ exports.getRelevantSiblingGroupInformation = ( siblingGroups, locals ) => {
 			emotionalNeeds							: _.uniq( children.map( child => needsMap[ child.emotionalNeeds ] ) ),
 			galleryImage							:  _.uniq( children.map( child => child.siblingGroupGalleryImage ) ).indexOf( NO_IMAGE_SIBLING_GROUP_DETAILS ) !== -1 ? NO_IMAGE_SIBLING_GROUP_DETAILS : children[ 0 ].siblingGroupGalleryImage,
 			genders									: _.uniq( children.map( child => child.gender.gender ) ),
-			hasContactWithBiologicalParents			: _.uniq( children.map( child => child.hasContactWithBirthFamily || false ) ), // TODO: is the || false needed?
-			hasContactWithBiologicalSiblings		: _.uniq( children.map( child => child.hasContactWithSiblings || false ) ), // TODO: is the || false needed?
+			hasContactWithBiologicalParents			: _.uniq( children.map( child => child.hasContactWithBirthFamily ) ),
+			hasContactWithBiologicalSiblings		: _.uniq( children.map( child => child.hasContactWithSiblings ) ),
 			hasVideo								: children.filter( child => child.siblingGroupVideo && child.siblingGroupVideo.length > 0 ).length > 0,
 			intellectualNeeds						: _.uniq( children.map( child => needsMap[ child.intellectualNeeds ] ) ),
-			isBookmarked							: children.map( child => child.isBookmarked ).indexOf( true ) !== -1 ? true : false, // set to true if any of the children have true for isBookmarked
+			isBookmarked							: children.map( child => child.isBookmarked ).indexOf( true ) !== -1, // set to true if any of the children have true for isBookmarked
 			languages								: _.uniq( _.flatten( children.map( child => _.pluck(child.languages, 'language' ) ) ) ),
 			legalStatuses							: legalStatusesArray,
 			legalStatusesString						: middleware.getArrayAsList( legalStatusesArray ),
@@ -413,11 +428,11 @@ exports.getRelevantSiblingGroupInformation = ( siblingGroups, locals ) => {
 			registrationNumbersString				: middleware.getArrayAsList( registrationNumbersArray ),	
 			requiresNoSiblings						: _.uniq( children.map( child => otherFamilyConstellationConsiderations.indexOf( 'childless home' ) !== -1 ) ),
 			requiresSiblings						: _.uniq( children.map( child => otherFamilyConstellationConsiderations.indexOf( 'multi-child home' ) !== -1 ) ),
-			requiresOlderSibling					: _.uniq( children.map( child => otherFamilyConstellationConsiderations.indexOf( 'requires older children' ) !== -1 ) ),
-			requiresYoungerSibling					: _.uniq( children.map( child => otherFamilyConstellationConsiderations.indexOf( 'requires younger children' ) !== -1 ) ),	
-			siblingContactsCount					: children[ 0 ].siblingsToBePlacedWith.length,
+			olderChildrenAcceptable					: _.uniq( children.map( child => otherFamilyConstellationConsiderations.indexOf( 'older children acceptable' ) !== -1 ) ),
+			youngerChildrenAcceptable				: _.uniq( children.map( child => otherFamilyConstellationConsiderations.indexOf( 'younger children acceptable' ) !== -1 ) ),	
+			siblingToBePlacedWithCount				: children[ 0 ].siblingsToBePlacedWith.length,
 			updatedAt								: _.uniq( children.map( child => child.updatedAt ) ),
-			wednesdaysChild							: children.map( child => child.wednesdaysChild ).indexOf( true ) !== -1 ? true : false
+			wednesdaysChild							: children.map( child => child.wednesdaysChild ).indexOf( true ) !== -1
 		};
 	});
 }
@@ -427,7 +442,7 @@ exports.getChildDetails = ( req, res, next ) => {
 	const childData = req.body;
 	const registrationNumber = childData[ 'registrationNumber' ];
 
-	/* TODO: Fetch only the needed fields instead of grabbing everything */
+	/* TODO: fetch only the needed fields instead of grabbing everything */
 	Child.model.findOne()
         .where( 'registrationNumber', registrationNumber )
         .populate( 'gender' )
@@ -459,7 +474,7 @@ exports.getSiblingGroupDetails = ( req, res, next ) => {
 	const childData = req.body;
 	const registrationNumber = childData[ 'registrationNumber' ];
 
-	/* TODO: Fetch only the needed fields instead of grabbing everything */
+	/* TODO: fetch only the needed fields instead of grabbing everything */
 	Child.model.findOne()
         .where( 'registrationNumber', registrationNumber )
         .populate( 'gender' )
@@ -513,7 +528,7 @@ exports.registerChild = ( req, res, next ) => {
 	// set the redirect path to navigate to after processing is complete
 	locals.redirectPath = '/forms/child-registration-form';
 	// fetch the id for the active child status
-	const fetchActiveChildStatusId		= exports.fetchChildStatusId( 'active' );
+	const fetchActiveChildStatusId = exports.fetchChildStatusId( 'active' );
 	
 	fetchActiveChildStatusId.then( activeChildStatusId => {
 		// create a new Child model
@@ -577,7 +592,7 @@ exports.registerChild = ( req, res, next ) => {
 		newChild.save( ( err, child ) => {
 
 			if( err ) {
-				console.error( `error saving social registered child: ${ err }` );
+				console.error( `error saving social registered child - ${ err }` );
 				// create an error flash message
 				req.flash( 'error', {
 						title: `There was an error registering your child`,
@@ -591,8 +606,8 @@ exports.registerChild = ( req, res, next ) => {
 						title: `Congratulations, your child record has been successfully registered.`,
 						detail: `Please note that it can take several days for the child's account to be reviewed and activated.` } );
 				// attempt to send relevant emails and store the returned promises
-				let staffEmailSent = socialWorkerChildRegistrationService.sendRegistrationConfirmationEmailToStaff( child );
-				let socialWorkerEmailSent = socialWorkerChildRegistrationService.sendRegistrationConfirmationEmailToSocialWorker( child );
+				let staffEmailSent			= socialWorkerChildRegistrationService.sendRegistrationConfirmationEmailToStaff( child );
+				let socialWorkerEmailSent	= socialWorkerChildRegistrationService.sendRegistrationConfirmationEmailToSocialWorker( child );
 				// if all emails sent successfully
 				Promise.all( [ staffEmailSent, socialWorkerEmailSent ] ).then( () => {
 					// redirect the user to the appropriate page
@@ -604,5 +619,97 @@ exports.registerChild = ( req, res, next ) => {
 				});
 			}
 		});
+	});
+};
+
+// ------------------------------------------------------------------------------------------ //
+
+// TODO: these functions below are copies of functions above built with async.  They're rewritten with Promises
+//		 and will replace the functions above once async has been removed
+
+// ------------------------------------------------------------------------------------------ //
+
+/* fetch a single child by their registration number */
+exports.getChildByRegistrationNumberNew = registrationNumber => {
+
+	return new Promise( ( resolve, reject ) => {
+		// convert the registration number to a number if it isn't already
+		const targetRegistrationNumber = parseInt( registrationNumber, 10 );
+
+		// if no registration number was passed in, or the number is invalid
+		if( !registrationNumber
+			|| ( typeof registrationNumber !== 'number' && typeof registrationNumber !== 'string' )
+			|| ( typeof registrationNumber === 'number' && Number.isNaN( targetRegistrationNumber ) )
+			|| ( typeof registrationNumber === 'string' && registrationNumber.length === 0 ) ) {
+				// log an error for debugging purposes
+				console.error( `the registration number was either not provided or invalid - number: ${ registrationNumber }` );
+				// reject the promise
+				reject();
+		}
+		// attempt to find a single child matching the passed in registration number
+		Child.model.findOne()
+			.where( 'registrationNumber' ).equals( targetRegistrationNumber )
+			.exec()
+			// if the database fetch executed successfully
+			.then( child => {
+				// if the target child could not be found
+				if( !child ) {
+					// log an error for debugging purposes
+					console.error( `no child matching registration number '${ registrationNumber } could be found` );
+					// reject the promise
+					return reject();
+				}
+				// if the target child was found, resolve the promise with the lean version of the object
+				resolve( child );
+			// if there was an error fetching from the database
+			}, err => {
+				// log an error for debugging purposes
+				console.error( `error fetching child matching registration number ${ registrationNumber } - ${ err }` );
+				// and reject the promise
+				reject();
+			});
+	});
+};
+
+/* fetch multiple children based on a passed in array of registration numbers */
+exports.getChildrenByRegistrationNumbersNew = registrationNumbers => {
+
+	return new Promise( ( resolve, reject ) => {
+		// if either the registraton numbers were not an array or if no registration numbers were passed in
+		if( !registrationNumbers
+			|| !Array.isArray( registrationNumbers )
+			|| ( Array.isArray( registrationNumbers ) && registrationNumbers.length === 0 ) ) {
+				// log an error for debugging purposes
+				console.error( `the registration numbers were either not provided not an array
+								number: ${ registrationNumbers }
+								type: ${ typeof registrationNumbers }` );
+				// reject the promise
+				reject();
+		}
+
+		// convert the array of numbers as strings to an array of numbers
+		const targetRegistrationNumbers = registrationNumbers.map( registrationNumber => parseInt( registrationNumber, 10 ) );
+
+		// attempt to find all children matching the passed in registration numbers
+		Child.model.find()
+			.where( 'registrationNumber' ).in( targetRegistrationNumbers )
+			.exec()
+			.then( children => {
+				// if the target child could not be found
+				if( !children || children.length === 0 ) { // TODO: see if we need to check for existence
+					// log an error for debugging purposes
+					console.error( `no children matching registration numbers '${ registrationNumbers.join( ', ' ) } could be found` );
+					// reject the promise
+					return reject();
+				}
+				// if the target child was found, resolve the promise with the lean version of the object
+				resolve( children );
+			// if there was an error fetching from the database
+			}, err => {
+				// log an error for debugging purposes
+				console.error( `error fetching children matching registration numbers ${ registrationNumbers.join( ', ' ) } - ${ err }` );
+				// and reject the promise
+				reject();
+			});
 	});
 };

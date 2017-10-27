@@ -50,7 +50,7 @@ exports.getFirstNamesById = ( idsArray, namesArray, done ) => {
 exports.updateMySiblings = ( mySiblings, childId, done ) => {
 
 	// TODO: change this and all Array.from(...) to use the ES6 spread operator
-	// Fetch all siblings who were added
+	// fetch all siblings who were added
 	keystone.list( 'Child' ).model.find()
 			.where( '_id' ).in( Array.from( mySiblings ) )
 			.exec()
@@ -118,7 +118,7 @@ exports.updateMyRemainingSiblings = ( remainingSiblings, removedSiblings, childI
 				});
 
 				done();
-			// TODO: Update all error messages to make it clear what action failed (THIS IS A UNIVERSAL CHANGE)
+			// TODO: update all error messages to make it clear what action failed (THIS IS A UNIVERSAL CHANGE)
 			}, ( err ) => {
 
 				console.log( err );
@@ -128,7 +128,7 @@ exports.updateMyRemainingSiblings = ( remainingSiblings, removedSiblings, childI
 
 exports.updateMyRemovedSiblings = ( allSiblings, removedSiblings, childId, done ) => {
 
-	// Fetch all siblings who were removed from the target child ( childId )
+	// fetch all siblings who were removed from the target child ( childId )
 	keystone.list( 'Child' ).model.find()
 			.where( '_id' ).in( Array.from( removedSiblings ) )
 			.exec()
@@ -161,7 +161,7 @@ exports.updateMyRemovedSiblings = ( allSiblings, removedSiblings, childId, done 
 				});
 
 				done();
-			// TODO: Update all error messages to make it clear what action failed (THIS IS A UNIVERSAL CHANGE)
+			// TODO: update all error messages to make it clear what action failed (THIS IS A UNIVERSAL CHANGE)
 			}, ( err ) => {
 
 				console.log( err );
@@ -178,7 +178,7 @@ exports.updateMySiblingsToBePlacedWith = ( mySiblings, childId, groupProfile, si
 	const newGroupProfilePart2 = groupProfile.part2 || '';
 	const newGroupProfilePart3 = groupProfile.part3 || '';
 
-	// Fetch all siblings who were added
+	// fetch all siblings who were added
 	keystone.list( 'Child' ).model.find()
 			.where( '_id' ).in( Array.from( mySiblings ) )
 			.exec()
@@ -232,7 +232,7 @@ exports.updateMySiblingsToBePlacedWith = ( mySiblings, childId, groupProfile, si
 				});
 
 				done();
-			// TODO: Update all error messages to make it clear what action failed (THIS IS A UNIVERSAL CHANGE)
+			// TODO: update all error messages to make it clear what action failed (THIS IS A UNIVERSAL CHANGE)
 			}, ( err ) => {
 
 				console.log( err );
@@ -242,7 +242,7 @@ exports.updateMySiblingsToBePlacedWith = ( mySiblings, childId, groupProfile, si
 
 exports.updateMyRemainingSiblingsToBePlacedWith = ( remainingSiblings, removedSiblings, childId, done ) => {
 
-	// Fetch all siblings who remain after siblings have been removed from the target child ( childId )
+	// fetch all siblings who remain after siblings have been removed from the target child ( childId )
 	keystone.list( 'Child' ).model.find()
 			.where( '_id' ).in( Array.from( remainingSiblings ) )
 			.exec()
@@ -268,7 +268,7 @@ exports.updateMyRemainingSiblingsToBePlacedWith = ( remainingSiblings, removedSi
 				});
 
 				done();
-			// TODO: Update all error messages to make it clear what action failed (THIS IS A UNIVERSAL CHANGE)
+			// TODO: update all error messages to make it clear what action failed (THIS IS A UNIVERSAL CHANGE)
 			}, ( err ) => {
 
 				console.log( err );
@@ -278,7 +278,7 @@ exports.updateMyRemainingSiblingsToBePlacedWith = ( remainingSiblings, removedSi
 
 exports.updateMyRemovedSiblingsToBePlacedWith = ( allSiblings, removedSiblings, childId, done ) => {
 
-	// Fetch all siblings who were removed from the target child ( childId )
+	// fetch all siblings who were removed from the target child ( childId )
 	keystone.list( 'Child' ).model.find()
 			.where( '_id' ).in( Array.from( removedSiblings ) )
 			.exec()
@@ -311,7 +311,7 @@ exports.updateMyRemovedSiblingsToBePlacedWith = ( allSiblings, removedSiblings, 
 				});
 
 				done();
-			// TODO: Update all error messages to make it clear what action failed (THIS IS A UNIVERSAL CHANGE)
+			// TODO: update all error messages to make it clear what action failed (THIS IS A UNIVERSAL CHANGE)
 			}, ( err ) => {
 
 				console.log( err );

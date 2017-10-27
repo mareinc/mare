@@ -31,7 +31,7 @@ exports.checkFieldForChanges = ( field, model, modelBefore, changeHistory, done 
 
 	} else {
 
-		fieldBefore = modelBefore[field.name];
+		fieldBefore = modelBefore[ field.name ];
 		fieldAfter = model[field.name];
 	}
 
@@ -61,50 +61,50 @@ exports.checkFieldForChanges = ( field, model, modelBefore, changeHistory, done 
 			done => {
 
 				keystone.list( field.model ).model.find()
-							.where( '_id' ).in( fieldBefore )
-							.exec(  )
-							.then( models => {
+					.where( '_id' ).in( fieldBefore )
+					.exec(  )
+					.then( models => {
 
-								_.each( models, model => {
-									if( field.targetParent ) {
-										valuesBefore.push( model[ field.targetParent ][ field.targetField ] );
-									} else {
-										valuesBefore.push( model[ field.targetField ] );
-									}
-								});
+						_.each( models, model => {
+							if( field.targetParent ) {
+								valuesBefore.push( model[ field.targetParent ][ field.targetField ] );
+							} else {
+								valuesBefore.push( model[ field.targetField ] );
+							}
+						});
 
-								// execute done function if async is used to continue the flow of execution
-								done();
+						// execute done function if async is used to continue the flow of execution
+						done();
 
-							}, err => {
+					}, err => {
 
-								console.log( err );
-								done();
-							});
+						console.log( err );
+						done();
+					});
 			},
 			done => {
 
 				keystone.list( field.model ).model.find()
-							.where( '_id' ).in( fieldAfter )
-							.exec()
-							.then( models => {
+					.where( '_id' ).in( fieldAfter )
+					.exec()
+					.then( models => {
 
-								_.each( models, model => {
-									if( field.targetParent ) {
-										values.push( model[ field.targetParent ][ field.targetField ] );
-									} else {
-										values.push( model[ field.targetField ] );
-									}
-								});
+						_.each( models, model => {
+							if( field.targetParent ) {
+								values.push( model[ field.targetParent ][ field.targetField ] );
+							} else {
+								values.push( model[ field.targetField ] );
+							}
+						});
 
-								// execute done function if async is used to continue the flow of execution
-								done();
+						// execute done function if async is used to continue the flow of execution
+						done();
 
-							}, err => {
+					}, err => {
 
-								console.log( err );
-								done();
-							});
+						console.log( err );
+						done();
+					});
 			}
 		], () => {
 
@@ -131,21 +131,21 @@ exports.checkFieldForChanges = ( field, model, modelBefore, changeHistory, done 
 						done();
 					} else {
 						keystone.list( field.model ).model.findById( fieldBefore )
-									.exec()
-									.then( model => {
+							.exec()
+							.then( model => {
 
-										if( field.targetParent ) {
-											valueBefore = model[ field.targetParent ][ field.targetField ];
-										} else {
-											valueBefore = model[ field.targetField ];
-										}
+								if( field.targetParent ) {
+									valueBefore = model[ field.targetParent ][ field.targetField ];
+								} else {
+									valueBefore = model[ field.targetField ];
+								}
 
-										done();
-									}, err => {
+								done();
+							}, err => {
 
-										console.log( err );
-										done();
-									});
+								console.log( err );
+								done();
+							});
 					}
 				},
 				done => {
@@ -153,21 +153,21 @@ exports.checkFieldForChanges = ( field, model, modelBefore, changeHistory, done 
 						done();
 					} else {
 						keystone.list( field.model ).model.findById( fieldAfter )
-									.exec()
-									.then( model => {
+							.exec()
+							.then( model => {
 
-										if( field.targetParent ) {
-											value = model[ field.targetParent ][ field.targetField ];
-										} else {
-											value = model[ field.targetField ];
-										}
+								if( field.targetParent ) {
+									value = model[ field.targetParent ][ field.targetField ];
+								} else {
+									value = model[ field.targetField ];
+								}
 
-										done();
-									}, err => {
+								done();
+							}, err => {
 
-										console.log( err );
-										done();
-									});
+								console.log( err );
+								done();
+							});
 					}
 				}
 			], () => {
@@ -199,11 +199,7 @@ exports.addToHistoryEntry = ( fieldBefore, field, label, changeHistory ) => {
 		field = 'false';
 	}
 
-	changeHistory.changes += label.toUpperCase() +
-							 ': ' +
-							 ( fieldBefore || fieldBefore === 0 ? fieldBefore : '[blank]' ) +
-							 ' to ' +
-							 ( field || field === 0 ? field : '[blank]' );
+	changeHistory.changes += `${ label.toUpperCase() } to ${ field || field === 0 ? field : '[blank]' }`;
 };
 
 /* if the model is created via the website, there is no updatedBy.  In these cases we need to populate it with the website bot's id */
@@ -212,24 +208,22 @@ exports.setUpdatedby = ( targetModel, done ) => {
 	if( !targetModel.updatedBy ) {
 
 		keystone.list( 'Admin' ).model
-				.find()
-				.where( 'name.full' ).equals( 'Website Bot' )
-				.select( '_id name' )
-				.lean()
-				.exec()
-				.then( adminArray => {
-					// destructure the single returned admin from the returned array
-					const [ websiteBot ] = adminArray; 
-					// set the updatedBy field to the id of the website bot
-					targetModel.updatedBy = websiteBot._id;
+			.findOne()
+			.where( 'name.full' ).equals( 'Website Bot' )
+			.select( '_id name' )
+			.lean()
+			.exec()
+			.then( websiteBot => {
+				// set the updatedBy field to the id of the website bot
+				targetModel.updatedBy = websiteBot._id;
 
-					done();
-				}, err => {
+				done();
+			}, err => {
 
-					console.log( err );
+				console.log( err );
 
-					done();
-				});
+				done();
+			});
 	// otherwise, if the user was created using the admin UI
 	} else {
 		// TODO: move this check to the top to match other functions and make more readable
