@@ -1253,7 +1253,7 @@ Child.schema.methods.setChangeHistory = function( done ) {
 			}
 		], () => {
 
-			if (changeHistory.changes === '') {
+			if ( changeHistory.changes === '' ) {
 	
 				done();
 
