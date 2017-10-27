@@ -20,16 +20,14 @@ exports = module.exports = ( req, res ) => {
 		fetchFamilyConstellations	= listsService.getAllFamilyConstellations(),
 		fetchGenders				= listsService.getAllGenders(),
 		fetchLanguages				= listsService.getAllLanguages(),
-		fetchOtherConsiderations	= listsService.getAllOtherConsiderations(),
 		fetchRaces					= listsService.getAllRaces(),
 		fetchSidebarItems			= pageService.getSidebarItems();
 
 	Promise.all( [ fetchDisabilities, fetchFamilyConstellations, fetchGenders, fetchLanguages,
-				   fetchOtherConsiderations, fetchRaces, fetchSidebarItems ] )
+				   fetchRaces, fetchSidebarItems ] )
 		.then( values => {
 			// assign local variables to the values returned by the promises
-			const [ disabilities, familyConstellations, genders, languages,
-					otherConsiderations, races, sidebarItems ] = values;
+			const [ disabilities, familyConstellations, genders, languages, races, sidebarItems ] = values;
 			// the sidebar items are a success story and event in an array, assign local variables to the two objects
 			const [ randomSuccessStory, randomEvent ] = sidebarItems;
 			
@@ -38,7 +36,6 @@ exports = module.exports = ( req, res ) => {
 			locals.familyConstellations	= familyConstellations;
 			locals.genders				= genders;
 			locals.languages			= languages;
-			locals.otherConsiderations	= otherConsiderations;
 			locals.races				= races;
 			locals.randomSuccessStory	= randomSuccessStory;
 			locals.randomEvent			= randomEvent;

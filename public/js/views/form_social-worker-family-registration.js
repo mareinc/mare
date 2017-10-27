@@ -12,9 +12,9 @@
 		},
 
 		initialize: function() {
-			// Create a hook to access the child in home fields template
+			// create a hook to access the child in home fields template
 			var childInHomeHtml = $( '#child-in-home' ).html();
-			// Compile the template to be used adding/removing child in home field groups
+			// compile the template to be used adding/removing child in home field groups
 			this.template = Handlebars.compile( childInHomeHtml );
 			// DOM cache any commonly used elements to improve performance
 			this.$MACityContainer						= this.$( '.ma-city-container' );
@@ -32,12 +32,12 @@
 			this.$childrenInHome 						= this.$( '#children-in-home' );
 			this.$childrenInHomeDetails 				= this.$( '.children-in-home-details' );
 
-			// Initialize parsley validation on the form
+			// initialize parsley validation on the form
 			this.form = this.$el.parsley();
-			// Bind the city form elements individually to allow for binding/unbinding parsley validation
+			// bind the city form elements individually to allow for binding/unbinding parsley validation
 			this.MACityValidator 		= this.$MACity.parsley();
 			this.nonMACityValidator		= this.$NonMACity.parsley();
-			// Bind the hidden homestudy text boxes. For use in binding/unbinding validation
+			// bind the hidden homestudy text boxes. For use in binding/unbinding validation
 			this.homestudyCompletionDateValidator 	= this.$homestudyCompletionDate.parsley();
 
 			this.socialWorkerNameValidator 			= this.$socialWorkerName.parsley();
@@ -85,30 +85,30 @@
 		},
 
 		toggleHomestudySection: function toggleHomestudySection() {
-			// Hide/show the hidden homestudy section via the hidden class
+			// hide/show the hidden homestudy section via the hidden class
 			this.$homestudySubmissionSection.toggleClass( 'hidden' );
 
 			if( this.$homestudySubmissionSection.hasClass( 'hidden' ) ) {
-				// Clear out the homestudy input fields since the section is hidden and not part of the form submission
+				// clear out the homestudy input fields since the section is hidden and not part of the form submission
 				this.$homestudyCompletionDate.val( '' );
 				this.$socialWorkerName.val( '' );
 				this.$socialWorkerAgency.val( '' );
 				this.$socialWorkerPhone.val( '' );
 				this.$socialWorkerEmail.val( '' );
-				// Remove validation bindings
+				// remove validation bindings
 				this.$homestudyCompletionDate.attr( 'data-parsley-required', 'false' );
 				this.$socialWorkerName.attr( 'data-parsley-required', 'false' );
 				this.$socialWorkerAgency.attr( 'data-parsley-required', 'false' );
 				this.$socialWorkerPhone.attr( 'data-parsley-required', 'false' );
 				this.$socialWorkerEmail.attr( 'data-parsley-required', 'false' );
-				// Reset validation on the fields.  If they were already validated, we need to clear out the checks so the form can be submitted
+				// reset validation on the fields.  If they were already validated, we need to clear out the checks so the form can be submitted
 				this.homestudyCompletionDateValidator.reset();
 				this.socialWorkerNameValidator.reset();
 				this.socialWorkerAgencyValidator.reset();
 				this.socialWorkerPhoneValidator.reset();
 				this.socialWorkerEmailValidator.reset();
 			} else {
-				// Add validation binding
+				// add validation binding
 				this.$homestudyCompletionDate.attr( 'data-parsley-required', 'true' );
 				this.$socialWorkerName.attr( 'data-parsley-required', 'true' );
 				this.$socialWorkerAgency.attr( 'data-parsley-required', 'true' );
@@ -118,40 +118,40 @@
 		},
 
 		toggleFamilyDetailsForm: function toggleFamilyDetailsForm() {
-			// Capture the number of children the user has selected in the dropdown
+			// capture the number of children the user has selected in the dropdown
 			var selectedQuantity = parseInt( this.$childrenInHome.children( 'option:selected' ).html(), 10 );
 
 			if ( selectedQuantity > 0 ) {
-				// Show the appropriate number of child forms
+				// show the appropriate number of child forms
 				this.generateChildDetailInputs( selectedQuantity );
 			} else {
-				// Count the number of child data groups already shown on the page
+				// count the number of child data groups already shown on the page
 				var currentChildrenDisplayed = this.$( '.child-details-form' ).length;
-				// Remove extra additional child forms
+				// remove extra additional child forms
 				for( var i = 1; i <= currentChildrenDisplayed; i++ ) {
 					$( '.child' + i + '-form' ).remove();
-					$( '.child' + i + '-form-heading' ).remove(); // TODO: Include the heading as part of the form to make cleanup easier
+					$( '.child' + i + '-form-heading' ).remove(); // TODO: include the heading as part of the form to make cleanup easier
 				}
 			}
 		},
 
-		// TODO: This needs to be cleaned up a bit, both logic for efficiency and the creation should be handled in a template instead of jQuery.  An identical function exists in registration-family.js as well
+		// TODO: this needs to be cleaned up a bit, both logic for efficiency and the creation should be handled in a template instead of jQuery.  An identical function exists in registration-family.js as well
 		generateChildDetailInputs: function generateChildDetailInputs( selectedNumberOfChildren ) {
-			// Count the number of child data groups already shown on the page
+			// count the number of child data groups already shown on the page
 			var currentChildrenDisplayed = this.$( '.child-details-form' ).length,
 				i;
 
 			if( currentChildrenDisplayed > selectedNumberOfChildren ) {
-				// Remove extra additional child forms
+				// remove extra additional child forms
 				for( i = currentChildrenDisplayed; i > selectedNumberOfChildren; i-- ) {
 					$( '.child' + i + '-form' ).remove();
-					$( '.child' + i + '-form-heading' ).remove(); // TODO: Include the heading as part of the form to make cleanup easier
+					$( '.child' + i + '-form-heading' ).remove(); // TODO: include the heading as part of the form to make cleanup easier
 				}
 
 			} else {
-				// Add sections that aren't already on the page
+				// add sections that aren't already on the page
 				for( i = currentChildrenDisplayed + 1; i <= selectedNumberOfChildren; i++ ) {
-					// Pass the relevant data through the child in home template to generate to add to the page
+					// pass the relevant data through the child in home template to generate to add to the page
 					var html = this.template({ 	index		: i,
 												id			: 'child' + i,
 												formName	: 'child' + i + '-form',
@@ -168,10 +168,10 @@
 		},
 
 		uploadForm: function uploadForm( event ) {
-			// Get the full path to the file and trim everything up to and including the last slash to give us just the file name
+			// get the full path to the file and trim everything up to and including the last slash to give us just the file name
 			var filepath = event.target.value;
 			var filename = filepath.substr( filepath.lastIndexOf( '\\' ) + 1 );
-			// Show the file name to the user as a point of reference after they've selected the file they wish to upload
+			// show the file name to the user as a point of reference after they've selected the file they wish to upload
 			this.$( '.homestudy-file-text' ).html( filename );
 		},
 

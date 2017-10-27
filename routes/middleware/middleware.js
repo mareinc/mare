@@ -1,15 +1,5 @@
-/* TODO: move all this middleware into the appropriate files inside the middleware/ directory,
-         also, check for unused junk code
-
-/**
- * This file contains the common middleware used by your routes.
- *
- * Extend or replace these functions as your application requires.
- *
- * This structure is not enforced, and just a starting point. If
- * you have more middleware you may want to group it as separate
- * modules in your project's /lib directory.
- */
+// TODO: move all this middleware into the appropriate files inside the middleware/ directory,
+//		 also, check for unused junk code 
 
 var _ 				= require('underscore'),
 	async			= require( 'async' ),
@@ -18,14 +8,7 @@ var _ 				= require('underscore'),
 	// load in middleware
 	UserMiddleware	= require( './service_user' );
 
-/**
-	Initialises the standard view locals
-
-	The included layout depends on the navLinks array to generate
-	the navigation in the header, you may wish to change this array
-	or replace it with your own templates / logic.
-*/
-
+// initialize the standard view locals
 exports.initLocals = function(req, res, next) {
 	'use strict';
 
@@ -39,7 +22,7 @@ exports.initLocals = function(req, res, next) {
 	// store whether the user is logged in
 	locals.isLoggedIn = !!req.user;
 
-	// Create the main menu navigation.
+	// create the main menu navigation.
 	locals.mainNav = [
 		// TODO: add custom header background image for each menu item
 		{ title: 'Considering Adoption?', subMenu: [
@@ -100,10 +83,7 @@ exports.initLocals = function(req, res, next) {
 	next();
 };
 
-/**
-	Fetches and clears the flashMessages before a view is rendered
-*/
-
+/* fetches and clears the flashMessages before a view is rendered */
 exports.flashMessages = function(req, res, next) {
 	'use strict';
 
@@ -121,7 +101,7 @@ exports.flashMessages = function(req, res, next) {
 };
 
 
-/* Prevents people from accessing protected pages when they're not signed in */
+/* prevents people from accessing protected pages when they're not signed in */
 exports.requireUser = function(req, res, next) {
 	'use strict';
 	// if there is no req.user object, the user isn't signed in
@@ -142,7 +122,7 @@ exports.login = function( req, res, next ) {
 	let locals = res.locals;
 
 	if ( !req.body.email || !req.body.password ) {
-		/* TODO: Need a better message for the user, flash messages won't work because page reloads are stupid */
+		/* TODO: need a better message for the user, flash messages won't work because page reloads are stupid */
 		req.flash( 'error', { title: 'Something went wrong',
 							  detail: 'Please enter your username and password.' } );
 		return next();
@@ -174,7 +154,7 @@ exports.login = function( req, res, next ) {
 			}
 
 			var onFail = function() {
-				/* TODO: Need a better message for the user, flash messages won't work because page reloads are stupid */
+				/* TODO: need a better message for the user, flash messages won't work because page reloads are stupid */
 				req.flash( 'error', { title: 'Your username or password is incorrect, please try again.' } );
 				req.body.target ? res.redirect( req.body.target ) : res.redirect( '/' );
 			}
@@ -186,14 +166,12 @@ exports.login = function( req, res, next ) {
 
 exports.logout = function(req, res) {
 
-	// var view = new keystone.View( req, res );
-
-	keystone.session.signout(req, res, function() {
+	keystone.session.signout( req, res, function() {
 		req.query.target ? res.redirect( req.query.target ) : res.redirect( '/' );
 	});
 };
 
-/* TODO: This should be placed in a date-time.js file, but I wasn't able to get it to register on my first try */
+/* TODO: this should be placed in a date-time.js file, but I wasn't able to get it to register on my first try */
 exports.getAge = function getAge( dateOfBirth ) {
 
 	var today = new Date();
@@ -208,12 +186,12 @@ exports.getAge = function getAge( dateOfBirth ) {
 	return age;
 };
 
-/* Date objects are easily compared for sorting purposes when converted to milliseconds */
+/* date objects are easily compared for sorting purposes when converted to milliseconds */
 exports.convertDate = function convertDate( date ) {
 	return new Date( date ).getTime();
 };
 
-/* Converts an array to a string like 'element1, element2, and element3' */
+/* converts an array to a string like 'element1, element2, and element3' */
 exports.getArrayAsList = function getArrayAsList( array ) {
 	// store the length of the array to determine the separator word
 	const arrayLength = array.length;

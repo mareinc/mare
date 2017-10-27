@@ -1,4 +1,4 @@
-/* A place for generic utility functions for data processing and other common tasks */
+/* a place for generic utility functions for data processing and other common tasks */
 
 const _			= require( 'underscore' ),
 	  crypto	= require( 'crypto' );
@@ -10,22 +10,22 @@ exports.stripTags = text => {
 
 // TODO: add in a failure case similar to getReadableStringFromArray()
 exports.truncateText = ( text, options ) => {
-	// If the text is empty, return an empty string
+	// if the text is empty, return an empty string
 	if( !text || text.length === 0 ) {
 		return '';
 	}
-	// Remove leading and trailing whitespace
+	// remove leading and trailing whitespace
 	var trimmedText = text.trim();
 
-	// If the trimmed text is <= options.targetLength characters, return it.
+	// if the trimmed text is <= options.targetLength characters, return it.
 	if( trimmedText.length <= options.targetLength ) {
 		return trimmedText;
 	}
-	// If the character at options.targetLength is a space, return the clean character substring
+	// if the character at options.targetLength is a space, return the clean character substring
 	if( trimmedText.charAt( options.targetLength ) === ' ' ) {
 		return trimmedText.substr( 0, options.targetLength ) + '&#8230;';
 	}
-	// If the character at options.targetLength is not a space, return the longest substring ending in a space
+	// if the character at options.targetLength is not a space, return the longest substring ending in a space
 	if( trimmedText.charAt( options.targetLength ) !== ' ' ) {
 		var lastSpace = trimmedText.substr(0, options.targetLength).lastIndexOf(' ');
 		return trimmedText.substr( 0, lastSpace ) + '&#8230;';
@@ -34,7 +34,7 @@ exports.truncateText = ( text, options ) => {
 
 // TODO: match the destructured parameters and default values in all server-side functions
 
-/* Convert an array into a readable comma separated string */
+/* convert an array into a readable comma separated string */
 /* ['Bob'] => 'Bob'
    ['Bob', 'Sam'], delimiter = 'and' => 'Bob and Sam'
    ['Bob', 'Sam', 'John'], delimiter = 'or' => 'Bob, Sam, or John' */
@@ -89,7 +89,7 @@ exports.modifyWYSIWYGContent = ( object, content, options ) => {
 
 				const matchString		= new RegExp( `<${ option.element }>` );
 				const globalMatchString	= new RegExp( `<${ option.element }>`, 'g' );
-				// NOTE: This will fail when confronted with WYSIWYG content that already has ids/classes/attributes attached.  To handle
+				// NOTE: this will fail when confronted with WYSIWYG content that already has ids/classes/attributes attached.  To handle
 				// more complex cases, this will need to be changed to a regular expression match
 				if( option.targetAll ) {
 					object[ content ] = object[ content ].replace( globalMatchString, `<${ option.element } class="${ option.classesToAdd }">`);
@@ -102,7 +102,7 @@ exports.modifyWYSIWYGContent = ( object, content, options ) => {
 	});
 };
 /* generates a random string to be used as a temporary password */
-exports.generateAlphanumericHash = ( length ) => {
+exports.generateAlphanumericHash = length => {
 	// because it's a hex encoding, each unit will be two characters long, so we must divide by 2
 	return crypto.randomBytes( Math.ceil( length / 2 ) ).toString( 'hex' );
 };

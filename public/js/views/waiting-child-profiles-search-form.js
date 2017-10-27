@@ -1,10 +1,10 @@
-// TODO: Remove the complexity in this file by breaking out testing and storing of variables into discrete functions, then update .eslintrc
+// TODO: remove the complexity in this file by breaking out testing and storing of variables into discrete functions, then update .eslintrc
 
 (function () {
 	'use strict';
 
 	mare.views.GallerySearchForm = Backbone.View.extend({
-		// This view controls everything inside the element with class 'gallery-search-form'
+		// this view controls everything inside the element with class 'gallery-search-form'
 		el: '.gallery-search-form',
 
 		events: {
@@ -44,8 +44,7 @@
 				maximumEmotionalNeeds			: $( '.select-maximum-emotional-needs:checked' ).val(),
 				maximumIntellectualNeeds		: $( '.select-maximum-intellectual-needs:checked' ).val(),
 				disabilities					: $( '.select-disabilities:checked' ),
-				otherConsiderations				: $( '.select-other-considerations:checked' ),
-				familyConstellation				: $( '.select-family-constellation:checked' ),
+				familyConstellation				: $( '.select-family-constellation:checked' ).val(),
 				numberOfChildrenInHome			: $( '.select-number-of-children-in-home' ).val(),
 				gendersOfChildrenInHome			: $( '.select-genders-of-children-in-home:checked' ),
 				youngestChildAgeInHome			: $( '#youngest-child-age-in-home' ).val(),
@@ -60,8 +59,6 @@
 				raceArray						= [],
 				primaryLanguagesArray			= [],
 				disabilityArray					= [],
-				otherConsiderationsArray		= [],
-				familyConstellationArray		= [],
 				gendersOfChildrenInHomeArray	= [],
 				formFields						= this.formFields;
 
@@ -81,14 +78,6 @@
 				disabilityArray.push( disability.getAttribute( 'value' ) );
 			});
 
-			_.each( formFields.otherConsiderations, function( consideration ) {
-				otherConsiderationsArray.push( consideration.getAttribute( 'value' ) );
-			});
-
-			_.each( formFields.familyConstellation, function( constellation ) {
-				familyConstellationArray.push( constellation.getAttribute( 'value' ) );
-			});
-
 			_.each( formFields.gendersOfChildrenInHome, function( gender ) {
 				gendersOfChildrenInHomeArray.push( gender.getAttribute( 'value' ) );
 			});
@@ -97,8 +86,6 @@
 			formFields.races					= raceArray;
 			formFields.primaryLanguages			= primaryLanguagesArray;
 			formFields.disabilities				= disabilityArray;
-			formFields.otherConsiderations		= otherConsiderationsArray;
-			formFields.familyConstellation		= familyConstellationArray;
 			formFields.gendersOfChildrenInHome	= gendersOfChildrenInHomeArray;
 
 			formFields.minimumChildren			= parseInt( formFields.minimumChildren, 10 );
@@ -134,8 +121,6 @@
 			if( formFields.maximumEmotionalNeeds === 3 )				{ delete formFields.maximumEmotionalNeeds; }
 			if( formFields.maximumIntellectualNeeds === 3 )				{ delete formFields.maximumIntellectualNeeds; }
 			if( formFields.disabilities.length === 0 )					{ delete formFields.disabilities; }
-			if( formFields.otherConsiderations.length === 0 )			{ delete formFields.otherConsiderations; }
-			if( formFields.familyConstellation.length === 0 )			{ delete formFields.familyConstellation; }
 			if( formFields.gendersOfChildrenInHome.length === 0 )		{ delete formFields.gendersOfChildrenInHome; }
 			if( !formFields.petsInHome )								{ delete formFields.petsInHome; }
 		},
@@ -200,23 +185,62 @@
 					child.get( 'disabilities' ).length > 0 &&
 				   _.intersection( formFields.disabilities, child.get( 'disabilities' ) ).length === 0 ) { return; }
 
-				// break out of the current loop only if none of the child's other considerations match a selected consideration ( return is needed for this in _.each )
-				if( formFields.otherConsiderations &&
-					child.get( 'otherConsiderations' ).length > 0 &&
-				   _.intersection( formFields.otherConsiderations, child.get( 'otherConsiderations' ) ).length === 0 ) { return; }
-
-				// break out of the loop if the recommended family constellation for the child does not contain the one selected by the user ( return is needed for this in _.each )
+				// break out of the loop if the recommended family constellation for the child does not contain the one selected by the user
 				if( formFields.familyConstellation &&
-				   child.get( 'recommendedFamilyConstellation' ).length > 0 &&
-				_.intersection( formFields.familyConstellation, child.get( 'recommendedFamilyConstellation' ) ).length === 0 ) { return; }
-
-				// break out of the loop if any of the other considerations selected don't match the child ( return is needed for this in _.each )
-				if( child.get( 'requiresSiblings' ) && formFields.numberOfChildrenInHome === 0 ) { return; }
-				if( child.get( 'requiresNoSiblings' ) && formFields.numberOfChildrenInHome > 0 ) { return; }
-				if( child.get( 'requiresOlderSibling' ) && formFields.oldestChildAgeInHome <= child.get( 'age' ) ) { return; }
-				if( child.get( 'requiresYoungerSibling' ) && formFields.youngestChildAgeInHome >= child.get( 'age' ) ) { return; }
-				if( child.get( 'noPets' ) && formFields.petsInHome ) { return; }
-
+					child.get( 'recommendedFamilyConstellation' ).length > 0 &&
+					child.get( 'recommendedFamilyConstellation' ).indexOf( formFields.familyConstellation ) === -1 ) { return; }
+				
+				// determine if selections were made about the family, if not, don't use it to restrict search results
+				var numberOfChildrenInHomeSelected	= formFields.numberOfChildrenInHome !== '',
+					oldestChildAgeInHomeSelected	= formFields.oldestChildAgeInHome !== '',
+					youngestChildAgeInHomeSelected	= formFields.youngestChildAgeInHome !== '';
+				// store references to other family constellatoin considerations listed for any of the siblings
+				var requiresSiblings			= child.get( 'requiresSiblings' ),
+					requiresNoSiblings			= child.get( 'requiresNoSiblings' ),
+					olderChildrenAcceptable		= child.get( 'olderChildrenAcceptable' ),
+					youngerChildrenAcceptable	= child.get( 'youngerChildrenAcceptable' ),
+					// keep track of whether there are no other family constellation considerations listed for the child
+					hasOtherFamilyConstellationConsiderations = requiresSiblings
+															|| requiresNoSiblings
+															|| youngerChildrenAcceptable
+															|| olderChildrenAcceptable;
+				// assume that the family doesn't match with the child
+				var otherFamilyConstellationConsiderationsMatch = false;
+				/* NOTE: this logic is meant to be inclusive, so any matches on the child will add them to the search results */
+				// if the child has no listed other family constellation considerations, they should be included in the search results
+				if( !hasOtherFamilyConstellationConsiderations ) {
+					otherFamilyConstellationConsiderationsMatch = true;
+				// otherwise, if other family constellation considerations are listed for one or more sibling
+				} else {
+					// if the child requires siblings and the family has children, they should be included in the search results
+					if( requiresSiblings ) {
+						if( numberOfChildrenInHomeSelected && formFields.numberOfChildrenInHome !== 0 ) {
+							otherFamilyConstellationConsiderationsMatch = true;
+						}
+					}
+					// if the child requires no siblings and the family has no children, they should be included in the search results
+					if( requiresNoSiblings ) {
+						if( numberOfChildrenInHomeSelected && formFields.numberOfChildrenInHome === 0 ) {
+							otherFamilyConstellationConsiderationsMatch = true;
+						}
+					}
+					// if the child accepts older children and the family has older children, they should be included in the search results
+					if( olderChildrenAcceptable ) {
+						if( oldestChildAgeInHomeSelected && formFields.oldestChildAgeInHome >= child.get( 'age' ) ) {
+							otherFamilyConstellationConsiderationsMatch = true;
+						}
+					}
+					// if the child accepts younger children and the family has younger children, they should be included in the search results
+					if( youngerChildrenAcceptable ) {
+						if( youngestChildAgeInHomeSelected && formFields.youngestChildAgeInHome <= child.get( 'age' ) ) {
+							otherFamilyConstellationConsiderationsMatch = true;
+						}
+					}
+				}
+				// break out of the loop if none of the other considerations selected match the sibling group ( return is needed for this in _.each )
+				if( !otherFamilyConstellationConsiderationsMatch ) { return; }
+				// if the child requires no pets and the family has pets, they should be be excluded from the search results
+				if( formFields.petsInHome && child.get( 'noPets' ) ) { return; }
 				// if the child passes all checks, add them to the collection to display on the gallery
 				mare.collections.galleryChildren.add( child );
 			});
@@ -291,22 +315,61 @@
 					siblingGroup.get( 'disabilities' ).length > 0 &&
 					_.difference( siblingGroup.get( 'disabilities' ), formFields.disabilities ).length > 0 ) { return; }
 
-				// break out of the current loop only if none of the sibling group's other considerations match a selected consideration ( return is needed for this in _.each )
-				if( formFields.otherConsiderations &&
-					siblingGroup.get( 'otherConsiderations' ).length > 0 &&
-					_.difference( siblingGroup.get( 'otherConsiderations' ), formFields.otherConsiderations ).length > 0 ) { return; }
-
-				// break out of the loop if the recommended family constellation for the sibling group does not contain the one selected by the user ( return is needed for this in _.each )
+				// break out of the loop if the recommended family constellation for the sibling group does not contain the one selected by the user				
 				if( formFields.familyConstellation &&
 					siblingGroup.get( 'recommendedFamilyConstellations' ).length > 0 &&
-					_.difference( siblingGroup.get( 'recommendedFamilyConstellation' ), formFields.familyConstellation ).length > 0 ) { return; }
-
-				// break out of the loop if any of the other considerations selected don't match the sibling group ( return is needed for this in _.each )
-				// if( siblingGroup.get( 'requiresSiblings' ).indexOf( true ) !== -1 && formFields.numberOfChildrenInHome === 0 ) { return; }
-				// if( siblingGroup.get( 'requiresNoSiblings' ).indexOf( true ) !== -1 && formFields.numberOfChildrenInHome > 0 ) { return; }
-				// if( siblingGroup.get( 'requiresOlderSibling' ).indexOf( true ) !== -1 && formFields.oldestChildAgeInHome <= _.max( siblingGroup.get( 'age' ) ) ) { return; }
-				// if( siblingGroup.get( 'requiresYoungerSibling' ).indexOf( true ) !== -1 && formFields.youngestChildAgeInHome >= _.min( siblingGroup.get( 'age' ) ) ) { return; }
-				if( siblingGroup.get( 'noPets' ).indexOf( true ) !== -1 && formFields.petsInHome ) { return; }
+					siblingGroup.get( 'recommendedFamilyConstellations' ).indexOf( formFields.familyConstellation ) === -1 ) { return; }
+				// determine if selections were made about the family, if not, don't use it to restrict search results
+				var numberOfChildrenInHomeSelected	= formFields.numberOfChildrenInHome !== '',
+					oldestChildAgeInHomeSelected	= formFields.oldestChildAgeInHome !== '',
+					youngestChildAgeInHomeSelected	= formFields.youngestChildAgeInHome !== '';
+				// store references to other family constellatoin considerations listed for any of the siblings
+				var requiresSiblings			= siblingGroup.get( 'requiresSiblings' ).indexOf( true ) !== -1,
+					requiresNoSiblings			= siblingGroup.get( 'requiresNoSiblings' ).indexOf( true ) !== -1,
+					olderChildrenAcceptable		= siblingGroup.get( 'olderChildrenAcceptable' ).indexOf( true ) !== -1,
+					youngerChildrenAcceptable	= siblingGroup.get( 'youngerChildrenAcceptable' ).indexOf( true ) !== -1,
+					// keep track of whether there are no other family constellation considerations listed for any of the siblings
+					hasOtherFamilyConstellationConsiderations = requiresSiblings
+															 || requiresNoSiblings
+															 || youngerChildrenAcceptable
+															 || olderChildrenAcceptable;
+				// assume that the family doesn't match with the sibling group
+				var otherFamilyConstellationConsiderationsMatch = false;
+				/* NOTE: this logic is meant to be inclusive, so any matches on any of the siblings needs will add them to the search results */
+				// if no siblings have listed other family constellation considerations, they should be included in the search results
+				if( !hasOtherFamilyConstellationConsiderations ) {
+					otherFamilyConstellationConsiderationsMatch = true;
+				// otherwise, if other family constellation considerations are listed for one or more sibling
+				} else {
+					// if any siblings require siblings and the family has children, they should be included in the search results
+					if( requiresSiblings ) {
+						if( numberOfChildrenInHomeSelected && formFields.numberOfChildrenInHome !== 0 ) {
+							otherFamilyConstellationConsiderationsMatch = true;
+						}
+					}
+					// if any siblings require no siblings and the family has no children, they should be included in the search results
+					if( requiresNoSiblings ) {
+						if( numberOfChildrenInHomeSelected && formFields.numberOfChildrenInHome === 0 ) {
+							otherFamilyConstellationConsiderationsMatch = true;
+						}
+					}
+					// if any siblings accept older children and the family has older children, they should be included in the search results
+					if( olderChildrenAcceptable ) {
+						if( oldestChildAgeInHomeSelected && formFields.oldestChildAgeInHome >= _.max( siblingGroup.get( 'age' ) ) ) {
+							otherFamilyConstellationConsiderationsMatch = true;
+						}
+					}
+					// if any siblings accept younger children and the family has younger children, they should be included in the search results
+					if( youngerChildrenAcceptable ) {
+						if( youngestChildAgeInHomeSelected && formFields.youngestChildAgeInHome <= _.min( siblingGroup.get( 'age' ) ) ) {
+							otherFamilyConstellationConsiderationsMatch = true;
+						}
+					}
+				}
+				// if any siblings require no pets and the family has pets, they should be excluded from the search results
+				if( formFields.petsInHome && siblingGroup.get( 'noPets' ).indexOf( true ) !== -1 ) { return; }
+				// break out of the loop if none of the other considerations selected match the sibling group ( return is needed for this in _.each )
+				if( !otherFamilyConstellationConsiderationsMatch ) { return; }
 				// if the sibling group passes all checks, add them to the collection to display on the gallery
 				mare.collections.gallerySiblingGroups.add( siblingGroup );
 			});

@@ -6,7 +6,8 @@
 
 		events: {
 			'change #is-not-MA-city-checkbox' 		: 'toggleCitySelect',
-			'change .other-way-to-hear-about-mare'	: 'toggleOtherWayToHearTextField'
+			'change .other-way-to-hear-about-mare'	: 'toggleOtherWayToHearTextField',
+			'submit'								: 'disableRegistrationButton'
 		},
 
 		initialize: function() {
@@ -15,33 +16,33 @@
 			this.$NonMACityContainer	= this.$( '.non-ma-city-container' );
 			this.$MACity				= this.$( '#ma-city' );
 			this.$NonMACity				= this.$( '#non-ma-city' );
-			this.$howDidYouHearOther 	= this.$('#site-visitor-how-did-you-hear-other');
-			// Initialize parsley validation on the form
+			this.$howDidYouHearOther 	= this.$( '#site-visitor-how-did-you-hear-other' );
+			// initialize parsley validation on the form
 			this.form = this.$el.parsley();
-			// Bind the city form elements individually to allow for binding/unbinding parsley validation
+			// bind the city form elements individually to allow for binding/unbinding parsley validation
 			this.MACityValidator 					= this.$MACity.parsley();
 			this.nonMACityValidator					= this.$NonMACity.parsley();
-			// Bind the hidden 'other' text box for use in binding/unbinding validation
+			// bind the hidden 'other' text box for use in binding/unbinding validation
 			this.howDidYouHearOtherValidator		= this.$howDidYouHearOther.parsley();
 			// DOM cache the Parsley validation message for the hidden 'other' field for use in binding/unbinding validation
 			this.$howDidYouHearOtherErrorMessage	= this.$howDidYouHearOther.next();
 
-			this.form.on('field:validated', this.validateForm);
+			this.form.on( 'field:validated', this.validateForm );
 		},
 
 		toggleOtherWayToHearTextField: function toggleOtherWayToHearTextField() {
-			// Hide/show the hidden 'other' field via the hidden class
+			// hide/show the hidden 'other' field via the hidden class
 			this.$howDidYouHearOther.toggleClass('hidden');
 
 			if(this.$howDidYouHearOther.hasClass('hidden')) {
-				// Clear out the input box since it's hidden and not part of the form submission
+				// clear out the input box since it's hidden and not part of the form submission
 				this.$howDidYouHearOther.val('');
-				// Remove the validation binding
+				// remove the validation binding
 				this.$howDidYouHearOther.attr('data-parsley-required', 'false');
-				// Reset validation on the field.  If it was already validated, we need to clear out the check so the form can be submitted
+				// reset validation on the field.  If it was already validated, we need to clear out the check so the form can be submitted
 				this.howDidYouHearOtherValidator.reset();
 			} else {
-				// Add validation binding
+				// add validation binding
 				this.$howDidYouHearOther.attr('data-parsley-required', 'true');
 			}
 		},
@@ -80,6 +81,10 @@
 				// if it was already validated, we need to clear out the check so the form can be submitted
 				this.MACityValidator.reset();
 			}
+		},
+
+		disableRegistrationButton: function disableDonateButton() {
+			this.$( '.register' ).attr( 'disabled', 'disabled' );
 		},
 
 		validateForm: function validateForm() {

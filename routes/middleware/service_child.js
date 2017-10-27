@@ -16,7 +16,8 @@ exports.getAllChildren = ( req, res, done, fieldsToSelect ) => {
 
 	Child.model.find()
 				.select( fieldsToSelect )
-				.where( 'status').equals( locals.activeChildStatusId )
+				.where( 'isVisibleInGallery' ).equals( true )
+				.where( 'status' ).equals( locals.activeChildStatusId )
 				.populate( 'gender' )
 				.populate( 'race' )
 				.populate( 'languages' )
@@ -56,11 +57,11 @@ exports.getUnrestrictedChildren = ( req, res, done, fieldsToSelect ) => {
 	var locals = res.locals;
 	
 	// find all children who are active, and are either visible to everyone or have the 'child is visible on MARE web' checkbox checked
-	Child.model.find( { $or: [
-					{ 'siteVisibility': 'everyone' },
-					{ 'isVisibleInGallery': true } ] } )
+	Child.model.find()
 				.select( fieldsToSelect )
-				.where( 'status').equals( locals.activeChildStatusId )
+				.where( 'siteVisibility' ).equals( 'everyone' )
+				.where( 'isVisibleInGallery' ).equals( true )
+				.where( 'status' ).equals( locals.activeChildStatusId )
 				.populate( 'gender' )
 				.populate( 'race' )
 				.populate( 'languages' )
@@ -96,11 +97,22 @@ exports.getUnrestrictedChildren = ( req, res, done, fieldsToSelect ) => {
 				});
 };
 
-/* Sets the images for display in the gallery to a blank male/female face in the following cases:
- *	1. No image was uploaded for the child
- *	2. The child has been identified as legal risk
- *  3. The child is not visible to everyone, and the user wouldn't have permission to see them without the 'child is visible on MARE web' checkbox being checked
- */
+/* display the blank male/female/other image in the gallery in the following cases:
+	1. No image was uploaded for the child
+	2. The child has been identified as legal risk
+	3. The child is not visible to everyone, and the user wouldn't have permission to see them without the 'child is visible on MARE web' checkbox being checked
+
+	all other children will display their pictures normally
+*/
+
+/* display the blank sibling group image in the gallery in the following cases:
+
+	1. No image was uploaded for the sibling group
+	2. Any of the children have been identified as legal risk
+	3. Any of the children are not visible to everyone, and the user wouldn't have permission to see them without the 'child is visible on MARE web' checkbox being checked
+
+	all other sibling groups will display their pictures normally
+*/
 exports.setNoChildImage = ( req, res, child, canViewAllChildren ) => {
 
 	const NO_IMAGE_MALE_GALLERY				= 'images/no-image-male_gallery.png',
@@ -114,7 +126,10 @@ exports.setNoChildImage = ( req, res, child, canViewAllChildren ) => {
 	// if the child is part of a sibling group
 	if( child.mustBePlacedWithSiblings ) {
 		// and is missing an image or is legal risk
-		if( !child.siblingGroupImage.secure_url || child.legalStatus.legalStatus === 'legal risk' ) {
+		if( !child.siblingGroupImage.secure_url
+			|| child.legalStatus.legalStatus === 'legal risk'
+			|| ( child.siteVisibility !== 'everyone'
+				&& !canViewAllChildren ) ) {
 			// set the images to the placeholders for sibling groups
 			child.siblingGroupDetailImage = NO_IMAGE_SIBLING_GROUP_DETAILS;
 			child.siblingGroupGalleryImage = NO_IMAGE_SIBLING_GROUP_GALLERY;
@@ -206,12 +221,12 @@ exports.getGalleryData = ( req, res, next ) => {
 	locals.siblingGroups	= new Set(); // format: Set( { ids: Set(), children: [] }, ... )
 	// variables to determine what children the user has access to
 	locals.userType			= req.user ? req.user.get( 'userType' ) : 'anonymous';
-	// anonymous users, site visitors, and families without a verified homestudy have access only to unrestricted children
+	// anonymous users, site visitors, and families without a verified homestudy ( or from a state other than MA, NH, CT, ME, VT, RI, or NY ) have access only to unrestricted children
 	if( locals.userType === 'anonymous' ||
 		locals.userType === 'site visitor' ||
 		( locals.userType === 'family' && !req.user.permissions.canViewAllChildren ) ) {
 		locals.targetChildren = 'unrestricted';
-	// families with a verified homestudy and social workers have access to all children
+	// families with a verified homestudy ( from MA, NH, CT, ME, VT, RI, or NY ) and social workers have access to all children
 	} else {
 		locals.targetChildren = 'all';
 	}
@@ -236,14 +251,14 @@ exports.getGalleryData = ( req, res, next ) => {
 		done => { locals.canBookmarkChildren ? familyService.getBookmarkedChildren( req, res, done ) : done(); },
 		done => {
 			if( locals.bookmarkedChildren && locals.bookmarkedChildren.length > 0 ) {
-				// Loop through each child model and set a property to show they've already been bookmarked by the user during templating
+				// loop through each child model and set a property to show they've already been bookmarked by the user during templating
 				_.each( locals.allChildren, function( child ) {
-					// Get the child id to compare with the array of currently bookmarked child ids
+					// get the child id to compare with the array of currently bookmarked child ids
 					const childId = child.get( '_id' ).toString();
-					// The bookmarked children come back as Objects, and need to be converted to strings for comparison
+					// the bookmarked children come back as Objects, and need to be converted to strings for comparison
 					// TODO: think about doing the mapping inside the getBookmarkedChildren function
 					const bookmarkedChildrenArray = locals.bookmarkedChildren.map( childId => childId.toString() );
-					// Set the property for use during templating to show if the child has already been bookmarked
+					// set the property for use during templating to show if the child has already been bookmarked
 					child.isBookmarked = locals.bookmarkedChildren.indexOf( childId ) !== -1;
 				});
 
@@ -261,7 +276,7 @@ exports.getGalleryData = ( req, res, next ) => {
 		// map out the relevant information for solo children
 		exports.getRelevantChildInformation( [ ...locals.soloChildren ], locals );
 		// map out the relevant information for sibling groups
-		exports.getRelevantSiblingGroupInformation( [ ...locals.siblingGroups], locals );
+		exports.getRelevantSiblingGroupInformation( [ ...locals.siblingGroups ], locals );
 		// return the child and group information
 		res.send( { soloChildren: locals.soloChildrenToReturn, siblingGroups: locals.siblingGroupsToReturn } );
 	});
@@ -317,7 +332,7 @@ exports.getRelevantChildInformation = ( children, locals ) => {
 	};
 
 	locals.soloChildrenToReturn = children.map( child => {
-		// Create a searchable array for dealing with other family constellation considerations
+		// create a searchable array for dealing with other family constellation considerations
 		var otherFamilyConstellationConsiderations = _.pluck( child.otherFamilyConstellationConsideration, 'otherFamilyConstellationConsideration' );
 
 		return {
@@ -345,9 +360,9 @@ exports.getRelevantChildInformation = ( children, locals ) => {
 			registrationDateConverted				: middleware.convertDate( child.registrationDate ),
 			registrationNumber						: child.registrationNumber,
 			requiresNoSiblings						: otherFamilyConstellationConsiderations.indexOf( 'childless home' ) !== -1,
-			requiresOlderSibling					: otherFamilyConstellationConsiderations.indexOf( 'requires older children' ) !== -1,
+			olderChildrenAcceptable					: otherFamilyConstellationConsiderations.indexOf( 'older children acceptable' ) !== -1,
 			requiresSiblings						: otherFamilyConstellationConsiderations.indexOf( 'multi-child home' ) !== -1,
-			requiresYoungerSibling					: otherFamilyConstellationConsiderations.indexOf( 'requires younger children' ) !== -1,
+			youngerChildrenAcceptable				: otherFamilyConstellationConsiderations.indexOf( 'younger children acceptable' ) !== -1,
 			siblingToBePlacedWithCount				: child.siblingsToBePlacedWith.length, /* TODO: do we need to return this? */
 			updatedAt								: child.updatedAt,
 			wednesdaysChild							: child.wednesdaysChild
@@ -413,8 +428,8 @@ exports.getRelevantSiblingGroupInformation = ( siblingGroups, locals ) => {
 			registrationNumbersString				: middleware.getArrayAsList( registrationNumbersArray ),	
 			requiresNoSiblings						: _.uniq( children.map( child => otherFamilyConstellationConsiderations.indexOf( 'childless home' ) !== -1 ) ),
 			requiresSiblings						: _.uniq( children.map( child => otherFamilyConstellationConsiderations.indexOf( 'multi-child home' ) !== -1 ) ),
-			requiresOlderSibling					: _.uniq( children.map( child => otherFamilyConstellationConsiderations.indexOf( 'requires older children' ) !== -1 ) ),
-			requiresYoungerSibling					: _.uniq( children.map( child => otherFamilyConstellationConsiderations.indexOf( 'requires younger children' ) !== -1 ) ),	
+			olderChildrenAcceptable					: _.uniq( children.map( child => otherFamilyConstellationConsiderations.indexOf( 'older children acceptable' ) !== -1 ) ),
+			youngerChildrenAcceptable				: _.uniq( children.map( child => otherFamilyConstellationConsiderations.indexOf( 'younger children acceptable' ) !== -1 ) ),	
 			siblingToBePlacedWithCount				: children[ 0 ].siblingsToBePlacedWith.length,
 			updatedAt								: _.uniq( children.map( child => child.updatedAt ) ),
 			wednesdaysChild							: children.map( child => child.wednesdaysChild ).indexOf( true ) !== -1
@@ -427,7 +442,7 @@ exports.getChildDetails = ( req, res, next ) => {
 	const childData = req.body;
 	const registrationNumber = childData[ 'registrationNumber' ];
 
-	/* TODO: Fetch only the needed fields instead of grabbing everything */
+	/* TODO: fetch only the needed fields instead of grabbing everything */
 	Child.model.findOne()
         .where( 'registrationNumber', registrationNumber )
         .populate( 'gender' )
@@ -459,7 +474,7 @@ exports.getSiblingGroupDetails = ( req, res, next ) => {
 	const childData = req.body;
 	const registrationNumber = childData[ 'registrationNumber' ];
 
-	/* TODO: Fetch only the needed fields instead of grabbing everything */
+	/* TODO: fetch only the needed fields instead of grabbing everything */
 	Child.model.findOne()
         .where( 'registrationNumber', registrationNumber )
         .populate( 'gender' )
@@ -513,7 +528,7 @@ exports.registerChild = ( req, res, next ) => {
 	// set the redirect path to navigate to after processing is complete
 	locals.redirectPath = '/forms/child-registration-form';
 	// fetch the id for the active child status
-	const fetchActiveChildStatusId		= exports.fetchChildStatusId( 'active' );
+	const fetchActiveChildStatusId = exports.fetchChildStatusId( 'active' );
 	
 	fetchActiveChildStatusId.then( activeChildStatusId => {
 		// create a new Child model

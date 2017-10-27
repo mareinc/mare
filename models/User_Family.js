@@ -29,7 +29,7 @@ const ContactGroup = require( './ContactGroup' );
 // Create model
 var Family = new keystone.List( 'Family', {
 	inherits	: User,
-	track		: true,
+	track		: true, // needed for change history updated by assignment
 	autokey		: { path: 'key', from: 'registrationNumber', unique: true },
 	map			: { name: 'contact1.name.full' },
 	defaultSort	: 'contact1.name.full',
@@ -559,7 +559,7 @@ Family.schema.methods.setChangeHistory = function setChangeHistory( done ) {
 			done();
 		}, err => {
 			console.log( err );
-			console.log( 'error saving record created change history' );
+			console.log( `error saving 'record created' change history record` );
 
 			done();
 		});

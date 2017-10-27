@@ -2,7 +2,7 @@
 	'use strict';
 
 	mare.views.WaitingChildProfiles = Backbone.View.extend({
-		// This view controls everything inside the body element, with the exception of areas controlled by sub-views
+		// this view controls everything inside the body element, with the exception of areas controlled by sub-views
 		el: 'body',
 
 		events: {
@@ -17,25 +17,25 @@
 			this.$gallery		= this.$( '.gallery' );
 			this.$searchForm	= this.$( '.gallery-search-form' );
 
-			// Create a collection to hold all available children data as a base for sorting/filtering
+			// create a collection to hold all available children data as a base for sorting/filtering
 			mare.collections.allChildren = mare.collections.allChildren || new mare.collections.Children();
-			// Create a collection to hold only the children currently displayed in the gallery
+			// create a collection to hold only the children currently displayed in the gallery
 			mare.collections.galleryChildren = mare.collections.galleryChildren || new mare.collections.Children();
-			// Create a collection to hold all available sibling group data as a base for sorting/filtering
+			// create a collection to hold all available sibling group data as a base for sorting/filtering
 			mare.collections.allSiblingGroups = mare.collections.allSiblingGroups || new mare.collections.SiblingGroups();
-			// Create a collection to hold only the sibling groups currently displayed in the gallery
+			// create a collection to hold only the sibling groups currently displayed in the gallery
 			mare.collections.gallerySiblingGroups = mare.collections.gallerySiblingGroups || new mare.collections.SiblingGroups();
 
-			// Create a promise to resolve once we have data for all children the user is allowed to see
+			// create a promise to resolve once we have data for all children the user is allowed to see
 			mare.promises.childrenDataLoaded = $.Deferred();
-			// Fetch children the current user is allowed to view
+			// fetch children the current user is allowed to view
 			this.getChildren();
 
-			// Initialize views for the gallery and serach form
+			// initialize views for the gallery and serach form
 			mare.views.gallery = mare.views.gallery || new mare.views.Gallery();
 			mare.views.gallerySearchForm = mare.views.gallerySearchForm || new mare.views.GallerySearchForm();
 
-			// Bind to change events
+			// bind to change events
 			mare.collections.galleryChildren.on( 'updateComplete', function() {
 				that.navigateToGallery();
 			});
@@ -46,23 +46,23 @@
 
 		},
 
-		/* Hide the gallery search form and show the gallery */
+		/* hide the gallery search form and show the gallery */
 		showGallery: function showGallery() {
-			// Store a reference to this for insde callbacks where context is lost
+			// store a reference to this for insde callbacks where context is lost
 			var view = this;
-			// Fade the search form out and fade the gallery in
+			// fade the search form out and fade the gallery in
 			this.$searchForm.fadeOut( function() {
 				view.$gallery.fadeIn();
-				// Render the gallery
+				// render the gallery
 				mare.views.gallery.render();
 			});
 		},
 
-		/* Hide the gallery and show the gallery search form */
+		/* hide the gallery and show the gallery search form */
 		showSearchForm: function showSearchForm() {
-			// Store a reference to this for insde callbacks where context is lost
+			// store a reference to this for insde callbacks where context is lost
 			var view = this;
-			// Fade the gallery out and fade the search form in
+			// fade the gallery out and fade the search form in
 			this.$gallery.fadeOut( function() {
 				view.$searchForm.fadeIn();
 			});
@@ -88,7 +88,7 @@
 				mare.promises.childrenDataLoaded.resolve();
 
 			}).fail( function( err ) {
-				// TODO: Show an error message instead of the gallery if we failed to fetch the child data
+				// TODO: show an error message instead of the gallery if we failed to fetch the child data
 				console.log( err );
 			});
 		},

@@ -1,4 +1,4 @@
-/* This file is used for processing all forms except registration in the system */
+/* this file is used for processing all forms except registration in the system */
 // TODO: event submission is currently handled in the events middleware, we might want to migrate that here
 const keystone				= require( 'keystone' ),
 	  inquiryService		= require( './service_inquiry' ),
