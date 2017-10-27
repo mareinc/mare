@@ -558,7 +558,7 @@ Family.schema.methods.setChangeHistory = function setChangeHistory( done ) {
 			done();
 		}, err => {
 			console.log( err );
-			console.log( 'error saving record migrated change history' );
+			console.log( `error saving 'record created' change history record` );
 
 			done();
 		});

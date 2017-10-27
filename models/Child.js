@@ -567,7 +567,7 @@ Child.schema.methods.setChangeHistory = function( done ) {
 			done();
 		}, err => {
 			console.log( err );
-			console.log( 'error saving record migrated change history' );
+			console.log( `error saving 'record created' change history record` );
 
 			done();
 		});
@@ -1252,7 +1252,7 @@ Child.schema.methods.setChangeHistory = function( done ) {
 			}
 		], () => {
 
-			if (changeHistory.changes === '') {
+			if ( changeHistory.changes === '' ) {
 	
 				done();
 
