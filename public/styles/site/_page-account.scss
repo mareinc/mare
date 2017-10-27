@@ -21,9 +21,14 @@
 
 .sidebar-list {
     margin: 0;
+
+    &--account {
+        padding: 0;
+    }
 }
 
-.account-nav__link {
+.account-nav-link {
+    align-items: center;
     cursor: pointer;
     display: flex;
     justify-content: space-between;
@@ -45,7 +50,7 @@
         }
 
         &:hover,
-        &.account-nav__link--active {
+        &.account-nav-link--active {
             &:after {
                 opacity: 1;
                 transform: translateX(0);
