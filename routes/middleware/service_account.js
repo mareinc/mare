@@ -29,8 +29,11 @@ exports.updateUser = ( req, res, next ) => {
 
 	// fetch the users record using the id parameter passed in with the request
 	let fetchUser = userService.getUserByIdNew( userId, model );
+
 	// once we've fetched the user model
 	fetchUser.then( user => {
+
+		console.log(update);
 
 		/* NOTE: these are wrapped in if statements because the family account page will have different
 				 fields with different names.  If all models share the same field in the same place in the
@@ -41,18 +44,39 @@ exports.updateUser = ( req, res, next ) => {
 		   NOTE: it looks like trying to update a field that doesn't exist on the model using user.set()
 				 won't add the field, which is a good thing, preventing the need to check for the field
 				 on the model before attempting to update */
+		if( userType === 'family' ) {
+			if( update.contact1.mobilePhone ) { user.set( 'contact1.phone.mobile', update.contact1.MobilePhone ); }
+			if( update.contact2.mobilePhone ) { user.set( 'contact2.phone.mobile', update.contact2.MobilePhone ); }
+			if( update.contact1.workPhone ) { user.set( 'contact1.phone.work', update.contact1.WorkPhone ); }
+			if( update.contact2.workPhone ) { user.set( 'contact2.phone.work', update.contact2.WorkPhone ); }
+		} else {
+			if( userType !== 'social worker' ) {
+				if( update.homePhone ) { user.set( 'phone.home', update.homePhone ); }
+			}
+			
+			if( update.mobilePhone ) { user.set( 'phone.mobile', update.mobilePhone ); }
+			if( update.workPhone ) { user.set( 'phone.work', update.workPhone ); }
+		}
 
+		// Social worker specific fields
+		if( userType === 'social worker' ) {
+			if( update.position ) { user.set( 'position', update.position ); }
+			if( update.title ) { user.set( 'title', update.title ); }
+			if( update.agency ) { user.set( 'agency', update.agency ); }
+		}
+		
 		// update the submitted user fields
 		if( update.firstName ) { user.set( 'name.first', update.firstName ); }
 		if( update.lastName ) { user.set( 'name.last', update.lastName ); }
 		if( update.email ) { user.set( 'email', update.email ); }
-		if( update.homePhone ) { user.set( 'phone.home', update.homePhone ); }
-		if( update.mobilePhone ) { user.set( 'phone.mobile', update.mobilePhone ); }
-		if( update.workPhone ) { user.set( 'phone.work', update.workPhone ); }
+		if( update.password ) { user.set( 'password', update.password ); }
+		if( update.phone.preferred ) { user.set( 'phone.preferred', update.phone.preferred ); }
 		if( update.address1 ) { user.set( 'address.street1', update.address1 ); }
 		if( update.address2 ) { user.set( 'address.street2', update.address2 ); }
+		if( update.maCity ) { user.set( 'address.city', update.maCity ); }
+		if( update.nonMaCity ) { user.set( 'address.city', update.nonMaCity ); }
 		if( update.zipCode ) { user.set( 'address.zipCode', update.zipCode ); }
-		if( update.isMassachusettsResident ) { user.set( 'address.work', update.isMassachusettsResident === "true" ); }
+		if( update.isOutsideMassachusetts ) { user.set( 'address.isOutsideMassachusetts', update.isOutsideMassachusetts ); }
 		
 		// attempt to save the user with the updated information
 		user.save( ( err, savedModel ) => {
@@ -71,7 +95,7 @@ exports.updateUser = ( req, res, next ) => {
 					address1				: user.get( 'address.street1' ),
 					address2				: user.get( 'address.street2' ),
 					zipCode					: user.get( 'address.zipCode' ),
-					isMassachusettsResident	: user.get( 'isMassachusettsResident' )
+					isOutsideMassachusetts	: user.get( 'isOutsideMassachusetts' )
 				});
 			// if the model was successfully saved
 			} else {

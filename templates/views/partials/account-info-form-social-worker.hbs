@@ -3,28 +3,28 @@
 		<div class="form-section-header">Account Setup</div>
 		<div class="row form-group">
 			<div class="col-sm-12">
-				<input type="text" id="social-worker-first-name" class="input" name="firstName" placeholder="John" value="{{user.name.first}}">
-				<label for="social-worker-first-name" class="label">First Name</label>
+				<input type="text" id="first-name" class="input" name="firstName" placeholder="John" value="{{user.name.first}}">
+				<label for="first-name" class="label">First Name</label>
 			</div>
 			<div class="col-sm-12">
-				<input type="text" id="social-worker-last-name" class="input" name="lastName" placeholder="Smith" value="{{user.name.last}}">
-				<label for="social-worker-last-name" class="label">Last Name</label>
-			</div>
-		</div>
-		<div class="row form-group">
-			<div class="col-sm-12">
-				<input type="email" id="social-worker-email" class="input" name="email" placeholder="john.smith@gmail.com" value="{{user.email}}">
-				<label for="social-worker-email" class="label">Email Address</label>
+				<input type="text" id="last-name" class="input" name="lastName" placeholder="Smith" value="{{user.name.last}}">
+				<label for="last-name" class="label">Last Name</label>
 			</div>
 		</div>
 		<div class="row form-group">
 			<div class="col-sm-12">
-				<input type="password" id="social-worker-password" class="input" name="password" placeholder="**********">
-				<label for="social-worker-password" class="label">Password</label>
+				<input type="email" id="email" class="input" name="email" placeholder="john.smith@gmail.com" value="{{user.email}}">
+				<label for="email" class="label">Email Address</label>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-12">
+				<input type="password" id="password" class="input" name="password" placeholder="**********">
+				<label for="password" class="label">Password</label>
 			</div>
 			<div class="col-sm-12">
-				<input type="password" id="social-worker-confirm-password" class="input" name="confirmPassword" placeholder="**********">
-				<label for="social-worker-confirm-password" class="label">Confirm Password</label>
+				<input type="password" id="confirm-password" class="input" name="confirmPassword" placeholder="**********">
+				<label for="confirm-password" class="label">Confirm Password</label>
 			</div>
 		</div>
 	</section>
@@ -33,7 +33,7 @@
 		<div class="form-section-header">Contact Details</div>
 		<div class="row">
 			<div class="col-sm-12 form-group">
-				<select id="social-worker-position" name="position" class="input position-select">
+				<select id="position" name="position" class="input position-select">
 					<option value="adoption worker" {{#ifeq user.position 'adoption worker' }}selected{{/ifeq}}>adoption worker</option>
 					<option value="recruitment worker" {{#ifeq user.position 'recruitment worker' }}selected{{/ifeq}}>recruitment worker</option>
 					<option value="supervisor" {{#ifeq user.position 'supervisor' }}selected{{/ifeq}}>supervisor</option>
@@ -53,42 +53,42 @@
 		</div>
 		<div class="row">
 			<div class="col-sm-12 form-group social-worker-title-group {{#ifeq user.title 'false'}}hidden{{/ifeq}}">
-				<input type="text" id="social-worker-title" class="input" name="socialWorkerTitle" placeholder="my title" value="{{user.title}}">
-				<label for="social-worker-title" class="label">Title</label>
+				<input type="text" id="title" class="input" name="socialWorkerTitle" placeholder="my title" value="{{user.title}}">
+				<label for="title" class="label">Title</label>
 			</div>
 			<div class="col-sm-12 form-group">
-				<input type="text" id="social-worker-agency" class="input" name="agency" value="{{user.agencyText}}">
-				<label for="social-worker-agency" class="label">Agency</label>
+				<input type="text" id="agency" class="input" name="agency" value="{{user.agencyText}}">
+				<label for="agency" class="label">Agency</label>
 			</div>
 		</div>
 		<div class="row form-group">
 			<div class="col-sm-12">
-				<input type="text" id="social-worker-work-phone" class="input" name="workPhone" placeholder="(617) 111-1111" value="{{user.phone.work}}">
-				<label for="social-worker-work-phone" class="label">Work Phone</label>
+				<input type="text" id="work-phone" class="input" name="workPhone" placeholder="(617) 111-1111" value="{{user.phone.work}}">
+				<label for="work-phone" class="label">Work Phone</label>
 			</div>
 			<div class="col-sm-12">
-				<input type="text" id="social-worker-mobile-phone" class="input" name="mobilePhone" placeholder="(617) 222-2222" value="{{user.phone.mobile}}">
-				<label for="social-worker-mobile-phone" class="label">Mobile Phone</label>
+				<input type="text" id="mobile-phone" class="input" name="mobilePhone" placeholder="(617) 222-2222" value="{{user.phone.mobile}}">
+				<label for="mobile-phone" class="label">Mobile Phone</label>
 			</div>
 		</div>
 		<div class="row form-group">
 			<div class="col-sm-12">
-				<select id="social-worker-preferred-phone" class="input social-worker-preferred-phone-select" name="preferredPhone">
+				<select id="preferred-phone" class="input social-worker-preferred-phone-select" name="preferredPhone">
 					<option value=""></option>
 					<option {{#ifeq user.phone.preferred 'work'}}selected{{/ifeq}} value="work">work</option>
 					<option {{#ifeq user.phone.preferred 'mobile'}}selected{{/ifeq}} value="mobile">mobile</option>
 				</select>
-				<label for="social-worker-preferred-phone" class="label">Preferred Phone</label>
+				<label for="preferred-phone" class="label">Preferred Phone</label>
 			</div>
 		</div>
 		<div class="row form-group">
 			<div class="col-sm-12">
-				<input type="text" id="social-worker-street-1" class="input" name="street1" placeholder="100 Main Street" value="{{user.address.street1}}">
-				<label for="social-worker-street-1" class="label">Street 1</label>
+				<input type="text" id="street-1" class="input" name="street1" placeholder="100 Main Street" value="{{user.address.street1}}">
+				<label for="street-1" class="label">Street 1</label>
 			</div>
 			<div class="col-sm-12">
-				<input type="text" id="social-worker-street-2" class="input" name="street2" placeholder="Suite 1" value="{{user.address.street2}}">
-				<label for="social-worker-street-2" class="label">Street 2</label>
+				<input type="text" id="street-2" class="input" name="street2" placeholder="Suite 1" value="{{user.address.street2}}">
+				<label for="street-2" class="label">Street 2</label>
 			</div>
 		</div>
 		<div class="row form-group">
@@ -113,7 +113,7 @@
 		</div>
 		<div class="row form-group">
 			<div class="col-sm-12">
-				<select id="social-worker-state" class="input state-select" name="state">
+				<select id="state" class="input state-select" name="state">
 				{{#each states}}
 					{{#if defaultSelection}}
 						<option value="{{_id}}" selected="selected">{{state}}</option>
@@ -122,13 +122,13 @@
 					{{/if}}
 				{{/each}}
 				</select>
-				<label for="social-worker-state" class="label">State</label>
+				<label for="state" class="label">State</label>
 			</div>
 		</div>
 		<div class="row form-group">
 			<div class="col-sm-12">
-				<input type="number" id="social-worker-zip-code" class="input" name="zipCode" placeholder="02111" value="{{user.address.zipCode}}">
-				<label for="social-worker-zip-code" class="label">Zip Code</label>
+				<input type="number" id="zip-code" class="input" name="zipCode" placeholder="02111" value="{{user.address.zipCode}}">
+				<label for="zip-code" class="label">Zip Code</label>
 			</div>
 		</div>
 	</section>
