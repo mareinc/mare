@@ -17,7 +17,7 @@
 
 .sidebar.account-nav {
     padding: 0;
-    z-index: 2;
+    z-index: 10;
 }
 
 .sidebar-list {
@@ -30,6 +30,7 @@
 
 .account-nav-link {
     align-items: center;
+    box-shadow: inset -12px 0px 12px -6px rgba(0, 0, 0, 0.12);
     cursor: pointer;
     display: flex;
     justify-content: space-between;
@@ -59,12 +60,9 @@
 
         &.account-nav-link--active {
             background: white;
+            box-shadow: none;
             color: $button-background-color-1;
         }
-    }
-    
-    &:not(&--active) {
-        box-shadow: inset -12px 0px 12px -6px rgba(0, 0, 0, 0.12);
     }
 }
 

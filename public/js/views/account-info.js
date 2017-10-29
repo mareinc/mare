@@ -11,7 +11,8 @@
 
 		initialize: function initialize() {
 			// DOM cache any commonly used elements to improve performance
-
+			this.$socialWorkerTitle		= this.$( '#social-worker-title' );
+			this.$socialWorkerTitleGroup	= this.$( '.social-worker-title-group' );
 			// create a hook to access the section templates
 			var html 		= $( '#account-info' ).html();
 			// compile the templates to be used during rendering/repainting the different sections
@@ -26,21 +27,17 @@
 		},
 
 		toggleSocialWorkerTitleTextField: function toggleSocialWorkerTitleTextField() {
-			var
-				socialWorkerTitle		= this.$( '#social-worker-title' ),
-				socialWorkerTitleGroup	= this.$( '.social-worker-title-group' )
-			;
 			// hide/show the hidden 'other' field via the hidden class
-			socialWorkerTitleGroup.toggleClass( 'hidden' );
+			this.$socialWorkerTitleGroup.toggleClass( 'hidden' );
 
-			if( socialWorkerTitleGroup.hasClass( 'hidden' ) ) {
+			if( this.$socialWorkerTitleGroup.hasClass( 'hidden' ) ) {
 				// store the social worker title to reset the header when the account section is selected again
-				this.storedSocialWorkerTitle = socialWorkerTitle.val();
+				this.storedSocialWorkerTitle = this.$socialWorkerTitle.val();
 				// clear out the input box since it's hidden and not part of the form submission
-				socialWorkerTitle.val( '' );
+				this.$socialWorkerTitle.val( '' );
 			} else {
 				// if the title group isn't hidden, reset the header with the cached title value
-				socialWorkerTitle.val( this.storedSocialWorkerTitle );
+				this.$socialWorkerTitle.val( this.storedSocialWorkerTitle );
 			}
 		},
 
