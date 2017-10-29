@@ -316,26 +316,30 @@ module.exports.getEventById = ( resolve, reject, eventId ) => {
 };
 
 module.exports.getAdminById = ( resolve, reject, adminId ) => {
-	/* TODO: short circuit the fetch here by just resolving if there are no oldIds */
-	Admin.model.findOne()
-		.where( 'oldId', adminId )
-		.exec()
-		.then( retrievedAdmin => {
-			// if no admin was found
-			if( !retrievedAdmin ) {
-				// log the issue
-				console.error( `error fetching admin by oldId ${ adminId }` );
-				// and reject the promise
+
+	return new Promise( (resolve, reject ) => {
+		/* TODO: short circuit the fetch here by just resolving if there are no oldIds */
+		Admin.model
+			.findOne()
+			.where( 'oldId', adminId )
+			.exec()
+			.then( retrievedAdmin => {
+				// if no admin was found
+				if( !retrievedAdmin ) {
+					// log the issue
+					console.error( `error fetching admin by oldId ${ adminId }` );
+					// and reject the promise
+					reject();
+				}
+				// otherwise, accept the promise and pass back the retrieved admin
+				resolve( retrievedAdmin );
+
+			}, err => {
+
+				console.error( `error in getAdminById() ${ err }` );
 				reject();
-			}
-			// otherwise, accept the promise and pass back the retrieved admin
-			resolve( retrievedAdmin );
-
-		}, err => {
-
-			console.error( `error in getAdminById() ${ err }` );
-			reject();
-		});
+			});
+	});
 };
 
 module.exports.getInquiryById = ( resolve, reject, inquiryId ) => {

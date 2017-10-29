@@ -130,11 +130,8 @@ module.exports.createInquiryRecord = ( inquiry, pauseUntilSaved ) => {
 		console.log( 'no valid inquirer' );
 	}
 
-	// create a promise
-	const adminLoaded = new Promise( ( resolve, reject ) => {
-		// for fetching the admin who created the inquiry
-		utilityModelFetch.getAdminById( resolve, reject, inquiry.taken_by );
-	});
+	// create a promise for fetching the admin who created the inquiry
+	const adminLoaded = utilityModelFetch.getAdminById( inquiry.taken_by );
 	// fetch the social worker responsible for the inquiry
 	const socialWorkerLoaded = utilityModelFetch.getSocialWorkerById( inquiry.agc_id );
 	// fetch the family
