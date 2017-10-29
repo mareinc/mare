@@ -17,6 +17,7 @@
 
 .sidebar.account-nav {
     padding: 0;
+    z-index: 2;
 }
 
 .sidebar-list {
@@ -49,14 +50,22 @@
             width: 1em;
         }
 
-        &:hover,
-        &.account-nav-link--active {
+        &:hover {
             &:after {
                 opacity: 1;
                 transform: translateX(0);
             }
         }
-	}
+
+        &.account-nav-link--active {
+            background: white;
+            color: $button-background-color-1;
+        }
+    }
+    
+    &:not(&--active) {
+        box-shadow: inset -12px 0px 12px -6px rgba(0, 0, 0, 0.12);
+    }
 }
 
 .account-current-section__title {
