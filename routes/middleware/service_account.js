@@ -45,10 +45,14 @@ exports.updateUser = ( req, res, next ) => {
 				 won't add the field, which is a good thing, preventing the need to check for the field
 				 on the model before attempting to update */
 		if( userType === 'family' ) {
-			if( update.contact1.mobilePhone ) { user.set( 'contact1.phone.mobile', update.contact1.MobilePhone ); }
-			if( update.contact2.mobilePhone ) { user.set( 'contact2.phone.mobile', update.contact2.MobilePhone ); }
-			if( update.contact1.workPhone ) { user.set( 'contact1.phone.work', update.contact1.WorkPhone ); }
-			if( update.contact2.workPhone ) { user.set( 'contact2.phone.work', update.contact2.WorkPhone ); }
+			if( update.contact1 ) {
+				if( update.contact1.mobilePhone ) { user.set( 'contact1.phone.mobile', update.contact1.MobilePhone ); }
+				if( update.contact1.workPhone ) { user.set( 'contact1.phone.work', update.contact1.WorkPhone ); }
+			}
+			if( update.contact2 ) {
+				if( update.contact2.mobilePhone ) { user.set( 'contact2.phone.mobile', update.contact2.MobilePhone ); }
+				if( update.contact2.workPhone ) { user.set( 'contact2.phone.work', update.contact2.WorkPhone ); }
+			}
 		} else {
 			if( userType !== 'social worker' ) {
 				if( update.homePhone ) { user.set( 'phone.home', update.homePhone ); }
@@ -62,15 +66,18 @@ exports.updateUser = ( req, res, next ) => {
 		if( userType === 'social worker' ) {
 			if( update.position ) { user.set( 'position', update.position ); }
 			if( update.title ) { user.set( 'title', update.title ); }
-			if( update.agency ) { user.set( 'agency', update.agency ); }
 		}
 		
 		// update the submitted user fields
 		if( update.firstName ) { user.set( 'name.first', update.firstName ); }
 		if( update.lastName ) { user.set( 'name.last', update.lastName ); }
 		if( update.email ) { user.set( 'email', update.email ); }
-		if( update.password ) { user.set( 'password', update.password ); }
-		if( update.phone.preferred ) { user.set( 'phone.preferred', update.phone.preferred ); }
+		// if( update.password ) { user.set( 'password', update.password ); } // TODO...
+		
+		if( update.phone ) {
+			if( update.phone.preferred ) { user.set( 'phone.preferred', update.phone.preferred ); }
+		}
+
 		if( update.address1 ) { user.set( 'address.street1', update.address1 ); }
 		if( update.address2 ) { user.set( 'address.street2', update.address2 ); }
 		if( update.maCity ) { user.set( 'address.city', update.maCity ); }
@@ -82,6 +89,7 @@ exports.updateUser = ( req, res, next ) => {
 		user.save( ( err, savedModel ) => {
 			// if we run into an error
 			if( err ) {
+				console.error('Error saving to database:', err);
 				/* TODO: not every user type will get all of these fields as not all user types have all fields.
 						 you'll need to add checks to see if that field exists on the user.  You could do some
 						 fanciness here by only keeping the keys in the user object that exist in the update object */
