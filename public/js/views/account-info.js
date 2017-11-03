@@ -6,7 +6,8 @@
 
 		events: {
 			'click .save-button'					: 'updateUserInfo',
-			'change .social-worker-title-checkbox'	: 'toggleSocialWorkerTitleTextField'
+			'change .social-worker-title-checkbox'	: 'toggleSocialWorkerTitleTextField',
+			'change #is-not-MA-city-checkbox'		: 'toggleOutsideMa'
 		},
 
 		initialize: function initialize() {
@@ -24,8 +25,28 @@
 			this.$el.html( html );
 		},
 
+		// TODO: Update toggle functionality to make it more solid
+		toggleOutsideMa: function toggleOutsideMa() {
+			var $outsideMaGroup = $('.non-ma-city-container'),
+				$outsideMaInput = $(''),
+				$outsideMaDropdown = $(''),
+				$maGroup = $('.ma-city-container'),
+				$maInput = $(''),
+				$maDropdown = $('');
+
+				$outsideMaGroup.toggleClass( 'hidden' );
+				$maGroup.toggleClass( 'hidden' );
+
+			// if( $outsideMaGroup.hasClass('hidden') ) {
+
+			// } else {
+
+			// }		
+		},
+		
+		// TODO: Update toggle functionality to make it more solid
 		toggleSocialWorkerTitleTextField: function toggleSocialWorkerTitleTextField() {
-			var $socialWorkerTitle		= this.$( '#social-worker-title' ),
+			var $socialWorkerTitle		= this.$( '.social-worker-title' ),
 				$socialWorkerTitleGroup	= this.$( '.social-worker-title-group' );
 
 			// hide/show the hidden 'other' field via the hidden class
@@ -39,6 +60,8 @@
 			} else {
 				// if the title group isn't hidden, reset the header with the cached title value
 				$socialWorkerTitle.val( this.storedSocialWorkerTitle );
+				// clear the stored social worker title
+				this.storedSocialWorkerTitle = '';
 			}
 		},
 
@@ -83,6 +106,7 @@
 				homePhone				: $( '#home-phone' ) ? $( '#home-phone' ).val() : undefined,
 				mobilePhone				: $( '#mobile-phone' ) ? $( '#mobile-phone' ).val() : undefined,
 				workPhone				: $( '#work-phone' ) ? $( '#work-phone' ).val() : undefined,
+				preferredPhone			: $( '#preferred-phone' ) ? $( '#preferred-phone' ).val() : undefined,
 				street1					: $( '#address-1' ) ? $( '#address-1' ).val() : undefined,
 				street2					: $( '#address-2' ) ? $( '#address-2' ).val() : undefined,
 				zipCode					: $( '#zip-code' ) ? $( '#zip-code' ).val() : undefined,

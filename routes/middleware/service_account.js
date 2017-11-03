@@ -32,7 +32,7 @@ exports.updateUser = ( req, res, next ) => {
 
 	// once we've fetched the user model
 	fetchUser.then( user => {
-
+		console.log('--update--');
 		console.log(update);
 
 		/* NOTE: these are wrapped in if statements because the family account page will have different
@@ -73,10 +73,8 @@ exports.updateUser = ( req, res, next ) => {
 		if( update.lastName ) { user.set( 'name.last', update.lastName ); }
 		if( update.email ) { user.set( 'email', update.email ); }
 		// if( update.password ) { user.set( 'password', update.password ); } // TODO...
-		
-		if( update.phone ) {
-			if( update.phone.preferred ) { user.set( 'phone.preferred', update.phone.preferred ); }
-		}
+
+		if( update.preferredPhone ) { user.set( 'phone.preferred', update.preferredPhone ); }
 
 		if( update.address1 ) { user.set( 'address.street1', update.address1 ); }
 		if( update.address2 ) { user.set( 'address.street2', update.address2 ); }
