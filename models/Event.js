@@ -3,14 +3,14 @@ const keystone			= require( 'keystone' ),
 	  random			= require( 'mongoose-simple-random' ),
 	  SourceMiddleware	= require( '../routes/middleware/models_source' );
 
-// Create model. Additional options allow event name to be used what auto-generating URLs
+// create model. Additional options allow event name to be used what auto-generating URLs
 var Event = new keystone.List('Event', {
 	autokey: { path: 'key', from: 'name', unique: true },
 	map: { name: 'name' },
 	defaultSort: '-startDate'
 });
 
-// Create fields
+// create fields
 Event.add({ heading: 'General Information' }, {
 
 	name: { type: Types.Text, label: 'event name', required: true, initial: true },
@@ -65,20 +65,20 @@ Event.add({ heading: 'General Information' }, {
 	// this is used to determine whether we should send an automatic email to the creator when their event becomes active
 	createdViaWebsite: { type: Types.Boolean, label: 'created through the website', noedit: true }
 
-/* Container for all system fields (add a heading if any are meant to be visible through the admin UI) */
+/* container for all system fields (add a heading if any are meant to be visible through the admin UI) */
 }, {
 
 	// system field to store an appropriate file prefix
 	fileName: { type: Types.Text, hidden: true }
 
-/* Container for data migration fields ( these should be kept until after phase 2 and the old system is phased out completely ) */
+/* container for data migration fields ( these should be kept until after phase 2 and the old system is phased out completely ) */
 }, {
 	// system field to store an appropriate file prefix
 	oldId: { type: Types.Text, hidden: true }
 
 });
 
-// Pre Save
+// pre Save
 Event.schema.pre( 'save', function( next ) {
 	'use strict';
 
@@ -125,7 +125,7 @@ Event.schema.methods.setUrl = function() {
 
 Event.schema.methods.setFileName = function() {
 	'use strict';
-	// Create an identifying name for file uploads
+	// create an identifying name for file uploads
 	this.fileName = this.key.replace( /-/g, '_' );
 };
 
@@ -168,6 +168,6 @@ Event.schema.methods.setSourceField = function() {
 
 Event.schema.plugin( random );
 
-// Define default columns in the admin interface and register the model
+// define default columns in the admin interface and register the model
 Event.defaultColumns = 'name, url, starts, ends, isActive';
 Event.register();
