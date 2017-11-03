@@ -55,6 +55,20 @@
 		</div>
 
 	</section>
+	
+	{{#unless user}}
+	<section class="donations-page__selection-group">
+
+		<span class="selection-group__number">4.</span>
+		<div class="selection-group__content">
+			<span class="selection-group__header-text">Your Name</span>
+			<div class="button-group button-group--large-margin-above">	
+				<input type="text" id="donation-name-input" class="donations__input-field donations__input-field--longer" placeholder="Your Name">
+			</div>
+		</div>
+
+	</section>
+	{{/unless}}
 
 	<div class="button-group button-group--centered button-group--medium-margin-below">
 		<button id="donate-button" class="button button--disabled button--large button--green">Place Donation</button>
