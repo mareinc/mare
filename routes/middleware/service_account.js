@@ -79,7 +79,7 @@ exports.updateUser = ( req, res, next ) => {
 		if( update.address1 ) { user.set( 'address.street1', update.address1 ); }
 		if( update.address2 ) { user.set( 'address.street2', update.address2 ); }
 		if( update.maCity ) { user.set( 'address.city', update.maCity ); }
-		if( update.nonMaCity ) { user.set( 'address.city', update.nonMaCity ); }
+		if( update.nonMaCity ) { user.set( 'address.cityText', update.nonMaCity ); }
 		if( update.zipCode ) { user.set( 'address.zipCode', update.zipCode ); }
 		if( update.isOutsideMassachusetts ) { user.set( 'address.isOutsideMassachusetts', update.isOutsideMassachusetts ); }
 		

@@ -26,16 +26,23 @@
 		},
 
 		// TODO: Update toggle functionality to make it more solid
-		toggleOutsideMa: function toggleOutsideMa() {
-			var $outsideMaGroup = $('.non-ma-city-container'),
+		toggleOutsideMa: function toggleOutsideMa( e ) {
+			var	$outsideMaToggle = $(e.currentTarget),
+				$outsideMaGroup = $('.non-ma-city-container'),
 				$outsideMaInput = $(''),
 				$outsideMaDropdown = $(''),
 				$maGroup = $('.ma-city-container'),
 				$maInput = $(''),
 				$maDropdown = $('');
 
-				$outsideMaGroup.toggleClass( 'hidden' );
-				$maGroup.toggleClass( 'hidden' );
+				if( $outsideMaToggle.is(':checked') ) {
+					$outsideMaGroup.removeClass( 'hidden' );
+					$maGroup.addClass( 'hidden' );
+				} else {
+					$outsideMaGroup.addClass( 'hidden' );
+					$maGroup.removeClass( 'hidden' );
+				}
+
 
 			// if( $outsideMaGroup.hasClass('hidden') ) {
 

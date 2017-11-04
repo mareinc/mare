@@ -77,6 +77,7 @@
 				<label for="preferred-phone" class="label">Preferred Phone</label>
 			</div>
 		</div>
+
 		<div class="row form-group">
 			<div class="col-sm-12">
 				<input type="text" id="street-1" class="input" name="street1" placeholder="100 Main Street" value="{{user.address.street1}}">
@@ -87,9 +88,10 @@
 				<label for="street-2" class="label">Street 2</label>
 			</div>
 		</div>
+
 		<div class="row form-group">
 			
-			<div class="col-sm-12 form-group ma-city-container">
+			<div class="col-sm-12 form-group ma-city-container {{#ifeq user.address.isOutsideMassachusetts 'false'}}hidden{{/ifeq}}">
 				<select id="ma-city" class="input" name="city">
 					<option value=""></option>
 					{{#each citiesAndTowns}}
@@ -99,8 +101,8 @@
 				<label for="ma-city" class="label">City</label>
 			</div>
 
-			<div class="col-sm-12 form-group non-ma-city-container hidden">
-				<input type="text" id="non-ma-city" class="input" name="nonMACity" placeholder="Boston">
+			<div class="col-sm-12 form-group non-ma-city-container {{#if user.address.isOutsideMassachusetts}}hidden{{/if}}">
+				<input type="text" id="non-ma-city" class="input" name="nonMACity" placeholder="Boston" value="{{user.address.cityText}}">
 				<label for="non-ma-city" class="label">City</label>
 
 				<select id="state" class="input state-select" name="state">
@@ -116,7 +118,7 @@
 			</div>
 			<div class="col-sm-12 form-group">
 				<label class="checkbox-inline">
-					<input type="checkbox" id="is-not-MA-city-checkbox" name="isNotMACity" {{#if user.address.isOutsideMassachusetts}}checked="checked"{{/if}}>I live outside MA
+					<input type="checkbox" id="is-not-MA-city-checkbox" name="isNotMACity" {{#if user.address.isOutsideMassachusetts }}checked="checked"{{/if}}>I live outside MA
 				</label>
 			</div>
 		</div>
