@@ -19,7 +19,7 @@ exports = module.exports = function(req, res) {
 			// assign properties to locals for access during templating
 			locals.randomSuccessStory	= randomSuccessStory;
 			locals.randomEvent			= randomEvent;
-			locals.stripeKey 			= keystone.get('stripe keys').pubKey;
+			locals.stripeAPIKey 		= process.env.STRIPE_PUBLIC_API_KEY_TEST;
 
 			// set the layout to render with the right sidebar
 			locals[ 'render-with-sidebar' ] = true;

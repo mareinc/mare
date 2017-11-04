@@ -9,7 +9,7 @@
 			'keyup .donations__input-field'		: 'handleOtherDonationAmount',
 			'change .donations__input-field'	: 'handleOtherDonationAmount',
 			'click .toggle-button'				: 'toggleButton',
-			'click .donate'						: 'donate'
+			'click #donate-button'				: 'openDonationPopup'
 		},
 
 		initialize: function initialize() {
@@ -18,24 +18,24 @@
 			this.$donationAmountButtonGroup		= $( '#donation-amount-button-group' );
 			this.$donationAmountInputLabel		= $( '.donations__input-label' );
 			this.$donationAmountInputField		= $( '#donation-amount-input' );
+			this.$donateButton					= $( '#donate-button' );
 
-			//Variables needed to setup donations
+			// donation variables
 			this._donationAmount 				= 0;
-			this._donationFreq 					= '';
+			this.stripeAPIKey					= window.STRIPE_API_KEY;
 
-			/*this.stripeHandler = stripeCheckout.configure({
-				key: window.stripeKey,
-				//image: '' if needed for logo
-				locale: auto,
-				token: function(token) {
-					//send the token to the server for the charge 
-				}
-			}); 
+			// stripe donation popup configuration
+			this.StripeHandler = StripeCheckout.configure({
+				key: this.stripeAPIKey,
+				image: '/images/mare-icon.png',
+				locale: 'auto',
+				token: this.donationSubmissionHandler
+			});
 
 			//popstate to close stripe handler
 			window.addEventListener('popstate', function(){
-				this.stripeHandler.close();
-			});*/
+				this.StripeHandler.close();
+			});
 		},
 
 		// TODO: put this in a global util file since it's duplicated across multiple views
@@ -128,19 +128,31 @@
 			this.$donationAmountInputLabel.removeClass( 'donations__input-label--selected' );
 		},
 
-		donate: function donate() {
+		// opens the stripe donation popup and sets the charge amount to match the current donation amount
+		openDonationPopup: function openDonationPopup() {
 
-			/*this.stripeHandler.open({
-				name: 'MARE',
-				description: 'some description',
-				zipCode: true,
-				amount: this._donationAmount
-			});*/
+			// @Jared Question: how do you want to handle the donation button behavior if the donation amount is 0?
+			// @Jared Question: the donate button still has a hover state even when it is disabled - is that desired?
 
-			console.log(this._donationAmount, this._donationFreq);
+			// if the donation button is not disabled
+			if ( !this.$donateButton.hasClass( 'button--disabled' ) ) {
 
-			return false;
+				// convert the donation amount from dollars ( $1.00 ) to pennies ( 100 )
+				var donationAmount = this._donationAmount * 100; 
+
+				this.StripeHandler.open({
+					name: 'MARE',
+					description: 'Donation Description',
+					zipCode: true,
+					amount: donationAmount
+				});
+			}
+		},
+
+		// handles the callback from the stripe servers, passes a token to the stripe charge middleware to process the donation
+		donationSubmissionHandler: function donationSubmissionHandler( token ) {
+
+			console.log( token );
 		}
-
 	});
 }() );
