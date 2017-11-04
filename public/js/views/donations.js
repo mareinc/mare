@@ -26,14 +26,16 @@
 
 			// stripe donation popup configuration
 			this.StripeHandler = StripeCheckout.configure({
+
 				key: this.stripeAPIKey,
 				image: '/images/mare-icon.png',
 				locale: 'auto',
 				token: this.donationSubmissionHandler
 			});
 
-			//popstate to close stripe handler
-			window.addEventListener('popstate', function(){
+			// closes StripeHandler on page navigation
+			window.addEventListener( 'popstate', function() {
+
 				this.StripeHandler.close();
 			});
 		},
