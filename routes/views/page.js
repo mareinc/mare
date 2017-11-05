@@ -33,7 +33,8 @@ exports = module.exports = function( req, res ) {
 					// specify that it should render a button after the content
 					pageActions.hasButtons = true;
 					// set the button contents
-					pageActions.buttons.push( { text: 'Register a Child', target: '/forms/child-registration-form' } );
+					pageActions.buttons.push( { text: 'Register a Child',
+												target: '/forms/child-registration-form' } );
 				// if the user is not a logged in social worker
 				} else {
 					// set the section contents
@@ -46,7 +47,8 @@ exports = module.exports = function( req, res ) {
 					// specify that it should render a button after the content
 					pageActions.hasButtons = true;
 					// set the button contents
-					pageActions.buttons.push( { text: 'Register a Family', target: '/forms/family-registration-form' } );
+					pageActions.buttons.push( { text: 'Register a Family',
+												target: '/forms/family-registration-form' } );
 				// if the user is not a logged in social worker
 				} else {
 					// set the section contents
@@ -57,7 +59,8 @@ exports = module.exports = function( req, res ) {
 				// specify that it should render a button after the content
 				pageActions.hasButtons = true;
 				// set the button contents
-				pageActions.buttons.push( { text: 'Request Adoption Information', target: '/forms/information-request-form' } );
+				pageActions.buttons.push( { text: 'Request Adoption Information',
+											target: '/forms/information-request-form' } );
 			}
 
 			// assign properties to locals for access during templating
