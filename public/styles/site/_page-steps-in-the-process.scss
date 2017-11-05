@@ -92,8 +92,10 @@
     margin: 0;
     padding: 0.5em 0;
 }
-
-.step-in-the-process__image {
+/* this is needed to override the specificity in _page-wysiwyg.scss */
+// TODO: clean up this selector
+.step-in-the-process img.step-in-the-process__image {
+    width: 100px;
     height: 100px;
 
     /* TODO: remove extra 10px whitespace around each of the Steps in the Process images  */
