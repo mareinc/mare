@@ -73,21 +73,22 @@
 		},
 
 		checkForRequiredInfo: function checkForRequiredInfo() {
-
+			// assume that the donation button will be enabled
 			var enableDonateButton = true;
-
+			// if no buttons in the duration group were selected, prevent the donation button from being enabled
 			if( enableDonateButton &&
 			   this.$donationDurationButtonGroup.find( '.toggle-button--toggled' ).length === 0 ) {
 				enableDonateButton = false;
 			}
-
+			// if no amount button was selected and the amount field is blank or 0, prevent the donation button from being enabled
 			if( enableDonateButton &&
 			   this.$donationAmountButtonGroup.find( '.toggle-button--toggled' ).length === 0 &&
-			   this.$donationAmountInputField.val().length === 0 ) {
+			   ( this.$donationAmountInputField.val().length === 0 ||
+			     this.$donationAmountInputField.val() === '0' ) ) {
 				enableDonateButton = false;
 			}
 
-			if( enableDonateButton) {
+			if( enableDonateButton ) {
 				this.enableDonateButton();
 			} else {
 				this.disableDonateButton();
@@ -97,15 +98,15 @@
 
 		handleOtherDonationAmount: function handleOtherDonationAmount() {
 			// TODO: do we really want to check length vs the number itself?
-			// if the donation amount is great than 0
-			if( this.$donationAmountInputField.val().length > 0) {
+			// if the donation amount is greater than 0
+			if( this.$donationAmountInputField.val().length > 0 ) {
 				// get the previous button group and disable all the buttons
 				this.untoggleButtonGroup( this.$donationAmountButtonGroup );
 				// create an outline to show it's the selection
 				this.$donationAmountInputLabel.addClass( 'donations__input-label--selected' );
 				this.$donationAmountInputField.addClass( 'donations__input-field--selected' );
 
-				this._donationAmount = Number(this.$donationAmountInputField.val());
+				this._donationAmount = Number( this.$donationAmountInputField.val() );
 			} else {
 				// remove the class that adds the outline
 				this.$donationAmountInputLabel.removeClass( 'donations__input-label--selected' );
@@ -132,13 +133,8 @@
 
 		// opens the stripe donation popup and sets the charge amount to match the current donation amount
 		openDonationPopup: function openDonationPopup() {
-
-			// @Jared Question: how do you want to handle the donation button behavior if the donation amount is 0?
-			// @Jared Question: the donate button still has a hover state even when it is disabled - is that desired?
-
 			// if the donation button is not disabled
 			if ( !this.$donateButton.hasClass( 'button--disabled' ) ) {
-
 				// convert the donation amount from dollars ( $1.00 ) to pennies ( 100 )
 				var donationAmount = this._donationAmount * 100; 
 
