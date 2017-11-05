@@ -1,62 +1,66 @@
-<div class="page-header">
-	<span class="page-header-text">Have a Question?</span>
+<div class="card card--vertical card--large-padding">
+
+	<div class="page-header">
+		<span class="page-header-text">Have a Question?</span>
+	</div>
+	<div class="form-intro">
+		We are here to help! For general information regarding adoption from foster care, check out our Considering
+		Adoption Pages. Don't see what you need? Call us at (617) 964-6273 (Monday - Friday, 9am - 5pm) or send
+		us an email.
+	</div>
+
+	<section class="have-a-question-form">
+
+		<div class="form-type-header">General Information</div>
+		<span class="required required-description">* Required</span>
+
+		<form action="/submit-question" class="form--have-a-question" method="POST">
+
+			<section class="form-section">
+				<div class="form-section-header">Details</div>
+
+				<div class="row">
+					<div class="col-sm-12 form-group">
+						<input type="text" class="input" id="first-name" name="firstName" data-parsley-error-message="required" required="">
+						<label for="firstName" class="label required-field">First Name</label>
+					</div>
+					<div class="col-sm-12 form-group">
+						<input type="text" class="input" id="last-name" name="lastName" data-parsley-error-message="required" required="">
+						<label for="lastName" class="label required-field">Last Name</label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-12 form-group">
+						<input type="text" class="input" id="email" name="email" placeholder="john.smith@gmail.com" data-parsley-type="email" data-parsley-trigger="change" data-parsley-error-message="valid email required" required="">
+						<label for="email" class="label required-field">Email</label>
+					</div>
+					<div class="col-sm-12 form-group">
+						<input type="text" class="input" id="phone" name="phone" placeholder="(617) 111-1111" data-parsley-error-message="required" required="">
+						<label for="phone" class="label required-field">Phone Number</label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-24 form-group">
+						<span id="contact-method-error-container" class="error-container">
+							<span class="contact-method-select-text required-field">I prefer to be contacted via</span> &nbsp;&nbsp;
+								<label class="radio-inline"><input type="radio" name="contactMethod" value="email" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#contact-method-error-container" required="">email</label>
+								<label class="radio-inline"><input type="radio" name="contactMethod" value="phone" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#contact-method-error-container" required="">phone</label>
+						</span>
+					</div>
+				</div>
+				<div class="row form-group">
+					<div class="col-sm-16">
+						<textarea class="input" id="question" name="question" rows="6" data-parsley-error-message="required" required=""></textarea>
+						<label for="question" class="label required-field">Question/Comment</label>
+					</div>
+				</div>
+
+				<button class="button button--blue" type="submit">Submit</button>
+				
+			</section>
+
+		</form>
+
+	</section>
+
 </div>
-<div class="form-intro">
-	We are here to help! For general information regarding adoption from foster care, check out our Considering
-	Adoption Pages. Don't see what you need? Call us at (617) 964-6273 (Monday - Friday, 9am - 5pm) or send
-	us an email.
-</div>
-
-<section class="have-a-question-form">
-
-	<div class="form-type-header">General Information</div>
-	<span class="required required-description">* Required</span>
-
-	<form action="/submit-question" class="form--have-a-question" method="POST">
-
-		<section class="form-section">
-			<div class="form-section-header">Details</div>
-
-			<div class="row">
-				<div class="col-sm-12 form-group">
-					<input type="text" class="input" id="first-name" name="firstName" data-parsley-error-message="required" required="">
-					<label for="firstName" class="label required-field">First Name</label>
-				</div>
-				<div class="col-sm-12 form-group">
-					<input type="text" class="input" id="last-name" name="lastName" data-parsley-error-message="required" required="">
-					<label for="lastName" class="label required-field">Last Name</label>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-sm-12 form-group">
-					<input type="text" class="input" id="email" name="email" placeholder="john.smith@gmail.com" data-parsley-type="email" data-parsley-trigger="change" data-parsley-error-message="valid email required" required="">
-					<label for="email" class="label required-field">Email</label>
-				</div>
-				<div class="col-sm-12 form-group">
-					<input type="text" class="input" id="phone" name="phone" placeholder="(617) 111-1111" data-parsley-error-message="required" required="">
-					<label for="phone" class="label required-field">Phone Number</label>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-sm-24 form-group">
-					<span id="contact-method-error-container" class="error-container">
-						<span class="contact-method-select-text required-field">I prefer to be contacted via</span> &nbsp;&nbsp;
-							<label class="radio-inline"><input type="radio" name="contactMethod" value="email" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#contact-method-error-container" required="">email</label>
-							<label class="radio-inline"><input type="radio" name="contactMethod" value="phone" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#contact-method-error-container" required="">phone</label>
-					</span>
-				</div>
-			</div>
-			<div class="row form-group">
-				<div class="col-sm-16">
-					<textarea class="input" id="question" name="question" rows="6" data-parsley-error-message="required" required=""></textarea>
-					<label for="question" class="label required-field">Question/Comment</label>
-				</div>
-			</div>
-
-			<button class="button button--blue" type="submit">Submit</button>
-			
-		</section>
-
-	</form>
-
-</section>
