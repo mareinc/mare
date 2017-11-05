@@ -69,6 +69,10 @@
 		color: $button-text-color-2;
 		background-color: $button-background-color-5;
 		cursor: default;
+
+		&:hover {
+			background-color: $button-background-color-5;
+		}
 	}
 
 	& a {
