@@ -55,13 +55,11 @@
 
 .featured-item__title-container {
     display: flex;
-    position: absolute;
     align-items: center;
     justify-content: center;
     width: 100%;
-    height: 20%;
+    height: 6em;
     background-color: $teal;
-    opacity: 0.8;
 }
 
 .featured-item__title {
@@ -72,7 +70,5 @@
 }
 
 .featured-item__image {
-    width: 95%;
-    height: 95%;
-    margin: 2.5% 0;
+    width: 100%;
 }
