@@ -2,18 +2,18 @@
 	<section class="family-account-setup-section">
 		<div class="row form-group">
 			<div class="col-sm-12">
-				<input type="email" id="family-email" class="input" name="email" placeholder="john.smith@gmail.com" value="{{ user.email}}">
-				<label for="family-email" class="label">Email Address</label>
+				<input type="email" id="email" class="input" name="email" placeholder="john.smith@gmail.com" value="{{ user.email}}">
+				<label for="email" class="label">Email Address</label>
 			</div>
 		</div>
 		<div class="row form-group">
 			<div class="col-sm-12">
-				<input type="password" id="family-password" class="input" name="password" placeholder="**********">
-				<label for="family-password" class="label">Password</label>
+				<input type="password" id="password" class="input" name="password" placeholder="**********">
+				<label for="password" class="label">Password</label>
 			</div>
 			<div class="col-sm-12">
-				<input type="password" id="family-confirm-password" class="input" name="confirmPassword" placeholder="**********" data-parsley-equalto="#family-password" data-parsley-error-message="passwords must match">
-				<label for="family-confirm-password" class="label">Confirm Password</label>
+				<input type="password" id="confirm-password" class="input" name="confirmPassword" placeholder="**********" data-parsley-equalto="#family-password" data-parsley-error-message="passwords must match">
+				<label for="confirm-password" class="label">Confirm Password</label>
 			</div>
 		</div>
 	</section>
@@ -56,7 +56,7 @@
 				<span id="contact1-gender-error-container" class="error-container">
 					<span class="gender-select-text">Gender:</span> &nbsp;&nbsp;
 					{{#each genders}}
-						<label class="radio-inline"><input type="radio" name="contact1Gender" value="{{ _id }}" {{#ifeq ../user.contact1.gender _id }}checked="checked"{{/ifeq}}>{{ gender }}</label>
+						<label class="radio-inline"><input id="contact1-gender" type="radio" name="contact1Gender" value="{{ _id }}" {{#ifeq ../user.contact1.gender _id }}checked="checked"{{/ifeq}}>{{ gender }}</label>
 					{{/each}}
 				</span>
 			</div>
@@ -72,7 +72,7 @@
 					{{#each races}}
 					<div class="col-sm-12 form-group">
 						<label class="checkbox-inline">
-							<input type="checkbox" name="contact1Race" value="{{ _id }}" {{#ifincludes ../user.contact1.race _id }}checked="checked"{{/ifincludes}}>{{ race }}
+							<input id="contact1-race" type="checkbox" name="contact1Race" value="{{ _id }}" {{#ifincludes ../user.contact1.race _id }}checked="checked"{{/ifincludes}}>{{ race }}
 						</label>
 					</div>
 					{{/each}}
@@ -160,12 +160,12 @@
 
 		<div class="row form-group">
 			<div class="col-sm-12">
-				<input type="text" id="family-street-1" class="input" name="street1" placeholder="100 Main Street" value="{{ user.address.street1 }}">
-				<label for="family-street-1" class="label">Street 1</label>
+				<input type="text" id="street-1" class="input" name="street1" placeholder="100 Main Street" value="{{ user.address.street1 }}">
+				<label for="street-1" class="label">Street 1</label>
 			</div>
 			<div class="col-sm-12">
-				<input type="text" id="family-street-2" class="input" name="street2" placeholder="Suite 1" value="{{ user.address.street2 }}">
-				<label for="family-street-2" class="label">Street 2</label>
+				<input type="text" id="street-2" class="input" name="street2" placeholder="Suite 1" value="{{ user.address.street2 }}">
+				<label for="street-2" class="label">Street 2</label>
 			</div>
 		</div>
 		<div class="row form-group">
@@ -190,7 +190,7 @@
 		</div>
 		<div class="row form-group">
 			<div class="col-sm-12">
-				<select id="family-state" class="input state-select" name="state">
+				<select id="state" class="input state-select" name="state">
 				{{#each states}}
 					{{#if defaultSelection}}
 						<option value="{{ _id }}" selected="selected">{{ state }}</option>

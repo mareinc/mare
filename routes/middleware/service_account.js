@@ -46,12 +46,26 @@ exports.updateUser = ( req, res, next ) => {
 				 on the model before attempting to update */
 		if( userType === 'family' ) {
 			if( update.contact1 ) {
-				if( update.contact1.mobilePhone ) { user.set( 'contact1.phone.mobile', update.contact1.MobilePhone ); }
-				if( update.contact1.workPhone ) { user.set( 'contact1.phone.work', update.contact1.WorkPhone ); }
+				if( update.contact1.firstName ) { user.set( 'contact1.name.first', update.contact1.firstName ); }
+				if( update.contact1.lastName ) { user.set( 'contact1.name.last', update.contact1.lastName ); }
+				if( update.contact1.email ) { user.set( 'contact1.email', update.contact1.email ); }
+				if( update.contact1.mobilePhone ) { user.set( 'contact1.phone.mobile', update.contact1.mobilePhone ); }
+				if( update.contact1.workPhone ) { user.set( 'contact1.phone.work', update.contact1.workPhone ); }
+				if( update.contact1.preferredCommunicationMethod ) { user.set( 'contact1.preferredCommunicationMethod', update.contact1.preferredCommunicationMethod ); }
+				if( update.contact1.gender ) { user.set( 'contact1.gender', update.contact1.gender ); }
+				if( update.contact1.race ) { user.set( 'contact1.race', update.contact1.race ); }
+				if( update.contact1.occupation ) { user.set( 'contact1.occupation', update.contact1.occupation ); }
 			}
 			if( update.contact2 ) {
-				if( update.contact2.mobilePhone ) { user.set( 'contact2.phone.mobile', update.contact2.MobilePhone ); }
-				if( update.contact2.workPhone ) { user.set( 'contact2.phone.work', update.contact2.WorkPhone ); }
+				if( update.contact2.firstName ) { user.set( 'contact2.name.first', update.contact2.firstName ); }
+				if( update.contact2.lastName ) { user.set( 'contact2.name.last', update.contact2.lastName ); }
+				if( update.contact2.email ) { user.set( 'contact2.email', update.contact2.email ); }
+				if( update.contact2.mobilePhone ) { user.set( 'contact2.phone.mobile', update.contact2.mobilePhone ); }
+				if( update.contact2.workPhone ) { user.set( 'contact2.phone.work', update.contact2.workPhone ); }
+				if( update.contact2.preferredCommunicationMethod ) { user.set( 'contact2.preferredCommunicationMethod', update.contact2.preferredCommunicationMethod ); }
+				if( update.contact2.gender ) { user.set( 'contact2.gender', update.contact2.gender ); }
+				if( update.contact2.race ) { user.set( 'contact2.race', update.contact2.race ); }
+				if( update.contact2.occupation ) { user.set( 'contact2.occupation', update.contact2.occupation ); }
 			}
 		} else {
 			if( userType !== 'social worker' ) {
