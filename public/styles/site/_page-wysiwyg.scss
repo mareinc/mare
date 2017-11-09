@@ -1,4 +1,4 @@
-.content .content__body h1 {
+.content__body--wysiwyg h1 {
     display: block;
     text-align: center;
     text-transform: uppercase;
@@ -8,7 +8,7 @@
     color: $text-color-3;
 }
 
-.content .content__body img {
+.content__body--wysiwyg img {
     width: 100%;
     height: 100%;
 }
