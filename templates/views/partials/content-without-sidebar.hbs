@@ -2,7 +2,7 @@
 
 	<div class="content__main">
 
-		<section class="content__body">
+		<section class="content__body {{#if wysiwyg-page}}content__body--wysiwyg{{/if}}">
 			{{> flash-messages}}
 			{{{body}}}
 		</section>
