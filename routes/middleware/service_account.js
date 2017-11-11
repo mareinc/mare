@@ -79,7 +79,12 @@ exports.updateUser = ( req, res, next ) => {
 		// Social worker specific fields
 		if( userType === 'social worker' ) {
 			if( update.position ) { user.set( 'position', update.position ); }
-			if( update.title ) { user.set( 'title', update.title ); }
+			
+			if( update.title || update.title === '' ) {
+				const newTitle = update.title !== '' ? update.title : undefined;
+
+				user.set( 'title', newTitle );	
+			}
 		}
 		
 		// update the submitted user fields

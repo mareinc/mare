@@ -102,37 +102,39 @@
 		fetchFormData: function fetchFormData() {
 			// store all the values in the form as an object
 			var formData = {
-				firstName							: $( '#first-name' ) ? $( '#first-name' ).val() : undefined,
-				lastName							: $( '#last-name' ) ? $( '#last-name' ).val() : undefined,
-				email								: $( '#email' ) ? $( '#email' ).val() : undefined,
-				password							: $( '#password' ) ? $( '#password' ).val() : undefined,
-				confirmPassword						: $( '#confirmPassword' ) ? $( '#confirmPassword' ).val() : undefined,
-				position							: $( '#position' ) ? $( '#position' ).val() : undefined,
-				title								: $( '#title' ) ? $( '#title' ).val() : undefined,
-				agency								: $( '#agency' ) ? $( '#agency' ).val() : undefined,
-				homePhone							: $( '#home-phone' ) ? $( '#home-phone' ).val() : undefined,
-				mobilePhone							: $( '#mobile-phone' ) ? $( '#mobile-phone' ).val() : undefined,
-				workPhone							: $( '#work-phone' ) ? $( '#work-phone' ).val() : undefined,
-				preferredPhone						: $( '#preferred-phone' ) ? $( '#preferred-phone' ).val() : undefined,
-				street1								: $( '#address-1' ) ? $( '#address-1' ).val() : undefined,
-				street2								: $( '#address-2' ) ? $( '#address-2' ).val() : undefined,
-				zipCode								: $( '#zip-code' ) ? $( '#zip-code' ).val() : undefined,
-				maCity								: $( '#ma-city' ) ? $( '#ma-city' ).val() : undefined,
-				nonMaCity							: $( '#non-ma-city' ) ? $( '#non-ma-city' ).val() : undefined,
-				isOutsideMassachusetts				: $( '#is-not-MA-city-checkbox' ) ? $( '#is-not-MA-city-checkbox' ).is( ':checked' ) : undefined,
-
-				// Family
-				contact1: {
-					firstName						: $( 'contact1-first-name' ),
-					lastName						: $( 'contact1-last-name' ),
-					email							: $( 'contact1-email' ),
-					mobile							: $( 'contact1-mobile' ),
-					preferredCommunicationMethod	: $( 'contact1-preferred-communication-method' ),
-					gender							: $( 'contact1-gender-error-container' ),
-					race							: $( 'contact1-race-error-container' ),
-					occupation						: $( 'contact1-occupation' )
-				}
+				firstName							: document.querySelector( '#first-name' ) ? document.querySelector( '#first-name' ).value : undefined,
+				lastName							: document.querySelector( '#last-name' ) ? document.querySelector( '#last-name' ).value : undefined,
+				email								: document.querySelector( '#email' ) ? document.querySelector( '#email' ).value : undefined,
+				password							: document.querySelector( '#password' ) ? document.querySelector( '#password' ).value : undefined,
+				confirmPassword						: document.querySelector( '#confirmPassword' ) ? document.querySelector( '#confirmPassword' ).value : undefined,
+				position							: document.querySelector( '#position' ) ? document.querySelector( '#position' ).value : undefined,
+				title								: document.querySelector( '#title' ) ? document.querySelector( '#title' ).value : undefined,
+				agency								: document.querySelector( '#agency' ) ? document.querySelector( '#agency' ).value : undefined,
+				homePhone							: document.querySelector( '#home-phone' ) ? document.querySelector( '#home-phone' ).value : undefined,
+				mobilePhone							: document.querySelector( '#mobile-phone' ) ? document.querySelector( '#mobile-phone' ).value : undefined,
+				workPhone							: document.querySelector( '#work-phone' ) ? document.querySelector( '#work-phone' ).value : undefined,
+				preferredPhone						: document.querySelector( '#preferred-phone' ) ? document.querySelector( '#preferred-phone' ).value : undefined,
+				street1								: document.querySelector( '#address-1' ) ? document.querySelector( '#address-1' ).value : undefined,
+				street2								: document.querySelector( '#address-2' ) ? document.querySelector( '#address-2' ).value : undefined,
+				zipCode								: document.querySelector( '#zip-code' ) ? document.querySelector( '#zip-code' ).value : undefined,
+				maCity								: document.querySelector( '#ma-city' ) ? document.querySelector( '#ma-city' ).value : undefined,
+				nonMaCity							: document.querySelector( '#non-ma-city' ) ? document.querySelector( '#non-ma-city' ).value : undefined,
+				isOutsideMassachusetts				: document.querySelector( '#is-not-MA-city-checkbox' ) ? document.querySelector( '#is-not-MA-city-checkbox' ).checked : undefined
 			};
+
+			// Family
+			if ( document.querySelector( '#contact1-first-name' ) ) {
+				formData.contact1 = {
+					firstName						: document.querySelector( '#contact1-first-name' ),
+					lastName						: document.querySelector( '#contact1-last-name' ),
+					email							: document.querySelector( '#contact1-email' ),
+					mobile							: document.querySelector( '#contact1-mobile' ),
+					preferredCommunicationMethod	: document.querySelector( '#contact1-preferred-communication-method' ),
+					gender							: document.querySelector( '#contact1-gender-error-container' ),
+					race							: document.querySelector( '#contact1-race-error-container' ),
+					occupation						: document.querySelector( '#contact1-occupation' )
+				}
+			}
 
 			// return an object containing only the fields that are not undefined
 			return _.omit( formData, _.isUndefined );
