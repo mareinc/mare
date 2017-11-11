@@ -18,6 +18,7 @@
 
 // Page Styles
 // ===========
+@import "_page-wysiwyg.scss"; // this needs to be first as some WYSIWYG syles should be overwritable by the page syles below
 @import "_icons.scss";
 @import "_page";
 @import "_page-account";
@@ -27,7 +28,6 @@
 @import "_page-register";
 @import "_page-steps-in-the-process.scss";
 @import "_page-waiting-child-profiles";
-@import "_page-wysiwyg.scss";
 
 // Component Styles
 // ===========

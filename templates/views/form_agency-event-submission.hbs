@@ -1,123 +1,127 @@
-<div class="page-header">
-	<span class="page-header-text">Agency Event Submission</span>
+<div class="card card--vertical card--large-padding">
+
+	<div class="page-header">
+		<span class="page-header-text">Agency Event Submission</span>
+	</div>
+	<div class="form-intro">
+		Please note that MARE will review submissions and only post applicable events.  We will let you know if we are unable to post your event.
+	</div>
+
+	<section class="agency-event-submission-form">
+
+		<div class="form-type-header">Create an Event</div>
+		<span class="required required-description">* Required</span>
+
+		<form action="/submit-agency-event" class="form--agency-event-submission" method="POST">
+
+			<section class="form-section">
+				<div class="form-section-header">Event Details</div>
+
+				<div class="row">
+					<div class="col-sm-12 form-group">
+						<input type="text" class="input" id="name" name="name" data-parsley-error-message="required" required="">
+						<label for="name" class="label required-field">Event Name</label>
+					</div>
+					<div class="col-sm-12 form-group">
+						<select id="event-type" class="input event-type-select" name="eventType">
+						{{#each eventTypes}}
+							<option value="{{ eventType }}">{{ eventType }}</option>
+						{{/each}}
+						</select>
+						<label for="eventType" class="label required-field">Event Type</label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-12 form-group">
+						<input type="text" class="input" id="start-date" name="startDate" placeholder="DD/MM/YYYY" data-parsley-pattern="(0[1-9]|1[012])\/(0[1-9]|[12][0-9]|3[01])\/20\d\d" data-parsley-error-message="must match DD/MM/YYYY" required="">
+						<label for="start-date" class="label required-field">Start Date</label>
+					</div>
+					<div class="col-sm-12 form-group">
+						<input type="text" class="input" id="end-date" name="endDate" placeholder="DD/MM/YYYY" data-parsley-pattern="(0[1-9]|1[012])\/(0[1-9]|[12][0-9]|3[01])\/20\d\d" data-parsley-error-message="must match DD/MM/YYYY" required="">
+						<label for="end-date" class="label required-field">End Date</label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-12 form-group">
+						<input type="text" class="input" id="start-time" name="startTime" placeholder="4:00pm" data-parsley-error-message="required" required="">
+						<label for="start-time" class="label required-field">Start Time</label>
+					</div>
+					<div class="col-sm-12 form-group">
+						<input type="text" class="input" id="end-time" name="endTime" placeholder="5:30pm" data-parsley-error-message="required" required="">
+						<label for="end-time" class="label required-field">End Time</label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-12 form-group">
+						<textarea class="input" id="description" name="description" rows="4" data-parsley-error-message="required" required=""></textarea>
+						<label for="description" class="label required-field">Description</label>
+					</div>
+				</div>
+			</section>
+
+			<section class="form-section">
+				<div class="form-section-header">Location Details</div>
+			
+				<div class="row">
+					<div class="col-sm-12 form-group">
+						<input type="text" id="family-street-1" class="input" name="street1" placeholder="100 Main Street" data-parsley-error-message="required" required="">
+						<label for="family-street-1" class="label required-field">Street 1</label>
+					</div>
+					<div class="col-sm-12 form-group">
+						<input type="text" id="family-street-2" class="input" name="street2" placeholder="Suite 1">
+						<label for="family-street-2" class="label">Street 2</label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-12 form-group">
+						<input type="text" id="city" class="input" name="city" placeholder="Boston" data-parsley-error-message="required" required="">
+						<label for="city" class="label required-field">City</label>
+					</div>
+					<div class="col-sm-12 form-group">
+						<select id="state" class="input state-select" name="state">
+						{{#each states}}
+							{{#if defaultSelection}}
+								<option value="{{_id}}" selected="selected">{{state}}</option>
+							{{else}}
+								<option value="{{_id}}">{{state}}</option>
+							{{/if}}
+						{{/each}}
+						</select>
+						<label for="state" class="label required-field">State</label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-12 form-group">
+						<input type="number" id="zip-code" class="input" name="zipCode" placeholder="02111" data-parsley-error-message="required" required="">
+						<label for="zip-code" class="label required-field">Zip Code</label>
+					</div>
+				</div>
+			</section>
+			
+			<section class="form-section">
+				<div class="form-section-header">Contact Information</div>
+
+				<div class="row">
+					<div class="col-sm-12 form-group">
+						<input type="text" class="input" id="contact" name="contact" placeholder="John Smith" data-parsley-error-message="required" required="">
+						<label for="contact" class="label required-field">Name</label>
+					</div>
+					<div class="col-sm-12 form-group">
+						<input type="text" class="input" id="contact-phone" name="contactPhone" placeholder="(617) 111-1111" data-parsley-error-message="required" required="">
+						<label for="contact-phone" class="label required-field">Phone Number</label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-12 form-group">
+						<input type="text" class="input" id="contact-email" name="contactEmail" placeholder="john.smith@gmail.com" data-parsley-type="email" data-parsley-trigger="change" data-parsley-error-message="valid email required" required="">
+						<label for="contact-email" class="label required-field">Email</label>
+					</div>
+				</div>
+			</section>
+
+			<button class="button button--blue" type="submit">Submit</button>
+		</form>
+
+	</section>
+
 </div>
-<div class="form-intro">
-	Please note that MARE will review submissions and only post applicable events.  We will let you know if we are unable to post your event.
-</div>
-
-<section class="agency-event-submission-form">
-
-	<div class="form-type-header">Create an Event</div>
-	<span class="required required-description">* Required</span>
-
-	<form action="/submit-agency-event" class="form--agency-event-submission" method="POST">
-
-		<section class="form-section">
-			<div class="form-section-header">Event Details</div>
-
-			<div class="row">
-				<div class="col-sm-12 form-group">
-					<input type="text" class="input" id="name" name="name" data-parsley-error-message="required" required="">
-					<label for="name" class="label required-field">Event Name</label>
-				</div>
-				<div class="col-sm-12 form-group">
-					<select id="event-type" class="input event-type-select" name="eventType">
-					{{#each eventTypes}}
-						<option value="{{ eventType }}">{{ eventType }}</option>
-					{{/each}}
-					</select>
-					<label for="eventType" class="label required-field">Event Type</label>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-sm-12 form-group">
-					<input type="text" class="input" id="start-date" name="startDate" placeholder="DD/MM/YYYY" data-parsley-pattern="(0[1-9]|1[012])\/(0[1-9]|[12][0-9]|3[01])\/20\d\d" data-parsley-error-message="must match DD/MM/YYYY" required="">
-					<label for="start-date" class="label required-field">Start Date</label>
-				</div>
-				<div class="col-sm-12 form-group">
-					<input type="text" class="input" id="end-date" name="endDate" placeholder="DD/MM/YYYY" data-parsley-pattern="(0[1-9]|1[012])\/(0[1-9]|[12][0-9]|3[01])\/20\d\d" data-parsley-error-message="must match DD/MM/YYYY" required="">
-					<label for="end-date" class="label required-field">End Date</label>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-sm-12 form-group">
-					<input type="text" class="input" id="start-time" name="startTime" placeholder="4:00pm" data-parsley-error-message="required" required="">
-					<label for="start-time" class="label required-field">Start Time</label>
-				</div>
-				<div class="col-sm-12 form-group">
-					<input type="text" class="input" id="end-time" name="endTime" placeholder="5:30pm" data-parsley-error-message="required" required="">
-					<label for="end-time" class="label required-field">End Time</label>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-sm-12 form-group">
-					<textarea class="input" id="description" name="description" rows="4" data-parsley-error-message="required" required=""></textarea>
-					<label for="description" class="label required-field">Description</label>
-				</div>
-			</div>
-		</section>
-
-		<section class="form-section">
-			<div class="form-section-header">Location Details</div>
-		
-			<div class="row">
-				<div class="col-sm-12 form-group">
-					<input type="text" id="family-street-1" class="input" name="street1" placeholder="100 Main Street" data-parsley-error-message="required" required="">
-					<label for="family-street-1" class="label required-field">Street 1</label>
-				</div>
-				<div class="col-sm-12 form-group">
-					<input type="text" id="family-street-2" class="input" name="street2" placeholder="Suite 1">
-					<label for="family-street-2" class="label">Street 2</label>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-sm-12 form-group">
-					<input type="text" id="city" class="input" name="city" placeholder="Boston" data-parsley-error-message="required" required="">
-					<label for="city" class="label required-field">City</label>
-				</div>
-				<div class="col-sm-12 form-group">
-					<select id="state" class="input state-select" name="state">
-					{{#each states}}
-						{{#if defaultSelection}}
-							<option value="{{_id}}" selected="selected">{{state}}</option>
-						{{else}}
-							<option value="{{_id}}">{{state}}</option>
-						{{/if}}
-					{{/each}}
-					</select>
-					<label for="state" class="label required-field">State</label>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-sm-12 form-group">
-					<input type="number" id="zip-code" class="input" name="zipCode" placeholder="02111" data-parsley-error-message="required" required="">
-					<label for="zip-code" class="label required-field">Zip Code</label>
-				</div>
-			</div>
-		</section>
-		
-		<section class="form-section">
-			<div class="form-section-header">Contact Information</div>
-
-			<div class="row">
-				<div class="col-sm-12 form-group">
-					<input type="text" class="input" id="contact" name="contact" placeholder="John Smith" data-parsley-error-message="required" required="">
-					<label for="contact" class="label required-field">Name</label>
-				</div>
-				<div class="col-sm-12 form-group">
-					<input type="text" class="input" id="contact-phone" name="contactPhone" placeholder="(617) 111-1111" data-parsley-error-message="required" required="">
-					<label for="contact-phone" class="label required-field">Phone Number</label>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-sm-12 form-group">
-					<input type="text" class="input" id="contact-email" name="contactEmail" placeholder="john.smith@gmail.com" data-parsley-type="email" data-parsley-trigger="change" data-parsley-error-message="valid email required" required="">
-					<label for="contact-email" class="label required-field">Email</label>
-				</div>
-			</div>
-		</section>
-
-		<button class="button button--blue" type="submit">Submit</button>
-	</form>
-
-</section>
