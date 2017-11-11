@@ -1,29 +1,33 @@
-<div class="page-header">
-	<span class="page-header-text">Create an Account</span>
-</div>
-{{#if registrationSubmitted}}
-	<h3>Thanks for registering.</h3>
-	<p>You can now try to log in.</p>
-{{else}}
-<div class="form-intro">
-	Families: Once you create an account, you can quickly and easily inquire about specific children, RSVP for events and manage your subscription preferences.  If you are a Massachusetts family with an approved homestudy, creating an account will also allow you to access a greater pool of waiting children (including those at legal risk) and upload your homestudy to be shared with workers across the state for consideration for specific children.
-</div>
-<div class="form-intro">
-	Workers: If you are a Massachusetts social worker, you must create an account to register a child or family, RSVP for events, track inquiries and update your MARE caseload.
-</div>
-<div class="form-intro">
-	Site Visitors: Feel free to browse the website without registering, you can always create an account at a later time.
-</div>
-<div class="registration-type-selector-container">
-	<select class="registration-type-selector" name="registration-type-selector">
-		<option value="prospectiveParent" selected="selected">Prospective Parent</option>
-	    <option value="siteVisitor">Site Visitor</option>
-	    <option value="socialWorker">Social Worker</option>
-	</select>
-</div>
+<div class="card card--vertical card--large-padding">
 
-{{> registration-form-family}}
-{{> registration-form-site-visitor}}
-{{> registration-form-social-worker}}
+	<div class="page-header">
+		<span class="page-header-text">Create an Account</span>
+	</div>
+	{{#if registrationSubmitted}}
+		<h3>Thanks for registering.</h3>
+		<p>You can now try to log in.</p>
+	{{else}}
+	<div class="form-intro">
+		Families: Once you create an account, you can quickly and easily inquire about specific children, RSVP for events and manage your subscription preferences.  If you are a Massachusetts family with an approved homestudy, creating an account will also allow you to access a greater pool of waiting children (including those at legal risk) and upload your homestudy to be shared with workers across the state for consideration for specific children.
+	</div>
+	<div class="form-intro">
+		Workers: If you are a Massachusetts social worker, you must create an account to register a child or family, RSVP for events, track inquiries and update your MARE caseload.
+	</div>
+	<div class="form-intro">
+		Site Visitors: Feel free to browse the website without registering, you can always create an account at a later time.
+	</div>
+	<div class="registration-type-selector-container">
+		<select class="registration-type-selector" name="registration-type-selector">
+			<option value="prospectiveParent" selected="selected">Prospective Parent</option>
+			<option value="siteVisitor">Site Visitor</option>
+			<option value="socialWorker">Social Worker</option>
+		</select>
+	</div>
 
-{{/if}}
+	{{> registration-form-family}}
+	{{> registration-form-site-visitor}}
+	{{> registration-form-social-worker}}
+
+	{{/if}}
+
+</div>
