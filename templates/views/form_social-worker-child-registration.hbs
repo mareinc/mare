@@ -1,416 +1,420 @@
-<div class="page-header">
-	<span class="page-header-text">Child Registration</span>
-</div>
+<div class="card card--vertical card--large-padding">
 
-<div class="form-intro">To register a Massachusetts child for recruitment services, please submit the form
-	below with as much detail as possible. The more information we have about a child, the better able we
-	are to target our recruitment efforts specific to this child. Discretion will be used in deciding what
-	information is shared with the public.</div>
+	<div class="page-header">
+		<span class="page-header-text">Child Registration</span>
+	</div>
 
-<div class="form-intro">To complete registration, please email a clear photo of the child to <a href="mailto:web@mareinc.org">web@mareinc.org</a> with the child's
-	name in the subject. A photo is required regardless of the child's legal status. Once submitted, you will
-	be emailed a copy of the form for your records.</div>
+	<div class="form-intro">To register a Massachusetts child for recruitment services, please submit the form
+		below with as much detail as possible. The more information we have about a child, the better able we
+		are to target our recruitment efforts specific to this child. Discretion will be used in deciding what
+		information is shared with the public.</div>
 
-<section class="child-registration-form">
+	<div class="form-intro">To complete registration, please email a clear photo of the child to <a href="mailto:web@mareinc.org">web@mareinc.org</a> with the child's
+		name in the subject. A photo is required regardless of the child's legal status. Once submitted, you will
+		be emailed a copy of the form for your records.</div>
 
-	<div class="form-type-header">Register a Child</div>
-	<span class="required required-description">* Required</span>
+	<section class="child-registration-form">
 
-	<form enctype="multipart/form-data" action="/social-worker-register-child" class="form--child-registration" method="POST">
-	
-		<section class="child-information-section">
-			<div class="form-section-header">Child Information</div>
+		<div class="form-type-header">Register a Child</div>
+		<span class="required required-description">* Required</span>
 
-			<div class="row">
-				<div class="col-sm-12 form-group">
-					<input type="text" id="first-name" class="input" name="firstName" data-parsley-error-message="required" required="">
-					<label for="first-name" class="label required-field">First Name</label>
-				</div>
-				<div class="col-sm-12 form-group">
-					<input type="text" id="last-name" class="input" name="lastName" data-parsley-error-message="required" required="">
-					<label for="last-name" class="label required-field">Last Name</label>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-sm-12 form-group">
-					<input type="text" id="alias" class="input" name="alias">
-					<label for="alias" class="label">Alias (only for children who are legal risk)</label>
-				</div>
-				<div class="col-sm-12 form-group">
-					<input type="text" id="nickname" class="input" name="nickName">
-					<label for="nickname" class="label">Nickname</label>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-sm-12 form-group">
-					<input type="text" id="date-of-birth" class="input" name="dateOfBirth" data-parsley-error-message="required" required="">
-					<label for="date-of-birth" class="label required-field">Date of Birth</label>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-sm-24 form-group">
-					<label class="label required-field">Languages spoken</label>
-				</div>
-			</div>
-			<div class="row form-group">
-				<div class="col-sm-16">
-					<div id="languages-error-container" class="row error-container">
-					{{#each languages}}
-						<div class="col-sm-12 form-group">
-							<label class="checkbox-inline">
-								<input type="checkbox" name="languages[]" value="{{ _id }}" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#languages-error-container" data-parsley-mincheck="1" data-parsley-required="">{{ language }}
-							</label>
-						</div>
-					{{/each}}
-					</div>
-				</div>
-			</div>
-			<div class="row form-group">
-				<div class="col-sm-16">
-					<span class="required-field">Gender</span> &nbsp;&nbsp;
-					<span id="gender-error-container" class="error-container">
-					{{#each genders}}
-						<label class="radio-inline"><input type="radio" name="gender" value="{{_id}}" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#gender-error-container" required="">{{gender}}</label>
-					{{/each}}
-				</div>
-			</div>
-			<div class="row form-group">
-				<div class="col-sm-24">
-					<label class="label marg-bottom-xs-5 required-field">Race/Ethnicity (check all that apply)</label>
-				</div>
-			</div>
-			<div class="row form-group">
-				<div class="col-sm-16">
-					<div id="races-error-container" class="row error-container">
-					{{#each races}}
-						<div class="col-sm-12 form-group">
-							<label class="checkbox-inline">
-								<input type="checkbox" name="race[]" value="{{_id}}" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#races-error-container" data-parsley-mincheck="1" data-parsley-required="">{{race}}
-							</label>
-						</div>
-					{{/each}}
-					</div>
-				</div>
-			</div>
-			<div class="row form-group">
-				<div class="col-sm-12 form-group">
-					<textarea class="input" id="other-ethnic-background" name="otherEthnicBackground" rows="5"></textarea>
-					<label for="other-ethnic-background" class="label">Other Information About child's ethnic Background</label>
-				</div>
-			</div>
-			<div class="row form-group">
-				<div class="col-sm-24">
-					<label class="label marg-bottom-xs-5 required-field">Where does this child presently live?</label>
-				</div>
-			</div>
-			<div class="row form-group">
-				<div class="col-sm-16">
-					<div id="current-residence-error-container" class="row error-container">
-					{{#each residences}}
-						<div class="col-sm-24 form-group">
-							<label class="radio-inline">
-								<input type="radio" name="currentResidence" value="{{_id}}" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#current-residence-error-container" data-parsley-mincheck="1" data-parsley-required="">{{residence}}
-							</label>
-						</div>
-					{{/each}}
-					</div>
-				</div>
-			</div>
-			<div class="row form-group">
-				<div class="col-sm-12 form-group ma-city-container">
-					<select id="ma-city" class="input" name="MACity" data-parsley-trigger="change" data-parsley-errors-messages-disabled="true" required="">
-						<option value=""></option>
-						{{#each citiesAndTowns}}
-						<option value="{{_id}}">{{cityOrTown}}</option>
-						{{/each}}
-					</select>
-					<label for="ma-city" class="label required-field">City of Child's Current Location</label>
-				</div>
-				<div class="col-sm-12 form-group non-ma-city-container hidden">
-					<input type="text" id="non-ma-city" class="input" name="nonMACity" data-parsley-error-message="required" data-parsley-required="false">
-					<label for="non-ma-city" class="label required-field">City of Child's Current Location</label>
-				</div>
-				<div class="col-sm-12 form-group">
-					<label class="checkbox-inline">
-						<input type="checkbox" id="is-not-MA-city-checkbox" name="isNotMACity">Child lives outside MA
-					</label>
-				</div>
-			</div>
-			<div class="row form-group">
-				<div class="col-sm-12 form-group">
-					<input type="text" id="care-facility" class="input" name="careFacility">
-					<label for="care-facility" class="label">Name of Residential/Group Care Facility (if applicable)</label>
-				</div>
-			</div>
-			<div class="row form-group">
-				<div class="col-sm-16">
-					<span class="required-field">Legal Status</span> &nbsp;&nbsp;
-					<span id="preferred-legal-status-error-container" class="error-container">
-						{{#each legalStatuses}}
-							<label class="radio-inline"><input type="radio" name="legalStatus" value="{{_id}}" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#preferred-legal-status-error-container" required="">{{legalStatus}}</label>
-						{{/each}}
-					</span>
-				</div>
-			</div>
-			<div class="row form-group">
-				<div class="col-sm-12 form-group">
-					<input type="text" class="input" id="year-entered-care" name="yearEnteredCare" data-parsley-error-message="required" required="">
-					<label for="year-entered-care" class="label required-field">Year Child Entered Care</label>
-				</div>
-			</div>
-			<div class="row form-group">
-				<div class="col-sm-24 form-group">
-					<label class="checkbox-inline">
-						<input type="checkbox" id="is-part-of-sibling-group" name="isPartOfSiblingGroup">Is child to be adopted as part of a sibling group?
-					</label>
-				</div>
-			</div>
-			<div class="row form-group">
-				<div class="col-sm-16 form-group sibling-names-container hidden">
-					<input type="text" class="input" id="sibling-names" name="siblingNames">
-					<label for="sibling-names" class="label">names of siblings to be placed with</label>
-				</div>
-			</div>
-			<div class="row form-group">
-				<div class="col-sm-24">
-					<span class="required-field">Does child need contact with other siblings?</span> &nbsp;&nbsp;
-					<span id="is-sibling-contact-needed-error-container" class="error-container">
-						<label class="radio-inline"><input type="radio" name="isSiblingContactNeeded" value="Yes" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#is-sibling-contact-needed-error-container" data-parsley-required="">Yes</label>
-						<label class="radio-inline"><input type="radio" name="isSiblingContactNeeded" value="No">No</label>
-					</span>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-sm-12 form-group">
-					<input type="text" class="input" id="sibling-contact-description" name="siblingContactDescription">
-					<label for="sibling-contact-description" class="label">If yes, please describe (i.e. brother, sister, monthly, etc.)</label>
-				</div>
-			</div>
-			<div class="row form-group">
-				<div class="col-sm-24">
-					<span class="required-field">Does child need contact with other birth family?</span> &nbsp;&nbsp;
-					<span id="is-family-contact-needed-error-container" class="error-container">
-						<label class="radio-inline"><input type="radio" name="isFamilyContactNeeded" value="Yes" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#is-family-contact-needed-error-container" data-parsley-required="">Yes</label>
-						<label class="radio-inline"><input type="radio" name="isFamilyContactNeeded" value="No">No</label>
-					</span>
-				</div>
-			</div>
-			<div class="row form-group">
-				<div class="col-sm-12 form-group">
-					<input type="text" class="input" id="family-contact-description" name="familyContactDescription">
-					<label for="family-contact-description" class="label">If yes, please describe</label>
-				</div>
-			</div>
-			<div class="row form-group">
-				<div class="col-sm-24">
-					<label class="label marg-bottom-xs-5 required-field">Recommended Family Constellation (check all that apply)</label>
-				</div>
-			</div>
-			<div class="row form-group">
-				<div class="col-sm-16">
-					<div id="recommended-family-constellation-error-container" class="row error-container">
-					{{#each familyConstellations}}
-						<div class="col-sm-12 form-group">
-							<label class="checkbox-inline">
-								<input type="checkbox" name="recommendedFamilyConstellations[]" value="{{_id}}" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#recommended-family-constellation-error-container" data-parsley-mincheck="1" data-parsley-required="">{{familyConstellation}}
-							</label>
-						</div>
-					{{/each}}
-					</div>
-				</div>
-			</div>
-			{{!--<div class="row form-group">
-				<div class="col-sm-20 col-md-16">
-					<div class="row">
-						<div class="col-sm-24 form-group">
-							<span class="required-field">Recommended Family Constellation (check all that apply)</span>
-						</div>
-					</div>
-					<div class="col-sm-12 form-group">
-						<label class="checkbox-inline">
-							<input type="checkbox" name="recommendedFamilyConstellation" value="Two parents (two males)">Two parents (two males)
-						</label>
-					</div>
-					<div class="col-sm-12 form-group">
-						<label class="checkbox-inline">
-							<input type="checkbox" name="recommendedFamilyConstellation" value="Single parent (female)">Single parent (female)
-						</label>
-					</div>
-					<div class="col-sm-12 form-group">
-						<label class="checkbox-inline">
-							<input type="checkbox" name="recommendedFamilyConstellation" value="Single parent (male)">Single parent (male)
-						</label>
-					</div>
-					<div class="col-sm-12 form-group">
-						<label class="checkbox-inline">
-							<input type="checkbox" name="recommendedFamilyConstellation" value="Two parents (male/female)">Two parents (male/female)
-						</label>
-					</div>
-					<div class="col-sm-12 form-group">
-						<label class="checkbox-inline">
-							<input type="checkbox" name="recommendedFamilyConstellation" value="Two parents (two females)">Two parents (two females)
-						</label>
-					</div>
-				</div>
-			</div>--}}
-			<div class="row form-group">
-				<div class="col-sm-14 form-group">
-					<textarea class="input" id="child-invalid-constellation-reason" name="childInvalidFamilyConstellationReason" rows="5"></textarea>
-					<label for="child-invalid-family-constellation-reason" class="label">If same-sex couples or single parents will not be considered, please give clinically appropriate reason</label>
-				</div>
-			</div>
-			<div class="row form-group">
-				<div class="col-sm-24">
-					<label class="label marg-bottom-xs-5">Other Family Constellation Considerations (check all that apply)</label>
-				</div>
-			</div>
-			<div class="row form-group">
-				<div class="col-sm-16">
-				{{#each otherFamilyConstellationConsiderations}}
-					<div class="col-sm-12 form-group">
-						<label class="checkbox-inline">
-							<input type="checkbox" name="otherFamilyConstellationConsiderations[]" value="{{_id}}">{{otherFamilyConstellationConsideration}}
-						</label>
-					</div>
-				{{/each}}
-				</div>
-			</div>
-			<div class="row form-group">
-				<div class="col-sm-14 form-group">
-					<textarea class="input" id="physical-needs" name="physicalNeeds" rows="5" data-parsley-error-message="required" required=""></textarea>
-					<label for="physical-needs" class="label required-field">Physical Special Needs (Please be as descriptive as possible)</label>
-				</div>
-			</div>
-			<div class="row form-group">
-				<div class="col-sm-14 form-group">
-					<textarea class="input" id="intellectual-needs" name="intellectualNeeds" rows="5" data-parsley-error-message="required" required=""></textarea>
-					<label for="intellectual-needs" class="label required-field">Intellectual Special Needs (Please be as descriptive as possible)</label>
-				</div>
-			</div>
-			<div class="row form-group">
-				<div class="col-sm-14 form-group">
-					<textarea class="input" id="emotional-needs" name="emotionalNeeds" rows="5" data-parsley-error-message="required" required=""></textarea>
-					<label for="emotional-needs" class="label required-field">Emotional Needs/Trauma History (Please be as descriptive as possible)</label>
-				</div>
-			</div>
-			<div class="row form-group">
-				<div class="col-sm-14 form-group">
-					<textarea class="input" id="social-needs" name="socialNeeds" rows="5" data-parsley-error-message="required" required=""></textarea>
-					<label for="social-needs" class="label required-field">Social Needs (Please be as descriptive as possible)</label>
-				</div>
-			</div>
-			<div class="row form-group">
-				<div class="col-sm-16">
-					<label class="label marg-bottom-xs-5">Other Considerations (check all that apply)</label>
-				</div>
-			</div>
-			<div class="row form-group">
-				<div class="col-sm-16">
-				{{#each otherConsiderations}}
-					<div class="col-sm-12 form-group">
-						<label class="checkbox-inline"><input type="checkbox" name="otherConsiderations[]" value="{{_id}}">{{otherConsideration}}</label>
-					</div>
-				{{/each}}
-				</div>
-			</div>
-			<div class="row form-group">
-				<div class="col-sm-24">
-					<label class="label marg-bottom-xs">Other Disabilities (check all that apply)</label>
-				</div>
-			</div>
-			<div class="row form-group">
-				<div class="col-sm-16">
-				{{#each disabilities}}
-					<div class="col-sm-12 form-group">
-						<label class="checkbox-inline"><input type="checkbox" name="disabilities[]" value="{{_id}}">{{disability}}</label>
-					</div>
-				{{/each}}
-				</div>
-			</div>
-			<div class="row form-group">
-				<div class="col-sm-14 form-group">
-					<textarea class="input" id="aspirations" name="aspirations" rows="5" data-parsley-error-message="required" required=""></textarea>
-					<label for="aspirations" class="label required-field">Interests, Talents and Aspirations (Describe what child wants to be in the future –career or educational goals.)</label>
-				</div>
-			</div>
-			<div class="row form-group">
-				<div class="col-sm-14 form-group">
-					<textarea class="input" id="school-life" name="schoolLife" rows="5" data-parsley-error-message="required" required=""></textarea>
-					<label for="school-life" class="label required-field">School Life (Describe child’s academic functioning, grade level, school behavior, peer relationship.)</label>
-				</div>
-			</div>
-			<div class="row form-group">
-				<div class="col-sm-14 form-group">
-					<textarea class="input" id="family-life" name="familyLife" rows="5" data-parsley-error-message="required" required=""></textarea>
-					<label for="family-life" class="label required-field">Family Life (Describe child’s interaction and behavior in a family or residential setting.)</label>
-				</div>
-			</div>
-			<div class="row form-group">
-				<div class="col-sm-14 form-group">
-					<textarea class="input" id="personality" name="personality" rows="5" data-parsley-error-message="required" required=""></textarea>
-					<label for="personality" class="label required-field">Personality (How does child or others describe him/herself? What is unique about this child (e.g. sexual orientation/gender identity, temperament, sense of humor, etc.)</label>
-				</div>
-			</div>
-			<div class="row form-group">
-				<div class="col-sm-14 form-group">
-					<textarea class="input" id="other-recruitment-considerations" name="otherRecruitmentConsiderations" rows="5" data-parsley-error-message="required" required=""></textarea>
-					<label for="other-recruitment-considerations" class="label required-field">Other Recruitment Considerations (Qualities of the ideal family, child’s wishes for a family, worker’s recommendation, geographical considerations)</label>
-				</div>
-			</div>
-		</section>
+		<form enctype="multipart/form-data" action="/social-worker-register-child" class="form--child-registration" method="POST">
 		
-		<section class="recruitment-worker-information-section">
-			<div class="form-section-header">Recruitment Worker Information</div>
-			<div class="row">
-				<div class="col-sm-12 form-group">
-					<input type="text" class="input" id="recruitment-worker" name="childRecruitmentWorker" data-parsley-error-message="required" required="">
-					<label for="recruitment-worker" class="label required-field">Recruitment Worker</label>
-				</div>
-				<div class="col-sm-12 form-group">
-					<input type="text" class="input" id="recruitment-worker-agency" name="childRecruitmentWorkerAgency" data-parsley-error-message="required" required="">
-					<label for="recruitment-worker-agency" class="label required-field">Agency</label>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-sm-12 form-group">
-					<input type="text" class="input" id="recruitment-worker-phone" name="childRecruitmentWorkerPhone" data-parsley-error-message="required" required="">
-					<label for="recruitment-worker-phone" class="label required-field">Phone</label>
-				</div>
-				<div class="col-sm-12 form-group">
-					<input type="text" class="input" id="recruitment-worker-email" name="childRecruitmentWorkerEmail" data-parsley-type="email" data-parsley-trigger="change" data-parsley-error-message="valid email required" required="">
-					<label for="recruitment-worker-email" class="label required-field">Email</label>
-				</div>
-			</div>
-		</section>
+			<section class="child-information-section">
+				<div class="form-section-header">Child Information</div>
 
-		<section class="adoption-worker-information-section">
-			<div class="form-section-header">Adoption Worker Information</div>
-			<div class="row">
-				<div class="col-sm-12 form-group">
-					<input type="text" class="input" id="adoption-worker" name="adoptionWorker" data-parsley-error-message="required" required="">
-					<label for="adoption-worker" class="label required-field">Adoption Worker</label>
+				<div class="row">
+					<div class="col-sm-12 form-group">
+						<input type="text" id="first-name" class="input" name="firstName" data-parsley-error-message="required" required="">
+						<label for="first-name" class="label required-field">First Name</label>
+					</div>
+					<div class="col-sm-12 form-group">
+						<input type="text" id="last-name" class="input" name="lastName" data-parsley-error-message="required" required="">
+						<label for="last-name" class="label required-field">Last Name</label>
+					</div>
 				</div>
-				<div class="col-sm-12 form-group">
-					<input type="text" class="input" id="adoption-worker-agency" name="adoptionWorkerAgency" data-parsley-error-message="required" required="">
-					<label for="adoption-worker-agency" class="label required-field">Agency</label>
+				<div class="row">
+					<div class="col-sm-12 form-group">
+						<input type="text" id="alias" class="input" name="alias">
+						<label for="alias" class="label">Alias (only for children who are legal risk)</label>
+					</div>
+					<div class="col-sm-12 form-group">
+						<input type="text" id="nickname" class="input" name="nickName">
+						<label for="nickname" class="label">Nickname</label>
+					</div>
 				</div>
-			</div>
-			<div class="row">
-				<div class="col-sm-12 form-group">
-					<input type="text" class="input" id="adoption-worker-phone" name="adoptionWorkerPhone" data-parsley-error-message="required" required="">
-					<label for="adoption-worker-phone" class="label required-field">Phone</label>
+				<div class="row">
+					<div class="col-sm-12 form-group">
+						<input type="text" id="date-of-birth" class="input" name="dateOfBirth" data-parsley-error-message="required" required="">
+						<label for="date-of-birth" class="label required-field">Date of Birth</label>
+					</div>
 				</div>
-				<div class="col-sm-12 form-group">
-					<input type="text" class="input" id="adoption-worker-email" name="adoptionWorkerEmail" data-parsley-type="email" data-parsley-trigger="change" data-parsley-error-message="valid email required" required="">
-					<label for="adoption-worker-email" class="label required-field">Email</label>
+				<div class="row">
+					<div class="col-sm-24 form-group">
+						<label class="label required-field">Languages spoken</label>
+					</div>
 				</div>
-			</div>
-		</section>
+				<div class="row form-group">
+					<div class="col-sm-16">
+						<div id="languages-error-container" class="row error-container">
+						{{#each languages}}
+							<div class="col-sm-12 form-group">
+								<label class="checkbox-inline">
+									<input type="checkbox" name="languages[]" value="{{ _id }}" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#languages-error-container" data-parsley-mincheck="1" data-parsley-required="">{{ language }}
+								</label>
+							</div>
+						{{/each}}
+						</div>
+					</div>
+				</div>
+				<div class="row form-group">
+					<div class="col-sm-16">
+						<span class="required-field">Gender</span> &nbsp;&nbsp;
+						<span id="gender-error-container" class="error-container">
+						{{#each genders}}
+							<label class="radio-inline"><input type="radio" name="gender" value="{{_id}}" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#gender-error-container" required="">{{gender}}</label>
+						{{/each}}
+					</div>
+				</div>
+				<div class="row form-group">
+					<div class="col-sm-24">
+						<label class="label marg-bottom-xs-5 required-field">Race/Ethnicity (check all that apply)</label>
+					</div>
+				</div>
+				<div class="row form-group">
+					<div class="col-sm-16">
+						<div id="races-error-container" class="row error-container">
+						{{#each races}}
+							<div class="col-sm-12 form-group">
+								<label class="checkbox-inline">
+									<input type="checkbox" name="race[]" value="{{_id}}" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#races-error-container" data-parsley-mincheck="1" data-parsley-required="">{{race}}
+								</label>
+							</div>
+						{{/each}}
+						</div>
+					</div>
+				</div>
+				<div class="row form-group">
+					<div class="col-sm-12 form-group">
+						<textarea class="input" id="other-ethnic-background" name="otherEthnicBackground" rows="5"></textarea>
+						<label for="other-ethnic-background" class="label">Other Information About child's ethnic Background</label>
+					</div>
+				</div>
+				<div class="row form-group">
+					<div class="col-sm-24">
+						<label class="label marg-bottom-xs-5 required-field">Where does this child presently live?</label>
+					</div>
+				</div>
+				<div class="row form-group">
+					<div class="col-sm-16">
+						<div id="current-residence-error-container" class="row error-container">
+						{{#each residences}}
+							<div class="col-sm-24 form-group">
+								<label class="radio-inline">
+									<input type="radio" name="currentResidence" value="{{_id}}" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#current-residence-error-container" data-parsley-mincheck="1" data-parsley-required="">{{residence}}
+								</label>
+							</div>
+						{{/each}}
+						</div>
+					</div>
+				</div>
+				<div class="row form-group">
+					<div class="col-sm-12 form-group ma-city-container">
+						<select id="ma-city" class="input" name="MACity" data-parsley-trigger="change" data-parsley-errors-messages-disabled="true" required="">
+							<option value=""></option>
+							{{#each citiesAndTowns}}
+							<option value="{{_id}}">{{cityOrTown}}</option>
+							{{/each}}
+						</select>
+						<label for="ma-city" class="label required-field">City of Child's Current Location</label>
+					</div>
+					<div class="col-sm-12 form-group non-ma-city-container hidden">
+						<input type="text" id="non-ma-city" class="input" name="nonMACity" data-parsley-error-message="required" data-parsley-required="false">
+						<label for="non-ma-city" class="label required-field">City of Child's Current Location</label>
+					</div>
+					<div class="col-sm-12 form-group">
+						<label class="checkbox-inline">
+							<input type="checkbox" id="is-not-MA-city-checkbox" name="isNotMACity">Child lives outside MA
+						</label>
+					</div>
+				</div>
+				<div class="row form-group">
+					<div class="col-sm-12 form-group">
+						<input type="text" id="care-facility" class="input" name="careFacility">
+						<label for="care-facility" class="label">Name of Residential/Group Care Facility (if applicable)</label>
+					</div>
+				</div>
+				<div class="row form-group">
+					<div class="col-sm-16">
+						<span class="required-field">Legal Status</span> &nbsp;&nbsp;
+						<span id="preferred-legal-status-error-container" class="error-container">
+							{{#each legalStatuses}}
+								<label class="radio-inline"><input type="radio" name="legalStatus" value="{{_id}}" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#preferred-legal-status-error-container" required="">{{legalStatus}}</label>
+							{{/each}}
+						</span>
+					</div>
+				</div>
+				<div class="row form-group">
+					<div class="col-sm-12 form-group">
+						<input type="text" class="input" id="year-entered-care" name="yearEnteredCare" data-parsley-error-message="required" required="">
+						<label for="year-entered-care" class="label required-field">Year Child Entered Care</label>
+					</div>
+				</div>
+				<div class="row form-group">
+					<div class="col-sm-24 form-group">
+						<label class="checkbox-inline">
+							<input type="checkbox" id="is-part-of-sibling-group" name="isPartOfSiblingGroup">Is child to be adopted as part of a sibling group?
+						</label>
+					</div>
+				</div>
+				<div class="row form-group">
+					<div class="col-sm-16 form-group sibling-names-container hidden">
+						<input type="text" class="input" id="sibling-names" name="siblingNames">
+						<label for="sibling-names" class="label">names of siblings to be placed with</label>
+					</div>
+				</div>
+				<div class="row form-group">
+					<div class="col-sm-24">
+						<span class="required-field">Does child need contact with other siblings?</span> &nbsp;&nbsp;
+						<span id="is-sibling-contact-needed-error-container" class="error-container">
+							<label class="radio-inline"><input type="radio" name="isSiblingContactNeeded" value="Yes" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#is-sibling-contact-needed-error-container" data-parsley-required="">Yes</label>
+							<label class="radio-inline"><input type="radio" name="isSiblingContactNeeded" value="No">No</label>
+						</span>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-12 form-group">
+						<input type="text" class="input" id="sibling-contact-description" name="siblingContactDescription">
+						<label for="sibling-contact-description" class="label">If yes, please describe (i.e. brother, sister, monthly, etc.)</label>
+					</div>
+				</div>
+				<div class="row form-group">
+					<div class="col-sm-24">
+						<span class="required-field">Does child need contact with other birth family?</span> &nbsp;&nbsp;
+						<span id="is-family-contact-needed-error-container" class="error-container">
+							<label class="radio-inline"><input type="radio" name="isFamilyContactNeeded" value="Yes" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#is-family-contact-needed-error-container" data-parsley-required="">Yes</label>
+							<label class="radio-inline"><input type="radio" name="isFamilyContactNeeded" value="No">No</label>
+						</span>
+					</div>
+				</div>
+				<div class="row form-group">
+					<div class="col-sm-12 form-group">
+						<input type="text" class="input" id="family-contact-description" name="familyContactDescription">
+						<label for="family-contact-description" class="label">If yes, please describe</label>
+					</div>
+				</div>
+				<div class="row form-group">
+					<div class="col-sm-24">
+						<label class="label marg-bottom-xs-5 required-field">Recommended Family Constellation (check all that apply)</label>
+					</div>
+				</div>
+				<div class="row form-group">
+					<div class="col-sm-16">
+						<div id="recommended-family-constellation-error-container" class="row error-container">
+						{{#each familyConstellations}}
+							<div class="col-sm-12 form-group">
+								<label class="checkbox-inline">
+									<input type="checkbox" name="recommendedFamilyConstellations[]" value="{{_id}}" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#recommended-family-constellation-error-container" data-parsley-mincheck="1" data-parsley-required="">{{familyConstellation}}
+								</label>
+							</div>
+						{{/each}}
+						</div>
+					</div>
+				</div>
+				{{!--<div class="row form-group">
+					<div class="col-sm-20 col-md-16">
+						<div class="row">
+							<div class="col-sm-24 form-group">
+								<span class="required-field">Recommended Family Constellation (check all that apply)</span>
+							</div>
+						</div>
+						<div class="col-sm-12 form-group">
+							<label class="checkbox-inline">
+								<input type="checkbox" name="recommendedFamilyConstellation" value="Two parents (two males)">Two parents (two males)
+							</label>
+						</div>
+						<div class="col-sm-12 form-group">
+							<label class="checkbox-inline">
+								<input type="checkbox" name="recommendedFamilyConstellation" value="Single parent (female)">Single parent (female)
+							</label>
+						</div>
+						<div class="col-sm-12 form-group">
+							<label class="checkbox-inline">
+								<input type="checkbox" name="recommendedFamilyConstellation" value="Single parent (male)">Single parent (male)
+							</label>
+						</div>
+						<div class="col-sm-12 form-group">
+							<label class="checkbox-inline">
+								<input type="checkbox" name="recommendedFamilyConstellation" value="Two parents (male/female)">Two parents (male/female)
+							</label>
+						</div>
+						<div class="col-sm-12 form-group">
+							<label class="checkbox-inline">
+								<input type="checkbox" name="recommendedFamilyConstellation" value="Two parents (two females)">Two parents (two females)
+							</label>
+						</div>
+					</div>
+				</div>--}}
+				<div class="row form-group">
+					<div class="col-sm-14 form-group">
+						<textarea class="input" id="child-invalid-constellation-reason" name="childInvalidFamilyConstellationReason" rows="5"></textarea>
+						<label for="child-invalid-family-constellation-reason" class="label">If same-sex couples or single parents will not be considered, please give clinically appropriate reason</label>
+					</div>
+				</div>
+				<div class="row form-group">
+					<div class="col-sm-24">
+						<label class="label marg-bottom-xs-5">Other Family Constellation Considerations (check all that apply)</label>
+					</div>
+				</div>
+				<div class="row form-group">
+					<div class="col-sm-16">
+					{{#each otherFamilyConstellationConsiderations}}
+						<div class="col-sm-12 form-group">
+							<label class="checkbox-inline">
+								<input type="checkbox" name="otherFamilyConstellationConsiderations[]" value="{{_id}}">{{otherFamilyConstellationConsideration}}
+							</label>
+						</div>
+					{{/each}}
+					</div>
+				</div>
+				<div class="row form-group">
+					<div class="col-sm-14 form-group">
+						<textarea class="input" id="physical-needs" name="physicalNeeds" rows="5" data-parsley-error-message="required" required=""></textarea>
+						<label for="physical-needs" class="label required-field">Physical Special Needs (Please be as descriptive as possible)</label>
+					</div>
+				</div>
+				<div class="row form-group">
+					<div class="col-sm-14 form-group">
+						<textarea class="input" id="intellectual-needs" name="intellectualNeeds" rows="5" data-parsley-error-message="required" required=""></textarea>
+						<label for="intellectual-needs" class="label required-field">Intellectual Special Needs (Please be as descriptive as possible)</label>
+					</div>
+				</div>
+				<div class="row form-group">
+					<div class="col-sm-14 form-group">
+						<textarea class="input" id="emotional-needs" name="emotionalNeeds" rows="5" data-parsley-error-message="required" required=""></textarea>
+						<label for="emotional-needs" class="label required-field">Emotional Needs/Trauma History (Please be as descriptive as possible)</label>
+					</div>
+				</div>
+				<div class="row form-group">
+					<div class="col-sm-14 form-group">
+						<textarea class="input" id="social-needs" name="socialNeeds" rows="5" data-parsley-error-message="required" required=""></textarea>
+						<label for="social-needs" class="label required-field">Social Needs (Please be as descriptive as possible)</label>
+					</div>
+				</div>
+				<div class="row form-group">
+					<div class="col-sm-16">
+						<label class="label marg-bottom-xs-5">Other Considerations (check all that apply)</label>
+					</div>
+				</div>
+				<div class="row form-group">
+					<div class="col-sm-16">
+					{{#each otherConsiderations}}
+						<div class="col-sm-12 form-group">
+							<label class="checkbox-inline"><input type="checkbox" name="otherConsiderations[]" value="{{_id}}">{{otherConsideration}}</label>
+						</div>
+					{{/each}}
+					</div>
+				</div>
+				<div class="row form-group">
+					<div class="col-sm-24">
+						<label class="label marg-bottom-xs">Other Disabilities (check all that apply)</label>
+					</div>
+				</div>
+				<div class="row form-group">
+					<div class="col-sm-16">
+					{{#each disabilities}}
+						<div class="col-sm-12 form-group">
+							<label class="checkbox-inline"><input type="checkbox" name="disabilities[]" value="{{_id}}">{{disability}}</label>
+						</div>
+					{{/each}}
+					</div>
+				</div>
+				<div class="row form-group">
+					<div class="col-sm-14 form-group">
+						<textarea class="input" id="aspirations" name="aspirations" rows="5" data-parsley-error-message="required" required=""></textarea>
+						<label for="aspirations" class="label required-field">Interests, Talents and Aspirations (Describe what child wants to be in the future –career or educational goals.)</label>
+					</div>
+				</div>
+				<div class="row form-group">
+					<div class="col-sm-14 form-group">
+						<textarea class="input" id="school-life" name="schoolLife" rows="5" data-parsley-error-message="required" required=""></textarea>
+						<label for="school-life" class="label required-field">School Life (Describe child’s academic functioning, grade level, school behavior, peer relationship.)</label>
+					</div>
+				</div>
+				<div class="row form-group">
+					<div class="col-sm-14 form-group">
+						<textarea class="input" id="family-life" name="familyLife" rows="5" data-parsley-error-message="required" required=""></textarea>
+						<label for="family-life" class="label required-field">Family Life (Describe child’s interaction and behavior in a family or residential setting.)</label>
+					</div>
+				</div>
+				<div class="row form-group">
+					<div class="col-sm-14 form-group">
+						<textarea class="input" id="personality" name="personality" rows="5" data-parsley-error-message="required" required=""></textarea>
+						<label for="personality" class="label required-field">Personality (How does child or others describe him/herself? What is unique about this child (e.g. sexual orientation/gender identity, temperament, sense of humor, etc.)</label>
+					</div>
+				</div>
+				<div class="row form-group">
+					<div class="col-sm-14 form-group">
+						<textarea class="input" id="other-recruitment-considerations" name="otherRecruitmentConsiderations" rows="5" data-parsley-error-message="required" required=""></textarea>
+						<label for="other-recruitment-considerations" class="label required-field">Other Recruitment Considerations (Qualities of the ideal family, child’s wishes for a family, worker’s recommendation, geographical considerations)</label>
+					</div>
+				</div>
+			</section>
+			
+			<section class="recruitment-worker-information-section">
+				<div class="form-section-header">Recruitment Worker Information</div>
+				<div class="row">
+					<div class="col-sm-12 form-group">
+						<input type="text" class="input" id="recruitment-worker" name="childRecruitmentWorker" data-parsley-error-message="required" required="">
+						<label for="recruitment-worker" class="label required-field">Recruitment Worker</label>
+					</div>
+					<div class="col-sm-12 form-group">
+						<input type="text" class="input" id="recruitment-worker-agency" name="childRecruitmentWorkerAgency" data-parsley-error-message="required" required="">
+						<label for="recruitment-worker-agency" class="label required-field">Agency</label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-12 form-group">
+						<input type="text" class="input" id="recruitment-worker-phone" name="childRecruitmentWorkerPhone" data-parsley-error-message="required" required="">
+						<label for="recruitment-worker-phone" class="label required-field">Phone</label>
+					</div>
+					<div class="col-sm-12 form-group">
+						<input type="text" class="input" id="recruitment-worker-email" name="childRecruitmentWorkerEmail" data-parsley-type="email" data-parsley-trigger="change" data-parsley-error-message="valid email required" required="">
+						<label for="recruitment-worker-email" class="label required-field">Email</label>
+					</div>
+				</div>
+			</section>
 
-		<p class="form-group">Please include as much information as possible to allow us to best recruit for a child
-		or teen.  We will use discretion in what information is appropriate to be shared with the public.</p>
+			<section class="adoption-worker-information-section">
+				<div class="form-section-header">Adoption Worker Information</div>
+				<div class="row">
+					<div class="col-sm-12 form-group">
+						<input type="text" class="input" id="adoption-worker" name="adoptionWorker" data-parsley-error-message="required" required="">
+						<label for="adoption-worker" class="label required-field">Adoption Worker</label>
+					</div>
+					<div class="col-sm-12 form-group">
+						<input type="text" class="input" id="adoption-worker-agency" name="adoptionWorkerAgency" data-parsley-error-message="required" required="">
+						<label for="adoption-worker-agency" class="label required-field">Agency</label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-12 form-group">
+						<input type="text" class="input" id="adoption-worker-phone" name="adoptionWorkerPhone" data-parsley-error-message="required" required="">
+						<label for="adoption-worker-phone" class="label required-field">Phone</label>
+					</div>
+					<div class="col-sm-12 form-group">
+						<input type="text" class="input" id="adoption-worker-email" name="adoptionWorkerEmail" data-parsley-type="email" data-parsley-trigger="change" data-parsley-error-message="valid email required" required="">
+						<label for="adoption-worker-email" class="label required-field">Email</label>
+					</div>
+				</div>
+			</section>
+
+			<p class="form-group">Please include as much information as possible to allow us to best recruit for a child
+			or teen.  We will use discretion in what information is appropriate to be shared with the public.</p>
 
 
-		<button class="button button--blue register" type="submit">Submit</button>
-	</form>
-</section>
+			<button class="button button--blue register" type="submit">Submit</button>
+		</form>
+	</section>
+
+</div>
