@@ -1,7 +1,7 @@
 /* TODO: the modal contents should be broken out into their own component/page files */
 .modal {
 	position: fixed;
-	z-index: 100;
+	z-index: 200;
 }
 
 .modal__background {
@@ -16,7 +16,6 @@
 .modal__container {
 	display: none;
 	position: fixed;
-    z-index: 200;
     background-color: $background-color-light;
     width: 100%;
     height: 100%;
