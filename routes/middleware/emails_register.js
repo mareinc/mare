@@ -43,15 +43,16 @@ exports.sendRegistrationConfirmationEmailToStaff = ( user, registrationStaffCont
 
 };
 
-exports.sendThankYouEmailToUser = ( staffContactName, staffContactEmail, userEmail, userType, verificationCode, host ) => {
+exports.sendThankYouEmailToUser = ( staffContactInfo , userEmail, userType, verificationCode, host ) => {
 	
 	return new Promise( ( resolve, reject ) => {
 		// TODO: check the logic around process.env.migration, it doesn't seem to make sense
 		// if sending of the email is not currently allowed
-		if( process.env.MIGRATION === 'true' || process.env.SEND_REGISTRATION_THANK_YOU_EMAILS === 'false' ) {
+		if( process.env.SEND_REGISTRATION_THANK_YOU_EMAILS === 'false' ) {
 			// resolve the promise before any further processing takes place
 			return reject( `sending of registration thank you emails is currently turned off, no email was sent to ${ userEmail }` );
 		}
+
 		// find the email template in templates/emails/
 		new keystone.Email({
 
@@ -61,7 +62,7 @@ exports.sendThankYouEmailToUser = ( staffContactName, staffContactEmail, userEma
 
 		}).send({
 
-			to: 'jared.j.collier@gmail.com',
+			to: 'gmoha92@gmail.com',
 			from: {
 				name 	: 'MARE',
 				email 	: 'admin@adoptions.io'
@@ -71,8 +72,8 @@ exports.sendThankYouEmailToUser = ( staffContactName, staffContactEmail, userEma
 			isSocialWorker		: userType === 'social worker',
 			isFamily      		: userType === 'family',
 			emailSubject		: `${ userType } registration question`,
-			staffContactEmail,
-			staffContactName,
+			staffContactEmail	: staffContactInfo.email,
+			staffContactName	: staffContactInfo.name,
 			host,
 			userType,
 			verificationCode

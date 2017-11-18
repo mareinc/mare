@@ -59,7 +59,7 @@ exports.registerUser = ( req, res, next ) => {
 					// store the user type found in the returned model
 					const userType = newSiteVisitor.userType;
 					// store the host name to link to the verification code in the thank you email
-					const host = req.headers.host;
+					const host = (req.secure)? 'https://' + req.headers.host : 'http://' + req.headers.host;
 					// store the array of mailing list ids the user has opted into
 					const mailingListIds = user.mailingLists;
 					// create a new verification code model in the database to allow users to verify their accounts
@@ -119,7 +119,7 @@ exports.registerUser = ( req, res, next ) => {
 					// store the user type found in the returned model
 					const userType = newSocialWorker.userType;
 					// store the host name to link to the verification code in the thank you email
-					const host = req.headers.host;
+					const host = (req.secure)? 'https://' + req.headers.host : 'http://' + req.headers.host;
 					// store the array of mailing list ids the user has opted into
 					const mailingListIds = user.mailingLists;
 					// create a new verification code model in the database to allow users to verify their accounts
@@ -182,7 +182,7 @@ exports.registerUser = ( req, res, next ) => {
 					// store the user type found in the returned model
 					const userType = newFamily.userType;
 					// store the host name to link to the verification code in the thank you email
-					const host = req.headers.host;
+					const host = (req.secure)? 'https://' + req.headers.host : 'http://' + req.headers.host;
 					// store the array of mailing list ids the user has opted into
 					const mailingListIds = user.mailingLists;
 					// create a new verification code model in the database to allow users to verify their accounts

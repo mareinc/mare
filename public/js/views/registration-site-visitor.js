@@ -6,8 +6,8 @@
 
 		events: {
 			'change #is-not-MA-city-checkbox' 		: 'toggleCitySelect',
-			'change .other-way-to-hear-about-mare'	: 'toggleOtherWayToHearTextField',
-			'submit'								: 'disableRegistrationButton'
+			'change .other-way-to-hear-about-mare'	: 'toggleOtherWayToHearTextField'
+			//'submit'								: 'disableRegistrationButton'
 		},
 
 		initialize: function() {
