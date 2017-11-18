@@ -1,0 +1,107 @@
+<div class="registration-form form--site-visitor-registration">
+	<section class="site-visitor-registration-section">
+		<div class="row form-group">
+			<div class="col-sm-12">
+				<input type="text" id="site-visitor-first-name" class="input" name="firstName" placeholder="John" value="{{user.name.first}}">
+				<label for="site-visitor-first-name" class="label">First Name</label>
+			</div>
+			<div class="col-sm-12">
+				<input type="text" id="site-visitor-last-name" class="input" name="lastName" placeholder="Smith" value="{{user.name.last}}">
+				<label for="site-visitor-last-name" class="label">Last Name</label>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-12">
+				<input type="email" id="site-visitor-email" class="input" name="email" placeholder="john.smith@gmail.com" value="{{user.email}}">
+				<label for="site-visitor-email" class="label">Email Address</label>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-12">
+				<input type="password" id="site-visitor-password" class="input" name="password" placeholder="**********">
+				<label for="site-visitor-password" class="label">Password</label>
+			</div>
+			<div class="col-sm-12">
+				<input type="password" id="site-visitor-confirm-password" class="input" name="confirmPassword" placeholder="**********" data-parsley-equalto="#site-visitor-password" data-parsley-error-message="passwords must match">
+				<label for="site-visitor-confirm-password" class="label">Confirm Password</label>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-12">
+				<input type="text" id="site-visitor-street-1" class="input" name="street1" placeholder="100 Main Street" value="{{user.address.street1}}">
+				<label for="site-visitor-street-1" class="label">Street 1</label>
+			</div>
+			<div class="col-sm-12">
+				<input type="text" id="site-visitor-street-2" class="input" name="street2" placeholder="Suite 1" value="{{user.address.street2}}">
+				<label for="site-visitor-street-2" class="label">Street 2</label>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-12 form-group ma-city-container">
+				<select id="ma-city" class="input" name="city">
+					<option value=""></option>
+					{{#each citiesAndTowns}}
+					<option value="{{ _id }}" {{#ifeq ../user.address.city _id}}selected="selected"{{/ifeq}}>{{ cityOrTown }}</option>
+					{{/each}}
+				</select>
+				<label for="ma-city" class="label">City</label>
+			</div>
+			<div class="col-sm-12 form-group non-ma-city-container hidden">
+				<input type="text" id="non-ma-city" class="input" name="nonMACity" placeholder="Boston">
+				<label for="non-ma-city" class="label">City</label>
+			</div>
+			<div class="col-sm-12 form-group">
+				<label class="checkbox-inline">
+					<input type="checkbox" id="is-not-MA-city-checkbox" name="isNotMACity" {{#if user.address.isOutsideMassachusetts}}checked{{/if}}>I live outside MA
+				</label>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-12">
+				<select id="site-visitor-state" class="input state-select" name="state">
+				{{#each states}}
+					{{#if defaultSelection}}
+						<option value="{{_id}}" selected="selected">{{state}}</option>
+					{{else}}
+						<option value="{{_id}}">{{state}}</option>
+					{{/if}}
+				{{/each}}
+				</select>
+				<label for="site-visitor-state" class="label">State</label>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-12">
+				<input type="number" id="site-visitor-zip-code" class="input" name="zipCode" placeholder="02111" value="{{user.address.zipCode}}">
+				<label for="site-visitor-zip-code" class="label">Zip Code</label>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-12">
+				<input type="text" id="site-visitor-home-phone" class="input" name="homePhone" placeholder="(617) 111-1111" value="{{user.phone.home}}">
+				<label for="site-visitor-home-phone" class="label">Home Phone</label>
+			</div>
+			<div class="col-sm-12">
+				<input type="text" id="site-visitor-work-phone" class="input" name="workPhone" placeholder="(617) 222-2222" value="{{user.phone.work}}">
+				<label for="site-visitor-work-phone" class="label">Work Phone</label>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-12">
+				<input type="text" id="site-visitor-mobile-phone" class="input" name="mobilePhone" placeholder="(617) 333-3333" value="{{user.phone.mobile}}">
+				<label for="site-visitor-mobile-phone" class="label">Mobile Phone</label>
+			</div>
+			<div class="col-sm-12">
+				<select id="site-visitor-preferred-phone" class="input site-visitor-preferred-phone-select" name="preferredPhone">
+					<option value=""></option>
+					<option {{#ifeq user.phone.preferred 'home'}}selected="selected"{{/ifeq}} value="home">home</option>
+					<option {{#ifeq user.phone.preferred 'work'}}selected="selected"{{/ifeq}} value="work">work</option>
+					<option {{#ifeq user.phone.preferred 'mobile'}}selected="selected"{{/ifeq}} value="mobile">mobile</option>
+				</select>
+				<label for="site-visitor-preferred-phone" class="label">Preferred Phone</label>
+			</div>
+		</div>
+	</section>
+
+	<button class="button button--blue save-button">Save</button>
+</div>

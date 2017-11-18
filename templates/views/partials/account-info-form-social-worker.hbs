@@ -1,0 +1,151 @@
+<div class="registration-form form--social-worker-registration">
+	<section class="social-worker-account-setup-section">
+		<div class="form-section-header">Account Setup</div>
+		<div class="row form-group">
+			<div class="col-sm-12">
+				<input type="text" id="first-name" class="input" name="firstName" placeholder="John" value="{{user.name.first}}">
+				<label for="first-name" class="label">First Name</label>
+			</div>
+			<div class="col-sm-12">
+				<input type="text" id="last-name" class="input" name="lastName" placeholder="Smith" value="{{user.name.last}}">
+				<label for="last-name" class="label">Last Name</label>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-12">
+				<input type="email" id="email" class="input" name="email" placeholder="john.smith@gmail.com" value="{{user.email}}">
+				<label for="email" class="label">Email Address</label>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-12">
+				<input type="password" id="password" class="input" name="password" placeholder="**********">
+				<label for="password" class="label">Password</label>
+			</div>
+			<div class="col-sm-12">
+				<input type="password" id="confirm-password" class="input" name="confirmPassword" placeholder="**********">
+				<label for="confirm-password" class="label">Confirm Password</label>
+			</div>
+		</div>
+	</section>
+
+	<section class="social-worker-contact-details-section">
+		<div class="form-section-header">Contact Details</div>
+		<div class="row">
+			<div class="col-sm-12 form-group">
+				<select id="position" name="position" class="input position-select">
+					<option value="adoption worker" {{#ifeq user.position 'adoption worker' }}selected{{/ifeq}}>adoption worker</option>
+					<option value="recruitment worker" {{#ifeq user.position 'recruitment worker' }}selected{{/ifeq}}>recruitment worker</option>
+					<option value="supervisor" {{#ifeq user.position 'supervisor' }}selected{{/ifeq}}>supervisor</option>
+					<option value="administrator" {{#ifeq user.position 'administrator' }}selected{{/ifeq}}>administrator</option>
+					<option value="family worker" {{#ifeq user.position 'family worker' }}selected{{/ifeq}}>family worker</option>
+					<option value="other" {{#ifeq user.position 'other' }}selected{{/ifeq}}>other</option>
+				</select>
+				<label for="position" class="label">Position</label>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-24 form-group">
+				<label class="checkbox-inline social-worker-title-checkbox">
+					<input type="checkbox" name="titleDiffersFromPosition" {{#if user.title}}checked{{/if}}>My title differs from the position listed above
+				</label>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-12 form-group social-worker-title-group {{#unless user.title}}hidden{{/unless}}">
+				<input type="text" id="title" class="input social-worker-title" name="socialWorkerTitle" placeholder="my title" value="{{user.title}}">
+				<label for="title" class="label">Title</label>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-12">
+				<input type="text" id="work-phone" class="input" name="workPhone" placeholder="(617) 111-1111" value="{{user.phone.work}}">
+				<label for="work-phone" class="label">Work Phone</label>
+			</div>
+			<div class="col-sm-12">
+				<input type="text" id="mobile-phone" class="input" name="mobilePhone" placeholder="(617) 222-2222" value="{{user.phone.mobile}}">
+				<label for="mobile-phone" class="label">Mobile Phone</label>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-12">
+				<select id="preferred-phone" class="input social-worker-preferred-phone-select" name="preferredPhone">
+					<option value=""></option>
+					<option {{#ifeq user.phone.preferred 'work'}}selected{{/ifeq}} value="work">work</option>
+					<option {{#ifeq user.phone.preferred 'mobile'}}selected{{/ifeq}} value="mobile">mobile</option>
+				</select>
+				<label for="preferred-phone" class="label">Preferred Phone</label>
+			</div>
+		</div>
+
+		<div class="row form-group">
+			<div class="col-sm-12">
+				<input type="text" id="street-1" class="input" name="street1" placeholder="100 Main Street" value="{{user.address.street1}}">
+				<label for="street-1" class="label">Street 1</label>
+			</div>
+			<div class="col-sm-12">
+				<input type="text" id="street-2" class="input" name="street2" placeholder="Suite 1" value="{{user.address.street2}}">
+				<label for="street-2" class="label">Street 2</label>
+			</div>
+		</div>
+
+		<div class="row form-group">
+			<div class="col-sm-12 form-group ma-city-container {{#if user.address.isOutsideMassachusetts}}hidden{{/if}}">
+				<select id="ma-city" class="input" name="city">
+					<option value=""></option>
+					{{#each citiesAndTowns}}
+					<option value="{{ _id }}"  {{#ifeq ../user.address.city _id}}selected="selected"{{/ifeq}}>{{ cityOrTown }}</option>
+					{{/each}}
+				</select>
+				<label for="ma-city" class="label">City</label>
+			</div>
+
+			<div class="col-sm-12 form-group non-ma-city-container {{#unless user.address.isOutsideMassachusetts}}hidden{{/unless}}">
+				<input type="text" id="non-ma-city" class="input" name="nonMACity" placeholder="Boston" value="{{user.address.cityText}}">
+				<label for="non-ma-city" class="label">City</label>
+
+				<select id="state" class="input state-select" name="state">
+				{{#each states}}
+					{{#if defaultSelection}}
+						<option value="{{_id}}" selected="selected">{{state}}</option>
+					{{else}}
+						<option value="{{_id}}">{{state}}</option>
+					{{/if}}
+				{{/each}}
+				</select>
+				<label for="state" class="label">State</label>
+			</div>
+			<div class="col-sm-12 form-group">
+				<label class="checkbox-inline">
+					<input type="checkbox" id="is-not-MA-city-checkbox" name="isNotMACity" {{#if user.address.isOutsideMassachusetts }}checked="checked"{{/if}}>I live outside MA
+				</label>
+			</div>
+		</div>
+
+		<div class="row form-group">
+			<div class="col-sm-12">
+				<input type="number" id="zip-code" class="input" name="zipCode" placeholder="02111" value="{{user.address.zipCode}}">
+				<label for="zip-code" class="label">Zip Code</label>
+			</div>
+		</div>
+	</section>
+
+	<section class="social-worker-mare-and-you-section">
+		<div class="form-section-header">Mare &amp; You</div>
+		{{#each mailingLists }}
+		{{#if showOnSocialWorkerRegistrationPage}}
+		<div class="row form-group">
+			<div class="col-sm-12">
+				<label class="label marg-bottom-xs-5">{{ displayText }}</label>
+			</div>
+			<div class="col-sm-12">
+				<label class="radio-inline"><input type="radio" name="mailingLists[{{@index}}]" value={{ _id }} checked="checked">Yes</label>
+				<label class="radio-inline"><input type="radio" name="mailingLists[{{@index}}]" value="">No</label>
+			</div>
+		</div>
+		{{/if}}
+		{{/each}}
+	</section>
+
+	<button class="button button--blue save-button">Save</button>
+</div>

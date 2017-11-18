@@ -2,10 +2,9 @@
 
 	<div class="content__main content__main--with-sidebar">
 
-		<section class="content__body">
+		<section class="content__body {{#if wysiwyg-page}}content__body--wysiwyg{{/if}}">
 			{{> flash-messages}}
 			{{{body}}}
-			{{> page-actions}}
 		</section>
 
 		{{> sidebar}}

@@ -77,6 +77,9 @@ keystone.set('cloudinary secure', true);
 keystone.set('mandrill api key', process.env.MANDRILL_APIKEY);
 keystone.set('mandrill username', process.env.MANDRILL_USERNAME);
 
+//Setup stripe tokens 
+keystone.set('stripe keys',{pubKey: process.env.STRIPE_PUBKEY, privKey: process.env.STRIPE_KEY});
+
 // S3 configuration for hosted file storage
 keystone.set('s3 config', { bucket: process.env.S3_BUCKET_NAME, key: process.env.S3_KEY, secret: process.env.S3_SECRET });
 

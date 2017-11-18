@@ -8,8 +8,8 @@
   },
   "dependencies": {
     "async": "^2.5.0",
-    "browserify": "^14.3.0",
-    "cloudinary": "~1.9.0",
+    "browserify": "^14.5.0",
+    "cloudinary": "~1.9.1",
     "del": "^3.0.0",
     "dotenv": "^4.0.0",
     "express-handlebars": "~3.0.0",
@@ -27,15 +27,14 @@
     "gulp-sourcemaps": "^2.6.1",
     "gulp-uglify": "^3.0.0",
     "gulp-watch": "~4.3.11",
-    "handlebars": "~4.0.10",
+    "handlebars": "~4.0.11",
     "keystone": "https://github.com/keystonejs/keystone.git#c38b366c7b1bf01448c8ece7c36e1bb6eb195186",
     "moment": "~2.19.1",
     "mongoose-simple-random": "^0.4.1",
-    "newrelic": "^2.2.2",
+    "newrelic": "^2.3.1",
     "node-sass": "^4.5.3",
     "node-sass-middleware": "^0.11.0",
-    "q": "^1.5.0",
-    "stripe": "^5.1.1",
+    "stripe": "^5.2.0",
     "underscore": "~1.8.3"
   },
   "engines": {
@@ -50,7 +49,7 @@
   "devDependencies": {
     "chai": "^4.1.2",
     "mocha": "^4.0.1",
-    "sinon": "^4.0.1",
+    "sinon": "^4.0.2",
     "sinon-chai": "^2.14.0"
   }
 }

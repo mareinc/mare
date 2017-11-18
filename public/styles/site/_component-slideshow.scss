@@ -1,24 +1,20 @@
 .slideshow-container {
-	margin: -2.2em -0.75em -0 -0.75em;
+	margin: -1em -0.75em -0 -0.75em;
 
 	@media all and ( min-width: 655px ) {
-		margin-top: 0.8em;
+		margin-top: 1.9em;
 	}
 
 	@media all and ( min-width: 660px ) {
-		margin-top: -1.7em;
+		margin-top: -0.6em;
 	}
 
 	@media all and ( min-width: 765px ) {
-		margin-top: -2.7em;
+		margin-top: -1.5em;
 	}
 
 	@media all and ( min-width: 800px ) {
-		margin-top: -2em;
-	}
-
-	@media all and ( min-width: 850px ) {
-		margin-top: -2.1em;
+		margin-top: -0.9em;
 	}
 }
 
@@ -37,12 +33,12 @@
 	text-shadow: 0 2px 10px $gray;
 	width: 75%;
 
-	@media all and (min-width: 660px) {
+	@media all and ( min-width: 660px ) {
 		left: 0.75em;
 		top: 50%;
 	}
 
-	@media all and (min-width: 850px) {
+	@media all and ( min-width: 850px ) {
 		left: 1.5em;
 		top: 30%;
 		width: 60%;
@@ -53,11 +49,11 @@
 	font-size: 1.6875em; /* 27px */
 	margin-bottom: 10px;
 
-	@media all and (min-width: 660px) {
+	@media all and ( min-width: 660px ) {
 		font-size: 1.875em; /* 30px */
 	}
 
-	@media all and (min-width: 850px) {
+	@media all and ( min-width: 850px ) {
 		font-size: 2.25em; /* 36px */
 	}
 }
@@ -67,11 +63,11 @@
 	margin-left: 1.5em;
 	margin-bottom: 10px;
 
-	@media all and (min-width: 660px) {
+	@media all and ( min-width: 660px ) {
 		font-size: 1.3125em; /* 21px */
 	}
 
-	@media all and (min-width: 850px) {
+	@media all and ( min-width: 850px ) {
 		font-size: 1.6875em; /* 27px */
 	}
 }
@@ -79,7 +75,4 @@
 /* TODO: remove this component in lieu of the tagline */
 .slideshow__learn-more {
 	display: none;
-	// font-size: 1em;
-	// font-weight: 400;
-	// margin-left: 1.75em;
 }

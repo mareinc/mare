@@ -1,4 +1,5 @@
 /* TODO: Placed up at the top because this will become the standard button style */
+/* TODO: #25| subtask update all buttons on the page to use the .button styles */
 .button {
 	padding: 1em;
 	border-radius: 2px;
@@ -6,7 +7,6 @@
 	margin-left: 1%; /* these are here because buttons in button groups squish together // TODO: find a better way */
 	margin-right: 1%;
 	min-width: 8em;
-	/*box-shadow: 0 5px 11px 0 rgba(0, 0, 0, 0.18), 0 4px 15px 0 rgba(0, 0, 0, 0.15);*/
 	transition: 0.5s ease;
 	font-size: 0.9em;
 
@@ -20,6 +20,10 @@
 
 	&--large {
 		width: 11em;
+	}
+
+	&--extra-large {
+		width: 18em;
 	}
 
 	&--thin {
@@ -68,6 +72,10 @@
 		color: $button-text-color-2;
 		background-color: $button-background-color-5;
 		cursor: default;
+
+		&:hover {
+			background-color: $button-background-color-5;
+		}
 	}
 
 	& a {
@@ -81,6 +89,7 @@
 	max-width: 9em;
     text-align: center;
 }
+
 .file-upload-button input.file-upload {
 	position: absolute;
 	top: 0;
