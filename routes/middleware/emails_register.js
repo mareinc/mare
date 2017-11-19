@@ -68,9 +68,6 @@ exports.sendThankYouEmailToUser = ( staffContactInfo , userEmail, userType, veri
 				email 	: 'admin@adoptions.io'
 			},
 			subject       		: 'thank you for registering',
-			isSiteVisitor 		: userType === 'site visitor',
-			isSocialWorker		: userType === 'social worker',
-			isFamily      		: userType === 'family',
 			emailSubject		: `${ userType } registration question`,
 			staffContactEmail	: staffContactInfo.email,
 			staffContactName	: staffContactInfo.name,

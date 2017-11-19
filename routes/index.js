@@ -8,6 +8,7 @@ const keystone					= require( 'keystone' ),
 	  registrationMiddleware	= require( './middleware/service_register' ),
 	  accountMiddleware			= require( './middleware/service_account' ),
 	  eventMiddleware			= require( './middleware/middleware_event' ),
+	  accountVerificationService= require('./middleware/service_account-verification');
 	  importRoutes				= keystone.importer( __dirname );
 
 // common middleware
@@ -82,4 +83,8 @@ exports = module.exports = app => {
 	app.post( '/submit-information-request'				, formService.submitInformationRequest );
 	app.post( '/social-worker-register-child'			, childService.registerChild );
 	app.post( '/social-worker-register-family'			, familyService.registerFamily );
+
+
+	//#126 Adding path for verification code after user registers
+	app.get('/verifyAccount'							, accountVerificationService);
 };
