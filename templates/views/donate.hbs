@@ -11,10 +11,10 @@
 		<div class="selection-group__content">
 			<span class="selection-group__header-text">Guarantee your support to help children in need. Recurring donations are the best way to give steady support</span>
 			<div id="donation-duration-button-group" class="button-group button-group--space-between button-group--large-margin-above">
-				<button class="toggle-button toggle-button--quarter">Just Once</button>
-				<button class="toggle-button toggle-button--quarter">Monthly</button>
-				<button class="toggle-button toggle-button--quarter">Bi-Annually</button>
-				<button class="toggle-button toggle-button--quarter">Annually</button>
+				<button class="toggle-button toggle-button--quarter" data-donation-interval="{{donationPlans.onetime.interval_count}}" >Just Once</button>
+				<button class="toggle-button toggle-button--quarter" data-donation-interval="{{donationPlans.monthly.interval_count}}">Monthly</button>
+				<button class="toggle-button toggle-button--quarter" data-donation-interval="{{donationPlans.semiannual.interval_count}}">Bi-Annually</button>
+				<button class="toggle-button toggle-button--quarter" data-donation-interval="{{donationPlans.annual.interval_count}}">Annually</button>
 			</div>
 		</div>
 
@@ -55,7 +55,9 @@
 
 	</section>
 	
-	{{#unless user}}
+	{{#if user}}
+	<input type="hidden" id="donation-name-input" value="{{user.name.full}}">
+	{{else}}
 	<section class="donations-page__selection-group">
 
 		<span class="selection-group__number">4.</span>
@@ -67,7 +69,7 @@
 		</div>
 
 	</section>
-	{{/unless}}
+	{{/if}}
 
 	<div class="button-group button-group--centered button-group--medium-margin-below">
 		<button id="donate-button" class="button button--disabled button--large button--green">Place Donation</button>

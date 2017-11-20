@@ -1,27 +1,33 @@
 const keystone	= require( 'keystone' ),
 	  moment	= require( 'moment' ),
+	  stripe	= require( 'stripe' )( process.env.STRIPE_SECRET_API_KEY_TEST ),
 	  Donation	= keystone.list( 'Donation' );
-
-const stripeKey = keystone.get('stripe keys').privKey;
-const stripe = require('stripe')(stripeKey);
-
+	  
 /* define subscription plan types as per stripe API: https://stripe.com/docs/api#create_plan */
 const plan_types = {
+
+	onetime: {
+		id: 'one time',
+		interval: 'none',
+		interval_count: 0
+	},
 	
 	monthly: {
 		id: 'monthly',
-		interval: 'month'
+		interval: 'month',
+		interval_count: 1
 	},
 
 	annual: {
 		id: 'annual',
-		interval: 'year'
+		interval: 'year',
+		interval_count: 12
 	},
 
 	semiannual: {
 		id: 'semiannual',
 		interval: 'month',
-		interval_count: '6'  /* interval_count: The number of intervals between each subscription billing. 
+		interval_count: 6  /* interval_count: The number of intervals between each subscription billing. 
 												For example, interval = month and interval_count = 3 bills every 3 months.
 												Maximum of one year interval allowed (1 year, 12 months, or 52 weeks).*/
 	}
@@ -60,21 +66,26 @@ function createPlan( customer, amount, plan_type ) {
 
 exports = module.exports = {
 
-	oneTimeCharge: ( stripeToken, email, amount ) => {
-	
-		return new Promise( ( resolve, reject ) => {
+	oneTimeCharge: ( req, res, next ) => {
 
-			createStripeCustomer( stripeToken, email )
-				.then( customer => createCharge( customer,amount ) )
-				.then( charge => {
-					// log the customer has been charged x 
-					resolve();
-				})
-				.catch( error => {
-					// log the error 
-					reject();   
-				});
-		});
+		console.log( req.body );
+		res.send( 'great success' );
+
+		// https://stripe.com/docs/charges
+	
+		// return new Promise( ( resolve, reject ) => {
+
+		// 	createStripeCustomer( stripeToken, email )
+		// 		.then( customer => createCharge( customer, amount ) )
+		// 		.then( charge => {
+		// 			// log the customer has been charged x 
+		// 			resolve();
+		// 		})
+		// 		.catch( error => {
+		// 			// log the error 
+		// 			reject();   
+		// 		});
+		// });
 	},
 
 	recurringCharge: ( stripeToken, email, amount, plan_type ) => {
@@ -92,5 +103,7 @@ exports = module.exports = {
 					reject();   
 				});
 		});
-	}
+	},
+
+	PLAN_TYPES: plan_types
 };

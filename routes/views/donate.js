@@ -1,5 +1,6 @@
-const keystone		= require( 'keystone' ),
-	  pageService	= require( '../middleware/service_page' );
+const keystone			= require( 'keystone' ),
+	  pageService		= require( '../middleware/service_page' ),
+	  donationService	= require( '../middleware/service_donation' );
 
 // TODO: add code for a logged in user showing their previous donations/donation dates
 exports = module.exports = function(req, res) {
@@ -7,6 +8,9 @@ exports = module.exports = function(req, res) {
 
     const view 		= new keystone.View( req, res ),
 		  locals 	= res.locals;
+
+	// set donation interval data
+	locals.donationPlans = donationService.PLAN_TYPES;
 	
 	// fetch all data needed to render this page
 	let fetchSidebarItems = pageService.getSidebarItems();
