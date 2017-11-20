@@ -65,6 +65,8 @@ exports = module.exports = app => {
 	// user account management
 	app.get( '/account'									, middleware.requireUser, routes.views.account );
 	app.put( '/account/user-info'						, accountMiddleware.updateUser );
+	// verification code handling after user registers
+	app.get('/verifyAccount'							, accountVerificationService);
 	/* TODO: all these routes below need to be moved and prefixed with appropriate REST verbs like put */
 	// services for ajax calls
 	app.post( '/services/get-children-data'				, childService.getGalleryData );
@@ -83,8 +85,4 @@ exports = module.exports = app => {
 	app.post( '/submit-information-request'				, formService.submitInformationRequest );
 	app.post( '/social-worker-register-child'			, childService.registerChild );
 	app.post( '/social-worker-register-family'			, familyService.registerFamily );
-
-
-	//#126 Adding path for verification code after user registers
-	app.get('/verifyAccount'							, accountVerificationService);
 };

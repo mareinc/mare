@@ -43,7 +43,7 @@ exports.sendRegistrationConfirmationEmailToStaff = ( user, registrationStaffCont
 
 };
 
-exports.sendThankYouEmailToUser = ( staffContactInfo , userEmail, userType, verificationCode, host ) => {
+exports.sendThankYouEmailToUser = ( staffContactInfo = { email: 'gmoha92@gmail.com', name: 'Mohammad' } , userEmail, userType, verificationCode, host ) => {
 	
 	return new Promise( ( resolve, reject ) => {
 		// TODO: check the logic around process.env.migration, it doesn't seem to make sense

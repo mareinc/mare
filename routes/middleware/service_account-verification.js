@@ -1,7 +1,3 @@
-/*
-*   #126: User was sent a thank you email and they clicked on the email to verify their account
-*   
-*/
 const keystone 						= require( 'keystone' ),
       AccountVerificationCode		= keystone.list( 'Account Verification Code' ),
       SiteVisitor 					= keystone.list( 'Site Visitor' ),
@@ -9,54 +5,59 @@ const keystone 						= require( 'keystone' ),
 	  Family						= keystone.list( 'Family' );
 
 
-module.exports = function(req,res){
+module.exports = ( req, res ) => {
 
-    const verificationCode = req.query.verificationCode;
-    const userType         = req.query.userType;
+    const verificationCode = req.query.verificationCode,
+          userType         = req.query.userType;
 
-    if(!verificationCode || !userType){
-        //@jared: how do you want to handle this error 
-        console.error(`Account verification Error - Bad request Params -> verificationCode: ${verificationCode} , userType: ${userType}`);
-        res.status(400).send('Bad Parameters');
+    if( !verificationCode || !userType ) {
+        // log the error
+        console.error( `account verification Error - bad request paramaters -> verificationCode: ${ verificationCode }, userType: ${ userType }` );
+        // TODO: ensure the 404 page can display custom messages once it's created
+        res.status( 400 ).send( 'bad parameters' );
         return;
     }
 
-    //Now that we have the verification code we need to delete the record from the database 
-    //and set the user's is verified to true?
+    // now that we have the verification code we need to delete the record from the database 
+    // and set the user's is verified to true?
+    // @mo: yes, update the model, then on success delete the verification record
 
     AccountVerificationCode.model
         .findOne()
-        .where('code', verificationCode)
-        .exec( (err, verificationEntity) =>{
+        .where( 'code', verificationCode )
+        .exec()
+        .then( verificationEntity => {
 
-            if(err){
-                console.error(err);
-                return; 
-            }
-
-            if(!verificationEntity){
-                console.error(`Account verification Error - Could not find verification model based on verification code ${verificationCode}`);
-                res.status(404).send('Verification Record not found.');
+            if( !verificationEntity ){
+                console.error( `account verification error - could not find verification model based on verification code ${ verificationCode }` );
+                // TODO: ensure the 404 page can display custom messages once it's created
+                res.status( 404 ).send( 'verification record not found' );
                 return;
             }
             
-            //We found the verificationEntity and we want to remove it
+            // we found the verificationEntity and we want to remove it
             var userId = verificationEntity.user;
 
-            updateUser(userId, userType)
-                .then( () =>{
-
-                    //Delete the verification record 
-                    verificationEntity.remove( (err) => {
-                        if(err)
-                            console.error('Account verification Error - Could not remove the verification model entity.');
+            updateUser( userId, userType )
+                .then( () => {
+                    // delete the verification record 
+                    verificationEntity.remove( err => {
+                        if( err )
+                            console.error( 'account verification error - could not remove the verification model entity' );
                     });
-                    //@jared I would like to either create a view or redirect to the main page and show flash message
-                    res.status(200).send('Hello Jared Please let me setup a view or a flash message? Maybe? Hmmmmm.....');
+                    // @mo, I'd recommend creating a flash message, then redirecting to the home page
+                    req.flash( 'success', { title: 'Your account has been verified',
+                    detail: 'put any additional details here if you want, otherwise remove the details attribute' } );
+
+                    res.status( 200 ).send( 'Hello Jared Please let me setup a view or a flash message? Maybe? Hmmmmm.....' );
                 })  
                 .catch( () =>{
-                    console.error('Account verification Error - could not update the user field');
+                    console.error( 'account verification Error - could not update the user field' );
                 });
+        }, err => {
+            console.error( 'error processing verification email' )
+            console.error( err );
+
         });
 };
 
@@ -67,37 +68,39 @@ module.exports = function(req,res){
  *              userType - MARE user type 
  *  This function updates the isVerified field of the user 
  */
-function updateUser(userId, userType){
+function updateUser( userId, userType ){
 
-    return new Promise( (resolve, reject) =>{
+    return new Promise( ( resolve, reject ) =>{
 
-        var model;
+        let model;
 
-        if(userType === 'site visitor')
-            model = SiteVisitor.model;
-        else if(userType === 'family')
-            model = Family.model;
-        else
-            model = SocialWorker.model;
+        switch( userType ) {
+            case 'site visitor' : model = SiteVisitor.model; break;
+            case 'family'       : model = Family.model; break;
+            case 'social worker': model = SocialWorker.model; break;
+            default             : model = SiteVisitor.model;
+        }
 
-        model.findById(userId)
-            .exec( (err, user) =>{
-                if(err){
-                    console.error(`Account Verification Error - Could not find user ${userId}`);
-                    reject(err);
-                }
-
-                //Set the user to verified
+        model.findById( userId )
+            .exec()
+            .then( user => {
+                // set the user to verified
                 user.permissions.isVerified = true;
-                //Save user 
-                user.save( (err) => {
-                    if(err){
-                        console.error(`Account Verification Error - Could not save updated user ${userId}`);
+                // save user 
+                user.save( err => {
+                    if( err ) {
+                        console.error( `account verification error - could not save updated user ${ userId }` );
                         reject();
                     }
                 });
                 
                 resolve();
+
+            }, err => {
+                if( err ){
+                    console.error( `account verification error - could not find user ${ userId }` );
+                    reject( err );
+                }
             });
 
     });
