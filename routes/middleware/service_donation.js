@@ -3,11 +3,11 @@ const keystone	= require( 'keystone' ),
 	  stripe	= require( 'stripe' )( process.env.STRIPE_SECRET_API_KEY_TEST ),
 	  Donation	= keystone.list( 'Donation' );
 	  
-/* define subscription plan types as per stripe API: https://stripe.com/docs/api#create_plan */
+// define the various donation plan types ( stripe plans are used for recurring donations )
 const plan_types = {
 
 	onetime: {
-		id: 'one time',
+		id: 'onetime',
 		interval: 'none',
 		interval_count: 0
 	},
@@ -20,7 +20,7 @@ const plan_types = {
 
 	annual: {
 		id: 'annual',
-		interval: 'year',
+		interval: 'month',
 		interval_count: 12
 	},
 
@@ -33,26 +33,30 @@ const plan_types = {
 	}
 };
 
-// some helper functions
-function createStripeCustomer( stripeToken, email ) {
-	
-	// create stripe customer
-	return stripe.customers.create({
-			email: email, 
-			source: stripeToken
+// process a one-time donation via the Stripe Charge API
+function oneTimeDonation( donationData ) {
+
+	return new Promise( ( resolve, reject ) => {
+
+		stripe.charges.create({
+			amount: 	donationData.amount,
+			currency: 	'usd',
+			source: 	donationData.token
+		}, 
+		function( error, charge ) {
+
+			if ( error ) {
+
+				reject( error );
+			} else {
+
+				resolve( charge );
+			}
+		});
 	});
 }
 
-function createCharge( customer, amount ) {
-
-	return stripe.charges.create({
-		amount: amount,
-		currency: 'usd',
-		customer: customer.id
-	});
-}
-
-function createPlan( customer, amount, plan_type ) {
+function recurringDonation( customer, amount, plan_type ) {
 
 	return stripe.plans.create({
 		amount: amount,
@@ -64,46 +68,91 @@ function createPlan( customer, amount, plan_type ) {
 	});
 }
 
+// determines which type of charge to create based on the donation frequency
+function setDonationType( donationFrequency ) {
+
+	// if the donation frequency is greater than zero, it is a recurring charge
+	if ( donationFrequency > 0 ) {
+
+		return recurringDonation;
+	
+	// if the frequency is not greater than zero, it is a one-time charge
+	} else {
+
+		return oneTimeDonation;
+	}
+}
+
+// save the donation details in a Donation model
+function saveDonation( user, donationData, stripeChargeID  ) {
+
+	return new Promise( ( resolve, reject ) => {
+
+		// create new Donation model and pre-fill with donation data
+		var donation = new Donation.model({
+			date: 					Date.now(),
+			amount: 				donationData.amount / 100,
+			onBehalfOf:				donationData.honoree,
+			stripeTransactionID:	stripeChargeID
+		});
+
+		// if the donator is logged in, add user details
+		if ( user ) {
+
+			donation.isRegistered = true;
+
+		// if the donator is not logged in, try to add name details
+		} else {
+
+			donation.isRegistered = false;
+			donation.unregisteredUser = donationData.donator;
+		}
+
+		// save the Donation model to the db
+		donation.save( error => {
+
+			if ( error ) {
+
+				reject( error );
+			} else {
+
+				resolve( donation );
+			}
+		});
+	});
+}
+
 exports = module.exports = {
 
-	oneTimeCharge: ( req, res, next ) => {
+	// processes a donation by creating CC charge via Stripe API
+	// saves the donation and processing details in a Donation model
+	processDonation: ( req, res, next ) => {
 
-		console.log( req.body );
-		res.send( 'great success' );
+		// get donation data from request body
+		var donationData = req.body;
 
-		// https://stripe.com/docs/charges
-	
-		// return new Promise( ( resolve, reject ) => {
+		// parse numeric fields
+		donationData.amount = parseInt( donationData.amount );
+		donationData.frequency = parseInt( donationData.frequency );
 
-		// 	createStripeCustomer( stripeToken, email )
-		// 		.then( customer => createCharge( customer, amount ) )
-		// 		.then( charge => {
-		// 			// log the customer has been charged x 
-		// 			resolve();
-		// 		})
-		// 		.catch( error => {
-		// 			// log the error 
-		// 			reject();   
-		// 		});
-		// });
+		// determine which type of donation payment plan to generate based on the donation frequency 
+		var processDonationPayment = setDonationType( donationData.frequency );
+
+		// process the donation
+		processDonationPayment( donationData )
+			.then( stripeChargeResponse => saveDonation( req.user, donationData, stripeChargeResponse.id ) )
+			.then( dbResponse => {
+
+				console.log( dbResponse );
+				res.send( 'success' );
+			})
+			.catch( error => {
+
+				console.log( error );
+				res.send( error );	
+			});
 	},
-
-	recurringCharge: ( stripeToken, email, amount, plan_type ) => {
 	
-		return new Promise( ( resolve,reject ) => {
-
-			createStripeCustomer( stripeToken, email )
-				.then( customer => createPlan( customer,amount,plan_type ) )
-				.then( plan => {
-					//Log the plan has been created and is ready to be used
-					resolve();
-				})
-				.catch( error => {
-					//Log the error 
-					reject();   
-				});
-		});
-	},
-
+	// plan types constants
 	PLAN_TYPES: plan_types
 };
