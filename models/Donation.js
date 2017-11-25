@@ -15,6 +15,7 @@ Donation.add({
 	date: { type: Types.Date, label: 'date', format: 'MM/DD/YYYY', required: true, initial: true },
 	amount: { type: Types.Money, format: '$0,0.00', label: 'amount', required: true, initial: true },
 	stripeTransactionID: { type: Types.Text, label: 'stripe transaction ID', required: true, initial: true, noedit: true },
+	isSubscription: { type: Types.Boolean, label: ' is donation repeating', required: true, initial: true, noedit: true },
 
 	isRegistered: { type: Types.Boolean, label: 'is a registered user', default: true, required: true, initial: true },
 	userType: { type: Types.Select, label: 'user type', options: 'site visitor, social worker, family, admin', dependsOn: { isRegistered: true }, filters: { isActive: true }, initial: true },

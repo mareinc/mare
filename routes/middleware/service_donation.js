@@ -24,12 +24,10 @@ const plan_types = {
 		interval_count: 12
 	},
 
-	semiannual: {
-		id: 'semiannual',
+	biannual: {
+		id: 'biannual',
 		interval: 'month',
-		interval_count: 6  /* interval_count: The number of intervals between each subscription billing. 
-												For example, interval = month and interval_count = 3 bills every 3 months.
-												Maximum of one year interval allowed (1 year, 12 months, or 52 weeks).*/
+		interval_count: 6
 	}
 };
 
@@ -39,11 +37,10 @@ function oneTimeDonation( donationData ) {
 	return new Promise( ( resolve, reject ) => {
 
 		stripe.charges.create({
-			amount: 	donationData.amount,
+			amount: 	donationData.amountPennies,
 			currency: 	'usd',
 			source: 	donationData.token
-		}, 
-		function( error, charge ) {
+		}, function( error, charge ) {
 
 			if ( error ) {
 
@@ -56,19 +53,27 @@ function oneTimeDonation( donationData ) {
 	});
 }
 
-function recurringDonation( customer, amount, plan_type ) {
+// process a recurring donation using the Stripe Customer, Plan, and Subscription APIs
+function recurringDonation( donationData ) {
 
-	return stripe.plans.create({
-		amount: amount,
-		name: plan_type.id,
-		id: plan_type.id,
-		currency: 'usd',
-		interval: plan_type.interval,
-		interval_count: plan_type.interval_count ? plan_type.interval_count : 1
+	return new Promise( ( resolve, reject ) => {
+
+		// create a new stripe customer using the donator's email
+		createCustomer( donationData )
+			.then( customer => createPlan( customer, donationData ) )
+			.then( plan => createSubscription( plan ) )
+			.then( subscription => {
+
+				resolve( subscription );
+			})
+			.catch( error => {
+
+				reject( error );
+			});
 	});
 }
 
-// determines which type of charge to create based on the donation frequency
+// determine which type of charge to create based on the donation frequency
 function setDonationType( donationFrequency ) {
 
 	// if the donation frequency is greater than zero, it is a recurring charge
@@ -84,16 +89,17 @@ function setDonationType( donationFrequency ) {
 }
 
 // save the donation details in a Donation model
-function saveDonation( user, donationData, stripeChargeID  ) {
+function saveDonation( user, donationData, stripeTransactionID  ) {
 
 	return new Promise( ( resolve, reject ) => {
 
 		// create new Donation model and pre-fill with donation data
 		var donation = new Donation.model({
 			date: 					Date.now(),
-			amount: 				donationData.amount / 100,
+			amount: 				donationData.amountDollars,
 			onBehalfOf:				donationData.honoree,
-			stripeTransactionID:	stripeChargeID
+			isSubscription:			donationData.frequency > 0,
+			stripeTransactionID:	stripeTransactionID
 		});
 
 		// if the donator is logged in, add user details
@@ -122,25 +128,135 @@ function saveDonation( user, donationData, stripeChargeID  ) {
 	});
 }
 
+// create a stripe customer
+function createCustomer( donationData ) {
+
+	return new Promise( ( resolve, reject ) => {
+
+		stripe.customers.create({
+			email: donationData.email,
+			source: donationData.token
+		}, function( error, customer ) {
+
+			if ( error ) {
+
+				reject( error );
+			} else {
+
+				resolve( customer );
+			}
+		});
+	});
+
+
+}
+
+// create a stripe billing plan
+// plans describe the terms of Subscriptions, which allow donators to schedule repeat donations
+function createPlan( customer, donationData ) {
+
+	return new Promise( ( resolve, reject ) => {
+
+		// determine plan name based on donation amount and frequency
+		var planName;
+		// format the donation amount for the plan name text
+		var usdFormatter = new Intl.NumberFormat( 'en-US', { style: 'currency', currency: 'USD' } );
+		var donationAmountFormatted = usdFormatter.format( donationData.amountDollars );
+		
+		// set the plan name with frequency and amount
+		switch ( donationData.frequency ) {
+
+			case 1:
+				planName = 'Monthly Donation - ' + donationAmountFormatted;
+				break;
+			case 6:
+				planName = 'Bi-Annual Donation - ' + donationAmountFormatted;
+				break;
+			case 12:
+				planName = 'Annual Donation - ' + donationAmountFormatted;
+				break;
+		}
+
+		// create the plan
+		stripe.plans.create({
+			name: planName,
+			id: 'plan_' + donationData.amountPennies + '_' + customer.id,
+			interval: 'month',
+			interval_count: donationData.frequency,
+			amount: donationData.amountPennies,
+			currency: 'usd'
+			}, function( error, plan ) {
+
+				if ( error ) {
+
+					reject( error );
+				} else {
+
+					// add customer id to plan object so it is accessible in the create subscription function
+					plan.customer = customer;
+
+					resolve( plan );
+				}
+		});
+	});
+
+
+}
+
+// subscripe a customer to a payment plan
+// subscriptions represent recurring donations
+function createSubscription( plan ) {
+
+	return new Promise( ( resolve, reject ) => {
+
+		stripe.subscriptions.create({
+			customer: plan.customer.id,
+			items: [ { plan: plan.id } ]
+		}, function( error, subscription ) {
+
+			if ( error ) {
+
+				reject( error );
+			} else {
+
+				resolve( subscription );
+			}
+		});
+	});
+}
+
 exports = module.exports = {
 
 	// processes a donation by creating CC charge via Stripe API
 	// saves the donation and processing details in a Donation model
-	processDonation: ( req, res, next ) => {
+	processDonation: function processDonation( req, res, next ) {
 
 		// get donation data from request body
-		var donationData = req.body;
-
-		// parse numeric fields
-		donationData.amount = parseInt( donationData.amount );
-		donationData.frequency = parseInt( donationData.frequency );
+		var donationData = {
+			// donation amount in pennies ( stripe requires amounts in the smallest denomination possible )
+			amountPennies: req.body.amount,
+			// donation amount in dollars
+			amountDollars: req.body.amount / 100,
+			// donation frequency
+			frequency: req.body.frequency,
+			// donator name
+			donator: req.body.donator,
+			// donation in the name of
+			honoree: req.body.honoree,
+			// stripe charge auth token
+			token: req.body.token.id,
+			// stripe charge email
+			email: req.body.token.email
+		};
 
 		// determine which type of donation payment plan to generate based on the donation frequency 
 		var processDonationPayment = setDonationType( donationData.frequency );
 
-		// process the donation
+		// process the donation via the appropriate stripe payment API ( depending on payment plan, determined in the previous step )
 		processDonationPayment( donationData )
-			.then( stripeChargeResponse => saveDonation( req.user, donationData, stripeChargeResponse.id ) )
+			// save the donation data to the MARE db as a Donation model
+			.then( stripeTransactionResponse => saveDonation( req.user, donationData, stripeTransactionResponse.id ) )
+			// send a success message to the user
 			.then( dbResponse => {
 
 				console.log( dbResponse );
@@ -153,6 +269,57 @@ exports = module.exports = {
 			});
 	},
 	
+	validateDonationRequest: function validateDonationRequest( req, res, next ) {
+
+		// validation error flag
+		var validationError = false;
+
+		// convert donation amount to a number
+		var donationAmount = Number( req.body.amount );
+		// test to ensure donationamount is a valid number ( positive, finite, !NaN )
+		if ( Number.isFinite( donationAmount ) ) {
+			
+			req.body.amount = donationAmount;
+		} else {
+			
+			validationError = true;
+			res.send( 'Donation amount is not a valid number.' );
+			return;
+		}
+
+		// convert donation frequency to a number
+		var donationFrequency = Number( req.body.frequency );
+		// test to ensure donation frequency is a valid number ( positive, finite, !NaN )
+		if ( Number.isFinite( donationFrequency ) ) {
+
+			req.body.frequency = donationFrequency;
+		} else {
+			
+			validationError = true;
+			res.send( 'Donation frequency is not a valid number.' );
+			return;
+		}
+
+		// trim whitespace from the donator name
+		var donatorName = req.body.donator.trim();
+		// ensure a donator name was entered
+		if ( !donatorName ) {
+
+			// if there is no name, or the name is left empty, label the donator as 'Anonymous'
+			req.body.donator = 'Anonymous';
+		} else {
+
+			req.body.donator = donatorName;
+		}
+
+		// if there are no validation errors, continue middleware execution
+		if ( !validationError ) {
+
+			next();
+		}
+
+	},
+
 	// plan types constants
 	PLAN_TYPES: plan_types
 };

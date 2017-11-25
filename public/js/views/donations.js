@@ -188,7 +188,7 @@
 					// name of donator
 					donator: $donatorName.val(),
 					// Stripe token
-					token: token.id
+					token: token
 				};
 
 				// post the donation to the charge endpoint for payment processing
