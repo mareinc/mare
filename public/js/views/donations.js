@@ -194,7 +194,21 @@
 				// post the donation to the charge endpoint for payment processing
 				$.post( '/process-donation', data, function( responseData ) {
 
-					console.log( responseData );
+					// handle error responses
+					if ( responseData.status === 'error' ) {
+						
+						alert( responseData.message );
+						
+					// handle success responses
+					} else if ( responseData.status === 'success' ) {
+
+						console.log( responseData.message );
+
+					// handle unexpected responses
+					} else {
+
+						console.log( 'something went wrong, unhandled response' );
+					}
 				});
 			}
 

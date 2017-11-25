@@ -259,16 +259,21 @@ exports = module.exports = {
 			// send a success message to the user
 			.then( dbResponse => {
 
-				console.log( dbResponse );
-				res.send( 'success' );
+				res.send({
+					status: 'success',
+					message: 'donation succesfully processed'
+				});
 			})
 			.catch( error => {
 
-				console.log( error );
-				res.send( error );	
+				res.send({
+					status: 'error',
+					message: error.message
+				});	
 			});
 	},
 	
+	// validate the donation request body before processing payment
 	validateDonationRequest: function validateDonationRequest( req, res, next ) {
 
 		// validation error flag
@@ -283,20 +288,20 @@ exports = module.exports = {
 		} else {
 			
 			validationError = true;
-			res.send( 'Donation amount is not a valid number.' );
+			res.send( generateError( 'Donation amount is not a valid number.' ) );
 			return;
 		}
 
 		// convert donation frequency to a number
 		var donationFrequency = Number( req.body.frequency );
 		// test to ensure donation frequency is a valid number ( positive, finite, !NaN )
-		if ( Number.isFinite( donationFrequency ) ) {
+		if ( Number.isFinite( donationFrequency ) && isValidDonationFrequency( donationFrequency ) ) {
 
 			req.body.frequency = donationFrequency;
 		} else {
 			
 			validationError = true;
-			res.send( 'Donation frequency is not a valid number.' );
+			res.send( generateError( 'Donation frequency does not match any donation plan.' ) );
 			return;
 		}
 
@@ -318,6 +323,30 @@ exports = module.exports = {
 			next();
 		}
 
+		// helper to generate error response
+		function generateError( message ) {
+
+			return {
+				status: 'error',
+				message
+			};
+		}
+
+		// helper to validate that the specified frequency exists as an interval in a plan type
+		function isValidDonationFrequency( frequency ) {
+
+			for ( let plan in plan_types ) {
+
+				if ( plan_types[plan].interval_count === frequency ) {
+
+					// if the donation frequency matches any plan interval it is valid
+					return true;
+				}
+			}
+
+			// if the donation frequency is not matched it is not valid
+			return false;
+		}
 	},
 
 	// plan types constants
