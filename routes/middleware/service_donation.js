@@ -34,6 +34,13 @@ const plan_types = {
 	}
 };
 
+// define the various response message types
+const message_types = {
+
+	ERROR: 'error',
+	SUCCESS: 'success',
+};
+
 // process a one-time donation via the Stripe Charge API
 function oneTimeDonation( donationData ) {
 
@@ -229,7 +236,7 @@ function createSubscription( plan ) {
 }
 
 // generates a flash message to display the donation transaction status
-function generateFlashMessage( title, message ) {
+function generateFlashMessage( messageType, title, message ) {
 	
 	// get the relative path to the flash-messages hbs template partial
 	var templatePath = __dirname + '/../../templates/views/partials/flash-messages.hbs';
@@ -242,13 +249,14 @@ function generateFlashMessage( title, message ) {
 			// generate the markup for the flash messages
 			if ( !error ) {
 
-				// create the flash message to display
-				var messages = {
-					success: [{
-						title,
-						detail: message
-					}]
-				};
+				// create the flash messages object
+				var messages = {};
+				
+				// add the message type
+				messages[ messageType ] = [{
+					title,
+					detail: message
+				}];
 
 				// get the contents of the file as a string
 				var templateString = data.toString();
@@ -301,7 +309,7 @@ exports = module.exports = {
 			// save the donation data to the MARE db as a Donation model
 			.then( stripeTransactionResponse => saveDonation( req.user, donationData, stripeTransactionResponse.id ) )
 			// send a success message to the user
-			.then( dbResponse => generateFlashMessage( 'Success!', 'Thank you for your donation, payment has been processed succesfully.' ) )
+			.then( dbResponse => generateFlashMessage( message_types.SUCCESS, 'Success!', 'Thank you for your donation, payment has been processed succesfully.' ) )
 			// generate a success message to display on the front end
 			.then( flashMessageMarkup => {
 
@@ -313,7 +321,7 @@ exports = module.exports = {
 			.catch( error => {
 
 				// generate an error message to display on the front end
-				generateFlashMessage( 'Error!', error.message )
+				generateFlashMessage( message_types.ERROR, 'Error!', error.message )
 					.then( flashMessageMarkup => {
 
 						res.send({
