@@ -1,7 +1,10 @@
-const keystone	= require( 'keystone' ),
-	  moment	= require( 'moment' ),
-	  stripe	= require( 'stripe' )( process.env.STRIPE_SECRET_API_KEY_TEST ),
-	  Donation	= keystone.list( 'Donation' );
+const keystone		= require( 'keystone' ),
+	  moment		= require( 'moment' ),
+	  fs			= require( 'fs' ),
+	  handlebars	= require( 'handlebars' ),	
+	  helpers       = require( '../../templates/views/helpers/index' )(),
+	  stripe		= require( 'stripe' )( process.env.STRIPE_SECRET_API_KEY_TEST ),
+	  Donation		= keystone.list( 'Donation' );
 	  
 // define the various donation plan types ( stripe plans are used for recurring donations )
 const plan_types = {
@@ -225,6 +228,47 @@ function createSubscription( plan ) {
 	});
 }
 
+// generates a flash message to display the donation transaction status
+function generateFlashMessage( title, message ) {
+	
+	// get the relative path to the flash-messages hbs template partial
+	var templatePath = __dirname + '/../../templates/views/partials/flash-messages.hbs';
+
+	return new Promise( ( resolve, reject ) => {
+
+		// read the hbs template
+		fs.readFile( templatePath, ( error, data ) => {
+
+			// generate the markup for the flash messages
+			if ( !error ) {
+
+				// create the flash message to display
+				var messages = {
+					success: [{
+						title,
+						detail: message
+					}]
+				};
+
+				// get the contents of the file as a string
+				var templateString = data.toString();
+				// compile the template string
+				var template = handlebars.compile( templateString );
+				// register the flashMessages helper
+				handlebars.registerHelper( 'flashMessages', helpers.flashMessages );
+
+				// interpolate the template with flash message data
+				var html = template( { messages } );
+				resolve( html );
+
+			// reject with error
+			} else {
+				reject( error );
+			}
+		});
+	});
+}
+
 exports = module.exports = {
 
 	// processes a donation by creating CC charge via Stripe API
@@ -257,19 +301,26 @@ exports = module.exports = {
 			// save the donation data to the MARE db as a Donation model
 			.then( stripeTransactionResponse => saveDonation( req.user, donationData, stripeTransactionResponse.id ) )
 			// send a success message to the user
-			.then( dbResponse => {
+			.then( dbResponse => generateFlashMessage( 'Success!', 'Thank you for your donation, payment has been processed succesfully.' ) )
+			// generate a success message to display on the front end
+			.then( flashMessageMarkup => {
 
 				res.send({
 					status: 'success',
-					message: 'donation succesfully processed'
+					message: flashMessageMarkup
 				});
 			})
 			.catch( error => {
 
-				res.send({
-					status: 'error',
-					message: error.message
-				});	
+				// generate an error message to display on the front end
+				generateFlashMessage( 'Error!', error.message )
+					.then( flashMessageMarkup => {
+
+						res.send({
+							status: 'error',
+							message: flashMessageMarkup
+						});	
+					});
 			});
 	},
 	

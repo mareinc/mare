@@ -14,6 +14,7 @@
 
 		initialize: function initialize() {
 
+			this.$contentBody					= $( '.content__body' );
 			this.$donationDurationButtonGroup	= $( '#donation-duration-button-group' );
 			this.$donationAmountButtonGroup		= $( '#donation-amount-button-group' );
 			this.$donationAmountInputLabel		= $( '.donations__input-label' );
@@ -174,6 +175,8 @@
 			var $donationHonoree = this.$donationHonoreeField;
 			// get donators name
 			var $donatorName = this.$donatorNameField;
+			// get content body
+			var $contentBody = this.$contentBody;
 
 			function handleDonation( token ) {
 
@@ -197,12 +200,14 @@
 					// handle error responses
 					if ( responseData.status === 'error' ) {
 						
-						alert( responseData.message );
+						// display the error message to the user
+						$contentBody.prepend( responseData.message );
 						
 					// handle success responses
 					} else if ( responseData.status === 'success' ) {
-
-						console.log( responseData.message );
+						
+						// display the success message to the user
+						$contentBody.prepend( responseData.message );
 
 					// handle unexpected responses
 					} else {
