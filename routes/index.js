@@ -1,5 +1,6 @@
 const keystone					= require( 'keystone' ),
 	  childService				= require( './middleware/service_child' ),
+	  donationService			= require( './middleware/service_donation')
 	  eventService				= require( './middleware/service_event' ),
 	  familyService				= require( './middleware/service_family' ),
 	  formService				= require( './middleware/service_form' ),
@@ -60,7 +61,7 @@ exports = module.exports = app => {
 	app.get( '/mare-in-the-news/:key'					, routes.views.mareInTheNews );
 	// donations
 	app.get( '/donate'									, routes.views.donate );
-	app.post( '/charge'									, middleware.charge );
+	app.post( '/process-donation'						, donationService.validateDonationRequest, donationService.processDonation );
 	// user account management
 	app.get( '/account'									, middleware.requireUser, routes.views.account );
 	app.put( '/account/user-info'						, accountMiddleware.updateUser );

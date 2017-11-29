@@ -14,23 +14,37 @@
 
 		initialize: function initialize() {
 
+			this.$contentBody					= $( '.content__body' );
 			this.$donationDurationButtonGroup	= $( '#donation-duration-button-group' );
 			this.$donationAmountButtonGroup		= $( '#donation-amount-button-group' );
 			this.$donationAmountInputLabel		= $( '.donations__input-label' );
 			this.$donationAmountInputField		= $( '#donation-amount-input' );
 			this.$donateButton					= $( '#donate-button' );
+			this.$donationHonoreeField			= $( '#donation-in-honor-of-input' );
+			this.$donatorNameField				= $( '#donation-name-input' );
 
 			// donation variables
-			this._donationAmount 				= 0;
 			this.stripeAPIKey					= window.STRIPE_API_KEY;
+			this.donationData					= {
+				// setter to ensure all donation amounts are normalized for Stripe charges
+				setDonationAmount: function setDonationAmount( dollarAmount ) {
+
+					// multiply amount by 100 to convert dollar amounts to pennies
+					this.amount = dollarAmount * 100;
+				},
+				// normalized donation amount ( represented in pennies )
+				amount: 0,
+				// frequency of the donation in months ( 0 represents a one-time donation )
+				// see plan_types in service_donation.js for more details 
+				frequency: 0
+			};
 
 			// stripe donation popup configuration
 			this.StripeHandler = StripeCheckout.configure({
-
 				key: this.stripeAPIKey,
 				image: '/images/mare-icon.png',
 				locale: 'auto',
-				token: this.donationSubmissionHandler
+				token: this.donationSubmissionHandler()
 			});
 
 			// closes StripeHandler on page navigation
@@ -55,12 +69,14 @@
 			$target.addClass( 'toggle-button--toggled' );
 
 			if( $buttonGroup.is( '[id=donation-amount-button-group]' ) ) {
+				
 				//remove $ from button text
-				this._donationAmount = Number($target.data('value'));
+				this.donationData.setDonationAmount( Number( $target.data( 'value' ) ) );
 				this.clearDonationAmountInput();
 			}
-			else if($buttonGroup.is('[id=donation-duration-button-group]')){
-				this._donationFreq = $target.text();
+			else if( $buttonGroup.is( '[id=donation-duration-button-group]' ) ) {
+				
+				this.donationData.frequency = $target.data( 'donationInterval' );
 			}
 
 			this.checkForRequiredInfo();
@@ -106,7 +122,7 @@
 				this.$donationAmountInputLabel.addClass( 'donations__input-label--selected' );
 				this.$donationAmountInputField.addClass( 'donations__input-field--selected' );
 
-				this._donationAmount = Number( this.$donationAmountInputField.val() );
+				this.donationData.setDonationAmount( Number( this.$donationAmountInputField.val() ) );
 			} else {
 				// remove the class that adds the outline
 				this.$donationAmountInputLabel.removeClass( 'donations__input-label--selected' );
@@ -133,14 +149,17 @@
 
 		// opens the stripe donation popup and sets the charge amount to match the current donation amount
 		openDonationPopup: function openDonationPopup() {
+			
 			// if the donation button is not disabled
 			if ( !this.$donateButton.hasClass( 'button--disabled' ) ) {
-				// convert the donation amount from dollars ( $1.00 ) to pennies ( 100 )
-				var donationAmount = this._donationAmount * 100; 
+				
+				// get donation amount from view-level scope
+				var donationAmount = this.donationData.amount; 
 
+				// open the Stripe donation popup
 				this.StripeHandler.open({
 					name: 'MARE',
-					description: 'Donation Description',
+					description: 'Thank you for your donation.',
 					zipCode: true,
 					amount: donationAmount
 				});
@@ -148,9 +167,57 @@
 		},
 
 		// handles the callback from the stripe servers, passes a token to the stripe charge middleware to process the donation
-		donationSubmissionHandler: function donationSubmissionHandler( token ) {
+		donationSubmissionHandler: function donationSubmissionHandler() {
 
-			console.log( token );
+			// get donation data from view scope
+			var donationData = this.donationData;
+			// get donation honoree
+			var $donationHonoree = this.$donationHonoreeField;
+			// get donators name
+			var $donatorName = this.$donatorNameField;
+			// get content body
+			var $contentBody = this.$contentBody;
+
+			function handleDonation( token ) {
+
+				// create POST body
+				var data = {
+					// donation amount
+					amount: donationData.amount,
+					// donation frequency
+					frequency: donationData.frequency,
+					// donation honoree
+					honoree: $donationHonoree.val(),
+					// name of donator
+					donator: $donatorName.val(),
+					// Stripe token
+					token: token
+				};
+
+				// post the donation to the charge endpoint for payment processing
+				$.post( '/process-donation', data, function( responseData ) {
+
+					// handle error responses
+					if ( responseData.status === 'error' ) {
+						
+						// display the error message to the user
+						$contentBody.prepend( responseData.message );
+						
+					// handle success responses
+					} else if ( responseData.status === 'success' ) {
+						
+						// display the success message to the user
+						$contentBody.prepend( responseData.message );
+
+					// handle unexpected responses
+					} else {
+
+						console.log( 'something went wrong, unhandled response' );
+					}
+				});
+			}
+
+			return handleDonation;
 		}
 	});
 }() );

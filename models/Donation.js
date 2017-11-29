@@ -14,6 +14,8 @@ Donation.add({
 
 	date: { type: Types.Date, label: 'date', format: 'MM/DD/YYYY', required: true, initial: true },
 	amount: { type: Types.Money, format: '$0,0.00', label: 'amount', required: true, initial: true },
+	stripeTransactionID: { type: Types.Text, label: 'stripe transaction ID', required: true, initial: true, noedit: true },
+	isSubscription: { type: Types.Boolean, label: ' is donation repeating', required: true, initial: true, noedit: true },
 
 	isRegistered: { type: Types.Boolean, label: 'is a registered user', default: true, required: true, initial: true },
 	userType: { type: Types.Select, label: 'user type', options: 'site visitor, social worker, family, admin', dependsOn: { isRegistered: true }, filters: { isActive: true }, initial: true },
@@ -53,7 +55,7 @@ Donation.schema.pre( 'save', function( next ) {
 					this.name = user.name.full;
 				// otherwise, if they're a family
 				} else {
-					// TODO: This functionality is identical to that in event, pull both out and put them in the model as a virtual
+					// TODO: this functionality is identical to that in event, pull both out and put them in the model as a virtual
 					// check to see if a second contact has been filled out
 					const contact2Exists = user.contact2.name.full.length > 0;
 					// check to see if both contacts share a last name
@@ -86,9 +88,10 @@ Donation.schema.pre( 'save', function( next ) {
 	} else {
 		// set the name to whatever was filled out in the free text field
 		this.name = this.unregisteredUser;
+		next();
 	}
 });
 
-// Define default columns in the admin interface and register the model
+// define default columns in the admin interface and register the model
 Donation.defaultColumns = 'name, amount, date';
 Donation.register();
