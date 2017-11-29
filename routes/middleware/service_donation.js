@@ -103,26 +103,23 @@ function saveDonation( user, donationData, stripeTransactionID  ) {
 
 	return new Promise( ( resolve, reject ) => {
 
+		const isRegistered = !!user;
+
 		// create new Donation model and pre-fill with donation data
 		var donation = new Donation.model({
-			date: 					Date.now(),
-			amount: 				donationData.amountDollars,
-			onBehalfOf:				donationData.honoree,
-			isSubscription:			donationData.frequency > 0,
-			stripeTransactionID:	stripeTransactionID
+			date				: Date.now(),
+			amount				: donationData.amountDollars,
+			onBehalfOf			: donationData.honoree,
+			isSubscription		: donationData.frequency > 0,
+			isRegistered		: isRegistered,
+			userType			: isRegistered ? user.userType : undefined,
+			siteVisitor			: isRegistered && user.userType === 'site visitor' ? user.get( '_id' ) : undefined,
+			socialWorker		: isRegistered && user.userType === 'social worker' ? user.get( '_id' ) : undefined,
+			family				: isRegistered && user.userType === 'family' ? user.get( '_id' ) : undefined,
+			admin				: isRegistered && user.userType === 'admin' ? user.get( '_id' ) : undefined,
+			unregisteredUser	: !isRegistered ? donationData.donator : undefined,
+			stripeTransactionID	: stripeTransactionID
 		});
-
-		// if the donator is logged in, add user details
-		if ( user ) {
-
-			donation.isRegistered = true;
-
-		// if the donator is not logged in, try to add name details
-		} else {
-
-			donation.isRegistered = false;
-			donation.unregisteredUser = donationData.donator;
-		}
 
 		// save the Donation model to the db
 		donation.save( error => {
@@ -146,15 +143,9 @@ function createCustomer( donationData ) {
 		stripe.customers.create({
 			email: donationData.email,
 			source: donationData.token
-		}, function( error, customer ) {
+		}, ( error, customer ) => {
 
-			if ( error ) {
-
-				reject( error );
-			} else {
-
-				resolve( customer );
-			}
+			error ? reject( error ) : resolve( customer );
 		});
 	});
 
@@ -168,38 +159,33 @@ function createPlan( customer, donationData ) {
 	return new Promise( ( resolve, reject ) => {
 
 		// determine plan name based on donation amount and frequency
-		var planName;
+		let planName;
 		// format the donation amount for the plan name text
-		var usdFormatter = new Intl.NumberFormat( 'en-US', { style: 'currency', currency: 'USD' } );
-		var donationAmountFormatted = usdFormatter.format( donationData.amountDollars );
+		const usdFormatter				= new Intl.NumberFormat( 'en-US', { style: 'currency', currency: 'USD' } ),
+			  donationAmountFormatted	= usdFormatter.format( donationData.amountDollars );
 		
 		// set the plan name with frequency and amount
 		switch ( donationData.frequency ) {
 
-			case 1:
-				planName = 'Monthly Donation - ' + donationAmountFormatted;
-				break;
-			case 6:
-				planName = 'Bi-Annual Donation - ' + donationAmountFormatted;
-				break;
-			case 12:
-				planName = 'Annual Donation - ' + donationAmountFormatted;
-				break;
+			case 1: planName = `Monthly Donation - ${ donationAmountFormatted }`; break;
+			case 6: planName = `Bi-Annual Donation - ${ donationAmountFormatted }`; break;
+			case 12: planName = `Annual Donation - ${ donationAmountFormatted }`; break;
 		}
 
 		// create the plan
 		stripe.plans.create({
-			name: planName,
-			id: 'plan_' + donationData.amountPennies + '_' + customer.id,
-			interval: 'month',
-			interval_count: donationData.frequency,
-			amount: donationData.amountPennies,
-			currency: 'usd'
-			}, function( error, plan ) {
+				name			: planName,
+				id				: `plan_${ donationData.amountPennies }_${ customer.id }`,
+				interval		: 'month',
+				interval_count	: donationData.frequency,
+				amount			: donationData.amountPennies,
+				currency		: 'usd'
+			}, ( error, plan ) => {
 
 				if ( error ) {
 
 					reject( error );
+
 				} else {
 
 					// add customer id to plan object so it is accessible in the create subscription function
@@ -239,7 +225,7 @@ function createSubscription( plan ) {
 function generateFlashMessage( messageType, title, message ) {
 	
 	// get the relative path to the flash-messages hbs template partial
-	var templatePath = __dirname + '/../../templates/views/partials/flash-messages.hbs';
+	var templatePath = `${ __dirname }/../../templates/views/partials/flash-messages.hbs`;
 
 	return new Promise( ( resolve, reject ) => {
 
@@ -259,14 +245,15 @@ function generateFlashMessage( messageType, title, message ) {
 				}];
 
 				// get the contents of the file as a string
-				var templateString = data.toString();
+				const templateString = data.toString();
 				// compile the template string
-				var template = handlebars.compile( templateString );
+				const template = handlebars.compile( templateString );
 				// register the flashMessages helper
 				handlebars.registerHelper( 'flashMessages', helpers.flashMessages );
 
 				// interpolate the template with flash message data
-				var html = template( { messages } );
+				const html = template( { messages } );
+
 				resolve( html );
 
 			// reject with error
@@ -336,10 +323,10 @@ exports = module.exports = {
 	validateDonationRequest: function validateDonationRequest( req, res, next ) {
 
 		// validation error flag
-		var validationError = false;
+		let validationError = false;
 
 		// convert donation amount to a number
-		var donationAmount = Number( req.body.amount );
+		const donationAmount = Number( req.body.amount );
 		// test to ensure donationamount is a valid number ( positive, finite, !NaN )
 		if ( Number.isFinite( donationAmount ) ) {
 			
@@ -352,7 +339,7 @@ exports = module.exports = {
 		}
 
 		// convert donation frequency to a number
-		var donationFrequency = Number( req.body.frequency );
+		const donationFrequency = Number( req.body.frequency );
 		// test to ensure donation frequency is a valid number ( positive, finite, !NaN )
 		if ( Number.isFinite( donationFrequency ) && isValidDonationFrequency( donationFrequency ) ) {
 
@@ -365,7 +352,7 @@ exports = module.exports = {
 		}
 
 		// trim whitespace from the donator name
-		var donatorName = req.body.donator.trim();
+		const donatorName = req.body.donator.trim();
 		// ensure a donator name was entered
 		if ( !donatorName ) {
 
@@ -396,7 +383,7 @@ exports = module.exports = {
 
 			for ( let plan in plan_types ) {
 
-				if ( plan_types[plan].interval_count === frequency ) {
+				if ( plan_types[ plan ].interval_count === frequency ) {
 
 					// if the donation frequency matches any plan interval it is valid
 					return true;

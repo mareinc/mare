@@ -55,7 +55,7 @@ Donation.schema.pre( 'save', function( next ) {
 					this.name = user.name.full;
 				// otherwise, if they're a family
 				} else {
-					// TODO: This functionality is identical to that in event, pull both out and put them in the model as a virtual
+					// TODO: this functionality is identical to that in event, pull both out and put them in the model as a virtual
 					// check to see if a second contact has been filled out
 					const contact2Exists = user.contact2.name.full.length > 0;
 					// check to see if both contacts share a last name
@@ -92,6 +92,6 @@ Donation.schema.pre( 'save', function( next ) {
 	}
 });
 
-// Define default columns in the admin interface and register the model
+// define default columns in the admin interface and register the model
 Donation.defaultColumns = 'name, amount, date';
 Donation.register();
