@@ -46,7 +46,7 @@ exports = module.exports = app => {
 	app.post( '/events/unregister/:eventId'				, eventMiddleware.unregister );
 	// success stories
 	app.get( '/success-stories'							, routes.views.successStories );
-	app.get( '/success-story/:key'						, routes.views.successStory );
+	app.get( '/success-stories/:key'					, routes.views.successStory );
 	// gallery
 	app.get( '/waiting-child-profiles'					, routes.views.waitingChildProfiles );
 	// registration
@@ -55,10 +55,9 @@ exports = module.exports = app => {
 	// login / logout
 	app.get( '/logout'									, middleware.logout );
 	app.post('/login'									, middleware.login );
-	// TODO: decide if both the mare in the news routes are needed
 	// MARE in the news
 	app.get( '/mare-in-the-news'						, routes.views.mareInTheNewsStories );
-	// app.get( '/mare-in-the-news/:key'					, routes.views.mareInTheNews );
+	app.get( '/mare-in-the-news/:key'					, routes.views.mareInTheNewsStory );
 	// donations
 	app.get( '/donate'									, routes.views.donate );
 	app.post( '/process-donation'						, donationService.validateDonationRequest, donationService.processDonation );

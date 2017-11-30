@@ -40,7 +40,7 @@ exports = module.exports = ( req, res ) => {
 			// set the layout to render with the right sidebar
 			locals[ 'render-with-sidebar' ] = true;
 			// render the view using the mare-in-the-news.hbs template
-			view.render( 'mare-in-the-news' );
+			view.render( 'mare-in-the-news-stories' );
 		})
 		.catch( err => {
 			// log an error for debugging purposes

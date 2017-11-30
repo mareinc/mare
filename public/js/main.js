@@ -14,6 +14,7 @@ $(function() {
 	// TODO: ensure mangled urls route to the home page
 	switch( mare.url.siteArea ) {
 		case ''										: mare.routers.home = new mare.routers.Home();												break;
+		case 'account'              				: mare.routers.account = new mare.routers.Account();										break;
 		case 'donate'                   			: mare.routers.donations = new mare.routers.Donations();									break;
 		case 'events'                   			: mare.routers.events = new mare.routers.Events();											break;
 		case 'forms' :
@@ -25,12 +26,11 @@ $(function() {
 				case 'information-request-form'		: mare.routers.form_informationRequest = new mare.routers.Form_InformationRequest();		break;
 			}
 			break;
+		case 'mare-in-the-news'						: mare.routers.mareInTheNews = new mare.routers.MAREInTheNews;								break;
 		case 'page'                     			: mare.routers.pages = new mare.routers.Pages();											break;
-		case 'account'              				: mare.routers.account = new mare.routers.Account();										break;
 		case 'register'                 			: mare.routers.registration = new mare.routers.Registration();								break;
 		case 'steps-in-the-process'					: mare.routers.stepsInTheProcess = new mare.routers.StepsInTheProcess();					break;
 		case 'success-stories'          			: mare.routers.successStories = new mare.routers.SuccessStories();							break;
-		case 'success-story'						: mare.routers.successStories = new mare.routers.SuccessStories();							break;
 		case 'waiting-child-profiles'				: mare.routers.waitingChildProfiles = new mare.routers.WaitingChildProfiles();				break;
 	}
 	// start the backbone history state for browser navigation through backbone routes

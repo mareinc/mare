@@ -3,12 +3,21 @@
 	justify-content: center;
 }
 
+.link {
+	color: $link-color-1;
+
+	&--remove {
+		color: $link-color-2;
+	}
+}
+
 .link-separator {
 	color: $link-color-1;
     padding-left: 0.5em;
     padding-right: 0.5em;
 }
 
+// TODO: where this is implemented, the arrow is bound to text, update it so it is a standalone character after the text
 .link-arrow {
 
 	&--left {
@@ -19,7 +28,7 @@
 			display: inline-block;
 			padding: 4px;
 			margin-right: 4px;
-			transform: rotate(135deg);
+			transform: rotate( 135deg );
 		}
 	}	
 
@@ -31,15 +40,7 @@
 			display: inline-block;
 			padding: 4px;
 			margin-left: 4px;
-			transform: rotate(-45deg);
+			transform: rotate( -45deg );
 		}	
-	}
-}
-
-.link {
-	color: $link-color-1;
-
-	&--remove {
-		color: $link-color-2;
 	}
 }
