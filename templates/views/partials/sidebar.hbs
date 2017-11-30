@@ -6,7 +6,7 @@
 			<img class="card__image" src="/images/temp-children.png" alt="meet the children">	
 			<span class="card__image-text">
 				{{!-- TODO: this shouldn't be a link anymore, update with classes to style text the way the link does --}}
-				<a href="/waiting-child-profiles" class="card__image-title card__image-title--large card__image-title--centered">Meet the Children</a>
+				<span class="card__image-title card__image-title--large card__image-title--centered">Meet the Children</span>
 			</span>
 		</a>
 	</aside>
@@ -18,7 +18,7 @@
 			<span class="card__image-text">
 				<div class="card__image-description">{{{randomSuccessStory.shortContent}}}</div>
 				{{!-- TODO: this shouldn't be a link anymore, update with classes to style text the way the link does --}}
-				<a href="{{ randomSuccessStory.url }}" class="card__image-title card__image-title--right-aligned link-arrow link-arrow--right">{{ randomSuccessStory.heading }}</a>
+				<span class="card__image-title card__image-title--right-aligned link-arrow link-arrow--right">{{ randomSuccessStory.heading }}</span>
 			</span>
 		</a>
 	</aside>
@@ -31,7 +31,7 @@
 				<!-- TODO: do we need the date/time in the description? -->
 				<div class="card__image-description">{{{randomEvent.shortDescription}}} </div>
 				{{!-- TODO: this shouldn't be a link anymore, update with classes to style text the way the link does --}}
-				<a href="{{ randomEvent.url }}" class="card__image-title card__image-title--right-aligned link-arrow link-arrow--right">{{ randomEvent.name }}</a>
+				<span class="card__image-title card__image-title--right-aligned link-arrow link-arrow--right">{{ randomEvent.name }}</span>
 			</span>
 		</a>
 	</aside>
