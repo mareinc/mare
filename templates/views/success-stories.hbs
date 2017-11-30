@@ -14,11 +14,23 @@
 	</div>
 </div>
 
+{{#if hasNoSuccessStories}}
+
+<section class="card-list">
+	<div class="card card--large-padding">
+		<div class="card__details card__details--centered">
+			<p class="card__details__body">Something must have gone wrong, there are no success stories to display.</p>
+		</div>
+	</div>
+</section>
+
+{{else}}
+
 <section class="card-list">
 
-	{{#each stories}}
+	{{#each successStories}}
 
-	<div class="card card--vertical card--medium-padding">
+	<div class="card card--vertical card--medium-padding card--small-margin-below">
 		<div class="card__columns">
 			<div class="card__column card__column--left">
 				{{#if imageFeatured}}
@@ -47,3 +59,5 @@
 	{{/each}}
 
 </section>
+
+{{/if}}
