@@ -57,8 +57,8 @@ exports = module.exports = app => {
 	app.post('/login'									, middleware.login );
 	// TODO: decide if both the mare in the news routes are needed
 	// MARE in the news
-	app.get( '/mare-in-the-news'						, routes.views.mareInTheNews );
-	app.get( '/mare-in-the-news/:key'					, routes.views.mareInTheNews );
+	app.get( '/mare-in-the-news'						, routes.views.mareInTheNewsStories );
+	// app.get( '/mare-in-the-news/:key'					, routes.views.mareInTheNews );
 	// donations
 	app.get( '/donate'									, routes.views.donate );
 	app.post( '/process-donation'						, donationService.validateDonationRequest, donationService.processDonation );

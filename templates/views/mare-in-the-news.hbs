@@ -1,16 +1,56 @@
-<div class="card">
-	<p>We need to work out the language and functionality for MARE in the News pages</p>
+<div class="card card--vertical card--large-padding">
+	<div class="card-details">
+		<div class="card-details__header">MARE in the News</div>
+		<div class="card-details__body">
+			<p class="card-details__paragraph">We need to work out the introductory language for this area</p>
+		</div>
+	</div>
 </div>
 
-<div class="card">
-	<h1 class="card__title">{{ story.heading }}</h1>
-	{{#if story.imageFeatured}}
-	<img class="card__image card__image--no-margin" src="{{ story.imageFeatured }}" alt="{{ story.heading }}">
-	{{/if}}
-	<div class="card__content">
-		<article class="card__text">{{{ story.content }}}</article>
+{{#if hasNoMAREInTheNewsStories}}
+
+<section class="card-list">
+	<div class="card card--large-padding">
+		<div class="card__details card__details--centered">
+			<p class="card__details__body">Something must have gone wrong, there are no success stories to display.</p>
+		</div>
 	</div>
-	<section class="button-group button-group--horizontal button-group--space-around button-group--large-margin-above button-group--small-margin-below">
-		<button class="button button--large button--teal" data-url="/mare-in-the-news">Back to All Stories ( do we want a landing page? )</button>
-	</section>
-</div>
+</section>
+
+{{else}}
+
+<section class="card-list">
+
+	{{#each stories}}
+
+	<div class="card card--vertical card--medium-padding card--small-margin-below">
+		<div class="card__columns">
+			<div class="card__column card__column--left">
+				{{#if imageFeatured}}
+				<img class="card__image" src="{{ imageFeatured }}" alt="{{ heading }}">
+				{{/if}}
+				{{#if imageCaption}}
+				<div class="card__image-text card__image-text--centered card__image-text--smaller card__image-text--italic card__image-text--small-padding-top">{{ imageCaption }}</div>
+				{{/if}}
+			</div>
+			<div class="card__column card__column--right">
+				<div class="card__details card__details--vertical">
+
+					<span class="card-details__top-bar"></span>
+					<div class="card-details__header">{{ heading }}</div>
+					<div class="card-details__body">
+						{{{ shortContent }}}
+					</div>
+				</div>
+			</div>
+		</div>
+		<section class="button-group button-group--horizontal button-group--space-around button-group--small-margin-below">
+			<a class="link-arrow--right" href="{{ url }}">Read Full Story</a>
+		</section>
+	</div>
+
+	{{/each}}
+
+</section>
+
+{{/if}}

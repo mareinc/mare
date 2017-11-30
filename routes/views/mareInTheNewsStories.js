@@ -1,4 +1,5 @@
 const keystone 				= require( 'keystone' ),
+	  Utils					= require( '../middleware/utilities' ),
 	  mareInTheNewsService	= require( '../middleware/service_mare-in-the-news' ),
 	  pageService			= require( '../middleware/service_page' );
 
@@ -7,24 +8,34 @@ exports = module.exports = ( req, res ) => {
 
     const view 		= new keystone.View( req, res ),
 		  locals 	= res.locals;
-	// extract request object parameters into local constants
-	const { key } = req.params;
+	
+	// set how the text will be truncated for short content displays
+	const truncateOptions = { targetLength: 400 };
 	
 	// fetch all data needed to render this page
-	let fetchMAREInTheNewsStory	= mareInTheNewsService.getMAREInTheNewsByKey( key ),
-		fetchSidebarItems		= pageService.getSidebarItems();
+	let fetchMAREInTheNewsStories	= mareInTheNewsService.getAllMAREInTheNewsStories(),
+		fetchSidebarItems			= pageService.getSidebarItems();
 
-	Promise.all( [ fetchMAREInTheNewsStory, fetchSidebarItems ] )
+	Promise.all( [ fetchMAREInTheNewsStories, fetchSidebarItems ] )
 		.then( values => {
 			// assign local variables to the values returned by the promises
-			const [ story, sidebarItems ] = values;
+			const [ stories, sidebarItems ] = values;
 			// the sidebar items are a success story and event in an array, assign local variables to the two objects
 			const [ randomSuccessStory, randomEvent ] = sidebarItems;
+
+			// loop through all success stories
+			for( let story of stories ) { 
+				
+				story.shortContent = Utils.truncateText( story.content, truncateOptions );
+				// append classes to the WYSIWYG generated content to allow for styling
+				// Utils.modifyWYSIWYGContent( story, 'shortContent', WYSIWYGModificationOptions );
+			}
 			
 			// assign properties to locals for access during templating
-			locals.story				= story;
-			locals.randomSuccessStory	= randomSuccessStory;
-			locals.randomEvent			= randomEvent;
+			locals.stories						= stories;
+			locals.hasNoMAREInTheNewsStories	= stories.length === 0,
+			locals.randomSuccessStory			= randomSuccessStory;
+			locals.randomEvent					= randomEvent;
 
 			// set the layout to render with the right sidebar
 			locals[ 'render-with-sidebar' ] = true;
