@@ -48,7 +48,7 @@ SuccessStory.schema.pre( 'save', function(next) {
 
 	this.imageFeatured = this._.image.thumbnail( 168, 168, { quality: 80 } );
 	this.imageSidebar = this._.image.thumbnail( 216, 196, { quality: 80 } );
-	this.url = '/success-story/' + this.key;
+	this.url = '/success-stories/' + this.key;
 
 	// Create an identifying name for file uploads
 	this.fileName = this.key.replace( /-/g, '_' );
