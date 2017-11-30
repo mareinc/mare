@@ -66,12 +66,13 @@ exports.initLocals = function(req, res, next) {
 			{ title: 'Meet the Staff', href: '/page/meet-the-staff' },
 			{ title: 'Board of Directors', href: '/page/board-of-directors' },
 			{ title: 'MARE in the News', href: '/mare-in-the-news' },
-			{ title: 'Annual Report', href: '/page/annual-report' }
+			{ title: 'Annual Report', href: '/page/annual-report' },
+			{ title: 'Our Services', href: '/page/our-services' }
 		]}];
 
 	// based on the url from the requested page, fetch the navigation object for the site section
-	locals.currentSection = locals.mainNav.find( ( section ) => {
-		return section.subMenu.find( ( menuItem ) => {
+	locals.currentSection = locals.mainNav.find( section => {
+		return section.subMenu.find( menuItem => {
 			return menuItem.href === req.url;
 		});
 	});
