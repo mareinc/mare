@@ -13,8 +13,9 @@ module.exports = ( req, res ) => {
     if( !verificationCode || !userType ) {
         // log the error
         console.error( `account verification Error - bad request paramaters -> verificationCode: ${ verificationCode }, userType: ${ userType }` );
-        // TODO: ensure the 404 page can display custom messages once it's created
-        res.status( 400 ).send( 'bad parameters' );
+        req.flash( 'error', { title: 'There was an error processing your request.',
+        details: 'If this error persists, please notify MARE' } );
+        res.redirect('/');
         return;
     }
 
@@ -30,8 +31,8 @@ module.exports = ( req, res ) => {
 
             if( !verificationEntity ){
                 console.error( `account verification error - could not find verification model based on verification code ${ verificationCode }` );
-                // TODO: ensure the 404 page can display custom messages once it's created
-                res.status( 404 ).send( 'verification record not found' );
+                req.flash( 'error', { title: 'Verification record not found.'} );
+                res.redirect('/');
                 return;
             }
             
