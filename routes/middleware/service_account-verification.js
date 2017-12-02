@@ -49,7 +49,7 @@ module.exports = ( req, res ) => {
                     req.flash( 'success', { title: 'Your account has been verified',
                     detail: 'put any additional details here if you want, otherwise remove the details attribute' } );
 
-                    res.status( 200 ).send( 'Hello Jared Please let me setup a view or a flash message? Maybe? Hmmmmm.....' );
+                    res.status( 200 ).redirect('/');
                 })  
                 .catch( () =>{
                     console.error( 'account verification Error - could not update the user field' );
