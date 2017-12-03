@@ -361,18 +361,18 @@ Family.schema.pre( 'save', function( next ) {
 	'use strict';
 
 	async.series([
-		// done => { this.setHomestudyVerifiedDate( done ); }, // Update the homestudy verified date
-		// done => { this.setGalleryViewingPermissions( done ); }, // Determine whether the family can view all children or just the publicly visible ones
+		done => { this.setHomestudyVerifiedDate( done ); }, // Update the homestudy verified date
+		done => { this.setGalleryViewingPermissions( done ); }, // Determine whether the family can view all children or just the publicly visible ones
 		done => { this.setFullName( done ); }, // Create a full name for the family based on their first, middle, and last names
 		done => { this.setFileName( done ); }, // Create an identifying name for file uploads
 		done => { this.setUserType( done ); }, // All user types that can log in derive from the User model, this allows us to identify users better
-		// done => { this.setRegistrationNumber( done ) } // Set the registration number to the next highest available
-		// done => { ChangeHistoryMiddleware.setUpdatedby( this, done ); }, // we need this id in case the family was created via the website and udpatedBy is empty
-		// done => { this.setChangeHistory( done ); } // Process change history
+		done => { this.setRegistrationNumber( done ) }, // Set the registration number to the next highest available
+		done => { ChangeHistoryMiddleware.setUpdatedby( this, done ); }, // we need this id in case the family was created via the website and udpatedBy is empty
+		done => { this.setChangeHistory( done ); } // Process change history
 
 	], () => {
 
-		// console.log( 'family information updated' );
+		console.log( 'family information updated' );
 
 		next();
 
