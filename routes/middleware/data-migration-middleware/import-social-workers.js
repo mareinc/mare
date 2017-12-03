@@ -18,6 +18,8 @@ let socialWorkerImportComplete;
 let migrationResults;
 // create an array to store problems during the import
 let importErrors = [];
+// create a set to store problems with unrecognized city or town names.  A set is used to capture unique values
+let cityOrTownNameError = new Set();
 
 module.exports.importSocialWorkers = ( req, res, done ) => {
 	// expose done to our generator
@@ -82,6 +84,10 @@ module.exports.generateSocialWorkers = function* generateSocialWorkers() {
 				console.log( error )
 			});
 
+			cityOrTownNameError.forEach( cityOrTown => {
+				console.log( `bad city: ${ cityOrTown }` );
+			});
+
 			const resultsMessage = `finished creating ${ totalRecords } social workers in the new system`;
 			// store the results of this run for display after the run
 			migrationResults.push({
@@ -100,70 +106,102 @@ module.exports.generateSocialWorkers = function* generateSocialWorkers() {
 module.exports.createSocialWorkerRecord = ( socialWorker, pauseUntilSaved ) => {
 	
 	// create a placeholder for the agency we're going to fetch related to the current social worker
-	let agency;
+	let agency; // TODO: is this needed?
 	// create a promise for fetching the agency associated with the social worker
-	const agencyLoaded = new Promise( ( resolve, reject ) => {
-		utilityModelFetch.getAgencyById( resolve, reject, socialWorker.agn_id );
-	});
+	const agencyLoaded = utilityModelFetch.getAgencyById( socialWorker.agn_id );
+
 	// once we've fetched the agency
 	agencyLoaded.then( agency => {
-		// populate fields of a new SocialWorker object
-		let newSocialWorker = new SocialWorker.model({
-			// every social worker needs a password, this will generate one we can easily determine at a later date while still being unique
-			password: `${ socialWorker.first_name }_${ socialWorker.last_name }_${ socialWorker.agc_id }`,
+		// if the needed parts of the address field are missing
+		if( !agency.address || !agency.address.state || !agency.address.state.abbreviation ) {
+			// push an error so we can easily identify to problematic entries
+			importErrors.push( { id: agency.oldId, error: 'no state information provided' } );
+		}
 
-			isActive: socialWorker.is_active === 'Y' ? true : false,
-			
-			permissions: {
-				isVerified: socialWorker.email ? true : false,			// they can only have verified their email address if they have one
-			},
+		// adjust cities / towns in MA to have names the system expects so it can find their records
+		switch( agency.address.city ) {
+			case 'Boston': agency.address.city = 'Boston - Dorchester - Center'; break;
+			case 'South Boston': agency.address.city = 'Boston - Dorchester - Center'; break;
+			case 'Foxboro': agency.address.city = 'Foxborough'; break;
+			case 'Dorchester': agency.address.city = 'Boston - Dorchester - Center'; break;
+			case 'Springfield': agency.address.city = 'West Springfield'; break;
+			case 'W. Springfield': agency.address.city = 'West Springfield'; break;
+			case 'Roxbury': agency.address.city = 'Roxbury/Mission Hill'; break;
+			case 'Jamaica Plain': agency.address.city = 'Boston - Jamaica Plain'; break;
+			case 'South Dennis': agency.address.city = 'Dennis'; break;
+		}
 
-			name: {
-				first: socialWorker.first_name.trim(),
-				last: socialWorker.last_name.trim()
-			},
-			// TODO: every social worker needs an email address, this is just a placeholder until Lisa tells us how to handle these records
-			email: socialWorker.email.trim() ? socialWorker.email.trim().toLowerCase() : `placeholder${ socialWorker.agc_id }@email.com`,
+		// create a promise for fetching the MA city or town associated with the agency
+		const cityOrTownLoaded = utilityModelFetch.getCityOrTownByName( agency.address.city.trim(), agency.address.state.abbreviation );
+		// once we've fetch the city or town
+		cityOrTownLoaded.then( cityOrTown => {
+			// populate fields of a new SocialWorker object
+			let newSocialWorker = new SocialWorker.model({
+				// every social worker needs a password, this will generate one we can easily determine at a later date while still being unique
+				password: `${ socialWorker.first_name }_${ socialWorker.last_name }_${ socialWorker.agc_id }`,
 
-			phone: {
-				work: socialWorker.phone.trim()
-			},
+				isActive: socialWorker.is_active === 'Y',
+				
+				permissions: {
+					isVerified: socialWorker.email ? true : false, // they can only have verified their email address if they have one
+				},
 
-			agency: agency.get( '_id' ),
-			
-			address: {
-				street1: agency.address.street1.trim(),
-				street2: agency.address.street2.trim(),
-				city: agency.address.city.trim(),
-				state: agency.address.state.trim(),
-				zipCode: utilityFunctions.padZipCode( agency.address.zipCode ),
-				region: agency.address.region.trim()
-			},
+				name: {
+					first: socialWorker.first_name ? socialWorker.first_name.trim() : undefined,
+					last: socialWorker.last_name ? socialWorker.last_name.trim() : undefined
+				},
+				// TODO: every social worker needs an email address, this is just a placeholder until Lisa tells us how to handle these records
+				email: socialWorker.email ? socialWorker.email.trim().toLowerCase() : `placeholder${ socialWorker.agc_id }@email.com`,
 
-			notes: socialWorker.notes.trim(),
-			oldId: socialWorker.agc_id
+				phone: {
+					work: socialWorker.phone ? socialWorker.phone.trim() : undefined
+				},
+
+				agency: agency.get( '_id' ),
+				
+				address: {
+					street1: agency.address.street1 ? agency.address.street1.trim() : undefined,
+					street2: agency.address.street2 ? agency.address.street2.trim() : undefined,
+					isOutsideMassachusetts: agency.address.state.abbreviation !== 'MA',
+					city: cityOrTown,
+					cityText: agency.address.state.abbreviation !== 'MA' ? agency.address.city.trim() : undefined,
+					state: agency.address.state.get( '_id' ),
+					zipCode: utilityFunctions.padZipCode( agency.address.zipCode ),
+					region: agency.address.region
+				},
+
+				notes: socialWorker.notes ? socialWorker.notes.trim() : undefined,
+				oldId: socialWorker.agc_id
+			});
+
+			newSocialWorker.save( ( err, savedModel ) => {
+				// if we run into an error
+				if( err ) {
+					// store a reference to the entry that caused the error
+					importErrors.push( { id: socialWorker.agc_id, error: err.err } );
+				}
+
+				// fire off the next iteration of our generator after pausing
+				if( pauseUntilSaved ) {
+					setTimeout( () => {
+						socialWorkerGenerator.next();
+					}, 5000 );
+				}
+			});
+
+		}).catch( reason => {
+			console.error( `error processing social worker agency` );
+			console.error( reason );
+			// aborting the import
+			return done();
 		});
-
-		newSocialWorker.save( ( err, savedModel ) => {
-			// if we run into an error
-			if( err ) {
-				// store a reference to the entry that caused the error
-				importErrors.push( { id: socialWorker.agc_id, error: err.err } );
-			}
-
-			// fire off the next iteration of our generator after pausing
-			if( pauseUntilSaved ) {
-				setTimeout( () => {
-					socialWorkerGenerator.next();
-				}, 5000 );
-			}
-		});
-
-	}).catch( reason => {
-		console.error( `error processing social worker agency` );
-		console.error( reason );
-		// aborting the import
-		return done();
+	})
+	.catch( reason => {
+		// if a reason was provided
+		if( reason ) {
+			// we can assume it was a reject from trying to fetch the city or town by an unrecognized name
+			cityOrTownNameError.add( reason );
+		}
 	});
 };
 
