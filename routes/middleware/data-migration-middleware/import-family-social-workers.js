@@ -70,7 +70,7 @@ module.exports.generateFamilies = function* generateFamilies() {
 				console.log( error )
 			});
 
-			const resultsMessage = `finished creating ${ totalRecords } families in the new system`;
+			const resultsMessage = `finished adding social workers to ${ totalRecords } families in the new system`;
 			// store the results of this run for display after the run
 			migrationResults.push({
 				dataSet: 'Families',
@@ -112,6 +112,16 @@ module.exports.createFamilyRecord = ( family, pauseUntilSaved ) => {
 				}, 1000 );
 			}
 		});
+	})
+	.catch( reason => {
+		// we can assume it was a reject from trying to fetch the city or town by an unrecognized name
+		importErrors.push( reason );
+
+		if( pauseUntilSaved ) {
+			setTimeout( () => {
+				familyGenerator.next();
+			}, 1000 );
+		}
 	});
 };
 
