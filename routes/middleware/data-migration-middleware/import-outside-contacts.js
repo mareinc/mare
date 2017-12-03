@@ -20,7 +20,7 @@ let importErrors = [];
 module.exports.importOutsideContacts = ( req, res, done ) => {
 	// expose the maps we'll need for this import
 	contactGroupsMap	= res.locals.migration.maps.contactGroups;
-	statesMap				= res.locals.migration.maps.states;
+	statesMap			= res.locals.migration.maps.states;
 	// expose done to our generator
 	outsideContactsImportComplete = done;
 	// expose our migration results array
@@ -94,7 +94,7 @@ module.exports.createOutsideContactRecord = ( outsideContact, pauseUntilSaved ) 
 	// populate instance for Outside Contact object
 	let newOutsideContact = new OutsideContact.model({
 
-		groups: contactGroupsMap[ outsideContact.contact_type ],
+		contactGroups: contactGroupsMap[ outsideContact.contact_type ],
 
 		// from the outside_contact table get the ocn_id and go to mailing_list_subscription table, where based on the ocn_id, get the mlt_id and then
 		// go to mailing_list table and get the name associated with the mlt_id, once you have the name, go to the new system and fetch the new hash id
