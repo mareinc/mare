@@ -105,11 +105,9 @@ module.exports.generateAgencyContacts = function* generateAgencyContacts() {
 
 /* the import function for agencies */
 module.exports.updateAgencyRecord = ( agencyId, agencyContactId, pauseUntilSaved ) => {
-	// create a promise for fetching the agency associated with the contact
-	const agencyLoaded = new Promise( ( resolve, reject ) => {
-		utilityModelFetch.getAgencyById( resolve, reject, agencyId );
-	});	
-	// create a promise for fetching the current agency contact record
+	// fetch the agency associated with the contact
+	const agencyLoaded = utilityModelFetch.getAgencyById( agencyId );
+	// fetching the social worker associated with the agency
 	const agencyContactLoaded = utilityModelFetch.getSocialWorkerById( agencyContactId );
 
 	// when both resolve
