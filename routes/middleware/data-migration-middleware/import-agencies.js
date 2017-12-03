@@ -96,9 +96,6 @@ module.exports.createAgencyRecord = ( agency, pauseUntilSaved ) => {
 					agency.state === 'MA' ?	regionsMap[ 1002 ] : // otherwise, if the state is Massachusetts, set the region to 'other'
 					regionsMap[ 1007 ]; // if the state is not Massachusetts, set the region to 'out of state'
 
-	if( !agency.code.startsWith ) {
-		var x = 1;
-	}
 	// agency codes need to be prefixed by the state, then a dash
 	let code = agency.code.startsWith( agency.state ) ? agency.code.replace( agency.state, `${ agency.state }-` ) :
 			   `${ agency.state }-${ agency.code }`;
@@ -106,22 +103,22 @@ module.exports.createAgencyRecord = ( agency, pauseUntilSaved ) => {
 	let newAgency = new Agency.model({
 
 		oldId: agency.agn_id,
-		code: code.trim(),
-		name: agency.name.trim(),
+		code: code ? code.trim() : undefined,
+		name: agency.name ? agency.name.trim() : undefined,
 
-		phone: agency.phone.trim(),
-		fax: agency.fax.trim(),
+		phone: agency.phone ? agency.phone.trim() : undefined,
+		fax: agency.fax ? agency.fax.trim() : undefined,
 
 		address: {
-			street1: agency.address_1.trim(),
-			street2: agency.address_2.trim(),
-			city: agency.city.trim(),
-			state: statesMap[ agency.state ],
+			street1: agency.address_1 ? agency.address_1.trim() : undefined,
+			street2: agency.address_2 ? agency.address_2.trim() : undefined,
+			city: agency.city ? agency.city.trim() : undefined,
+			state: statesMap[ agency.state ] || statesMap[ 'I' ],
 			zipCode: utilityFunctions.padZipCode( agency.zip ),
-			region: region.trim()
+			region: region
 		},
 
-		url: agency.url.trim()
+		url: agency.url ? agency.url.trim() : undefined
 	});
 
 	newAgency.save( ( err, savedModel ) => {
