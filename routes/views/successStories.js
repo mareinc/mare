@@ -9,7 +9,7 @@ exports = module.exports = ( req, res ) => {
     const view 		= new keystone.View( req, res ),
     	  locals 	= res.locals;
 
-	// set options specifying how the WYSIWYG editor content (in HTML format) should be modified before templating
+	// set options specifying how the WYSIWYG editor content ( in HTML format ) should be modified before templating
 	const WYSIWYGModificationOptions = [{
 		action: 'add classes',
 		element: 'p',
@@ -46,6 +46,7 @@ exports = module.exports = ( req, res ) => {
 
 			// assign properties to locals for access during templating
 			locals.successStories		= successStories;
+			locals.hasNoSuccessStories	= successStories.length === 0;
 			locals.randomSuccessStory	= randomSuccessStory;
 			locals.randomEvent			= randomEvent;
 

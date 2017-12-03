@@ -59,7 +59,7 @@ exports.getSidebarItems = () => {
 				resolve( [ successStory, event ] );
 			})
 			// if any of the promises were rejected
-			.catch( () => {
+			.catch( err => {
 				// log the error for debugging purposes
 				console.error( `error fetching items to render the sidebar` );
 				// reject the promise

@@ -1,11 +1,11 @@
 (function () {
     'use strict';
 
-    mare.views.SuccessStories = Backbone.View.extend({
+    mare.views.MAREInTheNews = Backbone.View.extend({
         el: 'body',
 
         events: {
-            'click .success-story__navigation-button': 'navigate'
+            'click .mare-in-the-news__navigation-button': 'navigate'
         },
 
         navigate: function navigate( event ) {
