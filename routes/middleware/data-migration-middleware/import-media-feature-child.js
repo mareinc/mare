@@ -87,11 +87,8 @@ module.exports.generateMediaFeatureChildren = function* generateMediaFeatureChil
 module.exports.updateMediaFeatureRecord = ( mediaFeatureChild, pauseUntilSaved ) => {
     // fetch the first child
 	const childLoaded = utilityModelFetch.getChildByRegistrationNumber( mediaFeatureChild.chd_id );
-	// create a promise
-	const mediaFeatureLoaded = new Promise( ( resolve, reject ) => {
-		// for fetching the _ids from other children
-		utilityModelFetch.getMediaFeatureById( resolve, reject, mediaFeatureChild.mft_id );
-	});
+	// fetch the media feature associated with the child
+	const mediaFeatureLoaded = utilityModelFetch.getMediaFeatureById( mediaFeatureChild.mft_id );
 
     Promise.all( [ childLoaded, mediaFeatureLoaded ] ).then( values => {
 
