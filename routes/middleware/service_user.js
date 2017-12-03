@@ -109,3 +109,31 @@ exports.getUserByFullName = ( name, userType ) => {
 			});
 	});
 };
+
+/* IMPORTANT NOTE: The function below is a copy of one above that's bound to async.  Merge them once async is removed */
+exports.getUserByIdNew = ( id, targetModel ) => {
+
+	return new Promise( ( resolve, reject ) => {
+		// fetch the record from the specified model type using the passed in id value
+		targetModel.model.findById( id )
+			.exec()
+			.then( user => {
+				// if no user was found
+				if( !user ) {
+					// log the error for debugging purposes
+					console.error( `error fetching user by id ${ id }` );
+					// reject the promise
+					return reject();
+
+				}
+				// if the user was found, resolve the promise with the user object
+				resolve( user );
+			// if there was an error fetching the user model
+			}, err => {
+				// log the error for debugging purposes
+				console.error( `there was an error fetching user by id ${ id } - ${ err }` );
+				// reject the promise
+				reject();
+			});
+	});
+};

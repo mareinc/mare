@@ -1,0 +1,28 @@
+<section class="card-list">
+
+	<div class="card card--vertical card--medium-padding">
+		<div class="card__columns">
+			<div class="card__column card__column--left">
+				{{#if mareInTheNewsStory.imageFeatured}}
+				<img class="card__image" src="{{ mareInTheNewsStory.imageFeatured }}" alt="{{ mareInTheNewsStory.heading }}">
+				{{/if}}
+				{{#if mareInTheNewsStory.imageCaption}}
+				<div class="card__image-text card__image-text--centered card__image-text--smaller card__image-text--italic card__image-text--small-padding-top">{{ mareInTheNewsStory.imageCaption }}</div>
+				{{/if}}
+			</div>
+			<div class="card__column card__column--right">
+				<div class="card__details card__details--vertical">
+					<span class="card-details__top-bar"></span>
+					<div class="card-details__header">{{ mareInTheNewsStory.heading }}</div>
+					<div class="card-details__body">
+						{{{ mareInTheNewsStory.content }}}
+					</div>
+				</div>
+			</div>
+		</div>
+		<section class="button-group button-group--horizontal button-group--space-around button-group--large-margin-above button-group--small-margin-below">
+			<button class="button button--large button--teal mare-in-the-news__navigation-button" data-url="/mare-in-the-news">Back to all Stories</button>
+		</section>
+	</div>
+
+</section>

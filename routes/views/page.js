@@ -55,7 +55,8 @@ exports = module.exports = function( req, res ) {
 					pageActions.sections.push( `You must be logged in as a social worker to register a family.  If you're a social worker, you can <a href="/register#social-worker">register here</a>.` );
 				}
 			// otherwise, if the user requested any page in the 'Considering Adoption' section
-			} else if( locals.currentSection.title === 'Considering Adoption?' ) {
+			// NOTE: we check for locals.currentSection existing because it won't if the page isn't listed in the main menu
+			} else if( locals.curentSection && locals.currentSection.title === 'Considering Adoption?' ) {
 				// specify that it should render a button after the content
 				pageActions.hasButtons = true;
 				// set the button contents

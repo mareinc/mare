@@ -8,7 +8,7 @@
 
 	{{#if canSubmitEvent}}
 	<section class="button-group button-group--horizontal button-group--space-around button-group--large-margin-above button-group--small-margin-below">
-		<button class="button button--large button--teal events__create-event-button" data-url="/forms/agency-event-submission-form">Submit an Event</button>
+		<button class="button button--large button--teal events__navigation-button" data-url="/forms/agency-event-submission-form">Submit an Event</button>
 	</section>
 	{{/if}}
 
@@ -62,7 +62,7 @@
 			</section>
 		</div>
 		<section class="button-group button-group--horizontal button-group--space-around button-group--large-margin-above button-group--small-margin-below">
-			<button class="button button--large button--teal events__show-details-button" data-url="{{ url }}">View Details</button>
+			<button class="button button--large button--teal events__navigation-button" data-url="{{ url }}">View Details</button>
 			{{#if ../canRegister}}
 			{{#if ../user}}
 			{{!-- TODO: this handling of unregistering through forms was only done for consistency in flash messaging and NEEDS to be reworked --}}

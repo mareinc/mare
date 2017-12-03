@@ -1,4 +1,5 @@
 /* TODO: Placed up at the top because this will become the standard button style */
+/* TODO: #25| subtask update all buttons on the page to use the .button styles */
 .button {
 	padding: 1em;
 	border-radius: 2px;
@@ -71,6 +72,10 @@
 		color: $button-text-color-2;
 		background-color: $button-background-color-5;
 		cursor: default;
+
+		&:hover {
+			background-color: $button-background-color-5;
+		}
 	}
 
 	& a {

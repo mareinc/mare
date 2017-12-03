@@ -5,7 +5,7 @@
 		el: '.sidebar',
 
 		events: {
-			'click .account-nav__link': 'announceSelectionChange'
+			'click .account-nav-link': 'announceSelectionChange'
 		},
 
 		initialize: function initialize() {

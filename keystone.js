@@ -165,9 +165,7 @@ keystone.set('nav', {
 	'donations'			: [ 'donations' ],
 	'images'			: [ 'featured-items', 'slideshows', 'slideshow-items' ],
 	'content pages'		: [ 'pages' ],
-	'content snippets'	: [ 'success-stories' ],
-	
-
+	'content snippets'	: [ 'success-stories' ]
 });
 
 // Start Keystone to connect to your database and initialise the web server
