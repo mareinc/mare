@@ -152,7 +152,7 @@ exports.create = {
 		areaOffice: 'Dimock Street Area Office',
 		textRegion: 'Boston'
 	}, {
-		cityOrTown: 'Boston- Jamaica Plain',
+		cityOrTown: 'Boston - Jamaica Plain',
 		areaOffice: 'Dimock Street Area Office',
 		textRegion: 'Boston'
 	}, {
@@ -824,7 +824,7 @@ exports.create = {
 		areaOffice: 'Van Wart Area Office',
 		textRegion: 'western'
 	}, {
-		cityOrTown: 'montague',
+		cityOrTown: 'Montague',
 		areaOffice: 'Greenfield/Northampton Area Office',
 		textRegion: 'western'
 	}, {
@@ -968,7 +968,7 @@ exports.create = {
 		areaOffice: 'South Central/Blackstone Valley Area Office',
 		textRegion: 'central'
 	}, {
-		cityOrTown: 'palmer',
+		cityOrTown: 'Palmer',
 		areaOffice: 'Van Wart Area Office',
 		textRegion: 'western'
 	}, {
@@ -1195,14 +1195,6 @@ exports.create = {
 		cityOrTown: 'Spencer',
 		areaOffice: 'Worcester West Area Office',
 		textRegion: 'central'
-	}, {
-		cityOrTown: 'Springfield, East**',
-		areaOffice: 'Van Wart Area Office',
-		textRegion: 'western'
-	}, {
-		cityOrTown: 'Springfield, West**',
-		areaOffice: 'Holyoke Area Office',
-		textRegion: 'western'
 	}, {
 		cityOrTown: 'Sterling',
 		areaOffice: 'Worcester East Area Office',
