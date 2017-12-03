@@ -6,8 +6,8 @@ const keystone 				= require( 'keystone' ),
 exports = module.exports = ( req, res ) => {
     'use strict';
 
-    const view 		= new keystone.View( req, res );
-	const locals 	= res.locals;
+    const view 		= new keystone.View( req, res ),
+		 locals 	= res.locals;
 	// extract request object parameters into local constants
 	const { key } = req.params;
 

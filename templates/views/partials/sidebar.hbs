@@ -2,31 +2,38 @@
 
 	<!-- Meet the Children -->
 	<aside class="card card--vertical card--small-padding sidebar__card">	
-		<img class="card__image" src="/images/temp-children.png" alt="meet the children">	
-		<span class="card__image-text">
-			<a href="/waiting-child-profiles" class="card__image-title card__image-title--large card__image-title--centered">Meet the Children</a>
-		</span>
+		<a href="/waiting-child-profiles">
+			<img class="card__image" src="/images/temp-children.png" alt="meet the children">	
+			<span class="card__image-text">
+				{{!-- TODO: this shouldn't be a link anymore, update with classes to style text the way the link does --}}
+				<span class="card__image-title card__image-title--large card__image-title--centered">Meet the Children</span>
+			</span>
+		</a>
 	</aside>
 
 	<!-- Success Story -->
 	<aside class="card card--vertical card--small-padding sidebar__card">	
-		<img class="card__image" src="{{ randomSuccessStory.imageSidebar }}" alt="success story image">	
-		<span class="card__image-text">
-			<!-- TODO: limit the content to three lines with a trailing ellipses-->
-			<div class="card__image-description">{{{randomSuccessStory.shortContent}}}</div>
-			<a href="{{ randomSuccessStory.url }}" class="card__image-title card__image-title--right-aligned link-arrow--right">{{ randomSuccessStory.heading }}</a>
-		</span>
+		<a href="{{ randomSuccessStory.url }}">
+			<img class="card__image" src="{{ randomSuccessStory.imageSidebar }}" alt="success story image">	
+			<span class="card__image-text">
+				<div class="card__image-description">{{{randomSuccessStory.shortContent}}}</div>
+				{{!-- TODO: this shouldn't be a link anymore, update with classes to style text the way the link does --}}
+				<span class="card__image-title card__image-title--right-aligned link-arrow link-arrow--right">{{ randomSuccessStory.heading }}</span>
+			</span>
+		</a>
 	</aside>
 
 	<!-- Event -->
 	<aside class="card card--vertical card--small-padding sidebar__card sidebar__card--small-margin-bottom">
-		<img class="card__image" src="{{ randomEvent.imageSidebar }}" alt="event image">
-		<span class="card__image-text">
-			<!-- TODO: limit the content to three lines with a trailing ellipses -->
-			<!-- TODO: do we need the date/time in the description? -->
-			<div class="card__image-description">{{{randomEvent.shortDescription}}} </div>
-			<a href="{{ randomEvent.url }}" class="card__image-title card__image-title--right-aligned link-arrow--right">{{ randomEvent.name }}</a>
-		</span>
+		<a href="{{ randomEvent.url }}">
+			<img class="card__image" src="{{ randomEvent.imageSidebar }}" alt="event image">
+			<span class="card__image-text">
+				<!-- TODO: do we need the date/time in the description? -->
+				<div class="card__image-description">{{{randomEvent.shortDescription}}} </div>
+				{{!-- TODO: this shouldn't be a link anymore, update with classes to style text the way the link does --}}
+				<span class="card__image-title card__image-title--right-aligned link-arrow link-arrow--right">{{ randomEvent.name }}</span>
+			</span>
+		</a>
 	</aside>
 
 	<!-- Have a question and Donate links -->

@@ -1,0 +1,640 @@
+<div class="registration-form form--family-registration">
+	<section class="family-account-setup-section">
+		<div class="row form-group">
+			<div class="col-sm-12">
+				<input type="email" id="email" class="input" name="email" placeholder="john.smith@gmail.com" value="{{ user.email}}">
+				<label for="email" class="label">Email Address</label>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-12">
+				<input type="password" id="password" class="input" name="password" placeholder="**********">
+				<label for="password" class="label">Password</label>
+			</div>
+			<div class="col-sm-12">
+				<input type="password" id="confirm-password" class="input" name="confirmPassword" placeholder="**********" data-parsley-equalto="#family-password" data-parsley-error-message="passwords must match">
+				<label for="confirm-password" class="label">Confirm Password</label>
+			</div>
+		</div>
+	</section>
+
+	<section class="family-contact-1-section">
+		<div class="form-section-header">Contact 1</div>
+		<div class="row form-group">
+			<div class="col-sm-12">
+				<input type="text" id="contact1-first-name" class="input" name="contact1FirstName" placeholder="John" value="{{ user.contact1.name.first}}">
+				<label for="contact1-first-name" class="label">First Name</label>
+			</div>
+			<div class="col-sm-12">
+				<input type="text" id="contact1-last-name" class="input" name="contact1LastName" placeholder="Smith" value="{{ user.contact1.name.last}}">
+				<label for="contact1-last-name" class="label">Last Name</label>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-12">
+				<input type="email" id="contact1-email" class="input" name="contact1Email" placeholder="john.smith@gmail.com" value="{{ user.contact1.email}}">
+				<label for="contact1-email" class="label">Email Address</label>
+			</div>
+			<div class="col-sm-12">
+				<input type="text" id="contact1-mobile" class="input" name="contact1Mobile" placeholder="(617) 111-1111" value="{{ user.contact1.phone.mobile}}">
+				<label for="contact1-mobile" class="label">Mobile Phone</label>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-12">
+				<select id="contact1-preferred-communication-method" class="input" name="contact1PreferredCommunicationMethod">
+					<option value=""></option>
+					<option {{#ifeq user.contact1.preferredCommunicationMethod 'email' }}selected{{/ifeq}} value="email">email</option>
+					<option {{#ifeq user.contact1.preferredCommunicationMethod 'home phone' }}selected{{/ifeq}} value="home phone">home</option>
+					<option {{#ifeq user.contact1.preferredCommunicationMethod 'mobile phone' }}selected{{/ifeq}} value="mobile phone">mobile</option>
+				</select>
+				<label for="contact1-preferred-communication-method" class="label">Preferred Contact Method</label>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-24">
+				<span id="contact1-gender-error-container" class="error-container">
+					<span class="gender-select-text">Gender:</span> &nbsp;&nbsp;
+					{{#each genders}}
+						<label class="radio-inline"><input id="contact1-gender" type="radio" name="contact1Gender" value="{{ _id }}" {{#ifeq ../user.contact1.gender _id }}checked="checked"{{/ifeq}}>{{ gender }}</label>
+					{{/each}}
+				</span>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-12">
+				<div class="row form-group">
+					<div class="col-sm-24">
+						<span class="required-field">Race/Ethnicity (check all that apply)</span>
+					</div>
+				</div>
+				<div id="contact1-race-error-container" class="row form-group error-container">
+					{{#each races}}
+					<div class="col-sm-12 form-group">
+						<label class="checkbox-inline">
+							<input id="contact1-race" type="checkbox" name="contact1Race" value="{{ _id }}" {{#ifincludes ../user.contact1.race _id }}checked="checked"{{/ifincludes}}>{{ race }}
+						</label>
+					</div>
+					{{/each}}
+				</div>
+			</div>
+			<div class="col-sm-12">
+				<div class="form-group">
+					<input type="text" id="contact1-occupation" class="input" name="contact1Occupation" placeholder="teacher" value="{{ user.contact1.occupation }}">
+					<label for="contact1-occupation" class="label">Occupation</label>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section class="family-contact-2-section">
+		<div class="form-section-header">Contact 2</div>
+
+		<div class="row form-group">
+			<div class="col-sm-12">
+				<input type="text" id="contact2-first-name" class="input" name="contact2FirstName" placeholder="Jane" value="{{ user.contact2.name.first }}">
+				<label for="contact2-first-name" class="label">First Name</label>
+			</div>
+			<div class="col-sm-12">
+				<input type="text" id="contact2-last-name" class="input" name="contact2LastName" placeholder="Smith" value="{{ user.contact2.name.last }}">
+				<label for="contact2-last-name" class="label">Last Name</label>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-12">
+				<input type="email" id="contact2-email" class="input" name="contact2Email" placeholder="jane.smith@gmail.com" value="{{ user.contact2.email }}">
+				<label for="contact2-email" class="label">Email Address</label>
+			</div>
+			<div class="col-sm-12">
+				<input type="text" id="contact2-phone" class="input" name="contact2Mobile" placeholder="(617) 222-2222" value="{{ user.contact2.phone.mobile }}">
+				<label for="contact2-phone" class="label">Mobile Phone</label>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-12">
+				<select id="contact2-preferred-communication-method" class="input" name="contact2PreferredCommunicationMethod">
+					<option value=""></option>
+					<option {{#ifeq user.contact2.preferredCommunicationMethod 'email' }}selected{{/ifeq}} value="email">email</option>
+					<option {{#ifeq user.contact2.preferredCommunicationMethod 'home phone' }}selected{{/ifeq}} value="home phone">home</option>
+					<option {{#ifeq user.contact2.preferredCommunicationMethod 'mobile phone' }}selected{{/ifeq}} value="mobile phone">mobile</option>
+				</select>
+				<label for="contact2-preferred-communication-method" class="label">Preferred Contact Method</label>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-24">
+				<span class="gender-select-text">Gender:</span> &nbsp;&nbsp;
+				{{#each genders}}
+					<label class="radio-inline"><input type="radio" name="contact2Gender" value="{{ _id }}" {{#ifeq ../user.contact2.gender _id }}checked="checked"{{/ifeq}}>{{ gender }}</label>
+				{{/each}}
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-12">
+				<div class="row form-group">
+					<div class="col-sm-24">
+						<span>Race/Ethnicity (check all that apply)</span>
+					</div>
+				</div>
+				<div class="row form-group">
+					{{#each races}}
+					<div class="col-sm-12 form-group">
+						<label class="checkbox-inline">
+							<input type="checkbox" name="contact2Race" value="{{ _id }}" {{#ifincludes ../user.contact2.race _id }}checked="checked"{{/ifincludes}}>{{ race }}
+						</label>
+					</div>
+					{{/each}}
+				</div>
+			</div>
+			<div class="col-sm-12">
+				<div class="form-group">
+					<input type="text" id="contact2-occupation" class="input" name="contact2Occupation" placeholder="police officer" value="{{ user.contact2.occupation }}">
+					<label for="contact2-occupation" class="label">Occupation</label>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section class="family-home-address-section">
+		<div class="form-section-header">Home Address</div>
+
+		<div class="row form-group">
+			<div class="col-sm-12">
+				<input type="text" id="street-1" class="input" name="street1" placeholder="100 Main Street" value="{{ user.address.street1 }}">
+				<label for="street-1" class="label">Street 1</label>
+			</div>
+			<div class="col-sm-12">
+				<input type="text" id="street-2" class="input" name="street2" placeholder="Suite 1" value="{{ user.address.street2 }}">
+				<label for="street-2" class="label">Street 2</label>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-12 form-group ma-city-container">
+				<select id="ma-city" class="input" name="city">
+					<option value=""></option>
+					{{#each citiesAndTowns}}
+					<option value="{{ _id }}" {{#ifeq ../user.address.city _id}}selected="selected"{{/ifeq}}>{{ cityOrTown }}</option>
+					{{/each}}
+				</select>
+				<label for="ma-city" class="label">City</label>
+			</div>
+			<div class="col-sm-12 form-group non-ma-city-container hidden">
+				<input type="text" id="non-ma-city" class="input" name="nonMACity" placeholder="Boston" value="{{ user.address.city }}">
+				<label for="non-ma-city" class="label">City</label>
+			</div>
+			<div class="col-sm-12 form-group">
+				<label class="checkbox-inline">
+					<input type="checkbox" id="is-not-MA-city-checkbox" name="isNotMACity" value="{{ user.address.isOutsideMassachusetts }}" {{#if user.address.isOutsideMassachusetts}}checked="checked"{{/if}}>I live outside MA
+				</label>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-12">
+				<select id="state" class="input state-select" name="state">
+				{{#each states}}
+					{{#if defaultSelection}}
+						<option value="{{ _id }}" selected="selected">{{ state }}</option>
+					{{else}}
+						<option value="{{ _id }}">{{ state }}</option>
+					{{/if}}
+				{{/each}}
+				</select>
+				<label for="state" class="label">State</label>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-12">
+				<input type="number" id="zip-code" class="input" name="zipCode" placeholder="02111" value="{{ user.address.zipCode }}">
+				<label for="zip-code" class="label">Zip Code</label>
+			</div>
+			<div class="col-sm-12">
+				<input type="text" id="home-phone" class="input" name="homePhone" placeholder="(617) 333-3333" value="{{ user.homePhone }}">
+				<label for="home-phone" class="label">Home Phone</label>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-24">
+				<label class="label marg-bottom-xs-5">Where are you in the adoption process?</label>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-16">
+				<div class="row form-group">
+					<div class="col-sm-12 form-group">
+						<label class="checkbox-inline">
+							<input type="checkbox" id="gathering-information-checkbox" class="adoption-preferences-trigger" name="processProgression" value="{{user.stages.gatheringInformation.started}}" {{#if user.stages.gatheringInformation.started }}checked="checked"{{/if}}>Gathering Information
+						</label>
+					</div>
+					<div class="col-sm-12 form-group">
+						<label class="checkbox-inline">
+							<input type="checkbox" id="looking-for-agency-checkbox" class="adoption-preferences-trigger" name="processProgression" value="{{user.stages.lookingForAgency.started}}" {{#if user.stages.lookingForAgency.started }}checked="checked"{{/if}}>Looking for an agency
+						</label>
+					</div>
+					<div class="col-sm-12 form-group">
+						<label class="checkbox-inline">
+							<input type="checkbox" id="working-with-agency-checkbox" class="adoption-preferences-trigger" name="processProgression" value="{{user.stages.workingWithAgency.started}}" {{#if user.stages.workingWithAgency.started }}checked="checked"{{/if}}>Working with an agency
+						</label>
+					</div>
+					<div class="col-sm-12 form-group">
+						<label class="checkbox-inline">
+							<input type="checkbox" id="mapp-training-completed-checkbox" class="adoption-preferences-trigger" name="processProgression" value="{{user.stages.MAPPTrainingCompleted.started}}" {{#if user.stages.MAPPTrainingCompleted.started }}checked="checked"{{/if}}>MAPP training completed
+						</label>
+					</div>
+					<div class="col-sm-12 form-group">
+						<label class="checkbox-inline">
+							<input type="checkbox" id="homestudy-completed-checkbox" class="adoption-preferences-trigger" name="processProgression" value="{{ user.homestudy.completed }}" {{#if user.homestudy.completed }}checked="checked"{{/if}}>Homestudy completed
+						</label>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section class="family-homestudy-details-section hidden">
+		<div class="form-section-header">Homestudy Details</div>
+
+		<div class="row form-group">
+			<div class="col-sm-12">
+				<input type="text" id="homestudy-date-complete" class="input" name="homestudyDateComplete" placeholder="MM/DD/YYYY">
+				<label for="homestudy-date-complete" class="label">Date Homestudy Completed/Updated</label>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-12">
+				<input type="text" id="social-worker-name" class="input" name="socialWorkerName" placeholder="Jim Smith">
+				<label for="social-worker-name" class="label">Social Worker Name</label>
+			</div>
+			<div class="col-sm-12">
+				<input type="text" id="social-worker-agency" class="input" name="socialWorkerAgency" placeholder="Jim's Agency">
+				<label for="social-worker-agency" class="label">Social Worker Agency</label>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-12">
+				<input type="text" id="social-worker-phone" class="input" name="socialWorkerPhone" placeholder="(617) 444-4444">
+				<label for="social-worker-phone" class="label">Social Worker Phone Number</label>
+			</div>
+			<div class="col-sm-12">
+				<input type="email" id="social-worker-email" class="input" name="socialWorkerEmail" placeholder="jim.smith@gmail.com">
+				<label for="social-worker-email" class="label">Social Worker Email Address</label>
+			</div>
+		</div>
+
+		<section class="subheading family-submit-your-homestudy-section">
+			<strong>Submit Your Homestudy</strong>
+			<p>To complete your registration as a Massachusetts homestudied family, you must submit your homestudy to us via one of the following methods (choose one):</p>
+			<div class="row form-group">
+				<div class="col-sm-12">Upload PDF or Microsoft Word<sup>&reg;</sup> format:</div>
+				<div class="col-sm-12">
+					<div class="button button--medium button--brown file-upload-button">
+						<span>Upload</span>
+						<input id="upload-button" type="file" class="file-upload" id="homestudyFile_upload" name="homestudyFile_upload">
+					</div>
+					<span class="homestudy-file-text"></span>
+				</div>
+			</div>
+			<div class="row form-group">
+				<div class="col-sm-12">Email to web@mareinc.org:</div>
+				<div class="col-sm-12">
+					<div class="button button--medium button--brown"><a href="mailto:web@mareinc.org">Send as email</a></div>
+				</div>
+			</div>
+			<div class="row form-group">
+				<div class="col-sm-12">Fax to (617) 244-3983, Attention: Homestudy Registration</div>
+			</div>
+			<div class="row form-group">
+				<div class="col-sm-12">
+					<div class="indented-text">
+						Mail to:
+						<div class="indent-text">
+							Massachusetts Adoption Resource Exchange<br />
+							19 Needham Street<br />
+							Suite 206<br />
+							Newton, MA 02461
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+	</section>
+
+	<section class="family-details-section">
+		<div class="form-section-header">Family Details</div>
+
+		<div class="row form-group children-in-home">
+			<div class="col-sm-12">
+				<label for="children-in-home" class="label marg-bottom-xs-5">Total number of children currently living at home</label>
+			</div>
+			<div class="col-sm-12">
+				<select id="children-in-home" name="childrenInHome" class="input form__number-select">
+					<option {{#ifeq user.numberOfChildren '0' }}selected{{/ifeq}}>0</option>
+					<option {{#ifeq user.numberOfChildren '1' }}selected{{/ifeq}}>1</option>
+					<option {{#ifeq user.numberOfChildren '2' }}selected{{/ifeq}}>2</option>
+					<option {{#ifeq user.numberOfChildren '3' }}selected{{/ifeq}}>3</option>
+					<option {{#ifeq user.numberOfChildren '4' }}selected{{/ifeq}}>4</option>
+					<option {{#ifeq user.numberOfChildren '5' }}selected{{/ifeq}}>5</option>
+					<option {{#ifeq user.numberOfChildren '6' }}selected{{/ifeq}}>6</option>
+					<option {{#ifeq user.numberOfChildren '7' }}selected{{/ifeq}}>7</option>
+					<option {{#ifeq user.numberOfChildren '8+' }}selected{{/ifeq}}>8+</option>
+				</select>
+			</div>
+		</div>
+		<section class="children-in-home-details"></section>
+
+		<hr class="registration-divider">
+
+		<div class="row form-group">
+			<div class="col-sm-12">
+				<label for="other-adults-in-home" class="label marg-bottom-xs-5">Number of other adults living in home</label>
+			</div>
+			<div class="col-sm-12">
+				<select id="other-adults-in-home" name="otherAdultsInHome" class="input form__number-select">
+					<option {{#ifeq user.otherAdultsInHome.number '0' }}selected{{/ifeq}}>0</option>
+					<option {{#ifeq user.otherAdultsInHome.number '1' }}selected{{/ifeq}}>1</option>
+					<option {{#ifeq user.otherAdultsInHome.number '2' }}selected{{/ifeq}}>2</option>
+					<option {{#ifeq user.otherAdultsInHome.number '3' }}selected{{/ifeq}}>3</option>
+					<option {{#ifeq user.otherAdultsInHome.number '4' }}selected{{/ifeq}}>4</option>
+					<option {{#ifeq user.otherAdultsInHome.number '5' }}selected{{/ifeq}}>5</option>
+					<option {{#ifeq user.otherAdultsInHome.number '6' }}selected{{/ifeq}}>6</option>
+					<option {{#ifeq user.otherAdultsInHome.number '7' }}selected{{/ifeq}}>7</option>
+					<option {{#ifeq user.otherAdultsInHome.number '8' }}selected{{/ifeq}}>8</option>
+					<option {{#ifeq user.otherAdultsInHome.number '9' }}selected{{/ifeq}}>9</option>
+					<option {{#ifeq user.otherAdultsInHome.number '10+' }}selected{{/ifeq}}>10+</option>
+				</select>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-24">
+				<label class="checkbox-inline">
+					<input type="checkbox" name="havePets" value="{{ user.havePetsInHome }}" {{#if user.havePetsInHome}}checked="checked"{{/if}}>Have pets in the home
+				</label>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-12">
+				<label for="primary-language-in-home" class="label marg-bottom-xs-5">Primary language spoken at home</label>
+			</div>
+			<div class="col-sm-12">
+				<select name="primaryLanguageInHome" class="input form__number-select">
+					<option value=""></option>
+					{{#each languages}}
+						<option value="{{_id}}" {{#ifeq ../user.language _id}}selected="selected"{{/ifeq}}>{{language}}</option>
+					{{/each}}
+				</select>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-24">
+				<label class="label marg-bottom-xs-5">Other language(s) spoken at home</label>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-16">
+				<div class="row">
+				{{#each languages}}
+					<div class="col-sm-12 form-group">
+						<label class="checkbox-inline">
+							<input type="checkbox" name="otherLanguagesInHome" value="{{_id}}"  {{#ifincludes ../user.otherLanguages _id}}checked{{/ifincludes}}>{{language}}
+						</label>
+					</div>
+				{{/each}}
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section class="family-adoption-preferences-section">
+		<div class="form-section-header">Adoption Preferences</div>
+
+		<div class="row form-group">
+			<div class="col-sm-12">
+				<label class="label marg-bottom-xs-5 preferred-gender-label">Gender of children preferred</label>
+			</div>
+			<div class="col-sm-12">
+				<div id="preferred-gender-error-container" class="row error-container">
+				{{#each genders}}
+					<div class="col-sm-12 form-group">
+						<label class="checkbox-inline">
+							<input type="checkbox" name="preferredGender" class="preferred-gender" value="{{_id}}" {{#ifincludes ../user.matchingPreferences.gender _id}}checked="checked"{{/ifincludes}}>{{gender}}
+						</label>
+					</div>
+				{{/each}}
+				</div>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-12">
+				<label class="label marg-bottom-xs-5 legal-status-label">Legal Status</label>
+			</div>
+			<div class="col-sm-12">
+				<div id="preferred-legal-status-error-container" class="row error-container">
+				{{#each legalStatuses}}
+					<div class="col-sm-12">
+						<label class="checkbox-inline">
+							<input type="checkbox" name="legalStatus" class="legal-status" value="{{_id}}" {{#ifincludes ../user.matchingPreferences.legalStatus _id}}checked="checked"{{/ifincludes}}>{{legalStatus}}
+						</label>
+					</div>
+				{{/each}}
+				</div>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-12">
+				<label class="label marg-bottom-xs-5 age-range-label">Age Range</label>
+			</div>
+			<div class="col-sm-12">
+				<div class="row">
+					<div class="col-xs-8">
+						<select name="ageRangeFrom" class="input form__number-select inline age-range-from">
+							{{!-- TODO: Find ...adoptionAges FROM value --}}
+							<option value=""></option>
+							<option {{#ifeq user.matchingPreferences.adoptionAges.from 0 }}selected="selected"{{/ifeq}} value="0">0</option>
+							<option {{#ifeq user.matchingPreferences.adoptionAges.from 1 }}selected="selected"{{/ifeq}} value="1">1</option>
+							<option {{#ifeq user.matchingPreferences.adoptionAges.from 2 }}selected="selected"{{/ifeq}} value="2">2</option>
+							<option {{#ifeq user.matchingPreferences.adoptionAges.from 3 }}selected="selected"{{/ifeq}} value="3">3</option>
+							<option {{#ifeq user.matchingPreferences.adoptionAges.from 4 }}selected="selected"{{/ifeq}} value="4">4</option>
+							<option {{#ifeq user.matchingPreferences.adoptionAges.from 5 }}selected="selected"{{/ifeq}} value="5">5</option>
+							<option {{#ifeq user.matchingPreferences.adoptionAges.from 6 }}selected="selected"{{/ifeq}} value="6">6</option>
+							<option {{#ifeq user.matchingPreferences.adoptionAges.from 7 }}selected="selected"{{/ifeq}} value="7">7</option>
+							<option {{#ifeq user.matchingPreferences.adoptionAges.from 8 }}selected="selected"{{/ifeq}} value="8">8</option>
+							<option {{#ifeq user.matchingPreferences.adoptionAges.from 9 }}selected="selected"{{/ifeq}} value="9">9</option>
+							<option {{#ifeq user.matchingPreferences.adoptionAges.from 10 }}selected="selected"{{/ifeq}} value="10">10</option>
+							<option {{#ifeq user.matchingPreferences.adoptionAges.from 11 }}selected="selected"{{/ifeq}} value="11">11</option>
+							<option {{#ifeq user.matchingPreferences.adoptionAges.from 12 }}selected="selected"{{/ifeq}} value="12">12</option>
+							<option {{#ifeq user.matchingPreferences.adoptionAges.from 13 }}selected="selected"{{/ifeq}} value="13">13</option>
+							<option {{#ifeq user.matchingPreferences.adoptionAges.from 14 }}selected="selected"{{/ifeq}} value="14">14</option>
+							<option {{#ifeq user.matchingPreferences.adoptionAges.from 15 }}selected="selected"{{/ifeq}} value="15">15</option>
+							<option {{#ifeq user.matchingPreferences.adoptionAges.from 16 }}selected="selected"{{/ifeq}} value="16">16</option>
+							<option {{#ifeq user.matchingPreferences.adoptionAges.from 17 }}selected="selected"{{/ifeq}} value="17">17</option>
+						</select>
+					</div>
+					<div class="col-xs-4 text-center">To:</div>
+					<div class="col-xs-8">
+						<select name="ageRangeTo" class="input form__number-select inline age-range-to">
+							{{!-- TODO: Find ...adoptionAges TO value --}}
+							<option value=""></option>
+							<option {{#ifeq user.matchingPreferences.adoptionAges.to 0 }}selected="selected"{{/ifeq}} value="0">0</option>
+							<option {{#ifeq user.matchingPreferences.adoptionAges.to 1 }}selected="selected"{{/ifeq}} value="1">1</option>
+							<option {{#ifeq user.matchingPreferences.adoptionAges.to 2 }}selected="selected"{{/ifeq}} value="2">2</option>
+							<option {{#ifeq user.matchingPreferences.adoptionAges.to 3 }}selected="selected"{{/ifeq}} value="3">3</option>
+							<option {{#ifeq user.matchingPreferences.adoptionAges.to 4 }}selected="selected"{{/ifeq}} value="4">4</option>
+							<option {{#ifeq user.matchingPreferences.adoptionAges.to 5 }}selected="selected"{{/ifeq}} value="5">5</option>
+							<option {{#ifeq user.matchingPreferences.adoptionAges.to 6 }}selected="selected"{{/ifeq}} value="6">6</option>
+							<option {{#ifeq user.matchingPreferences.adoptionAges.to 7 }}selected="selected"{{/ifeq}} value="7">7</option>
+							<option {{#ifeq user.matchingPreferences.adoptionAges.to 8 }}selected="selected"{{/ifeq}} value="8">8</option>
+							<option {{#ifeq user.matchingPreferences.adoptionAges.to 9 }}selected="selected"{{/ifeq}} value="9">9</option>
+							<option {{#ifeq user.matchingPreferences.adoptionAges.to 10 }}selected="selected"{{/ifeq}} value="10">10</option>
+							<option {{#ifeq user.matchingPreferences.adoptionAges.to 11 }}selected="selected"{{/ifeq}} value="11">11</option>
+							<option {{#ifeq user.matchingPreferences.adoptionAges.to 12 }}selected="selected"{{/ifeq}} value="12">12</option>
+							<option {{#ifeq user.matchingPreferences.adoptionAges.to 13 }}selected="selected"{{/ifeq}} value="13">13</option>
+							<option {{#ifeq user.matchingPreferences.adoptionAges.to 14 }}selected="selected"{{/ifeq}} value="14">14</option>
+							<option {{#ifeq user.matchingPreferences.adoptionAges.to 15 }}selected="selected"{{/ifeq}} value="15">15</option>
+							<option {{#ifeq user.matchingPreferences.adoptionAges.to 16 }}selected="selected"{{/ifeq}} value="16">16</option>
+							<option {{#ifeq user.matchingPreferences.adoptionAges.to 17 }}selected="selected"{{/ifeq}} value="17">17</option>
+						</select>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-12">
+				<label class="label marg-bottom-xs-5 number-of-children-preferred-label">Number of children preferred</label>
+			</div>
+			<div class="col-sm-12">
+				{{!-- TODO: Find number of children in matching preferences --}}
+				<select name="numberOfChildrenPrefered" class="input form__number-select number-of-children-preferred">
+					<option value=""></option>
+					<option {{#ifeq user.matchingPreferences.numberOfChildrenToAdopt 0 }}selected="selected"{{/ifeq}} value="0">0</option>
+					<option {{#ifeq user.matchingPreferences.numberOfChildrenToAdopt 1 }}selected="selected"{{/ifeq}} value="1">1</option>
+					<option {{#ifeq user.matchingPreferences.numberOfChildrenToAdopt 2 }}selected="selected"{{/ifeq}} value="2">2</option>
+					<option {{#ifeq user.matchingPreferences.numberOfChildrenToAdopt 3 }}selected="selected"{{/ifeq}} value="3">3</option>
+					<option {{#ifeq user.matchingPreferences.numberOfChildrenToAdopt 4 }}selected="selected"{{/ifeq}} value="4">4</option>
+					<option {{#ifeq user.matchingPreferences.numberOfChildrenToAdopt 5 }}selected="selected"{{/ifeq}} value="5">5</option>
+					<option {{#ifeq user.matchingPreferences.numberOfChildrenToAdopt 6 }}selected="selected"{{/ifeq}} value="6">6</option>
+					<option {{#ifeq user.matchingPreferences.numberOfChildrenToAdopt 7 }}selected="selected"{{/ifeq}} value="7">7</option>
+					<option {{#ifeq user.matchingPreferences.numberOfChildrenToAdopt 8 }}selected="selected"{{/ifeq}} value="8">8</option>
+					<option {{#ifeq user.matchingPreferences.numberOfChildrenToAdopt 9 }}selected="selected"{{/ifeq}} value="9">9</option>
+					<option {{#ifeq user.matchingPreferences.numberOfChildrenToAdopt 10 }}selected="selected"{{/ifeq}} value="10">10+</option>
+				</select>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-12">
+				<label class="label marg-bottom-xs-5 contact-with-biological-siblings-label">Would you consider children who have contact with their biological siblings?</label>
+			</div>
+			<div class="col-sm-12">
+				<span id="preferred-sibling-contact-error-container" class="error-container">
+					<label class="radio-inline"><input type="radio" name="contactWithBiologicalSiblings" class="contact-with-biological-siblings" value="yes" {{#if user.matchingPreferences.siblingContact}}checked{{/if}}>Yes</label>
+					<label class="radio-inline"><input type="radio" name="contactWithBiologicalSiblings" value="no" {{#if user.matchingPreferences.siblingContact}}{{else}}checked{{/if}}>No</label>
+				</span>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-12">
+				<label class="label marg-bottom-xs-5 contact-with-biological-parents-label">Would you consider children who have contact with their biological parents?</label>
+			</div>
+			<div class="col-sm-12">
+				<span id="preferred-parent-contact-error-container" class="error-container">
+					<label class="radio-inline"><input type="radio" name="contactWithBiologicalParents" class="contact-with-biological-parents" value="yes" {{#if user.matchingPreferences.birthFamilyContact}}checked{{/if}}>Yes</label>
+					<label class="radio-inline"><input type="radio" name="contactWithBiologicalParents" value="no" {{#if user.matchingPreferences.birthFamilyContact}}{{else}}checked{{/if}}>No</label>
+				</span>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-24">
+				<label class="label marg-bottom-xs-5 race-label">Race/Ethnicity (check all that apply)</label>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-16">
+				<div id="preferred-race-error-container" class="row error-container">
+					{{#each races}}
+					<div class="col-sm-12 form-group">
+						<label class="checkbox-inline">
+							<input type="checkbox" name="adoptionPrefRace[]" class="race" value="{{ _id }}" {{#ifincludes ../user.matchingPreferences.race _id }}checked="checked"{{/ifincludes}}>{{ race }}
+						</label>
+					</div>
+					{{/each}}
+				</div>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-12">
+				<label class="label marg-bottom-xs-5 maximum-physical-needs-label">Maximum level of physical needs</label>
+			</div>
+			<div class="col-sm-12">
+				<span id="preferred-maximum-physical-needs-error-container" class="error-container">
+					<label class="radio-inline"><input type="radio" name="maximumPhysicalNeeds" class="maximum-physical-needs" value="none" {{#ifeq user.matchingPreferences.maxNeeds.physical 'none'}}checked="checked"{{/ifeq}}>None</label>
+					<label class="radio-inline"><input type="radio" name="maximumPhysicalNeeds" value="mild" {{#ifeq user.matchingPreferences.maxNeeds.physical 'mild'}}checked="checked"{{/ifeq}}>Mild</label>
+					<label class="radio-inline"><input type="radio" name="maximumPhysicalNeeds" value="moderate" {{#ifeq user.matchingPreferences.maxNeeds.physical 'moderate'}}checked="checked"{{/ifeq}}>Moderate</label>
+					<label class="radio-inline"><input type="radio" name="maximumPhysicalNeeds" value="severe" {{#ifeq user.matchingPreferences.maxNeeds.physical 'severe'}}checked="checked"{{/ifeq}}>Severe</label>
+				</span>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-12">
+				<label class="label marg-bottom-xs-5 maximum-emotional-needs-label">Maximum level of emotional needs</label>
+			</div>
+			<div class="col-sm-12">
+				<span id="preferred-maximum-emotional-needs-error-container" class="error-container">
+					<label class="radio-inline"><input type="radio" name="maximumEmotionalNeeds" class="maximum-emotional-needs" value="none" {{#ifeq user.matchingPreferences.maxNeeds.emotional 'none'}}checked="checked"{{/ifeq}}>None</label>
+					<label class="radio-inline"><input type="radio" name="maximumEmotionalNeeds" value="mild" {{#ifeq user.matchingPreferences.maxNeeds.emotional 'mild'}}checked="checked"{{/ifeq}}>Mild</label>
+					<label class="radio-inline"><input type="radio" name="maximumEmotionalNeeds" value="moderate" {{#ifeq user.matchingPreferences.maxNeeds.emotional 'moderate'}}checked="checked"{{/ifeq}}>Moderate</label>
+					<label class="radio-inline"><input type="radio" name="maximumEmotionalNeeds" value="severe" {{#ifeq user.matchingPreferences.maxNeeds.emotional 'severe'}}checked="checked"{{/ifeq}}>Severe</label>
+				</span>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-12">
+				<label class="label marg-bottom-xs-5 maximum-intellectual-needs-label">Maximum level of intellectual needs</label>
+			</div>
+			<div class="col-sm-12">
+				<span id="preferred-maximum-intellectual-needs-error-container" class="error-container">
+					<label class="radio-inline"><input type="radio" name="maximumIntellectualNeeds" class="maximum-intellectual-needs" value="none" {{#ifeq user.matchingPreferences.maxNeeds.intellectual 'none'}}checked="checked"{{/ifeq}}>None</label>
+					<label class="radio-inline"><input type="radio" name="maximumIntellectualNeeds" value="mild" {{#ifeq user.matchingPreferences.maxNeeds.intellectual 'mild'}}checked="checked"{{/ifeq}}>Mild</label>
+					<label class="radio-inline"><input type="radio" name="maximumIntellectualNeeds" value="moderate" {{#ifeq user.matchingPreferences.maxNeeds.intellectual 'moderate'}}checked="checked"{{/ifeq}}>Moderate</label>
+					<label class="radio-inline"><input type="radio" name="maximumIntellectualNeeds" value="severe" {{#ifeq user.matchingPreferences.maxNeeds.intellectual 'severe'}}checked="checked"{{/ifeq}}>Severe</label>
+				</span>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-24">
+				<label class="label marg-bottom-xs-5">Disabilities (check all that apply)</label>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-16">
+				<div class="row">
+				{{#each disabilities}}
+					<div class="col-sm-12 form-group">
+						<label class="checkbox-inline">
+							<input type="checkbox" name="disabilities" value="{{ _id }}" {{#ifincludes ../user.matchingPreferences.disabilities _id }}checked="checked"{{/ifincludes}}>{{ disability }}
+						</label>
+					</div>
+				{{/each}}
+				</div>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-24">
+				<label class="label marg-bottom-xs-5">Other considerations (check all that apply)</label>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-16">
+				<div class="row">
+				{{#each otherConsiderations}}
+					<div class="col-sm-12 form-group">
+						<label class="checkbox-inline">
+							<input type="checkbox" name="otherConsiderations" value="{{ _id }}" {{#ifincludes ../user.matchingPreferences.otherConsiderations _id }}checked="checked"{{/ifincludes}}>{{ otherConsideration }}
+						</label>
+					</div>
+				{{/each}}
+				</div>
+			</div>
+		</div>
+
+	</section>
+
+	<button class="button button--blue save-button">Save</button>
+</div>

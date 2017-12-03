@@ -33,7 +33,8 @@ exports = module.exports = function( req, res ) {
 					// specify that it should render a button after the content
 					pageActions.hasButtons = true;
 					// set the button contents
-					pageActions.buttons.push( { text: 'Register a Child', target: '/forms/child-registration-form' } );
+					pageActions.buttons.push( { text: 'Register a Child',
+												target: '/forms/child-registration-form' } );
 				// if the user is not a logged in social worker
 				} else {
 					// set the section contents
@@ -46,18 +47,21 @@ exports = module.exports = function( req, res ) {
 					// specify that it should render a button after the content
 					pageActions.hasButtons = true;
 					// set the button contents
-					pageActions.buttons.push( { text: 'Register a Family', target: '/forms/family-registration-form' } );
+					pageActions.buttons.push( { text: 'Register a Family',
+												target: '/forms/family-registration-form' } );
 				// if the user is not a logged in social worker
 				} else {
 					// set the section contents
 					pageActions.sections.push( `You must be logged in as a social worker to register a family.  If you're a social worker, you can <a href="/register#social-worker">register here</a>.` );
 				}
 			// otherwise, if the user requested any page in the 'Considering Adoption' section
-			} else if( locals.currentSection.title === 'Considering Adoption?' ) {
+			// NOTE: we check for locals.currentSection existing because it won't if the page isn't listed in the main menu
+			} else if( locals.curentSection && locals.currentSection.title === 'Considering Adoption?' ) {
 				// specify that it should render a button after the content
 				pageActions.hasButtons = true;
 				// set the button contents
-				pageActions.buttons.push( { text: 'Request Adoption Information', target: '/forms/information-request-form' } );
+				pageActions.buttons.push( { text: 'Request Adoption Information',
+											target: '/forms/information-request-form' } );
 			}
 
 			// assign properties to locals for access during templating
@@ -68,6 +72,8 @@ exports = module.exports = function( req, res ) {
 
 			// set the layout to render with the right sidebar
 			locals[ 'render-with-sidebar' ] = true;
+			// set the layout to add classes designating this a WYSIWYG page
+			locals[ 'wysiwyg-page' ] = true;
 			// render the view using the page.hbs template
 			view.render( 'page' );
 	})
@@ -76,6 +82,8 @@ exports = module.exports = function( req, res ) {
 		console.error( `there was an error loading data for the generic page - ${ err }` );
 		// set the layout to render with the right sidebar
 		locals[ 'render-with-sidebar' ] = true;
+		// set the layout to add classes designating this a WYSIWYG page
+		locals[ 'wysiwyg-page' ] = true;
 		// render the view using the page.hbs template
 		view.render( 'page' );
 	});

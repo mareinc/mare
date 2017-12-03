@@ -70,8 +70,8 @@ exports.initLocals = function(req, res, next) {
 		]}];
 
 	// based on the url from the requested page, fetch the navigation object for the site section
-	locals.currentSection = locals.mainNav.find( ( section ) => {
-		return section.subMenu.find( ( menuItem ) => {
+	locals.currentSection = locals.mainNav.find( section => {
+		return section.subMenu.find( menuItem => {
 			return menuItem.href === req.url;
 		});
 	});
@@ -210,20 +210,3 @@ exports.getArrayAsList = function getArrayAsList( array ) {
 
 	return returnString;
 }
-
-exports.charge = function( req, res ) {
-	// var stripeToken = req.body.stripeToken;
-    // var amount = 1000;
-	//
-    // stripe.charges.create({
-    //     card: stripeToken,
-    //     currency: 'usd',
-    //     amount: amount
-    // }, function(err, charge) {
-    //     if (err) {
-    //         res.send(500, err);
-    //     } else {
-    //         res.send(204);
-    //     }
-    // });
-};

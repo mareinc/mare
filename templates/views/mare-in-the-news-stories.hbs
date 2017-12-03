@@ -1,20 +1,13 @@
 <div class="card card--vertical card--large-padding">
 	<div class="card-details">
-		<div class="card-details__header">MARE Success Stories</div>
+		<div class="card-details__header">MARE in the News</div>
 		<div class="card-details__body">
-			<p class="card-details__paragraph">Over the years, MARE has found permanent, loving families
-				for thousands of children waiting in foster care. Read about a few of these phenomenal
-				families who, in the course of making a difference in a child’s life, also had their own
-				life-changing experiences.</p>
-
-			<p class="card-details__paragraph">If you have adopted with MARE’s help and have a success
-				story to share, we want to hear from you. Please email your story and picture to Diane
-				Tomaz, Director of Family Support Services, <a href="mailto:dianet@MAREinc.org">dianet@MAREinc.org</a>.</p>
+			<p class="card-details__paragraph">We need to work out the introductory language for this area</p>
 		</div>
 	</div>
 </div>
 
-{{#if hasNoSuccessStories}}
+{{#if hasNoMAREInTheNewsStories}}
 
 <section class="card-list">
 	<div class="card card--large-padding">
@@ -28,7 +21,7 @@
 
 <section class="card-list">
 
-	{{#each successStories}}
+	{{#each stories}}
 
 	<div class="card card--vertical card--medium-padding card--small-margin-below">
 		<div class="card__columns">
@@ -52,7 +45,7 @@
 			</div>
 		</div>
 		<section class="button-group button-group--horizontal button-group--space-around button-group--large-margin-above button-group--small-margin-below">
-			<button class="button button--large button--teal success-story__navigation-button" data-url="{{ url }}">Read Full Story</button>
+			<button class="button button--large button--teal mare-in-the-news__navigation-button" data-url="{{ url }}">Read Full Story</button>
 		</section>
 	</div>
 

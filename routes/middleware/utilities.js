@@ -5,6 +5,11 @@ const _			= require( 'underscore' ),
 
 /* remove any HTML style tags from text */
 exports.stripTags = text => {
+	// if the text is empty, return an empty string
+	if( !text || text.length === 0 ) {
+		return '';
+	}
+	
 	return text.replace( /(<([^>]+)>)/ig, '' );
 }
 

@@ -41,6 +41,10 @@
 		padding: 2em;
 	}
 
+	&--large-padding-below {
+		padding-bottom: 2em;
+	}
+
 	&--small-margin-below {
 		margin-bottom: 1em;
 	}
@@ -119,6 +123,7 @@
 .card__image-description {
 	line-height: 1.3em;
 	padding-bottom: 1em;
+	color: $text-color-7;
 
 	&--centered {
 		text-align: center;
@@ -276,7 +281,11 @@
 
 .card__list-item {
 	padding: 0.3em 0 0 1em;
-	color: $text-color-1;
+	color: $text-color-7;
+
+	&--disabled {
+		color: $text-color-1;
+	}
 }
 
 .card__content-divider {

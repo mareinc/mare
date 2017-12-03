@@ -18,7 +18,7 @@
 			this.$interest							= this.$( '.interest' );
 			this.$childRegistrationNumbersContainer	= this.$( '.child-registration-numbers-container' );
 
-			// Initialize parsley validation on the form
+			// initialize parsley validation on the form
 			this.form = this.$el.parsley();
 			
 			this.form.on( 'field:validated', this.validateForm );

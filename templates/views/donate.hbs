@@ -11,10 +11,10 @@
 		<div class="selection-group__content">
 			<span class="selection-group__header-text">Guarantee your support to help children in need. Recurring donations are the best way to give steady support</span>
 			<div id="donation-duration-button-group" class="button-group button-group--space-between button-group--large-margin-above">
-				<button class="toggle-button toggle-button--quarter">Just Once</button>
-				<button class="toggle-button toggle-button--quarter">Monthly</button>
-				<button class="toggle-button toggle-button--quarter">Bi-Annually</button>
-				<button class="toggle-button toggle-button--quarter">Annually</button>
+				<button class="toggle-button toggle-button--quarter" data-donation-interval="{{donationPlans.onetime.interval_count}}" >Just Once</button>
+				<button class="toggle-button toggle-button--quarter" data-donation-interval="{{donationPlans.monthly.interval_count}}">Monthly</button>
+				<button class="toggle-button toggle-button--quarter" data-donation-interval="{{donationPlans.biannual.interval_count}}">Bi-Annually</button>
+				<button class="toggle-button toggle-button--quarter" data-donation-interval="{{donationPlans.annual.interval_count}}">Annually</button>
 			</div>
 		</div>
 
@@ -27,17 +27,17 @@
 			<span class="selection-group__header-text">Choose desired donation amount</span>
 			<div class="selection-group__supporting-text"></div>
 			<div id="donation-amount-button-group" class="button-group button-group--space-between button-group--large-margin-above">
-				<button class="toggle-button toggle-button--sixth">$50</button>
-				<button class="toggle-button toggle-button--sixth">$100</button>
-				<button class="toggle-button toggle-button--sixth">$250</button>
-				<button class="toggle-button toggle-button--sixth">$500</button>
-				<button class="toggle-button toggle-button--sixth">$750</button>
-				<button class="toggle-button toggle-button--sixth">$1,000</button>
+				<button class="toggle-button toggle-button--sixth" data-value="50">$50</button>
+				<button class="toggle-button toggle-button--sixth" data-value="100">$100</button>
+				<button class="toggle-button toggle-button--sixth" data-value="250">$250</button>
+				<button class="toggle-button toggle-button--sixth" data-value="500">$500</button>
+				<button class="toggle-button toggle-button--sixth" data-value="750">$750</button>
+				<button class="toggle-button toggle-button--sixth" data-value="1000">$1,000</button>
 			</div>
 
 			<div class="button-group button-group--relative button-group--large-margin-above">
 				<label class="donations__input-label" for="donation-amount-input">$</label>
-				<input type="number" step="5" id="donation-amount-input" class="donations__input-field donations__input-field--more-padding-left" placeholder="Other Amount">
+				<input type="number" step="5" id="donation-amount-input" class="donations__input-field donations__input-field--more-padding-left" placeholder="Other Amount" min="0">
 			</div>
 		</div>
 
@@ -54,6 +54,22 @@
 		</div>
 
 	</section>
+	
+	{{#if user}}
+	<input type="hidden" id="donation-name-input" value="{{user.name.full}}">
+	{{else}}
+	<section class="donations-page__selection-group">
+
+		<span class="selection-group__number">4.</span>
+		<div class="selection-group__content">
+			<span class="selection-group__header-text">Your Name</span>
+			<div class="button-group button-group--large-margin-above">	
+				<input type="text" id="donation-name-input" class="donations__input-field donations__input-field--longer" placeholder="Your Name">
+			</div>
+		</div>
+
+	</section>
+	{{/if}}
 
 	<div class="button-group button-group--centered button-group--medium-margin-below">
 		<button id="donate-button" class="button button--disabled button--large button--green">Place Donation</button>
@@ -61,47 +77,8 @@
 
 </section>
 
-<form class="paypal-donation-form" action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
-	<input type="hidden" name="cmd" value="_s-xclick">
-	<table>
-		<tr>
-			<td>
-				<input type="hidden" name="on0" value="frequency">frequency
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<select name="os0">
-					<option value="once">once </option>
-					<option value="monthly">monthly </option>
-					<option value="bi-annually">bi-annually </option>
-					<option value="annually">annually </option>
-				</select>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<input type="hidden" name="on1" value="Enter your donation amount">Enter your donation amount
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<input type="text" name="os1" maxlength="200">
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<input type="hidden" name="on2" value="On behalf of">On behalf of
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<input type="text" name="os2" maxlength="200">
-			</td>
-		</tr>
-	</table>
-	<input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----
-	">
-	<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_subscribeCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
-	<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
-</form>
+<script src="https://checkout.stripe.com/checkout.js"></script>
+<script type="text/javascript">
+	// make stripe API key accessible to backbone view
+	var STRIPE_API_KEY = '{{stripeAPIKey}}';
+</script>
