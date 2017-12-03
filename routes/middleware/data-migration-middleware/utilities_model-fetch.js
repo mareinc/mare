@@ -6,6 +6,7 @@ const keystone		= require( 'keystone' ),
 	  Agency		= keystone.list( 'Agency' ),
 	  Family		= keystone.list( 'Family' ),
 	  SocialWorker	= keystone.list( 'Social Worker' ),
+	  CityOrTown	= keystone.list( 'City or Town' ),
 	  Child			= keystone.list( 'Child' ),
 	  MediaFeature	= keystone.list( 'Media Feature' ),
 	  Event			= keystone.list( 'Event' ),
@@ -35,27 +36,36 @@ module.exports.getSourceById = ( resolve, reject, sourceId ) => {
 		});
 };
 
-module.exports.getAgencyById = ( resolve, reject, agencyId ) => {
-	/* TODO: short circuit the fetch here by just resolving if there are no oldIds */
-	Agency.model.findOne()
-		.where( 'oldId', agencyId )
-		.exec()
-		.then( retrievedAgency => {
-			// if no agency was found
-			if( !retrievedAgency ) {
-				// log the issue
-				console.error( `error fetching agency by oldId ${ agencyId }` );
-				// and reject the promise
+module.exports.getAgencyById = agencyId => {
+
+	return new Promise( ( resolve, reject ) => {
+		// if no agency id was passed in
+		if( !agencyId ) {
+			// resolve the promise with an undefined value
+			return resolve();
+		}
+
+		Agency.model.findOne()
+			.where( 'oldId', agencyId )
+			.populate( 'address.state' )
+			.exec()
+			.then( retrievedAgency => {
+				// if no agency was found
+				if( !retrievedAgency ) {
+					// log the issue
+					console.error( `error fetching agency by oldId ${ agencyId }` );
+					// and reject the promise
+					reject();
+				}
+				// otherwise, accept the promise and pass back the retrieved agency
+				resolve( retrievedAgency );
+
+			}, err => {
+
+				console.error( `error in getAgencyById() ${ err }` );
 				reject();
-			}
-			// otherwise, accept the promise and pass back the retrieved agency
-			resolve( retrievedAgency );
-
-		}, err => {
-
-			console.error( `error in getAgencyById() ${ err }` );
-			reject();
-		});
+			});
+	});
 };
 
 module.exports.getAgencyIdsByOldIds = ( resolve, reject, oldIds ) => {
@@ -69,7 +79,7 @@ module.exports.getAgencyIdsByOldIds = ( resolve, reject, oldIds ) => {
 				// log the issue
 				console.error( `error fetching agency IDs by old ids ${ oldIds }` );
 				// and resolve the promise with an undefined value
-				resolve( undefined );
+				resolve();
 			}
 
 			let agencyIds = [];
@@ -87,11 +97,51 @@ module.exports.getAgencyIdsByOldIds = ( resolve, reject, oldIds ) => {
 		});
 };
 
+module.exports.getCityOrTownByName = ( cityOrTownName, state ) => {
+
+	return new Promise( ( resolve, reject ) => {
+		// if no registration number was passed in
+		if( !cityOrTownName ) {
+			console.log( `no city or town passed in to getCityOrTownbyName()` );
+			// resolve the promise on the spot
+			return resolve();
+		}
+		// if the user doesn't live in Massachusetts
+		if( state !== 'MA' ) {
+			// resolve the promise as there's no city or town information to fetch
+			return resolve();
+		}
+
+		CityOrTown.model
+			.findOne()
+			.where( 'cityOrTown', cityOrTownName )
+			.exec()
+			.then( cityOrTown => {
+				// if no child was found
+				if( !cityOrTown ) {
+					// log the issue
+					console.error( `error fetching city or town by name ${ cityOrTownName }` );
+					// and reject the promise with enough information to capture the error
+					reject( cityOrTownName );
+				}
+				// otherwise, accept the promise and pass back the retrieved child
+				resolve( cityOrTown );
+
+			}, err => {
+
+				console.error( `error in getCityOrTownByName() ${ err }` );
+				reject();
+			});
+	});
+};
+
 module.exports.getSocialWorkerById = socialWorkerId => {
 
 	return new Promise( ( resolve, reject ) => {
+		// if no social worker id was passed in
 		if( !socialWorkerId ) {
-			return resolve( undefined );
+			// resolve the promise with an undefined value
+			return resolve();
 		}
 	
 		SocialWorker.model
@@ -104,7 +154,7 @@ module.exports.getSocialWorkerById = socialWorkerId => {
 					// log the issue
 					console.error( `error fetching social worker by oldId ${ socialWorkerId }` );
 					// and resolve the promise with an undefined value
-					resolve( undefined );
+					resolve();
 				}
 				// otherwise, accept the promise and pass back the retrieved social worker
 				resolve( retrievedSocialWorker );
@@ -130,7 +180,7 @@ module.exports.getSocialWorkerIdsByOldIds = ( resolve, reject, oldIds ) => {
 				// log the issue
 				console.error( `error fetching social worker IDs by old ids ${ oldIds }` );
 				// and resolve the promise with an undefined value
-				resolve( undefined );
+				resolve();
 			}
 
 			let socialWorkerIds = [];
@@ -167,7 +217,7 @@ module.exports.getChildByRegistrationNumber = registrationNumber => {
 					// log the issue
 					console.error( `error fetching child by registration number ${ registrationNumber }` );
 					// and resolve the promise with an undefined value
-					resolve( undefined );
+					resolve();
 				}
 				// otherwise, accept the promise and pass back the retrieved child
 				resolve( retrievedChild );
@@ -191,7 +241,7 @@ module.exports.getChildIdsByRegistrationNumbers = ( resolve, reject, registratio
 				// log the issue
 				console.error( `error fetching child IDs by registration numbers ${ registrationNumbers }` );
 				// and resolve the promise with an undefined value
-				resolve( undefined );
+				resolve();
 			}
 
 			let childIds = [];
@@ -209,27 +259,36 @@ module.exports.getChildIdsByRegistrationNumbers = ( resolve, reject, registratio
 		});
 };
 
-module.exports.getMediaFeatureById = ( resolve, reject, mediaFeatureId ) => {
-	/* TODO: short circuit the fetch here by just resolving if there are no oldIds */
-	MediaFeature.model.findOne()
-		.where( 'oldId', mediaFeatureId )
-		.exec()
-		.then( retrievedMediaFeature => {
-			// if no media feature was found
-			if( !retrievedMediaFeature ) {
-				// log the issue
-				console.error( `error fetching media feature by ID ${ mediaFeatureId }` );
-				// and resolve the promise with an undefined value
-				resolve( undefined );
-			}
-			// otherwise, accept the promise and pass back the retrieved media feature
-			resolve( retrievedMediaFeature );
+module.exports.getMediaFeatureById = mediaFeatureId => {
 
-		}, err => {
+	return new Promise( ( resolve, reject ) => {
+		// if no media feature id was passed in
+		if( !mediaFeatureId ) {
+			// resolve the promise with an undefined value
+			return resolve();
+		}
 
-			console.error( `error in getMediaFeatureById() ${ err }` );
-			reject();
-		});
+		MediaFeature.model
+			.findOne()
+			.where( 'oldId', mediaFeatureId )
+			.exec()
+			.then( retrievedMediaFeature => {
+				// if no media feature was found
+				if( !retrievedMediaFeature ) {
+					// log the issue
+					console.error( `error fetching media feature by ID ${ mediaFeatureId }` );
+					// and resolve the promise with an undefined value
+					resolve();
+				}
+				// otherwise, accept the promise and pass back the retrieved media feature
+				resolve( retrievedMediaFeature );
+
+			}, err => {
+
+				console.error( `error in getMediaFeatureById() ${ err }` );
+				reject();
+			});
+	});
 };
 
 module.exports.getFamilyByRegistrationNumber = registrationNumber => {
@@ -237,7 +296,7 @@ module.exports.getFamilyByRegistrationNumber = registrationNumber => {
 	return new Promise( ( resolve, reject ) => {
 
 		if( !registrationNumber ) {
-			return resolve( undefined );
+			return resolve();
 		}
 
 		Family.model
@@ -250,7 +309,7 @@ module.exports.getFamilyByRegistrationNumber = registrationNumber => {
 					// log the issue
 					console.error( `error fetching family by registrationNumber ${ registrationNumber }` );
 					// and resolve the promise with an undefined value
-					resolve( undefined );
+					resolve();
 				}
 				// otherwise, accept the promise and pass back the retrieved family
 				resolve( retrievedFamily );
@@ -274,7 +333,7 @@ module.exports.getFamilyIdsByRegistrationNumbers = ( resolve, reject, registrati
 				// log the issue
 				console.error( `error fetching family IDs by registration numbers ${ registrationNumbers }` );
 				// and resolve the promise with an undefined value
-				resolve( undefined );
+				resolve();
 			}
 
 			let familyIds = [];
