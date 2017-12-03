@@ -24,6 +24,7 @@ exports.getStatesMap = ( req, res, done ) => {
 		done => { dataMigrationService.getModelId( { model: 'State', field: 'state', value: 'Idaho', mapTo: [ 'ID' ], namespace: locals.migration.maps.states }, done ); },
 		done => { dataMigrationService.getModelId( { model: 'State', field: 'state', value: 'Illinois', mapTo: [ 'IL' ], namespace: locals.migration.maps.states }, done ); },
 		done => { dataMigrationService.getModelId( { model: 'State', field: 'state', value: 'Indiana', mapTo: [ 'IN' ], namespace: locals.migration.maps.states }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'State', field: 'state', value: 'International', mapTo: [ 'I' ], namespace: locals.migration.maps.states }, done ); },
 		done => { dataMigrationService.getModelId( { model: 'State', field: 'state', value: 'Iowa', mapTo: [ 'IA' ], namespace: locals.migration.maps.states }, done ); },
 		done => { dataMigrationService.getModelId( { model: 'State', field: 'state', value: 'Kansas', mapTo: [ 'KS' ], namespace: locals.migration.maps.states }, done ); },
 		done => { dataMigrationService.getModelId( { model: 'State', field: 'state', value: 'Kentucky', mapTo: [ 'KY' ], namespace: locals.migration.maps.states }, done ); },
@@ -48,6 +49,7 @@ exports.getStatesMap = ( req, res, done ) => {
 		done => { dataMigrationService.getModelId( { model: 'State', field: 'state', value: 'Oklahoma', mapTo: [ 'OK' ], namespace: locals.migration.maps.states }, done ); },
 		done => { dataMigrationService.getModelId( { model: 'State', field: 'state', value: 'Oregon', mapTo: [ 'OR' ], namespace: locals.migration.maps.states }, done ); },
 		done => { dataMigrationService.getModelId( { model: 'State', field: 'state', value: 'Pennsylvania', mapTo: [ 'PA' ], namespace: locals.migration.maps.states }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'State', field: 'state', value: 'Puerto Rico', mapTo: [ 'PR' ], namespace: locals.migration.maps.states }, done ); },
 		done => { dataMigrationService.getModelId( { model: 'State', field: 'state', value: 'Rhode Island', mapTo: [ 'RI' ], namespace: locals.migration.maps.states }, done ); },
 		done => { dataMigrationService.getModelId( { model: 'State', field: 'state', value: 'South Carolina', mapTo: [ 'SC' ], namespace: locals.migration.maps.states }, done ); },
 		done => { dataMigrationService.getModelId( { model: 'State', field: 'state', value: 'South Dakota', mapTo: [ 'SD' ], namespace: locals.migration.maps.states }, done ); },
@@ -57,6 +59,7 @@ exports.getStatesMap = ( req, res, done ) => {
 		done => { dataMigrationService.getModelId( { model: 'State', field: 'state', value: 'Vermont', mapTo: [ 'VT' ], namespace: locals.migration.maps.states }, done ); },
 		done => { dataMigrationService.getModelId( { model: 'State', field: 'state', value: 'Virginia', mapTo: [ 'VA' ], namespace: locals.migration.maps.states }, done ); },
 		done => { dataMigrationService.getModelId( { model: 'State', field: 'state', value: 'Washington', mapTo: [ 'WA' ], namespace: locals.migration.maps.states }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'State', field: 'state', value: 'Washington DC', mapTo: [ 'DC' ], namespace: locals.migration.maps.states }, done ); },
 		done => { dataMigrationService.getModelId( { model: 'State', field: 'state', value: 'West Virginia', mapTo: [ 'WV' ], namespace: locals.migration.maps.states }, done ); },
 		done => { dataMigrationService.getModelId( { model: 'State', field: 'state', value: 'Wisconsin', mapTo: [ 'WI' ], namespace: locals.migration.maps.states }, done ); },
 		done => { dataMigrationService.getModelId( { model: 'State', field: 'state', value: 'Wyoming', mapTo: [ 'WY' ], namespace: locals.migration.maps.states }, done ); }
