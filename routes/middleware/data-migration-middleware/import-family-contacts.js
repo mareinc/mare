@@ -152,6 +152,10 @@ module.exports.updateFamilyRecord = ( contacts, familyId, pauseUntilSaved ) => {
 
 	familyLoaded.then( family => {
 
+		if( !family ) {
+			throw new Error( `family not found with registration number: ${ familyId }` );
+		}
+
 		if( contactsArray.length > 2 ) {
 			console.log( 'too many contacts in this family' );
 		}
@@ -223,7 +227,17 @@ module.exports.updateFamilyRecord = ( contacts, familyId, pauseUntilSaved ) => {
 				}, 1000 );
 			}
 		});
-	});
+	})
+	.catch( err => {
+		importErrors.push( err );
+
+		// fire off the next iteration of our generator after pausing
+		if( pauseUntilSaved ) {
+			setTimeout( () => {
+				familyContactGenerator.next();
+			}, 1000 );
+		}
+	})
 };
 
 // instantiates the generator used to create family records at a regulated rate
