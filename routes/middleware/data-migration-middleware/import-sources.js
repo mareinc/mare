@@ -61,6 +61,7 @@ module.exports.generateSources = function* generateSources() {
 		}
 		// decrement the counter keeping track of how many records we still need to process
 		remainingRecords--;
+		console.log( `sources remaining: ${ remainingRecords }` );
 		// if there are no more records to process call done to move to the next migration file
 		if( remainingRecords === 0 ) {
 
@@ -91,7 +92,7 @@ module.exports.createSourceRecord = ( source, pauseUntilSaved ) => {
 
 		source: source.name.trim(),
 		type: source.is_media_outlet === 'Y' ? 'media' : 'event',
-		isActive: source.is_media_outlet_active === 'Y' ? true : false,
+		isActive: source.is_media_outlet_active === 'Y',
 		mediaFrequency: source.media_frequency.trim(),
 		mediaType: source.media_type ? mediaTypesMap[ source.media_type ] : undefined,
 
