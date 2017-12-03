@@ -168,7 +168,7 @@ module.exports.createChildRecord = ( child, pauseUntilSaved ) => {
 		let newChild = new Child.model({
 
 			// Display Options
-			siteVisibility: child.legal_status === 'R' ? 'registered social workers and families' : 'everyone',
+			siteVisibility: child.legal_status === 'R' ? 'only registered social workers and families' : 'everyone',
 			isVisibleInGallery: child.status === 'A' && child.legal_status === 'F',
 
 			// Child Information
@@ -253,7 +253,7 @@ module.exports.createChildRecord = ( child, pauseUntilSaved ) => {
 			// if we run into an error
 			if( err ) {
 				// store a reference to the entry that caused the error
-				importErrors.push( { id: child.chd_id, error: err.err } );
+				importErrors.push( { id: child.chd_id, error: err } );
 			}
 
 			// fire off the next iteration of our generator after pausing
