@@ -164,11 +164,8 @@ module.exports.generateChildMediaFeatures = function* generateChildMediaFeatures
 module.exports.updateChildRecord = ( childMediaFeatureGroupIds, childOldId, pauseUntilSaved ) => {
 	// fetch the first child
 	const childLoaded = utilityModelFetch.getChildByRegistrationNumber( childOldId );
-	// // create a promise
-	// const mediaFeatureLoaded = new Promise( ( resolve, reject ) => {
-	// 	// for fetching the _ids from other children
-	// 	utilityModelFetch.getMediaFeatureById( resolve, reject, childMediaFeature.mft_id );
-	// });
+	// // fetch the media feature associated with the child
+	// const mediaFeatureLoaded = utilityModelFetch.getMediaFeatureById( childMediaFeature.mft_id );
 
 	// Promise.all( [ childLoaded, mediaFeatureLoaded ] ).then( values => {
 	childLoaded.then( child => {
