@@ -99,41 +99,43 @@ exports = module.exports = ( req, res ) => {
 		// data import
 
 		// done => { adminImport.importAdmin( req, res, done ); },
-		// done => { sourcesImport.importSources( req, res, done ); },	// there's no countdown during creation like the newer imports
+		// done => { sourcesImport.importSources( req, res, done ); },
 		// done => { mediaFeaturesImport.importMediaFeatures( req, res, done ); }, // notes have markup in them, probably need to strip this out (check display of content)
 		// done => { agenciesImport.importAgencies( req, res, done ); },
 		// done => { outsideContactImport.importOutsideContacts( req, res, done ); },
+
+		// IMPORTANT: remove all social workers and social worker histories before running
 		// done => { socialWorkerImport.importSocialWorkers( req, res, done ); },
 		// done => { agencyContactsImport.appendAgencyContacts( req, res, done ); },
 
-		// IMPORTANT: comment out the following in pre-save: setImages, setRegistrationNumber, updateMustBePlacedWithSiblingsCheckbox, updateGroupBio
+		// IMPORTANT: comment out the following in pre-save: setImages, setRegistrationNumber, setSiblingGroupFileName, updateMustBePlacedWithSiblingsCheckbox, updateGroupBio
 		// IMPORTANT: comment out the post-save hook
 		// done => { childrenImport.importChildren( req, res, done ); },
 		
 		// IMPORTANT: comment out the entire rest of the pre-save hook
 		// IMPORTANT: this consumes a TON of memory, need to run with nodemon --inspect --max-old-space-size=4096 keystone
-		done => { childHistoriesImport.importChildHistories( req, res, done ) },
+		// done => { childHistoriesImport.importChildHistories( req, res, done ) },								// not done - finish after go live
 		// done => { childMediaEligibilitiesImport.appendMediaEligibilities( req, res, done ); },
 		// done => { childDisabilitiesImport.appendDisabilities( req, res, done ); },
 		
 		// IMPORTANT: uncomment the pre-save hook and make only the following functions active: setSiblingGroupFileName, updateMustBePlacedWithSiblingsCheckbox, updateGroupBio
 		// IMPORTANT: uncomment the post-save hook and make only the following function active: updateSiblingFields
-		// done => { childSiblingsImport.appendSiblings( req, res, done ); }, // there's no countdown during creation like the newer imports
-		// done => { childRecruitmentChecklistImport.appendChildRecruitmentChecklists( req, res ,done ); },		// not done // DON'T NEED TO DO
-		// done => { childMediaFeaturesImport.appendMediaFeatures( req, res, done ); },							// not done // DON'T THINK WE NEED TO DO, CHECK ON THIS
+		// done => { childSiblingsImport.appendSiblings( req, res, done ); },
+		// done => { childRecruitmentChecklistImport.appendChildRecruitmentChecklists( req, res ,done ); },		// not done - don't need to do
+		// done => { childMediaFeaturesImport.appendMediaFeatures( req, res, done ); },							// not done - don't think we need to do this, check with Lisa.  Possibly handled with mediaFeatureChildImport
 		// IMPORTANT: the child pre/post save hooks can be restored
 		// done => { mediaFeatureChildImport.appendChildren( req, res, done ); },
 		
 		// IMPORTANT: comment out the following in pre-save: setHomestudyVerifiedDate, setGalleryViewingPermissions, setFullName, setFileName
 		// done => { familiesImport.importFamilies( req, res, done ); },
 		
-		// IMPORTANT: comment out the entire pre-save hook (THIS IS WRONG AND SHOULD BE REVIEWED ON NEXT RUN)
+		// IMPORTANT: comment out the entire pre-save hook
 		// done => { familySocialWorkersImport.appendFamilySocialWorkers( req, res, done ); },
 		// done => { familyRacePreferencesImport.appendFamilyRacePreferences( req, res, done ); },
 		// done => { familyDisabilityPreferencesImport.appendFamilyDisabilityPreferences( req, res, done ); },
 		// done => { familySupportServicesImport.appendFamilySupportServices( req, res, done ); },
+		// IMPORTANT: uncomment the pre-save hook and make only the following functions active: setFullName, setFileName
 		// done => { familyContactsImport.appendFamilyContacts( req, res, done ); },
-		// IMPORTANT: uncomment the pre-save hook and make only the following functions active: setGalleryViewingPermissions, setFullName, setFileName
 		// done => { familyChildrenImport.appendFamilyChildren( req, res, done ); },
 		// done => { familyRecruitmentChecklistImport.appendFamilyRecruitmentChecklists( req, res ,done );		// not done // DON'T NEED TO DO
 
@@ -145,7 +147,7 @@ exports = module.exports = ( req, res ) => {
 		// done => { inquiryChildrenImport.appendInquiryChildren( req, res, done ); },								// not done, call child
 		// done => { inquiryNotesImport.appendInquiryNotes( req, res, done ); },									// not done, call note
 		// done => { eventsImport.importEvents( req, res, done ); },
-		// done => { eventAttendeeImport.appendEventAttendees( req, res, done ); },
+		done => { eventAttendeeImport.appendEventAttendees( req, res, done ); },
 		// done => { mailingListAttendeesImport.importMailingListAttendees( req, res, done ); },					// not done
 		// IMPORTANT: I think family backup is family internal notes
 		// done => { familyInternalNotesImport.importInternalNotes( req, res, done ); }							// not done
