@@ -63,7 +63,7 @@ exports.registerUser = ( req, res, next ) => {
 					// store the array of mailing list ids the user has opted into
 					const mailingListIds = user.mailingLists;
 					// create a new verification code model in the database to allow users to verify their accounts
-					const createVerificationRecord = exports.createNewVerificationModel( verificationCode, userId );
+					const createVerificationRecord = exports.createNewVerificationRecord( verificationCode, userId );
 					// fetch contact info for the staff contact for site visitor registration
 					const fetchRegistrationStaffContactInfo = exports.getRegistrationStaffContactInfo( 'site visitor' );
 					// once the contact info has been fetched
@@ -123,7 +123,7 @@ exports.registerUser = ( req, res, next ) => {
 					// store the array of mailing list ids the user has opted into
 					const mailingListIds = user.mailingLists;
 					// create a new verification code model in the database to allow users to verify their accounts
-					const createVerificationRecord = exports.createNewVerificationModel( verificationCode, userId );
+					const createVerificationRecord = exports.createNewVerificationRecord( verificationCode, userId );
 					// fetch contact info for the staff contact for social worker registration
 					const fetchRegistrationStaffContactInfo = exports.getRegistrationStaffContactInfo( 'social worker' );
 					// once the contact info has been fetched
@@ -186,7 +186,7 @@ exports.registerUser = ( req, res, next ) => {
 					// store the array of mailing list ids the user has opted into
 					const mailingListIds = user.mailingLists;
 					// create a new verification code model in the database to allow users to verify their accounts
-					const createVerificationRecord = exports.createNewVerificationModel( verificationCode, userId );
+					const createVerificationRecord = exports.createNewVerificationRecord( verificationCode, userId );
 					// fetch contact info for the staff contact for family registration
 					const fetchRegistrationStaffContactInfo = exports.getRegistrationStaffContactInfo( 'family' );
 					// once the contact info has been fetched
@@ -673,7 +673,7 @@ exports.getCurrentDate = () => {
 
 	const date = new Date();
 
-	const formattedDate = ( date.getMonth() + 1 ) + '/' + date.getDate() + '/' +  date.getFullYear();
+	const formattedDate = `${ date.getMonth() + 1 }/${ date.getDate() }/${ date.getFullYear() }`;
 	return formattedDate;
 };
 
@@ -681,11 +681,11 @@ exports.setChild = ( user, i ) => {
 
 	let childObject = {};
 
-	if ( user[ 'child' + i + '-name' ] ) {
-		childObject.name 		= user[ 'child' + i + '-name' ];
-		childObject.birthDate 	= user[ 'child' + i + '-birthDate' ];
-		childObject.gender 		= user[ 'child' + i + '-gender' ];
-		childObject.type 		= user[ 'child' + i + '-type' ];
+	if ( user[ `child${ i }-name` ] ) {
+		childObject.name 		= user[ `child${ i }-name` ];
+		childObject.birthDate 	= user[ `child${ i }-birthDate` ];
+		childObject.gender 		= user[ `child${ i }-gender` ];
+		childObject.type 		= user[ `child${ i }-type` ];
 	}
 
 	return childObject;
@@ -729,23 +729,24 @@ exports.getStages = family => {
 	return stages;
 };
 
-exports.createNewVerificationModel = ( verificationCode, userId ) => {
+exports.createNewVerificationRecord = ( verificationCode, userId ) => {
 	
 	return new Promise( ( resolve, reject ) => {
 		// create the new verification model
-		var newVerificationCodeModel = new AccountVerificationCode.model({
+		const newVerificationCodeModel = new AccountVerificationCode.model({
 			code	: verificationCode,
 			user	: userId,
 			dateSent: new Date()
 		});
 		// attempt to save the new verification model
 		newVerificationCodeModel.save( ( err, model ) => {
+			// if there was an error saving the new model to the database
+			if( err ) {
+				// reject the promise with the reason for the rejection
+				return reject( `error saving the new verification code model for user ${ userId }: ${ err }` );
+			}
 			// if the model saved successfully, resolve the promise, returning the newly saved model
 			resolve( model );
-		// if there was an error saving the new model to the database
-		}, err => {
-			// reject the promise with the reason for the rejection
-            reject( `error saving the new verification code model for user ${ userId }: ${ err }` );
 		});
 	});
 };
