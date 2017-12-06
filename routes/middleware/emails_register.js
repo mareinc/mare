@@ -1,9 +1,9 @@
 const keystone				= require( 'keystone' );
 const utilitiesMiddleware   = require( './utilities' );
 
-exports.sendRegistrationConfirmationEmailToStaff = ( user, registrationStaffContact, done ) => {
+exports.sendNewUserRegistrationEmailToStaff = ( user, registrationStaffContact, done ) => {
 	// do nothing if sending of the email is not currently allowed
-	if( process.env.MIGRATION === 'true' ) {
+	if( process.env.SEND_NEW_USER_REGISTRATION_EMAILS_TO_MARE === 'true' ) {
 		return done();
 	}
 	// find the email template in templates/emails/
@@ -43,7 +43,56 @@ exports.sendRegistrationConfirmationEmailToStaff = ( user, registrationStaffCont
 
 };
 
-exports.sendThankYouEmailToUser = ( staffContactInfo = { email: 'gmoha92@gmail.com', name: 'Mohammad' } , userEmail, userType, verificationCode, host ) => {
+exports.sendAccountVerificationEmailToUser = ( staffContactInfo = { email: 'jared.j.collier@gmail.com', name: 'Jared' } , userEmail, userType, verificationCode, host ) => {
+	
+	return new Promise( ( resolve, reject ) => {
+		// if sending of the email is not currently allowed
+		if( process.env.SEND_ACCOUNT_VERIFICATION_EMAILS_TO_USER === 'false' ) {
+			// resolve the promise before any further processing takes place
+			return reject( `sending of account verification emails is currently turned off, no email was sent to ${ userEmail }` );
+		}
+
+		// find the email template in templates/emails/
+		new keystone.Email({
+
+			templateExt 	: 'hbs',
+			templateEngine 	: require( 'handlebars' ),
+			templateName 	: 'register_account-verification-to-user'
+
+		}).send({
+
+			to: 'jared.j.collier@gmail.com',
+			from: {
+				name 	: 'MARE',
+				email 	: 'admin@adoptions.io'
+			},
+			subject       		: 'please verify your MARE account',
+			emailSubject		: `${ userType } registration question`,
+			staffContactEmail	: staffContactInfo.email,
+			staffContactName	: staffContactInfo.name,
+			host,
+			userType,
+			verificationCode
+
+		}, ( err, message ) => {
+			// log any errors
+			if( err ) {
+				return reject( `error sending registration account verification email: ${ err }` );
+			}
+			// the response object is stored as the 0th element of the returned message
+			const response = message ? message[ 0 ] : undefined;
+			// if the email failed to send, or an error occurred ( which it does, rarely ) causing the response message to be empty
+			if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
+				// reject the promise with details
+				return reject( `account verification to newly registered user email failed to send: ${ message }.  Error: ${ err }` );
+			}
+
+			resolve();
+		});
+	});
+};
+
+exports.sendThankYouEmailToUser = ( staffContactInfo = { email: 'jared.j.collier@gmail.com', name: 'Jared' } , userEmail, userType, host ) => {
 	
 	return new Promise( ( resolve, reject ) => {
 		// TODO: check the logic around process.env.migration, it doesn't seem to make sense
@@ -62,7 +111,7 @@ exports.sendThankYouEmailToUser = ( staffContactInfo = { email: 'gmoha92@gmail.c
 
 		}).send({
 
-			to: 'gmoha92@gmail.com',
+			to: 'jared.j.collier@gmail.com',
 			from: {
 				name 	: 'MARE',
 				email 	: 'admin@adoptions.io'
@@ -85,7 +134,7 @@ exports.sendThankYouEmailToUser = ( staffContactInfo = { email: 'gmoha92@gmail.c
 			// if the email failed to send, or an error occurred ( which it does, rarely ) causing the response message to be empty
 			if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
 				// reject the promise with details
-				return reject( `thank you to new registered user email failed to send: ${ message }.  Error: ${ err }` );
+				return reject( `thank you to newly registered user email failed to send: ${ message }.  Error: ${ err }` );
 			}
 
 			resolve();

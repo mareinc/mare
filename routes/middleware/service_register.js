@@ -58,7 +58,7 @@ exports.registerUser = ( req, res, next ) => {
 					const userId = newSiteVisitor.get( '_id' );
 					// store the user type found in the returned model
 					const userType = newSiteVisitor.userType;
-					// store the host name to link to the verification code in the thank you email
+					// store the host name to link to the verification code in the account verification email
 					const host = req.secure ? `https://${ req.headers.host }` : `http://${ req.headers.host }`;
 					// store the array of mailing list ids the user has opted into
 					const mailingListIds = user.mailingLists;
@@ -70,13 +70,13 @@ exports.registerUser = ( req, res, next ) => {
 					Promise.all( [ createVerificationRecord, fetchRegistrationStaffContactInfo ] ).then( values => {
 						// assign local variables to the values returned by the promises
 						const [ verificationRecord, staffContactInfo ] = values;
-						// send the thank you email to the user
-						const thankYouEmailSentToUser = registrationEmailMiddleware.sendThankYouEmailToUser( staffContactInfo, user.email, userType, verificationCode, host );
+						// send the account verification email to the user
+						const accountVerificationEmailSentToUser = registrationEmailMiddleware.sendAccountVerificationEmailToUser( staffContactInfo, user.email, userType, verificationCode, host );
 						// TODO: need to send a notification email to the appropriate staff member as well ( check with Lisa to see if this is needed )
 						// add the user to any mailing lists they've opted into
 						const userAddedToMailingLists = exports.addToMailingLists( newSiteVisitor, mailingListIds, registrationType );
-						// if there was an error sending the thank you email to the new site visitor
-						thankYouEmailSentToUser.catch( reason => {
+						// if there was an error sending the account verification email to the new site visitor
+						accountVerificationEmailSentToUser.catch( reason => {
 							// log the reason the promise was rejected
 							console.error( reason );
 						});
@@ -118,7 +118,7 @@ exports.registerUser = ( req, res, next ) => {
 					const userId = newSocialWorker.get( '_id' );
 					// store the user type found in the returned model
 					const userType = newSocialWorker.userType;
-					// store the host name to link to the verification code in the thank you email
+					// store the host name to link to the verification code in the account verification email
 					const host = req.secure ? `https://${ req.headers.host }` : `http://${ req.headers.host }`;
 					// store the array of mailing list ids the user has opted into
 					const mailingListIds = user.mailingLists;
@@ -130,12 +130,12 @@ exports.registerUser = ( req, res, next ) => {
 					Promise.all( [ createVerificationRecord, fetchRegistrationStaffContactInfo ] ).then( values => {
 						// assign local variables to the values returned by the promises
 						const [ verificationRecord, staffContactInfo ] = values;
-						// send the thank you email to the user
-						const thankYouEmailSentToUser = registrationEmailMiddleware.sendThankYouEmailToUser( staffContactInfo, user.email, userType, verificationCode, host );
+						// send the account verification email to the user
+						const thankYouEmailSentToUser = registrationEmailMiddleware.sendAccountVerificationEmailToUser( staffContactInfo, user.email, userType, verificationCode, host );
 						// TODO: need to send a notification email to the appropriate staff member as well ( check with Lisa to see if this is needed )
 						// add the user to any mailing lists they've opted into
 						const userAddedToMailingLists = exports.addToMailingLists( newSocialWorker, mailingListIds, registrationType );
-						// if there was an error sending the thank you email to the new social worker
+						// if there was an error sending the account verification email to the new social worker
 						thankYouEmailSentToUser.catch( reason => {
 							// log the reason the promise was rejected
 							console.error( reason );
@@ -181,7 +181,7 @@ exports.registerUser = ( req, res, next ) => {
 					const userId = newFamily.get( '_id' );
 					// store the user type found in the returned model
 					const userType = newFamily.userType;
-					// store the host name to link to the verification code in the thank you email
+					// store the host name to link to the verification code in the account verification email
 					const host = req.secure ? `https://${ req.headers.host }` : `http://${ req.headers.host }`;
 					// store the array of mailing list ids the user has opted into
 					const mailingListIds = user.mailingLists;
@@ -193,14 +193,14 @@ exports.registerUser = ( req, res, next ) => {
 					Promise.all( [ createVerificationRecord, fetchRegistrationStaffContactInfo ] ).then( values => {
 						// assign local variables to the values returned by the promises
 						const [ verificationRecord, staffContactInfo ] = values;
-						// send the thank you email to the user
-						const thankYouEmailSentToUser = registrationEmailMiddleware.sendThankYouEmailToUser( staffContactInfo, user.email, userType, verificationCode, host );
+						// send the account verification email to the user
+						const thankYouEmailSentToUser = registrationEmailMiddleware.sendAccountVerificationEmailToUser( staffContactInfo, user.email, userType, verificationCode, host );
 						// TODO: need to send a notification email to the appropriate staff member as well ( check with Lisa to see if this is needed )
 						// add the user to any mailing lists they've opted into
 						const userAddedToMailingLists = exports.addToMailingLists( newFamily, mailingListIds, registrationType );
 						// save any submitted files and append them to the newly created user
 						const userFilesUploaded = exports.uploadFile( newFamily, 'homestudy', 'homestudyFile_upload', files.homestudyFile_upload );
-						// if there was an error sending the thank you email to the new family
+						// if there was an error sending the account verification email to the new family
 						thankYouEmailSentToUser.catch( reason => {
 							// log the reason the promise was rejected
 							console.error( reason );
@@ -575,7 +575,9 @@ exports.addToMailingLists = ( user, mailingListIds, registrationType ) => {
 
 	return new Promise( ( resolve, reject ) => {
 		// filter out any invalid strings.  False values from form submissions will result in an empty string
-		const validMailingListIds = mailingListIds.filter( ( mailingListId ) => mailingListId !== "" );
+		const validMailingListIds = mailingListIds ? 
+									mailingListIds.filter( ( mailingListId ) => mailingListId !== "" ) :
+									undefined;
 		// if there were no mailing lists the user opted into
 		if( !validMailingListIds || validMailingListIds.length === 0 ) {
 			return resolve();
