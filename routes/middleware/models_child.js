@@ -173,10 +173,11 @@ exports.updateMyRemovedSiblings = ( allSiblings, removedSiblings, childId, done 
 exports.updateMySiblingsToBePlacedWith = ( mySiblings, childId, groupProfile, siblingGroupImage, siblingGroupVideo, wednesdaysChildSiblingGroup, wednesdaysChildSiblingGroupDate, wednesdaysChildSiblingGroupVideo, done ) => {
 
 	// create the group profile object based on what was passed in
-	const newGroupProfile = groupProfile || {};
-	const newGroupProfilePart1 = groupProfile.part1 || '';
-	const newGroupProfilePart2 = groupProfile.part2 || '';
-	const newGroupProfilePart3 = groupProfile.part3 || '';
+	const newGroupProfile		= groupProfile || {},
+		  newGroupQuote			= groupProfile.quote || '',
+		  newGroupProfilePart1	= groupProfile.part1 || '',
+		  newGroupProfilePart2	= groupProfile.part2 || '',
+		  newGroupProfilePart3	= groupProfile.part3 || '';
 
 	// fetch all siblings who were added
 	keystone.list( 'Child' ).model.find()
@@ -204,6 +205,7 @@ exports.updateMySiblingsToBePlacedWith = ( mySiblings, childId, groupProfile, si
 					child.groupProfile = child.groupProfile || {};
 					// if there are siblings to add to the child or any shared sibling group data fields have changed
 					if( siblingsToAdd.size > 0 ||
+						child.groupProfile.quote !== groupProfile.quote ||
 						child.groupProfile.part1 !== groupProfile.part1 ||
 						child.groupProfile.part2 !== groupProfile.part2 ||
 						child.groupProfile.part3 !== groupProfile.part3 ||
@@ -214,6 +216,7 @@ exports.updateMySiblingsToBePlacedWith = ( mySiblings, childId, groupProfile, si
 						child.wednesdaysChildSiblingGroupVideo !== wednesdaysChildSiblingGroupVideo ) {
 						// TODO: possibly simplify this with an Object.assign
 						// update the child to be placed with with the shared bio information
+						child.groupProfile.quote	= newGroupQuote;
 						child.groupProfile.part1   	= newGroupProfilePart1;
 						child.groupProfile.part2	= newGroupProfilePart2;
 						child.groupProfile.part3	= newGroupProfilePart3;
