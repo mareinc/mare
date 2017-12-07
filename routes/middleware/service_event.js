@@ -366,16 +366,19 @@ exports.createEvent = event => {
 		});
 
 		newEvent.save( err => {
+			// if there was an error saving the new event to the database
+			if( err ) {
+				// log an error for debugging purposes
+				console.error( `there was an error creating the new event - ${ err }` );
+				// reject the promise
+				return reject();
+			}
+
 			// log a message that the event was created
 			console.log( `new event successfully created` );
 			// if the event was created successfully, resolve the event creation promise
 			resolve();
 
-		}, err => {
-			// log an error for debugging purposes
-			console.error( `there was an error creating the new event - ${ err }` );
-			// reject the promise
-			reject();
 		});
 	});
 };
