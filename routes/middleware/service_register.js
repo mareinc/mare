@@ -15,6 +15,7 @@ const keystone 						= require( 'keystone' ),
 	  registrationEmailMiddleware	= require( './emails_register' ),
 	  staffEmailTargetMiddleware	= require( './service_staff-email-target' ),
 	  staffEmailContactMiddleware	= require( './service_staff-email-contact' ),
+	  userService					= require( './service_user' ),
 	  utilities						= require( './utilities' );
 
 exports.registerUser = ( req, res, next ) => {
@@ -48,62 +49,75 @@ exports.registerUser = ( req, res, next ) => {
 		} else {
 			if( registrationType === 'siteVisitor' ) {
 				// save the site visitor model using the submitted user details
-				exports.saveSiteVisitor( user ).then( newSiteVisitor => {
-					// if the new site visitor model was saved successfully
-					// create a success flash message
-					req.flash( 'success', { title: 'Your account has been successfully created' } );
-					// create a new random code for the user to verify their account with
-					const verificationCode = utilities.generateAlphanumericHash( 35 );
-					// store the database id of the newly created user
-					const userId = newSiteVisitor.get( '_id' );
-					// store the user type found in the returned model
-					const userType = newSiteVisitor.userType;
-					// store the host name to link to the verification code in the account verification email
-					const host = req.secure ? `https://${ req.headers.host }` : `http://${ req.headers.host }`;
-					// store the array of mailing list ids the user has opted into
-					const mailingListIds = user.mailingLists;
-					// create a new verification code model in the database to allow users to verify their accounts
-					const createVerificationRecord = exports.createNewVerificationRecord( verificationCode, userId );
-					// fetch contact info for the staff contact for site visitor registration
-					const fetchRegistrationStaffContactInfo = exports.getRegistrationStaffContactInfo( 'site visitor' );
-					// once the contact info has been fetched
-					Promise.all( [ createVerificationRecord, fetchRegistrationStaffContactInfo ] ).then( values => {
-						// assign local variables to the values returned by the promises
-						const [ verificationRecord, staffContactInfo ] = values;
-						// send the account verification email to the user
-						const accountVerificationEmailSentToUser = registrationEmailMiddleware.sendAccountVerificationEmailToUser( staffContactInfo, user.email, userType, verificationCode, host );
-						// TODO: need to send a notification email to the appropriate staff member as well ( check with Lisa to see if this is needed )
-						// add the user to any mailing lists they've opted into
-						const userAddedToMailingLists = exports.addToMailingLists( newSiteVisitor, mailingListIds, registrationType );
-						// if there was an error sending the account verification email to the new site visitor
-						accountVerificationEmailSentToUser.catch( reason => {
-							// log the reason the promise was rejected
-							console.error( reason );
-						});
-						// if there was an error adding the new site visitor to the target mailing lists
-						userAddedToMailingLists.catch( reason => {
-							// log the reason the promise was rejected
-							console.error( reason );
-						});
+				exports.saveSiteVisitor( user )
+					.then( newSiteVisitor => {
+						// if the new site visitor model was saved successfully
+						// create a success flash message
+						req.flash( 'success', { title: 'Your account has been successfully created' } );
 						// redirect the user back to the appropriate page
 						res.redirect( 303, redirectPath );
-					// if there was an error saving the verification model or fetching the the registration staff contact info
-					}).catch( reason => {
-						// log the reason the promise was rejected
-						console.error( reason );
+
+						// create a new random code for the user to verify their account with
+						const verificationCode = utilities.generateAlphanumericHash( 35 );
+						// store the database id of the newly created user
+						const userId = newSiteVisitor.get( '_id' );
+						// store the user type found in the returned model
+						const userType = newSiteVisitor.userType;
+						// store the host name to link to the verification code in the account verification email
+						const host = req.secure ? `https://${ req.headers.host }` : `http://${ req.headers.host }`;
+						// store the array of mailing list ids the user has opted into
+						const mailingListIds = user.mailingLists;
+						// set the fields to populate on the fetched user model
+						const populateOptions = [ 'address.city', 'address.state', 'heardAboutMAREFrom' ];
+						
+						// fetch the user model.  Needed because the copies we have don't have the Relationship fields populated
+						const fetchUser = userService.getUserByIdNew( userId, SiteVisitor, populateOptions );
+						// fetch contact info for the staff contact for site visitor registration
+						const fetchRegistrationStaffContactInfo = exports.getRegistrationStaffContactInfo( 'site visitor' );
+						// create a new verification code model in the database to allow users to verify their accounts
+						const createVerificationRecord = exports.createNewVerificationRecord( verificationCode, userId );
+						// add the user to any mailing lists they've opted into
+						const addUserToMailingLists = exports.addToMailingLists( newSiteVisitor, mailingListIds, registrationType );
+
+						// once we know the contact info of the MARE employee who handles newly registered users
+						Promise.all( [ fetchUser, fetchRegistrationStaffContactInfo ] )
+							.then( values => {
+								// assign local variables to the values returned by the promises
+								const [ newUser, staffContact ] = values;
+								// send a notification email to MARE staff to allow them to enter the information in the old system
+								return registrationEmailMiddleware.sendNewSiteVisitorNotificationEmailToMARE( newUser, newUser.get( 'email' ), staffContact );
+							})
+							.catch( error => {
+								// log the error for debugging purposes
+								console.error( error );
+							});
+						
+						// once the contact info has been fetched
+						createVerificationRecord
+							.then( verificationRecord => {
+								// send the account verification email to the user
+								return registrationEmailMiddleware.sendAccountVerificationEmailToUser( newSiteVisitor.get( 'email' ), userType, verificationCode, host );
+							})
+							.catch( error => {
+								// log the error for debugging purposes
+								console.error( error );
+							});
+						
+						addUserToMailingLists
+							.catch( error => {
+								// log the error for debugging purposes
+								console.error( error );
+							});
+					})
+					// if there was an error saving the new site visitor
+					.catch( () => {
+						// create an error flash message to send back to the user
+						req.flash( 'error', {
+							title: 'There was an error creating your account',
+							detail: 'If this error persists, please contact MARE for assistance' } );
 						// redirect the user back to the appropriate page
 						res.redirect( 303, redirectPath );
 					});
-				})
-				// if there was an error saving the new site visitor
-				.catch( () => {
-					// create an error flash message to send back to the user
-					req.flash( 'error', {
-						title: 'There was an error creating your account',
-						detail: 'If this error persists, please contact MARE for assistance' } );
-					// redirect the user back to the appropriate page
-					res.redirect( 303, redirectPath );
-				});
 
 			} else if( registrationType === 'socialWorker' ) {
 				// save the social worker model
