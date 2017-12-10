@@ -55,6 +55,8 @@ exports = module.exports = app => {
 	// login / logout
 	app.get( '/logout'									, middleware.logout );
 	app.post('/login'									, middleware.login );
+	//login forgot password
+	app.post('/recover'									, middleware.resetPassword);
 	// MARE in the news
 	app.get( '/mare-in-the-news'						, routes.views.mareInTheNewsStories );
 	app.get( '/mare-in-the-news/:key'					, routes.views.mareInTheNewsStory );
