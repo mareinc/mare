@@ -9,6 +9,7 @@ const keystone					= require( 'keystone' ),
 	  registrationMiddleware	= require( './middleware/service_register' ),
 	  accountMiddleware			= require( './middleware/service_account' ),
 	  eventMiddleware			= require( './middleware/middleware_event' ),
+	  passwordResetService 		= require( './middleware/service_password-reset'),
 	  importRoutes				= keystone.importer( __dirname );
 
 // common middleware
@@ -56,7 +57,9 @@ exports = module.exports = app => {
 	app.get( '/logout'									, middleware.logout );
 	app.post('/login'									, middleware.login );
 	//login forgot password
-	app.post('/recover'									, middleware.resetPassword);
+	app.post('/recover/generate'						, passwordResetService.resetPassword);
+	app.post('recover'									, passwordResetService.changePassword);
+	app.get( '/recover'									, passwordResetService.getForm);
 	// MARE in the news
 	app.get( '/mare-in-the-news'						, routes.views.mareInTheNewsStories );
 	app.get( '/mare-in-the-news/:key'					, routes.views.mareInTheNewsStory );
