@@ -12,9 +12,7 @@
 				<table align="center" border="0" cellpadding="0" cellspacing="0" width="600" style="border: 1px solid #cccccc; border-collapse: collapse;">
 					<tr>
 						<td align="center" bgcolor="#3D4573" style="padding: 40px 0 30px 0; color: #ffffff; font-size: 28px; font-weight: bold; font-family: Arial, sans-serif;">
-							<table border="0" cellpadding="0" cellspacing="0">
-									<img src="mare-logo.png" alt="MARE Logo" width="500" height="106" style="display: block;" />
-							</table>
+
 						</td>
 					</tr>
 					<tr>
@@ -28,7 +26,15 @@
 								<tr>
 									<td style="padding: 20px 0 0 0; color: #153634; font-family: Ariel, sans-serif; font-size: 16px; line-height: 20px;">
 										The following data will need to be entered in a new {{ userType }} record in the old database:
+									</td>
 								</tr>
+								{{#userData}}
+								<tr>
+									<td style="padding: 20px 0 0 0; color: #153634; font-family: Ariel, sans-serif; font-size: 16px; line-height: 20px;">
+										<b>{{ key }}:</b> {{ value }}
+									</td>
+								</tr>
+								{{/userData}}
 							</table>
 						</td>
 					</tr>
