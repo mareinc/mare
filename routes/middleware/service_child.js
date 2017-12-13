@@ -1,55 +1,97 @@
 const keystone								= require( 'keystone' ),
 	  _										= require( 'underscore' ),
 	  async									= require( 'async' ),
-	  Child									= keystone.list( 'Child' ),
-	  ChildStatus							= keystone.list( 'Child Status' ),
 	  middleware							= require( './middleware' ),
 	  familyService							= require( './service_family' ),
 	  listsService							= require( './service_lists' ),
 	  userService							= require( './service_user' ),
 	  socialWorkerChildRegistrationService	= require( './emails_social-worker-child-registration' );
 
+exports.getMaxRegistrationNumber = function() {
+		
+	return new Promise( ( resolve, reject ) => {
+
+		keystone.list( 'Child' ).model
+			.findOne()
+			.sort( '-registrationNumber' )
+			.exec()
+			.then( child => {
+				if( child ) {
+					return resolve( child.get( 'registrationNumber' ) );
+				}
+
+				resolve( 0 );
+			}, err => {
+				reject( `error fetching maximum registration number for children` );
+			});
+	});
+};
 // TODO: combine the below two functions, the only difference in the filter in the find()
 exports.getAllChildren = ( req, res, done, fieldsToSelect ) => {
 
 	let locals = res.locals;
 
-	Child.model.find()
-				.select( fieldsToSelect )
-				.where( 'isVisibleInGallery' ).equals( true )
-				.where( 'status' ).equals( locals.activeChildStatusId )
-				.populate( 'gender' )
-				.populate( 'race' )
-				.populate( 'languages' )
-				.populate( 'disabilities' )
-				.populate( 'otherConsiderations' )
-				.populate( 'recommendedFamilyConstellation' )
-				.populate( 'otherFamilyConstellationConsideration' )
-				.populate( 'status' )
-				.populate( 'legalStatus' )
-				.exec()
-				.then( children => {
-					// loop through each child
-					_.each( children, child => {
-						// adjust the image to the blank male/female image if needed
-						exports.setNoChildImage( req, res, child, locals.targetChildren === 'all' );
-						// set extra information needed for rendering the child to the page
-						child.age						= middleware.getAge( child.birthDate );
-			    		child.ageConverted				= middleware.convertDate( child.birthDate );
-			    		child.registrationDateConverted	= middleware.convertDate( child.registrationDate );
-					});
+	keystone.list( 'Child' ).model
+		.find()
+		.select( fieldsToSelect )
+		.where( 'isVisibleInGallery' ).equals( true )
+		.where( 'status' ).equals( locals.activeChildStatusId )
+		.populate( 'gender' )
+		.populate( 'race' )
+		.populate( 'languages' )
+		.populate( 'disabilities' )
+		.populate( 'otherConsiderations' )
+		.populate( 'recommendedFamilyConstellation' )
+		.populate( 'otherFamilyConstellationConsideration' )
+		.populate( 'status' )
+		.populate( 'legalStatus' )
+		.exec()
+		.then( children => {
+			// loop through each child
+			_.each( children, child => {
+				// adjust the image to the blank male/female image if needed
+				exports.setNoChildImage( req, res, child, locals.targetChildren === 'all' );
+				// set extra information needed for rendering the child to the page
+				child.age						= middleware.getAge( child.birthDate );
+				child.ageConverted				= middleware.convertDate( child.birthDate );
+				child.registrationDateConverted	= middleware.convertDate( child.registrationDate );
+			});
 
-					locals.allChildren = children;
-					// execute done function if async is used to continue the flow of execution
-					done()
+			locals.allChildren = children;
+			// execute done function if async is used to continue the flow of execution
+			done()
 
-				}, err => {
+		}, err => {
 
-					console.log( err );
-					// execute done function if async is used to continue the flow of execution
-					done();
+			console.log( err );
+			// execute done function if async is used to continue the flow of execution
+			done();
 
-				});
+		});
+};
+
+exports.getChildrenByIds = idsArray => {
+	
+	return new Promise( ( resolve, reject ) => {
+
+		keystone.list( 'Child' ).model
+			.find()
+			.where( '_id' ).in( idsArray )
+			.exec()
+			.then( children => {
+				// if no children were returned
+				if( children.length === 0 ) {
+					// reject the promise with the reason why
+					reject( `error fetching children by id array - no children found with ids ${ idsArray }` );
+				}
+				// resolve the promise with the returned children
+				resolve( children );
+			// if an error occurred fetching from the database
+			}, err => {
+				// reject the promise with details of the error
+				reject( `error fetching children by id array ${ idsArray } - ${ err }` );
+			});
+	});
 };
 
 exports.getUnrestrictedChildren = ( req, res, done, fieldsToSelect ) => {
@@ -57,44 +99,45 @@ exports.getUnrestrictedChildren = ( req, res, done, fieldsToSelect ) => {
 	var locals = res.locals;
 	
 	// find all children who are active, and are either visible to everyone or have the 'child is visible on MARE web' checkbox checked
-	Child.model.find()
-				.select( fieldsToSelect )
-				.where( 'siteVisibility' ).equals( 'everyone' )
-				.where( 'isVisibleInGallery' ).equals( true )
-				.where( 'status' ).equals( locals.activeChildStatusId )
-				.populate( 'gender' )
-				.populate( 'race' )
-				.populate( 'languages' )
-				.populate( 'disabilities' )
-				.populate( 'otherConsiderations' )
-				.populate( 'recommendedFamilyConstellation' )
-				.populate( 'otherFamilyConstellationConsideration' )
-				.populate( 'status' )
-				.populate( 'legalStatus' )
-				.exec()
-				.then( children => {
-					// loop through each child
-					_.each( children, child => {
-						// adjust the image to the blank male/female image if needed
-						exports.setNoChildImage( req, res, child, locals.targetChildren === 'all' );
-						// set extra information needed for rendering the child to the page
-						child.age						= middleware.getAge( child.birthDate );
-			    		child.ageConverted				= middleware.convertDate( child.birthDate );
-			    		child.registrationDateConverted	= middleware.convertDate( child.registrationDate );
+	keystone.list( 'Child' ).model
+		.find()
+		.select( fieldsToSelect )
+		.where( 'siteVisibility' ).equals( 'everyone' )
+		.where( 'isVisibleInGallery' ).equals( true )
+		.where( 'status' ).equals( locals.activeChildStatusId )
+		.populate( 'gender' )
+		.populate( 'race' )
+		.populate( 'languages' )
+		.populate( 'disabilities' )
+		.populate( 'otherConsiderations' )
+		.populate( 'recommendedFamilyConstellation' )
+		.populate( 'otherFamilyConstellationConsideration' )
+		.populate( 'status' )
+		.populate( 'legalStatus' )
+		.exec()
+		.then( children => {
+			// loop through each child
+			_.each( children, child => {
+				// adjust the image to the blank male/female image if needed
+				exports.setNoChildImage( req, res, child, locals.targetChildren === 'all' );
+				// set extra information needed for rendering the child to the page
+				child.age						= middleware.getAge( child.birthDate );
+				child.ageConverted				= middleware.convertDate( child.birthDate );
+				child.registrationDateConverted	= middleware.convertDate( child.registrationDate );
 
-					});
+			});
 
-					locals.allChildren = children;
-					// execute done function if async is used to continue the flow of execution
-					done()
+			locals.allChildren = children;
+			// execute done function if async is used to continue the flow of execution
+			done()
 
-				}, err => {
+		}, err => {
 
-					console.log( err );
-					// execute done function if async is used to continue the flow of execution
-					done();
+			console.log( err );
+			// execute done function if async is used to continue the flow of execution
+			done();
 
-				});
+		});
 };
 
 /* display the blank male/female/other image in the gallery in the following cases:
@@ -166,22 +209,23 @@ exports.getChildByRegistrationNumber = ( req, res, done, registrationNumber ) =>
 	// convert the number as a string to a number
 	const targetRegistrationNumber = parseInt( registrationNumber, 10 );
 
-	Child.model.find()
-			.where('registrationNumber', targetRegistrationNumber )
-			.exec()
-			.then( child => {
+	keystone.list( 'Child' ).model
+		.find()
+		.where( 'registrationNumber', targetRegistrationNumber )
+		.exec()
+		.then( child => {
 
-				locals.child = child[ 0 ];
-				// execute done function if async is used to continue the flow of execution
- 				// TODO: if this is used in non-async middleware, done or next should be passed into options and the appropriate one should be executed
-				done();
+			locals.child = child[ 0 ];
+			// execute done function if async is used to continue the flow of execution
+			// TODO: if this is used in non-async middleware, done or next should be passed into options and the appropriate one should be executed
+			done();
 
-			}, err => {
+		}, err => {
 
-				console.log( err );
-				done();
+			console.log( err );
+			done();
 
-			});
+		});
 
 };
 
@@ -191,22 +235,23 @@ exports.getChildrenByRegistrationNumbers = ( req, res, done, registrationNumbers
 	// convert the array of numbers as strings to an array of numbers
 	const targetRegistrationNumbers = registrationNumbers.map( registrationNumber => parseInt( registrationNumber, 10 ) );
 
-	Child.model.find()
-			.where( 'registrationNumber' ).in( targetRegistrationNumbers )
-			.exec()
-			.then( children => {
+	keystone.list( 'Child' ).model
+		.find()
+		.where( 'registrationNumber' ).in( targetRegistrationNumbers )
+		.exec()
+		.then( children => {
 
-				locals.children = children;
-				// execute done function if async is used to continue the flow of execution
- 				// TODO: if this is used in non-async middleware, done or next should be passed into options and the appropriate one should be executed
-				done();
+			locals.children = children;
+			// execute done function if async is used to continue the flow of execution
+			// TODO: if this is used in non-async middleware, done or next should be passed into options and the appropriate one should be executed
+			done();
 
-			}, err => {
+		}, err => {
 
-				console.log( err );
-				done();
+			console.log( err );
+			done();
 
-			});
+		});
 
 };
 
@@ -443,7 +488,8 @@ exports.getChildDetails = ( req, res, next ) => {
 	const registrationNumber = childData[ 'registrationNumber' ];
 
 	/* TODO: fetch only the needed fields instead of grabbing everything */
-	Child.model.findOne()
+	keystone.list( 'Child' ).model
+		.findOne()
         .where( 'registrationNumber', registrationNumber )
         .populate( 'gender' )
         .exec()
@@ -475,7 +521,8 @@ exports.getSiblingGroupDetails = ( req, res, next ) => {
 	const registrationNumber = childData[ 'registrationNumber' ];
 
 	/* TODO: fetch only the needed fields instead of grabbing everything */
-	Child.model.findOne()
+	keystone.list( 'Child' ).model
+		.findOne()
         .where( 'registrationNumber', registrationNumber )
         .populate( 'gender' )
         .exec()
@@ -504,18 +551,19 @@ exports.getSiblingGroupDetails = ( req, res, next ) => {
 exports.fetchChildStatusId = status => {
 
 	return new Promise( ( resolve, reject ) => {
-		ChildStatus.model.findOne()
-				.where( 'childStatus', status )
-				.exec()
-				.then( status => {
+		keystone.list( 'Child Status' ).model
+			.findOne()
+			.where( 'childStatus', status )
+			.exec()
+			.then( status => {
 
-					status ? resolve( status.get( '_id' ) ) : resolve();
+				status ? resolve( status.get( '_id' ) ) : resolve();
 
-				}, err => {
+			}, err => {
 
-					reject();
+				reject();
 
-				});
+			});
 	});
 };
 
@@ -526,15 +574,58 @@ exports.registerChild = ( req, res, next ) => {
 	// store a reference to locals to allow access to globally available data
 	const locals = res.locals;
 	// set the redirect path to navigate to after processing is complete
-	locals.redirectPath = '/forms/child-registration-form';
+	const redirectPath = '/forms/child-registration-form';
 	// fetch the id for the active child status
 	const fetchActiveChildStatusId = exports.fetchChildStatusId( 'active' );
 	
 	fetchActiveChildStatusId.then( activeChildStatusId => {
+		return exports.saveChild( child, activeChildStatusId );
+	})
+	.then( newChild => {
+		// if the new child model was saved successfully
+		// create a success flash message
+		req.flash( 'success', {
+				title: `Congratulations, your child record has been successfully registered.`,
+				detail: `Please note that it can take several days for the child's account to be reviewed and activated.` } );
+		// redirect the user back to the appropriate page
+		res.redirect( 303, redirectPath );
+		
+		// send a notification email to MARE staff to allow them to enter the information in the old system
+		const staffEmailSent		= socialWorkerChildRegistrationService.sendSocialWorkerChildRegistrationConfirmationEmailToStaff( child );
+		// send a notification email to the child's social worker
+		const socialWorkerEmailSent	= socialWorkerChildRegistrationService.sendRegistrationConfirmationEmailToSocialWorker( child );
+		
+		staffEmailSent
+			.catch( err => {
+				console.error( `error sending new child registered by social worker notification to MARE staff - ${ err }` );
+			});
+
+		socialWorkerEmailSent
+			.catch( err => {
+				console.error( `error sending new child registered by social worker notification to social worker - ${ err }` );
+			});
+	})
+	.catch( err => {
+		// log the error for debugging purposes
+		console.error( `error saving social worker registered child - ${ err }` );
+		// create an error flash message
+		req.flash( 'error', {
+				title: `There was an error registering your child`,
+				detail: `If this error persists, please notify MARE` } );
+		// redirect the user to the appropriate page
+		res.redirect( 303, locals.redirectPath );
+	});
+};
+
+exports.saveChild = ( child, activeChildStatusId ) => {
+
+	return new Promise( ( resolve, reject ) => {
 		// create a new Child model
+		const Child = keystone.list( 'Child' )
+		
 		const newChild = new Child.model({
 
-			siteVisibility: 'registered social workers and families',
+			siteVisibility: 'only registered social workers and families',
 			isVisibleInGallery: false,
 
 			registeredBy: 'unknown',
@@ -589,38 +680,17 @@ exports.registerChild = ( req, res, next ) => {
 			otherConsiderations: child.otherConsiderations
 		});
 
-		newChild.save( ( err, child ) => {
-
+		newChild.save( ( err, model ) => {
+			// if there was an issue saving the new child
 			if( err ) {
-				console.error( `error saving social registered child - ${ err }` );
-				// create an error flash message
-				req.flash( 'error', {
-						title: `There was an error registering your child`,
-						detail: `If this error persists, please notify MARE` } );
-				// redirect the user to the appropriate page
-				res.redirect( 303, locals.redirectPath );
-			} else {
-				console.log( `new child saved` );
-				// create a success flash message
-				req.flash( 'success', {
-						title: `Congratulations, your child record has been successfully registered.`,
-						detail: `Please note that it can take several days for the child's account to be reviewed and activated.` } );
-				// attempt to send relevant emails and store the returned promises
-				let staffEmailSent			= socialWorkerChildRegistrationService.sendSocialWorkerChildRegistrationConfirmationEmailToStaff( child );
-				let socialWorkerEmailSent	= socialWorkerChildRegistrationService.sendRegistrationConfirmationEmailToSocialWorker( child );
-				// if all emails sent successfully
-				Promise.all( [ staffEmailSent, socialWorkerEmailSent ] ).then( () => {
-					// redirect the user to the appropriate page
-					res.redirect( 303, locals.redirectPath );
-				// if there was an error sending emails
-				}).catch( reason => {
-					// redirect the user back to the appropriate page
-					res.redirect( 303, redirectPath );
-				});
+				// reject the promise with a descriptive message
+				return reject( `error saving new child registered by social worker -  ${ err }` );
 			}
+			// resolve the promise with the newly saved child model
+			resolve( model );
 		});
 	});
-};
+}
 
 // ------------------------------------------------------------------------------------------ //
 
@@ -647,7 +717,8 @@ exports.getChildByRegistrationNumberNew = registrationNumber => {
 				reject();
 		}
 		// attempt to find a single child matching the passed in registration number
-		Child.model.findOne()
+		keystone.list( 'Child' ).model
+			.findOne()
 			.where( 'registrationNumber' ).equals( targetRegistrationNumber )
 			.exec()
 			// if the database fetch executed successfully
@@ -691,7 +762,8 @@ exports.getChildrenByRegistrationNumbersNew = registrationNumbers => {
 		const targetRegistrationNumbers = registrationNumbers.map( registrationNumber => parseInt( registrationNumber, 10 ) );
 
 		// attempt to find all children matching the passed in registration numbers
-		Child.model.find()
+		keystone.list( 'Child' ).model
+			.find()
 			.where( 'registrationNumber' ).in( targetRegistrationNumbers )
 			.exec()
 			.then( children => {
