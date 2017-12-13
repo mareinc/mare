@@ -4,14 +4,19 @@
 		<span class="page-header-text">Information Request Submission</span>
 	</div>
 
-	<section class="agency-event-submission-form">
+	{{#unless user}}
+	<section class="card_content-group log-in-prompt">
+		<div class="card__content-block card__content-block--centered">If you already have an account, logging in will prevent you from needing to enter most of the information below</div>
+	</section>
+	{{/unless}}
 
-		<div class="form-type-header">Information Request Form</div>
-		<span class="required required-description">* Required</span>
+	<section class="agency-event-submission-form">
 
 		<form action="/submit-information-request" class="form--information-request" method="POST">
 
 			<div class="form-section-header">Requested Information</div>
+
+			<span class="required required-description">* Required</span>
 
 			<div class="row">
 				<div class="col-sm-12 form-group">
