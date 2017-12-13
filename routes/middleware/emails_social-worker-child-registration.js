@@ -27,13 +27,12 @@ exports.sendSocialWorkerChildRegistrationConfirmationEmailToStaff = user => {
 				check that the child has been automatically added to the siblings to be placed with field of all siblings
 	*/
 	return new Promise( ( resolve, reject ) => {
-		// do nothing if sending of the email is not currently allowed
-		if( process.env.SEND_SOCIAL_WORKER_CHILD_REGISTRATION_EMAILS_TO_MARE === 'false' ) {
-			// log the error
-			console.error( 'sending of social worker child registration emails to MARE staff is currently disabled' );
-			// reject the promise
-			reject();
+		// if sending of the email is not currently allowed
+		if( process.env.SEND_SOCIAL_WORKER_CHILD_REGISTRATION_EMAILS_TO_MARE !== 'true' ) {
+			// reject the promise with information about why
+			return reject( `sending of the email is disabled` );
 		}
+
 		// the email template can be found in templates/emails/
 		new keystone.Email({
 			templateExt		: 'hbs',
@@ -66,16 +65,15 @@ exports.sendSocialWorkerChildRegistrationConfirmationEmailToStaff = user => {
 	});
 };
 /* TODO: registrationStaffContact can either be determined before and passed in, or found in this function */
-exports.sendRegistrationConfirmationEmailToSocialWorker = ( user ) => {
+exports.sendRegistrationConfirmationEmailToSocialWorker = user => {
 
 	return new Promise( ( resolve, reject ) => {
-		// do nothing if sending of the email is not currently allowed
-		if( process.env.SEND_SOCIAL_WORKER_CHILD_REGISTRATION_EMAILS_TO_SOCIAL_WORKER === 'false' ) {
-			// log the error
-			console.error( 'sending of social worker child registration emails to the social worker is currently disabled' );
-			// reject the promise
-			reject();
+		// if sending of the email is not currently allowed
+		if( process.env.SEND_SOCIAL_WORKER_CHILD_REGISTRATION_EMAILS_TO_SOCIAL_WORKER !== 'true' ) {
+			// reject the promise with information about why
+			return reject( `sending of the email is disabled` );
 		}
+
 		// the email template can be found in templates/emails/
 		new keystone.Email({
 			templateExt		: 'hbs',
