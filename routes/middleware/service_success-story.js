@@ -1,13 +1,12 @@
-const keystone		= require( 'keystone' );
-	  async			= require( 'async' );
-	  Utils			= require( './utilities' );
-	  SuccessStory	= keystone.list( 'Success Story' );
+const keystone	= require( 'keystone' ),
+	  async		= require( 'async' ),
+	  Utils		= require( './utilities' );
 
 exports.getRandomStory = () => {
 
 	return new Promise( ( resolve, reject ) => {
 		// use a function added to the Success Story model to find a single random story
-		SuccessStory.model
+		keystone.list( 'Success Story' ).model
 			.findRandom( ( err, successStory ) => {
 				// if there was an error
 				if ( err ) {
@@ -26,7 +25,7 @@ exports.getAllSuccessStories = () => {
 
 	return new Promise( ( resolve, reject ) => {
 		// use a function added to the Success Story model to find a single random story
-		SuccessStory.model
+		keystone.list( 'Success Story' ).model
 			.find()
 			.exec()
 			.then( successStories => {
@@ -53,7 +52,7 @@ exports.getSuccessStoryByKey = key => {
 
 	return new Promise( ( resolve, reject ) => {
 		// attempt to find a single success story matching the passed in key
-		SuccessStory.model
+		keystone.list( 'Success Story' ).model
 			.findOne()
 			.where( 'key', key )
 			.lean()

@@ -1,13 +1,11 @@
-const keystone		= require( 'keystone' ),
-	  Slideshow		= keystone.list( 'Slideshow' ),
-	  SlideshowItem	= keystone.list( 'Slideshow Item' );
+const keystone = require( 'keystone' );
 
 /* fetch the requested slideshow, default to 'Main Page Slideshow' if no name was provided */
 exports.fetchSlideshow = ( { title = 'Main Page Slideshow' } ) => {
 	// return a promise for cleaner asynchronous processing
 	return new Promise( ( resolve, reject ) => {
 		// fetch the model specified in the field using it's _id value
-		Slideshow.model
+		keystone.list( 'Slideshow' ).model
 			.findOne()
 			.where( 'title', title )
 			.exec()
@@ -20,9 +18,9 @@ exports.fetchSlideshow = ( { title = 'Main Page Slideshow' } ) => {
 				// resolve with the slideshow
 				resolve( slideshow );
 
-			}, () => {
+			}, err => {
 				// log the error for debugging purposes
-				console.error( `error fetching the slideshow: ${ title }` );
+				console.error( `error fetching the slideshow ${ title } - ${ err }` );
 				// if there was an error while fetching the model, reject the promise and return the error 
 				reject();
 			});
@@ -33,7 +31,8 @@ exports.fetchSlides = ( { slideshowId } ) => {
 	// return a promise for cleaner asynchronous processing
 	return new Promise( ( resolve, reject ) => {
 
-		SlideshowItem.model.find()
+		keystone.list( 'Slideshow Item' ).model
+			.find()
 			.where( 'parent', slideshowId )
 			.exec()
 			.then( slides => {
@@ -47,7 +46,7 @@ exports.fetchSlides = ( { slideshowId } ) => {
 
 			}, err => {
 				// log the error for debugging purposes
-				console.error( `error fetching the slides for slideshow with id: ${ slideshowId } - ${ err }` );
+				console.error( `error fetching the slides for slideshow with id ${ slideshowId } - ${ err }` );
 				// if there was an error while fetching the model, reject the promise and return the error 
 				reject();
 			});

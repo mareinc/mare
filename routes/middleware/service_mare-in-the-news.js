@@ -1,11 +1,10 @@
-const keystone		= require( 'keystone' ),
-      MAREInTheNews	= keystone.list( 'MARE in the News' );
+const keystone = require( 'keystone' );
 
 exports.getAllMAREInTheNewsStories = () => {
 
     return new Promise( ( resolve, reject ) => {
         // query the database for all mare in the news models
-        MAREInTheNews.model
+        keystone.list( 'MARE in the News' ).model
             .find()
             .exec()
             .then( stories => {
@@ -32,7 +31,7 @@ exports.getMAREInTheNewsStoryByKey = key => {
 
     return new Promise( ( resolve, reject ) => {
         // query the database for a mare in the news model matching the provided key
-        MAREInTheNews.model
+        keystone.list( 'MARE in the News' ).model
             .findOne()
             .where( 'key', key )
             .lean()

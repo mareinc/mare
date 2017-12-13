@@ -5,19 +5,8 @@
 // TODO: a lot of this functionality is needed for social worker child/family registration and should potentially be broken out and placed in more
 //		 appropriate files
 
-const keystone 						= require( 'keystone' ),
-	  User							= keystone.list( 'User' ),
-	  SiteVisitor 					= keystone.list( 'Site Visitor' ),
-	  SocialWorker 					= keystone.list( 'Social Worker' ),
-	  Family						= keystone.list( 'Family' ),
-	  Admin							= keystone.list( 'Admin' ),
-	  MailingList					= keystone.list( 'Mailing List' ),
-	  AccountVerificationCode		= keystone.list( 'Account Verification Code' ),
-	  registrationEmailMiddleware	= require( './emails_register' ),
-	  staffEmailTargetMiddleware	= require( './service_staff-email-target' ),
-	  staffEmailContactMiddleware	= require( './service_staff-email-contact' ),
-	  userService					= require( './service_user' ),
-	  utilities						= require( './utilities' );
+const keystone 		= require( 'keystone' ),
+	  userService	= require( './service_user' );
 
 exports.updateUser = ( req, res, next ) => {
 	const update	= req.body,

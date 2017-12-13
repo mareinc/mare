@@ -1,11 +1,10 @@
-const keystone			= require( 'keystone' ),
-	  StaffEmailTarget	= keystone.list( 'Staff Email Target' );
+const keystone = require( 'keystone' );
 
 exports.getTargetId = emailTarget => {
 
 	return new Promise( ( resolve, reject ) => {
 
-		StaffEmailTarget.model
+		keystone.list( 'Staff Email Target' ).model
 			.findOne()
 			.select( '_id' )
 			.where( 'staffEmailTarget', emailTarget )
@@ -14,7 +13,7 @@ exports.getTargetId = emailTarget => {
 				// if no target was found in the database
 				if( !target ) {
 					// reject the promise with the reason for the rejection
-					return reject( `no staff target found for: ${ emailTarget }` );
+					return reject( `no staff target found for ${ emailTarget }` );
 				}
 				// resolve the promise the the database id of the staff email target
 				resolve( target.get( '_id' ) );
