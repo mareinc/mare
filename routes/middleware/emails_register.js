@@ -1,31 +1,42 @@
-const keystone				= require( 'keystone' );
-const utilitiesMiddleware   = require( './utilities' );
+const keystone				= require( 'keystone' ),
+	  utilitiesMiddleware   = require( './utilities' );
 
-exports.sendNewSiteVisitorNotificationEmailToMARE = ( user, registrationStaffContact ) => {
+exports.sendNewSiteVisitorNotificationEmailToMARE = ( user, userEmail, registrationStaffContact ) => {
 
 	return new Promise( ( resolve, reject ) => {
 		// if sending of the email is not currently allowed
-		if( process.env.SEND_NEW_SITE_VISITOR_REGISTERED_EMAILS_TO_MARE === 'false' ) {
+		if( process.env.SEND_NEW_SITE_VISITOR_REGISTERED_EMAILS_TO_MARE !== 'true' ) {
 			// reject the promise with information about why
-			return reject( `sending of new user notification emails to MARE staff is currently turned off, no email was sent to ${ registrationStaffContact.email }` );
+			return reject( `sending of the email is disabled` );
 		}
 
-		// const userData = new Map();
-		// // store only the fields that have been populated by the user
-		// if( user.name.first ) { userData.set( 'first name', user.name.first ); }
-		// if( user.name.last ) { userData.set( 'last name', user.name.last ); }
-		// if( user.phone.work ) { userData.set( 'work phone', user.phone.work ); }
-		// if( user.phone.home ) { userData.set( 'home phone', user.phone.home ); }
-		// if( user.phone.mobile ) { userData.set( 'mobile phone', user.phone.mobile ); }
-		// if( user.phone.preferred ) { userData.set( 'preferred phone', user.phone.preferred ); }
-		// if( user.address.street1 ) { userData.set( 'street 1', user.address.street1 ); }
-		// if( user.address.street2 ) { userData.set( 'street 2', user.address.street2 ); }
-		// if( user.address.city.city && !user.address.isOutsideMassachusetts ) { userData.set( 'city', user.address.city ); }
-		// if( user.address.cityText && user.address.isOutsideMassachusetts ) { userData.set( 'city', user.address.cityText ); }
-		// if( user.address.state.state ) { userData.set( 'state', user.address.state ); }
-		// if( user.address.zipCode ) { userData.set( 'zip code', user.address.zipCode ); }
-		// if( user.heardAboutMAREFrom.length !== 0 ) { userData.set( 'heard about MARE from', user.heardAboutMAREFrom ); }
-		// if( user.heardAboutMAREFromOther ) { userData.set( 'heard about MARE from - other', user.heardAboutMAREFromOther ); }
+		if( !registrationStaffContact ) {
+			return reject( `no staff was contact provided` );
+		}
+
+		// an array was used instead of a Map because Mustache templates apparently can't handle maps
+		let userData = [];
+		let heardAboutMAREFromArray = [];
+
+		for( entry of user.heardAboutMAREFrom ) {
+			heardAboutMAREFromArray.push( entry.wayToHearAboutMARE );
+		}
+		// store only the fields that have been populated by the user
+		if( user.name.first ) { userData.push( { key: 'first name', value: user.name.first } ); }
+		if( user.name.last ) { userData.push( { key: 'last name', value: user.name.last } ); }
+		if( user.email ) { userData.push( { key: 'email', value: user.email } ); }
+		if( user.phone.work ) { userData.push( { key: 'work phone', value: user.phone.work } ); }
+		if( user.phone.home ) { userData.push( { key: 'home phone', value: user.phone.home } ); }
+		if( user.phone.mobile ) { userData.push( { key: 'mobile phone', value: user.phone.mobile } ); }
+		if( user.phone.preferred ) { userData.push( { key: 'preferred phone', value: user.phone.preferred } ); }
+		if( user.address.street1 ) { userData.push( { key: 'street 1', value: user.address.street1 } ); }
+		if( user.address.street2 ) { userData.push( { key: 'street 2', value: user.address.street2 } ); }
+		if( !user.address.isOutsideMassachusetts && user.address.city.cityOrTown ) { userData.push( { key: 'city', value: user.address.city.cityOrTown } ); }
+		if( user.address.isOutsideMassachusetts && user.address.cityText ) { userData.push( { key: 'city', value: user.address.cityText } ); }
+		if( user.address.state.state ) { userData.push( { key: 'state', value: user.address.state.state } ); }
+		if( user.address.zipCode ) { userData.push( { key: 'zip code', value: user.address.zipCode } ); }
+		if( heardAboutMAREFromArray.length !== 0 ) { userData.push( { key: 'heard about MARE from', value: heardAboutMAREFromArray } ); }
+		if( user.heardAboutMAREFromOther ) { userData.push( { key: 'heard about MARE from - other', value: user.heardAboutMAREFromOther } ); }
 
 		// find the email template in templates/emails/
 		new keystone.Email({
@@ -40,20 +51,156 @@ exports.sendNewSiteVisitorNotificationEmailToMARE = ( user, registrationStaffCon
 			},
 			subject			: `new ${ user.userType } registration`,
 			userType		: user.userType,
-			user,
+			userData,
 			registrationStaffContact
 		}, ( err, message ) => {
 			// if there was an error sending the email
 			if( err ) {
 				// reject the promise with details
-				return reject( `error sending new user notification email to MARE: ${ err }` );
+				return reject( `error sending new site visitor notification email to MARE - ${ err }` );
 			}
 			// the response object is stored as the 0th element of the returned message
 			const response = message ? message[ 0 ] : undefined;
 			// if the email failed to send, or an error occurred ( which it does, rarely ) causing the response message to be empty
 			if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
 				// reject the promise with details
-				return reject( `new user notification email to MARE failed to send: ${ message }.  Error: ${ err }` );
+				return reject( `error sending new site visitor notification email to MARE - ${ err }` );
+			}
+
+			resolve();
+		});
+	});
+};
+
+exports.sendNewSocialWorkerNotificationEmailToMARE = ( user, userEmail, registrationStaffContact ) => {
+	
+	return new Promise( ( resolve, reject ) => {
+		// if sending of the email is not currently allowed
+		if( process.env.SEND_NEW_SOCIAL_WORKER_REGISTERED_EMAILS_TO_MARE !== 'true' ) {
+			// reject the promise with information about why
+			return reject( `sending of the email is disabled` );
+		}
+
+		if( !registrationStaffContact ) {
+			return reject( `no staff contact was provided` );
+		}
+		// // an array was used instead of a Map because Mustache templates apparently can't handle maps
+		// let userData = [];
+		// let userMailingListData = [];
+
+		// // store only the fields that have been populated by the user
+		// if( user.name.first ) { userData.push( { key: 'first name', value: user.name.first } ); }
+		// if( user.name.last ) { userData.push( { key: 'last name', value: user.name.last } ); }
+		// if( user.email ) { userData.push( { key: 'email', value: user.email } ); }
+		// if( user.position.position ) { userData.push ( { key: 'position', value: user.position } ); } 
+		// if( !user.agencyNotListed && user.agency.name ) { userData.push( { key: 'agency', value: user.agency.name } ); }
+		// if( user.agencyNotListed && user.agencyText ) { userData.push( { key: 'agency', value: user.agencyText } ); }
+		// if( user.phone.work ) { userData.push( { key: 'work phone', value: user.phone.work } ); }
+		// if( user.phone.mobile ) { userData.push( { key: 'mobile phone', value: user.phone.mobile } ); }
+		// if( user.phone.preferred ) { userData.push( { key: 'preferred phone', value: user.phone.preferred } ); }
+		// if( user.address.street1 ) { userData.push( { key: 'street 1', value: user.address.street1 } ); }
+		// if( user.address.street2 ) { userData.push( { key: 'street 2', value: user.address.street2 } ); }
+		// if( !user.address.isOutsideMassachusetts && user.address.city.cityOrTown ) { userData.push( { key: 'city', value: user.address.city.cityOrTown } ); }
+		// if( user.address.isOutsideMassachusetts && user.address.cityText ) { userData.push( { key: 'city', value: user.address.cityText } ); }
+		// if( user.address.state.state ) { userData.push( { key: 'state', value: user.address.state.state } ); }
+		// if( user.address.zipCode ) { userData.push( { key: 'zip code', value: user.address.zipCode } ); }
+
+		// find the email template in templates/emails/
+		new keystone.Email({
+			templateExt		: 'hbs',
+			templateEngine 	: require( 'handlebars' ),
+			templateName 	: 'register_new-user-notification-to-staff'
+		}).send({
+			to				: 'jared.j.collier@gmail.com',
+			from: {
+				name 		: 'MARE',
+				email 		: 'admin@adoptions.io'
+			},
+			subject			: `new ${ user.userType } registration`,
+			userType		: user.userType,
+			userData,
+			registrationStaffContact
+		}, ( err, message ) => {
+			// if there was an error sending the email
+			if( err ) {
+				// reject the promise with details
+				return reject( `error sending new social worker notification email to MARE - ${ err }` );
+			}
+			// the response object is stored as the 0th element of the returned message
+			const response = message ? message[ 0 ] : undefined;
+			// if the email failed to send, or an error occurred ( which it does, rarely ) causing the response message to be empty
+			if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
+				// reject the promise with details
+				return reject( `error sending new social worker notification email to MARE - ${ err }` );
+			}
+
+			resolve();
+		});
+	});
+};
+
+exports.sendNewFamilyNotificationEmailToMARE = ( user, userEmail, registrationStaffContact ) => {
+	
+	return new Promise( ( resolve, reject ) => {
+		// if sending of the email is not currently allowed
+		if( process.env.SEND_NEW_FAMILY_REGISTERED_EMAILS_TO_MARE !== 'true' ) {
+			// reject the promise with information about why
+			return reject( `sending of the email is disabled` );
+		}
+
+		if( !registrationStaffContact ) {
+			return reject( `no staff contact was provided` );
+		}
+		// // an array was used instead of a Map because Mustache templates apparently can't handle maps
+		// let userData = [];
+		// let heardAboutMAREFromArray = [];
+
+		// for( entry of user.heardAboutMAREFrom ) {
+		// 	heardAboutMAREFromArray.push( entry.wayToHearAboutMARE );
+		// }
+		// // store only the fields that have been populated by the user
+		// if( user.name.first ) { userData.push( { key: 'first name', value: user.name.first } ); }
+		// if( user.name.last ) { userData.push( { key: 'last name', value: user.name.last } ); }
+		// if( user.phone.work ) { userData.push( { key: 'work phone', value: user.phone.work } ); }
+		// if( user.phone.home ) { userData.push( { key: 'home phone', value: user.phone.home } ); }
+		// if( user.phone.mobile ) { userData.push( { key: 'mobile phone', value: user.phone.mobile } ); }
+		// if( user.phone.preferred ) { userData.push( { key: 'preferred phone', value: user.phone.preferred } ); }
+		// if( user.address.street1 ) { userData.push( { key: 'street 1', value: user.address.street1 } ); }
+		// if( user.address.street2 ) { userData.push( { key: 'street 2', value: user.address.street2 } ); }
+		// if( !user.address.isOutsideMassachusetts && user.address.city.cityOrTown ) { userData.push( { key: 'city', value: user.address.city.cityOrTown } ); }
+		// if( user.address.isOutsideMassachusetts && user.address.cityText ) { userData.push( { key: 'city', value: user.address.cityText } ); }
+		// if( user.address.state.state ) { userData.push( { key: 'state', value: user.address.state.state } ); }
+		// if( user.address.zipCode ) { userData.push( { key: 'zip code', value: user.address.zipCode } ); }
+		// if( heardAboutMAREFromArray.length !== 0 ) { userData.push( { key: 'heard about MARE from', value: heardAboutMAREFromArray } ); }
+		// if( user.heardAboutMAREFromOther ) { userData.push( { key: 'heard about MARE from - other', value: user.heardAboutMAREFromOther } ); }
+
+		// find the email template in templates/emails/
+		new keystone.Email({
+			templateExt		: 'hbs',
+			templateEngine 	: require( 'handlebars' ),
+			templateName 	: 'register_new-user-notification-to-staff'
+		}).send({
+			to				: 'jared.j.collier@gmail.com',
+			from: {
+				name 		: 'MARE',
+				email 		: 'admin@adoptions.io'
+			},
+			subject			: `new ${ user.userType } registration`,
+			userType		: user.userType,
+			userData,
+			registrationStaffContact
+		}, ( err, message ) => {
+			// if there was an error sending the email
+			if( err ) {
+				// reject the promise with details
+				return reject( `error sending new family notification email to MARE - ${ err }` );
+			}
+			// the response object is stored as the 0th element of the returned message
+			const response = message ? message[ 0 ] : undefined;
+			// if the email failed to send, or an error occurred ( which it does, rarely ) causing the response message to be empty
+			if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
+				// reject the promise with details
+				return reject( `error sending new family notification email to MARE - ${ err }` );
 			}
 
 			resolve();
@@ -65,9 +212,13 @@ exports.sendAccountVerificationEmailToUser = ( userEmail, userType, verification
 	
 	return new Promise( ( resolve, reject ) => {
 		// if sending of the email is not currently allowed
-		if( process.env.SEND_ACCOUNT_VERIFICATION_EMAILS_TO_USER === 'false' ) {
+		if( process.env.SEND_ACCOUNT_VERIFICATION_EMAILS_TO_USER !== 'true' ) {
 			// reject the promise with information about why
-			return reject( `sending of account verification emails is currently turned off, no email was sent to ${ userEmail }` );
+			return reject( `sending of the email is disabled` );
+		}
+
+		if( !userEmail ) {
+			return reject( `no user email was provided` );
 		}
 
 		// find the email template in templates/emails/
@@ -94,14 +245,14 @@ exports.sendAccountVerificationEmailToUser = ( userEmail, userType, verification
 			// if there was an error sending the email
 			if( err ) {
 				// reject the promise with details
-				return reject( `error sending registration account verification email: ${ err }` );
+				return reject( `error sending account verification email to newly registered user - ${ err }` );
 			}
 			// the response object is stored as the 0th element of the returned message
 			const response = message ? message[ 0 ] : undefined;
 			// if the email failed to send, or an error occurred ( which it does, rarely ) causing the response message to be empty
 			if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
 				// reject the promise with details
-				return reject( `account verification to newly registered user email failed to send: ${ message }.  Error: ${ err }` );
+				return reject( `error sending account verification email to newly registered user - ${ err }` );
 			}
 
 			resolve();
@@ -113,9 +264,13 @@ exports.sendThankYouEmailToUser = ( staffContactInfo = { email: 'jared.j.collier
 	
 	return new Promise( ( resolve, reject ) => {
 		// if sending of the email is not currently allowed
-		if( process.env.SEND_REGISTRATION_THANK_YOU_EMAILS === 'false' ) {
+		if( process.env.SEND_REGISTRATION_THANK_YOU_EMAILS !== 'true' ) {
 			// resolve the promise before any further processing takes place
-			return reject( `sending of registration thank you emails is currently turned off, no email was sent to ${ userEmail }` );
+			return reject( `sending of the email is disabled` );
+		}
+
+		if( !userEmail ) {
+			return reject( `no user email was provided` );
 		}
 
 		// find the email template in templates/emails/
@@ -144,14 +299,14 @@ exports.sendThankYouEmailToUser = ( staffContactInfo = { email: 'jared.j.collier
 			// if there was an error sending the email
 			if( err ) {
 				// reject the promise with details
-				return reject( `error sending registration thank you email: ${ err }` );
+				return reject( `error sending thank you email to newly registered user - ${ err }` );
 			}
 			// the response object is stored as the 0th element of the returned message
 			const response = message ? message[ 0 ] : undefined;
 			// if the email failed to send, or an error occurred ( which it does, rarely ) causing the response message to be empty
 			if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
 				// reject the promise with details
-				return reject( `thank you to newly registered user email failed to send: ${ message }.  Error: ${ err }` );
+				return reject( `error sending thank you email to newly registered user - ${ err }` );
 			}
 
 			resolve();
