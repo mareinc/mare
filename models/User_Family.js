@@ -375,7 +375,7 @@ Family.schema.pre( 'save', function( next ) {
 			console.error( `Website Bot could not be fetched for family ${ this.displayName } ( registration number: ${ this.registrationNumber } ) - ${ err }` );
 		});
 
-	Promise.all( [ regionUpdated, galleryViewingPermissionsSet, registrationNumberSet, botUserFetched ] )
+	Promise.all( [ regionUpdated, galleryViewingPermissionsSet, registrationNumberSet, websiteBotFetched ] )
 		// if there was an error with any of the promises
 		.catch( err => {
 			// log it for debugging purposes
