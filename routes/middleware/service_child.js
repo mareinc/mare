@@ -494,6 +494,14 @@ exports.getChildDetails = ( req, res, next ) => {
         .populate( 'gender' )
         .exec()
         .then( child => {
+			// create a valid embed string based on the youtube string provided
+			const videoString = child.video && child.video.length > 0 ?
+								child.video.replace( 'youtu.be', 'www.youtube.com/embed' ).replace( 'watch?v=', 'embed/' ) :
+								undefined;
+			// create a valid embed string based on the youtube string provided
+			const wednesdaysChildVideoString = child.wednesdaysChildVideo && child.wednesdaysChildVideo.length > 0 ?
+								child.wednesdaysChildVideo.replace( 'youtu.be', 'www.youtube.com/embed' ).replace( 'watch?v=', 'embed/' ) :
+								undefined;
 
         	const relevantData = {
 				hasImage				: _.isEmpty( child.image ) && child.image.url.length > 0,
@@ -501,8 +509,8 @@ exports.getChildDetails = ( req, res, next ) => {
         		profilePart1			: child.profile.part1,
         		profilePart2			: child.profile.part2,
         		profilePart3			: child.profile.part3,
-        		video					: child.video && child.video.length > 0 ? child.video.replace( 'watch?v=', 'embed/' ) : undefined,
-				wednesdaysChildVideo	: child.wednesdaysChildVideo && child.wednesdaysChildVideo.length > 0 ? child.wednesdaysChildVideo.replace( 'watch?v=', 'embed/' ) : undefined
+        		video					: videoString,
+				wednesdaysChildVideo	: wednesdaysChildVideoString
         	};
 
         	res.send( relevantData );
@@ -527,15 +535,23 @@ exports.getSiblingGroupDetails = ( req, res, next ) => {
         .populate( 'gender' )
         .exec()
         .then( child => {
-
-        	const relevantData = {
+			// create a valid embed string based on the youtube string provided
+			const videoString = child.siblingGroupVideo && child.siblingGroupVideo.length > 0 ?
+								child.siblingGroupVideo.replace( 'youtu.be', 'www.youtube.com/embed' ).replace( 'watch?v=', 'embed/' ) :
+								undefined;
+			// create a valid embed string based on the youtube string provided
+			const wednesdaysChildVideoString = child.wednesdaysChildSiblingGroupVideo && child.wednesdaysChildSiblingGroupVideo.length > 0 ?
+											   child.wednesdaysChildSiblingGroupVideo.replace( 'youtu.be', 'www.youtube.com/embed' ).replace( 'watch?v=', 'embed/' ) :
+											   undefined;
+			
+			const relevantData = {
 				hasImage				: _.isEmpty( child.siblingGroupImage ) && child.siblingGroupImage.url.length > 0,
 				quote					: child.groupProfile.quote,
         		profilePart1			: child.groupProfile.part1,
         		profilePart2			: child.groupProfile.part2,
         		profilePart3			: child.groupProfile.part3,
-        		video					: child.siblingGroupVideo && child.siblingGroupVideo.length > 0 ? child.siblingGroupVideo.replace('watch?v=', 'embed/') : undefined,
-				wednesdaysChildVideo	: child.wednesdaysChildSiblingGroupVideo && child.wednesdaysChildSiblingGroupVideo.length > 0 ? child.wednesdaysChildSiblingGroupVideo.replace( 'watch?v=', 'embed/' ) : undefined
+        		video					: videoString,
+				wednesdaysChildVideo	: wednesdaysChildVideoString
         	};
 
         	res.send( relevantData );
