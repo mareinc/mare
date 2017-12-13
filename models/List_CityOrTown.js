@@ -19,7 +19,8 @@ CityOrTown.add({
 CityOrTown.schema.pre('save', function( next ) {
 	'use strict';
 
-	keystone.list( 'Region').model.find()
+	keystone.list( 'Region' ).model
+		.find()
 		.exec()
 		.then( regions => {
 
