@@ -7,7 +7,7 @@
     "url": "https://github.com/autoboxer/MARE.git"
   },
   "dependencies": {
-    "async": "^2.5.0",
+    "async": "^2.6.0",
     "browserify": "^14.5.0",
     "cloudinary": "~1.9.1",
     "csvtojson": "^1.1.7",
@@ -21,7 +21,7 @@
     "gulp-eslint": "^3.0.1",
     "gulp-filter": "^5.0.1",
     "gulp-ignore": "^2.0.2",
-    "gulp-imagemin": "^3.4.0",
+    "gulp-imagemin": "^4.0.0",
     "gulp-mocha": "^4.3.1",
     "gulp-rename": "^1.2.2",
     "gulp-sass": "^3.1.0",
@@ -30,12 +30,12 @@
     "gulp-watch": "~4.3.11",
     "handlebars": "~4.0.11",
     "keystone": "https://github.com/keystonejs/keystone.git#c38b366c7b1bf01448c8ece7c36e1bb6eb195186",
-    "moment": "~2.19.1",
+    "moment": "~2.19.4",
     "mongoose-simple-random": "^0.4.1",
-    "newrelic": "^2.3.1",
-    "node-sass": "^4.5.3",
+    "newrelic": "^2.4.2",
+    "node-sass": "^4.7.2",
     "node-sass-middleware": "^0.11.0",
-    "stripe": "^5.2.0",
+    "stripe": "^5.4.0",
     "underscore": "~1.8.3"
   },
   "engines": {
@@ -50,7 +50,7 @@
   "devDependencies": {
     "chai": "^4.1.2",
     "mocha": "^4.0.1",
-    "sinon": "^4.0.2",
+    "sinon": "^4.1.3",
     "sinon-chai": "^2.14.0"
   }
 }
