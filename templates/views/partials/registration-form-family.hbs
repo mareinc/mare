@@ -1,13 +1,13 @@
 <section class="family-registration hidden">
-
-	<div class="form-type-header">Prospective Parent Registration</div>
-	<span class="required required-description">* Required</span>
 	
 	<form enctype="multipart/form-data" action="/register" class="registration-form form--family-registration" method="POST">
 		<input type="hidden" class="registration-type" name="registrationType" value="family">
 
 		<section class="family-account-setup-section">
 			<div class="form-section-header">Account Setup</div>
+
+			<span class="required required-description">* Required</span>
+			
 			<div class="row form-group">
 				<div class="col-sm-12">
 					<input type="email" id="family-email" class="input" name="email" data-parsley-type="email" data-parsley-trigger="change" data-parsley-error-message="valid email required" required="">

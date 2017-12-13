@@ -18,14 +18,14 @@
 
 	<section class="family-registration-form">
 
-		<div class="form-type-header">Register a Family</div>
-		<span class="required required-description">* Required</span>
-
 		<form enctype="multipart/form-data" action="/social-worker-register-family" class="form--family-registration" method="POST">
 			<input type="hidden" class="registration-type" name="registrationType" value="family">
 			
 			<section class="family-contact-1-section">
 				<div class="form-section-header">Contact 1</div>
+
+				<span class="required required-description">* Required</span>
+				
 				<div class="row">
 					<div class="col-sm-12 form-group">
 						<input type="text" id="contact1-first-name" class="input" name="contact1FirstName" data-parsley-error-message="required" required="">

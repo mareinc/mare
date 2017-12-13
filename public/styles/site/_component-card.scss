@@ -220,6 +220,14 @@
 	}
 }
 
+.card__content-block {
+	margin: 1em 0 2em;
+
+	&--centered {
+		text-align: center;
+	}
+}
+
 .card__overview {
 	display: flex;
 	width: 100%;

@@ -81,7 +81,7 @@ exports.getActiveEventsByEventType = ( eventType, eventGroup ) => {
 				// if no active events matching the passed in eventType could not be found
 				if( events.length === 0 ) {
 					// log an error for debugging purposes
-					console.error( `no active events matching '${ eventType } could be found` );
+					console.error( `no active events matching ${ eventType } could be found` );
 				}
 				// resolve the promise with the events
 				resolve( events );
