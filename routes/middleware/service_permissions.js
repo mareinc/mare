@@ -1,10 +1,9 @@
 /* TODO: this should be moved to service_user.js */
-var keystone	= require('keystone'),
-	_			= require('underscore'),
-	async		= require('async'),
-	User		= keystone.list('User');
+const keystone	= require( 'keystone' ),
+	  _			= require( 'underscore' ),
+	  async		= require( 'async' );
 
-exports.getGalleryPermissions = function getGalleryPermissions(req, res, next) {
+exports.getGalleryPermissions = function getGalleryPermissions( req, res, next ) {
 
 	let locals = res.locals;
 
@@ -20,6 +19,6 @@ exports.getGalleryPermissions = function getGalleryPermissions(req, res, next) {
 		canSearch	: locals.canSearch
 	}
 
-	res.send(locals.galleryPermissions);
+	res.send( locals.galleryPermissions );
 
 };

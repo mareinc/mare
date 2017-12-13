@@ -5,7 +5,7 @@ exports.sendEventRegistrationEmailToStaff = ( registrationInfo, eventId, registr
 	return new Promise( ( resolve, reject ) => {
 		// TODO: check the logic around process.env.migration, it doesn't seem to make sense
 		// if sending of the email is not currently allowed
-		if( process.env.SEND_EVENT_REGISTRATION_TO_STAFF === 'false' ) {
+		if( process.env.SEND_EVENT_REGISTRATION_TO_STAFF !== 'true' ) {
 			// resolve the promise before any further processing takes place
 			return resolve();
 		}
@@ -47,7 +47,7 @@ exports.sendEventUnregistrationEmailToStaff = ( eventName, eventId, registration
 	return new Promise( ( resolve, reject ) => {
 		// TODO: check the logic around process.env.migration, it doesn't seem to make sense
 		// if sending of the email is not currently allowed
-		if( process.env.SEND_EVENT_UNREGISTRATION_TO_STAFF === 'false' ) {
+		if( process.env.SEND_EVENT_UNREGISTRATION_TO_STAFF !== 'true' ) {
 			// resolve the promise before any further processing takes place
 			return resolve();
 		}

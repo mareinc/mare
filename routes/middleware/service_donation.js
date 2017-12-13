@@ -3,8 +3,7 @@ const keystone		= require( 'keystone' ),
 	  fs			= require( 'fs' ),
 	  handlebars	= require( 'handlebars' ),	
 	  helpers       = require( '../../templates/views/helpers/index' )(),
-	  stripe		= require( 'stripe' )( process.env.STRIPE_SECRET_API_KEY_TEST ),
-	  Donation		= keystone.list( 'Donation' );
+	  stripe		= require( 'stripe' )( process.env.STRIPE_SECRET_API_KEY_TEST );
 	  
 // define the various donation plan types ( stripe plans are used for recurring donations )
 const plan_types = {
@@ -104,6 +103,8 @@ function saveDonation( user, donationData, stripeTransactionID  ) {
 	return new Promise( ( resolve, reject ) => {
 
 		const isRegistered = !!user;
+
+		const Donation = keystone.list( 'Donation' );
 
 		// create new Donation model and pre-fill with donation data
 		var donation = new Donation.model({

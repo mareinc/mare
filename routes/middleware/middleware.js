@@ -1,12 +1,10 @@
 // TODO: move all this middleware into the appropriate files inside the middleware/ directory,
 //		 also, check for unused junk code 
 
-var _ 				= require('underscore'),
-	async			= require( 'async' ),
-	// load in Keystone for model references
-	keystone 		= require('keystone'),
-	// load in middleware
-	UserMiddleware	= require( './service_user' );
+const keystone 			= require('keystone'),
+	  _ 				= require('underscore'),
+	  async				= require( 'async' ),
+	  UserMiddleware	= require( './service_user' );
 
 // initialize the standard view locals
 exports.initLocals = function(req, res, next) {

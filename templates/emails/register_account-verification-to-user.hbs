@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>Your new MARE {{ userType }} account</title>
+<title>MARE {{ userType }} registration</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 </head>
 <body style="margin: 0; padding: 0;">
@@ -22,34 +22,16 @@
 							<table border="0" cellpadding="0" cellspacing="0" width="100%">
 								<tr>
 									<td style="color: #153643; font-family: Arial, sans-serif; font-size: 24px;">
-										<b>Welcome to MARE!</b>
+										<b>Thanks for creating a MARE account!</b>
 									</td>
 								</tr>
 								<tr>
 									<td style="padding: 20px 0 0 0; color: #153634; font-family: Ariel, sans-serif; font-size: 16px; line-height: 20px;">
-										To complete your registration, please follow <a href="{{ host }}/verifyAccount?verificationCode={{ verificationCode }}&userType={{userType}}">this link</a>
+										To complete your registration, please follow <a href="{{ host }}/verifyAccount?verificationCode={{ verificationCode }}&userType={{ userType }}">this link</a>
 								</tr>
-								<tr>
-									<td style="padding: 20px 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 16px; line-height: 20px;">
-										Thank you for registering as a {{ userType }}. {{#unless isSiteVisitor}}Within 3 business days, your information will be verified and you will be able to log into your account to have access to a greater pool of waiting children (including those at legal risk), search for children and RSVP for events. {{/unless}}You now have access to register for events through our events page and browse all of our non-at risk children in the waiting child profiles gallery.
-									</td>
-								</tr>
-								<tr>
-									<td style="line-height:10px;">&nbsp;</td>
-								</tr>
-								{{#if isFamily}}
 								<tr>
 									<td style="padding: 0 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 16px; line-height: 20px;">
-										If you are a Massachusetts family with an approved homestudy to adopt from foster care and have uploaded your homestudy, we will compare your families’ preferences with the needs of the children registered with MARE and forward your homestudy to the child’s social worker. This is an opportunity to have your family’s preferences shared with workers across the state for consideration for specific children.
-									</td>
-								</tr>
-								<tr>
-									<td style="line-height:10px;">&nbsp;</td>
-								</tr>
-								{{/if}}
-								<tr>
-									<td style="padding: 0 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 16px; line-height: 20px;">
-										If you have any questions about your registration as a {{ userType }}, contact <a href="mailto:{{ staffContactEmail }}?Subject={{ emailSubject }}" style="text-decoration: none;">{{ staffContactEmail }}</a>.
+										If you didn't create an account with MARE, please ignore this email.
 									</td>
 								</tr>
 							</table>

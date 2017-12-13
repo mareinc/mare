@@ -1,34 +1,22 @@
 require('./Tracking_ChildHistory');
-require('./List_Language');
-require('./List_ChildStatus');
-require( './List_Gender' );
-require( './List_Race' );
-require( './List_LegalStatus' );
-require( './List_Residence' );
-require( './List_CityOrTown' );
-require( './List_Disability' );
-require( './List_FamilyConstellation' );
-require( './List_OtherFamilyConstellationConsideration' );
-require( './List_OtherConsideration' );
-require( './User_SocialWorker' );
-require( './List_Region' );
-require( './Event' );
-require( './List_MediaEligibility' );
 
-const keystone					= require( 'keystone' ),
-	  async 					= require( 'async' ),
-	  _ 						= require( 'underscore' ),
-	  Types						= keystone.Field.Types,
-	  ChildHistory				= keystone.list( 'Child History' ),
-	  ChangeHistoryMiddleware	= require( '../routes/middleware/models_change-history' ),
-	  ChildMiddleware			= require( '../routes/middleware/models_child' ),
-	  FamilyMiddleware			= require( '../routes/middleware/models_family' ),
-	  SocialWorkerMiddleware	= require( '../routes/middleware/models_social-worker' ),
-	  UtilitiesMiddleware		= require( '../routes/middleware/utilities' );
+const keystone						= require( 'keystone' ),
+	  async 						= require( 'async' ),
+	  _ 							= require( 'underscore' ),
+	  Types							= keystone.Field.Types,
+	  ChangeHistoryMiddleware		= require( '../routes/middleware/models_change-history' ),
+	  ChildServiceMiddleware		= require( '../routes/middleware/service_child' ),
+	  SocialWorkerServiceMiddleware	= require( '../routes/middleware/service_social-worker' ),
+	  UserServiceMiddleware			= require( '../routes/middleware/service_user' ),
+	  agencyMiddleware				= require( '../routes/middleware/service_agency' ),
+	  ChildMiddleware				= require( '../routes/middleware/models_child' ),
+	  FamilyMiddleware				= require( '../routes/middleware/models_family' ),
+	  SocialWorkerMiddleware		= require( '../routes/middleware/models_social-worker' ),
+	  UtilitiesMiddleware			= require( '../routes/middleware/utilities' );
 
 // Create model
 const Child = new keystone.List('Child', {
-	track		: true, // needed for change history updated by assignment
+	track: true, // needed for change history updated by assignment
 	autokey: { path: 'key', from: 'registrationNumber', unique: true },
 	map: { name: 'name.full' },
 	defaultSort: 'name.full'
@@ -74,8 +62,8 @@ Child.add('Display Options', {
 	birthFamilyTypeOfContact: { type: Types.Text, label: 'type of contact', initial: true },
 
 	residence: { type: Types.Relationship, label: 'where does the child presently live?', ref: 'Residence', initial: true },
-	city: { type: Types.Relationship, label: 'city/town of child\'s current location', ref: 'City or Town', dependsOn: { isOutsideMassachusetts: false }, initial: true },
 	isOutsideMassachusetts: { type: Types.Boolean, label: 'is outside Massachusetts', initial: true },
+	city: { type: Types.Relationship, label: 'city/town of child\'s current location', ref: 'City or Town', dependsOn: { isOutsideMassachusetts: false }, initial: true },
 	cityText: { type: Types.Text, label: 'city/town of child\'s current location', dependsOn: { isOutsideMassachusetts: true }, initial: true },
 	careFacilityName: { type: Types.Text, label: 'name of residential/group care facility', initial: true },
 	dateMovedToResidence: { type: Types.Date, label: 'date moved to current residence', format: 'MM/DD/YYYY', initial: true }
@@ -244,25 +232,55 @@ Child.schema.post( 'init', function() {
 
 Child.schema.pre( 'save', function( next ) {
 	'use strict';
-	// TODO: remove non-asynchronous calls from the async.series
-	async.series([
-		done => { this.setImages( done ); }, // Create cloudinary URLs for images sized for various uses
-		done => { this.setFullName( done ); }, // Create a full name for the child based on their first, middle, and last names
-		done => { this.setRegistrationNumber( done ); }, // Set the registration number to the next highest available
-		done => { this.setAgencyFields( done ); }, // Set the adoption and recruitment workers' agency and region
-		done => { this.setFileName( done ); }, // Create an identifying name for file uploads
-		done => { this.setSiblingGroupFileName( done ); }, // Create an identifying name for sibling group file uploads
-		done => { this.updateMustBePlacedWithSiblingsCheckbox( done ); }, // If there are no siblings to be placed with, uncheck the box, otherwise check it
-		done => { this.updateGroupBio( done ); },
-		done => { ChangeHistoryMiddleware.setUpdatedby( this, done ); }, // we need this id in case the family was created via the website and udpatedBy is empty
-		done => { this.setChangeHistory( done ); } // Process change history
-	], function() {
+	// create cloudinary URLs for images sized for various uses
+	this.setImages();
+	// create a full name for the child based on their first, middle, and last names
+	this.setFullName();
+	// create an identifying name for file uploads
+	this.setFileName();
+	// if there are no siblings to be placed with, uncheck the box, otherwise check it
+	this.updateMustBePlacedWithSiblingsCheckbox();
+	// if there are no siblings to be placed with, clear the group bio
+	this.updateGroupBio();
 
-		console.log( 'child information updated' );
+	// we need this id in case the family was created via the website and updatedBy is empty
+	const migrationBotFetched = UserServiceMiddleware.getUserByFullName( 'Migration Bot', 'admin' );
+	// set the registration number for the family
+	const registrationNumberSet = this.setRegistrationNumber();
+	// set the noedit fields associated with the adoption worker's agency
+	const adoptionWorkerAgencyFieldsSet = this.setAdoptionWorkerAgencyFields();
+	// set the noedit fields associated with the recruitment worker's agency
+	const recruitmentWorkerAgencyFieldsSet = this.setRecruitmentWorkerAgencyFields();
+	// create an identifying name for sibling group file uploads
+	const siblingGroupFileNameSet = this.setSiblingGroupFileName();
+	
+	// if the bot user was fetched successfully
+	migrationBotFetched
+		.then( bot => {
+			// set the updatedBy field to the bot's _id if the field isn't already set ( meaning it was saved in the admin UI and we know the user based on their session info )
+			this.updatedBy = this.updatedBy || bot.get( '_id' );
+		})
+		// if there was an error fetching the bot user
+		.catch( err => {
+			// log it for debugging purposes
+			console.error( `Website Bot could not be fetched for family ${ this.name.full } ( registration number: ${ this.registrationNumber } ) - ${ err }` );
+		});
 
-		next();
+	Promise.all( [ registrationNumberSet, adoptionWorkerAgencyFieldsSet, recruitmentWorkerAgencyFieldsSet, siblingGroupFileNameSet ] )
+		// if there was an error with any of the promises
+		.catch( err => {
+			// log it for debugging purposes
+			console.error( `child ${ this.name.full } ( registration number: ${ this.registrationNumber } ) saved with errors` );
+		})
+		// execute the following regardless of whether the promises were resolved or rejected
+		// TODO: this should be replaced with ES6 Promise.prototype.finally() once it's finalized, assuming we can update to the latest version of Node if we upgrade Keystone
+		.then( () => {
+			// process change history
+			// TODO: if change history isn't showing up until the page is reloaded, the next() will need to wait until after setChangeHistory completes
+			this.setChangeHistory();
 
-	});
+			next();
+		});
 });
 
 Child.schema.post( 'save', function() {
@@ -272,7 +290,7 @@ Child.schema.post( 'save', function() {
 	this.updateBookmarks();
 });
 
-Child.schema.methods.setImages = function( done ) {
+Child.schema.methods.setImages = function() {
 	'use strict';
 
 	// TODO: Play with lowering quality to 0 and doubling the image size as an optimization technique
@@ -281,11 +299,9 @@ Child.schema.methods.setImages = function( done ) {
 
 	this.siblingGroupGalleryImage = this._.siblingGroupImage.thumbnail( 430, 430, { quality: 60 } );
 	this.siblingGroupDetailImage = this._.siblingGroupImage.thumbnail( 200, 200, { quality: 60 } );
-
-	done();
 };
 // TODO: Better handled with a virtual
-Child.schema.methods.setFullName = function( done ) {
+Child.schema.methods.setFullName = function() {
 	'use strict';
 
 	// Build the name string for better identification when linking through Relationship field types
@@ -294,87 +310,171 @@ Child.schema.methods.setFullName = function( done ) {
 		  lastName    = ( this.name.last && this.name.last.length > 0 ) ? ' ' + this.name.last : ''
 
 	this.name.full = firstName + middleName + lastName;
-
-	done();
 };
 
-Child.schema.methods.setRegistrationNumber = function( done ) {
+Child.schema.methods.setRegistrationNumber = function() {
+	
+	return new Promise( ( resolve, reject ) => {
+		// If the registration number is already set ( which will happen during the data migration as well as saving existing children )
+		if( this.registrationNumber ) {
+			// ignore setting it and resolve the promise
+			resolve();
+		// if the registration number has not been set before
+		} else {
+			// get the maximum registration number across all children
+			const fetchMaxRegistrationNumber = ChildServiceMiddleware.getMaxRegistrationNumber();
+			// once the value has been fetched
+			fetchMaxRegistrationNumber
+				.then( registrationNumber => {
+					// set the current family's registration number to the max plus 1
+					this.registrationNumber = registrationNumber + 1;
+					// resolve the promise
+					resolve();
 
-	// If the registration number is already set ( which will happen during the data migration ), ignore setting it
-	if( this.registrationNumber ) {
-		done();
-	} else {
-		// get all children
-		keystone.list( 'Child' ).model
-				.find()
-				.select( 'registrationNumber' )
-				.lean()
-				.exec()
-				.then( children => {
-					// if this is the first child to be created
-					if( children.length === 0 ) {
-						this.registrationNumber = 1;
-					} else {
-						// get an array of registration numbers
-						const registrationNumbers = children.map( child => child.registrationNumber );
-						// get the largest registration number
-						this.registrationNumber = Math.max( ...registrationNumbers ) + 1;
-					}
-
-					done();
-
-				}, err => {
-					console.log( 'error setting registration number' );
-					console.log( err );
-
-					done();
+				})
+				// if there was an error fetching the max registration number
+				.catch( err => {
+					// log the error for debugging purposes
+					console.error( `registration number could not be updated for child ${ this.fullName } ( registration number: ${ this.registrationNumber } ) - ${ err }` );
+					// reject the promise with the error
+					reject();
 				});
-	}
-};
-// TODO: this is weird and ugly, use native promises
-Child.schema.methods.setAgencyFields = function( done ) {
-
-	async.series([
-		done => { ChildMiddleware.setAgencyFields( this, done ) }
-	], () => {
-
-		done();
-
+		}
 	});
-}
+};
 
-Child.schema.methods.setFileName = function( done ) {
+Child.schema.methods.setAdoptionWorkerAgencyFields = function() {
+	
+	return new Promise( ( resolve, reject ) => {
+
+		if( !this.adoptionWorker ) {
+			return resolve();
+		}
+
+		const fetchAdoptionWorker = SocialWorkerServiceMiddleware.getSocialWorkerById( this.adoptionWorker );
+
+		// if the adoption worker was fetched successfully
+		fetchAdoptionWorker
+			.then( adoptionWorker => {
+				// attempt to find the adoption worker's agency
+				return agencyMiddleware.getAgencyById( adoptionWorker.agency );
+			})
+			// if the adoption worker's agency was found successfully
+			.then( agency => {
+				// set the adoption worker agency for the child
+				this.adoptionWorkerAgency = agency.get( '_id' );
+				// set the adoption worker agency region for the child
+				this.adoptionWorkerAgencyRegion = agency.address.region;
+				// resolve the promise
+				resolve();
+			})
+			// if any of the promises were rejected
+			.catch( err => {
+				// log the error for debugging purposes
+				console.error( `error saving the child's adoption worker agency fields - ${ err }` );
+				// clear out the adoption worker agency fields
+				this.adoptionWorkerAgency = undefined;
+				this.adoptionWorkerAgencyRegion = undefined;
+				// reject the promise
+				reject();
+			});
+	});
+};
+
+Child.schema.methods.setRecruitmentWorkerAgencyFields = function() {
+	
+	return new Promise( ( resolve, reject ) => {
+
+		if( !this.recruitmentWorker ) {
+			return resolve();
+		}
+
+		const fetchRecruitmentWorker = SocialWorkerServiceMiddleware.getSocialWorkerById( this.recruitmentWorker );
+
+		// if the recruitment worker was fetched successfully
+		fetchRecruitmentWorker
+			.then( recruitmentWorker => {
+				// attempt to find the recruitment worker's agency
+				return agencyMiddleware.getAgencyById( recruitmentWorker.agency );
+			})
+			// if the recruitment worker's agency was found successfully
+			.then( agency => {
+				// set the recruitment worker agency for the child
+				this.recruitmentWorkerAgency = agency.get( '_id' );
+				// set the recruitment worker agency region for the child
+				this.recruitmentWorkerAgencyRegion = agency.address.region;
+				// resolve the promise
+				resolve();
+			})
+			// if any of the promises were rejected
+			.catch( err => {
+				// log the error for debugging purposes
+				console.error( `error saving the child's recruitment worker agency fields - ${ err }` );
+				// clear out the recruitment worker agency fields
+				this.recruitmentWorkerAgency = undefined;
+				this.recruitmentWorkerAgencyRegion = undefined;
+				// reject the promise
+				reject();
+			});
+	});
+};
+
+Child.schema.methods.setFileName = function() {
 	'use strict';
 
 	this.fileName = this.registrationNumber + '_' + this.name.first.toLowerCase();
-
-	done();
 };
 
-Child.schema.methods.setSiblingGroupFileName = function( done ) {
+Child.schema.methods.setSiblingGroupFileName = function() {
 	'use strict';
 
-	let idsArray = [ ...this.get( 'siblingsToBePlacedWith' ) ];
-	idsArray.push( this.get( '_id' ) );
+	return new Promise( ( resolve, reject ) => {
 
-	let registrationNumbersArray = [];
-	let namesArray = [];
+		if( !this.get( 'siblingsToBePlacedWith' ) || this.get( 'siblingsToBePlacedWith' ).length === 0 ) {
+			return resolve();
+		}
 
-	async.parallel([
-		done => { ChildMiddleware.getRegistrationNumbersById( idsArray, registrationNumbersArray, done ); },
-		done => { ChildMiddleware.getFirstNamesById( idsArray, namesArray, done ); }
-	], () => {
-
-		const idsString = registrationNumbersArray.join( '_' );
-		const namesString = namesArray.join( '_' );
-
-		this.siblingGroupFileName = `${ idsString }_${ namesString }`;
-
-		done();
+		// create an array with the _id's of the siblings they must be placed with
+		let idsArray = [ ...this.get( 'siblingsToBePlacedWith' ) ];
+		// push the _id of the current child to the array
+		idsArray.push( this.get( '_id' ) );
+		// fetch the siblings of the current child
+		const fetchChildren = ChildServiceMiddleware.getChildrenByIds( idsArray );
+		// if all children in the sibling group have been fetched successfully
+		fetchChildren
+			.then( children => {
+				// create arrays to store values for the different portions of the file name
+				let registrationNumbersArray	= [],
+					namesArray					= [];
+				// sort the children by registration number
+				children.sort( ( a, b ) => {
+					return parseInt( a.registrationNumber ) - parseInt( b.registrationNumber );
+				});
+				// loop through each of the children
+				for( let child of children ) {
+					// store the meaning values in arrays
+					registrationNumbersArray.push( child.get( 'registrationNumber' ) );
+					namesArray.push( child.get( 'name.first' ) );
+				}
+				// extract the values form the array into strings
+				const registrationNumbersString	= registrationNumbersArray.join( '_' ),
+					  namesString				= namesArray.join( '_' );
+	
+				this.siblingGroupFileName = `${ registrationNumbersString }_${ namesString }`;
+				// resolve the promise
+				resolve();
+			})
+			// if there was an error fetching the children
+			.catch( err => {
+				// log the error for debugging purposes
+				console.error( `sibling group file name could not be updated for child ${ this.name.full } ( registration number: ${ this.registrationNumber } ) - ${ err }` );
+				// reject the promise with the error
+				reject();
+			});
 	});
 };
 
-Child.schema.methods.updateMustBePlacedWithSiblingsCheckbox = function( done ) {
+Child.schema.methods.updateMustBePlacedWithSiblingsCheckbox = function() {
 	'use strict';
 
 	if( this.siblingsToBePlacedWith && this.siblingsToBePlacedWith.length > 0 ) {
@@ -382,11 +482,9 @@ Child.schema.methods.updateMustBePlacedWithSiblingsCheckbox = function( done ) {
 	} else {
 		this.mustBePlacedWithSiblings = false;
 	}
-
-	done();
 }
 
-Child.schema.methods.updateGroupBio = function( done ) {
+Child.schema.methods.updateGroupBio = function() {
 	'use strict';
 
 	if( !this.siblingsToBePlacedWith || this.siblingsToBePlacedWith.length === 0 ) {
@@ -395,8 +493,6 @@ Child.schema.methods.updateGroupBio = function( done ) {
 		this.groupProfile.part2 = '';
 		this.groupProfile.part3 = '';
 	}
-
-	done();
 };
 // Update the siblings field of all siblings listed to include the current child
 Child.schema.methods.updateSiblingFields = function() {
@@ -547,730 +643,735 @@ Child.schema.methods.updateBookmarks = function() {
 Child.schema.methods.setChangeHistory = function( done ) {
 	'use strict';
 
-	const modelBefore	= this._original,
-		  model 		= this;
+	return new Promise( ( resolve, reject ) => {
+		const modelBefore	= this._original,
+			  model 		= this;
 
-	const changeHistory = new ChildHistory.model({
-		  child			: this,
-	      date			: Date.now(),
-	      changes		: '',
-	      modifiedBy	: this.updatedBy
+		const ChildHistory = keystone.list( 'Child History' );
+
+		const changeHistory = new ChildHistory.model({
+			child			: this,
+			date			: Date.now(),
+			changes		: '',
+			modifiedBy	: this.updatedBy
+		});
+
+		// if the model is being saved for the first time
+		if( !model._original ) {
+			// set the text for the change history record
+			changeHistory.changes = 'record migrated';
+			// save the change history record
+			changeHistory.save( () => {
+				// if the record saved successfully, resolve the promise
+				resolve();
+				// if there was an error saving the record
+			}, err => {
+				// log the error for debugging purposes
+				console.error( `initial change history record could not be saved for child ${ this.name.full } ( registration number: ${ this.registrationNumber } ) - ${ err }` );
+				// reject the promise
+				reject();
+			});
+
+		} else {
+			// Any time a new field is added, it MUST be added to this list in order to be considered for display in change history
+			// Computed fields and fields internal to the object SHOULD NOT be added to this list
+			async.parallel([
+
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'siteVisibility',
+												label: 'site visibility',
+												type: 'string' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'isVisibleInGallery',
+												label: 'child is visible in the gallery',
+												type: 'boolean' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'visibleInGalleryDate',
+												label: 'visible in gallery date',
+												type: 'date' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'registrationNumber',
+												label: 'registration number',
+												type: 'number' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'registrationDate',
+												label: 'registration date',
+												type: 'date' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												parent: 'name',
+												name: 'first',
+												label: 'first name',
+												type: 'string' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												parent: 'name',
+												name: 'middle',
+												label: 'middle name',
+												type: 'string' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												parent: 'name',
+												name: 'last',
+												label: 'last name',
+												type: 'string' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												parent: 'name',
+												name: 'alias',
+												label: 'alias',
+												type: 'string' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												parent: 'name',
+												name: 'nickName',
+												label: 'nick name',
+												type: 'string' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'birthDate',
+												label: 'date of birth',
+												type: 'date' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'languages',
+												targetField: 'language',
+												label: 'languages',
+												type: 'relationship',
+												model: 'Language' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'statusChangeDate',
+												label: 'status change date',
+												type: 'date' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'status',
+												targetField: 'childStatus',
+												label: 'status',
+												type: 'relationship',
+												model: 'Child Status' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'gender',
+												targetField: 'gender',
+												label: 'gender',
+												type: 'relationship',
+												model: 'Gender' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'race',
+												targetField: 'race',
+												label: 'race',
+												type: 'relationship',
+												model: 'Race' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'raceNotes',
+												label: 'race notes',
+												type: 'string' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'legalStatus',
+												targetField: 'legalStatus',
+												label: 'legal status',
+												type: 'relationship',
+												model: 'Legal Status' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'yearEnteredCare',
+												label: 'year entered care',
+												type: 'string' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'hasContactWithSiblings',
+												label: 'has contact with siblings',
+												type: 'boolean' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'siblingTypeOfContact',
+												label: 'type of contact with siblings',
+												type: 'string' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'siblings',
+												targetParent: 'name',
+												targetField: 'full',
+												label: 'siblings',
+												type: 'relationship',
+												model: 'Child' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'mustBePlacedWithSiblings',
+												label: 'must be placed with siblings',
+												type: 'boolean' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'siblingsToBePlacedWith',
+												targetParent: 'name',
+												targetField: 'full',
+												label: 'siblings to be placed with',
+												type: 'relationship',
+												model: 'Child' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'hasContactWithBirthFamily',
+												label: 'has contact with birth family',
+												type: 'boolean' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'birthFamilyTypeOfContact',
+												label: 'type of contact with birth family',
+												type: 'string' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'residence',
+												targetField: 'residence',
+												label: 'where does the child presently live?',
+												type: 'relationship',
+												model: 'Residence' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'city',
+												targetField: 'cityOrTown',
+												label: 'city or town of childs current location',
+												type: 'relationship',
+												model: 'City or Town' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'isOutsideMassachusetts',
+												label: 'is outside Massachusetts',
+												type: 'boolean' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'cityText',
+												label: 'city or town of childs current location (text field)',
+												type: 'string' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'careFacilityName',
+												label: 'care facility name',
+												type: 'string' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'dateMovedToResidence',
+												label: 'date moved to residence',
+												type: 'date' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'physicalNeeds',
+												label: 'physical needs',
+												type: 'string' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'physicalNeedsDescription',
+												label: 'physical needs description',
+												type: 'string' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'emotionalNeeds',
+												label: 'emotional needs',
+												type: 'string' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'emotionalNeedsDescription',
+												label: 'emotional needs description',
+												type: 'string' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'intellectualNeeds',
+												label: 'intellectual needs',
+												type: 'string' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'intellectualNeedsDescription',
+												label: 'intellectual needs description',
+												type: 'string' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'socialNeeds',
+												label: 'social needs',
+												type: 'string' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'socialNeedsDescription',
+												label: 'social needs description',
+												type: 'string' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'aspirations',
+												label: 'interests, talents, and aspirations',
+												type: 'string' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'schoolLife',
+												label: 'school life',
+												type: 'string' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'family life',
+												label: 'family life',
+												type: 'string' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'personality',
+												label: 'personality',
+												type: 'string' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'otherRecruitmentConsiderations',
+												label: 'other recruitment considerations',
+												type: 'string' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'disabilities',
+												targetField: 'disability',
+												label: 'disabilities',
+												type: 'relationship',
+												model: 'Disability' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'healthNotesNew',
+												label: 'old health notes',
+												type: 'string' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'healthNotesOld',
+												label: 'new health notes',
+												type: 'string' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'recommendedFamilyConstellation',
+												targetField: 'familyConstellation',
+												label: 'recommended family constellation',
+												type: 'relationship',
+												model: 'Family Constellation' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'otherFamilyConstellationConsideration',
+												targetField: 'otherFamilyConstellationConsideration',
+												label: 'other family constellation considerations',
+												type: 'relationship',
+												model: 'Other Family Constellation Consideration' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'otherConsiderations',
+												targetField: 'otherConsideration',
+												label: 'other considerations',
+												type: 'relationship',
+												model: 'Other Consideration' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'registeredBy',
+												label: 'registered by',
+												type: 'string' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'adoptionWorker',
+												targetParent: 'name',
+												targetField: 'full',
+												label: 'adoption worker',
+												type: 'relationship',
+												model: 'Social Worker' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'adoptionWorkerAgency',
+												targetField: 'name',
+												label: `adoption worker's agency`,
+												type: 'relationship',
+												model: 'Agency' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'adoptionWorkerAgencyRegion',
+												targetField: 'region',
+												label: `adoption worker's region`,
+												type: 'relationship',
+												model: 'Region' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'recruitmentWorker',
+												targetParent: 'name',
+												targetField: 'full',
+												label: 'recruitment worker',
+												type: 'relationship',
+												model: 'Social Worker' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'recruitmentWorkerAgency',
+												targetField: 'name',
+												label: `recruitment worker's agency`,
+												type: 'relationship',
+												model: 'Agency' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'recruitmentWorkerAgencyRegion',
+												targetField: 'region',
+												label: `recruitment worker's region`,
+												type: 'relationship',
+												model: 'Region' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												parent: 'profile',
+												name: 'quote',
+												label: 'personal quote',
+												type: 'string' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												parent: 'profile',
+												name: 'part1',
+												label: 'profile 1st paragraph',
+												type: 'string' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												parent: 'profile',
+												name: 'part2',
+												label: 'profile 2nd paragraph',
+												type: 'string' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												parent: 'profile',
+												name: 'part3',
+												label: 'profile 3rd paragraph',
+												type: 'string' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												parent: 'groupProfile',
+												name: 'quote',
+												label: 'group quote',
+												type: 'string' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												parent: 'groupProfile',
+												name: 'part1',
+												label: 'group profile 1st paragraph',
+												type: 'string' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												parent: 'groupProfile',
+												name: 'part2',
+												label: 'group profile 2nd paragraph',
+												type: 'string' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												parent: 'groupProfile',
+												name: 'part3',
+												label: 'group profile 3rd paragraph',
+												type: 'string' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'hasPhotolistingWriteup',
+												label: 'has photolisting writup',
+												type: 'boolean' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'photolistingWriteupDate',
+												label: 'date of photolisting writeup',
+												type: 'date' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'hasPhotolistingPhoto',
+												label: 'has photolisting page',
+												type: 'boolean' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'photolistingPhotoDate',
+												label: 'date of photolisting photo',
+												type: 'date' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'isCurrentlyInPhotoListing',
+												label: 'is currently in the photo listing',
+												type: 'boolean' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'dateOfLastPhotoListing',
+												label: 'date of last photolisting',
+												type: 'date' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'photolistingPageNumber',
+												label: 'photolisting page number',
+												type: 'number' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'previousPhotolistingPageNumbers',
+												label: 'previous photolisting page number',
+												type: 'string' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												parent: 'image',
+												name: 'secure_url',
+												label: 'image',
+												type: 'string' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												parent: 'siblingGroupImage',
+												name: 'secure_url',
+												label: 'sibling group image',
+												type: 'string' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'extranetUrl',
+												label: 'extranet url',
+												type: 'string' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'hasVideoSnapshot',
+												label: 'has video snapshot',
+												type: 'boolean' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'videoSnapshotDate',
+												label: 'date of video snapshop',
+												type: 'date' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'video',
+												label: 'video',
+												type: 'string' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'siblingGroupVideo',
+												label: 'sibling group video',
+												type: 'string' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'onMAREWebsite',
+												label: 'on MARE website',
+												type: 'boolean' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'onMAREWebsiteDate',
+												label: 'date on MARE website',
+												type: 'date' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'onAdoptuskids',
+												label: 'on adoptuskids',
+												type: 'boolean' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'onAdoptuskidsDate',
+												label: 'date on adoptuskids',
+												type: 'date' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'wednesdaysChild',
+												label: 'wednesdays child?',
+												type: 'boolean' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'wednesdaysChildDate',
+												label: 'date of wednesdays child',
+												type: 'date' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'wednesdaysChildVideo',
+												label: 'wednesdays child video',
+												type: 'string' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'wednesdaysChildSiblingGroup',
+												label: 'wednesdays child for sibling group?',
+												type: 'boolean' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'wednesdaysChildSiblingGroupDate',
+												label: 'date of sibling groups wednesdays child',
+												type: 'date' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'wednesdaysChildSiblingGroupVideo',
+												label: 'wednesdays child sibling group video',
+												type: 'string' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'coalitionMeeting',
+												label: 'coalition meeting',
+												type: 'boolean' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'coalitionMeetingDate',
+												label: 'date of coalition meeting',
+												type: 'date' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'matchingEvent',
+												label: 'matching event',
+												type: 'boolean' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'matchingEventDate',
+												label: 'date of matching event',
+												type: 'date' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'adoptionParties',
+												targetField: 'name',
+												label: 'adoption parties',
+												type: 'relationship',
+												model: 'Event' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'mediaEligibility',
+												targetField: 'mediaEligibility',
+												label: 'media eligibility',
+												type: 'relationship',
+												model: 'Media Eligibility' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'otherMediaDescription',
+												label: 'other media description',
+												type: 'string' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'locationAlert',
+												label: 'locationAlert',
+												type: 'boolean' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'place',
+												label: 'place',
+												type: 'string' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'communicationsCollateral',
+												label: 'communications collateral',
+												type: 'boolean' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'communicationsCollateralDetails',
+												label: 'communications collateral details',
+												type: 'string' }, model, modelBefore, changeHistory, done );
+				}
+			], () => {
+				// if there were no updates to the child record
+				if ( changeHistory.changes === '' ) {
+					// resolve the promise
+					resolve();
+				// if there were updates to the family record
+				} else {
+					// save the change history record
+					changeHistory.save( () => {
+						// if the record saved successfully, resolve the promise
+						resolve();
+						// if there was an error saving the record
+						}, err => {
+							// log the error for debugging purposes
+							console.error( `initial change history record could not be saved for child ${ this.name.full } ( registration number: ${ this.registrationNumber } ) - ${ err }` );
+							// reject the promise
+							reject();
+						});
+				}
+			});
+		}
 	});
-
-	// if the model is being saved for the first time, mark only that fact in an initial change history record
-	if( !model._original ) {
-
-		changeHistory.changes = 'record migrated';
-
-		changeHistory.save( () => {
-			console.log( 'record migrated - change history saved successfully' );
-			done();
-		}, err => {
-			console.log( err );
-			console.log( `error saving 'record created' change history record` );
-
-			done();
-		});
-
-	} else {
-		// Any time a new field is added, it MUST be added to this list in order to be considered for display in change history
-		// Computed fields and fields internal to the object SHOULD NOT be added to this list
-		async.parallel([
-
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'siteVisibility',
-											label: 'site visibility',
-											type: 'string' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'isVisibleInGallery',
-											label: 'child is visible in the gallery',
-											type: 'boolean' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'visibleInGalleryDate',
-											label: 'visible in gallery date',
-											type: 'date' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'registrationNumber',
-											label: 'registration number',
-											type: 'number' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'registrationDate',
-											label: 'registration date',
-											type: 'date' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											parent: 'name',
-											name: 'first',
-											label: 'first name',
-											type: 'string' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											parent: 'name',
-											name: 'middle',
-											label: 'middle name',
-											type: 'string' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											parent: 'name',
-											name: 'last',
-											label: 'last name',
-											type: 'string' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											parent: 'name',
-											name: 'alias',
-											label: 'alias',
-											type: 'string' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											parent: 'name',
-											name: 'nickName',
-											label: 'nick name',
-											type: 'string' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'birthDate',
-											label: 'date of birth',
-											type: 'date' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'languages',
-											targetField: 'language',
-											label: 'languages',
-											type: 'relationship',
-											model: 'Language' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'statusChangeDate',
-											label: 'status change date',
-											type: 'date' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'status',
-											targetField: 'childStatus',
-											label: 'status',
-											type: 'relationship',
-											model: 'Child Status' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'gender',
-											targetField: 'gender',
-											label: 'gender',
-											type: 'relationship',
-											model: 'Gender' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'race',
-											targetField: 'race',
-											label: 'race',
-											type: 'relationship',
-											model: 'Race' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'raceNotes',
-											label: 'race notes',
-											type: 'string' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'legalStatus',
-											targetField: 'legalStatus',
-											label: 'legal status',
-											type: 'relationship',
-											model: 'Legal Status' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'yearEnteredCare',
-											label: 'year entered care',
-											type: 'string' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'hasContactWithSiblings',
-											label: 'has contact with siblings',
-											type: 'boolean' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'siblingTypeOfContact',
-											label: 'type of contact with siblings',
-											type: 'string' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'siblings',
-											targetParent: 'name',
-											targetField: 'full',
-											label: 'siblings',
-											type: 'relationship',
-											model: 'Child' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'mustBePlacedWithSiblings',
-											label: 'must be placed with siblings',
-											type: 'boolean' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'siblingsToBePlacedWith',
-											targetParent: 'name',
-											targetField: 'full',
-											label: 'siblings to be placed with',
-											type: 'relationship',
-											model: 'Child' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'hasContactWithBirthFamily',
-											label: 'has contact with birth family',
-											type: 'boolean' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'birthFamilyTypeOfContact',
-											label: 'type of contact with birth family',
-											type: 'string' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'residence',
-											targetField: 'residence',
-											label: 'where does the child presently live?',
-											type: 'relationship',
-											model: 'Residence' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'city',
-											targetField: 'cityOrTown',
-											label: 'city or town of child\'s current location',
-											type: 'relationship',
-											model: 'City or Town' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'isOutsideMassachusetts',
-											label: 'is outside Massachusetts',
-											type: 'boolean' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'cityText',
-											label: 'city or town of child\'s current location (text)',
-											type: 'string' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'careFacilityName',
-											label: 'care facility name',
-											type: 'string' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'dateMovedToResidence',
-											label: 'date moved to residence',
-											type: 'date' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'physicalNeeds',
-											label: 'physical needs',
-											type: 'string' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'physicalNeedsDescription',
-											label: 'physical needs description',
-											type: 'string' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'emotionalNeeds',
-											label: 'emotional needs',
-											type: 'string' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'emotionalNeedsDescription',
-											label: 'emotional needs description',
-											type: 'string' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'intellectualNeeds',
-											label: 'intellectual needs',
-											type: 'string' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'intellectualNeedsDescription',
-											label: 'intellectual needs description',
-											type: 'string' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'socialNeeds',
-											label: 'social needs',
-											type: 'string' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'socialNeedsDescription',
-											label: 'social needs description',
-											type: 'string' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'aspirations',
-											label: 'interests, talents, and aspirations',
-											type: 'string' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'schoolLife',
-											label: 'school life',
-											type: 'string' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'family life',
-											label: 'family life',
-											type: 'string' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'personality',
-											label: 'personality',
-											type: 'string' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'otherRecruitmentConsiderations',
-											label: 'other recruitment considerations',
-											type: 'string' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'disabilities',
-											targetField: 'disability',
-											label: 'disabilities',
-											type: 'relationship',
-											model: 'Disability' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'healthNotesNew',
-											label: 'old health notes',
-											type: 'string' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'healthNotesOld',
-											label: 'new health notes',
-											type: 'string' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'recommendedFamilyConstellation',
-											targetField: 'familyConstellation',
-											label: 'recommended family constellation',
-											type: 'relationship',
-											model: 'Family Constellation' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'otherFamilyConstellationConsideration',
-											targetField: 'otherFamilyConstellationConsideration',
-											label: 'other family constellation considerations',
-											type: 'relationship',
-											model: 'Other Family Constellation Consideration' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'otherConsiderations',
-											targetField: 'otherConsideration',
-											label: 'other considerations',
-											type: 'relationship',
-											model: 'Other Consideration' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'registeredBy',
-											label: 'registered by',
-											type: 'string' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'adoptionWorker',
-											targetParent: 'name',
-											targetField: 'full',
-											label: 'adoption worker',
-											type: 'relationship',
-											model: 'Social Worker' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'adoptionWorkerAgency',
-											targetField: 'name',
-											label: `adoption worker's agency`,
-											type: 'relationship',
-											model: 'Agency' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'adoptionWorkerAgencyRegion',
-											targetField: 'region',
-											label: `adoption worker's region`,
-											type: 'relationship',
-											model: 'Region' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'recruitmentWorker',
-											targetParent: 'name',
-											targetField: 'full',
-											label: 'recruitment worker',
-											type: 'relationship',
-											model: 'Social Worker' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'recruitmentWorkerAgency',
-											targetField: 'name',
-											label: `recruitment worker's agency`,
-											type: 'relationship',
-											model: 'Agency' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'recruitmentWorkerAgencyRegion',
-											targetField: 'region',
-											label: `recruitment worker's region`,
-											type: 'relationship',
-											model: 'Region' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											parent: 'profile',
-											name: 'quote',
-											label: 'personal quote',
-											type: 'string' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											parent: 'profile',
-											name: 'part1',
-											label: 'profile 1st paragraph',
-											type: 'string' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											parent: 'profile',
-											name: 'part2',
-											label: 'profile 2nd paragraph',
-											type: 'string' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											parent: 'profile',
-											name: 'part3',
-											label: 'profile 3rd paragraph',
-											type: 'string' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											parent: 'groupProfile',
-											name: 'quote',
-											label: 'group quote',
-											type: 'string' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											parent: 'groupProfile',
-											name: 'part1',
-											label: 'group profile 1st paragraph',
-											type: 'string' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											parent: 'groupProfile',
-											name: 'part2',
-											label: 'group profile 2nd paragraph',
-											type: 'string' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											parent: 'groupProfile',
-											name: 'part3',
-											label: 'group profile 3rd paragraph',
-											type: 'string' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'hasPhotolistingWriteup',
-											label: 'has photolisting writup',
-											type: 'boolean' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'photolistingWriteupDate',
-											label: 'date of photolisting writeup',
-											type: 'date' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'hasPhotolistingPhoto',
-											label: 'has photolisting page',
-											type: 'boolean' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'photolistingPhotoDate',
-											label: 'date of photolisting photo',
-											type: 'date' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'isCurrentlyInPhotoListing',
-											label: 'is currently in the photo listing',
-											type: 'boolean' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'dateOfLastPhotoListing',
-											label: 'date of last photolisting',
-											type: 'date' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'photolistingPageNumber',
-											label: 'photolisting page number',
-											type: 'number' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'previousPhotolistingPageNumbers',
-											label: 'previous photolisting page number',
-											type: 'string' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											parent: 'image',
-											name: 'secure_url',
-											label: 'image',
-											type: 'string' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											parent: 'siblingGroupImage',
-											name: 'secure_url',
-											label: 'sibling group image',
-											type: 'string' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'extranetUrl',
-											label: 'extranet url',
-											type: 'string' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'hasVideoSnapshot',
-											label: 'has video snapshot',
-											type: 'boolean' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'videoSnapshotDate',
-											label: 'date of video snapshop',
-											type: 'date' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'video',
-											label: 'video',
-											type: 'string' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'siblingGroupVideo',
-											label: 'sibling group video',
-											type: 'string' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'onMAREWebsite',
-											label: 'on MARE website',
-											type: 'boolean' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'onMAREWebsiteDate',
-											label: 'date on MARE website',
-											type: 'date' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'onAdoptuskids',
-											label: 'on adoptuskids',
-											type: 'boolean' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'onAdoptuskidsDate',
-											label: 'date on adoptuskids',
-											type: 'date' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'wednesdaysChild',
-											label: 'wednesdays child?',
-											type: 'boolean' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'wednesdaysChildDate',
-											label: 'date of wednesdays child',
-											type: 'date' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'wednesdaysChildVideo',
-											label: 'wednesdays child video',
-											type: 'string' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'wednesdaysChildSiblingGroup',
-											label: 'wednesdays child for sibling group?',
-											type: 'boolean' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'wednesdaysChildSiblingGroupDate',
-											label: 'date of sibling groups wednesdays child',
-											type: 'date' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'wednesdaysChildSiblingGroupVideo',
-											label: 'wednesdays child sibling group video',
-											type: 'string' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'coalitionMeeting',
-											label: 'coalition meeting',
-											type: 'boolean' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'coalitionMeetingDate',
-											label: 'date of coalition meeting',
-											type: 'date' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'matchingEvent',
-											label: 'matching event',
-											type: 'boolean' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'matchingEventDate',
-											label: 'date of matching event',
-											type: 'date' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'adoptionParties',
-											targetField: 'name',
-											label: 'adoption parties',
-											type: 'relationship',
-											model: 'Event' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'mediaEligibility',
-											targetField: 'mediaEligibility',
-											label: 'media eligibility',
-											type: 'relationship',
-											model: 'Media Eligibility' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'otherMediaDescription',
-											label: 'other media description',
-											type: 'string' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'locationAlert',
-											label: 'locationAlert',
-											type: 'boolean' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'place',
-											label: 'place',
-											type: 'string' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'communicationsCollateral',
-											label: 'communications collateral',
-											type: 'boolean' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'communicationsCollateralDetails',
-											label: 'communications collateral details',
-											type: 'string' }, model, modelBefore, changeHistory, done );
-			}
-		], () => {
-
-			if ( changeHistory.changes === '' ) {
-	
-				done();
-
-			} else {
-
-				changeHistory.save( () => {
-					console.log( 'change history saved successfully' );
-
-					done();
-				}, err => {
-					console.log( err );
-					console.log( 'error saving change history' );
-
-					done();
-				});
-			}
-		});
-	}
 };
 
 // Define default columns in the admin interface and register the model

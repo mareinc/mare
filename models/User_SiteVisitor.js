@@ -1,9 +1,9 @@
-var keystone	= require('keystone'),
+var keystone	= require( 'keystone' ),
 	Types		= keystone.Field.Types,
-	User		= require('./User');
+	User		= require( './User' );
 
 // Create model
-var SiteVisitor = new keystone.List('Site Visitor', {
+var SiteVisitor = new keystone.List( 'Site Visitor', {
 	inherits: User,
 	map: { name: 'name.full' },
 	defaultSort: 'name.full',
@@ -32,18 +32,18 @@ SiteVisitor.add( 'Permissions', {
 }, 'Contact Information', {
 
 	phone: {
-		work: { type: Types.Text, label: 'work phone number', initial: true },
 		home: { type: Types.Text, label: 'home phone number', initial: true },
 		mobile: { type: Types.Text, label: 'mobile phone number', initial: true },
+		work: { type: Types.Text, label: 'work phone number', initial: true },
 		preferred: { type: Types.Select, label: 'preferred phone', options: 'work, home, mobile', initial: true }
 	},
 
 	address: {
 	    street1: { type: Types.Text, label: 'street 1', initial: true },
 		street2: { type: Types.Text, label: 'street 2', initial: true },
-		city: { type: Types.Relationship, label: 'city', ref: 'City or Town', dependsOn: { isOutsideMassachusetts: false }, initial: true },
 		isOutsideMassachusetts: { type: Types.Boolean, label: 'is outside Massachusetts', initial: true },
-		cityText: { type: Types.Text, label: 'city', dependsOn: { isOutsideMassachusetts: true }, initial: true },
+		city: { type: Types.Relationship, label: 'city', ref: 'City or Town', dependsOn: { 'address.isOutsideMassachusetts': false }, initial: true },
+		cityText: { type: Types.Text, label: 'city', dependsOn: { 'address.isOutsideMassachusetts': true }, initial: true },
 		state: { type: Types.Relationship, label: 'state', ref: 'State', initial: true },
 		zipCode: { type: Types.Text, label: 'zip code', initial: true }
 	}
@@ -68,7 +68,7 @@ SiteVisitor.relationship({ ref: 'Mailing List', refPath: 'siteVisitorSubscribers
 SiteVisitor.relationship({ ref: 'Event', refPath: 'siteVisitorAttendees', path: 'events', label: 'events' });
 
 // Pre Save
-SiteVisitor.schema.pre('save', function(next) {
+SiteVisitor.schema.pre( 'save', function( next ) {
 	'use strict';
 
 	// Populate the full name string for better identification when linking through Relationship field types
@@ -83,7 +83,7 @@ SiteVisitor.schema.pre('save', function(next) {
 /* 						  Changing names or reworking this file changed the check in node_modules/keystone/templates/views/signin.jade
 /*						  for user.isAdmin on line 14 */
 // Provide access to Keystone
-SiteVisitor.schema.virtual('canAccessKeystone').get(function() {
+SiteVisitor.schema.virtual( 'canAccessKeystone' ).get( function() {
 	'use strict';
 
 	return false;

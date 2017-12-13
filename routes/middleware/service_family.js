@@ -8,6 +8,26 @@ const keystone						= require( 'keystone' ),
 	  staffEmailContactMiddleware	= require( './service_staff-email-contact' ),
 	  utilities         			= require( './utilities' );
 
+exports.getMaxRegistrationNumber = function() {
+		
+	return new Promise( ( resolve, reject ) => {
+
+		keystone.list( 'Family' ).model
+			.findOne()
+			.sort( '-registrationNumber' )
+			.exec()
+			.then( family => {
+				if( family ) {
+					return resolve( family.get( 'registrationNumber' ) );
+				}
+
+				resolve( 0 );
+			}, err => {
+				reject( `error fetching maximum registration number for families` );
+			});
+	});
+};
+
 exports.setGalleryPermissions = ( req, res ) => {
 
 	let locals		= res.locals;

@@ -1,12 +1,11 @@
 const keystone	= require( 'keystone' ),
 	  async		= require( 'async' ),
-	  moment	= require( 'moment' ),
-	  Event		= keystone.list( 'Event' );
+	  moment	= require( 'moment' );
 
 exports.getEventById = eventId => {
 
 	return new Promise( ( resolve, reject ) => {
-		Event.model
+		keystone.list( 'Event' ).model
 			.findById( eventId )
 			.exec()
 			.then( event => {
@@ -35,7 +34,8 @@ exports.getEventByKey = key => {
 	
 	return new Promise( ( resolve, reject ) => {
 		// attempt to find a single event matching the passed in key, and populate some of the Relationship fields
-		Event.model.findOne()
+		keystone.list( 'Event' ).model
+			.findOne()
 			.where( 'key', key )
 			.populate( 'contact' )
 			.populate( 'childAttendees' )
@@ -69,7 +69,8 @@ exports.getActiveEventsByEventType = ( eventType, eventGroup ) => {
 			
 	return new Promise( ( resolve, reject ) => {
 
-		Event.model.find()
+		keystone.list( 'Event' ).model
+			.find()
 			.where( 'type', eventType ) // grab only the events matching the target category
 			.where( 'isActive', true ) // we don't want to show inactive events
 			.populate( eventGroup )
@@ -98,7 +99,8 @@ exports.getActiveEventsByUserId = ( userId, eventGroup ) => {
 			
 	return new Promise( ( resolve, reject ) => {
 
-		Event.model.find()
+		keystone.list( 'Event' ).model
+			.find()
 			.where( 'isActive', true ) // we don't want to show inactive events
 			.populate( eventGroup )
 			.populate( 'address.state' )
@@ -126,7 +128,8 @@ exports.getAllActiveEvents = eventGroup => {
 			
 	return new Promise( ( resolve, reject ) => {
 
-		Event.model.find()
+		keystone.list( 'Event' ).model
+			.find()
 			.where( 'isActive', true ) // we don't want to show inactive events
 			.populate( eventGroup )
 			.populate( 'address.state' )
@@ -166,7 +169,7 @@ exports.getRandomEvent = () => {
 
 	return new Promise( ( resolve, reject ) => {
 		// query the database for a single random active event of the appprpriate type
-		Event.model
+		keystone.list( 'Event' ).model
 			.findRandom({
 				type: { $in: [ 'MARE adoption parties & information events', 'fundraising events' ] },
 				isActive: true
@@ -342,6 +345,9 @@ exports.submitEvent = function submitEvent( req, res, next ) {
 exports.createEvent = event => {
 
 	return new Promise( ( resolve, reject ) => {
+
+		const Event = keystone.list( 'Event' );
+
 		// create a new event using the form data we received
 		const newEvent = new Event.model({
 
@@ -366,16 +372,19 @@ exports.createEvent = event => {
 		});
 
 		newEvent.save( err => {
+			// if there was an error saving the new event to the database
+			if( err ) {
+				// log an error for debugging purposes
+				console.error( `there was an error creating the new event - ${ err }` );
+				// reject the promise
+				return reject();
+			}
+
 			// log a message that the event was created
 			console.log( `new event successfully created` );
 			// if the event was created successfully, resolve the event creation promise
 			resolve();
 
-		}, err => {
-			// log an error for debugging purposes
-			console.error( `there was an error creating the new event - ${ err }` );
-			// reject the promise
-			reject();
 		});
 	});
 };

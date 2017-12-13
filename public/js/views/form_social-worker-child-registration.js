@@ -11,9 +11,9 @@
 
 		initialize: function() {
 			// DOM cache commonly used elements
-			this.$MACityContainer		= this.$( '.ma-city-container' );
+			this.$MACityContainer		= this.$( '.city-container' );
 			this.$NonMACityContainer	= this.$( '.non-ma-city-container' );
-			this.$MACity				= this.$( '#ma-city' );
+			this.$MACity				= this.$( '#city' );
 			this.$NonMACity				= this.$( '#non-ma-city' );
 			this.$siblingNamesContainer	= this.$( '.sibling-names-container' );
 			this.$siblingNames			= this.$( '#sibling-names' );

@@ -6,15 +6,15 @@
 
 		events: {
 			'change #is-not-MA-city-checkbox' 		: 'toggleCitySelect',
-			'change .other-way-to-hear-about-mare'	: 'toggleOtherWayToHearTextField',
-			'submit'								: 'disableRegistrationButton'
+			'change .other-way-to-hear-about-mare'	: 'toggleOtherWayToHearTextField'
+			//'submit'								: 'disableRegistrationButton'
 		},
 
 		initialize: function() {
 			// DOM cache any commonly used elements to improve performance
-			this.$MACityContainer		= this.$( '.ma-city-container' );
+			this.$MACityContainer		= this.$( '.city-container' );
 			this.$NonMACityContainer	= this.$( '.non-ma-city-container' );
-			this.$MACity				= this.$( '#ma-city' );
+			this.$MACity				= this.$( '#city' );
 			this.$NonMACity				= this.$( '#non-ma-city' );
 			this.$howDidYouHearOther 	= this.$( '#site-visitor-how-did-you-hear-other' );
 			// initialize parsley validation on the form

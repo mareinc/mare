@@ -1,23 +1,31 @@
-const keystone		= require( 'keystone' ),
-	  Child			= require( '../../models/Child' ),
-	  SocialWorker	= keystone.list( 'Social Worker' );
+const keystone = require( 'keystone' );
  
-// TODO: this implementation is ugly, it needs to be rewritten in a non-crappy way
-exports.getSocialWorkerById = ( id, container, field, done ) => { 
-	// if the id isn't set
-	if( !id ) {
-		// return control to the calling context
-		return done();
-	}
-	// fetch the social worker record
-	SocialWorker.model.findById( id )
-		.exec()
-		.then( socialWorker => {
-			// set the field from the outer context to the social worker
-			container[ field ] = socialWorker;
-			// return control to the parent context
-			done();
-		});
+exports.getSocialWorkerById = id => { 
+
+	return new Promise( ( resolve, reject ) => {
+		// if no id was passed in
+		if( !id ) {
+			// reject the promise with details
+			return reject( `error fetching social worker by id - no id value passed in` );
+		}
+		// fetch the social worker record
+		keystone.list( 'Social Worker' ).model
+			.findById( id )
+			.exec()
+			.then( socialWorker => {
+				// if no social worker was found with a matching id
+				if( !socialWorker ) {
+					// reject the promise with the reason why
+					reject( `error fetching social worker by id - no social worker found with id ${ id }`)
+				}
+				// resolve the promise with the returned social worker
+				resolve( socialWorker );
+			// if an error occurred fetching from the database
+			}, err => {
+				// reject the promise with details of the error
+				reject( `error fetching social worker by id - ${ err }` );
+			});
+	});
 };
 
 exports.fetchRegisteredChildren = ( id ) => {

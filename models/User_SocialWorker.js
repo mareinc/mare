@@ -1,13 +1,11 @@
-require( './Tracking_SocialWorkerHistory' ),
-require( './List_State' );
-require( './Agency' );
+require( './Tracking_SocialWorkerHistory' );
 
 var keystone				= require( 'keystone' ),
 	async 					= require( 'async' ),
 	Types					= keystone.Field.Types,
-	SocialWorkerHistory		= keystone.list( 'Social Worker History' ),
-	User					= require( './User' );
-	ChangeHistoryMiddleware	= require( '../routes/middleware/models_change-history' );
+	User					= require( './User' ),
+	ChangeHistoryMiddleware	= require( '../routes/middleware/models_change-history' ),
+	UserServiceMiddleware	= require( '../routes/middleware/service_user' );
 
 // Export to make it available using require.  The keystone.list import throws a ReferenceError when importing a list that comes later when sorting alphabetically
 const ContactGroup = require( './ContactGroup' );
@@ -61,9 +59,9 @@ SocialWorker.add( 'Permissions', {
 	address: {
 	    street1: { type: Types.Text, label: 'street 1', initial: true },
 		street2: { type: Types.Text, label: 'street 2', initial: true },
-		city: { type: Types.Relationship, label: 'city', ref: 'City or Town', dependsOn: { isOutsideMassachusetts: false }, initial: true },
 		isOutsideMassachusetts: { type: Types.Boolean, label: 'is outside Massachusetts', initial: true },
-		cityText: { type: Types.Text, label: 'city', dependsOn: { isOutsideMassachusetts: true }, initial: true },
+		city: { type: Types.Relationship, label: 'city', ref: 'City or Town', dependsOn: { 'address.isOutsideMassachusetts': false }, initial: true },
+		cityText: { type: Types.Text, label: 'city', dependsOn: { 'address.isOutsideMassachusetts': true }, initial: true },
 		state: { type: Types.Relationship, label: 'state', ref: 'State', initial: true },
 		zipCode: { type: Types.Text, label: 'zip code', initial: true }
 	},
@@ -101,22 +99,38 @@ SocialWorker.schema.post( 'init', function() {
 });
 
 // Pre Save
-SocialWorker.schema.pre('save', function(next) {
+SocialWorker.schema.pre( 'save', function( next ) {
 	'use strict';
 
-	var model = this;
-	// TODO: get rid of model = this and all model references.  You'll need to verify all functionality still works
-	async.series([
-		done => { model.setFullName(done); }, // Create a full name for the child based on their first, middle, and last names
-		done => { model.setUserType(done); }, // Create an identifying name for file uploads
-		done => { ChangeHistoryMiddleware.setUpdatedby( this, done ); }, // we need this id in case the family was created via the website and udpatedBy is undefined
-		done => { model.setChangeHistory(done); } // Process change history
-	], () => {
+	// create a full name for the social worker
+	this.setFullName();
+	// all user types that can log in derive from the User model, this allows us to identify users better
+	this.setUserType();
+	// we need this id in case the family was created via the website and updatedBy is empty
+	const migrationBotFetched = UserServiceMiddleware.getUserByFullName( 'Migration Bot', 'admin' );
+	
+	// if the bot user was fetched successfully
+	migrationBotFetched
+		.then( bot => {
+			// set the updatedBy field to the bot's _id if the field isn't already set ( meaning it was saved in the admin UI and we know the user based on their session info )
+			this.updatedBy = this.updatedBy || bot.get( '_id' );
+		})
+		// if there was an error fetching the bot user
+		.catch( err => {
+			// log it for debugging purposes
+			console.error( `Migration Bot could not be fetched for social worker ${ this.name.full } - ${ err }` );
+			// add a generic error to keep it in line with error reporting when saving of other user models
+			console.error( `social worker ${ this.name.full } saved with errors` );
+		})
+		// execute the following regardless of whether the promises were resolved or rejected
+		// TODO: this should be replaced with ES6 Promise.prototype.finally() once it's finalized, assuming we can update to the latest version of Node if we upgrade Keystone
+		.then( () => {
+			// process change history
+			// TODO: if change history isn't showing up until the page is reloaded, the next() will need to wait until after setChangeHistory completes
+			this.setChangeHistory();
 
-		console.log( 'social worker information updated' );
-
-		next();
-	});
+			next();
+		});
 });
 
 /* TODO: VERY IMPORTANT:  Need to fix this to provide the link to access the keystone admin panel again */
@@ -135,251 +149,258 @@ SocialWorker.schema.virtual( 'displayName' ).get( function() {
 	return `${ this.name.first } ${ this.name.last }`;
 });
 
-SocialWorker.schema.methods.setFullName = function( done ) {
+SocialWorker.schema.methods.setFullName = function() {
 	'use strict';
 
-	// Populate the full name string for better identification when linking through Relationship field types
+	// populate the full name string for better identification when linking through Relationship field types
 	this.name.full = `${ this.name.first } ${ this.name.last }`;
-
-	done();
 };
-
-SocialWorker.schema.methods.setUserType = function( done ) {
+// TODO: better handled with a virtual
+SocialWorker.schema.methods.setUserType = function() {
 	'use strict'
 
-	// Set the userType for role based page rendering
+	// set the userType for role based page rendering
 	this.userType = 'social worker';
-
-	done();
 };
 
-SocialWorker.schema.methods.setChangeHistory = function setChangeHistory( done ) {
+SocialWorker.schema.methods.setChangeHistory = function setChangeHistory() {
 	'use strict';
 
-	var modelBefore	= this._original,
-		model		= this;
+	return new Promise( ( resolve, reject ) => {
 
-	var changeHistory = new SocialWorkerHistory.model({
-		socialWorker	: this,
-	    date			: Date.now(),
-	    changes			: '',
-	    modifiedBy		: this.updatedBy
+		const modelBefore	= this._original,
+			  model			= this;
+
+		const SocialWorkerHistory = keystone.list( 'Social Worker History' );
+
+		const changeHistory = new SocialWorkerHistory.model({
+			socialWorker	: this,
+			date			: Date.now(),
+			changes			: '',
+			modifiedBy		: this.updatedBy
+		});
+
+		// if the model is being saved for the first time
+		if( !model._original ) {
+			// set the text for the change history record
+			changeHistory.changes = 'record migrated';
+			// save the change history record
+			changeHistory.save( () => {
+				// if the record saved successfully, resolve the promise
+				resolve();
+			// if there was an error saving the record
+			}, err => {
+				// log the error for debugging purposes
+				console.error( `initial change history record could not be saved for social worker ${ this.name.full } - ${ err }` );
+				// reject the promise
+				reject();
+			});
+		// if the model isn't being saved for the first time
+		} else {
+			// Any time a new field is added, it MUST be added to this list in order to be considered for display in change history
+			// Computed fields and fields internal to the object SHOULD NOT be added to this list
+			async.parallel([
+
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'email',
+												label: 'email address',
+												type: 'string' }, model, modelBefore, changeHistory, done);
+				},		
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'isActive',
+												label: 'is active',
+												type: 'boolean' }, model, modelBefore, changeHistory, done);
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												parent: 'permissions',
+												name: 'isVerified',
+												label: 'is verified',
+												type: 'boolean' }, model, modelBefore, changeHistory, done);
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												parent: 'name',
+												name: 'first',
+												label: 'first name',
+												type: 'string' }, model, modelBefore, changeHistory, done);
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												parent: 'name',
+												name: 'last',
+												label: 'last name',
+												type: 'string' }, model, modelBefore, changeHistory, done);
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												parent: 'avatar',
+												name: 'secure_url',
+												label: 'avatar',
+												type: 'string' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'contactGroups',
+												targetField: 'name',
+												label: 'contact groups',
+												type: 'relationship',
+												model: 'Contact Group' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												parent: 'phone',
+												name: 'work',
+												label: 'work phone number',
+												type: 'string' }, model, modelBefore, changeHistory, done);
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												parent: 'phone',
+												name: 'mobile',
+												label: 'mobile phone number',
+												type: 'string' }, model, modelBefore, changeHistory, done);
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												parent: 'phone',
+												name: 'preferred',
+												label: 'preferred phone',
+												type: 'string' }, model, modelBefore, changeHistory, done);
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'position',
+												label: 'position',
+												type: 'string' }, model, modelBefore, changeHistory, done);
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'agency',
+												targetField: 'name',
+												label: 'agency',
+												type: 'relationship',
+												model: 'Agency' }, model, modelBefore, changeHistory, done);
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'agencyNotListed',
+												label: 'agency isnt listed',
+												type: 'boolean' }, model, modelBefore, changeHistory, done);
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'agencyText',
+												label: 'agency (text field)',
+												type: 'string' }, model, modelBefore, changeHistory, done);
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												parent: 'address',
+												name: 'street1',
+												label: 'street 1',
+												type: 'string' }, model, modelBefore, changeHistory, done);
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												parent: 'address',
+												name: 'street2',
+												label: 'street 2',
+												type: 'string' }, model, modelBefore, changeHistory, done);
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												parent: 'address',
+												name: 'city',
+												targetField: 'cityOrTown',
+												label: 'city',
+												type: 'relationship',
+												model: 'City or Town' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												parent: 'address',
+												name: 'isOutsideMassachusetts',
+												label: 'is outside Massachusetts',
+												type: 'boolean' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												parent: 'address',
+												name: 'cityText',
+												label: 'city (text field)',
+												type: 'string' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												parent: 'address',
+												name: 'state',
+												targetField: 'state',
+												label: 'state',
+												type: 'relationship',
+												model: 'State' }, model, modelBefore, changeHistory, done);
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												parent: 'address',
+												name: 'zipCode',
+												label: 'zip code',
+												type: 'string' }, model, modelBefore, changeHistory, done);
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'title',
+												label: 'title',
+												type: 'string' }, model, modelBefore, changeHistory, done);
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'notes',
+												label: 'notes',
+												type: 'string' }, model, modelBefore, changeHistory, done);
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'bookmarkedChildren',
+												targetParent: 'name',
+												targetField: 'full',
+												label: 'bookmarked children',
+												type: 'relationship',
+												model: 'Child' }, model, modelBefore, changeHistory, done);
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'bookmarkedSiblings',
+												targetParent: 'name',
+												targetField: 'full',
+												label: 'bookmarked sibling group children',
+												type: 'relationship',
+												model: 'Child' }, model, modelBefore, changeHistory, done);
+				}
+			], () => {
+				// if there were no updates to the family record
+				if ( changeHistory.changes === '' ) {
+					// resolve the promise
+					resolve();
+				// if there were updates to the family record
+				} else {
+					// save the change history record
+					changeHistory.save( () => {
+						// if the record saved successfully, resolve the promise
+						resolve();
+					// if there was an error saving the record
+					}, err => {
+						// log the error for debugging purposes
+						console.error( `initial change history record could not be saved for social worker ${ this.name.full } - ${ err }` );
+						// reject the promise
+						reject();
+					});
+				}
+			});
+		}
 	});
-
-	// if the model is being saved for the first time, mark only that fact in an initial change history record
-	if( !model._original ) {
-
-		changeHistory.changes = 'record migrated';
-
-		changeHistory.save( () => {
-			console.log('record migrated change history saved successfully');
-			done();
-		}, err => {			
-			console.log( err );
-			console.log( 'error saving record migrated change history' );
-			done();
-		});
-
-	} else {
-		// Any time a new field is added, it MUST be added to this list in order to be considered for display in change history
-		// Computed fields and fields internal to the object SHOULD NOT be added to this list
-		async.parallel([
-
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'email',
-											label: 'email address',
-											type: 'string' }, model, modelBefore, changeHistory, done);
-			},		
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'isActive',
-											label: 'is active',
-											type: 'boolean' }, model, modelBefore, changeHistory, done);
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											parent: 'permissions',
-											name: 'isVerified',
-											label: 'is verified',
-											type: 'boolean' }, model, modelBefore, changeHistory, done);
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											parent: 'name',
-											name: 'first',
-											label: 'first name',
-											type: 'string' }, model, modelBefore, changeHistory, done);
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											parent: 'name',
-											name: 'last',
-											label: 'last name',
-											type: 'string' }, model, modelBefore, changeHistory, done);
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											parent: 'avatar',
-											name: 'secure_url',
-											label: 'avatar',
-											type: 'string' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'contactGroups',
-											targetField: 'name',
-											label: 'contact groups',
-											type: 'relationship',
-											model: 'Contact Group' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											parent: 'phone',
-											name: 'work',
-											label: 'work phone number',
-											type: 'string' }, model, modelBefore, changeHistory, done);
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											parent: 'phone',
-											name: 'mobile',
-											label: 'mobile phone number',
-											type: 'string' }, model, modelBefore, changeHistory, done);
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											parent: 'phone',
-											name: 'preferred',
-											label: 'preferred phone',
-											type: 'string' }, model, modelBefore, changeHistory, done);
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'position',
-											label: 'position',
-											type: 'string' }, model, modelBefore, changeHistory, done);
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'agency',
-											targetField: 'name',
-											label: 'agency',
-											type: 'relationship',
-											model: 'Agency' }, model, modelBefore, changeHistory, done);
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'agencyNotListed',
-											label: 'agency isnt listed',
-											type: 'boolean' }, model, modelBefore, changeHistory, done);
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'agencyText',
-											label: 'agency (free text)',
-											type: 'string' }, model, modelBefore, changeHistory, done);
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											parent: 'address',
-											name: 'street1',
-											label: 'street 1',
-											type: 'string' }, model, modelBefore, changeHistory, done);
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											parent: 'address',
-											name: 'street2',
-											label: 'street 2',
-											type: 'string' }, model, modelBefore, changeHistory, done);
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											parent: 'address',
-											name: 'city',
-											targetField: 'cityOrTown',
-											label: 'city',
-											type: 'relationship',
-											model: 'City or Town' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											parent: 'address',
-											name: 'isOutsideMassachusetts',
-											label: 'is outside Massachusetts',
-											type: 'boolean' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											parent: 'address',
-											name: 'cityText',
-											label: 'city (text)',
-											type: 'string' }, model, modelBefore, changeHistory, done );
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											parent: 'address',
-											name: 'state',
-											targetField: 'state',
-											label: 'state',
-											type: 'relationship',
-											model: 'State' }, model, modelBefore, changeHistory, done);
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											parent: 'address',
-											name: 'zipCode',
-											label: 'zip code',
-											type: 'string' }, model, modelBefore, changeHistory, done);
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'title',
-											label: 'title',
-											type: 'string' }, model, modelBefore, changeHistory, done);
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'notes',
-											label: 'notes',
-											type: 'string' }, model, modelBefore, changeHistory, done);
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'bookmarkedChildren',
-											targetParent: 'name',
-											targetField: 'full',
-											label: 'bookmarked children',
-											type: 'relationship',
-											model: 'Child' }, model, modelBefore, changeHistory, done);
-			},
-			done => {
-				ChangeHistoryMiddleware.checkFieldForChanges({
-											name: 'bookmarkedSiblings',
-											targetParent: 'name',
-											targetField: 'full',
-											label: 'bookmarked sibling group children',
-											type: 'relationship',
-											model: 'Child' }, model, modelBefore, changeHistory, done);
-			}
-
-		], () => {
-
-			if ( changeHistory.changes === '' ) {
-				done();
-			} else {
-				changeHistory.save( () => {
-					console.log( 'change history saved successfully' );
-					done();
-				}, err => {
-					console.log( err );
-					console.log( 'error saving change history' );
-					done();
-				});
-			}
-		});
-	}
 };
 
 // Define default columns in the admin interface and register the model

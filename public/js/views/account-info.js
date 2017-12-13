@@ -31,7 +31,7 @@
 				$outsideMaGroup = $('.non-ma-city-container'),
 				$outsideMaInput = $(''),
 				$outsideMaDropdown = $(''),
-				$maGroup = $('.ma-city-container'),
+				$maGroup = $('.city-container'),
 				$maInput = $(''),
 				$maDropdown = $('');
 
@@ -102,24 +102,24 @@
 		fetchFormData: function fetchFormData() {
 			// store all the values in the form as an object
 			var formData = {
-				firstName							: document.querySelector( '#first-name' ) ? document.querySelector( '#first-name' ).value : undefined,
-				lastName							: document.querySelector( '#last-name' ) ? document.querySelector( '#last-name' ).value : undefined,
-				email								: document.querySelector( '#email' ) ? document.querySelector( '#email' ).value : undefined,
-				password							: document.querySelector( '#password' ) ? document.querySelector( '#password' ).value : undefined,
-				confirmPassword						: document.querySelector( '#confirmPassword' ) ? document.querySelector( '#confirmPassword' ).value : undefined,
-				position							: document.querySelector( '#position' ) ? document.querySelector( '#position' ).value : undefined,
-				title								: document.querySelector( '#title' ) ? document.querySelector( '#title' ).value : undefined,
-				agency								: document.querySelector( '#agency' ) ? document.querySelector( '#agency' ).value : undefined,
-				homePhone							: document.querySelector( '#home-phone' ) ? document.querySelector( '#home-phone' ).value : undefined,
-				mobilePhone							: document.querySelector( '#mobile-phone' ) ? document.querySelector( '#mobile-phone' ).value : undefined,
-				workPhone							: document.querySelector( '#work-phone' ) ? document.querySelector( '#work-phone' ).value : undefined,
-				preferredPhone						: document.querySelector( '#preferred-phone' ) ? document.querySelector( '#preferred-phone' ).value : undefined,
-				street1								: document.querySelector( '#address-1' ) ? document.querySelector( '#address-1' ).value : undefined,
-				street2								: document.querySelector( '#address-2' ) ? document.querySelector( '#address-2' ).value : undefined,
-				zipCode								: document.querySelector( '#zip-code' ) ? document.querySelector( '#zip-code' ).value : undefined,
-				maCity								: document.querySelector( '#ma-city' ) ? document.querySelector( '#ma-city' ).value : undefined,
-				nonMaCity							: document.querySelector( '#non-ma-city' ) ? document.querySelector( '#non-ma-city' ).value : undefined,
-				isOutsideMassachusetts				: document.querySelector( '#is-not-MA-city-checkbox' ) ? document.querySelector( '#is-not-MA-city-checkbox' ).checked : undefined
+				firstName				: document.querySelector( '#first-name' ) ? document.querySelector( '#first-name' ).value : undefined,
+				lastName				: document.querySelector( '#last-name' ) ? document.querySelector( '#last-name' ).value : undefined,
+				email					: document.querySelector( '#email' ) ? document.querySelector( '#email' ).value : undefined,
+				password				: document.querySelector( '#password' ) ? document.querySelector( '#password' ).value : undefined,
+				confirmPassword			: document.querySelector( '#confirmPassword' ) ? document.querySelector( '#confirmPassword' ).value : undefined,
+				position				: document.querySelector( '#position' ) ? document.querySelector( '#position' ).value : undefined,
+				title					: document.querySelector( '#title' ) ? document.querySelector( '#title' ).value : undefined,
+				agency					: document.querySelector( '#agency' ) ? document.querySelector( '#agency' ).value : undefined,
+				homePhone				: document.querySelector( '#home-phone' ) ? document.querySelector( '#home-phone' ).value : undefined,
+				mobilePhone				: document.querySelector( '#mobile-phone' ) ? document.querySelector( '#mobile-phone' ).value : undefined,
+				workPhone				: document.querySelector( '#work-phone' ) ? document.querySelector( '#work-phone' ).value : undefined,
+				preferredPhone			: document.querySelector( '#preferred-phone' ) ? document.querySelector( '#preferred-phone' ).value : undefined,
+				street1					: document.querySelector( '#address-1' ) ? document.querySelector( '#address-1' ).value : undefined,
+				street2					: document.querySelector( '#address-2' ) ? document.querySelector( '#address-2' ).value : undefined,
+				zipCode					: document.querySelector( '#zip-code' ) ? document.querySelector( '#zip-code' ).value : undefined,
+				maCity					: document.querySelector( '#city' ) ? document.querySelector( '#city' ).value : undefined,
+				nonMaCity				: document.querySelector( '#non-ma-city' ) ? document.querySelector( '#non-ma-city' ).value : undefined,
+				isOutsideMassachusetts	: document.querySelector( '#is-not-MA-city-checkbox' ) ? document.querySelector( '#is-not-MA-city-checkbox' ).checked : undefined
 			};
 
 			// Family
