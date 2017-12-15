@@ -137,6 +137,9 @@
 				// break out of the current loop if the child's gender wasn't selected ( return is needed for this in _.each )
 				if( formFields.genders && formFields.genders.indexOf( child.get( 'gender' ) ) === -1 ) { return; }
 
+				// break out of the current loop if the minimum children is greater than 1, which prevents solo children from displaying
+				if( formFields.minimumChildren >  1 ) { return; }
+				
 				// break out of the current loop if the child's age is less than the youngest or more than the oldest specified ( return is needed for this in _.each )
 				if( formFields.youngestAge > child.get( 'age' ) ||
 				   formFields.oldestAge < child.get( 'age' ) ) { return; }
