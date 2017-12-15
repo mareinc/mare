@@ -40,8 +40,8 @@ exports = module.exports = function( req, res ) {
 					// set the section contents
 					pageActions.sections.push( `You must be logged in as a social worker to register a child.  If you're a social worker, you can <a href="/register#social-worker">register here</a>.` );
 				}
-			// otherwise, if the user requested the 'Register a family' page
-			} else if( page.key === 'register-a-family' ) {
+			// otherwise, if the user requested the 'Register a family's homestudy' page
+			} else if( page.key === 'register-a-familys-homestudy' ) {
 				// if the user is logged in as a social worker
 				if( locals.user && locals.user.userType === 'social worker' ) {
 					// specify that it should render a button after the content
