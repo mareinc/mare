@@ -56,7 +56,7 @@ exports = module.exports = function( req, res ) {
 				}
 			// otherwise, if the user requested any page in the 'Considering Adoption' section
 			// NOTE: we check for locals.currentSection existing because it won't if the page isn't listed in the main menu
-			} else if( locals.curentSection && locals.currentSection.title === 'Considering Adoption?' ) {
+			} else if( locals.currentSection && locals.currentSection.title === 'Considering Adoption?' ) {
 				// specify that it should render a button after the content
 				pageActions.hasButtons = true;
 				// set the button contents
