@@ -84,7 +84,7 @@ exports.registerUser = ( req, res, next ) => {
 								})
 								.catch( err => {
 									// log the error for debugging purposes
-									console.error( `error sending new site visitor notification email to MARE contact ${ staffContact.name } at ${ staffContact.email } about ${ newSiteVisitor.get( 'name.full' ) } (${ newSiteVisitor.get( 'email' ) }) - ${ err }` );
+									console.error( `error sending new site visitor notification email to MARE contact about ${ newSiteVisitor.get( 'name.full' ) } (${ newSiteVisitor.get( 'email' ) }) - ${ err }` );
 								});
 							
 							// once the verification record has been saved
@@ -235,7 +235,7 @@ exports.registerUser = ( req, res, next ) => {
 								})
 								.catch( err => {
 									// log the error for debugging purposes
-									console.error( `error sending new family notification email to MARE contact ${ staffContact.name } at ${ staffContact.email } about ${ newFamily.get( 'displayName' ) } (${ newFamily.get( 'email' ) }) - ${ err }` );
+									console.error( `error sending new family notification email to MARE contact about ${ newFamily.get( 'displayName' ) } (${ newFamily.get( 'email' ) }) - ${ err }` );
 								});
 
 							// once the verification record has been saved
