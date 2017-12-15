@@ -30,7 +30,7 @@ Family.add( 'Permissions', {
 	permissions: {
 		isVerified: { type: Boolean, label: 'has a verified email address', default: false, noedit: true },
 		isHomestudyVerified: { type: Boolean, label: 'homestudy verified', initial: true },
-		homestudyVerifiedDate: { type: Types.Date, label: 'homestudy verified on', format: 'MM/DD/YYYY', noedit: true },
+		homestudyVerifiedDate: { type: Types.Date, label: 'homestudy verified on', format: 'MM/DD/YYYY', dependsOn: { 'permissions.isHomestudyVerified': true }, noedit: true },
 		canViewAllChildren: { type: Boolean, default: false, hidden: true, noedit: true }
 	}
 
@@ -209,6 +209,7 @@ Family.add( 'Permissions', {
 		completed: { type: Types.Boolean, label: 'homestudy completed', initial: true },
 		initialDate: { type: Types.Date, label: 'initial date homestudy completed', format: 'MM/DD/YYYY', dependsOn: { 'homestudy.completed': true }, initial: true },
 		mostRecentDate: { type: Types.Date, label: 'most recent update completed', format: 'MM/DD/YYYY', dependsOn: { 'homestudy.completed': true }, initial: true },
+		summary: { type: Types.Textarea, label: 'homestudy summary', dependsOn: { 'homestudy.completed': true }, initial: true },
 
 		homestudyFile_upload: {
 			label: 'homestudy file',
@@ -354,15 +355,32 @@ Family.schema.pre( 'save', function( next ) {
 	// all user types that can log in derive from the User model, this allows us to identify users better
 	this.setUserType();
 	
-	// we need this id in case the family was created via the website and updatedBy is empty
-	const websiteBotFetched = UserServiceMiddleware.getUserByFullName( 'Website Bot', 'admin' );
 	// attempt to update the no-edit region field
 	const regionUpdated = this.updateRegion();
 	// determine whether the family can view all children or just the publicly visible ones
 	const galleryViewingPermissionsSet = this.setGalleryViewingPermissions();
 	// set the registration number for the family
 	const registrationNumberSet = this.setRegistrationNumber();
+
+	Promise.all( [ regionUpdated, galleryViewingPermissionsSet, registrationNumberSet ] )
+		// if there was an error with any of the promises
+		.catch( err => {
+			// log it for debugging purposes
+			console.error( `family ${ this.displayName } ( registration number: ${ this.registrationNumber } ) saved with errors` );
+		})
+		// execute the following regardless of whether the promises were resolved or rejected
+		// TODO: this should be replaced with ES6 Promise.prototype.finally() once it's finalized, assuming we can update to the latest version of Node if we upgrade Keystone
+		.then( () => {
+
+			next();
+		});
+});
+
+Family.schema.post( 'save', function() {
 	
+	// we need this id in case the family was created via the website and updatedBy is empty
+	const websiteBotFetched = UserServiceMiddleware.getUserByFullName( 'Website Bot', 'admin' );
+
 	// if the bot user was fetched successfully
 	websiteBotFetched
 		.then( bot => {
@@ -373,22 +391,12 @@ Family.schema.pre( 'save', function( next ) {
 		.catch( err => {
 			// log it for debugging purposes
 			console.error( `Website Bot could not be fetched for family ${ this.displayName } ( registration number: ${ this.registrationNumber } ) - ${ err }` );
-		});
-
-	Promise.all( [ regionUpdated, galleryViewingPermissionsSet, registrationNumberSet, websiteBotFetched ] )
-		// if there was an error with any of the promises
-		.catch( err => {
-			// log it for debugging purposes
-			console.error( `family ${ this.displayName } ( registration number: ${ this.registrationNumber } ) saved with errors` );
 		})
 		// execute the following regardless of whether the promises were resolved or rejected
 		// TODO: this should be replaced with ES6 Promise.prototype.finally() once it's finalized, assuming we can update to the latest version of Node if we upgrade Keystone
 		.then( () => {
 			// process change history
-			// TODO: if change history isn't showing up until the page is reloaded, the next() will need to wait until after setChangeHistory completes
 			this.setChangeHistory();
-
-			next();
 		});
 });
 
@@ -1308,8 +1316,15 @@ Family.schema.methods.setChangeHistory = function setChangeHistory() {
 					ChangeHistoryMiddleware.checkFieldForChanges({
 												parent: 'homestudy',
 												name: 'mostRecentDate',
-												label: 'most recent update completed',
+												label: 'most recent homestudy update completed',
 												type: 'date' }, model, modelBefore, changeHistory, done);
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												parent: 'homestudy',
+												name: 'summary',
+												label: 'homestudy summary',
+												type: 'string' }, model, modelBefore, changeHistory, done);
 				},
 					// TODO: NEED TO ADD TRACKING FOR THE FILE PATH CHANGING.
 					// TODO: FIX WHEN FILE UPLOAD IS FIXED.
@@ -1663,7 +1678,7 @@ Family.schema.methods.setChangeHistory = function setChangeHistory() {
 					// if there was an error saving the record
 					}, err => {
 						// log the error for debugging purposes
-						console.error( `initial change history record could not be saved for family ${ this.displayName } ( registration number: ${ this.registrationNumber } ) - ${ err }` );
+						console.error( `change history record could not be saved for family ${ this.displayName } ( registration number: ${ this.registrationNumber } ) - ${ err }` );
 						// reject the promise
 						reject();
 					});
