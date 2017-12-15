@@ -8,9 +8,14 @@ module.exports = ( req, res ) => {
 	if( !verificationCode || !userType ) {
 		// log the error
 		console.error( `account verification Error - bad request paramaters -> verificationCode: ${ verificationCode }, userType: ${ userType }` );
-		req.flash( 'error', { title: 'There was an error processing your request.',
-		details: 'If this error persists, please notify MARE' } );
+		
+		req.flash( 'error', {
+			title: 'There was an error processing your request.',
+			detail: 'If this error persists, please notify MARE'
+		});
+		
 		res.redirect('/');
+		
 		return;
 	}
 
@@ -21,9 +26,15 @@ module.exports = ( req, res ) => {
 		.then( verificationEntity => {
 
 			if( !verificationEntity ){
+				
 				console.error( `account verification error - could not find verification model based on verification code ${ verificationCode }` );
-				req.flash( 'error', { title: 'Verification record not found.'} );
-				res.redirect('/');
+				
+				req.flash( 'error', {
+					title: 'Verification record not found.'
+				});
+				
+				res.redirect( '/' );
+				
 				return;
 			}
 			
@@ -34,22 +45,25 @@ module.exports = ( req, res ) => {
 				.then( () => {
 					// delete the verification record 
 					verificationEntity.remove( err => {
+						
 						if( err )
 							console.error( 'account verification error - could not remove the verification model entity' );
 					});
-					// @mo, I'd recommend creating a flash message, then redirecting to the home page
-					req.flash( 'success', { title: 'Your account has been verified',
-					detail: 'put any additional details here if you want, otherwise remove the details attribute' } );
 
-					res.status( 200 ).redirect('/');
+					req.flash( 'success', {
+						title: 'Your account has been verified',
+						detail: 'put any additional details here if you want, otherwise remove the details attribute'
+					});
+
+					res.status( 200 ).redirect( '/' );
 				})  
 				.catch( () =>{
+
 					console.error( 'account verification Error - could not update the user field' );
 				});
 		}, err => {
-			console.error( 'error processing verification email' )
-			console.error( err );
 
+			console.error( `error processing verification email - ${ err }` );
 		});
 };
 

@@ -288,15 +288,13 @@ exports.sendInquiryAcceptedEmailToAgencyContacts = ( inquiry, inquiryData, done 
 };
 
 /* Emails for inquiries generated via forms on the website */
-exports.sendAnonymousInquiryCreatedEmail = inquiry => {
+exports.sendAnonymousInquiryCreatedEmailToMARE = inquiry => {
 
 	return new Promise( (resolve, reject ) => {
 		// do nothing if sending of the email is not currently allowed
 		if( process.env.SEND_ANONYMOUS_INQUIRY_CREATED_EMAILS_TO_MARE !== 'true' ) {
-			// log the error
-			console.error( 'sending of anonymous inquiry create emails to MARE staff is currently disabled' );
-			// reject the promise
-			reject();
+			// reject the promise with details of the issue
+			return reject( 'sending of the email is disabled' );
 		}
 
 		// find the email template in templates/emails/
@@ -316,7 +314,7 @@ exports.sendAnonymousInquiryCreatedEmail = inquiry => {
 			// log any errors
 			if( err ) {
 				console.error( `error sending anonymouse inquiry created email to MARE staff: ${ err }` );
-				reject();
+				return reject();
 			}
 			// the response object is stored as the 0th element of the returned message
 			const response = message ? message[ 0 ] : undefined;
