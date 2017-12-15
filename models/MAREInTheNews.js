@@ -4,7 +4,8 @@ var keystone	= require( 'keystone' ),
 // Create model. Additional options allow menu name to be used what auto-generating URLs
 var MAREInTheNews = new keystone.List( 'MARE in the News', {
 	autokey: { path: 'key', from: 'heading', unique: true },
-	map: { name: 'heading' }
+	map: { name: 'heading' },
+	label: 'MARE in the News Stories'
 });
 
 // Create fields
