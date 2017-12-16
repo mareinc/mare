@@ -54,6 +54,13 @@ exports = module.exports = function( req, res ) {
 					// set the section contents
 					pageActions.sections.push( `You must be logged in as a social worker to register a family.  If you're a social worker, you can <a href="/register#social-worker">register here</a>.` );
 				}
+			// otherwise, if the user requested the 'How does MARE support families' page
+			} else if( page.key === 'how-does-mare-support-families' ) {
+				// specify that it should render a button after the content
+				pageActions.hasButtons = true;
+				// set the button contents
+				pageActions.buttons.push( { text: 'Have a Question',
+											target: '/forms/have-a-question-form' } );
 			// otherwise, if the user requested any page in the 'Considering Adoption' section
 			// NOTE: we check for locals.currentSection existing because it won't if the page isn't listed in the main menu
 			} else if( locals.currentSection && locals.currentSection.title === 'Considering Adoption?' ) {
@@ -63,7 +70,7 @@ exports = module.exports = function( req, res ) {
 				pageActions.buttons.push( { text: 'Request Adoption Information',
 											target: '/forms/information-request-form' } );
 			}
-
+			
 			// assign properties to locals for access during templating
 			locals.page			        = page;
 			locals.randomSuccessStory	= randomSuccessStory;
