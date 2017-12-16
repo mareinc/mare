@@ -7,7 +7,7 @@
 
 const keystone 						= require( 'keystone' ),
 	  registrationEmailMiddleware	= require( './emails_register' ),
-	  staffEmailTargetMiddleware	= require( './service_staff-email-target' ),
+	  emailTargetMiddleware			= require( './service_email-target' ),
 	  staffEmailContactMiddleware	= require( './service_staff-email-contact' ),
 	  userService					= require( './service_user' ),
 	  utilities						= require( './utilities' );
@@ -579,7 +579,7 @@ exports.setInitialErrorMessages = ( req, isEmailValid, isEmailDuplicate, isPassw
 exports.getRegistrationStaffContactInfo = userType => {
 
 	return new Promise( ( resolve, reject ) => {
-		// use the user type to get the staff email target role responsible for handling registration questions
+		// use the user type to get the email target role responsible for handling registration questions
 		const emailTarget = userType === 'site visitor' ? 'site visitor registration' :
 							userType === 'social worker' ? 'social worker registration' :
 							userType === 'family' ? 'family registration' :
@@ -592,7 +592,7 @@ exports.getRegistrationStaffContactInfo = userType => {
 		// TODO: it was nearly impossible to create a readable comma separated list of links in the template with more than one address,
 		// 	     so we're only fetching one contact when we should fetch them all
 		// get the database id of the admin contact set to handle registration questions for the target user type
-		staffEmailTargetMiddleware.getTargetId( emailTarget )
+		emailTargetMiddleware.getTargetId( emailTarget )
 			.then( targetId => {
 				// get the contact details of the admin contact set to thandle registration questions for the target user type
 				return staffEmailContactMiddleware.getContactById( targetId );

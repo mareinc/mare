@@ -4,8 +4,6 @@ const keystone						= require( 'keystone' ),
 	  userService 					= require( './service_user' ),
 	  registrationService			= require( './service_register' ),
 	  registrationEmailMiddleware	= require( './emails_register' ),
-	  staffEmailTargetMiddleware	= require( './service_staff-email-target' ),
-	  staffEmailContactMiddleware	= require( './service_staff-email-contact' ),
 	  utilities         			= require( './utilities' );
 
 exports.getMaxRegistrationNumber = function() {

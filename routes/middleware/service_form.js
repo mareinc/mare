@@ -3,7 +3,7 @@
 const keystone						= require( 'keystone' ),
 	  inquiryService				= require( './service_inquiry' ),
 	  inquiryEmailService			= require( './emails_inquiry' ),
-	  staffEmailTargetMiddleware	= require( './service_staff-email-target' ),
+	  emailTargetMiddleware			= require( './service_email-target' ),
 	  staffEmailContactMiddleware	= require( './service_staff-email-contact' );
 
 exports.submitInformationRequest = function submitInformationRequest( req, res, next ) {
@@ -110,7 +110,7 @@ exports.getRegistrationStaffContactInfo = emailTarget => {
 			// TODO: it was nearly impossible to create a readable comma separated list of links in the template with more than one address,
 			// 	     so we're only fetching one contact when we should fetch them all
 			// get the database id of the admin contact set to handle registration questions for the target user type
-			staffEmailTargetMiddleware.getTargetId( emailTarget )
+			emailTargetMiddleware.getTargetId( emailTarget )
 				.then( targetId => {
 					// get the contact details of the admin contact set to thandle registration questions for the target user type
 					return staffEmailContactMiddleware.getContactById( targetId );
