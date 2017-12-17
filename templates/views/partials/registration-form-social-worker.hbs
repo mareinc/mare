@@ -141,20 +141,9 @@
 					</select>
 					<label for="social-worker-state" class="label required-field">State</label>
 				</div>
-			</div>
-			<div class="row form-group">
 				<div class="col-sm-12">
 					<input type="number" id="social-worker-zip-code" class="input" name="zipCode" data-parsley-length="[5, 5]" data-parsley-error-message="required" required="">
 					<label for="social-worker-zip-code" class="label required-field">Zip Code</label>
-				</div>
-				<div class="col-sm-12 form-group">
-					<select id="social-worker-region" class="input region-select" name="region" data-parsley-errors-messages-disabled="true" required="">
-					<option value=""></option>
-					{{#each regions}}
-						<option value="{{_id}}">{{region}}</option>
-					{{/each}}
-					</select>
-					<label for="region" class="label required-field">Region</label>
 				</div>
 			</div>
 		</section>
