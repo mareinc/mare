@@ -136,9 +136,11 @@ exports.registerUser = ( req, res, next ) => {
 							const host = req.secure ? `https://${ req.headers.host }` : `http://${ req.headers.host }`;
 							// store the array of mailing list ids the user has opted into
 							const mailingListIds = user.mailingLists;
+							// set the fields to populate on the fetched user model
+							const populateOptions = [ 'address.city', 'address.state' ];
 							
 							// fetch the user model.  Needed because the copies we have don't have the Relationship fields populated
-							const fetchUser = userService.getUserByIdNew( userId, keystone.list( 'Social Worker' ) );
+							const fetchUser = userService.getUserByIdNew( userId, keystone.list( 'Social Worker' ), populateOptions );
 							// fetch contact info for the staff contact for social worker registration
 							const fetchRegistrationStaffContactInfo = exports.getRegistrationStaffContactInfo( 'social worker' );
 							// create a new verification code model in the database to allow users to verify their accounts
@@ -345,8 +347,8 @@ exports.saveSocialWorker = user => {
 			email						: user.email,
 			agencyNotListed				: true,
 			agencyText					: user.agency,
-			title						: user.titleDiffersFromPosition ? user.socialWorkerTitle : user.position,
 			position					: user.position,
+			title						: user.titleDiffersFromPosition ? user.socialWorkerTitle : user.position,
 
 			phone: {
 				work					: user.workPhone,
@@ -361,10 +363,8 @@ exports.saveSocialWorker = user => {
 				city					: user.isNotMACity ? undefined : user.city,
 				cityText				: user.isNotMACity ? user.nonMACity : '',
 				state					: user.state,
-				zipCode					: user.zipCode,
-				region 					: user.region
+				zipCode					: user.zipCode
 			}
-
 		});
 
 		newUser.save( ( err, model ) => {

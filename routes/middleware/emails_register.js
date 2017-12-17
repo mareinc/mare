@@ -84,26 +84,26 @@ exports.sendNewSocialWorkerNotificationEmailToMARE = ( user, userEmail, registra
 		if( !registrationStaffContact ) {
 			return reject( `no staff contact was provided` );
 		}
-		// // an array was used instead of a Map because Mustache templates apparently can't handle maps
-		// let userData = [];
-		// let userMailingListData = [];
+		// an array was used instead of a Map because Mustache templates apparently can't handle maps
+		let userData = [];
+		let userMailingListData = [];
 
-		// // store only the fields that have been populated by the user
-		// if( user.name.first ) { userData.push( { key: 'first name', value: user.name.first } ); }
-		// if( user.name.last ) { userData.push( { key: 'last name', value: user.name.last } ); }
-		// if( user.email ) { userData.push( { key: 'email', value: user.email } ); }
-		// if( user.position.position ) { userData.push ( { key: 'position', value: user.position } ); } 
-		// if( !user.agencyNotListed && user.agency.name ) { userData.push( { key: 'agency', value: user.agency.name } ); }
-		// if( user.agencyNotListed && user.agencyText ) { userData.push( { key: 'agency', value: user.agencyText } ); }
-		// if( user.phone.work ) { userData.push( { key: 'work phone', value: user.phone.work } ); }
-		// if( user.phone.mobile ) { userData.push( { key: 'mobile phone', value: user.phone.mobile } ); }
-		// if( user.phone.preferred ) { userData.push( { key: 'preferred phone', value: user.phone.preferred } ); }
-		// if( user.address.street1 ) { userData.push( { key: 'street 1', value: user.address.street1 } ); }
-		// if( user.address.street2 ) { userData.push( { key: 'street 2', value: user.address.street2 } ); }
-		// if( !user.address.isOutsideMassachusetts && user.address.city.cityOrTown ) { userData.push( { key: 'city', value: user.address.city.cityOrTown } ); }
-		// if( user.address.isOutsideMassachusetts && user.address.cityText ) { userData.push( { key: 'city', value: user.address.cityText } ); }
-		// if( user.address.state.state ) { userData.push( { key: 'state', value: user.address.state.state } ); }
-		// if( user.address.zipCode ) { userData.push( { key: 'zip code', value: user.address.zipCode } ); }
+		// store only the fields that have been populated by the user
+		if( user.name.first ) { userData.push( { key: 'first name', value: user.name.first } ); }
+		if( user.name.last ) { userData.push( { key: 'last name', value: user.name.last } ); }
+		if( user.email ) { userData.push( { key: 'email', value: user.email } ); }
+		if( user.position ) { userData.push ( { key: 'position', value: user.position } ); } 
+		if( user.title ) { userData.push( { key: 'title', value: user.title } ); }
+		if( user.agencyText ) { userData.push( { key: 'agency', value: user.agencyText } ); }
+		if( user.phone.work ) { userData.push( { key: 'work phone', value: user.phone.work } ); }
+		if( user.phone.mobile ) { userData.push( { key: 'mobile phone', value: user.phone.mobile } ); }
+		if( user.phone.preferred ) { userData.push( { key: 'preferred phone', value: user.phone.preferred } ); }
+		if( user.address.street1 ) { userData.push( { key: 'street 1', value: user.address.street1 } ); }
+		if( user.address.street2 ) { userData.push( { key: 'street 2', value: user.address.street2 } ); }
+		if( !user.address.isOutsideMassachusetts && user.address.city.cityOrTown ) { userData.push( { key: 'city', value: user.address.city.cityOrTown } ); } // POPULATE IT
+		if( user.address.isOutsideMassachusetts && user.address.cityText ) { userData.push( { key: 'city', value: user.address.cityText } ); }
+		if( user.address.state.state ) { userData.push( { key: 'state', value: user.address.state.state } ); } // POPULATE
+		if( user.address.zipCode ) { userData.push( { key: 'zip code', value: user.address.zipCode } ); }
 
 		// find the email template in templates/emails/
 		new keystone.Email({
