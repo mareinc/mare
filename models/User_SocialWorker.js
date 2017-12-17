@@ -106,6 +106,8 @@ SocialWorker.schema.pre( 'save', function( next ) {
 	this.setFullName();
 	// all user types that can log in derive from the User model, this allows us to identify users better
 	this.setUserType();
+	
+	 next();
 });
 
 SocialWorker.schema.post( 'save', function() {
