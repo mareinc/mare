@@ -81,7 +81,7 @@ function updateUser( userId, userType ){
 			default             : targetModel = keystone.list( 'Site Visitor' );
 		}
 
-		targetModel
+		targetModel.model
 			.findById( userId )
 			.exec()
 			.then( user => {
