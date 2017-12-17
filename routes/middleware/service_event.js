@@ -169,7 +169,8 @@ exports.getRandomEvent = () => {
 
 	return new Promise( ( resolve, reject ) => {
 		// query the database for a single random active event of the appprpriate type
-		keystone.list( 'Event' ).model
+		keystone.list( 'Event' )
+			.model
 			.findRandom({
 				type: { $in: [ 'MARE adoption parties & information events', 'fundraising events' ] },
 				isActive: true

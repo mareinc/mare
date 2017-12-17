@@ -6,7 +6,8 @@ exports.getRandomStory = () => {
 
 	return new Promise( ( resolve, reject ) => {
 		// use a function added to the Success Story model to find a single random story
-		keystone.list( 'Success Story' ).model
+		keystone.list( 'Success Story' )
+			.model
 			.findRandom( ( err, successStory ) => {
 				// if there was an error
 				if ( err ) {
