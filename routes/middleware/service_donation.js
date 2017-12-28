@@ -297,7 +297,7 @@ exports = module.exports = {
 			// save the donation data to the MARE db as a Donation model
 			.then( stripeTransactionResponse => saveDonation( req.user, donationData, stripeTransactionResponse.id ) )
 			// send a success message to the user
-			.then( dbResponse => generateFlashMessage( message_types.SUCCESS, 'Success!', 'Thank you for your donation, payment has been processed succesfully.' ) )
+			.then( dbResponse => generateFlashMessage( message_types.SUCCESS, 'Thank you!', 'Your donation to the Massachusetts Adoption Resource Exchange (MARE) is complete. Your gift will support finding adoptive homes for children and teens in foster care. A confirmation transaction email will come from the donation platform and a thank you letter and tax receipt will come from MARE. Please contact Megan Dolan at megand@mareinc.org with any questions or to learn more.' ) )
 			// generate a success message to display on the front end
 			.then( flashMessageMarkup => {
 
