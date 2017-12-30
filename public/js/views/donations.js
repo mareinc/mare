@@ -44,6 +44,8 @@
 				key: this.stripeAPIKey,
 				image: '/images/mare-icon.png',
 				locale: 'auto',
+				billingAddress: true,
+				shippingAddress: true,
 				token: this.donationSubmissionHandler()
 			});
 
