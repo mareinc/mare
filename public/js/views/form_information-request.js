@@ -5,7 +5,7 @@
 		el: '.form--information-request',
 
 		events: {
-			'change #is-not-MA-city-checkbox' 	: 'toggleCitySelect',
+			'change #is-not-ma-city-checkbox' 	: 'toggleCitySelect',
 			'change .interest'					: 'toggleChildRegistrationNumbersInput'
 		},
 

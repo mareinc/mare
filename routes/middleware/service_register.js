@@ -28,9 +28,9 @@ exports.registerUser = ( req, res, next ) => {
 	}
 
 	// check for conditions that will prevent saving the model
-	const isEmailValid			= exports.validateEmail( user.email );			// returns true/false
-	const fetchDuplicateEmail	= exports.checkForDuplicateEmail( user.email ); // returns a promise
-	const isPasswordValid		= exports.validatePassword( user.password, user.confirmPassword ); // returns true/false
+	const isEmailValid			= exports.validateEmail( user.email ),			// returns true/false
+		  fetchDuplicateEmail	= exports.checkForDuplicateEmail( user.email ), // returns a promise
+		  isPasswordValid		= exports.validatePassword( user.password, user.confirmPassword ); // returns true/false
 
 	fetchDuplicateEmail
 		.then( isEmailDuplicate => {
@@ -105,7 +105,9 @@ exports.registerUser = ( req, res, next ) => {
 								});
 						})
 						// if there was an error saving the new site visitor
-						.catch( () => {
+						.catch( err => {
+							// log the error for debugging purposes
+							console.error( `error saving new site visitor - ${ err }` );
 							// create an error flash message to send back to the user
 							req.flash( 'error', {
 								title: 'There was an error creating your account',
@@ -179,7 +181,9 @@ exports.registerUser = ( req, res, next ) => {
 								});
 						})
 						// if there was an error saving the new social worker
-						.catch( () => {
+						.catch( err => {
+							// log the error for debugging purposes
+							console.error( `error saving new social worker - ${ err }` );
 							// create an error flash message to send back to the user
 							req.flash( 'error', {
 								title: 'There was an error creating your account',
@@ -214,7 +218,20 @@ exports.registerUser = ( req, res, next ) => {
 							// store the array of mailing list ids the user has opted into
 							const mailingListIds = user.mailingLists;
 							// set the fields to populate on the fetched user model
-							const populateOptions = [];
+							const populateOptions = [ 'contact1.gender',
+													  'contact1.race',
+													  'contact2.gender',
+													  'contact2.race',
+													  'address.city',
+													  'address.region',
+													  'address.state',
+													  'language',
+													  'otherLanguages',
+													  'matchingPreferences.gender',
+													  'matchingPreferences.legalStatus',
+													  'matchingPreferences.disabilities',
+													  'matchingPreferences.otherConsiderations',
+													  'heardAboutMAREFrom' ];
 
 							// fetch the user model.  Needed because the copies we have don't have the Relationship fields populated
 							const fetchUser = userService.getUserByIdNew( userId, keystone.list( 'Family' ), populateOptions );
@@ -258,7 +275,9 @@ exports.registerUser = ( req, res, next ) => {
 								});
 						})
 						// if there was an error saving the new family
-						.catch( () => {
+						.catch( err => {
+							// log the error for debugging purposes
+							console.error( `error saving new family - ${ err }` );
 							// create an error flash message to send back to the user
 							req.flash( 'error', {
 								title: 'There was an error creating your account',
@@ -485,9 +504,9 @@ exports.saveFamily = user => {
 				race							: user.adoptionPrefRace,
 
 				maxNeeds: {
-					physical					: user.maximumPhysicalNeeds ? user.maximumPhysicalNeeds : 'none',
-					intellectual				: user.maximumIntellectualNeeds ? user.maximumIntellectualNeeds : 'none',
-					emotional					: user.maximumEmotionalNeeds ? user.maximumEmotionalNeeds : 'none'
+					physical					: user.maximumPhysicalNeeds ? user.maximumPhysicalNeeds : undefined,
+					intellectual				: user.maximumIntellectualNeeds ? user.maximumIntellectualNeeds : undefined,
+					emotional					: user.maximumEmotionalNeeds ? user.maximumEmotionalNeeds : undefined
 				},
 
 				disabilities					: user.disabilities,

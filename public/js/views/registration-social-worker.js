@@ -5,18 +5,17 @@
 		el: '.form--social-worker-registration',
 
 		events: {
-			'change #is-not-MA-city-checkbox' 		: 'toggleCitySelect',
-			'change .social-worker-title-checkbox'	: 'toggleSocialWorkerTitleTextField',
-			'submit'								: 'disableRegistrationButton'
+			'change .is-not-ma-city-checkbox' 		: 'toggleCitySelect',
+			'change .social-worker-title-checkbox'	: 'toggleSocialWorkerTitleTextField'
 		},
 
 		initialize: function() {
 			// DOM cache any commonly used elements to improve performance
 			this.$MACityContainer			= this.$( '.city-container' );
 			this.$NonMACityContainer		= this.$( '.non-ma-city-container' );
-			this.$MACity					= this.$( '#city' );
-			this.$NonMACity					= this.$( '#non-ma-city' );
-			this.$socialWorkerTitle			= this.$( '#social-worker-title' );
+			this.$MACity					= this.$( '.city' );
+			this.$NonMACity					= this.$( '.non-ma-city' );
+			this.$socialWorkerTitle			= this.$( '.social-worker-title' );
 			this.$socialWorkerTitleGroup	= this.$( '.social-worker-title-group' );
 			// initialize parsley validation on the form
 			this.form = this.$el.parsley();
@@ -84,14 +83,30 @@
 			}
 		},
 
-		disableRegistrationButton: function disableDonateButton() {
-			this.$( '.register' ).attr( 'disabled', 'disabled' );
+		enableRegistrationButton: function enableRegistrationButton() {
+			this.$( '.register' ).prop( 'disabled', false );
+		},
+
+		disableRegistrationButton: function disableRegistrationButton() {
+			this.$( '.register' ).prop( 'disabled', 'disabled' );
 		},
 
 		validateForm: function validateForm() {
+
 			var ok = $( '.parsley-error' ).length === 0;
+
 			$( '.bs-callout-info' ).toggleClass( 'hidden', !ok );
 			$( '.bs-callout-warning' ).toggleClass( 'hidden', ok );
+
+			// if there are no errors, the form will be submitted
+			if( ok ) {
+				// disable the registration button
+				mare.views.socialWorkerRegistration.disableRegistrationButton();
+			// if there are errors
+			} else {
+				// ensure the registration button is enabled
+				mare.views.socialWorkerRegistration.enableRegistrationButton();
+			}
 		}
 	});
 }());

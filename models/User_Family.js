@@ -217,8 +217,6 @@ Family.add( 'Permissions', {
 			type: Types.S3File,
 			s3path: '/family/homestudy',
 			filename: function( item, filename ) {
-				console.log( 'item' );
-				console.log( item );
 				// prefix file name with registration number and name for easier identification
 				return item.fileName;
 			}
@@ -298,7 +296,7 @@ Family.add( 'Permissions', {
 		},
 
 		disabilities: { type: Types.Relationship, label: 'disabilities', ref: 'Disability', many: true, initial: true },
-		otherConsiderations: { type: Types.Relationship, label: 'other considerations', ref: 'Other Consideration', initial: true }
+		otherConsiderations: { type: Types.Relationship, label: 'other considerations', ref: 'Other Consideration', many: true, initial: true }
 
 	}
 
@@ -1334,8 +1332,6 @@ Family.schema.methods.setChangeHistory = function setChangeHistory() {
 					// 	type: Types.S3File,
 					// 	s3path: '/family/homestudy',
 					// 	filename: function(item, filename){
-					// 		console.log('item');
-					// 		console.log(item);
 					// 		// prefix file name with registration number and name for easier identification
 					// 		return item.fileName;
 					// 	}

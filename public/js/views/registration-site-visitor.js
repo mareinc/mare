@@ -5,17 +5,16 @@
 		el: '.form--site-visitor-registration',
 
 		events: {
-			'change #is-not-MA-city-checkbox' 		: 'toggleCitySelect',
+			'change .is-not-ma-city-checkbox' 		: 'toggleCitySelect',
 			'change .other-way-to-hear-about-mare'	: 'toggleOtherWayToHearTextField'
-			//'submit'								: 'disableRegistrationButton'
 		},
 
 		initialize: function() {
 			// DOM cache any commonly used elements to improve performance
 			this.$MACityContainer		= this.$( '.city-container' );
 			this.$NonMACityContainer	= this.$( '.non-ma-city-container' );
-			this.$MACity				= this.$( '#city' );
-			this.$NonMACity				= this.$( '#non-ma-city' );
+			this.$MACity				= this.$( '.city' );
+			this.$NonMACity				= this.$( '.non-ma-city' );
 			this.$howDidYouHearOther 	= this.$( '#site-visitor-how-did-you-hear-other' );
 			// initialize parsley validation on the form
 			this.form = this.$el.parsley();
@@ -83,14 +82,30 @@
 			}
 		},
 
-		disableRegistrationButton: function disableDonateButton() {
+		enableRegistrationButton: function enableRegistrationButton() {
+			this.$( '.register' ).attr( 'disabled', false );
+		},
+
+		disableRegistrationButton: function disableRegistrationButton() {
 			this.$( '.register' ).attr( 'disabled', 'disabled' );
 		},
 
 		validateForm: function validateForm() {
+
 			var ok = $( '.parsley-error' ).length === 0;
+
 			$( '.bs-callout-info' ).toggleClass( 'hidden', !ok );
 			$( '.bs-callout-warning' ).toggleClass( 'hidden', ok );
+
+			// if there are no errors, the form will be submitted
+			if( ok ) {
+				// disable the registration button
+				mare.views.siteVisitorRegistration.disableRegistrationButton();
+			// if there are errors
+			} else {
+				// ensure the registration button is enabled
+				mare.views.siteVisitorRegistration.enableRegistrationButton();
+			}
 		}
 	});
 }());
