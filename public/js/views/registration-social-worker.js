@@ -74,9 +74,9 @@
 				// remove the validation binding from the city dropdown menu
 				this.$MACity.attr( 'data-parsley-required', 'false' );
 				// add the required attribute to the city free text field needed to show the red background during form validation
-				this.$MACity.attr( 'required', true );
+				this.$NonMACity.attr( 'required', true );
 				// remove the required attribute from the city dropdown menu needed to show the red background during form validation
-				this.$NonMACity.attr( 'required', false );
+				this.$MACity.attr( 'required', false );
 				// reset validation on the city dropdown menu
 				// if it was already validated, we need to clear out the check so the form can be submitted
 				this.MACityValidator.reset();
