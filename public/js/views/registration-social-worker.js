@@ -98,12 +98,12 @@
 			$( '.bs-callout-info' ).toggleClass( 'hidden', !ok );
 			$( '.bs-callout-warning' ).toggleClass( 'hidden', ok );
 
-			// if there are no errors, the form will be submitted
-			if( ok ) {
+			// if there are no errors and the user is attempting to submit the form
+			if( ok && event.type === 'submit' ) {
 				// disable the registration button
 				mare.views.socialWorkerRegistration.disableRegistrationButton();
-			// if there are errors
-			} else {
+			// otherwise, if there are errors
+			} else if ( !ok ) {
 				// ensure the registration button is enabled
 				mare.views.socialWorkerRegistration.enableRegistrationButton();
 			}
