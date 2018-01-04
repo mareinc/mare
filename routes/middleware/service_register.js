@@ -80,7 +80,7 @@ exports.registerUser = ( req, res, next ) => {
 									// assign local variables to the values returned by the promises
 									const [ newUser, staffContact ] = values;
 									// send a notification email to MARE staff to allow them to enter the information in the old system
-									return registrationEmailMiddleware.sendNewSiteVisitorNotificationEmailToMARE( newUser, newSiteVisitor.get( 'email' ), staffContact );
+									return registrationEmailMiddleware.sendNewSiteVisitorNotificationEmailToMARE( newUser, staffContact );
 								})
 								.catch( err => {
 									// log the error for debugging purposes
@@ -156,7 +156,7 @@ exports.registerUser = ( req, res, next ) => {
 									// assign local variables to the values returned by the promises
 									const [ newUser, staffContact ] = values;
 									// send a notification email to MARE staff to allow them to enter the information in the old system
-									return registrationEmailMiddleware.sendNewSocialWorkerNotificationEmailToMARE( newUser, newSocialWorker.get( 'email' ), staffContact );
+									return registrationEmailMiddleware.sendNewSocialWorkerNotificationEmailToMARE( newUser, staffContact );
 								})
 								.catch( err => {
 									// log the error for debugging purposes
@@ -267,7 +267,7 @@ exports.registerUser = ( req, res, next ) => {
 									// assign local variables to the values returned by the promises
 									const [ newUser, staffContact ] = values;
 									// send a notification email to MARE staff to allow them to enter the information in the old system
-									return registrationEmailMiddleware.sendNewFamilyNotificationEmailToMARE( newUser, newFamily.get( 'email' ), staffContact );
+									return registrationEmailMiddleware.sendNewFamilyNotificationEmailToMARE( newUser, staffContact );
 								})
 								.catch( err => {
 									// log the error for debugging purposes
@@ -634,7 +634,7 @@ exports.getRegistrationStaffContactInfo = userType => {
 		// get the database id of the admin contact set to handle registration questions for the target user type
 		emailTargetMiddleware.getTargetId( emailTarget )
 			.then( targetId => {
-				// get the contact details of the admin contact set to thandle registration questions for the target user type
+				// get the contact details of the admin contact set to handle registration questions for the target user type
 				return staffEmailContactMiddleware.getContactById( targetId );
 			})
 			.then( contactInfo => {

@@ -1,7 +1,7 @@
 const keystone				= require( 'keystone' ),
 	  utilitiesMiddleware   = require( './utilities' );
 
-exports.sendNewSiteVisitorNotificationEmailToMARE = ( user, userEmail, registrationStaffContact ) => {
+exports.sendNewSiteVisitorNotificationEmailToMARE = ( user, registrationStaffContact ) => {
 
 	return new Promise( ( resolve, reject ) => {
 		// if sending of the email is not currently allowed
@@ -134,15 +134,14 @@ exports.sendNewSiteVisitorNotificationEmailToMARE = ( user, userEmail, registrat
 			templateEngine 	: require( 'handlebars' ),
 			templateName 	: 'register_new-user-notification-to-staff'
 		}).send({
-			to				: 'jared.j.collier@gmail.com',
+			to				: registrationStaffContact.email,
 			from: {
 				name 		: 'MARE',
 				email 		: 'admin@adoptions.io'
 			},
 			subject			: `new ${ user.userType } registration`,
 			userType		: user.userType,
-			userData,
-			registrationStaffContact
+			userData
 		}, ( err, message ) => {
 			// if there was an error sending the email
 			if( err ) {
@@ -162,7 +161,7 @@ exports.sendNewSiteVisitorNotificationEmailToMARE = ( user, userEmail, registrat
 	});
 };
 
-exports.sendNewSocialWorkerNotificationEmailToMARE = ( user, userEmail, registrationStaffContact ) => {
+exports.sendNewSocialWorkerNotificationEmailToMARE = ( user, registrationStaffContact ) => {
 	
 	return new Promise( ( resolve, reject ) => {
 		// if sending of the email is not currently allowed
@@ -297,8 +296,7 @@ exports.sendNewSocialWorkerNotificationEmailToMARE = ( user, userEmail, registra
 			},
 			subject			: `new ${ user.userType } registration`,
 			userType		: user.userType,
-			userData,
-			registrationStaffContact
+			userData
 		}, ( err, message ) => {
 			// if there was an error sending the email
 			if( err ) {
@@ -318,7 +316,7 @@ exports.sendNewSocialWorkerNotificationEmailToMARE = ( user, userEmail, registra
 	});
 };
 
-exports.sendNewFamilyNotificationEmailToMARE = ( user, userEmail, registrationStaffContact ) => {
+exports.sendNewFamilyNotificationEmailToMARE = ( user, registrationStaffContact ) => {
 	
 	return new Promise( ( resolve, reject ) => {
 		// if sending of the email is not currently allowed
@@ -822,15 +820,14 @@ exports.sendNewFamilyNotificationEmailToMARE = ( user, userEmail, registrationSt
 			templateEngine 	: require( 'handlebars' ),
 			templateName 	: 'register_new-user-notification-to-staff'
 		}).send({
-			to				: 'jared.j.collier@gmail.com',
+			to				: registrationStaffContact.email,
 			from: {
 				name 		: 'MARE',
 				email 		: 'admin@adoptions.io'
 			},
 			subject			: `new ${ user.userType } registration`,
 			userType		: user.userType,
-			userData,
-			registrationStaffContact
+			userData
 		}, ( err, message ) => {
 			// if there was an error sending the email
 			if( err ) {
@@ -872,13 +869,12 @@ exports.sendAccountVerificationEmailToUser = ( userEmail, userType, verification
 
 		}).send({
 
-			to					: 'jared.j.collier@gmail.com',
+			to					: userEmail,
 			from: {
 				name 			: 'MARE',
 				email 			: 'admin@adoptions.io'
 			},
 			subject       		: 'please verify your MARE account',
-			emailSubject		: `${ userType } registration question`,
 			host,
 			userType,
 			verificationCode
@@ -902,7 +898,7 @@ exports.sendAccountVerificationEmailToUser = ( userEmail, userType, verification
 	});
 };
 
-exports.sendThankYouEmailToUser = ( staffContactInfo = { email: 'jared.j.collier@gmail.com', name: 'Jared' } , userEmail, userType, host ) => {
+exports.sendThankYouEmailToUser = ( staffContactInfo, userEmail, userType, host ) => {
 	
 	return new Promise( ( resolve, reject ) => {
 		// if sending of the email is not currently allowed
@@ -924,7 +920,7 @@ exports.sendThankYouEmailToUser = ( staffContactInfo = { email: 'jared.j.collier
 
 		}).send({
 
-			to					: 'jared.j.collier@gmail.com',
+			to					: userEmail,
 			from: {
 				name 			: 'MARE',
 				email 			: 'admin@adoptions.io'
@@ -932,10 +928,8 @@ exports.sendThankYouEmailToUser = ( staffContactInfo = { email: 'jared.j.collier
 			subject       		: 'thank you for registering',
 			emailSubject		: `${ userType } registration question`,
 			staffContactEmail	: staffContactInfo.email,
-			staffContactName	: staffContactInfo.name,
 			host,
-			userType,
-			verificationCode
+			userType
 
 		}, ( err, message ) => {
 			// if there was an error sending the email
