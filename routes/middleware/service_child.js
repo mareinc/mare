@@ -644,56 +644,56 @@ exports.saveChild = ( child, activeChildStatusId ) => {
 			siteVisibility: 'only registered social workers and families',
 			isVisibleInGallery: false,
 
-			registeredBy: 'unknown',
-			registrationDate: new Date(),
+			registeredBy					: 'unknown',
+			registrationDate				: new Date(),
 
 			name: {
-				first: child.firstName,
-				last: child.lastName,
-				alias: child.alias,
-				nickName: child.nickName
+				first						: child.firstName,
+				last						: child.lastName,
+				alias						: child.alias,
+				nickName					: child.nickName
 			},
 
-			birthDate: new Date( child.dateOfBirth ),
-			languages: child.languages,
-			status: activeChildStatusId,
-			gender: child.gender,
-			race: child.race,
-			legalStatus: child.legalStatus,
-			yearEnteredCare: child.yearEnteredCare,
+			birthDate						: new Date( child.dateOfBirth ),
+			languages						: child.languages,
+			status							: activeChildStatusId,
+			gender							: child.gender,
+			race							: child.race,
+			legalStatus						: child.legalStatus,
+			yearEnteredCare					: child.yearEnteredCare,
 
-			hasContactWithSiblings: child.isSiblingContactNeeded.toLowerCase() === 'yes',
-			siblingTypeOfContact: child.siblingContactDescription,
-			hasContactWithBirthFamily: child.isFamilyContactNeeded.toLowerCase() === 'yes',
-			birthFamilyTypeOfContact: child.familyContactDescription,
+			hasContactWithSiblings			: child.isSiblingContactNeeded.toLowerCase() === 'yes',
+			siblingTypeOfContact			: child.siblingContactDescription,
+			hasContactWithBirthFamily		: child.isFamilyContactNeeded.toLowerCase() === 'yes',
+			birthFamilyTypeOfContact		: child.familyContactDescription,
 
-			residence: child.currentResidence,
-			isOutsideMassachusetts: child.isNotMACity,
-			city: child.isNotMACity ? undefined : child.MACity,
-			cityText: child.isNotMACity ? child.nonMACity : '',
+			residence						: child.currentResidence,
+			isOutsideMassachusetts			: child.isNotMACity,
+			city							: child.isNotMACity ? undefined : child.MACity,
+			cityText						: child.isNotMACity ? child.nonMACity : '',
 			
-			careFacilityName: child.careFacility,
+			careFacilityName				: child.careFacility,
 
-			physicalNeeds: 'none',
-			physicalNeedsDescription: child.physicalNeeds,
-			emotionalNeeds: 'none',
-			emotionalNeedsDescription: child.emotionalNeeds,
-			intellectualNeeds: 'none',
-			intellectualNeedsDescription: child.intellectualNeeds,
-			socialNeeds: 'none',
-			socialNeedsDescription: child.socialNeeds,
+			physicalNeeds					: 'none',
+			physicalNeedsDescription		: child.physicalNeeds,
+			emotionalNeeds					: 'none',
+			emotionalNeedsDescription		: child.emotionalNeeds,
+			intellectualNeeds				: 'none',
+			intellectualNeedsDescription	: child.intellectualNeeds,
+			socialNeeds						: 'none',
+			socialNeedsDescription			: child.socialNeeds,
 
-			aspirations: child.aspirations,
+			aspirations						: child.aspirations,
 
-			schoolLife: child.schoolLife,
-			familyLife: child.familyLife,
-			personality: child.personality,
-			otherRecruitmentConsiderations: child.otherRecruitmentConsiderations,
+			schoolLife						: child.schoolLife,
+			familyLife						: child.familyLife,
+			personality						: child.personality,
+			otherRecruitmentConsiderations	: child.otherRecruitmentConsiderations,
 
-			disabilities: child.disabilities,
-			recommendedFamilyConstellation: child.recommendedFamilyConstellations,
+			disabilities					: child.disabilities,
+			recommendedFamilyConstellation	: child.recommendedFamilyConstellations,
 			otherFamilyConstellationConsideration: child.otherFamilyConstellationConsiderations,
-			otherConsiderations: child.otherConsiderations
+			otherConsiderations				: child.otherConsiderations
 		});
 
 		newChild.save( ( err, model ) => {
