@@ -44,7 +44,8 @@
   },
   "scripts": {
     "start": "node keystone.js",
-    "postinstall": "gulp heroku"
+    "heroku-prebuild": "gulp clean",
+    "heroku-postbuild": "gulp build"
   },
   "main": "keystone.js",
   "devDependencies": {
