@@ -225,10 +225,27 @@ exports.registerUser = ( req, res, next ) => {
 													  'address.city',
 													  'address.region',
 													  'address.state',
+													  'child1.gender',
+													  'child1.type',
+													  'child2.gender',
+													  'child2.type',
+													  'child3.gender',
+													  'child3.type',
+													  'child4.gender',
+													  'child4.type',
+													  'child5.gender',
+													  'child5.type',
+													  'child6.gender',
+													  'child6.type',
+													  'child7.gender',
+													  'child7.type',
+													  'child8.gender',
+													  'child8.type',
 													  'language',
 													  'otherLanguages',
 													  'matchingPreferences.gender',
 													  'matchingPreferences.legalStatus',
+													  'matchingPreferences.race',
 													  'matchingPreferences.disabilities',
 													  'matchingPreferences.otherConsiderations',
 													  'heardAboutMAREFrom' ];
@@ -484,7 +501,7 @@ exports.saveFamily = user => {
 				number							: parseInt( user.otherAdultsInHome, 10 )
 			},
 
-			havePetsInHome						: user.havePets === 'yes',
+			havePetsInHome						: user.havePets,
 
 			socialWorkerNotListed				: true,
 			socialWorkerText					: user.socialWorkerName,
@@ -499,8 +516,12 @@ exports.saveFamily = user => {
 				},
 
 				numberOfChildrenToAdopt			: user.numberOfChildrenPrefered ? parseInt( user.numberOfChildrenPrefered, 10 ) : 0,
-				siblingContact					: user.contactWithBiologicalSiblings === 'yes',
-				birthFamilyContact				: user.contactWithBiologicalParents === 'yes',
+				siblingContact					: user.contactWithBiologicalSiblings === 'yes' ? true :
+												  user.contactWithBiologicalSiblings === 'no' ? false :
+												  undefined,
+				birthFamilyContact				: user.contactWithBiologicalParents === 'yes' ? true :
+												  user.contactWithBiologicalParents === 'no' ? false :
+												  undefined,
 				race							: user.adoptionPrefRace,
 
 				maxNeeds: {
