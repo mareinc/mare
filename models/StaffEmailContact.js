@@ -3,8 +3,7 @@ const keystone	= require('keystone'),
 
 // Create model. Additional options allow menu name to be used what auto-generating URLs
 const StaffEmailContact = new keystone.List( 'Staff Email Contact', {
-	autokey: { path: 'key', from: 'emailTarget', unique: true },
-	map: { name: 'emailTarget' }
+	autokey: { path: 'key', from: 'emailTarget', unique: true }
 });
 
 // Create fields
