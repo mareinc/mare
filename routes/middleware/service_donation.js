@@ -40,6 +40,9 @@ const message_types = {
 	SUCCESS: 'success',
 };
 
+// define a USD currency formatter
+const usdFormatter = new Intl.NumberFormat( 'en-US', { style: 'currency', currency: 'USD' } );
+
 // process a one-time donation via the Stripe Charge API
 function oneTimeDonation( donationData ) {
 
@@ -48,7 +51,7 @@ function oneTimeDonation( donationData ) {
 		stripe.charges.create({
 			amount: 		donationData.amountPennies,
 			currency: 		'usd',
-			description:	`$${ new Intl.NumberFormat( 'en-US' ).format( donationData.amountDollars ) } One-Time Donation`,
+			description:	`${ usdFormatter.format( donationData.amountDollars ) } One-Time Donation`,
 			source: 		donationData.token
 		}, function( error, charge ) {
 
@@ -170,8 +173,7 @@ function createPlan( customer, donationData ) {
 		// determine plan name based on donation amount and frequency
 		let planName;
 		// format the donation amount for the plan name text
-		const usdFormatter				= new Intl.NumberFormat( 'en-US', { style: 'currency', currency: 'USD' } ),
-			  donationAmountFormatted	= usdFormatter.format( donationData.amountDollars );
+		const donationAmountFormatted = usdFormatter.format( donationData.amountDollars );
 		
 		// set the plan name with frequency and amount
 		switch ( donationData.frequency ) {
