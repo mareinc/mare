@@ -46,9 +46,10 @@ function oneTimeDonation( donationData ) {
 	return new Promise( ( resolve, reject ) => {
 
 		stripe.charges.create({
-			amount: 	donationData.amountPennies,
-			currency: 	'usd',
-			source: 	donationData.token
+			amount: 		donationData.amountPennies,
+			currency: 		'usd',
+			description:	`$${ new Intl.NumberFormat( 'en-US' ).format( donationData.amountDollars ) } One-Time Donation`,
+			source: 		donationData.token
 		}, function( error, charge ) {
 
 			if ( error ) {
