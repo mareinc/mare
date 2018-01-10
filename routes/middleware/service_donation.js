@@ -111,6 +111,13 @@ function saveDonation( user, donationData, stripeTransactionID  ) {
 			date				: Date.now(),
 			amount				: donationData.amountDollars,
 			onBehalfOf			: donationData.honoree,
+			note				: donationData.note,
+			address: {
+				street			: donationData.mailingAddress.line1,
+				city			: donationData.mailingAddress.city,
+				state			: donationData.mailingAddress.state,
+				zip				: donationData.mailingAddress.zip
+			},
 			isSubscription		: donationData.frequency > 0,
 			isRegistered		: isRegistered,
 			userType			: isRegistered ? user.userType : undefined,
@@ -283,10 +290,19 @@ exports = module.exports = {
 			donator: req.body.donator,
 			// donation in the name of
 			honoree: req.body.honoree,
+			// donation note
+			note: req.body.note,
 			// stripe charge auth token
 			token: req.body.token.id,
 			// stripe charge email
-			email: req.body.token.email
+			email: req.body.token.email,
+			// donator's mailing address
+			mailingAddress: {
+				line1: req.body.addressData.shipping_address_line1,
+				city: req.body.addressData.shipping_address_city,
+				state: req.body.addressData.shipping_address_state,
+				zip: req.body.addressData.shipping_address_zip
+			}
 		};
 
 		// determine which type of donation payment plan to generate based on the donation frequency 

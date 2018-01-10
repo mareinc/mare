@@ -22,6 +22,7 @@
 			this.$donateButton					= $( '#donate-button' );
 			this.$donationHonoreeField			= $( '#donation-in-honor-of-input' );
 			this.$donatorNameField				= $( '#donation-name-input' );
+			this.$donationNoteField				= $( '#donation-note-input' );
 
 			// donation variables
 			this.stripeAPIKey					= window.STRIPE_API_KEY;
@@ -175,12 +176,14 @@
 			var donationData = this.donationData;
 			// get donation honoree
 			var $donationHonoree = this.$donationHonoreeField;
+			// get donation note
+			var $donationNote = this.$donationNoteField;
 			// get donators name
 			var $donatorName = this.$donatorNameField;
 			// get content body
 			var $contentBody = this.$contentBody;
 
-			function handleDonation( token ) {
+			function handleDonation( token, addressData ) {
 
 				// create POST body
 				var data = {
@@ -190,8 +193,12 @@
 					frequency: donationData.frequency,
 					// donation honoree
 					honoree: $donationHonoree.val(),
+					// donation note
+					note: $donationNote.val(),
 					// name of donator
 					donator: $donatorName.val(),
+					// address data
+					addressData: addressData,
 					// Stripe token
 					token: token
 				};
