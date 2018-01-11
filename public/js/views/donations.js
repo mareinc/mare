@@ -206,6 +206,12 @@
 				// post the donation to the charge endpoint for payment processing
 				$.post( '/process-donation', data, function( responseData ) {
 
+					// remove any previously existing messages
+					$( '#flash-messages' ).remove();
+					
+					// ensure any message will be scrolled into view
+					$( 'html, body' ).scrollTop( 0 );
+
 					// handle error responses
 					if ( responseData.status === 'error' ) {
 						
