@@ -14,7 +14,6 @@ exports = module.exports = ( req, res ) => {
 
 	// fetch all data needed to render this page
 	let fetchCitiesAndTowns			= listsService.getAllCitiesAndTowns(),
-		fetchDisabilities			= listsService.getAllDisabilities(),
 		fetchGenders				= listsService.getAllGenders(),
 		fetchLanguages				= listsService.getAllLanguages(),
 		fetchLegalStatuses			= listsService.getAllLegalStatuses(),
@@ -23,18 +22,17 @@ exports = module.exports = ( req, res ) => {
 		fetchChildTypes				= listsService.getChildTypesForWebsite(),
 		fetchSidebarItems			= pageService.getSidebarItems();
 	
-		Promise.all( [ fetchCitiesAndTowns, fetchDisabilities, fetchGenders, fetchLanguages, fetchLegalStatuses,
+		Promise.all( [ fetchCitiesAndTowns, fetchGenders, fetchLanguages, fetchLegalStatuses,
 					   fetchRaces, fetchStates, fetchChildTypes, fetchSidebarItems ] )
 			.then( values => {
 				// assign local variables to the values returned by the promises
-				const [ citiesAndTowns, disabilities, genders, languages, legalStatuses,
+				const [ citiesAndTowns, genders, languages, legalStatuses,
 						races, states, childTypes, sidebarItems ] = values;
 				// the sidebar items are a success story and event in an array, assign local variables to the two objects
 				const [ randomSuccessStory, randomEvent ] = sidebarItems;
 				
 				// assign properties to locals for access during templating
 				locals.citiesAndTowns		= citiesAndTowns;
-				locals.disabilities			= disabilities;
 				locals.genders				= genders;
 				locals.languages			= languages;
 				locals.legalStatuses		= legalStatuses;
