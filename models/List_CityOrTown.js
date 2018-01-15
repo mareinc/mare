@@ -5,6 +5,7 @@ var keystone = require('keystone'),
 var CityOrTown = new keystone.List('City or Town', {
 	autokey: { path: 'key', from: 'cityOrTown', unique: true },
 	map: { name: 'cityOrTown' },
+	label: 'Cities and Towns',
 	defaultSort: 'cityOrTown'
 });
 

@@ -1,17 +1,20 @@
 <div class="card card--vertical card--large-padding">
 
-	<div class="page-header">
-		<span class="page-header-text">Information Request Submission</span>
-	</div>
+	<h1 class="card__title">Information Request</h1>
+
+	{{#unless user}}
+	<section class="card_content-group log-in-prompt">
+		<div class="card__content-block card__content-block--centered">If you already have an account, logging in will prevent you from needing to enter most of the information below</div>
+	</section>
+	{{/unless}}
 
 	<section class="agency-event-submission-form">
-
-		<div class="form-type-header">Information Request Form</div>
-		<span class="required required-description">* Required</span>
 
 		<form action="/submit-information-request" class="form--information-request" method="POST">
 
 			<div class="form-section-header">Requested Information</div>
+
+			<span class="required required-description">* Required</span>
 
 			<div class="row">
 				<div class="col-sm-12 form-group">
@@ -256,7 +259,7 @@
 				</div>
 				<div class="col-sm-12 form-group">
 					<label class="checkbox-inline">
-						<input type="checkbox" id="is-not-MA-city-checkbox" name="isNotMACity">I live outside MA
+						<input type="checkbox" id="is-not-ma-city-checkbox" name="isNotMACity">I live outside MA
 					</label>
 				</div>
 			</div>
@@ -336,10 +339,9 @@
 			<div class="row form-group">
 				<div class="col-sm-24">
 					<textarea class="input" id="inquiry" name="inquiry" rows="8"></textarea>
-					<label for="inquiry" class="label">Your Inquiry</label>
 				</div>
 			</div>
-			<button class="button button--blue" type="submit">Submit</button>
+			<button class="button button--teal" type="submit">Submit</button>
 		</form>
 	</section>
 

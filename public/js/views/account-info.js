@@ -7,7 +7,7 @@
 		events: {
 			'click .save-button'					: 'updateUserInfo',
 			'change .social-worker-title-checkbox'	: 'toggleSocialWorkerTitleTextField',
-			'change #is-not-MA-city-checkbox'		: 'toggleOutsideMa'
+			'change #is-not-ma-city-checkbox'		: 'toggleOutsideMa'
 		},
 
 		initialize: function initialize() {
@@ -119,7 +119,7 @@
 				zipCode					: document.querySelector( '#zip-code' ) ? document.querySelector( '#zip-code' ).value : undefined,
 				maCity					: document.querySelector( '#city' ) ? document.querySelector( '#city' ).value : undefined,
 				nonMaCity				: document.querySelector( '#non-ma-city' ) ? document.querySelector( '#non-ma-city' ).value : undefined,
-				isOutsideMassachusetts	: document.querySelector( '#is-not-MA-city-checkbox' ) ? document.querySelector( '#is-not-MA-city-checkbox' ).checked : undefined
+				isOutsideMassachusetts	: document.querySelector( '#is-not-ma-city-checkbox' ) ? document.querySelector( '#is-not-ma-city-checkbox' ).checked : undefined
 			};
 
 			// Family

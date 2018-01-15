@@ -9,7 +9,7 @@ const keystone					= require( 'keystone' ),
 	  registrationMiddleware	= require( './middleware/service_register' ),
 	  accountMiddleware			= require( './middleware/service_account' ),
 	  eventMiddleware			= require( './middleware/middleware_event' ),
-	  accountVerificationService= require('./middleware/service_account-verification');
+	  accountVerificationService= require( './middleware/service_account-verification' );
 	  importRoutes				= keystone.importer( __dirname );
 
 // common middleware
@@ -69,7 +69,7 @@ exports = module.exports = app => {
 	app.get( '/account'									, middleware.requireUser, routes.views.account );
 	app.put( '/account/user-info'						, accountMiddleware.updateUser );
 	// verification code handling after user registers
-	app.get('/verifyAccount'							, accountVerificationService);
+	app.get('/verifyAccount'							, accountVerificationService );
 	/* TODO: all these routes below need to be moved and prefixed with appropriate REST verbs like put */
 	// services for ajax calls
 	app.post( '/services/get-children-data'				, childService.getGalleryData );

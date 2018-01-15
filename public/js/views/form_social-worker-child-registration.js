@@ -5,7 +5,7 @@
 		el: '.form--child-registration',
 
 		events: {
-			'change #is-not-MA-city-checkbox' 	: 'toggleCitySelect',
+			'change #is-not-ma-city-checkbox' 	: 'toggleCitySelect',
 			'change #is-part-of-sibling-group'	: 'toggleSiblingNamesTextbox'
 		},
 

@@ -1,12 +1,17 @@
-const keystone	= require( 'keystone' ),
-	  async		= require( 'async' ),
-	  moment	= require( 'moment' );
+const keystone						= require( 'keystone' ),
+	  async							= require( 'async' ),
+	  moment						= require( 'moment' ),
+	  eventEmailMiddleware			= require( './emails_event' ),
+	  emailTargetMiddleware			= require( './service_email-target' ),
+	  staffEmailContactMiddleware	= require( './service_staff-email-contact' ),
+	  eventService					= require( './service_event' );
 
-exports.getEventById = eventId => {
+exports.getEventById = ( eventId, populateOptions = [] ) => {
 
 	return new Promise( ( resolve, reject ) => {
 		keystone.list( 'Event' ).model
 			.findById( eventId )
+			.populate( populateOptions )
 			.exec()
 			.then( event => {
 				// if the target event could not be found
@@ -81,7 +86,7 @@ exports.getActiveEventsByEventType = ( eventType, eventGroup ) => {
 				// if no active events matching the passed in eventType could not be found
 				if( events.length === 0 ) {
 					// log an error for debugging purposes
-					console.error( `no active events matching '${ eventType } could be found` );
+					console.error( `no active events matching ${ eventType } could be found` );
 				}
 				// resolve the promise with the events
 				resolve( events );
@@ -169,7 +174,8 @@ exports.getRandomEvent = () => {
 
 	return new Promise( ( resolve, reject ) => {
 		// query the database for a single random active event of the appprpriate type
-		keystone.list( 'Event' ).model
+		keystone.list( 'Event' )
+			.model
 			.findRandom({
 				type: { $in: [ 'MARE adoption parties & information events', 'fundraising events' ] },
 				isActive: true
@@ -185,6 +191,145 @@ exports.getRandomEvent = () => {
 				const randomEvent = event ? event[ 0 ] : {}; // TODO: make sure an empty response comes back as undefined instead of an empty array
 				// resolve the promise with the random event
 				resolve( randomEvent );
+			});
+	});
+};
+
+/* event creation submitted through the agency event submission form */
+exports.submitEvent = function submitEvent( req, res, next ) {
+
+	const event = req.body;
+
+	// attempt to create the event
+	let createEvent = exports.createEvent( event );
+
+	// once the event has been successfully created
+	createEvent
+		.then( event => {
+			// create a success flash message
+			req.flash( 'success', {
+						title: 'Your event has been submitted',
+						detail: 'once your event has been approved by the MARE staff, you will receive a notification email.  If you don\'t receive an email within 5 business days, please contact [some mare contact] for a status update.'} );
+			// reload the form to display the flash message
+			res.redirect( 303, '/forms/agency-event-submission-form' );
+
+			// set the fields to populate on the fetched event model
+			const populateOptions = [ 'contact', 'address.state' ];
+
+			// fetch the event model.  Needed because the copy we have doesn't have the Relationship fields populated
+			const fetchEvent = eventService.getEventById( event.get( '_id' ), populateOptions );
+			// fetch contact info for the staff contact for site visitor registration
+			const fetchEventStaffContactInfo = exports.getEventStaffContactInfo( 'event created by social worker' );
+		
+			Promise.all( [ fetchEvent, fetchEventStaffContactInfo ] )
+				.then( values => {
+					// assign local variables to the values returned by the promises
+					const [ newEvent, staffContact ] = values;
+					// send a notification email to MARE staff to allow them to enter the information in the old system
+					return eventEmailMiddleware.sendNewEventEmailToMARE( newEvent, req.user, staffContact );
+				})
+				.catch( err => {
+					// convert the event date from a date object into a readable string
+					const eventDate = `${ newEvent.startDate.getMonth() + 1 }/${ newEvent.startDate.getDate() }/${ newEvent.startDate.getFullYear() }`;
+					// log the error for debugging purposes
+					console.error( `error sending new event created email to MARE contact about ${ newEvent.get( 'name' ) } on ${ eventDate } from ${ newEvent.startTime } to ${ newEvent.endTime } - ${ err }` );
+				});
+		})
+		// if we're not successful in creating the event
+		.catch( err => {
+			// create an error flash message
+			req.flash( 'error', {
+						title: 'Something went wrong while creating your event.',
+						detail: 'We are looking into the issue and will email a status update once it\'s resolved' } );
+			// reload the form to display the flash message
+			res.redirect( 303, '/forms/agency-event-submission-form' );	
+		});
+};
+
+// create and save a new event model
+exports.createEvent = event => {
+
+	return new Promise( ( resolve, reject ) => {
+
+		const Event = keystone.list( 'Event' );
+
+		// create a new event using the form data we received
+		const newEvent = new Event.model({
+
+			name: event.name,
+			type: event.eventType,	
+			address: {
+				street1: event.street1,
+				street2: event.street2,
+				city: event.city,
+				state: event.state,
+				zipCode: event.zipCode
+			},
+			contactEmail: event.contactEmail,
+			startDate: event.startDate,
+			startTime: event.startTime,
+			endDate: event.endDate,
+			endTime: event.endTime,
+			description: event.description,
+			isActive: false,
+			createdViaWebsite: true
+
+		});
+
+		newEvent.save( ( err, model ) => {
+			// if there was an error saving the new event to the database
+			if( err ) {
+				// log an error for debugging purposes
+				console.error( `there was an error creating the new event - ${ err }` );
+				// reject the promise
+				return reject();
+			}
+
+			// resolve the promise with the newly saved event model
+			resolve( model );
+		});
+	});
+};
+
+exports.register = ( eventId, userId ) => {
+	// TODO: this will be implemented post-launch
+	return new Promise( ( resolve, reject ) => {
+		resolve();
+	});
+};
+
+exports.unregister = ( eventId, userId ) => {
+	// TODO: this will be implemented post-launch
+	return new Promise( ( resolve, reject ) => {
+		resolve();
+	});
+};
+
+/* returns an array of staff email contacts */
+exports.getEventStaffContactInfo = emailTarget => {
+
+	return new Promise( ( resolve, reject ) => {
+		// if the email target was unrecognized, the email target can't be set
+		if( !emailTarget ) {
+			// reject the promise with details of the issue
+			return reject( `no event email target provided` );
+		}
+		// TODO: it was nearly impossible to create a readable comma separated list of links in the template with more than one address,
+		// 	     so we're only fetching one contact when we should fetch them all
+		// get the database id of the admin contact set to handle registration questions for the email target
+		emailTargetMiddleware
+			.getTargetId( emailTarget )
+			.then( targetId => {
+				// get the contact details of the admin contact set to handle registration questions for the email target
+				return staffEmailContactMiddleware.getContactById( targetId );
+			})
+			.then( contactInfo => {
+				// resolve the promise with the full name and email address of the contact
+				resolve( contactInfo );
+			})
+			.catch( err => {
+				// reject the promise with the reason for the rejection
+				reject( `error fetching staff contact - ${ err }` );
 			});
 	});
 };
@@ -311,94 +456,3 @@ exports.getRandomEvent = () => {
 // 			res.json( responseData );
 // 		});
 // };
-
-/* event creation submitted through the agency event submission form */
-exports.submitEvent = function submitEvent( req, res, next ) {
-
-	const event = req.body;
-
-	// attempt to create an event
-	let createEvent = exports.createEvent( event );
-
-	// if we're successful in creating it
-	createEvent.then( result => {
-		// create a success flash message
-		req.flash( 'success', {
-					title: 'Your event has been submitted',
-					detail: 'once your event has been approved by the MARE staff, you will receive a notification email.  If you don\'t receive an email within 5 business days, please contact [some mare contact] for a status update.'} );
-		// reload the form to display the flash message
-		res.redirect( '/forms/agency-event-submission-form' );
-	// if we're not successful in creating it
-	})
-	.catch( error => {
-		// create an error flash message
-		req.flash( 'error', {
-					title: 'Something went wrong while creating your event.',
-					detail: 'We are looking into the issue and will email a status update once it\'s resolved' } );
-		// reload the form to display the flash message
-		res.redirect( '/forms/agency-event-submission-form' );	
-	});
-
-};
-
-// create and save a new event model
-exports.createEvent = event => {
-
-	return new Promise( ( resolve, reject ) => {
-
-		const Event = keystone.list( 'Event' );
-
-		// create a new event using the form data we received
-		const newEvent = new Event.model({
-
-			name: event.name,
-			type: event.eventType,	
-			address: {
-				street1: event.street1,
-				street2: event.street2,
-				city: event.city,
-				state: event.state,
-				zipCode: event.zipCode
-			},
-			contactEmail: event.contactEmail,
-			startDate: event.startDate,
-			startTime: event.startTime,
-			endDate: event.endDate,
-			endTime: event.endTime,
-			description: event.description,
-			isActive: false,
-			createdViaWebsite: true
-
-		});
-
-		newEvent.save( err => {
-			// if there was an error saving the new event to the database
-			if( err ) {
-				// log an error for debugging purposes
-				console.error( `there was an error creating the new event - ${ err }` );
-				// reject the promise
-				return reject();
-			}
-
-			// log a message that the event was created
-			console.log( `new event successfully created` );
-			// if the event was created successfully, resolve the event creation promise
-			resolve();
-
-		});
-	});
-};
-
-exports.register = ( eventId, userId ) => {
-	// TODO: this will be implemented post-launch
-	return new Promise( ( resolve, reject ) => {
-		resolve();
-	});
-}
-
-exports.unregister = ( eventId, userId ) => {
-	// TODO: this will be implemented post-launch
-	return new Promise( ( resolve, reject ) => {
-		resolve();
-	});
-}

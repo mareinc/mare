@@ -1,4 +1,4 @@
-require('./Tracking_ChildHistory');
+require( './Tracking_ChildHistory' );
 
 const keystone						= require( 'keystone' ),
 	  async 						= require( 'async' ),
@@ -15,7 +15,7 @@ const keystone						= require( 'keystone' ),
 	  UtilitiesMiddleware			= require( '../routes/middleware/utilities' );
 
 // Create model
-const Child = new keystone.List('Child', {
+const Child = new keystone.List( 'Child', {
 	track: true, // needed for change history updated by assignment
 	autokey: { path: 'key', from: 'registrationNumber', unique: true },
 	map: { name: 'name.full' },
@@ -133,9 +133,10 @@ Child.add('Display Options', {
 	photolistingPageNumber: { type: Types.Text, label: 'photolisting page', initial: true },
 	previousPhotolistingPageNumbers: { type: Types.Text, label: 'previous photolisting pages', initial: true },
 
-	image: { type: Types.CloudinaryImage, label: 'image', folder: 'children/', select: true, selectPrefix: 'children/', publicID: 'fileName', dependsOn: { mustBePlacedWithSiblings: false }, autoCleanup: true },
+	image: { type: Types.CloudinaryImage, label: 'display image', folder: 'children/', select: true, selectPrefix: 'children/', publicID: 'fileName', dependsOn: { mustBePlacedWithSiblings: false } },
 	galleryImage: { type: Types.Url, hidden: true },
 	detailImage: { type: Types.Url, hidden: true },
+	allImages: { type: Types.CloudinaryImages, label: 'all images', folder: 'children/', select: true, selectPrefix: 'children/', publicID: 'fileName', dependsOn: { mustBePlacedWithSiblings: false }, autoCleanup: true },
 	siblingGroupImage: { type: Types.CloudinaryImage, label: 'sibling group image', folder: 'sibling-groups/', select: true, selectPrefix: 'sibling-groups/', publicID: 'siblingGroupFileName', dependsOn: { mustBePlacedWithSiblings: true }, autoCleanup: true },
 	siblingGroupGalleryImage: { type: Types.Url, hidden: true },
 	siblingGroupDetailImage: { type: Types.Url, hidden: true },
@@ -181,18 +182,18 @@ Child.add('Display Options', {
 	photolistingPage: {
 		type: Types.S3File,
 		s3path: '/child/photolisting-pages',
-		filename: function(item, filename){
+		filename: function( item, filename ) {
 			// prefix file name with registration number and the user's name for easier identification
-			return fileName;
+			return item.get( 'fileName' );
 		}
 	},
 
 	otherAttachement: {
 		type: Types.S3File,
 		s3path: '/child/other',
-		filename: function( item, filename ){
+		filename: function( item, filename ) {
 			// prefix file name with registration number and name for easier identification
-			return fileName;
+			return item.get( 'fileName' );
 		}
 	}
 /* Container for all system fields (add a heading if any are meant to be visible through the admin UI) */
@@ -253,18 +254,6 @@ Child.schema.pre( 'save', function( next ) {
 	const recruitmentWorkerAgencyFieldsSet = this.setRecruitmentWorkerAgencyFields();
 	// create an identifying name for sibling group file uploads
 	const siblingGroupFileNameSet = this.setSiblingGroupFileName();
-	
-	// if the bot user was fetched successfully
-	migrationBotFetched
-		.then( bot => {
-			// set the updatedBy field to the bot's _id if the field isn't already set ( meaning it was saved in the admin UI and we know the user based on their session info )
-			this.updatedBy = this.updatedBy || bot.get( '_id' );
-		})
-		// if there was an error fetching the bot user
-		.catch( err => {
-			// log it for debugging purposes
-			console.error( `Website Bot could not be fetched for family ${ this.name.full } ( registration number: ${ this.registrationNumber } ) - ${ err }` );
-		});
 
 	Promise.all( [ registrationNumberSet, adoptionWorkerAgencyFieldsSet, recruitmentWorkerAgencyFieldsSet, siblingGroupFileNameSet ] )
 		// if there was an error with any of the promises
@@ -275,9 +264,6 @@ Child.schema.pre( 'save', function( next ) {
 		// execute the following regardless of whether the promises were resolved or rejected
 		// TODO: this should be replaced with ES6 Promise.prototype.finally() once it's finalized, assuming we can update to the latest version of Node if we upgrade Keystone
 		.then( () => {
-			// process change history
-			// TODO: if change history isn't showing up until the page is reloaded, the next() will need to wait until after setChangeHistory completes
-			this.setChangeHistory();
 
 			next();
 		});
@@ -288,6 +274,27 @@ Child.schema.post( 'save', function() {
 	this.updateSiblingFields();
 	// update saved bookmarks for families and social workers in the event of a status change or sibling group change
 	this.updateBookmarks();
+
+	// we need this id in case the family was created via the website and updatedBy is empty
+	const migrationBotFetched = UserServiceMiddleware.getUserByFullName( 'Migration Bot', 'admin' );
+
+	// if the bot user was fetched successfully
+	migrationBotFetched
+		.then( bot => {
+			// set the updatedBy field to the bot's _id if the field isn't already set ( meaning it was saved in the admin UI and we know the user based on their session info )
+			this.updatedBy = this.updatedBy || bot.get( '_id' );
+		})
+		// if there was an error fetching the bot user
+		.catch( err => {
+			// log it for debugging purposes
+			console.error( `Migration Bot could not be fetched for family ${ this.name.full } ( registration number: ${ this.registrationNumber } ) - ${ err }` );
+		})
+		// execute the following regardless of whether the promises were resolved or rejected
+		// TODO: this should be replaced with ES6 Promise.prototype.finally() once it's finalized, assuming we can update to the latest version of Node if we upgrade Keystone
+		.then( () => {
+			// process change history
+			this.setChangeHistory();
+		});
 });
 
 Child.schema.methods.setImages = function() {
@@ -640,10 +647,11 @@ Child.schema.methods.updateBookmarks = function() {
 	});
 };
 
-Child.schema.methods.setChangeHistory = function( done ) {
+Child.schema.methods.setChangeHistory = function() {
 	'use strict';
 
 	return new Promise( ( resolve, reject ) => {
+
 		const modelBefore	= this._original,
 			  model 		= this;
 
@@ -1361,13 +1369,13 @@ Child.schema.methods.setChangeHistory = function( done ) {
 					changeHistory.save( () => {
 						// if the record saved successfully, resolve the promise
 						resolve();
-						// if there was an error saving the record
-						}, err => {
-							// log the error for debugging purposes
-							console.error( `initial change history record could not be saved for child ${ this.name.full } ( registration number: ${ this.registrationNumber } ) - ${ err }` );
-							// reject the promise
-							reject();
-						});
+					// if there was an error saving the record
+					}, err => {
+						// log the error for debugging purposes
+						console.error( `change history record could not be saved for child ${ this.name.full } ( registration number: ${ this.registrationNumber } ) - ${ err }` );
+						// reject the promise
+						reject();
+					});
 				}
 			});
 		}

@@ -25,7 +25,18 @@ Donation.add({
 	admin: { type: Types.Relationship, label: 'donation from', ref: 'Admin', dependsOn: { isRegistered: true, userType: 'admin' }, filters: { isActive: true }, initial: true },
 	unregisteredUser: { type: Types.Text, label: 'donation from', dependsOn: { isRegistered: false }, initial: true },
 	name: { type: Types.Text, label: 'name', hidden: true, noedit: true, initial: false },
-	onBehalfOf: { type: Types.Text, label: 'on behalf of', initial: true }
+	onBehalfOf: { type: Types.Text, label: 'on behalf of', initial: true },
+	note: { type: Types.Text, label: 'note', initial: true }
+
+	}, 'Mailing Address', {
+		
+	address: {
+		street: 	{ type: Types.Text, label: 'street address', required: true, initial: true },
+		city:		{ type: Types.Text, required: true, initial: true },
+		state:		{ type: Types.Text, required: true, initial: true },
+		zip:		{ type: Types.Text, label: 'zip code', required: true, initial: true }
+	}
+
 });
 
 // presave hook
