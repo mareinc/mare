@@ -11,8 +11,8 @@ exports = module.exports = function( req, res ) {
 
 	// create a container for any additional page actions to render after the content
 	let pageActions = {
-		buttons: [], // placeholder for any buttons that may render in a button group after the content
-		sections: [] // placeholder for any sections that may render after the content
+		sections: [], // placeholder for any sections that may render after the content
+		buttons: [] // placeholder for any buttons that may render in a button group after the content
 	};
 
 	// fetch all data needed to render this page
@@ -38,7 +38,13 @@ exports = module.exports = function( req, res ) {
 				// if the user is not a logged in social worker
 				} else {
 					// set the section contents
-					pageActions.sections.push( `You must be logged in as a social worker to register a child.  If you're a social worker, you can <a href="/register#social-worker">register here</a>.` );
+					pageActions.sections.push( `Only social workers can register children.  If you're a social worker, either log in or create an account` );
+					// specify that it should render a button after the content
+					pageActions.hasButtons = true;
+					// set the button contents
+					pageActions.buttons.push( { text: 'Create an account',
+												target: '/register#social-worker' } );
+					// pageActions.sections.push( `You must be logged in as a social worker to register a child.  If you're a social worker, you can <a href="/register#social-worker">register here</a>.` );
 				}
 			// otherwise, if the user requested the 'Register a family's homestudy' page
 			} else if( page.key === 'register-a-familys-homestudy' ) {
@@ -52,7 +58,13 @@ exports = module.exports = function( req, res ) {
 				// if the user is not a logged in social worker
 				} else {
 					// set the section contents
-					pageActions.sections.push( `You must be logged in as a social worker to register a family.  If you're a social worker, you can <a href="/register#social-worker">register here</a>.` );
+					pageActions.sections.push( `Only social workers can register families' homestudies.  If you're a social worker, either log in or create an account` );
+					// specify that it should render a button after the content
+					pageActions.hasButtons = true;
+					// set the button contents
+					pageActions.buttons.push( { text: 'Create an account',
+												target: '/register#social-worker' } );
+					// pageActions.sections.push( `You must be logged in as a social worker to register a family.  If you're a social worker, you can <a href="/register#social-worker">register here</a>.` );
 				}
 			// otherwise, if the user requested the 'How does MARE support families' page
 			} else if( page.key === 'how-does-mare-support-families' ) {
