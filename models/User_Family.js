@@ -100,6 +100,7 @@ Family.add( 'Permissions', {
 		isOutsideMassachusetts: { type: Types.Boolean, label: 'is outside Massachusetts', initial: true },
 		city: { type: Types.Relationship, label: 'city', ref: 'City or Town', dependsOn: { 'address.isOutsideMassachusetts': false }, initial: true },
 		cityText: { type: Types.Text, label: 'city', dependsOn: { 'address.isOutsideMassachusetts': true }, initial: true },
+		displayCity: { type: Types.Text, label: 'city', hidden: true, noedit: true },
 		state: { type: Types.Relationship, label: 'state', ref: 'State', initial: true }, // was required: data migration change ( undo if possible )
 		zipCode: { type: Types.Text, label: 'zip code', initial: true }, // was required: data migration change ( undo if possible )
 		region: { type: Types.Relationship, label: 'region', ref: 'Region', noedit: true }
@@ -180,9 +181,7 @@ Family.add( 'Permissions', {
 	otherAdultsInHome: {
 		number: { type: Types.Number, label: 'number of other adults living in the home', initial: true },
 		relationships: { type: Types.Text, label: 'relationship of other adults living in the home', initial: true }
-	},
-
-	havePetsInHome: { type: Types.Boolean, label: 'have pets in the home', initial: true }
+	}
 
 }, 'Stages', {
 
@@ -287,6 +286,9 @@ Family.add( 'Permissions', {
 		numberOfChildrenToAdopt: { type: Types.Number, label: 'number of children to adopt', initial: true },
 		siblingContact: { type: Types.Boolean, label: 'contact with siblings', initial: true },
 		birthFamilyContact: { type: Types.Boolean, label: 'contact with birth parents', initial: true },
+		
+		havePetsInHome: { type: Types.Boolean, label: 'have pets in the home', initial: true },
+		
 		race: { type: Types.Relationship, label: 'race', ref: 'Race', many: true, initial: true },
 
 		maxNeeds: {
@@ -297,7 +299,6 @@ Family.add( 'Permissions', {
 
 		disabilities: { type: Types.Relationship, label: 'disabilities', ref: 'Disability', many: true, initial: true },
 		otherConsiderations: { type: Types.Relationship, label: 'other considerations', ref: 'Other Consideration', many: true, initial: true }
-
 	}
 
 }, 'Heard About MARE From', {
@@ -353,6 +354,8 @@ Family.schema.pre( 'save', function( next ) {
 	// all user types that can log in derive from the User model, this allows us to identify users better
 	this.setUserType();
 	
+	// there are two fields containing the city, depending on whether the family is in MA or not.  Save the value to a common field for display
+	const displayCityUpdated = this.setDisplayCity();
 	// attempt to update the no-edit region field
 	const regionUpdated = this.updateRegion();
 	// determine whether the family can view all children or just the publicly visible ones
@@ -360,7 +363,7 @@ Family.schema.pre( 'save', function( next ) {
 	// set the registration number for the family
 	const registrationNumberSet = this.setRegistrationNumber();
 
-	Promise.all( [ regionUpdated, galleryViewingPermissionsSet, registrationNumberSet ] )
+	Promise.all( [ displayCityUpdated, regionUpdated, galleryViewingPermissionsSet, registrationNumberSet ] )
 		// if there was an error with any of the promises
 		.catch( err => {
 			// log it for debugging purposes
@@ -466,6 +469,39 @@ Family.schema.methods.setFullName = function() {
 		this.contact2.name.full = '';
 	}
 };
+// TODO: better handled with a virtual
+Family.schema.methods.setDisplayCity = function() {
+	'use strict';
+
+	return new Promise( ( resolve, reject ) => {
+		// if the family lives outside Massachusetts
+		if( this.address.isOutsideMassachusetts ) {
+			// set the display city text to the free text field cityText
+			this.address.displayCity = this.address.cityText;
+			// resolve the promise
+			resolve();
+		// if the family lives in Massachusetts
+		} else {
+			// the city is a Relationship field, fetch it and return the name
+			const fetchCityOrTown = ListServiceMiddleware.getCityOrTownById( this.address.city );
+			// if the city or town was fetched without error
+			fetchCityOrTown
+				.then( cityOrTown => {
+					// set the display city text to the value returned
+					this.address.displayCity = cityOrTown.cityOrTown;
+					// resolve the promise
+					resolve();
+				})
+				// if there was an error fetching the city or town
+				.catch( err => {
+					// log the error for debugging purposes
+					console.error( `display city could not be updated for family ${ this.displayName } ( registration number: ${ this.registrationNumber } ) - ${ err }` );
+					// reject the promise with the error
+					reject();
+				});
+		}
+	});
+}
 // TODO: better handled with a virtual
 Family.schema.methods.setFileName = function() {
 	'use strict';
@@ -1685,7 +1721,7 @@ Family.schema.methods.setChangeHistory = function setChangeHistory() {
 };
 
 // Define default columns in the admin interface and register the model
-Family.defaultColumns = 'registrationNumber, contact1.name.full, address.city, address.cityText, address.state, isActive';
+Family.defaultColumns = 'registrationNumber, contact1.name.full, address.displayCity, address.state, isActive';
 Family.register();
 
 // Export to make it available using require.  The keystone.list import throws a ReferenceError when importing a list
