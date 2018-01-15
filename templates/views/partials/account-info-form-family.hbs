@@ -2,17 +2,17 @@
 	<section class="family-account-setup-section">
 		<div class="row form-group">
 			<div class="col-sm-12">
-				<input type="email" id="email" class="input" name="email" placeholder="john.smith@gmail.com" value="{{ user.email}}">
+				<input type="email" id="email" class="input" name="email" value="{{ user.email}}">
 				<label for="email" class="label">Email Address</label>
 			</div>
 		</div>
 		<div class="row form-group">
 			<div class="col-sm-12">
-				<input type="password" id="password" class="input" name="password" placeholder="**********">
+				<input type="password" id="password" class="input" name="password">
 				<label for="password" class="label">Password</label>
 			</div>
 			<div class="col-sm-12">
-				<input type="password" id="confirm-password" class="input" name="confirmPassword" placeholder="**********" data-parsley-equalto="#family-password" data-parsley-error-message="passwords must match">
+				<input type="password" id="confirm-password" class="input" name="confirmPassword" data-parsley-equalto="#family-password" data-parsley-error-message="passwords must match">
 				<label for="confirm-password" class="label">Confirm Password</label>
 			</div>
 		</div>
@@ -22,21 +22,21 @@
 		<div class="form-section-header">Contact 1</div>
 		<div class="row form-group">
 			<div class="col-sm-12">
-				<input type="text" id="contact1-first-name" class="input" name="contact1FirstName" placeholder="John" value="{{ user.contact1.name.first}}">
+				<input type="text" id="contact1-first-name" class="input" name="contact1FirstName" value="{{ user.contact1.name.first}}">
 				<label for="contact1-first-name" class="label">First Name</label>
 			</div>
 			<div class="col-sm-12">
-				<input type="text" id="contact1-last-name" class="input" name="contact1LastName" placeholder="Smith" value="{{ user.contact1.name.last}}">
+				<input type="text" id="contact1-last-name" class="input" name="contact1LastName" value="{{ user.contact1.name.last}}">
 				<label for="contact1-last-name" class="label">Last Name</label>
 			</div>
 		</div>
 		<div class="row form-group">
 			<div class="col-sm-12">
-				<input type="email" id="contact1-email" class="input" name="contact1Email" placeholder="john.smith@gmail.com" value="{{ user.contact1.email}}">
+				<input type="email" id="contact1-email" class="input" name="contact1Email" value="{{ user.contact1.email}}">
 				<label for="contact1-email" class="label">Email Address</label>
 			</div>
 			<div class="col-sm-12">
-				<input type="text" id="contact1-mobile" class="input" name="contact1Mobile" placeholder="(617) 111-1111" value="{{ user.contact1.phone.mobile}}">
+				<input type="text" id="contact1-mobile" class="input" name="contact1Mobile" value="{{ user.contact1.phone.mobile}}">
 				<label for="contact1-mobile" class="label">Mobile Phone</label>
 			</div>
 		</div>
@@ -80,7 +80,7 @@
 			</div>
 			<div class="col-sm-12">
 				<div class="form-group">
-					<input type="text" id="contact1-occupation" class="input" name="contact1Occupation" placeholder="teacher" value="{{ user.contact1.occupation }}">
+					<input type="text" id="contact1-occupation" class="input" name="contact1Occupation" value="{{ user.contact1.occupation }}">
 					<label for="contact1-occupation" class="label">Occupation</label>
 				</div>
 			</div>
@@ -92,21 +92,21 @@
 
 		<div class="row form-group">
 			<div class="col-sm-12">
-				<input type="text" id="contact2-first-name" class="input" name="contact2FirstName" placeholder="Jane" value="{{ user.contact2.name.first }}">
+				<input type="text" id="contact2-first-name" class="input" name="contact2FirstName" value="{{ user.contact2.name.first }}">
 				<label for="contact2-first-name" class="label">First Name</label>
 			</div>
 			<div class="col-sm-12">
-				<input type="text" id="contact2-last-name" class="input" name="contact2LastName" placeholder="Smith" value="{{ user.contact2.name.last }}">
+				<input type="text" id="contact2-last-name" class="input" name="contact2LastName" value="{{ user.contact2.name.last }}">
 				<label for="contact2-last-name" class="label">Last Name</label>
 			</div>
 		</div>
 		<div class="row form-group">
 			<div class="col-sm-12">
-				<input type="email" id="contact2-email" class="input" name="contact2Email" placeholder="jane.smith@gmail.com" value="{{ user.contact2.email }}">
+				<input type="email" id="contact2-email" class="input" name="contact2Email" value="{{ user.contact2.email }}">
 				<label for="contact2-email" class="label">Email Address</label>
 			</div>
 			<div class="col-sm-12">
-				<input type="text" id="contact2-phone" class="input" name="contact2Mobile" placeholder="(617) 222-2222" value="{{ user.contact2.phone.mobile }}">
+				<input type="text" id="contact2-phone" class="input" name="contact2Mobile" value="{{ user.contact2.phone.mobile }}">
 				<label for="contact2-phone" class="label">Mobile Phone</label>
 			</div>
 		</div>
@@ -148,7 +148,7 @@
 			</div>
 			<div class="col-sm-12">
 				<div class="form-group">
-					<input type="text" id="contact2-occupation" class="input" name="contact2Occupation" placeholder="police officer" value="{{ user.contact2.occupation }}">
+					<input type="text" id="contact2-occupation" class="input" name="contact2Occupation" value="{{ user.contact2.occupation }}">
 					<label for="contact2-occupation" class="label">Occupation</label>
 				</div>
 			</div>
@@ -160,31 +160,31 @@
 
 		<div class="row form-group">
 			<div class="col-sm-12">
-				<input type="text" id="street-1" class="input" name="street1" placeholder="100 Main Street" value="{{ user.address.street1 }}">
+				<input type="text" id="street-1" class="input" name="street1" value="{{ user.address.street1 }}">
 				<label for="street-1" class="label">Street 1</label>
 			</div>
 			<div class="col-sm-12">
-				<input type="text" id="street-2" class="input" name="street2" placeholder="Suite 1" value="{{ user.address.street2 }}">
+				<input type="text" id="street-2" class="input" name="street2" value="{{ user.address.street2 }}">
 				<label for="street-2" class="label">Street 2</label>
 			</div>
 		</div>
 		<div class="row form-group">
-			<div class="col-sm-12 form-group ma-city-container">
-				<select id="ma-city" class="input" name="city">
+			<div class="col-sm-12 form-group city-container">
+				<select id="city" class="input" name="city">
 					<option value=""></option>
 					{{#each citiesAndTowns}}
 					<option value="{{ _id }}" {{#ifeq ../user.address.city _id}}selected="selected"{{/ifeq}}>{{ cityOrTown }}</option>
 					{{/each}}
 				</select>
-				<label for="ma-city" class="label">City</label>
+				<label for="city" class="label">City</label>
 			</div>
 			<div class="col-sm-12 form-group non-ma-city-container hidden">
-				<input type="text" id="non-ma-city" class="input" name="nonMACity" placeholder="Boston" value="{{ user.address.city }}">
+				<input type="text" id="non-ma-city" class="input" name="nonMACity" value="{{ user.address.city }}">
 				<label for="non-ma-city" class="label">City</label>
 			</div>
 			<div class="col-sm-12 form-group">
 				<label class="checkbox-inline">
-					<input type="checkbox" id="is-not-MA-city-checkbox" name="isNotMACity" value="{{ user.address.isOutsideMassachusetts }}" {{#if user.address.isOutsideMassachusetts}}checked="checked"{{/if}}>I live outside MA
+					<input type="checkbox" id="is-not-ma-city-checkbox" name="isNotMACity" value="{{ user.address.isOutsideMassachusetts }}" {{#if user.address.isOutsideMassachusetts}}checked="checked"{{/if}}>I live outside MA
 				</label>
 			</div>
 		</div>
@@ -204,11 +204,11 @@
 		</div>
 		<div class="row form-group">
 			<div class="col-sm-12">
-				<input type="number" id="zip-code" class="input" name="zipCode" placeholder="02111" value="{{ user.address.zipCode }}">
+				<input type="number" id="zip-code" class="input" name="zipCode" value="{{ user.address.zipCode }}">
 				<label for="zip-code" class="label">Zip Code</label>
 			</div>
 			<div class="col-sm-12">
-				<input type="text" id="home-phone" class="input" name="homePhone" placeholder="(617) 333-3333" value="{{ user.homePhone }}">
+				<input type="text" id="home-phone" class="input" name="homePhone" value="{{ user.homePhone }}">
 				<label for="home-phone" class="label">Home Phone</label>
 			</div>
 		</div>
@@ -261,21 +261,21 @@
 		</div>
 		<div class="row form-group">
 			<div class="col-sm-12">
-				<input type="text" id="social-worker-name" class="input" name="socialWorkerName" placeholder="Jim Smith">
+				<input type="text" id="social-worker-name" class="input" name="socialWorkerName">
 				<label for="social-worker-name" class="label">Social Worker Name</label>
 			</div>
 			<div class="col-sm-12">
-				<input type="text" id="social-worker-agency" class="input" name="socialWorkerAgency" placeholder="Jim's Agency">
+				<input type="text" id="social-worker-agency" class="input" name="socialWorkerAgency">
 				<label for="social-worker-agency" class="label">Social Worker Agency</label>
 			</div>
 		</div>
 		<div class="row form-group">
 			<div class="col-sm-12">
-				<input type="text" id="social-worker-phone" class="input" name="socialWorkerPhone" placeholder="(617) 444-4444">
+				<input type="text" id="social-worker-phone" class="input" name="socialWorkerPhone">
 				<label for="social-worker-phone" class="label">Social Worker Phone Number</label>
 			</div>
 			<div class="col-sm-12">
-				<input type="email" id="social-worker-email" class="input" name="socialWorkerEmail" placeholder="jim.smith@gmail.com">
+				<input type="email" id="social-worker-email" class="input" name="socialWorkerEmail">
 				<label for="social-worker-email" class="label">Social Worker Email Address</label>
 			</div>
 		</div>
@@ -286,7 +286,7 @@
 			<div class="row form-group">
 				<div class="col-sm-12">Upload PDF or Microsoft Word<sup>&reg;</sup> format:</div>
 				<div class="col-sm-12">
-					<div class="button button--medium button--brown file-upload-button">
+					<div class="button button--medium button--teal file-upload-button">
 						<span>Upload</span>
 						<input id="upload-button" type="file" class="file-upload" id="homestudyFile_upload" name="homestudyFile_upload">
 					</div>
@@ -296,7 +296,7 @@
 			<div class="row form-group">
 				<div class="col-sm-12">Email to web@mareinc.org:</div>
 				<div class="col-sm-12">
-					<div class="button button--medium button--brown"><a href="mailto:web@mareinc.org">Send as email</a></div>
+					<div class="button button--medium button--teal"><a href="mailto:web@mareinc.org">Send as email</a></div>
 				</div>
 			</div>
 			<div class="row form-group">
@@ -502,7 +502,7 @@
 			</div>
 			<div class="col-sm-12">
 				{{!-- TODO: Find number of children in matching preferences --}}
-				<select name="numberOfChildrenPrefered" class="input form__number-select number-of-children-preferred">
+				<select name="numberOfChildrenPreferred" class="input form__number-select number-of-children-preferred">
 					<option value=""></option>
 					<option {{#ifeq user.matchingPreferences.numberOfChildrenToAdopt 0 }}selected="selected"{{/ifeq}} value="0">0</option>
 					<option {{#ifeq user.matchingPreferences.numberOfChildrenToAdopt 1 }}selected="selected"{{/ifeq}} value="1">1</option>
@@ -636,5 +636,5 @@
 
 	</section>
 
-	<button class="button button--blue save-button">Save</button>
+	<button class="button button--teal save-button">Save</button>
 </div>

@@ -1,12 +1,10 @@
 // TODO: move all this middleware into the appropriate files inside the middleware/ directory,
 //		 also, check for unused junk code 
 
-var _ 				= require('underscore'),
-	async			= require( 'async' ),
-	// load in Keystone for model references
-	keystone 		= require('keystone'),
-	// load in middleware
-	UserMiddleware	= require( './service_user' );
+const keystone 			= require('keystone'),
+	  _ 				= require('underscore'),
+	  async				= require( 'async' ),
+	  UserMiddleware	= require( './service_user' );
 
 // initialize the standard view locals
 exports.initLocals = function(req, res, next) {
@@ -45,7 +43,7 @@ exports.initLocals = function(req, res, next) {
 			{ title: 'How MARE Can Help You', href: '/page/how-mare-can-help-you' },
 			{ title: 'Register a Child', href: '/page/register-a-child' },
 			{ title: 'Attend Events', href: '/page/attend-events' },
-			{ title: 'Register a Family', href: '/page/register-a-family' }
+			{ title: `Register a Family's Homestudy`, href: '/page/register-a-familys-homestudy' }
 		]},
 		{ title: 'Events', subMenu: [
 			{ title: 'MARE Adoption Parties & Information Events', href: '/events/adoption-parties/'},

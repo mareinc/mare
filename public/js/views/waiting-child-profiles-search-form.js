@@ -137,6 +137,9 @@
 				// break out of the current loop if the child's gender wasn't selected ( return is needed for this in _.each )
 				if( formFields.genders && formFields.genders.indexOf( child.get( 'gender' ) ) === -1 ) { return; }
 
+				// break out of the current loop if the minimum children is greater than 1, which prevents solo children from displaying
+				if( formFields.minimumChildren >  1 ) { return; }
+				
 				// break out of the current loop if the child's age is less than the youngest or more than the oldest specified ( return is needed for this in _.each )
 				if( formFields.youngestAge > child.get( 'age' ) ||
 				   formFields.oldestAge < child.get( 'age' ) ) { return; }
@@ -157,7 +160,7 @@
 				   child.get( 'hasContactWithBiologicalParents' ) !== false ) { return; }
 
 				// break out of the current loop if the child doesn't have a video and the user specifies that they should ( return is needed for this in _.each )
-				if( formFields.videoOnly && child.get( 'hasVideo' ) === false ) { return; }
+				if( formFields.videoOnly && !child.get( 'hasVideo' ) ) { return; }
 
 				// break out of the current loop if the child isn't legally free and the user specifies that they should be ( return is needed for this in _.each )
 				if( formFields.legallyFreeOnly && child.get( 'legalStatus' ) !== 'free' ) { return; }
@@ -287,7 +290,7 @@
 					siblingGroup.get( 'hasContactWithBiologicalParents' ).indexOf( true ) !== -1 ) { return; }
 
 				// break out of the current loop if the sibling group doesn't have a video and the user specifies that they should ( return is needed for this in _.each )
-				if( formFields.videoOnly && siblingGroup.get( 'hasVideo' ).indexOf( false ) !== -1 ) { return; }
+				if( formFields.videoOnly && !siblingGroup.get( 'hasVideo' ) ) { return; }
 
 				// break out of the current loop if the sibling group isn't legally free and the user specifies that they should be ( return is needed for this in _.each )
 				if( formFields.legallyFreeOnly && siblingGroup.get( 'legalStatuses' ).indexOf( 'legal risk' ) !== -1 ) { return; }

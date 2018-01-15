@@ -2,14 +2,14 @@
 
 	<div class="donations-page__header-area">
 		<div class="donations-page__header">Donate</div>
-		<div class="donations-page__subheader">Your gift helps MARE find adoptive parents for children in state foster care</div>
+		<div class="donations-page__subheader">Your donation to MARE will find forever families for children and teens waiting in foster care</div>
 	</div>
 
 	<section class="donations-page__selection-group">
 
 		<span class="selection-group__number">1.</span>
 		<div class="selection-group__content">
-			<span class="selection-group__header-text">Guarantee your support to help children in need. Recurring donations are the best way to give steady support</span>
+			<span class="selection-group__header-text">Choose the frequency of your giving - remember, recurring donations are the best way to provide steady support</span>
 			<div id="donation-duration-button-group" class="button-group button-group--space-between button-group--large-margin-above">
 				<button class="toggle-button toggle-button--quarter" data-donation-interval="{{donationPlans.onetime.interval_count}}" >Just Once</button>
 				<button class="toggle-button toggle-button--quarter" data-donation-interval="{{donationPlans.monthly.interval_count}}">Monthly</button>
@@ -43,24 +43,12 @@
 
 	</section>
 
-	<section class="donations-page__selection-group">
-
-		<span class="selection-group__number">3.</span>
-		<div class="selection-group__content">
-			<span class="selection-group__header-text">(optional) Dedicate your donation to honor someone else</span>
-			<div class="button-group button-group--large-margin-above">	
-				<input type="text" id="donation-in-honor-of-input" class="donations__input-field donations__input-field--longer" placeholder="In Honor / Memory Of">
-			</div>
-		</div>
-
-	</section>
-	
 	{{#if user}}
 	<input type="hidden" id="donation-name-input" value="{{user.name.full}}">
 	{{else}}
 	<section class="donations-page__selection-group">
 
-		<span class="selection-group__number">4.</span>
+		<span class="selection-group__number">3.</span>
 		<div class="selection-group__content">
 			<span class="selection-group__header-text">Your Name</span>
 			<div class="button-group button-group--large-margin-above">	
@@ -70,6 +58,30 @@
 
 	</section>
 	{{/if}}
+
+	<section class="donations-page__selection-group">
+
+		<span class="selection-group__number">4.</span>
+		<div class="selection-group__content">
+			<span class="selection-group__header-text">(optional) Dedicate your donation to honor someone else</span>
+			<div class="button-group button-group--large-margin-above">	
+				<input type="text" id="donation-in-honor-of-input" class="donations__input-field donations__input-field--longer" placeholder="In Honor / Memory Of">
+			</div>
+		</div>
+
+	</section>
+
+	<section class="donations-page__selection-group">
+
+		<span class="selection-group__number">5.</span>
+		<div class="selection-group__content">
+			<span class="selection-group__header-text">(optional) Please add any notes about your donation here</span>
+			<div class="button-group button-group--large-margin-above">	
+				<input type="text" id="donation-note-input" class="donations__input-field donations__input-field--longer" placeholder="Notes">
+			</div>
+		</div>
+
+	</section>
 
 	<div class="button-group button-group--centered button-group--medium-margin-below">
 		<button id="donate-button" class="button button--disabled button--large button--green">Place Donation</button>

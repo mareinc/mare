@@ -38,7 +38,7 @@
 
 		<div class="profile__detailed-child-info">
 			<div class="detailed-child-info__introduction">
-				<div class="detailed-child-info__header">Hi! My name is \{{ name }} and \{{ quote }}</div>
+				<div class="detailed-child-info__header">Hi! My name is \{{ name }}\{{#if quote}} and \{{ quote }}\{{/if}}</div>
 			</div>
 			<div class="detailed-child-info__part-1">
 				<div class="detailed-child-info__text">\{{ profilePart1 }}</div>
@@ -79,7 +79,7 @@
 		</div>
 
 		<div class="profile-details__video-container">
-			<iframe src=\{{ video }} frameborder="0" allowfullscreen class="profile-details__video"></iframe>
+			<iframe src=\{{ video }} frameborder="0" gesture="media" allow="encrypted-media" allowfullscreen class="profile-details__video"></iframe>
 		</div>
 
 		<div class="detailed-profile__footer">You can help bring me closer to finding "a place to call HOME" by filling out the <a href="/forms/information-request-form">MARE Information Request Form</a>. They will be glad to help you get more information about me.</div>
@@ -111,7 +111,7 @@
 		</div>
 
 		<div class="profile-details__video-container">
-			<iframe src=\{{ wednesdaysChildVideo }} frameborder="0" allowfullscreen class="profile-details__wednesdays-child-video"></iframe>
+			<iframe src=\{{ wednesdaysChildVideo }} frameborder="0" gesture="media" allow="encrypted-media" allowfullscreen class="profile-details__wednesdays-child-video"></iframe>
 		</div>
 
 		<div class="detailed-profile__footer">You can help bring me closer to finding "a place to call HOME" by filling out the <a href="/forms/information-request-form">MARE Information Request Form</a>. They will be glad to help you get more information about me.</div>

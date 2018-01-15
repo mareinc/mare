@@ -220,6 +220,14 @@
 	}
 }
 
+.card__content-block {
+	margin: 1em 0 2em;
+
+	&--centered {
+		text-align: center;
+	}
+}
+
 .card__overview {
 	display: flex;
 	width: 100%;
@@ -238,6 +246,10 @@
 .card__overview-text {
 	margin-left: 1em;
 	align-self: center;
+
+	&--normal {
+		font-style: normal;
+	}
 }
 
 /* NOTE: replace instances with .card__image-text */

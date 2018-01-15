@@ -30,7 +30,7 @@ Placement.add( 'Placement', {
 
 	isUnregisteredFamily: { type: Types.Boolean, label: 'unregistered family', initial: true },
 
-	family: { type: Types.Relationship, label: 'family', ref: 'Family', dependsOn: { isUnregisteredFamily: false }, filters: { isActive: true }, initial: true },
+	family: { type: Types.Relationship, label: 'family', ref: 'Family', dependsOn: { isUnregisteredFamily: false }, initial: true },
 
 	familyDetails: {
 		name: { type: Types.Text, label: 'family name', dependsOn: { isUnregisteredFamily: true }, initial: true },

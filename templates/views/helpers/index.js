@@ -25,7 +25,7 @@ module.exports = function() {
 	 */
 
 	// standard hbs equality check, pass in two values from template
-	// {{#ifeq keyToCheck data.myKey}} [requires an else blockin template regardless]
+	// {{#ifeq keyToCheck data.myKey}} [ requires an else block in template regardless ]
 	_helpers.ifeq = function ifeq( a, b, options ) {
 
 		if( a instanceof Object && !( a instanceof Array ) &&
@@ -74,6 +74,11 @@ module.exports = function() {
 		;
 
 		return '$' + formattedNumber;
+	};
+
+	// gets the current year
+	_helpers.currentYear = function currentYear() {
+		return new Date().getFullYear();
 	};
 
 	/**

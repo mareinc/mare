@@ -87,23 +87,24 @@ OutsideContact.schema.methods.setVolunteerStatus = function( done ) {
 	this.isVolunteer	= false;
 	// loop through each of the contact groups the user should be added to and mark the outside contact as a volunteer
 	// if they are part of the 'volunteers' contact group
-	ContactGroup.model.find()
-			.where( { _id: { $in: contactGroups } } )
-			.exec()
-			.then( contactGroups => {
-				// create an array from just the names of each contact group
-				const contactGroupNames = contactGroups.map( contactGroup => contactGroup.get( 'name' ) );
-				// events have outside contacts who are volunteers listed, we need to capture a reference to which outside contacts are volunteers
-				if( contactGroupNames.includes( 'volunteers' ) ) {
-					this.isVolunteer = true;
-				}
+	ContactGroup.model
+		.find()
+		.where( { _id: { $in: contactGroups } } )
+		.exec()
+		.then( contactGroups => {
+			// create an array from just the names of each contact group
+			const contactGroupNames = contactGroups.map( contactGroup => contactGroup.get( 'name' ) );
+			// events have outside contacts who are volunteers listed, we need to capture a reference to which outside contacts are volunteers
+			if( contactGroupNames.includes( 'volunteers' ) ) {
+				this.isVolunteer = true;
+			}
 
-				done();
+			done();
 
-			}, err => {
-				console.error( err );
-				done();
-			});
+		}, err => {
+			console.error( err );
+			done();
+		});
 };
 
 // Set up relationship values to show up at the bottom of the model if any exist

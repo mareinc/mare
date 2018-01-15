@@ -144,39 +144,7 @@ exports.create = {
 		areaOffice: 'Worcester East Area Office',
 		textRegion: 'central'
 	}, {
-		cityOrTown: 'Boston - Brighton',
-		areaOffice: 'Dimock Street Area Office',
-		textRegion: 'Boston'
-	}, {
-		cityOrTown: 'Boston - Mission Hill/Roxbury',
-		areaOffice: 'Dimock Street Area Office',
-		textRegion: 'Boston'
-	}, {
-		cityOrTown: 'Boston - Jamaica Plain',
-		areaOffice: 'Dimock Street Area Office',
-		textRegion: 'Boston'
-	}, {
-		cityOrTown: 'Boston - Charlestown',
-		areaOffice: 'Harbor Area Office',
-		textRegion: 'Boston'
-	}, {
-		cityOrTown: 'Boston - East Boston',
-		areaOffice: 'Harbor Area Office',
-		textRegion: 'Boston'
-	}, {
-		cityOrTown: 'Boston - Dorchester - Center',
-		areaOffice: 'Hyde Park Area Office',
-		textRegion: 'Boston'
-	}, {
-		cityOrTown: 'Boston - Dorchester - Grove Hall, Uphams Corner*02122, 02210, 02122',
-		areaOffice: 'Park Street Area Office',
-		textRegion: 'Boston'
-	}, {
-		cityOrTown: 'Boston - Dorchester - Four Corners*',
-		areaOffice: 'Park Street Area Office',
-		textRegion: 'Boston'
-	}, {
-		cityOrTown: 'Boston - Fenway, Back Bay, Kenmore 02108-02114',
+		cityOrTown: 'Boston',
 		areaOffice: 'Harbor Area Office',
 		textRegion: 'Boston'
 	}, {
@@ -215,6 +183,10 @@ exports.create = {
 		cityOrTown: 'Bridgewater',
 		areaOffice: 'Brockton Area Office',
 		textRegion: 'southern'
+	}, {
+		cityOrTown: 'Brighton',
+		areaOffice: 'Dimock Street Area Office',
+		textRegion: 'Boston'
 	}, {
 		cityOrTown: 'Brimfield',
 		areaOffice: 'South Central/Blackstone Valley Area Office',
@@ -259,6 +231,10 @@ exports.create = {
 		cityOrTown: 'Charlemont',
 		areaOffice: 'Greenfield/Northampton Area Office',
 		textRegion: 'western'
+	}, {
+		cityOrTown: 'Charlestown',
+		areaOffice: 'Harbor Area Office',
+		textRegion: 'Boston'
 	}, {
 		cityOrTown: 'Charlton',
 		areaOffice: 'South Central/Blackstone Valley Area Office',
@@ -352,6 +328,10 @@ exports.create = {
 		areaOffice: 'Taunton Area Office',
 		textRegion: 'southern'
 	}, {
+		cityOrTown: 'Dorchester',
+		areaOffice: 'Park Street Area Office',
+		textRegion: 'Boston'
+	}, {
 		cityOrTown: 'Douglas',
 		areaOffice: 'South Central/Blackstone Valley Area Office',
 		textRegion: 'central'
@@ -376,6 +356,10 @@ exports.create = {
 		areaOffice: 'Plymouth Area Office',
 		textRegion: 'southern'
 	}, {
+		cityOrTown: 'East Boston',
+		areaOffice: 'Harbor Area Office',
+		textRegion: 'Boston'
+	}, {
 		cityOrTown: 'East Bridgewater',
 		areaOffice: 'Brockton Area Office',
 		textRegion: 'southern'
@@ -386,10 +370,6 @@ exports.create = {
 	}, {
 		cityOrTown: 'East Longmeadow',
 		areaOffice: 'Springfield Area Office',
-		textRegion: 'western'
-	}, {
-		cityOrTown: 'East Springfield',
-		areaOffice: 'Van Wart Area Office',
 		textRegion: 'western'
 	}, {
 		cityOrTown: 'Eastham',
@@ -635,6 +615,10 @@ exports.create = {
 		cityOrTown: 'Ipswich',
 		areaOffice: 'Haverhill Area Office',
 		textRegion: 'northern'
+	}, {
+		cityOrTown: 'Jamaica Plain',
+		areaOffice: 'Dimock Street Area Office',
+		textRegion: 'Boston'
 	}, {
 		cityOrTown: 'Kingston',
 		areaOffice: 'Plymouth Area Office',
@@ -1072,6 +1056,10 @@ exports.create = {
 		areaOffice: 'Cape Ann Area Office',
 		textRegion: 'northern'
 	}, {
+		cityOrTown: 'Roslindate',
+		areaOffice: 'Hyde Park Area Office',
+		textRegion: 'Boston'
+	}, {
 		cityOrTown: 'Rowe',
 		areaOffice: 'Greenfield/Northampton Area Office',
 		textRegion: 'western'
@@ -1080,7 +1068,7 @@ exports.create = {
 		areaOffice: 'Haverhill Area Office',
 		textRegion: 'northern'
 	}, {
-		cityOrTown: 'Roxbury/Mission Hill',
+		cityOrTown: 'Roxbury',
 		areaOffice: 'Dimock Street Area Office',
 		textRegion: 'Boston'
 	}, {
@@ -1195,6 +1183,10 @@ exports.create = {
 		cityOrTown: 'Spencer',
 		areaOffice: 'Worcester West Area Office',
 		textRegion: 'central'
+	}, {
+		cityOrTown: 'Springfield',
+		areaOffice: 'Van Wart Area Office',
+		textRegion: 'western'
 	}, {
 		cityOrTown: 'Sterling',
 		areaOffice: 'Worcester East Area Office',
@@ -1367,10 +1359,6 @@ exports.create = {
 		cityOrTown: 'West Newbury',
 		areaOffice: 'Haverhill Area Office',
 		textRegion: 'northern'
-	}, {
-		cityOrTown: 'West Springfield',
-		areaOffice: 'Holyoke Area Office',
-		textRegion: 'western'
 	}, {
 		cityOrTown: 'West Stockbridge',
 		areaOffice: 'Pittsfield Area Office',

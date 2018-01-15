@@ -1,5 +1,4 @@
 const keystone		= require( 'keystone' ),
-	  Inquiry		= keystone.list( 'Inquiry' ),
 	  userService	= require( './service_user' ),
 	  listsService	= require( './service_lists' ),
 	  childService	= require( './service_child' );
@@ -73,6 +72,8 @@ exports.createChildInquiry = ( { inquiry, user } ) => {
 				// assign local variables to the values returned by the promises
 				const [ websiteBot, websiteSource, inquiryMethod, children ] = values;
 
+				const Inquiry = keystone.list( 'Inquiry' );
+
 				let newInquiry = new Inquiry.model({
 
 					takenBy: websiteBot.get( '_id' ),
@@ -129,6 +130,8 @@ exports.createGeneralInquiry = ( { inquiry, user } ) => {
 			// assign local variables to the values returned by the promises
 			const [ websiteBot, websiteSource, inquiryMethod ] = values;
 
+			const Inquiry = keystone.list( 'Inquiry' );
+			
 			let newInquiry = new Inquiry.model({
 
 				takenBy: websiteBot.get( '_id' ),

@@ -1,8 +1,8 @@
-var keystone = require( 'keystone' );
+const keystone = require( 'keystone' );
 
 exports.sendInquiryCreatedEmailToStaff = ( inquiry, inquiryData, done ) => {
 	// if sending of the email is currently allowed
-	if( process.env.SEND_INQUIRY_RECEIVED_EMAILS_TO_MARE === 'false' ) {
+	if( process.env.SEND_INQUIRY_RECEIVED_EMAILS_TO_MARE !== 'true' ) {
 		return done();
 	}
 	// find the email template in templates/emails/
@@ -45,7 +45,7 @@ exports.sendInquiryCreatedEmailToStaff = ( inquiry, inquiryData, done ) => {
 
 exports.sendThankYouEmailToInquirer = ( inquiry, inquiryData, done ) => {
 	// do nothing if sending of the email is not currently allowed
-	if( process.env.SEND_INQUIRY_RECEIVED_EMAILS_TO_INQUIRER === 'false' ) {
+	if( process.env.SEND_INQUIRY_RECEIVED_EMAILS_TO_INQUIRER !== 'true' ) {
 		return done();
 	}
 	// find the email template in templates/emails/
@@ -87,7 +87,7 @@ exports.sendThankYouEmailToInquirer = ( inquiry, inquiryData, done ) => {
 
 exports.sendThankYouEmailToFamilyOnBehalfOfInquirer = ( inquiry, inquiryData, done ) => {
 	// do nothing if sending of the email is not currently allowed
-	if( process.env.SEND_INQUIRY_RECEIVED_ON_BEHALF_OF_EMAILS_TO_FAMILY === 'false' ) {
+	if( process.env.SEND_INQUIRY_RECEIVED_ON_BEHALF_OF_EMAILS_TO_FAMILY !== 'true' ) {
 		return done();
 	}
 	// find the email template in templates/emails/
@@ -129,7 +129,7 @@ exports.sendThankYouEmailToFamilyOnBehalfOfInquirer = ( inquiry, inquiryData, do
 
 exports.sendInquiryAcceptedEmailToInquirer = ( inquiry, inquiryData, done ) => {
 	// do nothing if sending of the email is not currently allowed
-	if( process.env.SEND_INQUIRY_ACCEPTED_EMAILS_TO_INQUIRER === 'false' ) {
+	if( process.env.SEND_INQUIRY_ACCEPTED_EMAILS_TO_INQUIRER !== 'true' ) {
 		return done();
 	}
 	// find the email template in templates/emails/
@@ -169,7 +169,7 @@ exports.sendInquiryAcceptedEmailToInquirer = ( inquiry, inquiryData, done ) => {
 
 exports.sendInquiryAcceptedEmailToFamilyOnBehalfOfInquirer = ( inquiry, inquiryData, done ) => {
 	// do nothing if sending of the email is not currently allowed
-	if( process.env.SEND_INQUIRY_ACCEPTED_ON_BEHALF_OF_EMAILS_TO_FAMILY === 'false' ) {
+	if( process.env.SEND_INQUIRY_ACCEPTED_ON_BEHALF_OF_EMAILS_TO_FAMILY !== 'true' ) {
 		return done();
 	}
 	// find the email template in templates/emails/
@@ -209,7 +209,7 @@ exports.sendInquiryAcceptedEmailToFamilyOnBehalfOfInquirer = ( inquiry, inquiryD
 
 exports.sendInquiryAcceptedEmailToChildsSocialWorker = ( inquiry, inquiryData, done ) => {
 	// do nothing if sending of the email is not currently allowed
-	if( process.env.SEND_CHILD_INQUIRY_ACCEPTED_EMAILS_TO_CHILDS_SOCIAL_WORKER === 'false' ) {
+	if( process.env.SEND_CHILD_INQUIRY_ACCEPTED_EMAILS_TO_CHILDS_SOCIAL_WORKER !== 'true' ) {
 		return done();
 	}
 	// find the email template in templates/emails/
@@ -249,7 +249,7 @@ exports.sendInquiryAcceptedEmailToChildsSocialWorker = ( inquiry, inquiryData, d
 
 exports.sendInquiryAcceptedEmailToAgencyContacts = ( inquiry, inquiryData, done ) => {
 	// do nothing if sending of the email is not currently allowed
-	if( process.env.SEND_GENERAL_INQUIRY_ACCEPTED_EMAILS_TO_AGENCY_CONTACTS === 'false' ) {
+	if( process.env.SEND_GENERAL_INQUIRY_ACCEPTED_EMAILS_TO_AGENCY_CONTACTS !== 'true' ) {
 		return done();
 	}
 	// find the email template in templates/emails/
@@ -288,15 +288,13 @@ exports.sendInquiryAcceptedEmailToAgencyContacts = ( inquiry, inquiryData, done 
 };
 
 /* Emails for inquiries generated via forms on the website */
-exports.sendAnonymousInquiryCreatedEmail = inquiry => {
+exports.sendAnonymousInquiryCreatedEmailToMARE = inquiry => {
 
 	return new Promise( (resolve, reject ) => {
 		// do nothing if sending of the email is not currently allowed
-		if( process.env.SEND_ANONYMOUS_INQUIRY_CREATED_EMAILS_TO_MARE === 'false' ) {
-			// log the error
-			console.error( 'sending of anonymous inquiry create emails to MARE staff is currently disabled' );
-			// reject the promise
-			reject();
+		if( process.env.SEND_ANONYMOUS_INQUIRY_CREATED_EMAILS_TO_MARE !== 'true' ) {
+			// reject the promise with details of the issue
+			return reject( 'sending of the email is disabled' );
 		}
 
 		// find the email template in templates/emails/
@@ -316,7 +314,7 @@ exports.sendAnonymousInquiryCreatedEmail = inquiry => {
 			// log any errors
 			if( err ) {
 				console.error( `error sending anonymouse inquiry created email to MARE staff: ${ err }` );
-				reject();
+				return reject();
 			}
 			// the response object is stored as the 0th element of the returned message
 			const response = message ? message[ 0 ] : undefined;

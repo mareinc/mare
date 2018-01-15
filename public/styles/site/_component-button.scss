@@ -30,21 +30,6 @@
 		padding: 0.5em;
 	}
 
-	&--brown {
-		color: $button-text-color-light;
-		background-color: $button-background-color-1;
-	}
-
-	&--blue {
-		color: $button-text-color-light;
-		background-color: $button-background-color-2;
-	}
-
-	&--red {
-		color: $button-text-color-light;
-		background-color: $button-background-color-4;
-	}
-
 	&--teal {
 		color: $button-text-color-light;
 		background-color: $button-background-color-1;
@@ -69,7 +54,7 @@
 	}
 
 	&--disabled {
-		color: $button-text-color-2;
+		color: $button-text-color-1;
 		background-color: $button-background-color-5;
 		cursor: default;
 

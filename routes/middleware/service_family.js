@@ -4,9 +4,27 @@ const keystone						= require( 'keystone' ),
 	  userService 					= require( './service_user' ),
 	  registrationService			= require( './service_register' ),
 	  registrationEmailMiddleware	= require( './emails_register' ),
-	  staffEmailTargetMiddleware	= require( './service_staff-email-target' ),
-	  staffEmailContactMiddleware	= require( './service_staff-email-contact' ),
 	  utilities         			= require( './utilities' );
+
+exports.getMaxRegistrationNumber = function() {
+		
+	return new Promise( ( resolve, reject ) => {
+
+		keystone.list( 'Family' ).model
+			.findOne()
+			.sort( '-registrationNumber' )
+			.exec()
+			.then( family => {
+				if( family ) {
+					return resolve( family.get( 'registrationNumber' ) );
+				}
+
+				resolve( 0 );
+			}, err => {
+				reject( `error fetching maximum registration number for families` );
+			});
+	});
+};
 
 exports.setGalleryPermissions = ( req, res ) => {
 
@@ -255,7 +273,7 @@ exports.registerFamily = ( req, res, next ) => {
                     // assign local variables to the values returned by the promises
                     const [ verificationRecord, staffContactInfo ] = values;
                     // send the thank you email to the user
-                    const thankYouEmailSentToUser = registrationEmailMiddleware.sendThankYouEmailToUser( staffContactInfo, user.email, userType, verificationCode, host );
+                    const thankYouEmailSentToUser = registrationEmailMiddleware.sendThankYouEmailToUser( staffContactInfo, user.email, userType, host );
                     // TODO: need to send a notification email to the appropriate staff member as well ( check with Lisa to see if this is needed )
 
                     // save any submitted files and append them to the newly created user

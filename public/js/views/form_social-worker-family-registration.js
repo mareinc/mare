@@ -5,7 +5,7 @@
 		el: '.form--family-registration',
 
 		events: {
-			'change #is-not-MA-city-checkbox' 		: 'toggleCitySelect',
+			'change #is-not-ma-city-checkbox' 		: 'toggleCitySelect',
 			'change #upload-button'					: 'uploadForm',
 			'change #children-in-home'				: 'toggleFamilyDetailsForm',
 			'change .adoption-preferences-trigger'	: 'checkAdoptionPreferences'
@@ -17,9 +17,9 @@
 			// compile the template to be used adding/removing child in home field groups
 			this.template = Handlebars.compile( childInHomeHtml );
 			// DOM cache any commonly used elements to improve performance
-			this.$MACityContainer						= this.$( '.ma-city-container' );
+			this.$MACityContainer						= this.$( '.city-container' );
 			this.$NonMACityContainer					= this.$( '.non-ma-city-container' );
-			this.$MACity								= this.$( '#ma-city' );
+			this.$MACity								= this.$( '#city' );
 			this.$NonMACity								= this.$( '#non-ma-city' );
 			this.$state									= this.$( '#family-state' ); // TODO: may not need
 			this.$homestudyCompletionDate				= this.$( '#homestudy-date-complete' );

@@ -22,6 +22,7 @@
 			this.$donateButton					= $( '#donate-button' );
 			this.$donationHonoreeField			= $( '#donation-in-honor-of-input' );
 			this.$donatorNameField				= $( '#donation-name-input' );
+			this.$donationNoteField				= $( '#donation-note-input' );
 
 			// donation variables
 			this.stripeAPIKey					= window.STRIPE_API_KEY;
@@ -44,6 +45,8 @@
 				key: this.stripeAPIKey,
 				image: '/images/mare-icon.png',
 				locale: 'auto',
+				billingAddress: true,
+				shippingAddress: true,
 				token: this.donationSubmissionHandler()
 			});
 
@@ -173,12 +176,14 @@
 			var donationData = this.donationData;
 			// get donation honoree
 			var $donationHonoree = this.$donationHonoreeField;
+			// get donation note
+			var $donationNote = this.$donationNoteField;
 			// get donators name
 			var $donatorName = this.$donatorNameField;
 			// get content body
 			var $contentBody = this.$contentBody;
 
-			function handleDonation( token ) {
+			function handleDonation( token, addressData ) {
 
 				// create POST body
 				var data = {
@@ -188,14 +193,24 @@
 					frequency: donationData.frequency,
 					// donation honoree
 					honoree: $donationHonoree.val(),
+					// donation note
+					note: $donationNote.val(),
 					// name of donator
 					donator: $donatorName.val(),
+					// address data
+					addressData: addressData,
 					// Stripe token
 					token: token
 				};
 
 				// post the donation to the charge endpoint for payment processing
 				$.post( '/process-donation', data, function( responseData ) {
+
+					// remove any previously existing messages
+					$( '#flash-messages' ).remove();
+					
+					// ensure any message will be scrolled into view
+					$( 'html, body' ).scrollTop( 0 );
 
 					// handle error responses
 					if ( responseData.status === 'error' ) {
