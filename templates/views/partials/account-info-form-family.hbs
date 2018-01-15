@@ -286,7 +286,7 @@
 			<div class="row form-group">
 				<div class="col-sm-12">Upload PDF or Microsoft Word<sup>&reg;</sup> format:</div>
 				<div class="col-sm-12">
-					<div class="button button--medium button--brown file-upload-button">
+					<div class="button button--medium button--teal file-upload-button">
 						<span>Upload</span>
 						<input id="upload-button" type="file" class="file-upload" id="homestudyFile_upload" name="homestudyFile_upload">
 					</div>
@@ -296,7 +296,7 @@
 			<div class="row form-group">
 				<div class="col-sm-12">Email to web@mareinc.org:</div>
 				<div class="col-sm-12">
-					<div class="button button--medium button--brown"><a href="mailto:web@mareinc.org">Send as email</a></div>
+					<div class="button button--medium button--teal"><a href="mailto:web@mareinc.org">Send as email</a></div>
 				</div>
 			</div>
 			<div class="row form-group">
@@ -502,7 +502,7 @@
 			</div>
 			<div class="col-sm-12">
 				{{!-- TODO: Find number of children in matching preferences --}}
-				<select name="numberOfChildrenPrefered" class="input form__number-select number-of-children-preferred">
+				<select name="numberOfChildrenPreferred" class="input form__number-select number-of-children-preferred">
 					<option value=""></option>
 					<option {{#ifeq user.matchingPreferences.numberOfChildrenToAdopt 0 }}selected="selected"{{/ifeq}} value="0">0</option>
 					<option {{#ifeq user.matchingPreferences.numberOfChildrenToAdopt 1 }}selected="selected"{{/ifeq}} value="1">1</option>
@@ -636,5 +636,5 @@
 
 	</section>
 
-	<button class="button button--blue save-button">Save</button>
+	<button class="button button--teal save-button">Save</button>
 </div>
