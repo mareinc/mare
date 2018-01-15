@@ -44,7 +44,6 @@
   },
   "scripts": {
     "start": "node keystone.js",
-    "heroku-prebuild": "gulp clean",
     "heroku-postbuild": "gulp build"
   },
   "main": "keystone.js",
