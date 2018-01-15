@@ -1,7 +1,7 @@
 const keystone				= require( 'keystone' ),
 	  utilitiesMiddleware   = require( './utilities' );
 
-exports.sendNewSiteVisitorNotificationEmailToMARE = ( user, registrationStaffContact ) => {
+exports.sendNewSiteVisitorNotificationEmailToMARE = ( user, registrationStaffContact, mailingListNames ) => {
 
 	return new Promise( ( resolve, reject ) => {
 		// if sending of the email is not currently allowed
@@ -127,6 +127,12 @@ exports.sendNewSiteVisitorNotificationEmailToMARE = ( user, registrationStaffCon
 			});
 		}
 
+		if( mailingListNames.length > 0 ) {
+			userData.push( {
+				key: 'mailing lists',
+				value: mailingListNames.join( ', ' )
+			});
+		}
 
 		// find the email template in templates/emails/
 		new keystone.Email({
@@ -161,7 +167,7 @@ exports.sendNewSiteVisitorNotificationEmailToMARE = ( user, registrationStaffCon
 	});
 };
 
-exports.sendNewSocialWorkerNotificationEmailToMARE = ( user, registrationStaffContact ) => {
+exports.sendNewSocialWorkerNotificationEmailToMARE = ( user, registrationStaffContact, mailingListNames ) => {
 	
 	return new Promise( ( resolve, reject ) => {
 		// if sending of the email is not currently allowed
@@ -283,13 +289,20 @@ exports.sendNewSocialWorkerNotificationEmailToMARE = ( user, registrationStaffCo
 			});
 		}
 
+		if( mailingListNames.length > 0 ) {
+			userData.push( {
+				key: 'mailing lists',
+				value: mailingListNames.join( ', ' )
+			});
+		}
+
 		// find the email template in templates/emails/
 		new keystone.Email({
 			templateExt		: 'hbs',
 			templateEngine 	: require( 'handlebars' ),
 			templateName 	: 'register_new-user-notification-to-staff'
 		}).send({
-			to				: 'jared.j.collier@gmail.com',
+			to				: registrationStaffContact.email,
 			from: {
 				name 		: 'MARE',
 				email 		: 'admin@adoptions.io'
@@ -316,7 +329,7 @@ exports.sendNewSocialWorkerNotificationEmailToMARE = ( user, registrationStaffCo
 	});
 };
 
-exports.sendNewFamilyNotificationEmailToMARE = ( user, registrationStaffContact ) => {
+exports.sendNewFamilyNotificationEmailToMARE = ( user, registrationStaffContact, mailingListNames ) => {
 	
 	return new Promise( ( resolve, reject ) => {
 		// if sending of the email is not currently allowed
@@ -811,6 +824,13 @@ exports.sendNewFamilyNotificationEmailToMARE = ( user, registrationStaffContact 
 			userData.push( {
 				key: 'heard about MARE from - other',
 				value: user.heardAboutMAREOther
+			});
+		}
+
+		if( mailingListNames.length > 0 ) {
+			userData.push( {
+				key: 'mailing lists',
+				value: mailingListNames.join( ', ' )
 			});
 		}
 

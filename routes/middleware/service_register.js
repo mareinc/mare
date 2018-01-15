@@ -75,12 +75,16 @@ exports.registerUser = ( req, res, next ) => {
 							const userAddedToMailingLists = exports.addToMailingLists( newSiteVisitor, mailingListIds, registrationType );
 
 							// once we know the contact info of the MARE employee who handles newly registered users
-							Promise.all( [ fetchUser, fetchRegistrationStaffContactInfo ] )
+							Promise.all( [ fetchUser, fetchRegistrationStaffContactInfo, userAddedToMailingLists ] )
 								.then( values => {
 									// assign local variables to the values returned by the promises
-									const [ newUser, staffContact ] = values;
+									const [ newUser, staffContact, mailingLists ] = values;
+									// fetch the names of the returned mailing lists
+									const mailingListNames = mailingLists.map( mailingList => {
+										return mailingList.get( 'mailingList' );
+									});
 									// send a notification email to MARE staff to allow them to enter the information in the old system
-									return registrationEmailMiddleware.sendNewSiteVisitorNotificationEmailToMARE( newUser, staffContact );
+									return registrationEmailMiddleware.sendNewSiteVisitorNotificationEmailToMARE( newUser, staffContact, mailingListNames );
 								})
 								.catch( err => {
 									// log the error for debugging purposes
@@ -151,12 +155,16 @@ exports.registerUser = ( req, res, next ) => {
 							const userAddedToMailingLists = exports.addToMailingLists( newSocialWorker, mailingListIds, registrationType );
 
 							// once we know the contact info of the MARE employee who handles newly registered users
-							Promise.all( [ fetchUser, fetchRegistrationStaffContactInfo ] )
+							Promise.all( [ fetchUser, fetchRegistrationStaffContactInfo, userAddedToMailingLists ] )
 								.then( values => {
 									// assign local variables to the values returned by the promises
-									const [ newUser, staffContact ] = values;
+									const [ newUser, staffContact, mailingLists ] = values;
+									// fetch the names of the returned mailing lists
+									const mailingListNames = mailingLists.map( mailingList => {
+										return mailingList.get( 'mailingList' );
+									});
 									// send a notification email to MARE staff to allow them to enter the information in the old system
-									return registrationEmailMiddleware.sendNewSocialWorkerNotificationEmailToMARE( newUser, staffContact );
+									return registrationEmailMiddleware.sendNewSocialWorkerNotificationEmailToMARE( newUser, staffContact, mailingListNames );
 								})
 								.catch( err => {
 									// log the error for debugging purposes
@@ -262,12 +270,16 @@ exports.registerUser = ( req, res, next ) => {
 							// const userFilesUploaded = exports.uploadFile( newFamily, 'homestudy', 'homestudyFile_upload', files.homestudyFile_upload );
 
 							// once we know the contact info of the MARE employee who handles newly registered users
-							Promise.all( [ fetchUser, fetchRegistrationStaffContactInfo ] )
+							Promise.all( [ fetchUser, fetchRegistrationStaffContactInfo, userAddedToMailingLists ] )
 								.then( values => {
 									// assign local variables to the values returned by the promises
-									const [ newUser, staffContact ] = values;
+									const [ newUser, staffContact, mailingLists ] = values;
+									// fetch the names of the returned mailing lists
+									const mailingListNames = mailingLists.map( mailingList => {
+										return mailingList.get( 'mailingList' );
+									});
 									// send a notification email to MARE staff to allow them to enter the information in the old system
-									return registrationEmailMiddleware.sendNewFamilyNotificationEmailToMARE( newUser, staffContact );
+									return registrationEmailMiddleware.sendNewFamilyNotificationEmailToMARE( newUser, staffContact, mailingListNames );
 								})
 								.catch( err => {
 									// log the error for debugging purposes
@@ -486,8 +498,6 @@ exports.saveFamily = user => {
 				initialDate						: !user.processProgression ? undefined : user.processProgression.indexOf( 'homestudyCompleted' ) !== -1 ? user.homestudyDateComplete : undefined
 			},
 
-			numberOfChildren					: user.childrenInHome,
-
 			child1                              : exports.setChild( user, 1 ),
 			child2                              : exports.setChild( user, 2 ),
 			child3                              : exports.setChild( user, 3 ),
@@ -497,9 +507,7 @@ exports.saveFamily = user => {
 			child7                              : exports.setChild( user, 7 ),
 			child8                              : exports.setChild( user, 8 ),
 
-			otherAdultsInHome: {
-				number							: parseInt( user.otherAdultsInHome, 10 )
-			},
+			otherAdultsInHome: {},
 
 			havePetsInHome						: user.havePets,
 
@@ -515,7 +523,6 @@ exports.saveFamily = user => {
 					to							: user.ageRangeTo
 				},
 
-				numberOfChildrenToAdopt			: user.numberOfChildrenPrefered ? parseInt( user.numberOfChildrenPrefered, 10 ) : 0,
 				siblingContact					: user.contactWithBiologicalSiblings === 'yes' ? true :
 												  user.contactWithBiologicalSiblings === 'no' ? false :
 												  undefined,
@@ -539,6 +546,18 @@ exports.saveFamily = user => {
 
 			registeredViaWebsite				: true
 		});
+
+		if( user.numberOfChildrenPreferred !== '' ) {
+			newUser.set( 'matchingPreferences.numberOfChildrenToAdopt', parseInt( user.numberOfChildrenPreferred, 10 ) );
+		}
+
+		if( user.childrenInHome !== '' ) {
+			newUser.set( 'numberOfChildren', parseInt( user.childrenInHome ) );
+		}
+
+		if ( user.otherAdultsInHome !== '' ) {
+			newUser.set( 'otherAdultsInHome.number', parseInt( user.otherAdultsInHome, 10 ) );
+		}
 
 		newUser.save( ( err, model ) => {
 			// if there was an issue saving the new site visitor
@@ -632,7 +651,8 @@ exports.getRegistrationStaffContactInfo = userType => {
 		// TODO: it was nearly impossible to create a readable comma separated list of links in the template with more than one address,
 		// 	     so we're only fetching one contact when we should fetch them all
 		// get the database id of the admin contact set to handle registration questions for the target user type
-		emailTargetMiddleware.getTargetId( emailTarget )
+		emailTargetMiddleware
+			.getTargetId( emailTarget )
 			.then( targetId => {
 				// get the contact details of the admin contact set to handle registration questions for the target user type
 				return staffEmailContactMiddleware.getContactById( targetId );
@@ -658,7 +678,8 @@ exports.addToMailingLists = ( user, mailingListIds, registrationType ) => {
 									undefined;
 		// if there were no mailing lists the user opted into
 		if( !validMailingListIds || validMailingListIds.length === 0 ) {
-			return reject( `no valid mailing lists were provided` );
+			// resolve the promise with an empty array as it's meant to represent the absence of mailing lists which would normally be returned in array
+			return resolve( [] );
 		}
 		// create an array to hold promises for adding the user asynchronously to each mailing list
 		let addUserToMailingLists = [];
@@ -668,9 +689,9 @@ exports.addToMailingLists = ( user, mailingListIds, registrationType ) => {
 			addUserToMailingLists.push( exports.addToMailingList( user, mailingListId, registrationType ) );
 		}
 		// once the user has been added to all mailing lists
-		Promise.all( addUserToMailingLists ).then( values => {
-			// resolve the promise
-			resolve();
+		Promise.all( addUserToMailingLists ).then( mailingLists => {
+			// resolve the promise with the array of mailing lists the user was added to
+			resolve( mailingLists );
 		// if any error were encountered
 		}).catch( err => {
 			// reject the promise with the reason
@@ -706,7 +727,7 @@ exports.addToMailingList = ( user, mailingListId, registrationType ) => {
 						return reject( `error saving user to mailing list ${ mailingList.mailingList } - ${ err }` );
 					}
 					// if there was no error, resolve the promise
-					resolve();
+					resolve( mailingList );
 				});
 			});
 	});
