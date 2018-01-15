@@ -5,18 +5,17 @@
 		el: '.form--social-worker-registration',
 
 		events: {
-			'change #is-not-MA-city-checkbox' 		: 'toggleCitySelect',
-			'change .social-worker-title-checkbox'	: 'toggleSocialWorkerTitleTextField',
-			'submit'								: 'disableRegistrationButton'
+			'change .is-not-ma-city-checkbox' 		: 'toggleCitySelect',
+			'change .social-worker-title-checkbox'	: 'toggleSocialWorkerTitleTextField'
 		},
 
 		initialize: function() {
 			// DOM cache any commonly used elements to improve performance
 			this.$MACityContainer			= this.$( '.city-container' );
 			this.$NonMACityContainer		= this.$( '.non-ma-city-container' );
-			this.$MACity					= this.$( '#city' );
-			this.$NonMACity					= this.$( '#non-ma-city' );
-			this.$socialWorkerTitle			= this.$( '#social-worker-title' );
+			this.$MACity					= this.$( '.city' );
+			this.$NonMACity					= this.$( '.non-ma-city' );
+			this.$socialWorkerTitle			= this.$( '.social-worker-title' );
 			this.$socialWorkerTitleGroup	= this.$( '.social-worker-title-group' );
 			// initialize parsley validation on the form
 			this.form = this.$el.parsley();
@@ -75,23 +74,39 @@
 				// remove the validation binding from the city dropdown menu
 				this.$MACity.attr( 'data-parsley-required', 'false' );
 				// add the required attribute to the city free text field needed to show the red background during form validation
-				this.$MACity.attr( 'required', true );
+				this.$NonMACity.attr( 'required', true );
 				// remove the required attribute from the city dropdown menu needed to show the red background during form validation
-				this.$NonMACity.attr( 'required', false );
+				this.$MACity.attr( 'required', false );
 				// reset validation on the city dropdown menu
 				// if it was already validated, we need to clear out the check so the form can be submitted
 				this.MACityValidator.reset();
 			}
 		},
 
-		disableRegistrationButton: function disableDonateButton() {
-			this.$( '.register' ).attr( 'disabled', 'disabled' );
+		enableRegistrationButton: function enableRegistrationButton() {
+			this.$( '.register' ).prop( 'disabled', false );
+		},
+
+		disableRegistrationButton: function disableRegistrationButton() {
+			this.$( '.register' ).prop( 'disabled', 'disabled' );
 		},
 
 		validateForm: function validateForm() {
+
 			var ok = $( '.parsley-error' ).length === 0;
+
 			$( '.bs-callout-info' ).toggleClass( 'hidden', !ok );
 			$( '.bs-callout-warning' ).toggleClass( 'hidden', ok );
+
+			// if there are no errors and the user is attempting to submit the form
+			if( ok && event.type === 'submit' ) {
+				// disable the registration button
+				mare.views.socialWorkerRegistration.disableRegistrationButton();
+			// otherwise, if there are errors
+			} else if ( !ok ) {
+				// ensure the registration button is enabled
+				mare.views.socialWorkerRegistration.enableRegistrationButton();
+			}
 		}
 	});
 }());

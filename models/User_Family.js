@@ -30,7 +30,7 @@ Family.add( 'Permissions', {
 	permissions: {
 		isVerified: { type: Boolean, label: 'has a verified email address', default: false, noedit: true },
 		isHomestudyVerified: { type: Boolean, label: 'homestudy verified', initial: true },
-		homestudyVerifiedDate: { type: Types.Date, label: 'homestudy verified on', format: 'MM/DD/YYYY', noedit: true },
+		homestudyVerifiedDate: { type: Types.Date, label: 'homestudy verified on', format: 'MM/DD/YYYY', dependsOn: { 'permissions.isHomestudyVerified': true }, noedit: true },
 		canViewAllChildren: { type: Boolean, default: false, hidden: true, noedit: true }
 	}
 
@@ -100,6 +100,7 @@ Family.add( 'Permissions', {
 		isOutsideMassachusetts: { type: Types.Boolean, label: 'is outside Massachusetts', initial: true },
 		city: { type: Types.Relationship, label: 'city', ref: 'City or Town', dependsOn: { 'address.isOutsideMassachusetts': false }, initial: true },
 		cityText: { type: Types.Text, label: 'city', dependsOn: { 'address.isOutsideMassachusetts': true }, initial: true },
+		displayCity: { type: Types.Text, label: 'city', hidden: true, noedit: true },
 		state: { type: Types.Relationship, label: 'state', ref: 'State', initial: true }, // was required: data migration change ( undo if possible )
 		zipCode: { type: Types.Text, label: 'zip code', initial: true }, // was required: data migration change ( undo if possible )
 		region: { type: Types.Relationship, label: 'region', ref: 'Region', noedit: true }
@@ -180,9 +181,7 @@ Family.add( 'Permissions', {
 	otherAdultsInHome: {
 		number: { type: Types.Number, label: 'number of other adults living in the home', initial: true },
 		relationships: { type: Types.Text, label: 'relationship of other adults living in the home', initial: true }
-	},
-
-	havePetsInHome: { type: Types.Boolean, label: 'have pets in the home', initial: true }
+	}
 
 }, 'Stages', {
 
@@ -209,6 +208,7 @@ Family.add( 'Permissions', {
 		completed: { type: Types.Boolean, label: 'homestudy completed', initial: true },
 		initialDate: { type: Types.Date, label: 'initial date homestudy completed', format: 'MM/DD/YYYY', dependsOn: { 'homestudy.completed': true }, initial: true },
 		mostRecentDate: { type: Types.Date, label: 'most recent update completed', format: 'MM/DD/YYYY', dependsOn: { 'homestudy.completed': true }, initial: true },
+		summary: { type: Types.Textarea, label: 'homestudy summary', dependsOn: { 'homestudy.completed': true }, initial: true },
 
 		homestudyFile_upload: {
 			label: 'homestudy file',
@@ -216,8 +216,6 @@ Family.add( 'Permissions', {
 			type: Types.S3File,
 			s3path: '/family/homestudy',
 			filename: function( item, filename ) {
-				console.log( 'item' );
-				console.log( item );
 				// prefix file name with registration number and name for easier identification
 				return item.fileName;
 			}
@@ -288,6 +286,9 @@ Family.add( 'Permissions', {
 		numberOfChildrenToAdopt: { type: Types.Number, label: 'number of children to adopt', initial: true },
 		siblingContact: { type: Types.Boolean, label: 'contact with siblings', initial: true },
 		birthFamilyContact: { type: Types.Boolean, label: 'contact with birth parents', initial: true },
+		
+		havePetsInHome: { type: Types.Boolean, label: 'have pets in the home', initial: true },
+		
 		race: { type: Types.Relationship, label: 'race', ref: 'Race', many: true, initial: true },
 
 		maxNeeds: {
@@ -297,8 +298,7 @@ Family.add( 'Permissions', {
 		},
 
 		disabilities: { type: Types.Relationship, label: 'disabilities', ref: 'Disability', many: true, initial: true },
-		otherConsiderations: { type: Types.Relationship, label: 'other considerations', ref: 'Other Consideration', initial: true }
-
+		otherConsiderations: { type: Types.Relationship, label: 'other considerations', ref: 'Other Consideration', many: true, initial: true }
 	}
 
 }, 'Heard About MARE From', {
@@ -354,15 +354,34 @@ Family.schema.pre( 'save', function( next ) {
 	// all user types that can log in derive from the User model, this allows us to identify users better
 	this.setUserType();
 	
-	// we need this id in case the family was created via the website and updatedBy is empty
-	const websiteBotFetched = UserServiceMiddleware.getUserByFullName( 'Website Bot', 'admin' );
+	// there are two fields containing the city, depending on whether the family is in MA or not.  Save the value to a common field for display
+	const displayCityUpdated = this.setDisplayCity();
 	// attempt to update the no-edit region field
 	const regionUpdated = this.updateRegion();
 	// determine whether the family can view all children or just the publicly visible ones
 	const galleryViewingPermissionsSet = this.setGalleryViewingPermissions();
 	// set the registration number for the family
 	const registrationNumberSet = this.setRegistrationNumber();
+
+	Promise.all( [ displayCityUpdated, regionUpdated, galleryViewingPermissionsSet, registrationNumberSet ] )
+		// if there was an error with any of the promises
+		.catch( err => {
+			// log it for debugging purposes
+			console.error( `family ${ this.displayName } ( registration number: ${ this.registrationNumber } ) saved with errors` );
+		})
+		// execute the following regardless of whether the promises were resolved or rejected
+		// TODO: this should be replaced with ES6 Promise.prototype.finally() once it's finalized, assuming we can update to the latest version of Node if we upgrade Keystone
+		.then( () => {
+
+			next();
+		});
+});
+
+Family.schema.post( 'save', function() {
 	
+	// we need this id in case the family was created via the website and updatedBy is empty
+	const websiteBotFetched = UserServiceMiddleware.getUserByFullName( 'Website Bot', 'admin' );
+
 	// if the bot user was fetched successfully
 	websiteBotFetched
 		.then( bot => {
@@ -373,22 +392,12 @@ Family.schema.pre( 'save', function( next ) {
 		.catch( err => {
 			// log it for debugging purposes
 			console.error( `Website Bot could not be fetched for family ${ this.displayName } ( registration number: ${ this.registrationNumber } ) - ${ err }` );
-		});
-
-	Promise.all( [ regionUpdated, galleryViewingPermissionsSet, registrationNumberSet, botUserFetched ] )
-		// if there was an error with any of the promises
-		.catch( err => {
-			// log it for debugging purposes
-			console.error( `family ${ this.displayName } ( registration number: ${ this.registrationNumber } ) saved with errors` );
 		})
 		// execute the following regardless of whether the promises were resolved or rejected
 		// TODO: this should be replaced with ES6 Promise.prototype.finally() once it's finalized, assuming we can update to the latest version of Node if we upgrade Keystone
 		.then( () => {
 			// process change history
-			// TODO: if change history isn't showing up until the page is reloaded, the next() will need to wait until after setChangeHistory completes
 			this.setChangeHistory();
-
-			next();
 		});
 });
 
@@ -460,6 +469,39 @@ Family.schema.methods.setFullName = function() {
 		this.contact2.name.full = '';
 	}
 };
+// TODO: better handled with a virtual
+Family.schema.methods.setDisplayCity = function() {
+	'use strict';
+
+	return new Promise( ( resolve, reject ) => {
+		// if the family lives outside Massachusetts
+		if( this.address.isOutsideMassachusetts ) {
+			// set the display city text to the free text field cityText
+			this.address.displayCity = this.address.cityText;
+			// resolve the promise
+			resolve();
+		// if the family lives in Massachusetts
+		} else {
+			// the city is a Relationship field, fetch it and return the name
+			const fetchCityOrTown = ListServiceMiddleware.getCityOrTownById( this.address.city );
+			// if the city or town was fetched without error
+			fetchCityOrTown
+				.then( cityOrTown => {
+					// set the display city text to the value returned
+					this.address.displayCity = cityOrTown.cityOrTown;
+					// resolve the promise
+					resolve();
+				})
+				// if there was an error fetching the city or town
+				.catch( err => {
+					// log the error for debugging purposes
+					console.error( `display city could not be updated for family ${ this.displayName } ( registration number: ${ this.registrationNumber } ) - ${ err }` );
+					// reject the promise with the error
+					reject();
+				});
+		}
+	});
+}
 // TODO: better handled with a virtual
 Family.schema.methods.setFileName = function() {
 	'use strict';
@@ -1308,8 +1350,15 @@ Family.schema.methods.setChangeHistory = function setChangeHistory() {
 					ChangeHistoryMiddleware.checkFieldForChanges({
 												parent: 'homestudy',
 												name: 'mostRecentDate',
-												label: 'most recent update completed',
+												label: 'most recent homestudy update completed',
 												type: 'date' }, model, modelBefore, changeHistory, done);
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												parent: 'homestudy',
+												name: 'summary',
+												label: 'homestudy summary',
+												type: 'string' }, model, modelBefore, changeHistory, done);
 				},
 					// TODO: NEED TO ADD TRACKING FOR THE FILE PATH CHANGING.
 					// TODO: FIX WHEN FILE UPLOAD IS FIXED.
@@ -1319,8 +1368,6 @@ Family.schema.methods.setChangeHistory = function setChangeHistory() {
 					// 	type: Types.S3File,
 					// 	s3path: '/family/homestudy',
 					// 	filename: function(item, filename){
-					// 		console.log('item');
-					// 		console.log(item);
 					// 		// prefix file name with registration number and name for easier identification
 					// 		return item.fileName;
 					// 	}
@@ -1663,7 +1710,7 @@ Family.schema.methods.setChangeHistory = function setChangeHistory() {
 					// if there was an error saving the record
 					}, err => {
 						// log the error for debugging purposes
-						console.error( `initial change history record could not be saved for family ${ this.displayName } ( registration number: ${ this.registrationNumber } ) - ${ err }` );
+						console.error( `change history record could not be saved for family ${ this.displayName } ( registration number: ${ this.registrationNumber } ) - ${ err }` );
 						// reject the promise
 						reject();
 					});
@@ -1674,7 +1721,7 @@ Family.schema.methods.setChangeHistory = function setChangeHistory() {
 };
 
 // Define default columns in the admin interface and register the model
-Family.defaultColumns = 'registrationNumber, contact1.name.full, isActive';
+Family.defaultColumns = 'registrationNumber, contact1.name.full, address.displayCity, address.state, isActive';
 Family.register();
 
 // Export to make it available using require.  The keystone.list import throws a ReferenceError when importing a list

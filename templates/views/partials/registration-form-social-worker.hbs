@@ -1,11 +1,12 @@
 <section class="social-worker-registration hidden">
-	<div class="form-type-header">Social Worker Registration</div>
-	<span class="required required-description">* Required</span>
 	<form action="/register" class="registration-form form--social-worker-registration" method="POST">
 		<input type="hidden" class="registration-type" name="registrationType" value="socialWorker">
 
 		<section class="social-worker-account-setup-section">
 			<div class="form-section-header">Account Setup</div>
+
+			<span class="required required-description">* Required</span>
+			
 			<div class="row form-group">
 				<div class="col-sm-12">
 					<input type="text" id="social-worker-first-name" class="input" name="firstName" data-parsley-error-message="required" required="">
@@ -18,8 +19,8 @@
 			</div>
 			<div class="row form-group">
 				<div class="col-sm-12">
-					<input type="email" id="social-worker-email" class="input" name="email" data-parsley-type="email" data-parsley-trigger="change" data-parsley-error-message="valid email required" required="">
-					<label for="social-worker-email" class="label required-field">Email Address</label>
+					<input type="email" id="social-worker-form-social-worker-email" class="input social-worker-email" name="email" data-parsley-type="email" data-parsley-trigger="change" data-parsley-error-message="valid email required" required="">
+					<label for="social-worker-form-social-worker-email" class="label required-field">Email Address</label>
 				</div>
 			</div>
 			<div class="row form-group">
@@ -69,12 +70,12 @@
 			</div>
 			<div class="row">
 				<div class="col-sm-12 form-group social-worker-title-group hidden">
-					<input type="text" id="social-worker-title" class="input" name="socialWorkerTitle" data-parsley-required="false" data-parsley-error-message="required">
+					<input type="text" id="social-worker-title" class="input social-worker-title" name="socialWorkerTitle" data-parsley-required="false" data-parsley-error-message="required">
 					<label for="social-worker-title" class="label required-field">Title</label>
 				</div>
 				<div class="col-sm-12 form-group">
-					<input type="text" id="social-worker-agency" class="input" name="agency" data-parsley-error-message="required" required="">
-					<label for="social-worker-agency" class="label required-field">Agency</label>
+					<input type="text" id="social-worker-form-social-worker-agency" class="input social-worker-agency" name="agency" data-parsley-error-message="required" required="">
+					<label for="social-worker-form-social-worker-agency" class="label required-field">Agency</label>
 				</div>
 			</div>
 			<div class="row form-group">
@@ -109,7 +110,7 @@
 			</div>
 			<div class="row form-group">
 				<div class="col-sm-12 form-group city-container">
-					<select id="city" class="input" name="city" data-parsley-trigger="change" data-parsley-errors-messages-disabled="true" required="">
+					<select class="input city" name="city" data-parsley-trigger="change" data-parsley-errors-messages-disabled="true" required="">
 						<option value=""></option>
 						{{#each citiesAndTowns}}
 						<option value="{{ _id }}">{{ cityOrTown }}</option>
@@ -118,12 +119,12 @@
 					<label for="city" class="label required-field">City</label>
 				</div>
 				<div class="col-sm-12 form-group non-ma-city-container hidden">
-					<input type="text" id="non-ma-city" class="input" name="nonMACity" data-parsley-error-message="required" data-parsley-required="false">
-					<label for="non-ma-city" class="label required-field">City</label>
+					<input type="text" id="social-worker-non-ma-city" class="input non-ma-city" name="nonMACity" data-parsley-error-message="required" data-parsley-required="false">
+					<label for="social-worker-non-ma-city" class="label required-field">City</label>
 				</div>
 				<div class="col-sm-12 form-group">
 					<label class="checkbox-inline">
-						<input type="checkbox" id="is-not-MA-city-checkbox" name="isNotMACity">I live outside MA
+						<input type="checkbox" class="is-not-ma-city-checkbox" name="isNotMACity">I live outside MA
 					</label>
 				</div>
 			</div>
@@ -140,20 +141,9 @@
 					</select>
 					<label for="social-worker-state" class="label required-field">State</label>
 				</div>
-			</div>
-			<div class="row form-group">
 				<div class="col-sm-12">
 					<input type="number" id="social-worker-zip-code" class="input" name="zipCode" data-parsley-length="[5, 5]" data-parsley-error-message="required" required="">
 					<label for="social-worker-zip-code" class="label required-field">Zip Code</label>
-				</div>
-				<div class="col-sm-12 form-group">
-					<select id="social-worker-region" class="input region-select" name="region" data-parsley-errors-messages-disabled="true" required="">
-					<option value=""></option>
-					{{#each regions}}
-						<option value="{{_id}}">{{region}}</option>
-					{{/each}}
-					</select>
-					<label for="region" class="label required-field">Region</label>
 				</div>
 			</div>
 		</section>
@@ -175,6 +165,6 @@
 			{{/each}}
 		</section>
 
-		<button class="button button--blue register" type="submit">Register</button>
+		<button class="button button--teal register" type="submit">Register</button>
 	</form>
 </section>

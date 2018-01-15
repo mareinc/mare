@@ -68,9 +68,9 @@ exports = module.exports = ( req, res ) => {
 				// street1 is required, so this is enough to tell us if the address has been populated
 				event.hasAddress = event.address && event.address.street1;
 
-				// if the user is logged in
-				if( req.user ) {
-					// loop through each of the attendees in the group that matches the users type
+				// if the user is logged in and the event has attendees of the user's type
+				if( req.user && event[ eventGroup ] ) {
+					// loop through each of the attendees in the group that matches the user's type
 					for( let attendee of event[ eventGroup ] ) {
 						// without converting to strings, these were both evaluating to Object which didn't allow for a clean comparison
 						var attendeeID	= attendee._id.toString(),

@@ -494,6 +494,14 @@ exports.getChildDetails = ( req, res, next ) => {
         .populate( 'gender' )
         .exec()
         .then( child => {
+			// create a valid embed string based on the youtube string provided
+			const videoString = child.video && child.video.length > 0 ?
+								child.video.replace( 'youtu.be', 'www.youtube.com/embed' ).replace( 'watch?v=', 'embed/' ) :
+								undefined;
+			// create a valid embed string based on the youtube string provided
+			const wednesdaysChildVideoString = child.wednesdaysChildVideo && child.wednesdaysChildVideo.length > 0 ?
+								child.wednesdaysChildVideo.replace( 'youtu.be', 'www.youtube.com/embed' ).replace( 'watch?v=', 'embed/' ) :
+								undefined;
 
         	const relevantData = {
 				hasImage				: _.isEmpty( child.image ) && child.image.url.length > 0,
@@ -501,8 +509,8 @@ exports.getChildDetails = ( req, res, next ) => {
         		profilePart1			: child.profile.part1,
         		profilePart2			: child.profile.part2,
         		profilePart3			: child.profile.part3,
-        		video					: child.video && child.video.length > 0 ? child.video.replace( 'watch?v=', 'embed/' ) : undefined,
-				wednesdaysChildVideo	: child.wednesdaysChildVideo && child.wednesdaysChildVideo.length > 0 ? child.wednesdaysChildVideo.replace( 'watch?v=', 'embed/' ) : undefined
+        		video					: videoString,
+				wednesdaysChildVideo	: wednesdaysChildVideoString
         	};
 
         	res.send( relevantData );
@@ -527,15 +535,23 @@ exports.getSiblingGroupDetails = ( req, res, next ) => {
         .populate( 'gender' )
         .exec()
         .then( child => {
-
-        	const relevantData = {
+			// create a valid embed string based on the youtube string provided
+			const videoString = child.siblingGroupVideo && child.siblingGroupVideo.length > 0 ?
+								child.siblingGroupVideo.replace( 'youtu.be', 'www.youtube.com/embed' ).replace( 'watch?v=', 'embed/' ) :
+								undefined;
+			// create a valid embed string based on the youtube string provided
+			const wednesdaysChildVideoString = child.wednesdaysChildSiblingGroupVideo && child.wednesdaysChildSiblingGroupVideo.length > 0 ?
+											   child.wednesdaysChildSiblingGroupVideo.replace( 'youtu.be', 'www.youtube.com/embed' ).replace( 'watch?v=', 'embed/' ) :
+											   undefined;
+			
+			const relevantData = {
 				hasImage				: _.isEmpty( child.siblingGroupImage ) && child.siblingGroupImage.url.length > 0,
 				quote					: child.groupProfile.quote,
         		profilePart1			: child.groupProfile.part1,
         		profilePart2			: child.groupProfile.part2,
         		profilePart3			: child.groupProfile.part3,
-        		video					: child.siblingGroupVideo && child.siblingGroupVideo.length > 0 ? child.siblingGroupVideo.replace('watch?v=', 'embed/') : undefined,
-				wednesdaysChildVideo	: child.wednesdaysChildSiblingGroupVideo && child.wednesdaysChildSiblingGroupVideo.length > 0 ? child.wednesdaysChildSiblingGroupVideo.replace( 'watch?v=', 'embed/' ) : undefined
+        		video					: videoString,
+				wednesdaysChildVideo	: wednesdaysChildVideoString
         	};
 
         	res.send( relevantData );
@@ -628,56 +644,56 @@ exports.saveChild = ( child, activeChildStatusId ) => {
 			siteVisibility: 'only registered social workers and families',
 			isVisibleInGallery: false,
 
-			registeredBy: 'unknown',
-			registrationDate: new Date(),
+			registeredBy					: 'unknown',
+			registrationDate				: new Date(),
 
 			name: {
-				first: child.firstName,
-				last: child.lastName,
-				alias: child.alias,
-				nickName: child.nickName
+				first						: child.firstName,
+				last						: child.lastName,
+				alias						: child.alias,
+				nickName					: child.nickName
 			},
 
-			birthDate: new Date( child.dateOfBirth ),
-			languages: child.languages,
-			status: activeChildStatusId,
-			gender: child.gender,
-			race: child.race,
-			legalStatus: child.legalStatus,
-			yearEnteredCare: child.yearEnteredCare,
+			birthDate						: new Date( child.dateOfBirth ),
+			languages						: child.languages,
+			status							: activeChildStatusId,
+			gender							: child.gender,
+			race							: child.race,
+			legalStatus						: child.legalStatus,
+			yearEnteredCare					: child.yearEnteredCare,
 
-			hasContactWithSiblings: child.isSiblingContactNeeded.toLowerCase() === 'yes',
-			siblingTypeOfContact: child.siblingContactDescription,
-			hasContactWithBirthFamily: child.isFamilyContactNeeded.toLowerCase() === 'yes',
-			birthFamilyTypeOfContact: child.familyContactDescription,
+			hasContactWithSiblings			: child.isSiblingContactNeeded.toLowerCase() === 'yes',
+			siblingTypeOfContact			: child.siblingContactDescription,
+			hasContactWithBirthFamily		: child.isFamilyContactNeeded.toLowerCase() === 'yes',
+			birthFamilyTypeOfContact		: child.familyContactDescription,
 
-			residence: child.currentResidence,
-			isOutsideMassachusetts: child.isNotMACity,
-			city: child.isNotMACity ? undefined : child.MACity,
-			cityText: child.isNotMACity ? child.nonMACity : '',
+			residence						: child.currentResidence,
+			isOutsideMassachusetts			: child.isNotMACity,
+			city							: child.isNotMACity ? undefined : child.MACity,
+			cityText						: child.isNotMACity ? child.nonMACity : '',
 			
-			careFacilityName: child.careFacility,
+			careFacilityName				: child.careFacility,
 
-			physicalNeeds: 'none',
-			physicalNeedsDescription: child.physicalNeeds,
-			emotionalNeeds: 'none',
-			emotionalNeedsDescription: child.emotionalNeeds,
-			intellectualNeeds: 'none',
-			intellectualNeedsDescription: child.intellectualNeeds,
-			socialNeeds: 'none',
-			socialNeedsDescription: child.socialNeeds,
+			physicalNeeds					: 'none',
+			physicalNeedsDescription		: child.physicalNeeds,
+			emotionalNeeds					: 'none',
+			emotionalNeedsDescription		: child.emotionalNeeds,
+			intellectualNeeds				: 'none',
+			intellectualNeedsDescription	: child.intellectualNeeds,
+			socialNeeds						: 'none',
+			socialNeedsDescription			: child.socialNeeds,
 
-			aspirations: child.aspirations,
+			aspirations						: child.aspirations,
 
-			schoolLife: child.schoolLife,
-			familyLife: child.familyLife,
-			personality: child.personality,
-			otherRecruitmentConsiderations: child.otherRecruitmentConsiderations,
+			schoolLife						: child.schoolLife,
+			familyLife						: child.familyLife,
+			personality						: child.personality,
+			otherRecruitmentConsiderations	: child.otherRecruitmentConsiderations,
 
-			disabilities: child.disabilities,
-			recommendedFamilyConstellation: child.recommendedFamilyConstellations,
+			disabilities					: child.disabilities,
+			recommendedFamilyConstellation	: child.recommendedFamilyConstellations,
 			otherFamilyConstellationConsideration: child.otherFamilyConstellationConsiderations,
-			otherConsiderations: child.otherConsiderations
+			otherConsiderations				: child.otherConsiderations
 		});
 
 		newChild.save( ( err, model ) => {

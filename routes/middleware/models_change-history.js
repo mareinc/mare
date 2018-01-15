@@ -216,7 +216,7 @@ exports.addToHistoryEntry = ( valueBefore, value, label, fieldType, changeHistor
 
 	// if the field wasn't removed or changed to false
 	if( value || value === 0 ) {
-		changeHistory.changes += `${ label.toUpperCase() } changed to ${ field }`;
+		changeHistory.changes += `${ label.toUpperCase() } was changed to ${ value }`;
 	// if the field was removed or changed to false
 	} else {
 		changeHistory.changes += `${ label.toUpperCase() } ${ emptyFieldText }`;

@@ -41,4 +41,26 @@ h2 {
 	font-weight: normal;
 }
 
+h1 {
+    display: block;
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 1.5em;
+    margin: 0.5em 0 1.2em;
+    color: $text-color-2;
+	font-weight: 300;
+	
+	@media all and ( min-width: 500px ) {
+		font-size: 1.8em;
+	}
+
+	@media all and ( min-width: 1000px ) {
+		font-size: 2em;
+	}
+
+	@media all and ( min-width: 1500px ) {
+		font-size: 2.2em;
+	}
+}
+
 label { margin: 0; }

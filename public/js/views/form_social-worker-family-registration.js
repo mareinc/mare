@@ -5,7 +5,7 @@
 		el: '.form--family-registration',
 
 		events: {
-			'change #is-not-MA-city-checkbox' 		: 'toggleCitySelect',
+			'change #is-not-ma-city-checkbox' 		: 'toggleCitySelect',
 			'change #upload-button'					: 'uploadForm',
 			'change #children-in-home'				: 'toggleFamilyDetailsForm',
 			'change .adoption-preferences-trigger'	: 'checkAdoptionPreferences'

@@ -216,9 +216,9 @@ exports.getInquirerState = ( inquiryData, done ) => {
 
 exports.getStaffInquiryContact = ( inquiryData, done ) => {
 	// Fetch the list of email targets to find the id of 'general inquiries'
-	keystone.list( 'Staff Email Target' ).model
+	keystone.list( 'Email Target' ).model
 		.findOne()
-		.where( 'staffEmailTarget', 'general inquiries' )
+		.where( 'emailTarget', 'general inquiries' )
 		.exec()
 		.then( generalInquiryTargetId => {
 			// Fetch the CSC contact designated for general inquiries

@@ -106,6 +106,12 @@ SocialWorker.schema.pre( 'save', function( next ) {
 	this.setFullName();
 	// all user types that can log in derive from the User model, this allows us to identify users better
 	this.setUserType();
+	
+	 next();
+});
+
+SocialWorker.schema.post( 'save', function() {
+
 	// we need this id in case the family was created via the website and updatedBy is empty
 	const websiteBotFetched = UserServiceMiddleware.getUserByFullName( 'Website Bot', 'admin' );
 	
@@ -119,17 +125,12 @@ SocialWorker.schema.pre( 'save', function( next ) {
 		.catch( err => {
 			// log it for debugging purposes
 			console.error( `Website Bot could not be fetched for social worker ${ this.name.full } - ${ err }` );
-			// add a generic error to keep it in line with error reporting when saving of other user models
-			console.error( `social worker ${ this.name.full } saved with errors` );
 		})
 		// execute the following regardless of whether the promises were resolved or rejected
 		// TODO: this should be replaced with ES6 Promise.prototype.finally() once it's finalized, assuming we can update to the latest version of Node if we upgrade Keystone
 		.then( () => {
 			// process change history
-			// TODO: if change history isn't showing up until the page is reloaded, the next() will need to wait until after setChangeHistory completes
 			this.setChangeHistory();
-
-			next();
 		});
 });
 
@@ -163,7 +164,7 @@ SocialWorker.schema.methods.setUserType = function() {
 	this.userType = 'social worker';
 };
 
-SocialWorker.schema.methods.setChangeHistory = function setChangeHistory() {
+SocialWorker.schema.methods.setChangeHistory = function() {
 	'use strict';
 
 	return new Promise( ( resolve, reject ) => {
@@ -393,7 +394,7 @@ SocialWorker.schema.methods.setChangeHistory = function setChangeHistory() {
 					// if there was an error saving the record
 					}, err => {
 						// log the error for debugging purposes
-						console.error( `initial change history record could not be saved for social worker ${ this.name.full } - ${ err }` );
+						console.error( `change history record could not be saved for social worker ${ this.name.full } - ${ err }` );
 						// reject the promise
 						reject();
 					});

@@ -79,9 +79,9 @@ function recurringDonation( donationData ) {
 
 				resolve( subscription );
 			})
-			.catch( error => {
+			.catch( err => {
 
-				reject( error );
+				reject( err );
 			});
 	});
 }
@@ -325,10 +325,9 @@ exports = module.exports = {
 					message: flashMessageMarkup
 				});
 			})
-			.catch( error => {
-
+			.catch( err => {
 				// generate an error message to display on the front end
-				generateFlashMessage( message_types.ERROR, 'Error!', error.message )
+				generateFlashMessage( message_types.ERROR, 'Error!', err.message )
 					.then( flashMessageMarkup => {
 
 						res.send({
