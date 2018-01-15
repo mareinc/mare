@@ -6,7 +6,7 @@ const keystone					= require( 'keystone' ),
 
 // Create model. Additional options allow menu name to be used to auto-generate the URL
 var Inquiry = new keystone.List( 'Inquiry', {
-	defaultSort: 'takenOn'
+	defaultSort: '-takenOn'
 });
 
 // Create fields
@@ -193,5 +193,5 @@ Inquiry.schema.methods.setDerivedFields = function( inquiryData, done ) {
 }
 
 // Define default columns in the admin interface and register the model
-Inquiry.defaultColumns = 'takenOn, takenBy, child, family, socialWorker, siteVisitor, source';
+Inquiry.defaultColumns = 'takenOn, takenBy, source';
 Inquiry.register();

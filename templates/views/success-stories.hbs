@@ -1,6 +1,8 @@
 <div class="card card--vertical card--large-padding">
+
+	<h1 h1 class="card__title">MARE Success Stories</h1>
+
 	<div class="card-details">
-		<div class="card-details__header">MARE Success Stories</div>
 		<div class="card-details__body">
 			<p class="card-details__paragraph">Over the years, MARE has found permanent, loving families
 				for thousands of children waiting in foster care. Read about a few of these phenomenal
@@ -14,11 +16,23 @@
 	</div>
 </div>
 
+{{#if hasNoSuccessStories}}
+
+<section class="card-list">
+	<div class="card card--large-padding">
+		<div class="card__details card__details--centered">
+			<p class="card__details__body">Something must have gone wrong, there are no success stories to display.</p>
+		</div>
+	</div>
+</section>
+
+{{else}}
+
 <section class="card-list">
 
-	{{#each stories}}
+	{{#each successStories}}
 
-	<div class="card card--vertical card--medium-padding">
+	<div class="card card--vertical card--medium-padding card--small-margin-below">
 		<div class="card__columns">
 			<div class="card__column card__column--left">
 				{{#if imageFeatured}}
@@ -39,11 +53,13 @@
 				</div>
 			</div>
 		</div>
-		<section class="button-group button-group--horizontal button-group--space-around button-group--small-margin-below">
-			<a class="link-arrow--right" href="{{ url }}">Read Full Story</a>
+		<section class="button-group button-group--horizontal button-group--space-around button-group--large-margin-above button-group--small-margin-below">
+			<button class="button button--large button--teal success-story__navigation-button" data-url="{{ url }}">Read Full Story</button>
 		</section>
 	</div>
 
 	{{/each}}
 
 </section>
+
+{{/if}}

@@ -64,5 +64,65 @@ exports.create = {
 		},
 		password: 'LisaFunaro',
 		email: 'lisafd4@gmail.com'
+	},
+	{
+		isActive: true,
+		permissions: {
+			isVerified: true
+		},
+		name: {
+			first: 'Test',
+			last: 'Admin 1'
+		},
+		password: 'testadmin1',
+		email: 'testadmin1@mare.com',
+	},
+	{
+		isActive: true,
+		permissions: {
+			isVerified: true
+		},
+		name: {
+			first: 'Test',
+			last: 'Admin 2'
+		},
+		password: 'testadmin2',
+		email: 'testadmin2@mare.com',
+	},
+	{
+		isActive: true,
+		permissions: {
+			isVerified: true
+		},
+		name: {
+			first: 'Test',
+			last: 'Admin 3'
+		},
+		password: 'testadmin3',
+		email: 'testadmin3@mare.com',
+	},
+	{
+		isActive: true,
+		permissions: {
+			isVerified: true
+		},
+		name: {
+			first: 'Test',
+			last: 'Admin 4'
+		},
+		password: 'testadmin4',
+		email: 'testadmin4@mare.com',
+	},
+	{
+		isActive: true,
+		permissions: {
+			isVerified: true
+		},
+		name: {
+			first: 'Test',
+			last: 'Admin 5'
+		},
+		password: 'testadmin5',
+		email: 'testadmin5@mare.com',
 	}]
 };

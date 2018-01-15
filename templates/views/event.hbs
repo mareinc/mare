@@ -1,14 +1,33 @@
 <div class="card card--vertical card--large-padding">
 
-	{{#ifeq category 'mapp-trainings'}} {{> events-mapp-training-info}} {{/ifeq}}
-	{{#ifeq category 'adoption-parties'}} {{> events-adoption-party-info}} {{/ifeq}}
-	{{#ifeq category 'fundraising-events'}} {{> events-fundraising-events-info}} {{/ifeq}}
-	{{#ifeq category 'agency-info-meetings'}} {{> events-agency-info-meetings-info}} {{/ifeq}}
-	{{#ifeq category 'other-trainings'}} {{> events-other-trainings-info}} {{/ifeq}}
+	{{#ifeq category 'mapp-trainings'}}
+		<h1 class="card__title">MAPP Training Events</h1>
+		{{> events-mapp-training-info}}
+	{{/ifeq}}
+	
+	{{#ifeq category 'adoption-parties'}}
+		<h1 class="card__title">MARE Adoption Parties &amp; Information Events</h1>
+		{{> events-adoption-party-info}}
+	{{/ifeq}}
+	
+	{{#ifeq category 'fundraising-events'}}
+		<h1 class="card__title">Fundraising Events</h1>
+		{{> events-fundraising-events-info}}
+	{{/ifeq}}
+	
+	{{#ifeq category 'agency-info-meetings'}}
+		<h1 class="card__title">Agency Information Meetings</h1>
+		{{> events-agency-info-meetings-info}}
+	{{/ifeq}}
+	
+	{{#ifeq category 'other-trainings'}}
+		<h1 class="card__title">Other Trainings</h1>
+		{{> events-other-trainings-info}}
+	{{/ifeq}}
 
 	{{#if canSubmitEvent}}
 	<section class="button-group button-group--horizontal button-group--space-around button-group--large-margin-above button-group--small-margin-below">	
-		<button class="button button--large button--teal events__create-event-button" data-url="/forms/agency-event-submission-form">Submit an Event</button>
+		<button class="button button--large button--teal events__navigation-button" data-url="/forms/agency-event-submission-form">Submit an Event</button>
 	</section>
 	{{/if}}
 
@@ -53,7 +72,7 @@
 			{{#if event.contact.name.full}}
 			For more information, {{#if event.contact.phone.work}}call{{else}}contact{{/if}} {{ event.contact.name.full }} at {{#if event.contact.phone.work}} {{ event.contact.phone.work }} {{else}} <a href="mailto:{{ event.contact.email }}" class="events__contact-link">{{ event.contact.email}}</a> {{/if}}
 			{{else}}
-			For more information, contact <a href="mailto:{{ event.contactEmail }}" class="events__contact-link">{{ event.contactEmail}}</a>
+			For more information, contact <a href="mailto:{{ event.contactEmail }}" class="events__contact-link">{{ event.contactEmail }}</a>
 			{{/if}}
 		</section>
 
@@ -61,69 +80,70 @@
 		<hr class="card__content-divider"></hr>
 		<aside class="card__content-group">
 			<h3 class="card__title">Attendees</h3>
+
 			<section class="card__list-container">
-				{{#if event.hasStaffAttendees}}
 				<h4 class="card__list-title">Staff</h4>
 				<ul class="card__list" data-group="admin">
-				{{/if}}
+					{{#if event.hasStaffAttendees}}
 					{{#each event.staffAttendees}}
 					<li class="card__list-item">{{ name.full }}</li>
 					{{/each}}
-				{{#if event.hasStaffAttendees}}
+					{{else}}
+					<li class="card__list-item card__list-item--disabled">no staff attending</li>
+					{{/if}}
 				</ul>
-				{{/if}}
 			</section>
 
 			<section class="card__list-container">
-				{{#if event.hasSocialWorkerAttendees}}
 				<h4 class="card__list-title">Social Workers</h4>
 				<ul class="card__list" data-group="social worker">
-				{{/if}}
+					{{#if event.hasSocialWorkerAttendees}}
 					{{#each event.socialWorkerAttendees}}
 					<li class="card__list-item">{{ name.full }}</li>
 					{{/each}}
-				{{#if event.hasSocialWorkerAttendees}}
+					{{else}}
+					<li class="card__list-item card__list-item--disabled">no social workers attending</li>
+					{{/if}}
 				</ul>
-				{{/if}}
 			</section>
 
 			<section class="card__list-container">
-				{{#if event.hasChildAttendees}}
 				<h4 class="card__list-title">Children</h4>
 				<ul class="card__list">
-				{{/if}}
+					{{#if event.hasChildAttendees}}
 					{{#each event.childAttendees}}
 					<li class="card__list-item">{{ name.full }}</li>
 					{{/each}}
-				{{#if event.hasChildAttendees}}
+					{{else}}
+					<li class="card__list-item card__list-item--disabled">no children attending</li>
+					{{/if}}
 				</ul>
-				{{/if}}
 			</section>
 
 			<section class="card__list-container">
-				{{#if event.hasFamilyAttendees}}
 				<h4 class="card__list-title">Families</h4>
 				<ul class="card__list" data-group="family">
-				{{/if}}
+					{{#if event.hasFamilyAttendees}}
 					{{#each event.familyAttendees}}
 					<li class="card__list-item">{{ fullName }}</li>
 					{{/each}}
-				{{#if event.hasFamilyAttendees}}
+					{{else}}
+					<li class="card__list-item card__list-item--disabled">no families attending</li>
+					{{/if}}
 				</ul>
-				{{/if}}
 			</section>
 
 			<section class="card__list-container">
-				{{#if event.hasSiteVisitorAttendees}}
 				<h4 class="card__list-title">Site Visitors</h4>
 				<ul class="card__list" data-group="site visitor">
-				{{/if}}
+					{{#if event.hasSiteVisitorAttendees}}
 					{{#each event.siteVisitorAttendees}}
 					<li class="card__list-item">{{ name.full }}</li>
 					{{/each}}
-				{{#if event.hasSiteVisitorAttendees}}
+					{{else}}
+					<li class="card__list-item card__list-item--disabled">no site visitors attending</li>
+					{{/if}}
 				</ul>
-				{{/if}}
 			</section>
 		</aside>
 
@@ -147,7 +167,7 @@
 			<button class="button button--large button--teal events__register-button">Register</button>
 			{{/if}}
 			{{else}}
-			<button id="register-with-mare-button" class="button button--large button--teal events__create-account-button" data-url="/register">Create an account</button>
+			<button id="register-with-mare-button" class="button button--large button--teal events__navigation-button" data-url="/register">Create an account</button>
 			{{/if}}
 			{{/if}}
 		</section>

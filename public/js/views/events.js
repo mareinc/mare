@@ -6,11 +6,8 @@
 		el: 'body',
 
         events: {
-            'click .events__category-card'						: 'navigate',
-			'click .events__create-event-button'				: 'navigate',
-			'click .events__create-account-button'				: 'navigate',
-            'click .events__show-details-button'				: 'navigate',
-			'click .events__register-button'					: 'showEventRegistrationForm'
+            'click .events__navigation-button'		: 'navigate',
+			'click .events__register-button'		: 'showEventRegistrationForm'
 		},
 		
 		initialize: function initialize() {

@@ -5,6 +5,7 @@ var keystone = require('keystone'),
 var CityOrTown = new keystone.List('City or Town', {
 	autokey: { path: 'key', from: 'cityOrTown', unique: true },
 	map: { name: 'cityOrTown' },
+	label: 'Cities and Towns',
 	defaultSort: 'cityOrTown'
 });
 
@@ -19,7 +20,8 @@ CityOrTown.add({
 CityOrTown.schema.pre('save', function( next ) {
 	'use strict';
 
-	keystone.list( 'Region').model.find()
+	keystone.list( 'Region' ).model
+		.find()
 		.exec()
 		.then( regions => {
 

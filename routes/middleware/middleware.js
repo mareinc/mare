@@ -1,12 +1,10 @@
 // TODO: move all this middleware into the appropriate files inside the middleware/ directory,
 //		 also, check for unused junk code 
 
-var _ 				= require('underscore'),
-	async			= require( 'async' ),
-	// load in Keystone for model references
-	keystone 		= require('keystone'),
-	// load in middleware
-	UserMiddleware	= require( './service_user' );
+const keystone 			= require('keystone'),
+	  _ 				= require('underscore'),
+	  async				= require( 'async' ),
+	  UserMiddleware	= require( './service_user' );
 
 // initialize the standard view locals
 exports.initLocals = function(req, res, next) {
@@ -45,7 +43,7 @@ exports.initLocals = function(req, res, next) {
 			{ title: 'How MARE Can Help You', href: '/page/how-mare-can-help-you' },
 			{ title: 'Register a Child', href: '/page/register-a-child' },
 			{ title: 'Attend Events', href: '/page/attend-events' },
-			{ title: 'Register a Family', href: '/page/register-a-family' }
+			{ title: `Register a Family's Homestudy`, href: '/page/register-a-familys-homestudy' }
 		]},
 		{ title: 'Events', subMenu: [
 			{ title: 'MARE Adoption Parties & Information Events', href: '/events/adoption-parties/'},
@@ -70,8 +68,8 @@ exports.initLocals = function(req, res, next) {
 		]}];
 
 	// based on the url from the requested page, fetch the navigation object for the site section
-	locals.currentSection = locals.mainNav.find( ( section ) => {
-		return section.subMenu.find( ( menuItem ) => {
+	locals.currentSection = locals.mainNav.find( section => {
+		return section.subMenu.find( menuItem => {
 			return menuItem.href === req.url;
 		});
 	});
@@ -210,20 +208,3 @@ exports.getArrayAsList = function getArrayAsList( array ) {
 
 	return returnString;
 }
-
-exports.charge = function( req, res ) {
-	// var stripeToken = req.body.stripeToken;
-    // var amount = 1000;
-	//
-    // stripe.charges.create({
-    //     card: stripeToken,
-    //     currency: 'usd',
-    //     amount: amount
-    // }, function(err, charge) {
-    //     if (err) {
-    //         res.send(500, err);
-    //     } else {
-    //         res.send(204);
-    //     }
-    // });
-};

@@ -1,6 +1,5 @@
 const keystone				= require( 'keystone' ),
 	  moment				= require( 'moment' ),
-	  Page					= keystone.list('Page'),
 	  Utils					= require( './utilities' ),
 	  eventService			= require( './service_event' ),
 	  successStoryService	= require( './service_success-story' );
@@ -9,7 +8,8 @@ exports.getPageByKey = key => {
 
 	return new Promise( ( resolve, reject ) => {
 		// query the database a single page model matching the passes in key
-		Page.model.findOne()
+		keystone.list( 'Page' ).model
+			.findOne()
 			.where( 'key', key )
 			.lean()
 			.exec()
@@ -59,7 +59,7 @@ exports.getSidebarItems = () => {
 				resolve( [ successStory, event ] );
 			})
 			// if any of the promises were rejected
-			.catch( () => {
+			.catch( err => {
 				// log the error for debugging purposes
 				console.error( `error fetching items to render the sidebar` );
 				// reject the promise

@@ -1,5 +1,6 @@
-const keystone		= require( 'keystone' ),
-	  pageService	= require( '../middleware/service_page' );
+const keystone			= require( 'keystone' ),
+	  pageService		= require( '../middleware/service_page' ),
+	  donationService	= require( '../middleware/service_donation' );
 
 // TODO: add code for a logged in user showing their previous donations/donation dates
 exports = module.exports = function(req, res) {
@@ -7,6 +8,9 @@ exports = module.exports = function(req, res) {
 
     const view 		= new keystone.View( req, res ),
 		  locals 	= res.locals;
+
+	// set donation interval data
+	locals.donationPlans = donationService.PLAN_TYPES;
 	
 	// fetch all data needed to render this page
 	let fetchSidebarItems = pageService.getSidebarItems();
@@ -19,6 +23,7 @@ exports = module.exports = function(req, res) {
 			// assign properties to locals for access during templating
 			locals.randomSuccessStory	= randomSuccessStory;
 			locals.randomEvent			= randomEvent;
+			locals.stripeAPIKey 		= process.env.STRIPE_PUBLIC_API_KEY_TEST;
 
 			// set the layout to render with the right sidebar
 			locals[ 'render-with-sidebar' ] = true;

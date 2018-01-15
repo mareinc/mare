@@ -41,6 +41,10 @@
 		padding: 2em;
 	}
 
+	&--large-padding-below {
+		padding-bottom: 2em;
+	}
+
 	&--small-margin-below {
 		margin-bottom: 1em;
 	}
@@ -119,6 +123,7 @@
 .card__image-description {
 	line-height: 1.3em;
 	padding-bottom: 1em;
+	color: $text-color-7;
 
 	&--centered {
 		text-align: center;
@@ -215,6 +220,14 @@
 	}
 }
 
+.card__content-block {
+	margin: 1em 0 2em;
+
+	&--centered {
+		text-align: center;
+	}
+}
+
 .card__overview {
 	display: flex;
 	width: 100%;
@@ -233,6 +246,10 @@
 .card__overview-text {
 	margin-left: 1em;
 	align-self: center;
+
+	&--normal {
+		font-style: normal;
+	}
 }
 
 /* NOTE: replace instances with .card__image-text */
@@ -276,7 +293,11 @@
 
 .card__list-item {
 	padding: 0.3em 0 0 1em;
-	color: $text-color-1;
+	color: $text-color-7;
+
+	&--disabled {
+		color: $text-color-1;
+	}
 }
 
 .card__content-divider {

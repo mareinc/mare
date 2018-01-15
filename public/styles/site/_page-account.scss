@@ -6,7 +6,7 @@
 	}
 }
 
-.mobile-account-nav-container {
+.mobile-account-nav {
     margin: 0 0 1em;
     width: 100%;
 
@@ -17,9 +17,21 @@
 
 .sidebar.account-nav {
     padding: 0;
+    z-index: 10;
 }
 
-.account-nav__link {
+.sidebar-list {
+    margin: 0;
+
+    &--account {
+        padding: 0;
+    }
+}
+
+.account-nav-link {
+    align-items: center;
+    box-shadow: inset -12px 0px 12px -6px rgba(0, 0, 0, 0.12);
+    cursor: pointer;
     display: flex;
     justify-content: space-between;
 
@@ -39,14 +51,19 @@
             width: 1em;
         }
 
-        &:hover,
-        &.account-nav__link--active {
+        &:hover {
             &:after {
                 opacity: 1;
                 transform: translateX(0);
             }
         }
-	}
+
+        &.account-nav-link--active {
+            background: white;
+            box-shadow: none;
+            color: $button-background-color-1;
+        }
+    }
 }
 
 .account-current-section__title {

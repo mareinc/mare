@@ -1,14 +1,33 @@
 <div class="card card--vertical card--large-padding">
 
-	{{#ifeq category 'mapp-trainings'}} {{> events-mapp-training-info}} {{/ifeq}}
-	{{#ifeq category 'adoption-parties'}} {{> events-adoption-party-info}} {{/ifeq}}
-	{{#ifeq category 'fundraising-events'}} {{> events-fundraising-events-info}} {{/ifeq}}
-	{{#ifeq category 'agency-info-meetings'}} {{> events-agency-info-meetings-info}} {{/ifeq}}
-	{{#ifeq category 'other-trainings'}} {{> events-other-trainings-info}} {{/ifeq}}
+	{{#ifeq category 'mapp-trainings'}}
+		<h1 class="card__title">MAPP Training Events</h1>
+		{{> events-mapp-training-info}}
+	{{/ifeq}}
+
+	{{#ifeq category 'adoption-parties'}}
+		<h1 class="card__title">MARE Adoption Parties &amp; Information Events</h1>
+		{{> events-adoption-party-info}}
+	{{/ifeq}}
+
+	{{#ifeq category 'fundraising-events'}}
+		<h1 class="card__title">Fundraising Events</h1>
+		{{> events-fundraising-events-info}}
+	{{/ifeq}}
+
+	{{#ifeq category 'agency-info-meetings'}}
+		<h1 class="card__title">Agency Information Meetings</h1>
+		{{> events-agency-info-meetings-info}}
+	{{/ifeq}}
+
+	{{#ifeq category 'other-trainings'}}
+		<h1 class="card__title">Other Trainings</h1>
+		{{> events-other-trainings-info}}
+	{{/ifeq}}
 
 	{{#if canSubmitEvent}}
 	<section class="button-group button-group--horizontal button-group--space-around button-group--large-margin-above button-group--small-margin-below">
-		<button class="button button--large button--teal events__create-event-button" data-url="/forms/agency-event-submission-form">Submit an Event</button>
+		<button class="button button--large button--teal events__navigation-button" data-url="/forms/agency-event-submission-form">Submit an Event</button>
 	</section>
 	{{/if}}
 
@@ -43,7 +62,7 @@
 				<span class="card__overview">
 					{{#if address}}
 					<i class="fa fa-2x fa-map-marker card__overview-icon" aria-hidden="true"></i>
-					<address class="card__overview-text">
+					<address class="card__overview-text card__overview-text--normal">
 						{{ address.street1 }} {{ address.street2 }}<br>
 						{{ address.city }}, {{ address.state.state }} {{ address.zipCode }}
 					</address>
@@ -55,14 +74,10 @@
 					<span class="card__overview-text">{{ startTime }} - {{ endTime }}</span>
 					{{/if}}
 				</span>
-				<span class="card__overview">
-					<i class="fa fa-2x fa-envelope-o card__overview-icon" aria-hidden="true"></i>
-					<span class="card__overview-text">Click “More Info” below for registration and contact info</span>
-				</span>
 			</section>
 		</div>
 		<section class="button-group button-group--horizontal button-group--space-around button-group--large-margin-above button-group--small-margin-below">
-			<button class="button button--large button--teal events__show-details-button" data-url="{{ url }}">View Details</button>
+			<button class="button button--large button--teal events__navigation-button" data-url="{{ url }}">View Details</button>
 			{{#if ../canRegister}}
 			{{#if ../user}}
 			{{!-- TODO: this handling of unregistering through forms was only done for consistency in flash messaging and NEEDS to be reworked --}}

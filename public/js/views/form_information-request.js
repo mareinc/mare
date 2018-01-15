@@ -5,20 +5,20 @@
 		el: '.form--information-request',
 
 		events: {
-			'change #is-not-MA-city-checkbox' 	: 'toggleCitySelect',
+			'change #is-not-ma-city-checkbox' 	: 'toggleCitySelect',
 			'change .interest'					: 'toggleChildRegistrationNumbersInput'
 		},
 
 		initialize: function() {
 			// DOM cache any commonly used elements to improve performance
-			this.$MACityContainer					= this.$( '.ma-city-container' );
+			this.$MACityContainer					= this.$( '.city-container' );
 			this.$NonMACityContainer				= this.$( '.non-ma-city-container' );
-			this.$MACity							= this.$( '#ma-city' );
+			this.$MACity							= this.$( '#city' );
 			this.$NonMACity							= this.$( '#non-ma-city' );
 			this.$interest							= this.$( '.interest' );
 			this.$childRegistrationNumbersContainer	= this.$( '.child-registration-numbers-container' );
 
-			// Initialize parsley validation on the form
+			// initialize parsley validation on the form
 			this.form = this.$el.parsley();
 			
 			this.form.on( 'field:validated', this.validateForm );

@@ -157,17 +157,15 @@ keystone.set('nav', {
 	'mailing lists'		: [ 'mailing-lists' ],
 	'relationships'		: [ 'csc-region-contacts', 'staff-email-contacts', 'matches', 'media-features', 'placements' ],
 	'change tracking'	: [ 'child-histories', 'family-histories', 'social-worker-histories' ],
-	'lists'				: [ 'child-statuses', 'child-types', 'city-or-towns', 'closed-reasons', 'communication-methods',
-						    'disabilities', 'event-types', 'family-constellations', 'family-statuses', 'genders', 'inquiry-methods',
+	'lists'				: [ 'child-statuses', 'child-types', 'city-or-towns', 'closed-reasons', 'communication-methods', 'disabilities', 
+						    'email-targets', 'event-types', 'family-constellations', 'family-statuses', 'genders', 'inquiry-methods',
 						    'inquiry-types', 'languages', 'legal-statuses', 'match-determinations', 'media-eligibilities',
 						    'other-considerations', 'other-family-constellation-considerations', 'races', 'regions', 'residences',
-							'social-worker-positions', 'sources', 'staff-email-targets', 'states', 'way-to-hear-about-mares' ],
+							'social-worker-positions', 'sources', 'states', 'way-to-hear-about-mares' ],
 	'donations'			: [ 'donations' ],
 	'images'			: [ 'featured-items', 'slideshows', 'slideshow-items' ],
 	'content pages'		: [ 'pages' ],
-	'content snippets'	: [ 'success-stories' ],
-	
-
+	'content snippets'	: [ 'success-stories' ]
 });
 
 // Start Keystone to connect to your database and initialise the web server

@@ -1,4 +1,4 @@
-var keystone = require( 'keystone' );
+const keystone = require( 'keystone' );
 
 /* fetch the child record targeted in the inquiry */
 exports.getChild = ( inquiryData, done ) => {  
@@ -13,19 +13,20 @@ exports.getChild = ( inquiryData, done ) => {
 		return done();
 	}
 	// for all other inquiry types, get the child record
-	keystone.list( 'Child' ).model.findById( inquiryData.childId )
-			.populate( 'status' )
-			.exec()
-			.then( child => {
-				// store the child in the inquiryData object
-				inquiryData.child = child;
-				// take note of whether the field was populated for including conditional sections of the email
-				inquiryData.hasChild = true;
-				done();
-			}, err => {
-				console.log( err );
-				done();
-			});
+	keystone.list( 'Child' ).model
+		.findById( inquiryData.childId )
+		.populate( 'status' )
+		.exec()
+		.then( child => {
+			// store the child in the inquiryData object
+			inquiryData.child = child;
+			// take note of whether the field was populated for including conditional sections of the email
+			inquiryData.hasChild = true;
+			done();
+		}, err => {
+			console.log( err );
+			done();
+		});
 };
 
 exports.getChildsSocialWorker = ( inquiryData, done ) => {
@@ -40,18 +41,19 @@ exports.getChildsSocialWorker = ( inquiryData, done ) => {
 		return done();
 	}
 	// use the child data to fetch the child's social worker
-	keystone.list( 'Social Worker' ).model.findById( inquiryData.child.adoptionWorker )
-			.exec()
-			.then( socialWorker => {
-				// store the child's social worker in the inquiryData object
-				inquiryData.childsSocialWorker = socialWorker;
-				// take note of whether the field was populated for including conditional sections of the email
-				inquiryData.hasChildsSocialWorker = true;
-				done();
-			}, err => {
-				console.log( err );
-				done();
-			});
+	keystone.list( 'Social Worker' ).model
+		.findById( inquiryData.child.adoptionWorker )
+		.exec()
+		.then( socialWorker => {
+			// store the child's social worker in the inquiryData object
+			inquiryData.childsSocialWorker = socialWorker;
+			// take note of whether the field was populated for including conditional sections of the email
+			inquiryData.hasChildsSocialWorker = true;
+			done();
+		}, err => {
+			console.log( err );
+			done();
+		});
 };
 
 exports.getCSCRegionContacts = ( inquiryData, done ) => {
@@ -61,19 +63,20 @@ exports.getCSCRegionContacts = ( inquiryData, done ) => {
 		return done();
 	}
 	// use the region information in the child record to fetch the CSC region contacts
-	keystone.list( 'CSC Region Contact' ).model.find()
-			.where( 'region', inquiryData.child.region )
-			.populate( 'cscRegionContact' ) // we need the information for the contact, not just their ID
-			.exec()
-			.then( cscRegionContacts => {
-				inquiryData.cscRegionContacts = cscRegionContacts;
-				// take note of whether the field was populated for including conditional sections of the email
-				inquiryData.hasCscRegionContacts = true;
-				done();
-			}, err => {
-				console.log( err );
-				done();
-			});
+	keystone.list( 'CSC Region Contact' ).model
+		.find()
+		.where( 'region', inquiryData.child.region )
+		.populate( 'cscRegionContact' ) // we need the information for the contact, not just their ID
+		.exec()
+		.then( cscRegionContacts => {
+			inquiryData.cscRegionContacts = cscRegionContacts;
+			// take note of whether the field was populated for including conditional sections of the email
+			inquiryData.hasCscRegionContacts = true;
+			done();
+		}, err => {
+			console.log( err );
+			done();
+		});
 };
 
 exports.getOnBehalfOfFamily = ( inquiry, inquiryData, done ) => {
@@ -99,23 +102,24 @@ exports.getOnBehalfOfFamily = ( inquiry, inquiryData, done ) => {
 		return done();
 	}
 	// fetch the family record
-	keystone.list( 'Family' ).model.findById( inquiry.onBehalfOfFamily )
-			.exec()
-			.then( family => {
-				// store the family in the inquiryData object
-				inquiryData.onBehalfOfFamily = family;
-				// if we found the family
-				if( family ) {
-					// take note of whether the field was populated for including conditional sections of the email
-					inquiryData.hasOnBehalfOfFamilyModel = true;
-					inquiryData.hasOnBehalfOfFamily = true;
-					inquiryData.emailAddressFamilyOnBehalfOf.push( family.contact1.email );
-				}
-				done();
-			}, err => {
-				console.log( err );
-				done();
-			});
+	keystone.list( 'Family' ).model
+		.findById( inquiry.onBehalfOfFamily )
+		.exec()
+		.then( family => {
+			// store the family in the inquiryData object
+			inquiryData.onBehalfOfFamily = family;
+			// if we found the family
+			if( family ) {
+				// take note of whether the field was populated for including conditional sections of the email
+				inquiryData.hasOnBehalfOfFamilyModel = true;
+				inquiryData.hasOnBehalfOfFamily = true;
+				inquiryData.emailAddressFamilyOnBehalfOf.push( family.contact1.email );
+			}
+			done();
+		}, err => {
+			console.log( err );
+			done();
+		});
 };
 
 exports.getOnBehalfOfFamilyState = ( inquiryData, done ) => {
@@ -126,16 +130,17 @@ exports.getOnBehalfOfFamilyState = ( inquiryData, done ) => {
 	}
 	// TODO - CRITICAL: what if the state field is missing?  We need to check all middleware for reliance on non-required fields
 	// fetch the family record
-	keystone.list( 'State' ).model.findById( inquiryData.onBehalfOfFamily.address.state )
-			.exec()
-			.then( state => {
-				// store the family in the inquiryData object
-				inquiryData.onBehalfOfFamilyState = state;
-				done();
-			}, err => {
-				console.log( err );
-				done();
-			});
+	keystone.list( 'State' ).model
+		.findById( inquiryData.onBehalfOfFamily.address.state )
+		.exec()
+		.then( state => {
+			// store the family in the inquiryData object
+			inquiryData.onBehalfOfFamilyState = state;
+			done();
+		}, err => {
+			console.log( err );
+			done();
+		});
 };
 
 exports.getAgencyContacts = ( inquiryData, done ) => {
@@ -151,19 +156,20 @@ exports.getAgencyContacts = ( inquiryData, done ) => {
 	}
 	// TODO: look at Child model for a cleaner way to do the $in with ES6 spread operator
 	// If a general inquiry has been accepted, we need to send an email to the agency
-	keystone.list( 'Agency' ).model.find()
-			.where( { _id: { $in: inquiryData.agencyReferralIds } } )
-			.exec()
-			.then( agencies => {
-				// store the agencies in the inquiry object
-				inquiryData.agencyContacts = agencies;
-				// take note of whether the field was populated for including conditional sections of the email
-				inquiryData.hasAgencyContacts = true;
-				done();
-			}, err => {
-				console.log( err );
-				done();
-			});
+	keystone.list( 'Agency' ).model
+		.find()
+		.where( { _id: { $in: inquiryData.agencyReferralIds } } )
+		.exec()
+		.then( agencies => {
+			// store the agencies in the inquiry object
+			inquiryData.agencyContacts = agencies;
+			// take note of whether the field was populated for including conditional sections of the email
+			inquiryData.hasAgencyContacts = true;
+			done();
+		}, err => {
+			console.log( err );
+			done();
+		});
 };
 
 exports.getInquirer = ( inquiryData, done ) => {
@@ -178,99 +184,106 @@ exports.getInquirer = ( inquiryData, done ) => {
 				 : inquiryData.socialWorkerId;
 				 
 	// use the target model type and id to fetch the inquirer record
-	keystone.list( userType ).model.findById( userId )
-			.exec()
-			.then( inquirer => {
-				// store the inquirer in the inquiryData object
-				inquiryData.inquirer = inquirer;
-				// take note of whether the field was populated for including conditional sections of the email
-				inquiryData.hasInquirer = true;
-				done();
-			}, err => {
-				console.log( err );
-				done();
-			});
+	keystone.list( userType ).model
+		.findById( userId )
+		.exec()
+		.then( inquirer => {
+			// store the inquirer in the inquiryData object
+			inquiryData.inquirer = inquirer;
+			// take note of whether the field was populated for including conditional sections of the email
+			inquiryData.hasInquirer = true;
+			done();
+		}, err => {
+			console.log( err );
+			done();
+		});
 };
 
 exports.getInquirerState = ( inquiryData, done ) => {
 
-	keystone.list( 'State' ).model.findById( inquiryData.inquirer.address.state )
-			.exec()
-			.then( state => {
-				// store the inquirer in the inquiryData object
-				inquiryData.inquirerState = state;
-				done();
-			}, err => {
-				console.log( err );
-				done();
-			});
+	keystone.list( 'State' ).model
+		.findById( inquiryData.inquirer.address.state )
+		.exec()
+		.then( state => {
+			// store the inquirer in the inquiryData object
+			inquiryData.inquirerState = state;
+			done();
+		}, err => {
+			console.log( err );
+			done();
+		});
 };
 
 exports.getStaffInquiryContact = ( inquiryData, done ) => {
 	// Fetch the list of email targets to find the id of 'general inquiries'
-	keystone.list( 'Staff Email Target' ).model.findOne()
-			.where( 'staffEmailTarget', 'general inquiries' )
-			.exec()
-			.then( generalInquiryTargetId => {
-				// Fetch the CSC contact designated for general inquiries
-				keystone.list( 'Staff Email Contact' ).model.find()
-						.where( 'emailTarget', generalInquiryTargetId )
-						.populate( 'staffEmailContact', 'email' ) // We need the information for the contact, not just their ID
-						.exec()
-						.then( generalInquiryStaffContacts => {
-							inquiryData.generalInquiryStaffContacts = generalInquiryStaffContacts;
-							done();
-						}, err => {
-							console.log( err );
-							done();
-						});
-			}, err => {
-				console.log( err );
-				done();
-			});
+	keystone.list( 'Email Target' ).model
+		.findOne()
+		.where( 'emailTarget', 'general inquiries' )
+		.exec()
+		.then( generalInquiryTargetId => {
+			// Fetch the CSC contact designated for general inquiries
+			keystone.list( 'Staff Email Contact' ).model
+				.find()
+				.where( 'emailTarget', generalInquiryTargetId )
+				.populate( 'staffEmailContact', 'email' ) // We need the information for the contact, not just their ID
+				.exec()
+				.then( generalInquiryStaffContacts => {
+					inquiryData.generalInquiryStaffContacts = generalInquiryStaffContacts;
+					done();
+				}, err => {
+					console.log( err );
+					done();
+				});
+		}, err => {
+			console.log( err );
+			done();
+		});
 };
 
 exports.getSource = ( sourceId, inquiryData, done ) => {
 
-	keystone.list( 'Source' ).model.findOne()
-			.where( '_id', sourceId )
-			.exec()
-			.then( source => {
-				inquiryData.source = source.source;
-				done();
-			}, err => {
-				console.log( err );
-				done();
-			});
+	keystone.list( 'Source' ).model
+		.findOne()
+		.where( '_id', sourceId )
+		.exec()
+		.then( source => {
+			inquiryData.source = source.source;
+			done();
+		}, err => {
+			console.log( err );
+			done();
+		});
 
 };
 
 exports.getMethod = ( methodId, inquiryData, done ) => {
 
-	keystone.list( 'Inquiry Method' ).model.findOne()
-			.where( '_id', methodId )
-			.exec()
-			.then( method => {
-				inquiryData.method = method.inquiryMethod;
-				done();
-			}, err => {
-				console.log( err );
-				done();
-			});
+	keystone.list( 'Inquiry Method' ).model
+		.findOne()
+		.where( '_id', methodId )
+		.exec()
+		.then( method => {
+			inquiryData.method = method.inquiryMethod;
+			done();
+		}, err => {
+			console.log( err );
+			done();
+		});
 };
 
 exports.getInquiryTakenBy = ( employeeId, inquiryData, done ) => {
 
-	keystone.list( 'Admin' ).model.findOne()
-			.where( '_id', employeeId )
-			.exec()
-			.then( employee => {
-				inquiryData.takenBy = employee.name.full;
-				done();
-			}, err => {
-				console.log( err );
-				done();
-			});
+	keystone.list( 'Admin' ).model
+		.findOne()
+		.where( '_id', employeeId )
+		.exec()
+		.then( employee => {
+			inquiryData.takenBy = employee.name.full;
+			done();
+		}, err => {
+			console.log( err );
+			done();
+		});
 };
 
 exports.setStaffEmail = ( inquiryData, done ) => {

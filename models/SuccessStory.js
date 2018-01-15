@@ -30,13 +30,14 @@ SuccessStory.add({
 
 SuccessStory.schema.statics.findRandom = function( callback ) {
 
-	this.count(function( err, count ) {
+	this.count( function( err, count ) {
 	
 		if ( err ) {
-		return callback( err );
+			return callback( err );
 		}
 		
-		var rand = Math.floor( Math.random() * count );
+		const rand = Math.floor( Math.random() * count );
+		
 		this.findOne().skip( rand ).exec( callback );
 	
 	}.bind( this ) );
@@ -48,7 +49,7 @@ SuccessStory.schema.pre( 'save', function(next) {
 
 	this.imageFeatured = this._.image.thumbnail( 168, 168, { quality: 80 } );
 	this.imageSidebar = this._.image.thumbnail( 216, 196, { quality: 80 } );
-	this.url = '/success-story/' + this.key;
+	this.url = '/success-stories/' + this.key;
 
 	// Create an identifying name for file uploads
 	this.fileName = this.key.replace( /-/g, '_' );

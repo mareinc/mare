@@ -1,30 +1,11 @@
-const keystone								= require( 'keystone' ),
-	  _										= require( 'underscore' ),
-	  CityOrTown							= keystone.list( 'City or Town' ),
-	  ChildStatus							= keystone.list( 'Child Status' ),
-	  ChildType								= keystone.list( 'Child Type' ),
-	  Disability							= keystone.list( 'Disability' ),
-	  EventType								= keystone.list( 'Event Type' ),
-	  FamilyConstellation					= keystone.list( 'Family Constellation' ),
-	  Gender								= keystone.list( 'Gender' ),
-	  InquiryMethod							= keystone.list( 'Inquiry Method' ),
-	  LegalStatus							= keystone.list( 'Legal Status' ),
-	  Language								= keystone.list( 'Language' ),
-	  OtherConsideration					= keystone.list( 'Other Consideration' ),
-	  OtherFamilyConstellationConsideration	= keystone.list( 'Other Family Constellation Consideration' ),
-	  Position								= keystone.list( 'Social Worker Position' ),
-	  Race									= keystone.list( 'Race' ),
-	  Region 								= keystone.list( 'Region' ),
-	  Residence								= keystone.list( 'Residence' ),
-	  Source								= keystone.list( 'Source' ),
-	  State									= keystone.list( 'State' ),
-	  WayToHearAboutMARE					= keystone.list( 'Way To Hear About MARE' );
+const keystone	= require( 'keystone' ),
+	  _			= require( 'underscore' );
 
 exports.getAllRegions = () => {
 
 	return new Promise( ( resolve, reject ) => {
 		// query the database for all region models
-		Region.model
+		keystone.list( 'Region' ).model
 			.find()
 			.exec()
 			.then( regions => {
@@ -47,11 +28,35 @@ exports.getAllRegions = () => {
 	});
 };
 
+exports.getRegionByName = name => {
+	
+	return new Promise( ( resolve, reject ) => {
+		// query the database for the region with the matching name
+		keystone.list( 'Region' ).model
+			.findOne()
+			.where( 'region', name )
+			.exec()
+			.then( region => {
+				// if no region could not be found
+				if( !region ) {
+					// reject the promise with an error message
+					return reject( `region could not be found by name: ${ name }` );
+				}
+				// if the region was successfully returned, resolve with the model
+				resolve( region );
+			// if an error was encountered fetching from the database
+			}, err => {
+				// reject the promise
+				reject( err );
+			});
+	});
+};
+
 exports.getAllSocialWorkerPositions = () => {
 	
 	return new Promise( ( resolve, reject ) => {
 		// query the database for all social worker position models
-		Position.model
+		keystone.list( 'Social Worker Position' ).model
 			.find()
 			.exec()
 			.then( positions => {
@@ -78,7 +83,7 @@ exports.getAllRaces = options => {
 	
 	return new Promise( ( resolve, reject ) => {
 		// query the database for all race models
-		Race.model
+		keystone.list( 'Race' ).model
 			.find()
 			.exec()
 			.then( races => {
@@ -117,7 +122,7 @@ exports.getAllStates = options => {
 	
 	return new Promise( ( resolve, reject ) => {
 		// query the database for all states models
-		State.model
+		keystone.list( 'State' ).model
 			.find()
 			.exec()
 			.then( states => {
@@ -152,11 +157,34 @@ exports.getAllStates = options => {
 	});
 };
 
+exports.getStateById = id => {
+	
+	return new Promise( ( resolve, reject ) => {
+		// query the database for the state with the matching _id
+		keystone.list( 'State' ).model
+			.findById( id )
+			.exec()
+			.then( state => {
+				// if no state could not be found
+				if( !state ) {
+					// reject the promise with an error message
+					return reject( `state could not be found` );
+				}
+				// if the state was successfully returned, resolve with the model
+				resolve( state );
+			// if an error was encountered fetching from the database
+			}, err => {
+				// reject the promise
+				reject( err );
+			});
+	});
+};
+
 exports.getAllGenders = () => {
 	
 	return new Promise( ( resolve, reject ) => {
 		// query the database for all gender models
-		Gender.model
+		keystone.list( 'Gender' ).model
 			.find()
 			.exec()
 			.then( genders => {
@@ -183,7 +211,7 @@ exports.getAllLegalStatuses = () => {
 	
 	return new Promise( ( resolve, reject ) => {
 		// query the database for all legal status models
-		LegalStatus.model
+		keystone.list( 'Legal Status' ).model
 			.find()
 			.exec()
 			.then( legalStatuses => {
@@ -210,7 +238,7 @@ exports.getAllLanguages = () => {
 	
 	return new Promise( ( resolve, reject ) => {
 		// query the database for all language models
-		Language.model
+		keystone.list( 'Language' ).model
 			.find()
 			.exec()
 			.then( languages => {
@@ -237,7 +265,7 @@ exports.getAllFamilyConstellations = () => {
 	
 	return new Promise( ( resolve, reject ) => {
 		// query the database for all family constellation models
-		FamilyConstellation.model
+		keystone.list( 'Family Constellation' ).model
 			.find()
 			.exec()
 			.then( familyConstellations => {
@@ -264,7 +292,7 @@ exports.getAllDisabilities = () => {
 	
 	return new Promise( ( resolve, reject ) => {
 		// query the database for all disability models
-		Disability.model
+		keystone.list( 'Disability' ).model
 			.find()
 			.exec()
 			.then( disabilities => {
@@ -291,7 +319,7 @@ exports.getAllOtherConsiderations = () => {
 	
 	return new Promise( ( resolve, reject ) => {
 		// query the database for all other consideration models
-		OtherConsideration.model
+		keystone.list( 'Other Consideration' ).model
 			.find()
 			.exec()
 			.then( otherConsiderations => {
@@ -319,7 +347,7 @@ exports.getChildTypesForWebsite = () => {
 	
 	return new Promise( ( resolve, reject ) => {
 		// query the database for all child types marked for display on the website
-		ChildType.model
+		keystone.list( 'Child Type' ).model
 			.find()
 			.where( 'availableOnWebsite', true )
 			.exec()
@@ -348,7 +376,7 @@ exports.getEventTypesForWebsite = () => {
 	
 	return new Promise( ( resolve, reject ) => {
 		// query the database for all event types marked for display on the website
-		EventType.model
+		keystone.list( 'Event Type' ).model
 			.find()
 			.where( 'availableOnWebsite', true )
 			.exec()
@@ -376,7 +404,7 @@ exports.getAllWaysToHearAboutMARE = options => {
 	
 	return new Promise( ( resolve, reject ) => {
 	// query the database for all ways to hear about MARE
-	WayToHearAboutMARE.model
+	keystone.list( 'Way To Hear About MARE' ).model
 		.find()
 		.exec()
 		.then( waysToHearAboutMARE => {
@@ -415,7 +443,7 @@ exports.getAllResidences = () => {
 
 	return new Promise( ( resolve, reject ) => {
 		// query the database for all residences
-		Residence.model
+		keystone.list( 'Residence' ).model
 			.find()
 			.exec()
 			.then( residences => {
@@ -442,7 +470,7 @@ exports.getAllOtherFamilyConstellationConsiderations = () => {
 
 	return new Promise( ( resolve, reject ) => {
 		// query the database for all other family constellation considerations
-		OtherFamilyConstellationConsideration.model
+		keystone.list( 'Other Family Constellation Consideration' ).model
 			.find()
 			.exec()
 			.then( otherFamilyConstellationConsiderations => {
@@ -469,9 +497,9 @@ exports.getAllCitiesAndTowns = () => {
 	
 	return new Promise( ( resolve, reject ) => {
 		// query the database for all cities and towns
-		CityOrTown.model
+		keystone.list( 'City or Town' ).model
 			.find()
-			.sort( { cityOrTown: 1 } )
+			.sort( { cityOrTown: 1 } ) // TODO: should this be handled in the model?
 			.exec()
 			.then( citiesAndTowns => {
 				// if no cities or towns could not be found
@@ -492,12 +520,36 @@ exports.getAllCitiesAndTowns = () => {
 			});
 	});
 };
+
+exports.getCityOrTownById = id => {
+	
+	return new Promise( ( resolve, reject ) => {
+		// query the database for the city or town with the matching _id
+		keystone.list( 'City or Town' ).model
+			.findById( id )
+			.exec()
+			.then( city => {
+				// if no city or town could not be found
+				if( !city ) {
+					// reject the promise with an error message
+					return reject( `city or town could not be found` );
+				}
+				// if the city or town was successfully returned, resolve with the model
+				resolve( city );
+			// if an error was encountered fetching from the database
+			}, err => {
+				// reject the promise
+				reject( err );
+			});
+	});
+};
+
 // TODO: this needs to be un-async'ed
 exports.getChildStatusIdByName = ( req, res, done, name ) => {
 
 	let locals = res.locals;
 
-	ChildStatus.model
+	keystone.list( 'Child Status' ).model
 		.findOne()
 		.where( 'childStatus' ).equals( name )
 		.lean()
@@ -514,13 +566,13 @@ exports.getChildStatusIdByName = ( req, res, done, name ) => {
 			done();
 
 		});
- };
+};
 
 exports.getInquiryMethodByName = name => {
 
 	return new Promise( ( resolve, reject ) => {
 		// attempt to find a single inquiry method matching the passed in name
-		InquiryMethod.model
+		keystone.list( 'Inquiry Method' ).model
 			.findOne()
 			.where( 'inquiryMethod' ).equals( name )
 			.exec()
@@ -548,7 +600,7 @@ exports.getSourceByName = name => {
 	
 		return new Promise( ( resolve, reject ) => {
 			// attempt to find a single source matching the passed in name
-			Source.model
+			keystone.list( 'Source' ).model
 				.findOne()
 				.where( 'source' ).equals( name )
 				.exec()

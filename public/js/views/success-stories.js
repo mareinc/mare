@@ -5,7 +5,7 @@
         el: 'body',
 
         events: {
-            'click .success-story__button'	: 'navigate'
+            'click .success-story__navigation-button': 'navigate'
         },
 
         navigate: function navigate( event ) {

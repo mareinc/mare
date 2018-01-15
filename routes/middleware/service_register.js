@@ -6,15 +6,10 @@
 //		 appropriate files
 
 const keystone 						= require( 'keystone' ),
-	  User							= keystone.list( 'User' ),
-	  SiteVisitor 					= keystone.list( 'Site Visitor' ),
-	  SocialWorker 					= keystone.list( 'Social Worker' ),
-	  Family						= keystone.list( 'Family' ),
-	  MailingList					= keystone.list( 'Mailing List' ),
-	  AccountVerificationCode		= keystone.list( 'Account Verification Code' ),
 	  registrationEmailMiddleware	= require( './emails_register' ),
-	  staffEmailTargetMiddleware	= require( './service_staff-email-target' ),
+	  emailTargetMiddleware			= require( './service_email-target' ),
 	  staffEmailContactMiddleware	= require( './service_staff-email-contact' ),
+	  userService					= require( './service_user' ),
 	  utilities						= require( './utilities' );
 
 exports.registerUser = ( req, res, next ) => {
@@ -33,223 +28,311 @@ exports.registerUser = ( req, res, next ) => {
 	}
 
 	// check for conditions that will prevent saving the model
-	const isEmailValid			= exports.validateEmail( user.email );			// returns true/false
-	const fetchDuplicateEmail	= exports.checkForDuplicateEmail( user.email ); // returns a promise
-	const isPasswordValid		= exports.validatePassword( user.password, user.confirmPassword ); // returns true/false
+	const isEmailValid			= exports.validateEmail( user.email ),			// returns true/false
+		  fetchDuplicateEmail	= exports.checkForDuplicateEmail( user.email ), // returns a promise
+		  isPasswordValid		= exports.validatePassword( user.password, user.confirmPassword ); // returns true/false
 
-	fetchDuplicateEmail.then( isEmailDuplicate => {
-		// set flash messages for any errors with the email/password information submitted
-		exports.setInitialErrorMessages( req, isEmailValid, isEmailDuplicate, isPasswordValid );
-		// if initial errors exist, prevent additional processing, alert the user via the flash messages above
-		if( !isEmailValid || isEmailDuplicate || !isPasswordValid ) {
-			// and redirect to the appropriate page 
-			res.redirect( 303, redirectPath );
-		// if there were no initial errors, proceed with creating the account
-		} else {
-			if( registrationType === 'siteVisitor' ) {
-				// save the site visitor model using the submitted user details
-				exports.saveSiteVisitor( user ).then( newSiteVisitor => {
-					// if the new site visitor model was saved successfully
-					// create a success flash message
-					req.flash( 'success', { title: 'Your account has been successfully created' } );
-					// create a new random code for the user to verify their account with
-					const verificationCode = utilities.generateAlphanumericHash( 35 );
-					// store the database id of the newly created user
-					const userId = newSiteVisitor.get( '_id' );
-					// store the user type found in the returned model
-					const userType = newSiteVisitor.userType;
-					// store the host name to link to the verification code in the thank you email
-					const host = req.headers.host;
-					// store the array of mailing list ids the user has opted into
-					const mailingListIds = user.mailingLists;
-					// create a new verification code model in the database to allow users to verify their accounts
-					const createVerificationRecord = exports.createNewVerificationModel( verificationCode, userId );
-					// fetch contact info for the staff contact for site visitor registration
-					const fetchRegistrationStaffContactInfo = exports.getRegistrationStaffContactInfo( 'site visitor' );
-					// once the contact info has been fetched
-					Promise.all( [ createVerificationRecord, fetchRegistrationStaffContactInfo ] ).then( values => {
-						// assign local variables to the values returned by the promises
-						const [ verificationRecord, staffContactInfo ] = values;
-						// send the thank you email to the user
-						const thankYouEmailSentToUser = registrationEmailMiddleware.sendThankYouEmailToUser( staffContactInfo, user.email, userType, verificationCode, host );
-						// TODO: need to send a notification email to the appropriate staff member as well ( check with Lisa to see if this is needed )
-						// add the user to any mailing lists they've opted into
-						const userAddedToMailingLists = exports.addToMailingLists( newSiteVisitor, mailingListIds, registrationType );
-						// if there was an error sending the thank you email to the new site visitor
-						thankYouEmailSentToUser.catch( reason => {
-							// log the reason the promise was rejected
-							console.error( reason );
-						});
-						// if there was an error adding the new site visitor to the target mailing lists
-						userAddedToMailingLists.catch( reason => {
-							// log the reason the promise was rejected
-							console.error( reason );
-						});
-						// redirect the user back to the appropriate page
-						res.redirect( 303, redirectPath );
-					// if there was an error saving the verification model or fetching the the registration staff contact info
-					}).catch( reason => {
-						// log the reason the promise was rejected
-						console.error( reason );
-						// redirect the user back to the appropriate page
-						res.redirect( 303, redirectPath );
-					});
-				})
-				// if there was an error saving the new site visitor
-				.catch( () => {
-					// create an error flash message to send back to the user
-					req.flash( 'error', {
-						title: 'There was an error creating your account',
-						detail: 'If this error persists, please contact MARE for assistance' } );
-					// redirect the user back to the appropriate page
-					res.redirect( 303, redirectPath );
-				});
+	fetchDuplicateEmail
+		.then( isEmailDuplicate => {
+			// set flash messages for any errors with the email/password information submitted
+			exports.setInitialErrorMessages( req, isEmailValid, isEmailDuplicate, isPasswordValid );
+			// if initial errors exist, prevent additional processing, alert the user via the flash messages above
+			if( !isEmailValid || isEmailDuplicate || !isPasswordValid ) {
+				// and redirect to the appropriate page 
+				res.redirect( 303, redirectPath );
+			// if there were no initial errors, proceed with creating the account
+			} else {
+				if( registrationType === 'siteVisitor' ) {
+					// save the site visitor model using the submitted user details
+					exports.saveSiteVisitor( user )
+						.then( newSiteVisitor => {
+							// if the new site visitor model was saved successfully
+							// create a success flash message
+							req.flash( 'success', { title: 'Your account has been successfully created' } );
+							// redirect the user back to the appropriate page
+							res.redirect( 303, redirectPath );
 
-			} else if( registrationType === 'socialWorker' ) {
-				// save the social worker model
-				exports.saveSocialWorker( user ).then( newSocialWorker => {
-					// if the new social worker model was saved successfully
-					req.flash( 'success', {
-						title: 'Your account has been successfully created',
-						detail: 'Please note that it can take several days for your account to be reviewed and activated.  You will receive an email once MARE has had a chance to review your information.' } );
-					// create a new random code for the user to verify their account with
-					const verificationCode = utilities.generateAlphanumericHash( 35 );
-					// store the database id of the newly created user
-					const userId = newSocialWorker.get( '_id' );
-					// store the user type found in the returned model
-					const userType = newSocialWorker.userType;
-					// store the host name to link to the verification code in the thank you email
-					const host = req.headers.host;
-					// store the array of mailing list ids the user has opted into
-					const mailingListIds = user.mailingLists;
-					// create a new verification code model in the database to allow users to verify their accounts
-					const createVerificationRecord = exports.createNewVerificationModel( verificationCode, userId );
-					// fetch contact info for the staff contact for social worker registration
-					const fetchRegistrationStaffContactInfo = exports.getRegistrationStaffContactInfo( 'social worker' );
-					// once the contact info has been fetched
-					Promise.all( [ createVerificationRecord, fetchRegistrationStaffContactInfo ] ).then( values => {
-						// assign local variables to the values returned by the promises
-						const [ verificationRecord, staffContactInfo ] = values;
-						// send the thank you email to the user
-						const thankYouEmailSentToUser = registrationEmailMiddleware.sendThankYouEmailToUser( staffContactInfo, user.email, userType, verificationCode, host );
-						// TODO: need to send a notification email to the appropriate staff member as well ( check with Lisa to see if this is needed )
-						// add the user to any mailing lists they've opted into
-						const userAddedToMailingLists = exports.addToMailingLists( newSocialWorker, mailingListIds, registrationType );
-						// if there was an error sending the thank you email to the new social worker
-						thankYouEmailSentToUser.catch( reason => {
-							// log the reason the promise was rejected
-							console.error( reason );
-						});
-						// if there was an error adding the new social worker to the target mailing lists
-						userAddedToMailingLists.catch( reason => {
-							// log the reason the promise was rejected
-							console.error( reason );
-						});
-						// redirect the user back to the appropriate page
-						res.redirect( 303, redirectPath );
-					// if there was an error saving the verification model or fetching the the registration staff contact info
-					}).catch( reason => {
-						// log the reason the promise was rejected
-						console.error( reason );
-						// redirect the user back to the appropriate page
-						res.redirect( 303, redirectPath );
-					});
-				})
-				// if there was an error saving the new social worker
-				.catch( () => {
-					// create an error flash message to send back to the user
-					req.flash( 'error', {
-						title: 'There was an error creating your account',
-						detail: 'If this error persists, please contact MARE for assistance' } );
-					
-					res.redirect( 303, redirectPath );
-				});
+							// create a new random code for the user to verify their account with
+							const verificationCode = utilities.generateAlphanumericHash( 35 );
+							// store the database id of the newly created user
+							const userId = newSiteVisitor.get( '_id' );
+							// store the user type found in the returned model
+							const userType = newSiteVisitor.userType;
+							// store the host name to link to the verification code in the account verification email
+							const host = req.secure ? `https://${ req.headers.host }` : `http://${ req.headers.host }`;
+							// store the array of mailing list ids the user has opted into
+							const mailingListIds = user.mailingLists;
+							// set the fields to populate on the fetched user model
+							const populateOptions = [ 'address.city', 'address.state', 'heardAboutMAREFrom' ];
+							
+							// fetch the user model.  Needed because the copies we have don't have the Relationship fields populated
+							const fetchUser = userService.getUserByIdNew( userId, keystone.list( 'Site Visitor' ), populateOptions );
+							// fetch contact info for the staff contact for site visitor registration
+							const fetchRegistrationStaffContactInfo = exports.getRegistrationStaffContactInfo( 'site visitor' );
+							// create a new verification code model in the database to allow users to verify their accounts
+							const createVerificationRecord = exports.createNewVerificationRecord( verificationCode, userId );
+							// add the user to any mailing lists they've opted into
+							const userAddedToMailingLists = exports.addToMailingLists( newSiteVisitor, mailingListIds, registrationType );
 
-			} else if ( registrationType === 'family' ) {
-				// store any uploaded files
-				// TODO: these still need to be handled
-				const files = req.files;
-				// save the family model
-				exports.saveFamily( user ).then( newFamily => {
-					// if the new family model was saved successfully
-					req.flash( 'success', {
-						title: 'Your account has been successfully created',
-						detail: 'Please note that it can take several days for your account to be reviewed and activated.  You will receive an email once MARE has had a chance to review your information.' } );
-					// create a new random code for the user to verify their account with
-					const verificationCode = utilities.generateAlphanumericHash( 35 );
-					// store the database id of the newly created user
-					const userId = newFamily.get( '_id' );
-					// store the user type found in the returned model
-					const userType = newFamily.userType;
-					// store the host name to link to the verification code in the thank you email
-					const host = req.headers.host;
-					// store the array of mailing list ids the user has opted into
-					const mailingListIds = user.mailingLists;
-					// create a new verification code model in the database to allow users to verify their accounts
-					const createVerificationRecord = exports.createNewVerificationModel( verificationCode, userId );
-					// fetch contact info for the staff contact for family registration
-					const fetchRegistrationStaffContactInfo = exports.getRegistrationStaffContactInfo( 'family' );
-					// once the contact info has been fetched
-					Promise.all( [ createVerificationRecord, fetchRegistrationStaffContactInfo ] ).then( values => {
-						// assign local variables to the values returned by the promises
-						const [ verificationRecord, staffContactInfo ] = values;
-						// send the thank you email to the user
-						const thankYouEmailSentToUser = registrationEmailMiddleware.sendThankYouEmailToUser( staffContactInfo, user.email, userType, verificationCode, host );
-						// TODO: need to send a notification email to the appropriate staff member as well ( check with Lisa to see if this is needed )
-						// add the user to any mailing lists they've opted into
-						const userAddedToMailingLists = exports.addToMailingLists( newFamily, mailingListIds, registrationType );
-						// save any submitted files and append them to the newly created user
-						const userFilesUploaded = exports.uploadFile( newFamily, 'homestudy', 'homestudyFile_upload', files.homestudyFile_upload );
-						// if there was an error sending the thank you email to the new family
-						thankYouEmailSentToUser.catch( reason => {
-							// log the reason the promise was rejected
-							console.error( reason );
+							// once we know the contact info of the MARE employee who handles newly registered users
+							Promise.all( [ fetchUser, fetchRegistrationStaffContactInfo, userAddedToMailingLists ] )
+								.then( values => {
+									// assign local variables to the values returned by the promises
+									const [ newUser, staffContact, mailingLists ] = values;
+									// fetch the names of the returned mailing lists
+									const mailingListNames = mailingLists.map( mailingList => {
+										return mailingList.get( 'mailingList' );
+									});
+									// send a notification email to MARE staff to allow them to enter the information in the old system
+									return registrationEmailMiddleware.sendNewSiteVisitorNotificationEmailToMARE( newUser, staffContact, mailingListNames );
+								})
+								.catch( err => {
+									// log the error for debugging purposes
+									console.error( `error sending new site visitor notification email to MARE contact about ${ newSiteVisitor.get( 'name.full' ) } (${ newSiteVisitor.get( 'email' ) }) - ${ err }` );
+								});
+							
+							// once the verification record has been saved
+							createVerificationRecord
+								.then( verificationRecord => {
+									// send the account verification email to the user
+									return registrationEmailMiddleware.sendAccountVerificationEmailToUser( newSiteVisitor.get( 'email' ), userType, verificationCode, host );
+								})
+								.catch( err => {
+									// log the error for debugging purposes
+									console.error( `error sending account verification email to site visitor ${ newSiteVisitor.get( 'name.full' ) } at ${ newSiteVisitor.get( 'email' ) } - ${ err }` );
+								});
+							
+							userAddedToMailingLists
+								.catch( err => {
+									// log the error for debugging purposes
+									console.error( `error adding new site visitor ${ newSiteVisitor.get( 'name.full' ) } (${ newSiteVisitor.get( 'email' ) }) to mailing lists - ${ err }` );
+								});
+						})
+						// if there was an error saving the new site visitor
+						.catch( err => {
+							// log the error for debugging purposes
+							console.error( `error saving new site visitor - ${ err }` );
+							// create an error flash message to send back to the user
+							req.flash( 'error', {
+								title: 'There was an error creating your account',
+								detail: 'If this error persists, please contact MARE for assistance' } );
+							// redirect the user back to the appropriate page
+							res.redirect( 303, redirectPath );
 						});
-						// if there was an error adding the new family to the target mailing lists
-						userAddedToMailingLists.catch( reason => {
-							// log the reason the promise was rejected
-							console.error( reason );
+
+				} else if( registrationType === 'socialWorker' ) {
+					// save the social worker model using the submitted user details
+					exports.saveSocialWorker( user )
+						.then( newSocialWorker => {
+							// if the new social worker model was saved successfully
+							// create a success flash message
+							req.flash( 'success', {
+								title: 'Your account has been successfully created',
+								detail: 'Please note that it can take several days for your account to be reviewed and activated.  You will receive an email once MARE has had a chance to review your information.' } );
+							// redirect the user back to the appropriate page
+							res.redirect( 303, redirectPath );
+							
+							// create a new random code for the user to verify their account with
+							const verificationCode = utilities.generateAlphanumericHash( 35 );
+							// store the database id of the newly created user
+							const userId = newSocialWorker.get( '_id' );
+							// store the user type found in the returned model
+							const userType = newSocialWorker.userType;
+							// store the host name to link to the verification code in the account verification email
+							const host = req.secure ? `https://${ req.headers.host }` : `http://${ req.headers.host }`;
+							// store the array of mailing list ids the user has opted into
+							const mailingListIds = user.mailingLists;
+							// set the fields to populate on the fetched user model
+							const populateOptions = [ 'address.city', 'address.state' ];
+							
+							// fetch the user model.  Needed because the copies we have don't have the Relationship fields populated
+							const fetchUser = userService.getUserByIdNew( userId, keystone.list( 'Social Worker' ), populateOptions );
+							// fetch contact info for the staff contact for social worker registration
+							const fetchRegistrationStaffContactInfo = exports.getRegistrationStaffContactInfo( 'social worker' );
+							// create a new verification code model in the database to allow users to verify their accounts
+							const createVerificationRecord = exports.createNewVerificationRecord( verificationCode, userId );
+							// add the user to any mailing lists they've opted into
+							const userAddedToMailingLists = exports.addToMailingLists( newSocialWorker, mailingListIds, registrationType );
+
+							// once we know the contact info of the MARE employee who handles newly registered users
+							Promise.all( [ fetchUser, fetchRegistrationStaffContactInfo, userAddedToMailingLists ] )
+								.then( values => {
+									// assign local variables to the values returned by the promises
+									const [ newUser, staffContact, mailingLists ] = values;
+									// fetch the names of the returned mailing lists
+									const mailingListNames = mailingLists.map( mailingList => {
+										return mailingList.get( 'mailingList' );
+									});
+									// send a notification email to MARE staff to allow them to enter the information in the old system
+									return registrationEmailMiddleware.sendNewSocialWorkerNotificationEmailToMARE( newUser, staffContact, mailingListNames );
+								})
+								.catch( err => {
+									// log the error for debugging purposes
+									console.error( `error sending new social worker notification email to MARE contact for ${ newSocialWorker.get( 'name.full' ) } (${ newSocialWorker.get( 'email' ) }) - ${ err }` );
+								});
+							
+							// once the verification record has been saved
+							createVerificationRecord
+								.then( verificationRecord => {
+									// send the account verification email to the user
+									return registrationEmailMiddleware.sendAccountVerificationEmailToUser( newSocialWorker.get( 'email' ), userType, verificationCode, host );
+								})
+								.catch( err => {
+									// log the error for debugging purposes
+									console.error( `error sending account verification email to social worker ${ newSocialWorker.get( 'name.full' ) } at ${ newSocialWorker.get( 'email' ) } - ${ err }` );
+								});
+
+							userAddedToMailingLists
+								.catch( err => {
+									// log the error for debugging purposes
+									console.error( `error adding new social worker ${ newSocialWorker.get( 'name.full' ) } (${ newSocialWorker.get( 'email' ) }) to mailing lists - ${ err }` );
+								});
+						})
+						// if there was an error saving the new social worker
+						.catch( err => {
+							// log the error for debugging purposes
+							console.error( `error saving new social worker - ${ err }` );
+							// create an error flash message to send back to the user
+							req.flash( 'error', {
+								title: 'There was an error creating your account',
+								detail: 'If this error persists, please contact MARE for assistance' } );
+							// redirect the user back to the appropriate page
+							res.redirect( 303, redirectPath );
 						});
-						// if there was an error uploading the files to the new user
-						userFilesUploaded.catch( reason => {
-							// log the reason the promise was rejected
-							console.error( reason );
+
+				} else if ( registrationType === 'family' ) {
+					// store any uploaded files
+					// TODO: these still need to be handled
+					const files = req.files;
+					// save the family model
+					exports.saveFamily( user )
+						.then( newFamily => {
+							// if the new family model was saved successfully
+							// create a success flash message
+							req.flash( 'success', {
+								title: 'Your account has been successfully created',
+								detail: 'Please note that it can take several days for your account to be reviewed and activated.  You will receive an email once MARE has had a chance to review your information.' } );
+							// redirect the user back to the appropriate page
+							res.redirect( 303, redirectPath );
+							
+							// create a new random code for the user to verify their account with
+							const verificationCode = utilities.generateAlphanumericHash( 35 );
+							// store the database id of the newly created user
+							const userId = newFamily.get( '_id' );
+							// store the user type found in the returned model
+							const userType = newFamily.userType;
+							// store the host name to link to the verification code in the account verification email
+							const host = req.secure ? `https://${ req.headers.host }` : `http://${ req.headers.host }`;
+							// store the array of mailing list ids the user has opted into
+							const mailingListIds = user.mailingLists;
+							// set the fields to populate on the fetched user model
+							const populateOptions = [ 'contact1.gender',
+													  'contact1.race',
+													  'contact2.gender',
+													  'contact2.race',
+													  'address.city',
+													  'address.region',
+													  'address.state',
+													  'child1.gender',
+													  'child1.type',
+													  'child2.gender',
+													  'child2.type',
+													  'child3.gender',
+													  'child3.type',
+													  'child4.gender',
+													  'child4.type',
+													  'child5.gender',
+													  'child5.type',
+													  'child6.gender',
+													  'child6.type',
+													  'child7.gender',
+													  'child7.type',
+													  'child8.gender',
+													  'child8.type',
+													  'language',
+													  'otherLanguages',
+													  'matchingPreferences.gender',
+													  'matchingPreferences.legalStatus',
+													  'matchingPreferences.race',
+													  'matchingPreferences.disabilities',
+													  'matchingPreferences.otherConsiderations',
+													  'heardAboutMAREFrom' ];
+
+							// fetch the user model.  Needed because the copies we have don't have the Relationship fields populated
+							const fetchUser = userService.getUserByIdNew( userId, keystone.list( 'Family' ), populateOptions );
+							// fetch contact info for the staff contact for family registration
+							const fetchRegistrationStaffContactInfo = exports.getRegistrationStaffContactInfo( 'family' );
+							// create a new verification code model in the database to allow users to verify their accounts
+							const createVerificationRecord = exports.createNewVerificationRecord( verificationCode, userId );
+							// add the user to any mailing lists they've opted into
+							const userAddedToMailingLists = exports.addToMailingLists( newFamily, mailingListIds, registrationType );
+							// save any submitted files and append them to the newly created user
+							// const userFilesUploaded = exports.uploadFile( newFamily, 'homestudy', 'homestudyFile_upload', files.homestudyFile_upload );
+
+							// once we know the contact info of the MARE employee who handles newly registered users
+							Promise.all( [ fetchUser, fetchRegistrationStaffContactInfo, userAddedToMailingLists ] )
+								.then( values => {
+									// assign local variables to the values returned by the promises
+									const [ newUser, staffContact, mailingLists ] = values;
+									// fetch the names of the returned mailing lists
+									const mailingListNames = mailingLists.map( mailingList => {
+										return mailingList.get( 'mailingList' );
+									});
+									// send a notification email to MARE staff to allow them to enter the information in the old system
+									return registrationEmailMiddleware.sendNewFamilyNotificationEmailToMARE( newUser, staffContact, mailingListNames );
+								})
+								.catch( err => {
+									// log the error for debugging purposes
+									console.error( `error sending new family notification email to MARE contact about ${ newFamily.get( 'displayName' ) } (${ newFamily.get( 'email' ) }) - ${ err }` );
+								});
+
+							// once the verification record has been saved
+							createVerificationRecord
+								.then( verificationRecord => {
+									// send the account verification email to the user
+									return registrationEmailMiddleware.sendAccountVerificationEmailToUser( newFamily.get( 'email' ), userType, verificationCode, host );
+								})
+								.catch( err => {
+									// log the error for debugging purposes
+									console.error( `error sending account verification email to family ${ newFamily.get( 'displayName' ) } at ${ newFamily.get( 'email' ) } - ${ err }` );
+								});
+							
+							userAddedToMailingLists
+								.catch( err => {
+									// log the error for debugging purposes
+									console.error( `error adding new family ${ newFamily.get( 'displayName' ) } (${ newFamily.get( 'email' ) }) to mailing lists - ${ err }` );
+								});
+						})
+						// if there was an error saving the new family
+						.catch( err => {
+							// log the error for debugging purposes
+							console.error( `error saving new family - ${ err }` );
+							// create an error flash message to send back to the user
+							req.flash( 'error', {
+								title: 'There was an error creating your account',
+								detail: 'If this error persists, please contact MARE for assistance' } );
+							// redirect the user back to the appropriate page
+							res.redirect( 303, redirectPath );
 						});
-						// redirect the user back to the appropriate page
-						res.redirect( 303, redirectPath );
-					// if there was an error saving the verification model or fetching the the registration staff contact info
-					}).catch( reason => {
-						// log the reason the promise was rejected
-						console.error( reason );
-						// redirect the user back to the appropriate page
-						res.redirect( 303, redirectPath );
-					});
-				})
-				// if there was an error saving the new family
-				.catch( () => {
-					// create an error flash message to send back to the user
-					req.flash( 'error', {
-						title: 'There was an error creating your account',
-						detail: 'If this error persists, please contact MARE for assistance' } );
-					
-					res.redirect( 303, redirectPath );
-				});
+				}
 			}
-		}
-	})
-	.catch( reason => {
-		
-		req.flash( `error`, {
-					title: `There was a problem creating your account`,
-					detail: `If the problem persists, please contact MARE for assistance` } );
-		
-		res.redirect( 303, redirectPath );
-	});
+		})
+		.catch( reason => {
+			
+			req.flash( `error`, {
+						title: `There was a problem creating your account`,
+						detail: `If the problem persists, please contact MARE for assistance` } );
+			// redirect the user to the appropriate page
+			res.redirect( 303, redirectPath );
+		});
 };
 
 exports.saveSiteVisitor = user => {
 
 	return new Promise( ( resolve, reject ) => {
+
+		const SiteVisitor = keystone.list( 'Site Visitor' );
+
 		// create a new site visitor model with the passed in data
 		let newUser = new SiteVisitor.model({
 
@@ -272,7 +355,7 @@ exports.saveSiteVisitor = user => {
 				street1					: user.street1,
 				street2					: user.street2,
 				isOutsideMassachusetts	: user.isNotMACity,
-				city					: user.isNotMACity ? undefined : user.MACity,
+				city					: user.isNotMACity ? undefined : user.city,
 				cityText				: user.isNotMACity ? user.nonMACity : '',
 				state					: user.state,
 				zipCode					: user.zipCode
@@ -287,7 +370,7 @@ exports.saveSiteVisitor = user => {
 			// if there was an issue saving the new site visitor
 			if( err ) {
 				// reject the promise with a descriptive message
-				return reject( `there was an error saving the new site visitor model ${ err }` );
+				return reject( `error saving new site visitor -  ${ err }` );
 			}
 			// resolve the promise with the newly saved site visitor model
 			resolve( model );
@@ -298,6 +381,8 @@ exports.saveSiteVisitor = user => {
 exports.saveSocialWorker = user => {
  
 	return new Promise( ( resolve, reject ) => {
+
+		const SocialWorker = keystone.list( 'Social Worker' );
 
 		const newUser = new SocialWorker.model({
 
@@ -310,8 +395,8 @@ exports.saveSocialWorker = user => {
 			email						: user.email,
 			agencyNotListed				: true,
 			agencyText					: user.agency,
-			title						: user.titleDiffersFromPosition ? user.socialWorkerTitle : user.position,
 			position					: user.position,
+			title						: user.titleDiffersFromPosition ? user.socialWorkerTitle : user.position,
 
 			phone: {
 				work					: user.workPhone,
@@ -323,20 +408,18 @@ exports.saveSocialWorker = user => {
 				street1					: user.street1,
 				street2					: user.street2,
 				isOutsideMassachusetts	: user.isNotMACity,
-				city					: user.isNotMACity ? undefined : user.MACity,
+				city					: user.isNotMACity ? undefined : user.city,
 				cityText				: user.isNotMACity ? user.nonMACity : '',
 				state					: user.state,
-				zipCode					: user.zipCode,
-				region 					: user.region
+				zipCode					: user.zipCode
 			}
-
 		});
 
 		newUser.save( ( err, model ) => {
 			// if there was an issue saving the new site visitor
 			if( err ) {
 				// reject the promise with a descriptive message
-				return reject( `there was an error saving the new social worker model ${ err }` );
+				return reject( `error saving new social worker ${ err }` );
 			}
 			// resolve the promise with the newly saved site visitor model
 			resolve( model );
@@ -348,6 +431,8 @@ exports.saveFamily = user => {
 
 	return new Promise( ( resolve, reject ) => {
 		
+		const Family = keystone.list( 'Family' );
+
 		const newUser = new Family.model({
 
 			email								: user.email,
@@ -398,7 +483,7 @@ exports.saveFamily = user => {
 				street1							: user.street1,
 				street2							: user.street2,
 				isOutsideMassachusetts			: user.isNotMACity,
-				city							: user.isNotMACity ? undefined: user.MACity,
+				city							: user.isNotMACity ? undefined: user.city,
 				cityText						: user.isNotMACity ? user.nonMACity : '',
 				state							: user.state,
 				zipCode							: user.zipCode
@@ -413,8 +498,6 @@ exports.saveFamily = user => {
 				initialDate						: !user.processProgression ? undefined : user.processProgression.indexOf( 'homestudyCompleted' ) !== -1 ? user.homestudyDateComplete : undefined
 			},
 
-			numberOfChildren					: user.childrenInHome,
-
 			child1                              : exports.setChild( user, 1 ),
 			child2                              : exports.setChild( user, 2 ),
 			child3                              : exports.setChild( user, 3 ),
@@ -424,11 +507,9 @@ exports.saveFamily = user => {
 			child7                              : exports.setChild( user, 7 ),
 			child8                              : exports.setChild( user, 8 ),
 
-			otherAdultsInHome: {
-				number							: parseInt( user.otherAdultsInHome, 10 )
-			},
+			otherAdultsInHome: {},
 
-			havePetsInHome						: user.havePets === 'yes',
+			havePetsInHome						: user.havePets,
 
 			socialWorkerNotListed				: true,
 			socialWorkerText					: user.socialWorkerName,
@@ -442,15 +523,18 @@ exports.saveFamily = user => {
 					to							: user.ageRangeTo
 				},
 
-				numberOfChildrenToAdopt			: user.numberOfChildrenPrefered ? parseInt( user.numberOfChildrenPrefered, 10 ) : 0,
-				siblingContact					: user.contactWithBiologicalSiblings === 'yes',
-				birthFamilyContact				: user.contactWithBiologicalParents === 'yes',
+				siblingContact					: user.contactWithBiologicalSiblings === 'yes' ? true :
+												  user.contactWithBiologicalSiblings === 'no' ? false :
+												  undefined,
+				birthFamilyContact				: user.contactWithBiologicalParents === 'yes' ? true :
+												  user.contactWithBiologicalParents === 'no' ? false :
+												  undefined,
 				race							: user.adoptionPrefRace,
 
 				maxNeeds: {
-					physical					: user.maximumPhysicalNeeds ? user.maximumPhysicalNeeds : 'none',
-					intellectual				: user.maximumIntellectualNeeds ? user.maximumIntellectualNeeds : 'none',
-					emotional					: user.maximumEmotionalNeeds ? user.maximumEmotionalNeeds : 'none'
+					physical					: user.maximumPhysicalNeeds ? user.maximumPhysicalNeeds : undefined,
+					intellectual				: user.maximumIntellectualNeeds ? user.maximumIntellectualNeeds : undefined,
+					emotional					: user.maximumEmotionalNeeds ? user.maximumEmotionalNeeds : undefined
 				},
 
 				disabilities					: user.disabilities,
@@ -463,11 +547,23 @@ exports.saveFamily = user => {
 			registeredViaWebsite				: true
 		});
 
+		if( user.numberOfChildrenPreferred !== '' ) {
+			newUser.set( 'matchingPreferences.numberOfChildrenToAdopt', parseInt( user.numberOfChildrenPreferred, 10 ) );
+		}
+
+		if( user.childrenInHome !== '' ) {
+			newUser.set( 'numberOfChildren', parseInt( user.childrenInHome ) );
+		}
+
+		if ( user.otherAdultsInHome !== '' ) {
+			newUser.set( 'otherAdultsInHome.number', parseInt( user.otherAdultsInHome, 10 ) );
+		}
+
 		newUser.save( ( err, model ) => {
 			// if there was an issue saving the new site visitor
 			if( err ) {
 				// reject the promise with a description
-				return reject( `there was an error saving the new family model ${ err }` );
+				return reject( `error saving new family ${ err }` );
 			}
 			// resolve the promise with the newly saved site visitor model
 			resolve( model );
@@ -491,18 +587,19 @@ exports.checkForDuplicateEmail = email => {
 	return new Promise( ( resolve, reject ) => {
 		// TODO: this exec() is suspicious and different from all my others, it warrants further testing
 		// All user types inherit from the User model, so checking User will allow us to accurately check for duplicates
-		User.model.findOne()
+		keystone.list( 'User' ).model
+			.findOne()
 			.where( 'email', email )
-			.exec( ( err, user ) => {
+			.exec()
+			.then( user => {
 				// if we've found a user with the same email, it's a duplicate
-				const isEmailDuplicate = user;
+				const isEmailDuplicate = !!user;
 
 				resolve( isEmailDuplicate );
 
-			}, function( err ) {
+			}, err => {
 
-				console.log( `error testing for duplicate email in registration` );
-				console.log( err );
+				console.error( `error testing for duplicate email - ${ err }` );
 
 				reject();
 			});
@@ -517,6 +614,7 @@ exports.validatePassword = ( password, confirmPassword ) => {
 
 /* create error flash messages if a problem was encountered */
 exports.setInitialErrorMessages = ( req, isEmailValid, isEmailDuplicate, isPasswordValid ) => {
+	
 	if( !isEmailValid ) {
 		req.flash( `error`, {
 				title: `There was a problem creating your account`,
@@ -540,7 +638,7 @@ exports.setInitialErrorMessages = ( req, isEmailValid, isEmailDuplicate, isPassw
 exports.getRegistrationStaffContactInfo = userType => {
 
 	return new Promise( ( resolve, reject ) => {
-		// use the user type to get the staff email target role responsible for handling registration questions
+		// use the user type to get the email target role responsible for handling registration questions
 		const emailTarget = userType === 'site visitor' ? 'site visitor registration' :
 							userType === 'social worker' ? 'social worker registration' :
 							userType === 'family' ? 'family registration' :
@@ -548,25 +646,25 @@ exports.getRegistrationStaffContactInfo = userType => {
 		// if the user type was unrecognized, the email target can't be set
 		if( !emailTarget ) {
 			// reject the promise with details of the issue
-			return reject( `unknown user type, staff email contact couldn't be fetched` );
+			return reject( `unknown user type ${ userType }` );
 		}
 		// TODO: it was nearly impossible to create a readable comma separated list of links in the template with more than one address,
 		// 	     so we're only fetching one contact when we should fetch them all
 		// get the database id of the admin contact set to handle registration questions for the target user type
-		staffEmailTargetMiddleware.getTargetId( emailTarget ).then( targetId => {
-			// get the contact details of the admin contact set to thandle registration questions for the target user type
-			staffEmailContactMiddleware.getContact( targetId ).then( contactInfo => {
+		emailTargetMiddleware
+			.getTargetId( emailTarget )
+			.then( targetId => {
+				// get the contact details of the admin contact set to handle registration questions for the target user type
+				return staffEmailContactMiddleware.getContactById( targetId );
+			})
+			.then( contactInfo => {
 				// resolve the promise with the full name and email address of the contact
 				resolve( contactInfo );
-			}).catch( reason => {
+			})
+			.catch( err => {
 				// reject the promise with the reason for the rejection
-				reject( reason );
+				reject( `error fetching staff contact - ${ err }` );
 			});
-		// if there was a problem fetching the email target id
-		}).catch( reason => {
-			// reject the promise with the reason for the rejection
-			reject( reason );
-		});
 	});
 }
 
@@ -575,10 +673,13 @@ exports.addToMailingLists = ( user, mailingListIds, registrationType ) => {
 
 	return new Promise( ( resolve, reject ) => {
 		// filter out any invalid strings.  False values from form submissions will result in an empty string
-		const validMailingListIds = mailingListIds.filter( ( mailingListId ) => mailingListId !== "" );
+		const validMailingListIds = mailingListIds ? 
+									mailingListIds.filter( ( mailingListId ) => mailingListId !== '' ) :
+									undefined;
 		// if there were no mailing lists the user opted into
 		if( !validMailingListIds || validMailingListIds.length === 0 ) {
-			return resolve();
+			// resolve the promise with an empty array as it's meant to represent the absence of mailing lists which would normally be returned in array
+			return resolve( [] );
 		}
 		// create an array to hold promises for adding the user asynchronously to each mailing list
 		let addUserToMailingLists = [];
@@ -588,13 +689,13 @@ exports.addToMailingLists = ( user, mailingListIds, registrationType ) => {
 			addUserToMailingLists.push( exports.addToMailingList( user, mailingListId, registrationType ) );
 		}
 		// once the user has been added to all mailing lists
-		Promise.all( addUserToMailingLists ).then( values => {
-			// resolve the promise
-			resolve();
+		Promise.all( addUserToMailingLists ).then( mailingLists => {
+			// resolve the promise with the array of mailing lists the user was added to
+			resolve( mailingLists );
 		// if any error were encountered
-		}).catch( reason => {
+		}).catch( err => {
 			// reject the promise with the reason
-			reject( reason );
+			reject( err );
 		});
 	});
 };
@@ -603,14 +704,14 @@ exports.addToMailingList = ( user, mailingListId, registrationType ) => {
 
 	return new Promise( ( resolve, reject ) => {
 
-		MailingList.model
+		keystone.list( 'Mailing List' ).model
 			.findById( mailingListId )
 			.exec()
 			.then( mailingList => {
 				// if the mailing list wasn't found
 				if( !mailingList ) {
 					// reject the promise with the id of the list the user couldn't be added to
-					reject( `error fetching mailing list: ${ mailingListId }` );
+					return reject( `no mailing list could be found with the id ${ mailingListId }` );
 				}
 				// add the user id to the correct Relationship field in the mailing list based on what type of user they are
 				switch( registrationType ) {
@@ -619,14 +720,14 @@ exports.addToMailingList = ( user, mailingListId, registrationType ) => {
 					case 'family'		: mailingList.familySubscribers.push( user.get( '_id' ) );
 				}
 				// attempt to save the updated mailing list
-				mailingList.save( ( err, model ) => {
+				mailingList.save( ( err, mailingList ) => {
 					// if there was an error saving the updated mailing list model
 					if( err ) {
 						// reject the promise with details about the failure
-						return reject( `error saving user ${ user.get( '_id' ) } to mailing list ${ model.mailingList }` );
+						return reject( `error saving user to mailing list ${ mailingList.mailingList } - ${ err }` );
 					}
 					// if there was no error, resolve the promise
-					resolve();
+					resolve( mailingList );
 				});
 			});
 	});
@@ -671,7 +772,7 @@ exports.getCurrentDate = () => {
 
 	const date = new Date();
 
-	const formattedDate = ( date.getMonth() + 1 ) + '/' + date.getDate() + '/' +  date.getFullYear();
+	const formattedDate = `${ date.getMonth() + 1 }/${ date.getDate() }/${ date.getFullYear() }`;
 	return formattedDate;
 };
 
@@ -679,11 +780,11 @@ exports.setChild = ( user, i ) => {
 
 	let childObject = {};
 
-	if ( user[ 'child' + i + '-name' ] ) {
-		childObject.name 		= user[ 'child' + i + '-name' ];
-		childObject.birthDate 	= user[ 'child' + i + '-birthDate' ];
-		childObject.gender 		= user[ 'child' + i + '-gender' ];
-		childObject.type 		= user[ 'child' + i + '-type' ];
+	if ( user[ `child${ i }-name` ] ) {
+		childObject.name 		= user[ `child${ i }-name` ];
+		childObject.birthDate 	= user[ `child${ i }-birthDate` ];
+		childObject.gender 		= user[ `child${ i }-gender` ];
+		childObject.type 		= user[ `child${ i }-type` ];
 	}
 
 	return childObject;
@@ -727,23 +828,27 @@ exports.getStages = family => {
 	return stages;
 };
 
-exports.createNewVerificationModel = ( verificationCode, userId ) => {
+exports.createNewVerificationRecord = ( verificationCode, userId ) => {
 	
 	return new Promise( ( resolve, reject ) => {
+
+		const AccountVerificationCode = keystone.list( 'Account Verification Code' );
+
 		// create the new verification model
-		var newVerificationCodeModel = new AccountVerificationCode.model({
+		const newVerificationCodeModel = new AccountVerificationCode.model({
 			code	: verificationCode,
 			user	: userId,
 			dateSent: new Date()
 		});
 		// attempt to save the new verification model
 		newVerificationCodeModel.save( ( err, model ) => {
+			// if there was an error saving the new model to the database
+			if( err ) {
+				// reject the promise with the reason for the rejection
+				return reject( `error saving new verification code model for user with id ${ userId } - ${ err }` );
+			}
 			// if the model saved successfully, resolve the promise, returning the newly saved model
 			resolve( model );
-		// if there was an error saving the new model to the database
-		}, err => {
-			// reject the promise with the reason for the rejection
-            reject( `error saving the new verification code model for user ${ userId }: ${ err }` );
 		});
 	});
 };

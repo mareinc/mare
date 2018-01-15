@@ -1,5 +1,6 @@
 const keystone					= require( 'keystone' ),
 	  childService				= require( './middleware/service_child' ),
+	  donationService			= require( './middleware/service_donation')
 	  eventService				= require( './middleware/service_event' ),
 	  familyService				= require( './middleware/service_family' ),
 	  formService				= require( './middleware/service_form' ),
@@ -8,6 +9,7 @@ const keystone					= require( 'keystone' ),
 	  registrationMiddleware	= require( './middleware/service_register' ),
 	  accountMiddleware			= require( './middleware/service_account' ),
 	  eventMiddleware			= require( './middleware/middleware_event' ),
+	  accountVerificationService= require( './middleware/service_account-verification' );
 	  importRoutes				= keystone.importer( __dirname );
 
 // common middleware
@@ -45,7 +47,7 @@ exports = module.exports = app => {
 	app.post( '/events/unregister/:eventId'				, eventMiddleware.unregister );
 	// success stories
 	app.get( '/success-stories'							, routes.views.successStories );
-	app.get( '/success-story/:key'						, routes.views.successStory );
+	app.get( '/success-stories/:key'					, routes.views.successStory );
 	// gallery
 	app.get( '/waiting-child-profiles'					, routes.views.waitingChildProfiles );
 	// registration
@@ -54,16 +56,17 @@ exports = module.exports = app => {
 	// login / logout
 	app.get( '/logout'									, middleware.logout );
 	app.post('/login'									, middleware.login );
-	// TODO: decide if both the mare in the news routes are needed
 	// MARE in the news
-	app.get( '/mare-in-the-news'						, routes.views.mareInTheNews );
-	app.get( '/mare-in-the-news/:key'					, routes.views.mareInTheNews );
+	app.get( '/mare-in-the-news'						, routes.views.mareInTheNewsStories );
+	app.get( '/mare-in-the-news/:key'					, routes.views.mareInTheNewsStory );
 	// donations
 	app.get( '/donate'									, routes.views.donate );
-	app.post( '/charge'									, middleware.charge );
+	app.post( '/process-donation'						, donationService.validateDonationRequest, donationService.processDonation );
 	// user account management
 	app.get( '/account'									, middleware.requireUser, routes.views.account );
-	app.post( '/account-update'							, accountMiddleware.updateUser );
+	app.put( '/account/user-info'						, accountMiddleware.updateUser );
+	// verification code handling after user registers
+	app.get('/verifyAccount'							, accountVerificationService );
 	/* TODO: all these routes below need to be moved and prefixed with appropriate REST verbs like put */
 	// services for ajax calls
 	app.post( '/services/get-children-data'				, childService.getGalleryData );

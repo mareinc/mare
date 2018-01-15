@@ -14,6 +14,8 @@ Donation.add({
 
 	date: { type: Types.Date, label: 'date', format: 'MM/DD/YYYY', required: true, initial: true },
 	amount: { type: Types.Money, format: '$0,0.00', label: 'amount', required: true, initial: true },
+	stripeTransactionID: { type: Types.Text, label: 'stripe transaction ID', required: true, initial: true, noedit: true },
+	isSubscription: { type: Types.Boolean, label: ' is donation repeating', required: true, initial: true, noedit: true },
 
 	isRegistered: { type: Types.Boolean, label: 'is a registered user', default: true, required: true, initial: true },
 	userType: { type: Types.Select, label: 'user type', options: 'site visitor, social worker, family, admin', dependsOn: { isRegistered: true }, filters: { isActive: true }, initial: true },
@@ -23,7 +25,18 @@ Donation.add({
 	admin: { type: Types.Relationship, label: 'donation from', ref: 'Admin', dependsOn: { isRegistered: true, userType: 'admin' }, filters: { isActive: true }, initial: true },
 	unregisteredUser: { type: Types.Text, label: 'donation from', dependsOn: { isRegistered: false }, initial: true },
 	name: { type: Types.Text, label: 'name', hidden: true, noedit: true, initial: false },
-	onBehalfOf: { type: Types.Text, label: 'on behalf of', initial: true }
+	onBehalfOf: { type: Types.Text, label: 'on behalf of', initial: true },
+	note: { type: Types.Text, label: 'note', initial: true }
+
+	}, 'Mailing Address', {
+		
+	address: {
+		street: 	{ type: Types.Text, label: 'street address', required: true, initial: true },
+		city:		{ type: Types.Text, required: true, initial: true },
+		state:		{ type: Types.Text, required: true, initial: true },
+		zip:		{ type: Types.Text, label: 'zip code', required: true, initial: true }
+	}
+
 });
 
 // presave hook
@@ -53,7 +66,7 @@ Donation.schema.pre( 'save', function( next ) {
 					this.name = user.name.full;
 				// otherwise, if they're a family
 				} else {
-					// TODO: This functionality is identical to that in event, pull both out and put them in the model as a virtual
+					// TODO: this functionality is identical to that in event, pull both out and put them in the model as a virtual
 					// check to see if a second contact has been filled out
 					const contact2Exists = user.contact2.name.full.length > 0;
 					// check to see if both contacts share a last name
@@ -86,9 +99,10 @@ Donation.schema.pre( 'save', function( next ) {
 	} else {
 		// set the name to whatever was filled out in the free text field
 		this.name = this.unregisteredUser;
+		next();
 	}
 });
 
-// Define default columns in the admin interface and register the model
+// define default columns in the admin interface and register the model
 Donation.defaultColumns = 'name, amount, date';
 Donation.register();
