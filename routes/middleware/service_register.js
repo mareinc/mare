@@ -254,8 +254,6 @@ exports.registerUser = ( req, res, next ) => {
 													  'matchingPreferences.gender',
 													  'matchingPreferences.legalStatus',
 													  'matchingPreferences.race',
-													  'matchingPreferences.disabilities',
-													  'matchingPreferences.otherConsiderations',
 													  'heardAboutMAREFrom' ];
 
 							// fetch the user model.  Needed because the copies we have don't have the Relationship fields populated
