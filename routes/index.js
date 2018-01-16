@@ -52,7 +52,7 @@ exports = module.exports = app => {
 	app.get( '/waiting-child-profiles'					, routes.views.waitingChildProfiles );
 	// registration
 	app.get( '/register'								, routes.views.register );
-	app.post( '/register'								, registrationMiddleware.registerUser );
+	app.post( '/register'								, registrationMiddleware.registerUser, middleware.login );
 	// login / logout
 	app.get( '/logout'									, middleware.logout );
 	app.post('/login'									, middleware.login );

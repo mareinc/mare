@@ -22,7 +22,7 @@ var SocialWorker = new keystone.List( 'Social Worker', {
 // Create fields
 SocialWorker.add( 'Permissions', {
 
-	isActive: { type: Boolean, label: 'is active', default: false },
+	isActive: { type: Boolean, label: 'is active', default: true },
 
 	permissions: {
 		isVerified: { type: Boolean, label: 'has a verified email address', default: false, noedit: true }
