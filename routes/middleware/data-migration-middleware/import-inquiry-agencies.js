@@ -124,28 +124,39 @@ module.exports.updateInquiryRecord = ( agencyIds, inquiryId, pauseUntilSaved ) =
 		utilityModelFetch.getAgencyIdsByOldIds( resolve, reject, agencyIds );
 	});
 
-	Promise.all( [ inquiryLoaded, agenciesLoaded ] ).then( values => {
+	Promise.all( [ inquiryLoaded, agenciesLoaded ] )
+		.then( values => {
 
-		const [ inquiry, inquiryAgencies ] = values;
+			const [ inquiry, inquiryAgencies ] = values;
 
-		inquiry.agencyReferrals = inquiryAgencies;
+			inquiry.agencyReferrals = inquiryAgencies;
 
-		// save the updated inquiry record
-		inquiry.save( ( err, savedModel ) => {
-			// if we run into an error
-			if( err ) {
-				// store a reference to the entry that caused the error
-				importErrors.push( { id: inquiry.get( '_id' ), error: err.err } );
-			}
+			// save the updated inquiry record
+			inquiry.save( ( err, savedModel ) => {
+				// if we run into an error
+				if( err ) {
+					// store a reference to the entry that caused the error
+					importErrors.push( { id: inquiry.get( '_id' ), error: err.err } );
+				}
 
-			// fire off the next iteration of our generator after pausing
+				// fire off the next iteration of our generator after pausing
+				if( pauseUntilSaved ) {
+					setTimeout( () => {
+						inquiryAgencyGenerator.next();
+					}, 1000 );
+				}
+			});
+		})
+		.catch( err => {
+			// we can assume it was a reject from trying to fetch the city or town by an unrecognized name
+			importErrors.push( { id: inquiryId, error: `error adding agencies with ids ${ agencyIds } to inquiry with id ${ inquiryId } - ${ err }` } );
+
 			if( pauseUntilSaved ) {
 				setTimeout( () => {
 					inquiryAgencyGenerator.next();
 				}, 1000 );
 			}
 		});
-	});
 };
 
 // instantiates the generator used to create inquiry agency records at a regulated rate

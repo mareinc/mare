@@ -134,53 +134,70 @@ module.exports.createSocialWorkerRecord = ( socialWorker, pauseUntilSaved ) => {
 		// create a promise for fetching the MA city or town associated with the agency
 		const cityOrTownLoaded = utilityModelFetch.getCityOrTownByName( agency.address.city.trim(), agency.address.state.abbreviation );
 		// once we've fetch the city or town
-		cityOrTownLoaded.then( cityOrTown => {
-			// populate fields of a new SocialWorker object
-			let newSocialWorker = new SocialWorker.model({
-				// every social worker needs a password, this will generate one we can easily determine at a later date while still being unique
-				password: `${ socialWorker.first_name }_${ socialWorker.last_name }_${ socialWorker.agc_id }`,
+		cityOrTownLoaded
+			.then( cityOrTown => {
+				// populate fields of a new SocialWorker object
+				let newSocialWorker = new SocialWorker.model({
+					// every social worker needs a password, this will generate one we can easily determine at a later date while still being unique
+					password: `${ socialWorker.first_name }_${ socialWorker.last_name }_${ socialWorker.agc_id }`,
 
-				isActive: socialWorker.is_active === 'Y',
-				
-				permissions: {
-					isVerified: socialWorker.email ? true : false, // they can only have verified their email address if they have one
-				},
+					isActive: socialWorker.is_active === 'Y',
+					
+					permissions: {
+						isVerified: socialWorker.email ? true : false, // they can only have verified their email address if they have one
+					},
 
-				name: {
-					first: socialWorker.first_name ? socialWorker.first_name.trim() : undefined,
-					last: socialWorker.last_name ? socialWorker.last_name.trim() : undefined
-				},
-				// TODO: every social worker needs an email address, this is just a placeholder until Lisa tells us how to handle these records
-				email: socialWorker.email ? socialWorker.email.trim().toLowerCase() : `placeholder${ socialWorker.agc_id }@email.com`,
+					name: {
+						first: socialWorker.first_name ? socialWorker.first_name.trim() : undefined,
+						last: socialWorker.last_name ? socialWorker.last_name.trim() : undefined
+					},
+					// TODO: every social worker needs an email address, this is just a placeholder until Lisa tells us how to handle these records
+					email: socialWorker.email ? socialWorker.email.trim().toLowerCase() : `placeholder${ socialWorker.agc_id }@email.com`,
 
-				phone: {
-					work: socialWorker.phone ? socialWorker.phone.trim() : undefined
-				},
+					phone: {
+						work: socialWorker.phone ? socialWorker.phone.trim() : undefined
+					},
 
-				agency: agency.get( '_id' ),
-				
-				address: {
-					street1: agency.address.street1 ? agency.address.street1.trim() : undefined,
-					street2: agency.address.street2 ? agency.address.street2.trim() : undefined,
-					isOutsideMassachusetts: agency.address.state.abbreviation !== 'MA',
-					city: cityOrTown,
-					cityText: agency.address.state.abbreviation !== 'MA' ? agency.address.city.trim() : undefined,
-					state: agency.address.state.get( '_id' ),
-					zipCode: utilityFunctions.padZipCode( agency.address.zipCode ),
-					region: agency.address.region
-				},
+					agency: agency.get( '_id' ),
+					
+					address: {
+						street1: agency.address.street1 ? agency.address.street1.trim() : undefined,
+						street2: agency.address.street2 ? agency.address.street2.trim() : undefined,
+						isOutsideMassachusetts: agency.address.state.abbreviation !== 'MA',
+						city: cityOrTown,
+						cityText: agency.address.state.abbreviation !== 'MA' ? agency.address.city.trim() : undefined,
+						state: agency.address.state.get( '_id' ),
+						zipCode: utilityFunctions.padZipCode( agency.address.zipCode ),
+						region: agency.address.region
+					},
 
-				notes: socialWorker.notes ? socialWorker.notes.trim() : undefined,
-				oldId: socialWorker.agc_id
-			});
+					notes: socialWorker.notes ? socialWorker.notes.trim() : undefined,
+					oldId: socialWorker.agc_id
+				});
 
-			newSocialWorker.save( ( err, savedModel ) => {
-				// if we run into an error
+				newSocialWorker.save( ( err, savedModel ) => {
+					// if we run into an error
+					if( err ) {
+						// store a reference to the entry that caused the error
+						importErrors.push( { id: socialWorker.agc_id, error: err.err } );
+					}
+
+					// fire off the next iteration of our generator after pausing
+					if( pauseUntilSaved ) {
+						setTimeout( () => {
+							socialWorkerGenerator.next();
+						}, 5000 );
+					}
+				});
+
+			}).catch( err => {
+				// if a error was provided
 				if( err ) {
-					// store a reference to the entry that caused the error
-					importErrors.push( { id: socialWorker.agc_id, error: err.err } );
+					console.log( `error saving social worker - couldn't fetch city or town ${ agency.address.city.trim() } in state ${ agency.address.state.abbreviation } - ${ err }` );
+					// we can assume it was a reject from trying to fetch the city or town by an unrecognized name
+					cityOrTownNameError.add( err );
 				}
-
+				
 				// fire off the next iteration of our generator after pausing
 				if( pauseUntilSaved ) {
 					setTimeout( () => {
@@ -188,21 +205,18 @@ module.exports.createSocialWorkerRecord = ( socialWorker, pauseUntilSaved ) => {
 					}, 5000 );
 				}
 			});
-
-		}).catch( reason => {
-			console.error( `error processing social worker agency` );
-			console.error( reason );
-			// aborting the import
-			return done();
-		});
-	})
-	.catch( reason => {
-		// if a reason was provided
-		if( reason ) {
+		})
+		.catch( err => {
 			// we can assume it was a reject from trying to fetch the city or town by an unrecognized name
-			cityOrTownNameError.add( reason );
-		}
-	});
+			importErrors.push( { id: socialWorker.agc_id, error: `error importing social worker - couldn't load agency with id ${ socialWorker.agn_id } - ${ err }` } );
+
+			// fire off the next iteration of our generator after pausing
+			if( pauseUntilSaved ) {
+				setTimeout( () => {
+					socialWorkerGenerator.next();
+				}, 5000 );
+			}
+		});
 };
 
 // instantiates the generator used to create social worker records at a regulated rate

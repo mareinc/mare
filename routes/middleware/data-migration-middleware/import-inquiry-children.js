@@ -27,20 +27,21 @@ module.exports.appendInquiryChildren = ( req, res, done ) => {
 	const inquiryChildrenLoaded = CSVConversionMiddleware.fetchInquiryChildren();
 
 	// if the file was successfully converted, it will return the array of inquiry children
-	inquiryChildrenLoaded.then( inquiryChildrenArray => {
-		// store the inquiry children in a variable accessible throughout this file
-		inquiryChildren = inquiryChildrenArray;
-		// call the function to build the sibling map
-		exports.buildInquiryChildrenMap();
-		// kick off the first run of our generator
-		inquiryChildGenerator.next();
-	// if there was an error converting the inquiry children file
-	}).catch( reason => {
-		console.error( `error processing inquiry children` );
-		console.error( reason );
-		// aborting the import
-		return done();
-	});
+	inquiryChildrenLoaded
+		.then( inquiryChildrenArray => {
+			// store the inquiry children in a variable accessible throughout this file
+			inquiryChildren = inquiryChildrenArray;
+			// call the function to build the sibling map
+			exports.buildInquiryChildrenMap();
+			// kick off the first run of our generator
+			inquiryChildGenerator.next();
+		// if there was an error converting the inquiry children file
+		}).catch( reason => {
+			console.error( `error processing inquiry children` );
+			console.error( reason );
+			// aborting the import
+			return done();
+		});
 };
 
 module.exports.buildInquiryChildrenMap = () => {
@@ -118,29 +119,40 @@ module.exports.updateInquiryRecord = ( childIds, inquiryId, pauseUntilSaved ) =>
 		utilityModelFetch.getChildIdsByRegistrationNumbers( resolve, reject, childIds );
 	});
 
-	Promise.all( [ inquiryLoaded, childrenLoaded ] ).then( values => {
+	Promise.all( [ inquiryLoaded, childrenLoaded ] )
+		.then( values => {
 
-		const [ inquiry, inquiryChildren ] = values;
+			const [ inquiry, inquiryChildren ] = values;
 
-		inquiry.child = inquiryChildren; // IMPORTANT: right now this is a single select field you're storing an array in.  The assumption is this will need to change to handle sibling groups
+			inquiry.child = inquiryChildren; // IMPORTANT: right now this is a single select field you're storing an array in.  The assumption is this will need to change to handle sibling groups
 
-		// save the updated inquiry record
-		inquiry.save( ( err, savedModel ) => {
-			// if we run into an error
-			if( err ) {
-				// halt execution by throwing an error
-				console.log( `error: ${ err }` );
-				throw `[inquiry id: ${ inquiry.get( '_id' ) }] an error occured while appending a child to the inquiry record.`;
-			}
+			// save the updated inquiry record
+			inquiry.save( ( err, savedModel ) => {
+				// if we run into an error
+				if( err ) {
+					// halt execution by throwing an error
+					console.log( `error: ${ err }` );
+					throw `[inquiry id: ${ inquiry.get( '_id' ) }] an error occured while appending a child to the inquiry record.`;
+				}
 
-			// fire off the next iteration of our generator after pausing
+				// fire off the next iteration of our generator after pausing
+				if( pauseUntilSaved ) {
+					setTimeout( () => {
+						inquiryChildGenerator.next();
+					}, 1000 );
+				}
+			});
+		})
+		.catch( err => {
+			// we can assume it was a reject from trying to fetch the city or town by an unrecognized name
+			importErrors.push( { id: inquiryId, error: `error adding children with ids ${ childIds } to inquiry with id ${ inquiryId } - ${ err }` } );
+
 			if( pauseUntilSaved ) {
 				setTimeout( () => {
 					inquiryChildGenerator.next();
 				}, 1000 );
 			}
 		});
-	});
 };
 
 // instantiates the generator used to create inquiry child records at a regulated rate

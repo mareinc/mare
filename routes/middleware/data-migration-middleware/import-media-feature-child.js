@@ -90,26 +90,35 @@ module.exports.updateMediaFeatureRecord = ( mediaFeatureChild, pauseUntilSaved )
 	// fetch the media feature associated with the child
 	const mediaFeatureLoaded = utilityModelFetch.getMediaFeatureById( mediaFeatureChild.mft_id );
 
-    Promise.all( [ childLoaded, mediaFeatureLoaded ] ).then( values => {
+	Promise.all( [ childLoaded, mediaFeatureLoaded ] )
+		.then( values => {
 
-		const [ child, mediaFeature ] = values;
+			const [ child, mediaFeature ] = values;
 
-        mediaFeature.children.push( child.get( '_id' ) );
+			mediaFeature.children.push( child.get( '_id' ) );
 
-        // save the child record
-        mediaFeature.save( ( err, savedModel ) => {
-            // if we run into an error
-            if( err ) {
-				// store a reference to the entry that caused the error
-				importErrors.push( { id: mediaFeature.mfc_id, error: err.err } );
-            }
+			// save the child record
+			mediaFeature.save( ( err, savedModel ) => {
+				// if we run into an error
+				if( err ) {
+					// store a reference to the entry that caused the error
+					importErrors.push( { id: mediaFeature.mfc_id, error: err.err } );
+				}
 
-            // fire off the next iteration of our generator after saving
-            if( pauseUntilSaved ) {
-                mediaFeatureChildGenerator.next();
-            }
-        });
-    });
+				// fire off the next iteration of our generator after saving
+				if( pauseUntilSaved ) {
+					mediaFeatureChildGenerator.next();
+				}
+			});
+		})
+		.catch( err => {
+			// we can assume it was a reject from trying to fetch the city or town by an unrecognized name
+			importErrors.push( { id: mediaFeature.mfc_id, error: `error adding children with id ${ mediaFeatureChild.chd_id } to media feature with id ${ mediaFeatureChild.mft_id } - ${ err }` } );
+
+			if( pauseUntilSaved ) {
+				mediaFeatureChildGenerator.next();
+			}
+		});
 };
 
 // instantiates the generator used to create child records at a regulated rate

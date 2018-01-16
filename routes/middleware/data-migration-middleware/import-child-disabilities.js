@@ -93,26 +93,36 @@ module.exports.updateChildRecord = ( childDisability, pauseUntilSaved ) => {
 	// fetch the first child
 	const childLoaded = utilityModelFetch.getChildByRegistrationNumber( childDisability.chd_id );
 	// populate disability field of the child specified in the disability record
-	childLoaded.then( child => {
-		// find the disability id using the disabilities map
-		let newDisability = disabilitiesMap[ childDisability.spn_id ];
-		// add the disability to the child's disabilities array
-		child.disabilities.push( newDisability );
+	childLoaded
+		.then( child => {
+			// find the disability id using the disabilities map
+			let newDisability = disabilitiesMap[ childDisability.spn_id ];
+			// add the disability to the child's disabilities array
+			child.disabilities.push( newDisability );
 
-		// save the child record
-		child.save( ( err, savedModel ) => {
-			// if we run into an error
-			if( err ) {
-				// store a reference to the entry that caused the error
-				importErrors.push( { id: childDisability.csn_id, error: err.err } );
-			}
+			// save the child record
+			child.save( ( err, savedModel ) => {
+				// if we run into an error
+				if( err ) {
+					// store a reference to the entry that caused the error
+					importErrors.push( { id: childDisability.csn_id, error: err.err } );
+				}
 
-			// fire off the next iteration of our generator after saving
+				// fire off the next iteration of our generator after saving
+				if( pauseUntilSaved ) {
+					childDisabilityGenerator.next();
+				}
+			});
+		})
+		.catch( err => {
+			// push the error to the importErrors array for display after the import has finished running
+			importErrors.push( { id: childDisability.csn_id, error: `error loading child with id ${ childDisability.chd_id } - ${ err }` } );
+
+			// fire off the next iteration of our generator after pausing
 			if( pauseUntilSaved ) {
-				childDisabilityGenerator.next();
+				familyChildrenGenerator.next();
 			}
 		});
-	});
 };
 
 // instantiates the generator used to create child records at a regulated rate

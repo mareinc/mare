@@ -92,37 +92,38 @@ module.exports.createFamilyRecord = ( family, pauseUntilSaved ) => {
 	// fetch the family's social worker
 	const socialWorkerLoaded = utilityModelFetch.getSocialWorkerById( family.social_worker_agc_id );
 
-	Promise.all( [ familyLoaded, socialWorkerLoaded ] ).then( values => {
-		// store the retrieved family and family social worker in local variables
-		const [ family, familySocialWorker ] = values;
-		// append the family social worker ID to the family
-		family.socialWorker = familySocialWorker ? familySocialWorker.get( '_id' ) : undefined;
-		// save the updated family record
-		family.save( ( err, savedModel ) => {
-			// if we run into an error
-			if( err ) {
-				// store a reference to the entry that caused the error
-				importErrors.push( { id: familiy.get( 'registrationNumber' ), error: err.err } );
-			}
+	Promise.all( [ familyLoaded, socialWorkerLoaded ] )
+		.then( values => {
+			// store the retrieved family and family social worker in local variables
+			const [ family, familySocialWorker ] = values;
+			// append the family social worker ID to the family
+			family.socialWorker = familySocialWorker ? familySocialWorker.get( '_id' ) : undefined;
+			// save the updated family record
+			family.save( ( err, savedModel ) => {
+				// if we run into an error
+				if( err ) {
+					// store a reference to the entry that caused the error
+					importErrors.push( { id: familiy.get( 'registrationNumber' ), error: err.err } );
+				}
 
-			// fire off the next iteration of our generator after pausing
+				// fire off the next iteration of our generator after pausing
+				if( pauseUntilSaved ) {
+					setTimeout( () => {
+						familyGenerator.next();
+					}, 1000 );
+				}
+			});
+		})
+		.catch( err => {
+			// we can assume it was a reject from trying to fetch the city or town by an unrecognized name
+			importErrors.push( { id: family.fam_id, err: `error adding social worker with id ${ family.social_worker_agc_id } to family with id ${ family.fam_id } - ${ err }` } );
+
 			if( pauseUntilSaved ) {
 				setTimeout( () => {
 					familyGenerator.next();
 				}, 1000 );
 			}
 		});
-	})
-	.catch( reason => {
-		// we can assume it was a reject from trying to fetch the city or town by an unrecognized name
-		importErrors.push( reason );
-
-		if( pauseUntilSaved ) {
-			setTimeout( () => {
-				familyGenerator.next();
-			}, 1000 );
-		}
-	});
 };
 
 // instantiates the generator used to create family records at a regulated rate

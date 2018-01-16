@@ -106,43 +106,55 @@ module.exports.createEventRecord = ( event, pauseUntilSaved ) => {
 		// for fetching the recruitment source
 		utilityModelFetch.getSourceById( resolve, reject, event.rcs_id );
 	});
-	// populate disability field of the child specified in the disability record
-	sourceLoaded.then( source => {
-		// populate fields of a new Event object
-		let newEvent = new Event.model({
-			name: source.get( 'source' ) + eventPostfix,
-			isActive: event.is_active === 'Y',
+	// if the source was loaded successfully
+	sourceLoaded
+		.then( source => {
+			// populate fields of a new Event object
+			let newEvent = new Event.model({
+				name: source.get( 'source' ) + eventPostfix,
+				isActive: event.is_active === 'Y',
 
-			type: 'MARE adoption parties & information events',
+				type: 'MARE adoption parties & information events',
 
-			startDate: eventStartDate,
-			endDate: eventStartDate,
-			startTime: eventStartTime,
-			endTime: eventEndTime,
+				startDate: eventStartDate,
+				endDate: eventStartDate,
+				startTime: eventStartTime,
+				endTime: eventEndTime,
 
-			notes: event.notes,
+				notes: event.notes,
 
-			// this is used to determine whether we should send an automatic email to the creator when their event becomes active
-			createdViaWebsite: false,
+				// this is used to determine whether we should send an automatic email to the creator when their event becomes active
+				createdViaWebsite: false,
 
-			oldId: event.evt_id
-		});
+				oldId: event.evt_id
+			});
 
-		newEvent.save( ( err, savedModel ) => {
-			// if we run into an error
-			if( err ) {
-				// store a reference to the entry that caused the error
-				importErrors.push( { id: event.evt_id, error: err.err } );
-			}
-			
-			// fire off the next iteration of our generator after pausing for a second
+			newEvent.save( ( err, savedModel ) => {
+				// if we run into an error
+				if( err ) {
+					// store a reference to the entry that caused the error
+					importErrors.push( { id: event.evt_id, error: err.err } );
+				}
+				
+				// fire off the next iteration of our generator after pausing for a second
+				if( pauseUntilSaved ) {
+					setTimeout( () => {
+						eventGenerator.next();
+					}, 1000 );
+				}
+			});
+		})
+		.catch( err => {
+			// push the error to the importErrors array for display after the import has finished running
+			importErrors.push( { id: undefined, error: `error importing event - could not load source with id ${ event.rcs_id } - ${ err }` } );
+
+			// fire off the next iteration of our generator after pausing
 			if( pauseUntilSaved ) {
 				setTimeout( () => {
 					eventGenerator.next();
 				}, 1000 );
 			}
 		});
-	});
 };
 
 // instantiates the generator used to create event records at a regulated rate

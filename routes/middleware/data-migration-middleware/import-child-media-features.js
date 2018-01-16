@@ -168,51 +168,61 @@ module.exports.updateChildRecord = ( childMediaFeatureGroupIds, childOldId, paus
 	// const mediaFeatureLoaded = utilityModelFetch.getMediaFeatureById( childMediaFeature.mft_id );
 
 	// Promise.all( [ childLoaded, mediaFeatureLoaded ] ).then( values => {
-	childLoaded.then( child => {
+	childLoaded
+		.then( child => {
 
-		// const [ child, mediaFeature ] = values;
+			// const [ child, mediaFeature ] = values;
 
-		// "86","Video Snapshots" // have this already, should we check ( ask Lisa ).  Maybe see which source is trustworthy
-		// "68","AdoptUsKids/Faces" // have the checkbox, should we check ( ask Lisa ). Maybe see which source is trustworthy
-		// "1","MARE Photolisting"
-		// "2","Wednesday's Child"
+			// "86","Video Snapshots" // have this already, should we check ( ask Lisa ).  Maybe see which source is trustworthy
+			// "68","AdoptUsKids/Faces" // have the checkbox, should we check ( ask Lisa ). Maybe see which source is trustworthy
+			// "1","MARE Photolisting"
+			// "2","Wednesday's Child"
 
-		// "90","Matching Meetings","N","N","",""
-		// "93","Single Parent Matching Night","N","N","",""
-		// "103","MARE Matching Program","N","N","",""
-		// "1000","MARE On-line Matching- Family","N","N","",""
-		// "1020","MARE On-line Matching- SW","N","N","",""
-		// "1101","2010 Family Matching Night","N","N","",""
-		// "1139","2011 Girls Matching Night","N","N","",""
-		// "1159","2012 Casey Matching Night","N","N","",""
-		// "1167","2012 Southeast Matching Night","N","N","",""
-		// "1198","2014 Boston/Southern Matching","N","N","",""
-		// "1225","2015 DCF LYNN MATCHING NIGHT","Y","Y","1/27/15","W"
+			// "90","Matching Meetings","N","N","",""
+			// "93","Single Parent Matching Night","N","N","",""
+			// "103","MARE Matching Program","N","N","",""
+			// "1000","MARE On-line Matching- Family","N","N","",""
+			// "1020","MARE On-line Matching- SW","N","N","",""
+			// "1101","2010 Family Matching Night","N","N","",""
+			// "1139","2011 Girls Matching Night","N","N","",""
+			// "1159","2012 Casey Matching Night","N","N","",""
+			// "1167","2012 Southeast Matching Night","N","N","",""
+			// "1198","2014 Boston/Southern Matching","N","N","",""
+			// "1225","2015 DCF LYNN MATCHING NIGHT","Y","Y","1/27/15","W"
 
 
-		// have: video snapshot with date
-		// 	  adoptuskids but not adoptuskids date
+			// have: video snapshot with date
+			// 	  adoptuskids but not adoptuskids date
 
-		// `coalition meeting` // no match
-		// `matching event`	// lots of potential matches ( see above )
-		// `adoption parties`	// lots of potential matches.  See recruitment_source.csv
+			// `coalition meeting` // no match
+			// `matching event`	// lots of potential matches ( see above )
+			// `adoption parties`	// lots of potential matches.  See recruitment_source.csv
 
-		console.log( `stop here` ); // NOTE: no idea what this means
+			console.log( `stop here` ); // NOTE: no idea what this means
 
-		// save the child record
-		child.save( ( err, savedModel ) => {
-			// if we run into an error
-			if( err ) {
-				// store a reference to the entry that caused the error
-				importErrors.push( { id: childMediaFeature.chd_id, error: err.err } );
-			}
+			// save the child record
+			child.save( ( err, savedModel ) => {
+				// if we run into an error
+				if( err ) {
+					// store a reference to the entry that caused the error
+					importErrors.push( { id: childMediaFeature.chd_id, error: err.err } );
+				}
 
-			// fire off the next iteration of our generator after saving
+				// fire off the next iteration of our generator after saving
+				if( pauseUntilSaved ) {
+					childMediaFeatureGenerator.next();
+				}
+			});
+		})
+		.catch( err => {
+			// log the error
+			importErrors.push( { id: childMediaFeature.chd_id, error: `error adding child media features ${ childMediaFeatureGroupIds } to child with id ${ childOldId } - ${ err }` } );
+
+			// fire off the next iteration of our generator after pausing
 			if( pauseUntilSaved ) {
 				childMediaFeatureGenerator.next();
 			}
 		});
-	});
 };
 
 // instantiates the generator used to create child records at a regulated rate

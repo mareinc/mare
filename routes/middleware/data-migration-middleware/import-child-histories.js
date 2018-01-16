@@ -26,26 +26,27 @@ module.exports.importChildHistories = ( req, res, done ) => {
 	// create a promise for converting the child histories CSV file to JSON
 	const childHistoriesLoaded = CSVConversionMiddleware.fetchChildHistories();
 	// if the file was successfully converted, it will return the array of child histories
-	childHistoriesLoaded.then( childHistoriesArray => {
+	childHistoriesLoaded
+		.then( childHistoriesArray => {
 
-		for( let childHistory of childHistoriesArray ) {
-			if( childHistories.has( childHistory.chd_id ) ) {
-				childHistories.get( childHistory.chd_id ).push( childHistory );
-			} else {
-				childHistories.set( childHistory.chd_id, [ childHistory ] );
+			for( let childHistory of childHistoriesArray ) {
+				if( childHistories.has( childHistory.chd_id ) ) {
+					childHistories.get( childHistory.chd_id ).push( childHistory );
+				} else {
+					childHistories.set( childHistory.chd_id, [ childHistory ] );
+				}
 			}
-		}
 
-		console.timeEnd( 'loading child histories' );
+			console.timeEnd( 'loading child histories' );
 
-		// kick off the first run of our generator
-		childHistoryGenerator.next();
-	// if there was an error converting the child histories file
-	}).catch( reason => {
-		console.error( `error processing child histories - ${ reason }` );
-		// aborting the import
-		return done();
-	});
+			// kick off the first run of our generator
+			childHistoryGenerator.next();
+		// if there was an error converting the child histories file
+		}).catch( reason => {
+			console.error( `error processing child histories - ${ reason }` );
+			// aborting the import
+			return done();
+		});
 };
 
 /* a generator to allow us to control the processing of each record */

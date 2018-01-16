@@ -157,21 +157,34 @@ module.exports.updateEventRecord = ( attendees, eventId, pauseUntilSaved ) => {
 		utilityModelFetch.getSocialWorkerIdsByOldIds( resolve, reject, socialWorkerIds );
 	});
 
-	Promise.all( [ eventLoaded, childAttendeesLoaded, familyAttendeesLoaded, socialWorkerAttendeesLoaded ] ).then( values => {
+	Promise.all( [ eventLoaded, childAttendeesLoaded, familyAttendeesLoaded, socialWorkerAttendeesLoaded ] )
+		.then( values => {
 
-		const [ event, childAttendees, familyAttendees, socialWorkerAttendees ] = values;
+			const [ event, childAttendees, familyAttendees, socialWorkerAttendees ] = values;
 
-		event.childAttendees = childAttendees;
-		event.familyAttendees = familyAttendees;
-		event.socialWorkerAttendees = socialWorkerAttendees;
+			event.childAttendees = childAttendees;
+			event.familyAttendees = familyAttendees;
+			event.socialWorkerAttendees = socialWorkerAttendees;
 
-		// save the updated event record
-		event.save( ( err, savedModel ) => {
-			// if we run into an error
-			if( err ) {
-				// store a reference to the entry that caused the error
-				importErrors.push( { id: event.get( 'name' ), error: err.err } );
-			}
+			// save the updated event record
+			event.save( ( err, savedModel ) => {
+				// if we run into an error
+				if( err ) {
+					// store a reference to the entry that caused the error
+					importErrors.push( { id: event.get( 'name' ), error: err.err } );
+				}
+
+				// fire off the next iteration of our generator after pausing
+				if( pauseUntilSaved ) {
+					setTimeout( () => {
+						eventAttendeeGenerator.next();
+					}, 1000 );
+				}
+			});
+		})
+		.catch( err => {
+			// push the error to the importErrors array for display after the import has finished running
+			importErrors.push( { id: eventId, error: `error adding attendees to event - ${ err }` } );
 
 			// fire off the next iteration of our generator after pausing
 			if( pauseUntilSaved ) {
@@ -180,7 +193,6 @@ module.exports.updateEventRecord = ( attendees, eventId, pauseUntilSaved ) => {
 				}, 1000 );
 			}
 		});
-	});
 };
 
 // instantiates the generator used to create event attendee records at a regulated rate

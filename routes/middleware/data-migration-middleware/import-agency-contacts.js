@@ -111,7 +111,8 @@ module.exports.updateAgencyRecord = ( agencyId, agencyContactId, pauseUntilSaved
 	const agencyContactLoaded = utilityModelFetch.getSocialWorkerById( agencyContactId );
 
 	// when both resolve
-	Promise.all( [ agencyLoaded, agencyContactLoaded ] ).then( values => {
+	Promise.all( [ agencyLoaded, agencyContactLoaded ] )
+		.then( values => {
 		// store the retrieved agency and agency contact in local variables
 		const [ agency, agencyContact ] = values;
 		// append the agency contact ID to the agency
@@ -123,6 +124,17 @@ module.exports.updateAgencyRecord = ( agencyId, agencyContactId, pauseUntilSaved
 				// store a reference to the entry that caused the error
 				importErrors.push( { id: agencyContactId, error: err.err } );
 			}
+
+			// fire off the next iteration of our generator after pausing
+			if( pauseUntilSaved ) {
+				setTimeout( () => {
+					agencyGenerator.next();
+				}, 2000 );
+			}
+		})
+		.catch( err => {
+			// log the error
+			importErrors.push( { id: agencyContactId, error: `error adding agency contact with id ${ agencyContactId } to agency with id ${ agencyId } - ${ err }` } );
 
 			// fire off the next iteration of our generator after pausing
 			if( pauseUntilSaved ) {

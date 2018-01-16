@@ -92,28 +92,41 @@ module.exports.createMediaFeatureRecord = ( mediaFeature, pauseUntilSaved ) => {
 		utilityModelFetch.getSourceById( resolve, reject, mediaFeature.rcs_id );
 	});
 
-	sourceLoaded.then( source => {
+	sourceLoaded
+		.then( source => {
 
-		let mediaFeatureNotes = mediaFeature.case_number ? `case number: ${ mediaFeature.case_number }` : '';
-			mediaFeatureNotes += mediaFeature.location ? `\n\nlocation: ${ mediaFeature.location }` : '';
+			let mediaFeatureNotes = mediaFeature.case_number ? `case number: ${ mediaFeature.case_number }` : '';
+				mediaFeatureNotes += mediaFeature.location ? `\n\nlocation: ${ mediaFeature.location }` : '';
 
-		let newMediaFeature = new MediaFeature.model({
+			let newMediaFeature = new MediaFeature.model({
 
-			source: source.get( '_id' ),
-			date: mediaFeature.schedule_date,
-			notes: mediaFeatureNotes.trim(),
+				source: source.get( '_id' ),
+				date: mediaFeature.schedule_date,
+				notes: mediaFeatureNotes.trim(),
 
-			oldId: mediaFeature.mft_id
+				oldId: mediaFeature.mft_id
 
-		});
+			});
 
-		newMediaFeature.save( ( err, savedModel ) => {
-			// if we run into an error
-			if( err ) {
-				// store a reference to the entry that caused the error
-				importErrors.push( { id: mediaFeature.mft_id, error: err.err } );
-			}
-			
+			newMediaFeature.save( ( err, savedModel ) => {
+				// if we run into an error
+				if( err ) {
+					// store a reference to the entry that caused the error
+					importErrors.push( { id: mediaFeature.mft_id, error: err.err } );
+				}
+				
+				// fire off the next iteration of our generator after pausing for a second
+				if( pauseUntilSaved ) {
+					setTimeout( () => {
+						mediaFeatureGenerator.next();
+					}, 1000 );
+				}
+			});
+		})
+		.catch( err => {
+			// we can assume it was a reject from trying to fetch the city or town by an unrecognized name
+			importErrors.push( { id: mediaFeature.mft_id, error: `error importing media feature with id ${ mediaFeature.mft_id } - ${ err }` } );
+
 			// fire off the next iteration of our generator after pausing for a second
 			if( pauseUntilSaved ) {
 				setTimeout( () => {
@@ -121,7 +134,6 @@ module.exports.createMediaFeatureRecord = ( mediaFeature, pauseUntilSaved ) => {
 				}, 1000 );
 			}
 		});
-	});
 };
 
 // instantiates the generator used to create agency records at a regulated rate

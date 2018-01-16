@@ -124,29 +124,39 @@ module.exports.updateChildRecord = ( recruitmentChecklistItems, childRegistratio
 	// fetch the child
 	const childLoaded = utilityModelFetch.getChildByRegistrationNumber( childRegistrationNumber );
 
-	childLoaded.then( child => {
-		// create an array from the recruitment checklist actions associated with the current child
-		const recruitmentActionsArray = recruitmentChecklistItemsArray.map( recruitmentChecklistItem => {
-			return recruitmentChecklistItem.action;
-		});
+	childLoaded
+		.then( child => {
+			// create an array from the recruitment checklist actions associated with the current child
+			const recruitmentActionsArray = recruitmentChecklistItemsArray.map( recruitmentChecklistItem => {
+				return recruitmentChecklistItem.action;
+			});
 
-		// child.field = recruitmentActionsArray.indexOf( someNumber ) ? true : false;
-		// child.fieldComments = recruitmentActionsArray.indexOf( someNumber ) ? recruitmentChecklistItemsArray[ recruitmentActionsArray.indexOf( someNumber ) ].comments : '';
+			// child.field = recruitmentActionsArray.indexOf( someNumber ) ? true : false;
+			// child.fieldComments = recruitmentActionsArray.indexOf( someNumber ) ? recruitmentChecklistItemsArray[ recruitmentActionsArray.indexOf( someNumber ) ].comments : '';
 
-		// save the updated child record
-		child.save( ( err, savedModel ) => {
-			// if we run into an error
-			if( err ) {
-				// store a reference to the entry that caused the error
-				importErrors.push( { id: child.get( 'registrationNumber' ), error: err.err } );
-			}
+			// save the updated child record
+			child.save( ( err, savedModel ) => {
+				// if we run into an error
+				if( err ) {
+					// store a reference to the entry that caused the error
+					importErrors.push( { id: child.get( 'registrationNumber' ), error: err.err } );
+				}
+
+				// fire off the next iteration of our generator after pausing
+				if( pauseUntilSaved ) {
+					childRecruitmentChecklistItemsGenerator.next();
+				}
+			});
+		})
+		.catch( err => {
+			// log the error
+			importErrors.push( { id: childRegistrationNumber, error: `error adding child recruitment checklists ${ recruitmentChecklistItems } to child with id ${ childRegistrationNumber } - ${ err }` } );
 
 			// fire off the next iteration of our generator after pausing
 			if( pauseUntilSaved ) {
 				childRecruitmentChecklistItemsGenerator.next();
 			}
 		});
-	});
 };
 
 // instantiates the generator used to create family records at a regulated rate

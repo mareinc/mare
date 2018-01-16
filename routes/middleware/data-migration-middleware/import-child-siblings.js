@@ -121,31 +121,41 @@ module.exports.updateChildRecord = ( ids, pauseUntilSaved ) => {
 		utilityModelFetch.getChildIdsByRegistrationNumbers( resolve, reject, siblingRegistrationNumbers );
 	});
 	// when both resolve
-	Promise.all( [ childLoaded, siblingsLoaded ] ).then( children => {
+	Promise.all( [ childLoaded, siblingsLoaded ] )
+		.then( children => {
 
-		const [ child, siblingIds ] = children;
-		// append other ids to first child as siblings
-		child.siblings = siblingIds;
-		// check the 'must be placed together' checkbox
-		child.mustBePlacedWithSiblings = true;
-		// append other ids to first child as siblings to be placed with
-		child.siblingsToBePlacedWith = siblingIds;
-		// save first child
-		child.save( ( err, savedModel ) => {
-			// if we run into an error
-			if( err ) {
-				// store a reference to the entry that caused the error
-				importErrors.push( { id: child.get( 'registrationNumber' ), error: err.err } );
-			}
+			const [ child, siblingIds ] = children;
+			// append other ids to first child as siblings
+			child.siblings = siblingIds;
+			// check the 'must be placed together' checkbox
+			child.mustBePlacedWithSiblings = true;
+			// append other ids to first child as siblings to be placed with
+			child.siblingsToBePlacedWith = siblingIds;
+			// save first child
+			child.save( ( err, savedModel ) => {
+				// if we run into an error
+				if( err ) {
+					// store a reference to the entry that caused the error
+					importErrors.push( { id: child.get( 'registrationNumber' ), error: err.err } );
+				}
+
+				// fire off the next iteration of our generator after pausing
+				if( pauseUntilSaved ) {
+					setTimeout( () => {
+						siblingGenerator.next();
+					}, 2000 );
+				}
+			});
+		})
+		.catch( err => {
+			// log the error
+			importErrors.push( { id: childRegistrationNumber, error: `error adding siblings with ids ${ siblingRegistrationNumbers } to child with id ${ childRegistrationNumber } - ${ err }` } );
 
 			// fire off the next iteration of our generator after pausing
 			if( pauseUntilSaved ) {
-				setTimeout( () => {
-					siblingGenerator.next();
-				}, 2000 );
+				siblingGenerator.next();
 			}
 		});
-	});
 };
 
 // instantiates the generator used to create child records at a regulated rate

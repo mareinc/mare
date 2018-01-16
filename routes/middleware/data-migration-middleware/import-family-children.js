@@ -124,41 +124,51 @@ module.exports.updateFamilyRecord = ( children, familyId, pauseUntilSaved ) => {
 	// fetch the family
 	const familyLoaded = utilityModelFetch.getFamilyByRegistrationNumber( familyId );
 
-	familyLoaded.then( family => {
-		// keep track of the current child we're adding to the family
-		let childNumber = 1;
+	familyLoaded
+		.then( family => {
+			// keep track of the current child we're adding to the family
+			let childNumber = 1;
 
-		for( let child of childrenArray ) {
-			// the system can only catalogue 8 children, ignore any children beyond that point
-			if( childNumber > 8 ) {
-				continue;
+			for( let child of childrenArray ) {
+				// the system can only catalogue 8 children, ignore any children beyond that point
+				if( childNumber > 8 ) {
+					continue;
+				}
+				// get the object for the current child on the family model
+				const targetChild = family[ `child${ childNumber }` ];
+				// set the relevant child fields, note that gender is missing
+				targetChild.name = child.name;
+				targetChild.birthDate = child.date_of_birth ? new Date( child.date_of_birth ) : undefined;
+				targetChild.type = childTypesMap[ child.type ];
+				// up the childNumber for the next iteration of the loop
+				childNumber++;
 			}
-			// get the object for the current child on the family model
-			const targetChild = family[ `child${ childNumber }` ];
-			// set the relevant child fields, note that gender is missing
-			targetChild.name = child.name;
-			targetChild.birthDate = child.date_of_birth ? new Date( child.date_of_birth ) : undefined;
-			targetChild.type = childTypesMap[ child.type ];
-			// up the childNumber for the next iteration of the loop
-			childNumber++;
-		}
-		// the system can only register 1, 2, 3, 4, 5, 6, 7, and 8+
-		family.numberOfChildren = childrenArray.length <= 7 ? childrenArray.length : '8+';
+			// the system can only register 1, 2, 3, 4, 5, 6, 7, and 8+
+			family.numberOfChildren = childrenArray.length <= 7 ? childrenArray.length : '8+';
 
-		// save the updated family record
-		family.save( ( err, savedModel ) => {
-			// if we run into an error
-			if( err ) {
-				// store a reference to the entry that caused the error
-				importErrors.push( { id: family.get( 'registrationNumber' ), error: err.err } );
-			}
+			// save the updated family record
+			family.save( ( err, savedModel ) => {
+				// if we run into an error
+				if( err ) {
+					// store a reference to the entry that caused the error
+					importErrors.push( { id: family.get( 'registrationNumber' ), error: err.err } );
+				}
+
+				// fire off the next iteration of our generator after pausing
+				if( pauseUntilSaved ) {
+					familyChildrenGenerator.next();
+				}
+			});
+		})
+		.catch( err => {
+			// push the error to the importErrors array for display after the import has finished running
+			importErrors.push( { id: familyId, error: `error loading family - ${ err }` } );
 
 			// fire off the next iteration of our generator after pausing
 			if( pauseUntilSaved ) {
 				familyChildrenGenerator.next();
 			}
 		});
-	});
 };
 
 // instantiates the generator used to create family records at a regulated rate

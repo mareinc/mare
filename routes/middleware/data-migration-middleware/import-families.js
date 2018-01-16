@@ -768,141 +768,143 @@ module.exports.createFamilyRecord = ( family, pauseUntilSaved ) => {
 	// create a promise for fetching the MA city or town associated with the agency
 	const cityOrTownLoaded = utilityModelFetch.getCityOrTownByName( family.city.trim(), family.state );
 	// once we've fetch the city or town
-	cityOrTownLoaded.then( cityOrTown => {
+	cityOrTownLoaded
+		.then( cityOrTown => {
+			// populate instance for Family object
+			let newFamily = new Family.model({
+				// every family needs an email, this will generate a placeholder which will be updated during the family contacts import
+				email: `placeholder0${ family.fam_id }@email.com`,
+				// every family needs a password, this will generate a placeholder which will be updated during the family contacts import
+				password: `${ family.fam_id }`,
 
-		// populate instance for Family object
-		let newFamily = new Family.model({
-			// every family needs an email, this will generate a placeholder which will be updated during the family contacts import
-			email: `placeholder0${ family.fam_id }@email.com`,
-			// every family needs a password, this will generate a placeholder which will be updated during the family contacts import
-			password: `${ family.fam_id }`,
+				isActive: family.status === 'A' || family.status === 'H',
 
-			isActive: family.status === 'A' || family.status === 'H',
+				registrationNumber: family.fam_id,
+				initialContact: family.listing_date ? new Date( family.listing_date ) : undefined,
+				flagCalls: family.flag_calls === 'Y',
+				familyConstellation: familyConstellationsMap[ family.family_constellation ],	// this is required in the new system
 
-			registrationNumber: family.fam_id,
-			initialContact: family.listing_date ? new Date( family.listing_date ) : undefined,
-			flagCalls: family.flag_calls === 'Y',
-			familyConstellation: familyConstellationsMap[ family.family_constellation ],	// this is required in the new system
+				language: primaryLanguage,
+				otherLanguages: otherLanguagesArray,
 
-			language: primaryLanguage,
-			otherLanguages: otherLanguagesArray,
-
-			address: {
-				street1: family.address_1.trim(),
-				street2: family.address_2.trim(),
-				city: cityOrTown,
-				isOutsideMassachusetts: family.state !== 'MA',
-				cityText: family.state !== 'MA' ? family.city.trim() : undefined,
-				state: statesMap[ family.state ],
-				zipCode: utilityFunctions.padZipCode( family.zip ),
-				region: cityRegionsMap[ family.city.trim() ]
-			},
-
-			homePhone: family.home_phone,
-
-			numberOfChildren: 0, // This will be updated in the family child import
-
-			stages: {
-				gatheringInformation: {
-					started: family.is_gathering_info === 'Y',
-					date: family.gathering_info_date ? new Date( family.gathering_info_date ) : undefined
+				address: {
+					street1: family.address_1.trim(),
+					street2: family.address_2.trim(),
+					city: cityOrTown,
+					isOutsideMassachusetts: family.state !== 'MA',
+					cityText: family.state !== 'MA' ? family.city.trim() : undefined,
+					state: statesMap[ family.state ],
+					zipCode: utilityFunctions.padZipCode( family.zip ),
+					region: cityRegionsMap[ family.city.trim() ]
 				},
-				lookingForAgency: {
-					started: family.is_looking_for_agency === 'Y',
-					date: family.looking_for_agency_date ? new Date( family.looking_for_agency_date ) : undefined
+
+				homePhone: family.home_phone,
+
+				numberOfChildren: 0, // This will be updated in the family child import
+
+				stages: {
+					gatheringInformation: {
+						started: family.is_gathering_info === 'Y',
+						date: family.gathering_info_date ? new Date( family.gathering_info_date ) : undefined
+					},
+					lookingForAgency: {
+						started: family.is_looking_for_agency === 'Y',
+						date: family.looking_for_agency_date ? new Date( family.looking_for_agency_date ) : undefined
+					},
+					workingWithAgency: {
+						started: family.is_working_with_agency === 'Y',
+						date: family.working_with_agency_date ? new Date( family.working_with_agency_date ) : undefined
+					},
+					MAPPTrainingCompleted: {
+						completed: !!family.mapp_training_date,	// no match for this
+						date: family.mapp_training_date ? new Date( family.mapp_training_date ) : undefined
+					}
 				},
-				workingWithAgency: {
-					started: family.is_working_with_agency === 'Y',
-					date: family.working_with_agency_date ? new Date( family.working_with_agency_date ) : undefined
+
+				homestudy: {
+					completed: family.is_home_studied === 'Y',
+					initialDate: family.home_study_date ? new Date( family.home_study_date ) : undefined,
+					mostRecentDate: family.home_study_date ? new Date( family.home_study_date ) : undefined // This is correct per Lisa, it's not in the old system
 				},
-				MAPPTrainingCompleted: {
-					completed: !!family.mapp_training_date,	// no match for this
-					date: family.mapp_training_date ? new Date( family.mapp_training_date ) : undefined
+
+				onlineMatching: { // This may come out if the new system handles this funtionality correctly
+					started: !!family.online_matching_date, // this comes from the extranet in the old system
+					date: family.online_matching_date ? new Date( family.online_matching_date ) : undefined
+				},
+
+				registeredWithMARE: {
+					registered: family.is_registered === 'Y',
+					date: family.registered_date ? new Date( family.registered_date ) : undefined,
+					status: familyStatusesMap[ family.status ]
+				},
+
+				familyProfile: {
+					created: family.has_family_profile === 'Y',
+					date: family.family_profile_date ? new Date( family.family_profile_date ) : undefined
+				},
+
+				closed: {
+					isClosed: family.is_closed === 'Y',
+					date: family.closed_date ? new Date( family.closed_date ) : undefined,
+					reason: closedReasonsMap[ family.closed_reason ]
+				},
+			
+				infoPacket: { // English/Electronic, English/Hardcopy, Spanish/Electronic, Spanish/Hardcopy, None
+					packet: family.info_pack === 'EE' || family.info_pack === 'EH' ? 'English' :
+							family.info_pack === 'SE' || family.info_pack === 'SH' ? 'Spanish' :
+							'none',
+					date: family.info_pack_sent_date ? new Date( family.info_pack_sent_date ) : undefined,
+					notes: family.info_pack_notes.trim()
+				},
+
+				matchingPreferences: {
+					gender: matchingGenderPreferences,
+					legalStatus: matchingLegalStatusPreferences,
+
+					adoptionAges: {
+						from: family.adoption_ages_from ? parseInt( family.adoption_ages_from, 10 ) : undefined,
+						to: family.adoption_ages_to ? parseInt( family.adoption_ages_to, 10 ) : undefined
+					},
+
+					numberOfChildrenToAdopt: family.number_of_children_to_adopt ? parseInt( family.number_of_children_to_adopt, 10 ) : undefined,
+					siblingContact: family.accept_sibling_contact === 'Y',
+					birthFamilyContact: family.accept_birth_family_contact === 'Y',
+					
+					maxNeeds: { // if these don't exist, we'll need a default value
+						physical: disabilityStatusesMap[ family.max_physical_dst_id ]  || 'none',
+						intellectual: disabilityStatusesMap[ family.max_intellectual_dst_id ] || 'none',
+						emotional: disabilityStatusesMap[ family.max_emotional_dst_id ] || 'none'
+					}
 				}
-			},
 
-			homestudy: {
-				completed: family.is_home_studied === 'Y',
-				initialDate: family.home_study_date ? new Date( family.home_study_date ) : undefined,
-				mostRecentDate: family.home_study_date ? new Date( family.home_study_date ) : undefined // This is correct per Lisa, it's not in the old system
-			},
+			});
 
-			onlineMatching: { // This may come out if the new system handles this funtionality correctly
-				started: !!family.online_matching_date, // this comes from the extranet in the old system
-				date: family.online_matching_date ? new Date( family.online_matching_date ) : undefined
-			},
-
-			registeredWithMARE: {
-				registered: family.is_registered === 'Y',
-				date: family.registered_date ? new Date( family.registered_date ) : undefined,
-				status: familyStatusesMap[ family.status ]
-			},
-
-			familyProfile: {
-				created: family.has_family_profile === 'Y',
-				date: family.family_profile_date ? new Date( family.family_profile_date ) : undefined
-			},
-
-			closed: {
-				isClosed: family.is_closed === 'Y',
-				date: family.closed_date ? new Date( family.closed_date ) : undefined,
-				reason: closedReasonsMap[ family.closed_reason ]
-			},
-		
-			infoPacket: { // English/Electronic, English/Hardcopy, Spanish/Electronic, Spanish/Hardcopy, None
-				packet: family.info_pack === 'EE' || family.info_pack === 'EH' ? 'English' :
-						family.info_pack === 'SE' || family.info_pack === 'SH' ? 'Spanish' :
-						'none',
-				date: family.info_pack_sent_date ? new Date( family.info_pack_sent_date ) : undefined,
-				notes: family.info_pack_notes.trim()
-			},
-
-			matchingPreferences: {
-				gender: matchingGenderPreferences,
-				legalStatus: matchingLegalStatusPreferences,
-
-				adoptionAges: {
-					from: family.adoption_ages_from ? parseInt( family.adoption_ages_from, 10 ) : undefined,
-					to: family.adoption_ages_to ? parseInt( family.adoption_ages_to, 10 ) : undefined
-				},
-
-				numberOfChildrenToAdopt: family.number_of_children_to_adopt ? parseInt( family.number_of_children_to_adopt, 10 ) : undefined,
-				siblingContact: family.accept_sibling_contact === 'Y',
-				birthFamilyContact: family.accept_birth_family_contact === 'Y',
-				
-				maxNeeds: { // if these don't exist, we'll need a default value
-					physical: disabilityStatusesMap[ family.max_physical_dst_id ]  || 'none',
-					intellectual: disabilityStatusesMap[ family.max_intellectual_dst_id ] || 'none',
-					emotional: disabilityStatusesMap[ family.max_emotional_dst_id ] || 'none'
+			newFamily.save( ( err, savedModel ) => {
+				// if we run into an error
+				if( err ) {
+					console.error( `error saving family - ${ err.err }` );
+					// store a reference to the entry that caused the error
+					importErrors.push( { id: family.fam_id, error: err.err } );
 				}
-			}
 
-		});
-
-		newFamily.save( ( err, savedModel ) => {
-			// if we run into an error
+				// fire off the next iteration of our generator
+				if( pauseUntilSaved ) {
+					familyGenerator.next();
+				}
+			});
+		})
+		.catch( err => {
+			// if a error was provided
 			if( err ) {
-				// store a reference to the entry that caused the error
-				importErrors.push( { id: family.fam_id, error: err.err } );
+				console.error( `error fetching city or town ${ family.city.trim() } in state ${ family.state }` );
+				// we can assume it was a reject from trying to fetch the city or town by an unrecognized name
+				cityOrTownNameError.add( `error fetching city or town ${ family.city.trim() } in state ${ family.state } - ${ err }` );
 			}
 
-			// fire off the next iteration of our generator
 			if( pauseUntilSaved ) {
 				familyGenerator.next();
 			}
 		});
-	})
-	.catch( reason => {
-		// if a reason was provided
-		if( reason ) {
-			// we can assume it was a reject from trying to fetch the city or town by an unrecognized name
-			cityOrTownNameError.add( reason );
-		}
-
-		if( pauseUntilSaved ) {
-			familyGenerator.next();
-		}
-	});
 };
 
 // instantiates the generator used to create family records at a regulated rate

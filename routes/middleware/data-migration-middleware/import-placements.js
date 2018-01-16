@@ -136,37 +136,49 @@ module.exports.createPlacementRecord = ( placement, pauseUntilSaved ) => {
 	// fetch the family
 	const familyLoaded = utilityModelFetch.getFamilyByRegistrationNumber( placement.fam_id );
 
-	Promise.all( [ childLoaded, familyLoaded ] ).then( values => {
+	Promise.all( [ childLoaded, familyLoaded ] )
+		.then( values => {
 
-		const [ child, family ] = values;
+			const [ child, family ] = values;
 
-		let newPlacement = new Placement.model({
+			let newPlacement = new Placement.model({
 
-			// oldId: placement.fpl_id,
-			child						: child ? child.get( '_id' ) : undefined,
-			// placementDate			// this doesn't appear to exist in the old system
-			childPlacedWithMAREFamily	: !!family,
-			placedWithFamily			: family ? family.get( '_id' ) : undefined,
-			// familyAgency				// needs to be determined on save
-			notes						: placement.comment
-		});
+				// oldId: placement.fpl_id,
+				child						: child ? child.get( '_id' ) : undefined,
+				// placementDate			// this doesn't appear to exist in the old system
+				childPlacedWithMAREFamily	: !!family,
+				placedWithFamily			: family ? family.get( '_id' ) : undefined,
+				// familyAgency				// needs to be determined on save
+				notes						: placement.comment
+			});
 
-		// save the new placement record
-		newPlacement.save( ( err, savedModel ) => {
-			// if we run into an error
-			if( err ) {
-				// store a reference to the entry that caused the error
-				importErrors.push( { id: placement.fpl_id, error: err.err } );
-			}
+			// save the new placement record
+			newPlacement.save( ( err, savedModel ) => {
+				// if we run into an error
+				if( err ) {
+					// store a reference to the entry that caused the error
+					importErrors.push( { id: placement.fpl_id, error: err.err } );
+				}
 
-			// fire off the next iteration of our generator after pausing
+				// fire off the next iteration of our generator after pausing
+				if( pauseUntilSaved ) {
+					setTimeout( () => {
+						placementGenerator.next();
+					}, 1000 );
+				}
+			});
+		})
+		.catch( err => {
+			// we can assume it was a reject from trying to fetch the city or town by an unrecognized name
+			importErrors.push( { id: placement.fpl_id, error: `error importing placement with id ${ placement.fpl_id } - ${ err }` } );
+
+			// fire off the next iteration of our generator after pausing for a second
 			if( pauseUntilSaved ) {
 				setTimeout( () => {
 					placementGenerator.next();
 				}, 1000 );
 			}
 		});
-	});
 };
 
 // instantiates the generator used to create family records at a regulated rate

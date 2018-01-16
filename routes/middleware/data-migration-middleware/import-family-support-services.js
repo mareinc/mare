@@ -118,36 +118,47 @@ module.exports.updateFamilyRecord = ( ids, familyId, pauseUntilSaved ) => {
 	// fetch the family
 	const familyLoaded = utilityModelFetch.getFamilyByRegistrationNumber( familyId );
 
-	familyLoaded.then( family => {
+	familyLoaded
+		.then( family => {
 
-		family.familyServices.mentee						= supportServiceIds.indexOf( 10 ) !== -1;
-		family.familyServices.mentor						= supportServiceIds.indexOf( 20 ) !== -1;
-		family.familyServices.mediaSpokesperson				= supportServiceIds.indexOf( 30 ) !== -1;
-		family.familyServices.eventPresenterOrSpokesperson	= supportServiceIds.indexOf( 40 ) !== -1;
-		family.familyServices.communityOutreach				= supportServiceIds.indexOf( 100 ) !== -1;
-		family.familyServices.fundraising					= supportServiceIds.indexOf( 110 ) !== -1;
-		family.familyServices.MARESupportGroupLeader		= supportServiceIds.indexOf( 80 ) !== -1;
-		family.familyServices.MARESupportGroupParticipant	= supportServiceIds.indexOf( 90 ) !== -1;
-		family.familyServices.receivesConsultationServices	= supportServiceIds.indexOf( 50 ) !== -1 ||
-															  supportServiceIds.indexOf( 60 ) !== -1 ||
-															  supportServiceIds.indexOf( 70 ) !== -1;
+			family.familyServices.mentee						= supportServiceIds.indexOf( 10 ) !== -1;
+			family.familyServices.mentor						= supportServiceIds.indexOf( 20 ) !== -1;
+			family.familyServices.mediaSpokesperson				= supportServiceIds.indexOf( 30 ) !== -1;
+			family.familyServices.eventPresenterOrSpokesperson	= supportServiceIds.indexOf( 40 ) !== -1;
+			family.familyServices.communityOutreach				= supportServiceIds.indexOf( 100 ) !== -1;
+			family.familyServices.fundraising					= supportServiceIds.indexOf( 110 ) !== -1;
+			family.familyServices.MARESupportGroupLeader		= supportServiceIds.indexOf( 80 ) !== -1;
+			family.familyServices.MARESupportGroupParticipant	= supportServiceIds.indexOf( 90 ) !== -1;
+			family.familyServices.receivesConsultationServices	= supportServiceIds.indexOf( 50 ) !== -1 ||
+																supportServiceIds.indexOf( 60 ) !== -1 ||
+																supportServiceIds.indexOf( 70 ) !== -1;
 
-		// save the updated family record
-		family.save( ( err, savedModel ) => {
-			// if we run into an error
-			if( err ) {
-				// store a reference to the entry that caused the error
-				importErrors.push( { id: family.get( 'registrationNumber' ), error: err.err } );
-			}
+			// save the updated family record
+			family.save( ( err, savedModel ) => {
+				// if we run into an error
+				if( err ) {
+					// store a reference to the entry that caused the error
+					importErrors.push( { id: family.get( 'registrationNumber' ), error: err.err } );
+				}
 
-			// fire off the next iteration of our generator after pausing
+				// fire off the next iteration of our generator after pausing
+				if( pauseUntilSaved ) {
+					setTimeout( () => {
+						familySupportServiceGenerator.next();
+					}, 1000 );
+				}
+			});
+		})
+		.catch( err => {
+			// we can assume it was a reject from trying to fetch the city or town by an unrecognized name
+			importErrors.push( { id: familyId, err: `error adding family support services with ids ${ supportServiceIds } to family with id ${ familyId } - ${ err }` } );
+
 			if( pauseUntilSaved ) {
 				setTimeout( () => {
 					familySupportServiceGenerator.next();
 				}, 1000 );
 			}
 		});
-	});
 };
 
 // instantiates the generator used to create family records at a regulated rate

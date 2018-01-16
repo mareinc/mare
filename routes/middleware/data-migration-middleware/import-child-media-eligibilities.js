@@ -122,37 +122,49 @@ module.exports.updateChildRecord = ( ids, childOldId, pauseUntilSaved ) => {
 	const childLoaded = utilityModelFetch.getChildByRegistrationNumber( childOldId );
 	
 	// when the promise resolves
-	childLoaded.then( child => {
+	childLoaded
+		.then( child => {
 
-		let mediaEligibilitiesArray = [];
+			let mediaEligibilitiesArray = [];
 
-		for( let mediaEligibilityId of mediaEligibilityIds ) {
+			for( let mediaEligibilityId of mediaEligibilityIds ) {
 
-			const newMediaEligibility = mediaEligibilitiesMap[ mediaEligibilityId ];
+				const newMediaEligibility = mediaEligibilitiesMap[ mediaEligibilityId ];
 
-			if( newMediaEligibility && mediaEligibilitiesArray.indexOf( newMediaEligibility ) === -1 ) {
-				mediaEligibilitiesArray.push( newMediaEligibility );
-			}
-		}
-
-		child.mediaEligibility = mediaEligibilitiesArray;
-
-		// save the child record
-		child.save( ( err, savedModel ) => {
-			// if we run into an error
-			if( err ) {
-				// store a reference to the entry that caused the error
-				importErrors.push( { id: mediaEligibility.mlg_id, error: err.err } );
+				if( newMediaEligibility && mediaEligibilitiesArray.indexOf( newMediaEligibility ) === -1 ) {
+					mediaEligibilitiesArray.push( newMediaEligibility );
+				}
 			}
 
-			// fire off the next iteration of our generator after saving
+			child.mediaEligibility = mediaEligibilitiesArray;
+
+			// save the child record
+			child.save( ( err, savedModel ) => {
+				// if we run into an error
+				if( err ) {
+					// store a reference to the entry that caused the error
+					importErrors.push( { id: mediaEligibility.mlg_id, error: err.err } );
+				}
+
+				// fire off the next iteration of our generator after saving
+				if( pauseUntilSaved ) {
+					setTimeout( () => {
+						mediaEligibilityGenerator.next();
+					}, 2000 );
+				}
+			});
+		})
+		.catch( err => {
+			// log the error
+			importErrors.push( { id: mediaEligibility.mlg_id, error: `error adding media eligibilities with ids ${ ids } to child with id ${ childOldId } - ${ err }` } );
+
+			// fire off the next iteration of our generator after pausing
 			if( pauseUntilSaved ) {
 				setTimeout( () => {
 					mediaEligibilityGenerator.next();
 				}, 2000 );
 			}
 		});
-	});
 };
 
 // instantiates the generator used to create child records at a regulated rate

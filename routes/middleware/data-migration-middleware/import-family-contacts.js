@@ -150,75 +150,87 @@ module.exports.updateFamilyRecord = ( contacts, familyId, pauseUntilSaved ) => {
 	// fetch the family
 	const familyLoaded = utilityModelFetch.getFamilyByRegistrationNumber( familyId );
 
-	familyLoaded.then( family => {
+	familyLoaded
+		.then( family => {
 
-		if( !family ) {
-			throw new Error( `family not found with registration number: ${ familyId }` );
-		}
-
-		if( contactsArray.length > 2 ) {
-			console.log( 'too many contacts in this family' );
-		}
-
-		const contact1 = contactsArray.filter( contact => contact.index === '1' )[ 0 ];
-		const contact2 = contactsArray.filter( contact => contact.index === '2' )[ 0 ];
-
-		if( contact1 ) {
-
-			const preferredCommunicationMethod = contact1.preferredCommunicationMethod === 'H' ? 'home phone' :
-											  contact1.preferredCommunicationMethod === 'C' ? 'mobile phone' :
-											  contact1.preferredCommunicationMethod === 'W' ? 'work phone' :
-											  contact1.preferredCommunicationMethod === 'E' ? 'email' :
-											  contact1.preferredCommunicationMethod === 'U' ? 'unknown' :
-											  undefined;
-
-			family.contact1.name.first						= contact1.firstName.trim(),
-			family.contact1.name.last						= contact1.lastName.trim(),
-			family.contact1.phone.work						= `${ contact1.workPhone.trim() } ${ contact1.workPhoneExt.trim() }`,
-			family.contact1.phone.mobile					= contact1.cellPhone.trim(),
-			family.contact1.email							= contact1.email ? contact1.email : undefined,
-			family.contact1.preferredCommunicationMethod	= preferredCommunicationMethod,
-			family.contact1.gender							= gendersMap[ contact1.gender ],
-			family.contact1.race							= contact1.raceId ? racesMap[ contact1.raceId ] : racesMap[ 17 ], // if the race id exists, set it, otherwise, set it to 'unknown'
-			family.contact1.occupation						= contact1.occupation.trim(),
-			family.contact1.birthDate						= contact1.dateOfBirth.trim() ? new Date( contact1.dateOfBirth ) : undefined
-		}
-
-		if( contact2 ) {
-
-			const preferredCommunicationMethod = contact2.preferredCommunicationMethod === 'H' ? 'home phone' :
-											  contact2.preferredCommunicationMethod === 'C' ? 'mobile phone' :
-											  contact2.preferredCommunicationMethod === 'W' ? 'work phone' :
-											  contact2.preferredCommunicationMethod === 'E' ? 'email' :
-											  contact2.preferredCommunicationMethod === 'U' ? 'unknown' :
-											  undefined;
-
-			family.contact2.name.first						= contact2.firstName.trim(),
-			family.contact2.name.last						= contact2.lastName.trim(),
-			family.contact2.phone.work						= `${ contact2.workPhone.trim() } ${ contact2.workPhoneExt.trim() }`,
-			family.contact2.phone.mobile					= contact2.cellPhone.trim(),
-			family.contact2.email							= contact2.email ? contact2.email : undefined,
-			family.contact2.preferredCommunicationMethod	= preferredCommunicationMethod,
-			family.contact2.gender							= gendersMap[ contact2.gender ],
-			family.contact2.race							= contact2.raceId ? racesMap[ contact2.raceId ] : racesMap[ 17 ],
-			family.contact2.occupation						= contact2.occupation.trim(),
-			family.contact2.birthDate						= contact2.dateOfBirth.trim() ? new Date( contact2.dateOfBirth ) : undefined
-		}
-
-		family.email = family.contact1.email ? family.contact1.email.toLowerCase() :
-					   family.contact2.email ? family.contact2.email.toLowerCase() :
-					   family.email;
-
-		// save the updated family record
-		family.save( ( err, savedModel ) => {
-			// if we run into an error
-			if( err ) {
-				console.log( `registration number: ${ family.registrationNumber }` );
-				console.log( `contact 1 email: ${ family.contact1.email ? family.contact1.email.toLowerCase() : '' }` );
-				console.log( `contact 2 email: ${ family.contact2.email ? family.contact2.email.toLowerCase() : '' }` );
-				// store a reference to the entry that caused the error
-				importErrors.push( { id: family.get( 'registrationNumber' ), contact1: contact1.fmc_id, contact2: contact2.fmc_id, error: err.err } );
+			if( !family ) {
+				throw new Error( `family not found with registration number: ${ familyId }` );
 			}
+
+			if( contactsArray.length > 2 ) {
+				console.log( 'too many contacts in this family' );
+			}
+
+			const contact1 = contactsArray.filter( contact => contact.index === '1' )[ 0 ];
+			const contact2 = contactsArray.filter( contact => contact.index === '2' )[ 0 ];
+
+			if( contact1 ) {
+
+				const preferredCommunicationMethod = contact1.preferredCommunicationMethod === 'H' ? 'home phone' :
+												contact1.preferredCommunicationMethod === 'C' ? 'mobile phone' :
+												contact1.preferredCommunicationMethod === 'W' ? 'work phone' :
+												contact1.preferredCommunicationMethod === 'E' ? 'email' :
+												contact1.preferredCommunicationMethod === 'U' ? 'unknown' :
+												undefined;
+
+				family.contact1.name.first						= contact1.firstName.trim(),
+				family.contact1.name.last						= contact1.lastName.trim(),
+				family.contact1.phone.work						= `${ contact1.workPhone.trim() } ${ contact1.workPhoneExt.trim() }`,
+				family.contact1.phone.mobile					= contact1.cellPhone.trim(),
+				family.contact1.email							= contact1.email ? contact1.email : undefined,
+				family.contact1.preferredCommunicationMethod	= preferredCommunicationMethod,
+				family.contact1.gender							= gendersMap[ contact1.gender ],
+				family.contact1.race							= contact1.raceId ? racesMap[ contact1.raceId ] : racesMap[ 17 ], // if the race id exists, set it, otherwise, set it to 'unknown'
+				family.contact1.occupation						= contact1.occupation.trim(),
+				family.contact1.birthDate						= contact1.dateOfBirth.trim() ? new Date( contact1.dateOfBirth ) : undefined
+			}
+
+			if( contact2 ) {
+
+				const preferredCommunicationMethod = contact2.preferredCommunicationMethod === 'H' ? 'home phone' :
+												contact2.preferredCommunicationMethod === 'C' ? 'mobile phone' :
+												contact2.preferredCommunicationMethod === 'W' ? 'work phone' :
+												contact2.preferredCommunicationMethod === 'E' ? 'email' :
+												contact2.preferredCommunicationMethod === 'U' ? 'unknown' :
+												undefined;
+
+				family.contact2.name.first						= contact2.firstName.trim(),
+				family.contact2.name.last						= contact2.lastName.trim(),
+				family.contact2.phone.work						= `${ contact2.workPhone.trim() } ${ contact2.workPhoneExt.trim() }`,
+				family.contact2.phone.mobile					= contact2.cellPhone.trim(),
+				family.contact2.email							= contact2.email ? contact2.email : undefined,
+				family.contact2.preferredCommunicationMethod	= preferredCommunicationMethod,
+				family.contact2.gender							= gendersMap[ contact2.gender ],
+				family.contact2.race							= contact2.raceId ? racesMap[ contact2.raceId ] : racesMap[ 17 ],
+				family.contact2.occupation						= contact2.occupation.trim(),
+				family.contact2.birthDate						= contact2.dateOfBirth.trim() ? new Date( contact2.dateOfBirth ) : undefined
+			}
+
+			family.email = family.contact1.email ? family.contact1.email.toLowerCase() :
+						family.contact2.email ? family.contact2.email.toLowerCase() :
+						family.email;
+
+			// save the updated family record
+			family.save( ( err, savedModel ) => {
+				// if we run into an error
+				if( err ) {
+					console.log( `registration number: ${ family.registrationNumber }` );
+					console.log( `contact 1 email: ${ family.contact1.email ? family.contact1.email.toLowerCase() : '' }` );
+					console.log( `contact 2 email: ${ family.contact2.email ? family.contact2.email.toLowerCase() : '' }` );
+					// store a reference to the entry that caused the error
+					importErrors.push( { id: family.get( 'registrationNumber' ), contact1: contact1.fmc_id, contact2: contact2.fmc_id, error: err.err } );
+				}
+
+				// fire off the next iteration of our generator after pausing
+				if( pauseUntilSaved ) {
+					setTimeout( () => {
+						familyContactGenerator.next();
+					}, 1000 );
+				}
+			});
+		})
+		.catch( err => {
+			importErrors.push( { id: familyId, err: `error adding contacts ${ contactsArray } to family with id ${ familyId } - ${ err }` } );
 
 			// fire off the next iteration of our generator after pausing
 			if( pauseUntilSaved ) {
@@ -227,17 +239,6 @@ module.exports.updateFamilyRecord = ( contacts, familyId, pauseUntilSaved ) => {
 				}, 1000 );
 			}
 		});
-	})
-	.catch( err => {
-		importErrors.push( err );
-
-		// fire off the next iteration of our generator after pausing
-		if( pauseUntilSaved ) {
-			setTimeout( () => {
-				familyContactGenerator.next();
-			}, 1000 );
-		}
-	})
 };
 
 // instantiates the generator used to create family records at a regulated rate

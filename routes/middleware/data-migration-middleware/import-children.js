@@ -160,115 +160,121 @@ module.exports.createChildRecord = ( child, pauseUntilSaved ) => {
 	// create a promise for fetching the recruitment worker associated with the child
 	const recruitmentWorkerLoaded = utilityModelFetch.getSocialWorkerById( recruitmentWorkerId );
 	// once we've fetched the child's social worker
-	Promise.all( [ adoptionWorkerLoaded, recruitmentWorkerLoaded ] ).then( socialWorkers => {
-		// destructure the adoption worker and recruitment worker from the returned promises in local variables
-		const [ adoptionWorker, recruitmentWorker ] = socialWorkers;
+	Promise.all( [ adoptionWorkerLoaded, recruitmentWorkerLoaded ] )
+		.then( socialWorkers => {
+			// destructure the adoption worker and recruitment worker from the returned promises in local variables
+			const [ adoptionWorker, recruitmentWorker ] = socialWorkers;
 
-		// populate fields of a new Child object
-		let newChild = new Child.model({
+			// populate fields of a new Child object
+			let newChild = new Child.model({
 
-			// Display Options
-			siteVisibility: child.legal_status === 'R' ? 'only registered social workers and families' : 'everyone',
-			isVisibleInGallery: child.status === 'A' && child.legal_status === 'F',
+				// Display Options
+				siteVisibility: child.legal_status === 'R' ? 'only registered social workers and families' : 'everyone',
+				isVisibleInGallery: child.status === 'A' && child.legal_status === 'F',
 
-			// Child Information
-			registrationNumber: parseInt( child.chd_id, 10 ),
-			registrationDate: new Date( child.registered_date.trim() ),
-			name: {
-				first: child.first_name.trim(),
-				middle: child.middle_name.trim(),
-				last: child.last_name.trim(),
-				alias: child.alias.trim(),
-				nickName: child.nickname.trim()
-			},
-			birthDate: new Date( child.date_of_birth.trim() ),
-			languages: languages,
-			statusChangeDate: new Date( child.last_status_change_datetime.trim() ),
-			status: childStatusesMap[ child.status.trim() ],
-			gender: gendersMap[ child.gender.trim() ],
-			race: racesMap[ child.rce_id ],
-			raceNotes: child.race_note.trim(),
-			legalStatus: legalStatusesMap[ child.legal_status.trim() ],
+				// Child Information
+				registrationNumber: parseInt( child.chd_id, 10 ),
+				registrationDate: new Date( child.registered_date.trim() ),
+				name: {
+					first: child.first_name.trim(),
+					middle: child.middle_name.trim(),
+					last: child.last_name.trim(),
+					alias: child.alias.trim(),
+					nickName: child.nickname.trim()
+				},
+				birthDate: new Date( child.date_of_birth.trim() ),
+				languages: languages,
+				statusChangeDate: new Date( child.last_status_change_datetime.trim() ),
+				status: childStatusesMap[ child.status.trim() ],
+				gender: gendersMap[ child.gender.trim() ],
+				race: racesMap[ child.rce_id ],
+				raceNotes: child.race_note.trim(),
+				legalStatus: legalStatusesMap[ child.legal_status.trim() ],
 
-			hasContactWithSiblings: child.allow_sibling_contact.trim() === 'Y',
-			siblingTypeOfContact: child.sibling_contact_note.trim(),
-			hasContactWithBirthFamily: child.allow_birth_family_contact.trim() === 'Y',
-			birthFamilyTypeOfContact: child.birth_family_contact_note.trim(),
+				hasContactWithSiblings: child.allow_sibling_contact.trim() === 'Y',
+				siblingTypeOfContact: child.sibling_contact_note.trim(),
+				hasContactWithBirthFamily: child.allow_birth_family_contact.trim() === 'Y',
+				birthFamilyTypeOfContact: child.birth_family_contact_note.trim(),
 
-			// Special Needs
-			physicalNeeds: disabilityStatusesMap[ child.physical_dst_id ],
-			physicalNeedsDescription: child.physical_disability_comment.trim(),
-			emotionalNeeds: disabilityStatusesMap[ child.emotional_dst_id ],
-			emotionalNeedsDescription: child.emotional_disability_comment.trim(),
-			intellectualNeeds: disabilityStatusesMap[ child.intellectual_dst_id ],
-			intellectualNeedsDescription: child.intellectual_disability_comment.trim(),
-			socialNeeds: 'none',
-			healthNotesOld: child.health_notes.trim(),
+				// Special Needs
+				physicalNeeds: disabilityStatusesMap[ child.physical_dst_id ],
+				physicalNeedsDescription: child.physical_disability_comment.trim(),
+				emotionalNeeds: disabilityStatusesMap[ child.emotional_dst_id ],
+				emotionalNeedsDescription: child.emotional_disability_comment.trim(),
+				intellectualNeeds: disabilityStatusesMap[ child.intellectual_dst_id ],
+				intellectualNeedsDescription: child.intellectual_disability_comment.trim(),
+				socialNeeds: 'none',
+				healthNotesOld: child.health_notes.trim(),
 
-			// Placement Considerations
-			recommendedFamilyConstellation: recommendedFamilyConstellations,
-			otherFamilyConstellationConsideration: otherFamilyConstellationConsiderations,
+				// Placement Considerations
+				recommendedFamilyConstellation: recommendedFamilyConstellations,
+				otherFamilyConstellationConsideration: otherFamilyConstellationConsiderations,
 
-			// Agency Information
-			registeredBy: child.registered_by.trim() === 'A' ? 'adoption worker' :
-						  child.registered_by.trim() === 'R' ? 'recruitment worker' :
-															   'unknown',
-			adoptionWorker: adoptionWorker ? adoptionWorker.get( '_id' ) : undefined,
-			recruitmentWorker: recruitmentWorker ? recruitmentWorker.get( '_id' ) : undefined,
-			
-			// Photolisting Information
-			hasPhotolistingWriteup: child.have_photolisting_writeup.trim() === 'Y',
-			photolistingWriteupDate: child.photolisting_writeup_date.trim(),
-			hasPhotolistingPhoto: child.have_photolisting_photo.trim() === 'Y',
-			photolistingPhotoDate: child.photolisting_photo_date.trim() ? new Date( child.photolisting_photo_date.trim() ) : undefined,
-			isCurrentlyInPhotoListing: child.in_photolisting.trim() === 'Y',
-			dateOfLastPhotoListing: child.photolisting_date.trim() ? new Date( child.photolisting_date.trim() ) : undefined,
-			photolistingPageNumber: child.photolisting_page.trim(),
-			previousPhotolistingPageNumbers: child.previous_photolisting_page.trim(),
-			extranetUrl: child.profile_url.trim(),
+				// Agency Information
+				registeredBy: child.registered_by.trim() === 'A' ? 'adoption worker' :
+							child.registered_by.trim() === 'R' ? 'recruitment worker' :
+																'unknown',
+				adoptionWorker: adoptionWorker ? adoptionWorker.get( '_id' ) : undefined,
+				recruitmentWorker: recruitmentWorker ? recruitmentWorker.get( '_id' ) : undefined,
+				
+				// Photolisting Information
+				hasPhotolistingWriteup: child.have_photolisting_writeup.trim() === 'Y',
+				photolistingWriteupDate: child.photolisting_writeup_date.trim(),
+				hasPhotolistingPhoto: child.have_photolisting_photo.trim() === 'Y',
+				photolistingPhotoDate: child.photolisting_photo_date.trim() ? new Date( child.photolisting_photo_date.trim() ) : undefined,
+				isCurrentlyInPhotoListing: child.in_photolisting.trim() === 'Y',
+				dateOfLastPhotoListing: child.photolisting_date.trim() ? new Date( child.photolisting_date.trim() ) : undefined,
+				photolistingPageNumber: child.photolisting_page.trim(),
+				previousPhotolistingPageNumbers: child.previous_photolisting_page.trim(),
+				extranetUrl: child.profile_url.trim(),
 
-			// Recruitment Options	
-			hasVideoSnapshot: child.have_video_snapshot.trim() === 'Y',
-			videoSnapshotDate: child.video_snapshot_date.trim() ? new Date( child.video_snapshot_date.trim() ) : undefined,
-			onAdoptuskids: child.is_on_adoptuskids.trim() === 'Y',
-			
-			// onAdoptuskidsDate: 'not done', // NOT IN THE OLD SYSTEM, see notes for field below, we can determine it based on the date
-			// wednesdaysChild: 'not done', // see recruitment checklist, link through the media outlets // NOTE: depending on whether part of sibling group, fill out the appropriate group below
-			// wednesdaysChildDate: 'not done',
-			// wednesdaysChildVideo: 'not done',
-			// wednesdaysChildSiblingGroup: 'not done',
-			// wednesdaysChildSiblingGroupDate: 'not done',
-			// wednesdaysChildSiblingGroupVideo: 'not done',
-			// coalitionMeeting: 'not done', // IGNORE, ROLLED INTO MATCHING EVENT
-			// coalitionMeetingDate: 'not done', // IGNORE, ROLLED INTO MATCHING EVENT
-			// matchingEvent: 'not done', // see recruitment checklist, link through the media outlets // see media outlet report.  NOTE: this is combined with coalition meeting in the old system, but info should go here
-			// matchingEventDate: 'not done', // see recruitment checklist, link through the media outlets // see media outlet report.  NOTE: this is combined with coalition meeting in the old system, but info should go here
-			// adoptionParties: 'remove field',
-			// mediaEligibility: 'done in another import',
-			locationAlert: child.on_media_location_alert.trim() === 'Y',
-			place: child.media_location_alert_place.trim()
-		});
+				// Recruitment Options	
+				hasVideoSnapshot: child.have_video_snapshot.trim() === 'Y',
+				videoSnapshotDate: child.video_snapshot_date.trim() ? new Date( child.video_snapshot_date.trim() ) : undefined,
+				onAdoptuskids: child.is_on_adoptuskids.trim() === 'Y',
+				
+				// onAdoptuskidsDate: 'not done', // NOT IN THE OLD SYSTEM, see notes for field below, we can determine it based on the date
+				// wednesdaysChild: 'not done', // see recruitment checklist, link through the media outlets // NOTE: depending on whether part of sibling group, fill out the appropriate group below
+				// wednesdaysChildDate: 'not done',
+				// wednesdaysChildVideo: 'not done',
+				// wednesdaysChildSiblingGroup: 'not done',
+				// wednesdaysChildSiblingGroupDate: 'not done',
+				// wednesdaysChildSiblingGroupVideo: 'not done',
+				// coalitionMeeting: 'not done', // IGNORE, ROLLED INTO MATCHING EVENT
+				// coalitionMeetingDate: 'not done', // IGNORE, ROLLED INTO MATCHING EVENT
+				// matchingEvent: 'not done', // see recruitment checklist, link through the media outlets // see media outlet report.  NOTE: this is combined with coalition meeting in the old system, but info should go here
+				// matchingEventDate: 'not done', // see recruitment checklist, link through the media outlets // see media outlet report.  NOTE: this is combined with coalition meeting in the old system, but info should go here
+				// adoptionParties: 'remove field',
+				// mediaEligibility: 'done in another import',
+				locationAlert: child.on_media_location_alert.trim() === 'Y',
+				place: child.media_location_alert_place.trim()
+			});
 
-		newChild.save( ( err, savedModel ) => {
-			// if we run into an error
-			if( err ) {
-				// store a reference to the entry that caused the error
-				importErrors.push( { id: child.chd_id, error: err } );
-			}
+			newChild.save( ( err, savedModel ) => {
+				// if we run into an error
+				if( err ) {
+					// store a reference to the entry that caused the error
+					importErrors.push( { id: child.chd_id, error: err } );
+				}
+
+				// fire off the next iteration of our generator after pausing
+				if( pauseUntilSaved ) {
+					childGenerator.next();
+				}
+			});
+
+		})
+		.catch( err => {
+			// log the error so we can see it during the import
+			console.error( `error fetching child's social worker ${ child.adoption_agc_id } ${ child.recruitment_agc_id } - ${ err }` );
+
+			importErrors.push( { id: 'id', error: `error fetching child's social worker ${ child.adoption_agc_id } ${ child.recruitment_agc_id } - ${ err }` } );
 
 			// fire off the next iteration of our generator after pausing
 			if( pauseUntilSaved ) {
 				childGenerator.next();
 			}
 		});
-
-	}).catch( reason => {
-
-		console.error( `error processing child's social worker` );
-		console.error( reason );
-		// aborting the import
-		return next();
-	});
 };
 
 // instantiates the generator used to create child records at a regulated rate

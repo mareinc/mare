@@ -119,26 +119,37 @@ module.exports.updateInquiryRecord = ( noteIds, inquiryId, pauseUntilSaved ) => 
 		utilityModelFetch.getInquiryById( resolve, reject, inquiryId );
 	});
 
-	inquiryLoaded.then( inquiry => {
+	inquiryLoaded
+		.then( inquiry => {
 
-		inquiry.note = inquiryNotes;
+			inquiry.note = inquiryNotes;
 
-		// save the updated inquiry record
-		inquiry.save( ( err, savedModel ) => {
-			// if we run into an error
-			if( err ) {
-				// store a reference to the entry that caused the error
-				importErrors.push( { id: inquiry.get( '_id' ), error: err.err } );
-			}
+			// save the updated inquiry record
+			inquiry.save( ( err, savedModel ) => {
+				// if we run into an error
+				if( err ) {
+					// store a reference to the entry that caused the error
+					importErrors.push( { id: inquiry.get( '_id' ), error: err.err } );
+				}
 
-			// fire off the next iteration of our generator after pausing
+				// fire off the next iteration of our generator after pausing
+				if( pauseUntilSaved ) {
+					setTimeout( () => {
+						inquiryNoteGenerator.next();
+					}, 1000 );
+				}
+			});
+		})
+		.catch( err => {
+			// we can assume it was a reject from trying to fetch the city or town by an unrecognized name
+			importErrors.push( { id: inquiryId, error: `error adding notes with ids ${ noteIds } to inquiry with id ${ inquiryId } - ${ err }` } );
+
 			if( pauseUntilSaved ) {
 				setTimeout( () => {
 					inquiryNoteGenerator.next();
 				}, 1000 );
 			}
 		});
-	});
 };
 
 // instantiates the generator used to create inquiry note records at a regulated rate

@@ -122,28 +122,40 @@ module.exports.updateFamilyRecord = ( ids, familyId, pauseUntilSaved ) => {
 	// fetch the family
 	const familyLoaded = utilityModelFetch.getFamilyByRegistrationNumber( familyId );
 
-	familyLoaded.then( family => {
+	familyLoaded
+		.then( family => {
 
-		let racesArray = [];
+			let racesArray = [];
 
-		for( let raceId of raceIds ) {
+			for( let raceId of raceIds ) {
 
-			const newRace = racesMap[ raceId ];
+				const newRace = racesMap[ raceId ];
 
-			if( newRace && racesArray.indexOf( newRace ) === -1 ) {
-				racesArray.push( newRace );
+				if( newRace && racesArray.indexOf( newRace ) === -1 ) {
+					racesArray.push( newRace );
+				}
 			}
-		}
 
-		family.matchingPreferences.race = racesArray;
+			family.matchingPreferences.race = racesArray;
 
-		// save the updated family record
-		family.save( ( err, savedModel ) => {
-			// if we run into an error
-			if( err ) {
-				// store a reference to the entry that caused the error
-				importErrors.push( { id: family.get( 'registrationNumber' ), error: err.err } );
-			}
+			// save the updated family record
+			family.save( ( err, savedModel ) => {
+				// if we run into an error
+				if( err ) {
+					// store a reference to the entry that caused the error
+					importErrors.push( { id: family.get( 'registrationNumber' ), error: err.err } );
+				}
+
+				// fire off the next iteration of our generator after pausing
+				if( pauseUntilSaved ) {
+					setTimeout( () => {
+						familyRacePreferenceGenerator.next();
+					}, 1000 );
+				}
+			});
+		})
+		.catch( err => {
+			importErrors.push( { id: familyId, err: `error adding races ${ raceIds } to family with id ${ familyId } - ${ err }` } );
 
 			// fire off the next iteration of our generator after pausing
 			if( pauseUntilSaved ) {
@@ -152,7 +164,6 @@ module.exports.updateFamilyRecord = ( ids, familyId, pauseUntilSaved ) => {
 				}, 1000 );
 			}
 		});
-	});
 };
 
 // instantiates the generator used to create family records at a regulated rate
