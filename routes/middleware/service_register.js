@@ -18,13 +18,17 @@ exports.registerUser = ( req, res, next ) => {
 	// store the registration type which determines which path we take during registration
 	const registrationType = user.registrationType;
 	// create a variable to hold the redirect path to take the user to a target page after processing is complete
-	let redirectPath;
+	// TODO: update redirectPath Strings across the app to Objects with success and failure props
+	let redirectPath = {
+		success: '/account',
+		failure: '/'
+	};
 	
-	// set the redirect URL for use throughout the registration process
+	// set the redirect failure URL for use throughout the registration process
 	switch( registrationType ) {
-		case 'siteVisitor'	: redirectPath = '/register#site-visitor'; break;
-		case 'socialWorker'	: redirectPath = '/register#social-worker'; break;
-		case 'family'		: redirectPath = '/register#family'; break;
+		case 'siteVisitor'	: redirectPath.failure = '/register#site-visitor'; break;
+		case 'socialWorker'	: redirectPath.failure = '/register#social-worker'; break;
+		case 'family'		: redirectPath.failure = '/register#family'; break;
 	}
 
 	// check for conditions that will prevent saving the model
@@ -39,7 +43,7 @@ exports.registerUser = ( req, res, next ) => {
 			// if initial errors exist, prevent additional processing, alert the user via the flash messages above
 			if( !isEmailValid || isEmailDuplicate || !isPasswordValid ) {
 				// and redirect to the appropriate page 
-				res.redirect( 303, redirectPath );
+				res.redirect( 303, redirectPath.failure );
 			// if there were no initial errors, proceed with creating the account
 			} else {
 				if( registrationType === 'siteVisitor' ) {
@@ -47,10 +51,6 @@ exports.registerUser = ( req, res, next ) => {
 					exports.saveSiteVisitor( user )
 						.then( newSiteVisitor => {
 							// if the new site visitor model was saved successfully
-							// create a success flash message
-							req.flash( 'success', { title: 'Your account has been successfully created' } );
-							// redirect the user back to the appropriate page
-							res.redirect( 303, redirectPath );
 
 							// create a new random code for the user to verify their account with
 							const verificationCode = utilities.generateAlphanumericHash( 35 );
@@ -107,6 +107,13 @@ exports.registerUser = ( req, res, next ) => {
 									// log the error for debugging purposes
 									console.error( `error adding new site visitor ${ newSiteVisitor.get( 'name.full' ) } (${ newSiteVisitor.get( 'email' ) }) to mailing lists - ${ err }` );
 								});
+
+							// create a success flash message
+							req.flash( 'success', { title: 'Your account has been successfully created' } );
+							// set the redirect path to the success target route
+							req.body.target = redirectPath.success;
+							// pass control to the login middleware
+							next();
 						})
 						// if there was an error saving the new site visitor
 						.catch( err => {
@@ -117,7 +124,7 @@ exports.registerUser = ( req, res, next ) => {
 								title: 'There was an error creating your account',
 								detail: 'If this error persists, please contact MARE for assistance' } );
 							// redirect the user back to the appropriate page
-							res.redirect( 303, redirectPath );
+							res.redirect( 303, redirectPath.failure );
 						});
 
 				} else if( registrationType === 'socialWorker' ) {
@@ -125,12 +132,6 @@ exports.registerUser = ( req, res, next ) => {
 					exports.saveSocialWorker( user )
 						.then( newSocialWorker => {
 							// if the new social worker model was saved successfully
-							// create a success flash message
-							req.flash( 'success', {
-								title: 'Your account has been successfully created',
-								detail: 'Please note that it can take several days for your account to be reviewed and activated.  You will receive an email once MARE has had a chance to review your information.' } );
-							// redirect the user back to the appropriate page
-							res.redirect( 303, redirectPath );
 							
 							// create a new random code for the user to verify their account with
 							const verificationCode = utilities.generateAlphanumericHash( 35 );
@@ -187,6 +188,15 @@ exports.registerUser = ( req, res, next ) => {
 									// log the error for debugging purposes
 									console.error( `error adding new social worker ${ newSocialWorker.get( 'name.full' ) } (${ newSocialWorker.get( 'email' ) }) to mailing lists - ${ err }` );
 								});
+							
+							// create a success flash message
+							req.flash( 'success', {
+								title: 'Your account has been successfully created',
+								detail: 'Please note that it can take several days for your account to be reviewed and activated.  You will receive an email once MARE has had a chance to review your information.' } );
+							// set the redirect path to the success target route
+							req.body.target = redirectPath.success;
+							// pass control to the login middleware
+							next();
 						})
 						// if there was an error saving the new social worker
 						.catch( err => {
@@ -197,7 +207,7 @@ exports.registerUser = ( req, res, next ) => {
 								title: 'There was an error creating your account',
 								detail: 'If this error persists, please contact MARE for assistance' } );
 							// redirect the user back to the appropriate page
-							res.redirect( 303, redirectPath );
+							res.redirect( 303, redirectPath.failure );
 						});
 
 				} else if ( registrationType === 'family' ) {
@@ -208,12 +218,6 @@ exports.registerUser = ( req, res, next ) => {
 					exports.saveFamily( user )
 						.then( newFamily => {
 							// if the new family model was saved successfully
-							// create a success flash message
-							req.flash( 'success', {
-								title: 'Your account has been successfully created',
-								detail: 'Please note that it can take several days for your account to be reviewed and activated.  You will receive an email once MARE has had a chance to review your information.' } );
-							// redirect the user back to the appropriate page
-							res.redirect( 303, redirectPath );
 							
 							// create a new random code for the user to verify their account with
 							const verificationCode = utilities.generateAlphanumericHash( 35 );
@@ -254,8 +258,6 @@ exports.registerUser = ( req, res, next ) => {
 													  'matchingPreferences.gender',
 													  'matchingPreferences.legalStatus',
 													  'matchingPreferences.race',
-													  'matchingPreferences.disabilities',
-													  'matchingPreferences.otherConsiderations',
 													  'heardAboutMAREFrom' ];
 
 							// fetch the user model.  Needed because the copies we have don't have the Relationship fields populated
@@ -302,6 +304,15 @@ exports.registerUser = ( req, res, next ) => {
 									// log the error for debugging purposes
 									console.error( `error adding new family ${ newFamily.get( 'displayName' ) } (${ newFamily.get( 'email' ) }) to mailing lists - ${ err }` );
 								});
+
+							// create a success flash message
+							req.flash( 'success', {
+								title: 'Your account has been successfully created',
+								detail: 'Please note that it can take several days for your account to be reviewed and activated.  You will receive an email once MARE has had a chance to review your information.' } );
+							// set the redirect path to the success target route
+							req.body.target = redirectPath.success;
+							// pass control to the login middleware
+							next();
 						})
 						// if there was an error saving the new family
 						.catch( err => {
@@ -312,7 +323,7 @@ exports.registerUser = ( req, res, next ) => {
 								title: 'There was an error creating your account',
 								detail: 'If this error persists, please contact MARE for assistance' } );
 							// redirect the user back to the appropriate page
-							res.redirect( 303, redirectPath );
+							res.redirect( 303, redirectPath.failure );
 						});
 				}
 			}
@@ -323,7 +334,7 @@ exports.registerUser = ( req, res, next ) => {
 						title: `There was a problem creating your account`,
 						detail: `If the problem persists, please contact MARE for assistance` } );
 			// redirect the user to the appropriate page
-			res.redirect( 303, redirectPath );
+			res.redirect( 303, redirectPath.failure );
 		});
 };
 

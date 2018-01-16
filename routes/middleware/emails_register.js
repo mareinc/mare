@@ -349,9 +349,7 @@ exports.sendNewFamilyNotificationEmailToMARE = ( user, registrationStaffContact,
 			otherLanguagesArray = [],
 			matchingPreferencesGenderArray = [],
 			matchingPreferencesLegalStatusArray = [],
-			matchingPreferencesRaceArray = [],
-			matchingPreferencesDisabilityArray = [],
-			matchingPreferencesOtherConsiderationArray = [];
+			matchingPreferencesRaceArray = [];
 
 		// loop through each way to hear about MARE model which was populated when the user model was fetched
 		for( entry of user.heardAboutMAREFrom ) {
@@ -387,16 +385,6 @@ exports.sendNewFamilyNotificationEmailToMARE = ( user, registrationStaffContact,
 		for( entry of user.matchingPreferences.race ) {
 			// extract the text values associated with the model into the array
 			matchingPreferencesRaceArray.push( entry.race );
-		}
-		// loop through each matching preferences disability model which was populated when the user model was fetched
-		for( entry of user.matchingPreferences.disabilities ) {
-			// extract the text values associated with the model into the array
-			matchingPreferencesDisabilityArray.push( entry.disability );
-		}
-		// loop through each matching preferences other considerations model which was populated when the user model was fetched
-		for( entry of user.matchingPreferences.otherConsiderations ) {
-			// extract the text values associated with the model into the array
-			matchingPreferencesOtherConsiderationArray.push( entry.otherConsideration );
 		}
 		// store only the fields that have been populated by the user
 		if( user.email ) {
@@ -796,20 +784,6 @@ exports.sendNewFamilyNotificationEmailToMARE = ( user, registrationStaffContact,
 			userData.push( {
 				key: 'maximum intellectual needs',
 				value: user.matchingPreferences.maxNeeds.intellectual
-			});
-		}
-
-		if( matchingPreferencesDisabilityArray.length !== 0 ) {
-			userData.push( {
-				key: 'accepted disabilities',
-				value: matchingPreferencesDisabilityArray.join( ', ' )
-			});
-		}
-
-		if( matchingPreferencesOtherConsiderationArray.length !== 0 ) {
-			userData.push( {
-				key: 'is willing to consider',
-				value: matchingPreferencesOtherConsiderationArray.join( ', ' )
 			});
 		}
 

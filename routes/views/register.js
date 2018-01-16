@@ -17,11 +17,9 @@ exports = module.exports = ( req, res ) => {
 	// fetch all data needed to render this page
 	let fetchChildTypes				= listsService.getChildTypesForWebsite(),
 		fetchCitiesAndTowns			= listsService.getAllCitiesAndTowns(),
-		fetchDisabilities			= listsService.getAllDisabilities(),
 		fetchGenders				= listsService.getAllGenders(),
 		fetchLanguages				= listsService.getAllLanguages(),
 		fetchLegalStatuses			= listsService.getAllLegalStatuses(),
-		fetchOtherConsiderations	= listsService.getAllOtherConsiderations(),
 		fetchRaces					= listsService.getAllRaces( raceOptions ),
 		fetchRegions				= listsService.getAllRegions(),
 		fetchSocialWorkerPositions	= listsService.getAllSocialWorkerPositions(),
@@ -30,13 +28,13 @@ exports = module.exports = ( req, res ) => {
 		fetchMailingLists			= mailingListService.getRegistrationMailingLists(),
 		fetchSidebarItems			= pageService.getSidebarItems();
 
-	Promise.all( [ fetchChildTypes, fetchCitiesAndTowns, fetchDisabilities, fetchGenders, fetchLanguages,
-				   fetchLegalStatuses, fetchOtherConsiderations, fetchRaces, fetchRegions, fetchSocialWorkerPositions,
+	Promise.all( [ fetchChildTypes, fetchCitiesAndTowns, fetchGenders, fetchLanguages,
+				   fetchLegalStatuses, fetchRaces, fetchRegions, fetchSocialWorkerPositions,
 				   fetchStates, fetchWaysToHearAboutMARE, fetchMailingLists, fetchSidebarItems ] )
 		.then( values => {
 			// assign local variables to the values returned by the promises
-			const [ childTypes, citiesAndTowns, disabilities, genders, languages,
-					legalStatuses, otherConsiderations, races, regions, socialWorkerPositions,
+			const [ childTypes, citiesAndTowns, genders, languages,
+					legalStatuses, races, regions, socialWorkerPositions,
 					states, waysToHearAboutMARE, mailingLists, sidebarItems ] = values;
 			// the sidebar items are a success story and event in an array, assign local variables to the two objects
 			const [ randomSuccessStory, randomEvent ] = sidebarItems;
@@ -44,11 +42,9 @@ exports = module.exports = ( req, res ) => {
 			// assign properties to locals for access during templating
 			locals.childTypes				= childTypes;
 			locals.citiesAndTowns			= citiesAndTowns;
-			locals.disabilities				= disabilities;
 			locals.genders					= genders;
 			locals.languages				= languages;
 			locals.legalStatuses			= legalStatuses;
-			locals.otherConsiderations		= otherConsiderations;
 			locals.races					= races;
 			locals.regions					= regions;
 			locals.socialWorkerPositions	= socialWorkerPositions;

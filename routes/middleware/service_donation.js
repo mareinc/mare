@@ -138,7 +138,11 @@ function saveDonation( user, donationData, stripeTransactionID  ) {
 
 			if ( error ) {
 
-				reject( error );
+				// if the Donation model save fails, log the error along with the Stripe transaction ID so that the Donation can be manually saved later
+				console.error( `error saving donation model - ${ error } - Donation Payment Processed ( Stipe Transaction ID: ${ stripeTransactionID } )` );
+				
+				// resolve the promise so that the user is still presented with a success message on the front end, as the donation payment has processed succesfully
+				resolve();
 			} else {
 
 				resolve( donation );
