@@ -7,7 +7,7 @@ const   fs			= require( 'fs' ),
 exports = module.exports = {
     
     // generates a flash message to display the donation transaction status
-    generateFlashMessage: function generateFlashMessage( messageType, title, message ) {
+    generateFlashMessage: function generateFlashMessage( { messageType, title, message } ) {
         
         // get the relative path to the flash-messages hbs template partial
         var templatePath = `${ __dirname }/../../templates/views/partials/flash-messages.hbs`;
