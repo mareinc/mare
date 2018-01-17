@@ -267,12 +267,19 @@ exports = module.exports = {
 			// save the donation data to the MARE db as a Donation model
 			.then( stripeTransactionResponse => saveDonation( req.user, donationData, stripeTransactionResponse.id ) )
 			// send a success message to the user
-			.then( dbResponse => flashMessages.generateFlashMessage({
-				messageType: flashMessages.MESSAGE_TYPES.SUCCESS,
-				title: 'Thank you!', 
-				message: 'Your donation to the Massachusetts Adoption Resource Exchange (MARE) is complete. Your gift will support finding adoptive homes for children and teens in foster care. A confirmation transaction email will come from the donation platform and a thank you letter and tax receipt will come from MARE. Please contact Megan Dolan at megand@mareinc.org with any questions or to learn more.'
-			}))
-			// generate a success message to display on the front end
+			.then( dbResponse => {
+				
+				// append the succcess message to the flash messages list
+				flashMessages.appendFlashMessage({
+					messageType: flashMessages.MESSAGE_TYPES.SUCCESS,
+					title: 'Thank you!', 
+					message: 'Your donation to the Massachusetts Adoption Resource Exchange (MARE) is complete. Your gift will support finding adoptive homes for children and teens in foster care. A confirmation transaction email will come from the donation platform and a thank you letter and tax receipt will come from MARE. Please contact Megan Dolan at megand@mareinc.org with any questions or to learn more.'
+				});
+
+				// generate flash message markup
+				return flashMessages.generateFlashMessageMarkup();
+			})
+			// send the flash message markup response to display on the front end
 			.then( flashMessageMarkup => {
 
 				res.send({
@@ -282,19 +289,23 @@ exports = module.exports = {
 			})
 			.catch( err => {
 				
-				// generate an error message to display on the front end
-				flashMessages.generateFlashMessage({
+				// append the error message to the flash messages list
+				flashMessages.appendFlashMessage({
 					messageType: flashMessages.MESSAGE_TYPES.ERROR,
 					title: 'Error!', 
 					message: err.message
-				})
-				.then( flashMessageMarkup => {
-
-					res.send({
-						status: 'error',
-						message: flashMessageMarkup
-					});	
 				});
+
+				// generate flash message markup
+				flashMessages.generateFlashMessageMarkup()
+					// send the flash message markup response to display on the front end
+					.then( flashMessageMarkup => {
+
+						res.send({
+							status: 'error',
+							message: flashMessageMarkup
+						});	
+					});
 			});
 	},
 	
