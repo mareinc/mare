@@ -27,6 +27,9 @@
 			this.$howDidYouHearOtherErrorMessage	= this.$howDidYouHearOther.next();
 
 			this.form.on( 'field:validated', this.validateForm );
+
+			// submit form via AJAX on successful validation
+			this.form.on( 'form:success', this.submitForm );
 		},
 
 		toggleOtherWayToHearTextField: function toggleOtherWayToHearTextField() {
@@ -106,6 +109,43 @@
 				// ensure the registration button is enabled
 				mare.views.siteVisitorRegistration.enableRegistrationButton();
 			}
+		},
+
+		// submit registration form via AJAX
+		submitForm: function submitForm() {
+
+			// set validation result to false so the form is not auto-submitted 
+			// ( this mimics the behavior of event.preventDefault(), but that approach is deprecated by parsely )
+			this.validationResult = false;
+
+			// retrieve the data from the form
+			var formData = this.$element.serializeArray();
+
+			// post the form data to the registration route
+			$.post( '/registerAjax', formData )
+				.done( function( responseData ) {
+
+					// handle error responses
+					if ( responseData.status === 'error' ) {
+						
+						// display the error message to the user
+						mare.views.registration.displayFlashMessage( responseData.flashMessage );
+
+						// enable the register button
+						mare.views.siteVisitorRegistration.enableRegistrationButton();
+						
+					// handle success responses
+					} else if ( responseData.status === 'success' ) {
+						
+						// redirect the user to the success target page
+						window.location.replace( responseData.targetPage );
+					}
+				})
+				.fail( function( error ) {
+					
+					// TODO handle errors between the browser and the server
+					console.error( error.status + ' - ' + error.statusText );
+				});
 		}
 	});
 }());
