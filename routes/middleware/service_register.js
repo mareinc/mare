@@ -19,11 +19,7 @@ exports.registerUser = ( req, res, next ) => {
 	// store the registration type which determines which path we take during registration
 	const registrationType = user.registrationType;
 	// create a variable to hold the redirect path to take the user to a target page after processing is complete
-	// TODO: update redirectPath Strings across the app to Objects with success and failure props
-	let redirectPath = {
-		success: '/account',
-		failure: '/'
-	};
+	let redirectPath = '/account?newUser=true';
 
 	// check for conditions that will prevent saving the model
 	const isEmailValid			= exports.validateEmail( user.email ),			// returns true/false
@@ -108,10 +104,8 @@ exports.registerUser = ( req, res, next ) => {
 									console.error( `error adding new site visitor ${ newSiteVisitor.get( 'name.full' ) } (${ newSiteVisitor.get( 'email' ) }) to mailing lists - ${ err }` );
 								});
 
-							// create a success flash message
-							req.flash( 'success', { title: 'Your account has been successfully created' } );
 							// set the redirect path to the success target route
-							req.body.target = redirectPath.success;
+							req.body.target = redirectPath;
 							// pass control to the login middleware
 							next();
 						})
@@ -197,12 +191,8 @@ exports.registerUser = ( req, res, next ) => {
 									console.error( `error adding new social worker ${ newSocialWorker.get( 'name.full' ) } (${ newSocialWorker.get( 'email' ) }) to mailing lists - ${ err }` );
 								});
 							
-							// create a success flash message
-							req.flash( 'success', {
-								title: 'Your account has been successfully created',
-								detail: 'Please note that it can take several days for your account to be reviewed and activated.  You will receive an email once MARE has had a chance to review your information.' } );
 							// set the redirect path to the success target route
-							req.body.target = redirectPath.success;
+							req.body.target = redirectPath;
 							// pass control to the login middleware
 							next();
 						})
@@ -321,12 +311,8 @@ exports.registerUser = ( req, res, next ) => {
 									console.error( `error adding new family ${ newFamily.get( 'displayName' ) } (${ newFamily.get( 'email' ) }) to mailing lists - ${ err }` );
 								});
 
-							// create a success flash message
-							req.flash( 'success', {
-								title: 'Your account has been successfully created',
-								detail: 'Please note that it can take several days for your account to be reviewed and activated.  You will receive an email once MARE has had a chance to review your information.' } );
 							// set the redirect path to the success target route
-							req.body.target = redirectPath.success;
+							req.body.target = redirectPath;
 							// pass control to the login middleware
 							next();
 						})
