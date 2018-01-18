@@ -122,7 +122,7 @@
 			var formData = this.$element.serializeArray();
 
 			// post the form data to the registration route
-			$.post( '/registerAjax', formData )
+			$.post( '/register', formData )
 				.done( function( responseData ) {
 
 					// handle error responses
@@ -138,7 +138,7 @@
 					} else if ( responseData.status === 'success' ) {
 						
 						// redirect the user to the success target page
-						window.location.replace( responseData.targetPage );
+						window.location.href = responseData.targetPage;
 					}
 				})
 				.fail( function( error ) {

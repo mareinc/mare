@@ -10,7 +10,8 @@ const keystone 						= require( 'keystone' ),
 	  emailTargetMiddleware			= require( './service_email-target' ),
 	  staffEmailContactMiddleware	= require( './service_staff-email-contact' ),
 	  userService					= require( './service_user' ),
-	  utilities						= require( './utilities' );
+	  utilities						= require( './utilities' ),
+	  flashMessages					= require( './service_flash-messages' );
 
 exports.registerUser = ( req, res, next ) => {
 	// extract the submitted user information
@@ -23,13 +24,6 @@ exports.registerUser = ( req, res, next ) => {
 		success: '/account',
 		failure: '/'
 	};
-	
-	// set the redirect failure URL for use throughout the registration process
-	switch( registrationType ) {
-		case 'siteVisitor'	: redirectPath.failure = '/register#site-visitor'; break;
-		case 'socialWorker'	: redirectPath.failure = '/register#social-worker'; break;
-		case 'family'		: redirectPath.failure = '/register#family'; break;
-	}
 
 	// check for conditions that will prevent saving the model
 	const isEmailValid			= exports.validateEmail( user.email ),			// returns true/false
@@ -42,8 +36,14 @@ exports.registerUser = ( req, res, next ) => {
 			exports.setInitialErrorMessages( req, isEmailValid, isEmailDuplicate, isPasswordValid );
 			// if initial errors exist, prevent additional processing, alert the user via the flash messages above
 			if( !isEmailValid || isEmailDuplicate || !isPasswordValid ) {
-				// and redirect to the appropriate page 
-				res.redirect( 303, redirectPath.failure );
+				// and send the error status and flash message markup
+				flashMessages.generateFlashMessageMarkup()
+					.then( flashMessageMarkup => {
+						res.send({
+							status: 'error',
+							flashMessage: flashMessageMarkup 
+						});
+					});
 			// if there were no initial errors, proceed with creating the account
 			} else {
 				if( registrationType === 'siteVisitor' ) {
@@ -120,11 +120,19 @@ exports.registerUser = ( req, res, next ) => {
 							// log the error for debugging purposes
 							console.error( `error saving new site visitor - ${ err }` );
 							// create an error flash message to send back to the user
-							req.flash( 'error', {
+							flashMessages.appendFlashMessage({
+								messageType: flashMessages.MESSAGE_TYPES.ERROR,
 								title: 'There was an error creating your account',
-								detail: 'If this error persists, please contact MARE for assistance' } );
-							// redirect the user back to the appropriate page
-							res.redirect( 303, redirectPath.failure );
+								message: 'If this error persists, please contact MARE for assistance'
+							});
+							// send the error status and flash message markup
+							flashMessages.generateFlashMessageMarkup()
+								.then( flashMessageMarkup => {
+									res.send({
+										status: 'error',
+										flashMessage: flashMessageMarkup 
+									});
+								});
 						});
 
 				} else if( registrationType === 'socialWorker' ) {
@@ -203,11 +211,19 @@ exports.registerUser = ( req, res, next ) => {
 							// log the error for debugging purposes
 							console.error( `error saving new social worker - ${ err }` );
 							// create an error flash message to send back to the user
-							req.flash( 'error', {
+							flashMessages.appendFlashMessage({
+								messageType: flashMessages.MESSAGE_TYPES.ERROR,
 								title: 'There was an error creating your account',
-								detail: 'If this error persists, please contact MARE for assistance' } );
-							// redirect the user back to the appropriate page
-							res.redirect( 303, redirectPath.failure );
+								message: 'If this error persists, please contact MARE for assistance'
+							});
+							// send the error status and flash message markup
+							flashMessages.generateFlashMessageMarkup()
+								.then( flashMessageMarkup => {
+									res.send({
+										status: 'error',
+										flashMessage: flashMessageMarkup 
+									});
+								});
 						});
 
 				} else if ( registrationType === 'family' ) {
@@ -319,22 +335,39 @@ exports.registerUser = ( req, res, next ) => {
 							// log the error for debugging purposes
 							console.error( `error saving new family - ${ err }` );
 							// create an error flash message to send back to the user
-							req.flash( 'error', {
+							flashMessages.appendFlashMessage({
+								messageType: flashMessages.MESSAGE_TYPES.ERROR,
 								title: 'There was an error creating your account',
-								detail: 'If this error persists, please contact MARE for assistance' } );
-							// redirect the user back to the appropriate page
-							res.redirect( 303, redirectPath.failure );
+								message: 'If this error persists, please contact MARE for assistance'
+							});
+							// send the error status and flash message markup
+							flashMessages.generateFlashMessageMarkup()
+								.then( flashMessageMarkup => {
+									res.send({
+										status: 'error',
+										flashMessage: flashMessageMarkup 
+									});
+								});
 						});
 				}
 			}
 		})
 		.catch( reason => {
 			
-			req.flash( `error`, {
-						title: `There was a problem creating your account`,
-						detail: `If the problem persists, please contact MARE for assistance` } );
-			// redirect the user to the appropriate page
-			res.redirect( 303, redirectPath.failure );
+			// create an error flash message to send back to the user
+			flashMessages.appendFlashMessage({
+				messageType: flashMessages.MESSAGE_TYPES.ERROR,
+				title: 'There was an error creating your account',
+				message: 'If this error persists, please contact MARE for assistance'
+			});
+			// send the error status and flash message markup
+			flashMessages.generateFlashMessageMarkup()
+				.then( flashMessageMarkup => {
+					res.send({
+						status: 'error',
+						flashMessage: flashMessageMarkup 
+					});
+				});
 		});
 };
 
@@ -627,21 +660,27 @@ exports.validatePassword = ( password, confirmPassword ) => {
 exports.setInitialErrorMessages = ( req, isEmailValid, isEmailDuplicate, isPasswordValid ) => {
 	
 	if( !isEmailValid ) {
-		req.flash( `error`, {
-				title: `There was a problem creating your account`,
-				detail: `The email address you're trying to use is invalid` } );
+		flashMessages.appendFlashMessage({
+			messageType: flashMessages.MESSAGE_TYPES.ERROR,
+			title: `There was a problem creating your account`,
+			message: `The email address you're trying to use is invalid`
+		});
 	}
 
 	if( isEmailDuplicate ) {
-		req.flash( `error`, {
-				title: `There was a problem creating your account`,
-				detail: `The email address you're trying to use already exists in the system` } );
+		flashMessages.appendFlashMessage({
+			messageType: flashMessages.MESSAGE_TYPES.ERROR,
+			title: `There was a problem creating your account`,
+			message: `The email address you're trying to use already exists in the system`
+		});
 	}
 
 	if( !isPasswordValid ) {
-		req.flash( `error`, {
-				title: `There was a problem creating your account`,
-				detail: `The passwords you entered don't match` } );
+		flashMessages.appendFlashMessage({
+			messageType: flashMessages.MESSAGE_TYPES.ERROR,
+			title: `There was a problem creating your account`,
+			message: `The passwords you entered don't match`
+		});
 	}
 };
 

@@ -52,8 +52,7 @@ exports = module.exports = app => {
 	app.get( '/waiting-child-profiles'					, routes.views.waitingChildProfiles );
 	// registration
 	app.get( '/register'								, routes.views.register );
-	app.post( '/register'								, registrationMiddleware.registerUser, middleware.login );
-	app.post( '/registerAjax'							, registrationMiddleware.registerUser, middleware.loginAjax );
+	app.post( '/register'								, registrationMiddleware.registerUser, middleware.loginAjax );
 	// login / logout
 	app.get( '/logout'									, middleware.logout );
 	app.post('/login'									, middleware.login );
