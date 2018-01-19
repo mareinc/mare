@@ -1056,7 +1056,7 @@ exports.create = {
 		areaOffice: 'Cape Ann Area Office',
 		textRegion: 'northern'
 	}, {
-		cityOrTown: 'Roslindate',
+		cityOrTown: 'Roslindale',
 		areaOffice: 'Hyde Park Area Office',
 		textRegion: 'Boston'
 	}, {
