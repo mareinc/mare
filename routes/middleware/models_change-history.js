@@ -1,7 +1,7 @@
-var keystone 	= require( 'keystone' ),
-	_			= require( 'underscore' ),
-	moment		= require( 'moment' ),
-	async		= require( 'async' );
+const keystone 	= require( 'keystone' ),
+	  _			= require( 'underscore' ),
+	  moment	= require( 'moment' ),
+	  async		= require( 'async' );
 
 exports.checkFieldForChanges = ( field, model, modelBefore, changeHistory, done ) => {
 
@@ -39,7 +39,7 @@ exports.checkFieldForChanges = ( field, model, modelBefore, changeHistory, done 
 		valueBefore = fieldBefore ? fieldBefore : '';
 		value = fieldAfter ? fieldAfter : '';
 
-		exports.addToHistoryEntry( valueBefore, value, field.label, changeHistory );
+		exports.addToHistoryEntry( valueBefore, value, field.label, field.type, changeHistory );
 
 		done();
 
@@ -50,7 +50,7 @@ exports.checkFieldForChanges = ( field, model, modelBefore, changeHistory, done 
 		value = fieldAfter ? moment(fieldAfter).format( 'MM/DD/YYYY' ) : '';
 		// not a part of the check above because Date.parse( fieldBefore ) !== Date.parse( fieldAfter ), even if they have the same date ( I think the milliseconds are appearing different )
 		if( valueBefore !== value ) {
-			exports.addToHistoryEntry( valueBefore, value, field.label, changeHistory );
+			exports.addToHistoryEntry( valueBefore, value, field.label, field.type, changeHistory );
 		}
 
 		done();
@@ -60,7 +60,8 @@ exports.checkFieldForChanges = ( field, model, modelBefore, changeHistory, done 
 		async.parallel([
 			done => {
 
-				keystone.list( field.model ).model.find()
+				keystone.list( field.model ).model
+					.find()
 					.where( '_id' ).in( fieldBefore )
 					.exec(  )
 					.then( models => {
@@ -84,7 +85,8 @@ exports.checkFieldForChanges = ( field, model, modelBefore, changeHistory, done 
 			},
 			done => {
 
-				keystone.list( field.model ).model.find()
+				keystone.list( field.model ).model
+					.find()
 					.where( '_id' ).in( fieldAfter )
 					.exec()
 					.then( models => {
@@ -113,7 +115,7 @@ exports.checkFieldForChanges = ( field, model, modelBefore, changeHistory, done 
 
 			if( valuesBeforeString !== valuesString ) {
 
-				exports.addToHistoryEntry( valuesBeforeString, valuesString, field.label, changeHistory );
+				exports.addToHistoryEntry( valuesBeforeString, valuesString, field.label, field.type, changeHistory );
 			}
 
 			done();
@@ -130,7 +132,8 @@ exports.checkFieldForChanges = ( field, model, modelBefore, changeHistory, done 
 					if( !fieldBefore ) {
 						done();
 					} else {
-						keystone.list( field.model ).model.findById( fieldBefore )
+						keystone.list( field.model ).model
+							.findById( fieldBefore )
 							.exec()
 							.then( model => {
 
@@ -152,7 +155,8 @@ exports.checkFieldForChanges = ( field, model, modelBefore, changeHistory, done 
 					if( !fieldAfter ) {
 						done();
 					} else {
-						keystone.list( field.model ).model.findById( fieldAfter )
+						keystone.list( field.model ).model
+							.findById( fieldAfter )
 							.exec()
 							.then( model => {
 
@@ -173,7 +177,7 @@ exports.checkFieldForChanges = ( field, model, modelBefore, changeHistory, done 
 			], () => {
 				if( valueBefore !== value ) {
 
-					exports.addToHistoryEntry( valueBefore, value, field.label, changeHistory );
+					exports.addToHistoryEntry( valueBefore, value, field.label, field.type, changeHistory );
 				}
 
 				done();
@@ -185,21 +189,38 @@ exports.checkFieldForChanges = ( field, model, modelBefore, changeHistory, done 
 	}
 };
 
-exports.addToHistoryEntry = ( fieldBefore, field, label, changeHistory ) => {
+exports.addToHistoryEntry = ( valueBefore, value, label, fieldType, changeHistory ) => {
 
 	if( changeHistory.changes !== '' ) {
 		changeHistory.changes += ' || ';
 	}
 
-	if( fieldBefore === false ) {
-		fieldBefore = 'false';
+	if( valueBefore === false ) {
+		valueBefore = 'false';
 	}
 
-	if( field === false ) {
-		field = 'false';
+	if( value === false ) {
+		value = 'false';
+	}
+	// the wording around values changing to blank or false depends on the field type
+	let emptyFieldText;
+	// assign the appropriate text if the field was changed to blank or false based on the field type
+	switch( fieldType ) {
+		case 'string'		: emptyFieldText = 'was deleted'; break;
+		case 'boolean'		: emptyFieldText = 'was changed to false'; break;
+		case 'number'		: emptyFieldText = 'was deleted'; break;
+		case 'date'			: emptyFieldText = 'was deleted'; break;
+		case 'relationship'	: emptyFieldText = 'was deleted'; break;
+		default				: emptyFieldText = 'was deleted';
 	}
 
-	changeHistory.changes += `${ label.toUpperCase() } to ${ field || field === 0 ? field : '[blank]' }`;
+	// if the field wasn't removed or changed to false
+	if( value || value === 0 ) {
+		changeHistory.changes += `${ label.toUpperCase() } was changed to ${ value }`;
+	// if the field was removed or changed to false
+	} else {
+		changeHistory.changes += `${ label.toUpperCase() } ${ emptyFieldText }`;
+	}
 };
 
 /* if the model is created via the website, there is no updatedBy.  In these cases we need to populate it with the website bot's id */

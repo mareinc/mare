@@ -1,11 +1,11 @@
-require( '../../models/List_Source' );
-
-const keystone	= require( 'keystone' );
-const Source	= keystone.list( 'Source' );
+const keystone = require( 'keystone' );
 
 exports.createSource = ( sourceName ) => {
 	// return a promise around the creation of the new source
 	return new Promise( ( resolve, reject ) => {
+
+		const Source = keystone.list( 'Source' );
+
 		// create a new source
 		var newSource = new Source.model({
 			source: sourceName,
@@ -30,7 +30,8 @@ exports.updateSource = ( sourceId, sourceName ) => {
 	// return a promise around the updating of the existing source record
 	return new Promise( ( resolve, reject ) => {
 		// fetch the source record
-		Source.model.findById( sourceId )
+		keystone.list( 'Source' ).model
+			.findById( sourceId )
 			.exec()
 			.then( source => {
 				// if the name for the source doesn't need to be updated

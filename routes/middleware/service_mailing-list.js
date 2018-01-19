@@ -1,11 +1,10 @@
-const keystone		= require( 'keystone' ),
-	  MailingList	= keystone.list( 'Mailing List' );
+const keystone = require( 'keystone' );
 
 exports.getRegistrationMailingLists = () => {
 
 	return new Promise( ( resolve, reject ) => {
 
-		MailingList.model
+		keystone.list( 'Mailing List' ).model
 			.find( { $or: [
 						{ 'showOnSiteVisitorRegistrationPage': true },
 						{ 'showOnSocialWorkerRegistrationPage': true },

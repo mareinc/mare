@@ -6,7 +6,7 @@ const keystone					= require( 'keystone' ),
 
 // Create model. Additional options allow menu name to be used to auto-generate the URL
 var Inquiry = new keystone.List( 'Inquiry', {
-	defaultSort: 'takenOn'
+	defaultSort: '-takenOn'
 });
 
 // Create fields
@@ -46,7 +46,6 @@ Inquiry.add( 'General Information', {
 }, 'Emails Sent', {
 
 	emailSentToStaff: { type: Types.Boolean, label: 'notification email sent to MARE staff', noedit: true },
-	thankYouSentToInquirer: { type: Types.Boolean, label: 'thank you sent to inquirer', noedit: true },
 	thankYouSentToFamilyOnBehalfOfInquirer: { type: Types.Boolean, label: 'thank you sent to family on behalf of inquiring social worker', dependsOn: { inquirer: 'social worker', onBehalfOfMAREFamily: true }, noedit: true },
 	approvalEmailSentToInquirer: { type: Types.Boolean, label: 'inquiry accepted information sent to inquirer',  noedit: true },
 	approvalEmailSentToFamilyOnBehalfOfInquirer: { type: Types.Boolean, label: 'inquiry accepted information sent to family on behalf of inquirer', dependsOn: { inquirer: 'social worker', onBehalfOfMAREFamily: true }, noedit: true },
@@ -111,14 +110,6 @@ Inquiry.schema.pre( 'save', function( next ) {
 				inquiryEmailMiddleware.sendInquiryCreatedEmailToStaff( this, inquiryData, done );
 			} else {
 				console.log( `staff notification email already sent - no notification email sent to staff contact` );
-				done();
-			}
-		},
-		done => {
-			if( !this.thankYouSentToInquirer ) {
-				inquiryEmailMiddleware.sendThankYouEmailToInquirer( this, inquiryData, done );
-			} else {
-				console.log( `thank you already sent - no thank you email sent to inquirer` );
 				done();
 			}
 		},
@@ -193,5 +184,5 @@ Inquiry.schema.methods.setDerivedFields = function( inquiryData, done ) {
 }
 
 // Define default columns in the admin interface and register the model
-Inquiry.defaultColumns = 'takenOn, takenBy, child, family, socialWorker, siteVisitor, source';
+Inquiry.defaultColumns = 'takenOn, takenBy, source';
 Inquiry.register();

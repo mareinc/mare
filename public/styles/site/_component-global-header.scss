@@ -21,7 +21,7 @@
 }
 
 .global-header .logo {
-	margin: 1em;
+	margin: 1em 0 1em 0.75em;
 	pointer-events: auto; // TODO: overrides the perhaps too broad img { pointer-events: none } to protect images.  Perhaps we should rethink the scope of that selector or the method used to restrict image copying
 
 	&--vertical {
@@ -29,7 +29,8 @@
 		width: 10em;
 
 		@media all and (min-width: 655px) {
-	    	display: inline;
+			display: inline;
+			margin: 1em;
 	    }
 
 		@media all and (min-width: 765px) {
@@ -74,9 +75,13 @@
 // TODO: put these in the correct place
 .global-header .top-nav .hamburger {
 	display: block;
-	padding-left: 1em;
+	margin-left: 1em;
 
 	@media all and (min-width: 655px) {
 		display: none;
 	}
+}
+
+.top-nav__hamburger-icon {
+	padding: 0.75em;
 }

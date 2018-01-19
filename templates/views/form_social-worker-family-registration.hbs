@@ -1,8 +1,6 @@
 <div class="card card--vertical card--large-padding">
 
-	<div class="page-header">
-		<span class="page-header-text">Family Registration</span>
-	</div>
+	<h1 class="card__title">Homestudy Registration</h1>
 
 	<div class="form-intro">We are pleased that you are interested in registering your homestudied family with MARE.
 		Only Massachusetts families with completed and approved homestudies can be registered with MARE through this form.
@@ -13,36 +11,35 @@
 	<div class="form-intro">If the family is not yet homestudied and would like to request information, please request that
 		they fill out the <a href="/forms/information-request-form">Information Request Form</a>.</div>
 
-	<div class="form-intro">Click <a href="#">here [link to form needed]</a> to download the Family Registration Form for you to print, complete and fax to MARE
-		at 617-542-1006.</div>
+	<div class="form-intro">For questions about Homestudy Registration contact <a href="mailto:dianet@mareinc.org">Diane Tomaz</a></div>
 
 	<section class="family-registration-form">
-
-		<div class="form-type-header">Register a Family</div>
-		<span class="required required-description">* Required</span>
 
 		<form enctype="multipart/form-data" action="/social-worker-register-family" class="form--family-registration" method="POST">
 			<input type="hidden" class="registration-type" name="registrationType" value="family">
 			
 			<section class="family-contact-1-section">
 				<div class="form-section-header">Contact 1</div>
+
+				<span class="required required-description">* Required</span>
+				
 				<div class="row">
 					<div class="col-sm-12 form-group">
-						<input type="text" id="contact1-first-name" class="input" name="contact1FirstName" placeholder="John" data-parsley-error-message="required" required="">
+						<input type="text" id="contact1-first-name" class="input" name="contact1FirstName" data-parsley-error-message="required" required="">
 						<label for="contact1-first-name" class="label required-field">First Name</label>
 					</div>
 					<div class="col-sm-12 form-group">
-						<input type="text" id="contact1-last-name" class="input" name="contact1LastName" placeholder="Smith" data-parsley-error-message="required" required="">
+						<input type="text" id="contact1-last-name" class="input" name="contact1LastName" data-parsley-error-message="required" required="">
 						<label for="contact1-last-name" class="label required-field">Last Name</label>
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-sm-12 form-group">
-						<input type="email" id="contact1-email" class="input" name="contact1Email" placeholder="john.smith@gmail.com" data-parsley-type="email" data-parsley-trigger="change" data-parsley-error-message="valid email required" required="">
+						<input type="email" id="contact1-email" class="input" name="contact1Email" data-parsley-type="email" data-parsley-trigger="change" data-parsley-error-message="valid email required" required="">
 						<label for="contact1-email" class="label required-field">Email Address</label>
 					</div>
 					<div class="col-sm-12 form-group">
-						<input type="text" id="contact1-mobile" class="input" name="contact1Mobile" placeholder="(617) 111-1111" data-parsley-error-message="required" required="">
+						<input type="text" id="contact1-mobile" class="input" name="contact1Mobile" data-parsley-error-message="required" required="">
 						<label for="contact1-mobile" class="label required-field">Mobile Phone</label>
 					</div>
 				</div>
@@ -86,7 +83,7 @@
 					</div>
 					<div class="col-sm-12">
 						<div class="form-group">
-							<input type="text" id="contact1-occupation" class="input" name="contact1Occupation" placeholder="teacher">
+							<input type="text" id="contact1-occupation" class="input" name="contact1Occupation">
 							<label for="contact1-occupation" class="label">Occupation</label>
 						</div>
 						<div class="form-group">
@@ -102,21 +99,21 @@
 
 				<div class="row">
 					<div class="col-sm-12 form-group">
-						<input type="text" id="contact2-first-name" class="input" name="contact2FirstName" placeholder="Jane">
+						<input type="text" id="contact2-first-name" class="input" name="contact2FirstName">
 						<label for="contact2-first-name" class="label">First Name</label>
 					</div>
 					<div class="col-sm-12 form-group">
-						<input type="text" id="contact2-last-name" class="input" name="contact2LastName" placeholder="Smith">
+						<input type="text" id="contact2-last-name" class="input" name="contact2LastName">
 						<label for="contact2-last-name" class="label">Last Name</label>
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-sm-12 form-group">
-						<input type="email" id="contact2-email" class="input" name="contact2Email" placeholder="jane.smith@gmail.com" data-parsley-type="email" data-parsley-trigger="change" data-parsley-required="false" data-parsley-error-message="valid email required">
+						<input type="email" id="contact2-email" class="input" name="contact2Email" data-parsley-type="email" data-parsley-trigger="change" data-parsley-required="false" data-parsley-error-message="valid email required">
 						<label for="contact2-email" class="label">Email Address</label>
 					</div>
 					<div class="col-sm-12 form-group">
-						<input type="text" id="contact2-phone" class="input" name="contact2Mobile" placeholder="(617) 222-2222">
+						<input type="text" id="contact2-phone" class="input" name="contact2Mobile">
 						<label for="contact2-phone" class="label">Mobile Phone</label>
 					</div>
 				</div>
@@ -158,7 +155,7 @@
 					</div>
 					<div class="col-sm-12">
 						<div class="form-group">
-							<input type="text" id="contact2-occupation" class="input" name="contact2Occupation" placeholder="police officer">
+							<input type="text" id="contact2-occupation" class="input" name="contact2Occupation">
 							<label for="contact2-occupation" class="label">Occupation</label>
 						</div>
 						<div class="form-group">
@@ -174,31 +171,31 @@
 
 				<div class="row">
 					<div class="col-sm-12 form-group">
-						<input type="text" id="family-street-1" class="input" name="street1" placeholder="100 Main Street" data-parsley-error-message="required" required="">
+						<input type="text" id="family-street-1" class="input" name="street1" data-parsley-error-message="required" required="">
 						<label for="family-street-1" class="label required-field">Street 1</label>
 					</div>
 					<div class="col-sm-12 form-group">
-						<input type="text" id="family-street-2" class="input" name="street2" placeholder="Suite 1">
+						<input type="text" id="family-street-2" class="input" name="street2">
 						<label for="family-street-2" class="label">Street 2</label>
 					</div>
 				</div>
 				<div class="row form-group">
-					<div class="col-sm-12 form-group ma-city-container">
-						<select id="ma-city" class="input" name="MACity" data-parsley-trigger="change" data-parsley-errors-messages-disabled="true" required="">
+					<div class="col-sm-12 form-group city-container">
+						<select id="city" class="input" name="city" data-parsley-trigger="change" data-parsley-errors-messages-disabled="true" required="">
 							<option value=""></option>
 							{{#each citiesAndTowns}}
 							<option value="{{_id}}">{{cityOrTown}}</option>
 							{{/each}}
 						</select>
-						<label for="ma-city" class="label required-field">City</label>
+						<label for="city" class="label required-field">City</label>
 					</div>
 					<div class="col-sm-12 form-group non-ma-city-container hidden">
-						<input type="text" id="non-ma-city" class="input" name="nonMACity" placeholder="Boston" data-parsley-error-message="required" data-parsley-required="false">
+						<input type="text" id="non-ma-city" class="input" name="nonMACity" data-parsley-error-message="required" data-parsley-required="false">
 						<label for="non-ma-city" class="label required-field">City</label>
 					</div>
 					<div class="col-sm-12 form-group">
 						<label class="checkbox-inline">
-							<input type="checkbox" id="is-not-MA-city-checkbox" name="isNotMACity">Family lives outside MA
+							<input type="checkbox" id="is-not-ma-city-checkbox" name="isNotMACity">Family lives outside MA
 						</label>
 					</div>
 				</div>
@@ -216,11 +213,11 @@
 				</div>
 				<div class="row">
 					<div class="col-sm-12 form-group">
-						<input type="number" id="zip-code" class="input" name="zipCode" placeholder="02111" data-parsley-error-message="required" required="">
+						<input type="number" id="zip-code" class="input" name="zipCode" data-parsley-error-message="required" required="">
 						<label for="zip-code" class="label required-field">Zip Code</label>
 					</div>
 					<div class="col-sm-12 form-group">
-						<input type="text" id="home-phone" class="input" name="homePhone" placeholder="(617) 333-3333">
+						<input type="text" id="home-phone" class="input" name="homePhone">
 						<label for="home-phone" class="label">Home Phone</label>
 					</div>
 				</div>
@@ -238,21 +235,21 @@
 				</div>
 				<div class="row">
 					<div class="col-sm-12 form-group">
-						<input type="text" id="social-worker-name" class="input" name="socialWorkerName" data-parsley-required="true" data-parsley-error-message="required" placeholder="Jim Smith">
+						<input type="text" id="social-worker-name" class="input" name="socialWorkerName" data-parsley-required="true" data-parsley-error-message="required">
 						<label for="social-worker-name" class="label required-field">Social Worker Name</label>
 					</div>
 					<div class="col-sm-12 form-group">
-						<input type="text" id="social-worker-agency" class="input" name="socialWorkerAgency" data-parsley-required="true" data-parsley-error-message="required" placeholder="Jim's Agency">
+						<input type="text" id="social-worker-agency" class="input" name="socialWorkerAgency" data-parsley-required="true" data-parsley-error-message="required">
 						<label for="social-worker-agency" class="label required-field">Social Worker Agency</label>
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-sm-12 form-group">
-						<input type="text" id="social-worker-phone" class="input" name="socialWorkerPhone" data-parsley-required="true" data-parsley-error-message="required" placeholder="(617) 444-4444">
+						<input type="text" id="social-worker-phone" class="input" name="socialWorkerPhone" data-parsley-required="true" data-parsley-error-message="required">
 						<label for="social-worker-phone" class="label required-field">Social Worker Phone Number</label>
 					</div>
 					<div class="col-sm-12 form-group">
-						<input type="email" id="social-worker-email" class="input" name="socialWorkerEmail" placeholder="jim.smith@gmail.com" data-parsley-type="email" data-parsley-trigger="change" data-parsley-required="true" data-parsley-error-message="valid email required">
+						<input type="email" id="social-worker-email" class="input" name="socialWorkerEmail" data-parsley-type="email" data-parsley-trigger="change" data-parsley-required="true" data-parsley-error-message="valid email required">
 						<label for="social-worker-email" class="label required-field">Social Worker Email Address</label>
 					</div>
 				</div>
@@ -263,7 +260,7 @@
 					<div class="row">
 						<div class="col-sm-12 form-group">Upload PDF or Microsoft Word<sup>&reg;</sup> format:</div>
 						<div class="col-sm-12 form-group">
-							<div class="button button--medium button--brown file-upload-button">
+							<div class="button button--medium button--teal file-upload-button">
 								<span>Upload</span>
 								<input id="upload-button" type="file" class="file-upload" id="homestudyFile_upload" name="homestudyFile_upload">
 							</div>
@@ -273,7 +270,7 @@
 					<div class="row">
 						<div class="col-sm-12 form-group">Email to web@mareinc.org:</div>
 						<div class="col-sm-12 form-group">
-							<div class="button button--medium button--brown"><a href="mailto:web@mareinc.org">Send as email</a></div>
+							<div class="button button--medium button--teal"><a href="mailto:web@mareinc.org">Send as email</a></div>
 						</div>
 					</div>
 					<div class="row">
@@ -476,7 +473,7 @@
 						<label class="label marg-bottom-xs-5 number-of-children-preferred-label required-field">Number of children preferred</label>
 					</div>
 					<div class="col-sm-12">
-						<select name="numberOfChildrenPrefered" class="input form__number-select number-of-children-preferred" data-parsley-errors-messages-disabled="true" data-parsley-required="true" required="">
+						<select name="numberOfChildrenPreferred" class="input form__number-select number-of-children-preferred" data-parsley-errors-messages-disabled="true" data-parsley-required="true" required="">
 							<option value=""></option>
 							<option value="0">0</option>
 							<option value="1">1</option>
@@ -571,46 +568,10 @@
 						</span>
 					</div>
 				</div>
-				<div class="row">
-					<div class="col-sm-24 form-group">
-						<label class="label marg-bottom-xs-5">Disabilities (check all that apply)</label>
-					</div>
-				</div>
-				<div class="row form-group">
-					<div class="col-sm-16">
-						<div class="row">
-						{{#each disabilities}}
-							<div class="col-sm-12 form-group">
-								<label class="checkbox-inline">
-									<input type="checkbox" name="disabilities" value="{{_id}}">{{disability}}
-								</label>
-							</div>
-						{{/each}}
-						</div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-sm-24 form-group">
-						<label class="label marg-bottom-xs-5">Other considerations (check all that apply)</label>
-					</div>
-				</div>
-				<div class="row form-group">
-					<div class="col-sm-16">
-						<div class="row">
-						{{#each otherConsiderations}}
-							<div class="col-sm-12 form-group">
-								<label class="checkbox-inline">
-									<input type="checkbox" name="otherConsiderations" value="{{_id}}">{{otherConsideration}}
-								</label>
-							</div>
-						{{/each}}
-						</div>
-					</div>
-				</div>
 
 			</section>
 
-			<button class="button button--blue register" type="submit">Submit</button>
+			<button class="button button--teal register" type="submit">Register Homestudy</button>
 		</form>
 	</section>
 

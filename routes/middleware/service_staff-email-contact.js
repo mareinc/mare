@@ -1,11 +1,10 @@
-const keystone			= require( 'keystone' ),
-      StaffEmailContact = keystone.list( 'Staff Email Contact' );
-
-exports.getContact = targetId => {
+const keystone = require( 'keystone' );
+// TODO: clean this up to just return the contact whole, the calling function should take what it needs from it
+exports.getContactById = targetId => {
 
     return new Promise( ( resolve, reject ) => {
 
-        StaffEmailContact.model
+        keystone.list( 'Staff Email Contact' ).model
             .findOne()
             .select( 'staffEmailContact' )
             .where( 'emailTarget', targetId )
@@ -15,7 +14,7 @@ exports.getContact = targetId => {
                 // if no matching staff contact was found in the database
                 if( !staffContact ) {
                     // reject the promise with the reason for the rejection
-                    return reject( `no staff contact found for the provided id: ${ targetId }` );
+                    return reject( `no staff contact found for the id ${ targetId }` );
                 }
                 // resolve the promise with an object containing the name and email address of the target contact
                 resolve({
@@ -25,7 +24,7 @@ exports.getContact = targetId => {
             // if there was an error fetching data from the database
             }, err => {
                 // reject the promise with the reason for the rejection
-                reject( `error fetching staff email contact for ${ targetId }` );
+                reject( `error fetching staff email contact by id ${ targetId }` );
             });
     });
 }

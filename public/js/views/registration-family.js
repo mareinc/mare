@@ -5,14 +5,13 @@
 		el: '.form--family-registration',
 
 		events: {
-			'change #is-not-MA-city-checkbox' 		: 'toggleCitySelect',
+			'change .is-not-ma-city-checkbox' 		: 'toggleCitySelect',
 			'change .other-way-to-hear-about-mare'	: 'toggleOtherWayToHearTextField',
 			'change #family-state'					: 'toggleHomestudySubmission',
 			'change #homestudy-completed-checkbox'	: 'toggleHomestudySection',
 			'change #upload-button'					: 'uploadForm',
 			'change #children-in-home'				: 'toggleFamilyDetailsForm',
-			'change .adoption-preferences-trigger'	: 'checkAdoptionPreferences',
-			'submit'								: 'disableRegistrationButton'
+			'change .adoption-preferences-trigger'	: 'checkAdoptionPreferences'
 		},
 
 		initialize: function() {
@@ -21,16 +20,16 @@
 			// compile the template to be used adding/removing child in home field groups
 			this.template = Handlebars.compile( childInHomeHtml );
 			// DOM cache any commonly used elements to improve performance
-			this.$MACityContainer						= this.$( '.ma-city-container' );
+			this.$MACityContainer						= this.$( '.city-container' );
 			this.$NonMACityContainer					= this.$( '.non-ma-city-container' );
-			this.$MACity								= this.$( '#ma-city' );
-			this.$NonMACity								= this.$( '#non-ma-city' );
+			this.$MACity								= this.$( '.city' );
+			this.$NonMACity								= this.$( '.non-ma-city' );
 			this.$state									= this.$( '#family-state' );
 			this.$homestudyCompletionDate				= this.$( '#homestudy-date-complete' );
 			this.$socialWorkerName						= this.$( '#social-worker-name' );
 			this.$socialWorkerAgency					= this.$( '#social-worker-agency' );
 			this.$socialWorkerPhone						= this.$( '#social-worker-phone' );
-			this.$socialWorkerEmail						= this.$( '#social-worker-email' );
+			this.$socialWorkerEmail						= this.$( '.social-worker-email' );
 			this.$homestudySection						= this.$( '.family-submit-your-homestudy-section' );
 			this.$homestudySubmissionSection			= this.$( '.family-homestudy-details-section' );
 			this.$howDidYouHearOther					= this.$( '#family-how-did-you-hear-other' );
@@ -48,6 +47,8 @@
 			this.$numberOfChildrenPreferred 			= this.$( '.number-of-children-preferred' );
 			this.$contactWithBiologicalSiblingsLabel	= this.$( '.contact-with-biological-siblings-label' );
 			this.$contactWithBiologicalSiblings			= this.$( '.contact-with-biological-siblings' );
+			this.$contactWithBiologicalParentsLabel		= this.$( '.contact-with-biological-parents-label' );
+			this.$contactWithBiologicalParents			= this.$( '.contact-with-biological-parents' );
 			this.$raceLabel								= this.$( '.race-label' );
 			this.$race									= this.$( '.race' );
 			this.$maximumPhysicalNeedsLabel				= this.$( '.maximum-physical-needs-label' );
@@ -75,6 +76,9 @@
 			this.$howDidYouHearOtherErrorMessage = this.$howDidYouHearOther.next();
 
 			this.form.on( 'field:validated', this.validateForm );
+
+			// submit form via AJAX on successful validation
+			this.form.on( 'form:success', this.submitForm );
 		},
 
 		toggleCitySelect: function toggleCitySelect( event ) {
@@ -104,9 +108,9 @@
 				// remove the validation binding from the city dropdown menu
 				this.$MACity.attr( 'data-parsley-required', 'false' );
 				// add the required attribute to the city free text field needed to show the red background during form validation
-				this.$MACity.attr( 'required', true );
+				this.$NonMACity.attr( 'required', true );
 				// remove the required attribute from the city dropdown menu needed to show the red background during form validation
-				this.$NonMACity.attr( 'required', false );
+				this.$MACity.attr( 'required', false );
 				// reset validation on the city dropdown menu
 				// if it was already validated, we need to clear out the check so the form can be submitted
 				this.MACityValidator.reset();
@@ -224,6 +228,7 @@
 			this.$ageRangeLabel.addClass( 'required-field' );
 			this.$numberOfChildrenPreferredLabel.addClass( 'required-field' );
 			this.$contactWithBiologicalSiblingsLabel.addClass( 'required-field' );
+			this.$contactWithBiologicalParentsLabel.addClass( 'required-field' );
 			this.$raceLabel.addClass( 'required-field' );
 			this.$maximumPhysicalNeedsLabel.addClass( 'required-field' );
 			this.$maximumEmotionalNeedsLabel.addClass( 'required-field' );
@@ -235,6 +240,7 @@
 			this.$ageRangeTo.addClass( 'required' );
 			this.$numberOfChildrenPreferred.addClass( 'required' );
 			this.$contactWithBiologicalSiblings.addClass( 'required' );
+			this.$contactWithBiologicalParents.addClass( 'required' );
 			this.$race.addClass( 'required' );
 			this.$maximumPhysicalNeeds.addClass( 'required' );
 			this.$maximumEmotionalNeeds.addClass( 'required' );
@@ -246,6 +252,7 @@
 			this.$ageRangeTo.attr( 'required', true );
 			this.$numberOfChildrenPreferred.attr( 'required', true );
 			this.$contactWithBiologicalSiblings.attr( 'required', true );
+			this.$contactWithBiologicalParents.attr( 'required', true );
 			this.$race.attr( 'required', true );
 			this.$maximumPhysicalNeeds.attr( 'required', true );
 			this.$maximumEmotionalNeeds.attr( 'required', true );
@@ -259,6 +266,7 @@
 			this.$ageRangeLabel.removeClass( 'required-field' );
 			this.$numberOfChildrenPreferredLabel.removeClass( 'required-field' );
 			this.$contactWithBiologicalSiblingsLabel.removeClass( 'required-field' );
+			this.$contactWithBiologicalParentsLabel.removeClass( 'required-field' );
 			this.$raceLabel.removeClass( 'required-field' );
 			this.$maximumPhysicalNeedsLabel.removeClass( 'required-field' );
 			this.$maximumEmotionalNeedsLabel.removeClass( 'required-field' );
@@ -270,6 +278,7 @@
 			this.$ageRangeTo.removeClass( 'required' );
 			this.$numberOfChildrenPreferred.removeClass( 'required' );
 			this.$contactWithBiologicalSiblings.removeClass( 'required' );
+			this.$contactWithBiologicalParents.removeClass( 'required' );
 			this.$race.removeClass( 'required' );
 			this.$maximumPhysicalNeeds.removeClass( 'required' );
 			this.$maximumEmotionalNeeds.removeClass( 'required' );
@@ -281,6 +290,7 @@
 			this.$ageRangeTo.attr( 'required', false );
 			this.$numberOfChildrenPreferred.attr( 'required', false );
 			this.$contactWithBiologicalSiblings.attr( 'required', false );
+			this.$contactWithBiologicalParents.attr( 'required', false );
 			this.$race.attr( 'required', false );
 			this.$maximumPhysicalNeeds.attr( 'required', false );
 			this.$maximumEmotionalNeeds.attr( 'required', false );
@@ -327,14 +337,67 @@
 			this.$( '.homestudy-file-text' ).html( filename );
 		},
 
-		disableRegistrationButton: function disableDonateButton() {
-			this.$( '.register' ).attr( 'disabled', 'disabled' );
+		enableRegistrationButton: function enableRegistrationButton() {
+			this.$( '.register' ).prop( 'disabled', false );
+		},
+
+		disableRegistrationButton: function disableRegistrationButton() {
+			this.$( '.register' ).prop( 'disabled', 'disabled' );
 		},
 
 		validateForm: function validateForm() {
+
 			var ok = $( '.parsley-error' ).length === 0;
+
 			$( '.bs-callout-info' ).toggleClass( 'hidden', !ok );
 			$( '.bs-callout-warning' ).toggleClass( 'hidden', ok );
+			
+			// if there are no errors and the user is attempting to submit the form
+			if( ok && event.type === 'submit' ) {
+				// disable the registration button
+				mare.views.familyRegistration.disableRegistrationButton();
+			// otherwise, if there are errors
+			} else if ( !ok ) {
+				// ensure the registration button is enabled
+				mare.views.familyRegistration.enableRegistrationButton();
+			}
+		},
+
+		// submit registration form via AJAX
+		submitForm: function submitForm() {
+
+			// set validation result to false so the form is not auto-submitted 
+			// ( this mimics the behavior of event.preventDefault(), but that approach is deprecated by parsely )
+			this.validationResult = false;
+
+			// retrieve the data from the form
+			var formData = this.$element.serializeArray();
+
+			// post the form data to the registration route
+			$.post( '/register', formData )
+				.done( function( responseData ) {
+
+					// handle error responses
+					if ( responseData.status === 'error' ) {
+						
+						// display the error message to the user
+						mare.views.registration.displayFlashMessage( responseData.flashMessage );
+
+						// enable the register button
+						mare.views.familyRegistration.enableRegistrationButton();
+						
+					// handle success responses
+					} else if ( responseData.status === 'success' ) {
+						
+						// redirect the user to the success target page
+						window.location.href = responseData.targetPage;
+					}
+				})
+				.fail( function( error ) {
+					
+					// TODO handle errors between the browser and the server
+					console.error( error.status + ' - ' + error.statusText );
+				});
 		}
 	});
 }());

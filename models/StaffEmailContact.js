@@ -1,12 +1,14 @@
-var keystone = require('keystone'),
-	Types = keystone.Field.Types;
+const keystone	= require('keystone'),
+	  Types		= keystone.Field.Types;
 
 // Create model. Additional options allow menu name to be used what auto-generating URLs
-var StaffEmailContact = new keystone.List('Staff Email Contact');
+const StaffEmailContact = new keystone.List( 'Staff Email Contact', {
+	autokey: { path: 'key', from: 'emailTarget', unique: true }
+});
 
 // Create fields
 StaffEmailContact.add({
-	emailTarget: { type: Types.Relationship, label: 'primary contact for', ref: 'Staff Email Target', required: true, initial: true },
+	emailTarget: { type: Types.Relationship, label: 'primary contact for', ref: 'Email Target', required: true, initial: true },
 	staffEmailContact: { type: Types.Relationship, label: 'staff email contact', ref: 'Admin', filters: { isActive: true }, required: true, initial: true }
 });
 
