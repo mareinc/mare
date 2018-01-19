@@ -58,7 +58,7 @@ exports = module.exports = app => {
 	app.post('/login'									, middleware.login );
 	//login forgot password
 	app.post('/recover/generate'						, passwordResetService.resetPassword);
-	app.post('recover'									, passwordResetService.changePassword);
+	app.post('/recover'									, passwordResetService.changePassword);
 	app.get( '/recover'									, passwordResetService.getForm);
 	// MARE in the news
 	app.get( '/mare-in-the-news'						, routes.views.mareInTheNewsStories );

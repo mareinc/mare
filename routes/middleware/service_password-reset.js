@@ -94,6 +94,18 @@ exports.getForm = function getForm(req,res){
 
 exports.changePassword = function changePassword(req, res){
 
-    res.status(200).send('Hi');
+    const resetToken        = req.body.resetToken,
+          password          = req.body.password,
+          confirm_password  = req.body.confirm_password;
 
+    if(!resetToken){
+        console.error(`no reset Token provided to changePassword handler`);
+        res.send('stop trolling');
+        return;
+    }
+
+    //check passwords are correct - some validation 
+    // if passwords are correct fetch the user with that resetToken and change the password
+
+    res.send('ok');
 };
