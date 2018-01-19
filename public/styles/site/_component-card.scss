@@ -169,7 +169,7 @@
 
 .card-details__paragraph {
 
-	&:not( :first-child ) {
+	&:not( :first-of-type ) {
 		margin-top: 1em;
 	}
 }
@@ -183,7 +183,6 @@
 	}
 
 }
-
 
 /* not optimized below this line */
 .card__title {

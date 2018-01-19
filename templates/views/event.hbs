@@ -71,7 +71,7 @@
 		<section class="card__content-group events__contact">
 			{{#if event.contact.name.full}}
 			For more information, {{#if event.contact.phone.work}}call{{else}}contact{{/if}} {{ event.contact.name.full }} at {{#if event.contact.phone.work}} {{ event.contact.phone.work }} {{else}} <a href="mailto:{{ event.contact.email }}" class="events__contact-link">{{ event.contact.email}}</a> {{/if}}
-			{{else}}
+			{{else if event.contactEmail}}
 			For more information, contact <a href="mailto:{{ event.contactEmail }}" class="events__contact-link">{{ event.contactEmail }}</a>
 			{{/if}}
 		</section>
