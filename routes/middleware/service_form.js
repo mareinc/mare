@@ -1,12 +1,12 @@
 /* this file is used for processing all forms except registration in the system */
-// TODO: event submission is currently handled in the events middleware, we might want to migrate that here
+// TODO: break this out into a file for each form
 const keystone						= require( 'keystone' ),
 	  inquiryService				= require( './service_inquiry' ),
 	  inquiryEmailService			= require( './emails_inquiry' ),
 	  emailTargetMiddleware			= require( './service_email-target' ),
 	  staffEmailContactMiddleware	= require( './service_staff-email-contact' );
 
-exports.submitInformationRequest = function submitInformationRequest( req, res, next ) {
+exports.submitInquiry = function submitInquiry( req, res, next ) {
 	// store the inquiry information in a local variable
 	const inquiry = req.body;
 	// reload the form to display the flash message
@@ -22,11 +22,11 @@ exports.submitInformationRequest = function submitInformationRequest( req, res, 
 		return res.redirect( 303, redirectPath );
 	}
 
+	// TODO: CREATE THE INQUIRY HERE, FLASH AND REDIRECT ON SUCCESS OR FAILURE, THEN PROCESS STUFF BELOW IN THE BACKGROUND
+
 	const inquiryContactTarget = inquiry.interest === 'general info' ? 'general inquiries' : 'non-general inquiries';
 	// fetch contact info for the staff contact for site visitor registration
 	const fetchRegistrationStaffContactInfo = exports.getRegistrationStaffContactInfo( inquiryContactTarget );
-
-	// TODO: fill in the email submissions for have a question form when handling the email system tasks
 	
 	// if the user is not logged in
 	if( !req.user ) {
@@ -34,7 +34,7 @@ exports.submitInformationRequest = function submitInformationRequest( req, res, 
 		fetchRegistrationStaffContactInfo
 			.then( staffContact => {
 				// we won't have the required information to generate an inquiry, email MARE with the details instead
-				return inquiryEmailService.sendAnonymousInquiryCreatedEmailToMARE( req.body );
+				return inquiryEmailService.sendAnonymousInquiryCreatedEmailToMARE( inquiry, staffContact );
 			})
 			.catch( err => {
 				console.error( `error sending anonymous inquiry created email to MARE contact for ${ inquiryContactTarget } - ${ err }` );
@@ -44,21 +44,19 @@ exports.submitInformationRequest = function submitInformationRequest( req, res, 
 			.then( () => {
 				// create an informational message until the email system is built out
 				req.flash( 'info', {
-					title: 'Emails will be sent once that portion of the system is built out'
-				});
-				// create an informational message until the email system is built out
-				req.flash( 'info', {
 					title: 'Creating general inquiries as an anonymouse user still needs to be built',
 					detail: 'This feature should be available soon'
 				});
+				// TODO: SEE REGISTRATION PROCESSING AND MOVE THIS UP
 				// redirect to the appropriate page 
 				res.redirect( 303, redirectPath );
 			});
 	// otherwise, if the user is logged in
 	} else {
 		// use the inquiry service to generate a new inquiry record
-		inquiryService.createInquiry( { inquiry: req.body, user: req.user } )
-			// if it was successful
+		const inquiryCreated = inquiryService.createInquiry( { inquiry: req.body, user: req.user } )
+		// if it was successful
+		inquiryCreated
 			.then( () => {
 				// create an informational message until the email system is built out
 				req.flash( 'info', {

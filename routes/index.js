@@ -82,7 +82,7 @@ exports = module.exports = app => {
 	// services for form submissions
 	app.post( '/submit-agency-event'					, eventService.submitEvent );
 	app.post( '/submit-question'						, formService.submitQuestion );
-	app.post( '/submit-information-request'				, formService.submitInformationRequest );
+	app.post( '/submit-information-request'				, formService.submitInquiry );
 	app.post( '/social-worker-register-child'			, childService.registerChild );
 	app.post( '/social-worker-register-family'			, familyService.registerFamily );
 };
