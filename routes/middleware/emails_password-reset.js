@@ -22,7 +22,7 @@ exports.sendPasswordResetEmail = ( fullName ,email, host, resetToken) => {
             
                     }).send({
             
-                        to: 'gmoha92@gmail.com',
+                        to: email,
                         from: {
                             name 	: 'MARE',
                             email 	: 'admin@adoptions.io' //@Jared this should probably be in a constant file or something?
