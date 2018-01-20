@@ -28,11 +28,11 @@ $(function() {
 			break;
 		case 'mare-in-the-news'						: mare.routers.mareInTheNews = new mare.routers.MAREInTheNews;								break;
 		case 'page'                     			: mare.routers.pages = new mare.routers.Pages();											break;
+		case 'recover'								: mare.routers.recover = new mare.routers.Recover();										break;
 		case 'register'                 			: mare.routers.registration = new mare.routers.Registration();								break;
 		case 'steps-in-the-process'					: mare.routers.stepsInTheProcess = new mare.routers.StepsInTheProcess();					break;
 		case 'success-stories'          			: mare.routers.successStories = new mare.routers.SuccessStories();							break;
 		case 'waiting-child-profiles'				: mare.routers.waitingChildProfiles = new mare.routers.WaitingChildProfiles();				break;
-		case 'recover'								: mare.routers.recover = new mare.routers.Recover();										break;
 	}
 	// start the backbone history state for browser navigation through backbone routes
 	// NOTE: this needs to be below the subrouter initialization to allow for subrouters to reroute properly
