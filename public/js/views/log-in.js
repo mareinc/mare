@@ -17,7 +17,8 @@
 		bindEvents: function bindEvents() {
 			// bind an event to allow closing of the modal
 			$( '.modal__close' ).click( this.closeModal.bind( this ) );
-			$('.log-in-form__forgot').click(this.toggleForgotPassword.bind(this));
+			$( '.log-in-form__forgot' ).click(this.toggleForgotPassword);
+			$( '.forgot-password__login-link' ).click(this.toggleLogin);
 		},
 		// events need to be unbound every time the modal is closed
 		unbindEvents: function unbindEvents() {
@@ -87,8 +88,13 @@
 		/* switch the login view to the password reset view */
 		toggleForgotPassword: function setupForgotPassword(){
 			//TODO: @jared up to you if you want to add some animation 
-			$('.log-in').hide();
-			$('.forgot-password').show();	
+			$( '.log-in' ).hide();
+			$( '.forgot-password' ).show();	
+		},
+
+		toggleLogin: function displayLogin(){
+			$( '.forgot-password' ).hide();
+			$( '.log-in' ).show();
 		}
 	});
 }());
