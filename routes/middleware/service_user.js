@@ -97,6 +97,23 @@ exports.getUserByEmail = function(email){
 	
 }
 
+
+/* gets a user by password reset token */ 
+exports.getUserByPasswordResetToken = function(resetToken){
+
+	return new Promise( (resolve, reject) => {
+		User.model.findOne()
+		.where('resetPasswordToken', resetToken)
+		.exec()
+		.then( user => {
+			resolve(user);
+		}, err =>{
+			reject(err);
+		});
+	});
+	
+}
+
 /* gets the ID of any user type (except families) based on their full name */
 exports.getUserByFullName = ( name, userType ) => {
 	// bind targetModel to the appropriate keystone model type based on the passed in userType
