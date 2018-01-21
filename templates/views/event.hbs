@@ -125,7 +125,7 @@
 				<ul class="card__list" data-group="family">
 					{{#if event.hasFamilyAttendees}}
 					{{#each event.familyAttendees}}
-					<li class="card__list-item">{{ fullName }}</li>
+					<li class="card__list-item">{{ displayName }}</li>
 					{{/each}}
 					{{else}}
 					<li class="card__list-item card__list-item--disabled">no families attending</li>

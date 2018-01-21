@@ -1,7 +1,7 @@
 const keystone				= require( 'keystone' );
 const utilitiesMiddleware   = require( './utilities' );
 
-exports.sendPasswordResetEmail = ( fullName, email, host, resetToken ) => {
+exports.sendPasswordResetEmail = ( name, email, host, resetToken ) => {
 
     return new Promise( ( resolve,reject ) => {
         // find the email template in templates/emails/
@@ -19,7 +19,7 @@ exports.sendPasswordResetEmail = ( fullName, email, host, resetToken ) => {
                 email 	: 'admin@adoptions.io' // TODO: this should be in a model or ENV variable
             },
             subject     : 'Password Reset',
-            fullName,
+            name,
             host,
             resetToken
 
