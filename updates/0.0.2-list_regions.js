@@ -1,5 +1,5 @@
 exports.create = {
 	'Region': [{
-		region: 'other'
+		region: 'Other'
 	}]
 };

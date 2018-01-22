@@ -133,7 +133,7 @@ module.exports.createEventRecord = ( event, pauseUntilSaved ) => {
 				// if we run into an error
 				if( err ) {
 					// store a reference to the entry that caused the error
-					importErrors.push( { id: event.evt_id, error: err.err } );
+					importErrors.push( { id: event.evt_id, error: err } );
 				}
 				
 				// fire off the next iteration of our generator after pausing for a second

@@ -136,7 +136,7 @@ module.exports.updateChildRecord = ( ids, pauseUntilSaved ) => {
 				// if we run into an error
 				if( err ) {
 					// store a reference to the entry that caused the error
-					importErrors.push( { id: child.get( 'registrationNumber' ), error: err.err } );
+					importErrors.push( { id: child.get( 'registrationNumber' ), error: err } );
 				}
 
 				// fire off the next iteration of our generator after pausing

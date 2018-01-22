@@ -134,11 +134,13 @@ module.exports.createFamilyRecord = ( family, pauseUntilSaved ) => {
 	// if the record has a primary language listed
 	if( family.primary_language ) {
 		// split the string on commas to create an array of languages
-		let allLanguagesArray = family.primary_language.trim().replace( '/', ',' )
-														.replace( 'Haitian Creole/Eng', 'french, english' ) // This has to be done since the space is used as a delimeter in some cases
-													   .replace( '-', ',' )
-													   .replace( ' ', ',' )
-													   .split( ',' ); // redo to get dash handling back, add break on space ( 'english spanish' ) and / ( French/English )
+		let allLanguagesArray = family.primary_language
+									.trim()
+									.replace( '/', ',' )
+									.replace( 'Haitian Creole/Eng', 'french, english' ) // This has to be done since the space is used as a delimeter in some cases
+									.replace( '-', ',' )
+									.replace( ' ', ',' )
+									.split( ',' ); // redo to get dash handling back, add break on space ( 'english spanish' ) and / ( French/English )
 		// store the first language as the primary and all other languages in other
 		const [ primary, ...other ] = allLanguagesArray;
 		// map the primary language listed to the _id value in the new system
@@ -993,7 +995,6 @@ module.exports.createFamilyRecord = ( family, pauseUntilSaved ) => {
 		case `spencer`: family.city = `Spencer`; break;
 		case `Sprinfield`: family.city = `Springfield`; break;
 		case `springfield`: family.city = `Springfield`; break;
-		case `Springfield,`: family.city = `Springfield`; break;
 		case `Springfiled`: family.city = `Springfield`; break;
 		case `Springlfield`: family.city = `Springfield`; break;
 		case `Springhill`: family.city = `Somerville`; break;
@@ -1071,6 +1072,7 @@ module.exports.createFamilyRecord = ( family, pauseUntilSaved ) => {
 		case `West Point`: family.city = `Westport`; break;
 		case `West. Roxbury`: family.city = `Roxbury`; break;
 		case `West Sprinfield`: family.city = `Springfield`; break;
+		case `West Springfield`: family.city = `Springfield`; break;
 		case `west springfield`: family.city = `Springfield`; break;
 		case `West Wareham`: family.city = `Wareham`; break;
 		case `West wareham`: family.city = `Wareham`; break;
@@ -1228,9 +1230,9 @@ module.exports.createFamilyRecord = ( family, pauseUntilSaved ) => {
 			newFamily.save( ( err, savedModel ) => {
 				// if we run into an error
 				if( err ) {
-					console.error( `error saving family - ${ err.err }` );
+					console.error( `error saving family - ${ err }` );
 					// store a reference to the entry that caused the error
-					importErrors.push( { id: family.fam_id, error: err.err } );
+					importErrors.push( { id: family.fam_id, error: err } );
 				}
 
 				// fire off the next iteration of our generator

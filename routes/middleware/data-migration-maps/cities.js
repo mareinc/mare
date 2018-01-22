@@ -11,13 +11,13 @@ exports.getCitiesOrTownsMap = ( req, res, done ) => {
 
 	async.parallel([
 
-		done => { dataMigrationService.getModelId( { model: 'City or Town', field: 'cityOrTown', value: 'western', mapTo: [ 1000 ], namespace: locals.migration.maps.citiesOrTowns }, done ); },
-		done => { dataMigrationService.getModelId( { model: 'City or Town', field: 'cityOrTown', value: 'central', mapTo: [ 1001 ], namespace: locals.migration.maps.citiesOrTowns }, done ); },
-		done => { dataMigrationService.getModelId( { model: 'City or Town', field: 'cityOrTown', value: 'other', mapTo: [ 1002, 1006, 1008 ], namespace: locals.migration.maps.citiesOrTowns }, done ); },
-		done => { dataMigrationService.getModelId( { model: 'City or Town', field: 'cityOrTown', value: 'northern', mapTo: [ 1003 ], namespace: locals.migration.maps.citiesOrTowns }, done ); },
-		done => { dataMigrationService.getModelId( { model: 'City or Town', field: 'cityOrTown', value: 'southern', mapTo: [ 1004 ], namespace: locals.migration.maps.citiesOrTowns }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'City or Town', field: 'cityOrTown', value: 'Western', mapTo: [ 1000 ], namespace: locals.migration.maps.citiesOrTowns }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'City or Town', field: 'cityOrTown', value: 'Central', mapTo: [ 1001 ], namespace: locals.migration.maps.citiesOrTowns }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'City or Town', field: 'cityOrTown', value: 'Other', mapTo: [ 1002, 1006, 1008 ], namespace: locals.migration.maps.citiesOrTowns }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'City or Town', field: 'cityOrTown', value: 'Northern', mapTo: [ 1003 ], namespace: locals.migration.maps.citiesOrTowns }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'City or Town', field: 'cityOrTown', value: 'Southern', mapTo: [ 1004 ], namespace: locals.migration.maps.citiesOrTowns }, done ); },
 		done => { dataMigrationService.getModelId( { model: 'City or Town', field: 'cityOrTown', value: 'Boston', mapTo: [ 1005 ], namespace: locals.migration.maps.citiesOrTowns }, done ); },
-		done => { dataMigrationService.getModelId( { model: 'City or Town', field: 'cityOrTown', value: 'out of state', mapTo: [ 1007 ], namespace: locals.migration.maps.citiesOrTowns }, done ); }
+		done => { dataMigrationService.getModelId( { model: 'City or Town', field: 'cityOrTown', value: 'Out of state', mapTo: [ 1007 ], namespace: locals.migration.maps.citiesOrTowns }, done ); }
 
 	], () => {
 

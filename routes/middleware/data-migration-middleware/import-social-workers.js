@@ -117,25 +117,6 @@ module.exports.createSocialWorkerRecord = ( socialWorker, pauseUntilSaved ) => {
 			// push an error so we can easily identify to problematic entries
 			importErrors.push( { id: agency.oldId, error: 'no state information provided' } );
 		}
-
-		// adjust cities / towns in MA to have names the system expects so it can find their records
-		switch( agency.address.city ) {
-			case 'Boston': agency.address.city = 'Boston - Dorchester - Center'; break;
-			case 'South Boston': agency.address.city = 'Boston - Dorchester - Center'; break;
-			case 'Foxboro': agency.address.city = 'Foxborough'; break;
-			case 'Dorchester': agency.address.city = 'Boston - Dorchester - Center'; break;
-			case 'Springfield': agency.address.city = 'West Springfield'; break;
-			case 'W. Springfield': agency.address.city = 'West Springfield'; break;
-			case 'Roxbury': agency.address.city = 'Roxbury/Mission Hill'; break;
-			case 'Jamaica Plain': agency.address.city = 'Boston - Jamaica Plain'; break;
-			case 'South Dennis': agency.address.city = 'Dennis'; break;
-		}
-
-		// create a promise for fetching the MA city or town associated with the agency
-		const cityOrTownLoaded = utilityModelFetch.getCityOrTownByName( agency.address.city.trim(), agency.address.state.abbreviation );
-		// once we've fetch the city or town
-		cityOrTownLoaded
-			.then( cityOrTown => {
 				// populate fields of a new SocialWorker object
 				let newSocialWorker = new SocialWorker.model({
 					// every social worker needs a password, this will generate one we can easily determine at a later date while still being unique
@@ -163,9 +144,9 @@ module.exports.createSocialWorkerRecord = ( socialWorker, pauseUntilSaved ) => {
 					address: {
 						street1: agency.address.street1 ? agency.address.street1.trim() : undefined,
 						street2: agency.address.street2 ? agency.address.street2.trim() : undefined,
-						isOutsideMassachusetts: agency.address.state.abbreviation !== 'MA',
-						city: cityOrTown,
-						cityText: agency.address.state.abbreviation !== 'MA' ? agency.address.city.trim() : undefined,
+						isOutsideMassachusetts: agency.address.isOutsideMassachusetts,
+						city: agency.address.isOutsideMassachusetts ? undefined : agency.address.city,
+						cityText: agency.address.isOutsideMassachusetts ? agency.address.cityText : undefined,
 						state: agency.address.state.get( '_id' ),
 						zipCode: utilityFunctions.padZipCode( agency.address.zipCode ),
 						region: agency.address.region
@@ -179,7 +160,7 @@ module.exports.createSocialWorkerRecord = ( socialWorker, pauseUntilSaved ) => {
 					// if we run into an error
 					if( err ) {
 						// store a reference to the entry that caused the error
-						importErrors.push( { id: socialWorker.agc_id, error: err.err } );
+						importErrors.push( { id: socialWorker.agc_id, error: err } );
 					}
 
 					// fire off the next iteration of our generator after pausing
@@ -189,22 +170,6 @@ module.exports.createSocialWorkerRecord = ( socialWorker, pauseUntilSaved ) => {
 						}, 5000 );
 					}
 				});
-
-			}).catch( err => {
-				// if a error was provided
-				if( err ) {
-					console.log( `error saving social worker - couldn't fetch city or town ${ agency.address.city.trim() } in state ${ agency.address.state.abbreviation } - ${ err }` );
-					// we can assume it was a reject from trying to fetch the city or town by an unrecognized name
-					cityOrTownNameError.add( err );
-				}
-				
-				// fire off the next iteration of our generator after pausing
-				if( pauseUntilSaved ) {
-					setTimeout( () => {
-						socialWorkerGenerator.next();
-					}, 5000 );
-				}
-			});
 		})
 		.catch( err => {
 			// we can assume it was a reject from trying to fetch the city or town by an unrecognized name

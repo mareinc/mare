@@ -218,7 +218,7 @@ module.exports.updateFamilyRecord = ( contacts, familyId, pauseUntilSaved ) => {
 					console.log( `contact 1 email: ${ family.contact1.email ? family.contact1.email.toLowerCase() : '' }` );
 					console.log( `contact 2 email: ${ family.contact2.email ? family.contact2.email.toLowerCase() : '' }` );
 					// store a reference to the entry that caused the error
-					importErrors.push( { id: family.get( 'registrationNumber' ), contact1: contact1.fmc_id, contact2: contact2.fmc_id, error: err.err } );
+					importErrors.push( { id: family.get( 'registrationNumber' ), contact1: contact1.fmc_id, contact2: contact2.fmc_id, error: err } );
 				}
 
 				// fire off the next iteration of our generator after pausing

@@ -113,24 +113,25 @@ module.exports.updateAgencyRecord = ( agencyId, agencyContactId, pauseUntilSaved
 	// when both resolve
 	Promise.all( [ agencyLoaded, agencyContactLoaded ] )
 		.then( values => {
-		// store the retrieved agency and agency contact in local variables
-		const [ agency, agencyContact ] = values;
-		// append the agency contact ID to the agency
-		agency.generalInquiryContact = agencyContact.get( '_id' );
-		// save the updated agency record
-		agency.save( ( err, savedModel ) => {
-			// if we run into an error
-			if( err ) {
-				// store a reference to the entry that caused the error
-				importErrors.push( { id: agencyContactId, error: err.err } );
-			}
+			// store the retrieved agency and agency contact in local variables
+			const [ agency, agencyContact ] = values;
+			// append the agency contact ID to the agency
+			agency.generalInquiryContact = agencyContact.get( '_id' );
+			// save the updated agency record
+			agency.save( ( err, savedModel ) => {
+				// if we run into an error
+				if( err ) {
+					// store a reference to the entry that caused the error
+					importErrors.push( { id: agencyContactId, error: err } );
+				}
 
-			// fire off the next iteration of our generator after pausing
-			if( pauseUntilSaved ) {
-				setTimeout( () => {
-					agencyGenerator.next();
-				}, 2000 );
-			}
+				// fire off the next iteration of our generator after pausing
+				if( pauseUntilSaved ) {
+					setTimeout( () => {
+						agencyGenerator.next();
+					}, 2000 );
+				}
+			});
 		})
 		.catch( err => {
 			// log the error
@@ -143,7 +144,6 @@ module.exports.updateAgencyRecord = ( agencyId, agencyContactId, pauseUntilSaved
 				}, 2000 );
 			}
 		});
-	});
 };
 
 // instantiates the generator used to create agency records at a regulated rate

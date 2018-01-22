@@ -11,13 +11,13 @@ exports.getRegionsMap = ( req, res, done ) => {
 
 	async.parallel([
 
-		done => { dataMigrationService.getModelId( { model: 'Region', field: 'region', value: 'western', mapTo: [ 1000 ], namespace: locals.migration.maps.regions }, done ); },
-		done => { dataMigrationService.getModelId( { model: 'Region', field: 'region', value: 'central', mapTo: [ 1001 ], namespace: locals.migration.maps.regions }, done ); },
-		done => { dataMigrationService.getModelId( { model: 'Region', field: 'region', value: 'other', mapTo: [ 1002, 1006, 1008 ], namespace: locals.migration.maps.regions }, done ); },
-		done => { dataMigrationService.getModelId( { model: 'Region', field: 'region', value: 'northern', mapTo: [ 1003 ], namespace: locals.migration.maps.regions }, done ); },
-		done => { dataMigrationService.getModelId( { model: 'Region', field: 'region', value: 'southern', mapTo: [ 1004 ], namespace: locals.migration.maps.regions }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'Region', field: 'region', value: 'Western', mapTo: [ 1000 ], namespace: locals.migration.maps.regions }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'Region', field: 'region', value: 'Central', mapTo: [ 1001 ], namespace: locals.migration.maps.regions }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'Region', field: 'region', value: 'Other', mapTo: [ 1002, 1006, 1008 ], namespace: locals.migration.maps.regions }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'Region', field: 'region', value: 'Northern', mapTo: [ 1003 ], namespace: locals.migration.maps.regions }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'Region', field: 'region', value: 'Southern', mapTo: [ 1004 ], namespace: locals.migration.maps.regions }, done ); },
 		done => { dataMigrationService.getModelId( { model: 'Region', field: 'region', value: 'Boston', mapTo: [ 1005 ], namespace: locals.migration.maps.regions }, done ); },
-		done => { dataMigrationService.getModelId( { model: 'Region', field: 'region', value: 'out of state', mapTo: [ 1007 ], namespace: locals.migration.maps.regions }, done ); }
+		done => { dataMigrationService.getModelId( { model: 'Region', field: 'region', value: 'Out of state', mapTo: [ 1007 ], namespace: locals.migration.maps.regions }, done ); }
 
 	], () => {
 

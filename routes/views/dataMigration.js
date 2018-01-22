@@ -105,14 +105,16 @@ exports = module.exports = ( req, res ) => {
 		// done => { outsideContactImport.importOutsideContacts( req, res, done ); },
 
 		// IMPORTANT: remove all social workers and social worker histories before running
+		// IMPORTANT: remove 0.0.1-user_social-workers.js from the app_updates table
+		// COMMAND TO REMOVE SOCIAL WORKERS: db.users.remove({ userType: "social worker" })
 		// done => { socialWorkerImport.importSocialWorkers( req, res, done ); },
 		// done => { agencyContactsImport.appendAgencyContacts( req, res, done ); },
 
 		// IMPORTANT: comment out the following in pre-save: setImages, setRegistrationNumber, setSiblingGroupFileName, updateMustBePlacedWithSiblingsCheckbox, updateGroupBio
-		// IMPORTANT: comment out the post-save hook
+		// IMPORTANT: comment out the following in post-save: updateSiblingFields, updateBookmarks
 		// done => { childrenImport.importChildren( req, res, done ); },
 		
-		// IMPORTANT: comment out the entire rest of the pre-save hook
+		// IMPORTANT: comment out the entire pre-save and post-save hooks
 		// IMPORTANT: this consumes a TON of memory, need to run with nodemon --inspect --max-old-space-size=4096 keystone
 		// done => { childHistoriesImport.importChildHistories( req, res, done ) },								// not done - finish after go live
 		// done => { childMediaEligibilitiesImport.appendMediaEligibilities( req, res, done ); },
@@ -126,11 +128,11 @@ exports = module.exports = ( req, res ) => {
 		// IMPORTANT: the child pre/post save hooks can be restored
 		// done => { mediaFeatureChildImport.appendChildren( req, res, done ); },
 		
-		// IMPORTANT: comment out the following in pre-save: setHomestudyVerifiedDate, setGalleryViewingPermissions, setFullName, setFileName
+		// IMPORTANT: comment out the following in pre-save: setHomestudyVerifiedDate, setFullName, setFileName, setGalleryViewingPermissions
 		// done => { familiesImport.importFamilies( req, res, done ); },
 		
 		// IMPORTANT: comment out the entire pre-save hook
-		// done => { familySocialWorkersImport.appendFamilySocialWorkers( req, res, done ); },
+		done => { familySocialWorkersImport.appendFamilySocialWorkers( req, res, done ); },
 		// done => { familyRacePreferencesImport.appendFamilyRacePreferences( req, res, done ); },
 		// done => { familyDisabilityPreferencesImport.appendFamilyDisabilityPreferences( req, res, done ); },
 		// done => { familySupportServicesImport.appendFamilySupportServices( req, res, done ); },
@@ -147,7 +149,7 @@ exports = module.exports = ( req, res ) => {
 		// done => { inquiryChildrenImport.appendInquiryChildren( req, res, done ); },								// not done, call child
 		// done => { inquiryNotesImport.appendInquiryNotes( req, res, done ); },									// not done, call note
 		// done => { eventsImport.importEvents( req, res, done ); },
-		done => { eventAttendeeImport.appendEventAttendees( req, res, done ); },
+		// done => { eventAttendeeImport.appendEventAttendees( req, res, done ); },
 		// done => { mailingListAttendeesImport.importMailingListAttendees( req, res, done ); },					// not done
 		// IMPORTANT: I think family backup is family internal notes
 		// done => { familyInternalNotesImport.importInternalNotes( req, res, done ); }							// not done

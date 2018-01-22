@@ -105,7 +105,7 @@ module.exports.updateChildRecord = ( childDisability, pauseUntilSaved ) => {
 				// if we run into an error
 				if( err ) {
 					// store a reference to the entry that caused the error
-					importErrors.push( { id: childDisability.csn_id, error: err.err } );
+					importErrors.push( { id: childDisability.csn_id, error: err } );
 				}
 
 				// fire off the next iteration of our generator after saving

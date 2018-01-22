@@ -244,8 +244,6 @@ Child.schema.pre( 'save', function( next ) {
 	// if there are no siblings to be placed with, clear the group bio
 	this.updateGroupBio();
 
-	// we need this id in case the family was created via the website and updatedBy is empty
-	const migrationBotFetched = UserServiceMiddleware.getUserByFullName( 'Migration Bot', 'admin' );
 	// set the registration number for the family
 	const registrationNumberSet = this.setRegistrationNumber();
 	// set the noedit fields associated with the adoption worker's agency

@@ -1,7 +1,8 @@
-const keystone			= require( 'keystone' );
-const Agency 			= keystone.list( 'Agency' );
+const keystone					= require( 'keystone' );
+const Agency 					= keystone.list( 'Agency' );
 // utility middleware
-const utilityFunctions	= require( './utilities_functions' );
+const utilityFunctions			= require( './utilities_functions' );
+const utilityModelFetch			= require( './utilities_model-fetch' );
 // csv conversion middleware
 const CSVConversionMiddleware	= require( './utilities_csv-conversion' );
 
@@ -16,6 +17,8 @@ let agencyImportComplete;
 let migrationResults;
 // create an array to store problems during the import
 let importErrors = [];
+// create a set to store problems with unrecognized city or town names.  A set is used to capture unique values
+let cityOrTownNameError = new Set();
 
 module.exports.importAgencies = ( req, res, done ) => {
 	// expose the maps we'll need for this import
@@ -72,7 +75,11 @@ module.exports.generateAgencies = function* generateAgencies() {
 			console.log( `the following records weren't saved correctly:` );
 
 			importErrors.forEach( error => {
-				console.log( error )
+				console.error( error )
+			});
+
+			cityOrTownNameError.forEach( cityOrTown => {
+				console.error( `bad city: ${ cityOrTown }` );
 			});
 
 			const resultsMessage = `finished creating ${ totalRecords } agencies in the new system`;
@@ -99,42 +106,73 @@ module.exports.createAgencyRecord = ( agency, pauseUntilSaved ) => {
 	// agency codes need to be prefixed by the state, then a dash
 	let code = agency.code.startsWith( agency.state ) ? agency.code.replace( agency.state, `${ agency.state }-` ) :
 			   `${ agency.state }-${ agency.code }`;
+	 
+	// adjust cities / towns in MA to have names the system expects so it can find their records
+	switch( agency.city ) {
+		case `South Boston`: agency.city = `Dorchester`; break;
+		case `W. Springfield`: agency.city = `Springfield`; break;
+		case `West Newton`: agency.city = `Newton`; break;
+		case `East Taunton`: agency.city = `Taunton`; break;
+		case `Foxboro`: agency.city = `Foxborough`; break;
+		case `South Dennis`: agency.city = `Dennis`; break;
+	}
+	// create a promise for fetching the MA city or town associated with the agency
+	const cityOrTownLoaded = utilityModelFetch.getCityOrTownByName( agency.city.trim(), agency.state );
+	// once we've fetch the city or town
+	cityOrTownLoaded
+		.then( cityOrTown => {
+			let newAgency = new Agency.model({
 
-	let newAgency = new Agency.model({
+				oldId: agency.agn_id,
+				code: code ? code.trim() : undefined,
+				name: agency.name ? agency.name.trim() : undefined,
 
-		oldId: agency.agn_id,
-		code: code ? code.trim() : undefined,
-		name: agency.name ? agency.name.trim() : undefined,
+				phone: agency.phone ? agency.phone.trim() : undefined,
+				fax: agency.fax ? agency.fax.trim() : undefined,
 
-		phone: agency.phone ? agency.phone.trim() : undefined,
-		fax: agency.fax ? agency.fax.trim() : undefined,
+				address: {
+					street1: agency.address_1 ? agency.address_1.trim() : undefined,
+					street2: agency.address_2 ? agency.address_2.trim() : undefined,
+					isOutsideMassachusetts: agency.state !== 'MA',
+					city: cityOrTown,
+					cityText: agency.state !== 'MA' ? agency.city.trim() : undefined,
+					state: statesMap[ agency.state ] || statesMap[ 'I' ],
+					zipCode: utilityFunctions.padZipCode( agency.zip ),
+					region: region
+				},
 
-		address: {
-			street1: agency.address_1 ? agency.address_1.trim() : undefined,
-			street2: agency.address_2 ? agency.address_2.trim() : undefined,
-			city: agency.city ? agency.city.trim() : undefined,
-			state: statesMap[ agency.state ] || statesMap[ 'I' ],
-			zipCode: utilityFunctions.padZipCode( agency.zip ),
-			region: region
-		},
+				url: agency.url ? agency.url.trim() : undefined
+			});
 
-		url: agency.url ? agency.url.trim() : undefined
-	});
-
-	newAgency.save( ( err, savedModel ) => {
-		// if we run into an error
-		if( err ) {
-			// store a reference to the entry that caused the error
-			importErrors.push( { id: agency.agn_id, error: err.err } );
-		}
-		
-		// fire off the next iteration of our generator after pausing for a second
-		if( pauseUntilSaved ) {
-			setTimeout( () => {
-				agencyGenerator.next();
-			}, 1000 );
-		}
-	});
+			newAgency.save( ( err, savedModel ) => {
+				// if we run into an error
+				if( err ) {
+					// store a reference to the entry that caused the error
+					importErrors.push( { id: agency.agn_id, error: err } );
+				}
+				
+				// fire off the next iteration of our generator after pausing for a second
+				if( pauseUntilSaved ) {
+					setTimeout( () => {
+						agencyGenerator.next();
+					}, 1000 );
+				}
+			});
+		})
+		.catch( err => {
+			// if a error was provided
+			if( err ) {
+				// we can assume it was a reject from trying to fetch the city or town by an unrecognized name
+				cityOrTownNameError.add( err );
+			}
+			
+			// fire off the next iteration of our generator after pausing
+			if( pauseUntilSaved ) {
+				setTimeout( () => {
+					agencyGenerator.next();
+				}, 1000 );
+			}
+		});
 };
 
 // instantiates the generator used to create agency records at a regulated rate

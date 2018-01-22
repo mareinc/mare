@@ -103,7 +103,7 @@ module.exports.createFamilyRecord = ( family, pauseUntilSaved ) => {
 				// if we run into an error
 				if( err ) {
 					// store a reference to the entry that caused the error
-					importErrors.push( { id: family.get( 'registrationNumber' ), error: err.err } );
+					importErrors.push( { id: family.get( 'registrationNumber' ), error: err } );
 				}
 
 				// fire off the next iteration of our generator after pausing

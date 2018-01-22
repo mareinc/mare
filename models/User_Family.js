@@ -526,7 +526,7 @@ Family.schema.methods.updateRegion = function() {
 		// if the agency is outside MA
 		if( this.address.isOutsideMassachusetts ) {
 			// fetch the region model with the name 'out of state'
-			const fetchRegion = ListServiceMiddleware.getRegionByName( 'out of state' );
+			const fetchRegion = ListServiceMiddleware.getRegionByName( 'Out of state' );
 			// if the region was fetched without error
 			fetchRegion
 				.then( region => {
