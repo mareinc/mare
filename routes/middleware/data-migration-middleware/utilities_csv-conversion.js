@@ -1,5 +1,5 @@
 const csv									= require( 'csvtojson' ),
-// migration file locations
+	  // migration file locations
 	  adminFilePath							= './migration-data/csv-data/app_user.csv',
 	  agenciesFilePath						= './migration-data/csv-data/agency.csv',
 	  agencyContactsFilePath				= './migration-data/csv-data/agency_contact.csv',
