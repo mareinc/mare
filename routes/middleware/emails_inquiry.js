@@ -43,48 +43,6 @@ exports.sendInquiryCreatedEmailToStaff = ( inquiry, inquiryData, done ) => {
 
 };
 
-exports.sendThankYouEmailToInquirer = ( inquiry, inquiryData, done ) => {
-	// do nothing if sending of the email is not currently allowed
-	if( process.env.SEND_INQUIRY_RECEIVED_EMAILS_TO_INQUIRER !== 'true' ) {
-		return done();
-	}
-	// find the email template in templates/emails/
-	new keystone.Email({
-		templateExt 	: 'hbs',
-		templateEngine 	: require( 'handlebars' ),
-		templateName 	: 'inquiry_thank-you-to-inquirer'
-	}).send({
-		to: inquiryData.emailAddressInquirer,
-		from: {
-			name 	: 'MARE',
-			email 	: 'admin@adoptions.io'
-		},
-		subject: 'your inquiry has been received',
-		inquiry: inquiry,
-		inquiryData: inquiryData
-	}, ( err, message ) => {
-		// log any errors
-		if( err ) {
-			console.log( `error sending staff email: ${ err }` );
-			return done();
-		}
-		// the response object is stored as the 0th element of the returned message
-		const response = message ? message[ 0 ] : undefined;
-		// if the email failed to send, or an error occurred ( which is does, rarely ) causing the response message to be empty
-		if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
-			console.log( `thank you to inquirer email failed to send: ${ message }` );
-			console.log( `error: ${ err }` );
-			return done();
-		}
-
-		console.log( `thank you to inquirer email sent successfully` );
-		// mark the inquiry thank you email as having been sent to prevent it being sent in the future
-		inquiry.thankYouSentToInquirer = true;
-		done();
-	});
-
-};
-
 exports.sendThankYouEmailToFamilyOnBehalfOfInquirer = ( inquiry, inquiryData, done ) => {
 	// do nothing if sending of the email is not currently allowed
 	if( process.env.SEND_INQUIRY_RECEIVED_ON_BEHALF_OF_EMAILS_TO_FAMILY !== 'true' ) {
@@ -288,7 +246,7 @@ exports.sendInquiryAcceptedEmailToAgencyContacts = ( inquiry, inquiryData, done 
 };
 
 /* Emails for inquiries generated via forms on the website */
-exports.sendAnonymousInquiryCreatedEmailToMARE = inquiry => {
+exports.sendAnonymousInquiryCreatedEmailToMARE = ( inquiry, staffContact ) => {
 
 	return new Promise( (resolve, reject ) => {
 		// do nothing if sending of the email is not currently allowed

@@ -1,16 +1,17 @@
-const keystone					= require( 'keystone' ),
-	  childService				= require( './middleware/service_child' ),
-	  donationService			= require( './middleware/service_donation')
-	  eventService				= require( './middleware/service_event' ),
-	  familyService				= require( './middleware/service_family' ),
-	  formService				= require( './middleware/service_form' ),
-	  middleware				= require( './middleware/middleware' ),
-	  permissionsService		= require( './middleware/service_permissions' ),
-	  registrationMiddleware	= require( './middleware/service_register' ),
-	  accountMiddleware			= require( './middleware/service_account' ),
-	  eventMiddleware			= require( './middleware/middleware_event' ),
-	  accountVerificationService= require( './middleware/service_account-verification' );
-	  importRoutes				= keystone.importer( __dirname );
+const keystone						= require( 'keystone' ),
+	  childService					= require( './middleware/service_child' ),
+	  donationService				= require( './middleware/service_donation')
+	  eventService					= require( './middleware/service_event' ),
+	  familyService					= require( './middleware/service_family' ),
+	  formService					= require( './middleware/service_form' ),
+	  middleware					= require( './middleware/middleware' ),
+	  permissionsService			= require( './middleware/service_permissions' ),
+	  registrationMiddleware		= require( './middleware/service_register' ),
+	  accountMiddleware				= require( './middleware/service_account' ),
+	  eventMiddleware				= require( './middleware/middleware_event' ),
+	  passwordResetService 			= require( './middleware/service_password-reset'),
+	  accountVerificationService	= require( './middleware/service_account-verification' );
+	  importRoutes					= keystone.importer( __dirname );
 
 // common middleware
 keystone.pre( 'routes', middleware.initLocals );
@@ -52,10 +53,14 @@ exports = module.exports = app => {
 	app.get( '/waiting-child-profiles'					, routes.views.waitingChildProfiles );
 	// registration
 	app.get( '/register'								, routes.views.register );
-	app.post( '/register'								, registrationMiddleware.registerUser, middleware.login );
+	app.post( '/register'								, registrationMiddleware.registerUser, middleware.loginAjax );
 	// login / logout
 	app.get( '/logout'									, middleware.logout );
 	app.post('/login'									, middleware.login );
+	//login forgot password
+	app.post('/recover/generate'						, passwordResetService.resetPassword);
+	app.post('/recover'									, passwordResetService.changePassword);
+	app.get( '/recover'									, passwordResetService.getForm);
 	// MARE in the news
 	app.get( '/mare-in-the-news'						, routes.views.mareInTheNewsStories );
 	app.get( '/mare-in-the-news/:key'					, routes.views.mareInTheNewsStory );
@@ -85,7 +90,7 @@ exports = module.exports = app => {
 	// services for form submissions
 	app.post( '/submit-agency-event'					, eventService.submitEvent );
 	app.post( '/submit-question'						, formService.submitQuestion );
-	app.post( '/submit-information-request'				, formService.submitInformationRequest );
+	app.post( '/submit-information-request'				, formService.submitInquiry );
 	app.post( '/social-worker-register-child'			, childService.registerChild );
 	app.post( '/social-worker-register-family'			, familyService.registerFamily );
 };

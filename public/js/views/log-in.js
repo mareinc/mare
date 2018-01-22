@@ -11,12 +11,14 @@
 			// create a hook to access the log in modal contents template
 			var html = $( '#log-in-template' ).html();
 			// compile the template to be used during rendering/repainting the log in modal
-			this.template = Handlebars.compile( html );
+			this.template = Handlebars.compile( html );	
 		},
 		// events need to be bound every time the modal is opened, so they can't be put in an event block
 		bindEvents: function bindEvents() {
 			// bind an event to allow closing of the modal
 			$( '.modal__close' ).click( this.closeModal.bind( this ) );
+			$( '.log-in-form__forgot-password' ).click( this.toggleForgotPassword );
+			$( '.forgot-password__login-link' ).click( this.toggleLogin );
 		},
 		// events need to be unbound every time the modal is closed
 		unbindEvents: function unbindEvents() {
@@ -81,6 +83,17 @@
 			} else {
 				this.unbindEvents();
 			}
+		},
+
+		/* switch the login view to the password reset view */
+		toggleForgotPassword: function setupForgotPassword(){
+			$( '.log-in' ).hide();
+			$( '.forgot-password' ).show();	
+		},
+
+		toggleLogin: function displayLogin(){
+			$( '.forgot-password' ).hide();
+			$( '.log-in' ).show();
 		}
 	});
 }());

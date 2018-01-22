@@ -46,7 +46,6 @@ Inquiry.add( 'General Information', {
 }, 'Emails Sent', {
 
 	emailSentToStaff: { type: Types.Boolean, label: 'notification email sent to MARE staff', noedit: true },
-	thankYouSentToInquirer: { type: Types.Boolean, label: 'thank you sent to inquirer', noedit: true },
 	thankYouSentToFamilyOnBehalfOfInquirer: { type: Types.Boolean, label: 'thank you sent to family on behalf of inquiring social worker', dependsOn: { inquirer: 'social worker', onBehalfOfMAREFamily: true }, noedit: true },
 	approvalEmailSentToInquirer: { type: Types.Boolean, label: 'inquiry accepted information sent to inquirer',  noedit: true },
 	approvalEmailSentToFamilyOnBehalfOfInquirer: { type: Types.Boolean, label: 'inquiry accepted information sent to family on behalf of inquirer', dependsOn: { inquirer: 'social worker', onBehalfOfMAREFamily: true }, noedit: true },
@@ -99,70 +98,62 @@ Inquiry.schema.pre( 'save', function( next ) {
 		done => { inquiryMiddleware.getSource( this.source, inquiryData, done ); },			// all inquiries
 		done => { inquiryMiddleware.getMethod( this.inquiryMethod, inquiryData, done ); },	// all inquiries
 		done => { inquiryMiddleware.getInquiryTakenBy( this.takenBy, inquiryData, done ); },// all inquiries
-		done => { this.setDerivedFields( inquiryData, done ); }
-		// done => { inquiryMiddleware.setStaffEmail( inquiryData, done ); },
-		// done => { inquiryMiddleware.setInquirerEmail( inquiryData, done ); },
-		// done => { inquiryMiddleware.setSocialWorkerEmail( inquiryData, done ); },
-		// done => { inquiryMiddleware.setAgencyContactEmail( inquiryData, done ); },
-		// done => { inquiryMiddleware.formatEmailFields( inquiryData, done ); },
-		// done => {
-		// 	if( !this.emailSentToStaff ) {
-		// 		inquiryEmailMiddleware.sendInquiryCreatedEmailToStaff( this, inquiryData, done );
-		// 	} else {
-		// 		console.log( `staff notification email already sent - no notification email sent to staff contact` );
-		// 		done();
-		// 	}
-		// },
-		// done => {
-		// 	if( !this.thankYouSentToInquirer && this.thankInquirer === true ) {
-		// 		inquiryEmailMiddleware.sendThankYouEmailToInquirer( this, inquiryData, done );
-		// 	} else {
-		// 		console.log( `thank you already sent or 'send thank you to inquirer' checkbox not checked - no thank you email sent to inquirer` );
-		// 		done();
-		// 	}
-		// },
-		// done => {
-		// 	if( !this.thankYouSentToFamilyOnBehalfOfInquirer && this.thankInquirer === true && inquiryData.onBehalfOfFamily ) {
-		// 		inquiryEmailMiddleware.sendThankYouEmailToFamilyOnBehalfOfInquirer( this, inquiryData, done );
-		// 	} else {
-		// 		console.log( `thank you already sent or 'send thank you to inquirer' checkbox not checked - no thank you email sent to family on behalf of inquirer` );
-		// 		done();
-		// 	}
-		// },
-		// done => {
-		// 	if( !this.approvalEmailSentToInquirer && this.inquiryAccepted === true ) {
-		// 		inquiryEmailMiddleware.sendInquiryAcceptedEmailToInquirer( this, inquiryData, done );
-		// 	} else {
-		// 		console.log( `inquiry accepted email already sent to inquirer or 'inquiry accepted' checkbox not checked - no inquiry accepted email sent to inquirer` );
-		// 		done();
-		// 	}
-		// },
-		// done => {
-		// 	if( !this.approvalEmailSentToFamilyOnBehalfOfInquirer && this.inquiryAccepted === true && inquiryData.onBehalfOfFamily ) {
-		// 		inquiryEmailMiddleware.sendInquiryAcceptedEmailToFamilyOnBehalfOfInquirer( this, inquiryData, done );
-		// 	} else {
-		// 		console.log( `inquiry accepted email already sent to family on behalf of inquirer or 'inquiry accepted' checkbox not checked - no inquiry accepted email sent to family on behalf of inquirer` );
-		// 		done();
-		// 	}
-		// },
-		// done => {
-		// 	// TODO: do we need to check that we have a social worker saved to prevent the app from crashing?
-		// 	if( !this.emailSentToChildsSocialWorker && this.inquiryAccepted === true && this.inquiryType !== 'general inquiry' ) {
-		// 		inquiryEmailMiddleware.sendInquiryAcceptedEmailToChildsSocialWorker( this, inquiryData, done );
-		// 	} else {
-		// 		console.log( `confirmation already sent to social worker, 'inquiry accepted' checkbox not checked, or general inquiry - no inquiry accepted email sent to child's social worker` );
-		// 		done();
-		// 	}
-		// },
-		// done => {
-		// 	// TODO: do we need to check that we have agency contacts saved to prevent the app from crashing?
-		// 	if( !this.emailSentToAgencies && this.inquiryAccepted === true && this.inquiryType === 'general inquiry') {
-		// 		inquiryEmailMiddleware.sendInquiryAcceptedEmailToAgencyContacts( this, inquiryData, done );
-		// 	} else {
-		// 		console.log( `agency contact email already sent, 'inquiry accepted' checkbox not checked, or not a general inquiry - no inquiry accepted email sent to agency contacts` );
-		// 		done();
-		// 	}
-		// }
+		done => { this.setDerivedFields( inquiryData, done ); },
+		done => { inquiryMiddleware.setStaffEmail( inquiryData, done ); },
+		done => { inquiryMiddleware.setInquirerEmail( inquiryData, done ); },
+		done => { inquiryMiddleware.setSocialWorkerEmail( inquiryData, done ); },
+		done => { inquiryMiddleware.setAgencyContactEmail( inquiryData, done ); },
+		done => { inquiryMiddleware.formatEmailFields( inquiryData, done ); },
+		done => {
+			if( !this.emailSentToStaff ) {
+				inquiryEmailMiddleware.sendInquiryCreatedEmailToStaff( this, inquiryData, done );
+			} else {
+				console.log( `staff notification email already sent - no notification email sent to staff contact` );
+				done();
+			}
+		},
+		done => {
+			if( !this.thankYouSentToFamilyOnBehalfOfInquirer && inquiryData.onBehalfOfFamily ) {
+				inquiryEmailMiddleware.sendThankYouEmailToFamilyOnBehalfOfInquirer( this, inquiryData, done );
+			} else {
+				console.log( `thank you already sent - no thank you email sent to family on behalf of inquirer` );
+				done();
+			}
+		},
+		done => {
+			if( !this.approvalEmailSentToInquirer && this.inquiryAccepted === true ) {
+				inquiryEmailMiddleware.sendInquiryAcceptedEmailToInquirer( this, inquiryData, done );
+			} else {
+				console.log( `inquiry accepted email already sent to inquirer or 'inquiry accepted' checkbox not checked - no inquiry accepted email sent to inquirer` );
+				done();
+			}
+		},
+		done => {
+			if( !this.approvalEmailSentToFamilyOnBehalfOfInquirer && this.inquiryAccepted === true && inquiryData.onBehalfOfFamily ) {
+				inquiryEmailMiddleware.sendInquiryAcceptedEmailToFamilyOnBehalfOfInquirer( this, inquiryData, done );
+			} else {
+				console.log( `inquiry accepted email already sent to family on behalf of inquirer or 'inquiry accepted' checkbox not checked - no inquiry accepted email sent to family on behalf of inquirer` );
+				done();
+			}
+		},
+		done => {
+			// TODO: do we need to check that we have a social worker saved to prevent the app from crashing?
+			if( !this.emailSentToChildsSocialWorker && this.inquiryAccepted === true && this.inquiryType !== 'general inquiry' ) {
+				inquiryEmailMiddleware.sendInquiryAcceptedEmailToChildsSocialWorker( this, inquiryData, done );
+			} else {
+				console.log( `confirmation already sent to social worker, 'inquiry accepted' checkbox not checked, or general inquiry - no inquiry accepted email sent to child's social worker` );
+				done();
+			}
+		},
+		done => {
+			// TODO: do we need to check that we have agency contacts saved to prevent the app from crashing?
+			if( !this.emailSentToAgencies && this.inquiryAccepted === true && this.inquiryType === 'general inquiry') {
+				inquiryEmailMiddleware.sendInquiryAcceptedEmailToAgencyContacts( this, inquiryData, done );
+			} else {
+				console.log( `agency contact email already sent, 'inquiry accepted' checkbox not checked, or not a general inquiry - no inquiry accepted email sent to agency contacts` );
+				done();
+			}
+		}
 	], () => {
 
 		next();
