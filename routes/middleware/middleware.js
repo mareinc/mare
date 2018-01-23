@@ -139,7 +139,7 @@ exports.login = function( req, res, next ) {
 		} else if( locals.userStatus === 'inactive' ) {
 			// TODO: we need to figure out if they were once active, or change the message to handle that case as well
 			req.flash( 'error', { title: 'Something went wrong',
-							  detail: 'Your account is not active yet, you will receive an email what your account has been reviewed.' } );
+							  detail: 'Your account is not active yet, you will receive an email when your account has been reviewed.' } );
 			res.redirect( req.body.target || '/' );
 
 		} else if( locals.userStatus === 'active' ) {
