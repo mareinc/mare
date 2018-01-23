@@ -107,6 +107,7 @@ exports.getActiveEventsByUserId = ( userId, eventGroup ) => {
 		keystone.list( 'Event' ).model
 			.find()
 			.where( 'isActive', true ) // we don't want to show inactive events
+			.where( eventGroup ).in( [userId] ) // only show events for this user
 			.populate( eventGroup )
 			.populate( 'address.state' )
 			.lean()
