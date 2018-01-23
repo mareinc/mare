@@ -42,7 +42,7 @@ module.exports.appendFamilySocialWorkers = ( req, res, done ) => {
 /* a generator to allow us to control the processing of each record */
 module.exports.generateFamilies = function* generateFamilies() {
 
-	console.log( `creating families in the new system` );
+	console.log( `adding family social workers in the new system` );
 	// create monitor variables to assess how many records we still need to process
 	let totalRecords			= families.length,
 		remainingRecords 		= totalRecords,

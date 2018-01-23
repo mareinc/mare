@@ -170,7 +170,11 @@ module.exports.getSocialWorkerById = socialWorkerId => {
 };
 
 module.exports.getSocialWorkerIdsByOldIds = ( resolve, reject, oldIds ) => {
-	/* TODO: short circuit the fetch here by just resolving if there are no oldIds */
+	
+	if( oldIds.length === 0 ) {
+		return resolve();
+	}
+
 	SocialWorker.model.find()
 		.where( { 'oldId': { $in: oldIds } } )
 		.exec()
@@ -231,7 +235,11 @@ module.exports.getChildByRegistrationNumber = registrationNumber => {
 };
 
 module.exports.getChildIdsByRegistrationNumbers = ( resolve, reject, registrationNumbers ) => {
-	/* TODO: short circuit the fetch here by just resolving if there are no oldIds */
+	
+	if( registrationNumbers.length === 0 ) {
+		return resolve();
+	}
+
 	Child.model.find()
 		.where( { 'registrationNumber': { $in: registrationNumbers } } )
 		.exec()
@@ -323,7 +331,11 @@ module.exports.getFamilyByRegistrationNumber = registrationNumber => {
 };
 
 module.exports.getFamilyIdsByRegistrationNumbers = ( resolve, reject, registrationNumbers ) => {
-	/* TODO: short circuit the fetch here by just resolving if there are no oldIds */
+	
+	if( registrationNumbers.length === 0 ) {
+		return resolve();
+	}
+
 	Family.model.find()
 		.where( { 'registrationNumber': { $in: registrationNumbers } } )
 		.exec()
