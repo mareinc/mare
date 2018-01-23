@@ -24,7 +24,7 @@ exports = module.exports = ( req, res ) => {
 		raceOptions        			= { other: true },
 	
 		// fetch all data needed to render this page
-		fetchEvents					= eventService.getAllActiveEvents( eventGroup ),
+		fetchEvents					= eventService.getActiveEventsByUserId( userID, eventGroup ),
 		
 		fetchCitiesAndTowns			= listsService.getAllCitiesAndTowns(),
 		fetchDisabilities			= listsService.getAllDisabilities(),
