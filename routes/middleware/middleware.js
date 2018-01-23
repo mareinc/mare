@@ -105,9 +105,7 @@ exports.requireUser = function(req, res, next) {
 	'use strict';
 	// if there is no req.user object, the user isn't signed in
 	if ( !req.user ) {
-		// create a flash message to display for them
-		req.flash( 'error', { title: 'please sign in to access this page' } );
-		// and redirect them to the home page
+		// redirect them to the home page
 		res.redirect('/');
 	// otherwise, the user must be signed in
 	} else {
