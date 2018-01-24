@@ -44,7 +44,7 @@ SuccessStory.schema.statics.findRandom = function( callback ) {
 };
 
 // Pre Save
-SuccessStory.schema.pre( 'save', function(next) {
+SuccessStory.schema.pre( 'save', function( next ) {
 	'use strict';
 
 	this.imageFeatured = this._.image.thumbnail( 168, 168, { quality: 80 } );
