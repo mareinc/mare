@@ -27,7 +27,7 @@
 			var gallerySiblingGroupsHtml		= $( '#gallery-sibling-groups-template' ).html();
 			// compile the templates to be used during rendering/repainting the gallery
 			this.childrenTemplate				= Handlebars.compile( galleryChildrenHtml );
-			this.siblingGroupsTemplate			= Handlebars.compile( gallerySiblingGroupsHtml )
+			this.siblingGroupsTemplate			= Handlebars.compile( gallerySiblingGroupsHtml );
 			// initialize a subview for the details modals
 			mare.views.childDetails				= mare.views.childDetails || new mare.views.ChildDetails();
 			mare.views.siblingGroupDetails		= mare.views.siblingGroupDetails || new mare.views.SiblingGroupDetails();

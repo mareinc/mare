@@ -68,14 +68,12 @@
 		},
 
 		renderChildGallery: function renderChildGallery() {
-			// hide the search form
-			mare.views.waitingChildProfiles.$searchForm.hide();
 			// hide the child profiles header section
 			mare.views.waitingChildProfiles.$childProfilesHeaderCard.hide();
 			// show the gallery
 			mare.views.waitingChildProfiles.$gallery.show();
 			// render the gallery
-			mare.views.gallery.render();
+			mare.views.accountGallery.render();
 		}
 	});
 }());
