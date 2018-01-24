@@ -9,9 +9,6 @@
 			var html = $( '#account-children' ).html();
 			// compile the templates to be used during rendering/repainting the different sections
 			this.template = Handlebars.compile( html );
-			
-			// create a new WaitingChildProfiles view
-			mare.views.waitingChildProfiles = mare.views.waitingChildProfiles || new mare.views.WaitingChildProfiles();
 
 			// DOM cache any commonly used elements to improve performance
 			this.$gallery					= this.$( '.gallery' );
@@ -28,7 +25,7 @@
 			this.getChildren();
 
 			// initialize views for the gallery
-			mare.views.gallery = mare.views.gallery || new mare.views.Gallery();
+			mare.views.accountGallery = mare.views.accountGallery || new mare.views.Gallery();
 		},
 
 		render: function render() {
