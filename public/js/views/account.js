@@ -21,6 +21,9 @@
 			// bind listeners for navigation changes
 			mare.views.accountMobileSidebar.on( 'changeSection', this.changeSection.bind( this ) );
 			mare.views.accountSidebar.on( 'changeSection', this.changeSection.bind( this ) );
+
+			// create a flag to denote if the child section has been rendered
+			this.hasChildSectionRendered = false;
 		},
 
 		changeSection: function changeSection( section ) {
@@ -55,7 +58,14 @@
 			mare.views.accountEvents.hide();
 			// show the account subsection that is currently selected, and render it
 			mare.views.accountChildren.show();
-			mare.views.accountChildren.render();
+			
+			// if the child section hasn't rendered yet
+			if ( !this.hasChildSectionRendered )  {
+				// render the child section
+				mare.views.accountChildren.render();
+				// update the rendered flag
+				this.hasChildSectionRendered = true;
+			}
 		},
 
 		openEmailListSection: function openEmailListSection() {

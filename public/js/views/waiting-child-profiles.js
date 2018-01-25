@@ -14,8 +14,9 @@
 		initialize: function initialize() {
 			var that = this;
 			// DOM cache any commonly used elements to improve performance
-			this.$gallery		= this.$( '.gallery' );
-			this.$searchForm	= this.$( '.gallery-search-form' );
+			this.$gallery					= this.$( '.gallery' );
+			this.$searchForm				= this.$( '.gallery-search-form' );
+			this.$childProfilesHeaderCard 	= this.$( '.gallery section.card' );
 
 			// create a collection to hold all available children data as a base for sorting/filtering
 			mare.collections.allChildren = mare.collections.allChildren || new mare.collections.Children();
