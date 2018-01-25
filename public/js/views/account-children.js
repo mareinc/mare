@@ -27,6 +27,7 @@
 			// render the template to the page
 			this.$el.html( html );
 
+			// TODO: refactor the gallery rendering process so that it is not dependent on the account-children view render
 			this.$( '.gallery section.card' ).hide();
 			this.$( '.gallery' ).show();
 
@@ -53,18 +54,33 @@
 			$.ajax({
 				dataType: 'json',
 				url: '/services/get-children-data',
-				type: 'POST'
-			}).done( function( children ) {
-				// store all children in the collecction for the current gallery display as we always start showing the full list
-				mare.collections.galleryChildren.add( children.soloChildren );
-				// Store all sibling groups for the current gallery display
-				mare.collections.gallerySiblingGroups.add( children.siblingGroups );
-				// resolve the promise tracking child data loading
-				mare.promises.childrenDataLoaded.resolve();
+				type: 'POST',
+				data: { requestPage: 'account' }
+			}).done( function( responseData ) {
+
+				if ( responseData.status === 'success' ) {
+					
+					// store all children in the collecction for the current gallery display as we always start showing the full list
+					mare.collections.galleryChildren.add( responseData.soloChildren );
+					// Store all sibling groups for the current gallery display
+					mare.collections.gallerySiblingGroups.add( responseData.siblingGroups );
+					// resolve the promise tracking child data loading
+					mare.promises.childrenDataLoaded.resolve();
+				} else if ( responseData.status === 'error' ) {
+
+					// log handled errors
+					// TODO: potentially implement a flash message error
+					console.error( responseData.message );
+				} else {
+					
+					// log unhandled errors
+					console.error( responseData );
+				}
+				
 
 			}).fail( function( err ) {
 				// TODO: show an error message instead of the gallery if we failed to fetch the child data
-				console.log( err );
+				console.error( err );
 			});
 		}
 	});
