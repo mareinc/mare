@@ -10,10 +10,6 @@
 			// compile the templates to be used during rendering/repainting the different sections
 			this.template = Handlebars.compile( html );
 
-			// DOM cache any commonly used elements to improve performance
-			this.$gallery					= this.$( '.gallery' );
-			this.$childProfilesHeaderCard 	= this.$( '.gallery section.card' );
-
 			// create a collection to hold only the children currently displayed in the gallery
 			mare.collections.galleryChildren = mare.collections.galleryChildren || new mare.collections.Children();
 			// create a collection to hold only the sibling groups currently displayed in the gallery
@@ -23,9 +19,6 @@
 			mare.promises.childrenDataLoaded = $.Deferred();
 			// fetch children the current user is allowed to view
 			this.getChildren();
-
-			// initialize views for the gallery
-			mare.views.accountGallery = mare.views.accountGallery || new mare.views.Gallery();
 		},
 
 		render: function render() {
@@ -33,8 +26,16 @@
 			var html = this.template();
 			// render the template to the page
 			this.$el.html( html );
-			// render the child gallery
-			this.renderChildGallery();
+
+			this.$( '.gallery section.card' ).hide();
+			this.$( '.gallery' ).show();
+
+			// initialize views for the gallery.  This is done here as the view will attempt to bind it's el to
+			// DOM that's rendered in this function
+			mare.views.accountGallery = mare.views.accountGallery || new mare.views.Gallery();
+
+			// render the child gallery view
+			mare.views.accountGallery.render();
 		},
 		
 		hide: function hide() {
@@ -65,15 +66,6 @@
 				// TODO: show an error message instead of the gallery if we failed to fetch the child data
 				console.log( err );
 			});
-		},
-
-		renderChildGallery: function renderChildGallery() {
-			// hide the child profiles header section
-			mare.views.waitingChildProfiles.$childProfilesHeaderCard.hide();
-			// show the gallery
-			mare.views.waitingChildProfiles.$gallery.show();
-			// render the gallery
-			mare.views.accountGallery.render();
 		}
 	});
 }());
