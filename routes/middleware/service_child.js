@@ -269,7 +269,8 @@ exports.getGalleryData = ( req, res, next ) => {
 	// anonymous users, site visitors, and families without a verified homestudy ( or from a state other than MA, NH, CT, ME, VT, RI, or NY ) have access only to unrestricted children
 	if( locals.userType === 'anonymous' ||
 		locals.userType === 'site visitor' ||
-		( locals.userType === 'family' && !req.user.permissions.canViewAllChildren ) ) {
+		( locals.userType === 'family' && !req.user.permissions.canViewAllChildren ) ||
+		( locals.userType === 'social worker' && !req.user.permissions.canViewAllChildren ) ) {
 		locals.targetChildren = 'unrestricted';
 	// families with a verified homestudy ( from MA, NH, CT, ME, VT, RI, or NY ) and social workers have access to all children
 	} else {
