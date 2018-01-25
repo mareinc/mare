@@ -25,7 +25,8 @@ SocialWorker.add( 'Permissions', {
 	isActive: { type: Boolean, label: 'is active', default: true },
 
 	permissions: {
-		isVerified: { type: Boolean, label: 'has a verified email address', default: false, noedit: true }
+		isVerified: { type: Boolean, label: 'has a verified email address', default: false, noedit: true },
+		canViewAllChildren: { type: Boolean, label: 'verified access to legal risk children', default: false }
 	}
 
 }, 'General Information', {
