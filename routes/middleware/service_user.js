@@ -1,4 +1,5 @@
-const keystone = require('keystone');
+const keystone = require('keystone'),
+	  User	   = require('../../models/User');
 
 /* root through the passed in options and get/set the necessary information on res.locals for processing by each service request */
 exports.exposeGlobalOptions = function exposeGlobalOptions( req, res, options ) {
@@ -79,6 +80,43 @@ exports.checkUserActiveStatus = function( email, locals, done ) {
 			done();
 		});
 };
+
+/* gets a user by email */ 
+exports.getUserByEmail = ( email ) => {
+
+	return new Promise( ( resolve, reject ) => {
+		
+		User.model
+			.findOne()
+			.where( 'email', email )
+			.exec()
+			.then( user => {
+				resolve( user );
+			}, err => {
+				console.error( `error fetching user by email ${ email } - ${ err } ` );
+				reject( err );
+			});
+	});
+}
+
+
+/* gets a user by password reset token */ 
+exports.getUserByPasswordResetToken = ( resetToken ) => {
+
+	return new Promise( ( resolve, reject ) => {
+		
+		User.model
+			.findOne()
+			.where( 'resetPasswordToken', resetToken )
+			.exec()
+			.then( user => {
+				resolve( user );
+			}, err => {
+				console.error( `error fetching user by password reset token ${ resetToken } - ${ err }` );
+				reject( err );
+			});
+	});
+}
 
 /* gets the ID of any user type (except families) based on their full name */
 exports.getUserByFullName = ( name, userType ) => {

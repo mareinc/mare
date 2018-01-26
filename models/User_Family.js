@@ -17,15 +17,15 @@ var Family = new keystone.List( 'Family', {
 	inherits	: User,
 	track		: true, // needed for change history updated by assignment
 	autokey		: { path: 'key', from: 'registrationNumber', unique: true },
-	map			: { name: 'contact1.name.full' },
-	defaultSort	: 'contact1.name.full',
+	map			: { name: 'displayNameAndRegistration' },
+	defaultSort	: 'displayName',
 	hidden		: false
 });
 
 // Create fields
 Family.add( 'Permissions', {
 
-	isActive: { type: Boolean, label: 'is active', default: false },
+	isActive: { type: Boolean, label: 'is active', default: true },
 
 	permissions: {
 		isVerified: { type: Boolean, label: 'has a verified email address', default: false, noedit: true },
@@ -45,7 +45,10 @@ Family.add( 'Permissions', {
 	language: { type: Types.Relationship, label: 'language', ref: 'Language', required: true, initial: true },
 	otherLanguages: { type: Types.Relationship, label: 'other languages', ref: 'Language', many: true, initial: true },
 
-	contactGroups: { type: Types.Relationship, label: 'contact groups', ref: 'Contact Group', many: true, initial: true }
+	contactGroups: { type: Types.Relationship, label: 'contact groups', ref: 'Contact Group', many: true, initial: true },
+
+	displayName: { type: Types.Text, label: 'name', hidden: true, noedit: true },
+	displayNameAndRegistration: { type: Types.Text, label: 'name and registration number', hidden: true, noedit: true }
 
 }, 'Contact 1', {
 
@@ -347,8 +350,10 @@ Family.schema.pre( 'save', function( next ) {
 	'use strict';
 	// update the homestudy verified date
 	this.setHomestudyVerifiedDate();
-	// create a full name for the family based on their first, middle, and last names
-	this.setFullName();
+	// create a full name for each contact based on their first, middle, and last names
+	this.setFullNames();
+	// set the display - a readable combination of contact 1's and contact 2's full name
+	this.setDisplayName();
 	// create an identifying name for file uploads
 	this.setFileName();
 	// all user types that can log in derive from the User model, this allows us to identify users better
@@ -373,6 +378,8 @@ Family.schema.pre( 'save', function( next ) {
 		// TODO: this should be replaced with ES6 Promise.prototype.finally() once it's finalized, assuming we can update to the latest version of Node if we upgrade Keystone
 		.then( () => {
 
+			// set a compound label consisting of the display name and registration number to enable admins to differentiate families in relationship fields
+			this.setDisplayNameAndRegistrationLabel();
 			next();
 		});
 });
@@ -411,9 +418,9 @@ Family.schema.virtual( 'canAccessKeystone' ).get( function() {
 	return false;
 });
 
-Family.schema.virtual( 'displayName' ).get( function() {
+Family.schema.methods.setDisplayName = function() {
 	'use strict';
-
+	// if contact 2 has a first name filled out, we can assume they exist
 	const contact2Exists = this.contact2.name.first && this.contact2.name.first.length > 0;
 	// check to see if both contacts share a last name
 	const sameLastName = this.contact1.name.last === this.contact2.name.last;
@@ -421,17 +428,24 @@ Family.schema.virtual( 'displayName' ).get( function() {
 	// if there's a second contact and they both contacts share a last name
 	if( contact2Exists && sameLastName ) {
 		// set the name to both first names, then the last name: John Smith + Jane Smith = John and Jane Smith
-		return `${ this.contact1.name.first } and ${ this.contact2.name.first } ${ this.contact1.name.last }`;
+		this.displayName = `${ this.contact1.name.first } and ${ this.contact2.name.first } ${ this.contact1.name.last }`;
 	// if there's a second contact, but the contacts have different last names
 	} else if( contact2Exists && !sameLastName ) {
 		// set the name to the two names appended: John Smith + Jane Doe = John Smith and Jane Doe
-		return `${ this.contact1.name.first } ${ this.contact1.name.last } and ${ this.contact2.name.first } ${ this.contact2.name.last }`;
+		this.displayName = `${ this.contact1.name.first } ${ this.contact1.name.last } and ${ this.contact2.name.first } ${ this.contact2.name.last }`;
 	// if there's no second contact
 	} else {
 		// set the name to contact 1's full name
-		return `${ this.contact1.name.first } ${ this.contact1.name.last }`;
+		this.displayName = `${ this.contact1.name.first } ${ this.contact1.name.last }`;
 	}
-});
+};
+
+Family.schema.methods.setDisplayNameAndRegistrationLabel = function() {
+	'use strict';
+
+	// combine the display name and registration number to create a unique label for all Family models
+	this.displayNameAndRegistration = `${ this.displayName } - ${ this.registrationNumber }`;
+};
 
 Family.schema.methods.setHomestudyVerifiedDate = function() {
 	'use strict';
@@ -450,7 +464,7 @@ Family.schema.methods.setHomestudyVerifiedDate = function() {
 /* TODO: a lot of the checks in the else if don't need ot be there, clean this up
 		 the whole thing could probably be `${ this.contact2.name.first } ${ this.contact2.name.last }`*/
 // TODO: better handled with a virtual ( unless we can't key off it in Relationship dropdowns in other models )
-Family.schema.methods.setFullName = function() {
+Family.schema.methods.setFullNames = function() {
 	'use strict';
 
 	this.contact1.name.full = `${ this.contact1.name.first } ${ this.contact1.name.last }`;
@@ -573,7 +587,7 @@ Family.schema.methods.setGalleryViewingPermissions = function() {
 		const fetchState = ListServiceMiddleware.getStateById( this.address.state );
 		// if the state was fetched without error
 		fetchState
-			.then( state => {
+			.then( state => { // TODO: DO WE NEED TO CHECK TO SEE IF THEY'RE ACTIVE?????? // TODO: SHOULD WE ADD PERMISSIONS TO HANDLE THE EDGE CASES
 				// if the family has a verified homestudy and lives in a New England state
 				if( this.permissions.isHomestudyVerified && [ 'MA', 'NH', 'CT', 'ME', 'VT', 'RI', 'NY' ].includes( state.abbreviation ) ) {
 					// allow them to view all children in the gallery
@@ -1721,7 +1735,7 @@ Family.schema.methods.setChangeHistory = function setChangeHistory() {
 };
 
 // Define default columns in the admin interface and register the model
-Family.defaultColumns = 'registrationNumber, contact1.name.full, address.displayCity, address.state, isActive';
+Family.defaultColumns = 'address.displayCity, address.state, isActive';
 Family.register();
 
 // Export to make it available using require.  The keystone.list import throws a ReferenceError when importing a list

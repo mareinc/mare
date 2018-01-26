@@ -1,11 +1,10 @@
 <script id="account-children" type="text/x-handlebars-template">
 
-        <h1 class="account-current-section__title">Your Children</h1>
-
-        <ul>
-            {{#each children}}
-            <li>{{name}}</li>
-            {{/each}}
-        </ul>
+    {{> waiting-child-profiles-gallery}}
     
 </script>
+
+{{> waiting-child-profiles-gallery-children-template}}
+{{> waiting-child-profiles-gallery-sibling-groups-template}}
+{{> waiting-child-profiles-child-details-template}}
+{{> waiting-child-profiles-sibling-group-details-template}}

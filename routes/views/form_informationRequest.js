@@ -8,33 +8,15 @@ exports = module.exports = ( req, res ) => {
 	const view 				= new keystone.View( req, res ),
 		  locals 			= res.locals;
 	
-	// objects with additional search parameters
-	const stateOptions		= { default: 'Massachusetts' },
-		  raceOptions		= { other: true },
-		  waysToHearOptions	= { other: true };
-	
 	// fetch all data needed to render this page
-	let fetchCitiesAndTowns			= listsService.getAllCitiesAndTowns(),
-		fetchGenders				= listsService.getAllGenders(),
-		fetchRaces					= listsService.getAllRaces( raceOptions ),
-		fetchStates					= listsService.getAllStates( stateOptions ),
-		fetchWaysToHearAboutMARE	= listsService.getAllWaysToHearAboutMARE( waysToHearOptions ),
-		fetchSidebarItems			= pageService.getSidebarItems();
+	let fetchSidebarItems			= pageService.getSidebarItems();
 
-	Promise.all( [ fetchCitiesAndTowns, fetchGenders, fetchRaces, fetchStates, fetchWaysToHearAboutMARE,
-				   fetchSidebarItems ] )
-		.then( values => {
-			// assign local variables to the values returned by the promises
-			const [ citiesAndTowns, genders, races, states, waysToHearAboutMARE, sidebarItems ] = values;
+	fetchSidebarItems
+		.then( sidebarItems => {
 			// the sidebar items are a success story and event in an array, assign local variables to the two objects
 			const [ randomSuccessStory, randomEvent ] = sidebarItems;
 			
 			// assign properties to locals for access during templating
-			locals.citiesAndTowns		= citiesAndTowns;
-			locals.genders				= genders;
-			locals.races				= races;
-			locals.states				= states;
-			locals.waysToHearAboutMARE	= waysToHearAboutMARE;
 			locals.randomSuccessStory	= randomSuccessStory;
 			locals.randomEvent			= randomEvent;
 			

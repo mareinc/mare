@@ -1,8 +1,5 @@
 const keystone		= require( 'keystone' ),
-	  moment		= require( 'moment' ),
-	  fs			= require( 'fs' ),
-	  handlebars	= require( 'handlebars' ),	
-	  helpers       = require( '../../templates/views/helpers/index' )(),
+	  flashMessages	= require( './service_flash-messages' ),
 	  stripe		= require( 'stripe' )( process.env.STRIPE_SECRET_API_KEY_TEST );
 	  
 // define the various donation plan types ( stripe plans are used for recurring donations )
@@ -31,13 +28,6 @@ const plan_types = {
 		interval: 'month',
 		interval_count: 6
 	}
-};
-
-// define the various response message types
-const message_types = {
-
-	ERROR: 'error',
-	SUCCESS: 'success',
 };
 
 // define a USD currency formatter
@@ -138,7 +128,11 @@ function saveDonation( user, donationData, stripeTransactionID  ) {
 
 			if ( error ) {
 
-				reject( error );
+				// if the Donation model save fails, log the error along with the Stripe transaction ID so that the Donation can be manually saved later
+				console.error( `error saving donation model - ${ error } - Donation Payment Processed ( Stipe Transaction ID: ${ stripeTransactionID } )` );
+				
+				// resolve the promise so that the user is still presented with a success message on the front end, as the donation payment has processed succesfully
+				resolve();
 			} else {
 
 				resolve( donation );
@@ -232,49 +226,6 @@ function createSubscription( plan ) {
 	});
 }
 
-// generates a flash message to display the donation transaction status
-function generateFlashMessage( messageType, title, message ) {
-	
-	// get the relative path to the flash-messages hbs template partial
-	var templatePath = `${ __dirname }/../../templates/views/partials/flash-messages.hbs`;
-
-	return new Promise( ( resolve, reject ) => {
-
-		// read the hbs template
-		fs.readFile( templatePath, ( error, data ) => {
-
-			// generate the markup for the flash messages
-			if ( !error ) {
-
-				// create the flash messages object
-				var messages = {};
-				
-				// add the message type
-				messages[ messageType ] = [{
-					title,
-					detail: message
-				}];
-
-				// get the contents of the file as a string
-				const templateString = data.toString();
-				// compile the template string
-				const template = handlebars.compile( templateString );
-				// register the flashMessages helper
-				handlebars.registerHelper( 'flashMessages', helpers.flashMessages );
-
-				// interpolate the template with flash message data
-				const html = template( { messages } );
-
-				resolve( html );
-
-			// reject with error
-			} else {
-				reject( error );
-			}
-		});
-	});
-}
-
 exports = module.exports = {
 
 	// processes a donation by creating CC charge via Stripe API
@@ -316,8 +267,19 @@ exports = module.exports = {
 			// save the donation data to the MARE db as a Donation model
 			.then( stripeTransactionResponse => saveDonation( req.user, donationData, stripeTransactionResponse.id ) )
 			// send a success message to the user
-			.then( dbResponse => generateFlashMessage( message_types.SUCCESS, 'Thank you!', 'Your donation to the Massachusetts Adoption Resource Exchange (MARE) is complete. Your gift will support finding adoptive homes for children and teens in foster care. A confirmation transaction email will come from the donation platform and a thank you letter and tax receipt will come from MARE. Please contact Megan Dolan at megand@mareinc.org with any questions or to learn more.' ) )
-			// generate a success message to display on the front end
+			.then( dbResponse => {
+				
+				// append the succcess message to the flash messages list
+				flashMessages.appendFlashMessage({
+					messageType: flashMessages.MESSAGE_TYPES.SUCCESS,
+					title: 'Thank you!', 
+					message: 'Your donation to the Massachusetts Adoption Resource Exchange (MARE) is complete. Your gift will support finding adoptive homes for children and teens in foster care. A confirmation transaction email will come from the donation platform and a thank you letter and tax receipt will come from MARE. Please contact Megan Dolan at megand@mareinc.org with any questions or to learn more.'
+				});
+
+				// generate flash message markup
+				return flashMessages.generateFlashMessageMarkup();
+			})
+			// send the flash message markup response to display on the front end
 			.then( flashMessageMarkup => {
 
 				res.send({
@@ -326,8 +288,17 @@ exports = module.exports = {
 				});
 			})
 			.catch( err => {
-				// generate an error message to display on the front end
-				generateFlashMessage( message_types.ERROR, 'Error!', err.message )
+				
+				// append the error message to the flash messages list
+				flashMessages.appendFlashMessage({
+					messageType: flashMessages.MESSAGE_TYPES.ERROR,
+					title: 'Error!', 
+					message: err.message
+				});
+
+				// generate flash message markup
+				flashMessages.generateFlashMessageMarkup()
+					// send the flash message markup response to display on the front end
 					.then( flashMessageMarkup => {
 
 						res.send({

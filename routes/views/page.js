@@ -53,7 +53,7 @@ exports = module.exports = function( req, res ) {
 					// specify that it should render a button after the content
 					pageActions.hasButtons = true;
 					// set the button contents
-					pageActions.buttons.push( { text: 'Register a Family',
+					pageActions.buttons.push( { text: 'Register Homestudy',
 												target: '/forms/family-registration-form' } );
 				// if the user is not a logged in social worker
 				} else {

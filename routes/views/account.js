@@ -24,7 +24,7 @@ exports = module.exports = ( req, res ) => {
 		raceOptions        			= { other: true },
 	
 		// fetch all data needed to render this page
-		fetchEvents					= eventService.getAllActiveEvents( eventGroup ),
+		fetchEvents					= eventService.getActiveEventsByUserId( userID, eventGroup ),
 		
 		fetchCitiesAndTowns			= listsService.getAllCitiesAndTowns(),
 		fetchDisabilities			= listsService.getAllDisabilities(),
@@ -37,6 +37,13 @@ exports = module.exports = ( req, res ) => {
 		fetchChildTypes				= listsService.getChildTypesForWebsite(),
 		fetchMailingLists			= mailingListService.getRegistrationMailingLists()
 	;
+
+	// check to see if the page is being loaded for a newly registered user
+	if ( req.query.newUser ) {
+
+		// display the succesful registration flash message
+		req.flash( 'success', { title: 'Your account has been successfully created' } );
+	}
 
 	Promise.all( [ fetchEvents, fetchCitiesAndTowns, fetchDisabilities, fetchGenders, fetchLanguages, fetchLegalStatuses,
 		fetchOtherConsiderations, fetchRaces, fetchStates, fetchChildTypes, fetchMailingLists ] )

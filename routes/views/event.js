@@ -99,20 +99,6 @@ exports = module.exports = ( req, res ) => {
 				};
 			}
 
-			for( let family of event.familyAttendees ) {
-				// if the eventGroup is families, we need to prettify the attendee name
-				const hasContact2		= family.contact2.name.full.length > 0;
-				const hasSameLastName	= family.contact1.name.last === family.contact2.name.last;
-
-				if( hasContact2 && hasSameLastName ) {
-					family.fullName = family.contact1.name.first + ' and ' + family.contact2.name.full;
-				} else if( hasContact2 && !hasSameLastName ) {
-					family.fullName = family.contact1.name.full + ' and ' + family.contact2.name.full;
-				} else {
-					family.fullName = family.contact1.name.full;
-				}
-			};
-
 			// assign properties to locals for access during templating
 			locals.event				= event;
 			locals.isEventMissing		= _.isEmpty( event );
