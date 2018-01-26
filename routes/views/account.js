@@ -38,6 +38,9 @@ exports = module.exports = ( req, res ) => {
 		fetchMailingLists			= mailingListService.getRegistrationMailingLists()
 	;
 
+	// check to see if the Children tab should be rendered
+	locals.shouldRenderChildrenSection = ( userType === 'social worker' || userType === 'family' );
+
 	// check to see if the page is being loaded for a newly registered user
 	if ( req.query.newUser ) {
 
