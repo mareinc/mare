@@ -26,8 +26,8 @@ exports.resetPassword = ( req, res ) => {
 			if ( !user ) {
 				
 				req.flash( 'error', {
-					title: 'Error with your request',
-					detail: 'If the issue persists, please contact MARE for assistance'
+					title: 'There is no account associated with this email address.',
+					detail: 'If applicable, please attempt to log in with a secondary/spouse email address.  Otherwise register to create a new account or contact MARE at communications@mareinc.org for assistance.'
 				});
 
 				throw new Error( `error fetching user by email ${ req.body.email }` );
