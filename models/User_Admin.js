@@ -18,7 +18,7 @@ Admin.add( 'Permissions', {
 
 	permissions: {
 		isVerified: { type: Boolean, label: 'has a verified email address', default: true, noedit: true, hidden: true },
-		canMigrate: { type: Boolean, label: 'can migrate data', default: false, noedit: true }
+		canMigrate: { type: Boolean, label: 'can migrate data', default: false, noedit: true, hidden: true }
 	}
 
 }, 'General Information', {
