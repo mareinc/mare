@@ -42,10 +42,9 @@ exports.resetPassword = ( req, res ) => {
 							 `http://${ req.headers.host }`;
 				// set the reset password token for the user record
 				user.resetPasswordToken = resetToken;
+
 				// the name is stored differently for families than for other models
-				const name = user.type === 'family' ?
-							 user.displayName :
-							 user.name.full;
+				const name = user.get('displayName');
 				
 				// create an email with the reset token and save the user entity
 				const sendPasswordResetEmail = PasswordResetEmailMiddleware.sendPasswordResetEmail( name, user.email, host, resetToken );
