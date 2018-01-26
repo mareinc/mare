@@ -1,24 +1,41 @@
 <!-- client side template for rendering log in modal -->
 <script id="log-in-template" type="text/x-handlebars-template">
+	<div class="log-in">
+		<form action="/logIn" method="POST" class="log-in-form">
+			<header class="log-in-form__header-container">
+				<span class="log-in-form__header">Log In</span>
+			</header>
+			<input type="hidden" name="target" value="\{{ target }}" hidden>
+			<div class="log-in-form__input-container">
+					<input type="email" class="input input-small" required id="email" name="email" pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
+				<label for="email" class="log-in-form__label">Email Address</label>
+			</div>
+			<div class="log-in-form__input-container">
+				<input type="password" class="input input-small" id="password" name="password">
+				<label for="password" class="log-in-form__label">Password</label>
+				<span class="log-in-form__label log-in-form__forgot-password">
+					<a href="javascript:void(0);"  class="log-in-form__forgot-password">Forgot?</a>
+				</span>
+			</div>
+			<button type="submit" class="button button--teal button--large button--uppercase log-in-form__log-in-button">Log In</button>
+		</form>
+		<a href="/register" class="log-in-form__register">Register Now</a>
+	</div>
 
-	<form action="/logIn" method="POST" class="log-in-form">
-		<header class="log-in-form__header-container">
-			<span class="log-in-form__header">Log In</span>
-		</header>
-		<input type="hidden" name="target" value="\{{ target }}" hidden>
-		<div class="log-in-form__input-container">
+	<div class="forgot-password">
+		<form action="/recover/generate" method="POST" class="log-in-form">
+			<header class="log-in-form__header-container">
+				<span class="log-in-form__header">Reset Password</span>
+			</header>
+			<div class="log-in-form__input-container">
 				<input type="email" class="input input-small" required id="email" name="email" pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
-			<label for="email" class="log-in-form__label">Email Address</label>
-		</div>
-		<div class="log-in-form__input-container">
-			<input type="password" class="input input-small" id="password" name="password">
-			<label for="password" class="log-in-form__label">Password</label>
-			<span class="log-in-form__label log-in-form__forgot-password">
-				<a href="/register" class="log-in-form__register">Forgot?</a>
-			</span>
-		</div>
-		<button type="submit" class="button button--teal button--large button--uppercase log-in-form__log-in-button">Log In</button>
-	</form>
-	<a href="/register" class="log-in-form__register">Register Now</a>
+				<label for="email" class="log-in-form__label">Please enter your email address.</label>
+			</div>
+
+			<button type="submit" class="button button--teal button--large button--uppercase log-in-form__log-in-button">Reset</button>
+
+			<a href="javascript:void(0);"  class="forgot-password__login-link">Login</a>
+		</form>
+	</div>
 
 </script>

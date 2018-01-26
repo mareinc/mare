@@ -70,6 +70,82 @@ exports.getAllChildren = ( req, res, done, fieldsToSelect ) => {
 		});
 };
 
+exports.getChildrenForSocialWorker = ( req, res, done, fieldsToSelect ) => {
+
+	let locals = res.locals;
+	// create a map to convert social worker positions to corresponding field names on the Child model
+	const socialWorkerPositionTypes = {
+		'adoption worker': 'adoptionWorker',
+		'recruitment worker': 'recruitmentWorker'
+	};
+
+	if ( locals.userType === 'social worker' ) {
+
+		// get the social worker position from the user model
+		let socialWorkerPosition = socialWorkerPositionTypes[ locals.user.position ];
+
+		if ( socialWorkerPosition ) {
+
+			keystone.list( 'Child' ).model
+					.find()
+					.select( fieldsToSelect )
+					.where( socialWorkerPosition, locals.user._id )
+					// TODO: determine if the isVisibleInGallery or active status are necessary filters for the account gallery
+					// .where( 'isVisibleInGallery' ).equals( true )
+					// .where( 'status' ).equals( locals.activeChildStatusId )
+					.populate( 'gender' )
+					.populate( 'race' )
+					.populate( 'languages' )
+					.populate( 'disabilities' )
+					.populate( 'otherConsiderations' )
+					.populate( 'recommendedFamilyConstellation' )
+					.populate( 'otherFamilyConstellationConsideration' )
+					.populate( 'status' )
+					.populate( 'legalStatus' )
+					.exec( ( err, children ) => {
+
+						if ( err ) {
+							
+							console.error( err );
+							done();
+						} else {
+							
+							// loop through each child
+							_.each( children, child => {
+								// adjust the image to the blank male/female image if needed
+								exports.setNoChildImage( req, res, child, locals.targetChildren === 'all' );
+								// set extra information needed for rendering the child to the page
+								child.age						= middleware.getAge( child.birthDate );
+								child.ageConverted				= middleware.convertDate( child.birthDate );
+								child.registrationDateConverted	= middleware.convertDate( child.registrationDate );
+							});
+
+							locals.allChildren = children;
+							// execute done function if async is used to continue the flow of execution
+							done();
+						}
+					});
+		} else {
+			
+			// if a social worker that is neither an adoption or recruitment agent is trying to load a children gallery, log an error message
+			console.error( `error verifying social worker position type - social worker of position ${ locals.user.position } is trying to load a children gallery` );
+			res.send({
+				status: 'error',
+				message: `error verifying social worker position type - social worker of position ${ locals.user.position } is trying to load a children gallery`
+			});
+		}
+	} else {
+
+		// if an unauthorized user is trying to load this data, log an error message
+		console.error( `error loading children gallery data - user of type ${ locals.userType } is trying to access a gallery restricted to social workers` );
+		res.send({
+			status: 'error',
+			message: `error loading children gallery data - user of type ${ locals.userType } is trying to access a gallery restricted to social workers`
+		});
+	}
+
+};
+
 exports.getChildrenByIds = idsArray => {
 	
 	return new Promise( ( resolve, reject ) => {
@@ -269,11 +345,17 @@ exports.getGalleryData = ( req, res, next ) => {
 	// anonymous users, site visitors, and families without a verified homestudy ( or from a state other than MA, NH, CT, ME, VT, RI, or NY ) have access only to unrestricted children
 	if( locals.userType === 'anonymous' ||
 		locals.userType === 'site visitor' ||
-		( locals.userType === 'family' && !req.user.permissions.canViewAllChildren ) ) {
+		( locals.userType === 'family' && !req.user.permissions.canViewAllChildren ) ||
+		( locals.userType === 'social worker' && !req.user.permissions.canViewAllChildren ) ) {
 		locals.targetChildren = 'unrestricted';
 	// families with a verified homestudy ( from MA, NH, CT, ME, VT, RI, or NY ) and social workers have access to all children
 	} else {
 		locals.targetChildren = 'all';
+	}
+	// determine if this request is for an account page
+	if ( req.body.requestPage === 'account' ) {
+		// if so, override the targetChildren accordingly
+		locals.targetChildren = 'socialWorkerAccount';
 	}
 	// create a string with the fields to select from each child (this speeds up the queries)
 	const fieldsToSelect = `gender race languages disabilities otherConsiderations recommendedFamilyConstellation
@@ -287,9 +369,13 @@ exports.getGalleryData = ( req, res, next ) => {
 		done => { listsService.getChildStatusIdByName( req, res, done, 'active' ) },
 		done => {
 			// fetch the appropriate set of children based on the user's permissions
-			locals.targetChildren === 'all' ? exports.getAllChildren( req, res, done, fieldsToSelect )
-											: exports.getUnrestrictedChildren( req, res, done, fieldsToSelect );
-
+			if ( locals.targetChildren === 'all' ) {
+				exports.getAllChildren( req, res, done, fieldsToSelect );
+			} else if ( locals.targetChildren === 'socialWorkerAccount' ) {
+				exports.getChildrenForSocialWorker( req, res, done, fieldsToSelect );
+			} else {
+				exports.getUnrestrictedChildren( req, res, done, fieldsToSelect );
+			}
 		},
 		// TODO: these familyService functions are for social workers too, they belong in a page level service instead
 		done => { familyService.setGalleryPermissions( req, res ); done(); },
@@ -323,7 +409,7 @@ exports.getGalleryData = ( req, res, next ) => {
 		// map out the relevant information for sibling groups
 		exports.getRelevantSiblingGroupInformation( [ ...locals.siblingGroups ], locals );
 		// return the child and group information
-		res.send( { soloChildren: locals.soloChildrenToReturn, siblingGroups: locals.siblingGroupsToReturn } );
+		res.send( { soloChildren: locals.soloChildrenToReturn, siblingGroups: locals.siblingGroupsToReturn, status: 'success' } );
 	});
 }
 

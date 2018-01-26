@@ -13,9 +13,32 @@
 		},
 
 		initialize: function initialize() {
+			// create a promise to resolve once we have permissions for the user (All actions are verified on the server so this won't introduce any risk)
+			mare.promises.permissionsLoaded = $.Deferred();
+			// fetch the users permissions
+			this.getPermissions();
+
 			mare.views.account = mare.views.account || new mare.views.Account();
 			// bind listener for the dropdown menu changing
 			mare.views.account.on( 'changeRoute', this.updateRoute.bind( this ) );
+		},
+
+		getPermissions: function getPermissions() {
+			// fetch permissions for the current user
+			$.ajax({
+				dataType: 'json',
+				url: '/services/get-gallery-permissions',
+				type: 'POST'
+			}).done( function( permissions ) {
+				// store the permissions on the namespace to allow us to access them in all views and subviews for this page
+				mare.permissions.gallery = permissions;
+				// resolve the promise tracking permissions loading
+				mare.promises.permissionsLoaded.resolve();
+
+			}).fail( function( err ) {
+				// TODO: show an error message if we failed to fetch the permissions
+				console.log( err );
+			});
 		},
 
 		loadInfo: function loadInfo() {

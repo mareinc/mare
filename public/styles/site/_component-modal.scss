@@ -83,7 +83,8 @@
 }
 
 /* TODO: move these styles to a more appropriate place once the modal content areas are broken out better */
-.log-in-container {
+.log-in-container,
+.log-in {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -121,8 +122,8 @@
 
 .log-in-form__forgot-password {
 	position: relative;
-    bottom: 1.3em;
-    left: 13.2em;
+    bottom: 0.65em;
+    left: 6.25em;
 }
 
 .log-in-form__log-in-button {

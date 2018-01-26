@@ -55,18 +55,6 @@ exports.create = {
 		email: 'jared.j.collier@gmail.com'
 	},{
 		isActive: true,
-		name: {
-			first: 'Lisa',
-			last: 'Funaro'
-		},
-		permissions: {
-			isVerified: true
-		},
-		password: 'LisaFunaro',
-		email: 'lisafd4@gmail.com'
-	},
-	{
-		isActive: true,
 		permissions: {
 			isVerified: true
 		},

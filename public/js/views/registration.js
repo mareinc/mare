@@ -10,6 +10,7 @@
 
 		initialize: function() {
 			// DOM cache any commonly used elements to improve performance
+			this.$contentBody		= this.$( '.content__body' );
 			this.$formSelector		= this.$( '.registration-type-selector' );
 			this.$siteVisitorForm	= this.$( '.site-visitor-registration' );
 			this.$socialWorkerForm	= this.$( '.social-worker-registration' );
@@ -47,7 +48,18 @@
 			this.$siteVisitorForm.fadeOut();
 			this.$socialWorkerForm.fadeOut();
 			this.$familyForm.fadeIn();
-		}
+		},
 
+		displayFlashMessage: function displayFlashMessage( flashMessageMarkup ) {
+
+			// remove any previously existing messages
+			$( '#flash-messages' ).remove();
+					
+			// ensure any message will be scrolled into view
+			$( 'html, body' ).scrollTop( 0 );
+
+			// display the flash message to the user
+			this.$contentBody.prepend( flashMessageMarkup );
+		}
 	});
 }());
