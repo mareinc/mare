@@ -288,21 +288,24 @@ exports.setNoChildImage = ( req, res, child, canViewAllChildren ) => {
 		  NO_IMAGE_SIBLING_GROUP_DETAILS	= 'images/no-image-sibling-group_details.png';	
 	// if the child is part of a sibling group
 	if( child.mustBePlacedWithSiblings ) {
-		// and is missing an image or is legal risk
-		if( !child.siblingGroupImage.secure_url
-			|| child.legalStatus.legalStatus === 'legal risk'
-			|| ( child.siteVisibility !== 'everyone'
-				&& !canViewAllChildren ) ) {
+		// if the child image is missing or
+		//	the child is legal risk and the user doesn't have permissions to view all children or
+		//	the child visibility is 'Only Registered Social Workers and Families' and the user doesn't have permissions to view all children
+		if( !child.siblingGroupImage.secure_url ||
+			( child.legalStatus.legalStatus === 'legal risk' && !canViewAllChildren ) ||
+			( child.siteVisibility !== 'everyone' && !canViewAllChildren ) ) {
 			// set the images to the placeholders for sibling groups
 			child.siblingGroupDetailImage = NO_IMAGE_SIBLING_GROUP_DETAILS;
 			child.siblingGroupGalleryImage = NO_IMAGE_SIBLING_GROUP_GALLERY;
 		}
 	// if the child is not part of a sibling group
 	} else {
-		if( !child.image.secure_url								// and is missing an image
-			|| child.legalStatus.legalStatus === 'legal risk' 	// or is legal risk
-			|| ( child.siteVisibility !== 'everyone' 			// or if the child is not visible to everyone
-			 	&& !canViewAllChildren ) ) {					// 	and the user wouldn't have permission without the 'child is visible on MARE web' checkbox being checked
+		//	if the child image is missing or
+		//	the child is legal risk and the user doesn't have permissions to view all children or
+		//	the child visibility is 'Only Registered Social Workers and Families' and the user doesn't have permissions to view all children
+		if( !child.image.secure_url	||
+			( child.legalStatus.legalStatus === 'legal risk' && !canViewAllChildren ) ||
+			( child.siteVisibility !== 'everyone' && !canViewAllChildren ) ) {
 			// and the child is male
 			if( child.gender.gender === 'male' ) {
 				// set the images to the placeholder for male children
