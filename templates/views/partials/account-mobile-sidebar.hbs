@@ -4,7 +4,9 @@
         <option value="info" \{{#ifeq selectedRoute 'info' }}selected="selected"\{{/ifeq}}>My Information</option>
         <option value="email-list" \{{#ifeq selectedRoute 'email-list' }}selected="selected"\{{/ifeq}}>Email Lists</option>
         <option value="events" \{{#ifeq selectedRoute 'events' }}selected="selected"\{{/ifeq}}>Events</option>
+        {{#if shouldRenderChildrenSection}}
         <option value="children" \{{#ifeq selectedRoute 'children' }}selected="selected"\{{/ifeq}}>Children</option>
+        {{/if}}
         {{#ifeq user.userType 'admin'}}
         <option value="admin">Admin</option>
         {{/ifeq}}

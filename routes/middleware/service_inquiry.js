@@ -8,7 +8,7 @@ exports.createInquiry = ( { inquiry, user } ) => {
 	return new Promise( ( resolve, reject ) => {
 		// if no inquiry object was received, abort execution and reject the promise
 		if( !inquiry ) {
-			console.error( 'inquiry creation failed - no inquiry data received' );
+			console.error( 'error creating inquiry via website - no inquiry data received' );
 			return reject();
 		}
 		// if we've received a child inquiry
@@ -20,9 +20,9 @@ exports.createInquiry = ( { inquiry, user } ) => {
 				resolve();
 			})
 			// if there was an error saving the inquiry
-			.catch( reason => {
+			.catch( err => {
 				// log the error for debugging purposes
-				console.error( `inquiry creation failed` );
+				console.error( `error creating child inquiry via website - ${ err }` );
 				reject();
 			});
 		// otherwise, if it's a general inquiry
@@ -34,15 +34,15 @@ exports.createInquiry = ( { inquiry, user } ) => {
 				resolve();
 			})
 			// if there was an error saving the inquiry
-			.catch( reason => {
+			.catch( err => {
 				// log the error for debugging purposes and reject the promise
-				console.error( `inquiry creation failed` );
+				console.error( `error creating general inquiry via website - ${ err }` );
 				reject();
 			});
 		// otherwise, it's an unrecognized inquiry type and
 		} else {
 			// log the error for debugging purposes and reject the promise
-			console.error( `inquiry creation failed - invalid interest value: ${ interest } ` );
+			console.error( `error creating inquiry via website - invalid interest value ${ interest } ` );
 			reject();
 		}
 	});
@@ -98,17 +98,16 @@ exports.createChildInquiry = ( { inquiry, user } ) => {
 				newInquiry.save( ( err, model ) => {
 					// if there was an issue saving the new inquiry
 					if( err ) {
-						// log the error for debugging purposes and reject the promise
-						console.error( `there was an error saving the new inquiry model - ${ err }` );
-						return reject();
+						// reject the promise with information about the error
+						return reject( `error saving inquiry model - ${ err }` );
 					}
 					// if the inquiry was saved successfully, resolve the promise with the newly saved inquiry model
 					resolve( model );
 				});
 			})
-			.catch( () => {
-				// reject the promise
-				reject();
+			.catch( err => {
+				// reject the promise with information about the error
+				reject( err );
 			});
 	});
 };
@@ -155,17 +154,16 @@ exports.createGeneralInquiry = ( { inquiry, user } ) => {
 			newInquiry.save( ( err, model ) => {
 				// if there was an issue saving the new inquiry
 				if( err ) {
-					// log the error for debugging purposes and reject the promise
-					console.error( `there was an error saving the new inquiry model - ${ err }` );
-					return reject();
+					// reject the promise with information about the error
+					return reject( `error saving inquiry model - ${ err }` );
 				}
 				// if the inquiry was saved successfully, resolve the promise with the newly saved inquiry model
 				resolve( model );
 			});
 		})
-		.catch( () => {
-			// reject the promise
-			reject();
+		.catch( err => {
+			// reject the promise with information about the error
+			reject( err );
 		});
 	});
 };

@@ -17,7 +17,7 @@ var Family = new keystone.List( 'Family', {
 	inherits	: User,
 	track		: true, // needed for change history updated by assignment
 	autokey		: { path: 'key', from: 'registrationNumber', unique: true },
-	map			: { name: 'displayName' },
+	map			: { name: 'displayNameAndRegistration' },
 	defaultSort	: 'displayName',
 	hidden		: false
 });
@@ -31,6 +31,7 @@ Family.add( 'Permissions', {
 		isVerified: { type: Boolean, label: 'has a verified email address', default: false, noedit: true },
 		isHomestudyVerified: { type: Boolean, label: 'homestudy verified', initial: true },
 		homestudyVerifiedDate: { type: Types.Date, label: 'homestudy verified on', format: 'MM/DD/YYYY', dependsOn: { 'permissions.isHomestudyVerified': true }, noedit: true },
+		canViewAllChildrenOverride: { type: Boolean, label: 'allow family to see all children', note: 'this will allow the family to see at risk children regardless of their homestudy or place of residence', default: false, initial: true },
 		canViewAllChildren: { type: Boolean, default: false, hidden: true, noedit: true }
 	}
 
@@ -47,7 +48,8 @@ Family.add( 'Permissions', {
 
 	contactGroups: { type: Types.Relationship, label: 'contact groups', ref: 'Contact Group', many: true, initial: true },
 
-	displayName: { type: Types.Text, label: 'name', hidden: true, noedit: true }
+	displayName: { type: Types.Text, label: 'name', hidden: true, noedit: true },
+	displayNameAndRegistration: { type: Types.Text, label: 'name and registration number', hidden: true, noedit: true }
 
 }, 'Contact 1', {
 
@@ -351,7 +353,7 @@ Family.schema.pre( 'save', function( next ) {
 	this.setHomestudyVerifiedDate();
 	// create a full name for each contact based on their first, middle, and last names
 	this.setFullNames();
-	// set the display name with is a readable combination of contact 1's and contact 2's full name
+	// set the display - a readable combination of contact 1's and contact 2's full name
 	this.setDisplayName();
 	// create an identifying name for file uploads
 	this.setFileName();
@@ -377,6 +379,8 @@ Family.schema.pre( 'save', function( next ) {
 		// TODO: this should be replaced with ES6 Promise.prototype.finally() once it's finalized, assuming we can update to the latest version of Node if we upgrade Keystone
 		.then( () => {
 
+			// set a compound label consisting of the display name and registration number to enable admins to differentiate families in relationship fields
+			this.setDisplayNameAndRegistrationLabel();
 			next();
 		});
 });
@@ -435,6 +439,13 @@ Family.schema.methods.setDisplayName = function() {
 		// set the name to contact 1's full name
 		this.displayName = `${ this.contact1.name.first } ${ this.contact1.name.last }`;
 	}
+};
+
+Family.schema.methods.setDisplayNameAndRegistrationLabel = function() {
+	'use strict';
+
+	// combine the display name and registration number to create a unique label for all Family models
+	this.displayNameAndRegistration = `${ this.displayName } - ${ this.registrationNumber }`;
 };
 
 Family.schema.methods.setHomestudyVerifiedDate = function() {
@@ -573,11 +584,18 @@ Family.schema.methods.setGalleryViewingPermissions = function() {
 	'use strict';
 
 	return new Promise( ( resolve, reject ) => {
+		// if the user can view all children override checkbox is checked
+		if( this.permissions.canViewAllChildrenOverride ) {
+			// disregard all other checks and all the user to view all children in the gallery
+			this.permissions.canViewAllChildren = true;
+			// resolve the promise and prevent further execution in this function
+			return resolve();
+		}
 		// fetch the state model saved for the agency
 		const fetchState = ListServiceMiddleware.getStateById( this.address.state );
 		// if the state was fetched without error
 		fetchState
-			.then( state => { // TODO: DO WE NEED TO CHECK TO SEE IF THEY'RE ACTIVE?????? // TODO: SHOULD WE ADD PERMISSIONS TO HANDLE THE EDGE CASES
+			.then( state => {
 				// if the family has a verified homestudy and lives in a New England state
 				if( this.permissions.isHomestudyVerified && [ 'MA', 'NH', 'CT', 'ME', 'VT', 'RI', 'NY' ].includes( state.abbreviation ) ) {
 					// allow them to view all children in the gallery
@@ -1725,7 +1743,7 @@ Family.schema.methods.setChangeHistory = function setChangeHistory() {
 };
 
 // Define default columns in the admin interface and register the model
-Family.defaultColumns = 'registrationNumber, displayName, address.displayCity, address.state, isActive';
+Family.defaultColumns = 'address.displayCity, address.state, isActive';
 Family.register();
 
 // Export to make it available using require.  The keystone.list import throws a ReferenceError when importing a list

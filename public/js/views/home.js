@@ -15,9 +15,8 @@
         initializeSlideshow: function initializeSlideshow() {
             // initialize the slideshow default settings
             $( '#slideshow' ).owlCarousel({
-                autoPlay: true,
-                autoPlayTimeout: 5000,
-                dots: false,
+                autoPlay: 5000,
+                // dots: false,
                 singleItem : true,
                 lazyLoad : true,
                 lazyEffect: 'fade',

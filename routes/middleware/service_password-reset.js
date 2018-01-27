@@ -26,8 +26,8 @@ exports.resetPassword = ( req, res ) => {
 			if ( !user ) {
 				
 				req.flash( 'error', {
-					title: 'Error with your request',
-					detail: 'If the issue persists, please contact MARE for assistance'
+					title: 'There is no account associated with this email address.',
+					detail: 'If applicable, please attempt to log in with a secondary/spouse email address.  Otherwise register to create a new account or contact MARE at communications@mareinc.org for assistance.'
 				});
 
 				throw new Error( `error fetching user by email ${ req.body.email }` );
@@ -42,10 +42,9 @@ exports.resetPassword = ( req, res ) => {
 							 `http://${ req.headers.host }`;
 				// set the reset password token for the user record
 				user.resetPasswordToken = resetToken;
+
 				// the name is stored differently for families than for other models
-				const name = user.type === 'family' ?
-							 user.displayName :
-							 user.name.full;
+				const name = user.get('displayName');
 				
 				// create an email with the reset token and save the user entity
 				const sendPasswordResetEmail = PasswordResetEmailMiddleware.sendPasswordResetEmail( name, user.email, host, resetToken );
