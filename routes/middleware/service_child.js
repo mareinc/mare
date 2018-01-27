@@ -70,7 +70,7 @@ exports.getAllChildren = ( req, res, done, fieldsToSelect ) => {
 		});
 };
 
-exports.getChildrenForSocialWorker = ( req, res, done, fieldsToSelect ) => {
+exports.getChildrenForSocialWorkerAccount = ( req, res, done, fieldsToSelect ) => {
 
 	let locals = res.locals;
 	// create a map to convert social worker positions to corresponding field names on the Child model
@@ -144,6 +144,50 @@ exports.getChildrenForSocialWorker = ( req, res, done, fieldsToSelect ) => {
 		});
 	}
 
+};
+
+exports.getChildrenForFamilyAccount = ( req, res, done, fieldsToSelect ) => {
+
+	let locals = res.locals;
+
+	let bookmarkedChildren = locals.user.bookmarkedChildren.concat( locals.user.bookmarkedSiblings );
+
+	keystone.list( 'Child' ).model
+		.find()
+		.select( fieldsToSelect )
+		.where( '_id' ).in( bookmarkedChildren )
+		.populate( 'gender' )
+		.populate( 'race' )
+		.populate( 'languages' )
+		.populate( 'disabilities' )
+		.populate( 'otherConsiderations' )
+		.populate( 'recommendedFamilyConstellation' )
+		.populate( 'otherFamilyConstellationConsideration' )
+		.populate( 'status' )
+		.populate( 'legalStatus' )
+		.exec( ( err, children ) => {
+
+			if ( err ) {
+				
+				console.error( err );
+				done();
+			} else {
+				
+				// loop through each child
+				_.each( children, child => {
+					// adjust the image to the blank male/female image if needed
+					exports.setNoChildImage( req, res, child, locals.targetChildren === 'all' );
+					// set extra information needed for rendering the child to the page
+					child.age						= middleware.getAge( child.birthDate );
+					child.ageConverted				= middleware.convertDate( child.birthDate );
+					child.registrationDateConverted	= middleware.convertDate( child.registrationDate );
+				});
+
+				locals.allChildren = children;
+				// execute done function if async is used to continue the flow of execution
+				done();
+			}
+		});
 };
 
 exports.getChildrenByIds = idsArray => {
@@ -354,8 +398,12 @@ exports.getGalleryData = ( req, res, next ) => {
 	}
 	// determine if this request is for an account page
 	if ( req.body.requestPage === 'account' ) {
-		// if so, override the targetChildren accordingly
-		locals.targetChildren = 'socialWorkerAccount';
+		// if so, override the targetChildren accordingly based on the user type
+		if ( locals.userType === 'family' ) {
+			locals.targetChildren = 'familyAccount';
+		} else if ( locals.userType === 'social worker' ) {
+			locals.targetChildren = 'socialWorkerAccount';
+		}
 	}
 	// create a string with the fields to select from each child (this speeds up the queries)
 	const fieldsToSelect = `gender race languages disabilities otherConsiderations recommendedFamilyConstellation
@@ -372,7 +420,9 @@ exports.getGalleryData = ( req, res, next ) => {
 			if ( locals.targetChildren === 'all' ) {
 				exports.getAllChildren( req, res, done, fieldsToSelect );
 			} else if ( locals.targetChildren === 'socialWorkerAccount' ) {
-				exports.getChildrenForSocialWorker( req, res, done, fieldsToSelect );
+				exports.getChildrenForSocialWorkerAccount( req, res, done, fieldsToSelect );
+			} else if ( locals.targetChildren === 'familyAccount' ) {
+				exports.getChildrenForFamilyAccount( req, res, done, fieldsToSelect );
 			} else {
 				exports.getUnrestrictedChildren( req, res, done, fieldsToSelect );
 			}

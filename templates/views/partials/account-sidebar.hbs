@@ -12,20 +12,12 @@
             <span class="account-nav-link__title">Events</span>
         </li>
 
-        {{!-- TODO: add a way to test ifeq multiple items --}}
-        {{#ifeq user.userType 'social worker'}}
+        {{#if shouldRenderChildrenSection}}
         <li class="button button--teal account-nav-link \{{#ifeq selectedRoute 'children' }}account-nav-link--active\{{/ifeq}}" data-section="children">
             <i class="fa fa-users"></i>
             <span class="account-nav-link__title">Children</span>
         </li>
-        {{/ifeq}}
-
-        {{#ifeq user.userType 'families'}}
-        <li class="button button--teal account-nav-link \{{#ifeq selectedRoute 'children' }}account-nav-link--active\{{/ifeq}}" data-section="children">
-            <i class="fa fa-users"></i>
-            <span class="account-nav-link__title">Children</span>
-        </li>
-        {{/ifeq}}
+        {{/if}}
 
         {{#ifeq user.userType 'admin'}}
         <a href="/keystone"><li class="button button--green account-nav-link account-nav-link--admin">Admin Panel</li></a>
