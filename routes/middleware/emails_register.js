@@ -822,6 +822,7 @@ exports.sendNewFamilyNotificationEmailToMARE = ( user, registrationStaffContact,
 			subject			: `new ${ user.userType } registration`,
 			userType		: user.userType,
 			userData
+			
 		}, ( err, message ) => {
 			// if there was an error sending the email
 			if( err ) {

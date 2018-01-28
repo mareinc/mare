@@ -3,7 +3,7 @@
 
 .gallery,
 .gallery-search-form {
-    display: none;
+    display: none; // TODO: this should be handled programmatically as the gallery is used in the account page as well wehre this doesn't apply
 }
 
 .filters {
