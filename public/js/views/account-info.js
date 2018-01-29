@@ -107,7 +107,6 @@
 				email					: document.querySelector( '#email' ) ? document.querySelector( '#email' ).value : undefined,
 				password				: document.querySelector( '#password' ) ? document.querySelector( '#password' ).value : undefined,
 				confirmPassword			: document.querySelector( '#confirmPassword' ) ? document.querySelector( '#confirmPassword' ).value : undefined,
-				position				: document.querySelector( '#position' ) ? document.querySelector( '#position' ).value : undefined,
 				title					: document.querySelector( '#title' ) ? document.querySelector( '#title' ).value : undefined,
 				agency					: document.querySelector( '#agency' ) ? document.querySelector( '#agency' ).value : undefined,
 				homePhone				: document.querySelector( '#home-phone' ) ? document.querySelector( '#home-phone' ).value : undefined,
@@ -119,7 +118,8 @@
 				zipCode					: document.querySelector( '#zip-code' ) ? document.querySelector( '#zip-code' ).value : undefined,
 				maCity					: document.querySelector( '#city' ) ? document.querySelector( '#city' ).value : undefined,
 				nonMaCity				: document.querySelector( '#non-ma-city' ) ? document.querySelector( '#non-ma-city' ).value : undefined,
-				isOutsideMassachusetts	: document.querySelector( '#is-not-ma-city-checkbox' ) ? document.querySelector( '#is-not-ma-city-checkbox' ).checked : undefined
+				isOutsideMassachusetts	: document.querySelector( '#is-not-ma-city-checkbox' ) ? document.querySelector( '#is-not-ma-city-checkbox' ).checked : undefined,
+				positions				: mare.views.accountInfo.getSocialWorkerPositionsData()
 			};
 
 			// Family
@@ -138,6 +138,18 @@
 
 			// return an object containing only the fields that are not undefined
 			return _.omit( formData, _.isUndefined );
+		},
+
+		// retrieves updated form data for the Social Worker positions checkbox group
+		getSocialWorkerPositionsData: function getSocialWorkerPositionsData() {
+
+			var positionIDs = [];
+
+			$( '#positions:checked' ).each( function() {
+				positionIDs.push( $( this ).val() );
+			});
+
+			return positionIDs.length > 1 ? positionIDs : undefined;
 		}
 	});
 }());

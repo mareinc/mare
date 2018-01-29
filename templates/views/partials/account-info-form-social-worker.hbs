@@ -32,17 +32,18 @@
 	<section class="social-worker-contact-details-section">
 		<div class="form-section-header">Contact Details</div>
 		<div class="row">
-			<div class="col-sm-12 form-group">
-				<select id="position" name="position" class="input position-select">
-					<option value="adoption worker" {{#ifeq user.position 'adoption worker' }}selected{{/ifeq}}>adoption worker</option>
-					<option value="recruitment worker" {{#ifeq user.position 'recruitment worker' }}selected{{/ifeq}}>recruitment worker</option>
-					<option value="supervisor" {{#ifeq user.position 'supervisor' }}selected{{/ifeq}}>supervisor</option>
-					<option value="administrator" {{#ifeq user.position 'administrator' }}selected{{/ifeq}}>administrator</option>
-					<option value="family worker" {{#ifeq user.position 'family worker' }}selected{{/ifeq}}>family worker</option>
-					<option value="other" {{#ifeq user.position 'other' }}selected{{/ifeq}}>other</option>
-				</select>
-				<label for="position" class="label">Position</label>
+			<div class="col-sm-24 form-group">
+				<span class="required-field">Positions (check all that apply)</span>
 			</div>
+		</div>
+		<div class="row form-group">
+			{{#each socialWorkerPositions}}
+			<div class="col-sm-12 form-group">
+				<label class="checkbox-inline">
+					<input id="positions" type="checkbox" name="positions" value="{{ _id }}" {{#ifincludes ../user.positions _id }}checked="checked"{{/ifincludes}}>{{ position }}
+				</label>
+			</div>
+			{{/each}}
 		</div>
 		<div class="row">
 			<div class="col-sm-24 form-group">
