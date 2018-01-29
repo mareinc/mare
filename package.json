@@ -11,7 +11,7 @@
     "browserify": "^15.2.0",
     "cloudinary": "~1.9.1",
     "del": "^3.0.0",
-    "dotenv": "^4.0.0",
+    "dotenv": "^5.0.0",
     "express-handlebars": "~3.0.0",
     "gulp": "gulpjs/gulp#4.0",
     "gulp-autoprefixer": "^4.1.0",
