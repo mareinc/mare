@@ -72,68 +72,98 @@ exports.getAllChildren = ( req, res, done, fieldsToSelect ) => {
 
 exports.getChildrenForSocialWorkerAccount = ( req, res, done, fieldsToSelect ) => {
 
-	let locals = res.locals;
-	// create a map to convert social worker positions to corresponding field names on the Child model
-	const socialWorkerPositionTypes = {
+	let locals = res.locals;	
+	// create a map to convert social worker positions to their corresponding field names on the Child model
+	const socialWorkerPositionFieldNames = {
 		'adoption worker': 'adoptionWorker',
 		'recruitment worker': 'recruitmentWorker'
 	};
 
 	if ( locals.userType === 'social worker' ) {
 
-		// get the social worker position from the user model
-		let socialWorkerPosition = socialWorkerPositionTypes[ locals.user.position ];
+		let socialWorker = locals.user;
 
-		if ( socialWorkerPosition ) {
+		// populate the social worker's positions
+		socialWorker.populate( 'positions', err => {
 
-			keystone.list( 'Child' ).model
-					.find()
-					.select( fieldsToSelect )
-					.where( socialWorkerPosition, locals.user._id )
-					// TODO: determine if the isVisibleInGallery or active status are necessary filters for the account gallery
-					// .where( 'isVisibleInGallery' ).equals( true )
-					// .where( 'status' ).equals( locals.activeChildStatusId )
-					.populate( 'gender' )
-					.populate( 'race' )
-					.populate( 'languages' )
-					.populate( 'disabilities' )
-					.populate( 'otherConsiderations' )
-					.populate( 'recommendedFamilyConstellation' )
-					.populate( 'otherFamilyConstellationConsideration' )
-					.populate( 'status' )
-					.populate( 'legalStatus' )
-					.exec( ( err, children ) => {
+			if ( err ) {
 
-						if ( err ) {
-							
-							console.error( err );
-							done();
-						} else {
-							
-							// loop through each child
-							_.each( children, child => {
-								// adjust the image to the blank male/female image if needed
-								exports.setNoChildImage( req, res, child, locals.targetChildren === 'all' );
-								// set extra information needed for rendering the child to the page
-								child.age						= middleware.getAge( child.birthDate );
-								child.ageConverted				= middleware.convertDate( child.birthDate );
-								child.registrationDateConverted	= middleware.convertDate( child.registrationDate );
+				console.error( `error populating the social worker's positions - cannot complete children gallery data fetch for social worker: ${ socialWorker._id }` );
+				res.send({
+					status: 'error',
+					message: `could not determine social worker's positions, children gallery data cannot be loaded`
+				});
+			} else {
+
+				// construct a query to search Children models from the Social Worker's valid positions
+				let socialWorkerPositionQuery = socialWorker.positions.map( position => {
+
+					// get the field name ( if one exists ) on the Child model that corresponds to a social worker's position
+					let socialWorkerFieldOnChildModel = socialWorkerPositionFieldNames[ position.position ];
+
+					// if a field for the social worker's position exists on the Child model, add it to the query
+					if ( socialWorkerFieldOnChildModel ) {
+
+						return { [ socialWorkerFieldOnChildModel ]: socialWorker._id };
+					}
+
+				})
+				// filter out any invalid positions
+				.filter( query => query );
+
+				// check to ensure there was at least one valid position type to query with
+				if ( socialWorkerPositionQuery.length > 0 ) {
+
+					keystone.list( 'Child' ).model
+							.find()
+							.select( fieldsToSelect )
+							.or( socialWorkerPositionQuery )
+							// TODO: determine if the isVisibleInGallery or active status are necessary filters for the account gallery
+							// .where( 'isVisibleInGallery' ).equals( true )
+							// .where( 'status' ).equals( locals.activeChildStatusId )
+							.populate( 'gender' )
+							.populate( 'race' )
+							.populate( 'languages' )
+							.populate( 'disabilities' )
+							.populate( 'otherConsiderations' )
+							.populate( 'recommendedFamilyConstellation' )
+							.populate( 'otherFamilyConstellationConsideration' )
+							.populate( 'status' )
+							.populate( 'legalStatus' )
+							.exec( ( err, children ) => {
+
+								if ( err ) {
+									
+									console.error( err );
+									done();
+								} else {
+									
+									// loop through each child
+									_.each( children, child => {
+										// adjust the image to the blank male/female image if needed
+										exports.setNoChildImage( req, res, child, locals.targetChildren === 'all' );
+										// set extra information needed for rendering the child to the page
+										child.age						= middleware.getAge( child.birthDate );
+										child.ageConverted				= middleware.convertDate( child.birthDate );
+										child.registrationDateConverted	= middleware.convertDate( child.registrationDate );
+									});
+
+									locals.allChildren = children;
+									// execute done function if async is used to continue the flow of execution
+									done();
+								}
 							});
-
-							locals.allChildren = children;
-							// execute done function if async is used to continue the flow of execution
-							done();
-						}
+				} else {
+					
+					// if a social worker that is neither an adoption or recruitment agent is trying to load a children gallery, log an error message
+					console.error( `error constructing social worker account child gallery query - social worker: ${ socialWorker._id } does not have any valid position types` );
+					res.send({
+						status: 'error',
+						message: `could not construct a valid query based on social worker's positions, children gallery data cannot be loaded`
 					});
-		} else {
-			
-			// if a social worker that is neither an adoption or recruitment agent is trying to load a children gallery, log an error message
-			console.error( `error verifying social worker position type - social worker of position ${ locals.user.position } is trying to load a children gallery` );
-			res.send({
-				status: 'error',
-				message: `error verifying social worker position type - social worker of position ${ locals.user.position } is trying to load a children gallery`
-			});
-		}
+				}
+			}
+		});
 	} else {
 
 		// if an unauthorized user is trying to load this data, log an error message
@@ -143,7 +173,6 @@ exports.getChildrenForSocialWorkerAccount = ( req, res, done, fieldsToSelect ) =
 			message: `error loading children gallery data - user of type ${ locals.userType } is trying to access a gallery restricted to social workers`
 		});
 	}
-
 };
 
 exports.getChildrenForFamilyAccount = ( req, res, done, fieldsToSelect ) => {
