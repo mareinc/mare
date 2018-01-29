@@ -137,7 +137,7 @@ module.exports.createFamilyRecord = ( family, pauseUntilSaved ) => {
 		let allLanguagesArray = family.primary_language
 									.trim()
 									.replace( '/', ',' )
-									.replace( 'Haitian Creole/Eng', 'french, english' ) // This has to be done since the space is used as a delimeter in some cases
+									.replace( 'Haitian Creole/Eng', 'Haitian Creole, English' ) // This has to be done since the space is used as a delimeter in some cases
 									.replace( '-', ',' )
 									.replace( ' ', ',' )
 									.split( ',' ); // redo to get dash handling back, add break on space ( 'english spanish' ) and / ( French/English )
