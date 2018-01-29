@@ -67,7 +67,7 @@ exports.updateUser = ( req, res, next ) => {
 
 		// Social worker specific fields
 		if( userType === 'social worker' ) {
-			if( update.position ) { user.set( 'position', update.position ); }
+			if( update.positions ) { user.set( 'positions', update.positions ); }
 			
 			if( update.title || update.title === '' ) {
 				const newTitle = update.title !== '' ? update.title : undefined;

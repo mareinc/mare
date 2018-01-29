@@ -182,6 +182,13 @@ exports.sendNewSocialWorkerNotificationEmailToMARE = ( user, registrationStaffCo
 		// an array was used instead of a Map because Mustache templates apparently can't handle maps
 		let userData = [];
 		let userMailingListData = [];
+		let positionsArray = [];
+
+		// loop through each position model which was populated when the user model was fetched
+		for( entry of user.positions ) {
+			// extract the text values associated with the model into the array
+			positionsArray.push( entry.position );
+		}
 
 		// store only the fields that have been populated by the user
 		if( user.name.first ) {
@@ -205,12 +212,6 @@ exports.sendNewSocialWorkerNotificationEmailToMARE = ( user, registrationStaffCo
 			});
 		}
 
-		if( user.position ) {
-			userData.push ( {
-				key: 'position',
-				value: user.position
-			}); 
-		}
 
 		if( user.title ) {
 			userData.push( {
@@ -293,6 +294,13 @@ exports.sendNewSocialWorkerNotificationEmailToMARE = ( user, registrationStaffCo
 			userData.push( {
 				key: 'mailing lists',
 				value: mailingListNames.join( ', ' )
+			});
+		}
+
+		if( positionsArray.length > 0 ) {
+			userData.push( {
+				key: 'positions',
+				value: positionsArray.join( ', ' )
 			});
 		}
 
