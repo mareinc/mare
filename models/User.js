@@ -11,8 +11,8 @@ var User = new keystone.List( 'User', {
 // Create fields
 User.add( 'Login Information', {
 
-	email: { type: Types.Email, label: 'email address', unique: true, required: true, initial: true },
-	password: { type: Types.Password, label: 'password', required: true, initial: true },
+	email: { type: Types.Email, label: 'email address', unique: true, initial: true },
+	password: { type: Types.Password, label: 'password', initial: true },
 	resetPasswordToken: { type: String, hidden: true, noedit: true }
 
 }, {
