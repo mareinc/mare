@@ -90,7 +90,7 @@ exports.resetPassword = ( req, res ) => {
 
 };
 
-// TODO: this function may belong in a different folder
+// TODO: make this an express view
 exports.getForm = ( req, res ) => {
 
 	const resetToken = req.query.resetToken;
@@ -126,7 +126,7 @@ exports.getForm = ( req, res ) => {
 			const view = new keystone.View( req, res ),
 		   
 			locals = res.locals;
-			//pass the reset token to the view
+			// pass the reset token to the view
 			locals.resetToken = resetToken;
 
 			view.render( 'form_reset-password' );
