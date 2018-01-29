@@ -37,29 +37,19 @@
 
 		<section class="social-worker-contact-details-section">
 			<div class="form-section-header">Contact Details</div>
-
-			{{!-- <div class="row">
-				<div class="col-sm-12 form-group">
-					<select id="social-worker-position" name="position" class="input position-select">
-					{{#each positions}}
-						<option value="{{_id}}">{{position}}</option>
-					{{/each}}
-					</select>
-					<label for="position" class="label">Position</label>
+			<div class="row ">
+				<div class="col-sm-24 form-group">
+					<span class="required-field">Positions (check all that apply)</span>
 				</div>
-			</div> --}}
-			<div class="row">
+			</div>
+			<div id="positions-error-container" class="row form-group error-container">
+				{{#each socialWorkerPositions}}
 				<div class="col-sm-12 form-group">
-					<select id="social-worker-position" name="position" class="input position-select">
-						<option value="adoption worker">adoption worker</option>
-						<option value="recruitment worker">recruitment worker</option>
-						<option value="supervisor">supervisor</option>
-						<option value="administrator">administrator</option>
-						<option value="family worker">family worker</option>
-						<option value="other">other</option>
-					</select>
-					<label for="position" class="label">Position</label>
+					<label class="checkbox-inline">
+						<input type="checkbox" name="positions" value="{{ _id }}" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#positions-error-container" required>{{ position }}
+					</label>
 				</div>
+				{{/each}}
 			</div>
 			<div class="row">
 				<div class="col-sm-24 form-group">
