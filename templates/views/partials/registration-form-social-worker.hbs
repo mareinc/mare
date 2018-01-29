@@ -46,21 +46,14 @@
 				{{#each socialWorkerPositions}}
 				<div class="col-sm-12 form-group">
 					<label class="checkbox-inline">
-						<input type="checkbox" name="positions" value="{{ _id }}" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#positions-error-container" required>{{ position }}
+						<input type="checkbox" name="positions" value="{{ _id }}" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#positions-error-container" required="">{{ position }}
 					</label>
 				</div>
 				{{/each}}
 			</div>
 			<div class="row">
-				<div class="col-sm-24 form-group">
-					<label class="checkbox-inline social-worker-title-checkbox">
-						<input type="checkbox" name="titleDiffersFromPosition">My title differs from the position listed above
-					</label>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-sm-12 form-group social-worker-title-group hidden">
-					<input type="text" id="social-worker-title" class="input social-worker-title" name="socialWorkerTitle" data-parsley-required="false" data-parsley-error-message="required">
+				<div class="col-sm-12 form-group social-worker-title-group">
+					<input type="text" id="social-worker-title" class="input social-worker-title" name="socialWorkerTitle" required="" data-parsley-error-message="required">
 					<label for="social-worker-title" class="label required-field">Title</label>
 				</div>
 				<div class="col-sm-12 form-group">

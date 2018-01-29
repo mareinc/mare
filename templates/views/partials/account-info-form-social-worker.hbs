@@ -46,14 +46,7 @@
 			{{/each}}
 		</div>
 		<div class="row">
-			<div class="col-sm-24 form-group">
-				<label class="checkbox-inline social-worker-title-checkbox">
-					<input type="checkbox" name="titleDiffersFromPosition" {{#if user.title}}checked{{/if}}>My title differs from the position listed above
-				</label>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-sm-12 form-group social-worker-title-group {{#unless user.title}}hidden{{/unless}}">
+			<div class="col-sm-12 form-group social-worker-title-group">
 				<input type="text" id="title" class="input social-worker-title" name="socialWorkerTitle" value="{{user.title}}">
 				<label for="title" class="label">Title</label>
 			</div>

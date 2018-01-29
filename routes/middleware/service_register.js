@@ -426,7 +426,7 @@ exports.saveSocialWorker = user => {
 			agencyNotListed				: true,
 			agencyText					: user.agency,
 			positions					: user.positions,
-			title						: user.titleDiffersFromPosition ? user.socialWorkerTitle : user.position,
+			title						: user.socialWorkerTitle,
 
 			phone: {
 				work					: user.workPhone,

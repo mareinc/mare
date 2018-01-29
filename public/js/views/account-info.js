@@ -6,7 +6,6 @@
 
 		events: {
 			'click .save-button'					: 'updateUserInfo',
-			'change .social-worker-title-checkbox'	: 'toggleSocialWorkerTitleTextField',
 			'change #is-not-ma-city-checkbox'		: 'toggleOutsideMa'
 		},
 
@@ -49,27 +48,6 @@
 			// } else {
 
 			// }		
-		},
-		
-		// TODO: Update toggle functionality to make it more solid
-		toggleSocialWorkerTitleTextField: function toggleSocialWorkerTitleTextField() {
-			var $socialWorkerTitle		= this.$( '.social-worker-title' ),
-				$socialWorkerTitleGroup	= this.$( '.social-worker-title-group' );
-
-			// hide/show the hidden 'other' field via the hidden class
-			$socialWorkerTitleGroup.toggleClass( 'hidden' );
-
-			if( $socialWorkerTitleGroup.hasClass( 'hidden' ) ) {
-				// store the social worker title to reset the header when the account section is selected again
-				this.storedSocialWorkerTitle = $socialWorkerTitle.val();
-				// clear out the input box since it's hidden and not part of the form submission
-				$socialWorkerTitle.val( '' );
-			} else {
-				// if the title group isn't hidden, reset the header with the cached title value
-				$socialWorkerTitle.val( this.storedSocialWorkerTitle );
-				// clear the stored social worker title
-				this.storedSocialWorkerTitle = '';
-			}
 		},
 
 		hide: function hide() {
