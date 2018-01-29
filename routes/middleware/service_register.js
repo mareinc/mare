@@ -146,7 +146,7 @@ exports.registerUser = ( req, res, next ) => {
 							// store the array of mailing list ids the user has opted into
 							const mailingListIds = user.mailingLists;
 							// set the fields to populate on the fetched user model
-							const populateOptions = [ 'address.city', 'address.state' ];
+							const populateOptions = [ 'address.city', 'address.state', 'positions' ];
 							
 							// fetch the user model.  Needed because the copies we have don't have the Relationship fields populated
 							const fetchUser = userService.getUserByIdNew( userId, keystone.list( 'Social Worker' ), populateOptions );
