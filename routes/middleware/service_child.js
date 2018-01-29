@@ -1,13 +1,13 @@
-const keystone								= require( 'keystone' ),
-	  _										= require( 'underscore' ),
-	  async									= require( 'async' ),
-	  middleware							= require( './middleware' ),
-	  emailTargetMiddleware					= require( './service_email-target' ),
-	  staffEmailContactMiddleware			= require( './service_staff-email-contact' ),
-	  familyService							= require( './service_family' ),
-	  listsService							= require( './service_lists' ),
-	  userService							= require( './service_user' ),
-	  socialWorkerChildRegistrationService	= require( './emails_social-worker-child-registration' );
+const keystone									= require( 'keystone' ),
+	  _											= require( 'underscore' ),
+	  async										= require( 'async' ),
+	  middleware								= require( './middleware' ),
+	  emailTargetMiddleware						= require( './service_email-target' ),
+	  staffEmailContactMiddleware				= require( './service_staff-email-contact' ),
+	  familyService								= require( './service_family' ),
+	  listsService								= require( './service_lists' ),
+	  userService								= require( './service_user' ),
+	  socialWorkerChildRegistrationEmailService	= require( './emails_social-worker-child-registration' );
 
 exports.getMaxRegistrationNumber = function() {
 		
@@ -752,8 +752,8 @@ exports.registerChild = ( req, res, next ) => {
 		.then( newChild => {
 			// create a success flash message
 			req.flash( 'success', {
-					title: `Congratulations, your child record has been successfully registered.`,
-					detail: `Please note that it can take several days for the child's account to be reviewed and activated.` } );
+					title: `Congratulations, the child you submitted has been successfully registered.`,
+					detail: `Please note that it can take several days for the child's information to be reviewed.` } );
 			// redirect the user back to the appropriate page
 			res.redirect( 303, redirectPath );
 			
@@ -769,7 +769,7 @@ exports.registerChild = ( req, res, next ) => {
 									  'recommendedFamilyConstellation', 'otherFamilyConstellationConsideration',
 									  'otherConsiderations', 'disabilities' ];
 			
-			// fetch the newly saved child model.  Needed because the copies we have don't have the Relationship fields populated
+			// fetch the newly saved child model.  Needed because the saved child object doesn't have the Relationship fields populated
 			const fetchChild = exports.getChildByRegistrationNumberNew( childId, populateOptions );
 			// fetch contact info for the staff contact for children registered by social workers
 			const fetchRegistrationStaffContactInfo = exports.getStaffContactInfo( 'social worker child registration' );
@@ -778,7 +778,7 @@ exports.registerChild = ( req, res, next ) => {
 				.then( fetchedChild => {
 					// send a notification email to the social worker who saved the child
 					// NOTE: both the form data and the newly saved child are passed in as both contain information that belongs in the email
-					socialWorkerChildRegistrationService.sendNewSocialWorkerChildRegistrationNotificationEmailToSocialWorker( rawChildData, fetchedChild, req.user.get( 'email' ), host );
+					socialWorkerChildRegistrationEmailService.sendNewSocialWorkerChildRegistrationNotificationEmailToSocialWorker( rawChildData, fetchedChild, req.user.get( 'email' ), host );
 				})
 				.catch( err => {
 					// log the error for debugging purposes
@@ -791,7 +791,7 @@ exports.registerChild = ( req, res, next ) => {
 					const [ fetchedChild, contactInfo ] = values;
 					// send a notification email to MARE staff to allow them to enter the information in the old system
 					// NOTE: both the form data and the newly saved child are passed in as both contain information that belongs in the email
-					return socialWorkerChildRegistrationService.sendNewSocialWorkerChildRegistrationNotificationEmailToMARE( rawChildData, fetchedChild, contactInfo, host );
+					return socialWorkerChildRegistrationEmailService.sendNewSocialWorkerChildRegistrationNotificationEmailToMARE( rawChildData, fetchedChild, contactInfo, host );
 				})
 				.catch( err => {
 					// log the error for debugging purposes
