@@ -58,9 +58,9 @@ exports = module.exports = app => {
 	app.get( '/logout'									, middleware.logout );
 	app.post('/login'									, middleware.login );
 	//login forgot password
-	app.post('/recover/generate'						, passwordResetService.resetPassword);
-	app.post('/recover'									, passwordResetService.changePassword);
-	app.get( '/recover'									, passwordResetService.getForm);
+	app.post('/recover/generate'						, passwordResetService.resetPassword );
+	app.post('/recover'									, passwordResetService.changePassword );
+	app.get( '/recover'									, passwordResetService.getForm ); // the view should be rendered in this chain
 	// MARE in the news
 	app.get( '/mare-in-the-news'						, routes.views.mareInTheNewsStories );
 	app.get( '/mare-in-the-news/:key'					, routes.views.mareInTheNewsStory );
