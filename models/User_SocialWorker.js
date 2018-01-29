@@ -275,9 +275,11 @@ SocialWorker.schema.methods.setChangeHistory = function() {
 				},
 				done => {
 					ChangeHistoryMiddleware.checkFieldForChanges({
-												name: 'position',
-												label: 'position',
-												type: 'string' }, model, modelBefore, changeHistory, done);
+												name: 'positions',
+												targetField: 'position',
+												label: 'positions',
+												type: 'relationship',
+												model: 'Social Worker Position' }, model, modelBefore, changeHistory, done);
 				},
 				done => {
 					ChangeHistoryMiddleware.checkFieldForChanges({
