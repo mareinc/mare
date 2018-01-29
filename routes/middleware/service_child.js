@@ -1,11 +1,13 @@
-const keystone								= require( 'keystone' ),
-	  _										= require( 'underscore' ),
-	  async									= require( 'async' ),
-	  middleware							= require( './middleware' ),
-	  familyService							= require( './service_family' ),
-	  listsService							= require( './service_lists' ),
-	  userService							= require( './service_user' ),
-	  socialWorkerChildRegistrationService	= require( './emails_social-worker-child-registration' );
+const keystone									= require( 'keystone' ),
+	  _											= require( 'underscore' ),
+	  async										= require( 'async' ),
+	  middleware								= require( './middleware' ),
+	  emailTargetMiddleware						= require( './service_email-target' ),
+	  staffEmailContactMiddleware				= require( './service_staff-email-contact' ),
+	  familyService								= require( './service_family' ),
+	  listsService								= require( './service_lists' ),
+	  userService								= require( './service_user' ),
+	  socialWorkerChildRegistrationEmailService	= require( './emails_social-worker-child-registration' );
 
 exports.getMaxRegistrationNumber = function() {
 		
@@ -731,22 +733,31 @@ exports.getSiblingGroupDetails = ( req, res, next ) => {
 			done();
 		});
 };
-
+// TODO: this shouldn't return the id, but the entire model to be manipulated by the caller, as should all of these fetch functions
+// TODO: this should be moved to the list service
 exports.fetchChildStatusId = status => {
 
 	return new Promise( ( resolve, reject ) => {
+
 		keystone.list( 'Child Status' ).model
 			.findOne()
 			.where( 'childStatus', status )
 			.exec()
 			.then( status => {
-
-				status ? resolve( status.get( '_id' ) ) : resolve();
-
+				// if we found a child status matching the passed in text
+				if( status ) {
+					//resolve the promise with it's id
+					resolve( status.get( '_id' ) )
+				// if no matching child status was found
+				} else {
+					// TODO: consider throwing and new Error in these cases. This should be a system-wide change for better error handling and messaging
+					// resolve the promise with undefined
+					resolve( `could not find child status matching ${ status }` );
+				}
+			// if an error was encountered
 			}, err => {
-
-				reject();
-
+				// reject the promise with details of the error
+				reject( `error fetching child status matching ${ status }` );
 			});
 	});
 };
@@ -754,51 +765,79 @@ exports.fetchChildStatusId = status => {
 /* called when a social worker attempts to register a family */
 exports.registerChild = ( req, res, next ) => {
 	// extract the child details submitted through the req object
-	const child = req.body;
+	const rawChildData = req.body;
 	// store a reference to locals to allow access to globally available data
 	const locals = res.locals;
 	// set the redirect path to navigate to after processing is complete
 	const redirectPath = '/forms/child-registration-form';
 	// fetch the id for the active child status
 	const fetchActiveChildStatusId = exports.fetchChildStatusId( 'active' );
-	
-	fetchActiveChildStatusId.then( activeChildStatusId => {
-		return exports.saveChild( child, activeChildStatusId );
-	})
-	.then( newChild => {
+	// if the active child status model has been
+	fetchActiveChildStatusId
+		.then( activeChildStatusId => {
+			return exports.saveChild( rawChildData, activeChildStatusId );
+		})
 		// if the new child model was saved successfully
-		// create a success flash message
-		req.flash( 'success', {
-				title: `Congratulations, your child record has been successfully registered.`,
-				detail: `Please note that it can take several days for the child's account to be reviewed and activated.` } );
-		// redirect the user back to the appropriate page
-		res.redirect( 303, redirectPath );
-		
-		// send a notification email to MARE staff to allow them to enter the information in the old system
-		const staffEmailSent		= socialWorkerChildRegistrationService.sendSocialWorkerChildRegistrationConfirmationEmailToStaff( child );
-		// send a notification email to the child's social worker
-		const socialWorkerEmailSent	= socialWorkerChildRegistrationService.sendRegistrationConfirmationEmailToSocialWorker( child );
-		
-		staffEmailSent
-			.catch( err => {
-				console.error( `error sending new child registered by social worker notification to MARE staff - ${ err }` );
-			});
+		.then( newChild => {
+			// create a success flash message
+			req.flash( 'success', {
+					title: `Congratulations, the child you submitted has been successfully registered.`,
+					detail: `Please note that it can take several days for the child's information to be reviewed.` } );
+			// redirect the user back to the appropriate page
+			res.redirect( 303, redirectPath );
+			
+			// get the database id of the social worker who submitted the form
+			const socialWorkerId = req.user.get( '_id' );
+			// store the registration number of the child who was created
+			const childId = newChild.get( 'registrationNumber' );
+			// store the host name to link to the verification code in the account verification email
+			const host = req.secure ? `https://${ req.headers.host }` : `http://${ req.headers.host }`;
 
-		socialWorkerEmailSent
-			.catch( err => {
-				console.error( `error sending new child registered by social worker notification to social worker - ${ err }` );
-			});
-	})
-	.catch( err => {
-		// log the error for debugging purposes
-		console.error( `error saving social worker registered child - ${ err }` );
-		// create an error flash message
-		req.flash( 'error', {
-				title: `There was an error registering your child`,
-				detail: `If this error persists, please notify MARE` } );
-		// redirect the user to the appropriate page
-		res.redirect( 303, locals.redirectPath );
-	});
+			// set the fields to populate on the fetched child model
+			const populateOptions = [ 'languages', 'gender', 'race', 'residence', 'city', 'legalStatus', 'status',
+									  'recommendedFamilyConstellation', 'otherFamilyConstellationConsideration',
+									  'otherConsiderations', 'disabilities' ];
+			
+			// fetch the newly saved child model.  Needed because the saved child object doesn't have the Relationship fields populated
+			const fetchChild = exports.getChildByRegistrationNumberNew( childId, populateOptions );
+			// fetch contact info for the staff contact for children registered by social workers
+			const fetchRegistrationStaffContactInfo = exports.getStaffContactInfo( 'social worker child registration' );
+
+			fetchChild
+				.then( fetchedChild => {
+					// send a notification email to the social worker who saved the child
+					// NOTE: both the form data and the newly saved child are passed in as both contain information that belongs in the email
+					socialWorkerChildRegistrationEmailService.sendNewSocialWorkerChildRegistrationNotificationEmailToSocialWorker( rawChildData, fetchedChild, req.user.get( 'email' ), host );
+				})
+				.catch( err => {
+					// log the error for debugging purposes
+					console.error( `error sending new child registered by social worker email to social worker ${ req.user.name.full } - ${ err }` );
+				});
+
+			Promise.all( [ fetchChild, fetchRegistrationStaffContactInfo ] )
+				.then( values => {
+					// assign local variables to the values returned by the promises
+					const [ fetchedChild, contactInfo ] = values;
+					// send a notification email to MARE staff to allow them to enter the information in the old system
+					// NOTE: both the form data and the newly saved child are passed in as both contain information that belongs in the email
+					return socialWorkerChildRegistrationEmailService.sendNewSocialWorkerChildRegistrationNotificationEmailToMARE( rawChildData, fetchedChild, contactInfo, host );
+				})
+				.catch( err => {
+					// log the error for debugging purposes
+					console.error( `error sending new child registered by social worker email to MARE staff - ${ err }` );
+				});
+		})
+		// if there was an error saving the new child record
+		.catch( err => {
+			// log the error for debugging purposes
+			console.error( `error saving social worker registered child - ${ err }` );
+			// create an error flash message
+			req.flash( 'error', {
+					title: `There was an error registering your child`,
+					detail: `If this error persists, please notify MARE` } );
+			// redirect the user to the appropriate page
+			res.redirect( 303, locals.redirectPath );
+		});
 };
 
 exports.saveChild = ( child, activeChildStatusId ) => {
@@ -837,7 +876,7 @@ exports.saveChild = ( child, activeChildStatusId ) => {
 
 			residence						: child.currentResidence,
 			isOutsideMassachusetts			: child.isNotMACity,
-			city							: child.isNotMACity ? undefined : child.MACity,
+			city							: child.isNotMACity ? undefined : child.city,
 			cityText						: child.isNotMACity ? child.nonMACity : '',
 			
 			careFacilityName				: child.careFacility,
@@ -876,6 +915,31 @@ exports.saveChild = ( child, activeChildStatusId ) => {
 	});
 }
 
+/* returns an array of staff email contacts */
+// TODO: this is reused in several of the services that generate emails, make it a more generic call
+exports.getStaffContactInfo = contactType => {
+
+	return new Promise( ( resolve, reject ) => {
+		// TODO: it was nearly impossible to create a readable comma separated list of links in the template with more than one address,
+		// 	     so we're only fetching one contact when we should fetch them all
+		// get the database id of the admin contact set to handle children registered by social workers
+		emailTargetMiddleware
+			.getTargetId( contactType )
+			.then( targetId => {
+				// get the contact details of the admin contact set to handle registration questions for the target user type
+				return staffEmailContactMiddleware.getContactById( targetId );
+			})
+			.then( contactInfo => {
+				// resolve the promise with the full name and email address of the contact
+				resolve( contactInfo );
+			})
+			.catch( err => {
+				// reject the promise with the reason for the rejection
+				reject( `error fetching staff contact - ${ err }` );
+			});
+	});
+}
+
 // ------------------------------------------------------------------------------------------ //
 
 // TODO: these functions below are copies of functions above built with async.  They're rewritten with Promises
@@ -884,7 +948,7 @@ exports.saveChild = ( child, activeChildStatusId ) => {
 // ------------------------------------------------------------------------------------------ //
 
 /* fetch a single child by their registration number */
-exports.getChildByRegistrationNumberNew = registrationNumber => {
+exports.getChildByRegistrationNumberNew = ( registrationNumber, populateOptions = [] ) => {
 
 	return new Promise( ( resolve, reject ) => {
 		// convert the registration number to a number if it isn't already
@@ -904,6 +968,7 @@ exports.getChildByRegistrationNumberNew = registrationNumber => {
 		keystone.list( 'Child' ).model
 			.findOne()
 			.where( 'registrationNumber' ).equals( targetRegistrationNumber )
+			.populate( populateOptions )
 			.exec()
 			// if the database fetch executed successfully
 			.then( child => {

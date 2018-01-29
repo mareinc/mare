@@ -44,7 +44,9 @@ exports.resetPassword = ( req, res ) => {
 				user.resetPasswordToken = resetToken;
 
 				// the name is stored differently for families than for other models
-				const name = user.get('displayName');
+				const name = user.userType === 'family' ?
+							 user.get( 'displayName' ) :
+							 user.get( 'name.full' );
 				
 				// create an email with the reset token and save the user entity
 				const sendPasswordResetEmail = PasswordResetEmailMiddleware.sendPasswordResetEmail( name, user.email, host, resetToken );
@@ -59,7 +61,7 @@ exports.resetPassword = ( req, res ) => {
 
 						throw new Error( `error sending reset password email - ${ err }` );
 					});
-
+				// TODO: saving the reset token to the user should come first, and an email should only be sent if successful
 				user.save( err => {
 
 					if( err ) {
@@ -90,7 +92,7 @@ exports.resetPassword = ( req, res ) => {
 
 };
 
-// TODO: this function may belong in a different folder
+// TODO: make this an express view
 exports.getForm = ( req, res ) => {
 
 	const resetToken = req.query.resetToken;
@@ -126,7 +128,7 @@ exports.getForm = ( req, res ) => {
 			const view = new keystone.View( req, res ),
 		   
 			locals = res.locals;
-			//pass the reset token to the view
+			// pass the reset token to the view
 			locals.resetToken = resetToken;
 
 			view.render( 'form_reset-password' );
