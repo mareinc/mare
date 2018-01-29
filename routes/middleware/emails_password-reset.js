@@ -2,7 +2,7 @@ const keystone				= require( 'keystone' );
 const utilitiesMiddleware   = require( './utilities' );
 
 exports.sendPasswordResetEmail = ( name, email, host, resetToken ) => {
-
+    // TODO: there is no way to turn these emails off
     return new Promise( ( resolve,reject ) => {
         // find the email template in templates/emails/
 		new keystone.Email({
