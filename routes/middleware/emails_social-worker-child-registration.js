@@ -1,7 +1,7 @@
 const keystone				= require( 'keystone' ),
 	  utilitiesMiddleware   = require( './utilities' );
 
-exports.sendNewSocialWorkerChildRegistrationNotificationEmailToMARE = ( rawChildData, child, registrationStaffContact, host ) => {
+exports.sendNewSocialWorkerChildRegistrationNotificationEmailToMARE = ( rawChildData, child, registrationStaffContact ) => {
 
 	return new Promise( ( resolve, reject ) => {
 		// if sending of the email is not currently allowed
@@ -786,6 +786,7 @@ exports.sendNewSocialWorkerChildRegistrationNotificationEmailToSocialWorker = ( 
 			},
 			subject		: `child registration details`,
 			childName	: child.name.full,
+			host,
 			childData,
 			additionalChildData,
 		
