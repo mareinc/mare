@@ -11,6 +11,9 @@ exports = module.exports = ( req, res ) => {
 	// fetch all data needed to render this page
 	let fetchSidebarItems			= pageService.getSidebarItems();
 
+	// pull registration number(s) from query params to pre-populate form fields
+	locals.registrationNumber = req.query.registrationNumber;
+
 	fetchSidebarItems
 		.then( sidebarItems => {
 			// the sidebar items are a success story and event in an array, assign local variables to the two objects
