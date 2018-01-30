@@ -4,6 +4,8 @@ const keystone                      = require( 'keystone' ),
 	  UserMiddleware                = require( './service_user' );
 
 exports.resetPassword = ( req, res ) => {
+	// store a reference to locals
+	const locals = res.locals;
 
 	if ( !req.body.email ) {
 		// log errors for debugging purposes
@@ -36,20 +38,16 @@ exports.resetPassword = ( req, res ) => {
 				// TODO: should this be stored in a more permanent location?
 				// generate a new password reset token 
 				const resetToken = utilities.generateAlphanumericHash( 35 );
-				// store the host information to ensure changes between http and https are handled correctly
-				const host = req.secure ?
-							 `https://${ req.headers.host }` :
-							 `http://${ req.headers.host }`;
 				// set the reset password token for the user record
 				user.resetPasswordToken = resetToken;
 
 				// the name is stored differently for families than for other models
-				const name = user.userType === 'family' ?
+				const name = user.get( 'userType' ) === 'family' ?
 							 user.get( 'displayName' ) :
 							 user.get( 'name.full' );
 				
 				// create an email with the reset token and save the user entity
-				const sendPasswordResetEmail = PasswordResetEmailMiddleware.sendPasswordResetEmail( name, user.email, host, resetToken );
+				const sendPasswordResetEmail = PasswordResetEmailMiddleware.sendPasswordResetEmail( name, user.email, locals.host, resetToken );
 				// if there was an error sending the password reset email
 				sendPasswordResetEmail
 					.catch( err => {

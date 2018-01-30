@@ -13,6 +13,11 @@ exports.initLocals = function(req, res, next) {
 
 	var locals = res.locals;
 
+	// store the host information to ensure changes between http and https are handled correctly
+	locals.host = req.secure ?
+		`https://${ req.headers.host }` :
+		`http://${ req.headers.host }`;
+
 	locals.navLinks = [
 		{ label: 'Home', key: 'home', href: '/' }
 	];
