@@ -5,9 +5,7 @@
 
 		initialize: function initialize() {
 			// create a view for the child registration form
-			mare.views.familyRegistration = mare.views.familyRegistration || new mare.views.FamilyRegistration();
+			mare.views.socialWorkerFamilyRegistration = mare.views.socialWorkerFamilyRegistration || new mare.views.SocialWorkerFamilyRegistration();
 		}
-
 	});
-
 }());

@@ -3,6 +3,7 @@ const keystone			= require( 'keystone' ),
 	  userService		= require( '../middleware/service_user' ),
 	  eventService		= require( '../middleware/service_event' ),
 	  donationService	= require( '../middleware/service_donation' ),
+	  familyService		= require( '../middleware/service_family' ),
 	  listsService		= require( '../middleware/service_lists' ),
 	  pageService		= require( '../middleware/service_page' ),
 	  mailingListService		= require( '../middleware/service_mailing-list' );
@@ -32,11 +33,17 @@ exports = module.exports = ( req, res ) => {
 		fetchLanguages				= listsService.getAllLanguages(),
 		fetchLegalStatuses			= listsService.getAllLegalStatuses(),
 		fetchOtherConsiderations	= listsService.getAllOtherConsiderations(),
+		fetchSocialWorkerPositions	= listsService.getAllSocialWorkerPositions(),
 		fetchRaces					= listsService.getAllRaces( raceOptions ),
 		fetchStates					= listsService.getAllStates( stateOptions ),
 		fetchChildTypes				= listsService.getChildTypesForWebsite(),
 		fetchMailingLists			= mailingListService.getRegistrationMailingLists()
 	;
+
+	// check to see if the Children tab should be rendered
+	locals.shouldRenderChildrenSection = ( userType === 'social worker' || userType === 'family' );
+	// determine if the user has permissions for bookmarking functionality
+	familyService.setGalleryPermissions( req, res );
 
 	// check to see if the page is being loaded for a newly registered user
 	if ( req.query.newUser ) {
@@ -46,12 +53,12 @@ exports = module.exports = ( req, res ) => {
 	}
 
 	Promise.all( [ fetchEvents, fetchCitiesAndTowns, fetchDisabilities, fetchGenders, fetchLanguages, fetchLegalStatuses,
-		fetchOtherConsiderations, fetchRaces, fetchStates, fetchChildTypes, fetchMailingLists ] )
+		fetchOtherConsiderations, fetchSocialWorkerPositions, fetchRaces, fetchStates, fetchChildTypes, fetchMailingLists ] )
 		.then( values => {
 
 			// assign local variables to the values returned by the promises
 			const [ events, citiesAndTowns, disabilities, genders, languages, legalStatuses,
-				otherConsiderations, races, states, childTypes, mailingLists ] = values;
+				otherConsiderations, socialWorkerPositions, races, states, childTypes, mailingLists ] = values;
 
 			// options to define how truncation will be handled
 			const truncateOptions = { targetLength: 400 };
@@ -74,19 +81,20 @@ exports = module.exports = ( req, res ) => {
 			}
 
 			// assign properties to locals for access during templating
-			locals.user					= req.user;
-			locals.events				= events;
-			locals.hasNoEvents			= events.length === 0;
-			locals.citiesAndTowns		= citiesAndTowns;
-			locals.disabilities			= disabilities;
-			locals.genders				= genders;
-			locals.languages			= languages;
-			locals.legalStatuses		= legalStatuses;
-			locals.otherConsiderations	= otherConsiderations;
-			locals.races				= races;
-			locals.states				= states;
-			locals.childTypes			= childTypes;
-			locals.mailingLists			= mailingLists;
+			locals.user						= req.user;
+			locals.events					= events;
+			locals.hasNoEvents				= events.length === 0;
+			locals.citiesAndTowns			= citiesAndTowns;
+			locals.disabilities				= disabilities;
+			locals.genders					= genders;
+			locals.languages				= languages;
+			locals.legalStatuses			= legalStatuses;
+			locals.otherConsiderations		= otherConsiderations;
+			locals.socialWorkerPositions 	= socialWorkerPositions;
+			locals.races					= races;
+			locals.states					= states;
+			locals.childTypes				= childTypes;
+			locals.mailingLists				= mailingLists;
 
 			// set the layout to render without the right sidebar
 			locals[ 'render-with-sidebar' ] = false;

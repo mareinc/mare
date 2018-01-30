@@ -51,8 +51,7 @@ SocialWorker.add( 'Permissions', {
 
 }, 'Social Worker Information', {
 
-	// position: { type: Types.Relationship, label: 'Position', ref: 'Social Worker Position', initial: true },
-	position: { type: Types.Select, options: 'adoption worker, recruitment worker, supervisor, administrator, family worker, other', label: 'position', initial: true },
+	positions: { type: Types.Relationship, label: 'positions', ref: 'Social Worker Position', many: true, initial: true },
 	agency: { type: Types.Relationship, label: 'agency', ref: 'Agency', filters: { isActive: true }, initial: true },
 	agencyNotListed: { type: Types.Boolean, label: 'agency isn\'t listed', initial: true },
 	agencyText: { type: Types.Text, label: 'agency', dependsOn: { agencyNotListed: true }, initial: true },
@@ -83,7 +82,8 @@ SocialWorker.add( 'Permissions', {
 });
 
 // Set up relationship values to show up at the bottom of the model if any exist
-SocialWorker.relationship( { ref: 'Child', refPath: 'adoptionWorker', path: 'children', label: 'children' } );
+SocialWorker.relationship( { ref: 'Child', refPath: 'adoptionWorker', path: 'childrenAdoption', label: 'adoption worker for' } );
+SocialWorker.relationship( { ref: 'Child', refPath: 'recruitmentWorker', path: 'childrenRecruitment', label: 'recruitment worker for' } );
 SocialWorker.relationship( { ref: 'Family', refPath: 'socialWorker', path: 'families', label: 'families' } );
 SocialWorker.relationship( { ref: 'Inquiry', refPath: 'socialWorker', path: 'my-inquiries', label: 'my inquiries' } );
 SocialWorker.relationship( { ref: 'Inquiry', refPath: 'childsSocialWorker', path: 'family-inquiries', label: 'family inquiries' } );
@@ -274,9 +274,11 @@ SocialWorker.schema.methods.setChangeHistory = function() {
 				},
 				done => {
 					ChangeHistoryMiddleware.checkFieldForChanges({
-												name: 'position',
-												label: 'position',
-												type: 'string' }, model, modelBefore, changeHistory, done);
+												name: 'positions',
+												targetField: 'position',
+												label: 'positions',
+												type: 'relationship',
+												model: 'Social Worker Position' }, model, modelBefore, changeHistory, done);
 				},
 				done => {
 					ChangeHistoryMiddleware.checkFieldForChanges({

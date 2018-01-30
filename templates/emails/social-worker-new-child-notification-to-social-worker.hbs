@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>MARE inquiry accepted</title>
+<title>MARE child registration</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 </head>
 <body style="margin: 0; padding: 0;">
@@ -13,7 +13,7 @@
 					<tr>
 						<td align="center" bgcolor="#3D4573" style="padding: 40px 0 30px 0; color: #ffffff; font-size: 28px; font-weight: bold; font-family: Arial, sans-serif;">
 							<table border="0" cellpadding="0" cellspacing="0">
-									<img src="/dist/img/mare-logo.png" alt="MARE Logo" width="500" height="106" style="display: block;" />
+									<img src="{{ host }}/dist/img/mare-logo.png" alt="MARE Logo" width="500" height="106" style="display: block;" />
 							</table>
 						</td>
 					</tr>
@@ -22,31 +22,28 @@
 							<table border="0" cellpadding="0" cellspacing="0" width="100%">
 								<tr>
 									<td style="color: #153643; font-family: Arial, sans-serif; font-size: 24px;">
-										<b>Your inquiry has been accepted!</b>
+										<b>Your child has been registered</b>
 									</td>
 								</tr>
 								<tr>
-									<td style="padding: 20px 0 100px 0; color: #153643; font-family: Arial, sans-serif; font-size: 15px; line-height: 18px;">
-										Congratulations, after processing your inquiry from <b>{{ inquiryData.takenOn }}</b>, we are excited to inform you that it has been accepted.  <i>I'm sure something awesome happens now, but only Lisa and the gang know what to tell you about it.</i>
-										<i><b>we'll also need to talk about how to handle this text based on what type of inquiry was submitted</b></i>
+									<td style="padding: 20px 0 10px 0; color: #153634; font-family: Ariel, sans-serif; font-size: 16px; line-height: 20px;">
+										<b>The following is the information you submitted for {{ childName }}</b>
 									</td>
 								</tr>
-							</table>
-						</td>
-					</tr>
-					<tr>
-						<td bgcolor="#3D4573" style="padding: 30px 30px 30px 30px;">
-							<table border="0" cellpadding="0" cellspacing="0" width="100%">
+								{{#childData}}
 								<tr>
-									<td align="center" style="color: #ffffff; font-family: Arial, sans-serif; font-size: 14px;" width="100%">
-										Massachusetts Adoption Resource Exchange | <a href="http://mareinc.org/" style="color: #ffffff; text-decoration:none;"><font color="#fffbd7"><b>mareinc.org</b></font></a> 
-										<br/><br/>
-										19 Needham Street, Suite 206 <br/>
-										Newton, MA 02461
-										<br/>
-										(617) 964-6273
+									<td style="padding: 20px 0 0 0; color: #153634; font-family: Ariel, sans-serif; font-size: 16px; line-height: 20px;">
+										<b>{{ key }}:</b> {{ value }}
 									</td>
 								</tr>
+								{{/childData}}
+								{{#additionalChildData}}
+								<tr>
+									<td style="padding: 20px 0 0 0; color: #153634; font-family: Ariel, sans-serif; font-size: 16px; line-height: 20px;">
+										<b>{{ key }}:</b> {{ value }}
+									</td>
+								</tr>
+								{{/additionalChildData}}
 							</table>
 						</td>
 					</tr>
