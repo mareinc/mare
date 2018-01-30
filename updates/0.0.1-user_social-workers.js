@@ -22,7 +22,7 @@ exports.create = {
 			state: 'Massachusetts',
 			zipCode: '02110'
 		},
-		position: 'adoption worker'
+		positions: []
 	},
 	{
 		isActive: true,
@@ -47,7 +47,7 @@ exports.create = {
 			state: 'Massachusetts',
 			zipCode: '02110'
 		},
-		position: 'adoption worker'
+		positions: []
 	},
 	{
 		isActive: true,
@@ -72,7 +72,7 @@ exports.create = {
 			state: 'Massachusetts',
 			zipCode: '02110'
 		},
-		position: 'adoption worker'
+		positions: []
 	},
 	{
 		isActive: true,
@@ -97,7 +97,7 @@ exports.create = {
 			state: 'Massachusetts',
 			zipCode: '02110'
 		},
-		position: 'adoption worker'
+		positions: []
 	},
 	{
 		isActive: true,
@@ -122,6 +122,6 @@ exports.create = {
 			state: 'Massachusetts',
 			zipCode: '02110'
 		},
-		position: 'adoption worker'
+		positions: []
 	}]
 };

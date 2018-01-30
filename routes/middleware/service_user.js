@@ -99,7 +99,6 @@ exports.getUserByEmail = ( email ) => {
 	});
 }
 
-
 /* gets a user by password reset token */ 
 exports.getUserByPasswordResetToken = ( resetToken ) => {
 

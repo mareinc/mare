@@ -1,7 +1,7 @@
 (function () {
 	'use strict';
 
-	mare.views.FamilyRegistration = Backbone.View.extend({
+	mare.views.SocialWorkerFamilyRegistration = Backbone.View.extend({
 		el: '.form--family-registration',
 
 		events: {
