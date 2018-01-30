@@ -30,8 +30,8 @@ exports.getMaxRegistrationNumber = function() {
 };
 // TODO: combine the below two functions, the only difference in the filter in the find()
 exports.getAllChildren = ( req, res, done, fieldsToSelect ) => {
-
-	let locals = res.locals;
+	// store a reference to locals
+	const locals = res.locals;
 
 	keystone.list( 'Child' ).model
 		.find()
@@ -73,8 +73,8 @@ exports.getAllChildren = ( req, res, done, fieldsToSelect ) => {
 };
 
 exports.getChildrenForSocialWorkerAccount = ( req, res, done, fieldsToSelect ) => {
-
-	let locals = res.locals;	
+	// store a reference to locals
+	const locals = res.locals;	
 	// create a map to convert social worker positions to their corresponding field names on the Child model
 	const socialWorkerPositionFieldNames = {
 		'adoption worker': 'adoptionWorker',
@@ -178,8 +178,8 @@ exports.getChildrenForSocialWorkerAccount = ( req, res, done, fieldsToSelect ) =
 };
 
 exports.getChildrenForFamilyAccount = ( req, res, done, fieldsToSelect ) => {
-
-	let locals = res.locals;
+	// store a reference to locals
+	const locals = res.locals;
 
 	let bookmarkedChildren = locals.user.bookmarkedChildren.concat( locals.user.bookmarkedSiblings );
 
@@ -246,8 +246,8 @@ exports.getChildrenByIds = idsArray => {
 };
 
 exports.getUnrestrictedChildren = ( req, res, done, fieldsToSelect ) => {
-
-	var locals = res.locals;
+	// store a reference to locals
+	const locals = res.locals;
 	
 	// find all children who are active, and are either visible to everyone or have the 'child is visible on MARE web' checkbox checked
 	keystone.list( 'Child' ).model
@@ -358,8 +358,8 @@ exports.setNoChildImage = ( req, res, child, canViewAllChildren ) => {
 };
 // TODO: combine the below two functions, and adjust the calling code to pass and accept arrays
 exports.getChildByRegistrationNumber = ( req, res, done, registrationNumber ) => {
-
-	let locals = res.locals;
+	// store a reference to locals
+	const locals = res.locals;
 	// convert the number as a string to a number
 	const targetRegistrationNumber = parseInt( registrationNumber, 10 );
 
@@ -384,8 +384,8 @@ exports.getChildByRegistrationNumber = ( req, res, done, registrationNumber ) =>
 };
 
 exports.getChildrenByRegistrationNumbers = ( req, res, done, registrationNumbers ) => {
-
-	let locals = res.locals;
+	// store a reference to locals
+	const locals = res.locals;
 	// convert the array of numbers as strings to an array of numbers
 	const targetRegistrationNumbers = registrationNumbers.map( registrationNumber => parseInt( registrationNumber, 10 ) );
 
@@ -411,8 +411,8 @@ exports.getChildrenByRegistrationNumbers = ( req, res, done, registrationNumbers
 
 /* Expose the child data for the gallery view to the front-end via an API call */
 exports.getGalleryData = ( req, res, next ) => {
-
-	let locals				= res.locals;
+	// store a reference to locals
+	const locals = res.locals;
 	// create an array to store all children we fetch from the database
 	locals.allChildren		= [];
 	// create sets to store the individual children and sibling groups
@@ -764,10 +764,10 @@ exports.fetchChildStatusId = status => {
 
 /* called when a social worker attempts to register a family */
 exports.registerChild = ( req, res, next ) => {
+	// store a reference to locals
+	const locals = res.locals;
 	// extract the child details submitted through the req object
 	const rawChildData = req.body;
-	// store a reference to locals to allow access to globally available data
-	const locals = res.locals;
 	// set the redirect path to navigate to after processing is complete
 	const redirectPath = '/forms/child-registration-form';
 	// fetch the id for the active child status
@@ -790,8 +790,6 @@ exports.registerChild = ( req, res, next ) => {
 			const socialWorkerId = req.user.get( '_id' );
 			// store the registration number of the child who was created
 			const childId = newChild.get( 'registrationNumber' );
-			// store the host name to link to the verification code in the account verification email
-			const host = req.secure ? `https://${ req.headers.host }` : `http://${ req.headers.host }`;
 
 			// set the fields to populate on the fetched child model
 			const populateOptions = [ 'languages', 'gender', 'race', 'residence', 'city', 'legalStatus', 'status',
@@ -807,7 +805,7 @@ exports.registerChild = ( req, res, next ) => {
 				.then( fetchedChild => {
 					// send a notification email to the social worker who saved the child
 					// NOTE: both the form data and the newly saved child are passed in as both contain information that belongs in the email
-					socialWorkerChildRegistrationEmailService.sendNewSocialWorkerChildRegistrationNotificationEmailToSocialWorker( rawChildData, fetchedChild, req.user.get( 'email' ), host );
+					socialWorkerChildRegistrationEmailService.sendNewSocialWorkerChildRegistrationNotificationEmailToSocialWorker( rawChildData, fetchedChild, req.user.get( 'email' ), locals.host );
 				})
 				.catch( err => {
 					// log the error for debugging purposes
@@ -820,7 +818,7 @@ exports.registerChild = ( req, res, next ) => {
 					const [ fetchedChild, contactInfo ] = values;
 					// send a notification email to MARE staff to allow them to enter the information in the old system
 					// NOTE: both the form data and the newly saved child are passed in as both contain information that belongs in the email
-					return socialWorkerChildRegistrationEmailService.sendNewSocialWorkerChildRegistrationNotificationEmailToMARE( rawChildData, fetchedChild, contactInfo, host );
+					return socialWorkerChildRegistrationEmailService.sendNewSocialWorkerChildRegistrationNotificationEmailToMARE( rawChildData, fetchedChild, contactInfo );
 				})
 				.catch( err => {
 					// log the error for debugging purposes

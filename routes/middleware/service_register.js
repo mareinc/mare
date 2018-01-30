@@ -14,6 +14,8 @@ const keystone 						= require( 'keystone' ),
 	  flashMessages					= require( './service_flash-messages' );
 
 exports.registerUser = ( req, res, next ) => {
+	// store a reference to locals
+	const locals = res.locals;
 	// extract the submitted user information
 	const user = req.body;
 	// store the registration type which determines which path we take during registration
@@ -54,8 +56,6 @@ exports.registerUser = ( req, res, next ) => {
 							const userId = newSiteVisitor.get( '_id' );
 							// store the user type found in the returned model
 							const userType = newSiteVisitor.userType;
-							// store the host name to link to the verification code in the account verification email
-							const host = req.secure ? `https://${ req.headers.host }` : `http://${ req.headers.host }`;
 							// store the array of mailing list ids the user has opted into
 							const mailingListIds = user.mailingLists;
 							// set the fields to populate on the fetched user model
@@ -91,7 +91,7 @@ exports.registerUser = ( req, res, next ) => {
 							createVerificationRecord
 								.then( verificationRecord => {
 									// send the account verification email to the user
-									return registrationEmailMiddleware.sendAccountVerificationEmailToUser( newSiteVisitor.get( 'email' ), userType, verificationCode, host );
+									return registrationEmailMiddleware.sendAccountVerificationEmailToUser( newSiteVisitor.get( 'email' ), userType, verificationCode, locals.host );
 								})
 								.catch( err => {
 									// log the error for debugging purposes
@@ -141,8 +141,6 @@ exports.registerUser = ( req, res, next ) => {
 							const userId = newSocialWorker.get( '_id' );
 							// store the user type found in the returned model
 							const userType = newSocialWorker.userType;
-							// store the host name to link to the verification code in the account verification email
-							const host = req.secure ? `https://${ req.headers.host }` : `http://${ req.headers.host }`;
 							// store the array of mailing list ids the user has opted into
 							const mailingListIds = user.mailingLists;
 							// set the fields to populate on the fetched user model
@@ -178,7 +176,7 @@ exports.registerUser = ( req, res, next ) => {
 							createVerificationRecord
 								.then( verificationRecord => {
 									// send the account verification email to the user
-									return registrationEmailMiddleware.sendAccountVerificationEmailToUser( newSocialWorker.get( 'email' ), userType, verificationCode, host );
+									return registrationEmailMiddleware.sendAccountVerificationEmailToUser( newSocialWorker.get( 'email' ), userType, verificationCode, locals.host );
 								})
 								.catch( err => {
 									// log the error for debugging purposes
@@ -231,8 +229,6 @@ exports.registerUser = ( req, res, next ) => {
 							const userId = newFamily.get( '_id' );
 							// store the user type found in the returned model
 							const userType = newFamily.userType;
-							// store the host name to link to the verification code in the account verification email
-							const host = req.secure ? `https://${ req.headers.host }` : `http://${ req.headers.host }`;
 							// store the array of mailing list ids the user has opted into
 							const mailingListIds = user.mailingLists;
 							// set the fields to populate on the fetched user model
@@ -298,7 +294,7 @@ exports.registerUser = ( req, res, next ) => {
 							createVerificationRecord
 								.then( verificationRecord => {
 									// send the account verification email to the user
-									return registrationEmailMiddleware.sendAccountVerificationEmailToUser( newFamily.get( 'email' ), userType, verificationCode, host );
+									return registrationEmailMiddleware.sendAccountVerificationEmailToUser( newFamily.get( 'email' ), userType, verificationCode, locals.host );
 								})
 								.catch( err => {
 									// log the error for debugging purposes
