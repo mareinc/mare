@@ -16,6 +16,7 @@ exports.getLanguagesMap = ( req, res, done ) => {
 		done => { dataMigrationService.getModelId( { model: 'Language', field: 'language', value: 'Russian', mapTo: [ 'russian' ], namespace: locals.migration.maps.languages }, done ); },
 		done => { dataMigrationService.getModelId( { model: 'Language', field: 'language', value: 'Spanish', mapTo: [ 'spanish', 'sapanish', 'spansih', 'spanis', 'spanih', 'span', 'spa', 'sp' ], namespace: locals.migration.maps.languages }, done ); },
 		done => { dataMigrationService.getModelId( { model: 'Language', field: 'language', value: 'French', mapTo: [ 'french', 'creole', 'french creole' ], namespace: locals.migration.maps.languages }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'Language', field: 'language', value: 'Haitian Creole', mapTo: [ 'haitiancreole' ], namespace: locals.migration.maps.languages }, done ); },
 		done => { dataMigrationService.getModelId( { model: 'Language', field: 'language', value: 'other', mapTo: [ 'other', 'arabic', 'laos', 'khmer', 'grebo', 'greek', 'lebanese' ], namespace: locals.migration.maps.languages }, done ); },
 		done => { dataMigrationService.getModelId( { model: 'Language', field: 'language', value: 'non-verbal', mapTo: [ 'non-verbal', 'nonverbal', 'english (non-verbal)' ], namespace: locals.migration.maps.languages }, done ); },
 		done => { dataMigrationService.getModelId( { model: 'Language', field: 'language', value: 'ASL', mapTo: [ 'asl', 'sign language' ], namespace: locals.migration.maps.languages }, done ); }

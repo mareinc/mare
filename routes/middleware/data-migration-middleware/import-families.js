@@ -137,7 +137,7 @@ module.exports.createFamilyRecord = ( family, pauseUntilSaved ) => {
 		let allLanguagesArray = family.primary_language
 									.trim()
 									.replace( '/', ',' )
-									.replace( 'Haitian Creole/Eng', 'Haitian Creole, English' ) // This has to be done since the space is used as a delimeter in some cases
+									.replace( 'Haitian Creole', 'haitiancreole' )
 									.replace( '-', ',' )
 									.replace( ' ', ',' )
 									.split( ',' ); // redo to get dash handling back, add break on space ( 'english spanish' ) and / ( French/English )
@@ -164,12 +164,7 @@ module.exports.createFamilyRecord = ( family, pauseUntilSaved ) => {
 	// if the family has no primary language listed
 	if( !primaryLanguage ) {
 		// store a reference to the entry that caused the error
-		importErrors.push( { id: family.fam_id, error: `missing family constellation: ${ primaryLanguage }` } );
-	}
-	// if the family has no state listed
-	if( !family.state ) {
-		// push an error so we can easily identify to problematic entries
-		importErrors.push( { id: family.fam_id, error: 'no state information provided' } );
+		importErrors.push( { id: family.fam_id, error: `missing primary language: ${ primaryLanguage }` } );
 	}
 	// if the family has no city listed
 	if( !family.city ) {
@@ -177,7 +172,8 @@ module.exports.createFamilyRecord = ( family, pauseUntilSaved ) => {
 		importErrors.push( { id: family.fam_id, error: 'no city information provided' } );
 	}
 	// adjust cities / towns in MA to have names the system expects so it can find their records
-	switch( family.city ) {
+	switch( family.city.trim() ) {
+		case `?`: family.city = `not specified`; break;
 		case `1`: family.city = `not specified`; break;
 		case `11`: family.city = `not specified`; break;
 		case `111`: family.city = `not specified`; break;
@@ -224,6 +220,7 @@ module.exports.createFamilyRecord = ( family, pauseUntilSaved ) => {
 		case `main`: family.city = `not specified`; break;
 		case `Martinsville`: family.city = `not specified`; break;
 		case `Massachusetts`: family.city = `not specified`; break;
+		case `Moberly`: family.city = `not specified`; break;
 		case `Mount Hermon`: family.city = `not specified`; break;
 		case `Mt Hermon`: family.city = `not specified`; break;
 		case `Murfreesboro`: family.city = `not specified`; break;
@@ -232,6 +229,7 @@ module.exports.createFamilyRecord = ( family, pauseUntilSaved ) => {
 		case `na`: family.city = `not specified`; break;
 		case `Nashua`: family.city = `not specified`; break;
 		case `New Haven`: family.city = `not specified`; break;
+		case `North Shore`: family.city = `not specified`; break;
 		case `Newport`: family.city = `not specified`; break;
 		case `no`: family.city = `not specified`; break;
 		case `No address given`: family.city = `not specified`; break;
@@ -255,6 +253,7 @@ module.exports.createFamilyRecord = ( family, pauseUntilSaved ) => {
 		case `Rockwood`: family.city = `not specified`; break;
 		case `Scarborough`: family.city = `not specified`; break;
 		case `See Comments`: family.city = `not specified`; break;
+		case `Seogwipo`: family.city = `not specified`; break;
 		case `Southern Region`: family.city = `not specified`; break;
 		case `Stonington`: family.city = `not specified`; break;
 		case `stoughton`: family.city = `Stoughton`; break;
@@ -271,6 +270,7 @@ module.exports.createFamilyRecord = ( family, pauseUntilSaved ) => {
 		case `Vancouver`: family.city = `not specified`; break;
 		case `Verona`: family.city = `not specified`; break;
 		case `western MA`: family.city = `not specified`; break;
+		case `Western MA`: family.city = `not specified`; break;
 		case `will not give`: family.city = `not specified`; break;
 		case `Wilton`: family.city = `not specified`; break;
 		case `Winston`: family.city = `not specified`; break;
@@ -289,7 +289,7 @@ module.exports.createFamilyRecord = ( family, pauseUntilSaved ) => {
 		case `xxxxxxxxxxxxxxx`: family.city = `not specified`; break;
 		case `YYYYYY`: family.city = `not specified`; break;
 		case `Dorcehster`: family.city = `Dorchester`; break;
-		case `Boston`: family.city = `Boston`; break;
+		case `Bpston`: family.city = `Boston`; break;
 		case `.Danvers`: family.city = `Danvers`; break;
 		case `North Marshfield`: family.city = `Marshfield`; break;
 		case `W. Peabody`: family.city = `Peabody`; break;
@@ -377,6 +377,7 @@ module.exports.createFamilyRecord = ( family, pauseUntilSaved ) => {
 		case `W Barnstable`: family.city = `Barnstable`; break;
 		case `E. Walpole`: family.city = `Walpole`; break;
 		case `dedham`: family.city = `Dedham`; break;
+		case `Deham`: family.city = `Dedham`; break;
 		case `norfolk`: family.city = `Norfolk`; break;
 		case `E Weymouth`: family.city = `Weymouth`; break;
 		case `Barry`: family.city = `Barre`; break;
@@ -545,6 +546,7 @@ module.exports.createFamilyRecord = ( family, pauseUntilSaved ) => {
 		case `braintree`: family.city = `Braintree`; break;
 		case `Brant Rock`: family.city = `Marshfield`; break;
 		case `Bridgerwater`: family.city = `Bridgewater`; break;
+		case `BRIGHTON`: family.city = `Brighton`; break;
 		case `Brocton`: family.city = `Brockton`; break;
 		case `brockton`: family.city = `Brockton`; break;
 		case `BROCKTON`: family.city = `Brockton`; break;
@@ -576,6 +578,7 @@ module.exports.createFamilyRecord = ( family, pauseUntilSaved ) => {
 		case `Cotuit`: family.city = `Barnstable`; break;
 		case `Cummington Road`: family.city = `Cummington`; break;
 		case `Dancers`: family.city = `Danvers`; break;
+		case `danvers`: family.city = `Danvers`; break;
 		case `Danville`: family.city = `Granville`; break;	
 		case `Darmouth`: family.city = `Dartmouth`; break;
 		case `Darthmouth`: family.city = `Dartmouth`; break;
@@ -593,6 +596,7 @@ module.exports.createFamilyRecord = ( family, pauseUntilSaved ) => {
 		case `Duxsbury`: family.city = `Duxbury`; break;
 		case `Dudely`: family.city = `Dudley`; break;
 		case `E Freetown`: family.city = `Freetown`; break;
+		case `E Longmeadow`: family.city = `East Longmeadow`; break;
 		case `E Sandwich`: family.city = `Sandwich`; break;
 		case `E Taunton`: family.city = `Taunton`; break;
 		case `E Walpole`: family.city = `Walpole`; break;
@@ -611,6 +615,7 @@ module.exports.createFamilyRecord = ( family, pauseUntilSaved ) => {
 		case `East Alpole`: family.city = `Walpole`; break;
 		case `East  Weymouth`: family.city = `Weymouth`; break;
 		case `East Bridgwater`: family.city = `East Bridgewater`; break;
+		case `east bridgewater`: family.city = `East Bridgewater`; break;
 		case `East Dennis`: family.city = `Dennis`; break;
 		case `East Douglas`: family.city = `Douglas`; break;
 		case `East Hampton`: family.city = `Easthampton`; break;
@@ -640,6 +645,7 @@ module.exports.createFamilyRecord = ( family, pauseUntilSaved ) => {
 		case `Everret`: family.city = `Everett`; break;
 		case `E7 Chelmsford`: family.city = `Chelmsford`; break;
 		case `Fair Haven`: family.city = `Fairhaven`; break;
+		case `FALMOUTH`: family.city = `Falmouth`; break;
 		case `Fall  River`: family.city = `Fall River`; break;
 		case `FAll River`: family.city = `Fall River`; break;
 		case `fall river`: family.city = `Fall River`; break;
@@ -666,6 +672,7 @@ module.exports.createFamilyRecord = ( family, pauseUntilSaved ) => {
 		case `Framigham`: family.city = `Framingham`; break;
 		case `framingham`: family.city = `Framingham`; break;
 		case `Framinghan`: family.city = `Framingham`; break;
+		case `FRAMINGHAM`: family.city = `Framingham`; break;
 		case `Framinham`: family.city = `Framingham`; break;
 		case `Frankin`: family.city = `Franklin`; break;
 		case `Frankliln`: family.city = `Franklin`; break;
@@ -758,6 +765,7 @@ module.exports.createFamilyRecord = ( family, pauseUntilSaved ) => {
 		case `Lynwood`: family.city = `Lynnfield`; break;
 		case `Magnolia`: family.city = `Gloucester`; break;
 		case `Malborough`: family.city = `Marlborough`; break;
+		case `MARLBOROUGH`: family.city = `Marlborough`; break;
 		case `malden`: family.city = `Malden`; break;
 		case `Manchaug`: family.city = `Sutton`; break;
 		case `Manchester by Sea`: family.city = `Manchester`; break;
@@ -780,8 +788,10 @@ module.exports.createFamilyRecord = ( family, pauseUntilSaved ) => {
 		case `Mashapee`: family.city = `Mashpee`; break;
 		case `Mathuen`: family.city = `Methuen`; break;
 		case `Mattapan`: family.city = `Boston`; break;
+		case `mattapan`: family.city = `Boston`; break;
 		case `Mattapisett`: family.city = `Mattapoisett`; break;
 		case `medford`: family.city = `Medford`; break;
+		case `melrose`: family.city = `Melrose`; break;
 		case `mendon`: family.city = `Mendon`; break;
 		case `Metheuen`: family.city = `Methuen`; break;
 		case `Metheun`: family.city = `Methuen`; break;
@@ -865,6 +875,7 @@ module.exports.createFamilyRecord = ( family, pauseUntilSaved ) => {
 		case `North Eastham`: family.city = `Eastham`; break;
 		case `North Eaton`: family.city = `North Easton`; break;
 		case `North Falmouth`: family.city = `Falmouth`; break;
+		case `North falmouth`: family.city = `Falmouth`; break;
 		case `North Grafton`: family.city = `Grafton`; break;
 		case `north grafton`: family.city = `Grafton`; break;
 		case `North Hatfield`: family.city = `Hatfield`; break;
@@ -950,6 +961,7 @@ module.exports.createFamilyRecord = ( family, pauseUntilSaved ) => {
 		case `S.Hamilton`: family.city = `Hamilton`; break;
 		case `S.Ludlow`: family.city = `Ludlow`; break;
 		case `salem`: family.city = `Salem`; break;
+		case `Salem/Peabody`: family.city = `Salem`; break;
 		case `STOW`: family.city = `Stow`; break;
 		case `Sagamore Beach`: family.city = `Sagamore`; break;
 		case `saugus`: family.city = `Saugus`; break;
@@ -993,8 +1005,10 @@ module.exports.createFamilyRecord = ( family, pauseUntilSaved ) => {
 		case `Southfield`: family.city = `New Marlborough`; break;
 		case `Southfiled`: family.city = `New Marlborough`; break;
 		case `spencer`: family.city = `Spencer`; break;
+		case `SPENCER`: family.city = `Spencer`; break;
 		case `Sprinfield`: family.city = `Springfield`; break;
 		case `springfield`: family.city = `Springfield`; break;
+		case `Springfield,`: family.city = `Springfield`; break;
 		case `Springfiled`: family.city = `Springfield`; break;
 		case `Springlfield`: family.city = `Springfield`; break;
 		case `Springhill`: family.city = `Somerville`; break;
@@ -1050,6 +1064,7 @@ module.exports.createFamilyRecord = ( family, pauseUntilSaved ) => {
 		case `weymouth`: family.city = `Weymouth`; break;
 		case `Watetown`: family.city = `Watertown`; break;
 		case `Waymouth`: family.city = `Weymouth`; break;
+		case `wayland`: family.city = `Wayland`; break;
 		case `wellesley`: family.city = `Wellesley`; break;
 		case `Wellesley Hills`: family.city = `Wellesley`; break;
 		case `Wellsley`: family.city = `Wellesley`; break;
@@ -1071,6 +1086,7 @@ module.exports.createFamilyRecord = ( family, pauseUntilSaved ) => {
 		case `West  Newbury`: family.city = `West Newbury`; break;
 		case `West Point`: family.city = `Westport`; break;
 		case `West. Roxbury`: family.city = `Roxbury`; break;
+		case `West Spingfield`: family.city = `Springfield`; break;
 		case `West Sprinfield`: family.city = `Springfield`; break;
 		case `West Springfield`: family.city = `Springfield`; break;
 		case `west springfield`: family.city = `Springfield`; break;
@@ -1098,6 +1114,7 @@ module.exports.createFamilyRecord = ( family, pauseUntilSaved ) => {
 		case `Wilminghton`: family.city = `Wilmington`; break;
 		case `wilmington`: family.city = `Wilmington`; break;
 		case `Winchedon`: family.city = `Winchendon`; break;
+		case `winchendon`: family.city = `Winchendon`; break;
 		case `winchester`: family.city = `Winchester`; break;
 		case `woburn`: family.city = `Woburn`; break;
 		case `Woburn,`: family.city = `Woburn`; break;
@@ -1108,6 +1125,7 @@ module.exports.createFamilyRecord = ( family, pauseUntilSaved ) => {
 		case `Worcetser`: family.city = `Worcester`; break;
 		case `worcester`: family.city = `Worcester`; break;
 		case `Worchester`: family.city = `Worcester`; break;
+		case `Worcster`: family.city = `Worcester`; break;
 		case `Wrenthan`: family.city = `Wrentham`; break;
 		case `Wretham`: family.city = `Wrentham`; break;
 		case `Wymouth`: family.city = `Weymouth`; break;
@@ -1120,10 +1138,6 @@ module.exports.createFamilyRecord = ( family, pauseUntilSaved ) => {
 		.then( cityOrTown => {
 			// populate instance for Family object
 			let newFamily = new Family.model({
-				// every family needs an email, this will generate a placeholder which will be updated during the family contacts import
-				email: `placeholder0${ family.fam_id }@email.com`,
-				// every family needs a password, this will generate a placeholder which will be updated during the family contacts import
-				password: `${ family.fam_id }`,
 
 				isActive: family.status === 'A' || family.status === 'H',
 

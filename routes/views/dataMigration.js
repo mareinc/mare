@@ -110,6 +110,7 @@ exports = module.exports = ( req, res ) => {
 		// done => { socialWorkerImport.importSocialWorkers( req, res, done ); },
 		// done => { agencyContactsImport.appendAgencyContacts( req, res, done ); },
 
+		// IMPORTANT: remove all children and child histories before running
 		// IMPORTANT: comment out the following in pre-save: setImages, setRegistrationNumber, setSiblingGroupFileName, updateMustBePlacedWithSiblingsCheckbox, updateGroupBio
 		// IMPORTANT: comment out the following in post-save: updateSiblingFields, updateBookmarks
 		// done => { childrenImport.importChildren( req, res, done ); },
@@ -120,15 +121,18 @@ exports = module.exports = ( req, res ) => {
 		// done => { childMediaEligibilitiesImport.appendMediaEligibilities( req, res, done ); },
 		// done => { childDisabilitiesImport.appendDisabilities( req, res, done ); },
 		
-		// IMPORTANT: uncomment the pre-save hook and make only the following functions active: setSiblingGroupFileName, updateMustBePlacedWithSiblingsCheckbox, updateGroupBio
-		// IMPORTANT: uncomment the post-save hook and make only the following function active: updateSiblingFields
+		// IMPORTANT: uncomment the pre-save hook and make only the following functions are active: setSiblingGroupFileName, updateMustBePlacedWithSiblingsCheckbox, updateGroupBio
+		// IMPORTANT: uncomment the post-save hook and make only the following function is active: updateSiblingFields
 		// done => { childSiblingsImport.appendSiblings( req, res, done ); },
 		// done => { childRecruitmentChecklistImport.appendChildRecruitmentChecklists( req, res ,done ); },		// not done - don't need to do
 		// done => { childMediaFeaturesImport.appendMediaFeatures( req, res, done ); },							// not done - don't think we need to do this, check with Lisa.  Possibly handled with mediaFeatureChildImport
 		// IMPORTANT: the child pre/post save hooks can be restored
 		// done => { mediaFeatureChildImport.appendChildren( req, res, done ); },
 		
-		// IMPORTANT: comment out the following in pre-save: setHomestudyVerifiedDate, setFullName, setFileName, setGalleryViewingPermissions
+		// IMPORTANT: remove all families and family histories before running
+		// IMPORTANT: comment out the following in pre-save: setHomestudyVerifiedDate, setFullName, setDisplayName, setFileName, setGalleryViewingPermissions
+		// IMPORTANT: comment out this.setDisplayNameAndRegistrationLabel(); in the final .then() clause
+		// COMMAND TO REMOVE FAMILIES: db.users.remove({ userType: "family" })
 		// done => { familiesImport.importFamilies( req, res, done ); },
 		
 		// IMPORTANT: comment out the entire pre-save and post-save hooks
@@ -138,7 +142,7 @@ exports = module.exports = ( req, res ) => {
 		// done => { familySupportServicesImport.appendFamilySupportServices( req, res, done ); },
 		// IMPORTANT: uncomment the pre-save hook and make only the following functions active: setFullName, setDisplayName, and setFileName
 		// done => { familyContactsImport.appendFamilyContacts( req, res, done ); },
-		// IMPORTANT: uncomment comment out the entire pre-save and post-save hooks
+		// IMPORTANT: comment out the entire pre-save and post-save hooks
 		// done => { familyChildrenImport.appendFamilyChildren( req, res, done ); },
 		// done => { familyRecruitmentChecklistImport.appendFamilyRecruitmentChecklists( req, res ,done );		// not done // DON'T NEED TO DO
 
@@ -150,7 +154,7 @@ exports = module.exports = ( req, res ) => {
 		// done => { inquiryChildrenImport.appendInquiryChildren( req, res, done ); },								// not done, call child
 		// done => { inquiryNotesImport.appendInquiryNotes( req, res, done ); },									// not done, call note
 		// done => { eventsImport.importEvents( req, res, done ); },
-		done => { eventAttendeeImport.appendEventAttendees( req, res, done ); },
+		// done => { eventAttendeeImport.appendEventAttendees( req, res, done ); },
 		// done => { mailingListAttendeesImport.importMailingListAttendees( req, res, done ); },					// not done
 		// IMPORTANT: I think family backup is family internal notes
 		// done => { familyInternalNotesImport.importInternalNotes( req, res, done ); }							// not done

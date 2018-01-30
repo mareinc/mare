@@ -119,8 +119,6 @@ module.exports.createSocialWorkerRecord = ( socialWorker, pauseUntilSaved ) => {
 		}
 				// populate fields of a new SocialWorker object
 				let newSocialWorker = new SocialWorker.model({
-					// every social worker needs a password, this will generate one we can easily determine at a later date while still being unique
-					password: `${ socialWorker.first_name }_${ socialWorker.last_name }_${ socialWorker.agc_id }`,
 
 					isActive: socialWorker.is_active === 'Y',
 					
@@ -133,7 +131,7 @@ module.exports.createSocialWorkerRecord = ( socialWorker, pauseUntilSaved ) => {
 						last: socialWorker.last_name ? socialWorker.last_name.trim() : undefined
 					},
 					// TODO: every social worker needs an email address, this is just a placeholder until Lisa tells us how to handle these records
-					email: socialWorker.email ? socialWorker.email.trim().toLowerCase() : `placeholder${ socialWorker.agc_id }@email.com`,
+					email: socialWorker.email ? socialWorker.email.trim().toLowerCase() : undefined,
 
 					phone: {
 						work: socialWorker.phone ? socialWorker.phone.trim() : undefined

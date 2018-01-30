@@ -389,7 +389,13 @@ module.exports.getEventById = ( resolve, reject, eventId ) => {
 module.exports.getAdminById = ( resolve, reject, adminId ) => {
 
 	return new Promise( (resolve, reject ) => {
-		/* TODO: short circuit the fetch here by just resolving if there are no oldIds */
+		
+		// if no admin id was passed in
+		if( !adminId ) {
+			// resolve the promise with an undefined value
+			return resolve();
+		}
+
 		Admin.model
 			.findOne()
 			.where( 'oldId', adminId )
