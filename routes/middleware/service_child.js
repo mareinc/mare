@@ -148,7 +148,7 @@ exports.getChildrenForSocialWorkerAccount = ( req, res, done, fieldsToSelect ) =
 									});
 
 									// remove children that have already been placed
-									let unplacedChildren = children.filter( child => child.status.childStatus != 'placed' );
+									let unplacedChildren = children.filter( child => child.status.childStatus !== 'placed' );
 
 									locals.allChildren = unplacedChildren;
 									// execute done function if async is used to continue the flow of execution
