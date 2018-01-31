@@ -198,52 +198,70 @@ exports.getRandomEvent = () => {
 
 /* event creation submitted through the agency event submission form */
 exports.submitEvent = function submitEvent( req, res, next ) {
-
-	const event = req.body;
+	// store the event and social worker information in a local variable
+	const event			= req.body,
+		  socialWorker	= req.user;
 
 	// attempt to create the event
-	let createEvent = exports.createEvent( event );
+	const createEvent = exports.createEvent( event );
 
 	// once the event has been successfully created
 	createEvent
 		.then( event => {
 			// create a success flash message
 			req.flash( 'success', {
-						title: 'Your event has been submitted',
-						detail: 'once your event has been approved by the MARE staff, you will receive a notification email.  If you don\'t receive an email within 5 business days, please contact [some mare contact] for a status update.'} );
-			// reload the form to display the flash message
-			res.redirect( 303, '/forms/agency-event-submission-form' );
-
+				title: 'Your event has been submitted',
+				detail: 'once your event has been approved by MARE staff, you will receive a notification email.  If you don\'t receive an email within 5 business days, please contact [some mare contact] for a status update.'} );
+			
 			// set the fields to populate on the fetched event model
-			const populateOptions = [ 'contact', 'address.state' ];
-
-			// fetch the event model.  Needed because the copy we have doesn't have the Relationship fields populated
-			const fetchEvent = eventService.getEventById( event.get( '_id' ), populateOptions );
-			// fetch contact info for the staff contact for site visitor registration
-			const fetchEventStaffContactInfo = exports.getEventStaffContactInfo( 'event created by social worker' );
-		
-			Promise.all( [ fetchEvent, fetchEventStaffContactInfo ] )
-				.then( values => {
-					// assign local variables to the values returned by the promises
-					const [ newEvent, staffContact ] = values;
-					// send a notification email to MARE staff to allow them to enter the information in the old system
-					return eventEmailMiddleware.sendNewEventEmailToMARE( newEvent, req.user, staffContact );
-				})
-				.catch( err => {
-					// convert the event date from a date object into a readable string
-					const eventDate = `${ newEvent.startDate.getMonth() + 1 }/${ newEvent.startDate.getDate() }/${ newEvent.startDate.getFullYear() }`;
+			const populateOptions = [ 'contact', 'address.state' ];		
+			// populate the Relationship fields on the event
+			event.populate( populateOptions, err => {
+				// if there was an error populating Relationship fields on the event
+				if ( err ) {
 					// log the error for debugging purposes
-					console.error( `error sending new event created email to MARE contact about ${ newEvent.get( 'name' ) } on ${ eventDate } from ${ newEvent.startTime } to ${ newEvent.endTime } - ${ err }` );
-				});
+					console.error( `error populating the new event fields` );
+				// if there were no errors populating Relationship fields on the event
+				} else {
+					// fetch the email target model matching 'event created by social worker'
+					const fetchEmailTarget = emailTargetMiddleware.getEmailTargetByName( 'event created by social worker' );
+					
+					fetchEmailTarget
+						// if we successfully fetched the email target model
+						.then( emailTarget => {
+							// set the fields to populate on the staff email contact model
+							const populateOptions = [ 'staffEmailContact' ];
+							// fetch contact info for the staff contact for 'event created by social worker'
+							return staffEmailContactMiddleware.getStaffEmailContactByEmailTarget( emailTarget.get( '_id' ), populateOptions );
+						})
+						// if we successfully fetched the staff email contact
+						.then( staffEmailContact => {
+							// send a notification email to MARE staff to allow them to enter the information in the old system
+							return eventEmailMiddleware.sendNewEventEmailToMARE( event, socialWorker, staffEmailContact );
+						})
+						.catch( err => {
+							// convert the event date from a date object into a readable string
+							const eventDate = `${ event.startDate.getMonth() + 1 }/${ event.startDate.getDate() }/${ event.startDate.getFullYear() }`;
+							// throw an error with details about what went wrong
+							console.error( `error sending new event created email to MARE contact about ${ event.get( 'name' ) } on ${ eventDate } from ${ event.get( 'startTime' ) } to ${ event.get( 'endTime' ) } - ${ err }` );
+						});
+				}
+			});
 		})
 		// if we're not successful in creating the event
 		.catch( err => {
+			// log the error for debugging purposes
+			console.error( err );
 			// create an error flash message
 			req.flash( 'error', {
 						title: 'Something went wrong while creating your event.',
 						detail: 'We are looking into the issue and will email a status update once it\'s resolved' } );
+		})
+		// execute the following regardless of whether the promises were resolved or rejected
+		// TODO: this should be replaced with ES6 Promise.prototype.finally() once it's finalized, assuming we can update to the latest version of Node if we upgrade Keystone
+		.then( () => {
 			// reload the form to display the flash message
-			res.redirect( 303, '/forms/agency-event-submission-form' );	
+			res.redirect( 303, '/forms/agency-event-submission-form' );
 		});
 };
 

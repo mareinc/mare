@@ -92,7 +92,7 @@ exports.submitQuestion = function submitQuestion( req, res, next ) {
 	// reload the form to display the flash message
 	const redirectPath = '/forms/have-a-question-form';
 
-	// fetch the newly saved child model.  Needed because the saved child object doesn't have the Relationship fields populated
+	// fetch the email target model matching 'have a question'
 	const fetchEmailTarget = emailTargetMiddleware.getEmailTargetByName( 'have a question' );
 
 	fetchEmailTarget

@@ -3,9 +3,10 @@ const keystone				= require( 'keystone' ),
 
 exports.sendNewQuestionNotificationEmailToMARE = ( question, staffEmailContact ) => {
 
-	const staffEmail = staffEmailContact.staffEmailContact.get( 'email' );
-
 	return new Promise( ( resolve, reject ) => {
+
+		const staffEmail = staffEmailContact.staffEmailContact.get( 'email' );
+		
 		// if sending of the email is not currently allowed
 		if( process.env.SEND_QUESTION_RECEIVED_EMAILS_TO_MARE !== 'true' ) {
 			// reject the promise with information about why
