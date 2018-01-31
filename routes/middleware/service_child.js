@@ -1021,7 +1021,7 @@ exports.getChildrenByRegistrationNumbersNew = registrationNumbers => {
 					// reject the promise
 					return reject();
 				}
-				// if the target child was found, resolve the promise with the lean version of the object
+				// if the target child was found, resolve the promise with the returned model
 				resolve( children );
 			// if there was an error fetching from the database
 			}, err => {

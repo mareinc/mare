@@ -1,5 +1,6 @@
 const keystone = require( 'keystone' );
-// TODO: clean this up to just return the contact whole, the calling function should take what it needs from it
+// TODO: clean this up to just return the contact whole, the calling function should take what it needs from it.
+//       References to it should be replaced by the function getStaffEmailContactById() below
 exports.getContactById = targetId => {
 
     return new Promise( ( resolve, reject ) => {
@@ -27,4 +28,29 @@ exports.getContactById = targetId => {
                 reject( `error fetching staff email contact by id ${ targetId }` );
             });
     });
-}
+};
+
+exports.getStaffEmailContactByEmailTarget = ( emailTargetId, populateOptions = [] ) => {
+
+    return new Promise( ( resolve, reject ) => {
+
+        keystone.list( 'Staff Email Contact' ).model
+            .findOne()
+            .where( 'emailTarget', emailTargetId )
+            .populate( populateOptions )
+            .exec()
+            .then( staffEmailContact => {
+                // if no matching staff email contact
+                if( !staffEmailContact ) {
+                    // reject the promise with the reason for the rejection
+                    return reject( `no staff email target matching id '${ id } could be found` );
+                }
+                // if the staff email contact was found, resolve the promise with the model
+				resolve( staffEmailContact );
+            // if there was an error fetching data from the database
+            }, err => {
+                // reject the promise with the reason for the rejection
+                reject( `error fetching staff email contact matching id ${ targetId } - ${ err }` );
+            });
+    });
+};
