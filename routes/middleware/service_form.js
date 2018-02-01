@@ -113,7 +113,7 @@ exports.submitQuestion = function submitQuestion( req, res, next ) {
 			// create a flash message to notify the user of the success
 			req.flash( 'success', {
 				title: `Your question has been submitted`,
-				detail: `You should expect a response from MARE within the next 3 to 5 business days` } );
+				detail: `You should expect a response from MARE within the next 2 business days` } );
 		})
 		// if something went wrong
 		.catch( err => {
