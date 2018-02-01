@@ -6,7 +6,8 @@
 
 		events: {
 			'click .save-button'					: 'updateUserInfo',
-			'change #is-not-ma-city-checkbox'		: 'toggleOutsideMa'
+			'change #is-not-ma-city-checkbox'		: 'toggleOutsideMa',
+			'change input, select'					: 'formElementChanged'
 		},
 
 		initialize: function initialize() {
@@ -14,8 +15,11 @@
 			var html 		= $( '#account-info' ).html();
 			// compile the templates to be used during rendering/repainting the different sections
 			this.template 	= Handlebars.compile( html );
+
+			// create an object to hold all changes to form data
+			this.accountInfoUpdates = {};
 		},
-		
+
 		render: function render() {
 			// compile the template
 			var html = this.template();
@@ -47,7 +51,47 @@
 
 			// } else {
 
-			// }		
+			// }
+		},
+
+		formElementChanged: function formElementChanged( event ) {
+
+			// get the updated form field from the change event
+			var $updatedField = $( event.currentTarget );
+			// get the field name that should be updated
+			var updatedFieldName = $updatedField.data( 'field-name' );
+
+			// get the updated value
+			if ( $updatedField.data( 'field-type' ) === 'array' ) {
+
+				var updatedValue = [];
+
+				// if the field type is an array, construct the updated array value
+				// from the values of the other input elements with the same name
+				$( 'input[ name=\'' + $updatedField.attr( 'name' ) + '\' ]' ).each( function( index, element ) {
+
+					// if the element is checked add it to the updatedValue array
+					if ( element.checked ) {
+
+						updatedValue.push( element.value );
+					}
+				});
+			} else {
+
+				// if the field is a single checkbox
+				if ( $updatedField.attr( 'type' ) === 'checkbox' ) {
+
+					// set the value based on the checked status
+					var updatedValue = $updatedField.is( ':checked' );
+				} else {
+
+					// for all other field types, simply get the updated value of the form field
+					var updatedValue = $updatedField.val();
+				}
+			}
+
+			// create an update record with the field name that has changed and the new value
+			this.accountInfoUpdates[ updatedFieldName ] = updatedValue;
 		},
 
 		hide: function hide() {
@@ -64,70 +108,23 @@
 
 		updateUserInfo: function updateUserInfo( event ) {
 			// fetch the form data
-			var data = this.fetchFormData();
-			
+			var data = this.accountInfoUpdates;
+
 			// send a put request to the server with the updated user information
 			$.ajax({
 				type: 'PUT',
 				url: 'account/user-info',
 				data: data,
-				success: function( user ) {
-					console.log( user );
+				success: function( responseData ) {
+
+					// TODO: flash message with error/success status
+					if ( responseData.status === 'error' ) {
+						console.error( 'there was an error updating the account info' );
+					} else {
+						console.log( 'account info successfully updated' );
+					}
 				}
-			})
-		},
-
-		fetchFormData: function fetchFormData() {
-			// store all the values in the form as an object
-			var formData = {
-				firstName				: document.querySelector( '#first-name' ) ? document.querySelector( '#first-name' ).value : undefined,
-				lastName				: document.querySelector( '#last-name' ) ? document.querySelector( '#last-name' ).value : undefined,
-				email					: document.querySelector( '#email' ) ? document.querySelector( '#email' ).value : undefined,
-				password				: document.querySelector( '#password' ) ? document.querySelector( '#password' ).value : undefined,
-				confirmPassword			: document.querySelector( '#confirmPassword' ) ? document.querySelector( '#confirmPassword' ).value : undefined,
-				title					: document.querySelector( '#title' ) ? document.querySelector( '#title' ).value : undefined,
-				agency					: document.querySelector( '#agency' ) ? document.querySelector( '#agency' ).value : undefined,
-				homePhone				: document.querySelector( '#home-phone' ) ? document.querySelector( '#home-phone' ).value : undefined,
-				mobilePhone				: document.querySelector( '#mobile-phone' ) ? document.querySelector( '#mobile-phone' ).value : undefined,
-				workPhone				: document.querySelector( '#work-phone' ) ? document.querySelector( '#work-phone' ).value : undefined,
-				preferredPhone			: document.querySelector( '#preferred-phone' ) ? document.querySelector( '#preferred-phone' ).value : undefined,
-				street1					: document.querySelector( '#address-1' ) ? document.querySelector( '#address-1' ).value : undefined,
-				street2					: document.querySelector( '#address-2' ) ? document.querySelector( '#address-2' ).value : undefined,
-				zipCode					: document.querySelector( '#zip-code' ) ? document.querySelector( '#zip-code' ).value : undefined,
-				maCity					: document.querySelector( '#city' ) ? document.querySelector( '#city' ).value : undefined,
-				nonMaCity				: document.querySelector( '#non-ma-city' ) ? document.querySelector( '#non-ma-city' ).value : undefined,
-				isOutsideMassachusetts	: document.querySelector( '#is-not-ma-city-checkbox' ) ? document.querySelector( '#is-not-ma-city-checkbox' ).checked : undefined,
-				positions				: mare.views.accountInfo.getSocialWorkerPositionsData()
-			};
-
-			// Family
-			if ( document.querySelector( '#contact1-first-name' ) ) {
-				formData.contact1 = {
-					firstName						: document.querySelector( '#contact1-first-name' ),
-					lastName						: document.querySelector( '#contact1-last-name' ),
-					email							: document.querySelector( '#contact1-email' ),
-					mobile							: document.querySelector( '#contact1-mobile' ),
-					preferredCommunicationMethod	: document.querySelector( '#contact1-preferred-communication-method' ),
-					gender							: document.querySelector( '#contact1-gender-error-container' ),
-					race							: document.querySelector( '#contact1-race-error-container' ),
-					occupation						: document.querySelector( '#contact1-occupation' )
-				}
-			}
-
-			// return an object containing only the fields that are not undefined
-			return _.omit( formData, _.isUndefined );
-		},
-
-		// retrieves updated form data for the Social Worker positions checkbox group
-		getSocialWorkerPositionsData: function getSocialWorkerPositionsData() {
-
-			var positionIDs = [];
-
-			$( '#positions:checked' ).each( function() {
-				positionIDs.push( $( this ).val() );
 			});
-
-			return positionIDs.length > 1 ? positionIDs : undefined;
 		}
 	});
 }());
