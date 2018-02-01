@@ -49,7 +49,7 @@ Family.add( 'Permissions', {
 	contactGroups: { type: Types.Relationship, label: 'contact groups', ref: 'Contact Group', many: true, initial: true },
 
 	displayName: { type: Types.Text, label: 'name', hidden: true, noedit: true },
-	displayNameAndRegistration: { type: Types.Text, label: 'name and registration number', hidden: true, noedit: true }
+	displayNameAndRegistration: { type: Types.Text, label: 'name and registration number', default: 'new family', hidden: true, noedit: true }
 
 }, 'Contact 1', {
 
@@ -378,9 +378,8 @@ Family.schema.pre( 'save', function( next ) {
 		// execute the following regardless of whether the promises were resolved or rejected
 		// TODO: this should be replaced with ES6 Promise.prototype.finally() once it's finalized, assuming we can update to the latest version of Node if we upgrade Keystone
 		.then( () => {
-
-			// set a compound label consisting of the display name and registration number to enable admins to differentiate families in relationship fields
 			this.setDisplayNameAndRegistrationLabel();
+			
 			next();
 		});
 });
@@ -541,7 +540,7 @@ Family.schema.methods.updateRegion = function() {
 		// if the agency is outside MA
 		if( this.address.isOutsideMassachusetts ) {
 			// fetch the region model with the name 'out of state'
-			const fetchRegion = ListServiceMiddleware.getRegionByName( 'out of state' );
+			const fetchRegion = ListServiceMiddleware.getRegionByName( 'Out of state' );
 			// if the region was fetched without error
 			fetchRegion
 				.then( region => {

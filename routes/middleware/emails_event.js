@@ -1,25 +1,28 @@
 const keystone = require( 'keystone' );
 
-exports.sendNewEventEmailToMARE = ( event, user, registrationStaffContact ) => {
+exports.sendNewEventEmailToMARE = ( event, socialWorker, staffEmailContact ) => {
 
 	return new Promise( ( resolve, reject ) => {
+
+		const staffEmail = staffEmailContact.staffEmailContact.get( 'email' );
+
 		// if sending of the email is not currently allowed
 		if( process.env.SEND_EVENT_CREATED_EMAILS_TO_MARE !== 'true' ) {
 			// reject the promise with information about why
 			return reject( `sending of the email is disabled` );
 		}
 
-		if( !registrationStaffContact ) {
-			return reject( `no staff was contact provided` );
+		if( !staffEmail ) {
+			return reject( `no staff contact was provided` );
 		}
 
 		// find the email template in templates/emails/
 		new keystone.Email({
 			templateExt		: 'hbs',
 			templateEngine 	: require( 'handlebars' ),
-			templateName 	: 'event-created-notification-to-staff'
+			templateName 	: 'event-created-notification-to-mare'
 		}).send({
-			to				: registrationStaffContact.email,
+			to				: staffEmail,
 			from: {
 				name 		: 'MARE',
 				email 		: 'admin@adoptions.io'
@@ -28,7 +31,7 @@ exports.sendNewEventEmailToMARE = ( event, user, registrationStaffContact ) => {
 			startDate		: `${ event.startDate.getMonth() + 1 }/${ event.startDate.getDate() }/${ event.startDate.getFullYear() }`,
 			endDate			: `${ event.endDate.getMonth() + 1 }/${ event.endDate.getDate() }/${ event.endDate.getFullYear() }`,
 			event,
-			user
+			socialWorker
 		}, ( err, message ) => {
 			// if there was an error sending the email
 			if( err ) {
