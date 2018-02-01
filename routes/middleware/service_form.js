@@ -4,7 +4,8 @@ const keystone						= require( 'keystone' ),
 	  inquiryService				= require( './service_inquiry' ),
 	  inquiryEmailService			= require( './emails_inquiry' ),
 	  emailTargetMiddleware			= require( './service_email-target' ),
-	  staffEmailContactMiddleware	= require( './service_staff-email-contact' );
+	  staffEmailContactMiddleware	= require( './service_staff-email-contact' ),
+	  haveAQuestionEmailService		= require( './emails_have-a-question' );
 
 exports.submitInquiry = function submitInquiry( req, res, next ) {
 	// store the inquiry information in a local variable
@@ -86,13 +87,49 @@ exports.submitInquiry = function submitInquiry( req, res, next ) {
 };
 
 exports.submitQuestion = function submitQuestion( req, res, next ) {
-	// TODO: fill in the email submissions for have a question form when handling the email system tasks
-	req.flash( 'info', {
-		title: 'Emails will be sent once that portion of the system is built out'
-	});
-
+	// store the question information in a local variable
+	const question = req.body;
 	// reload the form to display the flash message
-	res.redirect( '/forms/have-a-question-form' );
+	const redirectPath = '/forms/have-a-question-form';
+
+	// fetch the email target model matching 'have a question'
+	const fetchEmailTarget = emailTargetMiddleware.getEmailTargetByName( 'have a question' );
+
+	fetchEmailTarget
+		// if we successfully fetched the email target
+		.then( emailTarget => {
+			// set the fields to populate on the fetched staff email contact model
+			const populateOptions = [ 'staffEmailContact' ];
+			// fetch contact info for the staff contact for 'have a question'
+			return staffEmailContactMiddleware.getStaffEmailContactByEmailTarget( emailTarget.get( '_id' ), populateOptions );
+		})
+		// if we successfully fetched the staff email contact
+		.then( staffEmailContact => {
+			// send a notification email to MARE staff
+			return haveAQuestionEmailService.sendNewQuestionNotificationEmailToMARE( question, staffEmailContact );
+		})
+		// if the email was successfully sent to MARE staff
+		.then( () => {
+			// create a flash message to notify the user of the success
+			req.flash( 'success', {
+				title: `Your question has been submitted`,
+				detail: `You should expect a response from MARE within the next 2 business days` } );
+		})
+		// if something went wrong
+		.catch( err => {
+			// log the error for debugging purposes
+			console.error( `error sending new question email to MARE staff - ${ err }` );
+			// create a flash message to notify the user of the error
+			req.flash( 'error', {
+				title: `There was an error submitting your question`,
+				detail: `If this error persists, please notify MARE` } );
+		})
+		// execute the following regardless of whether the promises were resolved or rejected
+		// TODO: this should be replaced with ES6 Promise.prototype.finally() once it's finalized, assuming we can update to the latest version of Node if we upgrade Keystone
+		.then( () => {
+			// reload the form to display the flash message
+			res.redirect( 303, redirectPath );
+		});
 };
 
 // TODO: this is a duplicate of functionality in the registration middleware, can we combine them to make the code more DRY

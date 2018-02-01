@@ -2,14 +2,14 @@ exports.create = {
 	'Region': [{
 		region: 'Boston'
 	}, {
-		region: 'central'
+		region: 'Central'
 	}, {
-		region: 'northern'
+		region: 'Northern'
 	}, {
-		region: 'out of state'
+		region: 'Out of state'
 	}, {
-		region: 'southern'
+		region: 'Southern'
 	}, {
-		region: 'western'
+		region: 'Western'
 	}]
 };

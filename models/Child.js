@@ -1381,5 +1381,5 @@ Child.schema.methods.setChangeHistory = function() {
 };
 
 // Define default columns in the admin interface and register the model
-Child.defaultColumns = 'registrationNumber, name.full, ethnicity, legalStatus, gender';
+Child.defaultColumns = 'registrationNumber, name.full, ethnicity, status, legalStatus, gender';
 Child.register();

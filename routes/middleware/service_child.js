@@ -120,9 +120,6 @@ exports.getChildrenForSocialWorkerAccount = ( req, res, done, fieldsToSelect ) =
 							.find()
 							.select( fieldsToSelect )
 							.or( socialWorkerPositionQuery )
-							// TODO: determine if the isVisibleInGallery or active status are necessary filters for the account gallery
-							// .where( 'isVisibleInGallery' ).equals( true )
-							// .where( 'status' ).equals( locals.activeChildStatusId )
 							.populate( 'gender' )
 							.populate( 'race' )
 							.populate( 'languages' )
@@ -150,7 +147,10 @@ exports.getChildrenForSocialWorkerAccount = ( req, res, done, fieldsToSelect ) =
 										child.registrationDateConverted	= middleware.convertDate( child.registrationDate );
 									});
 
-									locals.allChildren = children;
+									// remove children that have already been placed
+									let unplacedChildren = children.filter( child => child.status.childStatus !== 'placed' );
+
+									locals.allChildren = unplacedChildren;
 									// execute done function if async is used to continue the flow of execution
 									done();
 								}
@@ -1021,7 +1021,7 @@ exports.getChildrenByRegistrationNumbersNew = registrationNumbers => {
 					// reject the promise
 					return reject();
 				}
-				// if the target child was found, resolve the promise with the lean version of the object
+				// if the target child was found, resolve the promise with the returned model
 				resolve( children );
 			// if there was an error fetching from the database
 			}, err => {
