@@ -30,7 +30,7 @@
 			{{#each socialWorkerPositions}}
 			<div class="col-sm-12 form-group">
 				<label class="checkbox-inline">
-					<input id="positions" type="checkbox" name="positions" data-field-name="positions" data-field-type="array" value="{{ _id }}" {{#ifincludes ../user.positions _id }}checked="checked"{{/ifincludes}}>{{ position }}
+					<input id="positions" type="checkbox" name="positions" data-field-name="positions" data-field-type="select-multiple" value="{{ _id }}" {{#ifincludes ../user.positions _id }}checked="checked"{{/ifincludes}}>{{ position }}
 				</label>
 			</div>
 			{{/each}}
