@@ -20,8 +20,6 @@
 
 		/* initialize the gallery view */
 		initialize: function initialize() {
-			// store a reference to this for insde callbacks where context is lost
-			var view							= this;
 			// create a hook to access the gallery template
 			var galleryChildrenHtml				= $( '#gallery-children-template' ).html();
 			var gallerySiblingGroupsHtml		= $( '#gallery-sibling-groups-template' ).html();
@@ -33,38 +31,38 @@
 			mare.views.siblingGroupDetails		= mare.views.siblingGroupDetails || new mare.views.SiblingGroupDetails();
 			// initialize the gallery once we've fetched the child data needed to display the gallery (this doesn't include child details data)
 			mare.promises.childrenDataLoaded.done( function() {
-				view.childrenCollection			= mare.collections.galleryChildren;
-				view.siblingGroupsCollection	= mare.collections.gallerySiblingGroups;
-			});
+				this.childrenCollection			= mare.collections.galleryChildren;
+				this.siblingGroupsCollection	= mare.collections.gallerySiblingGroups;
+			}.bind( this ) );
 
 			// bind to change events
 			mare.collections.galleryChildren.on( 'sorted', function() {
-				view.render();
-			});
+				this.render();
+			}.bind( this ) );
 			// when we get a response from the server that the bookmark for a child has successfully updated, update the view
 			mare.collections.galleryChildren.on( 'childBookmarkUpdated', function( registrationNumber, action ) {
-				view.updateChildBookmarkView( registrationNumber, action );
-			});
+				this.updateChildBookmarkView( registrationNumber, action );
+			}.bind( this ) );
 			// when we get a response from the server that the bookmark for a group of siblings successfully updated, update the view
 			mare.collections.galleryChildren.on( 'siblingGroupBookmarkUpdated', function( registrationNumbers, action ) {
-				view.updateSiblingGroupBookmarkView( registrationNumbers, action );
-			});
+				this.updateSiblingGroupBookmarkView( registrationNumbers, action );
+			}.bind( this ) );
 			// when the details view sends an event to trigger updating the child bookmark, send the request to the server
 			mare.collections.galleryChildren.on( 'childBookmarkUpdateNeeded', function( registrationNumber, action ) {
 				if( action === 'add' ) {
-					view.addChildBookmark( registrationNumber );
+					this.addChildBookmark( registrationNumber );
 				} else if( action === 'remove' ) {
-					view.removeChildBookmark( registrationNumber );
+					this.removeChildBookmark( registrationNumber );
 				}
-			});
+			}.bind( this ) );
 			// when the details view sends an event to trigger updating the sibling group bookmark, send the request to the server
 			mare.collections.galleryChildren.on( 'siblingGroupBookmarkUpdateNeeded', function( registrationNumbers, action ) {
 				if( action === 'add' ) {
-					view.addSiblingGroupBookmark( registrationNumbers );
+					this.addSiblingGroupBookmark( registrationNumbers );
 				} else if( action === 'remove' ) {
-					view.removeSiblingGroupBookmark( registrationNumbers );
+					this.removeSiblingGroupBookmark( registrationNumbers );
 				}
-			});
+			}.bind( this ) );
 		},
 
 		/* render the view onto the page */

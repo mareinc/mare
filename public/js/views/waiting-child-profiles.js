@@ -12,7 +12,6 @@
 		},
 
 		initialize: function initialize() {
-			var that = this;
 			// DOM cache any commonly used elements to improve performance
 			this.$gallery					= this.$( '.gallery' );
 			this.$searchForm				= this.$( '.gallery-search-form' );
@@ -38,35 +37,32 @@
 
 			// bind to change events
 			mare.collections.galleryChildren.on( 'updateComplete', function() {
-				that.navigateToGallery();
-			});
+				this.navigateToGallery();
+			}.bind( this ) );
 
 			mare.collections.galleryChildren.on( 'resetComplete', function() {
-				that.showGallery();
-			});
+				this.showGallery();
+			}.bind( this ) );
 
 		},
 
 		/* hide the gallery search form and show the gallery */
 		showGallery: function showGallery() {
-			// store a reference to this for insde callbacks where context is lost
-			var view = this;
 			// fade the search form out and fade the gallery in
 			this.$searchForm.fadeOut( function() {
-				view.$gallery.fadeIn();
+				this.$gallery.fadeIn();
 				// render the gallery
 				mare.views.gallery.render();
-			});
+			}.bind( this ) );
 		},
 
 		/* hide the gallery and show the gallery search form */
 		showSearchForm: function showSearchForm() {
-			// store a reference to this for insde callbacks where context is lost
-			var view = this;
 			// fade the gallery out and fade the search form in
 			this.$gallery.fadeOut( function() {
-				view.$searchForm.fadeIn();
-			});
+				// render the search form
+				this.$searchForm.fadeIn();
+			}.bind( this ) );
 		},
 
 		/* get all children information the user is allowed to view.  This only includes data to show in the gallery cards, no detailed information

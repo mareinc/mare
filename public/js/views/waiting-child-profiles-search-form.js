@@ -10,7 +10,6 @@
 		events: {
 
 			'click .gallery-search-form__search-button' : 'updateGallery'
-
 		},
 
 		updateGallery: function updateGallery() {
