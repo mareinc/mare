@@ -8,22 +8,20 @@
   		className: 'child-details',
 
 		initialize: function initialize() {
-			// store a reference to this for insde callbacks where context is lost
-			var view = this;
 			// create a hook to access the gallery template
 			var html = $( '#child-details-template' ).html();
 			// compile the template to be used during rendering/repainting the gallery
 			this.template = Handlebars.compile( html );
 			// initialize the details modal once we've fetched the basic child data, this is needed because the details will be appended to the same collection
 			mare.promises.childrenDataLoaded.done( function() {
-				view.collection = mare.collections.galleryChildren;
+				this.collection = mare.collections.galleryChildren;
 				// bind event handler for when child details are returned
-				view.on( 'child-details-loaded', view.render );
-			});
+				this.on( 'child-details-loaded', this.render );
+			}.bind( this ) );
 			// when we get a response from the server that the bookmark for a child has successfully updated, update the view
 			mare.collections.galleryChildren.on( 'childBookmarkUpdated', function( registrationNumber, action ) {
-				view.updateBookmarkButton( registrationNumber, action );
-			});
+				this.updateBookmarkButton( registrationNumber, action );
+			}.bind( this ) );
 		},
 		// events need to be bound every time the modal is opened, so they can't be put in an event block
 		bindEvents: function bindEvents() {
@@ -95,9 +93,7 @@
 
 		/* when a child card is clicked, display detailed information for that child in a modal window */
 		handleGalleryClick: function handleGalleryClick( event ) {
-			// store a reference to this for insde callbacks where context is lost
-			var view = this;
-
+			
 			var selectedChild		= $( event.currentTarget ),
 				registrationNumber	= selectedChild.data( 'registration-number' ),
 				childModel			= this.getChildByRegistrationNumber( registrationNumber );
@@ -108,9 +104,6 @@
 		},
 
 		handleNavClick: function handleNavClick( event ) {
-			// store a reference to the view for callback functions that lose context
-			var view = this;
-
 			this.unbindEvents();
 
 			var selectedChild = $( event.currentTarget ),
@@ -120,9 +113,9 @@
 			// fade displayed child details if any are shown, and display the loading indicator
 			$( '.modal-container__contents' ).fadeOut( function() {
 				$( '.modal-container__loading' ).fadeIn( function() {
-					view.getDetails( child );
-				});
-			});
+					this.getDetails( child );
+				}.bind( this ) );
+			}.bind( this ) );
 		},
 
 		/* make a call to fetch data for the current child to show detailed information for */

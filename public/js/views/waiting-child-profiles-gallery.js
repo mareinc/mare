@@ -20,8 +20,6 @@
 
 		/* initialize the gallery view */
 		initialize: function initialize() {
-			// store a reference to this for insde callbacks where context is lost
-			var view							= this;
 			// create a hook to access the gallery template
 			var galleryChildrenHtml				= $( '#gallery-children-template' ).html();
 			var gallerySiblingGroupsHtml		= $( '#gallery-sibling-groups-template' ).html();
@@ -31,46 +29,53 @@
 			// initialize a subview for the details modals
 			mare.views.childDetails				= mare.views.childDetails || new mare.views.ChildDetails();
 			mare.views.siblingGroupDetails		= mare.views.siblingGroupDetails || new mare.views.SiblingGroupDetails();
+			
 			// initialize the gallery once we've fetched the child data needed to display the gallery (this doesn't include child details data)
 			mare.promises.childrenDataLoaded.done( function() {
-				view.childrenCollection			= mare.collections.galleryChildren;
-				view.siblingGroupsCollection	= mare.collections.gallerySiblingGroups;
-			});
+				this.childrenCollection			= mare.collections.galleryChildren;
+				this.siblingGroupsCollection	= mare.collections.gallerySiblingGroups;
+			}.bind( this ) );
 
 			// bind to change events
 			mare.collections.galleryChildren.on( 'sorted', function() {
-				view.render();
-			});
+				this.render();
+			}.bind( this ) );
+			
 			// when we get a response from the server that the bookmark for a child has successfully updated, update the view
 			mare.collections.galleryChildren.on( 'childBookmarkUpdated', function( registrationNumber, action ) {
-				view.updateChildBookmarkView( registrationNumber, action );
-			});
+				this.updateChildBookmarkView( registrationNumber, action );
+			}.bind( this ) );
+			
 			// when we get a response from the server that the bookmark for a group of siblings successfully updated, update the view
 			mare.collections.galleryChildren.on( 'siblingGroupBookmarkUpdated', function( registrationNumbers, action ) {
-				view.updateSiblingGroupBookmarkView( registrationNumbers, action );
-			});
+				this.updateSiblingGroupBookmarkView( registrationNumbers, action );
+			}.bind( this ) );
+			
 			// when the details view sends an event to trigger updating the child bookmark, send the request to the server
 			mare.collections.galleryChildren.on( 'childBookmarkUpdateNeeded', function( registrationNumber, action ) {
 				if( action === 'add' ) {
-					view.addChildBookmark( registrationNumber );
+					this.addChildBookmark( registrationNumber );
 				} else if( action === 'remove' ) {
-					view.removeChildBookmark( registrationNumber );
+					this.removeChildBookmark( registrationNumber );
 				}
-			});
+			}.bind( this ) );
+			
 			// when the details view sends an event to trigger updating the sibling group bookmark, send the request to the server
 			mare.collections.galleryChildren.on( 'siblingGroupBookmarkUpdateNeeded', function( registrationNumbers, action ) {
 				if( action === 'add' ) {
-					view.addSiblingGroupBookmark( registrationNumbers );
+					this.addSiblingGroupBookmark( registrationNumbers );
 				} else if( action === 'remove' ) {
-					view.removeSiblingGroupBookmark( registrationNumbers );
+					this.removeSiblingGroupBookmark( registrationNumbers );
 				}
-			});
+			}.bind( this ) );
 		},
 
 		/* render the view onto the page */
 		render: function render() {
 			// store a reference to this for insde callbacks where context is lost
 			var view = this;
+			// unbind any existing media box plugins
+			this.unbindMediaBoxes();
 			// the gallery can't render until we have the user permissions and the child data is loaded
 			// use the promise bound to both data to delay rendering until we have them
 			$.when( mare.promises.permissionsLoaded, mare.promises.childrenDataLoaded ).then( function() {
@@ -78,7 +83,7 @@
 				var siblingGroupsHtml	= view.siblingGroupsTemplate( view.siblingGroupsCollection.toJSON() );
 				var childrenHtml		= view.childrenTemplate( view.childrenCollection.toJSON() );
 
-				view.$( '.profiles-container' ).html( siblingGroupsHtml + childrenHtml );
+				view.$( '#children-grid' ).html( siblingGroupsHtml + childrenHtml );
 				// once the html is rendered to the page, initialize the gallery display plugin
 				view.initializeMediaBoxes();
 			});
@@ -88,14 +93,13 @@
 		initializeMediaBoxes: function initializeMediaBoxes() {
 			// initialize the photo listing children gallery grid
 			$( '#children-grid' ).mediaBoxes({
-				boxesToLoadStart: 12,
-				boxesToLoad 	: 8
+				boxesToLoadStart: 32,
+				boxesToLoad 	: 24
 			});
-			// initialize the photo listing sibling group gallery grid
-			$( '#sibling-groups-grid' ).mediaBoxes({
-				boxesToLoadStart: 12,
-				boxesToLoad 	: 8
-			});
+		},
+
+		unbindMediaBoxes: function unbindMediaBoxes() {
+			$( '#children-grid' ).mediaBoxes( 'destroy' );
 		},
 
 		/* pass the request for child details to the subview in charge of the details modal */
@@ -323,8 +327,8 @@
 
 		/* sort the children in the gallery */
 		sortGallery: function sortGallery( event ) {
-			var $currentTarget = $( event.currentTarget );
-			var sortBy = $currentTarget.val();
+
+			var sortBy = $( event.currentTarget ).val();
 
 			mare.collections.galleryChildren.reorder( sortBy );
 		}

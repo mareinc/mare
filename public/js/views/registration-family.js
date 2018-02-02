@@ -345,7 +345,7 @@
 			this.$( '.register' ).prop( 'disabled', 'disabled' );
 		},
 
-		validateForm: function validateForm() {
+		validateForm: function validateForm( event ) {
 
 			var ok = $( '.parsley-error' ).length === 0;
 
