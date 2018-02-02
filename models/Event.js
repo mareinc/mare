@@ -11,7 +11,7 @@ var Event = new keystone.List('Event', {
 });
 
 // create fields
-Event.add({ heading: 'General Information' }, {
+Event.add( 'General Information', {
 
 	name: { type: Types.Text, label: 'event name', required: true, initial: true },
 	url: { type: Types.Url, label: 'url', noedit: true },
@@ -27,7 +27,7 @@ Event.add({ heading: 'General Information' }, {
 	areBuddiesAllowed: { type: Types.Boolean, label: 'buddies allowed', initial: true },
 	isMatchingEvent: { type: Types.Boolean, label: 'matching event', initial: true }
 
-}, { heading: 'Address' }, {
+}, 'Address', {
 
 	address: {
 	    street1: { type: Types.Text, label: 'street 1', initial: true },
@@ -40,7 +40,7 @@ Event.add({ heading: 'General Information' }, {
 	contact: { type: Types.Relationship, label: 'contact', ref: 'Admin', filters: { isActive: true }, initial: true },
 	contactEmail: { type: Types.Email, label: 'contact person email', note: 'only fill out if no contact is selected', initial: true }
 
-}, { heading: 'Details' }, {
+}, 'Details', {
 
 	startDate: { type: Types.Date, label: 'start date', format: 'MM/DD/YYYY', required: true, initial: true },
 	startTime: { type: Types.Text, label: 'start time', required: true, initial: true },
@@ -57,7 +57,7 @@ Event.add({ heading: 'General Information' }, {
 	childAttendees: { type: Types.Relationship, label: 'children', ref: 'Child', many: true, initial: true },
 	outsideContactAttendees: { type: Types.Relationship, label: 'volunteers', filters: { isVolunteer: true }, ref: 'Outside Contact', many: true, initial: true}
 
-}, { heading: 'Notes' }, {
+}, 'Notes', {
 
 	notes: { type: Types.Text, label: 'notes', initial: true }
 
