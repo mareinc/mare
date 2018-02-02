@@ -86,13 +86,13 @@
 		initializeMediaBoxes: function initializeMediaBoxes() {
 			// initialize the photo listing children gallery grid
 			$( '#children-grid' ).mediaBoxes({
-				boxesToLoadStart: 12,
-				boxesToLoad 	: 8
+				boxesToLoadStart: 16,
+				boxesToLoad 	: 24
 			});
 			// initialize the photo listing sibling group gallery grid
 			$( '#sibling-groups-grid' ).mediaBoxes({
-				boxesToLoadStart: 12,
-				boxesToLoad 	: 8
+				boxesToLoadStart: 16,
+				boxesToLoad 	: 24
 			});
 		},
 
