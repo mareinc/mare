@@ -2,7 +2,7 @@
 /* ======================================================= 
  *
  *      Media Boxes     
- *      Version: 2.8
+ *      Version: 3.2
  *      By castlecode
  *
  *      Contact: http://codecanyon.net/user/castlecode
@@ -15,33 +15,122 @@
  *      CONTENTS
  *      ---------------------------------
  *
- *      [1] SETUP
- *      [2] GRID METHODS
- *      [3] EXTENGIN ISOTOPE
- *      [4] FILTERING ISOTOPE
- *      [5] LOAD MORE BOXES
- *      [6] FILTER
- *      [7] SEARCH
- *      [8] SORTING
- *      [9] THUMBNAIL OVERLAY EFFECT
- *      [10] MAGNIFIC POPUP
- *      [11] DEEP LINKING
- *      [12] SOCIAL IN MAGNIFIC POPUP
+ *      [A] MEDIA BOXES CLASS
+ *      [B] DEFAULTS
+ *      [C] INIT
+ *          [1] SETUP
+ *          [2] GRID METHODS
+ *          [3] EXTENGIN ISOTOPE
+ *          [4] FILTERING ISOTOPE
+ *          [5] LOAD MORE BOXES
+ *          [6] FILTER
+ *          [7] SEARCH
+ *          [8] SORTING
+ *          [9] THUMBNAIL OVERLAY EFFECT
+ *          [10] IFRAME ON GRID
+ *          [11] MAGNIFIC POPUP
+ *          [12] DEEP LINKING
+ *          [13] SOCIAL IN MAGNIFIC POPUP
+ *      [D] DESTROY
+ *      [E] INSERT
+ *      [F] REFRESH
+ *      [G] RESIZE
+ *      [H] MEDIA BOXES PLUGIN
  *      
  * ======================================================= */
 
-
-// convert divs into images
 (function( window, $, undefined ){
 
+/* ====================================================================== *
+        [A] MEDIA BOXES CLASS
+ * ====================================================================== */    
+
     var MediaBoxes = function(container, options){
+        this.init(container, options);
+    }
+
+/* ====================================================================== *
+        [B] DEFAULTS
+ * ====================================================================== */    
+    
+    MediaBoxes.DEFAULTS = {
+        boxesToLoadStart: 8,
+        boxesToLoad: 4,
+        minBoxesPerFilter: 0,
+        lazyLoad: true,
+        horizontalSpaceBetweenBoxes: 15,
+        verticalSpaceBetweenBoxes: 15,
+        columnWidth: 'auto',
+        columns: 4,
+        resolutions: [
+            {
+                maxWidth: 960,
+                columnWidth: 'auto',
+                columns: 3,
+            },
+            {
+                maxWidth: 650,
+                columnWidth: 'auto',
+                columns: 2,
+                horizontalSpaceBetweenBoxes: 10,
+                verticalSpaceBetweenBoxes: 10,
+            },
+            {
+                maxWidth: 450,
+                columnWidth: 'auto',
+                columns: 1,
+                horizontalSpaceBetweenBoxes: 10,
+                verticalSpaceBetweenBoxes: 10,
+            },
+        ],
+        multipleFilterLogic: 'AND',
+        filterContainer: '#filter',
+        search: '', // i.e. #search
+        searchTarget: '.media-box-title',
+        sortContainer: '', // i.e. #sort
+        getSortData: {
+          title: '.media-box-title',
+          text: '.media-box-text',
+        }, 
+        waitUntilThumbWithRatioLoads: true, // When they have dimensions specified
+        waitForAllThumbsNoMatterWhat: false, // Wait for all the thumbnails to load even if they got dimensions specified
+        thumbnailOverlay: true, //Show the overlay on mouse over
+        overlayEffect: 'fade', // 'push-up', 'push-down', 'push-up-100%', 'push-down-100%', 'reveal-top', 'reveal-bottom', 'reveal-top-100%', 'reveal-bottom-100%', 'direction-aware', 'direction-aware-fade', 'direction-right', 'direction-left', 'direction-top', 'direction-bottom', 'fade'
+        overlaySpeed: 200,
+        overlayEasing: 'default',
+        showOnlyVisibleBoxesInPopup: false,
+        considerFilteringInPopup: true,
+        deepLinkingOnPopup: true,
+        deepLinkingOnFilter: true,
+        deepLinkingOnSearch: false,
+        gallery: true,
+        LoadingWord: 'Loading...',
+        loadMoreWord: 'Load More',
+        noMoreEntriesWord: 'No More Entries',
+        alignTop: false,
+        preload: [0,2],
+        magnificPopup: true,
+        percentage: false,
+
+        //some sharing hidden options :D
+        /*facebook: true,
+        twitter: true,
+        googleplus: true,
+        pinterest: true,*/
+    };    
+
+/* ====================================================================== *
+        [C] INIT
+ * ====================================================================== */    
+
+    MediaBoxes.prototype.init = function(container, options){   
         
     /* ====================================================================== *
             [1] SETUP
      * ====================================================================== */
 
         /* SETTINGS */
-        var settings = $.extend({}, $.fn.mediaBoxes.defaults, options);
+        var settings = $.extend({}, MediaBoxes.DEFAULTS, options);
 
         /* VARS */
         var $container                  = $(container).addClass('media-boxes-container');        
@@ -56,8 +145,12 @@
         if( settings.overlayEasing == 'default' ){
             settings.overlayEasing = (animation=='transition')?'_default':'swing'; /* 'default' is for CSS3 and 'swing' for jQuery animate */
         }
+
+        /* SET GLOBAL VARS, USED FOR "OUTSIDE" METHODS */
+        this.container                  = $container;
+        this.container_clone            = $container.clone().removeClass('media-boxes-container');
         
-        /* LOAD MORE BUTTON */
+        /* Load more button */
         var loadMoreButton              = $('<div class="media-boxes-load-more media-boxes-load-more-button"></div>').insertAfter($container);
 
         /* Sort the resolutions from lower to higher */
@@ -67,17 +160,13 @@
         $container.data('settings', settings);
         
         /* Fix the margins for the container (for horizontal and vertical space)  */
-        $container
-            .css({
-                    'margin-left' : -settings.horizontalSpaceBetweenBoxes,
-                    //'margin-top'  : -settings.verticalSpaceBetweenBoxes,
-                });
+        //$container.css('margin-left', -settings.horizontalSpaceBetweenBoxes);
 
         /* Hide all boxes */
         $container.find(itemSelector).removeClass(itemClass).addClass(itemHiddenClass);
 
         /* default sort selected */
-        var defSortElem = $(settings.sortContainer).find(settings.sort).filter('.selected');
+        var defSortElem = $(settings.sortContainer).find('*[data-sort-by]').filter('.selected');
         var defSort     = defSortElem.attr('data-sort-by');
         var defAsc      = getSortDirection(defSortElem);
 
@@ -86,9 +175,10 @@
 
         /* Initialize isotope plugin */
         $container.isotopeMB({
-            itemSelector    : itemSelector,  
-            //transitionDuration: '0.3s',  
-            //filter: combineFilters(filters),     
+            itemSelector    : itemSelector,   
+            transitionDuration: '0.4s',
+            hiddenStyle: { opacity: 0, transform: 'scale(0.001)' },
+            visibleStyle: { opacity: 1, transform: 'scale(1)' },
             masonry: {
                 columnWidth: '.media-boxes-grid-sizer'
             },
@@ -97,48 +187,75 @@
             sortAscending: defAsc,     
         }); 
 
-        //updateFilterClasses(); /* this is used for the popup, so it does show the images depending on the filter */
-
     /* ====================================================================== *
             [2] GRID METHODS
      * ====================================================================== */
 
-        /* ****** Add the trigger for the magnific popup ****** */
-        function addPopupTrigger(container){
+        /* ****** Add div with margins (for horizontal and vertical space) ****** */
+        function addWrapperForMargins(container){
+            /*var wrapper = $('<div class="media-box-container"></div').css({
+                                    'margin-left'       : container.data('settings').horizontalSpaceBetweenBoxes,
+                                    'margin-bottom'     : container.data('settings').verticalSpaceBetweenBoxes
+                                });*/
 
-            container.find(itemSelector+', .'+itemHiddenClass).find(boxImageSelector+':not([data-popupTrigger])').each(function(){
-                var boxImage        = $(this);
-                var popupDiv        = boxImage.find('div[data-popup]').eq(0); /* only one popup allowed */
-                var popupTrigger    = boxImage.find('.mb-open-popup').addBack('.mb-open-popup');
-                //var popupTrigger  = boxImage.find('.mb-open-popup').andSelf().filter('.mb-open-popup'); // For jQuery v1.7.1 - v1.8
+            var wrapper = $('<div class="media-box-container"></div');
+            container.find(itemSelector+':not([data-wrapper-added])').attr('data-wrapper-added', 'yes').wrapInner( wrapper );
+        }
 
-                // instead of openning the iframe in the popup open it in the grid
-                if( popupDiv.hasClass('iframe-on-grid') && popupDiv.data('type') == 'iframe' ){
-                    popupTrigger.attr('iframe-on-grid-src', popupDiv.data('popup'));
-                    popupTrigger.addClass('mb-open-iframe-on-grid');
-                    return;
+        /* ****** FadeIn the thumbnail or show broken thumbnail only for the ones with ratio specified ****** */
+        function fadeInOrBroken(imageObj){
+            var image           = $(imageObj.img);
+            var thumbnailDiv    = image.parents('.image-with-dimensions');
+            
+            /* it has already been loaded or broken so skip it */
+
+            if(image.hasClass('done')){ 
+                return;
+            }
+            image.addClass('done');
+
+            /* if the media-box is fully scaled (100%) then no need for the delay, fadeIn right away */
+
+            var delay               = 400;
+            var media_box           = image.parents(itemSelector);
+            var transform_matrix    = media_box.css("-webkit-transform") || media_box.css("-moz-transform") || media_box.css("-ms-transform") || media_box.css("-o-transform") || media_box.css("transform");
+            if(transform_matrix == 'none'){
+                delay = 0;
+            }
+
+            /* Load or broken */
+
+            setTimeout(function(){
+
+                if( imageObj.isLoaded ){
+                    
+                    image.fadeIn(300, function(){ /* This will only be trigger if you hide the image above (if the "waitUntilThumbWithRatioLoads" settings is true) */
+                        thumbnailDiv.removeClass('image-with-dimensions'); 
+                    }); 
+                    
+                }else{
+                    thumbnailDiv.removeClass('image-with-dimensions');
+                    image.hide(); /* hide image since you are going to show a broken logo */
+                    thumbnailDiv.addClass('broken-image-here');
                 }
 
-                boxImage.attr('data-popupTrigger', 'yes');
-                
-                var type = 'mfp-image';
-                if(popupDiv.data('type') == 'iframe'){
-                    type = 'mfp-iframe';
-                }else if(popupDiv.data('type') == 'inline'){
-                    type = 'mfp-inline';
-                }else if(popupDiv.data('type') == 'ajax'){
-                    type = 'mfp-ajax';
-                }
+            }, delay);
+        }
 
-                popupTrigger.attr('data-mfp-src', popupDiv.data('popup')).addClass(type);
-                if(popupDiv.attr('title') != undefined){
-                    popupTrigger.attr('mfp-title', popupDiv.attr('title'));
-                }
-                if(popupDiv.attr('alt') != undefined){
-                    popupTrigger.attr('mfp-alt', popupDiv.attr('alt'));
-                }
-            });
-
+        /* ****** Load images with dimensions ****** */
+        function loadImagesWithDimensions(container){
+            /* FadeIn thumbnails that have dimensions specified if you want to show them after they have been loaded */
+            container.find('.image-with-dimensions').imagesLoadedMB()
+                .always(function(instance){
+                    /* In case the progress event don't get to show the images (this happens sometimes when you refresh the page) */
+                    for(index in instance.images){
+                        var imageObj = instance.images[index];
+                        fadeInOrBroken(imageObj);
+                    }
+                })
+                .progress(function(instance, imageObj) {
+                    fadeInOrBroken(imageObj);
+                });
         }
 
         /* ****** Convert the divs with the URL specified to real images ****** */
@@ -146,171 +263,114 @@
             container.find(itemSelector).find(boxImageSelector+':not([data-imageconverted])').each(function(){
                 var boxImage        = $(this);
                 var thumbnailDiv    = boxImage.find('div[data-thumbnail]').eq(0); /* only one thumb allowed */
-                var popupDiv        = boxImage.find('div[data-popup]').eq(0); /* only one popup allowed */
-                var thumbSrc        = thumbnailDiv.data('thumbnail');
+                var thumbnailSrc    = thumbnailDiv.attr('data-thumbnail');
+                var thumbnailTitle  = thumbnailDiv.attr('data-title') != undefined ? thumbnailDiv.attr('data-title') : "";
+                var thumbnailAlt    = thumbnailDiv.attr('data-alt') != undefined ? thumbnailDiv.attr('data-alt') : "";
+                var gotDimensions   = thumbnailDiv.attr('data-width') != undefined && thumbnailDiv.attr('data-height') != undefined;
+                var waitForAll      = container.data('settings').waitForAllThumbsNoMatterWhat;
 
-                if(thumbnailDiv[0] == undefined){ /* if you haven't sepcified a thumbnail then take the image */
-                    thumbnailDiv   = popupDiv;
-                    thumbSrc    = popupDiv.data('popup');
-                }
-                
-                if( imagesWithDimensions == false && container.data('settings').waitForAllThumbsNoMatterWhat == false ){
-                    if( thumbnailDiv.data('width') == undefined && thumbnailDiv.data('height') == undefined ){
-                        /* Then we are good to go since we don't want images with dimenssions specified */
-                    }else{
-                        return;
-                        /* If you are here then nothing after this will be executed */
-                    }
+                if(imagesWithDimensions == false && gotDimensions == true && waitForAll == false){
+                    /* when the plugin wants the images WITHOUT dimensions, only ignore the images WITH dimensions if option "waitForAll..." is false */
+                    return;
                 }
 
-                boxImage.attr('data-imageconverted', 'yes');
-                
-                var thumbTitle = thumbnailDiv.attr('title');
-                if(thumbTitle == undefined){
-                    thumbTitle = "";
-                }
-
-                var thumbAlt = thumbnailDiv.attr('alt');
-                if(thumbAlt == undefined){
-                    thumbAlt = thumbSrc;
-                }
-
-                var imgHTML   = $('<img alt="'+ thumbAlt +'" title="'+ thumbTitle +'" src="'+ thumbSrc +'" />');
+                var imgHTML         = $('<img alt="'+thumbnailAlt+'" title="'+thumbnailTitle+'" src="'+thumbnailSrc+'" />');
 
                 if(imagesWithDimensions == true){
-                    /* If the dmienssions are specified in the images then ignore them in the imagesLoaded plugin when you insert new items */
+                    /* If the dimensions are specified in the images then ignore them in the imagesLoaded plugin when you insert new items */
                     imgHTML.attr('data-dont-wait-for-me', 'yes');
-
                     thumbnailDiv.addClass('image-with-dimensions');
 
-                    if( container.data('settings').waitUntilThumbLoads ){
+                    if( container.data('settings').waitUntilThumbWithRatioLoads ){
                         imgHTML.hide();
                     }
                 }
 
+                boxImage.attr('data-imageconverted', 'yes');
                 thumbnailDiv.addClass('media-box-thumbnail-container').prepend(imgHTML);
             });
 
-            if(imagesWithDimensions == true){
-
-                    /* FadeIn the thumbnail or show broken thumbnail */
-                    function fadeInOrBroken(image){
-                        var $image          = $(image.img);
-                        var thumbnailDiv    = $image.parents('.image-with-dimensions');
-                        
-                        if(thumbnailDiv[0] == undefined){ /* If is undefined it means that it has already been loaded or broken so skip it */
-                            return;
-                        }
-
-                        if( image.isLoaded ){
-                            $image.fadeIn(400, function(){ /* This will only be trigger if you hide the image above (if the "waitUntilThumbLoads" settings is true) */
-                                thumbnailDiv.removeClass('image-with-dimensions'); 
-                            }); 
-                        }else{
-                            thumbnailDiv.removeClass('image-with-dimensions');
-                            $image.hide(); /* hide image since you are going to show a broken logo */
-                            thumbnailDiv.addClass('broken-image-here');
-                        }
-                    }
-
-                    /* FadeIn thumbnails that have dimensions specified if you want to show them after they have been loaded */
-                    container.find('.image-with-dimensions').imagesLoadedMB()
-                        .always(function(instance){
-                            
-                            /* In case the progress event don't get to show the images (this happens sometimes when you refresh the page) */
-                            for(index in instance.images){
-                                var image = instance.images[index];
-                                fadeInOrBroken(image);
-                            }
-
-                        })
-                        .progress(function(instance, image) {
-                            
-                            fadeInOrBroken(image);
-
-                        });
-
-            }
-
+            loadImagesWithDimensions(container);
         }
 
+        /* ****** Set the width and height for the media-box-image div, this is helpful for some overlay effects ****** */
         function setDimensionsToImageContainer(container){
-            container.find(itemSelector).each(function(){
-                var box             = $(this);
+            container.find(itemSelector).find(boxImageSelector).each(function(){
+                var boxImage        = $(this);
+                var box             = boxImage.parents(itemSelector);
+                var hiddenBox       = box.css('display') == 'none';
+                var thumbnailDiv    = boxImage.find('div[data-thumbnail]').eq(0); // only one thumb allowed
 
-                var boxImage        = box.find(boxImageSelector);
-                var thumbnailDiv    = boxImage.find('div[data-thumbnail]').eq(0); /* only one thumb allowed */
-                var popupDiv        = boxImage.find('div[data-popup]').eq(0); /* only one popup allowed */
+                if(thumbnailDiv[0] != undefined){ // if you haven't specified a thumbnail then ignore
+                    if(hiddenBox){// If it is hidden, display 'none' wont give you the right height so you need to do this trick
+                        box.css('margin-top', 99999999999999).show();
+                    }
 
-                if(thumbnailDiv[0] == undefined){ /* if you haven't sepcified a thumbnail then take the image */
-                    thumbnailDiv   = popupDiv;
-                }
+                    boxImage.width( thumbnailDiv[0].offsetWidth ); // now using offsetWidth, since jQuery3.width() changed to getBoundingClientRect()
+                    boxImage.height( thumbnailDiv[0].offsetHeight );
 
-                var display = box.css('display');
-                if(display == 'none'){// If it is hidden, display to 'none' wont give you the right height so you need to do this trick
-                    box.css('margin-top', 99999999999999).show();
-                }
-
-                boxImage.width( thumbnailDiv.width() );
-                boxImage.height( thumbnailDiv.height() );
-
-                if(display == 'none'){
-                    box.css('margin-top', 0).hide();
+                    if(hiddenBox){
+                        box.css('margin-top', 0).hide();
+                    }
                 }
             });
         }
 
         /* ****** Calculate the right dimensions for the thumbnails ****** */
         function setStaticDimensionsOfThumbnails(container){
-            
             container.find(itemSelector).find(boxImageSelector).each(function(){
                 var boxImage        = $(this);
+                var box             = boxImage.parents(itemSelector);
+                var hiddenBox       = box.css('display') == 'none';
                 var thumbnailDiv    = boxImage.find('div[data-thumbnail]').eq(0); /* only one thumb allowed */
-                var popupDiv        = boxImage.find('div[data-popup]').eq(0); /* only one popup allowed */
+                var gotDimensions   = thumbnailDiv.attr('data-width') != undefined && thumbnailDiv.attr('data-height') != undefined;
 
-                if(thumbnailDiv[0] == undefined){ /* if you haven't sepcified a thumbnail then take the image */
-                    thumbnailDiv = popupDiv;
+                var imgWidth        = parseFloat( thumbnailDiv.data('width') );
+                var imgHeight       = parseFloat( thumbnailDiv.data('height') );
+
+                if(hiddenBox){// If it is hidden, display 'none' wont give you the right height so you need to do this trick
+                    box.css('margin-top', 99999999999999).show();
                 }
-                
-                var imgWidth    = parseFloat( thumbnailDiv.data('width') );
-                var imgHeight   = parseFloat( thumbnailDiv.data('height') );
 
-                var newWidth    = boxImage.parents(itemSelector).width() - container.data('settings').horizontalSpaceBetweenBoxes;
-                var newHeight   = (imgHeight * newWidth)/imgWidth;
+                var newWidth        = box[0].offsetWidth - container.data('current_horizontalSpaceBetweenBoxes'); // now using offsetWidth, since jQuery3.width() changed to getBoundingClientRect()
+                var newHeight       = (imgHeight * newWidth)/imgWidth;
+
+                if(hiddenBox){
+                    box.css('margin-top', 0).hide();
+                }
                 
                 thumbnailDiv.css('width', newWidth);
 
                 /* Set the height only to those thumbs with width and height specified */ 
-                if( thumbnailDiv.data('width') != undefined || thumbnailDiv.data('height') != undefined ){
+                if( gotDimensions ){
                     thumbnailDiv.css('height', Math.floor(newHeight));
                 }
             });
-
         }
         
         /* ****** Set the width of the columns according to the settings specified ****** */
         function setColumnWidth(container, columnWidth, columns){
-            var mediaBoxes = container.find(itemSelector);
-            var newWidth;
-            var percentage = false;
+            var newWidth    = 0;
+            var percentage  = container.data('settings').percentage;
+            var symbol      = '';
 
             if( columnWidth == 'auto' ){
                 if(percentage){
-                    newWidth = 100/columns+'%';
+                    newWidth    = 100/columns;
+                    symbol      = '%';
                 }else{
-                   //newWidth = Math.floor( (container.width()-1)/columns ); // minus 1px because some resolutions don't fit perfectly
-                   newWidth = Math.floor(  Math.floor(container.width())/columns ); // minus 1px because some resolutions don't fit perfectly
+                    newWidth    = Math.floor(  Math.floor(container.width())/columns ); // minus 1px because some resolutions don't fit perfectly
                 }
             }else{
                 newWidth = columnWidth;
             }
 
             /* the width that the isotope logic will use for each column of the grid */
-            container.find('.media-boxes-grid-sizer').css( 'width' , newWidth );
+            container.find('.media-boxes-grid-sizer').css( 'width' , newWidth + symbol );
             
-            mediaBoxes.each(function(index){
-                var $this       = $(this);
-                var boxColumns  = $this.data('columns');
+            container.find(itemSelector).each(function(index){
+                var box         = $(this);
+                var boxColumns  = box.data('columns');
 
                 /* if the box has columns asigned, check that it doesn't have more than the number of columns in the grid */
                 if(boxColumns != undefined && parseInt(boxColumns)>parseInt(columns)){
@@ -323,20 +383,7 @@
                 }
                 
                 /* Adjust the width */
-                //if(boxColumns != undefined && parseInt(columns)>=parseInt(boxColumns)){ // erase this if you don't remember what it was
-                //if(boxColumns != undefined){
-                    if(percentage){
-                        $this.css( 'width' , parseFloat(100/columns)*boxColumns+'%' );
-                    }else{
-                        $this.css( 'width' , newWidth*parseInt(boxColumns) );
-                    }
-                /*}else{
-                    if(percentage){
-                        $this.css( 'width' , parseFloat(100/columns)+'%' );
-                    }else{
-                        $this.css( 'width' , newWidth );
-                    }
-                }*/
+                box.css( 'width' , (parseFloat(newWidth)*parseInt(boxColumns)) + symbol );
             });
         }
         
@@ -350,6 +397,19 @@
             return { width : e[ a+'Width' ] , height : e[ a+'Height' ] };
         }
         
+        /* ****** Set new horizontal and vertical space between boxes ****** */
+        function setSpaceBetweenBoxes(container, horizontal, vertical){
+            container.data('current_horizontalSpaceBetweenBoxes', horizontal);
+            container.data('current_verticalSpaceBetweenBoxes', vertical);
+
+            container.css('margin-left', -horizontal);
+            container.find('.media-box-container').css({
+                                    'margin-left'       : horizontal,
+                                    'margin-bottom'     : vertical
+                                });
+
+        }
+
         /* ****** Get and set the correct columnWidth for the current resolution ****** */
         function getAndSetColumnWidth(container){
             var resolutionFound = false;
@@ -357,6 +417,11 @@
                 var value = container.data('settings').resolutions[key];
                 
                 if( value.maxWidth >= viewport().width ){
+                    if(value.horizontalSpaceBetweenBoxes != undefined && value.verticalSpaceBetweenBoxes != undefined){
+                        setSpaceBetweenBoxes(container, value.horizontalSpaceBetweenBoxes, value.verticalSpaceBetweenBoxes);
+                    }else{
+                        setSpaceBetweenBoxes(container, container.data('settings').horizontalSpaceBetweenBoxes, container.data('settings').verticalSpaceBetweenBoxes);
+                    }
                     setColumnWidth(container, value.columnWidth, value.columns);
                     resolutionFound = true;
                     break;
@@ -365,105 +430,12 @@
             
             /* If there wasn't a match then use the default one */
             if( resolutionFound == false ){
+                setSpaceBetweenBoxes(container, container.data('settings').horizontalSpaceBetweenBoxes, container.data('settings').verticalSpaceBetweenBoxes);
                 setColumnWidth(container, container.data('settings').columnWidth, container.data('settings').columns);
             }
         }
 
-        /* ****** Add div with margins (for horizontal and vertical space) ****** */
-        function addWrapperForMargins(container){
-            var wrapper = $('<div class="media-box-container"></div')
-                            .css({
-                                    'margin-left' : container.data('settings').horizontalSpaceBetweenBoxes,
-                                    'margin-bottom'  : container.data('settings').verticalSpaceBetweenBoxes
-                                });
-
-            var boxes = container.find(itemSelector+':not([data-wrapper-added])').attr('data-wrapper-added', 'yes');
-            
-            boxes.wrapInner( wrapper );
-        }
-
-        /* ****** Set the overlay depending on the overlay effect before the hover event is trigger ****** */
-        function setupOverlayForHoverEffect(container){
-            if( container.data('settings').thumbnailOverlay == false ) return;
-
-            var boxes = container.find(itemSelector+':not([data-set-overlay-for-hover-effect])').attr('data-set-overlay-for-hover-effect', 'yes');
-
-            /* Add extra divs for vertical aliognment */
-            boxes.find('.thumbnail-overlay').wrapInner( "<div class='aligment'><div class='aligment'></div></div>" );
-
-            boxes.each(function(){
-
-                var box         = $(this);
-                var boxImage    = box.find(boxImageSelector);
-                var effect      = container.data('settings').overlayEffect;
-                if(boxImage.data('overlay-effect') != undefined){
-                    effect = boxImage.data('overlay-effect');
-                }
-
-                    /* Add wrapper for some effects */
-                    if( effect == 'push-up' || effect == 'push-down' || effect == 'push-up-100%' || effect == 'push-down-100%'  ){
-                        
-                            var thumbnailDiv        = boxImage.find('.media-box-thumbnail-container');
-                            var thumbnailOverlay    = boxImage.find('.thumbnail-overlay').css('position', 'relative');
-                            if( effect == 'push-up-100%' || effect == 'push-down-100%' ){/* set the height of the overlay to the same of the thumbnail */
-                                thumbnailOverlay.outerHeight( thumbnailDiv.outerHeight(false) );
-                            }
-                            var heightOverlay       = thumbnailOverlay.outerHeight(false);
-                            
-
-
-                            var wrapper             = $('<div class="wrapper-for-some-effects"></div');
-
-                            if( effect == 'push-up' || effect == 'push-up-100%' ){
-                                thumbnailOverlay.appendTo(boxImage);    
-                            }else if( effect == 'push-down' || effect == 'push-down-100%'  ){
-                                thumbnailOverlay.prependTo(boxImage);    
-                                wrapper.css('margin-top', -heightOverlay);
-                            }
-                    
-                            boxImage.wrapInner( wrapper );
-
-                    }
-                    /* Set some CSS style for this effects */
-                    else if( effect == 'reveal-top' || effect == 'reveal-top-100%' ){
-                        
-                        box.addClass('position-reveal-effect');
-                        
-                        var overlay = box.find('.thumbnail-overlay').css('top', 0);
-                        if( effect == 'reveal-top-100%' ){
-                            overlay.css('height', '100%');
-                        }
-
-                    }else if( effect == 'reveal-bottom' || effect == 'reveal-bottom-100%' ){
-                        
-                        box.addClass('position-reveal-effect').addClass('position-bottom-reveal-effect');
-                        
-                        var overlay = box.find('.thumbnail-overlay').css('bottom', 0);
-                        if( effect == 'reveal-bottom-100%' ){
-                            overlay.css('height', '100%');
-                        }
-
-                    }else if( effect.substr(0, 9) == 'direction'){ // 'direction-aware', 'direction-aware-fade', 'direction-right', 'direction-left', 'direction-top', 'direction-bottom'
-
-                        /* Set the height to 100% if not it would be just the default height of the overlay */
-                        box.find('.thumbnail-overlay').css('height', '100%');
-
-                    }else if( effect == 'fade' ){
-                        
-                        var thumbOverlay = box.find('.thumbnail-overlay').hide();
-                        thumbOverlay.css({
-                                            'height' : '100%',
-                                            'top'    : '0',
-                                            'left'   : '0',
-                                        });
-                        thumbOverlay.find('i.fa').css({ scale : 1.4 });
-
-                    }
-
-            });
-
-        }
-
+        /* ****** Hide overlays when resizing ****** */
         function hideOverlaysOnResize(container){
             var boxes = container.find(itemSelector);
 
@@ -491,7 +463,7 @@
         /* ****** Extending Isotope on resize event ****** */
         $.extend( IsotopeMB.prototype, {
             resize : function() {
-                /* Hack for setting the right sizes of the column */
+                /* Hack for seting the grid */
                 var container = $(this.element);
                 getAndSetColumnWidth(container);
                 setStaticDimensionsOfThumbnails(container);
@@ -512,31 +484,31 @@
         /* ****** Extending Isotope so when it does set the container width the plugin can refresh the lazy load feature ****** */
         $.extend( IsotopeMB.prototype, {
             _setContainerMeasure : function( measure, isWidth ) {
-                  if ( measure === undefined ) {
+                if ( measure === undefined ) {
                     return;
-                  }
+                }
 
-                  var elemSize = this.size;
-                  // add padding and border width if border box
-                  if ( elemSize.isBorderBox ) {
+                var elemSize = this.size;
+                // add padding and border width if border box
+                if ( elemSize.isBorderBox ) {
                     measure += isWidth ? elemSize.paddingLeft + elemSize.paddingRight +
-                      elemSize.borderLeftWidth + elemSize.borderRightWidth :
-                      elemSize.paddingBottom + elemSize.paddingTop +
-                      elemSize.borderTopWidth + elemSize.borderBottomWidth;
-                  }
+                    elemSize.borderLeftWidth + elemSize.borderRightWidth :
+                    elemSize.paddingBottom + elemSize.paddingTop +
+                    elemSize.borderTopWidth + elemSize.borderBottomWidth;
+                }
 
-                  measure = Math.max( measure, 0 );
-                  this.element.style[ isWidth ? 'width' : 'height' ] = measure + 'px';
-                  
-                  /* Hack to refresh the waypoint */
-                  var container = $(this.element);
-                  $.waypoints('refresh');
-                  container.addClass('lazy-load-ready');
-                  /* End hack */
+                measure = Math.max( measure, 0 );
+                this.element.style[ isWidth ? 'width' : 'height' ] = measure + 'px';
 
-                  /* Remove this class since the grid has been resized due to the filtering system */
-                  container.removeClass('filtering-isotope');
-                  /* End Remove this class */
+                /* Hack to refresh the waypoint */
+                var container = $(this.element);
+                Waypoint.refreshAll();
+                setTimeout(function(){ container.addClass('lazy-load-ready'); }, 10); // delay 10 ms, since the new version of waypoints triggers to fast
+                /* End hack */
+
+                /* Remove this class since the grid has been resized due to the filtering system */
+                container.removeClass('filtering-isotope');
+                /* End Remove this class */
             }
         });
 
@@ -557,38 +529,31 @@
                     }
                 });
                 
-                /* COMMENT THIS FOR PREPEND */
                 var items = this.addItems( elems );
                 if ( !items.length ) {
-
                     /* Callback for inserting items, I added this 3 lines */
                     if (typeof callback === 'function'){
                         callback();
                     }
-
                     return;
                 }   
 
-                // Snippet (the insertBefore method so it is always ordered) 
-                var firstHiddenBox = container.find('.'+itemHiddenClass)[0];
                 // append item elements
-                var i, item;
+                var i, item, firstHiddenBox = container.find('.'+itemHiddenClass)[0];
                 var len = items.length;
                 for ( i=0; i < len; i++ ) {
-                  item = items[i];
-                  if(firstHiddenBox != undefined){
-                    this.element.insertBefore( item.element, firstHiddenBox );
-                  }else{
-                    this.element.appendChild( item.element );
-                  }
-                } 
-                // End Snippet
-                /**/
+                    item = items[i];
+                    if(firstHiddenBox != undefined){
+                        this.element.insertBefore( item.element, firstHiddenBox );
+                    }else{
+                        this.element.appendChild( item.element );
+                    }
+                }
 
                 var isotopeDefaultLogic = function(){
 
-                    /* COMMENT THIS FOR PREPEND */
-                    var filteredInsertItems = this._filter( items ).matches; /* when updating to Isotope V2.2.0 I had to add .matches */
+                    // filter new stuff
+                    var filteredInsertItems = this._filter( items ).matches;
                     // hide all newitems
                     this._noTransition( function() {
                       this.hide( filteredInsertItems );
@@ -603,26 +568,7 @@
                       delete items[i].isLayoutInstant;
                     }
                     this.reveal( filteredInsertItems );
-                    /**/
-                    
-                    /* UNCOMMENT THIS FOR PREPEND
-                    var items = this._itemize( elems );
-                    if ( !items.length ) {
-                      return;
-                    }
-                    // add items to beginning of collection
-                    var previousItems = this.items.slice(0);
-                    this.items = items.concat( previousItems );
-                    // start new layout
-                    this._resetLayout();
-                    this._manageStamps();
-                    // layout new stuff without transition
-                    var filteredItems = this._filterRevealAdded( items );
-                    // layout previous items
-                    this.layoutItems( previousItems );
-                    // add to filteredItems
-                    this.filteredItems = filteredItems.concat( this.filteredItems );
-                    $(this.element).isotopeMB('layout');*/
+
                 }
 
                 /* ======== Hack when inserting new boxes so they are properly converted ======== */
@@ -636,39 +582,26 @@
                     }
                 }
 
-
-
                 var instance    = this;
-                
-                /* Set the vertical and horizontal space between boxes */
-                addWrapperForMargins(container);
-                
-                /* Set the columnWidth and set the static dimensions of the images that have it specified */
-                getAndSetColumnWidth(container);
-                setStaticDimensionsOfThumbnails(container);
 
-                addPopupTrigger(container);
                 
-                convertDivsIntoImages(container, false); /* only the ones that have NO width and height */
+                addPopupTrigger(container);                /* Add popup trigger */
+                addWrapperForMargins(container);            /* Set the vertical and horizontal space between boxes */
+                getAndSetColumnWidth(container);            /* Set the column width */
+                setStaticDimensionsOfThumbnails(container); /* Set the static ratio to the thumbnailDiv */
+                convertDivsIntoImages(container, false);    /* Only the ones that have NO width and height */
 
                 container.find('img:not([data-dont-wait-for-me])').imagesLoadedMB()
                     .always(function(){
                         if( container.data('settings').waitForAllThumbsNoMatterWhat == false ){
-                            convertDivsIntoImages(container, true); /* the ones left that have width and height */                  
+                            convertDivsIntoImages(container, true);                 /* the ones left that have width and height */                  
                         }
 
-                        /* Add the class to show the box */
-                        container.find(itemSelector).addClass('media-box-loaded');
-
-                        /* show or hide according to the searching criteria */
-                        $(container.data('settings').search).trigger('keyup');
-
-                        /* Now you can call the default logic of the insert method from Isotope */
-                        isotopeDefaultLogic.call(instance);
-
-                        setDimensionsToImageContainer(container); /* set the same dimensions of the thumbnail to the container (for caption purposes) */
-
-                        setupOverlayForHoverEffect(container);
+                        container.find(itemSelector).addClass('media-box-loaded');  /* Add the class to show the box */
+                        $(container.data('settings').search).trigger('keyup');      /* Show or hide according to the searching criteria */
+                        isotopeDefaultLogic.call(instance);                         /* Now you can call the default logic of the insert method from Isotope */
+                        setDimensionsToImageContainer(container);                   /* Set the same dimensions of the thumbnail to the container (for caption purposes) */
+                        setupOverlayForHoverEffect(container);                      /* Get ready for the overlay effect */
 
                         /* Callback for inserting items */
                         if (typeof callback === 'function'){
@@ -683,7 +616,7 @@
                     })
                     .progress(function( instance, image ) {
                         /* For broken images */
-                        checkForBrokenImages(image);
+                        checkForBrokenImages(image);        
                     });
                 
                 /* ======== End Hack ======== */
@@ -702,7 +635,8 @@
             boxes.not( filter ).addClass('hidden-media-boxes-by-filter').removeClass('visible-media-boxes-by-filter');
         }
 
-        function filterTheBoxes( filterValue, filterGroup ){
+        function filterTheBoxes(filterValue, filterGroup){
+
             /* Add a class until it resizes the grid */
             $container.addClass('filtering-isotope');
 
@@ -724,9 +658,8 @@
                 fixLoadMoreButton();
             }
 
-            if( checkMinBoxesPerFilter() ){
-                /* it will load the missing boxes */
-            }
+            // load more boxes if neccessary 
+            checkMinBoxesPerFilter();
         }
 
         function goAndFilterIsotope(filterValue, filterGroup){
@@ -738,54 +671,59 @@
         }
 
         function combineFilters( filters ) {
-            //Remove undefined values
+
+            var output = [];
+
             for ( var prop in filters ) {
-                var filter = filters[ prop ];
-                if(filter == undefined){
-                    filters[ prop ] = '*';
-                }
-            }
-            
-            var longerFilter = ''; // i.e. navigation-bar 
-            for ( var prop in filters ) {
-                var filter = filters[ prop ];
+                var selector        = filters[prop];
+                var selector_clean  = selector.split(" ").join(""); // Remove empty spaces, so if we have this: .red, .blue it should be: .red,.blue
+                var selector_split  = selector_clean.split(",")     
 
-                if(longerFilter == ''){
-                    longerFilter = prop;
-                }else if( longerFilter.split(',').length < filter.split(',').length ){
-                    longerFilter = prop;
-                }
-            }
-
-            var combinedFilters = filters[longerFilter]; // i.e. .images, .sounds
-            for ( var prop in filters ) {
-                if(prop == longerFilter)continue;
-
-                var filterSplit = filters[ prop ].split(',');
-                for(var i=0; i<filterSplit.length; i++){
-
-                    var largerFilterSplit   = combinedFilters.split(',');
-                    var newFilter           = [];
-                    for(var j=0; j<largerFilterSplit.length; j++){
-                        if(largerFilterSplit[j] == '*' && filterSplit[i] == '*'){
-                            filterSplit[i] = '';
+                /* ###### AND ###### */
+                if(settings.multipleFilterLogic == 'AND'){
+                    
+                    if(selector_clean != '*'){
+                        if(output.length == 0){
+                            output = selector_split;                        
                         }else{
-                            if(filterSplit[i] == '*'){
-                                filterSplit[i] = '';
-                            }   
-                            if(largerFilterSplit[j] == '*'){
-                                largerFilterSplit[j] = '';
-                            }
+                            output = allPossibleCases([ output, selector_split ]);                        
                         }
-                        
-                        
-                        newFilter.push( largerFilterSplit[j]+filterSplit[i] );
                     }
-                    combinedFilters = newFilter.join(',');
+
                 }
+
+                /* ###### OR ###### */
+                else if(settings.multipleFilterLogic == 'OR'){
+                    if(selector_clean != '*' && selector_clean != '.search-match'){
+                        if('search' in filters){ // if the search filter is enable, then combine it with the current selector
+                            var mixed = allPossibleCases([ ['.search-match'], selector_split ]);
+                            output.push( mixed.join(',') );
+                        }else{
+                            output.push( selector_split.join(',') );             
+                        }
+                    }
+                }
+
             }
 
-            return combinedFilters;
+            var combined = output.length > 0 ? output.join(',') : '*'; // if output is empty, is probably because all filters were '*'
+
+            return combined;
+        }
+
+        function allPossibleCases(arr) {
+            if (arr.length == 1) {
+                return arr[0];
+            } else {
+                var result = [];
+                var allCasesOfRest = allPossibleCases(arr.slice(1));  // recur with the rest of array
+                for (var i = 0; i < allCasesOfRest.length; i++) {
+                    for (var j = 0; j < arr[0].length; j++) {
+                        result.push(arr[0][j] + allCasesOfRest[i]);
+                    }
+                }
+                return result;
+            }
         }
 
     /* ====================================================================== *
@@ -794,14 +732,24 @@
 
         function checkMinBoxesPerFilter(){
 
-            var boxesInCurrentCategory = getBoxesInCurrentFilter().length;
+            var filter  = getCurrentFilter();
+            var in_all  = false;
+            if( filter == '*' || (filter == '.search-match' && $(settings.search).val() == '') ){
+                in_all = true;
+            }
+            
+            if(in_all == false){//only execute the minBoxesPerFilter when is not showing all the boxes
 
-            /* Also check if there's boxes waiting to get load from that category, because maybe there isn't and there's no case to try to load them */
-            if( boxesInCurrentCategory < settings.minBoxesPerFilter && hiddenBoxesWaitingToLoad().length > 0 ){
-                /* Load the boxes that are missing */
-                loadMore( settings.minBoxesPerFilter - boxesInCurrentCategory );
+                var boxesInCurrentCategory  = getBoxesInCurrentFilter().length;
 
-                return true;
+                /* Also check if there's boxes waiting to get load from that category, because maybe there isn't and there's no case to try to load them */
+                if( boxesInCurrentCategory < settings.minBoxesPerFilter && hiddenBoxesWaitingToLoad().length > 0 ){
+                    /* Load the boxes that are missing */
+                    loadMore( settings.minBoxesPerFilter - boxesInCurrentCategory );
+
+                    return true;
+                }
+
             }
 
             return false;
@@ -851,7 +799,6 @@
 
         function startLoading(){
             loadingsCounter++;
-
             loading();
         }
 
@@ -903,24 +850,9 @@
 
                 /* Force a relayout of Isotope */
                 $container.isotopeMB('layout');
-
-                // == START CUSTOMIZATION         REMEMBER: deepLinking:false , id of target1, target2 , hiddenStyle:{opacity:0,transform:"scale(0.001)"} 
-                /*if(firstTime == true && location.hash.substr(0, 2) == '#-'){
-                    var hash        = location.href.split('#-')[1];
-                    var scrollTo    = $container.find('#'+hash);
-
-                    if(scrollTo[0] != undefined){
-                        setTimeout(function(){ 
-                           $("body, html").animate({ 
-                                scrollTop: scrollTo.offset().top 
-                            }, 600);
-                        }, 500);
-                    }
-                }*/
-                // == END CUSTOMIZATION
             });
         }
-        loadMore( settings.boxesToLoadStart, true);
+        loadMore( settings.boxesToLoadStart, true );
         
         /* Load more boxes when you click the button */
         loadMoreButton.on('click', function(){
@@ -953,53 +885,69 @@
             [6] FILTER
      * ====================================================================== */   
 
-        var filterContainer = $(settings.filterContainer);  
+        var filtersContainers = $(settings.filterContainer);  
         
-        filterContainer.on('click', settings.filter, function(e){
-            var $this = $(this);
-            
-            /* Remove selected class from others */
-            var filterContainer = $this.parents(settings.filterContainer);
-            filterContainer.find(settings.filter).removeClass('selected');
-            
-            /* Add class of selected */
-            $this.addClass('selected');
-
-            /* Filter isotope */
-            var filterValue = $this.attr('data-filter');
-            var filterId = "filter";
-            if (filterContainer.data("id") != undefined) {
-                filterId = filterContainer.data("id")
+        /* EVENT IF THE FILTER IS A SELECT */
+        filtersContainers.on('change', function(){
+            if($(this).is("select")){ // check if its a select element 
+                /* current items */
+                var current_filter          = $(this).find("*[data-filter]:selected");
+                var current_filterContainer = $(this);
+                
+                /* initialize the filtering */
+                init_filtering(current_filter, current_filterContainer, 'change');
             }
-            filterTheBoxes( filterValue , filterId );
+        });
 
-            e.preventDefault();
+        /* EVENT FOR WHEN CLICKING A FILTER NAVIGATION BAR OR A DROPDOWN MENU */
+        filtersContainers.on('click', '*[data-filter]', function(e){
+            if(!$(this).is("option")){ // check if its not an option from a select element 
+                /* current items */
+                var current_filter          = $(this);
+                var current_filterContainer = $(this).parents(settings.filterContainer);
+                
+                /* initialize the filtering */
+                init_filtering(current_filter, current_filterContainer, 'click');
+
+                e.preventDefault();
+            }
         });
 
         /* DEFAULT FILTERS SELECTED */
-        filterContainer.each(function(){
-            var $this = $(this);
-            var f = $this.find(settings.filter).filter('.selected');
-            if(f[0]==undefined)return;
+        filtersContainers.each(function(){
+            /* current items */
+            var current_filter          = $(this).find('*[data-filter]').filter('.selected');
+            var current_filterContainer = $(this);
 
-            /* Filter isotope */
-            var filterValue = f.attr('data-filter');
-            var filterId = "filter";
-            if ($this.data("id") != undefined) {
-                filterId = $this.data("id")
-            }
+            if(current_filter[0] == undefined) return;
 
-            //filters[ filterId ] = filterValue;
-            goAndFilterIsotope(filterValue, filterId);
+            /* set default value */
+            current_filterContainer.attr('default-value', current_filter.attr('data-filter'));
+
+            /* initialize the filtering */
+            init_filtering(current_filter, current_filterContainer, 'default');
         });
 
-        seeItFiltered();
+        function init_filtering(current_filter, current_filterContainer, evt){
+            /* Remove selected class from others */
+            current_filterContainer.find('*[data-filter]').removeClass('selected');
+            
+            /* Add class of selected */
+            current_filter.addClass('selected');
 
-        //var defFilter = filterContainer.find(settings.filter).filter('.selected').attr('data-filter');
-        //filters[ 'filter' ] = defFilter;
+            /* Filter isotope */
+            var filterValue     = current_filter.attr('data-filter');
+            var filterGroup     = current_filterContainer.data("id") != undefined ? current_filterContainer.data("id") : "filter"; // take the id of the filter container if exists, if not just a string
+            var is_default      = current_filterContainer.attr('default-value') == filterValue;
 
-        /* default search  selected */
-        search( $(settings.search).val() );
+            // Hash on filter change, but do not take in consideration when the plugin set a default value when first loads
+            if(evt != 'default'){
+                hash_on_filter_change(filterValue, filterGroup, is_default);
+            }
+
+            // Filter the boxes
+            filterTheBoxes( filterValue , filterGroup);
+        }
 
     /* ====================================================================== *
             [7] SEARCH
@@ -1024,16 +972,26 @@
                 });
             }
 
+            var is_default      = $(settings.search).attr('default-value') == value;
+
             setTimeout( function() {
+                // Hash on filter change
+                hash_on_filter_change(value, 'search', is_default);
+
+                // Filter the boxes
                 filterTheBoxes('.search-match', 'search');
             }, 100 );
         }
 
         $(settings.search).on('keyup', function(){
-            var value = $(this).val();
-
-            search( value );
+            search( $(this).val() );
         });
+
+        /* set default value */
+        $(settings.search).attr('default-value', $(settings.search).attr('value') === undefined ? "" : $(settings.search).attr('value'));
+
+        /* default search  selected */
+        search( $(settings.search).val() );
 
     /* ====================================================================== *
             [8] SORTING
@@ -1052,11 +1010,11 @@
             return direction;
         }
 
-        $(settings.sortContainer).find(settings.sort).on('click', function(e){
+        $(settings.sortContainer).find('*[data-sort-by]').on('click', function(e){
             var $this = $(this);
 
             /* Remove selected class from others */
-            $this.parents(settings.sortContainer).find(settings.sort).removeClass('selected');
+            $this.parents(settings.sortContainer).find('*[data-sort-by]').removeClass('selected');
             
             /* Add class of selected */
             $this.addClass('selected');
@@ -1072,6 +1030,87 @@
             [9] THUMBNAIL OVERLAY EFFECT
      * ====================================================================== */    
 
+        /* ****** Set the overlay depending on the overlay effect before the hover event is trigger ****** */
+        function setupOverlayForHoverEffect(container){
+            if( container.data('settings').thumbnailOverlay == false ) return;
+
+            var boxes = container.find(itemSelector+':not([data-set-overlay-for-hover-effect])').attr('data-set-overlay-for-hover-effect', 'yes');
+
+            /* Add extra divs for vertical alignment */
+            boxes.find('.thumbnail-overlay').wrapInner( "<div class='aligment'><div class='aligment'></div></div>" );
+
+            boxes.each(function(){
+
+                var box         = $(this);
+                var boxImage    = box.find(boxImageSelector);
+                var effect      = container.data('settings').overlayEffect;
+                if(boxImage.data('overlay-effect') != undefined){
+                    effect = boxImage.data('overlay-effect');
+                }
+
+                /* Add wrapper for some effects */
+                if( effect == 'push-up' || effect == 'push-down' || effect == 'push-up-100%' || effect == 'push-down-100%'  ){
+                    
+                        var thumbnailDiv        = boxImage.find('.media-box-thumbnail-container');
+                        var thumbnailOverlay    = boxImage.find('.thumbnail-overlay').css('position', 'relative');
+                        if( effect == 'push-up-100%' || effect == 'push-down-100%' ){/* set the height of the overlay to the same of the thumbnail */
+                            thumbnailOverlay.outerHeight( thumbnailDiv.outerHeight(false) );
+                        }
+                        var heightOverlay       = thumbnailOverlay.outerHeight(false);
+
+                        var wrapper             = $('<div class="wrapper-for-some-effects"></div');
+
+                        if( effect == 'push-up' || effect == 'push-up-100%' ){
+                            thumbnailOverlay.appendTo(boxImage);    
+                        }else if( effect == 'push-down' || effect == 'push-down-100%'  ){
+                            thumbnailOverlay.prependTo(boxImage);    
+                            wrapper.css('margin-top', -heightOverlay);
+                        }
+                
+                        boxImage.wrapInner( wrapper );
+
+                }
+                /* Set some CSS style for this effects */
+                else if( effect == 'reveal-top' || effect == 'reveal-top-100%' ){
+                    
+                    box.addClass('position-reveal-effect');
+                    
+                    var overlay = box.find('.thumbnail-overlay').css('top', 0);
+                    if( effect == 'reveal-top-100%' ){
+                        overlay.css('height', '100%');
+                    }
+
+                }else if( effect == 'reveal-bottom' || effect == 'reveal-bottom-100%' ){
+                    
+                    box.addClass('position-reveal-effect').addClass('position-bottom-reveal-effect');
+                    
+                    var overlay = box.find('.thumbnail-overlay').css('bottom', 0);
+                    if( effect == 'reveal-bottom-100%' ){
+                        overlay.css('height', '100%');
+                    }
+
+                }else if( effect.substr(0, 9) == 'direction'){ // 'direction-aware', 'direction-aware-fade', 'direction-right', 'direction-left', 'direction-top', 'direction-bottom'
+
+                    /* Set the height to 100% if not it would be just the default height of the overlay */
+                    box.find('.thumbnail-overlay').css('height', '100%');
+
+                }else if( effect == 'fade' ){
+                    
+                    var thumbOverlay = box.find('.thumbnail-overlay').hide();
+                    thumbOverlay.css({
+                                        'height' : '100%',
+                                        'top'    : '0',
+                                        'left'   : '0',
+                                    });
+                    thumbOverlay.find('i.fa').css({ scale : 1.4 });
+
+                }
+
+            });
+
+        }
+
+        /* ****** Hide element when done ****** */
         function hideWhenDone(element){
             if( element.attr('data-stop') != undefined ){
                 element.hide();
@@ -1079,6 +1118,7 @@
             }
         }
 
+        /* ****** Trigger the overlay effect ****** */
         $container.on( 'mouseenter.hoverdir, mouseleave.hoverdir', boxImageSelector, function(event){
             if( settings.thumbnailOverlay == false ) return;
 
@@ -1184,9 +1224,7 @@
 
         });   
 
-
         /* ****** Methods for the direction-aware hover effect ****** */
-
         var _getDir = function( $el, coordinates ) {
             /** the width and height of the current div **/
             var w = $el.width(),
@@ -1249,140 +1287,16 @@
             return { from : fromLeft, to: fromTop };
         }; 
 
-
     /* ====================================================================== *
-            [10] MAGNIFIC POPUP
+            [10] IFRAME ON GRID
      * ====================================================================== */
 
-        var delegate = '.mb-open-popup[data-mfp-src]';
-        
-        if(settings.considerFilteringInPopup){
-            delegate = itemSelector+':not(.hidden-media-boxes-by-filter) .mb-open-popup[data-mfp-src], .'+itemHiddenClass+':not(.hidden-media-boxes-by-filter) .mb-open-popup[data-mfp-src]';
-        }
-        if(settings.showOnlyLoadedBoxesInPopup){
-            delegate = itemSelector+':visible .mb-open-popup[data-mfp-src]';
-        }
-
-        if(settings.magnificPopup){
-
-            $container.magnificPopup({
-                delegate: delegate, // child items selector, by clicking on it popup will open
-                type: 'image',
-                removalDelay : 200,
-                closeOnContentClick : false,
-                alignTop: settings.alignTop,
-                preload: settings.preload,
-                tLoading: 'loading...',
-                mainClass : 'my-mfp-slide-bottom',
-                gallery:{
-                    enabled:settings.gallery
-                },
-                closeMarkup : '<button title="%title%" class="mfp-close"></button>',
-                titleSrc: 'title',
-                iframe : {
-                    patterns : {
-                        youtube: {
-                          index: 'youtube.com/', // String that detects type of video (in this case YouTube). Simply via url.indexOf(index).
-
-                          id: 'v=', // String that splits URL in a two parts, second part should be %id%
-                          // Or null - full URL will be returned
-                          // Or a function that should return %id%, for example:
-                          // id: function(url) { return 'parsed id'; } 
-
-                          src: 'https://www.youtube.com/embed/%id%?autoplay=1' // URL that will be set as a source for iframe. 
-                        },
-                        vimeo: {
-                          index: 'vimeo.com/',
-                          id: '/',
-                          src: 'https://player.vimeo.com/video/%id%?autoplay=1'
-                        },
-                    },
-                    markup : '<div class="mfp-iframe-scaler">'+
-                                    '<div class="mfp-close"></div>'+
-                                    '<iframe class="mfp-iframe" frameborder="0" allowfullscreen></iframe>'+
-                                    '<div class="mfp-bottom-bar" style="margin-top:4px;"><div class="mfp-title"></div><div class="mfp-counter"></div></div>'+
-                             '</div>'                      
-                },
-                callbacks : {
-                    change : function() {
-                        var item    = $(this.currItem.el);
-                        setTimeout(function(){ 
-                            if(item.attr('mfp-title') != undefined){
-                                $('.mfp-title').html(item.attr('mfp-title'));    
-                            }else{
-                                $('.mfp-title').html('');
-                            }
-
-                            if(item.attr('mfp-alt') != undefined){
-                                $('.mfp-img').attr('alt', item.attr('mfp-alt'));    
-                            }
-
-                            // ==== SOCIAL BUTTONS ==== //
-
-                            var FullURL             = location.href; // the url of your page
-                            var URLWithoutHash      = location.href.replace(location.hash,""); // the url of your page without the hashtag
-                            var imageURL            = item.attr('data-mfp-src'); // the image URL
-
-                            // which URL do you want to share of the 3 options above?
-                            var sharingURL = FullURL;
-
-
-                            var social = "<div class='media-boxes-social-container'>";
-                            if(settings.facebook != undefined){//FB
-                              social+="<div class='media-boxes-facebook fa fa-facebook-square' data-url='"+sharingURL+"'></div>";
-                            }
-                            if(settings.twitter != undefined){//Twitter
-                              social+="<div class='media-boxes-twitter fa fa-twitter-square' data-url='"+sharingURL+"'></div>";
-                            }
-                            if(settings.googleplus != undefined){//Google+
-                              social+="<div class='media-boxes-googleplus fa fa-google-plus-square' data-url='"+sharingURL+"'></div>";
-                            }
-                            if(settings.pinterest != undefined){//Pintrest
-                              social+="<div class='media-boxes-pinterest fa fa-pinterest-square' data-url='"+sharingURL+"'></div>";
-                            }
-                            social+="</div>";
-
-                            var oldHTML = $('.mfp-title').html();
-                            $('.mfp-title').html(oldHTML+social);
-
-                            // ==== END SOCIAL BUTTONS ==== //
-
-
-                        }, 5);
-
-                        if(settings.deepLinking){
-                            location.hash   = '#mb=' + item.attr('data-mfp-src') + '||' + item.parents('.media-boxes-container').attr('id'); /* with the "src" of the image and the "id" of the container */
-                        }
-                    },
-                    beforeOpen: function() {
-                        this.container.data('scrollTop', parseInt($(window).scrollTop()));
-                    },
-                    open: function(){
-                        $('html, body').scrollTop( this.container.data('scrollTop') );
-                    },
-                    close: function () {
-                        if(settings.deepLinking){
-                            //window.location.hash = '#!';
-                            
-                            //if(history.pushState) {
-                                //history.pushState(null, null, '#');
-                            //}
-                            //else {
-                                location.hash = '#!';
-                            //}
-                        }
-                    },
-                },
-            });
-
-        }
-
         /* Instead of openning the youtube/vimeo video in the popup open it in the grid  */
-        $container.on('click', '.mb-open-iframe-on-grid', function(){
+        $container.on('click', '.iframe-on-grid', function(){
             var $this   = $(this);
             var mbImage = $this.parents(itemSelector).find(boxImageSelector);
-
-            show_video_on_grid(mbImage, $this.attr('iframe-on-grid-src'));
+            
+            show_video_on_grid(mbImage, $this.attr('data-src'));
         });
 
         function show_video_on_grid(mbImage, src){
@@ -1411,79 +1325,316 @@
         }
 
     /* ====================================================================== *
-            [11] DEEP LINKING
+            [11] MAGNIFIC POPUP
      * ====================================================================== */
 
-        if(settings.deepLinking){
-        
-                function urlFromHash() {
-                    if ( location.hash.indexOf('#mb=') == -1 ) {
-                        return null;
-                    }
-                    // why not location.hash? => http://stackoverflow.com/q/4835784/298479
-                    var hash    = location.href.split('#mb=')[1];
-                    var id      = hash.split('||')[1];
-                    var src     = hash.split('||')[0];
-                    return {
-                        hash: hash,
-                        id: id,
-                        src: src
-                    };
+        function addPopupTrigger(container){
+
+            container.find(itemSelector+', .'+itemHiddenClass).find('.mb-open-popup:not(.popup-trigger-added)').each(function(){
+                
+                var $this            = $(this).addClass('popup-trigger-added');
+                var attr_src         = $this.attr('data-src');
+                var attr_type        = $this.attr('data-type');
+                var attr_title       = $this.attr('data-title') != undefined ? $this.attr('data-title') : "";
+                var attr_alt         = $this.attr('data-alt') != undefined ? $this.attr('data-alt') : "";
+
+                // Instead of openning the iframe in the popup open it in the grid
+                if( $this.hasClass('iframe-on-grid') && attr_type == 'iframe' ){
+                    return;
+                }
+                
+                // Magnific Popup attributes
+
+                var type = 'mfp-image';
+                if(attr_type == 'iframe'){
+                    type = 'mfp-iframe';
+                }else if(attr_type == 'inline'){
+                    type = 'mfp-inline';
+                }else if(attr_type == 'ajax'){
+                    type = 'mfp-ajax';
                 }
 
-                var hashUrl = urlFromHash();
-                if (hashUrl) {
-                    $container.filter('[id="' + hashUrl.id + '"]').find('.mb-open-popup[data-mfp-src="' + hashUrl.src + '"]').trigger('click');
-                }
-
-                function doHash() {
-                    var mp = $.magnificPopup.instance;
-                    if (!mp) {
-                        // this check is not needed in this example, but in some cases you might delay everything before
-                        // this event e.g. until something else finished loading - in that case hashchange might trigger before
-                        return;
-                    }
-                    
-                    var url = urlFromHash();
-                    if (!url && mp.isOpen) {
-                        // no url => close popup
-                        mp.close();
-                    } else if (url) {
-                        if ( mp.isOpen && mp.currItem && mp.currItem.el.parents('.media-boxes-container').attr('id') == url.id ) {
-                            if( mp.currItem.el.attr('data-mfp-src') != url.src ){
-                                // open => only update if necessary
-                                var index = null;
-                                $.each(mp.items, function (i, item) {
-                                    var jqItem = item.parsed ? item.el : $(item);
-                                    if (jqItem.attr('data-mfp-src') == url.src) {
-                                        index = i;
-                                        return false;
-                                    }
-                                });
-                                if (index !== null) {
-                                    mp.goTo(index);
-                                }
-                            }else{
-                                // is already in the correct one
-                            }
-                        }else{
-                            // not open or doesn't match the right one => simply click the matching link
-                            $container.filter('[id="' + url.id + '"]').find('.mb-open-popup[data-mfp-src="' + url.src + '"]').trigger('click');
-                        }
-                    }
-                }
-
-                if (window.addEventListener) {
-                    window.addEventListener("hashchange", doHash, false);
-                } else if (window.attachEvent) {
-                    window.attachEvent("onhashchange", doHash);  
-                }
+                $this.attr('data-mfp-src', attr_src);
+                $this.addClass(type);
+                $this.attr('mfp-title', attr_title);
+                $this.attr('mfp-alt', attr_alt);
+                
+            });
 
         }
 
+        function startPopup(container, delegate){
+
+            $container.magnificPopup({
+                delegate            : delegate, // child items selector, by clicking on it popup will open
+                type                : 'image',
+                removalDelay        : 200,
+                closeOnContentClick : false,
+                alignTop            : settings.alignTop,
+                preload             : settings.preload,
+                tLoading            : 'loading...',
+                mainClass           : 'my-mfp-slide-bottom',
+                gallery             : { enabled : settings.gallery },
+                closeMarkup         : '<button title="%title%" class="mfp-close"></button>',
+                titleSrc            : 'title',
+                autoFocusLast       : false, // in the new version of Magnific Popup on IE it jumps to the element that triggered the popup, which looks odd, so we better disable it 
+                iframe              : {
+                    patterns : {
+                        youtube: {
+                          index: 'youtube.com/', // String that detects type of video (in this case YouTube). Simply via url.indexOf(index).
+                          id: 'v=', // String that splits URL in a two parts, second part should be %id%
+                          src: 'https://www.youtube.com/embed/%id%?autoplay=1' // URL that will be set as a source for iframe. 
+                        },
+                        vimeo: {
+                          index: 'vimeo.com/',
+                          id: '/',
+                          src: 'https://player.vimeo.com/video/%id%?autoplay=1'
+                        },
+                    },
+                    markup : '<div class="mfp-iframe-scaler">'+
+                                    '<div class="mfp-close"></div>'+
+                                    '<iframe class="mfp-iframe" frameborder="0" allowfullscreen></iframe>'+
+                                    '<div class="mfp-bottom-bar" style="margin-top:4px;"><div class="mfp-title"></div><div class="mfp-counter"></div></div>'+
+                             '</div>'                      
+                },
+                callbacks           : {
+                    change : function() {
+                        var item    = $(this.currItem.el);
+
+                        setTimeout(function(){ 
+                            $('.mfp-title').html(item.attr('mfp-title'));    
+                            $('.mfp-img').attr('alt', item.attr('mfp-alt'));    
+
+                            addSocialButtons(item)
+                        }, 5);
+
+                        hash_on_popup_change(item.attr('data-src'));
+                    },
+                    close: function () {
+                        if(settings.deepLinkingOnPopup){
+                            var item    = $(this.currItem.el);
+                            remove_from_hash('('+item.parents('.media-boxes-container').attr('id')+'|popup)=');
+                        }
+                    },
+                    /* FIX SO THE BACKGROUND DOESN'T MOVE */
+                    beforeOpen: function() {
+                        this.container.data('scrollTop', parseInt($(window).scrollTop()));
+                    },
+                    open: function(){
+                        $('html, body').scrollTop( this.container.data('scrollTop') );
+                    },
+                },
+            });
+
+        }
+
+        if(settings.magnificPopup){
+            var delegate = '.mb-open-popup[data-src]';
+            if(settings.considerFilteringInPopup){
+                delegate = itemSelector+':not(.hidden-media-boxes-by-filter) .mb-open-popup[data-src], .'+itemHiddenClass+':not(.hidden-media-boxes-by-filter) .mb-open-popup[data-src]';
+            }
+            if(settings.showOnlyVisibleBoxesInPopup){
+                delegate = itemSelector+':visible .mb-open-popup[data-src]';
+            }
+
+            startPopup($container, delegate)
+        }
+
     /* ====================================================================== *
-            [12] SOCIAL IN MAGNIFIC POPUP
+            [12] DEEP LINKING
      * ====================================================================== */
+
+        function hash_on_filter_change(filterValue, filterGroup, is_default){
+            if( (filterGroup=='search' && settings.deepLinkingOnSearch) || (filterGroup!='search' && settings.deepLinkingOnFilter) ){
+                if(is_default === true){
+                    remove_from_hash('('+$container.attr('id')+'|'+filterGroup+')=');
+                }else{
+                    set_key_and_value_in_hash('('+$container.attr('id')+'|'+filterGroup+')=', filterValue);
+                }
+            }
+        }
+
+        function hash_on_popup_change(value){
+            if(settings.deepLinkingOnPopup){
+                set_key_and_value_in_hash('('+$container.attr('id')+'|popup)=', value); /* with the "src" of the image and the "id" of the container */
+            }
+        }
+
+        var cleaned_hash = '';
+
+        function trigger_filter_and_search(){
+            if(settings.deepLinkingOnFilter){
+                $(settings.filterContainer).each(function(){
+                    var current_filterContainer = $(this);
+                    var filterGroup             = current_filterContainer.data("id") != undefined ? current_filterContainer.data("id") : "filter"; // take the id of the filter container if exists, if not just a string
+                    var key                     = '('+$container.attr('id')+'|'+filterGroup+')=';
+                    var hash_value              = get_value_from_hash(key);
+
+                    cleaned_hash += get_value_and_start_from_hash(key);
+                    
+                    if(hash_value != ''){
+                        if(current_filterContainer.is("select")){ // check if its a select element 
+                            var val = current_filterContainer.find('*[data-filter="'+hash_value+'"]').val();
+                            current_filterContainer.val(val).trigger('change');
+                        }else{
+                            current_filterContainer.find('*[data-filter="'+hash_value+'"]').trigger('click');
+                        }
+                    }
+                });
+            }
+
+            if(settings.deepLinkingOnSearch){
+                var key             = '('+$container.attr('id')+'|search)=';
+                var hash_value      = get_value_from_hash(key);
+
+                cleaned_hash += get_value_and_start_from_hash(key);
+
+                if(hash_value != ''){
+                    $(settings.search).val(hash_value).trigger('keyup');
+                }
+            }
+        }
+        trigger_filter_and_search();
+
+        function trigger_popup(){
+            if(settings.deepLinkingOnPopup){
+                var key             = '('+$container.attr('id')+'|popup)=';
+                var hash_value      = get_value_from_hash(key);
+
+                cleaned_hash += get_value_and_start_from_hash(key);
+
+                if(hash_value != ''){
+                    $container.find('.mb-open-popup[data-src="'+ hash_value +'"]').trigger('click');
+                }
+            }
+        }
+        trigger_popup();
+
+        // save only the part of the hash that's correct (without trash)
+        $container.attr('cleaned_hash', cleaned_hash); // this is helpful if later on, outside the scope of the MediaBoxes method, you wish to clean the has from old values or trash
+
+/*
+        // THIS MAY CAUSE BUGS!!
+        
+        if(window.addEventListener){
+            window.addEventListener("hashchange", function(){ trigger_popup(); trigger_filter_and_search(); }, false);
+        }else if (window.attachEvent){
+            window.attachEvent("onhashchange", function(){ trigger_popup(); trigger_filter_and_search(); });  
+        }
+*/
+
+        /* ### HELPFUL METHODS ### */
+
+        function remove_from_hash(start){
+            var new_hash    = get_hash().split( get_value_and_start_from_hash(start) ).join('');
+            set_hash(new_hash);
+        }
+
+        function get_hash(){
+            if(location.href.indexOf("#") != -1){
+                //return decodeURI( location.href.split("#")[1] ); // this wouldn't work if there are more # in the hash
+                return decodeURI( location.href.substring(location.href.indexOf('#')+1) );
+            }else{
+                return '';
+            }
+        }
+
+        function set_hash(new_hash){
+            if(new_hash === '' || new_hash === '#' || new_hash === '!'){
+                /* if the hash will be empty then use this following peace of code, otherwise it will jump back to the top of the page if you set an empty result for the hash */
+                if(history.pushState) { 
+                    history.pushState(null, null, '#'); 
+                }else{ 
+                    location.hash = '#!'; 
+                }
+            }else{
+                location.hash = '#' + new_hash;
+
+                /* This may be helpful later on (I found in a site it jumps to the beginning of the page the first time you change the hash, but in the examples is working like a charm)
+                if(history.pushState) { 
+                    history.pushState(null, null, '#'+ new_hash); 
+                }else{ 
+                    location.hash = '#!'+ new_hash; 
+                }
+                */
+            }
+        }
+
+        function replace_in_hash(old_value, new_value){
+            var hash        = get_hash();
+
+            if(hash.indexOf(old_value) > -1 && old_value != ""){ // if the old value exists, then just replace it
+                set_hash( hash.split(old_value).join(new_value) );
+            }else{ // if the old value doesn't exists then just add the new one
+                set_hash( hash+new_value );
+            }
+        }
+
+        function get_value_and_start_from_hash(start){
+            var hash            = get_hash();
+            var output          = '';
+            var index_start     = hash.indexOf(start);
+            
+            if(index_start > -1 && hash.indexOf(';', index_start) > -1){
+                output = hash.substring(index_start, hash.indexOf(';', index_start)+1);
+            }
+
+            return output;
+        }
+
+        function get_value_from_hash(start){
+            var hash            = get_hash();
+            var output          = '';
+            var index_start     = hash.indexOf(start);
+            
+            if(index_start > -1 && hash.indexOf(';', index_start) > -1){
+                output = hash.substring(index_start+(start.length), hash.indexOf(';', index_start))
+            }
+
+            return output;
+        }
+
+        function set_key_and_value_in_hash(start, value){
+            if(get_value_from_hash(start) == value){
+                // do nothing, since there's no change in the hash
+            }else{
+                var old_value   = get_value_and_start_from_hash(start);
+                var new_value   = start + value + ';'; // i.e. // (grid|popup)=some_image.png;
+                replace_in_hash(old_value, new_value);
+            }
+        }
+
+    /* ====================================================================== *
+            [13] SOCIAL IN MAGNIFIC POPUP
+     * ====================================================================== */
+
+        function addSocialButtons(item){
+            var FullURL             = location.href; // the url of your page
+            var URLWithoutHash      = location.href.replace(location.hash,""); // the url of your page without the hashtag
+            var imageURL            = item.attr('data-src'); // the image URL
+
+            // which URL do you want to share of the 3 options above?
+            // var sharingURL = URLWithoutHash+"/"+imageURL;
+            var sharingURL = FullURL;
+
+            var social = "<div class='media-boxes-social-container'>";
+            if(settings.facebook != undefined){//FB
+              social+="<div class='media-boxes-facebook fa fa-facebook-square' data-url='"+sharingURL+"'></div>";
+            }
+            if(settings.twitter != undefined){//Twitter
+              social+="<div class='media-boxes-twitter fa fa-twitter-square' data-url='"+sharingURL+"'></div>";
+            }
+            if(settings.googleplus != undefined){//Google+
+              social+="<div class='media-boxes-googleplus fa fa-google-plus-square' data-url='"+sharingURL+"'></div>";
+            }
+            if(settings.pinterest != undefined){//Pintrest
+              social+="<div class='media-boxes-pinterest fa fa-pinterest-square' data-url='"+sharingURL+"'></div>";
+            }
+            social+="</div>";
+
+            var oldHTML = $('.mfp-title').html();
+            $('.mfp-title').html(oldHTML+social);
+        }
 
         // OPEN WINDOWS FOR SHARING :D
         var openWindow = function(url){
@@ -1520,198 +1671,81 @@
             openWindow(url);
         });
 
+        //return this;
 
+    };//END OF INIT
 
+/* ====================================================================== *
+        [D] DESTROY
+ * ====================================================================== */
 
+    MediaBoxes.prototype.destroy = function () {
 
+        this.container_clone.insertBefore(this.container).removeData('mediaBoxes');
 
+        this.container.removeClass(); // remove all classes! (if I don't the lazy load gets triggered)
+        this.container.next('.media-boxes-load-more-button').remove();
+        this.container.isotopeMB('destroy');
+        this.container.remove();
 
-        return this;
+    }   
 
-    };//END OF FUSION OBJECT
-    
+/* ====================================================================== *
+        [E] INSERT
+ * ====================================================================== */
 
-     $.fn.mediaBoxes = function(options) {
+    MediaBoxes.prototype.insert = function (content, callback) {
+
+        var $container = this.container;
+
+        $container.isotopeMB( 'insert', $(content), function(){
+            callback();
+            $container.isotopeMB('layout'); 
+        });  
+
+    }      
+
+/* ====================================================================== *
+        [F] REFRESH
+ * ====================================================================== */
+
+    MediaBoxes.prototype.refresh = function () {
+
+        this.container.isotopeMB('layout'); 
+
+    }     
+
+/* ====================================================================== *
+        [G] RESIZE
+ * ====================================================================== */
+
+    MediaBoxes.prototype.resize = function () {
+
+        this.container.isotopeMB('resize'); 
+
+    }      
+
+/* ====================================================================== *
+        [H] MEDIA BOXES PLUGIN
+ * ====================================================================== */
+
+    $.fn.mediaBoxes = function(options, content, callback) {
 
         return this.each(function(key, value){
-            var element = $(this);
-            // Return early if this element already has a plugin instance
-            if (element.data('mediaBoxes')) return element.data('mediaBoxes');
-            // Pass options to plugin constructor
-            var mediaBoxes = new MediaBoxes(this, options);
-            // Store plugin object in this element's data
-            element.data('mediaBoxes', mediaBoxes);
-        });
-
-    };
-    
-    //Default settings
-    $.fn.mediaBoxes.defaults = {
-        boxesToLoadStart: 8,
-        boxesToLoad: 4,
-        minBoxesPerFilter: 0,
-        lazyLoad: true,
-        horizontalSpaceBetweenBoxes: 15,
-        verticalSpaceBetweenBoxes: 15,
-        columnWidth: 'auto',
-        columns: 4,
-        resolutions: [
-            {
-                maxWidth: 960,
-                columnWidth: 'auto',
-                columns: 3,
-            },
-            {
-                maxWidth: 650,
-                columnWidth: 'auto',
-                columns: 2,
-            },
-            {
-                maxWidth: 450,
-                columnWidth: 'auto',
-                columns: 1,
-            },
-        ],
-        filterContainer: '#filter',
-        filter: 'a',
-        search: '', // i.e. #search
-        searchTarget: '.media-box-title',
-        sortContainer: '', // i.e. #sort
-        sort: 'a',
-        getSortData: {
-          title: '.media-box-title',
-          text: '.media-box-text',
-        }, 
-        waitUntilThumbLoads: true, // When they have dimensions specified
-        waitForAllThumbsNoMatterWhat: false, // Wait for all the thumbnails to load even if they got dimensions specified
-        thumbnailOverlay: true, //Show the overlay on mouse over
-        overlayEffect: 'fade', // 'push-up', 'push-down', 'push-up-100%', 'push-down-100%', 'reveal-top', 'reveal-bottom', 'reveal-top-100%', 'reveal-bottom-100%', 'direction-aware', 'direction-aware-fade', 'direction-right', 'direction-left', 'direction-top', 'direction-bottom', 'fade'
-        overlaySpeed: 200,
-        overlayEasing: 'default',
-        showOnlyLoadedBoxesInPopup: false,
-        considerFilteringInPopup: true,
-        deepLinking: true,
-        gallery: true,
-        LoadingWord: 'Loading...',
-        loadMoreWord: 'Load More',
-        noMoreEntriesWord: 'No More Entries',
-        alignTop: false,
-        preload: [0,2],
-        magnificPopup: true,
-
-        //some sharing hidden options :D
-        /*facebook: true,
-        twitter: true,
-        googleplus: true,
-        pinterest: true,*/
-    };
-
-
-
-
-    /* DROP DOWN PLUGIN */
-
-    (function(){
-
-
-        /* CHECK FOR MOBILE BROWSER */ 
-        function isMobileBrowser() {
-            var check = false;
-            (function(a){
-                if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino/i.test(a)||/1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0,4)))
-                    check = true
-            })(navigator.userAgent||navigator.vendor||window.opera);
-
-            if(/android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(navigator.userAgent.toLowerCase())) {
-                check = true;
-            }
-
-            return check; 
-        }
-
-        function start($wrapper){
-            var $menu           = $wrapper.find('.media-boxes-drop-down-menu');
-            var $header         = $wrapper.find('.media-boxes-drop-down-header');
+            var $this   = $(this);
+            var data    = $this.data('mediaBoxes')
             
-            function mouseout(){
-                $menu.hide(); 
-            };
-
-            function mouseover(){
-                $menu.show();
-            };
-
-            function updateHeader(){
-                var $selectedDefault    = $menu.find( '.selected' );
-                var $selected           = $selectedDefault.length ? $selectedDefault.parents('li') : $menu.children().first();
-                var $clone              = $selected.clone().find('a').html();
-                
-                //$clone.removeAttr('data-sort-toggle').removeAttr('data-sort-by');
-                $header.html( '<span class="fa fa-sort-desc"></span>' + $clone );
-            }
-            updateHeader();
-
-            function click(e){
-                e.preventDefault();
-                //e.stopPropagation();
-                
-                $(this).parents('li').siblings('li').find('a').removeClass('selected').end().end().find('a').addClass('selected');
-                updateHeader();
-
-                //mouseout();
+            // Initialize plugin
+            if (!data && typeof options != 'string'){
+                $this.data('mediaBoxes', new MediaBoxes(this, options));
             }
 
-            if(isMobileBrowser()){
-            //if(true){
-
-                function clickToggle(e){
-                    e.stopPropagation();
-
-                    if($menu.is(":visible")){
-                        mouseout();
-                    }else{
-                        mouseover();
-                    }
-                }
-
-                $('body').on('click', function(){
-                    if($menu.is(":visible")){
-                        mouseout();
-                    }
-                })
-
-                $header
-                    .bind('click', clickToggle);
-
-                $menu.find('> li > *')
-                    .bind('click', click);
-            }else{
-                $header
-                    .bind('mouseout', mouseout)
-                    .bind('mouseover', mouseover);
-
-                $menu
-                    .bind('mouseout', mouseout)
-                    .bind('mouseover', mouseover);
-
-                $menu.find('> li > *')    
-                    .bind('click', click);
+            // Call method
+            if (data && typeof options == 'string'){
+                data[options](content, callback);    
             }
-
-            $header.on('click', 'a', function(e){
-                e.preventDefault();
-                //return false;
-            });
-
-        }
-
-
-        $('.media-boxes-drop-down').each(function(){
-            start($(this));
         });
 
-    })();
-
-
+    };      
     
 })( window, jQuery );
