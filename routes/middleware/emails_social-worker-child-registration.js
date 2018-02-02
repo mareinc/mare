@@ -779,7 +779,7 @@ exports.sendNewSocialWorkerChildRegistrationNotificationEmailToSocialWorker = ( 
 			templateEngine 	: require( 'handlebars' ),
 			templateName 	: 'social-worker-new-child-notification-to-social-worker'
 		}).send({
-			to: socialWorkerEmail,
+			to				: socialWorkerEmail,
 			from: {
 				name 	: 'MARE',
 				email 	: 'admin@adoptions.io'
