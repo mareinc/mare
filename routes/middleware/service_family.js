@@ -76,6 +76,7 @@ exports.setGalleryPermissions = ( req, res ) => {
 	locals.canSearchForChildren = userType === 'social worker' || userType === 'family';
 	// TODO: canViewAllChildren and canSeeAdvancedOptions are the same check and should have a name that encompasses both
 	locals.canSeeAdvancedSearchOptions = userType === 'social worker' ||
+										 userType === 'admin' ||
 									   ( userType === 'family' && req.user.permissions.canViewAllChildren );
 };
 
