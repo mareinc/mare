@@ -212,27 +212,27 @@
 				<div class="row form-group">
 					<div class="col-sm-12 form-group">
 						<label class="checkbox-inline">
-							<input type="checkbox" id="gathering-information-checkbox" class="adoption-preferences-trigger" name="processProgression" value="{{user.stages.gatheringInformation.started}}" {{#if user.stages.gatheringInformation.started}}checked="checked"{{/if}}>Gathering Information
+							<input type="checkbox" id="gathering-information-checkbox" class="adoption-preferences-trigger" name="processProgression" data-field-name="gatheringInformation.started" value="{{user.stages.gatheringInformation.started}}" {{#if user.stages.gatheringInformation.started}}checked="checked"{{/if}}>Gathering Information
 						</label>
 					</div>
 					<div class="col-sm-12 form-group">
 						<label class="checkbox-inline">
-							<input type="checkbox" id="looking-for-agency-checkbox" class="adoption-preferences-trigger" name="processProgression" value="{{user.stages.lookingForAgency.started}}" {{#if user.stages.lookingForAgency.started}}checked="checked"{{/if}}>Looking for an agency
+							<input type="checkbox" id="looking-for-agency-checkbox" class="adoption-preferences-trigger" name="processProgression" data-field-name="stages.lookingForAgency.started" value="{{user.stages.lookingForAgency.started}}" {{#if user.stages.lookingForAgency.started}}checked="checked"{{/if}}>Looking for an agency
 						</label>
 					</div>
 					<div class="col-sm-12 form-group">
 						<label class="checkbox-inline">
-							<input type="checkbox" id="working-with-agency-checkbox" class="adoption-preferences-trigger" name="processProgression" value="{{user.stages.workingWithAgency.started}}" {{#if user.stages.workingWithAgency.started}}checked="checked"{{/if}}>Working with an agency
+							<input type="checkbox" id="working-with-agency-checkbox" class="adoption-preferences-trigger" name="processProgression" data-field-name="stages.workingWithAgency.started"  value="{{user.stages.workingWithAgency.started}}" {{#if user.stages.workingWithAgency.started}}checked="checked"{{/if}}>Working with an agency
 						</label>
 					</div>
 					<div class="col-sm-12 form-group">
 						<label class="checkbox-inline">
-							<input type="checkbox" id="mapp-training-completed-checkbox" class="adoption-preferences-trigger" name="processProgression" value="{{user.stages.MAPPTrainingCompleted.started}}" {{#if user.stages.MAPPTrainingCompleted.started}}checked="checked"{{/if}}>MAPP training completed
+							<input type="checkbox" id="mapp-training-completed-checkbox" class="adoption-preferences-trigger" name="processProgression" data-field-name="stages.MAPPTrainingCompleted.completed" value="{{user.stages.MAPPTrainingCompleted.completed}}" {{#if user.stages.MAPPTrainingCompleted.completed}}checked="checked"{{/if}}>MAPP training completed
 						</label>
 					</div>
 					<div class="col-sm-12 form-group">
 						<label class="checkbox-inline">
-							<input type="checkbox" id="homestudy-completed-checkbox" class="adoption-preferences-trigger" name="processProgression" value="{{user.homestudy.completed}}" {{#if user.homestudy.completed}}checked="checked"{{/if}}>Homestudy completed
+							<input type="checkbox" id="homestudy-completed-checkbox" class="adoption-preferences-trigger" name="processProgression" data-field-name="homestudy.completed" value="{{user.homestudy.completed}}" {{#if user.homestudy.completed}}checked="checked"{{/if}}>Homestudy completed
 						</label>
 					</div>
 				</div>
@@ -316,7 +316,7 @@
 				<label for="children-in-home" class="label marg-bottom-xs-5">Total number of children currently living at home</label>
 			</div>
 			<div class="col-sm-12">
-				<select id="children-in-home" name="childrenInHome" class="input form__number-select">
+				<select id="children-in-home" name="childrenInHome" class="input form__number-select" data-field-name="numberOfChildren">
 					<option {{#ifeq user.numberOfChildren '0'}}selected{{/ifeq}}>0</option>
 					<option {{#ifeq user.numberOfChildren '1'}}selected{{/ifeq}}>1</option>
 					<option {{#ifeq user.numberOfChildren '2'}}selected{{/ifeq}}>2</option>
@@ -338,7 +338,7 @@
 				<label for="other-adults-in-home" class="label marg-bottom-xs-5">Number of other adults living in home</label>
 			</div>
 			<div class="col-sm-12">
-				<select id="other-adults-in-home" name="otherAdultsInHome" class="input form__number-select">
+				<select id="other-adults-in-home" name="otherAdultsInHome" class="input form__number-select" data-field-name="otherAdultsInHome.number">
 					<option {{#ifeq user.otherAdultsInHome.number '0'}}selected{{/ifeq}}>0</option>
 					<option {{#ifeq user.otherAdultsInHome.number '1'}}selected{{/ifeq}}>1</option>
 					<option {{#ifeq user.otherAdultsInHome.number '2'}}selected{{/ifeq}}>2</option>
@@ -356,7 +356,7 @@
 		<div class="row form-group">
 			<div class="col-sm-24">
 				<label class="checkbox-inline">
-					<input type="checkbox" name="havePets" value="{{user.havePetsInHome}}" {{#if user.havePetsInHome}}checked="checked"{{/if}}>Have pets in the home
+					<input type="checkbox" name="havePets" data-field-name="havePetsInHome" value="{{user.havePetsInHome}}"  {{#if user.havePetsInHome}}checked="checked"{{/if}}>Have pets in the home
 				</label>
 			</div>
 		</div>
@@ -365,7 +365,7 @@
 				<label for="primary-language-in-home" class="label marg-bottom-xs-5">Primary language spoken at home</label>
 			</div>
 			<div class="col-sm-12">
-				<select name="primaryLanguageInHome" class="input form__number-select">
+				<select name="primaryLanguageInHome" class="input form__number-select" data-field-name="language">
 					<option value=""></option>
 					{{#each languages}}
 						<option value="{{_id}}" {{#ifeq ../user.language _id}}selected="selected"{{/ifeq}}>{{language}}</option>
@@ -384,7 +384,7 @@
 				{{#each languages}}
 					<div class="col-sm-12 form-group">
 						<label class="checkbox-inline">
-							<input type="checkbox" name="otherLanguagesInHome" value="{{_id}}"  {{#ifincludes ../user.otherLanguages _id}}checked{{/ifincludes}}>{{language}}
+							<input type="checkbox" name="otherLanguagesInHome" data-field-name="otherLanguages" data-field-type="select-multiple" value="{{_id}}"  {{#ifincludes ../user.otherLanguages _id}}checked{{/ifincludes}}>{{language}}
 						</label>
 					</div>
 				{{/each}}
@@ -405,7 +405,7 @@
 				{{#each genders}}
 					<div class="col-sm-12 form-group">
 						<label class="checkbox-inline">
-							<input type="checkbox" name="preferredGender" class="preferred-gender" value="{{_id}}" {{#ifincludes ../user.matchingPreferences.gender _id}}checked="checked"{{/ifincludes}}>{{gender}}
+							<input type="checkbox" name="preferredGender" class="preferred-gender" data-field-name="matchingPreferences.gender" data-field-type="select-multiple" value="{{_id}}" {{#ifincludes ../user.matchingPreferences.gender _id}}checked="checked"{{/ifincludes}}>{{gender}}
 						</label>
 					</div>
 				{{/each}}
@@ -421,7 +421,7 @@
 				{{#each legalStatuses}}
 					<div class="col-sm-12">
 						<label class="checkbox-inline">
-							<input type="checkbox" name="legalStatus" class="legal-status" value="{{_id}}" {{#ifincludes ../user.matchingPreferences.legalStatus _id}}checked="checked"{{/ifincludes}}>{{legalStatus}}
+							<input type="checkbox" name="legalStatus" class="legal-status" data-field-name="matchingPreferences.legalStatus" data-field-type="select-multiple" value="{{_id}}" {{#ifincludes ../user.matchingPreferences.legalStatus _id}}checked="checked"{{/ifincludes}}>{{legalStatus}}
 						</label>
 					</div>
 				{{/each}}
@@ -435,7 +435,7 @@
 			<div class="col-sm-12">
 				<div class="row">
 					<div class="col-xs-8">
-						<select name="ageRangeFrom" class="input form__number-select inline age-range-from">
+						<select name="ageRangeFrom" class="input form__number-select inline age-range-from" data-field-name="matchingPreferences.adoptionAges.from">
 							{{!-- TODO: Find ...adoptionAges FROM value --}}
 							<option value=""></option>
 							<option {{#ifeq user.matchingPreferences.adoptionAges.from 0}}selected="selected"{{/ifeq}} value="0">0</option>
@@ -460,7 +460,7 @@
 					</div>
 					<div class="col-xs-4 text-center">To:</div>
 					<div class="col-xs-8">
-						<select name="ageRangeTo" class="input form__number-select inline age-range-to">
+						<select name="ageRangeTo" class="input form__number-select inline age-range-to" data-field-name="matchingPreferences.adoptionAges.to">
 							{{!-- TODO: Find ...adoptionAges TO value --}}
 							<option value=""></option>
 							<option {{#ifeq user.matchingPreferences.adoptionAges.to 0}}selected="selected"{{/ifeq}} value="0">0</option>
@@ -492,7 +492,7 @@
 			</div>
 			<div class="col-sm-12">
 				{{!-- TODO: Find number of children in matching preferences --}}
-				<select name="numberOfChildrenPreferred" class="input form__number-select number-of-children-preferred">
+				<select name="numberOfChildrenPreferred" class="input form__number-select number-of-children-preferred" data-field-name="matchingPreferences.numberOfChildrenToAdopt">
 					<option value=""></option>
 					<option {{#ifeq user.matchingPreferences.numberOfChildrenToAdopt 0}}selected="selected"{{/ifeq}} value="0">0</option>
 					<option {{#ifeq user.matchingPreferences.numberOfChildrenToAdopt 1}}selected="selected"{{/ifeq}} value="1">1</option>
@@ -514,8 +514,8 @@
 			</div>
 			<div class="col-sm-12">
 				<span id="preferred-sibling-contact-error-container" class="error-container">
-					<label class="radio-inline"><input type="radio" name="contactWithBiologicalSiblings" class="contact-with-biological-siblings" value="yes" {{#if user.matchingPreferences.siblingContact}}checked{{/if}}>Yes</label>
-					<label class="radio-inline"><input type="radio" name="contactWithBiologicalSiblings" value="no" {{#if user.matchingPreferences.siblingContact}}{{else}}checked{{/if}}>No</label>
+					<label class="radio-inline"><input type="radio" name="contactWithBiologicalSiblings" class="contact-with-biological-siblings" data-field-name="matchingPreferences.siblingContact" value="true" {{#if user.matchingPreferences.siblingContact}}checked{{/if}}>Yes</label>
+					<label class="radio-inline"><input type="radio" name="contactWithBiologicalSiblings" data-field-name="matchingPreferences.siblingContact" value="false" {{#if user.matchingPreferences.siblingContact}}{{else}}checked{{/if}}>No</label>
 				</span>
 			</div>
 		</div>
@@ -525,8 +525,8 @@
 			</div>
 			<div class="col-sm-12">
 				<span id="preferred-parent-contact-error-container" class="error-container">
-					<label class="radio-inline"><input type="radio" name="contactWithBiologicalParents" class="contact-with-biological-parents" value="yes" {{#if user.matchingPreferences.birthFamilyContact}}checked{{/if}}>Yes</label>
-					<label class="radio-inline"><input type="radio" name="contactWithBiologicalParents" value="no" {{#if user.matchingPreferences.birthFamilyContact}}{{else}}checked{{/if}}>No</label>
+					<label class="radio-inline"><input type="radio" name="contactWithBiologicalParents" class="contact-with-biological-parents" data-field-name="matchingPreferences.birthFamilyContact" value="true" {{#if user.matchingPreferences.birthFamilyContact}}checked{{/if}}>Yes</label>
+					<label class="radio-inline"><input type="radio" name="contactWithBiologicalParents" data-field-name="matchingPreferences.birthFamilyContact" value="false" {{#if user.matchingPreferences.birthFamilyContact}}{{else}}checked{{/if}}>No</label>
 				</span>
 			</div>
 		</div>
@@ -541,7 +541,7 @@
 					{{#each races}}
 					<div class="col-sm-12 form-group">
 						<label class="checkbox-inline">
-							<input type="checkbox" name="adoptionPrefRace[]" class="race" value="{{_id}}" {{#ifincludes ../user.matchingPreferences.race _id}}checked="checked"{{/ifincludes}}>{{race}}
+							<input type="checkbox" name="adoptionPrefRace[]" class="race" data-field-name="matchingPreferences.race" data-field-type="select-multiple" value="{{_id}}" {{#ifincludes ../user.matchingPreferences.race _id}}checked="checked"{{/ifincludes}}>{{race}}
 						</label>
 					</div>
 					{{/each}}
@@ -554,10 +554,10 @@
 			</div>
 			<div class="col-sm-12">
 				<span id="preferred-maximum-physical-needs-error-container" class="error-container">
-					<label class="radio-inline"><input type="radio" name="maximumPhysicalNeeds" class="maximum-physical-needs" value="none" {{#ifeq user.matchingPreferences.maxNeeds.physical 'none'}}checked="checked"{{/ifeq}}>None</label>
-					<label class="radio-inline"><input type="radio" name="maximumPhysicalNeeds" value="mild" {{#ifeq user.matchingPreferences.maxNeeds.physical 'mild'}}checked="checked"{{/ifeq}}>Mild</label>
-					<label class="radio-inline"><input type="radio" name="maximumPhysicalNeeds" value="moderate" {{#ifeq user.matchingPreferences.maxNeeds.physical 'moderate'}}checked="checked"{{/ifeq}}>Moderate</label>
-					<label class="radio-inline"><input type="radio" name="maximumPhysicalNeeds" value="severe" {{#ifeq user.matchingPreferences.maxNeeds.physical 'severe'}}checked="checked"{{/ifeq}}>Severe</label>
+					<label class="radio-inline"><input type="radio" name="maximumPhysicalNeeds" class="maximum-physical-needs" data-field-name="matchingPreferences.maxNeeds.physical" value="none" {{#ifeq user.matchingPreferences.maxNeeds.physical 'none'}}checked="checked"{{/ifeq}}>None</label>
+					<label class="radio-inline"><input type="radio" name="maximumPhysicalNeeds" data-field-name="matchingPreferences.maxNeeds.physical" value="mild" {{#ifeq user.matchingPreferences.maxNeeds.physical 'mild'}}checked="checked"{{/ifeq}}>Mild</label>
+					<label class="radio-inline"><input type="radio" name="maximumPhysicalNeeds" data-field-name="matchingPreferences.maxNeeds.physical" value="moderate" {{#ifeq user.matchingPreferences.maxNeeds.physical 'moderate'}}checked="checked"{{/ifeq}}>Moderate</label>
+					<label class="radio-inline"><input type="radio" name="maximumPhysicalNeeds" data-field-name="matchingPreferences.maxNeeds.physical" value="severe" {{#ifeq user.matchingPreferences.maxNeeds.physical 'severe'}}checked="checked"{{/ifeq}}>Severe</label>
 				</span>
 			</div>
 		</div>
@@ -567,10 +567,10 @@
 			</div>
 			<div class="col-sm-12">
 				<span id="preferred-maximum-emotional-needs-error-container" class="error-container">
-					<label class="radio-inline"><input type="radio" name="maximumEmotionalNeeds" class="maximum-emotional-needs" value="none" {{#ifeq user.matchingPreferences.maxNeeds.emotional 'none'}}checked="checked"{{/ifeq}}>None</label>
-					<label class="radio-inline"><input type="radio" name="maximumEmotionalNeeds" value="mild" {{#ifeq user.matchingPreferences.maxNeeds.emotional 'mild'}}checked="checked"{{/ifeq}}>Mild</label>
-					<label class="radio-inline"><input type="radio" name="maximumEmotionalNeeds" value="moderate" {{#ifeq user.matchingPreferences.maxNeeds.emotional 'moderate'}}checked="checked"{{/ifeq}}>Moderate</label>
-					<label class="radio-inline"><input type="radio" name="maximumEmotionalNeeds" value="severe" {{#ifeq user.matchingPreferences.maxNeeds.emotional 'severe'}}checked="checked"{{/ifeq}}>Severe</label>
+					<label class="radio-inline"><input type="radio" name="maximumEmotionalNeeds" class="maximum-emotional-needs" data-field-name="matchingPreferences.maxNeeds.emotional" value="none" {{#ifeq user.matchingPreferences.maxNeeds.emotional 'none'}}checked="checked"{{/ifeq}}>None</label>
+					<label class="radio-inline"><input type="radio" name="maximumEmotionalNeeds" data-field-name="matchingPreferences.maxNeeds.emotional" value="mild" {{#ifeq user.matchingPreferences.maxNeeds.emotional 'mild'}}checked="checked"{{/ifeq}}>Mild</label>
+					<label class="radio-inline"><input type="radio" name="maximumEmotionalNeeds" data-field-name="matchingPreferences.maxNeeds.emotional" value="moderate" {{#ifeq user.matchingPreferences.maxNeeds.emotional 'moderate'}}checked="checked"{{/ifeq}}>Moderate</label>
+					<label class="radio-inline"><input type="radio" name="maximumEmotionalNeeds" data-field-name="matchingPreferences.maxNeeds.emotional" value="severe" {{#ifeq user.matchingPreferences.maxNeeds.emotional 'severe'}}checked="checked"{{/ifeq}}>Severe</label>
 				</span>
 			</div>
 		</div>
@@ -580,10 +580,10 @@
 			</div>
 			<div class="col-sm-12">
 				<span id="preferred-maximum-intellectual-needs-error-container" class="error-container">
-					<label class="radio-inline"><input type="radio" name="maximumIntellectualNeeds" class="maximum-intellectual-needs" value="none" {{#ifeq user.matchingPreferences.maxNeeds.intellectual 'none'}}checked="checked"{{/ifeq}}>None</label>
-					<label class="radio-inline"><input type="radio" name="maximumIntellectualNeeds" value="mild" {{#ifeq user.matchingPreferences.maxNeeds.intellectual 'mild'}}checked="checked"{{/ifeq}}>Mild</label>
-					<label class="radio-inline"><input type="radio" name="maximumIntellectualNeeds" value="moderate" {{#ifeq user.matchingPreferences.maxNeeds.intellectual 'moderate'}}checked="checked"{{/ifeq}}>Moderate</label>
-					<label class="radio-inline"><input type="radio" name="maximumIntellectualNeeds" value="severe" {{#ifeq user.matchingPreferences.maxNeeds.intellectual 'severe'}}checked="checked"{{/ifeq}}>Severe</label>
+					<label class="radio-inline"><input type="radio" name="maximumIntellectualNeeds" class="maximum-intellectual-needs" data-field-name="matchingPreferences.maxNeeds.intellectual" value="none" {{#ifeq user.matchingPreferences.maxNeeds.intellectual 'none'}}checked="checked"{{/ifeq}}>None</label>
+					<label class="radio-inline"><input type="radio" name="maximumIntellectualNeeds" data-field-name="matchingPreferences.maxNeeds.intellectual" value="mild" {{#ifeq user.matchingPreferences.maxNeeds.intellectual 'mild'}}checked="checked"{{/ifeq}}>Mild</label>
+					<label class="radio-inline"><input type="radio" name="maximumIntellectualNeeds" data-field-name="matchingPreferences.maxNeeds.intellectual" value="moderate" {{#ifeq user.matchingPreferences.maxNeeds.intellectual 'moderate'}}checked="checked"{{/ifeq}}>Moderate</label>
+					<label class="radio-inline"><input type="radio" name="maximumIntellectualNeeds" data-field-name="matchingPreferences.maxNeeds.intellectual" value="severe" {{#ifeq user.matchingPreferences.maxNeeds.intellectual 'severe'}}checked="checked"{{/ifeq}}>Severe</label>
 				</span>
 			</div>
 		</div>
@@ -598,7 +598,7 @@
 				{{#each disabilities}}
 					<div class="col-sm-12 form-group">
 						<label class="checkbox-inline">
-							<input type="checkbox" name="disabilities" value="{{_id}}" {{#ifincludes ../user.matchingPreferences.disabilities _id}}checked="checked"{{/ifincludes}}>{{disability}}
+							<input type="checkbox" name="disabilities" data-field-name="matchingPreferences.disabilities" data-field-type="select-multiple" value="{{_id}}" {{#ifincludes ../user.matchingPreferences.disabilities _id}}checked="checked"{{/ifincludes}}>{{disability}}
 						</label>
 					</div>
 				{{/each}}
@@ -616,7 +616,7 @@
 				{{#each otherConsiderations}}
 					<div class="col-sm-12 form-group">
 						<label class="checkbox-inline">
-							<input type="checkbox" name="otherConsiderations" value="{{_id}}" {{#ifincludes ../user.matchingPreferences.otherConsiderations _id}}checked="checked"{{/ifincludes}}>{{otherConsideration}}
+							<input type="checkbox" name="otherConsiderations" data-field-name="matchingPreferences.otherConsiderations" data-field-type="select-multiple" value="{{_id}}" {{#ifincludes ../user.matchingPreferences.otherConsiderations _id}}checked="checked"{{/ifincludes}}>{{otherConsideration}}
 						</label>
 					</div>
 				{{/each}}
