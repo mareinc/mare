@@ -37,6 +37,9 @@
 
 			// bind to change events
 			mare.collections.galleryChildren.on( 'updateComplete', function() {
+				// clear out existing registration number search
+				mare.views.gallery.clearRegistrationSearch();
+				
 				this.navigateToGallery();
 			}.bind( this ) );
 

@@ -32,12 +32,22 @@ exports.checkFieldForChanges = ( field, model, modelBefore, changeHistory, done 
 	} else {
 
 		fieldBefore = modelBefore[ field.name ];
-		fieldAfter = model[field.name];
+		fieldAfter = model[ field.name ];
 	}
 
-	if( [ 'string', 'boolean', 'number' ].includes( field.type ) && fieldBefore !== fieldAfter && ( !!fieldBefore || !!fieldAfter ) ) {
+	if( [ 'string', 'number' ].includes( field.type ) && fieldBefore !== fieldAfter && ( !!fieldBefore || !!fieldAfter ) ) {
+		
 		valueBefore = fieldBefore ? fieldBefore : '';
 		value = fieldAfter ? fieldAfter : '';
+
+		exports.addToHistoryEntry( valueBefore, value, field.label, field.type, changeHistory );
+
+		done();
+
+	} else if( field.type === 'boolean' && fieldBefore !== fieldAfter ) {
+		
+		valueBefore = fieldBefore ? fieldBefore : false;
+		value = fieldAfter ? fieldAfter : false;
 
 		exports.addToHistoryEntry( valueBefore, value, field.label, field.type, changeHistory );
 
