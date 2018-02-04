@@ -4,9 +4,17 @@
 	mare.views.AccountInfoBase = Backbone.View.extend({
 		el: '.account-info-container',
 
-		events: {
-			'click .save-button'					: 'updateUserInfo',
-			'change input, select'					: 'formElementChanged'
+		events: function() {
+
+			// set events common to all AccountInfo views
+			var events = {
+				'click .save-button'	: 'updateUserInfo',
+				'change input, select'	: 'formElementChanged'
+			};
+
+			// add any events defined in the current child view
+			$.extend( events, this.childEvents );
+			return events;
 		},
 
 		initialize: function initialize() {
@@ -30,7 +38,7 @@
 			// get the field name that should be updated
 			var updatedFieldName = $updatedField.data( 'field-name' );
 			// create a placeholder for the updated value
-			var updatedValue = undefined;
+			var updatedValue;
 
 			// check to ensure the form field is mapped to a model field
 			if ( updatedFieldName ) {
