@@ -612,19 +612,6 @@
 				<label class="label marg-bottom-xs-5">Other considerations (check all that apply)</label>
 			</div>
 		</div>
-		<div class="row form-group">
-			<div class="col-sm-16">
-				<div class="row">
-				{{#each otherConsiderations}}
-					<div class="col-sm-12 form-group">
-						<label class="checkbox-inline">
-							<input type="checkbox" name="otherConsiderations" data-field-name="matchingPreferences.otherConsiderations" data-field-type="select-multiple" value="{{_id}}" {{#ifincludes ../user.matchingPreferences.otherConsiderations _id}}checked="checked"{{/ifincludes}}>{{otherConsideration}}
-						</label>
-					</div>
-				{{/each}}
-				</div>
-			</div>
-		</div>
 
 	</section>
 

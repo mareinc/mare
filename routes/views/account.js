@@ -33,7 +33,6 @@ exports = module.exports = ( req, res ) => {
 		fetchGenders				= listsService.getAllGenders(),
 		fetchLanguages				= listsService.getAllLanguages(),
 		fetchLegalStatuses			= listsService.getAllLegalStatuses(),
-		fetchOtherConsiderations	= listsService.getAllOtherConsiderations(),
 		fetchSocialWorkerPositions	= listsService.getAllSocialWorkerPositions(),
 		fetchRaces					= listsService.getAllRaces( raceOptions ),
 		fetchStates					= listsService.getAllStates( stateOptions ),
@@ -54,12 +53,12 @@ exports = module.exports = ( req, res ) => {
 	}
 
 	Promise.all( [ fetchEvents, fetchCitiesAndTowns, fetchDisabilities, fetchGenders, fetchLanguages, fetchLegalStatuses,
-		fetchOtherConsiderations, fetchSocialWorkerPositions, fetchRaces, fetchStates, fetchChildTypes, fetchMailingLists ] )
+		fetchSocialWorkerPositions, fetchRaces, fetchStates, fetchChildTypes, fetchMailingLists ] )
 		.then( values => {
 
 			// assign local variables to the values returned by the promises
 			const [ events, citiesAndTowns, disabilities, genders, languages, legalStatuses,
-				otherConsiderations, socialWorkerPositions, races, states, childTypes, mailingLists ] = values;
+				socialWorkerPositions, races, states, childTypes, mailingLists ] = values;
 
 			// options to define how truncation will be handled
 			const truncateOptions = { targetLength: 400 };
@@ -90,7 +89,6 @@ exports = module.exports = ( req, res ) => {
 			locals.genders					= genders;
 			locals.languages				= languages;
 			locals.legalStatuses			= legalStatuses;
-			locals.otherConsiderations		= otherConsiderations;
 			locals.socialWorkerPositions 	= socialWorkerPositions;
 			locals.races					= races;
 			locals.states					= states;
