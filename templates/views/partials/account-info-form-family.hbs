@@ -159,7 +159,7 @@
 			</div>
 		</div>
 		<div class="row form-group">
-			<div class="col-sm-12 form-group city-container">
+			<div class="col-sm-12 form-group city-container {{#if user.address.isOutsideMassachusetts}}hidden{{/if}}">
 				<select id="city" class="input" name="city" data-field-name="address.city">
 					<option value=""></option>
 					{{#each citiesAndTowns}}
@@ -168,19 +168,11 @@
 				</select>
 				<label for="city" class="label">City</label>
 			</div>
-			<div class="col-sm-12 form-group non-ma-city-container hidden">
+			<div class="col-sm-12 form-group non-ma-city-container {{#unless user.address.isOutsideMassachusetts}}hidden{{/unless}}">
 				<input type="text" id="non-ma-city" class="input" name="nonMACity" data-field-name="address.cityText" value="{{user.address.cityText}}">
 				<label for="non-ma-city" class="label">City</label>
-			</div>
-			<div class="col-sm-12 form-group">
-				<label class="checkbox-inline">
-					<input type="checkbox" id="is-not-ma-city-checkbox" name="isNotMACity" data-field-name="address.isOutsideMassachusetts" value="{{user.address.isOutsideMassachusetts}}" {{#if user.address.isOutsideMassachusetts}}checked="checked"{{/if}}>I live outside MA
-				</label>
-			</div>
-		</div>
-		<div class="row form-group">
-			<div class="col-sm-12">
-				<select id="state" class="input state-select" name="state" data-field-name="address.state">
+
+				<select id="family-state" class="input state-select" name="state" data-field-name="address.state">
 				{{#each states}}
 					{{#if defaultSelection}}
 						<option value="{{_id}}" selected="selected">{{state}}</option>
@@ -190,6 +182,16 @@
 				{{/each}}
 				</select>
 				<label for="state" class="label">State</label>
+			</div>
+			<div class="col-sm-12 form-group">
+				<label class="checkbox-inline">
+					<input type="checkbox" id="is-not-ma-city-checkbox" name="isNotMACity" data-field-name="address.isOutsideMassachusetts" value="{{user.address.isOutsideMassachusetts}}" {{#if user.address.isOutsideMassachusetts}}checked="checked"{{/if}}>I live outside MA
+				</label>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-sm-12">
+
 			</div>
 		</div>
 		<div class="row form-group">
@@ -240,12 +242,12 @@
 		</div>
 	</section>
 
-	<section class="family-homestudy-details-section hidden">
+	<section class="family-homestudy-details-section {{#unless user.homestudy.completed}}hidden{{/unless}}">
 		<div class="form-section-header">Homestudy Details</div>
 
 		<div class="row form-group">
 			<div class="col-sm-12">
-				<input type="text" id="homestudy-date-complete" class="input" name="homestudyDateComplete" placeholder="MM/DD/YYYY">
+				<input type="text" id="homestudy-date-complete" class="input" name="homestudyDateComplete" data-field-name="homestudy.completed" placeholder="MM/DD/YYYY">
 				<label for="homestudy-date-complete" class="label">Date Homestudy Completed/Updated</label>
 			</div>
 		</div>
@@ -628,3 +630,5 @@
 
 	<button class="button button--teal save-button">Save</button>
 </div>
+
+{{> registration-form_child-details}}
