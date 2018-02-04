@@ -1,10 +1,8 @@
-<script id="account-info" type="text/x-handlebars-template">
+<h1 class="account-current-section__title">Account Information</h1>
 
-    <h1 class="account-current-section__title">Account Information</h1>
+<span id="currentSection" data-info-section-type="{{user.userType}}"></span>
 
-    {{#ifeq user.userType 'admin'}}{{> account-info-form-admin }}{{/ifeq}}
-    {{#ifeq user.userType 'family'}}{{> account-info-form-family }}{{/ifeq}}
-    {{#ifeq user.userType 'social worker'}}{{> account-info-form-social-worker }}{{/ifeq}}
-    {{#ifeq user.userType 'site visitor'}}{{> account-info-form-site-visitor }}{{/ifeq}}
-    
-</script>
+{{#ifeq user.userType 'admin'}}{{> account-info-form-admin }}{{/ifeq}}
+{{#ifeq user.userType 'family'}}{{> account-info-form-family }}{{/ifeq}}
+{{#ifeq user.userType 'social worker'}}{{> account-info-form-social-worker }}{{/ifeq}}
+{{#ifeq user.userType 'site visitor'}}{{> account-info-form-site-visitor }}{{/ifeq}}

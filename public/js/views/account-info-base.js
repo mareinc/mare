@@ -1,57 +1,26 @@
 (function () {
 	'use strict';
 
-	mare.views.AccountInfo = Backbone.View.extend({
+	mare.views.AccountInfoBase = Backbone.View.extend({
 		el: '.account-info-container',
 
 		events: {
 			'click .save-button'					: 'updateUserInfo',
-			'change #is-not-ma-city-checkbox'		: 'toggleOutsideMa',
 			'change input, select'					: 'formElementChanged'
 		},
 
 		initialize: function initialize() {
-			// create a hook to access the section templates
-			var html 		= $( '#account-info' ).html();
-			// compile the templates to be used during rendering/repainting the different sections
-			this.template 	= Handlebars.compile( html );
 
 			// create an object to hold all changes to form data
 			this.accountInfoUpdates = {};
 		},
 
-		render: function render() {
-			// compile the template
-			var html = this.template();
-
-			// render the template to the page
-			this.$el.html( html );
+		hide: function hide() {
+			this.$el.hide();
 		},
 
-		// TODO: Update toggle functionality to make it more solid
-		toggleOutsideMa: function toggleOutsideMa( e ) {
-			var	$outsideMaToggle = $(e.currentTarget),
-				$outsideMaGroup = $('.non-ma-city-container'),
-				$outsideMaInput = $(''),
-				$outsideMaDropdown = $(''),
-				$maGroup = $('.city-container'),
-				$maInput = $(''),
-				$maDropdown = $('');
-
-				if( $outsideMaToggle.is(':checked') ) {
-					$outsideMaGroup.removeClass( 'hidden' );
-					$maGroup.addClass( 'hidden' );
-				} else {
-					$outsideMaGroup.addClass( 'hidden' );
-					$maGroup.removeClass( 'hidden' );
-				}
-
-
-			// if( $outsideMaGroup.hasClass('hidden') ) {
-
-			// } else {
-
-			// }
+		show: function show() {
+			this.$el.show();
 		},
 
 		formElementChanged: function formElementChanged( event ) {
@@ -102,18 +71,6 @@
 				// display a warning that the updated field could not be processed
 				console.warn( 'form field is not properly configured to capture updates' );
 			}
-		},
-
-		hide: function hide() {
-			// hide the section
-			this.$el.hide();
-			// remove the contents of the view
-			this.$el.empty();
-			// NOTE: if any events are bound to DOM elements, they should be explicitly removed here as well
-		},
-
-		show: function show() {
-			this.$el.show();
 		},
 
 		updateUserInfo: function updateUserInfo( event ) {
