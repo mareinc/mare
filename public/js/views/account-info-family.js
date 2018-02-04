@@ -8,7 +8,7 @@
 			'change #family-state'					: 'toggleHomestudySubmission',
 			'change #homestudy-completed-checkbox'	: 'toggleHomestudySection',
 			'change #upload-button'					: 'uploadForm',
-			'change #children-in-home'				: 'toggleFamilyDetailsForm',
+			'change #children-in-home'				: 'toggleFamilyDetailsForm'
 		},
 
 		initialize: function initialize() {
@@ -28,6 +28,10 @@
 			this.$homestudySection						= this.$( '.family-submit-your-homestudy-section' );
 			this.$homestudySubmissionSection			= this.$( '.family-homestudy-details-section' );
 			this.$childrenInHome 						= this.$( '#children-in-home' );
+			this.numChildrenInHome						= this.$childrenInHome.val();
+
+			// create and populate form fields for any children that already exist in the family model
+			this.setExistingChildData( this.numChildrenInHome );
 		},
 
 		toggleCitySelect: function toggleCitySelect( event ) {
@@ -116,6 +120,22 @@
 				}
 
 			}
+		},
+
+		setExistingChildData: function setExistingChildData( numChildren ) {
+
+			this.generateChildDetailInputs( numChildren );
+
+			$( 'span.familyChildrenData > span' ).each( function( index, child ) {
+
+				var childIndex = index + 1;
+
+				$( 'input[ name=\'child' + childIndex + '-name\' ]' ).val( $( child ).find( '.childName' ).text() );
+				$( 'input[ name=\'child' + childIndex + '-birthDate\' ]' ).val( $( child ).find( '.childBirthDate' ).text() );
+
+				$( 'select[ name=\'child' + childIndex + '-gender\' ] option[value=\'' + $( child ).find( '.childGender' ).text() + '\'' ).attr( 'selected', 'selected' );
+				$( 'select[ name=\'child' + childIndex + '-type\' ] option[value=\'' + $( child ).find( '.childType' ).text() + '\'' ).attr( 'selected', 'selected' );
+			});
 		},
 
 		uploadForm: function uploadForm( event ) {

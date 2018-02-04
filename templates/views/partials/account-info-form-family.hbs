@@ -619,3 +619,15 @@
 </div>
 
 {{> registration-form_child-details}}
+
+<span class="familyChildrenData hidden">
+	{{#each familyChildren}}
+		<span class="child{{@index}}">
+			<span class="childName">{{ name }}</span>
+			<span class="childBirthDate">{{#date birthDate format='MM/DD/YYYY'}}{{/date}}</span>
+			<span class="childGender">{{ gender }}</span>
+			<span class="childType">{{ type }}</span>
+		</span>
+	{{/each}}
+</span>
+

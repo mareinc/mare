@@ -94,6 +94,7 @@ exports = module.exports = ( req, res ) => {
 			locals.states					= states;
 			locals.childTypes				= childTypes;
 			locals.mailingLists				= mailingLists;
+			locals.familyChildren			= [];
 
 			// check to see if the user has an address/state defined
 			if ( isUserStateDefined ) {
@@ -102,6 +103,17 @@ exports = module.exports = ( req, res ) => {
 				let userState = locals.states.find( state => state._id.id === locals.user.address.state.id );
 				// set it to be default selection
 				userState.defaultSelection = true;
+			}
+
+			// check to see if the user is a family and has children
+			if ( userType === 'family' && locals.user.numberOfChildren !== 0 ) {
+
+				// loop through all children definitions
+				for ( let i = 1; i <= locals.user.numberOfChildren; i++ ) {
+
+					// add each child to the familyChildren array
+					locals.familyChildren.push( locals.user[ `child${ i }` ] );
+				}
 			}
 
 			// set the layout to render without the right sidebar
