@@ -100,8 +100,8 @@
 			$( '#children-grid' ).mediaBoxes({
 				boxesToLoadStart: 32,
 				boxesToLoad 	: 24,
-				search: '#registration-number-search',
-        		searchTarget: '.media-box-registration-number'
+				search			: '#registration-number-search',
+				searchTarget	: '.media-box-registration-number'
 			});
 		},
 

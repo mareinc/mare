@@ -4,10 +4,25 @@
 
 .media-box-container {
 	overflow: inherit;
-	background-color: $white;
-	box-shadow: 0 0 24px 0 $light-gray;
+	background-color: $background-color-light;
+	box-shadow: 0 0 24px 0 $shadow-color-1;
 }
 
 .media-box-image {
     width: 100% !important;
+}
+
+.media-box-container {
+	box-shadow: none;
+}
+
+.media-boxes-load-more-button {
+	background-color: inherit;
+    color: $text-color-1;
+    opacity: 1;
+    font-size: 2em !important;
+    font-weight: 300;
+	margin-top: 1em;
+	height: unset;
+    width: unset;
 }

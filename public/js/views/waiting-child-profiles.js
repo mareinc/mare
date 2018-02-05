@@ -42,11 +42,6 @@
 				
 				this.navigateToGallery();
 			}.bind( this ) );
-
-			mare.collections.galleryChildren.on( 'resetComplete', function() {
-				this.showGallery();
-			}.bind( this ) );
-
 		},
 
 		/* hide the gallery search form and show the gallery */
@@ -102,16 +97,22 @@
 		},
 
 		resetGallery: function resetGallery() {
-			// cache the collection for faster access
-			var galleryChildren = mare.collections.galleryChildren;
-			// clear out the contents of the gallery collection
+			// cache the collections for faster access
+			var galleryChildren = mare.collections.galleryChildren,
+				gallerySiblingGroups = mare.collections.gallerySiblingGroups;
+			// clear out the contents of the gallery collections
 			galleryChildren.reset();
+			gallerySiblingGroups.reset();
 			// add all children back to the gallery collection for display
 			mare.collections.allChildren.each( function( child ) {
 				galleryChildren.add( child );
 			});
-			// emit an event to allow the gallery to update it's display now that we have all matching models
-			mare.collections.galleryChildren.trigger( 'resetComplete' );
+			// add all sibling groups back to the gallery collection for display
+			mare.collections.allSiblingGroups.each( function( siblingGroup ) {
+				gallerySiblingGroups.add( siblingGroup );
+			});
+
+			this.showGallery();
 		},
 
 		showSavedChildrenAndSiblingGroups: function showSavedChildrenAndSiblingGroups() {

@@ -208,7 +208,7 @@
 				</div>
 			</div>
 		</section>
-
+		{{#if canSeeAdvancedSearchOptions}}
 		<section class="form-section form-section--disability-levels">
 			<div class="form-section-header">Disability Levels</div>
 
@@ -299,7 +299,6 @@
 					</div>
 				</div>
 			</div>
-			{{#if canSeeAdvancedSearchOptions}}
 			<div class="row">
 				<div class="col-sm-24 form-group">
 					<label class="label marg-bottom-xs-5">Include children with the following developmental needs:</label>
@@ -316,8 +315,8 @@
 				{{/each}}
 				</div>
 			</div>
-			{{/if}}
 		</section>
+		{{/if}}
 
 		<section class="form-section form-section--family-profile">
 			<div class="form-section-header">Family Profile</div>
