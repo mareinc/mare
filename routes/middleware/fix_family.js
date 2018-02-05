@@ -83,14 +83,13 @@ function saveFamily( family ) {
 		family.save( ( err, savedModel ) => {
 			// if we run into an error
 			if( err ) {
-				// resolve the promise with information about the error, used because .finally isn't in the spec
-				// and a failure will cause the calling function to abort execution
+				// return control back to the generator with details about the error
 				familiesGenerator.next({
 					responseType: 'error',
 					message: `${ family.get( 'displayName' ) } - ${ family.get( 'id' ) } - ${ err }` } );
 			// if the model saved successfully
 			} else {
-				// resolve the promise
+				// return control back to the generator
 				familiesGenerator.next( { responseType: 'success' } );
 			}
 		});

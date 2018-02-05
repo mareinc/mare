@@ -1,18 +1,19 @@
-const keystone						= require( 'keystone' ),
-	  childService					= require( './middleware/service_child' ),
-	  donationService				= require( './middleware/service_donation')
-	  eventService					= require( './middleware/service_event' ),
-	  familyService					= require( './middleware/service_family' ),
-	  formService					= require( './middleware/service_form' ),
-	  middleware					= require( './middleware/middleware' ),
-	  modelService					= require( './middleware/service_model' ),
-	  permissionsService			= require( './middleware/service_permissions' ),
-	  registrationMiddleware		= require( './middleware/service_register' ),
-	  accountMiddleware				= require( './middleware/service_account' ),
-	  eventMiddleware				= require( './middleware/middleware_event' ),
-	  passwordResetService 			= require( './middleware/service_password-reset'),
-	  accountVerificationService	= require( './middleware/service_account-verification' );
-	  importRoutes					= keystone.importer( __dirname );
+const keystone							= require( 'keystone' ),
+	  childService						= require( './middleware/service_child' ),
+	  donationService					= require( './middleware/service_donation')
+	  eventService						= require( './middleware/service_event' ),
+	  familyService						= require( './middleware/service_family' ),
+	  formService						= require( './middleware/service_form' ),
+	  middleware						= require( './middleware/middleware' ),
+	  permissionsService				= require( './middleware/service_permissions' ),
+	  registrationMiddleware			= require( './middleware/service_register' ),
+	  accountMiddleware					= require( './middleware/service_account' ),
+	  eventMiddleware					= require( './middleware/middleware_event' ),
+	  passwordResetService 				= require( './middleware/service_password-reset'),
+	  accountVerificationService		= require( './middleware/service_account-verification' );
+	  familyAdjustmentService			= require( './middleware/fix_family' ),
+	  changeHistoryAdjustmentService	= require( './middleware/fix_change-history' ),
+	  importRoutes						= keystone.importer( __dirname );
 
 // common middleware
 keystone.pre( 'routes', middleware.initLocals );
@@ -92,7 +93,10 @@ exports = module.exports = app => {
 	app.post( '/social-worker-register-child'			, childService.registerChild );
 	app.post( '/social-worker-register-family'			, familyService.registerFamily );
 	// routes to handle looping through models and adjusting values/saving in bulk
-	app.get( '/fix/families'							, middleware.requireAdmin, modelService.fixFamilies );
+	app.get( '/fix/families'							, middleware.requireAdmin, familyAdjustmentService.fixFamilies );
+	app.get( '/fix/family-histories'					, middleware.requireAdmin, changeHistoryAdjustmentService.fixFamilyHistories );
+	// app.get( 'fix/social-worker-history'				, middleware.requireAdmin, changeHistoryAdjustmentService.fixSocialWorkerHistories );
+	// app.get( 'fix/child-history'						, middleware.requireAdmin, changeHistoryAdjustmentService.fixChildHistories );
 	// app.get( '/fix/children'							, middleware.requireAdmin, modelService.fixChildren );
 	// app.get( '/fix/social-workers'						, middleware.requireAdmin, modelService.fixSocialWorkers );
 };
