@@ -210,8 +210,12 @@ exports.checkFieldForChanges = ( field, model, modelBefore, changeHistory, done 
 
 exports.addToHistoryEntry = ( valueBefore, value, label, fieldType, changeHistory ) => {
 
+	if( changeHistory.summary !== '' ) {
+		changeHistory.summary += ', ';
+	}
+
 	if( changeHistory.changes !== '' ) {
-		changeHistory.changes += ' || ';
+		changeHistory.changes += '\n\n';
 	}
 
 	if( valueBefore === false ) {
@@ -233,12 +237,15 @@ exports.addToHistoryEntry = ( valueBefore, value, label, fieldType, changeHistor
 		default				: emptyFieldText = 'was deleted';
 	}
 
+	// add the summary entry
+	changeHistory.summary += label;
+
 	// if the field wasn't removed or changed to false
 	if( value || value === 0 ) {
-		changeHistory.changes += `${ label.toUpperCase() } was changed to ${ value }`;
+		changeHistory.changes += `<p><strong>${ label }</strong> was changed to ${ value }</p>`;
 	// if the field was removed or changed to false
 	} else {
-		changeHistory.changes += `${ label.toUpperCase() } ${ emptyFieldText }`;
+		changeHistory.changes += `<p><strong>${ label }</strong> ${ emptyFieldText }</p>`;
 	}
 };
 
