@@ -41,7 +41,7 @@ Family.add( 'Permissions', {
 
 	registrationNumber: { type: Number, label: 'registration number', format: false, noedit: true },
 	initialContact: { type: Types.Date, label: 'initial contact', format: 'MM/DD/YYYY', initial: true }, // was required: data migration change ( undo if possible )
-	flagCalls: { type: Types.Boolean, label: 'flag calls', initial: true },
+	flagCalls: { type: Types.Boolean, label: 'flag calls', default: false, initial: true },
 	familyConstellation: { type: Types.Relationship, label: 'family constellation', ref: 'Family Constellation', initial: true },
 	language: { type: Types.Relationship, label: 'language', ref: 'Language', required: true, initial: true },
 	otherLanguages: { type: Types.Relationship, label: 'other languages', ref: 'Language', many: true, initial: true },
@@ -101,7 +101,7 @@ Family.add( 'Permissions', {
 	address: {
 		street1: { type: Types.Text, label: 'street 1', required: true, initial: true },
 		street2: { type: Types.Text, label: 'street 2', initial: true },
-		isOutsideMassachusetts: { type: Types.Boolean, label: 'is outside Massachusetts', initial: true },
+		isOutsideMassachusetts: { type: Types.Boolean, label: 'is outside Massachusetts', default: false, initial: true },
 		city: { type: Types.Relationship, label: 'city', ref: 'City or Town', dependsOn: { 'address.isOutsideMassachusetts': false }, initial: true },
 		cityText: { type: Types.Text, label: 'city', dependsOn: { 'address.isOutsideMassachusetts': true }, initial: true },
 		displayCity: { type: Types.Text, label: 'city', hidden: true, noedit: true },
@@ -191,25 +191,25 @@ Family.add( 'Permissions', {
 
 	stages: {
 		gatheringInformation: {
-			started: { type: Types.Boolean, label: 'gathering information', initial: true },
+			started: { type: Types.Boolean, label: 'gathering information', default: false, initial: true },
 			date: { type: Types.Date, label: 'date gathering information started', format: 'MM/DD/YYYY', dependsOn: { 'stages.gatheringInformation.started': true }, initial: true }
 		},
 		lookingForAgency: {
-			started: { type: Types.Boolean, label: 'looking for agency', initial: true },
+			started: { type: Types.Boolean, label: 'looking for agency', default: false, initial: true },
 			date: { type: Types.Date, label: 'date looking for agency started', format: 'MM/DD/YYYY', dependsOn: { 'stages.lookingForAgency.started': true }, initial: true }
 		},
 		workingWithAgency: {
-			started: { type: Types.Boolean, label: 'working with agency', initial: true },
+			started: { type: Types.Boolean, label: 'working with agency', default: false, initial: true },
 			date: { type: Types.Date, label: 'date working with agency started', format: 'MM/DD/YYYY', dependsOn: { 'stages.workingWithAgency.started': true }, initial: true }
 		},
 		MAPPTrainingCompleted: {
-			completed: { type: Types.Boolean, label: 'MAPP training completed', initial: true },
+			completed: { type: Types.Boolean, label: 'MAPP training completed', default: false, initial: true },
 			date: { type: Types.Date, label: 'date MAPP training completed', format: 'MM/DD/YYYY', dependsOn: { 'stages.MAPPTrainingCompleted.completed': true }, initial: true }
 		}
 	},
 
 	homestudy: {
-		completed: { type: Types.Boolean, label: 'homestudy completed', initial: true },
+		completed: { type: Types.Boolean, label: 'homestudy completed', default: false, initial: true },
 		initialDate: { type: Types.Date, label: 'initial date homestudy completed', format: 'MM/DD/YYYY', dependsOn: { 'homestudy.completed': true }, initial: true },
 		mostRecentDate: { type: Types.Date, label: 'most recent update completed', format: 'MM/DD/YYYY', dependsOn: { 'homestudy.completed': true }, initial: true },
 		summary: { type: Types.Textarea, label: 'homestudy summary', dependsOn: { 'homestudy.completed': true }, initial: true },

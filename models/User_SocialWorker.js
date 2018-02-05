@@ -53,13 +53,13 @@ SocialWorker.add( 'Permissions', {
 
 	positions: { type: Types.Relationship, label: 'positions', ref: 'Social Worker Position', many: true, initial: true },
 	agency: { type: Types.Relationship, label: 'agency', ref: 'Agency', filters: { isActive: true }, initial: true },
-	agencyNotListed: { type: Types.Boolean, label: 'agency isn\'t listed', initial: true },
+	agencyNotListed: { type: Types.Boolean, label: 'agency isn\'t listed', default: false, initial: true },
 	agencyText: { type: Types.Text, label: 'agency', dependsOn: { agencyNotListed: true }, initial: true },
 
 	address: {
 	    street1: { type: Types.Text, label: 'street 1', initial: true },
 		street2: { type: Types.Text, label: 'street 2', initial: true },
-		isOutsideMassachusetts: { type: Types.Boolean, label: 'is outside Massachusetts', initial: true },
+		isOutsideMassachusetts: { type: Types.Boolean, label: 'is outside Massachusetts', default: false, initial: true },
 		city: { type: Types.Relationship, label: 'city', ref: 'City or Town', dependsOn: { 'address.isOutsideMassachusetts': false }, initial: true },
 		cityText: { type: Types.Text, label: 'city', dependsOn: { 'address.isOutsideMassachusetts': true }, initial: true },
 		state: { type: Types.Relationship, label: 'state', ref: 'State', initial: true },

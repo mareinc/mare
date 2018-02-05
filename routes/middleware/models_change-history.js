@@ -35,7 +35,7 @@ exports.checkFieldForChanges = ( field, model, modelBefore, changeHistory, done 
 		fieldAfter = model[ field.name ];
 	}
 
-	if( field.type === 'string' && fieldBefore.toLowerCase() !== fieldAfter.toLowerCase() && ( !!fieldBefore || !!fieldAfter ) ) {
+	if( field.type === 'string' && ( !!fieldBefore || !!fieldAfter ) && fieldBefore.toLowerCase() !== fieldAfter.toLowerCase() ) {
 
 		valueBefore = fieldBefore ? fieldBefore : '';
 		value = fieldAfter ? fieldAfter : '';
