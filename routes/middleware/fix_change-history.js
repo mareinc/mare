@@ -77,27 +77,24 @@ function saveFamilyHistory( familyHistory ) {
 
 	const changes = familyHistory.get( 'changes' );
 	
-	if( familyHistory.get( 'summary' ) ) {
-		// return control to the generator
-		familyHistoriesGenerator.next( { responseType: 'success' } );
-	
-	} else {
+	if( changes === 'record migrated' || changes === 'record created' ) {
 		// adjust fields as needed
 		familyHistory.set( 'summary', changes );
 		familyHistory.set( 'changes', `<p>${ changes }</p>` );
-		// attempt the save the family history
-		familyHistory.save( ( err, savedModel ) => {
-			// if we run into an error
-			if( err ) {
-				// return control to the generator with information about the error
-				familyHistoriesGenerator.next({
-					responseType: 'error',
-					message: `${ family.get( 'displayName' ) } - ${ family.get( 'id' ) } - ${ err }` } );
-			// if the model saved successfully
-			} else {
-				// return control to the generator
-				familyHistoriesGenerator.next( { responseType: 'success' } );
-			}
-		});
 	}
+
+	// attempt the save the family history
+	familyHistory.save( ( err, savedModel ) => {
+		// if we run into an error
+		if( err ) {
+			// return control to the generator with information about the error
+			familyHistoriesGenerator.next({
+				responseType: 'error',
+				message: `${ family.get( 'displayName' ) } - ${ family.get( 'id' ) } - ${ err }` } );
+		// if the model saved successfully
+		} else {
+			// return control to the generator
+			familyHistoriesGenerator.next( { responseType: 'success' } );
+		}
+	});
 };
