@@ -21,7 +21,6 @@ exports.sendNewSocialWorkerChildRegistrationNotificationEmailToMARE = ( rawChild
 			raceArray = [],
 			recommendedFamilyConstellationArray = [],
 			otherFamilyConstellationConsiderationArray = [],
-			otherConsiderationsArray = [],
 			disabilitiesArray = [];
 
 		// loop through each language model which was populated when the user model was fetched
@@ -43,11 +42,6 @@ exports.sendNewSocialWorkerChildRegistrationNotificationEmailToMARE = ( rawChild
 		for( let entry of child.otherFamilyConstellationConsideration ) {
 			// extract the text values associated with the model into the array
 			otherFamilyConstellationConsiderationArray.push( entry.otherFamilyConstellationConsideration );
-		}
-		// loop through each other consideration model which was populated when the user model was fetched
-		for( let entry of child.otherConsiderations ) {
-			// extract the text values associated with the model into the array
-			otherConsiderationsArray.push( entry.otherConsideration );
 		}
 		// loop through each disability model which was populated when the user model was fetched
 		for( let entry of child.disabilities ) {
@@ -275,13 +269,6 @@ exports.sendNewSocialWorkerChildRegistrationNotificationEmailToMARE = ( rawChild
 			childData.push( {
 				key: 'other family constellation considerations',
 				value: otherFamilyConstellationConsiderationArray.join( ', ' )
-			});
-		}
-
-		if( otherConsiderationsArray.length !== 0 ) {
-			childData.push( {
-				key: 'other considerations',
-				value: otherConsiderationsArray.join( ', ' )
 			});
 		}
 
@@ -432,7 +419,6 @@ exports.sendNewSocialWorkerChildRegistrationNotificationEmailToSocialWorker = ( 
 			raceArray = [],
 			recommendedFamilyConstellationArray = [],
 			otherFamilyConstellationConsiderationArray = [],
-			otherConsiderationsArray = [],
 			disabilitiesArray = [];
 
 		// loop through each language model which was populated when the user model was fetched
@@ -454,11 +440,6 @@ exports.sendNewSocialWorkerChildRegistrationNotificationEmailToSocialWorker = ( 
 		for( let entry of child.otherFamilyConstellationConsideration ) {
 			// extract the text values associated with the model into the array
 			otherFamilyConstellationConsiderationArray.push( entry.otherFamilyConstellationConsideration );
-		}
-		// loop through each other consideration model which was populated when the user model was fetched
-		for( let entry of child.otherConsiderations ) {
-			// extract the text values associated with the model into the array
-			otherConsiderationsArray.push( entry.otherConsideration );
 		}
 		// loop through each disability model which was populated when the user model was fetched
 		for( let entry of child.disabilities ) {
@@ -689,13 +670,6 @@ exports.sendNewSocialWorkerChildRegistrationNotificationEmailToSocialWorker = ( 
 			});
 		}
 
-		if( otherConsiderationsArray.length !== 0 ) {
-			childData.push( {
-				key: 'other considerations',
-				value: otherConsiderationsArray.join( ', ' )
-			});
-		}
-
 		if( disabilitiesArray.length !== 0 ) {
 			childData.push( {
 				key: 'disabilities',
@@ -779,7 +753,7 @@ exports.sendNewSocialWorkerChildRegistrationNotificationEmailToSocialWorker = ( 
 			templateEngine 	: require( 'handlebars' ),
 			templateName 	: 'social-worker-new-child-notification-to-social-worker'
 		}).send({
-			to: socialWorkerEmail,
+			to				: socialWorkerEmail,
 			from: {
 				name 	: 'MARE',
 				email 	: 'admin@adoptions.io'

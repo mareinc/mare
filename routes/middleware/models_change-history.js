@@ -32,12 +32,31 @@ exports.checkFieldForChanges = ( field, model, modelBefore, changeHistory, done 
 	} else {
 
 		fieldBefore = modelBefore[ field.name ];
-		fieldAfter = model[field.name];
+		fieldAfter = model[ field.name ];
 	}
 
-	if( [ 'string', 'boolean', 'number' ].includes( field.type ) && fieldBefore !== fieldAfter && ( !!fieldBefore || !!fieldAfter ) ) {
+	if( field.type === 'string' && ( !!fieldBefore || !!fieldAfter ) && fieldBefore.toLowerCase() !== fieldAfter.toLowerCase() ) {
+
 		valueBefore = fieldBefore ? fieldBefore : '';
 		value = fieldAfter ? fieldAfter : '';
+
+		exports.addToHistoryEntry( valueBefore, value, field.label, field.type, changeHistory );
+
+		done();
+
+	} else if( field.type === 'number' && fieldBefore !== fieldAfter && ( !!fieldBefore || !!fieldAfter ) ) {
+		
+		valueBefore = fieldBefore ? fieldBefore : '';
+		value = fieldAfter ? fieldAfter : '';
+
+		exports.addToHistoryEntry( valueBefore, value, field.label, field.type, changeHistory );
+
+		done();
+
+	} else if( field.type === 'boolean' && fieldBefore !== fieldAfter ) {
+		
+		valueBefore = fieldBefore ? fieldBefore : false;
+		value = fieldAfter ? fieldAfter : false;
 
 		exports.addToHistoryEntry( valueBefore, value, field.label, field.type, changeHistory );
 
@@ -46,8 +65,8 @@ exports.checkFieldForChanges = ( field, model, modelBefore, changeHistory, done 
 	// Date.parse( null ) returns NaN, and NaN !== NaN, so the second check is needed
 	} else if( field.type === 'date' && ( fieldBefore || fieldAfter ) ) {
 		// convert the values to nicely formatted dates
-		valueBefore = fieldBefore ? moment(fieldBefore).format( 'MM/DD/YYYY' ) : '';
-		value = fieldAfter ? moment(fieldAfter).format( 'MM/DD/YYYY' ) : '';
+		valueBefore = fieldBefore ? moment( fieldBefore ).format( 'MM/DD/YYYY' ) : '';
+		value = fieldAfter ? moment( fieldAfter ).format( 'MM/DD/YYYY' ) : '';
 		// not a part of the check above because Date.parse( fieldBefore ) !== Date.parse( fieldAfter ), even if they have the same date ( I think the milliseconds are appearing different )
 		if( valueBefore !== value ) {
 			exports.addToHistoryEntry( valueBefore, value, field.label, field.type, changeHistory );
@@ -191,8 +210,12 @@ exports.checkFieldForChanges = ( field, model, modelBefore, changeHistory, done 
 
 exports.addToHistoryEntry = ( valueBefore, value, label, fieldType, changeHistory ) => {
 
+	if( changeHistory.summary !== '' ) {
+		changeHistory.summary += ', ';
+	}
+
 	if( changeHistory.changes !== '' ) {
-		changeHistory.changes += ' || ';
+		changeHistory.changes += '\n\n';
 	}
 
 	if( valueBefore === false ) {
@@ -214,12 +237,15 @@ exports.addToHistoryEntry = ( valueBefore, value, label, fieldType, changeHistor
 		default				: emptyFieldText = 'was deleted';
 	}
 
+	// add the summary entry
+	changeHistory.summary += label;
+
 	// if the field wasn't removed or changed to false
 	if( value || value === 0 ) {
-		changeHistory.changes += `${ label.toUpperCase() } was changed to ${ value }`;
+		changeHistory.changes += `<p><strong>${ label }</strong> was changed to ${ value }</p>`;
 	// if the field was removed or changed to false
 	} else {
-		changeHistory.changes += `${ label.toUpperCase() } ${ emptyFieldText }`;
+		changeHistory.changes += `<p><strong>${ label }</strong> ${ emptyFieldText }</p>`;
 	}
 };
 

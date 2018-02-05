@@ -88,13 +88,20 @@
 				view.initializeMediaBoxes();
 			});
 		},
+		/* clearing this search is needed as using modify search while this has content causes
+		   the page to render incorrectly when navigating back to the gallery */
+		clearRegistrationSearch: function clearRegistrationSearch() {
+			this.$( '#registration-number-search' ).val( '' ).trigger( 'keyup' );
+		},
 
 		/* ititializes the media box plugin that drives the images in the gallery */
 		initializeMediaBoxes: function initializeMediaBoxes() {
 			// initialize the photo listing children gallery grid
 			$( '#children-grid' ).mediaBoxes({
 				boxesToLoadStart: 32,
-				boxesToLoad 	: 24
+				boxesToLoad 	: 24,
+				search			: '#registration-number-search',
+				searchTarget	: '.media-box-registration-number'
 			});
 		},
 

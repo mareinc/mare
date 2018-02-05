@@ -84,7 +84,7 @@ exports.getChildrenForSocialWorkerAccount = ( req, res, done, fieldsToSelect ) =
 	if ( locals.userType === 'social worker' ) {
 
 		let socialWorker = locals.user;
-
+		// TODO: update other code to populate models we already have this way.  This will get us one step closer to single fetch functions instead of one offs
 		// populate the social worker's positions
 		socialWorker.populate( 'positions', err => {
 
@@ -794,7 +794,7 @@ exports.registerChild = ( req, res, next ) => {
 			// set the fields to populate on the fetched child model
 			const populateOptions = [ 'languages', 'gender', 'race', 'residence', 'city', 'legalStatus', 'status',
 									  'recommendedFamilyConstellation', 'otherFamilyConstellationConsideration',
-									  'otherConsiderations', 'disabilities' ];
+									  'disabilities' ];
 			
 			// fetch the newly saved child model.  Needed because the saved child object doesn't have the Relationship fields populated
 			const fetchChild = exports.getChildByRegistrationNumberNew( childId, populateOptions );
@@ -897,8 +897,7 @@ exports.saveChild = ( child, activeChildStatusId ) => {
 
 			disabilities					: child.disabilities,
 			recommendedFamilyConstellation	: child.recommendedFamilyConstellations,
-			otherFamilyConstellationConsideration: child.otherFamilyConstellationConsiderations,
-			otherConsiderations				: child.otherConsiderations
+			otherFamilyConstellationConsideration: child.otherFamilyConstellationConsiderations
 		});
 
 		newChild.save( ( err, model ) => {

@@ -19,20 +19,19 @@ exports = module.exports = ( req, res ) => {
 		fetchGenders								= listsService.getAllGenders(),
 		fetchLanguages								= listsService.getAllLanguages(),
 		fetchLegalStatuses							= listsService.getAllLegalStatuses(),
-		fetchOtherConsiderations					= listsService.getAllOtherConsiderations(),
 		fetchOtherFamilyConstellationConsiderations	= listsService.getAllOtherFamilyConstellationConsiderations(),
 		fetchRaces									= listsService.getAllRaces( raceOptions ),
 		fetchResidences								= listsService.getAllResidences(),
 		fetchStates									= listsService.getAllStates( stateOptions ),
 		fetchSidebarItems							= pageService.getSidebarItems();
 
-	Promise.all( [ fetchCitiesAndTowns, fetchDisabilities, fetchFamilyConstellations, fetchGenders,fetchLanguages,
-				   fetchLegalStatuses, fetchOtherConsiderations, fetchOtherFamilyConstellationConsiderations,
+	Promise.all( [ fetchCitiesAndTowns, fetchDisabilities, fetchFamilyConstellations, fetchGenders, fetchLanguages,
+				   fetchLegalStatuses, fetchOtherFamilyConstellationConsiderations,
 				   fetchRaces, fetchResidences, fetchStates, fetchSidebarItems ] )
 		.then( values => {
 			// assign local variables to the values returned by the promises
 			const [ citiesAndTowns, disabilities, familyConstellations, genders, languages,
-					legalStatuses, otherConsiderations, otherFamilyConstellationConsiderations,
+					legalStatuses, otherFamilyConstellationConsiderations,
 					races, residences, states, sidebarItems ] = values;
 			// the sidebar items are a success story and event in an array, assign local variables to the two objects
 			const [ randomSuccessStory, randomEvent ] = sidebarItems;
@@ -44,7 +43,6 @@ exports = module.exports = ( req, res ) => {
 			locals.genders									= genders;
 			locals.languages								= languages;
 			locals.legalStatuses							= legalStatuses;
-			locals.otherConsiderations						= otherConsiderations;
 			locals.otherFamilyConstellationConsiderations	= otherFamilyConstellationConsiderations;
 			locals.races									= races;
 			locals.residences								= residences;
