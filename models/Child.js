@@ -658,8 +658,9 @@ Child.schema.methods.setChangeHistory = function() {
 		const changeHistory = new ChildHistory.model({
 			child			: this,
 			date			: Date.now(),
-			changes		: '',
-			modifiedBy	: this.updatedBy
+			summary			: '',
+			changes			: '',
+			modifiedBy		: this.updatedBy
 		});
 
 		// if the model is being saved for the first time
