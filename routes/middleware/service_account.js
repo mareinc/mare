@@ -33,6 +33,12 @@ exports.updateUser = ( req, res, next ) => {
 
 			if ( fieldDefinition ) {
 
+				// check for special case to set a field to undefined ( i.e. unset the field )
+				// cannot pass undefined values in a POST request, so we need this workaround
+				if ( updates[ updateFieldPath ] === '_undefined' ) {
+					updates[ updateFieldPath ] = undefined;
+				}
+
 				// if the fieldDefinition exists, set the updated value on the user model
 				user.set( updateFieldPath, updates[ updateFieldPath ] );
 			} else {

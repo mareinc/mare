@@ -69,15 +69,22 @@
 			// TODO: this can be done more easily by passing in an event and setting selectedQuantity to event.currentTarget.value
 			// capture the number of children the user has selected in the dropdown
 			var selectedQuantity = parseInt( this.$childrenInHome.children( 'option:selected' ).html(), 10 );
+			var currentChildrenDisplayed = this.$( '.child-details-form' ).length;
 
-			if ( selectedQuantity > 0 ) {
+			if ( selectedQuantity >= currentChildrenDisplayed ) {
 				// show the appropriate number of child forms
 				this.generateChildDetailInputs( selectedQuantity );
 			} else {
-				// count the number of child data groups already shown on the page
-				var currentChildrenDisplayed = this.$( '.child-details-form' ).length;
+
 				// remove extra additional child forms
-				for( var i = 1; i <= currentChildrenDisplayed; i++ ) {
+				for( var i = currentChildrenDisplayed; i > selectedQuantity; i-- ) {
+
+					this.accountInfoUpdates[ $( 'input[ name=\'child' + i + '-name\' ]' ).data( 'field-name' ) ] = '_undefined';
+					this.accountInfoUpdates[ $( 'input[ name=\'child' + i + '-birthDate\' ]' ).data( 'field-name' ) ] = '_undefined';
+					this.accountInfoUpdates[ $( 'select[ name=\'child' + i + '-gender\' ]' ).data( 'field-name' ) ] = '_undefined';
+					this.accountInfoUpdates[ $( 'select[ name=\'child' + i + '-type\' ]' ).data( 'field-name' ) ] = '_undefined';
+					console.log( this.accountInfoUpdates );
+
 					$( '.child' + i + '-form' ).remove();
 					$( '.child' + i + '-form-heading' ).remove(); // TODO: include the heading as part of the form to make cleanup easier
 				}
@@ -89,35 +96,26 @@
 			var currentChildrenDisplayed = this.$( '.child-details-form' ).length,
 				i;
 
-			if( currentChildrenDisplayed > selectedNumberOfChildren ) {
-				// remove extra additional child forms
-				for( i = currentChildrenDisplayed; i > selectedNumberOfChildren; i-- ) {
-					$( '.child' + i + '-form' ).remove();
-					$( '.child' + i + '-form-heading' ).remove(); // TODO: include the heading as part of the form to make cleanup easier
-				}
 
-			} else {
-				// add sections that aren't already on the page
-				for( i = currentChildrenDisplayed + 1; i <= selectedNumberOfChildren; i++ ) {
-					// pass the relevant data through the child in home template to generate to add to the page
-					var html = this.template({ 	index		: i,
-												id			: 'child' + i,
-												formName	: 'child' + i + '-form',
-												formHeading	: 'child' + i + '-form-heading',
-												name		: 'child' + i + '-name',
-												gender		: 'child' + i + '-gender',
-												birthDate	: 'child' + i + '-birthDate',
-												type		: 'child' + i + '-type',
-												fields		: {
-													name		: 'child' + i + '.name',
-													gender		: 'child' + i + '.gender',
-													birthDate	: 'child' + i + '.birthDate',
-													type		: 'child' + i + '.type'
-												}});
+			// add sections that aren't already on the page
+			for( i = currentChildrenDisplayed + 1; i <= selectedNumberOfChildren; i++ ) {
+				// pass the relevant data through the child in home template to generate to add to the page
+				var html = this.template({ 	index		: i,
+											id			: 'child' + i,
+											formName	: 'child' + i + '-form',
+											formHeading	: 'child' + i + '-form-heading',
+											name		: 'child' + i + '-name',
+											gender		: 'child' + i + '-gender',
+											birthDate	: 'child' + i + '-birthDate',
+											type		: 'child' + i + '-type',
+											fields		: {
+												name		: 'child' + i + '.name',
+												gender		: 'child' + i + '.gender',
+												birthDate	: 'child' + i + '.birthDate',
+												type		: 'child' + i + '.type'
+											}});
 
-					this.$( '.children-in-home-details' ).append( html );
-
-				}
+				this.$( '.children-in-home-details' ).append( html );
 
 			}
 		},
