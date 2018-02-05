@@ -79,12 +79,13 @@
 				// remove extra additional child forms
 				for( var i = currentChildrenDisplayed; i > selectedQuantity; i-- ) {
 
+					// add updates to unset the child data on the Family model
 					this.accountInfoUpdates[ $( 'input[ name=\'child' + i + '-name\' ]' ).data( 'field-name' ) ] = '_undefined';
 					this.accountInfoUpdates[ $( 'input[ name=\'child' + i + '-birthDate\' ]' ).data( 'field-name' ) ] = '_undefined';
 					this.accountInfoUpdates[ $( 'select[ name=\'child' + i + '-gender\' ]' ).data( 'field-name' ) ] = '_undefined';
 					this.accountInfoUpdates[ $( 'select[ name=\'child' + i + '-type\' ]' ).data( 'field-name' ) ] = '_undefined';
-					console.log( this.accountInfoUpdates );
 
+					// remove the child detail form fields from the DOM
 					$( '.child' + i + '-form' ).remove();
 					$( '.child' + i + '-form-heading' ).remove(); // TODO: include the heading as part of the form to make cleanup easier
 				}
@@ -116,7 +117,6 @@
 											}});
 
 				this.$( '.children-in-home-details' ).append( html );
-
 			}
 		},
 
