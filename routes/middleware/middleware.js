@@ -119,6 +119,20 @@ exports.requireUser = function(req, res, next) {
 	}
 };
 
+exports.requireAdmin = function( req, res, next ) {
+	'use strict';
+	// if the user isn't logged in as an administrator
+	if ( !req.user || !req.user.userType === 'admin' ) {
+		// return them to the home page
+		res.redirect( 303, '/' );
+	// if the user is logged in as an administrator
+	} else {
+		// return control to allow the next middlware to execute
+		return next();
+	}
+
+};
+
 exports.login = function( req, res, next ) {
 
 	let locals = res.locals;

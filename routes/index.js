@@ -5,6 +5,7 @@ const keystone						= require( 'keystone' ),
 	  familyService					= require( './middleware/service_family' ),
 	  formService					= require( './middleware/service_form' ),
 	  middleware					= require( './middleware/middleware' ),
+	  modelService					= require( './middleware/service_model' ),
 	  permissionsService			= require( './middleware/service_permissions' ),
 	  registrationMiddleware		= require( './middleware/service_register' ),
 	  accountMiddleware				= require( './middleware/service_account' ),
@@ -90,4 +91,8 @@ exports = module.exports = app => {
 	app.post( '/submit-information-request'				, formService.submitInquiry );
 	app.post( '/social-worker-register-child'			, childService.registerChild );
 	app.post( '/social-worker-register-family'			, familyService.registerFamily );
+	// routes to handle looping through models and adjusting values/saving in bulk
+	app.get( '/fix/families'							, middleware.requireAdmin, modelService.fixFamilies );
+	// app.get( '/fix/children'							, middleware.requireAdmin, modelService.fixChildren );
+	// app.get( '/fix/social-workers'						, middleware.requireAdmin, modelService.fixSocialWorkers );
 };
