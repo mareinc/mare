@@ -16,7 +16,7 @@ function* fixFamiliesGenerator() {
 		errors = [];
 
 	while( page ) {
-		console.info( `saveing families ${ ( page - 1 ) * 100 } - ${ page * 100 }` );
+		console.info( `saving families ${ ( page - 1 ) * 100 } - ${ page * 100 }` );
 		// fetch the page of families, waiting to execute further code until we have a result
 		const fetchedFamilies = yield fetchFamiliesByPage( page );
 		// if there was an error fetching the page of families

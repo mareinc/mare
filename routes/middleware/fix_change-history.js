@@ -16,7 +16,7 @@ function* fixChangeHistoriesGenerator() {
 		errors = [];
 
 	while( page ) {
-		console.info( `saveing family histories ${ ( page - 1 ) * 100 } - ${ page * 100 }` );
+		console.info( `saving family histories ${ ( page - 1 ) * 100 } - ${ page * 100 }` );
 		// fetch the page of family histories, waiting to execute further code until we have a result
 		const fetchedFamilyHistories = yield fetchFamilyHistoriesByPage( page );
 		// if there was an error fetching the page of family histories
