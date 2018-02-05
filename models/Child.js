@@ -665,7 +665,7 @@ Child.schema.methods.setChangeHistory = function() {
 		// if the model is being saved for the first time
 		if( !model._original ) {
 			// set the text for the change history record
-			changeHistory.changes = 'record created';
+			changeHistory.changes = '<p>record created</p>';
 			// save the change history record
 			changeHistory.save( () => {
 				// if the record saved successfully, resolve the promise

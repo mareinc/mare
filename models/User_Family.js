@@ -661,6 +661,7 @@ Family.schema.methods.setChangeHistory = function setChangeHistory() {
 		const changeHistory = new FamilyHistory.model({
 			family		: this,
 			date		: Date.now(),
+			summary		: '',
 			changes		: '',
 			modifiedBy	: this.updatedBy
 		});
@@ -668,7 +669,7 @@ Family.schema.methods.setChangeHistory = function setChangeHistory() {
 		// if the model is being saved for the first time
 		if( !model._original ) {
 			// set the text for the change history record
-			changeHistory.changes = 'record created';
+			changeHistory.changes = '<p>record created</p>';
 			// save the change history record
 			changeHistory.save( () => {
 				// if the record saved successfully, resolve the promise
