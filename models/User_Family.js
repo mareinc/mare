@@ -29,7 +29,7 @@ Family.add( 'Permissions', {
 
 	permissions: {
 		isVerified: { type: Boolean, label: 'has a verified email address', default: false, noedit: true },
-		isHomestudyVerified: { type: Boolean, label: 'homestudy verified', initial: true },
+		isHomestudyVerified: { type: Boolean, label: 'homestudy verified', default: false, initial: true },
 		homestudyVerifiedDate: { type: Types.Date, label: 'homestudy verified on', format: 'MM/DD/YYYY', dependsOn: { 'permissions.isHomestudyVerified': true }, noedit: true },
 		canViewAllChildrenOverride: { type: Boolean, label: 'allow family to see all children', note: 'this will allow the family to see at risk children regardless of their homestudy or place of residence', default: false, initial: true },
 		canViewAllChildren: { type: Boolean, default: false, hidden: true, noedit: true }
@@ -41,7 +41,7 @@ Family.add( 'Permissions', {
 
 	registrationNumber: { type: Number, label: 'registration number', format: false, noedit: true },
 	initialContact: { type: Types.Date, label: 'initial contact', format: 'MM/DD/YYYY', initial: true }, // was required: data migration change ( undo if possible )
-	flagCalls: { type: Types.Boolean, label: 'flag calls', initial: true },
+	flagCalls: { type: Types.Boolean, label: 'flag calls', default: false, initial: true },
 	familyConstellation: { type: Types.Relationship, label: 'family constellation', ref: 'Family Constellation', initial: true },
 	language: { type: Types.Relationship, label: 'language', ref: 'Language', required: true, initial: true },
 	otherLanguages: { type: Types.Relationship, label: 'other languages', ref: 'Language', many: true, initial: true },
@@ -101,7 +101,7 @@ Family.add( 'Permissions', {
 	address: {
 		street1: { type: Types.Text, label: 'street 1', required: true, initial: true },
 		street2: { type: Types.Text, label: 'street 2', initial: true },
-		isOutsideMassachusetts: { type: Types.Boolean, label: 'is outside Massachusetts', initial: true },
+		isOutsideMassachusetts: { type: Types.Boolean, label: 'is outside Massachusetts', default: false, initial: true },
 		city: { type: Types.Relationship, label: 'city', ref: 'City or Town', dependsOn: { 'address.isOutsideMassachusetts': false }, initial: true },
 		cityText: { type: Types.Text, label: 'city', dependsOn: { 'address.isOutsideMassachusetts': true }, initial: true },
 		displayCity: { type: Types.Text, label: 'city', hidden: true, noedit: true },
@@ -191,25 +191,25 @@ Family.add( 'Permissions', {
 
 	stages: {
 		gatheringInformation: {
-			started: { type: Types.Boolean, label: 'gathering information', initial: true },
+			started: { type: Types.Boolean, label: 'gathering information', default: false, initial: true },
 			date: { type: Types.Date, label: 'date gathering information started', format: 'MM/DD/YYYY', dependsOn: { 'stages.gatheringInformation.started': true }, initial: true }
 		},
 		lookingForAgency: {
-			started: { type: Types.Boolean, label: 'looking for agency', initial: true },
+			started: { type: Types.Boolean, label: 'looking for agency', default: false, initial: true },
 			date: { type: Types.Date, label: 'date looking for agency started', format: 'MM/DD/YYYY', dependsOn: { 'stages.lookingForAgency.started': true }, initial: true }
 		},
 		workingWithAgency: {
-			started: { type: Types.Boolean, label: 'working with agency', initial: true },
+			started: { type: Types.Boolean, label: 'working with agency', default: false, initial: true },
 			date: { type: Types.Date, label: 'date working with agency started', format: 'MM/DD/YYYY', dependsOn: { 'stages.workingWithAgency.started': true }, initial: true }
 		},
 		MAPPTrainingCompleted: {
-			completed: { type: Types.Boolean, label: 'MAPP training completed', initial: true },
+			completed: { type: Types.Boolean, label: 'MAPP training completed', default: false, initial: true },
 			date: { type: Types.Date, label: 'date MAPP training completed', format: 'MM/DD/YYYY', dependsOn: { 'stages.MAPPTrainingCompleted.completed': true }, initial: true }
 		}
 	},
 
 	homestudy: {
-		completed: { type: Types.Boolean, label: 'homestudy completed', initial: true },
+		completed: { type: Types.Boolean, label: 'homestudy completed', default: false, initial: true },
 		initialDate: { type: Types.Date, label: 'initial date homestudy completed', format: 'MM/DD/YYYY', dependsOn: { 'homestudy.completed': true }, initial: true },
 		mostRecentDate: { type: Types.Date, label: 'most recent update completed', format: 'MM/DD/YYYY', dependsOn: { 'homestudy.completed': true }, initial: true },
 		summary: { type: Types.Textarea, label: 'homestudy summary', dependsOn: { 'homestudy.completed': true }, initial: true },
@@ -227,23 +227,23 @@ Family.add( 'Permissions', {
 	},
 
 	onlineMatching: {
-		started: { type: Types.Boolean, label: 'online matching', initial: true },
+		started: { type: Types.Boolean, label: 'online matching', default: false, initial: true },
 		date: { type: Types.Date, label: 'date online matching started', format: 'MM/DD/YYYY', dependsOn: { 'onlineMatching.started': true }, initial: true }
 	},
 
 	registeredWithMARE: {
-		registered: { type: Types.Boolean, label: 'registered with MARE', initial: true },
+		registered: { type: Types.Boolean, label: 'registered with MARE', default: false, initial: true },
 		date: { type: Types.Date, label: 'date registered with MARE', format: 'MM/DD/YYYY', dependsOn: { 'registeredWithMARE.registered': true }, initial: true },
 		status: { type: Types.Relationship, label: 'status', ref: 'Child Status', dependsOn: { 'registeredWithMARE.registered': true }, initial: true }
 	},
 
 	familyProfile: {
-		created: { type: Types.Boolean, label: 'family profile created', initial: true },
+		created: { type: Types.Boolean, label: 'family profile created', default: false, initial: true },
 		date: { type: Types.Date, label: 'date family profile created', format: 'MM/DD/YYYY', dependsOn: { 'familyProfile.created': true }, initial: true }
 	},
 
 	closed: {
-		isClosed: { type: Types.Boolean, label: 'closed', initial: true },
+		isClosed: { type: Types.Boolean, label: 'closed', default: false, initial: true },
 		date: { type: Types.Date, label: 'date closed', format: 'MM/DD/YYYY', dependsOn: { 'closed.isClosed': true }, initial: true },
 		reason: { type: Types.Relationship, label: 'reason', ref: 'Closed Reason', dependsOn: { 'closed.isClosed': true }, initial: true }
 	}
@@ -251,21 +251,21 @@ Family.add( 'Permissions', {
 }, 'Social Worker Information', {
 
 	socialWorker: { type: Types.Relationship, label: 'social worker', ref: 'Social Worker', filters: { isActive: true }, initial: true },
-	socialWorkerNotListed: { type: Types.Boolean, label: 'social worker isn\'t listed', initial: true },
+	socialWorkerNotListed: { type: Types.Boolean, label: 'social worker isn\'t listed', default: false, initial: true },
 	socialWorkerText: { type: Types.Text, label: 'social worker', dependsOn: { socialWorkerNotListed: true }, initial: true }
 
 }, 'Family Services', {
 
 	familyServices: {
-		mentee: { type: Types.Boolean, label: 'mentee', initial: true },
-		mentor: { type: Types.Boolean, label: 'mentor', initial: true },
-		mediaSpokesperson: { type: Types.Boolean, label: 'media spokesperson', initial: true },
-		eventPresenterOrSpokesperson: { type: Types.Boolean, label: 'event presenter/spokesperson', initial: true },
-		communityOutreach: { type: Types.Boolean, label: 'community outreach', initial: true },
-		fundraising: { type: Types.Boolean, label: 'fundraising', initial: true },
-		MARESupportGroupLeader: { type: Types.Boolean, label: 'MARE support group leader', initial: true },
-		MARESupportGroupParticipant: { type: Types.Boolean, label: 'MARE support group participant', initial: true },
-		receivesConsultationServices: { type: Types.Boolean, label: 'receives consultation services', initial: true }
+		mentee: { type: Types.Boolean, label: 'mentee', default: false, initial: true },
+		mentor: { type: Types.Boolean, label: 'mentor', default: false, initial: true },
+		mediaSpokesperson: { type: Types.Boolean, label: 'media spokesperson', default: false, initial: true },
+		eventPresenterOrSpokesperson: { type: Types.Boolean, label: 'event presenter/spokesperson', default: false, initial: true },
+		communityOutreach: { type: Types.Boolean, label: 'community outreach', default: false, initial: true },
+		fundraising: { type: Types.Boolean, label: 'fundraising', default: false, initial: true },
+		MARESupportGroupLeader: { type: Types.Boolean, label: 'MARE support group leader', default: false, initial: true },
+		MARESupportGroupParticipant: { type: Types.Boolean, label: 'MARE support group participant', default: false, initial: true },
+		receivesConsultationServices: { type: Types.Boolean, label: 'receives consultation services', default: false, initial: true }
 	}
 
 }, 'Info Preferences', {
@@ -288,10 +288,10 @@ Family.add( 'Permissions', {
 		},
 
 		numberOfChildrenToAdopt: { type: Types.Number, label: 'number of children to adopt', initial: true },
-		siblingContact: { type: Types.Boolean, label: 'contact with siblings', initial: true },
-		birthFamilyContact: { type: Types.Boolean, label: 'contact with birth parents', initial: true },
+		siblingContact: { type: Types.Boolean, label: 'contact with siblings', default: false, initial: true },
+		birthFamilyContact: { type: Types.Boolean, label: 'contact with birth parents', default: false, initial: true },
 		
-		havePetsInHome: { type: Types.Boolean, label: 'have pets in the home', initial: true },
+		havePetsInHome: { type: Types.Boolean, label: 'have pets in the home', default: false, initial: true },
 		
 		race: { type: Types.Relationship, label: 'race', ref: 'Race', many: true, initial: true },
 
@@ -312,7 +312,7 @@ Family.add( 'Permissions', {
 
 }, 'Registration Details', {
 
-	registeredViaWebsite: { type: Types.Boolean, label: 'registered through the website', noedit: true }
+	registeredViaWebsite: { type: Types.Boolean, label: 'registered through the website', default: false, noedit: true }
 
 }, {
 
@@ -661,6 +661,7 @@ Family.schema.methods.setChangeHistory = function setChangeHistory() {
 		const changeHistory = new FamilyHistory.model({
 			family		: this,
 			date		: Date.now(),
+			summary		: '',
 			changes		: '',
 			modifiedBy	: this.updatedBy
 		});
@@ -668,7 +669,7 @@ Family.schema.methods.setChangeHistory = function setChangeHistory() {
 		// if the model is being saved for the first time
 		if( !model._original ) {
 			// set the text for the change history record
-			changeHistory.changes = 'record created';
+			changeHistory.changes = '<p>record created</p>';
 			// save the change history record
 			changeHistory.save( () => {
 				// if the record saved successfully, resolve the promise

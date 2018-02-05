@@ -26,7 +26,7 @@ const Child = new keystone.List( 'Child', {
 Child.add('Display Options', {
 
 	siteVisibility: { type: Types.Select, label: 'child is visible to', options: 'everyone, only registered social workers and families', required: true, initial: true },
-	isVisibleInGallery: { type: Types.Boolean, label: 'activate child profile on website to group selected', note: 'authorized staff only', initial: true },
+	isVisibleInGallery: { type: Types.Boolean, label: 'activate child profile on website to group selected', note: 'authorized staff only', default: false, initial: true },
 	visibleInGalleryDate: { type: Types.Date, label: 'date added to MARE web', format: 'MM/DD/YYYY', dependsOn: {isVisibleInGallery: true }, initial: true }
 
 }, 'Child Information', {
@@ -53,16 +53,16 @@ Child.add('Display Options', {
 	legalStatus: { type: Types.Relationship, label: 'legal status', ref: 'Legal Status', required: true, initial: true },
 	yearEnteredCare: { type: Types.Text, label: 'year entered care', note: 'yyyy - required', initial: true },
 
-	hasContactWithSiblings: { type: Types.Boolean, label: 'has contact with siblings?', initial: true },
+	hasContactWithSiblings: { type: Types.Boolean, label: 'has contact with siblings?', default: false, initial: true },
 	siblingTypeOfContact: { type: Types.Text, label: 'type of contact', initial: true },
 	siblings: { type: Types.Relationship, label: 'siblings', ref: 'Child', many: true, initial: true },
-	mustBePlacedWithSiblings: { type: Types.Boolean, label: 'must be placed with one or more sibling', initial: true },
+	mustBePlacedWithSiblings: { type: Types.Boolean, label: 'must be placed with one or more sibling', default: false, initial: true },
 	siblingsToBePlacedWith: { type: Types.Relationship, label: 'siblings to be placed with', ref: 'Child', dependsOn: { mustBePlacedWithSiblings: true }, many: true, initial: true },
-	hasContactWithBirthFamily: { type: Types.Boolean, label: 'has contact with birth family?', initial: true },
+	hasContactWithBirthFamily: { type: Types.Boolean, label: 'has contact with birth family?', default: false, initial: true },
 	birthFamilyTypeOfContact: { type: Types.Text, label: 'type of contact', initial: true },
 
 	residence: { type: Types.Relationship, label: 'where does the child presently live?', ref: 'Residence', initial: true },
-	isOutsideMassachusetts: { type: Types.Boolean, label: 'is outside Massachusetts', initial: true },
+	isOutsideMassachusetts: { type: Types.Boolean, label: 'is outside Massachusetts', default: false, initial: true },
 	city: { type: Types.Relationship, label: 'city/town of child\'s current location', ref: 'City or Town', dependsOn: { isOutsideMassachusetts: false }, initial: true },
 	cityText: { type: Types.Text, label: 'city/town of child\'s current location', dependsOn: { isOutsideMassachusetts: true }, initial: true },
 	careFacilityName: { type: Types.Text, label: 'name of residential/group care facility', initial: true },
@@ -124,11 +124,11 @@ Child.add('Display Options', {
 		part3: { type: Types.Textarea, label: '3rd paragraph', dependsOn: { mustBePlacedWithSiblings: true }, note: 'Legal Status, Sibling/Family Contact, Family Constellation and Placement requirements', initial: true }
 	},
 
-	hasPhotolistingWriteup: { type: Types.Boolean, label: 'photolisting writeup', initial: true },
+	hasPhotolistingWriteup: { type: Types.Boolean, label: 'photolisting writeup', default: false, initial: true },
 	photolistingWriteupDate: { type: Types.Date, label: 'date of photolisting writeup', format: 'MM/DD/YYYY', dependsOn: { hasPhotolistingWriteup: true }, initial: true },
-	hasPhotolistingPhoto: { type: Types.Boolean, label: 'photolisting photo', initial: true },
+	hasPhotolistingPhoto: { type: Types.Boolean, label: 'photolisting photo', default: false, initial: true },
 	photolistingPhotoDate: { type: Types.Date, label: 'date of photolisting photo', format: 'MM/DD/YYYY', dependsOn: { hasPhotolistingPhoto: true }, initial: true },
-	isCurrentlyInPhotoListing: { type: Types.Boolean, label: 'currently in photolisting', initial: true },
+	isCurrentlyInPhotoListing: { type: Types.Boolean, label: 'currently in photolisting', default: false, initial: true },
 	dateOfLastPhotoListing: { type: Types.Date, label: 'date of last photolisting', format: 'MM/DD/YYYY', dependsOn: {isCurrentlyInPhotoListing: true }, initial: true },
 	photolistingPageNumber: { type: Types.Text, label: 'photolisting page', initial: true },
 	previousPhotolistingPageNumbers: { type: Types.Text, label: 'previous photolisting pages', initial: true },
@@ -144,26 +144,26 @@ Child.add('Display Options', {
 
 }, 'Recruitment Options', {
 
-	hasVideoSnapshot: { type: Types.Boolean, label: 'video snapshot', initial: true },
+	hasVideoSnapshot: { type: Types.Boolean, label: 'video snapshot', default: false, initial: true },
 	videoSnapshotDate: { type: Types.Date, label: 'date of video snapshot', format: 'MM/DD/YYYY', dependsOn: { hasVideoSnapshot: true }, initial: true },
 	video: { type: Types.Url, label: 'video', dependsOn: { hasVideoSnapshot: true, mustBePlacedWithSiblings: false } },
 	siblingGroupVideo: { type: Types.Url, label: 'sibling group video', dependsOn: { hasVideoSnapshot: true, mustBePlacedWithSiblings: true } },
 
-	onAdoptuskids: { type: Types.Boolean, label: 'Adoptuskids website', initial: true },
+	onAdoptuskids: { type: Types.Boolean, label: 'Adoptuskids website', default: false, initial: true },
 	onAdoptuskidsDate: { type: Types.Date, label: 'date on Adoptuskids', format: 'MM/DD/YYYY', dependsOn: { onAdoptuskids: true }, initial: true },
 
-	wednesdaysChild: { type: Types.Boolean, label: 'Wednesday\'s Child', dependsOn: { mustBePlacedWithSiblings: false }, initial: true },
+	wednesdaysChild: { type: Types.Boolean, label: 'Wednesday\'s Child', dependsOn: { mustBePlacedWithSiblings: false }, default: false, initial: true },
 	wednesdaysChildDate: { type: Types.Date, label: 'date of Wednesday\'s Child', format: 'MM/DD/YYYY', dependsOn: { mustBePlacedWithSiblings: false, wednesdaysChild: true }, initial: true },
 	wednesdaysChildVideo: { type: Types.Url, label: 'Wednesday\'s Child video', dependsOn: { mustBePlacedWithSiblings: false, wednesdaysChild: true } },
 
-	wednesdaysChildSiblingGroup: { type: Types.Boolean, label: 'Wednesday\'s Child for sibling group?', dependsOn: { mustBePlacedWithSiblings: true }, initial: true },
+	wednesdaysChildSiblingGroup: { type: Types.Boolean, label: 'Wednesday\'s Child for sibling group?', dependsOn: { mustBePlacedWithSiblings: true }, default: false, initial: true },
 	wednesdaysChildSiblingGroupDate: { type: Types.Date, label: 'date of sibling group\'s Wednesday\'s Child', format: 'MM/DD/YYYY', dependsOn: { mustBePlacedWithSiblings: true, wednesdaysChildSiblingGroup: true }, initial: true },
 	wednesdaysChildSiblingGroupVideo: { type: Types.Url, label: 'Wednesday\'s Child sibling group video', dependsOn: { mustBePlacedWithSiblings: true, wednesdaysChildSiblingGroup: true } },
 
-	coalitionMeeting: { type: Types.Boolean, label: 'coalition meeting', initial: true },
+	coalitionMeeting: { type: Types.Boolean, label: 'coalition meeting', default: false, initial: true },
 	coalitionMeetingDate: { type: Types.Date, label: 'date of coalition meeting', format: 'MM/DD/YYYY', dependsOn: { coalitionMeeting: true }, initial: true },
 
-	matchingEvent: { type: Types.Boolean, label: 'matching event', initial: true },
+	matchingEvent: { type: Types.Boolean, label: 'matching event', default: false, initial: true },
 	matchingEventDate: { type: Types.Date, label: 'date of matching event', format: 'MM/DD/YYYY', dependsOn: { matchingEvent: true }, initial: true },
 
 	adoptionParties: { type: Types.Relationship, label: 'adoption parties', ref: 'Event', filters: { type: 'adoption party', isActive: true }, many: true, initial: true },
@@ -171,10 +171,10 @@ Child.add('Display Options', {
 	mediaEligibility: { type: Types.Relationship, label: 'media eligibility', ref: 'Media Eligibility', many: true, initial: true },
 	otherMediaDescription: { type: Types.Textarea, label: 'description', note: 'only fill out if \'other\' is selected for media eligibility' , initial: true }, // TODO: THIS DOESN'T WORK BECAUSE IT REFERENCES A RELATIONSHIP FIELD SO ALL WE HAVE IS THE _id, MAKE IT WORK!
 
-	locationAlert: { type: Types.Boolean, label: 'location alert', initial: true },
+	locationAlert: { type: Types.Boolean, label: 'location alert', default: false, initial: true },
 	place: { type: Types.Text, label: 'place', initial: true, dependsOn: { locationAlert: true } },
 
-	communicationsCollateral: { type: Types.Boolean, label: 'communications collateral', initial: true },
+	communicationsCollateral: { type: Types.Boolean, label: 'communications collateral', default: false, initial: true },
 	communicationsCollateralDetails: { type: Types.Text, label: 'details', dependsOn: { communicationsCollateral: true }, initial: true }
 
 }, 'Attachments', {
@@ -665,7 +665,7 @@ Child.schema.methods.setChangeHistory = function() {
 		// if the model is being saved for the first time
 		if( !model._original ) {
 			// set the text for the change history record
-			changeHistory.changes = 'record created';
+			changeHistory.changes = '<p>record created</p>';
 			// save the change history record
 			changeHistory.save( () => {
 				// if the record saved successfully, resolve the promise
