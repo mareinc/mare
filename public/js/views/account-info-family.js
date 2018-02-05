@@ -80,8 +80,8 @@
 				for( var i = currentChildrenDisplayed; i > selectedQuantity; i-- ) {
 
 					// add updates to unset the child data on the Family model
-					this.accountInfoUpdates[ $( 'input[ name=\'child' + i + '-name\' ]' ).data( 'field-name' ) ] = '_undefined';
-					this.accountInfoUpdates[ $( 'input[ name=\'child' + i + '-birthDate\' ]' ).data( 'field-name' ) ] = '_undefined';
+					this.accountInfoUpdates[ $( 'input[ name=\'child' + i + '-name\' ]' ).data( 'field-name' ) ] = '';
+					this.accountInfoUpdates[ $( 'input[ name=\'child' + i + '-birthDate\' ]' ).data( 'field-name' ) ] = '';
 					this.accountInfoUpdates[ $( 'select[ name=\'child' + i + '-gender\' ]' ).data( 'field-name' ) ] = '_undefined';
 					this.accountInfoUpdates[ $( 'select[ name=\'child' + i + '-type\' ]' ).data( 'field-name' ) ] = '_undefined';
 
