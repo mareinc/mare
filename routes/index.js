@@ -11,6 +11,7 @@ const keystone							= require( 'keystone' ),
 	  eventMiddleware					= require( './middleware/middleware_event' ),
 	  passwordResetService 				= require( './middleware/service_password-reset'),
 	  accountVerificationService		= require( './middleware/service_account-verification' );
+	  childAdjustmentService			= require( '.middleware/fix_child' ),
 	  familyAdjustmentService			= require( './middleware/fix_family' ),
 	  changeHistoryAdjustmentService	= require( './middleware/fix_change-history' ),
 	  importRoutes						= keystone.importer( __dirname );
@@ -93,6 +94,7 @@ exports = module.exports = app => {
 	app.post( '/social-worker-register-child'			, childService.registerChild );
 	app.post( '/social-worker-register-family'			, familyService.registerFamily );
 	// routes to handle looping through models and adjusting values/saving in bulk
+	app.get( '/fix/children'							, middleware.requireAdmin, childAdjustmentService.fixChildren );
 	app.get( '/fix/families'							, middleware.requireAdmin, familyAdjustmentService.fixFamilies );
 	app.get( '/fix/family-histories'					, middleware.requireAdmin, changeHistoryAdjustmentService.fixFamilyHistories );
 	// app.get( 'fix/social-worker-history'				, middleware.requireAdmin, changeHistoryAdjustmentService.fixSocialWorkerHistories );

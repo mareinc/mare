@@ -50,13 +50,12 @@ function fetchFamiliesByPage( page ) {
 
 	return new Promise( ( resolve, reject ) => {
 		// fetch the request page of family records
-		keystone.list( 'Child' )
+		keystone.list( 'Family' )
 			.paginate ({
 				page: page || 1,
 				perPage: 100,
 				filters: {} // add any needed filters as { key: value }
 			})
-			.where( 'displayNameAndRegistration', undefined )
 			.exec ( ( err, families ) => {
 
 				// if there was an error
