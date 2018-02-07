@@ -240,7 +240,6 @@ Child.schema.pre( 'save', function( next ) {
 	// this.setFullName();
 	// // create a unique label for each child based on their first & last names and their registration number
 	this.setFullNameAndRegistrationLabel();
-	next();
 	// // create an identifying name for file uploads
 	// this.setFileName();
 	// // if there are no siblings to be placed with, uncheck the box, otherwise check it
@@ -267,7 +266,7 @@ Child.schema.pre( 'save', function( next ) {
 	// 	// TODO: this should be replaced with ES6 Promise.prototype.finally() once it's finalized, assuming we can update to the latest version of Node if we upgrade Keystone
 	// 	.then( () => {
 
-	// 		next();
+			next();
 	// 	});
 });
 

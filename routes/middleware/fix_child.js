@@ -56,7 +56,6 @@ function fetchChildrenByPage( page ) {
 				perPage: 100,
 				filters: {} // add any needed filters as { key: value }
 			})
-			.where( 'displayNameAndRegistration', undefined )
 			.exec ( ( err, children ) => {
 
 				// if there was an error
