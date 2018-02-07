@@ -18,7 +18,7 @@ const keystone						= require( 'keystone' ),
 const Child = new keystone.List( 'Child', {
 	track: true, // needed for change history updated by assignment
 	autokey: { path: 'key', from: 'registrationNumber', unique: true },
-	map: { name: 'name.full' },
+	map: { name: 'displayNameAndRegistration' },
 	defaultSort: 'name.full'
 });
 
@@ -33,6 +33,7 @@ Child.add('Display Options', {
 
 	registrationNumber: { type: Number, label: 'registration number', format: false, noedit: true },
 	registrationDate: { type: Types.Date, label: 'registration date', format: 'MM/DD/YYYY', required: true, initial: true },
+	displayNameAndRegistration: { type: Types.Text, label: 'name and registration number', default: 'new child', hidden: true, noedit: true },
 
 	name: {
 		first: { type: Types.Text, label: 'first name', required: true, initial: true },
@@ -233,66 +234,69 @@ Child.schema.post( 'init', function() {
 
 Child.schema.pre( 'save', function( next ) {
 	'use strict';
-	// create cloudinary URLs for images sized for various uses
-	this.setImages();
-	// create a full name for the child based on their first, middle, and last names
-	this.setFullName();
-	// create an identifying name for file uploads
-	this.setFileName();
-	// if there are no siblings to be placed with, uncheck the box, otherwise check it
-	this.updateMustBePlacedWithSiblingsCheckbox();
-	// if there are no siblings to be placed with, clear the group bio
-	this.updateGroupBio();
+	// // create cloudinary URLs for images sized for various uses
+	// this.setImages();
+	// // create a full name for the child based on their first, middle, and last names
+	// this.setFullName();
+	// // create a unique label for each child based on their first & last names and their registration number
+	this.setFullNameAndRegistrationLabel();
+	next();
+	// // create an identifying name for file uploads
+	// this.setFileName();
+	// // if there are no siblings to be placed with, uncheck the box, otherwise check it
+	// this.updateMustBePlacedWithSiblingsCheckbox();
+	// // if there are no siblings to be placed with, clear the group bio
+	// this.updateGroupBio();
 
-	// set the registration number for the family
-	const registrationNumberSet = this.setRegistrationNumber();
-	// set the noedit fields associated with the adoption worker's agency
-	const adoptionWorkerAgencyFieldsSet = this.setAdoptionWorkerAgencyFields();
-	// set the noedit fields associated with the recruitment worker's agency
-	const recruitmentWorkerAgencyFieldsSet = this.setRecruitmentWorkerAgencyFields();
-	// create an identifying name for sibling group file uploads
-	const siblingGroupFileNameSet = this.setSiblingGroupFileName();
+	// // set the registration number for the family
+	// const registrationNumberSet = this.setRegistrationNumber();
+	// // set the noedit fields associated with the adoption worker's agency
+	// const adoptionWorkerAgencyFieldsSet = this.setAdoptionWorkerAgencyFields();
+	// // set the noedit fields associated with the recruitment worker's agency
+	// const recruitmentWorkerAgencyFieldsSet = this.setRecruitmentWorkerAgencyFields();
+	// // create an identifying name for sibling group file uploads
+	// const siblingGroupFileNameSet = this.setSiblingGroupFileName();
 
-	Promise.all( [ registrationNumberSet, adoptionWorkerAgencyFieldsSet, recruitmentWorkerAgencyFieldsSet, siblingGroupFileNameSet ] )
-		// if there was an error with any of the promises
-		.catch( err => {
-			// log it for debugging purposes
-			console.error( `child ${ this.name.full } ( registration number: ${ this.registrationNumber } ) saved with errors` );
-		})
-		// execute the following regardless of whether the promises were resolved or rejected
-		// TODO: this should be replaced with ES6 Promise.prototype.finally() once it's finalized, assuming we can update to the latest version of Node if we upgrade Keystone
-		.then( () => {
+	// Promise.all( [ registrationNumberSet, adoptionWorkerAgencyFieldsSet, recruitmentWorkerAgencyFieldsSet, siblingGroupFileNameSet ] )
+	// 	// if there was an error with any of the promises
+	// 	.catch( err => {
+	// 		// log it for debugging purposes
+	// 		console.error( `child ${ this.name.full } ( registration number: ${ this.registrationNumber } ) saved with errors` );
+	// 	})
+	// 	// execute the following regardless of whether the promises were resolved or rejected
+	// 	// TODO: this should be replaced with ES6 Promise.prototype.finally() once it's finalized, assuming we can update to the latest version of Node if we upgrade Keystone
+	// 	.then( () => {
 
-			next();
-		});
+	// 		next();
+	// 	});
 });
 
 Child.schema.post( 'save', function() {
 	// update all sibling information
-	this.updateSiblingFields();
-	// update saved bookmarks for families and social workers in the event of a status change or sibling group change
-	this.updateBookmarks();
+	// this.updateSiblingFields();
+	// // update saved bookmarks for families and social workers in the event of a status change or sibling group change
+	// this.updateBookmarks();
 
-	// we need this id in case the family was created via the website and updatedBy is empty
-	const websiteBotFetched = UserServiceMiddleware.getUserByFullName( 'Website Bot', 'admin' );
+	// // we need this id in case the family was created via the website and updatedBy is empty
+	// const websiteBotFetched = UserServiceMiddleware.getUserByFullName( 'Website Bot', 'admin' );
 
-	// if the bot user was fetched successfully
-	websiteBotFetched
-		.then( bot => {
-			// set the updatedBy field to the bot's _id if the field isn't already set ( meaning it was saved in the admin UI and we know the user based on their session info )
-			this.updatedBy = this.updatedBy || bot.get( '_id' );
-		})
-		// if there was an error fetching the bot user
-		.catch( err => {
-			// log it for debugging purposes
-			console.error( `Website Bot could not be fetched for family ${ this.name.full } ( registration number: ${ this.registrationNumber } ) - ${ err }` );
-		})
-		// execute the following regardless of whether the promises were resolved or rejected
-		// TODO: this should be replaced with ES6 Promise.prototype.finally() once it's finalized, assuming we can update to the latest version of Node if we upgrade Keystone
-		.then( () => {
-			// process change history
-			this.setChangeHistory();
-		});
+	// // if the bot user was fetched successfully
+	// websiteBotFetched
+	// 	.then( bot => {
+	// 		// set the updatedBy field to the bot's _id if the field isn't already set ( meaning it was saved in the admin UI and we know the user based on their session info )
+	// 		this.updatedBy = this.updatedBy || bot.get( '_id' );
+	// 	})
+	// 	// if there was an error fetching the bot user
+	// 	.catch( err => {
+	// 		// log it for debugging purposes
+	// 		console.error( `Website Bot could not be fetched for family ${ this.name.full } ( registration number: ${ this.registrationNumber } ) - ${ err }` );
+	// 	})
+	// 	// execute the following regardless of whether the promises were resolved or rejected
+	// 	// TODO: this should be replaced with ES6 Promise.prototype.finally() once it's finalized, assuming we can update to the latest version of Node if we upgrade Keystone
+	// 	.then( () => {
+	// 		// process change history
+	// 		this.setChangeHistory();
+	// 	});
 });
 
 Child.schema.methods.setImages = function() {
@@ -318,7 +322,7 @@ Child.schema.methods.setFullName = function() {
 };
 
 Child.schema.methods.setRegistrationNumber = function() {
-	
+
 	return new Promise( ( resolve, reject ) => {
 		// If the registration number is already set ( which will happen during the data migration as well as saving existing children )
 		if( this.registrationNumber ) {
@@ -348,8 +352,15 @@ Child.schema.methods.setRegistrationNumber = function() {
 	});
 };
 
+Child.schema.methods.setFullNameAndRegistrationLabel = function() {
+	'use strict';
+
+	// combine the first & last names and registration number to create a unique label for all Child models
+	this.displayNameAndRegistration = `${ this.name.first } ${ this.name.last } - ${ this.registrationNumber }`;
+};
+
 Child.schema.methods.setAdoptionWorkerAgencyFields = function() {
-	
+
 	return new Promise( ( resolve, reject ) => {
 
 		if( !this.adoptionWorker ) {
@@ -387,7 +398,7 @@ Child.schema.methods.setAdoptionWorkerAgencyFields = function() {
 };
 
 Child.schema.methods.setRecruitmentWorkerAgencyFields = function() {
-	
+
 	return new Promise( ( resolve, reject ) => {
 
 		if( !this.recruitmentWorker ) {
@@ -464,7 +475,7 @@ Child.schema.methods.setSiblingGroupFileName = function() {
 				// extract the values form the array into strings
 				const registrationNumbersString	= registrationNumbersArray.join( '_' ),
 					  namesString				= namesArray.join( '_' );
-	
+
 				this.siblingGroupFileName = `${ registrationNumbersString }_${ namesString }`;
 				// resolve the promise
 				resolve();
@@ -507,7 +518,7 @@ Child.schema.methods.updateSiblingFields = function() {
 		  siblingsArrayAfterSave				= this.siblings.map( sibling => sibling.toString() ),
 		  siblingsToBePlacedWithArrayBeforeSave	= this._original ? this._original.siblingsToBePlacedWith.map( sibling => sibling.toString() ) : [],
 		  siblingsToBePlacedWithArrayAfterSave	= this.siblingsToBePlacedWith.map( sibling => sibling.toString() ),
-		  
+
 		  siblingsBeforeSave					= new Set( siblingsArrayBeforeSave ),
 		  siblingsAfterSave						= new Set( siblingsArrayAfterSave ),
 		  siblingsToBePlacedWithBeforeSave		= new Set( siblingsToBePlacedWithArrayBeforeSave ),
@@ -1381,5 +1392,5 @@ Child.schema.methods.setChangeHistory = function() {
 };
 
 // Define default columns in the admin interface and register the model
-Child.defaultColumns = 'registrationNumber, name.full, ethnicity, status, legalStatus, gender';
+Child.defaultColumns = 'displayNameAndRegistration, ethnicity, status, legalStatus, gender';
 Child.register();

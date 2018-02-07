@@ -16,13 +16,13 @@ function* fixFamiliesGenerator() {
 		errors = [];
 
 	while( page ) {
-		console.info( `saving families ${ ( page - 1 ) * 100 } - ${ page * 100 }` );
+		console.info( `saving children ${ ( page - 1 ) * 100 } - ${ page * 100 }` );
 		// fetch the page of families, waiting to execute further code until we have a result
 		const fetchedFamilies = yield fetchFamiliesByPage( page );
 		// if there was an error fetching the page of families
 		if( fetchedFamilies.responseType === 'error' ) {
 			// log the error for debugging purposes
-			console.error( `error fetching page ${ page } of families - ${ fetchedFamilies.error }` );
+			console.error( `error fetching page ${ page } of children - ${ fetchedFamilies.error }` );
 		// if the page of families was fetched successfully
 		} else {
 			// loop through each of the returned family models
@@ -50,13 +50,15 @@ function fetchFamiliesByPage( page ) {
 
 	return new Promise( ( resolve, reject ) => {
 		// fetch the request page of family records
-		keystone.list( 'Family' )
+		keystone.list( 'Child' )
 			.paginate ({
 				page: page || 1,
 				perPage: 100,
 				filters: {} // add any needed filters as { key: value }
 			})
+			.where( 'displayNameAndRegistration', undefined )
 			.exec ( ( err, families ) => {
+
 				// if there was an error
 				if( err ) {
 					// reject the promise with the error and the next page to fetch ( false if this is the last page )
@@ -86,7 +88,7 @@ function saveFamily( family ) {
 				// return control back to the generator with details about the error
 				familiesGenerator.next({
 					responseType: 'error',
-					message: `${ family.get( 'displayName' ) } - ${ family.get( 'id' ) } - ${ err }` } );
+					message: `${ family.get( 'name.full' ) } - ${ family.get( 'id' ) } - ${ err }` } );
 			// if the model saved successfully
 			} else {
 				// return control back to the generator
