@@ -178,6 +178,7 @@ SocialWorker.schema.methods.setChangeHistory = function() {
 		const changeHistory = new SocialWorkerHistory.model({
 			socialWorker	: this,
 			date			: Date.now(),
+			summary			: '',
 			changes			: '',
 			modifiedBy		: this.updatedBy
 		});

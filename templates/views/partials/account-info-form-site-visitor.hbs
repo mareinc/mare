@@ -2,43 +2,33 @@
 	<section class="site-visitor-registration-section">
 		<div class="row form-group">
 			<div class="col-sm-12">
-				<input type="text" id="site-visitor-first-name" class="input" name="firstName" value="{{user.name.first}}">
+				<input type="text" id="site-visitor-first-name" class="input" name="firstName" data-field-name="name.first" value="{{user.name.first}}">
 				<label for="site-visitor-first-name" class="label">First Name</label>
 			</div>
 			<div class="col-sm-12">
-				<input type="text" id="site-visitor-last-name" class="input" name="lastName" value="{{user.name.last}}">
+				<input type="text" id="site-visitor-last-name" class="input" name="lastName" data-field-name="name.last" value="{{user.name.last}}">
 				<label for="site-visitor-last-name" class="label">Last Name</label>
 			</div>
 		</div>
 		<div class="row form-group">
 			<div class="col-sm-12">
-				<input type="email" id="site-visitor-email" class="input" name="email" value="{{user.email}}">
+				<input type="email" id="site-visitor-email" class="input" name="email" data-field-name="email" value="{{user.email}}">
 				<label for="site-visitor-email" class="label">Email Address</label>
 			</div>
 		</div>
 		<div class="row form-group">
 			<div class="col-sm-12">
-				<input type="password" id="site-visitor-password" class="input" name="password">
-				<label for="site-visitor-password" class="label">Password</label>
-			</div>
-			<div class="col-sm-12">
-				<input type="password" id="site-visitor-confirm-password" class="input" name="confirmPassword" data-parsley-equalto="#site-visitor-password" data-parsley-error-message="passwords must match">
-				<label for="site-visitor-confirm-password" class="label">Confirm Password</label>
-			</div>
-		</div>
-		<div class="row form-group">
-			<div class="col-sm-12">
-				<input type="text" id="site-visitor-street-1" class="input" name="street1" value="{{user.address.street1}}">
+				<input type="text" id="site-visitor-street-1" class="input" name="street1" data-field-name="address.street1" value="{{user.address.street1}}">
 				<label for="site-visitor-street-1" class="label">Street 1</label>
 			</div>
 			<div class="col-sm-12">
-				<input type="text" id="site-visitor-street-2" class="input" name="street2" value="{{user.address.street2}}">
+				<input type="text" id="site-visitor-street-2" class="input" name="street2" data-field-name="address.street2" value="{{user.address.street2}}">
 				<label for="site-visitor-street-2" class="label">Street 2</label>
 			</div>
 		</div>
 		<div class="row form-group">
-			<div class="col-sm-12 form-group city-container">
-				<select id="city" class="input" name="city">
+			<div class="col-sm-12 form-group city-container {{#if user.address.isOutsideMassachusetts}}hidden{{/if}}">
+				<select id="city" class="input" name="city" data-field-name="address.city">
 					<option value=""></option>
 					{{#each citiesAndTowns}}
 					<option value="{{ _id }}" {{#ifeq ../user.address.city _id}}selected="selected"{{/ifeq}}>{{ cityOrTown }}</option>
@@ -46,19 +36,10 @@
 				</select>
 				<label for="city" class="label">City</label>
 			</div>
-			<div class="col-sm-12 form-group non-ma-city-container hidden">
-				<input type="text" id="non-ma-city" class="input" name="nonMACity">
+			<div class="col-sm-12 form-group non-ma-city-container {{#unless user.address.isOutsideMassachusetts}}hidden{{/unless}}">
+				<input type="text" id="non-ma-city" class="input" name="nonMACity" data-field-name="address.cityText" value="{{user.address.cityText}}">
 				<label for="non-ma-city" class="label">City</label>
-			</div>
-			<div class="col-sm-12 form-group">
-				<label class="checkbox-inline">
-					<input type="checkbox" id="is-not-ma-city-checkbox" name="isNotMACity" {{#if user.address.isOutsideMassachusetts}}checked{{/if}}>I live outside MA
-				</label>
-			</div>
-		</div>
-		<div class="row form-group">
-			<div class="col-sm-12">
-				<select id="site-visitor-state" class="input state-select" name="state">
+				<select id="site-visitor-state" class="input state-select" name="state" data-field-name="address.state">
 				{{#each states}}
 					{{#if defaultSelection}}
 						<option value="{{_id}}" selected="selected">{{state}}</option>
@@ -69,30 +50,35 @@
 				</select>
 				<label for="site-visitor-state" class="label">State</label>
 			</div>
+			<div class="col-sm-12 form-group">
+				<label class="checkbox-inline">
+					<input type="checkbox" id="is-not-ma-city-checkbox" name="isNotMACity" data-field-name="address.isOutsideMassachusetts" {{#if user.address.isOutsideMassachusetts}}checked{{/if}}>I live outside MA
+				</label>
+			</div>
 		</div>
 		<div class="row form-group">
 			<div class="col-sm-12">
-				<input type="number" id="site-visitor-zip-code" class="input" name="zipCode" value="{{user.address.zipCode}}">
+				<input type="number" id="site-visitor-zip-code" class="input" name="zipCode" data-field-name="address.zipCode" value="{{user.address.zipCode}}">
 				<label for="site-visitor-zip-code" class="label">Zip Code</label>
 			</div>
 		</div>
 		<div class="row form-group">
 			<div class="col-sm-12">
-				<input type="text" id="site-visitor-home-phone" class="input" name="homePhone" value="{{user.phone.home}}">
+				<input type="text" id="site-visitor-home-phone" class="input" name="homePhone" data-field-name="phone.home" value="{{user.phone.home}}">
 				<label for="site-visitor-home-phone" class="label">Home Phone</label>
 			</div>
 			<div class="col-sm-12">
-				<input type="text" id="site-visitor-work-phone" class="input" name="workPhone" value="{{user.phone.work}}">
+				<input type="text" id="site-visitor-work-phone" class="input" name="workPhone" data-field-name="phone.work" value="{{user.phone.work}}">
 				<label for="site-visitor-work-phone" class="label">Work Phone</label>
 			</div>
 		</div>
 		<div class="row form-group">
 			<div class="col-sm-12">
-				<input type="text" id="site-visitor-mobile-phone" class="input" name="mobilePhone" value="{{user.phone.mobile}}">
+				<input type="text" id="site-visitor-mobile-phone" class="input" name="mobilePhone" data-field-name="phone.mobile" value="{{user.phone.mobile}}">
 				<label for="site-visitor-mobile-phone" class="label">Mobile Phone</label>
 			</div>
 			<div class="col-sm-12">
-				<select id="site-visitor-preferred-phone" class="input site-visitor-preferred-phone-select" name="preferredPhone">
+				<select id="site-visitor-preferred-phone" class="input site-visitor-preferred-phone-select" name="preferredPhone" data-field-name="phone.preferred">
 					<option value=""></option>
 					<option {{#ifeq user.phone.preferred 'home'}}selected="selected"{{/ifeq}} value="home">home</option>
 					<option {{#ifeq user.phone.preferred 'work'}}selected="selected"{{/ifeq}} value="work">work</option>

@@ -11,13 +11,13 @@
 		<div class="col-sm-12 form-group">
 			<div class="row">
 				<div class="col-sm-24 form-group">
-					<input type="text" class="input child-form-input" name="\{{ name }}" data-parsley-error-message="required" required="">
+					<input type="text" class="input child-form-input" name="\{{ name }}" data-field-name="\{{ fields.name }}" data-parsley-error-message="required" required="">
 					<label for="\{{ name }}" class="label marg-bottom-xs-5 required-field">Name</label>
 				</div>
 			</div>
 			<div class="row">
 				<div class="col-sm-24">
-					<select class="input registration-number-select child-form-input" name="\{{ gender }}" data-parsley-errors-messages-disabled="true" required="">
+					<select class="input registration-number-select child-form-input" name="\{{ gender }}" data-field-name="\{{ fields.gender }}" data-parsley-errors-messages-disabled="true" required="">
 						<option value=""></option>
 					{{#each genders}}
 						<option value="{{_id}}">{{ gender }}</option>
@@ -30,13 +30,13 @@
 		<div class="col-sm-12 form-group">
 			<div class="row">
 				<div class="col-sm-24 form-group">
-					<input type="text" class="input child-form-input" placeholder="MM/DD/YYYY" name="\{{ birthDate }}" data-parsley-error-message="required" required="">
+					<input type="text" class="input child-form-input" placeholder="MM/DD/YYYY" name="\{{ birthDate }}" data-field-name="\{{ fields.birthDate }}" data-parsley-error-message="required" required="">
 					<label for="\{{ birthDate }}" class="label marg-bottom-xs-5 required-field">Date of Birth</label>
 				</div>
 			</div>
 			<div class="row">
 				<div class="col-sm-24">
-					<select class="input registration-number-select child-form-input" name="\{{ type }}" data-parsley-errors-messages-disabled="true" required="">
+					<select class="input registration-number-select child-form-input" name="\{{ type }}" data-field-name="\{{ fields.type }}" data-parsley-errors-messages-disabled="true" required="">
 						<option value=""></option>
 					{{#each childTypes}}
 						<option value="{{ _id }}">{{ displayName }}</option>
@@ -47,5 +47,4 @@
 			</div>
 		</div>
 	</div>
-
 </script>
