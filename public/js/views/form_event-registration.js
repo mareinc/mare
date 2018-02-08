@@ -90,6 +90,8 @@
 			this.$( '.registered-children-container' ).append( childDetails );
 			// bind the last remove button on the page, which corresponds to the newly added child
 			this.$( '.remove-registered-child:last' ).click( this.removeRegisteredChild.bind( this ) );
+			// hide/show fields based on number of children attending
+			this.checkNumberOfChildrenAttending();
 		},
 
 		removeRegisteredChild: function removeRegisteredChild( event ) {
@@ -97,6 +99,8 @@
 			$( event.currentTarget ).unbind( 'click' );
 			// remove the child section
 			$( event.currentTarget ).closest( '.attending-registered-child' ).remove();
+			// hide/show fields based on number of children attending
+			this.checkNumberOfChildrenAttending();
 		},
 
 		// TODO: use this functionality to update the children in home in registration-family.js
@@ -142,6 +146,8 @@
 					$( '.child-' + i ).remove();
 				}
 			}
+			// hide/show fields based on number of children attending
+			this.checkNumberOfChildrenAttending();
 		},
 
 		generatePersonDetailInputs: function generatePersonDetailInputs( options ) {
@@ -168,11 +174,13 @@
 			// if other is selected
 			if( event.currentTarget.value === 'other' ) {
 				// show the 'other source' field and its label
+				$( '.other-source' ).attr( 'required', true );
 				$( '.other-source' ).removeClass( 'hidden' );
 				$( '.other-source-label' ).removeClass( 'hidden' );
 			// otherwise
 			} else {
 				// hide the 'other source' field and its label
+				$( '.other-source' ).attr( 'required', false );
 				$( '.other-source' ).addClass( 'hidden' );
 				$( '.other-source-label' ).addClass( 'hidden' );
 			}
@@ -180,6 +188,20 @@
 			if( $( '.other-source' ).hasClass( 'hidden' ) ) {
 				// clear out the input box since it's not part of the form submission
 				$( '.other-source' ).val( '' );
+			}
+		},
+
+		checkNumberOfChildrenAttending: function checkNumberOfChildrenAttending() {
+
+			var registeredChildrenCount = this.$( '.registered-children-container' ).children().length;
+			var unregisteredChildrenCount = this.$( '.attending-child' ).length;
+
+			if ( registeredChildrenCount + unregisteredChildrenCount > 0 ) {
+				$( '.attendance-capacity__container' ).hide();
+				$( '#attendance-capacity' ).attr( 'required', false );
+			} else {
+				$( '.attendance-capacity__container' ).show();
+				$( '#attendance-capacity' ).attr( 'required', true );
 			}
 		},
 
@@ -194,6 +216,7 @@
 			mare.utils.disablePageScrolling();
 			// bind click events for the newly rendered elements
 			this.bindEvents();
+			this.initializeValidation();
 		},
 
 		/* close the modal container */
@@ -204,9 +227,19 @@
 			mare.utils.enablePageScrolling();
 			/* TODO: move this to a modal component and emit an event on close so the child details view can respond to it appropriatly */
 			this.unbindEvents();
+			// destory the validator
+			this.form.destroy();
+		},
+
+		initializeValidation: function initializeValidation() {
+
+			// initialize parsley validation on the form
+			this.form = this.$( '.modal-form--register-for-event' ).parsley();
+			this.form.on( 'field:validated', this.validateForm );
 		},
 
 		validateForm: function validateForm() {
+
 			var ok = $( '.parsley-error' ).length === 0;
 			$( '.bs-callout-info' ).toggleClass( 'hidden', !ok );
 			$( '.bs-callout-warning' ).toggleClass( 'hidden', ok );

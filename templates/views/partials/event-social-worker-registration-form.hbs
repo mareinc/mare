@@ -63,7 +63,7 @@
 
 			<div class="row form-group">
 				<div class="col-sm-24 form-group">
-					<select id="source" class="input source-select" name="source">
+					<select id="source" class="input source-select" name="source" data-parsley-error-message="required" required="true">
 						<option value=""></option>
 						<option value="websiteOrEmail">website/email</option>
 						<option value="television">television</option>
@@ -76,14 +76,14 @@
 					<label for="source" class="label required-field">How did you hear about this event?</label>
 				</div>
 				<div class="col-sm-24 form-group">
-					<input type="text" id="other-source" class="input hidden other-source" name="otherSource">
+					<input type="text" id="other-source" class="input hidden other-source" name="otherSource" data-parsley-error-message="required">
 					<label for="other-source" class="label hidden other-source-label">Details</label>
 				</div>
 			</div>
 
-			<div class="row form-group">
+			<div class="row form-group attendance-capacity__container">
 				<div class="col-sm-24 form-group">
-					<select id="attendance-capacity" class="input attendance-capacity-select" name="attendanceCapacity">
+					<select id="attendance-capacity" class="input attendance-capacity-select" name="attendanceCapacity" data-parsley-error-message="required" required="true">
 						<option value=""></option>
 						<option value="volunteer">volunteer</option>
 						<option value="tableStaff">staff a regional/agency table</option>
