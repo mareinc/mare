@@ -1,7 +1,7 @@
 <!-- client side template for rendering the event registration form in a modal -->
 <script id="event-registration-form-template" type="text/x-handlebars-template">
 
-<section class="event-social-worker-registration-form">
+<section class="event-social-worker-registration-form event-registration__container">
 	<div class="modal-form__header">
 		<div class="modal-form-header__text"> {{!-- should be h1 etc --}}
 			\{{ eventName }}
@@ -43,8 +43,8 @@
 			</div>
 			{{/if}}
 
-			<section class="registered-children-container row form-group"></section>
-			
+			<section class="row form-group registered-children-container"></section>
+
 			<div class="row form-group">
 				<div class="col-sm-12 form-group">
 					<select id="number-of-children" class="input number-of-children-select" name="numberOfChildren">
@@ -59,7 +59,7 @@
 				</div>
 			</div>
 
-			<section class="unregistered-children-container"></section>
+			<section class="row form-group unregistered-children-container"></section>
 
 			<div class="row form-group">
 				<div class="col-sm-24 form-group">

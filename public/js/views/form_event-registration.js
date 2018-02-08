@@ -9,8 +9,8 @@
 		events: {
 			'change .source-select': 'checkOtherSourceField'
 		},
-		
-		initialize: function initialize() {     
+
+		initialize: function initialize() {
 			// create a hook to access the event registration modal contents template
 			var html = $( '#event-registration-form-template' ).html();
 			// if the template doesn't exist, the user isn't a family or social worker
@@ -18,7 +18,7 @@
 				// create a hook to access the templates
 				var personDetailsHtml			= $( '#event-registration-form_person-details-template' ).html(),
 					registeredChildDetailsHtml	= $( '#event-registration-form_registered-child-details-template' ).html();
-				
+
 				// compile the template to be used during rendering/repainting the event registration modal
 				this.template = Handlebars.compile( html );
 				// compile the person and registered child templates
@@ -29,7 +29,7 @@
 				}
 			}
 		},
-		
+
 		// events need to be bound every time the modal is opened, so they can't be put in an event block
 		bindEvents: function bindEvents() {
 			// bind an event to allow closing of the modal
@@ -40,7 +40,7 @@
 			this.$( '.number-of-adults-select' ).change( this.updateAdultsSection.bind( this ) );
 			this.$( '.number-of-children-select' ).change( this.updateChildrenSection.bind( this ) );
 		},
-		
+
 		// events need to be unbound every time the modal is closed
 		unbindEvents: function unbindEvents() {
 			$( '.modal__close' ).unbind( 'click' );
@@ -49,7 +49,7 @@
 			this.$( '.number-of-adults-select' ).unbind( 'change' );
 			this.$( '.number-of-children-select' ).unbind( 'change' );
 		},
-		
+
 		render: function render( event ) {
 			// DOM cache the event parent and extract important information from it's data attributes
 			var $event		= $( event.currentTarget ).closest( '.event' ),
@@ -67,7 +67,7 @@
 			$( '.modal-container__loading' ).hide();
 			$( '.modal-container__contents' ).show();
 		},
-		
+
 		/* when the register button on an event card is clicked, display the event registration form */
 		handleRegisterButtonClick: function handleRegisterButtonClick( event ) {
 			// populate the modal with the event registration template
@@ -75,7 +75,7 @@
 			// open the modal
 			this.openModal();
 		},
-		
+
 		addRegisteredChild: function addRegisteredChild( event ) {
 			// NOTE: for some reason non-submit button presses were triggering a new page to load, this prevents that behavior
 			event.preventDefault();
@@ -91,14 +91,14 @@
 			// bind the last remove button on the page, which corresponds to the newly added child
 			this.$( '.remove-registered-child:last' ).click( this.removeRegisteredChild.bind( this ) );
 		},
-		
+
 		removeRegisteredChild: function removeRegisteredChild( event ) {
 			// unbind the clicked remove button
 			$( event.currentTarget ).unbind( 'click' );
 			// remove the child section
 			$( event.currentTarget ).closest( '.attending-registered-child' ).remove();
 		},
-		
+
 		// TODO: use this functionality to update the children in home in registration-family.js
 		updateAdultsSection: function updateAdultsSection( event ) {
 			// count the number of adult data groups already shown on the page
@@ -121,7 +121,7 @@
 				}
 			}
 		},
-		
+
 		updateChildrenSection: function updateChildrenSection( event ) {
 			// count the number of child data groups already shown on the page
 			var currentChildren = this.$( '.attending-child' ).length;
@@ -143,7 +143,7 @@
 				}
 			}
 		},
-		
+
 		generatePersonDetailInputs: function generatePersonDetailInputs( options ) {
 			// create a variable to build the template into
 			var html = ''
@@ -182,25 +182,25 @@
 				$( '.other-source' ).val( '' );
 			}
 		},
-		
+
 		/* TODO: all modal functions below mirror the calls made in waiting-child-profiles-child-details.js.  Both files need to use
 				 a modal.js Backbone view which should handle all this.
 		/* open the modal container */
 		openModal: function openModal() {
-			
+
 			$( '.modal__background' ).fadeIn();
 			$( '.modal__container' ).fadeIn();
-			
+
 			mare.utils.disablePageScrolling();
 			// bind click events for the newly rendered elements
 			this.bindEvents();
 		},
-		
+
 		/* close the modal container */
 		closeModal: function closeModal() {
 			$( '.modal__background' ).fadeOut();
 			$( '.modal__container' ).fadeOut();
-			
+
 			mare.utils.enablePageScrolling();
 			/* TODO: move this to a modal component and emit an event on close so the child details view can respond to it appropriatly */
 			this.unbindEvents();
