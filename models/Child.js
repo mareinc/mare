@@ -18,7 +18,7 @@ const keystone						= require( 'keystone' ),
 const Child = new keystone.List( 'Child', {
 	track: true, // needed for change history updated by assignment
 	autokey: { path: 'key', from: 'registrationNumber', unique: true },
-	map: { name: 'name.full' },
+	map: { name: 'displayNameAndRegistration' },
 	defaultSort: 'name.full'
 });
 
@@ -33,6 +33,7 @@ Child.add('Display Options', {
 
 	registrationNumber: { type: Number, label: 'registration number', format: false, noedit: true },
 	registrationDate: { type: Types.Date, label: 'registration date', format: 'MM/DD/YYYY', required: true, initial: true },
+	displayNameAndRegistration: { type: Types.Text, label: 'name and registration number', default: 'new child', hidden: true, noedit: true },
 
 	name: {
 		first: { type: Types.Text, label: 'first name', required: true, initial: true },
@@ -237,6 +238,8 @@ Child.schema.pre( 'save', function( next ) {
 	this.setImages();
 	// create a full name for the child based on their first, middle, and last names
 	this.setFullName();
+	// create a unique label for each child based on their first & last names and their registration number
+	this.setFullNameAndRegistrationLabel();
 	// create an identifying name for file uploads
 	this.setFileName();
 	// if there are no siblings to be placed with, uncheck the box, otherwise check it
@@ -318,7 +321,7 @@ Child.schema.methods.setFullName = function() {
 };
 
 Child.schema.methods.setRegistrationNumber = function() {
-	
+
 	return new Promise( ( resolve, reject ) => {
 		// If the registration number is already set ( which will happen during the data migration as well as saving existing children )
 		if( this.registrationNumber ) {
@@ -348,8 +351,15 @@ Child.schema.methods.setRegistrationNumber = function() {
 	});
 };
 
+Child.schema.methods.setFullNameAndRegistrationLabel = function() {
+	'use strict';
+
+	// combine the first & last names and registration number to create a unique label for all Child models
+	this.displayNameAndRegistration = `${ this.name.first } ${ this.name.last } - ${ this.registrationNumber }`;
+};
+
 Child.schema.methods.setAdoptionWorkerAgencyFields = function() {
-	
+
 	return new Promise( ( resolve, reject ) => {
 
 		if( !this.adoptionWorker ) {
@@ -387,7 +397,7 @@ Child.schema.methods.setAdoptionWorkerAgencyFields = function() {
 };
 
 Child.schema.methods.setRecruitmentWorkerAgencyFields = function() {
-	
+
 	return new Promise( ( resolve, reject ) => {
 
 		if( !this.recruitmentWorker ) {
@@ -464,7 +474,7 @@ Child.schema.methods.setSiblingGroupFileName = function() {
 				// extract the values form the array into strings
 				const registrationNumbersString	= registrationNumbersArray.join( '_' ),
 					  namesString				= namesArray.join( '_' );
-	
+
 				this.siblingGroupFileName = `${ registrationNumbersString }_${ namesString }`;
 				// resolve the promise
 				resolve();
@@ -507,7 +517,7 @@ Child.schema.methods.updateSiblingFields = function() {
 		  siblingsArrayAfterSave				= this.siblings.map( sibling => sibling.toString() ),
 		  siblingsToBePlacedWithArrayBeforeSave	= this._original ? this._original.siblingsToBePlacedWith.map( sibling => sibling.toString() ) : [],
 		  siblingsToBePlacedWithArrayAfterSave	= this.siblingsToBePlacedWith.map( sibling => sibling.toString() ),
-		  
+
 		  siblingsBeforeSave					= new Set( siblingsArrayBeforeSave ),
 		  siblingsAfterSave						= new Set( siblingsArrayAfterSave ),
 		  siblingsToBePlacedWithBeforeSave		= new Set( siblingsToBePlacedWithArrayBeforeSave ),
@@ -1382,5 +1392,5 @@ Child.schema.methods.setChangeHistory = function() {
 };
 
 // Define default columns in the admin interface and register the model
-Child.defaultColumns = 'registrationNumber, name.full, ethnicity, status, legalStatus, gender';
+Child.defaultColumns = 'displayNameAndRegistration, ethnicity, status, legalStatus, gender';
 Child.register();
