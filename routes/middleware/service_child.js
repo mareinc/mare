@@ -10,7 +10,7 @@ const keystone									= require( 'keystone' ),
 	  socialWorkerChildRegistrationEmailService	= require( './emails_social-worker-child-registration' );
 
 exports.getMaxRegistrationNumber = function() {
-		
+
 	return new Promise( ( resolve, reject ) => {
 
 		keystone.list( 'Child' ).model
@@ -74,7 +74,7 @@ exports.getAllChildren = ( req, res, done, fieldsToSelect ) => {
 
 exports.getChildrenForSocialWorkerAccount = ( req, res, done, fieldsToSelect ) => {
 	// store a reference to locals
-	const locals = res.locals;	
+	const locals = res.locals;
 	// create a map to convert social worker positions to their corresponding field names on the Child model
 	const socialWorkerPositionFieldNames = {
 		'adoption worker': 'adoptionWorker',
@@ -132,11 +132,11 @@ exports.getChildrenForSocialWorkerAccount = ( req, res, done, fieldsToSelect ) =
 							.exec( ( err, children ) => {
 
 								if ( err ) {
-									
+
 									console.error( err );
 									done();
 								} else {
-									
+
 									// loop through each child
 									_.each( children, child => {
 										// adjust the image to the blank male/female image if needed
@@ -147,16 +147,16 @@ exports.getChildrenForSocialWorkerAccount = ( req, res, done, fieldsToSelect ) =
 										child.registrationDateConverted	= middleware.convertDate( child.registrationDate );
 									});
 
-									// remove children that have already been placed
-									let unplacedChildren = children.filter( child => child.status.childStatus !== 'placed' );
+									// remove children that have already been placed or have been withdrawn
+									let displayChildren = children.filter( child => child.status.childStatus !== 'placed' && child.status.childStatus !== 'withdrawn' );
 
-									locals.allChildren = unplacedChildren;
+									locals.allChildren = displayChildren;
 									// execute done function if async is used to continue the flow of execution
 									done();
 								}
 							});
 				} else {
-					
+
 					// if a social worker that is neither an adoption or recruitment agent is trying to load a children gallery, log an error message
 					console.error( `error constructing social worker account child gallery query - social worker: ${ socialWorker._id } does not have any valid position types` );
 					res.send({
@@ -199,11 +199,11 @@ exports.getChildrenForFamilyAccount = ( req, res, done, fieldsToSelect ) => {
 		.exec( ( err, children ) => {
 
 			if ( err ) {
-				
+
 				console.error( err );
 				done();
 			} else {
-				
+
 				// loop through each child
 				_.each( children, child => {
 					// adjust the image to the blank male/female image if needed
@@ -222,7 +222,7 @@ exports.getChildrenForFamilyAccount = ( req, res, done, fieldsToSelect ) => {
 };
 
 exports.getChildrenByIds = idsArray => {
-	
+
 	return new Promise( ( resolve, reject ) => {
 
 		keystone.list( 'Child' ).model
@@ -248,7 +248,7 @@ exports.getChildrenByIds = idsArray => {
 exports.getUnrestrictedChildren = ( req, res, done, fieldsToSelect ) => {
 	// store a reference to locals
 	const locals = res.locals;
-	
+
 	// find all children who are active, and are either visible to everyone or have the 'child is visible on MARE web' checkbox checked
 	keystone.list( 'Child' ).model
 		.find()
@@ -316,7 +316,7 @@ exports.setNoChildImage = ( req, res, child, canViewAllChildren ) => {
 		  NO_IMAGE_OTHER_GALLERY			= 'images/no-image-other_gallery.png',
 		  NO_IMAGE_OTHER_DETAILS			= 'images/no-image-other_details.png',
 		  NO_IMAGE_SIBLING_GROUP_GALLERY	= 'images/no-image-sibling-group_gallery.png',
-		  NO_IMAGE_SIBLING_GROUP_DETAILS	= 'images/no-image-sibling-group_details.png';	
+		  NO_IMAGE_SIBLING_GROUP_DETAILS	= 'images/no-image-sibling-group_details.png';
 	// if the child is part of a sibling group
 	if( child.mustBePlacedWithSiblings ) {
 		// if the child image is missing or
@@ -613,7 +613,7 @@ exports.getRelevantSiblingGroupInformation = ( siblingGroups, locals ) => {
 		const legalStatusesArray		= _.uniq( children.map( child => child.legalStatus.legalStatus ) );
 
 		return {
-			
+
 			ages									: agesArray,
 			agesConverted							: children.map( child => middleware.convertDate( child.birthDate ) ),
 			agesString								: middleware.getArrayAsList( agesArray ),
@@ -640,11 +640,11 @@ exports.getRelevantSiblingGroupInformation = ( siblingGroups, locals ) => {
 			recommendedFamilyConstellations			: _.uniq( _.flatten( children.map( child => _.pluck( child.recommendedFamilyConstellation, 'familyConstellation' ) ) ) ),
 			registrationDatesConverted				: children.map( child => middleware.convertDate( child.registrationDate ) ),
 			registrationNumbers						: registrationNumbersArray,
-			registrationNumbersString				: middleware.getArrayAsList( registrationNumbersArray ),	
+			registrationNumbersString				: middleware.getArrayAsList( registrationNumbersArray ),
 			requiresNoSiblings						: _.uniq( children.map( child => otherFamilyConstellationConsiderations.indexOf( 'childless home' ) !== -1 ) ),
 			requiresSiblings						: _.uniq( children.map( child => otherFamilyConstellationConsiderations.indexOf( 'multi-child home' ) !== -1 ) ),
 			olderChildrenAcceptable					: _.uniq( children.map( child => otherFamilyConstellationConsiderations.indexOf( 'older children acceptable' ) !== -1 ) ),
-			youngerChildrenAcceptable				: _.uniq( children.map( child => otherFamilyConstellationConsiderations.indexOf( 'younger children acceptable' ) !== -1 ) ),	
+			youngerChildrenAcceptable				: _.uniq( children.map( child => otherFamilyConstellationConsiderations.indexOf( 'younger children acceptable' ) !== -1 ) ),
 			siblingToBePlacedWithCount				: children[ 0 ].siblingsToBePlacedWith.length,
 			updatedAt								: _.uniq( children.map( child => child.updatedAt ) ),
 			wednesdaysChild							: children.map( child => child.wednesdaysChild ).indexOf( true ) !== -1
@@ -713,7 +713,7 @@ exports.getSiblingGroupDetails = ( req, res, next ) => {
 			const wednesdaysChildVideoString = child.wednesdaysChildSiblingGroupVideo && child.wednesdaysChildSiblingGroupVideo.length > 0 ?
 											   child.wednesdaysChildSiblingGroupVideo.replace( 'youtu.be', 'www.youtube.com/embed' ).replace( 'watch?v=', 'embed/' ) :
 											   undefined;
-			
+
 			const relevantData = {
 				hasImage				: _.isEmpty( child.siblingGroupImage ) && child.siblingGroupImage.url.length > 0,
 				quote					: child.groupProfile.quote,
@@ -785,7 +785,7 @@ exports.registerChild = ( req, res, next ) => {
 					detail: `Please note that it can take several days for the child's information to be reviewed.` } );
 			// redirect the user back to the appropriate page
 			res.redirect( 303, redirectPath );
-			
+
 			// get the database id of the social worker who submitted the form
 			const socialWorkerId = req.user.get( '_id' );
 			// store the registration number of the child who was created
@@ -795,7 +795,7 @@ exports.registerChild = ( req, res, next ) => {
 			const populateOptions = [ 'languages', 'gender', 'race', 'residence', 'city', 'legalStatus', 'status',
 									  'recommendedFamilyConstellation', 'otherFamilyConstellationConsideration',
 									  'disabilities' ];
-			
+
 			// fetch the newly saved child model.  Needed because the saved child object doesn't have the Relationship fields populated
 			const fetchChild = exports.getChildByRegistrationNumberNew( childId, populateOptions );
 			// fetch contact info for the staff contact for children registered by social workers
@@ -843,7 +843,7 @@ exports.saveChild = ( child, activeChildStatusId ) => {
 	return new Promise( ( resolve, reject ) => {
 		// create a new Child model
 		const Child = keystone.list( 'Child' )
-		
+
 		const newChild = new Child.model({
 
 			siteVisibility: 'only registered social workers and families',
@@ -876,7 +876,7 @@ exports.saveChild = ( child, activeChildStatusId ) => {
 			isOutsideMassachusetts			: child.isNotMACity,
 			city							: child.isNotMACity ? undefined : child.city,
 			cityText						: child.isNotMACity ? child.nonMACity : '',
-			
+
 			careFacilityName				: child.careFacility,
 
 			physicalNeeds					: 'none',
