@@ -3,28 +3,18 @@
 		<div class="form-section-header">Account Setup</div>
 		<div class="row form-group">
 			<div class="col-sm-12">
-				<input type="text" id="first-name" class="input" name="firstName" value="{{user.name.first}}">
+				<input type="text" id="first-name" class="input" name="firstName" data-field-name="name.first" value="{{user.name.first}}">
 				<label for="first-name" class="label">First Name</label>
 			</div>
 			<div class="col-sm-12">
-				<input type="text" id="last-name" class="input" name="lastName" value="{{user.name.last}}">
+				<input type="text" id="last-name" class="input" name="lastName" data-field-name="name.last" value="{{user.name.last}}">
 				<label for="last-name" class="label">Last Name</label>
 			</div>
 		</div>
 		<div class="row form-group">
 			<div class="col-sm-12">
-				<input type="email" id="email" class="input" name="email" value="{{user.email}}">
+				<input type="email" id="email" class="input" name="email" data-field-name="email" value="{{user.email}}">
 				<label for="email" class="label">Email Address</label>
-			</div>
-		</div>
-		<div class="row form-group">
-			<div class="col-sm-12">
-				<input type="password" id="password" class="input" name="password">
-				<label for="password" class="label">Password</label>
-			</div>
-			<div class="col-sm-12">
-				<input type="password" id="confirm-password" class="input" name="confirmPassword">
-				<label for="confirm-password" class="label">Confirm Password</label>
 			</div>
 		</div>
 	</section>
@@ -40,30 +30,30 @@
 			{{#each socialWorkerPositions}}
 			<div class="col-sm-12 form-group">
 				<label class="checkbox-inline">
-					<input id="positions" type="checkbox" name="positions" value="{{ _id }}" {{#ifincludes ../user.positions _id }}checked="checked"{{/ifincludes}}>{{ position }}
+					<input id="positions" type="checkbox" name="positions" data-field-name="positions" data-field-type="select-multiple" value="{{ _id }}" {{#ifincludes ../user.positions _id }}checked="checked"{{/ifincludes}}>{{ position }}
 				</label>
 			</div>
 			{{/each}}
 		</div>
 		<div class="row">
 			<div class="col-sm-12 form-group social-worker-title-group">
-				<input type="text" id="title" class="input social-worker-title" name="socialWorkerTitle" value="{{user.title}}">
+				<input type="text" id="title" class="input social-worker-title" name="socialWorkerTitle" data-field-name="title" value="{{user.title}}">
 				<label for="title" class="label">Title</label>
 			</div>
 		</div>
 		<div class="row form-group">
 			<div class="col-sm-12">
-				<input type="text" id="work-phone" class="input" name="workPhone" value="{{user.phone.work}}">
+				<input type="text" id="work-phone" class="input" name="workPhone" data-field-name="phone.work" value="{{user.phone.work}}">
 				<label for="work-phone" class="label">Work Phone</label>
 			</div>
 			<div class="col-sm-12">
-				<input type="text" id="mobile-phone" class="input" name="mobilePhone" value="{{user.phone.mobile}}">
+				<input type="text" id="mobile-phone" class="input" name="mobilePhone" data-field-name="phone.mobile" value="{{user.phone.mobile}}">
 				<label for="mobile-phone" class="label">Mobile Phone</label>
 			</div>
 		</div>
 		<div class="row form-group">
 			<div class="col-sm-12">
-				<select id="preferred-phone" class="input social-worker-preferred-phone-select" name="preferredPhone">
+				<select id="preferred-phone" class="input social-worker-preferred-phone-select" name="preferredPhone" data-field-name="phone.preferred">
 					<option value=""></option>
 					<option {{#ifeq user.phone.preferred 'work'}}selected{{/ifeq}} value="work">work</option>
 					<option {{#ifeq user.phone.preferred 'mobile'}}selected{{/ifeq}} value="mobile">mobile</option>
@@ -74,18 +64,18 @@
 
 		<div class="row form-group">
 			<div class="col-sm-12">
-				<input type="text" id="street-1" class="input" name="street1" value="{{user.address.street1}}">
+				<input type="text" id="street-1" class="input" name="street1" data-field-name="address.street1" value="{{user.address.street1}}">
 				<label for="street-1" class="label">Street 1</label>
 			</div>
 			<div class="col-sm-12">
-				<input type="text" id="street-2" class="input" name="street2" value="{{user.address.street2}}">
+				<input type="text" id="street-2" class="input" name="street2" data-field-name="address.street2" value="{{user.address.street2}}">
 				<label for="street-2" class="label">Street 2</label>
 			</div>
 		</div>
 
 		<div class="row form-group">
 			<div class="col-sm-12 form-group city-container {{#if user.address.isOutsideMassachusetts}}hidden{{/if}}">
-				<select id="city" class="input" name="city">
+				<select id="city" class="input" name="city" data-field-name="address.city">
 					<option value=""></option>
 					{{#each citiesAndTowns}}
 					<option value="{{ _id }}"  {{#ifeq ../user.address.city _id}}selected="selected"{{/ifeq}}>{{ cityOrTown }}</option>
@@ -95,10 +85,10 @@
 			</div>
 
 			<div class="col-sm-12 form-group non-ma-city-container {{#unless user.address.isOutsideMassachusetts}}hidden{{/unless}}">
-				<input type="text" id="non-ma-city" class="input" name="nonMACity" value="{{user.address.cityText}}">
+				<input type="text" id="non-ma-city" class="input" name="nonMACity" data-field-name="address.cityText" value="{{user.address.cityText}}">
 				<label for="non-ma-city" class="label">City</label>
 
-				<select id="state" class="input state-select" name="state">
+				<select id="state" class="input state-select" name="state" data-field-name="address.state">
 				{{#each states}}
 					{{#if defaultSelection}}
 						<option value="{{_id}}" selected="selected">{{state}}</option>
@@ -111,20 +101,21 @@
 			</div>
 			<div class="col-sm-12 form-group">
 				<label class="checkbox-inline">
-					<input type="checkbox" id="is-not-ma-city-checkbox" name="isNotMACity" {{#if user.address.isOutsideMassachusetts }}checked="checked"{{/if}}>I live outside MA
+					<input type="checkbox" id="is-not-ma-city-checkbox" name="isNotMACity" data-field-name="address.isOutsideMassachusetts" {{#if user.address.isOutsideMassachusetts }}checked="checked"{{/if}}>I live outside MA
 				</label>
 			</div>
 		</div>
 
 		<div class="row form-group">
 			<div class="col-sm-12">
-				<input type="number" id="zip-code" class="input" name="zipCode" value="{{user.address.zipCode}}">
+				<input type="text" id="zip-code" class="input" name="zipCode" data-field-name="address.zipCode" value="{{user.address.zipCode}}">
 				<label for="zip-code" class="label">Zip Code</label>
 			</div>
 		</div>
 	</section>
 
-	<section class="social-worker-mare-and-you-section">
+	{{!-- TODO: display this section once mailing list work is completed }}
+	{{!-- <section class="social-worker-mare-and-you-section">
 		<div class="form-section-header">Mare &amp; You</div>
 		{{#each mailingLists }}
 		{{#if showOnSocialWorkerRegistrationPage}}
@@ -139,7 +130,7 @@
 		</div>
 		{{/if}}
 		{{/each}}
-	</section>
+	</section> --}}
 
 	<button class="button button--teal save-button">Save</button>
 </div>

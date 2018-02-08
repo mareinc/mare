@@ -1,18 +1,18 @@
-const keystone			= require( 'keystone' ),
-	  moment			= require( 'moment' ),
-	  userService		= require( '../middleware/service_user' ),
-	  eventService		= require( '../middleware/service_event' ),
-	  donationService	= require( '../middleware/service_donation' ),
-	  familyService		= require( '../middleware/service_family' ),
-	  listsService		= require( '../middleware/service_lists' ),
-	  pageService		= require( '../middleware/service_page' ),
-	  mailingListService		= require( '../middleware/service_mailing-list' );
+const keystone				= require( 'keystone' ),
+	  moment				= require( 'moment' ),
+	  userService			= require( '../middleware/service_user' ),
+	  eventService			= require( '../middleware/service_event' ),
+	  donationService		= require( '../middleware/service_donation' ),
+	  familyService			= require( '../middleware/service_family' ),
+	  listsService			= require( '../middleware/service_lists' ),
+	  pageService			= require( '../middleware/service_page' ),
+	  mailingListService	= require( '../middleware/service_mailing-list' );
 
 exports = module.exports = ( req, res ) => {
     'use strict';
 
 	const
-		view						= new keystone.View( req, res ),		  
+		view						= new keystone.View( req, res ),
 		locals						= res.locals,
 		userType					= req.user ? req.user.userType : '', // knowing the type of user visiting the page will allow us to display extra relevant information
 		userID						= req.user ? req.user._id : '',
@@ -20,19 +20,19 @@ exports = module.exports = ( req, res ) => {
 		// find the field the user belongs to in the event model based on their user type
 		eventGroup					= eventService.getEventGroup( userType ),
 
-		// Options for fetching 
-		stateOptions     		   	= { default: 'Massachusetts' },
+		// Options for fetching
+		isUserStateDefined			= ( locals.user.address && locals.user.address.state ) ? true : false,
+		stateOptions     		   	= isUserStateDefined ? undefined : { default: 'Massachusetts' },
 		raceOptions        			= { other: true },
-	
+
 		// fetch all data needed to render this page
 		fetchEvents					= eventService.getActiveEventsByUserId( userID, eventGroup ),
-		
+
 		fetchCitiesAndTowns			= listsService.getAllCitiesAndTowns(),
 		fetchDisabilities			= listsService.getAllDisabilities(),
 		fetchGenders				= listsService.getAllGenders(),
 		fetchLanguages				= listsService.getAllLanguages(),
 		fetchLegalStatuses			= listsService.getAllLegalStatuses(),
-		fetchOtherConsiderations	= listsService.getAllOtherConsiderations(),
 		fetchSocialWorkerPositions	= listsService.getAllSocialWorkerPositions(),
 		fetchRaces					= listsService.getAllRaces( raceOptions ),
 		fetchStates					= listsService.getAllStates( stateOptions ),
@@ -53,12 +53,12 @@ exports = module.exports = ( req, res ) => {
 	}
 
 	Promise.all( [ fetchEvents, fetchCitiesAndTowns, fetchDisabilities, fetchGenders, fetchLanguages, fetchLegalStatuses,
-		fetchOtherConsiderations, fetchSocialWorkerPositions, fetchRaces, fetchStates, fetchChildTypes, fetchMailingLists ] )
+		fetchSocialWorkerPositions, fetchRaces, fetchStates, fetchChildTypes, fetchMailingLists ] )
 		.then( values => {
 
 			// assign local variables to the values returned by the promises
 			const [ events, citiesAndTowns, disabilities, genders, languages, legalStatuses,
-				otherConsiderations, socialWorkerPositions, races, states, childTypes, mailingLists ] = values;
+				socialWorkerPositions, races, states, childTypes, mailingLists ] = values;
 
 			// options to define how truncation will be handled
 			const truncateOptions = { targetLength: 400 };
@@ -71,7 +71,7 @@ exports = module.exports = ( req, res ) => {
 
 				// check to see if the event spans multiple days
 				const multidayEvent = event.startDate.getTime() !== event.endDate.getTime();
-				
+
 				// Pull the date and time into a string for easier templating
 				if( multidayEvent ) {
 					event.dateString = `${ moment( event.startDate ).format( 'dddd MMMM Do, YYYY' ) } to ${ moment( event.endDate ).format( 'dddd MMMM Do, YYYY' ) }`;
@@ -89,12 +89,32 @@ exports = module.exports = ( req, res ) => {
 			locals.genders					= genders;
 			locals.languages				= languages;
 			locals.legalStatuses			= legalStatuses;
-			locals.otherConsiderations		= otherConsiderations;
 			locals.socialWorkerPositions 	= socialWorkerPositions;
 			locals.races					= races;
 			locals.states					= states;
 			locals.childTypes				= childTypes;
 			locals.mailingLists				= mailingLists;
+			locals.familyChildren			= [];
+
+			// check to see if the user has an address/state defined
+			if ( isUserStateDefined ) {
+
+				// find the user's state in the state list
+				let userState = locals.states.find( state => state._id.id === locals.user.address.state.id );
+				// set it to be default selection
+				userState.defaultSelection = true;
+			}
+
+			// check to see if the user is a family and has children
+			if ( userType === 'family' && locals.user.numberOfChildren !== 0 ) {
+
+				// loop through all children definitions
+				for ( let i = 1; i <= locals.user.numberOfChildren; i++ ) {
+
+					// add each child to the familyChildren array
+					locals.familyChildren.push( locals.user[ `child${ i }` ] );
+				}
+			}
 
 			// set the layout to render without the right sidebar
 			locals[ 'render-with-sidebar' ] = false;
@@ -104,7 +124,7 @@ exports = module.exports = ( req, res ) => {
 		})
 		.catch( err => {
 			// log an error for debugging purposes
-			console.error( `there was an error loading data for the account page - ${ err }` );	
+			console.error( `there was an error loading data for the account page - ${ err }` );
 			// set the layout to render without the right sidebar
 			locals[ 'render-with-sidebar' ] = false;
 			// render the view using the account.hbs template
