@@ -55,7 +55,7 @@ Event.add( 'General Information', {
 	socialWorkerAttendees: { type: Types.Relationship, label: 'social workers', ref: 'Social Worker', filters: { isActive: true }, many: true, initial: true },
 	familyAttendees: { type: Types.Relationship, label: 'families', ref: 'Family', filters: { isActive: true }, many: true, initial: true },
 	childAttendees: { type: Types.Relationship, label: 'children', ref: 'Child', many: true, initial: true },
-	outsideContactAttendees: { type: Types.Relationship, label: 'volunteers', filters: { isVolunteer: true }, ref: 'Outside Contact', many: true, initial: true}
+	outsideContactAttendees: { type: Types.Relationship, label: 'volunteers', filters: { isVolunteer: true }, ref: 'Outside Contact', many: true, initial: true }
 
 }, 'Notes', {
 
@@ -78,6 +78,18 @@ Event.add( 'General Information', {
 
 });
 
+// add an array of sub-documents to keep track of unregistered children attendees
+Event.schema.add({
+	unregisteredChildAttendees: [{
+		name: {
+			first: String,
+			last: String
+		},
+		age: Number,
+		socialWorkerID: String
+	}]
+});
+
 // pre Save
 Event.schema.pre( 'save', function( next ) {
 	'use strict';
@@ -87,7 +99,7 @@ Event.schema.pre( 'save', function( next ) {
 	this.setFileName();
 
 	let setSourceField = this.setSourceField();
-	
+
 	setSourceField.then( sourceId => {
 
 		this.source = sourceId;
@@ -108,7 +120,7 @@ Event.schema.methods.updateImageFields = function() {
 
 Event.schema.methods.setUrl = function() {
 	'use strict';
-	
+
 	let eventType;
 
 	switch( this.type ) {

@@ -7,16 +7,16 @@ exports.register = ( req, res, next ) => {
 	// extract the event information from the req object
 	const eventDetails = req.body;
 	// extract request object parameters into local constants
-	const { eventId } = req.params;
+	eventDetails.eventId = req.params.eventId;
 	// attempt to register the user and send a notification email to MARE staff
-	let register	= eventService.register( eventId, req.user.get( '_id' ) ),
-		notifyStaff	= eventEmailMiddleware.sendEventRegistrationEmailToStaff( eventDetails, eventId, 'jared.j.collier@gmail.com' ); // TODO: need to fetch the staff contact to send the email to
-	
+	let register	= eventService.register( eventDetails, req.user );
+		//notifyStaff	= eventEmailMiddleware.sendEventRegistrationEmailToStaff( eventDetails, eventId, 'jared.j.collier@gmail.com' ); // TODO: need to fetch the staff contact to send the email to
+
 	// create a flash message to notify the user that these emails are turned off
 	req.flash( 'info', { title: `sending of event registration emails is currently turned off, no email was sent` } );
 
 	// if all promises resolved without issue
-	Promise.all( [ register, notifyStaff ] ).then( () => {
+	Promise.all( [ register ] ).then( () => {
 		// notify the user that the registration was successful
 		req.flash( 'success', { title: 'MARE has been notified of your registration',
 				   detail: 'your registration will be processed in 1-3 business days and someone will reach out if additional information is needed' });

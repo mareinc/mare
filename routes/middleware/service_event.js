@@ -36,7 +36,7 @@ exports.getEventById = ( eventId, populateOptions = [] ) => {
 /* TODO: this is not reusable, but is needed to show a single event page.  Consider adding populate and possibly
 		 building other elements of the Mongoose query dynamically using passed in options */
 exports.getEventByKey = key => {
-	
+
 	return new Promise( ( resolve, reject ) => {
 		// attempt to find a single event matching the passed in key, and populate some of the Relationship fields
 		keystone.list( 'Event' ).model
@@ -71,7 +71,7 @@ exports.getEventByKey = key => {
 /* TODO: this is not reusable, but is needed to show a events category page.  Consider adding populate and possibly
 		 building other elements of the Mongoose query dynamically using passed in options */
 exports.getActiveEventsByEventType = ( eventType, eventGroup ) => {
-			
+
 	return new Promise( ( resolve, reject ) => {
 
 		keystone.list( 'Event' ).model
@@ -97,11 +97,11 @@ exports.getActiveEventsByEventType = ( eventType, eventGroup ) => {
 				// and reject the promise
 				reject();
 			});
-		});			
+		});
 };
 
 exports.getActiveEventsByUserId = ( userId, eventGroup ) => {
-			
+
 	return new Promise( ( resolve, reject ) => {
 
 		keystone.list( 'Event' ).model
@@ -131,7 +131,7 @@ exports.getActiveEventsByUserId = ( userId, eventGroup ) => {
 };
 
 exports.getAllActiveEvents = eventGroup => {
-			
+
 	return new Promise( ( resolve, reject ) => {
 
 		keystone.list( 'Event' ).model
@@ -212,9 +212,9 @@ exports.submitEvent = function submitEvent( req, res, next ) {
 			req.flash( 'success', {
 				title: 'Your event has been submitted',
 				detail: 'once your event has been approved by MARE staff, you will receive a notification email.  If you don\'t receive an email within 5 business days, please contact [some mare contact] for a status update.'} );
-			
+
 			// set the fields to populate on the fetched event model
-			const populateOptions = [ 'contact', 'address.state' ];		
+			const populateOptions = [ 'contact', 'address.state' ];
 			// populate the Relationship fields on the event
 			event.populate( populateOptions, err => {
 				// if there was an error populating Relationship fields on the event
@@ -225,7 +225,7 @@ exports.submitEvent = function submitEvent( req, res, next ) {
 				} else {
 					// fetch the email target model matching 'event created by social worker'
 					const fetchEmailTarget = emailTargetMiddleware.getEmailTargetByName( 'event created by social worker' );
-					
+
 					fetchEmailTarget
 						// if we successfully fetched the email target model
 						.then( emailTarget => {
@@ -276,7 +276,7 @@ exports.createEvent = event => {
 		const newEvent = new Event.model({
 
 			name: event.name,
-			type: event.eventType,	
+			type: event.eventType,
 			address: {
 				street1: event.street1,
 				street2: event.street2,
@@ -310,10 +310,67 @@ exports.createEvent = event => {
 	});
 };
 
-exports.register = ( eventId, userId ) => {
+exports.register = ( eventDetails, user ) => {
+
 	// TODO: this will be implemented post-launch
 	return new Promise( ( resolve, reject ) => {
-		resolve();
+
+		// get the user type that is registering for an event
+		let attendeeType =  exports.getEventGroup( user.userType );
+
+		// get the event that the user is registering for
+		exports.getEventById( eventDetails.eventId )
+			.then( event => {
+
+				// add the user as an attendee
+				event[ attendeeType ].push( user._id );
+
+				// if the user is a social worker, add any registered or unregistered children they are signing up as attendees
+				if ( user.userType === 'social worker' ) {
+
+					// if there are registered children defined, add them to the list of attendees
+					if ( eventDetails.registeredChildren ) {
+
+						eventDetails.registeredChildren.forEach( child => {
+
+							event.childAttendees.push( child );
+						});
+					}
+
+					// add each of the unregsitered children defined to the list of attendees
+					for ( let i = 0; i < eventDetails.numberOfChildren; i++ ) {
+
+						let unregisteredChildAttendee = {
+							name: {
+								first: eventDetails.childFirstName[ i ],
+								last: eventDetails.childLastName[ i ]
+							},
+							age: eventDetails.childAge[ i ],
+							socialWorkerID: user._id
+						};
+
+						event.unregisteredChildAttendees.push( unregisteredChildAttendee );
+					}
+				}
+
+				// save the updated event
+				event.save( error => {
+
+					if ( error ) {
+
+						console.error( `error saving an update to event ${ event._id } - ${ error }` );
+						reject( error );
+					} else {
+
+						resolve();
+					}
+				});
+			})
+			.catch( error => {
+
+				console.error( `error registering user ${ user._id } for event ${ eventDetails.eventId } - ${ error }` );
+				reject( error );
+			});
 	});
 };
 
@@ -357,7 +414,7 @@ exports.getEventStaffContactInfo = emailTarget => {
  *	frontend services
  */
 // exports.addUser = ( req, res, next ) => {
-	
+
 // 	const userId	= req.user.get( '_id' ),
 // 		  userName	= req.user.get( 'name.full' ),
 // 		  userType	= req.user.get( 'userType' ),
@@ -367,7 +424,7 @@ exports.getEventStaffContactInfo = emailTarget => {
 // 	const eventGroup = exports.getEventGroup( userType );
 // 	// fetch the event the user should be added to
 // 	let fetchEvent = exports.getEventById( eventId );
-		
+
 // 	fetchEvent
 // 		.then( event => {
 // 			// get the array of user IDs already in the field the user should be added to, and get the index of the user
@@ -402,8 +459,8 @@ exports.getEventStaffContactInfo = emailTarget => {
 // 		})
 // 		.catch( () => {
 // 			// log an error for debugging purposes
-// 			console.error( `there was an error adding the user to the event with id ${ req.body.eventId }` );	
-			
+// 			console.error( `there was an error adding the user to the event with id ${ req.body.eventId }` );
+
 // 			// construct useful data for needed UI updates
 // 			var responseData = {
 // 				success: false,
@@ -463,8 +520,8 @@ exports.getEventStaffContactInfo = emailTarget => {
 // 		})
 // 		.catch( () => {
 // 			// log an error for debugging purposes
-// 			console.error( `there was an error removing the user from the event with id ${ req.body.eventId }` );	
-			
+// 			console.error( `there was an error removing the user from the event with id ${ req.body.eventId }` );
+
 // 			// construct useful data for needed UI updates
 // 			var responseData = {
 // 				success: false,
