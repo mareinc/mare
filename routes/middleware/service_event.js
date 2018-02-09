@@ -312,7 +312,6 @@ exports.createEvent = event => {
 
 exports.register = ( eventDetails, user ) => {
 
-	// TODO: this will be implemented post-launch
 	return new Promise( ( resolve, reject ) => {
 
 		// get the user type that is registering for an event
@@ -374,10 +373,40 @@ exports.register = ( eventDetails, user ) => {
 	});
 };
 
-exports.unregister = ( eventId, userId ) => {
-	// TODO: this will be implemented post-launch
+exports.unregister = ( eventDetails, user ) => {
+
 	return new Promise( ( resolve, reject ) => {
-		resolve();
+
+		// get the user type that is unregistering for an event
+		let attendeeType =  exports.getEventGroup( user.userType );
+
+		// get the event that the user is registering for
+		exports.getEventById( eventDetails.eventId )
+			.then( event => {
+
+				// get the index of the attendee to be removed
+				let indexOfAttendee = event[ attendeeType ].indexOf( user._id );
+				// splice the attendee from the list
+				event[ attendeeType ].splice( indexOfAttendee, 1 );
+
+				// save the updated event
+				event.save( error => {
+
+					if ( error ) {
+
+						console.error( `error saving an update to event ${ event._id } - ${ error }` );
+						reject( error );
+					} else {
+
+						resolve();
+					}
+				});
+			})
+			.catch( error => {
+
+				console.error( `error unregistering user ${ user._id } for event ${ eventDetails.eventId } - ${ error }` );
+				reject( error );
+			});
 	});
 };
 
