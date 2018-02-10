@@ -58,7 +58,7 @@ exports.unregister = ( req, res, next ) => {
 	// if one or more promises were rejected
 	.catch( err => {
 		// log the issue for debugging purposes
-		console.error( `there was an issue registering ${ req.user.displayName } for ${ eventName } - ${ err }` );
+		console.error( `there was an issue registering ${ req.user.displayName } for ${ eventDetails.eventName } - ${ err }` );
 		// notify the user of the error
 		req.flash( 'error', { title: 'There was an issue unregistering you for this event',
 				   detail: 'If this error persists, please notify MARE' } );

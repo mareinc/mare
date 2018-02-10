@@ -382,6 +382,7 @@ exports.unregister = ( eventDetails, user ) => {
 
 		// get the event that the user is registering for
 		exports.getEventById( eventDetails.eventId )
+			// remove the attendee from the event
 			.then( event => {
 
 				// get the index of the attendee to be removed
@@ -389,12 +390,26 @@ exports.unregister = ( eventDetails, user ) => {
 				// splice the attendee from the list
 				event[ attendeeType ].splice( indexOfAttendee, 1 );
 
+				return event;
+			})
+			// remove any children registered by the attendee of the event
+			.then( event => {
+
+				if ( user.userType === 'social worker' ) {
+					return exports.unregisterChildrenOfSocialWorker( event, user._id );
+				} else {
+					return event;
+				}
+			})
+			// save the updated event
+			.then( event => {
+
 				// save the updated event
 				event.save( error => {
 
 					if ( error ) {
 
-						console.error( `error saving an update to event ${ event._id } - ${ error }` );
+						console.error( `error unregistering user ${ user._id } for event ${ eventDetails.eventId } - ${ error }` );
 						reject( error );
 					} else {
 
@@ -407,6 +422,40 @@ exports.unregister = ( eventDetails, user ) => {
 				console.error( `error unregistering user ${ user._id } for event ${ eventDetails.eventId } - ${ error }` );
 				reject( error );
 			});
+	});
+};
+
+exports.unregisterChildrenOfSocialWorker = ( event, socialWorkerID ) => {
+
+	return new Promise( ( resolve, reject ) => {
+
+		// populate the registered children attendees of the event
+		event.populate( 'childAttendees', error => {
+
+			if ( error ) {
+
+				console.error( `error populating the child attendees of event ${ event._id } - ${ error }` );
+				reject( error );
+			} else {
+
+				let childrenToUnregisterIndexes = [];
+
+				// capture the index of all children that were registered by the social worker that is unregistering
+				event.childAttendees.forEach( ( child, index ) => {
+
+					if ( socialWorkerID.id === child.adoptionWorker.id || socialWorkerID.id === child.recruitmentWorker.id ) {
+						childrenToUnregisterIndexes.push( index );
+					}
+				});
+
+				// remove each child from the list of child attendees
+				childrenToUnregisterIndexes.forEach( indexOfChild => {
+					event.childAttendees.splice( indexOfChild, 1 );
+				});
+
+				resolve( event );
+			}
+		});
 	});
 };
 
