@@ -330,19 +330,13 @@ exports.register = ( eventDetails, user ) => {
 					// if there are registered children defined, add them to the list of attendees
 					if ( eventDetails.registeredChildren ) {
 
-						eventDetails.registeredChildren.forEach( child => {
-
-							event.childAttendees.push( child );
-						});
+						event.childAttendees = event.childAttendees.concat( eventDetails.registeredChildren );
 					}
 
 					// if there are unregistered children defined, add them to the list of attendees
 					if ( eventDetails.unregisteredChildren ) {
 
-						eventDetails.unregisteredChildren.forEach( child => {
-
-							event.unregisteredChildAttendees.push( child );
-						});
+						event.unregisteredChildAttendees = event.unregisteredChildAttendees.concat( eventDetails.unregisteredChildren );
 					}
 				}
 
