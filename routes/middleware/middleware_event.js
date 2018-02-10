@@ -8,15 +8,38 @@ exports.register = ( req, res, next ) => {
 	const eventDetails = req.body;
 	// extract request object parameters into local constants
 	eventDetails.eventId = req.params.eventId;
+
+	// if there are unregistered children attendees
+	if ( eventDetails.numberOfChildren > 0 ) {
+
+		eventDetails.unregisteredChildren = [];
+
+		// compile unregistered children attendee data into a single array
+		for ( let i = 0; i < eventDetails.numberOfChildren; i++ ) {
+
+			let unregisteredChildAttendee = {
+				name: {
+					first: eventDetails.childFirstName[ i ],
+					last: eventDetails.childLastName[ i ]
+				},
+				age: eventDetails.childAge[ i ],
+				socialWorkerID: req.user._id
+			};
+
+			eventDetails.unregisteredChildren.push( unregisteredChildAttendee );
+		}
+	}
+
+	console.log( eventDetails );
 	// attempt to register the user and send a notification email to MARE staff
-	let register	= eventService.register( eventDetails, req.user );
-		//notifyStaff	= eventEmailMiddleware.sendEventRegistrationEmailToStaff( eventDetails, eventId, 'jared.j.collier@gmail.com' ); // TODO: need to fetch the staff contact to send the email to
+	let register	= eventService.register( eventDetails, req.user ),
+		notifyStaff	= eventEmailMiddleware.sendEventRegistrationEmailToMARE( eventDetails, req.user, res.host ); // TODO: need to fetch the staff contact to send the email to
 
 	// create a flash message to notify the user that these emails are turned off
 	req.flash( 'info', { title: `sending of event registration emails is currently turned off, no email was sent` } );
 
 	// if all promises resolved without issue
-	Promise.all( [ register ] ).then( () => {
+	Promise.all( [ register, notifyStaff ] ).then( () => {
 		// notify the user that the registration was successful
 		req.flash( 'success', { title: 'MARE has been notified of your registration',
 				   detail: 'your registration will be processed in 1-3 business days and someone will reach out if additional information is needed' });

@@ -336,19 +336,13 @@ exports.register = ( eventDetails, user ) => {
 						});
 					}
 
-					// add each of the unregsitered children defined to the list of attendees
-					for ( let i = 0; i < eventDetails.numberOfChildren; i++ ) {
+					// if there are unregistered children defined, add them to the list of attendees
+					if ( eventDetails.unregisteredChildren ) {
 
-						let unregisteredChildAttendee = {
-							name: {
-								first: eventDetails.childFirstName[ i ],
-								last: eventDetails.childLastName[ i ]
-							},
-							age: eventDetails.childAge[ i ],
-							socialWorkerID: user._id
-						};
+						eventDetails.unregisteredChildren.forEach( child => {
 
-						event.unregisteredChildAttendees.push( unregisteredChildAttendee );
+							event.unregisteredChildAttendees.push( child );
+						});
 					}
 				}
 
