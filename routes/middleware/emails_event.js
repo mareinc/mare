@@ -52,7 +52,7 @@ exports.sendNewEventEmailToMARE = ( event, socialWorker, staffEmailContact ) => 
 	});
 };
 
-exports.sendEventRegistrationEmailToMARE = ( eventDetails, userDetails, host ) => {
+exports.sendEventRegistrationEmailToMARE = ( eventDetails, userDetails, host, staffContactEmail ) => {
 
 	return new Promise( ( resolve, reject ) => {
 		// TODO: check the logic around process.env.migration, it doesn't seem to make sense
@@ -73,10 +73,6 @@ exports.sendEventRegistrationEmailToMARE = ( eventDetails, userDetails, host ) =
 					eventDetails.source = `Other: ${ eventDetails.otherSource }`;
 				}
 
-				if ( eventDetails.questionsOrComments === '' ) {
-					eventDetails.questionsOrComments = undefined;
-				}
-
 				// find the email template in templates/emails/
 				new keystone.Email({
 
@@ -86,7 +82,7 @@ exports.sendEventRegistrationEmailToMARE = ( eventDetails, userDetails, host ) =
 
 				}).send({
 
-					to: 'noahweinert@gmail.com',
+					to: staffContactEmail,
 					from: {
 						name 	: 'MARE',
 						email 	: 'admin@adoptions.io'
