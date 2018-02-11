@@ -436,8 +436,9 @@ exports.unregisterChildrenOfSocialWorker = ( event, socialWorkerID ) => {
 					}
 				});
 
-				// remove each child from the list of child attendees
-				childrenToUnregisterIndexes.forEach( indexOfChild => {
+				// reverse the array to prevent splicing messing with the array indexes
+				// then remove each child from the list of child attendees
+				childrenToUnregisterIndexes.reverse().forEach( indexOfChild => {
 					event.childAttendees.splice( indexOfChild, 1 );
 				});
 
