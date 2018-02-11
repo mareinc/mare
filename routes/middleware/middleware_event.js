@@ -32,6 +32,11 @@ exports.register = ( req, res, next ) => {
 		}
 	}
 
+	// create an info flash message if email sending is turned off
+	if ( process.env.SEND_EVENT_REGISTRATION_TO_STAFF !== true ) {
+		req.flash( 'info', { title: `sending of event registration emails is currently turned off, no email was sent` } );
+	}
+
 	// initialize a promise chain
 	Promise.resolve()
 		// register the attendee for the event
