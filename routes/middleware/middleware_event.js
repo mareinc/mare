@@ -91,7 +91,7 @@ exports.unregister = ( req, res, next ) => {
 		.then( unregistrationData => {
 
 			// add any registered children that were removed
-			eventDetails.registeredChildrenRemoved = ( unregistrationData.registeredChildrenRemoved && unregistrationData.registeredChildrenRemoved.length ) > 0 ? unregistrationData.registeredChildrenRemoved : undefined;
+			eventDetails.registeredChildrenRemoved = ( unregistrationData.registeredChildrenRemoved && unregistrationData.registeredChildrenRemoved.length > 0 ) ? unregistrationData.registeredChildrenRemoved : undefined;
 			// add any unregistered children that were removed
 			eventDetails.unregisteredChildrenRemoved = ( unregistrationData.unregisteredChildrenRemoved && unregistrationData.unregisteredChildrenRemoved.length > 0 ) ? unregistrationData.unregisteredChildrenRemoved: undefined;
 			return;
