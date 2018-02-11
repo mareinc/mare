@@ -87,7 +87,7 @@ exports.sendEventRegistrationEmailToMARE = ( eventDetails, userDetails, host, st
 						name 	: 'MARE',
 						email 	: 'admin@adoptions.io'
 					},
-					subject			: `new event registration`,
+					subject		: `new event registration`,
 					event: eventDetails,
 					user: userDetails,
 					host
@@ -115,29 +115,34 @@ exports.sendEventRegistrationEmailToMARE = ( eventDetails, userDetails, host, st
 	});
 };
 
-exports.sendEventUnregistrationEmailToMARE = ( eventName, eventId, registrationStaffContact ) => {
+exports.sendEventUnregistrationEmailToMARE = ( eventDetails, userDetails, host, staffContactEmail ) => {
 
 	return new Promise( ( resolve, reject ) => {
 		// TODO: check the logic around process.env.migration, it doesn't seem to make sense
 		// if sending of the email is not currently allowed
-		if( process.env.SEND_EVENT_UNREGISTRATION_TO_MARE !== 'true' ) {
+		if( process.env.SEND_EVENT_UNREGISTRATION_TO_STAFF !== 'true' ) {
 			// resolve the promise before any further processing takes place
 			return resolve();
 		}
+
 		// find the email template in templates/emails/
 		new keystone.Email({
 
 			templateExt 	: 'hbs',
 			templateEngine 	: require( 'handlebars' ),
-			templateName 	: 'event_user-unregistered'
+			templateName 	: 'event-unregistration-notification-to-mare'
 
 		}).send({
 
-			to: 'jared.j.collier@gmail.com',
+			to: staffContactEmail,
 			from: {
 				name 	: 'MARE',
 				email 	: 'admin@adoptions.io'
-			}
+			},
+			subject		: `event unregistration`,
+			event: eventDetails,
+			user: userDetails,
+			host
 
 		}, ( err, message ) => {
 			// log any errors

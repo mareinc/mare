@@ -386,14 +386,14 @@ exports.unregister = ( eventDetails, user ) => {
 				if ( user.userType === 'social worker' ) {
 					return exports.unregisterChildrenOfSocialWorker( event, user._id );
 				} else {
-					return event;
+					return { eventModel: event };
 				}
 			})
 			// save the updated event
-			.then( event => {
+			.then( unregistrationData => {
 
 				// save the updated event
-				event.save( error => {
+				unregistrationData.eventModel.save( error => {
 
 					if ( error ) {
 
@@ -401,7 +401,10 @@ exports.unregister = ( eventDetails, user ) => {
 						reject( error );
 					} else {
 
-						resolve();
+						resolve({
+							registeredChildrenRemoved: unregistrationData.registeredChildrenRemoved,
+							unregisteredChildrenRemoved: unregistrationData.unregisteredChildrenRemoved
+						});
 					}
 				});
 			})
@@ -417,7 +420,29 @@ exports.unregisterChildrenOfSocialWorker = ( event, socialWorkerID ) => {
 
 	return new Promise( ( resolve, reject ) => {
 
-		// populate the registered children attendees of the event
+		// remove the unregistered children attendees of the event that were signed up by the social worker that is unregistering for the event
+		let unregisteredChildrenToRemoveIndexes = [];
+		let unregisteredChildrenRemoved = [];
+
+		// capture all unregistered children ( and their indexes ) that were signed up by the social worker that is unregistering
+		event.unregisteredChildAttendees.forEach( ( child, index ) => {
+
+			if ( socialWorkerID.toString() === child.socialWorkerID ) {
+
+				unregisteredChildrenToRemoveIndexes.push( index );
+				unregisteredChildrenRemoved.push( child );
+			}
+		});
+
+		// reverse the unregisteredChildrenToRemoveIndexes array to prevent the splicing process from messing with the array indexes
+		unregisteredChildrenToRemoveIndexes.reverse();
+		// remove each unregistered child from the list of child attendees
+		unregisteredChildrenToRemoveIndexes.forEach( indexOfChild => {
+
+			event.unregisteredChildAttendees.splice( indexOfChild, 1 );
+		});
+
+		// populate the registered children attendees of the event and remove any children that were signed up by the social worker that is unregistering for the event
 		event.populate( 'childAttendees', error => {
 
 			if ( error ) {
@@ -426,23 +451,32 @@ exports.unregisterChildrenOfSocialWorker = ( event, socialWorkerID ) => {
 				reject( error );
 			} else {
 
-				let childrenToUnregisterIndexes = [];
+				let registeredChildrenToRemoveIndexes = [];
+				let registeredChildrenRemoved = [];
 
-				// capture the index of all children that were registered by the social worker that is unregistering
+				// capture all registered children ( and their indexes ) that were signed up by the social worker that is unregistering
 				event.childAttendees.forEach( ( child, index ) => {
 
 					if ( socialWorkerID.id === child.adoptionWorker.id || socialWorkerID.id === child.recruitmentWorker.id ) {
-						childrenToUnregisterIndexes.push( index );
+
+						registeredChildrenToRemoveIndexes.push( index );
+						registeredChildrenRemoved.push( child );
 					}
 				});
 
-				// reverse the array to prevent splicing messing with the array indexes
-				// then remove each child from the list of child attendees
-				childrenToUnregisterIndexes.reverse().forEach( indexOfChild => {
+				// reverse the registeredChildrenToRemoveIndexes array to prevent the splicing process from messing with the array indexes
+				registeredChildrenToRemoveIndexes.reverse();
+				// remove each registered child from the list of child attendees
+				registeredChildrenToRemoveIndexes.forEach( indexOfChild => {
+
 					event.childAttendees.splice( indexOfChild, 1 );
 				});
 
-				resolve( event );
+				resolve({
+					eventModel: event,
+					registeredChildrenRemoved,
+					unregisteredChildrenRemoved
+				});
 			}
 		});
 	});
