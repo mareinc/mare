@@ -134,11 +134,11 @@ Child.add('Display Options', {
 	photolistingPageNumber: { type: Types.Text, label: 'photolisting page', initial: true },
 	previousPhotolistingPageNumbers: { type: Types.Text, label: 'previous photolisting pages', initial: true },
 
-	image: { type: Types.CloudinaryImage, label: 'display image', folder: 'children/', select: true, selectPrefix: 'children/', publicID: 'fileName', dependsOn: { mustBePlacedWithSiblings: false } },
+	image: { type: Types.CloudinaryImage, label: 'display image', folder: `${ process.env.CLOUDINARY_DIRECTORY }/children/`, select: true, selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/children/`, publicID: 'fileName', dependsOn: { mustBePlacedWithSiblings: false } },
 	galleryImage: { type: Types.Url, hidden: true },
 	detailImage: { type: Types.Url, hidden: true },
-	allImages: { type: Types.CloudinaryImages, label: 'all images', folder: 'children/', select: true, selectPrefix: 'children/', publicID: 'fileName', dependsOn: { mustBePlacedWithSiblings: false }, autoCleanup: true },
-	siblingGroupImage: { type: Types.CloudinaryImage, label: 'sibling group image', folder: 'sibling-groups/', select: true, selectPrefix: 'sibling-groups/', publicID: 'siblingGroupFileName', dependsOn: { mustBePlacedWithSiblings: true }, autoCleanup: true },
+	allImages: { type: Types.CloudinaryImages, label: 'all images', folder: `${ process.env.CLOUDINARY_DIRECTORY }/children/`, select: true, selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/children/`, publicID: 'fileName', dependsOn: { mustBePlacedWithSiblings: false }, autoCleanup: true },
+	siblingGroupImage: { type: Types.CloudinaryImage, label: 'sibling group image', folder: `${ process.env.CLOUDINARY_DIRECTORY }/sibling-groups/`, select: true, selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/sibling-groups/`, publicID: 'siblingGroupFileName', dependsOn: { mustBePlacedWithSiblings: true }, autoCleanup: true },
 	siblingGroupGalleryImage: { type: Types.Url, hidden: true },
 	siblingGroupDetailImage: { type: Types.Url, hidden: true },
 	extranetUrl: { type: Types.Url, label: 'extranet and related profile url', initial: true } // TODO: Since this is redundant as this just points the the url where the photo exists (the child's page), we may hide this field.  This must be kept in as it will help us track down the child information in the old system in the event of an issue.
@@ -299,16 +299,20 @@ Child.schema.post( 'save', function() {
 			this.setChangeHistory();
 		});
 });
-
+// TODO: this isn't needed anymore, remove gallery image binding across the site and remove the fields from all child models
 Child.schema.methods.setImages = function() {
 	'use strict';
 
 	// TODO: Play with lowering quality to 0 and doubling the image size as an optimization technique
-	this.galleryImage = this._.image.thumbnail( 430, 430, { quality: 60 } );
-	this.detailImage = this._.image.thumbnail( 200, 200, { quality: 60 } );
+	if( this.image.exists ) {
+		this.galleryImage = this.image.secure_url;
+		this.detailImage = this.image.secure_url;
+	}
 
-	this.siblingGroupGalleryImage = this._.siblingGroupImage.thumbnail( 430, 430, { quality: 60 } );
-	this.siblingGroupDetailImage = this._.siblingGroupImage.thumbnail( 200, 200, { quality: 60 } );
+	if( this.siblingGroupImage.exists ) {
+		this.siblingGroupGalleryImage = this.siblingGroupImage.secure_url;
+		this.siblingGroupDetailImage = this.siblingGroupImage.secure_url;
+	}
 };
 /* text fields don't automatically trim(), this is to ensure no leading or trailing whitespace gets saved into url, text, or text area fields */
 Child.schema.methods.trimTextFields = function() {
