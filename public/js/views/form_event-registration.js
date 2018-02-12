@@ -83,15 +83,27 @@
 			var selectedChild       = this.$( '.registered-children-select option:selected' ),
 				selectedChildId     = selectedChild.val(),
 				selectedChildName   = selectedChild.html();
-			// generate the html for the new child using the child's details
-			var childDetails = this.registeredChildDetailsTemplate({ childId: selectedChildId,
-																	 childName: selectedChildName });
-			// append the child html to the page
-			this.$( '.registered-children-container' ).append( childDetails );
-			// bind the last remove button on the page, which corresponds to the newly added child
-			this.$( '.remove-registered-child:last' ).click( this.removeRegisteredChild.bind( this ) );
-			// hide/show fields based on number of children attending
-			this.checkNumberOfChildrenAttending();
+
+			// check if the newly selected child has already been selected
+			var hasChildALreadyBeenSelected = false;
+			this.$( '.registered-children-container input.hidden' ).each( function() {
+				if ( selectedChildId === $( this ).val() ) {
+					hasChildALreadyBeenSelected = true;
+				}
+			});
+
+			// if the child hasn't already been selected, add it to the list
+			if ( !hasChildALreadyBeenSelected ) {
+				// generate the html for the new child using the child's details
+				var childDetails = this.registeredChildDetailsTemplate({ childId: selectedChildId,
+					childName: selectedChildName });
+				// append the child html to the page
+				this.$( '.registered-children-container' ).append( childDetails );
+				// bind the last remove button on the page, which corresponds to the newly added child
+				this.$( '.remove-registered-child:last' ).click( this.removeRegisteredChild.bind( this ) );
+				// hide/show fields based on number of children attending
+				this.checkNumberOfChildrenAttending();
+			}
 		},
 
 		removeRegisteredChild: function removeRegisteredChild( event ) {
