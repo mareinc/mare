@@ -200,7 +200,7 @@ Child.add('Display Options', {
 /* Container for all system fields (add a heading if any are meant to be visible through the admin UI) */
 }, {
 
-	// system field to store an appropriate file prefix
+	// system fields to store appropriate file prefixes
 	fileName: { type: Types.Text, hidden: true },
 	siblingGroupFileName: { type: Types.Text, hidden: true }
 

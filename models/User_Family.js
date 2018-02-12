@@ -37,7 +37,7 @@ Family.add( 'Permissions', {
 
 },  'General Information', {
 
-	avatar: { type: Types.CloudinaryImage, label: 'avatar', folder: 'users/families', select: true, selectPrefix: 'users/families', autoCleanup: true }, // TODO: add publicID attribute for better naming in Cloudinary
+	avatar: { type: Types.CloudinaryImage, label: 'avatar', folder: `${ process.env.CLOUDINARY_DIRECTORY }/users/families`, select: true, selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/users/families`, autoCleanup: true }, // TODO: add publicID attribute for better naming in Cloudinary
 
 	registrationNumber: { type: Number, label: 'registration number', format: false, noedit: true },
 	initialContact: { type: Types.Date, label: 'initial contact', format: 'MM/DD/YYYY', initial: true }, // was required: data migration change ( undo if possible )
