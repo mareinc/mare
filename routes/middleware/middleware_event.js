@@ -26,10 +26,30 @@ exports.register = ( req, res, next ) => {
 					last: eventDetails.childLastName[ i ]
 				},
 				age: eventDetails.childAge[ i ],
-				socialWorkerID: req.user._id
+				registrantID: req.user._id
 			};
 
 			eventDetails.unregisteredChildren.push( unregisteredChildAttendee );
+		}
+	}
+
+	// if there are unregistered adult attendees
+	if ( eventDetails.numberOfAdults > 0 ) {
+
+		eventDetails.unregisteredAdults = [];
+
+		// compile unregistered adult attendee data into a single array
+		for ( let i = 0; i < eventDetails.numberOfAdults; i++ ) {
+
+			let unregisteredAdultAttendee = {
+				name: {
+					first: eventDetails.adultFirstName[ i ],
+					last: eventDetails.adultLastName[ i ]
+				},
+				registrantID: req.user._id
+			};
+
+			eventDetails.unregisteredAdults.push( unregisteredAdultAttendee );
 		}
 	}
 
@@ -93,7 +113,9 @@ exports.unregister = ( req, res, next ) => {
 			// add any registered children that were removed
 			eventDetails.registeredChildrenRemoved = ( unregistrationData.registeredChildrenRemoved && unregistrationData.registeredChildrenRemoved.length > 0 ) ? unregistrationData.registeredChildrenRemoved : undefined;
 			// add any unregistered children that were removed
-			eventDetails.unregisteredChildrenRemoved = ( unregistrationData.unregisteredChildrenRemoved && unregistrationData.unregisteredChildrenRemoved.length > 0 ) ? unregistrationData.unregisteredChildrenRemoved: undefined;
+			eventDetails.unregisteredChildrenRemoved = ( unregistrationData.unregisteredChildrenRemoved && unregistrationData.unregisteredChildrenRemoved.length > 0 ) ? unregistrationData.unregisteredChildrenRemoved : undefined;
+			// add any unregistered adults that were removed
+			eventDetails.unregisteredAdultsRemoved = ( unregistrationData.unregisteredAdultsRemoved && unregistrationData.unregisteredAdultsRemoved.length > 0 ) ? unregistrationData.unregisteredAdultsRemoved : undefined;
 			return;
 		})
 		// get the email target for an event unregistration

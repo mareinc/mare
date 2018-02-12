@@ -83,6 +83,20 @@
 										</td>
 									</tr>
 								{{/each}}
+								{{#if event.unregisteredAdults}}
+								<tr>
+									<td style="padding: 30px 0 10px 0; color: #153634; font-family: Ariel, sans-serif; font-size: 20px; line-height: 24px;">
+										<b>Unregistered Adult Attendees</b>
+									</td>
+								</tr>
+								{{/if}}
+								{{#each event.unregisteredAdults}}
+									<tr>
+										<td style="padding: 5px 0 {{#if @last}}0{{else}}10px{{/if}} 0; color: #153634; font-family: Ariel, sans-serif; font-size: 14px; line-height: 16px;">
+											<b>name</b> {{ name.first }} {{ name.last }}
+										</td>
+									</tr>
+								{{/each}}
 								<tr>
 									<td style="padding: 30px 0 10px 0; color: #153634; font-family: Ariel, sans-serif; font-size: 20px; line-height: 24px;">
 										<b>Registration Details</b>
@@ -93,10 +107,10 @@
 										<b>how did they hear about the event</b> {{ event.source }}
 									</td>
 								</tr>
-								{{#if event.attendanceCapacity}}
+								{{#if event.whereInTheProcess}}
 								<tr>
 									<td style="padding: 5px 0 0 0; color: #153634; font-family: Ariel, sans-serif; font-size: 14px; line-height: 16px;">
-										<b>attendance capacity</b> {{ event.attendanceCapacity }}
+										<b>where are they in the adoption process</b> {{ event.whereInTheProcess }}
 									</td>
 								</tr>
 								{{/if}}

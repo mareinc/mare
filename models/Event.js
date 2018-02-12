@@ -86,7 +86,18 @@ Event.schema.add({
 			last: String
 		},
 		age: Number,
-		socialWorkerID: String
+		registrantID: String
+	}]
+});
+
+// add an array of sub-documents to keep track of unregistered adult attendees
+Event.schema.add({
+	unregisteredAdultAttendees: [{
+		name: {
+			first: String,
+			last: String
+		},
+		registrantID: String
 	}]
 });
 

@@ -67,7 +67,7 @@
 								{{#if event.unregisteredChildrenRemoved}}
 								<tr>
 									<td style="padding: 30px 0 10px 0; color: #153634; font-family: Ariel, sans-serif; font-size: 20px; line-height: 24px;">
-										<b>Unregistered Children Attendees Removed</b>
+										<b>Unregistered Child Attendees Removed</b>
 									</td>
 								</tr>
 								{{/if}}
@@ -83,30 +83,20 @@
 										</td>
 									</tr>
 								{{/each}}
-								{{!-- <tr>
+								{{#if event.unregisteredAdultsRemoved}}
+								<tr>
 									<td style="padding: 30px 0 10px 0; color: #153634; font-family: Ariel, sans-serif; font-size: 20px; line-height: 24px;">
-										<b>Registration Details</b>
-									</td>
-								</tr>
-								<tr>
-									<td style="padding: 5px 0 0 0; color: #153634; font-family: Ariel, sans-serif; font-size: 14px; line-height: 16px;">
-										<b>how did they hear about the event</b> {{ event.source }}
-									</td>
-								</tr>
-								{{#if event.attendanceCapacity}}
-								<tr>
-									<td style="padding: 5px 0 0 0; color: #153634; font-family: Ariel, sans-serif; font-size: 14px; line-height: 16px;">
-										<b>attendance capacity</b> {{ event.attendanceCapacity }}
+										<b>Unregistered Adult Attendees Removed</b>
 									</td>
 								</tr>
 								{{/if}}
-								{{#if event.questionsOrComments}}
-								<tr>
-									<td style="padding: 5px 0 0 0; color: #153634; font-family: Ariel, sans-serif; font-size: 14px; line-height: 16px;">
-										<b>questions or comments</b> {{ event.questionsOrComments }}
-									</td>
-								</tr>
-								{{/if}} --}}
+								{{#each event.unregisteredAdultsRemoved}}
+									<tr>
+										<td style="padding: 5px 0 {{#if @last}}0{{else}}10px{{/if}} 0; color: #153634; font-family: Ariel, sans-serif; font-size: 14px; line-height: 16px;">
+											<b>name</b> {{ name.first }} {{ name.last }}
+										</td>
+									</tr>
+								{{/each}}
 							</table>
 						</td>
 					</tr>
