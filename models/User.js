@@ -3,8 +3,6 @@ var keystone	= require( 'keystone' ),
 
 // Create model
 var User = new keystone.List( 'User', {
-	// autokey: { path: 'key', from: 'email', unique: true },
-	// map: { name: 'email' },
 	hidden: true
 });
 

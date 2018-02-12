@@ -134,11 +134,11 @@ Child.add('Display Options', {
 	photolistingPageNumber: { type: Types.Text, label: 'photolisting page', initial: true },
 	previousPhotolistingPageNumbers: { type: Types.Text, label: 'previous photolisting pages', initial: true },
 
-	image: { type: Types.CloudinaryImage, label: 'display image', folder: 'children/', select: true, selectPrefix: 'children/', publicID: 'fileName', dependsOn: { mustBePlacedWithSiblings: false } },
+	image: { type: Types.CloudinaryImage, label: 'display image', folder: `${ process.env.CLOUDINARY_DIRECTORY }/children/`, select: true, selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/children/`, publicID: 'fileName', dependsOn: { mustBePlacedWithSiblings: false } },
 	galleryImage: { type: Types.Url, hidden: true },
 	detailImage: { type: Types.Url, hidden: true },
-	allImages: { type: Types.CloudinaryImages, label: 'all images', folder: 'children/', select: true, selectPrefix: 'children/', publicID: 'fileName', dependsOn: { mustBePlacedWithSiblings: false }, autoCleanup: true },
-	siblingGroupImage: { type: Types.CloudinaryImage, label: 'sibling group image', folder: 'sibling-groups/', select: true, selectPrefix: 'sibling-groups/', publicID: 'siblingGroupFileName', dependsOn: { mustBePlacedWithSiblings: true }, autoCleanup: true },
+	allImages: { type: Types.CloudinaryImages, label: 'all images', folder: `${ process.env.CLOUDINARY_DIRECTORY }/children/`, select: true, selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/children/`, publicID: 'fileName', dependsOn: { mustBePlacedWithSiblings: false }, autoCleanup: true },
+	siblingGroupImage: { type: Types.CloudinaryImage, label: 'sibling group image', folder: `${ process.env.CLOUDINARY_DIRECTORY }/sibling-groups/`, select: true, selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/sibling-groups/`, publicID: 'siblingGroupFileName', dependsOn: { mustBePlacedWithSiblings: true }, autoCleanup: true },
 	siblingGroupGalleryImage: { type: Types.Url, hidden: true },
 	siblingGroupDetailImage: { type: Types.Url, hidden: true },
 	extranetUrl: { type: Types.Url, label: 'extranet and related profile url', initial: true } // TODO: Since this is redundant as this just points the the url where the photo exists (the child's page), we may hide this field.  This must be kept in as it will help us track down the child information in the old system in the event of an issue.
@@ -200,7 +200,7 @@ Child.add('Display Options', {
 /* Container for all system fields (add a heading if any are meant to be visible through the admin UI) */
 }, {
 
-	// system field to store an appropriate file prefix
+	// system fields to store appropriate file prefixes
 	fileName: { type: Types.Text, hidden: true },
 	siblingGroupFileName: { type: Types.Text, hidden: true }
 
@@ -236,10 +236,12 @@ Child.schema.pre( 'save', function( next ) {
 	'use strict';
 	// // create cloudinary URLs for images sized for various uses
 	// this.setImages();
+	// // trim whitespace characters from any type.Text fields
+	// this.trimTextFields();
 	// // create a full name for the child based on their first, middle, and last names
 	// this.setFullName();
 	// // create a unique label for each child based on their first & last names and their registration number
-	this.setFullNameAndRegistrationLabel();
+	// this.setFullNameAndRegistrationLabel();
 	// // create an identifying name for file uploads
 	// this.setFileName();
 	// // if there are no siblings to be placed with, uncheck the box, otherwise check it
@@ -297,17 +299,185 @@ Child.schema.post( 'save', function() {
 	// 		this.setChangeHistory();
 	// 	});
 });
-
+// TODO: this isn't needed anymore, remove gallery image binding across the site and remove the fields from all child models
 Child.schema.methods.setImages = function() {
 	'use strict';
 
 	// TODO: Play with lowering quality to 0 and doubling the image size as an optimization technique
-	this.galleryImage = this._.image.thumbnail( 430, 430, { quality: 60 } );
-	this.detailImage = this._.image.thumbnail( 200, 200, { quality: 60 } );
+	if( this.image.exists ) {
+		this.galleryImage = this.image.secure_url;
+		this.detailImage = this.image.secure_url;
+	}
 
-	this.siblingGroupGalleryImage = this._.siblingGroupImage.thumbnail( 430, 430, { quality: 60 } );
-	this.siblingGroupDetailImage = this._.siblingGroupImage.thumbnail( 200, 200, { quality: 60 } );
+	if( this.siblingGroupImage.exists ) {
+		this.siblingGroupGalleryImage = this.siblingGroupImage.secure_url;
+		this.siblingGroupDetailImage = this.siblingGroupImage.secure_url;
+	}
 };
+/* text fields don't automatically trim(), this is to ensure no leading or trailing whitespace gets saved into url, text, or text area fields */
+Child.schema.methods.trimTextFields = function() {
+
+	if( this.get( 'name.first' ) ) {
+		this.set( 'name.first', this.get( 'name.first' ).trim() );
+	}
+	
+	if( this.get( 'name.middle' ) ) {
+		this.set( 'name.middle', this.get( 'name.middle' ).trim() );
+	}
+
+	if( this.get( 'name.last' ) ) {
+		this.set( 'name.last', this.get( 'name.last' ).trim() );
+	}
+
+	if( this.get( 'name.alias' ) ) {
+		this.set( 'name.alias', this.get( 'name.alias' ).trim() );
+	}
+
+	if( this.get( 'name.nickName' ) ) {
+		this.set( 'name.nickName', this.get( 'name.nickName' ).trim() );
+	}
+
+	if( this.get( 'raceNotes' ) ) {
+		this.set( 'raceNotes', this.get( 'raceNotes' ).trim() );
+	}
+
+	if( this.get( 'yearEnteredCare' ) ) {
+		this.set( 'yearEnteredCare', this.get( 'yearEnteredCare' ).trim() );
+	}
+
+	if( this.get( 'siblingTypeOfContact' ) ) {
+		this.set( 'siblingTypeOfContact', this.get( 'siblingTypeOfContact' ).trim() );
+	}
+
+	if( this.get( 'birthFamilyTypeOfContact' ) ) {
+		this.set( 'birthFamilyTypeOfContact', this.get( 'birthFamilyTypeOfContact' ).trim() );
+	}
+
+	if( this.get( 'cityText' ) ) {
+		this.set( 'cityText', this.get( 'cityText' ).trim() );
+	}
+
+	if( this.get( 'careFacilityName' ) ) {
+		this.set( 'careFacilityName', this.get( 'careFacilityName' ).trim() );
+	}
+
+	if( this.get( 'physicalNeedsDescription' ) ) {
+		this.set( 'physicalNeedsDescription', this.get( 'physicalNeedsDescription' ).trim() );
+	}
+
+	if( this.get( 'emotionalNeedsDescription' ) ) {
+		this.set( 'emotionalNeedsDescription', this.get( 'emotionalNeedsDescription' ).trim() );
+	}
+
+	if( this.get( 'intellectualNeedsDescription' ) ) {
+		this.set( 'intellectualNeedsDescription', this.get( 'intellectualNeedsDescription' ).trim() );
+	}
+
+	if( this.get( 'socialNeedsDescription' ) ) {
+		this.set( 'socialNeedsDescription', this.get( 'socialNeedsDescription' ).trim() );
+	}
+
+	if( this.get( 'aspirations' ) ) {
+		this.set( 'aspirations', this.get( 'aspirations' ).trim() );
+	}
+
+	if( this.get( 'schoolLife' ) ) {
+		this.set( 'schoolLife', this.get( 'schoolLife' ).trim() );
+	}
+
+	if( this.get( 'familyLife' ) ) {
+		this.set( 'familyLife', this.get( 'familyLife' ).trim() );
+	}
+
+	if( this.get( 'personality' ) ) {
+		this.set( 'personality', this.get( 'personality' ).trim() );
+	}
+
+	if( this.get( 'otherRecruitmentConsiderations' ) ) {
+		this.set( 'otherRecruitmentConsiderations', this.get( 'otherRecruitmentConsiderations' ).trim() );
+	}
+
+	if( this.get( 'healthNotesNew' ) ) {
+		this.set( 'healthNotesNew', this.get( 'healthNotesNew' ).trim() );
+	}
+
+	if( this.get( 'healthNotesOld' ) ) {
+		this.set( 'healthNotesOld', this.get( 'healthNotesOld' ).trim() );
+	}
+
+	if( this.get( 'profile.quote' ) ) {
+		this.set( 'profile.quote', this.get( 'profile.quote' ).trim() );
+	}
+
+	if( this.get( 'profile.part1' ) ) {
+		this.set( 'profile.part1', this.get( 'profile.part1' ).trim() );
+	}
+
+	if( this.get( 'profile.part2' ) ) {
+		this.set( 'profile.part2', this.get( 'profile.part2' ).trim() );
+	}
+
+	if( this.get( 'profile.part3' ) ) {
+		this.set( 'profile.part3', this.get( 'profile.part3' ).trim() );
+	}
+
+	if( this.get( 'groupProfile.quote' ) ) {
+		this.set( 'groupProfile.quote', this.get( 'groupProfile.quote' ).trim() );
+	}
+
+	if( this.get( 'groupProfile.part1' ) ) {
+		this.set( 'groupProfile.part1', this.get( 'groupProfile.part1' ).trim() );
+	}
+
+	if( this.get( 'groupProfile.part2' ) ) {
+		this.set( 'groupProfile.part2', this.get( 'groupProfile.part2' ).trim() );
+	}
+
+	if( this.get( 'groupProfile.part3' ) ) {
+		this.set( 'groupProfile.part3', this.get( 'groupProfile.part3' ).trim() );
+	}
+
+	if( this.get( 'photolistingPageNumber' ) ) {
+		this.set( 'photolistingPageNumber', this.get( 'photolistingPageNumber' ).trim() );
+	}
+
+	if( this.get( 'previousPhotolistingPageNumbers' ) ) {
+		this.set( 'previousPhotolistingPageNumbers', this.get( 'previousPhotolistingPageNumbers' ).trim() );
+	}
+
+	if( this.get( 'extranetUrl' ) ) {
+		this.set( 'extranetUrl', this.get( 'extranetUrl' ).trim() );
+	}
+
+	if( this.get( 'video' ) ) {
+		this.set( 'video', this.get( 'video' ).trim() );
+	}
+
+	if( this.get( 'siblingGroupVideo' ) ) {
+		this.set( 'siblingGroupVideo', this.get( 'siblingGroupVideo' ).trim() );
+	}
+
+	if( this.get( 'wednesdaysChildVideo' ) ) {
+		this.set( 'wednesdaysChildVideo', this.get( 'wednesdaysChildVideo' ).trim() );
+	}
+
+	if( this.get( 'wednesdaysChildSiblingGroupVideo' ) ) {
+		this.set( 'wednesdaysChildSiblingGroupVideo', this.get( 'wednesdaysChildSiblingGroupVideo' ).trim() );
+	}
+
+	if( this.get( 'otherMediaDescription' ) ) {
+		this.set( 'otherMediaDescription', this.get( 'otherMediaDescription' ).trim() );
+	}
+
+	if( this.get( 'place' ) ) {
+		this.set( 'place', this.get( 'place' ).trim() );
+	}
+
+	if( this.get( 'communicationsCollateralDetails' ) ) {
+		this.set( 'communicationsCollateralDetails', this.get( 'communicationsCollateralDetails' ).trim() );
+	}
+};
+
 // TODO: Better handled with a virtual
 Child.schema.methods.setFullName = function() {
 	'use strict';
@@ -675,6 +845,8 @@ Child.schema.methods.setChangeHistory = function() {
 
 		// if the model is being saved for the first time
 		if( !model._original ) {
+			// set the summary information for the change history record
+			changeHistory.summary = 'record created';
 			// set the text for the change history record
 			changeHistory.changes = '<p>record created</p>';
 			// save the change history record

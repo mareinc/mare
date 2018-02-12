@@ -37,7 +37,7 @@ SocialWorker.add( 'Permissions', {
 		full: { type: Types.Text, label: 'name', hidden: true, noedit: true, initial: false }
 	},
 
-	avatar: { type: Types.CloudinaryImage, label: 'avatar', folder: 'users/social workers', select: true, selectPrefix: 'users/social workers', autoCleanup: true }, // TODO: add publicID attribute for better naming in Cloudinary
+	avatar: { type: Types.CloudinaryImage, label: 'avatar', folder: `${ process.env.CLOUDINARY_DIRECTORY }/users/social-workers`, select: true, selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/users/social-workers`, autoCleanup: true }, // TODO: add publicID attribute for better naming in Cloudinary
 
 	contactGroups: { type: Types.Relationship, label: 'contact groups', ref: 'Contact Group', many: true, initial: true }
 
@@ -103,6 +103,8 @@ SocialWorker.schema.post( 'init', function() {
 SocialWorker.schema.pre( 'save', function( next ) {
 	'use strict';
 
+	// trim whitespace characters from any type.Text fields
+	this.trimTextFields();
 	// create a full name for the social worker
 	this.setFullName();
 	// all user types that can log in derive from the User model, this allows us to identify users better
@@ -151,6 +153,58 @@ SocialWorker.schema.virtual( 'displayName' ).get( function() {
 	return `${ this.name.first } ${ this.name.last }`;
 });
 
+/* text fields don't automatically trim(), this is to ensure no leading or trailing whitespace gets saved into url, text, or text area fields */
+SocialWorker.schema.methods.trimTextFields = function() {
+	
+	if( this.get( 'name.first' ) ) {
+		this.set( 'name.first', this.get( 'name.first' ).trim() );
+	}
+
+	if( this.get( 'name.last' ) ) {
+		this.set( 'name.last', this.get( 'name.last' ).trim() );
+	}
+
+	if( this.get( 'name.full' ) ) {
+		this.set( 'name.full', this.get( 'name.full' ).trim() );
+	}
+
+	if( this.get( 'phone.work' ) ) {
+		this.set( 'phone.work', this.get( 'phone.work' ).trim() );
+	}
+
+	if( this.get( 'phone.mobile' ) ) {
+		this.set( 'phone.mobile', this.get( 'phone.mobile' ).trim() );
+	}
+
+	if( this.get( 'agencyText' ) ) {
+		this.set( 'agencyText', this.get( 'agencyText' ).trim() );
+	}
+
+	if( this.get( 'address.street1' ) ) {
+		this.set( 'address.street1', this.get( 'address.street1' ).trim() );
+	}
+
+	if( this.get( 'address.street2' ) ) {
+		this.set( 'address.street2', this.get( 'address.street2' ).trim() );
+	}
+
+	if( this.get( 'address.cityText' ) ) {
+		this.set( 'address.cityText', this.get( 'address.cityText' ).trim() );
+	}
+
+	if( this.get( 'address.zipCode' ) ) {
+		this.set( 'address.zipCode', this.get( 'address.zipCode' ).trim() );
+	}
+
+	if( this.get( 'title' ) ) {
+		this.set( 'title', this.get( 'title' ).trim() );
+	}
+
+	if( this.get( 'notes' ) ) {
+		this.set( 'notes', this.get( 'notes' ).trim() );
+	}
+};
+
 SocialWorker.schema.methods.setFullName = function() {
 	'use strict';
 
@@ -185,6 +239,8 @@ SocialWorker.schema.methods.setChangeHistory = function() {
 
 		// if the model is being saved for the first time
 		if( !model._original ) {
+			// set the summary information for the change history record
+			changeHistory.summary = 'record created';
 			// set the text for the change history record
 			changeHistory.changes = '<p>record created</p>';
 			// save the change history record

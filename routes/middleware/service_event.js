@@ -36,7 +36,7 @@ exports.getEventById = ( eventId, populateOptions = [] ) => {
 /* TODO: this is not reusable, but is needed to show a single event page.  Consider adding populate and possibly
 		 building other elements of the Mongoose query dynamically using passed in options */
 exports.getEventByKey = key => {
-	
+
 	return new Promise( ( resolve, reject ) => {
 		// attempt to find a single event matching the passed in key, and populate some of the Relationship fields
 		keystone.list( 'Event' ).model
@@ -71,7 +71,7 @@ exports.getEventByKey = key => {
 /* TODO: this is not reusable, but is needed to show a events category page.  Consider adding populate and possibly
 		 building other elements of the Mongoose query dynamically using passed in options */
 exports.getActiveEventsByEventType = ( eventType, eventGroup ) => {
-			
+
 	return new Promise( ( resolve, reject ) => {
 
 		keystone.list( 'Event' ).model
@@ -97,11 +97,11 @@ exports.getActiveEventsByEventType = ( eventType, eventGroup ) => {
 				// and reject the promise
 				reject();
 			});
-		});			
+		});
 };
 
 exports.getActiveEventsByUserId = ( userId, eventGroup ) => {
-			
+
 	return new Promise( ( resolve, reject ) => {
 
 		keystone.list( 'Event' ).model
@@ -131,7 +131,7 @@ exports.getActiveEventsByUserId = ( userId, eventGroup ) => {
 };
 
 exports.getAllActiveEvents = eventGroup => {
-			
+
 	return new Promise( ( resolve, reject ) => {
 
 		keystone.list( 'Event' ).model
@@ -212,9 +212,9 @@ exports.submitEvent = function submitEvent( req, res, next ) {
 			req.flash( 'success', {
 				title: 'Your event has been submitted',
 				detail: 'once your event has been approved by MARE staff, you will receive a notification email.  If you don\'t receive an email within 5 business days, please contact [some mare contact] for a status update.'} );
-			
+
 			// set the fields to populate on the fetched event model
-			const populateOptions = [ 'contact', 'address.state' ];		
+			const populateOptions = [ 'contact', 'address.state' ];
 			// populate the Relationship fields on the event
 			event.populate( populateOptions, err => {
 				// if there was an error populating Relationship fields on the event
@@ -225,7 +225,7 @@ exports.submitEvent = function submitEvent( req, res, next ) {
 				} else {
 					// fetch the email target model matching 'event created by social worker'
 					const fetchEmailTarget = emailTargetMiddleware.getEmailTargetByName( 'event created by social worker' );
-					
+
 					fetchEmailTarget
 						// if we successfully fetched the email target model
 						.then( emailTarget => {
@@ -276,7 +276,7 @@ exports.createEvent = event => {
 		const newEvent = new Event.model({
 
 			name: event.name,
-			type: event.eventType,	
+			type: event.eventType,
 			address: {
 				street1: event.street1,
 				street2: event.street2,
@@ -310,18 +310,218 @@ exports.createEvent = event => {
 	});
 };
 
-exports.register = ( eventId, userId ) => {
-	// TODO: this will be implemented post-launch
+exports.register = ( eventDetails, user ) => {
+
 	return new Promise( ( resolve, reject ) => {
-		resolve();
+
+		// get the user type that is registering for an event
+		let attendeeType =  exports.getEventGroup( user.userType );
+
+		// get the event that the user is registering for
+		exports.getEventById( eventDetails.eventId )
+			.then( event => {
+
+				// add the user as an attendee
+				event[ attendeeType ].push( user._id );
+
+				// if there are registered children defined, add them to the list of attendees
+				if ( eventDetails.registeredChildren ) {
+
+					event.childAttendees = event.childAttendees.concat( eventDetails.registeredChildren );
+				}
+
+				// if there are unregistered children defined, add them to the list of attendees
+				if ( eventDetails.unregisteredChildren ) {
+
+					event.unregisteredChildAttendees = event.unregisteredChildAttendees.concat( eventDetails.unregisteredChildren );
+				}
+
+				// if there are unregistered adults defined, add them to the list of attendees
+				if ( eventDetails.unregisteredAdults ) {
+
+					event.unregisteredAdultAttendees = event.unregisteredAdultAttendees.concat( eventDetails.unregisteredAdults );
+				}
+
+				// save the updated event
+				event.save( error => {
+
+					if ( error ) {
+
+						console.error( `error saving an update to event ${ event._id } - ${ error }` );
+						reject( error );
+					} else {
+
+						resolve();
+					}
+				});
+			})
+			.catch( error => {
+
+				console.error( `error registering user ${ user._id } for event ${ eventDetails.eventId } - ${ error }` );
+				reject( error );
+			});
 	});
 };
 
-exports.unregister = ( eventId, userId ) => {
-	// TODO: this will be implemented post-launch
+exports.unregister = ( eventDetails, user ) => {
+
 	return new Promise( ( resolve, reject ) => {
-		resolve();
+
+		// get the user type that is unregistering for an event
+		let attendeeType =  exports.getEventGroup( user.userType );
+
+		// get the event that the user is registering for
+		exports.getEventById( eventDetails.eventId )
+			// remove the attendee from the event
+			.then( event => {
+
+				// get the index of the attendee to be removed
+				let indexOfAttendee = event[ attendeeType ].indexOf( user._id );
+				// splice the attendee from the list
+				event[ attendeeType ].splice( indexOfAttendee, 1 );
+
+				return event;
+			})
+			// remove any registered children attendees ( if applicable )
+			.then( event => {
+
+				if ( user.userType === 'social worker' ) {
+					return exports.removeRegisteredChildren( event, user._id );
+				} else {
+					return { eventModel: event };
+				}
+			})
+			// remove any unregistered children and adult attendees
+			.then( unregistrationData => {
+
+				unregistrationData.unregisteredChildrenRemoved = exports.removeUnregisteredChildren( unregistrationData.eventModel, user._id );
+				unregistrationData.unregisteredAdultsRemoved = exports.removeUnregisteredAdults( unregistrationData.eventModel, user._id );
+
+				return unregistrationData;
+			})
+			// save the updated event
+			.then( unregistrationData => {
+
+				// save the updated event
+				unregistrationData.eventModel.save( error => {
+
+					if ( error ) {
+
+						console.error( `error unregistering user ${ user._id } for event ${ eventDetails.eventId } - ${ error }` );
+						reject( error );
+					} else {
+
+						resolve({
+							registeredChildrenRemoved: unregistrationData.registeredChildrenRemoved,
+							unregisteredChildrenRemoved: unregistrationData.unregisteredChildrenRemoved,
+							unregisteredAdultsRemoved: unregistrationData.unregisteredAdultsRemoved
+						});
+					}
+				});
+			})
+			.catch( error => {
+
+				console.error( `error unregistering user ${ user._id } for event ${ eventDetails.eventId } - ${ error }` );
+				reject( error );
+			});
 	});
+};
+
+exports.removeRegisteredChildren = ( event, registrantID ) => {
+
+	return new Promise( ( resolve, reject ) => {
+
+		// populate the registered children attendees of the event and remove any children that were signed up by the social worker that is unregistering for the event
+		event.populate( 'childAttendees', error => {
+
+			if ( error ) {
+
+				console.error( `error populating the child attendees of event ${ event._id } - ${ error }` );
+				reject( error );
+			} else {
+
+				let registeredChildrenToRemoveIndexes = [];
+				let registeredChildrenRemoved = [];
+
+				// capture all registered children ( and their indexes ) that were signed up by the social worker that is unregistering
+				event.childAttendees.forEach( ( child, index ) => {
+
+					if ( registrantID.id === child.adoptionWorker.id || registrantID.id === child.recruitmentWorker.id ) {
+
+						registeredChildrenToRemoveIndexes.push( index );
+						registeredChildrenRemoved.push( child );
+					}
+				});
+
+				// reverse the registeredChildrenToRemoveIndexes array to prevent the splicing process from messing with the array indexes
+				registeredChildrenToRemoveIndexes.reverse();
+				// remove each registered child from the list of child attendees
+				registeredChildrenToRemoveIndexes.forEach( indexOfChild => {
+
+					event.childAttendees.splice( indexOfChild, 1 );
+				});
+
+				resolve({
+					eventModel: event,
+					registeredChildrenRemoved
+				});
+			}
+		});
+	});
+};
+
+exports.removeUnregisteredChildren = ( event, registrantID ) => {
+
+	// remove the unregistered children attendees of the event that were signed up by the user that is unregistering for the event
+	let unregisteredChildrenToRemoveIndexes = [];
+	let unregisteredChildrenRemoved = [];
+
+	// capture all unregistered children ( and their indexes ) that were signed up by the user that is unregistering
+	event.unregisteredChildAttendees.forEach( ( child, index ) => {
+
+		if ( registrantID.toString() === child.registrantID ) {
+
+			unregisteredChildrenToRemoveIndexes.push( index );
+			unregisteredChildrenRemoved.push( child );
+		}
+	});
+
+	// reverse the unregisteredChildrenToRemoveIndexes array to prevent the splicing process from messing with the array indexes
+	unregisteredChildrenToRemoveIndexes.reverse();
+	// remove each unregistered child from the list of child attendees
+	unregisteredChildrenToRemoveIndexes.forEach( indexOfChild => {
+
+		event.unregisteredChildAttendees.splice( indexOfChild, 1 );
+	});
+
+	return unregisteredChildrenRemoved;
+};
+
+exports.removeUnregisteredAdults = ( event, registrantID ) => {
+
+	// remove the unregistered adult attendees of the event that were signed up by the user that is unregistering for the event
+	let unregisteredAdultsToRemoveIndexes = [];
+	let unregisteredAdultsRemoved = [];
+
+	// capture all unregistered adult ( and their indexes ) that were signed up by the user that is unregistering
+	event.unregisteredAdultAttendees.forEach( ( adult, index ) => {
+
+		if ( registrantID.toString() === adult.registrantID ) {
+
+			unregisteredAdultsToRemoveIndexes.push( index );
+			unregisteredAdultsRemoved.push( adult );
+		}
+	});
+
+	// reverse the unregisteredAdultsToRemoveIndexes array to prevent the splicing process from messing with the array indexes
+	unregisteredAdultsToRemoveIndexes.reverse();
+	// remove each unregistered adult from the list of adult attendees
+	unregisteredAdultsToRemoveIndexes.forEach( indexOfChild => {
+
+		event.unregisteredAdultAttendees.splice( indexOfChild, 1 );
+	});
+
+	return unregisteredAdultsRemoved;
 };
 
 /* returns an array of staff email contacts */
@@ -357,7 +557,7 @@ exports.getEventStaffContactInfo = emailTarget => {
  *	frontend services
  */
 // exports.addUser = ( req, res, next ) => {
-	
+
 // 	const userId	= req.user.get( '_id' ),
 // 		  userName	= req.user.get( 'name.full' ),
 // 		  userType	= req.user.get( 'userType' ),
@@ -367,7 +567,7 @@ exports.getEventStaffContactInfo = emailTarget => {
 // 	const eventGroup = exports.getEventGroup( userType );
 // 	// fetch the event the user should be added to
 // 	let fetchEvent = exports.getEventById( eventId );
-		
+
 // 	fetchEvent
 // 		.then( event => {
 // 			// get the array of user IDs already in the field the user should be added to, and get the index of the user
@@ -402,8 +602,8 @@ exports.getEventStaffContactInfo = emailTarget => {
 // 		})
 // 		.catch( () => {
 // 			// log an error for debugging purposes
-// 			console.error( `there was an error adding the user to the event with id ${ req.body.eventId }` );	
-			
+// 			console.error( `there was an error adding the user to the event with id ${ req.body.eventId }` );
+
 // 			// construct useful data for needed UI updates
 // 			var responseData = {
 // 				success: false,
@@ -463,8 +663,8 @@ exports.getEventStaffContactInfo = emailTarget => {
 // 		})
 // 		.catch( () => {
 // 			// log an error for debugging purposes
-// 			console.error( `there was an error removing the user from the event with id ${ req.body.eventId }` );	
-			
+// 			console.error( `there was an error removing the user from the event with id ${ req.body.eventId }` );
+
 // 			// construct useful data for needed UI updates
 // 			var responseData = {
 // 				success: false,

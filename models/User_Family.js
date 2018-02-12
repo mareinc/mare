@@ -37,7 +37,7 @@ Family.add( 'Permissions', {
 
 },  'General Information', {
 
-	avatar: { type: Types.CloudinaryImage, label: 'avatar', folder: 'users/families', select: true, selectPrefix: 'users/families', autoCleanup: true }, // TODO: add publicID attribute for better naming in Cloudinary
+	avatar: { type: Types.CloudinaryImage, label: 'avatar', folder: `${ process.env.CLOUDINARY_DIRECTORY }/users/families`, select: true, selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/users/families`, autoCleanup: true }, // TODO: add publicID attribute for better naming in Cloudinary
 
 	registrationNumber: { type: Number, label: 'registration number', format: false, noedit: true },
 	initialContact: { type: Types.Date, label: 'initial contact', format: 'MM/DD/YYYY', initial: true }, // was required: data migration change ( undo if possible )
@@ -349,6 +349,8 @@ Family.schema.post( 'init', function() {
 // Pre Save
 Family.schema.pre( 'save', function( next ) {
 	'use strict';
+	// trim whitespace characters from any type.Text fields
+	this.trimTextFields();
 	// update the homestudy verified date
 	this.setHomestudyVerifiedDate();
 	// create a full name for each contact based on their first, middle, and last names
@@ -445,6 +447,150 @@ Family.schema.methods.setDisplayNameAndRegistrationLabel = function() {
 
 	// combine the display name and registration number to create a unique label for all Family models
 	this.displayNameAndRegistration = `${ this.displayName } - ${ this.registrationNumber }`;
+};
+
+/* text fields don't automatically trim(), this is to ensure no leading or trailing whitespace gets saved into url, text, or text area fields */
+Family.schema.methods.trimTextFields = function() {
+
+	if( this.get( 'displayName' ) ) {
+		this.set( 'displayName', this.get( 'displayName' ).trim() );
+	}
+
+	if( this.get( 'displayNameAndRegistration' ) ) {
+		this.set( 'displayNameAndRegistration', this.get( 'displayNameAndRegistration' ).trim() );
+	}
+
+	if( this.get( 'contact1.name.first' ) ) {
+		this.set( 'contact1.name.first', this.get( 'contact1.name.first' ).trim() );
+	}
+
+	if( this.get( 'contact1.name.last' ) ) {
+		this.set( 'contact1.name.last', this.get( 'contact1.name.last' ).trim() );
+	}
+
+	if( this.get( 'contact1.name.full' ) ) {
+		this.set( 'contact1.name.full', this.get( 'contact1.name.full' ).trim() );
+	}
+
+	if( this.get( 'contact1.phone.mobile' ) ) {
+		this.set( 'contact1.phone.mobile', this.get( 'contact1.phone.mobile' ).trim() );
+	}
+
+	if( this.get( 'contact1.phone.work' ) ) {
+		this.set( 'contact1.phone.work', this.get( 'contact1.phone.work' ).trim() );
+	}
+
+	if( this.get( 'contact1.email' ) ) {
+		this.set( 'contact1.email', this.get( 'contact1.email' ).trim() );
+	}
+
+	if( this.get( 'contact1.occupation' ) ) {
+		this.set( 'contact1.occupation', this.get( 'contact1.occupation' ).trim() );
+	}
+
+	if( this.get( 'contact2.name.first' ) ) {
+		this.set( 'contact2.name.first', this.get( 'contact2.name.first' ).trim() );
+	}
+
+	if( this.get( 'contact2.name.last' ) ) {
+		this.set( 'contact2.name.last', this.get( 'contact2.name.last' ).trim() );
+	}
+
+	if( this.get( 'contact2.name.full' ) ) {
+		this.set( 'contact2.name.full', this.get( 'contact2.name.full' ).trim() );
+	}
+
+	if( this.get( 'contact2.phone.mobile' ) ) {
+		this.set( 'contact2.phone.mobile', this.get( 'contact2.phone.mobile' ).trim() );
+	}
+
+	if( this.get( 'contact2.phone.work' ) ) {
+		this.set( 'contact2.phone.work', this.get( 'contact2.phone.work' ).trim() );
+	}
+
+	if( this.get( 'contact2.email' ) ) {
+		this.set( 'contact2.email', this.get( 'contact2.email' ).trim() );
+	}
+
+	if( this.get( 'contact2.occupation' ) ) {
+		this.set( 'contact2.occupation', this.get( 'contact2.occupation' ).trim() );
+	}
+
+	if( this.get( 'address.street1' ) ) {
+		this.set( 'address.street1', this.get( 'address.street1' ).trim() );
+	}
+
+	if( this.get( 'address.street2' ) ) {
+		this.set( 'address.street2', this.get( 'address.street2' ).trim() );
+	}
+
+	if( this.get( 'address.cityText' ) ) {
+		this.set( 'address.cityText', this.get( 'address.cityText' ).trim() );
+	}
+
+	if( this.get( 'address.displayCity' ) ) {
+		this.set( 'address.displayCity', this.get( 'address.displayCity' ).trim() );
+	}
+
+	if( this.get( 'address.zipCode' ) ) {
+		this.set( 'address.zipCode', this.get( 'address.zipCode' ).trim() );
+	}
+
+	if( this.get( 'address.homePhone' ) ) {
+		this.set( 'address.homePhone', this.get( 'address.homePhone' ).trim() );
+	}
+
+	if( this.get( 'child1.name' ) ) {
+		this.set( 'child1.name', this.get( 'child1.name' ).trim() );
+	}
+
+	if( this.get( 'child2.name' ) ) {
+		this.set( 'child2.name', this.get( 'child2.name' ).trim() );
+	}
+
+	if( this.get( 'child3.name' ) ) {
+		this.set( 'child3.name', this.get( 'child3.name' ).trim() );
+	}
+
+	if( this.get( 'child4.name' ) ) {
+		this.set( 'child4.name', this.get( 'child4.name' ).trim() );
+	}
+
+	if( this.get( 'child5.name' ) ) {
+		this.set( 'child5.name', this.get( 'child5.name' ).trim() );
+	}
+
+	if( this.get( 'child6.name' ) ) {
+		this.set( 'child6.name', this.get( 'child6.name' ).trim() );
+	}
+
+	if( this.get( 'child7.name' ) ) {
+		this.set( 'child7.name', this.get( 'child7.name' ).trim() );
+	}
+
+	if( this.get( 'child8.name' ) ) {
+		this.set( 'child8.name', this.get( 'child8.name' ).trim() );
+	}
+
+	if( this.get( 'otherAdultsInHome.relationships' ) ) {
+		this.set( 'otherAdultsInHome.relationships', this.get( 'otherAdultsInHome.relationships' ).trim() );
+	}
+
+	if( this.get( 'homestudy.summary' ) ) {
+		this.set( 'homestudy.summary', this.get( 'homestudy.summary' ).trim() );
+	}
+
+	if( this.get( 'socialWorkerText' ) ) {
+		this.set( 'socialWorkerText', this.get( 'socialWorkerText' ).trim() );
+	}
+
+	if( this.get( 'infoPacket.notes' ) ) {
+		this.set( 'infoPacket.notes', this.get( 'infoPacket.notes' ).trim() );
+	}
+
+	if( this.get( 'heardAboutMAREOther' ) ) {
+		this.set( 'heardAboutMAREOther', this.get( 'heardAboutMAREOther' ).trim() );
+	}
 };
 
 Family.schema.methods.setHomestudyVerifiedDate = function() {
@@ -668,6 +814,8 @@ Family.schema.methods.setChangeHistory = function setChangeHistory() {
 
 		// if the model is being saved for the first time
 		if( !model._original ) {
+			// set the summary information for the change history record
+			changeHistory.summary = 'record created';
 			// set the text for the change history record
 			changeHistory.changes = '<p>record created</p>';
 			// save the change history record
