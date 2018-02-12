@@ -594,9 +594,6 @@ exports.getRelevantSiblingGroupInformation = ( siblingGroups, locals ) => {
 		'severe'	: 3
 	};
 
-	const NO_IMAGE_SIBLING_GROUP_GALLERY	= 'images/no-image-sibling-group_gallery',
-		  NO_IMAGE_SIBLING_GROUP_DETAILS	= 'images/no-image-sibling-group_details';
-
 	locals.siblingGroupsToReturn = siblingGroups.map( group => {
 		// cache the children array from the group for faster lookups
 		const children = group.children;
