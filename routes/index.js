@@ -14,6 +14,7 @@ const keystone							= require( 'keystone' ),
 	  childAdjustmentService			= require( './middleware/fix_child' ),
 	  familyAdjustmentService			= require( './middleware/fix_family' ),
 	  changeHistoryAdjustmentService	= require( './middleware/fix_change-history' ),
+	  cloudinaryImageAdjustmentService	= require( './middleware/fix_cloudinary-images' ),
 	  importRoutes						= keystone.importer( __dirname );
 
 // common middleware
@@ -97,8 +98,6 @@ exports = module.exports = app => {
 	app.get( '/fix/children'							, middleware.requireAdmin, childAdjustmentService.fixChildren );
 	app.get( '/fix/families'							, middleware.requireAdmin, familyAdjustmentService.fixFamilies );
 	app.get( '/fix/family-histories'					, middleware.requireAdmin, changeHistoryAdjustmentService.fixFamilyHistories );
-	// app.get( 'fix/social-worker-history'				, middleware.requireAdmin, changeHistoryAdjustmentService.fixSocialWorkerHistories );
-	// app.get( 'fix/child-history'						, middleware.requireAdmin, changeHistoryAdjustmentService.fixChildHistories );
-	// app.get( '/fix/children'							, middleware.requireAdmin, modelService.fixChildren );
-	// app.get( '/fix/social-workers'						, middleware.requireAdmin, modelService.fixSocialWorkers );
+	app.get( '/fix/cloudinary-images'					, middleware.requireAdmin, cloudinaryImageAdjustmentService.fixCloudinaryImages );
+	app.get( '/fix/cloudinary-images/:model'			, middleware.requireAdmin, cloudinaryImageAdjustmentService.fixCloudinaryImages );
 };
