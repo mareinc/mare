@@ -21,8 +21,6 @@ Event.add( 'General Information', {
 	type: { type: Types.Select, label: 'event type', options: 'MARE adoption parties & information events, MAPP trainings, agency information meetings, other opportunities & trainings, fundraising events', required: true, initial: true }, // TODO: this fixes an issue in pre-save which can be updated to fetch the live results and not hardcode this list.
 	source: { type: Types.Relationship, label: 'source', ref: 'Source', dependsOn: { shouldCreateSource: true }, noedit: true, initial: true },
 	image: { type: Types.CloudinaryImage, note: 'needed to display in the sidebar, events page, and home page', folder: `${ process.env.CLOUDINARY_DIRECTORY }/events/`, select: true, selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/events/`, publicID: 'fileName', autoCleanup: true },
-	imageFeatured: { type: Types.Url, hidden: true },
-	imageSidebar: { type: Types.Url, hidden: true },
 
 	areBuddiesAllowed: { type: Types.Boolean, label: 'buddies allowed', initial: true },
 	isMatchingEvent: { type: Types.Boolean, label: 'matching event', initial: true }
@@ -101,11 +99,16 @@ Event.schema.add({
 	}]
 });
 
+Event.schema.virtual( 'hasImage' ).get( function() {
+	'use strict';
+
+	return this.image.exists;
+});
+
 // pre Save
 Event.schema.pre( 'save', function( next ) {
 	'use strict';
 
-	this.updateImageFields();
 	this.setUrl();
 	this.setFileName();
 
@@ -121,13 +124,6 @@ Event.schema.pre( 'save', function( next ) {
 		next();
 	});
 });
-// TODO: turn these fields into virtuals and update the templates that rely on it
-Event.schema.methods.updateImageFields = function() {
-	'use strict';
-
-	this.imageFeatured = this._.image.thumbnail( 168, 168, { quality: 80 } );
-	this.imageSidebar = this._.image.thumbnail( 216, 196, { quality: 80 } );
-};
 
 Event.schema.methods.setUrl = function() {
 	'use strict';

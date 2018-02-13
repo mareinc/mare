@@ -1,7 +1,9 @@
 <div id="slideshow" class="owl-carousel">
 	{{#each slides}}
 	<div class="item">
-		<img class="lazyOwl" data-src="{{ imageScaled }}" alt="{{ heading }}">
+		{{#if hasImage}}
+		<img class="lazyOwl" data-src="{{ image.secure_url }}" alt="{{ heading }}">
+		{{/if}}
 		<span class="slideshow__description hidden">
 			<div class="slideshow__header">{{ heading }}</div>
 			<div class="slideshow__tagline">{{ subHeading }}</div>

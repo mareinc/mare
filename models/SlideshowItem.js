@@ -11,25 +11,18 @@ var SlideshowItem = new keystone.List('Slideshow Item', {
 SlideshowItem.add({
 
 	image: { type: Types.CloudinaryImage, folder: `${ process.env.CLOUDINARY_DIRECTORY }/slideshow/`, select: true, selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/slideshow/`, autoCleanup: true }, // TODO: add publicID attribute for better naming in Cloudinary
-	imageStretched: {type: Types.Url, hidden: true},
-	imageScaled: {type: Types.Url, hidden: true},
 	parent: { type: Types.Relationship, label: 'slideshow', ref: 'Slideshow', initial: true },
 	heading: { type: Types.Text, label: 'heading', initial: true },
 	subHeading: { type: Types.Text, label: 'sub-heading', initial: true },
-	guideLabel: { type: Types.Text, label: 'label', initial: true},
+	guideLabel: { type: Types.Text, label: 'label', initial: true },
 	order: { type: Types.Number, label: 'order', initial: true }
 
 });
 
-// Pre Save
-SlideshowItem.schema.pre('save', function(next) {
+SlideshowItem.schema.virtual( 'hasImage' ).get( function() {
 	'use strict';
 
-	this.imageStretched = this._.image.scale(1050,500,{ quality: 80 });
-	this.imageScaled = this._.image.thumbnail(1050,500,{ quality: 80 });
-	// TODO: Consider formatting the order to 0,0
-
-	next();
+	return this.image.exists;
 });
 
 // Define default columns in the admin interface and register the model
