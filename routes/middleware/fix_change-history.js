@@ -5,6 +5,17 @@ const keystone		= require( 'keystone' ),
 const familyHistoriesGenerator = fixChangeHistoriesGenerator();
 
 exports.fixFamilyHistories = function( req, res, next ) {
+	// if the user is trying to run this script against the production database
+	if( /^.*\/mare$/.test( process.env.MONGO_URI ) ) {
+		// alert them of what they're doing and how to get around this message
+		return res.send(`
+		
+			WARNING:
+		
+			You are running this script against the production database.
+		
+			To allow execution, open fix_change-history.js and comment out the if block in fixFamilyHistories()` );
+	}
 	// kick off the first run of our generator
 	familyHistoriesGenerator.next();
 };

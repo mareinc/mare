@@ -40,18 +40,33 @@ targetModels.set( 'siteVisitors',		{ name: 'Site Visitor',		plural: 'site visito
 targetModels.set( 'admin',				{ name: 'Admin',			plural: 'admin' } );
 targetModels.set( 'siteVisitors',		{ name: 'Site Visitor',		plural: 'site visitors' } );
 targetModels.set( 'events',				{ name: 'Event',			plural: 'events' } );
-targetModels.set( 'featuredItems',		{ name: 'Featured Item',	plural: 'featured items' } );
 targetModels.set( 'mareInTheNews',		{ name: 'MARE in the News',	plural: 'MARE in the news stories' } );
-targetModels.set( 'slideshow items',	{ name: 'Slideshow Items',	plural: 'slideshow items' } );
+targetModels.set( 'slideshowItems',		{ name: 'Slideshow Item',	plural: 'slideshow items' } );
 targetModels.set( 'successStories',		{ name: 'Success Story',	plural: 'success stories' } );
 // create an array to hold models that need to be processed
 let modelsToProcess = [];
 
 exports.fixCloudinaryImages = function( req, res, next ) {
+	// if the user is trying to run this script against the production database
+	if( /^.*\/mare$/.test( process.env.MONGO_URI ) ) {
+		// alert them of what they're doing and how to get around this message
+		return res.send(`
+		
+			WARNING:
+		
+			You are running this script against the production database.
+		
+			To allow execution, open fix_cloudinary-images.js and comment out the if block in fixCloudinaryImages()` );
+	}
 	// extract request object parameters into variables for use by the functions and generator below
 	const targetModel = req.params.model;
 	// if a target model was specified
 	if( targetModel ) {
+		// if there the url the user enterd doesn't align with a model this script is set to fix
+		if( !targetModels.get( targetModel ) ) {
+			// respond with an error message and halt execution
+			return res.send( `ERROR: no script has been created to process the model you're targeting.  Please check fix_cloudinary-images.js to see if your route is wrong` );
+		}
 		// ensure we are processing just the specified model
 		modelsToProcess.push( targetModel );
 	// if no target model was specified
@@ -147,41 +162,50 @@ function saveModel( model ) {
 	const publicIdRegExp	= /^(?:website-development|website-staging|website-production)?\/?(.*)$/,
 		  urlRegExp			= /^(.+)(?:dbe9nfmbx|autoboxer)(.+)(?:v\d{10})(?:\/website-development|website-staging|website-production)?(.+)/;
 
-	// keep track of whether a model update was needed
-	let isModelUpdated;
-
 	// search for image fields
-	for( let field in model._doc ) {
+	for( let fieldName in model._doc ) {
+		// get the image field
+		let field = model.get( fieldName );
 		// if the field is an object and has a public_id field, it's a cloudinary image
-		if( model.get( field ) && typeof model.get( field ) === 'object' && model.get( field ).public_id ) {
-			// replace the folder prefix with one appropriate for the target environment
-			model.get( field ).public_id = model.get( field ).public_id.replace( publicIdRegExp, `${ cloudinaryData.folder }/$1` );
-			// replace the version of the child's image with the randomly generated one
-			model.get( field ).version = cloudinaryData.version;
-			// replace the account field, image version, and folder prefix in both image url fields
-			model.get( field ).url = model.get( field ).url.replace( urlRegExp, `$1${ cloudinaryData.account }$2v${ cloudinaryData.version }/${ cloudinaryData.folder }$3` );
-			model.get( field ).secure_url = model.get( field ).secure_url.replace( urlRegExp, `$1${ cloudinaryData.account }$2v${ cloudinaryData.version }/${ cloudinaryData.folder }$3` );
-			// mark the model as having been updated
-			isModelUpdated = true;
+		if( field && typeof field === 'object' && field.public_id ) {
+			// create an object with the updated image fields
+			let newImageData = {
+				// replace the folder prefix with one appropriate for the target environment
+				public_id: field.public_id.replace( publicIdRegExp, `${ cloudinaryData.folder }/$1` ),
+				// replace the version of the child's image with the randomly generated one for cache busting
+				version: cloudinaryData.version,
+				// replace the account field, image version, and folder prefix in both image url fields
+				url: field.url.replace( urlRegExp, `$1${ cloudinaryData.account }$2v${ cloudinaryData.version }/${ cloudinaryData.folder }$3` ),
+				secure_url: field.secure_url.replace( urlRegExp, `$1${ cloudinaryData.account }$2v${ cloudinaryData.version }/${ cloudinaryData.folder }$3` )
+			};
+			// merge the new image details into the original image and save the new object to the model
+			model.set( fieldName, Object.assign( field, newImageData ) );
 		}
 		// if the field contains an array of cloudinary image object
-		if( Array.isArray( model.get( field ) ) && model.get( field )[ 0 ] && model.get( field )[ 0 ].public_id ) {
+		if( Array.isArray( field ) && field[ 0 ] && field[ 0 ].public_id ) {
+			// create an array to hold the replacement image objects
+			let newImagesArray = [];
 			// loop through each image in the array
-			for( let image of model.get( field ) ) {
-				// replace the folder prefix with one appropriate for the target environment
-				image.public_id = image.public_id.replace( publicIdRegExp, `${ cloudinaryData.folder }/$1` );
-				// replace the version of the child's image with the randomly generated one
-				image.version = cloudinaryData.version;
-				// replace the account field, image version, and folder prefix in both image url fields
-				image.url = image.url.replace( urlRegExp, `$1${ cloudinaryData.account }$2v${ cloudinaryData.version }/${ cloudinaryData.folder }$3` );
-				image.secure_url = image.secure_url.replace( urlRegExp, `$1${ cloudinaryData.account }$2v${ cloudinaryData.version }/${ cloudinaryData.folder }$3` );
+			for( let image of field ) {
+				// create an object with the updated image fields
+				let newImageData = {
+					// replace the folder prefix with one appropriate for the target environment
+					public_id: image.public_id.replace( publicIdRegExp, `${ cloudinaryData.folder }/$1` ),
+					// replace the version of the child's image with the randomly generated one for cache busting
+					version: cloudinaryData.version,
+					// replace the account field, image version, and folder prefix in both image url fields
+					url: image.url.replace( urlRegExp, `$1${ cloudinaryData.account }$2v${ cloudinaryData.version }/${ cloudinaryData.folder }$3` ),
+					secure_url: image.secure_url.replace( urlRegExp, `$1${ cloudinaryData.account }$2v${ cloudinaryData.version }/${ cloudinaryData.folder }$3` )
+				};
+				// merge the new image details into the original image and save the new object to the array of new images
+				newImagesArray.push( Object.assign( image, newImageData ) );
 			}
-			// mark the model as having been updated
-			isModelUpdated = true;
+			// save the new images array to the model
+			model.set( fieldName, newImagesArray );
 		}
 	}
 
-	// attempt the save the model
+	// attempt to save the model
 	model.save( ( err, savedModel ) => {
 		// if we run into an error
 		if( err ) {
