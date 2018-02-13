@@ -15,8 +15,6 @@ SuccessStory.add({
 	subHeading: { type: Types.Text, label: 'sub-heading', initial: true },
 	content: { type: Types.Html, wysiwyg: true, note: 'do not add images or video, instead use the fields below', initial: true },
 	image: { type: Types.CloudinaryImage, note: 'needed to display in the sidebar, success story page, and home page', folder: `${ process.env.CLOUDINARY_DIRECTORY }/success-stories/`, select: true, selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/success-stories/`, publicID: 'fileName', autoCleanup: true },
-	imageFeatured: { type: Types.Url, hidden: true },
-	imageSidebar: { type: Types.Url, hidden: true },
 	imageCaption: { type: Types.Text, label: 'image caption', initial: true },
 	video: { type: Types.Url, label: 'video', initial: true }
 
@@ -43,12 +41,16 @@ SuccessStory.schema.statics.findRandom = function( callback ) {
 	}.bind( this ) );
 };
 
+SuccessStory.schema.virtual( 'hasImage' ).get( function() {
+	'use strict';
+
+	return this.image.exists;
+});
+
 // Pre Save
 SuccessStory.schema.pre( 'save', function( next ) {
 	'use strict';
 
-	this.imageFeatured = this._.image.thumbnail( 168, 168, { quality: 80 } );
-	this.imageSidebar = this._.image.thumbnail( 216, 196, { quality: 80 } );
 	this.url = '/success-stories/' + this.key;
 
 	// Create an identifying name for file uploads
