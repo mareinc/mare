@@ -106,24 +106,24 @@ Event.schema.virtual( 'hasImage' ).get( function() {
 });
 
 // pre Save
-Event.schema.pre( 'save', function( next ) {
-	'use strict';
+// Event.schema.pre( 'save', function( next ) {
+// 	'use strict';
 
-	this.setUrl();
-	this.setFileName();
+// 	this.setUrl();
+// 	this.setFileName();
 
-	let setSourceField = this.setSourceField();
+// 	let setSourceField = this.setSourceField();
 
-	setSourceField.then( sourceId => {
+// 	setSourceField.then( sourceId => {
 
-		this.source = sourceId;
-		next();
-	})
-	.catch( () => {
+// 		this.source = sourceId;
+// 		next();
+// 	})
+// 	.catch( () => {
 
-		next();
-	});
-});
+// 		next();
+// 	});
+// });
 
 Event.schema.methods.setUrl = function() {
 	'use strict';
