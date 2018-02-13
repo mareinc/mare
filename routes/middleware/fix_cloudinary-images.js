@@ -176,8 +176,8 @@ function saveModel( model ) {
 				// replace the version of the child's image with the randomly generated one for cache busting
 				version: cloudinaryData.version,
 				// replace the account field, image version, and folder prefix in both image url fields
-				url: field.url.replace( urlRegExp, `$1${ cloudinaryData.account }$2v${ cloudinaryData.version }/${ cloudinaryData.folder }$3` ).replace( '%27', '_' ),
-				secure_url: field.secure_url.replace( urlRegExp, `$1${ cloudinaryData.account }$2v${ cloudinaryData.version }/${ cloudinaryData.folder }$3` ).replace( '%27', '_' )
+				url: field.url.replace( urlRegExp, `$1${ cloudinaryData.account }$2v${ cloudinaryData.version }/${ cloudinaryData.folder }$3` ).replace( /%27/g, '_' ),
+				secure_url: field.secure_url.replace( urlRegExp, `$1${ cloudinaryData.account }$2v${ cloudinaryData.version }/${ cloudinaryData.folder }$3` ).replace( /%27/g, '_' )
 			};
 			// merge the new image details into the original image and save the new object to the model
 			model.set( fieldName, Object.assign( field, newImageData ) );
@@ -195,8 +195,8 @@ function saveModel( model ) {
 					// replace the version of the child's image with the randomly generated one for cache busting
 					version: cloudinaryData.version,
 					// replace the account field, image version, and folder prefix in both image url fields
-					url: image.url.replace( urlRegExp, `$1${ cloudinaryData.account }$2v${ cloudinaryData.version }/${ cloudinaryData.folder }$3` ).replace( '%27', '_' ),
-					secure_url: image.secure_url.replace( urlRegExp, `$1${ cloudinaryData.account }$2v${ cloudinaryData.version }/${ cloudinaryData.folder }$3` ).replace( '%27', '_' )
+					url: image.url.replace( urlRegExp, `$1${ cloudinaryData.account }$2v${ cloudinaryData.version }/${ cloudinaryData.folder }$3` ).replace( /%27/g, '_' ),
+					secure_url: image.secure_url.replace( urlRegExp, `$1${ cloudinaryData.account }$2v${ cloudinaryData.version }/${ cloudinaryData.folder }$3` ).replace( /%27/g, '_' )
 				};
 				// merge the new image details into the original image and save the new object to the array of new images
 				newImagesArray.push( Object.assign( image, newImageData ) );
