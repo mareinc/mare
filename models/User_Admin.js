@@ -29,7 +29,7 @@ Admin.add( 'Permissions', {
 		full: { type: Types.Text, label: 'name', hidden: true, noedit: true, initial: false }
 	},
 
-	avatar: { type: Types.CloudinaryImage, label: 'avatar', folder: 'users/admin', select: true, selectPrefix: 'users/admin', autoCleanup: true } // TODO: add publicID attribute for better naming in Cloudinary
+	avatar: { type: Types.CloudinaryImage, label: 'avatar', folder: `${ process.env.CLOUDINARY_DIRECTORY }/users/admin`, select: true, selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/users/admin`, autoCleanup: true } // TODO: add publicID attribute for better naming in Cloudinary
 
 }, 'Contact Information', {
 

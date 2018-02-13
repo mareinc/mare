@@ -20,9 +20,7 @@ Event.add( 'General Information', {
 	// type: { type: Types.Relationship, label: 'Event Type', ref: 'Event Type', required: true, initial: true }
 	type: { type: Types.Select, label: 'event type', options: 'MARE adoption parties & information events, MAPP trainings, agency information meetings, other opportunities & trainings, fundraising events', required: true, initial: true }, // TODO: this fixes an issue in pre-save which can be updated to fetch the live results and not hardcode this list.
 	source: { type: Types.Relationship, label: 'source', ref: 'Source', dependsOn: { shouldCreateSource: true }, noedit: true, initial: true },
-	image: { type: Types.CloudinaryImage, note: 'needed to display in the sidebar, events page, and home page', folder: 'events/', select: true, selectPrefix: 'events/', publicID: 'fileName', autoCleanup: true },
-	imageFeatured: { type: Types.Url, hidden: true },
-	imageSidebar: { type: Types.Url, hidden: true },
+	image: { type: Types.CloudinaryImage, note: 'needed to display in the sidebar, events page, and home page', folder: `${ process.env.CLOUDINARY_DIRECTORY }/events/`, select: true, selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/events/`, publicID: 'fileName', autoCleanup: true },
 
 	areBuddiesAllowed: { type: Types.Boolean, label: 'buddies allowed', initial: true },
 	isMatchingEvent: { type: Types.Boolean, label: 'matching event', initial: true }
@@ -55,7 +53,7 @@ Event.add( 'General Information', {
 	socialWorkerAttendees: { type: Types.Relationship, label: 'social workers', ref: 'Social Worker', filters: { isActive: true }, many: true, initial: true },
 	familyAttendees: { type: Types.Relationship, label: 'families', ref: 'Family', filters: { isActive: true }, many: true, initial: true },
 	childAttendees: { type: Types.Relationship, label: 'children', ref: 'Child', many: true, initial: true },
-	outsideContactAttendees: { type: Types.Relationship, label: 'volunteers', filters: { isVolunteer: true }, ref: 'Outside Contact', many: true, initial: true}
+	outsideContactAttendees: { type: Types.Relationship, label: 'volunteers', filters: { isVolunteer: true }, ref: 'Outside Contact', many: true, initial: true }
 
 }, 'Notes', {
 
@@ -78,16 +76,44 @@ Event.add( 'General Information', {
 
 });
 
+// add an array of sub-documents to keep track of unregistered children attendees
+Event.schema.add({
+	unregisteredChildAttendees: [{
+		name: {
+			first: String,
+			last: String
+		},
+		age: Number,
+		registrantID: String
+	}]
+});
+
+// add an array of sub-documents to keep track of unregistered adult attendees
+Event.schema.add({
+	unregisteredAdultAttendees: [{
+		name: {
+			first: String,
+			last: String
+		},
+		registrantID: String
+	}]
+});
+
+Event.schema.virtual( 'hasImage' ).get( function() {
+	'use strict';
+
+	return this.image.exists;
+});
+
 // pre Save
 Event.schema.pre( 'save', function( next ) {
 	'use strict';
 
-	this.updateImageFields();
 	this.setUrl();
 	this.setFileName();
 
 	let setSourceField = this.setSourceField();
-	
+
 	setSourceField.then( sourceId => {
 
 		this.source = sourceId;
@@ -98,17 +124,10 @@ Event.schema.pre( 'save', function( next ) {
 		next();
 	});
 });
-// TODO: turn these fields into virtuals and update the templates that rely on it
-Event.schema.methods.updateImageFields = function() {
-	'use strict';
-
-	this.imageFeatured = this._.image.thumbnail( 168, 168, { quality: 80 } );
-	this.imageSidebar = this._.image.thumbnail( 216, 196, { quality: 80 } );
-};
 
 Event.schema.methods.setUrl = function() {
 	'use strict';
-	
+
 	let eventType;
 
 	switch( this.type ) {

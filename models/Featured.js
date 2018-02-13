@@ -17,8 +17,7 @@ Featured.add({
 	aboutUs: {
 		title: { type: Types.Text, label: 'about us title', initial: true, default: 'Our Services' },
 		target: { type: Types.Relationship, ref: 'Page', label: 'about us page', filter: { type: 'aboutUs' }, required: true, initial: true },
-		image: { type: Types.CloudinaryImage, label: 'about us image', folder: 'featured/', select: true, selectPrefix: 'featured/', publicID: 'aboutUsFileName', autoCleanup: true }, // TODO: add publicID attribute for better naming in Cloudinary
-		imageScaled: { type: Types.Url, hidden: true },
+		image: { type: Types.CloudinaryImage, label: 'about us image', folder: `${ process.env.CLOUDINARY_DIRECTORY }/featured/`, select: true, selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/featured/`, publicID: 'aboutUsFileName', autoCleanup: true },
 		url: { type: Types.Url, label: 'about us url', noedit: true }
 	}
 
@@ -27,8 +26,7 @@ Featured.add({
 	successStory: {
 		title: { type: Types.Text, label: 'success story title', initial: true, default: 'Success Stories' },
 		target: { type: Types.Relationship, ref: 'Success Story', label: 'success story', required: true, initial: true },
-		image: { type: Types.CloudinaryImage, label: 'success story image', folder: 'featured/', select: true, selectPrefix: 'featured/', publicID: 'successStoryFileName', autoCleanup: true }, // TODO: add publicID attribute for better naming in Cloudinary
-		imageScaled: { type: Types.Url, hidden: true },
+		image: { type: Types.CloudinaryImage, label: 'success story image', folder: `${ process.env.CLOUDINARY_DIRECTORY }/featured/`, select: true, selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/featured/`, publicID: 'successStoryFileName', autoCleanup: true },
 		url: { type: Types.Url, label: 'success story url', noedit: true }
 	}
 
@@ -37,8 +35,7 @@ Featured.add({
 	event: {
 		title: { type: Types.Text, label: 'event title', initial: true, default: 'Events' },
 		target: { type: Types.Relationship, ref: 'Event', label: 'event', filters: { isActive: true }, required: true, initial: true },
-		image: { type: Types.CloudinaryImage, label: 'event image', folder: 'featured/', select: true, selectPrefix: 'featured/', publicID: 'eventFileName', autoCleanup: true }, // TODO: add publicID attribute for better naming in Cloudinary
-		imageScaled: { type: Types.Url, hidden: true },
+		image: { type: Types.CloudinaryImage, label: 'event image', folder: `${ process.env.CLOUDINARY_DIRECTORY }/featured/`, select: true, selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/featured/`, publicID: 'eventFileName', autoCleanup: true },
 		url: { type: Types.Url, label: 'event url', noedit: true }
 	}
 /* container for all system fields (add a heading if any are meant to be visible through the admin UI) */
@@ -49,6 +46,24 @@ Featured.add({
 	successStoryFileName: { type: Types.Text, hidden: true },
 	eventFileName: { type: Types.Text, hidden: true }
 
+});
+
+Featured.schema.virtual( 'hasAboutUsImage' ).get( function() {
+	'use strict';
+
+	return this.aboutUs.image.exists;
+});
+
+Featured.schema.virtual( 'hasSuccessStoryImage' ).get( function() {
+	'use strict';
+
+	return this.successStory.image.exists;
+});
+
+Featured.schema.virtual( 'hasEventImage' ).get( function() {
+	'use strict';
+
+	return this.event.image.exists;
 });
 
 // pre save
@@ -106,8 +121,6 @@ Featured.schema.methods.updateFields = function updateFields( { id, targetModel,
 					}
 					// populate the related fields
 					this[ field ].url = url ? url : model.get( 'url' );
-					// this may be confusing, but it's the same as this._.aboutUs.image.thumbnail(...) if field were 'aboutUs'
-					this[ field ].imageScaled = this._[ field ].image.thumbnail( 640,640,{ quality: 100 } );
 					// resolve with the _id of the model for easy refetching further down the line
 					resolve( model.get( '_id' ) );
 

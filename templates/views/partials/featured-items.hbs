@@ -5,7 +5,9 @@
 			<div class="featured-item__title-container">
 				<span class="featured-item__title">{{ aboutUs.title }}</span>
 			</div>
-			<img src="{{ aboutUs.imageScaled }}" alt="{{ aboutUs.title }}" class="featured-item__image">
+			{{#if hasAboutUsImage}}
+			<img src="{{ aboutUs.image.secure_url }}" alt="{{ aboutUs.title }}" class="featured-item__image">
+			{{/if}}
 		</a>
 	</li>
 	<li class="featured-item card">
@@ -13,7 +15,9 @@
 			<div class="featured-item__title-container">
 				<span class="featured-item__title">{{ successStory.title }}</span>
 			</div>
-			<img src="{{ successStory.imageScaled }}" alt="{{ successStory.title }}" class="featured-item__image">
+			{{#if hasSuccessStoryImage}}
+			<img src="{{ successStory.image.secure_url }}" alt="{{ successStory.title }}" class="featured-item__image">
+			{{/if}}
 		</a>
 	</li>
 	<li class="featured-item card">
@@ -21,7 +25,9 @@
 			<div class="featured-item__title-container">
 				<span class="featured-item__title">{{ event.title }}</span>
 			</div>
-			<img src="{{ event.imageScaled }}" alt="{{ event.title }}" class="featured-item__image">
+			{{#if hasEventImage}}
+			<img src="{{ event.image.secure_url }}" alt="{{ event.title }}" class="featured-item__image">
+			{{/if}}
 		</a>
 	</li>
 </ul>
