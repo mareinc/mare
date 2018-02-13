@@ -8,7 +8,7 @@ exports.getGalleryPermissions = function getGalleryPermissions( req, res, next )
 	let locals = res.locals;
 
 	// set local variables
-	locals.userType	= req.user ? req.user.get('userType') : 'anonymous';
+	locals.userType	= req.user ? req.user.get( 'userType' ) : 'anonymous';
 	// set a control variable for what a user has access to and simplifying future checks
 	locals.canBookmark	= locals.userType === 'family' || locals.userType === 'social worker';
 	locals.canSearch	= locals.userType === 'family' || locals.userType === 'social worker' || locals.userType === 'admin';

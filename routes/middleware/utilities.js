@@ -112,6 +112,12 @@ exports.generateAlphanumericHash = length => {
 	return crypto.randomBytes( Math.ceil( length / 2 ) ).toString( 'hex' );
 };
 
+/* generates a random number of the specified length, and ensures it will never have a leading 0 */
+exports.generateNumber = length => {
+
+	return Math.floor( Math.pow( 10, length - 1 ) + Math.random() * 9 * Math.pow( 10,  length - 1 ) );
+};
+
 /* add functionality to ES6 Set type for finding the union of two sets */
 /* { a, b, c }, { b, c, d } => { a, b, c, d } */
 Set.prototype.union = function( setB ) {
