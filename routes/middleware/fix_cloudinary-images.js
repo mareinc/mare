@@ -8,6 +8,8 @@
  * 
  * IMPORTANT: not specifying a target in the url will update all image fields in the database
  * 
+ * IMPORTANT: be sure to comment out the necessary parts of the pre-save and post-save hooks before running this script
+ * 
  * EXAMPLE: localhost:3000/fix/cloudinary-image
  */
 
@@ -38,7 +40,6 @@ targetModels.set( 'families',			{ name: 'Family',			plural: 'families' } );
 targetModels.set( 'socialWorkers',		{ name: 'Social Worker',	plural: 'social workers'} );
 targetModels.set( 'siteVisitors',		{ name: 'Site Visitor',		plural: 'site visitors' } );
 targetModels.set( 'admin',				{ name: 'Admin',			plural: 'admin' } );
-targetModels.set( 'siteVisitors',		{ name: 'Site Visitor',		plural: 'site visitors' } );
 targetModels.set( 'events',				{ name: 'Event',			plural: 'events' } );
 targetModels.set( 'mareInTheNews',		{ name: 'MARE in the News',	plural: 'MARE in the news stories' } );
 targetModels.set( 'slideshowItems',		{ name: 'Slideshow Item',	plural: 'slideshow items' } );
@@ -175,8 +176,8 @@ function saveModel( model ) {
 				// replace the version of the child's image with the randomly generated one for cache busting
 				version: cloudinaryData.version,
 				// replace the account field, image version, and folder prefix in both image url fields
-				url: field.url.replace( urlRegExp, `$1${ cloudinaryData.account }$2v${ cloudinaryData.version }/${ cloudinaryData.folder }$3` ),
-				secure_url: field.secure_url.replace( urlRegExp, `$1${ cloudinaryData.account }$2v${ cloudinaryData.version }/${ cloudinaryData.folder }$3` )
+				url: field.url.replace( urlRegExp, `$1${ cloudinaryData.account }$2v${ cloudinaryData.version }/${ cloudinaryData.folder }$3` ).replace( '%27', '_' ),
+				secure_url: field.secure_url.replace( urlRegExp, `$1${ cloudinaryData.account }$2v${ cloudinaryData.version }/${ cloudinaryData.folder }$3` ).replace( '%27', '_' )
 			};
 			// merge the new image details into the original image and save the new object to the model
 			model.set( fieldName, Object.assign( field, newImageData ) );
@@ -194,8 +195,8 @@ function saveModel( model ) {
 					// replace the version of the child's image with the randomly generated one for cache busting
 					version: cloudinaryData.version,
 					// replace the account field, image version, and folder prefix in both image url fields
-					url: image.url.replace( urlRegExp, `$1${ cloudinaryData.account }$2v${ cloudinaryData.version }/${ cloudinaryData.folder }$3` ),
-					secure_url: image.secure_url.replace( urlRegExp, `$1${ cloudinaryData.account }$2v${ cloudinaryData.version }/${ cloudinaryData.folder }$3` )
+					url: image.url.replace( urlRegExp, `$1${ cloudinaryData.account }$2v${ cloudinaryData.version }/${ cloudinaryData.folder }$3` ).replace( '%27', '_' ),
+					secure_url: image.secure_url.replace( urlRegExp, `$1${ cloudinaryData.account }$2v${ cloudinaryData.version }/${ cloudinaryData.folder }$3` ).replace( '%27', '_' )
 				};
 				// merge the new image details into the original image and save the new object to the array of new images
 				newImagesArray.push( Object.assign( image, newImageData ) );

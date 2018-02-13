@@ -235,7 +235,7 @@ Child.schema.post( 'init', function() {
 Child.schema.pre( 'save', function( next ) {
 	'use strict';
 	// // create cloudinary URLs for images sized for various uses
-	// this.setImages();
+	this.setImages();
 	// // trim whitespace characters from any type.Text fields
 	// this.trimTextFields();
 	// // create a full name for the child based on their first, middle, and last names
