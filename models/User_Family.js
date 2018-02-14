@@ -290,9 +290,9 @@ Family.add( 'Permissions', {
 		numberOfChildrenToAdopt: { type: Types.Number, label: 'number of children to adopt', initial: true },
 		siblingContact: { type: Types.Boolean, label: 'contact with siblings', default: false, initial: true },
 		birthFamilyContact: { type: Types.Boolean, label: 'contact with birth parents', default: false, initial: true },
-		
+
 		havePetsInHome: { type: Types.Boolean, label: 'have pets in the home', default: false, initial: true },
-		
+
 		race: { type: Types.Relationship, label: 'race', ref: 'Race', many: true, initial: true },
 
 		maxNeeds: {
@@ -361,7 +361,7 @@ Family.schema.pre( 'save', function( next ) {
 	this.setFileName();
 	// all user types that can log in derive from the User model, this allows us to identify users better
 	this.setUserType();
-	
+
 	// there are two fields containing the city, depending on whether the family is in MA or not.  Save the value to a common field for display
 	const displayCityUpdated = this.setDisplayCity();
 	// attempt to update the no-edit region field
@@ -376,18 +376,21 @@ Family.schema.pre( 'save', function( next ) {
 		.catch( err => {
 			// log it for debugging purposes
 			console.error( `family ${ this.displayName } ( registration number: ${ this.registrationNumber } ) saved with errors` );
+			// create a unique label for each family based on their display names and their registration number
+			this.setDisplayNameAndRegistrationLabel();
 		})
 		// execute the following regardless of whether the promises were resolved or rejected
 		// TODO: this should be replaced with ES6 Promise.prototype.finally() once it's finalized, assuming we can update to the latest version of Node if we upgrade Keystone
 		.then( () => {
+			// create a unique label for each family based on their display names and their registration number
 			this.setDisplayNameAndRegistrationLabel();
-			
+
 			next();
 		});
 });
 
 Family.schema.post( 'save', function() {
-	
+
 	// we need this id in case the family was created via the website and updatedBy is empty
 	const websiteBotFetched = UserServiceMiddleware.getUserByFullName( 'Website Bot', 'admin' );
 
@@ -445,8 +448,11 @@ Family.schema.methods.setDisplayName = function() {
 Family.schema.methods.setDisplayNameAndRegistrationLabel = function() {
 	'use strict';
 
-	// combine the display name and registration number to create a unique label for all Family models
-	this.displayNameAndRegistration = `${ this.displayName } - ${ this.registrationNumber }`;
+	// if a registration number exists, add it to the displayNameAndRegistration label
+	let registrationNumberString = this.registrationNumber ? ` - ${ this.registrationNumber }` : '';
+
+	// combine the display name and registration number  to create a unique label for all Family models
+	this.displayNameAndRegistration = `${ this.displayName }${ registrationNumberString }`;
 };
 
 /* text fields don't automatically trim(), this is to ensure no leading or trailing whitespace gets saved into url, text, or text area fields */
@@ -656,8 +662,8 @@ Family.schema.methods.setDisplayCity = function() {
 				.catch( err => {
 					// log the error for debugging purposes
 					console.error( `display city could not be updated for family ${ this.displayName } ( registration number: ${ this.registrationNumber } ) - ${ err }` );
-					// reject the promise with the error
-					reject();
+					// resolve the promise so that the Promise.all() in the pre-save hook does not fail
+					resolve();
 				});
 		}
 	});
@@ -699,8 +705,8 @@ Family.schema.methods.updateRegion = function() {
 				.catch( err => {
 					// log the error for debugging purposes
 					console.error( `region could not be updated for family ${ this.displayName } ( registration number: ${ this.registrationNumber } ) - ${ err }` );
-					// reject the promise with the error
-					reject();
+					// resolve the promise so that the Promise.all() in the pre-save hook does not fail
+					resolve();
 				});
 		// otherwise, if the agency is in MA
 		} else {
@@ -718,8 +724,8 @@ Family.schema.methods.updateRegion = function() {
 				.catch( err => {
 					// log the error for debugging purposes
 					console.error( `region could not be updated for family ${ this.displayName } ( registration number: ${ this.registrationNumber } ) - ${ err }` );
-					// reject the promise with the error
-					reject();
+					// resolve the promise so that the Promise.all() in the pre-save hook does not fail
+					resolve();
 				});
 		}
 	});
@@ -742,7 +748,7 @@ Family.schema.methods.setGalleryViewingPermissions = function() {
 		fetchState
 			.then( state => {
 				// if the family has a verified homestudy and lives in a New England state
-				if( this.permissions.isHomestudyVerified && [ 'MA', 'NH', 'CT', 'ME', 'VT', 'RI', 'NY' ].includes( state.abbreviation ) ) {
+				if( state && this.permissions.isHomestudyVerified && [ 'MA', 'NH', 'CT', 'ME', 'VT', 'RI', 'NY' ].includes( state.abbreviation ) ) {
 					// allow them to view all children in the gallery
 					this.permissions.canViewAllChildren = true;
 				// otherwise
@@ -755,10 +761,12 @@ Family.schema.methods.setGalleryViewingPermissions = function() {
 			})
 			// if there was an error fetching the state
 			.catch( err => {
+				// allow them to view only unrestricted children in the gallery
+				this.permissions.canViewAllChildren = false;
 				// log the error for debugging purposes
-				console.error( `gallery viewing permissions could not be updated for family ${ this.displayName } ( registration number: ${ this.registrationNumber } ) - ${ err }` );
-				// reject the promise with the error
-				reject();
+				console.error( `gallery viewing permissions restricted by default for family ${ this.displayName } ( registration number: ${ this.registrationNumber } ) - ${ err }` );
+				// resolve the promise so that the Promise.all() in the pre-save hook does not fail
+				resolve();
 			});
 	});
 };
@@ -773,6 +781,7 @@ Family.schema.methods.setRegistrationNumber = function() {
 		// if the registration number has not been set before
 		} else {
 			// get the maximum registration number across all families
+			// TODO: combine this with Child service getMaxRegistrationNumber
 			const fetchMaxRegistrationNumber = FamilyServiceMiddleware.getMaxRegistrationNumber();
 			// once the value has been fetched
 			fetchMaxRegistrationNumber
@@ -787,8 +796,8 @@ Family.schema.methods.setRegistrationNumber = function() {
 				.catch( err => {
 					// log the error for debugging purposes
 					console.error( `registration number could not be updated for family ${ this.displayName } ( registration number: ${ this.registrationNumber } ) - ${ err }` );
-					// reject the promise with the error
-					reject();
+					// resolve the promise so that the Promise.all() in the pre-save hook does not fail
+					resolve();
 				});
 		}
 	});
