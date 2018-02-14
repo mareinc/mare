@@ -135,12 +135,8 @@ Child.add('Display Options', {
 	previousPhotolistingPageNumbers: { type: Types.Text, label: 'previous photolisting pages', initial: true },
 
 	image: { type: Types.CloudinaryImage, label: 'display image', folder: `${ process.env.CLOUDINARY_DIRECTORY }/children/`, select: true, selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/children/`, publicID: 'fileName', dependsOn: { mustBePlacedWithSiblings: false } },
-	galleryImage: { type: Types.Url, hidden: true },
-	detailImage: { type: Types.Url, hidden: true },
 	allImages: { type: Types.CloudinaryImages, label: 'all images', folder: `${ process.env.CLOUDINARY_DIRECTORY }/children/`, select: true, selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/children/`, publicID: 'fileName', dependsOn: { mustBePlacedWithSiblings: false }, autoCleanup: true },
 	siblingGroupImage: { type: Types.CloudinaryImage, label: 'sibling group image', folder: `${ process.env.CLOUDINARY_DIRECTORY }/sibling-groups/`, select: true, selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/sibling-groups/`, publicID: 'siblingGroupFileName', dependsOn: { mustBePlacedWithSiblings: true }, autoCleanup: true },
-	siblingGroupGalleryImage: { type: Types.Url, hidden: true },
-	siblingGroupDetailImage: { type: Types.Url, hidden: true },
 	extranetUrl: { type: Types.Url, label: 'extranet and related profile url', initial: true } // TODO: Since this is redundant as this just points the the url where the photo exists (the child's page), we may hide this field.  This must be kept in as it will help us track down the child information in the old system in the event of an issue.
 
 }, 'Recruitment Options', {
@@ -225,6 +221,18 @@ Child.relationship( { ref: 'Media Feature', refPath: 'children', path: 'media-fe
 Child.relationship( { ref: 'Internal Note', refPath: 'child', path: 'internal-notes', label: 'internal notes' } );
 Child.relationship( { ref: 'Child History', refPath: 'child', path: 'child-histories', label: 'change history' } );
 
+Child.schema.virtual( 'hasImage' ).get( function() {
+	'use strict';
+
+	return this.image.exists;
+});
+
+Child.schema.virtual( 'hasSiblingGroupImage' ).get( function() {
+	'use strict';
+
+	return this.siblingGroupImage.exists;
+});
+
 // Post Init - used to store all the values before anything is changed
 Child.schema.post( 'init', function() {
 	'use strict';
@@ -299,21 +307,7 @@ Child.schema.post( 'save', function() {
 			this.setChangeHistory();
 		});
 });
-// TODO: this isn't needed anymore, remove gallery image binding across the site and remove the fields from all child models
-Child.schema.methods.setImages = function() {
-	'use strict';
 
-	// TODO: Play with lowering quality to 0 and doubling the image size as an optimization technique
-	if( this.image.exists ) {
-		this.galleryImage = this.image.secure_url;
-		this.detailImage = this.image.secure_url;
-	}
-
-	if( this.siblingGroupImage.exists ) {
-		this.siblingGroupGalleryImage = this.siblingGroupImage.secure_url;
-		this.siblingGroupDetailImage = this.siblingGroupImage.secure_url;
-	}
-};
 /* text fields don't automatically trim(), this is to ensure no leading or trailing whitespace gets saved into url, text, or text area fields */
 Child.schema.methods.trimTextFields = function() {
 
