@@ -11,19 +11,19 @@ exports = module.exports = function(req, res) {
 
 	// set donation interval data
 	locals.donationPlans = donationService.PLAN_TYPES;
-	
+
 	// fetch all data needed to render this page
 	let fetchSidebarItems = pageService.getSidebarItems();
-    
+
 	fetchSidebarItems
 		.then( sidebarItems => {
 			// the sidebar items are a success story and event in an array, assign local variables to the two objects
 			const [ randomSuccessStory, randomEvent ] = sidebarItems;
-		
+
 			// assign properties to locals for access during templating
 			locals.randomSuccessStory	= randomSuccessStory;
 			locals.randomEvent			= randomEvent;
-			locals.stripeAPIKey 		= process.env.STRIPE_PUBLIC_API_KEY_TEST;
+			locals.stripeAPIKey 		= process.env.STRIPE_PUBLIC_API_KEY;
 
 			// set the layout to render with the right sidebar
 			locals[ 'render-with-sidebar' ] = true;
@@ -32,7 +32,7 @@ exports = module.exports = function(req, res) {
 		})
 		.catch( err => {
 			// log an error for debugging purposes
-			console.error( `there was an error loading data for the donation page ${ err }` );	
+			console.error( `there was an error loading data for the donation page ${ err }` );
 			// set the layout to render with the right sidebar
 			locals[ 'render-with-sidebar' ] = true;
 			// render the view using the donate.hbs template

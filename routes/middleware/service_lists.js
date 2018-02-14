@@ -16,7 +16,7 @@ exports.getAllRegions = () => {
 					// reject the promise
 					return reject();
 				}
-				// if regions were successfully returned, resolve with the array	
+				// if regions were successfully returned, resolve with the array
 				resolve( regions );
 			// if an error was encountered fetching from the database
 			}, err => {
@@ -29,7 +29,7 @@ exports.getAllRegions = () => {
 };
 
 exports.getRegionByName = name => {
-	
+
 	return new Promise( ( resolve, reject ) => {
 		// query the database for the region with the matching name
 		keystone.list( 'Region' ).model
@@ -53,7 +53,7 @@ exports.getRegionByName = name => {
 };
 
 exports.getAllSocialWorkerPositions = () => {
-	
+
 	return new Promise( ( resolve, reject ) => {
 		// query the database for all social worker position models
 		keystone.list( 'Social Worker Position' ).model
@@ -80,7 +80,7 @@ exports.getAllSocialWorkerPositions = () => {
 };
 
 exports.getAllRaces = options => {
-	
+
 	return new Promise( ( resolve, reject ) => {
 		// query the database for all race models
 		keystone.list( 'Race' ).model
@@ -119,7 +119,7 @@ exports.getAllRaces = options => {
 };
 
 exports.getAllStates = options => {
-	
+
 	return new Promise( ( resolve, reject ) => {
 		// query the database for all states models
 		keystone.list( 'State' ).model
@@ -158,8 +158,13 @@ exports.getAllStates = options => {
 };
 
 exports.getStateById = id => {
-	
+
 	return new Promise( ( resolve, reject ) => {
+		// if no id value was passed into the function
+		if ( !id ) {
+			// reject the promise with a description of the error
+			return reject( 'getStateById cannot execute - no state ID provided' );
+		}
 		// query the database for the state with the matching _id
 		keystone.list( 'State' ).model
 			.findById( id )
@@ -181,7 +186,7 @@ exports.getStateById = id => {
 };
 
 exports.getAllGenders = () => {
-	
+
 	return new Promise( ( resolve, reject ) => {
 		// query the database for all gender models
 		keystone.list( 'Gender' ).model
@@ -208,7 +213,7 @@ exports.getAllGenders = () => {
 };
 
 exports.getAllLegalStatuses = () => {
-	
+
 	return new Promise( ( resolve, reject ) => {
 		// query the database for all legal status models
 		keystone.list( 'Legal Status' ).model
@@ -235,7 +240,7 @@ exports.getAllLegalStatuses = () => {
 };
 
 exports.getAllLanguages = () => {
-	
+
 	return new Promise( ( resolve, reject ) => {
 		// query the database for all language models
 		keystone.list( 'Language' ).model
@@ -262,7 +267,7 @@ exports.getAllLanguages = () => {
 };
 
 exports.getAllFamilyConstellations = () => {
-	
+
 	return new Promise( ( resolve, reject ) => {
 		// query the database for all family constellation models
 		keystone.list( 'Family Constellation' ).model
@@ -289,7 +294,7 @@ exports.getAllFamilyConstellations = () => {
 };
 
 exports.getAllDisabilities = () => {
-	
+
 	return new Promise( ( resolve, reject ) => {
 		// query the database for all disability models
 		keystone.list( 'Disability' ).model
@@ -316,7 +321,7 @@ exports.getAllDisabilities = () => {
 };
 
 exports.getAllOtherConsiderations = () => {
-	
+
 	return new Promise( ( resolve, reject ) => {
 		// query the database for all other consideration models
 		keystone.list( 'Other Consideration' ).model
@@ -344,7 +349,7 @@ exports.getAllOtherConsiderations = () => {
 };
 
 exports.getChildTypesForWebsite = () => {
-	
+
 	return new Promise( ( resolve, reject ) => {
 		// query the database for all child types marked for display on the website
 		keystone.list( 'Child Type' ).model
@@ -373,7 +378,7 @@ exports.getChildTypesForWebsite = () => {
 };
 
 exports.getEventTypesForWebsite = () => {
-	
+
 	return new Promise( ( resolve, reject ) => {
 		// query the database for all event types marked for display on the website
 		keystone.list( 'Event Type' ).model
@@ -401,7 +406,7 @@ exports.getEventTypesForWebsite = () => {
 };
 
 exports.getAllWaysToHearAboutMARE = options => {
-	
+
 	return new Promise( ( resolve, reject ) => {
 	// query the database for all ways to hear about MARE
 	keystone.list( 'Way To Hear About MARE' ).model
@@ -494,7 +499,7 @@ exports.getAllOtherFamilyConstellationConsiderations = () => {
 };
 
 exports.getAllCitiesAndTowns = () => {
-	
+
 	return new Promise( ( resolve, reject ) => {
 		// query the database for all cities and towns
 		keystone.list( 'City or Town' ).model
@@ -522,7 +527,7 @@ exports.getAllCitiesAndTowns = () => {
 };
 
 exports.getCityOrTownById = id => {
-	
+
 	return new Promise( ( resolve, reject ) => {
 		// query the database for the city or town with the matching _id
 		keystone.list( 'City or Town' ).model
@@ -597,7 +602,7 @@ exports.getInquiryMethodByName = name => {
 };
 
 exports.getSourceByName = name => {
-	
+
 		return new Promise( ( resolve, reject ) => {
 			// attempt to find a single source matching the passed in name
 			keystone.list( 'Source' ).model

@@ -56,7 +56,6 @@ exports.getSuccessStoryByKey = key => {
 		keystone.list( 'Success Story' ).model
 			.findOne()
 			.where( 'key', key )
-			.lean()
 			.exec()
 			.then( successStory => {
 				// if the target success story could not be found

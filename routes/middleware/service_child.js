@@ -147,8 +147,8 @@ exports.getChildrenForSocialWorkerAccount = ( req, res, done, fieldsToSelect ) =
 										child.registrationDateConverted	= middleware.convertDate( child.registrationDate );
 									});
 
-									// remove children that have already been placed or have been withdrawn
-									let displayChildren = children.filter( child => child.status.childStatus !== 'placed' && child.status.childStatus !== 'withdrawn' );
+									// filter out any children that are not active or on hold
+									let displayChildren = children.filter( child => child.status.childStatus === 'active' || child.status.childStatus === 'on hold' );
 
 									locals.allChildren = displayChildren;
 									// execute done function if async is used to continue the flow of execution
@@ -309,50 +309,48 @@ exports.getUnrestrictedChildren = ( req, res, done, fieldsToSelect ) => {
 */
 exports.setNoChildImage = ( req, res, child, canViewAllChildren ) => {
 
-	const NO_IMAGE_MALE_GALLERY				= 'images/no-image-male_gallery.png',
-		  NO_IMAGE_MALE_DETAILS				= 'images/no-image-male_details.png',
-		  NO_IMAGE_FEMALE_GALLERY			= 'images/no-image-female_gallery.png',
-		  NO_IMAGE_FEMALE_DETAILS			= 'images/no-image-female_details.png',
-		  NO_IMAGE_OTHER_GALLERY			= 'images/no-image-other_gallery.png',
-		  NO_IMAGE_OTHER_DETAILS			= 'images/no-image-other_details.png',
-		  NO_IMAGE_SIBLING_GROUP_GALLERY	= 'images/no-image-sibling-group_gallery.png',
-		  NO_IMAGE_SIBLING_GROUP_DETAILS	= 'images/no-image-sibling-group_details.png';
+	const NO_IMAGE_MALE				= 'images/no-image-male.png',
+		  NO_IMAGE_FEMALE			= 'images/no-image-female.png',
+		  NO_IMAGE_OTHER			= 'images/no-image-other.png',
+		  NO_IMAGE_SIBLING_GROUP	= 'images/no-image-sibling-group.png';
 	// if the child is part of a sibling group
 	if( child.mustBePlacedWithSiblings ) {
 		// if the child image is missing or
 		//	the child is legal risk and the user doesn't have permissions to view all children or
 		//	the child visibility is 'Only Registered Social Workers and Families' and the user doesn't have permissions to view all children
-		if( !child.siblingGroupImage.secure_url ||
+		if( !child.hasSiblingGroupImage ||
 			( child.legalStatus.legalStatus === 'legal risk' && !canViewAllChildren ) ||
 			( child.siteVisibility !== 'everyone' && !canViewAllChildren ) ) {
 			// set the images to the placeholders for sibling groups
-			child.siblingGroupDetailImage = NO_IMAGE_SIBLING_GROUP_DETAILS;
-			child.siblingGroupGalleryImage = NO_IMAGE_SIBLING_GROUP_GALLERY;
+			child.siblingGroupDisplayImage = NO_IMAGE_SIBLING_GROUP;
+		// if it is acceptable to show the sibling group's image
+		} else {
+			child.siblingGroupDisplayImage = child.siblingGroupImage.secure_url;
 		}
 	// if the child is not part of a sibling group
 	} else {
 		//	if the child image is missing or
 		//	the child is legal risk and the user doesn't have permissions to view all children or
 		//	the child visibility is 'Only Registered Social Workers and Families' and the user doesn't have permissions to view all children
-		if( !child.image.secure_url	||
+		if( !child.hasImage	||
 			( child.legalStatus.legalStatus === 'legal risk' && !canViewAllChildren ) ||
 			( child.siteVisibility !== 'everyone' && !canViewAllChildren ) ) {
 			// and the child is male
 			if( child.gender.gender === 'male' ) {
 				// set the images to the placeholder for male children
-				child.detailImage = NO_IMAGE_MALE_DETAILS;
-				child.galleryImage = NO_IMAGE_MALE_GALLERY;
+				child.displayImage = NO_IMAGE_MALE;
 			// but if the child is female
 			} else if( child.gender.gender === 'female' ) {
 				// set the images to the placeholder for female children
-				child.detailImage = NO_IMAGE_FEMALE_DETAILS;
-				child.galleryImage = NO_IMAGE_FEMALE_GALLERY;
+				child.displayImage = NO_IMAGE_FEMALE;
 			// but if the child is neither male nor female
 			} else {
 				// set the images to the placeholder for transgender/other children
-				child.detailImage = NO_IMAGE_OTHER_DETAILS;
-				child.galleryImage = NO_IMAGE_OTHER_GALLERY;
+				child.displayImage = NO_IMAGE_OTHER;
 			}
+		// if it is acceptable to show the child's image
+		} else {
+			child.displayImage = child.image.secure_url;
 		}
 	}
 };
@@ -442,10 +440,10 @@ exports.getGalleryData = ( req, res, next ) => {
 	// create a string with the fields to select from each child (this speeds up the queries)
 	const fieldsToSelect = `gender race languages disabilities otherConsiderations recommendedFamilyConstellation
 							otherFamilyConstellationConsideration status legalStatus birthDate registrationDate
-							image siblingGroupImage siblingGroupDetailImage siblingGroupGalleryImage siteVisibility
-							detailImage galleryImage emotionalNeeds hasContactWithBirthFamily hasContactWithSiblings
-							video intellectualNeeds isBookmarked name siblings physicalNeeds registrationNumber
-							siblingsToBePlacedWith updatedAt wednesdaysChild mustBePlacedWithSiblings siblingGroupVideo`;
+							image siblingGroupImage siteVisibility emotionalNeeds hasContactWithBirthFamily
+							hasContactWithSiblings video intellectualNeeds isBookmarked name siblings physicalNeeds
+							registrationNumber siblingsToBePlacedWith updatedAt wednesdaysChild mustBePlacedWithSiblings
+							siblingGroupVideo`;
 
 	async.series([
 		done => { listsService.getChildStatusIdByName( req, res, done, 'active' ) },
@@ -553,10 +551,9 @@ exports.getRelevantChildInformation = ( children, locals ) => {
 		return {
 			age										: middleware.getAge( child.birthDate ),
 			ageConverted							: middleware.convertDate( child.birthDate ),
-			detailImage								: child.detailImage,
+			image								: child.displayImage,
 			disabilities							: _.pluck( child.disabilities, 'disability' ),
 			emotionalNeeds							: needsMap[child.emotionalNeeds],
-			galleryImage							: child.galleryImage,
 			gender									: child.gender.gender,
 			hasContactWithBiologicalParents			: child.hasContactWithBirthFamily,
 			hasContactWithBiologicalSiblings		: child.hasContactWithSiblings,
@@ -594,8 +591,7 @@ exports.getRelevantSiblingGroupInformation = ( siblingGroups, locals ) => {
 		'severe'	: 3
 	};
 
-	const NO_IMAGE_SIBLING_GROUP_GALLERY	= 'images/no-image-sibling-group_gallery',
-		  NO_IMAGE_SIBLING_GROUP_DETAILS	= 'images/no-image-sibling-group_details';
+	const NO_IMAGE_SIBLING_GROUP_PATH	= 'images/no-image-sibling-group';
 
 	locals.siblingGroupsToReturn = siblingGroups.map( group => {
 		// cache the children array from the group for faster lookups
@@ -617,10 +613,9 @@ exports.getRelevantSiblingGroupInformation = ( siblingGroups, locals ) => {
 			ages									: agesArray,
 			agesConverted							: children.map( child => middleware.convertDate( child.birthDate ) ),
 			agesString								: middleware.getArrayAsList( agesArray ),
-			detailImage								: _.uniq( children.map( child => child.siblingGroupDetailImage ) ).indexOf( NO_IMAGE_SIBLING_GROUP_DETAILS ) !== -1 ? NO_IMAGE_SIBLING_GROUP_DETAILS : children[ 0 ].siblingGroupDetailImage,
+			image									: _.uniq( children.map( child => child.siblingGroupDisplayImage ) ).indexOf( NO_IMAGE_SIBLING_GROUP_PATH ) !== -1 ? NO_IMAGE_SIBLING_GROUP_PATH : children[ 0 ].siblingGroupDisplayImage,
 			disabilities							: _.uniq( _.flatten( children.map( child => _.pluck( child.disabilities, 'disability' ) ) ) ),
 			emotionalNeeds							: _.uniq( children.map( child => needsMap[ child.emotionalNeeds ] ) ),
-			galleryImage							:  _.uniq( children.map( child => child.siblingGroupGalleryImage ) ).indexOf( NO_IMAGE_SIBLING_GROUP_DETAILS ) !== -1 ? NO_IMAGE_SIBLING_GROUP_DETAILS : children[ 0 ].siblingGroupGalleryImage,
 			genders									: _.uniq( children.map( child => child.gender.gender ) ),
 			hasContactWithBiologicalParents			: _.uniq( children.map( child => child.hasContactWithBirthFamily ) ),
 			hasContactWithBiologicalSiblings		: _.uniq( children.map( child => child.hasContactWithSiblings ) ),
