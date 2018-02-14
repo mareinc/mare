@@ -376,8 +376,6 @@ Family.schema.pre( 'save', function( next ) {
 		.catch( err => {
 			// log it for debugging purposes
 			console.error( `family ${ this.displayName } ( registration number: ${ this.registrationNumber } ) saved with errors` );
-			// create a unique label for each family based on their display names and their registration number
-			this.setDisplayNameAndRegistrationLabel();
 		})
 		// execute the following regardless of whether the promises were resolved or rejected
 		// TODO: this should be replaced with ES6 Promise.prototype.finally() once it's finalized, assuming we can update to the latest version of Node if we upgrade Keystone
