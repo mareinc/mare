@@ -147,8 +147,8 @@ exports.getChildrenForSocialWorkerAccount = ( req, res, done, fieldsToSelect ) =
 										child.registrationDateConverted	= middleware.convertDate( child.registrationDate );
 									});
 
-									// remove children that have already been placed or have been withdrawn
-									let displayChildren = children.filter( child => child.status.childStatus !== 'placed' && child.status.childStatus !== 'withdrawn' );
+									// filter out any children that are not active or on hold
+									let displayChildren = children.filter( child => child.status.childStatus === 'active' || child.status.childStatus === 'on hold' );
 
 									locals.allChildren = displayChildren;
 									// execute done function if async is used to continue the flow of execution

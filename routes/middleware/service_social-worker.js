@@ -1,6 +1,6 @@
 const keystone = require( 'keystone' );
- 
-exports.getSocialWorkerById = id => { 
+
+exports.getSocialWorkerById = id => {
 
 	return new Promise( ( resolve, reject ) => {
 		// if no id was passed in
@@ -41,10 +41,14 @@ exports.fetchRegisteredChildren = ( id ) => {
 			.find( { $or: [
 						{ adoptionWorker: id },
 						{ recruitmentWorker: id } ] } )
+			.populate( 'status' )
 			.lean()
 			.exec()
 			.then( children => {
-				resolve( children );
+
+				// filter out any children that are not active or on hold
+				let displayChildren = children.filter( child => child.status.childStatus === 'active' || child.status.childStatus === 'on hold' );
+				resolve( displayChildren );
 			}, err => {
 				// log the error for debugging purposes
 				console.error( `an error occurred fetching the children registered by social worker with id ${ id } - ${ err }` );
