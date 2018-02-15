@@ -13,7 +13,7 @@ exports = module.exports = ( req, res ) => {
 	// set default information for a staff email contact in case the real contact info can't be fetched
 	locals.donationsQuestionContact = {
 		name: { full: 'MARE' },
-		email: 'info@mareinc.org'
+		email: 'web@mareinc.org'
 	};
 
 	// set donation interval data and the stripe API key
