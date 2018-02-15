@@ -31,14 +31,16 @@ exports = module.exports = ( req, res ) => {
 		.catch( err => console.error( `error fetching email target for donation questions, default contact info will be used instead - ${ err }` ) )
 		// fetch the sidebar items
 		.then( () => pageService.getSidebarItems() )
-		// if the sidebar items were fetched successfully
+		// assign returned sidebar items to locals for templating
 		.then( sidebarItems => {
 			// the sidebar items are a success story and event in an array, assign local variables to the two objects
 			const [ randomSuccessStory, randomEvent ] = sidebarItems;
 			// assign properties to locals for access during templating
 			locals.randomSuccessStory	= randomSuccessStory;
-			locals.randomEvent			= randomEvent;		
-			
+			locals.randomEvent			= randomEvent;
+		})
+		// render the page with the sidebar
+		.then( () => {	
 			// set the layout to render with the right sidebar
 			locals[ 'render-with-sidebar' ] = true;
 			// render the view using the donate.hbs template
