@@ -73,6 +73,9 @@ exports.sendEventRegistrationEmailToMARE = ( eventDetails, userDetails, host, st
 					eventDetails.source = `Other: ${ eventDetails.otherSource }`;
 				}
 
+				// set custom display name if necessary
+				var displayName = userDetails.userType === 'family' ? userDetails.displayName : undefined;
+
 				// find the email template in templates/emails/
 				new keystone.Email({
 
@@ -90,7 +93,8 @@ exports.sendEventRegistrationEmailToMARE = ( eventDetails, userDetails, host, st
 					subject		: `new event registration`,
 					event: eventDetails,
 					user: userDetails,
-					host
+					host,
+					displayName
 
 				}, ( err, message ) => {
 					// log any errors
@@ -125,6 +129,9 @@ exports.sendEventUnregistrationEmailToMARE = ( eventDetails, userDetails, host, 
 			return resolve();
 		}
 
+		// set custom display name if necessary
+		var displayName = userDetails.userType === 'family' ? userDetails.displayName : undefined;
+
 		// find the email template in templates/emails/
 		new keystone.Email({
 
@@ -142,7 +149,8 @@ exports.sendEventUnregistrationEmailToMARE = ( eventDetails, userDetails, host, 
 			subject		: `event unregistration`,
 			event: eventDetails,
 			user: userDetails,
-			host
+			host,
+			displayName
 
 		}, ( err, message ) => {
 			// log any errors
