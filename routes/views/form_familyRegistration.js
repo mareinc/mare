@@ -29,6 +29,7 @@ exports = module.exports = ( req, res ) => {
 		fetchStates					= listsService.getAllStates( stateOptions ),
 		fetchChildTypes				= listsService.getChildTypesForWebsite();
 	
+	// initialize a promise chain
 	Promise.resolve()
 		// fetch information to populate all form selection elements
 		.then( () => Promise.all( [ fetchCitiesAndTowns, fetchGenders, fetchLanguages, fetchLegalStatuses, fetchRaces, fetchStates, fetchChildTypes ] ) )
@@ -55,7 +56,7 @@ exports = module.exports = ( req, res ) => {
 		// overwrite the default contact details with the returned object
 		.then( staffEmailContact => locals.socialWorkerFamilyRegistrationQuestionContact = staffEmailContact.staffEmailContact )
 		// log any errors fetching the staff email contact
-		.catch( err => console.error( `error fetching email target for social worker family registration questions, default contact info will be used instead - ${ err }` ) )
+		.catch( err => console.error( `error fetching email contact for social worker family registration questions, default contact info will be used instead - ${ err }` ) )
 		// fetch the sidebar items
 		.then( () => pageService.getSidebarItems() )
 		// assign returned sidebar items to locals for templating
