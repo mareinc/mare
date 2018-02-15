@@ -42,6 +42,7 @@ function oneTimeDonation( donationData ) {
 			amount: 		donationData.amountPennies,
 			currency: 		'usd',
 			description:	`${ usdFormatter.format( donationData.amountDollars ) } One-Time Donation`,
+			receipt_email:	donationData.email,
 			source: 		donationData.token
 		}, function( error, charge ) {
 
@@ -154,8 +155,6 @@ function createCustomer( donationData ) {
 			error ? reject( error ) : resolve( customer );
 		});
 	});
-
-
 }
 
 // create a stripe billing plan
@@ -200,8 +199,6 @@ function createPlan( customer, donationData ) {
 				}
 		});
 	});
-
-
 }
 
 // subscripe a customer to a payment plan
