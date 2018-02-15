@@ -121,31 +121,6 @@ exports.getBookmarkedChildren = ( req, res, done ) => {
 	}
 };
 
-/* returns an array of staff email contacts */
-// TODO: this is reused in several of the services that generate emails, make it a more generic call
-exports.getStaffContactInfo = contactType => {
-
-	return new Promise( ( resolve, reject ) => {
-		// TODO: it was nearly impossible to create a readable comma separated list of links in the template with more than one address,
-		// 	     so we're only fetching one contact when we should fetch them all
-		// get the database id of the admin contact set to handle children registered by social workers
-		emailTargetMiddleware
-			.getTargetId( contactType )
-			.then( targetId => {
-				// get the contact details of the admin contact set to handle registration questions for the target user type
-				return staffEmailContactMiddleware.getContactById( targetId );
-			})
-			.then( contactInfo => {
-				// resolve the promise with the full name and email address of the contact
-				resolve( contactInfo );
-			})
-			.catch( err => {
-				// reject the promise with the reason for the rejection
-				reject( `error fetching staff contact - ${ err }` );
-			});
-	});
-}
-
 /* Frontend services */
 
 exports.addChildBookmark = ( req, res, next ) => {
@@ -352,55 +327,54 @@ exports.registerFamily = ( req, res, next ) => {
 									   'child7.type', 'child8.gender', 'child8.type', 'language',
 									   'otherLanguages', 'matchingPreferences.gender', 'matchingPreferences.legalStatus',
 									   'matchingPreferences.race', 'heardAboutMAREFrom' ];
+			
+			// set default information for a staff email contact in case the real contact info can't be fetched
+			let staffEmailContactInfo = {
+				name: 'MARE',
+				email: 'web@mareinc.org'
+			};
 
 			// fetch the newly saved family model.  Needed because the saved family object doesn't have the Relationship fields populated
 			const fetchFamily = exports.getFamilyById( familyId, fieldsToPopulate );
 			// create a new verification code model in the database to allow users to verify their accounts
-			const createVerificationRecord = registrationService.createNewVerificationRecord( verificationCode, familyId );
-			// fetch contact info for the staff contact for family registration
-			const fetchRegistrationStaffContactInfo = exports.getStaffContactInfo( 'social worker family registration' );
-			// save any submitted files and append them to the newly created user
+			const createVerificationRecord = registrationService.createNewVerificationRecord( verificationCode, familyId );			
+			// fetch the email target model matching 'social worker family registration'
+			const fetchEmailTarget = emailTargetMiddleware.getEmailTargetByName( 'social worker family registration' );
+
+			// save any submitted files and append them to the newly created user		
 			// TODO: this still need to be implemented when file uploads are added to the system
 			// const uploadFamilyFiles = registrationService.uploadFile( newFamily, 'homestudy', 'homestudyFile_upload', files.homestudyFile_upload );
 
-			Promise.all( [ fetchFamily, fetchRegistrationStaffContactInfo ] )
+			fetchEmailTarget
+				// fetch contact info for the staff contact for 'social worker family registration'
+				.then( emailTarget => staffEmailContactMiddleware.getStaffEmailContactByEmailTarget( emailTarget.get( '_id' ), [ 'staffEmailContact' ] ) )
+				// overwrite the default contact details with the returned object
+				.then( staffEmailContact => staffEmailContactInfo = staffEmailContact.staffEmailContact )
+				// log any errors fetching the staff email contact
+				.catch( err => console.error( `error fetching email contact for social worker family registration, default contact info will be used instead - ${ err }` ) )
+				// check on the attempt to fetch the newly saved family
+				.then( () => fetchFamily )
+				// send a notification email to MARE
+				.then( fetchedFamily => socialWorkerFamilyRegistrationEmailService.sendNewSocialWorkerFamilyRegistrationNotificationEmailToMARE( socialWorkerName, rawFamilyData, fetchedFamily, staffEmailContactInfo, host ) )
+				// if there was an error sending the email
+				.catch( err => console.error( `error sending new family registered by social worker email to MARE - ${ err }` ) )
+				// check on the attempt to fetch the newly saved family ( needed again to give us access to the fetched family data at this point in the promise chain )
+				.then( () => fetchFamily )
+				// send a notification email to the social worker
+				.then( fetchedFamily => socialWorkerFamilyRegistrationEmailService.sendNewSocialWorkerFamilyRegistrationNotificationEmailToSocialWorker( socialWorkerName, rawFamilyData, fetchedFamily, staffEmailContactInfo, host ) )
+				// if there was an error sending the email to the social worker
+				.catch( err => console.error( `error sending new family registered by social worker email to social worker ${ req.user.get( 'name.full' ) } - ${ err }` ) )
+				// check on the attempt to fetch the newly saved family and create the verification record ( needed again to give us access to the fetched family data at this point in the promise chain )
+				.then( () => Promise.all( [ fetchFamily, createVerificationRecord ] ) )
+				// send a notification email to the family registered by the social worker
 				.then( values => {
 					// assign local variables to the values returned by the promises
-					const [ fetchedFamily, staffContactInfo ] = values;
+					const [ fetchedFamily, verificationRecord ] = values;
 					// send the notification email to family the social worker registered
-					return socialWorkerFamilyRegistrationEmailService.sendNewSocialWorkerFamilyRegistrationNotificationEmailToMARE( socialWorkerName, rawFamilyData, fetchedFamily, staffContactInfo, host );
+					return socialWorkerFamilyRegistrationEmailService.sendNewSocialWorkerFamilyRegistrationNotificationEmailToFamily( rawFamilyData, fetchedFamily, staffEmailContactInfo, host, verificationRecord );
 				})
-				// if there was an error sending the thank you email to the new family
-				.catch( err => {
-					// log the error for debugging purposes
-					console.error( `error sending new family registered by social worker email to MARE - ${ err }` );
-				});
-
-			Promise.all( [ fetchFamily, fetchRegistrationStaffContactInfo ] )
-				.then( values => {
-					// assign local variables to the values returned by the promises
-					const [ fetchedFamily, staffContactInfo ] = values;
-					// send the notification email to family the social worker registered
-					return socialWorkerFamilyRegistrationEmailService.sendNewSocialWorkerFamilyRegistrationNotificationEmailToSocialWorker( socialWorkerName, rawFamilyData, fetchedFamily, staffContactInfo, host );
-				})
-				// if there was an error sending the thank you email to the new family
-				.catch( err => {
-					// log the error for debugging purposes
-					console.error( `error sending new family registered by social worker email to social worker ${ req.user.get( 'name.full' ) } - ${ err }` );
-				});
-
-			Promise.all( [ fetchFamily, createVerificationRecord, fetchRegistrationStaffContactInfo ] )
-				.then( values => {
-					// assign local variables to the values returned by the promises
-					const [ fetchedFamily, verificationRecord, staffContactInfo ] = values;
-					// send the notification email to family the social worker registered
-					return socialWorkerFamilyRegistrationEmailService.sendNewSocialWorkerFamilyRegistrationNotificationEmailToFamily( rawFamilyData, fetchedFamily, staffContactInfo, host, verificationRecord );
-				})
-				// if there was an error sending the thank you email to the new family
-				.catch( err => {
-					// log the error for debugging purposes
-					console.error( `error sending new family registered by social worker email to family ${ newFamily.get( 'displayName' ) } - ${ err }` );
-				});
+				// if there was an error sending the email to the new family
+				.catch( err => console.error( `error sending new family registered by social worker email to family ${ newFamily.get( 'displayName' ) } - ${ err }` ) );
 
 			// create a success flash message
 			req.flash( 'success', {
