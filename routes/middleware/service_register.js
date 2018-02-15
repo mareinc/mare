@@ -59,10 +59,10 @@ exports.registerUser = ( req, res, next ) => {
 							// store the array of mailing list ids the user has opted into
 							const mailingListIds = user.mailingLists;
 							// set the fields to populate on the fetched user model
-							const populateOptions = [ 'address.city', 'address.state', 'heardAboutMAREFrom' ];
+							const fieldsToPopulate = [ 'address.city', 'address.state', 'heardAboutMAREFrom' ];
 							
 							// fetch the user model.  Needed because the copies we have don't have the Relationship fields populated
-							const fetchUser = userService.getUserByIdNew( userId, keystone.list( 'Site Visitor' ), populateOptions );
+							const fetchUser = userService.getUserByIdNew( userId, keystone.list( 'Site Visitor' ), fieldsToPopulate );
 							// fetch contact info for the staff contact for site visitor registration
 							const fetchRegistrationStaffContactInfo = exports.getRegistrationStaffContactInfo( 'site visitor' );
 							// create a new verification code model in the database to allow users to verify their accounts
@@ -144,10 +144,10 @@ exports.registerUser = ( req, res, next ) => {
 							// store the array of mailing list ids the user has opted into
 							const mailingListIds = user.mailingLists;
 							// set the fields to populate on the fetched user model
-							const populateOptions = [ 'address.city', 'address.state', 'positions' ];
+							const fieldsToPopulate = [ 'address.city', 'address.state', 'positions' ];
 							
 							// fetch the user model.  Needed because the copies we have don't have the Relationship fields populated
-							const fetchUser = userService.getUserByIdNew( userId, keystone.list( 'Social Worker' ), populateOptions );
+							const fetchUser = userService.getUserByIdNew( userId, keystone.list( 'Social Worker' ), fieldsToPopulate );
 							// fetch contact info for the staff contact for social worker registration
 							const fetchRegistrationStaffContactInfo = exports.getRegistrationStaffContactInfo( 'social worker' );
 							// create a new verification code model in the database to allow users to verify their accounts
@@ -232,38 +232,18 @@ exports.registerUser = ( req, res, next ) => {
 							// store the array of mailing list ids the user has opted into
 							const mailingListIds = user.mailingLists;
 							// set the fields to populate on the fetched user model
-							const populateOptions = [ 'contact1.gender',
-													  'contact1.race',
-													  'contact2.gender',
-													  'contact2.race',
-													  'address.city',
-													  'address.region',
-													  'address.state',
-													  'child1.gender',
-													  'child1.type',
-													  'child2.gender',
-													  'child2.type',
-													  'child3.gender',
-													  'child3.type',
-													  'child4.gender',
-													  'child4.type',
-													  'child5.gender',
-													  'child5.type',
-													  'child6.gender',
-													  'child6.type',
-													  'child7.gender',
-													  'child7.type',
-													  'child8.gender',
-													  'child8.type',
-													  'language',
-													  'otherLanguages',
-													  'matchingPreferences.gender',
-													  'matchingPreferences.legalStatus',
-													  'matchingPreferences.race',
-													  'heardAboutMAREFrom' ];
+							const fieldsToPopulate = [ 'contact1.gender', 'contact1.race', 'contact2.gender',
+													   'contact2.race', 'address.city', 'address.region', 'address.state',
+													   'child1.gender', 'child1.type', 'child2.gender', 'child2.type',
+													   'child3.gender', 'child3.type', 'child4.gender', 'child4.type',
+													   'child5.gender', 'child5.type', 'child6.gender', 'child6.type',
+													   'child7.gender', 'child7.type', 'child8.gender', 'child8.type',
+													   'language', 'otherLanguages', 'matchingPreferences.gender',
+													   'matchingPreferences.legalStatus', 'matchingPreferences.race',
+													   'heardAboutMAREFrom' ];
 
 							// fetch the user model.  Needed because the copies we have don't have the Relationship fields populated
-							const fetchUser = userService.getUserByIdNew( userId, keystone.list( 'Family' ), populateOptions );
+							const fetchUser = userService.getUserByIdNew( userId, keystone.list( 'Family' ), fieldsToPopulate );
 							// fetch contact info for the staff contact for family registration
 							const fetchRegistrationStaffContactInfo = exports.getRegistrationStaffContactInfo( 'family' );
 							// create a new verification code model in the database to allow users to verify their accounts

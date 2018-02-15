@@ -145,13 +145,13 @@ exports.getUserByFullName = ( name, userType ) => {
 };
 
 /* IMPORTANT NOTE: The function below is a copy of one above that's bound to async.  Merge them once async is removed */
-exports.getUserByIdNew = ( id, targetModel, populateOptions = [] ) => {
+exports.getUserByIdNew = ( id, targetModel, fieldsToPopulate = [] ) => {
 
 	return new Promise( ( resolve, reject ) => {
 		// fetch the record from the specified model type using the passed in id value
 		targetModel.model
 			.findById( id )
-			.populate( populateOptions )
+			.populate( fieldsToPopulate )
 			.exec()
 			.then( user => {
 				// if no user was found

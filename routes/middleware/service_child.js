@@ -787,12 +787,12 @@ exports.registerChild = ( req, res, next ) => {
 			const childId = newChild.get( 'registrationNumber' );
 
 			// set the fields to populate on the fetched child model
-			const populateOptions = [ 'languages', 'gender', 'race', 'residence', 'city', 'legalStatus', 'status',
-									  'recommendedFamilyConstellation', 'otherFamilyConstellationConsideration',
-									  'disabilities' ];
+			const fieldsToPopulate = [ 'languages', 'gender', 'race', 'residence', 'city', 'legalStatus', 'status',
+									   'recommendedFamilyConstellation', 'otherFamilyConstellationConsideration',
+									   'disabilities' ];
 
 			// fetch the newly saved child model.  Needed because the saved child object doesn't have the Relationship fields populated
-			const fetchChild = exports.getChildByRegistrationNumberNew( childId, populateOptions );
+			const fetchChild = exports.getChildByRegistrationNumberNew( childId, fieldsToPopulate );
 			// fetch contact info for the staff contact for children registered by social workers
 			const fetchRegistrationStaffContactInfo = exports.getStaffContactInfo( 'social worker child registration' );
 
@@ -940,7 +940,7 @@ exports.getStaffContactInfo = contactType => {
 // ------------------------------------------------------------------------------------------ //
 
 /* fetch a single child by their registration number */
-exports.getChildByRegistrationNumberNew = ( registrationNumber, populateOptions = [] ) => {
+exports.getChildByRegistrationNumberNew = ( registrationNumber, fieldsToPopulate = [] ) => {
 
 	return new Promise( ( resolve, reject ) => {
 		// convert the registration number to a number if it isn't already
@@ -960,7 +960,7 @@ exports.getChildByRegistrationNumberNew = ( registrationNumber, populateOptions 
 		keystone.list( 'Child' ).model
 			.findOne()
 			.where( 'registrationNumber' ).equals( targetRegistrationNumber )
-			.populate( populateOptions )
+			.populate( fieldsToPopulate )
 			.exec()
 			// if the database fetch executed successfully
 			.then( child => {

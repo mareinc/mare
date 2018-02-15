@@ -10,7 +10,7 @@ const keystone										= require( 'keystone' ),
 	  utilities         							= require( './utilities' );
 
 /* fetch a single family by their id */
-exports.getFamilyById = ( id, populateOptions = [] ) => {
+exports.getFamilyById = ( id, fieldsToPopulate = [] ) => {
 
 	return new Promise( ( resolve, reject ) => {
 		// if no id was passed in, or the number is invalid
@@ -23,7 +23,7 @@ exports.getFamilyById = ( id, populateOptions = [] ) => {
 		// attempt to find a single family matching the passed in id
 		keystone.list( 'Family' ).model
 			.findById( id )
-			.populate( populateOptions )
+			.populate( fieldsToPopulate )
 			.exec()
 			// if the database fetch executed successfully
 			.then( family => {
@@ -344,38 +344,17 @@ exports.registerFamily = ( req, res, next ) => {
 			const host = req.headers.host;
 
 			// set the fields to populate on the fetched user model
-			const populateOptions = [ 'contact1.gender',
-				'contact1.race',
-				'contact2.gender',
-				'contact2.race',
-				'address.city',
-				'address.region',
-				'address.state',
-				'child1.gender',
-				'child1.type',
-				'child2.gender',
-				'child2.type',
-				'child3.gender',
-				'child3.type',
-				'child4.gender',
-				'child4.type',
-				'child5.gender',
-				'child5.type',
-				'child6.gender',
-				'child6.type',
-				'child7.gender',
-				'child7.type',
-				'child8.gender',
-				'child8.type',
-				'language',
-				'otherLanguages',
-				'matchingPreferences.gender',
-				'matchingPreferences.legalStatus',
-				'matchingPreferences.race',
-				'heardAboutMAREFrom' ];
+			const fieldsToPopulate = [ 'contact1.gender', 'contact1.race', 'contact2.gender', 'contact2.race',
+									   'address.city', 'address.region', 'address.state', 'child1.gender',
+									   'child1.type', 'child2.gender', 'child2.type', 'child3.gender',
+									   'child3.type', 'child4.gender', 'child4.type', 'child5.gender',
+									   'child5.type', 'child6.gender', 'child6.type', 'child7.gender',
+									   'child7.type', 'child8.gender', 'child8.type', 'language',
+									   'otherLanguages', 'matchingPreferences.gender', 'matchingPreferences.legalStatus',
+									   'matchingPreferences.race', 'heardAboutMAREFrom' ];
 
 			// fetch the newly saved family model.  Needed because the saved family object doesn't have the Relationship fields populated
-			const fetchFamily = exports.getFamilyById( familyId, populateOptions );
+			const fetchFamily = exports.getFamilyById( familyId, fieldsToPopulate );
 			// create a new verification code model in the database to allow users to verify their accounts
 			const createVerificationRecord = registrationService.createNewVerificationRecord( verificationCode, familyId );
 			// fetch contact info for the staff contact for family registration

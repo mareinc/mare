@@ -99,9 +99,9 @@ exports.submitQuestion = function submitQuestion( req, res, next ) {
 		// if we successfully fetched the email target
 		.then( emailTarget => {
 			// set the fields to populate on the fetched staff email contact model
-			const populateOptions = [ 'staffEmailContact' ];
+			const fieldsToPopulate = [ 'staffEmailContact' ];
 			// fetch contact info for the staff contact for 'have a question'
-			return staffEmailContactMiddleware.getStaffEmailContactByEmailTarget( emailTarget.get( '_id' ), populateOptions );
+			return staffEmailContactMiddleware.getStaffEmailContactByEmailTarget( emailTarget.get( '_id' ), fieldsToPopulate );
 		})
 		// if we successfully fetched the staff email contact
 		.then( staffEmailContact => {

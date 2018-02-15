@@ -6,12 +6,12 @@ const keystone						= require( 'keystone' ),
 	  staffEmailContactMiddleware	= require( './service_staff-email-contact' ),
 	  eventService					= require( './service_event' );
 
-exports.getEventById = ( eventId, populateOptions = [] ) => {
+exports.getEventById = ( eventId, fieldsToPopulate = [] ) => {
 
 	return new Promise( ( resolve, reject ) => {
 		keystone.list( 'Event' ).model
 			.findById( eventId )
-			.populate( populateOptions )
+			.populate( fieldsToPopulate )
 			.exec()
 			.then( event => {
 				// if the target event could not be found
@@ -214,9 +214,9 @@ exports.submitEvent = function submitEvent( req, res, next ) {
 				detail: 'once your event has been approved by MARE staff, you will receive a notification email.  If you don\'t receive an email within 5 business days, please contact [some mare contact] for a status update.'} );
 
 			// set the fields to populate on the fetched event model
-			const populateOptions = [ 'contact', 'address.state' ];
+			const fieldsToPopulate = [ 'contact', 'address.state' ];
 			// populate the Relationship fields on the event
-			event.populate( populateOptions, err => {
+			event.populate( fieldsToPopulate, err => {
 				// if there was an error populating Relationship fields on the event
 				if ( err ) {
 					// log the error for debugging purposes
@@ -230,9 +230,9 @@ exports.submitEvent = function submitEvent( req, res, next ) {
 						// if we successfully fetched the email target model
 						.then( emailTarget => {
 							// set the fields to populate on the staff email contact model
-							const populateOptions = [ 'staffEmailContact' ];
+							const fieldsToPopulate = [ 'staffEmailContact' ];
 							// fetch contact info for the staff contact for 'event created by social worker'
-							return staffEmailContactMiddleware.getStaffEmailContactByEmailTarget( emailTarget.get( '_id' ), populateOptions );
+							return staffEmailContactMiddleware.getStaffEmailContactByEmailTarget( emailTarget.get( '_id' ), fieldsToPopulate );
 						})
 						// if we successfully fetched the staff email contact
 						.then( staffEmailContact => {

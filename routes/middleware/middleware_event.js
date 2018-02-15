@@ -61,13 +61,13 @@ exports.register = ( req, res, next ) => {
 	// initialize a promise chain
 	Promise.resolve()
 		// register the attendee for the event
-		.then( () => eventService.register( eventDetails, req.user ))
+		.then( () => eventService.register( eventDetails, req.user ) )
 		// get the email target for an event registration
-		.then( () => emailTargetService.getEmailTargetByName( 'event registration' ))
+		.then( () => emailTargetService.getEmailTargetByName( 'event registration' ) )
 		// get the staff contact assigned to the email target
-		.then( emailTarget => staffEmailContactService.getStaffEmailContactByEmailTarget( emailTarget._id, [ 'staffEmailContact' ] ))
+		.then( emailTarget => staffEmailContactService.getStaffEmailContactByEmailTarget( emailTarget._id, [ 'staffEmailContact' ] ) )
 		// send an email to the staff contact with the registration info
-		.then( staffContact => eventEmailMiddleware.sendEventRegistrationEmailToMARE( eventDetails, req.user, res.host, staffContact.staffEmailContact.email ))
+		.then( staffContact => eventEmailMiddleware.sendEventRegistrationEmailToMARE( eventDetails, req.user, res.host, staffContact.staffEmailContact.email ) )
 		// notify the user that the registration was successful
 		.then( () => {
 
@@ -106,7 +106,7 @@ exports.unregister = ( req, res, next ) => {
 	// initialize a promise chain
 	Promise.resolve()
 		// unregister the attendee for the event
-		.then( () => eventService.unregister( eventDetails, req.user ))
+		.then( () => eventService.unregister( eventDetails, req.user ) )
 		// add the unregistration data to the eventDetails
 		.then( unregistrationData => {
 
@@ -119,11 +119,11 @@ exports.unregister = ( req, res, next ) => {
 			return;
 		})
 		// get the email target for an event unregistration
-		.then( () => emailTargetService.getEmailTargetByName( 'event registration' ))
+		.then( () => emailTargetService.getEmailTargetByName( 'event registration' ) )
 		// get the staff contact assigned to the email target
-		.then( emailTarget => staffEmailContactService.getStaffEmailContactByEmailTarget( emailTarget._id, [ 'staffEmailContact' ] ))
+		.then( emailTarget => staffEmailContactService.getStaffEmailContactByEmailTarget( emailTarget._id, [ 'staffEmailContact' ] ) )
 		// send an email to the staff contact with the unregistration info
-		.then( staffContact => eventEmailMiddleware.sendEventUnregistrationEmailToMARE( eventDetails, req.user, res.host, staffContact.staffEmailContact.email ))
+		.then( staffContact => eventEmailMiddleware.sendEventUnregistrationEmailToMARE( eventDetails, req.user, res.host, staffContact.staffEmailContact.email ) )
 		// notify the user that the unregistration was successful
 		.then( () => {
 
