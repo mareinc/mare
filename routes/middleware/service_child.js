@@ -790,35 +790,41 @@ exports.registerChild = ( req, res, next ) => {
 			const fieldsToPopulate = [ 'languages', 'gender', 'race', 'residence', 'city', 'legalStatus', 'status',
 									   'recommendedFamilyConstellation', 'otherFamilyConstellationConsideration',
 									   'disabilities' ];
+			// set default information for a staff email contact in case the real contact info can't be fetched
+			let staffEmailContactInfo = {
+				name: { full: 'MARE' },
+				email: 'web@mareinc.org'
+			};
 
 			// fetch the newly saved child model.  Needed because the saved child object doesn't have the Relationship fields populated
 			const fetchChild = exports.getChildByRegistrationNumberNew( childId, fieldsToPopulate );
-			// fetch contact info for the staff contact for children registered by social workers
-			const fetchRegistrationStaffContactInfo = exports.getStaffContactInfo( 'social worker child registration' );
+			// fetch the email target model matching 'social worker child registration'
+			const fetchEmailTarget = emailTargetMiddleware.getEmailTargetByName( 'social worker child registration' );
 
-			fetchChild
+			fetchEmailTarget
+				// fetch contact info for the staff contact for 'social worker child registration'
+				.then( emailTarget => staffEmailContactMiddleware.getStaffEmailContactByEmailTarget( emailTarget.get( '_id' ), [ 'staffEmailContact' ] ) )
+				// overwrite the default contact details with the returned object
+				.then( staffEmailContact => staffEmailContactInfo = staffEmailContact.staffEmailContact )
+				// log any errors fetching the staff email contact
+				.catch( err => console.error( `error fetching email contact for social worker child registration, default contact info will be used instead - ${ err }` ) )
+				// check on the attempt to fetch the newly saved child
+				.then( () => fetchChild )
+				// send a notification email to MARE
 				.then( fetchedChild => {
-					// send a notification email to the social worker who saved the child
-					// NOTE: both the form data and the newly saved child are passed in as both contain information that belongs in the email
-					socialWorkerChildRegistrationEmailService.sendNewSocialWorkerChildRegistrationNotificationEmailToSocialWorker( rawChildData, fetchedChild, req.user.get( 'email' ), locals.host );
-				})
-				.catch( err => {
-					// log the error for debugging purposes
-					console.error( `error sending new child registered by social worker email to social worker ${ req.user.name.full } - ${ err }` );
-				});
-
-			Promise.all( [ fetchChild, fetchRegistrationStaffContactInfo ] )
-				.then( values => {
-					// assign local variables to the values returned by the promises
-					const [ fetchedChild, contactInfo ] = values;
 					// send a notification email to MARE staff to allow them to enter the information in the old system
 					// NOTE: both the form data and the newly saved child are passed in as both contain information that belongs in the email
-					return socialWorkerChildRegistrationEmailService.sendNewSocialWorkerChildRegistrationNotificationEmailToMARE( rawChildData, fetchedChild, contactInfo );
+					return socialWorkerChildRegistrationEmailService.sendNewSocialWorkerChildRegistrationNotificationEmailToMARE( rawChildData, fetchedChild, staffEmailContactInfo );
 				})
-				.catch( err => {
-					// log the error for debugging purposes
-					console.error( `error sending new child registered by social worker email to MARE staff - ${ err }` );
-				});
+				// if there was an error sending the email to MARE staff
+				.catch( err => console.error( `error sending new child registered by social worker email to MARE staff - ${ err }` ) );
+
+			fetchChild
+				// send a notification email to the social worker
+				// NOTE: both the form data and the newly saved child are passed in as both contain information that belongs in the email
+				.then( fetchedChild => socialWorkerChildRegistrationEmailService.sendNewSocialWorkerChildRegistrationNotificationEmailToSocialWorker( rawChildData, fetchedChild, req.user.get( 'email' ), locals.host ) )
+				// if there was an error sending the email to MARE staff
+				.catch( err => console.error( `error sending new child registered by social worker email to social worker ${ req.user.name.full } - ${ err }` ) );
 		})
 		// if there was an error saving the new child record
 		.catch( err => {
@@ -904,31 +910,6 @@ exports.saveChild = ( child, activeChildStatusId ) => {
 			// resolve the promise with the newly saved child model
 			resolve( model );
 		});
-	});
-}
-
-/* returns an array of staff email contacts */
-// TODO: this is reused in several of the services that generate emails, make it a more generic call
-exports.getStaffContactInfo = contactType => {
-
-	return new Promise( ( resolve, reject ) => {
-		// TODO: it was nearly impossible to create a readable comma separated list of links in the template with more than one address,
-		// 	     so we're only fetching one contact when we should fetch them all
-		// get the database id of the admin contact set to handle children registered by social workers
-		emailTargetMiddleware
-			.getTargetId( contactType )
-			.then( targetId => {
-				// get the contact details of the admin contact set to handle registration questions for the target user type
-				return staffEmailContactMiddleware.getContactById( targetId );
-			})
-			.then( contactInfo => {
-				// resolve the promise with the full name and email address of the contact
-				resolve( contactInfo );
-			})
-			.catch( err => {
-				// reject the promise with the reason for the rejection
-				reject( `error fetching staff contact - ${ err }` );
-			});
 	});
 }
 
