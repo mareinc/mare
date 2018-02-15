@@ -9,10 +9,10 @@
 
 		events: {
 
-			'click .gallery-search-form__search-button' : 'updateGallery'
+			'click .gallery-search-form__search-button' : 'displaySearchResults'
 		},
 
-		updateGallery: function updateGallery() {
+		displaySearchResults: function displaySearchResults() {
 
 			this.getFormFields();
 			this.processFormFields();
@@ -20,7 +20,7 @@
 			this.updateChildren();
 			this.updateSiblingGroups();
 			// emit an event to allow the gallery to update it's display now that we have all matching models
-			mare.collections.galleryChildren.trigger( 'updateComplete' );
+			this.trigger( 'searchResultsRetrieved' );
 		},
 
 		getFormFields: function getFormFields() {

@@ -35,13 +35,21 @@
 			mare.views.gallery = mare.views.gallery || new mare.views.Gallery();
 			mare.views.gallerySearchForm = mare.views.gallerySearchForm || new mare.views.GallerySearchForm();
 
-			// bind to change events
-			mare.collections.galleryChildren.on( 'updateComplete', function() {
+			// when the search form data has been processed and non-matching children and sibling groups have been filtered out
+			mare.views.gallerySearchForm.on( 'searchResultsRetrieved', function() {
 				// clear out existing registration number search
 				mare.views.gallery.clearRegistrationSearch();
-				
+				// navigate to the gallery page
 				this.navigateToGallery();
 			}.bind( this ) );
+
+			// when bookmarked children and sibling groups have been processed and the gallery is ready to render
+			this.on( 'bookmarkedChildrenAndSiblingGroupsRetrieved', function() {
+				// clear out existing registration number search
+				mare.views.gallery.clearRegistrationSearch();
+				// render the gallery
+				mare.views.gallery.render();
+			});
 		},
 
 		/* hide the gallery search form and show the gallery */
@@ -111,8 +119,10 @@
 			mare.collections.allSiblingGroups.each( function( siblingGroup ) {
 				gallerySiblingGroups.add( siblingGroup );
 			});
-
-			this.showGallery();
+			// clear out existing registration number search
+			mare.views.gallery.clearRegistrationSearch();
+			// render the gallery
+			mare.views.gallery.render();
 		},
 
 		showSavedChildrenAndSiblingGroups: function showSavedChildrenAndSiblingGroups() {
@@ -120,15 +130,12 @@
 			this.showSavedChildren();
 			this.showSavedSiblingGroups();
 			// emit an event to allow the gallery to update it's display now that we have all matching models
-			// TODO: since we're now resetting both children and sibling groups, emitting the event off the gallery children collection is no longer appropriate
-			mare.collections.galleryChildren.trigger( 'resetComplete' );
+			this.trigger( 'bookmarkedChildrenAndSiblingGroupsRetrieved' );
 		},
 
 		showSavedChildren: function showSavedChildren() {
-			// cache the collection for faster access
-			var galleryChildren = mare.collections.galleryChildren;
 			// clear out the contents of the gallery collection
-			galleryChildren.reset();
+			mare.collections.galleryChildren.reset();
 			// add all bookmarked children back to the gallery collection for display
 			mare.collections.allChildren.each( function( child ) {
 				if( child.get( 'isBookmarked' ) ) {
@@ -138,10 +145,8 @@
 		},
 
 		showSavedSiblingGroups: function showSavedSiblingGroups() {
-			// cache the collection for faster access
-			var gallerySiblingGroups = mare.collections.gallerySiblingGroups;
 			// clear out the contents of the gallery collection
-			gallerySiblingGroups.reset();
+			mare.collections.gallerySiblingGroups.reset();
 			// add all bookmarked sibling groups back to the gallery collection for display
 			mare.collections.allSiblingGroups.each( function( siblingGroup ) {
 				if( siblingGroup.get( 'isBookmarked' ) ) {
