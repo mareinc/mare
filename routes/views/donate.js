@@ -20,6 +20,7 @@ exports = module.exports = ( req, res ) => {
 	locals.donationPlans	= donationService.PLAN_TYPES;
 	locals.stripeAPIKey		= process.env.STRIPE_PUBLIC_API_KEY;
 
+	// initialize a promise chain
 	Promise.resolve()
 		// fetch the email target model matching 'donation question'
 		.then( () => emailTargetMiddleware.getEmailTargetByName( 'donation question' ) )
@@ -28,7 +29,7 @@ exports = module.exports = ( req, res ) => {
 		// overwrite the default contact details with the returned object
 		.then( staffEmailContact => locals.donationsQuestionContact = staffEmailContact.staffEmailContact )
 		// log any errors fetching the staff email contact
-		.catch( err => console.error( `error fetching email target for donation questions, default contact info will be used instead - ${ err }` ) )
+		.catch( err => console.error( `error fetching email contact for donation questions, default contact info will be used instead - ${ err }` ) )
 		// fetch the sidebar items
 		.then( () => pageService.getSidebarItems() )
 		// assign returned sidebar items to locals for templating
