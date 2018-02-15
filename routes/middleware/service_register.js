@@ -60,49 +60,51 @@ exports.registerUser = ( req, res, next ) => {
 							const mailingListIds = user.mailingLists;
 							// set the fields to populate on the fetched user model
 							const fieldsToPopulate = [ 'address.city', 'address.state', 'heardAboutMAREFrom' ];
+							// set default information for a staff email contact in case the real contact info can't be fetched
+							let staffEmailContactInfo = {
+								name: { full: 'MARE' },
+								email: 'web@mareinc.org'
+							};
 							
 							// fetch the user model.  Needed because the copies we have don't have the Relationship fields populated
 							const fetchUser = userService.getUserByIdNew( userId, keystone.list( 'Site Visitor' ), fieldsToPopulate );
-							// fetch contact info for the staff contact for site visitor registration
-							const fetchRegistrationStaffContactInfo = exports.getRegistrationStaffContactInfo( 'site visitor' );
+							// fetch the email target model matching 'site visitor registration'
+							const fetchEmailTarget = emailTargetMiddleware.getEmailTargetByName( 'site visitor registration' );
 							// create a new verification code model in the database to allow users to verify their accounts
 							const createVerificationRecord = exports.createNewVerificationRecord( verificationCode, userId );
 							// add the user to any mailing lists they've opted into
-							const userAddedToMailingLists = exports.addToMailingLists( newSiteVisitor, mailingListIds, registrationType );
+							const addUserToMailingLists = exports.addToMailingLists( newSiteVisitor, mailingListIds, registrationType );
 
-							// once we know the contact info of the MARE employee who handles newly registered users
-							Promise.all( [ fetchUser, fetchRegistrationStaffContactInfo, userAddedToMailingLists ] )
+							fetchEmailTarget
+								// fetch contact info for the staff contact for 'site visitor registration'
+								.then( emailTarget => staffEmailContactMiddleware.getStaffEmailContactByEmailTarget( emailTarget.get( '_id' ), [ 'staffEmailContact' ] ) )
+								// overwrite the default contact details with the returned object
+								.then( staffEmailContact => staffEmailContactInfo = staffEmailContact.staffEmailContact )
+								// log any errors fetching the staff email contact
+								.catch( err => console.error( `error fetching email contact for site visitor registration, default contact info will be used instead - ${ err }` ) )
+								// fetch the user information and whether they were successfully added to each mailing list
+								.then( () => Promise.all( [ fetchUser, addUserToMailingLists ] ) )
+								// send out the new site visitor registered email to MARE
 								.then( values => {
 									// assign local variables to the values returned by the promises
-									const [ newUser, staffContact, mailingLists ] = values;
+									const [ newUser, mailingLists ] = values;
 									// fetch the names of the returned mailing lists
-									const mailingListNames = mailingLists.map( mailingList => {
-										return mailingList.get( 'mailingList' );
-									});
+									const mailingListNames = mailingLists.map( mailingList => mailingList.get( 'mailingList' ) );
 									// send a notification email to MARE staff to allow them to enter the information in the old system
-									return registrationEmailMiddleware.sendNewSiteVisitorNotificationEmailToMARE( newUser, staffContact, mailingListNames );
+									return registrationEmailMiddleware.sendNewSiteVisitorNotificationEmailToMARE( newUser, staffEmailContactInfo, mailingListNames );
 								})
-								.catch( err => {
-									// log the error for debugging purposes
-									console.error( `error sending new site visitor notification email to MARE contact about ${ newSiteVisitor.get( 'name.full' ) } (${ newSiteVisitor.get( 'email' ) }) - ${ err }` );
-								});
+								// if the email couldn't be sent, log the error for debugging purposes
+								.catch( err => console.error( `error sending new site visitor notification email to MARE contact about ${ newSiteVisitor.get( 'name.full' ) } (${ newSiteVisitor.get( 'email' ) }) - ${ err }` ) );
 							
-							// once the verification record has been saved
 							createVerificationRecord
-								.then( verificationRecord => {
-									// send the account verification email to the user
-									return registrationEmailMiddleware.sendAccountVerificationEmailToUser( newSiteVisitor.get( 'email' ), userType, verificationCode, locals.host );
-								})
-								.catch( err => {
-									// log the error for debugging purposes
-									console.error( `error sending account verification email to site visitor ${ newSiteVisitor.get( 'name.full' ) } at ${ newSiteVisitor.get( 'email' ) } - ${ err }` );
-								});
+								// send the account verification email to the user
+								.then( verificationRecord => registrationEmailMiddleware.sendAccountVerificationEmailToUser( newSiteVisitor.get( 'email' ), userType, verificationCode, locals.host ) )
+								// if the email couldn't be send, log the error for debugging purposes
+								.catch( err => console.error( `error sending account verification email to site visitor ${ newSiteVisitor.get( 'name.full' ) } at ${ newSiteVisitor.get( 'email' ) } - ${ err }` ) );
 							
-							userAddedToMailingLists
-								.catch( err => {
-									// log the error for debugging purposes
-									console.error( `error adding new site visitor ${ newSiteVisitor.get( 'name.full' ) } (${ newSiteVisitor.get( 'email' ) }) to mailing lists - ${ err }` );
-								});
+							addUserToMailingLists
+								// if the user couldn't be added to one or more mailing lists
+								.catch( err => console.error( `error adding new site visitor ${ newSiteVisitor.get( 'name.full' ) } (${ newSiteVisitor.get( 'email' ) }) to mailing lists - ${ err }` ) );
 
 							// set the redirect path to the success target route
 							req.body.target = redirectPath;
@@ -145,49 +147,52 @@ exports.registerUser = ( req, res, next ) => {
 							const mailingListIds = user.mailingLists;
 							// set the fields to populate on the fetched user model
 							const fieldsToPopulate = [ 'address.city', 'address.state', 'positions' ];
+							// set default information for a staff email contact in case the real contact info can't be fetched
+							let staffEmailContactInfo = {
+								name: { full: 'MARE' },
+								email: 'web@mareinc.org'
+							};
 							
 							// fetch the user model.  Needed because the copies we have don't have the Relationship fields populated
 							const fetchUser = userService.getUserByIdNew( userId, keystone.list( 'Social Worker' ), fieldsToPopulate );
-							// fetch contact info for the staff contact for social worker registration
-							const fetchRegistrationStaffContactInfo = exports.getRegistrationStaffContactInfo( 'social worker' );
+							// fetch the email target model matching 'social worker registration'
+							const fetchEmailTarget = emailTargetMiddleware.getEmailTargetByName( 'social worker registration' );
 							// create a new verification code model in the database to allow users to verify their accounts
 							const createVerificationRecord = exports.createNewVerificationRecord( verificationCode, userId );
 							// add the user to any mailing lists they've opted into
-							const userAddedToMailingLists = exports.addToMailingLists( newSocialWorker, mailingListIds, registrationType );
+							const addUserToMailingLists = exports.addToMailingLists( newSocialWorker, mailingListIds, registrationType );
 
-							// once we know the contact info of the MARE employee who handles newly registered users
-							Promise.all( [ fetchUser, fetchRegistrationStaffContactInfo, userAddedToMailingLists ] )
+							fetchEmailTarget
+								// fetch contact info for the staff contact for 'social worker registration'
+								.then( emailTarget => staffEmailContactMiddleware.getStaffEmailContactByEmailTarget( emailTarget.get( '_id' ), [ 'staffEmailContact' ] ) )
+								// overwrite the default contact details with the returned object
+								.then( staffEmailContact => staffEmailContactInfo = staffEmailContact.staffEmailContact )
+								// log any errors fetching the staff email contact
+								.catch( err => console.error( `error fetching email contact for social worker registration, default contact info will be used instead - ${ err }` ) )
+								// fetch the user information and whether they were successfully added to each mailing list
+								.then( () => Promise.all( [ fetchUser, addUserToMailingLists ] ) )
+								// send out the new social worker registered email to MARE
 								.then( values => {
 									// assign local variables to the values returned by the promises
-									const [ newUser, staffContact, mailingLists ] = values;
+									const [ newUser, mailingLists ] = values;
 									// fetch the names of the returned mailing lists
-									const mailingListNames = mailingLists.map( mailingList => {
-										return mailingList.get( 'mailingList' );
-									});
+									const mailingListNames = mailingLists.map( mailingList => mailingList.get( 'mailingList' ) );
 									// send a notification email to MARE staff to allow them to enter the information in the old system
-									return registrationEmailMiddleware.sendNewSocialWorkerNotificationEmailToMARE( newUser, staffContact, mailingListNames );
+									return registrationEmailMiddleware.sendNewSocialWorkerNotificationEmailToMARE( newUser, staffEmailContactInfo, mailingListNames );
 								})
-								.catch( err => {
-									// log the error for debugging purposes
-									console.error( `error sending new social worker notification email to MARE contact for ${ newSocialWorker.get( 'name.full' ) } (${ newSocialWorker.get( 'email' ) }) - ${ err }` );
-								});
+								// if the email couldn't be sent, log the error for debugging purposes
+								.catch( err => console.error( `error sending new social worker notification email to MARE contact for ${ newSocialWorker.get( 'name.full' ) } (${ newSocialWorker.get( 'email' ) }) - ${ err }` ) );
 							
 							// once the verification record has been saved
 							createVerificationRecord
-								.then( verificationRecord => {
-									// send the account verification email to the user
-									return registrationEmailMiddleware.sendAccountVerificationEmailToUser( newSocialWorker.get( 'email' ), userType, verificationCode, locals.host );
-								})
-								.catch( err => {
-									// log the error for debugging purposes
-									console.error( `error sending account verification email to social worker ${ newSocialWorker.get( 'name.full' ) } at ${ newSocialWorker.get( 'email' ) } - ${ err }` );
-								});
+								// send the account verification email to the user
+								.then( verificationRecord => registrationEmailMiddleware.sendAccountVerificationEmailToUser( newSocialWorker.get( 'email' ), userType, verificationCode, locals.host ) )
+								// if the email couldn't be send, log the error for debugging purposes
+								.catch( err => console.error( `error sending account verification email to social worker ${ newSocialWorker.get( 'name.full' ) } at ${ newSocialWorker.get( 'email' ) } - ${ err }` ) );
 
-							userAddedToMailingLists
-								.catch( err => {
-									// log the error for debugging purposes
-									console.error( `error adding new social worker ${ newSocialWorker.get( 'name.full' ) } (${ newSocialWorker.get( 'email' ) }) to mailing lists - ${ err }` );
-								});
+							addUserToMailingLists
+								// if the user couldn't be added to one or more mailing lists
+								.catch( err => console.error( `error adding new social worker ${ newSocialWorker.get( 'name.full' ) } (${ newSocialWorker.get( 'email' ) }) to mailing lists - ${ err }` ) );
 							
 							// set the redirect path to the success target route
 							req.body.target = redirectPath;
@@ -241,51 +246,54 @@ exports.registerUser = ( req, res, next ) => {
 													   'language', 'otherLanguages', 'matchingPreferences.gender',
 													   'matchingPreferences.legalStatus', 'matchingPreferences.race',
 													   'heardAboutMAREFrom' ];
+							// set default information for a staff email contact in case the real contact info can't be fetched
+							let staffEmailContactInfo = {
+								name: { full: 'MARE' },
+								email: 'web@mareinc.org'
+							};
 
 							// fetch the user model.  Needed because the copies we have don't have the Relationship fields populated
 							const fetchUser = userService.getUserByIdNew( userId, keystone.list( 'Family' ), fieldsToPopulate );
-							// fetch contact info for the staff contact for family registration
-							const fetchRegistrationStaffContactInfo = exports.getRegistrationStaffContactInfo( 'family' );
+							// fetch the email target model matching 'family registration'
+							const fetchEmailTarget = emailTargetMiddleware.getEmailTargetByName( 'family registration' );
 							// create a new verification code model in the database to allow users to verify their accounts
 							const createVerificationRecord = exports.createNewVerificationRecord( verificationCode, userId );
 							// add the user to any mailing lists they've opted into
-							const userAddedToMailingLists = exports.addToMailingLists( newFamily, mailingListIds, registrationType );
+							const addUserToMailingLists = exports.addToMailingLists( newFamily, mailingListIds, registrationType );
 							// save any submitted files and append them to the newly created user
 							// const userFilesUploaded = exports.uploadFile( newFamily, 'homestudy', 'homestudyFile_upload', files.homestudyFile_upload );
 
-							// once we know the contact info of the MARE employee who handles newly registered users
-							Promise.all( [ fetchUser, fetchRegistrationStaffContactInfo, userAddedToMailingLists ] )
+							fetchEmailTarget
+								// fetch contact info for the staff contact for 'family registration'
+								.then( emailTarget => staffEmailContactMiddleware.getStaffEmailContactByEmailTarget( emailTarget.get( '_id' ), [ 'staffEmailContact' ] ) )
+								// overwrite the default contact details with the returned object
+								.then( staffEmailContact => staffEmailContactInfo = staffEmailContact.staffEmailContact )
+								// log any errors fetching the staff email contact
+								.catch( err => console.error( `error fetching email contact for family registration, default contact info will be used instead - ${ err }` ) )
+								// fetch the user information and whether they were successfully added to each mailing list
+								.then( () => Promise.all( [ fetchUser, addUserToMailingLists ] ) )
+								// send out the new family registered email to MARE
 								.then( values => {
 									// assign local variables to the values returned by the promises
-									const [ newUser, staffContact, mailingLists ] = values;
+									const [ newUser, mailingLists ] = values;
 									// fetch the names of the returned mailing lists
-									const mailingListNames = mailingLists.map( mailingList => {
-										return mailingList.get( 'mailingList' );
-									});
+									const mailingListNames = mailingLists.map( mailingList => mailingList.get( 'mailingList' ) );
 									// send a notification email to MARE staff to allow them to enter the information in the old system
-									return registrationEmailMiddleware.sendNewFamilyNotificationEmailToMARE( newUser, staffContact, mailingListNames );
+									return registrationEmailMiddleware.sendNewFamilyNotificationEmailToMARE( newUser, staffEmailContactInfo, mailingListNames );
 								})
-								.catch( err => {
-									// log the error for debugging purposes
-									console.error( `error sending new family notification email to MARE contact about ${ newFamily.get( 'displayName' ) } (${ newFamily.get( 'email' ) }) - ${ err }` );
-								});
+								// if the email couldn't be sent, log the error for debugging purposes
+								.catch( err => console.error( `error sending new family notification email to MARE contact about ${ newFamily.get( 'displayName' ) } (${ newFamily.get( 'email' ) }) - ${ err }` ) );
 
 							// once the verification record has been saved
 							createVerificationRecord
-								.then( verificationRecord => {
-									// send the account verification email to the user
-									return registrationEmailMiddleware.sendAccountVerificationEmailToUser( newFamily.get( 'email' ), userType, verificationCode, locals.host );
-								})
-								.catch( err => {
-									// log the error for debugging purposes
-									console.error( `error sending account verification email to family ${ newFamily.get( 'displayName' ) } at ${ newFamily.get( 'email' ) } - ${ err }` );
-								});
+								// send the account verification email to the user
+								.then( verificationRecord => registrationEmailMiddleware.sendAccountVerificationEmailToUser( newFamily.get( 'email' ), userType, verificationCode, locals.host ) )
+								// if the email couldn't be send, log the error for debugging purposes
+								.catch( err => console.error( `error sending account verification email to family ${ newFamily.get( 'displayName' ) } at ${ newFamily.get( 'email' ) } - ${ err }` ) );
 							
-							userAddedToMailingLists
-								.catch( err => {
-									// log the error for debugging purposes
-									console.error( `error adding new family ${ newFamily.get( 'displayName' ) } (${ newFamily.get( 'email' ) }) to mailing lists - ${ err }` );
-								});
+							addUserToMailingLists
+								// if the user couldn't be added to one or more mailing lists
+								.catch( err => console.error( `error adding new family ${ newFamily.get( 'displayName' ) } (${ newFamily.get( 'email' ) }) to mailing lists - ${ err }` ) );
 
 							// set the redirect path to the success target route
 							req.body.target = redirectPath;
@@ -645,40 +653,6 @@ exports.setInitialErrorMessages = ( req, isEmailValid, isEmailDuplicate, isPassw
 		});
 	}
 };
-
-/* returns an array of staff email contacts */
-exports.getRegistrationStaffContactInfo = userType => {
-
-	return new Promise( ( resolve, reject ) => {
-		// use the user type to get the email target role responsible for handling registration questions
-		const emailTarget = userType === 'site visitor' ? 'site visitor registration' :
-							userType === 'social worker' ? 'social worker registration' :
-							userType === 'family' ? 'family registration' :
-							undefined;
-		// if the user type was unrecognized, the email target can't be set
-		if( !emailTarget ) {
-			// reject the promise with details of the issue
-			return reject( `unknown user type ${ userType }` );
-		}
-		// TODO: it was nearly impossible to create a readable comma separated list of links in the template with more than one address,
-		// 	     so we're only fetching one contact when we should fetch them all
-		// get the database id of the admin contact set to handle registration questions for the target user type
-		emailTargetMiddleware
-			.getTargetId( emailTarget )
-			.then( targetId => {
-				// get the contact details of the admin contact set to handle registration questions for the target user type
-				return staffEmailContactMiddleware.getContactById( targetId );
-			})
-			.then( contactInfo => {
-				// resolve the promise with the full name and email address of the contact
-				resolve( contactInfo );
-			})
-			.catch( err => {
-				// reject the promise with the reason for the rejection
-				reject( `error fetching staff contact - ${ err }` );
-			});
-	});
-}
 
 /* add the passed in user to the emails specified in the mailingListIds array using registrationType to find the target field */
 exports.addToMailingLists = ( user, mailingListIds, registrationType ) => {
