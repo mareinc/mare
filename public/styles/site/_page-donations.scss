@@ -32,6 +32,15 @@
 	margin-bottom: 1em;
 }
 
+.selection-group__header-sub-text {
+	font-size: 0.9em;
+	opacity: 0.6;
+
+	&--small-margin-above {
+		margin-top: 0.5em;
+	}
+}
+
 .selection-group__number {
 	font-size: 1.5em; /* 24px */
 	margin-right: 0.5em;

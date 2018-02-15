@@ -10,6 +10,7 @@
 		<span class="selection-group__number">1.</span>
 		<div class="selection-group__content">
 			<span class="selection-group__header-text">Choose the frequency of your giving - remember, recurring donations are the best way to provide steady support</span>
+			<div class="selection-group__header-sub-text selection-group__header-sub-text--small-margin-above">If you'd like to make changes to your recurring donation, please contact {{ donationsQuestionContact.name.full }} at {{ donationsQuestionContact.email }}</div>
 			<div id="donation-duration-button-group" class="button-group button-group--space-between button-group--large-margin-above">
 				<button class="toggle-button toggle-button--quarter" data-donation-interval="{{donationPlans.onetime.interval_count}}" >Just Once</button>
 				<button class="toggle-button toggle-button--quarter" data-donation-interval="{{donationPlans.monthly.interval_count}}">Monthly</button>
