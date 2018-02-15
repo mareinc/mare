@@ -40,16 +40,12 @@ exports = module.exports = ( req, res ) => {
 			locals.randomSuccessStory	= randomSuccessStory;
 			locals.randomEvent			= randomEvent;
 
-			// set the layout to render without the right sidebar
-			locals[ 'render-with-sidebar' ] = false;
 			// render the view using the waiting-child-profiles.hbs template
 			view.render( 'waiting-child-profiles' );
 		})
 		.catch( err => {
 			// log an error for debugging purposes
-			console.error( `there was an error loading data for the waiting child profiles page - ${ err }` );
-			// set the layout to render without the right sidebar
-			locals[ 'render-with-sidebar' ] = false;
+			console.error( `error loading data for the waiting child profiles page - ${ err }` );
 			// render the view using the waiting-child-profiles.hbs template
 			view.render( 'waiting-child-profiles' );
 		});

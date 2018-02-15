@@ -49,9 +49,7 @@ exports = module.exports = ( req, res ) => {
 			})
 			.catch( err => {
 				// log an error for debugging purposes
-				console.error( `there was an error loading data for the social worker family registration form - ${ err }` );
-				// set the layout to render with the right sidebar
-				locals[ 'render-with-sidebar' ] = true;
+				console.error( `error loading data for the social worker family registration form - ${ err }` );
 				// render the view using the form_social-worker-family-registration.hbs template
 				view.render( 'form_social-worker-family-registration' );
 			});
