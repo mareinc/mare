@@ -5,16 +5,12 @@ exports.sendNewEventEmailToMARE = ( event, socialWorker, staffEmailContact ) => 
 
 	return new Promise( ( resolve, reject ) => {
 
-		const staffEmail = staffEmailContact.staffEmailContact.get( 'email' );
+		const staffEmail = staffEmailContact.email;
 
 		// if sending of the email is not currently allowed
 		if( process.env.SEND_EVENT_CREATED_EMAILS_TO_MARE !== 'true' ) {
 			// reject the promise with information about why
 			return reject( `sending of the email is disabled` );
-		}
-
-		if( !staffEmail ) {
-			return reject( `no staff contact was provided` );
 		}
 
 		// find the email template in templates/emails/
@@ -55,11 +51,10 @@ exports.sendNewEventEmailToMARE = ( event, socialWorker, staffEmailContact ) => 
 exports.sendEventRegistrationEmailToMARE = ( eventDetails, userDetails, host, staffContactEmail ) => {
 
 	return new Promise( ( resolve, reject ) => {
-		// TODO: check the logic around process.env.migration, it doesn't seem to make sense
 		// if sending of the email is not currently allowed
 		if( process.env.SEND_EVENT_REGISTRATION_TO_STAFF !== 'true' ) {
-			// resolve the promise before any further processing takes place
-			return resolve();
+			// reject the promise with information about why
+			return reject( `sending of the email is disabled` );
 		}
 
 		exports.getRegisteredChildData( eventDetails.registeredChildren )
@@ -125,8 +120,8 @@ exports.sendEventUnregistrationEmailToMARE = ( eventDetails, userDetails, host, 
 		// TODO: check the logic around process.env.migration, it doesn't seem to make sense
 		// if sending of the email is not currently allowed
 		if( process.env.SEND_EVENT_UNREGISTRATION_TO_STAFF !== 'true' ) {
-			// resolve the promise before any further processing takes place
-			return resolve();
+			// reject the promise with information about why
+			return reject( `sending of the email is disabled` );
 		}
 
 		// set custom display name if necessary
