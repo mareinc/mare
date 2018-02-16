@@ -203,7 +203,6 @@
 				// TODO: Show an error message to the user
 				console.log( err );
 			});
-
 		},
 
 		/* make a call to the server to remove the bookmark for the child, then modify the view */
@@ -244,11 +243,16 @@
 					registrationNumbers: registrationNumbers
 				}
 			}).done( function( response ) {
-				// create an array from the string of registration numbers in the sibling group
-				var registrationNumbersArray = registrationNumbers.split( ',' );
+				// create a string array from the string of registration numbers in the sibling group
+				var registrationNumbersStringArray = registrationNumbers.split( ',' );
+				// create a number array for comparisons from the string array
+				var registrationNumbersArray = registrationNumbersStringArray.map( function( numberAsString ) {
+					return Number.parseInt( numberAsString );
+				});
+				
 				// update the isBookmarked field for the target siblingGroup model
 				mare.collections.gallerySiblingGroups.each( function( siblingGroup ) {
-					if( _.intersection( registrationNumbersArray, siblingGroup.get( 'registrationNumbers' ).length > 0 ) ) {
+					if( _.intersection( registrationNumbersArray, siblingGroup.get( 'registrationNumbers' ) ).length > 0 ) {
 						siblingGroup.set( 'isBookmarked', true );
 					}
 				});
@@ -272,11 +276,16 @@
 					registrationNumbers: registrationNumbers
 				}
 			}).done( function( response ) {
-				// create an array from the string of registration numbers in the sibling group
-				var registrationNumbersArray = registrationNumbers.split( ',' );
+				// create a string array from the string of registration numbers in the sibling group
+				var registrationNumbersStringArray = registrationNumbers.split( ',' );
+				// create a number array for comparisons from the string array
+				var registrationNumbersArray = registrationNumbersStringArray.map( function( numberAsString ) {
+					return Number.parseInt( numberAsString );
+				});
+
 				// update the isBookmarked field for the target siblingGroup model
 				mare.collections.gallerySiblingGroups.each( function( siblingGroup ) {
-					if( _.intersection( registrationNumbersArray, siblingGroup.get( 'registrationNumbers' ).length > 0 ) ) {
+					if( _.intersection( registrationNumbersArray, siblingGroup.get( 'registrationNumbers' ) ).length > 0 ) {
 						siblingGroup.set( 'isBookmarked', false );
 					}
 				});

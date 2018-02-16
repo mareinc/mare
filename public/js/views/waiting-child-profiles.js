@@ -139,7 +139,7 @@
 			// add all bookmarked children back to the gallery collection for display
 			mare.collections.allChildren.each( function( child ) {
 				if( child.get( 'isBookmarked' ) ) {
-					galleryChildren.add( child );
+					mare.collections.galleryChildren.add( child );
 				}
 			});
 		},
@@ -150,7 +150,7 @@
 			// add all bookmarked sibling groups back to the gallery collection for display
 			mare.collections.allSiblingGroups.each( function( siblingGroup ) {
 				if( siblingGroup.get( 'isBookmarked' ) ) {
-					gallerySiblingGroups.add( siblingGroup );
+					mare.collections.gallerySiblingGroups.add( siblingGroup );
 				}
 			});
 		}
