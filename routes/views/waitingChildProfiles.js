@@ -33,11 +33,13 @@ exports = module.exports = ( req, res ) => {
 			const [ disabilities, familyConstellations, genders, languages, races, sidebarItems ] = values;
 			// the sidebar items are a success story and event in an array, assign local variables to the two objects
 			const [ randomSuccessStory, randomEvent ] = sidebarItems;
-			
 			// assign properties to locals for access during templating
 			locals.disabilities			= disabilities;
 			locals.familyConstellations	= familyConstellations;
-			locals.genders				= genders;
+			// if the user doesn't have access to advanced search options, they shouldn't have access to the transgender option in the search form
+			locals.genders				= locals.canSeeAdvancedSearchOptions ?
+										  genders :
+										  genders.filter( gender => gender.get( 'gender' ) !== 'transgender' );
 			locals.languages			= languages;
 			locals.races				= races;
 			locals.randomSuccessStory	= randomSuccessStory;
