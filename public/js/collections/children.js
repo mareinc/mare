@@ -18,8 +18,6 @@
 				case 'age'			: this.sortByAge(); break;
 				default				: this.sortByDateRegistered(); break;
 			}
-
-			this.trigger( 'sorted' );
 		},
 
 		sortByDateRegistered: function sortByDateRegistered() {

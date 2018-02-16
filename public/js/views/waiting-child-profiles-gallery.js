@@ -37,7 +37,7 @@
 			}.bind( this ) );
 
 			// bind to change events
-			mare.collections.galleryChildren.on( 'sorted', function() {
+			this.on( 'sorted', function() {
 				this.render();
 			}.bind( this ) );
 			
@@ -249,7 +249,7 @@
 				var registrationNumbersArray = registrationNumbersStringArray.map( function( numberAsString ) {
 					return Number.parseInt( numberAsString );
 				});
-				
+
 				// update the isBookmarked field for the target siblingGroup model
 				mare.collections.gallerySiblingGroups.each( function( siblingGroup ) {
 					if( _.intersection( registrationNumbersArray, siblingGroup.get( 'registrationNumbers' ) ).length > 0 ) {
@@ -343,10 +343,14 @@
 
 		/* sort the children in the gallery */
 		sortGallery: function sortGallery( event ) {
-
+			// get the selected option to sort by from the dropdown menu
 			var sortBy = $( event.currentTarget ).val();
-
+			// update the order of the children being shown in the gallery
 			mare.collections.galleryChildren.reorder( sortBy );
+			// update the order of the sibling groups being shown in the gallery
+			mare.collections.gallerySiblingGroups.reorder( sortBy );
+
+			this.trigger( 'sorted' );
 		}
 	});
 }());
