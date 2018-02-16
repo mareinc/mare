@@ -119,6 +119,8 @@
 			mare.collections.allSiblingGroups.each( function( siblingGroup ) {
 				gallerySiblingGroups.add( siblingGroup );
 			});
+			// reset all search form fields
+			mare.views.gallerySearchForm.reset();
 			// clear out existing registration number search
 			mare.views.gallery.clearRegistrationSearch();
 			// render the gallery

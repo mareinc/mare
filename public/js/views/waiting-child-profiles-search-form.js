@@ -23,6 +23,43 @@
 			this.trigger( 'searchResultsRetrieved' );
 		},
 
+		reset: function reset() {
+			// check all the gender checkboxes
+			$( '.select-gender' ).prop( 'checked', true );
+			// set minimum acceptable number of children to 0
+			$( '#minimum-number-of-children > option:eq(0)' ).prop( 'selected', true );
+			// set maximum acceptable number of children to 8+
+			$( '#maximum-number-of-children > option:eq(8)' ).prop( 'selected', true );
+			// set minimum acceptable age of children to 0
+			$( '#youngest-age > option:eq(0)' ).prop( 'selected', true );
+			// set minimum acceptable age of children to 0
+			$( '#oldest-age > option:eq(17)' ).prop( 'selected', true );
+			// check all the race checkboxes
+			$( '.select-race' ).prop( 'checked', true );
+			// check all the primary language checkboxes
+			$( '.select-primary-language' ).prop( 'checked', true );
+			// select the radio to include children who have contact with their biological siblings
+			$( '.select-contact-with-biological-siblings[ value = "yes" ]' ).prop( 'checked', true );
+			// select the radio to include children who have contact with their biological parents
+			$( '.select-contact-with-biological-parents[ value = "yes" ]' ).prop( 'checked', true );
+			// uncheck box requiring child to have a video
+			$( '.select-video-only' ).prop( 'checked', false );
+			// uncheck box requiring child to be legally free
+			$( '.select-legally-free-only' ).prop( 'checked', false );
+			// remove restrictions on how recently the child's profile was updated
+			$( '#updated-within > option:eq(0)' ).prop( 'selected', true );
+			// remove any selected radio buttons for family constellation
+			$( '.select-family-constellation' ).prop( 'checked', false );
+			// remove selection for number of children in home
+			$( '#number-of-children-in-home > option:eq(0)' ).prop( 'selected', true );
+			// remove selection for age of youngest child in home
+			$( '#youngest-child-age-in-home > option:eq(0)' ).prop( 'selected', true );
+			// remove selection for age of oldest child in home
+			$( '#oldest-child-age-in-home > option:eq(0)' ).prop( 'selected', true );
+			// uncheck the pets in home checkbox
+			$( '.select-pets-in-home' ).prop( 'checked', false );
+		},
+
 		getFormFields: function getFormFields() {
 
 			this.formFields = {
