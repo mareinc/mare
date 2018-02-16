@@ -116,17 +116,12 @@ exports = module.exports = ( req, res ) => {
 				}
 			}
 
-			// set the layout to render without the right sidebar
-			locals[ 'render-with-sidebar' ] = false;
-
 			// render the view using the account.hbs template
 			view.render( 'account' );
 		})
 		.catch( err => {
 			// log an error for debugging purposes
-			console.error( `there was an error loading data for the account page - ${ err }` );
-			// set the layout to render without the right sidebar
-			locals[ 'render-with-sidebar' ] = false;
+			console.error( `error loading data for the account page - ${ err }` );
 			// render the view using the account.hbs template
 			view.render( 'account' );
 		});

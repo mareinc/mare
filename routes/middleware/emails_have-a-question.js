@@ -5,7 +5,7 @@ exports.sendNewQuestionNotificationEmailToMARE = ( question, staffEmailContact )
 
 	return new Promise( ( resolve, reject ) => {
 
-		const staffEmail = staffEmailContact.staffEmailContact.get( 'email' );
+		const staffEmail = staffEmailContact.staffEmailContact.email;
 		
 		// if sending of the email is not currently allowed
 		if( process.env.SEND_QUESTION_RECEIVED_EMAILS_TO_MARE !== 'true' ) {

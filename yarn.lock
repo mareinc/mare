@@ -1628,9 +1628,9 @@ browserify@^14.0.0:
     vm-browserify "~0.0.1"
     xtend "^4.0.0"
 
-browserify@^15.2.0:
-  version "15.2.0"
-  resolved "https://registry.yarnpkg.com/browserify/-/browserify-15.2.0.tgz#1e121ba1fa72cf9fd2d8df002f8674b68b45df89"
+browserify@^16.1.0:
+  version "16.1.0"
+  resolved "https://registry.yarnpkg.com/browserify/-/browserify-16.1.0.tgz#00b86844f89482bbd0d5d1b584b324762ef3f698"
   dependencies:
     JSONStream "^1.0.3"
     assert "^1.4.0"
@@ -1639,15 +1639,15 @@ browserify@^15.2.0:
     browserify-zlib "~0.2.0"
     buffer "^5.0.2"
     cached-path-relative "^1.0.0"
-    concat-stream "~1.5.1"
+    concat-stream "^1.6.0"
     console-browserify "^1.1.0"
     constants-browserify "~1.0.0"
     crypto-browserify "^3.0.0"
     defined "^1.0.0"
     deps-sort "^2.0.0"
-    domain-browser "~1.1.0"
+    domain-browser "^1.2.0"
     duplexer2 "~0.1.2"
-    events "~1.1.0"
+    events "^2.0.0"
     glob "^7.1.0"
     has "^1.0.0"
     htmlescape "^1.1.0"
@@ -1656,7 +1656,7 @@ browserify@^15.2.0:
     insert-module-globals "^7.0.0"
     labeled-stream-splicer "^2.0.0"
     mkdirp "^0.5.0"
-    module-deps "^5.0.1"
+    module-deps "^6.0.0"
     os-browserify "~0.3.0"
     parents "^1.0.1"
     path-browserify "~0.0.0"
@@ -1675,7 +1675,7 @@ browserify@^15.2.0:
     syntax-error "^1.1.1"
     through2 "^2.0.0"
     timers-browserify "^1.0.1"
-    tty-browserify "~0.0.0"
+    tty-browserify "0.0.1"
     url "~0.11.0"
     util "~0.10.1"
     vm-browserify "~0.0.1"
@@ -2042,12 +2042,19 @@ cloneable-readable@^1.0.0:
     process-nextick-args "^1.0.6"
     through2 "^2.0.1"
 
-cloudinary@^1.2.5, cloudinary@~1.9.1:
+cloudinary@^1.2.5:
   version "1.9.1"
   resolved "https://registry.yarnpkg.com/cloudinary/-/cloudinary-1.9.1.tgz#6eb060a5cfb5084c4c984e4253cc15657b13d9b8"
   dependencies:
     lodash "3.10.x"
     q "1.4.x"
+
+cloudinary@~1.10.0:
+  version "1.10.0"
+  resolved "https://registry.yarnpkg.com/cloudinary/-/cloudinary-1.10.0.tgz#4dfaeeebf932fe98e61d2f7e4d2391c39e76bbf8"
+  dependencies:
+    lodash "^4.17.4"
+    q "^1.5.1"
 
 co@3.1.0:
   version "3.1.0"
@@ -2830,6 +2837,10 @@ dom-serializer@0, dom-serializer@~0.1.0:
     domelementtype "~1.1.1"
     entities "~1.1.1"
 
+domain-browser@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/domain-browser/-/domain-browser-1.2.0.tgz#3d31f50191a6749dd1375a7f522e823d42e54eda"
+
 domain-browser@~1.1.0:
   version "1.1.7"
   resolved "https://registry.yarnpkg.com/domain-browser/-/domain-browser-1.1.7.tgz#867aa4b093faa05f1de08c06f4d7b21fdf8698bc"
@@ -3253,6 +3264,10 @@ event-emitter@^0.3.5, event-emitter@~0.3.4:
   dependencies:
     d "1"
     es5-ext "~0.10.14"
+
+events@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/events/-/events-2.0.0.tgz#cbbb56bf3ab1ac18d71c43bb32c86255062769f2"
 
 events@~1.1.0:
   version "1.1.1"
@@ -6222,9 +6237,9 @@ module-deps@^4.0.8:
     through2 "^2.0.0"
     xtend "^4.0.0"
 
-module-deps@^5.0.1:
-  version "5.0.1"
-  resolved "https://registry.yarnpkg.com/module-deps/-/module-deps-5.0.1.tgz#3bc47c14b0a6d925aff2ec4a177b456a96ae0396"
+module-deps@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/module-deps/-/module-deps-6.0.0.tgz#4417b49a4f4d7af79b104186e5389ea99b1dc837"
   dependencies:
     JSONStream "^1.0.3"
     browser-resolve "^1.7.0"
@@ -6236,7 +6251,7 @@ module-deps@^5.0.1:
     inherits "^2.0.1"
     parents "^1.0.0"
     readable-stream "^2.0.2"
-    resolve "^1.1.3"
+    resolve "^1.4.0"
     stream-combiner2 "^1.1.1"
     subarg "^1.0.0"
     through2 "^2.0.0"
@@ -7231,7 +7246,7 @@ q@1.4.x, q@~1.4.0:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/q/-/q-1.4.1.tgz#55705bcd93c5f3673530c2c2cbc0c2b3addc286e"
 
-q@^1.1.2:
+q@^1.1.2, q@^1.5.1:
   version "1.5.1"
   resolved "https://registry.yarnpkg.com/q/-/q-1.5.1.tgz#7e32f75b41381291d04611f1bf14109ac00651d7"
 
@@ -8853,6 +8868,10 @@ trim-x@^3.0.0:
 tsscmp@~1.0.0:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/tsscmp/-/tsscmp-1.0.5.tgz#7dc4a33af71581ab4337da91d85ca5427ebd9a97"
+
+tty-browserify@0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/tty-browserify/-/tty-browserify-0.0.1.tgz#3f05251ee17904dfd0677546670db9651682b811"
 
 tty-browserify@~0.0.0:
   version "0.0.0"
