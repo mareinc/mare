@@ -184,5 +184,5 @@ Inquiry.schema.methods.setDerivedFields = function( inquiryData, done ) {
 }
 
 // Define default columns in the admin interface and register the model
-Inquiry.defaultColumns = 'takenOn, takenBy, source';
+Inquiry.defaultColumns = 'takenOn, takenBy, source, child, family';
 Inquiry.register();
