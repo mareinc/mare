@@ -1,5 +1,5 @@
 const keystone		= require( 'keystone' ),
-	  familyService	= require( '../middleware/service_family' ),
+	  userService	= require( '../middleware/service_user' ),
 	  listsService	= require( '../middleware/service_lists' ),
 	  pageService	= require( '../middleware/service_page' );
 
@@ -11,9 +11,12 @@ exports = module.exports = ( req, res ) => {
 
 	// store user type for determining gallery permissions
 	const userType = req.user ? req.user.get( 'userType' ) : 'anonymous';
-
-	familyService.setGalleryPermissions( req, res );
-	familyService.checkForBookmarkedChildren( req, res );
+	// store the gallery permissions in local variables
+	const { canBookmarkChildren, canSearchForChildren, canSeeAdvancedSearchOptions } = userService.getGalleryPermissions( req.user );
+	// store the gallery permissions on locals for templating
+	locals.canBookmarkChildren			= canBookmarkChildren;
+	locals.canSearchForChildren			= canSearchForChildren;
+	locals.canSeeAdvancedSearchOptions	= canSeeAdvancedSearchOptions;
 	
 	// fetch all data needed to render this page
 	let fetchDisabilities			= listsService.getAllDisabilities(),

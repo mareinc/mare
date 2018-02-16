@@ -28,7 +28,7 @@ exports.getSocialWorkerById = id => {
 	});
 };
 
-exports.fetchRegisteredChildren = ( id ) => {
+exports.fetchRegisteredChildren = id => {
 
 	return new Promise( ( resolve, reject ) => {
 		// if the id isn't set
@@ -56,4 +56,4 @@ exports.fetchRegisteredChildren = ( id ) => {
 				reject();
 			});
 	});
-}
+};

@@ -173,3 +173,38 @@ exports.getUserByIdNew = ( id, targetModel, fieldsToPopulate = [] ) => {
 			});
 	});
 };
+
+exports.getGalleryPermissions = user => {
+	// check for which type of user is making the request
+	const userType = user ? user.get( 'userType' ) : undefined;
+	// TODO: all of these checks should be virtuals on the models
+	const canBookmarkChildren = userType === 'social worker' || userType === 'family';
+	const canSearchForChildren = userType === 'social worker' || userType === 'family';
+	// TODO: canViewAllChildren and canSeeAdvancedOptions are the same check and should have a name that encompasses both
+	const canSeeAdvancedSearchOptions = userType === 'social worker' ||
+										userType === 'admin' ||
+										( userType === 'family' && user.permissions.canViewAllChildren );
+	// return an object with the user's gallery permissions									
+	return {
+		canBookmarkChildren,
+		canSearchForChildren,
+		canSeeAdvancedSearchOptions
+	}
+};
+
+exports.checkForBookmarkedChildren = user => {
+	// check for which type of user is making the request
+	const userType = user ? user.get( 'userType' ) : undefined;
+	
+	// anonymous users, site visitors, and admin can't bookmark children
+	if( !userType || userType === 'site visitor' || userType === 'admin' ) {
+		return false;
+	}
+
+	// store the bookmarked children and sibling groups
+	const bookmarkedChildren = user ? user.get( 'bookmarkedChildren' ) : [];
+	const bookmarkedSiblings = user ? user.get( 'bookmarkedSiblings' ) : [];
+	// return true if the user has any bookmarked children or siblings, and false otherwise
+	return ( bookmarkedChildren && bookmarkedChildren.length > 0 ) ||
+		   ( bookmarkedSiblings && bookmarkedSiblings.length > 0 );
+};

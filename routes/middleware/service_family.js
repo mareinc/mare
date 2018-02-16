@@ -65,7 +65,7 @@ exports.getMaxRegistrationNumber = function() {
 			});
 	});
 };
-
+// TODO: this has a copy in service_user which should be used instead.  This needs to be phased out, but is in use in several places
 exports.setGalleryPermissions = ( req, res ) => {
 
 	let locals		= res.locals;
@@ -78,17 +78,6 @@ exports.setGalleryPermissions = ( req, res ) => {
 	locals.canSeeAdvancedSearchOptions = userType === 'social worker' ||
 										 userType === 'admin' ||
 									   ( userType === 'family' && req.user.permissions.canViewAllChildren );
-};
-
-exports.checkForBookmarkedChildren = ( req, res ) => {
-
-	let locals = res.locals;
-	// store the bookmarked children and sibling groups
-	const bookmarkedChildren = req.user ? req.user.get( 'bookmarkedChildren' ) : [];
-	const bookmarkedSiblings = req.user ? req.user.get( 'bookmarkedSiblings' ) : [];
-	// store whether or not the user has any bookmarked children or siblings
-	locals.hasBookmarkedChildren = ( bookmarkedChildren && bookmarkedChildren.length > 0 ) ||
-								   ( bookmarkedSiblings && bookmarkedSiblings.length > 0 );
 };
 
 /* If the user type is capable of bookmarking children on the site, retrieve any that are already bookmarked */
