@@ -4,8 +4,9 @@
 	padding: 1em;
 	border-radius: 2px;
 	border-style: none;
-	margin-left: 1%; /* these are here because buttons in button groups squish together // TODO: find a better way */
-	margin-right: 1%;
+	margin-left: 0.3em;
+	margin-right: 0.3em;
+	margin-bottom: 1em;
 	min-width: 8em;
 	transition: 0.5s ease;
 	font-size: 0.9em;
@@ -23,7 +24,7 @@
 	}
 
 	&--extra-large {
-		width: 18em;
+		width: 18.67em;
 	}
 
 	&--thin {
