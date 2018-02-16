@@ -24,7 +24,6 @@ const stagingFolder		= 'website-staging';
 const productionFolder	= 'website-production';
 
 const cloudinaryData = {
-	account: 'dbe9nfmbx',
 	folder: developmentFolder, // IMPORTANT: change this based on the environment you're targeting
 	version: utilities.generateNumber( 10 ) // generate a random 10-digit number used for cache busting images in Cloudinary
 };
@@ -161,7 +160,7 @@ function saveModel( model ) {
 
 	// create regular expressions to match any possible public_id, url, and secure url
 	const publicIdRegExp	= /^(?:website-development|website-staging|website-production)?\/?(.*)$/,
-		  urlRegExp			= /^(.+)(?:dbe9nfmbx|autoboxer)(.+)(?:v\d{10})(?:\/website-development|website-staging|website-production)?(.+)/;
+		  urlRegExp			= /^(.+)(?:v\d{10})\/(?:website-development|website-staging|website-production)(.+)/;
 
 	// search for image fields
 	for( let fieldName in model._doc ) {
@@ -176,8 +175,8 @@ function saveModel( model ) {
 				// replace the version of the child's image with the randomly generated one for cache busting
 				version: cloudinaryData.version,
 				// replace the account field, image version, and folder prefix in both image url fields
-				url: field.url.replace( urlRegExp, `$1${ cloudinaryData.account }$2v${ cloudinaryData.version }/${ cloudinaryData.folder }$3` ).replace( /%27/g, '_' ),
-				secure_url: field.secure_url.replace( urlRegExp, `$1${ cloudinaryData.account }$2v${ cloudinaryData.version }/${ cloudinaryData.folder }$3` ).replace( /%27/g, '_' )
+				url: field.url.replace( urlRegExp, `$1v${ cloudinaryData.version }/${ cloudinaryData.folder }$2` ).replace( /%27/g, '_' ),
+				secure_url: field.secure_url.replace( urlRegExp, `$1v${ cloudinaryData.version }/${ cloudinaryData.folder }$2` ).replace( /%27/g, '_' )
 			};
 			// merge the new image details into the original image and save the new object to the model
 			model.set( fieldName, Object.assign( field, newImageData ) );
@@ -195,8 +194,8 @@ function saveModel( model ) {
 					// replace the version of the child's image with the randomly generated one for cache busting
 					version: cloudinaryData.version,
 					// replace the account field, image version, and folder prefix in both image url fields
-					url: image.url.replace( urlRegExp, `$1${ cloudinaryData.account }$2v${ cloudinaryData.version }/${ cloudinaryData.folder }$3` ).replace( /%27/g, '_' ),
-					secure_url: image.secure_url.replace( urlRegExp, `$1${ cloudinaryData.account }$2v${ cloudinaryData.version }/${ cloudinaryData.folder }$3` ).replace( /%27/g, '_' )
+					url: image.url.replace( urlRegExp, `$1v${ cloudinaryData.version }/${ cloudinaryData.folder }$2` ).replace( /%27/g, '_' ),
+					secure_url: image.secure_url.replace( urlRegExp, `$1v${ cloudinaryData.version }/${ cloudinaryData.folder }$2` ).replace( /%27/g, '_' )
 				};
 				// merge the new image details into the original image and save the new object to the array of new images
 				newImagesArray.push( Object.assign( image, newImageData ) );
