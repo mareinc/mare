@@ -341,7 +341,7 @@
 					<label for="children-in-home" class="label required-field marg-bottom-xs-5">Total number of children currently living at home</label>
 				</div>
 				<div class="col-sm-12">
-					<select id="children-in-home" name="childrenInHome" class="input form__number-select" data-parsley-errors-messages-disabled="true" required="">
+					<select id="children-in-home" name="childrenInHome" class="input form__number-select">
 						<option value=""></option>
 						<option value="0">0</option>
 						<option value="1">1</option>
@@ -392,7 +392,7 @@
 					<label for="primary-language-in-home" class="label marg-bottom-xs-5 required-field">Primary language spoken at home</label>
 				</div>
 				<div class="col-sm-12">
-					<select name="primaryLanguageInHome" class="input form__number-select" data-parsley-errors-messages-disabled="true" required="">
+					<select name="primaryLanguageInHome" class="input form__number-select">
 						<option value=""></option>
 						{{#each languages}}
 							<option value="{{_id}}">{{language}}</option>
