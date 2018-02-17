@@ -134,7 +134,7 @@ Child.add('Display Options', {
 	photolistingPageNumber: { type: Types.Text, label: 'photolisting page', initial: true },
 	previousPhotolistingPageNumbers: { type: Types.Text, label: 'previous photolisting pages', initial: true },
 
-	image: { type: Types.CloudinaryImage, label: 'display image', folder: `${ process.env.CLOUDINARY_DIRECTORY }/children/`, select: true, selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/children/`, publicID: 'fileName', dependsOn: { mustBePlacedWithSiblings: false } },
+	image: { type: Types.CloudinaryImage, label: 'display image', folder: `${ process.env.CLOUDINARY_DIRECTORY }/children/`, select: true, selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/children/`, publicID: 'fileName', dependsOn: { mustBePlacedWithSiblings: false }, autoCleanup: true },
 	allImages: { type: Types.CloudinaryImages, label: 'all images', folder: `${ process.env.CLOUDINARY_DIRECTORY }/children/`, select: true, selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/children/`, publicID: 'fileName', dependsOn: { mustBePlacedWithSiblings: false }, autoCleanup: true },
 	siblingGroupImage: { type: Types.CloudinaryImage, label: 'sibling group image', folder: `${ process.env.CLOUDINARY_DIRECTORY }/sibling-groups/`, select: true, selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/sibling-groups/`, publicID: 'siblingGroupFileName', dependsOn: { mustBePlacedWithSiblings: true }, autoCleanup: true },
 	extranetUrl: { type: Types.Url, label: 'extranet and related profile url', initial: true } // TODO: Since this is redundant as this just points the the url where the photo exists (the child's page), we may hide this field.  This must be kept in as it will help us track down the child information in the old system in the event of an issue.
@@ -242,6 +242,7 @@ Child.schema.post( 'init', function() {
 
 Child.schema.pre( 'save', function( next ) {
 	'use strict';
+
 	// trim whitespace characters from any type.Text fields
 	this.trimTextFields();
 	// create a full name for the child based on their first, middle, and last names
