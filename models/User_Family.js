@@ -287,6 +287,8 @@ Family.add( 'Permissions', {
 			to: { type: Types.Number, label: 'to age', initial: true }
 		},
 
+		minNumberOfChildrenToAdopt: { type: Types.Number, label: 'minimum number of children to adopt', initial: true },
+		maxNumberOfChildrenToAdopt: { type: Types.Number, label: 'maximum number of children to adopt', initial: true },
 		numberOfChildrenToAdopt: { type: Types.Number, label: 'number of children to adopt', initial: true },
 		siblingContact: { type: Types.Boolean, label: 'contact with siblings', default: false, initial: true },
 		birthFamilyContact: { type: Types.Boolean, label: 'contact with birth parents', default: false, initial: true },
@@ -1765,8 +1767,15 @@ Family.schema.methods.setChangeHistory = function setChangeHistory() {
 				done => {
 					ChangeHistoryMiddleware.checkFieldForChanges({
 												parent: 'matchingPreferences',
-												name: 'numberOfChildrenToAdopt',
-												label: 'matching preference - number of children to adopt',
+												name: 'minNumberOfChildrenToAdopt',
+												label: 'matching preference - minimum number of children to adopt',
+												type: 'number' }, model, modelBefore, changeHistory, done);
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												parent: 'matchingPreferences',
+												name: 'maxNumberOfChildrenToAdopt',
+												label: 'matching preference - maximum number of children to adopt',
 												type: 'number' }, model, modelBefore, changeHistory, done);
 				},
 				done => {

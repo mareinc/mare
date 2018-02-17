@@ -1,5 +1,5 @@
 <section class="family-registration hidden">
-	
+
 	<form enctype="multipart/form-data" action="/register" class="registration-form form--family-registration" method="POST">
 		<input type="hidden" class="registration-type" name="registrationType" value="family">
 
@@ -7,7 +7,7 @@
 			<div class="form-section-header">Account Setup</div>
 
 			<span class="required required-description">* Required</span>
-			
+
 			<div class="row form-group">
 				<div class="col-sm-12">
 					<input type="email" id="family-email" class="input" name="email" data-parsley-type="email" data-parsley-trigger="change" data-parsley-error-message="valid email required" required="">
@@ -515,20 +515,39 @@
 					<label class="label marg-bottom-xs-5 number-of-children-preferred-label">Number of children preferred</label>
 				</div>
 				<div class="col-sm-12">
-					<select name="numberOfChildrenPreferred" class="input form__number-select number-of-children-preferred" data-parsley-errors-messages-disabled="true" data-parsley-required="false">
-						<option value=""></option>
-						<option value="0">0</option>
-						<option value="1">1</option>
-						<option value="2">2</option>
-						<option value="3">3</option>
-						<option value="4">4</option>
-						<option value="5">5</option>
-						<option value="6">6</option>
-						<option value="7">7</option>
-						<option value="8">8</option>
-						<option value="9">9</option>
-						<option value="10">10+</option>
-					</select>
+					<div class="row">
+						<div class="col-xs-8">
+							<select name="numberOfChildrenFrom" class="input form__number-select inline number-of-children-from" data-parsley-errors-messages-disabled="true" data-parsley-required="false">
+								<option value=""></option>
+								<option value="1">1</option>
+								<option value="2">2</option>
+								<option value="3">3</option>
+								<option value="4">4</option>
+								<option value="5">5</option>
+								<option value="6">6</option>
+								<option value="7">7</option>
+								<option value="8">8</option>
+								<option value="9">9</option>
+								<option value="10">10+</option>
+							</select>
+						</div>
+						<div class="col-xs-4 text-center">To:</div>
+						<div class="col-xs-8">
+							<select name="numberOfChildrenTo" class="input form__number-select inline number-of-children-to" data-parsley-errors-messages-disabled="true" data-parsley-required="false">
+								<option value=""></option>
+								<option value="1">1</option>
+								<option value="2">2</option>
+								<option value="3">3</option>
+								<option value="4">4</option>
+								<option value="5">5</option>
+								<option value="6">6</option>
+								<option value="7">7</option>
+								<option value="8">8</option>
+								<option value="9">9</option>
+								<option value="10">10+</option>
+							</select>
+						</div>
+					</div>
 				</div>
 			</div>
 			<div class="row form-group">
