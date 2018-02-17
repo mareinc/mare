@@ -14,7 +14,7 @@ module.exports = ( req, res ) => {
 			detail: 'If this error persists, please notify MARE'
 		});
 		
-		res.redirect('/');
+		res.redirect( '/' );
 		
 		return;
 	}

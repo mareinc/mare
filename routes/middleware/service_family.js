@@ -282,7 +282,7 @@ exports.registerFamily = ( req, res, next ) => {
 				// throw an error with details to construct a console.error() and flash message
 				req.flash( 'error', {
 					title: `There was a problem creating the family account`,
-					detail: `The email address you've provided for contact 1 is invalid`});
+					detail: `The email address you've provided for contact 1 is invalid` });
 				// throw an error with details about what went wrong
 				throw new Error( `error creating social worker registered family - email address ${ rawFamilyData.email } is invalid` );
 			}
