@@ -7,7 +7,8 @@
 
 const keystone 		= require( 'keystone' ),
 	  _				= require( 'lodash' ),
-	  userService	= require( './service_user' );
+	  userService	= require( './service_user' ),
+	  flashMessages	= require( './service_flash-messages' );
 
 exports.updateUser = ( req, res, next ) => {
 	const updates	= req.body,
@@ -58,25 +59,73 @@ exports.updateUser = ( req, res, next ) => {
 
 					// log any errors
 					console.error( `there was an error saving an update to ${ userType } ${ user._id } : ${ error }` );
-					res.send({ status: 'error' });
+					// create an error flash message to send back to the user
+					flashMessages.appendFlashMessage({
+						messageType: flashMessages.MESSAGE_TYPES.ERROR,
+						title: 'There was an error updating your account',
+						message: 'If this error persists, please contact MARE for assistance'
+					});
+					// send the error status and flash message markup
+					flashMessages.generateFlashMessageMarkup()
+						.then( flashMessageMarkup => {
+							res.send({
+								status: 'error',
+								flashMessage: flashMessageMarkup
+							});
+						});
 				} else {
-					res.send({ status: 'success' });
+
+					// create an error flash message to send back to the user
+					flashMessages.appendFlashMessage({
+						messageType: flashMessages.MESSAGE_TYPES.SUCCESS,
+						title: 'Your account was updated succesfully'
+					});
+					// send the error status and flash message markup
+					flashMessages.generateFlashMessageMarkup()
+						.then( flashMessageMarkup => {
+							res.send({
+								status: 'success',
+								flashMessage: flashMessageMarkup
+							});
+						});
 				}
-
-
 			});
 		} else {
 
 			// log the error
 			console.error( `there were no updates to save to ${ userType } ${ user._id }` );
-			// send an emtpy response
-			res.send({ status: 'error' });
+			// create an error flash message to send back to the user
+			flashMessages.appendFlashMessage({
+				messageType: flashMessages.MESSAGE_TYPES.ERROR,
+				title: 'There was an error updating your account',
+				message: 'If this error persists, please contact MARE for assistance'
+			});
+			// send the error status and flash message markup
+			flashMessages.generateFlashMessageMarkup()
+				.then( flashMessageMarkup => {
+					res.send({
+						status: 'error',
+						flashMessage: flashMessageMarkup
+					});
+				});
 		}
 	})
 	.catch( () => {
 		// log the error for debugging purposes
 		console.error( `there was an error updating details for user with id ${ userId }` );
-		// send an empty response back to the user
-		res.send({ status: 'error' });
+		// create an error flash message to send back to the user
+		flashMessages.appendFlashMessage({
+			messageType: flashMessages.MESSAGE_TYPES.ERROR,
+			title: 'There was an error updating your account',
+			message: 'If this error persists, please contact MARE for assistance'
+		});
+		// send the error status and flash message markup
+		flashMessages.generateFlashMessageMarkup()
+			.then( flashMessageMarkup => {
+				res.send({
+					status: 'error',
+					flashMessage: flashMessageMarkup
+				});
+			});
 	});
 }
