@@ -1443,6 +1443,7 @@ Family.schema.methods.setChangeHistory = function setChangeHistory() {
 				},
 				done => {
 					ChangeHistoryMiddleware.checkFieldForChanges({
+												parent: 'matchingPreferences',
 												name: 'havePetsInHome',
 												label: 'have pets in the home',
 												type: 'boolean' }, model, modelBefore, changeHistory, done);
