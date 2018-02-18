@@ -289,7 +289,6 @@ Family.add( 'Permissions', {
 
 		minNumberOfChildrenToAdopt: { type: Types.Number, label: 'minimum number of children to adopt', initial: true },
 		maxNumberOfChildrenToAdopt: { type: Types.Number, label: 'maximum number of children to adopt', initial: true },
-		numberOfChildrenToAdopt: { type: Types.Number, label: 'number of children to adopt', initial: true },
 		siblingContact: { type: Types.Boolean, label: 'contact with siblings', default: false, initial: true },
 		birthFamilyContact: { type: Types.Boolean, label: 'contact with birth parents', default: false, initial: true },
 
