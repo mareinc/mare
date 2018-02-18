@@ -412,10 +412,17 @@ exports.sendNewSocialWorkerFamilyRegistrationNotificationEmailToMARE = ( socialW
 			});
 		}
 
-		if( family.matchingPreferences.numberOfChildrenToAdopt ) {
+		if( family.matchingPreferences.minNumberOfChildrenToAdopt ) {
 			familyData.push( {
-				key: 'preferred number of children',
-				value: family.matchingPreferences.numberOfChildrenToAdopt
+				key: 'minimum number of children preferred',
+				value: family.matchingPreferences.minNumberOfChildrenToAdopt
+			});
+		}
+
+		if( family.matchingPreferences.maxNumberOfChildrenToAdopt ) {
+			familyData.push( {
+				key: 'maximum number of children preferred',
+				value: family.matchingPreferences.maxNumberOfChildrenToAdopt
 			});
 		}
 
@@ -949,10 +956,17 @@ exports.sendNewSocialWorkerFamilyRegistrationNotificationEmailToSocialWorker = (
 			});
 		}
 
-		if( family.matchingPreferences.numberOfChildrenToAdopt ) {
+		if( family.matchingPreferences.minNumberOfChildrenToAdopt ) {
 			familyData.push( {
-				key: 'preferred number of children',
-				value: family.matchingPreferences.numberOfChildrenToAdopt
+				key: 'minimum number of children preferred',
+				value: family.matchingPreferences.minNumberOfChildrenToAdopt
+			});
+		}
+
+		if( family.matchingPreferences.maxNumberOfChildrenToAdopt ) {
+			familyData.push( {
+				key: 'maximum number of children preferred',
+				value: family.matchingPreferences.maxNumberOfChildrenToAdopt
 			});
 		}
 

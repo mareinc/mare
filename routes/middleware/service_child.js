@@ -428,15 +428,6 @@ exports.getGalleryData = ( req, res, next ) => {
 	} else {
 		locals.targetChildren = 'all';
 	}
-	// determine if this request is for an account page
-	if ( req.body.requestPage === 'account' ) {
-		// if so, override the targetChildren accordingly based on the user type
-		if ( locals.userType === 'family' ) {
-			locals.targetChildren = 'familyAccount';
-		} else if ( locals.userType === 'social worker' ) {
-			locals.targetChildren = 'socialWorkerAccount';
-		}
-	}
 	// create a string with the fields to select from each child (this speeds up the queries)
 	const fieldsToSelect = `gender race languages disabilities otherConsiderations recommendedFamilyConstellation
 							otherFamilyConstellationConsideration status legalStatus birthDate registrationDate
@@ -448,15 +439,25 @@ exports.getGalleryData = ( req, res, next ) => {
 	async.series([
 		done => { listsService.getChildStatusIdByName( req, res, done, 'active' ) },
 		done => {
-			// fetch the appropriate set of children based on the user's permissions
-			if ( locals.targetChildren === 'all' ) {
-				exports.getAllChildren( req, res, done, fieldsToSelect );
-			} else if ( locals.targetChildren === 'socialWorkerAccount' ) {
-				exports.getChildrenForSocialWorkerAccount( req, res, done, fieldsToSelect );
-			} else if ( locals.targetChildren === 'familyAccount' ) {
-				exports.getChildrenForFamilyAccount( req, res, done, fieldsToSelect );
+
+			// fetch the appropriate set of children based on the user's permissions and the page that's being requested
+
+			// if the user is requesting the account page
+			if ( req.body.requestPage === 'account' ) {
+				// determine which children to show based on the user's type
+				if ( locals.userType === 'family' ) {
+					exports.getChildrenForFamilyAccount( req, res, done, fieldsToSelect );
+				} else if ( locals.userType === 'social worker' ) {
+					exports.getChildrenForSocialWorkerAccount( req, res, done, fieldsToSelect );
+				}
+			// if the user is not requesting the account page
 			} else {
-				exports.getUnrestrictedChildren( req, res, done, fieldsToSelect );
+				// determine which chidlren to show based on the user's access permissions
+				if ( locals.targetChildren === 'all' ) {
+					exports.getAllChildren( req, res, done, fieldsToSelect );
+				} else {
+					exports.getUnrestrictedChildren( req, res, done, fieldsToSelect );
+				}
 			}
 		},
 		// TODO: these familyService functions are for social workers too, they belong in a page level service instead
@@ -1004,6 +1005,35 @@ exports.getChildrenByRegistrationNumbersNew = registrationNumbers => {
 				console.error( `error fetching children matching registration numbers ${ registrationNumbers.join( ', ' ) } - ${ err }` );
 				// and reject the promise
 				reject();
+			});
+	});
+};
+
+/* fetch a single child by their _id field */
+exports.getChildById = ( { id, fieldsToPopulate = [] } ) => {
+	return new Promise( ( resolve, reject ) => {
+		// if no id was passed in
+		if( !id ) {
+			// reject the promise with details about the error
+			reject( `no id provided` );
+		}
+		// attempt to find a single child matching the passed in registration number
+		keystone.list( 'Child' ).model
+			.findById( id )
+			.populate( fieldsToPopulate )
+			.exec()
+			.then( child => {
+				// if the target child could not be found
+				if( !child ) {
+					// reject the promise with details about the error
+					return reject( `no child matching id '${ id } could be found` );
+				}
+				// if the target child was found, resolve the promise with the model
+				resolve( child );
+			// if there was an error fetching from the database
+			}, err => {
+				// reject the promise with details about the error
+				reject( `error fetching child matching id ${ id } - ${ err }` );
 			});
 	});
 };

@@ -44,7 +44,8 @@
 			this.$ageRangeFrom							= this.$( '.age-range-from' );
 			this.$ageRangeTo							= this.$( '.age-range-to' );
 			this.$numberOfChildrenPreferredLabel		= this.$( '.number-of-children-preferred-label' );
-			this.$numberOfChildrenPreferred 			= this.$( '.number-of-children-preferred' );
+			this.$numberOfChildrenFrom					= this.$( '.number-of-children-from' );
+			this.$numberOfChildrenTo					= this.$( '.number-of-children-to' );
 			this.$contactWithBiologicalSiblingsLabel	= this.$( '.contact-with-biological-siblings-label' );
 			this.$contactWithBiologicalSiblings			= this.$( '.contact-with-biological-siblings' );
 			this.$contactWithBiologicalParentsLabel		= this.$( '.contact-with-biological-parents-label' );
@@ -67,7 +68,7 @@
 			this.howDidYouHearOtherValidator 		= this.$howDidYouHearOther.parsley();
 			// bind the hidden homestudy text boxes for use in binding/unbinding validation
 			this.homestudyCompletionDateValidator 	= this.$homestudyCompletionDate.parsley();
-			
+
 			this.socialWorkerNameValidator 			= this.$socialWorkerName.parsley();
 			this.socialWorkerAgencyValidator 		= this.$socialWorkerAgency.parsley();
 			this.socialWorkerPhoneValidator 		= this.$socialWorkerPhone.parsley();
@@ -238,7 +239,8 @@
 			this.$legalStatus.addClass( 'required' );
 			this.$ageRangeFrom.addClass( 'required' );
 			this.$ageRangeTo.addClass( 'required' );
-			this.$numberOfChildrenPreferred.addClass( 'required' );
+			this.$numberOfChildrenFrom.addClass( 'required' );
+			this.$numberOfChildrenTo.addClass( 'required' );
 			this.$contactWithBiologicalSiblings.addClass( 'required' );
 			this.$contactWithBiologicalParents.addClass( 'required' );
 			this.$race.addClass( 'required' );
@@ -250,7 +252,8 @@
 			this.$legalStatus.attr( 'required', true );
 			this.$ageRangeFrom.attr( 'required', true );
 			this.$ageRangeTo.attr( 'required', true );
-			this.$numberOfChildrenPreferred.attr( 'required', true );
+			this.$numberOfChildrenFrom.attr( 'required', true );
+			this.$numberOfChildrenTo.attr( 'required', true );
 			this.$contactWithBiologicalSiblings.attr( 'required', true );
 			this.$contactWithBiologicalParents.attr( 'required', true );
 			this.$race.attr( 'required', true );
@@ -276,7 +279,8 @@
 			this.$legalStatus.removeClass( 'required' );
 			this.$ageRangeFrom.removeClass( 'required' );
 			this.$ageRangeTo.removeClass( 'required' );
-			this.$numberOfChildrenPreferred.removeClass( 'required' );
+			this.$numberOfChildrenFrom.removeClass( 'required' );
+			this.$numberOfChildrenTo.removeClass( 'required' );
 			this.$contactWithBiologicalSiblings.removeClass( 'required' );
 			this.$contactWithBiologicalParents.removeClass( 'required' );
 			this.$race.removeClass( 'required' );
@@ -288,7 +292,8 @@
 			this.$legalStatus.attr( 'required', false );
 			this.$ageRangeFrom.attr( 'required', false );
 			this.$ageRangeTo.attr( 'required', false );
-			this.$numberOfChildrenPreferred.attr( 'required', false );
+			this.$numberOfChildrenFrom.attr( 'required', false );
+			this.$numberOfChildrenTo.attr( 'required', false );
 			this.$contactWithBiologicalSiblings.attr( 'required', false );
 			this.$contactWithBiologicalParents.attr( 'required', false );
 			this.$race.attr( 'required', false );
@@ -351,7 +356,7 @@
 
 			$( '.bs-callout-info' ).toggleClass( 'hidden', !ok );
 			$( '.bs-callout-warning' ).toggleClass( 'hidden', ok );
-			
+
 			// if there are no errors and the user is attempting to submit the form
 			if( ok && event.type === 'submit' ) {
 				// disable the registration button
@@ -366,7 +371,7 @@
 		// submit registration form via AJAX
 		submitForm: function submitForm() {
 
-			// set validation result to false so the form is not auto-submitted 
+			// set validation result to false so the form is not auto-submitted
 			// ( this mimics the behavior of event.preventDefault(), but that approach is deprecated by parsely )
 			this.validationResult = false;
 
@@ -379,22 +384,22 @@
 
 					// handle error responses
 					if ( responseData.status === 'error' ) {
-						
+
 						// display the error message to the user
 						mare.views.registration.displayFlashMessage( responseData.flashMessage );
 
 						// enable the register button
 						mare.views.familyRegistration.enableRegistrationButton();
-						
+
 					// handle success responses
 					} else if ( responseData.status === 'success' ) {
-						
+
 						// redirect the user to the success target page
 						window.location.href = responseData.targetPage;
 					}
 				})
 				.fail( function( error ) {
-					
+
 					// TODO handle errors between the browser and the server
 					console.error( error.status + ' - ' + error.statusText );
 				});

@@ -39,7 +39,7 @@ exports.registerUser = ( req, res, next ) => {
 					.then( flashMessageMarkup => {
 						res.send({
 							status: 'error',
-							flashMessage: flashMessageMarkup 
+							flashMessage: flashMessageMarkup
 						});
 					});
 			// if there were no initial errors, proceed with creating the account
@@ -65,7 +65,7 @@ exports.registerUser = ( req, res, next ) => {
 								name: { full: 'MARE' },
 								email: 'web@mareinc.org'
 							};
-							
+
 							// fetch the user model.  Needed because the copies we have don't have the Relationship fields populated
 							const fetchUser = userService.getUserByIdNew( userId, keystone.list( 'Site Visitor' ), fieldsToPopulate );
 							// fetch the email target model matching 'site visitor registration'
@@ -95,13 +95,13 @@ exports.registerUser = ( req, res, next ) => {
 								})
 								// if the email couldn't be sent, log the error for debugging purposes
 								.catch( err => console.error( `error sending new site visitor notification email to MARE contact about ${ newSiteVisitor.get( 'name.full' ) } (${ newSiteVisitor.get( 'email' ) }) - ${ err }` ) );
-							
+
 							createVerificationRecord
 								// send the account verification email to the user
 								.then( verificationRecord => registrationEmailMiddleware.sendAccountVerificationEmailToUser( newSiteVisitor.get( 'email' ), userType, verificationCode, locals.host ) )
 								// if the email couldn't be send, log the error for debugging purposes
 								.catch( err => console.error( `error sending account verification email to site visitor ${ newSiteVisitor.get( 'name.full' ) } at ${ newSiteVisitor.get( 'email' ) } - ${ err }` ) );
-							
+
 							addUserToMailingLists
 								// if the user couldn't be added to one or more mailing lists
 								.catch( err => console.error( `error adding new site visitor ${ newSiteVisitor.get( 'name.full' ) } (${ newSiteVisitor.get( 'email' ) }) to mailing lists - ${ err }` ) );
@@ -126,7 +126,7 @@ exports.registerUser = ( req, res, next ) => {
 								.then( flashMessageMarkup => {
 									res.send({
 										status: 'error',
-										flashMessage: flashMessageMarkup 
+										flashMessage: flashMessageMarkup
 									});
 								});
 						});
@@ -136,7 +136,7 @@ exports.registerUser = ( req, res, next ) => {
 					exports.saveSocialWorker( user )
 						.then( newSocialWorker => {
 							// if the new social worker model was saved successfully
-							
+
 							// create a new random code for the user to verify their account with
 							const verificationCode = utilities.generateAlphanumericHash( 35 );
 							// store the database id of the newly created user
@@ -152,7 +152,7 @@ exports.registerUser = ( req, res, next ) => {
 								name: { full: 'MARE' },
 								email: 'web@mareinc.org'
 							};
-							
+
 							// fetch the user model.  Needed because the copies we have don't have the Relationship fields populated
 							const fetchUser = userService.getUserByIdNew( userId, keystone.list( 'Social Worker' ), fieldsToPopulate );
 							// fetch the email target model matching 'social worker registration'
@@ -182,7 +182,7 @@ exports.registerUser = ( req, res, next ) => {
 								})
 								// if the email couldn't be sent, log the error for debugging purposes
 								.catch( err => console.error( `error sending new social worker notification email to MARE contact for ${ newSocialWorker.get( 'name.full' ) } (${ newSocialWorker.get( 'email' ) }) - ${ err }` ) );
-							
+
 							// once the verification record has been saved
 							createVerificationRecord
 								// send the account verification email to the user
@@ -193,7 +193,7 @@ exports.registerUser = ( req, res, next ) => {
 							addUserToMailingLists
 								// if the user couldn't be added to one or more mailing lists
 								.catch( err => console.error( `error adding new social worker ${ newSocialWorker.get( 'name.full' ) } (${ newSocialWorker.get( 'email' ) }) to mailing lists - ${ err }` ) );
-							
+
 							// set the redirect path to the success target route
 							req.body.target = redirectPath;
 							// pass control to the login middleware
@@ -214,7 +214,7 @@ exports.registerUser = ( req, res, next ) => {
 								.then( flashMessageMarkup => {
 									res.send({
 										status: 'error',
-										flashMessage: flashMessageMarkup 
+										flashMessage: flashMessageMarkup
 									});
 								});
 						});
@@ -227,7 +227,7 @@ exports.registerUser = ( req, res, next ) => {
 					exports.saveFamily( user )
 						.then( newFamily => {
 							// if the new family model was saved successfully
-							
+
 							// create a new random code for the user to verify their account with
 							const verificationCode = utilities.generateAlphanumericHash( 35 );
 							// store the database id of the newly created user
@@ -290,7 +290,7 @@ exports.registerUser = ( req, res, next ) => {
 								.then( verificationRecord => registrationEmailMiddleware.sendAccountVerificationEmailToUser( newFamily.get( 'email' ), userType, verificationCode, locals.host ) )
 								// if the email couldn't be send, log the error for debugging purposes
 								.catch( err => console.error( `error sending account verification email to family ${ newFamily.get( 'displayName' ) } at ${ newFamily.get( 'email' ) } - ${ err }` ) );
-							
+
 							addUserToMailingLists
 								// if the user couldn't be added to one or more mailing lists
 								.catch( err => console.error( `error adding new family ${ newFamily.get( 'displayName' ) } (${ newFamily.get( 'email' ) }) to mailing lists - ${ err }` ) );
@@ -315,7 +315,7 @@ exports.registerUser = ( req, res, next ) => {
 								.then( flashMessageMarkup => {
 									res.send({
 										status: 'error',
-										flashMessage: flashMessageMarkup 
+										flashMessage: flashMessageMarkup
 									});
 								});
 						});
@@ -323,7 +323,7 @@ exports.registerUser = ( req, res, next ) => {
 			}
 		})
 		.catch( reason => {
-			
+
 			// create an error flash message to send back to the user
 			flashMessages.appendFlashMessage({
 				messageType: flashMessages.MESSAGE_TYPES.ERROR,
@@ -335,7 +335,7 @@ exports.registerUser = ( req, res, next ) => {
 				.then( flashMessageMarkup => {
 					res.send({
 						status: 'error',
-						flashMessage: flashMessageMarkup 
+						flashMessage: flashMessageMarkup
 					});
 				});
 		});
@@ -393,7 +393,7 @@ exports.saveSiteVisitor = user => {
 };
 
 exports.saveSocialWorker = user => {
- 
+
 	return new Promise( ( resolve, reject ) => {
 
 		const SocialWorker = keystone.list( 'Social Worker' );
@@ -444,7 +444,7 @@ exports.saveSocialWorker = user => {
 exports.saveFamily = user => {
 
 	return new Promise( ( resolve, reject ) => {
-		
+
 		const Family = keystone.list( 'Family' );
 
 		const newUser = new Family.model({
@@ -453,7 +453,6 @@ exports.saveFamily = user => {
 			password							: user.password,
 
 			initialContact						: exports.getCurrentDate(),
-			language							: user.primaryLanguageInHome,
 			otherLanguages						: user.otherLanguagesInHome,
 
 			contact1: {
@@ -561,8 +560,16 @@ exports.saveFamily = user => {
 			registeredViaWebsite				: true
 		});
 
-		if( user.numberOfChildrenPreferred !== '' ) {
-			newUser.set( 'matchingPreferences.numberOfChildrenToAdopt', parseInt( user.numberOfChildrenPreferred, 10 ) );
+		if( user.numberOfChildrenFrom ) {
+			newUser.set( 'matchingPreferences.minNumberOfChildrenToAdopt', parseInt( user.numberOfChildrenFrom, 10 ) );
+		}
+
+		if( user.numberOfChildrenTo ) {
+			newUser.set( 'matchingPreferences.maxNumberOfChildrenToAdopt', parseInt( user.numberOfChildrenTo, 10 ) );
+		}
+
+		if ( user.primaryLanguageInHome ) {
+			newUser.set( 'language', user.primaryLanguageInHome );
 		}
 
 		if( user.childrenInHome !== '' ) {
@@ -596,7 +603,7 @@ exports.validateEmail = email => {
 
 /* return true if the submitted email already exists in the system for a user of any type */
 exports.checkForDuplicateEmail = email => {
-	
+
 	// return a promise for cleaner asynchronous processing
 	return new Promise( ( resolve, reject ) => {
 		// TODO: this exec() is suspicious and different from all my others, it warrants further testing
@@ -628,7 +635,7 @@ exports.validatePassword = ( password, confirmPassword ) => {
 
 /* create error flash messages if a problem was encountered */
 exports.setInitialErrorMessages = ( req, isEmailValid, isEmailDuplicate, isPasswordValid ) => {
-	
+
 	if( !isEmailValid ) {
 		flashMessages.appendFlashMessage({
 			messageType: flashMessages.MESSAGE_TYPES.ERROR,
@@ -659,7 +666,7 @@ exports.addToMailingLists = ( user, mailingListIds, registrationType ) => {
 
 	return new Promise( ( resolve, reject ) => {
 		// filter out any invalid strings.  False values from form submissions will result in an empty string
-		const validMailingListIds = mailingListIds ? 
+		const validMailingListIds = mailingListIds ?
 									mailingListIds.filter( ( mailingListId ) => mailingListId !== '' ) :
 									undefined;
 		// if there were no mailing lists the user opted into
@@ -815,7 +822,7 @@ exports.getStages = family => {
 };
 
 exports.createNewVerificationRecord = ( verificationCode, userId ) => {
-	
+
 	return new Promise( ( resolve, reject ) => {
 
 		const AccountVerificationCode = keystone.list( 'Account Verification Code' );

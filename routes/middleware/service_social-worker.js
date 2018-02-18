@@ -5,8 +5,8 @@ exports.getSocialWorkerById = id => {
 	return new Promise( ( resolve, reject ) => {
 		// if no id was passed in
 		if( !id ) {
-			// reject the promise with details
-			return reject( `error fetching social worker by id - no id value passed in` );
+			// reject the promise with details of the error
+			return reject( `no id value provided` );
 		}
 		// fetch the social worker record
 		keystone.list( 'Social Worker' ).model
@@ -16,14 +16,14 @@ exports.getSocialWorkerById = id => {
 				// if no social worker was found with a matching id
 				if( !socialWorker ) {
 					// reject the promise with the reason why
-					reject( `error fetching social worker by id - no social worker found with id ${ id }`)
+					reject( `no social worker found matching id ${ id } could be found` );
 				}
 				// resolve the promise with the returned social worker
 				resolve( socialWorker );
 			// if an error occurred fetching from the database
 			}, err => {
 				// reject the promise with details of the error
-				reject( `error fetching social worker by id - ${ err }` );
+				reject( `error fetching social worker matching id ${ id } - ${ err }` );
 			});
 	});
 };

@@ -178,7 +178,7 @@ exports.getGalleryPermissions = user => {
 	// check for which type of user is making the request
 	const userType = user ? user.get( 'userType' ) : undefined;
 	// TODO: all of these checks should be virtuals on the models
-	const canBookmarkChildren = userType === 'social worker' || userType === 'family';
+	const canBookmarkChildren = userType === 'family';
 	const canSearchForChildren = userType === 'social worker' || userType === 'family';
 	// TODO: canViewAllChildren and canSeeAdvancedOptions are the same check and should have a name that encompasses both
 	const canSeeAdvancedSearchOptions = userType === 'social worker' ||

@@ -1,5 +1,5 @@
 <section class="family-registration hidden">
-	
+
 	<form enctype="multipart/form-data" action="/register" class="registration-form form--family-registration" method="POST">
 		<input type="hidden" class="registration-type" name="registrationType" value="family">
 
@@ -7,7 +7,7 @@
 			<div class="form-section-header">Account Setup</div>
 
 			<span class="required required-description">* Required</span>
-			
+
 			<div class="row form-group">
 				<div class="col-sm-12">
 					<input type="email" id="family-email" class="input" name="email" data-parsley-type="email" data-parsley-trigger="change" data-parsley-error-message="valid email required" required="">
@@ -16,13 +16,25 @@
 			</div>
 			<div class="row form-group">
 				<div class="col-sm-12">
-					<input type="password" id="family-password" class="input" name="password" data-parsley-error-message="required" required="">
+					<input type="password" id="family-password" class="input" name="password"
+							data-parsley-trigger="focusout"
+							data-parsley-minlength="8" data-parsley-minlength-message="password must be 8 or more characters"
+							data-parsley-required-message="password is required" required=""
+							data-parsley-pattern="/(?=.*\d)(?=.*[a-z])(?=.*[A-Z])/" data-parsley-pattern-message="password does not meet requirements">
 					<label for="family-password" class="label required-field">Password</label>
 				</div>
 				<div class="col-sm-12">
-					<input type="password" id="family-confirm-password" class="input" name="confirmPassword" data-parsley-equalto="#family-password" data-parsley-error-message="passwords must match" required="">
+					<input type="password" id="family-confirm-password" class="input" name="confirmPassword"
+							data-parsley-trigger="focusout"
+							data-parsley-minlength="8" data-parsley-minlength-message="password must be 8 or more characters"
+							data-parsley-required-message="password is required" required=""
+							data-parsley-pattern="/(?=.*\d)(?=.*[a-z])(?=.*[A-Z])/" data-parsley-pattern-message="password does not meet requirements"
+							data-parsley-equalto="#family-password" data-parsley-equalto-message="passwords must match">
 					<label for="family-confirm-password" class="label required-field">Confirm Password</label>
 				</div>
+			</div>
+			<div>
+				<p class="form-field-note">Note: passwords must be at least 8 characters long, contain at least one number, one uppercase letter, and one lowercase letter.</p>
 			</div>
 		</section>
 
@@ -338,10 +350,10 @@
 
 			<div class="row form-group children-in-home">
 				<div class="col-sm-12">
-					<label for="children-in-home" class="label required-field marg-bottom-xs-5">Total number of children currently living at home</label>
+					<label for="children-in-home" class="label marg-bottom-xs-5">Total number of children currently living at home</label>
 				</div>
 				<div class="col-sm-12">
-					<select id="children-in-home" name="childrenInHome" class="input form__number-select" data-parsley-errors-messages-disabled="true" required="">
+					<select id="children-in-home" name="childrenInHome" class="input form__number-select">
 						<option value=""></option>
 						<option value="0">0</option>
 						<option value="1">1</option>
@@ -389,10 +401,10 @@
 			</div>
 			<div class="row form-group">
 				<div class="col-sm-12">
-					<label for="primary-language-in-home" class="label marg-bottom-xs-5 required-field">Primary language spoken at home</label>
+					<label for="primary-language-in-home" class="label marg-bottom-xs-5">Primary language spoken at home</label>
 				</div>
 				<div class="col-sm-12">
-					<select name="primaryLanguageInHome" class="input form__number-select" data-parsley-errors-messages-disabled="true" required="">
+					<select name="primaryLanguageInHome" class="input form__number-select">
 						<option value=""></option>
 						{{#each languages}}
 							<option value="{{_id}}">{{language}}</option>
@@ -515,20 +527,39 @@
 					<label class="label marg-bottom-xs-5 number-of-children-preferred-label">Number of children preferred</label>
 				</div>
 				<div class="col-sm-12">
-					<select name="numberOfChildrenPreferred" class="input form__number-select number-of-children-preferred" data-parsley-errors-messages-disabled="true" data-parsley-required="false">
-						<option value=""></option>
-						<option value="0">0</option>
-						<option value="1">1</option>
-						<option value="2">2</option>
-						<option value="3">3</option>
-						<option value="4">4</option>
-						<option value="5">5</option>
-						<option value="6">6</option>
-						<option value="7">7</option>
-						<option value="8">8</option>
-						<option value="9">9</option>
-						<option value="10">10+</option>
-					</select>
+					<div class="row">
+						<div class="col-xs-8">
+							<select name="numberOfChildrenFrom" class="input form__number-select inline number-of-children-from" data-parsley-errors-messages-disabled="true" data-parsley-required="false">
+								<option value=""></option>
+								<option value="1">1</option>
+								<option value="2">2</option>
+								<option value="3">3</option>
+								<option value="4">4</option>
+								<option value="5">5</option>
+								<option value="6">6</option>
+								<option value="7">7</option>
+								<option value="8">8</option>
+								<option value="9">9</option>
+								<option value="10">10+</option>
+							</select>
+						</div>
+						<div class="col-xs-4 text-center">To:</div>
+						<div class="col-xs-8">
+							<select name="numberOfChildrenTo" class="input form__number-select inline number-of-children-to" data-parsley-errors-messages-disabled="true" data-parsley-required="false">
+								<option value=""></option>
+								<option value="1">1</option>
+								<option value="2">2</option>
+								<option value="3">3</option>
+								<option value="4">4</option>
+								<option value="5">5</option>
+								<option value="6">6</option>
+								<option value="7">7</option>
+								<option value="8">8</option>
+								<option value="9">9</option>
+								<option value="10">10+</option>
+							</select>
+						</div>
+					</div>
 				</div>
 			</div>
 			<div class="row form-group">

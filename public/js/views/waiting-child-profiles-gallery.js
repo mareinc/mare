@@ -247,7 +247,7 @@
 				var registrationNumbersStringArray = registrationNumbers.split( ',' );
 				// create a number array for comparisons from the string array
 				var registrationNumbersArray = registrationNumbersStringArray.map( function( numberAsString ) {
-					return Number.parseInt( numberAsString );
+					return Number.parseInt( numberAsString, 10 );
 				});
 
 				// update the isBookmarked field for the target siblingGroup model
@@ -280,7 +280,7 @@
 				var registrationNumbersStringArray = registrationNumbers.split( ',' );
 				// create a number array for comparisons from the string array
 				var registrationNumbersArray = registrationNumbersStringArray.map( function( numberAsString ) {
-					return Number.parseInt( numberAsString );
+					return Number.parseInt( numberAsString, 10 );
 				});
 
 				// update the isBookmarked field for the target siblingGroup model

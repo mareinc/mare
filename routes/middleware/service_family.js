@@ -72,7 +72,7 @@ exports.setGalleryPermissions = ( req, res ) => {
 	// variables to determine what features the user has access to.  Don't overwrite it if it's already set
 	const userType = locals.userType || ( req.user ? req.user.get( 'userType' ) : 'anonymous' );
 	// TODO: all of these checks should be virtuals on the models
-	locals.canBookmarkChildren = userType === 'social worker' || userType === 'family';
+	locals.canBookmarkChildren = userType === userType === 'family';
 	locals.canSearchForChildren = userType === 'social worker' || userType === 'family';
 	// TODO: canViewAllChildren and canSeeAdvancedOptions are the same check and should have a name that encompasses both
 	locals.canSeeAdvancedSearchOptions = userType === 'social worker' ||
@@ -282,7 +282,7 @@ exports.registerFamily = ( req, res, next ) => {
 				// throw an error with details to construct a console.error() and flash message
 				req.flash( 'error', {
 					title: `There was a problem creating the family account`,
-					detail: `The email address you've provided for contact 1 is invalid`});
+					detail: `The email address you've provided for contact 1 is invalid` });
 				// throw an error with details about what went wrong
 				throw new Error( `error creating social worker registered family - email address ${ rawFamilyData.email } is invalid` );
 			}

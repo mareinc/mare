@@ -1,4 +1,5 @@
 const keystone						= require( 'keystone' ),
+	  robots						= require( 'express-robots' ),
 	  childService					= require( './middleware/service_child' ),
 	  donationService				= require( './middleware/service_donation')
 	  eventService					= require( './middleware/service_event' ),
@@ -27,6 +28,15 @@ var routes = {
 // TODO: clean up these routes to call middleware ( where views aren't appropriate ) which then calls services, instead of services directly
 exports = module.exports = app => {
 	'use strict';
+
+	// serve robots.txt based on the runtime environment
+	if ( process.env.ALLOW_ROBOTS === 'true' ) {
+		// if running in production, allow robots to crawl by serving the production robots.txt
+		app.use( robots( __dirname + '/robots/robots-production.txt' ) );
+	} else {
+		// otherwise, serve the dev robots.txt ( i.e. disallow all crawlers )
+		app.use( robots( __dirname + '/robots/robots-development.txt' ) );
+	}
 
 	// home page
 	app.get( '/'										, routes.views.main );
