@@ -86,7 +86,7 @@ exports = module.exports = app => {
 	app.get( '/mare-in-the-news/:key'					, routes.views.mareInTheNewsStory );
 	// donations
 	app.get( '/donate'									, routes.views.donate );
-	app.post( '/process-donation'						, donationService.validateDonationRequest, donationService.processDonation );
+	app.post( '/donate'									, donationService.validateDonationRequest, donationService.processDonation );
 	// user account management
 	app.get( '/account'									, middleware.requireUser, routes.views.account );
 	app.put( '/account/user-info'						, accountMiddleware.updateUser );
