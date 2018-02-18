@@ -244,5 +244,5 @@ Inquiry.schema.pre( 'save', function( next ) {
 });
 
 // Define default columns in the admin interface and register the model
-Inquiry.defaultColumns = 'takenOn, takenBy, source, child, family';
+Inquiry.defaultColumns = 'takenOn, takenBy, source, children, family';
 Inquiry.register();
