@@ -746,10 +746,17 @@ exports.sendNewFamilyNotificationEmailToMARE = ( user, registrationStaffContact,
 			});
 		}
 
-		if( user.matchingPreferences.numberOfChildrenToAdopt ) {
+		if( user.matchingPreferences.minNumberOfChildrenToAdopt ) {
 			userData.push( {
-				key: 'preferred number of children',
-				value: user.matchingPreferences.numberOfChildrenToAdopt
+				key: 'minimum number of children preferred',
+				value: user.matchingPreferences.minNumberOfChildrenToAdopt
+			});
+		}
+
+		if( user.matchingPreferences.maxNumberOfChildrenToAdopt ) {
+			userData.push( {
+				key: 'maximum number of children preferred',
+				value: user.matchingPreferences.maxNumberOfChildrenToAdopt
 			});
 		}
 
