@@ -765,7 +765,7 @@ exports.registerChild = ( req, res, next ) => {
 	// extract the child details submitted through the req object
 	const rawChildData = req.body;
 	// set the redirect path to navigate to after processing is complete
-	const redirectPath = '/forms/child-registration-form';
+	const redirectPath = '/forms/social-worker-child-registration';
 	// fetch the id for the active child status
 	const fetchActiveChildStatusId = exports.fetchChildStatusId( 'active' );
 	// if the active child status model has been
