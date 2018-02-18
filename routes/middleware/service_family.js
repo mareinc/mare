@@ -72,7 +72,7 @@ exports.setGalleryPermissions = ( req, res ) => {
 	// variables to determine what features the user has access to.  Don't overwrite it if it's already set
 	const userType = locals.userType || ( req.user ? req.user.get( 'userType' ) : 'anonymous' );
 	// TODO: all of these checks should be virtuals on the models
-	locals.canBookmarkChildren = userType === 'social worker' || userType === 'family';
+	locals.canBookmarkChildren = userType === userType === 'family';
 	locals.canSearchForChildren = userType === 'social worker' || userType === 'family';
 	// TODO: canViewAllChildren and canSeeAdvancedOptions are the same check and should have a name that encompasses both
 	locals.canSeeAdvancedSearchOptions = userType === 'social worker' ||
