@@ -1008,3 +1008,32 @@ exports.getChildrenByRegistrationNumbersNew = registrationNumbers => {
 			});
 	});
 };
+
+/* fetch a single child by their _id field */
+exports.getChildById = ( { id, fieldsToPopulate = [] } ) => {
+	return new Promise( ( resolve, reject ) => {
+		// if no id was passed in
+		if( !id ) {
+			// reject the promise with details about the error
+			reject( `no id provided` );
+		}
+		// attempt to find a single child matching the passed in registration number
+		keystone.list( 'Child' ).model
+			.findById( id )
+			.populate( fieldsToPopulate )
+			.exec()
+			.then( child => {
+				// if the target child could not be found
+				if( !child ) {
+					// reject the promise with details about the error
+					return reject( `no child matching id '${ id } could be found` );
+				}
+				// if the target child was found, resolve the promise with the model
+				resolve( child );
+			// if there was an error fetching from the database
+			}, err => {
+				// reject the promise with details about the error
+				reject( `error fetching child matching id ${ id } - ${ err }` );
+			});
+	});
+};
