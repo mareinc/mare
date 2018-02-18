@@ -27,7 +27,7 @@ function* fixFamiliesGenerator() {
 		errors = [];
 
 	while( page ) {
-		console.info( `saving children ${ ( page - 1 ) * 100 } - ${ page * 100 }` );
+		console.info( `saving families ${ ( page - 1 ) * 100 } - ${ page * 100 }` );
 		// fetch the page of families, waiting to execute further code until we have a result
 		const fetchedFamilies = yield fetchFamiliesByPage( page );
 		// if there was an error fetching the page of families
@@ -91,6 +91,15 @@ function fetchFamiliesByPage( page ) {
 function saveFamily( family ) {
 
 	return new Promise( ( resolve, reject ) => {
+		const numberOfChildrenToAdopt = family.get( 'matchingPreferences.numberOfChildrenToAdopt' );
+		// if a value is set for number of children to adopt
+		if( numberOfChildrenToAdopt ) {
+			// set min and max number of children to adopt fields
+			family.set( 'matchingPreferences.minNumberOfChildrenToAdopt', numberOfChildrenToAdopt );
+			family.set( 'matchingPreferences.maxNumberOfChildrenToAdopt', numberOfChildrenToAdopt );
+			// delete the number of children to adopt field.  Strict needs to be set to false since the field is no longer part of the schema
+			family.set( 'matchingPreferences.numberOfChildrenToAdopt', undefined, { strict: false } );
+		}
 		// attempt the save the family
 		family.save( ( err, savedModel ) => {
 			// if we run into an error
