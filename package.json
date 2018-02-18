@@ -13,6 +13,7 @@
     "del": "^3.0.0",
     "dotenv": "^5.0.0",
     "express-handlebars": "~3.0.0",
+    "express-robots": "^0.1.6",
     "gulp": "gulpjs/gulp#4.0",
     "gulp-autoprefixer": "^4.1.0",
     "gulp-clean-css": "^3.9.2",
