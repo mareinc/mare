@@ -358,7 +358,7 @@
 		<div class="row form-group">
 			<div class="col-sm-24">
 				<label class="checkbox-inline">
-					<input type="checkbox" name="havePets" data-field-name="havePetsInHome" value="{{user.havePetsInHome}}"  {{#if user.havePetsInHome}}checked="checked"{{/if}}>Have pets in the home
+					<input type="checkbox" name="havePets" data-field-name="matchingPreferences.havePetsInHome" value="{{user.matchingPreferences.havePetsInHome}}"  {{#if user.matchingPreferences.havePetsInHome}}checked="checked"{{/if}}>Have pets in the home
 				</label>
 			</div>
 		</div>
@@ -493,21 +493,39 @@
 				<label class="label marg-bottom-xs-5 number-of-children-preferred-label">Number of children preferred</label>
 			</div>
 			<div class="col-sm-12">
-				{{!-- TODO: Find number of children in matching preferences --}}
-				<select name="numberOfChildrenPreferred" class="input form__number-select number-of-children-preferred" data-field-name="matchingPreferences.numberOfChildrenToAdopt">
-					<option value=""></option>
-					<option {{#ifeq user.matchingPreferences.numberOfChildrenToAdopt 0}}selected="selected"{{/ifeq}} value="0">0</option>
-					<option {{#ifeq user.matchingPreferences.numberOfChildrenToAdopt 1}}selected="selected"{{/ifeq}} value="1">1</option>
-					<option {{#ifeq user.matchingPreferences.numberOfChildrenToAdopt 2}}selected="selected"{{/ifeq}} value="2">2</option>
-					<option {{#ifeq user.matchingPreferences.numberOfChildrenToAdopt 3}}selected="selected"{{/ifeq}} value="3">3</option>
-					<option {{#ifeq user.matchingPreferences.numberOfChildrenToAdopt 4}}selected="selected"{{/ifeq}} value="4">4</option>
-					<option {{#ifeq user.matchingPreferences.numberOfChildrenToAdopt 5}}selected="selected"{{/ifeq}} value="5">5</option>
-					<option {{#ifeq user.matchingPreferences.numberOfChildrenToAdopt 6}}selected="selected"{{/ifeq}} value="6">6</option>
-					<option {{#ifeq user.matchingPreferences.numberOfChildrenToAdopt 7}}selected="selected"{{/ifeq}} value="7">7</option>
-					<option {{#ifeq user.matchingPreferences.numberOfChildrenToAdopt 8}}selected="selected"{{/ifeq}} value="8">8</option>
-					<option {{#ifeq user.matchingPreferences.numberOfChildrenToAdopt 9}}selected="selected"{{/ifeq}} value="9">9</option>
-					<option {{#ifeq user.matchingPreferences.numberOfChildrenToAdopt 10}}selected="selected"{{/ifeq}} value="10">10+</option>
-				</select>
+				<div class="row">
+					<div class="col-xs-8">
+						<select name="numberOfChildrenFrom" class="input form__number-select inline number-of-children-from" data-field-name="matchingPreferences.minNumberOfChildrenToAdopt">
+							<option value=""></option>
+							<option {{#ifeq user.matchingPreferences.minNumberOfChildrenToAdopt 1}}selected="selected"{{/ifeq}} value="1">1</option>
+							<option {{#ifeq user.matchingPreferences.minNumberOfChildrenToAdopt 2}}selected="selected"{{/ifeq}} value="2">2</option>
+							<option {{#ifeq user.matchingPreferences.minNumberOfChildrenToAdopt 3}}selected="selected"{{/ifeq}} value="3">3</option>
+							<option {{#ifeq user.matchingPreferences.minNumberOfChildrenToAdopt 4}}selected="selected"{{/ifeq}} value="4">4</option>
+							<option {{#ifeq user.matchingPreferences.minNumberOfChildrenToAdopt 5}}selected="selected"{{/ifeq}} value="5">5</option>
+							<option {{#ifeq user.matchingPreferences.minNumberOfChildrenToAdopt 6}}selected="selected"{{/ifeq}} value="6">6</option>
+							<option {{#ifeq user.matchingPreferences.minNumberOfChildrenToAdopt 7}}selected="selected"{{/ifeq}} value="7">7</option>
+							<option {{#ifeq user.matchingPreferences.minNumberOfChildrenToAdopt 8}}selected="selected"{{/ifeq}} value="8">8</option>
+							<option {{#ifeq user.matchingPreferences.minNumberOfChildrenToAdopt 9}}selected="selected"{{/ifeq}} value="9">9</option>
+							<option {{#ifeq user.matchingPreferences.minNumberOfChildrenToAdopt 10}}selected="selected"{{/ifeq}} value="10">10+</option>
+						</select>
+					</div>
+					<div class="col-xs-4 text-center">To:</div>
+					<div class="col-xs-8">
+						<select name="numberOfChildrenTo" class="input form__number-select inline number-of-children-to" data-field-name="matchingPreferences.maxNumberOfChildrenToAdopt">
+							<option value=""></option>
+							<option {{#ifeq user.matchingPreferences.maxNumberOfChildrenToAdopt 1}}selected="selected"{{/ifeq}} value="1">1</option>
+							<option {{#ifeq user.matchingPreferences.maxNumberOfChildrenToAdopt 2}}selected="selected"{{/ifeq}} value="2">2</option>
+							<option {{#ifeq user.matchingPreferences.maxNumberOfChildrenToAdopt 3}}selected="selected"{{/ifeq}} value="3">3</option>
+							<option {{#ifeq user.matchingPreferences.maxNumberOfChildrenToAdopt 4}}selected="selected"{{/ifeq}} value="4">4</option>
+							<option {{#ifeq user.matchingPreferences.maxNumberOfChildrenToAdopt 5}}selected="selected"{{/ifeq}} value="5">5</option>
+							<option {{#ifeq user.matchingPreferences.maxNumberOfChildrenToAdopt 6}}selected="selected"{{/ifeq}} value="6">6</option>
+							<option {{#ifeq user.matchingPreferences.maxNumberOfChildrenToAdopt 7}}selected="selected"{{/ifeq}} value="7">7</option>
+							<option {{#ifeq user.matchingPreferences.maxNumberOfChildrenToAdopt 8}}selected="selected"{{/ifeq}} value="8">8</option>
+							<option {{#ifeq user.matchingPreferences.maxNumberOfChildrenToAdopt 9}}selected="selected"{{/ifeq}} value="9">9</option>
+							<option {{#ifeq user.matchingPreferences.maxNumberOfChildrenToAdopt 10}}selected="selected"{{/ifeq}} value="10">10+</option>
+						</select>
+					</div>
+				</div>
 			</div>
 		</div>
 		<div class="row form-group">

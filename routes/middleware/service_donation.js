@@ -1,7 +1,7 @@
 const keystone		= require( 'keystone' ),
 	  flashMessages	= require( './service_flash-messages' ),
-	  stripe		= require( 'stripe' )( process.env.STRIPE_SECRET_API_KEY_TEST );
-	  
+	  stripe		= require( 'stripe' )( process.env.STRIPE_SECRET_API_KEY );
+
 // define the various donation plan types ( stripe plans are used for recurring donations )
 const plan_types = {
 
@@ -10,7 +10,7 @@ const plan_types = {
 		interval: 'none',
 		interval_count: 0
 	},
-	
+
 	monthly: {
 		id: 'monthly',
 		interval: 'month',
@@ -42,6 +42,7 @@ function oneTimeDonation( donationData ) {
 			amount: 		donationData.amountPennies,
 			currency: 		'usd',
 			description:	`${ usdFormatter.format( donationData.amountDollars ) } One-Time Donation`,
+			receipt_email:	donationData.email,
 			source: 		donationData.token
 		}, function( error, charge ) {
 
@@ -83,7 +84,7 @@ function setDonationType( donationFrequency ) {
 	if ( donationFrequency > 0 ) {
 
 		return recurringDonation;
-	
+
 	// if the frequency is not greater than zero, it is a one-time charge
 	} else {
 
@@ -130,7 +131,7 @@ function saveDonation( user, donationData, stripeTransactionID  ) {
 
 				// if the Donation model save fails, log the error along with the Stripe transaction ID so that the Donation can be manually saved later
 				console.error( `error saving donation model - ${ error } - Donation Payment Processed ( Stipe Transaction ID: ${ stripeTransactionID } )` );
-				
+
 				// resolve the promise so that the user is still presented with a success message on the front end, as the donation payment has processed succesfully
 				resolve();
 			} else {
@@ -154,8 +155,6 @@ function createCustomer( donationData ) {
 			error ? reject( error ) : resolve( customer );
 		});
 	});
-
-
 }
 
 // create a stripe billing plan
@@ -168,7 +167,7 @@ function createPlan( customer, donationData ) {
 		let planName;
 		// format the donation amount for the plan name text
 		const donationAmountFormatted = usdFormatter.format( donationData.amountDollars );
-		
+
 		// set the plan name with frequency and amount
 		switch ( donationData.frequency ) {
 
@@ -200,8 +199,6 @@ function createPlan( customer, donationData ) {
 				}
 		});
 	});
-
-
 }
 
 // subscripe a customer to a payment plan
@@ -259,7 +256,7 @@ exports = module.exports = {
 			}
 		};
 
-		// determine which type of donation payment plan to generate based on the donation frequency 
+		// determine which type of donation payment plan to generate based on the donation frequency
 		var processDonationPayment = setDonationType( donationData.frequency );
 
 		// process the donation via the appropriate stripe payment API ( depending on payment plan, determined in the previous step )
@@ -268,11 +265,11 @@ exports = module.exports = {
 			.then( stripeTransactionResponse => saveDonation( req.user, donationData, stripeTransactionResponse.id ) )
 			// send a success message to the user
 			.then( dbResponse => {
-				
+
 				// append the succcess message to the flash messages list
 				flashMessages.appendFlashMessage({
 					messageType: flashMessages.MESSAGE_TYPES.SUCCESS,
-					title: 'Thank you!', 
+					title: 'Thank you!',
 					message: 'Your donation to the Massachusetts Adoption Resource Exchange (MARE) is complete. Your gift will support finding adoptive homes for children and teens in foster care. A confirmation transaction email will come from the donation platform and a thank you letter and tax receipt will come from MARE. Please contact Megan Dolan at megand@mareinc.org with any questions or to learn more.'
 				});
 
@@ -288,11 +285,11 @@ exports = module.exports = {
 				});
 			})
 			.catch( err => {
-				
+
 				// append the error message to the flash messages list
 				flashMessages.appendFlashMessage({
 					messageType: flashMessages.MESSAGE_TYPES.ERROR,
-					title: 'Error!', 
+					title: 'Error!',
 					message: err.message
 				});
 
@@ -304,11 +301,11 @@ exports = module.exports = {
 						res.send({
 							status: 'error',
 							message: flashMessageMarkup
-						});	
+						});
 					});
 			});
 	},
-	
+
 	// validate the donation request body before processing payment
 	validateDonationRequest: function validateDonationRequest( req, res, next ) {
 
@@ -319,10 +316,10 @@ exports = module.exports = {
 		const donationAmount = Number( req.body.amount );
 		// test to ensure donationamount is a valid number ( positive, finite, !NaN )
 		if ( Number.isFinite( donationAmount ) ) {
-			
+
 			req.body.amount = donationAmount;
 		} else {
-			
+
 			validationError = true;
 			res.send( generateError( 'Donation amount is not a valid number.' ) );
 			return;
@@ -335,7 +332,7 @@ exports = module.exports = {
 
 			req.body.frequency = donationFrequency;
 		} else {
-			
+
 			validationError = true;
 			res.send( generateError( 'Donation frequency does not match any donation plan.' ) );
 			return;

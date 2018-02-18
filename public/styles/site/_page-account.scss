@@ -69,3 +69,17 @@
 .account-current-section__title {
     margin-top: 0;
 }
+
+.account-event__container {
+	border-top: 1px solid #989698;
+	padding: 0 0 20px 0;
+
+	&:last-of-type {
+		padding: 0;
+	}
+
+	.card__content-group {
+		display: flex;
+		flex-direction: row;
+	}
+}

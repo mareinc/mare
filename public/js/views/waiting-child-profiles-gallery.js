@@ -37,7 +37,7 @@
 			}.bind( this ) );
 
 			// bind to change events
-			mare.collections.galleryChildren.on( 'sorted', function() {
+			this.on( 'sorted', function() {
 				this.render();
 			}.bind( this ) );
 			
@@ -203,7 +203,6 @@
 				// TODO: Show an error message to the user
 				console.log( err );
 			});
-
 		},
 
 		/* make a call to the server to remove the bookmark for the child, then modify the view */
@@ -244,11 +243,16 @@
 					registrationNumbers: registrationNumbers
 				}
 			}).done( function( response ) {
-				// create an array from the string of registration numbers in the sibling group
-				var registrationNumbersArray = registrationNumbers.split( ',' );
+				// create a string array from the string of registration numbers in the sibling group
+				var registrationNumbersStringArray = registrationNumbers.split( ',' );
+				// create a number array for comparisons from the string array
+				var registrationNumbersArray = registrationNumbersStringArray.map( function( numberAsString ) {
+					return Number.parseInt( numberAsString, 10 );
+				});
+
 				// update the isBookmarked field for the target siblingGroup model
 				mare.collections.gallerySiblingGroups.each( function( siblingGroup ) {
-					if( _.intersection( registrationNumbersArray, siblingGroup.get( 'registrationNumbers' ).length > 0 ) ) {
+					if( _.intersection( registrationNumbersArray, siblingGroup.get( 'registrationNumbers' ) ).length > 0 ) {
 						siblingGroup.set( 'isBookmarked', true );
 					}
 				});
@@ -272,11 +276,16 @@
 					registrationNumbers: registrationNumbers
 				}
 			}).done( function( response ) {
-				// create an array from the string of registration numbers in the sibling group
-				var registrationNumbersArray = registrationNumbers.split( ',' );
+				// create a string array from the string of registration numbers in the sibling group
+				var registrationNumbersStringArray = registrationNumbers.split( ',' );
+				// create a number array for comparisons from the string array
+				var registrationNumbersArray = registrationNumbersStringArray.map( function( numberAsString ) {
+					return Number.parseInt( numberAsString, 10 );
+				});
+
 				// update the isBookmarked field for the target siblingGroup model
 				mare.collections.gallerySiblingGroups.each( function( siblingGroup ) {
-					if( _.intersection( registrationNumbersArray, siblingGroup.get( 'registrationNumbers' ).length > 0 ) ) {
+					if( _.intersection( registrationNumbersArray, siblingGroup.get( 'registrationNumbers' ) ).length > 0 ) {
 						siblingGroup.set( 'isBookmarked', false );
 					}
 				});
@@ -334,10 +343,14 @@
 
 		/* sort the children in the gallery */
 		sortGallery: function sortGallery( event ) {
-
+			// get the selected option to sort by from the dropdown menu
 			var sortBy = $( event.currentTarget ).val();
-
+			// update the order of the children being shown in the gallery
 			mare.collections.galleryChildren.reorder( sortBy );
+			// update the order of the sibling groups being shown in the gallery
+			mare.collections.gallerySiblingGroups.reorder( sortBy );
+
+			this.trigger( 'sorted' );
 		}
 	});
 }());

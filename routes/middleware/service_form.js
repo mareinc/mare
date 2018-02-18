@@ -91,23 +91,24 @@ exports.submitQuestion = function submitQuestion( req, res, next ) {
 	const question = req.body;
 	// reload the form to display the flash message
 	const redirectPath = '/forms/have-a-question-form';
+	// set default information for a staff email contact in case the real contact info can't be fetched
+	let staffEmailContactInfo = {
+		name: { full: 'MARE' },
+		email: 'web@mareinc.org'
+	};
 
 	// fetch the email target model matching 'have a question'
 	const fetchEmailTarget = emailTargetMiddleware.getEmailTargetByName( 'have a question' );
 
 	fetchEmailTarget
-		// if we successfully fetched the email target
-		.then( emailTarget => {
-			// set the fields to populate on the fetched staff email contact model
-			const populateOptions = [ 'staffEmailContact' ];
-			// fetch contact info for the staff contact for 'have a question'
-			return staffEmailContactMiddleware.getStaffEmailContactByEmailTarget( emailTarget.get( '_id' ), populateOptions );
-		})
-		// if we successfully fetched the staff email contact
-		.then( staffEmailContact => {
-			// send a notification email to MARE staff
-			return haveAQuestionEmailService.sendNewQuestionNotificationEmailToMARE( question, staffEmailContact );
-		})
+		// fetch contact info for the staff contact for 'have a question'
+		.then( emailTarget => staffEmailContactMiddleware.getStaffEmailContactByEmailTarget( emailTarget.get( '_id' ), [ 'staffEmailContact' ] ) )
+		// overwrite the default contact details with the returned object
+		.then( staffEmailContact => staffEmailContactInfo = staffEmailContact.staffEmailContact )
+		// log any errors fetching the staff email contact
+		.catch( err => console.error( `error fetching email contact for have a question submission, default contact info will be used instead - ${ err }` ) )
+		// send a notification email to MARE staff
+		.then( () => haveAQuestionEmailService.sendNewQuestionNotificationEmailToMARE( question, staffEmailContactInfo ) )		
 		// if the email was successfully sent to MARE staff
 		.then( () => {
 			// create a flash message to notify the user of the success
@@ -115,7 +116,7 @@ exports.submitQuestion = function submitQuestion( req, res, next ) {
 				title: `Your question has been submitted`,
 				detail: `You should expect a response from MARE within the next 2 business days` } );
 		})
-		// if something went wrong
+		// if there was an error sending the email to MARE staff
 		.catch( err => {
 			// log the error for debugging purposes
 			console.error( `error sending new question email to MARE staff - ${ err }` );
@@ -124,8 +125,7 @@ exports.submitQuestion = function submitQuestion( req, res, next ) {
 				title: `There was an error submitting your question`,
 				detail: `If this error persists, please notify MARE` } );
 		})
-		// execute the following regardless of whether the promises were resolved or rejected
-		// TODO: this should be replaced with ES6 Promise.prototype.finally() once it's finalized, assuming we can update to the latest version of Node if we upgrade Keystone
+		// redirect the user once finished
 		.then( () => {
 			// reload the form to display the flash message
 			res.redirect( 303, redirectPath );

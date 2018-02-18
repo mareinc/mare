@@ -28,7 +28,7 @@
 
 	<div class="profile-tab__contents profile-tab__contents--selected" data-contents="profile">
 
-		<img class="profile__profile-picture" src=\{{ detailImage }}>
+		<img class="profile__profile-picture" src=\{{ image }}>
 
 		<div class="profile__basic-info">
 			<div class="profile-details__name">\{{ namesString }}</div>
@@ -49,10 +49,6 @@
 			<div class="detailed-child-info__part-3">
 				<div class="detailed-child-info__text">\{{ profilePart3 }}</div>
 			</div>
-		</div>
-
-		<div class="detailed-profile__footer">
-			<span class="detailed-profile__footer-text">You can help bring us closer to finding "a place to call HOME" by filling out the <a href="/forms/information-request-form">MARE Information Request Form</a>. They will be glad to help you get more information about us.</span>
 		</div>
 
 		<!-- determining whether to add the block below based on whether the user is allowed to bookmark children needs to happen server-side -->
@@ -104,7 +100,7 @@
 
 	\{{#if wednesdaysChild}}
 	<div class="profile-tab__contents" data-contents="wednesdays-child">
-		
+
 		<div class="profile__basic-info">
 			<div class="profile-details__name">\{{ names }}</div>
 			<div class="profile-details__age">Age \{{ ages }}</div>
@@ -130,7 +126,7 @@
 			</a>
 		</div>
 		{{/if}}
-		
+
 	</div>
 	\{{/if}}
 

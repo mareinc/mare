@@ -9,7 +9,9 @@
 }
 
 .media-box-image {
-    width: 100% !important;
+	display: flex;
+	width: 100% !important;
+	height: 100%;
 }
 
 .media-box-container {

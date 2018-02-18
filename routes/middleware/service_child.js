@@ -147,8 +147,8 @@ exports.getChildrenForSocialWorkerAccount = ( req, res, done, fieldsToSelect ) =
 										child.registrationDateConverted	= middleware.convertDate( child.registrationDate );
 									});
 
-									// remove children that have already been placed or have been withdrawn
-									let displayChildren = children.filter( child => child.status.childStatus !== 'placed' && child.status.childStatus !== 'withdrawn' );
+									// filter out any children that are not active or on hold
+									let displayChildren = children.filter( child => child.status.childStatus === 'active' || child.status.childStatus === 'on hold' );
 
 									locals.allChildren = displayChildren;
 									// execute done function if async is used to continue the flow of execution
@@ -309,50 +309,48 @@ exports.getUnrestrictedChildren = ( req, res, done, fieldsToSelect ) => {
 */
 exports.setNoChildImage = ( req, res, child, canViewAllChildren ) => {
 
-	const NO_IMAGE_MALE_GALLERY				= 'images/no-image-male_gallery.png',
-		  NO_IMAGE_MALE_DETAILS				= 'images/no-image-male_details.png',
-		  NO_IMAGE_FEMALE_GALLERY			= 'images/no-image-female_gallery.png',
-		  NO_IMAGE_FEMALE_DETAILS			= 'images/no-image-female_details.png',
-		  NO_IMAGE_OTHER_GALLERY			= 'images/no-image-other_gallery.png',
-		  NO_IMAGE_OTHER_DETAILS			= 'images/no-image-other_details.png',
-		  NO_IMAGE_SIBLING_GROUP_GALLERY	= 'images/no-image-sibling-group_gallery.png',
-		  NO_IMAGE_SIBLING_GROUP_DETAILS	= 'images/no-image-sibling-group_details.png';
+	const NO_IMAGE_MALE				= 'images/no-image-male.png',
+		  NO_IMAGE_FEMALE			= 'images/no-image-female.png',
+		  NO_IMAGE_OTHER			= 'images/no-image-other.png',
+		  NO_IMAGE_SIBLING_GROUP	= 'images/no-image-sibling-group.png';
 	// if the child is part of a sibling group
 	if( child.mustBePlacedWithSiblings ) {
 		// if the child image is missing or
 		//	the child is legal risk and the user doesn't have permissions to view all children or
 		//	the child visibility is 'Only Registered Social Workers and Families' and the user doesn't have permissions to view all children
-		if( !child.siblingGroupImage.secure_url ||
+		if( !child.hasSiblingGroupImage ||
 			( child.legalStatus.legalStatus === 'legal risk' && !canViewAllChildren ) ||
 			( child.siteVisibility !== 'everyone' && !canViewAllChildren ) ) {
 			// set the images to the placeholders for sibling groups
-			child.siblingGroupDetailImage = NO_IMAGE_SIBLING_GROUP_DETAILS;
-			child.siblingGroupGalleryImage = NO_IMAGE_SIBLING_GROUP_GALLERY;
+			child.siblingGroupDisplayImage = NO_IMAGE_SIBLING_GROUP;
+		// if it is acceptable to show the sibling group's image
+		} else {
+			child.siblingGroupDisplayImage = child.siblingGroupImage.secure_url;
 		}
 	// if the child is not part of a sibling group
 	} else {
 		//	if the child image is missing or
 		//	the child is legal risk and the user doesn't have permissions to view all children or
 		//	the child visibility is 'Only Registered Social Workers and Families' and the user doesn't have permissions to view all children
-		if( !child.image.secure_url	||
+		if( !child.hasImage	||
 			( child.legalStatus.legalStatus === 'legal risk' && !canViewAllChildren ) ||
 			( child.siteVisibility !== 'everyone' && !canViewAllChildren ) ) {
 			// and the child is male
 			if( child.gender.gender === 'male' ) {
 				// set the images to the placeholder for male children
-				child.detailImage = NO_IMAGE_MALE_DETAILS;
-				child.galleryImage = NO_IMAGE_MALE_GALLERY;
+				child.displayImage = NO_IMAGE_MALE;
 			// but if the child is female
 			} else if( child.gender.gender === 'female' ) {
 				// set the images to the placeholder for female children
-				child.detailImage = NO_IMAGE_FEMALE_DETAILS;
-				child.galleryImage = NO_IMAGE_FEMALE_GALLERY;
+				child.displayImage = NO_IMAGE_FEMALE;
 			// but if the child is neither male nor female
 			} else {
 				// set the images to the placeholder for transgender/other children
-				child.detailImage = NO_IMAGE_OTHER_DETAILS;
-				child.galleryImage = NO_IMAGE_OTHER_GALLERY;
+				child.displayImage = NO_IMAGE_OTHER;
 			}
+		// if it is acceptable to show the child's image
+		} else {
+			child.displayImage = child.image.secure_url;
 		}
 	}
 };
@@ -430,35 +428,36 @@ exports.getGalleryData = ( req, res, next ) => {
 	} else {
 		locals.targetChildren = 'all';
 	}
-	// determine if this request is for an account page
-	if ( req.body.requestPage === 'account' ) {
-		// if so, override the targetChildren accordingly based on the user type
-		if ( locals.userType === 'family' ) {
-			locals.targetChildren = 'familyAccount';
-		} else if ( locals.userType === 'social worker' ) {
-			locals.targetChildren = 'socialWorkerAccount';
-		}
-	}
 	// create a string with the fields to select from each child (this speeds up the queries)
 	const fieldsToSelect = `gender race languages disabilities otherConsiderations recommendedFamilyConstellation
 							otherFamilyConstellationConsideration status legalStatus birthDate registrationDate
-							image siblingGroupImage siblingGroupDetailImage siblingGroupGalleryImage siteVisibility
-							detailImage galleryImage emotionalNeeds hasContactWithBirthFamily hasContactWithSiblings
-							video intellectualNeeds isBookmarked name siblings physicalNeeds registrationNumber
-							siblingsToBePlacedWith updatedAt wednesdaysChild mustBePlacedWithSiblings siblingGroupVideo`;
+							image siblingGroupImage siteVisibility emotionalNeeds hasContactWithBirthFamily
+							hasContactWithSiblings video intellectualNeeds isBookmarked name siblings physicalNeeds
+							registrationNumber siblingsToBePlacedWith updatedAt wednesdaysChild mustBePlacedWithSiblings
+							siblingGroupVideo`;
 
 	async.series([
 		done => { listsService.getChildStatusIdByName( req, res, done, 'active' ) },
 		done => {
-			// fetch the appropriate set of children based on the user's permissions
-			if ( locals.targetChildren === 'all' ) {
-				exports.getAllChildren( req, res, done, fieldsToSelect );
-			} else if ( locals.targetChildren === 'socialWorkerAccount' ) {
-				exports.getChildrenForSocialWorkerAccount( req, res, done, fieldsToSelect );
-			} else if ( locals.targetChildren === 'familyAccount' ) {
-				exports.getChildrenForFamilyAccount( req, res, done, fieldsToSelect );
+
+			// fetch the appropriate set of children based on the user's permissions and the page that's being requested
+
+			// if the user is requesting the account page
+			if ( req.body.requestPage === 'account' ) {
+				// determine which children to show based on the user's type
+				if ( locals.userType === 'family' ) {
+					exports.getChildrenForFamilyAccount( req, res, done, fieldsToSelect );
+				} else if ( locals.userType === 'social worker' ) {
+					exports.getChildrenForSocialWorkerAccount( req, res, done, fieldsToSelect );
+				}
+			// if the user is not requesting the account page
 			} else {
-				exports.getUnrestrictedChildren( req, res, done, fieldsToSelect );
+				// determine which chidlren to show based on the user's access permissions
+				if ( locals.targetChildren === 'all' ) {
+					exports.getAllChildren( req, res, done, fieldsToSelect );
+				} else {
+					exports.getUnrestrictedChildren( req, res, done, fieldsToSelect );
+				}
 			}
 		},
 		// TODO: these familyService functions are for social workers too, they belong in a page level service instead
@@ -553,10 +552,9 @@ exports.getRelevantChildInformation = ( children, locals ) => {
 		return {
 			age										: middleware.getAge( child.birthDate ),
 			ageConverted							: middleware.convertDate( child.birthDate ),
-			detailImage								: child.detailImage,
+			image									: child.displayImage,
 			disabilities							: _.pluck( child.disabilities, 'disability' ),
 			emotionalNeeds							: needsMap[child.emotionalNeeds],
-			galleryImage							: child.galleryImage,
 			gender									: child.gender.gender,
 			hasContactWithBiologicalParents			: child.hasContactWithBirthFamily,
 			hasContactWithBiologicalSiblings		: child.hasContactWithSiblings,
@@ -594,8 +592,7 @@ exports.getRelevantSiblingGroupInformation = ( siblingGroups, locals ) => {
 		'severe'	: 3
 	};
 
-	const NO_IMAGE_SIBLING_GROUP_GALLERY	= 'images/no-image-sibling-group_gallery',
-		  NO_IMAGE_SIBLING_GROUP_DETAILS	= 'images/no-image-sibling-group_details';
+	const NO_IMAGE_SIBLING_GROUP_PATH	= 'images/no-image-sibling-group';
 
 	locals.siblingGroupsToReturn = siblingGroups.map( group => {
 		// cache the children array from the group for faster lookups
@@ -614,13 +611,12 @@ exports.getRelevantSiblingGroupInformation = ( siblingGroups, locals ) => {
 
 		return {
 
-			ages									: agesArray,
-			agesConverted							: children.map( child => middleware.convertDate( child.birthDate ) ),
-			agesString								: middleware.getArrayAsList( agesArray ),
-			detailImage								: _.uniq( children.map( child => child.siblingGroupDetailImage ) ).indexOf( NO_IMAGE_SIBLING_GROUP_DETAILS ) !== -1 ? NO_IMAGE_SIBLING_GROUP_DETAILS : children[ 0 ].siblingGroupDetailImage,
+			ages									: _.sortBy( agesArray ),
+			agesConverted							: _.sortBy( children.map( child => middleware.convertDate( child.birthDate ) ) ),
+			agesString								: middleware.getArrayAsList( _.sortBy( agesArray ) ),
+			image									: _.uniq( children.map( child => child.siblingGroupDisplayImage ) ).indexOf( NO_IMAGE_SIBLING_GROUP_PATH ) !== -1 ? NO_IMAGE_SIBLING_GROUP_PATH : children[ 0 ].siblingGroupDisplayImage,
 			disabilities							: _.uniq( _.flatten( children.map( child => _.pluck( child.disabilities, 'disability' ) ) ) ),
 			emotionalNeeds							: _.uniq( children.map( child => needsMap[ child.emotionalNeeds ] ) ),
-			galleryImage							:  _.uniq( children.map( child => child.siblingGroupGalleryImage ) ).indexOf( NO_IMAGE_SIBLING_GROUP_DETAILS ) !== -1 ? NO_IMAGE_SIBLING_GROUP_DETAILS : children[ 0 ].siblingGroupGalleryImage,
 			genders									: _.uniq( children.map( child => child.gender.gender ) ),
 			hasContactWithBiologicalParents			: _.uniq( children.map( child => child.hasContactWithBirthFamily ) ),
 			hasContactWithBiologicalSiblings		: _.uniq( children.map( child => child.hasContactWithSiblings ) ),
@@ -630,17 +626,17 @@ exports.getRelevantSiblingGroupInformation = ( siblingGroups, locals ) => {
 			languages								: _.uniq( _.flatten( children.map( child => _.pluck(child.languages, 'language' ) ) ) ),
 			legalStatuses							: legalStatusesArray,
 			legalStatusesString						: middleware.getArrayAsList( legalStatusesArray ),
-			names									: namesArray,
-			namesString								: middleware.getArrayAsList( namesArray ),
+			names									: _.sortBy( namesArray ),
+			namesString								: middleware.getArrayAsList( _.sortBy( namesArray ) ),
 			noPets									: _.uniq( children.map( child => otherFamilyConstellationConsiderations.indexOf( 'no pets' ) !== -1 ) ),
 			numberOfSiblings						: _.uniq( children.map( child => child.siblings.length ) ), // TODO: Ask Lisa if the number of siblings between children can vary (think half siblings)
 			otherConsiderations						: _.uniq( _.flatten( children.map( child => _.pluck( child.otherConsiderations, 'otherConsideration' ) ) ) ),
 			physicalNeeds							: _.uniq( children.map( child => needsMap[ child.physicalNeeds ] ) ),
 			races									: _.uniq( _.flatten( children.map( child => _.pluck(child.race, 'race' ) ) ) ),
 			recommendedFamilyConstellations			: _.uniq( _.flatten( children.map( child => _.pluck( child.recommendedFamilyConstellation, 'familyConstellation' ) ) ) ),
-			registrationDatesConverted				: children.map( child => middleware.convertDate( child.registrationDate ) ),
-			registrationNumbers						: registrationNumbersArray,
-			registrationNumbersString				: middleware.getArrayAsList( registrationNumbersArray ),
+			registrationDatesConverted				: _.sortBy( children.map( child => middleware.convertDate( child.registrationDate ) ) ),
+			registrationNumbers						: _.sortBy( registrationNumbersArray ),
+			registrationNumbersString				: middleware.getArrayAsList( _.sortBy( registrationNumbersArray ) ),
 			requiresNoSiblings						: _.uniq( children.map( child => otherFamilyConstellationConsiderations.indexOf( 'childless home' ) !== -1 ) ),
 			requiresSiblings						: _.uniq( children.map( child => otherFamilyConstellationConsiderations.indexOf( 'multi-child home' ) !== -1 ) ),
 			olderChildrenAcceptable					: _.uniq( children.map( child => otherFamilyConstellationConsiderations.indexOf( 'older children acceptable' ) !== -1 ) ),
@@ -792,38 +788,44 @@ exports.registerChild = ( req, res, next ) => {
 			const childId = newChild.get( 'registrationNumber' );
 
 			// set the fields to populate on the fetched child model
-			const populateOptions = [ 'languages', 'gender', 'race', 'residence', 'city', 'legalStatus', 'status',
-									  'recommendedFamilyConstellation', 'otherFamilyConstellationConsideration',
-									  'disabilities' ];
+			const fieldsToPopulate = [ 'languages', 'gender', 'race', 'residence', 'city', 'legalStatus', 'status',
+									   'recommendedFamilyConstellation', 'otherFamilyConstellationConsideration',
+									   'disabilities' ];
+			// set default information for a staff email contact in case the real contact info can't be fetched
+			let staffEmailContactInfo = {
+				name: { full: 'MARE' },
+				email: 'web@mareinc.org'
+			};
 
 			// fetch the newly saved child model.  Needed because the saved child object doesn't have the Relationship fields populated
-			const fetchChild = exports.getChildByRegistrationNumberNew( childId, populateOptions );
-			// fetch contact info for the staff contact for children registered by social workers
-			const fetchRegistrationStaffContactInfo = exports.getStaffContactInfo( 'social worker child registration' );
+			const fetchChild = exports.getChildByRegistrationNumberNew( childId, fieldsToPopulate );
+			// fetch the email target model matching 'social worker child registration'
+			const fetchEmailTarget = emailTargetMiddleware.getEmailTargetByName( 'social worker child registration' );
 
-			fetchChild
+			fetchEmailTarget
+				// fetch contact info for the staff contact for 'social worker child registration'
+				.then( emailTarget => staffEmailContactMiddleware.getStaffEmailContactByEmailTarget( emailTarget.get( '_id' ), [ 'staffEmailContact' ] ) )
+				// overwrite the default contact details with the returned object
+				.then( staffEmailContact => staffEmailContactInfo = staffEmailContact.staffEmailContact )
+				// log any errors fetching the staff email contact
+				.catch( err => console.error( `error fetching email contact for social worker child registration, default contact info will be used instead - ${ err }` ) )
+				// check on the attempt to fetch the newly saved child
+				.then( () => fetchChild )
+				// send a notification email to MARE
 				.then( fetchedChild => {
-					// send a notification email to the social worker who saved the child
-					// NOTE: both the form data and the newly saved child are passed in as both contain information that belongs in the email
-					socialWorkerChildRegistrationEmailService.sendNewSocialWorkerChildRegistrationNotificationEmailToSocialWorker( rawChildData, fetchedChild, req.user.get( 'email' ), locals.host );
-				})
-				.catch( err => {
-					// log the error for debugging purposes
-					console.error( `error sending new child registered by social worker email to social worker ${ req.user.name.full } - ${ err }` );
-				});
-
-			Promise.all( [ fetchChild, fetchRegistrationStaffContactInfo ] )
-				.then( values => {
-					// assign local variables to the values returned by the promises
-					const [ fetchedChild, contactInfo ] = values;
 					// send a notification email to MARE staff to allow them to enter the information in the old system
 					// NOTE: both the form data and the newly saved child are passed in as both contain information that belongs in the email
-					return socialWorkerChildRegistrationEmailService.sendNewSocialWorkerChildRegistrationNotificationEmailToMARE( rawChildData, fetchedChild, contactInfo );
+					return socialWorkerChildRegistrationEmailService.sendNewSocialWorkerChildRegistrationNotificationEmailToMARE( rawChildData, fetchedChild, staffEmailContactInfo );
 				})
-				.catch( err => {
-					// log the error for debugging purposes
-					console.error( `error sending new child registered by social worker email to MARE staff - ${ err }` );
-				});
+				// if there was an error sending the email to MARE staff
+				.catch( err => console.error( `error sending new child registered by social worker email to MARE staff - ${ err }` ) );
+
+			fetchChild
+				// send a notification email to the social worker
+				// NOTE: both the form data and the newly saved child are passed in as both contain information that belongs in the email
+				.then( fetchedChild => socialWorkerChildRegistrationEmailService.sendNewSocialWorkerChildRegistrationNotificationEmailToSocialWorker( rawChildData, fetchedChild, req.user.get( 'email' ), locals.host ) )
+				// if there was an error sending the email to MARE staff
+				.catch( err => console.error( `error sending new child registered by social worker email to social worker ${ req.user.name.full } - ${ err }` ) );
 		})
 		// if there was an error saving the new child record
 		.catch( err => {
@@ -912,31 +914,6 @@ exports.saveChild = ( child, activeChildStatusId ) => {
 	});
 }
 
-/* returns an array of staff email contacts */
-// TODO: this is reused in several of the services that generate emails, make it a more generic call
-exports.getStaffContactInfo = contactType => {
-
-	return new Promise( ( resolve, reject ) => {
-		// TODO: it was nearly impossible to create a readable comma separated list of links in the template with more than one address,
-		// 	     so we're only fetching one contact when we should fetch them all
-		// get the database id of the admin contact set to handle children registered by social workers
-		emailTargetMiddleware
-			.getTargetId( contactType )
-			.then( targetId => {
-				// get the contact details of the admin contact set to handle registration questions for the target user type
-				return staffEmailContactMiddleware.getContactById( targetId );
-			})
-			.then( contactInfo => {
-				// resolve the promise with the full name and email address of the contact
-				resolve( contactInfo );
-			})
-			.catch( err => {
-				// reject the promise with the reason for the rejection
-				reject( `error fetching staff contact - ${ err }` );
-			});
-	});
-}
-
 // ------------------------------------------------------------------------------------------ //
 
 // TODO: these functions below are copies of functions above built with async.  They're rewritten with Promises
@@ -945,7 +922,7 @@ exports.getStaffContactInfo = contactType => {
 // ------------------------------------------------------------------------------------------ //
 
 /* fetch a single child by their registration number */
-exports.getChildByRegistrationNumberNew = ( registrationNumber, populateOptions = [] ) => {
+exports.getChildByRegistrationNumberNew = ( registrationNumber, fieldsToPopulate = [] ) => {
 
 	return new Promise( ( resolve, reject ) => {
 		// convert the registration number to a number if it isn't already
@@ -965,7 +942,7 @@ exports.getChildByRegistrationNumberNew = ( registrationNumber, populateOptions 
 		keystone.list( 'Child' ).model
 			.findOne()
 			.where( 'registrationNumber' ).equals( targetRegistrationNumber )
-			.populate( populateOptions )
+			.populate( fieldsToPopulate )
 			.exec()
 			// if the database fetch executed successfully
 			.then( child => {
@@ -1028,6 +1005,35 @@ exports.getChildrenByRegistrationNumbersNew = registrationNumbers => {
 				console.error( `error fetching children matching registration numbers ${ registrationNumbers.join( ', ' ) } - ${ err }` );
 				// and reject the promise
 				reject();
+			});
+	});
+};
+
+/* fetch a single child by their _id field */
+exports.getChildById = ( { id, fieldsToPopulate = [] } ) => {
+	return new Promise( ( resolve, reject ) => {
+		// if no id was passed in
+		if( !id ) {
+			// reject the promise with details about the error
+			reject( `no id provided` );
+		}
+		// attempt to find a single child matching the passed in registration number
+		keystone.list( 'Child' ).model
+			.findById( id )
+			.populate( fieldsToPopulate )
+			.exec()
+			.then( child => {
+				// if the target child could not be found
+				if( !child ) {
+					// reject the promise with details about the error
+					return reject( `no child matching id '${ id } could be found` );
+				}
+				// if the target child was found, resolve the promise with the model
+				resolve( child );
+			// if there was an error fetching from the database
+			}, err => {
+				// reject the promise with details about the error
+				reject( `error fetching child matching id ${ id } - ${ err }` );
 			});
 	});
 };
