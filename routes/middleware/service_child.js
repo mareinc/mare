@@ -428,15 +428,6 @@ exports.getGalleryData = ( req, res, next ) => {
 	} else {
 		locals.targetChildren = 'all';
 	}
-	// determine if this request is for an account page
-	if ( req.body.requestPage === 'account' ) {
-		// if so, override the targetChildren accordingly based on the user type
-		if ( locals.userType === 'family' ) {
-			locals.targetChildren = 'familyAccount';
-		} else if ( locals.userType === 'social worker' ) {
-			locals.targetChildren = 'socialWorkerAccount';
-		}
-	}
 	// create a string with the fields to select from each child (this speeds up the queries)
 	const fieldsToSelect = `gender race languages disabilities otherConsiderations recommendedFamilyConstellation
 							otherFamilyConstellationConsideration status legalStatus birthDate registrationDate
@@ -448,15 +439,25 @@ exports.getGalleryData = ( req, res, next ) => {
 	async.series([
 		done => { listsService.getChildStatusIdByName( req, res, done, 'active' ) },
 		done => {
-			// fetch the appropriate set of children based on the user's permissions
-			if ( locals.targetChildren === 'all' ) {
-				exports.getAllChildren( req, res, done, fieldsToSelect );
-			} else if ( locals.targetChildren === 'socialWorkerAccount' ) {
-				exports.getChildrenForSocialWorkerAccount( req, res, done, fieldsToSelect );
-			} else if ( locals.targetChildren === 'familyAccount' ) {
-				exports.getChildrenForFamilyAccount( req, res, done, fieldsToSelect );
+
+			// fetch the appropriate set of children based on the user's permissions and the page that's being requested
+
+			// if the user is requesting the account page
+			if ( req.body.requestPage === 'account' ) {
+				// determine which children to show based on the user's type
+				if ( locals.userType === 'family' ) {
+					exports.getChildrenForFamilyAccount( req, res, done, fieldsToSelect );
+				} else if ( locals.userType === 'social worker' ) {
+					exports.getChildrenForSocialWorkerAccount( req, res, done, fieldsToSelect );
+				}
+			// if the user is not requesting the account page
 			} else {
-				exports.getUnrestrictedChildren( req, res, done, fieldsToSelect );
+				// determine which chidlren to show based on the user's access permissions
+				if ( locals.targetChildren === 'all' ) {
+					exports.getAllChildren( req, res, done, fieldsToSelect );
+				} else {
+					exports.getUnrestrictedChildren( req, res, done, fieldsToSelect );
+				}
 			}
 		},
 		// TODO: these familyService functions are for social workers too, they belong in a page level service instead

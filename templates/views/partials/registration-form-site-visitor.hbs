@@ -2,7 +2,7 @@
 	<form action="/register" class="registration-form form--site-visitor-registration" method="POST">
 		<section class="site-visitor-registration-section">
 			<div class="form-type-header">Account Setup</div>
-			
+
 			<span class="required required-description">* Required</span>
 
 			<input type="hidden" class="registration-type" name="registrationType" value="siteVisitor">
@@ -25,13 +25,25 @@
 			</div>
 			<div class="row form-group">
 				<div class="col-sm-12">
-					<input type="password" id="site-visitor-password" class="input" name="password" data-parsley-error-message="required" required="">
+					<input type="password" id="site-visitor-password" class="input" name="password"
+							data-parsley-trigger="focusout"
+							data-parsley-minlength="8" data-parsley-minlength-message="password must be 8 or more characters"
+							data-parsley-required-message="password is required" required=""
+							data-parsley-pattern="/(?=.*\d)(?=.*[a-z])(?=.*[A-Z])/" data-parsley-pattern-message="password does not meet requirements">
 					<label for="site-visitor-password" class="label required-field">Password</label>
 				</div>
 				<div class="col-sm-12">
-					<input type="password" id="site-visitor-confirm-password" class="input" name="confirmPassword" data-parsley-equalto="#site-visitor-password" data-parsley-error-message="passwords must match" required="">
+					<input type="password" id="site-visitor-confirm-password" class="input" name="confirmPassword"
+							data-parsley-trigger="focusout"
+							data-parsley-minlength="8" data-parsley-minlength-message="password must be 8 or more characters"
+							data-parsley-required-message="password is required" required=""
+							data-parsley-pattern="/(?=.*\d)(?=.*[a-z])(?=.*[A-Z])/" data-parsley-pattern-message="password does not meet requirements"
+							data-parsley-equalto="#site-visitor-password" data-parsley-equalto-message="passwords must match">
 					<label for="site-visitor-confirm-password" class="label required-field">Confirm Password</label>
 				</div>
+			</div>
+			<div>
+				<p class="form-field-note">Note: passwords must be at least 8 characters long, contain at least one number, one uppercase letter, and one lowercase letter.</p>
 			</div>
 			<div class="input-section-description">While not required for registration, providing your contact details below will make registering
 for events on the MARE site faster and easier.</div>

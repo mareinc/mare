@@ -453,7 +453,6 @@ exports.saveFamily = user => {
 			password							: user.password,
 
 			initialContact						: exports.getCurrentDate(),
-			language							: user.primaryLanguageInHome,
 			otherLanguages						: user.otherLanguagesInHome,
 
 			contact1: {
@@ -567,6 +566,10 @@ exports.saveFamily = user => {
 
 		if( user.numberOfChildrenTo ) {
 			newUser.set( 'matchingPreferences.maxNumberOfChildrenToAdopt', parseInt( user.numberOfChildrenTo, 10 ) );
+		}
+
+		if ( user.primaryLanguageInHome ) {
+			newUser.set( 'language', user.primaryLanguageInHome );
 		}
 
 		if( user.childrenInHome !== '' ) {
