@@ -131,8 +131,8 @@
 				$( 'input[ name=\'child' + childIndex + '-name\' ]' ).val( $( child ).find( '.childName' ).text() );
 				$( 'input[ name=\'child' + childIndex + '-birthDate\' ]' ).val( $( child ).find( '.childBirthDate' ).text() );
 
-				$( 'select[ name=\'child' + childIndex + '-gender\' ] option[value=\'' + $( child ).find( '.childGender' ).text() + '\'' ).attr( 'selected', 'selected' );
-				$( 'select[ name=\'child' + childIndex + '-type\' ] option[value=\'' + $( child ).find( '.childType' ).text() + '\'' ).attr( 'selected', 'selected' );
+				$( 'select[ name=\'child' + childIndex + '-gender\' ] option[value=\'' + $( child ).find( '.childGender' ).text() + '\']' ).attr( 'selected', 'selected' );
+				$( 'select[ name=\'child' + childIndex + '-type\' ] option[value=\'' + $( child ).find( '.childType' ).text() + '\']' ).attr( 'selected', 'selected' );
 			});
 		},
 
