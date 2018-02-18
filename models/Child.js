@@ -210,7 +210,7 @@ Child.add('Display Options', {
 // Set up relationship values to show up at the bottom of the model if any exist
 Child.relationship( { ref: 'Child', refPath: 'siblings', path: 'children', label: 'siblings' } );
 Child.relationship( { ref: 'Placement', refPath: 'child', path: 'placements', label: 'placements' } );
-Child.relationship( { ref: 'Inquiry', refPath: 'child', path: 'inquiries', label: 'inquiries' } );
+Child.relationship( { ref: 'Inquiry', refPath: 'children', path: 'inquiries', label: 'inquiries' } );
 Child.relationship( { ref: 'Match', refPath: 'child', path: 'matches', label: 'matches' } );
 Child.relationship( { ref: 'Family', refPath: 'bookmarkedChildren', path: 'families', label: 'bookmarked by families' } );
 Child.relationship( { ref: 'Family', refPath: 'bookmarkedSiblingGroups', path: 'families', label: 'sibling group bookmarked by families' } );

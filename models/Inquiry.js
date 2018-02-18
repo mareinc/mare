@@ -2,7 +2,10 @@ const keystone					= require( 'keystone' ),
 	  async 					= require( 'async' ),
 	  Types 					= keystone.Field.Types,
 	  inquiryMiddleware			= require( '../routes/middleware/models_inquiry' ),
-	  inquiryEmailMiddleware	= require( '../routes/middleware/emails_inquiry' );
+	  inquiryEmailService		= require( '../routes/middleware/emails_inquiry' ),
+	  childService				= require( '../routes/middleware/service_child' ),
+	  socialWorkerService		= require( '../routes/middleware/service_social-worker' ),
+	  CSCRegionContactService 	= require( '../routes/middleware/service_CSC-region-contact' );
 
 // Create model. Additional options allow menu name to be used to auto-generate the URL
 var Inquiry = new keystone.List( 'Inquiry', {
@@ -11,7 +14,6 @@ var Inquiry = new keystone.List( 'Inquiry', {
 
 // Create fields
 Inquiry.add( 'General Information', {
-
 	takenBy: { type: Types.Relationship, label: 'taken by', ref: 'Admin', filters: { isActive: true }, required: true, initial: true },
 	takenOn: { type: Types.Date, label: 'taken on', format: 'MM/DD/YYYY', required: true, initial: true },
 
@@ -23,9 +25,9 @@ Inquiry.add( 'General Information', {
 
 	source: { type: Types.Relationship, label: 'source', ref: 'Source', filters: { isActive: true }, required: true, initial: true },
 
-	child: { type: Types.Relationship, label: 'child', ref: 'Child', dependsOn: { inquiryType: ['child inquiry', 'complaint', 'family support consultation'] }, many: true, initial: true },
+	children: { type: Types.Relationship, label: 'children', ref: 'Child', dependsOn: { inquiryType: ['child inquiry', 'complaint', 'family support consultation'] }, many: true, initial: true },
 	childsSocialWorker: { type: Types.Relationship, label: 'child\'s social worker', ref: 'Social Worker', dependsOn: { inquiryType: ['child inquiry', 'complaint', 'family support consultation'] }, noedit: true },
-	previousChildsSocialWorker: { type: Types.Relationship, ref: 'Social Worker', noedit: true, hidden: true },
+	originalChildsSocialWorker: { type: Types.Relationship, ref: 'Social Worker', noedit: true, hidden: true },
 	siteVisitor: { type: Types.Relationship, label: 'site visitor', ref: 'Site Visitor', dependsOn: { inquirer: 'site visitor' }, filters: { isActive: true }, initial: true },
 	family: { type: Types.Relationship, label: 'family', ref: 'Family', dependsOn: { inquirer: 'family' }, filters: { isActive: true }, initial: true },
 	socialWorker: { type: Types.Relationship, label: 'social worker', ref: 'Social Worker', dependsOn: { inquirer: 'social worker' }, filters: { isActive: true }, initial: true },
@@ -59,129 +61,187 @@ Inquiry.add( 'General Information', {
 
 });
 
-// TODO: Dig into the async npm module.  There's a function called auto you should look into which will determine what to call based on each functions dependencies
 // Pre Save
 Inquiry.schema.pre( 'save', function( next ) {
 	'use strict';
 
-	// create an object to store all calculated inquiry data for populating emails
-	let inquiryData = {
-		inquiryType						: this.inquiryType,
-		isGeneralInquiry				: this.inquiryType === 'general inquiry',
-		inquirerType					: this.inquirer,
-		isSiteVisitor					: this.inquirer === 'site visitor',
-		isFamilyInquiry					: this.inquirer === 'family',
-		isSocialWorkerInquiry			: this.inquirer === 'social worker',
-		childId							: this.child,
-		siteVisitorId					: this.siteVisitor,
-		familyId						: this.family,
-		socialWorkerId					: this.socialWorker,
-		agencyReferralIds				: this.agencyReferrals,
-		isFamilyRegistered				: this.onBehalfOfMAREFamily ? 'yes' : 'no',
-		emailAddressInquirer			: [],
-		emailAddressFamilyOnBehalfOf	: [],
-		emailAddressChildsSocialWorker	: [],
-		emailAddressesStaff				: [],
-		emailAddressesAgencyContacts	: []
-	};
-	// NOTE: all checks for whether to run each function below exist within the functions themselves
-	async.series([
-		done => { inquiryMiddleware.getChild( inquiryData, done ); },						// all inquiries except general inquiries
-		done => { inquiryMiddleware.getChildsSocialWorker( inquiryData, done ); },			// all inquiries except general inquiries
-		done => { inquiryMiddleware.getCSCRegionContacts( inquiryData, done ); },			// all inquiries except general inquiries
-		done => { inquiryMiddleware.getOnBehalfOfFamily( this, inquiryData, done ); }, 		// social worker inquiries only
-		done => { inquiryMiddleware.getOnBehalfOfFamilyState( inquiryData, done ); },		// social worker inquiries only
-		done => { inquiryMiddleware.getAgencyContacts( inquiryData, done ); },				// general inquiries only
-		done => { inquiryMiddleware.getInquirer( inquiryData, done ); },					// all inquiries
-		done => { inquiryMiddleware.getInquirerState( inquiryData, done ); },				// all inquiries
-		done => { inquiryMiddleware.getStaffInquiryContact( inquiryData, done ); },			// all inquiries
-		done => { inquiryMiddleware.getSource( this.source, inquiryData, done ); },			// all inquiries
-		done => { inquiryMiddleware.getMethod( this.inquiryMethod, inquiryData, done ); },	// all inquiries
-		done => { inquiryMiddleware.getInquiryTakenBy( this.takenBy, inquiryData, done ); },// all inquiries
-
-		done => { this.setDerivedFields( inquiryData, done ); },
-		done => { inquiryMiddleware.setStaffEmail( inquiryData, done ); },
-		done => { inquiryMiddleware.setInquirerEmail( inquiryData, done ); },
-		done => { inquiryMiddleware.setSocialWorkerEmail( inquiryData, done ); },
-		done => { inquiryMiddleware.setAgencyContactEmail( inquiryData, done ); },
-		done => { inquiryMiddleware.formatEmailFields( inquiryData, done ); },
-		done => {
-			if( !this.emailSentToStaff ) {
-				inquiryEmailMiddleware.sendInquiryCreatedEmailToStaff( this, inquiryData, done );
-			} else {
-				console.log( `staff notification email already sent - no notification email sent to staff contact` );
-				done();
-			}
-		},
-		done => {
-			if( !this.thankYouSentToFamilyOnBehalfOfInquirer && inquiryData.onBehalfOfFamily ) {
-				inquiryEmailMiddleware.sendThankYouEmailToFamilyOnBehalfOfInquirer( this, inquiryData, done );
-			} else {
-				console.log( `thank you already sent - no thank you email sent to family on behalf of inquirer` );
-				done();
-			}
-		},
-		done => {
-			if( !this.approvalEmailSentToInquirer && this.inquiryAccepted === true ) {
-				inquiryEmailMiddleware.sendInquiryAcceptedEmailToInquirer( this, inquiryData, done );
-			} else {
-				console.log( `inquiry accepted email already sent to inquirer or 'inquiry accepted' checkbox not checked - no inquiry accepted email sent to inquirer` );
-				done();
-			}
-		},
-		done => {
-			if( !this.approvalEmailSentToFamilyOnBehalfOfInquirer && this.inquiryAccepted === true && inquiryData.onBehalfOfFamily ) {
-				inquiryEmailMiddleware.sendInquiryAcceptedEmailToFamilyOnBehalfOfInquirer( this, inquiryData, done );
-			} else {
-				console.log( `inquiry accepted email already sent to family on behalf of inquirer or 'inquiry accepted' checkbox not checked - no inquiry accepted email sent to family on behalf of inquirer` );
-				done();
-			}
-		},
-		done => {
-			// TODO: do we need to check that we have a social worker saved to prevent the app from crashing?
-			if( !this.emailSentToChildsSocialWorker && this.inquiryAccepted === true && this.inquiryType !== 'general inquiry' ) {
-				inquiryEmailMiddleware.sendInquiryAcceptedEmailToChildsSocialWorker( this, inquiryData, done );
-			} else {
-				console.log( `confirmation already sent to social worker, 'inquiry accepted' checkbox not checked, or general inquiry - no inquiry accepted email sent to child's social worker` );
-				done();
-			}
-		},
-		done => {
-			// TODO: do we need to check that we have agency contacts saved to prevent the app from crashing?
-			if( !this.emailSentToAgencies && this.inquiryAccepted === true && this.inquiryType === 'general inquiry') {
-				inquiryEmailMiddleware.sendInquiryAcceptedEmailToAgencyContacts( this, inquiryData, done );
-			} else {
-				console.log( `agency contact email already sent, 'inquiry accepted' checkbox not checked, or not a general inquiry - no inquiry accepted email sent to agency contacts` );
-				done();
-			}
+	// populate the inquiry Relationship fields
+	this.populate( [ 'children' ], err => {
+		// if there was an error populating the specified fields on the inquiry model
+		if ( err ) {
+			// log the error for debugging purposes
+			console.error( `error populating inquiry fields with id ${ this.get( '_id' ) }` );
+			// prevent the rest of the function from executing
+			return next();
 		}
-	], () => {
 
-		next();
+		const firstChild = this.get( 'children' ).length > 0 ? this.get( 'children' )[ 0 ] : undefined;
+		
+		// if there is at least one child and it's not a general inquiry
+		if( firstChild && this.get( 'inquiryType' ) !== 'general inquiry' ) {
+			// populate the necessary fields on the firstChild model
+			firstChild.populate( 'adoptionWorker', err => {
+				// if there was an error populating the child model fields
+				if ( err ) {
+					// log the error for debugging purposes
+					console.error( `error populating child with registration number ${ firstChild.get( 'registrationNumber' ) } for inquiry with id ${ this.get( '_id' ) }` );
+					// prevent the rest of the function from executing
+					return next();
+				}
+				// store the child's adoption worker
+				const adoptionWorker = firstChild.get( 'adoptionWorker' );
+				// if the child's adoption worker field is set
+				if( adoptionWorker ) {
+					// store commonly used values
+					const adoptionWorkersId			= adoptionWorker.get( '_id' ),
+						  childsSocialWorkerId		= this.get( 'childsSocialWorker' ),
+						  previousAdoptionWorker	= this.get( 'previousChildsSocialWorker' );
+					// if the child's social worker field was never set or has changed
+					if( !childsSocialWorkerId || childsSocialWorkerId.toString() !== adoptionWorkersId.toString() ) {
+						// set the child's social worker field to the id of the child's adoption worker
+						this.set( 'childsSocialWorker', adoptionWorkersId );
+					}
+					// if no child's social worker has been set, save it
+					if( !this.get( 'originalChildsSocialWorker' ) ) {
+						// set the previous child's social worker to point to the adoption worker of the first child
+						this.set( 'originalChildsSocialWorker', adoptionWorkersId );
+					}
+					// if either the previous social worker value wasn't set, or the adoption worker has changed
+					if( !this.get( 'agency' ) ) {
+						// set the agency field to the agency associated with the child's adoption worker
+						this.set( 'agency', adoptionWorker.get( 'agency' ) );
+					}
+
+					return next();
+				}
+			});
+		} else {
+			next();
+		}
+
+		// if( !this.thankYouSentToFamilyOnBehalfOfInquirer && inquiryData.onBehalfOfFamily ) {
+		// 	inquiryEmailService.sendThankYouEmailToFamilyOnBehalfOfInquirer( this, inquiryData, done );
+		// }
+
+		// if( !this.approvalEmailSentToInquirer && this.inquiryAccepted === true ) {
+		// 	inquiryEmailService.sendInquiryAcceptedEmailToInquirer( this, inquiryData, done );
+		// }
+
+		// if( !this.approvalEmailSentToFamilyOnBehalfOfInquirer && this.inquiryAccepted === true && inquiryData.onBehalfOfFamily ) {
+		// 	inquiryEmailService.sendInquiryAcceptedEmailToFamilyOnBehalfOfInquirer( this, inquiryData, done );
+		// }
+
+		// // TODO: do we need to check that we have a social worker saved to prevent the app from crashing?
+		// if( !this.emailSentToChildsSocialWorker && this.inquiryAccepted === true && this.inquiryType !== 'general inquiry' ) {
+		// 	inquiryEmailService.sendInquiryAcceptedEmailToChildsSocialWorker( this, inquiryData, done );
+		// }
+
+		// // TODO: do we need to check that we have agency contacts saved to prevent the app from crashing?
+		// if( !this.emailSentToAgencies && this.inquiryAccepted === true && this.inquiryType === 'general inquiry') {
+		// 	inquiryEmailService.sendInquiryAcceptedEmailToAgencyContacts( this, inquiryData, done );
+		// }
 	});
+
+	// create an object to store all calculated inquiry data for populating emails
+	// let inquiryData = {
+	// 	inquiryType						: this.inquiryType,
+	// 	isGeneralInquiry				: this.inquiryType === 'general inquiry',
+	// 	inquirerType					: this.inquirer,
+	// 	isSiteVisitor					: this.inquirer === 'site visitor',
+	// 	isFamilyInquiry					: this.inquirer === 'family',
+	// 	isSocialWorkerInquiry			: this.inquirer === 'social worker',
+	// 	childId							: this.child,
+	// 	siteVisitorId					: this.siteVisitor,
+	// 	familyId						: this.family,
+	// 	socialWorkerId					: this.socialWorker,
+	// 	agencyReferralIds				: this.agencyReferrals,
+	// 	isFamilyRegistered				: this.onBehalfOfMAREFamily ? 'yes' : 'no',
+	// 	emailAddressInquirer			: [],
+	// 	emailAddressFamilyOnBehalfOf	: [],
+	// 	emailAddressChildsSocialWorker	: [],
+	// 	emailAddressesStaff				: [],
+	// 	emailAddressesAgencyContacts	: []
+	// };
+
+	// begin a promise chain
+	// Promise.resolve()
+	// 	.then( () => {
+	// 		// non-general inquiries will attempt to fetch the child specified in the child field
+	// 		// general inquiries don't need to process child information and will return undefined
+	// 		return inquiryData.inquiryType !== 'general inquiry' ?
+	// 			   // REFACTOR NOTE: original just populates 'status', but as of now I don't see why 'status' needs to be populated
+	// 			   childService.getChildById({ child: this.child,
+	// 										   fieldsToPopulate: [ 'status', 'adoptionWorker', 'region' ] } ) :
+	// 			   undefined
+	// 	})
+	// 	// if the child was fetched successfully, add them to the inquiryData object for future reference
+	// 	.then( child => inquiryData.child = child )
+	// 	// if the child wasn't fetched successfully, log an error
+	// 	.catch( err => console.error( `error fetching child for ${ inquiryData.inquiryType } ${ this.get( '_id' ) } - ${ err }` ) )
+	// 	// fetch the child's social worker
+	// 	.then( () => {
+	// 		// if a child should have been fetched, but wasn't
+	// 		if( inquiryData.inquiryType !== 'general inquiry' && !inquiryData.child ) {
+	// 			// thow an error to ensure the next catch block is hit
+	// 			throw new Error( `child was not fetched properly` );
+	// 		}
+	// 		// non-general inquiries will attempt to fetch the child's social worker
+	// 		// general inquiries will return undefined
+	// 		return inquiryData.child ?
+	// 			   socialWorkerService.getSocialWorkerById( inquiryData.child.adoptionWorker ) :
+	// 			   undefined;
+	// 	})
+	// 	// if the child's social worker was fetched successfully, add them to the inquiryData object for future reference
+	// 	.then( socialWorker => inquiryData.childsSocialWorker = socialWorker )
+	// 	// if there was an error fetching the child's social worker, log the error
+	// 	.catch( err => console.error( `error fetching the CSC region contact for ${ inquiryData.inquiryType } ${ this.get( '_id' ) } - ${ err }` ) )
+	// 	// fetch the CSC contact for the child's region
+	// 	// REFACTOR NOTE: not applicable for general inquiries, would set inquiryData.childsSocialWorker and inquiryData.hasChildsSocialWorker
+	// 	.then( () => {
+	// 		// if a child should have been fetched, but wasn't
+	// 		if( inquiryData.inquiryType !== 'general inquiry' && !inquiryData.child ) {
+	// 			// thow an error to ensure the next catch block is hit
+	// 			throw new Error( `child was not fetched properly` );
+	// 		}
+	// 		// non-general inquiries will attempt to fetch the CSC contact for the child's region
+	// 		// general inquiries will return undefined
+	// 		return inquiryData.child ?
+	// 			   CSCRegionContactService.getCSCRegionContactById( inquiryData.child.region, [ 'cscRegionContact' ] ) :
+	// 			   undefined;
+	// 	})
+	// 	// if the CSC region contact was fetched successfully, add them to the inquiryData object for future reference
+	// 	.then( CSCRegionContact => inquiryData.CSCRegionContact = CSCRegionContact )
+	// 	// if there was an error fetching the CSC region contact, log the error
+	// 	.catch( err => console.error( `error fetching the CSC region contact for ${ inquiryData.inquiryType } ${ this.get( '_id' ) } - ${ err }` ) )
+
+
+	// NOTE: all checks for whether to run each function below exist within the functions themselves
+	// async.series([
+	// 	// done => { inquiryMiddleware.getChild( inquiryData, done ); },						// all inquiries except general inquiries
+	// 	done => { inquiryMiddleware.getChildsSocialWorker( inquiryData, done ); },			// all inquiries except general inquiries
+	// 	done => { inquiryMiddleware.getCSCRegionContacts( inquiryData, done ); },			// all inquiries except general inquiries
+	// 	// done => { inquiryMiddleware.getOnBehalfOfFamily( this, inquiryData, done ); }, 		// social worker inquiries only
+	// 	// done => { inquiryMiddleware.getOnBehalfOfFamilyState( inquiryData, done ); },		// social worker inquiries only
+	// 	// done => { inquiryMiddleware.getAgencyContacts( inquiryData, done ); },				// general inquiries only
+	// 	// done => { inquiryMiddleware.getInquirer( inquiryData, done ); },					// all inquiries
+	// 	// done => { inquiryMiddleware.getInquirerState( inquiryData, done ); },				// all inquiries
+	// 	done => { inquiryMiddleware.getStaffInquiryContact( inquiryData, done ); },			// all inquiries
+	// 	// done => { inquiryMiddleware.getSource( this.source, inquiryData, done ); },			// all inquiries
+	// 	// done => { inquiryMiddleware.getMethod( this.inquiryMethod, inquiryData, done ); },	// all inquiries
+	// 	// done => { inquiryMiddleware.getInquiryTakenBy( this.takenBy, inquiryData, done ); },// all inquiries
+
+	// 	done => { this.setDerivedFields( inquiryData, done ); },
+	// 	done => { inquiryMiddleware.setStaffEmail( inquiryData, done ); },
+	// 	done => { inquiryMiddleware.setInquirerEmail( inquiryData, done ); },
+	// 	done => { inquiryMiddleware.setSocialWorkerEmail( inquiryData, done ); },
+	// 	done => { inquiryMiddleware.setAgencyContactEmail( inquiryData, done ); },
+	// 	done => { inquiryMiddleware.formatEmailFields( inquiryData, done ); },
+		
+	// ], () => {
+
+	// 	next();
+	// });
 });
-
-Inquiry.schema.methods.setDerivedFields = function( inquiryData, done ) {
-	// if we were able to fetch the child's record
-	if( inquiryData.child ) {
-		// set the child's social worker field in the inquiry
-		this.childsSocialWorker = inquiryData.child.adoptionWorker;
-	}
-
-	// if we were able to fetch the child's social worker record
-	if( inquiryData.childsSocialWorker ) {
-		// and either the previous social worker value wasn't set, or the social worker was changed
-		if( !this.previousChildsSocialWorker ||
-			this.previousChildsSocialWorker.toString() !== this.childsSocialWorker.toString() ) {
-			// set the agency field in the inquiry
-			this.agency = inquiryData.childsSocialWorker.agency;
-			// and the previous child's social worker so we can monitor for future changes
-			this.previousChildsSocialWorker = inquiryData.childsSocialWorker._id;
-		}
-	}
-
-	done();
-}
 
 // Define default columns in the admin interface and register the model
 Inquiry.defaultColumns = 'takenOn, takenBy, source, child, family';
