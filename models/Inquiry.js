@@ -47,12 +47,11 @@ Inquiry.add( 'General Information', {
 
 }, 'Emails Sent', {
 
-	emailSentToStaff: { type: Types.Boolean, label: 'notification email sent to MARE staff', noedit: true },
-	thankYouSentToFamilyOnBehalfOfInquirer: { type: Types.Boolean, label: 'thank you sent to family on behalf of inquiring social worker', dependsOn: { inquirer: 'social worker', onBehalfOfMAREFamily: true }, noedit: true },
-	approvalEmailSentToInquirer: { type: Types.Boolean, label: 'inquiry accepted information sent to inquirer',  noedit: true },
-	approvalEmailSentToFamilyOnBehalfOfInquirer: { type: Types.Boolean, label: 'inquiry accepted information sent to family on behalf of inquirer', dependsOn: { inquirer: 'social worker', onBehalfOfMAREFamily: true }, noedit: true },
-	emailSentToChildsSocialWorker: { type: Types.Boolean, label: 'inquiry accepted email sent to child\'s social worker', dependsOn: { inquiryType: ['child inquiry', 'complaint', 'family support consultation'] }, noedit: true },
-	emailSentToAgencies: { type: Types.Boolean, label: 'inquiry accepted email sent to agency contacts', dependsOn: { inquiryType: 'general inquiry' }, noedit: true }
+	thankYouSentToFamilyOnBehalfOfInquirer: { type: Types.Boolean, label: 'thank you sent to family on behalf of inquiring social worker', dependsOn: { inquirer: 'social worker', onBehalfOfMAREFamily: true }, noedit: false },
+	approvalEmailSentToInquirer: { type: Types.Boolean, label: 'inquiry accepted information sent to inquirer',  noedit: false },
+	approvalEmailSentToFamilyOnBehalfOfInquirer: { type: Types.Boolean, label: 'inquiry accepted information sent to family on behalf of inquirer', dependsOn: { inquirer: 'social worker', onBehalfOfMAREFamily: true }, noedit: false },
+	emailSentToChildsSocialWorker: { type: Types.Boolean, label: 'inquiry accepted email sent to child\'s social worker', dependsOn: { inquiryType: ['child inquiry', 'complaint', 'family support consultation'] }, noedit: false },
+	emailSentToAgencies: { type: Types.Boolean, label: 'inquiry accepted email sent to agency contacts', dependsOn: { inquiryType: 'general inquiry' }, noedit: false }
 
 /* Container for data migration fields ( these should be kept until after phase 2 and the old system is phased out completely ) */
 }, {
