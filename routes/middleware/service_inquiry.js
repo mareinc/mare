@@ -4,9 +4,9 @@ const keystone					= require( 'keystone' ),
 	  userService				= require( './service_user' ),
 	  listsService				= require( './service_lists' ),
 	  childService				= require( './service_child' ),
-	  socialWorkerService		= require( './service_social-worker' ),
 	  emailTargetService		= require( './service_email-target' ),
 	  staffEmailContactService	= require( './service_staff-email-contact' ),
+	  staffRegionContactService	= require( './service_staff-region-contact' ),
 	  inquiryEmailService		= require( './emails_inquiry' );
 
 /* public - creates an inquiry from data submitted through the information request form on the website */
@@ -22,7 +22,8 @@ exports.createInquiry = ( { inquiry, user } ) => {
 		// create variables to store the inquiry and inquirer data
 		let newInquiry,
 			inquiryData,
-			inquirerData;
+			inquirerData,
+			targetRegion;
 
 		// set default information for a staff email contact in case the real contact info can't be fetched
 		let staffEmail = 'web@mareinc.org';
@@ -54,6 +55,15 @@ exports.createInquiry = ( { inquiry, user } ) => {
 			.then( inquiry => {
 				// store the inquiry model in a variable for future processing
 				newInquiry = inquiry;
+				// store information needed for processing child inquiries if present
+				const adoptionWorkerRegion		= inquiry.children.length > 0 ?
+												  inquiry.children[ 0 ].adoptionWorkerAgencyRegion :
+												  undefined;
+				const recruitmentWorkerRegion	= inquiry.children.length > 0 ?
+												  inquiry.children[ 0 ].recruitmentWorkerAgencyRegion :
+												  undefined;
+				// if we have the recruitment worker region, we'll use it to find the staff region contact, otherwise, fall back to the adoption worker region
+				targetRegion = recruitmentWorkerRegion || adoptionWorkerRegion;
 				// resolve the promise with the new inquiry model
 				resolve( newInquiry );
 			})
@@ -71,11 +81,10 @@ exports.createInquiry = ( { inquiry, user } ) => {
 			.then( emailTarget => staffEmailContactService.getStaffEmailContactByEmailTarget( emailTarget.get( '_id' ), [ 'staffEmailContact' ] ) )
 			.then( contact => staffEmail = contact.staffEmailContact.email )
 			.catch( err => console.error( `error fetching email contact for child inquiry submission, default contact info will be used instead - ${ err }` ) )
-			// fetch the staff region contact for the child, overwriting the default contact details with the returned staff email
-			// .then( () => socialWorkerService.getSocialWorkerById() )
-			// .then( emailTarget => staffEmailContactService.getStaffEmailContactByEmailTarget( emailTarget.get( '_id' ), [ 'staffEmailContact' ] ) )
-			// .then( contact => staffEmail = contact.staffEmailContact.email )
-			// .catch( err => console.error( `error fetching region contact for child with id ${ inquiry.children[0] }, default or staff email contact info will be used instead - ${ err }` ) )			
+			// fetch the staff region contact, overwriting the default contact or staff email contact details with the returned staff email
+			.then( () => staffRegionContactService.getContactByRegion( { region: targetRegion, fieldsToPopulate: [ 'cscRegionContact' ] } ) )
+			.then( contact => staffEmail = contact.cscRegionContact.email )
+			.catch( err => console.error( `error fetching region contact for region with id ${ targetRegion }, default or staff email contact info will be used instead - ${ err }` ) )			
 			// send a notification email to MARE staff
 			.then( () => inquiryEmailService.sendNewInquiryEmailToMARE( { inquiryData, inquirerData, staffEmail } ) )
 			.catch( err => console.error( `error sending new inquiry email to MARE contact about inquiry with id ${ newInquiry.get( '_id' ) } - ${ err }` ) );
