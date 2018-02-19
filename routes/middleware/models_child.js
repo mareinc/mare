@@ -2,6 +2,24 @@ const keystone	= require( 'keystone' ),
 	  _			= require( 'underscore' ),
 	  async		= require( 'async' );
 
+// wraps a model.save() operation in a Promise
+function promisifySaveOperation( modelToSave ) {
+
+	return new Promise( ( resolve, reject ) => {
+
+		modelToSave.save( error => {
+
+			if ( error ) {
+
+				reject( error );
+			} else {
+
+				resolve();
+			}
+		});
+	});
+}
+
 /* updates sibling fields for chidren listed as siblings by adding missing entries */
 exports.updateMySiblings = ( mySiblings, childId, done ) => {
 
@@ -12,7 +30,8 @@ exports.updateMySiblings = ( mySiblings, childId, done ) => {
 		.where( '_id' ).in( Array.from( mySiblings ) )
 		.exec()
 		.then( siblings => {
-
+			// create an array to store all of the child model updates that need to be saved
+			let childModelUpdates = [];
 			// loop through each added sibling
 			_.each( siblings, child => {
 				// store the childs current sibling as an array of strings
@@ -26,19 +45,30 @@ exports.updateMySiblings = ( mySiblings, childId, done ) => {
 				// add the current child in the loop to the set
 				newSiblings.add( childId );
 				// remove the current child in the loop because we don't want to add him/her as a sibling of himself/herself
-				newSiblings.delete( targetChildId );       
+				newSiblings.delete( targetChildId );
 				// create a set of the siblings to add, derived from looking at which siblings are already included
 				const siblingsToAdd = currentSiblings.rightOuterJoin( newSiblings );
 				// if there are siblings to add to the child
 				if( siblingsToAdd.size > 0 ) {
 					// add any new siblings to the child
 					child.siblings.push( ...siblingsToAdd );
-					// save the child
-					child.save();
+					// add the updated model to the list of child updates to be saved
+					childModelUpdates.push( promisifySaveOperation( child ) );
 				}
 			});
 
-			done();
+			// execute all pending child model updates
+			Promise
+				.all( childModelUpdates )
+				.then( () => {
+
+					done();
+				})
+				.catch( error => {
+
+					console.error( error );
+					done();
+				});
 		// TODO: Update all error messages to make it clear what action failed (THIS IS A UNIVERSAL CHANGE)
 		}, ( err ) => {
 
@@ -55,13 +85,15 @@ exports.updateMyRemainingSiblings = ( remainingSiblings, removedSiblings, childI
 		.where( '_id' ).in( Array.from( remainingSiblings ) )
 		.exec()
 		.then( siblings => {
+			// create an array to store all of the child model updates that need to be saved
+			let childModelUpdates = [];
 			// loop through each added sibling
 			_.each( siblings, child => {
 				const targetChildId = child.get('_id').toString();
 				// store the childs current sibling as an array of strings
 				const currentSiblingsArray = child.siblings ? child.siblings.map( sibling => sibling.toString() ) : [];
 				// convert the array to a set
-				const currentSiblings = new Set( currentSiblingsArray );    
+				const currentSiblings = new Set( currentSiblingsArray );
 				// create a set of the siblings to add, derived from looking at which siblings are already included
 				const siblingsToRemove = currentSiblings.intersection( removedSiblings );
 				// if the child has any siblings
@@ -70,12 +102,23 @@ exports.updateMyRemainingSiblings = ( remainingSiblings, removedSiblings, childI
 					const remainingChildren = currentSiblings.leftOuterJoin( siblingsToRemove );
 					// remove all siblings from the child
 					child.siblings = [ ...remainingChildren ];
-					// save the child
-					child.save();
+					// add the updated model to the list of child updates to be saved
+					childModelUpdates.push( promisifySaveOperation( child ) );
 				}
 			});
 
-			done();
+			// execute all pending child model updates
+			Promise
+				.all( childModelUpdates )
+				.then( () => {
+
+					done();
+				})
+				.catch( error => {
+
+					console.error( error );
+					done();
+				});
 		// TODO: update all error messages to make it clear what action failed (THIS IS A UNIVERSAL CHANGE)
 		}, ( err ) => {
 
@@ -92,6 +135,8 @@ exports.updateMyRemovedSiblings = ( allSiblings, removedSiblings, childId, done 
 		.where( '_id' ).in( Array.from( removedSiblings ) )
 		.exec()
 		.then( siblings => {
+			// create an array to store all of the child model updates that need to be saved
+			let childModelUpdates = [];
 			// loop through each added sibling
 			_.each( siblings, child => {
 				// store the childs current sibling as an array of strings
@@ -105,7 +150,7 @@ exports.updateMyRemovedSiblings = ( allSiblings, removedSiblings, childId, done 
 				// add the current child in the loop to the set
 				deletedSiblings.add( childId );
 				// remove the current child in the loop because we don't want to add him/her as a sibling of himself/herself
-				deletedSiblings.delete( targetChildId );       
+				deletedSiblings.delete( targetChildId );
 				// create a set of the siblings to add, derived from looking at which siblings are already included
 				const siblingsToRemove = currentSiblings.intersection( deletedSiblings );
 				// if the child has any siblings
@@ -114,12 +159,23 @@ exports.updateMyRemovedSiblings = ( allSiblings, removedSiblings, childId, done 
 					const remainingChildren = currentSiblings.leftOuterJoin( siblingsToRemove );
 					// remove all siblings from the child
 					child.siblings = [ ...remainingChildren ];
-					// save the child
-					child.save();
+					// add the updated model to the list of child updates to be saved
+					childModelUpdates.push( promisifySaveOperation( child ) );
 				}
 			});
 
-			done();
+			// execute all pending child model updates
+			Promise
+				.all( childModelUpdates )
+				.then( () => {
+
+					done();
+				})
+				.catch( error => {
+
+					console.error( error );
+					done();
+				});
 		// TODO: update all error messages to make it clear what action failed (THIS IS A UNIVERSAL CHANGE)
 		}, ( err ) => {
 
@@ -144,7 +200,8 @@ exports.updateMySiblingsToBePlacedWith = ( mySiblings, childId, groupProfile, si
 		.where( '_id' ).in( Array.from( mySiblings ) )
 		.exec()
 		.then( siblings => {
-
+			// create an array to store all of the child model updates that need to be saved
+			let childModelUpdates = [];
 			// loop through each added sibling
 			_.each( siblings, child => {
 				// store the childs current sibling as an array of strings
@@ -158,7 +215,7 @@ exports.updateMySiblingsToBePlacedWith = ( mySiblings, childId, groupProfile, si
 				// add the current child in the loop to the set
 				newSiblings.add( childId );
 				// remove the current child in the loop because we don't want to add him/her as a sibling of himself/herself
-				newSiblings.delete( targetChildId );       
+				newSiblings.delete( targetChildId );
 				// create a set of the siblings to add, derived from looking at which siblings are already included
 				const siblingsToAdd = currentSiblings.rightOuterJoin( newSiblings );
 				// ensures that the group profile object exists
@@ -189,12 +246,23 @@ exports.updateMySiblingsToBePlacedWith = ( mySiblings, childId, groupProfile, si
 					child.wednesdaysChildSiblingGroupVideo  = wednesdaysChildSiblingGroupVideo;
 					// add any new siblings to the child
 					child.siblingsToBePlacedWith.push( ...siblingsToAdd );
-					// save the child
-					child.save();
+					// add the updated model to the list of child updates to be saved
+					childModelUpdates.push( promisifySaveOperation( child ) );
 				}
 			});
 
-			done();
+			// execute all pending child model updates
+			Promise
+				.all( childModelUpdates )
+				.then( () => {
+
+					done();
+				})
+				.catch( error => {
+
+					console.error( error );
+					done();
+				});
 		// TODO: update all error messages to make it clear what action failed (THIS IS A UNIVERSAL CHANGE)
 		}, ( err ) => {
 
@@ -211,13 +279,15 @@ exports.updateMyRemainingSiblingsToBePlacedWith = ( remainingSiblings, removedSi
 		.where( '_id' ).in( Array.from( remainingSiblings ) )
 		.exec()
 		.then( siblings => {
+			// create an array to store all of the child model updates that need to be saved
+			let childModelUpdates = [];
 			// loop through each added sibling
 			_.each( siblings, child => {
 				const targetChildId = child.get('_id').toString();
 				// store the childs current sibling as an array of strings
 				const currentSiblingsArray = child.siblingsToBePlacedWith ? child.siblingsToBePlacedWith.map( sibling => sibling.toString() ) : [];
 				// convert the array to a set
-				const currentSiblings = new Set( currentSiblingsArray );    
+				const currentSiblings = new Set( currentSiblingsArray );
 				// create a set of the siblings to add, derived from looking at which siblings are already included
 				const siblingsToRemove = currentSiblings.intersection( removedSiblings );
 				// if the child has any siblings
@@ -226,12 +296,23 @@ exports.updateMyRemainingSiblingsToBePlacedWith = ( remainingSiblings, removedSi
 					const remainingChildren = currentSiblings.leftOuterJoin( siblingsToRemove );
 					// remove all siblings from the child
 					child.siblingsToBePlacedWith = [ ...remainingChildren ];
-					// save the child
-					child.save();
+					// add the updated model to the list of child updates to be saved
+					childModelUpdates.push( promisifySaveOperation( child ) );
 				}
 			});
 
-			done();
+			// execute all pending child model updates
+			Promise
+				.all( childModelUpdates )
+				.then( () => {
+
+					done();
+				})
+				.catch( error => {
+
+					console.error( error );
+					done();
+				});
 		// TODO: update all error messages to make it clear what action failed (THIS IS A UNIVERSAL CHANGE)
 		}, ( err ) => {
 
@@ -248,6 +329,8 @@ exports.updateMyRemovedSiblingsToBePlacedWith = ( allSiblings, removedSiblings, 
 		.where( '_id' ).in( Array.from( removedSiblings ) )
 		.exec()
 		.then( siblings => {
+			// create an array to store all of the child model updates that need to be saved
+			let childModelUpdates = [];
 			// loop through each added sibling
 			_.each( siblings, child => {
 				// store the childs current sibling as an array of strings
@@ -261,7 +344,7 @@ exports.updateMyRemovedSiblingsToBePlacedWith = ( allSiblings, removedSiblings, 
 				// add the current child in the loop to the set
 				deletedSiblings.add( childId );
 				// remove the current child in the loop because we don't want to add him/her as a sibling of himself/herself
-				deletedSiblings.delete( targetChildId );       
+				deletedSiblings.delete( targetChildId );
 				// create a set of the siblings to add, derived from looking at which siblings are already included
 				const siblingsToRemove = currentSiblings.intersection( deletedSiblings );
 				// if the child has any siblings
@@ -270,12 +353,23 @@ exports.updateMyRemovedSiblingsToBePlacedWith = ( allSiblings, removedSiblings, 
 					const remainingChildren = currentSiblings.leftOuterJoin( siblingsToRemove );
 					// remove all siblings from the child
 					child.siblingsToBePlacedWith = [ ...remainingChildren ];
-					// save the child
-					child.save();
+					// add the updated model to the list of child updates to be saved
+					childModelUpdates.push( promisifySaveOperation( child ) );
 				}
 			});
 
-			done();
+			// execute all pending child model updates
+			Promise
+				.all( childModelUpdates )
+				.then( () => {
+
+					done();
+				})
+				.catch( error => {
+
+					console.error( error );
+					done();
+				});
 		// TODO: update all error messages to make it clear what action failed (THIS IS A UNIVERSAL CHANGE)
 		}, ( err ) => {
 
@@ -302,5 +396,5 @@ exports.updateBookmarksToRemoveByStatus = ( statusId, bookmarkedChildrenToRemove
 			console.log( err );
 
 			done();
-		});	
+		});
 }
