@@ -1,46 +1,46 @@
 const keystone = require( 'keystone' );
 
-exports.sendInquiryCreatedEmailToStaff = ( inquiry, inquiryData, done ) => {
-	// if sending of the email is currently allowed
-	if( process.env.SEND_INQUIRY_RECEIVED_EMAILS_TO_MARE !== 'true' ) {
-		return done();
-	}
-	// find the email template in templates/emails/
-	new keystone.Email({
-		templateExt 	: 'hbs',
-		templateEngine 	: require( 'handlebars' ),
-		templateName 	: 'inquiry_staff-notification'
-	}).send({
-		to: inquiryData.emailAddressesStaff,
-		from: {
-			name 	: 'MARE',
-			email 	: 'admin@adoptions.io'
-		},
-		subject: 'staff email',
-		inquiry: inquiry,
-		inquiryData: inquiryData
-	// TODO: we should be handling success/failure better, possibly with a flash message if we can make it appear in the model screen
-	}, ( err, message ) => {
-		// log any errors
-		if( err ) {
-			console.log( `error sending staff email: ${ err }` );
-			return done();
-		}
-		// the response object is stored as the 0th element of the returned message
-		const response = message ? message[ 0 ] : undefined;
-		// if the email failed to send, or an error occurred ( which is does, rarely ) causing the response message to be empty
-		if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
-			console.log( `staff notification email failed to send: ${ message }` );
-			console.log( `error: ${ err }` );
-			return done();
+exports.sendNewInquiryEmailToMARE = ( { inquiryData, inquirerData, staffEmail } ) => {
+
+	return new Promise( ( resolve, reject ) => {
+		// if sending of the email is not currently allowed
+		if( process.env.SEND_INQUIRY_RECEIVED_EMAILS_TO_MARE !== 'true' ) {
+			// reject the promise with details about the reason
+			return reject( `sending of the email is disabled` );
 		}
 
-		console.log( `staff notification email sent successfully` );
-		// mark the staff notification email as having been sent to prevent it being sent in the future
-		inquiry.emailSentToStaff = true;
-		done();
+		// find the email template in templates/emails/
+		new keystone.Email({
+			templateExt 	: 'hbs',
+			templateEngine 	: require( 'handlebars' ),
+			templateName 	: 'inquiry_staff-notification'
+		}).send({
+			to				: staffEmail,
+			from: {
+				name 		: 'MARE',
+				email 		: 'admin@adoptions.io'
+			},
+			subject			: `new ${ inquiryData.inquiryType }`,
+			inquiryData,
+			inquirerData
+
+		}, ( err, message ) => {
+			// if there was an error sending the email
+			if( err ) {
+				// reject the promise with details
+				return reject( `error sending new inquiry notification email to MARE - ${ err }` );
+			}
+			// the response object is stored as the 0th element of the returned message
+			const response = message ? message[ 0 ] : undefined;
+			// if the email failed to send, or an error occurred ( which it does, rarely ) causing the response message to be empty
+			if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
+				// reject the promise with details
+				reject( `error sending new inquiry notification email to MARE - ${ message } - ${ err }` );
+			}
+
+			resolve();
+		});
 	});
-
 };
 
 exports.sendThankYouEmailToFamilyOnBehalfOfInquirer = ( inquiry, inquiryData, done ) => {
@@ -244,47 +244,3 @@ exports.sendInquiryAcceptedEmailToAgencyContacts = ( inquiry, inquiryData, done 
 		done();
 	});
 };
-
-/* Emails for inquiries generated via forms on the website */
-exports.sendAnonymousInquiryCreatedEmailToMARE = ( inquiry, staffContact ) => {
-
-	return new Promise( (resolve, reject ) => {
-		// do nothing if sending of the email is not currently allowed
-		if( process.env.SEND_ANONYMOUS_INQUIRY_CREATED_EMAILS_TO_MARE !== 'true' ) {
-			// reject the promise with details of the issue
-			return reject( 'sending of the email is disabled' );
-		}
-
-		// find the email template in templates/emails/
-		new keystone.Email({
-			templateExt 	: 'hbs',
-			templateEngine 	: require( 'handlebars' ),
-			templateName 	: 'inquiry_anonymouse-inquiry-created-to-mare'
-		}).send({
-			to: '',
-			from: {
-				name 	: 'MARE',
-				email 	: 'admin@adoptions.io'
-			},
-			subject: 'inquiry information for agency contact',
-			inquiry: inquiry
-		}, ( err, message ) => {
-			// log any errors
-			if( err ) {
-				console.error( `error sending anonymouse inquiry created email to MARE staff: ${ err }` );
-				return reject();
-			}
-			// the response object is stored as the 0th element of the returned message
-			const response = message ? message[ 0 ] : undefined;
-			// if the email failed to send, or an error occurred ( which is does, rarely ) causing the response message to be empty
-			if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
-				console.error( `anonymous inquiry created email to MARE staff failed to send: ${ message }` );
-				return reject();
-			}
-			// if the email sent successfully, log a message for debugging purposes
-			console.info( `anonymous inquiry created email to MARE sent` ); // TODO: include some indentifying inquiry id data for tracking (maybe)
-			// resolve the promise
-			resolve();
-		});
-	});
-}

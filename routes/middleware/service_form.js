@@ -26,10 +26,20 @@ exports.submitInquiry = function submitInquiry( req, res, next ) {
 	const inquiryCreated = inquiryService.createInquiry( { inquiry: req.body, user: req.user } )
 	// if it was successful
 	inquiryCreated
+		.then( inquiry => {
+			// create a flash message to notify the user of the success
+			req.flash( 'success', {
+				title: `Your inquiry has been received.`,
+				detail: `A MARE staff person will be in touch with additional information within 2-3 business days.` } );
+		})
 		// if an error occurred
 		.catch( err => {
 			// log the error for debugging purposes
 			console.error( `inquiry could not be created through the information request form - ${ err }` );
+			// create a flash message to notify the user of the error
+			req.flash( 'error', {
+				title: `There was an error processing your request.`,
+				detail: `If this error persists, please notify MARE at <a href="mailto:communications@mareinc.org">communications@mareinc.org</a>` } );
 		})
 		// execute the following regardless of whether the promises were resolved or rejected
 		// TODO: this should be replaced with ES6 Promise.prototype.finally() once it's finalized, assuming we can update to the latest version of Node if we upgrade Keystone

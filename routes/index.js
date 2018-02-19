@@ -42,7 +42,7 @@ exports = module.exports = app => {
 	app.get( '/'										, routes.views.main );
 	// MARE staff generated pages
 	app.get( '/page/:key'								, routes.views.page );
-	/* TODO: combine all the get requests into /forms/:key and handle the service calls in middleware */
+	/* TODO: combine all these requests into /forms/:key and handle the service calls in middleware */
 	// forms
 	app.get( '/forms/agency-event-submission'			, routes.views.form_agencyEventSubmission );
 	app.post( '/forms/agency-event-submission'			, eventService.submitEvent );
