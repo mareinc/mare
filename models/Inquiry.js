@@ -64,60 +64,12 @@ Inquiry.add( 'General Information', {
 // Pre Save
 Inquiry.schema.pre( 'save', function( next ) {
 	'use strict';
-
-	// populate the inquiry Relationship fields
-	this.populate( [ 'children' ], err => {
-		// if there was an error populating the specified fields on the inquiry model
-		if ( err ) {
-			// log the error for debugging purposes
-			console.error( `error populating inquiry fields with id ${ this.get( '_id' ) }` );
-			// prevent the rest of the function from executing
-			return next();
-		}
-
-		const firstChild = this.get( 'children' ).length > 0 ? this.get( 'children' )[ 0 ] : undefined;
-		
-		// if there is at least one child and it's not a general inquiry
-		if( firstChild && this.get( 'inquiryType' ) !== 'general inquiry' ) {
-			// populate the necessary fields on the firstChild model
-			firstChild.populate( 'adoptionWorker', err => {
-				// if there was an error populating the child model fields
-				if ( err ) {
-					// log the error for debugging purposes
-					console.error( `error populating child with registration number ${ firstChild.get( 'registrationNumber' ) } for inquiry with id ${ this.get( '_id' ) }` );
-					// prevent the rest of the function from executing
-					return next();
-				}
-				// store the child's adoption worker
-				const adoptionWorker = firstChild.get( 'adoptionWorker' );
-				// if the child's adoption worker field is set
-				if( adoptionWorker ) {
-					// store commonly used values
-					const adoptionWorkersId			= adoptionWorker.get( '_id' ),
-						  childsSocialWorkerId		= this.get( 'childsSocialWorker' ),
-						  previousAdoptionWorker	= this.get( 'previousChildsSocialWorker' );
-					// if the child's social worker field was never set or has changed
-					if( !childsSocialWorkerId || childsSocialWorkerId.toString() !== adoptionWorkersId.toString() ) {
-						// set the child's social worker field to the id of the child's adoption worker
-						this.set( 'childsSocialWorker', adoptionWorkersId );
-					}
-					// if no child's social worker has been set, save it
-					if( !this.get( 'originalChildsSocialWorker' ) ) {
-						// set the previous child's social worker to point to the adoption worker of the first child
-						this.set( 'originalChildsSocialWorker', adoptionWorkersId );
-					}
-					// if either the previous social worker value wasn't set, or the adoption worker has changed
-					if( !this.get( 'agency' ) ) {
-						// set the agency field to the agency associated with the child's adoption worker
-						this.set( 'agency', adoptionWorker.get( 'agency' ) );
-					}
-
-					return next();
-				}
-			});
-		} else {
-			next();
-		}
+	// attempt to populate any derived fields for child inquiries
+	this.populateDerivedFields()
+		// if there was an error populating the derived fields, log the error
+		.catch( err => console.error( `error populating fields for inquiry with id ${ this.get( '_id' ) } - ${ err }` ) )
+		// call next to allow the model to save
+		.then( () => next() )
 
 		// if( !this.thankYouSentToFamilyOnBehalfOfInquirer && inquiryData.onBehalfOfFamily ) {
 		// 	inquiryEmailService.sendThankYouEmailToFamilyOnBehalfOfInquirer( this, inquiryData, done );
@@ -140,7 +92,7 @@ Inquiry.schema.pre( 'save', function( next ) {
 		// if( !this.emailSentToAgencies && this.inquiryAccepted === true && this.inquiryType === 'general inquiry') {
 		// 	inquiryEmailService.sendInquiryAcceptedEmailToAgencyContacts( this, inquiryData, done );
 		// }
-	});
+	// });
 
 	// create an object to store all calculated inquiry data for populating emails
 	// let inquiryData = {
@@ -242,6 +194,62 @@ Inquiry.schema.pre( 'save', function( next ) {
 	// 	next();
 	// });
 });
+
+Inquiry.schema.methods.populateDerivedFields = function() {
+
+	return new Promise( ( resolve, reject ) => {
+		// populate the inquiry Relationship fields
+		this.populate( [ 'children' ], err => {
+			// if there was an error populating the specified fields on the inquiry model
+			if ( err ) {
+				// reject the promise with details of the error, preventing the rest of the function from executing
+				return reject( `error populating inquiry fields with id ${ this.get( '_id' ) }` );
+			}
+
+			const firstChild = this.get( 'children' ).length > 0 ? this.get( 'children' )[ 0 ] : undefined;
+			
+			// if there are no saved children, or it's a general inquiry
+			if( !firstChild || this.get( 'inquiryType' ) === 'general inquiry' ) {
+				// resolve the promise, preventing the rest of the function from executing
+				return resolve();
+			}
+			// populate the necessary fields on the firstChild model
+			firstChild.populate( 'adoptionWorker', err => {
+				// if there was an error populating the child model fields
+				if ( err ) {
+					// reject the promise with details of the error, preventing the rest of the function from executing
+					return reject( `error populating child with registration number ${ firstChild.get( 'registrationNumber' ) } for inquiry with id ${ this.get( '_id' ) }` );
+				}
+				// store the child's adoption worker
+				const adoptionWorker = firstChild.get( 'adoptionWorker' );
+				// if the child's adoption worker field is set
+				if( adoptionWorker ) {
+					// store commonly used values
+					const adoptionWorkersId		= adoptionWorker.get( '_id' ),
+						childsSocialWorkerId	= this.get( 'childsSocialWorker' ),
+						previousAdoptionWorker	= this.get( 'previousChildsSocialWorker' );
+					// if the child's social worker field was never set or has changed
+					if( !childsSocialWorkerId || childsSocialWorkerId.toString() !== adoptionWorkersId.toString() ) {
+						// set the child's social worker field to the id of the child's adoption worker
+						this.set( 'childsSocialWorker', adoptionWorkersId );
+					}
+					// if no child's social worker has been set, save it
+					if( !this.get( 'originalChildsSocialWorker' ) ) {
+						// set the previous child's social worker to point to the adoption worker of the first child
+						this.set( 'originalChildsSocialWorker', adoptionWorkersId );
+					}
+					// if either the previous social worker value wasn't set, or the adoption worker has changed
+					if( !this.get( 'agency' ) ) {
+						// set the agency field to the agency associated with the child's adoption worker
+						this.set( 'agency', adoptionWorker.get( 'agency' ) );
+					}
+
+					resolve();
+				}
+			});
+		});
+	});
+};
 
 // Define default columns in the admin interface and register the model
 Inquiry.defaultColumns = 'takenOn, takenBy, source, children, family';
