@@ -10,12 +10,10 @@ function promisifySaveOperation( modelToSave ) {
 		modelToSave.save( error => {
 
 			if ( error ) {
-
-				reject( error );
-			} else {
-
-				resolve();
+				console.error( error );
 			}
+
+			resolve();
 		});
 	});
 }
