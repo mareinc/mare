@@ -53,6 +53,13 @@
 										<b>method</b> {{ inquiryData.inquiryMethod }}
 									</td>
 								</tr>
+								{{#if inquiryData.isOnBehalfOfMAREFamily}}
+								<tr>
+									<td style="padding: 5px 0 0 0; color: #153634; font-family: Ariel, sans-serif; font-size: 14px; line-height: 16px;">
+										<b>on behalf of family</b> {{ inquiryData.onBehalfOfMAREFamily }}
+									</td>
+								</tr>
+								{{/if}}
 								{{#if inquiryData.family}}
 								<tr>
 									<td style="padding: 30px 0 0px 0; color: #153634; font-family: Ariel, sans-serif; font-size: 20px; line-height: 24px;">

@@ -127,7 +127,8 @@ function saveChildInquiry( { inquiry, user } ) {
 					siteVisitor: isSiteVisitor ? user.get( '_id' ) : undefined,
 					socialWorker: isSocialWorker ? user.get( '_id' ) : undefined,
 					family: isFamily ? user.get( '_id' ) : undefined,
-					onBehalfOfMAREFamily: isSocialWorker, // we assume true if they are a social worker because we don't know, MARE staff will need to check the notes
+					onBehalfOfMAREFamily: !!inquiry.onBehalfOfFamily.trim(),
+					onBehalfOfFamilyText: !!inquiry.onBehalfOfFamily.trim() ? inquiry.onBehalfOfFamily : undefined,
 					comments: inquiry.inquiry
 				});
 
@@ -182,7 +183,8 @@ function saveGeneralInquiry( { inquiry, user } ) {
 				siteVisitor: isSiteVisitor ? user.get( '_id' ) : undefined,
 				socialWorker: isSocialWorker ? user.get( '_id' ) : undefined,
 				family: isFamily ? user.get( '_id' ) : undefined,
-				onBehalfOfMAREFamily: isSocialWorker, // we assume true if they are a social worker because we don't know, MARE staff will need to check the notes
+				onBehalfOfMAREFamily: !!inquiry.onBehalfOfFamily.trim(),
+				onBehalfOfFamilyText: !!inquiry.onBehalfOfFamily.trim() ? inquiry.onBehalfOfFamily : undefined,
 				comments: inquiry.inquiry,
 
 				agencyReferrals: undefined, // TODO: Relationship.  Don't set, needs to be filled out by MARE staff, or we need to capture that info in the form
@@ -242,7 +244,8 @@ function extractInquiryData( inquiry ) {
 				inquirer: inquiry.inquirer,
 				inquiryMethod: inquiry.inquiryMethod ? inquiry.inquiryMethod.inquiryMethod : undfined,
 				inquiryType: inquiry.inquiryType,
-				isOnBehalfOfMAREFamily: inquiry.onBehalfOfMAREFamily ? 'yes' : 'no',
+				isOnBehalfOfMAREFamily: inquiry.onBehalfOfMAREFamily,
+				onBehalfOfMAREFamily: inquiry.onBehalfOfFamilyText,
 				source: inquiry.sourceText.trim(),
 				takenBy: 'Website Bot',
 				takenOn: inquiry.takenOn ? moment( inquiry.takenOn ).format( 'MM/DD/YYYY' ) : undefined
