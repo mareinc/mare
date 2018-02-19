@@ -249,7 +249,7 @@ exports.registerFamily = ( req, res, next ) => {
 	// store a reference to locals to allow access to globally available data
 	const locals = res.locals;
 	// set the redirect URL for use throughout the registration process
-	const redirectPath = '/forms/family-registration-form';
+	const redirectPath = '/forms/social-worker-family-registration';
 	// set the account email to the email for contact 1
 	rawFamilyData.email = rawFamilyData.contact1Email;
 	// generate a random password hash

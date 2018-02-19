@@ -222,7 +222,8 @@ Family.add( 'Permissions', {
 			filename: function( item, filename ) {
 				// prefix file name with registration number and name for easier identification
 				return item.fileName;
-			}
+			},
+			hidden: true
 		}
 	},
 

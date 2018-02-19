@@ -172,9 +172,9 @@ Child.add('Display Options', {
 	place: { type: Types.Text, label: 'place', initial: true, dependsOn: { locationAlert: true } },
 
 	communicationsCollateral: { type: Types.Boolean, label: 'communications collateral', default: false, initial: true },
-	communicationsCollateralDetails: { type: Types.Text, label: 'details', dependsOn: { communicationsCollateral: true }, initial: true }
+	communicationsCollateralDetails: { type: Types.Text, label: 'details', dependsOn: { communicationsCollateral: true }, initial: true },
 
-}, 'Attachments', {
+// }, 'Attachments', {
 
 	photolistingPage: {
 		type: Types.S3File,
@@ -182,7 +182,8 @@ Child.add('Display Options', {
 		filename: function( item, filename ) {
 			// prefix file name with registration number and the user's name for easier identification
 			return item.get( 'fileName' );
-		}
+		},
+		hidden: true
 	},
 
 	otherAttachement: {
@@ -191,7 +192,8 @@ Child.add('Display Options', {
 		filename: function( item, filename ) {
 			// prefix file name with registration number and name for easier identification
 			return item.get( 'fileName' );
-		}
+		},
+		hidden: true
 	}
 /* Container for all system fields (add a heading if any are meant to be visible through the admin UI) */
 }, {

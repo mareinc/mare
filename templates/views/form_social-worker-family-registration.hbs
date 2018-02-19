@@ -9,13 +9,13 @@
 		Follow-up on such referrals is at the discretion of the child’s social worker. There is no fee for this service.</div>
 
 	<div class="form-intro">If the family is not yet homestudied and would like to request information, please request that
-		they fill out the <a href="/forms/information-request-form">Information Request Form</a>.</div>
+		they fill out the <a href="/forms/information-request">Information Request Form</a>.</div>
 
 	<div class="form-intro">For questions about Homestudy Registration, please <a href="mailto:{{ socialWorkerFamilyRegistrationQuestionContact.email }}">contact {{ socialWorkerFamilyRegistrationQuestionContact.name.full }}</a></div>
 
 	<section class="family-registration-form">
 
-		<form enctype="multipart/form-data" action="/social-worker-register-family" class="form--family-registration" method="POST">
+		<form enctype="multipart/form-data" action="/forms/social-worker-family-registration" class="form--family-registration" method="POST">
 			<input type="hidden" class="registration-type" name="registrationType" value="family">
 
 			<section class="family-contact-1-section">
@@ -255,9 +255,13 @@
 				</div>
 
 				<section class="subheading family-submit-your-homestudy-section">
-					<strong>Submit Your Homestudy</strong>
-					<p>To complete your registration as a Massachusetts homestudied family, you must submit your homestudy to us via one of the following methods (choose one):</p>
-					<div class="row">
+					<div class="row form-group">
+						<div class="col-sm-24"><strong>Submit Your Homestudy</strong></div>
+					</div>
+					<div class="row form-group">
+						<div class="col-sm-24">To complete your registration as a Massachusetts homestudied family, you must submit your homestudy to us via one of the following methods (choose one):</div>
+					</div>
+					{{!-- <div class="row">
 						<div class="col-sm-12 form-group">Upload PDF or Microsoft Word<sup>&reg;</sup> format:</div>
 						<div class="col-sm-12 form-group">
 							<div class="button button--medium button--teal file-upload-button">
@@ -266,7 +270,7 @@
 							</div>
 							<span class="homestudy-file-text"></span>
 						</div>
-					</div>
+					</div> --}}
 					<div class="row">
 						<div class="col-sm-12 form-group">Email to web@mareinc.org:</div>
 						<div class="col-sm-12 form-group">

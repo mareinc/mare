@@ -24,7 +24,7 @@ exports = module.exports = ( req, res ) => {
 			pageActions.hasButtons = true;
 			// set the button contents
 			pageActions.buttons.push( { text	: 'Request Adoption Information',
-										target	: '/forms/information-request-form' } );
+										target	: '/forms/information-request' } );
 		
 			// assign properties to locals for access during templating
 			locals.randomSuccessStory	= randomSuccessStory;
