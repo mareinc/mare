@@ -4,6 +4,7 @@ const keystone					= require( 'keystone' ),
 	  userService				= require( './service_user' ),
 	  listsService				= require( './service_lists' ),
 	  childService				= require( './service_child' ),
+	  socialWorkerService		= require( './service_social-worker' ),
 	  emailTargetService		= require( './service_email-target' ),
 	  staffEmailContactService	= require( './service_staff-email-contact' ),
 	  inquiryEmailService		= require( './emails_inquiry' );
@@ -49,42 +50,34 @@ exports.createInquiry = ( { inquiry, user } ) => {
 		}
 
 		createInquiry
-			// if the inquiry saved successfully
+			// process the result of saving the inquiry
 			.then( inquiry => {
 				// store the inquiry model in a variable for future processing
 				newInquiry = inquiry;
 				// resolve the promise with the new inquiry model
 				resolve( newInquiry );
 			})
-			// if there was an error saving the inquiry
-			.catch( err => {
-				// reject the promise with details of the error
-				reject( `error saving inquiry - ${ err }` );
-			})
-			// extract only the relevant fields from the inquiry
+			.catch( err => reject( `error saving inquiry - ${ err }` ) )
+			// extract only the relevant fields from the inquiry, storing the results in a variable for future processing
 			.then( () => extractInquiryData( newInquiry ) )
-			// store the data in a variable for future processing
 			.then( data => inquiryData = data )
-			// if the inquiry data was not populated correctly, log the error
 			.catch( err => console.error( `error populating inquiry data for new inquiry staff email - inquiry id ${ newInquiry.get( '_id' ) } - ${ err }` ) )
-			// extract only the relevant fields from the inquirer
+			// extract only the relevant fields from the inquirer, storing the results in a variable for future processing
 			.then( () => fetchInquirerData )
-			// store the data in a variable for future processing
 			.then( data => inquirerData = data )
-			// if the inquirer data was not populated correctly, log the error
 			.catch( err => console.error( `error populating inquirer data for new inquiry staff email - inquiry id ${ newInquiry.get( '_id' ) } - ${ err }` ) )
-			// extract the staff email contact for child inquiries
+			// fetch the staff email contact for child inquiries, overwriting the default contact details with the returned staff email
 			.then( () => fetchEmailTarget )
-			// fetch contact info for the staff email contact for child inquiries
 			.then( emailTarget => staffEmailContactService.getStaffEmailContactByEmailTarget( emailTarget.get( '_id' ), [ 'staffEmailContact' ] ) )
-			// overwrite the default contact details with the returned staff email
 			.then( contact => staffEmail = contact.staffEmailContact.email )
-			// if there was an error fetching the staff email contact, log the error
-			.catch( err => console.error( `error fetching email contact for child inquiry submission, default contact info will be used instead - ${ err }` ) )		
+			.catch( err => console.error( `error fetching email contact for child inquiry submission, default contact info will be used instead - ${ err }` ) )
+			// fetch the staff region contact for the child, overwriting the default contact details with the returned staff email
+			// .then( () => socialWorkerService.getSocialWorkerById() )
+			// .then( emailTarget => staffEmailContactService.getStaffEmailContactByEmailTarget( emailTarget.get( '_id' ), [ 'staffEmailContact' ] ) )
+			// .then( contact => staffEmail = contact.staffEmailContact.email )
+			// .catch( err => console.error( `error fetching region contact for child with id ${ inquiry.children[0] }, default or staff email contact info will be used instead - ${ err }` ) )			
 			// send a notification email to MARE staff
-			.then( () => {
-				return inquiryEmailService.sendNewInquiryEmailToMARE( { inquiryData, inquirerData, staffEmail } ) } )
-			// if there was an error sending the email to MARE staff, log the error with details about what went wrong
+			.then( () => inquiryEmailService.sendNewInquiryEmailToMARE( { inquiryData, inquirerData, staffEmail } ) )
 			.catch( err => console.error( `error sending new inquiry email to MARE contact about inquiry with id ${ newInquiry.get( '_id' ) } - ${ err }` ) );
 	});
 }
@@ -127,8 +120,8 @@ function saveChildInquiry( { inquiry, user } ) {
 					siteVisitor: isSiteVisitor ? user.get( '_id' ) : undefined,
 					socialWorker: isSocialWorker ? user.get( '_id' ) : undefined,
 					family: isFamily ? user.get( '_id' ) : undefined,
-					onBehalfOfMAREFamily: !!inquiry.onBehalfOfFamily.trim(),
-					onBehalfOfFamilyText: !!inquiry.onBehalfOfFamily.trim() ? inquiry.onBehalfOfFamily : undefined,
+					onBehalfOfMAREFamily: inquiry.onBehalfOfFamily ? !!inquiry.onBehalfOfFamily.trim() : undefined,
+					onBehalfOfFamilyText: inquiry.onBehalfOfFamily ? inquiry.onBehalfOfFamily.trim() : undefined,
 					comments: inquiry.inquiry
 				});
 
@@ -183,8 +176,8 @@ function saveGeneralInquiry( { inquiry, user } ) {
 				siteVisitor: isSiteVisitor ? user.get( '_id' ) : undefined,
 				socialWorker: isSocialWorker ? user.get( '_id' ) : undefined,
 				family: isFamily ? user.get( '_id' ) : undefined,
-				onBehalfOfMAREFamily: !!inquiry.onBehalfOfFamily.trim(),
-				onBehalfOfFamilyText: !!inquiry.onBehalfOfFamily.trim() ? inquiry.onBehalfOfFamily : undefined,
+				onBehalfOfMAREFamily: inquiry.onBehalfOfFamily ? !!inquiry.onBehalfOfFamily.trim() : undefined,
+				onBehalfOfFamilyText: inquiry.onBehalfOfFamily ? inquiry.onBehalfOfFamily.trim() : undefined,
 				comments: inquiry.inquiry,
 
 				agencyReferrals: undefined, // TODO: Relationship.  Don't set, needs to be filled out by MARE staff, or we need to capture that info in the form
