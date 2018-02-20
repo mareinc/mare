@@ -134,13 +134,9 @@ Child.add('Display Options', {
 	photolistingPageNumber: { type: Types.Text, label: 'photolisting page', initial: true },
 	previousPhotolistingPageNumbers: { type: Types.Text, label: 'previous photolisting pages', initial: true },
 
-	image: { type: Types.CloudinaryImage, label: 'display image', folder: `${ process.env.CLOUDINARY_DIRECTORY }/children/`, select: true, selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/children/`, publicID: 'fileName', dependsOn: { mustBePlacedWithSiblings: false } },
-	galleryImage: { type: Types.Url, hidden: true },
-	detailImage: { type: Types.Url, hidden: true },
+	image: { type: Types.CloudinaryImage, label: 'display image', folder: `${ process.env.CLOUDINARY_DIRECTORY }/children/`, select: true, selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/children/`, publicID: 'fileName', dependsOn: { mustBePlacedWithSiblings: false }, autoCleanup: true },
 	allImages: { type: Types.CloudinaryImages, label: 'all images', folder: `${ process.env.CLOUDINARY_DIRECTORY }/children/`, select: true, selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/children/`, publicID: 'fileName', dependsOn: { mustBePlacedWithSiblings: false }, autoCleanup: true },
 	siblingGroupImage: { type: Types.CloudinaryImage, label: 'sibling group image', folder: `${ process.env.CLOUDINARY_DIRECTORY }/sibling-groups/`, select: true, selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/sibling-groups/`, publicID: 'siblingGroupFileName', dependsOn: { mustBePlacedWithSiblings: true }, autoCleanup: true },
-	siblingGroupGalleryImage: { type: Types.Url, hidden: true },
-	siblingGroupDetailImage: { type: Types.Url, hidden: true },
 	extranetUrl: { type: Types.Url, label: 'extranet and related profile url', initial: true } // TODO: Since this is redundant as this just points the the url where the photo exists (the child's page), we may hide this field.  This must be kept in as it will help us track down the child information in the old system in the event of an issue.
 
 }, 'Recruitment Options', {
@@ -176,9 +172,9 @@ Child.add('Display Options', {
 	place: { type: Types.Text, label: 'place', initial: true, dependsOn: { locationAlert: true } },
 
 	communicationsCollateral: { type: Types.Boolean, label: 'communications collateral', default: false, initial: true },
-	communicationsCollateralDetails: { type: Types.Text, label: 'details', dependsOn: { communicationsCollateral: true }, initial: true }
+	communicationsCollateralDetails: { type: Types.Text, label: 'details', dependsOn: { communicationsCollateral: true }, initial: true },
 
-}, 'Attachments', {
+// }, 'Attachments', {
 
 	photolistingPage: {
 		type: Types.S3File,
@@ -186,7 +182,8 @@ Child.add('Display Options', {
 		filename: function( item, filename ) {
 			// prefix file name with registration number and the user's name for easier identification
 			return item.get( 'fileName' );
-		}
+		},
+		hidden: true
 	},
 
 	otherAttachement: {
@@ -195,7 +192,8 @@ Child.add('Display Options', {
 		filename: function( item, filename ) {
 			// prefix file name with registration number and name for easier identification
 			return item.get( 'fileName' );
-		}
+		},
+		hidden: true
 	}
 /* Container for all system fields (add a heading if any are meant to be visible through the admin UI) */
 }, {
@@ -214,7 +212,7 @@ Child.add('Display Options', {
 // Set up relationship values to show up at the bottom of the model if any exist
 Child.relationship( { ref: 'Child', refPath: 'siblings', path: 'children', label: 'siblings' } );
 Child.relationship( { ref: 'Placement', refPath: 'child', path: 'placements', label: 'placements' } );
-Child.relationship( { ref: 'Inquiry', refPath: 'child', path: 'inquiries', label: 'inquiries' } );
+Child.relationship( { ref: 'Inquiry', refPath: 'children', path: 'inquiries', label: 'inquiries' } );
 Child.relationship( { ref: 'Match', refPath: 'child', path: 'matches', label: 'matches' } );
 Child.relationship( { ref: 'Family', refPath: 'bookmarkedChildren', path: 'families', label: 'bookmarked by families' } );
 Child.relationship( { ref: 'Family', refPath: 'bookmarkedSiblingGroups', path: 'families', label: 'sibling group bookmarked by families' } );
@@ -225,6 +223,18 @@ Child.relationship( { ref: 'Media Feature', refPath: 'children', path: 'media-fe
 Child.relationship( { ref: 'Internal Note', refPath: 'child', path: 'internal-notes', label: 'internal notes' } );
 Child.relationship( { ref: 'Child History', refPath: 'child', path: 'child-histories', label: 'change history' } );
 
+Child.schema.virtual( 'hasImage' ).get( function() {
+	'use strict';
+
+	return this.image.exists;
+});
+
+Child.schema.virtual( 'hasSiblingGroupImage' ).get( function() {
+	'use strict';
+
+	return this.siblingGroupImage.exists;
+});
+
 // Post Init - used to store all the values before anything is changed
 Child.schema.post( 'init', function() {
 	'use strict';
@@ -234,14 +244,11 @@ Child.schema.post( 'init', function() {
 
 Child.schema.pre( 'save', function( next ) {
 	'use strict';
-	// create cloudinary URLs for images sized for various uses
-	this.setImages();
+
 	// trim whitespace characters from any type.Text fields
 	this.trimTextFields();
 	// create a full name for the child based on their first, middle, and last names
 	this.setFullName();
-	// create a unique label for each child based on their first & last names and their registration number
-	this.setFullNameAndRegistrationLabel();
 	// create an identifying name for file uploads
 	this.setFileName();
 	// if there are no siblings to be placed with, uncheck the box, otherwise check it
@@ -267,6 +274,8 @@ Child.schema.pre( 'save', function( next ) {
 		// execute the following regardless of whether the promises were resolved or rejected
 		// TODO: this should be replaced with ES6 Promise.prototype.finally() once it's finalized, assuming we can update to the latest version of Node if we upgrade Keystone
 		.then( () => {
+			// create a unique label for each child based on their first & last names and their registration number
+			this.setFullNameAndRegistrationLabel();
 
 			next();
 		});
@@ -299,28 +308,14 @@ Child.schema.post( 'save', function() {
 			this.setChangeHistory();
 		});
 });
-// TODO: this isn't needed anymore, remove gallery image binding across the site and remove the fields from all child models
-Child.schema.methods.setImages = function() {
-	'use strict';
 
-	// TODO: Play with lowering quality to 0 and doubling the image size as an optimization technique
-	if( this.image.exists ) {
-		this.galleryImage = this.image.secure_url;
-		this.detailImage = this.image.secure_url;
-	}
-
-	if( this.siblingGroupImage.exists ) {
-		this.siblingGroupGalleryImage = this.siblingGroupImage.secure_url;
-		this.siblingGroupDetailImage = this.siblingGroupImage.secure_url;
-	}
-};
 /* text fields don't automatically trim(), this is to ensure no leading or trailing whitespace gets saved into url, text, or text area fields */
 Child.schema.methods.trimTextFields = function() {
 
 	if( this.get( 'name.first' ) ) {
 		this.set( 'name.first', this.get( 'name.first' ).trim() );
 	}
-	
+
 	if( this.get( 'name.middle' ) ) {
 		this.set( 'name.middle', this.get( 'name.middle' ).trim() );
 	}
@@ -514,8 +509,8 @@ Child.schema.methods.setRegistrationNumber = function() {
 				.catch( err => {
 					// log the error for debugging purposes
 					console.error( `registration number could not be updated for child ${ this.fullName } ( registration number: ${ this.registrationNumber } ) - ${ err }` );
-					// reject the promise with the error
-					reject();
+					// resolve the promise so that the Promise.all() in the pre-save hook does not fail
+					resolve();
 				});
 		}
 	});
@@ -524,8 +519,11 @@ Child.schema.methods.setRegistrationNumber = function() {
 Child.schema.methods.setFullNameAndRegistrationLabel = function() {
 	'use strict';
 
+	// if a registration number exists, add it to the full name and registration label
+	let registrationNumberString = this.registrationNumber ? ` - ${ this.registrationNumber }` : '';
+
 	// combine the first & last names and registration number to create a unique label for all Child models
-	this.displayNameAndRegistration = `${ this.name.first } ${ this.name.last } - ${ this.registrationNumber }`;
+	this.displayNameAndRegistration = `${ this.name.first } ${ this.name.last }${ registrationNumberString }`;
 };
 
 Child.schema.methods.setAdoptionWorkerAgencyFields = function() {
@@ -560,8 +558,8 @@ Child.schema.methods.setAdoptionWorkerAgencyFields = function() {
 				// clear out the adoption worker agency fields
 				this.adoptionWorkerAgency = undefined;
 				this.adoptionWorkerAgencyRegion = undefined;
-				// reject the promise
-				reject();
+				// resolve the promise so that the Promise.all() in the pre-save hook does not fail
+				resolve();
 			});
 	});
 };
@@ -598,8 +596,8 @@ Child.schema.methods.setRecruitmentWorkerAgencyFields = function() {
 				// clear out the recruitment worker agency fields
 				this.recruitmentWorkerAgency = undefined;
 				this.recruitmentWorkerAgencyRegion = undefined;
-				// reject the promise
-				reject();
+				// resolve the promise so that the Promise.all() in the pre-save hook does not fail
+				resolve();
 			});
 	});
 };
@@ -653,8 +651,8 @@ Child.schema.methods.setSiblingGroupFileName = function() {
 			.catch( err => {
 				// log the error for debugging purposes
 				console.error( `sibling group file name could not be updated for child ${ this.name.full } ( registration number: ${ this.registrationNumber } ) - ${ err }` );
-				// reject the promise with the error
-				reject();
+				// resolve the promise so that the Promise.all() in the pre-save hook does not fail
+				resolve();
 			});
 	});
 };

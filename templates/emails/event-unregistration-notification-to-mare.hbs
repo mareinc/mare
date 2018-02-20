@@ -30,11 +30,19 @@
 										<b>Attendee Removed</b>
 									</td>
 								</tr>
+								{{#if displayName}}
+								<tr>
+									<td style="padding: 5px 0 0 0; color: #153634; font-family: Ariel, sans-serif; font-size: 14px; line-height: 16px;">
+										<b>name</b> {{ displayName }}
+									</td>
+								</tr>
+								{{else}}
 								<tr>
 									<td style="padding: 5px 0 0 0; color: #153634; font-family: Ariel, sans-serif; font-size: 14px; line-height: 16px;">
 										<b>name</b> {{ user.name.full }}
 									</td>
 								</tr>
+								{{/if}}
 								<tr>
 									<td style="padding: 5px 0 0 0; color: #153634; font-family: Ariel, sans-serif; font-size: 14px; line-height: 16px;">
 										<b>email</b> {{ user.email }}

@@ -30,14 +30,14 @@ exports.getContactById = targetId => {
     });
 };
 
-exports.getStaffEmailContactByEmailTarget = ( emailTargetId, populateOptions = [] ) => {
+exports.getStaffEmailContactByEmailTarget = ( emailTargetId, fieldsToPopulate = [] ) => {
 
     return new Promise( ( resolve, reject ) => {
 
         keystone.list( 'Staff Email Contact' ).model
             .findOne()
             .where( 'emailTarget', emailTargetId )
-            .populate( populateOptions )
+            .populate( fieldsToPopulate )
             .exec()
             .then( staffEmailContact => {
                 // if no matching staff email contact

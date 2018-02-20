@@ -6,7 +6,7 @@
 			<div class="form-section-header">Account Setup</div>
 
 			<span class="required required-description">* Required</span>
-			
+
 			<div class="row form-group">
 				<div class="col-sm-12">
 					<input type="text" id="social-worker-first-name" class="input" name="firstName" data-parsley-error-message="required" required="">
@@ -25,13 +25,25 @@
 			</div>
 			<div class="row form-group">
 				<div class="col-sm-12">
-					<input type="password" id="social-worker-password" class="input" name="password" data-parsley-error-message="required" required="">
+					<input type="password" id="social-worker-password" class="input" name="password"
+							data-parsley-trigger="focusout"
+							data-parsley-minlength="8" data-parsley-minlength-message="password must be 8 or more characters"
+							data-parsley-required-message="password is required" required=""
+							data-parsley-pattern="/(?=.*\d)(?=.*[a-z])(?=.*[A-Z])/" data-parsley-pattern-message="password does not meet requirements">
 					<label for="social-worker-password" class="label required-field">Password</label>
 				</div>
 				<div class="col-sm-12">
-					<input type="password" id="social-worker-confirm-password" class="input" name="confirmPassword" data-parsley-equalto="#social-worker-password" data-parsley-error-message="passwords must match" required="">
+					<input type="password" id="social-worker-confirm-password" class="input" name="confirmPassword"
+							data-parsley-trigger="focusout"
+							data-parsley-minlength="8" data-parsley-minlength-message="password must be 8 or more characters"
+							data-parsley-required-message="password is required" required=""
+							data-parsley-pattern="/(?=.*\d)(?=.*[a-z])(?=.*[A-Z])/" data-parsley-pattern-message="password does not meet requirements"
+							data-parsley-equalto="#social-worker-password" data-parsley-equalto-message="passwords must match">
 					<label for="social-worker-confirm-password" class="label required-field">Confirm Password</label>
 				</div>
+			</div>
+			<div>
+				<p class="form-field-note">Note: passwords must be at least 8 characters long, contain at least one number, one uppercase letter, and one lowercase letter.</p>
 			</div>
 		</section>
 

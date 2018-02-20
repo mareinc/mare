@@ -1,4 +1,5 @@
 const keystone						= require( 'keystone' ),
+	  robots						= require( 'express-robots' ),
 	  childService					= require( './middleware/service_child' ),
 	  donationService				= require( './middleware/service_donation')
 	  eventService					= require( './middleware/service_event' ),
@@ -28,17 +29,35 @@ var routes = {
 exports = module.exports = app => {
 	'use strict';
 
+	// serve robots.txt based on the runtime environment
+	if ( process.env.ALLOW_ROBOTS === 'true' ) {
+		// if running in production, allow robots to crawl by serving the production robots.txt
+		app.use( robots( __dirname + '/robots/robots-production.txt' ) );
+	} else {
+		// otherwise, serve the dev robots.txt ( i.e. disallow all crawlers )
+		app.use( robots( __dirname + '/robots/robots-development.txt' ) );
+	}
+
 	// home page
 	app.get( '/'										, routes.views.main );
 	// MARE staff generated pages
 	app.get( '/page/:key'								, routes.views.page );
-	/* TODO: combine all these into /forms/:key and handle the service calls in middleware */
+	/* TODO: combine all these requests into /forms/:key and handle the service calls in middleware */
 	// forms
-	app.get( '/forms/agency-event-submission-form'		, routes.views.form_agencyEventSubmission );
-	app.get( '/forms/child-registration-form'			, routes.views.form_childRegistration );
-	app.get( '/forms/family-registration-form'			, routes.views.form_familyRegistration );
-	app.get( '/forms/information-request-form'			, routes.views.form_informationRequest );
-	app.get( '/forms/have-a-question-form'				, routes.views.form_haveAQuestion );
+	app.get( '/forms/agency-event-submission'			, routes.views.form_agencyEventSubmission );
+	app.post( '/forms/agency-event-submission'			, eventService.submitEvent );
+	
+	app.get( '/forms/social-worker-child-registration'	, routes.views.form_childRegistration );
+	app.post( '/forms/social-worker-child-registration'	, childService.registerChild );
+	
+	app.get( '/forms/social-worker-family-registration'	, routes.views.form_familyRegistration );
+	app.post( '/forms/social-worker-family-registration', familyService.registerFamily );
+	
+	app.get( '/forms/information-request'				, routes.views.form_informationRequest );
+	app.post( '/forms/information-request'				, formService.submitInquiry );
+	
+	app.get( '/forms/have-a-question'					, routes.views.form_haveAQuestion );
+	app.post( '/forms/have-a-question'					, formService.submitQuestion );
 	// steps in the process
 	app.get( '/steps-in-the-process'					, routes.views.stepsInTheProcess );
 	// events
@@ -57,6 +76,7 @@ exports = module.exports = app => {
 	// login / logout
 	app.get( '/logout'									, middleware.logout );
 	app.post('/login'									, middleware.login );
+	// TODO: refactor these routes and their processing
 	//login forgot password
 	app.post('/recover/generate'						, passwordResetService.resetPassword );
 	app.post('/recover'									, passwordResetService.changePassword );
@@ -66,7 +86,7 @@ exports = module.exports = app => {
 	app.get( '/mare-in-the-news/:key'					, routes.views.mareInTheNewsStory );
 	// donations
 	app.get( '/donate'									, routes.views.donate );
-	app.post( '/process-donation'						, donationService.validateDonationRequest, donationService.processDonation );
+	app.post( '/donate'									, donationService.validateDonationRequest, donationService.processDonation );
 	// user account management
 	app.get( '/account'									, middleware.requireUser, routes.views.account );
 	app.put( '/account/user-info'						, accountMiddleware.updateUser );
@@ -84,10 +104,4 @@ exports = module.exports = app => {
 	app.post( '/services/get-gallery-permissions'		, permissionsService.getGalleryPermissions );
 	// app.post( '/services/register-for-event'			, eventService.addUser ); // TODO: I'm leaving these commented out so I don't forget they exist when I need to implement adding/removing users to an event automatically
 	// app.post( '/services/unregister-for-event'			, eventService.removeUser ); // TODO: I'm leaving these commented out so I don't forget they exist when I need to implement adding/removing users to an event automatically
-	// services for form submissions
-	app.post( '/submit-agency-event'					, eventService.submitEvent );
-	app.post( '/submit-question'						, formService.submitQuestion );
-	app.post( '/submit-information-request'				, formService.submitInquiry );
-	app.post( '/social-worker-register-child'			, childService.registerChild );
-	app.post( '/social-worker-register-family'			, familyService.registerFamily );
 };

@@ -10,7 +10,7 @@ const keystone										= require( 'keystone' ),
 	  utilities         							= require( './utilities' );
 
 /* fetch a single family by their id */
-exports.getFamilyById = ( id, populateOptions = [] ) => {
+exports.getFamilyById = ( id, fieldsToPopulate = [] ) => {
 
 	return new Promise( ( resolve, reject ) => {
 		// if no id was passed in, or the number is invalid
@@ -23,7 +23,7 @@ exports.getFamilyById = ( id, populateOptions = [] ) => {
 		// attempt to find a single family matching the passed in id
 		keystone.list( 'Family' ).model
 			.findById( id )
-			.populate( populateOptions )
+			.populate( fieldsToPopulate )
 			.exec()
 			// if the database fetch executed successfully
 			.then( family => {
@@ -65,30 +65,19 @@ exports.getMaxRegistrationNumber = function() {
 			});
 	});
 };
-
+// TODO: this has a copy in service_user which should be used instead.  This needs to be phased out, but is in use in several places
 exports.setGalleryPermissions = ( req, res ) => {
 
 	let locals		= res.locals;
 	// variables to determine what features the user has access to.  Don't overwrite it if it's already set
 	const userType = locals.userType || ( req.user ? req.user.get( 'userType' ) : 'anonymous' );
 	// TODO: all of these checks should be virtuals on the models
-	locals.canBookmarkChildren = userType === 'social worker' || userType === 'family';
+	locals.canBookmarkChildren = userType === userType === 'family';
 	locals.canSearchForChildren = userType === 'social worker' || userType === 'family';
 	// TODO: canViewAllChildren and canSeeAdvancedOptions are the same check and should have a name that encompasses both
 	locals.canSeeAdvancedSearchOptions = userType === 'social worker' ||
 										 userType === 'admin' ||
 									   ( userType === 'family' && req.user.permissions.canViewAllChildren );
-};
-
-exports.checkForBookmarkedChildren = ( req, res ) => {
-
-	let locals = res.locals;
-	// store the bookmarked children and sibling groups
-	const bookmarkedChildren = req.user ? req.user.get( 'bookmarkedChildren' ) : [];
-	const bookmarkedSiblings = req.user ? req.user.get( 'bookmarkedSiblings' ) : [];
-	// store whether or not the user has any bookmarked children or siblings
-	locals.hasBookmarkedChildren = ( bookmarkedChildren && bookmarkedChildren.length > 0 ) ||
-								   ( bookmarkedSiblings && bookmarkedSiblings.length > 0 );
 };
 
 /* If the user type is capable of bookmarking children on the site, retrieve any that are already bookmarked */
@@ -120,31 +109,6 @@ exports.getBookmarkedChildren = ( req, res, done ) => {
 		done();
 	}
 };
-
-/* returns an array of staff email contacts */
-// TODO: this is reused in several of the services that generate emails, make it a more generic call
-exports.getStaffContactInfo = contactType => {
-
-	return new Promise( ( resolve, reject ) => {
-		// TODO: it was nearly impossible to create a readable comma separated list of links in the template with more than one address,
-		// 	     so we're only fetching one contact when we should fetch them all
-		// get the database id of the admin contact set to handle children registered by social workers
-		emailTargetMiddleware
-			.getTargetId( contactType )
-			.then( targetId => {
-				// get the contact details of the admin contact set to handle registration questions for the target user type
-				return staffEmailContactMiddleware.getContactById( targetId );
-			})
-			.then( contactInfo => {
-				// resolve the promise with the full name and email address of the contact
-				resolve( contactInfo );
-			})
-			.catch( err => {
-				// reject the promise with the reason for the rejection
-				reject( `error fetching staff contact - ${ err }` );
-			});
-	});
-}
 
 /* Frontend services */
 
@@ -285,7 +249,7 @@ exports.registerFamily = ( req, res, next ) => {
 	// store a reference to locals to allow access to globally available data
 	const locals = res.locals;
 	// set the redirect URL for use throughout the registration process
-	const redirectPath = '/forms/family-registration-form';
+	const redirectPath = '/forms/social-worker-family-registration';
 	// set the account email to the email for contact 1
 	rawFamilyData.email = rawFamilyData.contact1Email;
 	// generate a random password hash
@@ -318,7 +282,7 @@ exports.registerFamily = ( req, res, next ) => {
 				// throw an error with details to construct a console.error() and flash message
 				req.flash( 'error', {
 					title: `There was a problem creating the family account`,
-					detail: `The email address you've provided for contact 1 is invalid`});
+					detail: `The email address you've provided for contact 1 is invalid` });
 				// throw an error with details about what went wrong
 				throw new Error( `error creating social worker registered family - email address ${ rawFamilyData.email } is invalid` );
 			}
@@ -344,84 +308,62 @@ exports.registerFamily = ( req, res, next ) => {
 			const host = req.headers.host;
 
 			// set the fields to populate on the fetched user model
-			const populateOptions = [ 'contact1.gender',
-				'contact1.race',
-				'contact2.gender',
-				'contact2.race',
-				'address.city',
-				'address.region',
-				'address.state',
-				'child1.gender',
-				'child1.type',
-				'child2.gender',
-				'child2.type',
-				'child3.gender',
-				'child3.type',
-				'child4.gender',
-				'child4.type',
-				'child5.gender',
-				'child5.type',
-				'child6.gender',
-				'child6.type',
-				'child7.gender',
-				'child7.type',
-				'child8.gender',
-				'child8.type',
-				'language',
-				'otherLanguages',
-				'matchingPreferences.gender',
-				'matchingPreferences.legalStatus',
-				'matchingPreferences.race',
-				'heardAboutMAREFrom' ];
+			const fieldsToPopulate = [ 'contact1.gender', 'contact1.race', 'contact2.gender', 'contact2.race',
+									   'address.city', 'address.region', 'address.state', 'child1.gender',
+									   'child1.type', 'child2.gender', 'child2.type', 'child3.gender',
+									   'child3.type', 'child4.gender', 'child4.type', 'child5.gender',
+									   'child5.type', 'child6.gender', 'child6.type', 'child7.gender',
+									   'child7.type', 'child8.gender', 'child8.type', 'language',
+									   'otherLanguages', 'matchingPreferences.gender', 'matchingPreferences.legalStatus',
+									   'matchingPreferences.race', 'heardAboutMAREFrom' ];
+			
+			// set default information for a staff email contact in case the real contact info can't be fetched
+			let staffEmailContactInfo = {
+				name: 'MARE',
+				email: 'web@mareinc.org'
+			};
 
 			// fetch the newly saved family model.  Needed because the saved family object doesn't have the Relationship fields populated
-			const fetchFamily = exports.getFamilyById( familyId, populateOptions );
+			const fetchFamily = exports.getFamilyById( familyId, fieldsToPopulate );
 			// create a new verification code model in the database to allow users to verify their accounts
-			const createVerificationRecord = registrationService.createNewVerificationRecord( verificationCode, familyId );
-			// fetch contact info for the staff contact for family registration
-			const fetchRegistrationStaffContactInfo = exports.getStaffContactInfo( 'social worker family registration' );
-			// save any submitted files and append them to the newly created user
+			const createVerificationRecord = registrationService.createNewVerificationRecord( verificationCode, familyId );			
+			// fetch the email target model matching 'social worker family registration'
+			const fetchEmailTarget = emailTargetMiddleware.getEmailTargetByName( 'social worker family registration' );
+
+			// save any submitted files and append them to the newly created user		
 			// TODO: this still need to be implemented when file uploads are added to the system
 			// const uploadFamilyFiles = registrationService.uploadFile( newFamily, 'homestudy', 'homestudyFile_upload', files.homestudyFile_upload );
 
-			Promise.all( [ fetchFamily, fetchRegistrationStaffContactInfo ] )
+			fetchEmailTarget
+				// fetch contact info for the staff contact for 'social worker family registration'
+				.then( emailTarget => staffEmailContactMiddleware.getStaffEmailContactByEmailTarget( emailTarget.get( '_id' ), [ 'staffEmailContact' ] ) )
+				// overwrite the default contact details with the returned object
+				.then( staffEmailContact => staffEmailContactInfo = staffEmailContact.staffEmailContact )
+				// log any errors fetching the staff email contact
+				.catch( err => console.error( `error fetching email contact for social worker family registration, default contact info will be used instead - ${ err }` ) )
+				// check on the attempt to fetch the newly saved family
+				.then( () => fetchFamily )
+				// send a notification email to MARE
+				.then( fetchedFamily => socialWorkerFamilyRegistrationEmailService.sendNewSocialWorkerFamilyRegistrationNotificationEmailToMARE( socialWorkerName, rawFamilyData, fetchedFamily, staffEmailContactInfo, host ) )
+				// if there was an error sending the email
+				.catch( err => console.error( `error sending new family registered by social worker email to MARE - ${ err }` ) )
+				// check on the attempt to fetch the newly saved family ( needed again to give us access to the fetched family data at this point in the promise chain )
+				.then( () => fetchFamily )
+				// send a notification email to the social worker
+				.then( fetchedFamily => socialWorkerFamilyRegistrationEmailService.sendNewSocialWorkerFamilyRegistrationNotificationEmailToSocialWorker( socialWorkerName, rawFamilyData, fetchedFamily, staffEmailContactInfo, host ) )
+				// if there was an error sending the email to the social worker
+				.catch( err => console.error( `error sending new family registered by social worker email to social worker ${ req.user.get( 'name.full' ) } - ${ err }` ) )
+				// check on the attempt to fetch the newly saved family and create the verification record ( needed again to give us access to the fetched family data at this point in the promise chain )
+				.then( () => Promise.all( [ fetchFamily, createVerificationRecord ] ) )
+				// send a notification email to the family registered by the social worker
 				.then( values => {
 					// assign local variables to the values returned by the promises
-					const [ fetchedFamily, staffContactInfo ] = values;
+					const [ fetchedFamily, verificationRecord ] = values;
 					// send the notification email to family the social worker registered
-					return socialWorkerFamilyRegistrationEmailService.sendNewSocialWorkerFamilyRegistrationNotificationEmailToMARE( socialWorkerName, rawFamilyData, fetchedFamily, staffContactInfo, host );
+					return socialWorkerFamilyRegistrationEmailService.sendNewSocialWorkerFamilyRegistrationNotificationEmailToFamily( rawFamilyData, fetchedFamily, staffEmailContactInfo, host, verificationRecord );
 				})
-				// if there was an error sending the thank you email to the new family
-				.catch( err => {
-					// log the error for debugging purposes
-					console.error( `error sending new family registered by social worker email to MARE - ${ err }` );
-				});
-
-			Promise.all( [ fetchFamily, fetchRegistrationStaffContactInfo ] )
-				.then( values => {
-					// assign local variables to the values returned by the promises
-					const [ fetchedFamily, staffContactInfo ] = values;
-					// send the notification email to family the social worker registered
-					return socialWorkerFamilyRegistrationEmailService.sendNewSocialWorkerFamilyRegistrationNotificationEmailToSocialWorker( socialWorkerName, rawFamilyData, fetchedFamily, staffContactInfo, host );
-				})
-				// if there was an error sending the thank you email to the new family
-				.catch( err => {
-					// log the error for debugging purposes
-					console.error( `error sending new family registered by social worker email to social worker ${ req.user.get( 'name.full' ) } - ${ err }` );
-				});
-
-			Promise.all( [ fetchFamily, createVerificationRecord, fetchRegistrationStaffContactInfo ] )
-				.then( values => {
-					// assign local variables to the values returned by the promises
-					const [ fetchedFamily, verificationRecord, staffContactInfo ] = values;
-					// send the notification email to family the social worker registered
-					return socialWorkerFamilyRegistrationEmailService.sendNewSocialWorkerFamilyRegistrationNotificationEmailToFamily( rawFamilyData, fetchedFamily, staffContactInfo, host, verificationRecord );
-				})
-				// if there was an error sending the thank you email to the new family
-				.catch( err => {
-					// log the error for debugging purposes
-					console.error( `error sending new family registered by social worker email to family ${ newFamily.get( 'displayName' ) } - ${ err }` );
-				});
+				// if there was an error sending the email to the new family
+				.catch( err => console.error( `error sending new family registered by social worker email to family ${ newFamily.get( 'displayName' ) } - ${ err }` ) );
 
 			// create a success flash message
 			req.flash( 'success', {

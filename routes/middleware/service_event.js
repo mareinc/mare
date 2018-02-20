@@ -6,12 +6,12 @@ const keystone						= require( 'keystone' ),
 	  staffEmailContactMiddleware	= require( './service_staff-email-contact' ),
 	  eventService					= require( './service_event' );
 
-exports.getEventById = ( eventId, populateOptions = [] ) => {
+exports.getEventById = ( eventId, fieldsToPopulate = [] ) => {
 
 	return new Promise( ( resolve, reject ) => {
 		keystone.list( 'Event' ).model
 			.findById( eventId )
-			.populate( populateOptions )
+			.populate( fieldsToPopulate )
 			.exec()
 			.then( event => {
 				// if the target event could not be found
@@ -214,31 +214,34 @@ exports.submitEvent = function submitEvent( req, res, next ) {
 				detail: 'once your event has been approved by MARE staff, you will receive a notification email.  If you don\'t receive an email within 5 business days, please contact [some mare contact] for a status update.'} );
 
 			// set the fields to populate on the fetched event model
-			const populateOptions = [ 'contact', 'address.state' ];
+			const fieldsToPopulate = [ 'contact', 'address.state' ];
 			// populate the Relationship fields on the event
-			event.populate( populateOptions, err => {
+			event.populate( fieldsToPopulate, err => {
 				// if there was an error populating Relationship fields on the event
 				if ( err ) {
 					// log the error for debugging purposes
 					console.error( `error populating the new event fields` );
 				// if there were no errors populating Relationship fields on the event
 				} else {
+					// set default information for a staff email contact in case the real contact info can't be fetched
+					let staffEmailContactInfo = {
+						name: { full: 'MARE' },
+						email: 'web@mareinc.org'
+					};
+
 					// fetch the email target model matching 'event created by social worker'
 					const fetchEmailTarget = emailTargetMiddleware.getEmailTargetByName( 'event created by social worker' );
 
 					fetchEmailTarget
-						// if we successfully fetched the email target model
-						.then( emailTarget => {
-							// set the fields to populate on the staff email contact model
-							const populateOptions = [ 'staffEmailContact' ];
-							// fetch contact info for the staff contact for 'event created by social worker'
-							return staffEmailContactMiddleware.getStaffEmailContactByEmailTarget( emailTarget.get( '_id' ), populateOptions );
-						})
-						// if we successfully fetched the staff email contact
-						.then( staffEmailContact => {
-							// send a notification email to MARE staff to allow them to enter the information in the old system
-							return eventEmailMiddleware.sendNewEventEmailToMARE( event, socialWorker, staffEmailContact );
-						})
+						// fetch contact info for the staff contact for 'event created by social worker'
+						.then( emailTarget => staffEmailContactMiddleware.getStaffEmailContactByEmailTarget( emailTarget.get( '_id' ), [ 'staffEmailContact' ] ) )
+						// overwrite the default contact details with the returned object
+						.then( staffEmailContact => staffEmailContactInfo = staffEmailContact.staffEmailContact )
+						// log any errors fetching the staff email contact
+						.catch( err => console.error( `error fetching email contact for event submission, default contact info will be used instead - ${ err }` ) )
+						// send a notification email to MARE staff to allow them to enter the information in the old system
+						.then( () => eventEmailMiddleware.sendNewEventEmailToMARE( event, socialWorker, staffEmailContactInfo ) )
+						// if there was an error sending the email to MARE staff
 						.catch( err => {
 							// convert the event date from a date object into a readable string
 							const eventDate = `${ event.startDate.getMonth() + 1 }/${ event.startDate.getDate() }/${ event.startDate.getFullYear() }`;
@@ -261,7 +264,7 @@ exports.submitEvent = function submitEvent( req, res, next ) {
 		// TODO: this should be replaced with ES6 Promise.prototype.finally() once it's finalized, assuming we can update to the latest version of Node if we upgrade Keystone
 		.then( () => {
 			// reload the form to display the flash message
-			res.redirect( 303, '/forms/agency-event-submission-form' );
+			res.redirect( 303, '/forms/agency-event-submission' );
 		});
 };
 
@@ -313,7 +316,6 @@ exports.createEvent = event => {
 exports.register = ( eventDetails, user ) => {
 
 	return new Promise( ( resolve, reject ) => {
-
 		// get the user type that is registering for an event
 		let attendeeType =  exports.getEventGroup( user.userType );
 
@@ -366,7 +368,6 @@ exports.register = ( eventDetails, user ) => {
 exports.unregister = ( eventDetails, user ) => {
 
 	return new Promise( ( resolve, reject ) => {
-
 		// get the user type that is unregistering for an event
 		let attendeeType =  exports.getEventGroup( user.userType );
 
