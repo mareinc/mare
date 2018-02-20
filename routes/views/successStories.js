@@ -57,9 +57,7 @@ exports = module.exports = ( req, res ) => {
 		})
 		.catch( err => {
 			// log an error for debugging purposes
-			console.error( `there was an error loading data for the success stories page - ${ err }` );	
-			// set the layout to render with the right sidebar
-			locals[ 'render-with-sidebar' ] = true;
+			console.error( `error loading data for the success stories page - ${ err }` );	
 			// render the view using the success-stories.hbs template
 			view.render( 'success-stories' );
 		});

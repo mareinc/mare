@@ -204,7 +204,7 @@
 				};
 
 				// post the donation to the charge endpoint for payment processing
-				$.post( '/process-donation', data, function( responseData ) {
+				$.post( '/donate', data, function( responseData ) {
 
 					// remove any previously existing messages
 					$( '#flash-messages' ).remove();

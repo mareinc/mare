@@ -60,10 +60,8 @@ exports.getSidebarItems = () => {
 			})
 			// if any of the promises were rejected
 			.catch( err => {
-				// log the error for debugging purposes
-				console.error( `error fetching items to render the sidebar` );
-				// reject the promise
-				reject();
+				// reject the promise with details about the error
+				reject( `error fetching random success story and random event` );
 			})
 	});
 };

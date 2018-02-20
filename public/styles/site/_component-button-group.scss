@@ -1,5 +1,6 @@
 .button-group {
 	display: flex;
+	flex-wrap: wrap;
 
 	&--relative {
 		position: relative;

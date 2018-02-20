@@ -10,11 +10,11 @@ module.exports = ( req, res ) => {
 		console.error( `account verification Error - bad request paramaters -> verificationCode: ${ verificationCode }, userType: ${ userType }` );
 		
 		req.flash( 'error', {
-			title: 'There was an error processing your request.',
-			detail: 'If this error persists, please notify MARE'
+			title: 'There was an error verifying your account',
+			detail: 'If this error persists, please notify MARE at <a href="mailto:communications@mareinc.org">communications@mareinc.org</a>'
 		});
 		
-		res.redirect('/');
+		res.redirect( 303, '/' );
 		
 		return;
 	}
@@ -30,10 +30,11 @@ module.exports = ( req, res ) => {
 				console.error( `account verification error - could not find verification model based on verification code ${ verificationCode }` );
 				
 				req.flash( 'error', {
-					title: 'Verification record not found.'
+					title: 'There was an error verifying your account',
+					detail: 'If this error persists, please notify MARE at <a href="mailto:communications@mareinc.org">communications@mareinc.org</a>'
 				});
 				
-				res.redirect( '/' );
+				res.redirect( 303, '/' );
 				
 				return;
 			}
@@ -46,24 +47,36 @@ module.exports = ( req, res ) => {
 					// delete the verification record 
 					verificationEntity.remove( err => {
 						
-						if( err )
+						if( err ) {
 							console.error( 'account verification error - could not remove the verification model entity' );
+						}
 					});
 
-					req.flash( 'success', {
-						title: 'Your account has been verified',
-						detail: 'put any additional details here if you want, otherwise remove the details attribute'
-					});
+					req.flash( 'success', { title: 'Thank you for verifying your account' } );
 
-					res.status( 200 ).redirect( '/' );
+					res.redirect( 200, '/' );
 				})  
 				.catch( () =>{
 
 					console.error( 'account verification Error - could not update the user field' );
+
+					req.flash( 'error', {
+						title: 'There was an error verifying your account',
+						detail: 'If this error persists, please notify MARE at <a href="mailto:communications@mareinc.org">communications@mareinc.org</a>'
+					});
+
+					res.redirect( 303, '/' );
 				});
 		}, err => {
 
 			console.error( `error processing verification email - ${ err }` );
+
+			req.flash( 'error', {
+				title: 'There was an error verifying your account',
+				detail: 'If this error persists, please notify MARE at <a href="mailto:communications@mareinc.org">communications@mareinc.org</a>'
+			});
+
+			res.redirect( 303, '/' );
 		});
 };
 

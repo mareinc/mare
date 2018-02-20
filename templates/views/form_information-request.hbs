@@ -6,7 +6,7 @@
 
 	<section class="agency-event-submission-form">
 
-		<form action="/submit-information-request" class="form--information-request" method="POST">
+		<form action="/forms/information-request" class="form--information-request" method="POST">
 
 			<div class="form-section-header">Requested Information</div>
 
@@ -19,7 +19,7 @@
 				<div id="interest-error-container" class="error-container col-sm-12 form-group">
 					<div class="col-sm-24 form-group">
 						<label class="radio-inline">
-							<input type="radio" name="interest" class="interest" value="child info" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#interest-error-container" required="">Information about a specific child or children
+							<input type="radio" name="interest" class="interest" value="child info" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#interest-error-container" required=""{{#if isChildInquiry}} checked="checked"{{/if}}>Information about a specific child or children
 						</label>
 					</div>
 					<div class="col-sm-24 form-group">
@@ -30,15 +30,33 @@
 				</div>
 			</div>
 
-			<div class="row child-registration-numbers-container hidden">
+			<div class="row child-registration-numbers-container{{#unless isChildInquiry}} hidden{{/unless}}">
 				<div class="col-sm-12 form-group">
 					<label for="child-registration-numbers" class="label">Child Registration Number(s) (comma separated)</label>
 				</div>
 				<div class="col-sm-12 form-group">
-					<input type="text" class="input" id="child-registration-numbers" name="childRegistrationNumbers" value="{{ registrationNumber }}">
+					<input type="text" class="input" id="child-registration-numbers" name="childRegistrationNumbers"{{#if isChildInquiry}} value="{{ registrationNumbers }}"{{/if}}>
 				</div>
 			</div>
 
+			<div class="row source">
+				<div class="col-sm-12 form-group">
+					<label for="source" class="label">How did you learn about MARE or this specific child?</label>
+				</div>
+				<div class="col-sm-12 form-group">
+					<input type="text" class="input" id="source" name="source">
+				</div>
+			</div>
+			{{#if isSocialWorker}}
+			<div class="row on-behalf-of-family-container">
+				<div class="col-sm-12 form-group">
+					<label for="on-behalf-of-family" class="label">If this inquiry is on behalf of a family, please list them here</label>
+				</div>
+				<div class="col-sm-12 form-group">
+					<input type="text" class="input" id="on-behalf-of-family" name="onBehalfOfFamily">
+				</div>
+			</div>
+			{{/if}}
 			<div class="row form-group">
 				<div class="col-sm-24">
 					<textarea class="input" id="inquiry" name="inquiry" rows="8"></textarea>
@@ -51,7 +69,7 @@
 	{{else}}
 
 	<section class="card_content-group">
-		<div class="card__content-block card__content-block--centered">To learn more about a specific child or to get general adoption information, please <a href="/register">Register</a>.  Registering will create an account for ongoing access to MARE services.   For any other question, use the <a href="/forms/have-a-question-form">Have a Question form</a>.</div>
+		<div class="card__content-block card__content-block--centered">To learn more about a specific child or to get general adoption information, please <a href="/register">Register</a>.  Registering will create an account for ongoing access to MARE services.   For any other question, use the <a href="/forms/have-a-question">Have a Question form</a>.</div>
 	</section>
 	
 	{{/if}}

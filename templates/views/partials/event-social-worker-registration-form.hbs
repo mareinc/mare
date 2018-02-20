@@ -1,7 +1,7 @@
 <!-- client side template for rendering the event registration form in a modal -->
 <script id="event-registration-form-template" type="text/x-handlebars-template">
 
-<section class="event-social-worker-registration-form">
+<section class="event-social-worker-registration-form event-registration__container">
 	<div class="modal-form__header">
 		<div class="modal-form-header__text"> {{!-- should be h1 etc --}}
 			\{{ eventName }}
@@ -43,8 +43,8 @@
 			</div>
 			{{/if}}
 
-			<section class="registered-children-container row form-group"></section>
-			
+			<section class="row form-group registered-children-container"></section>
+
 			<div class="row form-group">
 				<div class="col-sm-12 form-group">
 					<select id="number-of-children" class="input number-of-children-select" name="numberOfChildren">
@@ -59,11 +59,11 @@
 				</div>
 			</div>
 
-			<section class="unregistered-children-container"></section>
+			<section class="row form-group unregistered-children-container"></section>
 
 			<div class="row form-group">
 				<div class="col-sm-24 form-group">
-					<select id="source" class="input source-select" name="source">
+					<select id="source" class="input source-select" name="source" data-parsley-error-message="required" required="true">
 						<option value=""></option>
 						<option value="websiteOrEmail">website/email</option>
 						<option value="television">television</option>
@@ -76,14 +76,14 @@
 					<label for="source" class="label required-field">How did you hear about this event?</label>
 				</div>
 				<div class="col-sm-24 form-group">
-					<input type="text" id="other-source" class="input hidden other-source" name="otherSource">
+					<input type="text" id="other-source" class="input hidden other-source" name="otherSource" data-parsley-error-message="required">
 					<label for="other-source" class="label hidden other-source-label">Details</label>
 				</div>
 			</div>
 
-			<div class="row form-group">
+			<div class="row form-group attendance-capacity__container">
 				<div class="col-sm-24 form-group">
-					<select id="attendance-capacity" class="input attendance-capacity-select" name="attendanceCapacity">
+					<select id="attendance-capacity" class="input attendance-capacity-select" name="attendanceCapacity" data-parsley-error-message="required" required="true">
 						<option value=""></option>
 						<option value="volunteer">volunteer</option>
 						<option value="tableStaff">staff a regional/agency table</option>

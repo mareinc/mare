@@ -8,12 +8,13 @@
 			// initialize the views for the sidebar and mobile menu
 			mare.views.accountMobileSidebar	= mare.views.accountMobileSidebar || new mare.views.AccountMobileSidebar();
 			mare.views.accountSidebar 		= mare.views.accountSidebar || new mare.views.AccountSidebar();
-			
+
 			// initialize views for the different account sections
-			mare.views.accountInfo		= mare.views.accountInfo || new mare.views.AccountInfo();
 			mare.views.accountChildren	= mare.views.accountChildren || new mare.views.AccountChildren();
 			mare.views.accountEmailList	= mare.views.accountEmailList || new mare.views.AccountEmailList();
 			mare.views.accountEvents	= mare.views.accountEvents || new mare.views.AccountEvents();
+
+			this.initializeInfoSection();
 
 			// render the page navigation elements
 			this.renderNavigation();
@@ -34,7 +35,35 @@
 		renderNavigation: function renderNavigation( section ) {
 			// render the sidebar and mobile dropdown
 			mare.views.accountMobileSidebar.render( section );
-			mare.views.accountSidebar.render(  section );
+			mare.views.accountSidebar.render( section );
+		},
+
+		initializeInfoSection: function initializeInfoSection( ) {
+
+			// check to ensure an account info view doesn't already exist
+			if ( !mare.views.accountInfo ) {
+
+				// get the type of info section currently loaded
+				var infoSectionType = $( '#currentSection' ).data( 'info-section-type' );
+
+				// initialize the proper Account Info view based on the current user type
+				switch ( infoSectionType ) {
+					case 'admin':
+						mare.views.accountInfo = new mare.views.AccountInfoBase();
+						break;
+					case 'family':
+						mare.views.accountInfo = new mare.views.AccountInfoFamily();
+						break;
+					case 'social worker':
+						mare.views.accountInfo = new mare.views.AccountInfoSocialWorker();
+						break;
+					case 'site visitor':
+						mare.views.accountInfo = new mare.views.AccountInfoSiteVisitor();
+						break;
+					default:
+						console.error( 'no account info view DOM present - cannot initialize account info backbone view' );
+				}
+			}
 		},
 
 		openInfoSection: function openInfoSection() {
@@ -46,7 +75,6 @@
 			mare.views.accountEvents.hide();
 			// show the account subsection that is currently selected, and render it
 			mare.views.accountInfo.show();
-			mare.views.accountInfo.render();
 		},
 
 		openChildrenSection: function openChildrenSection() {
@@ -58,7 +86,7 @@
 			mare.views.accountEvents.hide();
 			// show the account subsection that is currently selected, and render it
 			mare.views.accountChildren.show();
-			
+
 			// if the child section hasn't rendered yet
 			if ( !this.hasChildSectionRendered )  {
 				// render the child section
@@ -77,7 +105,7 @@
 			mare.views.accountEvents.hide();
 			// show the account subsection that is currently selected, and render it
 			mare.views.accountEmailList.show();
-			mare.views.accountEmailList.render();		
+			mare.views.accountEmailList.render();
 		},
 
 		openEventsSection: function openEventsSection() {

@@ -1,7 +1,7 @@
 <!-- client side template for rendering the event registration form in a modal -->
 <script id="event-registration-form-template" type="text/x-handlebars-template">
 
-<section class="event-registration-form">
+<section class="event-registration-form event-registration__container">
 	<div class="modal-form__header">
 		<div class="modal-form-header__text"> {{!-- should be h1 etc --}}
 			\{{ eventName }}
@@ -13,10 +13,10 @@
 	<div class="modal-form__key">
 		<span class="required required-description">* Required</span>
 	</div>
-	<form action="/events/register/\{{ eventId }}" class="modal-form--event-registration" method="POST">
+	<form action="/events/register/\{{ eventId }}" class="modal-form--register-for-event" method="POST">
 		<input type="hidden" name="eventName" value="\{{ eventName }}">
 		<input type="hidden" name="redirectPath" value="{{ redirectPath }}">
-		
+
 		<section class="form-section">
 			<div class="row form-group">
 				<div class="col-sm-24 form-group">
@@ -37,8 +37,7 @@
 					<label for="number-of-adults" class="label required-field">Number of adults attending</label>
 				</div>
 			</div>
-			<section class="adults-container"></section>
-			
+			<section class="row form-group adults-container"></section>
 			<div class="row form-group">
 				<div class="col-sm-12 form-group">
 					<select id="number-of-children" class="input number-of-children-select" name="numberOfChildren">
@@ -52,10 +51,10 @@
 					<label for="number-of-children" class="label required-field">Number of children attending</label>
 				</div>
 			</div>
-			<section class="unregistered-children-container"></section>
+			<section class="row form-group unregistered-children-container"></section>
 			<div class="row form-group">
 				<div class="col-sm-24 form-group">
-					<select id="source" class="input source-select" name="source">
+					<select id="source" class="input source-select" name="source" data-parsley-error-message="required" required="true">
 						<option value=""></option>
 						<option value="websiteOrEmail">website/email</option>
 						<option value="television">television</option>
@@ -74,7 +73,7 @@
 			</div>
 			<div class="row form-group">
 				<div class="col-sm-24 form-group">
-					<select id="where-in-the-process" class="input where-in-the-process-select" name="where-in-the-process">
+					<select id="where-in-the-process" class="input where-in-the-process-select" name="whereInTheProcess" data-parsley-error-message="required" required="true">
 						<option value=""></option>
 						<option value="gathering information">gathering information</option>
 						<option value="looking for agency">looking for agency</option>
