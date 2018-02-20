@@ -282,7 +282,7 @@ Child.schema.pre( 'save', function( next ) {
 			// create a unique label for each child based on their first & last names and their registration number
 			this.setFullNameAndRegistrationLabel();
 
-			ChildMiddleware.updateSiblingAllSiblings( this )
+			ChildMiddleware.batchAllSiblingUpdates( this )
 				.then( result => {
 
 					console.log( `exiting pre-save hook of child: ${ this.name.first } ${ this.name.last }` );
@@ -299,12 +299,42 @@ Child.schema.pre( 'save', function( next ) {
 Child.schema.post( 'save', function() {
 
 	console.log( `entering post-save hook of child: ${ this.name.first } ${ this.name.last }`  );
-	if ( this._original ) {
-		console.log( `pre-save siblings: ${ this._original.siblings }` );
-	} else {
-		console.log( `initial save - no pre-save state` );
+
+	const siblingsArrayBeforeSave				= this._original ? this._original.siblings.map( sibling => sibling.toString() ) : [], // this handles the model being saved for the first time
+		siblingsArrayAfterSave				= this.siblings.map( sibling => sibling.toString() ),
+		siblingsToBePlacedWithArrayBeforeSave	= this._original ? this._original.siblingsToBePlacedWith.map( sibling => sibling.toString() ) : [],
+		siblingsToBePlacedWithArrayAfterSave	= this.siblingsToBePlacedWith.map( sibling => sibling.toString() ),
+
+		siblingsBeforeSave					= new Set( siblingsArrayBeforeSave ),
+		siblingsAfterSave						= new Set( siblingsArrayAfterSave ),
+		siblingsToBePlacedWithBeforeSave		= new Set( siblingsToBePlacedWithArrayBeforeSave ),
+		siblingsToBePlacedWithAfterSave		= new Set( siblingsToBePlacedWithArrayAfterSave ),
+
+		childId								= this._id.toString();
+
+	// create a set of all siblings added to the original child by the save operation
+	let siblingsAddedBySave = siblingsBeforeSave.rightOuterJoin( siblingsAfterSave );
+	// create a set of all siblings removed from the original child by the save operation
+	let siblingsRemovedBySave = siblingsBeforeSave.leftOuterJoin( siblingsAfterSave );
+	console.log( `siblings added by save ${ Array.from( siblingsAddedBySave ) }` );
+	console.log( `siblings removed by save ${ Array.from( siblingsRemovedBySave ) }` );
+
+
+	if ( siblingsAddedBySave.size > 0 ) {
+
+		let siblingsAdded = Array.from( siblingsAddedBySave );
+
+		let siblingUpdates = siblingsAdded.map( sibling => ChildMiddleware.updateSiblingsOfChild( { siblingsToAddIDs: [ childId ], childToUpdateID: sibling } ) );
+
+		Promise
+			.all( siblingUpdates )
+			.then( result => {
+				console.log( 'all siblings updated' );
+			})
+			.catch( error => {
+				console.error( error );
+			});
 	}
-	console.log( `post-save siblings: ${ this.siblings }` );
 });
 
 // Child.schema.post( 'save', function() {

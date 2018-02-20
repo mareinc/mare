@@ -19,7 +19,7 @@ function promisifySaveOperation( modelToSave ) {
 	});
 }
 
-exports.updateSiblingAllSiblings = ( childModel ) => {
+exports.batchAllSiblingUpdates = ( childModel ) => {
 
 	return new Promise( ( resolve, reject ) => {
 
@@ -45,13 +45,11 @@ exports.updateSiblingAllSiblings = ( childModel ) => {
 
 		// create a set of all siblings added to the original child by the save operation
 		let siblingsAddedBySave = siblingsBeforeSave.rightOuterJoin( siblingsAfterSave );
-		// create a set of all siblings removed from the original child by the save operation
-		let siblingsRemovedBySave = siblingsBeforeSave.leftOuterJoin( siblingsAfterSave );
-		console.log( `siblings added by save ${ Array.from( siblingsAddedBySave ) }` );
-		console.log( `siblings removed by save ${ Array.from( siblingsRemovedBySave ) }` );
 
 		// if there were no siblings added by the save operation
 		if ( siblingsAddedBySave.size === 0 ) {
+			// ensure that the sibling list is still unique
+			childModel.siblings = Array.from( siblingsAfterSave );
 			// return before doing any additional processing
 			console.log( 'no siblings added - additional pre-save processing is not required' );
 			return resolve();
@@ -72,12 +70,63 @@ exports.updateSiblingAllSiblings = ( childModel ) => {
 						child.siblings.forEach( sibling => siblingGroup.add( sibling.toString() ) );
 					}
 				});
+				// ensure that the child does not have itself listed in the sibling group
+				siblingGroup.delete( childId );
 				// create an array from the siblingGroup Set and set it as the saving child's siblings
 				childModel.siblings = Array.from( siblingGroup );
 				console.log( `final sibling group ${ childModel.siblings }` );
 				resolve();
 			})
 			// catch any errors
+			.catch( error => {
+				// log the error
+				console.error( error );
+				// reject the promise with the error
+				reject( error );
+			});
+	});
+};
+
+exports.updateSiblingsOfChild = ( { siblingToAddID, siblingsToRemoveIDs = [], childToUpdateID } ) => {
+
+	return new Promise( ( resolve, reject ) => {
+
+		childService
+			.getChildById( { id: childToUpdateID } )
+			.then( child => {
+
+				let currentSiblings = child.siblings.map( sibling => sibling.toString() );
+				let allSiblings = currentSiblings.push( siblingToAddID );
+				let filteredSiblings = allSiblings.filter( sibling => !siblingsToRemoveIDs.includes( sibling ) );
+				let newSiblings =  Array.from( new Set( filteredSiblings ) );
+
+				let siblingsDirty = false;
+
+				newSiblings.forEach( sibling => {
+
+					if ( !currentSiblings.includes( sibling ) ) {
+						siblingsDirty = true;
+					}
+				});
+
+				if ( siblingsDirty ) {
+
+					child.siblings = newSiblings;
+
+					child.save( error => {
+
+						if ( error ) {
+							console.error( error );
+						}
+
+						resolve();
+					});
+				} else {
+					resolve();
+				}
+
+
+			})
 			.catch( error => {
 				// log the error
 				console.error( error );
