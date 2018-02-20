@@ -51,21 +51,18 @@
 			</div>
 		</div>
 
-		<div class="profile__footer">You can help bring me closer to finding "a place to call HOME" by filling out the <a href="/forms/information-request">MARE Information Request Form</a>. They will be glad to help you get more information about me.</div>
-		
-		<!-- determining whether to add the block below based on whether the user is allowed to bookmark children needs to happen server-side -->
-		{{#if canBookmarkChildren}}
 		<div class="button-group button-group--horizontal button-group--space-around button-group--large-margin-above button-group--small-margin-below">
+			{{#if canBookmarkChildren}}
 			\{{#if isBookmarked}}
 			<button class="button button--teal button--large child-bookmark-button button--active" data-registration-number="\{{ registrationNumber }}">Remove Bookmark</button>
 			\{{else}}
 			<button class="button button--teal button--large child-bookmark-button" data-registration-number="\{{ registrationNumber }}">Bookmark</button>
 			\{{/if}}
+			{{/if}}
 			<a href="/forms/information-request?registrationNumber=\{{ registrationNumber }}">
 				<button class="button button--teal button--large child-inquiry-button">Inquire</button>
 			</a>
 		</div>
-		{{/if}}
 
 	</div>
 

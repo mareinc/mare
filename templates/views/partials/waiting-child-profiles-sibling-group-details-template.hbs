@@ -51,19 +51,18 @@
 			</div>
 		</div>
 
-		<!-- determining whether to add the block below based on whether the user is allowed to bookmark children needs to happen server-side -->
-		{{#if canBookmarkChildren}}
 		<div class="button-group button-group--horizontal button-group--space-around button-group--large-margin-above button-group--small-margin-below">
+			{{#if canBookmarkChildren}}
 			\{{#if isBookmarked}}
 			<button class="button button--teal button--large sibling-group-bookmark-button button--active" data-registration-numbers="\{{ registrationNumbers }}">Remove Bookmark</button>
 			\{{else}}
 			<button class="button button--teal button--large sibling-group-bookmark-button" data-registration-numbers="\{{ registrationNumbers }}">Bookmark</button>
 			\{{/if}}
+			{{/if}}
 			<a href="/forms/information-request?registrationNumber=\{{ registrationNumbers }}">
 				<button class="button button--teal button--large sibling-group-inquiry-button">Inquire</button>
 			</a>
-		</div>
-		{{/if}}
+		</div>	
 	</div>
 
 	\{{#if hasVideo}}
