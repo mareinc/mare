@@ -95,12 +95,14 @@ exports.updateSiblingsOfChild = ( { childToUpdateID, siblingToAddID, siblingsToR
 			.getChildById( { id: childToUpdateID } )
 			.then( child => {
 
+				let silbingsUpdated = false;
+
 				// get a list of the siblings that are currently defined on the child to be updated
 				let currentSiblings = child.siblings.map( sibling => sibling.toString() );
 				// create a list of all of the current siblings and the siblings added by the update
 				let allSiblings = currentSiblings.concat( siblingToAddID );
 				// de-dupe the sibling list
-				let siblingsUnique =  Array.from( new Set( allSiblings ) );
+				let siblingsUnique = Array.from( new Set( allSiblings ) );
 
 				// if the length of the current list of siblings is equal to the size of the de-duped list
 				// of siblings that includes the sibling that was just added, we know that sibling was
@@ -108,24 +110,48 @@ exports.updateSiblingsOfChild = ( { childToUpdateID, siblingToAddID, siblingsToR
 				if ( currentSiblings.length === siblingsUnique.length ) {
 
 					// the current list is the same as the new list, so no updates are required
-					return resolve();
+					console.log( 'no siblings added' );
+					//return resolve();
+				} else {
+
+					// if the current list and the new list are not equal sizes, there are updates to be processed.
+					// overwite the current list of siblings with the new list
+					child.siblings = siblingsUnique;
+					silbingsUpdated = true;
 				}
 
-				// if the current list and the new list are not equal sizes, there are updates to be processed.
-				// overwite the current list of siblings with the new list
-				child.siblings = siblingsUnique;
-				// save the updated child model
-				child.save( error => {
+				// filter any of the siblings to remove from the unique list of siblings
+				let siblingsUniqueFiltered = siblingsUnique.filter( sibling => !siblingsToRemoveIDs.includes( sibling ) );
 
-					// if there was an error during the save, log it
-					if ( error ) {
-						console.error( error );
-					}
+				if ( siblingsUnique.length === siblingsUniqueFiltered.length ) {
+
+					console.log( 'no siblings removed' );
+				} else {
+
+					child.siblings = siblingsUniqueFiltered;
+					silbingsUpdated = true;
+				}
+
+				if ( silbingsUpdated ) {
+
+					// save the updated child model
+					child.save( error => {
+
+						// if there was an error during the save, log it
+						if ( error ) {
+							console.error( error );
+						}
+						// resolve the promise
+						resolve();
+					});
+				} else {
+
+					console.log( 'no updates to process' );
 					// resolve the promise
 					resolve();
-				});
+				}
 
-				//let filteredSiblings = allSiblings.filter( sibling => !siblingsToRemoveIDs.includes( sibling ) );
+
 			})
 			.catch( error => {
 				// log the error

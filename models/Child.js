@@ -319,22 +319,22 @@ Child.schema.post( 'save', function() {
 	console.log( `siblings added by save ${ Array.from( siblingsAddedBySave ) }` );
 	console.log( `siblings removed by save ${ Array.from( siblingsRemovedBySave ) }` );
 
+	let siblingsAdded = Array.from( siblingsAddedBySave );
+	let siblingsRemoved = Array.from( siblingsRemovedBySave );
 
-	if ( siblingsAddedBySave.size > 0 ) {
+	let siblingsImpacted = siblingsAdded.concat( siblingsRemoved );
 
-		let siblingsAdded = Array.from( siblingsAddedBySave );
+	let siblingUpdates = siblingsImpacted.map( sibling => ChildMiddleware.updateSiblingsOfChild( { childToUpdateID: sibling, siblingToAddID: childId, siblingsToRemoveIDs: siblingsRemoved } ) );
 
-		let siblingUpdates = siblingsAdded.map( sibling => ChildMiddleware.updateSiblingsOfChild( { siblingToAddID: childId, childToUpdateID: sibling } ) );
+	Promise
+		.all( siblingUpdates )
+		.then( result => {
+			console.log( 'all siblings updated' );
+		})
+		.catch( error => {
+			console.error( error );
+		});
 
-		Promise
-			.all( siblingUpdates )
-			.then( result => {
-				console.log( 'all siblings updated' );
-			})
-			.catch( error => {
-				console.error( error );
-			});
-	}
 });
 
 // Child.schema.post( 'save', function() {
