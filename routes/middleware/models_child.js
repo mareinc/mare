@@ -1,6 +1,7 @@
-const keystone	= require( 'keystone' ),
-	  _			= require( 'underscore' ),
-	  async		= require( 'async' );
+const keystone		= require( 'keystone' ),
+	  _				= require( 'underscore' ),
+	  async			= require( 'async' ),
+	  childService	= require( './service_child' );
 
 // wraps a model.save() operation in a Promise
 function promisifySaveOperation( modelToSave ) {
@@ -17,6 +18,74 @@ function promisifySaveOperation( modelToSave ) {
 		});
 	});
 }
+
+exports.updateSiblingAllSiblings = ( childModel ) => {
+
+	return new Promise( ( resolve, reject ) => {
+
+		console.log( `updating siblings for child: ${ childModel.name.first } ${ childModel.name.last }` );
+
+		const siblingsArrayBeforeSave				= childModel._original ? childModel._original.siblings.map( sibling => sibling.toString() ) : [], // this handles the model being saved for the first time
+			  siblingsArrayAfterSave				= childModel.siblings.map( sibling => sibling.toString() ),
+			  siblingsToBePlacedWithArrayBeforeSave	= childModel._original ? childModel._original.siblingsToBePlacedWith.map( sibling => sibling.toString() ) : [],
+			  siblingsToBePlacedWithArrayAfterSave	= childModel.siblingsToBePlacedWith.map( sibling => sibling.toString() ),
+
+			  siblingsBeforeSave					= new Set( siblingsArrayBeforeSave ),
+			  siblingsAfterSave						= new Set( siblingsArrayAfterSave ),
+			  siblingsToBePlacedWithBeforeSave		= new Set( siblingsToBePlacedWithArrayBeforeSave ),
+			  siblingsToBePlacedWithAfterSave		= new Set( siblingsToBePlacedWithArrayAfterSave ),
+
+			  childId								= childModel._id.toString();
+
+		console.log( `siblings before save ${ Array.from( siblingsBeforeSave ) }` );
+		console.log( `siblings after save ${ Array.from( siblingsAfterSave ) }` );
+
+		// create an initial version of the set of record that will describe the final sibling group to save
+		let siblingGroup = siblingsAfterSave;
+
+		// create a set of all siblings added to the original child by the save operation
+		let siblingsAddedBySave = siblingsBeforeSave.rightOuterJoin( siblingsAfterSave );
+		// create a set of all siblings removed from the original child by the save operation
+		let siblingsRemovedBySave = siblingsBeforeSave.leftOuterJoin( siblingsAfterSave );
+		console.log( `siblings added by save ${ Array.from( siblingsAddedBySave ) }` );
+		console.log( `siblings removed by save ${ Array.from( siblingsRemovedBySave ) }` );
+
+		// if there were no siblings added by the save operation
+		if ( siblingsAddedBySave.size === 0 ) {
+			// return before doing any additional processing
+			console.log( 'no siblings added - additional pre-save processing is not required' );
+			return resolve();
+		}
+
+		// add all of the siblings of the siblings that were added by the save operation
+		childService
+			// get the full model for any siblings that were added
+			.getChildrenByIds( Array.from( siblingsAddedBySave ) )
+			.then( addedChildren => {
+				// loop through each of the child models
+				addedChildren.forEach( child => {
+					// get any siblings that are already defined for the child
+					let addedChildSiblings = child.siblings.length > 0 ? child.siblings : undefined;
+					// if there are any siblings already defined on the child model
+					if ( addedChildSiblings ) {
+						// add those siblings to the sibling group
+						child.siblings.forEach( sibling => siblingGroup.add( sibling.toString() ) );
+					}
+				});
+				// create an array from the siblingGroup Set and set it as the saving child's siblings
+				childModel.siblings = Array.from( siblingGroup );
+				console.log( `final sibling group ${ childModel.siblings }` );
+				resolve();
+			})
+			// catch any errors
+			.catch( error => {
+				// log the error
+				console.error( error );
+				// reject the promise with the error
+				reject( error );
+			});
+	});
+};
 
 /* updates sibling fields for chidren listed as siblings by adding missing entries */
 exports.updateMySiblings = ( mySiblings, childId, done ) => {

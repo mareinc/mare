@@ -57,8 +57,8 @@ Child.add('Display Options', {
 	hasContactWithSiblings: { type: Types.Boolean, label: 'has contact with siblings?', default: false, initial: true },
 	siblingTypeOfContact: { type: Types.Text, label: 'type of contact', initial: true },
 	siblings: { type: Types.Relationship, label: 'siblings', ref: 'Child', many: true, initial: true },
-	mustBePlacedWithSiblings: { type: Types.Boolean, label: 'must be placed with one or more sibling', default: false, initial: true },
-	siblingsToBePlacedWith: { type: Types.Relationship, label: 'siblings to be placed with', ref: 'Child', dependsOn: { mustBePlacedWithSiblings: true }, many: true, initial: true },
+	//mustBePlacedWithSiblings: { type: Types.Boolean, label: 'must be placed with one or more sibling', default: false, initial: true },
+	siblingsToBePlacedWith: { type: Types.Relationship, label: 'siblings to be placed with', ref: 'Child', many: true, initial: true },
 	hasContactWithBirthFamily: { type: Types.Boolean, label: 'has contact with birth family?', default: false, initial: true },
 	birthFamilyTypeOfContact: { type: Types.Text, label: 'type of contact', initial: true },
 
@@ -235,6 +235,11 @@ Child.schema.virtual( 'hasSiblingGroupImage' ).get( function() {
 	return this.siblingGroupImage.exists;
 });
 
+Child.schema.virtual( 'mustBePlacedWithSiblings' ).get( function() {
+
+	return this.siblingsToBePlacedWith.length > 0 ? true : false;
+});
+
 // Post Init - used to store all the values before anything is changed
 Child.schema.post( 'init', function() {
 	'use strict';
@@ -252,7 +257,7 @@ Child.schema.pre( 'save', function( next ) {
 	// create an identifying name for file uploads
 	this.setFileName();
 	// if there are no siblings to be placed with, uncheck the box, otherwise check it
-	this.updateMustBePlacedWithSiblingsCheckbox();
+	//this.updateMustBePlacedWithSiblingsCheckbox();
 	// if there are no siblings to be placed with, clear the group bio
 	this.updateGroupBio();
 
@@ -277,37 +282,58 @@ Child.schema.pre( 'save', function( next ) {
 			// create a unique label for each child based on their first & last names and their registration number
 			this.setFullNameAndRegistrationLabel();
 
-			next();
+			ChildMiddleware.updateSiblingAllSiblings( this )
+				.then( result => {
+
+					console.log( `exiting pre-save hook of child: ${ this.name.first } ${ this.name.last }` );
+					next();
+				})
+				.catch( error => {
+
+					console.error( error );
+					next();
+				});
 		});
 });
 
 Child.schema.post( 'save', function() {
-	// update all sibling information
-	this.updateSiblingFields();
-	// update saved bookmarks for families and social workers in the event of a status change or sibling group change
-	this.updateBookmarks();
 
-	// we need this id in case the family was created via the website and updatedBy is empty
-	const websiteBotFetched = UserServiceMiddleware.getUserByFullName( 'Website Bot', 'admin' );
-
-	// if the bot user was fetched successfully
-	websiteBotFetched
-		.then( bot => {
-			// set the updatedBy field to the bot's _id if the field isn't already set ( meaning it was saved in the admin UI and we know the user based on their session info )
-			this.updatedBy = this.updatedBy || bot.get( '_id' );
-		})
-		// if there was an error fetching the bot user
-		.catch( err => {
-			// log it for debugging purposes
-			console.error( `Website Bot could not be fetched for family ${ this.name.full } ( registration number: ${ this.registrationNumber } ) - ${ err }` );
-		})
-		// execute the following regardless of whether the promises were resolved or rejected
-		// TODO: this should be replaced with ES6 Promise.prototype.finally() once it's finalized, assuming we can update to the latest version of Node if we upgrade Keystone
-		.then( () => {
-			// process change history
-			this.setChangeHistory();
-		});
+	console.log( `entering post-save hook of child: ${ this.name.first } ${ this.name.last }`  );
+	if ( this._original ) {
+		console.log( `pre-save siblings: ${ this._original.siblings }` );
+	} else {
+		console.log( `initial save - no pre-save state` );
+	}
+	console.log( `post-save siblings: ${ this.siblings }` );
 });
+
+// Child.schema.post( 'save', function() {
+// 	// update all sibling information
+// 	this.updateSiblingFields();
+// 	// update saved bookmarks for families and social workers in the event of a status change or sibling group change
+// 	this.updateBookmarks();
+
+// 	// we need this id in case the family was created via the website and updatedBy is empty
+// 	const websiteBotFetched = UserServiceMiddleware.getUserByFullName( 'Website Bot', 'admin' );
+
+// 	// if the bot user was fetched successfully
+// 	websiteBotFetched
+// 		.then( bot => {
+// 			// set the updatedBy field to the bot's _id if the field isn't already set ( meaning it was saved in the admin UI and we know the user based on their session info )
+// 			this.updatedBy = this.updatedBy || bot.get( '_id' );
+// 		})
+// 		// if there was an error fetching the bot user
+// 		.catch( err => {
+// 			// log it for debugging purposes
+// 			console.error( `Website Bot could not be fetched for family ${ this.name.full } ( registration number: ${ this.registrationNumber } ) - ${ err }` );
+// 		})
+// 		// execute the following regardless of whether the promises were resolved or rejected
+// 		// TODO: this should be replaced with ES6 Promise.prototype.finally() once it's finalized, assuming we can update to the latest version of Node if we upgrade Keystone
+// 		.then( () => {
+// 			// process change history
+// 			this.setChangeHistory();
+// 		});
+// });
 
 /* text fields don't automatically trim(), this is to ensure no leading or trailing whitespace gets saved into url, text, or text area fields */
 Child.schema.methods.trimTextFields = function() {
