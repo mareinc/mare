@@ -126,7 +126,7 @@ exports.login = function( req, res, next ) {
 	if ( !req.body.email || !req.body.password ) {
 		/* TODO: need a better message for the user, flash messages won't work because page reloads are stupid */
 		req.flash( 'error', { title: 'Something went wrong',
-							  detail: 'Please enter your username and password.' } );
+							  detail: 'Please enter your username and password' } );
 		return next();
 	}
 
@@ -136,7 +136,7 @@ exports.login = function( req, res, next ) {
 
 		if( locals.userStatus === 'nonexistent' ) {
 			req.flash( 'error', { title: 'Something went wrong',
-							  	  detail: 'Your username or password is incorrect, please try again.' } );
+							  	  detail: 'Your username or password is incorrect, please try again' } );
 			res.redirect( req.body.target || '/' );
 
 		} else if( locals.userStatus === 'inactive' ) {
@@ -158,7 +158,7 @@ exports.login = function( req, res, next ) {
 			var onFail = function() {
 				/* TODO: need a better message for the user, flash messages won't work because page reloads are stupid */
 				req.flash( 'error', { title: 'Something went wrong',
-									  detail: 'please try again.' } );
+									  detail: 'Please try again.  If this error persists, please notify <a href="mailto:communications@mareinc.org">communications@mareinc.org</a>' } );
 				req.body.target ? res.redirect( req.body.target ) : res.redirect( '/' );
 			}
 

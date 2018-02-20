@@ -778,7 +778,7 @@ exports.registerChild = ( req, res, next ) => {
 			// create a success flash message
 			req.flash( 'success', {
 					title: `Congratulations, the child you submitted has been successfully registered.`,
-					detail: `Please note that it can take several days for the child's information to be reviewed.` } );
+					detail: `You will receive a copy of this registration by email.  Your MARE Child Services Coordinator will be in touch if additional information is needed.` } );
 			// redirect the user back to the appropriate page
 			res.redirect( 303, redirectPath );
 
@@ -833,8 +833,8 @@ exports.registerChild = ( req, res, next ) => {
 			console.error( `error saving social worker registered child - ${ err }` );
 			// create an error flash message
 			req.flash( 'error', {
-					title: `There was an error registering your child`,
-					detail: `If this error persists, please notify MARE` } );
+					title: `There was an error submitting this child registration.`,
+					detail: `If this error persists, please notify MARE at <a href="mailto:communications@mareinc.org">communications@mareinc.org</a>` } );
 			// redirect the user to the appropriate page
 			res.redirect( 303, locals.redirectPath );
 		});
