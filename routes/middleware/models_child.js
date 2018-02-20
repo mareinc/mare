@@ -87,7 +87,7 @@ exports.batchAllSiblingUpdates = ( childModel ) => {
 	});
 };
 
-exports.updateSiblingsOfChild = ( { siblingToAddID, siblingsToRemoveIDs = [], childToUpdateID } ) => {
+exports.updateSiblingsOfChild = ( { childToUpdateID, siblingToAddID, siblingsToRemoveIDs = [] } ) => {
 
 	return new Promise( ( resolve, reject ) => {
 
@@ -95,37 +95,37 @@ exports.updateSiblingsOfChild = ( { siblingToAddID, siblingsToRemoveIDs = [], ch
 			.getChildById( { id: childToUpdateID } )
 			.then( child => {
 
+				// get a list of the siblings that are currently defined on the child to be updated
 				let currentSiblings = child.siblings.map( sibling => sibling.toString() );
-				let allSiblings = currentSiblings.push( siblingToAddID );
-				let filteredSiblings = allSiblings.filter( sibling => !siblingsToRemoveIDs.includes( sibling ) );
-				let newSiblings =  Array.from( new Set( filteredSiblings ) );
+				// create a list of all of the current siblings and the siblings added by the update
+				let allSiblings = currentSiblings.concat( siblingToAddID );
+				// de-dupe the sibling list
+				let siblingsUnique =  Array.from( new Set( allSiblings ) );
 
-				let siblingsDirty = false;
+				// if the length of the current list of siblings is equal to the size of the de-duped list
+				// of siblings that includes the sibling that was just added, we know that sibling was
+				// already in current list of siblings
+				if ( currentSiblings.length === siblingsUnique.length ) {
 
-				newSiblings.forEach( sibling => {
-
-					if ( !currentSiblings.includes( sibling ) ) {
-						siblingsDirty = true;
-					}
-				});
-
-				if ( siblingsDirty ) {
-
-					child.siblings = newSiblings;
-
-					child.save( error => {
-
-						if ( error ) {
-							console.error( error );
-						}
-
-						resolve();
-					});
-				} else {
-					resolve();
+					// the current list is the same as the new list, so no updates are required
+					return resolve();
 				}
 
+				// if the current list and the new list are not equal sizes, there are updates to be processed.
+				// overwite the current list of siblings with the new list
+				child.siblings = siblingsUnique;
+				// save the updated child model
+				child.save( error => {
 
+					// if there was an error during the save, log it
+					if ( error ) {
+						console.error( error );
+					}
+					// resolve the promise
+					resolve();
+				});
+
+				//let filteredSiblings = allSiblings.filter( sibling => !siblingsToRemoveIDs.includes( sibling ) );
 			})
 			.catch( error => {
 				// log the error

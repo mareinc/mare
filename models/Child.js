@@ -324,7 +324,7 @@ Child.schema.post( 'save', function() {
 
 		let siblingsAdded = Array.from( siblingsAddedBySave );
 
-		let siblingUpdates = siblingsAdded.map( sibling => ChildMiddleware.updateSiblingsOfChild( { siblingsToAddIDs: [ childId ], childToUpdateID: sibling } ) );
+		let siblingUpdates = siblingsAdded.map( sibling => ChildMiddleware.updateSiblingsOfChild( { siblingToAddID: childId, childToUpdateID: sibling } ) );
 
 		Promise
 			.all( siblingUpdates )
