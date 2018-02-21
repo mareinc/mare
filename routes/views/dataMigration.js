@@ -144,22 +144,22 @@ exports = module.exports = ( req, res ) => {
 		// done => { familyContactsImport.appendFamilyContacts( req, res, done ); },
 		// IMPORTANT: comment out the entire pre-save and post-save hooks
 		// done => { familyChildrenImport.appendFamilyChildren( req, res, done ); },
-		// done => { familyRecruitmentChecklistImport.appendFamilyRecruitmentChecklists( req, res ,done );		// not done // DON'T NEED TO DO
+		// done => { familyRecruitmentChecklistImport.appendFamilyRecruitmentChecklists( req, res ,done ); // not done // DON'T NEED TO DO
 
 		// 13 left undone below
 
-		// done => { placementsImport.importPlacements( req, res, done ); }, 									// not done TODO: Get details to Brian so he can help you track down the field matches, or work out mismatch in placements and placement sources with Lisa
-		// done => { inquiriesImport.importInquiries( req, res, done ); },									// not done
-		// done => { inquiryAgenciesImport.appendInquiryAgencies( req, res, done ); },								// not done
-		// done => { inquiryChildrenImport.appendInquiryChildren( req, res, done ); },								// not done, call child
-		// done => { inquiryNotesImport.appendInquiryNotes( req, res, done ); },									// not done, call note
+		// done => { placementsImport.importPlacements( req, res, done ); }, // not done TODO: Get details to Brian so he can help you track down the field matches, or work out mismatch in placements and placement sources with Lisa
+		// done => { inquiriesImport.importInquiries( req, res, done ); },
+		// done => { inquiryAgenciesImport.appendInquiryAgencies( req, res, done ); },
+		done => { inquiryChildrenImport.appendInquiryChildren( req, res, done ); },
+		// done => { inquiryNotesImport.appendInquiryNotes( req, res, done ); },
 		// done => { eventsImport.importEvents( req, res, done ); },
 		// done => { eventAttendeeImport.appendEventAttendees( req, res, done ); },
-		// done => { mailingListAttendeesImport.importMailingListAttendees( req, res, done ); },					// not done
+		// done => { mailingListAttendeesImport.importMailingListAttendees( req, res, done ); }, // not done
 		// IMPORTANT: I think family backup is family internal notes
-		// done => { familyInternalNotesImport.importInternalNotes( req, res, done ); }							// not done
-		// done => { childInternalNotesImport.importInternalNotes( req, res, done ); }							// not done
-		// file attachment																						// not done
+		// done => { familyInternalNotesImport.importInternalNotes( req, res, done ); }	// not done
+		// done => { childInternalNotesImport.importInternalNotes( req, res, done ); }	// not done
+		// file attachment  															// not done
 
 		
 	], () => {

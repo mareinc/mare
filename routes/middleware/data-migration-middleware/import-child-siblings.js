@@ -115,11 +115,8 @@ module.exports.updateChildRecord = ( ids, pauseUntilSaved ) => {
 	const [ childRegistrationNumber, ...siblingRegistrationNumbers ] = ids;
 	// fetch the first child
 	const childLoaded = utilityModelFetch.getChildByRegistrationNumber( childRegistrationNumber );
-	// create a promise
-	const siblingsLoaded = new Promise( ( resolve, reject ) => {
-		// for fetching the _ids from other children
-		utilityModelFetch.getChildIdsByRegistrationNumbers( resolve, reject, siblingRegistrationNumbers );
-	});
+	// fetch the siblings
+	const siblingsLoaded = utilityModelFetch.getChildIdsByRegistrationNumbers( siblingRegistrationNumbers );
 	// when both resolve
 	Promise.all( [ childLoaded, siblingsLoaded ] )
 		.then( children => {

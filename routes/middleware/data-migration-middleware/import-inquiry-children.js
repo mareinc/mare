@@ -54,11 +54,11 @@ module.exports.buildInquiryChildrenMap = () => {
 
 			if( newInquiryChildrenMap[ inquiryId ] ) {
 
-				newInquiryChildrenMap[ inquiryId ].add( inquiryChild.agn_id );
+				newInquiryChildrenMap[ inquiryId ].add( inquiryChild.chd_id );
 
 			} else {
 
-				let newInquiryAgencySet = new Set( [ inquiryChild.agn_id ] );
+				let newInquiryAgencySet = new Set( [ inquiryChild.chd_id ] );
 				// create an entry containing a set with the one inquiry child
 				newInquiryChildrenMap[ inquiryId ] = newInquiryAgencySet;
 			}
@@ -73,7 +73,7 @@ module.exports.generateInquiryChildren = function* generateInquiryChildren() {
 	// create monitor variables to assess how many records we still need to process
 	let totalRecords						= Object.keys( newInquiryChildrenMap ).length,
 		remainingRecords 					= totalRecords,
-		batchCount							= 10, // number of records to be process simultaneously
+		batchCount							= 100, // number of records to be process simultaneously
 		inquiryChildNumber					= 0; // keeps track of the current inquiry child number being processed.  Used for batch processing
 	// loop through each inquiry child object we need to create a record for
 	for( let key in newInquiryChildrenMap ) {
@@ -106,33 +106,28 @@ module.exports.generateInquiryChildren = function* generateInquiryChildren() {
 };
 
 // a function paired with the generator to create a record and request the generator to process the next once finished
-module.exports.updateInquiryRecord = ( childIds, inquiryId, pauseUntilSaved ) => {
+module.exports.updateInquiryRecord = ( childOldIds, inquiryId, pauseUntilSaved ) => {
 
-	// create a promise
-	const inquiryLoaded = new Promise( ( resolve, reject ) => {
-		// for fetching the inquiry
-		utilityModelFetch.getInquiryById( resolve, reject, inquiryId );
-	});
-	// create a promise
-	const childrenLoaded = new Promise( ( resolve, reject ) => {
-		// for fetching the _ids from children
-		utilityModelFetch.getChildIdsByRegistrationNumbers( resolve, reject, childIds );
-	});
+	// fetch the inquiry
+	const inquiryLoaded = utilityModelFetch.getInquiryById( inquiryId );
+
+	// fetch the children
+	const childrenLoaded = utilityModelFetch.getChildIdsByRegistrationNumbers( [ ...childOldIds ] );
 
 	Promise.all( [ inquiryLoaded, childrenLoaded ] )
 		.then( values => {
 
-			const [ inquiry, inquiryChildren ] = values;
+			const [ inquiry, children ] = values;
 
-			inquiry.child = inquiryChildren; // IMPORTANT: right now this is a single select field you're storing an array in.  The assumption is this will need to change to handle sibling groups
+			const childIds = children.map( child => child.get( '_id' ) );
+
+			inquiry.children = childIds;
 
 			// save the updated inquiry record
 			inquiry.save( ( err, savedModel ) => {
 				// if we run into an error
 				if( err ) {
-					// halt execution by throwing an error
-					console.log( `error: ${ err }` );
-					throw `[inquiry id: ${ inquiry.get( '_id' ) }] an error occured while appending a child to the inquiry record.`;
+					importErrors.push( { id: inquiryId, error: `error adding children with ids ${ childIds } to inquiry with id ${ inquiryId } - ${ err }` } );
 				}
 
 				// fire off the next iteration of our generator after pausing
@@ -144,7 +139,7 @@ module.exports.updateInquiryRecord = ( childIds, inquiryId, pauseUntilSaved ) =>
 			});
 		})
 		.catch( err => {
-			// we can assume it was a reject from trying to fetch the city or town by an unrecognized name
+			
 			importErrors.push( { id: inquiryId, error: `error adding children with ids ${ childIds } to inquiry with id ${ inquiryId } - ${ err }` } );
 
 			if( pauseUntilSaved ) {

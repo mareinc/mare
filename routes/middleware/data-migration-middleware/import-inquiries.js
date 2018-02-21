@@ -1,5 +1,7 @@
 const keystone					= require( 'keystone' );
 const Inquiry 					= keystone.list( 'Inquiry' );
+// services
+const userService				= require( '../service_user' );
 // utility middleware
 const utilityModelFetch			= require( './utilities_model-fetch' );
 // csv conversion middleware
@@ -107,49 +109,49 @@ module.exports.createInquiryRecord = ( inquiry, pauseUntilSaved ) => {
 	// *family: on behalf of
 
 	// sets variables to make determining which emails should be marked as sent easier
-	const isFamilyInquiry		= !!inquiry.fam_id,
-		  isSocialWorkerInquiry	= !!inquiry.agc_id,
-		  isGeneralInquiry		= inquiry.inquiry_type === 'G',
-		  isChildInquiry		= inquiry.inquiry_type === 'C',
-		  isComplaint			= inquiry.inquiry_type === 'L',
-		  isOnBehalfOfFamily	= !!inquiry.family,
-		  isInquiryApproved		= !!inquiry.confirm_print_date,
-		  isEmailInquiry		= inquiry.inquiry_method === 'E',
-		  isPhoneInquiry		= inquiry.inquiry_method === 'P',
-		  isInPersonInquiry		= inquiry.inquiry_method === 'I'
+	const isFamilyInquiry				= !!inquiry.fam_id,
+		  isSocialWorkerInquiry			= !!inquiry.agc_id,
+		  isGeneralInquiry				= inquiry.inquiry_type === 'G',
+		  isChildInquiry				= inquiry.inquiry_type === 'C',
+		  isComplaint					= inquiry.inquiry_type === 'L',
+		  isFamilySupportConsultation 	= inquiry.inquiry_type === 'S',
+		  isOnBehalfOfFamily			= !!inquiry.family,
+		  isEmailInquiry				= inquiry.inquiry_method === 'E',
+		  isPhoneInquiry				= inquiry.inquiry_method === 'P',
+		  isInPersonInquiry				= inquiry.inquiry_method === 'I',
+		  isMailInquiry					= inquiry.inquiry_method === 'M',
 
 	if( !isEmailInquiry && !isPhoneInquiry && !isInPersonInquiry ) {
-		console.log( inquiry.inquiry_method );
+		console.log( inquiry.inquiry_method ); // This is being hit
 	}
 
 	if( !isGeneralInquiry && !isChildInquiry && !isComplaint ) {
-		console.log( inquiry.inquiry_type );
+		console.log( inquiry.inquiry_type ); // This is being hit
 	}
 
 	if( !isFamilyInquiry && !isSocialWorkerInquiry ) {
 		console.error( 'no valid inquirer' );
 	}
 
-	// create a promise for fetching the admin who created the inquiry
+	// fetch the admin who created the inquiry
 	const adminLoaded = utilityModelFetch.getAdminById( inquiry.taken_by );
+	// fetch the website bot as a fallback to the admin if the admin is no longer in the system
+	const websiteBotLoaded	= userService.getUserByFullName( 'Website Bot', 'admin' );
 	// fetch the social worker responsible for the inquiry
 	const socialWorkerLoaded = utilityModelFetch.getSocialWorkerById( inquiry.agc_id );
 	// fetch the family
 	const familyLoaded = utilityModelFetch.getFamilyByRegistrationNumber( inquiry.fam_id );
-	// create a promise
-	const sourceLoaded = new Promise( ( resolve, reject ) => {
-		// for fetching the recruitment source
-		utilityModelFetch.getSourceById( resolve, reject, inquiry.rcs_id );
-	});
+	// fetch the recruitment source
+	const sourceLoaded = utilityModelFetch.getSourceById( inquiry.rcs_id );
 
-	Promise.all( [ adminLoaded, socialWorkerLoaded, familyLoaded, sourceLoaded ] )
+	Promise.all( [ adminLoaded, websiteBotLoaded, socialWorkerLoaded, familyLoaded, sourceLoaded ] )
 		.then( values => {
 			// store the retrieved admin social worker, and family in local variables
-			const [ admin, socialWorker, family, source ] = values;
+			const [ admin, websiteBot, socialWorker, family, source ] = values;
 
 			let newInquiry = new Inquiry.model({
 
-				takenBy: admin.get( '_id' ),
+				takenBy: admin ? admin.get( '_id' ) : websiteBot.get( '_id' ),
 				takenOn: new Date( inquiry.call_date ),
 
 				inquirer: isFamilyInquiry ? 'family' :
@@ -157,28 +159,27 @@ module.exports.createInquiryRecord = ( inquiry, pauseUntilSaved ) => {
 						undefined,
 
 				inquiryType: isChildInquiry ? 'child inquiry'
-							: isGeneralInquiry ? 'general inquiry'
-							: undefined,
+						   : isGeneralInquiry ? 'general inquiry'
+						   : isComplaint ? 'complaint'
+						   : isFamilySupportConsultation ? 'family support consultation'
+						   : 'general inquiry',
 
-				inquiryMethod: inquiryMethodsMap[ inquiry.inquiry_method ],
+				inquiryMethod: inquiryMethodsMap[ inquiry.inquiry_method ] || inquiryMethodsMap[ 'W' ],
 
-				source: source.get( '_id' ),
+				source: source ? source.get( '_id' ) : undefined,
 				
 				family: isFamilyInquiry ? family.get( '_id' ) : undefined,
 				socialWorker: isSocialWorkerInquiry ? socialWorker.get( '_id' ) : undefined,
 				onBehalfOfMAREFamily: false,
-				onBehalfOfFamilyText: inquiry.family,
+				onBehalfOfFamilyText: isOnBehalfOfFamily ? inquiry.family.trim() : undefined,
 
-				thankInquirer: true,
-				inquiryAccepted: isInquiryApproved,
+				inquiryAccepted: true,
 
-				emailSentToStaff: true, // no deps
-				thankYouSentToInquirer: true, // no deps
 				thankYouSentToFamilyOnBehalfOfInquirer: isSocialWorkerInquiry && isOnBehalfOfFamily, // social worker inquiry, on behalf of family
-				approvalEmailSentToInquirer: isInquiryApproved, // no deps
-				approvalEmailSentToFamilyOnBehalfOfInquirer: isSocialWorkerInquiry && isOnBehalfOfFamily && isInquiryApproved, // social worker inquiry, on behalf of family
-				emailSentToChildsSocialWorker: ( isChildInquiry || isComplaint ) && isInquiryApproved, // child inquiry, isComplaint, or family support consultation.  We only capture child inquiries
-				emailSentToAgencies: isGeneralInquiry && isInquiryApproved, // general inquiry
+				approvalEmailSentToInquirer: true, // no deps
+				approvalEmailSentToFamilyOnBehalfOfInquirer: isSocialWorkerInquiry && isOnBehalfOfFamily, // social worker inquiry, on behalf of family
+				emailSentToChildsSocialWorker: ( isChildInquiry || isComplaint ), // child inquiry, isComplaint, or family support consultation.  We only capture child inquiries
+				emailSentToAgencies: isGeneralInquiry, // general inquiry
 
 				oldId: inquiry.cll_id
 
@@ -190,7 +191,7 @@ module.exports.createInquiryRecord = ( inquiry, pauseUntilSaved ) => {
 					// store a reference to the entry that caused the error
 					importErrors.push( { id: inquiry.cll_id, error: err } );
 				}
-				
+
 				// fire off the next iteration of our generator after pausing for a second
 				if( pauseUntilSaved ) {
 					setTimeout( () => {

@@ -141,11 +141,8 @@ module.exports.updateEventRecord = ( attendees, eventId, pauseUntilSaved ) => {
 		// for fetching the family
 		utilityModelFetch.getEventById( resolve, reject, eventId );
 	});
-	// create a promise
-	const childAttendeesLoaded = new Promise( ( resolve, reject ) => {
-		// for fetching the _ids from children
-		utilityModelFetch.getChildIdsByRegistrationNumbers( resolve, reject, childIds );
-	});
+	// fetch the child attendees
+	const childAttendeesLoaded = utilityModelFetch.getChildIdsByRegistrationNumbers( childIds );
 	// create a promise
 	const familyAttendeesLoaded = new Promise( ( resolve, reject ) => {
 		// for fetching the _ids from families

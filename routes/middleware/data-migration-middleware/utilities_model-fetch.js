@@ -13,27 +13,32 @@ const keystone		= require( 'keystone' ),
 	  Admin			= keystone.list( 'Admin' ),
 	  Inquiry		= keystone.list( 'Inquiry' );
 
-module.exports.getSourceById = ( resolve, reject, sourceId ) => {
-	/* TODO: short circuit the fetch here by just resolving if there are no oldIds */
-	Source.model.findOne()
-		.where( 'oldId', sourceId )
-		.exec()
-		.then( retrievedSource => {
-			// if no source was found
-			if( !retrievedSource ) {
-				// log the issue
-				console.error( `error fetching source by oldId ${ sourceId }` );
-				// and reject the promise
-				reject();
-			}
-			// otherwise, accept the promise and pass back the retrieved source
-			resolve( retrievedSource );
+module.exports.getSourceById = id => {
 
-		}, err => {
+	return new Promise( ( resolve, reject ) => {
 
-			console.error( `error in getSourceById() ${ err }` );
-			reject();
-		});
+		if( !id ) {
+			return reject( `no id value passed in to getSourceById()` );
+		}
+
+		Source.model
+			.findOne()
+			.where( 'oldId', id )
+			.exec()
+			.then( source => {
+				// if no source was found
+				if( !source ) {
+					// reject the promise with details about the error
+					reject( `no source matching oldId ${ id } could be found` );
+				}
+				// otherwise, accept the promise and pass back the retrieved source
+				resolve( source );
+
+			}, err => {
+
+				reject( `error fetching source by oldId ${ id } - ${ err }` );
+			});
+	});
 };
 
 module.exports.getAgencyById = agencyId => {
@@ -234,36 +239,33 @@ module.exports.getChildByRegistrationNumber = registrationNumber => {
 	});
 };
 
-module.exports.getChildIdsByRegistrationNumbers = ( resolve, reject, registrationNumbers ) => {
+module.exports.getChildIdsByRegistrationNumbers = registrationNumbers => {
 	
-	if( registrationNumbers.length === 0 ) {
-		return resolve();
-	}
+	return new Promise( ( resolve, reject ) => {
 
-	Child.model.find()
-		.where( { 'registrationNumber': { $in: registrationNumbers } } )
-		.exec()
-		.then( retrievedChildren => {
-			// if no children were found
-			if( retrievedChildren.length === 0 ) {
-				// log the issue
-				console.error( `error fetching child IDs by registration numbers ${ registrationNumbers }` );
-				// and resolve the promise with an undefined value
-				resolve();
-			}
+		if( registrationNumbers.length === 0 ) {
+			return resolve();
+		}
 
-			let childIds = [];
+		Child.model.find()
+			.where( { 'registrationNumber': { $in: registrationNumbers } } )
+			.exec()
+			.then( children => {
+				// if no children were found
+				if( children.length === 0 ) {
+					// log the issue
+					console.error( `error fetching child IDs by registration numbers ${ registrationNumbers }` );
+					// and resolve the promise with an undefined value
+					resolve();
+				}
+				// otherwise, accept the promise and pass back the retrieved child IDs
+				resolve( children );
 
-			for( child of retrievedChildren ) {
-				childIds.push( child._id );
-			}
-			// otherwise, accept the promise and pass back the retrieved child IDs
-			resolve( childIds );
+			}, err => {
 
-		}, err => {
-
-			console.error( `error in getChildIdsByRegistrationNumbers() ${ err }` );
-			reject();
+				console.error( `error in getChildIdsByRegistrationNumbers() ${ err }` );
+				reject();
+			});
 		});
 };
 
@@ -386,58 +388,58 @@ module.exports.getEventById = ( resolve, reject, eventId ) => {
 		});
 };
 
-module.exports.getAdminById = ( resolve, reject, adminId ) => {
+module.exports.getAdminById = id => {
 
-	return new Promise( (resolve, reject ) => {
-		
+	return new Promise( (resolve, reject ) => {		
 		// if no admin id was passed in
-		if( !adminId ) {
+		if( !id ) {
 			// resolve the promise with an undefined value
 			return resolve();
 		}
 
 		Admin.model
 			.findOne()
-			.where( 'oldId', adminId )
+			.where( 'oldId', id )
 			.exec()
-			.then( retrievedAdmin => {
+			.then( admin => {
 				// if no admin was found
-				if( !retrievedAdmin ) {
-					// log the issue
-					console.error( `error fetching admin by oldId ${ adminId }` );
-					// and reject the promise
-					reject();
+				if( !admin ) {
+					reject( `error fetching admin by oldId ${ id }` );
 				}
 				// otherwise, accept the promise and pass back the retrieved admin
-				resolve( retrievedAdmin );
+				resolve( admin );
 
 			}, err => {
 
-				console.error( `error in getAdminById() ${ err }` );
-				reject();
+				reject( `error in getAdminById() ${ err }` );
 			});
 	});
 };
 
-module.exports.getInquiryById = ( resolve, reject, inquiryId ) => {
-	/* TODO: short circuit the fetch here by just resolving if there are no oldIds */
-	Inquiry.model.findOne()
-		.where( 'oldId', inquiryId )
-		.exec()
-		.then( retrievedInquiry => {
-			// if no inquiry was found
-			if( !retrievedInquiry ) {
-				// log the issue
-				console.error( `error fetching inquiry by oldId ${ inquiryId }` );
-				// and reject the promise
-				reject();
-			}
-			// otherwise, accept the promise and pass back the retrieved inquiry
-			resolve( retrievedInquiry );
+module.exports.getInquiryById = id => {
+	
+	return new Promise( ( resolve, reject ) => {
+	
+		if( !id ) {
+			return reject( `error fetching inquiry by id ${ id }` );
+		}
 
-		}, err => {
+		Inquiry.model
+			.findOne()
+			.where( 'oldId', id )
+			.exec()
+			.then( inquiry => {
+				// if no inquiry was found
+				if( !inquiry ) {
+					// and reject the promise
+					reject( `error fetching inquiry by oldId ${ id }` );
+				}
+				// otherwise, accept the promise and pass back the retrieved inquiry
+				resolve( inquiry );
 
-			console.error( `error in getInquiryById() ${ err }` );
-			reject();
-		});
+			}, err => {
+
+				reject( `error in getInquiryById() ${ err }` );
+			});
+	});
 };

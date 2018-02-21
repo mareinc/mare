@@ -86,11 +86,8 @@ module.exports.generateMediaFeatures = function* generateMediaFeatures() {
 /* the import function for agencies */
 module.exports.createMediaFeatureRecord = ( mediaFeature, pauseUntilSaved ) => {
 
-	// create a promise
-	const sourceLoaded = new Promise( ( resolve, reject ) => {
-		// for fetching the first child
-		utilityModelFetch.getSourceById( resolve, reject, mediaFeature.rcs_id );
-	});
+	// fetch the source of the media feature
+	const sourceLoaded = utilityModelFetch.getSourceById( mediaFeature.rcs_id );
 
 	sourceLoaded
 		.then( source => {

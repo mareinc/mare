@@ -113,11 +113,8 @@ module.exports.generateInquiryAgencies = function* generateInquiryAgencies() {
 // a function paired with the generator to create a record and request the generator to process the next once finished
 module.exports.updateInquiryRecord = ( agencyIds, inquiryId, pauseUntilSaved ) => {
 
-	// create a promise
-	const inquiryLoaded = new Promise( ( resolve, reject ) => {
-		// for fetching the inquiry
-		utilityModelFetch.getInquiryById( resolve, reject, inquiryId );
-	});
+	// fetch the inquiry
+	const inquiryLoaded = utilityModelFetch.getInquiryById( inquiryId );
 	// create a promise
 	const agenciesLoaded = new Promise( ( resolve, reject ) => {
 		// for fetching the _ids from agencies

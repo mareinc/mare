@@ -53,11 +53,11 @@ module.exports.buildInquiryNotesMap = () => {
 
 			if( newInquiryNotesMap[ inquiryId ] ) {
 
-				newInquiryNotesMap[ inquiryId ].add( inquiryNote.agn_id );
+				newInquiryNotesMap[ inquiryId ].add( inquiryNote.comment );
 
 			} else {
 
-				let newInquiryAgencySet = new Set( [ inquiryNote.agn_id ] );
+				let newInquiryAgencySet = new Set( [ inquiryNote.comment ] );
 				// create an entry containing a set with the one inquiry note
 				newInquiryNotesMap[ inquiryId ] = newInquiryAgencySet;
 			}
@@ -72,9 +72,10 @@ module.exports.generateInquiryNotes = function* generateInquiryNotes() {
 	// create monitor variables to assess how many records we still need to process
 	let totalRecords						= Object.keys( newInquiryNotesMap ).length,
 		remainingRecords 					= totalRecords,
-		batchCount							= 10, // number of records to be process simultaneously
+		batchCount							= 100, // number of records to be process simultaneously
 		inquiryNoteNumber					= 0; // keeps track of the current inquiry note number being processed.  Used for batch processing
-	// loop through each inquiry note object we need to create a record for
+	
+		// loop through each inquiry note object we need to create a record for
 	for( let key in newInquiryNotesMap ) {
 		// increment the inquiryNoteNumber
 		inquiryNoteNumber++;
@@ -111,18 +112,20 @@ module.exports.generateInquiryNotes = function* generateInquiryNotes() {
 };
 
 // a function paired with the generator to create a record and request the generator to process the next once finished
-module.exports.updateInquiryRecord = ( noteIds, inquiryId, pauseUntilSaved ) => {
+module.exports.updateInquiryRecord = ( notesSet, inquiryId, pauseUntilSaved ) => {
 
-	// create a promise
-	const inquiryLoaded = new Promise( ( resolve, reject ) => {
-		// for fetching the inquiry
-		utilityModelFetch.getInquiryById( resolve, reject, inquiryId );
-	});
+	const note = [ ...notesSet ].reduce( ( prev, next, i, arr ) => `${ prev }\n\r\n\r${ next }` );
+
+	if( notesSet.size > 1 ) {
+		console.log( 'here' );
+	}
+	// fetch the inquiry
+	const inquiryLoaded = utilityModelFetch.getInquiryById( inquiryId );
 
 	inquiryLoaded
 		.then( inquiry => {
 
-			inquiry.note = inquiryNotes;
+			inquiry.comments = note;
 
 			// save the updated inquiry record
 			inquiry.save( ( err, savedModel ) => {
@@ -142,7 +145,7 @@ module.exports.updateInquiryRecord = ( noteIds, inquiryId, pauseUntilSaved ) => 
 		})
 		.catch( err => {
 			// we can assume it was a reject from trying to fetch the city or town by an unrecognized name
-			importErrors.push( { id: inquiryId, error: `error adding notes with ids ${ noteIds } to inquiry with id ${ inquiryId } - ${ err }` } );
+			importErrors.push( { id: inquiryId, error: `error adding notes with ids ${ notesSet } to inquiry with id ${ inquiryId } - ${ err }` } );
 
 			if( pauseUntilSaved ) {
 				setTimeout( () => {

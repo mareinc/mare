@@ -63,6 +63,7 @@ Inquiry.add( 'General Information', {
 // Pre Save
 Inquiry.schema.pre( 'save', function( next ) {
 	'use strict';
+
 	// attempt to populate any derived fields for child inquiries
 	this.populateDerivedFields()
 		// if there was an error populating the derived fields, log the error

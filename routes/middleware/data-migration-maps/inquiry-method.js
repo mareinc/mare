@@ -12,7 +12,9 @@ exports.getInquiryMethodsMap = ( req, res, done ) => {
 	async.parallel([
 		done => { dataMigrationService.getModelId( { model: 'Inquiry Method', field: 'inquiryMethod', value: 'email', mapTo: [ 'E' ], namespace: locals.migration.maps.inquiryMethods }, done ); },
 		done => { dataMigrationService.getModelId( { model: 'Inquiry Method', field: 'inquiryMethod', value: 'in person', mapTo: [ 'I' ], namespace: locals.migration.maps.inquiryMethods }, done ); },
-		done => { dataMigrationService.getModelId( { model: 'Inquiry Method', field: 'inquiryMethod', value: 'phone', mapTo: [ 'P' ], namespace: locals.migration.maps.inquiryMethods }, done ); }
+		done => { dataMigrationService.getModelId( { model: 'Inquiry Method', field: 'inquiryMethod', value: 'phone', mapTo: [ 'P' ], namespace: locals.migration.maps.inquiryMethods }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'Inquiry Method', field: 'inquiryMethod', value: 'mail', mapTo: [ 'M' ], namespace: locals.migration.maps.inquiryMethods }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'Inquiry Method', field: 'inquiryMethod', value: 'website', mapTo: [ 'W' ], namespace: locals.migration.maps.inquiryMethods }, done ); }
 		
 	], () => {
 

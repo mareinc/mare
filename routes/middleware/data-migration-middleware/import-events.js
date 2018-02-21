@@ -101,11 +101,9 @@ module.exports.createEventRecord = ( event, pauseUntilSaved ) => {
 		eventPostfix += ` - ${ eventStartDate }`;
 	}
 
-	// create a promise
-	const sourceLoaded = new Promise( ( resolve, reject ) => {
-		// for fetching the recruitment source
-		utilityModelFetch.getSourceById( resolve, reject, event.rcs_id );
-	});
+	// fetch the recruitment source
+	const sourceLoaded = utilityModelFetch.getSourceById( inquiry.rcs_id );
+	
 	// if the source was loaded successfully
 	sourceLoaded
 		.then( source => {

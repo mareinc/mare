@@ -168,11 +168,8 @@ module.exports.createInquiryRecord = ( inquiry, pauseUntilSaved ) => {
 	const socialWorkerLoaded = utilityModelFetch.getSocialWorkerById( inquiry.agc_id );
 	// fetch the family
 	const familyLoaded = utilityModelFetch.getFamilyByRegistrationNumber( inquiry.fam_id );
-	// create a promise
-	const sourceLoaded = new Promise( ( resolve, reject ) => {
-		// for fetching the recruitment source
-		utilityModelFetch.getSourceById( resolve, reject, inquiry.rcs_id );
-	});
+	// fetch the recruitment source
+	const sourceLoaded = utilityModelFetch.getSourceById( inquiry.rcs_id );
 
 	Promise.all( [ adminLoaded, socialWorkerLoaded, familyLoaded, sourceLoaded ] ).then( values => {
 		// store the retrieved admin social worker, and family in local variables
