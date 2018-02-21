@@ -12,7 +12,8 @@ const keystone						= require( 'keystone' ),
 	  ChildMiddleware				= require( '../routes/middleware/models_child' ),
 	  FamilyMiddleware				= require( '../routes/middleware/models_family' ),
 	  SocialWorkerMiddleware		= require( '../routes/middleware/models_social-worker' ),
-	  UtilitiesMiddleware			= require( '../routes/middleware/utilities' );
+	  UtilitiesMiddleware			= require( '../routes/middleware/utilities' ),
+	  saveLock						= require( '../routes/middleware/model_save_lock' );
 
 // Create model
 const Child = new keystone.List( 'Child', {
@@ -298,43 +299,55 @@ Child.schema.pre( 'save', function( next ) {
 
 Child.schema.post( 'save', function() {
 
-	console.log( `entering post-save hook of child: ${ this.name.first } ${ this.name.last }`  );
+	console.log( `entering post-save hook of child: ${ this.name.first } ${ this.name.last }` );
 
-	const siblingsArrayBeforeSave				= this._original ? this._original.siblings.map( sibling => sibling.toString() ) : [], // this handles the model being saved for the first time
-		siblingsArrayAfterSave				= this.siblings.map( sibling => sibling.toString() ),
-		siblingsToBePlacedWithArrayBeforeSave	= this._original ? this._original.siblingsToBePlacedWith.map( sibling => sibling.toString() ) : [],
-		siblingsToBePlacedWithArrayAfterSave	= this.siblingsToBePlacedWith.map( sibling => sibling.toString() ),
+	let siblingsArrayBeforeSave = this._original ? this._original.siblings.map( sibling => sibling.toString() ) : [];
+	let siblingsBeforeSave = new Set( siblingsArrayBeforeSave );
 
-		siblingsBeforeSave					= new Set( siblingsArrayBeforeSave ),
-		siblingsAfterSave						= new Set( siblingsArrayAfterSave ),
-		siblingsToBePlacedWithBeforeSave		= new Set( siblingsToBePlacedWithArrayBeforeSave ),
-		siblingsToBePlacedWithAfterSave		= new Set( siblingsToBePlacedWithArrayAfterSave ),
-
-		childId								= this._id.toString();
+	let siblingsArrayAfterSave = this.siblings.map( sibling => sibling.toString() );
+	let siblingsAfterSave = new Set( siblingsArrayAfterSave );
 
 	// create a set of all siblings added to the original child by the save operation
-	let siblingsAddedBySave = siblingsBeforeSave.rightOuterJoin( siblingsAfterSave );
+	let siblingsAddedBySave = Array.from( siblingsBeforeSave.rightOuterJoin( siblingsAfterSave ) );
 	// create a set of all siblings removed from the original child by the save operation
-	let siblingsRemovedBySave = siblingsBeforeSave.leftOuterJoin( siblingsAfterSave );
-	console.log( `siblings added by save ${ Array.from( siblingsAddedBySave ) }` );
-	console.log( `siblings removed by save ${ Array.from( siblingsRemovedBySave ) }` );
+	let siblingsRemovedBySave = Array.from( siblingsBeforeSave.leftOuterJoin( siblingsAfterSave ) );
+	console.log( `siblings added by save ${ siblingsAddedBySave }` );
+	console.log( `siblings removed by save ${ siblingsRemovedBySave }` );
 
-	let siblingsAdded = Array.from( siblingsAddedBySave );
-	let siblingsRemoved = Array.from( siblingsRemovedBySave );
+	// create an updated representation of the sibling group based on the post-save state of the siblings array
+	let updatedSiblingGroup = siblingsArrayAfterSave;
+	// if the updated sibling group is not empty
+	if ( updatedSiblingGroup.length > 0 ) {
+		// add the current child to the group ( because a child will not store itself in the siblings array )
+		updatedSiblingGroup.push( this._id.toString() );
 
-	let siblingsImpacted = siblingsAdded.concat( siblingsRemoved );
+		console.log( `updated sibling group: ${ updatedSiblingGroup }` );
 
-	let siblingUpdates = siblingsImpacted.map( sibling => ChildMiddleware.updateSiblingsOfChild( { childToUpdateID: sibling, siblingToAddID: childId, siblingsToRemoveIDs: siblingsRemoved } ) );
+		let siblingsImpacted = updatedSiblingGroup.concat( siblingsRemovedBySave ).filter( siblingID => siblingID !== this._id.toString() );
+		console.log( `siblings impacted by save: ${ siblingsImpacted }` );
 
-	Promise
-		.all( siblingUpdates )
-		.then( result => {
-			console.log( 'all siblings updated' );
-		})
-		.catch( error => {
-			console.error( error );
+		siblingsImpacted.forEach( siblingID => {
+
+			if ( !saveLock.isLocked( siblingID ) ) {
+
+				saveLock.lock( siblingID );
+				ChildMiddleware
+					.applySiblingGroupToChild( { childToUpdateID: siblingID, siblingGroup: updatedSiblingGroup } )
+					.then( updatedChildID => {
+
+						saveLock.unlock( updatedChildID );
+					})
+					.catch( updatedChildID => {
+						saveLock.unlock( updatedChildID );
+					});
+			} else {
+				console.log( `attmpted to save locked child ${ siblingID }` );
+			}
 		});
-
+	} else {
+		console.log( `${ this.name.first } ${ this.name.last } has no siblings, not doing anything...` );
+		console.log( `should remove this child from:  ${ siblingsRemovedBySave }` );
+	}
 });
 
 // Child.schema.post( 'save', function() {

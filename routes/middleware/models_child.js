@@ -23,7 +23,7 @@ exports.batchAllSiblingUpdates = ( childModel ) => {
 
 	return new Promise( ( resolve, reject ) => {
 
-		console.log( `updating siblings for child: ${ childModel.name.first } ${ childModel.name.last }` );
+		console.log( `pre-save processing for: ${ childModel.name.first } ${ childModel.name.last }` );
 
 		const siblingsArrayBeforeSave				= childModel._original ? childModel._original.siblings.map( sibling => sibling.toString() ) : [], // this handles the model being saved for the first time
 			  siblingsArrayAfterSave				= childModel.siblings.map( sibling => sibling.toString() ),
@@ -87,7 +87,7 @@ exports.batchAllSiblingUpdates = ( childModel ) => {
 	});
 };
 
-exports.updateSiblingsOfChild = ( { childToUpdateID, siblingToAddID, siblingsToRemoveIDs = [] } ) => {
+exports.applySiblingGroupToChild =  ( { childToUpdateID, siblingGroup = [] } ) => {
 
 	return new Promise( ( resolve, reject ) => {
 
@@ -95,12 +95,105 @@ exports.updateSiblingsOfChild = ( { childToUpdateID, siblingToAddID, siblingsToR
 			.getChildById( { id: childToUpdateID } )
 			.then( child => {
 
+				console.log( `applying sibling group to child: ${ child.name.first } ${ child.name.last } ( ${ childToUpdateID } )` );
+				console.log( `sibling group: ${ siblingGroup }` );
+
+				// create a flag to determine if there are updates to the sibling group that need to be saved
+				let saveUpdatesToSiblingGroup = false;
+
+				// check to see if the current child is in the new sibling group
+				let isCurrentChildInNewSiblingGroup = siblingGroup.includes( childToUpdateID );
+
+				// if the current child is part of the new sibling group, update the child's current sibling group to the new sibling group
+				if ( isCurrentChildInNewSiblingGroup ) {
+
+					console.log( `child ${ child.name.first } ${ child.name.last } is part of the updated sibling group - applying updated group` );
+
+					// get a representation of the child's current sibling group ( so it can be compared to the updated group )
+					let currentSiblingGroup = child.siblings.map( sibling => sibling.toString() );
+					console.log( `child to update's current sibling group: ${ currentSiblingGroup }` );
+
+					// remove the current child's id from the updated sibling group ( it should not have a reference to itsels as a sibling )
+					let siblingGroupWithoutCurrentChild = siblingGroup.filter( siblingID => siblingID !== childToUpdateID );
+					console.log( `sibling group without child to update: ${ siblingGroupWithoutCurrentChild }` );
+
+					// create sets from the siblings groups to leverage Set utilities to find differences
+					let currentSiblingGroupSet = new Set( currentSiblingGroup );
+					let updatedSiblingGroupSet = new Set( siblingGroupWithoutCurrentChild );
+
+					// find any siblings that exist in the current sibling group but not the updated sibling group
+					let exclusiveSiblingsInTheCurrentSet = currentSiblingGroupSet.leftOuterJoin( updatedSiblingGroupSet );
+					console.log( `siblings exclusively in the current group: ${ Array.from( exclusiveSiblingsInTheCurrentSet ) }` );
+
+					// find any siblings that exist in the updated sibling group but not the current sibling group
+					let exclusiveSiblingsInTheUpdatedSet = currentSiblingGroupSet.rightOuterJoin( updatedSiblingGroupSet );
+					console.log( `siblings exclusively in the updated group: ${ Array.from( exclusiveSiblingsInTheUpdatedSet ) }` );
+
+					// if the current or updated sibling groups contain any differences
+					if ( exclusiveSiblingsInTheCurrentSet.size > 0 || exclusiveSiblingsInTheUpdatedSet.size > 0 ) {
+						// set the updated sibling group on the child model
+						child.siblings = Array.from( updatedSiblingGroupSet );
+						// set the save updates flag to true
+						saveUpdatesToSiblingGroup = true;
+					}
+
+				// if the current child is not part of the new sibling group, reset the current child's sibling group to an empty group
+				} else {
+
+					console.log( `child ${ child.name.first } ${ child.name.last } is not part of the updated sibling group - resetting the sibling group` );
+
+					// if the current child's sibling group is not already empty
+					if ( child.siblings.length !== 0 ) {
+						console.log( 'hard reset GO GO GO' );
+						// reset the child's sibling group
+						child.siblings = [];
+						// set the save updates flag to true
+						saveUpdatesToSiblingGroup = true;
+					}
+				}
+
+				// if there are updates to be saved to the current child's sibling group
+				if ( saveUpdatesToSiblingGroup ) {
+
+					console.log( 'difference detected, siblings should be saved and updated' );
+
+					// save the updated child model
+					child.save( error => {
+						// log any errors
+						error ? console.error( error ) : console.log( `${ child.name.first } ${ child.name.last } ( ${ childToUpdateID } ) saved successfully` );
+						// resolve the promise
+						resolve( childToUpdateID );
+					});
+				} else {
+					console.log( 'no difference detected, no save or update required' );
+					resolve( childToUpdateID );
+				}
+			})
+			.catch( error => {
+				// log the error
+				console.error( error );
+				// reject the promise with the error
+				reject( childToUpdateID );
+			});
+	});
+};
+
+exports.updateSiblingsOfChild = ( { childToUpdateID, sourceChildID, sourceChildIsSibling, siblingsToRemoveIDs = [] } ) => {
+
+	return new Promise( ( resolve, reject ) => {
+
+		childService
+			.getChildById( { id: childToUpdateID } )
+			.then( child => {
+
+				console.log( `updating sibling: ${ child.name.first } ${ child.name.last }`  );
+
 				let silbingsUpdated = false;
 
 				// get a list of the siblings that are currently defined on the child to be updated
 				let currentSiblings = child.siblings.map( sibling => sibling.toString() );
 				// create a list of all of the current siblings and the siblings added by the update
-				let allSiblings = currentSiblings.concat( siblingToAddID );
+				let allSiblings = currentSiblings.concat( sourceChildID );
 				// de-dupe the sibling list
 				let siblingsUnique = Array.from( new Set( allSiblings ) );
 
