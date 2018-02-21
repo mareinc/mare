@@ -283,7 +283,7 @@ Child.schema.pre( 'save', function( next ) {
 			// create a unique label for each child based on their first & last names and their registration number
 			this.setFullNameAndRegistrationLabel();
 
-			ChildMiddleware.batchAllSiblingUpdates( this )
+			ChildMiddleware.batchAllSiblingsToBePlacedWithUpdates( this )
 				.then( result => {
 
 					console.log( `exiting pre-save hook of child: ${ this.name.first } ${ this.name.last }` );
@@ -302,7 +302,8 @@ Child.schema.post( 'save', function() {
 	console.log( `entering post-save hook of child: ${ this.name.first } ${ this.name.last }` );
 
 	// update all sibling information
-	this.updateSiblingGroup();
+	//this.updateSiblingGroup();
+	this.updateSiblingsToBePlacedWithGroup();
 	// update saved bookmarks for families and social workers in the event of a status change or sibling group change
 	this.updateBookmarks();
 
@@ -761,6 +762,80 @@ Child.schema.methods.updateSiblingGroup = function() {
 					})
 					.catch( updatedChildID => {
 						// unlock the sibling after update is complete
+						saveLock.unlock( updatedChildID );
+					});
+			} else {
+				console.log( `attmpted to save locked child ${ siblingID }` );
+			}
+		});
+	}
+};
+
+Child.schema.methods.updateSiblingsToBePlacedWithGroup = function() {
+
+	let siblingsToBePlacedWithArrayBeforeSave = this._original ? this._original.siblingsToBePlacedWith.map( sibling => sibling.toString() ) : [];
+	let siblingsToBePlacedWithBeforeSave = new Set( siblingsToBePlacedWithArrayBeforeSave );
+
+	let siblingsToBePlacedWithArrayAfterSave = this.siblingsToBePlacedWith.map( sibling => sibling.toString() );
+	let siblingsToBePlacedWithAfterSave = new Set( siblingsToBePlacedWithArrayAfterSave );
+
+	// create a set of all siblings to be placed with added to the original child by the save operation
+	let siblingsToBePlacedWithAddedBySave = Array.from( siblingsToBePlacedWithBeforeSave.rightOuterJoin( siblingsToBePlacedWithAfterSave ) );
+	// create a set of all siblings to be placed with removed from the original child by the save operation
+	let siblingsToBePlacedWithRemovedBySave = Array.from( siblingsToBePlacedWithBeforeSave.leftOuterJoin( siblingsToBePlacedWithAfterSave ) );
+	console.log( `siblings to be placed with added by save ${ siblingsToBePlacedWithAddedBySave }` );
+	console.log( `siblings to be placed with removed by save ${ siblingsToBePlacedWithRemovedBySave }` );
+
+	// create an updated representation of the siblings to be placed with group based on the post-save state of the siblings array
+	let updatedSiblingsToBePlacedWithGroup = siblingsToBePlacedWithArrayAfterSave;
+	// if the updated siblings to be placed with group is not empty this child has siblings to be placed with and a valid group to update
+	if ( updatedSiblingsToBePlacedWithGroup.length > 0 ) {
+		// add the current child to the group ( because a child will not store itself in the siblings array )
+		updatedSiblingsToBePlacedWithGroup.push( this._id.toString() );
+		console.log( `updated siblings to be placed with group: ${ updatedSiblingsToBePlacedWithGroup }` );
+		// determine which siblings to be placed with were impacted by the update
+		let siblingsToBePlacedWithImpacted = updatedSiblingsToBePlacedWithGroup.concat( siblingsToBePlacedWithRemovedBySave ).filter( siblingID => siblingID !== this._id.toString() );
+		console.log( `siblings to be placed with impacted by save: ${ siblingsToBePlacedWithImpacted }` );
+
+		// for each sibling to be placed with impacted
+		siblingsToBePlacedWithImpacted.forEach( siblingID => {
+			// check to ensure that the sibling to be placed with is not already in the process of being saved
+			if ( !saveLock.isLocked( siblingID ) ) {
+				// lock the sibling to be placed with to ensure that it cannot be updated by any other processes until this update is complete
+				saveLock.lock( siblingID );
+				// update the sibling to be placed with with the new siblings to be placed with group
+				ChildMiddleware
+					.applySiblingsToBePlacedWithGroupToChild( { childToUpdateID: siblingID, siblingsToBePlacedWithGroup: updatedSiblingsToBePlacedWithGroup } )
+					.then( updatedChildID => {
+						// unlock the sibling to be placed with after update is complete
+						saveLock.unlock( updatedChildID );
+					})
+					.catch( updatedChildID => {
+						// unlock the sibling to be placed with after update is complete
+						saveLock.unlock( updatedChildID );
+					});
+			} else {
+				console.log( `attmpted to save locked child ${ siblingID }` );
+			}
+		});
+	// if the updated siblings to be placed with group is empty this child was removed from a siblings to be placed with group and should remove itself from any siblings to be placed with remaining in that group
+	} else {
+		console.log( `${ this.name.first } ${ this.name.last } has no siblings to be placed with, removing it from all previous siblings to be placed with` );
+		// for each sibling that this child used to be a in a siblings to be placed with group with
+		siblingsToBePlacedWithRemovedBySave.forEach( siblingID => {
+			// check to ensure that the sibling to be placed with is not already in the process of being saved
+			if ( !saveLock.isLocked( siblingID ) ) {
+				// lock the sibling to be placed with to ensure that it cannot be updated by any other processes until this update is complete
+				saveLock.lock( siblingID );
+				// remove this child from a sibling to be placed with
+				ChildMiddleware
+					.removeSiblingToBePlacedWithFromChild( { childToUpdateID: siblingID, siblingToBePlacedWithToRemoveID: this._id.toString() } )
+					.then( updatedChildID => {
+						// unlock the sibling to be placed with after update is complete
+						saveLock.unlock( updatedChildID );
+					})
+					.catch( updatedChildID => {
+						// unlock the sibling to be placed with after update is complete
 						saveLock.unlock( updatedChildID );
 					});
 			} else {
