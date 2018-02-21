@@ -28,7 +28,6 @@ Inquiry.add( 'General Information', {
 
 	children: { type: Types.Relationship, label: 'children', ref: 'Child', dependsOn: { inquiryType: ['child inquiry', 'complaint', 'family support consultation'] }, many: true, initial: true },
 	childsSocialWorker: { type: Types.Relationship, label: 'child\'s social worker', ref: 'Social Worker', dependsOn: { inquiryType: ['child inquiry', 'complaint', 'family support consultation'] }, noedit: true },
-	originalChildsSocialWorker: { type: Types.Relationship, ref: 'Social Worker', noedit: true, hidden: true },
 	siteVisitor: { type: Types.Relationship, label: 'site visitor', ref: 'Site Visitor', dependsOn: { inquirer: 'site visitor' }, filters: { isActive: true }, initial: true },
 	family: { type: Types.Relationship, label: 'family', ref: 'Family', dependsOn: { inquirer: 'family' }, filters: { isActive: true }, initial: true },
 	socialWorker: { type: Types.Relationship, label: 'social worker', ref: 'Social Worker', dependsOn: { inquirer: 'social worker' }, filters: { isActive: true }, initial: true },
@@ -232,11 +231,6 @@ Inquiry.schema.methods.populateDerivedFields = function() {
 					if( !childsSocialWorkerId || childsSocialWorkerId.toString() !== adoptionWorkersId.toString() ) {
 						// set the child's social worker field to the id of the child's adoption worker
 						this.set( 'childsSocialWorker', adoptionWorkersId );
-					}
-					// if no child's social worker has been set, save it
-					if( !this.get( 'originalChildsSocialWorker' ) ) {
-						// set the previous child's social worker to point to the adoption worker of the first child
-						this.set( 'originalChildsSocialWorker', adoptionWorkersId );
 					}
 					// if either the previous social worker value wasn't set, or the adoption worker has changed
 					if( !this.get( 'agency' ) ) {
