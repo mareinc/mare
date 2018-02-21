@@ -135,9 +135,9 @@ Child.add('Display Options', {
 	photolistingPageNumber: { type: Types.Text, label: 'photolisting page', initial: true },
 	previousPhotolistingPageNumbers: { type: Types.Text, label: 'previous photolisting pages', initial: true },
 
-	image: { type: Types.CloudinaryImage, label: 'display image', folder: `${ process.env.CLOUDINARY_DIRECTORY }/children/`, select: true, selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/children/`, publicID: 'fileName', dependsOn: { mustBePlacedWithSiblings: false }, autoCleanup: true },
-	allImages: { type: Types.CloudinaryImages, label: 'all images', folder: `${ process.env.CLOUDINARY_DIRECTORY }/children/`, select: true, selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/children/`, publicID: 'fileName', dependsOn: { mustBePlacedWithSiblings: false }, autoCleanup: true },
-	siblingGroupImage: { type: Types.CloudinaryImage, label: 'sibling group image', folder: `${ process.env.CLOUDINARY_DIRECTORY }/sibling-groups/`, select: true, selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/sibling-groups/`, publicID: 'siblingGroupFileName', dependsOn: { mustBePlacedWithSiblings: true }, autoCleanup: true },
+	image: { type: Types.CloudinaryImage, label: 'display image', folder: `${ process.env.CLOUDINARY_DIRECTORY }/children/`, select: true, selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/children/`, publicID: 'fileName', dependsOn: { mustBePlacedWithSiblings: false }, autoCleanup: false },
+	allImages: { type: Types.CloudinaryImages, label: 'all images', folder: `${ process.env.CLOUDINARY_DIRECTORY }/children/`, select: true, selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/children/`, publicID: 'fileName', dependsOn: { mustBePlacedWithSiblings: false }, autoCleanup: false },
+	siblingGroupImage: { type: Types.CloudinaryImage, label: 'sibling group image', folder: `${ process.env.CLOUDINARY_DIRECTORY }/sibling-groups/`, select: true, selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/sibling-groups/`, publicID: 'siblingGroupFileName', dependsOn: { mustBePlacedWithSiblings: true }, autoCleanup: false },
 	extranetUrl: { type: Types.Url, label: 'extranet and related profile url', initial: true } // TODO: Since this is redundant as this just points the the url where the photo exists (the child's page), we may hide this field.  This must be kept in as it will help us track down the child information in the old system in the event of an issue.
 
 }, 'Recruitment Options', {
@@ -260,7 +260,7 @@ Child.schema.pre( 'save', function( next ) {
 	// if there are no siblings to be placed with, uncheck the box, otherwise check it
 	this.updateMustBePlacedWithSiblingsCheckbox();
 	// if there are no siblings to be placed with, clear the group bio
-	this.updateGroupBio();
+	this.updateSiblingGroupInfo();
 
 	// set the registration number for the family
 	const registrationNumberSet = this.setRegistrationNumber();
@@ -686,14 +686,19 @@ Child.schema.methods.updateMustBePlacedWithSiblingsCheckbox = function() {
 	}
 }
 
-Child.schema.methods.updateGroupBio = function() {
+Child.schema.methods.updateSiblingGroupInfo = function() {
 	'use strict';
 
 	if( !this.siblingsToBePlacedWith || this.siblingsToBePlacedWith.length === 0 ) {
-		this.groupProfile = this.groupProfile || {};
+		this.groupProfile.quote = '';
 		this.groupProfile.part1 = '';
 		this.groupProfile.part2 = '';
 		this.groupProfile.part3 = '';
+		this.wednesdaysChildSiblingGroup = false;
+		// this.wednesdaysChildSiblingGroupDate = '';
+		// this.wednesdaysChildSiblingGroupVideo = '';
+		// this.siblingGroupImage = '';
+		// this.siblingGroupVideo = '';
 	}
 };
 
@@ -805,7 +810,14 @@ Child.schema.methods.updateSiblingsToBePlacedWithGroup = function() {
 				saveLock.lock( siblingID );
 				// update the sibling to be placed with with the new siblings to be placed with group
 				ChildMiddleware
-					.applySiblingsToBePlacedWithGroupToChild( { childToUpdateID: siblingID, siblingsToBePlacedWithGroup: updatedSiblingsToBePlacedWithGroup } )
+					.applySiblingsToBePlacedWithGroupToChild( { childToUpdateID: siblingID,
+																siblingsToBePlacedWithGroup: updatedSiblingsToBePlacedWithGroup,
+																siblingGroupProfile: this.get( 'groupProfile' ),
+																siblingGroupImage: this.get( 'siblingGroupImage' ),
+																siblingGroupVideo: this.get( 'siblingGroupVideo' ),
+																wednesdaysChildSiblingGroup: this.get( 'wednesdaysChildSiblingGroup' ),
+																wednesdaysChildSiblingGroupDate: this.get( 'wednesdaysChildSiblingGroupDate' ),
+																wednesdaysChildSiblingGroupVideo: this.get( 'wednesdaysChildSiblingGroupVideo' ) } )
 					.then( updatedChildID => {
 						// unlock the sibling to be placed with after update is complete
 						saveLock.unlock( updatedChildID );

@@ -275,10 +275,20 @@ exports.batchAllSiblingsToBePlacedWithUpdates = ( childModel ) => {
 	});
 };
 
-exports.applySiblingsToBePlacedWithGroupToChild = ( { childToUpdateID, siblingsToBePlacedWithGroup = [] } ) => {
+exports.applySiblingsToBePlacedWithGroupToChild = ( { childToUpdateID, siblingsToBePlacedWithGroup = [], siblingGroupProfile, siblingGroupImage, siblingGroupVideo, wednesdaysChildSiblingGroup, wednesdaysChildSiblingGroupDate, wednesdaysChildSiblingGroupVideo } ) => {
 
 	return new Promise( ( resolve, reject ) => {
 
+		// create a group profile object based on the saving child's profile information
+		const newGroupProfile						= siblingGroupProfile || {},
+			  newGroupQuote							= siblingGroupProfile.quote || '',
+			  newGroupProfilePart1					= siblingGroupProfile.part1 || '',
+			  newGroupProfilePart2					= siblingGroupProfile.part2 || '',
+			  newGroupProfilePart3					= siblingGroupProfile.part3 || '',
+			  newSiblingGroupImage					= siblingGroupImage || {},
+			  newWednesdaysChildSiblingGroupDate 	= wednesdaysChildSiblingGroupDate || '';
+
+		// get the child model to update
 		childService
 			.getChildById( { id: childToUpdateID } )
 			.then( child => {
@@ -324,6 +334,42 @@ exports.applySiblingsToBePlacedWithGroupToChild = ( { childToUpdateID, siblingsT
 						// set the save updates flag to true
 						saveUpdatesToSiblingsToBePlacedWithGroup = true;
 					}
+
+					// protect against items being undefined
+					child.siblingGroupImage = child.siblingGroupImage || {};
+					child.wednesdaysChildSiblingGroupDate = child.wednesdaysChildSiblingGroupDate || '';
+					if ( child.wednesdaysChildSiblingGroupDate == null ) {
+						child.wednesdaysChildSiblingGroupDate = '';
+						child.set( 'wednesdaysChildSiblingGroupDate', '' );
+					}
+					// test to see if any group profile attributes need to be updated
+					if( child.groupProfile.quote !== siblingGroupProfile.quote ||
+						child.groupProfile.part1 !== siblingGroupProfile.part1 ||
+						child.groupProfile.part2 !== siblingGroupProfile.part2 ||
+						child.groupProfile.part3 !== siblingGroupProfile.part3 ||
+						child.siblingGroupImage.secure_url !== newSiblingGroupImage.secure_url || // when checking that the objects are different, we only need to test a single attribute
+						child.siblingGroupVideo !== siblingGroupVideo ||
+						child.wednesdaysChildSiblingGroup !== wednesdaysChildSiblingGroup ||
+						// commenting this line out because it causes reference errors
+						//child.wednesdaysChildSiblingGroupDate.toString() !== newWednesdaysChildSiblingGroupDate.toString() ||
+						child.wednesdaysChildSiblingGroupVideo !== wednesdaysChildSiblingGroupVideo ) {
+							// update the child to be placed with with the shared bio information
+							child.groupProfile.quote	= newGroupQuote;
+							child.groupProfile.part1   	= newGroupProfilePart1;
+							child.groupProfile.part2	= newGroupProfilePart2;
+							child.groupProfile.part3	= newGroupProfilePart3;
+							// update the child to be placed with, with the group image and video
+							child.siblingGroupImage     = Object.assign( {}, newSiblingGroupImage );
+							child.siblingGroupVideo     = siblingGroupVideo;
+							// update the group wednesday's child fields
+							child.wednesdaysChildSiblingGroup       = wednesdaysChildSiblingGroup;
+							child.wednesdaysChildSiblingGroupDate   = wednesdaysChildSiblingGroupDate;
+							child.wednesdaysChildSiblingGroupVideo  = wednesdaysChildSiblingGroupVideo;
+							// set the save updates flag to true
+							saveUpdatesToSiblingsToBePlacedWithGroup = true;
+
+							console.log( '!!!PROFILE INFO UPDATED!!!' );
+						}
 
 				// if the current child is not part of the new siblings to be placed with group, reset the current child's siblings to be placed with group to an empty group
 				} else {
