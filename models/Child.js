@@ -268,10 +268,50 @@ Child.schema.pre( 'save', function( next ) {
 	const adoptionWorkerAgencyFieldsSet = this.setAdoptionWorkerAgencyFields();
 	// set the noedit fields associated with the recruitment worker's agency
 	const recruitmentWorkerAgencyFieldsSet = this.setRecruitmentWorkerAgencyFields();
-	// create an identifying name for sibling group file uploads
-	const siblingGroupFileNameSet = this.setSiblingGroupFileName();
 
-	Promise.all( [ registrationNumberSet, adoptionWorkerAgencyFieldsSet, recruitmentWorkerAgencyFieldsSet, siblingGroupFileNameSet ] )
+
+	// check to see if the siblings groups have been changed
+	let hasSiblingsChanged = this.checkSiblingsForChanges();
+	let hasSiblingsToBePlacedWithChanged = this.checkSiblingsToBePlacedWithForChanges();
+	// if both groups have been changed
+	if ( hasSiblingsChanged && hasSiblingsToBePlacedWithChanged ) {
+		// revert the changes to the siblingsToBePlacedWith group
+		console.log( 'siblings and siblings to be placed with were changed simultaneously - reverting siblings to be placed with' );
+		this.siblingsToBePlacedWith = this._original.siblingsToBePlacedWith;
+		hasSiblingsToBePlacedWithChanged = false;
+	}
+
+	// perform async processing
+	Promise
+		.resolve()
+		// process updates to sibling groups
+		.then( () => {
+			// if the siblings group has been updated
+			if ( hasSiblingsChanged ) {
+				// batch the siblings group updates
+				return ChildMiddleware.batchAllSiblingUpdates( this );
+			// if the siblings to be placed with group has been updated
+			} else if ( hasSiblingsToBePlacedWithChanged ) {
+				// batch the siblings to be placed with group updates
+				return ChildMiddleware.batchAllSiblingsToBePlacedWithUpdates( this );
+			// if neither group has been updated
+			} else {
+				// continue execution
+				return;
+			}
+		})
+		// catch and log any errors
+		.catch( error => {
+			// log any errors
+			console.error( error );
+		})
+		// perform the rest of the pre-save processing
+		.then( () => {
+			// create an identifying name for sibling group file uploads ( this has to run after sibling updates have been processed )
+			const siblingGroupFileNameSet = this.setSiblingGroupFileName();
+
+			return Promise.all( [ registrationNumberSet, adoptionWorkerAgencyFieldsSet, recruitmentWorkerAgencyFieldsSet, siblingGroupFileNameSet ] );
+		})
 		// if there was an error with any of the promises
 		.catch( err => {
 			// log it for debugging purposes
@@ -282,18 +322,7 @@ Child.schema.pre( 'save', function( next ) {
 		.then( () => {
 			// create a unique label for each child based on their first & last names and their registration number
 			this.setFullNameAndRegistrationLabel();
-
-			ChildMiddleware.batchAllSiblingsToBePlacedWithUpdates( this )
-				.then( result => {
-
-					console.log( `exiting pre-save hook of child: ${ this.name.first } ${ this.name.last }` );
-					next();
-				})
-				.catch( error => {
-
-					console.error( error );
-					next();
-				});
+			next();
 		});
 });
 
@@ -301,9 +330,18 @@ Child.schema.post( 'save', function() {
 
 	console.log( `entering post-save hook of child: ${ this.name.first } ${ this.name.last }` );
 
-	// update all sibling information
-	//this.updateSiblingGroup();
-	this.updateSiblingsToBePlacedWithGroup();
+	// if the siblings group has been changed
+	if ( this.checkSiblingsForChanges() ) {
+		// process updates for other siblings in the group
+		this.updateSiblingGroup();
+	}
+
+	// if the siblings to be placed with group has been changed
+	if ( this.checkSiblingsToBePlacedWithForChanges() ) {
+		// process updates for other siblings in the group
+		this.updateSiblingsToBePlacedWithGroup();
+	}
+
 	// update saved bookmarks for families and social workers in the event of a status change or sibling group change
 	this.updateBookmarks();
 
@@ -855,6 +893,34 @@ Child.schema.methods.updateSiblingsToBePlacedWithGroup = function() {
 			}
 		});
 	}
+};
+
+Child.schema.methods.checkSiblingsForChanges = function() {
+
+	let siblingsArrayBeforeSave = this._original ? this._original.siblings.map( sibling => sibling.toString() ) : [];
+	let siblingsBeforeSave = new Set( siblingsArrayBeforeSave );
+
+	let siblingsArrayAfterSave = this.siblings.map( sibling => sibling.toString() );
+	let siblingsAfterSave = new Set( siblingsArrayAfterSave );
+
+	let exclusiveSiblingsInTheBeforeSaveSet = siblingsBeforeSave.leftOuterJoin( siblingsAfterSave );
+	let exclusiveSiblingsInThAfterSaveSet = siblingsBeforeSave.rightOuterJoin( siblingsAfterSave );
+
+	return exclusiveSiblingsInTheBeforeSaveSet.size > 0 || exclusiveSiblingsInThAfterSaveSet.size > 0;
+};
+
+Child.schema.methods.checkSiblingsToBePlacedWithForChanges = function() {
+
+	let siblingsArrayBeforeSave = this._original ? this._original.siblingsToBePlacedWith.map( sibling => sibling.toString() ) : [];
+	let siblingsBeforeSave = new Set( siblingsArrayBeforeSave );
+
+	let siblingsArrayAfterSave = this.siblingsToBePlacedWith.map( sibling => sibling.toString() );
+	let siblingsAfterSave = new Set( siblingsArrayAfterSave );
+
+	let exclusiveSiblingsInTheBeforeSaveSet = siblingsBeforeSave.leftOuterJoin( siblingsAfterSave );
+	let exclusiveSiblingsInThAfterSaveSet = siblingsBeforeSave.rightOuterJoin( siblingsAfterSave );
+
+	return exclusiveSiblingsInTheBeforeSaveSet.size > 0 || exclusiveSiblingsInThAfterSaveSet.size > 0;
 };
 
 // Update the siblings field of all siblings listed to include the current child
