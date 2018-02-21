@@ -365,6 +365,27 @@ Child.schema.post( 'save', function() {
 				}
 		});
 	}
+
+	// we need this id in case the family was created via the website and updatedBy is empty
+	const websiteBotFetched = UserServiceMiddleware.getUserByFullName( 'Website Bot', 'admin' );
+
+	// if the bot user was fetched successfully
+	websiteBotFetched
+		.then( bot => {
+			// set the updatedBy field to the bot's _id if the field isn't already set ( meaning it was saved in the admin UI and we know the user based on their session info )
+			this.updatedBy = this.updatedBy || bot.get( '_id' );
+		})
+		// if there was an error fetching the bot user
+		.catch( err => {
+			// log it for debugging purposes
+			console.error( `Website Bot could not be fetched for family ${ this.name.full } ( registration number: ${ this.registrationNumber } ) - ${ err }` );
+		})
+		// execute the following regardless of whether the promises were resolved or rejected
+		// TODO: this should be replaced with ES6 Promise.prototype.finally() once it's finalized, assuming we can update to the latest version of Node if we upgrade Keystone
+		.then( () => {
+			// process change history
+			this.setChangeHistory();
+		});
 });
 
 // Child.schema.post( 'save', function() {
