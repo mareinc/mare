@@ -345,8 +345,25 @@ Child.schema.post( 'save', function() {
 			}
 		});
 	} else {
-		console.log( `${ this.name.first } ${ this.name.last } has no siblings, not doing anything...` );
-		console.log( `should remove this child from:  ${ siblingsRemovedBySave }` );
+		console.log( `${ this.name.first } ${ this.name.last } has no siblings, removing it from all previous siblings` );
+
+		siblingsRemovedBySave.forEach( siblingID => {
+
+			if ( !saveLock.isLocked( siblingID ) ) {
+				saveLock.lock( siblingID );
+				ChildMiddleware
+					.removeSiblingFromChild( { childToUpdateID: siblingID, siblingToRemoveID: this._id.toString() } )
+					.then( updatedChildID => {
+
+						saveLock.unlock( updatedChildID );
+					})
+					.catch( updatedChildID => {
+						saveLock.unlock( updatedChildID );
+					});
+				} else {
+					console.log( `attmpted to save locked child ${ siblingID }` );
+				}
+		});
 	}
 });
 

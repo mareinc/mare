@@ -87,7 +87,7 @@ exports.batchAllSiblingUpdates = ( childModel ) => {
 	});
 };
 
-exports.applySiblingGroupToChild =  ( { childToUpdateID, siblingGroup = [] } ) => {
+exports.applySiblingGroupToChild = ( { childToUpdateID, siblingGroup = [] } ) => {
 
 	return new Promise( ( resolve, reject ) => {
 
@@ -166,6 +166,43 @@ exports.applySiblingGroupToChild =  ( { childToUpdateID, siblingGroup = [] } ) =
 					});
 				} else {
 					console.log( 'no difference detected, no save or update required' );
+					resolve( childToUpdateID );
+				}
+			})
+			.catch( error => {
+				// log the error
+				console.error( error );
+				// reject the promise with the error
+				reject( childToUpdateID );
+			});
+	});
+};
+
+exports.removeSiblingFromChild = ( { childToUpdateID, siblingToRemoveID } ) => {
+
+	return new Promise( ( resolve, reject ) => {
+
+		childService
+			.getChildById( { id: childToUpdateID } )
+			.then( child => {
+
+				let siblings = child.siblings.map( sibling => sibling.toString() );
+				let siblingSet = new Set( siblings );
+				let siblingSetSizeBeforeDelete = siblingSet.size;
+
+				siblingSet.delete( siblingToRemoveID );
+
+				if ( siblingSetSizeBeforeDelete !== siblingSet.size ) {
+					child.siblings = Array.from( siblingSet );
+
+					// save the updated child model
+					child.save( error => {
+						// log any errors
+						error ? console.error( error ) : console.log( `${ child.name.first } ${ child.name.last } ( ${ childToUpdateID } ) saved successfully` );
+						// resolve the promise
+						resolve( childToUpdateID );
+					});
+				} else {
 					resolve( childToUpdateID );
 				}
 			})
