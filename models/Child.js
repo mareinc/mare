@@ -58,7 +58,7 @@ Child.add('Display Options', {
 	hasContactWithSiblings: { type: Types.Boolean, label: 'has contact with siblings?', default: false, initial: true },
 	siblingTypeOfContact: { type: Types.Text, label: 'type of contact', initial: true },
 	siblings: { type: Types.Relationship, label: 'siblings', ref: 'Child', many: true, initial: true },
-	//mustBePlacedWithSiblings: { type: Types.Boolean, label: 'must be placed with one or more sibling', default: false, initial: true },
+	mustBePlacedWithSiblings: { type: Types.Boolean, label: 'must be placed with one or more sibling', default: false, initial: true, hidden: true },
 	siblingsToBePlacedWith: { type: Types.Relationship, label: 'siblings to be placed with', ref: 'Child', many: true, initial: true },
 	hasContactWithBirthFamily: { type: Types.Boolean, label: 'has contact with birth family?', default: false, initial: true },
 	birthFamilyTypeOfContact: { type: Types.Text, label: 'type of contact', initial: true },
@@ -236,16 +236,15 @@ Child.schema.virtual( 'hasSiblingGroupImage' ).get( function() {
 	return this.siblingGroupImage.exists;
 });
 
-Child.schema.virtual( 'mustBePlacedWithSiblings' ).get( function() {
-
-	return this.siblingsToBePlacedWith.length > 0 ? true : false;
-});
-
 // Post Init - used to store all the values before anything is changed
 Child.schema.post( 'init', function() {
 	'use strict';
 
 	this._original = this.toObject();
+
+	if ( this.siblingsToBePlacedWith ) {
+		this.mustBePlacedWithSiblings = this.siblingsToBePlacedWith.length > 0 ? true : false;
+	}
 });
 
 Child.schema.pre( 'save', function( next ) {
