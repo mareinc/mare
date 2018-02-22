@@ -92,22 +92,6 @@ module.exports.generateInquiries = function* generateInquiries() {
 /* the import function for agencies */
 module.exports.createInquiryRecord = ( inquiry, pauseUntilSaved ) => {
 
-	// *cll_id
-	// **agc_id: inquirer
-	// **fam_id
-	// ***taken_by
-	// *call_date
-	// *inquiry_type
-	// **inquiry_method
-	// *rcs_id
-	// recruitment_agc_id: child's social worker
-	// ?confirm_print_date: means that the call was taken, then an admin went in and made sure the inquirer had a confirmation sent.  This marks the final two checkboxes
-	// ?generate_letter
-	// ?scheduled_print_date
-	// ?last_print_date
-	// ?generate_confirmation
-	// *family: on behalf of
-
 	// sets variables to make determining which emails should be marked as sent easier
 	const isFamilyInquiry				= !!inquiry.fam_id,
 		  isSocialWorkerInquiry			= !!inquiry.agc_id,
@@ -119,18 +103,21 @@ module.exports.createInquiryRecord = ( inquiry, pauseUntilSaved ) => {
 		  isEmailInquiry				= inquiry.inquiry_method === 'E',
 		  isPhoneInquiry				= inquiry.inquiry_method === 'P',
 		  isInPersonInquiry				= inquiry.inquiry_method === 'I',
-		  isMailInquiry					= inquiry.inquiry_method === 'M',
+		  isMailInquiry					= inquiry.inquiry_method === 'M';
 
-	if( !isEmailInquiry && !isPhoneInquiry && !isInPersonInquiry ) {
-		console.log( inquiry.inquiry_method ); // This is being hit
+	if( !isEmailInquiry && !isPhoneInquiry && !isInPersonInquiry && !isMailInquiry ) {
+		// store a reference to the entry that caused the error
+		importErrors.push( { id: inquiry.cll_id, error: `unexpected inquiry method ${ inquiry.inquiry_method }` } );
 	}
 
-	if( !isGeneralInquiry && !isChildInquiry && !isComplaint ) {
-		console.log( inquiry.inquiry_type ); // This is being hit
+	if( !isGeneralInquiry && !isChildInquiry && !isComplaint && !isFamilySupportConsultation ) {
+		// store a reference to the entry that caused the error
+		importErrors.push( { id: inquiry.cll_id, error: `unexpected inquiry type ${ inquiry.inquiry_type }` } );
 	}
 
 	if( !isFamilyInquiry && !isSocialWorkerInquiry ) {
-		console.error( 'no valid inquirer' );
+		// store a reference to the entry that caused the error
+		importErrors.push( { id: inquiry.cll_id, error: `no valid inquirer` } );
 	}
 
 	// fetch the admin who created the inquiry
@@ -202,7 +189,7 @@ module.exports.createInquiryRecord = ( inquiry, pauseUntilSaved ) => {
 		})
 		.catch( err => {
 			// we can assume it was a reject from trying to fetch the city or town by an unrecognized name
-			importErrors.push( { id: inquiry.cll_id, error: `error importing inquiry with id ${ inquiry.cll_id } - ${ err }` } );
+			importErrors.push( { id: inquiry.cll_id, error: `error importing inquiry - ${ err }` } );
 
 			if( pauseUntilSaved ) {
 				setTimeout( () => {

@@ -18,7 +18,9 @@ module.exports.getSourceById = id => {
 	return new Promise( ( resolve, reject ) => {
 
 		if( !id ) {
-			return reject( `no id value passed in to getSourceById()` );
+			console.error( `no id value passed in to getSourceById()` );
+
+			resolve();
 		}
 
 		Source.model
