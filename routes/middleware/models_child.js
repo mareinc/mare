@@ -341,10 +341,13 @@ exports.applySiblingsToBePlacedWithGroupToChild = ( { childToUpdateID, siblingsT
 					let hasWednesdaysChildSiblingGroupDateChanged = false;
 					// try to cast both values to dates
 					let currentwednesdaysChildSiblingGroupDate = child.wednesdaysChildSiblingGroupDate instanceof Date ? child.wednesdaysChildSiblingGroupDate : undefined;
-					let newWednesdaysChildSiblingGroupDate 	= wednesdaysChildSiblingGroupDate instanceof Date ? wednesdaysChildSiblingGroupDate : undefined;
+					let newWednesdaysChildSiblingGroupDate = wednesdaysChildSiblingGroupDate instanceof Date ? wednesdaysChildSiblingGroupDate : undefined;
 					// if both values are dates
 					if ( currentwednesdaysChildSiblingGroupDate && newWednesdaysChildSiblingGroupDate ) {
 						hasWednesdaysChildSiblingGroupDateChanged = currentwednesdaysChildSiblingGroupDate.toString() !== newWednesdaysChildSiblingGroupDate.toString();
+					// if both values are not dates
+					} else {
+						hasWednesdaysChildSiblingGroupDateChanged = currentwednesdaysChildSiblingGroupDate != newWednesdaysChildSiblingGroupDate;
 					}
 
 					// test to see if any group profile attributes need to be updated
@@ -367,7 +370,7 @@ exports.applySiblingsToBePlacedWithGroupToChild = ( { childToUpdateID, siblingsT
 							child.siblingGroupVideo     = siblingGroupVideo;
 							// update the group wednesday's child fields
 							child.wednesdaysChildSiblingGroup       = wednesdaysChildSiblingGroup;
-							child.wednesdaysChildSiblingGroupDate   = wednesdaysChildSiblingGroupDate;
+							child.wednesdaysChildSiblingGroupDate   = newWednesdaysChildSiblingGroupDate;
 							child.wednesdaysChildSiblingGroupVideo  = wednesdaysChildSiblingGroupVideo;
 							// set the save updates flag to true
 							saveUpdatesToSiblingsToBePlacedWithGroup = true;
