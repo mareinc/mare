@@ -336,8 +336,8 @@ Child.schema.post( 'save', function() {
 		this.updateSiblingGroup();
 	}
 
-	// if the siblings to be placed with group has been changed
-	if ( this.checkSiblingsToBePlacedWithForChanges() ) {
+	// if the siblings group has not changed, try to apply siblings to be placed with changes to ensure group info is updated all siblings to be placed with
+	if ( !this.checkSiblingsForChanges() ) {
 		// process updates for other siblings in the group
 		this.updateSiblingsToBePlacedWithGroup();
 	}
@@ -733,10 +733,10 @@ Child.schema.methods.updateSiblingGroupInfo = function() {
 		this.groupProfile.part2 = '';
 		this.groupProfile.part3 = '';
 		this.wednesdaysChildSiblingGroup = false;
-		// this.wednesdaysChildSiblingGroupDate = '';
-		// this.wednesdaysChildSiblingGroupVideo = '';
-		// this.siblingGroupImage = '';
-		// this.siblingGroupVideo = '';
+		this.wednesdaysChildSiblingGroupDate = undefined;
+		this.wednesdaysChildSiblingGroupVideo = undefined;
+		this.siblingGroupImage = undefined;
+		this.siblingGroupVideo = undefined;
 	}
 };
 

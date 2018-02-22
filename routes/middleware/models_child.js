@@ -285,8 +285,8 @@ exports.applySiblingsToBePlacedWithGroupToChild = ( { childToUpdateID, siblingsT
 			  newGroupProfilePart1					= siblingGroupProfile.part1 || '',
 			  newGroupProfilePart2					= siblingGroupProfile.part2 || '',
 			  newGroupProfilePart3					= siblingGroupProfile.part3 || '',
-			  newSiblingGroupImage					= siblingGroupImage || {},
-			  newWednesdaysChildSiblingGroupDate 	= wednesdaysChildSiblingGroupDate || '';
+			  newSiblingGroupImage					= siblingGroupImage || {};
+
 
 		// get the child model to update
 		childService
@@ -337,11 +337,16 @@ exports.applySiblingsToBePlacedWithGroupToChild = ( { childToUpdateID, siblingsT
 
 					// protect against items being undefined
 					child.siblingGroupImage = child.siblingGroupImage || {};
-					child.wednesdaysChildSiblingGroupDate = child.wednesdaysChildSiblingGroupDate || '';
-					if ( child.wednesdaysChildSiblingGroupDate == null ) {
-						child.wednesdaysChildSiblingGroupDate = '';
-						child.set( 'wednesdaysChildSiblingGroupDate', '' );
+					// test if wednesday's child group date has changed
+					let hasWednesdaysChildSiblingGroupDateChanged = false;
+					// try to cast both values to dates
+					let currentwednesdaysChildSiblingGroupDate = child.wednesdaysChildSiblingGroupDate instanceof Date ? child.wednesdaysChildSiblingGroupDate : undefined;
+					let newWednesdaysChildSiblingGroupDate 	= wednesdaysChildSiblingGroupDate instanceof Date ? wednesdaysChildSiblingGroupDate : undefined;
+					// if both values are dates
+					if ( currentwednesdaysChildSiblingGroupDate && newWednesdaysChildSiblingGroupDate ) {
+						hasWednesdaysChildSiblingGroupDateChanged = currentwednesdaysChildSiblingGroupDate.toString() !== newWednesdaysChildSiblingGroupDate.toString();
 					}
+
 					// test to see if any group profile attributes need to be updated
 					if( child.groupProfile.quote !== siblingGroupProfile.quote ||
 						child.groupProfile.part1 !== siblingGroupProfile.part1 ||
@@ -350,8 +355,7 @@ exports.applySiblingsToBePlacedWithGroupToChild = ( { childToUpdateID, siblingsT
 						child.siblingGroupImage.secure_url !== newSiblingGroupImage.secure_url || // when checking that the objects are different, we only need to test a single attribute
 						child.siblingGroupVideo !== siblingGroupVideo ||
 						child.wednesdaysChildSiblingGroup !== wednesdaysChildSiblingGroup ||
-						// commenting this line out because it causes reference errors
-						//child.wednesdaysChildSiblingGroupDate.toString() !== newWednesdaysChildSiblingGroupDate.toString() ||
+						hasWednesdaysChildSiblingGroupDateChanged ||
 						child.wednesdaysChildSiblingGroupVideo !== wednesdaysChildSiblingGroupVideo ) {
 							// update the child to be placed with with the shared bio information
 							child.groupProfile.quote	= newGroupQuote;
