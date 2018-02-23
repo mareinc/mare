@@ -63,7 +63,7 @@ exports.register = ( req, res, next ) => {
 		.then( () => {
 			// notify the user that they were successful
 			req.flash( 'success', { title: 'MARE has been notified of your registration',
-				detail: 'your registration will be processed in 1-3 business days and someone will reach out if additional information is needed' });
+				detail: 'You can expect to receive a confirmation email with additional details prior to the event' });
 		})
 		// if there was an issue registering the attendee
 		.catch( err => {
@@ -71,7 +71,7 @@ exports.register = ( req, res, next ) => {
 			console.error( `error registering ${ req.user.displayName } for ${ eventDetails.eventName } - ${ err }` );
 			// notify the user of the error
 			req.flash( 'error', { title: 'There was an issue registering you for this event',
-						detail: 'If this error persists, please notify MARE' } );
+				detail: 'If this error persists, please notify MARE at <a href="mailto:web@mareinc.org">web@mareinc.org</a>' } );
 		})
 		// get the email target for an event registration
 		.then( () => emailTargetService.getEmailTargetByName( 'event registration' ) )
@@ -118,16 +118,16 @@ exports.unregister = ( req, res, next ) => {
 			eventDetails.unregisteredAdultsRemoved = ( unregistrationData.unregisteredAdultsRemoved && unregistrationData.unregisteredAdultsRemoved.length > 0 ) ? unregistrationData.unregisteredAdultsRemoved : undefined;
 			
 			// notify the user that they were successful
-			req.flash( 'success', { title: 'MARE has been notified of your unregistration',
-				detail: 'your unregistration will be processed in 1-3 business days and someone will reach out if additional information is needed' });
+			req.flash( 'success', { title: 'MARE has been notified of your change in registration',
+				detail: 'For additional questions contact <a href="mailto:web@mareinc.org">web@mareinc.org</a>' } );
 		})
 		// if there was an issue registering the attendee
 		.catch( err => {
 			// log the error for debugging purposes
 			console.error( `error unregistering ${ req.user.displayName } for ${ eventDetails.eventName } - ${ err }` );
 			// notify the user of the error
-			req.flash( 'error', { title: 'There was an issue unregistering you for this event',
-						detail: 'If this error persists, please notify MARE' } );
+			req.flash( 'error', { title: 'There was an issue changing your registration for this event',
+				detail: 'If this error persists, please notify MARE at <a href="mailto:web@mareinc.org">web@mareinc.org</a>' } );
 		})
 		// get the email target for an event unregistration
 		.then( () => emailTargetService.getEmailTargetByName( 'event registration' ) )

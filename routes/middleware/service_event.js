@@ -264,7 +264,7 @@ exports.submitEvent = function submitEvent( req, res, next ) {
 		// TODO: this should be replaced with ES6 Promise.prototype.finally() once it's finalized, assuming we can update to the latest version of Node if we upgrade Keystone
 		.then( () => {
 			// reload the form to display the flash message
-			res.redirect( 303, '/forms/agency-event-submission-form' );
+			res.redirect( 303, '/forms/agency-event-submission' );
 		});
 };
 

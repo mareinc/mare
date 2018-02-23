@@ -12,7 +12,8 @@ const keystone						= require( 'keystone' ),
 	  ChildMiddleware				= require( '../routes/middleware/models_child' ),
 	  FamilyMiddleware				= require( '../routes/middleware/models_family' ),
 	  SocialWorkerMiddleware		= require( '../routes/middleware/models_social-worker' ),
-	  UtilitiesMiddleware			= require( '../routes/middleware/utilities' );
+	  UtilitiesMiddleware			= require( '../routes/middleware/utilities' ),
+	  saveLock						= require( '../routes/middleware/model_save_lock' );
 
 // Create model
 const Child = new keystone.List( 'Child', {
@@ -56,9 +57,9 @@ Child.add('Display Options', {
 
 	hasContactWithSiblings: { type: Types.Boolean, label: 'has contact with siblings?', default: false, initial: true },
 	siblingTypeOfContact: { type: Types.Text, label: 'type of contact', initial: true },
-	siblings: { type: Types.Relationship, label: 'siblings', ref: 'Child', many: true, initial: true },
-	mustBePlacedWithSiblings: { type: Types.Boolean, label: 'must be placed with one or more sibling', default: false, initial: true },
-	siblingsToBePlacedWith: { type: Types.Relationship, label: 'siblings to be placed with', ref: 'Child', dependsOn: { mustBePlacedWithSiblings: true }, many: true, initial: true },
+	siblings: { type: Types.Relationship, label: 'siblings', ref: 'Child', many: true, initial: true, note: 'siblings cannot be updated at the same time as siblings to be placed with - save your changes to one, then update the other' },
+	mustBePlacedWithSiblings: { type: Types.Boolean, label: 'must be placed with one or more sibling', default: false, initial: true, noedit: true, note: 'this field will update automatically when the child is saved' },
+	siblingsToBePlacedWith: { type: Types.Relationship, label: 'siblings to be placed with', ref: 'Child', many: true, initial: true, note: 'siblings to be placed with cannot be updated at the same time as siblings - save your changes to one, then update the other' },
 	hasContactWithBirthFamily: { type: Types.Boolean, label: 'has contact with birth family?', default: false, initial: true },
 	birthFamilyTypeOfContact: { type: Types.Text, label: 'type of contact', initial: true },
 
@@ -134,9 +135,9 @@ Child.add('Display Options', {
 	photolistingPageNumber: { type: Types.Text, label: 'photolisting page', initial: true },
 	previousPhotolistingPageNumbers: { type: Types.Text, label: 'previous photolisting pages', initial: true },
 
-	image: { type: Types.CloudinaryImage, label: 'display image', folder: `${ process.env.CLOUDINARY_DIRECTORY }/children/`, select: true, selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/children/`, publicID: 'fileName', dependsOn: { mustBePlacedWithSiblings: false }, autoCleanup: true },
-	allImages: { type: Types.CloudinaryImages, label: 'all images', folder: `${ process.env.CLOUDINARY_DIRECTORY }/children/`, select: true, selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/children/`, publicID: 'fileName', dependsOn: { mustBePlacedWithSiblings: false }, autoCleanup: true },
-	siblingGroupImage: { type: Types.CloudinaryImage, label: 'sibling group image', folder: `${ process.env.CLOUDINARY_DIRECTORY }/sibling-groups/`, select: true, selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/sibling-groups/`, publicID: 'siblingGroupFileName', dependsOn: { mustBePlacedWithSiblings: true }, autoCleanup: true },
+	image: { type: Types.CloudinaryImage, label: 'display image', folder: `${ process.env.CLOUDINARY_DIRECTORY }/children/`, select: true, selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/children/`, publicID: 'fileName', dependsOn: { mustBePlacedWithSiblings: false }, autoCleanup: false },
+	allImages: { type: Types.CloudinaryImages, label: 'all images', folder: `${ process.env.CLOUDINARY_DIRECTORY }/children/`, select: true, selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/children/`, publicID: 'fileName', dependsOn: { mustBePlacedWithSiblings: false }, autoCleanup: false },
+	siblingGroupImage: { type: Types.CloudinaryImage, label: 'sibling group image', folder: `${ process.env.CLOUDINARY_DIRECTORY }/sibling-groups/`, select: true, selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/sibling-groups/`, publicID: 'siblingGroupFileName', dependsOn: { mustBePlacedWithSiblings: true }, autoCleanup: false },
 	extranetUrl: { type: Types.Url, label: 'extranet and related profile url', initial: true } // TODO: Since this is redundant as this just points the the url where the photo exists (the child's page), we may hide this field.  This must be kept in as it will help us track down the child information in the old system in the event of an issue.
 
 }, 'Recruitment Options', {
@@ -172,9 +173,9 @@ Child.add('Display Options', {
 	place: { type: Types.Text, label: 'place', initial: true, dependsOn: { locationAlert: true } },
 
 	communicationsCollateral: { type: Types.Boolean, label: 'communications collateral', default: false, initial: true },
-	communicationsCollateralDetails: { type: Types.Text, label: 'details', dependsOn: { communicationsCollateral: true }, initial: true }
+	communicationsCollateralDetails: { type: Types.Text, label: 'details', dependsOn: { communicationsCollateral: true }, initial: true },
 
-}, 'Attachments', {
+// }, 'Attachments', {
 
 	photolistingPage: {
 		type: Types.S3File,
@@ -182,7 +183,8 @@ Child.add('Display Options', {
 		filename: function( item, filename ) {
 			// prefix file name with registration number and the user's name for easier identification
 			return item.get( 'fileName' );
-		}
+		},
+		hidden: true
 	},
 
 	otherAttachement: {
@@ -191,7 +193,8 @@ Child.add('Display Options', {
 		filename: function( item, filename ) {
 			// prefix file name with registration number and name for easier identification
 			return item.get( 'fileName' );
-		}
+		},
+		hidden: true
 	}
 /* Container for all system fields (add a heading if any are meant to be visible through the admin UI) */
 }, {
@@ -238,73 +241,129 @@ Child.schema.post( 'init', function() {
 	'use strict';
 
 	this._original = this.toObject();
+
+	// if there are any siblingsToBePlacedWith, set mustBePlacedWithSiblings to true
+	if ( this.siblingsToBePlacedWith ) {
+		this.mustBePlacedWithSiblings = this.siblingsToBePlacedWith.length > 0 ? true : false;
+	}
 });
 
 Child.schema.pre( 'save', function( next ) {
 	'use strict';
+	// trim whitespace characters from any type.Text fields
+	this.trimTextFields();
+	// create a full name for the child based on their first, middle, and last names
+	this.setFullName();
+	// create an identifying name for file uploads
+	this.setFileName();
+	// if there are no siblings to be placed with, uncheck the box, otherwise check it
+	this.updateMustBePlacedWithSiblingsCheckbox();
+	// if there are no siblings to be placed with, clear the group bio
+	this.updateSiblingGroupInfo();
 
-	// // trim whitespace characters from any type.Text fields
-	// this.trimTextFields();
-	// // create a full name for the child based on their first, middle, and last names
-	// this.setFullName();
-	// // create an identifying name for file uploads
-	// this.setFileName();
-	// // if there are no siblings to be placed with, uncheck the box, otherwise check it
-	// this.updateMustBePlacedWithSiblingsCheckbox();
-	// // if there are no siblings to be placed with, clear the group bio
-	// this.updateGroupBio();
+	// set the registration number for the family
+	const registrationNumberSet = this.setRegistrationNumber();
+	// set the noedit fields associated with the adoption worker's agency
+	const adoptionWorkerAgencyFieldsSet = this.setAdoptionWorkerAgencyFields();
+	// set the noedit fields associated with the recruitment worker's agency
+	const recruitmentWorkerAgencyFieldsSet = this.setRecruitmentWorkerAgencyFields();
 
-	// // set the registration number for the family
-	// const registrationNumberSet = this.setRegistrationNumber();
-	// // set the noedit fields associated with the adoption worker's agency
-	// const adoptionWorkerAgencyFieldsSet = this.setAdoptionWorkerAgencyFields();
-	// // set the noedit fields associated with the recruitment worker's agency
-	// const recruitmentWorkerAgencyFieldsSet = this.setRecruitmentWorkerAgencyFields();
-	// // create an identifying name for sibling group file uploads
-	// const siblingGroupFileNameSet = this.setSiblingGroupFileName();
 
-	// Promise.all( [ registrationNumberSet, adoptionWorkerAgencyFieldsSet, recruitmentWorkerAgencyFieldsSet, siblingGroupFileNameSet ] )
-	// 	// if there was an error with any of the promises
-	// 	.catch( err => {
-	// 		// log it for debugging purposes
-	// 		console.error( `child ${ this.name.full } ( registration number: ${ this.registrationNumber } ) saved with errors` );
-	// 	})
-	// 	// execute the following regardless of whether the promises were resolved or rejected
-	// 	// TODO: this should be replaced with ES6 Promise.prototype.finally() once it's finalized, assuming we can update to the latest version of Node if we upgrade Keystone
-	// 	.then( () => {
-	// 		// create a unique label for each child based on their first & last names and their registration number
-	// 		this.setFullNameAndRegistrationLabel();
+	// check to see if the siblings groups have been changed
+	let hasSiblingsChanged = this.checkSiblingsForChanges();
+	let hasSiblingsToBePlacedWithChanged = this.checkSiblingsToBePlacedWithForChanges();
+	// if both groups have been changed
+	if ( hasSiblingsChanged && hasSiblingsToBePlacedWithChanged ) {
+		// revert the changes to the siblingsToBePlacedWith group
+		console.log( 'siblings and siblings to be placed with were changed simultaneously - reverting siblings to be placed with' );
+		this.siblingsToBePlacedWith = this._original.siblingsToBePlacedWith;
+		hasSiblingsToBePlacedWithChanged = false;
+	}
 
-	// 		next();
-	// 	});
+	// perform async processing
+	Promise
+		.resolve()
+		// process updates to sibling groups
+		.then( () => {
+			// if the siblings group has been updated
+			if ( hasSiblingsChanged ) {
+				// batch the siblings group updates
+				return ChildMiddleware.batchAllSiblingUpdates( this );
+			// if the siblings to be placed with group has been updated
+			} else if ( hasSiblingsToBePlacedWithChanged ) {
+				// batch the siblings to be placed with group updates
+				return ChildMiddleware.batchAllSiblingsToBePlacedWithUpdates( this );
+			// if neither group has been updated
+			} else {
+				// continue execution
+				return;
+			}
+		})
+		// catch and log any errors
+		.catch( error => {
+			// log any errors
+			console.error( error );
+		})
+		// perform the rest of the pre-save processing
+		.then( () => {
+			// create an identifying name for sibling group file uploads ( this has to run after sibling updates have been processed )
+			const siblingGroupFileNameSet = this.setSiblingGroupFileName();
+
+			return Promise.all( [ registrationNumberSet, adoptionWorkerAgencyFieldsSet, recruitmentWorkerAgencyFieldsSet, siblingGroupFileNameSet ] );
+		})
+		// if there was an error with any of the promises
+		.catch( err => {
+			// log it for debugging purposes
+			console.error( `child ${ this.name.full } ( registration number: ${ this.registrationNumber } ) saved with errors` );
+		})
+		// execute the following regardless of whether the promises were resolved or rejected
+		// TODO: this should be replaced with ES6 Promise.prototype.finally() once it's finalized, assuming we can update to the latest version of Node if we upgrade Keystone
+		.then( () => {
+			// create a unique label for each child based on their first & last names and their registration number
+			this.setFullNameAndRegistrationLabel();
+			next();
+		});
 });
 
 Child.schema.post( 'save', function() {
-	// update all sibling information
-	// this.updateSiblingFields();
-	// // update saved bookmarks for families and social workers in the event of a status change or sibling group change
-	// this.updateBookmarks();
 
-	// // we need this id in case the family was created via the website and updatedBy is empty
-	// const websiteBotFetched = UserServiceMiddleware.getUserByFullName( 'Website Bot', 'admin' );
+	console.log( `entering post-save hook of child: ${ this.name.first } ${ this.name.last }` );
 
-	// // if the bot user was fetched successfully
-	// websiteBotFetched
-	// 	.then( bot => {
-	// 		// set the updatedBy field to the bot's _id if the field isn't already set ( meaning it was saved in the admin UI and we know the user based on their session info )
-	// 		this.updatedBy = this.updatedBy || bot.get( '_id' );
-	// 	})
-	// 	// if there was an error fetching the bot user
-	// 	.catch( err => {
-	// 		// log it for debugging purposes
-	// 		console.error( `Website Bot could not be fetched for family ${ this.name.full } ( registration number: ${ this.registrationNumber } ) - ${ err }` );
-	// 	})
-	// 	// execute the following regardless of whether the promises were resolved or rejected
-	// 	// TODO: this should be replaced with ES6 Promise.prototype.finally() once it's finalized, assuming we can update to the latest version of Node if we upgrade Keystone
-	// 	.then( () => {
-	// 		// process change history
-	// 		this.setChangeHistory();
-	// 	});
+	// if the siblings group has been changed
+	if ( this.checkSiblingsForChanges() ) {
+		// process updates for other siblings in the group
+		this.updateSiblingGroup();
+	}
+
+	// if the siblings group has not changed, try to apply siblings to be placed with changes to ensure group info is updated all siblings to be placed with
+	if ( !this.checkSiblingsForChanges() ) {
+		// process updates for other siblings in the group
+		this.updateSiblingsToBePlacedWithGroup();
+	}
+
+	// update saved bookmarks for families and social workers in the event of a status change or sibling group change
+	this.updateBookmarks();
+
+	// we need this id in case the family was created via the website and updatedBy is empty
+	const websiteBotFetched = UserServiceMiddleware.getUserByFullName( 'Website Bot', 'admin' );
+
+	// if the bot user was fetched successfully
+	websiteBotFetched
+		.then( bot => {
+			// set the updatedBy field to the bot's _id if the field isn't already set ( meaning it was saved in the admin UI and we know the user based on their session info )
+			this.updatedBy = this.updatedBy || bot.get( '_id' );
+		})
+		// if there was an error fetching the bot user
+		.catch( err => {
+			// log it for debugging purposes
+			console.error( `Website Bot could not be fetched for family ${ this.name.full } ( registration number: ${ this.registrationNumber } ) - ${ err }` );
+		})
+		// execute the following regardless of whether the promises were resolved or rejected
+		// TODO: this should be replaced with ES6 Promise.prototype.finally() once it's finalized, assuming we can update to the latest version of Node if we upgrade Keystone
+		.then( () => {
+			// process change history
+			this.setChangeHistory();
+		});
 });
 
 /* text fields don't automatically trim(), this is to ensure no leading or trailing whitespace gets saved into url, text, or text area fields */
@@ -658,23 +717,211 @@ Child.schema.methods.setSiblingGroupFileName = function() {
 Child.schema.methods.updateMustBePlacedWithSiblingsCheckbox = function() {
 	'use strict';
 
-	if( this.siblingsToBePlacedWith && this.siblingsToBePlacedWith.length > 0 ) {
-    	this.mustBePlacedWithSiblings = true;
-	} else {
-		this.mustBePlacedWithSiblings = false;
+	// if there are any siblingsToBePlacedWith, set mustBePlacedWithSiblings to true
+	if ( this.siblingsToBePlacedWith ) {
+		this.mustBePlacedWithSiblings = this.siblingsToBePlacedWith.length > 0 ? true : false;
 	}
 }
 
-Child.schema.methods.updateGroupBio = function() {
+Child.schema.methods.updateSiblingGroupInfo = function() {
 	'use strict';
 
 	if( !this.siblingsToBePlacedWith || this.siblingsToBePlacedWith.length === 0 ) {
-		this.groupProfile = this.groupProfile || {};
+		this.groupProfile.quote = '';
 		this.groupProfile.part1 = '';
 		this.groupProfile.part2 = '';
 		this.groupProfile.part3 = '';
+		this.wednesdaysChildSiblingGroup = false;
+		this.wednesdaysChildSiblingGroupDate = undefined;
+		this.wednesdaysChildSiblingGroupVideo = undefined;
+		this.siblingGroupImage = undefined;
+		this.siblingGroupVideo = undefined;
 	}
 };
+
+Child.schema.methods.updateSiblingGroup = function() {
+
+	let siblingsArrayBeforeSave = this._original ? this._original.siblings.map( sibling => sibling.toString() ) : [];
+	let siblingsBeforeSave = new Set( siblingsArrayBeforeSave );
+
+	let siblingsArrayAfterSave = this.siblings.map( sibling => sibling.toString() );
+	let siblingsAfterSave = new Set( siblingsArrayAfterSave );
+
+	// create a set of all siblings added to the original child by the save operation
+	let siblingsAddedBySave = Array.from( siblingsBeforeSave.rightOuterJoin( siblingsAfterSave ) );
+	// create a set of all siblings removed from the original child by the save operation
+	let siblingsRemovedBySave = Array.from( siblingsBeforeSave.leftOuterJoin( siblingsAfterSave ) );
+	console.log( `siblings added by save ${ siblingsAddedBySave }` );
+	console.log( `siblings removed by save ${ siblingsRemovedBySave }` );
+
+	// create an updated representation of the sibling group based on the post-save state of the siblings array
+	let updatedSiblingGroup = siblingsArrayAfterSave;
+	// if the updated sibling group is not empty this child has siblings and a valid group to update
+	if ( updatedSiblingGroup.length > 0 ) {
+		// add the current child to the group ( because a child will not store itself in the siblings array )
+		updatedSiblingGroup.push( this._id.toString() );
+		console.log( `updated sibling group: ${ updatedSiblingGroup }` );
+		// determine which siblings were impacted by the update
+		let siblingsImpacted = updatedSiblingGroup.concat( siblingsRemovedBySave ).filter( siblingID => siblingID !== this._id.toString() );
+		console.log( `siblings impacted by save: ${ siblingsImpacted }` );
+
+		// for each sibling impacted
+		siblingsImpacted.forEach( siblingID => {
+			// check to ensure that the sibling is not already in the process of being saved
+			if ( !saveLock.isLocked( siblingID ) ) {
+				// lock the sibling to ensure that it cannot be updated by any other processes until this update is complete
+				saveLock.lock( siblingID );
+				// update the sibling with the new sibling group
+				ChildMiddleware
+					.applySiblingGroupToChild( { childToUpdateID: siblingID, siblingGroup: updatedSiblingGroup } )
+					.then( updatedChildID => {
+						// unlock the sibling after update is complete
+						saveLock.unlock( updatedChildID );
+					})
+					.catch( updatedChildID => {
+						// unlock the sibling after update is complete
+						saveLock.unlock( updatedChildID );
+					});
+			} else {
+				console.log( `attmpted to save locked child ${ siblingID }` );
+			}
+		});
+	// if the updated sibling group is empty this child was removed from a sibling group and should remove itself from any siblings remaining in that group
+	} else {
+		console.log( `${ this.name.first } ${ this.name.last } has no siblings, removing it from all previous siblings` );
+		// for each sibling that this child used to be a in a sibling group with
+		siblingsRemovedBySave.forEach( siblingID => {
+			// check to ensure that the sibling is not already in the process of being saved
+			if ( !saveLock.isLocked( siblingID ) ) {
+				// lock the sibling to ensure that it cannot be updated by any other processes until this update is complete
+				saveLock.lock( siblingID );
+				// remove this child from a sibling
+				ChildMiddleware
+					.removeSiblingFromChild( { childToUpdateID: siblingID, siblingToRemoveID: this._id.toString() } )
+					.then( updatedChildID => {
+						// unlock the sibling after update is complete
+						saveLock.unlock( updatedChildID );
+					})
+					.catch( updatedChildID => {
+						// unlock the sibling after update is complete
+						saveLock.unlock( updatedChildID );
+					});
+			} else {
+				console.log( `attmpted to save locked child ${ siblingID }` );
+			}
+		});
+	}
+};
+
+Child.schema.methods.updateSiblingsToBePlacedWithGroup = function() {
+
+	let siblingsToBePlacedWithArrayBeforeSave = this._original ? this._original.siblingsToBePlacedWith.map( sibling => sibling.toString() ) : [];
+	let siblingsToBePlacedWithBeforeSave = new Set( siblingsToBePlacedWithArrayBeforeSave );
+
+	let siblingsToBePlacedWithArrayAfterSave = this.siblingsToBePlacedWith.map( sibling => sibling.toString() );
+	let siblingsToBePlacedWithAfterSave = new Set( siblingsToBePlacedWithArrayAfterSave );
+
+	// create a set of all siblings to be placed with added to the original child by the save operation
+	let siblingsToBePlacedWithAddedBySave = Array.from( siblingsToBePlacedWithBeforeSave.rightOuterJoin( siblingsToBePlacedWithAfterSave ) );
+	// create a set of all siblings to be placed with removed from the original child by the save operation
+	let siblingsToBePlacedWithRemovedBySave = Array.from( siblingsToBePlacedWithBeforeSave.leftOuterJoin( siblingsToBePlacedWithAfterSave ) );
+	console.log( `siblings to be placed with added by save ${ siblingsToBePlacedWithAddedBySave }` );
+	console.log( `siblings to be placed with removed by save ${ siblingsToBePlacedWithRemovedBySave }` );
+
+	// create an updated representation of the siblings to be placed with group based on the post-save state of the siblings array
+	let updatedSiblingsToBePlacedWithGroup = siblingsToBePlacedWithArrayAfterSave;
+	// if the updated siblings to be placed with group is not empty this child has siblings to be placed with and a valid group to update
+	if ( updatedSiblingsToBePlacedWithGroup.length > 0 ) {
+		// add the current child to the group ( because a child will not store itself in the siblings array )
+		updatedSiblingsToBePlacedWithGroup.push( this._id.toString() );
+		console.log( `updated siblings to be placed with group: ${ updatedSiblingsToBePlacedWithGroup }` );
+		// determine which siblings to be placed with were impacted by the update
+		let siblingsToBePlacedWithImpacted = updatedSiblingsToBePlacedWithGroup.concat( siblingsToBePlacedWithRemovedBySave ).filter( siblingID => siblingID !== this._id.toString() );
+		console.log( `siblings to be placed with impacted by save: ${ siblingsToBePlacedWithImpacted }` );
+
+		// for each sibling to be placed with impacted
+		siblingsToBePlacedWithImpacted.forEach( siblingID => {
+			// check to ensure that the sibling to be placed with is not already in the process of being saved
+			if ( !saveLock.isLocked( siblingID ) ) {
+				// lock the sibling to be placed with to ensure that it cannot be updated by any other processes until this update is complete
+				saveLock.lock( siblingID );
+				// update the sibling to be placed with with the new siblings to be placed with group
+				ChildMiddleware
+					.applySiblingsToBePlacedWithGroupToChild( { childToUpdateID: siblingID,
+																siblingsToBePlacedWithGroup: updatedSiblingsToBePlacedWithGroup,
+																siblingGroupProfile: this.get( 'groupProfile' ),
+																siblingGroupImage: this.get( 'siblingGroupImage' ),
+																siblingGroupVideo: this.get( 'siblingGroupVideo' ),
+																wednesdaysChildSiblingGroup: this.get( 'wednesdaysChildSiblingGroup' ),
+																wednesdaysChildSiblingGroupDate: this.get( 'wednesdaysChildSiblingGroupDate' ),
+																wednesdaysChildSiblingGroupVideo: this.get( 'wednesdaysChildSiblingGroupVideo' ) } )
+					.then( updatedChildID => {
+						// unlock the sibling to be placed with after update is complete
+						saveLock.unlock( updatedChildID );
+					})
+					.catch( updatedChildID => {
+						// unlock the sibling to be placed with after update is complete
+						saveLock.unlock( updatedChildID );
+					});
+			} else {
+				console.log( `attmpted to save locked child ${ siblingID }` );
+			}
+		});
+	// if the updated siblings to be placed with group is empty this child was removed from a siblings to be placed with group and should remove itself from any siblings to be placed with remaining in that group
+	} else {
+		console.log( `${ this.name.first } ${ this.name.last } has no siblings to be placed with, removing it from all previous siblings to be placed with` );
+		// for each sibling that this child used to be a in a siblings to be placed with group with
+		siblingsToBePlacedWithRemovedBySave.forEach( siblingID => {
+			// check to ensure that the sibling to be placed with is not already in the process of being saved
+			if ( !saveLock.isLocked( siblingID ) ) {
+				// lock the sibling to be placed with to ensure that it cannot be updated by any other processes until this update is complete
+				saveLock.lock( siblingID );
+				// remove this child from a sibling to be placed with
+				ChildMiddleware
+					.removeSiblingToBePlacedWithFromChild( { childToUpdateID: siblingID, siblingToBePlacedWithToRemoveID: this._id.toString() } )
+					.then( updatedChildID => {
+						// unlock the sibling to be placed with after update is complete
+						saveLock.unlock( updatedChildID );
+					})
+					.catch( updatedChildID => {
+						// unlock the sibling to be placed with after update is complete
+						saveLock.unlock( updatedChildID );
+					});
+			} else {
+				console.log( `attmpted to save locked child ${ siblingID }` );
+			}
+		});
+	}
+};
+
+Child.schema.methods.checkSiblingsForChanges = function() {
+
+	let siblingsArrayBeforeSave = this._original ? this._original.siblings.map( sibling => sibling.toString() ) : [];
+	let siblingsBeforeSave = new Set( siblingsArrayBeforeSave );
+
+	let siblingsArrayAfterSave = this.siblings.map( sibling => sibling.toString() );
+	let siblingsAfterSave = new Set( siblingsArrayAfterSave );
+
+	let exclusiveSiblingsInTheBeforeSaveSet = siblingsBeforeSave.leftOuterJoin( siblingsAfterSave );
+	let exclusiveSiblingsInThAfterSaveSet = siblingsBeforeSave.rightOuterJoin( siblingsAfterSave );
+
+	return exclusiveSiblingsInTheBeforeSaveSet.size > 0 || exclusiveSiblingsInThAfterSaveSet.size > 0;
+};
+
+Child.schema.methods.checkSiblingsToBePlacedWithForChanges = function() {
+
+	let siblingsArrayBeforeSave = this._original ? this._original.siblingsToBePlacedWith.map( sibling => sibling.toString() ) : [];
+	let siblingsBeforeSave = new Set( siblingsArrayBeforeSave );
+
+	let siblingsArrayAfterSave = this.siblingsToBePlacedWith.map( sibling => sibling.toString() );
+	let siblingsAfterSave = new Set( siblingsArrayAfterSave );
+
+	let exclusiveSiblingsInTheBeforeSaveSet = siblingsBeforeSave.leftOuterJoin( siblingsAfterSave );
+	let exclusiveSiblingsInThAfterSaveSet = siblingsBeforeSave.rightOuterJoin( siblingsAfterSave );
+
+	return exclusiveSiblingsInTheBeforeSaveSet.size > 0 || exclusiveSiblingsInThAfterSaveSet.size > 0;
+};
+
 // Update the siblings field of all siblings listed to include the current child
 Child.schema.methods.updateSiblingFields = function() {
 	'use strict';

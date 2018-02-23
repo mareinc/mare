@@ -34,7 +34,7 @@ exports = module.exports = function( req, res ) {
 					pageActions.hasButtons = true;
 					// set the button contents
 					pageActions.buttons.push( { text: 'Register a Child',
-												target: '/forms/child-registration-form' } );
+												target: '/forms/social-worker-child-registration' } );
 				// if the user is not a logged in social worker
 				} else {
 					// set the section contents
@@ -54,7 +54,7 @@ exports = module.exports = function( req, res ) {
 					pageActions.hasButtons = true;
 					// set the button contents
 					pageActions.buttons.push( { text: 'Register Homestudy',
-												target: '/forms/family-registration-form' } );
+												target: '/forms/social-worker-family-registration' } );
 				// if the user is not a logged in social worker
 				} else {
 					// set the section contents
@@ -72,7 +72,7 @@ exports = module.exports = function( req, res ) {
 				pageActions.hasButtons = true;
 				// set the button contents
 				pageActions.buttons.push( { text: 'Have a Question',
-											target: '/forms/have-a-question-form' } );
+											target: '/forms/have-a-question' } );
 			// otherwise, if the user requested any page in the 'Considering Adoption' section
 			// NOTE: we check for locals.currentSection existing because it won't if the page isn't listed in the main menu
 			} else if( locals.currentSection && locals.currentSection.title === 'Considering Adoption?' ) {
@@ -80,7 +80,7 @@ exports = module.exports = function( req, res ) {
 				pageActions.hasButtons = true;
 				// set the button contents
 				pageActions.buttons.push( { text: 'Request Adoption Information',
-											target: '/forms/information-request-form' } );
+											target: '/forms/information-request' } );
 			}
 			
 			// assign properties to locals for access during templating

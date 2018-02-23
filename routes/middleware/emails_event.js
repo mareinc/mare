@@ -52,7 +52,7 @@ exports.sendEventRegistrationEmailToMARE = ( eventDetails, userDetails, host, st
 
 	return new Promise( ( resolve, reject ) => {
 		// if sending of the email is not currently allowed
-		if( process.env.SEND_EVENT_REGISTRATION_TO_STAFF !== 'true' ) {
+		if( process.env.SEND_EVENT_REGISTRATION_TO_MARE !== 'true' ) {
 			// reject the promise with information about why
 			return reject( `sending of the email is disabled` );
 		}
@@ -119,7 +119,7 @@ exports.sendEventUnregistrationEmailToMARE = ( eventDetails, userDetails, host, 
 	return new Promise( ( resolve, reject ) => {
 		// TODO: check the logic around process.env.migration, it doesn't seem to make sense
 		// if sending of the email is not currently allowed
-		if( process.env.SEND_EVENT_UNREGISTRATION_TO_STAFF !== 'true' ) {
+		if( process.env.SEND_EVENT_UNREGISTRATION_TO_MARE !== 'true' ) {
 			// reject the promise with information about why
 			return reject( `sending of the email is disabled` );
 		}
