@@ -56,6 +56,7 @@ const inquiryAgenciesImport						= require( '../middleware/data-migration-middle
 const inquiryChildrenImport						= require( '../middleware/data-migration-middleware/import-inquiry-children' );
 const inquiryNotesImport						= require( '../middleware/data-migration-middleware/import-inquiry-notes' );
 const mailingListSubscriptionsImport    		= require( '../middleware/data-migration-middleware/import-mailing-list-subscriptions');
+const childInternalNotesImport					= require( '../middleware/data-migration-middleware/import-child-internal-notes' );
 // const internalNotesImport						= require( '../middleware/data-migration-middleware/import-internal-notes' );
 
 exports = module.exports = ( req, res ) => {
@@ -155,10 +156,10 @@ exports = module.exports = ( req, res ) => {
 		// done => { inquiryNotesImport.appendInquiryNotes( req, res, done ); },
 		// done => { eventsImport.importEvents( req, res, done ); },
 		// done => { eventAttendeeImport.appendEventAttendees( req, res, done ); },
-		done => { mailingListSubscriptionsImport.importMailingListSubscriptions( req, res, done ); }, // not done
+		// done => { mailingListSubscriptionsImport.importMailingListSubscriptions( req, res, done ); }, // not done
 		// IMPORTANT: I think family backup is family internal notes
 		// done => { familyInternalNotesImport.importInternalNotes( req, res, done ); }	// not done
-		// done => { childInternalNotesImport.importInternalNotes( req, res, done ); }	// not done
+		done => { childInternalNotesImport.importInternalNotes( req, res, done ); }	// not done
 		// file attachment  															// not done
 
 		

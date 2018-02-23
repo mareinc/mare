@@ -1,10 +1,3 @@
-/* IMPORTANT NOTE: THIS FILE IS NOT COMPLETE, AND WAS CHECKED IN AS A PARTIAL IMPLEMENTATION
- * 
- * NOTE: still trying to figure out how to match specific placements with placement sources.  It appears
- * 		 placement sources are linked to children, but not placements, and placements are linked to children
- * 		 and are missing placement sources
- */
-
 const keystone					= require( 'keystone' );
 const Placement 				= keystone.list( 'Placement' );
 // utility middleware
