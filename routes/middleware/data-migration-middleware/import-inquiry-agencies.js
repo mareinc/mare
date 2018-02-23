@@ -72,8 +72,9 @@ module.exports.generateInquiryAgencies = function* generateInquiryAgencies() {
 	// create monitor variables to assess how many records we still need to process
 	let totalRecords						= Object.keys( newInquiryAgenciesMap ).length,
 		remainingRecords 					= totalRecords,
-		batchCount							= 10, // number of records to be process simultaneously
+		batchCount							= 100, // number of records to be process simultaneously
 		inquiryAgencyNumber					= 0; // keeps track of the current inquiry agency number being processed.  Used for batch processing
+	
 	// loop through each inquiry agency object we need to create a record for
 	for( let key in newInquiryAgenciesMap ) {
 		// increment the inquiryAgencyNumber
@@ -86,7 +87,10 @@ module.exports.generateInquiryAgencies = function* generateInquiryAgencies() {
 		}
 		// decrement the counter keeping track of how many records we still need to process
 		remainingRecords--;
-		console.log( `inquiry agency groups remaining: ${ remainingRecords }` );
+
+		if( remainingRecords % 200 === 0 ) {
+			console.log( `inquiry agency groups remaining: ${ remainingRecords }` );
+		}
 		// if there are no more records to process call done to move to the next migration file
 		if( remainingRecords === 0 ) {
 
@@ -113,20 +117,20 @@ module.exports.generateInquiryAgencies = function* generateInquiryAgencies() {
 // a function paired with the generator to create a record and request the generator to process the next once finished
 module.exports.updateInquiryRecord = ( agencyIds, inquiryId, pauseUntilSaved ) => {
 
+	const agencyArray = [ ...agencyIds ];
+
+	const latestAgencyId = agencyArray[ agencyArray.length - 1 ];
 	// fetch the inquiry
 	const inquiryLoaded = utilityModelFetch.getInquiryById( inquiryId );
-	// create a promise
-	const agenciesLoaded = new Promise( ( resolve, reject ) => {
-		// for fetching the _ids from agencies
-		utilityModelFetch.getAgencyIdsByOldIds( resolve, reject, agencyIds );
-	});
+	// fetch the latest agency applied to the inquiry
+	const agencyLoaded = utilityModelFetch.getAgencyById( latestAgencyId );
 
-	Promise.all( [ inquiryLoaded, agenciesLoaded ] )
+	Promise.all( [ inquiryLoaded, agencyLoaded ] )
 		.then( values => {
 
-			const [ inquiry, inquiryAgencies ] = values;
+			const [ inquiry, agency ] = values;
 
-			inquiry.agencyReferrals = inquiryAgencies;
+			inquiry.agency = agency;
 
 			// save the updated inquiry record
 			inquiry.save( ( err, savedModel ) => {

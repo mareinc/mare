@@ -72,10 +72,10 @@ module.exports.generateInquiryNotes = function* generateInquiryNotes() {
 	// create monitor variables to assess how many records we still need to process
 	let totalRecords						= Object.keys( newInquiryNotesMap ).length,
 		remainingRecords 					= totalRecords,
-		batchCount							= 100, // number of records to be process simultaneously
+		batchCount							= 200, // number of records to be process simultaneously
 		inquiryNoteNumber					= 0; // keeps track of the current inquiry note number being processed.  Used for batch processing
 	
-		// loop through each inquiry note object we need to create a record for
+	// loop through each inquiry note object we need to create a record for
 	for( let key in newInquiryNotesMap ) {
 		// increment the inquiryNoteNumber
 		inquiryNoteNumber++;
@@ -87,7 +87,10 @@ module.exports.generateInquiryNotes = function* generateInquiryNotes() {
 		}
 		// decrement the counter keeping track of how many records we still need to process
 		remainingRecords--;
-		console.log( `inquiry note groups remaining: ${ remainingRecords }` );
+
+		if( remainingRecords % 500 === 0 ) {
+			console.log( `inquiry note groups remaining: ${ remainingRecords }` );
+		}
 		// if there are no more records to process call done to move to the next migration file
 		if( remainingRecords === 0 ) {
 
@@ -116,9 +119,6 @@ module.exports.updateInquiryRecord = ( notesSet, inquiryId, pauseUntilSaved ) =>
 
 	const note = [ ...notesSet ].reduce( ( prev, next, i, arr ) => `${ prev }\n\r\n\r${ next }` );
 
-	if( notesSet.size > 1 ) {
-		console.log( 'here' );
-	}
 	// fetch the inquiry
 	const inquiryLoaded = utilityModelFetch.getInquiryById( inquiryId );
 

@@ -63,13 +63,13 @@ Inquiry.add( 'General Information', {
 // Pre Save
 Inquiry.schema.pre( 'save', function( next ) {
 	'use strict';
-
+next();
 	// attempt to populate any derived fields for child inquiries
-	this.populateDerivedFields()
-		// if there was an error populating the derived fields, log the error
-		.catch( err => console.error( `error populating fields for inquiry with id ${ this.get( '_id' ) } - ${ err }` ) )
-		// call next to allow the model to save
-		.then( () => next() )
+	// this.populateDerivedFields()
+	// 	// if there was an error populating the derived fields, log the error
+	// 	.catch( err => console.error( `error populating fields for inquiry with id ${ this.get( '_id' ) } - ${ err }` ) )
+	// 	// call next to allow the model to save
+	// 	.then( () => next() )
 
 		// if( !this.thankYouSentToFamilyOnBehalfOfInquirer && inquiryData.onBehalfOfFamily ) {
 		// 	inquiryEmailService.sendThankYouEmailToFamilyOnBehalfOfInquirer( this, inquiryData, done );

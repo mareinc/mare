@@ -19,7 +19,7 @@ const csv									= require( 'csvtojson' ),
 	  inquiryAgenciesFilePath				= './migration-data/csv-data/call_agency.csv',
 	  inquiryChildrenFilePath				= './migration-data/csv-data/call_child.csv',
 	  inquiryNotesFilePath					= './migration-data/csv-data/call_note.csv',
-	  mailingListAttendeesFilePath			= './migration-data/csv-data/mailing_list_subscription.csv',
+	  mailingListSubscriptionsFilePath		= './migration-data/csv-data/mailing_list_subscription.csv',
 	  mediaEligibilitiesFilePath			= './migration-data/csv-data/media_eligibility.csv',
 	  mediaFeaturesFilePath					= './migration-data/csv-data/media_feature.csv',
 	  mediaFeatureChildrenFilePath			= './migration-data/csv-data/media_feature_child.csv',
@@ -411,21 +411,19 @@ exports.fetchInquiryNotes = () => {
 	});
 };
 
-exports.fetchMailingListAttendees = () => {
-	
-	console.log( `fetching mailing list attendees from CSV` );
+exports.fetchMailingListSubscriptions = () => {
 
 	return new Promise( ( resolve, reject ) => {
-		// fetch all records from the mailing list attendees csv file
-		csv().fromFile( mailingListAttendeesFilePath )
+		// fetch all records from the mailing list subscribers csv file
+		csv().fromFile( mailingListSubscriptionsFilePath )
 			// wait until the whole file has been parsed into an array of objects
-			.on( 'end_parsed', mailingListAttendeesArray => {
-				console.log( `mailing list attendees fetched` );
+			.on( 'end_parsed', mailingListSubscribersArray => {
+				console.log( `mailing list subscribers fetched` );
 				// resolve the promise with the array of event objects
-				resolve( mailingListAttendeesArray );
+				resolve( mailingListSubscribersArray );
 			})
 			.on( 'error', err => {
-				console.error( `error fetching mailing list attendees or converting to JSON => ${ err }` );
+				console.error( `error fetching mailing list subscribers or converting to JSON => ${ err }` );
 				reject();
 			});
 	});

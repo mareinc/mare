@@ -1,17 +1,19 @@
 /* functions to fetch model information for use during the migration */
 
 // TODO: for all these, you need to check string input, and if so, trim then check each for existence
-const keystone		= require( 'keystone' ),
-	  Source		= keystone.list( 'Source' ),
-	  Agency		= keystone.list( 'Agency' ),
-	  Family		= keystone.list( 'Family' ),
-	  SocialWorker	= keystone.list( 'Social Worker' ),
-	  CityOrTown	= keystone.list( 'City or Town' ),
-	  Child			= keystone.list( 'Child' ),
-	  MediaFeature	= keystone.list( 'Media Feature' ),
-	  Event			= keystone.list( 'Event' ),
-	  Admin			= keystone.list( 'Admin' ),
-	  Inquiry		= keystone.list( 'Inquiry' );
+const keystone			= require( 'keystone' ),
+	  Source			= keystone.list( 'Source' ),
+	  Agency			= keystone.list( 'Agency' ),
+	  Family			= keystone.list( 'Family' ),
+	  SocialWorker		= keystone.list( 'Social Worker' ),
+	  CityOrTown		= keystone.list( 'City or Town' ),
+	  Child				= keystone.list( 'Child' ),
+	  MediaFeature		= keystone.list( 'Media Feature' ),
+	  Event				= keystone.list( 'Event' ),
+	  Admin				= keystone.list( 'Admin' ),
+	  Inquiry			= keystone.list( 'Inquiry' ),
+	  MailingList		= keystone.list( 'Mailing List' ),
+	  OutsideContact	= keystone.list( 'Outside Contact' );
 
 module.exports.getSourceById = id => {
 
@@ -20,7 +22,7 @@ module.exports.getSourceById = id => {
 		if( !id ) {
 			console.error( `no id value passed in to getSourceById()` );
 
-			resolve();
+			return resolve();
 		}
 
 		Source.model
@@ -48,6 +50,7 @@ module.exports.getAgencyById = agencyId => {
 	return new Promise( ( resolve, reject ) => {
 		// if no agency id was passed in
 		if( !agencyId ) {
+			console.error( 'no agency id provided' );
 			// resolve the promise with an undefined value
 			return resolve();
 		}
@@ -59,49 +62,15 @@ module.exports.getAgencyById = agencyId => {
 			.then( retrievedAgency => {
 				// if no agency was found
 				if( !retrievedAgency ) {
-					// log the issue
-					console.error( `error fetching agency by oldId ${ agencyId }` );
-					// and reject the promise
-					reject();
+					reject( `error fetching agency by oldId ${ agencyId }`);
 				}
 				// otherwise, accept the promise and pass back the retrieved agency
 				resolve( retrievedAgency );
 
 			}, err => {
-
-				console.error( `error in getAgencyById() ${ err }` );
-				reject();
+				reject( `error in getAgencyById() ${ err }` );
 			});
 	});
-};
-
-module.exports.getAgencyIdsByOldIds = ( resolve, reject, oldIds ) => {
-	/* TODO: short circuit the fetch here by just resolving if there are no oldIds */
-	Agency.model.find()
-		.where( { 'oldId': { $in: oldIds } } )
-		.exec()
-		.then( retrievedAgencies => {
-			// if no agencies were found
-			if( retrievedAgencies.length === 0 ) {
-				// log the issue
-				console.error( `error fetching agency IDs by old ids ${ oldIds }` );
-				// and resolve the promise with an undefined value
-				resolve();
-			}
-
-			let agencyIds = [];
-
-			for( agency of retrievedAgencies ) {
-				agencyIds.push( agency._id );
-			}
-			// otherwise, accept the promise and pass back the retrieved agency IDs
-			resolve( agencyIds );
-
-		}, err => {
-
-			console.error( `error in getAgencyIdsByOldIds() ${ err }` );
-			reject();
-		});
 };
 
 module.exports.getCityOrTownByName = ( cityOrTownName, state ) => {
@@ -176,36 +145,77 @@ module.exports.getSocialWorkerById = socialWorkerId => {
 	
 };
 
-module.exports.getSocialWorkerIdsByOldIds = ( resolve, reject, oldIds ) => {
+module.exports.getSocialWorkersByOldIds = oldIds => {
 	
-	if( oldIds.length === 0 ) {
-		return resolve();
-	}
+	return new Promise( ( resolve, reject ) => {
 
-	SocialWorker.model.find()
-		.where( { 'oldId': { $in: oldIds } } )
-		.exec()
-		.then( retrievedSocialWorkers => {
-			// if no social workers were found
-			if( retrievedSocialWorkers.length === 0 ) {
-				// log the issue
-				console.error( `error fetching social worker IDs by old ids ${ oldIds }` );
-				// and resolve the promise with an undefined value
-				resolve();
-			}
+		if( oldIds.length === 0 ) {
 
-			let socialWorkerIds = [];
+			console.error( `no ids passed into getSocialWorkersByOldIds()` );
 
-			for( socialWorker of retrievedSocialWorkers ) {
-				socialWorkerIds.push( socialWorker._id );
-			}
-			// otherwise, accept the promise and pass back the retrieved social worker IDs
-			resolve( socialWorkerIds );
+			return resolve();
+		}
 
-		}, err => {
+		SocialWorker.model
+			.find()
+			.where( { 'oldId': { $in: oldIds } } )
+			.exec()
+			.then( socialWorkers => {
+				// if no social workers were found
+				if( socialWorkers.length === 0 ) {
+					// log the issue
+					console.error( `error fetching social worker IDs by old ids ${ oldIds }` );
+					// and resolve the promise with an undefined value
+					resolve();
+				}
+				// otherwise, accept the promise and pass back the retrieved social worker IDs
+				resolve( socialWorkers );
 
-			console.error( `error in getSocialWorkerIdsByOldIds() ${ err }` );
-			reject();
+			}, err => {
+
+				console.error( `error in getSocialWorkerIdsByOldIds() ${ err }` );
+				reject();
+			});
+		});
+};
+
+module.exports.getSocialWorkerIdsByOldIds = oldIds => {
+	
+	return new Promise( ( resolve, reject ) => {
+
+		if( oldIds.length === 0 ) {
+
+			console.error( `no ids passed into getSocialWorkerIdsByOldIds()` );
+
+			return resolve();
+		}
+
+		SocialWorker.model
+			.find()
+			.where( { 'oldId': { $in: oldIds } } )
+			.exec()
+			.then( socialWorkers => {
+				// if no social workers were found
+				if( socialWorkers.length === 0 ) {
+					// log the issue
+					console.error( `error fetching social worker IDs by old ids ${ oldIds }` );
+					// and resolve the promise with an undefined value
+					resolve();
+				}
+
+				let socialWorkerIds = [];
+
+				for( socialWorker of socialWorkers ) {
+					socialWorkerIds.push( socialWorker._id );
+				}
+				// otherwise, accept the promise and pass back the retrieved social worker IDs
+				resolve( socialWorkerIds );
+
+			}, err => {
+
+				console.error( `error in getSocialWorkerIdsByOldIds() ${ err }` );
+				reject();
+			});
 		});
 };
 
@@ -334,37 +344,70 @@ module.exports.getFamilyByRegistrationNumber = registrationNumber => {
 	});
 };
 
-module.exports.getFamilyIdsByRegistrationNumbers = ( resolve, reject, registrationNumbers ) => {
+module.exports.getFamiliesByRegistrationNumbers = registrationNumbers => {
 	
-	if( registrationNumbers.length === 0 ) {
-		return resolve();
-	}
+	return new Promise( ( resolve, reject ) => {
+		
+		if( registrationNumbers.length === 0 ) {
+			return resolve();
+		}
 
-	Family.model.find()
-		.where( { 'registrationNumber': { $in: registrationNumbers } } )
-		.exec()
-		.then( retrievedFamilies => {
-			// if no families were found
-			if( retrievedFamilies.length === 0 ) {
-				// log the issue
-				console.error( `error fetching family IDs by registration numbers ${ registrationNumbers }` );
-				// and resolve the promise with an undefined value
-				resolve();
-			}
+		Family.model
+			.find()
+			.where( { 'registrationNumber': { $in: registrationNumbers } } )
+			.exec()
+			.then( families => {
+				// if no families were found
+				if( families.length === 0 ) {
+					// log the issue
+					console.error( `error fetching families by registration numbers ${ registrationNumbers }` );
+					// and resolve the promise with an undefined value
+					resolve();
+				}
+				// otherwise, accept the promise and pass back the retrieved family IDs
+				resolve( families );
 
-			let familyIds = [];
+			}, err => {
 
-			for( family of retrievedFamilies ) {
-				familyIds.push( family._id );
-			}
-			// otherwise, accept the promise and pass back the retrieved family IDs
-			resolve( familyIds );
+				reject( `error in getFamilyIdsByRegistrationNumbers() - ${ err }` );
+			});
+	});
+};
 
-		}, err => {
+module.exports.getFamilyIdsByRegistrationNumbers = registrationNumbers => {
+	
+	return new Promise( ( resolve, reject ) => {
+		
+		if( registrationNumbers.length === 0 ) {
+			return resolve();
+		}
 
-			console.error( `error in getFamilyIdsByRegistrationNumbers() ${ err }` );
-			reject();
-		});
+		Family.model.find()
+			.where( { 'registrationNumber': { $in: registrationNumbers } } )
+			.exec()
+			.then( retrievedFamilies => {
+				// if no families were found
+				if( retrievedFamilies.length === 0 ) {
+					// log the issue
+					console.error( `error fetching family IDs by registration numbers ${ registrationNumbers }` );
+					// and resolve the promise with an undefined value
+					resolve();
+				}
+
+				let familyIds = [];
+
+				for( family of retrievedFamilies ) {
+					familyIds.push( family._id );
+				}
+				// otherwise, accept the promise and pass back the retrieved family IDs
+				resolve( familyIds );
+
+			}, err => {
+
+				console.error( `error in getFamilyIdsByRegistrationNumbers() ${ err }` );
+				reject();
+			});
+	});
 };
 
 module.exports.getEventById = ( resolve, reject, eventId ) => {
@@ -445,3 +488,62 @@ module.exports.getInquiryById = id => {
 			});
 	});
 };
+
+module.exports.getMailingListById = id => {
+
+	return new Promise( ( resolve, reject ) => {
+	
+		if( !id ) {
+			return reject( `error fetching mailing list by id ${ id }` );
+		}
+
+		MailingList.model
+			.findById( id )
+			.exec()
+			.then( mailingList => {
+				// if no mailing list was found
+				if( !mailingList ) {
+					// and reject the promise
+					reject( `error fetching mailing list by oldId ${ id }` );
+				}
+				// otherwise, accept the promise and pass back the retrieved mailing list
+				resolve( mailingList );
+
+			}, err => {
+
+				reject( `error in getMailingListById() ${ err }` );
+			});
+	});
+}
+
+module.exports.getOutsideContactsByOldIds = ids => {
+	
+	return new Promise( ( resolve, reject ) => {
+	
+		if( ids.length === 0 ) {
+
+			console.error( `no ids passed into getOutsideContactsByOldIds` );
+
+			return resolve();
+		}
+
+		OutsideContact.model.find()
+			.where( { 'oldId': { $in: ids } } )
+			.exec()
+			.then( outsideContacts => {
+				// if no social workers were found
+				if( outsideContacts.length === 0 ) {
+					// log the issue
+					console.error( `error fetching outside contacts by old ids ${ ids }` );
+					// and resolve the promise with an undefined value
+					resolve();
+				}
+				// otherwise, accept the promise and pass back the retrieved social worker IDs
+				resolve( outsideContacts );
+
+			}, err => {
+
+				reject( `error in getSocialWorkerIdsByOldIds() ${ err }` );
+			});
+		});
+}

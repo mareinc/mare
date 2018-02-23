@@ -30,56 +30,21 @@ module.exports.importPlacements = ( req, res, done ) => {
 
 	// create a promise for converting the placements CSV file to JSON
 	const placementsLoaded = CSVConversionMiddleware.fetchPlacements();
-	// create a promise for converting the placement source CSV file to JSON
-	const placementSourcesLoaded = CSVConversionMiddleware.fetchPlacementSources();
-
-	// TODO: need to load recruitment sources
-
-	// TODO: in the main part, need to fetch the child by old id
-	// TODO: in the main part, need to fetch the family by old id
 
 	// if the file was successfully converted, it will return the array of placements
-	Promise.all( [ placementsLoaded, placementSourcesLoaded ] ).then( values => {
-		// store the retrieved placements and placement sources in local variables
-		const [ placementsArray, placementSourcesArray ] = values;
-
-		const placements = new Map()
-
-		for( let placement of placementsArray ) {
-			if( placements.has( placement.chd_id ) ) {
-				placements.get( placement.chd_id ).placements.push( placement );
-			} else {
-				placements.set( placement.chd_id, { sources: [], placements: [ placement ] } );
-			}
-		}
-
-		for( let placementSource of placementSourcesArray ) {
-			if( placements.has( placementSource.chd_id ) ) {
-				placements.get( placementSource.chd_id ).sources.push( placementSource );
-			} else {
-				placements.set( placementSource.chd_id, { sources: [ placementSource ], placements: [] } );
-			}
-		}
-
-		let badCount = 0;
-
-		for( let [ key, placement ] of placements ) {
-			if( placement.sources.length !== placement.placements.length ) {
-				console.log( `${ key } - sources: ${ placement.sources.length }, placements: ${ placement.placements.length }` );
-				badCount++;
-			}
-		}
-		console.log( `${ badCount } entries with number of sources and placements that don't match` );
-		// kick off the first run of our generator
-		// placementGenerator.next();
-		var x = 10;
-	// if there was an error converting the placements file
-	}).catch( reason => {
-		console.error( `error processing placements` );
-		console.error( reason );
-		// aborting the import
-		return done();
-	});
+	placementsLoaded
+		.then( placementsArray => {
+			// store the placements in a variable accessible throughout this file
+			const placements = placementsArray;
+			// kick off the first run of our generator
+			inquiryGenerator.next();
+		// if there was an error converting the inquiries file
+		}).catch( reason => {
+			console.error( `error processing inquiries` );
+			console.error( reason );
+			// aborting the import
+			return done();
+		});
 };
 
 /* a generator to allow us to control the processing of each record */
@@ -88,7 +53,6 @@ module.exports.generatePlacements = function* generatePlacements() {
 	console.log( `creating placements in the new system` );
 	// create monitor variables to assess how many records we still need to process
 	let totalRecords		= placements.length,
-
 		remainingRecords 	= totalRecords,
 		batchCount			= 100, // number of records to be process simultaneously
 		placementsNumber	= 0; // keeps track of the current placement being processed.  Used for batch processing
@@ -104,7 +68,10 @@ module.exports.generatePlacements = function* generatePlacements() {
 		}
 		// decrement the counter keeping track of how many records we still need to process
 		remainingRecords--;
-		console.log( `placements remaining: ${ remainingRecords }` );
+
+		if( remainingRecords % 100 === 0 ) {
+			console.log( `placements remaining: ${ remainingRecords }` );
+		}
 		// if there are no more records to process call done to move to the next migration file
 		if( remainingRecords === 0 ) {
 
@@ -143,13 +110,25 @@ module.exports.createPlacementRecord = ( placement, pauseUntilSaved ) => {
 
 			let newPlacement = new Placement.model({
 
-				// oldId: placement.fpl_id,
-				child						: child ? child.get( '_id' ) : undefined,
+				placementDate: `no idea if this should be last updated date or not`,
+				familyAgency: `will need to get the agency id from the family record`,
+				// constellation: `meant for unregistered families, don't think we have this info`,
+				// race: `meant for unregistered families, don't think we have this info`,
+				// source: `done in placement_source import`,
+				notes						: placement.comment,
+				isUnregisteredChild			: !!child,
+				child						: !!child ? child.get( '_id' ) : undefined,
+				childDetails: {
+					firstName				: !!child ? placement.chd_first_name : undefined,
+					lastName				: !!child ? placement.chd_last_name : undefined,
+					status					: `we don't have this info`
+				},
+				isUnregisteredFamily		: !family,
+				family						: !!family ? family.get( '_id' ) : undefined,
 				// placementDate			// this doesn't appear to exist in the old system
 				childPlacedWithMAREFamily	: !!family,
 				placedWithFamily			: family ? family.get( '_id' ) : undefined,
-				// familyAgency				// needs to be determined on save
-				notes						: placement.comment
+				
 			});
 
 			// save the new placement record
@@ -211,3 +190,16 @@ const placementGenerator = exports.generatePlacements();
 		// we have no place to enter child information, and some records we're bringing over don't have a child id, but do have a child first / last name
 
 		// we have no placement date, do placements in the old system have a date associated with them?
+
+// NEW NOTES:
+
+		"fpl_id", // old id if using
+		"fam_id", // family and all family details
+		"chd_id", // child and all child details
+		"chd_first_name", // child name if not in the system
+		"chd_last_name", // child name if not in the system
+		"status", // placement status | M = Matched, P = Placed, L = Legalized, N = Not Matched, D = Disruption
+		"status_change_date", // possibly placementDate
+		"comment" // notes
+		
+		// nothing matching source, race, or placement date unless we want to use status change date

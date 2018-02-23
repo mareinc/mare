@@ -17,6 +17,8 @@ let inquiryImportComplete;
 let migrationResults;
 // create an array to store problems during the import
 let importErrors = [];
+// fetch the website bot as a fallback to the admin if the admin is no longer in the system
+const websiteBotLoaded	= userService.getUserByFullName( 'Website Bot', 'admin' );
 
 module.exports.importInquiries = ( req, res, done ) => {
 	// expose the map we'll need for this import
@@ -53,7 +55,9 @@ module.exports.generateInquiries = function* generateInquiries() {
 		remainingRecords 	= totalRecords,
 		batchCount			= 200, // number of records to be process simultaneously
 		inquiryNumber		= 0; // keeps track of the current inquiry number being processed.  Used for batch processing
-	// loop through each inquiry object we need to create a record for
+	console.log( totalRecords );
+	
+		// loop through each inquiry object we need to create a record for
 	for( let inquiry of inquiries ) {
 		// increment the inquiryNumber
 		inquiryNumber++;
@@ -65,7 +69,9 @@ module.exports.generateInquiries = function* generateInquiries() {
 		}
 		// decrement the counter keeping track of how many records we still need to process
 		remainingRecords--;
-		console.log( `inquiries remaining: ${ remainingRecords }` );
+		if( remainingRecords % 500 === 0 ) {
+			console.log( `inquiries remaining: ${ remainingRecords }` );
+		}
 		// if there are no more records to process call done to move to the next migration file
 		if( remainingRecords === 0 ) {
 			
@@ -84,7 +90,7 @@ module.exports.generateInquiries = function* generateInquiries() {
 			
 			console.log( resultsMessage );
 			// return control to the data migration view
-			return inquiriesImportComplete();
+			return inquiryImportComplete();
 		}
 	}
 };
@@ -119,83 +125,99 @@ module.exports.createInquiryRecord = ( inquiry, pauseUntilSaved ) => {
 		// store a reference to the entry that caused the error
 		importErrors.push( { id: inquiry.cll_id, error: `no valid inquirer` } );
 	}
-
+	// sanity check to see if the inquiry already exists in the system
+	const existingInquiryLoaded = utilityModelFetch.getInquiryById( inquiry.cll_id );
 	// fetch the admin who created the inquiry
 	const adminLoaded = utilityModelFetch.getAdminById( inquiry.taken_by );
-	// fetch the website bot as a fallback to the admin if the admin is no longer in the system
-	const websiteBotLoaded	= userService.getUserByFullName( 'Website Bot', 'admin' );
 	// fetch the social worker responsible for the inquiry
 	const socialWorkerLoaded = utilityModelFetch.getSocialWorkerById( inquiry.agc_id );
+	// fetch the child's social workerat the time of the inquiry
+	const childsSocialWorkerLoaded = utilityModelFetch.getSocialWorkerById( inquiry.recruitment_agc_id );
 	// fetch the family
 	const familyLoaded = utilityModelFetch.getFamilyByRegistrationNumber( inquiry.fam_id );
 	// fetch the recruitment source
 	const sourceLoaded = utilityModelFetch.getSourceById( inquiry.rcs_id );
 
-	Promise.all( [ adminLoaded, websiteBotLoaded, socialWorkerLoaded, familyLoaded, sourceLoaded ] )
-		.then( values => {
-			// store the retrieved admin social worker, and family in local variables
-			const [ admin, websiteBot, socialWorker, family, source ] = values;
+	existingInquiryLoaded
+		// if the inquiry was already saved in the new system
+		.then( err => {
+			// fire off the next iteration of our generator after pausing for a second
+			if( pauseUntilSaved ) {
+				setTimeout( () => {
+					inquiryGenerator.next();
+				}, 1000 );
+			}
+		})
+		// if the inquiry was not already saved in the new system
+		.catch( () => {
+			Promise.all( [ adminLoaded, websiteBotLoaded, socialWorkerLoaded, childsSocialWorkerLoaded, familyLoaded, sourceLoaded ] )
+			.then( values => {
+				// store the retrieved admin social worker, and family in local variables
+				const [ admin, websiteBot, socialWorker, childsSocialWorker, family, source ] = values;
 
-			let newInquiry = new Inquiry.model({
+				let newInquiry = new Inquiry.model({
 
-				takenBy: admin ? admin.get( '_id' ) : websiteBot.get( '_id' ),
-				takenOn: new Date( inquiry.call_date ),
+					takenBy: admin ? admin.get( '_id' ) : websiteBot.get( '_id' ),
+					takenOn: new Date( inquiry.call_date ),
 
-				inquirer: isFamilyInquiry ? 'family' :
-						isSocialWorkerInquiry ? 'social worker' :
-						undefined,
+					inquirer: isFamilyInquiry ? 'family' :
+							isSocialWorkerInquiry ? 'social worker' :
+							undefined,
 
-				inquiryType: isChildInquiry ? 'child inquiry'
-						   : isGeneralInquiry ? 'general inquiry'
-						   : isComplaint ? 'complaint'
-						   : isFamilySupportConsultation ? 'family support consultation'
-						   : 'general inquiry',
+					inquiryType: isChildInquiry ? 'child inquiry'
+							: isGeneralInquiry ? 'general inquiry'
+							: isComplaint ? 'complaint'
+							: isFamilySupportConsultation ? 'family support consultation'
+							: 'general inquiry',
 
-				inquiryMethod: inquiryMethodsMap[ inquiry.inquiry_method ] || inquiryMethodsMap[ 'W' ],
+					inquiryMethod: inquiryMethodsMap[ inquiry.inquiry_method ] || inquiryMethodsMap[ 'W' ],
 
-				source: source ? source.get( '_id' ) : undefined,
-				
-				family: isFamilyInquiry ? family.get( '_id' ) : undefined,
-				socialWorker: isSocialWorkerInquiry ? socialWorker.get( '_id' ) : undefined,
-				onBehalfOfMAREFamily: false,
-				onBehalfOfFamilyText: isOnBehalfOfFamily ? inquiry.family.trim() : undefined,
+					childsSocialWorker: childsSocialWorker ? childsSocialWorker.get( '_id' ) : undefined,
 
-				inquiryAccepted: true,
+					source: source ? source.get( '_id' ) : undefined,
+					
+					family: isFamilyInquiry ? family.get( '_id' ) : undefined,
+					socialWorker: isSocialWorkerInquiry ? socialWorker.get( '_id' ) : undefined,
+					onBehalfOfMAREFamily: false,
+					onBehalfOfFamilyText: isOnBehalfOfFamily ? inquiry.family.trim() : undefined,
 
-				thankYouSentToFamilyOnBehalfOfInquirer: isSocialWorkerInquiry && isOnBehalfOfFamily, // social worker inquiry, on behalf of family
-				approvalEmailSentToInquirer: true, // no deps
-				approvalEmailSentToFamilyOnBehalfOfInquirer: isSocialWorkerInquiry && isOnBehalfOfFamily, // social worker inquiry, on behalf of family
-				emailSentToChildsSocialWorker: ( isChildInquiry || isComplaint ), // child inquiry, isComplaint, or family support consultation.  We only capture child inquiries
-				emailSentToAgencies: isGeneralInquiry, // general inquiry
+					inquiryAccepted: true,
 
-				oldId: inquiry.cll_id
+					thankYouSentToFamilyOnBehalfOfInquirer: isSocialWorkerInquiry && isOnBehalfOfFamily, // social worker inquiry, on behalf of family
+					approvalEmailSentToInquirer: true, // no deps
+					approvalEmailSentToFamilyOnBehalfOfInquirer: isSocialWorkerInquiry && isOnBehalfOfFamily, // social worker inquiry, on behalf of family
+					emailSentToChildsSocialWorker: ( isChildInquiry || isComplaint ), // child inquiry, isComplaint, or family support consultation.  We only capture child inquiries
+					emailSentToAgencies: isGeneralInquiry, // general inquiry
 
-			});
+					oldId: inquiry.cll_id
 
-			newInquiry.save( ( err, savedModel ) => {
-				// if we run into an error
-				if( err ) {
-					// store a reference to the entry that caused the error
-					importErrors.push( { id: inquiry.cll_id, error: err } );
-				}
+				});
 
-				// fire off the next iteration of our generator after pausing for a second
+				newInquiry.save( ( err, savedModel ) => {
+					// if we run into an error
+					if( err ) {
+						// store a reference to the entry that caused the error
+						importErrors.push( { id: inquiry.cll_id, error: err } );
+					}
+
+					// fire off the next iteration of our generator after pausing for a second
+					if( pauseUntilSaved ) {
+						setTimeout( () => {
+							inquiryGenerator.next();
+						}, 1000 );
+					}
+				});
+			})
+			.catch( err => {
+				// we can assume it was a reject from trying to fetch the city or town by an unrecognized name
+				importErrors.push( { id: inquiry.cll_id, error: `error importing inquiry - ${ err }` } );
+
 				if( pauseUntilSaved ) {
 					setTimeout( () => {
 						inquiryGenerator.next();
 					}, 1000 );
 				}
 			});
-		})
-		.catch( err => {
-			// we can assume it was a reject from trying to fetch the city or town by an unrecognized name
-			importErrors.push( { id: inquiry.cll_id, error: `error importing inquiry - ${ err }` } );
-
-			if( pauseUntilSaved ) {
-				setTimeout( () => {
-					inquiryGenerator.next();
-				}, 1000 );
-			}
 		});
 };
 

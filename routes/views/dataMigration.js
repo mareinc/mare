@@ -55,7 +55,7 @@ const inquiriesImport							= require( '../middleware/data-migration-middleware/
 const inquiryAgenciesImport						= require( '../middleware/data-migration-middleware/import-inquiry-agencies' );
 const inquiryChildrenImport						= require( '../middleware/data-migration-middleware/import-inquiry-children' );
 const inquiryNotesImport						= require( '../middleware/data-migration-middleware/import-inquiry-notes' );
-const mailingListAttendeesImport    			= require( '../middleware/data-migration-middleware/import-mailing-list-attendees');
+const mailingListSubscriptionsImport    		= require( '../middleware/data-migration-middleware/import-mailing-list-subscriptions');
 // const internalNotesImport						= require( '../middleware/data-migration-middleware/import-internal-notes' );
 
 exports = module.exports = ( req, res ) => {
@@ -151,11 +151,11 @@ exports = module.exports = ( req, res ) => {
 		// done => { placementsImport.importPlacements( req, res, done ); }, // not done TODO: Get details to Brian so he can help you track down the field matches, or work out mismatch in placements and placement sources with Lisa
 		// done => { inquiriesImport.importInquiries( req, res, done ); },
 		// done => { inquiryAgenciesImport.appendInquiryAgencies( req, res, done ); },
-		done => { inquiryChildrenImport.appendInquiryChildren( req, res, done ); },
+		// done => { inquiryChildrenImport.appendInquiryChildren( req, res, done ); },
 		// done => { inquiryNotesImport.appendInquiryNotes( req, res, done ); },
 		// done => { eventsImport.importEvents( req, res, done ); },
 		// done => { eventAttendeeImport.appendEventAttendees( req, res, done ); },
-		// done => { mailingListAttendeesImport.importMailingListAttendees( req, res, done ); }, // not done
+		done => { mailingListSubscriptionsImport.importMailingListSubscriptions( req, res, done ); }, // not done
 		// IMPORTANT: I think family backup is family internal notes
 		// done => { familyInternalNotesImport.importInternalNotes( req, res, done ); }	// not done
 		// done => { childInternalNotesImport.importInternalNotes( req, res, done ); }	// not done

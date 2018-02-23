@@ -87,7 +87,10 @@ module.exports.generateInquiryChildren = function* generateInquiryChildren() {
 		}
 		// decrement the counter keeping track of how many records we still need to process
 		remainingRecords--;
-		console.log( `inquiry child groups remaining: ${ remainingRecords }` );
+
+		if( remainingRecords % 500 === 0 ) {
+			console.log( `inquiry child groups remaining: ${ remainingRecords }` );
+		}
 		// if there are no more records to process call done to move to the next migration file
 		if( remainingRecords === 0 ) {
 
@@ -140,7 +143,7 @@ module.exports.updateInquiryRecord = ( childOldIds, inquiryId, pauseUntilSaved )
 		})
 		.catch( err => {
 			
-			importErrors.push( { id: inquiryId, error: `error adding children with ids ${ childIds } to inquiry with id ${ inquiryId } - ${ err }` } );
+			importErrors.push( { id: inquiryId, error: `error adding children with ids ${ childOldIds } to inquiry with id ${ inquiryId } - ${ err }` } );
 
 			if( pauseUntilSaved ) {
 				setTimeout( () => {

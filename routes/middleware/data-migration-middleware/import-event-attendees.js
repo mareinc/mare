@@ -143,16 +143,10 @@ module.exports.updateEventRecord = ( attendees, eventId, pauseUntilSaved ) => {
 	});
 	// fetch the child attendees
 	const childAttendeesLoaded = utilityModelFetch.getChildIdsByRegistrationNumbers( childIds );
-	// create a promise
-	const familyAttendeesLoaded = new Promise( ( resolve, reject ) => {
-		// for fetching the _ids from families
-		utilityModelFetch.getFamilyIdsByRegistrationNumbers( resolve, reject, familyIds );
-	});
-	// create a promise
-	const socialWorkerAttendeesLoaded = new Promise( ( resolve, reject ) => {
-		// for fetching the _ids from social workers
-		utilityModelFetch.getSocialWorkerIdsByOldIds( resolve, reject, socialWorkerIds );
-	});
+	// fetch the family attendees
+	const familyAttendeesLoaded = utilityModelFetch.getFamilyIdsByRegistrationNumbers( familyIds );
+	// fetch social worker attendees
+	const socialWorkerAttendeesLoaded = utilityModelFetch.getSocialWorkerIdsByOldIds( socialWorkerIds );
 
 	Promise.all( [ eventLoaded, childAttendeesLoaded, familyAttendeesLoaded, socialWorkerAttendeesLoaded ] )
 		.then( values => {
