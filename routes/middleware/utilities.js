@@ -9,7 +9,7 @@ exports.stripTags = text => {
 	if( !text || text.length === 0 ) {
 		return '';
 	}
-	
+
 	return text.replace( /(<([^>]+)>)/ig, '' );
 }
 
@@ -79,15 +79,15 @@ exports.getReadableStringFromArray = ({ array, delimiter = 'and' }) => {
 
 /* takes in the object containing the field to be modified, the name of the content field, and any modification specification */
 exports.modifyWYSIWYGContent = ( object, content, options ) => {
-	
+
 	options.forEach( option => {
 
 		switch( option.action ) {
 
 			case 'add more links':
-			
+
 				console.log( `add 'em in` );
-				
+
 				break;
 
 			case 'add classes':
@@ -101,7 +101,7 @@ exports.modifyWYSIWYGContent = ( object, content, options ) => {
 				} else {
 					object[ content ] = object[ content ].replace( matchString, `<${ option.element } class="${ option.classesToAdd }">`);
 				}
-				
+
 				break;
 		}
 	});
@@ -140,13 +140,14 @@ Set.prototype.intersection = function( setB ) {
 	return intersection;
 }
 
+// TODO: ensure this actually returns the difference of two sets
 /* add functionality to ES6 Set type for finding the difference between two sets */
 /* { a, b, c }, { b, c, d } => { a, d } */
 Set.prototype.difference = function( setB ) {
 	var difference = new Set( this );
 	for ( var elem of setB ) {
 		difference.delete( elem );
-	}  
+	}
 	return difference;
 }
 
@@ -158,7 +159,7 @@ Set.prototype.leftOuterJoin = function( setB ) {
 		if( setB.has( item ) ) {
 			difference.delete( item );
 		}
-	}; 
+	};
 	return difference;
 }
 
