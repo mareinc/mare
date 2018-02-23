@@ -68,7 +68,7 @@ module.exports.buildInquiryAgenciesMap = () => {
 /* a generator to allow us to control the processing of each record */
 module.exports.generateInquiryAgencies = function* generateInquiryAgencies() {
 
-	console.log( `creating inquiry agencies in the new system` );
+	console.log( `appending inquiry agencies in the new system` );
 	// create monitor variables to assess how many records we still need to process
 	let totalRecords						= Object.keys( newInquiryAgenciesMap ).length,
 		remainingRecords 					= totalRecords,
@@ -130,7 +130,7 @@ module.exports.updateInquiryRecord = ( agencyIds, inquiryId, pauseUntilSaved ) =
 
 			const [ inquiry, agency ] = values;
 
-			inquiry.agency = agency;
+			inquiry.familyAgency = agency;
 
 			// save the updated inquiry record
 			inquiry.save( ( err, savedModel ) => {
