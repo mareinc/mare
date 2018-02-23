@@ -45,7 +45,7 @@ exports.checkFieldForChanges = ( field, model, modelBefore, changeHistory, done 
 		done();
 
 	} else if( field.type === 'number' && fieldBefore !== fieldAfter && ( !!fieldBefore || !!fieldAfter ) ) {
-		
+
 		valueBefore = fieldBefore ? fieldBefore : '';
 		value = fieldAfter ? fieldAfter : '';
 
@@ -54,7 +54,7 @@ exports.checkFieldForChanges = ( field, model, modelBefore, changeHistory, done 
 		done();
 
 	} else if( field.type === 'boolean' && fieldBefore !== fieldAfter ) {
-		
+
 		valueBefore = fieldBefore ? fieldBefore : false;
 		value = fieldAfter ? fieldAfter : false;
 
@@ -65,8 +65,8 @@ exports.checkFieldForChanges = ( field, model, modelBefore, changeHistory, done 
 	// Date.parse( null ) returns NaN, and NaN !== NaN, so the second check is needed
 	} else if( field.type === 'date' && ( fieldBefore || fieldAfter ) ) {
 		// convert the values to nicely formatted dates
-		valueBefore = fieldBefore ? moment( fieldBefore ).format( 'MM/DD/YYYY' ) : '';
-		value = fieldAfter ? moment( fieldAfter ).format( 'MM/DD/YYYY' ) : '';
+		valueBefore = fieldBefore ? moment( fieldBefore ).utc().format( 'MM/DD/YYYY' ) : '';
+		value = fieldAfter ? moment( fieldAfter ).utc().format( 'MM/DD/YYYY' ) : '';
 		// not a part of the check above because Date.parse( fieldBefore ) !== Date.parse( fieldAfter ), even if they have the same date ( I think the milliseconds are appearing different )
 		if( valueBefore !== value ) {
 			exports.addToHistoryEntry( valueBefore, value, field.label, field.type, changeHistory );
@@ -251,7 +251,7 @@ exports.addToHistoryEntry = ( valueBefore, value, label, fieldType, changeHistor
 
 /* if the model is created via the website, there is no updatedBy.  In these cases we need to populate it with the website bot's id */
 exports.setUpdatedby = ( targetModel, done ) => {
-	// if the user was created using the website	
+	// if the user was created using the website
 	if( !targetModel.updatedBy ) {
 
 		keystone.list( 'Admin' ).model
