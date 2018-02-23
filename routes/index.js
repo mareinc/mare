@@ -16,6 +16,7 @@ const keystone							= require( 'keystone' ),
 	  familyAdjustmentService			= require( './middleware/fix_family' ),
 	  changeHistoryAdjustmentService	= require( './middleware/fix_change-history' ),
 	  cloudinaryImageAdjustmentService	= require( './middleware/fix_cloudinary-images' ),
+	  inquiryAdjustmentService			= require( './middleware/fix_inquiry' ),
 	  importRoutes						= keystone.importer( __dirname );
 
 // common middleware
@@ -117,8 +118,9 @@ exports = module.exports = app => {
 	app.post( '/social-worker-register-family'			, familyService.registerFamily );
 	// routes to handle looping through models and adjusting values/saving in bulk
 	app.get( '/fix/children'							, middleware.requireAdmin, childAdjustmentService.fixChildren );
-	app.get( '/fix/families'							, middleware.requireAdmin, familyAdjustmentService.fixFamilies );
-	app.get( '/fix/family-histories'					, middleware.requireAdmin, changeHistoryAdjustmentService.fixFamilyHistories );
 	app.get( '/fix/cloudinary-images'					, middleware.requireAdmin, cloudinaryImageAdjustmentService.fixCloudinaryImages );
 	app.get( '/fix/cloudinary-images/:model'			, middleware.requireAdmin, cloudinaryImageAdjustmentService.fixCloudinaryImages );
+	app.get( '/fix/families'							, middleware.requireAdmin, familyAdjustmentService.fixFamilies );
+	app.get( '/fix/family-histories'					, middleware.requireAdmin, changeHistoryAdjustmentService.fixFamilyHistories );
+	app.get( '/fix/inquiries'							, middleware.requireAdmin, inquiryAdjustmentService.fixInquiries );
 };

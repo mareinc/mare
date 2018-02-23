@@ -6,7 +6,7 @@ const familyHistoriesGenerator = fixChangeHistoriesGenerator();
 
 exports.fixFamilyHistories = function( req, res, next ) {
 	// if the user is trying to run this script against the production database
-	if( /^.*\/mare$/.test( process.env.MONGO_URI ) ) {
+	if( /^.*\/production.*$/.test( process.env.MONGO_URI ) ) {
 		// alert them of what they're doing and how to get around this message
 		return res.send(`
 		
