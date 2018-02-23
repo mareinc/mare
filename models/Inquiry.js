@@ -25,6 +25,7 @@ Inquiry.add( 'General Information', {
 	isSourceUnlisted: { type: Types.Boolean, label: `source isn't listed`, default: false, initial: true },
 	source: { type: Types.Relationship, label: 'source', ref: 'Source', dependsOn: { isSourceUnlisted: false }, filters: { isActive: true }, initial: true },
 	sourceText: { type: Types.Text, label: 'source', dependsOn: { isSourceUnlisted: true }, initial: true },
+	additionalSources: { type: Types.Relationship, label: 'additional sources', ref: 'Source', filters: { isActive: true }, many: true, initial: true },
 
 	children: { type: Types.Relationship, label: 'children', ref: 'Child', dependsOn: { inquiryType: ['child inquiry', 'complaint', 'family support consultation'] }, many: true, initial: true },
 	childsSocialWorker: { type: Types.Relationship, label: 'child\'s social worker', ref: 'Social Worker', dependsOn: { inquiryType: ['child inquiry', 'complaint', 'family support consultation'] }, noedit: true },
@@ -38,7 +39,8 @@ Inquiry.add( 'General Information', {
 
 }, 'Agency', {
 
-	agency: { type: Types.Relationship, label: 'agency at time of inquiry', ref: 'Agency', dependsOn: { inquiryType: ['child inquiry', 'complaint', 'family support consultation'] }, noedit: true },
+	childAgency: { type: Types.Relationship, label: `child's agency at time of inquiry`, ref: 'Agency', dependsOn: { inquiryType: ['child inquiry', 'complaint', 'family support consultation'] }, noedit: true },
+	familyAgency: { type: Types.Relationship, label: `family's agency at time of inquiry`, ref: 'Agency', dependsOn: { inquiryType: 'general inquiry' }, noedit: true },
 	agencyReferrals: { type: Types.Relationship, label: 'agency referrals', ref: 'Agency', dependsOn: { inquiryType: 'general inquiry' }, filters: { isActive: true }, many: true, initial: true }
 
 }, 'Confirmation', {
@@ -51,7 +53,7 @@ Inquiry.add( 'General Information', {
 	approvalEmailSentToInquirer: { type: Types.Boolean, label: 'inquiry accepted information sent to inquirer',  noedit: false },
 	approvalEmailSentToFamilyOnBehalfOfInquirer: { type: Types.Boolean, label: 'inquiry accepted information sent to family on behalf of inquirer', dependsOn: { inquirer: 'social worker', onBehalfOfMAREFamily: true }, noedit: false },
 	emailSentToChildsSocialWorker: { type: Types.Boolean, label: 'inquiry accepted email sent to child\'s social worker', dependsOn: { inquiryType: ['child inquiry', 'complaint', 'family support consultation'] }, noedit: false },
-	emailSentToAgencies: { type: Types.Boolean, label: 'inquiry accepted email sent to agency contacts', dependsOn: { inquiryType: 'general inquiry' }, noedit: false }
+	emailSentToAgencies: { type: Types.Boolean, label: 'inquiry accepted email sent to agency contacts', dependsOn: { inquirer: 'family' }, noedit: false }
 
 /* Container for data migration fields ( these should be kept until after phase 2 and the old system is phased out completely ) */
 }, {
