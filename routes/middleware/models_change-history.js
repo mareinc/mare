@@ -35,12 +35,14 @@ exports.checkFieldForChanges = ( field, model, modelBefore, changeHistory, done 
 		fieldAfter = model[ field.name ];
 	}
 
-	if( field.type === 'string' && ( !!fieldBefore || !!fieldAfter ) && fieldBefore.toLowerCase() !== fieldAfter.toLowerCase() ) {
+	if( field.type === 'string' && ( !!fieldBefore || !!fieldAfter ) ) {
 
-		valueBefore = fieldBefore ? fieldBefore : '';
-		value = fieldAfter ? fieldAfter : '';
+		valueBefore = fieldBefore ? fieldBefore.toLowerCase() : '';
+		value = fieldAfter ? fieldAfter.toLowerCase() : '';
 
-		exports.addToHistoryEntry( valueBefore, value, field.label, field.type, changeHistory );
+		if( valueBefore !== value ) {
+			exports.addToHistoryEntry( valueBefore, value, field.label, field.type, changeHistory );
+		}
 
 		done();
 
