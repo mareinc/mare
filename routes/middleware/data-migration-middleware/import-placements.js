@@ -110,21 +110,18 @@ module.exports.createPlacementRecord = ( placement, pauseUntilSaved ) => {
 
 			let newPlacement = new Placement.model({
 
-				placementDate: `no idea if this should be last updated date or not`,
-				familyAgency: `will need to get the agency id from the family record`,
-				// constellation: `meant for unregistered families, don't think we have this info`,
-				// race: `meant for unregistered families, don't think we have this info`,
-				// source: `done in placement_source import`,
+				placementDate				: placement.status_change_date,
+				familyAgency				: family ? family.get( 'agency' ) : undefined,
 				notes						: placement.comment,
 				isUnregisteredChild			: !!child,
-				child						: !!child ? child.get( '_id' ) : undefined,
+				child						: child ? child.get( '_id' ) : undefined,
 				childDetails: {
-					firstName				: !!child ? placement.chd_first_name : undefined,
-					lastName				: !!child ? placement.chd_last_name : undefined,
+					firstName				: child ? placement.chd_first_name : undefined,
+					lastName				: child ? placement.chd_last_name : undefined,
 					status					: `we don't have this info`
 				},
 				isUnregisteredFamily		: !family,
-				family						: !!family ? family.get( '_id' ) : undefined,
+				family						: family ? family.get( '_id' ) : undefined,
 				// placementDate			// this doesn't appear to exist in the old system
 				childPlacedWithMAREFamily	: !!family,
 				placedWithFamily			: family ? family.get( '_id' ) : undefined,
@@ -163,43 +160,31 @@ module.exports.createPlacementRecord = ( placement, pauseUntilSaved ) => {
 // instantiates the generator used to create family records at a regulated rate
 const placementGenerator = exports.generatePlacements();
 
-	// MODEL FIELDS:
+// TODO:
 
-		// placementDate				Date
-		// * child						Relationship
-		// * childPlacedWithMAREFamily	Boolean
-		// * placedWithFamily			Relationship
-		// * familyAgency				Relationship // needs to be determined on save
-		// source						Relationship // added in the placement source import
-		// * notes						Textarea
+	// 1. loop through children, grabbing the following and creating placement records
 
+		// placement_placed_date
+		// placement_disruption_date
+		// placement_family_name
+		// placement_address_1
+		// placement_address_2
+		// placement_city
+		// placement_state
+		// placement_zip
+		// placement_home_phone
+		// placement_country
+		// placement_email
+		// placement_agency
+		// placement_constellation
+		// placement_rce_id
 
-	// MATCHED FIELDS ( SOME NEED TO AUTO-GENERATE AS NOTED ABOVE ):
+	// 2. loop through all family_placement.csv and create placement records
 
-		// placementOldId		fpl_id
-		// placedWithFamily		fam_id
-		// child				chd_id
-		// comment				notes
+	// 3. loop through all placements you've created to see if there are multiple placements for any child
 
+	// 4. if no, append all placement sources
 
-	// QUESTIONS FOR LISA:
+	// 5. if yes, freak out and talk to Lisa
 
-		// we have no status ( just a place to mark disruptions ).  Should I only carry over the status and the date from placements marked as disrupted?
-			// options from the old system: M = Matched, P = Placed, L = Legalized, N = Not Matched, D = Disruption
-
-		// we have no place to enter child information, and some records we're bringing over don't have a child id, but do have a child first / last name
-
-		// we have no placement date, do placements in the old system have a date associated with them?
-
-// NEW NOTES:
-
-		"fpl_id", // old id if using
-		"fam_id", // family and all family details
-		"chd_id", // child and all child details
-		"chd_first_name", // child name if not in the system
-		"chd_last_name", // child name if not in the system
-		"status", // placement status | M = Matched, P = Placed, L = Legalized, N = Not Matched, D = Disruption
-		"status_change_date", // possibly placementDate
-		"comment" // notes
-		
-		// nothing matching source, race, or placement date unless we want to use status change date
+	// PENDING. waiting for Victoria's response to find out how to handle a disruption for a child since we were using status change date for the placement date
