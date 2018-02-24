@@ -77,12 +77,6 @@ module.exports.generatePlacementSources = function* generatePlacementSources() {
 
 	console.log( `placement source groups remaining: ${ remainingRecords }` );
 
-	for( let key in newPlacementSourcesMap ) {
-		if( newPlacementSourcesMap[ key ].size > 1 ) {
-			console.log( 'here' );
-		}
-	}
-
 	// loop through each placement source object we need to create a record for
 	for( let key in newPlacementSourcesMap ) {
 		// increment the placementSourceNumber

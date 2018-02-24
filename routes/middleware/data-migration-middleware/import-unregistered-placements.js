@@ -133,18 +133,18 @@ module.exports.createPlacementRecord = ( placement, pauseUntilSaved ) => {
 	// fetch the family
 	const familyLoaded = utilityModelFetch.getFamilyByRegistrationNumber( placement.familyId );
 	// fetch the agency
-	const agencyLoaded = utilityModelFetch.getAgencyById( placement.agencyId )
+	// const agencyLoaded = utilityModelFetch.getAgencyById( placement.agencyId )
 
-	Promise.all( [ childLoaded, familyLoaded, agencyLoaded ] )
+	Promise.all( [ childLoaded, familyLoaded ] )
 		.then( values => {
 
-			const [ child, family, agency ] = values;
+			const [ child, family ] = values;
 
 			let newPlacement = new Placement.model({
 
 				placementDate				: placement.placedDate ? new Date( placement.placedDate ) : undefined,
 				disruptionDate				: placement.disruptionDate ? new Date( placement.disruptionDate ) : undefined,
-				familyAgency				: agency ? agency.get( '_id' ) : undefined,
+				// familyAgency				: agency ? agency.get( '_id' ) : undefined,
 				child						: child ? child.get( '_id' ) : undefined,
 				isUnregisteredFamily		: !!placement.familyId,
 				family						: family ? family.get( '_id' ) : undefined,

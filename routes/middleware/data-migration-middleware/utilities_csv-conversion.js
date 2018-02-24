@@ -562,8 +562,7 @@ exports.fetchPlacementSources = () => {
 				resolve( placementSourcesArray );
 			})
 			.on( 'error', err => {
-				console.error( `error fetching placement sources or converting to JSON => ${ err }` );
-				reject();
+				reject( `error fetching placement sources or converting to JSON => ${ err }` );
 			});
 	});
 };
