@@ -1,0 +1,30 @@
+// flash messages container
+#flash-messages {
+
+	// general positioning and layout
+	position: fixed;
+	top: 0;
+	width: 100%;
+
+	// position the flash messages container offscreen initially
+	transform: translateY( -100% );
+
+	// ensure the flash messages have a z-index greater than the global header menu
+	z-index: 200;
+
+	// configure transition & animation props
+	transition-property: transform;
+	transition-timing-function: ease-in;
+	transition-duration: .5s;
+
+	// defines a class to slide the flash messages into view
+	&.slide-in {
+		transform: translateY( 0% );
+	}
+
+	// container for each message within the flash messages container
+	.alert {
+		margin: 0;
+		padding: 10px;
+	}
+}
