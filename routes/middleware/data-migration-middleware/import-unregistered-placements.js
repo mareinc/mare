@@ -14,23 +14,57 @@ let placementsImportComplete;
 let migrationResults;
 // create an array to store problems during the import
 let importErrors = [];
+// create references to the maps that we stored on locals.  These are bound here to be available to multiple functions below since res can't be passed to the generator
+let statesMap,
+	regionsMap;
 
 module.exports.importPlacements = ( req, res, done ) => {
+	// expose the maps we'll need for this import
+	statesMap	= res.locals.migration.maps.states;
+	regionsMap	= res.locals.migration.maps.regions;
 	// expose done to our generator
 	placementsImportComplete = done;
 	// expose our migration results array
 	migrationResults = res.locals.migrationResults;
 
 	// create a promise for converting the placements CSV file to JSON
-	const placementsLoaded = CSVConversionMiddleware.fetchPlacements();
+	const childrenLoaded = CSVConversionMiddleware.fetchChildren();
 
 	// if the file was successfully converted, it will return the array of placements
-	placementsLoaded
-		.then( placementsArray => {
+	childrenLoaded
+		.then( childrenArray => {
 			// store the placements in a variable accessible throughout this file
-			const placements = placementsArray;
+			const filteredChildren = childrenArray.filter( child => {
+				// if the child has any placement fields filled out, include them
+				return child.placement_placed_date || child.placement_disruption_date || child.placement_fam_id ||
+					child.placement_family_name || child.placement_address_1 || child.placement_address_2 ||
+					child.placement_city || child.placement_state || child.placement_zip ||
+					child.placement_home_phone || child.placement_country || child.placement_email ||
+					child.placement_agency || child.placement_constellation || child.placement_rce_id;
+			});
+
+			placements = filteredChildren.map( child => {
+				return {
+					childId: child.chd_id,
+					placedDate: child.placement_placed_date,
+					disruptionDate: child.placement_disruption_date,
+					familyId: child.placement_fam_id,
+					familyName: child.placement_family_name,
+					street1: child.placement_address_1,
+					street2: child.placement_address_2,
+					city: child.placement_city,
+					state: child.placement_state,
+					zipCode: child.placement_zip,
+					homePhone: child.placement_home_phone,
+					country: child.placement_country,
+					email: child.placement_email,
+					agencyId: child.placement_agency,
+					familyConstellation: child.placement_constellation,
+					raceId: child.placement_rce_id
+				}
+			});
 			// kick off the first run of our generator
-			inquiryGenerator.next();
+			placementGenerator.next();
 		// if there was an error converting the inquiries file
 		}).catch( reason => {
 			console.error( `error processing inquiries` );
@@ -49,6 +83,9 @@ module.exports.generatePlacements = function* generatePlacements() {
 		remainingRecords 	= totalRecords,
 		batchCount			= 100, // number of records to be process simultaneously
 		placementsNumber	= 0; // keeps track of the current placement being processed.  Used for batch processing
+	
+	console.log( `placements remaining: ${ remainingRecords }` );
+
 	// loop through each placement we need to create a record for
 	for( let placement of placements ) {
 		// increment the placementsNumber
@@ -92,33 +129,44 @@ module.exports.generatePlacements = function* generatePlacements() {
 module.exports.createPlacementRecord = ( placement, pauseUntilSaved ) => {
 
 	// fetch the child
-	const childLoaded = utilityModelFetch.getChildByRegistrationNumber( placement.chd_id );
+	const childLoaded = utilityModelFetch.getChildByRegistrationNumber( placement.childId );
 	// fetch the family
-	const familyLoaded = utilityModelFetch.getFamilyByRegistrationNumber( placement.fam_id );
+	const familyLoaded = utilityModelFetch.getFamilyByRegistrationNumber( placement.familyId );
+	// fetch the agency
+	const agencyLoaded = utilityModelFetch.getAgencyById( placement.agencyId )
 
-	Promise.all( [ childLoaded, familyLoaded ] )
+	Promise.all( [ childLoaded, familyLoaded, agencyLoaded ] )
 		.then( values => {
 
-			const [ child, family ] = values;
+			const [ child, family, agency ] = values;
 
 			let newPlacement = new Placement.model({
 
-				placementDate				: placement.status_change_date,
-				familyAgency				: family ? family.get( 'agency' ) : undefined,
-				notes						: placement.comment,
-				isUnregisteredChild			: !!child,
+				placementDate				: placement.placedDate ? new Date( placement.placedDate ) : undefined,
+				disruptionDate				: placement.disruptionDate ? new Date( placement.disruptionDate ) : undefined,
+				familyAgency				: agency ? agency.get( '_id' ) : undefined,
 				child						: child ? child.get( '_id' ) : undefined,
-				childDetails: {
-					firstName				: child ? placement.chd_first_name : undefined,
-					lastName				: child ? placement.chd_last_name : undefined,
-					status					: `we don't have this info`
-				},
-				isUnregisteredFamily		: !family,
+				isUnregisteredFamily		: !!placement.familyId,
 				family						: family ? family.get( '_id' ) : undefined,
-				// placementDate			// this doesn't appear to exist in the old system
-				childPlacedWithMAREFamily	: !!family,
-				placedWithFamily			: family ? family.get( '_id' ) : undefined,
-				
+				familyDetails: {
+					name: placement.familyName,	
+					address: {
+						street1: placement.street1,
+						street2: placement.street2,
+						city: placement.city,
+						state: placement.state ? statesMap[ placement.state ] : undefined,
+						zipCode: placement.zipCode,
+						country: placement.country,
+						region: placement.region ? regionsMap[ placement.region ] : undefined
+					},
+			
+					phone: {
+						home: placement.homePhone,
+						preferred: 'home'
+					},
+			
+					email: placement.email
+				}
 			});
 
 			// save the new placement record
@@ -126,7 +174,7 @@ module.exports.createPlacementRecord = ( placement, pauseUntilSaved ) => {
 				// if we run into an error
 				if( err ) {
 					// store a reference to the entry that caused the error
-					importErrors.push( { id: placement.fpl_id, error: err } );
+					importErrors.push( { id: placement.childId, error: err } );
 				}
 
 				// fire off the next iteration of our generator after pausing
@@ -139,7 +187,7 @@ module.exports.createPlacementRecord = ( placement, pauseUntilSaved ) => {
 		})
 		.catch( err => {
 			// we can assume it was a reject from trying to fetch the city or town by an unrecognized name
-			importErrors.push( { id: placement.fpl_id, error: `error importing placement with id ${ placement.fpl_id } - ${ err }` } );
+			importErrors.push( { id: placement.childId, error: `error importing placement for child - ${ err }` } );
 
 			// fire off the next iteration of our generator after pausing for a second
 			if( pauseUntilSaved ) {

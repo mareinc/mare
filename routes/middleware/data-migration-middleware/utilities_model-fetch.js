@@ -50,7 +50,6 @@ module.exports.getAgencyById = agencyId => {
 	return new Promise( ( resolve, reject ) => {
 		// if no agency id was passed in
 		if( !agencyId ) {
-			console.error( 'no agency id provided' );
 			// resolve the promise with an undefined value
 			return resolve();
 		}
@@ -338,8 +337,7 @@ module.exports.getFamilyByRegistrationNumber = registrationNumber => {
 
 			}, err => {
 
-				console.error( `error in getFamilyByRegistrationNumber() ${ err }` );
-				reject();
+				reject( `error in getFamilyByRegistrationNumber() - ${ err }` );
 			});
 	});
 };
@@ -514,7 +512,7 @@ module.exports.getMailingListById = id => {
 				reject( `error in getMailingListById() ${ err }` );
 			});
 	});
-}
+};
 
 module.exports.getOutsideContactsByOldIds = ids => {
 	
@@ -546,4 +544,32 @@ module.exports.getOutsideContactsByOldIds = ids => {
 				reject( `error in getSocialWorkerIdsByOldIds() ${ err }` );
 			});
 		});
-}
+};
+
+module.exports.getPlacementsByChildId = id => {
+	
+	return new Promise( ( resolve, reject ) => {
+	
+		if( !id ) {
+			return reject( `error fetching placement by id ${ id }` );
+		}
+
+		Inquiry.model
+			.findOne()
+			.where( 'oldId', id )
+			.exec()
+			.then( inquiry => {
+				// if no inquiry was found
+				if( !inquiry ) {
+					// and reject the promise
+					reject( `error fetching inquiry by oldId ${ id }` );
+				}
+				// otherwise, accept the promise and pass back the retrieved inquiry
+				resolve( inquiry );
+
+			}, err => {
+
+				reject( `error in getInquiryById() ${ err }` );
+			});
+	});
+};

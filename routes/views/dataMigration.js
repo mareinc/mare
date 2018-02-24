@@ -29,7 +29,6 @@ const agencyContactsImport						= require( '../middleware/data-migration-middlew
 const adminImport								= require( '../middleware/data-migration-middleware/import-admin' );
 const childrenImport							= require( '../middleware/data-migration-middleware/import-children' );
 const childDisabilitiesImport					= require( '../middleware/data-migration-middleware/import-child-disabilities' );
-const childHistoriesImport						= require( '../middleware/data-migration-middleware/import-child-histories' );
 const childMediaEligibilitiesImport				= require( '../middleware/data-migration-middleware/import-child-media-eligibilities' );
 const childMediaFeaturesImport					= require( '../middleware/data-migration-middleware/import-child-media-features' );
 const childRecruitmentChecklistImport			= require( '../middleware/data-migration-middleware/import-child-recruitment-checklists' );
@@ -40,24 +39,24 @@ const familiesImport							= require( '../middleware/data-migration-middleware/i
 const familyChildrenImport						= require( '../middleware/data-migration-middleware/import-family-children' );
 const familyContactsImport						= require( '../middleware/data-migration-middleware/import-family-contacts' );
 const familyDisabilityPreferencesImport			= require( '../middleware/data-migration-middleware/import-family-disability-preferences' );
-// const familyHistoriesImport						= require( '../middleware/data-migration-middleware/import-family-histories' );
 const familyRacePreferencesImport				= require( '../middleware/data-migration-middleware/import-family-race-preferences' );
 const familySocialWorkersImport					= require( '../middleware/data-migration-middleware/import-family-social-workers' );
 const familySupportServicesImport				= require( '../middleware/data-migration-middleware/import-family-support-services' );
 const mediaFeaturesImport						= require( '../middleware/data-migration-middleware/import-media-features' );
 const mediaFeatureChildImport					= require( '../middleware/data-migration-middleware/import-media-feature-child' );
 const outsideContactImport						= require( '../middleware/data-migration-middleware/import-outside-contacts' );
-const placementsImport							= require( '../middleware/data-migration-middleware/import-placements' );
+const registeredPlacementsImport				= require( '../middleware/data-migration-middleware/import-registered-placements' );
+const unregisteredPlacementsImport				= require( '../middleware/data-migration-middleware/import-unregistered-placements' );
+const placementSourcesImport					= require( '../middleware/data-migration-middleware/import-placement-sources' );
 const sourcesImport								= require( '../middleware/data-migration-middleware/import-sources' );
 const socialWorkerImport						= require( '../middleware/data-migration-middleware/import-social-workers' );
-// const inquiriesExtranetImport					= require( '../middleware/data-migration-middleware/import-inquiries-extranet' );
 const inquiriesImport							= require( '../middleware/data-migration-middleware/import-inquiries');
 const inquiryAgenciesImport						= require( '../middleware/data-migration-middleware/import-inquiry-agencies' );
 const inquiryChildrenImport						= require( '../middleware/data-migration-middleware/import-inquiry-children' );
 const inquiryNotesImport						= require( '../middleware/data-migration-middleware/import-inquiry-notes' );
 const mailingListSubscriptionsImport    		= require( '../middleware/data-migration-middleware/import-mailing-list-subscriptions');
 const childInternalNotesImport					= require( '../middleware/data-migration-middleware/import-child-internal-notes' );
-// const internalNotesImport						= require( '../middleware/data-migration-middleware/import-internal-notes' );
+const familyInternalNotesImport					= require( '../middleware/data-migration-middleware/import-family-internal-notes' );
 
 exports = module.exports = ( req, res ) => {
     'use strict';
@@ -149,17 +148,18 @@ exports = module.exports = ( req, res ) => {
 
 		// 13 left undone below
 
-		// done => { placementsImport.importPlacements( req, res, done ); }, // not done TODO: Get details to Brian so he can help you track down the field matches, or work out mismatch in placements and placement sources with Lisa
+		// done => { registeredPlacementsImport.importPlacements( req, res, done ); },
+		// done => { unregisteredPlacementsImport.importPlacements( req, res, done ); },
+		// done => { placementSourcesImport.appendPlacementSources( req, res, done ); },
 		// done => { inquiriesImport.importInquiries( req, res, done ); },
 		// done => { inquiryAgenciesImport.appendInquiryAgencies( req, res, done ); },
 		// done => { inquiryChildrenImport.appendInquiryChildren( req, res, done ); },
 		// done => { inquiryNotesImport.appendInquiryNotes( req, res, done ); },
 		// done => { eventsImport.importEvents( req, res, done ); },
 		// done => { eventAttendeeImport.appendEventAttendees( req, res, done ); },
-		// done => { mailingListSubscriptionsImport.importMailingListSubscriptions( req, res, done ); }, // not done
-		// IMPORTANT: I think family backup is family internal notes
-		// done => { familyInternalNotesImport.importInternalNotes( req, res, done ); }	// not done
-		done => { childInternalNotesImport.importInternalNotes( req, res, done ); }	// not done
+		// done => { mailingListSubscriptionsImport.importMailingListSubscriptions( req, res, done ); },
+		// done => { childInternalNotesImport.importInternalNotes( req, res, done ); },
+		done => { familyInternalNotesImport.importInternalNotes( req, res, done ); },
 		// file attachment  															// not done
 
 		
@@ -170,5 +170,4 @@ exports = module.exports = ( req, res ) => {
 		view.render( 'data-migration-output' );
 
 	});
-
 };

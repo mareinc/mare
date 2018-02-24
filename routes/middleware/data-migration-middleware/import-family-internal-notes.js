@@ -27,7 +27,7 @@ module.exports.importInternalNotes = ( req, res, done ) => {
 	migrationResults = res.locals.migrationResults;
 
 	// create a promise for converting the internal notes CSV file to JSON
-	const internalNotesLoaded = CSVConversionMiddleware.fetchChildInternalNotes();
+	const internalNotesLoaded = CSVConversionMiddleware.fetchFamilyInternalNotes();
 	// if the file was successfully converted, it will return the array of internal notes
 	internalNotesLoaded
 		.then( internalNotesArray => {
@@ -79,10 +79,10 @@ module.exports.generateInternalNotes = function* generateInternalNotes() {
 				console.log( error )
 			});
 
-			const resultsMessage = `finished creating ${ totalRecords } child internal notes in the new system`;
+			const resultsMessage = `finished creating ${ totalRecords } family internal notes in the new system`;
 			// store the results of this run for display after the run
 			migrationResults.push({
-				dataSet: 'child internal notes',
+				dataSet: 'family internal notes',
 				results: resultsMessage
 			});
 
@@ -97,30 +97,30 @@ module.exports.generateInternalNotes = function* generateInternalNotes() {
 module.exports.createInternalNoteRecord = ( internalNote, pauseUntilSaved ) => {
 	// if the notes field exists, we should create a new record
 	if( internalNote.notes ) {
-		// fetch the child specified in the placement
-		const fetchChild = utilityModelFetch.getChildByRegistrationNumber( internalNote.chd_id );
+		// fetch the family specified in the placement
+		const fetchFamily = utilityModelFetch.getFamilyByRegistrationNumber( internalNote.fam_id );
 		// fetch the admin who took the note
 		const fetchCreatedBy = utilityModelFetch.getAdminById( internalNote.created_by );
-		// once the child is fetched
-		Promise.all( [ fetchChild, fetchCreatedBy, fetchMigrationBot ] )
+		// once the family is fetched
+		Promise.all( [ fetchFamily, fetchCreatedBy, fetchMigrationBot ] )
 			.then( values => {
 
-				let [ child, createdBy, migrationBot ] = values;
+				let [ family, createdBy, migrationBot ] = values;
 
 				let newInternalNote = new InternalNote.model({
-					target		: 'child',
-					child		: child ? child.get( '_id' ) : undefined,
+					target		: 'family',
+					family		: family ? family.get( '_id' ) : undefined,
 					date		: new Date( internalNote.created_datetime ),
 					note		: internalNote.notes,
 					employee	: createdBy ? createdBy.get( '_id' ) : undefined
 				});
 
-				// save the new child internal note record
+				// save the new family internal note record
 				newInternalNote.save( ( err, savedModel ) => {
 					// if we run into an error
 					if( err ) {
 						// store a reference to the entry that caused the error
-						importErrors.push( { id: internalNote.chd_h_id, error: err } );
+						importErrors.push( { id: internalNote.fam_h_id, error: err } );
 					}
 
 					// fire off the next iteration of our generator after pausing
@@ -133,7 +133,7 @@ module.exports.createInternalNoteRecord = ( internalNote, pauseUntilSaved ) => {
 			})
 			.catch( err => {
 				// we can assume it was a reject from trying to fetch the city or town by an unrecognized name
-				importErrors.push( { id: internalNote.chd_h_id, error: `error creating internal note - ${ err }` } );
+				importErrors.push( { id: internalNote.fam_h_id, error: `error creating internal note - ${ err }` } );
 
 				if( pauseUntilSaved ) {
 					setTimeout( () => {

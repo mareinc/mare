@@ -5,13 +5,14 @@ const csv									= require( 'csvtojson' ),
 	  agencyContactsFilePath				= './migration-data/csv-data/agency_contact.csv',
 	  childrenFilePath						= './migration-data/csv-data/child.csv',
 	  childDisabilitiesFilePath				= './migration-data/csv-data/child_special_need.csv',
-	  childHistoriesFilePath				= './migration-data/csv-data/child_h.csv',
+	  childInternalNotesFilePath			= './migration-data/csv-data/child_h.csv',
 	  eventsFilePath						= './migration-data/csv-data/event.csv',
 	  eventAttendeesFilePath				= './migration-data/csv-data/event_attendee.csv',
 	  familiesFilePath						= './migration-data/csv-data/family.csv',
 	  familyChildrenFilePath				= './migration-data/csv-data/family_child.csv',
 	  familyContactsFilePath				= './migration-data/csv-data/family_contact.csv',
 	  familyDisabilityPreferencesFilePath	= './migration-data/csv-data/family_special_need.csv',
+	  familyInternalNotesFilePath			= './migration-data/csv-data/family_h.csv',
 	  familyRacePreferencesFilePath			= './migration-data/csv-data/family_race_preference.csv',
 	  familySupportServicesFilePath			= './migration-data/csv-data/family_support_service.csv',
 	  inquiriesFilePath						= './migration-data/csv-data/ext_inquiry.csv',
@@ -131,22 +132,40 @@ exports.fetchChildDisabilities = () => {
 	});
 };
 
-exports.fetchChildHistories = () => {
+exports.fetchChildInternalNotes = () => {
 	
-	console.log( `fetching child histories from CSV` );
+	console.log( `fetching child internal notes from CSV` );
 
 	return new Promise( ( resolve, reject ) => {
-		// fetch all records from the child histories csv file
-		csv().fromFile( childHistoriesFilePath )
+		// fetch all records from the child internal notes csv file
+		csv().fromFile( childInternalNotesFilePath )
 			// wait until the whole file has been parsed into an array of objects
-			.on( 'end_parsed', childHistoriesArray => {
-				console.log( `child histories fetched` );
-				// resolve the promise with the array of child history objects
-				resolve( childHistoriesArray );
+			.on( 'end_parsed', childInternalNotesArray => {
+				console.log( `child internal notes fetched` );
+				// resolve the promise with the array of child internal note objects
+				resolve( childInternalNotesArray );
 			})
 			.on( 'error', err => {
-				console.error( `error fetching child histories or converting to JSON => ${ err }` );
-				reject();
+				reject( `error fetching child internal notes or converting to JSON => ${ err }` );
+			});
+	});
+};
+
+exports.fetchFamilyInternalNotes = () => {
+	
+	console.log( `fetching family internal notes from CSV` );
+
+	return new Promise( ( resolve, reject ) => {
+		// fetch all records from the family internal notes csv file
+		csv().fromFile( familyInternalNotesFilePath )
+			// wait until the whole file has been parsed into an array of objects
+			.on( 'end_parsed', familyInternalNotesArray => {
+				console.log( `family internal notes fetched` );
+				// resolve the promise with the array of family internal note objects
+				resolve( familyInternalNotesArray );
+			})
+			.on( 'error', err => {
+				reject( `error fetching family internal notes or converting to JSON => ${ err }` );
 			});
 	});
 };
