@@ -28,30 +28,53 @@
 		margin: 0;
 		border: 0;
 		border-radius: 0;
-		padding: 0;
+		padding: 0 0 15px 0;
 
 		// disregard overflow to prevent padding of text elements from creating whitespace
 		overflow: hidden;
 
+		// transition padding for a slide-up effect
+		transition: padding-bottom linear .1s;
+
+		// initiates slide-up transition
+		&.slide-up-padding {
+			padding-bottom: 0;
+		}
+
 		// container for each individual message within a block of messages
 		div {
 
+			display: flex;
+			flex-direction: column;
 			padding: 0 15px;
+
+			// overflow needs to be hidden prevent text from overlapping during animations
+			overflow: hidden;
 
 			// ensure that longer messages will wrap on small screen sizes
 			word-wrap: break-word;
 
-			// add padding to the bottom of the last message element
-			&:last-of-type {
-				padding-bottom: 1.33em;
+			// transition max-height for a slide-up effect
+			transition: max-height linear .5s;
+
+			// initiates slide-up transition
+			&.slide-up {
+				max-height: 0 !important;
+			}
+
+			h4 {
+				margin: 15px 15px 7px 15px;
+			}
+
+			p {
+				margin: 0 15px;
 			}
 		}
 	}
 }
 
 // animation logic for whenever we implement a slide up animation for messages
-
-// animation: hideMessage 1s ease-out 1 normal forwards;
+//animation: hideMessage 1s ease-out 0s 1 normal forwards;
 // @keyframes hideMessage {
 
 // 	from {
