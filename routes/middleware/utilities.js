@@ -84,11 +84,7 @@ exports.modifyWYSIWYGContent = ( object, content, options ) => {
 
 		switch( option.action ) {
 
-			case 'add more links':
-
-				console.log( `add 'em in` );
-
-				break;
+			case 'add more links': break; // TODO: finish coding this section
 
 			case 'add classes':
 
