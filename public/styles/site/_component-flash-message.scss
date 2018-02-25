@@ -4,6 +4,7 @@
 	// general positioning and layout
 	position: fixed;
 	top: 0;
+	min-width: 320px;
 	width: 100%;
 
 	// position the flash messages container offscreen initially
@@ -13,18 +14,52 @@
 	z-index: 200;
 
 	// configure transition & animation props
-	transition-property: transform;
-	transition-timing-function: ease-in;
-	transition-duration: .5s;
+	transition: transform ease-in .5s;
 
 	// defines a class to slide the flash messages into view
 	&.slide-in {
 		transform: translateY( 0% );
 	}
 
-	// container for each message within the flash messages container
+	// container for each block of messages of a particular type ( e.g. success, error, etc. ) within the flash messages container
 	.alert {
+
+		// remove margins, padding, and borders from alert container to allow it to disappear fully when all messages are removed
 		margin: 0;
-		padding: 10px;
+		border: 0;
+		border-radius: 0;
+		padding: 0;
+
+		// disregard overflow to prevent padding of text elements from creating whitespace
+		overflow: hidden;
+
+		// container for each individual message within a block of messages
+		div {
+
+			padding: 0 15px;
+
+			// ensure that longer messages will wrap on small screen sizes
+			word-wrap: break-word;
+
+			// add padding to the bottom of the last message element
+			&:last-of-type {
+				padding-bottom: 1.33em;
+			}
+		}
 	}
 }
+
+// animation logic for whenever we implement a slide up animation for messages
+
+// animation: hideMessage 1s ease-out 1 normal forwards;
+// @keyframes hideMessage {
+
+// 	from {
+// 		transform-origin: top;
+// 	}
+
+// 	to {
+// 		transform-origin: top;
+// 		transform: scaleY( 0 );
+// 	}
+// }
