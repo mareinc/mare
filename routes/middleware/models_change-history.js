@@ -37,8 +37,8 @@ exports.checkFieldForChanges = ( field, model, modelBefore, changeHistory, done 
 
 	if( field.type === 'string' && ( !!fieldBefore || !!fieldAfter ) ) {
 
-		valueBefore = fieldBefore ? fieldBefore.toLowerCase() : '';
-		value = fieldAfter ? fieldAfter.toLowerCase() : '';
+		valueBefore = fieldBefore ? fieldBefore.toLowerCase().replace( /\s/g, '' ) : '';
+		value = fieldAfter ? fieldAfter.toLowerCase().replace( /\s/g, '' ) : '';
 
 		if( valueBefore !== value ) {
 			exports.addToHistoryEntry( valueBefore, value, field.label, field.type, changeHistory );
