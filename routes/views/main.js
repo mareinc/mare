@@ -16,6 +16,12 @@ exports = module.exports = ( req, res ) => {
 	req.flash( 'success', { title: 'This is just a test title',
 			detail: 'Here are some test details' });
 
+	req.flash( 'success', { title: 'This is a second flash message',
+			detail: 'Here are some more details that are really long and will problably wrap on smaller screens.  How does this look when wrapping?' });
+
+	req.flash( 'error', { title: 'This is an error message',
+			detail: 'Here are some more details' });
+
 	Promise.all( [ fetchSlideshow, fetchFeaturedItems ] )
 		.then( values => {
 			// assign local variables to the values returned by the promises
