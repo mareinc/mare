@@ -8,6 +8,11 @@ var Placement = new keystone.List( 'Placement' );
 Placement.add( 'Placement', {
 
 	placementDate: { type: Types.Date, label: 'placement date', format: 'MM/DD/YYYY', initial: true },
+	legalizationDate: { type: Types.Date, label: 'legalization date', format: 'MM/DD/YYYY', initial: true },
+	reunificationDate: { type: Types.Date, label: 'reunification date', format: 'MM/DD/YYYY', initial: true },
+	withdrawnDate: { type: Types.Date, label: 'withdrawn date', format: 'MM/DD/YYYY', initial: true },
+	disruptionDate: { type: Types.Date, label: 'disruption date', format: 'MM/DD/YYYY', initial: true },
+
 	familyAgency: { type: Types.Relationship, label: 'family\'s agency', ref: 'Agency', dependsOn: { isUnregisteredFamily: false }, filters: { isActive: true }, initial: true },
 	constellation: { type: Types.Relationship, label: 'constellation', ref: 'Family Constellation', dependsOn: { isUnregisteredFamily: true }, initial: true },
 	race: { type: Types.Relationship, label: 'race', ref: 'Race', dependsOn: { isUnregisteredFamily: true }, many: true, initial: true },
@@ -54,11 +59,6 @@ Placement.add( 'Placement', {
 
 		email: { type: Types.Email, label: 'email address', dependsOn: { isUnregisteredFamily: true }, initial: true }
 	}
-
-}, 'Disruption', {
-
-	disruptionDate: { type: Types.Date, label: 'disruption date', format: 'MM/DD/YYYY', initial: true }
-
 });
 
 // Define default columns in the admin interface and register the model
