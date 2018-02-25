@@ -6,14 +6,12 @@ let _lockedModels = new Set();
 // locks a model
 exports.lock = modelID => {
 
-	console.log( `locking ${ modelID }` );
 	_lockedModels.add( modelID );
 };
 
 //  unlocks a model
 exports.unlock = modelID => {
 
-	console.log( `unlocking ${ modelID }` );
 	_lockedModels.delete( modelID );
 };
 
