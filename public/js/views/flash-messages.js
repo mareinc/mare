@@ -16,11 +16,69 @@
 			// set the max-height of each message on the page
 			this.setMaxHeights();
 
-			// slide the flash messages into view after 1s
-			setTimeout( function() {
+			// if there are any messages to display
+			if ( this.$flashMessageContainer.children().length > 0 ) {
 
-				this.mare.views.flashMessages.$flashMessageContainer.addClass( 'slide-in' );
-			}, 1000 );
+				// slide the flash message container into view
+				this.slideIn();
+			}
+		},
+
+		// initialize flash messages based on AJAX actions ( e.g. form submissions )
+		initializeAJAX: function( flashMessageMarkup ) {
+
+			// if the flash message container is already in view
+			if ( this.$flashMessageContainer.hasClass( 'slide-in' ) ) {
+
+				// ensure the flash message container is not already in view
+				mare.views.flashMessages.$flashMessageContainer.removeClass( 'slide-in' );
+
+				// wait until the flash message container has been slid out of view
+				mare.views.flashMessages.$flashMessageContainer.on( 'transitionend', function( event ) {
+
+					// remove the transitionend handler
+					mare.views.flashMessages.$flashMessageContainer.off( 'transitionend' );
+
+					// remove all of the messages from the flash message container
+					mare.views.flashMessages.$flashMessageContainer.empty();
+
+					// append and show any messages
+					mare.views.flashMessages.appendAndShowAJAXMessages( flashMessageMarkup );
+				});
+
+			// if the flash message container is not in view
+			} else {
+
+				// append and show any messages
+				this.appendAndShowAJAXMessages( flashMessageMarkup );
+			}
+		},
+
+		// append any AJAX flash messages and slid the messages into view
+		appendAndShowAJAXMessages: function( flashMessageMarkup ) {
+
+			// iterate over each message in the generated flash message markup
+			$( flashMessageMarkup ).find( '.alert' ).each( function() {
+
+				// append each message to the flash message container
+				mare.views.flashMessages.$flashMessageContainer.append( this );
+			});
+
+			// set the max-height of each message on the page
+			this.setMaxHeights();
+
+			// slide the flash message container into view
+			this.slideIn( 500 );
+		},
+
+		// slides the flash messages container into view after a specified delay
+		slideIn: function( delay ) {
+
+			// set the slide in delay ( in milliseconds ) to a default of 1s if none is specified
+			var slideInDelay = delay || 1000;
+
+			// slide the flash messages into view
+			setTimeout( function() { mare.views.flashMessages.$flashMessageContainer.addClass( 'slide-in' ); }, slideInDelay );
 		},
 
 		// remove a message when the user clicks the close button
