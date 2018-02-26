@@ -99,7 +99,6 @@ exports.getUserByEmail = ( email ) => {
 	});
 }
 
-
 /* gets a user by password reset token */ 
 exports.getUserByPasswordResetToken = ( resetToken ) => {
 
@@ -146,13 +145,13 @@ exports.getUserByFullName = ( name, userType ) => {
 };
 
 /* IMPORTANT NOTE: The function below is a copy of one above that's bound to async.  Merge them once async is removed */
-exports.getUserByIdNew = ( id, targetModel, populateOptions = [] ) => {
+exports.getUserByIdNew = ( id, targetModel, fieldsToPopulate = [] ) => {
 
 	return new Promise( ( resolve, reject ) => {
 		// fetch the record from the specified model type using the passed in id value
 		targetModel.model
 			.findById( id )
-			.populate( populateOptions )
+			.populate( fieldsToPopulate )
 			.exec()
 			.then( user => {
 				// if no user was found
@@ -173,4 +172,39 @@ exports.getUserByIdNew = ( id, targetModel, populateOptions = [] ) => {
 				reject();
 			});
 	});
+};
+
+exports.getGalleryPermissions = user => {
+	// check for which type of user is making the request
+	const userType = user ? user.get( 'userType' ) : undefined;
+	// TODO: all of these checks should be virtuals on the models
+	const canBookmarkChildren = userType === 'family';
+	const canSearchForChildren = userType === 'social worker' || userType === 'family';
+	// TODO: canViewAllChildren and canSeeAdvancedOptions are the same check and should have a name that encompasses both
+	const canSeeAdvancedSearchOptions = userType === 'social worker' ||
+										userType === 'admin' ||
+										( userType === 'family' && user.permissions.canViewAllChildren );
+	// return an object with the user's gallery permissions									
+	return {
+		canBookmarkChildren,
+		canSearchForChildren,
+		canSeeAdvancedSearchOptions
+	}
+};
+
+exports.checkForBookmarkedChildren = user => {
+	// check for which type of user is making the request
+	const userType = user ? user.get( 'userType' ) : undefined;
+	
+	// anonymous users, site visitors, and admin can't bookmark children
+	if( !userType || userType === 'site visitor' || userType === 'admin' ) {
+		return false;
+	}
+
+	// store the bookmarked children and sibling groups
+	const bookmarkedChildren = user ? user.get( 'bookmarkedChildren' ) : [];
+	const bookmarkedSiblings = user ? user.get( 'bookmarkedSiblings' ) : [];
+	// return true if the user has any bookmarked children or siblings, and false otherwise
+	return ( bookmarkedChildren && bookmarkedChildren.length > 0 ) ||
+		   ( bookmarkedSiblings && bookmarkedSiblings.length > 0 );
 };

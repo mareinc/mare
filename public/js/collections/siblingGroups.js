@@ -12,37 +12,45 @@
 		// TODO: update based on Lisa's input
 		reorder: function reorder( sortBy ) {
 
-			switch(sortBy) {
+			switch( sortBy ) {
 				case 'registered'	: this.sortByDateRegistered(); break;
 				case 'name'			: this.sortByName(); break;
 				case 'age'			: this.sortByAge(); break;
 				default				: this.sortByDateRegistered(); break;
 			}
 
-			this.trigger( 'sorted' );
-
 		},
-		// TODO: update based on Lisa's input
+
 		sortByDateRegistered: function sortByDateRegistered() {
 
-			this.comparator = function comparator( child ) {
-				return -child.get( 'registrationDateConverted' );
+			this.comparator = function comparator( siblingGroup ) {
+				// find the largest number of milliseconds ( most recently updated ) and sort in reverse order
+				return _.max( siblingGroup.get( 'registrationDatesConverted' ) );
 			}
 
 			this.sort();
 
 		},
-		// TODO: update based on Lisa's input
+		// TODO: make names alphabetical
 		sortByName: function sortByName() {
 
-			this.comparator = 'name';
+			this.comparator = function comparator( siblingGroup ) {
+				// the names are already alphabetical, but sort them to be sure, and grab the first name in the array
+				return _.sortBy( siblingGroup.get( 'names' ) );
+			}
+
 			this.sort();
 
 		},
-		// TODO: update based on Lisa's input
+
 		sortByAge: function sortByAge() {
 
-			this.comparator = 'age';
+			this.comparator = function comparator( siblingGroup ) {
+				// find the minimum age in the array
+				// TODO: this should compare one age after the next, but comparing arrays by replacing _.min with _.sortBy was causing issues where 10 < 2, etc.
+				return _.min( siblingGroup.get( 'ages' ) );
+			}
+
 			this.sort();
 
 		}

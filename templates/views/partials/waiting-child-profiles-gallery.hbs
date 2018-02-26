@@ -32,7 +32,7 @@
 				<button class="button button--medium button--teal filters__search-button filters__search-button--clear">Clear Search</button>
 				{{#if canBookmarkChildren}}
 				<!-- REDESIGN TODO: remove left margin on button... might affect other buttons -->
-				<button class="button button--medium button--teal filters__search-button filters__search-button--show-saved-children {{#unless hasBookmarkedChildren}}hidden{{/unless}}">Show Saved</button>
+				<button class="button button--extra-large button--teal filters__search-button filters__search-button--show-saved-children">Show Bookmarked Profiles</button>
 				{{/if}}
 			</div>
 
@@ -40,12 +40,14 @@
 		</section>
 	</section>
 
-	<div class="button-group button-group--space-between button-group--medium-margin-above button-group--medium-margin-below button-group--wrap">
+	<div class="button-group button-group--space-between button-group--large-margin-above button-group--large-margin-below button-group--wrap waiting-child-profiles__search-and-filter-bar">
 		<select class="waiting-child-profiles__gallery-filter waiting-child-profiles-filter">
 			<option value="registered">Sort by Most Recent</option>
 			<option value="name">Sort by Name</option>
 			<option value="age">Sort by Age</option>
 		</select>
+
+		<input type="text" id="registration-number-search" class="media-boxes-search" placeholder="Search By Registration #">
 
 		<div class="icon-key">
 			<span class="icon-text-unit filter">
@@ -59,5 +61,7 @@
 		</div>
 	</div>
 
-	<section class="profiles-container"></section>
+	<section class="profiles-container">
+		<div id="children-grid" class="card-grid"></div>
+	</section>
 </section>

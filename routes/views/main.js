@@ -17,7 +17,7 @@ exports = module.exports = ( req, res ) => {
 		.then( values => {
 			// assign local variables to the values returned by the promises
 			const [ slideshow, featuredItems ] = values;
-			
+
 			// assign properties to locals for access during templating
 			locals.featuredItems = featuredItems;
 
@@ -28,22 +28,17 @@ exports = module.exports = ( req, res ) => {
 			/* TODO: can possibly remove slide order if I use sortable in the Model.  See DB section of the documentation */
 			// assign properties to locals for access during templating
 			locals.slides = _.sortBy( slides, slide => +slide.order ); // organize the slides in the order specified in the models, low to high
-
-			// set the layout to render without the right sidebar and without a wrapper needed for the full width slideshow
-			locals[ 'render-with-sidebar' ] = false;
+			// set the layout to render without a wrapper needed to display the full width slideshow
 			locals[ 'render-homepage' ] = true;
-			
+
 			// render the view using the main.hbs template
 			view.render( 'main' );
 		})
 		.catch( err => {
 			// log an error for debugging purposes
-			console.error( `there was an error loading data for the homepage - ${ err }` );
-			
-			// set the layout to render without the right sidebar and without a wrapper needed for the full width slideshow
-			locals[ 'render-with-sidebar' ] = false;
+			console.error( `error loading data for the homepage - ${ err }` );
+			// set the layout to render without a wrapper needed to display the full width slideshow
 			locals[ 'render-homepage' ] = true;
-			
 			// render the view using the main.hbs template
 			view.render( 'main' );
 		});

@@ -13,7 +13,7 @@ var SiteVisitor = new keystone.List( 'Site Visitor', {
 // Create fields
 SiteVisitor.add( 'Permissions', {
 
-	isActive: { type: Boolean, label: 'is active', default: true },
+	isActive: { type: Boolean, label: 'is active' },
 
 	permissions: {
 		isVerified: { type: Boolean, label: 'has a verified email address', default: false, noedit: true }
@@ -27,7 +27,7 @@ SiteVisitor.add( 'Permissions', {
 		full: { type: Types.Text, label: 'name', hidden: true, noedit: true, initial: false }
 	},
 
-	avatar: { type: Types.CloudinaryImage, label: 'avatar', folder: 'users/site visitors', select: true, selectPrefix: 'users/site visitors', autoCleanup: true } // TODO: add publicID attribute for better naming in Cloudinary
+	avatar: { type: Types.CloudinaryImage, label: 'avatar', folder: `${ process.env.CLOUDINARY_DIRECTORY }/users/site visitors`, select: true, selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/users/site visitors`, autoCleanup: true } // TODO: add publicID attribute for better naming in Cloudinary
 
 }, 'Contact Information', {
 

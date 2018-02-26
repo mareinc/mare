@@ -4,6 +4,8 @@ const keystone                      = require( 'keystone' ),
 	  UserMiddleware                = require( './service_user' );
 
 exports.resetPassword = ( req, res ) => {
+	// store a reference to locals
+	const locals = res.locals;
 
 	if ( !req.body.email ) {
 		// log errors for debugging purposes
@@ -26,8 +28,8 @@ exports.resetPassword = ( req, res ) => {
 			if ( !user ) {
 				
 				req.flash( 'error', {
-					title: 'Error with your request',
-					detail: 'If the issue persists, please contact MARE for assistance'
+					title: 'There is no account associated with this email address.',
+					detail: 'If applicable, please attempt to log in with a secondary/spouse email address.  Otherwise register to create a new account or contact MARE at communications@mareinc.org for assistance.'
 				});
 
 				throw new Error( `error fetching user by email ${ req.body.email }` );
@@ -36,19 +38,16 @@ exports.resetPassword = ( req, res ) => {
 				// TODO: should this be stored in a more permanent location?
 				// generate a new password reset token 
 				const resetToken = utilities.generateAlphanumericHash( 35 );
-				// store the host information to ensure changes between http and https are handled correctly
-				const host = req.secure ?
-							 `https://${ req.headers.host }` :
-							 `http://${ req.headers.host }`;
 				// set the reset password token for the user record
 				user.resetPasswordToken = resetToken;
+
 				// the name is stored differently for families than for other models
-				const name = user.type === 'family' ?
-							 user.displayName :
-							 user.name.full;
+				const name = user.get( 'userType' ) === 'family' ?
+							 user.get( 'displayName' ) :
+							 user.get( 'name.full' );
 				
 				// create an email with the reset token and save the user entity
-				const sendPasswordResetEmail = PasswordResetEmailMiddleware.sendPasswordResetEmail( name, user.email, host, resetToken );
+				const sendPasswordResetEmail = PasswordResetEmailMiddleware.sendPasswordResetEmail( name, user.email, locals.host, resetToken );
 				// if there was an error sending the password reset email
 				sendPasswordResetEmail
 					.catch( err => {
@@ -60,7 +59,7 @@ exports.resetPassword = ( req, res ) => {
 
 						throw new Error( `error sending reset password email - ${ err }` );
 					});
-
+				// TODO: saving the reset token to the user should come first, and an email should only be sent if successful
 				user.save( err => {
 
 					if( err ) {
@@ -91,7 +90,7 @@ exports.resetPassword = ( req, res ) => {
 
 };
 
-// TODO: this function may belong in a different folder
+// TODO: make this an express view
 exports.getForm = ( req, res ) => {
 
 	const resetToken = req.query.resetToken;
@@ -127,7 +126,7 @@ exports.getForm = ( req, res ) => {
 			const view = new keystone.View( req, res ),
 		   
 			locals = res.locals;
-			//pass the reset token to the view
+			// pass the reset token to the view
 			locals.resetToken = resetToken;
 
 			view.render( 'form_reset-password' );
@@ -175,7 +174,9 @@ exports.changePassword = ( req, res ) => {
 				// update the password field for the user
 				user.set( 'password', password );
 				//reset the password token so that users cant use the link anymore
-				user.set( 'resetPasswordToken', '' ); 
+				user.set( 'resetPasswordToken', '' );
+				// set the user to active, allowing them to log in
+				user.set( 'isActive', true );
 
 				user.save( err => {
 					

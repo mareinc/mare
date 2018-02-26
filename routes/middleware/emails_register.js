@@ -168,7 +168,7 @@ exports.sendNewSiteVisitorNotificationEmailToMARE = ( user, registrationStaffCon
 };
 
 exports.sendNewSocialWorkerNotificationEmailToMARE = ( user, registrationStaffContact, mailingListNames ) => {
-	
+
 	return new Promise( ( resolve, reject ) => {
 		// if sending of the email is not currently allowed
 		if( process.env.SEND_NEW_SOCIAL_WORKER_REGISTERED_EMAILS_TO_MARE !== 'true' ) {
@@ -182,6 +182,13 @@ exports.sendNewSocialWorkerNotificationEmailToMARE = ( user, registrationStaffCo
 		// an array was used instead of a Map because Mustache templates apparently can't handle maps
 		let userData = [];
 		let userMailingListData = [];
+		let positionsArray = [];
+
+		// loop through each position model which was populated when the user model was fetched
+		for( entry of user.positions ) {
+			// extract the text values associated with the model into the array
+			positionsArray.push( entry.position );
+		}
 
 		// store only the fields that have been populated by the user
 		if( user.name.first ) {
@@ -205,12 +212,6 @@ exports.sendNewSocialWorkerNotificationEmailToMARE = ( user, registrationStaffCo
 			});
 		}
 
-		if( user.position ) {
-			userData.push ( {
-				key: 'position',
-				value: user.position
-			}); 
-		}
 
 		if( user.title ) {
 			userData.push( {
@@ -296,6 +297,13 @@ exports.sendNewSocialWorkerNotificationEmailToMARE = ( user, registrationStaffCo
 			});
 		}
 
+		if( positionsArray.length > 0 ) {
+			userData.push( {
+				key: 'positions',
+				value: positionsArray.join( ', ' )
+			});
+		}
+
 		// find the email template in templates/emails/
 		new keystone.Email({
 			templateExt		: 'hbs',
@@ -330,7 +338,7 @@ exports.sendNewSocialWorkerNotificationEmailToMARE = ( user, registrationStaffCo
 };
 
 exports.sendNewFamilyNotificationEmailToMARE = ( user, registrationStaffContact, mailingListNames ) => {
-	
+
 	return new Promise( ( resolve, reject ) => {
 		// if sending of the email is not currently allowed
 		if( process.env.SEND_NEW_FAMILY_REGISTERED_EMAILS_TO_MARE !== 'true' ) {
@@ -646,7 +654,7 @@ exports.sendNewFamilyNotificationEmailToMARE = ( user, registrationStaffContact,
 			key: 'number of children currently in home',
 			value: user.numberOfChildren
 		});
-		
+
 		const numberOfChildrenInHome = user.numberOfChildren === '8+' ?
 									   8 :
 									   parseInt( user.numberOfChildren, 10 );
@@ -654,28 +662,28 @@ exports.sendNewFamilyNotificationEmailToMARE = ( user, registrationStaffContact,
 		for( let i = 1; i <= numberOfChildrenInHome; i++ ) {
 			if( user[ `child${ i }` ][ 'name' ] ) {
 				userData.push( {
-					key: 'child 1 name',
+					key: `child ${ i } name`,
 					value: user[ `child${ i }` ][ 'name' ]
 				});
 			}
 
 			if( user[ `child${ i }` ][ 'birthDate' ] ) {
 				userData.push( {
-					key: 'child 1 date of birth',
+					key: `child ${ i } date of birth`,
 					value: `${ user[ `child${ i }` ][ 'birthDate' ].getMonth() + 1 }/${ user[ `child${ i }` ][ 'birthDate' ].getDate() }/${ user[ `child${ i }` ][ 'birthDate' ].getFullYear() }`
 				});
 			}
 
 			if( user[ `child${ i }` ][ 'gender' ] ) {
 				userData.push( {
-					key: 'child 1 gender',
+					key: `child ${ i } gender`,
 					value: user[ `child${ i }` ][ 'gender' ][ 'gender' ]
 				});
 			}
 
 			if( user[ `child${ i }` ][ 'type' ] ) {
 				userData.push( {
-					key: 'child 1 type',
+					key: `child ${ i } type`,
 					value: user[ `child${ i }` ][ 'type' ][ 'childType']
 				});
 			}
@@ -695,7 +703,7 @@ exports.sendNewFamilyNotificationEmailToMARE = ( user, registrationStaffContact,
 			});
 		}
 
-		if( user.language.language ) {
+		if( user.language && user.language.language ) {
 			userData.push( {
 				key: 'primary language',
 				value: user.language.language
@@ -738,10 +746,17 @@ exports.sendNewFamilyNotificationEmailToMARE = ( user, registrationStaffContact,
 			});
 		}
 
-		if( user.matchingPreferences.numberOfChildrenToAdopt ) {
+		if( user.matchingPreferences.minNumberOfChildrenToAdopt ) {
 			userData.push( {
-				key: 'preferred number of children',
-				value: user.matchingPreferences.numberOfChildrenToAdopt
+				key: 'minimum number of children preferred',
+				value: user.matchingPreferences.minNumberOfChildrenToAdopt
+			});
+		}
+
+		if( user.matchingPreferences.maxNumberOfChildrenToAdopt ) {
+			userData.push( {
+				key: 'maximum number of children preferred',
+				value: user.matchingPreferences.maxNumberOfChildrenToAdopt
 			});
 		}
 
@@ -822,6 +837,7 @@ exports.sendNewFamilyNotificationEmailToMARE = ( user, registrationStaffContact,
 			subject			: `new ${ user.userType } registration`,
 			userType		: user.userType,
 			userData
+
 		}, ( err, message ) => {
 			// if there was an error sending the email
 			if( err ) {
@@ -842,7 +858,7 @@ exports.sendNewFamilyNotificationEmailToMARE = ( user, registrationStaffContact,
 };
 
 exports.sendAccountVerificationEmailToUser = ( userEmail, userType, verificationCode, host ) => {
-	
+
 	return new Promise( ( resolve, reject ) => {
 		// if sending of the email is not currently allowed
 		if( process.env.SEND_ACCOUNT_VERIFICATION_EMAILS_TO_USER !== 'true' ) {
@@ -885,58 +901,6 @@ exports.sendAccountVerificationEmailToUser = ( userEmail, userType, verification
 			if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
 				// reject the promise with details
 				return reject( `error sending account verification email to newly registered user - ${ err }` );
-			}
-
-			resolve();
-		});
-	});
-};
-
-exports.sendThankYouEmailToUser = ( staffContactInfo, userEmail, userType, host ) => {
-	
-	return new Promise( ( resolve, reject ) => {
-		// if sending of the email is not currently allowed
-		if( process.env.SEND_REGISTRATION_THANK_YOU_EMAILS !== 'true' ) {
-			// resolve the promise before any further processing takes place
-			return reject( `sending of the email is disabled` );
-		}
-
-		if( !userEmail ) {
-			return reject( `no user email was provided` );
-		}
-
-		// find the email template in templates/emails/
-		new keystone.Email({
-
-			templateExt 		: 'hbs',
-			templateEngine 		: require( 'handlebars' ),
-			templateName 		: 'register_thank-you-to-user'
-
-		}).send({
-
-			to					: userEmail,
-			from: {
-				name 			: 'MARE',
-				email 			: 'admin@adoptions.io'
-			},
-			subject       		: 'thank you for registering',
-			emailSubject		: `${ userType } registration question`,
-			staffContactEmail	: staffContactInfo.email,
-			host,
-			userType
-
-		}, ( err, message ) => {
-			// if there was an error sending the email
-			if( err ) {
-				// reject the promise with details
-				return reject( `error sending thank you email to newly registered user - ${ err }` );
-			}
-			// the response object is stored as the 0th element of the returned message
-			const response = message ? message[ 0 ] : undefined;
-			// if the email failed to send, or an error occurred ( which it does, rarely ) causing the response message to be empty
-			if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
-				// reject the promise with details
-				return reject( `error sending thank you email to newly registered user - ${ err }` );
 			}
 
 			resolve();

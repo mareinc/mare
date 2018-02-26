@@ -1,0 +1,114 @@
+// flash messages container
+#flash-messages {
+
+	// general positioning and layout
+	position: fixed;
+	top: 0;
+	min-width: 320px;
+	width: 100%;
+
+	// position the flash messages container offscreen initially
+	transform: translateY( -100% );
+
+	// ensure the flash messages have a z-index greater than the global header menu
+	z-index: 200;
+
+	// configure transition & animation props
+	transition: transform ease-in .5s;
+
+	// defines a class to slide the flash messages into view
+	&.slide-in {
+		transform: translateY( 0% );
+	}
+
+	// container for each block of messages of a particular type ( e.g. success, error, etc. ) within the flash messages container
+	.alert {
+
+		// remove margins, padding, and borders from alert container to allow it to disappear fully when all messages are removed
+		margin: 0;
+		border: 0;
+		border-radius: 0;
+		padding: 0 0 15px 0;
+
+		// disregard overflow to prevent padding of text elements from creating whitespace
+		overflow: hidden;
+
+		// transition padding for a slide-up effect
+		transition: padding-bottom linear .1s;
+
+		// initiates slide-up transition
+		&.slide-up-padding {
+			padding-bottom: 0;
+		}
+
+		// container for each individual message within a block of messages
+		.alert__content {
+
+			display: flex;
+			flex-direction: row;
+
+			padding: 0 15px;
+
+			// overflow needs to be hidden prevent text from overlapping during animations
+			overflow: hidden;
+
+			// ensure that longer messages will wrap on small screen sizes
+			word-wrap: break-word;
+
+			// transition max-height for a slide-up effect
+			transition: max-height linear .5s;
+
+			// initiates slide-up transition
+			&.slide-up {
+				max-height: 0 !important;
+			}
+
+			// alert message text content
+			.alert__content-message {
+
+				display: inline-flex;
+				flex-grow: 1;
+				flex-direction: column;
+
+				h4 {
+					margin: 15px 15px 7px 15px;
+				}
+
+				p {
+					margin: 0 15px;
+				}
+
+			}
+
+			// close button
+			.flash-message__close-button {
+
+				display: inline-flex;
+				align-self: center;
+				margin-top: 7.5px;
+				padding: 15px;
+				font-size: 2em;
+				//height: 34px;
+				//width: 14px;
+				cursor: pointer;
+
+				// execute the fade out animation
+				&.fade-out {
+					animation: hideCloseButton 0.2s linear 0s 1 normal forwards;
+				}
+			}
+		}
+	}
+}
+
+// fade out the close button
+@keyframes hideCloseButton {
+
+	from {
+		opacity: 1;
+	}
+
+	to {
+		opacity: 0;
+	}
+}

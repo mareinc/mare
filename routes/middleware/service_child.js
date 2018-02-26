@@ -1,14 +1,16 @@
-const keystone								= require( 'keystone' ),
-	  _										= require( 'underscore' ),
-	  async									= require( 'async' ),
-	  middleware							= require( './middleware' ),
-	  familyService							= require( './service_family' ),
-	  listsService							= require( './service_lists' ),
-	  userService							= require( './service_user' ),
-	  socialWorkerChildRegistrationService	= require( './emails_social-worker-child-registration' );
+const keystone									= require( 'keystone' ),
+	  _											= require( 'underscore' ),
+	  async										= require( 'async' ),
+	  middleware								= require( './middleware' ),
+	  emailTargetMiddleware						= require( './service_email-target' ),
+	  staffEmailContactMiddleware				= require( './service_staff-email-contact' ),
+	  familyService								= require( './service_family' ),
+	  listsService								= require( './service_lists' ),
+	  userService								= require( './service_user' ),
+	  socialWorkerChildRegistrationEmailService	= require( './emails_social-worker-child-registration' );
 
 exports.getMaxRegistrationNumber = function() {
-		
+
 	return new Promise( ( resolve, reject ) => {
 
 		keystone.list( 'Child' ).model
@@ -28,8 +30,8 @@ exports.getMaxRegistrationNumber = function() {
 };
 // TODO: combine the below two functions, the only difference in the filter in the find()
 exports.getAllChildren = ( req, res, done, fieldsToSelect ) => {
-
-	let locals = res.locals;
+	// store a reference to locals
+	const locals = res.locals;
 
 	keystone.list( 'Child' ).model
 		.find()
@@ -70,70 +72,100 @@ exports.getAllChildren = ( req, res, done, fieldsToSelect ) => {
 		});
 };
 
-exports.getChildrenForSocialWorker = ( req, res, done, fieldsToSelect ) => {
-
-	let locals = res.locals;
-	// create a map to convert social worker positions to corresponding field names on the Child model
-	const socialWorkerPositionTypes = {
+exports.getChildrenForSocialWorkerAccount = ( req, res, done, fieldsToSelect ) => {
+	// store a reference to locals
+	const locals = res.locals;
+	// create a map to convert social worker positions to their corresponding field names on the Child model
+	const socialWorkerPositionFieldNames = {
 		'adoption worker': 'adoptionWorker',
 		'recruitment worker': 'recruitmentWorker'
 	};
 
 	if ( locals.userType === 'social worker' ) {
 
-		// get the social worker position from the user model
-		let socialWorkerPosition = socialWorkerPositionTypes[ locals.user.position ];
+		let socialWorker = locals.user;
+		// TODO: update other code to populate models we already have this way.  This will get us one step closer to single fetch functions instead of one offs
+		// populate the social worker's positions
+		socialWorker.populate( 'positions', err => {
 
-		if ( socialWorkerPosition ) {
+			if ( err ) {
 
-			keystone.list( 'Child' ).model
-					.find()
-					.select( fieldsToSelect )
-					.where( socialWorkerPosition, locals.user._id )
-					// TODO: determine if the isVisibleInGallery or active status are necessary filters for the account gallery
-					// .where( 'isVisibleInGallery' ).equals( true )
-					// .where( 'status' ).equals( locals.activeChildStatusId )
-					.populate( 'gender' )
-					.populate( 'race' )
-					.populate( 'languages' )
-					.populate( 'disabilities' )
-					.populate( 'otherConsiderations' )
-					.populate( 'recommendedFamilyConstellation' )
-					.populate( 'otherFamilyConstellationConsideration' )
-					.populate( 'status' )
-					.populate( 'legalStatus' )
-					.exec( ( err, children ) => {
+				console.error( `error populating the social worker's positions - cannot complete children gallery data fetch for social worker: ${ socialWorker._id }` );
+				res.send({
+					status: 'error',
+					message: `could not determine social worker's positions, children gallery data cannot be loaded`
+				});
+			} else {
 
-						if ( err ) {
-							
-							console.error( err );
-							done();
-						} else {
-							
-							// loop through each child
-							_.each( children, child => {
-								// adjust the image to the blank male/female image if needed
-								exports.setNoChildImage( req, res, child, locals.targetChildren === 'all' );
-								// set extra information needed for rendering the child to the page
-								child.age						= middleware.getAge( child.birthDate );
-								child.ageConverted				= middleware.convertDate( child.birthDate );
-								child.registrationDateConverted	= middleware.convertDate( child.registrationDate );
+				// construct a query to search Children models from the Social Worker's valid positions
+				let socialWorkerPositionQuery = socialWorker.positions.map( position => {
+
+					// get the field name ( if one exists ) on the Child model that corresponds to a social worker's position
+					let socialWorkerFieldOnChildModel = socialWorkerPositionFieldNames[ position.position ];
+
+					// if a field for the social worker's position exists on the Child model, add it to the query
+					if ( socialWorkerFieldOnChildModel ) {
+
+						return { [ socialWorkerFieldOnChildModel ]: socialWorker._id };
+					}
+
+				})
+				// filter out any invalid positions
+				.filter( query => query );
+
+				// check to ensure there was at least one valid position type to query with
+				if ( socialWorkerPositionQuery.length > 0 ) {
+
+					keystone.list( 'Child' ).model
+							.find()
+							.select( fieldsToSelect )
+							.or( socialWorkerPositionQuery )
+							.populate( 'gender' )
+							.populate( 'race' )
+							.populate( 'languages' )
+							.populate( 'disabilities' )
+							.populate( 'otherConsiderations' )
+							.populate( 'recommendedFamilyConstellation' )
+							.populate( 'otherFamilyConstellationConsideration' )
+							.populate( 'status' )
+							.populate( 'legalStatus' )
+							.exec( ( err, children ) => {
+
+								if ( err ) {
+
+									console.error( err );
+									done();
+								} else {
+
+									// loop through each child
+									_.each( children, child => {
+										// adjust the image to the blank male/female image if needed
+										exports.setNoChildImage( req, res, child, locals.targetChildren === 'all' );
+										// set extra information needed for rendering the child to the page
+										child.age						= middleware.getAge( child.birthDate );
+										child.ageConverted				= middleware.convertDate( child.birthDate );
+										child.registrationDateConverted	= middleware.convertDate( child.registrationDate );
+									});
+
+									// filter out any children that are not active or on hold
+									let displayChildren = children.filter( child => child.status.childStatus === 'active' || child.status.childStatus === 'on hold' );
+
+									locals.allChildren = displayChildren;
+									// execute done function if async is used to continue the flow of execution
+									done();
+								}
 							});
+				} else {
 
-							locals.allChildren = children;
-							// execute done function if async is used to continue the flow of execution
-							done();
-						}
+					// if a social worker that is neither an adoption or recruitment agent is trying to load a children gallery, log an error message
+					console.error( `error constructing social worker account child gallery query - social worker: ${ socialWorker._id } does not have any valid position types` );
+					res.send({
+						status: 'error',
+						message: `could not construct a valid query based on social worker's positions, children gallery data cannot be loaded`
 					});
-		} else {
-			
-			// if a social worker that is neither an adoption or recruitment agent is trying to load a children gallery, log an error message
-			console.error( `error verifying social worker position type - social worker of position ${ locals.user.position } is trying to load a children gallery` );
-			res.send({
-				status: 'error',
-				message: `error verifying social worker position type - social worker of position ${ locals.user.position } is trying to load a children gallery`
-			});
-		}
+				}
+			}
+		});
 	} else {
 
 		// if an unauthorized user is trying to load this data, log an error message
@@ -143,11 +175,54 @@ exports.getChildrenForSocialWorker = ( req, res, done, fieldsToSelect ) => {
 			message: `error loading children gallery data - user of type ${ locals.userType } is trying to access a gallery restricted to social workers`
 		});
 	}
+};
 
+exports.getChildrenForFamilyAccount = ( req, res, done, fieldsToSelect ) => {
+	// store a reference to locals
+	const locals = res.locals;
+
+	let bookmarkedChildren = locals.user.bookmarkedChildren.concat( locals.user.bookmarkedSiblings );
+
+	keystone.list( 'Child' ).model
+		.find()
+		.select( fieldsToSelect )
+		.where( '_id' ).in( bookmarkedChildren )
+		.populate( 'gender' )
+		.populate( 'race' )
+		.populate( 'languages' )
+		.populate( 'disabilities' )
+		.populate( 'otherConsiderations' )
+		.populate( 'recommendedFamilyConstellation' )
+		.populate( 'otherFamilyConstellationConsideration' )
+		.populate( 'status' )
+		.populate( 'legalStatus' )
+		.exec( ( err, children ) => {
+
+			if ( err ) {
+
+				console.error( err );
+				done();
+			} else {
+
+				// loop through each child
+				_.each( children, child => {
+					// adjust the image to the blank male/female image if needed
+					exports.setNoChildImage( req, res, child, locals.targetChildren === 'all' );
+					// set extra information needed for rendering the child to the page
+					child.age						= middleware.getAge( child.birthDate );
+					child.ageConverted				= middleware.convertDate( child.birthDate );
+					child.registrationDateConverted	= middleware.convertDate( child.registrationDate );
+				});
+
+				locals.allChildren = children;
+				// execute done function if async is used to continue the flow of execution
+				done();
+			}
+		});
 };
 
 exports.getChildrenByIds = idsArray => {
-	
+
 	return new Promise( ( resolve, reject ) => {
 
 		keystone.list( 'Child' ).model
@@ -171,9 +246,9 @@ exports.getChildrenByIds = idsArray => {
 };
 
 exports.getUnrestrictedChildren = ( req, res, done, fieldsToSelect ) => {
+	// store a reference to locals
+	const locals = res.locals;
 
-	var locals = res.locals;
-	
 	// find all children who are active, and are either visible to everyone or have the 'child is visible on MARE web' checkbox checked
 	keystone.list( 'Child' ).model
 		.find()
@@ -234,54 +309,55 @@ exports.getUnrestrictedChildren = ( req, res, done, fieldsToSelect ) => {
 */
 exports.setNoChildImage = ( req, res, child, canViewAllChildren ) => {
 
-	const NO_IMAGE_MALE_GALLERY				= 'images/no-image-male_gallery.png',
-		  NO_IMAGE_MALE_DETAILS				= 'images/no-image-male_details.png',
-		  NO_IMAGE_FEMALE_GALLERY			= 'images/no-image-female_gallery.png',
-		  NO_IMAGE_FEMALE_DETAILS			= 'images/no-image-female_details.png',
-		  NO_IMAGE_OTHER_GALLERY			= 'images/no-image-other_gallery.png',
-		  NO_IMAGE_OTHER_DETAILS			= 'images/no-image-other_details.png',
-		  NO_IMAGE_SIBLING_GROUP_GALLERY	= 'images/no-image-sibling-group_gallery.png',
-		  NO_IMAGE_SIBLING_GROUP_DETAILS	= 'images/no-image-sibling-group_details.png';	
+	const NO_IMAGE_MALE				= 'images/no-image-male.png',
+		  NO_IMAGE_FEMALE			= 'images/no-image-female.png',
+		  NO_IMAGE_OTHER			= 'images/no-image-other.png',
+		  NO_IMAGE_SIBLING_GROUP	= 'images/no-image-sibling-group.png';
 	// if the child is part of a sibling group
 	if( child.mustBePlacedWithSiblings ) {
-		// and is missing an image or is legal risk
-		if( !child.siblingGroupImage.secure_url
-			|| child.legalStatus.legalStatus === 'legal risk'
-			|| ( child.siteVisibility !== 'everyone'
-				&& !canViewAllChildren ) ) {
+		// if the child image is missing or
+		//	the child is legal risk and the user doesn't have permissions to view all children or
+		//	the child visibility is 'Only Registered Social Workers and Families' and the user doesn't have permissions to view all children
+		if( !child.hasSiblingGroupImage ||
+			( child.legalStatus.legalStatus === 'legal risk' && !canViewAllChildren ) ||
+			( child.siteVisibility !== 'everyone' && !canViewAllChildren ) ) {
 			// set the images to the placeholders for sibling groups
-			child.siblingGroupDetailImage = NO_IMAGE_SIBLING_GROUP_DETAILS;
-			child.siblingGroupGalleryImage = NO_IMAGE_SIBLING_GROUP_GALLERY;
+			child.siblingGroupDisplayImage = NO_IMAGE_SIBLING_GROUP;
+		// if it is acceptable to show the sibling group's image
+		} else {
+			child.siblingGroupDisplayImage = child.siblingGroupImage.secure_url;
 		}
 	// if the child is not part of a sibling group
 	} else {
-		if( !child.image.secure_url								// and is missing an image
-			|| child.legalStatus.legalStatus === 'legal risk' 	// or is legal risk
-			|| ( child.siteVisibility !== 'everyone' 			// or if the child is not visible to everyone
-			 	&& !canViewAllChildren ) ) {					// 	and the user wouldn't have permission without the 'child is visible on MARE web' checkbox being checked
+		//	if the child image is missing or
+		//	the child is legal risk and the user doesn't have permissions to view all children or
+		//	the child visibility is 'Only Registered Social Workers and Families' and the user doesn't have permissions to view all children
+		if( !child.hasImage	||
+			( child.legalStatus.legalStatus === 'legal risk' && !canViewAllChildren ) ||
+			( child.siteVisibility !== 'everyone' && !canViewAllChildren ) ) {
 			// and the child is male
 			if( child.gender.gender === 'male' ) {
 				// set the images to the placeholder for male children
-				child.detailImage = NO_IMAGE_MALE_DETAILS;
-				child.galleryImage = NO_IMAGE_MALE_GALLERY;
+				child.displayImage = NO_IMAGE_MALE;
 			// but if the child is female
 			} else if( child.gender.gender === 'female' ) {
 				// set the images to the placeholder for female children
-				child.detailImage = NO_IMAGE_FEMALE_DETAILS;
-				child.galleryImage = NO_IMAGE_FEMALE_GALLERY;
+				child.displayImage = NO_IMAGE_FEMALE;
 			// but if the child is neither male nor female
 			} else {
 				// set the images to the placeholder for transgender/other children
-				child.detailImage = NO_IMAGE_OTHER_DETAILS;
-				child.galleryImage = NO_IMAGE_OTHER_GALLERY;
+				child.displayImage = NO_IMAGE_OTHER;
 			}
+		// if it is acceptable to show the child's image
+		} else {
+			child.displayImage = child.image.secure_url;
 		}
 	}
 };
 // TODO: combine the below two functions, and adjust the calling code to pass and accept arrays
 exports.getChildByRegistrationNumber = ( req, res, done, registrationNumber ) => {
-
-	let locals = res.locals;
+	// store a reference to locals
+	const locals = res.locals;
 	// convert the number as a string to a number
 	const targetRegistrationNumber = parseInt( registrationNumber, 10 );
 
@@ -306,8 +382,8 @@ exports.getChildByRegistrationNumber = ( req, res, done, registrationNumber ) =>
 };
 
 exports.getChildrenByRegistrationNumbers = ( req, res, done, registrationNumbers ) => {
-
-	let locals = res.locals;
+	// store a reference to locals
+	const locals = res.locals;
 	// convert the array of numbers as strings to an array of numbers
 	const targetRegistrationNumbers = registrationNumbers.map( registrationNumber => parseInt( registrationNumber, 10 ) );
 
@@ -333,8 +409,8 @@ exports.getChildrenByRegistrationNumbers = ( req, res, done, registrationNumbers
 
 /* Expose the child data for the gallery view to the front-end via an API call */
 exports.getGalleryData = ( req, res, next ) => {
-
-	let locals				= res.locals;
+	// store a reference to locals
+	const locals = res.locals;
 	// create an array to store all children we fetch from the database
 	locals.allChildren		= [];
 	// create sets to store the individual children and sibling groups
@@ -352,29 +428,36 @@ exports.getGalleryData = ( req, res, next ) => {
 	} else {
 		locals.targetChildren = 'all';
 	}
-	// determine if this request is for an account page
-	if ( req.body.requestPage === 'account' ) {
-		// if so, override the targetChildren accordingly
-		locals.targetChildren = 'socialWorkerAccount';
-	}
 	// create a string with the fields to select from each child (this speeds up the queries)
 	const fieldsToSelect = `gender race languages disabilities otherConsiderations recommendedFamilyConstellation
 							otherFamilyConstellationConsideration status legalStatus birthDate registrationDate
-							image siblingGroupImage siblingGroupDetailImage siblingGroupGalleryImage siteVisibility
-							detailImage galleryImage emotionalNeeds hasContactWithBirthFamily hasContactWithSiblings
-							video intellectualNeeds isBookmarked name siblings physicalNeeds registrationNumber
-							siblingsToBePlacedWith updatedAt wednesdaysChild mustBePlacedWithSiblings siblingGroupVideo`;
+							image siblingGroupImage siteVisibility emotionalNeeds hasContactWithBirthFamily
+							hasContactWithSiblings video intellectualNeeds isBookmarked name siblings physicalNeeds
+							registrationNumber siblingsToBePlacedWith updatedAt wednesdaysChild mustBePlacedWithSiblings
+							siblingGroupVideo`;
 
 	async.series([
 		done => { listsService.getChildStatusIdByName( req, res, done, 'active' ) },
 		done => {
-			// fetch the appropriate set of children based on the user's permissions
-			if ( locals.targetChildren === 'all' ) {
-				exports.getAllChildren( req, res, done, fieldsToSelect );
-			} else if ( locals.targetChildren === 'socialWorkerAccount' ) {
-				exports.getChildrenForSocialWorker( req, res, done, fieldsToSelect );
+
+			// fetch the appropriate set of children based on the user's permissions and the page that's being requested
+
+			// if the user is requesting the account page
+			if ( req.body.requestPage === 'account' ) {
+				// determine which children to show based on the user's type
+				if ( locals.userType === 'family' ) {
+					exports.getChildrenForFamilyAccount( req, res, done, fieldsToSelect );
+				} else if ( locals.userType === 'social worker' ) {
+					exports.getChildrenForSocialWorkerAccount( req, res, done, fieldsToSelect );
+				}
+			// if the user is not requesting the account page
 			} else {
-				exports.getUnrestrictedChildren( req, res, done, fieldsToSelect );
+				// determine which chidlren to show based on the user's access permissions
+				if ( locals.targetChildren === 'all' ) {
+					exports.getAllChildren( req, res, done, fieldsToSelect );
+				} else {
+					exports.getUnrestrictedChildren( req, res, done, fieldsToSelect );
+				}
 			}
 		},
 		// TODO: these familyService functions are for social workers too, they belong in a page level service instead
@@ -469,10 +552,9 @@ exports.getRelevantChildInformation = ( children, locals ) => {
 		return {
 			age										: middleware.getAge( child.birthDate ),
 			ageConverted							: middleware.convertDate( child.birthDate ),
-			detailImage								: child.detailImage,
+			image									: child.displayImage,
 			disabilities							: _.pluck( child.disabilities, 'disability' ),
 			emotionalNeeds							: needsMap[child.emotionalNeeds],
-			galleryImage							: child.galleryImage,
 			gender									: child.gender.gender,
 			hasContactWithBiologicalParents			: child.hasContactWithBirthFamily,
 			hasContactWithBiologicalSiblings		: child.hasContactWithSiblings,
@@ -510,8 +592,7 @@ exports.getRelevantSiblingGroupInformation = ( siblingGroups, locals ) => {
 		'severe'	: 3
 	};
 
-	const NO_IMAGE_SIBLING_GROUP_GALLERY	= 'images/no-image-sibling-group_gallery',
-		  NO_IMAGE_SIBLING_GROUP_DETAILS	= 'images/no-image-sibling-group_details';
+	const NO_IMAGE_SIBLING_GROUP_PATH	= 'images/no-image-sibling-group';
 
 	locals.siblingGroupsToReturn = siblingGroups.map( group => {
 		// cache the children array from the group for faster lookups
@@ -529,14 +610,13 @@ exports.getRelevantSiblingGroupInformation = ( siblingGroups, locals ) => {
 		const legalStatusesArray		= _.uniq( children.map( child => child.legalStatus.legalStatus ) );
 
 		return {
-			
-			ages									: agesArray,
-			agesConverted							: children.map( child => middleware.convertDate( child.birthDate ) ),
-			agesString								: middleware.getArrayAsList( agesArray ),
-			detailImage								: _.uniq( children.map( child => child.siblingGroupDetailImage ) ).indexOf( NO_IMAGE_SIBLING_GROUP_DETAILS ) !== -1 ? NO_IMAGE_SIBLING_GROUP_DETAILS : children[ 0 ].siblingGroupDetailImage,
+
+			ages									: _.sortBy( agesArray ),
+			agesConverted							: _.sortBy( children.map( child => middleware.convertDate( child.birthDate ) ) ),
+			agesString								: middleware.getArrayAsList( _.sortBy( agesArray ) ),
+			image									: _.uniq( children.map( child => child.siblingGroupDisplayImage ) ).indexOf( NO_IMAGE_SIBLING_GROUP_PATH ) !== -1 ? NO_IMAGE_SIBLING_GROUP_PATH : children[ 0 ].siblingGroupDisplayImage,
 			disabilities							: _.uniq( _.flatten( children.map( child => _.pluck( child.disabilities, 'disability' ) ) ) ),
 			emotionalNeeds							: _.uniq( children.map( child => needsMap[ child.emotionalNeeds ] ) ),
-			galleryImage							:  _.uniq( children.map( child => child.siblingGroupGalleryImage ) ).indexOf( NO_IMAGE_SIBLING_GROUP_DETAILS ) !== -1 ? NO_IMAGE_SIBLING_GROUP_DETAILS : children[ 0 ].siblingGroupGalleryImage,
 			genders									: _.uniq( children.map( child => child.gender.gender ) ),
 			hasContactWithBiologicalParents			: _.uniq( children.map( child => child.hasContactWithBirthFamily ) ),
 			hasContactWithBiologicalSiblings		: _.uniq( children.map( child => child.hasContactWithSiblings ) ),
@@ -546,21 +626,21 @@ exports.getRelevantSiblingGroupInformation = ( siblingGroups, locals ) => {
 			languages								: _.uniq( _.flatten( children.map( child => _.pluck(child.languages, 'language' ) ) ) ),
 			legalStatuses							: legalStatusesArray,
 			legalStatusesString						: middleware.getArrayAsList( legalStatusesArray ),
-			names									: namesArray,
-			namesString								: middleware.getArrayAsList( namesArray ),
+			names									: _.sortBy( namesArray ),
+			namesString								: middleware.getArrayAsList( _.sortBy( namesArray ) ),
 			noPets									: _.uniq( children.map( child => otherFamilyConstellationConsiderations.indexOf( 'no pets' ) !== -1 ) ),
 			numberOfSiblings						: _.uniq( children.map( child => child.siblings.length ) ), // TODO: Ask Lisa if the number of siblings between children can vary (think half siblings)
 			otherConsiderations						: _.uniq( _.flatten( children.map( child => _.pluck( child.otherConsiderations, 'otherConsideration' ) ) ) ),
 			physicalNeeds							: _.uniq( children.map( child => needsMap[ child.physicalNeeds ] ) ),
 			races									: _.uniq( _.flatten( children.map( child => _.pluck(child.race, 'race' ) ) ) ),
 			recommendedFamilyConstellations			: _.uniq( _.flatten( children.map( child => _.pluck( child.recommendedFamilyConstellation, 'familyConstellation' ) ) ) ),
-			registrationDatesConverted				: children.map( child => middleware.convertDate( child.registrationDate ) ),
-			registrationNumbers						: registrationNumbersArray,
-			registrationNumbersString				: middleware.getArrayAsList( registrationNumbersArray ),	
+			registrationDatesConverted				: _.sortBy( children.map( child => middleware.convertDate( child.registrationDate ) ) ),
+			registrationNumbers						: _.sortBy( registrationNumbersArray ),
+			registrationNumbersString				: middleware.getArrayAsList( _.sortBy( registrationNumbersArray ) ),
 			requiresNoSiblings						: _.uniq( children.map( child => otherFamilyConstellationConsiderations.indexOf( 'childless home' ) !== -1 ) ),
 			requiresSiblings						: _.uniq( children.map( child => otherFamilyConstellationConsiderations.indexOf( 'multi-child home' ) !== -1 ) ),
 			olderChildrenAcceptable					: _.uniq( children.map( child => otherFamilyConstellationConsiderations.indexOf( 'older children acceptable' ) !== -1 ) ),
-			youngerChildrenAcceptable				: _.uniq( children.map( child => otherFamilyConstellationConsiderations.indexOf( 'younger children acceptable' ) !== -1 ) ),	
+			youngerChildrenAcceptable				: _.uniq( children.map( child => otherFamilyConstellationConsiderations.indexOf( 'younger children acceptable' ) !== -1 ) ),
 			siblingToBePlacedWithCount				: children[ 0 ].siblingsToBePlacedWith.length,
 			updatedAt								: _.uniq( children.map( child => child.updatedAt ) ),
 			wednesdaysChild							: children.map( child => child.wednesdaysChild ).indexOf( true ) !== -1
@@ -629,7 +709,7 @@ exports.getSiblingGroupDetails = ( req, res, next ) => {
 			const wednesdaysChildVideoString = child.wednesdaysChildSiblingGroupVideo && child.wednesdaysChildSiblingGroupVideo.length > 0 ?
 											   child.wednesdaysChildSiblingGroupVideo.replace( 'youtu.be', 'www.youtube.com/embed' ).replace( 'watch?v=', 'embed/' ) :
 											   undefined;
-			
+
 			const relevantData = {
 				hasImage				: _.isEmpty( child.siblingGroupImage ) && child.siblingGroupImage.url.length > 0,
 				quote					: child.groupProfile.quote,
@@ -649,74 +729,115 @@ exports.getSiblingGroupDetails = ( req, res, next ) => {
 			done();
 		});
 };
-
+// TODO: this shouldn't return the id, but the entire model to be manipulated by the caller, as should all of these fetch functions
+// TODO: this should be moved to the list service
 exports.fetchChildStatusId = status => {
 
 	return new Promise( ( resolve, reject ) => {
+
 		keystone.list( 'Child Status' ).model
 			.findOne()
 			.where( 'childStatus', status )
 			.exec()
 			.then( status => {
-
-				status ? resolve( status.get( '_id' ) ) : resolve();
-
+				// if we found a child status matching the passed in text
+				if( status ) {
+					//resolve the promise with it's id
+					resolve( status.get( '_id' ) )
+				// if no matching child status was found
+				} else {
+					// TODO: consider throwing and new Error in these cases. This should be a system-wide change for better error handling and messaging
+					// resolve the promise with undefined
+					resolve( `could not find child status matching ${ status }` );
+				}
+			// if an error was encountered
 			}, err => {
-
-				reject();
-
+				// reject the promise with details of the error
+				reject( `error fetching child status matching ${ status }` );
 			});
 	});
 };
 
 /* called when a social worker attempts to register a family */
 exports.registerChild = ( req, res, next ) => {
-	// extract the child details submitted through the req object
-	const child = req.body;
-	// store a reference to locals to allow access to globally available data
+	// store a reference to locals
 	const locals = res.locals;
+	// extract the child details submitted through the req object
+	const rawChildData = req.body;
 	// set the redirect path to navigate to after processing is complete
-	const redirectPath = '/forms/child-registration-form';
+	const redirectPath = '/forms/social-worker-child-registration';
 	// fetch the id for the active child status
 	const fetchActiveChildStatusId = exports.fetchChildStatusId( 'active' );
-	
-	fetchActiveChildStatusId.then( activeChildStatusId => {
-		return exports.saveChild( child, activeChildStatusId );
-	})
-	.then( newChild => {
+	// if the active child status model has been
+	fetchActiveChildStatusId
+		.then( activeChildStatusId => {
+			return exports.saveChild( rawChildData, activeChildStatusId );
+		})
 		// if the new child model was saved successfully
-		// create a success flash message
-		req.flash( 'success', {
-				title: `Congratulations, your child record has been successfully registered.`,
-				detail: `Please note that it can take several days for the child's account to be reviewed and activated.` } );
-		// redirect the user back to the appropriate page
-		res.redirect( 303, redirectPath );
-		
-		// send a notification email to MARE staff to allow them to enter the information in the old system
-		const staffEmailSent		= socialWorkerChildRegistrationService.sendSocialWorkerChildRegistrationConfirmationEmailToStaff( child );
-		// send a notification email to the child's social worker
-		const socialWorkerEmailSent	= socialWorkerChildRegistrationService.sendRegistrationConfirmationEmailToSocialWorker( child );
-		
-		staffEmailSent
-			.catch( err => {
-				console.error( `error sending new child registered by social worker notification to MARE staff - ${ err }` );
-			});
+		.then( newChild => {
+			// create a success flash message
+			req.flash( 'success', {
+					title: `Congratulations, the child you submitted has been successfully registered.`,
+					detail: `You will receive a copy of this registration by email.  Your MARE Child Services Coordinator will be in touch if additional information is needed.` } );
+			// redirect the user back to the appropriate page
+			res.redirect( 303, redirectPath );
 
-		socialWorkerEmailSent
-			.catch( err => {
-				console.error( `error sending new child registered by social worker notification to social worker - ${ err }` );
-			});
-	})
-	.catch( err => {
-		// log the error for debugging purposes
-		console.error( `error saving social worker registered child - ${ err }` );
-		// create an error flash message
-		req.flash( 'error', {
-				title: `There was an error registering your child`,
-				detail: `If this error persists, please notify MARE` } );
-		// redirect the user to the appropriate page
-		res.redirect( 303, locals.redirectPath );
-	});
+			// get the database id of the social worker who submitted the form
+			const socialWorkerId = req.user.get( '_id' );
+			// store the registration number of the child who was created
+			const childId = newChild.get( 'registrationNumber' );
+
+			// set the fields to populate on the fetched child model
+			const fieldsToPopulate = [ 'languages', 'gender', 'race', 'residence', 'city', 'legalStatus', 'status',
+									   'recommendedFamilyConstellation', 'otherFamilyConstellationConsideration',
+									   'disabilities' ];
+			// set default information for a staff email contact in case the real contact info can't be fetched
+			let staffEmailContactInfo = {
+				name: { full: 'MARE' },
+				email: 'web@mareinc.org'
+			};
+
+			// fetch the newly saved child model.  Needed because the saved child object doesn't have the Relationship fields populated
+			const fetchChild = exports.getChildByRegistrationNumberNew( childId, fieldsToPopulate );
+			// fetch the email target model matching 'social worker child registration'
+			const fetchEmailTarget = emailTargetMiddleware.getEmailTargetByName( 'social worker child registration' );
+
+			fetchEmailTarget
+				// fetch contact info for the staff contact for 'social worker child registration'
+				.then( emailTarget => staffEmailContactMiddleware.getStaffEmailContactByEmailTarget( emailTarget.get( '_id' ), [ 'staffEmailContact' ] ) )
+				// overwrite the default contact details with the returned object
+				.then( staffEmailContact => staffEmailContactInfo = staffEmailContact.staffEmailContact )
+				// log any errors fetching the staff email contact
+				.catch( err => console.error( `error fetching email contact for social worker child registration, default contact info will be used instead - ${ err }` ) )
+				// check on the attempt to fetch the newly saved child
+				.then( () => fetchChild )
+				// send a notification email to MARE
+				.then( fetchedChild => {
+					// send a notification email to MARE staff to allow them to enter the information in the old system
+					// NOTE: both the form data and the newly saved child are passed in as both contain information that belongs in the email
+					return socialWorkerChildRegistrationEmailService.sendNewSocialWorkerChildRegistrationNotificationEmailToMARE( rawChildData, fetchedChild, staffEmailContactInfo );
+				})
+				// if there was an error sending the email to MARE staff
+				.catch( err => console.error( `error sending new child registered by social worker email to MARE staff - ${ err }` ) );
+
+			fetchChild
+				// send a notification email to the social worker
+				// NOTE: both the form data and the newly saved child are passed in as both contain information that belongs in the email
+				.then( fetchedChild => socialWorkerChildRegistrationEmailService.sendNewSocialWorkerChildRegistrationNotificationEmailToSocialWorker( rawChildData, fetchedChild, req.user.get( 'email' ), locals.host ) )
+				// if there was an error sending the email to MARE staff
+				.catch( err => console.error( `error sending new child registered by social worker email to social worker ${ req.user.name.full } - ${ err }` ) );
+		})
+		// if there was an error saving the new child record
+		.catch( err => {
+			// log the error for debugging purposes
+			console.error( `error saving social worker registered child - ${ err }` );
+			// create an error flash message
+			req.flash( 'error', {
+					title: `There was an error submitting this child registration.`,
+					detail: `If this error persists, please notify MARE at <a href="mailto:communications@mareinc.org">communications@mareinc.org</a>` } );
+			// redirect the user to the appropriate page
+			res.redirect( 303, locals.redirectPath );
+		});
 };
 
 exports.saveChild = ( child, activeChildStatusId ) => {
@@ -724,7 +845,7 @@ exports.saveChild = ( child, activeChildStatusId ) => {
 	return new Promise( ( resolve, reject ) => {
 		// create a new Child model
 		const Child = keystone.list( 'Child' )
-		
+
 		const newChild = new Child.model({
 
 			siteVisibility: 'only registered social workers and families',
@@ -755,9 +876,9 @@ exports.saveChild = ( child, activeChildStatusId ) => {
 
 			residence						: child.currentResidence,
 			isOutsideMassachusetts			: child.isNotMACity,
-			city							: child.isNotMACity ? undefined : child.MACity,
+			city							: child.isNotMACity ? undefined : child.city,
 			cityText						: child.isNotMACity ? child.nonMACity : '',
-			
+
 			careFacilityName				: child.careFacility,
 
 			physicalNeeds					: 'none',
@@ -778,8 +899,7 @@ exports.saveChild = ( child, activeChildStatusId ) => {
 
 			disabilities					: child.disabilities,
 			recommendedFamilyConstellation	: child.recommendedFamilyConstellations,
-			otherFamilyConstellationConsideration: child.otherFamilyConstellationConsiderations,
-			otherConsiderations				: child.otherConsiderations
+			otherFamilyConstellationConsideration: child.otherFamilyConstellationConsiderations
 		});
 
 		newChild.save( ( err, model ) => {
@@ -802,7 +922,7 @@ exports.saveChild = ( child, activeChildStatusId ) => {
 // ------------------------------------------------------------------------------------------ //
 
 /* fetch a single child by their registration number */
-exports.getChildByRegistrationNumberNew = registrationNumber => {
+exports.getChildByRegistrationNumberNew = ( registrationNumber, fieldsToPopulate = [] ) => {
 
 	return new Promise( ( resolve, reject ) => {
 		// convert the registration number to a number if it isn't already
@@ -822,6 +942,7 @@ exports.getChildByRegistrationNumberNew = registrationNumber => {
 		keystone.list( 'Child' ).model
 			.findOne()
 			.where( 'registrationNumber' ).equals( targetRegistrationNumber )
+			.populate( fieldsToPopulate )
 			.exec()
 			// if the database fetch executed successfully
 			.then( child => {
@@ -876,7 +997,7 @@ exports.getChildrenByRegistrationNumbersNew = registrationNumbers => {
 					// reject the promise
 					return reject();
 				}
-				// if the target child was found, resolve the promise with the lean version of the object
+				// if the target child was found, resolve the promise with the returned model
 				resolve( children );
 			// if there was an error fetching from the database
 			}, err => {
@@ -884,6 +1005,35 @@ exports.getChildrenByRegistrationNumbersNew = registrationNumbers => {
 				console.error( `error fetching children matching registration numbers ${ registrationNumbers.join( ', ' ) } - ${ err }` );
 				// and reject the promise
 				reject();
+			});
+	});
+};
+
+/* fetch a single child by their _id field */
+exports.getChildById = ( { id, fieldsToPopulate = [] } ) => {
+	return new Promise( ( resolve, reject ) => {
+		// if no id was passed in
+		if( !id ) {
+			// reject the promise with details about the error
+			reject( `no id provided` );
+		}
+		// attempt to find a single child matching the passed in registration number
+		keystone.list( 'Child' ).model
+			.findById( id )
+			.populate( fieldsToPopulate )
+			.exec()
+			.then( child => {
+				// if the target child could not be found
+				if( !child ) {
+					// reject the promise with details about the error
+					return reject( `no child matching id '${ id } could be found` );
+				}
+				// if the target child was found, resolve the promise with the model
+				resolve( child );
+			// if there was an error fetching from the database
+			}, err => {
+				// reject the promise with details about the error
+				reject( `error fetching child matching id ${ id } - ${ err }` );
 			});
 	});
 };

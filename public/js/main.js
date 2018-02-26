@@ -7,6 +7,7 @@ $(function() {
 	// every route needs to initialize views for scaffolded areas like the header and the navigation
 	mare.views.globalHeader = mare.views.globalHeader || new mare.views.GlobalHeader();
 	mare.views.mobileMenu = mare.views.mobileMenu || new mare.views.MobileMenu();
+	mare.views.flashMessages = mare.views.flashMessages || new mare.views.FlashMessages();
 	// register Handlebars helpers
 	mare.utils.registerHandlebarsHelpers();
 	// handle basic routing, initializing based on the result
@@ -19,11 +20,11 @@ $(function() {
 		case 'events'                   			: mare.routers.events = new mare.routers.Events();											break;
 		case 'forms' :
 			switch( mare.url.page ) {
-				case 'agency-event-submission-form'	: mare.routers.form_agencyEventSubmission = new mare.routers.Form_AgencyEventSubmission();	break;
-				case 'child-registration-form'		: mare.routers.childRegistration = new mare.routers.ChildRegistration();					break;
-				case 'family-registration-form'		: mare.routers.familyRegistration = new mare.routers.FamilyRegistration();					break;
-				case 'have-a-question-form'			: mare.routers.form_haveAQuestion = new mare.routers.Form_HaveAQuestion();					break;
-				case 'information-request-form'		: mare.routers.form_informationRequest = new mare.routers.Form_InformationRequest();		break;
+				case 'agency-event-submission'			: mare.routers.form_agencyEventSubmission = new mare.routers.Form_AgencyEventSubmission();	break;
+				case 'social-worker-child-registration'	: mare.routers.childRegistration = new mare.routers.ChildRegistration();					break;
+				case 'social-worker-family-registration': mare.routers.familyRegistration = new mare.routers.FamilyRegistration();					break;
+				case 'have-a-question'					: mare.routers.form_haveAQuestion = new mare.routers.Form_HaveAQuestion();					break;
+				case 'information-request'				: mare.routers.form_informationRequest = new mare.routers.Form_InformationRequest();		break;
 			}
 			break;
 		case 'mare-in-the-news'						: mare.routers.mareInTheNews = new mare.routers.MAREInTheNews;								break;

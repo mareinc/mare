@@ -45,9 +45,7 @@ exports = module.exports = ( req, res ) => {
 		})
 		.catch( err => {
 			// log an error for debugging purposes
-			console.error( `there was an error loading data for the MARE in the news story page - ${ err }` );	
-			// set the layout to render with the right sidebar
-			locals[ 'render-with-sidebar' ] = true;
+			console.error( `error loading data for the MARE in the news story page - ${ err }` );	
 			// render the view using the mare-in-the-news-story.hbs template
 			view.render( 'mare-in-the-news-story' );
 		});

@@ -3,10 +3,12 @@
 	<span class="mobile-account-nav-container"></span>
 
 	<aside class="sidebar sidebar--slim account-nav"></aside>
-				
+
 	<section class="content__body">
 		<div id="account-current-section" class="card card--vertical card--large-padding account-current-section">
-			<div class="account-info-container"></div>
+			<div class="account-info-container">
+				{{> account-info}}
+			</div>
 			<div class="account-children-container"></div>
 			<div class="account-email-list-container"></div>
 			<div class="account-events-container"></div>
@@ -20,7 +22,6 @@
 {{> account-sidebar}}
 
 {{!-- sub-section partials --}}
-{{> account-info}}
 {{> account-email-list}}
 {{> account-events}}
 {{> account-children}}

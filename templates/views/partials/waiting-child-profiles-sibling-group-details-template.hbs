@@ -28,7 +28,7 @@
 
 	<div class="profile-tab__contents profile-tab__contents--selected" data-contents="profile">
 
-		<img class="profile__profile-picture" src=\{{ detailImage }}>
+		<img class="profile__profile-picture" src=\{{ image }}>
 
 		<div class="profile__basic-info">
 			<div class="profile-details__name">\{{ namesString }}</div>
@@ -51,23 +51,18 @@
 			</div>
 		</div>
 
-		<div class="detailed-profile__footer">
-			<span class="detailed-profile__footer-text">You can help bring us closer to finding "a place to call HOME" by filling out the <a href="/forms/information-request-form">MARE Information Request Form</a>. They will be glad to help you get more information about us.</span>
-		</div>
-
-		<!-- determining whether to add the block below based on whether the user is allowed to bookmark children needs to happen server-side -->
-		{{#if canBookmarkChildren}}
 		<div class="button-group button-group--horizontal button-group--space-around button-group--large-margin-above button-group--small-margin-below">
+			{{#if canBookmarkChildren}}
 			\{{#if isBookmarked}}
 			<button class="button button--teal button--large sibling-group-bookmark-button button--active" data-registration-numbers="\{{ registrationNumbers }}">Remove Bookmark</button>
 			\{{else}}
 			<button class="button button--teal button--large sibling-group-bookmark-button" data-registration-numbers="\{{ registrationNumbers }}">Bookmark</button>
 			\{{/if}}
-			<a href="/forms/information-request-form?registrationNumber=\{{ registrationNumbers }}">
+			{{/if}}
+			<a href="/forms/information-request?registrationNumber=\{{ registrationNumbers }}">
 				<button class="button button--teal button--large sibling-group-inquiry-button">Inquire</button>
 			</a>
-		</div>
-		{{/if}}
+		</div>	
 	</div>
 
 	\{{#if hasVideo}}
@@ -83,7 +78,7 @@
 			<iframe src=\{{ video }} frameborder="0" gesture="media" allow="encrypted-media" allowfullscreen class="profile-details__video"></iframe>
 		</div>
 
-		<div class="detailed-profile__footer">You can help bring me closer to finding "a place to call HOME" by filling out the <a href="/forms/information-request-form">MARE Information Request Form</a>. They will be glad to help you get more information about me.</div>
+		<div class="detailed-profile__footer">You can help bring me closer to finding "a place to call HOME" by filling out the <a href="/forms/information-request">MARE Information Request Form</a>. They will be glad to help you get more information about me.</div>
 
 		<!-- determining whether to add the block below based on whether the user is allowed to bookmark children needs to happen server-side -->
 		{{#if canBookmarkChildren}}
@@ -93,7 +88,7 @@
 			\{{else}}
 			<button class="button button--teal button--large sibling-group-bookmark-button" data-registration-numbers="\{{ registrationNumbers }}">Bookmark</button>
 			\{{/if}}
-			<a href="/forms/information-request-form?registrationNumber=\{{ registrationNumbers }}">
+			<a href="/forms/information-request?registrationNumber=\{{ registrationNumbers }}">
 				<button class="button button--teal button--large sibling-group-inquiry-button">Inquire</button>
 			</a>
 		</div>
@@ -104,7 +99,7 @@
 
 	\{{#if wednesdaysChild}}
 	<div class="profile-tab__contents" data-contents="wednesdays-child">
-		
+
 		<div class="profile__basic-info">
 			<div class="profile-details__name">\{{ names }}</div>
 			<div class="profile-details__age">Age \{{ ages }}</div>
@@ -115,7 +110,7 @@
 			<iframe src=\{{ wednesdaysChildVideo }} frameborder="0" gesture="media" allow="encrypted-media" allowfullscreen class="profile-details__wednesdays-child-video"></iframe>
 		</div>
 
-		<div class="detailed-profile__footer">You can help bring me closer to finding "a place to call HOME" by filling out the <a href="/forms/information-request-form">MARE Information Request Form</a>. They will be glad to help you get more information about me.</div>
+		<div class="detailed-profile__footer">You can help bring me closer to finding "a place to call HOME" by filling out the <a href="/forms/information-request">MARE Information Request Form</a>. They will be glad to help you get more information about me.</div>
 
 		<!-- determining whether to add the block below based on whether the user is allowed to bookmark children needs to happen server-side -->
 		{{#if canBookmarkChildren}}
@@ -125,12 +120,12 @@
 			\{{else}}
 			<button class="button button--teal button--large sibling-group-bookmark-button" data-registration-numbers="\{{ registrationNumbers }}">Bookmark</button>
 			\{{/if}}
-			<a href="/forms/information-request-form?registrationNumber=\{{ registrationNumbers }}">
+			<a href="/forms/information-request?registrationNumber=\{{ registrationNumbers }}">
 				<button class="button button--teal button--large sibling-group-inquiry-button">Inquire</button>
 			</a>
 		</div>
 		{{/if}}
-		
+
 	</div>
 	\{{/if}}
 

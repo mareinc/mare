@@ -22,7 +22,7 @@ var SocialWorker = new keystone.List( 'Social Worker', {
 // Create fields
 SocialWorker.add( 'Permissions', {
 
-	isActive: { type: Boolean, label: 'is active', default: true },
+	isActive: { type: Boolean, label: 'is active' },
 
 	permissions: {
 		isVerified: { type: Boolean, label: 'has a verified email address', default: false, noedit: true },
@@ -37,7 +37,7 @@ SocialWorker.add( 'Permissions', {
 		full: { type: Types.Text, label: 'name', hidden: true, noedit: true, initial: false }
 	},
 
-	avatar: { type: Types.CloudinaryImage, label: 'avatar', folder: 'users/social workers', select: true, selectPrefix: 'users/social workers', autoCleanup: true }, // TODO: add publicID attribute for better naming in Cloudinary
+	avatar: { type: Types.CloudinaryImage, label: 'avatar', folder: `${ process.env.CLOUDINARY_DIRECTORY }/users/social-workers`, select: true, selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/users/social-workers`, autoCleanup: true }, // TODO: add publicID attribute for better naming in Cloudinary
 
 	contactGroups: { type: Types.Relationship, label: 'contact groups', ref: 'Contact Group', many: true, initial: true }
 
@@ -51,16 +51,15 @@ SocialWorker.add( 'Permissions', {
 
 }, 'Social Worker Information', {
 
-	// position: { type: Types.Relationship, label: 'Position', ref: 'Social Worker Position', initial: true },
-	position: { type: Types.Select, options: 'adoption worker, recruitment worker, supervisor, administrator, family worker, other', label: 'position', initial: true },
+	positions: { type: Types.Relationship, label: 'positions', ref: 'Social Worker Position', many: true, initial: true },
 	agency: { type: Types.Relationship, label: 'agency', ref: 'Agency', filters: { isActive: true }, initial: true },
-	agencyNotListed: { type: Types.Boolean, label: 'agency isn\'t listed', initial: true },
+	agencyNotListed: { type: Types.Boolean, label: 'agency isn\'t listed', default: false, initial: true },
 	agencyText: { type: Types.Text, label: 'agency', dependsOn: { agencyNotListed: true }, initial: true },
 
 	address: {
 	    street1: { type: Types.Text, label: 'street 1', initial: true },
 		street2: { type: Types.Text, label: 'street 2', initial: true },
-		isOutsideMassachusetts: { type: Types.Boolean, label: 'is outside Massachusetts', initial: true },
+		isOutsideMassachusetts: { type: Types.Boolean, label: 'is outside Massachusetts', default: false, initial: true },
 		city: { type: Types.Relationship, label: 'city', ref: 'City or Town', dependsOn: { 'address.isOutsideMassachusetts': false }, initial: true },
 		cityText: { type: Types.Text, label: 'city', dependsOn: { 'address.isOutsideMassachusetts': true }, initial: true },
 		state: { type: Types.Relationship, label: 'state', ref: 'State', initial: true },
@@ -83,7 +82,8 @@ SocialWorker.add( 'Permissions', {
 });
 
 // Set up relationship values to show up at the bottom of the model if any exist
-SocialWorker.relationship( { ref: 'Child', refPath: 'adoptionWorker', path: 'children', label: 'children' } );
+SocialWorker.relationship( { ref: 'Child', refPath: 'adoptionWorker', path: 'childrenAdoption', label: 'adoption worker for' } );
+SocialWorker.relationship( { ref: 'Child', refPath: 'recruitmentWorker', path: 'childrenRecruitment', label: 'recruitment worker for' } );
 SocialWorker.relationship( { ref: 'Family', refPath: 'socialWorker', path: 'families', label: 'families' } );
 SocialWorker.relationship( { ref: 'Inquiry', refPath: 'socialWorker', path: 'my-inquiries', label: 'my inquiries' } );
 SocialWorker.relationship( { ref: 'Inquiry', refPath: 'childsSocialWorker', path: 'family-inquiries', label: 'family inquiries' } );
@@ -103,6 +103,8 @@ SocialWorker.schema.post( 'init', function() {
 SocialWorker.schema.pre( 'save', function( next ) {
 	'use strict';
 
+	// trim whitespace characters from any type.Text fields
+	this.trimTextFields();
 	// create a full name for the social worker
 	this.setFullName();
 	// all user types that can log in derive from the User model, this allows us to identify users better
@@ -151,6 +153,58 @@ SocialWorker.schema.virtual( 'displayName' ).get( function() {
 	return `${ this.name.first } ${ this.name.last }`;
 });
 
+/* text fields don't automatically trim(), this is to ensure no leading or trailing whitespace gets saved into url, text, or text area fields */
+SocialWorker.schema.methods.trimTextFields = function() {
+	
+	if( this.get( 'name.first' ) ) {
+		this.set( 'name.first', this.get( 'name.first' ).trim() );
+	}
+
+	if( this.get( 'name.last' ) ) {
+		this.set( 'name.last', this.get( 'name.last' ).trim() );
+	}
+
+	if( this.get( 'name.full' ) ) {
+		this.set( 'name.full', this.get( 'name.full' ).trim() );
+	}
+
+	if( this.get( 'phone.work' ) ) {
+		this.set( 'phone.work', this.get( 'phone.work' ).trim() );
+	}
+
+	if( this.get( 'phone.mobile' ) ) {
+		this.set( 'phone.mobile', this.get( 'phone.mobile' ).trim() );
+	}
+
+	if( this.get( 'agencyText' ) ) {
+		this.set( 'agencyText', this.get( 'agencyText' ).trim() );
+	}
+
+	if( this.get( 'address.street1' ) ) {
+		this.set( 'address.street1', this.get( 'address.street1' ).trim() );
+	}
+
+	if( this.get( 'address.street2' ) ) {
+		this.set( 'address.street2', this.get( 'address.street2' ).trim() );
+	}
+
+	if( this.get( 'address.cityText' ) ) {
+		this.set( 'address.cityText', this.get( 'address.cityText' ).trim() );
+	}
+
+	if( this.get( 'address.zipCode' ) ) {
+		this.set( 'address.zipCode', this.get( 'address.zipCode' ).trim() );
+	}
+
+	if( this.get( 'title' ) ) {
+		this.set( 'title', this.get( 'title' ).trim() );
+	}
+
+	if( this.get( 'notes' ) ) {
+		this.set( 'notes', this.get( 'notes' ).trim() );
+	}
+};
+
 SocialWorker.schema.methods.setFullName = function() {
 	'use strict';
 
@@ -178,14 +232,17 @@ SocialWorker.schema.methods.setChangeHistory = function() {
 		const changeHistory = new SocialWorkerHistory.model({
 			socialWorker	: this,
 			date			: Date.now(),
+			summary			: '',
 			changes			: '',
 			modifiedBy		: this.updatedBy
 		});
 
 		// if the model is being saved for the first time
 		if( !model._original ) {
+			// set the summary information for the change history record
+			changeHistory.summary = 'record created';
 			// set the text for the change history record
-			changeHistory.changes = 'record created';
+			changeHistory.changes = '<p>record created</p>';
 			// save the change history record
 			changeHistory.save( () => {
 				// if the record saved successfully, resolve the promise
@@ -274,9 +331,11 @@ SocialWorker.schema.methods.setChangeHistory = function() {
 				},
 				done => {
 					ChangeHistoryMiddleware.checkFieldForChanges({
-												name: 'position',
-												label: 'position',
-												type: 'string' }, model, modelBefore, changeHistory, done);
+												name: 'positions',
+												targetField: 'position',
+												label: 'positions',
+												type: 'relationship',
+												model: 'Social Worker Position' }, model, modelBefore, changeHistory, done);
 				},
 				done => {
 					ChangeHistoryMiddleware.checkFieldForChanges({

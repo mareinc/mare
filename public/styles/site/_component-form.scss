@@ -61,8 +61,11 @@ select {
 .top-label {
     margin-bottom: 5px;
 }
-select {
-    height: 27px;
+
+.form-field-note {
+	font-size: 0.8em;
+	opacity: 0.8;
+	margin-top: -5px;
 }
 
 @media all and (max-width: 768px) {

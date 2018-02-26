@@ -12,13 +12,14 @@ const keystone						= require( 'keystone' ),
 	  ChildMiddleware				= require( '../routes/middleware/models_child' ),
 	  FamilyMiddleware				= require( '../routes/middleware/models_family' ),
 	  SocialWorkerMiddleware		= require( '../routes/middleware/models_social-worker' ),
-	  UtilitiesMiddleware			= require( '../routes/middleware/utilities' );
+	  UtilitiesMiddleware			= require( '../routes/middleware/utilities' ),
+	  saveLock						= require( '../routes/middleware/model_save_lock' );
 
 // Create model
 const Child = new keystone.List( 'Child', {
 	track: true, // needed for change history updated by assignment
 	autokey: { path: 'key', from: 'registrationNumber', unique: true },
-	map: { name: 'name.full' },
+	map: { name: 'displayNameAndRegistration' },
 	defaultSort: 'name.full'
 });
 
@@ -26,13 +27,14 @@ const Child = new keystone.List( 'Child', {
 Child.add('Display Options', {
 
 	siteVisibility: { type: Types.Select, label: 'child is visible to', options: 'everyone, only registered social workers and families', required: true, initial: true },
-	isVisibleInGallery: { type: Types.Boolean, label: 'activate child profile on website to group selected', note: 'authorized staff only', initial: true },
-	visibleInGalleryDate: { type: Types.Date, label: 'date added to MARE web', format: 'MM/DD/YYYY', dependsOn: {isVisibleInGallery: true }, initial: true }
+	isVisibleInGallery: { type: Types.Boolean, label: 'activate child profile on website to group selected', note: 'authorized staff only', default: false, initial: true },
+	visibleInGalleryDate: { type: Types.Date, label: 'date added to MARE web', format: 'MM/DD/YYYY', utc: true, dependsOn: {isVisibleInGallery: true }, initial: true }
 
 }, 'Child Information', {
 
 	registrationNumber: { type: Number, label: 'registration number', format: false, noedit: true },
-	registrationDate: { type: Types.Date, label: 'registration date', format: 'MM/DD/YYYY', required: true, initial: true },
+	registrationDate: { type: Types.Date, label: 'registration date', format: 'MM/DD/YYYY', utc: true, required: true, initial: true },
+	displayNameAndRegistration: { type: Types.Text, label: 'name and registration number', default: 'new child', hidden: true, noedit: true },
 
 	name: {
 		first: { type: Types.Text, label: 'first name', required: true, initial: true },
@@ -43,9 +45,9 @@ Child.add('Display Options', {
 		full: { type: Types.Text, label: 'name', hidden: true, noedit: true, initial: false }
 	},
 
-	birthDate: { type: Types.Date, label: 'date of birth', format: 'MM/DD/YYYY', required: true, initial: true },
+	birthDate: { type: Types.Date, label: 'date of birth', format: 'MM/DD/YYYY', utc: true, required: true, initial: true },
 	languages: { type: Types.Relationship, label: 'languages', ref: 'Language', many: true, required: true, initial: true },
-	statusChangeDate: { type: Types.Date, label: 'status change date', format: 'MM/DD/YYYY', initial: true }, // TODO: Logic needed, see line 14 of https://docs.google.com/spreadsheets/d/1Opb9qziX2enTehJx5K1J9KAT7v-j2yAdqwyQUMSsFwc/edit#gid=1235141373
+	statusChangeDate: { type: Types.Date, label: 'status change date', format: 'MM/DD/YYYY', utc: true, initial: true }, // TODO: Logic needed, see line 14 of https://docs.google.com/spreadsheets/d/1Opb9qziX2enTehJx5K1J9KAT7v-j2yAdqwyQUMSsFwc/edit#gid=1235141373
 	status: { type: Types.Relationship, label: 'status', ref: 'Child Status', required: true, initial: true },
 	gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', required: true, initial: true },
 	race: { type: Types.Relationship, label: 'race', ref: 'Race', many: true, required: true, initial: true },
@@ -53,20 +55,20 @@ Child.add('Display Options', {
 	legalStatus: { type: Types.Relationship, label: 'legal status', ref: 'Legal Status', required: true, initial: true },
 	yearEnteredCare: { type: Types.Text, label: 'year entered care', note: 'yyyy - required', initial: true },
 
-	hasContactWithSiblings: { type: Types.Boolean, label: 'has contact with siblings?', initial: true },
+	hasContactWithSiblings: { type: Types.Boolean, label: 'has contact with siblings?', default: false, initial: true },
 	siblingTypeOfContact: { type: Types.Text, label: 'type of contact', initial: true },
-	siblings: { type: Types.Relationship, label: 'siblings', ref: 'Child', many: true, initial: true },
-	mustBePlacedWithSiblings: { type: Types.Boolean, label: 'must be placed with one or more sibling', initial: true },
-	siblingsToBePlacedWith: { type: Types.Relationship, label: 'siblings to be placed with', ref: 'Child', dependsOn: { mustBePlacedWithSiblings: true }, many: true, initial: true },
-	hasContactWithBirthFamily: { type: Types.Boolean, label: 'has contact with birth family?', initial: true },
+	siblings: { type: Types.Relationship, label: 'siblings', ref: 'Child', many: true, initial: true, note: 'siblings cannot be updated at the same time as siblings to be placed with - save your changes to one, then update the other' },
+	mustBePlacedWithSiblings: { type: Types.Boolean, label: 'must be placed with one or more sibling', default: false, initial: true, noedit: true, note: 'this field will update automatically when the child is saved' },
+	siblingsToBePlacedWith: { type: Types.Relationship, label: 'siblings to be placed with', ref: 'Child', many: true, initial: true, note: 'siblings to be placed with cannot be updated at the same time as siblings - save your changes to one, then update the other' },
+	hasContactWithBirthFamily: { type: Types.Boolean, label: 'has contact with birth family?', default: false, initial: true },
 	birthFamilyTypeOfContact: { type: Types.Text, label: 'type of contact', initial: true },
 
 	residence: { type: Types.Relationship, label: 'where does the child presently live?', ref: 'Residence', initial: true },
-	isOutsideMassachusetts: { type: Types.Boolean, label: 'is outside Massachusetts', initial: true },
+	isOutsideMassachusetts: { type: Types.Boolean, label: 'is outside Massachusetts', default: false, initial: true },
 	city: { type: Types.Relationship, label: 'city/town of child\'s current location', ref: 'City or Town', dependsOn: { isOutsideMassachusetts: false }, initial: true },
 	cityText: { type: Types.Text, label: 'city/town of child\'s current location', dependsOn: { isOutsideMassachusetts: true }, initial: true },
 	careFacilityName: { type: Types.Text, label: 'name of residential/group care facility', initial: true },
-	dateMovedToResidence: { type: Types.Date, label: 'date moved to current residence', format: 'MM/DD/YYYY', initial: true }
+	dateMovedToResidence: { type: Types.Date, label: 'date moved to current residence', format: 'MM/DD/YYYY', utc: true, initial: true }
 
 }, 'Special Needs', {
 
@@ -102,10 +104,10 @@ Child.add('Display Options', {
 }, 'Agency Information', {
 
 	registeredBy: { type: Types.Select, label: 'registered by', options: 'unknown, adoption worker, recruitment worker', required: true, initial: true },
-	adoptionWorker: { type: Types.Relationship, label: 'adoption worker', ref: 'Social Worker', filters: { position: 'adoption worker', isActive: true }, initial: true },
+	adoptionWorker: { type: Types.Relationship, label: 'adoption worker', ref: 'Social Worker', initial: true },
 	adoptionWorkerAgency: { type: Types.Relationship, label: `adoption worker's agency`, ref: 'Agency', noedit: true },
 	adoptionWorkerAgencyRegion: { type: Types.Relationship, label: `adoption worker's region`, ref: 'Region', noedit: true },
-	recruitmentWorker: { type: Types.Relationship, label: 'recruitment worker', ref: 'Social Worker', filters: { position: 'recruitment worker', isActive: true }, initial: true },
+	recruitmentWorker: { type: Types.Relationship, label: 'recruitment worker', ref: 'Social Worker', initial: true },
 	recruitmentWorkerAgency: { type: Types.Relationship, label: `recruitment worker's agency`, ref: 'Agency', noedit: true },
 	recruitmentWorkerAgencyRegion: { type: Types.Relationship, label: `recruitment worker's region`, ref: 'Region', noedit: true },
 
@@ -124,60 +126,56 @@ Child.add('Display Options', {
 		part3: { type: Types.Textarea, label: '3rd paragraph', dependsOn: { mustBePlacedWithSiblings: true }, note: 'Legal Status, Sibling/Family Contact, Family Constellation and Placement requirements', initial: true }
 	},
 
-	hasPhotolistingWriteup: { type: Types.Boolean, label: 'photolisting writeup', initial: true },
-	photolistingWriteupDate: { type: Types.Date, label: 'date of photolisting writeup', format: 'MM/DD/YYYY', dependsOn: { hasPhotolistingWriteup: true }, initial: true },
-	hasPhotolistingPhoto: { type: Types.Boolean, label: 'photolisting photo', initial: true },
-	photolistingPhotoDate: { type: Types.Date, label: 'date of photolisting photo', format: 'MM/DD/YYYY', dependsOn: { hasPhotolistingPhoto: true }, initial: true },
-	isCurrentlyInPhotoListing: { type: Types.Boolean, label: 'currently in photolisting', initial: true },
-	dateOfLastPhotoListing: { type: Types.Date, label: 'date of last photolisting', format: 'MM/DD/YYYY', dependsOn: {isCurrentlyInPhotoListing: true }, initial: true },
+	hasPhotolistingWriteup: { type: Types.Boolean, label: 'photolisting writeup', default: false, initial: true },
+	photolistingWriteupDate: { type: Types.Date, label: 'date of photolisting writeup', format: 'MM/DD/YYYY', utc: true, dependsOn: { hasPhotolistingWriteup: true }, initial: true },
+	hasPhotolistingPhoto: { type: Types.Boolean, label: 'photolisting photo', default: false, initial: true },
+	photolistingPhotoDate: { type: Types.Date, label: 'date of photolisting photo', format: 'MM/DD/YYYY', utc: true, dependsOn: { hasPhotolistingPhoto: true }, initial: true },
+	isCurrentlyInPhotoListing: { type: Types.Boolean, label: 'currently in photolisting', default: false, initial: true },
+	dateOfLastPhotoListing: { type: Types.Date, label: 'date of last photolisting', format: 'MM/DD/YYYY', utc: true, dependsOn: {isCurrentlyInPhotoListing: true }, initial: true },
 	photolistingPageNumber: { type: Types.Text, label: 'photolisting page', initial: true },
 	previousPhotolistingPageNumbers: { type: Types.Text, label: 'previous photolisting pages', initial: true },
 
-	image: { type: Types.CloudinaryImage, label: 'display image', folder: 'children/', select: true, selectPrefix: 'children/', publicID: 'fileName', dependsOn: { mustBePlacedWithSiblings: false } },
-	galleryImage: { type: Types.Url, hidden: true },
-	detailImage: { type: Types.Url, hidden: true },
-	allImages: { type: Types.CloudinaryImages, label: 'all images', folder: 'children/', select: true, selectPrefix: 'children/', publicID: 'fileName', dependsOn: { mustBePlacedWithSiblings: false }, autoCleanup: true },
-	siblingGroupImage: { type: Types.CloudinaryImage, label: 'sibling group image', folder: 'sibling-groups/', select: true, selectPrefix: 'sibling-groups/', publicID: 'siblingGroupFileName', dependsOn: { mustBePlacedWithSiblings: true }, autoCleanup: true },
-	siblingGroupGalleryImage: { type: Types.Url, hidden: true },
-	siblingGroupDetailImage: { type: Types.Url, hidden: true },
+	image: { type: Types.CloudinaryImage, label: 'display image', folder: `${ process.env.CLOUDINARY_DIRECTORY }/children/`, select: true, selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/children/`, publicID: 'fileName', dependsOn: { mustBePlacedWithSiblings: false }, autoCleanup: false },
+	allImages: { type: Types.CloudinaryImages, label: 'all images', folder: `${ process.env.CLOUDINARY_DIRECTORY }/children/`, select: true, selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/children/`, publicID: 'fileName', dependsOn: { mustBePlacedWithSiblings: false }, autoCleanup: false },
+	siblingGroupImage: { type: Types.CloudinaryImage, label: 'sibling group image', folder: `${ process.env.CLOUDINARY_DIRECTORY }/sibling-groups/`, select: true, selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/sibling-groups/`, publicID: 'siblingGroupFileName', dependsOn: { mustBePlacedWithSiblings: true }, autoCleanup: false },
 	extranetUrl: { type: Types.Url, label: 'extranet and related profile url', initial: true } // TODO: Since this is redundant as this just points the the url where the photo exists (the child's page), we may hide this field.  This must be kept in as it will help us track down the child information in the old system in the event of an issue.
 
 }, 'Recruitment Options', {
 
-	hasVideoSnapshot: { type: Types.Boolean, label: 'video snapshot', initial: true },
-	videoSnapshotDate: { type: Types.Date, label: 'date of video snapshot', format: 'MM/DD/YYYY', dependsOn: { hasVideoSnapshot: true }, initial: true },
+	hasVideoSnapshot: { type: Types.Boolean, label: 'video snapshot', default: false, initial: true },
+	videoSnapshotDate: { type: Types.Date, label: 'date of video snapshot', format: 'MM/DD/YYYY', utc: true, dependsOn: { hasVideoSnapshot: true }, initial: true },
 	video: { type: Types.Url, label: 'video', dependsOn: { hasVideoSnapshot: true, mustBePlacedWithSiblings: false } },
 	siblingGroupVideo: { type: Types.Url, label: 'sibling group video', dependsOn: { hasVideoSnapshot: true, mustBePlacedWithSiblings: true } },
 
-	onAdoptuskids: { type: Types.Boolean, label: 'Adoptuskids website', initial: true },
-	onAdoptuskidsDate: { type: Types.Date, label: 'date on Adoptuskids', format: 'MM/DD/YYYY', dependsOn: { onAdoptuskids: true }, initial: true },
+	onAdoptuskids: { type: Types.Boolean, label: 'Adoptuskids website', default: false, initial: true },
+	onAdoptuskidsDate: { type: Types.Date, label: 'date on Adoptuskids', format: 'MM/DD/YYYY', utc: true, dependsOn: { onAdoptuskids: true }, initial: true },
 
-	wednesdaysChild: { type: Types.Boolean, label: 'Wednesday\'s Child', dependsOn: { mustBePlacedWithSiblings: false }, initial: true },
-	wednesdaysChildDate: { type: Types.Date, label: 'date of Wednesday\'s Child', format: 'MM/DD/YYYY', dependsOn: { mustBePlacedWithSiblings: false, wednesdaysChild: true }, initial: true },
+	wednesdaysChild: { type: Types.Boolean, label: 'Wednesday\'s Child', dependsOn: { mustBePlacedWithSiblings: false }, default: false, initial: true },
+	wednesdaysChildDate: { type: Types.Date, label: 'date of Wednesday\'s Child', format: 'MM/DD/YYYY', utc: true, dependsOn: { mustBePlacedWithSiblings: false, wednesdaysChild: true }, initial: true },
 	wednesdaysChildVideo: { type: Types.Url, label: 'Wednesday\'s Child video', dependsOn: { mustBePlacedWithSiblings: false, wednesdaysChild: true } },
 
-	wednesdaysChildSiblingGroup: { type: Types.Boolean, label: 'Wednesday\'s Child for sibling group?', dependsOn: { mustBePlacedWithSiblings: true }, initial: true },
-	wednesdaysChildSiblingGroupDate: { type: Types.Date, label: 'date of sibling group\'s Wednesday\'s Child', format: 'MM/DD/YYYY', dependsOn: { mustBePlacedWithSiblings: true, wednesdaysChildSiblingGroup: true }, initial: true },
+	wednesdaysChildSiblingGroup: { type: Types.Boolean, label: 'Wednesday\'s Child for sibling group?', dependsOn: { mustBePlacedWithSiblings: true }, default: false, initial: true },
+	wednesdaysChildSiblingGroupDate: { type: Types.Date, label: 'date of sibling group\'s Wednesday\'s Child', format: 'MM/DD/YYYY', utc: true, dependsOn: { mustBePlacedWithSiblings: true, wednesdaysChildSiblingGroup: true }, initial: true },
 	wednesdaysChildSiblingGroupVideo: { type: Types.Url, label: 'Wednesday\'s Child sibling group video', dependsOn: { mustBePlacedWithSiblings: true, wednesdaysChildSiblingGroup: true } },
 
-	coalitionMeeting: { type: Types.Boolean, label: 'coalition meeting', initial: true },
-	coalitionMeetingDate: { type: Types.Date, label: 'date of coalition meeting', format: 'MM/DD/YYYY', dependsOn: { coalitionMeeting: true }, initial: true },
+	coalitionMeeting: { type: Types.Boolean, label: 'coalition meeting', default: false, initial: true },
+	coalitionMeetingDate: { type: Types.Date, label: 'date of coalition meeting', format: 'MM/DD/YYYY', utc: true, dependsOn: { coalitionMeeting: true }, initial: true },
 
-	matchingEvent: { type: Types.Boolean, label: 'matching event', initial: true },
-	matchingEventDate: { type: Types.Date, label: 'date of matching event', format: 'MM/DD/YYYY', dependsOn: { matchingEvent: true }, initial: true },
+	matchingEvent: { type: Types.Boolean, label: 'matching event', default: false, initial: true },
+	matchingEventDate: { type: Types.Date, label: 'date of matching event', format: 'MM/DD/YYYY', utc: true, dependsOn: { matchingEvent: true }, initial: true },
 
 	adoptionParties: { type: Types.Relationship, label: 'adoption parties', ref: 'Event', filters: { type: 'adoption party', isActive: true }, many: true, initial: true },
 
 	mediaEligibility: { type: Types.Relationship, label: 'media eligibility', ref: 'Media Eligibility', many: true, initial: true },
 	otherMediaDescription: { type: Types.Textarea, label: 'description', note: 'only fill out if \'other\' is selected for media eligibility' , initial: true }, // TODO: THIS DOESN'T WORK BECAUSE IT REFERENCES A RELATIONSHIP FIELD SO ALL WE HAVE IS THE _id, MAKE IT WORK!
 
-	locationAlert: { type: Types.Boolean, label: 'location alert', initial: true },
+	locationAlert: { type: Types.Boolean, label: 'location alert', default: false, initial: true },
 	place: { type: Types.Text, label: 'place', initial: true, dependsOn: { locationAlert: true } },
 
-	communicationsCollateral: { type: Types.Boolean, label: 'communications collateral', initial: true },
-	communicationsCollateralDetails: { type: Types.Text, label: 'details', dependsOn: { communicationsCollateral: true }, initial: true }
+	communicationsCollateral: { type: Types.Boolean, label: 'communications collateral', default: false, initial: true },
+	communicationsCollateralDetails: { type: Types.Text, label: 'details', dependsOn: { communicationsCollateral: true }, initial: true },
 
-}, 'Attachments', {
+// }, 'Attachments', {
 
 	photolistingPage: {
 		type: Types.S3File,
@@ -185,7 +183,8 @@ Child.add('Display Options', {
 		filename: function( item, filename ) {
 			// prefix file name with registration number and the user's name for easier identification
 			return item.get( 'fileName' );
-		}
+		},
+		hidden: true
 	},
 
 	otherAttachement: {
@@ -194,12 +193,13 @@ Child.add('Display Options', {
 		filename: function( item, filename ) {
 			// prefix file name with registration number and name for easier identification
 			return item.get( 'fileName' );
-		}
+		},
+		hidden: true
 	}
 /* Container for all system fields (add a heading if any are meant to be visible through the admin UI) */
 }, {
 
-	// system field to store an appropriate file prefix
+	// system fields to store appropriate file prefixes
 	fileName: { type: Types.Text, hidden: true },
 	siblingGroupFileName: { type: Types.Text, hidden: true }
 
@@ -213,7 +213,7 @@ Child.add('Display Options', {
 // Set up relationship values to show up at the bottom of the model if any exist
 Child.relationship( { ref: 'Child', refPath: 'siblings', path: 'children', label: 'siblings' } );
 Child.relationship( { ref: 'Placement', refPath: 'child', path: 'placements', label: 'placements' } );
-Child.relationship( { ref: 'Inquiry', refPath: 'child', path: 'inquiries', label: 'inquiries' } );
+Child.relationship( { ref: 'Inquiry', refPath: 'children', path: 'inquiries', label: 'inquiries' } );
 Child.relationship( { ref: 'Match', refPath: 'child', path: 'matches', label: 'matches' } );
 Child.relationship( { ref: 'Family', refPath: 'bookmarkedChildren', path: 'families', label: 'bookmarked by families' } );
 Child.relationship( { ref: 'Family', refPath: 'bookmarkedSiblingGroups', path: 'families', label: 'sibling group bookmarked by families' } );
@@ -224,17 +224,35 @@ Child.relationship( { ref: 'Media Feature', refPath: 'children', path: 'media-fe
 Child.relationship( { ref: 'Internal Note', refPath: 'child', path: 'internal-notes', label: 'internal notes' } );
 Child.relationship( { ref: 'Child History', refPath: 'child', path: 'child-histories', label: 'change history' } );
 
+Child.schema.virtual( 'hasImage' ).get( function() {
+	'use strict';
+
+	return this.image.exists;
+});
+
+Child.schema.virtual( 'hasSiblingGroupImage' ).get( function() {
+	'use strict';
+
+	return this.siblingGroupImage.exists;
+});
+
 // Post Init - used to store all the values before anything is changed
 Child.schema.post( 'init', function() {
 	'use strict';
 
 	this._original = this.toObject();
+
+	// if there are any siblingsToBePlacedWith, set mustBePlacedWithSiblings to true
+	if ( this.siblingsToBePlacedWith ) {
+		this.mustBePlacedWithSiblings = this.siblingsToBePlacedWith.length > 0 ? true : false;
+	}
 });
 
 Child.schema.pre( 'save', function( next ) {
 	'use strict';
-	// create cloudinary URLs for images sized for various uses
-	this.setImages();
+
+	// trim whitespace characters from any type.Text fields
+	this.trimTextFields();
 	// create a full name for the child based on their first, middle, and last names
 	this.setFullName();
 	// create an identifying name for file uploads
@@ -242,7 +260,7 @@ Child.schema.pre( 'save', function( next ) {
 	// if there are no siblings to be placed with, uncheck the box, otherwise check it
 	this.updateMustBePlacedWithSiblingsCheckbox();
 	// if there are no siblings to be placed with, clear the group bio
-	this.updateGroupBio();
+	this.updateSiblingGroupInfo();
 
 	// set the registration number for the family
 	const registrationNumberSet = this.setRegistrationNumber();
@@ -250,10 +268,49 @@ Child.schema.pre( 'save', function( next ) {
 	const adoptionWorkerAgencyFieldsSet = this.setAdoptionWorkerAgencyFields();
 	// set the noedit fields associated with the recruitment worker's agency
 	const recruitmentWorkerAgencyFieldsSet = this.setRecruitmentWorkerAgencyFields();
-	// create an identifying name for sibling group file uploads
-	const siblingGroupFileNameSet = this.setSiblingGroupFileName();
 
-	Promise.all( [ registrationNumberSet, adoptionWorkerAgencyFieldsSet, recruitmentWorkerAgencyFieldsSet, siblingGroupFileNameSet ] )
+
+	// check to see if the siblings groups have been changed
+	let hasSiblingsChanged = this.checkSiblingsForChanges();
+	let hasSiblingsToBePlacedWithChanged = this.checkSiblingsToBePlacedWithForChanges();
+	// if both groups have been changed
+	if ( hasSiblingsChanged && hasSiblingsToBePlacedWithChanged ) {
+		// revert the changes to the siblingsToBePlacedWith group
+		this.siblingsToBePlacedWith = this._original.siblingsToBePlacedWith;
+		hasSiblingsToBePlacedWithChanged = false;
+	}
+
+	// perform async processing
+	Promise
+		.resolve()
+		// process updates to sibling groups
+		.then( () => {
+			// if the siblings group has been updated
+			if ( hasSiblingsChanged ) {
+				// batch the siblings group updates
+				return ChildMiddleware.batchAllSiblingUpdates( this );
+			// if the siblings to be placed with group has been updated
+			} else if ( hasSiblingsToBePlacedWithChanged ) {
+				// batch the siblings to be placed with group updates
+				return ChildMiddleware.batchAllSiblingsToBePlacedWithUpdates( this );
+			// if neither group has been updated
+			} else {
+				// continue execution
+				return;
+			}
+		})
+		// catch and log any errors
+		.catch( error => {
+			// log any errors
+			console.error( error );
+		})
+		// perform the rest of the pre-save processing
+		.then( () => {
+			// create an identifying name for sibling group file uploads ( this has to run after sibling updates have been processed )
+			const siblingGroupFileNameSet = this.setSiblingGroupFileName();
+
+			return Promise.all( [ registrationNumberSet, adoptionWorkerAgencyFieldsSet, recruitmentWorkerAgencyFieldsSet, siblingGroupFileNameSet ] );
+		})
 		// if there was an error with any of the promises
 		.catch( err => {
 			// log it for debugging purposes
@@ -262,14 +319,26 @@ Child.schema.pre( 'save', function( next ) {
 		// execute the following regardless of whether the promises were resolved or rejected
 		// TODO: this should be replaced with ES6 Promise.prototype.finally() once it's finalized, assuming we can update to the latest version of Node if we upgrade Keystone
 		.then( () => {
-
+			// create a unique label for each child based on their first & last names and their registration number
+			this.setFullNameAndRegistrationLabel();
 			next();
 		});
 });
 
 Child.schema.post( 'save', function() {
-	// update all sibling information
-	this.updateSiblingFields();
+
+	// if the siblings group has been changed
+	if ( this.checkSiblingsForChanges() ) {
+		// process updates for other siblings in the group
+		this.updateSiblingGroup();
+	}
+
+	// if the siblings group has not changed, try to apply siblings to be placed with changes to ensure group info is updated all siblings to be placed with
+	if ( !this.checkSiblingsForChanges() ) {
+		// process updates for other siblings in the group
+		this.updateSiblingsToBePlacedWithGroup();
+	}
+
 	// update saved bookmarks for families and social workers in the event of a status change or sibling group change
 	this.updateBookmarks();
 
@@ -295,16 +364,170 @@ Child.schema.post( 'save', function() {
 		});
 });
 
-Child.schema.methods.setImages = function() {
-	'use strict';
+/* text fields don't automatically trim(), this is to ensure no leading or trailing whitespace gets saved into url, text, or text area fields */
+Child.schema.methods.trimTextFields = function() {
 
-	// TODO: Play with lowering quality to 0 and doubling the image size as an optimization technique
-	this.galleryImage = this._.image.thumbnail( 430, 430, { quality: 60 } );
-	this.detailImage = this._.image.thumbnail( 200, 200, { quality: 60 } );
+	if( this.get( 'name.first' ) ) {
+		this.set( 'name.first', this.get( 'name.first' ).trim() );
+	}
 
-	this.siblingGroupGalleryImage = this._.siblingGroupImage.thumbnail( 430, 430, { quality: 60 } );
-	this.siblingGroupDetailImage = this._.siblingGroupImage.thumbnail( 200, 200, { quality: 60 } );
+	if( this.get( 'name.middle' ) ) {
+		this.set( 'name.middle', this.get( 'name.middle' ).trim() );
+	}
+
+	if( this.get( 'name.last' ) ) {
+		this.set( 'name.last', this.get( 'name.last' ).trim() );
+	}
+
+	if( this.get( 'name.alias' ) ) {
+		this.set( 'name.alias', this.get( 'name.alias' ).trim() );
+	}
+
+	if( this.get( 'name.nickName' ) ) {
+		this.set( 'name.nickName', this.get( 'name.nickName' ).trim() );
+	}
+
+	if( this.get( 'raceNotes' ) ) {
+		this.set( 'raceNotes', this.get( 'raceNotes' ).trim() );
+	}
+
+	if( this.get( 'yearEnteredCare' ) ) {
+		this.set( 'yearEnteredCare', this.get( 'yearEnteredCare' ).trim() );
+	}
+
+	if( this.get( 'siblingTypeOfContact' ) ) {
+		this.set( 'siblingTypeOfContact', this.get( 'siblingTypeOfContact' ).trim() );
+	}
+
+	if( this.get( 'birthFamilyTypeOfContact' ) ) {
+		this.set( 'birthFamilyTypeOfContact', this.get( 'birthFamilyTypeOfContact' ).trim() );
+	}
+
+	if( this.get( 'cityText' ) ) {
+		this.set( 'cityText', this.get( 'cityText' ).trim() );
+	}
+
+	if( this.get( 'careFacilityName' ) ) {
+		this.set( 'careFacilityName', this.get( 'careFacilityName' ).trim() );
+	}
+
+	if( this.get( 'physicalNeedsDescription' ) ) {
+		this.set( 'physicalNeedsDescription', this.get( 'physicalNeedsDescription' ).trim() );
+	}
+
+	if( this.get( 'emotionalNeedsDescription' ) ) {
+		this.set( 'emotionalNeedsDescription', this.get( 'emotionalNeedsDescription' ).trim() );
+	}
+
+	if( this.get( 'intellectualNeedsDescription' ) ) {
+		this.set( 'intellectualNeedsDescription', this.get( 'intellectualNeedsDescription' ).trim() );
+	}
+
+	if( this.get( 'socialNeedsDescription' ) ) {
+		this.set( 'socialNeedsDescription', this.get( 'socialNeedsDescription' ).trim() );
+	}
+
+	if( this.get( 'aspirations' ) ) {
+		this.set( 'aspirations', this.get( 'aspirations' ).trim() );
+	}
+
+	if( this.get( 'schoolLife' ) ) {
+		this.set( 'schoolLife', this.get( 'schoolLife' ).trim() );
+	}
+
+	if( this.get( 'familyLife' ) ) {
+		this.set( 'familyLife', this.get( 'familyLife' ).trim() );
+	}
+
+	if( this.get( 'personality' ) ) {
+		this.set( 'personality', this.get( 'personality' ).trim() );
+	}
+
+	if( this.get( 'otherRecruitmentConsiderations' ) ) {
+		this.set( 'otherRecruitmentConsiderations', this.get( 'otherRecruitmentConsiderations' ).trim() );
+	}
+
+	if( this.get( 'healthNotesNew' ) ) {
+		this.set( 'healthNotesNew', this.get( 'healthNotesNew' ).trim() );
+	}
+
+	if( this.get( 'healthNotesOld' ) ) {
+		this.set( 'healthNotesOld', this.get( 'healthNotesOld' ).trim() );
+	}
+
+	if( this.get( 'profile.quote' ) ) {
+		this.set( 'profile.quote', this.get( 'profile.quote' ).trim() );
+	}
+
+	if( this.get( 'profile.part1' ) ) {
+		this.set( 'profile.part1', this.get( 'profile.part1' ).trim() );
+	}
+
+	if( this.get( 'profile.part2' ) ) {
+		this.set( 'profile.part2', this.get( 'profile.part2' ).trim() );
+	}
+
+	if( this.get( 'profile.part3' ) ) {
+		this.set( 'profile.part3', this.get( 'profile.part3' ).trim() );
+	}
+
+	if( this.get( 'groupProfile.quote' ) ) {
+		this.set( 'groupProfile.quote', this.get( 'groupProfile.quote' ).trim() );
+	}
+
+	if( this.get( 'groupProfile.part1' ) ) {
+		this.set( 'groupProfile.part1', this.get( 'groupProfile.part1' ).trim() );
+	}
+
+	if( this.get( 'groupProfile.part2' ) ) {
+		this.set( 'groupProfile.part2', this.get( 'groupProfile.part2' ).trim() );
+	}
+
+	if( this.get( 'groupProfile.part3' ) ) {
+		this.set( 'groupProfile.part3', this.get( 'groupProfile.part3' ).trim() );
+	}
+
+	if( this.get( 'photolistingPageNumber' ) ) {
+		this.set( 'photolistingPageNumber', this.get( 'photolistingPageNumber' ).trim() );
+	}
+
+	if( this.get( 'previousPhotolistingPageNumbers' ) ) {
+		this.set( 'previousPhotolistingPageNumbers', this.get( 'previousPhotolistingPageNumbers' ).trim() );
+	}
+
+	if( this.get( 'extranetUrl' ) ) {
+		this.set( 'extranetUrl', this.get( 'extranetUrl' ).trim() );
+	}
+
+	if( this.get( 'video' ) ) {
+		this.set( 'video', this.get( 'video' ).trim() );
+	}
+
+	if( this.get( 'siblingGroupVideo' ) ) {
+		this.set( 'siblingGroupVideo', this.get( 'siblingGroupVideo' ).trim() );
+	}
+
+	if( this.get( 'wednesdaysChildVideo' ) ) {
+		this.set( 'wednesdaysChildVideo', this.get( 'wednesdaysChildVideo' ).trim() );
+	}
+
+	if( this.get( 'wednesdaysChildSiblingGroupVideo' ) ) {
+		this.set( 'wednesdaysChildSiblingGroupVideo', this.get( 'wednesdaysChildSiblingGroupVideo' ).trim() );
+	}
+
+	if( this.get( 'otherMediaDescription' ) ) {
+		this.set( 'otherMediaDescription', this.get( 'otherMediaDescription' ).trim() );
+	}
+
+	if( this.get( 'place' ) ) {
+		this.set( 'place', this.get( 'place' ).trim() );
+	}
+
+	if( this.get( 'communicationsCollateralDetails' ) ) {
+		this.set( 'communicationsCollateralDetails', this.get( 'communicationsCollateralDetails' ).trim() );
+	}
 };
+
 // TODO: Better handled with a virtual
 Child.schema.methods.setFullName = function() {
 	'use strict';
@@ -318,7 +541,7 @@ Child.schema.methods.setFullName = function() {
 };
 
 Child.schema.methods.setRegistrationNumber = function() {
-	
+
 	return new Promise( ( resolve, reject ) => {
 		// If the registration number is already set ( which will happen during the data migration as well as saving existing children )
 		if( this.registrationNumber ) {
@@ -341,15 +564,25 @@ Child.schema.methods.setRegistrationNumber = function() {
 				.catch( err => {
 					// log the error for debugging purposes
 					console.error( `registration number could not be updated for child ${ this.fullName } ( registration number: ${ this.registrationNumber } ) - ${ err }` );
-					// reject the promise with the error
-					reject();
+					// resolve the promise so that the Promise.all() in the pre-save hook does not fail
+					resolve();
 				});
 		}
 	});
 };
 
+Child.schema.methods.setFullNameAndRegistrationLabel = function() {
+	'use strict';
+
+	// if a registration number exists, add it to the full name and registration label
+	let registrationNumberString = this.registrationNumber ? ` - ${ this.registrationNumber }` : '';
+
+	// combine the first & last names and registration number to create a unique label for all Child models
+	this.displayNameAndRegistration = `${ this.name.first } ${ this.name.last }${ registrationNumberString }`;
+};
+
 Child.schema.methods.setAdoptionWorkerAgencyFields = function() {
-	
+
 	return new Promise( ( resolve, reject ) => {
 
 		if( !this.adoptionWorker ) {
@@ -380,14 +613,14 @@ Child.schema.methods.setAdoptionWorkerAgencyFields = function() {
 				// clear out the adoption worker agency fields
 				this.adoptionWorkerAgency = undefined;
 				this.adoptionWorkerAgencyRegion = undefined;
-				// reject the promise
-				reject();
+				// resolve the promise so that the Promise.all() in the pre-save hook does not fail
+				resolve();
 			});
 	});
 };
 
 Child.schema.methods.setRecruitmentWorkerAgencyFields = function() {
-	
+
 	return new Promise( ( resolve, reject ) => {
 
 		if( !this.recruitmentWorker ) {
@@ -418,8 +651,8 @@ Child.schema.methods.setRecruitmentWorkerAgencyFields = function() {
 				// clear out the recruitment worker agency fields
 				this.recruitmentWorkerAgency = undefined;
 				this.recruitmentWorkerAgencyRegion = undefined;
-				// reject the promise
-				reject();
+				// resolve the promise so that the Promise.all() in the pre-save hook does not fail
+				resolve();
 			});
 	});
 };
@@ -464,7 +697,7 @@ Child.schema.methods.setSiblingGroupFileName = function() {
 				// extract the values form the array into strings
 				const registrationNumbersString	= registrationNumbersArray.join( '_' ),
 					  namesString				= namesArray.join( '_' );
-	
+
 				this.siblingGroupFileName = `${ registrationNumbersString }_${ namesString }`;
 				// resolve the promise
 				resolve();
@@ -473,8 +706,8 @@ Child.schema.methods.setSiblingGroupFileName = function() {
 			.catch( err => {
 				// log the error for debugging purposes
 				console.error( `sibling group file name could not be updated for child ${ this.name.full } ( registration number: ${ this.registrationNumber } ) - ${ err }` );
-				// reject the promise with the error
-				reject();
+				// resolve the promise so that the Promise.all() in the pre-save hook does not fail
+				resolve();
 			});
 	});
 };
@@ -482,23 +715,193 @@ Child.schema.methods.setSiblingGroupFileName = function() {
 Child.schema.methods.updateMustBePlacedWithSiblingsCheckbox = function() {
 	'use strict';
 
-	if( this.siblingsToBePlacedWith && this.siblingsToBePlacedWith.length > 0 ) {
-    	this.mustBePlacedWithSiblings = true;
-	} else {
-		this.mustBePlacedWithSiblings = false;
+	// if there are any siblingsToBePlacedWith, set mustBePlacedWithSiblings to true
+	if ( this.siblingsToBePlacedWith ) {
+		this.mustBePlacedWithSiblings = this.siblingsToBePlacedWith.length > 0 ? true : false;
 	}
 }
 
-Child.schema.methods.updateGroupBio = function() {
+Child.schema.methods.updateSiblingGroupInfo = function() {
 	'use strict';
 
 	if( !this.siblingsToBePlacedWith || this.siblingsToBePlacedWith.length === 0 ) {
-		this.groupProfile = this.groupProfile || {};
+		this.groupProfile.quote = '';
 		this.groupProfile.part1 = '';
 		this.groupProfile.part2 = '';
 		this.groupProfile.part3 = '';
+		this.wednesdaysChildSiblingGroup = false;
+		this.wednesdaysChildSiblingGroupDate = undefined;
+		this.wednesdaysChildSiblingGroupVideo = undefined;
+		this.siblingGroupImage = undefined;
+		this.siblingGroupVideo = undefined;
 	}
 };
+
+Child.schema.methods.updateSiblingGroup = function() {
+
+	let siblingsArrayBeforeSave = this._original ? this._original.siblings.map( sibling => sibling.toString() ) : [];
+	let siblingsBeforeSave = new Set( siblingsArrayBeforeSave );
+
+	let siblingsArrayAfterSave = this.siblings.map( sibling => sibling.toString() );
+	let siblingsAfterSave = new Set( siblingsArrayAfterSave );
+
+	// create a set of all siblings added to the original child by the save operation
+	let siblingsAddedBySave = Array.from( siblingsBeforeSave.rightOuterJoin( siblingsAfterSave ) );
+	// create a set of all siblings removed from the original child by the save operation
+	let siblingsRemovedBySave = Array.from( siblingsBeforeSave.leftOuterJoin( siblingsAfterSave ) );
+
+	// create an updated representation of the sibling group based on the post-save state of the siblings array
+	let updatedSiblingGroup = siblingsArrayAfterSave;
+	// if the updated sibling group is not empty this child has siblings and a valid group to update
+	if ( updatedSiblingGroup.length > 0 ) {
+		// add the current child to the group ( because a child will not store itself in the siblings array )
+		updatedSiblingGroup.push( this._id.toString() );
+		// determine which siblings were impacted by the update
+		let siblingsImpacted = updatedSiblingGroup.concat( siblingsRemovedBySave ).filter( siblingID => siblingID !== this._id.toString() );
+
+		// for each sibling impacted
+		siblingsImpacted.forEach( siblingID => {
+			// check to ensure that the sibling is not already in the process of being saved
+			if ( !saveLock.isLocked( siblingID ) ) {
+				// lock the sibling to ensure that it cannot be updated by any other processes until this update is complete
+				saveLock.lock( siblingID );
+				// update the sibling with the new sibling group
+				ChildMiddleware
+					.applySiblingGroupToChild( { childToUpdateID: siblingID, siblingGroup: updatedSiblingGroup } )
+					.then( updatedChildID => {
+						// unlock the sibling after update is complete
+						saveLock.unlock( updatedChildID );
+					})
+					.catch( updatedChildID => {
+						// unlock the sibling after update is complete
+						saveLock.unlock( updatedChildID );
+					});
+			}
+		});
+	// if the updated sibling group is empty this child was removed from a sibling group and should remove itself from any siblings remaining in that group
+	} else {
+		// for each sibling that this child used to be a in a sibling group with
+		siblingsRemovedBySave.forEach( siblingID => {
+			// check to ensure that the sibling is not already in the process of being saved
+			if ( !saveLock.isLocked( siblingID ) ) {
+				// lock the sibling to ensure that it cannot be updated by any other processes until this update is complete
+				saveLock.lock( siblingID );
+				// remove this child from a sibling
+				ChildMiddleware
+					.removeSiblingFromChild( { childToUpdateID: siblingID, siblingToRemoveID: this._id.toString() } )
+					.then( updatedChildID => {
+						// unlock the sibling after update is complete
+						saveLock.unlock( updatedChildID );
+					})
+					.catch( updatedChildID => {
+						// unlock the sibling after update is complete
+						saveLock.unlock( updatedChildID );
+					});
+			}
+		});
+	}
+};
+
+Child.schema.methods.updateSiblingsToBePlacedWithGroup = function() {
+
+	let siblingsToBePlacedWithArrayBeforeSave = this._original ? this._original.siblingsToBePlacedWith.map( sibling => sibling.toString() ) : [];
+	let siblingsToBePlacedWithBeforeSave = new Set( siblingsToBePlacedWithArrayBeforeSave );
+
+	let siblingsToBePlacedWithArrayAfterSave = this.siblingsToBePlacedWith.map( sibling => sibling.toString() );
+	let siblingsToBePlacedWithAfterSave = new Set( siblingsToBePlacedWithArrayAfterSave );
+
+	// create a set of all siblings to be placed with added to the original child by the save operation
+	let siblingsToBePlacedWithAddedBySave = Array.from( siblingsToBePlacedWithBeforeSave.rightOuterJoin( siblingsToBePlacedWithAfterSave ) );
+	// create a set of all siblings to be placed with removed from the original child by the save operation
+	let siblingsToBePlacedWithRemovedBySave = Array.from( siblingsToBePlacedWithBeforeSave.leftOuterJoin( siblingsToBePlacedWithAfterSave ) );
+
+	// create an updated representation of the siblings to be placed with group based on the post-save state of the siblings array
+	let updatedSiblingsToBePlacedWithGroup = siblingsToBePlacedWithArrayAfterSave;
+	// if the updated siblings to be placed with group is not empty this child has siblings to be placed with and a valid group to update
+	if ( updatedSiblingsToBePlacedWithGroup.length > 0 ) {
+		// add the current child to the group ( because a child will not store itself in the siblings array )
+		updatedSiblingsToBePlacedWithGroup.push( this._id.toString() );
+		// determine which siblings to be placed with were impacted by the update
+		let siblingsToBePlacedWithImpacted = updatedSiblingsToBePlacedWithGroup.concat( siblingsToBePlacedWithRemovedBySave ).filter( siblingID => siblingID !== this._id.toString() );
+
+		// for each sibling to be placed with impacted
+		siblingsToBePlacedWithImpacted.forEach( siblingID => {
+			// check to ensure that the sibling to be placed with is not already in the process of being saved
+			if ( !saveLock.isLocked( siblingID ) ) {
+				// lock the sibling to be placed with to ensure that it cannot be updated by any other processes until this update is complete
+				saveLock.lock( siblingID );
+				// update the sibling to be placed with with the new siblings to be placed with group
+				ChildMiddleware
+					.applySiblingsToBePlacedWithGroupToChild( { childToUpdateID: siblingID,
+																siblingsToBePlacedWithGroup: updatedSiblingsToBePlacedWithGroup,
+																siblingGroupProfile: this.get( 'groupProfile' ),
+																siblingGroupImage: this.get( 'siblingGroupImage' ),
+																siblingGroupVideo: this.get( 'siblingGroupVideo' ),
+																wednesdaysChildSiblingGroup: this.get( 'wednesdaysChildSiblingGroup' ),
+																wednesdaysChildSiblingGroupDate: this.get( 'wednesdaysChildSiblingGroupDate' ),
+																wednesdaysChildSiblingGroupVideo: this.get( 'wednesdaysChildSiblingGroupVideo' ) } )
+					.then( updatedChildID => {
+						// unlock the sibling to be placed with after update is complete
+						saveLock.unlock( updatedChildID );
+					})
+					.catch( updatedChildID => {
+						// unlock the sibling to be placed with after update is complete
+						saveLock.unlock( updatedChildID );
+					});
+			}
+		});
+	// if the updated siblings to be placed with group is empty this child was removed from a siblings to be placed with group and should remove itself from any siblings to be placed with remaining in that group
+	} else {
+		// for each sibling that this child used to be a in a siblings to be placed with group with
+		siblingsToBePlacedWithRemovedBySave.forEach( siblingID => {
+			// check to ensure that the sibling to be placed with is not already in the process of being saved
+			if ( !saveLock.isLocked( siblingID ) ) {
+				// lock the sibling to be placed with to ensure that it cannot be updated by any other processes until this update is complete
+				saveLock.lock( siblingID );
+				// remove this child from a sibling to be placed with
+				ChildMiddleware
+					.removeSiblingToBePlacedWithFromChild( { childToUpdateID: siblingID, siblingToBePlacedWithToRemoveID: this._id.toString() } )
+					.then( updatedChildID => {
+						// unlock the sibling to be placed with after update is complete
+						saveLock.unlock( updatedChildID );
+					})
+					.catch( updatedChildID => {
+						// unlock the sibling to be placed with after update is complete
+						saveLock.unlock( updatedChildID );
+					});
+			}
+		});
+	}
+};
+
+Child.schema.methods.checkSiblingsForChanges = function() {
+
+	let siblingsArrayBeforeSave = this._original ? this._original.siblings.map( sibling => sibling.toString() ) : [];
+	let siblingsBeforeSave = new Set( siblingsArrayBeforeSave );
+
+	let siblingsArrayAfterSave = this.siblings.map( sibling => sibling.toString() );
+	let siblingsAfterSave = new Set( siblingsArrayAfterSave );
+
+	let exclusiveSiblingsInTheBeforeSaveSet = siblingsBeforeSave.leftOuterJoin( siblingsAfterSave );
+	let exclusiveSiblingsInThAfterSaveSet = siblingsBeforeSave.rightOuterJoin( siblingsAfterSave );
+
+	return exclusiveSiblingsInTheBeforeSaveSet.size > 0 || exclusiveSiblingsInThAfterSaveSet.size > 0;
+};
+
+Child.schema.methods.checkSiblingsToBePlacedWithForChanges = function() {
+
+	let siblingsArrayBeforeSave = this._original ? this._original.siblingsToBePlacedWith.map( sibling => sibling.toString() ) : [];
+	let siblingsBeforeSave = new Set( siblingsArrayBeforeSave );
+
+	let siblingsArrayAfterSave = this.siblingsToBePlacedWith.map( sibling => sibling.toString() );
+	let siblingsAfterSave = new Set( siblingsArrayAfterSave );
+
+	let exclusiveSiblingsInTheBeforeSaveSet = siblingsBeforeSave.leftOuterJoin( siblingsAfterSave );
+	let exclusiveSiblingsInThAfterSaveSet = siblingsBeforeSave.rightOuterJoin( siblingsAfterSave );
+
+	return exclusiveSiblingsInTheBeforeSaveSet.size > 0 || exclusiveSiblingsInThAfterSaveSet.size > 0;
+};
+
 // Update the siblings field of all siblings listed to include the current child
 Child.schema.methods.updateSiblingFields = function() {
 	'use strict';
@@ -507,7 +910,7 @@ Child.schema.methods.updateSiblingFields = function() {
 		  siblingsArrayAfterSave				= this.siblings.map( sibling => sibling.toString() ),
 		  siblingsToBePlacedWithArrayBeforeSave	= this._original ? this._original.siblingsToBePlacedWith.map( sibling => sibling.toString() ) : [],
 		  siblingsToBePlacedWithArrayAfterSave	= this.siblingsToBePlacedWith.map( sibling => sibling.toString() ),
-		  
+
 		  siblingsBeforeSave					= new Set( siblingsArrayBeforeSave ),
 		  siblingsAfterSave						= new Set( siblingsArrayAfterSave ),
 		  siblingsToBePlacedWithBeforeSave		= new Set( siblingsToBePlacedWithArrayBeforeSave ),
@@ -564,8 +967,6 @@ Child.schema.methods.updateSiblingFields = function() {
 			}
 		}
 	], function() {
-
-		console.log( 'sibling information updated' );
 
 		done();
 	});
@@ -658,14 +1059,17 @@ Child.schema.methods.setChangeHistory = function() {
 		const changeHistory = new ChildHistory.model({
 			child			: this,
 			date			: Date.now(),
-			changes		: '',
-			modifiedBy	: this.updatedBy
+			summary			: '',
+			changes			: '',
+			modifiedBy		: this.updatedBy
 		});
 
 		// if the model is being saved for the first time
 		if( !model._original ) {
+			// set the summary information for the change history record
+			changeHistory.summary = 'record created';
 			// set the text for the change history record
-			changeHistory.changes = 'record created';
+			changeHistory.changes = '<p>record created</p>';
 			// save the change history record
 			changeHistory.save( () => {
 				// if the record saved successfully, resolve the promise
@@ -1381,5 +1785,5 @@ Child.schema.methods.setChangeHistory = function() {
 };
 
 // Define default columns in the admin interface and register the model
-Child.defaultColumns = 'registrationNumber, name.full, ethnicity, legalStatus, gender';
+Child.defaultColumns = 'displayNameAndRegistration, ethnicity, status, legalStatus, gender';
 Child.register();

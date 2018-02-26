@@ -1,39 +1,38 @@
 <script id="gallery-sibling-groups-template" type="text/x-handlebars-template">
 
-	<div id="sibling-groups-grid" class="card-grid">
-		\{{#each []}}
-			<div class="media-box sibling-group-media-box" data-registration-numbers="\{{ registrationNumbers }}">
-				<div class="contact-card card--medium-padding card--clickable">
-					<div class="media-box-image card__image">
-						<div class="protected-image" data-thumbnail=\{{ galleryImage }}></div>
-					</div>
+	\{{#each []}}
+		<div class="media-box sibling-group-media-box" data-registration-numbers="\{{ registrationNumbers }}">
+			<div class="contact-card card--medium-padding card--clickable">
+				<div class="media-box-image card__image">
+					<div class="protected-image" data-thumbnail=\{{ image }}></div>
+				</div>
 
-					<div class="media-box-content card__image-text contact-card__details">
-						<span class="contact-card__details-row contact-card__name">\{{ namesString }}</span>
-						<div class="contact-card__details-row">
-							<span>Ages \{{ agesString }}</span>
-							<span class="contact-card__details-divider">|</span>
-							<span>Status: \{{ legalStatusesString }}</span>
-						</div>
-						<div class="contact-card__icons">
-						\{{#if hasVideo}}
-							<img class="contact-card__icon" src="/dist/img/icon-video.png">
-						\{{/if}}
-						\{{#if wednesdaysChild}}
-							<img class="contact-card__icon" src="/dist/img/icon-wednesdays-child.png">
-						\{{/if}}
-						</div>
-					<!-- determining whether to add the block below based on whether the user is allowed to bookmark children needs to happen server-side -->
-					{{#if canBookmarkChildren}}
-						<span class="bookmark sibling-group-bookmark \{{#if isBookmarked}}bookmark--active\{{/if}}">
-							<i class="fa \{{#if isBookmarked}} fa-minus-square-o bookmark__icon--active \{{else}} fa-plus-square-o \{{/if}} bookmark__icon"></i>
-							<span class="bookmark__text">Bookmark</span>
-						</span>
-					{{/if}}
+				<div class="media-box-content card__image-text contact-card__details">
+					<span class="contact-card__details-row contact-card__name">\{{ namesString }}</span>
+					<div class="contact-card__details-row">
+						<span>Ages \{{ agesString }}</span>
+						<span class="contact-card__details-divider">|</span>
+						<span>Status: \{{ legalStatusesString }}</span>
+						<div class="media-box-registration-number hidden">Registration #: \{{ registrationNumbers }}</div>
 					</div>
+					<div class="contact-card__icons">
+					\{{#if hasVideo}}
+						<img class="contact-card__icon" src="/dist/img/icon-video.png">
+					\{{/if}}
+					\{{#if wednesdaysChild}}
+						<img class="contact-card__icon" src="/dist/img/icon-wednesdays-child.png">
+					\{{/if}}
+					</div>
+				<!-- determining whether to add the block below based on whether the user is allowed to bookmark children needs to happen server-side -->
+				{{#if canBookmarkChildren}}
+					<span class="bookmark sibling-group-bookmark \{{#if isBookmarked}}bookmark--active\{{/if}}">
+						<i class="fa \{{#if isBookmarked}} fa-minus-square-o bookmark__icon--active \{{else}} fa-plus-square-o \{{/if}} bookmark__icon"></i>
+						<span class="bookmark__text">Bookmark</span>
+					</span>
+				{{/if}}
 				</div>
 			</div>
-		\{{/each}}
-	</div>
+		</div>
+	\{{/each}}
 
 </script>

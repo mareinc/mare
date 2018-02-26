@@ -9,7 +9,7 @@ exports.stripTags = text => {
 	if( !text || text.length === 0 ) {
 		return '';
 	}
-	
+
 	return text.replace( /(<([^>]+)>)/ig, '' );
 }
 
@@ -79,16 +79,12 @@ exports.getReadableStringFromArray = ({ array, delimiter = 'and' }) => {
 
 /* takes in the object containing the field to be modified, the name of the content field, and any modification specification */
 exports.modifyWYSIWYGContent = ( object, content, options ) => {
-	
+
 	options.forEach( option => {
 
 		switch( option.action ) {
 
-			case 'add more links':
-			
-				console.log( `add 'em in` );
-				
-				break;
+			case 'add more links': break; // TODO: finish coding this section
 
 			case 'add classes':
 
@@ -97,11 +93,11 @@ exports.modifyWYSIWYGContent = ( object, content, options ) => {
 				// NOTE: this will fail when confronted with WYSIWYG content that already has ids/classes/attributes attached.  To handle
 				// more complex cases, this will need to be changed to a regular expression match
 				if( option.targetAll ) {
-					object[ content ] = object[ content ].replace( globalMatchString, `<${ option.element } class="${ option.classesToAdd }">`);
+					object[ content ] = object[ content ].replace( globalMatchString, `<${ option.element } class="${ option.classesToAdd }">` );
 				} else {
-					object[ content ] = object[ content ].replace( matchString, `<${ option.element } class="${ option.classesToAdd }">`);
+					object[ content ] = object[ content ].replace( matchString, `<${ option.element } class="${ option.classesToAdd }">` );
 				}
-				
+
 				break;
 		}
 	});
@@ -110,6 +106,12 @@ exports.modifyWYSIWYGContent = ( object, content, options ) => {
 exports.generateAlphanumericHash = length => {
 	// because it's a hex encoding, each unit will be two characters long, so we must divide by 2
 	return crypto.randomBytes( Math.ceil( length / 2 ) ).toString( 'hex' );
+};
+
+/* generates a random number of the specified length, and ensures it will never have a leading 0 */
+exports.generateNumber = length => {
+
+	return Math.floor( Math.pow( 10, length - 1 ) + Math.random() * 9 * Math.pow( 10,  length - 1 ) );
 };
 
 /* add functionality to ES6 Set type for finding the union of two sets */
@@ -134,13 +136,14 @@ Set.prototype.intersection = function( setB ) {
 	return intersection;
 }
 
+// TODO: ensure this actually returns the difference of two sets
 /* add functionality to ES6 Set type for finding the difference between two sets */
 /* { a, b, c }, { b, c, d } => { a, d } */
 Set.prototype.difference = function( setB ) {
 	var difference = new Set( this );
 	for ( var elem of setB ) {
 		difference.delete( elem );
-	}  
+	}
 	return difference;
 }
 
@@ -152,7 +155,7 @@ Set.prototype.leftOuterJoin = function( setB ) {
 		if( setB.has( item ) ) {
 			difference.delete( item );
 		}
-	}; 
+	};
 	return difference;
 }
 

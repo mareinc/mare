@@ -5,8 +5,7 @@
 		el: '.form--social-worker-registration',
 
 		events: {
-			'change .is-not-ma-city-checkbox' 		: 'toggleCitySelect',
-			'change .social-worker-title-checkbox'	: 'toggleSocialWorkerTitleTextField'
+			'change .is-not-ma-city-checkbox' 		: 'toggleCitySelect'
 		},
 
 		initialize: function() {
@@ -15,39 +14,16 @@
 			this.$NonMACityContainer		= this.$( '.non-ma-city-container' );
 			this.$MACity					= this.$( '.city' );
 			this.$NonMACity					= this.$( '.non-ma-city' );
-			this.$socialWorkerTitle			= this.$( '.social-worker-title' );
-			this.$socialWorkerTitleGroup	= this.$( '.social-worker-title-group' );
 			// initialize parsley validation on the form
 			this.form = this.$el.parsley();
 			// bind the city form elements individually to allow for binding/unbinding parsley validation
 			this.MACityValidator 				= this.$MACity.parsley();
 			this.nonMACityValidator				= this.$NonMACity.parsley();
-			// bind the hidden 'title' text box for use in binding/unbinding validation
-			this.socialWorkerTitleValidator		= this.$socialWorkerTitle.parsley();
-			// DOM cache the Parsley validation message for the hidden 'other' field for use in binding/unbinding validation
-			this.$socialWorkerTitleErrorMessage	= this.$socialWorkerTitle.next();
 
 			this.form.on( 'field:validated', this.validateForm );
 
 			// submit form via AJAX on successful validation
 			this.form.on( 'form:success', this.submitForm );
-		},
-
-		toggleSocialWorkerTitleTextField: function toggleSocialWorkerTitleTextField() {
-			// hide/show the hidden 'other' field via the hidden class
-			this.$socialWorkerTitleGroup.toggleClass( 'hidden' );
-
-			if( this.$socialWorkerTitleGroup.hasClass( 'hidden' ) ) {
-				// clear out the input box since it's hidden and not part of the form submission
-				this.$socialWorkerTitle.val( '' );
-				// remove the validation binding
-				this.$socialWorkerTitle.attr( 'data-parsley-required', 'false' );
-				// reset validation on the field.  If it was already validated, we need to clear out the check so the form can be submitted
-				this.socialWorkerTitleValidator.reset();
-			} else {
-				// add validation binding
-				this.$socialWorkerTitle.attr( 'data-parsley-required', 'true' );
-			}
 		},
 
 		toggleCitySelect: function toggleCitySelect( event ) {
@@ -94,7 +70,7 @@
 			this.$( '.register' ).prop( 'disabled', 'disabled' );
 		},
 
-		validateForm: function validateForm() {
+		validateForm: function validateForm( event ) {
 
 			var ok = $( '.parsley-error' ).length === 0;
 

@@ -13,6 +13,11 @@ exports.initLocals = function(req, res, next) {
 
 	var locals = res.locals;
 
+	// store the host information to ensure changes between http and https are handled correctly
+	locals.host = req.secure ?
+		`https://${ req.headers.host }` :
+		`http://${ req.headers.host }`;
+
 	locals.navLinks = [
 		{ label: 'Home', key: 'home', href: '/' }
 	];
@@ -121,7 +126,7 @@ exports.login = function( req, res, next ) {
 	if ( !req.body.email || !req.body.password ) {
 		/* TODO: need a better message for the user, flash messages won't work because page reloads are stupid */
 		req.flash( 'error', { title: 'Something went wrong',
-							  detail: 'Please enter your username and password.' } );
+							  detail: 'Please enter your username and password' } );
 		return next();
 	}
 
@@ -131,13 +136,13 @@ exports.login = function( req, res, next ) {
 
 		if( locals.userStatus === 'nonexistent' ) {
 			req.flash( 'error', { title: 'Something went wrong',
-							  detail: 'Your username or password is incorrect, please try again.' } );
+							  	  detail: 'Your username or password is incorrect, please try again' } );
 			res.redirect( req.body.target || '/' );
 
 		} else if( locals.userStatus === 'inactive' ) {
 			// TODO: we need to figure out if they were once active, or change the message to handle that case as well
 			req.flash( 'error', { title: 'Something went wrong',
-							  detail: 'Your account is not active yet, you will receive an email when your account has been reviewed.' } );
+							      detail: 'Your account is not active yet, you will receive an email when your account has been reviewed.' } );
 			res.redirect( req.body.target || '/' );
 
 		} else if( locals.userStatus === 'active' ) {
@@ -152,7 +157,8 @@ exports.login = function( req, res, next ) {
 
 			var onFail = function() {
 				/* TODO: need a better message for the user, flash messages won't work because page reloads are stupid */
-				req.flash( 'error', { title: 'Your username or password is incorrect, please try again.' } );
+				req.flash( 'error', { title: 'Something went wrong',
+									  detail: 'Please try again.  If this error persists, please notify <a href="mailto:communications@mareinc.org">communications@mareinc.org</a>' } );
 				req.body.target ? res.redirect( req.body.target ) : res.redirect( '/' );
 			}
 
@@ -277,20 +283,14 @@ exports.convertDate = function convertDate( date ) {
 
 /* converts an array to a string like 'element1, element2, and element3' */
 exports.getArrayAsList = function getArrayAsList( array ) {
-	// store the length of the array to determine the separator word
-	const arrayLength = array.length;
-	// creates a variable for the delimeter value
-	let delimeter = arrayLength > 2 ? ', and ' : ' and ';
 	// convert the array to a string separated by commas
-	let returnString = array.join(',');
+	let returnString = array.join( ', ' );
 	// findn the index of the last comma
-	const lastComma = returnString.lastIndexOf(',');
+	const lastComma = returnString.lastIndexOf( ',' );
 	// replace the last comma
-	if(lastComma !== -1 ) {
-		returnString = returnString.substring( 0, lastComma ) + delimeter + returnString.substring( lastComma + 1 );
+	if( lastComma !== -1 ) {
+		returnString = `${ returnString.substring( 0, lastComma ) } and ${ returnString.substring( lastComma + 2 ) }`;
 	}
-	// add space after all remaining commas
-	returnString = returnString.replace(',', ', ');
 
 	return returnString;
 }

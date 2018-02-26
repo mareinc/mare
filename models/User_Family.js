@@ -25,30 +25,31 @@ var Family = new keystone.List( 'Family', {
 // Create fields
 Family.add( 'Permissions', {
 
-	isActive: { type: Boolean, label: 'is active', default: true },
+	isActive: { type: Boolean, label: 'is active' },
 
 	permissions: {
 		isVerified: { type: Boolean, label: 'has a verified email address', default: false, noedit: true },
-		isHomestudyVerified: { type: Boolean, label: 'homestudy verified', initial: true },
-		homestudyVerifiedDate: { type: Types.Date, label: 'homestudy verified on', format: 'MM/DD/YYYY', dependsOn: { 'permissions.isHomestudyVerified': true }, noedit: true },
+		isHomestudyVerified: { type: Boolean, label: 'homestudy verified', default: false, initial: true },
+		homestudyVerifiedDate: { type: Types.Date, label: 'homestudy verified on', format: 'MM/DD/YYYY', utc: true, dependsOn: { 'permissions.isHomestudyVerified': true }, noedit: true },
+		canViewAllChildrenOverride: { type: Boolean, label: 'allow family to see all children', note: 'this will allow the family to see at risk children regardless of their homestudy or place of residence', default: false, initial: true },
 		canViewAllChildren: { type: Boolean, default: false, hidden: true, noedit: true }
 	}
 
 },  'General Information', {
 
-	avatar: { type: Types.CloudinaryImage, label: 'avatar', folder: 'users/families', select: true, selectPrefix: 'users/families', autoCleanup: true }, // TODO: add publicID attribute for better naming in Cloudinary
+	avatar: { type: Types.CloudinaryImage, label: 'avatar', folder: `${ process.env.CLOUDINARY_DIRECTORY }/users/families`, select: true, selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/users/families`, autoCleanup: true }, // TODO: add publicID attribute for better naming in Cloudinary
 
 	registrationNumber: { type: Number, label: 'registration number', format: false, noedit: true },
-	initialContact: { type: Types.Date, label: 'initial contact', format: 'MM/DD/YYYY', initial: true }, // was required: data migration change ( undo if possible )
-	flagCalls: { type: Types.Boolean, label: 'flag calls', initial: true },
+	initialContact: { type: Types.Date, label: 'initial contact', format: 'MM/DD/YYYY', utc: true, initial: true }, // was required: data migration change ( undo if possible )
+	flagCalls: { type: Types.Boolean, label: 'flag calls', default: false, initial: true },
 	familyConstellation: { type: Types.Relationship, label: 'family constellation', ref: 'Family Constellation', initial: true },
-	language: { type: Types.Relationship, label: 'language', ref: 'Language', required: true, initial: true },
+	language: { type: Types.Relationship, label: 'language', ref: 'Language', initial: true },
 	otherLanguages: { type: Types.Relationship, label: 'other languages', ref: 'Language', many: true, initial: true },
 
 	contactGroups: { type: Types.Relationship, label: 'contact groups', ref: 'Contact Group', many: true, initial: true },
 
 	displayName: { type: Types.Text, label: 'name', hidden: true, noedit: true },
-	displayNameAndRegistration: { type: Types.Text, label: 'name and registration number', hidden: true, noedit: true }
+	displayNameAndRegistration: { type: Types.Text, label: 'name and registration number', default: 'new family', hidden: true, noedit: true }
 
 }, 'Contact 1', {
 
@@ -70,7 +71,7 @@ Family.add( 'Permissions', {
 		gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', initial: true }, // was required: data migration change ( undo if possible )
 		race: { type: Types.Relationship, label: 'race', ref: 'Race', many: true, required: true, initial: true }, // was required: data migration change ( undo if possible )
 		occupation: { type: Types.Text, label: 'occupation', initial: true },
-		birthDate: { type: Types.Date, label: 'date of birth', format: 'MM/DD/YYYY', initial: true } // was required: data migration change ( undo if possible )
+		birthDate: { type: Types.Date, label: 'date of birth', format: 'MM/DD/YYYY', utc: true, initial: true } // was required: data migration change ( undo if possible )
 	}
 
 }, 'Contact 2', {
@@ -92,7 +93,7 @@ Family.add( 'Permissions', {
 		gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', initial: true },
 		race: { type: Types.Relationship, label: 'race', ref: 'Race', many: true, initial: true },
 		occupation: { type: Types.Text, label: 'occupation', initial: true },
-		birthDate: { type: Types.Date, label: 'date of birth', format: 'MM/DD/YYYY', initial: true }
+		birthDate: { type: Types.Date, label: 'date of birth', format: 'MM/DD/YYYY', utc: true, initial: true }
 	}
 
 }, 'Home Contact Information', {
@@ -100,7 +101,7 @@ Family.add( 'Permissions', {
 	address: {
 		street1: { type: Types.Text, label: 'street 1', required: true, initial: true },
 		street2: { type: Types.Text, label: 'street 2', initial: true },
-		isOutsideMassachusetts: { type: Types.Boolean, label: 'is outside Massachusetts', initial: true },
+		isOutsideMassachusetts: { type: Types.Boolean, label: 'is outside Massachusetts', default: false, initial: true },
 		city: { type: Types.Relationship, label: 'city', ref: 'City or Town', dependsOn: { 'address.isOutsideMassachusetts': false }, initial: true },
 		cityText: { type: Types.Text, label: 'city', dependsOn: { 'address.isOutsideMassachusetts': true }, initial: true },
 		displayCity: { type: Types.Text, label: 'city', hidden: true, noedit: true },
@@ -113,12 +114,12 @@ Family.add( 'Permissions', {
 
 }, 'Current Children in Family', {
 
-	numberOfChildren: { type: Types.Select, label: 'number of children', options: '0, 1, 2, 3, 4, 5, 6, 7, 8+', required: true, initial: true }
+	numberOfChildren: { type: Types.Select, label: 'number of children', options: '0, 1, 2, 3, 4, 5, 6, 7, 8+', initial: true }
 
 }, { heading: 'Child 1', dependsOn: { numberOfChildren: ['1', '2', '3', '4', '5', '6', '7', '8+'] } }, {
 	child1: {
 		name: { type: Types.Text, label: 'name', dependsOn: { numberOfChildren: ['1', '2', '3', '4', '5', '6', '7', '8+'] }, initial: true },
-		birthDate: { type: Types.Date, label: 'date of birth', format: 'MM/DD/YYYY', dependsOn: { numberOfChildren: ['1', '2', '3', '4', '5', '6', '7', '8+'] }, initial: true },
+		birthDate: { type: Types.Date, label: 'date of birth', format: 'MM/DD/YYYY', utc: true, dependsOn: { numberOfChildren: ['1', '2', '3', '4', '5', '6', '7', '8+'] }, initial: true },
 		gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', dependsOn: { numberOfChildren: ['1', '2', '3', '4', '5', '6', '7', '8+'] }, initial: true },
 		type: { type: Types.Relationship, label: 'type', ref: 'Child Type', dependsOn: { numberOfChildren: ['1', '2', '3', '4', '5', '6', '7', '8+'] }, initial: true }
 	}
@@ -126,7 +127,7 @@ Family.add( 'Permissions', {
 }, { heading: 'Child 2', dependsOn: { numberOfChildren: ['2', '3', '4', '5', '6', '7', '8+'] } }, {
 	child2: {
 		name: { type: Types.Text, label: 'name', dependsOn: { numberOfChildren: ['2', '3', '4', '5', '6', '7', '8+'] }, initial: true },
-		birthDate: { type: Types.Date, label: 'date of birth', format: 'MM/DD/YYYY', dependsOn: { numberOfChildren: ['2', '3', '4', '5', '6', '7', '8+'] }, initial: true },
+		birthDate: { type: Types.Date, label: 'date of birth', format: 'MM/DD/YYYY', utc: true, dependsOn: { numberOfChildren: ['2', '3', '4', '5', '6', '7', '8+'] }, initial: true },
 		gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', dependsOn: { numberOfChildren: ['2', '3', '4', '5', '6', '7', '8+'] }, initial: true },
 		type: { type: Types.Relationship, label: 'type', ref: 'Child Type', dependsOn: { numberOfChildren: ['2', '3', '4', '5', '6', '7', '8+'] }, initial: true }
 	}
@@ -134,7 +135,7 @@ Family.add( 'Permissions', {
 }, { heading: 'Child 3', dependsOn: { numberOfChildren: ['3', '4', '5', '6', '7', '8+'] } }, {
 	child3: {
 		name: { type: Types.Text, label: 'name', dependsOn: { numberOfChildren: ['3', '4', '5', '6', '7', '8+'] }, initial: true },
-		birthDate: { type: Types.Date, label: 'date of birth', format: 'MM/DD/YYYY', dependsOn: { numberOfChildren: ['3', '4', '5', '6', '7', '8+'] }, initial: true },
+		birthDate: { type: Types.Date, label: 'date of birth', format: 'MM/DD/YYYY', utc: true, dependsOn: { numberOfChildren: ['3', '4', '5', '6', '7', '8+'] }, initial: true },
 		gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', dependsOn: { numberOfChildren: ['3', '4', '5', '6', '7', '8+'] }, initial: true },
 		type: { type: Types.Relationship, label: 'type', ref: 'Child Type', dependsOn: { numberOfChildren: ['3', '4', '5', '6', '7', '8+'] }, initial: true }
 	}
@@ -142,7 +143,7 @@ Family.add( 'Permissions', {
 }, { heading: 'Child 4', dependsOn: { numberOfChildren: ['4', '5', '6', '7', '8+'] } }, {
 	child4: {
 		name: { type: Types.Text, label: 'name', dependsOn: { numberOfChildren: ['4', '5', '6', '7', '8+'] }, initial: true },
-		birthDate: { type: Types.Date, label: 'date of birth', format: 'MM/DD/YYYY', dependsOn: { numberOfChildren: ['4', '5', '6', '7', '8+'] }, initial: true },
+		birthDate: { type: Types.Date, label: 'date of birth', format: 'MM/DD/YYYY', utc: true, dependsOn: { numberOfChildren: ['4', '5', '6', '7', '8+'] }, initial: true },
 		gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', dependsOn: { numberOfChildren: ['4', '5', '6', '7', '8+'] }, initial: true },
 		type: { type: Types.Relationship, label: 'type', ref: 'Child Type', dependsOn: { numberOfChildren: ['4', '5', '6', '7', '8+'] }, initial: true }
 	}
@@ -150,7 +151,7 @@ Family.add( 'Permissions', {
 }, { heading: 'Child 5', dependsOn: { numberOfChildren: ['5', '6', '7', '8+'] } }, {
 	child5: {
 		name: { type: Types.Text, label: 'name', dependsOn: { numberOfChildren: ['5', '6', '7', '8+'] }, initial: true },
-		birthDate: { type: Types.Date, label: 'date of birth', format: 'MM/DD/YYYY', dependsOn: { numberOfChildren: ['5', '6', '7', '8+'] }, initial: true },
+		birthDate: { type: Types.Date, label: 'date of birth', format: 'MM/DD/YYYY', utc: true, dependsOn: { numberOfChildren: ['5', '6', '7', '8+'] }, initial: true },
 		gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', dependsOn: { numberOfChildren: ['5', '6', '7', '8+'] }, initial: true },
 		type: { type: Types.Relationship, label: 'type', ref: 'Child Type', dependsOn: { numberOfChildren: ['5', '6', '7', '8+'] }, initial: true }
 	}
@@ -158,7 +159,7 @@ Family.add( 'Permissions', {
 }, { heading: 'Child 6', dependsOn: { numberOfChildren: ['6', '7', '8+'] } }, {
 	child6: {
 		name: { type: Types.Text, label: 'name', dependsOn: { numberOfChildren: ['6', '7', '8+'] }, initial: true },
-		birthDate: { type: Types.Date, label: 'date of birth', format: 'MM/DD/YYYY', dependsOn: { numberOfChildren: ['6', '7', '8+'] }, initial: true },
+		birthDate: { type: Types.Date, label: 'date of birth', format: 'MM/DD/YYYY', utc: true, dependsOn: { numberOfChildren: ['6', '7', '8+'] }, initial: true },
 		gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', dependsOn: { numberOfChildren: ['6', '7', '8+'] }, initial: true },
 		type: { type: Types.Relationship, label: 'type', ref: 'Child Type', dependsOn: { numberOfChildren: ['6', '7', '8+'] }, initial: true }
 	}
@@ -166,7 +167,7 @@ Family.add( 'Permissions', {
 }, { heading: 'Child 7', dependsOn: { numberOfChildren: ['7', '8+'] } }, {
 	child7: {
 		name: { type: Types.Text, label: 'name', dependsOn: { numberOfChildren: ['7', '8+'] }, initial: true },
-		birthDate: { type: Types.Date, label: 'date of birth', format: 'MM/DD/YYYY', dependsOn: { numberOfChildren: ['7', '8+'] }, initial: true },
+		birthDate: { type: Types.Date, label: 'date of birth', format: 'MM/DD/YYYY', utc: true, dependsOn: { numberOfChildren: ['7', '8+'] }, initial: true },
 		gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', dependsOn: { numberOfChildren: ['7', '8+'] }, initial: true },
 		type: { type: Types.Relationship, label: 'type', ref: 'Child Type', dependsOn: { numberOfChildren: ['7', '8+'] }, initial: true }
 	}
@@ -174,7 +175,7 @@ Family.add( 'Permissions', {
 }, { heading: 'Child 8', dependsOn: { numberOfChildren: ['8+'] } }, {
 	child8: {
 		name: { type: Types.Text, label: 'name', dependsOn: { numberOfChildren: ['8+'] }, initial: true },
-		birthDate: { type: Types.Date, label: 'date of birth', format: 'MM/DD/YYYY', dependsOn: { numberOfChildren: ['8+'] }, initial: true },
+		birthDate: { type: Types.Date, label: 'date of birth', format: 'MM/DD/YYYY', utc: true, dependsOn: { numberOfChildren: ['8+'] }, initial: true },
 		gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', dependsOn: { numberOfChildren: ['8+'] }, initial: true },
 		type: { type: Types.Relationship, label: 'type', ref: 'Child Type', dependsOn: { numberOfChildren: ['8+'] }, initial: true }
 	}
@@ -190,27 +191,27 @@ Family.add( 'Permissions', {
 
 	stages: {
 		gatheringInformation: {
-			started: { type: Types.Boolean, label: 'gathering information', initial: true },
-			date: { type: Types.Date, label: 'date gathering information started', format: 'MM/DD/YYYY', dependsOn: { 'stages.gatheringInformation.started': true }, initial: true }
+			started: { type: Types.Boolean, label: 'gathering information', default: false, initial: true },
+			date: { type: Types.Date, label: 'date gathering information started', format: 'MM/DD/YYYY', utc: true, dependsOn: { 'stages.gatheringInformation.started': true }, initial: true }
 		},
 		lookingForAgency: {
-			started: { type: Types.Boolean, label: 'looking for agency', initial: true },
-			date: { type: Types.Date, label: 'date looking for agency started', format: 'MM/DD/YYYY', dependsOn: { 'stages.lookingForAgency.started': true }, initial: true }
+			started: { type: Types.Boolean, label: 'looking for agency', default: false, initial: true },
+			date: { type: Types.Date, label: 'date looking for agency started', format: 'MM/DD/YYYY', utc: true, dependsOn: { 'stages.lookingForAgency.started': true }, initial: true }
 		},
 		workingWithAgency: {
-			started: { type: Types.Boolean, label: 'working with agency', initial: true },
-			date: { type: Types.Date, label: 'date working with agency started', format: 'MM/DD/YYYY', dependsOn: { 'stages.workingWithAgency.started': true }, initial: true }
+			started: { type: Types.Boolean, label: 'working with agency', default: false, initial: true },
+			date: { type: Types.Date, label: 'date working with agency started', format: 'MM/DD/YYYY', utc: true, dependsOn: { 'stages.workingWithAgency.started': true }, initial: true }
 		},
 		MAPPTrainingCompleted: {
-			completed: { type: Types.Boolean, label: 'MAPP training completed', initial: true },
-			date: { type: Types.Date, label: 'date MAPP training completed', format: 'MM/DD/YYYY', dependsOn: { 'stages.MAPPTrainingCompleted.completed': true }, initial: true }
+			completed: { type: Types.Boolean, label: 'MAPP training completed', default: false, initial: true },
+			date: { type: Types.Date, label: 'date MAPP training completed', format: 'MM/DD/YYYY', utc: true, dependsOn: { 'stages.MAPPTrainingCompleted.completed': true }, initial: true }
 		}
 	},
 
 	homestudy: {
-		completed: { type: Types.Boolean, label: 'homestudy completed', initial: true },
-		initialDate: { type: Types.Date, label: 'initial date homestudy completed', format: 'MM/DD/YYYY', dependsOn: { 'homestudy.completed': true }, initial: true },
-		mostRecentDate: { type: Types.Date, label: 'most recent update completed', format: 'MM/DD/YYYY', dependsOn: { 'homestudy.completed': true }, initial: true },
+		completed: { type: Types.Boolean, label: 'homestudy completed', default: false, initial: true },
+		initialDate: { type: Types.Date, label: 'initial date homestudy completed', format: 'MM/DD/YYYY', utc: true, dependsOn: { 'homestudy.completed': true }, initial: true },
+		mostRecentDate: { type: Types.Date, label: 'most recent update completed', format: 'MM/DD/YYYY', utc: true, dependsOn: { 'homestudy.completed': true }, initial: true },
 		summary: { type: Types.Textarea, label: 'homestudy summary', dependsOn: { 'homestudy.completed': true }, initial: true },
 
 		homestudyFile_upload: {
@@ -221,57 +222,58 @@ Family.add( 'Permissions', {
 			filename: function( item, filename ) {
 				// prefix file name with registration number and name for easier identification
 				return item.fileName;
-			}
+			},
+			hidden: true
 		}
 	},
 
 	onlineMatching: {
-		started: { type: Types.Boolean, label: 'online matching', initial: true },
-		date: { type: Types.Date, label: 'date online matching started', format: 'MM/DD/YYYY', dependsOn: { 'onlineMatching.started': true }, initial: true }
+		started: { type: Types.Boolean, label: 'online matching', default: false, initial: true },
+		date: { type: Types.Date, label: 'date online matching started', format: 'MM/DD/YYYY', utc: true, dependsOn: { 'onlineMatching.started': true }, initial: true }
 	},
 
 	registeredWithMARE: {
-		registered: { type: Types.Boolean, label: 'registered with MARE', initial: true },
-		date: { type: Types.Date, label: 'date registered with MARE', format: 'MM/DD/YYYY', dependsOn: { 'registeredWithMARE.registered': true }, initial: true },
+		registered: { type: Types.Boolean, label: 'registered with MARE', default: false, initial: true },
+		date: { type: Types.Date, label: 'date registered with MARE', format: 'MM/DD/YYYY', utc: true, dependsOn: { 'registeredWithMARE.registered': true }, initial: true },
 		status: { type: Types.Relationship, label: 'status', ref: 'Child Status', dependsOn: { 'registeredWithMARE.registered': true }, initial: true }
 	},
 
 	familyProfile: {
-		created: { type: Types.Boolean, label: 'family profile created', initial: true },
-		date: { type: Types.Date, label: 'date family profile created', format: 'MM/DD/YYYY', dependsOn: { 'familyProfile.created': true }, initial: true }
+		created: { type: Types.Boolean, label: 'family profile created', default: false, initial: true },
+		date: { type: Types.Date, label: 'date family profile created', format: 'MM/DD/YYYY', utc: true, dependsOn: { 'familyProfile.created': true }, initial: true }
 	},
 
 	closed: {
-		isClosed: { type: Types.Boolean, label: 'closed', initial: true },
-		date: { type: Types.Date, label: 'date closed', format: 'MM/DD/YYYY', dependsOn: { 'closed.isClosed': true }, initial: true },
+		isClosed: { type: Types.Boolean, label: 'closed', default: false, initial: true },
+		date: { type: Types.Date, label: 'date closed', format: 'MM/DD/YYYY', utc: true, dependsOn: { 'closed.isClosed': true }, initial: true },
 		reason: { type: Types.Relationship, label: 'reason', ref: 'Closed Reason', dependsOn: { 'closed.isClosed': true }, initial: true }
 	}
 
 }, 'Social Worker Information', {
 
-	socialWorker: { type: Types.Relationship, label: 'social worker', ref: 'Social Worker', filters: { isActive: true }, initial: true },
-	socialWorkerNotListed: { type: Types.Boolean, label: 'social worker isn\'t listed', initial: true },
+	socialWorker: { type: Types.Relationship, label: 'social worker', ref: 'Social Worker', initial: true },
+	socialWorkerNotListed: { type: Types.Boolean, label: 'social worker isn\'t listed', default: false, initial: true },
 	socialWorkerText: { type: Types.Text, label: 'social worker', dependsOn: { socialWorkerNotListed: true }, initial: true }
 
 }, 'Family Services', {
 
 	familyServices: {
-		mentee: { type: Types.Boolean, label: 'mentee', initial: true },
-		mentor: { type: Types.Boolean, label: 'mentor', initial: true },
-		mediaSpokesperson: { type: Types.Boolean, label: 'media spokesperson', initial: true },
-		eventPresenterOrSpokesperson: { type: Types.Boolean, label: 'event presenter/spokesperson', initial: true },
-		communityOutreach: { type: Types.Boolean, label: 'community outreach', initial: true },
-		fundraising: { type: Types.Boolean, label: 'fundraising', initial: true },
-		MARESupportGroupLeader: { type: Types.Boolean, label: 'MARE support group leader', initial: true },
-		MARESupportGroupParticipant: { type: Types.Boolean, label: 'MARE support group participant', initial: true },
-		receivesConsultationServices: { type: Types.Boolean, label: 'receives consultation services', initial: true }
+		mentee: { type: Types.Boolean, label: 'mentee', default: false, initial: true },
+		mentor: { type: Types.Boolean, label: 'mentor', default: false, initial: true },
+		mediaSpokesperson: { type: Types.Boolean, label: 'media spokesperson', default: false, initial: true },
+		eventPresenterOrSpokesperson: { type: Types.Boolean, label: 'event presenter/spokesperson', default: false, initial: true },
+		communityOutreach: { type: Types.Boolean, label: 'community outreach', default: false, initial: true },
+		fundraising: { type: Types.Boolean, label: 'fundraising', default: false, initial: true },
+		MARESupportGroupLeader: { type: Types.Boolean, label: 'MARE support group leader', default: false, initial: true },
+		MARESupportGroupParticipant: { type: Types.Boolean, label: 'MARE support group participant', default: false, initial: true },
+		receivesConsultationServices: { type: Types.Boolean, label: 'receives consultation services', default: false, initial: true }
 	}
 
 }, 'Info Preferences', {
 
 	infoPacket: {
 		packet: { type: Types.Select, options: 'English, Spanish, none', label: 'Packet', initial: true },
-		date: { type: Types.Date, label: 'date info packet sent', format: 'MM/DD/YYYY', initial: true },
+		date: { type: Types.Date, label: 'date info packet sent', format: 'MM/DD/YYYY', utc: true, initial: true },
 		notes: { type: Types.Textarea, label: 'notes', initial: true }
 	}
 
@@ -286,12 +288,13 @@ Family.add( 'Permissions', {
 			to: { type: Types.Number, label: 'to age', initial: true }
 		},
 
-		numberOfChildrenToAdopt: { type: Types.Number, label: 'number of children to adopt', initial: true },
-		siblingContact: { type: Types.Boolean, label: 'contact with siblings', initial: true },
-		birthFamilyContact: { type: Types.Boolean, label: 'contact with birth parents', initial: true },
-		
-		havePetsInHome: { type: Types.Boolean, label: 'have pets in the home', initial: true },
-		
+		minNumberOfChildrenToAdopt: { type: Types.Number, label: 'minimum number of children to adopt', initial: true },
+		maxNumberOfChildrenToAdopt: { type: Types.Number, label: 'maximum number of children to adopt', initial: true },
+		siblingContact: { type: Types.Boolean, label: 'contact with siblings', default: false, initial: true },
+		birthFamilyContact: { type: Types.Boolean, label: 'contact with birth parents', default: false, initial: true },
+
+		havePetsInHome: { type: Types.Boolean, label: 'have pets in the home', default: false, initial: true },
+
 		race: { type: Types.Relationship, label: 'race', ref: 'Race', many: true, initial: true },
 
 		maxNeeds: {
@@ -311,7 +314,7 @@ Family.add( 'Permissions', {
 
 }, 'Registration Details', {
 
-	registeredViaWebsite: { type: Types.Boolean, label: 'registered through the website', noedit: true }
+	registeredViaWebsite: { type: Types.Boolean, label: 'registered through the website', default: false, noedit: true }
 
 }, {
 
@@ -348,6 +351,8 @@ Family.schema.post( 'init', function() {
 // Pre Save
 Family.schema.pre( 'save', function( next ) {
 	'use strict';
+	// trim whitespace characters from any type.Text fields
+	this.trimTextFields();
 	// update the homestudy verified date
 	this.setHomestudyVerifiedDate();
 	// create a full name for each contact based on their first, middle, and last names
@@ -358,7 +363,7 @@ Family.schema.pre( 'save', function( next ) {
 	this.setFileName();
 	// all user types that can log in derive from the User model, this allows us to identify users better
 	this.setUserType();
-	
+
 	// there are two fields containing the city, depending on whether the family is in MA or not.  Save the value to a common field for display
 	const displayCityUpdated = this.setDisplayCity();
 	// attempt to update the no-edit region field
@@ -377,15 +382,15 @@ Family.schema.pre( 'save', function( next ) {
 		// execute the following regardless of whether the promises were resolved or rejected
 		// TODO: this should be replaced with ES6 Promise.prototype.finally() once it's finalized, assuming we can update to the latest version of Node if we upgrade Keystone
 		.then( () => {
-
-			// set a compound label consisting of the display name and registration number to enable admins to differentiate families in relationship fields
+			// create a unique label for each family based on their display names and their registration number
 			this.setDisplayNameAndRegistrationLabel();
+
 			next();
 		});
 });
 
 Family.schema.post( 'save', function() {
-	
+
 	// we need this id in case the family was created via the website and updatedBy is empty
 	const websiteBotFetched = UserServiceMiddleware.getUserByFullName( 'Website Bot', 'admin' );
 
@@ -443,8 +448,155 @@ Family.schema.methods.setDisplayName = function() {
 Family.schema.methods.setDisplayNameAndRegistrationLabel = function() {
 	'use strict';
 
-	// combine the display name and registration number to create a unique label for all Family models
-	this.displayNameAndRegistration = `${ this.displayName } - ${ this.registrationNumber }`;
+	// if a registration number exists, add it to the displayNameAndRegistration label
+	let registrationNumberString = this.registrationNumber ? ` - ${ this.registrationNumber }` : '';
+
+	// combine the display name and registration number  to create a unique label for all Family models
+	this.displayNameAndRegistration = `${ this.displayName }${ registrationNumberString }`;
+};
+
+/* text fields don't automatically trim(), this is to ensure no leading or trailing whitespace gets saved into url, text, or text area fields */
+Family.schema.methods.trimTextFields = function() {
+
+	if( this.get( 'displayName' ) ) {
+		this.set( 'displayName', this.get( 'displayName' ).trim() );
+	}
+
+	if( this.get( 'displayNameAndRegistration' ) ) {
+		this.set( 'displayNameAndRegistration', this.get( 'displayNameAndRegistration' ).trim() );
+	}
+
+	if( this.get( 'contact1.name.first' ) ) {
+		this.set( 'contact1.name.first', this.get( 'contact1.name.first' ).trim() );
+	}
+
+	if( this.get( 'contact1.name.last' ) ) {
+		this.set( 'contact1.name.last', this.get( 'contact1.name.last' ).trim() );
+	}
+
+	if( this.get( 'contact1.name.full' ) ) {
+		this.set( 'contact1.name.full', this.get( 'contact1.name.full' ).trim() );
+	}
+
+	if( this.get( 'contact1.phone.mobile' ) ) {
+		this.set( 'contact1.phone.mobile', this.get( 'contact1.phone.mobile' ).trim() );
+	}
+
+	if( this.get( 'contact1.phone.work' ) ) {
+		this.set( 'contact1.phone.work', this.get( 'contact1.phone.work' ).trim() );
+	}
+
+	if( this.get( 'contact1.email' ) ) {
+		this.set( 'contact1.email', this.get( 'contact1.email' ).trim() );
+	}
+
+	if( this.get( 'contact1.occupation' ) ) {
+		this.set( 'contact1.occupation', this.get( 'contact1.occupation' ).trim() );
+	}
+
+	if( this.get( 'contact2.name.first' ) ) {
+		this.set( 'contact2.name.first', this.get( 'contact2.name.first' ).trim() );
+	}
+
+	if( this.get( 'contact2.name.last' ) ) {
+		this.set( 'contact2.name.last', this.get( 'contact2.name.last' ).trim() );
+	}
+
+	if( this.get( 'contact2.name.full' ) ) {
+		this.set( 'contact2.name.full', this.get( 'contact2.name.full' ).trim() );
+	}
+
+	if( this.get( 'contact2.phone.mobile' ) ) {
+		this.set( 'contact2.phone.mobile', this.get( 'contact2.phone.mobile' ).trim() );
+	}
+
+	if( this.get( 'contact2.phone.work' ) ) {
+		this.set( 'contact2.phone.work', this.get( 'contact2.phone.work' ).trim() );
+	}
+
+	if( this.get( 'contact2.email' ) ) {
+		this.set( 'contact2.email', this.get( 'contact2.email' ).trim() );
+	}
+
+	if( this.get( 'contact2.occupation' ) ) {
+		this.set( 'contact2.occupation', this.get( 'contact2.occupation' ).trim() );
+	}
+
+	if( this.get( 'address.street1' ) ) {
+		this.set( 'address.street1', this.get( 'address.street1' ).trim() );
+	}
+
+	if( this.get( 'address.street2' ) ) {
+		this.set( 'address.street2', this.get( 'address.street2' ).trim() );
+	}
+
+	if( this.get( 'address.cityText' ) ) {
+		this.set( 'address.cityText', this.get( 'address.cityText' ).trim() );
+	}
+
+	if( this.get( 'address.displayCity' ) ) {
+		this.set( 'address.displayCity', this.get( 'address.displayCity' ).trim() );
+	}
+
+	if( this.get( 'address.zipCode' ) ) {
+		this.set( 'address.zipCode', this.get( 'address.zipCode' ).trim() );
+	}
+
+	if( this.get( 'address.homePhone' ) ) {
+		this.set( 'address.homePhone', this.get( 'address.homePhone' ).trim() );
+	}
+
+	if( this.get( 'child1.name' ) ) {
+		this.set( 'child1.name', this.get( 'child1.name' ).trim() );
+	}
+
+	if( this.get( 'child2.name' ) ) {
+		this.set( 'child2.name', this.get( 'child2.name' ).trim() );
+	}
+
+	if( this.get( 'child3.name' ) ) {
+		this.set( 'child3.name', this.get( 'child3.name' ).trim() );
+	}
+
+	if( this.get( 'child4.name' ) ) {
+		this.set( 'child4.name', this.get( 'child4.name' ).trim() );
+	}
+
+	if( this.get( 'child5.name' ) ) {
+		this.set( 'child5.name', this.get( 'child5.name' ).trim() );
+	}
+
+	if( this.get( 'child6.name' ) ) {
+		this.set( 'child6.name', this.get( 'child6.name' ).trim() );
+	}
+
+	if( this.get( 'child7.name' ) ) {
+		this.set( 'child7.name', this.get( 'child7.name' ).trim() );
+	}
+
+	if( this.get( 'child8.name' ) ) {
+		this.set( 'child8.name', this.get( 'child8.name' ).trim() );
+	}
+
+	if( this.get( 'otherAdultsInHome.relationships' ) ) {
+		this.set( 'otherAdultsInHome.relationships', this.get( 'otherAdultsInHome.relationships' ).trim() );
+	}
+
+	if( this.get( 'homestudy.summary' ) ) {
+		this.set( 'homestudy.summary', this.get( 'homestudy.summary' ).trim() );
+	}
+
+	if( this.get( 'socialWorkerText' ) ) {
+		this.set( 'socialWorkerText', this.get( 'socialWorkerText' ).trim() );
+	}
+
+	if( this.get( 'infoPacket.notes' ) ) {
+		this.set( 'infoPacket.notes', this.get( 'infoPacket.notes' ).trim() );
+	}
+
+	if( this.get( 'heardAboutMAREOther' ) ) {
+		this.set( 'heardAboutMAREOther', this.get( 'heardAboutMAREOther' ).trim() );
+	}
 };
 
 Family.schema.methods.setHomestudyVerifiedDate = function() {
@@ -510,8 +662,8 @@ Family.schema.methods.setDisplayCity = function() {
 				.catch( err => {
 					// log the error for debugging purposes
 					console.error( `display city could not be updated for family ${ this.displayName } ( registration number: ${ this.registrationNumber } ) - ${ err }` );
-					// reject the promise with the error
-					reject();
+					// resolve the promise so that the Promise.all() in the pre-save hook does not fail
+					resolve();
 				});
 		}
 	});
@@ -540,7 +692,7 @@ Family.schema.methods.updateRegion = function() {
 		// if the agency is outside MA
 		if( this.address.isOutsideMassachusetts ) {
 			// fetch the region model with the name 'out of state'
-			const fetchRegion = ListServiceMiddleware.getRegionByName( 'out of state' );
+			const fetchRegion = ListServiceMiddleware.getRegionByName( 'Out of state' );
 			// if the region was fetched without error
 			fetchRegion
 				.then( region => {
@@ -553,8 +705,8 @@ Family.schema.methods.updateRegion = function() {
 				.catch( err => {
 					// log the error for debugging purposes
 					console.error( `region could not be updated for family ${ this.displayName } ( registration number: ${ this.registrationNumber } ) - ${ err }` );
-					// reject the promise with the error
-					reject();
+					// resolve the promise so that the Promise.all() in the pre-save hook does not fail
+					resolve();
 				});
 		// otherwise, if the agency is in MA
 		} else {
@@ -572,8 +724,8 @@ Family.schema.methods.updateRegion = function() {
 				.catch( err => {
 					// log the error for debugging purposes
 					console.error( `region could not be updated for family ${ this.displayName } ( registration number: ${ this.registrationNumber } ) - ${ err }` );
-					// reject the promise with the error
-					reject();
+					// resolve the promise so that the Promise.all() in the pre-save hook does not fail
+					resolve();
 				});
 		}
 	});
@@ -583,13 +735,20 @@ Family.schema.methods.setGalleryViewingPermissions = function() {
 	'use strict';
 
 	return new Promise( ( resolve, reject ) => {
+		// if the user can view all children override checkbox is checked
+		if( this.permissions.canViewAllChildrenOverride ) {
+			// disregard all other checks and all the user to view all children in the gallery
+			this.permissions.canViewAllChildren = true;
+			// resolve the promise and prevent further execution in this function
+			return resolve();
+		}
 		// fetch the state model saved for the agency
 		const fetchState = ListServiceMiddleware.getStateById( this.address.state );
 		// if the state was fetched without error
 		fetchState
-			.then( state => { // TODO: DO WE NEED TO CHECK TO SEE IF THEY'RE ACTIVE?????? // TODO: SHOULD WE ADD PERMISSIONS TO HANDLE THE EDGE CASES
+			.then( state => {
 				// if the family has a verified homestudy and lives in a New England state
-				if( this.permissions.isHomestudyVerified && [ 'MA', 'NH', 'CT', 'ME', 'VT', 'RI', 'NY' ].includes( state.abbreviation ) ) {
+				if( state && this.permissions.isHomestudyVerified && [ 'MA', 'NH', 'CT', 'ME', 'VT', 'RI', 'NY' ].includes( state.abbreviation ) ) {
 					// allow them to view all children in the gallery
 					this.permissions.canViewAllChildren = true;
 				// otherwise
@@ -602,10 +761,12 @@ Family.schema.methods.setGalleryViewingPermissions = function() {
 			})
 			// if there was an error fetching the state
 			.catch( err => {
+				// allow them to view only unrestricted children in the gallery
+				this.permissions.canViewAllChildren = false;
 				// log the error for debugging purposes
-				console.error( `gallery viewing permissions could not be updated for family ${ this.displayName } ( registration number: ${ this.registrationNumber } ) - ${ err }` );
-				// reject the promise with the error
-				reject();
+				console.error( `gallery viewing permissions restricted by default for family ${ this.displayName } ( registration number: ${ this.registrationNumber } ) - ${ err }` );
+				// resolve the promise so that the Promise.all() in the pre-save hook does not fail
+				resolve();
 			});
 	});
 };
@@ -620,6 +781,7 @@ Family.schema.methods.setRegistrationNumber = function() {
 		// if the registration number has not been set before
 		} else {
 			// get the maximum registration number across all families
+			// TODO: combine this with Child service getMaxRegistrationNumber
 			const fetchMaxRegistrationNumber = FamilyServiceMiddleware.getMaxRegistrationNumber();
 			// once the value has been fetched
 			fetchMaxRegistrationNumber
@@ -634,8 +796,8 @@ Family.schema.methods.setRegistrationNumber = function() {
 				.catch( err => {
 					// log the error for debugging purposes
 					console.error( `registration number could not be updated for family ${ this.displayName } ( registration number: ${ this.registrationNumber } ) - ${ err }` );
-					// reject the promise with the error
-					reject();
+					// resolve the promise so that the Promise.all() in the pre-save hook does not fail
+					resolve();
 				});
 		}
 	});
@@ -654,14 +816,17 @@ Family.schema.methods.setChangeHistory = function setChangeHistory() {
 		const changeHistory = new FamilyHistory.model({
 			family		: this,
 			date		: Date.now(),
+			summary		: '',
 			changes		: '',
 			modifiedBy	: this.updatedBy
 		});
 
 		// if the model is being saved for the first time
 		if( !model._original ) {
+			// set the summary information for the change history record
+			changeHistory.summary = 'record created';
 			// set the text for the change history record
-			changeHistory.changes = 'record created';
+			changeHistory.changes = '<p>record created</p>';
 			// save the change history record
 			changeHistory.save( () => {
 				// if the record saved successfully, resolve the promise
@@ -1278,6 +1443,7 @@ Family.schema.methods.setChangeHistory = function setChangeHistory() {
 				},
 				done => {
 					ChangeHistoryMiddleware.checkFieldForChanges({
+												parent: 'matchingPreferences',
 												name: 'havePetsInHome',
 												label: 'have pets in the home',
 												type: 'boolean' }, model, modelBefore, changeHistory, done);
@@ -1602,8 +1768,15 @@ Family.schema.methods.setChangeHistory = function setChangeHistory() {
 				done => {
 					ChangeHistoryMiddleware.checkFieldForChanges({
 												parent: 'matchingPreferences',
-												name: 'numberOfChildrenToAdopt',
-												label: 'matching preference - number of children to adopt',
+												name: 'minNumberOfChildrenToAdopt',
+												label: 'matching preference - minimum number of children to adopt',
+												type: 'number' }, model, modelBefore, changeHistory, done);
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												parent: 'matchingPreferences',
+												name: 'maxNumberOfChildrenToAdopt',
+												label: 'matching preference - maximum number of children to adopt',
 												type: 'number' }, model, modelBefore, changeHistory, done);
 				},
 				done => {

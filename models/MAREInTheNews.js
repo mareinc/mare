@@ -15,9 +15,7 @@ MAREInTheNews.add({
 	url: { type: Types.Url, label: 'url', noedit: true },
 	subHeading: { type: Types.Text, label: 'sub-heading', initial: true },
 	content: { type: Types.Html, wysiwyg: true, initial: true },
-	image: { type: Types.CloudinaryImage, note: 'needed to display in the sidebar, MARE in the news page, and the home page', folder: 'mare-in-the-news/', select: true, selectPrefix: 'mare-in-the-news/', publicID: 'fileName', autoCleanup: true },
-	imageFeatured: { type: Types.Url, hidden: true },
-	imageSidebar: { type: Types.Url, hidden: true },
+	image: { type: Types.CloudinaryImage, note: 'needed to display in the sidebar, MARE in the news page, and the home page', folder: `${ process.env.CLOUDINARY_DIRECTORY }/mare-in-the-news/`, select: true, selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/mare-in-the-news/`, publicID: 'fileName', autoCleanup: true },
 	video: { type: Types.Url, label: 'video', initial: true }
 
 /* Container for all system fields (add a heading if any are meant to be visible through the admin UI) */
@@ -43,12 +41,16 @@ MAREInTheNews.schema.statics.findRandom = function( callback ) {
 	}.bind( this ) );
 };
 
+MAREInTheNews.schema.virtual( 'hasImage' ).get( function() {
+	'use strict';
+
+	return this.image.exists;
+});
+
 // Pre Save
 MAREInTheNews.schema.pre( 'save', function(next) {
 	'use strict';
 
-	this.imageFeatured	= this._.image.thumbnail( 168, 168, { quality: 80 } );
-	this.imageSidebar	= this._.image.thumbnail( 216, 196, { quality: 80 } );
 	this.url = '/mare-in-the-news/' + this.key;
 
 	// Create an identifying name for file uploads
