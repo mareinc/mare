@@ -320,7 +320,7 @@ exports.sendNewSocialWorkerFamilyRegistrationNotificationEmailToMARE = ( socialW
 			key: 'number of children currently in home',
 			value: family.numberOfChildren
 		});
-		
+
 		const numberOfChildrenInHome = family.numberOfChildren === '8+' ?
 										8 :
 										parseInt( family.numberOfChildren, 10 );
@@ -525,7 +525,7 @@ exports.sendNewSocialWorkerFamilyRegistrationNotificationEmailToMARE = ( socialW
 			socialWorkerName,
 			familyData,
 			additionalFamilyData
-			
+
 		}, ( err, message ) => {
 			// if there was an error sending the email
 			if( err ) {
@@ -546,7 +546,7 @@ exports.sendNewSocialWorkerFamilyRegistrationNotificationEmailToMARE = ( socialW
 };
 
 // TODO: the bulk of this function is repeated in the function above as well as in emails_register.js.  It should be consolodated to keep it DRY
-exports.sendNewSocialWorkerFamilyRegistrationNotificationEmailToSocialWorker = ( socialWorkerName, rawFamilyData, family, registrationStaffContact, host ) => {
+exports.sendNewSocialWorkerFamilyRegistrationNotificationEmailToSocialWorker = ( socialWorkerName, rawFamilyData, family, socialWorkerEmail, host ) => {
 
 	return new Promise( ( resolve, reject ) => {
 		// if sending of the email is not currently allowed
@@ -555,8 +555,8 @@ exports.sendNewSocialWorkerFamilyRegistrationNotificationEmailToSocialWorker = (
 			return reject( `sending of the email is disabled` );
 		}
 
-		if( !registrationStaffContact ) {
-			return reject( `no staff contact was provided` );
+		if( !socialWorkerEmail ) {
+			return reject( `no social worker email was provided` );
 		}
 		// arrays was used instead of a Maps because Mustache templates apparently can't handle Maps
 		let familyData = [],
@@ -864,7 +864,7 @@ exports.sendNewSocialWorkerFamilyRegistrationNotificationEmailToSocialWorker = (
 			key: 'number of children currently in home',
 			value: family.numberOfChildren
 		});
-		
+
 		const numberOfChildrenInHome = family.numberOfChildren === '8+' ?
 										8 :
 										parseInt( family.numberOfChildren, 10 );
@@ -1060,7 +1060,7 @@ exports.sendNewSocialWorkerFamilyRegistrationNotificationEmailToSocialWorker = (
 			templateEngine 	: require( 'handlebars' ),
 			templateName 	: 'social-worker-new-family-notification-to-social-worker'
 		}).send({
-			to				: registrationStaffContact.email,
+			to				: socialWorkerEmail,
 			from: {
 				name 		: 'MARE',
 				email 		: 'admin@adoptions.io'
@@ -1069,7 +1069,7 @@ exports.sendNewSocialWorkerFamilyRegistrationNotificationEmailToSocialWorker = (
 			familyName		: family.displayName,
 			familyData,
 			additionalFamilyData
-			
+
 		}, ( err, message ) => {
 			// if there was an error sending the email
 			if( err ) {
@@ -1090,7 +1090,7 @@ exports.sendNewSocialWorkerFamilyRegistrationNotificationEmailToSocialWorker = (
 };
 
 exports.sendNewSocialWorkerFamilyRegistrationNotificationEmailToFamily = ( rawFamilyData, family, registrationStaffContact, host, verificationCode ) => {
-	
+
 	return new Promise( ( resolve, reject ) => {
 		// if sending of the email is not currently allowed
 		if( process.env.SEND_SOCIAL_WORKER_FAMILY_REGISTRATION_EMAILS_TO_FAMILY !== 'true' ) {
