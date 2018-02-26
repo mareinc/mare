@@ -76,8 +76,8 @@ exports.submitQuestion = function submitQuestion( req, res, next ) {
 		.then( () => {
 			// create a flash message to notify the user of the success
 			req.flash( 'success', {
-				title: `Your question has been submitted`,
-				detail: `You should expect a response from MARE within the next 2 business days` } );
+				title: `Your question has been received.`,
+				detail: `You should expect a response from MARE within 2 business days.` } );
 		})
 		// if there was an error sending the email to MARE staff
 		.catch( err => {
@@ -86,7 +86,7 @@ exports.submitQuestion = function submitQuestion( req, res, next ) {
 			// create a flash message to notify the user of the error
 			req.flash( 'error', {
 				title: `There was an error submitting your question`,
-				detail: `If this error persists, please notify MARE` } );
+				detail: `If this error persists, please notify MARE at <a href="mailto:web@mareinc.org">web@mareinc.org</a>` } );
 		})
 		// redirect the user once finished
 		.then( () => {
