@@ -146,7 +146,7 @@ module.exports.createPlacementRecord = ( placement, pauseUntilSaved ) => {
 				disruptionDate				: placement.disruptionDate ? new Date( placement.disruptionDate ) : undefined,
 				// familyAgency				: agency ? agency.get( '_id' ) : undefined,
 				child						: child ? child.get( '_id' ) : undefined,
-				isUnregisteredFamily		: !!placement.familyId,
+				isUnregisteredFamily		: !placement.familyId,
 				family						: family ? family.get( '_id' ) : undefined,
 				familyDetails: {
 					name: placement.familyName,	
