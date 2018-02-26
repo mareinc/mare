@@ -36,7 +36,7 @@
 				// normalized donation amount ( represented in pennies )
 				amount: 0,
 				// frequency of the donation in months ( 0 represents a one-time donation )
-				// see plan_types in service_donation.js for more details 
+				// see plan_types in service_donation.js for more details
 				frequency: 0
 			};
 
@@ -72,13 +72,13 @@
 			$target.addClass( 'toggle-button--toggled' );
 
 			if( $buttonGroup.is( '[id=donation-amount-button-group]' ) ) {
-				
+
 				//remove $ from button text
 				this.donationData.setDonationAmount( Number( $target.data( 'value' ) ) );
 				this.clearDonationAmountInput();
 			}
 			else if( $buttonGroup.is( '[id=donation-duration-button-group]' ) ) {
-				
+
 				this.donationData.frequency = $target.data( 'donationInterval' );
 			}
 
@@ -152,12 +152,12 @@
 
 		// opens the stripe donation popup and sets the charge amount to match the current donation amount
 		openDonationPopup: function openDonationPopup() {
-			
+
 			// if the donation button is not disabled
 			if ( !this.$donateButton.hasClass( 'button--disabled' ) ) {
-				
+
 				// get donation amount from view-level scope
-				var donationAmount = this.donationData.amount; 
+				var donationAmount = this.donationData.amount;
 
 				// open the Stripe donation popup
 				this.StripeHandler.open({
@@ -206,25 +206,13 @@
 				// post the donation to the charge endpoint for payment processing
 				$.post( '/donate', data, function( responseData ) {
 
-					// remove any previously existing messages
-					$( '#flash-messages' ).remove();
-					
-					// ensure any message will be scrolled into view
-					$( 'html, body' ).scrollTop( 0 );
+					// handle success and error responses
+					if ( responseData.status === 'error' ||  responseData.status === 'success' ) {
 
-					// handle error responses
-					if ( responseData.status === 'error' ) {
-						
-						// display the error message to the user
-						$contentBody.prepend( responseData.message );
-						
-					// handle success responses
-					} else if ( responseData.status === 'success' ) {
-						
-						// display the success message to the user
-						$contentBody.prepend( responseData.message );
+						// display a flash message with the resulting status of the update action
+						mare.views.flashMessages.initializeAJAX( responseData.message );
 
-					// handle unexpected responses
+					// log unhandled responses
 					} else {
 
 						console.log( 'something went wrong, unhandled response' );
