@@ -104,10 +104,10 @@ Child.add('Display Options', {
 }, 'Agency Information', {
 
 	registeredBy: { type: Types.Select, label: 'registered by', options: 'unknown, adoption worker, recruitment worker', required: true, initial: true },
-	adoptionWorker: { type: Types.Relationship, label: 'adoption worker', ref: 'Social Worker', filters: { isActive: true }, initial: true },
+	adoptionWorker: { type: Types.Relationship, label: 'adoption worker', ref: 'Social Worker', initial: true },
 	adoptionWorkerAgency: { type: Types.Relationship, label: `adoption worker's agency`, ref: 'Agency', noedit: true },
 	adoptionWorkerAgencyRegion: { type: Types.Relationship, label: `adoption worker's region`, ref: 'Region', noedit: true },
-	recruitmentWorker: { type: Types.Relationship, label: 'recruitment worker', ref: 'Social Worker', filters: { isActive: true }, initial: true },
+	recruitmentWorker: { type: Types.Relationship, label: 'recruitment worker', ref: 'Social Worker', initial: true },
 	recruitmentWorkerAgency: { type: Types.Relationship, label: `recruitment worker's agency`, ref: 'Agency', noedit: true },
 	recruitmentWorkerAgencyRegion: { type: Types.Relationship, label: `recruitment worker's region`, ref: 'Region', noedit: true },
 

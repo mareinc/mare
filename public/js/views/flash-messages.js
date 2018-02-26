@@ -5,7 +5,7 @@
 		el: '#flash-messages',
 
 		events: {
-			'click .alert > div': 'dismissMessage'
+			'click .flash-message__close-button' : 'dismissMessage'
 		},
 
 		initialize: function() {
@@ -84,15 +84,28 @@
 		// remove a message when the user clicks the close button
 		dismissMessage: function( event ) {
 
-			// begin the slide-up transition to remove the message
-			$( event.currentTarget ).addClass( 'slide-up' );
+			// get the close button from the event
+			var $closeButton = $( event.currentTarget );
+
+			// fade out the close button
+			$closeButton.addClass( 'fade-out' );
+
+			// wait for the fade out animation to complete
+			$closeButton.on( 'animationend', function() {
+
+				// remove the animationend event listener
+				$closeButton.off( 'animationend' );
+
+				// begin the slide-up transition to remove the message
+				$closeButton.closest( '.alert__content' ).addClass( 'slide-up' );
+			});
 		},
 
 		// sets the max-height of each message dynamically based on its content
 		setMaxHeights: function() {
 
 			// get a list of all the messages on the page
-			var $messages = $( '.alert > div' );
+			var $messages = $( '.alert__content' );
 
 			// iterate over each message
 			$messages.each( function() {
@@ -104,16 +117,27 @@
 				// add a transitionend event listener that will fire when the message is done being removed
 				$message.on( 'transitionend', function( event ) {
 
+					// there is a bug in Safari that causes this transitionend handler to be called
+					// when the max-height property is initially set.  we can workaround this issue
+					// by ignoring any transitions that don't result in the max-height being set to zero
+
+					// TODO: implement a better workaround for this issue
+					// if the resulting height of the transtiion is not zero
+					if ( event.currentTarget.clientHeight !== 0 ) {
+						// prevent execution of the handler code
+						return;
+					}
+
 					// get the removed message from the event details
 					var $removedMessage = $( event.currentTarget );
 					// store a reference to the message container
-					var $messageContainer = $removedMessage.parent();
+					var $messageContainer = $removedMessage.closest( '.alert' );
 
 					// remove the message DOM and unbind all event listeners
 					$removedMessage.remove();
 
 					// check to see if the removed message was the last message in the container
-					if ( $messageContainer.children().length === 0 ) {
+					if ( $messageContainer.children( '.alert__content' ).length === 0 ) {
 
 						// if so, slide up the container padding
 						$messageContainer.addClass( 'slide-up-padding' );

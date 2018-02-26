@@ -93,9 +93,9 @@ exports.modifyWYSIWYGContent = ( object, content, options ) => {
 				// NOTE: this will fail when confronted with WYSIWYG content that already has ids/classes/attributes attached.  To handle
 				// more complex cases, this will need to be changed to a regular expression match
 				if( option.targetAll ) {
-					object[ content ] = object[ content ].replace( globalMatchString, `<${ option.element } class="${ option.classesToAdd }">`);
+					object[ content ] = object[ content ].replace( globalMatchString, `<${ option.element } class="${ option.classesToAdd }">` );
 				} else {
-					object[ content ] = object[ content ].replace( matchString, `<${ option.element } class="${ option.classesToAdd }">`);
+					object[ content ] = object[ content ].replace( matchString, `<${ option.element } class="${ option.classesToAdd }">` );
 				}
 
 				break;

@@ -17,6 +17,7 @@ Placement.add( 'Placement', {
 	constellation: { type: Types.Relationship, label: 'constellation', ref: 'Family Constellation', dependsOn: { isUnregisteredFamily: true }, initial: true },
 	race: { type: Types.Relationship, label: 'race', ref: 'Race', dependsOn: { isUnregisteredFamily: true }, many: true, initial: true },
 	source: { type: Types.Relationship, label: 'sources', ref: 'Source', filters: { isActive: true }, initial: true },
+	additionalSources: { type: Types.Relationship, label: 'additional sources', ref: 'Source', filters: { isActive: true }, many: true, initial: true },
 	notes: { type: Types.Textarea, label: 'notes', initial: true }
 
 }, 'Child', {
