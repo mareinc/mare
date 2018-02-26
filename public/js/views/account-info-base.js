@@ -93,21 +93,9 @@
 				success: function( responseData ) {
 
 					// display a flash message with the resulting status of the update action
-					mare.views.accountInfo.displayFlashMessage( responseData.flashMessage );
+					mare.views.flashMessages.initializeAJAX( responseData.flashMessage );
 				}
 			});
-		},
-
-		displayFlashMessage: function displayFlashMessage( flashMessageMarkup ) {
-
-			// remove any previously existing messages
-			$( '#flash-messages' ).remove();
-
-			// ensure any message will be scrolled into view
-			$( 'html, body' ).scrollTop( 0 );
-
-			// display the flash message to the user
-			$( '.content__body' ).first().prepend( flashMessageMarkup );
 		}
 	});
 }());

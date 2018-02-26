@@ -37,8 +37,8 @@ exports.checkFieldForChanges = ( field, model, modelBefore, changeHistory, done 
 
 	if( field.type === 'string' && ( !!fieldBefore || !!fieldAfter ) ) {
 
-		valueBefore = fieldBefore ? fieldBefore.toLowerCase() : '';
-		value = fieldAfter ? fieldAfter.toLowerCase() : '';
+		valueBefore = fieldBefore ? fieldBefore.toLowerCase().replace( /\s/g, '' ) : '';
+		value = fieldAfter ? fieldAfter.toLowerCase().replace( /\s/g, '' ) : '';
 
 		if( valueBefore !== value ) {
 			exports.addToHistoryEntry( valueBefore, value, field.label, field.type, changeHistory );
@@ -66,10 +66,7 @@ exports.checkFieldForChanges = ( field, model, modelBefore, changeHistory, done 
 
 	// Date.parse( null ) returns NaN, and NaN !== NaN, so the second check is needed
 	} else if( field.type === 'date' && ( fieldBefore || fieldAfter ) ) {
-		console.log( '!!!DATE CHANGE DETECTED!!!' );
-		console.log( `field updated: ${ field.name }` );
-		console.log( `old value: ${ fieldBefore }` );
-		console.log( `new value: ${ fieldAfter }` );
+		
 		// convert the values to nicely formatted dates
 		valueBeforeUTC = fieldBefore ? moment( fieldBefore ).utc() : '';
 		valueUTC = fieldAfter ? moment( fieldAfter ).utc() : '';
@@ -77,12 +74,7 @@ exports.checkFieldForChanges = ( field, model, modelBefore, changeHistory, done 
 		valueUTCFormatted = valueUTC.format( 'MM/DD/YYYY' );
 		valueBefore = fieldBefore ? moment( fieldBefore ).format( 'MM/DD/YYYY' ) : '';
 		value = fieldAfter ? moment( fieldAfter ).format( 'MM/DD/YYYY' ) : '';
-		console.log( `old value UTC: ${ valueBeforeUTC }` );
-		console.log( `new value UTC: ${ valueUTC }` );
-		console.log( `old value UTC formatted: ${ valueBeforeUTCFormatted }` );
-		console.log( `new value UTC formatted: ${ valueUTCFormatted }` );
-		console.log( `old value formatted: ${ valueBefore }` );
-		console.log( `new value formatted: ${ value }` );
+		
 		// not a part of the check above because Date.parse( fieldBefore ) !== Date.parse( fieldAfter ), even if they have the same date ( I think the milliseconds are appearing different )
 		if( valueBeforeUTCFormatted !== valueUTCFormatted ) {
 			exports.addToHistoryEntry( valueBefore, value, field.label, field.type, changeHistory );

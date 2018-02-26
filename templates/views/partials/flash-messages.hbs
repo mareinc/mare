@@ -1,38 +1,36 @@
-<!-- Flash messages allow you to display once-off status messages to users, e.g. form
-	validation errors, success messages, etc -->
-
-{{#if messages}}
-
 <div id="flash-messages" class="container">
 
-	{{#if messages.info}}
+	{{#if messages}}
 
-	<div class="alert alert-info">
-		{{{flashMessages messages.info}}}
-	</div>
+		{{#if messages.info}}
+
+		<div class="alert alert-info">
+			{{{flashMessages messages.info}}}
+		</div>
+
+		{{/if}}
+		{{#if messages.success}}
+
+		<div class="alert alert-success">
+			{{{flashMessages messages.success}}}
+		</div>
+
+		{{/if}}
+		{{#if messages.warning}}
+
+		<div class="alert alert-warning">
+			{{{flashMessages messages.warning}}}
+		</div>
+
+		{{/if}}
+		{{#if messages.error}}
+
+		<div class="alert alert-danger">
+			{{{flashMessages messages.error}}}
+		</div>
+
+		{{/if}}
 
 	{{/if}}
-	{{#if messages.success}}
 
-	<div class="alert alert-success">
-		{{{flashMessages messages.success}}}
-	</div>
-
-	{{/if}}
-	{{#if messages.warning}}
-
-	<div class="alert alert-warning">
-		{{{flashMessages messages.warning}}}
-	</div>
-
-	{{/if}}
-	{{#if messages.error}}
-
-	<div class="alert alert-danger">
-		{{{flashMessages messages.error}}}
-	</div>
-
-	{{/if}}
 </div>
-
-{{/if}}

@@ -23,5 +23,5 @@ InternalNotes.add( 'Target', {
 });
 
 // Define default columns in the admin interface and register the model
-InternalNotes.defaultColumns = 'date|10%, child|10%, family|10%, socialWorker|10% note|60%';
+InternalNotes.defaultColumns = 'date|10%, child|10%, family|10%, socialWorker|10%, note|50%';
 InternalNotes.register();

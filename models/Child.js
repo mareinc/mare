@@ -276,7 +276,6 @@ Child.schema.pre( 'save', function( next ) {
 	// if both groups have been changed
 	if ( hasSiblingsChanged && hasSiblingsToBePlacedWithChanged ) {
 		// revert the changes to the siblingsToBePlacedWith group
-		console.log( 'siblings and siblings to be placed with were changed simultaneously - reverting siblings to be placed with' );
 		this.siblingsToBePlacedWith = this._original.siblingsToBePlacedWith;
 		hasSiblingsToBePlacedWithChanged = false;
 	}
@@ -327,8 +326,6 @@ Child.schema.pre( 'save', function( next ) {
 });
 
 Child.schema.post( 'save', function() {
-
-	console.log( `entering post-save hook of child: ${ this.name.first } ${ this.name.last }` );
 
 	// if the siblings group has been changed
 	if ( this.checkSiblingsForChanges() ) {
@@ -752,8 +749,6 @@ Child.schema.methods.updateSiblingGroup = function() {
 	let siblingsAddedBySave = Array.from( siblingsBeforeSave.rightOuterJoin( siblingsAfterSave ) );
 	// create a set of all siblings removed from the original child by the save operation
 	let siblingsRemovedBySave = Array.from( siblingsBeforeSave.leftOuterJoin( siblingsAfterSave ) );
-	console.log( `siblings added by save ${ siblingsAddedBySave }` );
-	console.log( `siblings removed by save ${ siblingsRemovedBySave }` );
 
 	// create an updated representation of the sibling group based on the post-save state of the siblings array
 	let updatedSiblingGroup = siblingsArrayAfterSave;
@@ -761,10 +756,8 @@ Child.schema.methods.updateSiblingGroup = function() {
 	if ( updatedSiblingGroup.length > 0 ) {
 		// add the current child to the group ( because a child will not store itself in the siblings array )
 		updatedSiblingGroup.push( this._id.toString() );
-		console.log( `updated sibling group: ${ updatedSiblingGroup }` );
 		// determine which siblings were impacted by the update
 		let siblingsImpacted = updatedSiblingGroup.concat( siblingsRemovedBySave ).filter( siblingID => siblingID !== this._id.toString() );
-		console.log( `siblings impacted by save: ${ siblingsImpacted }` );
 
 		// for each sibling impacted
 		siblingsImpacted.forEach( siblingID => {
@@ -783,13 +776,10 @@ Child.schema.methods.updateSiblingGroup = function() {
 						// unlock the sibling after update is complete
 						saveLock.unlock( updatedChildID );
 					});
-			} else {
-				console.log( `attmpted to save locked child ${ siblingID }` );
 			}
 		});
 	// if the updated sibling group is empty this child was removed from a sibling group and should remove itself from any siblings remaining in that group
 	} else {
-		console.log( `${ this.name.first } ${ this.name.last } has no siblings, removing it from all previous siblings` );
 		// for each sibling that this child used to be a in a sibling group with
 		siblingsRemovedBySave.forEach( siblingID => {
 			// check to ensure that the sibling is not already in the process of being saved
@@ -807,8 +797,6 @@ Child.schema.methods.updateSiblingGroup = function() {
 						// unlock the sibling after update is complete
 						saveLock.unlock( updatedChildID );
 					});
-			} else {
-				console.log( `attmpted to save locked child ${ siblingID }` );
 			}
 		});
 	}
@@ -826,8 +814,6 @@ Child.schema.methods.updateSiblingsToBePlacedWithGroup = function() {
 	let siblingsToBePlacedWithAddedBySave = Array.from( siblingsToBePlacedWithBeforeSave.rightOuterJoin( siblingsToBePlacedWithAfterSave ) );
 	// create a set of all siblings to be placed with removed from the original child by the save operation
 	let siblingsToBePlacedWithRemovedBySave = Array.from( siblingsToBePlacedWithBeforeSave.leftOuterJoin( siblingsToBePlacedWithAfterSave ) );
-	console.log( `siblings to be placed with added by save ${ siblingsToBePlacedWithAddedBySave }` );
-	console.log( `siblings to be placed with removed by save ${ siblingsToBePlacedWithRemovedBySave }` );
 
 	// create an updated representation of the siblings to be placed with group based on the post-save state of the siblings array
 	let updatedSiblingsToBePlacedWithGroup = siblingsToBePlacedWithArrayAfterSave;
@@ -835,10 +821,8 @@ Child.schema.methods.updateSiblingsToBePlacedWithGroup = function() {
 	if ( updatedSiblingsToBePlacedWithGroup.length > 0 ) {
 		// add the current child to the group ( because a child will not store itself in the siblings array )
 		updatedSiblingsToBePlacedWithGroup.push( this._id.toString() );
-		console.log( `updated siblings to be placed with group: ${ updatedSiblingsToBePlacedWithGroup }` );
 		// determine which siblings to be placed with were impacted by the update
 		let siblingsToBePlacedWithImpacted = updatedSiblingsToBePlacedWithGroup.concat( siblingsToBePlacedWithRemovedBySave ).filter( siblingID => siblingID !== this._id.toString() );
-		console.log( `siblings to be placed with impacted by save: ${ siblingsToBePlacedWithImpacted }` );
 
 		// for each sibling to be placed with impacted
 		siblingsToBePlacedWithImpacted.forEach( siblingID => {
@@ -864,13 +848,10 @@ Child.schema.methods.updateSiblingsToBePlacedWithGroup = function() {
 						// unlock the sibling to be placed with after update is complete
 						saveLock.unlock( updatedChildID );
 					});
-			} else {
-				console.log( `attmpted to save locked child ${ siblingID }` );
 			}
 		});
 	// if the updated siblings to be placed with group is empty this child was removed from a siblings to be placed with group and should remove itself from any siblings to be placed with remaining in that group
 	} else {
-		console.log( `${ this.name.first } ${ this.name.last } has no siblings to be placed with, removing it from all previous siblings to be placed with` );
 		// for each sibling that this child used to be a in a siblings to be placed with group with
 		siblingsToBePlacedWithRemovedBySave.forEach( siblingID => {
 			// check to ensure that the sibling to be placed with is not already in the process of being saved
@@ -888,8 +869,6 @@ Child.schema.methods.updateSiblingsToBePlacedWithGroup = function() {
 						// unlock the sibling to be placed with after update is complete
 						saveLock.unlock( updatedChildID );
 					});
-			} else {
-				console.log( `attmpted to save locked child ${ siblingID }` );
 			}
 		});
 	}
@@ -988,8 +967,6 @@ Child.schema.methods.updateSiblingFields = function() {
 			}
 		}
 	], function() {
-
-		console.log( 'sibling information updated' );
 
 		done();
 	});
