@@ -654,7 +654,7 @@ exports.setInitialErrorMessages = ( req, isEmailValid, isEmailDuplicate, isPassw
 		flashMessages.appendFlashMessage({
 			messageType: flashMessages.MESSAGE_TYPES.ERROR,
 			title: `There was a problem creating your account`,
-			message: `The email address you're trying to use already exists in the system`
+			message: `The email you are trying to use already exists in the system. Please reset your password for this email address in order to gain access. If this error persists, please notify MARE at <a href="mailto:web@mareinc.org">web@mareinc.org</a>`
 		});
 	}
 
