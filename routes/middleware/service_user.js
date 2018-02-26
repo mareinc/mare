@@ -63,7 +63,7 @@ exports.checkUserActiveStatus = function( email, locals, done ) {
 				// exit the login process and let the user know their email or password is invalid
 				locals.userStatus = 'nonexistent';
 			// if the user exists but isn't active yet
-			} else if( user.isActive === false ) {
+			} else if( !user.isActive || user.isActive === false ) {
 				// exit the login process and let the user know their account isn't active yet
 				locals.userStatus = 'inactive';
 			// if the user exists and is active

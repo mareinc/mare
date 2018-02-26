@@ -135,14 +135,19 @@ exports.login = function( req, res, next ) {
 	], () =>{
 
 		if( locals.userStatus === 'nonexistent' ) {
+
 			req.flash( 'error', { title: 'Something went wrong',
 							  	  detail: 'Your username or password is incorrect, please try again' } );
+			
 			res.redirect( req.body.target || '/' );
 
 		} else if( locals.userStatus === 'inactive' ) {
 			// TODO: we need to figure out if they were once active, or change the message to handle that case as well
-			req.flash( 'error', { title: 'Something went wrong',
-							      detail: 'Your account is not active yet, you will receive an email when your account has been reviewed.' } );
+			req.flash( 'error', {
+				title: 'Something went wrong',
+				detail: 'The email you are trying to use already exists in the system.  Please reset your password for this email address in order to gain access.    If this error persists, please notify MARE at <a href="mailto:web@mareinc.org">web@mareinc.org</a>'
+			});
+
 			res.redirect( req.body.target || '/' );
 
 		} else if( locals.userStatus === 'active' ) {
@@ -203,7 +208,7 @@ exports.loginAjax = function loginAjax( req, res, next ) {
 				flashMessageMiddleware.appendFlashMessage({
 					messageType: flashMessageMiddleware.MESSAGE_TYPES.ERROR,
 					title: 'Something went wrong',
-					message: 'Your account is not active yet, you will receive an email what your account has been reviewed.'
+					message: 'The email you are trying to use already exists in the system.  Please reset your password for this email address in order to gain access.    If this error persists, please notify MARE at <a href="mailto:web@mareinc.org">web@mareinc.org</a>'
 				});
 
 				generateAndSendFailureMessage();
