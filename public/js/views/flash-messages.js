@@ -104,7 +104,11 @@
 				// add a transitionend event listener that will fire when the message is done being removed
 				$message.on( 'transitionend', function( event ) {
 
-					// TODO: implement a better workaround for this issue in Safari
+					// there is a bug in Safari that causes this transitionend handler to be called
+					// when the max-height property is initially set.  we can workaround this issue
+					// by ignoring any transitions that don't result in the max-height being set to zero
+
+					// TODO: implement a better workaround for this issue
 					// if the resulting height of the transtiion is not zero
 					if ( event.currentTarget.clientHeight !== 0 ) {
 						// prevent execution of the handler code
