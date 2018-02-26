@@ -104,6 +104,13 @@
 				// add a transitionend event listener that will fire when the message is done being removed
 				$message.on( 'transitionend', function( event ) {
 
+					// TODO: implement a better workaround for this issue in Safari
+					// if the resulting height of the transtiion is not zero
+					if ( event.currentTarget.clientHeight !== 0 ) {
+						// prevent execution of the handler code
+						return;
+					}
+
 					// get the removed message from the event details
 					var $removedMessage = $( event.currentTarget );
 					// store a reference to the message container
