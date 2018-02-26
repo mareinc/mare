@@ -29,8 +29,8 @@ exports.createInquiry = ( { inquiry, user } ) => {
 		let staffEmail = 'web@mareinc.org';
 
 		// begin any asynchronous actions we can to speed up processing
-		// fetch the email target model matching 'child inquiry'
-		const fetchEmailTarget = emailTargetService.getEmailTargetByName( 'child inquiry' );
+		// create a variable to hold the promise for fetching the email target
+		const fetchEmailTarget;
 		// fetch the relevant inquirer data to populate the email
 		const fetchInquirerData = extractInquirerData( user );
 		// create a variable to hold the promise for creating the inquiry
@@ -40,10 +40,14 @@ exports.createInquiry = ( { inquiry, user } ) => {
 		if( inquiry.interest === 'child info' ) {
 			// attempt to create a new child inquiry
 			createInquiry = saveChildInquiry( { inquiry, user } );
+			// fetch the email target for child inquiries
+			fetchEmailTarget = emailTargetService.getEmailTargetByName( 'child inquiry' );
 		// if we've received a general inquiry
 		} else if (inquiry.interest === 'general info' ) {
 			// attempt to create the new general inquiry
 			createInquiry = saveGeneralInquiry( { inquiry, user } );
+			// fetch the email target for child inquiries
+			fetchEmailTarget = emailTargetService.getEmailTargetByName( 'general inquiry' );
 		// otherwise, it's an unrecognized inquiry type and
 		} else {
 			// reject the promise with details of the error
