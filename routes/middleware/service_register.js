@@ -350,6 +350,8 @@ exports.saveSiteVisitor = user => {
 		// create a new site visitor model with the passed in data
 		let newUser = new SiteVisitor.model({
 
+			isActive					: true,
+
 			name: {
 				first					: user.firstName,
 				last					: user.lastName
@@ -400,6 +402,8 @@ exports.saveSocialWorker = user => {
 
 		const newUser = new SocialWorker.model({
 
+			isActive					: true,
+
 			name: {
 				first					: user.firstName,
 				last					: user.lastName
@@ -448,6 +452,8 @@ exports.saveFamily = user => {
 		const Family = keystone.list( 'Family' );
 
 		const newUser = new Family.model({
+
+			isActive							: true,
 
 			email								: user.email,
 			password							: user.password,

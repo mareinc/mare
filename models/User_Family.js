@@ -25,7 +25,7 @@ var Family = new keystone.List( 'Family', {
 // Create fields
 Family.add( 'Permissions', {
 
-	isActive: { type: Boolean, label: 'is active', default: true },
+	isActive: { type: Boolean, label: 'is active' },
 
 	permissions: {
 		isVerified: { type: Boolean, label: 'has a verified email address', default: false, noedit: true },
@@ -251,7 +251,7 @@ Family.add( 'Permissions', {
 
 }, 'Social Worker Information', {
 
-	socialWorker: { type: Types.Relationship, label: 'social worker', ref: 'Social Worker', filters: { isActive: true }, initial: true },
+	socialWorker: { type: Types.Relationship, label: 'social worker', ref: 'Social Worker', initial: true },
 	socialWorkerNotListed: { type: Types.Boolean, label: 'social worker isn\'t listed', default: false, initial: true },
 	socialWorkerText: { type: Types.Text, label: 'social worker', dependsOn: { socialWorkerNotListed: true }, initial: true }
 
