@@ -10,6 +10,8 @@ const keystone					= require( 'keystone' ),
 
 // create a map to hold all internal notes.  These are created here to be available to multiple functions below
 let internalNotes;
+// create a map to hold just the latest version of each note
+let internalNotesMap = new Map();
 // expose done to be available to all functions below
 let internalNotesImportComplete;
 // expose the array storing progress through the migration run
@@ -33,6 +35,8 @@ module.exports.importInternalNotes = ( req, res, done ) => {
 		.then( internalNotesArray => {
 			// store the internal notes in a variable accessible throughout this file
 			internalNotes = internalNotesArray.filter( internalNote => internalNote.field_change_summary.indexOf( 'Internal Notes' ) !== -1 );
+			// call the function to build the internal notes map
+			exports.buildInternalNotesMap();
 			// kick off the first run of our generator
 			internalNoteGenerator.next();
 		// if there was an error converting the internal notes file
@@ -43,11 +47,32 @@ module.exports.importInternalNotes = ( req, res, done ) => {
 		});
 };
 
+module.exports.buildInternalNotesMap = () => {
+	// load all placement sources
+	for( let internalNote of internalNotes ) {
+		// for each placement source, get the inquiry id
+		const childId = internalNote.chd_id;
+	 	// and use the id as a key, and add each placement source's _id in a key object
+		if( childId ) {
+
+			if( internalNotesMap.has( childId ) &&
+				parseInt( internalNotesMap.get( childId ).version, 10 ) < parseInt( internalNote.version_number, 10 ) ) {
+
+				internalNotesMap.set( childId, { version: internalNote.version_number, model: internalNote } );
+
+			} else if( !internalNotesMap.has( childId ) ) {
+				// create an entry containing a set with the one placement source
+				internalNotesMap.set( childId, { version: internalNote.version_number, model: internalNote } );
+			}
+		}
+	}
+};
+
 /* a generator to allow us to control the processing of each record */
 module.exports.generateInternalNotes = function* generateInternalNotes() {
 	
 	// create monitor variables to assess how many records we still need to process
-	let totalRecords		= internalNotes.length,
+	let totalRecords		= internalNotesMap.size,
 		remainingRecords 	= totalRecords,
 		batchCount			= 200, // number of records to be process simultaneously
 		internalNoteNumber	= 0; // keeps track of the current internal note group being processed.  Used for batch processing
@@ -55,14 +80,14 @@ module.exports.generateInternalNotes = function* generateInternalNotes() {
 	console.log( `creating ${ totalRecords } internal notes in the new system` );
 	
 	// loop through each internal note we need to create a record for, and extract the key / array pair
-	for( let internalNote of internalNotes ) {
+	for( let [ key, internalNote ] of internalNotesMap ) {
 		// increment the internalNoteNumber
 		internalNoteNumber++;
 		// if we've hit a multiple of batchCount, pause execution to let the current records process
 		if( internalNoteNumber % batchCount === 0 ) {
-			yield exports.createInternalNoteRecord( internalNote, true );
+			yield exports.createInternalNoteRecord( internalNote.model, true );
 		} else {
-			exports.createInternalNoteRecord( internalNote, false );
+			exports.createInternalNoteRecord( internalNote.model, false );
 		}
 		// decrement the counter keeping track of how many records we still need to process
 		remainingRecords--;
@@ -143,6 +168,7 @@ module.exports.createInternalNoteRecord = ( internalNote, pauseUntilSaved ) => {
 			});
 	// if the notes field is empty
 	} else {
+
 		if( pauseUntilSaved ) {
 			setTimeout( () => {
 				internalNoteGenerator.next();

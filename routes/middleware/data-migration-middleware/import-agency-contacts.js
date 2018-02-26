@@ -30,7 +30,7 @@ module.exports.appendAgencyContacts = ( req, res, done ) => {
 	agencyContactsLoaded.then( agencyContactsArray => {
 		// store the agency contacts in a variable accessible throughout this file
 		agencyContacts = agencyContactsArray;
-		// call the function to build the sibling map
+		// call the function to build the agency map
 		exports.buildAgencyMap();
 		// kick off the first run of our generator
 		agencyGenerator.next();
