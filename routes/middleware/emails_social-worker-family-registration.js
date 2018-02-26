@@ -369,7 +369,7 @@ exports.sendNewSocialWorkerFamilyRegistrationNotificationEmailToMARE = ( socialW
 			});
 		}
 
-		if( family.language.language ) {
+		if( family.language && family.language.language ) {
 			familyData.push( {
 				key: 'primary language',
 				value: family.language.language
@@ -913,7 +913,7 @@ exports.sendNewSocialWorkerFamilyRegistrationNotificationEmailToSocialWorker = (
 			});
 		}
 
-		if( family.language.language ) {
+		if( family.language && family.language.language ) {
 			familyData.push( {
 				key: 'primary language',
 				value: family.language.language
