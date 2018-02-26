@@ -35,9 +35,8 @@ module.exports.appendPlacementSources = ( req, res, done ) => {
 		// kick off the first run of our generator
 		placementSourceGenerator.next();
 	// if there was an error converting the placement sources file
-	}).catch( reason => {
-		console.error( `error processing placement sources` );
-		console.error( reason );
+	}).catch( err => {
+		console.error( `error processing placement sources - ${ err }` );
 		// aborting the import
 		return done();
 	});
@@ -83,9 +82,9 @@ module.exports.generatePlacementSources = function* generatePlacementSources() {
 		placementSourceNumber++;
 		// if we've hit a multiple of batchCount, pause execution to let the current records process
 		if( placementSourceNumber % batchCount === 0 ) {
-			yield exports.updatePlacementRecord( newPlacementSourcesMap[ key ], key, true );
+			yield exports.updatePlacementRecord( key, newPlacementSourcesMap[ key ], key, true );
 		} else {
-			exports.updatePlacementRecord( newPlacementSourcesMap[ key ], key, false );
+			exports.updatePlacementRecord( key, newPlacementSourcesMap[ key ], key, false );
 		}
 		// decrement the counter keeping track of how many records we still need to process
 		remainingRecords--;
@@ -117,37 +116,52 @@ module.exports.generatePlacementSources = function* generatePlacementSources() {
 };
 
 // a function paired with the generator to create a record and request the generator to process the next once finished
-module.exports.updatePlacementRecord = ( placementId, pauseUntilSaved ) => {
+module.exports.updatePlacementRecord = ( childId, sources, pauseUntilSaved ) => {
 
+	const sourcesArray = [ ...sources ];
+
+	const primarySource = sourcesArray[ sourcesArray.length - 1 ];
+
+	const additionalSources = sourcesArray.slice( 0, sourcesArray.length - 1 );
 	// fetch the placement
-	const placementLoaded = utilityModelFetch.getPlacementById( placementId );
+	const placementsLoaded = utilityModelFetch.getPlacementsByChildRegistrationNumber( childId );
+	// fetch the primary source
+	const primarySourceLoaded = utilityModelFetch.getSourceById( primarySource );
+	// fetch additional sources
+	const additionalSourcesLoaded = utilityModelFetch.getSourcesByIds( additionalSources );
 
-	Promise.all( [ inquiryLoaded, agencyLoaded ] )
+	Promise.all( [ placementLoaded, primarySourceLoaded, additionalSourcesLoaded ] )
 		.then( values => {
 
-			const [ inquiry, agency ] = values;
+			const [ placements, primarySource, additionalSources ] = values;
 
-			inquiry.agency = agency;
+			let placementPromises = [];
 
-			// save the updated inquiry record
-			inquiry.save( ( err, savedModel ) => {
-				// if we run into an error
-				if( err ) {
-					// store a reference to the entry that caused the error
-					importErrors.push( { id: inquiry.get( '_id' ), error: err } );
-				}
+			for( let placement of placements ) {
 
-				// fire off the next iteration of our generator after pausing
-				if( pauseUntilSaved ) {
-					setTimeout( () => {
-						placementSourceGenerator.next();
-					}, 1000 );
-				}
-			});
+				placement.source = primarySource;
+				placement.additionalSources = additionalSources;
+
+				// save the updated placement record
+				placement.save( ( err, savedModel ) => {
+					// if we run into an error
+					if( err ) {
+						// store a reference to the entry that caused the error
+						importErrors.push( { id: childId, error: err } );
+					}
+				});
+			}
+
+			// fire off the next iteration of our generator after pausing
+			if( pauseUntilSaved ) {
+				setTimeout( () => {
+					placementSourceGenerator.next();
+				}, 1000 );
+			}
 		})
 		.catch( err => {
 			// we can assume it was a reject from trying to fetch the city or town by an unrecognized name
-			importErrors.push( { id: inquiryId, error: `error adding agencies with ids ${ agencyIds } to inquiry with id ${ inquiryId } - ${ err }` } );
+			importErrors.push( { id: childId, error: `error adding sources with ids ${ sources } to placement - ${ err }` } );
 
 			if( pauseUntilSaved ) {
 				setTimeout( () => {

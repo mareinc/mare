@@ -13,7 +13,8 @@ const keystone			= require( 'keystone' ),
 	  Admin				= keystone.list( 'Admin' ),
 	  Inquiry			= keystone.list( 'Inquiry' ),
 	  MailingList		= keystone.list( 'Mailing List' ),
-	  OutsideContact	= keystone.list( 'Outside Contact' );
+	  OutsideContact	= keystone.list( 'Outside Contact' ),
+	  Placement			= keystone.list( 'Placement' );
 
 module.exports.getSourceById = id => {
 
@@ -37,6 +38,36 @@ module.exports.getSourceById = id => {
 				}
 				// otherwise, accept the promise and pass back the retrieved source
 				resolve( source );
+
+			}, err => {
+
+				reject( `error fetching source by oldId ${ id } - ${ err }` );
+			});
+	});
+};
+
+module.exports.getSourcesByIds = ids => {
+
+	return new Promise( ( resolve, reject ) => {
+
+		if( ids.length === 0 ) {
+			console.error( `no ids passed in to getSourcesById()` );
+
+			return resolve();
+		}
+
+		Source.model
+			.findOne()
+			.where( 'oldId', { $in: ids } )
+			.exec()
+			.then( sources => {
+				// if no source was found
+				if( sources.length === 0 ) {
+					// reject the promise with details about the error
+					reject( `no sources matching oldIds ${ ids } could be found` );
+				}
+				// otherwise, accept the promise and pass back the retrieved source
+				resolve( sources );
 
 			}, err => {
 
@@ -546,30 +577,30 @@ module.exports.getOutsideContactsByOldIds = ids => {
 		});
 };
 
-module.exports.getPlacementsByChildId = id => {
+module.exports.getPlacementsByChildRegistrationNumber = id => {
 	
 	return new Promise( ( resolve, reject ) => {
 	
 		if( !id ) {
-			return reject( `error fetching placement by id ${ id }` );
+			return reject( `error fetching placements by child id ${ id }` );
 		}
 
-		Inquiry.model
-			.findOne()
-			.where( 'oldId', id )
+		Placement.model
+			.find()
+			.where( 'child', id )
 			.exec()
-			.then( inquiry => {
-				// if no inquiry was found
-				if( !inquiry ) {
+			.then( Placement => {
+				// if no Placement was found
+				if( !Placement ) {
 					// and reject the promise
-					reject( `error fetching inquiry by oldId ${ id }` );
+					reject( `error fetching Placement by oldId ${ id }` );
 				}
-				// otherwise, accept the promise and pass back the retrieved inquiry
-				resolve( inquiry );
+				// otherwise, accept the promise and pass back the retrieved placement
+				resolve( placement );
 
 			}, err => {
 
-				reject( `error in getInquiryById() ${ err }` );
+				reject( `error in getPlacementsByChildRegistrationNumber() ${ err }` );
 			});
 	});
 };

@@ -150,7 +150,7 @@ exports = module.exports = ( req, res ) => {
 
 		// done => { registeredPlacementsImport.importPlacements( req, res, done ); },
 		// done => { unregisteredPlacementsImport.importPlacements( req, res, done ); },
-		// done => { placementSourcesImport.appendPlacementSources( req, res, done ); },
+		done => { placementSourcesImport.appendPlacementSources( req, res, done ); },
 		// done => { inquiriesImport.importInquiries( req, res, done ); },
 		// done => { inquiryAgenciesImport.appendInquiryAgencies( req, res, done ); },
 		// done => { inquiryChildrenImport.appendInquiryChildren( req, res, done ); },
@@ -159,7 +159,7 @@ exports = module.exports = ( req, res ) => {
 		// done => { eventAttendeeImport.appendEventAttendees( req, res, done ); },
 		// done => { mailingListSubscriptionsImport.importMailingListSubscriptions( req, res, done ); },
 		// done => { childInternalNotesImport.importInternalNotes( req, res, done ); },
-		done => { familyInternalNotesImport.importInternalNotes( req, res, done ); },
+		// done => { familyInternalNotesImport.importInternalNotes( req, res, done ); },
 		// file attachment  															// not done
 
 		
