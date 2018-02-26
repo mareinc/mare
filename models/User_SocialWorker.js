@@ -100,42 +100,42 @@ SocialWorker.schema.post( 'init', function() {
 });
 
 // Pre Save
-SocialWorker.schema.pre( 'save', function( next ) {
-	'use strict';
+// SocialWorker.schema.pre( 'save', function( next ) {
+// 	'use strict';
 
-	// trim whitespace characters from any type.Text fields
-	this.trimTextFields();
-	// create a full name for the social worker
-	this.setFullName();
-	// all user types that can log in derive from the User model, this allows us to identify users better
-	this.setUserType();
+// 	// trim whitespace characters from any type.Text fields
+// 	this.trimTextFields();
+// 	// create a full name for the social worker
+// 	this.setFullName();
+// 	// all user types that can log in derive from the User model, this allows us to identify users better
+// 	this.setUserType();
 	
-	 next();
-});
+// 	 next();
+// });
 
-SocialWorker.schema.post( 'save', function() {
+// SocialWorker.schema.post( 'save', function() {
 
-	// we need this id in case the family was created via the website and updatedBy is empty
-	const websiteBotFetched = UserServiceMiddleware.getUserByFullName( 'Website Bot', 'admin' );
+// 	// we need this id in case the family was created via the website and updatedBy is empty
+// 	const websiteBotFetched = UserServiceMiddleware.getUserByFullName( 'Website Bot', 'admin' );
 	
-	// if the bot user was fetched successfully
-	websiteBotFetched
-		.then( bot => {
-			// set the updatedBy field to the bot's _id if the field isn't already set ( meaning it was saved in the admin UI and we know the user based on their session info )
-			this.updatedBy = this.updatedBy || bot.get( '_id' );
-		})
-		// if there was an error fetching the bot user
-		.catch( err => {
-			// log it for debugging purposes
-			console.error( `Website Bot could not be fetched for social worker ${ this.name.full } - ${ err }` );
-		})
-		// execute the following regardless of whether the promises were resolved or rejected
-		// TODO: this should be replaced with ES6 Promise.prototype.finally() once it's finalized, assuming we can update to the latest version of Node if we upgrade Keystone
-		.then( () => {
-			// process change history
-			this.setChangeHistory();
-		});
-});
+// 	// if the bot user was fetched successfully
+// 	websiteBotFetched
+// 		.then( bot => {
+// 			// set the updatedBy field to the bot's _id if the field isn't already set ( meaning it was saved in the admin UI and we know the user based on their session info )
+// 			this.updatedBy = this.updatedBy || bot.get( '_id' );
+// 		})
+// 		// if there was an error fetching the bot user
+// 		.catch( err => {
+// 			// log it for debugging purposes
+// 			console.error( `Website Bot could not be fetched for social worker ${ this.name.full } - ${ err }` );
+// 		})
+// 		// execute the following regardless of whether the promises were resolved or rejected
+// 		// TODO: this should be replaced with ES6 Promise.prototype.finally() once it's finalized, assuming we can update to the latest version of Node if we upgrade Keystone
+// 		.then( () => {
+// 			// process change history
+// 			this.setChangeHistory();
+// 		});
+// });
 
 /* TODO: VERY IMPORTANT:  Need to fix this to provide the link to access the keystone admin panel again */
 /* 						  Changing names or reworking this file changed the check in node_modules/keystone/templates/views/signin.jade
