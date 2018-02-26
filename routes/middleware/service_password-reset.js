@@ -174,7 +174,9 @@ exports.changePassword = ( req, res ) => {
 				// update the password field for the user
 				user.set( 'password', password );
 				//reset the password token so that users cant use the link anymore
-				user.set( 'resetPasswordToken', '' ); 
+				user.set( 'resetPasswordToken', '' );
+				// set the user to active, allowing them to log in
+				user.set( 'isActive', true );
 
 				user.save( err => {
 					
