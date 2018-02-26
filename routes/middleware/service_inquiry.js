@@ -30,7 +30,7 @@ exports.createInquiry = ( { inquiry, user } ) => {
 
 		// begin any asynchronous actions we can to speed up processing
 		// create a variable to hold the promise for fetching the email target
-		const fetchEmailTarget;
+		let fetchEmailTarget;
 		// fetch the relevant inquirer data to populate the email
 		const fetchInquirerData = extractInquirerData( user );
 		// create a variable to hold the promise for creating the inquiry
