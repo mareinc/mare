@@ -168,7 +168,7 @@ exports.sendNewSiteVisitorNotificationEmailToMARE = ( user, registrationStaffCon
 };
 
 exports.sendNewSocialWorkerNotificationEmailToMARE = ( user, registrationStaffContact, mailingListNames ) => {
-	
+
 	return new Promise( ( resolve, reject ) => {
 		// if sending of the email is not currently allowed
 		if( process.env.SEND_NEW_SOCIAL_WORKER_REGISTERED_EMAILS_TO_MARE !== 'true' ) {
@@ -338,7 +338,7 @@ exports.sendNewSocialWorkerNotificationEmailToMARE = ( user, registrationStaffCo
 };
 
 exports.sendNewFamilyNotificationEmailToMARE = ( user, registrationStaffContact, mailingListNames ) => {
-	
+
 	return new Promise( ( resolve, reject ) => {
 		// if sending of the email is not currently allowed
 		if( process.env.SEND_NEW_FAMILY_REGISTERED_EMAILS_TO_MARE !== 'true' ) {
@@ -654,7 +654,7 @@ exports.sendNewFamilyNotificationEmailToMARE = ( user, registrationStaffContact,
 			key: 'number of children currently in home',
 			value: user.numberOfChildren
 		});
-		
+
 		const numberOfChildrenInHome = user.numberOfChildren === '8+' ?
 									   8 :
 									   parseInt( user.numberOfChildren, 10 );
@@ -703,7 +703,7 @@ exports.sendNewFamilyNotificationEmailToMARE = ( user, registrationStaffContact,
 			});
 		}
 
-		if( user.language.language ) {
+		if( user.language && user.language.language ) {
 			userData.push( {
 				key: 'primary language',
 				value: user.language.language
@@ -837,7 +837,7 @@ exports.sendNewFamilyNotificationEmailToMARE = ( user, registrationStaffContact,
 			subject			: `new ${ user.userType } registration`,
 			userType		: user.userType,
 			userData
-			
+
 		}, ( err, message ) => {
 			// if there was an error sending the email
 			if( err ) {
@@ -858,7 +858,7 @@ exports.sendNewFamilyNotificationEmailToMARE = ( user, registrationStaffContact,
 };
 
 exports.sendAccountVerificationEmailToUser = ( userEmail, userType, verificationCode, host ) => {
-	
+
 	return new Promise( ( resolve, reject ) => {
 		// if sending of the email is not currently allowed
 		if( process.env.SEND_ACCOUNT_VERIFICATION_EMAILS_TO_USER !== 'true' ) {
