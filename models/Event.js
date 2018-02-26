@@ -35,7 +35,7 @@ Event.add( 'General Information', {
 		zipCode: { type: Types.Text, label: 'zip code', initial: true }
 	},
 
-	contact: { type: Types.Relationship, label: 'contact', ref: 'Admin', filters: { isActive: true }, initial: true },
+	contact: { type: Types.Relationship, label: 'contact', ref: 'Admin', initial: true },
 	contactEmail: { type: Types.Email, label: 'contact person email', note: 'only fill out if no contact is selected', initial: true }
 
 }, 'Details', {
@@ -48,10 +48,10 @@ Event.add( 'General Information', {
 
 }, 'Attendees', {
 
-	staffAttendees: { type: Types.Relationship, label: 'staff', ref: 'Admin', filters: { isActive: true }, many: true, initial: true },
-	siteVisitorAttendees: { type: Types.Relationship, label: 'site visitors', ref: 'Site Visitor', filters: { isActive: true }, many: true, initial: true },
-	socialWorkerAttendees: { type: Types.Relationship, label: 'social workers', ref: 'Social Worker', filters: { isActive: true }, many: true, initial: true },
-	familyAttendees: { type: Types.Relationship, label: 'families', ref: 'Family', filters: { isActive: true }, many: true, initial: true },
+	staffAttendees: { type: Types.Relationship, label: 'staff', ref: 'Admin', many: true, initial: true },
+	siteVisitorAttendees: { type: Types.Relationship, label: 'site visitors', ref: 'Site Visitor', many: true, initial: true },
+	socialWorkerAttendees: { type: Types.Relationship, label: 'social workers', ref: 'Social Worker', many: true, initial: true },
+	familyAttendees: { type: Types.Relationship, label: 'families', ref: 'Family', many: true, initial: true },
 	childAttendees: { type: Types.Relationship, label: 'children', ref: 'Child', many: true, initial: true },
 	outsideContactAttendees: { type: Types.Relationship, label: 'volunteers', filters: { isVolunteer: true }, ref: 'Outside Contact', many: true, initial: true }
 
