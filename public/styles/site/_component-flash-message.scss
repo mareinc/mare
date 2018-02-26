@@ -42,10 +42,11 @@
 		}
 
 		// container for each individual message within a block of messages
-		div {
+		.alert__content {
 
 			display: flex;
-			flex-direction: column;
+			flex-direction: row;
+
 			padding: 0 15px;
 
 			// overflow needs to be hidden prevent text from overlapping during animations
@@ -62,27 +63,52 @@
 				max-height: 0 !important;
 			}
 
-			h4 {
-				margin: 15px 15px 7px 15px;
+			// alert message text content
+			.alert__content-message {
+
+				display: inline-flex;
+				flex-grow: 1;
+				flex-direction: column;
+
+				h4 {
+					margin: 15px 15px 7px 15px;
+				}
+
+				p {
+					margin: 0 15px;
+				}
+
 			}
 
-			p {
-				margin: 0 15px;
+			// close button
+			.flash-message__close-button {
+
+				display: inline-flex;
+				align-self: center;
+				margin-top: 7.5px;
+				padding: 15px;
+				font-size: 2em;
+				//height: 34px;
+				//width: 14px;
+				cursor: pointer;
+
+				// execute the fade out animation
+				&.fade-out {
+					animation: hideCloseButton 0.2s linear 0s 1 normal forwards;
+				}
 			}
 		}
 	}
 }
 
-// animation logic for whenever we implement a slide up animation for messages
-//animation: hideMessage 1s ease-out 0s 1 normal forwards;
-// @keyframes hideMessage {
+// fade out the close button
+@keyframes hideCloseButton {
 
-// 	from {
-// 		transform-origin: top;
-// 	}
+	from {
+		opacity: 1;
+	}
 
-// 	to {
-// 		transform-origin: top;
-// 		transform: scaleY( 0 );
-// 	}
-// }
+	to {
+		opacity: 0;
+	}
+}
