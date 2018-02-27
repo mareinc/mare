@@ -461,19 +461,23 @@ exports.getGalleryData = ( req, res, next ) => {
 			}
 		},
 		// TODO: these familyService functions are for social workers too, they belong in a page level service instead
-		done => { familyService.setGalleryPermissions( req, res ); done(); },
+		done => { 
+			familyService.setGalleryPermissions( req, res );
+			done();
+		},
 		done => { locals.canBookmarkChildren ? familyService.getBookmarkedChildren( req, res, done ) : done(); },
 		done => {
 			if( locals.bookmarkedChildren && locals.bookmarkedChildren.length > 0 ) {
+				// the bookmarked children come back as Objects, and need to be converted to strings for comparison
+				// TODO: think about doing the mapping inside the getBookmarkedChildren function
+				const bookmarkedChildrenArray = locals.bookmarkedChildren.map( childId => childId.toString() );
+				
 				// loop through each child model and set a property to show they've already been bookmarked by the user during templating
 				_.each( locals.allChildren, function( child ) {
 					// get the child id to compare with the array of currently bookmarked child ids
 					const childId = child.get( '_id' ).toString();
-					// the bookmarked children come back as Objects, and need to be converted to strings for comparison
-					// TODO: think about doing the mapping inside the getBookmarkedChildren function
-					const bookmarkedChildrenArray = locals.bookmarkedChildren.map( childId => childId.toString() );
 					// set the property for use during templating to show if the child has already been bookmarked
-					child.isBookmarked = locals.bookmarkedChildren.indexOf( childId ) !== -1;
+					child.isBookmarked = bookmarkedChildrenArray.indexOf( childId ) !== -1;
 				});
 
 				done();

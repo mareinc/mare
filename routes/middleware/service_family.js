@@ -72,7 +72,7 @@ exports.setGalleryPermissions = ( req, res ) => {
 	// variables to determine what features the user has access to.  Don't overwrite it if it's already set
 	const userType = locals.userType || ( req.user ? req.user.get( 'userType' ) : 'anonymous' );
 	// TODO: all of these checks should be virtuals on the models
-	locals.canBookmarkChildren = userType === userType === 'family';
+	locals.canBookmarkChildren = userType === 'family';
 	locals.canSearchForChildren = userType === 'social worker' || userType === 'family';
 	// TODO: canViewAllChildren and canSeeAdvancedOptions are the same check and should have a name that encompasses both
 	locals.canSeeAdvancedSearchOptions = userType === 'social worker' ||
@@ -187,7 +187,7 @@ exports.addSiblingGroupBookmark = ( req, res, next ) => {
 		done => { userService.getUserById( req, res, done, userId ); }
 	], () => {
 
-		const childIds				= locals.children.map( child => child.get( '_id' ).toString() );
+		const childIds				= locals.children.map( child => child.get( '_id' ) );
 		const bookmarkedSiblings	= locals.user.get( 'bookmarkedSiblings' );
 
 		// only add the bookmark if it hasn't already been saved.  This is unlikely, and would require a bad state in the system, but the check has been added for an extra layer of safety
@@ -220,7 +220,7 @@ exports.removeSiblingGroupBookmark = ( req, res, next ) => {
 		done => { userService.getUserById( req, res, done, userId ); }
 	], () => {
 
-		const childIds				= locals.children.map( child => child.get( '_id' ).toString() );
+		const childIds				= locals.children.map( child => child.get( '_id' ) );
 		const bookmarkedSiblings	= locals.user.get( 'bookmarkedSiblings' );
 
 		for( childId of childIds ) {
