@@ -248,120 +248,120 @@ Child.schema.post( 'init', function() {
 	}
 });
 
-Child.schema.pre( 'save', function( next ) {
-	'use strict';
-	// trim whitespace characters from any type.Text fields
-	this.trimTextFields();
-	// create a full name for the child based on their first, middle, and last names
-	this.setFullName();
-	// create an identifying name for file uploads
-	this.setFileName();
-	// if there are no siblings to be placed with, uncheck the box, otherwise check it
-	this.updateMustBePlacedWithSiblingsCheckbox();
-	// if there are no siblings to be placed with, clear the group bio
-	this.updateSiblingGroupInfo();
+// Child.schema.pre( 'save', function( next ) {
+// 	'use strict';
+// 	// trim whitespace characters from any type.Text fields
+// 	this.trimTextFields();
+// 	// create a full name for the child based on their first, middle, and last names
+// 	this.setFullName();
+// 	// create an identifying name for file uploads
+// 	this.setFileName();
+// 	// if there are no siblings to be placed with, uncheck the box, otherwise check it
+// 	this.updateMustBePlacedWithSiblingsCheckbox();
+// 	// if there are no siblings to be placed with, clear the group bio
+// 	this.updateSiblingGroupInfo();
 
-	// set the registration number for the family
-	const registrationNumberSet = this.setRegistrationNumber();
-	// set the noedit fields associated with the adoption worker's agency
-	const adoptionWorkerAgencyFieldsSet = this.setAdoptionWorkerAgencyFields();
-	// set the noedit fields associated with the recruitment worker's agency
-	const recruitmentWorkerAgencyFieldsSet = this.setRecruitmentWorkerAgencyFields();
+// 	// set the registration number for the family
+// 	const registrationNumberSet = this.setRegistrationNumber();
+// 	// set the noedit fields associated with the adoption worker's agency
+// 	const adoptionWorkerAgencyFieldsSet = this.setAdoptionWorkerAgencyFields();
+// 	// set the noedit fields associated with the recruitment worker's agency
+// 	const recruitmentWorkerAgencyFieldsSet = this.setRecruitmentWorkerAgencyFields();
 
 
-	// check to see if the siblings groups have been changed
-	let hasSiblingsChanged = this.checkSiblingsForChanges();
-	let hasSiblingsToBePlacedWithChanged = this.checkSiblingsToBePlacedWithForChanges();
-	// if both groups have been changed
-	if ( hasSiblingsChanged && hasSiblingsToBePlacedWithChanged ) {
-		// revert the changes to the siblingsToBePlacedWith group
-		this.siblingsToBePlacedWith = this._original.siblingsToBePlacedWith;
-		hasSiblingsToBePlacedWithChanged = false;
-	}
+// 	// check to see if the siblings groups have been changed
+// 	let hasSiblingsChanged = this.checkSiblingsForChanges();
+// 	let hasSiblingsToBePlacedWithChanged = this.checkSiblingsToBePlacedWithForChanges();
+// 	// if both groups have been changed
+// 	if ( hasSiblingsChanged && hasSiblingsToBePlacedWithChanged ) {
+// 		// revert the changes to the siblingsToBePlacedWith group
+// 		this.siblingsToBePlacedWith = this._original.siblingsToBePlacedWith;
+// 		hasSiblingsToBePlacedWithChanged = false;
+// 	}
 
-	// perform async processing
-	Promise
-		.resolve()
-		// process updates to sibling groups
-		.then( () => {
-			// if the siblings group has been updated
-			if ( hasSiblingsChanged ) {
-				// batch the siblings group updates
-				return ChildMiddleware.batchAllSiblingUpdates( this );
-			// if the siblings to be placed with group has been updated
-			} else if ( hasSiblingsToBePlacedWithChanged ) {
-				// batch the siblings to be placed with group updates
-				return ChildMiddleware.batchAllSiblingsToBePlacedWithUpdates( this );
-			// if neither group has been updated
-			} else {
-				// continue execution
-				return;
-			}
-		})
-		// catch and log any errors
-		.catch( error => {
-			// log any errors
-			console.error( error );
-		})
-		// perform the rest of the pre-save processing
-		.then( () => {
-			// create an identifying name for sibling group file uploads ( this has to run after sibling updates have been processed )
-			const siblingGroupFileNameSet = this.setSiblingGroupFileName();
+// 	// perform async processing
+// 	Promise
+// 		.resolve()
+// 		// process updates to sibling groups
+// 		.then( () => {
+// 			// if the siblings group has been updated
+// 			if ( hasSiblingsChanged ) {
+// 				// batch the siblings group updates
+// 				return ChildMiddleware.batchAllSiblingUpdates( this );
+// 			// if the siblings to be placed with group has been updated
+// 			} else if ( hasSiblingsToBePlacedWithChanged ) {
+// 				// batch the siblings to be placed with group updates
+// 				return ChildMiddleware.batchAllSiblingsToBePlacedWithUpdates( this );
+// 			// if neither group has been updated
+// 			} else {
+// 				// continue execution
+// 				return;
+// 			}
+// 		})
+// 		// catch and log any errors
+// 		.catch( error => {
+// 			// log any errors
+// 			console.error( error );
+// 		})
+// 		// perform the rest of the pre-save processing
+// 		.then( () => {
+// 			// create an identifying name for sibling group file uploads ( this has to run after sibling updates have been processed )
+// 			const siblingGroupFileNameSet = this.setSiblingGroupFileName();
 
-			return Promise.all( [ registrationNumberSet, adoptionWorkerAgencyFieldsSet, recruitmentWorkerAgencyFieldsSet, siblingGroupFileNameSet ] );
-		})
-		// if there was an error with any of the promises
-		.catch( err => {
-			// log it for debugging purposes
-			console.error( `child ${ this.name.full } ( registration number: ${ this.registrationNumber } ) saved with errors` );
-		})
-		// execute the following regardless of whether the promises were resolved or rejected
-		// TODO: this should be replaced with ES6 Promise.prototype.finally() once it's finalized, assuming we can update to the latest version of Node if we upgrade Keystone
-		.then( () => {
-			// create a unique label for each child based on their first & last names and their registration number
-			this.setFullNameAndRegistrationLabel();
-			next();
-		});
-});
+// 			return Promise.all( [ registrationNumberSet, adoptionWorkerAgencyFieldsSet, recruitmentWorkerAgencyFieldsSet, siblingGroupFileNameSet ] );
+// 		})
+// 		// if there was an error with any of the promises
+// 		.catch( err => {
+// 			// log it for debugging purposes
+// 			console.error( `child ${ this.name.full } ( registration number: ${ this.registrationNumber } ) saved with errors` );
+// 		})
+// 		// execute the following regardless of whether the promises were resolved or rejected
+// 		// TODO: this should be replaced with ES6 Promise.prototype.finally() once it's finalized, assuming we can update to the latest version of Node if we upgrade Keystone
+// 		.then( () => {
+// 			// create a unique label for each child based on their first & last names and their registration number
+// 			this.setFullNameAndRegistrationLabel();
+// 			next();
+// 		});
+// });
 
-Child.schema.post( 'save', function() {
+// Child.schema.post( 'save', function() {
 
-	// if the siblings group has been changed
-	if ( this.checkSiblingsForChanges() ) {
-		// process updates for other siblings in the group
-		this.updateSiblingGroup();
-	}
+// 	// if the siblings group has been changed
+// 	if ( this.checkSiblingsForChanges() ) {
+// 		// process updates for other siblings in the group
+// 		this.updateSiblingGroup();
+// 	}
 
-	// if the siblings group has not changed, try to apply siblings to be placed with changes to ensure group info is updated all siblings to be placed with
-	if ( !this.checkSiblingsForChanges() ) {
-		// process updates for other siblings in the group
-		this.updateSiblingsToBePlacedWithGroup();
-	}
+// 	// if the siblings group has not changed, try to apply siblings to be placed with changes to ensure group info is updated all siblings to be placed with
+// 	if ( !this.checkSiblingsForChanges() ) {
+// 		// process updates for other siblings in the group
+// 		this.updateSiblingsToBePlacedWithGroup();
+// 	}
 
-	// update saved bookmarks for families and social workers in the event of a status change or sibling group change
-	this.updateBookmarks();
+// 	// update saved bookmarks for families and social workers in the event of a status change or sibling group change
+// 	this.updateBookmarks();
 
-	// we need this id in case the family was created via the website and updatedBy is empty
-	const websiteBotFetched = UserServiceMiddleware.getUserByFullName( 'Website Bot', 'admin' );
+// 	// we need this id in case the family was created via the website and updatedBy is empty
+// 	const websiteBotFetched = UserServiceMiddleware.getUserByFullName( 'Website Bot', 'admin' );
 
-	// if the bot user was fetched successfully
-	websiteBotFetched
-		.then( bot => {
-			// set the updatedBy field to the bot's _id if the field isn't already set ( meaning it was saved in the admin UI and we know the user based on their session info )
-			this.updatedBy = this.updatedBy || bot.get( '_id' );
-		})
-		// if there was an error fetching the bot user
-		.catch( err => {
-			// log it for debugging purposes
-			console.error( `Website Bot could not be fetched for family ${ this.name.full } ( registration number: ${ this.registrationNumber } ) - ${ err }` );
-		})
-		// execute the following regardless of whether the promises were resolved or rejected
-		// TODO: this should be replaced with ES6 Promise.prototype.finally() once it's finalized, assuming we can update to the latest version of Node if we upgrade Keystone
-		.then( () => {
-			// process change history
-			this.setChangeHistory();
-		});
-});
+// 	// if the bot user was fetched successfully
+// 	websiteBotFetched
+// 		.then( bot => {
+// 			// set the updatedBy field to the bot's _id if the field isn't already set ( meaning it was saved in the admin UI and we know the user based on their session info )
+// 			this.updatedBy = this.updatedBy || bot.get( '_id' );
+// 		})
+// 		// if there was an error fetching the bot user
+// 		.catch( err => {
+// 			// log it for debugging purposes
+// 			console.error( `Website Bot could not be fetched for family ${ this.name.full } ( registration number: ${ this.registrationNumber } ) - ${ err }` );
+// 		})
+// 		// execute the following regardless of whether the promises were resolved or rejected
+// 		// TODO: this should be replaced with ES6 Promise.prototype.finally() once it's finalized, assuming we can update to the latest version of Node if we upgrade Keystone
+// 		.then( () => {
+// 			// process change history
+// 			this.setChangeHistory();
+// 		});
+// });
 
 /* text fields don't automatically trim(), this is to ensure no leading or trailing whitespace gets saved into url, text, or text area fields */
 Child.schema.methods.trimTextFields = function() {

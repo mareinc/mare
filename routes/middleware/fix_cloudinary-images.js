@@ -74,9 +74,11 @@ exports.fixCloudinaryImages = function( req, res, next ) {
 		// put the fear in developers who may not have read the directions
 		console.warn( `WARNING: YOU ARE ABOUT TO UPDATE EVERY MODEL IN THE DATABASE, ABORT IF THIS WASN'T WHAT YOU INTENDED` );
 		// ensure we are processing all models with Cloudinary images site-wide
-		targetModel.push( 'children', 'families', 'socialWorkers', 'siteVisitors', 'admin',
-						  'siteVisitors', 'events', 'featuredItems', 'mareInTheNews',
-						  'slideshow items', 'successStories');
+		// targetModel.push( 'children', 'families', 'socialWorkers', 'admin',
+		// 				  'siteVisitors', 'events', 'featuredItems', 'mareInTheNews',
+		// 				  'slideshow items', 'successStories' );
+		modelsToProcess.push( 'events', 'mareInTheNews',
+							  'slideshowItems', 'successStories' );
 	}
 	// kick off the first run of our generator
 	generator.next();
@@ -88,36 +90,43 @@ function* fixModels() {
 	let errors = [];
 	// loop through each model that's been specified as needing image field updates
 	for( let modelToProcess of modelsToProcess ) {
-		if( modelsToProcess === 'families' ) {
-			console.log( 'here' );
-		}
 		// set the page of models to fetch
 		let page = 1,
 			modelDetails = targetModels.get( modelToProcess );
 
 		while( page ) {
 			console.info( `saving ${ modelDetails.plural } ${ ( page - 1 ) * 100 } - ${ page * 100 }` );
+			// create an array to store all promises for saving children to allow batch processing
+			let childPromises = [];
 			// fetch the page of models, waiting to execute further code until we have a result
 			const fetchedModels = yield fetchModelsByPage( modelDetails.name, page );
 			// if there was an error fetching the page of models
 			if( fetchedModels.responseType === 'error' ) {
 				// log the error for debugging purposes
 				console.error( `error fetching page ${ page } of ${ modelDetails.plural } - ${ fetchedModels.error }` );
+				// allow processing to continue
+				page = fetchedModels.nextPage;
 			// if the page of models was fetched successfully
 			} else {
 				// loop through each of the returned models
 				for( let model of fetchedModels.results ) {
 					// save the model using the saveModel generator
-					const savedModel = yield saveModel( model );
-					// if there was an error
-					if( savedModel.responseType === 'error' ) {
-						// push it to the errors array for display after all families have saved
-						errors.push( savedModel.message );
-					}
+					const modelSaved = saveModel( model );
+					// store the promise in the array of promises to batch them all together
+					childPromises.push( modelSaved );
 				}
-			}
-			// increment the page to fetch for the next run, or set it to false if there are no more pages to fetch
-			page = fetchedModels.nextPage;
+				// pause processing of the next page until the Promise.all has had a chance to finish running
+				yield Promise.all( childPromises )
+					// if there was an error saving any children, log it
+					.catch( err => console.error( err ) )
+					// no matter if there was an error, move on to the next page
+					.then( () => {
+						// advance the page to fetch until there are no pages left
+						page = fetchedModels.nextPage;
+						// unpause the generator to allow processing of the next page
+						generator.next();
+					});
+			}		
 		}
 	}
 	// loop through each saved error
@@ -158,65 +167,75 @@ function fetchModelsByPage( modelName, page ) {
 
 function saveModel( model ) {
 
-	// create regular expressions to match any possible public_id, url, and secure url
-	const publicIdRegExp	= /^(?:website-development|website-staging|website-production)?\/?(.*)$/,
-		  urlRegExp			= /^(.+)(?:v\d{10})\/(?:website-development|website-staging|website-production)(.+)/;
+	return new Promise( ( resolve, reject ) => {
+		// create regular expressions to match any possible public_id, url, and secure url
+		const publicIdRegExp	= /^(?:website-development|website-staging|website-production)?\/?(.*)$/,
+			  urlRegExp			= /^(.+)(?:v\d{10})\/(?:website-development|website-staging|website-production)(.+)/;
 
-	// search for image fields
-	for( let fieldName in model._doc ) {
-		// get the image field
-		let field = model.get( fieldName );
-		// if the field is an object and has a public_id field, it's a cloudinary image
-		if( field && typeof field === 'object' && field.public_id ) {
-			// create an object with the updated image fields
-			let newImageData = {
-				// replace the folder prefix with one appropriate for the target environment
-				public_id: field.public_id.replace( publicIdRegExp, `${ cloudinaryData.folder }/$1` ),
-				// replace the version of the child's image with the randomly generated one for cache busting
-				version: cloudinaryData.version,
-				// replace the account field, image version, and folder prefix in both image url fields
-				url: field.url.replace( urlRegExp, `$1v${ cloudinaryData.version }/${ cloudinaryData.folder }$2` ).replace( /%27/g, '_' ),
-				secure_url: field.secure_url.replace( urlRegExp, `$1v${ cloudinaryData.version }/${ cloudinaryData.folder }$2` ).replace( /%27/g, '_' )
-			};
-			// merge the new image details into the original image and save the new object to the model
-			model.set( fieldName, Object.assign( field, newImageData ) );
-		}
-		// if the field contains an array of cloudinary image object
-		if( Array.isArray( field ) && field[ 0 ] && field[ 0 ].public_id ) {
-			// create an array to hold the replacement image objects
-			let newImagesArray = [];
-			// loop through each image in the array
-			for( let image of field ) {
+		let isChanged = false;
+
+		// search for image fields
+		for( let fieldName in model._doc ) {
+			// get the image field
+			let field = model.get( fieldName );
+			// if the field is an object and has a public_id field, it's a cloudinary image
+			if( field && typeof field === 'object' && field.public_id ) {
 				// create an object with the updated image fields
 				let newImageData = {
 					// replace the folder prefix with one appropriate for the target environment
-					public_id: image.public_id.replace( publicIdRegExp, `${ cloudinaryData.folder }/$1` ),
+					public_id: field.public_id.replace( publicIdRegExp, `${ cloudinaryData.folder }/$1` ),
 					// replace the version of the child's image with the randomly generated one for cache busting
 					version: cloudinaryData.version,
 					// replace the account field, image version, and folder prefix in both image url fields
-					url: image.url.replace( urlRegExp, `$1v${ cloudinaryData.version }/${ cloudinaryData.folder }$2` ).replace( /%27/g, '_' ),
-					secure_url: image.secure_url.replace( urlRegExp, `$1v${ cloudinaryData.version }/${ cloudinaryData.folder }$2` ).replace( /%27/g, '_' )
+					url: field.url.replace( urlRegExp, `$1v${ cloudinaryData.version }/${ cloudinaryData.folder }$2` ).replace( /%27/g, '_' ),
+					secure_url: field.secure_url.replace( urlRegExp, `$1v${ cloudinaryData.version }/${ cloudinaryData.folder }$2` ).replace( /%27/g, '_' )
 				};
-				// merge the new image details into the original image and save the new object to the array of new images
-				newImagesArray.push( Object.assign( image, newImageData ) );
+				// merge the new image details into the original image and save the new object to the model
+				model.set( fieldName, Object.assign( field, newImageData ) );
+				// make a note that the model has changed
+				isChanged = true;
 			}
-			// save the new images array to the model
-			model.set( fieldName, newImagesArray );
+			// if the field contains an array of cloudinary image object
+			if( Array.isArray( field ) && field[ 0 ] && field[ 0 ].public_id ) {
+				// create an array to hold the replacement image objects
+				let newImagesArray = [];
+				// loop through each image in the array
+				for( let image of field ) {
+					// create an object with the updated image fields
+					let newImageData = {
+						// replace the folder prefix with one appropriate for the target environment
+						public_id: image.public_id.replace( publicIdRegExp, `${ cloudinaryData.folder }/$1` ),
+						// replace the version of the child's image with the randomly generated one for cache busting
+						version: cloudinaryData.version,
+						// replace the account field, image version, and folder prefix in both image url fields
+						url: image.url.replace( urlRegExp, `$1v${ cloudinaryData.version }/${ cloudinaryData.folder }$2` ).replace( /%27/g, '_' ),
+						secure_url: image.secure_url.replace( urlRegExp, `$1v${ cloudinaryData.version }/${ cloudinaryData.folder }$2` ).replace( /%27/g, '_' )
+					};
+					// merge the new image details into the original image and save the new object to the array of new images
+					newImagesArray.push( Object.assign( image, newImageData ) );
+				}
+				// save the new images array to the model
+				model.set( fieldName, newImagesArray );
+				// make a not that the model has changed
+				isChanged = true;
+			}
 		}
-	}
 
-	// attempt to save the model
-	model.save( ( err, savedModel ) => {
-		// if we run into an error
-		if( err ) {
-			// return control to the generator with information about the error
-			generator.next({
-				responseType: 'error',
-				message: `${ model.get( '_id' ) } - ${ err }` } );
-		// if the model saved successfully
+		if( isChanged ) {
+			// attempt to save the model
+			model.save( ( err, savedModel ) => {
+				// if we run into an error
+				if( err ) {
+					// reject the promise with details of the error
+					reject( `${ model.get( '_id' ) } - ${ err }` );
+				// if the model saved successfully
+				} else {
+					// return control to the generator
+					resolve();
+				}
+			});
 		} else {
-			// return control to the generator
-			generator.next( { responseType: 'success' } );
+			resolve();
 		}
 	});
 };
