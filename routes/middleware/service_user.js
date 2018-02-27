@@ -26,15 +26,12 @@ exports.getTargetModel = userType => {
 };
 
 /* get a user of any type by their _id value in the database */
-exports.getUserById = function getUserById(req, res, done, options) {
-	// several options need to be available in callback functions, expose them globally via res.locals
-	exports.exposeGlobalOptions(req, res, options);
+exports.getUserById = function getUserById( req, res, done, id ) {
 
-	var locals		= res.locals,
-		targetModel = res.locals.targetModel;
+	let locals = res.locals;
 
-	targetModel.model
-		.findById(options.id)
+	keystone.list( 'User' ).model
+		.findById( id )
 		.exec()
 		.then(function (user) {
 
