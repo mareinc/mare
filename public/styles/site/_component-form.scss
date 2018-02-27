@@ -65,10 +65,10 @@ select {
 .form-field-note {
 	font-size: 0.8em;
 	opacity: 0.8;
-	margin-top: -5px;
+	margin: -5px 0 15px
 }
 
-@media all and (max-width: 768px) {
+@media all and ( max-width: 768px ) {
 
     .marg-bottom-xs-5 {
         margin-bottom: 5px;
