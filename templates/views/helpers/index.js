@@ -397,6 +397,9 @@ module.exports = function() {
 		var output = '';
 		for (var i = 0; i < messages.length; i++) {
 
+			// open a containing div
+			output += '<div class="alert__content"><div class="alert__content-message">';
+
 			if (messages[i].title) {
 				output += '<h4>' + messages[i].title + '</h4>';
 			}
@@ -412,6 +415,9 @@ module.exports = function() {
 				}
 				output += '</ul>';
 			}
+
+			// add a close button and close the containing div
+			output += '</div><span class="flash-message__close-button">x</span></div>';
 		}
 		return new hbs.SafeString(output);
 	};

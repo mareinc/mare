@@ -26,15 +26,12 @@ exports.getTargetModel = userType => {
 };
 
 /* get a user of any type by their _id value in the database */
-exports.getUserById = function getUserById(req, res, done, options) {
-	// several options need to be available in callback functions, expose them globally via res.locals
-	exports.exposeGlobalOptions(req, res, options);
+exports.getUserById = function getUserById( req, res, done, id ) {
 
-	var locals		= res.locals,
-		targetModel = res.locals.targetModel;
+	let locals = res.locals;
 
-	targetModel.model
-		.findById(options.id)
+	keystone.list( 'User' ).model
+		.findById( id )
 		.exec()
 		.then(function (user) {
 
@@ -63,7 +60,7 @@ exports.checkUserActiveStatus = function( email, locals, done ) {
 				// exit the login process and let the user know their email or password is invalid
 				locals.userStatus = 'nonexistent';
 			// if the user exists but isn't active yet
-			} else if( user.isActive === false ) {
+			} else if( !user.isActive || user.isActive === false ) {
 				// exit the login process and let the user know their account isn't active yet
 				locals.userStatus = 'inactive';
 			// if the user exists and is active

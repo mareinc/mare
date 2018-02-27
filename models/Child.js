@@ -28,12 +28,12 @@ Child.add('Display Options', {
 
 	siteVisibility: { type: Types.Select, label: 'child is visible to', options: 'everyone, only registered social workers and families', required: true, initial: true },
 	isVisibleInGallery: { type: Types.Boolean, label: 'activate child profile on website to group selected', note: 'authorized staff only', default: false, initial: true },
-	visibleInGalleryDate: { type: Types.Date, label: 'date added to MARE web', format: 'MM/DD/YYYY', dependsOn: {isVisibleInGallery: true }, initial: true }
+	visibleInGalleryDate: { type: Types.Date, label: 'date added to MARE web', format: 'MM/DD/YYYY', utc: true, dependsOn: {isVisibleInGallery: true }, initial: true }
 
 }, 'Child Information', {
 
 	registrationNumber: { type: Number, label: 'registration number', format: false, noedit: true },
-	registrationDate: { type: Types.Date, label: 'registration date', format: 'MM/DD/YYYY', required: true, initial: true },
+	registrationDate: { type: Types.Date, label: 'registration date', format: 'MM/DD/YYYY', utc: true, required: true, initial: true },
 	displayNameAndRegistration: { type: Types.Text, label: 'name and registration number', default: 'new child', hidden: true, noedit: true },
 
 	name: {
@@ -45,9 +45,9 @@ Child.add('Display Options', {
 		full: { type: Types.Text, label: 'name', hidden: true, noedit: true, initial: false }
 	},
 
-	birthDate: { type: Types.Date, label: 'date of birth', format: 'MM/DD/YYYY', required: true, initial: true },
+	birthDate: { type: Types.Date, label: 'date of birth', format: 'MM/DD/YYYY', utc: true, required: true, initial: true },
 	languages: { type: Types.Relationship, label: 'languages', ref: 'Language', many: true, required: true, initial: true },
-	statusChangeDate: { type: Types.Date, label: 'status change date', format: 'MM/DD/YYYY', initial: true }, // TODO: Logic needed, see line 14 of https://docs.google.com/spreadsheets/d/1Opb9qziX2enTehJx5K1J9KAT7v-j2yAdqwyQUMSsFwc/edit#gid=1235141373
+	statusChangeDate: { type: Types.Date, label: 'status change date', format: 'MM/DD/YYYY', utc: true, initial: true }, // TODO: Logic needed, see line 14 of https://docs.google.com/spreadsheets/d/1Opb9qziX2enTehJx5K1J9KAT7v-j2yAdqwyQUMSsFwc/edit#gid=1235141373
 	status: { type: Types.Relationship, label: 'status', ref: 'Child Status', required: true, initial: true },
 	gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', required: true, initial: true },
 	race: { type: Types.Relationship, label: 'race', ref: 'Race', many: true, required: true, initial: true },
@@ -68,7 +68,7 @@ Child.add('Display Options', {
 	city: { type: Types.Relationship, label: 'city/town of child\'s current location', ref: 'City or Town', dependsOn: { isOutsideMassachusetts: false }, initial: true },
 	cityText: { type: Types.Text, label: 'city/town of child\'s current location', dependsOn: { isOutsideMassachusetts: true }, initial: true },
 	careFacilityName: { type: Types.Text, label: 'name of residential/group care facility', initial: true },
-	dateMovedToResidence: { type: Types.Date, label: 'date moved to current residence', format: 'MM/DD/YYYY', initial: true }
+	dateMovedToResidence: { type: Types.Date, label: 'date moved to current residence', format: 'MM/DD/YYYY', utc: true, initial: true }
 
 }, 'Special Needs', {
 
@@ -104,10 +104,10 @@ Child.add('Display Options', {
 }, 'Agency Information', {
 
 	registeredBy: { type: Types.Select, label: 'registered by', options: 'unknown, adoption worker, recruitment worker', required: true, initial: true },
-	adoptionWorker: { type: Types.Relationship, label: 'adoption worker', ref: 'Social Worker', filters: { isActive: true }, initial: true },
+	adoptionWorker: { type: Types.Relationship, label: 'adoption worker', ref: 'Social Worker', initial: true },
 	adoptionWorkerAgency: { type: Types.Relationship, label: `adoption worker's agency`, ref: 'Agency', noedit: true },
 	adoptionWorkerAgencyRegion: { type: Types.Relationship, label: `adoption worker's region`, ref: 'Region', noedit: true },
-	recruitmentWorker: { type: Types.Relationship, label: 'recruitment worker', ref: 'Social Worker', filters: { isActive: true }, initial: true },
+	recruitmentWorker: { type: Types.Relationship, label: 'recruitment worker', ref: 'Social Worker', initial: true },
 	recruitmentWorkerAgency: { type: Types.Relationship, label: `recruitment worker's agency`, ref: 'Agency', noedit: true },
 	recruitmentWorkerAgencyRegion: { type: Types.Relationship, label: `recruitment worker's region`, ref: 'Region', noedit: true },
 
@@ -127,11 +127,11 @@ Child.add('Display Options', {
 	},
 
 	hasPhotolistingWriteup: { type: Types.Boolean, label: 'photolisting writeup', default: false, initial: true },
-	photolistingWriteupDate: { type: Types.Date, label: 'date of photolisting writeup', format: 'MM/DD/YYYY', dependsOn: { hasPhotolistingWriteup: true }, initial: true },
+	photolistingWriteupDate: { type: Types.Date, label: 'date of photolisting writeup', format: 'MM/DD/YYYY', utc: true, dependsOn: { hasPhotolistingWriteup: true }, initial: true },
 	hasPhotolistingPhoto: { type: Types.Boolean, label: 'photolisting photo', default: false, initial: true },
-	photolistingPhotoDate: { type: Types.Date, label: 'date of photolisting photo', format: 'MM/DD/YYYY', dependsOn: { hasPhotolistingPhoto: true }, initial: true },
+	photolistingPhotoDate: { type: Types.Date, label: 'date of photolisting photo', format: 'MM/DD/YYYY', utc: true, dependsOn: { hasPhotolistingPhoto: true }, initial: true },
 	isCurrentlyInPhotoListing: { type: Types.Boolean, label: 'currently in photolisting', default: false, initial: true },
-	dateOfLastPhotoListing: { type: Types.Date, label: 'date of last photolisting', format: 'MM/DD/YYYY', dependsOn: {isCurrentlyInPhotoListing: true }, initial: true },
+	dateOfLastPhotoListing: { type: Types.Date, label: 'date of last photolisting', format: 'MM/DD/YYYY', utc: true, dependsOn: {isCurrentlyInPhotoListing: true }, initial: true },
 	photolistingPageNumber: { type: Types.Text, label: 'photolisting page', initial: true },
 	previousPhotolistingPageNumbers: { type: Types.Text, label: 'previous photolisting pages', initial: true },
 
@@ -143,26 +143,26 @@ Child.add('Display Options', {
 }, 'Recruitment Options', {
 
 	hasVideoSnapshot: { type: Types.Boolean, label: 'video snapshot', default: false, initial: true },
-	videoSnapshotDate: { type: Types.Date, label: 'date of video snapshot', format: 'MM/DD/YYYY', dependsOn: { hasVideoSnapshot: true }, initial: true },
+	videoSnapshotDate: { type: Types.Date, label: 'date of video snapshot', format: 'MM/DD/YYYY', utc: true, dependsOn: { hasVideoSnapshot: true }, initial: true },
 	video: { type: Types.Url, label: 'video', dependsOn: { hasVideoSnapshot: true, mustBePlacedWithSiblings: false } },
 	siblingGroupVideo: { type: Types.Url, label: 'sibling group video', dependsOn: { hasVideoSnapshot: true, mustBePlacedWithSiblings: true } },
 
 	onAdoptuskids: { type: Types.Boolean, label: 'Adoptuskids website', default: false, initial: true },
-	onAdoptuskidsDate: { type: Types.Date, label: 'date on Adoptuskids', format: 'MM/DD/YYYY', dependsOn: { onAdoptuskids: true }, initial: true },
+	onAdoptuskidsDate: { type: Types.Date, label: 'date on Adoptuskids', format: 'MM/DD/YYYY', utc: true, dependsOn: { onAdoptuskids: true }, initial: true },
 
 	wednesdaysChild: { type: Types.Boolean, label: 'Wednesday\'s Child', dependsOn: { mustBePlacedWithSiblings: false }, default: false, initial: true },
-	wednesdaysChildDate: { type: Types.Date, label: 'date of Wednesday\'s Child', format: 'MM/DD/YYYY', dependsOn: { mustBePlacedWithSiblings: false, wednesdaysChild: true }, initial: true },
+	wednesdaysChildDate: { type: Types.Date, label: 'date of Wednesday\'s Child', format: 'MM/DD/YYYY', utc: true, dependsOn: { mustBePlacedWithSiblings: false, wednesdaysChild: true }, initial: true },
 	wednesdaysChildVideo: { type: Types.Url, label: 'Wednesday\'s Child video', dependsOn: { mustBePlacedWithSiblings: false, wednesdaysChild: true } },
 
 	wednesdaysChildSiblingGroup: { type: Types.Boolean, label: 'Wednesday\'s Child for sibling group?', dependsOn: { mustBePlacedWithSiblings: true }, default: false, initial: true },
-	wednesdaysChildSiblingGroupDate: { type: Types.Date, label: 'date of sibling group\'s Wednesday\'s Child', format: 'MM/DD/YYYY', dependsOn: { mustBePlacedWithSiblings: true, wednesdaysChildSiblingGroup: true }, initial: true },
+	wednesdaysChildSiblingGroupDate: { type: Types.Date, label: 'date of sibling group\'s Wednesday\'s Child', format: 'MM/DD/YYYY', utc: true, dependsOn: { mustBePlacedWithSiblings: true, wednesdaysChildSiblingGroup: true }, initial: true },
 	wednesdaysChildSiblingGroupVideo: { type: Types.Url, label: 'Wednesday\'s Child sibling group video', dependsOn: { mustBePlacedWithSiblings: true, wednesdaysChildSiblingGroup: true } },
 
 	coalitionMeeting: { type: Types.Boolean, label: 'coalition meeting', default: false, initial: true },
-	coalitionMeetingDate: { type: Types.Date, label: 'date of coalition meeting', format: 'MM/DD/YYYY', dependsOn: { coalitionMeeting: true }, initial: true },
+	coalitionMeetingDate: { type: Types.Date, label: 'date of coalition meeting', format: 'MM/DD/YYYY', utc: true, dependsOn: { coalitionMeeting: true }, initial: true },
 
 	matchingEvent: { type: Types.Boolean, label: 'matching event', default: false, initial: true },
-	matchingEventDate: { type: Types.Date, label: 'date of matching event', format: 'MM/DD/YYYY', dependsOn: { matchingEvent: true }, initial: true },
+	matchingEventDate: { type: Types.Date, label: 'date of matching event', format: 'MM/DD/YYYY', utc: true, dependsOn: { matchingEvent: true }, initial: true },
 
 	adoptionParties: { type: Types.Relationship, label: 'adoption parties', ref: 'Event', filters: { type: 'adoption party', isActive: true }, many: true, initial: true },
 
@@ -275,7 +275,6 @@ Child.schema.pre( 'save', function( next ) {
 	// if both groups have been changed
 	if ( hasSiblingsChanged && hasSiblingsToBePlacedWithChanged ) {
 		// revert the changes to the siblingsToBePlacedWith group
-		console.log( 'siblings and siblings to be placed with were changed simultaneously - reverting siblings to be placed with' );
 		this.siblingsToBePlacedWith = this._original.siblingsToBePlacedWith;
 		hasSiblingsToBePlacedWithChanged = false;
 	}
@@ -326,8 +325,6 @@ Child.schema.pre( 'save', function( next ) {
 });
 
 Child.schema.post( 'save', function() {
-
-	console.log( `entering post-save hook of child: ${ this.name.first } ${ this.name.last }` );
 
 	// if the siblings group has been changed
 	if ( this.checkSiblingsForChanges() ) {
@@ -751,8 +748,6 @@ Child.schema.methods.updateSiblingGroup = function() {
 	let siblingsAddedBySave = Array.from( siblingsBeforeSave.rightOuterJoin( siblingsAfterSave ) );
 	// create a set of all siblings removed from the original child by the save operation
 	let siblingsRemovedBySave = Array.from( siblingsBeforeSave.leftOuterJoin( siblingsAfterSave ) );
-	console.log( `siblings added by save ${ siblingsAddedBySave }` );
-	console.log( `siblings removed by save ${ siblingsRemovedBySave }` );
 
 	// create an updated representation of the sibling group based on the post-save state of the siblings array
 	let updatedSiblingGroup = siblingsArrayAfterSave;
@@ -760,10 +755,8 @@ Child.schema.methods.updateSiblingGroup = function() {
 	if ( updatedSiblingGroup.length > 0 ) {
 		// add the current child to the group ( because a child will not store itself in the siblings array )
 		updatedSiblingGroup.push( this._id.toString() );
-		console.log( `updated sibling group: ${ updatedSiblingGroup }` );
 		// determine which siblings were impacted by the update
 		let siblingsImpacted = updatedSiblingGroup.concat( siblingsRemovedBySave ).filter( siblingID => siblingID !== this._id.toString() );
-		console.log( `siblings impacted by save: ${ siblingsImpacted }` );
 
 		// for each sibling impacted
 		siblingsImpacted.forEach( siblingID => {
@@ -782,13 +775,10 @@ Child.schema.methods.updateSiblingGroup = function() {
 						// unlock the sibling after update is complete
 						saveLock.unlock( updatedChildID );
 					});
-			} else {
-				console.log( `attmpted to save locked child ${ siblingID }` );
 			}
 		});
 	// if the updated sibling group is empty this child was removed from a sibling group and should remove itself from any siblings remaining in that group
 	} else {
-		console.log( `${ this.name.first } ${ this.name.last } has no siblings, removing it from all previous siblings` );
 		// for each sibling that this child used to be a in a sibling group with
 		siblingsRemovedBySave.forEach( siblingID => {
 			// check to ensure that the sibling is not already in the process of being saved
@@ -806,8 +796,6 @@ Child.schema.methods.updateSiblingGroup = function() {
 						// unlock the sibling after update is complete
 						saveLock.unlock( updatedChildID );
 					});
-			} else {
-				console.log( `attmpted to save locked child ${ siblingID }` );
 			}
 		});
 	}
@@ -825,8 +813,6 @@ Child.schema.methods.updateSiblingsToBePlacedWithGroup = function() {
 	let siblingsToBePlacedWithAddedBySave = Array.from( siblingsToBePlacedWithBeforeSave.rightOuterJoin( siblingsToBePlacedWithAfterSave ) );
 	// create a set of all siblings to be placed with removed from the original child by the save operation
 	let siblingsToBePlacedWithRemovedBySave = Array.from( siblingsToBePlacedWithBeforeSave.leftOuterJoin( siblingsToBePlacedWithAfterSave ) );
-	console.log( `siblings to be placed with added by save ${ siblingsToBePlacedWithAddedBySave }` );
-	console.log( `siblings to be placed with removed by save ${ siblingsToBePlacedWithRemovedBySave }` );
 
 	// create an updated representation of the siblings to be placed with group based on the post-save state of the siblings array
 	let updatedSiblingsToBePlacedWithGroup = siblingsToBePlacedWithArrayAfterSave;
@@ -834,10 +820,8 @@ Child.schema.methods.updateSiblingsToBePlacedWithGroup = function() {
 	if ( updatedSiblingsToBePlacedWithGroup.length > 0 ) {
 		// add the current child to the group ( because a child will not store itself in the siblings array )
 		updatedSiblingsToBePlacedWithGroup.push( this._id.toString() );
-		console.log( `updated siblings to be placed with group: ${ updatedSiblingsToBePlacedWithGroup }` );
 		// determine which siblings to be placed with were impacted by the update
 		let siblingsToBePlacedWithImpacted = updatedSiblingsToBePlacedWithGroup.concat( siblingsToBePlacedWithRemovedBySave ).filter( siblingID => siblingID !== this._id.toString() );
-		console.log( `siblings to be placed with impacted by save: ${ siblingsToBePlacedWithImpacted }` );
 
 		// for each sibling to be placed with impacted
 		siblingsToBePlacedWithImpacted.forEach( siblingID => {
@@ -863,13 +847,10 @@ Child.schema.methods.updateSiblingsToBePlacedWithGroup = function() {
 						// unlock the sibling to be placed with after update is complete
 						saveLock.unlock( updatedChildID );
 					});
-			} else {
-				console.log( `attmpted to save locked child ${ siblingID }` );
 			}
 		});
 	// if the updated siblings to be placed with group is empty this child was removed from a siblings to be placed with group and should remove itself from any siblings to be placed with remaining in that group
 	} else {
-		console.log( `${ this.name.first } ${ this.name.last } has no siblings to be placed with, removing it from all previous siblings to be placed with` );
 		// for each sibling that this child used to be a in a siblings to be placed with group with
 		siblingsToBePlacedWithRemovedBySave.forEach( siblingID => {
 			// check to ensure that the sibling to be placed with is not already in the process of being saved
@@ -887,8 +868,6 @@ Child.schema.methods.updateSiblingsToBePlacedWithGroup = function() {
 						// unlock the sibling to be placed with after update is complete
 						saveLock.unlock( updatedChildID );
 					});
-			} else {
-				console.log( `attmpted to save locked child ${ siblingID }` );
 			}
 		});
 	}
@@ -987,8 +966,6 @@ Child.schema.methods.updateSiblingFields = function() {
 			}
 		}
 	], function() {
-
-		console.log( 'sibling information updated' );
 
 		done();
 	});

@@ -37,8 +37,8 @@ exports.checkFieldForChanges = ( field, model, modelBefore, changeHistory, done 
 
 	if( field.type === 'string' && ( !!fieldBefore || !!fieldAfter ) ) {
 
-		valueBefore = fieldBefore ? fieldBefore.toLowerCase() : '';
-		value = fieldAfter ? fieldAfter.toLowerCase() : '';
+		valueBefore = fieldBefore ? fieldBefore.toLowerCase().replace( /\s/g, '' ) : '';
+		value = fieldAfter ? fieldAfter.toLowerCase().replace( /\s/g, '' ) : '';
 
 		if( valueBefore !== value ) {
 			exports.addToHistoryEntry( valueBefore, value, field.label, field.type, changeHistory );
@@ -66,11 +66,17 @@ exports.checkFieldForChanges = ( field, model, modelBefore, changeHistory, done 
 
 	// Date.parse( null ) returns NaN, and NaN !== NaN, so the second check is needed
 	} else if( field.type === 'date' && ( fieldBefore || fieldAfter ) ) {
+		
 		// convert the values to nicely formatted dates
-		valueBefore = fieldBefore ? moment( fieldBefore ).utc().format( 'MM/DD/YYYY' ) : '';
-		value = fieldAfter ? moment( fieldAfter ).utc().format( 'MM/DD/YYYY' ) : '';
+		valueBeforeUTC = fieldBefore ? moment( fieldBefore ).utc() : '';
+		valueUTC = fieldAfter ? moment( fieldAfter ).utc() : '';
+		valueBeforeUTCFormatted = fieldBefore ? valueBeforeUTC.format( 'MM/DD/YYYY' ) : '';
+		valueUTCFormatted = fieldAfter ? valueUTC.format( 'MM/DD/YYYY' ) : '';
+		valueBefore = fieldBefore ? moment( fieldBefore ).format( 'MM/DD/YYYY' ) : '';
+		value = fieldAfter ? moment( fieldAfter ).format( 'MM/DD/YYYY' ) : '';
+		
 		// not a part of the check above because Date.parse( fieldBefore ) !== Date.parse( fieldAfter ), even if they have the same date ( I think the milliseconds are appearing different )
-		if( valueBefore !== value ) {
+		if( valueBeforeUTCFormatted !== valueUTCFormatted ) {
 			exports.addToHistoryEntry( valueBefore, value, field.label, field.type, changeHistory );
 		}
 

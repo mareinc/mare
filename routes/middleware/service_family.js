@@ -47,7 +47,7 @@ exports.getFamilyById = ( id, fieldsToPopulate = [] ) => {
 };
 
 exports.getMaxRegistrationNumber = function() {
-		
+
 	return new Promise( ( resolve, reject ) => {
 
 		keystone.list( 'Family' ).model
@@ -72,7 +72,7 @@ exports.setGalleryPermissions = ( req, res ) => {
 	// variables to determine what features the user has access to.  Don't overwrite it if it's already set
 	const userType = locals.userType || ( req.user ? req.user.get( 'userType' ) : 'anonymous' );
 	// TODO: all of these checks should be virtuals on the models
-	locals.canBookmarkChildren = userType === userType === 'family';
+	locals.canBookmarkChildren = userType === 'family';
 	locals.canSearchForChildren = userType === 'social worker' || userType === 'family';
 	// TODO: canViewAllChildren and canSeeAdvancedOptions are the same check and should have a name that encompasses both
 	locals.canSeeAdvancedSearchOptions = userType === 'social worker' ||
@@ -105,7 +105,7 @@ exports.getBookmarkedChildren = ( req, res, done ) => {
 
 		locals.bookmarkedChildren = locals.user.get( 'bookmarkedChildren' );
 		locals.bookmarkedChildren.push( ...locals.user.get( 'bookmarkedSiblings' ) );
-		
+
 		done();
 	}
 };
@@ -187,7 +187,7 @@ exports.addSiblingGroupBookmark = ( req, res, next ) => {
 		done => { userService.getUserById( req, res, done, userId ); }
 	], () => {
 
-		const childIds				= locals.children.map( child => child.get( '_id' ).toString() );
+		const childIds				= locals.children.map( child => child.get( '_id' ) );
 		const bookmarkedSiblings	= locals.user.get( 'bookmarkedSiblings' );
 
 		// only add the bookmark if it hasn't already been saved.  This is unlikely, and would require a bad state in the system, but the check has been added for an extra layer of safety
@@ -220,7 +220,7 @@ exports.removeSiblingGroupBookmark = ( req, res, next ) => {
 		done => { userService.getUserById( req, res, done, userId ); }
 	], () => {
 
-		const childIds				= locals.children.map( child => child.get( '_id' ).toString() );
+		const childIds				= locals.children.map( child => child.get( '_id' ) );
 		const bookmarkedSiblings	= locals.user.get( 'bookmarkedSiblings' );
 
 		for( childId of childIds ) {
@@ -269,8 +269,8 @@ exports.registerFamily = ( req, res, next ) => {
 			if( isEmailDuplicate ) {
 				// create a generic error flash message to send back to the user
 				req.flash( 'error', {
-					title: `There was a problem creating the family account`,
-					detail: `The email address you provided for contact 1 already exists in the system` });
+					title: `There was a problem registering this family's homestudy with MARE.`,
+					detail: `If this error persists, please notify MARE at <a href="mailto:web@mareinc.org">web@mareinc.org</a>` });
 				// throw an error with details about what went wrong
 				throw new Error( 'email for contact 1 is already in use by another user' );
 			}
@@ -281,8 +281,8 @@ exports.registerFamily = ( req, res, next ) => {
 			if( !isEmailValid ) {
 				// throw an error with details to construct a console.error() and flash message
 				req.flash( 'error', {
-					title: `There was a problem creating the family account`,
-					detail: `The email address you've provided for contact 1 is invalid` });
+					title: `There was a problem registering this family's homestudy with MARE.`,
+					detail: `The email address you've provided for contact 1 is invalid.  If this error persists, please notify MARE at <a href="mailto:web@mareinc.org">web@mareinc.org</a>` });
 				// throw an error with details about what went wrong
 				throw new Error( `error creating social worker registered family - email address ${ rawFamilyData.email } is invalid` );
 			}
@@ -304,6 +304,8 @@ exports.registerFamily = ( req, res, next ) => {
 			const familyId = newFamily.get( '_id' );
 			// store the social worker's name
 			const socialWorkerName = req.user.get( 'name.full' );
+			// store the social worker
+			const socialWorkerEmail = req.user.get( 'email' );
 			// store the host name to link to the verification code in the thank you email
 			const host = req.headers.host;
 
@@ -316,7 +318,7 @@ exports.registerFamily = ( req, res, next ) => {
 									   'child7.type', 'child8.gender', 'child8.type', 'language',
 									   'otherLanguages', 'matchingPreferences.gender', 'matchingPreferences.legalStatus',
 									   'matchingPreferences.race', 'heardAboutMAREFrom' ];
-			
+
 			// set default information for a staff email contact in case the real contact info can't be fetched
 			let staffEmailContactInfo = {
 				name: 'MARE',
@@ -326,11 +328,11 @@ exports.registerFamily = ( req, res, next ) => {
 			// fetch the newly saved family model.  Needed because the saved family object doesn't have the Relationship fields populated
 			const fetchFamily = exports.getFamilyById( familyId, fieldsToPopulate );
 			// create a new verification code model in the database to allow users to verify their accounts
-			const createVerificationRecord = registrationService.createNewVerificationRecord( verificationCode, familyId );			
+			const createVerificationRecord = registrationService.createNewVerificationRecord( verificationCode, familyId );
 			// fetch the email target model matching 'social worker family registration'
 			const fetchEmailTarget = emailTargetMiddleware.getEmailTargetByName( 'social worker family registration' );
 
-			// save any submitted files and append them to the newly created user		
+			// save any submitted files and append them to the newly created user
 			// TODO: this still need to be implemented when file uploads are added to the system
 			// const uploadFamilyFiles = registrationService.uploadFile( newFamily, 'homestudy', 'homestudyFile_upload', files.homestudyFile_upload );
 
@@ -350,7 +352,7 @@ exports.registerFamily = ( req, res, next ) => {
 				// check on the attempt to fetch the newly saved family ( needed again to give us access to the fetched family data at this point in the promise chain )
 				.then( () => fetchFamily )
 				// send a notification email to the social worker
-				.then( fetchedFamily => socialWorkerFamilyRegistrationEmailService.sendNewSocialWorkerFamilyRegistrationNotificationEmailToSocialWorker( socialWorkerName, rawFamilyData, fetchedFamily, staffEmailContactInfo, host ) )
+				.then( fetchedFamily => socialWorkerFamilyRegistrationEmailService.sendNewSocialWorkerFamilyRegistrationNotificationEmailToSocialWorker( socialWorkerName, rawFamilyData, fetchedFamily, socialWorkerEmail, host ) )
 				// if there was an error sending the email to the social worker
 				.catch( err => console.error( `error sending new family registered by social worker email to social worker ${ req.user.get( 'name.full' ) } - ${ err }` ) )
 				// check on the attempt to fetch the newly saved family and create the verification record ( needed again to give us access to the fetched family data at this point in the promise chain )
@@ -368,7 +370,7 @@ exports.registerFamily = ( req, res, next ) => {
 			// create a success flash message
 			req.flash( 'success', {
 				title: `Congratulations, the family you submitted has been successfully registered.`,
-				detail: `The person specified in Contact 1 will receive an email notifying them of their new account.` } );
+				detail: `A MARE staff person will be in touch if additional information is needed.` } );
 			// redirect the user back to the appropriate page
 			res.redirect( 303, redirectPath );
 		})
@@ -376,7 +378,11 @@ exports.registerFamily = ( req, res, next ) => {
 		.catch( err => {
 			// log the error for debugging purposes
 			console.error( err.message );
-			
+			// throw an error with details to construct a console.error() and flash message
+			req.flash( 'error', {
+				title: `There was a problem registering this family's homestudy with MARE.`,
+				detail: `If this error persists, please notify MARE at <a href="mailto:web@mareinc.org">web@mareinc.org</a>` });
+
 			res.redirect( 303, redirectPath );
 		});
 };

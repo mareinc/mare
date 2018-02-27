@@ -350,6 +350,8 @@ exports.saveSiteVisitor = user => {
 		// create a new site visitor model with the passed in data
 		let newUser = new SiteVisitor.model({
 
+			isActive					: true,
+
 			name: {
 				first					: user.firstName,
 				last					: user.lastName
@@ -400,6 +402,8 @@ exports.saveSocialWorker = user => {
 
 		const newUser = new SocialWorker.model({
 
+			isActive					: true,
+
 			name: {
 				first					: user.firstName,
 				last					: user.lastName
@@ -448,6 +452,8 @@ exports.saveFamily = user => {
 		const Family = keystone.list( 'Family' );
 
 		const newUser = new Family.model({
+
+			isActive							: true,
 
 			email								: user.email,
 			password							: user.password,
@@ -648,7 +654,7 @@ exports.setInitialErrorMessages = ( req, isEmailValid, isEmailDuplicate, isPassw
 		flashMessages.appendFlashMessage({
 			messageType: flashMessages.MESSAGE_TYPES.ERROR,
 			title: `There was a problem creating your account`,
-			message: `The email address you're trying to use already exists in the system`
+			message: `The email you are trying to use already exists in the system. Please reset your password for this email address in order to gain access. If this error persists, please notify MARE at <a href="mailto:web@mareinc.org">web@mareinc.org</a>`
 		});
 	}
 

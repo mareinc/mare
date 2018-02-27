@@ -12,7 +12,7 @@ exports.resetPassword = ( req, res ) => {
 		console.error( `error initiating reset password - email address invalid` );
 
 		req.flash( 'error', {
-			title: 'Please enter a valid email address', // TODO: this should be handled in the Backbone view using Parsley data validation as well as here
+			title: 'Please enter a valid email address',
 		});
 		
 		res.redirect( 303, '/' ); // TODO: this needs to be fixed as the token information will be lost on redirect
@@ -29,7 +29,7 @@ exports.resetPassword = ( req, res ) => {
 				
 				req.flash( 'error', {
 					title: 'There is no account associated with this email address.',
-					detail: 'If applicable, please attempt to log in with a secondary/spouse email address.  Otherwise register to create a new account or contact MARE at communications@mareinc.org for assistance.'
+					detail: 'If applicable, please attempt to log in with a secondary/spouse email address.  Otherwise register to create a new account or contact MARE at <a href="mailto:communications@mareinc.org">communications@mareinc.org</a> for assistance.'
 				});
 
 				throw new Error( `error fetching user by email ${ req.body.email }` );
@@ -53,8 +53,8 @@ exports.resetPassword = ( req, res ) => {
 					.catch( err => {
 						
 						req.flash( 'error', {
-							title: 'Error with your request',
-							detail: 'There was an issue sending your password reset email.  Please try using the forgot password button again.  If the issue persists, please contact MARE for assistance'
+							title: 'There was an error with your password reset request.',
+							detail: 'Please try using the forgot password button again.  If the issue persists, please contact MARE at <a href="mailto:communications@mareinc.org">communications@mareinc.org</a>'
 						});
 
 						throw new Error( `error sending reset password email - ${ err }` );
@@ -65,8 +65,8 @@ exports.resetPassword = ( req, res ) => {
 					if( err ) {
 
 						req.flash( 'error', {
-							title: 'Error with your request',
-							detail: 'Please try using the forgot password button again.  If the issue persists, please contact MARE for assistance'
+							title: 'There was an error with your password reset request.',
+							detail: 'Please try using the forgot password button again.  If the issue persists, please contact MARE at <a href="mailto:communications@mareinc.org">communications@mareinc.org</a>'
 						});
 
 						throw new Error( `error saving password reset token to user with email ${ req.body.email } - ${ err }` );
@@ -100,8 +100,8 @@ exports.getForm = ( req, res ) => {
 		console.error( `password reset error - reset token not provided` );
 		
 		req.flash( 'error', {
-			title: 'Error with your request',
-			detail: 'The link you used is no longer valid.  Please try using the forgot password button again.  If the issue persists, please contact MARE for assistance'
+			title: 'There was an error with your password reset request.',
+			detail: 'Please try using the forgot password button again.  If the issue persists, please contact MARE at <a href="mailto:communications@mareinc.org">communications@mareinc.org</a>'
 		});
 
 		res.redirect( 303, '/' );
@@ -115,8 +115,8 @@ exports.getForm = ( req, res ) => {
 			if ( !user ) {
 				
 				req.flash( 'error', {
-					title: 'Error with your request',
-					detail: 'The reset token provided is not valid or expired.  Please try using the forgot password button again.  If the issue persists, please contact MARE for assistance'
+					title: 'There was an error with your password reset request.',
+					detail: 'Please try using the forgot password button again.  If the issue persists, please contact MARE at <a href="mailto:communications@mareinc.org">communications@mareinc.org</a>'
 				});
 				
 				throw new Error( `password reset error - no user found matching password reset token ${ resetToken }` );
@@ -163,9 +163,9 @@ exports.changePassword = ( req, res ) => {
 
 			if ( !user ) {
 				
-				req.flash('error', {
-					title: 'Error with your request',
-					detail: 'The reset token provided is not valid or expired. Please try using the forgot password button again.'
+				req.flash( 'error', {
+					title: 'There was an error with your password reset request.',
+					detail: 'Please try using the forgot password button again.  If the issue persists, please contact MARE at <a href="mailto:communications@mareinc.org">communications@mareinc.org</a>'
 				});
 
 				throw new Error( `Error fetching user by password reset token ${ resetToken }` );
@@ -174,15 +174,17 @@ exports.changePassword = ( req, res ) => {
 				// update the password field for the user
 				user.set( 'password', password );
 				//reset the password token so that users cant use the link anymore
-				user.set( 'resetPasswordToken', '' ); 
+				user.set( 'resetPasswordToken', '' );
+				// set the user to active, allowing them to log in
+				user.set( 'isActive', true );
 
 				user.save( err => {
 					
 					if( err ) {
 
 						req.flash( 'error', {
-							title: 'Error with your request',
-							detail: 'Please try using the forgot password button again.  If the issue persists, please contact MARE for assistance'
+							title: 'There was an error with your password reset request.',
+							detail: 'Please try using the forgot password button again.  If the issue persists, please contact MARE at <a href="mailto:communications@mareinc.org">communications@mareinc.org</a>'
 						});
 						
 						throw new Error( `error saving user model with new password - ${ err }` );

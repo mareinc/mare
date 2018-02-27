@@ -52,14 +52,8 @@
 
 		displayFlashMessage: function displayFlashMessage( flashMessageMarkup ) {
 
-			// remove any previously existing messages
-			$( '#flash-messages' ).remove();
-					
-			// ensure any message will be scrolled into view
-			$( 'html, body' ).scrollTop( 0 );
-
-			// display the flash message to the user
-			this.$contentBody.prepend( flashMessageMarkup );
+			// initialize and show the flash messages view
+			mare.views.flashMessages.initializeAJAX( flashMessageMarkup );
 		}
 	});
 }());
