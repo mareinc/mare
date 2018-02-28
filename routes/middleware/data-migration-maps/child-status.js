@@ -13,9 +13,9 @@ exports.getChildStatusesMap = ( req, res, done ) => {
 		done => { dataMigrationService.getModelId( { model: 'Child Status', field: 'childStatus', value: 'active', mapTo: [ 'A' ], namespace: locals.migration.maps.childStatuses }, done ); },
 		done => { dataMigrationService.getModelId( { model: 'Child Status', field: 'childStatus', value: 'disrupted', mapTo: [ 'D' ], namespace: locals.migration.maps.childStatuses }, done ); },
 		done => { dataMigrationService.getModelId( { model: 'Child Status', field: 'childStatus', value: 'on hold', mapTo: [ 'H' ], namespace: locals.migration.maps.childStatuses }, done ); },
-		done => { dataMigrationService.getModelId( { model: 'Child Status', field: 'childStatus', value: 'placed', mapTo: [ 'P' ], namespace: locals.migration.maps.childStatuses }, done ); },
+		done => { dataMigrationService.getModelId( { model: 'Child Status', field: 'childStatus', value: 'placed', mapTo: [ 'L', 'M', 'P' ], namespace: locals.migration.maps.childStatuses }, done ); },
 		done => { dataMigrationService.getModelId( { model: 'Child Status', field: 'childStatus', value: 'reunification', mapTo: [ 'R' ], namespace: locals.migration.maps.childStatuses }, done ); },
-		done => { dataMigrationService.getModelId( { model: 'Child Status', field: 'childStatus', value: 'withdrawn', mapTo: [ 'W' ], namespace: locals.migration.maps.childStatuses }, done ); }
+		done => { dataMigrationService.getModelId( { model: 'Child Status', field: 'childStatus', value: 'withdrawn', mapTo: [ 'N, W' ], namespace: locals.migration.maps.childStatuses }, done ); }
 	
 	], () => {
 

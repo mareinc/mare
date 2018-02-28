@@ -142,30 +142,30 @@ module.exports.createPlacementRecord = ( placement, pauseUntilSaved ) => {
 
 			let newPlacement = new Placement.model({
 
-				placementDate				: placement.placedDate ? new Date( placement.placedDate ) : undefined,
-				disruptionDate				: placement.disruptionDate ? new Date( placement.disruptionDate ) : undefined,
-				// familyAgency				: agency ? agency.get( '_id' ) : undefined,
-				child						: child ? child.get( '_id' ) : undefined,
-				isUnregisteredFamily		: !placement.familyId,
-				family						: family ? family.get( '_id' ) : undefined,
+				placementDate			: placement.placedDate ? new Date( placement.placedDate ) : undefined,
+				disruptionDate			: placement.disruptionDate ? new Date( placement.disruptionDate ) : undefined,
+				// familyAgency			: !family && agency ? agency.get( '_id' ) : undefined,
+				child					: child ? child.get( '_id' ) : undefined,
+				isUnregisteredFamily	: !placement.familyId,
+				family					: family ? family.get( '_id' ) : undefined,
 				familyDetails: {
-					name: placement.familyName,	
+					name				: placement.familyName,	
 					address: {
-						street1: placement.street1,
-						street2: placement.street2,
-						city: placement.city,
-						state: placement.state ? statesMap[ placement.state ] : undefined,
-						zipCode: placement.zipCode,
-						country: placement.country,
-						region: placement.region ? regionsMap[ placement.region ] : undefined
+						street1			: placement.street1,
+						street2			: placement.street2,
+						city			: placement.city,
+						state			: placement.state ? statesMap[ placement.state ] : undefined,
+						zipCode			: placement.zipCode,
+						country			: placement.country,
+						region			: placement.region ? regionsMap[ placement.region ] : undefined
 					},
 			
 					phone: {
-						home: placement.homePhone,
-						preferred: 'home'
+						home			: placement.homePhone,
+						preferred		: 'home'
 					},
 			
-					email: placement.email
+					email				: placement.email
 				}
 			});
 

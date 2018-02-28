@@ -51,13 +51,11 @@ module.exports.getSourcesByIds = ids => {
 	return new Promise( ( resolve, reject ) => {
 
 		if( ids.length === 0 ) {
-			console.error( `no ids passed in to getSourcesById()` );
-
 			return resolve();
 		}
 
 		Source.model
-			.findOne()
+			.find()
 			.where( 'oldId', { $in: ids } )
 			.exec()
 			.then( sources => {
@@ -577,7 +575,7 @@ module.exports.getOutsideContactsByOldIds = ids => {
 		});
 };
 
-module.exports.getPlacementsByChildRegistrationNumber = id => {
+module.exports.getPlacementsByChildId = id => {
 	
 	return new Promise( ( resolve, reject ) => {
 	
@@ -589,18 +587,18 @@ module.exports.getPlacementsByChildRegistrationNumber = id => {
 			.find()
 			.where( 'child', id )
 			.exec()
-			.then( Placement => {
-				// if no Placement was found
-				if( !Placement ) {
+			.then( placements => {
+				// if no placements was found
+				if( !placements ) {
 					// and reject the promise
-					reject( `error fetching Placement by oldId ${ id }` );
+					reject( `error fetching placements by child id ${ id }` );
 				}
 				// otherwise, accept the promise and pass back the retrieved placement
-				resolve( placement );
+				resolve( placements );
 
 			}, err => {
 
-				reject( `error in getPlacementsByChildRegistrationNumber() ${ err }` );
+				reject( `error in getPlacementsByChildId() ${ err }` );
 			});
 	});
 };

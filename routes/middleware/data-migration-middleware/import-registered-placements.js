@@ -119,9 +119,9 @@ module.exports.createPlacementRecord = ( placement, pauseUntilSaved ) => {
 				isUnregisteredChild	: !child,
 				child				: child ? child.get( '_id' ) : undefined,
 				childDetails: {
-					firstName		: placement.chd_first_name || undefined,
-					lastName		: placement.chd_last_name || undefined
-					// status			: childStatusesMap[ placement.status ] // this won't work as the map is to a word, not the letter stored in the placement
+					firstName		: !child ? placement.chd_first_name : undefined,
+					lastName		: !child ? placement.chd_last_name : undefined,
+					status			: !child ? childStatusesMap[ placement.status ] : undefined
 				},
 				isUnregisteredFamily: !family,
 				family				: family ? family.get( '_id' ) : undefined
@@ -159,32 +159,3 @@ module.exports.createPlacementRecord = ( placement, pauseUntilSaved ) => {
 
 // instantiates the generator used to create family records at a regulated rate
 const placementGenerator = exports.generatePlacements();
-
-// TODO:
-
-	// 1. loop through children, grabbing the following and creating placement records
-
-		// placement_placed_date
-		// placement_disruption_date
-		// placement_family_name
-		// placement_address_1
-		// placement_address_2
-		// placement_city
-		// placement_state
-		// placement_zip
-		// placement_home_phone
-		// placement_country
-		// placement_email
-		// placement_agency
-		// placement_constellation
-		// placement_rce_id
-
-	// 2. loop through all family_placement.csv and create placement records
-
-	// 3. loop through all placements you've created to see if there are multiple placements for any child
-
-	// 4. if no, append all placement sources
-
-	// 5. if yes, freak out and talk to Lisa
-
-	// PENDING. waiting for Victoria's response to find out how to handle a disruption for a child since we were using status change date for the placement date

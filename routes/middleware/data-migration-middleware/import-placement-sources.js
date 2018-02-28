@@ -117,47 +117,75 @@ module.exports.generatePlacementSources = function* generatePlacementSources() {
 
 // a function paired with the generator to create a record and request the generator to process the next once finished
 module.exports.updatePlacementRecord = ( childId, sources, pauseUntilSaved ) => {
-
+	// convert source to an array
 	const sourcesArray = [ ...sources ];
-
+	// store the id of the primary source
 	const primarySource = sourcesArray[ sourcesArray.length - 1 ];
-
+	// store the ids of all additional ( if any ) sources in an array
 	const additionalSources = sourcesArray.slice( 0, sourcesArray.length - 1 );
-	// fetch the placement
-	const placementsLoaded = utilityModelFetch.getPlacementsByChildRegistrationNumber( childId );
+
+	// variables to store information returned in the promise chain
+	let fetchedChild,
+		fetchedPlacements;
+	
+	// fetch the child for the placement
+	const childLoaded = utilityModelFetch.getChildByRegistrationNumber( childId );
 	// fetch the primary source
 	const primarySourceLoaded = utilityModelFetch.getSourceById( primarySource );
 	// fetch additional sources
 	const additionalSourcesLoaded = utilityModelFetch.getSourcesByIds( additionalSources );
-
-	Promise.all( [ placementLoaded, primarySourceLoaded, additionalSourcesLoaded ] )
+	// kick off a promise chain
+	Promise.resolve()
+		// fetch the child and store it for later use
+		.then( () => childLoaded )
+		.then( child => fetchedChild = child )
+		.catch( err => console.error( `error fetching child by registration number ${ childId }` ) )
+		// fetch the placement and store it for later use
+		.then( () => utilityModelFetch.getPlacementsByChildId( fetchedChild ? fetchedChild.get( '_id' ) : undefined ) )
+		.then( placements => fetchedPlacements = placements.filter( placement => placement.placementDate ) )
+		.catch( err => `error fetching placements by child id` )
+		// fetch the sources
+		.then( () => Promise.all( [ primarySourceLoaded, additionalSourcesLoaded ] ) )
 		.then( values => {
 
-			const [ placements, primarySource, additionalSources ] = values;
+			const [ primarySource, additionalSources ] = values;
+
+			const additionalSourcesIds = additionalSources ? additionalSources.map( source => source.get( 'id' ) ) : undefined;
 
 			let placementPromises = [];
 
-			for( let placement of placements ) {
+			for( let placement of fetchedPlacements ) {
 
-				placement.source = primarySource;
-				placement.additionalSources = additionalSources;
+				const placementPromise = new Promise( ( resolve, reject ) => {
 
-				// save the updated placement record
-				placement.save( ( err, savedModel ) => {
-					// if we run into an error
-					if( err ) {
-						// store a reference to the entry that caused the error
-						importErrors.push( { id: childId, error: err } );
+					placement.set( 'source', primarySource.get( 'id' ) );
+					placement.set( 'additionalSources', additionalSourcesIds );
+
+					// save the updated placement record
+					placement.save( ( err, savedModel ) => {
+						// if we run into an error
+						if( err ) {
+							// store a reference to the entry that caused the error
+							importErrors.push( { id: childId, error: err } );
+						}
+
+						resolve();
+					});
+				});
+
+				placementPromises.push( placementPromise );
+			}
+
+			Promise.all( placementPromises )
+				.catch( err => console.error( `placeholder error that should never be hit - ${ err }` ) )
+				.then( () => {
+					// fire off the next iteration of our generator after pausing
+					if( pauseUntilSaved ) {
+						setTimeout( () => {
+							placementSourceGenerator.next();
+						}, 1000 );
 					}
 				});
-			}
-
-			// fire off the next iteration of our generator after pausing
-			if( pauseUntilSaved ) {
-				setTimeout( () => {
-					placementSourceGenerator.next();
-				}, 1000 );
-			}
 		})
 		.catch( err => {
 			// we can assume it was a reject from trying to fetch the city or town by an unrecognized name
