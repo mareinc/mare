@@ -52,7 +52,7 @@ exports.getSidebarItems = () => {
 					successStory.shortContent = Utils.truncateText( successStory.content, truncateOptions );
 				}
 				// create a formatted date for display in the UI
-				event.prettyDate = moment( event.date ).format( 'dddd, MMMM Do' );
+				event.prettyDate = moment( event.date ).utc().format( 'dddd, MMMM Do' );
 				// truncated content and remove HTML tags from the description, storing the result in a new field
 				event.shortDescription = Utils.truncateText( Utils.stripTags( event.description ), truncateOptions );
 				// resolve the promise with the fetched success story and event
