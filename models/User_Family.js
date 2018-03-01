@@ -339,6 +339,7 @@ Family.relationship( { ref: 'Legalization', refPath: 'family', path: 'legalizati
 Family.relationship( { ref: 'Disruption', refPath: 'family', path: 'disruptions', label: 'disruptions' } );
 Family.relationship( { ref: 'Mailing List', refPath: 'familySubscribers', path: 'mailing-lists', label: 'mailing lists' } );
 Family.relationship( { ref: 'Event', refPath: 'familyAttendees', path: 'events', label: 'events' } );
+Family.relationship( { ref: 'Donation', refPath: 'family', path: 'donations', label: 'donations' } );
 Family.relationship( { ref: 'Internal Note', refPath: 'family', path: 'internal-notes', label: 'internal notes' } );
 Family.relationship( { ref: 'Family History', refPath: 'family', path: 'family-histories', label: 'change history' } );
 
