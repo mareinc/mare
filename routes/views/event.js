@@ -60,8 +60,8 @@ exports = module.exports = ( req, res ) => {
 			// check to see if the event spans multiple days
 			const multidayEvent = event.startDate.getTime() !== event.endDate.getTime();
 
-			const startDate = moment( event.startDate ).format( 'dddd MMMM Do, YYYY' ),
-				  endDate	= moment( event.endDate ).format( 'dddd MMMM Do, YYYY' );
+			const startDate = moment( event.startDate ).utc().format( 'dddd MMMM Do, YYYY' ),
+				  endDate	= moment( event.endDate ).utc().format( 'dddd MMMM Do, YYYY' );
 
 			// pull the date and time into a string for easier templating
 			if( multidayEvent ) {

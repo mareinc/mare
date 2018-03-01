@@ -254,7 +254,7 @@ function extractInquiryData( inquiry ) {
 				onBehalfOfMAREFamily: inquiry.onBehalfOfFamilyText,
 				source: inquiry.sourceText.trim(),
 				takenBy: 'Website Bot',
-				takenOn: inquiry.takenOn ? moment( inquiry.takenOn ).format( 'MM/DD/YYYY' ) : undefined
+				takenOn: inquiry.takenOn ? moment( inquiry.takenOn ).utc().format( 'MM/DD/YYYY' ) : undefined
 			};
 			// resolve the promise with the relevant inquiry data
 			resolve( relevantData );

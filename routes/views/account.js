@@ -74,9 +74,9 @@ exports = module.exports = ( req, res ) => {
 
 				// Pull the date and time into a string for easier templating
 				if( multidayEvent ) {
-					event.dateString = `${ moment( event.startDate ).format( 'dddd MMMM Do, YYYY' ) } to ${ moment( event.endDate ).format( 'dddd MMMM Do, YYYY' ) }`;
+					event.dateString = `${ moment( event.startDate ).utc().format( 'dddd MMMM Do, YYYY' ) } to ${ moment( event.endDate ).utc().format( 'dddd MMMM Do, YYYY' ) }`;
 				} else {
-					event.dateString = moment( event.startDate ).format( 'dddd MMMM Do, YYYY' );
+					event.dateString = moment( event.startDate ).utc().format( 'dddd MMMM Do, YYYY' );
 				}
 			}
 

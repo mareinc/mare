@@ -52,7 +52,7 @@ SiteVisitor.add( 'Permissions', {
 
 	infoPacket: {
 		packet: { type: Types.Select, options: 'English, Spanish, none', label: 'Packet', initial: true },
-		date: { type: Types.Date, label: 'date info packet sent', format: 'MM/DD/YYYY', initial: true },
+		date: { type: Types.Date, label: 'date info packet sent', format: 'MM/DD/YYYY', utc: true, initial: true },
 		notes: { type: Types.Textarea, label: 'notes', initial: true }
 	}
 

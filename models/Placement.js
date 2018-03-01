@@ -7,11 +7,11 @@ var Placement = new keystone.List( 'Placement' );
 // Create fields
 Placement.add( 'Placement', {
 
-	placementDate: { type: Types.Date, label: 'placement date', format: 'MM/DD/YYYY', initial: true },
-	legalizationDate: { type: Types.Date, label: 'legalization date', format: 'MM/DD/YYYY', initial: true },
-	reunificationDate: { type: Types.Date, label: 'reunification date', format: 'MM/DD/YYYY', initial: true },
-	withdrawnDate: { type: Types.Date, label: 'withdrawn date', format: 'MM/DD/YYYY', initial: true },
-	disruptionDate: { type: Types.Date, label: 'disruption date', format: 'MM/DD/YYYY', initial: true },
+	placementDate: { type: Types.Date, label: 'placement date', format: 'MM/DD/YYYY', utc: true, initial: true },
+	legalizationDate: { type: Types.Date, label: 'legalization date', format: 'MM/DD/YYYY', utc: true, initial: true },
+	reunificationDate: { type: Types.Date, label: 'reunification date', format: 'MM/DD/YYYY', utc: true, initial: true },
+	withdrawnDate: { type: Types.Date, label: 'withdrawn date', format: 'MM/DD/YYYY', utc: true, initial: true },
+	disruptionDate: { type: Types.Date, label: 'disruption date', format: 'MM/DD/YYYY', utc: true, initial: true },
 
 	familyAgency: { type: Types.Relationship, label: 'family\'s agency', ref: 'Agency', dependsOn: { isUnregisteredFamily: false }, filters: { isActive: true }, initial: true },
 	constellation: { type: Types.Relationship, label: 'constellation', ref: 'Family Constellation', dependsOn: { isUnregisteredFamily: true }, initial: true },
