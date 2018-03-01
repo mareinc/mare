@@ -1,14 +1,14 @@
-const keystone	= require( 'keystone' ),
-	  Types		= keystone.Field.Types;
+var keystone	= require( 'keystone' ),
+Types			= keystone.Field.Types;
 
-// Create model. Additional options allow menu name to be used what auto-generating URLs
-var Placement = new keystone.List( 'Placement' );
+// create model. Additional options allow menu name to be used what auto-generating URLs
+var Legalization = new keystone.List( 'Legalization' );
 
-// Create fields
-Placement.add( 'Placement', {
+// create fields
+Legalization.add( 'Legalization', {
 
-	placementDate: { type: Types.Date, label: 'placement date', format: 'MM/DD/YYYY', utc: true, initial: true },
-	
+	legalizationDate: { type: Types.Date, label: 'legalization date', format: 'MM/DD/YYYY', initial: true },
+
 	familyAgency: { type: Types.Relationship, label: 'family\'s agency', ref: 'Agency', dependsOn: { isUnregisteredFamily: false }, filters: { isActive: true }, initial: true },
 	constellation: { type: Types.Relationship, label: 'constellation', ref: 'Family Constellation', dependsOn: { isUnregisteredFamily: true }, initial: true },
 	race: { type: Types.Relationship, label: 'race', ref: 'Race', dependsOn: { isUnregisteredFamily: true }, many: true, initial: true },
@@ -59,5 +59,5 @@ Placement.add( 'Placement', {
 });
 
 // Define default columns in the admin interface and register the model
-Placement.defaultColumns = 'placementDate, child, family, family.name, source';
-Placement.register();
+Legalization.defaultColumns = 'legalizationDate, child, family, family.name, source';
+Legalization.register();

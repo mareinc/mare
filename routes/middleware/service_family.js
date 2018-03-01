@@ -72,7 +72,7 @@ exports.setGalleryPermissions = ( req, res ) => {
 	// variables to determine what features the user has access to.  Don't overwrite it if it's already set
 	const userType = locals.userType || ( req.user ? req.user.get( 'userType' ) : 'anonymous' );
 	// TODO: all of these checks should be virtuals on the models
-	locals.canBookmarkChildren = userType === userType === 'family';
+	locals.canBookmarkChildren = userType === 'family';
 	locals.canSearchForChildren = userType === 'social worker' || userType === 'family';
 	// TODO: canViewAllChildren and canSeeAdvancedOptions are the same check and should have a name that encompasses both
 	locals.canSeeAdvancedSearchOptions = userType === 'social worker' ||
@@ -187,7 +187,7 @@ exports.addSiblingGroupBookmark = ( req, res, next ) => {
 		done => { userService.getUserById( req, res, done, userId ); }
 	], () => {
 
-		const childIds				= locals.children.map( child => child.get( '_id' ).toString() );
+		const childIds				= locals.children.map( child => child.get( '_id' ) );
 		const bookmarkedSiblings	= locals.user.get( 'bookmarkedSiblings' );
 
 		// only add the bookmark if it hasn't already been saved.  This is unlikely, and would require a bad state in the system, but the check has been added for an extra layer of safety
@@ -220,7 +220,7 @@ exports.removeSiblingGroupBookmark = ( req, res, next ) => {
 		done => { userService.getUserById( req, res, done, userId ); }
 	], () => {
 
-		const childIds				= locals.children.map( child => child.get( '_id' ).toString() );
+		const childIds				= locals.children.map( child => child.get( '_id' ) );
 		const bookmarkedSiblings	= locals.user.get( 'bookmarkedSiblings' );
 
 		for( childId of childIds ) {
@@ -269,8 +269,8 @@ exports.registerFamily = ( req, res, next ) => {
 			if( isEmailDuplicate ) {
 				// create a generic error flash message to send back to the user
 				req.flash( 'error', {
-					title: `There was a problem creating the family account`,
-					detail: `The email address you provided for contact 1 already exists in the system` });
+					title: `There was a problem registering this family's homestudy with MARE.`,
+					detail: `If this error persists, please notify MARE at <a href="mailto:web@mareinc.org">web@mareinc.org</a>` });
 				// throw an error with details about what went wrong
 				throw new Error( 'email for contact 1 is already in use by another user' );
 			}
@@ -281,8 +281,8 @@ exports.registerFamily = ( req, res, next ) => {
 			if( !isEmailValid ) {
 				// throw an error with details to construct a console.error() and flash message
 				req.flash( 'error', {
-					title: `There was a problem creating the family account`,
-					detail: `The email address you've provided for contact 1 is invalid` });
+					title: `There was a problem registering this family's homestudy with MARE.`,
+					detail: `The email address you've provided for contact 1 is invalid.  If this error persists, please notify MARE at <a href="mailto:web@mareinc.org">web@mareinc.org</a>` });
 				// throw an error with details about what went wrong
 				throw new Error( `error creating social worker registered family - email address ${ rawFamilyData.email } is invalid` );
 			}
@@ -370,7 +370,7 @@ exports.registerFamily = ( req, res, next ) => {
 			// create a success flash message
 			req.flash( 'success', {
 				title: `Congratulations, the family you submitted has been successfully registered.`,
-				detail: `The person specified in Contact 1 will receive an email notifying them of their new account.` } );
+				detail: `A MARE staff person will be in touch if additional information is needed.` } );
 			// redirect the user back to the appropriate page
 			res.redirect( 303, redirectPath );
 		})
@@ -378,6 +378,10 @@ exports.registerFamily = ( req, res, next ) => {
 		.catch( err => {
 			// log the error for debugging purposes
 			console.error( err.message );
+			// throw an error with details to construct a console.error() and flash message
+			req.flash( 'error', {
+				title: `There was a problem registering this family's homestudy with MARE.`,
+				detail: `If this error persists, please notify MARE at <a href="mailto:web@mareinc.org">web@mareinc.org</a>` });
 
 			res.redirect( 303, redirectPath );
 		});

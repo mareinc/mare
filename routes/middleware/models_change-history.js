@@ -70,8 +70,8 @@ exports.checkFieldForChanges = ( field, model, modelBefore, changeHistory, done 
 		// convert the values to nicely formatted dates
 		valueBeforeUTC = fieldBefore ? moment( fieldBefore ).utc() : '';
 		valueUTC = fieldAfter ? moment( fieldAfter ).utc() : '';
-		valueBeforeUTCFormatted = valueBeforeUTC.format( 'MM/DD/YYYY' );
-		valueUTCFormatted = valueUTC.format( 'MM/DD/YYYY' );
+		valueBeforeUTCFormatted = fieldBefore ? valueBeforeUTC.format( 'MM/DD/YYYY' ) : '';
+		valueUTCFormatted = fieldAfter ? valueUTC.format( 'MM/DD/YYYY' ) : '';
 		valueBefore = fieldBefore ? moment( fieldBefore ).format( 'MM/DD/YYYY' ) : '';
 		value = fieldAfter ? moment( fieldAfter ).format( 'MM/DD/YYYY' ) : '';
 		

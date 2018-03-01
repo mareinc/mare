@@ -210,8 +210,8 @@ exports.submitEvent = function submitEvent( req, res, next ) {
 		.then( event => {
 			// create a success flash message
 			req.flash( 'success', {
-				title: 'Your event has been submitted',
-				detail: 'once your event has been approved by MARE staff, you will receive a notification email.  If you don\'t receive an email within 5 business days, please contact [some mare contact] for a status update.'} );
+				title: 'Your event has been submitted to be posted on the MARE website.',
+				detail: 'Your submission will be reviewed within two business days and you will receive a notification email when your event has been posted. For additional questions contact <a href="mailto:web@mareinc.org">web@mareinc.org</a>' } );
 
 			// set the fields to populate on the fetched event model
 			const fieldsToPopulate = [ 'contact', 'address.state' ];
@@ -257,8 +257,8 @@ exports.submitEvent = function submitEvent( req, res, next ) {
 			console.error( err );
 			// create an error flash message
 			req.flash( 'error', {
-						title: 'Something went wrong while creating your event.',
-						detail: 'We are looking into the issue and will email a status update once it\'s resolved' } );
+						title: 'Something went wrong while submitting your event.',
+						detail: 'If this issue persists, please notify MARE at <a href="mailto:communications@mareinc.org">communications@mareinc.org</a>' } );
 		})
 		// execute the following regardless of whether the promises were resolved or rejected
 		// TODO: this should be replaced with ES6 Promise.prototype.finally() once it's finalized, assuming we can update to the latest version of Node if we upgrade Keystone
