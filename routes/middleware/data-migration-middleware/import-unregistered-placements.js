@@ -1,5 +1,6 @@
 const keystone					= require( 'keystone' );
 const Placement 				= keystone.list( 'Placement' );
+const Disruption 				= keystone.list( 'Disruption' );
 // utility middleware
 const utilityFunctions			= require( './utilities_functions' );
 const utilityModelFetch			= require( './utilities_model-fetch' );
@@ -140,34 +141,70 @@ module.exports.createPlacementRecord = ( placement, pauseUntilSaved ) => {
 
 			const [ child, family ] = values;
 
-			let newPlacement = new Placement.model({
+			let newPlacement;
 
-				placementDate			: placement.placedDate ? new Date( placement.placedDate ) : undefined,
-				disruptionDate			: placement.disruptionDate ? new Date( placement.disruptionDate ) : undefined,
-				// familyAgency			: !family && agency ? agency.get( '_id' ) : undefined,
-				child					: child ? child.get( '_id' ) : undefined,
-				isUnregisteredFamily	: !placement.familyId,
-				family					: family ? family.get( '_id' ) : undefined,
-				familyDetails: {
-					name				: placement.familyName,	
-					address: {
-						street1			: placement.street1,
-						street2			: placement.street2,
-						city			: placement.city,
-						state			: placement.state ? statesMap[ placement.state ] : undefined,
-						zipCode			: placement.zipCode,
-						country			: placement.country,
-						region			: placement.region ? regionsMap[ placement.region ] : undefined
-					},
+			if( placement.placedDate && placement.disruptionDate ) {
+				console.log( 'here' );
+			}
+
+			if( placement.placedDate ) {
 			
-					phone: {
-						home			: placement.homePhone,
-						preferred		: 'home'
-					},
-			
-					email				: placement.email
-				}
-			});
+				newPlacement = new Placement.model({
+
+					placementDate			: new Date( placement.placedDate ),
+					child					: child ? child.get( '_id' ) : undefined,
+					isUnregisteredFamily	: !placement.familyId,
+					family					: family ? family.get( '_id' ) : undefined,
+					familyDetails: {
+						name				: placement.familyName,	
+						address: {
+							street1			: placement.street1,
+							street2			: placement.street2,
+							city			: placement.city,
+							state			: placement.state ? statesMap[ placement.state ] : undefined,
+							zipCode			: placement.zipCode,
+							country			: placement.country,
+							region			: placement.region ? regionsMap[ placement.region ] : undefined
+						},
+				
+						phone: {
+							home			: placement.homePhone,
+							preferred		: 'home'
+						},
+				
+						email				: placement.email
+					}
+				});
+
+			} else if ( placement.disruptionDate ) {
+
+				newPlacement = new Disruption.model({
+
+					disruptionDate			: new Date( placement.disruptionDate ),
+					child					: child ? child.get( '_id' ) : undefined,
+					isUnregisteredFamily	: !placement.familyId,
+					family					: family ? family.get( '_id' ) : undefined,
+					familyDetails: {
+						name				: placement.familyName,	
+						address: {
+							street1			: placement.street1,
+							street2			: placement.street2,
+							city			: placement.city,
+							state			: placement.state ? statesMap[ placement.state ] : undefined,
+							zipCode			: placement.zipCode,
+							country			: placement.country,
+							region			: placement.region ? regionsMap[ placement.region ] : undefined
+						},
+				
+						phone: {
+							home			: placement.homePhone,
+							preferred		: 'home'
+						},
+				
+						email				: placement.email
+					}
+				});
+			}
 
 			// save the new placement record
 			newPlacement.save( ( err, savedModel ) => {
