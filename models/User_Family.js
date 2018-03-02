@@ -334,6 +334,7 @@ Family.add( 'Permissions', {
 
 // Set up relationship values to show up at the bottom of the model if any exist
 Family.relationship( { ref: 'Inquiry', refPath: 'family', path: 'inquiries', label: 'inquiries' } );
+Family.relationship( { ref: 'Match', refPath: 'family', path: 'matches', label: 'matches' } );
 Family.relationship( { ref: 'Placement', refPath: 'family', path: 'placements', label: 'placements' } );
 Family.relationship( { ref: 'Legalization', refPath: 'family', path: 'legalizations', label: 'legalizations' } );
 Family.relationship( { ref: 'Disruption', refPath: 'family', path: 'disruptions', label: 'disruptions' } );
