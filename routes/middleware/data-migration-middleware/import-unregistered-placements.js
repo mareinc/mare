@@ -17,12 +17,16 @@ let migrationResults;
 let importErrors = [];
 // create references to the maps that we stored on locals.  These are bound here to be available to multiple functions below since res can't be passed to the generator
 let statesMap,
-	regionsMap;
+	regionsMap,
+	racesMap,
+	familyConstellationsMap;
 
 module.exports.importPlacements = ( req, res, done ) => {
 	// expose the maps we'll need for this import
-	statesMap	= res.locals.migration.maps.states;
-	regionsMap	= res.locals.migration.maps.regions;
+	statesMap				= res.locals.migration.maps.states;
+	regionsMap				= res.locals.migration.maps.regions;
+	racesMap				= res.locals.migration.maps.races;
+	familyConstellationsMap	= res.locals.migration.maps.familyConstellations;
 	// expose done to our generator
 	placementsImportComplete = done;
 	// expose our migration results array
@@ -60,7 +64,7 @@ module.exports.importPlacements = ( req, res, done ) => {
 					country: child.placement_country,
 					email: child.placement_email,
 					agencyId: child.placement_agency,
-					familyConstellation: child.placement_constellation,
+					familyConstellationId: child.placement_constellation,
 					raceId: child.placement_rce_id
 				}
 			});
@@ -143,10 +147,6 @@ module.exports.createPlacementRecord = ( placement, pauseUntilSaved ) => {
 
 			let newPlacement;
 
-			if( placement.placedDate && placement.disruptionDate ) {
-				console.log( 'here' );
-			}
-
 			if( placement.placedDate ) {
 			
 				newPlacement = new Placement.model({
@@ -156,7 +156,11 @@ module.exports.createPlacementRecord = ( placement, pauseUntilSaved ) => {
 					isUnregisteredFamily	: !placement.familyId,
 					family					: family ? family.get( '_id' ) : undefined,
 					familyDetails: {
-						name				: placement.familyName,	
+						name				: placement.familyName,
+
+						constellation: familyConstellationsMap[ placement.familyConstellationId ],
+						race: racesMap[ placement.raceId ],
+						
 						address: {
 							street1			: placement.street1,
 							street2			: placement.street2,
@@ -185,7 +189,11 @@ module.exports.createPlacementRecord = ( placement, pauseUntilSaved ) => {
 					isUnregisteredFamily	: !placement.familyId,
 					family					: family ? family.get( '_id' ) : undefined,
 					familyDetails: {
-						name				: placement.familyName,	
+						name				: placement.familyName,
+
+						constellation: familyConstellationsMap[ placement.familyConstellationId ],
+						race: racesMap[ placement.raceId ],
+
 						address: {
 							street1			: placement.street1,
 							street2			: placement.street2,

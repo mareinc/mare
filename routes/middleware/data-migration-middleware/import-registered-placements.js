@@ -1,4 +1,5 @@
 const keystone					= require( 'keystone' );
+const Match						= keystone.list( 'Match' );
 const Placement 				= keystone.list( 'Placement' );
 const Disruption 				= keystone.list( 'Disruption' );
 const Legalization 				= keystone.list( 'Legalization' );
@@ -117,7 +118,9 @@ module.exports.createPlacementRecord = ( placement, pauseUntilSaved ) => {
 				newPlacement = new Placement.model({
 					
 					placementDate		: placement.status_change_date ? new Date( placement.status_change_date ) : undefined,
-					familyAgency		: family ? family.get( 'agency' ) : undefined,
+					familyDetails: {
+						agency: family ? family.get( 'agency' ) : undefined
+					},
 					notes				: placement.comment,
 					isUnregisteredChild	: !child,
 					child				: child ? child.get( '_id' ) : undefined,
@@ -135,7 +138,9 @@ module.exports.createPlacementRecord = ( placement, pauseUntilSaved ) => {
 				newPlacement = new Legalization.model({
 					
 					legalizationDate	: placement.status_change_date ? new Date( placement.status_change_date ) : undefined,
-					familyAgency		: family ? family.get( 'agency' ) : undefined,
+					familyDetails: {
+						agency: family ? family.get( 'agency' ) : undefined
+					},
 					notes				: placement.comment,
 					isUnregisteredChild	: !child,
 					child				: child ? child.get( '_id' ) : undefined,
@@ -153,7 +158,9 @@ module.exports.createPlacementRecord = ( placement, pauseUntilSaved ) => {
 				newPlacement = new Disruption.model({
 					
 					disruptionDate		: placement.status_change_date ? new Date( placement.status_change_date ) : undefined,
-					familyAgency		: family ? family.get( 'agency' ) : undefined,
+					familyDetails: {
+						agency: family ? family.get( 'agency' ) : undefined
+					},
 					notes				: placement.comment,
 					isUnregisteredChild	: !child,
 					child				: child ? child.get( '_id' ) : undefined,
@@ -165,7 +172,30 @@ module.exports.createPlacementRecord = ( placement, pauseUntilSaved ) => {
 					isUnregisteredFamily: !family,
 					family				: family ? family.get( '_id' ) : undefined	
 				});
-			} else
+
+			} else if( [ 'M', 'N' ].includes( placement.status ) ) {
+
+				newPlacement = new Match.model({
+					
+					matchDate			: placement.status_change_date ? new Date( placement.status_change_date ) : undefined,
+					status				: placement.status === 'M' ? 'matched' :
+										  placement.status === 'N' ? 'not matched' :
+										  undefiend,
+					familyDetails: {
+						agency: family ? family.get( 'agency' ) : undefined
+					},
+					notes				: placement.comment,
+					isUnregisteredChild	: !child,
+					child				: child ? child.get( '_id' ) : undefined,
+					childDetails: {
+						firstName		: !child ? placement.chd_first_name : undefined,
+						lastName		: !child ? placement.chd_last_name : undefined,
+						status			: !child ? childStatusesMap[ placement.status ] : undefined
+					},
+					isUnregisteredFamily: !family,
+					family				: family ? family.get( '_id' ) : undefined	
+				});
+			}
 
 			// save the new placement record
 			newPlacement.save( ( err, savedModel ) => {
