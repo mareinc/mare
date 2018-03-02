@@ -19,6 +19,7 @@ var Family = new keystone.List( 'Family', {
 	autokey		: { path: 'key', from: 'registrationNumber', unique: true },
 	map			: { name: 'displayNameAndRegistration' },
 	defaultSort	: 'displayName',
+	searchFields: 'displayNameAndRegistration, contact1.name.full, contact2.name.full',
 	hidden		: false
 });
 
