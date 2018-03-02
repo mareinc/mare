@@ -195,12 +195,15 @@
 						child.set( 'isBookmarked', true );
 					}
 				});
-				// update the isBookmarked field for the target child model in the master children collection
-				mare.collections.allChildren.each( function( child ) {
-					if( child.get( 'registrationNumber' ) === registrationNumber ) {
-						child.set( 'isBookmarked', true );
-					}
-				});
+				// we need to check for existence of the collection because it's present in the gallery, but no on a user's account page
+				if( mare.collections.allChildren ) {
+					// update the isBookmarked field for the target child model in the master children collection
+					mare.collections.allChildren.each( function( child ) {
+						if( child.get( 'registrationNumber' ) === registrationNumber ) {
+							child.set( 'isBookmarked', true );
+						}
+					});
+				}
 				// emit an event on the collection showing that the child's bookmark has been updated
 				// this is bound to the collection so other views bound to the same data ( the details modal ) can respond
 				mare.collections.galleryChildren.trigger( 'childBookmarkUpdated', registrationNumber, 'add' );
@@ -227,12 +230,15 @@
 						child.set( 'isBookmarked', false );
 					}
 				});
-				// update the isBookmarked field for the target child model in the master children collection
-				mare.collections.allChildren.each( function( child ) {
-					if( child.get( 'registrationNumber' ) === registrationNumber ) {
-						child.set( 'isBookmarked', false );
-					}
-				});
+				// we need to check for existence of the collection because it's present in the gallery, but no on a user's account page
+				if( mare.collections.allChildren ) {
+					// update the isBookmarked field for the target child model in the master children collection
+					mare.collections.allChildren.each( function( child ) {
+						if( child.get( 'registrationNumber' ) === registrationNumber ) {
+							child.set( 'isBookmarked', false );
+						}
+					});
+				}
 				// TODO: the following event and all like it should trigger off the isBookmarked attribute changing
 				// emit an event on the collection showing that the child's bookmark has been updated
 				// this is bound to the collection so other views bound to the same data ( the details modal ) can respond
@@ -268,12 +274,15 @@
 						siblingGroup.set( 'isBookmarked', true );
 					}
 				});
-				// update the isBookmarked field for the target siblingGroup model in the master sibling group collection
-				mare.collections.allSiblingGroups.each( function( siblingGroup ) {
-					if( _.intersection( registrationNumbersArray, siblingGroup.get( 'registrationNumbers' ) ).length > 0 ) {
-						siblingGroup.set( 'isBookmarked', true );
-					}
-				});
+				// we need to check for existence of the collection because it's present in the gallery, but no on a user's account page
+				if( mare.collections.allSiblingGroups ) {
+					// update the isBookmarked field for the target siblingGroup model in the master sibling group collection
+					mare.collections.allSiblingGroups.each( function( siblingGroup ) {
+						if( _.intersection( registrationNumbersArray, siblingGroup.get( 'registrationNumbers' ) ).length > 0 ) {
+							siblingGroup.set( 'isBookmarked', true );
+						}
+					});
+				}
 				// emit an event on the collection showing that the sibling group's bookmark has been updated
 				// this is bound to the collection so other views bound to the same data ( the details modal ) can respond
 				mare.collections.galleryChildren.trigger( 'siblingGroupBookmarkUpdated', registrationNumbers, 'add' );
@@ -307,12 +316,15 @@
 						siblingGroup.set( 'isBookmarked', false );
 					}
 				});
-				// update the isBookmarked field for the target siblingGroup model in the master sibling group collection
-				mare.collections.allSiblingGroups.each( function( siblingGroup ) {
-					if( _.intersection( registrationNumbersArray, siblingGroup.get( 'registrationNumbers' ) ).length > 0 ) {
-						siblingGroup.set( 'isBookmarked', false );
-					}
-				});
+				// we need to check for existence of the collection because it's present in the gallery, but no on a user's account page
+				if( mare.collections.allSiblingGroups ) {
+					// update the isBookmarked field for the target siblingGroup model in the master sibling group collection
+					mare.collections.allSiblingGroups.each( function( siblingGroup ) {
+						if( _.intersection( registrationNumbersArray, siblingGroup.get( 'registrationNumbers' ) ).length > 0 ) {
+							siblingGroup.set( 'isBookmarked', false );
+						}
+					});
+				}
 				// emit an event on the collection showing that the sibling group's bookmark has been updated
 				// this is bound to the collection so other views bound to the same data ( the details modal ) can respond
 				mare.collections.galleryChildren.trigger( 'siblingGroupBookmarkUpdated', registrationNumbers, 'remove' );
