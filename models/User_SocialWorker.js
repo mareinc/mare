@@ -89,6 +89,7 @@ SocialWorker.relationship( { ref: 'Inquiry', refPath: 'socialWorker', path: 'my-
 SocialWorker.relationship( { ref: 'Inquiry', refPath: 'childsSocialWorker', path: 'family-inquiries', label: 'family inquiries' } );
 SocialWorker.relationship( { ref: 'Mailing List', refPath: 'socialWorkerSubscribers', path: 'mailing-lists', label: 'mailing lists' } );
 SocialWorker.relationship( { ref: 'Event', refPath: 'socialWorkerAttendees', path: 'events', label: 'events' } );
+SocialWorker.relationship( { ref: 'Donation', refPath: 'socialWorker', path: 'donations', label: 'donations' } );
 SocialWorker.relationship( { ref: 'Internal Note', refPath: 'socialWorker', path: 'internal-notes', label: 'internal notes' } );
 SocialWorker.relationship( { ref: 'Social Worker History', refPath: 'socialWorker', path: 'social-worker-histories', label: 'change history' } );
 

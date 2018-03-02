@@ -9,9 +9,6 @@ Placement.add( 'Placement', {
 
 	placementDate: { type: Types.Date, label: 'placement date', format: 'MM/DD/YYYY', utc: true, initial: true },
 	
-	familyAgency: { type: Types.Relationship, label: 'family\'s agency', ref: 'Agency', dependsOn: { isUnregisteredFamily: false }, filters: { isActive: true }, initial: true },
-	constellation: { type: Types.Relationship, label: 'constellation', ref: 'Family Constellation', dependsOn: { isUnregisteredFamily: true }, initial: true },
-	race: { type: Types.Relationship, label: 'race', ref: 'Race', dependsOn: { isUnregisteredFamily: true }, many: true, initial: true },
 	source: { type: Types.Relationship, label: 'source', ref: 'Source', filters: { isActive: true }, initial: true },
 	additionalSources: { type: Types.Relationship, label: 'additional sources', ref: 'Source', filters: { isActive: true }, many: true, initial: true },
 	notes: { type: Types.Textarea, label: 'notes', initial: true }
@@ -36,6 +33,10 @@ Placement.add( 'Placement', {
 
 	familyDetails: {
 		name: { type: Types.Text, label: 'family name', dependsOn: { isUnregisteredFamily: true }, initial: true },
+
+		agency: { type: Types.Relationship, label: 'family\'s agency', ref: 'Agency', dependsOn: { isUnregisteredFamily: false }, filters: { isActive: true }, initial: true },
+		constellation: { type: Types.Relationship, label: 'constellation', ref: 'Family Constellation', dependsOn: { isUnregisteredFamily: true }, initial: true },
+		race: { type: Types.Relationship, label: 'race', ref: 'Race', dependsOn: { isUnregisteredFamily: true }, many: true, initial: true },
 
 		address: {
 			street1: { type: Types.Text, label: 'address Line 1', dependsOn: { isUnregisteredFamily: true }, initial: true },
