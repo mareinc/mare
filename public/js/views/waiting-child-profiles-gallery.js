@@ -189,8 +189,14 @@
 					registrationNumber: registrationNumber
 				}
 			}).done( function( response ) {
-				// update the isBookmarked field for the target child model
+				// update the isBookmarked field for the target child model in the display collection
 				mare.collections.galleryChildren.each( function( child ) {
+					if( child.get( 'registrationNumber' ) === registrationNumber ) {
+						child.set( 'isBookmarked', true );
+					}
+				});
+				// update the isBookmarked field for the target child model in the master children collection
+				mare.collections.allChildren.each( function( child ) {
 					if( child.get( 'registrationNumber' ) === registrationNumber ) {
 						child.set( 'isBookmarked', true );
 					}
@@ -215,8 +221,14 @@
 					registrationNumber: registrationNumber
 				}
 			}).done( function( response ) {
-				// update the isBookmarked field for the target child model
+				// update the isBookmarked field for the target child model in the display collection
 				mare.collections.galleryChildren.each( function( child ) {
+					if( child.get( 'registrationNumber' ) === registrationNumber ) {
+						child.set( 'isBookmarked', false );
+					}
+				});
+				// update the isBookmarked field for the target child model in the master children collection
+				mare.collections.allChildren.each( function( child ) {
 					if( child.get( 'registrationNumber' ) === registrationNumber ) {
 						child.set( 'isBookmarked', false );
 					}
@@ -250,8 +262,14 @@
 					return Number.parseInt( numberAsString, 10 );
 				});
 
-				// update the isBookmarked field for the target siblingGroup model
+				// update the isBookmarked field for the target siblingGroup model in the display collection
 				mare.collections.gallerySiblingGroups.each( function( siblingGroup ) {
+					if( _.intersection( registrationNumbersArray, siblingGroup.get( 'registrationNumbers' ) ).length > 0 ) {
+						siblingGroup.set( 'isBookmarked', true );
+					}
+				});
+				// update the isBookmarked field for the target siblingGroup model in the master sibling group collection
+				mare.collections.allSiblingGroups.each( function( siblingGroup ) {
 					if( _.intersection( registrationNumbersArray, siblingGroup.get( 'registrationNumbers' ) ).length > 0 ) {
 						siblingGroup.set( 'isBookmarked', true );
 					}
@@ -283,8 +301,14 @@
 					return Number.parseInt( numberAsString, 10 );
 				});
 
-				// update the isBookmarked field for the target siblingGroup model
+				// update the isBookmarked field for the target siblingGroup model in the display collection
 				mare.collections.gallerySiblingGroups.each( function( siblingGroup ) {
+					if( _.intersection( registrationNumbersArray, siblingGroup.get( 'registrationNumbers' ) ).length > 0 ) {
+						siblingGroup.set( 'isBookmarked', false );
+					}
+				});
+				// update the isBookmarked field for the target siblingGroup model in the master sibling group collection
+				mare.collections.allSiblingGroups.each( function( siblingGroup ) {
 					if( _.intersection( registrationNumbersArray, siblingGroup.get( 'registrationNumbers' ) ).length > 0 ) {
 						siblingGroup.set( 'isBookmarked', false );
 					}
