@@ -359,31 +359,32 @@ Family.schema.post( 'init', function() {
 // Pre Save
 Family.schema.pre( 'save', function( next ) {
 	'use strict';
-	// trim whitespace characters from any type.Text fields
-	this.trimTextFields();
-	// update the homestudy verified date
-	this.setHomestudyVerifiedDate();
-	// create a full name for each contact based on their first, middle, and last names
-	this.setFullNames();
-	// set the display - a readable combination of contact 1's and contact 2's full name
-	this.setDisplayName();
-	// create an identifying name for file uploads
-	this.setFileName();
-	// all user types that can log in derive from the User model, this allows us to identify users better
-	this.setUserType();
+	// // trim whitespace characters from any type.Text fields
+	// this.trimTextFields();
+	// // update the homestudy verified date
+	// this.setHomestudyVerifiedDate();
+	// // create a full name for each contact based on their first, middle, and last names
+	// this.setFullNames();
+	// // set the display - a readable combination of contact 1's and contact 2's full name
+	// this.setDisplayName();
+	// // create an identifying name for file uploads
+	// this.setFileName();
+	// // all user types that can log in derive from the User model, this allows us to identify users better
+	// this.setUserType();
 
-	// there are two fields containing the city, depending on whether the family is in MA or not.  Save the value to a common field for display
-	const displayCityUpdated = this.setDisplayCity();
-	// attempt to update the no-edit region field
-	const regionUpdated = this.updateRegion();
+	// // there are two fields containing the city, depending on whether the family is in MA or not.  Save the value to a common field for display
+	// const displayCityUpdated = this.setDisplayCity();
+	// // attempt to update the no-edit region field
+	// const regionUpdated = this.updateRegion();
 	// set the noedit fields associated with the social worker's agency
 	const socialWorkerAgencyFieldsSet = this.setSocialWorkerAgencyFields();
-	// determine whether the family can view all children or just the publicly visible ones
-	const galleryViewingPermissionsSet = this.setGalleryViewingPermissions();
-	// set the registration number for the family
-	const registrationNumberSet = this.setRegistrationNumber();
+	// // determine whether the family can view all children or just the publicly visible ones
+	// const galleryViewingPermissionsSet = this.setGalleryViewingPermissions();
+	// // set the registration number for the family
+	// const registrationNumberSet = this.setRegistrationNumber();
 
-	Promise.all( [ displayCityUpdated, regionUpdated, socialWorkerAgencyFieldsSet, galleryViewingPermissionsSet, registrationNumberSet ] )
+	// Promise.all( [ displayCityUpdated, regionUpdated, socialWorkerAgencyFieldsSet, galleryViewingPermissionsSet, registrationNumberSet ] )
+	socialWorkerAgencyFieldsSet
 		// if there was an error with any of the promises
 		.catch( err => {
 			// log it for debugging purposes
@@ -392,36 +393,36 @@ Family.schema.pre( 'save', function( next ) {
 		// execute the following regardless of whether the promises were resolved or rejected
 		// TODO: this should be replaced with ES6 Promise.prototype.finally() once it's finalized, assuming we can update to the latest version of Node if we upgrade Keystone
 		.then( () => {
-			// create a unique label for each family based on their display names and their registration number
-			this.setDisplayNameAndRegistrationLabel();
+			// // create a unique label for each family based on their display names and their registration number
+			// this.setDisplayNameAndRegistrationLabel();
 
 			next();
 		});
 });
 
-Family.schema.post( 'save', function() {
+// Family.schema.post( 'save', function() {
 
-	// we need this id in case the family was created via the website and updatedBy is empty
-	const migrationBotFetched = UserServiceMiddleware.getUserByFullName( 'Migration Bot', 'admin' );
+// 	// we need this id in case the family was created via the website and updatedBy is empty
+// 	const migrationBotFetched = UserService.getUserByFullName( 'Migration Bot', 'admin' );
 
-	// if the bot user was fetched successfully
-	migrationBotFetched
-		.then( bot => {
-			// set the updatedBy field to the bot's _id if the field isn't already set
-			this.updatedBy = this.updatedBy || bot.get( '_id' );
-		})
-		// if there was an error fetching the bot user
-		.catch( err => {
-			// log it for debugging purposes
-			console.error( `Migration Bot could not be fetched for family ${ this.displayName } ( registration number: ${ this.registrationNumber } ) - ${ err }` );
-		})
-		// execute the following regardless of whether the promises were resolved or rejected
-		// TODO: this should be replaced with ES6 Promise.prototype.finally() once it's finalized, assuming we can update to the latest version of Node if we upgrade Keystone
-		.then( () => {
-			// process change history
-			this.setChangeHistory();
-		});
-});
+// 	// if the bot user was fetched successfully
+// 	migrationBotFetched
+// 		.then( bot => {
+// 			// set the updatedBy field to the bot's _id if the field isn't already set
+// 			this.updatedBy = this.updatedBy || bot.get( '_id' );
+// 		})
+// 		// if there was an error fetching the bot user
+// 		.catch( err => {
+// 			// log it for debugging purposes
+// 			console.error( `Migration Bot could not be fetched for family ${ this.displayName } ( registration number: ${ this.registrationNumber } ) - ${ err }` );
+// 		})
+// 		// execute the following regardless of whether the promises were resolved or rejected
+// 		// TODO: this should be replaced with ES6 Promise.prototype.finally() once it's finalized, assuming we can update to the latest version of Node if we upgrade Keystone
+// 		.then( () => {
+// 			// process change history
+// 			this.setChangeHistory();
+// 		});
+// });
 
 /* TODO: VERY IMPORTANT:  Need to fix this to provide the link to access the keystone admin panel again */
 /* 						  Changing names or reworking this file changed the check in node_modules/keystone/templates/views/signin.jade
