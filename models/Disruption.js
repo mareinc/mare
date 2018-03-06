@@ -60,5 +60,5 @@ Disruption.add( 'Disruption', {
 });
 
 // Define default columns in the admin interface and register the model
-Disruption.defaultColumns = 'disruptionDate, child, family, family.name, source';
+Disruption.defaultColumns = 'disruptionDate, child, family, family.name, notes';
 Disruption.register();
