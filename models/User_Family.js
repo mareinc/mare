@@ -5,9 +5,11 @@ const keystone					= require( 'keystone' ),
 	  Types						= keystone.Field.Types,
 	  User						= require( './User' ),
 	  ChangeHistoryMiddleware	= require( '../routes/middleware/models_change-history' ),
-	  UserServiceMiddleware		= require( '../routes/middleware/service_user' ),
-	  FamilyServiceMiddleware	= require( '../routes/middleware/service_family' ),
-	  ListServiceMiddleware		= require( '../routes/middleware/service_lists' );
+	  SocialWorkerService		= require( '../routes/middleware/service_social-worker' ),
+	  AgencyService				= require( '../routes/middleware/service_agency' ),
+	  UserService				= require( '../routes/middleware/service_user' ),
+	  FamilyService				= require( '../routes/middleware/service_family' ),
+	  ListService				= require( '../routes/middleware/service_lists' );
 
 // Export to make it available using require.  The keystone.list import throws a ReferenceError when importing a list that comes later when sorting alphabetically
 const ContactGroup = require( './ContactGroup' );
@@ -254,7 +256,9 @@ Family.add( 'Permissions', {
 
 	socialWorker: { type: Types.Relationship, label: 'social worker', ref: 'Social Worker', initial: true },
 	socialWorkerNotListed: { type: Types.Boolean, label: 'social worker isn\'t listed', default: false, initial: true },
-	socialWorkerText: { type: Types.Text, label: 'social worker', dependsOn: { socialWorkerNotListed: true }, initial: true }
+	socialWorkerText: { type: Types.Text, label: 'social worker', dependsOn: { socialWorkerNotListed: true }, initial: true },
+	socialWorkerAgency: { type: Types.Relationship, label: `social worker's agency`, dependsOn: { socialWorkerNotListed: false }, ref: 'Agency', noedit: true },
+	socialWorkerAgencyRegion: { type: Types.Relationship, label: `social worker's region`, dependsOn: { socialWorkerNotListed: false }, ref: 'Region', noedit: true }
 
 }, 'Family Services', {
 
@@ -372,12 +376,14 @@ Family.schema.pre( 'save', function( next ) {
 	const displayCityUpdated = this.setDisplayCity();
 	// attempt to update the no-edit region field
 	const regionUpdated = this.updateRegion();
+	// set the noedit fields associated with the social worker's agency
+	const socialWorkerAgencyFieldsSet = this.setSocialWorkerAgencyFields();
 	// determine whether the family can view all children or just the publicly visible ones
 	const galleryViewingPermissionsSet = this.setGalleryViewingPermissions();
 	// set the registration number for the family
 	const registrationNumberSet = this.setRegistrationNumber();
 
-	Promise.all( [ displayCityUpdated, regionUpdated, galleryViewingPermissionsSet, registrationNumberSet ] )
+	Promise.all( [ displayCityUpdated, regionUpdated, socialWorkerAgencyFieldsSet, galleryViewingPermissionsSet, registrationNumberSet ] )
 		// if there was an error with any of the promises
 		.catch( err => {
 			// log it for debugging purposes
@@ -396,7 +402,7 @@ Family.schema.pre( 'save', function( next ) {
 Family.schema.post( 'save', function() {
 
 	// we need this id in case the family was created via the website and updatedBy is empty
-	const websiteBotFetched = UserServiceMiddleware.getUserByFullName( 'Website Bot', 'admin' );
+	const websiteBotFetched = UserService.getUserByFullName( 'Website Bot', 'admin' );
 
 	// if the bot user was fetched successfully
 	websiteBotFetched
@@ -653,7 +659,7 @@ Family.schema.methods.setDisplayCity = function() {
 		// if the family lives in Massachusetts
 		} else {
 			// the city is a Relationship field, fetch it and return the name
-			const fetchCityOrTown = ListServiceMiddleware.getCityOrTownById( this.address.city );
+			const fetchCityOrTown = ListService.getCityOrTownById( this.address.city );
 			// if the city or town was fetched without error
 			fetchCityOrTown
 				.then( cityOrTown => {
@@ -696,7 +702,7 @@ Family.schema.methods.updateRegion = function() {
 		// if the agency is outside MA
 		if( this.address.isOutsideMassachusetts ) {
 			// fetch the region model with the name 'out of state'
-			const fetchRegion = ListServiceMiddleware.getRegionByName( 'Out of state' );
+			const fetchRegion = ListService.getRegionByName( 'Out of state' );
 			// if the region was fetched without error
 			fetchRegion
 				.then( region => {
@@ -715,7 +721,7 @@ Family.schema.methods.updateRegion = function() {
 		// otherwise, if the agency is in MA
 		} else {
 			// fetch the city or town model saved for the agency
-			const fetchCityOrTown = ListServiceMiddleware.getCityOrTownById( this.address.city );
+			const fetchCityOrTown = ListService.getCityOrTownById( this.address.city );
 			// if the city or town was fetched without error
 			fetchCityOrTown
 				.then( cityOrTown => {
@@ -735,6 +741,44 @@ Family.schema.methods.updateRegion = function() {
 	});
 };
 
+Family.schema.methods.setSocialWorkerAgencyFields = function() {
+
+	return new Promise( ( resolve, reject ) => {
+
+		if( !this.socialWorker ) {
+			return resolve();
+		}
+
+		const fetchSocialwWorker = SocialWorkerService.getSocialWorkerById( this.socialWorker );
+
+		// if the social worker was fetched successfully
+		fetchSocialwWorker
+			.then( socialWorker => {
+				// attempt to find the social worker's agency
+				return AgencyService.getAgencyById( socialWorker.agency );
+			})
+			// if the social worker's agency was found successfully
+			.then( agency => {
+				// set the social worker agency for the child
+				this.socialWorkerAgency = agency.get( '_id' );
+				// set the social worker agency region for the child
+				this.socialWorkerAgencyRegion = agency.address.region;
+				// resolve the promise
+				resolve();
+			})
+			// if any of the promises were rejected
+			.catch( err => {
+				// log the error for debugging purposes
+				console.error( `error saving the family's social worker agency fields - ${ err }` );
+				// clear out the social worker agency fields
+				this.socialWorkerAgency = undefined;
+				this.socialWorkerAgencyRegion = undefined;
+				// resolve the promise so that the Promise.all() in the pre-save hook does not fail
+				resolve();
+			});
+	});
+};
+
 Family.schema.methods.setGalleryViewingPermissions = function() {
 	'use strict';
 
@@ -747,7 +791,7 @@ Family.schema.methods.setGalleryViewingPermissions = function() {
 			return resolve();
 		}
 		// fetch the state model saved for the agency
-		const fetchState = ListServiceMiddleware.getStateById( this.address.state );
+		const fetchState = ListService.getStateById( this.address.state );
 		// if the state was fetched without error
 		fetchState
 			.then( state => {
@@ -786,7 +830,7 @@ Family.schema.methods.setRegistrationNumber = function() {
 		} else {
 			// get the maximum registration number across all families
 			// TODO: combine this with Child service getMaxRegistrationNumber
-			const fetchMaxRegistrationNumber = FamilyServiceMiddleware.getMaxRegistrationNumber();
+			const fetchMaxRegistrationNumber = FamilyService.getMaxRegistrationNumber();
 			// once the value has been fetched
 			fetchMaxRegistrationNumber
 				.then( registrationNumber => {
