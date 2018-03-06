@@ -181,10 +181,6 @@ module.exports.updatePlacementRecord = ( childId, sources, pauseUntilSaved ) => 
 			const additionalSourcesIds = additionalSources ? additionalSources.map( source => source.get( 'id' ) ) : undefined;
 
 			let placementPromises = [];
-
-			if( targets.length > 1 ) {
-				console.log( 'here' );
-			}
 			
 			for( let target of targets ) {
 
