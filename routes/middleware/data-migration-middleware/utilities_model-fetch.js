@@ -14,6 +14,9 @@ const keystone			= require( 'keystone' ),
 	  Inquiry			= keystone.list( 'Inquiry' ),
 	  MailingList		= keystone.list( 'Mailing List' ),
 	  OutsideContact	= keystone.list( 'Outside Contact' ),
+	  Disruption		= keystone.list( 'Disruption' ),
+	  Legalization		= keystone.list( 'Legalization' ),
+	  Match				= keystone.list( 'Match' ),
 	  Placement			= keystone.list( 'Placement' );
 
 module.exports.getSourceById = id => {
@@ -575,12 +578,81 @@ module.exports.getOutsideContactsByOldIds = ids => {
 		});
 };
 
+module.exports.getDisruptionsByChildId = id => {
+	
+	return new Promise( ( resolve, reject ) => {
+	
+		if( !id ) {
+			return reject( `error fetching disruptions - no child id provided` );
+		}
+
+		Disruption.model
+			.find()
+			.where( 'child', id )
+			.exec()
+			.then( disruptions => {
+				// otherwise, accept the promise and pass back the retrieved disruptions
+				resolve( disruptions );
+
+			}, err => {
+
+				reject( `error in getDisruptionsByChildId() - ${ err }` );
+			});
+	});
+};
+
+module.exports.getLegalizationsByChildId = id => {
+	
+	return new Promise( ( resolve, reject ) => {
+	
+		if( !id ) {
+			return reject( `error fetching legalizations - no child id provided` );
+		}
+
+		Legalization.model
+			.find()
+			.where( 'child', id )
+			.exec()
+			.then( legalizations => {
+				// otherwise, accept the promise and pass back the retrieved legalizations
+				resolve( legalizations );
+
+			}, err => {
+
+				reject( `error in getLegalizationsByChildId() - ${ err }` );
+			});
+	});
+};
+
+module.exports.getMatchesByChildId = id => {
+	
+	return new Promise( ( resolve, reject ) => {
+	
+		if( !id ) {
+			return reject( `error fetching matches - no child id provided` );
+		}
+
+		Match.model
+			.find()
+			.where( 'child', id )
+			.exec()
+			.then( matches => {
+				// otherwise, accept the promise and pass back the retrieved matches
+				resolve( matches );
+
+			}, err => {
+
+				reject( `error in getMatchesByChildId() - ${ err }` );
+			});
+	});
+};
+
 module.exports.getPlacementsByChildId = id => {
 	
 	return new Promise( ( resolve, reject ) => {
 	
 		if( !id ) {
-			return reject( `error fetching placements by child id ${ id }` );
+			return reject( `error fetching placements - no child id provided` );
 		}
 
 		Placement.model
@@ -588,17 +660,12 @@ module.exports.getPlacementsByChildId = id => {
 			.where( 'child', id )
 			.exec()
 			.then( placements => {
-				// if no placements was found
-				if( !placements ) {
-					// and reject the promise
-					reject( `error fetching placements by child id ${ id }` );
-				}
-				// otherwise, accept the promise and pass back the retrieved placement
+				// otherwise, accept the promise and pass back the retrieved placements
 				resolve( placements );
 
 			}, err => {
 
-				reject( `error in getPlacementsByChildId() ${ err }` );
+				reject( `error in getPlacementsByChildId() - ${ err }` );
 			});
 	});
 };

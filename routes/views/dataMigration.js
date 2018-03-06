@@ -146,9 +146,9 @@ exports = module.exports = ( req, res ) => {
 		// done => { familyChildrenImport.appendFamilyChildren( req, res, done ); },
 		// done => { familyRecruitmentChecklistImport.appendFamilyRecruitmentChecklists( req, res ,done ); // not done // DON'T NEED TO DO
 
-		done => { registeredPlacementsImport.importPlacements( req, res, done ); },
+		// done => { registeredPlacementsImport.importPlacements( req, res, done ); },
 		// done => { unregisteredPlacementsImport.importPlacements( req, res, done ); },
-		// done => { placementSourcesImport.appendPlacementSources( req, res, done ); },
+		done => { placementSourcesImport.appendPlacementSources( req, res, done ); },
 		// done => { inquiriesImport.importInquiries( req, res, done ); },
 		// done => { inquiryAgenciesImport.appendInquiryAgencies( req, res, done ); },
 		// done => { inquiryChildrenImport.appendInquiryChildren( req, res, done ); },

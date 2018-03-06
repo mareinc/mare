@@ -1,10 +1,9 @@
-const keystone					= require( 'keystone' );
-const Inquiry 					= keystone.list( 'Inquiry' );
-// utility middleware
-const utilityFunctions			= require( './utilities_functions' );
-const utilityModelFetch			= require( './utilities_model-fetch' );
-// csv conversion middleware
-const CSVConversionMiddleware	= require( './utilities_csv-conversion' );
+const keystone					= require( 'keystone' ),
+	  _							= require( 'underscore' ),
+	  Inquiry 					= keystone.list( 'Inquiry' ),
+	  utilityFunctions			= require( './utilities_functions' ),
+	  utilityModelFetch			= require( './utilities_model-fetch' ),
+	  CSVConversionMiddleware	= require( './utilities_csv-conversion' );
 
 // create an array to hold all placement sources.  This is created here to be available to multiple functions below
 let placementSources;
@@ -126,7 +125,7 @@ module.exports.updatePlacementRecord = ( childId, sources, pauseUntilSaved ) => 
 
 	// variables to store information returned in the promise chain
 	let fetchedChild,
-		fetchedPlacements;
+		targets = [];
 	
 	// fetch the child for the placement
 	const childLoaded = utilityModelFetch.getChildByRegistrationNumber( childId );
@@ -139,11 +138,40 @@ module.exports.updatePlacementRecord = ( childId, sources, pauseUntilSaved ) => 
 		// fetch the child and store it for later use
 		.then( () => childLoaded )
 		.then( child => fetchedChild = child )
-		.catch( err => console.error( `error fetching child by registration number ${ childId }` ) )
-		// fetch the placement and store it for later use
-		.then( () => utilityModelFetch.getPlacementsByChildId( fetchedChild ? fetchedChild.get( '_id' ) : undefined ) )
-		.then( placements => fetchedPlacements = placements.filter( placement => placement.placementDate ) )
-		.catch( err => `error fetching placements by child id` )
+		.catch( err => console.error( `error fetching child by registration number ${ childId } - ${ err }` ) )
+		// fetch the disruptions, legalizations, matches, and placements, and store them for later use
+		.then( () => {
+
+			let childId = fetchedChild ? fetchedChild.get( '_id' ) : undefined;
+
+			return Promise.all( [
+				utilityModelFetch.getDisruptionsByChildId( childId ),
+				utilityModelFetch.getLegalizationsByChildId( childId ),
+				utilityModelFetch.getMatchesByChildId( childId ),
+				utilityModelFetch.getPlacementsByChildId( childId )
+			])
+		})
+		.then( values => {
+			// store the retrieved information in local variables
+			const [ disruptions, legalizations, matches, placements ] = values;
+			// if values were returned, store the most recent one to apply the source to
+			if( !_.isEmpty( disruptions ) ) {
+				targets.push( _.max( disruptions, disruption => disruption.disruptionDate ) );
+			}
+
+			if( !_.isEmpty( legalizations ) ) {
+				targets.push( _.max( legalizations, legalization => legalization.legalizationDate ) );
+			}
+
+			if( !_.isEmpty( matches ) ) {
+				targets.push( _.max( matches, match => match.matchDate ) );
+			}
+
+			if( !_.isEmpty( placements ) ) {
+				targets.push( _.max( placements, placement => placement.placementDate ) );
+			}
+		})
+		.catch( err => `error fetching disruptions, legalizations, matches, or placements by child id - ${ err }` )
 		// fetch the sources
 		.then( () => Promise.all( [ primarySourceLoaded, additionalSourcesLoaded ] ) )
 		.then( values => {
@@ -154,15 +182,19 @@ module.exports.updatePlacementRecord = ( childId, sources, pauseUntilSaved ) => 
 
 			let placementPromises = [];
 
-			for( let placement of fetchedPlacements ) {
+			if( targets.length > 1 ) {
+				console.log( 'here' );
+			}
+			
+			for( let target of targets ) {
 
 				const placementPromise = new Promise( ( resolve, reject ) => {
 
-					placement.set( 'source', primarySource.get( 'id' ) );
-					placement.set( 'additionalSources', additionalSourcesIds );
+					target.set( 'source', primarySource.get( 'id' ) );
+					target.set( 'additionalSources', additionalSourcesIds );
 
-					// save the updated placement record
-					placement.save( ( err, savedModel ) => {
+					// save the updated target record
+					target.save( ( err, savedModel ) => {
 						// if we run into an error
 						if( err ) {
 							// store a reference to the entry that caused the error
