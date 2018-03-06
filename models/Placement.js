@@ -34,7 +34,7 @@ Placement.add( 'Placement', {
 	familyDetails: {
 		name: { type: Types.Text, label: 'family name', dependsOn: { isUnregisteredFamily: true }, initial: true },
 
-		agency: { type: Types.Relationship, label: 'family\'s agency', ref: 'Agency', note: 'this will be populated automatically if the family is registered with MARE', filters: { isActive: true }, initial: true },
+		agency: { type: Types.Relationship, label: 'family\'s agency', ref: 'Agency', note: 'this will be populated automatically if the family is registered with MARE and nothing has been selected', filters: { isActive: true }, initial: true },
 		constellation: { type: Types.Relationship, label: 'constellation', ref: 'Family Constellation', dependsOn: { isUnregisteredFamily: true }, initial: true },
 		race: { type: Types.Relationship, label: 'race', ref: 'Race', dependsOn: { isUnregisteredFamily: true }, many: true, initial: true },
 
@@ -58,6 +58,48 @@ Placement.add( 'Placement', {
 		email: { type: Types.Email, label: 'email address', dependsOn: { isUnregisteredFamily: true }, initial: true }
 	}
 });
+
+Placement.schema.pre( 'save', function( next ) {
+	// populate the family's agency field if it hasn't already been populated
+	const agencyPopulated = this.populateAgency();
+
+	agencyPopulated
+		// if there was an error populating the agency
+		.catch( err => {
+			// log the error for debugging purposes
+			console.error( err );
+		})
+		// if the agency was populated successfully
+		.then( () => {
+			// pass the flow of control out of this function
+			next();
+		});
+});
+
+Placement.schema.methods.populateAgency = function() {
+
+	return new Promise( ( resolve, reject ) => {	
+		// if the family is unregistered or an agency has already been selected
+		if( this.isUnregisteredFamily || this.familyDetails.agency ) {
+			// prevent the rest of the function from executing
+			return next();
+		// if the family is registered and the agency hasn't already been selected
+		} else {
+			// populate the family Relationship on the model
+			this.populate( 'family', err => {
+				// if there was an error populating the family field
+				if ( err ) {
+					// reject the promise with details of the error, preventing the rest of the function from executing
+					return reject( `error populating family field for placement with id ${ this.get( '_id' ) } - ${ err }` );
+				}
+				// if there were no errors, populate the agency field with the family's social worker's agency
+				this.familyDetails.agency = this.family.socialWorkerAgency;
+				// resolve the promise
+				resolve( this );
+			})
+		}
+	});
+};
 
 // Define default columns in the admin interface and register the model
 Placement.defaultColumns = 'placementDate, child, family, family.name, source';
