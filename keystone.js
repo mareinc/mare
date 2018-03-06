@@ -154,17 +154,18 @@ keystone.set('nav', {
 	'other'				: [ 'account-verification-codes', 'agencies', 'inquiries', 'internal-notes', 'mare-in-the-news' ],
 	'events'			: [ 'events' ],
 	'mailing lists'		: [ 'mailing-lists' ],
-	'relationships'		: [ 'csc-region-contacts', 'staff-email-contacts', 'matches', 'media-features', 'placements' ],
+	'placements'		: [ 'matches', 'placements', 'legalizations', 'disruptions' ],
+	'relationships'		: [ 'csc-region-contacts', 'staff-email-contacts', 'media-features' ],
 	'change tracking'	: [ 'child-histories', 'family-histories', 'social-worker-histories' ],
+	'donations'			: [ 'donations' ],
+	'images'			: [ 'featured-items', 'slideshows', 'slideshow-items' ],
+	'content pages'		: [ 'pages' ],
+	'content snippets'	: [ 'success-stories' ],
 	'lists'				: [ 'child-statuses', 'child-types', 'city-or-towns', 'closed-reasons', 'communication-methods', 'disabilities', 
 						    'email-targets', 'event-types', 'family-constellations', 'family-statuses', 'genders', 'inquiry-methods',
 						    'inquiry-types', 'languages', 'legal-statuses', 'match-determinations', 'media-eligibilities',
 							'media-types', 'other-considerations', 'other-family-constellation-considerations', 'races', 'regions',
-							'residences', 'social-worker-positions', 'sources', 'states', 'way-to-hear-about-mares' ],
-	'donations'			: [ 'donations' ],
-	'images'			: [ 'featured-items', 'slideshows', 'slideshow-items' ],
-	'content pages'		: [ 'pages' ],
-	'content snippets'	: [ 'success-stories' ]
+							'residences', 'social-worker-positions', 'sources', 'states', 'way-to-hear-about-mares' ]
 });
 
 // Start Keystone to connect to your database and initialise the web server

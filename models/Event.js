@@ -40,9 +40,9 @@ Event.add( 'General Information', {
 
 }, 'Details', {
 
-	startDate: { type: Types.Date, label: 'start date', format: 'MM/DD/YYYY', required: true, initial: true },
+	startDate: { type: Types.Date, label: 'start date', format: 'MM/DD/YYYY', utc: true, required: true, initial: true },
 	startTime: { type: Types.Text, label: 'start time', required: true, initial: true },
-	endDate: { type: Types.Date, label: 'end date', format: 'MM/DD/YYYY', required: true, initial: true },
+	endDate: { type: Types.Date, label: 'end date', format: 'MM/DD/YYYY', utc: true, required: true, initial: true },
 	endTime: { type: Types.Text, label: 'end time', required: true, initial: true },
 	description: { type: Types.Html, label: 'description', wysiwyg: true, initial: true }
 

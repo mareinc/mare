@@ -52,7 +52,7 @@ SiteVisitor.add( 'Permissions', {
 
 	infoPacket: {
 		packet: { type: Types.Select, options: 'English, Spanish, none', label: 'Packet', initial: true },
-		date: { type: Types.Date, label: 'date info packet sent', format: 'MM/DD/YYYY', initial: true },
+		date: { type: Types.Date, label: 'date info packet sent', format: 'MM/DD/YYYY', utc: true, initial: true },
 		notes: { type: Types.Textarea, label: 'notes', initial: true }
 	}
 
@@ -64,8 +64,9 @@ SiteVisitor.add( 'Permissions', {
 });
 
 // Set up relationship values to show up at the bottom of the model if any exist
-SiteVisitor.relationship({ ref: 'Mailing List', refPath: 'siteVisitorSubscribers', path: 'mailing-lists', label: 'mailing lists' });
-SiteVisitor.relationship({ ref: 'Event', refPath: 'siteVisitorAttendees', path: 'events', label: 'events' });
+SiteVisitor.relationship( { ref: 'Mailing List', refPath: 'siteVisitorSubscribers', path: 'mailing-lists', label: 'mailing lists' } );
+SiteVisitor.relationship( { ref: 'Event', refPath: 'siteVisitorAttendees', path: 'events', label: 'events' } );
+SiteVisitor.relationship( { ref: 'Donation', refPath: 'siteVisitor', path: 'donations', label: 'donations' } );
 
 // Pre Save
 SiteVisitor.schema.pre( 'save', function( next ) {

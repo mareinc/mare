@@ -16,7 +16,7 @@ InternalNotes.add( 'Target', {
 
 }, 'Note Details', {
 
-    date: { type: Types.Date, label: 'note date', format: 'MM/DD/YYYY', default: Date.now, required: true, noedit: true },
+    date: { type: Types.Date, label: 'note date', format: 'MM/DD/YYYY', utc: true, default: Date.now, required: true, noedit: true },
     employee: { type: Types.Relationship, label: 'note creator', ref: 'Admin', required: true, noedit: true, initial: true },
     note: { type: Types.Textarea, label: 'note', required: true, initial: true }
 
