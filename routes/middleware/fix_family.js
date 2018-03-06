@@ -23,11 +23,12 @@ exports.fixFamilies = function( req, res, next ) {
 /* loops through every family record, resaving them */
 function* fixFamiliesGenerator() {
 	// set the page of families to fetch
-	let page = 1,
-		errors = [];
+	let page = 1;
 
 	while( page ) {
 		console.info( `saving families ${ ( page - 1 ) * 100 } - ${ page * 100 }` );
+		// create an array to store all promises for saving families to allow batch processing
+		let familyPromises = [];
 		// fetch the page of families, waiting to execute further code until we have a result
 		const fetchedFamilies = yield fetchFamiliesByPage( page );
 		// if there was an error fetching the page of families
@@ -38,23 +39,28 @@ function* fixFamiliesGenerator() {
 		} else {
 			// loop through each of the returned family models
 			for( let family of fetchedFamilies.families ) {
-				// save the family using the saveFamily generator
-				const savedFamily = yield saveFamily( family );
-				// if there was an error
-				if( savedFamily.responseType === 'error' ) {
-					// push it to the errors array for display after all families have saved
-					errors.push( savedFamily.message );
-				}
+				// save the model using the saveModel generator
+				const familySaved = saveFamily( family );
+				// store the promise in the array of promises to batch them all together
+				familyPromises.push( familySaved );
 			}
+			// pause processing of the next page until the Promise.all has had a chance to finish running
+			yield Promise.all( familyPromises )
+				// if there was an error saving any families, log it
+				.catch( err => console.error( err ) )
+				// no matter if there was an error, move on to the next page
+				.then( () => {
+					// advance the page to fetch until there are no pages left
+					page = fetchedFamilies.nextPage;
+					// unpause the generator to allow processing of the next page
+					familiesGenerator.next();
+				});
 		}
 		// increment the page to fetch for the next run, or set it to false if there are no more pages to fetch
 		page = fetchedFamilies.nextPage;
 	}
-	// loop through each saved error
-	for( let error of errors ) {
-		// log the error for debugging purposes
-		console.error( error );
-	}
+	// let the user know all records have been processed
+	console.info( 'all records have been updated' );
 };
 
 function fetchFamiliesByPage( page ) {
@@ -92,19 +98,17 @@ function saveFamily( family ) {
 
 	return new Promise( ( resolve, reject ) => {
 	
-		family.set( 'isActive', false );
+		// family.set( 'isActive', false );
 		// attempt the save the family
 		family.save( ( err, savedModel ) => {
 			// if we run into an error
 			if( err ) {
-				// return control back to the generator with details about the error
-				familiesGenerator.next({
-					responseType: 'error',
-					message: `${ family.get( 'displayName' ) } - ${ family.get( 'id' ) } - ${ err }` } );
+				// reject the promise with details of the error
+				reject( `${ family.get( '_id' ) } - ${ err }` );
 			// if the model saved successfully
 			} else {
-				// return control back to the generator
-				familiesGenerator.next( { responseType: 'success' } );
+				// return control to the generator
+				resolve();
 			}
 		});
 	});

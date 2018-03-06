@@ -96,8 +96,8 @@ function* fixModels() {
 
 		while( page ) {
 			console.info( `saving ${ modelDetails.plural } ${ ( page - 1 ) * 100 } - ${ page * 100 }` );
-			// create an array to store all promises for saving children to allow batch processing
-			let childPromises = [];
+			// create an array to store all promises for saving images to allow batch processing
+			let imagePromises = [];
 			// fetch the page of models, waiting to execute further code until we have a result
 			const fetchedModels = yield fetchModelsByPage( modelDetails.name, page );
 			// if there was an error fetching the page of models
@@ -113,11 +113,11 @@ function* fixModels() {
 					// save the model using the saveModel generator
 					const modelSaved = saveModel( model );
 					// store the promise in the array of promises to batch them all together
-					childPromises.push( modelSaved );
+					imagePromises.push( modelSaved );
 				}
 				// pause processing of the next page until the Promise.all has had a chance to finish running
-				yield Promise.all( childPromises )
-					// if there was an error saving any children, log it
+				yield Promise.all( imagePromises )
+					// if there was an error saving any images, log it
 					.catch( err => console.error( err ) )
 					// no matter if there was an error, move on to the next page
 					.then( () => {
