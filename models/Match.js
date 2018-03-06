@@ -82,8 +82,8 @@ Match.schema.methods.populateAgency = function() {
 	return new Promise( ( resolve, reject ) => {	
 		// if the family is unregistered or an agency has already been selected
 		if( this.isUnregisteredFamily || this.familyDetails.agency ) {
-			// prevent the rest of the function from executing
-			return next();
+			// resolve the promise and prevent the rest of the function from executing
+			return resolve();
 		// if the family is registered and the agency hasn't already been selected
 		} else {
 			// populate the family Relationship on the model
