@@ -212,9 +212,11 @@ Child.add('Display Options', {
 
 // Set up relationship values to show up at the bottom of the model if any exist
 Child.relationship( { ref: 'Child', refPath: 'siblings', path: 'children', label: 'siblings' } );
-Child.relationship( { ref: 'Placement', refPath: 'child', path: 'placements', label: 'placements' } );
-Child.relationship( { ref: 'Inquiry', refPath: 'children', path: 'inquiries', label: 'inquiries' } );
 Child.relationship( { ref: 'Match', refPath: 'child', path: 'matches', label: 'matches' } );
+Child.relationship( { ref: 'Placement', refPath: 'child', path: 'placements', label: 'placements' } );
+Child.relationship( { ref: 'Legalization', refPath: 'child', path: 'legalizations', label: 'legalizations' } );
+Child.relationship( { ref: 'Disruption', refPath: 'child', path: 'disruptions', label: 'disruptions' } );
+Child.relationship( { ref: 'Inquiry', refPath: 'children', path: 'inquiries', label: 'inquiries' } );
 Child.relationship( { ref: 'Family', refPath: 'bookmarkedChildren', path: 'families', label: 'bookmarked by families' } );
 Child.relationship( { ref: 'Family', refPath: 'bookmarkedSiblingGroups', path: 'families', label: 'sibling group bookmarked by families' } );
 Child.relationship( { ref: 'Social Worker', refPath: 'bookmarkedChildren', path: 'social-workers', label: 'bookmarked by social workers' } );

@@ -26,6 +26,8 @@ Source.relationship( { ref: 'Event', refPath: 'source', path: 'events', label: '
 Source.relationship( { ref: 'Media Feature', refPath: 'source', path: 'media-features', label: 'media features' } );
 Source.relationship( { ref: 'Inquiry', refPath: 'source', path: 'inquiries', label: 'inquiries' } );
 Source.relationship( { ref: 'Placement', refPath: 'source', path: 'placements', label: 'placements' });
+Source.relationship( { ref: 'Legalization', refPath: 'source', path: 'legalizations', label: 'legalizations' } );
+Source.relationship( { ref: 'Disruption', refPath: 'source', path: 'disruptions', label: 'disruptions' } );
 
 // Define default columns in the admin interface and register the model
 Source.defaultColumns = 'source, type, mediaType, isActive';

@@ -56,9 +56,10 @@ Admin.add( 'Permissions', {
 });
 
 // Set up relationship values to show up at the bottom of the model if any exist
-Admin.relationship({ ref: 'CSC Region Contact', refPath: 'cscRegionContact', path: 'cscRegionContact', label: 'contact for the following regions' });
-Admin.relationship({ ref: 'Mailing List', refPath: 'adminSubscribers', path: 'mailing-lists', label: 'mailing lists' });
-Admin.relationship({ ref: 'Event', refPath: 'staffAttendees', path: 'events', label: 'events' });
+Admin.relationship( { ref: 'CSC Region Contact', refPath: 'cscRegionContact', path: 'cscRegionContact', label: 'contact for the following regions' } );
+Admin.relationship( { ref: 'Mailing List', refPath: 'adminSubscribers', path: 'mailing-lists', label: 'mailing lists' } );
+Admin.relationship( { ref: 'Event', refPath: 'staffAttendees', path: 'events', label: 'events' } );
+Admin.relationship( { ref: 'Donation', refPath: 'admin', path: 'donations', label: 'donations' } );
 
 // Pre Save
 Admin.schema.pre( 'save', function( next ) {
