@@ -652,7 +652,8 @@ module.exports.getPlacementsByChildId = id => {
 	return new Promise( ( resolve, reject ) => {
 	
 		if( !id ) {
-			return reject( `error fetching placements - no child id provided` );
+			// return reject( `error fetching placements - no child id provided` );
+			return resolve( [] ); // uncomment this when importing registered placements
 		}
 
 		Placement.model

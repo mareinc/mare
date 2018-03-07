@@ -101,19 +101,51 @@ module.exports.generatePlacements = function* generatePlacements() {
 // a function paired with the generator to create a record and request the generator to process the next once finished
 module.exports.createPlacementRecord = ( placement, pauseUntilSaved ) => {
 
+	// placeholders to store the fetched child and family records
+	let child,
+		family;
 	// fetch the child
 	const childLoaded = utilityModelFetch.getChildByRegistrationNumber( placement.chd_id );
 	// fetch the family
 	const familyLoaded = utilityModelFetch.getFamilyByRegistrationNumber( placement.fam_id );
 
 	Promise.all( [ childLoaded, familyLoaded ] )
-		.then( values => {
-
-			const [ child, family ] = values;
+		// if the child and family were fetched, store them in variables for later use
+		.then( values => [ child, family ] = values )
+		// if there was an error fetching the child or family, store the error
+		.catch( err => importErrors.push( { id: placement.fpl_id, error: `error importing placement with id ${ placement.fpl_id } - error loading family or child - ${ err }` } ) )
+		// fetch any existing placements for the child
+		.then( () => utilityModelFetch.getPlacementsByChildId( child ? child.get( '_id' ) : undefined ) )
+		// if existing placements were fetched successfully
+		.then( existingPlacements => {
 
 			let newPlacement;
 			
 			if( placement.status === 'P' ) {
+
+				const duplicatePlacements = existingPlacements.filter( existingPlacement => {
+						// if a placement in the system has the same date, family, and child, it's a duplicate and we should abort creating the current placement
+						return existingPlacement.placementDate &&
+							   placement.status_change_date &&
+							   existingPlacement.placementDate.toString() === ( new Date( placement.status_change_date ) ).toString() &&
+							   existingPlacement.child &&
+							   child &&
+							   existingPlacement.child.toString() === child.get( '_id' ).toString() &&
+							   existingPlacement.family &&
+							   family &&
+							   existingPlacement.family.toString() === family.get( '_id' ).toString();
+					});
+
+				if( duplicatePlacements.length > 0 ) {
+					// fire off the next iteration of our generator after pausing
+					if( pauseUntilSaved ) {
+						setTimeout( () => {
+							return placementGenerator.next();
+						}, 1000 );
+					} else {
+						return;
+					}
+				}
 
 				newPlacement = new Placement.model({
 					
@@ -213,9 +245,10 @@ module.exports.createPlacementRecord = ( placement, pauseUntilSaved ) => {
 				}
 			});
 		})
+		// if existing placements were fetched successfully
 		.catch( err => {
 			// we can assume it was a reject from trying to fetch the city or town by an unrecognized name
-			importErrors.push( { id: placement.fpl_id, error: `error importing placement with id ${ placement.fpl_id } - ${ err }` } );
+			importErrors.push( { id: placement.fpl_id, error: `error importing placement with id ${ placement.fpl_id } - error fetching existing placements - ${ err }` } );
 
 			// fire off the next iteration of our generator after pausing for a second
 			if( pauseUntilSaved ) {
