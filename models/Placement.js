@@ -1,7 +1,7 @@
 const keystone	= require( 'keystone' ),
 	  Types		= keystone.Field.Types;
 
-// Create model. Additional options allow menu name to be used what auto-generating URLs
+// Create model
 var Placement = new keystone.List( 'Placement' );
 
 // Create fields
