@@ -11,7 +11,8 @@ const keystone						= require( 'keystone' ),
 	  accountMiddleware				= require( './middleware/service_account' ),
 	  eventMiddleware				= require( './middleware/middleware_event' ),
 	  passwordResetService 			= require( './middleware/service_password-reset'),
-	  accountVerificationService	= require( './middleware/service_account-verification' );
+	  accountVerificationService	= require( './middleware/service_account-verification' ),
+	  enforce						= require( 'express-sslify' ),
 	  importRoutes					= keystone.importer( __dirname );
 
 // common middleware
@@ -29,6 +30,12 @@ var routes = {
 exports = module.exports = app => {
 	'use strict';
 
+	// set up forwarding to HTTPS at the app level when http is explicitly used
+	// use enforce.HTTPS({ trustProtoHeader: true }) in case you are behind a load balancer (e.g. Heroku) 
+	if( keystone.get( 'env' ) !== 'development' ) {
+		app.use( enforce.HTTPS( { trustProtoHeader: true } ) );
+	}
+	
 	// serve robots.txt based on the runtime environment
 	if ( process.env.ALLOW_ROBOTS === 'true' ) {
 		// if running in production, allow robots to crawl by serving the production robots.txt
