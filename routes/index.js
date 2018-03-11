@@ -32,7 +32,7 @@ exports = module.exports = app => {
 
 	// set up forwarding to HTTPS at the app level when http is explicitly used
 	// use enforce.HTTPS({ trustProtoHeader: true }) in case you are behind a load balancer (e.g. Heroku) 
-	if( keystone.get( 'env' ) !== 'development' ) {
+	if( keystone.get( 'env' ) === 'production' ) {
 		app.use( enforce.HTTPS( { trustProtoHeader: true } ) );
 	}
 	
