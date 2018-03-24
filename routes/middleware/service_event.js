@@ -326,21 +326,21 @@ exports.register = ( eventDetails, user ) => {
 				// add the user as an attendee
 				event[ attendeeType ].push( user._id );
 
-				// if there are registered children defined, add them to the list of attendees
+				// if there are registered children defined
 				if ( eventDetails.registeredChildren ) {
-
+					// add them to the list of attendees
 					event.childAttendees = event.childAttendees.concat( eventDetails.registeredChildren );
 				}
 
-				// if there are unregistered children defined, add them to the list of attendees
+				// if there are unregistered children defined
 				if ( eventDetails.unregisteredChildren ) {
-
+					// add them to the list of attendees
 					event.unregisteredChildAttendees = event.unregisteredChildAttendees.concat( eventDetails.unregisteredChildren );
 				}
 
-				// if there are unregistered adults defined, add them to the list of attendees
+				// if there are unregistered adults defined
 				if ( eventDetails.unregisteredAdults ) {
-
+					// add them to the list of attendees
 					event.unregisteredAdultAttendees = event.unregisteredAdultAttendees.concat( eventDetails.unregisteredAdults );
 				}
 

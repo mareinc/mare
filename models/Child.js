@@ -834,14 +834,15 @@ Child.schema.methods.updateSiblingsToBePlacedWithGroup = function() {
 				saveLock.lock( siblingID );
 				// update the sibling to be placed with with the new siblings to be placed with group
 				ChildMiddleware
-					.applySiblingsToBePlacedWithGroupToChild( { childToUpdateID: siblingID,
-																siblingsToBePlacedWithGroup: updatedSiblingsToBePlacedWithGroup,
-																siblingGroupProfile: this.get( 'groupProfile' ),
-																siblingGroupImage: this.get( 'siblingGroupImage' ),
-																siblingGroupVideo: this.get( 'siblingGroupVideo' ),
-																wednesdaysChildSiblingGroup: this.get( 'wednesdaysChildSiblingGroup' ),
-																wednesdaysChildSiblingGroupDate: this.get( 'wednesdaysChildSiblingGroupDate' ),
-																wednesdaysChildSiblingGroupVideo: this.get( 'wednesdaysChildSiblingGroupVideo' ) } )
+					.applySiblingsToBePlacedWithGroupToChild({
+						childToUpdateID: siblingID,
+						siblingsToBePlacedWithGroup: updatedSiblingsToBePlacedWithGroup,
+						siblingGroupProfile: this.get( 'groupProfile' ),
+						siblingGroupImage: this.get( 'siblingGroupImage' ),
+						siblingGroupVideo: this.get( 'siblingGroupVideo' ),
+						wednesdaysChildSiblingGroup: this.get( 'wednesdaysChildSiblingGroup' ),
+						wednesdaysChildSiblingGroupDate: this.get( 'wednesdaysChildSiblingGroupDate' ),
+						wednesdaysChildSiblingGroupVideo: this.get( 'wednesdaysChildSiblingGroupVideo' ) } )
 					.then( updatedChildID => {
 						// unlock the sibling to be placed with after update is complete
 						saveLock.unlock( updatedChildID );
