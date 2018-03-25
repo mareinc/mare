@@ -4,12 +4,13 @@ require('dotenv').load();
 
 // Initialise New Relic if an app name and license key exists
 if (process.env.NEW_RELIC_APP_NAME && process.env.NEW_RELIC_LICENSE_KEY) {
-	require('newrelic');
+	require( 'newrelic' );
 }
 
 // Initialize application
-var keystone = require('keystone'),
-	handlebars = require('express-handlebars');
+var keystone = require( 'keystone' ),
+	handlebars = require( 'express-handlebars' ),
+	fs = require( 'fs' );
 
 keystone.init({
 
@@ -97,12 +98,14 @@ keystone.set('locals', {
 	editable: keystone.content.editable
 });
 
+// TODO: clean this up and add in any reusable email content
 // Setup common locals for your emails. The following are required by Keystone's
 // default email templates, you may remove them if you're using your own.
 keystone.set('email locals', {
 	logo_src: '/public/dist/img/mare-logo.png',
 	logo_width: 194,
 	logo_height: 76,
+	logo: `data:image/png;base64,${ Buffer.from( fs.readFileSync( './public/dist/img/mare-logo.png' ) ).toString( 'base64' ) }`,
 	theme: {
 		email_bg: '#f9f9f9',
 		link_color: '#2697de',
@@ -115,10 +118,11 @@ keystone.set('email locals', {
 	host: (function() {
 		'use strict';
 
-		if (keystone.get('env') === 'development') { return 'http://development.adoptions.io'; }
-		if (keystone.get('env') === 'staging') { return 'http://staging.adoptions.io'; }
-		if (keystone.get('env') === 'production') { return 'http://adoptions.io'; }
-		return (keystone.get('host') || 'http://localhost:') + (keystone.get('port') || '3000');
+		if ( keystone.get( 'env' ) === 'development' ) { return 'http://development.adoptions.io'; }
+		if ( keystone.get( 'env' ) === 'staging' ) { return 'http://staging.adoptions.io'; }
+		if ( keystone.get( 'env' ) === 'production' ) { return 'https://www.mareinc.org'; }
+		
+		return ( keystone.get( 'host' ) || 'http://localhost:' ) + (keystone.get( 'port' ) || '3000' );
 	})()
 });
 
@@ -127,20 +131,22 @@ keystone.set('email rules', [{
 	replace: (function() {
 		'use strict';
 
-		if (keystone.get('env') === 'development') { return 'http://development.adoptions.io/templates/emails/'; }
-		if (keystone.get('env') === 'staging') { return 'http://staging.adoptions.io/templates/emails/'; }
-		if (keystone.get('env') === 'production') { return 'http://adoptions.io/templates/emails/'; }
-		return (keystone.get('host') || 'http://localhost:') + (keystone.get('port') || '3000') + '/templates/emails/';
+		if ( keystone.get( 'env' ) === 'development' ) { return 'http://development.adoptions.io/templates/emails/'; }
+		if ( keystone.get( 'env' ) === 'staging' ) { return 'http://staging.adoptions.io/templates/emails/'; }
+		if ( keystone.get( 'env' ) === 'production' ) { return 'https://www.mareinc.org/templates/emails/'; }
+		
+		return ( keystone.get( 'host' ) || 'http://localhost:' ) + (keystone.get( 'port' ) || '3000' ) + '/templates/emails/';
 	})()
 }, {
 	find: '/keystone/',
 	replace: (function() {
 		'use strict';
 
-		if (keystone.get('env') === 'development') { return 'http://development.adoptions.io/keystone'; }
-		if (keystone.get('env') === 'staging') { return 'http://staging.adoptions.io/keystone'; }
-		if (keystone.get('env') === 'production') { return 'http://adoptions.io/keystone'; }
-		return (keystone.get('host') || 'http://localhost:') + (keystone.get('port') || '3000/keystone');
+		if ( keystone.get( 'env' ) === 'development' ) { return 'http://development.adoptions.io/keystone'; }
+		if ( keystone.get( 'env' ) === 'staging' ) { return 'http://staging.adoptions.io/keystone'; }
+		if ( keystone.get( 'env' ) === 'production' ) { return 'https://www.mareinc.org/keystone'; }
+		
+		return ( keystone.get( 'host' ) || 'http://localhost:' ) + ( keystone.get( 'port' ) || '3000/keystone' );
 	})()
 }]);
 

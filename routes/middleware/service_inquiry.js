@@ -7,7 +7,8 @@ const keystone					= require( 'keystone' ),
 	  emailTargetService		= require( './service_email-target' ),
 	  staffEmailContactService	= require( './service_staff-email-contact' ),
 	  staffRegionContactService	= require( './service_staff-region-contact' ),
-	  inquiryEmailService		= require( './emails_inquiry' );
+	  inquiryEmailService		= require( './emails_inquiry' ),
+	  utilities					= require( './utilities' );
 
 /* public - creates an inquiry from data submitted through the information request form on the website */
 exports.createInquiry = ( { inquiry, user } ) => {
@@ -241,8 +242,9 @@ function extractInquiryData( inquiry ) {
 				children: inquiry.children ?
 						  inquiry.children.map( child => {
 							  return {
-								  nameAndRegistrationNumber: child.displayNameAndRegistration,
-								  photolistingPage: child.photolistingPageNumber } } ) :
+								  firstName: child.name ? child.name.first : undefined,
+								  registrationNumber: child.registrationNumber
+							  } } ) :
 						  undefined,
 				childsSocialWorker: inquiry.childsSocialWorker ? inquiry.childsSocialWorker.name.full : undefined,
 				comments: inquiry.comments.trim(),
@@ -271,24 +273,69 @@ function extractInquirerData( inquirer ) {
 			// reject the promise with details of the error and prevent further code from executing
 			return reject( `no inquirer provided` );
 		}
+		// set the fields to populate on the inquirer model
+		const fieldsToPopulate = [ 'address.state', 'contact1.gender', 'contact1.race', 'socialWorker' ];
 
 		// populate fields on the inquirer model
-		inquirer.populate( 'address.state', err => {
+		inquirer.populate( fieldsToPopulate, err => {
 			// if there was an error populating the specified fields
 			if ( err ) {
 				// reject the promise with details about the error
 				return resolve( `error populating fields for inquirer with id ${ inquirer.get( '_id' ) }` );
 			}
 
-			const relevantData = {
+			let relevantData = {
 				name: inquirer.userType === 'family' ? inquirer.displayName : inquirer.name.full,
+				email: inquirer.email,
+				userType: inquirer.userType,
+				dateOfBirth: inquirer.userType === 'family' && inquirer.contact1.birthDate ?
+							 moment( inquirer.contact1.birthDate ).utc().format( 'MM/DD/YYYY' ) :
+							 undefined,
+				gender: inquirer.userType === 'family' && inquirer.contact1.gender ?
+						inquirer.contact1.gender.gender :
+						undefined,
+				ethnicity: inquirer.userType === 'family' && inquirer.contact1.race ?
+						   utilities.getReadableStringFromArray( {
+							   array: inquirer.contact1.race.map( race => race.race ),
+							   delimiter: 'and'
+						   } ) :
+						   undefined,
 				street1: inquirer.address ? inquirer.address.street1 : undefined,
 				street2: inquirer.address ? inquirer.address.street2 : undefined,
 				city: inquirer.address ? inquirer.address.displayCity : undefined,
-				state: inquirer.address ? inquirer.address.state.abbreviation : undefined,
+				state: inquirer.address && inquirer.address.state ? inquirer.address.state.state : undefined,
 				zipCode: inquirer.address ? inquirer.address.zipCode : undefined,
-				mobilePhone: inquirer.userType === 'family' ? inquirer.contact1.phone.mobile : inquirer.phone.mobile,
-				workPhone: inquirer.userType === 'family' ? inquirer.contact1.phone.work : inquirer.phone.work
+				mobilePhone: inquirer.userType === 'family' && inquirer.contact1.phone ?
+							 inquirer.contact1.phone.mobile :
+							 inquirer.phone.mobile,
+				workPhone: inquirer.userType === 'family' && inquirer.contact1.phone ?
+						   inquirer.contact1.phone.work :
+						   inquirer.phone.work,
+				stages: inquirer.get( 'stages' ),
+				socialWorker: inquirer.userType === 'family' && inquirer.socialWorker && inquirer.socialWorker.name ?
+							  inquirer.socialWorker.name.full :
+							  inquirer.userType === 'family' && inquirer.socialWorkerNotListed ?
+							  inquirer.socialWorkerText :
+							  undefined
+			}
+
+			if( relevantData.stages ) {
+				// format the gathering information date if one exists
+				if( relevantData.stages.gatheringInformation && relevantData.stages.gatheringInformation.date instanceof Date ) {
+					relevantData.stages.gatheringInformation.date = moment( relevantData.stages.gatheringInformation.date ).utc().format( 'MM/DD/YYYY' );
+				}
+				// format the looking for agency date if one exists
+				if( relevantData.stages.lookingForAgency && relevantData.stages.lookingForAgency.date instanceof Date ) {
+					relevantData.stages.lookingForAgency.date = moment( relevantData.stages.lookingForAgency.date ).utc().format( 'MM/DD/YYYY' );
+				}
+				// format the working with agency date if one exists
+				if( relevantData.stages.workingWithAgency && relevantData.stages.workingWithAgency.date instanceof Date ) {
+					relevantData.stages.workingWithAgency.date = moment( relevantData.stages.workingWithAgency.date ).utc().format( 'MM/DD/YYYY' );
+				}
+				// format the MAPP training completed date if one exists
+				if( relevantData.stages.MAPPTrainingCompleted && relevantData.stages.MAPPTrainingCompleted.date instanceof Date ) {
+					relevantData.stages.MAPPTrainingCompleted.date = moment( relevantData.stages.MAPPTrainingCompleted.date ).utc().format( 'MM/DD/YYYY' );
+				}
 			}
 			// resolve the promise with the relevant inquirer data
 			resolve( relevantData );

@@ -8,7 +8,7 @@ exports.sendNewInquiryEmailToMARE = ( { inquiryData, inquirerData, staffEmail } 
 			// reject the promise with details about the reason
 			return reject( `sending of the email is disabled` );
 		}
-
+		// TODO: move the base-64 encoded image to a global place for defining these images, both in CSS and JavaScript
 		// find the email template in templates/emails/
 		new keystone.Email({
 			templateExt 	: 'hbs',
@@ -18,7 +18,10 @@ exports.sendNewInquiryEmailToMARE = ( { inquiryData, inquirerData, staffEmail } 
 			to				: staffEmail,
 			from: {
 				name 		: 'MARE',
-				email 		: 'admin@adoptions.io'
+				email 		: 'communications@mareinc.org'
+			},
+			headers			: {
+				'Reply-To': inquirerData.email || 'communications@mareinc.org'
 			},
 			subject			: `new ${ inquiryData.inquiryType }`,
 			inquiryData,
@@ -35,7 +38,7 @@ exports.sendNewInquiryEmailToMARE = ( { inquiryData, inquirerData, staffEmail } 
 			// if the email failed to send, or an error occurred ( which it does, rarely ) causing the response message to be empty
 			if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
 				// reject the promise with details
-				reject( `error sending new inquiry notification email to MARE - ${ message } - ${ err }` );
+				reject( `error sending new inquiry notification email to MARE - ${ response.status } - ${ response.email } - ${ response.reject_reason } - ${ err }` );
 			}
 
 			resolve();

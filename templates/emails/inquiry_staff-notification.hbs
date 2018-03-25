@@ -12,7 +12,9 @@
 				<table align="center" border="0" cellpadding="0" cellspacing="0" width="600" style="border: 1px solid #cccccc; border-collapse: collapse;">
 					<tr>
 						<td align="center" bgcolor="#3D4573" style="padding: 40px 0 30px 0; color: #ffffff; font-size: 28px; font-weight: bold; font-family: Arial, sans-serif;">
-
+							<table border="0" cellpadding="0" cellspacing="0">
+								<img src="{{ logo }}" alt="MARE Logo" width="500" height="106" style="display: block;" />
+							</table>
 						</td>
 					</tr>
 					<tr>
@@ -60,42 +62,9 @@
 									</td>
 								</tr>
 								{{/if}}
-								{{#if inquiryData.family}}
 								<tr>
-									<td style="padding: 30px 0 0px 0; color: #153634; font-family: Ariel, sans-serif; font-size: 20px; line-height: 24px;">
-										<b>family</b>
-									</td>
-								</tr>
-								<tr>
-									<td style="padding: 15px 0 0 0; color: #153634; font-family: Ariel, sans-serif; font-size: 14px; line-height: 16px;">
-										<b>family</b> {{ inquiryData.family }}
-									</td>
-								</tr>
-								{{/if}}
-								{{#if inquiryData.children}}
-								<tr>
-									<td style="padding: 30px 0 0px 0; color: #153634; font-family: Ariel, sans-serif; font-size: 20px; line-height: 24px;">
-										<b>children</b>
-									</td>
-								</tr>
-								{{#each inquiryData.children}}
-								<tr>
-									<td style="padding: 15px 0 0 0; color: #153634; font-family: Ariel, sans-serif; font-size: 14px; line-height: 16px;">
-										<b>child</b> {{ nameAndRegistrationNumber }}
-									</td>
-								</tr>
-								{{#if photolistingPage}}
-								<tr>
-									<td style="padding: 5px 0 0 0; color: #153634; font-family: Ariel, sans-serif; font-size: 14px; line-height: 16px;">
-										<b>photolisting page</b> {{ photolistingPage }}
-									</td>
-								</tr>
-								{{/if}}
-								{{/each}}
-								{{/if}}
-								<tr>
-									<td style="padding: 30px 0 5px 0; color: #153634; font-family: Ariel, sans-serif; font-size: 20px; line-height: 24px;">
-										<b>inquirer</b>
+									<td style="padding: 30px 0 10px 0; color: #153634; font-family: Ariel, sans-serif; font-size: 20px; line-height: 24px;">
+										<b>{{ inquirerData.userType }}</b>
 									</td>
 								</tr>
 								<tr>
@@ -143,6 +112,110 @@
 										<b>work phone</b> {{ inquirerData.workPhone }}
 									</td>
 								</tr>
+								{{/if}}
+								{{#if inquiryData.family}}
+								<tr>
+									<td style="padding: 5px 0 0 0; color: #153634; font-family: Ariel, sans-serif; font-size: 14px; line-height: 16px;">
+										<b>date of birth</b> {{ inquirerData.dateOfBirth }}
+									</td>
+								</tr>
+								<tr>
+									<td style="padding: 5px 0 0 0; color: #153634; font-family: Ariel, sans-serif; font-size: 14px; line-height: 16px;">
+										<b>gender</b> {{ inquirerData.gender }}
+									</td>
+								</tr>
+								<tr>
+									<td style="padding: 5px 0 0 0; color: #153634; font-family: Ariel, sans-serif; font-size: 14px; line-height: 16px;">
+										<b>ethnicity</b> {{ inquirerData.ethnicity }}
+									</td>
+								</tr>
+								<tr>
+									<td style="padding: 5px 0 0 0; color: #153634; font-family: Ariel, sans-serif; font-size: 14px; line-height: 16px;">
+										<b>social worker</b> {{ inquirerData.socialWorker }}
+									</td>
+								</tr>
+								{{#if inquirerData.stages}}
+								<tr>
+									<td style="padding: 30px 0 10px 0; color: #153634; font-family: Ariel, sans-serif; font-size: 20px; line-height: 24px;">
+										<b>steps in the process</b>
+									</td>
+								</tr>
+								{{#if inquirerData.stages.gatheringInformation}}
+								{{#if inquirerData.stages.gatheringInformation.started}}
+								<tr>
+									<td style="padding: 5px 0 0 0; color: #153634; font-family: Ariel, sans-serif; font-size: 14px; line-height: 16px;">
+										<b>stage</b> gathering information
+									</td>
+								</tr>
+								<tr>
+									<td style="padding: 5px 0 0 0; color: #153634; font-family: Ariel, sans-serif; font-size: 14px; line-height: 16px;">
+										<b>started</b> {{ inquirerData.stages.gatheringInformation.date }}
+									</td>
+								</tr>
+								{{/if}}
+								{{/if}}
+								{{#if inquirerData.stages.lookingForAgency}}
+								{{#if inquirerData.stages.lookingForAgency.started}}
+								<tr>
+									<td style="padding: 15px 0 0 0; color: #153634; font-family: Ariel, sans-serif; font-size: 14px; line-height: 16px;">
+										<b>stage</b> looking for agency
+									</td>
+								</tr>
+								<tr>
+									<td style="padding: 5px 0 0 0; color: #153634; font-family: Ariel, sans-serif; font-size: 14px; line-height: 16px;">
+										<b>started</b> {{ inquirerData.stages.lookingForAgency.date }}
+									</td>
+								</tr>
+								{{/if}}
+								{{/if}}
+								{{#if inquirerData.stages.workingWithAgency}}
+								{{#if inquirerData.stages.workingWithAgency.started}}
+								<tr>
+									<td style="padding: 15px 0 0 0; color: #153634; font-family: Ariel, sans-serif; font-size: 14px; line-height: 16px;">
+										<b>stage</b> working with agency
+									</td>
+								</tr>
+								<tr>
+									<td style="padding: 5px 0 0 0; color: #153634; font-family: Ariel, sans-serif; font-size: 14px; line-height: 16px;">
+										<b>started</b> {{ inquirerData.stages.workingWithAgency.date }}
+									</td>
+								</tr>
+								{{/if}}
+								{{/if}}
+								{{#if inquirerData.stages.MAPPTrainingCompleted}}
+								{{#if inquirerData.stages.MAPPTrainingCompleted.completed}}
+								<tr>
+									<td style="padding: 15px 0 0 0; color: #153634; font-family: Ariel, sans-serif; font-size: 14px; line-height: 16px;">
+										<b>stage</b> MAPP training completed
+									</td>
+								</tr>
+								<tr>
+									<td style="padding: 5px 0 0 0; color: #153634; font-family: Ariel, sans-serif; font-size: 14px; line-height: 16px;">
+										<b>completed</b> {{ inquirerData.stages.MAPPTrainingCompleted.date }}
+									</td>
+								</tr>
+								{{/if}}
+								{{/if}}
+								{{/if}}
+								{{/if}}
+								{{#if inquiryData.children}}
+								<tr>
+									<td style="padding: 30px 0 5px 0; color: #153634; font-family: Ariel, sans-serif; font-size: 20px; line-height: 24px;">
+										<b>children</b>
+									</td>
+								</tr>
+								{{#each inquiryData.children}}
+								<tr>
+									<td style="padding: 10px 0 0 0; color: #153634; font-family: Ariel, sans-serif; font-size: 14px; line-height: 16px;">
+										<b>name</b> {{ firstName }}
+									</td>
+								</tr>
+								<tr>
+									<td style="padding: 5px 0 0 0; color: #153634; font-family: Ariel, sans-serif; font-size: 14px; line-height: 16px;">
+										<b>registration number</b> {{ registrationNumber }}
+									</td>
+								</tr>
+								{{/each}}
 								{{/if}}
 								<tr>
 									<td style="padding: 30px 0 10px 0; color: #153634; font-family: Ariel, sans-serif; font-size: 20px; line-height: 24px;">
