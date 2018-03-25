@@ -39,10 +39,10 @@ exports = module.exports = app => {
 	// serve robots.txt based on the runtime environment
 	if ( process.env.ALLOW_ROBOTS === 'true' ) {
 		// if running in production, allow robots to crawl by serving the production robots.txt
-		app.use( robots( __dirname + '/robots/robots-production.txt' ) );
+		app.use( robots( `${ __dirname }/robots/robots-production.txt` ) );
 	} else {
 		// otherwise, serve the dev robots.txt ( i.e. disallow all crawlers )
-		app.use( robots( __dirname + '/robots/robots-development.txt' ) );
+		app.use( robots( `${ __dirname }/robots/robots-development.txt` ) );
 	}
 
 	// home page
@@ -110,5 +110,5 @@ exports = module.exports = app => {
 	app.post( '/services/remove-sibling-group-bookmark'	, familyService.removeSiblingGroupBookmark );
 	app.post( '/services/get-gallery-permissions'		, permissionsService.getGalleryPermissions );
 	// app.post( '/services/register-for-event'			, eventService.addUser ); // TODO: I'm leaving these commented out so I don't forget they exist when I need to implement adding/removing users to an event automatically
-	// app.post( '/services/unregister-for-event'			, eventService.removeUser ); // TODO: I'm leaving these commented out so I don't forget they exist when I need to implement adding/removing users to an event automatically
+	// app.post( '/services/unregister-for-event'		, eventService.removeUser ); // TODO: I'm leaving these commented out so I don't forget they exist when I need to implement adding/removing users to an event automatically
 };
