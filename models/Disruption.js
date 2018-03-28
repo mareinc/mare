@@ -92,8 +92,11 @@ Disruption.schema.methods.populateAgency = function() {
 					// reject the promise with details of the error, preventing the rest of the function from executing
 					return reject( `error populating family field for placement with id ${ this.get( '_id' ) } - ${ err }` );
 				}
-				// if there were no errors, populate the agency field with the family's social worker's agency
-				this.familyDetails.agency = this.family.socialWorkerAgency;
+				// if there were no errors and a MARE family has been selected
+				if( this.family ) {
+					// populate the agency field with the family's social worker's agency
+					this.familyDetails.agency = this.family.socialWorkerAgency;
+				}
 				// resolve the promise
 				resolve( this );
 			})
