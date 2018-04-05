@@ -160,11 +160,24 @@
 .card-details__header {
 	font-size: 1.6875em;
 	font-weight: 300;
+
+	&--small {
+		font-weight: 400;
+    	font-size: 1.3em;
+	}
+
+	&--medium-margin-above{
+		margin-top: 1.5em
+	}
 }
 
 .card-details__body {
 	font-size: 1em;
 	line-height: 1.3em;
+
+	&--bold {
+		font-weight: 600
+	}
 }
 
 .card-details__paragraph {
