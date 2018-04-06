@@ -588,6 +588,10 @@ Child.schema.methods.setAdoptionWorkerAgencyFields = function() {
 	return new Promise( ( resolve, reject ) => {
 
 		if( !this.adoptionWorker ) {
+			// remove the adoption worker agency and region fields
+			this.adoptionWorkerAgency = undefined;
+			this.adoptionWorkerAgencyRegion = undefined;
+			// resolve the promise and prevent future code from executing
 			return resolve();
 		}
 
@@ -612,7 +616,7 @@ Child.schema.methods.setAdoptionWorkerAgencyFields = function() {
 			.catch( err => {
 				// log the error for debugging purposes
 				console.error( `error saving the child's adoption worker agency fields - ${ err }` );
-				// clear out the adoption worker agency fields
+				// remove the adoption worker agency and region fields
 				this.adoptionWorkerAgency = undefined;
 				this.adoptionWorkerAgencyRegion = undefined;
 				// resolve the promise so that the Promise.all() in the pre-save hook does not fail
@@ -626,6 +630,10 @@ Child.schema.methods.setRecruitmentWorkerAgencyFields = function() {
 	return new Promise( ( resolve, reject ) => {
 
 		if( !this.recruitmentWorker ) {
+			// remove the recruitment worker agency and region fields
+			this.recruitmentWorkerAgency = undefined;
+			this.recruitmentWorkerAgencyRegion = undefined;
+			// resolve the promise and prevent future code from executing
 			return resolve();
 		}
 
@@ -650,9 +658,9 @@ Child.schema.methods.setRecruitmentWorkerAgencyFields = function() {
 			.catch( err => {
 				// log the error for debugging purposes
 				console.error( `error saving the child's recruitment worker agency fields - ${ err }` );
-				// clear out the recruitment worker agency fields
-				this.recruitmentWorkerAgency = undefined;
-				this.recruitmentWorkerAgencyRegion = undefined;
+				// remove the recruitment worker agency and region fields
+				this.adoptionWorkerAgency = undefined;
+				this.adoptionWorkerAgencyRegion = undefined;
 				// resolve the promise so that the Promise.all() in the pre-save hook does not fail
 				resolve();
 			});
