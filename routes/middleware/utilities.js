@@ -14,7 +14,7 @@ exports.stripTags = text => {
 }
 
 // TODO: add in a failure case similar to getReadableStringFromArray()
-exports.truncateText = ( text, options ) => {
+exports.truncateText = ( { text = '', options = {} } ) => {
 	// if the text is empty, return an empty string
 	if( !text || text.length === 0 ) {
 		return '';
