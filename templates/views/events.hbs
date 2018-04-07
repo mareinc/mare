@@ -78,6 +78,7 @@
 		</div>
 		<section class="button-group button-group--horizontal button-group--space-around button-group--large-margin-above button-group--small-margin-below">
 			<button class="button button--large button--teal events__navigation-button" data-url="{{ url }}">View Details</button>
+			{{#unless preventRegistration}}
 			{{#if ../canRegister}}
 			{{#if ../user}}
 			{{!-- TODO: this handling of unregistering through forms was only done for consistency in flash messaging and NEEDS to be reworked --}}
@@ -92,6 +93,7 @@
 			{{/if}}
 			{{/if}}
 			{{/if}}
+			{{/unless}}
 		</section>
 
 	</div>
