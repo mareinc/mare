@@ -31,15 +31,12 @@ exports = module.exports = ( req, res ) => {
 
 	// track whether it is an event users can register for through the site
 	// admin can't register, and everyone else can only register for select types of events
-	locals.canRegister = userType !== 'admin'
-						 && [ 'fundraising events',
-							  'MARE adoption parties & information events' ].includes( eventType );
+	locals.canRegister = userType !== 'admin' &&
+						 [ 'fundraising events', 'MARE adoption parties & information events' ].includes( eventType );
 
 	// only social workers can submit events, and only for specific types of events
-	locals.canSubmitEvent = userType === 'social worker'
-							&& [ 'MAPP trainings',
-								 'agency information meetings',
-								 'other opportunities & trainings' ].includes( eventType );
+	locals.canSubmitEvent = userType === 'social worker' &&
+							[ 'MAPP trainings', 'agency information meetings', 'other opportunities & trainings' ].includes( eventType );
 
 	// store on locals for access during templating
 	locals.category = category;
