@@ -26,7 +26,7 @@ exports = module.exports = ( req, res ) => {
 			// loop through all success stories
 			for( let story of stories ) { 
 				
-				story.shortContent = Utils.truncateText( story.content, truncateOptions );
+				story.shortContent = Utils.truncateText( { text: story.content, options: truncateOptions } );
 				// append classes to the WYSIWYG generated content to allow for styling
 				// Utils.modifyWYSIWYGContent( story, 'shortContent', WYSIWYGModificationOptions );
 			}

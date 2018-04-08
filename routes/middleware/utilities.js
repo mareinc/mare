@@ -14,7 +14,7 @@ exports.stripTags = text => {
 }
 
 // TODO: add in a failure case similar to getReadableStringFromArray()
-exports.truncateText = ( text, options ) => {
+exports.truncateText = ( { text = '', options = {} } ) => {
 	// if the text is empty, return an empty string
 	if( !text || text.length === 0 ) {
 		return '';
@@ -47,7 +47,7 @@ exports.truncateText = ( text, options ) => {
 /* if it is indicated that the contents of the array are email addresses, wrap them in <a> tags */
 /* ['admin@mareinc.org'] => <a href="mailto:admin@mareinc.org">admin@mareinc.org</a>
    ['admin@mareinc.org'], subject = 'subject' => <a href="mailto:admin@mareinc.org?Subject=subject">admin@mareinc.org</a> */
-exports.getReadableStringFromArray = ({ array, delimiter = 'and' }) => {
+exports.getReadableStringFromArray = ( { array, delimiter = 'and' } ) => {
 	// if the passed in array is not an array, or delimiter isn't a string, return and log a message
 	if( !Array.isArray( array ) || typeof delimiter !== 'string' ) {
 		console.log( `invalid arguments passed to getReadableStringFromArray(). array: ${ array }, delimiter: ${ delimiter }, returning ''` );
