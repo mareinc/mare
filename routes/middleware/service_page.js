@@ -49,12 +49,12 @@ exports.getSidebarItems = () => {
 				// if a success story was returned
 				if( successStory ) {
 					// create a truncated content element for a nicer display in summary cards
-					successStory.shortContent = Utils.truncateText( successStory.content, truncateOptions );
+					successStory.shortContent = Utils.truncateText( { text: successStory.content, options: truncateOptions } );
 				}
 				// create a formatted date for display in the UI
 				event.prettyDate = moment( event.date ).utc().format( 'dddd, MMMM Do' );
 				// truncated content and remove HTML tags from the description, storing the result in a new field
-				event.shortDescription = Utils.truncateText( Utils.stripTags( event.description ), truncateOptions );
+				event.shortDescription = Utils.truncateText( { text: Utils.stripTags( event.description ), options: truncateOptions } );
 				// resolve the promise with the fetched success story and event
 				resolve( [ successStory, event ] );
 			})
