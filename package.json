@@ -1,58 +1,58 @@
 {
-  "name": "mare",
-  "version": "0.0.1",
-  "private": true,
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/autoboxer/MARE.git"
-  },
-  "dependencies": {
-    "async": "^2.6.0",
-    "browserify": "^16.1.0",
-    "cloudinary": "~1.11.0",
-    "del": "^3.0.0",
-    "dotenv": "^5.0.0",
-    "express-handlebars": "~3.0.0",
-    "express-robots": "^0.1.6",
-    "express-sslify": "^1.2.0",
-    "gulp": "gulpjs/gulp#4.0",
-    "gulp-autoprefixer": "^5.0.0",
-    "gulp-clean-css": "^3.9.2",
-    "gulp-concat": "^2.6.1",
-    "gulp-eslint": "^4.0.0",
-    "gulp-filter": "^5.1.0",
-    "gulp-ignore": "^2.0.2",
-    "gulp-imagemin": "^4.1.0",
-    "gulp-mocha": "^5.0.0",
-    "gulp-rename": "^1.2.2",
-    "gulp-sass": "^4.0.0",
-    "gulp-sourcemaps": "^2.6.3",
-    "gulp-uglify": "^3.0.0",
-    "gulp-watch": "~5.0.0",
-    "handlebars": "~4.0.11",
-    "keystone": "https://github.com/keystonejs/keystone.git#c38b366c7b1bf01448c8ece7c36e1bb6eb195186",
-    "moment": "~2.22.0",
-    "mongoose-simple-random": "^0.4.1",
-    "newrelic": "^3.0.0",
-    "node-sass": "^4.7.2",
-    "node-sass-middleware": "^0.11.0",
-    "stripe": "^5.4.0",
-    "underscore": "~1.8.3"
-  },
-  "engines": {
-    "node": "^6.12.3",
-    "npm": "^3.10.10",
-    "yarn": "^1.3.2"
-  },
-  "scripts": {
-    "start": "node keystone.js",
-    "heroku-postbuild": "gulp build"
-  },
-  "main": "keystone.js",
-  "devDependencies": {
-    "chai": "^4.1.2",
-    "mocha": "^5.0.0",
-    "sinon": "^5.0.0",
-    "sinon-chai": "^3.0.0"
-  }
+	"name": "mare",
+	"version": "0.0.1",
+	"private": true,
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/autoboxer/MARE.git"
+	},
+	"dependencies": {
+		"async": "^2.6.0",
+		"browserify": "^16.1.0",
+		"cloudinary": "~1.11.0",
+		"del": "^3.0.0",
+		"dotenv": "^5.0.0",
+		"express-handlebars": "~3.0.0",
+		"express-robots": "^0.1.6",
+		"express-sslify": "^1.2.0",
+		"gulp": "gulpjs/gulp#4.0",
+		"gulp-autoprefixer": "^5.0.0",
+		"gulp-clean-css": "^3.9.2",
+		"gulp-concat": "^2.6.1",
+		"gulp-eslint": "^4.0.0",
+		"gulp-filter": "^5.1.0",
+		"gulp-ignore": "^2.0.2",
+		"gulp-imagemin": "^4.1.0",
+		"gulp-mocha": "^5.0.0",
+		"gulp-rename": "^1.2.2",
+		"gulp-sass": "^4.0.0",
+		"gulp-sourcemaps": "^2.6.3",
+		"gulp-uglify": "^3.0.0",
+		"gulp-watch": "~5.0.0",
+		"handlebars": "~4.0.11",
+		"keystone": "https://github.com/keystonejs/keystone.git#c38b366c7b1bf01448c8ece7c36e1bb6eb195186",
+		"moment": "~2.22.0",
+		"mongoose-simple-random": "^0.4.1",
+		"newrelic": "^4.1.0",
+		"node-sass": "^4.7.2",
+		"node-sass-middleware": "^0.11.0",
+		"stripe": "^6.0.0",
+		"underscore": "~1.9.0"
+	},
+	"engines": {
+		"node": "^6.12.3",
+		"npm": "^3.10.10",
+		"yarn": "^1.3.2"
+	},
+	"scripts": {
+		"start": "node keystone.js",
+		"heroku-postbuild": "gulp build"
+	},
+	"main": "keystone.js",
+	"devDependencies": {
+		"chai": "^4.1.2",
+		"mocha": "^5.0.0",
+		"sinon": "^5.0.0",
+		"sinon-chai": "^3.0.0"
+	}
 }
