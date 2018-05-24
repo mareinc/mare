@@ -1,5 +1,5 @@
-const keystone 		= require( 'keystone' );
-const childService	= require( './service_child' );
+const keystone = require('keystone');
+const childService = require('./service_child');
 
 exports.sendNewEventEmailToMARE = ( event, socialWorker, staffEmailContact ) => {
 
@@ -15,18 +15,18 @@ exports.sendNewEventEmailToMARE = ( event, socialWorker, staffEmailContact ) => 
 
 		// find the email template in templates/emails/
 		new keystone.Email({
-			templateExt		: 'hbs',
-			templateEngine 	: require( 'handlebars' ),
-			templateName 	: 'event-created-notification-to-mare'
+			templateExt: 'hbs',
+			templateEngine: require( 'handlebars' ),
+			templateName: 'event-created-notification-to-mare'
 		}).send({
-			to				: staffEmail,
+			to: staffEmail,
 			from: {
-				name 		: 'MARE',
-				email 		: 'admin@adoptions.io'
+				name: 'MARE',
+				email: 'admin@adoptions.io'
 			},
-			subject			: `new event created`,
-			startDate		: `${ event.startDate.getMonth() + 1 }/${ event.startDate.getDate() }/${ event.startDate.getFullYear() }`,
-			endDate			: `${ event.endDate.getMonth() + 1 }/${ event.endDate.getDate() }/${ event.endDate.getFullYear() }`,
+			subject: `new event created`,
+			startDate: `${ event.startDate.getMonth() + 1 }/${ event.startDate.getDate() }/${ event.startDate.getFullYear() }`,
+			endDate: `${ event.endDate.getMonth() + 1 }/${ event.endDate.getDate() }/${ event.endDate.getFullYear() }`,
 			event,
 			socialWorker
 		}, ( err, message ) => {
@@ -40,7 +40,7 @@ exports.sendNewEventEmailToMARE = ( event, socialWorker, staffEmailContact ) => 
 			// if the email failed to send, or an error occurred ( which it does, rarely ) causing the response message to be empty
 			if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
 				// reject the promise with details
-				return reject( `error sending new event created notification email to MARE - ${ err }` );
+				return reject( `error sending new event created notification email to MARE - ${ response.status } - ${ response.email } - ${ response.reject_reason } - ${ err }` );
 			}
 
 			resolve();
@@ -52,7 +52,7 @@ exports.sendEventRegistrationEmailToMARE = ( eventDetails, userDetails, host, st
 
 	return new Promise( ( resolve, reject ) => {
 		// if sending of the email is not currently allowed
-		if( process.env.SEND_EVENT_REGISTRATION_TO_MARE !== 'true' ) {
+		if ( process.env.SEND_EVENT_REGISTRATION_TO_MARE !== 'true' ) {
 			// reject the promise with information about why
 			return reject( `sending of the email is disabled` );
 		}
@@ -64,7 +64,7 @@ exports.sendEventRegistrationEmailToMARE = ( eventDetails, userDetails, host, st
 				eventDetails.registeredChildren = registeredChildrenData;
 
 				// perform field-level validation for email templating
-				if ( eventDetails.source === 'other' ) {
+				if( eventDetails.source === 'other' ) {
 					eventDetails.source = `Other: ${ eventDetails.otherSource }`;
 				}
 
@@ -74,18 +74,18 @@ exports.sendEventRegistrationEmailToMARE = ( eventDetails, userDetails, host, st
 				// find the email template in templates/emails/
 				new keystone.Email({
 
-					templateExt 	: 'hbs',
-					templateEngine 	: require( 'handlebars' ),
-					templateName 	: 'event-registration-notification-to-mare'
+					templateExt: 'hbs',
+					templateEngine: require( 'handlebars' ),
+					templateName: 'event-registration-notification-to-mare'
 
 				}).send({
 
 					to: staffContactEmail,
 					from: {
-						name 	: 'MARE',
-						email 	: 'admin@adoptions.io'
+						name: 'MARE',
+						email: 'admin@adoptions.io'
 					},
-					subject		: `new event registration`,
+					subject: `new event registration`,
 					event: eventDetails,
 					user: userDetails,
 					host,
@@ -130,18 +130,18 @@ exports.sendEventUnregistrationEmailToMARE = ( eventDetails, userDetails, host, 
 		// find the email template in templates/emails/
 		new keystone.Email({
 
-			templateExt 	: 'hbs',
-			templateEngine 	: require( 'handlebars' ),
-			templateName 	: 'event-unregistration-notification-to-mare'
+			templateExt: 'hbs',
+			templateEngine: require( 'handlebars' ),
+			templateName: 'event-unregistration-notification-to-mare'
 
 		}).send({
 
 			to: staffContactEmail,
 			from: {
-				name 	: 'MARE',
-				email 	: 'admin@adoptions.io'
+				name: 'MARE',
+				email: 'admin@adoptions.io'
 			},
-			subject		: `event unregistration`,
+			subject: `event unregistration`,
 			event: eventDetails,
 			user: userDetails,
 			host,
@@ -165,12 +165,12 @@ exports.sendEventUnregistrationEmailToMARE = ( eventDetails, userDetails, host, 
 	});
 };
 
-exports.getRegisteredChildData = ( registeredChildren ) => {
+exports.getRegisteredChildData = (registeredChildren) => {
 
 	return new Promise( ( resolve, reject ) => {
 
 		// if the event registration includes registered children attendees
-		if ( registeredChildren && registeredChildren.length > 0 ) {
+		if( registeredChildren && registeredChildren.length > 0 ) {
 
 			// get the children data
 			childService.getChildrenByIds( registeredChildren )
@@ -183,7 +183,7 @@ exports.getRegisteredChildData = ( registeredChildren ) => {
 					reject( error );
 				});
 
-		// if the event registration doesn't include registered children attendees
+			// if the event registration doesn't include registered children attendees
 		} else {
 
 			// resolve the promise without any child data

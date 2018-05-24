@@ -271,14 +271,13 @@ Child.schema.pre( 'save', function( next ) {
 	// set the noedit fields associated with the recruitment worker's agency
 	const recruitmentWorkerAgencyFieldsSet = this.setRecruitmentWorkerAgencyFields();
 
-
 	// check to see if the siblings groups have been changed
 	let hasSiblingsChanged = this.checkSiblingsForChanges();
 	let hasSiblingsToBePlacedWithChanged = this.checkSiblingsToBePlacedWithForChanges();
 	// if both groups have been changed
 	if ( hasSiblingsChanged && hasSiblingsToBePlacedWithChanged ) {
 		// revert the changes to the siblingsToBePlacedWith group
-		this.siblingsToBePlacedWith = this._original.siblingsToBePlacedWith;
+		this.siblingsToBePlacedWith = this._original ? this._original.siblingsToBePlacedWith : [];
 		hasSiblingsToBePlacedWithChanged = false;
 	}
 
@@ -1032,7 +1031,7 @@ Child.schema.methods.updateBookmarks = function() {
 				// mark all removed siblings to be placed with for removal as sibling bookmarks
 				bookmarkedSiblingsToRemove.concat( [ ...removedSiblingsToBePlacedWith ] );
 			// if the child doesn't need to be placed with siblings, but did prior to saving
-			} else if( this._original.mustBePlacedWithSiblings ) {
+			} else if( this._original && this._original.mustBePlacedWithSiblings ) {
 				// mark the current child for removal as a sibling bookmark
 				bookmarkedSiblingsToRemove.push( childId );
 				// mark all removed siblings to be placed with for removal as sibling bookmarks
