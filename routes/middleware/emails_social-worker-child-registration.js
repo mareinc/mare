@@ -391,7 +391,7 @@ exports.sendNewSocialWorkerChildRegistrationNotificationEmailToMARE = ( rawChild
 			// if the email failed to send, or an error occurred ( which it does, rarely ) causing the response message to be empty
 			if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
 				// reject the promise with details
-				return reject( `error sending new social worker child registration notification email to MARE - ${ err }` );
+				return reject( `error sending new social worker child registration notification email to MARE - ${ response.status } - ${ response.email } - ${ response.reject_reason } - ${ err }` );
 			}
 
 			resolve();
@@ -775,7 +775,7 @@ exports.sendNewSocialWorkerChildRegistrationNotificationEmailToSocialWorker = ( 
 			// if the email failed to send, or an error occurred ( which it does, rarely ) causing the response message to be empty
 			if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
 				// reject the promise with details
-				return reject( `error sending new social worker child registration notification email to social worker - ${ err }` );
+				return reject( `error sending new social worker child registration notification email to social worker - ${ response.status } - ${ response.email } - ${ response.reject_reason } - ${ err }` );
 			}
 
 			resolve();

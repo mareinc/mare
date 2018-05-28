@@ -537,7 +537,7 @@ exports.sendNewSocialWorkerFamilyRegistrationNotificationEmailToMARE = ( socialW
 			// if the email failed to send, or an error occurred ( which it does, rarely ) causing the response message to be empty
 			if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
 				// reject the promise with details
-				return reject( `error sending new family notification email to MARE - ${ err }` );
+				return reject( `error sending new family notification email to MARE - ${ response.status } - ${ response.email } - ${ response.reject_reason } - ${ err }` );
 			}
 
 			resolve();
@@ -1081,7 +1081,7 @@ exports.sendNewSocialWorkerFamilyRegistrationNotificationEmailToSocialWorker = (
 			// if the email failed to send, or an error occurred ( which it does, rarely ) causing the response message to be empty
 			if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
 				// reject the promise with details
-				return reject( `error sending new family notification email to social worker ${ socialWorkerName } - ${ err }` );
+				return reject( `error sending new family notification email to social worker - ${ response.status } - ${ response.email } - ${ response.reject_reason } - ${ err }` );
 			}
 
 			resolve();
@@ -1129,7 +1129,7 @@ exports.sendNewSocialWorkerFamilyRegistrationNotificationEmailToFamily = ( rawFa
 			// if the email failed to send, or an error occurred ( which it does, rarely ) causing the response message to be empty
 			if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
 				// reject the promise with details
-				return reject( `error sending new family notification email to family ${ family.get( 'displayName' ) } - ${ err }` );
+				return reject( `error sending new family notification email to family ${ family.get( 'displayName' ) } - ${ response.status } - ${ response.email } - ${ response.reject_reason } - ${ err }` );
 			}
 
 			resolve();
