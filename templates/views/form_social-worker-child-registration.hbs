@@ -211,7 +211,7 @@
 						{{#each familyConstellations}}
 							<div class="col-sm-12 form-group">
 								<label class="checkbox-inline">
-									<input type="checkbox" name="recommendedFamilyConstellations[]" value="{{_id}}" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#recommended-family-constellation-error-container" data-parsley-mincheck="1" data-parsley-required="">{{familyConstellation}}
+									<input type="checkbox" name="recommendedFamilyConstellations[]" value="{{_id}}" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#recommended-family-constellation-error-container" data-parsley-mincheck="1" data-parsley-required="" {{#if default}}checked{{/if}}>{{familyConstellation}}
 								</label>
 							</div>
 						{{/each}}

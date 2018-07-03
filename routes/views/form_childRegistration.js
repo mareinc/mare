@@ -36,10 +36,17 @@ exports = module.exports = ( req, res ) => {
 			// the sidebar items are a success story and event in an array, assign local variables to the two objects
 			const [ randomSuccessStory, randomEvent ] = sidebarItems;
 			
+			// add 'default' value
+			let familyConstellationsAltered = [];
+			familyConstellations.forEach( ( familyConstellation, i ) => {
+				familyConstellation.set( 'default', i != 9 && i != 10, { strict: false } );
+				familyConstellationsAltered.push( familyConstellation.toObject() );
+			} );
+			
 			// assign properties to locals for access during templating
 			locals.citiesAndTowns							= citiesAndTowns;
 			locals.disabilities								= disabilities;
-			locals.familyConstellations						= familyConstellations;
+			locals.familyConstellations						= familyConstellationsAltered;
 			locals.genders									= genders;
 			locals.languages								= languages;
 			locals.legalStatuses							= legalStatuses;
