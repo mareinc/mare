@@ -22,6 +22,51 @@ InternalNotes.add( 'Target', {
 
 });
 
+InternalNotes.schema.pre( 'save', function( next ) {
+	'use strict';
+	
+	if ( this.child && this.isNew && typeof this._disablePreSave === 'undefined' ) {
+		const Child = keystone.list( 'Child' );
+		const InternalNotes = keystone.list( 'Internal Note' );
+		const currentInternalNote = this;
+		
+		// Add the note to all siblings:
+		Child.model.findOne( { _id: this.child } ).populate('siblings').exec( function( err, child ) {
+			if ( err ) {
+				console.error( `Error while loading Child object: ${ err } ` );
+				next();
+			}
+			
+			Promise.all(
+				child.siblings.filter( childSibling => childSibling._id !== currentInternalNote.child ).map( childSibling =>
+					new Promise( ( resolve, reject ) => {
+						// Create note copy:
+						const newInternalNotes = new InternalNotes.model({
+							target: currentInternalNote.target,
+							child: childSibling._id,
+							employee: currentInternalNote.employee,
+							note: currentInternalNote.note
+						});
+						
+						// To disable an infinite loop:
+						newInternalNotes._disablePreSave = true;
+						
+						// Save the note
+						newInternalNotes.save( ( err, model ) => {
+							if ( err ) {
+								return reject( `error saving new internal note for sibling -  ${ err }` );
+							}
+							resolve();
+						});
+					})					
+				)
+			).then( () => next() );
+		});
+	} else {
+		next();
+	}
+});
+
 // Define default columns in the admin interface and register the model
 InternalNotes.defaultColumns = 'date|10%, child|10%, family|10%, socialWorker|10%, note|50%';
 InternalNotes.register();
