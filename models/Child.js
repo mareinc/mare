@@ -238,6 +238,41 @@ Child.schema.virtual( 'hasSiblingGroupImage' ).get( function() {
 	return this.siblingGroupImage.exists;
 });
 
+// pre init hook - initialize default recommendedFamilyConstellation values for new child records
+// Doing it here via pre init because it does not seem to work when setting in the post init hook via field default options or via direct assignment to this.recommendedFamilyConstellation
+Child.schema.pre('init', function (next, data) {
+	
+	// We are using a custom key of the Child const: _mareDefaultFamilyConstellations
+	// it will hold default recommendedFamilyConstellation values
+	if (typeof Child._mareDefaultFamilyConstellations === 'undefined') {
+		// load data
+		keystone.list( 'Family Constellation' ).model
+			.find()
+			.exec()
+			.then( constellations => {
+				Child._mareDefaultFamilyConstellations = [];
+				constellations.forEach( (familyConstellation, i ) => {
+					// assign all family constellation records as default except for other and unknown
+					if ( i !=9 && i != 10) {
+						Child._mareDefaultFamilyConstellations.push( familyConstellation._id );
+					}
+				} );
+				// assign as default field values
+				Child.fields.recommendedFamilyConstellation.options.default = Child._mareDefaultFamilyConstellations;
+				next();
+				
+			}, err => {
+				console.error( 'error populating default recommendedFamilyConstellation' );
+			});
+			
+	} else {
+		// assign as default field values
+		Child.fields.recommendedFamilyConstellation.options.default = Child._mareDefaultFamilyConstellations;
+		next();
+	
+	}
+});
+
 // Post Init - used to store all the values before anything is changed
 Child.schema.post( 'init', function() {
 	'use strict';
