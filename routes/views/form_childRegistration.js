@@ -39,7 +39,7 @@ exports = module.exports = ( req, res ) => {
 			// add 'default' value
 			let familyConstellationsAltered = [];
 			familyConstellations.forEach( ( familyConstellation, i ) => {
-				familyConstellation.set( 'default', i != 9 && i != 10, { strict: false } );
+				familyConstellation.set( 'default', familyConstellation.key !== 'unknown' && familyConstellation.key !== 'other', { strict: false } );
 				familyConstellationsAltered.push( familyConstellation.toObject() );
 			} );
 			
