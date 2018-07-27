@@ -244,7 +244,7 @@ Child.schema.pre('init', function (next, data) {
 	
 	// We are using a custom key of the Child const: _mareDefaultFamilyConstellations
 	// it will hold default recommendedFamilyConstellation values
-	if (typeof Child._mareDefaultFamilyConstellations === 'undefined') {
+	if( typeof Child._mareDefaultFamilyConstellations === 'undefined' ) {
 		// load data
 		keystone.list( 'Family Constellation' ).model
 			.find()
@@ -253,7 +253,7 @@ Child.schema.pre('init', function (next, data) {
 				Child._mareDefaultFamilyConstellations = [];
 				constellations.forEach( (familyConstellation, i ) => {
 					// assign all family constellation records as default except for other and unknown
-					if ( i !=9 && i != 10) {
+					if( familyConstellation.key !== 'unknown' && familyConstellation.key !== 'other' ) {
 						Child._mareDefaultFamilyConstellations.push( familyConstellation._id );
 					}
 				} );
