@@ -1055,22 +1055,20 @@ Child.schema.methods.updateBookmarks = function() {
 			ChildMiddleware.updateBookmarksToRemoveByStatus( this.get( 'status' ), bookmarkedChildrenToRemove, childId, done );
 		},
 		done => {
-			// if the child needs to be placed with siblings
-			if( this.mustBePlacedWithSiblings ) {
-				// mark the current child for removal as a child bookmark unless they're already marked
-				if( !bookmarkedChildrenToRemove.includes( childId ) ) {
-					bookmarkedChildrenToRemove.push( childId );
-				}
-				// mark all siblings to be placed with for removal as child bookmarks
-				bookmarkedChildrenToRemove.concat( [ ...remainingSiblingsToBePlacedWith ] );
-				// mark all removed siblings to be placed with for removal as sibling bookmarks
-				bookmarkedSiblingsToRemove.concat( [ ...removedSiblingsToBePlacedWith ] );
-			// if the child doesn't need to be placed with siblings, but did prior to saving
-			} else if( this._original && this._original.mustBePlacedWithSiblings ) {
+			
+			// if the child must be removed from bookmarks due to status change:
+			if( bookmarkedChildrenToRemove.includes( childId ) ) {
+				// mark all current siblings to be placed with for removal as child bookmarks
+				bookmarkedChildrenToRemove.push( ...remainingSiblingsToBePlacedWith );
+				// mark all removed siblings to be placed with for removal as child bookmarks
+				bookmarkedChildrenToRemove.push( ...removedSiblingsToBePlacedWith );
+				
 				// mark the current child for removal as a sibling bookmark
 				bookmarkedSiblingsToRemove.push( childId );
+				// mark all current siblings to be placed with for removal as sibling bookmarks
+				bookmarkedSiblingsToRemove.push( ...remainingSiblingsToBePlacedWith );
 				// mark all removed siblings to be placed with for removal as sibling bookmarks
-				bookmarkedSiblingsToRemove.concat( [ ...removedSiblingsToBePlacedWith ] );
+				bookmarkedSiblingsToRemove.push( ...removedSiblingsToBePlacedWith );
 			}
 
 			done();
