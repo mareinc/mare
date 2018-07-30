@@ -39,7 +39,11 @@
 			<div class="filters__modify-search-explanation">Your search results are displayed below.</div>
 		</section>
 	</section>
-
+	{{#if canBookmarkChildren}}
+	<h4>
+		You can bookmark specific child/sibling profiles to track children you have inquired about or wish to inquire about. Please note that once a child's status is no longer active they will be removed from your Bookmarked Profiles list.
+	</h4>
+	{{/if}}
 	<div class="button-group button-group--space-between button-group--large-margin-above button-group--large-margin-below button-group--wrap waiting-child-profiles__search-and-filter-bar">
 		<select class="waiting-child-profiles__gallery-filter waiting-child-profiles-filter">
 			<option value="registered">Sort by Most Recent</option>
