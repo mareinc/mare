@@ -5,7 +5,8 @@ const keystone					= require( 'keystone' ),
 	  inquiryEmailService		= require( '../routes/middleware/emails_inquiry' ),
 	  childService				= require( '../routes/middleware/service_child' ),
 	  socialWorkerService		= require( '../routes/middleware/service_social-worker' ),
-	  CSCRegionContactService 	= require( '../routes/middleware/service_CSC-region-contact' );
+	  CSCRegionContactService 	= require( '../routes/middleware/service_CSC-region-contact' ),
+	  ChildServiceMiddleware	= require( '../routes/middleware/service_child' );
 
 // Create model. Additional options allow menu name to be used to auto-generate the URL
 var Inquiry = new keystone.List( 'Inquiry', {
@@ -27,7 +28,7 @@ Inquiry.add( 'General Information', {
 	sourceText: { type: Types.Text, label: 'source', dependsOn: { isSourceUnlisted: true }, initial: true },
 	additionalSources: { type: Types.Relationship, label: 'additional sources', ref: 'Source', filters: { isActive: true }, many: true, initial: true },
 
-	children: { type: Types.Relationship, label: 'children', ref: 'Child', dependsOn: { inquiryType: ['child inquiry', 'complaint', 'family support consultation'] }, many: true, initial: true },
+	children: { type: Types.Relationship, label: 'children', ref: 'Child', dependsOn: { inquiryType: ['child inquiry', 'complaint', 'family support consultation'] }, many: true, initial: true, note: 'when the inquiry is saved all siblings are added too ' },
 	childsSocialWorker: { type: Types.Relationship, label: 'child\'s social worker', ref: 'Social Worker', dependsOn: { inquiryType: ['child inquiry', 'complaint', 'family support consultation'] }, noedit: true },
 	siteVisitor: { type: Types.Relationship, label: 'site visitor', ref: 'Site Visitor', dependsOn: { inquirer: 'site visitor' }, initial: true },
 	family: { type: Types.Relationship, label: 'family', ref: 'Family', dependsOn: { inquirer: 'family' }, initial: true },
@@ -70,7 +71,36 @@ Inquiry.schema.pre( 'save', function( next ) {
 		// if there was an error populating the derived fields, log the error
 		.catch( err => console.error( `error populating fields for inquiry with id ${ this.get( '_id' ) } - ${ err }` ) )
 		// call next to allow the model to save
-		.then( () => next() )
+		.then( () => {
+			
+			// add siblings to the children list
+			if ( this.get( 'children' ).length > 0 ) {
+				// get siblings that are not added yet
+				const siblingsToAdd = [];
+				this.get( 'children' ).forEach( child => {
+					child.siblings.forEach( siblingID => {
+						if ( typeof this.get( 'children' ).find( findChild => findChild._id.toString() == siblingID ) === 'undefined' ) {
+							siblingsToAdd.push( siblingID );
+						}
+					});
+				});
+				
+				// add siblings
+				const fetchSiblings = ChildServiceMiddleware.getChildrenByIds( siblingsToAdd );
+				fetchSiblings
+					.then( children => {
+						this.get( 'children' ).push( ...children );
+						next();
+					})
+					.catch( err => {
+						// if no children were found
+						next();
+					});
+			} else {
+				next();
+			}
+			
+		})
 
 		// if( !this.thankYouSentToFamilyOnBehalfOfInquirer && inquiryData.onBehalfOfFamily ) {
 		// 	inquiryEmailService.sendThankYouEmailToFamilyOnBehalfOfInquirer( this, inquiryData, done );

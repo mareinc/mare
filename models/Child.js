@@ -238,6 +238,41 @@ Child.schema.virtual( 'hasSiblingGroupImage' ).get( function() {
 	return this.siblingGroupImage.exists;
 });
 
+// pre init hook - initialize default recommendedFamilyConstellation values for new child records
+// Doing it here via pre init because it does not seem to work when setting in the post init hook via field default options or via direct assignment to this.recommendedFamilyConstellation
+Child.schema.pre('init', function (next, data) {
+	
+	// We are using a custom key of the Child const: _mareDefaultFamilyConstellations
+	// it will hold default recommendedFamilyConstellation values
+	if( typeof Child._mareDefaultFamilyConstellations === 'undefined' ) {
+		// load data
+		keystone.list( 'Family Constellation' ).model
+			.find()
+			.exec()
+			.then( constellations => {
+				Child._mareDefaultFamilyConstellations = [];
+				constellations.forEach( (familyConstellation, i ) => {
+					// assign all family constellation records as default except for other and unknown
+					if( familyConstellation.key !== 'unknown' && familyConstellation.key !== 'other' ) {
+						Child._mareDefaultFamilyConstellations.push( familyConstellation._id );
+					}
+				} );
+				// assign as default field values
+				Child.fields.recommendedFamilyConstellation.options.default = Child._mareDefaultFamilyConstellations;
+				next();
+				
+			}, err => {
+				console.error( 'error populating default recommendedFamilyConstellation' );
+			});
+			
+	} else {
+		// assign as default field values
+		Child.fields.recommendedFamilyConstellation.options.default = Child._mareDefaultFamilyConstellations;
+		next();
+	
+	}
+});
+
 // Post Init - used to store all the values before anything is changed
 Child.schema.post( 'init', function() {
 	'use strict';
@@ -1020,22 +1055,20 @@ Child.schema.methods.updateBookmarks = function() {
 			ChildMiddleware.updateBookmarksToRemoveByStatus( this.get( 'status' ), bookmarkedChildrenToRemove, childId, done );
 		},
 		done => {
-			// if the child needs to be placed with siblings
-			if( this.mustBePlacedWithSiblings ) {
-				// mark the current child for removal as a child bookmark unless they're already marked
-				if( !bookmarkedChildrenToRemove.includes( childId ) ) {
-					bookmarkedChildrenToRemove.push( childId );
-				}
-				// mark all siblings to be placed with for removal as child bookmarks
-				bookmarkedChildrenToRemove.concat( [ ...remainingSiblingsToBePlacedWith ] );
-				// mark all removed siblings to be placed with for removal as sibling bookmarks
-				bookmarkedSiblingsToRemove.concat( [ ...removedSiblingsToBePlacedWith ] );
-			// if the child doesn't need to be placed with siblings, but did prior to saving
-			} else if( this._original && this._original.mustBePlacedWithSiblings ) {
+			
+			// if the child must be removed from bookmarks due to status change:
+			if( bookmarkedChildrenToRemove.includes( childId ) ) {
+				// mark all current siblings to be placed with for removal as child bookmarks
+				bookmarkedChildrenToRemove.push( ...remainingSiblingsToBePlacedWith );
+				// mark all removed siblings to be placed with for removal as child bookmarks
+				bookmarkedChildrenToRemove.push( ...removedSiblingsToBePlacedWith );
+				
 				// mark the current child for removal as a sibling bookmark
 				bookmarkedSiblingsToRemove.push( childId );
+				// mark all current siblings to be placed with for removal as sibling bookmarks
+				bookmarkedSiblingsToRemove.push( ...remainingSiblingsToBePlacedWith );
 				// mark all removed siblings to be placed with for removal as sibling bookmarks
-				bookmarkedSiblingsToRemove.concat( [ ...removedSiblingsToBePlacedWith ] );
+				bookmarkedSiblingsToRemove.push( ...removedSiblingsToBePlacedWith );
 			}
 
 			done();
