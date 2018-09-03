@@ -26,11 +26,6 @@
 									</td>
 								</tr>
 								<tr>
-									<td style="padding: 30px 0 0 0; color: #153634; font-family: Ariel, sans-serif; font-size: 14px; line-height: 16px;">
-										The inquiry will need to be reviewed and some fields modified in the new system:
-									</td>
-								</tr>
-								<tr>
 									<td style="padding: 30px 0 10px 0; color: #153634; font-family: Ariel, sans-serif; font-size: 20px; line-height: 24px;">
 										<b>details</b>
 									</td>
@@ -72,6 +67,13 @@
 										<b>name</b> {{ inquirerData.name }}
 									</td>
 								</tr>
+								{{#if inquirerData.registrationNumber}}
+								<tr>
+									<td style="padding: 5px 0 0 0; color: #153634; font-family: Ariel, sans-serif; font-size: 14px; line-height: 16px;">
+										<b>registration number</b> {{ inquirerData.registrationNumber }}
+									</td>
+								</tr>
+								{{/if}}
 								<tr>
 									<td style="padding: 5px 0 0 0; color: #153634; font-family: Ariel, sans-serif; font-size: 14px; line-height: 16px;">
 										<b>street 1</b> {{ inquirerData.street1 }}
@@ -129,11 +131,208 @@
 										<b>ethnicity</b> {{ inquirerData.ethnicity }}
 									</td>
 								</tr>
+								
+								{{#if inquirerData.socialWorker}}
+									<tr>
+										<td style="padding: 30px 0 10px 0; color: #153634; font-family: Ariel, sans-serif; font-size: 20px; line-height: 24px;">
+											<b>social worker</b>
+										</td>
+									</tr>
+									<tr>
+										<td style="padding: 5px 0 0 0; color: #153634; font-family: Ariel, sans-serif; font-size: 14px; line-height: 16px;">
+											<b>name</b> {{ inquirerData.socialWorker }}
+										</td>
+									</tr>
+									
+									{{#if inquirerData.socialWorkerAgency}}
+									<tr>
+										<td style="padding: 5px 0 0 0; color: #153634; font-family: Ariel, sans-serif; font-size: 14px; line-height: 16px;">
+											<b>agency</b> {{ inquirerData.socialWorkerAgency }}
+										</td>
+									</tr>
+									{{/if}}
+									
+									{{#if inquirerData.socialWorkerPhoneWork}}
+									<tr>
+										<td style="padding: 5px 0 0 0; color: #153634; font-family: Ariel, sans-serif; font-size: 14px; line-height: 16px;">
+											<b>work phone</b> {{ inquirerData.socialWorkerPhoneWork }}
+										</td>
+									</tr>
+									{{/if}}
+									
+									{{#if inquirerData.socialWorkerPhoneMobile}}
+									<tr>
+										<td style="padding: 5px 0 0 0; color: #153634; font-family: Ariel, sans-serif; font-size: 14px; line-height: 16px;">
+											<b>mobile phone</b> {{ inquirerData.socialWorkerPhoneMobile }}
+										</td>
+									</tr>
+									{{/if}}
+									
+									{{#if inquirerData.socialWorkerPhonePreferred}}
+									<tr>
+										<td style="padding: 5px 0 0 0; color: #153634; font-family: Ariel, sans-serif; font-size: 14px; line-height: 16px;">
+											<b>preferred phone</b> {{ inquirerData.socialWorkerPhonePreferred }}
+										</td>
+									</tr>
+									{{/if}}
+								
+								{{/if}}
+								
+								{{#if inquirerData.contact2Available}}
+								
 								<tr>
-									<td style="padding: 5px 0 0 0; color: #153634; font-family: Ariel, sans-serif; font-size: 14px; line-height: 16px;">
-										<b>social worker</b> {{ inquirerData.socialWorker }}
+									<td style="padding: 30px 0 10px 0; color: #153634; font-family: Ariel, sans-serif; font-size: 20px; line-height: 24px;">
+										<b>contact 1</b>
 									</td>
 								</tr>
+								
+								{{#if inquirerData.contact1FullName}}
+								<tr>
+									<td style="padding: 5px 0 0 0; color: #153634; font-family: Ariel, sans-serif; font-size: 14px; line-height: 16px;">
+										<b>name</b> {{ inquirerData.contact1FullName }}
+									</td>
+								</tr>
+								{{/if}}
+								{{#if inquirerData.contact1PhoneMobile}}
+								<tr>
+									<td style="padding: 5px 0 0 0; color: #153634; font-family: Ariel, sans-serif; font-size: 14px; line-height: 16px;">
+										<b>mobile phone</b> {{ inquirerData.contact1PhoneMobile }}
+									</td>
+								</tr>
+								{{/if}}
+								{{#if inquirerData.contact1PhoneWork}}
+								<tr>
+									<td style="padding: 5px 0 0 0; color: #153634; font-family: Ariel, sans-serif; font-size: 14px; line-height: 16px;">
+										<b>work phone</b> {{ inquirerData.contact1PhoneWork }}
+									</td>
+								</tr>
+								{{/if}}
+								
+								{{#if inquirerData.contact1Email}}
+								<tr>
+									<td style="padding: 5px 0 0 0; color: #153634; font-family: Ariel, sans-serif; font-size: 14px; line-height: 16px;">
+										<b>e-mail</b> {{ inquirerData.contact1Email }}
+									</td>
+								</tr>
+								{{/if}}
+								
+								{{#if inquirerData.contact1PreferredCommunicationMethod}}
+								<tr>
+									<td style="padding: 5px 0 0 0; color: #153634; font-family: Ariel, sans-serif; font-size: 14px; line-height: 16px;">
+										<b>preferred communication method</b> {{ inquirerData.contact1PreferredCommunicationMethod }}
+									</td>
+								</tr>
+								{{/if}}
+								
+								{{#if inquirerData.contact1Gender}}
+								<tr>
+									<td style="padding: 5px 0 0 0; color: #153634; font-family: Ariel, sans-serif; font-size: 14px; line-height: 16px;">
+										<b>gender</b> {{ inquirerData.contact1Gender }}
+									</td>
+								</tr>
+								{{/if}}
+								
+								{{#if inquirerData.contact1Race}}
+								<tr>
+									<td style="padding: 5px 0 0 0; color: #153634; font-family: Ariel, sans-serif; font-size: 14px; line-height: 16px;">
+										<b>race</b> {{ inquirerData.contact1Race }}
+									</td>
+								</tr>
+								{{/if}}
+								
+								{{#if inquirerData.contact1Occupation}}
+								<tr>
+									<td style="padding: 5px 0 0 0; color: #153634; font-family: Ariel, sans-serif; font-size: 14px; line-height: 16px;">
+										<b>occupation</b> {{ inquirerData.contact1Occupation }}
+									</td>
+								</tr>
+								{{/if}}
+								
+								{{#if inquirerData.contact1BirthDate}}
+								<tr>
+									<td style="padding: 5px 0 0 0; color: #153634; font-family: Ariel, sans-serif; font-size: 14px; line-height: 16px;">
+										<b>date of birth</b> {{ inquirerData.contact1BirthDate }}
+									</td>
+								</tr>
+								{{/if}}
+								
+								<tr>
+									<td style="padding: 30px 0 10px 0; color: #153634; font-family: Ariel, sans-serif; font-size: 20px; line-height: 24px;">
+										<b>contact 2</b>
+									</td>
+								</tr>
+								
+								{{#if inquirerData.contact2FullName}}
+								<tr>
+									<td style="padding: 5px 0 0 0; color: #153634; font-family: Ariel, sans-serif; font-size: 14px; line-height: 16px;">
+										<b>name</b> {{ inquirerData.contact2FullName }}
+									</td>
+								</tr>
+								{{/if}}
+								{{#if inquirerData.contact2PhoneMobile}}
+								<tr>
+									<td style="padding: 5px 0 0 0; color: #153634; font-family: Ariel, sans-serif; font-size: 14px; line-height: 16px;">
+										<b>mobile phone</b> {{ inquirerData.contact2PhoneMobile }}
+									</td>
+								</tr>
+								{{/if}}
+								{{#if inquirerData.contact2PhoneWork}}
+								<tr>
+									<td style="padding: 5px 0 0 0; color: #153634; font-family: Ariel, sans-serif; font-size: 14px; line-height: 16px;">
+										<b>work phone</b> {{ inquirerData.contact2PhoneWork }}
+									</td>
+								</tr>
+								{{/if}}
+								
+								{{#if inquirerData.contact2Email}}
+								<tr>
+									<td style="padding: 5px 0 0 0; color: #153634; font-family: Ariel, sans-serif; font-size: 14px; line-height: 16px;">
+										<b>e-mail</b> {{ inquirerData.contact2Email }}
+									</td>
+								</tr>
+								{{/if}}
+								
+								{{#if inquirerData.contact2PreferredCommunicationMethod}}
+								<tr>
+									<td style="padding: 5px 0 0 0; color: #153634; font-family: Ariel, sans-serif; font-size: 14px; line-height: 16px;">
+										<b>preferred communication method</b> {{ inquirerData.contact2PreferredCommunicationMethod }}
+									</td>
+								</tr>
+								{{/if}}
+								
+								{{#if inquirerData.contact2Gender}}
+								<tr>
+									<td style="padding: 5px 0 0 0; color: #153634; font-family: Ariel, sans-serif; font-size: 14px; line-height: 16px;">
+										<b>gender</b> {{ inquirerData.contact2Gender }}
+									</td>
+								</tr>
+								{{/if}}
+								
+								{{#if inquirerData.contact2Race}}
+								<tr>
+									<td style="padding: 5px 0 0 0; color: #153634; font-family: Ariel, sans-serif; font-size: 14px; line-height: 16px;">
+										<b>race</b> {{ inquirerData.contact2Race }}
+									</td>
+								</tr>
+								{{/if}}
+								
+								{{#if inquirerData.contact2Occupation}}
+								<tr>
+									<td style="padding: 5px 0 0 0; color: #153634; font-family: Ariel, sans-serif; font-size: 14px; line-height: 16px;">
+										<b>occupation</b> {{ inquirerData.contact2Occupation }}
+									</td>
+								</tr>
+								{{/if}}
+								
+								{{#if inquirerData.contact2BirthDate}}
+								<tr>
+									<td style="padding: 5px 0 0 0; color: #153634; font-family: Ariel, sans-serif; font-size: 14px; line-height: 16px;">
+										<b>date of birth</b> {{ inquirerData.contact2BirthDate }}
+									</td>
+								</tr>
+								{{/if}}
+								
+								{{/if}}
 								{{#if inquirerData.stages}}
 								<tr>
 									<td style="padding: 30px 0 10px 0; color: #153634; font-family: Ariel, sans-serif; font-size: 20px; line-height: 24px;">
@@ -198,6 +397,24 @@
 								{{/if}}
 								{{/if}}
 								{{/if}}
+								
+								{{#if inquirerData.homestudy}}
+								<tr>
+									<td style="padding: 15px 0 0 0; color: #153634; font-family: Ariel, sans-serif; font-size: 14px; line-height: 16px;">
+										<b>homestudy completed</b>
+									</td>
+								</tr>
+								
+								{{#if inquirerData.homestudy.started}}
+								
+								<tr>
+									<td style="padding: 5px 0 0 0; color: #153634; font-family: Ariel, sans-serif; font-size: 14px; line-height: 16px;">
+										<b>started</b> {{ inquirerData.homestudy.started }}
+									</td>
+								</tr>
+								{{/if}}
+								{{/if}}
+								
 								{{#if inquiryData.children}}
 								<tr>
 									<td style="padding: 30px 0 5px 0; color: #153634; font-family: Ariel, sans-serif; font-size: 20px; line-height: 24px;">
