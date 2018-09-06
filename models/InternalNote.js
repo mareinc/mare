@@ -30,15 +30,15 @@ InternalNotes.schema.pre( 'save', function( next ) {
 		const InternalNotes = keystone.list( 'Internal Note' );
 		const currentInternalNote = this;
 		
-		// Add the note to all siblings:
-		Child.model.findOne( { _id: this.child } ).populate('siblings').exec( function( err, child ) {
+		// Add the note to all siblingsToBePlacedWith:
+		Child.model.findOne( { _id: this.child } ).populate('siblingsToBePlacedWith').exec( function( err, child ) {
 			if ( err ) {
 				console.error( `Error while loading Child object: ${ err } ` );
 				next();
 			}
 			
 			Promise.all(
-				child.siblings.filter( childSibling => childSibling._id !== currentInternalNote.child ).map( childSibling =>
+				child.siblingsToBePlacedWith.filter( childSibling => childSibling._id !== currentInternalNote.child ).map( childSibling =>
 					new Promise( ( resolve, reject ) => {
 						// Create note copy:
 						const newInternalNotes = new InternalNotes.model({
