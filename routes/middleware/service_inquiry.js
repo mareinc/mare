@@ -331,18 +331,16 @@ function extractInquirerData( inquirer ) {
 					relevantData[ 'socialWorkerPhonePreferred' ] = inquirer.socialWorker.phone.preferred;
 				}
 				
+				if ( inquirer.socialWorker.email ) {
+					relevantData[ 'socialWorkerEmail' ] = inquirer.socialWorker.email;
+				}
 			}
 			
 			// add contact 1 and contact 2 fields:
 			let isContact2Available = false;
 			if ( inquirer.userType === 'family' && inquirer.contact2 ) {
 				// first, check if contact 2 is not empty:
-				if ( inquirer.contact2.phone && ( inquirer.contact2.phone.mobile || inquirer.contact2.phone.work ) ) {
-					isContact2Available = true;
-				}
-				if ( inquirer.contact2.email ) {
-					isContact2Available = true;
-				}
+				isContact2Available = inquirer.contact2.name && inquirer.contact2.name.first && inquirer.contact2.name.first.length > 0;
 				
 				// add contact 1 and contact 2 fields only if contact 2 is not empty:
 				if ( isContact2Available ) {
