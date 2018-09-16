@@ -10,6 +10,8 @@
  * 
  * IMPORTANT: be sure to comment out the necessary parts of the pre-save and post-save hooks before running this script
  * 
+ * IMPORTANT: you'll need to restart the server after every run
+ * 
  * EXAMPLE: localhost:3000/fix/cloudinary-image
  */
 
@@ -40,6 +42,7 @@ targetModels.set( 'socialWorkers',		{ name: 'Social Worker',	plural: 'social wor
 targetModels.set( 'siteVisitors',		{ name: 'Site Visitor',		plural: 'site visitors' } );
 targetModels.set( 'admin',				{ name: 'Admin',			plural: 'admin' } );
 targetModels.set( 'events',				{ name: 'Event',			plural: 'events' } );
+targetModels.set( 'featuredItems',		{ name: 'Featured Item',	plural: 'featured items' } );
 targetModels.set( 'mareInTheNews',		{ name: 'MARE in the News',	plural: 'MARE in the news stories' } );
 targetModels.set( 'slideshowItems',		{ name: 'Slideshow Item',	plural: 'slideshow items' } );
 targetModels.set( 'successStories',		{ name: 'Success Story',	plural: 'success stories' } );
@@ -74,11 +77,11 @@ exports.fixCloudinaryImages = function( req, res, next ) {
 		// put the fear in developers who may not have read the directions
 		console.warn( `WARNING: YOU ARE ABOUT TO UPDATE EVERY MODEL IN THE DATABASE, ABORT IF THIS WASN'T WHAT YOU INTENDED` );
 		// ensure we are processing all models with Cloudinary images site-wide
-		// targetModel.push( 'children', 'families', 'socialWorkers', 'admin',
-		// 				  'siteVisitors', 'events', 'featuredItems', 'mareInTheNews',
-		// 				  'slideshow items', 'successStories' );
-		modelsToProcess.push( 'events', 'mareInTheNews',
-							  'slideshowItems', 'successStories' );
+		modelsToProcess.push( 'children', 'families', 'socialWorkers', 'admin',
+						  'siteVisitors', 'events', 'featuredItems', 'mareInTheNews',
+						  'slideshowItems', 'successStories' );
+		// modelsToProcess.push( 'events', 'mareInTheNews',
+		// 					  'slideshowItems', 'successStories' );
 	}
 	// kick off the first run of our generator
 	generator.next();
