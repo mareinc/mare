@@ -85,15 +85,15 @@
 				selectedChildName   = selectedChild.html();
 
 			// check if the newly selected child has already been selected
-			var hasChildALreadyBeenSelected = false;
+			var hasChildAlreadyBeenSelected = false;
 			this.$( '.registered-children-container input.hidden' ).each( function() {
 				if ( selectedChildId === $( this ).val() ) {
-					hasChildALreadyBeenSelected = true;
+					hasChildAlreadyBeenSelected = true;
 				}
 			});
 
 			// if the child hasn't already been selected, add it to the list
-			if ( !hasChildALreadyBeenSelected ) {
+			if ( !hasChildAlreadyBeenSelected ) {
 				// generate the html for the new child using the child's details
 				var childDetails = this.registeredChildDetailsTemplate({ childId: selectedChildId,
 					childName: selectedChildName });

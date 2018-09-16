@@ -46,6 +46,10 @@ Event.add( 'General Information', {
 	endTime: { type: Types.Text, label: 'end time', required: true, initial: true },
 	description: { type: Types.Html, label: 'description', wysiwyg: true, initial: true }
 
+}, 'Access Restrictions', {
+
+	preventRegistration: { type: Types.Boolean, label: 'prevent registration', note: 'this will prevent registration for active fundraising events and adoption parties & information events', initial: true }
+
 }, 'Attendees', {
 
 	staffAttendees: { type: Types.Relationship, label: 'staff', ref: 'Admin', many: true, initial: true },

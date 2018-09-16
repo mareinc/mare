@@ -81,8 +81,8 @@ Legalization.schema.methods.populateAgency = function() {
 	return new Promise( ( resolve, reject ) => {	
 		// if the family is unregistered or an agency has already been selected
 		if( this.isUnregisteredFamily || this.familyDetails.agency ) {
-			// prevent the rest of the function from executing
-			return next();
+			// resolve the promise and prevent the rest of the function from executing
+			return resolve();
 		// if the family is registered and the agency hasn't already been selected
 		} else {
 			// populate the family Relationship on the model
@@ -92,8 +92,11 @@ Legalization.schema.methods.populateAgency = function() {
 					// reject the promise with details of the error, preventing the rest of the function from executing
 					return reject( `error populating family field for placement with id ${ this.get( '_id' ) } - ${ err }` );
 				}
-				// if there were no errors, populate the agency field with the family's social worker's agency
-				this.familyDetails.agency = this.family.socialWorkerAgency;
+				// if there were no errors and a MARE family has been selected
+				if( this.family ) {
+					// populate the agency field with the family's social worker's agency
+					this.familyDetails.agency = this.family.socialWorkerAgency;
+				}
 				// resolve the promise
 				resolve( this );
 			})

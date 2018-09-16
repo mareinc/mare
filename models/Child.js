@@ -238,6 +238,41 @@ Child.schema.virtual( 'hasSiblingGroupImage' ).get( function() {
 	return this.siblingGroupImage.exists;
 });
 
+// pre init hook - initialize default recommendedFamilyConstellation values for new child records
+// Doing it here via pre init because it does not seem to work when setting in the post init hook via field default options or via direct assignment to this.recommendedFamilyConstellation
+Child.schema.pre('init', function (next, data) {
+	
+	// We are using a custom key of the Child const: _mareDefaultFamilyConstellations
+	// it will hold default recommendedFamilyConstellation values
+	if( typeof Child._mareDefaultFamilyConstellations === 'undefined' ) {
+		// load data
+		keystone.list( 'Family Constellation' ).model
+			.find()
+			.exec()
+			.then( constellations => {
+				Child._mareDefaultFamilyConstellations = [];
+				constellations.forEach( (familyConstellation, i ) => {
+					// assign all family constellation records as default except for other and unknown
+					if( familyConstellation.key !== 'unknown' && familyConstellation.key !== 'other' ) {
+						Child._mareDefaultFamilyConstellations.push( familyConstellation._id );
+					}
+				} );
+				// assign as default field values
+				Child.fields.recommendedFamilyConstellation.options.default = Child._mareDefaultFamilyConstellations;
+				next();
+				
+			}, err => {
+				console.error( 'error populating default recommendedFamilyConstellation' );
+			});
+			
+	} else {
+		// assign as default field values
+		Child.fields.recommendedFamilyConstellation.options.default = Child._mareDefaultFamilyConstellations;
+		next();
+	
+	}
+});
+
 // Post Init - used to store all the values before anything is changed
 Child.schema.post( 'init', function() {
 	'use strict';
@@ -252,6 +287,7 @@ Child.schema.post( 'init', function() {
 
 // Child.schema.pre( 'save', function( next ) {
 // 	'use strict';
+
 // 	// trim whitespace characters from any type.Text fields
 // 	this.trimTextFields();
 // 	// create a full name for the child based on their first, middle, and last names
@@ -270,14 +306,13 @@ Child.schema.post( 'init', function() {
 // 	// set the noedit fields associated with the recruitment worker's agency
 // 	const recruitmentWorkerAgencyFieldsSet = this.setRecruitmentWorkerAgencyFields();
 
-
 // 	// check to see if the siblings groups have been changed
 // 	let hasSiblingsChanged = this.checkSiblingsForChanges();
 // 	let hasSiblingsToBePlacedWithChanged = this.checkSiblingsToBePlacedWithForChanges();
 // 	// if both groups have been changed
 // 	if ( hasSiblingsChanged && hasSiblingsToBePlacedWithChanged ) {
 // 		// revert the changes to the siblingsToBePlacedWith group
-// 		this.siblingsToBePlacedWith = this._original.siblingsToBePlacedWith;
+// 		this.siblingsToBePlacedWith = this._original ? this._original.siblingsToBePlacedWith : [];
 // 		hasSiblingsToBePlacedWithChanged = false;
 // 	}
 
@@ -587,6 +622,10 @@ Child.schema.methods.setAdoptionWorkerAgencyFields = function() {
 	return new Promise( ( resolve, reject ) => {
 
 		if( !this.adoptionWorker ) {
+			// remove the adoption worker agency and region fields
+			this.adoptionWorkerAgency = undefined;
+			this.adoptionWorkerAgencyRegion = undefined;
+			// resolve the promise and prevent future code from executing
 			return resolve();
 		}
 
@@ -611,7 +650,7 @@ Child.schema.methods.setAdoptionWorkerAgencyFields = function() {
 			.catch( err => {
 				// log the error for debugging purposes
 				console.error( `error saving the child's adoption worker agency fields - ${ err }` );
-				// clear out the adoption worker agency fields
+				// remove the adoption worker agency and region fields
 				this.adoptionWorkerAgency = undefined;
 				this.adoptionWorkerAgencyRegion = undefined;
 				// resolve the promise so that the Promise.all() in the pre-save hook does not fail
@@ -625,6 +664,10 @@ Child.schema.methods.setRecruitmentWorkerAgencyFields = function() {
 	return new Promise( ( resolve, reject ) => {
 
 		if( !this.recruitmentWorker ) {
+			// remove the recruitment worker agency and region fields
+			this.recruitmentWorkerAgency = undefined;
+			this.recruitmentWorkerAgencyRegion = undefined;
+			// resolve the promise and prevent future code from executing
 			return resolve();
 		}
 
@@ -649,9 +692,9 @@ Child.schema.methods.setRecruitmentWorkerAgencyFields = function() {
 			.catch( err => {
 				// log the error for debugging purposes
 				console.error( `error saving the child's recruitment worker agency fields - ${ err }` );
-				// clear out the recruitment worker agency fields
-				this.recruitmentWorkerAgency = undefined;
-				this.recruitmentWorkerAgencyRegion = undefined;
+				// remove the recruitment worker agency and region fields
+				this.adoptionWorkerAgency = undefined;
+				this.adoptionWorkerAgencyRegion = undefined;
 				// resolve the promise so that the Promise.all() in the pre-save hook does not fail
 				resolve();
 			});
@@ -833,14 +876,15 @@ Child.schema.methods.updateSiblingsToBePlacedWithGroup = function() {
 				saveLock.lock( siblingID );
 				// update the sibling to be placed with with the new siblings to be placed with group
 				ChildMiddleware
-					.applySiblingsToBePlacedWithGroupToChild( { childToUpdateID: siblingID,
-																siblingsToBePlacedWithGroup: updatedSiblingsToBePlacedWithGroup,
-																siblingGroupProfile: this.get( 'groupProfile' ),
-																siblingGroupImage: this.get( 'siblingGroupImage' ),
-																siblingGroupVideo: this.get( 'siblingGroupVideo' ),
-																wednesdaysChildSiblingGroup: this.get( 'wednesdaysChildSiblingGroup' ),
-																wednesdaysChildSiblingGroupDate: this.get( 'wednesdaysChildSiblingGroupDate' ),
-																wednesdaysChildSiblingGroupVideo: this.get( 'wednesdaysChildSiblingGroupVideo' ) } )
+					.applySiblingsToBePlacedWithGroupToChild({
+						childToUpdateID: siblingID,
+						siblingsToBePlacedWithGroup: updatedSiblingsToBePlacedWithGroup,
+						siblingGroupProfile: this.get( 'groupProfile' ),
+						siblingGroupImage: this.get( 'siblingGroupImage' ),
+						siblingGroupVideo: this.get( 'siblingGroupVideo' ),
+						wednesdaysChildSiblingGroup: this.get( 'wednesdaysChildSiblingGroup' ),
+						wednesdaysChildSiblingGroupDate: this.get( 'wednesdaysChildSiblingGroupDate' ),
+						wednesdaysChildSiblingGroupVideo: this.get( 'wednesdaysChildSiblingGroupVideo' ) } )
 					.then( updatedChildID => {
 						// unlock the sibling to be placed with after update is complete
 						saveLock.unlock( updatedChildID );
@@ -1011,22 +1055,20 @@ Child.schema.methods.updateBookmarks = function() {
 			ChildMiddleware.updateBookmarksToRemoveByStatus( this.get( 'status' ), bookmarkedChildrenToRemove, childId, done );
 		},
 		done => {
-			// if the child needs to be placed with siblings
-			if( this.mustBePlacedWithSiblings ) {
-				// mark the current child for removal as a child bookmark unless they're already marked
-				if( !bookmarkedChildrenToRemove.includes( childId ) ) {
-					bookmarkedChildrenToRemove.push( childId );
-				}
-				// mark all siblings to be placed with for removal as child bookmarks
-				bookmarkedChildrenToRemove.concat( [ ...remainingSiblingsToBePlacedWith ] );
-				// mark all removed siblings to be placed with for removal as sibling bookmarks
-				bookmarkedSiblingsToRemove.concat( [ ...removedSiblingsToBePlacedWith ] );
-			// if the child doesn't need to be placed with siblings, but did prior to saving
-			} else if( this._original.mustBePlacedWithSiblings ) {
+			
+			// if the child must be removed from bookmarks due to status change:
+			if( bookmarkedChildrenToRemove.includes( childId ) ) {
+				// mark all current siblings to be placed with for removal as child bookmarks
+				bookmarkedChildrenToRemove.push( ...remainingSiblingsToBePlacedWith );
+				// mark all removed siblings to be placed with for removal as child bookmarks
+				bookmarkedChildrenToRemove.push( ...removedSiblingsToBePlacedWith );
+				
 				// mark the current child for removal as a sibling bookmark
 				bookmarkedSiblingsToRemove.push( childId );
+				// mark all current siblings to be placed with for removal as sibling bookmarks
+				bookmarkedSiblingsToRemove.push( ...remainingSiblingsToBePlacedWith );
 				// mark all removed siblings to be placed with for removal as sibling bookmarks
-				bookmarkedSiblingsToRemove.concat( [ ...removedSiblingsToBePlacedWith ] );
+				bookmarkedSiblingsToRemove.push( ...removedSiblingsToBePlacedWith );
 			}
 
 			done();

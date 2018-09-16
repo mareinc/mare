@@ -31,15 +31,12 @@ exports = module.exports = ( req, res ) => {
 
 	// track whether it is an event users can register for through the site
 	// admin can't register, and everyone else can only register for select types of events
-	locals.canRegister = userType !== 'admin'
-						 && [ 'fundraising events',
-							  'MARE adoption parties & information events' ].includes( eventType );
+	locals.canRegister = userType !== 'admin' &&
+						 [ 'fundraising events', 'MARE adoption parties & information events' ].includes( eventType );
 
 	// only social workers can submit events, and only for specific types of events
-	locals.canSubmitEvent = userType === 'social worker'
-							&& [ 'MAPP trainings',
-								 'agency information meetings',
-								 'other opportunities & trainings' ].includes( eventType );
+	locals.canSubmitEvent = userType === 'social worker' &&
+							[ 'MAPP trainings', 'agency information meetings', 'other opportunities & trainings' ].includes( eventType );
 
 	// store on locals for access during templating
 	locals.category = category;
@@ -63,7 +60,7 @@ exports = module.exports = ( req, res ) => {
 			// loop through all the events
 			for( let event of events ) {
 				// the list page needs truncated details information to keep the cards they're displayed on small
-				event.shortContent = Utils.truncateText( event.description, truncateOptions );
+				event.shortContent = Utils.truncateText( { text: event.description, options: truncateOptions } );
 				// determine whether or not address information exists for the event, which is helpful during rendering
 				// street1 is required, so this is enough to tell us if the address has been populated
 				event.hasAddress = event.address && event.address.street1;

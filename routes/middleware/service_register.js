@@ -22,6 +22,9 @@ exports.registerUser = ( req, res, next ) => {
 	const registrationType = user.registrationType;
 	// create a variable to hold the redirect path to take the user to a target page after processing is complete
 	let redirectPath = '/account?newUser=true';
+	if (typeof user.redirectUrl !== 'undefined') {
+		redirectPath = user.redirectUrl;
+	}
 
 	// check for conditions that will prevent saving the model
 	const isEmailValid			= exports.validateEmail( user.email ),			// returns true/false

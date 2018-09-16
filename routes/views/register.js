@@ -54,6 +54,15 @@ exports = module.exports = ( req, res ) => {
 			locals.randomSuccessStory		= randomSuccessStory;
 			locals.randomEvent				= randomEvent;
 			
+			if (typeof req.headers.referer !== 'undefined') {
+				let recognizedReferers = ['/page/register-a-child', '/page/register-a-familys-homestudy', '/events/adoption-parties/', '/events/fundraising-events/'];
+				recognizedReferers.forEach(path => {
+					if (req.headers.referer.includes(path)) {
+						locals.redirectUrl = req.headers.referer;
+					}
+				});
+			}
+			
 			// set the layout to render with the right sidebar
 			locals[ 'render-with-sidebar' ] = true;
 			// render the view using the register.hbs template

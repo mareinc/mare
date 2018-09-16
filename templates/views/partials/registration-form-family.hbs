@@ -2,6 +2,9 @@
 
 	<form enctype="multipart/form-data" action="/register" class="registration-form form--family-registration" method="POST">
 		<input type="hidden" class="registration-type" name="registrationType" value="family">
+		{{#if redirectUrl}}
+			<input type="hidden" name="redirectUrl" value="{{ redirectUrl }}">
+		{{/if}}
 
 		<section class="family-account-setup-section">
 			<div class="form-section-header">Account Setup</div>
@@ -247,31 +250,31 @@
 			</div>
 			<div class="row form-group">
 				<div id="adoption-process-error-container" class="col-sm-16 error-container">
-						<div class="col-sm-12 form-group">
-							<label class="checkbox-inline">
-								<input type="checkbox" id="gathering-information-checkbox" class="adoption-preferences-trigger" name="processProgression" value="gatheringInformation" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#adoption-process-error-container" required="">Gathering Information
-							</label>
-						</div>
-						<div class="col-sm-12 form-group">
-							<label class="checkbox-inline">
-								<input type="checkbox" id="looking-for-agency-checkbox" class="adoption-preferences-trigger" name="processProgression" value="lookingForAgency" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#adoption-process-error-container" required="">Looking for an agency
-							</label>
-						</div>
-						<div class="col-sm-12 form-group">
-							<label class="checkbox-inline">
-								<input type="checkbox" id="working-with-agency-checkbox" class="adoption-preferences-trigger" name="processProgression" value="workingWithAgency" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#adoption-process-error-container" required="">Working with an agency
-							</label>
-						</div>
-						<div class="col-sm-12 form-group">
-							<label class="checkbox-inline">
-								<input type="checkbox" id="mapp-training-completed-checkbox" class="adoption-preferences-trigger" name="processProgression" value="MAPPTrainingCompleted" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#adoption-process-error-container" required="">MAPP training completed
-							</label>
-						</div>
-						<div class="col-sm-12 form-group">
-							<label class="checkbox-inline">
-								<input type="checkbox" id="homestudy-completed-checkbox" class="adoption-preferences-trigger" name="processProgression" value="homestudyCompleted" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#adoption-process-error-container" required="">Homestudy completed
-							</label>
-						</div>
+					<div class="col-sm-12 form-group">
+						<label class="checkbox-inline">
+							<input type="checkbox" id="gathering-information-checkbox" class="adoption-preferences-trigger" name="processProgression" value="gatheringInformation" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#adoption-process-error-container" required="">Gathering Information
+						</label>
+					</div>
+					<div class="col-sm-12 form-group">
+						<label class="checkbox-inline">
+							<input type="checkbox" id="looking-for-agency-checkbox" class="adoption-preferences-trigger" name="processProgression" value="lookingForAgency" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#adoption-process-error-container" required="">Looking for an agency
+						</label>
+					</div>
+					<div class="col-sm-12 form-group">
+						<label class="checkbox-inline">
+							<input type="checkbox" id="working-with-agency-checkbox" class="adoption-preferences-trigger" name="processProgression" value="workingWithAgency" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#adoption-process-error-container" required="">Working with an agency
+						</label>
+					</div>
+					<div class="col-sm-12 form-group">
+						<label class="checkbox-inline">
+							<input type="checkbox" id="mapp-training-completed-checkbox" class="adoption-preferences-trigger" name="processProgression" value="MAPPTrainingCompleted" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#adoption-process-error-container" required="">MAPP training completed
+						</label>
+					</div>
+					<div class="col-sm-12 form-group">
+						<label class="checkbox-inline">
+							<input type="checkbox" id="homestudy-completed-checkbox" class="adoption-preferences-trigger" name="processProgression" value="homestudyCompleted" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#adoption-process-error-container" required="">Homestudy completed
+						</label>
+					</div>
 				</div>
 			</div>
 		</section>

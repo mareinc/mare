@@ -1,6 +1,9 @@
 <section class="social-worker-registration hidden">
 	<form action="/register" class="registration-form form--social-worker-registration" method="POST">
 		<input type="hidden" class="registration-type" name="registrationType" value="socialWorker">
+		{{#if redirectUrl}}
+			<input type="hidden" name="redirectUrl" value="{{ redirectUrl }}">
+		{{/if}}
 
 		<section class="social-worker-account-setup-section">
 			<div class="form-section-header">Account Setup</div>

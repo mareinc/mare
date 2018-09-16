@@ -1,3 +1,4 @@
+
 const keystone							= require( 'keystone' ),
 	  robots							= require( 'express-robots' ),
 	  childService						= require( './middleware/service_child' ),
@@ -11,7 +12,8 @@ const keystone							= require( 'keystone' ),
 	  accountMiddleware					= require( './middleware/service_account' ),
 	  eventMiddleware					= require( './middleware/middleware_event' ),
 	  passwordResetService 				= require( './middleware/service_password-reset'),
-	  accountVerificationService		= require( './middleware/service_account-verification' );
+	  accountVerificationService		= require( './middleware/service_account-verification' ),
+	  enforce							= require( 'express-sslify' ),
 	  childAdjustmentService			= require( './middleware/fix_child' ),
 	  familyAdjustmentService			= require( './middleware/fix_family' ),
 	  changeHistoryAdjustmentService	= require( './middleware/fix_change-history' ),
@@ -34,13 +36,19 @@ var routes = {
 exports = module.exports = app => {
 	'use strict';
 
+	// set up forwarding to HTTPS at the app level when http is explicitly used
+	// use enforce.HTTPS({ trustProtoHeader: true }) in case you are behind a load balancer (e.g. Heroku) 
+	if( keystone.get( 'env' ) === 'production' ) {
+		app.use( enforce.HTTPS( { trustProtoHeader: true } ) );
+	}
+	
 	// serve robots.txt based on the runtime environment
 	if ( process.env.ALLOW_ROBOTS === 'true' ) {
 		// if running in production, allow robots to crawl by serving the production robots.txt
-		app.use( robots( __dirname + '/robots/robots-production.txt' ) );
+		app.use( robots( `${ __dirname }/robots/robots-production.txt` ) );
 	} else {
 		// otherwise, serve the dev robots.txt ( i.e. disallow all crawlers )
-		app.use( robots( __dirname + '/robots/robots-development.txt' ) );
+		app.use( robots( `${ __dirname }/robots/robots-development.txt` ) );
 	}
 
 	// home page
@@ -108,14 +116,8 @@ exports = module.exports = app => {
 	app.post( '/services/remove-sibling-group-bookmark'	, familyService.removeSiblingGroupBookmark );
 	app.post( '/services/get-gallery-permissions'		, permissionsService.getGalleryPermissions );
 	// app.post( '/services/register-for-event'			, eventService.addUser ); // TODO: I'm leaving these commented out so I don't forget they exist when I need to implement adding/removing users to an event automatically
-	// app.post( '/services/unregister-for-event'			, eventService.removeUser ); // TODO: I'm leaving these commented out so I don't forget they exist when I need to implement adding/removing users to an event automatically
+	// app.post( '/services/unregister-for-event'		, eventService.removeUser ); // TODO: I'm leaving these commented out so I don't forget they exist when I need to implement adding/removing users to an event automatically
 
-	// services for form submissions
-	app.post( '/submit-agency-event'					, eventService.submitEvent );
-	app.post( '/submit-question'						, formService.submitQuestion );
-	app.post( '/submit-information-request'				, formService.submitInquiry );
-	app.post( '/social-worker-register-child'			, childService.registerChild );
-	app.post( '/social-worker-register-family'			, familyService.registerFamily );
 	// routes to handle looping through models and adjusting values/saving in bulk
 	app.get( '/fix/children'							, middleware.requireAdmin, childAdjustmentService.fixChildren );
 	app.get( '/fix/cloudinary-images'					, middleware.requireAdmin, cloudinaryImageAdjustmentService.fixCloudinaryImages );

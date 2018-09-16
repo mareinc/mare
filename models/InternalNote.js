@@ -17,9 +17,59 @@ InternalNotes.add( 'Target', {
 }, 'Note Details', {
 
     date: { type: Types.Date, label: 'note date', format: 'MM/DD/YYYY', utc: true, default: Date.now, required: true, noedit: true },
-    employee: { type: Types.Relationship, label: 'note creator', ref: 'Admin', required: true, noedit: true, initial: true },
+    employee: { type: Types.Relationship, label: 'note creator', ref: 'Admin', required: false, noedit: true, initial: true, note: 'if no creator is selected a current user will be used' },
     note: { type: Types.Textarea, label: 'note', required: true, initial: true }
 
+});
+
+InternalNotes.schema.pre( 'save', function( next ) {
+	'use strict';
+	
+	// if employee is empty add current user:
+	if ( typeof this.employee === 'undefined' && this._req_user ) {
+		this.employee = this._req_user;
+	}
+	
+	if ( this.child && this.isNew && typeof this._disablePreSave === 'undefined' ) {
+		const Child = keystone.list( 'Child' );
+		const InternalNotes = keystone.list( 'Internal Note' );
+		const currentInternalNote = this;
+		
+		// Add the note to all siblingsToBePlacedWith:
+		Child.model.findOne( { _id: this.child } ).populate('siblingsToBePlacedWith').exec( function( err, child ) {
+			if ( err ) {
+				console.error( `Error while loading Child object: ${ err } ` );
+				next();
+			}
+			
+			Promise.all(
+				child.siblingsToBePlacedWith.filter( childSibling => childSibling._id !== currentInternalNote.child ).map( childSibling =>
+					new Promise( ( resolve, reject ) => {
+						// Create note copy:
+						const newInternalNotes = new InternalNotes.model({
+							target: currentInternalNote.target,
+							child: childSibling._id,
+							employee: currentInternalNote.employee,
+							note: currentInternalNote.note
+						});
+						
+						// To disable an infinite loop:
+						newInternalNotes._disablePreSave = true;
+						
+						// Save the note
+						newInternalNotes.save( ( err, model ) => {
+							if ( err ) {
+								return reject( `error saving new internal note for sibling -  ${ err }` );
+							}
+							resolve();
+						});
+					})					
+				)
+			).then( () => next() );
+		});
+	} else {
+		next();
+	}
 });
 
 // Define default columns in the admin interface and register the model

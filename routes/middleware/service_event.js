@@ -326,21 +326,21 @@ exports.register = ( eventDetails, user ) => {
 				// add the user as an attendee
 				event[ attendeeType ].push( user._id );
 
-				// if there are registered children defined, add them to the list of attendees
+				// if there are registered children defined
 				if ( eventDetails.registeredChildren ) {
-
+					// add them to the list of attendees
 					event.childAttendees = event.childAttendees.concat( eventDetails.registeredChildren );
 				}
 
-				// if there are unregistered children defined, add them to the list of attendees
+				// if there are unregistered children defined
 				if ( eventDetails.unregisteredChildren ) {
-
+					// add them to the list of attendees
 					event.unregisteredChildAttendees = event.unregisteredChildAttendees.concat( eventDetails.unregisteredChildren );
 				}
 
-				// if there are unregistered adults defined, add them to the list of attendees
+				// if there are unregistered adults defined
 				if ( eventDetails.unregisteredAdults ) {
-
+					// add them to the list of attendees
 					event.unregisteredAdultAttendees = event.unregisteredAdultAttendees.concat( eventDetails.unregisteredAdults );
 				}
 
@@ -367,6 +367,8 @@ exports.register = ( eventDetails, user ) => {
 
 exports.unregister = ( eventDetails, user ) => {
 
+	let unregistrationData;
+
 	return new Promise( ( resolve, reject ) => {
 		// get the user type that is unregistering for an event
 		let attendeeType =  exports.getEventGroup( user.userType );
@@ -392,24 +394,25 @@ exports.unregister = ( eventDetails, user ) => {
 					return { eventModel: event };
 				}
 			})
-			// remove any unregistered children and adult attendees
-			.then( unregistrationData => {
-
-				unregistrationData.unregisteredChildrenRemoved = exports.removeUnregisteredChildren( unregistrationData.eventModel, user._id );
-				unregistrationData.unregisteredAdultsRemoved = exports.removeUnregisteredAdults( unregistrationData.eventModel, user._id );
-
-				return unregistrationData;
-			})
+			.then( data => unregistrationData = data )
+			.catch( err => console.error( `error removing registered children from event with id ${ eventDetails.eventId } - ${ err }` ) )
+			// remove any unregistered child attendees
+			.then( () => exports.removeUnregisteredChildren( unregistrationData.eventModel, user._id ) )
+			.then( data => unregistrationData.unregisteredChildrenRemoved = data )
+			.catch( err => console.error( `error removing unregistered children from event with id ${ eventDetails.eventId } - ${ err }` ) )
+			// remove any unregistered adult attendees
+			.then( () => exports.removeUnregisteredAdults( unregistrationData.eventModel, user._id ) )
+			.then( data => unregistrationData.unregisteredAdultsRemoved = data )
+			.catch( err => console.error( `error removing unregistered adults from event with id ${ eventDetails.eventId } - ${ err }` ) )
 			// save the updated event
-			.then( unregistrationData => {
+			.then( () => {
 
 				// save the updated event
 				unregistrationData.eventModel.save( error => {
 
 					if ( error ) {
-
-						console.error( `error unregistering user ${ user._id } for event ${ eventDetails.eventId } - ${ error }` );
-						reject( error );
+						// reject the promise with details of what went wrong
+						reject( `error unregistering user ${ user._id } from event ${ eventDetails.eventId } - ${ error }` );
 					} else {
 
 						resolve({
@@ -421,9 +424,8 @@ exports.unregister = ( eventDetails, user ) => {
 				});
 			})
 			.catch( error => {
-
-				console.error( `error unregistering user ${ user._id } for event ${ eventDetails.eventId } - ${ error }` );
-				reject( error );
+				// reject the promise with details about the error
+				reject( `error unregistering user ${ user._id } for event ${ eventDetails.eventId } - ${ error }` );
 			});
 	});
 };
@@ -431,14 +433,12 @@ exports.unregister = ( eventDetails, user ) => {
 exports.removeRegisteredChildren = ( event, registrantID ) => {
 
 	return new Promise( ( resolve, reject ) => {
-
 		// populate the registered children attendees of the event and remove any children that were signed up by the social worker that is unregistering for the event
 		event.populate( 'childAttendees', error => {
 
 			if ( error ) {
-
-				console.error( `error populating the child attendees of event ${ event._id } - ${ error }` );
-				reject( error );
+				// reject the promise with information about the error
+				reject( `error populating the child attendees of event ${ event._id } - ${ error }` );
 			} else {
 
 				let registeredChildrenToRemoveIndexes = [];
@@ -447,7 +447,7 @@ exports.removeRegisteredChildren = ( event, registrantID ) => {
 				// capture all registered children ( and their indexes ) that were signed up by the social worker that is unregistering
 				event.childAttendees.forEach( ( child, index ) => {
 
-					if ( registrantID.id === child.adoptionWorker.id || registrantID.id === child.recruitmentWorker.id ) {
+					if ( child.adoptionWorker && ( registrantID.id === child.adoptionWorker.id || registrantID.id === child.recruitmentWorker.id ) ) {
 
 						registeredChildrenToRemoveIndexes.push( index );
 						registeredChildrenRemoved.push( child );

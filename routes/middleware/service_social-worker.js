@@ -45,10 +45,12 @@ exports.fetchRegisteredChildren = id => {
 			.lean()
 			.exec()
 			.then( children => {
-
+				// TODO: this can be moved into where statements on the query itself
 				// filter out any children that are not active or on hold
 				let displayChildren = children.filter( child => child.status.childStatus === 'active' || child.status.childStatus === 'on hold' );
+				
 				resolve( displayChildren );
+
 			}, err => {
 				// log the error for debugging purposes
 				console.error( `an error occurred fetching the children registered by social worker with id ${ id } - ${ err }` );
