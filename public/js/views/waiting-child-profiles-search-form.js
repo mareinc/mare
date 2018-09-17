@@ -230,9 +230,9 @@
 					child.get( 'recommendedFamilyConstellation' ).indexOf( formFields.familyConstellation ) === -1 ) { return; }
 				
 				// determine if selections were made about the family, if not, don't use it to restrict search results
-				var numberOfChildrenInHomeSelected	= formFields.numberOfChildrenInHome !== '',
-					oldestChildAgeInHomeSelected	= formFields.oldestChildAgeInHome !== '',
-					youngestChildAgeInHomeSelected	= formFields.youngestChildAgeInHome !== '';
+				var numberOfChildrenInHomeSelected	= formFields.numberOfChildrenInHome === formFields.numberOfChildrenInHome, // IMPORTANT: testing if a value equals itself is the only reliable cross-browser way to test for NaN, and we support IE11
+					oldestChildAgeInHomeSelected	= formFields.oldestChildAgeInHome === formFields.oldestChildAgeInHome, // IMPORTANT: testing if a value equals itself is the only reliable cross-browser way to test for NaN, and we support IE11
+					youngestChildAgeInHomeSelected	= formFields.youngestChildAgeInHome === formFields.youngestChildAgeInHome; // IMPORTANT: testing if a value equals itself is the only reliable cross-browser way to test for NaN, and we support IE11
 				// store references to other family constellatoin considerations listed for any of the siblings
 				var requiresSiblings			= child.get( 'requiresSiblings' ),
 					requiresNoSiblings			= child.get( 'requiresNoSiblings' ),
@@ -253,13 +253,13 @@
 				} else {
 					// if the child requires siblings and the family has children, they should be included in the search results
 					if( requiresSiblings ) {
-						if( numberOfChildrenInHomeSelected && formFields.numberOfChildrenInHome !== 0 ) {
+						if( !numberOfChildrenInHomeSelected || formFields.numberOfChildrenInHome !== 0 ) {
 							otherFamilyConstellationConsiderationsMatch = true;
 						}
 					}
 					// if the child requires no siblings and the family has no children, they should be included in the search results
 					if( requiresNoSiblings ) {
-						if( numberOfChildrenInHomeSelected && formFields.numberOfChildrenInHome === 0 ) {
+						if( !numberOfChildrenInHomeSelected || formFields.numberOfChildrenInHome === 0 ) {
 							otherFamilyConstellationConsiderationsMatch = true;
 						}
 					}
