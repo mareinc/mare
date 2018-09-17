@@ -265,13 +265,13 @@
 					}
 					// if the child accepts older children and the family has older children, they should be included in the search results
 					if( olderChildrenAcceptable ) {
-						if( oldestChildAgeInHomeSelected && formFields.oldestChildAgeInHome >= child.get( 'age' ) ) {
+						if( !oldestChildAgeInHomeSelected || formFields.oldestChildAgeInHome >= child.get( 'age' ) ) {
 							otherFamilyConstellationConsiderationsMatch = true;
 						}
 					}
 					// if the child accepts younger children and the family has younger children, they should be included in the search results
 					if( youngerChildrenAcceptable ) {
-						if( youngestChildAgeInHomeSelected && formFields.youngestChildAgeInHome <= child.get( 'age' ) ) {
+						if( !youngestChildAgeInHomeSelected || formFields.youngestChildAgeInHome <= child.get( 'age' ) ) {
 							otherFamilyConstellationConsiderationsMatch = true;
 						}
 					}
