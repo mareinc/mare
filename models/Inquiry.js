@@ -15,7 +15,7 @@ var Inquiry = new keystone.List( 'Inquiry', {
 
 // Create fields
 Inquiry.add( 'General Information', {
-	takenBy: { type: Types.Relationship, label: 'taken by', ref: 'Admin', required: true, initial: true },
+	takenBy: { type: Types.Relationship, label: 'taken by', ref: 'Admin', required: false, initial: true, note: 'if no user is selected a current user will be used' },
 	takenOn: { type: Types.Date, label: 'taken on', format: 'MM/DD/YYYY', utc: true, required: true, initial: true },
 
 	inquirer: { type: Types.Select, label: 'inquirer', options: 'site visitor, family, social worker', default: 'family', initial: true },
@@ -66,6 +66,12 @@ Inquiry.add( 'General Information', {
 // Pre Save
 Inquiry.schema.pre( 'save', function( next ) {
 	'use strict';
+	
+	// if takenBy is empty add current user:
+	if ( typeof this.takenBy === 'undefined' && this._req_user ) {
+		this.takenBy = this._req_user;
+	}
+	
 	// attempt to populate any derived fields for child inquiries
 	this.populateDerivedFields()
 		// if there was an error populating the derived fields, log the error
