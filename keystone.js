@@ -19,7 +19,7 @@ keystone.init({
 
 	'sass': 'public',
 	'static': 'public',
-	'favicon': 'public/favicon.ico',
+	'favicon': 'public/dist/img/favicons/favicon.ico',
 
 	'views': 'templates/views',
 	'view engine': 'hbs',
@@ -78,9 +78,6 @@ keystone.set('cloudinary secure', true);
 keystone.set('mandrill api key', process.env.MANDRILL_APIKEY);
 keystone.set('mandrill username', process.env.MANDRILL_USERNAME);
 
-// S3 configuration for hosted file storage
-keystone.set('s3 config', { bucket: process.env.S3_BUCKET_NAME, key: process.env.S3_KEY, secret: process.env.S3_SECRET });
-
 // Load project's Models
 keystone.import('models');
 
@@ -126,29 +123,29 @@ keystone.set('email locals', {
 	})()
 });
 
-keystone.set('email rules', [{
-	find: '/templates/emails/',
-	replace: (function() {
-		'use strict';
+// keystone.set('email rules', [{
+// 	find: '/templates/emails/',
+// 	replace: (function() {
+// 		'use strict';
 
-		if ( keystone.get( 'env' ) === 'development' ) { return 'http://development.adoptions.io/templates/emails/'; }
-		if ( keystone.get( 'env' ) === 'staging' ) { return 'http://staging.adoptions.io/templates/emails/'; }
-		if ( keystone.get( 'env' ) === 'production' ) { return 'https://www.mareinc.org/templates/emails/'; }
+// 		if ( keystone.get( 'env' ) === 'development' ) { return 'http://development.adoptions.io/templates/emails/'; }
+// 		if ( keystone.get( 'env' ) === 'staging' ) { return 'http://staging.adoptions.io/templates/emails/'; }
+// 		if ( keystone.get( 'env' ) === 'production' ) { return 'https://www.mareinc.org/templates/emails/'; }
 		
-		return ( keystone.get( 'host' ) || 'http://localhost:' ) + (keystone.get( 'port' ) || '3000' ) + '/templates/emails/';
-	})()
-}, {
-	find: '/keystone/',
-	replace: (function() {
-		'use strict';
+// 		return ( keystone.get( 'host' ) || 'http://localhost:' ) + (keystone.get( 'port' ) || '3000' ) + '/templates/emails/';
+// 	})()
+// }, {
+// 	find: '/keystone/',
+// 	replace: (function() {
+// 		'use strict';
 
-		if ( keystone.get( 'env' ) === 'development' ) { return 'http://development.adoptions.io/keystone'; }
-		if ( keystone.get( 'env' ) === 'staging' ) { return 'http://staging.adoptions.io/keystone'; }
-		if ( keystone.get( 'env' ) === 'production' ) { return 'https://www.mareinc.org/keystone'; }
+// 		if ( keystone.get( 'env' ) === 'development' ) { return 'http://development.adoptions.io/keystone'; }
+// 		if ( keystone.get( 'env' ) === 'staging' ) { return 'http://staging.adoptions.io/keystone'; }
+// 		if ( keystone.get( 'env' ) === 'production' ) { return 'https://www.mareinc.org/keystone'; }
 		
-		return ( keystone.get( 'host' ) || 'http://localhost:' ) + ( keystone.get( 'port' ) || '3000/keystone' );
-	})()
-}]);
+// 		return ( keystone.get( 'host' ) || 'http://localhost:' ) + ( keystone.get( 'port' ) || '3000/keystone' );
+// 	})()
+// }]);
 
 // Load your project's email test routes
 keystone.set('email tests', require('./routes/emails'));

@@ -11,6 +11,26 @@ const keystone					= require( 'keystone' ),
 	  FamilyService				= require( '../routes/middleware/service_family' ),
 	  ListService				= require( '../routes/middleware/service_lists' );
 
+// configure the s3 storage adapter
+var storage = new keystone.Storage({
+	adapter: require('keystone-storage-adapter-s3'),
+	s3: {
+		key: process.env.S3_KEY, // required; defaults to process.env.S3_KEY
+		secret: process.env.S3_SECRET, // required; defaults to process.env.S3_SECRET
+		bucket: process.env.S3_BUCKET_NAME, // required; defaults to process.env.S3_BUCKET
+		region: process.env.S3_REGION, // optional; defaults to process.env.S3_REGION, or if that's not specified, us-east-1
+		uploadParams: { // optional; add S3 upload params; see below for details
+			ACL: 'public-read'
+		}
+	},
+	schema: {
+		bucket: true, // optional; store the bucket the file was uploaded to in your db
+		etag: true, // optional; store the etag for the resource
+		path: true, // optional; store the path of the file in your db
+		url: true, // optional; generate & store a public URL
+	}
+});
+
 // Export to make it available using require.  The keystone.list import throws a ReferenceError when importing a list that comes later when sorting alphabetically
 const ContactGroup = require( './ContactGroup' );
 
@@ -220,8 +240,9 @@ Family.add( 'Permissions', {
 		homestudyFile_upload: {
 			label: 'homestudy file',
 			dependsOn: { 'homestudy.completed': true },
-			type: Types.S3File,
-			s3path: '/family/homestudy',
+			type: Types.File,
+			storage: storage,
+			// path: '/family/homestudy',
 			filename: function( item, filename ) {
 				// prefix file name with registration number and name for easier identification
 				return item.fileName;
@@ -1593,8 +1614,9 @@ Family.schema.methods.setChangeHistory = function setChangeHistory() {
 					// homestudyFile_upload: {
 					// 	label: 'homestudy file',
 					// 	dependsOn: { 'homestudy.completed': true },
-					// 	type: Types.S3File,
-					// 	s3path: '/family/homestudy',
+					// 	type: Types.File,
+					//  storage: storage,
+					// 	path: '/family/homestudy',
 					// 	filename: function(item, filename){
 					// 		// prefix file name with registration number and name for easier identification
 					// 		return item.fileName;
@@ -1956,7 +1978,7 @@ Family.schema.methods.setChangeHistory = function setChangeHistory() {
 };
 
 // Define default columns in the admin interface and register the model
-Family.defaultColumns = 'address.displayCity, address.state, isActive';
+Family.defaultColumns = 'displayNameAndRegistration, address.displayCity, address.state, isActive';
 Family.register();
 
 // Export to make it available using require.  The keystone.list import throws a ReferenceError when importing a list

@@ -15,6 +15,26 @@ const keystone						= require( 'keystone' ),
 	  UtilitiesMiddleware			= require( '../routes/middleware/utilities' ),
 	  saveLock						= require( '../routes/middleware/model_save_lock' );
 
+// configure the s3 storage adapter
+var storage = new keystone.Storage({
+	adapter: require('keystone-storage-adapter-s3'),
+	s3: {
+		key: process.env.S3_KEY, // required; defaults to process.env.S3_KEY
+		secret: process.env.S3_SECRET, // required; defaults to process.env.S3_SECRET
+		bucket: process.env.S3_BUCKET_NAME, // required; defaults to process.env.S3_BUCKET
+		region: process.env.S3_REGION, // optional; defaults to process.env.S3_REGION, or if that's not specified, us-east-1
+		uploadParams: { // optional; add S3 upload params; see below for details
+			ACL: 'public-read'
+		}
+	  },
+	schema: {
+		bucket: true, // optional; store the bucket the file was uploaded to in your db
+		etag: true, // optional; store the etag for the resource
+		path: true, // optional; store the path of the file in your db
+		url: true, // optional; generate & store a public URL
+	}
+});
+
 // Create model
 const Child = new keystone.List( 'Child', {
 	track: true, // needed for change history updated by assignment
@@ -178,8 +198,9 @@ Child.add('Display Options', {
 // }, 'Attachments', {
 
 	photolistingPage: {
-		type: Types.S3File,
-		s3path: '/child/photolisting-pages',
+		type: Types.File,
+		storage: storage,
+		// path: '/child/photolisting-pages',
 		filename: function( item, filename ) {
 			// prefix file name with registration number and the user's name for easier identification
 			return item.get( 'fileName' );
@@ -188,8 +209,9 @@ Child.add('Display Options', {
 	},
 
 	otherAttachement: {
-		type: Types.S3File,
-		s3path: '/child/other',
+		type: Types.File,
+		storage: storage,
+		// path: '/child/other',
 		filename: function( item, filename ) {
 			// prefix file name with registration number and name for easier identification
 			return item.get( 'fileName' );
