@@ -114,7 +114,6 @@ exports.applySiblingGroupToChild = ( { childToUpdateID, siblingGroup = [] } ) =>
 						// set the save updates flag to true
 						saveUpdatesToSiblingGroup = true;
 					}
-
 				// if the current child is not part of the new sibling group, reset the current child's sibling group to an empty group
 				} else {
 
@@ -131,6 +130,7 @@ exports.applySiblingGroupToChild = ( { childToUpdateID, siblingGroup = [] } ) =>
 				if ( saveUpdatesToSiblingGroup ) {
 
 					// save the updated child model
+					child._disableReplicateFieldsToSiblings = true;
 					child.save( error => {
 						// log any errors
 						if ( error ) {
@@ -174,6 +174,7 @@ exports.removeSiblingFromChild = ( { childToUpdateID, siblingToRemoveID } ) => {
 					// update the child's sibling group
 					child.siblings = Array.from( siblingSet );
 					// save the updated child model
+					child._disableReplicateFieldsToSiblings = true;
 					child.save( error => {
 						// log any errors\
 						if ( error ) {
