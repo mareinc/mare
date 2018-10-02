@@ -1,5 +1,4 @@
-const keystone = require('keystone'),
-	utilitiesMiddleware = require('./utilities');
+const keystone = require('keystone');
 
 exports.sendNewQuestionNotificationEmailToMARE = ( question, staffEmailContact ) => {
 

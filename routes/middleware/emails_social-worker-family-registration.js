@@ -1,5 +1,4 @@
-const keystone				= require( 'keystone' ),
-	  utilitiesMiddleware   = require( './utilities' );
+const keystone = require( 'keystone' );
 
 // TODO: several email functions in this file are nearly identical to those in emails_register.js.  They should be consolidated to keep it DRY
 exports.sendNewSocialWorkerFamilyRegistrationNotificationEmailToMARE = ( socialWorkerName, rawFamilyData, family, registrationStaffContact, host ) => {
