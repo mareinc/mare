@@ -1,6 +1,6 @@
 // Simulate config options from your production environment by
 // customising the .env file in your project's root folder.
-require('dotenv').load();
+require( 'dotenv' ).load();
 
 // Initialise New Relic if an app name and license key exists
 if (process.env.NEW_RELIC_APP_NAME && process.env.NEW_RELIC_LICENSE_KEY) {
@@ -29,7 +29,7 @@ keystone.init({
 		layoutsDir: 'templates/views/layouts',
 		partialsDir: 'templates/views/partials',
 		defaultLayout: 'default',
-		helpers: new require('./templates/views/helpers')(),
+		helpers: new require( './templates/views/helpers' )(),
 		extname: '.hbs'
 	}).engine,
 
@@ -59,9 +59,9 @@ keystone.init({
 		extended_valid_elements : '+div[class]',
 		content_css: '/keystone/styles/content/editor.min.css',
 		templates: [
-    		{title: '30/70 Content', description: 'Columns (30% Left, 70% Right)', content: '<div class="row"><div class="col-sm-8">Left Content</div><div class="col-sm-16">Right Content</div></div><p>Stuff after...</p>'},
-    		{title: '70/30 Content', description: 'Columns (70% Left, 30% Right)', content: '<div class="row"><div class="col-sm-16">Left Content</div><div class="col-sm-8">Right Content</div></div><p>Stuff after...</p>'},
-    		{title: '50/50 Content', description: 'Columns (50% Left, 50% Right)', content: '<div class="row"><div class="col-sm-12">Left Content</div><div class="col-sm-12">Right Content</div></div><p>Stuff after...</p>'}
+    		{ title: '30/70 Content', description: 'Columns (30% Left, 70% Right)', content: '<div class="row"><div class="col-sm-8">Left Content</div><div class="col-sm-16">Right Content</div></div><p>Stuff after...</p>' },
+    		{ title: '70/30 Content', description: 'Columns (70% Left, 30% Right)', content: '<div class="row"><div class="col-sm-16">Left Content</div><div class="col-sm-8">Right Content</div></div><p>Stuff after...</p>' },
+    		{ title: '50/50 Content', description: 'Columns (50% Left, 50% Right)', content: '<div class="row"><div class="col-sm-12">Left Content</div><div class="col-sm-12">Right Content</div></div><p>Stuff after...</p>' }
   		]
   	},
 
@@ -70,27 +70,27 @@ keystone.init({
 
 // Cloudinary configuration
 // optional, will prefix each image public_id with [{prefix}]/{list.path}/{field.path}/
-keystone.set('cloudinary folders', true);
+keystone.set( 'cloudinary folders', true );
 // optional, will force cloudinary to serve images over https
-keystone.set('cloudinary secure', true);
+keystone.set( 'cloudinary secure', true );
 
 // Mandrill configuration
-keystone.set('mandrill api key', process.env.MANDRILL_APIKEY);
-keystone.set('mandrill username', process.env.MANDRILL_USERNAME);
+keystone.set( 'mandrill api key', process.env.MANDRILL_APIKEY );
+keystone.set( 'mandrill username', process.env.MANDRILL_USERNAME );
 
 // Load project's Models
-keystone.import('models');
+keystone.import( 'models' );
 
 // Load project Routes
-keystone.set('routes', require('./routes'));
+keystone.set( 'routes', require('./routes' ) );
 
 // Setup common locals for your templates. The following are required for the
 // bundled templates and layouts. Any runtime locals (that should be set uniquely
 // for each request) should be added to ./routes/middleware/middleware.js
-keystone.set('locals', {
-	_: require('underscore'),
-	moment: require('moment'),
-	env: keystone.get('env'),
+keystone.set( 'locals', {
+	_: require( 'underscore' ),
+	moment: require( 'moment' ),
+	env: keystone.get( 'env' ),
 	utils: keystone.utils,
 	editable: keystone.content.editable
 });
@@ -98,7 +98,7 @@ keystone.set('locals', {
 // TODO: clean this up and add in any reusable email content
 // Setup common locals for your emails. The following are required by Keystone's
 // default email templates, you may remove them if you're using your own.
-keystone.set('email locals', {
+keystone.set( 'email locals', {
 	logo_src: '/public/dist/img/mare-logo.png',
 	logo_width: 194,
 	logo_height: 76,
@@ -112,7 +112,7 @@ keystone.set('email locals', {
 			border_color: '#1a7cb7'
 		}
 	},
-	host: (function() {
+	host: ( function() {
 		'use strict';
 
 		if ( keystone.get( 'env' ) === 'development' ) { return 'http://development.adoptions.io'; }
@@ -123,35 +123,8 @@ keystone.set('email locals', {
 	})()
 });
 
-// keystone.set('email rules', [{
-// 	find: '/templates/emails/',
-// 	replace: (function() {
-// 		'use strict';
-
-// 		if ( keystone.get( 'env' ) === 'development' ) { return 'http://development.adoptions.io/templates/emails/'; }
-// 		if ( keystone.get( 'env' ) === 'staging' ) { return 'http://staging.adoptions.io/templates/emails/'; }
-// 		if ( keystone.get( 'env' ) === 'production' ) { return 'https://www.mareinc.org/templates/emails/'; }
-		
-// 		return ( keystone.get( 'host' ) || 'http://localhost:' ) + (keystone.get( 'port' ) || '3000' ) + '/templates/emails/';
-// 	})()
-// }, {
-// 	find: '/keystone/',
-// 	replace: (function() {
-// 		'use strict';
-
-// 		if ( keystone.get( 'env' ) === 'development' ) { return 'http://development.adoptions.io/keystone'; }
-// 		if ( keystone.get( 'env' ) === 'staging' ) { return 'http://staging.adoptions.io/keystone'; }
-// 		if ( keystone.get( 'env' ) === 'production' ) { return 'https://www.mareinc.org/keystone'; }
-		
-// 		return ( keystone.get( 'host' ) || 'http://localhost:' ) + ( keystone.get( 'port' ) || '3000/keystone' );
-// 	})()
-// }]);
-
-// Load your project's email test routes
-keystone.set('email tests', require('./routes/emails'));
-
 // Configure the navigation bar in Keystone's Admin UI
-keystone.set('nav', {
+keystone.set( 'nav', {
 	'people'			: [ 'admins', 'site-visitors', 'families', 'social-workers', 'children', 'outside-contacts',
 						   'contact-groups' ],
 	'other'				: [ 'account-verification-codes', 'agencies', 'inquiries', 'internal-notes', 'mare-in-the-news' ],
