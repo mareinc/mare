@@ -13,7 +13,7 @@ exports.sendPasswordResetEmail = ( name, email, host, resetToken ) => {
         // find the email template in templates/emails/
 		Email.send(
             // template path
-            'login_reset-password.hbs',
+            'login_reset-password',
             // email options
             {
                 engine: 'hbs',
