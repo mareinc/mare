@@ -60,7 +60,20 @@ Family.add( 'Permissions', {
 
 },  'General Information', {
 
-	avatar: { type: Types.CloudinaryImage, label: 'avatar', folder: `${ process.env.CLOUDINARY_DIRECTORY }/users/families`, select: true, selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/users/families`, autoCleanup: true }, // TODO: add publicID attribute for better naming in Cloudinary
+	avatar: {
+		type: Types.CloudinaryImage,
+		label: 'avatar',
+		folder: `${ process.env.CLOUDINARY_DIRECTORY }/users/families`,
+		select: true,
+		selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/users/families`,
+		autoCleanup: true,
+		whenExists: 'retry',
+		generateFilename: function( file, attemptNumber ) {
+			const originalname = file.originalname;
+			const filenameWithoutExtension = originalname.substring( 0, originalname.lastIndexOf( '.' ) );
+			return filenameWithoutExtension;
+		}
+	},
 
 	registrationNumber: { type: Number, label: 'registration number', format: false, noedit: true },
 	initialContact: { type: Types.Date, label: 'initial contact', format: 'MM/DD/YYYY', utc: true, initial: true }, // was required: data migration change ( undo if possible )
@@ -912,7 +925,7 @@ Family.schema.methods.setChangeHistory = function setChangeHistory() {
 			// Any time a new field is added, it MUST be added to this list in order to be considered for display in change history
 			// Computed fields and fields internal to the object SHOULD NOT be added to this list
 			async.parallel([
-				// avatar: { type: Types.CloudinaryImage, label: 'avatar', folder: 'users/families', select: true, selectPrefix: 'users/families', autoCleanup: true },
+				// TODO: check avatar field
 				done => {
 					ChangeHistoryMiddleware.checkFieldForChanges({
 												name: 'email',
