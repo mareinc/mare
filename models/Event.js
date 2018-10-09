@@ -84,12 +84,6 @@ Event.add( 'General Information', {
 	// this is used to determine whether we should send an automatic email to the creator when their event becomes active
 	createdViaWebsite: { type: Types.Boolean, label: 'created through the website', noedit: true }
 
-/* container for all system fields (add a heading if any are meant to be visible through the admin UI) */
-}, {
-
-	// system field to store an appropriate file prefix
-	fileName: { type: Types.Text, hidden: true }
-
 /* container for data migration fields ( these should be kept until after phase 2 and the old system is phased out completely ) */
 }, {
 	// system field to store an appropriate file prefix
