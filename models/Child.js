@@ -166,7 +166,7 @@ Child.add('Display Options', {
 		generateFilename: function( file, attemptNumber ) {
 			const originalname = file.originalname;
 			const filenameWithoutExtension = originalname.substring( 0, originalname.lastIndexOf( '.' ) );
-			return `${ filenameWithoutExtension }`;
+			return filenameWithoutExtension;
 
 			// TODO: the old logic was: this.fileName = this.registrationNumber + '_' + this.name.first.toLowerCase();
 			//		 the model doesn't seem to be accessible from within generateFilename
@@ -184,7 +184,7 @@ Child.add('Display Options', {
 		generateFilename: function( file, attemptNumber ) {
 			const originalname = file.originalname;
 			const filenameWithoutExtension = originalname.substring( 0, originalname.lastIndexOf( '.' ) );
-			return `${ filenameWithoutExtension }`;
+			return filenameWithoutExtension;
 
 			// TODO: the old logic was: this.fileName = this.registrationNumber + '_' + this.name.first.toLowerCase();
 			//		 the model doesn't seem to be accessible from within generateFilename
@@ -202,7 +202,7 @@ Child.add('Display Options', {
 		generateFilename: function( file, attemptNumber ) {
 			const originalname = file.originalname;
 			const filenameWithoutExtension = originalname.substring( 0, originalname.lastIndexOf( '.' ) );
-			return `${ filenameWithoutExtension }`;
+			return filenameWithoutExtension;
 
 			// TODO: the old logic was complicated, see commit #d9fe6e9e to view it
 			//		 the model doesn't seem to be accessible from within generateFilename
