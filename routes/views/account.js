@@ -100,7 +100,7 @@ exports = module.exports = ( req, res ) => {
 			if ( isUserStateDefined ) {
 
 				// find the user's state in the state list
-				let userState = locals.states.find( state => state._id.id === locals.user.address.state.id );
+				let userState = locals.states.find( state => state._id.id.toString() === locals.user.address.state.id.toString() );
 				// set it to be default selection
 				userState.defaultSelection = true;
 			}

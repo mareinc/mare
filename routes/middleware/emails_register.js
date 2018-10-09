@@ -191,7 +191,6 @@ exports.sendNewSocialWorkerNotificationEmailToMARE = ( user, registrationStaffCo
 		}
 		// an array was used instead of a Map because Mustache templates apparently can't handle maps
 		let userData = [];
-		let userMailingListData = [];
 		let positionsArray = [];
 
 		// loop through each position model which was populated when the user model was fetched
