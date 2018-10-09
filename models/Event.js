@@ -20,7 +20,24 @@ Event.add( 'General Information', {
 	// type: { type: Types.Relationship, label: 'Event Type', ref: 'Event Type', required: true, initial: true }
 	type: { type: Types.Select, label: 'event type', options: 'MARE adoption parties & information events, MAPP trainings, agency information meetings, other opportunities & trainings, fundraising events', required: true, initial: true }, // TODO: this fixes an issue in pre-save which can be updated to fetch the live results and not hardcode this list.
 	source: { type: Types.Relationship, label: 'source', ref: 'Source', dependsOn: { shouldCreateSource: true }, noedit: true, initial: true },
-	image: { type: Types.CloudinaryImage, note: 'needed to display in the sidebar, events page, and home page', folder: `${ process.env.CLOUDINARY_DIRECTORY }/events/`, select: true, selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/events/`, publicID: 'fileName', autoCleanup: true },
+	image: {
+		type: Types.CloudinaryImage,
+		note: 'needed to display in the sidebar, events page, and home page',
+		folder: `${ process.env.CLOUDINARY_DIRECTORY }/events/`,
+		select: true,
+		selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/events/`,
+		autoCleanup: true,
+		whenExists: 'retry',
+		generateFilename: function( file, attemptNumber ) {
+			const originalname = file.originalname;
+			const filenameWithoutExtension = originalname.substring( 0, originalname.lastIndexOf( '.' ) );
+			const timestamp = new Date().getTime();
+			return `${ filenameWithoutExtension }-${ timestamp }`;
+
+			// TODO: the old logic was: this.fileName = this.key.replace( /-/g, '_' );
+			//		 the model doesn't seem to be accessible from within generateFilename
+		}
+	},
 
 	areBuddiesAllowed: { type: Types.Boolean, label: 'buddies allowed', initial: true },
 	isMatchingEvent: { type: Types.Boolean, label: 'matching event', initial: true }
@@ -114,7 +131,6 @@ Event.schema.pre( 'save', function( next ) {
 	'use strict';
 
 	this.setUrl();
-	this.setFileName();
 
 	let setSourceField = this.setSourceField();
 
@@ -146,12 +162,6 @@ Event.schema.methods.setUrl = function() {
 	this.url = '/events/' + eventType + '/' + this.key;
 };
 
-Event.schema.methods.setFileName = function() {
-	'use strict';
-	// create an identifying name for file uploads
-	this.fileName = this.key.replace( /-/g, '_' );
-};
-
 Event.schema.methods.setSourceField = function() {
 	'use strict';
 
@@ -163,8 +173,7 @@ Event.schema.methods.setSourceField = function() {
 			// resolve the promise
 			return resolve();
 		}
-		// create a reference to the model for use after the new source promise resolves
-		// let model = this;
+
 		// if the source is already set, update it, otherwise create it
 		let newSource = this.source
 						? SourceMiddleware.updateSource( this.source, this.name )
