@@ -154,10 +154,60 @@ Child.add('Display Options', {
 	dateOfLastPhotoListing: { type: Types.Date, label: 'date of last photolisting', format: 'MM/DD/YYYY', utc: true, dependsOn: {isCurrentlyInPhotoListing: true }, initial: true },
 	photolistingPageNumber: { type: Types.Text, label: 'photolisting page', initial: true },
 	previousPhotolistingPageNumbers: { type: Types.Text, label: 'previous photolisting pages', initial: true },
+	image: {
+		type: Types.CloudinaryImage,
+		label: 'display image',
+		folder: `${ process.env.CLOUDINARY_DIRECTORY }/children/`,
+		select: true,
+		selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/children/`,
+		dependsOn: { mustBePlacedWithSiblings: false },
+		autoCleanup: false,
+		whenExists: 'replace',
+		generateFilename: function( file, attemptNumber ) {
+			const originalname = file.originalname;
+			const filenameWithoutExtension = originalname.substring( 0, originalname.lastIndexOf( '.' ) );
+			return `${ filenameWithoutExtension }`;
 
-	image: { type: Types.CloudinaryImage, label: 'display image', folder: `${ process.env.CLOUDINARY_DIRECTORY }/children/`, select: true, selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/children/`, publicID: 'fileName', dependsOn: { mustBePlacedWithSiblings: false }, autoCleanup: false },
-	allImages: { type: Types.CloudinaryImages, label: 'all images', folder: `${ process.env.CLOUDINARY_DIRECTORY }/children/`, select: true, selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/children/`, publicID: 'fileName', dependsOn: { mustBePlacedWithSiblings: false }, autoCleanup: false },
-	siblingGroupImage: { type: Types.CloudinaryImage, label: 'sibling group image', folder: `${ process.env.CLOUDINARY_DIRECTORY }/sibling-groups/`, select: true, selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/sibling-groups/`, publicID: 'siblingGroupFileName', dependsOn: { mustBePlacedWithSiblings: true }, autoCleanup: false },
+			// TODO: the old logic was: this.fileName = this.registrationNumber + '_' + this.name.first.toLowerCase();
+			//		 the model doesn't seem to be accessible from within generateFilename
+		}
+	},
+	allImages: {
+		type: Types.CloudinaryImages,
+		label: 'all images',
+		folder: `${ process.env.CLOUDINARY_DIRECTORY }/children/`,
+		select: true,
+		selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/children/`,
+		dependsOn: { mustBePlacedWithSiblings: false },
+		autoCleanup: false,
+		whenExists: 'replace',
+		generateFilename: function( file, attemptNumber ) {
+			const originalname = file.originalname;
+			const filenameWithoutExtension = originalname.substring( 0, originalname.lastIndexOf( '.' ) );
+			return `${ filenameWithoutExtension }`;
+
+			// TODO: the old logic was: this.fileName = this.registrationNumber + '_' + this.name.first.toLowerCase();
+			//		 the model doesn't seem to be accessible from within generateFilename
+		}
+	},
+	siblingGroupImage: {
+		type: Types.CloudinaryImage,
+		label: 'sibling group image',
+		folder: `${ process.env.CLOUDINARY_DIRECTORY }/sibling-groups/`,
+		select: true,
+		selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/sibling-groups/`,
+		dependsOn: { mustBePlacedWithSiblings: true },
+		autoCleanup: false,
+		whenExists: 'replace',
+		generateFilename: function( file, attemptNumber ) {
+			const originalname = file.originalname;
+			const filenameWithoutExtension = originalname.substring( 0, originalname.lastIndexOf( '.' ) );
+			return `${ filenameWithoutExtension }`;
+
+			// TODO: the old logic was complicated, see commit #d9fe6e9e to view it
+			//		 the model doesn't seem to be accessible from within generateFilename
+		}
+	},
 	extranetUrl: { type: Types.Url, label: 'extranet and related profile url', initial: true } // TODO: Since this is redundant as this just points the the url where the photo exists (the child's page), we may hide this field.  This must be kept in as it will help us track down the child information in the old system in the event of an issue.
 
 }, 'Recruitment Options', {
@@ -218,13 +268,6 @@ Child.add('Display Options', {
 		},
 		hidden: true
 	}
-/* Container for all system fields (add a heading if any are meant to be visible through the admin UI) */
-}, {
-
-	// system fields to store appropriate file prefixes
-	fileName: { type: Types.Text, hidden: true },
-	siblingGroupFileName: { type: Types.Text, hidden: true }
-
 /* Container for data migration fields ( these should be kept until after phase 2 and the old system is phased out completely ) */
 }, {
 	// system field to store an appropriate file prefix
@@ -314,8 +357,6 @@ Child.schema.pre( 'save', function( next ) {
 	this.trimTextFields();
 	// create a full name for the child based on their first, middle, and last names
 	this.setFullName();
-	// create an identifying name for file uploads
-	this.setFileName();
 	// if there are no siblings to be placed with, uncheck the box, otherwise check it
 	this.updateMustBePlacedWithSiblingsCheckbox();
 	// if there are no siblings to be placed with, clear the group bio
@@ -364,10 +405,8 @@ Child.schema.pre( 'save', function( next ) {
 		})
 		// perform the rest of the pre-save processing
 		.then( () => {
-			// create an identifying name for sibling group file uploads ( this has to run after sibling updates have been processed )
-			const siblingGroupFileNameSet = this.setSiblingGroupFileName();
 
-			return Promise.all( [ registrationNumberSet, adoptionWorkerAgencyFieldsSet, recruitmentWorkerAgencyFieldsSet, siblingGroupFileNameSet ] );
+			return Promise.all( [ registrationNumberSet, adoptionWorkerAgencyFieldsSet, recruitmentWorkerAgencyFieldsSet ] );
 		})
 		// if there was an error with any of the promises
 		.catch( err => {
@@ -717,61 +756,6 @@ Child.schema.methods.setRecruitmentWorkerAgencyFields = function() {
 				// remove the recruitment worker agency and region fields
 				this.adoptionWorkerAgency = undefined;
 				this.adoptionWorkerAgencyRegion = undefined;
-				// resolve the promise so that the Promise.all() in the pre-save hook does not fail
-				resolve();
-			});
-	});
-};
-
-Child.schema.methods.setFileName = function() {
-	'use strict';
-
-	this.fileName = this.registrationNumber + '_' + this.name.first.toLowerCase();
-};
-
-Child.schema.methods.setSiblingGroupFileName = function() {
-	'use strict';
-
-	return new Promise( ( resolve, reject ) => {
-
-		if( !this.get( 'siblingsToBePlacedWith' ) || this.get( 'siblingsToBePlacedWith' ).length === 0 ) {
-			return resolve();
-		}
-
-		// create an array with the _id's of the siblings they must be placed with
-		let idsArray = [ ...this.get( 'siblingsToBePlacedWith' ) ];
-		// push the _id of the current child to the array
-		idsArray.push( this.get( '_id' ) );
-		// fetch the siblings of the current child
-		const fetchChildren = ChildServiceMiddleware.getChildrenByIds( idsArray );
-		// if all children in the sibling group have been fetched successfully
-		fetchChildren
-			.then( children => {
-				// create arrays to store values for the different portions of the file name
-				let registrationNumbersArray	= [],
-					namesArray					= [];
-				// sort the children by registration number
-				children.sort( ( a, b ) => {
-					return parseInt( a.registrationNumber ) - parseInt( b.registrationNumber );
-				});
-				// loop through each of the children
-				for( let child of children ) {
-					// store the meaning values in arrays
-					registrationNumbersArray.push( child.get( 'registrationNumber' ) );
-					namesArray.push( child.get( 'name.first' ) );
-				}
-				// extract the values form the array into strings
-				const registrationNumbersString	= registrationNumbersArray.join( '_' ),
-					  namesString				= namesArray.join( '_' );
-
-				this.siblingGroupFileName = `${ registrationNumbersString }_${ namesString }`;
-				// resolve the promise
-				resolve();
-			})
-			// if there was an error fetching the children
-			.catch( err => {
-				// log the error for debugging purposes
-				console.error( `sibling group file name could not be updated for child ${ this.name.full } ( registration number: ${ this.registrationNumber } ) - ${ err }` );
 				// resolve the promise so that the Promise.all() in the pre-save hook does not fail
 				resolve();
 			});
