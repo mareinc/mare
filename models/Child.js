@@ -283,9 +283,9 @@ Child.relationship( { ref: 'Legalization', refPath: 'child', path: 'legalization
 Child.relationship( { ref: 'Disruption', refPath: 'child', path: 'disruptions', label: 'disruptions' } );
 Child.relationship( { ref: 'Inquiry', refPath: 'children', path: 'inquiries', label: 'inquiries' } );
 Child.relationship( { ref: 'Family', refPath: 'bookmarkedChildren', path: 'families', label: 'bookmarked by families' } );
-Child.relationship( { ref: 'Family', refPath: 'bookmarkedSiblingGroups', path: 'families', label: 'sibling group bookmarked by families' } );
+Child.relationship( { ref: 'Family', refPath: 'bookmarkedSiblings', path: 'families', label: 'sibling group bookmarked by families' } );
 Child.relationship( { ref: 'Social Worker', refPath: 'bookmarkedChildren', path: 'social-workers', label: 'bookmarked by social workers' } );
-Child.relationship( { ref: 'Social Worker', refPath: 'bookmarkedSiblingGroups', path: 'social-workers', label: 'sibling group bookmarked by social workers' } );
+Child.relationship( { ref: 'Social Worker', refPath: 'bookmarkedSiblings', path: 'social-workers', label: 'sibling group bookmarked by social workers' } );
 Child.relationship( { ref: 'Event', refPath: 'childAttendees', path: 'events', label: 'events' } );
 Child.relationship( { ref: 'Media Feature', refPath: 'children', path: 'media-features', label: 'media features' } );
 Child.relationship( { ref: 'Internal Note', refPath: 'child', path: 'internal-notes', label: 'internal notes' } );
