@@ -479,7 +479,7 @@ SocialWorker.schema.methods.setChangeHistory = function() {
 };
 
 // Define default columns in the admin interface and register the model
-SocialWorker.defaultColumns = 'name.full, phone.work, phone.home, phone.cell, phone.preferred, email, isActive';
+SocialWorker.defaultColumns = 'name.full, phone.mobile, phone.mobile, phone.preferred, email, isActive';
 SocialWorker.register();
 
 // Export to make it available using require.  The keystone.list import throws a ReferenceError when importing a list

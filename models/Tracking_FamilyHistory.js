@@ -12,7 +12,7 @@ var FamilyHistory = new keystone.List('Family History', {
 FamilyHistory.add({
 
     family: { type: Types.Relationship, label: 'family', ref: 'Family', required: true, noedit: true, initial: true },
-    date: { type: Types.Date, label: 'date', format: 'MM/DD/YYYY', utc: true, default: Date.now, required: true, noedit: true },
+    date: { type: Types.Date, label: 'date', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', utc: true, default: Date.now, required: true, noedit: true },
     summary: { type: Types.Text, label: 'summary of changes', noedit: true, initial: false },
     changes: { type: Types.Html, label: 'changes', wysiwyg: true, noedit: true, initial: false },
     modifiedBy: { type: Types.Relationship, label: 'modified by', ref: 'Admin', required: true, noedit: true, initial: true }

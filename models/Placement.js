@@ -2,12 +2,14 @@ const keystone	= require( 'keystone' ),
 	  Types		= keystone.Field.Types;
 
 // Create model
-var Placement = new keystone.List( 'Placement' );
+var Placement = new keystone.List( 'Placement', {
+	defaultSort: '-placementDate'
+});
 
 // Create fields
 Placement.add( 'Placement', {
 
-	placementDate: { type: Types.Date, label: 'placement date', format: 'MM/DD/YYYY', utc: true, initial: true },
+	placementDate: { type: Types.Date, label: 'placement date', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', utc: true, initial: true },
 	
 	source: { type: Types.Relationship, label: 'source', ref: 'Source', filters: { isActive: true }, initial: true },
 	additionalSources: { type: Types.Relationship, label: 'additional sources', ref: 'Source', filters: { isActive: true }, many: true, initial: true },
@@ -105,5 +107,5 @@ Placement.schema.methods.populateAgency = function() {
 };
 
 // Define default columns in the admin interface and register the model
-Placement.defaultColumns = 'placementDate, child, family, family.name, source';
+Placement.defaultColumns = 'placementDate, child, family, familyDetails.name, source';
 Placement.register();
