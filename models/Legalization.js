@@ -7,7 +7,7 @@ var Legalization = new keystone.List( 'Legalization' );
 // create fields
 Legalization.add( 'Legalization', {
 
-	legalizationDate: { type: Types.Date, label: 'legalization date', format: 'MM/DD/YYYY', initial: true },
+	legalizationDate: { type: Types.Date, label: 'legalization date', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', initial: true },
 
 	source: { type: Types.Relationship, label: 'source', ref: 'Source', filters: { isActive: true }, initial: true },
 	additionalSources: { type: Types.Relationship, label: 'additional sources', ref: 'Source', filters: { isActive: true }, many: true, initial: true },
@@ -105,5 +105,5 @@ Legalization.schema.methods.populateAgency = function() {
 };
 
 // Define default columns in the admin interface and register the model
-Legalization.defaultColumns = 'legalizationDate, child, family, family.name, source';
+Legalization.defaultColumns = 'legalizationDate, child, family, familyDetails.name, source';
 Legalization.register();

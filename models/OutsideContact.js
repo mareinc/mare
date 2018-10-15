@@ -111,5 +111,5 @@ OutsideContact.schema.methods.setVolunteerStatus = function( done ) {
 OutsideContact.relationship({ ref: 'Mailing List', refPath: 'outsideContactSubscribers', path: 'mailing-lists', label: 'mailing lists' });
 
 // Define default columns in the admin interface and register the model
-OutsideContact.defaultColumns = 'identifyingName, address.city, address.state, groups';
+OutsideContact.defaultColumns = 'identifyingName, address.city, address.state, contactGroups';
 OutsideContact.register();

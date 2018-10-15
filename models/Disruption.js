@@ -7,7 +7,7 @@ var Disruption = new keystone.List( 'Disruption' );
 // create fields
 Disruption.add( 'Disruption', {
 
-	disruptionDate: { type: Types.Date, label: 'disruption date', format: 'MM/DD/YYYY', initial: true },
+	disruptionDate: { type: Types.Date, label: 'disruption date', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', initial: true },
 
 	source: { type: Types.Relationship, label: 'source', ref: 'Source', filters: { isActive: true }, initial: true },
 	additionalSources: { type: Types.Relationship, label: 'additional sources', ref: 'Source', filters: { isActive: true }, many: true, initial: true },
@@ -105,5 +105,5 @@ Disruption.schema.methods.populateAgency = function() {
 };
 
 // Define default columns in the admin interface and register the model
-Disruption.defaultColumns = 'disruptionDate, child, family, family.name, notes';
+Disruption.defaultColumns = 'disruptionDate, child, family, familyDetails.name, notes';
 Disruption.register();

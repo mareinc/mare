@@ -230,9 +230,9 @@
 					child.get( 'recommendedFamilyConstellation' ).indexOf( formFields.familyConstellation ) === -1 ) { return; }
 				
 				// determine if selections were made about the family, if not, don't use it to restrict search results
-				var numberOfChildrenInHomeSelected	= formFields.numberOfChildrenInHome !== '',
-					oldestChildAgeInHomeSelected	= formFields.oldestChildAgeInHome !== '',
-					youngestChildAgeInHomeSelected	= formFields.youngestChildAgeInHome !== '';
+				var numberOfChildrenInHomeSelected	= typeof formFields.numberOfChildrenInHome === 'number' && !isNaN( formFields.numberOfChildrenInHome ),
+					oldestChildAgeInHomeSelected	= typeof formFields.oldestChildAgeInHome === 'number' && !isNaN( formFields.oldestChildAgeInHome ),
+					youngestChildAgeInHomeSelected	= typeof formFields.youngestChildAgeInHome === 'number' && !isNaN( formFields.youngestChildAgeInHome );
 				// store references to other family constellatoin considerations listed for any of the siblings
 				var requiresSiblings			= child.get( 'requiresSiblings' ),
 					requiresNoSiblings			= child.get( 'requiresNoSiblings' ),
@@ -253,25 +253,25 @@
 				} else {
 					// if the child requires siblings and the family has children, they should be included in the search results
 					if( requiresSiblings ) {
-						if( numberOfChildrenInHomeSelected && formFields.numberOfChildrenInHome !== 0 ) {
+						if( !numberOfChildrenInHomeSelected || formFields.numberOfChildrenInHome !== 0 ) {
 							otherFamilyConstellationConsiderationsMatch = true;
 						}
 					}
 					// if the child requires no siblings and the family has no children, they should be included in the search results
 					if( requiresNoSiblings ) {
-						if( numberOfChildrenInHomeSelected && formFields.numberOfChildrenInHome === 0 ) {
+						if( !numberOfChildrenInHomeSelected || formFields.numberOfChildrenInHome === 0 ) {
 							otherFamilyConstellationConsiderationsMatch = true;
 						}
 					}
 					// if the child accepts older children and the family has older children, they should be included in the search results
 					if( olderChildrenAcceptable ) {
-						if( oldestChildAgeInHomeSelected && formFields.oldestChildAgeInHome >= child.get( 'age' ) ) {
+						if( !oldestChildAgeInHomeSelected || formFields.oldestChildAgeInHome >= child.get( 'age' ) ) {
 							otherFamilyConstellationConsiderationsMatch = true;
 						}
 					}
 					// if the child accepts younger children and the family has younger children, they should be included in the search results
 					if( youngerChildrenAcceptable ) {
-						if( youngestChildAgeInHomeSelected && formFields.youngestChildAgeInHome <= child.get( 'age' ) ) {
+						if( !youngestChildAgeInHomeSelected || formFields.youngestChildAgeInHome <= child.get( 'age' ) ) {
 							otherFamilyConstellationConsiderationsMatch = true;
 						}
 					}

@@ -1,4 +1,5 @@
 const keystone = require( 'keystone' );
+
 // TODO: this function isn't written correctly, replace references to it with getEmailTargetByName() below
 exports.getTargetId = emailTarget => {
 

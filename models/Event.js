@@ -20,7 +20,24 @@ Event.add( 'General Information', {
 	// type: { type: Types.Relationship, label: 'Event Type', ref: 'Event Type', required: true, initial: true }
 	type: { type: Types.Select, label: 'event type', options: 'MARE adoption parties & information events, MAPP trainings, agency information meetings, other opportunities & trainings, fundraising events', required: true, initial: true }, // TODO: this fixes an issue in pre-save which can be updated to fetch the live results and not hardcode this list.
 	source: { type: Types.Relationship, label: 'source', ref: 'Source', dependsOn: { shouldCreateSource: true }, noedit: true, initial: true },
-	image: { type: Types.CloudinaryImage, note: 'needed to display in the sidebar, events page, and home page', folder: `${ process.env.CLOUDINARY_DIRECTORY }/events/`, select: true, selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/events/`, publicID: 'fileName', autoCleanup: true },
+	image: {
+		type: Types.CloudinaryImage,
+		note: 'needed to display in the sidebar, events page, and home page',
+		folder: `${ process.env.CLOUDINARY_DIRECTORY }/events/`,
+		select: true,
+		selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/events/`,
+		autoCleanup: true,
+		whenExists: 'retry',
+		generateFilename: function( file, attemptNumber ) {
+			const originalname = file.originalname;
+			const filenameWithoutExtension = originalname.substring( 0, originalname.lastIndexOf( '.' ) );
+			const timestamp = new Date().getTime();
+			return `${ filenameWithoutExtension }-${ timestamp }`;
+
+			// TODO: the old logic was: this.fileName = this.key.replace( /-/g, '_' );
+			//		 the model doesn't seem to be accessible from within generateFilename
+		}
+	},
 
 	areBuddiesAllowed: { type: Types.Boolean, label: 'buddies allowed', initial: true },
 	isMatchingEvent: { type: Types.Boolean, label: 'matching event', initial: true }
@@ -40,9 +57,9 @@ Event.add( 'General Information', {
 
 }, 'Details', {
 
-	startDate: { type: Types.Date, label: 'start date', format: 'MM/DD/YYYY', utc: true, required: true, initial: true },
+	startDate: { type: Types.Date, label: 'start date', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', required: true, initial: true },
 	startTime: { type: Types.Text, label: 'start time', required: true, initial: true },
-	endDate: { type: Types.Date, label: 'end date', format: 'MM/DD/YYYY', utc: true, required: true, initial: true },
+	endDate: { type: Types.Date, label: 'end date', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', required: true, initial: true },
 	endTime: { type: Types.Text, label: 'end time', required: true, initial: true },
 	description: { type: Types.Html, label: 'description', wysiwyg: true, initial: true }
 
@@ -66,12 +83,6 @@ Event.add( 'General Information', {
 }, 'Creation Details', {
 	// this is used to determine whether we should send an automatic email to the creator when their event becomes active
 	createdViaWebsite: { type: Types.Boolean, label: 'created through the website', noedit: true }
-
-/* container for all system fields (add a heading if any are meant to be visible through the admin UI) */
-}, {
-
-	// system field to store an appropriate file prefix
-	fileName: { type: Types.Text, hidden: true }
 
 /* container for data migration fields ( these should be kept until after phase 2 and the old system is phased out completely ) */
 }, {
@@ -113,8 +124,7 @@ Event.schema.virtual( 'hasImage' ).get( function() {
 // Event.schema.pre( 'save', function( next ) {
 // 	'use strict';
 
-// 	this.setUrl();
-// 	this.setFileName();
+//	this.setUrl();
 
 // 	let setSourceField = this.setSourceField();
 
@@ -146,12 +156,6 @@ Event.schema.methods.setUrl = function() {
 	this.url = '/events/' + eventType + '/' + this.key;
 };
 
-Event.schema.methods.setFileName = function() {
-	'use strict';
-	// create an identifying name for file uploads
-	this.fileName = this.key.replace( /-/g, '_' );
-};
-
 Event.schema.methods.setSourceField = function() {
 	'use strict';
 
@@ -163,8 +167,7 @@ Event.schema.methods.setSourceField = function() {
 			// resolve the promise
 			return resolve();
 		}
-		// create a reference to the model for use after the new source promise resolves
-		// let model = this;
+
 		// if the source is already set, update it, otherwise create it
 		let newSource = this.source
 						? SourceMiddleware.updateSource( this.source, this.name )
@@ -192,5 +195,5 @@ Event.schema.methods.setSourceField = function() {
 Event.schema.plugin( random );
 
 // define default columns in the admin interface and register the model
-Event.defaultColumns = 'name, url, starts, ends, isActive';
+Event.defaultColumns = 'name, url, startDate, endDate, isActive';
 Event.register();

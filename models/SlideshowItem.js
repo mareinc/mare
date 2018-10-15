@@ -10,7 +10,20 @@ var SlideshowItem = new keystone.List('Slideshow Item', {
 // Create fields
 SlideshowItem.add({
 
-	image: { type: Types.CloudinaryImage, folder: `${ process.env.CLOUDINARY_DIRECTORY }/slideshow/`, select: true, selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/slideshow/`, autoCleanup: true }, // TODO: add publicID attribute for better naming in Cloudinary
+	image: {
+		type: Types.CloudinaryImage,
+		folder: `${ process.env.CLOUDINARY_DIRECTORY }/slideshow/`,
+		select: true,
+		selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/slideshow/`,
+		autoCleanup: true,
+		whenExists: 'retry',
+		generateFilename: function( file, attemptNumber ) {
+			const originalname = file.originalname;
+			const filenameWithoutExtension = originalname.substring( 0, originalname.lastIndexOf( '.' ) );
+			const timestamp = new Date().getTime();
+			return `${ filenameWithoutExtension }-${ timestamp }`;
+		}
+	},
 	parent: { type: Types.Relationship, label: 'slideshow', ref: 'Slideshow', initial: true },
 	heading: { type: Types.Text, label: 'heading', initial: true },
 	subHeading: { type: Types.Text, label: 'sub-heading', initial: true },

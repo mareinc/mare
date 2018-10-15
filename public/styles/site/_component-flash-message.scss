@@ -14,7 +14,7 @@
 	z-index: 200;
 
 	// configure transition & animation props
-	transition: transform ease-in .5s;
+	transition: transform ease-in-out .2s;
 
 	// defines a class to slide the flash messages into view
 	&.slide-in {
@@ -56,7 +56,7 @@
 			word-wrap: break-word;
 
 			// transition max-height for a slide-up effect
-			transition: max-height linear .5s;
+			transition: max-height ease-in-out .2s;
 
 			// initiates slide-up transition
 			&.slide-up {
@@ -94,7 +94,7 @@
 
 				// execute the fade out animation
 				&.fade-out {
-					animation: hideCloseButton 0.2s linear 0s 1 normal forwards;
+					animation: hideCloseButton 0.1s linear 0s 1 normal forwards;
 				}
 			}
 		}

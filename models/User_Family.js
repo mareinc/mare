@@ -11,6 +11,26 @@ const keystone					= require( 'keystone' ),
 	  FamilyService				= require( '../routes/middleware/service_family' ),
 	  ListService				= require( '../routes/middleware/service_lists' );
 
+// configure the s3 storage adapter
+var storage = new keystone.Storage({
+	adapter: require('keystone-storage-adapter-s3'),
+	s3: {
+		key: process.env.S3_KEY, // required; defaults to process.env.S3_KEY
+		secret: process.env.S3_SECRET, // required; defaults to process.env.S3_SECRET
+		bucket: process.env.S3_BUCKET_NAME, // required; defaults to process.env.S3_BUCKET
+		region: process.env.S3_REGION, // optional; defaults to process.env.S3_REGION, or if that's not specified, us-east-1
+		uploadParams: { // optional; add S3 upload params; see below for details
+			ACL: 'public-read'
+		}
+	},
+	schema: {
+		bucket: true, // optional; store the bucket the file was uploaded to in your db
+		etag: true, // optional; store the etag for the resource
+		path: true, // optional; store the path of the file in your db
+		url: true, // optional; generate & store a public URL
+	}
+});
+
 // Export to make it available using require.  The keystone.list import throws a ReferenceError when importing a list that comes later when sorting alphabetically
 const ContactGroup = require( './ContactGroup' );
 
@@ -33,17 +53,30 @@ Family.add( 'Permissions', {
 	permissions: {
 		isVerified: { type: Boolean, label: 'has a verified email address', default: false, noedit: true },
 		isHomestudyVerified: { type: Boolean, label: 'homestudy verified', default: false, initial: true },
-		homestudyVerifiedDate: { type: Types.Date, label: 'homestudy verified on', format: 'MM/DD/YYYY', utc: true, dependsOn: { 'permissions.isHomestudyVerified': true }, noedit: true },
+		homestudyVerifiedDate: { type: Types.Date, label: 'homestudy verified on', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', dependsOn: { 'permissions.isHomestudyVerified': true }, noedit: true },
 		canViewAllChildrenOverride: { type: Boolean, label: 'allow family to see all children', note: 'this will allow the family to see at risk children regardless of their homestudy or place of residence', default: false, initial: true },
 		canViewAllChildren: { type: Boolean, default: false, hidden: true, noedit: true }
 	}
 
 },  'General Information', {
 
-	avatar: { type: Types.CloudinaryImage, label: 'avatar', folder: `${ process.env.CLOUDINARY_DIRECTORY }/users/families`, select: true, selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/users/families`, autoCleanup: true }, // TODO: add publicID attribute for better naming in Cloudinary
+	avatar: {
+		type: Types.CloudinaryImage,
+		label: 'avatar',
+		folder: `${ process.env.CLOUDINARY_DIRECTORY }/users/families`,
+		select: true,
+		selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/users/families`,
+		autoCleanup: true,
+		whenExists: 'retry',
+		generateFilename: function( file, attemptNumber ) {
+			const originalname = file.originalname;
+			const filenameWithoutExtension = originalname.substring( 0, originalname.lastIndexOf( '.' ) );
+			return filenameWithoutExtension;
+		}
+	},
 
 	registrationNumber: { type: Number, label: 'registration number', format: false, noedit: true },
-	initialContact: { type: Types.Date, label: 'initial contact', format: 'MM/DD/YYYY', utc: true, initial: true }, // was required: data migration change ( undo if possible )
+	initialContact: { type: Types.Date, label: 'initial contact', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', initial: true }, // was required: data migration change ( undo if possible )
 	flagCalls: { type: Types.Boolean, label: 'flag calls', default: false, initial: true },
 	familyConstellation: { type: Types.Relationship, label: 'family constellation', ref: 'Family Constellation', initial: true },
 	language: { type: Types.Relationship, label: 'language', ref: 'Language', initial: true },
@@ -74,7 +107,7 @@ Family.add( 'Permissions', {
 		gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', initial: true }, // was required: data migration change ( undo if possible )
 		race: { type: Types.Relationship, label: 'race', ref: 'Race', many: true, required: true, initial: true }, // was required: data migration change ( undo if possible )
 		occupation: { type: Types.Text, label: 'occupation', initial: true },
-		birthDate: { type: Types.Date, label: 'date of birth', format: 'MM/DD/YYYY', utc: true, initial: true } // was required: data migration change ( undo if possible )
+		birthDate: { type: Types.Date, label: 'date of birth', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', initial: true } // was required: data migration change ( undo if possible )
 	}
 
 }, 'Contact 2', {
@@ -96,7 +129,7 @@ Family.add( 'Permissions', {
 		gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', initial: true },
 		race: { type: Types.Relationship, label: 'race', ref: 'Race', many: true, initial: true },
 		occupation: { type: Types.Text, label: 'occupation', initial: true },
-		birthDate: { type: Types.Date, label: 'date of birth', format: 'MM/DD/YYYY', utc: true, initial: true }
+		birthDate: { type: Types.Date, label: 'date of birth', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', initial: true }
 	}
 
 }, 'Home Contact Information', {
@@ -122,7 +155,7 @@ Family.add( 'Permissions', {
 }, { heading: 'Child 1', dependsOn: { numberOfChildren: ['1', '2', '3', '4', '5', '6', '7', '8+'] } }, {
 	child1: {
 		name: { type: Types.Text, label: 'name', dependsOn: { numberOfChildren: ['1', '2', '3', '4', '5', '6', '7', '8+'] }, initial: true },
-		birthDate: { type: Types.Date, label: 'date of birth', format: 'MM/DD/YYYY', utc: true, dependsOn: { numberOfChildren: ['1', '2', '3', '4', '5', '6', '7', '8+'] }, initial: true },
+		birthDate: { type: Types.Date, label: 'date of birth', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', dependsOn: { numberOfChildren: ['1', '2', '3', '4', '5', '6', '7', '8+'] }, initial: true },
 		gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', dependsOn: { numberOfChildren: ['1', '2', '3', '4', '5', '6', '7', '8+'] }, initial: true },
 		type: { type: Types.Relationship, label: 'type', ref: 'Child Type', dependsOn: { numberOfChildren: ['1', '2', '3', '4', '5', '6', '7', '8+'] }, initial: true }
 	}
@@ -130,7 +163,7 @@ Family.add( 'Permissions', {
 }, { heading: 'Child 2', dependsOn: { numberOfChildren: ['2', '3', '4', '5', '6', '7', '8+'] } }, {
 	child2: {
 		name: { type: Types.Text, label: 'name', dependsOn: { numberOfChildren: ['2', '3', '4', '5', '6', '7', '8+'] }, initial: true },
-		birthDate: { type: Types.Date, label: 'date of birth', format: 'MM/DD/YYYY', utc: true, dependsOn: { numberOfChildren: ['2', '3', '4', '5', '6', '7', '8+'] }, initial: true },
+		birthDate: { type: Types.Date, label: 'date of birth', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', dependsOn: { numberOfChildren: ['2', '3', '4', '5', '6', '7', '8+'] }, initial: true },
 		gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', dependsOn: { numberOfChildren: ['2', '3', '4', '5', '6', '7', '8+'] }, initial: true },
 		type: { type: Types.Relationship, label: 'type', ref: 'Child Type', dependsOn: { numberOfChildren: ['2', '3', '4', '5', '6', '7', '8+'] }, initial: true }
 	}
@@ -138,7 +171,7 @@ Family.add( 'Permissions', {
 }, { heading: 'Child 3', dependsOn: { numberOfChildren: ['3', '4', '5', '6', '7', '8+'] } }, {
 	child3: {
 		name: { type: Types.Text, label: 'name', dependsOn: { numberOfChildren: ['3', '4', '5', '6', '7', '8+'] }, initial: true },
-		birthDate: { type: Types.Date, label: 'date of birth', format: 'MM/DD/YYYY', utc: true, dependsOn: { numberOfChildren: ['3', '4', '5', '6', '7', '8+'] }, initial: true },
+		birthDate: { type: Types.Date, label: 'date of birth', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', dependsOn: { numberOfChildren: ['3', '4', '5', '6', '7', '8+'] }, initial: true },
 		gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', dependsOn: { numberOfChildren: ['3', '4', '5', '6', '7', '8+'] }, initial: true },
 		type: { type: Types.Relationship, label: 'type', ref: 'Child Type', dependsOn: { numberOfChildren: ['3', '4', '5', '6', '7', '8+'] }, initial: true }
 	}
@@ -146,7 +179,7 @@ Family.add( 'Permissions', {
 }, { heading: 'Child 4', dependsOn: { numberOfChildren: ['4', '5', '6', '7', '8+'] } }, {
 	child4: {
 		name: { type: Types.Text, label: 'name', dependsOn: { numberOfChildren: ['4', '5', '6', '7', '8+'] }, initial: true },
-		birthDate: { type: Types.Date, label: 'date of birth', format: 'MM/DD/YYYY', utc: true, dependsOn: { numberOfChildren: ['4', '5', '6', '7', '8+'] }, initial: true },
+		birthDate: { type: Types.Date, label: 'date of birth', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', dependsOn: { numberOfChildren: ['4', '5', '6', '7', '8+'] }, initial: true },
 		gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', dependsOn: { numberOfChildren: ['4', '5', '6', '7', '8+'] }, initial: true },
 		type: { type: Types.Relationship, label: 'type', ref: 'Child Type', dependsOn: { numberOfChildren: ['4', '5', '6', '7', '8+'] }, initial: true }
 	}
@@ -154,7 +187,7 @@ Family.add( 'Permissions', {
 }, { heading: 'Child 5', dependsOn: { numberOfChildren: ['5', '6', '7', '8+'] } }, {
 	child5: {
 		name: { type: Types.Text, label: 'name', dependsOn: { numberOfChildren: ['5', '6', '7', '8+'] }, initial: true },
-		birthDate: { type: Types.Date, label: 'date of birth', format: 'MM/DD/YYYY', utc: true, dependsOn: { numberOfChildren: ['5', '6', '7', '8+'] }, initial: true },
+		birthDate: { type: Types.Date, label: 'date of birth', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', dependsOn: { numberOfChildren: ['5', '6', '7', '8+'] }, initial: true },
 		gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', dependsOn: { numberOfChildren: ['5', '6', '7', '8+'] }, initial: true },
 		type: { type: Types.Relationship, label: 'type', ref: 'Child Type', dependsOn: { numberOfChildren: ['5', '6', '7', '8+'] }, initial: true }
 	}
@@ -162,7 +195,7 @@ Family.add( 'Permissions', {
 }, { heading: 'Child 6', dependsOn: { numberOfChildren: ['6', '7', '8+'] } }, {
 	child6: {
 		name: { type: Types.Text, label: 'name', dependsOn: { numberOfChildren: ['6', '7', '8+'] }, initial: true },
-		birthDate: { type: Types.Date, label: 'date of birth', format: 'MM/DD/YYYY', utc: true, dependsOn: { numberOfChildren: ['6', '7', '8+'] }, initial: true },
+		birthDate: { type: Types.Date, label: 'date of birth', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', dependsOn: { numberOfChildren: ['6', '7', '8+'] }, initial: true },
 		gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', dependsOn: { numberOfChildren: ['6', '7', '8+'] }, initial: true },
 		type: { type: Types.Relationship, label: 'type', ref: 'Child Type', dependsOn: { numberOfChildren: ['6', '7', '8+'] }, initial: true }
 	}
@@ -170,7 +203,7 @@ Family.add( 'Permissions', {
 }, { heading: 'Child 7', dependsOn: { numberOfChildren: ['7', '8+'] } }, {
 	child7: {
 		name: { type: Types.Text, label: 'name', dependsOn: { numberOfChildren: ['7', '8+'] }, initial: true },
-		birthDate: { type: Types.Date, label: 'date of birth', format: 'MM/DD/YYYY', utc: true, dependsOn: { numberOfChildren: ['7', '8+'] }, initial: true },
+		birthDate: { type: Types.Date, label: 'date of birth', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', dependsOn: { numberOfChildren: ['7', '8+'] }, initial: true },
 		gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', dependsOn: { numberOfChildren: ['7', '8+'] }, initial: true },
 		type: { type: Types.Relationship, label: 'type', ref: 'Child Type', dependsOn: { numberOfChildren: ['7', '8+'] }, initial: true }
 	}
@@ -178,7 +211,7 @@ Family.add( 'Permissions', {
 }, { heading: 'Child 8', dependsOn: { numberOfChildren: ['8+'] } }, {
 	child8: {
 		name: { type: Types.Text, label: 'name', dependsOn: { numberOfChildren: ['8+'] }, initial: true },
-		birthDate: { type: Types.Date, label: 'date of birth', format: 'MM/DD/YYYY', utc: true, dependsOn: { numberOfChildren: ['8+'] }, initial: true },
+		birthDate: { type: Types.Date, label: 'date of birth', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', dependsOn: { numberOfChildren: ['8+'] }, initial: true },
 		gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', dependsOn: { numberOfChildren: ['8+'] }, initial: true },
 		type: { type: Types.Relationship, label: 'type', ref: 'Child Type', dependsOn: { numberOfChildren: ['8+'] }, initial: true }
 	}
@@ -195,33 +228,34 @@ Family.add( 'Permissions', {
 	stages: {
 		gatheringInformation: {
 			started: { type: Types.Boolean, label: 'gathering information', default: false, initial: true },
-			date: { type: Types.Date, label: 'date gathering information started', format: 'MM/DD/YYYY', utc: true, dependsOn: { 'stages.gatheringInformation.started': true }, initial: true }
+			date: { type: Types.Date, label: 'date gathering information started', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', dependsOn: { 'stages.gatheringInformation.started': true }, initial: true }
 		},
 		lookingForAgency: {
 			started: { type: Types.Boolean, label: 'looking for agency', default: false, initial: true },
-			date: { type: Types.Date, label: 'date looking for agency started', format: 'MM/DD/YYYY', utc: true, dependsOn: { 'stages.lookingForAgency.started': true }, initial: true }
+			date: { type: Types.Date, label: 'date looking for agency started', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', dependsOn: { 'stages.lookingForAgency.started': true }, initial: true }
 		},
 		workingWithAgency: {
 			started: { type: Types.Boolean, label: 'working with agency', default: false, initial: true },
-			date: { type: Types.Date, label: 'date working with agency started', format: 'MM/DD/YYYY', utc: true, dependsOn: { 'stages.workingWithAgency.started': true }, initial: true }
+			date: { type: Types.Date, label: 'date working with agency started', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', dependsOn: { 'stages.workingWithAgency.started': true }, initial: true }
 		},
 		MAPPTrainingCompleted: {
 			completed: { type: Types.Boolean, label: 'MAPP training completed', default: false, initial: true },
-			date: { type: Types.Date, label: 'date MAPP training completed', format: 'MM/DD/YYYY', utc: true, dependsOn: { 'stages.MAPPTrainingCompleted.completed': true }, initial: true }
+			date: { type: Types.Date, label: 'date MAPP training completed', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', dependsOn: { 'stages.MAPPTrainingCompleted.completed': true }, initial: true }
 		}
 	},
 
 	homestudy: {
 		completed: { type: Types.Boolean, label: 'homestudy completed', default: false, initial: true },
-		initialDate: { type: Types.Date, label: 'initial date homestudy completed', format: 'MM/DD/YYYY', utc: true, dependsOn: { 'homestudy.completed': true }, initial: true },
-		mostRecentDate: { type: Types.Date, label: 'most recent update completed', format: 'MM/DD/YYYY', utc: true, dependsOn: { 'homestudy.completed': true }, initial: true },
+		initialDate: { type: Types.Date, label: 'initial date homestudy completed', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', dependsOn: { 'homestudy.completed': true }, initial: true },
+		mostRecentDate: { type: Types.Date, label: 'most recent update completed', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', dependsOn: { 'homestudy.completed': true }, initial: true },
 		summary: { type: Types.Textarea, label: 'homestudy summary', dependsOn: { 'homestudy.completed': true }, initial: true },
 
 		homestudyFile_upload: {
 			label: 'homestudy file',
 			dependsOn: { 'homestudy.completed': true },
-			type: Types.S3File,
-			s3path: '/family/homestudy',
+			type: Types.File,
+			storage: storage,
+			// path: '/family/homestudy',
 			filename: function( item, filename ) {
 				// prefix file name with registration number and name for easier identification
 				return item.fileName;
@@ -232,23 +266,23 @@ Family.add( 'Permissions', {
 
 	onlineMatching: {
 		started: { type: Types.Boolean, label: 'online matching', default: false, initial: true },
-		date: { type: Types.Date, label: 'date online matching started', format: 'MM/DD/YYYY', utc: true, dependsOn: { 'onlineMatching.started': true }, initial: true }
+		date: { type: Types.Date, label: 'date online matching started', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', dependsOn: { 'onlineMatching.started': true }, initial: true }
 	},
 
 	registeredWithMARE: {
 		registered: { type: Types.Boolean, label: 'registered with MARE', default: false, initial: true },
-		date: { type: Types.Date, label: 'date registered with MARE', format: 'MM/DD/YYYY', utc: true, dependsOn: { 'registeredWithMARE.registered': true }, initial: true },
+		date: { type: Types.Date, label: 'date registered with MARE', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', dependsOn: { 'registeredWithMARE.registered': true }, initial: true },
 		status: { type: Types.Relationship, label: 'status', ref: 'Child Status', dependsOn: { 'registeredWithMARE.registered': true }, initial: true }
 	},
 
 	familyProfile: {
 		created: { type: Types.Boolean, label: 'family profile created', default: false, initial: true },
-		date: { type: Types.Date, label: 'date family profile created', format: 'MM/DD/YYYY', utc: true, dependsOn: { 'familyProfile.created': true }, initial: true }
+		date: { type: Types.Date, label: 'date family profile created', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', dependsOn: { 'familyProfile.created': true }, initial: true }
 	},
 
 	closed: {
 		isClosed: { type: Types.Boolean, label: 'closed', default: false, initial: true },
-		date: { type: Types.Date, label: 'date closed', format: 'MM/DD/YYYY', utc: true, dependsOn: { 'closed.isClosed': true }, initial: true },
+		date: { type: Types.Date, label: 'date closed', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', dependsOn: { 'closed.isClosed': true }, initial: true },
 		reason: { type: Types.Relationship, label: 'reason', ref: 'Closed Reason', dependsOn: { 'closed.isClosed': true }, initial: true }
 	}
 
@@ -278,7 +312,7 @@ Family.add( 'Permissions', {
 
 	infoPacket: {
 		packet: { type: Types.Select, options: 'English, Spanish, none', label: 'Packet', initial: true },
-		date: { type: Types.Date, label: 'date info packet sent', format: 'MM/DD/YYYY', utc: true, initial: true },
+		date: { type: Types.Date, label: 'date info packet sent', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', initial: true },
 		notes: { type: Types.Textarea, label: 'notes', initial: true }
 	}
 
@@ -892,7 +926,7 @@ Family.schema.methods.setChangeHistory = function setChangeHistory() {
 			// Any time a new field is added, it MUST be added to this list in order to be considered for display in change history
 			// Computed fields and fields internal to the object SHOULD NOT be added to this list
 			async.parallel([
-				// avatar: { type: Types.CloudinaryImage, label: 'avatar', folder: 'users/families', select: true, selectPrefix: 'users/families', autoCleanup: true },
+				// TODO: check avatar field
 				done => {
 					ChangeHistoryMiddleware.checkFieldForChanges({
 												name: 'email',
@@ -1594,8 +1628,9 @@ Family.schema.methods.setChangeHistory = function setChangeHistory() {
 					// homestudyFile_upload: {
 					// 	label: 'homestudy file',
 					// 	dependsOn: { 'homestudy.completed': true },
-					// 	type: Types.S3File,
-					// 	s3path: '/family/homestudy',
+					// 	type: Types.File,
+					//  storage: storage,
+					// 	path: '/family/homestudy',
 					// 	filename: function(item, filename){
 					// 		// prefix file name with registration number and name for easier identification
 					// 		return item.fileName;
@@ -1957,7 +1992,7 @@ Family.schema.methods.setChangeHistory = function setChangeHistory() {
 };
 
 // Define default columns in the admin interface and register the model
-Family.defaultColumns = 'address.displayCity, address.state, isActive';
+Family.defaultColumns = 'displayNameAndRegistration, address.displayCity, address.state, isActive';
 Family.register();
 
 // Export to make it available using require.  The keystone.list import throws a ReferenceError when importing a list

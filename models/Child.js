@@ -15,6 +15,26 @@ const keystone						= require( 'keystone' ),
 	  UtilitiesMiddleware			= require( '../routes/middleware/utilities' ),
 	  saveLock						= require( '../routes/middleware/model_save_lock' );
 
+// configure the s3 storage adapter
+var storage = new keystone.Storage({
+	adapter: require('keystone-storage-adapter-s3'),
+	s3: {
+		key: process.env.S3_KEY, // required; defaults to process.env.S3_KEY
+		secret: process.env.S3_SECRET, // required; defaults to process.env.S3_SECRET
+		bucket: process.env.S3_BUCKET_NAME, // required; defaults to process.env.S3_BUCKET
+		region: process.env.S3_REGION, // optional; defaults to process.env.S3_REGION, or if that's not specified, us-east-1
+		uploadParams: { // optional; add S3 upload params; see below for details
+			ACL: 'public-read'
+		}
+	  },
+	schema: {
+		bucket: true, // optional; store the bucket the file was uploaded to in your db
+		etag: true, // optional; store the etag for the resource
+		path: true, // optional; store the path of the file in your db
+		url: true, // optional; generate & store a public URL
+	}
+});
+
 // Create model
 const Child = new keystone.List( 'Child', {
 	track: true, // needed for change history updated by assignment
@@ -28,12 +48,12 @@ Child.add('Display Options', {
 
 	siteVisibility: { type: Types.Select, label: 'child is visible to', options: 'everyone, only registered social workers and families', required: true, initial: true },
 	isVisibleInGallery: { type: Types.Boolean, label: 'activate child profile on website to group selected', note: 'authorized staff only', default: false, initial: true },
-	visibleInGalleryDate: { type: Types.Date, label: 'date added to MARE web', format: 'MM/DD/YYYY', utc: true, dependsOn: {isVisibleInGallery: true }, initial: true }
+	visibleInGalleryDate: { type: Types.Date, label: 'date added to MARE web', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', dependsOn: {isVisibleInGallery: true }, initial: true }
 
 }, 'Child Information', {
 
 	registrationNumber: { type: Number, label: 'registration number', format: false, noedit: true },
-	registrationDate: { type: Types.Date, label: 'registration date', format: 'MM/DD/YYYY', utc: true, required: true, initial: true },
+	registrationDate: { type: Types.Date, label: 'registration date', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', required: true, initial: true },
 	displayNameAndRegistration: { type: Types.Text, label: 'name and registration number', default: 'new child', hidden: true, noedit: true },
 
 	name: {
@@ -45,9 +65,9 @@ Child.add('Display Options', {
 		full: { type: Types.Text, label: 'name', hidden: true, noedit: true, initial: false }
 	},
 
-	birthDate: { type: Types.Date, label: 'date of birth', format: 'MM/DD/YYYY', utc: true, required: true, initial: true },
+	birthDate: { type: Types.Date, label: 'date of birth', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', required: true, initial: true },
 	languages: { type: Types.Relationship, label: 'languages', ref: 'Language', many: true, required: true, initial: true },
-	statusChangeDate: { type: Types.Date, label: 'status change date', format: 'MM/DD/YYYY', utc: true, initial: true }, // TODO: Logic needed, see line 14 of https://docs.google.com/spreadsheets/d/1Opb9qziX2enTehJx5K1J9KAT7v-j2yAdqwyQUMSsFwc/edit#gid=1235141373
+	statusChangeDate: { type: Types.Date, label: 'status change date', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', initial: true }, // TODO: Logic needed, see line 14 of https://docs.google.com/spreadsheets/d/1Opb9qziX2enTehJx5K1J9KAT7v-j2yAdqwyQUMSsFwc/edit#gid=1235141373
 	status: { type: Types.Relationship, label: 'status', ref: 'Child Status', required: true, initial: true },
 	gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', required: true, initial: true },
 	race: { type: Types.Relationship, label: 'race', ref: 'Race', many: true, required: true, initial: true },
@@ -68,7 +88,7 @@ Child.add('Display Options', {
 	city: { type: Types.Relationship, label: 'city/town of child\'s current location', ref: 'City or Town', dependsOn: { isOutsideMassachusetts: false }, initial: true },
 	cityText: { type: Types.Text, label: 'city/town of child\'s current location', dependsOn: { isOutsideMassachusetts: true }, initial: true },
 	careFacilityName: { type: Types.Text, label: 'name of residential/group care facility', initial: true },
-	dateMovedToResidence: { type: Types.Date, label: 'date moved to current residence', format: 'MM/DD/YYYY', utc: true, initial: true }
+	dateMovedToResidence: { type: Types.Date, label: 'date moved to current residence', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', initial: true }
 
 }, 'Special Needs', {
 
@@ -127,42 +147,92 @@ Child.add('Display Options', {
 	},
 
 	hasPhotolistingWriteup: { type: Types.Boolean, label: 'photolisting writeup', default: false, initial: true },
-	photolistingWriteupDate: { type: Types.Date, label: 'date of photolisting writeup', format: 'MM/DD/YYYY', utc: true, dependsOn: { hasPhotolistingWriteup: true }, initial: true },
+	photolistingWriteupDate: { type: Types.Date, label: 'date of photolisting writeup', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', dependsOn: { hasPhotolistingWriteup: true }, initial: true },
 	hasPhotolistingPhoto: { type: Types.Boolean, label: 'photolisting photo', default: false, initial: true },
-	photolistingPhotoDate: { type: Types.Date, label: 'date of photolisting photo', format: 'MM/DD/YYYY', utc: true, dependsOn: { hasPhotolistingPhoto: true }, initial: true },
+	photolistingPhotoDate: { type: Types.Date, label: 'date of photolisting photo', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', dependsOn: { hasPhotolistingPhoto: true }, initial: true },
 	isCurrentlyInPhotoListing: { type: Types.Boolean, label: 'currently in photolisting', default: false, initial: true },
-	dateOfLastPhotoListing: { type: Types.Date, label: 'date of last photolisting', format: 'MM/DD/YYYY', utc: true, dependsOn: {isCurrentlyInPhotoListing: true }, initial: true },
+	dateOfLastPhotoListing: { type: Types.Date, label: 'date of last photolisting', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', dependsOn: {isCurrentlyInPhotoListing: true }, initial: true },
 	photolistingPageNumber: { type: Types.Text, label: 'photolisting page', initial: true },
 	previousPhotolistingPageNumbers: { type: Types.Text, label: 'previous photolisting pages', initial: true },
+	image: {
+		type: Types.CloudinaryImage,
+		label: 'display image',
+		folder: `${ process.env.CLOUDINARY_DIRECTORY }/children/`,
+		select: true,
+		selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/children/`,
+		dependsOn: { mustBePlacedWithSiblings: false },
+		autoCleanup: false,
+		whenExists: 'replace',
+		generateFilename: function( file, attemptNumber ) {
+			const originalname = file.originalname;
+			const filenameWithoutExtension = originalname.substring( 0, originalname.lastIndexOf( '.' ) );
+			return filenameWithoutExtension;
 
-	image: { type: Types.CloudinaryImage, label: 'display image', folder: `${ process.env.CLOUDINARY_DIRECTORY }/children/`, select: true, selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/children/`, publicID: 'fileName', dependsOn: { mustBePlacedWithSiblings: false }, autoCleanup: false },
-	allImages: { type: Types.CloudinaryImages, label: 'all images', folder: `${ process.env.CLOUDINARY_DIRECTORY }/children/`, select: true, selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/children/`, publicID: 'fileName', dependsOn: { mustBePlacedWithSiblings: false }, autoCleanup: false },
-	siblingGroupImage: { type: Types.CloudinaryImage, label: 'sibling group image', folder: `${ process.env.CLOUDINARY_DIRECTORY }/sibling-groups/`, select: true, selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/sibling-groups/`, publicID: 'siblingGroupFileName', dependsOn: { mustBePlacedWithSiblings: true }, autoCleanup: false },
+			// TODO: the old logic was: this.fileName = this.registrationNumber + '_' + this.name.first.toLowerCase();
+			//		 the model doesn't seem to be accessible from within generateFilename
+		}
+	},
+	allImages: {
+		type: Types.CloudinaryImages,
+		label: 'all images',
+		folder: `${ process.env.CLOUDINARY_DIRECTORY }/children/`,
+		select: true,
+		selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/children/`,
+		dependsOn: { mustBePlacedWithSiblings: false },
+		autoCleanup: false,
+		whenExists: 'replace',
+		generateFilename: function( file, attemptNumber ) {
+			const originalname = file.originalname;
+			const filenameWithoutExtension = originalname.substring( 0, originalname.lastIndexOf( '.' ) );
+			return filenameWithoutExtension;
+
+			// TODO: the old logic was: this.fileName = this.registrationNumber + '_' + this.name.first.toLowerCase();
+			//		 the model doesn't seem to be accessible from within generateFilename
+		}
+	},
+	siblingGroupImage: {
+		type: Types.CloudinaryImage,
+		label: 'sibling group image',
+		folder: `${ process.env.CLOUDINARY_DIRECTORY }/sibling-groups/`,
+		select: true,
+		selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/sibling-groups/`,
+		dependsOn: { mustBePlacedWithSiblings: true },
+		autoCleanup: false,
+		whenExists: 'replace',
+		generateFilename: function( file, attemptNumber ) {
+			const originalname = file.originalname;
+			const filenameWithoutExtension = originalname.substring( 0, originalname.lastIndexOf( '.' ) );
+			return filenameWithoutExtension;
+
+			// TODO: the old logic was complicated, see commit #d9fe6e9e to view it
+			//		 the model doesn't seem to be accessible from within generateFilename
+		}
+	},
 	extranetUrl: { type: Types.Url, label: 'extranet and related profile url', initial: true } // TODO: Since this is redundant as this just points the the url where the photo exists (the child's page), we may hide this field.  This must be kept in as it will help us track down the child information in the old system in the event of an issue.
 
 }, 'Recruitment Options', {
 
 	hasVideoSnapshot: { type: Types.Boolean, label: 'video snapshot', default: false, initial: true },
-	videoSnapshotDate: { type: Types.Date, label: 'date of video snapshot', format: 'MM/DD/YYYY', utc: true, dependsOn: { hasVideoSnapshot: true }, initial: true },
+	videoSnapshotDate: { type: Types.Date, label: 'date of video snapshot', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', dependsOn: { hasVideoSnapshot: true }, initial: true },
 	video: { type: Types.Url, label: 'video', dependsOn: { hasVideoSnapshot: true, mustBePlacedWithSiblings: false } },
 	siblingGroupVideo: { type: Types.Url, label: 'sibling group video', dependsOn: { hasVideoSnapshot: true, mustBePlacedWithSiblings: true } },
 
 	onAdoptuskids: { type: Types.Boolean, label: 'Adoptuskids website', default: false, initial: true },
-	onAdoptuskidsDate: { type: Types.Date, label: 'date on Adoptuskids', format: 'MM/DD/YYYY', utc: true, dependsOn: { onAdoptuskids: true }, initial: true },
+	onAdoptuskidsDate: { type: Types.Date, label: 'date on Adoptuskids', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', dependsOn: { onAdoptuskids: true }, initial: true },
 
 	wednesdaysChild: { type: Types.Boolean, label: 'Wednesday\'s Child', dependsOn: { mustBePlacedWithSiblings: false }, default: false, initial: true },
-	wednesdaysChildDate: { type: Types.Date, label: 'date of Wednesday\'s Child', format: 'MM/DD/YYYY', utc: true, dependsOn: { mustBePlacedWithSiblings: false, wednesdaysChild: true }, initial: true },
+	wednesdaysChildDate: { type: Types.Date, label: 'date of Wednesday\'s Child', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', dependsOn: { mustBePlacedWithSiblings: false, wednesdaysChild: true }, initial: true },
 	wednesdaysChildVideo: { type: Types.Url, label: 'Wednesday\'s Child video', dependsOn: { mustBePlacedWithSiblings: false, wednesdaysChild: true } },
 
 	wednesdaysChildSiblingGroup: { type: Types.Boolean, label: 'Wednesday\'s Child for sibling group?', dependsOn: { mustBePlacedWithSiblings: true }, default: false, initial: true },
-	wednesdaysChildSiblingGroupDate: { type: Types.Date, label: 'date of sibling group\'s Wednesday\'s Child', format: 'MM/DD/YYYY', utc: true, dependsOn: { mustBePlacedWithSiblings: true, wednesdaysChildSiblingGroup: true }, initial: true },
+	wednesdaysChildSiblingGroupDate: { type: Types.Date, label: 'date of sibling group\'s Wednesday\'s Child', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', dependsOn: { mustBePlacedWithSiblings: true, wednesdaysChildSiblingGroup: true }, initial: true },
 	wednesdaysChildSiblingGroupVideo: { type: Types.Url, label: 'Wednesday\'s Child sibling group video', dependsOn: { mustBePlacedWithSiblings: true, wednesdaysChildSiblingGroup: true } },
 
 	coalitionMeeting: { type: Types.Boolean, label: 'coalition meeting', default: false, initial: true },
-	coalitionMeetingDate: { type: Types.Date, label: 'date of coalition meeting', format: 'MM/DD/YYYY', utc: true, dependsOn: { coalitionMeeting: true }, initial: true },
+	coalitionMeetingDate: { type: Types.Date, label: 'date of coalition meeting', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', dependsOn: { coalitionMeeting: true }, initial: true },
 
 	matchingEvent: { type: Types.Boolean, label: 'matching event', default: false, initial: true },
-	matchingEventDate: { type: Types.Date, label: 'date of matching event', format: 'MM/DD/YYYY', utc: true, dependsOn: { matchingEvent: true }, initial: true },
+	matchingEventDate: { type: Types.Date, label: 'date of matching event', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', dependsOn: { matchingEvent: true }, initial: true },
 
 	adoptionParties: { type: Types.Relationship, label: 'adoption parties', ref: 'Event', filters: { type: 'adoption party', isActive: true }, many: true, initial: true },
 
@@ -178,8 +248,9 @@ Child.add('Display Options', {
 // }, 'Attachments', {
 
 	photolistingPage: {
-		type: Types.S3File,
-		s3path: '/child/photolisting-pages',
+		type: Types.File,
+		storage: storage,
+		// path: '/child/photolisting-pages',
 		filename: function( item, filename ) {
 			// prefix file name with registration number and the user's name for easier identification
 			return item.get( 'fileName' );
@@ -188,21 +259,15 @@ Child.add('Display Options', {
 	},
 
 	otherAttachement: {
-		type: Types.S3File,
-		s3path: '/child/other',
+		type: Types.File,
+		storage: storage,
+		// path: '/child/other',
 		filename: function( item, filename ) {
 			// prefix file name with registration number and name for easier identification
 			return item.get( 'fileName' );
 		},
 		hidden: true
 	}
-/* Container for all system fields (add a heading if any are meant to be visible through the admin UI) */
-}, {
-
-	// system fields to store appropriate file prefixes
-	fileName: { type: Types.Text, hidden: true },
-	siblingGroupFileName: { type: Types.Text, hidden: true }
-
 /* Container for data migration fields ( these should be kept until after phase 2 and the old system is phased out completely ) */
 }, {
 	// system field to store an appropriate file prefix
@@ -218,9 +283,9 @@ Child.relationship( { ref: 'Legalization', refPath: 'child', path: 'legalization
 Child.relationship( { ref: 'Disruption', refPath: 'child', path: 'disruptions', label: 'disruptions' } );
 Child.relationship( { ref: 'Inquiry', refPath: 'children', path: 'inquiries', label: 'inquiries' } );
 Child.relationship( { ref: 'Family', refPath: 'bookmarkedChildren', path: 'families', label: 'bookmarked by families' } );
-Child.relationship( { ref: 'Family', refPath: 'bookmarkedSiblingGroups', path: 'families', label: 'sibling group bookmarked by families' } );
+Child.relationship( { ref: 'Family', refPath: 'bookmarkedSiblings', path: 'families', label: 'sibling group bookmarked by families' } );
 Child.relationship( { ref: 'Social Worker', refPath: 'bookmarkedChildren', path: 'social-workers', label: 'bookmarked by social workers' } );
-Child.relationship( { ref: 'Social Worker', refPath: 'bookmarkedSiblingGroups', path: 'social-workers', label: 'sibling group bookmarked by social workers' } );
+Child.relationship( { ref: 'Social Worker', refPath: 'bookmarkedSiblings', path: 'social-workers', label: 'sibling group bookmarked by social workers' } );
 Child.relationship( { ref: 'Event', refPath: 'childAttendees', path: 'events', label: 'events' } );
 Child.relationship( { ref: 'Media Feature', refPath: 'children', path: 'media-features', label: 'media features' } );
 Child.relationship( { ref: 'Internal Note', refPath: 'child', path: 'internal-notes', label: 'internal notes' } );
@@ -292,8 +357,6 @@ Child.schema.post( 'init', function() {
 // 	this.trimTextFields();
 // 	// create a full name for the child based on their first, middle, and last names
 // 	this.setFullName();
-// 	// create an identifying name for file uploads
-// 	this.setFileName();
 // 	// if there are no siblings to be placed with, uncheck the box, otherwise check it
 // 	this.updateMustBePlacedWithSiblingsCheckbox();
 // 	// if there are no siblings to be placed with, clear the group bio
@@ -342,10 +405,8 @@ Child.schema.post( 'init', function() {
 // 		})
 // 		// perform the rest of the pre-save processing
 // 		.then( () => {
-// 			// create an identifying name for sibling group file uploads ( this has to run after sibling updates have been processed )
-// 			const siblingGroupFileNameSet = this.setSiblingGroupFileName();
 
-// 			return Promise.all( [ registrationNumberSet, adoptionWorkerAgencyFieldsSet, recruitmentWorkerAgencyFieldsSet, siblingGroupFileNameSet ] );
+// 			return Promise.all( [ registrationNumberSet, adoptionWorkerAgencyFieldsSet, recruitmentWorkerAgencyFieldsSet ] );
 // 		})
 // 		// if there was an error with any of the promises
 // 		.catch( err => {
@@ -695,61 +756,6 @@ Child.schema.methods.setRecruitmentWorkerAgencyFields = function() {
 				// remove the recruitment worker agency and region fields
 				this.adoptionWorkerAgency = undefined;
 				this.adoptionWorkerAgencyRegion = undefined;
-				// resolve the promise so that the Promise.all() in the pre-save hook does not fail
-				resolve();
-			});
-	});
-};
-
-Child.schema.methods.setFileName = function() {
-	'use strict';
-
-	this.fileName = this.registrationNumber + '_' + this.name.first.toLowerCase();
-};
-
-Child.schema.methods.setSiblingGroupFileName = function() {
-	'use strict';
-
-	return new Promise( ( resolve, reject ) => {
-
-		if( !this.get( 'siblingsToBePlacedWith' ) || this.get( 'siblingsToBePlacedWith' ).length === 0 ) {
-			return resolve();
-		}
-
-		// create an array with the _id's of the siblings they must be placed with
-		let idsArray = [ ...this.get( 'siblingsToBePlacedWith' ) ];
-		// push the _id of the current child to the array
-		idsArray.push( this.get( '_id' ) );
-		// fetch the siblings of the current child
-		const fetchChildren = ChildServiceMiddleware.getChildrenByIds( idsArray );
-		// if all children in the sibling group have been fetched successfully
-		fetchChildren
-			.then( children => {
-				// create arrays to store values for the different portions of the file name
-				let registrationNumbersArray	= [],
-					namesArray					= [];
-				// sort the children by registration number
-				children.sort( ( a, b ) => {
-					return parseInt( a.registrationNumber ) - parseInt( b.registrationNumber );
-				});
-				// loop through each of the children
-				for( let child of children ) {
-					// store the meaning values in arrays
-					registrationNumbersArray.push( child.get( 'registrationNumber' ) );
-					namesArray.push( child.get( 'name.first' ) );
-				}
-				// extract the values form the array into strings
-				const registrationNumbersString	= registrationNumbersArray.join( '_' ),
-					  namesString				= namesArray.join( '_' );
-
-				this.siblingGroupFileName = `${ registrationNumbersString }_${ namesString }`;
-				// resolve the promise
-				resolve();
-			})
-			// if there was an error fetching the children
-			.catch( err => {
-				// log the error for debugging purposes
-				console.error( `sibling group file name could not be updated for child ${ this.name.full } ( registration number: ${ this.registrationNumber } ) - ${ err }` );
 				// resolve the promise so that the Promise.all() in the pre-save hook does not fail
 				resolve();
 			});
@@ -1828,5 +1834,5 @@ Child.schema.methods.setChangeHistory = function() {
 };
 
 // Define default columns in the admin interface and register the model
-Child.defaultColumns = 'displayNameAndRegistration, ethnicity, status, legalStatus, gender';
+Child.defaultColumns = 'displayNameAndRegistration, race, status, legalStatus, gender';
 Child.register();

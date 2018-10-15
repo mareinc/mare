@@ -1,4 +1,5 @@
-const keystone = require( 'keystone' );
+const Email = require( 'keystone-email' ),
+      hbs = require( 'hbs' );
 
 exports.sendNewInquiryEmailToMARE = ( { inquiryData, inquirerData, staffEmail } ) => {
 
@@ -10,39 +11,48 @@ exports.sendNewInquiryEmailToMARE = ( { inquiryData, inquirerData, staffEmail } 
 		}
 		// TODO: move the base-64 encoded image to a global place for defining these images, both in CSS and JavaScript
 		// find the email template in templates/emails/
-		new keystone.Email({
-			templateExt 	: 'hbs',
-			templateEngine 	: require( 'handlebars' ),
-			templateName 	: 'inquiry_staff-notification'
-		}).send({
-			to				: staffEmail,
-			from: {
-				name 		: 'MARE',
-				email 		: 'communications@mareinc.org'
-			},
-			headers			: {
-				'Reply-To': inquirerData.email || 'communications@mareinc.org'
-			},
-			subject			: `new ${ inquiryData.inquiryType }`,
-			inquiryData,
-			inquirerData
+		Email.send(
+			// template path
+			'inquiry_staff-notification',
+			// email options
+            {
+                engine: 'hbs',
+                transport: 'mandrill',
+                root: 'templates/emails/'
+            // render options
+            }, {
+                inquiryData,
+				inquirerData,
+                layout: false
+            // send options
+            }, {
+                apiKey: process.env.MANDRILL_APIKEY,
+                to: staffEmail,
+                from: {
+                    name: 'MARE',
+                    email: 'communications@mareinc.org' // TODO: this should be in a model or ENV variable
+                },
+                headers: {
+					'Reply-To': inquirerData.email || 'communications@mareinc.org'
+				},
+				subject: `new ${ inquiryData.inquiryType }`
+            // callback
+			}, ( err, message ) => {
+				// if there was an error sending the email
+				if( err ) {
+					// reject the promise with details
+					return reject( `error sending new inquiry notification email to MARE - ${ err }` );
+				}
+				// the response object is stored as the 0th element of the returned message
+				const response = message ? message[ 0 ] : undefined;
+				// if the email failed to send, or an error occurred ( which it does, rarely ) causing the response message to be empty
+				if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
+					// reject the promise with details
+					return reject( `error sending new inquiry notification email to MARE - ${ response.status } - ${ response.email } - ${ response.reject_reason } - ${ err }` );
+				}
 
-		}, ( err, message ) => {
-			// if there was an error sending the email
-			if( err ) {
-				// reject the promise with details
-				return reject( `error sending new inquiry notification email to MARE - ${ err }` );
-			}
-			// the response object is stored as the 0th element of the returned message
-			const response = message ? message[ 0 ] : undefined;
-			// if the email failed to send, or an error occurred ( which it does, rarely ) causing the response message to be empty
-			if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
-				// reject the promise with details
-				return reject( `error sending new inquiry notification email to MARE - ${ response.status } - ${ response.email } - ${ response.reject_reason } - ${ err }` );
-			}
-
-			resolve();
-		});
+				resolve();
+			});
 	});
 };
 
@@ -52,40 +62,49 @@ exports.sendThankYouEmailToFamilyOnBehalfOfInquirer = ( inquiry, inquiryData, do
 		return done();
 	}
 	// find the email template in templates/emails/
-	new keystone.Email({
-		templateExt 	: 'hbs',
-		templateEngine 	: require( 'handlebars' ),
-		templateName 	: 'inquiry_thank-you-to-family-on-behalf-of-social-worker'
-	}).send({
-		to: inquiryData.emailAddressFamilyOnBehalfOf,
-		from: {
-			name 	: 'MARE',
-			email 	: 'admin@adoptions.io'
-		},
-		subject: 'your inquiry has been received',
-		inquiry: inquiry,
-		inquiryData: inquiryData
-	}, ( err, message ) => {
-		// log any errors
-		if( err ) {
-			console.log( `error sending staff email: ${ err }` );
-			return done();
-		}
-		// the response object is stored as the 0th element of the returned message
-		const response = message ? message[ 0 ] : undefined;
-		// if the email failed to send, or an error occurred ( which is does, rarely ) causing the response message to be empty
-		if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
-			console.log( `thank you to family on behalf of inquirer email failed to send: ${ message }` );
-			console.log( `error: ${ err }` );
-			return done();
-		}
+	Email.send(
+		// template path
+		'inquiry_thank-you-to-family-on-behalf-of-social-worker',
+		// email options
+		{
+			engine: 'hbs',
+			transport: 'mandrill',
+			root: 'templates/emails/'
+		// render options
+		}, {
+			inquiry,
+			inquiryData,
+			layout: false
+		// send options
+		}, {
+			apiKey: process.env.MANDRILL_APIKEY,
+			to: inquiryData.emailAddressFamilyOnBehalfOf,
+			from: {
+				name: 'MARE',
+				email: 'communications@mareinc.org' // TODO: this should be in a model or ENV variable
+			},
+			subject: 'your inquiry has been received'
+		// callback
+		}, ( err, message ) => {
+			// log any errors
+			if( err ) {
+				console.log( `error sending staff email: ${ err }` );
+				return done();
+			}
+			// the response object is stored as the 0th element of the returned message
+			const response = message ? message[ 0 ] : undefined;
+			// if the email failed to send, or an error occurred ( which is does, rarely ) causing the response message to be empty
+			if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
+				console.log( `thank you to family on behalf of inquirer email failed to send: ${ message }` );
+				console.log( `error: ${ err }` );
+				return done();
+			}
 
-		console.log( `thank you to family on behalf of inquirer email sent successfully` );
-		// mark the inquiry thank you email as having been sent to prevent it being sent in the future
-		inquiry.thankYouSentToFamilyOnBehalfOfInquirer = true;
-		done();
-	});
-
+			console.log( `thank you to family on behalf of inquirer email sent successfully` );
+			// mark the inquiry thank you email as having been sent to prevent it being sent in the future
+			inquiry.thankYouSentToFamilyOnBehalfOfInquirer = true;
+			done();
+		});
 };
 
 exports.sendInquiryAcceptedEmailToInquirer = ( inquiry, inquiryData, done ) => {
@@ -94,38 +113,48 @@ exports.sendInquiryAcceptedEmailToInquirer = ( inquiry, inquiryData, done ) => {
 		return done();
 	}
 	// find the email template in templates/emails/
-	new keystone.Email({
-		templateExt 	: 'hbs',
-		templateEngine 	: require( 'handlebars' ),
-		templateName 	: 'inquiry_inquiry-accepted-to-inquirer'
-	}).send({
-		to: inquiryData.emailAddressInquirer,
-		from: {
-			name 	: 'MARE',
-			email 	: 'admin@adoptions.io'
-		},
-		subject: 'inquiry information for inquirer',
-		inquiry: inquiry,
-		inquiryData: inquiryData
-	}, ( err, message ) => {
-		// log any errors
-		if( err ) {
-			console.log( `error sending staff email: ${ err }` );
-			return done();
-		}
-		// the response object is stored as the 0th element of the returned message
-		const response = message ? message[ 0 ] : undefined;
-		// if the email failed to send, or an error occurred ( which is does, rarely ) causing the response message to be empty
-		if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
-			console.log( `inquiry accepted inquirer email failed to send: ${ message }` );
-			console.log( `error: ${ err }` );
-			return done();
-		}
-		console.log( `inquiry accepted email successfully sent to inquirer` );
-		// mark the inquiry accepted email as having been sent to the inquirer to prevent it being sent in the future
-		inquiry.approvalEmailSentToInquirer = true;
-		done();
-	});
+	Email.send(
+		// template path
+		'inquiry_inquiry-accepted-to-inquirer',
+		// email options
+		{
+			engine: 'hbs',
+			transport: 'mandrill',
+			root: 'templates/emails/'
+		// render options
+		}, {
+			inquiry,
+			inquiryData,
+			layout: false
+		// send options
+		}, {
+			apiKey: process.env.MANDRILL_APIKEY,
+			to: inquiryData.emailAddressInquirer,
+			from: {
+				name: 'MARE',
+				email: 'communications@mareinc.org' // TODO: this should be in a model or ENV variable
+			},
+			subject: 'inquiry information for inquirer'
+		// callback
+		}, ( err, message ) => {
+			// log any errors
+			if( err ) {
+				console.log( `error sending staff email: ${ err }` );
+				return done();
+			}
+			// the response object is stored as the 0th element of the returned message
+			const response = message ? message[ 0 ] : undefined;
+			// if the email failed to send, or an error occurred ( which is does, rarely ) causing the response message to be empty
+			if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
+				console.log( `inquiry accepted inquirer email failed to send: ${ message }` );
+				console.log( `error: ${ err }` );
+				return done();
+			}
+			console.log( `inquiry accepted email successfully sent to inquirer` );
+			// mark the inquiry accepted email as having been sent to the inquirer to prevent it being sent in the future
+			inquiry.approvalEmailSentToInquirer = true;
+			done();
+		});
 };
 
 exports.sendInquiryAcceptedEmailToFamilyOnBehalfOfInquirer = ( inquiry, inquiryData, done ) => {
@@ -134,38 +163,48 @@ exports.sendInquiryAcceptedEmailToFamilyOnBehalfOfInquirer = ( inquiry, inquiryD
 		return done();
 	}
 	// find the email template in templates/emails/
-	new keystone.Email({
-		templateExt 	: 'hbs',
-		templateEngine 	: require( 'handlebars' ),
-		templateName 	: 'inquiry_inquiry-accepted-to-family-on-behalf-of-inquirer'
-	}).send({
-		to: inquiryData.emailAddressInquirer,
-		from: {
-			name 	: 'MARE',
-			email 	: 'admin@adoptions.io'
-		},
-		subject: 'inquiry information for inquirer',
-		inquiry: inquiry,
-		inquiryData: inquiryData
-	}, ( err, message ) => {
-		// log any errors
-		if( err ) {
-			console.log( `error sending staff email: ${ err }` );
-			return done();
-		}
-		// the response object is stored as the 0th element of the returned message
-		const response = message ? message[ 0 ] : undefined;
-		// if the email failed to send, or an error occurred ( which is does, rarely ) causing the response message to be empty
-		if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
-			console.log( `inquiry accepted on behalf of email failed to send: ${ message }` );
-			console.log( `error: ${ err }` );
-			return done();
-		}
-		console.log( `inquiry accepted on behalf of email successfully sent to family` );
-		// mark the inquiry accepted email as having been sent to the inquirer to prevent it being sent in the future
-		inquiry.approvalEmailSentToFamilyOnBehalfOfInquirer = true;
-		done();
-	});
+	Email.send(
+		// template path
+		'inquiry_inquiry-accepted-to-family-on-behalf-of-inquirer',
+		// email options
+		{
+			engine: 'hbs',
+			transport: 'mandrill',
+			root: 'templates/emails/'
+		// render options
+		}, {
+			inquiry,
+			inquiryData,
+			layout: false
+		// send options
+		}, {
+			apiKey: process.env.MANDRILL_APIKEY,
+			to: inquiryData.emailAddressInquirer,
+			from: {
+				name: 'MARE',
+				email: 'communications@mareinc.org' // TODO: this should be in a model or ENV variable
+			},
+			subject: 'inquiry information for inquirer'
+		// callback
+		}, ( err, message ) => {
+			// log any errors
+			if( err ) {
+				console.log( `error sending staff email: ${ err }` );
+				return done();
+			}
+			// the response object is stored as the 0th element of the returned message
+			const response = message ? message[ 0 ] : undefined;
+			// if the email failed to send, or an error occurred ( which is does, rarely ) causing the response message to be empty
+			if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
+				console.log( `inquiry accepted on behalf of email failed to send: ${ message }` );
+				console.log( `error: ${ err }` );
+				return done();
+			}
+			console.log( `inquiry accepted on behalf of email successfully sent to family` );
+			// mark the inquiry accepted email as having been sent to the inquirer to prevent it being sent in the future
+			inquiry.approvalEmailSentToFamilyOnBehalfOfInquirer = true;
+			done();
+		});
 };
 
 exports.sendInquiryAcceptedEmailToChildsSocialWorker = ( inquiry, inquiryData, done ) => {
@@ -174,38 +213,48 @@ exports.sendInquiryAcceptedEmailToChildsSocialWorker = ( inquiry, inquiryData, d
 		return done();
 	}
 	// find the email template in templates/emails/
-	new keystone.Email({
-		templateExt 	: 'hbs',
-		templateEngine 	: require( 'handlebars' ),
-		templateName 	: 'inquiry_inquiry-accepted-to-social-worker'
-	}).send({
-		to: inquiryData.emailAddressChildsSocialWorker,
-		from: {
-			name 	: 'MARE',
-			email 	: 'admin@adoptions.io'
-		},
-		subject: 'inquiry information for social worker',
-		inquiry: inquiry,
-		inquiryData: inquiryData
-	}, ( err, message ) => {
-		// log any errors
-		if( err ) {
-			console.log( `error sending staff email: ${ err }` );
-			return done();
-		}
-		// the response object is stored as the 0th element of the returned message
-		const response = message ? message[ 0 ] : undefined;
-		// if the email failed to send, or an error occurred ( which is does, rarely ) causing the response message to be empty
-		if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
-			console.log( `inquiry accepted email to child's social worker failed to send: ${ message }` );
-			console.log( `error: ${ err }` );
-			return done();
-		}
-		console.log( `inquiry accepted email successfully sent to child's social worker` );
-		// mark the inquiry accepted email as having been sent to the social worker to prevent it being sent in the future
-		inquiry.emailSentToChildsSocialWorker = true;
-		done();
-	});
+	Email.send(
+		// template path
+		'inquiry_inquiry-accepted-to-social-worker',
+		// email options
+		{
+			engine: 'hbs',
+			transport: 'mandrill',
+			root: 'templates/emails/'
+		// render options
+		}, {
+			inquiry,
+			inquiryData,
+			layout: false
+		// send options
+		}, {
+			apiKey: process.env.MANDRILL_APIKEY,
+			to: inquiryData.emailAddressChildsSocialWorker,
+			from: {
+				name: 'MARE',
+				email: 'communications@mareinc.org' // TODO: this should be in a model or ENV variable
+			},
+			subject: 'inquiry information for social worker'
+		// callback
+		}, ( err, message ) => {
+			// log any errors
+			if( err ) {
+				console.log( `error sending staff email: ${ err }` );
+				return done();
+			}
+			// the response object is stored as the 0th element of the returned message
+			const response = message ? message[ 0 ] : undefined;
+			// if the email failed to send, or an error occurred ( which is does, rarely ) causing the response message to be empty
+			if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
+				console.log( `inquiry accepted email to child's social worker failed to send: ${ message }` );
+				console.log( `error: ${ err }` );
+				return done();
+			}
+			console.log( `inquiry accepted email successfully sent to child's social worker` );
+			// mark the inquiry accepted email as having been sent to the social worker to prevent it being sent in the future
+			inquiry.emailSentToChildsSocialWorker = true;
+			done();
+		});
 };
 
 exports.sendInquiryAcceptedEmailToAgencyContacts = ( inquiry, inquiryData, done ) => {
@@ -214,36 +263,46 @@ exports.sendInquiryAcceptedEmailToAgencyContacts = ( inquiry, inquiryData, done 
 		return done();
 	}
 	// find the email template in templates/emails/
-	new keystone.Email({
-		templateExt 	: 'hbs',
-		templateEngine 	: require( 'handlebars' ),
-		templateName 	: 'inquiry_inquiry-accepted-to-agency-contact'
-	}).send({
-		to: inquiryData.emailAddressesAgencyContacts,
-		from: {
-			name 	: 'MARE',
-			email 	: 'admin@adoptions.io'
-		},
-		subject: 'inquiry information for agency contact',
-		inquiry: inquiry,
-		inquiryData: inquiryData
-	}, ( err, message ) => {
-		// log any errors
-		if( err ) {
-			console.log( `error sending staff email: ${ err }` );
-			return done();
-		}
-		// the response object is stored as the 0th element of the returned message
-		const response = message ? message[ 0 ] : undefined;
-		// if the email failed to send, or an error occurred ( which is does, rarely ) causing the response message to be empty
-		if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
-			console.log( `inquiry accepted email to agency contacts failed to send: ${ message }` );
-			console.log( `error: ${ err }` );
-			return done();
-		}
-		console.log( `inquiry accepted email successfully sent to agency contacts` );
-		// mark the inquiry accepted email as having been sent to the agency contacts to prevent it being sent in the future
-		inquiry.emailSentToAgencies = true;
-		done();
-	});
+	Email.send(
+		// template path
+		'inquiry_inquiry-accepted-to-agency-contact',
+		// email options
+		{
+			engine: 'hbs',
+			transport: 'mandrill',
+			root: 'templates/emails/'
+		// render options
+		}, {
+			inquiry,
+			inquiryData,
+			layout: false
+		// send options
+		}, {
+			apiKey: process.env.MANDRILL_APIKEY,
+			to: inquiryData.emailAddressesAgencyContacts,
+			from: {
+				name: 'MARE',
+				email: 'communications@mareinc.org' // TODO: this should be in a model or ENV variable
+			},
+			subject: 'inquiry information for agency contact'
+		// callback
+		}, ( err, message ) => {
+			// log any errors
+			if( err ) {
+				console.log( `error sending staff email: ${ err }` );
+				return done();
+			}
+			// the response object is stored as the 0th element of the returned message
+			const response = message ? message[ 0 ] : undefined;
+			// if the email failed to send, or an error occurred ( which is does, rarely ) causing the response message to be empty
+			if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
+				console.log( `inquiry accepted email to agency contacts failed to send: ${ message }` );
+				console.log( `error: ${ err }` );
+				return done();
+			}
+			console.log( `inquiry accepted email successfully sent to agency contacts` );
+			// mark the inquiry accepted email as having been sent to the agency contacts to prevent it being sent in the future
+			inquiry.emailSentToAgencies = true;
+			done();
+		});
 };
