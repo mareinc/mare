@@ -67,7 +67,7 @@ Inquiry.add( 'General Information', {
 Inquiry.schema.pre( 'save', function( next ) {
 	'use strict';
 	
-	// if takenBy is empty add current user:
+	// if takenBy is empty add current user
 	if ( typeof this.takenBy === 'undefined' && this._req_user ) {
 		this.takenBy = this._req_user;
 	}
@@ -76,33 +76,31 @@ Inquiry.schema.pre( 'save', function( next ) {
 	this.populateDerivedFields()
 		// if there was an error populating the derived fields, log the error
 		.catch( err => console.error( `error populating fields for inquiry with id ${ this.get( '_id' ) } - ${ err }` ) )
-		// call next to allow the model to save
+		// TODO: this should be moved into it's own method
 		.then( () => {
 			
 			// add siblings to the children list
 			if ( this.get( 'children' ).length > 0 ) {
-				// get siblings that are not added yet
-				const siblingsToAdd = [];
+				// create a unique list to all children, including siblings to be placed with children who were selectee
+				const updatedChildrenList = new Set();
+				// loop through the children field of the inquiry
 				this.get( 'children' ).forEach( child => {
-					child.siblings.forEach( siblingID => {
-						if ( typeof this.get( 'children' ).find( findChild => findChild._id.toString() == siblingID ) === 'undefined' ) {
-							siblingsToAdd.push( siblingID );
-						}
+					// add the current child id
+					updatedChildrenList.add( child.get( '_id' ) );
+					// loop through the siblings to be placed with field of the child
+					child.siblingsToBePlacedWith.forEach( siblingId => {
+						// add the child to the set, which will automatically prevent duplicate additions
+						updatedChildrenList.add( siblingId );
 					});
 				});
+				// convert the children list to an array and use it to update the children field of the inquiry
+				this.set( 'children', [ ...updatedChildrenList ] );
 				
-				// add siblings
-				const fetchSiblings = ChildServiceMiddleware.getChildrenByIds( siblingsToAdd );
-				fetchSiblings
-					.then( children => {
-						this.get( 'children' ).push( ...children );
-						next();
-					})
-					.catch( err => {
-						// if no children were found
-						next();
-					});
+				// call next to allow the model to save
+				next();
+				
 			} else {
+				// call next to allow the model to save
 				next();
 			}
 			
