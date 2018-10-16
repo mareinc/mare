@@ -1,8 +1,6 @@
 /* this file is used for processing all forms except registration in the system */
 // TODO: break this out into a file for each form
-const keystone						= require( 'keystone' ),
-	  inquiryService				= require( './service_inquiry' ),
-	  inquiryEmailService			= require( './emails_inquiry' ),
+const inquiryService				= require( './service_inquiry' ),
 	  emailTargetMiddleware			= require( './service_email-target' ),
 	  staffEmailContactMiddleware	= require( './service_staff-email-contact' ),
 	  haveAQuestionEmailService		= require( './emails_have-a-question' );

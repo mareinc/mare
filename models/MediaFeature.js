@@ -10,7 +10,7 @@ var MediaFeature = new keystone.List( 'Media Feature', {
 MediaFeature.add( 'Media Feature', {
 
 	source: { type: Types.Relationship, label: 'source', ref: 'Source', filters: { isActive: true }, required: true, initial: true },
-	date: { type: Types.Date, label: 'date', format: 'MM/DD/YYYY', utc: true, required: true, initial: true },
+	date: { type: Types.Date, label: 'date', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', required: true, initial: true },
 	notes: { type: Types.Textarea, label: 'notes', initial: true },
 	children: { type: Types.Relationship, label: 'children', ref: 'Child', many: true, initial: true }
 
@@ -22,5 +22,5 @@ MediaFeature.add( 'Media Feature', {
 });
 
 // Define default columns in the admin interface and register the model
-MediaFeature.defaultColumns = 'child, source, date, notes';
+MediaFeature.defaultColumns = 'children, source, date, notes';
 MediaFeature.register();

@@ -27,7 +27,20 @@ SiteVisitor.add( 'Permissions', {
 		full: { type: Types.Text, label: 'name', hidden: true, noedit: true, initial: false }
 	},
 
-	avatar: { type: Types.CloudinaryImage, label: 'avatar', folder: `${ process.env.CLOUDINARY_DIRECTORY }/users/site visitors`, select: true, selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/users/site visitors`, autoCleanup: true } // TODO: add publicID attribute for better naming in Cloudinary
+	avatar: {
+		type: Types.CloudinaryImage,
+		label: 'avatar',
+		folder: `${ process.env.CLOUDINARY_DIRECTORY }/users/site visitors`,
+		select: true,
+		selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/users/site visitors`,
+		autoCleanup: true,
+		whenExists: 'retry',
+		generateFilename: function( file, attemptNumber ) {
+			const originalname = file.originalname;
+			const filenameWithoutExtension = originalname.substring( 0, originalname.lastIndexOf( '.' ) );
+			return filenameWithoutExtension;
+		}
+	}
 
 }, 'Contact Information', {
 
@@ -52,7 +65,7 @@ SiteVisitor.add( 'Permissions', {
 
 	infoPacket: {
 		packet: { type: Types.Select, options: 'English, Spanish, none', label: 'Packet', initial: true },
-		date: { type: Types.Date, label: 'date info packet sent', format: 'MM/DD/YYYY', utc: true, initial: true },
+		date: { type: Types.Date, label: 'date info packet sent', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', initial: true },
 		notes: { type: Types.Textarea, label: 'notes', initial: true }
 	}
 

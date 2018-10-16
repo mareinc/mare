@@ -1,6 +1,5 @@
 const keystone		= require( 'keystone' ),
 	  _				= require( 'underscore' ),
-	  async			= require( 'async' ),
 	  childService	= require( './service_child' );
 
 // wraps a model.save() operation in a Promise

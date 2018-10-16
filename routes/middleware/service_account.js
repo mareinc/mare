@@ -5,8 +5,7 @@
 // TODO: a lot of this functionality is needed for social worker child/family registration and should potentially be broken out and placed in more
 //		 appropriate files
 
-const keystone 		= require( 'keystone' ),
-	  _				= require( 'lodash' ),
+const _				= require( 'lodash' ),
 	  userService	= require( './service_user' ),
 	  flashMessages	= require( './service_flash-messages' );
 

@@ -14,15 +14,23 @@ SuccessStory.add({
 	url: { type: Types.Url, label: 'url', noedit: true },
 	subHeading: { type: Types.Text, label: 'sub-heading', initial: true },
 	content: { type: Types.Html, wysiwyg: true, note: 'do not add images or video, instead use the fields below', initial: true },
-	image: { type: Types.CloudinaryImage, note: 'needed to display in the sidebar, success story page, and home page', folder: `${ process.env.CLOUDINARY_DIRECTORY }/success-stories/`, select: true, selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/success-stories/`, publicID: 'fileName', autoCleanup: true },
+	image: {
+		type: Types.CloudinaryImage,
+		note: 'needed to display in the sidebar, success story page, and home page',
+		folder: `${ process.env.CLOUDINARY_DIRECTORY }/success-stories/`,
+		select: true,
+		selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/success-stories/`,
+		autoCleanup: true,
+		whenExists: 'retry',
+		generateFilename: function( file, attemptNumber ) {
+			const originalname = file.originalname;
+			const filenameWithoutExtension = originalname.substring( 0, originalname.lastIndexOf( '.' ) );
+			const timestamp = new Date().getTime();
+			return `${ filenameWithoutExtension }-${ timestamp }`;
+		}
+	},
 	imageCaption: { type: Types.Text, label: 'image caption', initial: true },
 	video: { type: Types.Url, label: 'video', initial: true }
-
-/* Container for all system fields (add a heading if any are meant to be visible through the admin UI) */
-}, {
-
-	// system field to store an appropriate file prefix
-	fileName: { type: Types.Text, hidden: true }
 
 });
 
@@ -52,9 +60,6 @@ SuccessStory.schema.pre( 'save', function( next ) {
 	'use strict';
 
 	this.url = '/success-stories/' + this.key;
-
-	// Create an identifying name for file uploads
-	this.fileName = this.key.replace( /-/g, '_' );
 
 	next();
 

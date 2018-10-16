@@ -1,8 +1,8 @@
 /* a service to generate flash message markup to support messaging for AJAX requests */
 
-const   fs			= require( 'fs' ),
-        handlebars	= require( 'handlebars' ),	
-        helpers     = require( '../../templates/views/helpers/index' )();
+const fs			= require( 'fs' ),
+      handlebars    = require( 'handlebars' ),	
+      helpers       = require( '../../templates/views/helpers/index' )();
 
 // private placeholder for the list of flash messages to display
 let _messages = {};
