@@ -1,5 +1,4 @@
-const keystone 					= require( 'keystone' ),
-	  emailTargetService		= require( './service_email-target' ),
+const emailTargetService		= require( './service_email-target' ),
 	  staffEmailContactService	= require( './service_staff-email-contact' ),
 	  eventService				= require( './service_event' ),
 	  eventEmailMiddleware		= require( './emails_event' );

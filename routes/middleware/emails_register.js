@@ -1,5 +1,5 @@
-const keystone				= require('keystone'),
-	  utilitiesMiddleware	= require('./utilities');
+const Email = require( 'keystone-email' ),
+      hbs = require( 'hbs' );
 
 exports.sendNewSiteVisitorNotificationEmailToMARE = ( user, registrationStaffContact, mailingListNames ) => {
 
@@ -135,35 +135,45 @@ exports.sendNewSiteVisitorNotificationEmailToMARE = ( user, registrationStaffCon
 		}
 
 		// find the email template in templates/emails/
-		new keystone.Email({
-			templateExt		: 'hbs',
-			templateEngine	: require( 'handlebars' ),
-			templateName	: 'register_new-user-notification-to-staff'
-		}).send({
-			to: registrationStaffContact.email,
-			from: {
-				name: 'MARE',
-				email: 'admin@adoptions.io'
-			},
-			subject: `new ${ user.userType } registration`,
-			userType: user.userType,
-			userData
-		}, ( err, message ) => {
-			// if there was an error sending the email
-			if( err ) {
-				// reject the promise with details
-				return reject( `error sending new site visitor notification email to MARE - ${ err }` );
-			}
-			// the response object is stored as the 0th element of the returned message
-			const response = message ? message[ 0 ] : undefined;
-			// if the email failed to send, or an error occurred ( which it does, rarely ) causing the response message to be empty
-			if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
-				// reject the promise with details
-				return reject( `error sending new site visitor notification email to MARE - ${ response.status } - ${ response.email } - ${ response.reject_reason } - ${ err }` );
-			}
+		Email.send(
+			// template path
+            'register_new-user-notification-to-staff',
+            // email options
+            {
+                engine: 'hbs',
+                transport: 'mandrill',
+                root: 'templates/emails/'
+            // render options
+            }, {
+                userType: user.userType,
+				userData,
+                layout: false
+            // send options
+            }, {
+                apiKey: process.env.MANDRILL_APIKEY,
+                to: registrationStaffContact.email,
+				from: {
+					name: 'MARE',
+					email: 'communications@mareinc.org' // TODO: this should be in a model or ENV variable
+				},
+				subject: `new ${ user.userType } registration`
+			// callback
+			}, ( err, message ) => {
+				// if there was an error sending the email
+				if( err ) {
+					// reject the promise with details
+					return reject( `error sending new site visitor notification email to MARE - ${ err }` );
+				}
+				// the response object is stored as the 0th element of the returned message
+				const response = message ? message[ 0 ] : undefined;
+				// if the email failed to send, or an error occurred ( which it does, rarely ) causing the response message to be empty
+				if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
+					// reject the promise with details
+					return reject( `error sending new site visitor notification email to MARE - ${ response.status } - ${ response.email } - ${ response.reject_reason } - ${ err }` );
+				}
 
-			resolve();
-		});
+				resolve();
+			});
 	});
 };
 
@@ -181,7 +191,6 @@ exports.sendNewSocialWorkerNotificationEmailToMARE = ( user, registrationStaffCo
 		}
 		// an array was used instead of a Map because Mustache templates apparently can't handle maps
 		let userData = [];
-		let userMailingListData = [];
 		let positionsArray = [];
 
 		// loop through each position model which was populated when the user model was fetched
@@ -305,35 +314,45 @@ exports.sendNewSocialWorkerNotificationEmailToMARE = ( user, registrationStaffCo
 		}
 
 		// find the email template in templates/emails/
-		new keystone.Email({
-			templateExt: 'hbs',
-			templateEngine: require( 'handlebars' ),
-			templateName: 'register_new-user-notification-to-staff'
-		}).send({
-			to: registrationStaffContact.email,
-			from: {
-				name: 'MARE',
-				email: 'admin@adoptions.io'
-			},
-			subject: `new ${ user.userType } registration`,
-			userType: user.userType,
-			userData
-		}, ( err, message ) => {
-			// if there was an error sending the email
-			if( err  ) {
-				// reject the promise with details
-				return reject( `error sending new social worker notification email to MARE - ${ err }` );
-			}
-			// the response object is stored as the 0th element of the returned message
-			const response = message ? message[ 0 ] : undefined;
-			// if the email failed to send, or an error occurred ( which it does, rarely ) causing the response message to be empty
-			if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
-				// reject the promise with details
-				return reject( `error sending new social worker notification email to MARE - ${ response.status } - ${ response.email } - ${ response.reject_reason } - ${ err }` );
-			}
+		Email.send(
+			// template path
+            'register_new-user-notification-to-staff',
+            // email options
+            {
+                engine: 'hbs',
+                transport: 'mandrill',
+                root: 'templates/emails/'
+            // render options
+            }, {
+                userType: user.userType,
+				userData,
+                layout: false
+            // send options
+            }, {
+                apiKey: process.env.MANDRILL_APIKEY,
+                to: registrationStaffContact.email,
+				from: {
+					name: 'MARE',
+					email: 'communications@mareinc.org' // TODO: this should be in a model or ENV variable
+				},
+				subject: `new ${ user.userType } registration`
+			// callback
+			}, ( err, message ) => {
+				// if there was an error sending the email
+				if( err  ) {
+					// reject the promise with details
+					return reject( `error sending new social worker notification email to MARE - ${ err }` );
+				}
+				// the response object is stored as the 0th element of the returned message
+				const response = message ? message[ 0 ] : undefined;
+				// if the email failed to send, or an error occurred ( which it does, rarely ) causing the response message to be empty
+				if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
+					// reject the promise with details
+					return reject( `error sending new social worker notification email to MARE - ${ response.status } - ${ response.email } - ${ response.reject_reason } - ${ err }` );
+				}
 
-			resolve();
-		});
+				resolve();
+			});
 	});
 };
 
@@ -824,36 +843,45 @@ exports.sendNewFamilyNotificationEmailToMARE = ( user, registrationStaffContact,
 		}
 
 		// find the email template in templates/emails/
-		new keystone.Email({
-			templateExt: 'hbs',
-			templateEngine: require( 'handlebars' ),
-			templateName: 'register_new-user-notification-to-staff'
-		}).send({
-			to: registrationStaffContact.email,
-			from: {
-				name: 'MARE',
-				email: 'admin@adoptions.io'
-			},
-			subject: `new ${ user.userType } registration`,
-			userType: user.userType,
-			userData
+		Email.send(
+			// template path
+            'register_new-user-notification-to-staff',
+            // email options
+            {
+                engine: 'hbs',
+                transport: 'mandrill',
+                root: 'templates/emails/'
+            // render options
+            }, {
+                userType: user.userType,
+				userData,
+                layout: false
+            // send options
+            }, {
+                apiKey: process.env.MANDRILL_APIKEY,
+                to: registrationStaffContact.email,
+				from: {
+					name: 'MARE',
+					email: 'communications@mareinc.org' // TODO: this should be in a model or ENV variable
+				},
+				subject: `new ${ user.userType } registration`
+			// callback
+			}, ( err, message ) => {
+				// if there was an error sending the email
+				if( err ) {
+					// reject the promise with details
+					return reject( `error sending new family notification email to MARE - ${ err }` );
+				}
+				// the response object is stored as the 0th element of the returned message
+				const response = message ? message[ 0 ] : undefined;
+				// if the email failed to send, or an error occurred ( which it does, rarely ) causing the response message to be empty
+				if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
+					// reject the promise with details
+					return reject( `error sending new family notification email to MARE - ${ response.status } - ${ response.email } - ${ response.reject_reason } - ${ err }` );
+				}
 
-		}, ( err, message ) => {
-			// if there was an error sending the email
-			if( err ) {
-				// reject the promise with details
-				return reject( `error sending new family notification email to MARE - ${ err }` );
-			}
-			// the response object is stored as the 0th element of the returned message
-			const response = message ? message[ 0 ] : undefined;
-			// if the email failed to send, or an error occurred ( which it does, rarely ) causing the response message to be empty
-			if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
-				// reject the promise with details
-				return reject( `error sending new family notification email to MARE - ${ response.status } - ${ response.email } - ${ response.reject_reason } - ${ err }` );
-			}
-
-			resolve();
-		});
+				resolve();
+			});
 	});
 };
 
@@ -871,39 +899,45 @@ exports.sendAccountVerificationEmailToUser = ( userEmail, userType, verification
 		}
 
 		// find the email template in templates/emails/
-		new keystone.Email({
+		Email.send(
+			// template path
+            'register_account-verification-to-user',
+            // email options
+            {
+                engine: 'hbs',
+                transport: 'mandrill',
+                root: 'templates/emails/'
+            // render options
+            }, {
+                host,
+				userType,
+				verificationCode,
+                layout: false
+            // send options
+            }, {
+                apiKey: process.env.MANDRILL_APIKEY,
+                to: userEmail,
+				from: {
+					name: 'MARE',
+					email: 'communications@mareinc.org' // TODO: this should be in a model or ENV variable
+				},
+				subject: 'please verify your MARE account'
+			// callback
+			}, ( err, message ) => {
+				// if there was an error sending the email
+				if( err ) {
+					// reject the promise with details
+					return reject( `error sending account verification email to newly registered user - ${ err }` );
+				}
+				// the response object is stored as the 0th element of the returned message
+				const response = message ? message[ 0 ] : undefined;
+				// if the email failed to send, or an error occurred ( which it does, rarely ) causing the response message to be empty
+				if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
+					// reject the promise with details
+					return reject( `error sending account verification email to newly registered user - ${ response.status } - ${ response.email } - ${ response.reject_reason } - ${ err }` );
+				}
 
-			templateExt: 'hbs',
-			templateEngine: require( 'handlebars' ),
-			templateName: 'register_account-verification-to-user'
-
-		}).send({
-
-			to: userEmail,
-			from: {
-				name: 'MARE',
-				email: 'admin@adoptions.io'
-			},
-			subject: 'please verify your MARE account',
-			host,
-			userType,
-			verificationCode
-
-		}, ( err, message ) => {
-			// if there was an error sending the email
-			if( err ) {
-				// reject the promise with details
-				return reject( `error sending account verification email to newly registered user - ${ err }` );
-			}
-			// the response object is stored as the 0th element of the returned message
-			const response = message ? message[ 0 ] : undefined;
-			// if the email failed to send, or an error occurred ( which it does, rarely ) causing the response message to be empty
-			if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
-				// reject the promise with details
-				return reject( `error sending account verification email to newly registered user - ${ response.status } - ${ response.email } - ${ response.reject_reason } - ${ err }` );
-			}
-
-			resolve();
-		});
+				resolve();
+			});
 	});
 };

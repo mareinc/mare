@@ -1,5 +1,4 @@
-const keystone	= require( 'keystone' ),
-	  _			= require( 'underscore' );
+const keystone = require( 'keystone' );
 
 /* fetch a single CSC region contact by their _id field */
 exports.getCSCRegionContactById = ( id, fieldsToPopulate = [] ) => {

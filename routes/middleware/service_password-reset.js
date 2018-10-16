@@ -72,7 +72,7 @@ exports.resetPassword = ( req, res ) => {
 						throw new Error( `error saving password reset token to user with email ${ req.body.email } - ${ err }` );
 					}
 				});
-
+				// TODO: this should only be set if the two promises above resolve successfully
 				req.flash( 'success', {
 					title: 'Success',
 					detail: 'We have emailed you a link to reset your password.  Please follow the instructions in your email.'

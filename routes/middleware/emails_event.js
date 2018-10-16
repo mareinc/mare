@@ -1,5 +1,6 @@
-const keystone = require('keystone');
-const childService = require('./service_child');
+const Email = require( 'keystone-email' ),
+	  hbs = require( 'hbs' ),
+	  childService = require('./service_child');
 
 exports.sendNewEventEmailToMARE = ( event, socialWorker, staffEmailContact ) => {
 
@@ -14,37 +15,47 @@ exports.sendNewEventEmailToMARE = ( event, socialWorker, staffEmailContact ) => 
 		}
 
 		// find the email template in templates/emails/
-		new keystone.Email({
-			templateExt: 'hbs',
-			templateEngine: require( 'handlebars' ),
-			templateName: 'event-created-notification-to-mare'
-		}).send({
-			to: staffEmail,
-			from: {
-				name: 'MARE',
-				email: 'admin@adoptions.io'
-			},
-			subject: `new event created`,
-			startDate: `${ event.startDate.getMonth() + 1 }/${ event.startDate.getDate() }/${ event.startDate.getFullYear() }`,
-			endDate: `${ event.endDate.getMonth() + 1 }/${ event.endDate.getDate() }/${ event.endDate.getFullYear() }`,
-			event,
-			socialWorker
-		}, ( err, message ) => {
-			// if there was an error sending the email
-			if( err ) {
-				// reject the promise with details
-				return reject( `error sending new event created notification email to MARE - ${ err }` );
-			}
-			// the response object is stored as the 0th element of the returned message
-			const response = message ? message[ 0 ] : undefined;
-			// if the email failed to send, or an error occurred ( which it does, rarely ) causing the response message to be empty
-			if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
-				// reject the promise with details
-				return reject( `error sending new event created notification email to MARE - ${ response.status } - ${ response.email } - ${ response.reject_reason } - ${ err }` );
-			}
+		Email.send(
+			// template path
+			'event-created-notification-to-mare',
+			// email options
+			{
+				engine: 'hbs',
+                transport: 'mandrill',
+				root: 'templates/emails/'
+			// render options
+			}, {
+                startDate: `${ event.startDate.getMonth() + 1 }/${ event.startDate.getDate() }/${ event.startDate.getFullYear() }`,
+				endDate: `${ event.endDate.getMonth() + 1 }/${ event.endDate.getDate() }/${ event.endDate.getFullYear() }`,
+				event,
+				socialWorker,
+				layout: false
+			// send options
+			}, {
+				apiKey: process.env.MANDRILL_APIKEY,
+				to: staffEmail,
+				from: {
+					name: 'MARE',
+					email: 'admin@adoptions.io'
+				},
+				subject: `new event created`
+			// callback
+			}, ( err, message ) => {
+				// if there was an error sending the email
+				if( err ) {
+					// reject the promise with details
+					return reject( `error sending new event created notification email to MARE - ${ err }` );
+				}
+				// the response object is stored as the 0th element of the returned message
+				const response = message ? message[ 0 ] : undefined;
+				// if the email failed to send, or an error occurred ( which it does, rarely ) causing the response message to be empty
+				if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
+					// reject the promise with details
+					return reject( `error sending new event created notification email to MARE - ${ response.status } - ${ response.email } - ${ response.reject_reason } - ${ err }` );
+				}
 
-			resolve();
-		});
+				resolve();
+			});
 	});
 };
 
@@ -72,40 +83,46 @@ exports.sendEventRegistrationEmailToMARE = ( eventDetails, userDetails, host, st
 				var displayName = userDetails.userType === 'family' ? userDetails.displayName : undefined;
 
 				// find the email template in templates/emails/
-				new keystone.Email({
+				Email.send(
+					// template path
+					'event-registration-notification-to-mare',
+					// email options
+					{
+						engine: 'hbs',
+						transport: 'mandrill',
+						root: 'templates/emails/'
+					// render options
+					}, {
+						event: eventDetails,
+						user: userDetails,
+						host,
+						displayName,
+						layout: false
+					// send options
+					}, {
+						apiKey: process.env.MANDRILL_APIKEY,
+						to: staffContactEmail,
+						from: {
+							name: 'MARE',
+							email: 'admin@adoptions.io'
+						},
+						subject: `new event registration`,
+					// callback
+					}, ( err, message ) => {
+						// log any errors
+						if( err ) {
+							return reject( `error sending event registration thank you email - ${ err }` );
+						}
+						// the response object is stored as the 0th element of the returned message
+						const response = message ? message[ 0 ] : undefined;
+						// if the email failed to send, or an error occurred ( which it does, rarely ) causing the response message to be empty
+						if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
+							// reject the promise with details
+							return reject( `new event registration email to staff failed to send: ${ message } - ${ err }` );
+						}
 
-					templateExt: 'hbs',
-					templateEngine: require( 'handlebars' ),
-					templateName: 'event-registration-notification-to-mare'
-
-				}).send({
-
-					to: staffContactEmail,
-					from: {
-						name: 'MARE',
-						email: 'admin@adoptions.io'
-					},
-					subject: `new event registration`,
-					event: eventDetails,
-					user: userDetails,
-					host,
-					displayName
-
-				}, ( err, message ) => {
-					// log any errors
-					if( err ) {
-						return reject( `error sending event registration thank you email - ${ err }` );
-					}
-					// the response object is stored as the 0th element of the returned message
-					const response = message ? message[ 0 ] : undefined;
-					// if the email failed to send, or an error occurred ( which it does, rarely ) causing the response message to be empty
-					if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
-						// reject the promise with details
-						return reject( `new event registration email to staff failed to send: ${ message } - ${ err }` );
-					}
-
-					resolve();
-				});
+						resolve();
+					});
 			})
 			.catch( error => {
 
@@ -128,40 +145,46 @@ exports.sendEventUnregistrationEmailToMARE = ( eventDetails, userDetails, host, 
 		var displayName = userDetails.userType === 'family' ? userDetails.displayName : undefined;
 
 		// find the email template in templates/emails/
-		new keystone.Email({
+		Email.send(
+			// template path
+			'event-unregistration-notification-to-mare',
+			// email options
+			{
+				engine: 'hbs',
+				transport: 'mandrill',
+				root: 'templates/emails/'
+			// render options
+			}, {
+				event: eventDetails,
+				user: userDetails,
+				host,
+				displayName,
+				layout: false
+			// send options
+			}, {
+				apiKey: process.env.MANDRILL_APIKEY,
+				to: staffContactEmail,
+				from: {
+					name: 'MARE',
+					email: 'admin@adoptions.io'
+				},
+				subject: `event unregistration`
+			// callback
+			}, ( err, message ) => {
+				// log any errors
+				if( err ) {
+					return reject( `error sending event unregistration thank you email - ${ err }` );
+				}
+				// the response object is stored as the 0th element of the returned message
+				const response = message ? message[ 0 ] : undefined;
+				// if the email failed to send, or an error occurred ( which it does, rarely ) causing the response message to be empty
+				if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
+					// reject the promise with details
+					return reject( `new event unregistration email to staff failed to send: ${ message } - ${ err }` );
+				}
 
-			templateExt: 'hbs',
-			templateEngine: require( 'handlebars' ),
-			templateName: 'event-unregistration-notification-to-mare'
-
-		}).send({
-
-			to: staffContactEmail,
-			from: {
-				name: 'MARE',
-				email: 'admin@adoptions.io'
-			},
-			subject: `event unregistration`,
-			event: eventDetails,
-			user: userDetails,
-			host,
-			displayName
-
-		}, ( err, message ) => {
-			// log any errors
-			if( err ) {
-				return reject( `error sending event unregistration thank you email - ${ err }` );
-			}
-			// the response object is stored as the 0th element of the returned message
-			const response = message ? message[ 0 ] : undefined;
-			// if the email failed to send, or an error occurred ( which it does, rarely ) causing the response message to be empty
-			if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
-				// reject the promise with details
-				return reject( `new event unregistration email to staff failed to send: ${ message } - ${ err }` );
-			}
-
-			resolve();
-		});
+				resolve();
+			});
 	});
 };
 
