@@ -61,22 +61,22 @@ Placement.add( 'Placement', {
 	}
 });
 
-Placement.schema.pre( 'save', function( next ) {
-	// populate the family's agency field if it hasn't already been populated
-	const agencyPopulated = this.populateAgency();
+// Placement.schema.pre( 'save', function( next ) {
+// 	// populate the family's agency field if it hasn't already been populated
+// 	const agencyPopulated = this.populateAgency();
 
-	agencyPopulated
-		// if there was an error populating the agency
-		.catch( err => {
-			// log the error for debugging purposes
-			console.error( err );
-		})
-		// if the agency was populated successfully
-		.then( () => {
-			// pass the flow of control out of this function
-			next();
-		});
-});
+// 	agencyPopulated
+// 		// if there was an error populating the agency
+// 		.catch( err => {
+// 			// log the error for debugging purposes
+// 			console.error( err );
+// 		})
+// 		// if the agency was populated successfully
+// 		.then( () => {
+// 			// pass the flow of control out of this function
+// 			next();
+// 		});
+// });
 
 Placement.schema.methods.populateAgency = function() {
 

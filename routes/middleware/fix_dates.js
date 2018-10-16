@@ -16,19 +16,19 @@ exports.fixDates = async function( req, res, next ) {
 	}
 	
 	try {
-		// await fixModelDates( { targetModel: 'Event', fields: [ 'startDate', 'endDate' ] } );
+		await fixModelDates( { targetModel: 'Event', fields: [ 'startDate', 'endDate' ] } );
 		//// await fixModelDates( { targetModel: 'Account Verification Code', fields: [ 'dateSent' ] } );
 		await fixModelDates( { targetModel: 'Child', fields: [ 'visibleInGalleryDate', 'registrationDate', 'birthDate', 'statusChangeDate', 'dateMovedToResidence', 'photolistingWriteupDate', 'photolistingPhotoDate', 'dateOfLastPhotoListing', 'videoSnapshotDate', 'onAdoptuskidsDate', 'wednesdaysChildDate', 'wednesdaysChildSiblingGroupDate', 'coalitionMeetingDate', 'matchingEventDate' ] } );	
 		//// await fixModelDates( { targetModel: 'Donation', fields: [ 'date' ] } );
 		//// await fixModelDates( { targetModel: 'Inquiry', fields: [ 'takenOn' ] } );
 		//// await fixModelDates( { targetModel: 'Internal Note', fields: [ 'date' ] } );
-		// await fixModelDates( { targetModel: 'Match', fields: [ 'matchDate' ] } );
-		// await fixModelDates( { targetModel: 'Media Feature', fields: [ 'date' ] } );
-		// await fixModelDates( { targetModel: 'Placement', fields: [ 'placementDate' ] } );
+		await fixModelDates( { targetModel: 'Match', fields: [ 'matchDate' ] } );
+		await fixModelDates( { targetModel: 'Media Feature', fields: [ 'date' ] } );
+		await fixModelDates( { targetModel: 'Placement', fields: [ 'placementDate' ] } );
 		//// await fixModelDates( { targetModel: 'Child History', fields: [ 'date' ] } );
 		//// await fixModelDates( { targetModel: 'Family History', fields: [ 'date' ] } );
 		//// await fixModelDates( { targetModel: 'Social Worker History', fields: [ 'date' ] } );
-		// await fixModelDates( { targetModel: 'Family', fields: [ 'homestudyVerifiedDate', 'initialContact', 'contact1.birthDate', 'contact2.birthDate', 'child1.birthDate', 'child2.birthDate', 'child3.birthDate', 'child4.birthDate', 'child5.birthDate', 'child6.birthDate', 'child7.birthDate', 'child8.birthDate', 'stages.gatheringInformation.date', 'stages.lookingForAgency.date', 'stages.workingWithAgency.date', 'stages.MAPPTrainingCompleted.date', 'homestudy.initialDate', 'homestudy.mostRecentDate', 'onlineMatching.date', 'registeredWithMARE.date', 'familyProfile.date', 'closed.date', 'infoPacket.date' ] } );
+		await fixModelDates( { targetModel: 'Family', fields: [ 'homestudyVerifiedDate', 'initialContact', 'contact1.birthDate', 'contact2.birthDate', 'child1.birthDate', 'child2.birthDate', 'child3.birthDate', 'child4.birthDate', 'child5.birthDate', 'child6.birthDate', 'child7.birthDate', 'child8.birthDate', 'stages.gatheringInformation.date', 'stages.lookingForAgency.date', 'stages.workingWithAgency.date', 'stages.MAPPTrainingCompleted.date', 'homestudy.initialDate', 'homestudy.mostRecentDate', 'onlineMatching.date', 'registeredWithMARE.date', 'familyProfile.date', 'closed.date', 'infoPacket.date' ] } );
 		//// await fixModelDates( { targetModel: 'Site Visitor', fields: [ 'infoPacket.date' ] } );
 	}
 	catch( error ) {
