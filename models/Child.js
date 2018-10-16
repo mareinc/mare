@@ -305,50 +305,50 @@ Child.schema.virtual( 'hasSiblingGroupImage' ).get( function() {
 
 // pre init hook - initialize default recommendedFamilyConstellation values for new child records
 // Doing it here via pre init because it does not seem to work when setting in the post init hook via field default options or via direct assignment to this.recommendedFamilyConstellation
-Child.schema.pre('init', function (next, data) {
+// Child.schema.pre('init', function (next, data) {
 	
-	// We are using a custom key of the Child const: _mareDefaultFamilyConstellations
-	// it will hold default recommendedFamilyConstellation values
-	if( typeof Child._mareDefaultFamilyConstellations === 'undefined' ) {
-		// load data
-		keystone.list( 'Family Constellation' ).model
-			.find()
-			.exec()
-			.then( constellations => {
-				Child._mareDefaultFamilyConstellations = [];
-				constellations.forEach( (familyConstellation, i ) => {
-					// assign all family constellation records as default except for other and unknown
-					if( familyConstellation.key !== 'unknown' && familyConstellation.key !== 'other' ) {
-						Child._mareDefaultFamilyConstellations.push( familyConstellation._id );
-					}
-				} );
-				// assign as default field values
-				Child.fields.recommendedFamilyConstellation.options.default = Child._mareDefaultFamilyConstellations;
-				next();
+// 	// We are using a custom key of the Child const: _mareDefaultFamilyConstellations
+// 	// it will hold default recommendedFamilyConstellation values
+// 	if( typeof Child._mareDefaultFamilyConstellations === 'undefined' ) {
+// 		// load data
+// 		keystone.list( 'Family Constellation' ).model
+// 			.find()
+// 			.exec()
+// 			.then( constellations => {
+// 				Child._mareDefaultFamilyConstellations = [];
+// 				constellations.forEach( (familyConstellation, i ) => {
+// 					// assign all family constellation records as default except for other and unknown
+// 					if( familyConstellation.key !== 'unknown' && familyConstellation.key !== 'other' ) {
+// 						Child._mareDefaultFamilyConstellations.push( familyConstellation._id );
+// 					}
+// 				} );
+// 				// assign as default field values
+// 				Child.fields.recommendedFamilyConstellation.options.default = Child._mareDefaultFamilyConstellations;
+// 				next();
 				
-			}, err => {
-				console.error( 'error populating default recommendedFamilyConstellation' );
-			});
+// 			}, err => {
+// 				console.error( 'error populating default recommendedFamilyConstellation' );
+// 			});
 			
-	} else {
-		// assign as default field values
-		Child.fields.recommendedFamilyConstellation.options.default = Child._mareDefaultFamilyConstellations;
-		next();
+// 	} else {
+// 		// assign as default field values
+// 		Child.fields.recommendedFamilyConstellation.options.default = Child._mareDefaultFamilyConstellations;
+// 		next();
 	
-	}
-});
+// 	}
+// });
 
 // Post Init - used to store all the values before anything is changed
-Child.schema.post( 'init', function() {
-	'use strict';
+// Child.schema.post( 'init', function() {
+// 	'use strict';
 
-	this._original = this.toObject();
+// 	this._original = this.toObject();
 
-	// if there are any siblingsToBePlacedWith, set mustBePlacedWithSiblings to true
-	if ( this.siblingsToBePlacedWith ) {
-		this.mustBePlacedWithSiblings = this.siblingsToBePlacedWith.length > 0 ? true : false;
-	}
-});
+// 	// if there are any siblingsToBePlacedWith, set mustBePlacedWithSiblings to true
+// 	if ( this.siblingsToBePlacedWith ) {
+// 		this.mustBePlacedWithSiblings = this.siblingsToBePlacedWith.length > 0 ? true : false;
+// 	}
+// });
 
 // Child.schema.pre( 'save', function( next ) {
 // 	'use strict';

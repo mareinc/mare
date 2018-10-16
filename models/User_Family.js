@@ -391,7 +391,7 @@ Family.schema.post( 'init', function() {
 });
 
 // Pre Save
-Family.schema.pre( 'save', function( next ) {
+// Family.schema.pre( 'save', function( next ) {
 	// 'use strict';
 	// // trim whitespace characters from any type.Text fields
 	// this.trimTextFields();
@@ -411,28 +411,28 @@ Family.schema.pre( 'save', function( next ) {
 	// // attempt to update the no-edit region field
 	// const regionUpdated = this.updateRegion();
 	// set the noedit fields associated with the social worker's agency
-	const socialWorkerAgencyFieldsSet = this.setSocialWorkerAgencyFields();
+	// const socialWorkerAgencyFieldsSet = this.setSocialWorkerAgencyFields();
 	// // determine whether the family can view all children or just the publicly visible ones
 	// const galleryViewingPermissionsSet = this.setGalleryViewingPermissions();
 	// // set the registration number for the family
 	// const registrationNumberSet = this.setRegistrationNumber();
 
 	// Promise.all( [ displayCityUpdated, regionUpdated, socialWorkerAgencyFieldsSet, galleryViewingPermissionsSet, registrationNumberSet ] )
-	socialWorkerAgencyFieldsSet
-		// if there was an error with any of the promises
-		.catch( err => {
-			// log it for debugging purposes
-			console.error( `family ${ this.displayName } ( registration number: ${ this.registrationNumber } ) saved with errors` );
-		})
-		// execute the following regardless of whether the promises were resolved or rejected
-		// TODO: this should be replaced with ES6 Promise.prototype.finally() once it's finalized, assuming we can update to the latest version of Node if we upgrade Keystone
-		.then( () => {
-			// create a unique label for each family based on their display names and their registration number
-			this.setDisplayNameAndRegistrationLabel();
+// 	socialWorkerAgencyFieldsSet
+// 		// if there was an error with any of the promises
+// 		.catch( err => {
+// 			// log it for debugging purposes
+// 			console.error( `family ${ this.displayName } ( registration number: ${ this.registrationNumber } ) saved with errors` );
+// 		})
+// 		// execute the following regardless of whether the promises were resolved or rejected
+// 		// TODO: this should be replaced with ES6 Promise.prototype.finally() once it's finalized, assuming we can update to the latest version of Node if we upgrade Keystone
+// 		.then( () => {
+// 			// create a unique label for each family based on their display names and their registration number
+// 			this.setDisplayNameAndRegistrationLabel();
 
-			next();
-		});
-});
+// 			next();
+// 		});
+// });
 
 // Family.schema.post( 'save', function() {
 

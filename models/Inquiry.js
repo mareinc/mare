@@ -64,47 +64,47 @@ Inquiry.add( 'General Information', {
 });
 
 // Pre Save
-Inquiry.schema.pre( 'save', function( next ) {
-	'use strict';
+// Inquiry.schema.pre( 'save', function( next ) {
+// 	'use strict';
 	
-	// if takenBy is empty add current user
-	if ( typeof this.takenBy === 'undefined' && this._req_user ) {
-		this.takenBy = this._req_user;
-	}
+// 	// if takenBy is empty add current user
+// 	if ( typeof this.takenBy === 'undefined' && this._req_user ) {
+// 		this.takenBy = this._req_user;
+// 	}
 	
-	// attempt to populate any derived fields for child inquiries
-	this.populateDerivedFields()
-		// if there was an error populating the derived fields, log the error
-		.catch( err => console.error( `error populating fields for inquiry with id ${ this.get( '_id' ) } - ${ err }` ) )
-		// TODO: this should be moved into it's own method
-		.then( () => {
+// 	// attempt to populate any derived fields for child inquiries
+// 	this.populateDerivedFields()
+// 		// if there was an error populating the derived fields, log the error
+// 		.catch( err => console.error( `error populating fields for inquiry with id ${ this.get( '_id' ) } - ${ err }` ) )
+// 		// TODO: this should be moved into it's own method
+// 		.then( () => {
 			
-			// add siblings to the children list
-			if ( this.get( 'children' ).length > 0 ) {
-				// create a unique list to all children, including siblings to be placed with children who were selectee
-				const updatedChildrenList = new Set();
-				// loop through the children field of the inquiry
-				this.get( 'children' ).forEach( child => {
-					// add the current child id
-					updatedChildrenList.add( child.get( '_id' ) );
-					// loop through the siblings to be placed with field of the child
-					child.siblingsToBePlacedWith.forEach( siblingId => {
-						// add the child to the set, which will automatically prevent duplicate additions
-						updatedChildrenList.add( siblingId );
-					});
-				});
-				// convert the children list to an array and use it to update the children field of the inquiry
-				this.set( 'children', [ ...updatedChildrenList ] );
+// 			// add siblings to the children list
+// 			if ( this.get( 'children' ).length > 0 ) {
+// 				// create a unique list to all children, including siblings to be placed with children who were selectee
+// 				const updatedChildrenList = new Set();
+// 				// loop through the children field of the inquiry
+// 				this.get( 'children' ).forEach( child => {
+// 					// add the current child id
+// 					updatedChildrenList.add( child.get( '_id' ) );
+// 					// loop through the siblings to be placed with field of the child
+// 					child.siblingsToBePlacedWith.forEach( siblingId => {
+// 						// add the child to the set, which will automatically prevent duplicate additions
+// 						updatedChildrenList.add( siblingId );
+// 					});
+// 				});
+// 				// convert the children list to an array and use it to update the children field of the inquiry
+// 				this.set( 'children', [ ...updatedChildrenList ] );
 				
-				// call next to allow the model to save
-				next();
+// 				// call next to allow the model to save
+// 				next();
 				
-			} else {
-				// call next to allow the model to save
-				next();
-			}
+// 			} else {
+// 				// call next to allow the model to save
+// 				next();
+// 			}
 			
-		})
+// 		})
 
 		// if( !this.thankYouSentToFamilyOnBehalfOfInquirer && inquiryData.onBehalfOfFamily ) {
 		// 	inquiryEmailService.sendThankYouEmailToFamilyOnBehalfOfInquirer( this, inquiryData, done );
@@ -228,7 +228,7 @@ Inquiry.schema.pre( 'save', function( next ) {
 
 	// 	next();
 	// });
-});
+// });
 
 Inquiry.schema.methods.populateDerivedFields = function() {
 

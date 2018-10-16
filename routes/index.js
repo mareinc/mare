@@ -19,6 +19,7 @@ const keystone							= require( 'keystone' ),
 	  changeHistoryAdjustmentService	= require( './middleware/fix_change-history' ),
 	  cloudinaryImageAdjustmentService	= require( './middleware/fix_cloudinary-images' ),
 	  inquiryAdjustmentService			= require( './middleware/fix_inquiry' ),
+	  dateAdjustmentService				= require( './middleware/fix_dates' ),
 	  importRoutes						= keystone.importer( __dirname );
 
 // common middleware
@@ -125,4 +126,7 @@ exports = module.exports = app => {
 	app.get( '/fix/families'							, middleware.requireAdmin, familyAdjustmentService.fixFamilies );
 	app.get( '/fix/family-histories'					, middleware.requireAdmin, changeHistoryAdjustmentService.fixFamilyHistories );
 	app.get( '/fix/inquiries'							, middleware.requireAdmin, inquiryAdjustmentService.fixInquiries );
+	
+	/* NOTE: this is for a one-time fix to timezones in dates and should be removed.  Keeping as a reference for async/await in data migration */
+	app.get( '/fix/dates', middleware.requireAdmin, dateAdjustmentService.fixDates );
 };
