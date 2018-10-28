@@ -10,7 +10,7 @@ var MediaFeature = new keystone.List( 'Media Feature', {
 MediaFeature.add( 'Media Feature', {
 
 	source: { type: Types.Relationship, label: 'source', ref: 'Source', filters: { isActive: true }, required: true, initial: true },
-	date: { type: Types.Date, label: 'date', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', required: true, initial: true },
+	date: { type: Types.Date, label: 'date', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', required: true, initial: true },
 	notes: { type: Types.Textarea, label: 'notes', initial: true },
 	children: { type: Types.Relationship, label: 'children', ref: 'Child', many: true, initial: true }
 

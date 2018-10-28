@@ -9,7 +9,7 @@ var Placement = new keystone.List( 'Placement', {
 // Create fields
 Placement.add( 'Placement', {
 
-	placementDate: { type: Types.Date, label: 'placement date', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', initial: true },
+	placementDate: { type: Types.Date, label: 'placement date', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', initial: true },
 	
 	source: { type: Types.Relationship, label: 'source', ref: 'Source', filters: { isActive: true }, initial: true },
 	additionalSources: { type: Types.Relationship, label: 'additional sources', ref: 'Source', filters: { isActive: true }, many: true, initial: true },

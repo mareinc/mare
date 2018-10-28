@@ -12,7 +12,7 @@ var Donation = new keystone.List( 'Donation' );
 // create fields
 Donation.add({
 
-	date: { type: Types.Date, label: 'date', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', required: true, initial: true },
+	date: { type: Types.Date, label: 'date', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', required: true, initial: true },
 	amount: { type: Types.Money, format: '$0,0.00', label: 'amount', required: true, initial: true },
 	stripeTransactionID: { type: Types.Text, label: 'stripe transaction ID', required: true, initial: true, noedit: true },
 	isSubscription: { type: Types.Boolean, label: ' is donation repeating', required: true, initial: true, noedit: true },

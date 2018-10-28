@@ -48,12 +48,12 @@ Child.add('Display Options', {
 
 	siteVisibility: { type: Types.Select, label: 'child is visible to', options: 'everyone, only registered social workers and families', required: true, initial: true },
 	isVisibleInGallery: { type: Types.Boolean, label: 'activate child profile on website to group selected', note: 'authorized staff only', default: false, initial: true },
-	visibleInGalleryDate: { type: Types.Date, label: 'date added to MARE web', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', dependsOn: {isVisibleInGallery: true }, initial: true }
+	visibleInGalleryDate: { type: Types.Date, label: 'date added to MARE web', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', dependsOn: {isVisibleInGallery: true }, initial: true }
 
 }, 'Child Information', {
 
 	registrationNumber: { type: Number, label: 'registration number', format: false, noedit: true },
-	registrationDate: { type: Types.Date, label: 'registration date', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', required: true, initial: true },
+	registrationDate: { type: Types.Date, label: 'registration date', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', required: true, initial: true },
 	displayNameAndRegistration: { type: Types.Text, label: 'name and registration number', default: 'new child', hidden: true, noedit: true },
 
 	name: {
@@ -65,9 +65,9 @@ Child.add('Display Options', {
 		full: { type: Types.Text, label: 'name', hidden: true, noedit: true, initial: false }
 	},
 
-	birthDate: { type: Types.Date, label: 'date of birth', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', required: true, initial: true },
+	birthDate: { type: Types.Date, label: 'date of birth', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', required: true, initial: true },
 	languages: { type: Types.Relationship, label: 'languages', ref: 'Language', many: true, required: true, initial: true },
-	statusChangeDate: { type: Types.Date, label: 'status change date', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', initial: true }, // TODO: Logic needed, see line 14 of https://docs.google.com/spreadsheets/d/1Opb9qziX2enTehJx5K1J9KAT7v-j2yAdqwyQUMSsFwc/edit#gid=1235141373
+	statusChangeDate: { type: Types.Date, label: 'status change date', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', initial: true }, // TODO: Logic needed, see line 14 of https://docs.google.com/spreadsheets/d/1Opb9qziX2enTehJx5K1J9KAT7v-j2yAdqwyQUMSsFwc/edit#gid=1235141373
 	status: { type: Types.Relationship, label: 'status', ref: 'Child Status', required: true, initial: true },
 	gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', required: true, initial: true },
 	race: { type: Types.Relationship, label: 'race', ref: 'Race', many: true, required: true, initial: true },
@@ -88,7 +88,7 @@ Child.add('Display Options', {
 	city: { type: Types.Relationship, label: 'city/town of child\'s current location', ref: 'City or Town', dependsOn: { isOutsideMassachusetts: false }, initial: true },
 	cityText: { type: Types.Text, label: 'city/town of child\'s current location', dependsOn: { isOutsideMassachusetts: true }, initial: true },
 	careFacilityName: { type: Types.Text, label: 'name of residential/group care facility', initial: true },
-	dateMovedToResidence: { type: Types.Date, label: 'date moved to current residence', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', initial: true }
+	dateMovedToResidence: { type: Types.Date, label: 'date moved to current residence', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', initial: true }
 
 }, 'Special Needs', {
 
@@ -147,11 +147,11 @@ Child.add('Display Options', {
 	},
 
 	hasPhotolistingWriteup: { type: Types.Boolean, label: 'photolisting writeup', default: false, initial: true },
-	photolistingWriteupDate: { type: Types.Date, label: 'date of photolisting writeup', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', dependsOn: { hasPhotolistingWriteup: true }, initial: true },
+	photolistingWriteupDate: { type: Types.Date, label: 'date of photolisting writeup', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', dependsOn: { hasPhotolistingWriteup: true }, initial: true },
 	hasPhotolistingPhoto: { type: Types.Boolean, label: 'photolisting photo', default: false, initial: true },
-	photolistingPhotoDate: { type: Types.Date, label: 'date of photolisting photo', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', dependsOn: { hasPhotolistingPhoto: true }, initial: true },
+	photolistingPhotoDate: { type: Types.Date, label: 'date of photolisting photo', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', dependsOn: { hasPhotolistingPhoto: true }, initial: true },
 	isCurrentlyInPhotoListing: { type: Types.Boolean, label: 'currently in photolisting', default: false, initial: true },
-	dateOfLastPhotoListing: { type: Types.Date, label: 'date of last photolisting', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', dependsOn: {isCurrentlyInPhotoListing: true }, initial: true },
+	dateOfLastPhotoListing: { type: Types.Date, label: 'date of last photolisting', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', dependsOn: {isCurrentlyInPhotoListing: true }, initial: true },
 	photolistingPageNumber: { type: Types.Text, label: 'photolisting page', initial: true },
 	previousPhotolistingPageNumbers: { type: Types.Text, label: 'previous photolisting pages', initial: true },
 	image: {
@@ -213,26 +213,26 @@ Child.add('Display Options', {
 }, 'Recruitment Options', {
 
 	hasVideoSnapshot: { type: Types.Boolean, label: 'video snapshot', default: false, initial: true },
-	videoSnapshotDate: { type: Types.Date, label: 'date of video snapshot', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', dependsOn: { hasVideoSnapshot: true }, initial: true },
+	videoSnapshotDate: { type: Types.Date, label: 'date of video snapshot', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', dependsOn: { hasVideoSnapshot: true }, initial: true },
 	video: { type: Types.Url, label: 'video', dependsOn: { hasVideoSnapshot: true, mustBePlacedWithSiblings: false } },
 	siblingGroupVideo: { type: Types.Url, label: 'sibling group video', dependsOn: { hasVideoSnapshot: true, mustBePlacedWithSiblings: true } },
 
 	onAdoptuskids: { type: Types.Boolean, label: 'Adoptuskids website', default: false, initial: true },
-	onAdoptuskidsDate: { type: Types.Date, label: 'date on Adoptuskids', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', dependsOn: { onAdoptuskids: true }, initial: true },
+	onAdoptuskidsDate: { type: Types.Date, label: 'date on Adoptuskids', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', dependsOn: { onAdoptuskids: true }, initial: true },
 
 	wednesdaysChild: { type: Types.Boolean, label: 'Wednesday\'s Child', dependsOn: { mustBePlacedWithSiblings: false }, default: false, initial: true },
-	wednesdaysChildDate: { type: Types.Date, label: 'date of Wednesday\'s Child', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', dependsOn: { mustBePlacedWithSiblings: false, wednesdaysChild: true }, initial: true },
+	wednesdaysChildDate: { type: Types.Date, label: 'date of Wednesday\'s Child', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', dependsOn: { mustBePlacedWithSiblings: false, wednesdaysChild: true }, initial: true },
 	wednesdaysChildVideo: { type: Types.Url, label: 'Wednesday\'s Child video', dependsOn: { mustBePlacedWithSiblings: false, wednesdaysChild: true } },
 
 	wednesdaysChildSiblingGroup: { type: Types.Boolean, label: 'Wednesday\'s Child for sibling group?', dependsOn: { mustBePlacedWithSiblings: true }, default: false, initial: true },
-	wednesdaysChildSiblingGroupDate: { type: Types.Date, label: 'date of sibling group\'s Wednesday\'s Child', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', dependsOn: { mustBePlacedWithSiblings: true, wednesdaysChildSiblingGroup: true }, initial: true },
+	wednesdaysChildSiblingGroupDate: { type: Types.Date, label: 'date of sibling group\'s Wednesday\'s Child', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', dependsOn: { mustBePlacedWithSiblings: true, wednesdaysChildSiblingGroup: true }, initial: true },
 	wednesdaysChildSiblingGroupVideo: { type: Types.Url, label: 'Wednesday\'s Child sibling group video', dependsOn: { mustBePlacedWithSiblings: true, wednesdaysChildSiblingGroup: true } },
 
 	coalitionMeeting: { type: Types.Boolean, label: 'coalition meeting', default: false, initial: true },
-	coalitionMeetingDate: { type: Types.Date, label: 'date of coalition meeting', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', dependsOn: { coalitionMeeting: true }, initial: true },
+	coalitionMeetingDate: { type: Types.Date, label: 'date of coalition meeting', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', dependsOn: { coalitionMeeting: true }, initial: true },
 
 	matchingEvent: { type: Types.Boolean, label: 'matching event', default: false, initial: true },
-	matchingEventDate: { type: Types.Date, label: 'date of matching event', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', dependsOn: { matchingEvent: true }, initial: true },
+	matchingEventDate: { type: Types.Date, label: 'date of matching event', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', dependsOn: { matchingEvent: true }, initial: true },
 
 	adoptionParties: { type: Types.Relationship, label: 'adoption parties', ref: 'Event', filters: { type: 'adoption party', isActive: true }, many: true, initial: true },
 
