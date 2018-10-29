@@ -7,7 +7,7 @@ var Legalization = new keystone.List( 'Legalization' );
 // create fields
 Legalization.add( 'Legalization', {
 
-	legalizationDate: { type: Types.Date, label: 'legalization date', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', initial: true },
+	legalizationDate: { type: Types.Date, label: 'legalization date', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, initial: true },
 
 	source: { type: Types.Relationship, label: 'source', ref: 'Source', filters: { isActive: true }, initial: true },
 	additionalSources: { type: Types.Relationship, label: 'additional sources', ref: 'Source', filters: { isActive: true }, many: true, initial: true },

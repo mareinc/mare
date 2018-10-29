@@ -16,7 +16,7 @@ var Inquiry = new keystone.List( 'Inquiry', {
 // Create fields
 Inquiry.add( 'General Information', {
 	takenBy: { type: Types.Relationship, label: 'taken by', ref: 'Admin', required: false, initial: true, note: 'if no user is selected a current user will be used' },
-	takenOn: { type: Types.Date, label: 'taken on', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', required: true, initial: true },
+	takenOn: { type: Types.Date, label: 'taken on', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, required: true, initial: true },
 
 	inquirer: { type: Types.Select, label: 'inquirer', options: 'site visitor, family, social worker', default: 'family', initial: true },
 	inquiryType: { type: Types.Select, label: 'inquiry type', options: 'child inquiry, complaint, family support consultation, general inquiry', required: true, initial: true },
