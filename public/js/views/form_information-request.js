@@ -6,7 +6,8 @@
 
 		events: {
 			'change #is-not-ma-city-checkbox' 	: 'toggleCitySelect',
-			'change .interest'					: 'toggleChildRegistrationNumbersInput'
+			'change .interest'					: 'toggleChildRegistrationNumbersInput',
+			'submit'							: 'onSubmit'
 		},
 
 		initialize: function() {
@@ -17,11 +18,19 @@
 			this.$NonMACity							= this.$( '#non-ma-city' );
 			this.$interest							= this.$( '.interest' );
 			this.$childRegistrationNumbersContainer	= this.$( '.child-registration-numbers-container' );
+			this.$submitButton						= this.$( 'button[type="submit"]' );
 
 			// initialize parsley validation on the form
 			this.form = this.$el.parsley();
 			
 			this.form.on( 'field:validated', this.validateForm );
+		},
+
+		onSubmit: function( event ) {
+			if ( this.form.isValid() ) {
+				this.$submitButton.addClass( 'button--disabled' );
+				this.$submitButton.attr( 'disabled', 'disabled' );
+			}
 		},
 
 		toggleChildRegistrationNumbersInput: function toggleChildRegistrationNumbersInput() {

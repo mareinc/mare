@@ -1,5 +1,5 @@
-const keystone				= require( 'keystone' ),
-	  utilitiesMiddleware   = require( './utilities' );
+const Email = require( 'keystone-email' ),
+      hbs = require( 'hbs' );
 
 exports.sendNewSocialWorkerChildRegistrationNotificationEmailToMARE = ( rawChildData, child, registrationStaffContact ) => {
 
@@ -365,37 +365,46 @@ exports.sendNewSocialWorkerChildRegistrationNotificationEmailToMARE = ( rawChild
 		];
 
 		// the email template can be found in templates/emails/
-		new keystone.Email({
-			templateExt		: 'hbs',
-			templateEngine 	: require( 'handlebars' ),
-			templateName 	: 'social-worker-new-child-notification-to-mare'
-		}).send({
-			to				: registrationStaffContact.email,
-			from: {
-				name 	: 'MARE',
-				email 	: 'admin@adoptions.io'
-			},
-			subject		: `new social worker child registration`,
-			childData,
-			additionalChildData,
-			fieldsToUpdate
+		Email.send(
+			// template path
+            'social-worker-new-child-notification-to-mare',
+            // email options
+            {
+                engine: 'hbs',
+                transport: 'mandrill',
+                root: 'templates/emails/'
+            // render options
+            }, {
+                childData,
+				additionalChildData,
+				fieldsToUpdate,
+                layout: false
+            // send options
+            }, {
+                apiKey: process.env.MANDRILL_APIKEY,
+                to: registrationStaffContact.email,
+				from: {
+					name: 'MARE',
+					email: 'communications@mareinc.org' // TODO: this should be in a model or ENV variable
+				},
+				subject: `new social worker child registration`
+            // callback
+			}, ( err, message ) => {
+				// if there was an error sending the email
+				if( err ) {
+					// reject the promise with details
+					return reject( `error sending new social worker child registration notification email to MARE - ${ err }` );
+				}
+				// the response object is stored as the 0th element of the returned message
+				const response = message ? message[ 0 ] : undefined;
+				// if the email failed to send, or an error occurred ( which it does, rarely ) causing the response message to be empty
+				if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
+					// reject the promise with details
+					return reject( `error sending new social worker child registration notification email to MARE - ${ response.status } - ${ response.email } - ${ response.reject_reason } - ${ err }` );
+				}
 
-		}, ( err, message ) => {
-			// if there was an error sending the email
-			if( err ) {
-				// reject the promise with details
-				return reject( `error sending new social worker child registration notification email to MARE - ${ err }` );
-			}
-			// the response object is stored as the 0th element of the returned message
-			const response = message ? message[ 0 ] : undefined;
-			// if the email failed to send, or an error occurred ( which it does, rarely ) causing the response message to be empty
-			if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
-				// reject the promise with details
-				return reject( `error sending new social worker child registration notification email to MARE - ${ err }` );
-			}
-
-			resolve();
-		});
+				resolve();
+			});
 	});
 };
 
@@ -748,37 +757,46 @@ exports.sendNewSocialWorkerChildRegistrationNotificationEmailToSocialWorker = ( 
 		}
 
 		// the email template can be found in templates/emails/
-		new keystone.Email({
-			templateExt		: 'hbs',
-			templateEngine 	: require( 'handlebars' ),
-			templateName 	: 'social-worker-new-child-notification-to-social-worker'
-		}).send({
-			to				: socialWorkerEmail,
-			from: {
-				name 	: 'MARE',
-				email 	: 'admin@adoptions.io'
-			},
-			subject		: `child registration details`,
-			childName	: child.name.full,
-			host,
-			childData,
-			additionalChildData,
-		
-		}, ( err, message ) => {
-			// if there was an error sending the email
-			if( err ) {
-				// reject the promise with details
-				return reject( `error sending new social worker child registration notification email to social worker - ${ err }` );
-			}
-			// the response object is stored as the 0th element of the returned message
-			const response = message ? message[ 0 ] : undefined;
-			// if the email failed to send, or an error occurred ( which it does, rarely ) causing the response message to be empty
-			if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
-				// reject the promise with details
-				return reject( `error sending new social worker child registration notification email to social worker - ${ err }` );
-			}
+		Email.send(
+			// template path
+            'social-worker-new-child-notification-to-social-worker',
+            // email options
+            {
+                engine: 'hbs',
+                transport: 'mandrill',
+                root: 'templates/emails/'
+            // render options
+            }, {
+                childName: child.name.full,
+				host,
+				childData,
+				additionalChildData,
+                layout: false
+            // send options
+            }, {
+                apiKey: process.env.MANDRILL_APIKEY,
+                to: socialWorkerEmail,
+				from: {
+					name: 'MARE',
+					email: 'communications@mareinc.org' // TODO: this should be in a model or ENV variable
+				},
+				subject: `child registration details`
+            // callback
+			}, ( err, message ) => {
+				// if there was an error sending the email
+				if( err ) {
+					// reject the promise with details
+					return reject( `error sending new social worker child registration notification email to social worker - ${ err }` );
+				}
+				// the response object is stored as the 0th element of the returned message
+				const response = message ? message[ 0 ] : undefined;
+				// if the email failed to send, or an error occurred ( which it does, rarely ) causing the response message to be empty
+				if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
+					// reject the promise with details
+					return reject( `error sending new social worker child registration notification email to social worker - ${ response.status } - ${ response.email } - ${ response.reject_reason } - ${ err }` );
+				}
 
-			resolve();
-		});
+				resolve();
+			});
 	});
 };

@@ -60,7 +60,7 @@ exports = module.exports = ( req, res ) => {
 			// loop through all the events
 			for( let event of events ) {
 				// the list page needs truncated details information to keep the cards they're displayed on small
-				event.shortContent = Utils.truncateText( event.description, truncateOptions );
+				event.shortContent = Utils.truncateText( { text: event.description, options: truncateOptions } );
 				// determine whether or not address information exists for the event, which is helpful during rendering
 				// street1 is required, so this is enough to tell us if the address has been populated
 				event.hasAddress = event.address && event.address.street1;

@@ -37,7 +37,20 @@ SocialWorker.add( 'Permissions', {
 		full: { type: Types.Text, label: 'name', hidden: true, noedit: true, initial: false }
 	},
 
-	avatar: { type: Types.CloudinaryImage, label: 'avatar', folder: `${ process.env.CLOUDINARY_DIRECTORY }/users/social-workers`, select: true, selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/users/social-workers`, autoCleanup: true }, // TODO: add publicID attribute for better naming in Cloudinary
+	avatar: {
+		type: Types.CloudinaryImage,
+		label: 'avatar',
+		folder: `${ process.env.CLOUDINARY_DIRECTORY }/users/social-workers`,
+		select: true,
+		selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/users/social-workers`,
+		autoCleanup: true,
+		whenExists: 'retry',
+		generateFilename: function( file, attemptNumber ) {
+			const originalname = file.originalname;
+			const filenameWithoutExtension = originalname.substring( 0, originalname.lastIndexOf( '.' ) );
+			return filenameWithoutExtension;
+		}
+	},
 
 	contactGroups: { type: Types.Relationship, label: 'contact groups', ref: 'Contact Group', many: true, initial: true }
 
@@ -466,7 +479,7 @@ SocialWorker.schema.methods.setChangeHistory = function() {
 };
 
 // Define default columns in the admin interface and register the model
-SocialWorker.defaultColumns = 'name.full, phone.work, phone.home, phone.cell, phone.preferred, email, isActive';
+SocialWorker.defaultColumns = 'name.full, phone.mobile, phone.mobile, phone.preferred, email, isActive';
 SocialWorker.register();
 
 // Export to make it available using require.  The keystone.list import throws a ReferenceError when importing a list

@@ -17,7 +17,19 @@ Featured.add({
 	aboutUs: {
 		title: { type: Types.Text, label: 'about us title', initial: true, default: 'Our Services' },
 		target: { type: Types.Relationship, ref: 'Page', label: 'about us page', filter: { type: 'aboutUs' }, required: true, initial: true },
-		image: { type: Types.CloudinaryImage, label: 'about us image', folder: `${ process.env.CLOUDINARY_DIRECTORY }/featured/`, select: true, selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/featured/`, publicID: 'aboutUsFileName', autoCleanup: true },
+		image: {
+			type: Types.CloudinaryImage,
+			label: 'about us image',
+			folder: `${ process.env.CLOUDINARY_DIRECTORY }/featured/`,
+			select: true,
+			selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/featured/`,
+			autoCleanup: true,
+			whenExists: 'retry',
+			generateFilename: function( file, attemptNumber ) {
+				return 'about-us';
+			}
+		},
+
 		url: { type: Types.Url, label: 'about us url', noedit: true }
 	}
 
@@ -26,7 +38,18 @@ Featured.add({
 	successStory: {
 		title: { type: Types.Text, label: 'success story title', initial: true, default: 'Success Stories' },
 		target: { type: Types.Relationship, ref: 'Success Story', label: 'success story', required: true, initial: true },
-		image: { type: Types.CloudinaryImage, label: 'success story image', folder: `${ process.env.CLOUDINARY_DIRECTORY }/featured/`, select: true, selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/featured/`, publicID: 'successStoryFileName', autoCleanup: true },
+		image: {
+			type: Types.CloudinaryImage,
+			label: 'success story image',
+			folder: `${ process.env.CLOUDINARY_DIRECTORY }/featured/`,
+			select: true,
+			selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/featured/`,
+			autoCleanup: true,
+			whenExists: 'retry',
+			generateFilename: function( file, attemptNumber ) {
+				return 'success-story';
+			}
+		},
 		url: { type: Types.Url, label: 'success story url', noedit: true }
 	}
 
@@ -35,17 +58,20 @@ Featured.add({
 	event: {
 		title: { type: Types.Text, label: 'event title', initial: true, default: 'Events' },
 		target: { type: Types.Relationship, ref: 'Event', label: 'event', filters: { isActive: true }, required: true, initial: true },
-		image: { type: Types.CloudinaryImage, label: 'event image', folder: `${ process.env.CLOUDINARY_DIRECTORY }/featured/`, select: true, selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/featured/`, publicID: 'eventFileName', autoCleanup: true },
+		image: {
+			type: Types.CloudinaryImage,
+			label: 'event image',
+			folder: `${ process.env.CLOUDINARY_DIRECTORY }/featured/`,
+			select: true,
+			selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/featured/`,
+			autoCleanup: true,
+			whenExists: 'retry',
+			generateFilename: function( file, attemptNumber ) {
+				return 'event';
+			}
+		},
 		url: { type: Types.Url, label: 'event url', noedit: true }
 	}
-/* container for all system fields (add a heading if any are meant to be visible through the admin UI) */
-}, {
-
-	// system fields to store an appropriate file prefix
-	aboutUsFileName: { type: Types.Text, hidden: true },
-	successStoryFileName: { type: Types.Text, hidden: true },
-	eventFileName: { type: Types.Text, hidden: true }
-
 });
 
 Featured.schema.virtual( 'hasAboutUsImage' ).get( function() {
@@ -80,28 +106,9 @@ Featured.schema.pre( 'save', function( next ) {
 		  eventUpdated			= this.updateFields( eventOptions );
 	// once all three model sections have been updated
 	Promise.all( [ aboutUsUpdated, successStoryUpdated, eventUpdated ] ).then( () => {
-		// create identifying names for file uploads
-		this.setFileNames();
-
 		next();
 	});
 });
-/* TODO: it seems we're setting the file name for each to their key value.  Perhaps could simplify this task by just referencing 'key' */
-Featured.schema.methods.setFileNames = function setFileNames() {
-	'use strict';
-	// generate a readable file name for each featured item
-	this.aboutUsFileName		= this.aboutUs.title ?
-									`about-us_${ this.aboutUs.title.toLowerCase().replace( /\s/g, '-' ) }` :
-									'about-us_no-page';
-
-	this.successStoryFileName	= this.successStory.title ?
-									`success-story_${ this.successStory.title.toLowerCase().replace( /\s/g, '-' ) }` :
-									'success-story_no-page';
-
-	this.eventFileName			= this.event.title ?
-									`event_${ this.event.title.toLowerCase().replace( /\s/g, '-' ) }` :
-									'event_no-page';
-};
 
 Featured.schema.methods.updateFields = function updateFields( { id, targetModel, field, url } ) {
 	// return a promise for cleaner asynchronous processing

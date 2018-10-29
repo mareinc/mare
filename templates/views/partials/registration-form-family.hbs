@@ -2,6 +2,9 @@
 
 	<form enctype="multipart/form-data" action="/register" class="registration-form form--family-registration" method="POST">
 		<input type="hidden" class="registration-type" name="registrationType" value="family">
+		{{#if redirectUrl}}
+			<input type="hidden" name="redirectUrl" value="{{ redirectUrl }}">
+		{{/if}}
 
 		<section class="family-account-setup-section">
 			<div class="form-section-header">Account Setup</div>

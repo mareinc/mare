@@ -50,7 +50,7 @@ exports = module.exports = ( req, res ) => {
 		})
 		.catch( err => {
 			// log an error for debugging purposes
-			console.error( `error loading data for the success stories page - ${ err }` );	
+			console.error( `error loading page data for the success story with key ${ key } - ${ err }` );	
 			// render the view using the success-story.hbs template
 			view.render( 'success-story' );
 		});
