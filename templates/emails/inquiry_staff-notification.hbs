@@ -116,22 +116,23 @@
 								</tr>
 								{{/if}}
 								{{#if inquiryData.family}}
-								<tr>
-									<td style="padding: 5px 0 0 0; color: #153634; font-family: Ariel, sans-serif; font-size: 14px; line-height: 16px;">
-										<b>date of birth</b> {{ inquirerData.dateOfBirth }}
-									</td>
-								</tr>
-								<tr>
-									<td style="padding: 5px 0 0 0; color: #153634; font-family: Ariel, sans-serif; font-size: 14px; line-height: 16px;">
-										<b>gender</b> {{ inquirerData.gender }}
-									</td>
-								</tr>
-								<tr>
-									<td style="padding: 5px 0 0 0; color: #153634; font-family: Ariel, sans-serif; font-size: 14px; line-height: 16px;">
-										<b>ethnicity</b> {{ inquirerData.ethnicity }}
-									</td>
-								</tr>
-								
+								{{#unless inquirerData.contact2Available}}
+									<tr>
+										<td style="padding: 5px 0 0 0; color: #153634; font-family: Ariel, sans-serif; font-size: 14px; line-height: 16px;">
+											<b>date of birth</b> {{ inquirerData.dateOfBirth }}
+										</td>
+									</tr>
+									<tr>
+										<td style="padding: 5px 0 0 0; color: #153634; font-family: Ariel, sans-serif; font-size: 14px; line-height: 16px;">
+											<b>gender</b> {{ inquirerData.gender }}
+										</td>
+									</tr>
+									<tr>
+										<td style="padding: 5px 0 0 0; color: #153634; font-family: Ariel, sans-serif; font-size: 14px; line-height: 16px;">
+											<b>ethnicity</b> {{ inquirerData.ethnicity }}
+										</td>
+									</tr>
+								{{/unless}}
 								{{#if inquirerData.socialWorker}}
 									<tr>
 										<td style="padding: 30px 0 10px 0; color: #153634; font-family: Ariel, sans-serif; font-size: 20px; line-height: 24px;">
@@ -220,14 +221,6 @@
 								<tr>
 									<td style="padding: 5px 0 0 0; color: #153634; font-family: Ariel, sans-serif; font-size: 14px; line-height: 16px;">
 										<b>e-mail</b> {{ inquirerData.contact1Email }}
-									</td>
-								</tr>
-								{{/if}}
-								
-								{{#if inquirerData.contact1PreferredCommunicationMethod}}
-								<tr>
-									<td style="padding: 5px 0 0 0; color: #153634; font-family: Ariel, sans-serif; font-size: 14px; line-height: 16px;">
-										<b>preferred communication method</b> {{ inquirerData.contact1PreferredCommunicationMethod }}
 									</td>
 								</tr>
 								{{/if}}
