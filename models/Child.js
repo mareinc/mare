@@ -323,7 +323,7 @@ Child.schema.pre('init', function (next, data) {
 					}
 				} );
 				// assign as default field values
-				Child.fields.recommendedFamilyConstellation.options.default = Child._mareDefaultFamilyConstellations;
+				Child.fields.recommendedFamilyConstellation.__options.defaultValue = Child._mareDefaultFamilyConstellations;
 				next();
 				
 			}, err => {
@@ -332,7 +332,7 @@ Child.schema.pre('init', function (next, data) {
 			
 	} else {
 		// assign as default field values
-		Child.fields.recommendedFamilyConstellation.options.default = Child._mareDefaultFamilyConstellations;
+		Child.fields.recommendedFamilyConstellation.__options.defaultValue = Child._mareDefaultFamilyConstellations;
 		next();
 	
 	}
