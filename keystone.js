@@ -37,6 +37,7 @@ keystone.init({
 
 	'auto update': true,
 	'session': true,
+	'session store': 'mongo',
 	'auth': true,
 	'signin url': '/',
 	'user model': 'User',
