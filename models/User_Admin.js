@@ -36,7 +36,7 @@ Admin.add( 'Permissions', {
 		select: true,
 		selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/users/admin`,
 		autoCleanup: true,
-		whenExists: 'retry',
+		whenExists: 'overwrite',
 		generateFilename: function( file, attemptNumber ) {
 			const originalname = file.originalname;
 			const filenameWithoutExtension = originalname.substring( 0, originalname.lastIndexOf( '.' ) );

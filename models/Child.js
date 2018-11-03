@@ -162,7 +162,7 @@ Child.add('Display Options', {
 		selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/children/`,
 		dependsOn: { mustBePlacedWithSiblings: false },
 		autoCleanup: false,
-		whenExists: 'replace',
+		whenExists: 'overwrite',
 		generateFilename: function( file, attemptNumber ) {
 			const originalname = file.originalname;
 			const filenameWithoutExtension = originalname.substring( 0, originalname.lastIndexOf( '.' ) );
@@ -180,7 +180,7 @@ Child.add('Display Options', {
 		selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/children/`,
 		dependsOn: { mustBePlacedWithSiblings: false },
 		autoCleanup: false,
-		whenExists: 'replace',
+		whenExists: 'overwrite',
 		generateFilename: function( file, attemptNumber ) {
 			const originalname = file.originalname;
 			const filenameWithoutExtension = originalname.substring( 0, originalname.lastIndexOf( '.' ) );
@@ -198,7 +198,7 @@ Child.add('Display Options', {
 		selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/sibling-groups/`,
 		dependsOn: { mustBePlacedWithSiblings: true },
 		autoCleanup: false,
-		whenExists: 'replace',
+		whenExists: 'overwrite',
 		generateFilename: function( file, attemptNumber ) {
 			const originalname = file.originalname;
 			const filenameWithoutExtension = originalname.substring( 0, originalname.lastIndexOf( '.' ) );

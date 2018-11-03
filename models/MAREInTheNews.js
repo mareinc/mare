@@ -22,7 +22,7 @@ MAREInTheNews.add({
 		select: true,
 		selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/mare-in-the-news/`,
 		autoCleanup: true,
-		whenExists: 'retry',
+		whenExists: 'overwrite',
 		generateFilename: function( file, attemptNumber ) {
 			const originalname = file.originalname;
 			const filenameWithoutExtension = originalname.substring( 0, originalname.lastIndexOf( '.' ) );
