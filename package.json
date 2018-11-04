@@ -12,15 +12,15 @@
 		"cloudinary": "~1.11.0",
 		"connect-mongo": "^2.0.1",
 		"del": "^3.0.0",
-		"dotenv": "^5.0.0",
+		"dotenv": "^6.1.0",
 		"express-handlebars": "~3.0.0",
 		"express-robots": "^0.1.6",
 		"express-sslify": "^1.2.0",
 		"gulp": "gulpjs/gulp#4.0",
-		"gulp-autoprefixer": "^5.0.0",
+		"gulp-autoprefixer": "^6.0.0",
 		"gulp-clean-css": "^3.9.2",
 		"gulp-concat": "^2.6.1",
-		"gulp-eslint": "^4.0.0",
+		"gulp-eslint": "^5.0.0",
 		"gulp-filter": "^5.1.0",
 		"gulp-ignore": "^2.0.2",
 		"gulp-imagemin": "^4.1.0",
@@ -56,7 +56,7 @@
 	"devDependencies": {
 		"chai": "^4.1.2",
 		"mocha": "^5.0.0",
-		"sinon": "^5.0.0",
+		"sinon": "^6.0.1",
 		"sinon-chai": "^3.0.0"
 	}
 }
