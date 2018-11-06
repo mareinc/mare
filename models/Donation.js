@@ -17,7 +17,7 @@ Donation.add({
 	stripeTransactionID: { type: Types.Text, label: 'stripe transaction ID', required: true, initial: true, noedit: true },
 	isSubscription: { type: Types.Boolean, label: ' is donation repeating', initial: true, noedit: true },
 
-	isRegistered: { type: Types.Boolean, label: 'is a registered user', default: true, initial: true },
+	isRegistered: { type: Types.Boolean, label: 'is a registered user', initial: true },
 	userType: { type: Types.Select, label: 'user type', options: 'site visitor, social worker, family, admin', dependsOn: { isRegistered: true }, initial: true },
 	siteVisitor: { type: Types.Relationship, label: 'donation from', ref: 'Site Visitor', dependsOn: { isRegistered: true, userType: 'site visitor' }, initial: true },
 	socialWorker: { type: Types.Relationship, label: 'donation from', ref: 'Social Worker', dependsOn: { isRegistered: true, userType: 'social worker' }, initial: true },
