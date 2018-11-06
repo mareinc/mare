@@ -13,7 +13,7 @@ const keystone					= require( 'keystone' ),
 
 // configure the s3 storage adapter
 var storage = new keystone.Storage({
-	adapter: require('keystone-storage-adapter-s3'),
+	adapter: require( 'keystone-storage-adapter-s3' ),
 	s3: {
 		key: process.env.S3_KEY, // required; defaults to process.env.S3_KEY
 		secret: process.env.S3_SECRET, // required; defaults to process.env.S3_SECRET
