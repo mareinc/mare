@@ -14,9 +14,9 @@ exports.getRegistrationMailingLists = () => {
 				// if no mailing lists could not be found
 				if( mailingLists.length === 0 ) {
 					// log an error for debugging purposes
-					console.error( `no mailing lists could be found` );
-					// reject the promise
-					return reject();
+					console.log( `no mailing lists could be found` );
+					// resolve the promise
+					return resolve();
 				}
 				// if mailing lists were successfully returned, resolve with the array
 				resolve( mailingLists );
