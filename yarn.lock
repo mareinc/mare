@@ -1943,11 +1943,18 @@ cloudinary-microurl@^1.2.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/cloudinary-microurl/-/cloudinary-microurl-1.4.0.tgz#37ab057811ad48b503476dc993a34111866ac49a"
 
-cloudinary@^1.11.0, cloudinary@~1.11.0:
+cloudinary@^1.11.0:
   version "1.11.0"
   resolved "https://registry.yarnpkg.com/cloudinary/-/cloudinary-1.11.0.tgz#3f6b21961d17859f271738f452427d9899591ff1"
   dependencies:
     lodash "^4.17.4"
+    q "^1.5.1"
+
+cloudinary@~1.12.0:
+  version "1.12.0"
+  resolved "https://registry.yarnpkg.com/cloudinary/-/cloudinary-1.12.0.tgz#390a70bf2278606a8f77467dfdf9d9c67ccf1b6c"
+  dependencies:
+    lodash "^4.17.11"
     q "^1.5.1"
 
 co@3.1.0:
@@ -5767,7 +5774,7 @@ lodash@^3.5.0, lodash@^3.9.3:
   version "3.10.1"
   resolved "http://registry.npmjs.org/lodash/-/lodash-3.10.1.tgz#5bf45e8e49ba4189e17d482789dfd15bd140b7b6"
 
-lodash@^4.0.0, lodash@^4.0.1, lodash@^4.13.1, lodash@^4.14.0, lodash@^4.17.10, lodash@^4.17.4, lodash@^4.17.5, lodash@^4.2.0, lodash@^4.2.1, lodash@~4.17.10:
+lodash@^4.0.0, lodash@^4.0.1, lodash@^4.13.1, lodash@^4.14.0, lodash@^4.17.10, lodash@^4.17.11, lodash@^4.17.4, lodash@^4.17.5, lodash@^4.2.0, lodash@^4.2.1, lodash@~4.17.10:
   version "4.17.11"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.11.tgz#b39ea6229ef607ecd89e2c8df12536891cac9b8d"
 
