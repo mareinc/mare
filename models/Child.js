@@ -427,7 +427,14 @@ Child.schema.post( 'save', function() {
 	// if the siblings group has been changed
 	if ( this.checkSiblingsForChanges() ) {
 		// process updates for other siblings in the group
-		this.updateSiblingGroup();
+		this.updateSiblingGroup()
+			.then( () => {
+				// TODO: can these action be combined to make this process more efficient?
+				// replicate fields to all siblings after they are updated
+				this.replicateFieldsToSiblings();
+			});
+	} else {
+		this.replicateFieldsToSiblings();
 	}
 
 	// if the siblings group has not changed, try to apply siblings to be placed with changes to ensure group info is updated all siblings to be placed with
@@ -789,6 +796,8 @@ Child.schema.methods.updateSiblingGroupInfo = function() {
 
 Child.schema.methods.updateSiblingGroup = function() {
 
+	let siblingGroupPromises = [];
+
 	let siblingsArrayBeforeSave = this._original ? this._original.siblings.map( sibling => sibling.toString() ) : [];
 	let siblingsBeforeSave = new Set( siblingsArrayBeforeSave );
 
@@ -816,7 +825,7 @@ Child.schema.methods.updateSiblingGroup = function() {
 				// lock the sibling to ensure that it cannot be updated by any other processes until this update is complete
 				saveLock.lock( siblingID );
 				// update the sibling with the new sibling group
-				ChildMiddleware
+				let siblingGroupPromise = ChildMiddleware
 					.applySiblingGroupToChild( { childToUpdateID: siblingID, siblingGroup: updatedSiblingGroup } )
 					.then( updatedChildID => {
 						// unlock the sibling after update is complete
@@ -826,6 +835,8 @@ Child.schema.methods.updateSiblingGroup = function() {
 						// unlock the sibling after update is complete
 						saveLock.unlock( updatedChildID );
 					});
+
+				siblingGroupPromises.push( siblingGroupPromise );
 			}
 		});
 	// if the updated sibling group is empty this child was removed from a sibling group and should remove itself from any siblings remaining in that group
@@ -837,7 +848,7 @@ Child.schema.methods.updateSiblingGroup = function() {
 				// lock the sibling to ensure that it cannot be updated by any other processes until this update is complete
 				saveLock.lock( siblingID );
 				// remove this child from a sibling
-				ChildMiddleware
+				let siblingGroupPromise = ChildMiddleware
 					.removeSiblingFromChild( { childToUpdateID: siblingID, siblingToRemoveID: this._id.toString() } )
 					.then( updatedChildID => {
 						// unlock the sibling after update is complete
@@ -847,9 +858,13 @@ Child.schema.methods.updateSiblingGroup = function() {
 						// unlock the sibling after update is complete
 						saveLock.unlock( updatedChildID );
 					});
+
+				siblingGroupPromises.push( siblingGroupPromise );
 			}
 		});
 	}
+
+	return Promise.all( siblingGroupPromises );
 };
 
 Child.schema.methods.updateSiblingsToBePlacedWithGroup = function() {
@@ -982,6 +997,7 @@ Child.schema.methods.updateSiblingFields = function() {
 	// get all the aggregate of all siblings to be placed with before and after saving
 	const allSiblingsToBePlacedWith = siblingsToBePlacedWithBeforeSave.union( siblingsToBePlacedWithAfterSave );
 
+	// TODO: update this to use native Promises or Async/Await
 	// add update children list in the siblings and siblingsToBePlacedWith fields
 	async.series([
 		done => { ChildMiddleware.updateMySiblings( siblingsAfterSave, childId, done ); },
@@ -1020,6 +1036,69 @@ Child.schema.methods.updateSiblingFields = function() {
 	], function() {
 
 		done();
+	});
+};
+
+// TODO: see if this should be merged into Child.schema.methods.updateSiblingFields
+Child.schema.methods.replicateFieldsToSiblings = function() {
+	
+	// don't replicate fields if _disableReplicateFieldsToSiblings flag is present:
+	if ( typeof this._disableReplicateFieldsToSiblings !== 'undefined' ) {
+		return;
+	}
+
+	let sourceFields = {
+		recommendedFamilyConstellation: this.recommendedFamilyConstellation,
+		adoptionWorker: this.adoptionWorker,
+		recruitmentWorker: this.recruitmentWorker,
+		isVisibleInGallery: this.isVisibleInGallery
+	}
+	
+	this.siblings.forEach( siblingID => {
+		ChildServiceMiddleware
+			.getChildById( { id: siblingID } )
+			.then( child => {
+				let updateChild = false;
+				
+				// create sets to find differences in recommendedFamilyConstellation field:
+				let currentRecommendedFamilyConstellationSet = new Set( child.recommendedFamilyConstellation.map( constellation => constellation.toString() ) );
+				let updatedRecommendedFamilyConstellationSet = new Set( sourceFields.recommendedFamilyConstellation.map( constellation => constellation.toString() ) );
+				if ( currentRecommendedFamilyConstellationSet.leftOuterJoin( updatedRecommendedFamilyConstellationSet ).size > 0 || 
+					currentRecommendedFamilyConstellationSet.rightOuterJoin( updatedRecommendedFamilyConstellationSet ).size > 0 
+				) {
+					child.recommendedFamilyConstellation = sourceFields.recommendedFamilyConstellation;
+					updateChild = true;
+				}
+				
+				if ( child.adoptionWorker != sourceFields.adoptionWorker ) {
+					child.adoptionWorker = sourceFields.adoptionWorker;
+					updateChild = true;
+				}
+				
+				if ( child.recruitmentWorker != sourceFields.recruitmentWorker ) {
+					child.recruitmentWorker = sourceFields.recruitmentWorker;
+					updateChild = true;
+				}
+				
+				if ( child.isVisibleInGallery != sourceFields.isVisibleInGallery ) {
+					child.isVisibleInGallery = sourceFields.isVisibleInGallery;
+					updateChild = true;
+				}
+				
+				if ( updateChild && !saveLock.isLocked( siblingID ) ) {
+					saveLock.lock( siblingID );
+					child._disableReplicateFieldsToSiblings = true;
+					child.save( error => {
+						// log any errors
+						if ( error ) {
+							console.error('ERRR', error );
+						}
+						
+						saveLock.unlock( siblingID );
+					});
+				}
+				
+			});
 	});
 };
 

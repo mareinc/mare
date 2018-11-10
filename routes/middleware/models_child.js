@@ -129,6 +129,9 @@ exports.applySiblingGroupToChild = ( { childToUpdateID, siblingGroup = [] } ) =>
 				// if there are updates to be saved to the current child's sibling group
 				if ( saveUpdatesToSiblingGroup ) {
 
+					// disable future replication of fields to siblings ( this is presumably done to prevent siblings from updating eachother in an infinite loop )
+					child._disableReplicateFieldsToSiblings = true;
+
 					// save the updated child model
 					child.save( error => {
 						// log any errors
@@ -172,6 +175,8 @@ exports.removeSiblingFromChild = ( { childToUpdateID, siblingToRemoveID } ) => {
 				if ( siblingSetSizeBeforeDelete !== siblingSet.size ) {
 					// update the child's sibling group
 					child.siblings = Array.from( siblingSet );
+					// disable future replication of fields to siblings ( this is presumably done to prevent siblings from updating eachother in an infinite loop )
+					child._disableReplicateFieldsToSiblings = true;
 					// save the updated child model
 					child.save( error => {
 						// log any errors\
