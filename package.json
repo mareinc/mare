@@ -9,7 +9,7 @@
 	"dependencies": {
 		"async": "^2.6.0",
 		"browserify": "^16.1.0",
-		"cloudinary": "~1.11.0",
+		"cloudinary": "~1.12.0",
 		"connect-mongo": "^2.0.1",
 		"del": "^3.0.0",
 		"dotenv": "^6.1.0",
@@ -23,7 +23,7 @@
 		"gulp-eslint": "^5.0.0",
 		"gulp-filter": "^5.1.0",
 		"gulp-ignore": "^2.0.2",
-		"gulp-imagemin": "^4.1.0",
+		"gulp-imagemin": "^5.0.3",
 		"gulp-mocha": "^6.0.0",
 		"gulp-rename": "^1.2.2",
 		"gulp-sass": "^4.0.0",
