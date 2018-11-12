@@ -1977,9 +1977,9 @@ cloudinary@^1.11.0:
     lodash "^4.17.4"
     q "^1.5.1"
 
-cloudinary@~1.12.0:
-  version "1.12.0"
-  resolved "https://registry.yarnpkg.com/cloudinary/-/cloudinary-1.12.0.tgz#390a70bf2278606a8f77467dfdf9d9c67ccf1b6c"
+cloudinary@~1.13.0:
+  version "1.13.0"
+  resolved "https://registry.yarnpkg.com/cloudinary/-/cloudinary-1.13.0.tgz#0c54bc4af7ee3764f5e3a5d3555770dd5bc29c85"
   dependencies:
     lodash "^4.17.11"
     q "^1.5.1"
