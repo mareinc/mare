@@ -71,6 +71,10 @@ exports.createInquiry = ( { inquiry, user } ) => {
 						
 						// resolve the promise with the new inquiry model
 						resolve( newInquiry );
+					})
+					.catch( error => {
+						// resolve the promise with the new inquiry model
+						resolve( newInquiry );
 					});
 				} else {
 					resolve( newInquiry );
