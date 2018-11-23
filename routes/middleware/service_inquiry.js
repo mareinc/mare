@@ -61,17 +61,20 @@ exports.createInquiry = ( { inquiry, user } ) => {
 			.then( inquiry => {
 				// store the inquiry model in a variable for future processing
 				newInquiry = inquiry;
+				
 				// store information needed for processing child inquiries if present
-				const adoptionWorkerRegion		= inquiry.children.length > 0 ?
-												  inquiry.children[ 0 ].adoptionWorkerAgencyRegion :
-												  undefined;
-				const recruitmentWorkerRegion	= inquiry.children.length > 0 ?
-												  inquiry.children[ 0 ].recruitmentWorkerAgencyRegion :
-												  undefined;
-				// if we have the recruitment worker region, we'll use it to find the staff region contact, otherwise, fall back to the adoption worker region
-				targetRegion = recruitmentWorkerRegion || adoptionWorkerRegion;
-				// resolve the promise with the new inquiry model
-				resolve( newInquiry );
+				if ( inquiry.children.length > 0 ) {
+					let firstChild = childService.getChildrenByIds( [ inquiry.children[ 0 ] ] );
+					firstChild.then( childrenData => {
+						// if we have the recruitment worker region, we'll use it to find the staff region contact, otherwise, fall back to the adoption worker region
+						targetRegion = childrenData[ 0 ].recruitmentWorkerAgencyRegion || childrenData[ 0 ].adoptionWorkerAgencyRegion;
+						
+						// resolve the promise with the new inquiry model
+						resolve( newInquiry );
+					});
+				} else {
+					resolve( newInquiry );
+				}
 			})
 			.catch( err => reject( `error saving inquiry - ${ err }` ) )
 			// extract only the relevant fields from the inquiry, storing the results in a variable for future processing
