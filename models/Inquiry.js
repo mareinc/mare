@@ -86,11 +86,11 @@ Inquiry.schema.pre( 'save', function( next ) {
 				// loop through the children field of the inquiry
 				this.get( 'children' ).forEach( child => {
 					// add the current child id
-					updatedChildrenList.add( child.get( '_id' ) );
+					updatedChildrenList.add( child.get( '_id' ).toString() );
 					// loop through the siblings to be placed with field of the child
 					child.siblingsToBePlacedWith.forEach( siblingId => {
 						// add the child to the set, which will automatically prevent duplicate additions
-						updatedChildrenList.add( siblingId );
+						updatedChildrenList.add( siblingId.toString() );
 					});
 				});
 				// convert the children list to an array and use it to update the children field of the inquiry
