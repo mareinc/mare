@@ -64,18 +64,22 @@ exports.createInquiry = ( { inquiry, user } ) => {
 				
 				// store information needed for processing child inquiries if present
 				if ( inquiry.children.length > 0 ) {
-					let firstChild = childService.getChildrenByIds( [ inquiry.children[ 0 ] ] );
-					firstChild.then( childrenData => {
-						// if we have the recruitment worker region, we'll use it to find the staff region contact, otherwise, fall back to the adoption worker region
-						targetRegion = childrenData[ 0 ].recruitmentWorkerAgencyRegion || childrenData[ 0 ].adoptionWorkerAgencyRegion;
-						
-						// resolve the promise with the new inquiry model
-						resolve( newInquiry );
-					})
-					.catch( error => {
-						// resolve the promise with the new inquiry model
-						resolve( newInquiry );
-					});
+					// fetch the child model matching the first child in the inquiry
+					// NOTE: The assumption is that all children will have the same region data, so we only need to look at the one child
+					childService.getChildById( { id: inquiry.children[ 0 ] } )
+						.then( child => {
+							// if we have the recruitment worker region, we'll use it to find the staff region contact, otherwise, fall back to the adoption worker region
+							targetRegion = child.recruitmentWorkerAgencyRegion || child.adoptionWorkerAgencyRegion;
+							
+							// resolve the promise with the new inquiry model
+							resolve( newInquiry );
+						})
+						.catch( err => {
+							// log the error
+							console.error( `error fetching region for inquiry with id ${ inquiry.get( '_id' ) } - ${ err }` );
+							// resolve the promise with the new inquiry model
+							resolve( newInquiry );
+						});
 				} else {
 					resolve( newInquiry );
 				}
