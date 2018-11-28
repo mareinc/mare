@@ -69,7 +69,7 @@ exports.createInquiry = ( { inquiry, user } ) => {
 					childService.getChildById( { id: inquiry.children[ 0 ] } )
 						.then( child => {
 							// if we have the recruitment worker region, we'll use it to find the staff region contact, otherwise, fall back to the adoption worker region
-							targetRegion = child.recruitmentWorkerAgencyRegion || child.adoptionWorkerAgencyRegion;
+							targetRegion = child.adoptionWorkerAgencyRegion || child.recruitmentWorkerAgencyRegion;
 							
 							// resolve the promise with the new inquiry model
 							resolve( newInquiry );
