@@ -61,17 +61,28 @@ exports.createInquiry = ( { inquiry, user } ) => {
 			.then( inquiry => {
 				// store the inquiry model in a variable for future processing
 				newInquiry = inquiry;
+				
 				// store information needed for processing child inquiries if present
-				const adoptionWorkerRegion		= inquiry.children.length > 0 ?
-												  inquiry.children[ 0 ].adoptionWorkerAgencyRegion :
-												  undefined;
-				const recruitmentWorkerRegion	= inquiry.children.length > 0 ?
-												  inquiry.children[ 0 ].recruitmentWorkerAgencyRegion :
-												  undefined;
-				// if we have the recruitment worker region, we'll use it to find the staff region contact, otherwise, fall back to the adoption worker region
-				targetRegion = recruitmentWorkerRegion || adoptionWorkerRegion;
-				// resolve the promise with the new inquiry model
-				resolve( newInquiry );
+				if ( inquiry.children.length > 0 ) {
+					// fetch the child model matching the first child in the inquiry
+					// NOTE: The assumption is that all children will have the same region data, so we only need to look at the one child
+					childService.getChildById( { id: inquiry.children[ 0 ] } )
+						.then( child => {
+							// if we have the recruitment worker region, we'll use it to find the staff region contact, otherwise, fall back to the adoption worker region
+							targetRegion = child.adoptionWorkerAgencyRegion || child.recruitmentWorkerAgencyRegion;
+							
+							// resolve the promise with the new inquiry model
+							resolve( newInquiry );
+						})
+						.catch( err => {
+							// log the error
+							console.error( `error fetching region for inquiry with id ${ inquiry.get( '_id' ) } - ${ err }` );
+							// resolve the promise with the new inquiry model
+							resolve( newInquiry );
+						});
+				} else {
+					resolve( newInquiry );
+				}
 			})
 			.catch( err => reject( `error saving inquiry - ${ err }` ) )
 			// extract only the relevant fields from the inquiry, storing the results in a variable for future processing

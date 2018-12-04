@@ -7,7 +7,7 @@ var Match = new keystone.List( 'Match' );
 // Create fields
 Match.add( 'Match', {
 
-	matchDate: { type: Types.Date, label: 'match date', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', required: true, initial: true },
+	matchDate: { type: Types.Date, label: 'match date', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, required: true, initial: true },
 
 	status: { type: Types.Select, label: 'status', options: 'matched, not matched', required: true, initial: true },
 	source: { type: Types.Relationship, label: 'source', ref: 'Source', filters: { isActive: true }, initial: true },

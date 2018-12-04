@@ -15,7 +15,7 @@ Event.add( 'General Information', {
 
 	name: { type: Types.Text, label: 'event name', required: true, initial: true },
 	url: { type: Types.Url, label: 'url', noedit: true },
-	isActive: { type: Types.Boolean, label: 'is event active?', default: true, initial: true },
+	isActive: { type: Types.Boolean, label: 'is event active?', initial: true },
 	shouldCreateSource: { type: Types.Boolean, label: 'create source from this event', initial: true },
 	// type: { type: Types.Relationship, label: 'Event Type', ref: 'Event Type', required: true, initial: true }
 	type: { type: Types.Select, label: 'event type', options: 'MARE adoption parties & information events, MAPP trainings, agency information meetings, other opportunities & trainings, fundraising events', required: true, initial: true }, // TODO: this fixes an issue in pre-save which can be updated to fetch the live results and not hardcode this list.
@@ -27,7 +27,7 @@ Event.add( 'General Information', {
 		select: true,
 		selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/events/`,
 		autoCleanup: true,
-		whenExists: 'retry',
+		whenExists: 'overwrite',
 		generateFilename: function( file, attemptNumber ) {
 			const originalname = file.originalname;
 			const filenameWithoutExtension = originalname.substring( 0, originalname.lastIndexOf( '.' ) );
@@ -57,9 +57,9 @@ Event.add( 'General Information', {
 
 }, 'Details', {
 
-	startDate: { type: Types.Date, label: 'start date', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', required: true, initial: true },
+	startDate: { type: Types.Date, label: 'start date', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, required: true, initial: true },
 	startTime: { type: Types.Text, label: 'start time', required: true, initial: true },
-	endDate: { type: Types.Date, label: 'end date', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', required: true, initial: true },
+	endDate: { type: Types.Date, label: 'end date', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, required: true, initial: true },
 	endTime: { type: Types.Text, label: 'end time', required: true, initial: true },
 	description: { type: Types.Html, label: 'description', wysiwyg: true, initial: true }
 

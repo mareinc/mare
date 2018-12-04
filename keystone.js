@@ -3,7 +3,7 @@
 require( 'dotenv' ).load();
 
 // Initialise New Relic if an app name and license key exists
-if (process.env.NEW_RELIC_APP_NAME && process.env.NEW_RELIC_LICENSE_KEY) {
+if( process.env.NEW_RELIC_APP_NAME && process.env.NEW_RELIC_LICENSE_KEY ) {
 	require( 'newrelic' );
 }
 
@@ -37,6 +37,7 @@ keystone.init({
 
 	'auto update': true,
 	'session': true,
+	'session store': 'mongo',
 	'auth': true,
 	'signin url': '/',
 	'user model': 'User',

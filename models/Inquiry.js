@@ -16,7 +16,7 @@ var Inquiry = new keystone.List( 'Inquiry', {
 // Create fields
 Inquiry.add( 'General Information', {
 	takenBy: { type: Types.Relationship, label: 'taken by', ref: 'Admin', required: false, initial: true, note: 'if no user is selected a current user will be used' },
-	takenOn: { type: Types.Date, label: 'taken on', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', required: true, initial: true },
+	takenOn: { type: Types.Date, label: 'taken on', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, required: true, initial: true },
 
 	inquirer: { type: Types.Select, label: 'inquirer', options: 'site visitor, family, social worker', default: 'family', initial: true },
 	inquiryType: { type: Types.Select, label: 'inquiry type', options: 'child inquiry, complaint, family support consultation, general inquiry', required: true, initial: true },
@@ -33,7 +33,7 @@ Inquiry.add( 'General Information', {
 	siteVisitor: { type: Types.Relationship, label: 'site visitor', ref: 'Site Visitor', dependsOn: { inquirer: 'site visitor' }, initial: true },
 	family: { type: Types.Relationship, label: 'family', ref: 'Family', dependsOn: { inquirer: 'family' }, initial: true },
 	socialWorker: { type: Types.Relationship, label: 'social worker', ref: 'Social Worker', dependsOn: { inquirer: 'social worker' }, initial: true },
-	onBehalfOfMAREFamily: { type: Types.Boolean, label: 'is the family registered?', default: true, dependsOn: { inquirer: 'social worker' }, initial: true },
+	onBehalfOfMAREFamily: { type: Types.Boolean, label: 'is the family registered?', dependsOn: { inquirer: 'social worker' }, initial: true },
 	onBehalfOfFamily: { type: Types.Relationship, label: 'on behalf of', ref: 'Family', dependsOn: { inquirer: 'social worker', onBehalfOfMAREFamily: true }, initial: true },
 	onBehalfOfFamilyText: { type: Types.Text, label: 'on behalf of', dependsOn: { inquirer: 'social worker', onBehalfOfMAREFamily: false }, initial: true },
 	comments: { type: Types.Textarea, label: 'comments', initial: true }
@@ -79,6 +79,7 @@ Inquiry.add( 'General Information', {
 // 		// TODO: this should be moved into it's own method
 // 		.then( () => {
 			
+<<<<<<< HEAD
 // 			// add siblings to the children list
 // 			if ( this.get( 'children' ).length > 0 ) {
 // 				// create a unique list to all children, including siblings to be placed with children who were selectee
@@ -95,6 +96,24 @@ Inquiry.add( 'General Information', {
 // 				});
 // 				// convert the children list to an array and use it to update the children field of the inquiry
 // 				this.set( 'children', [ ...updatedChildrenList ] );
+=======
+			// add siblings to the children list
+			if ( this.get( 'children' ).length > 0 ) {
+				// create a unique list to all children, including siblings to be placed with children who were selectee
+				const updatedChildrenList = new Set();
+				// loop through the children field of the inquiry
+				this.get( 'children' ).forEach( child => {
+					// add the current child id
+					updatedChildrenList.add( child.get( '_id' ).toString() );
+					// loop through the siblings to be placed with field of the child
+					child.siblingsToBePlacedWith.forEach( siblingId => {
+						// add the child to the set, which will automatically prevent duplicate additions
+						updatedChildrenList.add( siblingId.toString() );
+					});
+				});
+				// convert the children list to an array and use it to update the children field of the inquiry
+				this.set( 'children', [ ...updatedChildrenList ] );
+>>>>>>> develop
 				
 // 				// call next to allow the model to save
 // 				next();

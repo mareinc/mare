@@ -34,7 +34,7 @@ SiteVisitor.add( 'Permissions', {
 		select: true,
 		selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/users/site visitors`,
 		autoCleanup: true,
-		whenExists: 'retry',
+		whenExists: 'overwrite',
 		generateFilename: function( file, attemptNumber ) {
 			const originalname = file.originalname;
 			const filenameWithoutExtension = originalname.substring( 0, originalname.lastIndexOf( '.' ) );
@@ -65,7 +65,7 @@ SiteVisitor.add( 'Permissions', {
 
 	infoPacket: {
 		packet: { type: Types.Select, options: 'English, Spanish, none', label: 'Packet', initial: true },
-		date: { type: Types.Date, label: 'date info packet sent', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', initial: true },
+		date: { type: Types.Date, label: 'date info packet sent', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, initial: true },
 		notes: { type: Types.Textarea, label: 'notes', initial: true }
 	}
 

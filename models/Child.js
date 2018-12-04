@@ -48,12 +48,12 @@ Child.add('Display Options', {
 
 	siteVisibility: { type: Types.Select, label: 'child is visible to', options: 'everyone, only registered social workers and families', required: true, initial: true },
 	isVisibleInGallery: { type: Types.Boolean, label: 'activate child profile on website to group selected', note: 'authorized staff only', default: false, initial: true },
-	visibleInGalleryDate: { type: Types.Date, label: 'date added to MARE web', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', dependsOn: {isVisibleInGallery: true }, initial: true }
+	visibleInGalleryDate: { type: Types.Date, label: 'date added to MARE web', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: {isVisibleInGallery: true }, initial: true }
 
 }, 'Child Information', {
 
 	registrationNumber: { type: Number, label: 'registration number', format: false, noedit: true },
-	registrationDate: { type: Types.Date, label: 'registration date', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', required: true, initial: true },
+	registrationDate: { type: Types.Date, label: 'registration date', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, required: true, initial: true },
 	displayNameAndRegistration: { type: Types.Text, label: 'name and registration number', default: 'new child', hidden: true, noedit: true },
 
 	name: {
@@ -65,9 +65,9 @@ Child.add('Display Options', {
 		full: { type: Types.Text, label: 'name', hidden: true, noedit: true, initial: false }
 	},
 
-	birthDate: { type: Types.Date, label: 'date of birth', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', required: true, initial: true },
+	birthDate: { type: Types.Date, label: 'date of birth', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, required: true, initial: true },
 	languages: { type: Types.Relationship, label: 'languages', ref: 'Language', many: true, required: true, initial: true },
-	statusChangeDate: { type: Types.Date, label: 'status change date', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', initial: true }, // TODO: Logic needed, see line 14 of https://docs.google.com/spreadsheets/d/1Opb9qziX2enTehJx5K1J9KAT7v-j2yAdqwyQUMSsFwc/edit#gid=1235141373
+	statusChangeDate: { type: Types.Date, label: 'status change date', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, initial: true }, // TODO: Logic needed, see line 14 of https://docs.google.com/spreadsheets/d/1Opb9qziX2enTehJx5K1J9KAT7v-j2yAdqwyQUMSsFwc/edit#gid=1235141373
 	status: { type: Types.Relationship, label: 'status', ref: 'Child Status', required: true, initial: true },
 	gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', required: true, initial: true },
 	race: { type: Types.Relationship, label: 'race', ref: 'Race', many: true, required: true, initial: true },
@@ -88,7 +88,7 @@ Child.add('Display Options', {
 	city: { type: Types.Relationship, label: 'city/town of child\'s current location', ref: 'City or Town', dependsOn: { isOutsideMassachusetts: false }, initial: true },
 	cityText: { type: Types.Text, label: 'city/town of child\'s current location', dependsOn: { isOutsideMassachusetts: true }, initial: true },
 	careFacilityName: { type: Types.Text, label: 'name of residential/group care facility', initial: true },
-	dateMovedToResidence: { type: Types.Date, label: 'date moved to current residence', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', initial: true }
+	dateMovedToResidence: { type: Types.Date, label: 'date moved to current residence', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, initial: true }
 
 }, 'Special Needs', {
 
@@ -147,11 +147,11 @@ Child.add('Display Options', {
 	},
 
 	hasPhotolistingWriteup: { type: Types.Boolean, label: 'photolisting writeup', default: false, initial: true },
-	photolistingWriteupDate: { type: Types.Date, label: 'date of photolisting writeup', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', dependsOn: { hasPhotolistingWriteup: true }, initial: true },
+	photolistingWriteupDate: { type: Types.Date, label: 'date of photolisting writeup', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { hasPhotolistingWriteup: true }, initial: true },
 	hasPhotolistingPhoto: { type: Types.Boolean, label: 'photolisting photo', default: false, initial: true },
-	photolistingPhotoDate: { type: Types.Date, label: 'date of photolisting photo', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', dependsOn: { hasPhotolistingPhoto: true }, initial: true },
+	photolistingPhotoDate: { type: Types.Date, label: 'date of photolisting photo', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { hasPhotolistingPhoto: true }, initial: true },
 	isCurrentlyInPhotoListing: { type: Types.Boolean, label: 'currently in photolisting', default: false, initial: true },
-	dateOfLastPhotoListing: { type: Types.Date, label: 'date of last photolisting', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', dependsOn: {isCurrentlyInPhotoListing: true }, initial: true },
+	dateOfLastPhotoListing: { type: Types.Date, label: 'date of last photolisting', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: {isCurrentlyInPhotoListing: true }, initial: true },
 	photolistingPageNumber: { type: Types.Text, label: 'photolisting page', initial: true },
 	previousPhotolistingPageNumbers: { type: Types.Text, label: 'previous photolisting pages', initial: true },
 	image: {
@@ -162,7 +162,7 @@ Child.add('Display Options', {
 		selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/children/`,
 		dependsOn: { mustBePlacedWithSiblings: false },
 		autoCleanup: false,
-		whenExists: 'replace',
+		whenExists: 'overwrite',
 		generateFilename: function( file, attemptNumber ) {
 			const originalname = file.originalname;
 			const filenameWithoutExtension = originalname.substring( 0, originalname.lastIndexOf( '.' ) );
@@ -180,7 +180,7 @@ Child.add('Display Options', {
 		selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/children/`,
 		dependsOn: { mustBePlacedWithSiblings: false },
 		autoCleanup: false,
-		whenExists: 'replace',
+		whenExists: 'overwrite',
 		generateFilename: function( file, attemptNumber ) {
 			const originalname = file.originalname;
 			const filenameWithoutExtension = originalname.substring( 0, originalname.lastIndexOf( '.' ) );
@@ -198,7 +198,7 @@ Child.add('Display Options', {
 		selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/sibling-groups/`,
 		dependsOn: { mustBePlacedWithSiblings: true },
 		autoCleanup: false,
-		whenExists: 'replace',
+		whenExists: 'overwrite',
 		generateFilename: function( file, attemptNumber ) {
 			const originalname = file.originalname;
 			const filenameWithoutExtension = originalname.substring( 0, originalname.lastIndexOf( '.' ) );
@@ -213,26 +213,26 @@ Child.add('Display Options', {
 }, 'Recruitment Options', {
 
 	hasVideoSnapshot: { type: Types.Boolean, label: 'video snapshot', default: false, initial: true },
-	videoSnapshotDate: { type: Types.Date, label: 'date of video snapshot', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', dependsOn: { hasVideoSnapshot: true }, initial: true },
+	videoSnapshotDate: { type: Types.Date, label: 'date of video snapshot', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { hasVideoSnapshot: true }, initial: true },
 	video: { type: Types.Url, label: 'video', dependsOn: { hasVideoSnapshot: true, mustBePlacedWithSiblings: false } },
 	siblingGroupVideo: { type: Types.Url, label: 'sibling group video', dependsOn: { hasVideoSnapshot: true, mustBePlacedWithSiblings: true } },
 
 	onAdoptuskids: { type: Types.Boolean, label: 'Adoptuskids website', default: false, initial: true },
-	onAdoptuskidsDate: { type: Types.Date, label: 'date on Adoptuskids', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', dependsOn: { onAdoptuskids: true }, initial: true },
+	onAdoptuskidsDate: { type: Types.Date, label: 'date on Adoptuskids', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { onAdoptuskids: true }, initial: true },
 
 	wednesdaysChild: { type: Types.Boolean, label: 'Wednesday\'s Child', dependsOn: { mustBePlacedWithSiblings: false }, default: false, initial: true },
-	wednesdaysChildDate: { type: Types.Date, label: 'date of Wednesday\'s Child', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', dependsOn: { mustBePlacedWithSiblings: false, wednesdaysChild: true }, initial: true },
+	wednesdaysChildDate: { type: Types.Date, label: 'date of Wednesday\'s Child', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { mustBePlacedWithSiblings: false, wednesdaysChild: true }, initial: true },
 	wednesdaysChildVideo: { type: Types.Url, label: 'Wednesday\'s Child video', dependsOn: { mustBePlacedWithSiblings: false, wednesdaysChild: true } },
 
 	wednesdaysChildSiblingGroup: { type: Types.Boolean, label: 'Wednesday\'s Child for sibling group?', dependsOn: { mustBePlacedWithSiblings: true }, default: false, initial: true },
-	wednesdaysChildSiblingGroupDate: { type: Types.Date, label: 'date of sibling group\'s Wednesday\'s Child', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', dependsOn: { mustBePlacedWithSiblings: true, wednesdaysChildSiblingGroup: true }, initial: true },
+	wednesdaysChildSiblingGroupDate: { type: Types.Date, label: 'date of sibling group\'s Wednesday\'s Child', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { mustBePlacedWithSiblings: true, wednesdaysChildSiblingGroup: true }, initial: true },
 	wednesdaysChildSiblingGroupVideo: { type: Types.Url, label: 'Wednesday\'s Child sibling group video', dependsOn: { mustBePlacedWithSiblings: true, wednesdaysChildSiblingGroup: true } },
 
 	coalitionMeeting: { type: Types.Boolean, label: 'coalition meeting', default: false, initial: true },
-	coalitionMeetingDate: { type: Types.Date, label: 'date of coalition meeting', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', dependsOn: { coalitionMeeting: true }, initial: true },
+	coalitionMeetingDate: { type: Types.Date, label: 'date of coalition meeting', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { coalitionMeeting: true }, initial: true },
 
 	matchingEvent: { type: Types.Boolean, label: 'matching event', default: false, initial: true },
-	matchingEventDate: { type: Types.Date, label: 'date of matching event', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', dependsOn: { matchingEvent: true }, initial: true },
+	matchingEventDate: { type: Types.Date, label: 'date of matching event', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { matchingEvent: true }, initial: true },
 
 	adoptionParties: { type: Types.Relationship, label: 'adoption parties', ref: 'Event', filters: { type: 'adoption party', isActive: true }, many: true, initial: true },
 
@@ -305,161 +305,168 @@ Child.schema.virtual( 'hasSiblingGroupImage' ).get( function() {
 
 // pre init hook - initialize default recommendedFamilyConstellation values for new child records
 // Doing it here via pre init because it does not seem to work when setting in the post init hook via field default options or via direct assignment to this.recommendedFamilyConstellation
-// Child.schema.pre('init', function (next, data) {
+Child.schema.pre('init', function (next, data) {
 	
-// 	// We are using a custom key of the Child const: _mareDefaultFamilyConstellations
-// 	// it will hold default recommendedFamilyConstellation values
-// 	if( typeof Child._mareDefaultFamilyConstellations === 'undefined' ) {
-// 		// load data
-// 		keystone.list( 'Family Constellation' ).model
-// 			.find()
-// 			.exec()
-// 			.then( constellations => {
-// 				Child._mareDefaultFamilyConstellations = [];
-// 				constellations.forEach( (familyConstellation, i ) => {
-// 					// assign all family constellation records as default except for other and unknown
-// 					if( familyConstellation.key !== 'unknown' && familyConstellation.key !== 'other' ) {
-// 						Child._mareDefaultFamilyConstellations.push( familyConstellation._id );
-// 					}
-// 				} );
-// 				// assign as default field values
-// 				Child.fields.recommendedFamilyConstellation.options.default = Child._mareDefaultFamilyConstellations;
-// 				next();
+	// We are using a custom key of the Child const: _mareDefaultFamilyConstellations
+	// it will hold default recommendedFamilyConstellation values
+	if( typeof Child._mareDefaultFamilyConstellations === 'undefined' ) {
+		// load data
+		keystone.list( 'Family Constellation' ).model
+			.find()
+			.exec()
+			.then( constellations => {
+				Child._mareDefaultFamilyConstellations = [];
+				constellations.forEach( (familyConstellation, i ) => {
+					// assign all family constellation records as default except for other and unknown
+					if( familyConstellation.key !== 'unknown' && familyConstellation.key !== 'other' ) {
+						Child._mareDefaultFamilyConstellations.push( familyConstellation._id );
+					}
+				} );
+				// assign as default field values
+				Child.fields.recommendedFamilyConstellation.__options.defaultValue = Child._mareDefaultFamilyConstellations;
+				next();
 				
-// 			}, err => {
-// 				console.error( 'error populating default recommendedFamilyConstellation' );
-// 			});
+			}, err => {
+				console.error( 'error populating default recommendedFamilyConstellation' );
+			});
 			
-// 	} else {
-// 		// assign as default field values
-// 		Child.fields.recommendedFamilyConstellation.options.default = Child._mareDefaultFamilyConstellations;
-// 		next();
+	} else {
+		// assign as default field values
+		Child.fields.recommendedFamilyConstellation.__options.defaultValue = Child._mareDefaultFamilyConstellations;
+		next();
 	
-// 	}
-// });
+	}
+});
 
 // Post Init - used to store all the values before anything is changed
-// Child.schema.post( 'init', function() {
-// 	'use strict';
+Child.schema.post( 'init', function() {
+	'use strict';
 
-// 	this._original = this.toObject();
+	this._original = this.toObject();
 
-// 	// if there are any siblingsToBePlacedWith, set mustBePlacedWithSiblings to true
-// 	if ( this.siblingsToBePlacedWith ) {
-// 		this.mustBePlacedWithSiblings = this.siblingsToBePlacedWith.length > 0 ? true : false;
-// 	}
-// });
+	// if there are any siblingsToBePlacedWith, set mustBePlacedWithSiblings to true
+	if ( this.siblingsToBePlacedWith ) {
+		this.mustBePlacedWithSiblings = this.siblingsToBePlacedWith.length > 0 ? true : false;
+	}
+});
 
-// Child.schema.pre( 'save', function( next ) {
-// 	'use strict';
+Child.schema.pre( 'save', function( next ) {
+	'use strict';
 
-// 	// trim whitespace characters from any type.Text fields
-// 	this.trimTextFields();
-// 	// create a full name for the child based on their first, middle, and last names
-// 	this.setFullName();
-// 	// if there are no siblings to be placed with, uncheck the box, otherwise check it
-// 	this.updateMustBePlacedWithSiblingsCheckbox();
-// 	// if there are no siblings to be placed with, clear the group bio
-// 	this.updateSiblingGroupInfo();
+	// trim whitespace characters from any type.Text fields
+	this.trimTextFields();
+	// create a full name for the child based on their first, middle, and last names
+	this.setFullName();
+	// if there are no siblings to be placed with, uncheck the box, otherwise check it
+	this.updateMustBePlacedWithSiblingsCheckbox();
+	// if there are no siblings to be placed with, clear the group bio
+	this.updateSiblingGroupInfo();
 
-// 	// set the registration number for the family
-// 	const registrationNumberSet = this.setRegistrationNumber();
-// 	// set the noedit fields associated with the adoption worker's agency
-// 	const adoptionWorkerAgencyFieldsSet = this.setAdoptionWorkerAgencyFields();
-// 	// set the noedit fields associated with the recruitment worker's agency
-// 	const recruitmentWorkerAgencyFieldsSet = this.setRecruitmentWorkerAgencyFields();
+	// set the registration number for the family
+	const registrationNumberSet = this.setRegistrationNumber();
+	// set the noedit fields associated with the adoption worker's agency
+	const adoptionWorkerAgencyFieldsSet = this.setAdoptionWorkerAgencyFields();
+	// set the noedit fields associated with the recruitment worker's agency
+	const recruitmentWorkerAgencyFieldsSet = this.setRecruitmentWorkerAgencyFields();
 
-// 	// check to see if the siblings groups have been changed
-// 	let hasSiblingsChanged = this.checkSiblingsForChanges();
-// 	let hasSiblingsToBePlacedWithChanged = this.checkSiblingsToBePlacedWithForChanges();
-// 	// if both groups have been changed
-// 	if ( hasSiblingsChanged && hasSiblingsToBePlacedWithChanged ) {
-// 		// revert the changes to the siblingsToBePlacedWith group
-// 		this.siblingsToBePlacedWith = this._original ? this._original.siblingsToBePlacedWith : [];
-// 		hasSiblingsToBePlacedWithChanged = false;
-// 	}
+	// check to see if the siblings groups have been changed
+	let hasSiblingsChanged = this.checkSiblingsForChanges();
+	let hasSiblingsToBePlacedWithChanged = this.checkSiblingsToBePlacedWithForChanges();
+	// if both groups have been changed
+	if ( hasSiblingsChanged && hasSiblingsToBePlacedWithChanged ) {
+		// revert the changes to the siblingsToBePlacedWith group
+		this.siblingsToBePlacedWith = this._original ? this._original.siblingsToBePlacedWith : [];
+		hasSiblingsToBePlacedWithChanged = false;
+	}
 
-// 	// perform async processing
-// 	Promise
-// 		.resolve()
-// 		// process updates to sibling groups
-// 		.then( () => {
-// 			// if the siblings group has been updated
-// 			if ( hasSiblingsChanged ) {
-// 				// batch the siblings group updates
-// 				return ChildMiddleware.batchAllSiblingUpdates( this );
-// 			// if the siblings to be placed with group has been updated
-// 			} else if ( hasSiblingsToBePlacedWithChanged ) {
-// 				// batch the siblings to be placed with group updates
-// 				return ChildMiddleware.batchAllSiblingsToBePlacedWithUpdates( this );
-// 			// if neither group has been updated
-// 			} else {
-// 				// continue execution
-// 				return;
-// 			}
-// 		})
-// 		// catch and log any errors
-// 		.catch( error => {
-// 			// log any errors
-// 			console.error( error );
-// 		})
-// 		// perform the rest of the pre-save processing
-// 		.then( () => {
+	// perform async processing
+	Promise
+		.resolve()
+		// process updates to sibling groups
+		.then( () => {
+			// if the siblings group has been updated
+			if ( hasSiblingsChanged ) {
+				// batch the siblings group updates
+				return ChildMiddleware.batchAllSiblingUpdates( this );
+			// if the siblings to be placed with group has been updated
+			} else if ( hasSiblingsToBePlacedWithChanged ) {
+				// batch the siblings to be placed with group updates
+				return ChildMiddleware.batchAllSiblingsToBePlacedWithUpdates( this );
+			// if neither group has been updated
+			} else {
+				// continue execution
+				return;
+			}
+		})
+		// catch and log any errors
+		.catch( error => {
+			// log any errors
+			console.error( error );
+		})
+		// perform the rest of the pre-save processing
+		.then( () => {
 
-// 			return Promise.all( [ registrationNumberSet, adoptionWorkerAgencyFieldsSet, recruitmentWorkerAgencyFieldsSet ] );
-// 		})
-// 		// if there was an error with any of the promises
-// 		.catch( err => {
-// 			// log it for debugging purposes
-// 			console.error( `child ${ this.name.full } ( registration number: ${ this.registrationNumber } ) saved with errors` );
-// 		})
-// 		// execute the following regardless of whether the promises were resolved or rejected
-// 		// TODO: this should be replaced with ES6 Promise.prototype.finally() once it's finalized, assuming we can update to the latest version of Node if we upgrade Keystone
-// 		.then( () => {
-// 			// create a unique label for each child based on their first & last names and their registration number
-// 			this.setFullNameAndRegistrationLabel();
-// 			next();
-// 		});
-// });
+			return Promise.all( [ registrationNumberSet, adoptionWorkerAgencyFieldsSet, recruitmentWorkerAgencyFieldsSet ] );
+		})
+		// if there was an error with any of the promises
+		.catch( err => {
+			// log it for debugging purposes
+			console.error( `child ${ this.name.full } ( registration number: ${ this.registrationNumber } ) saved with errors` );
+		})
+		// execute the following regardless of whether the promises were resolved or rejected
+		// TODO: this should be replaced with ES6 Promise.prototype.finally() once it's finalized, assuming we can update to the latest version of Node if we upgrade Keystone
+		.then( () => {
+			// create a unique label for each child based on their first & last names and their registration number
+			this.setFullNameAndRegistrationLabel();
+			next();
+		});
+});
 
-// Child.schema.post( 'save', function() {
+Child.schema.post( 'save', function() {
 
-// 	// if the siblings group has been changed
-// 	if ( this.checkSiblingsForChanges() ) {
-// 		// process updates for other siblings in the group
-// 		this.updateSiblingGroup();
-// 	}
+	// if the siblings group has been changed
+	if ( this.checkSiblingsForChanges() ) {
+		// process updates for other siblings in the group
+		this.updateSiblingGroup()
+			.then( () => {
+				// TODO: can these action be combined to make this process more efficient?
+				// replicate fields to all siblings after they are updated
+				this.replicateFieldsToSiblings();
+			});
+	} else {
+		this.replicateFieldsToSiblings();
+	}
 
-// 	// if the siblings group has not changed, try to apply siblings to be placed with changes to ensure group info is updated all siblings to be placed with
-// 	if ( !this.checkSiblingsForChanges() ) {
-// 		// process updates for other siblings in the group
-// 		this.updateSiblingsToBePlacedWithGroup();
-// 	}
+	// if the siblings group has not changed, try to apply siblings to be placed with changes to ensure group info is updated all siblings to be placed with
+	if ( !this.checkSiblingsForChanges() ) {
+		// process updates for other siblings in the group
+		this.updateSiblingsToBePlacedWithGroup();
+	}
 
-// 	// update saved bookmarks for families and social workers in the event of a status change or sibling group change
-// 	this.updateBookmarks();
+	// update saved bookmarks for families and social workers in the event of a status change or sibling group change
+	this.updateBookmarks();
 
-// 	// we need this id in case the family was created via the website and updatedBy is empty
-// 	const websiteBotFetched = UserServiceMiddleware.getUserByFullName( 'Website Bot', 'admin' );
+	// we need this id in case the family was created via the website and updatedBy is empty
+	const websiteBotFetched = UserServiceMiddleware.getUserByFullName( 'Website Bot', 'admin' );
 
-// 	// if the bot user was fetched successfully
-// 	websiteBotFetched
-// 		.then( bot => {
-// 			// set the updatedBy field to the bot's _id if the field isn't already set ( meaning it was saved in the admin UI and we know the user based on their session info )
-// 			this.updatedBy = this.updatedBy || bot.get( '_id' );
-// 		})
-// 		// if there was an error fetching the bot user
-// 		.catch( err => {
-// 			// log it for debugging purposes
-// 			console.error( `Website Bot could not be fetched for family ${ this.name.full } ( registration number: ${ this.registrationNumber } ) - ${ err }` );
-// 		})
-// 		// execute the following regardless of whether the promises were resolved or rejected
-// 		// TODO: this should be replaced with ES6 Promise.prototype.finally() once it's finalized, assuming we can update to the latest version of Node if we upgrade Keystone
-// 		.then( () => {
-// 			// process change history
-// 			this.setChangeHistory();
-// 		});
-// });
+	// if the bot user was fetched successfully
+	websiteBotFetched
+		.then( bot => {
+			// set the updatedBy field to the bot's _id if the field isn't already set ( meaning it was saved in the admin UI and we know the user based on their session info )
+			this.updatedBy = this.updatedBy || bot.get( '_id' );
+		})
+		// if there was an error fetching the bot user
+		.catch( err => {
+			// log it for debugging purposes
+			console.error( `Website Bot could not be fetched for family ${ this.name.full } ( registration number: ${ this.registrationNumber } ) - ${ err }` );
+		})
+		// execute the following regardless of whether the promises were resolved or rejected
+		// TODO: this should be replaced with ES6 Promise.prototype.finally() once it's finalized, assuming we can update to the latest version of Node if we upgrade Keystone
+		.then( () => {
+			// process change history
+			this.setChangeHistory();
+		});
+});
 
 /* text fields don't automatically trim(), this is to ensure no leading or trailing whitespace gets saved into url, text, or text area fields */
 Child.schema.methods.trimTextFields = function() {
@@ -789,6 +796,8 @@ Child.schema.methods.updateSiblingGroupInfo = function() {
 
 Child.schema.methods.updateSiblingGroup = function() {
 
+	let siblingGroupPromises = [];
+
 	let siblingsArrayBeforeSave = this._original ? this._original.siblings.map( sibling => sibling.toString() ) : [];
 	let siblingsBeforeSave = new Set( siblingsArrayBeforeSave );
 
@@ -816,7 +825,7 @@ Child.schema.methods.updateSiblingGroup = function() {
 				// lock the sibling to ensure that it cannot be updated by any other processes until this update is complete
 				saveLock.lock( siblingID );
 				// update the sibling with the new sibling group
-				ChildMiddleware
+				let siblingGroupPromise = ChildMiddleware
 					.applySiblingGroupToChild( { childToUpdateID: siblingID, siblingGroup: updatedSiblingGroup } )
 					.then( updatedChildID => {
 						// unlock the sibling after update is complete
@@ -826,6 +835,8 @@ Child.schema.methods.updateSiblingGroup = function() {
 						// unlock the sibling after update is complete
 						saveLock.unlock( updatedChildID );
 					});
+
+				siblingGroupPromises.push( siblingGroupPromise );
 			}
 		});
 	// if the updated sibling group is empty this child was removed from a sibling group and should remove itself from any siblings remaining in that group
@@ -837,7 +848,7 @@ Child.schema.methods.updateSiblingGroup = function() {
 				// lock the sibling to ensure that it cannot be updated by any other processes until this update is complete
 				saveLock.lock( siblingID );
 				// remove this child from a sibling
-				ChildMiddleware
+				let siblingGroupPromise = ChildMiddleware
 					.removeSiblingFromChild( { childToUpdateID: siblingID, siblingToRemoveID: this._id.toString() } )
 					.then( updatedChildID => {
 						// unlock the sibling after update is complete
@@ -847,9 +858,13 @@ Child.schema.methods.updateSiblingGroup = function() {
 						// unlock the sibling after update is complete
 						saveLock.unlock( updatedChildID );
 					});
+
+				siblingGroupPromises.push( siblingGroupPromise );
 			}
 		});
 	}
+
+	return Promise.all( siblingGroupPromises );
 };
 
 Child.schema.methods.updateSiblingsToBePlacedWithGroup = function() {
@@ -982,6 +997,7 @@ Child.schema.methods.updateSiblingFields = function() {
 	// get all the aggregate of all siblings to be placed with before and after saving
 	const allSiblingsToBePlacedWith = siblingsToBePlacedWithBeforeSave.union( siblingsToBePlacedWithAfterSave );
 
+	// TODO: update this to use native Promises or Async/Await
 	// add update children list in the siblings and siblingsToBePlacedWith fields
 	async.series([
 		done => { ChildMiddleware.updateMySiblings( siblingsAfterSave, childId, done ); },
@@ -1020,6 +1036,69 @@ Child.schema.methods.updateSiblingFields = function() {
 	], function() {
 
 		done();
+	});
+};
+
+// TODO: see if this should be merged into Child.schema.methods.updateSiblingFields
+Child.schema.methods.replicateFieldsToSiblings = function() {
+	
+	// don't replicate fields if _disableReplicateFieldsToSiblings flag is present:
+	if ( typeof this._disableReplicateFieldsToSiblings !== 'undefined' ) {
+		return;
+	}
+
+	let sourceFields = {
+		recommendedFamilyConstellation: this.recommendedFamilyConstellation,
+		adoptionWorker: this.adoptionWorker,
+		recruitmentWorker: this.recruitmentWorker,
+		isVisibleInGallery: this.isVisibleInGallery
+	}
+	
+	this.siblings.forEach( siblingID => {
+		ChildServiceMiddleware
+			.getChildById( { id: siblingID } )
+			.then( child => {
+				let updateChild = false;
+				
+				// create sets to find differences in recommendedFamilyConstellation field:
+				let currentRecommendedFamilyConstellationSet = new Set( child.recommendedFamilyConstellation.map( constellation => constellation.toString() ) );
+				let updatedRecommendedFamilyConstellationSet = new Set( sourceFields.recommendedFamilyConstellation.map( constellation => constellation.toString() ) );
+				if ( currentRecommendedFamilyConstellationSet.leftOuterJoin( updatedRecommendedFamilyConstellationSet ).size > 0 || 
+					currentRecommendedFamilyConstellationSet.rightOuterJoin( updatedRecommendedFamilyConstellationSet ).size > 0 
+				) {
+					child.recommendedFamilyConstellation = sourceFields.recommendedFamilyConstellation;
+					updateChild = true;
+				}
+				
+				if ( child.adoptionWorker != sourceFields.adoptionWorker ) {
+					child.adoptionWorker = sourceFields.adoptionWorker;
+					updateChild = true;
+				}
+				
+				if ( child.recruitmentWorker != sourceFields.recruitmentWorker ) {
+					child.recruitmentWorker = sourceFields.recruitmentWorker;
+					updateChild = true;
+				}
+				
+				if ( child.isVisibleInGallery != sourceFields.isVisibleInGallery ) {
+					child.isVisibleInGallery = sourceFields.isVisibleInGallery;
+					updateChild = true;
+				}
+				
+				if ( updateChild && !saveLock.isLocked( siblingID ) ) {
+					saveLock.lock( siblingID );
+					child._disableReplicateFieldsToSiblings = true;
+					child.save( error => {
+						// log any errors
+						if ( error ) {
+							console.error('ERRR', error );
+						}
+						
+						saveLock.unlock( siblingID );
+					});
+				}
+				
+			});
 	});
 };
 

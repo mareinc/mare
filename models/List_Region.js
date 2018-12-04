@@ -13,8 +13,8 @@ Region.add({
 });
 
 // Displaly associations via the Relationship field type
-Region.relationship({ path: 'region', ref: 'CSC Region Contact', label: 'CSC contacts', refPath: 'region' });
-Region.relationship({ path: 'region', ref: 'City or Town', label: 'cities and towns', refPath: 'region' });
+Region.relationship({ ref: 'CSC Region Contact', refPath: 'region', path: 'region', label: 'CSC contacts' });
+Region.relationship({ ref: 'City or Town', refPath: 'region', path: 'region', label: 'cities and towns' });
 
 // Define default columns in the admin interface and register the model
 Region.defaultColumns = 'region';
