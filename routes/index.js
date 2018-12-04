@@ -14,11 +14,13 @@ const keystone							= require( 'keystone' ),
 	  passwordResetService 				= require( './middleware/service_password-reset'),
 	  accountVerificationService		= require( './middleware/service_account-verification' ),
 	  enforce							= require( 'express-sslify' ),
+	  agencyAdjustmentService			= require( './middleware/fix_agency' ),
 	  childAdjustmentService			= require( './middleware/fix_child' ),
 	  familyAdjustmentService			= require( './middleware/fix_family' ),
 	  changeHistoryAdjustmentService	= require( './middleware/fix_change-history' ),
 	  cloudinaryImageAdjustmentService	= require( './middleware/fix_cloudinary-images' ),
 	  inquiryAdjustmentService			= require( './middleware/fix_inquiry' ),
+	  socialWorkerAdjustmentService		= require( './middleware/fix_social-worker' ),
 	  dateAdjustmentService				= require( './middleware/fix_dates' ),
 	  importRoutes						= keystone.importer( __dirname );
 
@@ -120,13 +122,14 @@ exports = module.exports = app => {
 	// app.post( '/services/unregister-for-event'		, eventService.removeUser ); // TODO: I'm leaving these commented out so I don't forget they exist when I need to implement adding/removing users to an event automatically
 
 	// routes to handle looping through models and adjusting values/saving in bulk
+	app.get( '/fix/agencies'							, middleware.requireAdmin, agencyAdjustmentService.fixAgencies );
 	app.get( '/fix/children'							, middleware.requireAdmin, childAdjustmentService.fixChildren );
 	app.get( '/fix/cloudinary-images'					, middleware.requireAdmin, cloudinaryImageAdjustmentService.fixCloudinaryImages );
 	app.get( '/fix/cloudinary-images/:model'			, middleware.requireAdmin, cloudinaryImageAdjustmentService.fixCloudinaryImages );
 	app.get( '/fix/families'							, middleware.requireAdmin, familyAdjustmentService.fixFamilies );
 	app.get( '/fix/family-histories'					, middleware.requireAdmin, changeHistoryAdjustmentService.fixFamilyHistories );
 	app.get( '/fix/inquiries'							, middleware.requireAdmin, inquiryAdjustmentService.fixInquiries );
-	
+	app.get( '/fix/social-workers'						, middleware.requireAdmin, socialWorkerAdjustmentService.fixSocialWorkers );
 	/* NOTE: this is for a one-time fix to timezones in dates and should be removed.  Keeping as a reference for async/await in data migration */
-	app.get( '/fix/dates', middleware.requireAdmin, dateAdjustmentService.fixDates );
+	app.get( '/fix/dates'								, middleware.requireAdmin, dateAdjustmentService.fixDates );
 };

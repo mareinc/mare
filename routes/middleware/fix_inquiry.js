@@ -93,7 +93,7 @@ function saveInquiry( inquiry ) {
 	return new Promise( ( resolve, reject ) => {
 
 		// delete the number of inquiries to adopt field.  Strict needs to be set to false since the field is no longer part of the schema
-		inquiry.set( 'agency', undefined, { strict: false } );
+		// inquiry.set( 'agency', undefined, { strict: false } );
 		// attempt the save the inquiry
 		inquiry.save( ( err, savedModel ) => {
 			// if we run into an error
