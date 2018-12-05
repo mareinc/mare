@@ -75,7 +75,7 @@
 			var value = this.$('[name="isPartOfSiblingGroup"]:checked').val();
 
 			// if the child is part of a sibling group
-			if( value == 'Yes' ) {
+			if( value === 'Yes' ) {
 				this.$siblingNamesContainer.removeClass( 'hidden' );
 				
 				// add the validation binding to the sibling names text field

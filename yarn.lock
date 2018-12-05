@@ -5342,9 +5342,9 @@ keystone-utils@^0.4.0:
     randomkey "^1.0.0"
     speakingurl "^9.0.0"
 
-"keystone@https://github.com/keystonejs/keystone.git#50b221e9a2891567c48e1fc1a49781de2e48eb06":
+"keystone@https://github.com/keystonejs/keystone.git#a202478f9541048908c9b5922b5c725d71de0159":
   version "4.0.0"
-  resolved "https://github.com/keystonejs/keystone.git#50b221e9a2891567c48e1fc1a49781de2e48eb06"
+  resolved "https://github.com/keystonejs/keystone.git#a202478f9541048908c9b5922b5c725d71de0159"
   dependencies:
     async "^2.5.0"
     asyncdi "^1.1.0"
