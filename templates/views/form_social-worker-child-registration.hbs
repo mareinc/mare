@@ -159,9 +159,11 @@
 				</div>
 				<div class="row form-group">
 					<div class="col-sm-24 form-group">
-						<label class="checkbox-inline">
-							<input type="checkbox" id="is-part-of-sibling-group" name="isPartOfSiblingGroup">Is child to be adopted as part of a sibling group?
-						</label>
+						<span class="required-field">Is child to be adopted as part of a sibling group?</span> &nbsp;&nbsp;
+						<span id="is-part-of-sibling-group-error-container" class="error-container">
+							<label class="radio-inline"><input type="radio" name="isPartOfSiblingGroup" value="Yes" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#is-part-of-sibling-group-error-container" data-parsley-required="">Yes</label>
+							<label class="radio-inline"><input type="radio" name="isPartOfSiblingGroup" value="No">No</label>
+						</span>
 					</div>
 				</div>
 				<div class="row form-group">

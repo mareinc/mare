@@ -6,7 +6,7 @@
 
 		events: {
 			'change #is-not-ma-city-checkbox' 	: 'toggleCitySelect',
-			'change #is-part-of-sibling-group'	: 'toggleSiblingNamesTextbox'
+			'change [name="isPartOfSiblingGroup"]'	: 'toggleSiblingNamesTextbox'
 		},
 
 		initialize: function() {
@@ -72,11 +72,12 @@
 		},
 
 		toggleSiblingNamesTextbox: function toggleSiblingNamesTextbox( event ) {
-			// toggle showing of the sibling names textbox
-			this.$siblingNamesContainer.toggleClass( 'hidden' );
+			var value = this.$('[name="isPartOfSiblingGroup"]:checked').val();
 
 			// if the child is part of a sibling group
-			if( event.target.checked ) {
+			if( value == 'Yes' ) {
+				this.$siblingNamesContainer.removeClass( 'hidden' );
+				
 				// add the validation binding to the sibling names text field
 				this.$siblingNames.attr( 'data-parsley-required', 'true' );
 				// add the required attribute to the sibling names text field needed to show the red background during form validation
@@ -84,6 +85,8 @@
 			
 			// otherwise, if the child is not part of a sibling group
 			} else {
+				this.$siblingNamesContainer.addClass( 'hidden' );
+				
 				// remove the validation binding from the city dropdown menu
 				this.$siblingNames.attr( 'data-parsley-required', 'false' );
 				// remove the required attribute from the sibling names text field needed to show the red background during form validation
