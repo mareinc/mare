@@ -65,7 +65,7 @@ Child.add('Display Options', {
 		full: { type: Types.Text, label: 'name', hidden: true, noedit: true, initial: false }
 	},
 
-	birthDate: { type: Types.Date, label: 'date of birth', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, required: true, initial: true },
+	birthDate: { type: Types.Date, label: 'date of birth', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', todayButton: false, utc: true, required: true, initial: true },
 	languages: { type: Types.Relationship, label: 'languages', ref: 'Language', many: true, required: true, initial: true },
 	statusChangeDate: { type: Types.Date, label: 'status change date', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, initial: true }, // TODO: Logic needed, see line 14 of https://docs.google.com/spreadsheets/d/1Opb9qziX2enTehJx5K1J9KAT7v-j2yAdqwyQUMSsFwc/edit#gid=1235141373
 	status: { type: Types.Relationship, label: 'status', ref: 'Child Status', required: true, initial: true },

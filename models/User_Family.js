@@ -107,7 +107,7 @@ Family.add( 'Permissions', {
 		gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', initial: true }, // was required: data migration change ( undo if possible )
 		race: { type: Types.Relationship, label: 'race', ref: 'Race', many: true, required: true, initial: true }, // was required: data migration change ( undo if possible )
 		occupation: { type: Types.Text, label: 'occupation', initial: true },
-		birthDate: { type: Types.Date, label: 'date of birth', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, initial: true } // was required: data migration change ( undo if possible )
+		birthDate: { type: Types.Date, label: 'date of birth', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', todayButton: false, utc: true, initial: true } // was required: data migration change ( undo if possible )
 	}
 
 }, 'Contact 2', {
@@ -129,7 +129,7 @@ Family.add( 'Permissions', {
 		gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', initial: true },
 		race: { type: Types.Relationship, label: 'race', ref: 'Race', many: true, initial: true },
 		occupation: { type: Types.Text, label: 'occupation', initial: true },
-		birthDate: { type: Types.Date, label: 'date of birth', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, initial: true }
+		birthDate: { type: Types.Date, label: 'date of birth', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', todayButton: false, default: '', utc: true, initial: true }
 	}
 
 }, 'Home Contact Information', {
@@ -155,7 +155,7 @@ Family.add( 'Permissions', {
 }, { heading: 'Child 1', dependsOn: { numberOfChildren: ['1', '2', '3', '4', '5', '6', '7', '8+'] } }, {
 	child1: {
 		name: { type: Types.Text, label: 'name', dependsOn: { numberOfChildren: ['1', '2', '3', '4', '5', '6', '7', '8+'] }, initial: true },
-		birthDate: { type: Types.Date, label: 'date of birth', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { numberOfChildren: ['1', '2', '3', '4', '5', '6', '7', '8+'] }, initial: true },
+		birthDate: { type: Types.Date, label: 'date of birth', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', todayButton: false, default: '', utc: true, dependsOn: { numberOfChildren: ['1', '2', '3', '4', '5', '6', '7', '8+'] }, initial: true },
 		gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', dependsOn: { numberOfChildren: ['1', '2', '3', '4', '5', '6', '7', '8+'] }, initial: true },
 		type: { type: Types.Relationship, label: 'type', ref: 'Child Type', dependsOn: { numberOfChildren: ['1', '2', '3', '4', '5', '6', '7', '8+'] }, initial: true }
 	}
@@ -163,7 +163,7 @@ Family.add( 'Permissions', {
 }, { heading: 'Child 2', dependsOn: { numberOfChildren: ['2', '3', '4', '5', '6', '7', '8+'] } }, {
 	child2: {
 		name: { type: Types.Text, label: 'name', dependsOn: { numberOfChildren: ['2', '3', '4', '5', '6', '7', '8+'] }, initial: true },
-		birthDate: { type: Types.Date, label: 'date of birth', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { numberOfChildren: ['2', '3', '4', '5', '6', '7', '8+'] }, initial: true },
+		birthDate: { type: Types.Date, label: 'date of birth', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', todayButton: false, default: '', utc: true, dependsOn: { numberOfChildren: ['2', '3', '4', '5', '6', '7', '8+'] }, initial: true },
 		gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', dependsOn: { numberOfChildren: ['2', '3', '4', '5', '6', '7', '8+'] }, initial: true },
 		type: { type: Types.Relationship, label: 'type', ref: 'Child Type', dependsOn: { numberOfChildren: ['2', '3', '4', '5', '6', '7', '8+'] }, initial: true }
 	}
@@ -171,7 +171,7 @@ Family.add( 'Permissions', {
 }, { heading: 'Child 3', dependsOn: { numberOfChildren: ['3', '4', '5', '6', '7', '8+'] } }, {
 	child3: {
 		name: { type: Types.Text, label: 'name', dependsOn: { numberOfChildren: ['3', '4', '5', '6', '7', '8+'] }, initial: true },
-		birthDate: { type: Types.Date, label: 'date of birth', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { numberOfChildren: ['3', '4', '5', '6', '7', '8+'] }, initial: true },
+		birthDate: { type: Types.Date, label: 'date of birth', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', todayButton: false, default: '', utc: true, dependsOn: { numberOfChildren: ['3', '4', '5', '6', '7', '8+'] }, initial: true },
 		gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', dependsOn: { numberOfChildren: ['3', '4', '5', '6', '7', '8+'] }, initial: true },
 		type: { type: Types.Relationship, label: 'type', ref: 'Child Type', dependsOn: { numberOfChildren: ['3', '4', '5', '6', '7', '8+'] }, initial: true }
 	}
@@ -179,7 +179,7 @@ Family.add( 'Permissions', {
 }, { heading: 'Child 4', dependsOn: { numberOfChildren: ['4', '5', '6', '7', '8+'] } }, {
 	child4: {
 		name: { type: Types.Text, label: 'name', dependsOn: { numberOfChildren: ['4', '5', '6', '7', '8+'] }, initial: true },
-		birthDate: { type: Types.Date, label: 'date of birth', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { numberOfChildren: ['4', '5', '6', '7', '8+'] }, initial: true },
+		birthDate: { type: Types.Date, label: 'date of birth', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', todayButton: false, default: '', utc: true, dependsOn: { numberOfChildren: ['4', '5', '6', '7', '8+'] }, initial: true },
 		gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', dependsOn: { numberOfChildren: ['4', '5', '6', '7', '8+'] }, initial: true },
 		type: { type: Types.Relationship, label: 'type', ref: 'Child Type', dependsOn: { numberOfChildren: ['4', '5', '6', '7', '8+'] }, initial: true }
 	}
@@ -187,7 +187,7 @@ Family.add( 'Permissions', {
 }, { heading: 'Child 5', dependsOn: { numberOfChildren: ['5', '6', '7', '8+'] } }, {
 	child5: {
 		name: { type: Types.Text, label: 'name', dependsOn: { numberOfChildren: ['5', '6', '7', '8+'] }, initial: true },
-		birthDate: { type: Types.Date, label: 'date of birth', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { numberOfChildren: ['5', '6', '7', '8+'] }, initial: true },
+		birthDate: { type: Types.Date, label: 'date of birth', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', todayButton: false, default: '', utc: true, dependsOn: { numberOfChildren: ['5', '6', '7', '8+'] }, initial: true },
 		gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', dependsOn: { numberOfChildren: ['5', '6', '7', '8+'] }, initial: true },
 		type: { type: Types.Relationship, label: 'type', ref: 'Child Type', dependsOn: { numberOfChildren: ['5', '6', '7', '8+'] }, initial: true }
 	}
@@ -195,7 +195,7 @@ Family.add( 'Permissions', {
 }, { heading: 'Child 6', dependsOn: { numberOfChildren: ['6', '7', '8+'] } }, {
 	child6: {
 		name: { type: Types.Text, label: 'name', dependsOn: { numberOfChildren: ['6', '7', '8+'] }, initial: true },
-		birthDate: { type: Types.Date, label: 'date of birth', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { numberOfChildren: ['6', '7', '8+'] }, initial: true },
+		birthDate: { type: Types.Date, label: 'date of birth', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', todayButton: false, default: '', utc: true, dependsOn: { numberOfChildren: ['6', '7', '8+'] }, initial: true },
 		gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', dependsOn: { numberOfChildren: ['6', '7', '8+'] }, initial: true },
 		type: { type: Types.Relationship, label: 'type', ref: 'Child Type', dependsOn: { numberOfChildren: ['6', '7', '8+'] }, initial: true }
 	}
@@ -203,7 +203,7 @@ Family.add( 'Permissions', {
 }, { heading: 'Child 7', dependsOn: { numberOfChildren: ['7', '8+'] } }, {
 	child7: {
 		name: { type: Types.Text, label: 'name', dependsOn: { numberOfChildren: ['7', '8+'] }, initial: true },
-		birthDate: { type: Types.Date, label: 'date of birth', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { numberOfChildren: ['7', '8+'] }, initial: true },
+		birthDate: { type: Types.Date, label: 'date of birth', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', todayButton: false, default: '', utc: true, dependsOn: { numberOfChildren: ['7', '8+'] }, initial: true },
 		gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', dependsOn: { numberOfChildren: ['7', '8+'] }, initial: true },
 		type: { type: Types.Relationship, label: 'type', ref: 'Child Type', dependsOn: { numberOfChildren: ['7', '8+'] }, initial: true }
 	}
@@ -211,7 +211,7 @@ Family.add( 'Permissions', {
 }, { heading: 'Child 8', dependsOn: { numberOfChildren: ['8+'] } }, {
 	child8: {
 		name: { type: Types.Text, label: 'name', dependsOn: { numberOfChildren: ['8+'] }, initial: true },
-		birthDate: { type: Types.Date, label: 'date of birth', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { numberOfChildren: ['8+'] }, initial: true },
+		birthDate: { type: Types.Date, label: 'date of birth', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', todayButton: false, default: '', utc: true, dependsOn: { numberOfChildren: ['8+'] }, initial: true },
 		gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', dependsOn: { numberOfChildren: ['8+'] }, initial: true },
 		type: { type: Types.Relationship, label: 'type', ref: 'Child Type', dependsOn: { numberOfChildren: ['8+'] }, initial: true }
 	}
