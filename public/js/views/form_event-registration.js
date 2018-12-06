@@ -35,7 +35,7 @@
 			// bind an event to allow closing of the modal
 			$( '.modal__close' ).click( this.closeModal.bind( this ) );
 			// bind events for functionality within the form
-			this.$( '.add-registered-child' ).click( this.addRegisteredChild.bind( this ) );
+			this.$( '.registered-children-select' ).change( this.addRegisteredChild.bind( this ) );
 			this.$( '.remove-registered-child' ).click( this.removeRegisteredChild.bind( this ) );
 			this.$( '.number-of-adults-select' ).change( this.updateAdultsSection.bind( this ) );
 			this.$( '.number-of-children-select' ).change( this.updateChildrenSection.bind( this ) );
@@ -44,7 +44,7 @@
 		// events need to be unbound every time the modal is closed
 		unbindEvents: function unbindEvents() {
 			$( '.modal__close' ).unbind( 'click' );
-			this.$( '.add-registered-child' ).unbind( 'click' );
+			this.$( '.registered-children-select' ).unbind( 'change' );
 			this.$( '.remove-registered-child' ).unbind( 'click' );
 			this.$( '.number-of-adults-select' ).unbind( 'change' );
 			this.$( '.number-of-children-select' ).unbind( 'change' );
@@ -93,7 +93,7 @@
 			});
 
 			// if the child hasn't already been selected, add it to the list
-			if ( !hasChildAlreadyBeenSelected ) {
+			if ( !hasChildAlreadyBeenSelected && selectedChildId.length > 0 ) {
 				// generate the html for the new child using the child's details
 				var childDetails = this.registeredChildDetailsTemplate({ childId: selectedChildId,
 					childName: selectedChildName });
@@ -104,6 +104,8 @@
 				// hide/show fields based on number of children attending
 				this.checkNumberOfChildrenAttending();
 			}
+			
+			this.$( '.registered-children-select' ).val( '' );
 		},
 
 		removeRegisteredChild: function removeRegisteredChild( event ) {
