@@ -323,8 +323,8 @@ exports.register = ( eventDetails, user ) => {
 		exports.getEventById( eventDetails.eventId )
 			.then( event => {
 
-				// add the user as an attendee
-				event[ attendeeType ].push( user._id );
+				// add the user as an attendee to the existing list
+				event[ attendeeType ] = event[ attendeeType ].concat( user.get( '_id' ) );
 
 				// if there are registered children defined
 				if ( eventDetails.registeredChildren ) {
