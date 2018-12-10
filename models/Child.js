@@ -949,9 +949,9 @@ Child.schema.methods.checkSiblingsForChanges = function() {
 	let siblingsAfterSave = new Set( siblingsArrayAfterSave );
 
 	let exclusiveSiblingsInTheBeforeSaveSet = siblingsBeforeSave.leftOuterJoin( siblingsAfterSave );
-	let exclusiveSiblingsInThAfterSaveSet = siblingsBeforeSave.rightOuterJoin( siblingsAfterSave );
+	let exclusiveSiblingsInTheAfterSaveSet = siblingsBeforeSave.rightOuterJoin( siblingsAfterSave );
 
-	return exclusiveSiblingsInTheBeforeSaveSet.size > 0 || exclusiveSiblingsInThAfterSaveSet.size > 0;
+	return exclusiveSiblingsInTheBeforeSaveSet.size > 0 || exclusiveSiblingsInTheAfterSaveSet.size > 0;
 };
 
 Child.schema.methods.checkSiblingsToBePlacedWithForChanges = function() {
@@ -963,9 +963,9 @@ Child.schema.methods.checkSiblingsToBePlacedWithForChanges = function() {
 	let siblingsAfterSave = new Set( siblingsArrayAfterSave );
 
 	let exclusiveSiblingsInTheBeforeSaveSet = siblingsBeforeSave.leftOuterJoin( siblingsAfterSave );
-	let exclusiveSiblingsInThAfterSaveSet = siblingsBeforeSave.rightOuterJoin( siblingsAfterSave );
+	let exclusiveSiblingsInTheAfterSaveSet = siblingsBeforeSave.rightOuterJoin( siblingsAfterSave );
 
-	return exclusiveSiblingsInTheBeforeSaveSet.size > 0 || exclusiveSiblingsInThAfterSaveSet.size > 0;
+	return exclusiveSiblingsInTheBeforeSaveSet.size > 0 || exclusiveSiblingsInTheAfterSaveSet.size > 0;
 };
 
 // Update the siblings field of all siblings listed to include the current child
