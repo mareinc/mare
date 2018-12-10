@@ -40,6 +40,7 @@ keystone.init({
 	'session store': 'mongo',
 	'auth': true,
 	'signin url': '/',
+	'signout url': '/',
 	'user model': 'User',
 
 	'wysiwyg override toolbar': false,
