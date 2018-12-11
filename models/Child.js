@@ -131,20 +131,25 @@ Child.add('Display Options', {
 	recruitmentWorkerAgency: { type: Types.Relationship, label: `recruitment worker's agency`, ref: 'Agency', noedit: true },
 	recruitmentWorkerAgencyRegion: { type: Types.Relationship, label: `recruitment worker's region`, ref: 'Region', noedit: true },
 
-}, 'Photolisting Information', {
+}, 'Child Profile', {
 
 	profile: {
-		quote: { type: Types.Textarea, label: 'personal quote', dependsOn: { mustBePlacedWithSiblings: false }, initial: true },
-		part1: { type: Types.Textarea, label: '1st paragraph', dependsOn: { mustBePlacedWithSiblings: false }, note: 'Age, Race, Interests, Hobbies, Strengths', initial: true },
-		part2: { type: Types.Textarea, label: '2nd paragraph', dependsOn: { mustBePlacedWithSiblings: false }, note: 'Physical, Social, Emotional and Academic Functioning', initial: true },
-		part3: { type: Types.Textarea, label: '3rd paragraph', dependsOn: { mustBePlacedWithSiblings: false }, note: 'Legal Status, Sibling/Family Contact, Family Constellation and Placement requirements', initial: true }
-	},
+		quote: { type: Types.Textarea, label: 'personal quote', initial: true },
+		part1: { type: Types.Textarea, label: '1st paragraph', note: 'Age, Race, Interests, Hobbies, Strengths', initial: true },
+		part2: { type: Types.Textarea, label: '2nd paragraph', note: 'Physical, Social, Emotional and Academic Functioning', initial: true },
+		part3: { type: Types.Textarea, label: '3rd paragraph', note: 'Legal Status, Sibling/Family Contact, Family Constellation and Placement requirements', initial: true }
+	}
+
+}, 'Sibling Group Profile', {
+
 	groupProfile: {
-		quote: { type: Types.Textarea, label: 'group quote', dependsOn: { mustBePlacedWithSiblings: true }, initial: true },
-		part1: { type: Types.Textarea, label: '1st paragraph', dependsOn: { mustBePlacedWithSiblings: true }, note: 'Age, Race, Interests, Hobbies, Strengths', initial: true },
-		part2: { type: Types.Textarea, label: '2nd paragraph', dependsOn: { mustBePlacedWithSiblings: true }, note: 'Physical, Social, Emotional and Academic Functioning', initial: true },
-		part3: { type: Types.Textarea, label: '3rd paragraph', dependsOn: { mustBePlacedWithSiblings: true }, note: 'Legal Status, Sibling/Family Contact, Family Constellation and Placement requirements', initial: true }
+		quote: { type: Types.Textarea, label: 'group quote', initial: true },
+		part1: { type: Types.Textarea, label: '1st paragraph', note: 'Age, Race, Interests, Hobbies, Strengths', initial: true },
+		part2: { type: Types.Textarea, label: '2nd paragraph', note: 'Physical, Social, Emotional and Academic Functioning', initial: true },
+		part3: { type: Types.Textarea, label: '3rd paragraph', note: 'Legal Status, Sibling/Family Contact, Family Constellation and Placement requirements', initial: true }
 	},
+
+}, 'Photolisting Information', {
 
 	hasPhotolistingWriteup: { type: Types.Boolean, label: 'photolisting writeup', default: false, initial: true },
 	photolistingWriteupDate: { type: Types.Date, label: 'date of photolisting writeup', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { hasPhotolistingWriteup: true }, initial: true },
@@ -360,9 +365,7 @@ Child.schema.pre( 'save', function( next ) {
 	// if there are no siblings to be placed with, uncheck the box, otherwise check it
 	this.updateMustBePlacedWithSiblingsCheckbox();
 	// if there are no siblings to be placed with, clear the group bio
-	// NOTE IMPORTANT: this needs to be removed when both sets of fields are visible.  This has implications for
-	// 				   saving across siblings if the info is still there.  You may need to check with Bridget and Joe
-	this.updateSiblingGroupInfo();
+	// this.updateSiblingGroupInfo();
 
 	// set the registration number for the family
 	const registrationNumberSet = this.setRegistrationNumber();
