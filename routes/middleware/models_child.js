@@ -73,19 +73,19 @@ exports.batchAllSiblingUpdates = ( childModel ) => {
 	});
 };
 
-exports.applySiblingGroupToChild = ( { childToUpdateID, siblingGroup = [] } ) => {
+exports.applySiblingGroupToChild = ( { childToUpdateId, siblingGroup = [] } ) => {
 
 	return new Promise( ( resolve, reject ) => {
 
 		childService
-			.getChildById( { id: childToUpdateID } )
+			.getChildById( { id: childToUpdateId } )
 			.then( child => {
 
 				// create a flag to determine if there are updates to the sibling group that need to be saved
 				let saveUpdatesToSiblingGroup = false;
 
 				// check to see if the current child is in the new sibling group
-				let isCurrentChildInNewSiblingGroup = siblingGroup.includes( childToUpdateID );
+				let isCurrentChildInNewSiblingGroup = siblingGroup.includes( childToUpdateId );
 
 				// if the current child is part of the new sibling group, update the child's current sibling group to the new sibling group
 				if ( isCurrentChildInNewSiblingGroup ) {
@@ -94,7 +94,7 @@ exports.applySiblingGroupToChild = ( { childToUpdateID, siblingGroup = [] } ) =>
 					let currentSiblingGroup = child.siblings.map( sibling => sibling.toString() );
 
 					// remove the current child's id from the updated sibling group ( it should not have a reference to itsels as a sibling )
-					let siblingGroupWithoutCurrentChild = siblingGroup.filter( siblingID => siblingID !== childToUpdateID );
+					let siblingGroupWithoutCurrentChild = siblingGroup.filter( siblingId => siblingId !== childToUpdateId );
 
 					// create sets from the siblings groups to leverage Set utilities to find differences
 					let currentSiblingGroupSet = new Set( currentSiblingGroup );
@@ -139,27 +139,27 @@ exports.applySiblingGroupToChild = ( { childToUpdateID, siblingGroup = [] } ) =>
 							console.error( error );
 						}
 						// resolve the promise
-						resolve( childToUpdateID );
+						resolve( childToUpdateId );
 					});
 				} else {
-					resolve( childToUpdateID );
+					resolve( childToUpdateId );
 				}
 			})
 			.catch( error => {
 				// log the error
 				console.error( error );
 				// reject the promise with the error
-				reject( childToUpdateID );
+				reject( childToUpdateId );
 			});
 	});
 };
 
-exports.removeSiblingFromChild = ( { childToUpdateID, siblingToRemoveID } ) => {
+exports.removeSiblingFromChild = ( { childToUpdateId, siblingToRemoveId } ) => {
 
 	return new Promise( ( resolve, reject ) => {
 
 		childService
-			.getChildById( { id: childToUpdateID } )
+			.getChildById( { id: childToUpdateId } )
 			.then( child => {
 
 				// get an array of the current siblings on the child to update
@@ -169,7 +169,7 @@ exports.removeSiblingFromChild = ( { childToUpdateID, siblingToRemoveID } ) => {
 				// store the size of the array before attempting to delete the sibling to remove
 				let siblingSetSizeBeforeDelete = siblingSet.size;
 				// delete the sibling to remove from the current sibling set
-				siblingSet.delete( siblingToRemoveID );
+				siblingSet.delete( siblingToRemoveId );
 
 				// if the size of the sibling set has changed after the delete action
 				if ( siblingSetSizeBeforeDelete !== siblingSet.size ) {
@@ -184,19 +184,19 @@ exports.removeSiblingFromChild = ( { childToUpdateID, siblingToRemoveID } ) => {
 							console.error( error );
 						}
 						// resolve the promise
-						resolve( childToUpdateID );
+						resolve( childToUpdateId );
 					});
 				// if the size of the sibling set did not change after the delete action
 				} else {
 					// no update necessary - resolve the promise
-					resolve( childToUpdateID );
+					resolve( childToUpdateId );
 				}
 			})
 			.catch( error => {
 				// log the error
 				console.error( error );
 				// reject the promise with the error
-				reject( childToUpdateID );
+				reject( childToUpdateId );
 			});
 	});
 };
@@ -256,13 +256,12 @@ exports.batchAllSiblingsToBePlacedWithUpdates = ( childModel ) => {
 	});
 };
 
-exports.applySiblingsToBePlacedWithGroupToChild = ( { childToUpdateID, siblingsToBePlacedWithGroup = [], siblingGroupProfile, siblingGroupImage, siblingGroupVideo, wednesdaysChildSiblingGroup, wednesdaysChildSiblingGroupDate, wednesdaysChildSiblingGroupVideo } ) => {
+exports.applySiblingsToBePlacedWithGroupToChild = ( { childToUpdateId, recommendedFamilyConstellation = [], adoptionWorker, recruitmentWorker, isVisibleInGallery = false, siblingsToBePlacedWithGroup = [], siblingGroupProfile, siblingGroupImage, siblingGroupVideo, wednesdaysChildSiblingGroup, wednesdaysChildSiblingGroupDate, wednesdaysChildSiblingGroupVideo } ) => {
 
 	return new Promise( ( resolve, reject ) => {
 
 		// create a group profile object based on the saving child's profile information
-		const newGroupProfile						= siblingGroupProfile || {},
-			  newGroupQuote							= siblingGroupProfile.quote || '',
+		const newGroupQuote							= siblingGroupProfile.quote || '',
 			  newGroupProfilePart1					= siblingGroupProfile.part1 || '',
 			  newGroupProfilePart2					= siblingGroupProfile.part2 || '',
 			  newGroupProfilePart3					= siblingGroupProfile.part3 || '',
@@ -271,34 +270,26 @@ exports.applySiblingsToBePlacedWithGroupToChild = ( { childToUpdateID, siblingsT
 
 		// get the child model to update
 		childService
-			.getChildById( { id: childToUpdateID } )
+			.getChildById( { id: childToUpdateId } )
 			.then( child => {
 
 				// create a flag to determine if there are updates to the siblings to be placed with group that need to be saved
 				let saveUpdatesToSiblingsToBePlacedWithGroup = false;
-
 				// check to see if the current child is in the new siblings to be placed with group
-				let isCurrentChildInNewSiblingsToBePlacedWithGroup = siblingsToBePlacedWithGroup.includes( childToUpdateID );
-
+				let isCurrentChildInNewSiblingsToBePlacedWithGroup = siblingsToBePlacedWithGroup.includes( childToUpdateId );
 				// if the current child is part of the new siblings to be placed with group, update the child's current siblings to be placed with group to the new siblings to be placed with group
 				if ( isCurrentChildInNewSiblingsToBePlacedWithGroup ) {
-
 					// get a representation of the child's current siblings to be placed with group ( so it can be compared to the updated group )
 					let currentSiblingsToBePlacedWithGroup = child.siblingsToBePlacedWith.map( sibling => sibling.toString() );
-
 					// remove the current child's id from the updated siblings to be placed with group ( it should not have a reference to itsels as a sibling to be placed with )
-					let siblingsToBePlacedWithGroupWithoutCurrentChild = siblingsToBePlacedWithGroup.filter( siblingID => siblingID !== childToUpdateID );
-
+					let siblingsToBePlacedWithGroupWithoutCurrentChild = siblingsToBePlacedWithGroup.filter( siblingId => siblingId !== childToUpdateId );
 					// create sets from the siblings to be placed with groups to leverage Set utilities to find differences
 					let currentSiblingsToBePlacedWithGroupSet = new Set( currentSiblingsToBePlacedWithGroup );
 					let updatedSiblingsToBePlacedWithGroupSet = new Set( siblingsToBePlacedWithGroupWithoutCurrentChild );
-
 					// find any siblings that exist in the current siblings to be placed with group but not the updated siblings to be placed with group
 					let exclusiveSiblingsToBePlacedWithInTheCurrentSet = currentSiblingsToBePlacedWithGroupSet.leftOuterJoin( updatedSiblingsToBePlacedWithGroupSet );
-
 					// find any siblings that exist in the updated siblings to be placed with group but not the current siblings to be placed with group
 					let exclusiveSiblingsToBePlacedWithInTheUpdatedSet = currentSiblingsToBePlacedWithGroupSet.rightOuterJoin( updatedSiblingsToBePlacedWithGroupSet );
-
 					// if the current or updated siblings to be placed with groups contain any differences
 					if ( exclusiveSiblingsToBePlacedWithInTheCurrentSet.size > 0 || exclusiveSiblingsToBePlacedWithInTheUpdatedSet.size > 0 ) {
 						// set the updated siblings to be placed with group on the child model
@@ -317,13 +308,19 @@ exports.applySiblingsToBePlacedWithGroupToChild = ( { childToUpdateID, siblingsT
 					// if both values are dates
 					if ( currentwednesdaysChildSiblingGroupDate && newWednesdaysChildSiblingGroupDate ) {
 						hasWednesdaysChildSiblingGroupDateChanged = currentwednesdaysChildSiblingGroupDate.toString() !== newWednesdaysChildSiblingGroupDate.toString();
-					// if both values are not dates
+					// if either value is not a date
 					} else {
 						hasWednesdaysChildSiblingGroupDateChanged = currentwednesdaysChildSiblingGroupDate != newWednesdaysChildSiblingGroupDate;
 					}
 
 					// test to see if any group profile attributes need to be updated
-					if( child.groupProfile.quote !== siblingGroupProfile.quote ||
+					// NOTE: this first check converts the _id arrays to strings, ensures both are sorted, then converts them into single strings for comparison
+					// TODO: make a utility function for more readable array comparison
+					if( child.recommendedFamilyConstellation.map( familyConstellation => familyConstellation.toString() ).sort().join( '' ) !== recommendedFamilyConstellation.map( familyConstellation => familyConstellation.toString() ).sort().join( '' ) ||
+						child.adoptionWorker.toString() !== adoptionWorker.toString() ||
+						child.recruitmentWorker.toString() !== recruitmentWorker.toString() ||
+						child.isVisibleInGallery !== isVisibleInGallery ||
+						child.groupProfile.quote !== siblingGroupProfile.quote ||
 						child.groupProfile.part1 !== siblingGroupProfile.part1 ||
 						child.groupProfile.part2 !== siblingGroupProfile.part2 ||
 						child.groupProfile.part3 !== siblingGroupProfile.part3 ||
@@ -332,6 +329,11 @@ exports.applySiblingsToBePlacedWithGroupToChild = ( { childToUpdateID, siblingsT
 						child.wednesdaysChildSiblingGroup !== wednesdaysChildSiblingGroup ||
 						hasWednesdaysChildSiblingGroupDateChanged ||
 						child.wednesdaysChildSiblingGroupVideo !== wednesdaysChildSiblingGroupVideo ) {
+							// update the child to be placed with with values that should replicate across records
+							child.recommendedFamilyConstellation = recommendedFamilyConstellation;
+							child.adoptionWorker = adoptionWorker;
+							child.recruitmentWorker = recruitmentWorker;
+							child.isVisibleInGallery = isVisibleInGallery;
 							// update the child to be placed with with the shared bio information
 							child.groupProfile.quote	= newGroupQuote;
 							child.groupProfile.part1   	= newGroupProfilePart1;
@@ -370,27 +372,27 @@ exports.applySiblingsToBePlacedWithGroupToChild = ( { childToUpdateID, siblingsT
 							console.error( error );
 						}
 						// resolve the promise
-						resolve( childToUpdateID );
+						resolve( childToUpdateId );
 					});
 				} else {
-					resolve( childToUpdateID );
+					resolve( childToUpdateId );
 				}
 			})
 			.catch( error => {
 				// log the error
 				console.error( error );
 				// reject the promise with the error
-				reject( childToUpdateID );
+				reject( childToUpdateId );
 			});
 	});
 };
 
-exports.removeSiblingToBePlacedWithFromChild = ( { childToUpdateID, siblingToBePlacedWithToRemoveID } ) => {
+exports.removeSiblingToBePlacedWithFromChild = ( { childToUpdateId, siblingToBePlacedWithToRemoveId } ) => {
 
 	return new Promise( ( resolve, reject ) => {
 
 		childService
-			.getChildById( { id: childToUpdateID } )
+			.getChildById( { id: childToUpdateId } )
 			.then( child => {
 
 				// get an array of the current siblings to be placed with on the child to update
@@ -400,7 +402,7 @@ exports.removeSiblingToBePlacedWithFromChild = ( { childToUpdateID, siblingToBeP
 				// store the size of the array before attempting to delete the sibling to be placed with to remove
 				let siblingsToBePlacedWithSetSizeBeforeDelete = siblingsToBePlacedWithSet.size;
 				// delete the sibling to be placed with to remove from the current siblings to be placed with set
-				siblingsToBePlacedWithSet.delete( siblingToBePlacedWithToRemoveID );
+				siblingsToBePlacedWithSet.delete( siblingToBePlacedWithToRemoveId );
 
 				// if the size of the siblings to be placed with set has changed after the delete action
 				if ( siblingsToBePlacedWithSetSizeBeforeDelete !== siblingsToBePlacedWithSet.size ) {
@@ -413,19 +415,19 @@ exports.removeSiblingToBePlacedWithFromChild = ( { childToUpdateID, siblingToBeP
 							console.error( error );
 						}
 						// resolve the promise
-						resolve( childToUpdateID );
+						resolve( childToUpdateId );
 					});
 				// if the size of the siblings to be placed with set did not change after the delete action
 				} else {
 					// no update necessary - resolve the promise
-					resolve( childToUpdateID );
+					resolve( childToUpdateId );
 				}
 			})
 			.catch( error => {
 				// log the error
 				console.error( error );
 				// reject the promise with the error
-				reject( childToUpdateID );
+				reject( childToUpdateId );
 			});
 	});
 };

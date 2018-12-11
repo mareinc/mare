@@ -31,14 +31,12 @@
 			<div class="row form-group">
 				<div class="col-sm-12 form-group">
 					<select id="registered-children" class="input registered-children-select">
+						<option value="">Add Child</option>
 						{{#each registeredChildren}}
 						<option value="{{ _id }}">{{ name.full }}</option>
 						{{/each}}
 					</select>
 					<label for="registered-children" class="label required-field">Registered Children</label>
-				</div>
-				<div class="col-sm-12 form-group">
-					<button class="button button--large button--thin button--teal add-registered-child">Add Child</button>
 				</div>
 			</div>
 			{{/if}}
