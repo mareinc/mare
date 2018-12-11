@@ -430,7 +430,7 @@ exports.unregister = ( eventDetails, user ) => {
 	});
 };
 
-exports.removeRegisteredChildren = ( event, registrantID ) => {
+exports.removeRegisteredChildren = ( event, registrantId ) => {
 
 	return new Promise( ( resolve, reject ) => {
 		// populate the registered children attendees of the event and remove any children that were signed up by the social worker that is unregistering for the event
@@ -447,7 +447,7 @@ exports.removeRegisteredChildren = ( event, registrantID ) => {
 				// capture all registered children ( and their indexes ) that were signed up by the social worker that is unregistering
 				event.childAttendees.forEach( ( child, index ) => {
 
-					if ( child.adoptionWorker && ( registrantID.id === child.adoptionWorker.id || registrantID.id === child.recruitmentWorker.id ) ) {
+					if ( child.adoptionWorker && ( registrantId.id === child.adoptionWorker.id || registrantId.id === child.recruitmentWorker.id ) ) {
 
 						registeredChildrenToRemoveIndexes.push( index );
 						registeredChildrenRemoved.push( child );
@@ -471,7 +471,7 @@ exports.removeRegisteredChildren = ( event, registrantID ) => {
 	});
 };
 
-exports.removeUnregisteredChildren = ( event, registrantID ) => {
+exports.removeUnregisteredChildren = ( event, registrantId ) => {
 
 	// remove the unregistered children attendees of the event that were signed up by the user that is unregistering for the event
 	let unregisteredChildrenToRemoveIndexes = [];
@@ -480,7 +480,7 @@ exports.removeUnregisteredChildren = ( event, registrantID ) => {
 	// capture all unregistered children ( and their indexes ) that were signed up by the user that is unregistering
 	event.unregisteredChildAttendees.forEach( ( child, index ) => {
 
-		if ( registrantID.toString() === child.registrantID ) {
+		if ( registrantId.toString() === child.registrantId ) {
 
 			unregisteredChildrenToRemoveIndexes.push( index );
 			unregisteredChildrenRemoved.push( child );
@@ -498,7 +498,7 @@ exports.removeUnregisteredChildren = ( event, registrantID ) => {
 	return unregisteredChildrenRemoved;
 };
 
-exports.removeUnregisteredAdults = ( event, registrantID ) => {
+exports.removeUnregisteredAdults = ( event, registrantId ) => {
 
 	// remove the unregistered adult attendees of the event that were signed up by the user that is unregistering for the event
 	let unregisteredAdultsToRemoveIndexes = [];
@@ -507,7 +507,7 @@ exports.removeUnregisteredAdults = ( event, registrantID ) => {
 	// capture all unregistered adult ( and their indexes ) that were signed up by the user that is unregistering
 	event.unregisteredAdultAttendees.forEach( ( adult, index ) => {
 
-		if ( registrantID.toString() === adult.registrantID ) {
+		if ( registrantId.toString() === adult.registrantId ) {
 
 			unregisteredAdultsToRemoveIndexes.push( index );
 			unregisteredAdultsRemoved.push( adult );

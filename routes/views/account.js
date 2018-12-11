@@ -15,7 +15,7 @@ exports = module.exports = ( req, res ) => {
 		view						= new keystone.View( req, res ),
 		locals						= res.locals,
 		userType					= req.user ? req.user.userType : '', // knowing the type of user visiting the page will allow us to display extra relevant information
-		userID						= req.user ? req.user._id : '',
+		userId						= req.user ? req.user._id : '',
 
 		// find the field the user belongs to in the event model based on their user type
 		eventGroup					= eventService.getEventGroup( userType ),
@@ -26,7 +26,7 @@ exports = module.exports = ( req, res ) => {
 		raceOptions        			= { other: true },
 
 		// fetch all data needed to render this page
-		fetchEvents					= eventService.getActiveEventsByUserId( userID, eventGroup ),
+		fetchEvents					= eventService.getActiveEventsByUserId( userId, eventGroup ),
 
 		fetchCitiesAndTowns			= listsService.getAllCitiesAndTowns(),
 		fetchDisabilities			= listsService.getAllDisabilities(),

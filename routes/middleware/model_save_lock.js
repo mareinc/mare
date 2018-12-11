@@ -4,20 +4,20 @@
 let _lockedModels = new Set();
 
 // locks a model
-exports.lock = modelID => {
+exports.lock = modelId => {
 
-	_lockedModels.add( modelID );
+	_lockedModels.add( modelId );
 };
 
 //  unlocks a model
-exports.unlock = modelID => {
+exports.unlock = modelId => {
 
-	_lockedModels.delete( modelID );
+	_lockedModels.delete( modelId );
 };
 
 // returns the status of a model
-exports.isLocked = modelID => {
+exports.isLocked = modelId => {
 
-	return _lockedModels.has( modelID );
+	return _lockedModels.has( modelId );
 };
 

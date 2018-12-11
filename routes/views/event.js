@@ -89,12 +89,12 @@ exports = module.exports = ( req, res ) => {
 				// loop through each of the attendees in the group that matches the users type
 				for( let attendee of event[ eventGroup ] ) {
 					// without converting to strings, these were both evaluating to Object which didn't allow for a clean comparison
-					const attendeeID = attendee._id.toString();
-					const userID = req.user._id.toString();
+					const attendeeId = attendee._id.toString();
+					const userId = req.user._id.toString();
 					// determine whether the user is already attending the event
 					// TODO: this was a _.forEach, which couldn't be broken out of, so we only kept checking if true wasn't found
 					if( !event.attending ) {
-						event.attending = attendeeID === userID;
+						event.attending = attendeeId === userId;
 					}
 				};
 			}

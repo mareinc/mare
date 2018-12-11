@@ -360,6 +360,8 @@ Child.schema.pre( 'save', function( next ) {
 	// if there are no siblings to be placed with, uncheck the box, otherwise check it
 	this.updateMustBePlacedWithSiblingsCheckbox();
 	// if there are no siblings to be placed with, clear the group bio
+	// NOTE IMPORTANT: this needs to be removed when both sets of fields are visible.  This has implications for
+	// 				   saving across siblings if the info is still there.  You may need to check with Bridget and Joe
 	this.updateSiblingGroupInfo();
 
 	// set the registration number for the family
@@ -424,21 +426,12 @@ Child.schema.pre( 'save', function( next ) {
 
 Child.schema.post( 'save', function() {
 
-	// if the siblings group has been changed
+	// if the list of siblings has been changed
 	if ( this.checkSiblingsForChanges() ) {
-		// process updates for other siblings in the group
-		this.updateSiblingGroup()
-			.then( () => {
-				// TODO: can these action be combined to make this process more efficient?
-				// replicate fields to all siblings after they are updated
-				this.replicateFieldsToSiblings();
-			});
+		// process updates for other siblings
+		this.updateSiblingGroup();
+	// if the siblings group has not changed, replicate fields to each sibling to be placed with that should be identical across records
 	} else {
-		this.replicateFieldsToSiblings();
-	}
-
-	// if the siblings group has not changed, try to apply siblings to be placed with changes to ensure group info is updated all siblings to be placed with
-	if ( !this.checkSiblingsForChanges() ) {
 		// process updates for other siblings in the group
 		this.updateSiblingsToBePlacedWithGroup();
 	}
@@ -816,24 +809,24 @@ Child.schema.methods.updateSiblingGroup = function() {
 		// add the current child to the group ( because a child will not store itself in the siblings array )
 		updatedSiblingGroup.push( this._id.toString() );
 		// determine which siblings were impacted by the update
-		let siblingsImpacted = updatedSiblingGroup.concat( siblingsRemovedBySave ).filter( siblingID => siblingID !== this._id.toString() );
+		let siblingsImpacted = updatedSiblingGroup.concat( siblingsRemovedBySave ).filter( siblingId => siblingId !== this._id.toString() );
 
 		// for each sibling impacted
-		siblingsImpacted.forEach( siblingID => {
+		siblingsImpacted.forEach( siblingId => {
 			// check to ensure that the sibling is not already in the process of being saved
-			if ( !saveLock.isLocked( siblingID ) ) {
+			if ( !saveLock.isLocked( siblingId ) ) {
 				// lock the sibling to ensure that it cannot be updated by any other processes until this update is complete
-				saveLock.lock( siblingID );
+				saveLock.lock( siblingId );
 				// update the sibling with the new sibling group
 				let siblingGroupPromise = ChildMiddleware
-					.applySiblingGroupToChild( { childToUpdateID: siblingID, siblingGroup: updatedSiblingGroup } )
-					.then( updatedChildID => {
+					.applySiblingGroupToChild( { childToUpdateId: siblingId, siblingGroup: updatedSiblingGroup } )
+					.then( updatedChildId => {
 						// unlock the sibling after update is complete
-						saveLock.unlock( updatedChildID );
+						saveLock.unlock( updatedChildId );
 					})
-					.catch( updatedChildID => {
+					.catch( updatedChildId => {
 						// unlock the sibling after update is complete
-						saveLock.unlock( updatedChildID );
+						saveLock.unlock( updatedChildId );
 					});
 
 				siblingGroupPromises.push( siblingGroupPromise );
@@ -842,21 +835,21 @@ Child.schema.methods.updateSiblingGroup = function() {
 	// if the updated sibling group is empty this child was removed from a sibling group and should remove itself from any siblings remaining in that group
 	} else {
 		// for each sibling that this child used to be a in a sibling group with
-		siblingsRemovedBySave.forEach( siblingID => {
+		siblingsRemovedBySave.forEach( siblingId => {
 			// check to ensure that the sibling is not already in the process of being saved
-			if ( !saveLock.isLocked( siblingID ) ) {
+			if ( !saveLock.isLocked( siblingId ) ) {
 				// lock the sibling to ensure that it cannot be updated by any other processes until this update is complete
-				saveLock.lock( siblingID );
+				saveLock.lock( siblingId );
 				// remove this child from a sibling
 				let siblingGroupPromise = ChildMiddleware
-					.removeSiblingFromChild( { childToUpdateID: siblingID, siblingToRemoveID: this._id.toString() } )
-					.then( updatedChildID => {
+					.removeSiblingFromChild( { childToUpdateId: siblingId, siblingToRemoveId: this._id.toString() } )
+					.then( updatedChildId => {
 						// unlock the sibling after update is complete
-						saveLock.unlock( updatedChildID );
+						saveLock.unlock( updatedChildId );
 					})
-					.catch( updatedChildID => {
+					.catch( updatedChildId => {
 						// unlock the sibling after update is complete
-						saveLock.unlock( updatedChildID );
+						saveLock.unlock( updatedChildId );
 					});
 
 				siblingGroupPromises.push( siblingGroupPromise );
@@ -887,18 +880,22 @@ Child.schema.methods.updateSiblingsToBePlacedWithGroup = function() {
 		// add the current child to the group ( because a child will not store itself in the siblings array )
 		updatedSiblingsToBePlacedWithGroup.push( this._id.toString() );
 		// determine which siblings to be placed with were impacted by the update
-		let siblingsToBePlacedWithImpacted = updatedSiblingsToBePlacedWithGroup.concat( siblingsToBePlacedWithRemovedBySave ).filter( siblingID => siblingID !== this._id.toString() );
+		let siblingsToBePlacedWithImpacted = updatedSiblingsToBePlacedWithGroup.concat( siblingsToBePlacedWithRemovedBySave ).filter( siblingId => siblingId !== this._id.toString() );
 
 		// for each sibling to be placed with impacted
-		siblingsToBePlacedWithImpacted.forEach( siblingID => {
+		siblingsToBePlacedWithImpacted.forEach( siblingId => {
 			// check to ensure that the sibling to be placed with is not already in the process of being saved
-			if ( !saveLock.isLocked( siblingID ) ) {
+			if ( !saveLock.isLocked( siblingId ) ) {
 				// lock the sibling to be placed with to ensure that it cannot be updated by any other processes until this update is complete
-				saveLock.lock( siblingID );
+				saveLock.lock( siblingId );
 				// update the sibling to be placed with with the new siblings to be placed with group
 				ChildMiddleware
 					.applySiblingsToBePlacedWithGroupToChild({
-						childToUpdateID: siblingID,
+						childToUpdateId: siblingId,
+						recommendedFamilyConstellation: this.get( 'recommendedFamilyConstellation' ),
+						adoptionWorker: this.get( 'adoptionWorker' ),
+						recruitmentWorker: this.get( 'recruitmentWorker' ),
+						isVisibleInGallery: this.get( 'isVisibleInGallery' ),
 						siblingsToBePlacedWithGroup: updatedSiblingsToBePlacedWithGroup,
 						siblingGroupProfile: this.get( 'groupProfile' ),
 						siblingGroupImage: this.get( 'siblingGroupImage' ),
@@ -906,34 +903,37 @@ Child.schema.methods.updateSiblingsToBePlacedWithGroup = function() {
 						wednesdaysChildSiblingGroup: this.get( 'wednesdaysChildSiblingGroup' ),
 						wednesdaysChildSiblingGroupDate: this.get( 'wednesdaysChildSiblingGroupDate' ),
 						wednesdaysChildSiblingGroupVideo: this.get( 'wednesdaysChildSiblingGroupVideo' ) } )
-					.then( updatedChildID => {
+					.then( updatedChildId => {
 						// unlock the sibling to be placed with after update is complete
-						saveLock.unlock( updatedChildID );
+						saveLock.unlock( updatedChildId );
 					})
-					.catch( updatedChildID => {
+					.catch( updatedChildId => {
 						// unlock the sibling to be placed with after update is complete
-						saveLock.unlock( updatedChildID );
+						saveLock.unlock( updatedChildId );
 					});
 			}
 		});
 	// if the updated siblings to be placed with group is empty this child was removed from a siblings to be placed with group and should remove itself from any siblings to be placed with remaining in that group
 	} else {
 		// for each sibling that this child used to be a in a siblings to be placed with group with
-		siblingsToBePlacedWithRemovedBySave.forEach( siblingID => {
+		siblingsToBePlacedWithRemovedBySave.forEach( siblingId => {
 			// check to ensure that the sibling to be placed with is not already in the process of being saved
-			if ( !saveLock.isLocked( siblingID ) ) {
+			if ( !saveLock.isLocked( siblingId ) ) {
 				// lock the sibling to be placed with to ensure that it cannot be updated by any other processes until this update is complete
-				saveLock.lock( siblingID );
+				saveLock.lock( siblingId );
 				// remove this child from a sibling to be placed with
 				ChildMiddleware
-					.removeSiblingToBePlacedWithFromChild( { childToUpdateID: siblingID, siblingToBePlacedWithToRemoveID: this._id.toString() } )
-					.then( updatedChildID => {
-						// unlock the sibling to be placed with after update is complete
-						saveLock.unlock( updatedChildID );
+					.removeSiblingToBePlacedWithFromChild({
+						childToUpdateId: siblingId,
+						siblingToBePlacedWithToRemoveId: this._id.toString()
 					})
-					.catch( updatedChildID => {
+					.then( updatedChildId => {
 						// unlock the sibling to be placed with after update is complete
-						saveLock.unlock( updatedChildID );
+						saveLock.unlock( updatedChildId );
+					})
+					.catch( updatedChildId => {
+						// unlock the sibling to be placed with after update is complete
+						saveLock.unlock( updatedChildId );
 					});
 			}
 		});
@@ -948,10 +948,9 @@ Child.schema.methods.checkSiblingsForChanges = function() {
 	let siblingsArrayAfterSave = this.siblings.map( sibling => sibling.toString() );
 	let siblingsAfterSave = new Set( siblingsArrayAfterSave );
 
-	let exclusiveSiblingsInTheBeforeSaveSet = siblingsBeforeSave.leftOuterJoin( siblingsAfterSave );
-	let exclusiveSiblingsInTheAfterSaveSet = siblingsBeforeSave.rightOuterJoin( siblingsAfterSave );
+	let addedOrRemovedSiblings = siblingsBeforeSave.difference( siblingsAfterSave );
 
-	return exclusiveSiblingsInTheBeforeSaveSet.size > 0 || exclusiveSiblingsInTheAfterSaveSet.size > 0;
+	return addedOrRemovedSiblings.size > 0;
 };
 
 Child.schema.methods.checkSiblingsToBePlacedWithForChanges = function() {
@@ -962,10 +961,9 @@ Child.schema.methods.checkSiblingsToBePlacedWithForChanges = function() {
 	let siblingsArrayAfterSave = this.siblingsToBePlacedWith.map( sibling => sibling.toString() );
 	let siblingsAfterSave = new Set( siblingsArrayAfterSave );
 
-	let exclusiveSiblingsInTheBeforeSaveSet = siblingsBeforeSave.leftOuterJoin( siblingsAfterSave );
-	let exclusiveSiblingsInTheAfterSaveSet = siblingsBeforeSave.rightOuterJoin( siblingsAfterSave );
+	let addedOrRemovedSiblings = siblingsBeforeSave.difference( siblingsAfterSave );
 
-	return exclusiveSiblingsInTheBeforeSaveSet.size > 0 || exclusiveSiblingsInTheAfterSaveSet.size > 0;
+	return addedOrRemovedSiblings.size > 0;
 };
 
 // Update the siblings field of all siblings listed to include the current child
@@ -1036,69 +1034,6 @@ Child.schema.methods.updateSiblingFields = function() {
 	], function() {
 
 		done();
-	});
-};
-
-// TODO: see if this should be merged into Child.schema.methods.updateSiblingFields
-Child.schema.methods.replicateFieldsToSiblings = function() {
-	
-	// don't replicate fields if _disableReplicateFieldsToSiblings flag is present:
-	if ( typeof this._disableReplicateFieldsToSiblings !== 'undefined' ) {
-		return;
-	}
-
-	let sourceFields = {
-		recommendedFamilyConstellation: this.recommendedFamilyConstellation,
-		adoptionWorker: this.adoptionWorker,
-		recruitmentWorker: this.recruitmentWorker,
-		isVisibleInGallery: this.isVisibleInGallery
-	}
-	
-	this.siblings.forEach( siblingID => {
-		ChildServiceMiddleware
-			.getChildById( { id: siblingID } )
-			.then( child => {
-				let updateChild = false;
-				
-				// create sets to find differences in recommendedFamilyConstellation field:
-				let currentRecommendedFamilyConstellationSet = new Set( child.recommendedFamilyConstellation.map( constellation => constellation.toString() ) );
-				let updatedRecommendedFamilyConstellationSet = new Set( sourceFields.recommendedFamilyConstellation.map( constellation => constellation.toString() ) );
-				if ( currentRecommendedFamilyConstellationSet.leftOuterJoin( updatedRecommendedFamilyConstellationSet ).size > 0 || 
-					currentRecommendedFamilyConstellationSet.rightOuterJoin( updatedRecommendedFamilyConstellationSet ).size > 0 
-				) {
-					child.recommendedFamilyConstellation = sourceFields.recommendedFamilyConstellation;
-					updateChild = true;
-				}
-				
-				if ( child.adoptionWorker != sourceFields.adoptionWorker ) {
-					child.adoptionWorker = sourceFields.adoptionWorker;
-					updateChild = true;
-				}
-				
-				if ( child.recruitmentWorker != sourceFields.recruitmentWorker ) {
-					child.recruitmentWorker = sourceFields.recruitmentWorker;
-					updateChild = true;
-				}
-				
-				if ( child.isVisibleInGallery != sourceFields.isVisibleInGallery ) {
-					child.isVisibleInGallery = sourceFields.isVisibleInGallery;
-					updateChild = true;
-				}
-				
-				if ( updateChild && !saveLock.isLocked( siblingID ) ) {
-					saveLock.lock( siblingID );
-					child._disableReplicateFieldsToSiblings = true;
-					child.save( error => {
-						// log any errors
-						if ( error ) {
-							console.error('ERRR', error );
-						}
-						
-						saveLock.unlock( siblingID );
-					});
-				}
-				
-			});
 	});
 };
 
