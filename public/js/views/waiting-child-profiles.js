@@ -61,6 +61,26 @@
 				mare.views.gallery.render();
 			}.bind( this ) );
 		},
+		
+		/* hide the gallery search form and show both the gallery and given child details */
+		showChildDetails: function showChildDetails( registrationNumber ) {
+			// fade the search form out and fade the gallery in
+			this.$searchForm.fadeOut( function() {
+				this.$gallery.fadeIn();
+				// render the gallery and the child details
+				mare.views.gallery.renderChild( registrationNumber );
+			}.bind( this ) );
+		},
+		
+		/* hide the gallery search form and show both the gallery and given sibling group details */
+		showSiblingGroupDetails: function showSiblingGroupDetails( registrationNumbers ) {
+			// fade the search form out and fade the gallery in
+			this.$searchForm.fadeOut( function() {
+				this.$gallery.fadeIn();
+				// render the gallery and the sibling group details
+				mare.views.gallery.renderSiblingGroup( registrationNumbers );
+			}.bind( this ) );
+		},
 
 		/* hide the gallery and show the gallery search form */
 		showSearchForm: function showSearchForm() {

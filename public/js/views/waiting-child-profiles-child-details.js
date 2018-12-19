@@ -101,6 +101,9 @@
 			this.openModal();
 			// fetch the child details information
 			this.getDetails( childModel );
+			
+			// update the url
+			Backbone.history.navigate( 'gallery/child/' + registrationNumber );
 		},
 
 		handleNavClick: function handleNavClick( event ) {
@@ -114,6 +117,9 @@
 			$( '.modal-container__contents' ).fadeOut( function() {
 				$( '.modal-container__loading' ).fadeIn( function() {
 					this.getDetails( child );
+					
+					// update the url
+					Backbone.history.navigate( 'gallery/child/' + child.get( 'registrationNumber' ) );
 				}.bind( this ) );
 			}.bind( this ) );
 		},
@@ -172,6 +178,9 @@
 			this.clearModalContents();
 
 			this.unbindEvents();
+			
+			// update the url
+			Backbone.history.navigate( 'gallery' );
 		},
 
 		/* clear out the current contents of the modal */
