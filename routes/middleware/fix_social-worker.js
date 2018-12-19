@@ -75,14 +75,14 @@ function fetchSocialWorkersByPage( page ) {
 					socialWorkersGenerator.next({
 						responseType: 'error',
 						error: err,
-						nextPage: agencies.next });
-				// if the agencies were fetched successfully
+						nextPage: socialWorkers.next });
+				// if the social workers were fetched successfully
 				} else {
-					// resolve the promise with the agencies and the next page to fetch ( false if this is the last page )
+					// resolve the promise with the social workers and the next page to fetch ( false if this is the last page )
 					socialWorkersGenerator.next({
 						responseType: 'success',
-						agencies: agencies.results,
-						nextPage: agencies.next });
+						socialWorkers: socialWorkers.results,
+						nextPage: socialWorkers.next });
 				}
 			});
 	});
