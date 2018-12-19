@@ -256,16 +256,18 @@ exports.batchAllSiblingsToBePlacedWithUpdates = ( childModel ) => {
 	});
 };
 
-exports.applySiblingsToBePlacedWithGroupToChild = ( { childToUpdateId, recommendedFamilyConstellation = [], adoptionWorker, recruitmentWorker, isVisibleInGallery = false, siblingsToBePlacedWithGroup = [], siblingGroupProfile, siblingGroupImage, siblingGroupVideo, wednesdaysChildSiblingGroup, wednesdaysChildSiblingGroupDate, wednesdaysChildSiblingGroupVideo } ) => {
+exports.applySiblingsToBePlacedWithGroupToChild = ( { childToUpdateId, recommendedFamilyConstellation = [], adoptionWorker = '', recruitmentWorker = '', isVisibleInGallery = false, siblingsToBePlacedWithGroup = [], siblingGroupProfile, siblingGroupImage, siblingGroupVideo, wednesdaysChildSiblingGroup, wednesdaysChildSiblingGroupDate, wednesdaysChildSiblingGroupVideo } ) => {
 
 	return new Promise( ( resolve, reject ) => {
 
 		// create a group profile object based on the saving child's profile information
-		const newGroupQuote							= siblingGroupProfile.quote || '',
-			  newGroupProfilePart1					= siblingGroupProfile.part1 || '',
-			  newGroupProfilePart2					= siblingGroupProfile.part2 || '',
-			  newGroupProfilePart3					= siblingGroupProfile.part3 || '',
-			  newSiblingGroupImage					= siblingGroupImage || {};
+		const newGroupQuote				= siblingGroupProfile.quote || '',
+			  newGroupProfilePart1		= siblingGroupProfile.part1 || '',
+			  newGroupProfilePart2		= siblingGroupProfile.part2 || '',
+			  newGroupProfilePart3		= siblingGroupProfile.part3 || '',
+			  newSiblingGroupImage		= siblingGroupImage || {},
+			  childsAdoptionWorker		= child.adoptionWorker ? child.adoptionWorker.toString() : '',
+			  childsRecruitmentWorker	= child.recruitmentWorker ? child.recruitmentWorker.toString() : '';
 
 
 		// get the child model to update
@@ -317,8 +319,8 @@ exports.applySiblingsToBePlacedWithGroupToChild = ( { childToUpdateId, recommend
 					// NOTE: this first check converts the _id arrays to strings, ensures both are sorted, then converts them into single strings for comparison
 					// TODO: make a utility function for more readable array comparison
 					if( child.recommendedFamilyConstellation.map( familyConstellation => familyConstellation.toString() ).sort().join( '' ) !== recommendedFamilyConstellation.map( familyConstellation => familyConstellation.toString() ).sort().join( '' ) ||
-						child.adoptionWorker.toString() !== adoptionWorker.toString() ||
-						child.recruitmentWorker.toString() !== recruitmentWorker.toString() ||
+						childsAdoptionWorker !== adoptionWorker.toString() ||
+						childsRecruitmentWorker !== recruitmentWorker.toString() ||
 						child.isVisibleInGallery !== isVisibleInGallery ||
 						child.groupProfile.quote !== siblingGroupProfile.quote ||
 						child.groupProfile.part1 !== siblingGroupProfile.part1 ||
