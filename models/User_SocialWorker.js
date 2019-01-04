@@ -5,7 +5,8 @@ var keystone				= require( 'keystone' ),
 	Types					= keystone.Field.Types,
 	User					= require( './User' ),
 	ChangeHistoryMiddleware	= require( '../routes/middleware/models_change-history' ),
-	UserServiceMiddleware	= require( '../routes/middleware/service_user' );
+	UserServiceMiddleware	= require( '../routes/middleware/service_user' ),
+	Validators  			= require( '../routes/middleware/validators' );
 
 // Export to make it available using require.  The keystone.list import throws a ReferenceError when importing a list that comes later when sorting alphabetically
 const ContactGroup = require( './ContactGroup' );
@@ -57,8 +58,8 @@ SocialWorker.add( 'Permissions', {
 }, 'Contact Information', {
 
 	phone: {
-		work: { type: Types.Text, label: 'work phone number', initial: true },
-		mobile: { type: Types.Text, label: 'mobile phone number', initial: true },
+		work: { type: Types.Text, label: 'work phone number', initial: true, validate: Validators.phoneValidator },
+		mobile: { type: Types.Text, label: 'mobile phone number', initial: true, validate: Validators.phoneValidator },
 		preferred: { type: Types.Select, label: 'preferred phone', options: 'work, mobile', initial: true }
 	}
 

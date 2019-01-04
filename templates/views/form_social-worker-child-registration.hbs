@@ -326,7 +326,8 @@
 				</div>
 				<div class="row">
 					<div class="col-sm-12 form-group">
-						<input type="text" class="input" id="recruitment-worker-phone" name="recruitmentWorkerPhone" data-parsley-error-message="required" required="">
+						<input type="text" class="input" id="recruitment-worker-phone" name="recruitmentWorkerPhone" data-parsley-required-message="required" required=""
+							 data-parsley-pattern="/^\d{3}-\d{3}-\d{4}$/" data-parsley-pattern-message="Please use xxx-xxx-xxxx format">
 						<label for="recruitment-worker-phone" class="label required-field">Phone</label>
 					</div>
 					<div class="col-sm-12 form-group">
@@ -350,7 +351,8 @@
 				</div>
 				<div class="row">
 					<div class="col-sm-12 form-group">
-						<input type="text" class="input" id="adoption-worker-phone" name="adoptionWorkerPhone" data-parsley-error-message="required" required="">
+						<input type="text" class="input" id="adoption-worker-phone" name="adoptionWorkerPhone" data-parsley-required-message="required" required=""
+							 data-parsley-pattern="/^\d{3}-\d{3}-\d{4}$/" data-parsley-pattern-message="Please use xxx-xxx-xxxx format">
 						<label for="adoption-worker-phone" class="label required-field">Phone</label>
 					</div>
 					<div class="col-sm-12 form-group">
