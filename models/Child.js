@@ -16,8 +16,8 @@ const keystone						= require( 'keystone' ),
 	  saveLock						= require( '../routes/middleware/model_save_lock' );
 
 // configure the s3 storage adapter
-var storage = new keystone.Storage({
-	adapter: require('keystone-storage-adapter-s3'),
+const storage = new keystone.Storage({
+	adapter: require( 'keystone-storage-adapter-s3' ),
 	s3: {
 		key: process.env.S3_KEY, // required; defaults to process.env.S3_KEY
 		secret: process.env.S3_SECRET, // required; defaults to process.env.S3_SECRET
@@ -25,8 +25,12 @@ var storage = new keystone.Storage({
 		region: process.env.S3_REGION, // optional; defaults to process.env.S3_REGION, or if that's not specified, us-east-1
 		uploadParams: { // optional; add S3 upload params; see below for details
 			ACL: 'public-read'
+		},
+		generateFilename: function( item ) {
+			// use the files name instead of randomly generating a value
+			return item.originalname;
 		}
-	  },
+	},
 	schema: {
 		bucket: true, // optional; store the bucket the file was uploaded to in your db
 		etag: true, // optional; store the etag for the resource
@@ -44,7 +48,7 @@ const Child = new keystone.List( 'Child', {
 });
 
 // Create fields
-Child.add('Display Options', {
+Child.add( 'Display Options', {
 
 	siteVisibility: { type: Types.Select, label: 'child is visible to', options: 'everyone, only registered social workers and families', required: true, initial: true },
 	isVisibleInGallery: { type: Types.Boolean, label: 'activate child profile on website to group selected', note: 'authorized staff only', default: false, initial: true },
@@ -250,29 +254,14 @@ Child.add('Display Options', {
 	communicationsCollateral: { type: Types.Boolean, label: 'communications collateral', default: false, initial: true },
 	communicationsCollateralDetails: { type: Types.Text, label: 'details', dependsOn: { communicationsCollateral: true }, initial: true },
 
-// }, 'Attachments', {
+}, 'Attachments', {
 
-	photolistingPage: {
-		type: Types.File,
-		storage: storage,
-		// path: '/child/photolisting-pages',
-		filename: function( item, filename ) {
-			// prefix file name with registration number and the user's name for easier identification
-			return item.get( 'fileName' );
-		},
-		hidden: true
-	},
+	attachment1: { type: Types.File, storage: storage, label: 'attachment 1' },
+	attachment2: { type: Types.File, storage: storage, label: 'attachment 2' },
+	attachment3: { type: Types.File, storage: storage, label: 'attachment 3' },
+	attachment4: { type: Types.File, storage: storage, label: 'attachment 4' },
+	attachment5: { type: Types.File, storage: storage, label: 'attachment 5' }
 
-	otherAttachement: {
-		type: Types.File,
-		storage: storage,
-		// path: '/child/other',
-		filename: function( item, filename ) {
-			// prefix file name with registration number and name for easier identification
-			return item.get( 'fileName' );
-		},
-		hidden: true
-	}
 /* Container for data migration fields ( these should be kept until after phase 2 and the old system is phased out completely ) */
 }, {
 	// system field to store an appropriate file prefix
