@@ -139,6 +139,15 @@ Event.schema.pre( 'save', function( next ) {
 	});
 });
 
+// TODO IMPORTANT: this is a temporary solution to fix a problem where the autokey generation from Keystone
+// 				   occurs after the pre-save hook for this model, preventing the url from being set.  Remove
+//				   this hook once that issue is resolved.
+Event.schema.post( 'save', function() {
+	if( !this.get( 'url' ) ) {
+		this.save();
+	}
+});
+
 Event.schema.methods.setUrl = function() {
 	'use strict';
 
@@ -152,8 +161,9 @@ Event.schema.methods.setUrl = function() {
     	case 'other opportunities & trainings': eventType = 'other-trainings'; break;
     	default: eventType = '';
 	}
+
 	// TODO: if !eventType.length, I should prevent the save
-	this.url = '/events/' + eventType + '/' + this.key;
+	this.url = this.get( 'key' ) ? '/events/' + eventType + '/' + this.get( 'key' ) : undefined;
 };
 
 Event.schema.methods.setSourceField = function() {

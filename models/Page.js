@@ -19,8 +19,18 @@ Page.add({
 Page.schema.pre('save', function(next) {
 'use strict';
 
-	this.url = '/page/' + this.key;
+	this.url = this.get( 'key' ) ? '/page/' + this.get( 'key' ) : undefined;
+
 	next();
+});
+
+// TODO IMPORTANT: this is a temporary solution to fix a problem where the autokey generation from Keystone
+// 				   occurs after the pre-save hook for this model, preventing the url from being set.  Remove
+//				   this hook once that issue is resolved.
+Page.schema.post( 'save', function() {
+	if( !this.get( 'url' ) ) {
+		this.save();
+	}
 });
 
 // Define default columns in the admin interface and register the model

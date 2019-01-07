@@ -59,10 +59,18 @@ MAREInTheNews.schema.virtual( 'hasImage' ).get( function() {
 MAREInTheNews.schema.pre( 'save', function(next) {
 	'use strict';
 
-	this.url = '/mare-in-the-news/' + this.key;
+	this.url = this.get( 'key' ) ? '/mare-in-the-news/' + this.get( 'key' ) : undefined;
 
 	next();
+});
 
+// TODO IMPORTANT: this is a temporary solution to fix a problem where the autokey generation from Keystone
+// 				   occurs after the pre-save hook for this model, preventing the url from being set.  Remove
+//				   this hook once that issue is resolved.
+MAREInTheNews.schema.post( 'save', function() {
+	if( !this.get( 'url' ) ) {
+		this.save();
+	}
 });
 
 // Define default columns in the admin interface and register the model
