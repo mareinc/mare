@@ -26,7 +26,8 @@
 				<label for="contact1-email" class="label">Email Address</label>
 			</div>
 			<div class="col-sm-12">
-				<input type="text" id="contact1-mobile" class="input" name="contact1Mobile" data-field-name="contact1.phone.mobile" value="{{user.contact1.phone.mobile}}">
+				<input type="text" id="contact1-mobile" class="input" name="contact1Mobile" data-field-name="contact1.phone.mobile" value="{{user.contact1.phone.mobile}}"
+					data-parsley-pattern="/^\d{3}-\d{3}-\d{4}$/" data-parsley-pattern-message="Please use xxx-xxx-xxxx format">
 				<label for="contact1-mobile" class="label">Mobile Phone</label>
 			</div>
 		</div>
@@ -96,7 +97,8 @@
 				<label for="contact2-email" class="label">Email Address</label>
 			</div>
 			<div class="col-sm-12">
-				<input type="text" id="contact2-phone" class="input" name="contact2Mobile" data-field-name="contact2.phone.mobile" value="{{user.contact2.phone.mobile}}">
+				<input type="text" id="contact2-phone" class="input" name="contact2Mobile" data-field-name="contact2.phone.mobile" value="{{user.contact2.phone.mobile}}"
+					data-parsley-pattern="/^\d{3}-\d{3}-\d{4}$/" data-parsley-pattern-message="Please use xxx-xxx-xxxx format">
 				<label for="contact2-phone" class="label">Mobile Phone</label>
 			</div>
 		</div>
@@ -200,7 +202,8 @@
 				<label for="zip-code" class="label">Zip Code</label>
 			</div>
 			<div class="col-sm-12">
-				<input type="text" id="home-phone" class="input" name="homePhone" data-field-name="homePhone" value="{{user.homePhone}}">
+				<input type="text" id="home-phone" class="input" name="homePhone" data-field-name="homePhone" value="{{user.homePhone}}"
+					data-parsley-pattern="/^\d{3}-\d{3}-\d{4}$/" data-parsley-pattern-message="Please use xxx-xxx-xxxx format">
 				<label for="home-phone" class="label">Home Phone</label>
 			</div>
 		</div>
@@ -263,7 +266,7 @@
 		</div>
 		<div class="row form-group">
 			<div class="col-sm-12">
-				<input type="text" id="social-worker-phone" class="input" name="socialWorkerPhone">
+				<input type="text" id="social-worker-phone" class="input" name="socialWorkerPhone" data-parsley-pattern="/^\d{3}-\d{3}-\d{4}$/" data-parsley-pattern-message="Please use xxx-xxx-xxxx format">
 				<label for="social-worker-phone" class="label">Social Worker Phone Number</label>
 			</div>
 			<div class="col-sm-12">

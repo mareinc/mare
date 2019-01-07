@@ -1,6 +1,7 @@
 const keystone				= require( 'keystone' ),
 	  Types					= keystone.Field.Types,
-	  ListServiceMiddleware	= require( '../routes/middleware/service_lists' );
+	  ListServiceMiddleware	= require( '../routes/middleware/service_lists' ),
+	  Validators			= require( '../routes/middleware/validators' );
 
 // create model
 var Agency = new keystone.List('Agency', {
@@ -16,7 +17,7 @@ Agency.add({
 	code: { type: Types.Text, label: 'agency code', required: true, initial: true },
 	name: { type: Types.Text, label: 'agency name', required: true, initial: true },
 
-	phone: { type: Types.Text, label: 'phone number', initial: true },
+	phone: { type: Types.Text, label: 'phone number', initial: true, validate: Validators.phoneValidator },
 	fax: { type: Types.Text, label: 'fax number', initial: true },
 
 	address: {

@@ -17,6 +17,8 @@
 			'click .sibling-group-bookmark'					: 'toggleSiblingGroupBookmark',
 			'change .waiting-child-profiles__gallery-filter': 'sortGallery'
 		},
+		
+		defaultBoxesToLoadStart: 32,
 
 		/* initialize the gallery view */
 		initialize: function initialize() {
@@ -71,11 +73,15 @@
 		},
 
 		/* render the view onto the page */
-		render: function render() {
+		render: function render( doneCallback ) {
 			// store a reference to this for insde callbacks where context is lost
 			var view = this;
 			// unbind any existing media box plugins
 			this.unbindMediaBoxes();
+			
+			// close the modal if opened
+			mare.views.childDetails.closeModal();
+			
 			// the gallery can't render until we have the user permissions and the child data is loaded
 			// use the promise bound to both data to delay rendering until we have them
 			$.when( mare.promises.permissionsLoaded, mare.promises.childrenDataLoaded ).then( function() {
@@ -84,21 +90,68 @@
 				var childrenHtml		= view.childrenTemplate( view.childrenCollection.toJSON() );
 
 				view.$( '#children-grid' ).html( siblingGroupsHtml + childrenHtml );
+			}).then( typeof doneCallback === "function" ? doneCallback : function() { 
 				// once the html is rendered to the page, initialize the gallery display plugin
-				view.initializeMediaBoxes();
-			});
+				view.initializeMediaBoxes( view.defaultBoxesToLoadStart );
+			} );
 		},
+		
+		/* render the gallery view and the child details */
+		renderChild: function renderChild( registrationNumber ) {
+			this.render( function () {
+				var element = this.$( '.child-media-box[data-registration-number="' + registrationNumber + '"]' );
+				if ( element.length > 0 ) {
+					element.trigger( jQuery.Event( "click" ) );
+					this.initializeMediaBoxesOnTarget( element );
+				} else {
+					this.initializeMediaBoxes( this.defaultBoxesToLoadStart );
+				}
+			}.bind( this ) );
+		},
+		
+		/* render the gallery view and the sibling group details */
+		renderSiblingGroup: function renderSiblingGroup( registrationNumbers ) {
+			this.render( function () {
+				var element = this.$( '.sibling-group-media-box[data-registration-numbers="' + registrationNumbers.replace( /-/g, "," ) + '"]' );
+				if ( element.length > 0 ) {
+					element.trigger( jQuery.Event( "click" ) );
+					this.initializeMediaBoxesOnTarget( element );
+				} else {
+					this.initializeMediaBoxes( this.defaultBoxesToLoadStart );
+				}
+			}.bind( this ) );
+		},
+		
 		/* clearing this search is needed as using modify search while this has content causes
 		   the page to render incorrectly when navigating back to the gallery */
 		clearRegistrationSearch: function clearRegistrationSearch() {
 			this.$( '#registration-number-search' ).val( '' ).trigger( 'keyup' );
 		},
+		
+		/* ititializes the media box plugin that drives the images in the gallery, it focuses on a given element */
+		initializeMediaBoxesOnTarget: function initializeMediaBoxesOnTarget( targetElement ) {
+			// calculate how many boxes should be displayed on start
+			var boxesToLoadStart = targetElement.index();
+			boxesToLoadStart += ( 4 - ( boxesToLoadStart % 4 ) );
+			boxesToLoadStart += 8;
+			
+			// initialize the gallery display plugin
+			this.initializeMediaBoxes( boxesToLoadStart > this.defaultBoxesToLoadStart ? boxesToLoadStart : this.defaultBoxesToLoadStart );
+			
+			// scroll down to the target element
+			setTimeout( function() {
+				var scrollTop = targetElement.offset().top - $( '.global-header' ).height();
+				if ( scrollTop > 0 ) {
+					$( window ).scrollTop( scrollTop );
+				}
+			}, 1000 );
+		},
 
 		/* ititializes the media box plugin that drives the images in the gallery */
-		initializeMediaBoxes: function initializeMediaBoxes() {
+		initializeMediaBoxes: function initializeMediaBoxes( boxesToLoadStart ) {
 			// initialize the photo listing children gallery grid
 			$( '#children-grid' ).mediaBoxes({
-				boxesToLoadStart: 32,
+				boxesToLoadStart: boxesToLoadStart,
 				boxesToLoad 	: 24,
 				search			: '#registration-number-search',
 				searchTarget	: '.media-box-registration-number'

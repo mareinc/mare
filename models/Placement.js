@@ -1,5 +1,6 @@
 const keystone	= require( 'keystone' ),
-	  Types		= keystone.Field.Types;
+	  Types		= keystone.Field.Types,
+	  Validators = require( '../routes/middleware/validators' );
 
 // Create model
 var Placement = new keystone.List( 'Placement', {
@@ -51,9 +52,9 @@ Placement.add( 'Placement', {
 		},
 
 		phone: {
-			work: { type: Types.Text, label: 'work phone number', dependsOn: { isUnregisteredFamily: true }, initial: true },
-			home: { type: Types.Text, label: 'home phone number', dependsOn: { isUnregisteredFamily: true }, initial: true },
-			mobile: { type: Types.Text, label: 'mobile phone number', dependsOn: { isUnregisteredFamily: true }, initial: true },
+			work: { type: Types.Text, label: 'work phone number', dependsOn: { isUnregisteredFamily: true }, initial: true, validate: Validators.phoneValidator },
+			home: { type: Types.Text, label: 'home phone number', dependsOn: { isUnregisteredFamily: true }, initial: true, validate: Validators.phoneValidator },
+			mobile: { type: Types.Text, label: 'mobile phone number', dependsOn: { isUnregisteredFamily: true }, initial: true, validate: Validators.phoneValidator },
 			preferred: { type: Types.Select, label: 'preferred phone', options: 'work, home, mobile', dependsOn: { isUnregisteredFamily: true }, initial: true }
 		},
 

@@ -102,6 +102,9 @@
 			this.openModal();
 			// fetch the child details information
 			this.getDetails( siblingGroup );
+			
+			// update the url
+			Backbone.history.navigate( 'gallery/children/' + registrationNumbers.replace( /,/g, '-' ) );
 		},
 
 		handleNavClick: function handleNavClick( event ) {
@@ -116,6 +119,9 @@
 			$('.modal-container__contents').fadeOut( function() {
 				$('.modal-container__loading').fadeIn( function() {
 					this.getDetails( siblingGroup );
+					
+					// update the url
+					Backbone.history.navigate( 'gallery/children/' + siblingGroup.get( 'registrationNumbers' ).join( '-' ) );
 				}.bind( this ) );
 			}.bind( this ) );
 		},
@@ -173,6 +179,9 @@
 			mare.utils.enablePageScrolling();
 
 			this.clearModalContents();
+			
+			// update the url
+			Backbone.history.navigate( 'gallery' );
 		},
 
 		/* clear out the current contents of the modal */

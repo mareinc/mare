@@ -4,10 +4,12 @@
 	mare.routers.WaitingChildProfiles = Backbone.Router.extend({
 
 		routes: {
-			''			: 'loadDefault',
-			'gallery'	: 'loadGallery',
-			'search'	: 'loadSearch',
-			'*other'	: 'loadDefault'
+			''						: 'loadDefault',
+			'gallery'				: 'loadGallery',
+			'gallery/child/:id'		: 'loadGalleryAndDisplayChildDetails',
+			'gallery/children/:ids'	: 'loadGalleryAndDisplaySiblingGroupDetails',
+			'search'				: 'loadSearch',
+			'*other'				: 'loadDefault'
 		},
 
 		initialize: function initialize() {
@@ -40,6 +42,14 @@
 		loadGallery: function loadGallery() {
 			// use the view for the waiting child profiles page as a whole to display the correct area
 			mare.views.waitingChildProfiles.showGallery();
+		},
+
+		loadGalleryAndDisplayChildDetails: function( id ) {
+			mare.views.waitingChildProfiles.showChildDetails( id );
+		},
+
+		loadGalleryAndDisplaySiblingGroupDetails: function( ids ) {
+			mare.views.waitingChildProfiles.showSiblingGroupDetails( ids );
 		},
 
 		loadSearch: function loadSearch() {

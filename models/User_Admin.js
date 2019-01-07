@@ -1,6 +1,7 @@
 var keystone	= require( 'keystone' ),
 	Types		= keystone.Field.Types,
-	User		= require( './User' );
+	User		= require( './User' ),
+	Validators  = require( '../routes/middleware/validators' );
 
 // Create model
 var Admin = new keystone.List( 'Admin', {
@@ -47,9 +48,9 @@ Admin.add( 'Permissions', {
 }, 'Contact Information', {
 
 	phone: {
-		work: { type: Types.Text, label: 'work phone number', initial: true },
-		home: { type: Types.Text, label: 'home phone number', initial: true },
-		mobile: { type: Types.Text, label: 'mobile phone number', initial: true },
+		work: { type: Types.Text, label: 'work phone number', initial: true, validate: Validators.phoneValidator },
+		home: { type: Types.Text, label: 'home phone number', initial: true, validate: Validators.phoneValidator },
+		mobile: { type: Types.Text, label: 'mobile phone number', initial: true, validate: Validators.phoneValidator },
 		preferred: { type: Types.Select, label: 'preferred phone', options: 'work, home, mobile', initial: true }
 	},
 

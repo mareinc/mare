@@ -9,7 +9,8 @@ const keystone					= require( 'keystone' ),
 	  AgencyService				= require( '../routes/middleware/service_agency' ),
 	  UserService				= require( '../routes/middleware/service_user' ),
 	  FamilyService				= require( '../routes/middleware/service_family' ),
-	  ListService				= require( '../routes/middleware/service_lists' );
+	  ListService				= require( '../routes/middleware/service_lists' ),
+	  Validators  				= require( '../routes/middleware/validators' );
 
 // configure the s3 storage adapter
 var storage = new keystone.Storage({
@@ -98,8 +99,8 @@ Family.add( 'Permissions', {
 		},
 
 		phone: {
-			mobile: { type: Types.Text, label: 'mobile phone number', initial: true },
-			work: { type: Types.Text, label: 'work phone number', initial: true }
+			mobile: { type: Types.Text, label: 'mobile phone number', initial: true, validate: Validators.phoneValidator },
+			work: { type: Types.Text, label: 'work phone number', initial: true, validate: Validators.phoneValidator }
 		},
 
 		email: { type: Types.Email, label: 'email address', initial: true },
@@ -120,8 +121,8 @@ Family.add( 'Permissions', {
 		},
 
 		phone: {
-			mobile: { type: Types.Text, label: 'mobile phone number', initial: true },
-			work: { type: Types.Text, label: 'work phone number', initial: true }
+			mobile: { type: Types.Text, label: 'mobile phone number', initial: true, validate: Validators.phoneValidator },
+			work: { type: Types.Text, label: 'work phone number', initial: true, validate: Validators.phoneValidator }
 		},
 
 		email: { type: Types.Email, label: 'email address', initial: true },
@@ -146,7 +147,7 @@ Family.add( 'Permissions', {
 		region: { type: Types.Relationship, label: 'region', ref: 'Region', noedit: true }
 	},
 
-	homePhone: { type: Types.Text, label: 'home phone number', initial: true }
+	homePhone: { type: Types.Text, label: 'home phone number', initial: true, validate: Validators.phoneValidator }
 
 }, 'Current Children in Family', {
 

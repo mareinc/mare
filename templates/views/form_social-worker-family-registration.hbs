@@ -39,7 +39,8 @@
 						<label for="contact1-email" class="label required-field">Email Address</label>
 					</div>
 					<div class="col-sm-12 form-group">
-						<input type="text" id="contact1-mobile" class="input" name="contact1Mobile" data-parsley-error-message="required" required="">
+						<input type="text" id="contact1-mobile" class="input" name="contact1Mobile" data-parsley-required-message="required" required=""
+							 data-parsley-pattern="/^\d{3}-\d{3}-\d{4}$/" data-parsley-pattern-message="Please use xxx-xxx-xxxx format">
 						<label for="contact1-mobile" class="label required-field">Mobile Phone</label>
 					</div>
 				</div>
@@ -113,7 +114,7 @@
 						<label for="contact2-email" class="label">Email Address</label>
 					</div>
 					<div class="col-sm-12 form-group">
-						<input type="text" id="contact2-phone" class="input" name="contact2Mobile">
+						<input type="text" id="contact2-phone" class="input" name="contact2Mobile" data-parsley-pattern="/^\d{3}-\d{3}-\d{4}$/" data-parsley-pattern-message="Please use xxx-xxx-xxxx format">
 						<label for="contact2-phone" class="label">Mobile Phone</label>
 					</div>
 				</div>
@@ -217,7 +218,7 @@
 						<label for="zip-code" class="label required-field">Zip Code</label>
 					</div>
 					<div class="col-sm-12 form-group">
-						<input type="text" id="home-phone" class="input" name="homePhone">
+						<input type="text" id="home-phone" class="input" name="homePhone" data-parsley-pattern="/^\d{3}-\d{3}-\d{4}$/" data-parsley-pattern-message="Please use xxx-xxx-xxxx format">
 						<label for="home-phone" class="label">Home Phone</label>
 					</div>
 				</div>
@@ -245,7 +246,8 @@
 				</div>
 				<div class="row">
 					<div class="col-sm-12 form-group">
-						<input type="text" id="social-worker-phone" class="input" name="socialWorkerPhone" data-parsley-required="true" data-parsley-error-message="required">
+						<input type="text" id="social-worker-phone" class="input" name="socialWorkerPhone" data-parsley-required="true" data-parsley-required-message="required"
+							 data-parsley-pattern="/^\d{3}-\d{3}-\d{4}$/" data-parsley-pattern-message="Please use xxx-xxx-xxxx format">
 						<label for="social-worker-phone" class="label required-field">Social Worker Phone Number</label>
 					</div>
 					<div class="col-sm-12 form-group">

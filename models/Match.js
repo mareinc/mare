@@ -1,5 +1,6 @@
 const keystone	= require( 'keystone' );
 const Types		= keystone.Field.Types;
+const Validators = require( '../routes/middleware/validators' );
 
 // Create model. Additional options allow menu name to be used what auto-generating URLs
 var Match = new keystone.List( 'Match' );
@@ -50,9 +51,9 @@ Match.add( 'Match', {
 		},
 
 		phone: {
-			work: { type: Types.Text, label: 'work phone number', dependsOn: { isUnregisteredFamily: true }, initial: true },
-			home: { type: Types.Text, label: 'home phone number', dependsOn: { isUnregisteredFamily: true }, initial: true },
-			mobile: { type: Types.Text, label: 'mobile phone number', dependsOn: { isUnregisteredFamily: true }, initial: true },
+			work: { type: Types.Text, label: 'work phone number', dependsOn: { isUnregisteredFamily: true }, initial: true, validate: Validators.phoneValidator },
+			home: { type: Types.Text, label: 'home phone number', dependsOn: { isUnregisteredFamily: true }, initial: true, validate: Validators.phoneValidator },
+			mobile: { type: Types.Text, label: 'mobile phone number', dependsOn: { isUnregisteredFamily: true }, initial: true, validate: Validators.phoneValidator },
 			preferred: { type: Types.Select, label: 'preferred phone', options: 'work, home, mobile', dependsOn: { isUnregisteredFamily: true }, initial: true }
 		},
 

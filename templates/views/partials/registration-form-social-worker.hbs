@@ -78,11 +78,12 @@
 			</div>
 			<div class="row form-group">
 				<div class="col-sm-12">
-					<input type="text" id="social-worker-work-phone" class="input" name="workPhone" data-parsley-error-message="required" required="">
+					<input type="text" id="social-worker-work-phone" class="input" name="workPhone" data-parsley-required-message="required" required=""
+						data-parsley-pattern="/^\d{3}-\d{3}-\d{4}$/" data-parsley-pattern-message="Please use xxx-xxx-xxxx format" >
 					<label for="social-worker-work-phone" class="label required-field">Work Phone</label>
 				</div>
 				<div class="col-sm-12">
-					<input type="text" id="social-worker-mobile-phone" class="input" name="mobilePhone">
+					<input type="text" id="social-worker-mobile-phone" class="input" name="mobilePhone" data-parsley-pattern="/^\d{3}-\d{3}-\d{4}$/" data-parsley-pattern-message="Please use xxx-xxx-xxxx format">
 					<label for="social-worker-mobile-phone" class="label">Mobile Phone</label>
 				</div>
 			</div>

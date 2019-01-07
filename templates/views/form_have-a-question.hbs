@@ -33,7 +33,8 @@
 						<label for="email" class="label required-field">Email</label>
 					</div>
 					<div class="col-sm-12 form-group">
-						<input type="text" class="input" id="phone" name="phone" data-parsley-error-message="required" required="">
+						<input type="text" class="input" id="phone" name="phone" data-parsley-required-message="required" required=""
+							data-parsley-pattern="/^\d{3}-\d{3}-\d{4}$/" data-parsley-pattern-message="Please use xxx-xxx-xxxx format">
 						<label for="phone" class="label required-field">Phone Number</label>
 					</div>
 				</div>
