@@ -12,7 +12,6 @@ const keystone						= require( 'keystone' ),
 	  ChildMiddleware				= require( '../routes/middleware/models_child' ),
 	  FamilyMiddleware				= require( '../routes/middleware/models_family' ),
 	  SocialWorkerMiddleware		= require( '../routes/middleware/models_social-worker' ),
-	  UtilitiesMiddleware			= require( '../routes/middleware/utilities' ),
 	  saveLock						= require( '../routes/middleware/model_save_lock' );
 
 // configure the s3 storage adapter
