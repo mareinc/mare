@@ -14,7 +14,7 @@ var Admin = new keystone.List( 'Admin', {
 // Create fields
 Admin.add( 'Permissions', {
 
-	isActive: { type: Boolean, label: 'is active', noedit: true },
+	isActive: { type: Boolean, label: 'is active' },
 
 	permissions: {
 		isVerified: { type: Boolean, label: 'has a verified email address', noedit: true, hidden: true },
