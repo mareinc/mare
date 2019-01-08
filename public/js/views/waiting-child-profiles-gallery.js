@@ -17,11 +17,12 @@
 			'click .sibling-group-bookmark'					: 'toggleSiblingGroupBookmark',
 			'change .waiting-child-profiles__gallery-filter': 'sortGallery'
 		},
-		
-		defaultBoxesToLoadStart: 32,
 
 		/* initialize the gallery view */
 		initialize: function initialize() {
+			// the default number of boxes to load
+			this.defaultBoxesToLoadStart = 32;
+			
 			// create a hook to access the gallery template
 			var galleryChildrenHtml				= $( '#gallery-children-template' ).html();
 			var gallerySiblingGroupsHtml		= $( '#gallery-sibling-groups-template' ).html();
