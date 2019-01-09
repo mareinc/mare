@@ -25,7 +25,7 @@ Featured.add({
 			selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/featured/`,
 			autoCleanup: true,
 			whenExists: 'overwrite',
-			generateFilename: function( file, attemptNumber ) {
+			generateFilename: function() {
 				return 'about-us';
 			}
 		},
@@ -46,7 +46,7 @@ Featured.add({
 			selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/featured/`,
 			autoCleanup: true,
 			whenExists: 'overwrite',
-			generateFilename: function( file, attemptNumber ) {
+			generateFilename: function() {
 				return 'success-story';
 			}
 		},
@@ -66,7 +66,7 @@ Featured.add({
 			selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/featured/`,
 			autoCleanup: true,
 			whenExists: 'overwrite',
-			generateFilename: function( file, attemptNumber ) {
+			generateFilename: function() {
 				return 'event';
 			}
 		},

@@ -34,10 +34,6 @@ var storage = new keystone.Storage({
 		etag: true, // optional; store the etag for the resource
 		path: true, // optional; store the path of the file in your db
 		url: true, // optional; generate & store a public URL
-	},
-	generateFilename: function( item ) {
-		// use the files name instead of randomly generating a value
-		return item.originalname;
 	}
 });
 
@@ -78,11 +74,7 @@ Family.add( 'Permissions', {
 		selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/users/families`,
 		autoCleanup: true,
 		whenExists: 'overwrite',
-		generateFilename: function( file, attemptNumber ) {
-			const originalname = file.originalname;
-			const filenameWithoutExtension = originalname.substring( 0, originalname.lastIndexOf( '.' ) );
-			return filenameWithoutExtension;
-		}
+		filenameAsPublicID: true
 	},
 
 	registrationNumber: { type: Number, label: 'registration number', format: false, noedit: true },

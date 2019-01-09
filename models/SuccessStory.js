@@ -22,12 +22,7 @@ SuccessStory.add({
 		selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/success-stories/`,
 		autoCleanup: true,
 		whenExists: 'overwrite',
-		generateFilename: function( file, attemptNumber ) {
-			const originalname = file.originalname;
-			const filenameWithoutExtension = originalname.substring( 0, originalname.lastIndexOf( '.' ) );
-			const timestamp = new Date().getTime();
-			return `${ filenameWithoutExtension }-${ timestamp }`;
-		}
+		filenameAsPublicID: true
 	},
 	imageCaption: { type: Types.Text, label: 'image caption', initial: true },
 	video: { type: Types.Url, label: 'video', initial: true }
