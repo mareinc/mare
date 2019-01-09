@@ -116,7 +116,7 @@ exports.getActiveEventsByUserId = ( userId, eventGroup ) => {
 				// if no active events could be found
 				if( events.length === 0 ) {
 					// log an error for debugging purposes
-					console.error( `no active events could be found for user with id: ${ userId }` );
+					console.log( `no active events could be found for user with id: ${ userId }` );
 				}
 				// resolve the promise with the events
 				resolve( events );

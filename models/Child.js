@@ -177,7 +177,7 @@ Child.add( 'Display Options', {
 			return filenameWithoutExtension;
 
 			// TODO: the old logic was: this.fileName = this.registrationNumber + '_' + this.name.first.toLowerCase();
-			//		 the model doesn't seem to be accessible from within generateFilename
+			//		 the model isn't accessible from within generateFilename
 		}
 	},
 	allImages: {
@@ -195,7 +195,7 @@ Child.add( 'Display Options', {
 			return filenameWithoutExtension;
 
 			// TODO: the old logic was: this.fileName = this.registrationNumber + '_' + this.name.first.toLowerCase();
-			//		 the model doesn't seem to be accessible from within generateFilename
+			//		   the model isnt't accessible from within generateFilename
 		}
 	},
 	siblingGroupImage: {
@@ -213,7 +213,7 @@ Child.add( 'Display Options', {
 			return filenameWithoutExtension;
 
 			// TODO: the old logic was complicated, see commit #d9fe6e9e to view it
-			//		 the model doesn't seem to be accessible from within generateFilename
+			//		 the model isn't accessible from within generateFilename
 		}
 	},
 	extranetUrl: { type: Types.Url, label: 'extranet and related profile url', initial: true } // TODO: Since this is redundant as this just points the the url where the photo exists (the child's page), we may hide this field.  This must be kept in as it will help us track down the child information in the old system in the event of an issue.
