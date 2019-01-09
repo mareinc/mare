@@ -351,15 +351,19 @@ Family.add( 'Permissions', {
 
 	registeredViaWebsite: { type: Types.Boolean, label: 'registered through the website', default: false, noedit: true }
 
-}, {
-
-	fileName: { type: Types.Text, hidden: true }
-
 }, 'User Selections', {
 
 	bookmarkedChildren: { type: Types.Relationship, label: 'bookmarked children', ref: 'Child', many: true, noedit: true },
 	bookmarkedSiblings: { type: Types.Relationship, label: 'bookmarked sibling group children', ref: 'Child', many: true, noedit: true }
 
+}, 'Attachments', {
+
+		attachment1: { type: Types.File, storage: storage, label: 'attachment 1' },
+		attachment2: { type: Types.File, storage: storage, label: 'attachment 2' },
+		attachment3: { type: Types.File, storage: storage, label: 'attachment 3' },
+		attachment4: { type: Types.File, storage: storage, label: 'attachment 4' },
+		attachment5: { type: Types.File, storage: storage, label: 'attachment 5' }
+		
 /* Container for data migration fields ( these should be kept until after phase 2 and the old system is phased out completely ) */
 }, {
 	// system field to store an appropriate file prefix
