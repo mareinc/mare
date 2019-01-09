@@ -20,8 +20,13 @@ var storage = new keystone.Storage({
 		secret: process.env.S3_SECRET, // required; defaults to process.env.S3_SECRET
 		bucket: process.env.S3_BUCKET_NAME, // required; defaults to process.env.S3_BUCKET
 		region: process.env.S3_REGION, // optional; defaults to process.env.S3_REGION, or if that's not specified, us-east-1
+		path: '/Family',
 		uploadParams: { // optional; add S3 upload params; see below for details
 			ACL: 'public-read'
+		},
+		generateFilename: function( item ) {
+			// use the files name instead of randomly generating a value
+			return item.originalname;
 		}
 	},
 	schema: {
@@ -29,6 +34,10 @@ var storage = new keystone.Storage({
 		etag: true, // optional; store the etag for the resource
 		path: true, // optional; store the path of the file in your db
 		url: true, // optional; generate & store a public URL
+	},
+	generateFilename: function( item ) {
+		// use the files name instead of randomly generating a value
+		return item.originalname;
 	}
 });
 
@@ -255,13 +264,7 @@ Family.add( 'Permissions', {
 			label: 'homestudy file',
 			dependsOn: { 'homestudy.completed': true },
 			type: Types.File,
-			storage: storage,
-			// path: '/family/homestudy',
-			filename: function( item, filename ) {
-				// prefix file name with registration number and name for easier identification
-				return item.fileName;
-			},
-			hidden: true
+			storage: storage
 		}
 	},
 
