@@ -198,7 +198,8 @@
 		</div>
 		<div class="row form-group">
 			<div class="col-sm-12">
-				<input type="number" id="zip-code" class="input" name="zipCode" data-field-name="address.zipCode" value="{{user.address.zipCode}}">
+				<input type="number" id="zip-code" class="input" name="zipCode" data-field-name="address.zipCode" value="{{user.address.zipCode}}"
+					data-parsley-pattern="/^[0-9]{5}$/" data-parsley-pattern-message="Please use xxxxx format">
 				<label for="zip-code" class="label">Zip Code</label>
 			</div>
 			<div class="col-sm-12">
@@ -250,7 +251,8 @@
 
 		<div class="row form-group">
 			<div class="col-sm-12">
-				<input type="text" id="homestudy-date-complete" class="input" name="homestudyDateComplete" data-field-name="homestudy.completed" placeholder="MM/DD/YYYY">
+				<input type="text" id="homestudy-date-complete" class="input" name="homestudyDateComplete" data-field-name="homestudy.completed" placeholder="MM/DD/YYYY"
+					data-parsley-pattern="/^((0?[1-9])|(1[0-2]))\/((0?[1-9])|([1-2]?[0-9])|(3[0-1]))\/\d{4}$/" data-parsley-pattern-message="Please use MM/DD/YYYY format">
 				<label for="homestudy-date-complete" class="label">Date Homestudy Completed/Updated</label>
 			</div>
 		</div>

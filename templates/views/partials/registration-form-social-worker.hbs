@@ -141,7 +141,8 @@
 					<label for="social-worker-state" class="label required-field">State</label>
 				</div>
 				<div class="col-sm-12">
-					<input type="number" id="social-worker-zip-code" class="input" name="zipCode" data-parsley-length="[5, 5]" data-parsley-error-message="required" required="">
+					<input type="number" id="social-worker-zip-code" class="input" name="zipCode" data-parsley-length="[5, 5]" data-parsley-required-message="required" required=""
+						data-parsley-pattern="/^[0-9]{5}$/" data-parsley-pattern-message="Please use xxxxx format">
 					<label for="social-worker-zip-code" class="label required-field">Zip Code</label>
 				</div>
 			</div>

@@ -58,7 +58,8 @@
 		</div>
 		<div class="row form-group">
 			<div class="col-sm-12">
-				<input type="number" id="site-visitor-zip-code" class="input" name="zipCode" data-field-name="address.zipCode" value="{{user.address.zipCode}}">
+				<input type="number" id="site-visitor-zip-code" class="input" name="zipCode" data-field-name="address.zipCode" value="{{user.address.zipCode}}"
+					data-parsley-pattern="/^[0-9]{5}$/" data-parsley-pattern-message="Please use xxxxx format">
 				<label for="site-visitor-zip-code" class="label">Zip Code</label>
 			</div>
 		</div>
