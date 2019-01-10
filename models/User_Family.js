@@ -34,10 +34,6 @@ var storage = new keystone.Storage({
 		etag: true, // optional; store the etag for the resource
 		path: true, // optional; store the path of the file in your db
 		url: true, // optional; generate & store a public URL
-	},
-	generateFilename: function( item ) {
-		// use the files name instead of randomly generating a value
-		return item.originalname;
 	}
 });
 
@@ -78,11 +74,7 @@ Family.add( 'Permissions', {
 		selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/users/families`,
 		autoCleanup: true,
 		whenExists: 'overwrite',
-		generateFilename: function( file, attemptNumber ) {
-			const originalname = file.originalname;
-			const filenameWithoutExtension = originalname.substring( 0, originalname.lastIndexOf( '.' ) );
-			return filenameWithoutExtension;
-		}
+		filenameAsPublicID: true
 	},
 
 	registrationNumber: { type: Number, label: 'registration number', format: false, noedit: true },
@@ -359,15 +351,19 @@ Family.add( 'Permissions', {
 
 	registeredViaWebsite: { type: Types.Boolean, label: 'registered through the website', default: false, noedit: true }
 
-}, {
-
-	fileName: { type: Types.Text, hidden: true }
-
 }, 'User Selections', {
 
 	bookmarkedChildren: { type: Types.Relationship, label: 'bookmarked children', ref: 'Child', many: true, noedit: true },
 	bookmarkedSiblings: { type: Types.Relationship, label: 'bookmarked sibling group children', ref: 'Child', many: true, noedit: true }
 
+}, 'Attachments', {
+
+		attachment1: { type: Types.File, storage: storage, label: 'attachment 1' },
+		attachment2: { type: Types.File, storage: storage, label: 'attachment 2' },
+		attachment3: { type: Types.File, storage: storage, label: 'attachment 3' },
+		attachment4: { type: Types.File, storage: storage, label: 'attachment 4' },
+		attachment5: { type: Types.File, storage: storage, label: 'attachment 5' }
+		
 /* Container for data migration fields ( these should be kept until after phase 2 and the old system is phased out completely ) */
 }, {
 	// system field to store an appropriate file prefix

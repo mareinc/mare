@@ -17,12 +17,7 @@ SlideshowItem.add({
 		selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/slideshow/`,
 		autoCleanup: true,
 		whenExists: 'overwrite',
-		generateFilename: function( file, attemptNumber ) {
-			const originalname = file.originalname;
-			const filenameWithoutExtension = originalname.substring( 0, originalname.lastIndexOf( '.' ) );
-			const timestamp = new Date().getTime();
-			return `${ filenameWithoutExtension }-${ timestamp }`;
-		}
+		filenameAsPublicID: true
 	},
 	parent: { type: Types.Relationship, label: 'slideshow', ref: 'Slideshow', initial: true },
 	heading: { type: Types.Text, label: 'heading', initial: true },

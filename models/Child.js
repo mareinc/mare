@@ -172,14 +172,7 @@ Child.add( 'Display Options', {
 		dependsOn: { mustBePlacedWithSiblings: false },
 		autoCleanup: false,
 		whenExists: 'overwrite',
-		generateFilename: function( file, attemptNumber ) {
-			const originalname = file.originalname;
-			const filenameWithoutExtension = originalname.substring( 0, originalname.lastIndexOf( '.' ) );
-			return filenameWithoutExtension;
-
-			// TODO: the old logic was: this.fileName = this.registrationNumber + '_' + this.name.first.toLowerCase();
-			//		 the model isn't accessible from within generateFilename
-		}
+		filenameAsPublicID: true
 	},
 	allImages: {
 		type: Types.CloudinaryImages,
@@ -188,16 +181,9 @@ Child.add( 'Display Options', {
 		select: true,
 		selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/children/`,
 		dependsOn: { mustBePlacedWithSiblings: false },
-		autoCleanup: false,
+		autoCleanup: true,
 		whenExists: 'overwrite',
-		generateFilename: function( file, attemptNumber ) {
-			const originalname = file.originalname;
-			const filenameWithoutExtension = originalname.substring( 0, originalname.lastIndexOf( '.' ) );
-			return filenameWithoutExtension;
-
-			// TODO: the old logic was: this.fileName = this.registrationNumber + '_' + this.name.first.toLowerCase();
-			//		   the model isnt't accessible from within generateFilename
-		}
+		filenameAsPublicID: true
 	},
 	siblingGroupImage: {
 		type: Types.CloudinaryImage,
@@ -208,14 +194,7 @@ Child.add( 'Display Options', {
 		dependsOn: { mustBePlacedWithSiblings: true },
 		autoCleanup: false,
 		whenExists: 'overwrite',
-		generateFilename: function( file, attemptNumber ) {
-			const originalname = file.originalname;
-			const filenameWithoutExtension = originalname.substring( 0, originalname.lastIndexOf( '.' ) );
-			return filenameWithoutExtension;
-
-			// TODO: the old logic was complicated, see commit #d9fe6e9e to view it
-			//		 the model isn't accessible from within generateFilename
-		}
+		filenameAsPublicID: true
 	},
 	extranetUrl: { type: Types.Url, label: 'extranet and related profile url', initial: true } // TODO: Since this is redundant as this just points the the url where the photo exists (the child's page), we may hide this field.  This must be kept in as it will help us track down the child information in the old system in the event of an issue.
 

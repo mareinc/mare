@@ -23,12 +23,7 @@ MAREInTheNews.add({
 		selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/mare-in-the-news/`,
 		autoCleanup: true,
 		whenExists: 'overwrite',
-		generateFilename: function( file, attemptNumber ) {
-			const originalname = file.originalname;
-			const filenameWithoutExtension = originalname.substring( 0, originalname.lastIndexOf( '.' ) );
-			const timestamp = new Date().getTime();
-			return `${ filenameWithoutExtension }-${ timestamp }`;
-		}
+		filenameAsPublicID: true
 	},
 	video: { type: Types.Url, label: 'video', initial: true }
 
