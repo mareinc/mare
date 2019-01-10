@@ -152,7 +152,7 @@ Family.add( 'Permissions', {
 		cityText: { type: Types.Text, label: 'city', dependsOn: { 'address.isOutsideMassachusetts': true }, initial: true },
 		displayCity: { type: Types.Text, label: 'city', hidden: true, noedit: true },
 		state: { type: Types.Relationship, label: 'state', ref: 'State', initial: true }, // was required: data migration change ( undo if possible )
-		zipCode: { type: Types.Text, label: 'zip code', initial: true }, // was required: data migration change ( undo if possible )
+		zipCode: { type: Types.Text, label: 'zip code', initial: true, validate: Validators.zipValidator }, // was required: data migration change ( undo if possible )
 		region: { type: Types.Relationship, label: 'region', ref: 'Region', noedit: true }
 	},
 

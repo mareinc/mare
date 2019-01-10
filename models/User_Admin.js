@@ -59,7 +59,7 @@ Admin.add( 'Permissions', {
 		street2: { type: Types.Text, label: 'street 2', initial: true },
 		city: { type: Types.Text, label: 'city', initial: true },
 		state: { type: Types.Relationship, label: 'state', ref: 'State', initial: true },
-		zipCode: { type: Types.Text, label: 'zip code', initial: true }
+		zipCode: { type: Types.Text, label: 'zip code', initial: true, validate: Validators.zipValidator }
 	}
 
 /* Container for data migration fields ( these should be kept until after phase 2 and the old system is phased out completely ) */

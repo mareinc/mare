@@ -44,7 +44,7 @@ Disruption.add( 'Disruption', {
 			street2: { type: Types.Text, label: 'address Line 2', dependsOn: { isUnregisteredFamily: true }, initial: true },
 			city: { type: Types.Text, label: 'city', dependsOn: { isUnregisteredFamily: true }, initial: true },
 			state: { type: Types.Relationship, label: 'state', ref: 'State', dependsOn: { isUnregisteredFamily: true }, initial: true },
-			zipCode: { type: Types.Text, label: 'zip code', dependsOn: { isUnregisteredFamily: true }, initial: true },
+			zipCode: { type: Types.Text, label: 'zip code', dependsOn: { isUnregisteredFamily: true }, initial: true, validate: Validators.zipValidator },
 			country: { type: Types.Text, label: 'country', dependsOn: { isUnregisteredFamily: true }, initial: true },
 			region: { type: Types.Relationship, label: 'region', dependsOn: { isUnregisteredFamily: true }, ref: 'Region', initial: true }
 		},
