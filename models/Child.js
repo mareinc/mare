@@ -12,21 +12,25 @@ const keystone						= require( 'keystone' ),
 	  ChildMiddleware				= require( '../routes/middleware/models_child' ),
 	  FamilyMiddleware				= require( '../routes/middleware/models_family' ),
 	  SocialWorkerMiddleware		= require( '../routes/middleware/models_social-worker' ),
-	  UtilitiesMiddleware			= require( '../routes/middleware/utilities' ),
 	  saveLock						= require( '../routes/middleware/model_save_lock' );
 
 // configure the s3 storage adapter
-var storage = new keystone.Storage({
-	adapter: require('keystone-storage-adapter-s3'),
+const storage = new keystone.Storage({
+	adapter: require( 'keystone-storage-adapter-s3' ),
 	s3: {
 		key: process.env.S3_KEY, // required; defaults to process.env.S3_KEY
 		secret: process.env.S3_SECRET, // required; defaults to process.env.S3_SECRET
 		bucket: process.env.S3_BUCKET_NAME, // required; defaults to process.env.S3_BUCKET
 		region: process.env.S3_REGION, // optional; defaults to process.env.S3_REGION, or if that's not specified, us-east-1
+		path: '/Child',
 		uploadParams: { // optional; add S3 upload params; see below for details
 			ACL: 'public-read'
+		},
+		generateFilename: function( item ) {
+			// use the files name instead of randomly generating a value
+			return item.originalname;
 		}
-	  },
+	},
 	schema: {
 		bucket: true, // optional; store the bucket the file was uploaded to in your db
 		etag: true, // optional; store the etag for the resource
@@ -44,7 +48,7 @@ const Child = new keystone.List( 'Child', {
 });
 
 // Create fields
-Child.add('Display Options', {
+Child.add( 'Display Options', {
 
 	siteVisibility: { type: Types.Select, label: 'child is visible to', options: 'everyone, only registered social workers and families', required: true, initial: true },
 	isVisibleInGallery: { type: Types.Boolean, label: 'activate child profile on website to group selected', note: 'authorized staff only', default: false, initial: true },
@@ -168,14 +172,7 @@ Child.add('Display Options', {
 		dependsOn: { mustBePlacedWithSiblings: false },
 		autoCleanup: false,
 		whenExists: 'overwrite',
-		generateFilename: function( file, attemptNumber ) {
-			const originalname = file.originalname;
-			const filenameWithoutExtension = originalname.substring( 0, originalname.lastIndexOf( '.' ) );
-			return filenameWithoutExtension;
-
-			// TODO: the old logic was: this.fileName = this.registrationNumber + '_' + this.name.first.toLowerCase();
-			//		 the model doesn't seem to be accessible from within generateFilename
-		}
+		filenameAsPublicID: true
 	},
 	allImages: {
 		type: Types.CloudinaryImages,
@@ -184,16 +181,9 @@ Child.add('Display Options', {
 		select: true,
 		selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/children/`,
 		dependsOn: { mustBePlacedWithSiblings: false },
-		autoCleanup: false,
+		autoCleanup: true,
 		whenExists: 'overwrite',
-		generateFilename: function( file, attemptNumber ) {
-			const originalname = file.originalname;
-			const filenameWithoutExtension = originalname.substring( 0, originalname.lastIndexOf( '.' ) );
-			return filenameWithoutExtension;
-
-			// TODO: the old logic was: this.fileName = this.registrationNumber + '_' + this.name.first.toLowerCase();
-			//		 the model doesn't seem to be accessible from within generateFilename
-		}
+		filenameAsPublicID: true
 	},
 	siblingGroupImage: {
 		type: Types.CloudinaryImage,
@@ -204,14 +194,7 @@ Child.add('Display Options', {
 		dependsOn: { mustBePlacedWithSiblings: true },
 		autoCleanup: false,
 		whenExists: 'overwrite',
-		generateFilename: function( file, attemptNumber ) {
-			const originalname = file.originalname;
-			const filenameWithoutExtension = originalname.substring( 0, originalname.lastIndexOf( '.' ) );
-			return filenameWithoutExtension;
-
-			// TODO: the old logic was complicated, see commit #d9fe6e9e to view it
-			//		 the model doesn't seem to be accessible from within generateFilename
-		}
+		filenameAsPublicID: true
 	},
 	extranetUrl: { type: Types.Url, label: 'extranet and related profile url', initial: true } // TODO: Since this is redundant as this just points the the url where the photo exists (the child's page), we may hide this field.  This must be kept in as it will help us track down the child information in the old system in the event of an issue.
 
@@ -250,29 +233,14 @@ Child.add('Display Options', {
 	communicationsCollateral: { type: Types.Boolean, label: 'communications collateral', default: false, initial: true },
 	communicationsCollateralDetails: { type: Types.Text, label: 'details', dependsOn: { communicationsCollateral: true }, initial: true },
 
-// }, 'Attachments', {
+}, 'Attachments', {
 
-	photolistingPage: {
-		type: Types.File,
-		storage: storage,
-		// path: '/child/photolisting-pages',
-		filename: function( item, filename ) {
-			// prefix file name with registration number and the user's name for easier identification
-			return item.get( 'fileName' );
-		},
-		hidden: true
-	},
+	attachment1: { type: Types.File, storage: storage, label: 'attachment 1' },
+	attachment2: { type: Types.File, storage: storage, label: 'attachment 2' },
+	attachment3: { type: Types.File, storage: storage, label: 'attachment 3' },
+	attachment4: { type: Types.File, storage: storage, label: 'attachment 4' },
+	attachment5: { type: Types.File, storage: storage, label: 'attachment 5' }
 
-	otherAttachement: {
-		type: Types.File,
-		storage: storage,
-		// path: '/child/other',
-		filename: function( item, filename ) {
-			// prefix file name with registration number and name for easier identification
-			return item.get( 'fileName' );
-		},
-		hidden: true
-	}
 /* Container for data migration fields ( these should be kept until after phase 2 and the old system is phased out completely ) */
 }, {
 	// system field to store an appropriate file prefix

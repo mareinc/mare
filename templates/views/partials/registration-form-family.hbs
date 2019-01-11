@@ -59,7 +59,8 @@
 					<label for="contact1-email" class="label required-field">Email Address</label>
 				</div>
 				<div class="col-sm-12">
-					<input type="text" id="contact1-mobile" class="input" name="contact1Mobile" data-parsley-error-message="required" required="">
+					<input type="text" id="contact1-mobile" class="input" name="contact1Mobile" data-parsley-required-message="required" required=""
+						data-parsley-pattern="/^\d{3}-\d{3}-\d{4}$/" data-parsley-pattern-message="Please use xxx-xxx-xxxx format">
 					<label for="contact1-mobile" class="label required-field">Mobile Phone</label>
 				</div>
 			</div>
@@ -107,7 +108,8 @@
 						<label for="contact1-occupation" class="label">Occupation</label>
 					</div>
 					<div class="form-group">
-						<input type="text" class="input" id="contact1-date-of-birth" name="contact1DateOfBirth" data-parsley-error-message="required" required="" placeholder="MM/DD/YYYY">
+						<input type="text" class="input" id="contact1-date-of-birth" name="contact1DateOfBirth" data-parsley-required-message="required" required="" placeholder="MM/DD/YYYY"
+							data-parsley-pattern="/^((0?[1-9])|(1[0-2]))\/((0?[1-9])|([1-2]?[0-9])|(3[0-1]))\/\d{4}$/" data-parsley-pattern-message="Please use MM/DD/YYYY format">
 						<label for="contact1-date-of-birth" class="label required-field">Date of Birth</label>
 					</div>
 				</div>
@@ -133,7 +135,7 @@
 					<label for="contact2-email" class="label">Email Address</label>
 				</div>
 				<div class="col-sm-12">
-					<input type="text" id="contact2-phone" class="input" name="contact2Mobile">
+					<input type="text" id="contact2-phone" class="input" name="contact2Mobile" data-parsley-pattern="/^\d{3}-\d{3}-\d{4}$/" data-parsley-pattern-message="Please use xxx-xxx-xxxx format">
 					<label for="contact2-phone" class="label">Mobile Phone</label>
 				</div>
 			</div>
@@ -179,7 +181,8 @@
 						<label for="contact2-occupation" class="label">Occupation</label>
 					</div>
 					<div class="form-group">
-						<input type="text" id="contact2-date-of-birth" class="input" name="contact2DateOfBirth" placeholder="MM/DD/YYYY">
+						<input type="text" id="contact2-date-of-birth" class="input" name="contact2DateOfBirth" placeholder="MM/DD/YYYY"
+							data-parsley-pattern="/^((0?[1-9])|(1[0-2]))\/((0?[1-9])|([1-2]?[0-9])|(3[0-1]))\/\d{4}$/" data-parsley-pattern-message="Please use MM/DD/YYYY format">
 						<label for="contact2-date-of-birth" class="label">Date of Birth</label>
 					</div>
 				</div>
@@ -235,11 +238,12 @@
 			</div>
 			<div class="row form-group">
 				<div class="col-sm-12">
-					<input type="number" id="zip-code" class="input" name="zipCode" data-parsley-error-message="required" required="">
+					<input type="number" id="zip-code" class="input" name="zipCode" data-parsley-required-message="required" required=""
+						 data-parsley-pattern="/^[0-9]{5}$/" data-parsley-pattern-message="Please use xxxxx format">
 					<label for="zip-code" class="label required-field">Zip Code</label>
 				</div>
 				<div class="col-sm-12">
-					<input type="text" id="home-phone" class="input" name="homePhone">
+					<input type="text" id="home-phone" class="input" name="homePhone" data-parsley-pattern="/^\d{3}-\d{3}-\d{4}$/" data-parsley-pattern-message="Please use xxx-xxx-xxxx format">
 					<label for="home-phone" class="label">Home Phone</label>
 				</div>
 			</div>
@@ -285,7 +289,8 @@
 
 			<div class="row form-group">
 				<div class="col-sm-12">
-					<input type="text" id="homestudy-date-complete" class="input" name="homestudyDateComplete" data-parsley-required="false" data-parsley-error-message="required" placeholder="MM/DD/YYYY">
+					<input type="text" id="homestudy-date-complete" class="input" name="homestudyDateComplete" data-parsley-required="false" data-parsley-required-message="required" placeholder="MM/DD/YYYY"
+						data-parsley-pattern="/^((0?[1-9])|(1[0-2]))\/((0?[1-9])|([1-2]?[0-9])|(3[0-1]))\/\d{4}$/" data-parsley-pattern-message="Please use MM/DD/YYYY format">
 					<label for="homestudy-date-complete" class="label required-field">Date Homestudy Completed/Updated</label>
 				</div>
 			</div>
@@ -301,7 +306,8 @@
 			</div>
 			<div class="row form-group">
 				<div class="col-sm-12">
-					<input type="text" id="social-worker-phone" class="input" name="socialWorkerPhone" data-parsley-required="false" data-parsley-error-message="required">
+					<input type="text" id="social-worker-phone" class="input" name="socialWorkerPhone" data-parsley-required="false" data-parsley-required-message="required"
+						data-parsley-pattern="/^\d{3}-\d{3}-\d{4}$/" data-parsley-pattern-message="Please use xxx-xxx-xxxx format">
 					<label for="social-worker-phone" class="label required-field">Social Worker Phone Number</label>
 				</div>
 				<div class="col-sm-12">

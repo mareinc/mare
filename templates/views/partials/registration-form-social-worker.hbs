@@ -78,11 +78,12 @@
 			</div>
 			<div class="row form-group">
 				<div class="col-sm-12">
-					<input type="text" id="social-worker-work-phone" class="input" name="workPhone" data-parsley-error-message="required" required="">
+					<input type="text" id="social-worker-work-phone" class="input" name="workPhone" data-parsley-required-message="required" required=""
+						data-parsley-pattern="/^\d{3}-\d{3}-\d{4}$/" data-parsley-pattern-message="Please use xxx-xxx-xxxx format" >
 					<label for="social-worker-work-phone" class="label required-field">Work Phone</label>
 				</div>
 				<div class="col-sm-12">
-					<input type="text" id="social-worker-mobile-phone" class="input" name="mobilePhone">
+					<input type="text" id="social-worker-mobile-phone" class="input" name="mobilePhone" data-parsley-pattern="/^\d{3}-\d{3}-\d{4}$/" data-parsley-pattern-message="Please use xxx-xxx-xxxx format">
 					<label for="social-worker-mobile-phone" class="label">Mobile Phone</label>
 				</div>
 			</div>
@@ -140,7 +141,8 @@
 					<label for="social-worker-state" class="label required-field">State</label>
 				</div>
 				<div class="col-sm-12">
-					<input type="number" id="social-worker-zip-code" class="input" name="zipCode" data-parsley-length="[5, 5]" data-parsley-error-message="required" required="">
+					<input type="number" id="social-worker-zip-code" class="input" name="zipCode" data-parsley-length="[5, 5]" data-parsley-required-message="required" required=""
+						data-parsley-pattern="/^[0-9]{5}$/" data-parsley-pattern-message="Please use xxxxx format">
 					<label for="social-worker-zip-code" class="label required-field">Zip Code</label>
 				</div>
 			</div>

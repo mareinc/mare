@@ -4,7 +4,8 @@ const keystone 		= require( 'keystone' ),
 	  SiteVisitor	= require( './User_SiteVisitor' ),
 	  SocialWorker	= require( './User_SocialWorker' ),
 	  Family		= require( './User_Family' ),
-	  Admin			= require( './User_Admin' );
+	  Admin			= require( './User_Admin' ),
+	  Validators	= require( '../routes/middleware/validators' );
 
 // create model
 var Donation = new keystone.List( 'Donation' );
@@ -34,7 +35,7 @@ Donation.add({
 		street: 	{ type: Types.Text, label: 'street address', required: true, initial: true },
 		city:		{ type: Types.Text, required: true, initial: true },
 		state:		{ type: Types.Text, required: true, initial: true },
-		zip:		{ type: Types.Text, label: 'zip code', required: true, initial: true }
+		zip:		{ type: Types.Text, label: 'zip code', required: true, initial: true, validate: Validators.zipValidator }
 	}
 
 });

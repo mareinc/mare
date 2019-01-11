@@ -43,11 +43,13 @@
 		</div>
 		<div class="row form-group">
 			<div class="col-sm-12">
-				<input type="text" id="work-phone" class="input" name="workPhone" data-field-name="phone.work" value="{{user.phone.work}}">
+				<input type="text" id="work-phone" class="input" name="workPhone" data-field-name="phone.work" value="{{user.phone.work}}"
+					data-parsley-pattern="/^\d{3}-\d{3}-\d{4}$/" data-parsley-pattern-message="Please use xxx-xxx-xxxx format">
 				<label for="work-phone" class="label">Work Phone</label>
 			</div>
 			<div class="col-sm-12">
-				<input type="text" id="mobile-phone" class="input" name="mobilePhone" data-field-name="phone.mobile" value="{{user.phone.mobile}}">
+				<input type="text" id="mobile-phone" class="input" name="mobilePhone" data-field-name="phone.mobile" value="{{user.phone.mobile}}"
+					data-parsley-pattern="/^\d{3}-\d{3}-\d{4}$/" data-parsley-pattern-message="Please use xxx-xxx-xxxx format">
 				<label for="mobile-phone" class="label">Mobile Phone</label>
 			</div>
 		</div>
@@ -108,7 +110,8 @@
 
 		<div class="row form-group">
 			<div class="col-sm-12">
-				<input type="text" id="zip-code" class="input" name="zipCode" data-field-name="address.zipCode" value="{{user.address.zipCode}}">
+				<input type="text" id="zip-code" class="input" name="zipCode" data-field-name="address.zipCode" value="{{user.address.zipCode}}"
+					data-parsley-pattern="/^[0-9]{5}$/" data-parsley-pattern-message="Please use xxxxx format">
 				<label for="zip-code" class="label">Zip Code</label>
 			</div>
 		</div>

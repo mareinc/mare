@@ -18,7 +18,10 @@
 		},
 
 		initialize: function initialize() {
-
+			
+			// initialize parsley validation on input elements
+			this.$el.find('input').parsley();
+			
 			// create an object to hold all changes to form data
 			this.accountInfoUpdates = {};
 		},
@@ -80,10 +83,32 @@
 				console.warn( 'form field is not properly configured to capture updates' );
 			}
 		},
+		
+		isValid: function () {
+			var isValid = true;
+			
+			// validate all input elements
+			this.$el.find('input').each( function() {
+				if ( $(this).parsley().validate() !== true ) {
+					// focus the first invalid element
+					if ( isValid ) {
+						$(this).focus();
+					}
+					isValid = false;
+				}
+			});
+			
+			return isValid;
+		},
 
 		updateUserInfo: function updateUserInfo( event ) {
 			// fetch the form data
 			var data = this.accountInfoUpdates;
+			
+			// check if the form is valid
+			if ( !this.isValid() ) {
+				return;
+			}
 
 			// send a put request to the server with the updated user information
 			$.ajax({

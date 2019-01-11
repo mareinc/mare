@@ -1,6 +1,7 @@
 var keystone	= require( 'keystone' ),
 	Types		= keystone.Field.Types,
-	User		= require( './User' );
+	User		= require( './User' ),
+	Validators  = require( '../routes/middleware/validators' );
 
 // Create model
 var SiteVisitor = new keystone.List( 'Site Visitor', {
@@ -35,19 +36,15 @@ SiteVisitor.add( 'Permissions', {
 		selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/users/site visitors`,
 		autoCleanup: true,
 		whenExists: 'overwrite',
-		generateFilename: function( file, attemptNumber ) {
-			const originalname = file.originalname;
-			const filenameWithoutExtension = originalname.substring( 0, originalname.lastIndexOf( '.' ) );
-			return filenameWithoutExtension;
-		}
+		filenameAsPublicID: true
 	}
 
 }, 'Contact Information', {
 
 	phone: {
-		home: { type: Types.Text, label: 'home phone number', initial: true },
-		mobile: { type: Types.Text, label: 'mobile phone number', initial: true },
-		work: { type: Types.Text, label: 'work phone number', initial: true },
+		home: { type: Types.Text, label: 'home phone number', initial: true, validate: Validators.phoneValidator },
+		mobile: { type: Types.Text, label: 'mobile phone number', initial: true, validate: Validators.phoneValidator },
+		work: { type: Types.Text, label: 'work phone number', initial: true, validate: Validators.phoneValidator },
 		preferred: { type: Types.Select, label: 'preferred phone', options: 'work, home, mobile', initial: true }
 	},
 
@@ -58,7 +55,7 @@ SiteVisitor.add( 'Permissions', {
 		city: { type: Types.Relationship, label: 'city', ref: 'City or Town', dependsOn: { 'address.isOutsideMassachusetts': false }, initial: true },
 		cityText: { type: Types.Text, label: 'city', dependsOn: { 'address.isOutsideMassachusetts': true }, initial: true },
 		state: { type: Types.Relationship, label: 'state', ref: 'State', initial: true },
-		zipCode: { type: Types.Text, label: 'zip code', initial: true }
+		zipCode: { type: Types.Text, label: 'zip code', initial: true, validate: Validators.zipValidator }
 	}
 
 }, 'Info Preferences', {

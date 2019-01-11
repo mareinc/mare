@@ -3,6 +3,7 @@ const Types		= keystone.Field.Types;
 const async		= require( 'async' );
 // Export to make it available using require.  The keystone.list import throws a ReferenceError when importing a list that comes later when sorting alphabetically
 const ContactGroup = require( './ContactGroup' );
+const Validators = require( '../routes/middleware/validators' );
 
 // Create model
 var OutsideContact = new keystone.List( 'Outside Contact', {
@@ -25,8 +26,8 @@ OutsideContact.add( 'General Information', {
 	email: { type: Types.Email, label: 'email address', initial: true },
 
 	phone: {
-		work: { type: Types.Text, label: 'work phone number', initial: true },
-		mobile: { type: Types.Text, label: 'mobile phone number', initial: true },
+		work: { type: Types.Text, label: 'work phone number', initial: true, validate: Validators.phoneValidator },
+		mobile: { type: Types.Text, label: 'mobile phone number', initial: true, validate: Validators.phoneValidator },
 		preferred: { type: Types.Select, label: 'preferred phone', options: 'work, mobile', initial: true }
 	}
 
@@ -37,7 +38,7 @@ OutsideContact.add( 'General Information', {
 		street2: { type: Types.Text, label: 'street 2', initial: true },
 		city: { type: Types.Text, label: 'city', initial: true },
 		state: { type: Types.Relationship, label: 'state', ref: 'State', initial: true },
-		zipCode: { type: Types.Text, label: 'zip code', initial: true }
+		zipCode: { type: Types.Text, label: 'zip code', initial: true, validate: Validators.zipValidator }
 	}
 
 }, {

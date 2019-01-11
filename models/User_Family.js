@@ -9,7 +9,8 @@ const keystone					= require( 'keystone' ),
 	  AgencyService				= require( '../routes/middleware/service_agency' ),
 	  UserService				= require( '../routes/middleware/service_user' ),
 	  FamilyService				= require( '../routes/middleware/service_family' ),
-	  ListService				= require( '../routes/middleware/service_lists' );
+	  ListService				= require( '../routes/middleware/service_lists' ),
+	  Validators  				= require( '../routes/middleware/validators' );
 
 // configure the s3 storage adapter
 var storage = new keystone.Storage({
@@ -19,8 +20,13 @@ var storage = new keystone.Storage({
 		secret: process.env.S3_SECRET, // required; defaults to process.env.S3_SECRET
 		bucket: process.env.S3_BUCKET_NAME, // required; defaults to process.env.S3_BUCKET
 		region: process.env.S3_REGION, // optional; defaults to process.env.S3_REGION, or if that's not specified, us-east-1
+		path: '/Family',
 		uploadParams: { // optional; add S3 upload params; see below for details
 			ACL: 'public-read'
+		},
+		generateFilename: function( item ) {
+			// use the files name instead of randomly generating a value
+			return item.originalname;
 		}
 	},
 	schema: {
@@ -68,11 +74,7 @@ Family.add( 'Permissions', {
 		selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/users/families`,
 		autoCleanup: true,
 		whenExists: 'overwrite',
-		generateFilename: function( file, attemptNumber ) {
-			const originalname = file.originalname;
-			const filenameWithoutExtension = originalname.substring( 0, originalname.lastIndexOf( '.' ) );
-			return filenameWithoutExtension;
-		}
+		filenameAsPublicID: true
 	},
 
 	registrationNumber: { type: Number, label: 'registration number', format: false, noedit: true },
@@ -98,8 +100,8 @@ Family.add( 'Permissions', {
 		},
 
 		phone: {
-			mobile: { type: Types.Text, label: 'mobile phone number', initial: true },
-			work: { type: Types.Text, label: 'work phone number', initial: true }
+			mobile: { type: Types.Text, label: 'mobile phone number', initial: true, validate: Validators.phoneValidator },
+			work: { type: Types.Text, label: 'work phone number', initial: true, validate: Validators.phoneValidator }
 		},
 
 		email: { type: Types.Email, label: 'email address', initial: true },
@@ -120,8 +122,8 @@ Family.add( 'Permissions', {
 		},
 
 		phone: {
-			mobile: { type: Types.Text, label: 'mobile phone number', initial: true },
-			work: { type: Types.Text, label: 'work phone number', initial: true }
+			mobile: { type: Types.Text, label: 'mobile phone number', initial: true, validate: Validators.phoneValidator },
+			work: { type: Types.Text, label: 'work phone number', initial: true, validate: Validators.phoneValidator }
 		},
 
 		email: { type: Types.Email, label: 'email address', initial: true },
@@ -142,11 +144,11 @@ Family.add( 'Permissions', {
 		cityText: { type: Types.Text, label: 'city', dependsOn: { 'address.isOutsideMassachusetts': true }, initial: true },
 		displayCity: { type: Types.Text, label: 'city', hidden: true, noedit: true },
 		state: { type: Types.Relationship, label: 'state', ref: 'State', initial: true }, // was required: data migration change ( undo if possible )
-		zipCode: { type: Types.Text, label: 'zip code', initial: true }, // was required: data migration change ( undo if possible )
+		zipCode: { type: Types.Text, label: 'zip code', initial: true, validate: Validators.zipValidator }, // was required: data migration change ( undo if possible )
 		region: { type: Types.Relationship, label: 'region', ref: 'Region', noedit: true }
 	},
 
-	homePhone: { type: Types.Text, label: 'home phone number', initial: true }
+	homePhone: { type: Types.Text, label: 'home phone number', initial: true, validate: Validators.phoneValidator }
 
 }, 'Current Children in Family', {
 
@@ -254,13 +256,7 @@ Family.add( 'Permissions', {
 			label: 'homestudy file',
 			dependsOn: { 'homestudy.completed': true },
 			type: Types.File,
-			storage: storage,
-			// path: '/family/homestudy',
-			filename: function( item, filename ) {
-				// prefix file name with registration number and name for easier identification
-				return item.fileName;
-			},
-			hidden: true
+			storage: storage
 		}
 	},
 
@@ -355,15 +351,19 @@ Family.add( 'Permissions', {
 
 	registeredViaWebsite: { type: Types.Boolean, label: 'registered through the website', default: false, noedit: true }
 
-}, {
-
-	fileName: { type: Types.Text, hidden: true }
-
 }, 'User Selections', {
 
 	bookmarkedChildren: { type: Types.Relationship, label: 'bookmarked children', ref: 'Child', many: true, noedit: true },
 	bookmarkedSiblings: { type: Types.Relationship, label: 'bookmarked sibling group children', ref: 'Child', many: true, noedit: true }
 
+}, 'Attachments', {
+
+		attachment1: { type: Types.File, storage: storage, label: 'attachment 1' },
+		attachment2: { type: Types.File, storage: storage, label: 'attachment 2' },
+		attachment3: { type: Types.File, storage: storage, label: 'attachment 3' },
+		attachment4: { type: Types.File, storage: storage, label: 'attachment 4' },
+		attachment5: { type: Types.File, storage: storage, label: 'attachment 5' }
+		
 /* Container for data migration fields ( these should be kept until after phase 2 and the old system is phased out completely ) */
 }, {
 	// system field to store an appropriate file prefix

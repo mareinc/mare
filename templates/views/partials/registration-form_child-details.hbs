@@ -30,7 +30,8 @@
 		<div class="col-sm-12 form-group">
 			<div class="row">
 				<div class="col-sm-24 form-group">
-					<input type="text" class="input child-form-input" placeholder="MM/DD/YYYY" name="\{{ birthDate }}" data-field-name="\{{ fields.birthDate }}" data-parsley-error-message="required" required="">
+					<input type="text" class="input child-form-input" placeholder="MM/DD/YYYY" name="\{{ birthDate }}" data-field-name="\{{ fields.birthDate }}" data-parsley-required-message="required" required=""
+						data-parsley-pattern="/^((0?[1-9])|(1[0-2]))\/((0?[1-9])|([1-2]?[0-9])|(3[0-1]))\/\d{4}$/" data-parsley-pattern-message="Please use MM/DD/YYYY format">
 					<label for="\{{ birthDate }}" class="label marg-bottom-xs-5 required-field">Date of Birth</label>
 				</div>
 			</div>

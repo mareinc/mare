@@ -1,6 +1,7 @@
 var keystone	= require( 'keystone' ),
 	Types		= keystone.Field.Types,
-	User		= require( './User' );
+	User		= require( './User' ),
+	Validators  = require( '../routes/middleware/validators' );
 
 // Create model
 var Admin = new keystone.List( 'Admin', {
@@ -14,7 +15,7 @@ var Admin = new keystone.List( 'Admin', {
 // Create fields
 Admin.add( 'Permissions', {
 
-	isActive: { type: Boolean, label: 'is active', noedit: true },
+	isActive: { type: Boolean, label: 'is active' },
 
 	permissions: {
 		isVerified: { type: Boolean, label: 'has a verified email address', noedit: true, hidden: true },
@@ -37,19 +38,15 @@ Admin.add( 'Permissions', {
 		selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/users/admin`,
 		autoCleanup: true,
 		whenExists: 'overwrite',
-		generateFilename: function( file, attemptNumber ) {
-			const originalname = file.originalname;
-			const filenameWithoutExtension = originalname.substring( 0, originalname.lastIndexOf( '.' ) );
-			return filenameWithoutExtension;
-		}
+		filenameAsPublicID: true
 	}
 
 }, 'Contact Information', {
 
 	phone: {
-		work: { type: Types.Text, label: 'work phone number', initial: true },
-		home: { type: Types.Text, label: 'home phone number', initial: true },
-		mobile: { type: Types.Text, label: 'mobile phone number', initial: true },
+		work: { type: Types.Text, label: 'work phone number', initial: true, validate: Validators.phoneValidator },
+		home: { type: Types.Text, label: 'home phone number', initial: true, validate: Validators.phoneValidator },
+		mobile: { type: Types.Text, label: 'mobile phone number', initial: true, validate: Validators.phoneValidator },
 		preferred: { type: Types.Select, label: 'preferred phone', options: 'work, home, mobile', initial: true }
 	},
 
@@ -58,7 +55,7 @@ Admin.add( 'Permissions', {
 		street2: { type: Types.Text, label: 'street 2', initial: true },
 		city: { type: Types.Text, label: 'city', initial: true },
 		state: { type: Types.Relationship, label: 'state', ref: 'State', initial: true },
-		zipCode: { type: Types.Text, label: 'zip code', initial: true }
+		zipCode: { type: Types.Text, label: 'zip code', initial: true, validate: Validators.zipValidator }
 	}
 
 /* Container for data migration fields ( these should be kept until after phase 2 and the old system is phased out completely ) */

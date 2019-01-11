@@ -22,12 +22,7 @@ SuccessStory.add({
 		selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/success-stories/`,
 		autoCleanup: true,
 		whenExists: 'overwrite',
-		generateFilename: function( file, attemptNumber ) {
-			const originalname = file.originalname;
-			const filenameWithoutExtension = originalname.substring( 0, originalname.lastIndexOf( '.' ) );
-			const timestamp = new Date().getTime();
-			return `${ filenameWithoutExtension }-${ timestamp }`;
-		}
+		filenameAsPublicID: true
 	},
 	imageCaption: { type: Types.Text, label: 'image caption', initial: true },
 	video: { type: Types.Url, label: 'video', initial: true }
@@ -59,10 +54,19 @@ SuccessStory.schema.virtual( 'hasImage' ).get( function() {
 SuccessStory.schema.pre( 'save', function( next ) {
 	'use strict';
 
-	this.url = '/success-stories/' + this.key;
+	this.url = this.get( 'key' ) ? '/success-stories/' + this.get( 'key' ) : undefined;
 
 	next();
 
+});
+
+// TODO IMPORTANT: this is a temporary solution to fix a problem where the autokey generation from Keystone
+// 				   occurs after the pre-save hook for this model, preventing the url from being set.  Remove
+//				   this hook once that issue is resolved.
+SuccessStory.schema.post( 'save', function() {
+	if( !this.get( 'url' ) ) {
+		this.save();
+	}
 });
 
 // Define default columns in the admin interface and register the model

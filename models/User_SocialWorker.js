@@ -5,7 +5,8 @@ var keystone				= require( 'keystone' ),
 	Types					= keystone.Field.Types,
 	User					= require( './User' ),
 	ChangeHistoryMiddleware	= require( '../routes/middleware/models_change-history' ),
-	UserServiceMiddleware	= require( '../routes/middleware/service_user' );
+	UserServiceMiddleware	= require( '../routes/middleware/service_user' ),
+	Validators  			= require( '../routes/middleware/validators' );
 
 // Export to make it available using require.  The keystone.list import throws a ReferenceError when importing a list that comes later when sorting alphabetically
 const ContactGroup = require( './ContactGroup' );
@@ -45,11 +46,7 @@ SocialWorker.add( 'Permissions', {
 		selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/users/social-workers`,
 		autoCleanup: true,
 		whenExists: 'overwrite',
-		generateFilename: function( file, attemptNumber ) {
-			const originalname = file.originalname;
-			const filenameWithoutExtension = originalname.substring( 0, originalname.lastIndexOf( '.' ) );
-			return filenameWithoutExtension;
-		}
+		filenameAsPublicID: true
 	},
 
 	contactGroups: { type: Types.Relationship, label: 'contact groups', ref: 'Contact Group', many: true, initial: true }
@@ -57,8 +54,8 @@ SocialWorker.add( 'Permissions', {
 }, 'Contact Information', {
 
 	phone: {
-		work: { type: Types.Text, label: 'work phone number', initial: true },
-		mobile: { type: Types.Text, label: 'mobile phone number', initial: true },
+		work: { type: Types.Text, label: 'work phone number', initial: true, validate: Validators.phoneValidator },
+		mobile: { type: Types.Text, label: 'mobile phone number', initial: true, validate: Validators.phoneValidator },
 		preferred: { type: Types.Select, label: 'preferred phone', options: 'work, mobile', initial: true }
 	}
 
@@ -76,7 +73,7 @@ SocialWorker.add( 'Permissions', {
 		city: { type: Types.Relationship, label: 'city', ref: 'City or Town', dependsOn: { 'address.isOutsideMassachusetts': false }, initial: true },
 		cityText: { type: Types.Text, label: 'city', dependsOn: { 'address.isOutsideMassachusetts': true }, initial: true },
 		state: { type: Types.Relationship, label: 'state', ref: 'State', initial: true },
-		zipCode: { type: Types.Text, label: 'zip code', initial: true }
+		zipCode: { type: Types.Text, label: 'zip code', initial: true, validate: Validators.zipValidator }
 	},
 
 	title: { type: Types.Text, label: 'title', initial: true },
