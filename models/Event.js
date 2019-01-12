@@ -113,9 +113,11 @@ Event.schema.virtual( 'hasImage' ).get( function() {
 	return this.image.exists;
 });
 
-// pre Save
+// pre save hook
 Event.schema.pre( 'save', function( next ) {
 	'use strict';
+	// trim whitespace characters from any type.Text fields
+	this.trimTextFields();
 
 	this.setUrl();
 
@@ -140,6 +142,54 @@ Event.schema.post( 'save', function() {
 		this.save();
 	}
 });
+
+/* text fields don't automatically trim(), this is to ensure no leading or trailing whitespace gets saved into url, text, or text area fields */
+Event.schema.methods.trimTextFields = function() {
+
+	if( this.get( 'name' ) ) {
+		this.set( 'name', this.get( 'name' ).trim() );
+	}
+
+	if( this.get( 'url' ) ) {
+		this.set( 'url', this.get( 'url' ).trim() );
+	}
+
+	if( this.get( 'address.street1' ) ) {
+		this.set( 'address.street1', this.get( 'address.street1' ).trim() );
+	}
+
+	if( this.get( 'address.street2' ) ) {
+		this.set( 'address.street2', this.get( 'address.street2' ).trim() );
+	}
+
+	if( this.get( 'address.city' ) ) {
+		this.set( 'address.city', this.get( 'address.city' ).trim() );
+	}
+
+	if( this.get( 'address.zipCode' ) ) {
+		this.set( 'address.zipCode', this.get( 'address.zipCode' ).trim() );
+	}
+
+	if( this.get( 'contactEmail' ) ) {
+		this.set( 'contactEmail', this.get( 'contactEmail' ).trim() );
+	}
+
+	if( this.get( 'startTime' ) ) {
+		this.set( 'startTime', this.get( 'startTime' ).trim() );
+	}
+
+	if( this.get( 'endTime' ) ) {
+		this.set( 'endTime', this.get( 'endTime' ).trim() );
+	}
+
+	if( this.get( 'description' ) ) {
+		this.set( 'description', this.get( 'description' ).trim() );
+	}
+
+	if( this.get( 'notes' ) ) {
+		this.set( 'notes', this.get( 'notes' ).trim() );
+	}
+};
 
 Event.schema.methods.setUrl = function() {
 	'use strict';

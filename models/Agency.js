@@ -51,6 +51,8 @@ Agency.relationship({ ref: 'Inquiry', refPath: 'agencyReferral', path: 'agencyRe
 // pre-save
 Agency.schema.pre( 'save', function( next ) {
 	'use strict';
+	// trim whitespace characters from any type.Text fields
+	this.trimTextFields();
 	// attempt to update the no-edit region field
 	this.updateRegion()
 		.then( () => {
@@ -62,6 +64,46 @@ Agency.schema.pre( 'save', function( next ) {
 			next();
 		});
 });
+
+/* text fields don't automatically trim(), this is to ensure no leading or trailing whitespace gets saved into url, text, or text area fields */
+Agency.schema.methods.trimTextFields = function() {
+
+	if( this.get( 'code' ) ) {
+		this.set( 'code', this.get( 'code' ).trim() );
+	}
+
+	if( this.get( 'name' ) ) {
+		this.set( 'name', this.get( 'name' ).trim() );
+	}
+
+	if( this.get( 'phone' ) ) {
+		this.set( 'phone', this.get( 'phone' ).trim() );
+	}
+
+	if( this.get( 'fax' ) ) {
+		this.set( 'fax', this.get( 'fax' ).trim() );
+	}
+
+	if( this.get( 'street1' ) ) {
+		this.set( 'street1', this.get( 'street1' ).trim() );
+	}
+
+	if( this.get( 'street2' ) ) {
+		this.set( 'street2', this.get( 'street2' ).trim() );
+	}
+
+	if( this.get( 'cityText' ) ) {
+		this.set( 'cityText', this.get( 'cityText' ).trim() );
+	}
+
+	if( this.get( 'zipCode' ) ) {
+		this.set( 'zipCode', this.get( 'zipCode' ).trim() );
+	}
+
+	if( this.get( 'url' ) ) {
+		this.set( 'url', this.get( 'url' ).trim() );
+	}
+};
 
 Agency.schema.methods.updateRegion = function() {
 	'use strict';
