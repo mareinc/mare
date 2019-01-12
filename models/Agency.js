@@ -17,7 +17,7 @@ Agency.add({
 	code: { type: Types.Text, label: 'agency code', required: true, initial: true },
 	name: { type: Types.Text, label: 'agency name', required: true, initial: true },
 
-	phone: { type: Types.Text, label: 'phone number', initial: true, validate: Validators.phoneValidator },
+	phone: { type: Types.Text, label: 'phone number', initial: true },
 	fax: { type: Types.Text, label: 'fax number', initial: true },
 
 	address: {
@@ -27,7 +27,7 @@ Agency.add({
 		city: { type: Types.Relationship, label: 'city/town', ref: 'City or Town', dependsOn: { 'address.isOutsideMassachusetts': false }, initial: true },
 		cityText: { type: Types.Text, label: 'city/town', dependsOn: { 'address.isOutsideMassachusetts': true }, initial: true },
 		state: { type: Types.Relationship, label: 'state', ref: 'State', initial: true },
-		zipCode: { type: Types.Text, label: 'zip code', initial: true, validate: Validators.zipValidator },
+		zipCode: { type: Types.Text, label: 'zip code', initial: true },
 		region: { type: Types.Relationship, label: 'region', ref: 'Region', noedit: true }
 	},
 

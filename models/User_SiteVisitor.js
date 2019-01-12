@@ -42,9 +42,9 @@ SiteVisitor.add( 'Permissions', {
 }, 'Contact Information', {
 
 	phone: {
-		home: { type: Types.Text, label: 'home phone number', initial: true, validate: Validators.phoneValidator },
-		mobile: { type: Types.Text, label: 'mobile phone number', initial: true, validate: Validators.phoneValidator },
-		work: { type: Types.Text, label: 'work phone number', initial: true, validate: Validators.phoneValidator },
+		home: { type: Types.Text, label: 'home phone number', initial: true },
+		mobile: { type: Types.Text, label: 'mobile phone number', initial: true },
+		work: { type: Types.Text, label: 'work phone number', initial: true },
 		preferred: { type: Types.Select, label: 'preferred phone', options: 'work, home, mobile', initial: true }
 	},
 
@@ -55,7 +55,7 @@ SiteVisitor.add( 'Permissions', {
 		city: { type: Types.Relationship, label: 'city', ref: 'City or Town', dependsOn: { 'address.isOutsideMassachusetts': false }, initial: true },
 		cityText: { type: Types.Text, label: 'city', dependsOn: { 'address.isOutsideMassachusetts': true }, initial: true },
 		state: { type: Types.Relationship, label: 'state', ref: 'State', initial: true },
-		zipCode: { type: Types.Text, label: 'zip code', initial: true, validate: Validators.zipValidator }
+		zipCode: { type: Types.Text, label: 'zip code', initial: true }
 	}
 
 }, 'Info Preferences', {

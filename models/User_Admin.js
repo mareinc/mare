@@ -44,9 +44,9 @@ Admin.add( 'Permissions', {
 }, 'Contact Information', {
 
 	phone: {
-		work: { type: Types.Text, label: 'work phone number', initial: true, validate: Validators.phoneValidator },
-		home: { type: Types.Text, label: 'home phone number', initial: true, validate: Validators.phoneValidator },
-		mobile: { type: Types.Text, label: 'mobile phone number', initial: true, validate: Validators.phoneValidator },
+		work: { type: Types.Text, label: 'work phone number', initial: true },
+		home: { type: Types.Text, label: 'home phone number', initial: true },
+		mobile: { type: Types.Text, label: 'mobile phone number', initial: true },
 		preferred: { type: Types.Select, label: 'preferred phone', options: 'work, home, mobile', initial: true }
 	},
 
@@ -55,7 +55,7 @@ Admin.add( 'Permissions', {
 		street2: { type: Types.Text, label: 'street 2', initial: true },
 		city: { type: Types.Text, label: 'city', initial: true },
 		state: { type: Types.Relationship, label: 'state', ref: 'State', initial: true },
-		zipCode: { type: Types.Text, label: 'zip code', initial: true, validate: Validators.zipValidator }
+		zipCode: { type: Types.Text, label: 'zip code', initial: true }
 	}
 
 /* Container for data migration fields ( these should be kept until after phase 2 and the old system is phased out completely ) */
