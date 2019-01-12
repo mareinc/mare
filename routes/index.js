@@ -9,6 +9,7 @@ const keystone						= require( 'keystone' ),
 	  permissionsService			= require( './middleware/service_permissions' ),
 	  registrationMiddleware		= require( './middleware/service_register' ),
 	  accountMiddleware				= require( './middleware/service_account' ),
+	  chronMiddleware				= require( './middleware/middleware_chron' ),
 	  eventMiddleware				= require( './middleware/middleware_event' ),
 	  passwordResetService 			= require( './middleware/service_password-reset'),
 	  accountVerificationService	= require( './middleware/service_account-verification' ),
@@ -111,4 +112,6 @@ exports = module.exports = app => {
 	app.post( '/services/get-gallery-permissions'		, permissionsService.getGalleryPermissions );
 	// app.post( '/services/register-for-event'			, eventService.addUser ); // TODO: I'm leaving these commented out so I don't forget they exist when I need to implement adding/removing users to an event automatically
 	// app.post( '/services/unregister-for-event'		, eventService.removeUser ); // TODO: I'm leaving these commented out so I don't forget they exist when I need to implement adding/removing users to an event automatically
+
+	app.get( '/chron/nightly'							, chronMiddleware.runNightlyChronJob );
 };
