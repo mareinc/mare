@@ -45,15 +45,15 @@ Match.add( 'Match', {
 			street2: { type: Types.Text, label: 'address Line 2', dependsOn: { isUnregisteredFamily: true }, initial: true },
 			city: { type: Types.Text, label: 'city', dependsOn: { isUnregisteredFamily: true }, initial: true },
 			state: { type: Types.Relationship, label: 'state', ref: 'State', dependsOn: { isUnregisteredFamily: true }, initial: true },
-			zipCode: { type: Types.Text, label: 'zip code', dependsOn: { isUnregisteredFamily: true }, initial: true, validate: Validators.zipValidator },
+			zipCode: { type: Types.Text, label: 'zip code', dependsOn: { isUnregisteredFamily: true }, initial: true },
 			country: { type: Types.Text, label: 'country', dependsOn: { isUnregisteredFamily: true }, initial: true },
 			region: { type: Types.Relationship, label: 'region', dependsOn: { isUnregisteredFamily: true }, ref: 'Region', initial: true }
 		},
 
 		phone: {
-			work: { type: Types.Text, label: 'work phone number', dependsOn: { isUnregisteredFamily: true }, initial: true, validate: Validators.phoneValidator },
-			home: { type: Types.Text, label: 'home phone number', dependsOn: { isUnregisteredFamily: true }, initial: true, validate: Validators.phoneValidator },
-			mobile: { type: Types.Text, label: 'mobile phone number', dependsOn: { isUnregisteredFamily: true }, initial: true, validate: Validators.phoneValidator },
+			work: { type: Types.Text, label: 'work phone number', dependsOn: { isUnregisteredFamily: true }, initial: true },
+			home: { type: Types.Text, label: 'home phone number', dependsOn: { isUnregisteredFamily: true }, initial: true },
+			mobile: { type: Types.Text, label: 'mobile phone number', dependsOn: { isUnregisteredFamily: true }, initial: true },
 			preferred: { type: Types.Select, label: 'preferred phone', options: 'work, home, mobile', dependsOn: { isUnregisteredFamily: true }, initial: true }
 		},
 
