@@ -1,4 +1,4 @@
-#! /usr/bin/env node
+#! /app/.heroku/node/bin/node
 
 const http = require( 'http' );
 
