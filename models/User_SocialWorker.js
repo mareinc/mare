@@ -103,6 +103,22 @@ SocialWorker.relationship( { ref: 'Donation', refPath: 'socialWorker', path: 'do
 SocialWorker.relationship( { ref: 'Internal Note', refPath: 'socialWorker', path: 'internal-notes', label: 'internal notes' } );
 SocialWorker.relationship( { ref: 'Social Worker History', refPath: 'socialWorker', path: 'social-worker-histories', label: 'change history' } );
 
+/* TODO: VERY IMPORTANT:  Need to fix this to provide the link to access the keystone admin panel again */
+/* 						  Changing names or reworking this file changed the check in node_modules/keystone/templates/views/signin.jade
+/*						  for user.isAdmin on line 14 */
+// Provide access to Keystone
+SocialWorker.schema.virtual( 'canAccessKeystone' ).get( function() {
+	'use strict';
+
+	return false;
+});
+
+SocialWorker.schema.virtual( 'displayName' ).get( function() {
+	'use strict';
+
+	return `${ this.name.first } ${ this.name.last }`;
+});
+
 // Post Init - used to store all the values before anything is changed
 SocialWorker.schema.post( 'init', function() {
 	'use strict';
@@ -147,22 +163,6 @@ SocialWorker.schema.post( 'init', function() {
 // 			this.setChangeHistory();
 // 		});
 // });
-
-/* TODO: VERY IMPORTANT:  Need to fix this to provide the link to access the keystone admin panel again */
-/* 						  Changing names or reworking this file changed the check in node_modules/keystone/templates/views/signin.jade
-/*						  for user.isAdmin on line 14 */
-// Provide access to Keystone
-SocialWorker.schema.virtual( 'canAccessKeystone' ).get( function() {
-	'use strict';
-
-	return false;
-});
-
-SocialWorker.schema.virtual( 'displayName' ).get( function() {
-	'use strict';
-
-	return `${ this.name.first } ${ this.name.last }`;
-});
 
 /* text fields don't automatically trim(), this is to ensure no leading or trailing whitespace gets saved into url, text, or text area fields */
 SocialWorker.schema.methods.trimTextFields = function() {

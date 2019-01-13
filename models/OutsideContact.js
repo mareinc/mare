@@ -55,56 +55,102 @@ OutsideContact.add( 'General Information', {
 // Pre Save
 OutsideContact.schema.pre( 'save', function( next ) {
 	'use strict';
-
-	async.parallel([
-		done => { this.setIdentifyingName( done ); },
-		done => { this.setVolunteerStatus( done ); }	
-	], () => {
-		next();
-	});
+	// trim whitespace characters from any type.Text fields
+	this.trimTextFields();
+	// set an identifying name based on the name and organization provided to make using it in Relationship dropdowns possible
+	this.setIdentifyingName();
+	// determine whether or not the outside contact is a volunteer
+	this.setVolunteerStatus()
+		.catch( err => {
+			console.error( `error setting the volunteer status for outside contact with identifyingName ${this.get('identifyingName')} - ${err}` );
+		})
+		.then(() => {
+			next();
+		});
 });
 
-OutsideContact.schema.methods.setIdentifyingName = function( done ) {
+/* text fields don't automatically trim(), this is to ensure no leading or trailing whitespace gets saved into url, text, or text area fields */
+OutsideContact.schema.methods.trimTextFields = function() {
+
+	if( this.get( 'name' ) ) {
+		this.set( 'name', this.get( 'name' ).trim() );
+	}
+
+	if( this.get( 'organization' ) ) {
+		this.set( 'organization', this.get( 'organization' ).trim() );
+	}
+
+	if( this.get( 'email' ) ) {
+		this.set( 'email', this.get( 'email' ).trim() );
+	}
+
+	if( this.get( 'phone.work' ) ) {
+		this.set( 'phone.work', this.get( 'phone.work' ).trim() );
+	}
+
+	if( this.get( 'phone.mobile' ) ) {
+		this.set( 'phone.mobile', this.get( 'phone.mobile' ).trim() );
+	}
+
+	if( this.get( 'address.street1' ) ) {
+		this.set( 'address.street1', this.get( 'address.street1' ).trim() );
+	}
+
+	if( this.get( 'address.street2' ) ) {
+		this.set( 'address.street2', this.get( 'address.street2' ).trim() );
+	}
+
+	if( this.get( 'address.city' ) ) {
+		this.set( 'address.city', this.get( 'address.city' ).trim() );
+	}
+
+	if( this.get( 'address.zipCode' ) ) {
+		this.set( 'address.zipCode', this.get( 'address.zipCode' ).trim() );
+	}
+};
+
+OutsideContact.schema.methods.setIdentifyingName = function() {
 	'use strict';
 
 	// if only the name is populated, it becomes the identifying name
-	if( this.name && !this.organization ) {
-		this.identifyingName = `${ this.name }`;
+	if( this.name.trim() && !this.organization.trim() ) {
+		this.identifyingName = `${ this.name.trim() }`;
 	// otherwise, if only the organization is populated, it becomes the identifying name
-	} else if( !this.name && this.organization ) {
-		this.identifyingName = `${ this.organization }`;
+	} else if( !this.name.trim() && this.organization.trim() ) {
+		this.identifyingName = `${ this.organization.trim() }`;
 	// otherwise, both must be populated, and the identifying name becomes 'name - organization'
 	} else {
-		this.identifyingName = `${ this.name } - ${ this.organization }`
+		this.identifyingName = `${ this.name.trim() } - ${ this.organization.trim() }`
 	}
-
-	done();
 };
 
-OutsideContact.schema.methods.setVolunteerStatus = function( done ) {
-	// get all the contact groups
-	var contactGroups	= this.contactGroups;
-	// reset the isVolunteer flag to allow a fresh check every save
-	this.isVolunteer	= false;
-	// loop through each of the contact groups the user should be added to and mark the outside contact as a volunteer
-	// if they are part of the 'volunteers' contact group
-	ContactGroup.model
-		.find()
-		.where( { _id: { $in: contactGroups } } )
-		.exec()
-		.then( contactGroups => {
-			// create an array from just the names of each contact group
-			const contactGroupNames = contactGroups.map( contactGroup => contactGroup.get( 'name' ) );
-			// events have outside contacts who are volunteers listed, we need to capture a reference to which outside contacts are volunteers
-			if( contactGroupNames.includes( 'volunteers' ) ) {
-				this.isVolunteer = true;
-			}
+OutsideContact.schema.methods.setVolunteerStatus = function() {
 
-			done();
+	return new Promise( (resolve, reject) => {
+		// get all the contact groups
+		const contactGroups	= this.contactGroups;
+		// reset the isVolunteer flag to allow a fresh check every save
+		this.isVolunteer = false;
+		// loop through each of the contact groups the user should be added to and mark the outside contact as a volunteer
+		// if they are part of the 'volunteers' contact group
+		// TODO: this can probably be done much more cleanly with a .populate on the current model.  See populateAgency in the Placement model
+		ContactGroup.model
+			.find()
+			.where( { _id: { $in: contactGroups } } )
+			.exec()
+			.then( contactGroups => {
+				// create an array from just the names of each contact group
+				const contactGroupNames = contactGroups.map( contactGroup => contactGroup.get( 'name' ) );
+				// events have outside contacts who are volunteers listed, we need to capture a reference to which outside contacts are volunteers
+				if( contactGroupNames.includes( 'volunteers' ) ) {
+					this.isVolunteer = true;
+				}
 
-		}, err => {
-			console.error( err );
-			done();
+				resolve();
+
+			}, err => {
+				reject( err );
+			})
 		});
 };
 

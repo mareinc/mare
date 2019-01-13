@@ -587,8 +587,8 @@ Family.schema.methods.trimTextFields = function() {
 		this.set( 'address.zipCode', this.get( 'address.zipCode' ).trim() );
 	}
 
-	if( this.get( 'address.homePhone' ) ) {
-		this.set( 'address.homePhone', this.get( 'address.homePhone' ).trim() );
+	if( this.get( 'homePhone' ) ) {
+		this.set( 'homePhone', this.get( 'homePhone' ).trim() );
 	}
 
 	if( this.get( 'child1.name' ) ) {

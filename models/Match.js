@@ -61,22 +61,82 @@ Match.add( 'Match', {
 	}
 });
 
-// Match.schema.pre( 'save', function( next ) {
-// 	// populate the family's agency field if it hasn't already been populated
-// 	const agencyPopulated = this.populateAgency();
+Match.schema.pre( 'save', function( next ) {
+	'use strict';
+	// trim whitespace characters from any type.Text fields
+	this.trimTextFields();
+	// populate the family's agency field if it hasn't already been populated
+	// const agencyPopulated = this.populateAgency();
 
-// 	agencyPopulated
-// 		// if there was an error populating the agency
-// 		.catch( err => {
-// 			// log the error for debugging purposes
-// 			console.error( err );
-// 		})
-// 		// if the agency was populated successfully
-// 		.then( () => {
-// 			// pass the flow of control out of this function
-// 			next();
-// 		});
-// });
+	// agencyPopulated
+	// 	// if there was an error populating the agency
+	// 	.catch( err => {
+	// 		// log the error for debugging purposes
+	// 		console.error( err );
+	// 	})
+	// 	// if the agency was populated successfully
+	// 	.then( () => {
+	// 		// pass the flow of control out of this function
+	// 		next();
+	// 	});
+	next();
+});
+
+/* text fields don't automatically trim(), this is to ensure no leading or trailing whitespace gets saved into url, text, or text area fields */
+Match.schema.methods.trimTextFields = function() {
+
+	if( this.get( 'notes' ) ) {
+		this.set( 'notes', this.get( 'notes' ).trim() );
+	}
+
+	if( this.get( 'childDetails.firstName' ) ) {
+		this.set( 'childDetails.firstName', this.get( 'childDetails.firstName' ).trim() );
+	}
+
+	if( this.get( 'childDetails.lastName' ) ) {
+		this.set( 'childDetails.lastName', this.get( 'childDetails.lastName' ).trim() );
+	}
+
+	if( this.get( 'familyDetails.name' ) ) {
+		this.set( 'familyDetails.name', this.get( 'familyDetails.name' ).trim() );
+	}
+
+	if( this.get( 'familyDetails.address.street1' ) ) {
+		this.set( 'familyDetails.address.street1', this.get( 'familyDetails.address.street1' ).trim() );
+	}
+
+	if( this.get( 'familyDetails.address.street2' ) ) {
+		this.set( 'familyDetails.address.street2', this.get( 'familyDetails.address.street2' ).trim() );
+	}
+
+	if( this.get( 'familyDetails.address.city' ) ) {
+		this.set( 'familyDetails.address.city', this.get( 'familyDetails.address.city' ).trim() );
+	}
+
+	if( this.get( 'familyDetails.address.zipCode' ) ) {
+		this.set( 'familyDetails.address.zipCode', this.get( 'familyDetails.address.zipCode' ).trim() );
+	}
+
+	if( this.get( 'familyDetails.address.country' ) ) {
+		this.set( 'familyDetails.address.country', this.get( 'familyDetails.address.country' ).trim() );
+	}
+
+	if( this.get( 'familyDetails.phone.work' ) ) {
+		this.set( 'familyDetails.phone.work', this.get( 'familyDetails.phone.work' ).trim() );
+	}
+
+	if( this.get( 'familyDetails.phone.home' ) ) {
+		this.set( 'familyDetails.phone.home', this.get( 'familyDetails.phone.home' ).trim() );
+	}
+
+	if( this.get( 'familyDetails.phone.mobile' ) ) {
+		this.set( 'familyDetails.phone.mobile', this.get( 'familyDetails.phone.mobile' ).trim() );
+	}
+
+	if( this.get( 'familyDetails.email' ) ) {
+		this.set( 'familyDetails.email', this.get( 'familyDetails.email' ).trim() );
+	}
+};
 
 Match.schema.methods.populateAgency = function() {
 

@@ -41,8 +41,11 @@ Donation.add({
 });
 
 // presave hook
+// TODO: split out the contents into schema methods
 Donation.schema.pre( 'save', function( next ) {
 	'use strict';
+	// trim whitespace characters from any type.Text fields
+	this.trimTextFields();
 
 	let targetUserType,
 		targetId;
@@ -92,7 +95,7 @@ Donation.schema.pre( 'save', function( next ) {
 
 			}, err => {
 				// log the error for debugging purposes
-				console.error( `an error occurred fetching the user model to set the donator name - ${ err }` );
+				console.error( `an error occurred fetching the user model to set the donator name for donation with id ${this.get( 'id' )} - ${ err }` );
 				// allow further processing beyond this middleware
 				next();
 			});
@@ -103,6 +106,46 @@ Donation.schema.pre( 'save', function( next ) {
 		next();
 	}
 });
+
+/* text fields don't automatically trim(), this is to ensure no leading or trailing whitespace gets saved into url, text, or text area fields */
+Donation.schema.methods.trimTextFields = function() {
+
+	if( this.get( 'stripeTransactionID' ) ) {
+		this.set( 'stripeTransactionID', this.get( 'stripeTransactionID' ).trim() );
+	}
+
+	if( this.get( 'unregisteredUser' ) ) {
+		this.set( 'unregisteredUser', this.get( 'unregisteredUser' ).trim() );
+	}
+
+	if( this.get( 'name' ) ) {
+		this.set( 'name', this.get( 'name' ).trim() );
+	}
+
+	if( this.get( 'onBehalfOf' ) ) {
+		this.set( 'onBehalfOf', this.get( 'onBehalfOf' ).trim() );
+	}
+
+	if( this.get( 'note' ) ) {
+		this.set( 'note', this.get( 'note' ).trim() );
+	}
+
+	if( this.get( 'address.street' ) ) {
+		this.set( 'address.street', this.get( 'address.street' ).trim() );
+	}
+
+	if( this.get( 'address.city' ) ) {
+		this.set( 'address.city', this.get( 'address.city' ).trim() );
+	}
+
+	if( this.get( 'address.state' ) ) {
+		this.set( 'address.state', this.get( 'address.state' ).trim() );
+	}
+
+	if( this.get( 'address.zip' ) ) {
+		this.set( 'address.zip', this.get( 'address.zip' ).trim() );
+	}
+};
 
 // define default columns in the admin interface and register the model
 Donation.defaultColumns = 'name, amount, date';

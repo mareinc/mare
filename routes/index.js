@@ -1,4 +1,3 @@
-
 const keystone							= require( 'keystone' ),
 	  robots							= require( 'express-robots' ),
 	  childService						= require( './middleware/service_child' ),
@@ -10,6 +9,7 @@ const keystone							= require( 'keystone' ),
 	  permissionsService				= require( './middleware/service_permissions' ),
 	  registrationMiddleware			= require( './middleware/service_register' ),
 	  accountMiddleware					= require( './middleware/service_account' ),
+	  chronMiddleware					= require( './middleware/middleware_chron' ),
 	  eventMiddleware					= require( './middleware/middleware_event' ),
 	  passwordResetService 				= require( './middleware/service_password-reset'),
 	  accountVerificationService		= require( './middleware/service_account-verification' ),
@@ -23,6 +23,7 @@ const keystone							= require( 'keystone' ),
 	  socialWorkerAdjustmentService		= require( './middleware/fix_social-worker' ),
 	  dateAdjustmentService				= require( './middleware/fix_dates' ),
 	  importRoutes						= keystone.importer( __dirname );
+
 
 // common middleware
 keystone.pre( 'routes', middleware.initLocals );
@@ -132,4 +133,6 @@ exports = module.exports = app => {
 	app.get( '/fix/social-workers'						, middleware.requireAdmin, socialWorkerAdjustmentService.fixSocialWorkers );
 	/* NOTE: this is for a one-time fix to timezones in dates and should be removed.  Keeping as a reference for async/await in data migration */
 	app.get( '/fix/dates'								, middleware.requireAdmin, dateAdjustmentService.fixDates );
+
+	app.get( '/chron/nightly'							, chronMiddleware.runNightlyChronJob );
 };

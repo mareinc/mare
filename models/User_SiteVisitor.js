@@ -78,18 +78,6 @@ SiteVisitor.relationship( { ref: 'Mailing List', refPath: 'siteVisitorSubscriber
 SiteVisitor.relationship( { ref: 'Event', refPath: 'siteVisitorAttendees', path: 'events', label: 'events' } );
 SiteVisitor.relationship( { ref: 'Donation', refPath: 'siteVisitor', path: 'donations', label: 'donations' } );
 
-// Pre Save
-SiteVisitor.schema.pre( 'save', function( next ) {
-	'use strict';
-
-	// Populate the full name string for better identification when linking through Relationship field types
-	this.name.full = this.name.first + ' ' + this.name.last;
-	// Set the userType for role based page rendering
-	this.userType = 'site visitor';
-
-	next();
-});
-
 /* TODO: VERY IMPORTANT:  Need to fix this to provide the link to access the keystone admin panel again */
 /* 						  Changing names or reworking this file changed the check in node_modules/keystone/templates/views/signin.jade
 /*						  for user.isAdmin on line 14 */
@@ -105,6 +93,71 @@ SiteVisitor.schema.virtual( 'displayName' ).get( function() {
 
 	return `${ this.name.first } ${ this.name.last }`;
 });
+
+// Pre Save
+SiteVisitor.schema.pre( 'save', function( next ) {
+	'use strict';
+	// trim whitespace characters from any type.Text fields
+	this.trimTextFields();
+	// Populate the full name string for better identification when linking through Relationship field types
+	this.name.full = this.name.first + ' ' + this.name.last;
+	// Set the userType for role based page rendering
+	this.userType = 'site visitor';
+
+	next();
+});
+
+/* text fields don't automatically trim(), this is to ensure no leading or trailing whitespace gets saved into url, text, or text area fields */
+SiteVisitor.schema.methods.trimTextFields = function() {
+
+	if( this.get( 'name.first' ) ) {
+		this.set( 'name.first', this.get( 'name.first' ).trim() );
+	}
+
+	if( this.get( 'name.last' ) ) {
+		this.set( 'name.last', this.get( 'name.last' ).trim() );
+	}
+
+	if( this.get( 'name.full' ) ) {
+		this.set( 'name.full', this.get( 'name.full' ).trim() );
+	}
+
+	if( this.get( 'phone.home' ) ) {
+		this.set( 'phone.home', this.get( 'phone.home' ).trim() );
+	}
+
+	if( this.get( 'phone.mobile' ) ) {
+		this.set( 'phone.mobile', this.get( 'phone.mobile' ).trim() );
+	}
+
+	if( this.get( 'phone.work' ) ) {
+		this.set( 'phone.work', this.get( 'phone.work' ).trim() );
+	}
+
+	if( this.get( 'address.street1' ) ) {
+		this.set( 'address.street1', this.get( 'address.street1' ).trim() );
+	}
+
+	if( this.get( 'address.street2' ) ) {
+		this.set( 'address.street2', this.get( 'address.street2' ).trim() );
+	}
+
+	if( this.get( 'address.cityText' ) ) {
+		this.set( 'address.cityText', this.get( 'address.cityText' ).trim() );
+	}
+
+	if( this.get( 'address.zipCode' ) ) {
+		this.set( 'address.zipCode', this.get( 'address.zipCode' ).trim() );
+	}
+
+	if( this.get( 'infoPacket.notes' ) ) {
+		this.set( 'infoPacket.notes', this.get( 'infoPacket.notes' ).trim() );
+	}
+
+	if( this.get( 'heardAboutMAREOther' ) ) {
+		this.set( 'heardAboutMAREOther', this.get( 'heardAboutMAREOther' ).trim() );
+	}
+};
 
 // Define default columns in the admin interface and register the model
 SiteVisitor.defaultColumns = 'name.full, email, isActive';
