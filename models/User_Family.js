@@ -384,17 +384,17 @@ Family.relationship( { ref: 'Internal Note', refPath: 'family', path: 'internal-
 Family.relationship( { ref: 'Family History', refPath: 'family', path: 'family-histories', label: 'change history' } );
 
 // Post Init - used to store all the values before anything is changed
-Family.schema.post( 'init', function() {
-	'use strict';
+// Family.schema.post( 'init', function() {
+// 	'use strict';
 
-	this._original = this.toObject();
-});
+// 	this._original = this.toObject();
+// });
 
-// Pre Save
-Family.schema.pre( 'save', function( next ) {
-	'use strict';
-	// trim whitespace characters from any type.Text fields
-	this.trimTextFields();
+// // Pre Save
+// Family.schema.pre( 'save', function( next ) {
+// 	'use strict';
+// 	// trim whitespace characters from any type.Text fields
+// 	this.trimTextFields();
 	// // update the homestudy verified date
 	// this.setHomestudyVerifiedDate();
 	// // create a full name for each contact based on their first, middle, and last names
@@ -432,8 +432,7 @@ Family.schema.pre( 'save', function( next ) {
 
 // 			next();
 // 		});
-	next();
-});
+// });
 
 // Family.schema.post( 'save', function() {
 
