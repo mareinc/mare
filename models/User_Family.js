@@ -391,10 +391,10 @@ Family.schema.post( 'init', function() {
 });
 
 // Pre Save
-// Family.schema.pre( 'save', function( next ) {
-	// 'use strict';
-	// // trim whitespace characters from any type.Text fields
-	// this.trimTextFields();
+Family.schema.pre( 'save', function( next ) {
+	'use strict';
+	// trim whitespace characters from any type.Text fields
+	this.trimTextFields();
 	// // update the homestudy verified date
 	// this.setHomestudyVerifiedDate();
 	// // create a full name for each contact based on their first, middle, and last names
@@ -432,7 +432,8 @@ Family.schema.post( 'init', function() {
 
 // 			next();
 // 		});
-// });
+	next();
+});
 
 // Family.schema.post( 'save', function() {
 

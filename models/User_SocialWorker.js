@@ -137,8 +137,8 @@ SocialWorker.schema.pre( 'save', function( next ) {
 // 	// all user types that can log in derive from the User model, this allows us to identify users better
 // 	this.setUserType();
 	
-// 	 next();
-// });
+	 next();
+});
 
 // SocialWorker.schema.post( 'save', function() {
 
@@ -162,8 +162,7 @@ SocialWorker.schema.pre( 'save', function( next ) {
 // 			// process change history
 // 			this.setChangeHistory();
 // 		});
-	next();
-});
+// });
 
 /* text fields don't automatically trim(), this is to ensure no leading or trailing whitespace gets saved into url, text, or text area fields */
 SocialWorker.schema.methods.trimTextFields = function() {
