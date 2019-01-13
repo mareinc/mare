@@ -127,11 +127,11 @@ SocialWorker.schema.post( 'init', function() {
 });
 
 // Pre Save
-// SocialWorker.schema.pre( 'save', function( next ) {
-// 	'use strict';
+SocialWorker.schema.pre( 'save', function( next ) {
+	'use strict';
 
-// 	// trim whitespace characters from any type.Text fields
-// 	this.trimTextFields();
+	// trim whitespace characters from any type.Text fields
+	this.trimTextFields();
 // 	// create a full name for the social worker
 // 	this.setFullName();
 // 	// all user types that can log in derive from the User model, this allows us to identify users better
@@ -162,7 +162,8 @@ SocialWorker.schema.post( 'init', function() {
 // 			// process change history
 // 			this.setChangeHistory();
 // 		});
-// });
+	next();
+});
 
 /* text fields don't automatically trim(), this is to ensure no leading or trailing whitespace gets saved into url, text, or text area fields */
 SocialWorker.schema.methods.trimTextFields = function() {
