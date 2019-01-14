@@ -382,11 +382,11 @@ Family.add( 'Permissions', {
 
 }, 'File Attachments', {
 
-	fileAttachment1: { type: Types.File, storage: storage, label: 'file attachment 1' },
-	fileAttachment2: { type: Types.File, storage: storage, label: 'file attachment 2' },
-	fileAttachment3: { type: Types.File, storage: storage, label: 'file attachment 3' },
-	fileAttachment4: { type: Types.File, storage: storage, label: 'file attachment 4' },
-	fileAttachment5: { type: Types.File, storage: storage, label: 'file attachment 5' }
+	fileAttachment1: { type: Types.File, storage: fileStorage, label: 'file attachment 1' },
+	fileAttachment2: { type: Types.File, storage: fileStorage, label: 'file attachment 2' },
+	fileAttachment3: { type: Types.File, storage: fileStorage, label: 'file attachment 3' },
+	fileAttachment4: { type: Types.File, storage: fileStorage, label: 'file attachment 4' },
+	fileAttachment5: { type: Types.File, storage: fileStorage, label: 'file attachment 5' }
 	
 }, 'Image Attachments', {
 
