@@ -22,7 +22,7 @@ const storage = new keystone.Storage({
 		secret: process.env.S3_SECRET, // required; defaults to process.env.S3_SECRET
 		bucket: process.env.S3_BUCKET_NAME, // required; defaults to process.env.S3_BUCKET
 		region: process.env.S3_REGION, // optional; defaults to process.env.S3_REGION, or if that's not specified, us-east-1
-		path: '/Child',
+		path: '/Children',
 		uploadParams: { // optional; add S3 upload params; see below for details
 			ACL: 'public-read'
 		},
