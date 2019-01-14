@@ -12,20 +12,44 @@ const keystone					= require( 'keystone' ),
 	  ListService				= require( '../routes/middleware/service_lists' ),
 	  Validators  				= require( '../routes/middleware/validators' );
 
-// configure the s3 storage adapter
-var storage = new keystone.Storage({
+// configure the s3 storage adapters
+var fileStorage = new keystone.Storage({
 	adapter: require( 'keystone-storage-adapter-s3' ),
 	s3: {
 		key: process.env.S3_KEY, // required; defaults to process.env.S3_KEY
 		secret: process.env.S3_SECRET, // required; defaults to process.env.S3_SECRET
 		bucket: process.env.S3_BUCKET_NAME, // required; defaults to process.env.S3_BUCKET
 		region: process.env.S3_REGION, // optional; defaults to process.env.S3_REGION, or if that's not specified, us-east-1
-		path: '/Families',
+		path: '/Families/Files',
 		uploadParams: { // optional; add S3 upload params; see below for details
 			ACL: 'public-read'
 		},
 		generateFilename: function( item ) {
-			// use the files name instead of randomly generating a value
+			// use the file name instead of randomly generating a value
+			return item.originalname;
+		}
+	},
+	schema: {
+		bucket: true, // optional; store the bucket the file was uploaded to in your db
+		etag: true, // optional; store the etag for the resource
+		path: true, // optional; store the path of the file in your db
+		url: true, // optional; generate & store a public URL
+	}
+});
+
+var imageStorage = new keystone.Storage({
+	adapter: require( 'keystone-storage-adapter-s3' ),
+	s3: {
+		key: process.env.S3_KEY, // required; defaults to process.env.S3_KEY
+		secret: process.env.S3_SECRET, // required; defaults to process.env.S3_SECRET
+		bucket: process.env.S3_BUCKET_NAME, // required; defaults to process.env.S3_BUCKET
+		region: process.env.S3_REGION, // optional; defaults to process.env.S3_REGION, or if that's not specified, us-east-1
+		path: '/Families/Images',
+		uploadParams: { // optional; add S3 upload params; see below for details
+			ACL: 'public-read'
+		},
+		generateFilename: function( item ) {
+			// use the image name instead of randomly generating a value
 			return item.originalname;
 		}
 	},
@@ -356,14 +380,18 @@ Family.add( 'Permissions', {
 	bookmarkedChildren: { type: Types.Relationship, label: 'bookmarked children', ref: 'Child', many: true, noedit: true },
 	bookmarkedSiblings: { type: Types.Relationship, label: 'bookmarked sibling group children', ref: 'Child', many: true, noedit: true }
 
-}, 'Attachments', {
+}, 'File Attachments', {
 
-		attachment1: { type: Types.File, storage: storage, label: 'attachment 1' },
-		attachment2: { type: Types.File, storage: storage, label: 'attachment 2' },
-		attachment3: { type: Types.File, storage: storage, label: 'attachment 3' },
-		attachment4: { type: Types.File, storage: storage, label: 'attachment 4' },
-		attachment5: { type: Types.File, storage: storage, label: 'attachment 5' }
-		
+	fileAttachment1: { type: Types.File, storage: storage, label: 'file attachment 1' },
+	fileAttachment2: { type: Types.File, storage: storage, label: 'file attachment 2' },
+	fileAttachment3: { type: Types.File, storage: storage, label: 'file attachment 3' },
+	fileAttachment4: { type: Types.File, storage: storage, label: 'file attachment 4' },
+	fileAttachment5: { type: Types.File, storage: storage, label: 'file attachment 5' }
+	
+}, 'Image Attachments', {
+
+	imageAttachment1: { type: Types.File, storage: imageStorage, label: 'image attachment' }
+	
 /* Container for data migration fields ( these should be kept until after phase 2 and the old system is phased out completely ) */
 }, {
 	// system field to store an appropriate file prefix
