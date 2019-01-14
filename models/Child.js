@@ -180,7 +180,7 @@ Child.add( 'Display Options', {
 		folder: `${ process.env.CLOUDINARY_DIRECTORY }/children/`,
 		select: true,
 		selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/children/`,
-		dependsOn: { mustBePlacedWithSiblings: false },
+		hidden: true,
 		autoCleanup: true,
 		whenExists: 'overwrite',
 		filenameAsPublicID: true
