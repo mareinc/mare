@@ -91,6 +91,14 @@ function fetchChildrenByPage( page ) {
 function saveChild( child ) {
 
 	return new Promise( ( resolve, reject ) => {
+
+		// delete the attachment fields.  Strict needs to be set to false since the fields are no longer part of the schema
+		// child.set( 'attachment1', undefined, { strict: false } );
+		// child.set( 'attachment2', undefined, { strict: false } );
+		// child.set( 'attachment3', undefined, { strict: false } );
+		// child.set( 'attachment4', undefined, { strict: false } );
+		// child.set( 'attachment5', undefined, { strict: false } );
+
 		// attempt the save the child
 		child.save( ( err, savedModel ) => {
 			// if we run into an error

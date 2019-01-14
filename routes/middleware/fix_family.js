@@ -97,8 +97,14 @@ function fetchFamiliesByPage( page ) {
 function saveFamily( family ) {
 
 	return new Promise( ( resolve, reject ) => {
-	
-		// family.set( 'isActive', false );
+
+		// delete the attachment fields.  Strict needs to be set to false since the fields are no longer part of the schema
+		// family.set( 'attachment1', undefined, { strict: false } );
+		// family.set( 'attachment2', undefined, { strict: false } );
+		// family.set( 'attachment3', undefined, { strict: false } );
+		// family.set( 'attachment4', undefined, { strict: false } );
+		// family.set( 'attachment5', undefined, { strict: false } );
+
 		// attempt the save the family
 		family.save( ( err, savedModel ) => {
 			// if we run into an error
