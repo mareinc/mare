@@ -280,7 +280,7 @@ Family.add( 'Permissions', {
 			label: 'homestudy file',
 			dependsOn: { 'homestudy.completed': true },
 			type: Types.File,
-			storage: storage
+			storage: fileStorage
 		}
 	},
 
