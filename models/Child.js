@@ -14,20 +14,44 @@ const keystone						= require( 'keystone' ),
 	  SocialWorkerMiddleware		= require( '../routes/middleware/models_social-worker' ),
 	  saveLock						= require( '../routes/middleware/model_save_lock' );
 
-// configure the s3 storage adapter
-const storage = new keystone.Storage({
+// configure the s3 storage adapters
+const fileStorage = new keystone.Storage({
 	adapter: require( 'keystone-storage-adapter-s3' ),
 	s3: {
 		key: process.env.S3_KEY, // required; defaults to process.env.S3_KEY
 		secret: process.env.S3_SECRET, // required; defaults to process.env.S3_SECRET
 		bucket: process.env.S3_BUCKET_NAME, // required; defaults to process.env.S3_BUCKET
 		region: process.env.S3_REGION, // optional; defaults to process.env.S3_REGION, or if that's not specified, us-east-1
-		path: '/Child',
+		path: '/Children/Files',
 		uploadParams: { // optional; add S3 upload params; see below for details
 			ACL: 'public-read'
 		},
 		generateFilename: function( item ) {
-			// use the files name instead of randomly generating a value
+			// use the file name instead of randomly generating a value
+			return item.originalname;
+		}
+	},
+	schema: {
+		bucket: true, // optional; store the bucket the file was uploaded to in your db
+		etag: true, // optional; store the etag for the resource
+		path: true, // optional; store the path of the file in your db
+		url: true, // optional; generate & store a public URL
+	}
+});
+
+const imageStorage = new keystone.Storage({
+	adapter: require( 'keystone-storage-adapter-s3' ),
+	s3: {
+		key: process.env.S3_KEY, // required; defaults to process.env.S3_KEY
+		secret: process.env.S3_SECRET, // required; defaults to process.env.S3_SECRET
+		bucket: process.env.S3_BUCKET_NAME, // required; defaults to process.env.S3_BUCKET
+		region: process.env.S3_REGION, // optional; defaults to process.env.S3_REGION, or if that's not specified, us-east-1
+		path: '/Children/Images',
+		uploadParams: { // optional; add S3 upload params; see below for details
+			ACL: 'public-read'
+		},
+		generateFilename: function( item ) {
+			// use the image name instead of randomly generating a value
 			return item.originalname;
 		}
 	},
@@ -180,7 +204,7 @@ Child.add( 'Display Options', {
 		folder: `${ process.env.CLOUDINARY_DIRECTORY }/children/`,
 		select: true,
 		selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/children/`,
-		dependsOn: { mustBePlacedWithSiblings: false },
+		hidden: true,
 		autoCleanup: true,
 		whenExists: 'overwrite',
 		filenameAsPublicID: true
@@ -233,13 +257,21 @@ Child.add( 'Display Options', {
 	communicationsCollateral: { type: Types.Boolean, label: 'communications collateral', default: false, initial: true },
 	communicationsCollateralDetails: { type: Types.Text, label: 'details', dependsOn: { communicationsCollateral: true }, initial: true },
 
-}, 'Attachments', {
+}, 'File Attachments', {
 
-	attachment1: { type: Types.File, storage: storage, label: 'attachment 1' },
-	attachment2: { type: Types.File, storage: storage, label: 'attachment 2' },
-	attachment3: { type: Types.File, storage: storage, label: 'attachment 3' },
-	attachment4: { type: Types.File, storage: storage, label: 'attachment 4' },
-	attachment5: { type: Types.File, storage: storage, label: 'attachment 5' }
+	fileAttachment1: { type: Types.File, storage: fileStorage, label: 'file attachment 1' },
+	fileAttachment2: { type: Types.File, storage: fileStorage, label: 'file attachment 2' },
+	fileAttachment3: { type: Types.File, storage: fileStorage, label: 'file attachment 3' },
+	fileAttachment4: { type: Types.File, storage: fileStorage, label: 'file attachment 4' },
+	fileAttachment5: { type: Types.File, storage: fileStorage, label: 'file attachment 5' }
+
+}, 'Image Attachments', {
+
+	imageAttachment1: { type: Types.File, storage: imageStorage, label: 'image attachment 1' },
+	imageAttachment2: { type: Types.File, storage: imageStorage, label: 'image attachment 2' },
+	imageAttachment3: { type: Types.File, storage: imageStorage, label: 'image attachment 3' },
+	imageAttachment4: { type: Types.File, storage: imageStorage, label: 'image attachment 4' },
+	imageAttachment5: { type: Types.File, storage: imageStorage, label: 'image attachment 5' }
 
 /* Container for data migration fields ( these should be kept until after phase 2 and the old system is phased out completely ) */
 }, {
