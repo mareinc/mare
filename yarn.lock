@@ -6317,9 +6317,9 @@ netmask@^1.0.6:
   version "1.0.6"
   resolved "https://registry.yarnpkg.com/netmask/-/netmask-1.0.6.tgz#20297e89d86f6f6400f250d9f4f6b4c1945fcd35"
 
-newrelic@^4.1.1:
-  version "4.9.0"
-  resolved "https://registry.yarnpkg.com/newrelic/-/newrelic-4.9.0.tgz#8d7e0426115e0b2cd078de2dafb95952e17879c3"
+newrelic@^5.0.0:
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/newrelic/-/newrelic-5.1.0.tgz#55b019bb6521f62c19952443cbccc54c14b5baec"
   dependencies:
     "@newrelic/koa" "^1.0.0"
     "@newrelic/superagent" "^1.0.0"
