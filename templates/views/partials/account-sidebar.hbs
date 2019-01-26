@@ -18,6 +18,11 @@
             <span class="account-nav-link__title">Children</span>
         </li>
         {{/if}}
+		
+		<li class="button button--teal account-nav-link \{{#ifeq selectedRoute 'email-list' }}account-nav-link--active\{{/ifeq}}" data-section="email-list">
+            <i class="fa fa-calendar"></i>
+            <span class="account-nav-link__title">Mailing Lists</span>
+        </li>
 
         {{#ifeq user.userType 'admin'}}
         <a href="/keystone"><li class="button button--green account-nav-link account-nav-link--admin">Admin Panel</li></a>
