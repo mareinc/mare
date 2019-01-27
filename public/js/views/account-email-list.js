@@ -5,7 +5,7 @@
 		el: '.account-email-list-container',
 		
 		events: {
-			'click .save-button'	: 'updateMailingLists',
+			'click .save-button'	: 'updateMailingLists'
 		},
 
 		initialize: function initialize() {
