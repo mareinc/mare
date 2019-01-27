@@ -99,19 +99,41 @@ function saveChild( child ) {
 		// child.set( 'attachment4', undefined, { strict: false } );
 		// child.set( 'attachment5', undefined, { strict: false } );
 
-		// attempt the save the child
-		child.save( ( err, savedModel ) => {
-			// if we run into an error
-			if( err ) {
-				// return control back to the generator with details about the error
-				childrenGenerator.next({
-					responseType: 'error',
-					message: `${ child.get( 'name.full' ) } - ${ child.get( 'id' ) } - ${ err }` } );
-			// if the model saved successfully
-			} else {
-				// return control back to the generator
-				childrenGenerator.next( { responseType: 'success' } );
+		let saveNeeded = false;
+
+		for( let count of [1,2,3,4,5] ) {
+			const fileAttachment = child.get( `fileAttachment${ count }` );
+			const imageAttachment = child.get( `imageAttachment${ count }` );
+
+			if( fileAttachment && fileAttachment.url ) {
+				fileAttachment.url.replace( 'https', 'http' );
+				saveNeeded = true;
 			}
-		});
+
+			if( imageAttachment && imageAttachment.url ) {
+				imageAttachment.url.replace( 'https', 'http' );
+				saveNeeded = true;
+			}
+		}
+
+		if( saveNeeded ) {
+			// attempt the save the child
+			child.save( ( err, savedModel ) => {
+				// if we run into an error
+				if( err ) {
+					// return control back to the generator with details about the error
+					childrenGenerator.next({
+						responseType: 'error',
+						message: `${ child.get( 'name.full' ) } - ${ child.get( 'id' ) } - ${ err }` } );
+				// if the model saved successfully
+				} else {
+					// return control back to the generator
+					childrenGenerator.next( { responseType: 'success' } );
+				}
+			});
+		} else {
+			// return control back to the generator
+			childrenGenerator.next( { responseType: 'success' } );
+		}
 	});
 };
