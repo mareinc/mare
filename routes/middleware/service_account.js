@@ -5,9 +5,10 @@
 // TODO: a lot of this functionality is needed for social worker child/family registration and should potentially be broken out and placed in more
 //		 appropriate files
 
-const _				= require( 'lodash' ),
-	  userService	= require( './service_user' ),
-	  flashMessages	= require( './service_flash-messages' );
+const _						= require( 'lodash' ),
+	  userService			= require( './service_user' ),
+	  flashMessages			= require( './service_flash-messages' ),
+	  mailingListService	= require( './service_mailing-list' );
 
 exports.updateUser = ( req, res, next ) => {
 	const updates	= req.body,
@@ -127,4 +128,147 @@ exports.updateUser = ( req, res, next ) => {
 				});
 			});
 	});
+}
+
+// wraps a model.save() operation in a Promise
+function promisifySaveOperation( modelToSave ) {
+
+	return new Promise( ( resolve, reject ) => {
+
+		modelToSave.save( error => {
+
+			if ( error ) {
+				console.error( error );
+			}
+
+			resolve();
+		});
+	});
+}
+
+exports.updateUserEmailLists = ( req, res, next ) => {
+	const updates	= req.body,
+		  userType	= req.user.userType,
+		  userId	= req.user.get( '_id' );
+
+	mailingListService.getRegistrationMailingLists()
+		.then( mailingLists => {
+			let updatedEmailListIds = typeof updates.emailLists !== 'undefined' ? updates.emailLists : [];
+			let userIdString = userId.toString();
+			let mailingListModelUpdates = [];
+			
+			for ( let mailingList of mailingLists ) {
+				let mailingListId = mailingList._id.toString();
+				let subscribers;
+				
+				switch ( req.user.userType ) {
+					case 'admin':
+						subscribers = mailingList.adminSubscribers;
+						break;
+					case 'social worker':
+						subscribers = mailingList.socialWorkerSubscribers;
+						break;
+					case 'site visitor':
+						subscribers = mailingList.siteVisitorSubscribers;
+						break;
+					case 'family':
+						subscribers = mailingList.familySubscribers;
+						break;
+				}
+				
+				// if the user type is not supported
+				if ( typeof subscribers === 'undefined' ) {
+					continue;
+				}
+				
+				let isModified = false;
+				let subscriberIds = subscribers.map( subscriber => subscriber.toString() );
+				
+				// add to the list
+				if ( ! subscriberIds.includes( userIdString ) && updatedEmailListIds.includes( mailingListId ) ) {
+					// append the user to subscribers array without the mutation
+					subscribers.splice( 0, subscribers.length, ...subscribers.concat( [ userId ] ) );
+					isModified = true;
+				}
+				
+				// remove from the list
+				if ( subscriberIds.includes( userIdString ) && ! updatedEmailListIds.includes( mailingListId ) ) {
+					let index = subscribers.findIndex( subscriber => subscriber.toString() === userIdString );
+					// remove the user from subscribers array without the mutation
+					subscribers.splice( index, 1 );
+					isModified = true;
+				}
+				
+				// add the mailing list to the updates
+				if ( isModified ) {
+					mailingListModelUpdates.push( new Promise( ( resolve, reject ) => {
+							mailingList.save( error => {
+								if ( error ) {
+									console.error( error );
+									reject();
+								}
+								resolve();
+							});
+						})
+					);
+				}
+			}
+			
+			// save all changed models
+			Promise
+				.all( mailingListModelUpdates )
+				.then( () => {
+					// create an error flash message to send back to the user
+					flashMessages.appendFlashMessage({
+						messageType: flashMessages.MESSAGE_TYPES.SUCCESS,
+						title: 'Your e-mail lists were updated succesfully'
+					});
+					// send the error status and flash message markup
+					flashMessages.generateFlashMessageMarkup()
+						.then( flashMessageMarkup => {
+							res.send({
+								status: 'success',
+								flashMessage: flashMessageMarkup
+							});
+						});;
+				})
+				.catch( error => {
+					// log an error for debugging purposes
+					console.error( `there was an error saving e-mail lists of ${ userType } ${ userId } : ${ error }` );
+					
+					// create an error flash message to send back to the user
+					flashMessages.appendFlashMessage({
+						messageType: flashMessages.MESSAGE_TYPES.ERROR,
+						title: 'There was an error updating your e-mail lists',
+						message: 'If this error persists, please contact MARE for assistance'
+					});
+					// send the error status and flash message markup
+					flashMessages.generateFlashMessageMarkup()
+						.then( flashMessageMarkup => {
+							res.send({
+								status: 'error',
+								flashMessage: flashMessageMarkup
+							});
+						});
+				});
+		})
+		.catch( err => {
+			// log an error for debugging purposes
+			console.error( `error loading e-mail lists${ err }` );
+			
+			// create an error flash message to send back to the user
+			flashMessages.appendFlashMessage({
+				messageType: flashMessages.MESSAGE_TYPES.ERROR,
+				title: 'There was an error updating your e-mail lists',
+				message: 'If this error persists, please contact MARE for assistance'
+			});
+			// send the error status and flash message markup
+			flashMessages.generateFlashMessageMarkup()
+				.then( flashMessageMarkup => {
+					res.send({
+						status: 'error',
+						flashMessage: flashMessageMarkup
+					});
+				});
+		});
 }

@@ -3,6 +3,10 @@
 
 	mare.views.AccountEmailList = Backbone.View.extend({
 		el: '.account-email-list-container',
+		
+		events: {
+			'click .save-button'	: 'updateMailingLists',
+		},
 
 		initialize: function initialize() {
 			// create a hook to access the section templates
@@ -28,6 +32,30 @@
 
 		show: function show() {
 			this.$el.show();
+		},
+		
+		updateMailingLists: function( event ) {
+			// fetch the form data
+			var data = [];
+			this.$el.find( "input[type='radio']:checked" ).each( function( index, element ) {
+				var value = $( element ).val();
+				if ( value.length > 0 ) {
+					data.push( value );
+				}
+			} );
+			
+			// send a put request to the server with the updated information
+			$.ajax({
+				type: 'PUT',
+				url: 'account/user-email-lists',
+				data: {
+					emailLists: data
+				},
+				success: function( responseData ) {
+					// display a flash message with the resulting status of the update action
+					mare.views.flashMessages.initializeAJAX( responseData.flashMessage );
+				}
+			});
 		}
 	});
 }());

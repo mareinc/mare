@@ -107,6 +107,7 @@ exports = module.exports = app => {
 	// user account management
 	app.get( '/account'									, middleware.requireUser, routes.views.account );
 	app.put( '/account/user-info'						, accountMiddleware.updateUser );
+	app.put( '/account/user-email-lists'				, accountMiddleware.updateUserEmailLists );
 	// verification code handling after user registers
 	app.get('/verifyAccount'							, accountVerificationService );
 	/* TODO: all these routes below need to be moved and prefixed with appropriate REST verbs like put */
