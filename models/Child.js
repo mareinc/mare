@@ -27,8 +27,9 @@ const fileStorage = new keystone.Storage({
 			ACL: 'public-read'
 		},
 		generateFilename: function( item ) {
-			// use the file name instead of randomly generating a value
-			return item.originalname;
+			// use the file name with spaces replaced by dashes instead of randomly generating a value.
+			// NOTE: this is needed to prevent access errors when trying to view the files
+			return item.originalname.replace( /\s/g, '-' );
 		}
 	},
 	schema: {
@@ -51,8 +52,9 @@ const imageStorage = new keystone.Storage({
 			ACL: 'public-read'
 		},
 		generateFilename: function( item ) {
-			// use the image name instead of randomly generating a value
-			return item.originalname;
+			// use the file name with spaces replaced by dashes instead of randomly generating a value.
+			// NOTE: this is needed to prevent access errors when trying to view the files
+			return item.originalname.replace( /\s/g, '-' );
 		}
 	},
 	schema: {
