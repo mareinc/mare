@@ -105,17 +105,42 @@ function saveFamily( family ) {
 		// family.set( 'attachment4', undefined, { strict: false } );
 		// family.set( 'attachment5', undefined, { strict: false } );
 
-		// attempt the save the family
-		family.save( ( err, savedModel ) => {
-			// if we run into an error
-			if( err ) {
-				// reject the promise with details of the error
-				reject( `${ family.get( '_id' ) } - ${ err }` );
-			// if the model saved successfully
-			} else {
-				// return control to the generator
-				resolve();
+		let saveNeeded = false;
+
+		for( let count of [1,2,3,4,5] ) {
+			const fileAttachment = family.get( `fileAttachment${ count }` );
+
+			if( fileAttachment && fileAttachment.url && fileAttachment.url.indexOf( 'https' ) !== -1 ) {
+				family.set( `fileAttachment${ count }`, Object.assign( {}, fileAttachment, { url: `${ fileAttachment.url.replace( 'https', 'http' )}` }) );
+				saveNeeded = true;
 			}
-		});
+		}
+
+		const imageAttachment = family.get( 'imageAttachment1' );
+
+		if( imageAttachment && imageAttachment.url && imageAttachment.url.indexOf( 'https' ) !== -1 ) {
+			family.set( `imageAttachment1`, Object.assign( {}, imageAttachment, { url: `${ imageAttachment.url.replace( 'https', 'http' )}` }) );
+			saveNeeded = true;
+		}
+
+		if( saveNeeded ) {
+			// attempt the save the family
+			family.save( ( err, savedModel ) => {
+				// if we run into an error
+				if( err ) {
+					// reject the promise with details of the error
+					reject( `${ family.get( '_id' ) } - ${ err }` );
+				// if the model saved successfully
+				} else {
+					// return control to the generator
+					resolve();
+				}
+			});
+		} else {
+			// return control back to the generator
+			setTimeout( () => {
+				resolve();
+			}, 10 );
+		}
 	});
 };

@@ -105,13 +105,13 @@ function saveChild( child ) {
 			const fileAttachment = child.get( `fileAttachment${ count }` );
 			const imageAttachment = child.get( `imageAttachment${ count }` );
 
-			if( fileAttachment && fileAttachment.url ) {
-				fileAttachment.url.replace( 'https', 'http' );
+			if( fileAttachment && fileAttachment.url && fileAttachment.url.indexOf( 'https' ) !== -1 ) {
+				child.set( `fileAttachment${ count }`, Object.assign( {}, fileAttachment, { url: `${ fileAttachment.url.replace( 'https', 'http' )}` }) );
 				saveNeeded = true;
 			}
 
-			if( imageAttachment && imageAttachment.url ) {
-				imageAttachment.url.replace( 'https', 'http' );
+			if( imageAttachment && imageAttachment.url && imageAttachment.url.indexOf( 'https' ) !== -1 ) {
+				child.set( `imageAttachment${ count }`, Object.assign( {}, imageAttachment, { url: `${ imageAttachment.url.replace( 'https', 'http' )}` }) );
 				saveNeeded = true;
 			}
 		}
@@ -133,7 +133,9 @@ function saveChild( child ) {
 			});
 		} else {
 			// return control back to the generator
-			childrenGenerator.next( { responseType: 'success' } );
+			setTimeout( () => {
+				childrenGenerator.next( { responseType: 'success' } );
+			}, 10 );
 		}
 	});
 };
