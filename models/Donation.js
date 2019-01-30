@@ -35,7 +35,7 @@ Donation.add({
 		street: 	{ type: Types.Text, label: 'street address', required: true, initial: true },
 		city:		{ type: Types.Text, required: true, initial: true },
 		state:		{ type: Types.Text, required: true, initial: true },
-		zip:		{ type: Types.Text, label: 'zip code', required: true, initial: true }
+		zip:		{ type: Types.Text, label: 'zip code', required: true, initial: true, validate: Validators.zipValidator }
 	}
 
 });
