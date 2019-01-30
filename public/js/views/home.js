@@ -14,18 +14,20 @@
         /* initializes the slideshow */
         initializeSlideshow: function initializeSlideshow() {
             // initialize the slideshow default settings
-            $( '#slideshow' ).owlCarousel({
-                autoPlay: 5000,
-                // dots: false,
-                singleItem : true,
-                lazyLoad : true,
-                lazyEffect: 'fade',
+            $( '.owl-carousel' ).owlCarousel({
                 autoHeight: true,
-                transitionStyle : 'fade'
+                autoplay: true,
+                autoplaySpeed: 5000,
+                lazyLoadEager: 1,
+                dots: false,
+                items : 1,
+                lazyLoad : true,
+                loop: true,
+                animateOut: 'fadeOut'
             });
             // prevents the slideshow image descriptions from loading in before the images do
             // TODO: This doesn't seem to be working as well as it needs to.
-            $( '#slideshow img' ).load(function() {
+            $( '.owl-carousel img' ).load(function() {
                 $(this).siblings( '.slideshow__description' ).removeClass( 'hidden' );
             });
         }

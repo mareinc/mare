@@ -20,9 +20,6 @@ SlideshowItem.add({
 		filenameAsPublicID: true
 	},
 	parent: { type: Types.Relationship, label: 'slideshow', ref: 'Slideshow', initial: true },
-	heading: { type: Types.Text, label: 'heading', initial: true },
-	subHeading: { type: Types.Text, label: 'sub-heading', initial: true },
-	guideLabel: { type: Types.Text, label: 'label', initial: true },
 	order: { type: Types.Number, label: 'order', initial: true }
 
 });
