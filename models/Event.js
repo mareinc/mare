@@ -42,7 +42,7 @@ Event.add( 'General Information', {
 		street2: { type: Types.Text, label: 'street 2', initial: true },
 		city: { type: Types.Text, label: 'city', initial: true },
 		state: { type: Types.Relationship, label: 'state', ref: 'State', initial: true },
-		zipCode: { type: Types.Text, label: 'zip code', initial: true }
+		zipCode: { type: Types.Text, label: 'zip code', initial: true, validate: Validators.zipValidator }
 	},
 
 	contact: { type: Types.Relationship, label: 'contact', ref: 'Admin', initial: true },
@@ -51,9 +51,9 @@ Event.add( 'General Information', {
 }, 'Details', {
 
 	startDate: { type: Types.Date, label: 'start date', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, required: true, initial: true },
-	startTime: { type: Types.Text, label: 'start time', required: true, initial: true },
+	startTime: { type: Types.Text, label: 'start time', required: true, initial: true, validate: Validators.timeValidator },
 	endDate: { type: Types.Date, label: 'end date', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, required: true, initial: true },
-	endTime: { type: Types.Text, label: 'end time', required: true, initial: true },
+	endTime: { type: Types.Text, label: 'end time', required: true, initial: true, validate: Validators.timeValidator },
 	description: { type: Types.Html, label: 'description', wysiwyg: true, initial: true }
 
 }, 'Access Restrictions', {

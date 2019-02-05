@@ -1,14 +1,14 @@
 const keystone = require( 'keystone' );
 
 exports.runNightlyChronJob = async ( req, res, next ) => {
-	// respond immediately to minimize the amount of time the one-off dyno is running (this is done to minimize the Heroku billing amount)
-	res.status(200).send();
 
 	console.log( `execution of the nightly chron job has started` );
 
 	await saveAllAgencies();
 	await saveAllSocialWorkers();
 	await saveAllChildren();
+
+	res.status(200).send();
 
 	console.log( `execution of the nightly chron job complete` );
 

@@ -79,6 +79,12 @@ exports = module.exports = ( req, res ) => {
 					event.dateString = moment( event.startDate ).utc().format( 'dddd MMMM Do, YYYY' );
 				}
 			}
+			
+			// loop through all the mailing lists and mark the current selection
+			for( let mailingList of mailingLists ) {
+				const subscribers = [ ...mailingList.adminSubscribers, ...mailingList.siteVisitorSubscribers, ...mailingList.socialWorkerSubscribers, ...mailingList.familySubscribers ];
+				mailingList.isSelected = subscribers.map( subscriber => subscriber.toString() ).includes(req.user._id.toString());
+			}
 
 			// assign properties to locals for access during templating
 			locals.user						= req.user;

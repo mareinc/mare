@@ -1,5 +1,23 @@
 <script id="account-email-list" type="text/x-handlebars-template">
 
-    <h1 class="account-current-section__title">Your Email Lists</h1>
+    <h1 class="account-current-section__title">Your Email Subscriptions</h1>
 
+	{{#each mailingLists}}
+		<div class="row form-group">
+			<div class="col-sm-12">
+				<label class="label marg-bottom-xs-5">{{ mailingList }}</label>
+				<p class="form-field-note">{{ displayText }}</p>
+			</div>
+			<div class="col-sm-12">
+				<label class="radio-inline"><input type="radio" name="mailingLists[{{@index}}]" value={{ _id }} {{#if isSelected}}checked="checked"{{/if}}>Yes</label>
+				<label class="radio-inline"><input type="radio" name="mailingLists[{{@index}}]" value="" {{#unless isSelected}}checked="checked"{{/unless}}>No</label>
+			</div>
+		</div>
+	{{else}}
+		No mailing lists could be found
+	{{/each}}
+	
+	{{#if mailingLists}}
+		<button class="button button--teal save-button">Save</button>
+	{{/if}}
 </script>
