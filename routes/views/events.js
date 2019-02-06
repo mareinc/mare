@@ -22,21 +22,27 @@ exports = module.exports = ( req, res ) => {
 	const eventGroup = eventService.getEventGroup( userType );
 
 	switch( category ) {
-		case 'adoption-parties'			: eventType = 'MARE adoption parties & information events'; break;
 		case 'mapp-trainings'			: eventType = 'MAPP trainings'; break;
-		case 'fundraising-events'		: eventType = 'fundraising events'; break;
-		case 'agency-info-meetings'		: eventType = 'agency information meetings'; break;
-		case 'other-trainings'			: eventType = 'other opportunities & trainings'; break;
+		case 'mare-hosted-events'		: eventType = 'MARE hosted events'; break;
+		case 'partner-hosted-events'	: eventType = 'partner hosted events'; break;
+	}
+
+	switch( userType ) {
+		case 'site visitor' : locals.isRegistrationBlocked = !!event.preventSiteVisitorRegistration; break;
+		case 'family' : locals.isRegistrationBlocked = !!event.preventFamilyRegistration; break;
+		case 'social worker' : locals.isRegistrationBlocked = !!event.preventSocialWorkerRegistration; break;
+		default: locals.isRegistrationBlocked = false;
 	}
 
 	// track whether it is an event users can register for through the site
 	// admin can't register, and everyone else can only register for select types of events
-	locals.canRegister = userType !== 'admin' &&
-						 [ 'fundraising events', 'MARE adoption parties & information events' ].includes( eventType );
+	locals.canRegister = userType !== 'admin'
+		&& eventType === 'MARE hosted events'
+		&& !locals.isRegistrationBlocked;
 
 	// only social workers can submit events, and only for specific types of events
-	locals.canSubmitEvent = userType === 'social worker' &&
-							[ 'MAPP trainings', 'agency information meetings', 'other opportunities & trainings' ].includes( eventType );
+	locals.canSubmitEvent = userType === 'social worker'
+		&& [ 'MAPP trainings', 'partner hosted events' ].includes( eventType );
 
 	// store on locals for access during templating
 	locals.category = category;
