@@ -19,6 +19,7 @@ const keystone							= require( 'keystone' ),
 	  familyAdjustmentService			= require( './middleware/fix_family' ),
 	  changeHistoryAdjustmentService	= require( './middleware/fix_change-history' ),
 	  cloudinaryImageAdjustmentService	= require( './middleware/fix_cloudinary-images' ),
+	  eventAdjustmentService			= require( './middleware/fix_event' ),
 	  inquiryAdjustmentService			= require( './middleware/fix_inquiry' ),
 	  socialWorkerAdjustmentService		= require( './middleware/fix_social-worker' ),
 	  dateAdjustmentService				= require( './middleware/fix_dates' ),
@@ -128,6 +129,7 @@ exports = module.exports = app => {
 	app.get( '/fix/children'							, middleware.requireAdmin, childAdjustmentService.fixChildren );
 	app.get( '/fix/cloudinary-images'					, middleware.requireAdmin, cloudinaryImageAdjustmentService.fixCloudinaryImages );
 	app.get( '/fix/cloudinary-images/:model'			, middleware.requireAdmin, cloudinaryImageAdjustmentService.fixCloudinaryImages );
+	app.get( '/fix/events'								, middleware.requireAdmin, eventAdjustmentService.fixEvents );
 	app.get( '/fix/families'							, middleware.requireAdmin, familyAdjustmentService.fixFamilies );
 	app.get( '/fix/family-histories'					, middleware.requireAdmin, changeHistoryAdjustmentService.fixFamilyHistories );
 	app.get( '/fix/inquiries'							, middleware.requireAdmin, inquiryAdjustmentService.fixInquiries );
