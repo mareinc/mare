@@ -19,7 +19,7 @@ Event.add( 'General Information', {
 	isActive: { type: Types.Boolean, label: 'is event active?', initial: true },
 	shouldCreateSource: { type: Types.Boolean, label: 'create source from this event', initial: true },
 	// type: { type: Types.Relationship, label: 'Event Type', ref: 'Event Type', required: true, initial: true }
-	type: { type: Types.Select, label: 'event type', options: 'MARE adoption parties & information events, MAPP trainings, agency information meetings, other opportunities & trainings, fundraising events', required: true, initial: true }, // TODO: this fixes an issue in pre-save which can be updated to fetch the live results and not hardcode this list.
+	type: { type: Types.Select, label: 'event type', options: 'MAPP trainings, Mare hosted events, partner hosted events', required: true, initial: true }, // TODO: this fixes an issue in pre-save which can be updated to fetch the live results and not hardcode this list.
 	source: { type: Types.Relationship, label: 'source', ref: 'Source', dependsOn: { shouldCreateSource: true }, noedit: true, initial: true },
 	image: {
 		type: Types.CloudinaryImage,
@@ -50,15 +50,19 @@ Event.add( 'General Information', {
 
 }, 'Details', {
 
-	startDate: { type: Types.Date, label: 'start date', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, required: true, initial: true },
-	startTime: { type: Types.Text, label: 'start time', required: true, initial: true, validate: Validators.timeValidator },
-	endDate: { type: Types.Date, label: 'end date', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, required: true, initial: true },
-	endTime: { type: Types.Text, label: 'end time', required: true, initial: true, validate: Validators.timeValidator },
+	recurringEvent: { type: Types.Boolean, label: 'recurring event', initial: true },
+	startDate: { type: Types.Date, label: 'start date', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { recurringEvent: true }, initial: true },
+	startTime: { type: Types.Text, label: 'start time', utc: true, dependsOn: { recurringEvent: true }, initial: true, validate: Validators.timeValidator },
+	endDate: { type: Types.Date, label: 'end date', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, utc: true, dependsOn: { recurringEvent: true }, initial: true },
+	endTime: { type: Types.Text, label: 'end time', initial: true, utc: true, dependsOn: { recurringEvent: true }, validate: Validators.timeValidator },
+	scheduleDescription: { type: Types.TextArea, label: 'schedule description', note: 'only use this field if this is a recurring event', utc: true, dependsOn: { recurringEvent: false }, initial: true },
 	description: { type: Types.Html, label: 'description', wysiwyg: true, initial: true }
 
 }, 'Access Restrictions', {
 
-	preventRegistration: { type: Types.Boolean, label: 'prevent registration', note: 'this will prevent registration for active fundraising events and adoption parties & information events', initial: true }
+	preventSiteVisitorRegistration: { type: Types.Boolean, label: 'prevent site visitor registration', note: 'this will prevent registration for active fundraising events and adoption parties & information events', initial: true },
+	preventFamilyRegistration: { type: Types.Boolean, label: 'prevent family registration', note: 'this will prevent registration for active fundraising events and adoption parties & information events', initial: true },
+	preventSocialWorkerRegistration: { type: Types.Boolean, label: 'prevent social worker registration', note: 'this will prevent registration for active fundraising events and adoption parties & information events', initial: true }
 
 }, 'Attendees', {
 
