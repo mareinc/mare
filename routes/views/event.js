@@ -42,19 +42,18 @@ exports = module.exports = ( req, res ) => {
 			const [ event, sidebarItems, registeredChildren ] = values;
 			// the sidebar items are a success story and event in an array, assign local variables to the two objects
 			const [ randomSuccessStory, randomEvent ] = sidebarItems;
-			
-			switch( userType ) {
-				case 'site visitor' : locals.isRegistrationBlocked = !!event.preventSiteVisitorRegistration; break;
-				case 'family' : locals.isRegistrationBlocked = !!event.preventFamilyRegistration; break;
-				case 'social worker' : locals.isRegistrationBlocked = !!event.preventSocialWorkerRegistration; break;
-				default: locals.isRegistrationBlocked = false;
-			}
+
+			const isRegistrationBlocked =
+				userType === 'site visitor' ? !!event.preventSiteVisitorRegistration
+				: userType === 'family' ? !!event.preventFamilyRegistration
+				: userType === 'social worker' ? !!event.preventSocialWorkerRegistration
+				: false;
 
 			// track whether it is an event users can register for through the site
-			// admin can't register, and everyone else can only register for select types of events
+			// admin can't register, and everyone else can only register for select types of events if registration isn't blocked in the event model
 			locals.canRegister = userType !== 'admin'
 				&& eventType === 'MARE hosted events'
-				&& !locals.isRegistrationBlocked;
+				&& !isRegistrationBlocked;
 
 			// only social workers can submit events, and only for specific types of events
 			locals.canSubmitEvent = userType === 'social worker'
