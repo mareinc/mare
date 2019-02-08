@@ -52,11 +52,9 @@ exports.initLocals = function(req, res, next) {
 			{ title: `Register a Family's Homestudy`, href: '/page/register-a-familys-homestudy' }
 		]},
 		{ title: 'Events', subMenu: [
-			{ title: 'MARE Adoption Parties & Information Events', href: '/events/adoption-parties/'},
-			{ title: 'MAPP Training', href: '/events/mapp-trainings/' },
-			{ title: 'Agency Information Meetings', href: '/events/agency-info-meetings/' },
-			{ title: 'Other Opportunities & Trainings', href: '/events/other-trainings/' },
-			{ title: 'Fundraising Events', href: '/events/fundraising-events/' }
+			{ title: 'MARE Hosted Events', href: '/events/mare-hosted-events/'},
+			{ title: 'Partner Hosted Events', href: '/events/partner-hosted-events'},
+			{ title: 'MAPP Training', href: '/events/mapp-trainings/' }
 		]},
 		{ title: 'Ways to Help', subMenu: [
 			{ title: 'Why give?', href: '/page/why-give' },

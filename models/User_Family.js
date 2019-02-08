@@ -25,8 +25,9 @@ var fileStorage = new keystone.Storage({
 			ACL: 'public-read'
 		},
 		generateFilename: function( item ) {
-			// use the file name instead of randomly generating a value
-			return item.originalname;
+			// use the file name with spaces replaced by dashes instead of randomly generating a value.
+			// NOTE: this is needed to prevent access errors when trying to view the files
+			return item.originalname.replace( /\s/g, '-' );
 		}
 	},
 	schema: {
@@ -49,8 +50,9 @@ var imageStorage = new keystone.Storage({
 			ACL: 'public-read'
 		},
 		generateFilename: function( item ) {
-			// use the image name instead of randomly generating a value
-			return item.originalname;
+			// use the file name with spaces replaced by dashes instead of randomly generating a value.
+			// NOTE: this is needed to prevent access errors when trying to view the files
+			return item.originalname.replace( /\s/g, '-' );
 		}
 	},
 	schema: {
@@ -124,8 +126,8 @@ Family.add( 'Permissions', {
 		},
 
 		phone: {
-			mobile: { type: Types.Text, label: 'mobile phone number', initial: true },
-			work: { type: Types.Text, label: 'work phone number', initial: true }
+			mobile: { type: Types.Text, label: 'mobile phone number', initial: true, validate: Validators.phoneValidator },
+			work: { type: Types.Text, label: 'work phone number', initial: true, validate: Validators.phoneValidator }
 		},
 
 		email: { type: Types.Email, label: 'email address', initial: true },
@@ -146,8 +148,8 @@ Family.add( 'Permissions', {
 		},
 
 		phone: {
-			mobile: { type: Types.Text, label: 'mobile phone number', initial: true },
-			work: { type: Types.Text, label: 'work phone number', initial: true }
+			mobile: { type: Types.Text, label: 'mobile phone number', initial: true, validate: Validators.phoneValidator },
+			work: { type: Types.Text, label: 'work phone number', initial: true, validate: Validators.phoneValidator }
 		},
 
 		email: { type: Types.Email, label: 'email address', initial: true },
@@ -168,11 +170,11 @@ Family.add( 'Permissions', {
 		cityText: { type: Types.Text, label: 'city', dependsOn: { 'address.isOutsideMassachusetts': true }, initial: true },
 		displayCity: { type: Types.Text, label: 'city', hidden: true, noedit: true },
 		state: { type: Types.Relationship, label: 'state', ref: 'State', initial: true }, // was required: data migration change ( undo if possible )
-		zipCode: { type: Types.Text, label: 'zip code', initial: true }, // was required: data migration change ( undo if possible )
+		zipCode: { type: Types.Text, label: 'zip code', initial: true, validate: Validators.zipValidator }, // was required: data migration change ( undo if possible )
 		region: { type: Types.Relationship, label: 'region', ref: 'Region', noedit: true }
 	},
 
-	homePhone: { type: Types.Text, label: 'home phone number', initial: true }
+	homePhone: { type: Types.Text, label: 'home phone number', initial: true, validate: Validators.phoneValidator }
 
 }, 'Current Children in Family', {
 

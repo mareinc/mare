@@ -19,7 +19,7 @@ Event.add( 'General Information', {
 	isActive: { type: Types.Boolean, label: 'is event active?', initial: true },
 	shouldCreateSource: { type: Types.Boolean, label: 'create source from this event', initial: true },
 	// type: { type: Types.Relationship, label: 'Event Type', ref: 'Event Type', required: true, initial: true }
-	type: { type: Types.Select, label: 'event type', options: 'MARE adoption parties & information events, MAPP trainings, agency information meetings, other opportunities & trainings, fundraising events', required: true, initial: true }, // TODO: this fixes an issue in pre-save which can be updated to fetch the live results and not hardcode this list.
+	type: { type: Types.Select, label: 'event type', options: 'Mare hosted events, partner hosted events, MAPP trainings', required: true, initial: true }, // TODO: this fixes an issue in pre-save which can be updated to fetch the live results and not hardcode this list.
 	source: { type: Types.Relationship, label: 'source', ref: 'Source', dependsOn: { shouldCreateSource: true }, noedit: true, initial: true },
 	image: {
 		type: Types.CloudinaryImage,
@@ -42,23 +42,29 @@ Event.add( 'General Information', {
 		street2: { type: Types.Text, label: 'street 2', initial: true },
 		city: { type: Types.Text, label: 'city', initial: true },
 		state: { type: Types.Relationship, label: 'state', ref: 'State', initial: true },
-		zipCode: { type: Types.Text, label: 'zip code', initial: true }
+		zipCode: { type: Types.Text, label: 'zip code', initial: true, validate: Validators.zipValidator }
 	},
 
-	contact: { type: Types.Relationship, label: 'contact', ref: 'Admin', initial: true },
-	contactEmail: { type: Types.Email, label: 'contact person email', note: 'only fill out if no contact is selected', initial: true }
+	contact: { type: Types.Relationship, label: 'social worker contact', ref: 'Admin', initial: true },
+	contactEmail: { type: Types.Email, label: 'social worker contact email', note: 'only fill out if no social worker contact is selected', initial: true },
+	familyContact: { type: Types.Relationship, label: 'family contact', ref: 'Admin', initial: true },
+	familyContactEmail: { type: Types.Email, label: 'family contact email', note: 'only fill out if no family contact is selected', initial: true },
 
 }, 'Details', {
 
-	startDate: { type: Types.Date, label: 'start date', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, required: true, initial: true },
-	startTime: { type: Types.Text, label: 'start time', required: true, initial: true },
-	endDate: { type: Types.Date, label: 'end date', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, required: true, initial: true },
-	endTime: { type: Types.Text, label: 'end time', required: true, initial: true },
+	recurringEvent: { type: Types.Boolean, label: 'recurring event', initial: true },
+	startDate: { type: Types.Date, label: 'start date', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { recurringEvent: false }, initial: true },
+	startTime: { type: Types.Text, label: 'start time', utc: true, dependsOn: { recurringEvent: false }, initial: true, validate: Validators.timeValidator },
+	endDate: { type: Types.Date, label: 'end date', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, utc: true, dependsOn: { recurringEvent: false }, initial: true },
+	endTime: { type: Types.Text, label: 'end time', initial: true, utc: true, dependsOn: { recurringEvent: false }, validate: Validators.timeValidator },
+	scheduleDescription: { type: Types.Textarea, label: 'schedule description', note: 'only use this field if this is a recurring event', utc: true, dependsOn: { recurringEvent: true }, initial: true },
 	description: { type: Types.Html, label: 'description', wysiwyg: true, initial: true }
 
 }, 'Access Restrictions', {
 
-	preventRegistration: { type: Types.Boolean, label: 'prevent registration', note: 'this will prevent registration for active fundraising events and adoption parties & information events', initial: true }
+	preventSiteVisitorRegistration: { type: Types.Boolean, label: 'prevent site visitor registration', initial: true },
+	preventFamilyRegistration: { type: Types.Boolean, label: 'prevent family registration', initial: true },
+	preventSocialWorkerRegistration: { type: Types.Boolean, label: 'prevent social worker registration', initial: true }
 
 }, 'Attendees', {
 
@@ -195,19 +201,17 @@ Event.schema.methods.trimTextFields = function() {
 Event.schema.methods.setUrl = function() {
 	'use strict';
 
-	let eventType;
+	let eventType =
+		this.type === 'Mare hosted events' ? 'mare-hosted-events'
+		: this.type === 'partner hosted events' ? 'partner-hosted-events'
+		: this.type === 'MAPP trainings' ? 'mapp-trainings'
+		: 'mare-hosted-events';
 
-	switch( this.type ) {
-		case 'MARE adoption parties & information events': eventType = 'adoption-parties'; break
-		case 'MAPP trainings': eventType = 'mapp-trainings'; break;
-    	case 'fundraising events': eventType = 'fundraising-events'; break;
-    	case 'agency information meetings': eventType = 'agency-info-meetings'; break;
-    	case 'other opportunities & trainings': eventType = 'other-trainings'; break;
-    	default: eventType = '';
-	}
-
-	// TODO: if !eventType.length, I should prevent the save
-	this.url = this.get( 'key' ) ? '/events/' + eventType + '/' + this.get( 'key' ) : undefined;
+	let eventKey = this.get( 'key' );
+	// Prevent a malformed url as the key will not be set on the first save
+	this.url = eventKey
+		? `/events/${ eventType }/${ eventKey }`
+		: undefined;
 };
 
 Event.schema.methods.setSourceField = function() {

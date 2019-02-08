@@ -1,28 +1,18 @@
 <div class="card card--vertical card--large-padding">
 
+	{{#ifeq category 'mare-hosted-events'}}
+		<h1 class="card__title">MARE Hosted Events</h1>
+		{{> events-adoption-party-info}}
+	{{/ifeq}}
+
+	{{#ifeq category 'partner-hosted-events'}}
+		<h1 class="card__title">Partner Hosted Events</h1>
+		{{> events-agency-info-meetings-info}}
+	{{/ifeq}}
+
 	{{#ifeq category 'mapp-trainings'}}
 		<h1 class="card__title">MAPP Training Events</h1>
 		{{> events-mapp-training-info}}
-	{{/ifeq}}
-	
-	{{#ifeq category 'adoption-parties'}}
-		<h1 class="card__title">MARE Adoption Parties &amp; Information Events</h1>
-		{{> events-adoption-party-info}}
-	{{/ifeq}}
-	
-	{{#ifeq category 'fundraising-events'}}
-		<h1 class="card__title">Fundraising Events</h1>
-		{{> events-fundraising-events-info}}
-	{{/ifeq}}
-	
-	{{#ifeq category 'agency-info-meetings'}}
-		<h1 class="card__title">Agency Information Meetings</h1>
-		{{> events-agency-info-meetings-info}}
-	{{/ifeq}}
-	
-	{{#ifeq category 'other-trainings'}}
-		<h1 class="card__title">Other Trainings</h1>
-		{{> events-other-trainings-info}}
 	{{/ifeq}}
 
 	{{#if canSubmitEvent}}
@@ -58,15 +48,6 @@
 				{{{ event.description }}}
 			</div>
 		</div>
-		
-		<section class="card__content-group">
-			<time class="events__time">{{ event.displayDateAndTime }}</time>
-			<address class="events__address">
-				{{ event.address.street1 }}<br>
-				{{#if events.address.street2}} {{ event.address.street2 }}<br> {{/if}}
-				{{#if events.address.city}} {{ event.address.city }},{{/if}} {{ event.address.state.state }} {{ event.address.zipCode }}
-			</address>
-		</section>
 		
 		<section class="card__content-group events__contact">
 			{{#if event.contact.name.full}}
@@ -150,15 +131,12 @@
 		{{/ifeq}}
 
 		{{#if canRegister}}
-		{{#unless event.preventRegistration}}
 		{{#unless user}}
 		<hr class="card__content-divider"></hr>
 		<label for="register-with-mare-button" class="button-group__label">In order to register for events, you first need to log in or create an account.</label>
 		{{/unless}}
-		{{/unless}}
 		{{/if}}
 		<section class="button-group button-group--horizontal button-group--space-around button-group--large-margin-above button-group--small-margin-below">
-			{{#unless event.preventRegistration}}
 			{{#if canRegister}}
 			{{#if user}}
 			{{!-- TODO: this handling of unregistering through forms was only done for consistency in flash messaging and NEEDS to be reworked --}}
@@ -175,7 +153,6 @@
 			<button id="register-with-mare-button" class="button button--large button--teal events__navigation-button" data-url="/register">Create an account</button>
 			{{/if}}
 			{{/if}}
-			{{/unless}}
 		</section>
 
 	</div>

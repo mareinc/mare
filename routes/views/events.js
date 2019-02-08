@@ -22,21 +22,17 @@ exports = module.exports = ( req, res ) => {
 	const eventGroup = eventService.getEventGroup( userType );
 
 	switch( category ) {
-		case 'adoption-parties'			: eventType = 'MARE adoption parties & information events'; break;
 		case 'mapp-trainings'			: eventType = 'MAPP trainings'; break;
-		case 'fundraising-events'		: eventType = 'fundraising events'; break;
-		case 'agency-info-meetings'		: eventType = 'agency information meetings'; break;
-		case 'other-trainings'			: eventType = 'other opportunities & trainings'; break;
+		case 'mare-hosted-events'		: eventType = 'Mare hosted events'; break;
+		case 'partner-hosted-events'	: eventType = 'partner hosted events'; break;
 	}
 
-	// track whether it is an event users can register for through the site
-	// admin can't register, and everyone else can only register for select types of events
-	locals.canRegister = userType !== 'admin' &&
-						 [ 'fundraising events', 'MARE adoption parties & information events' ].includes( eventType );
+	// create a map to determine which events the user can register for
+	locals.canRegister = {};
 
 	// only social workers can submit events, and only for specific types of events
-	locals.canSubmitEvent = userType === 'social worker' &&
-							[ 'MAPP trainings', 'agency information meetings', 'other opportunities & trainings' ].includes( eventType );
+	locals.canSubmitEvent = userType === 'social worker'
+		&& [ 'MAPP trainings', 'partner hosted events' ].includes( eventType );
 
 	// store on locals for access during templating
 	locals.category = category;
@@ -59,6 +55,19 @@ exports = module.exports = ( req, res ) => {
 
 			// loop through all the events
 			for( let event of events ) {
+				// check to see if registration is blocked for the user's type in the event model
+				const isRegistrationBlocked =
+					userType === 'site visitor' ? !!event.preventSiteVisitorRegistration
+					: userType === 'family' ? !!event.preventFamilyRegistration
+					: userType === 'social worker' ? !!event.preventSocialWorkerRegistration
+					: false;
+
+				// track whether it is an event users can register for through the site
+				// admin can't register, and everyone else can only register for select types of events if registration isn't blocked in the event model
+				event.canRegister = userType !== 'admin'
+					&& eventType === 'MARE hosted events'
+					&& !isRegistrationBlocked;
+
 				// the list page needs truncated details information to keep the cards they're displayed on small
 				event.shortContent = Utils.truncateText( { text: event.description, options: truncateOptions } );
 				// determine whether or not address information exists for the event, which is helpful during rendering

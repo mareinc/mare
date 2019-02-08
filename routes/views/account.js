@@ -37,7 +37,7 @@ exports = module.exports = ( req, res ) => {
 		fetchRaces					= listsService.getAllRaces( raceOptions ),
 		fetchStates					= listsService.getAllStates( stateOptions ),
 		fetchChildTypes				= listsService.getChildTypesForWebsite(),
-		fetchMailingLists			= mailingListService.getRegistrationMailingLists()
+		fetchMailingLists			= mailingListService.getMailingListsByUserType( userType )
 	;
 
 	// check to see if the Children tab should be rendered

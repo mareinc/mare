@@ -1,14 +1,8 @@
-<div id="slideshow" class="owl-carousel">
+<!-- TODO: REMOVE SLIDESHOW ID AND CHANGE RELATED CSS -->
+<div id="slideshow" class="owl-carousel owl-theme owl-loaded">
 	{{#each slides}}
-	<div class="item">
-		{{#if hasImage}}
-		<img class="lazyOwl" data-src="{{ image.secure_url }}" alt="{{ heading }}">
-		{{/if}}
-		<span class="slideshow__description hidden">
-			<div class="slideshow__header">{{ heading }}</div>
-			<div class="slideshow__tagline">{{ subHeading }}</div>
-			<div class="slideshow__learn-more">{{ guideLabel }}</div>
-		</span>
-	</div>
+	{{#if hasImage}}
+	<img class="owl-lazy" data-src="{{ image.secure_url }}" alt="{{ heading }}">
+	{{/if}}
 	{{/each}}
 </div>
