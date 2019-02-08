@@ -14,10 +14,21 @@ module.exports.fixEvents = async ( req, res, next ) => {
 			To allow execution, open fix_family.js and comment out the if block in fixFamilies()` );
   }
   
-  keystone.list( 'Event' )
+  keystone.list( 'Event' ).model
     .find()
     .exec()
     .then( async events => {
+
+      let types = events.map( event => {
+        return event.type;
+      });
+
+      let typesSet = new Set( types );
+
+      for( let type of typesSet.values() ) {
+        console.log( type );
+      }
+
       // loop through each event
       for( let event of events ) {
         // assume no update is needed
@@ -34,12 +45,18 @@ module.exports.fixEvents = async ( req, res, next ) => {
         }
         // if changes were made, save the event with the updated type and pause the loop using async/await
         if( updateNeeded ) {
-          await event.save( err => {
-            // log an error if the model couldn't be saved
-            if ( err ) {
-              console.error( `error updating event ${ event.get( 'name' ) } -  ${ err }` );
-            }
-          });
+          
+          try {
+            await event.save( ( err, savedEvent ) => {
+              // log an error if the model couldn't be saved
+              if ( err ) {
+                throw new Error( `error updating event ${ event.get( 'name' ) } -  ${ err }` );
+              }
+            });
+          }
+          catch( err ) {
+            console.log( err );
+          }
         }
       }     
     }, err => {
