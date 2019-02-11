@@ -27,9 +27,6 @@ exports = module.exports = ( req, res ) => {
 		case 'partner-hosted-events'	: eventType = 'partner hosted events'; break;
 	}
 
-	// create a map to determine which events the user can register for
-	locals.canRegister = {};
-
 	// only social workers can submit events, and only for specific types of events
 	locals.canSubmitEvent = userType === 'social worker'
 		&& [ 'MAPP trainings', 'partner hosted events' ].includes( eventType );
