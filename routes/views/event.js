@@ -57,10 +57,12 @@ exports = module.exports = ( req, res ) => {
 
 			// only social workers can submit events, and only for specific types of events
 			locals.canSubmitEvent = userType === 'social worker'
-				&& [ 'MAPP trainings', 'partner hosted events' ].includes( eventType );
+				&& eventType !== 'MARE hosted events';
 
 			// check to see if the event spans multiple days
-			const multidayEvent = event.startDate.getTime() !== event.endDate.getTime();
+			const multidayEvent = event.startDate
+				&& event.endDate
+				&& event.startDate.getTime() !== event.endDate.getTime();
 
 			const startDate = moment( event.startDate ).utc().format( 'dddd MMMM Do, YYYY' ),
 				  endDate	= moment( event.endDate ).utc().format( 'dddd MMMM Do, YYYY' );

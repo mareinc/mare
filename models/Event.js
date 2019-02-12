@@ -14,7 +14,8 @@ var Event = new keystone.List('Event', {
 // create fields
 Event.add( 'General Information', {
 
-	name: { type: Types.Text, label: 'event name', required: true, initial: true },
+	name: { type: Types.Text, label: 'event name', note: 'this is a unique name for internal use', required: true, initial: true },
+	displayName: { type: Types.Text, label: 'display name', note: 'this is the name that will appear on the website', required: true, initial: true },
 	url: { type: Types.Url, label: 'url', noedit: true },
 	isActive: { type: Types.Boolean, label: 'is event active?', initial: true },
 	shouldCreateSource: { type: Types.Boolean, label: 'create source from this event', initial: true },
@@ -42,13 +43,14 @@ Event.add( 'General Information', {
 		street2: { type: Types.Text, label: 'street 2', initial: true },
 		city: { type: Types.Text, label: 'city', initial: true },
 		state: { type: Types.Relationship, label: 'state', ref: 'State', initial: true },
-		zipCode: { type: Types.Text, label: 'zip code', initial: true, validate: Validators.zipValidator }
+		zipCode: { type: Types.Text, label: 'zip code', initial: true, validate: Validators.zipValidator },
+		region: { type: Types.Relationship, label: 'region', ref: 'Region' }
 	},
 
-	contact: { type: Types.Relationship, label: 'social worker contact', ref: 'Admin', initial: true },
-	contactEmail: { type: Types.Email, label: 'social worker contact email', note: 'only fill out if no social worker contact is selected', initial: true },
-	familyContact: { type: Types.Relationship, label: 'family contact', ref: 'Admin', initial: true },
-	familyContactEmail: { type: Types.Email, label: 'family contact email', note: 'only fill out if no family contact is selected', initial: true },
+	contact: { type: Types.Relationship, label: 'gen./SW contact', ref: 'Admin', initial: true },
+	contactEmail: { type: Types.Email, label: 'gen./SW contact email', note: 'only fill out if no gen./SW contact is selected', initial: true },
+	familyContact: { type: Types.Relationship, label: 'family reg. contact', ref: 'Admin', initial: true },
+	familyContactEmail: { type: Types.Email, label: 'family reg. contact email', note: 'only fill out if no family reg. contact is selected', initial: true },
 
 }, 'Details', {
 
@@ -77,7 +79,7 @@ Event.add( 'General Information', {
 
 }, 'Notes', {
 
-	notes: { type: Types.Text, label: 'notes', initial: true }
+	notes: { type: Types.Textarea, label: 'notes', initial: true }
 
 }, 'Creation Details', {
 	// this is used to determine whether we should send an automatic email to the creator when their event becomes active
@@ -127,7 +129,8 @@ Event.schema.pre( 'save', function( next ) {
 
 	this.setUrl();
 
-	let setSourceField = this.setSourceField();
+	// attempt to update the no-edit source field
+	const setSourceField = this.setSourceField();
 
 	setSourceField.then( sourceId => {
 

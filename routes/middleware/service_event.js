@@ -80,6 +80,7 @@ exports.getActiveEventsByEventType = ( eventType, eventGroup ) => {
 			.where( 'isActive', true ) // we don't want to show inactive events
 			.populate( eventGroup )
 			.populate( 'address.state' )
+			.populate( 'address.region' )
 			.lean()
 			.exec()
 			.then( events => {
@@ -279,6 +280,7 @@ exports.createEvent = event => {
 		const newEvent = new Event.model({
 
 			name: event.name,
+			displayName: event.name,
 			type: event.eventType,
 			address: {
 				street1: event.street1,

@@ -2,12 +2,12 @@
 
 	{{#ifeq category 'mare-hosted-events'}}
 		<h1 class="card__title">MARE Hosted Events</h1>
-		{{> events-adoption-party-info}}
+		{{> events-mare-hosted-events}}
 	{{/ifeq}}
 
 	{{#ifeq category 'partner-hosted-events'}}
 		<h1 class="card__title">Partner Hosted Events</h1>
-		{{> events-agency-info-meetings-info}}
+		{{> events-partner-hosted-events}}
 	{{/ifeq}}
 
 	{{#ifeq category 'mapp-trainings'}}
@@ -41,7 +41,7 @@
 
 	<div class="card card--vertical card--medium-padding event" data-event-name="{{ event.name }}" data-event-date="{{ event.displayDate }}" data-event-id="{{ event._id }}">
 		
-		<h2 class="card__title">{{ event.name }}</h2>
+		<h2 class="card__title">{{ event.displayName }}</h2>
 		
 		<div class="card__content">
 			<div class="events__event-description">

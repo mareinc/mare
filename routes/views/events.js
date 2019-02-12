@@ -8,10 +8,16 @@ const keystone 				= require( 'keystone' ),
 exports = module.exports = ( req, res ) => {
 	'use strict';
 
-	const view		= new keystone.View( req, res ),
-		  locals	= res.locals,
-		  userId	= req.user ? req.user.get( '_id' ) : undefined,
-		  userType	= req.user ? req.user.get( 'userType' ) : undefined; // knowing the type of user visiting the page will allow us to display extra relevant information
+	const view = new keystone.View( req, res ),
+		  locals = res.locals,
+		  user = req.user,
+		  userId = user ? user.get( '_id' ) : undefined,
+		  userType = user ? user.get( 'userType' ) : undefined, // knowing the type of user visiting the page will allow us to display extra relevant information
+		  userRegion = user ? user.get( 'address.region' ) : undefined, // knowing the user's region will allow us to display events around them first
+		  MAREHostedEvents = [], // for MARE hosted events only
+		  eventsWithNoRegion = [], // for non-MARE hosted events, events with no region information will be placed under a 'no region' header
+		  eventsInUsersRegion = [], // for non-MARE hosted events, events in the user's region will be displayed first
+		  eventsOutsideUsersRegion = []; // for non-MARE hosted events, events are displayed with headers, this lets us organize events by region
 	// extract request object parameters into local constants
 	const { category } = req.params;
 
@@ -29,7 +35,7 @@ exports = module.exports = ( req, res ) => {
 
 	// only social workers can submit events, and only for specific types of events
 	locals.canSubmitEvent = userType === 'social worker'
-		&& [ 'MAPP trainings', 'partner hosted events' ].includes( eventType );
+		&& eventType !== 'Mare hosted events';
 
 	// store on locals for access during templating
 	locals.category = category;
@@ -48,10 +54,12 @@ exports = module.exports = ( req, res ) => {
 			const [ randomSuccessStory, randomEvent ] = sidebarItems;
 
 			// options to define how truncation will be handled
-			const truncateOptions = { targetLength: 400 }
+			const truncateOptions = { targetLength: 400 };
 
 			// loop through all the events
 			for( let event of events ) {
+				// cache the event region
+				const eventRegion = event.address.region ? event.address.region.region : undefined;
 				// check to see if registration is blocked for the user's type in the event model
 				const isRegistrationBlocked =
 					userType === 'site visitor' ? !!event.preventSiteVisitorRegistration
@@ -72,12 +80,12 @@ exports = module.exports = ( req, res ) => {
 				event.hasAddress = event.address && event.address.street1;
 
 				// if the user is logged in and the event has attendees of the user's type
-				if( req.user && event[ eventGroup ] ) {
+				if( user && event[ eventGroup ] ) {
 					// loop through each of the attendees in the group that matches the user's type
 					for( let attendee of event[ eventGroup ] ) {
 						// without converting to strings, these were both evaluating to Object which didn't allow for a clean comparison
 						const attendeeId	= attendee._id.toString(),
-							  userId		= req.user._id.toString();
+							  userId		= user._id.toString();
 
 						// determine whether the user has already attended the event
 						event.attended = attendeeId === userId;
@@ -85,24 +93,95 @@ exports = module.exports = ( req, res ) => {
 				}
 
 				// check to see if the event spans multiple days
-				const multidayEvent = event.startDate.getTime() !== event.endDate.getTime();
+				const multidayEvent = event.startDate
+					&& event.endDate
+					&& event.startDate.getTime() !== event.endDate.getTime();
 
 				const startDate	= moment( event.startDate ).utc().format( 'dddd MMMM Do, YYYY' ),
 					  endDate	= moment( event.endDate ).utc().format( 'dddd MMMM Do, YYYY' );
 				
 				// pull the date and into a string for easier templating
 				event.displayDate = multidayEvent ? `${ startDate } to ${ endDate }` : startDate;
+
+				// MARE hosted events don't need region headers, so they can all be stored in a single array
+				if( eventType === 'Mare hosted events' ) {
+					// add the events to the MARE hosted events array
+					MAREHostedEvents.push( event );
+				// MAPP trainings and partner hosted events need region headers, so we must divide them into separate arrays for templating
+				} else {
+					// if the event doesn't have a region specified, add it to the array for events with no region
+					if( !eventRegion ) {
+						eventsWithNoRegion.push( event );
+					// if the event is in the user's region, add it to the events array for the user's region
+					} else if( eventRegion === userRegion ) {
+						eventsInUsersRegion.push( event );
+					// if the event is not in the user's region, add it to the events map for that region
+					} else {
+						// loop through the events not in the user's region and capture the object for a region's events if one exists
+						let targetEventGroup = eventsOutsideUsersRegion.find( eventGroup => {
+							return eventGroup.region === eventRegion;
+						});
+						// if an object for a region's events was found that matches the event's region, add the event to its array
+						if( targetEventGroup ) {
+							targetEventGroup.events.push( event );
+						// if no object for a region's events was found that matches the event's region, create it
+						} else {
+							let targetEventGroup = { region: eventRegion, events: [ event ] };
+							eventsOutsideUsersRegion.push( targetEventGroup );
+						}
+					}
+				}
 			};
 
+			let MAREHostedEventsExist			= MAREHostedEvents.length > 0;
+			let eventsWithNoRegionExist			= eventsWithNoRegion.length > 0;
+			let eventsInUsersRegionExist		= eventsInUsersRegion.length > 0;
+			let eventsOutsideUsersRegionExist	= eventsOutsideUsersRegion.length > 0;
+
+			// sort events in reverse-chronological order if they exist
+			if( MAREHostedEventsExist ) {
+				MAREHostedEvents.sort( ( a, b ) => {
+					return a.date - b.date;
+				});
+			}
+			// sort events that don't have the region field filled out in reverse-chronological order if they exist
+			if( eventsWithNoRegionExist ) {
+				eventsWithNoRegion.sort( ( a, b ) => {
+					return a.date - b.date;
+				});
+			}
+			// sort events in the user's region in reverse-chronological order if they exist
+			if( eventsInUsersRegionExist ) {
+				eventsInUsersRegion.sort( ( a, b ) => {
+					return a.date - b.date;
+				});
+			}
+			// sort each group of events outside the user's region in reverse-chronological order if they exist
+			if( eventsOutsideUsersRegionExist ) {
+				for( let eventGroup of eventsOutsideUsersRegion ) {
+					eventGroup.events.sort( ( a, b ) => {
+						return a.date - b.date;
+					});
+				}
+			}
+
 			// assign properties to locals for access during templating
-			locals.events				= events;
-			locals.hasNoEvents			= events.length === 0;
-			locals.randomSuccessStory	= randomSuccessStory;
-			locals.randomEvent			= randomEvent;
-			locals.displayName			= req.user ? req.user.displayName : '';
-			locals.hasChildren			= registeredChildren.length > 0;
-			locals.registeredChildren	= registeredChildren;
-			locals.redirectPath			= req.url;
+			locals.userRegion						= userRegion;
+			locals.MAREHostedEvents					= MAREHostedEvents; // only populated for MARE hosted events
+			locals.eventsWithNoRegion				= eventsWithNoRegion; // only populated for non-MARE hosted events
+			locals.eventsInUsersRegion				= eventsInUsersRegion; // only populated for non-MARE hosted events
+			locals.eventsOutsideUsersRegion			= eventsOutsideUsersRegion; // only populated for non-MARE hosted events
+			locals.MAREHostedEventsExist			= MAREHostedEventsExist;
+			locals.eventsWithNoRegionExist			= eventsWithNoRegionExist;
+			locals.eventsInUsersRegionExist			= eventsInUsersRegionExist;
+			locals.eventsOutsideUsersRegionExist	= eventsOutsideUsersRegionExist;
+			locals.hasNoEvents						= events.length === 0;
+			locals.randomSuccessStory				= randomSuccessStory;
+			locals.randomEvent						= randomEvent;
+			locals.displayName						= user ? user.displayName : '';
+			locals.hasChildren						= registeredChildren.length > 0;
+			locals.registeredChildren				= registeredChildren;
+			locals.redirectPath						= req.url;
 
 			// set the layout to render with the right sidebar
 			locals[ 'render-with-sidebar' ] = true;
