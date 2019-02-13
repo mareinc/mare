@@ -187,6 +187,13 @@
 	}
 }
 
+.card-details__paragraph-text {
+
+	&--bold {
+		font-weight: 600;
+	}
+}
+
 .card__subheading {
 	display: flex;	
 	width: 75%;
