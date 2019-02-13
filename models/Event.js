@@ -54,7 +54,7 @@ Event.add( 'General Information', {
 
 }, 'Details', {
 
-	recurringEvent: { type: Types.Boolean, label: 'recurring event', initial: true },
+	isRecurringEvent: { type: Types.Boolean, label: 'recurring event', initial: true },
 	startDate: { type: Types.Date, label: 'start date', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { recurringEvent: false }, initial: true },
 	startTime: { type: Types.Text, label: 'start time', utc: true, dependsOn: { recurringEvent: false }, initial: true, validate: Validators.timeValidator },
 	endDate: { type: Types.Date, label: 'end date', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, utc: true, dependsOn: { recurringEvent: false }, initial: true },
