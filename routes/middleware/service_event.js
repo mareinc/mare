@@ -179,7 +179,7 @@ exports.getRandomEvent = () => {
 		keystone.list( 'Event' )
 			.model
 			.findRandom({
-				type: { $in: [ 'MARE adoption parties & information events', 'fundraising events' ] },
+				type: 'Mare hosted events',
 				isActive: true
 			}, ( err, event ) => {
 				// if there was an error
