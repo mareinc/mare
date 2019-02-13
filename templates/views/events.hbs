@@ -48,22 +48,24 @@
 		<h2 class="card__title event-title">{{ displayName }}</h2>
 		<div class="card__content">
 			<section class="card__content-group">
-				{{#if startDate}}
+				{{#if isRecurringEvent}}
+				<span class="card__overview">
+					<i class="fa fa-2x fa-calendar-o card__overview-icon" aria-hidden="true"></i>
+					<span class="card__overview-text">{{ scheduleDescription }}</span>
+				</span>
+				{{else if startDate}}
 				<span class="card__overview">
 					<i class="fa fa-2x fa-calendar-o card__overview-icon" aria-hidden="true"></i>
 					<span class="card__overview-text">{{ displayDate }}</span>
 				</span>
-				{{/if}}
-				{{#if isRecurringEvent}}
-				<span class="card__overview">
-					<i class="fa fa-2x fa-clock-o card__overview-icon" aria-hidden="true"></i>
-					<span class="card__overview-text">{{ scheduleDescription }}</span>
-				</span>			
-				{{else if startTime}}
+				{{/if}}		
+				{{#if startTime}}
+				{{#unless isRecurringEvent}}
 				<span class="card__overview">
 					<i class="fa fa-2x fa-clock-o card__overview-icon" aria-hidden="true"></i>
 					<span class="card__overview-text">{{ startTime }} - {{ endTime }}</span>
 				</span>
+				{{/unless}}
 				{{/if}}
 				{{#if address}}
 				<span class="card__overview">
@@ -116,22 +118,24 @@
 		<h2 class="card__title event-title">{{ displayName }}</h2>
 		<div class="card__content">
 			<section class="card__content-group">
-				{{#if startDate}}
+				{{#if isRecurringEvent}}
+				<span class="card__overview">
+					<i class="fa fa-2x fa-calendar-o card__overview-icon" aria-hidden="true"></i>
+					<span class="card__overview-text">{{ scheduleDescription }}</span>
+				</span>
+				{{else if startDate}}
 				<span class="card__overview">
 					<i class="fa fa-2x fa-calendar-o card__overview-icon" aria-hidden="true"></i>
 					<span class="card__overview-text">{{ displayDate }}</span>
 				</span>
-				{{/if}}
-				{{#if isRecurringEvent}}
-				<span class="card__overview">
-					<i class="fa fa-2x fa-clock-o card__overview-icon" aria-hidden="true"></i>
-					<span class="card__overview-text">{{ scheduleDescription }}</span>
-				</span>			
-				{{else if startTime}}
+				{{/if}}		
+				{{#if startTime}}
+				{{#unless isRecurringEvent}}
 				<span class="card__overview">
 					<i class="fa fa-2x fa-clock-o card__overview-icon" aria-hidden="true"></i>
 					<span class="card__overview-text">{{ startTime }} - {{ endTime }}</span>
 				</span>
+				{{/unless}}
 				{{/if}}
 				{{#if address}}
 				<span class="card__overview">
@@ -182,22 +186,24 @@
 		<h2 class="card__title event-title">{{ displayName }}</h2>
 		<div class="card__content">
 			<section class="card__content-group">
-				{{#if startDate}}
+				{{#if isRecurringEvent}}
+				<span class="card__overview">
+					<i class="fa fa-2x fa-calendar-o card__overview-icon" aria-hidden="true"></i>
+					<span class="card__overview-text">{{ scheduleDescription }}</span>
+				</span>
+				{{else if startDate}}
 				<span class="card__overview">
 					<i class="fa fa-2x fa-calendar-o card__overview-icon" aria-hidden="true"></i>
 					<span class="card__overview-text">{{ displayDate }}</span>
 				</span>
-				{{/if}}
-				{{#if isRecurringEvent}}
-				<span class="card__overview">
-					<i class="fa fa-2x fa-clock-o card__overview-icon" aria-hidden="true"></i>
-					<span class="card__overview-text">{{ scheduleDescription }}</span>
-				</span>			
-				{{else if startTime}}
+				{{/if}}		
+				{{#if startTime}}
+				{{#unless isRecurringEvent}}
 				<span class="card__overview">
 					<i class="fa fa-2x fa-clock-o card__overview-icon" aria-hidden="true"></i>
 					<span class="card__overview-text">{{ startTime }} - {{ endTime }}</span>
 				</span>
+				{{/unless}}
 				{{/if}}
 				{{#if address}}
 				<span class="card__overview">
@@ -247,22 +253,24 @@
 		<h2 class="card__title event-title">{{ displayName }}</h2>
 		<div class="card__content">
 			<section class="card__content-group">
-				{{#if startDate}}
+				{{#if isRecurringEvent}}
+				<span class="card__overview">
+					<i class="fa fa-2x fa-calendar-o card__overview-icon" aria-hidden="true"></i>
+					<span class="card__overview-text">{{ scheduleDescription }}</span>
+				</span>
+				{{else if startDate}}
 				<span class="card__overview">
 					<i class="fa fa-2x fa-calendar-o card__overview-icon" aria-hidden="true"></i>
 					<span class="card__overview-text">{{ displayDate }}</span>
 				</span>
-				{{/if}}
-				{{#if isRecurringEvent}}
-				<span class="card__overview">
-					<i class="fa fa-2x fa-clock-o card__overview-icon" aria-hidden="true"></i>
-					<span class="card__overview-text">{{ scheduleDescription }}</span>
-				</span>			
-				{{else if startTime}}
+				{{/if}}		
+				{{#if startTime}}
+				{{#unless isRecurringEvent}}
 				<span class="card__overview">
 					<i class="fa fa-2x fa-clock-o card__overview-icon" aria-hidden="true"></i>
 					<span class="card__overview-text">{{ startTime }} - {{ endTime }}</span>
 				</span>
+				{{/unless}}
 				{{/if}}
 				{{#if address}}
 				<span class="card__overview">
