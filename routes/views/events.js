@@ -156,21 +156,33 @@ exports = module.exports = async ( req, res ) => {
 			if( MAREHostedEventsExist ) {
 				// sort the events in reverse-chonological order
 				MAREHostedEvents.sort( ( a, b ) => {
-					return a.date - b.date;
+					// recurring events must show above all other events, so we give them a date closest to the current date/time to ensure this
+					let aDate = a.isRecurringEvent ? new Date() : a.startDate;
+					let bDate = b.isRecurringEvent ? new Date() : b.startDate;
+
+					return aDate - bDate;
 				});
 			}
 			// if events exist outside the user's region
 			if( eventsWithNoRegionExist ) {
 				// sort the events in reverse-chonological order
 				eventsWithNoRegion.sort( ( a, b ) => {
-					return a.date - b.date;
+					// recurring events must show above all other events, so we give them a date closest to the current date/time to ensure this
+					let aDate = a.isRecurringEvent ? new Date() : a.startDate;
+					let bDate = b.isRecurringEvent ? new Date() : b.startDate;
+					
+					return aDate - bDate;
 				});
 			}
 			// if events exist in the user's region
 			if( eventsInUsersRegionExist ) {
 				// sort the events in reverse-chonological order
 				eventsInUsersRegion.sort( ( a, b ) => {
-					return a.date - b.date;
+					// recurring events must show above all other events, so we give them a date closest to the current date/time to ensure this
+					let aDate = a.isRecurringEvent ? new Date() : a.startDate;
+					let bDate = b.isRecurringEvent ? new Date() : b.startDate;
+					
+					return aDate - bDate;
 				});
 			}
 			// if events outside the user's region exist
@@ -183,7 +195,11 @@ exports = module.exports = async ( req, res ) => {
 				for( let eventGroup of eventsOutsideUsersRegion ) {
 					// sort each group's events in reverse-chonological order
 					eventGroup.events.sort( ( a, b ) => {
-						return a.date - b.date;
+						// recurring events must show above all other events, so we give them a date closest to the current date/time to ensure this
+						let aDate = a.isRecurringEvent ? new Date() : a.startDate;
+						let bDate = b.isRecurringEvent ? new Date() : b.startDate;
+						
+						return aDate - bDate;
 					});
 				}
 			}
