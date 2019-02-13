@@ -19,7 +19,7 @@ exports.updateUser = ( req, res, next ) => {
 	const model = userService.getTargetModel( userType );
 
 	// fetch the users record using the id parameter passed in with the request
-	let fetchUser = userService.getUserByIdNew( userId, model );
+	let fetchUser = userService.getUserByIdNew( { id: userId, targetModel: model } );
 
 	// once we've fetched the user model
 	fetchUser.then( user => {

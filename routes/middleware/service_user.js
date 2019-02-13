@@ -142,9 +142,17 @@ exports.getUserByFullName = ( name, userType ) => {
 };
 
 /* IMPORTANT NOTE: The function below is a copy of one above that's bound to async.  Merge them once async is removed */
-exports.getUserByIdNew = ( id, targetModel, fieldsToPopulate = [] ) => {
+// TODO: targetModel should be a string, not a Keystone model (change in call locations)
+// TODO: rejecting the promise might cause downstream problems in the places this function is called (until they're switched to async/await)
+exports.getUserByIdNew = ( { id, targetModel, fieldsToPopulate = [] } ) => {
 
 	return new Promise( ( resolve, reject ) => {
+		// stop execution if required information is missing
+		if( !id ) {
+			return reject( `error fetching user by id - no id passed in` );
+		} else if( !targetModel ) {
+			return reject( `error fetching user by id - no target model passed in` );
+		}
 		// fetch the record from the specified model type using the passed in id value
 		targetModel.model
 			.findById( id )

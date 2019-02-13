@@ -3,21 +3,36 @@ const keystone 				= require( 'keystone' ),
 	  Utils					= require( '../middleware/utilities' ),
 	  eventService			= require( '../middleware/service_event' ),
 	  pageService			= require( '../middleware/service_page' ),
-	  socialWorkerService	= require( '../middleware/service_social-worker' );
+	  socialWorkerService	= require( '../middleware/service_social-worker' ),
+	  userService			= require( '../middleware/service_user' );
 
-exports = module.exports = ( req, res ) => {
+exports = module.exports = async ( req, res ) => {
 	'use strict';
 
 	const view = new keystone.View( req, res ),
 		  locals = res.locals,
-		  user = req.user,
-		  userId = user ? user.get( '_id' ) : undefined,
-		  userType = user ? user.get( 'userType' ) : undefined, // knowing the type of user visiting the page will allow us to display extra relevant information
-		  userRegion = user ? user.get( 'address.region' ) : undefined, // knowing the user's region will allow us to display events around them first
+		  userId = req.user ? req.user.get( '_id' ) : undefined,
+		  userType = req.user ? req.user.get( 'userType' ) : undefined, // knowing the type of user visiting the page will allow us to display extra relevant information
 		  MAREHostedEvents = [], // for MARE hosted events only
 		  eventsWithNoRegion = [], // for non-MARE hosted events, events with no region information will be placed under a 'no region' header
 		  eventsInUsersRegion = [], // for non-MARE hosted events, events in the user's region will be displayed first
 		  eventsOutsideUsersRegion = []; // for non-MARE hosted events, events are displayed with headers, this lets us organize events by region
+	
+	let user,
+		userRegion;
+
+	if( req.user ) {
+		// fetch the target model to allow us to find the correct user from their user type pool
+		const targetModel = await userService.getTargetModel( userType );
+		// specify which relationship fields we want to populate when we fetch the user model
+		const fieldsToPopulate = [ 'address.region' ];
+		// the user object can't just be pulled from req.user because we need to populate the region Relationship field	
+		user = await userService.getUserByIdNew( { id: userId, targetModel, fieldsToPopulate } );
+		// knowing the user's region will allow us to display events around them first
+		userRegion = user.address.region.region;
+		  
+	}
+
 	// extract request object parameters into local constants
 	const { category } = req.params;
 
@@ -138,27 +153,36 @@ exports = module.exports = ( req, res ) => {
 			let eventsInUsersRegionExist		= eventsInUsersRegion.length > 0;
 			let eventsOutsideUsersRegionExist	= eventsOutsideUsersRegion.length > 0;
 
-			// sort events in reverse-chronological order if they exist
+			// if MARE hosted events exist
 			if( MAREHostedEventsExist ) {
+				// sort the events in reverse-chonological order
 				MAREHostedEvents.sort( ( a, b ) => {
 					return a.date - b.date;
 				});
 			}
-			// sort events that don't have the region field filled out in reverse-chronological order if they exist
+			// if events exist outside the user's region
 			if( eventsWithNoRegionExist ) {
+				// sort the events in reverse-chonological order
 				eventsWithNoRegion.sort( ( a, b ) => {
 					return a.date - b.date;
 				});
 			}
-			// sort events in the user's region in reverse-chronological order if they exist
+			// if events exist in the user's region
 			if( eventsInUsersRegionExist ) {
+				// sort the events in reverse-chonological order
 				eventsInUsersRegion.sort( ( a, b ) => {
 					return a.date - b.date;
 				});
 			}
-			// sort each group of events outside the user's region in reverse-chronological order if they exist
+			// if events outside the user's region exist
 			if( eventsOutsideUsersRegionExist ) {
+				// sort each event group alphabetically by region
+				eventsOutsideUsersRegion.sort( (a, b ) => {
+					return a.region > b.region;
+				});
+				// loop through each group of events (each group is for a single region)
 				for( let eventGroup of eventsOutsideUsersRegion ) {
+					// sort each group's events in reverse-chonological order
 					eventGroup.events.sort( ( a, b ) => {
 						return a.date - b.date;
 					});
