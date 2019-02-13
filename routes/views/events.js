@@ -29,8 +29,7 @@ exports = module.exports = async ( req, res ) => {
 		// the user object can't just be pulled from req.user because we need to populate the region Relationship field	
 		user = await userService.getUserByIdNew( { id: userId, targetModel, fieldsToPopulate } );
 		// knowing the user's region will allow us to display events around them first
-		userRegion = user.address.region.region;
-		  
+		userRegion = user.address.region ? user.address.region.region : undefined;	  
 	}
 
 	// extract request object parameters into local constants
