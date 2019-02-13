@@ -55,11 +55,11 @@ Event.add( 'General Information', {
 }, 'Details', {
 
 	isRecurringEvent: { type: Types.Boolean, label: 'recurring event', initial: true },
-	startDate: { type: Types.Date, label: 'start date', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { recurringEvent: false }, initial: true },
-	startTime: { type: Types.Text, label: 'start time', utc: true, dependsOn: { recurringEvent: false }, initial: true, validate: Validators.timeValidator },
-	endDate: { type: Types.Date, label: 'end date', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, utc: true, dependsOn: { recurringEvent: false }, initial: true },
-	endTime: { type: Types.Text, label: 'end time', initial: true, utc: true, dependsOn: { recurringEvent: false }, validate: Validators.timeValidator },
-	scheduleDescription: { type: Types.Textarea, label: 'schedule description', note: 'only use this field if this is a recurring event', utc: true, dependsOn: { recurringEvent: true }, initial: true },
+	startDate: { type: Types.Date, label: 'start date', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { isRecurringEvent: false }, initial: true },
+	startTime: { type: Types.Text, label: 'start time', utc: true, dependsOn: { isRecurringEvent: false }, initial: true, validate: Validators.timeValidator },
+	endDate: { type: Types.Date, label: 'end date', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, utc: true, dependsOn: { isRecurringEvent: false }, initial: true },
+	endTime: { type: Types.Text, label: 'end time', initial: true, utc: true, dependsOn: { isRecurringEvent: false }, validate: Validators.timeValidator },
+	scheduleDescription: { type: Types.Textarea, label: 'schedule description', note: 'only use this field if this is a recurring event', utc: true, dependsOn: { isRecurringEvent: true }, initial: true },
 	description: { type: Types.Html, label: 'description', wysiwyg: true, initial: true }
 
 }, 'Access Restrictions', {
