@@ -6,14 +6,54 @@
 	margin-top: 1em;
 }
 
+.card-list__collapsible-trigger-container {
+	display: flex;
+	cursor: pointer;
+}
+
+.card-list__collapsible-trigger-indicator {
+	position: absolute;
+	top: 0.6em;
+	right: 0.5em;
+	font-size: 1.5em;
+  font-weight: 400;
+	color: #000; /* this is a fallback for touch-enabled devices */
+	
+	/* for non-touch-enabled devices, hide the indicator and add a transform for toggling it */
+	.no-touch & {
+		color: transparent;
+		transform: translateX( 0.5em );
+		transition: all 0.1s ease-in-out;
+	}
+
+	&--visible {
+		/* for non-touch-enabled devices, set up the visible state of the indicator */
+		.no-touch & {
+			color: #000;
+			transform: translateX( 0 );
+		}
+	}
+}
+
+.card-list__collapsible-content {
+
+	overflow: hidden;
+	height: 0;
+
+	&--expanded {
+		height: auto;
+	}
+}
+
 .card-group {
 	display: flex;
 	flex-wrap: wrap;
 }
 
 .card {
-	border: none;
 	display: flex;
+	width: 100%;
+	border: none;
 	background-color: $white;
 	box-shadow: 0 0 24px 0 $light-gray;
 
