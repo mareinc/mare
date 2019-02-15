@@ -30,7 +30,7 @@
 		"gulp-sourcemaps": "^2.6.3",
 		"gulp-uglify": "^3.0.0",
 		"gulp-watch": "~5.0.0",
-		"handlebars": "~4.0.11",
+		"handlebars": "~4.1.0",
 		"hbs": "^4.0.1",
 		"keystone": "https://github.com/keystonejs/keystone.git#17976c3001e0dd79033d1e0398eff714fd102566",
 		"keystone-email": "^1.1.0",
