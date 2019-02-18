@@ -52,12 +52,12 @@ exports = module.exports = ( req, res ) => {
 			// track whether it is an event users can register for through the site
 			// admin can't register, and everyone else can only register for select types of events if registration isn't blocked in the event model
 			locals.canRegister = userType !== 'admin'
-				&& eventType === 'MARE hosted events'
+				&& eventType === 'Mare hosted events'
 				&& !isRegistrationBlocked;
 
 			// only social workers can submit events, and only for specific types of events
 			locals.canSubmitEvent = userType === 'social worker'
-				&& eventType !== 'MARE hosted events';
+				&& eventType !== 'Mare hosted events';
 
 			// check to see if the event spans multiple days
 			const multidayEvent = event.startDate
@@ -82,11 +82,13 @@ exports = module.exports = ( req, res ) => {
 			
 			// store data on whether any attendees exist for each group
 			// NOTE: used to determine whether we should render headers for each list during templating
-			event.hasStaffAttendees			= event.staffAttendees.length > 0;
-			event.hasFamilyAttendees		= event.familyAttendees.length > 0;
-			event.hasSocialWorkerAttendees	= event.socialWorkerAttendees.length > 0;
-			event.hasSiteVisitorAttendees	= event.siteVisitorAttendees.length > 0;
-			event.hasChildAttendees			= event.childAttendees.length > 0;
+			event.hasStaffAttendees				= event.staffAttendees.length > 0;
+			event.hasFamilyAttendees			= event.familyAttendees.length > 0;
+			event.hasSocialWorkerAttendees		= event.socialWorkerAttendees.length > 0;
+			event.hasSiteVisitorAttendees		= event.siteVisitorAttendees.length > 0;
+			event.hasChildAttendees				= event.childAttendees.length > 0;
+			event.hasUnregisteredChildAttendees	= event.unregisteredChildAttendees > 0;
+			event.hasUnregisteredAdultAttendees = event.unregisteredAdultAttendees > 0;
 
 			// if the user is logged in
 			if( req.user ) {
