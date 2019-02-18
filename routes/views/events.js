@@ -84,7 +84,7 @@ exports = module.exports = async ( req, res ) => {
 				// track whether it is an event users can register for through the site
 				// admin can't register, and everyone else can only register for select types of events if registration isn't blocked in the event model
 				event.canRegister = userType !== 'admin'
-					&& eventType === 'MARE hosted events'
+					&& eventType === 'Mare hosted events'
 					&& !isRegistrationBlocked;
 
 				// the list page needs truncated details information to keep the cards they're displayed on small

@@ -144,8 +144,9 @@
 			<form action="/events/unregister/{{ event._id }}" class="modal-form--event-registration" method="POST">
 				<input type="hidden" name="eventName" value="{{ event.name }}">
 				<input type="hidden" name="redirectPath" value="{{ redirectPath }}">
-				<button class="button button--large button--teal events__unregister-button" type="submit">Unregister</button>
+				<button class="button button--large button--teal" type="submit">Unregister</button>
 			</form>
+			<button class="button button--large button--teal events__edit-registration-button">Edit Registration</button>
 			{{else}}
 			<button class="button button--large button--teal events__register-button">Register</button>
 			{{/if}}

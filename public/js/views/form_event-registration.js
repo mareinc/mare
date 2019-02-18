@@ -50,7 +50,7 @@
 			this.$( '.number-of-children-select' ).unbind( 'change' );
 		},
 
-		render: function render( event ) {
+		render: function render( event, action ) {
 			// DOM cache the event parent and extract important information from it's data attributes
 			var $event		= $( event.currentTarget ).closest( '.event' ),
 				eventId		= $event.data( 'event-id' ),
@@ -58,7 +58,7 @@
 				eventDate	= $event.data( 'event-date' );
 
 			// pass the child model through the template we stored during initialization
-			var html = this.template( { eventName: eventName, eventDate: eventDate, eventId: eventId } );
+			var html = this.template( { eventName: eventName, eventDate: eventDate, eventId: eventId, action: action } );
 			this.$el.html( html );
 			// render the contents area and tabs
 			$( '.modal-container__contents' ).html( this.$el );
@@ -69,9 +69,9 @@
 		},
 
 		/* when the register button on an event card is clicked, display the event registration form */
-		handleRegisterButtonClick: function handleRegisterButtonClick( event ) {
-			// populate the modal with the event registration template
-			this.render( event );
+		handleRegisterButtonClick: function handleRegisterButtonClick( event, action ) {
+			// populate the modal with the event registration template, modifying it based on an action of 'register' or 'edit'
+			this.render( event, action );
 			// open the modal
 			this.openModal();
 		},
