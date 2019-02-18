@@ -3,11 +3,18 @@ const cronJob = require( 'cron' ).CronJob,
 
 exports.scheduleEventDeactivator = () => {
 	// run the task every hour
-	new cronJob( '00 00 * * * *', () => {
+	new cronJob( '00 00 * * * *', async () => {
 
-    	console.log( 'chron - beginning task to deactivate events that have passed' );
+    	console.log( 'chron - beginning scheduled task to deactivate events that have passed' );
 
-    	eventService.checkForOldEvents();
+    	try {
+			await eventService.checkForOldEvents();
+		}
+		catch( err ) {
+			console.error( `error running scheduled task to deactivate events that have passed - ${ err }` );
+		}
+
+		console.log( 'chron - completed scheduled task to deactivate events that have passed' );
 
   	}, null, true, 'America/New_York' );
 };

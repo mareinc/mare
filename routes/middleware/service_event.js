@@ -583,46 +583,51 @@ exports.getEventStaffContactInfo = emailTarget => {
 	});
 };
 
-exports.checkForOldEvents = async () => {
-	// store the current date/time
-	const now = new Date();
+exports.checkForOldEvents = () => {
 
-	let activeEvents;
+	return new Promise( async ( resolve, reject ) => {
+		// store the current date/time
+		const now = new Date();
 
-	// attempt to fetch all events that are currently active in the system
-	try {
-		activeEvents = await this.getActiveEvents();
-	}
-	catch( err ) {
-		console.error( `error fetching active events - ${ err }` );
-	}
+		let activeEvents;
 
-	// loop through all active events
-	for( let event of activeEvents ) {
-		// "9:00pm" will store [ "9:00pm", "9:00pm", "9", "00", "pm" ]
-		let endTimeArray = /((1[0-2]|0?[1-9]):([0-5][0-9]) ?([AaPp][Mm]))/.exec( event.endTime );
-		// if the event has a stored end time and is a valid date
-		if( endTimeArray ) {
-			// check if the time is AM or PM, then extract the hours and add 12 for PM times
-			let endTimeHours = endTimeArray[ 4 ].toLowerCase() === 'pm'
-				? parseInt( endTimeArray[ 2 ] ) + 12
-				: parseInt( endTimeArray[ 2 ] );
+		// attempt to fetch all events that are currently active in the system
+		try {
+			activeEvents = await this.getActiveEvents();
+		}
+		catch( err ) {
+			return reject( `error fetching active events - ${ err }` );
+		}
 
-			// use the extracted hours and day of the event to construct a date object for comparison
-			event.endDate.setHours( endTimeHours );
-			// if the event is not recurring and has ended before the current date/time
-			if( !event.isRecurringEvent && event.endDate < now ) {
-				// log a message for debugging purposes
-				console.log( `deactivating event ${ event.name }` );
-				// deactivate and save the event
-				event.set( 'isActive', false );
+		// loop through all active events
+		for( let event of activeEvents ) {
+			// "9:00pm" will store [ "9:00pm", "9:00pm", "9", "00", "pm" ]
+			let endTimeArray = /((1[0-2]|0?[1-9]):([0-5][0-9]) ?([AaPp][Mm]))/.exec( event.endTime );
+			// if the event has a stored end time and is a valid date
+			if( endTimeArray ) {
+				// check if the time is AM or PM, then extract the hours and add 12 for PM times
+				let endTimeHours = endTimeArray[ 4 ].toLowerCase() === 'pm'
+					? parseInt( endTimeArray[ 2 ] ) + 12
+					: parseInt( endTimeArray[ 2 ] );
 
-				await event.save( err => {
-					if( err ) {
-						console.err( `error saving deactivated event ${ event.name } - ${ err }` );
-					}
-				});
+				// use the extracted hours and day of the event to construct a date object for comparison
+				event.endDate.setHours( endTimeHours );
+				// if the event is not recurring and has ended before the current date/time
+				if( !event.isRecurringEvent && event.endDate < now ) {
+					// log a message for debugging purposes
+					console.log( `deactivating event ${ event.name }` );
+					// deactivate and save the event
+					event.set( 'isActive', false );
+
+					await event.save( err => {
+						if( err ) {
+							console.err( `error saving deactivated event ${ event.name } - ${ err }` );
+						}
+					});
+				}
 			}
 		}
-	}
+
+		resolve();
+	});
 };
