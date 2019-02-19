@@ -43,7 +43,7 @@
 	<div class="card card--small-margin-below card-list__collapsible-trigger-container">
 		<div class="card__details card__details--centered">
 			<p class="card__details__body">
-				<h3 class="card-list__collapsible-trigger-text">{{ userRegion }} ({{ eventsInUsersRegion.length }} events)</h3>
+				<h3 class="card-list__collapsible-trigger-text">{{ userRegion }} ({{ eventsInUsersRegion.length }} {{#ifeq eventsInUsersRegion.length 1}}event{{else}}events{{/ifeq}})</h3>
 				<span class="card-list__collapsible-trigger-indicator card-list__collapsible-trigger-indicator--expanded">-</span>
 			</p>
 		</div>
@@ -138,7 +138,7 @@
 	<div class="card card--small-margin-below card-list__collapsible-trigger-container">
 		<div class="card__details card__details--centered">
 			<p class="card__details__body">
-				<h3 class="card-list__collapsible-trigger-text">{{ region }} ({{ this.events.length }} events)</h3>
+				<h3 class="card-list__collapsible-trigger-text">{{ region }} ({{ this.events.length }} {{#ifeq this.events.length 1}}event{{else}}events{{/ifeq}})</h3>
 				<span class="card-list__collapsible-trigger-indicator card-list__collapsible-trigger-indicator--expanded">-</span>
 			</p>
 		</div>
@@ -231,7 +231,7 @@
 	<div class="card card--small-margin-below card-list__collapsible-trigger-container">
 		<div class="card__details card__details--centered">
 			<p class="card__details__body">
-				<h3 class="card-list__collapsible-trigger-text">Available Statewide ({{ eventsWithNoRegion.length }} events)</h3>
+				<h3 class="card-list__collapsible-trigger-text">Available Statewide ({{ eventsWithNoRegion.length }} {{#ifeq eventsWithNoRegion.length 1}}event{{else}}events{{/ifeq}})</h3>
 				<span class="card-list__collapsible-trigger-indicator card-list__collapsible-trigger-indicator--expanded">-</span>
 			</p>
 		</div>
