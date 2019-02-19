@@ -111,8 +111,6 @@ exports = module.exports = app => {
 	app.post( '/services/add-sibling-group-bookmark'	, familyService.addSiblingGroupBookmark );
 	app.post( '/services/remove-sibling-group-bookmark'	, familyService.removeSiblingGroupBookmark );
 	app.post( '/services/get-gallery-permissions'		, permissionsService.getGalleryPermissions );
-	// app.post( '/services/register-for-event'			, eventService.addUser ); // TODO: I'm leaving these commented out so I don't forget they exist when I need to implement adding/removing users to an event automatically
-	// app.post( '/services/unregister-for-event'		, eventService.removeUser ); // TODO: I'm leaving these commented out so I don't forget they exist when I need to implement adding/removing users to an event automatically
 
 	app.get( '/chron/nightly'							, chronMiddleware.runNightlyChronJob );
 };

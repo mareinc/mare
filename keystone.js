@@ -8,9 +8,10 @@ if( process.env.NEW_RELIC_APP_NAME && process.env.NEW_RELIC_LICENSE_KEY ) {
 }
 
 // Initialize application
-var keystone = require( 'keystone' ),
-	handlebars = require( 'express-handlebars' ),
-	fs = require( 'fs' );
+const keystone = require( 'keystone' ),
+	  handlebars = require( 'express-handlebars' ),
+	  chron = require( './bin/chron' ),
+	  fs = require( 'fs' );
 
 keystone.init({
 
@@ -146,5 +147,8 @@ keystone.set( 'nav', {
 							'residences', 'social-worker-positions', 'sources', 'states', 'way-to-hear-about-mares' ]
 });
 
-// Start Keystone to connect to your database and initialise the web server
-keystone.start();
+// Start Keystone to connect to the database and initialise the web server
+keystone.start( () => {
+	// schedule an hourly task to deactivate events in the past
+	chron.scheduleEventDeactivator();
+});

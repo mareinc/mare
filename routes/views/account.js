@@ -37,8 +37,7 @@ exports = module.exports = ( req, res ) => {
 		fetchRaces					= listsService.getAllRaces( raceOptions ),
 		fetchStates					= listsService.getAllStates( stateOptions ),
 		fetchChildTypes				= listsService.getChildTypesForWebsite(),
-		fetchMailingLists			= mailingListService.getMailingListsByUserType( userType )
-	;
+		fetchMailingLists			= mailingListService.getMailingListsByUserType( userType );
 
 	// check to see if the Children tab should be rendered
 	locals.shouldRenderChildrenSection = ( userType === 'social worker' || userType === 'family' );
@@ -104,7 +103,6 @@ exports = module.exports = ( req, res ) => {
 
 			// check to see if the user has an address/state defined
 			if ( isUserStateDefined ) {
-
 				// find the user's state in the state list
 				let userState = locals.states.find( state => state._id.id.toString() === locals.user.address.state.id.toString() );
 				// set it to be default selection
@@ -114,7 +112,7 @@ exports = module.exports = ( req, res ) => {
 			// check to see if the user is a family and has children
 			if ( userType === 'family' && locals.user.numberOfChildren !== 0 ) {
 
-				// loop through all children definitions
+				// loop through all child definitions
 				for ( let i = 1; i <= locals.user.numberOfChildren; i++ ) {
 
 					// add each child to the familyChildren array

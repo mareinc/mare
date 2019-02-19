@@ -80,6 +80,7 @@ exports.getActiveEventsByEventType = ( eventType, eventGroup ) => {
 			.where( 'isActive', true ) // we don't want to show inactive events
 			.populate( eventGroup )
 			.populate( 'address.state' )
+			.populate( 'address.region' )
 			.lean()
 			.exec()
 			.then( events => {
@@ -159,6 +160,33 @@ exports.getAllActiveEvents = eventGroup => {
 	;
 };
 
+exports.getActiveEvents = () => {
+
+	return new Promise( ( resolve, reject ) => {
+
+		keystone.list( 'Event' ).model
+			.find()
+			.where( 'isActive', true )
+			.exec()
+			.then( events => {
+				// if no active events could be found
+				if( events.length === 0 ) {
+					// log an error for debugging purposes
+					console.error( `no active events could be found` );
+				}
+				// resolve the promise with the events
+				resolve( events );
+			// if there was an error fetching from the database
+			}, err => {
+				// log an error for debugging purposes
+				console.error( `error fetching active events - ${ err }` );
+				// and reject the promise
+				reject();
+			});
+		})
+	;
+};
+
 exports.getEventGroup = userType => {
 
 	switch( userType ) {
@@ -178,7 +206,7 @@ exports.getRandomEvent = () => {
 		keystone.list( 'Event' )
 			.model
 			.findRandom({
-				type: { $in: [ 'MARE adoption parties & information events', 'fundraising events' ] },
+				type: 'Mare hosted events',
 				isActive: true
 			}, ( err, event ) => {
 				// if there was an error
@@ -279,6 +307,7 @@ exports.createEvent = event => {
 		const newEvent = new Event.model({
 
 			name: event.name,
+			displayName: event.name,
 			type: event.eventType,
 			address: {
 				street1: event.street1,
@@ -554,125 +583,46 @@ exports.getEventStaffContactInfo = emailTarget => {
 	});
 };
 
-/*
- *	frontend services
- */
-// exports.addUser = ( req, res, next ) => {
+exports.checkForOldEvents = async () => {
+	// store the current date/time
+	const now = new Date();
 
-// 	const userId	= req.user.get( '_id' ),
-// 		  userName	= req.user.get( 'name.full' ),
-// 		  userType	= req.user.get( 'userType' ),
-// 		  eventId	= req.body.eventId;
+	let activeEvents;
 
-// 	// fetch the field the user should be added to based on their user type
-// 	const eventGroup = exports.getEventGroup( userType );
-// 	// fetch the event the user should be added to
-// 	let fetchEvent = exports.getEventById( eventId );
+	// attempt to fetch all events that are currently active in the system
+	try {
+		activeEvents = await this.getActiveEvents();
+	}
+	catch( err ) {
+		console.error( `error fetching active events - ${ err }` );
+	}
 
-// 	fetchEvent
-// 		.then( event => {
-// 			// get the array of user IDs already in the field the user should be added to, and get the index of the user
-// 			const attendees	= event.get( eventGroup ),
-// 				  userIndex	= attendees.indexOf( userId );
-// 			// if the user is not already added
-// 			if( userIndex === -1 ) {
-// 				// add them to the attendees list
-// 				attendees.push( userId );
-// 				// save the updated event model to the database
-// 				event.save();
-// 				// construct useful data for needed UI updates
-// 				var responseData = {
-// 					success: true,
-// 					action: 'register',
-// 					name: userName,
-// 					group: userType
-// 				};
-// 				// send the response data base to the user as JSON
-// 				res.json( responseData );
+	// loop through all active events
+	for( let event of activeEvents ) {
+		// "9:00pm" will store [ "9:00pm", "9:00pm", "9", "00", "pm" ]
+		let endTimeArray = /((1[0-2]|0?[1-9]):([0-5][0-9]) ?([AaPp][Mm]))/.exec( event.endTime );
+		// if the event has a stored end time and is a valid date
+		if( endTimeArray ) {
+			// check if the time is AM or PM, then extract the hours and add 12 for PM times
+			let endTimeHours = endTimeArray[ 4 ].toLowerCase() === 'pm'
+				? parseInt( endTimeArray[ 2 ] ) + 12
+				: parseInt( endTimeArray[ 2 ] );
 
-// 			} else {
-// 				// construct useful data for needed UI updates
-// 				var responseData = {
-// 					success: false,
-// 					action: 'register',
-// 					message: 'You are already attending that event'
-// 				};
-// 				// send the response data base to the user as JSON
-// 				res.json( responseData );
-// 			}
-// 		})
-// 		.catch( () => {
-// 			// log an error for debugging purposes
-// 			console.error( `there was an error adding the user to the event with id ${ req.body.eventId }` );
+			// use the extracted hours and day of the event to construct a date object for comparison
+			event.endDate.setHours( endTimeHours );
+			// if the event is not recurring and has ended before the current date/time
+			if( !event.isRecurringEvent && event.endDate < now ) {
+				// log a message for debugging purposes
+				console.log( `deactivating event ${ event.name }` );
+				// deactivate and save the event
+				event.set( 'isActive', false );
 
-// 			// construct useful data for needed UI updates
-// 			var responseData = {
-// 				success: false,
-// 				action: 'register',
-// 				message: 'An error occurred when adding you to the event'
-// 			};
-// 			// send the response data base to the user as JSON
-// 			res.json( responseData );
-// 		});
-// };
-
-// exports.removeUser = ( req, res, next ) => {
-
-// 	const locals	= res.locals,
-// 		  userId	= req.user.get( '_id' ),
-// 		  userName	= req.user.get( 'name.full' ),
-// 		  userType	= req.user.get( 'userType' ),
-// 		  eventId	= req.body.eventId;
-
-// 	// fetch the field the user should be added to based on their user type
-// 	const eventGroup = exports.getEventGroup( userType );
-// 	// fetch the event the user should be added to
-// 	let fetchEvent = exports.getEventById( eventId );
-
-// 	fetchEvent
-// 		.then( event => {
-// 			// get the array of user IDs already in the field the user should be added to, and get the index of the user
-// 			const attendees	= event.get( eventGroup ),
-// 				userIndex	= attendees.indexOf( userId );
-
-// 			// if the user exists in the group
-// 			if(userIndex !== -1) {
-// 				// remove them from the attendees list
-// 				attendees.splice( userIndex, 1 );
-// 				// save the updated event model
-// 				event.save();
-// 				// construct useful data for needed UI updates
-// 				var responseData = {
-// 					success: true,
-// 					action: 'unregister',
-// 					name: userName,
-// 					group: userType
-// 				};
-// 				// send the response data base to the user as JSON
-// 				res.json( responseData );
-
-// 			} else {
-// 				// construct useful data for needed UI updates
-// 				var responseData = {
-// 					success: false,
-// 					action: 'unregister',
-// 					message: 'You have already been removed from that event'
-// 				};
-// 				// send the response data base to the user as JSON
-// 				res.json( responseData );
-// 			}
-// 		})
-// 		.catch( () => {
-// 			// log an error for debugging purposes
-// 			console.error( `there was an error removing the user from the event with id ${ req.body.eventId }` );
-
-// 			// construct useful data for needed UI updates
-// 			var responseData = {
-// 				success: false,
-// 				action: 'register',
-// 				message: 'An error occurred when removing you from the event'
-// 			};
-// 			// send the response data base to the user as JSON
-// 			res.json( responseData );
-// 		});
-// };
+				await event.save( err => {
+					if( err ) {
+						console.err( `error saving deactivated event ${ event.name } - ${ err }` );
+					}
+				});
+			}
+		}
+	}
+};
