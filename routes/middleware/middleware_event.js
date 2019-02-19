@@ -240,3 +240,65 @@ exports.unregister = ( req, res, next ) => {
 			res.redirect( 303, eventDetails.redirectPath );
 		});
 };
+
+exports.editRegistration = async ( req, res, next ) => {
+	'use strict';
+
+	// extract the event information from the req object
+	const eventDetails = req.body;
+	// extract request object parameters into local constants
+	eventDetails.eventId = req.params.eventId;
+
+	// if there are unregistered child attendees
+	if ( eventDetails.numberOfChildren > 0 ) {
+
+		eventDetails.unregisteredChildren = [];
+
+		// compile unregistered children attendee data into a single array
+		for ( let i = 0; i < eventDetails.numberOfChildren; i++ ) {
+
+			let unregisteredChildAttendee = {
+				name: {
+					first: eventDetails.childFirstName[ i ],
+					last: eventDetails.childLastName[ i ]
+				},
+				age: eventDetails.childAge[ i ],
+				registrantID: req.user._id
+			};
+
+			eventDetails.unregisteredChildren.push( unregisteredChildAttendee );
+		}
+	}
+
+	// if there are unregistered adult attendees
+	if ( eventDetails.numberOfAdults > 0 ) {
+
+		eventDetails.unregisteredAdults = [];
+
+		// compile unregistered adult attendee data into a single array
+		for ( let i = 0; i < eventDetails.numberOfAdults; i++ ) {
+
+			let unregisteredAdultAttendee = {
+				name: {
+					first: eventDetails.adultFirstName[ i ],
+					last: eventDetails.adultLastName[ i ]
+				},
+				registrantID: req.user._id
+			};
+
+			eventDetails.unregisteredAdults.push( unregisteredAdultAttendee );
+		}
+	}
+	
+	// set default information for a staff email contact in case the real contact info can't be fetched
+	let staffContactEmail = 'web@mareinc.org';
+	// attempt to edit the users event registration
+	try {
+		await eventService.editRegistration( eventDetails, req.user );
+
+		res.redirect( 303, eventDetails.redirectPath );
+	}
+	catch( err ) {
+		console.error( `error editing event registration - ${ err }` );
+	}
+};

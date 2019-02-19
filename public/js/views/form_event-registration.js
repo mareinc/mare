@@ -58,6 +58,9 @@
 				eventId = $event.data( 'event-id' ),
 				eventName = $event.data( 'event-name' ),
 				eventDate = $event.data( 'event-date' ),
+				registeredChildrenUserIsBringing = $event.data( 'registered-children-user-is-bringing' ) || [],
+				unregisteredChildrenUserIsBringing = $event.data( 'unregistered-children-user-is-bringing' ) || [],
+				unregisteredAdultsUserIsBringing = $event.data( 'unregistered-adults-user-is-bringing' ) || [],
 				html;
 
 			// pass the child model through the template we stored during initialization
@@ -71,7 +74,10 @@
 				html = this.editRegistrationFormTemplate({
 					eventName: eventName,
 					eventDate: eventDate,
-					eventId: eventId
+					eventId: eventId,
+					registeredChildrenUserIsBringing: registeredChildrenUserIsBringing.map( function( child ) { return child.id } ),
+					unregisteredChildrenUserIsBringing: unregisteredChildrenUserIsBringing.map( function( child ) { return child.id } ),
+					unregisteredAdultsUserIsBringing: unregisteredAdultsUserIsBringing.map( function( adult ) { return adult.id } )
 				});
 			}
 			this.$el.html( html );

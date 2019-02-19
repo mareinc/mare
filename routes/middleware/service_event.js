@@ -459,6 +459,20 @@ exports.unregister = ( eventDetails, user ) => {
 	});
 };
 
+exports.editRegistration = ( eventDetails, user ) => {
+	return new Promise( async ( resolve, reject ) => {
+		try {
+			await exports.unregister( eventDetails, user );
+			await exports.register( eventDetails, user );
+
+			resolve();
+		}
+		catch( err ) {
+			reject( `error editing user registration for event - ${ err }` );
+		}
+	});
+};
+
 exports.removeRegisteredChildren = ( event, registrantId ) => {
 
 	return new Promise( ( resolve, reject ) => {
