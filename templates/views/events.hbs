@@ -153,7 +153,7 @@
 			data-event-date="{{ displayDate }}"
 			data-event-id="{{ _id }}"
 			{{#if isUserBringingChildren}}
-			data-registered-children-user-is-bringing="{{ registeredChildrenUserIsBringing }}"
+			data-registered-children-user-is-bringing="[{{ registeredChildrenUserIsBringing }}]"
 			{{/if}}
 			{{#if isUserBringingUnregisteredChildren}}
 			data-unregistered-children-user-is-bringing="[{{ unregisteredChildrenUserIsBringing }}]"
@@ -246,7 +246,7 @@
 			data-event-date="{{ displayDate }}"
 			data-event-id="{{ _id }}"
 			{{#if isUserBringingChildren}}
-			data-registered-children-user-is-bringing="{{ registeredChildrenUserIsBringing }}"
+			data-registered-children-user-is-bringing="[{{ registeredChildrenUserIsBringing }}]"
 			{{/if}}
 			{{#if isUserBringingUnregisteredChildren}}
 			data-unregistered-children-user-is-bringing="[{{ unregisteredChildrenUserIsBringing }}]"
@@ -329,7 +329,7 @@
 		data-event-date="{{ displayDate }}"
 		data-event-id="{{ _id }}"
 		{{#if isUserBringingChildren}}
-		data-registered-children-user-is-bringing="{{ registeredChildrenUserIsBringing }}"
+		data-registered-children-user-is-bringing="[{{ registeredChildrenUserIsBringing }}]"
 		{{/if}}
 		{{#if isUserBringingUnregisteredChildren}}
 		data-unregistered-children-user-is-bringing="[{{ unregisteredChildrenUserIsBringing }}]"
