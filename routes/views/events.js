@@ -118,7 +118,7 @@ exports = module.exports = async ( req, res ) => {
 				event.displayDate = multidayEvent ? `${ startDate } to ${ endDate }` : startDate;
 
 				// get a list of registered and unregistered children/adults the user said they were bringing when they registered
-				const allChildAttendeeIds = event.childAttendees.map( child => child.get( '_id' ).toString() );
+				const allChildAttendeeIds = event.childAttendees.map( childId => childId.toString() );
 				const registeredChildrenUserIsBringing = socialWorkersChildren.filter( attendee => allChildAttendeeIds.includes( attendee._id.toString() ) );
 				const unregisteredChildrenUserIsBringing = event.unregisteredChildAttendees.filter( child => child.registrantID === userId );
 				const unregisteredAdultsUserIsBringing = event.unregisteredAdultAttendees.filter( adult => adult.registrantID === userId );
