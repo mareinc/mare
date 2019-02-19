@@ -23,7 +23,7 @@ exports = module.exports = ( req, res ) => {
 	// TODO: these locals bindings can be removed and the ifeq handlebars helper can be used instead.  Need to update in events.js as well
 	switch( category ) {
 		case 'mapp-trainings'			: eventType = 'MAPP trainings'; break;
-		case 'mare-hosted-events'		: eventType = 'MARE hosted events'; break;
+		case 'mare-hosted-events'		: eventType = 'Mare hosted events'; break;
 		case 'partner-hosted-events'	: eventType = 'partner hosted events'; break;
 	}
 
