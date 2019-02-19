@@ -150,5 +150,5 @@ keystone.set( 'nav', {
 // Start Keystone to connect to the database and initialise the web server
 keystone.start( () => {
 	// schedule an hourly task to deactivate events in the past
-	chron.scheduleEventDeactivator();
+	// chron.scheduleEventDeactivator();
 });

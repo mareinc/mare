@@ -476,7 +476,7 @@ exports.removeRegisteredChildren = ( event, registrantId ) => {
 				// capture all registered children ( and their indexes ) that were signed up by the social worker that is unregistering
 				event.childAttendees.forEach( ( child, index ) => {
 
-					if ( child.adoptionWorker && ( registrantId.id === child.adoptionWorker.id || registrantId.id === child.recruitmentWorker.id ) ) {
+					if ( child.adoptionWorker && ( registrantId.toString() === child.adoptionWorker.toString() || registrantId.toString() === child.recruitmentWorker.toString() ) ) {
 
 						registeredChildrenToRemoveIndexes.push( index );
 						registeredChildrenRemoved.push( child );
@@ -509,7 +509,7 @@ exports.removeUnregisteredChildren = ( event, registrantId ) => {
 	// capture all unregistered children ( and their indexes ) that were signed up by the user that is unregistering
 	event.unregisteredChildAttendees.forEach( ( child, index ) => {
 
-		if ( registrantId.toString() === child.registrantId ) {
+		if ( registrantId.toString() === child.registrantID ) {
 
 			unregisteredChildrenToRemoveIndexes.push( index );
 			unregisteredChildrenRemoved.push( child );
@@ -536,7 +536,7 @@ exports.removeUnregisteredAdults = ( event, registrantId ) => {
 	// capture all unregistered adult ( and their indexes ) that were signed up by the user that is unregistering
 	event.unregisteredAdultAttendees.forEach( ( adult, index ) => {
 
-		if ( registrantId.toString() === adult.registrantId ) {
+		if ( registrantId.toString() === adult.registrantID ) {
 
 			unregisteredAdultsToRemoveIndexes.push( index );
 			unregisteredAdultsRemoved.push( adult );

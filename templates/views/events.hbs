@@ -53,7 +53,20 @@
 		
 		{{#each eventsInUsersRegion}}
 
-		<div class="card card--vertical card--medium-padding card--small-margin-below event" data-event-name="{{ name }}" data-event-date="{{ displayDate }}" data-event-id="{{ _id }}">
+		<div class="card card--vertical card--medium-padding card--small-margin-below event"
+			data-event-name="{{ name }}"
+			data-event-date="{{ displayDate }}"
+			data-event-id="{{ _id }}"
+			{{#if isUserBringingChildren}}
+			data-registered-children-user-is-bringing="[{{ registeredChildrenUserIsBringing }}]"
+			{{/if}}
+			{{#if isUserBringingUnregisteredChildren}}
+			data-unregistered-children-user-is-bringing="[{{ unregisteredChildrenUserIsBringing }}]"
+			{{/if}}
+			{{#if isUserBringingUnregisteredAdults}}
+			data-unregistered-adults-user-is-bringing="[{{ unregisteredAdultsUserIsBringing }}]"
+			{{/if}}
+		>
 			<h2 class="card__title event-title">{{ displayName }}</h2>
 			<div class="card__content">
 				<section class="card__content-group">
@@ -135,7 +148,20 @@
 
 		{{#each events}}
 
-		<div class="card card--vertical card--medium-padding card--small-margin-below event" data-event-name="{{ name }}" data-event-date="{{ displayDate }}" data-event-id="{{ _id }}">
+		<div class="card card--vertical card--medium-padding card--small-margin-below event"
+			data-event-name="{{ name }}"
+			data-event-date="{{ displayDate }}"
+			data-event-id="{{ _id }}"
+			{{#if isUserBringingChildren}}
+			data-registered-children-user-is-bringing="{{ registeredChildrenUserIsBringing }}"
+			{{/if}}
+			{{#if isUserBringingUnregisteredChildren}}
+			data-unregistered-children-user-is-bringing="[{{ unregisteredChildrenUserIsBringing }}]"
+			{{/if}}
+			{{#if isUserBringingUnregisteredAdults}}
+			data-unregistered-adults-user-is-bringing="[{{ unregisteredAdultsUserIsBringing }}]"
+			{{/if}}
+		>
 			<h2 class="card__title event-title">{{ displayName }}</h2>
 			<div class="card__content">
 				<section class="card__content-group">
@@ -215,7 +241,20 @@
 		
 		{{#each eventsWithNoRegion}}
 
-		<div class="card card--vertical card--medium-padding card--small-margin-below event" data-event-name="{{ name }}" data-event-date="{{ displayDate }}" data-event-id="{{ _id }}">
+		<div class="card card--vertical card--medium-padding card--small-margin-below event"
+			data-event-name="{{ name }}"
+			data-event-date="{{ displayDate }}"
+			data-event-id="{{ _id }}"
+			{{#if isUserBringingChildren}}
+			data-registered-children-user-is-bringing="{{ registeredChildrenUserIsBringing }}"
+			{{/if}}
+			{{#if isUserBringingUnregisteredChildren}}
+			data-unregistered-children-user-is-bringing="[{{ unregisteredChildrenUserIsBringing }}]"
+			{{/if}}
+			{{#if isUserBringingUnregisteredAdults}}
+			data-unregistered-adults-user-is-bringing="[{{ unregisteredAdultsUserIsBringing }}]"
+			{{/if}}
+		>
 			<h2 class="card__title event-title">{{ displayName }}</h2>
 			<div class="card__content">
 				<section class="card__content-group">
@@ -285,7 +324,20 @@
 
 	{{#each MAREHostedEvents}}
 
-	<div class="card card--vertical card--medium-padding card--small-margin-below event" data-event-name="{{ name }}" data-event-date="{{ displayDate }}" data-event-id="{{ _id }}">
+	<div class="card card--vertical card--medium-padding card--small-margin-below event"
+		data-event-name="{{ name }}"
+		data-event-date="{{ displayDate }}"
+		data-event-id="{{ _id }}"
+		{{#if isUserBringingChildren}}
+		data-registered-children-user-is-bringing="{{ registeredChildrenUserIsBringing }}"
+		{{/if}}
+		{{#if isUserBringingUnregisteredChildren}}
+		data-unregistered-children-user-is-bringing="[{{ unregisteredChildrenUserIsBringing }}]"
+		{{/if}}
+		{{#if isUserBringingUnregisteredAdults}}
+		data-unregistered-adults-user-is-bringing="[{{ unregisteredAdultsUserIsBringing }}]"
+		{{/if}}
+	>
 		<h2 class="card__title event-title">{{ displayName }}</h2>
 		<div class="card__content">
 			<section class="card__content-group">
@@ -337,7 +389,6 @@
 			{{/if}}
 			{{/if}}
 		</section>
-
 	</div>
 
 	{{/each}}
@@ -348,6 +399,15 @@
 
 {{/if}}
 
-{{#ifeq userType 'site visitor'}}{{> event-registration-form}}{{/ifeq}}
-{{#ifeq userType 'family'}}{{> event-registration-form}}{{/ifeq}}
-{{#ifeq userType 'social worker'}}{{> event-social-worker-registration-form}}{{/ifeq}}
+{{#ifeq userType 'site visitor'}}
+{{> event-registration-form}}
+{{> event-edit-registration-form}}
+{{/ifeq}}
+{{#ifeq userType 'family'}}
+{{> event-registration-form}}
+{{> event-edit-registration-form}}
+{{/ifeq}}
+{{#ifeq userType 'social worker'}}
+{{> event-social-worker-registration-form}}
+{{> event-edit-social-worker-registration-form}}
+{{/ifeq}}

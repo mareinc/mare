@@ -11,7 +11,7 @@ exports = module.exports = async ( req, res ) => {
 
 	const view = new keystone.View( req, res ),
 		  locals = res.locals,
-		  userId = req.user ? req.user.get( '_id' ) : undefined,
+		  userId = req.user ? req.user.get( '_id' ).toString() : undefined,
 		  userType = req.user ? req.user.get( 'userType' ) : undefined, // knowing the type of user visiting the page will allow us to display extra relevant information
 		  MAREHostedEvents = [], // for MARE hosted events only
 		  eventsWithNoRegion = [], // for non-MARE hosted events, events with no region information will be placed under a 'no region' header
@@ -58,12 +58,12 @@ exports = module.exports = async ( req, res ) => {
 	// fetch all data needed to render this page
 	let fetchEvents					= eventService.getActiveEventsByEventType( eventType, eventGroup ),
 		fetchSidebarItems			= pageService.getSidebarItems(),
-		fetchSocialWorkersChildren	= socialWorkerService.fetchRegisteredChildren( userId );
+		fetchSocialWorkersChildren	= socialWorkerService.fetchSocialWorkersChildren( userId );
 
 	Promise.all( [ fetchEvents, fetchSidebarItems, fetchSocialWorkersChildren ] )
 		.then( values => {
 			// assign local variables to the values returned by the promises
-			const [ events, sidebarItems, registeredChildren ] = values;
+			const [ events, sidebarItems, socialWorkersChildren ] = values;
 			// the sidebar items are a success story and event in an array, assign local variables to the two objects
 			const [ randomSuccessStory, randomEvent ] = sidebarItems;
 
@@ -117,6 +117,20 @@ exports = module.exports = async ( req, res ) => {
 				// pull the date and into a string for easier templating
 				event.displayDate = multidayEvent ? `${ startDate } to ${ endDate }` : startDate;
 
+				// get a list of registered and unregistered children/adults the user said they were bringing when they registered
+				const allChildAttendeeIds = event.childAttendees.map( child => child.get( '_id' ).toString() );
+				const registeredChildrenUserIsBringing = socialWorkersChildren.filter( attendee => allChildAttendeeIds.includes( attendee._id.toString() ) );
+				const unregisteredChildrenUserIsBringing = event.unregisteredChildAttendees.filter( child => child.registrantID === userId );
+				const unregisteredAdultsUserIsBringing = event.unregisteredAdultAttendees.filter( adult => adult.registrantID === userId );
+
+				// store information about who the user is bringing on the event
+				event.isUserBringingChildren				= registeredChildrenUserIsBringing.length > 0;
+				event.isUserBringingUnregisteredChildren	= unregisteredChildrenUserIsBringing.length > 0;
+				event.isUserBringingUnregisteredAdults		= unregisteredAdultsUserIsBringing.length > 0;
+				event.registeredChildrenUserIsBringing		= registeredChildrenUserIsBringing.map( child => `{ "name": "${ child.name.full }", "id": "${ child._id }" }` );
+				event.unregisteredChildrenUserIsBringing	= unregisteredChildrenUserIsBringing.map( child => `{ "name": { "first": "${ child.name.first }", "last": "${ child.name.last }" }, "age": ${ child.age }, "id": "${ child._id }" }` );
+				event.unregisteredAdultsUserIsBringing		= unregisteredAdultsUserIsBringing.map( adult => `{ "name": { "first": "${adult.name.first }", "last": "${ adult.name.last }" }, "id": "${ adult._id }" }` );
+
 				// MARE hosted events don't need region headers, so they can all be stored in a single array
 				if( eventType === 'Mare hosted events' ) {
 					// add the events to the MARE hosted events array
@@ -147,10 +161,10 @@ exports = module.exports = async ( req, res ) => {
 				}
 			};
 
-			let MAREHostedEventsExist			= MAREHostedEvents.length > 0;
-			let eventsWithNoRegionExist			= eventsWithNoRegion.length > 0;
-			let eventsInUsersRegionExist		= eventsInUsersRegion.length > 0;
-			let eventsOutsideUsersRegionExist	= eventsOutsideUsersRegion.length > 0;
+			const MAREHostedEventsExist			= MAREHostedEvents.length > 0,
+				  eventsWithNoRegionExist		= eventsWithNoRegion.length > 0,
+				  eventsInUsersRegionExist		= eventsInUsersRegion.length > 0,
+				  eventsOutsideUsersRegionExist	= eventsOutsideUsersRegion.length > 0;
 
 			// if MARE hosted events exist
 			if( MAREHostedEventsExist ) {
@@ -218,8 +232,8 @@ exports = module.exports = async ( req, res ) => {
 			locals.randomSuccessStory				= randomSuccessStory;
 			locals.randomEvent						= randomEvent;
 			locals.displayName						= user ? user.displayName : '';
-			locals.hasChildren						= registeredChildren.length > 0;
-			locals.registeredChildren				= registeredChildren;
+			locals.hasSocialWorkersChildren			= socialWorkersChildren.length > 0;
+			locals.socialWorkersChildren			= socialWorkersChildren;
 			locals.redirectPath						= req.url;
 
 			// set the layout to render with the right sidebar

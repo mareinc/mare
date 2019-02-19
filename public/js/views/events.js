@@ -63,7 +63,7 @@
 			mare.views.eventRegistrationForm.handleRegisterButtonClick( event, 'register' );
 		},
 
-		showEventRegistrationForm: function showEventRegistrationForm( event ) {
+		editEventRegistrationForm: function editEventRegistrationForm( event ) {
 			// pass the request for opening the modal to the view in charge of the modal
 			mare.views.eventRegistrationForm.handleRegisterButtonClick( event, 'edit' );
 		}
