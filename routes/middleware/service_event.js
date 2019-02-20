@@ -459,6 +459,20 @@ exports.unregister = ( eventDetails, user ) => {
 	});
 };
 
+exports.editRegistration = ( eventDetails, user ) => {
+	return new Promise( async ( resolve, reject ) => {
+		try {
+			await exports.unregister( eventDetails, user );
+			await exports.register( eventDetails, user );
+
+			resolve();
+		}
+		catch( err ) {
+			reject( `error editing user registration for event - ${ err }` );
+		}
+	});
+};
+
 exports.removeRegisteredChildren = ( event, registrantId ) => {
 
 	return new Promise( ( resolve, reject ) => {
@@ -476,7 +490,7 @@ exports.removeRegisteredChildren = ( event, registrantId ) => {
 				// capture all registered children ( and their indexes ) that were signed up by the social worker that is unregistering
 				event.childAttendees.forEach( ( child, index ) => {
 
-					if ( child.adoptionWorker && ( registrantId.id === child.adoptionWorker.id || registrantId.id === child.recruitmentWorker.id ) ) {
+					if ( child.adoptionWorker && ( registrantId.toString() === child.adoptionWorker.toString() || registrantId.toString() === child.recruitmentWorker.toString() ) ) {
 
 						registeredChildrenToRemoveIndexes.push( index );
 						registeredChildrenRemoved.push( child );
@@ -509,7 +523,7 @@ exports.removeUnregisteredChildren = ( event, registrantId ) => {
 	// capture all unregistered children ( and their indexes ) that were signed up by the user that is unregistering
 	event.unregisteredChildAttendees.forEach( ( child, index ) => {
 
-		if ( registrantId.toString() === child.registrantId ) {
+		if ( registrantId.toString() === child.registrantID ) {
 
 			unregisteredChildrenToRemoveIndexes.push( index );
 			unregisteredChildrenRemoved.push( child );
@@ -536,7 +550,7 @@ exports.removeUnregisteredAdults = ( event, registrantId ) => {
 	// capture all unregistered adult ( and their indexes ) that were signed up by the user that is unregistering
 	event.unregisteredAdultAttendees.forEach( ( adult, index ) => {
 
-		if ( registrantId.toString() === adult.registrantId ) {
+		if ( registrantId.toString() === adult.registrantID ) {
 
 			unregisteredAdultsToRemoveIndexes.push( index );
 			unregisteredAdultsRemoved.push( adult );
@@ -583,46 +597,51 @@ exports.getEventStaffContactInfo = emailTarget => {
 	});
 };
 
-exports.checkForOldEvents = async () => {
-	// store the current date/time
-	const now = new Date();
+exports.checkForOldEvents = () => {
 
-	let activeEvents;
+	return new Promise( async ( resolve, reject ) => {
+		// store the current date/time
+		const now = new Date();
 
-	// attempt to fetch all events that are currently active in the system
-	try {
-		activeEvents = await this.getActiveEvents();
-	}
-	catch( err ) {
-		console.error( `error fetching active events - ${ err }` );
-	}
+		let activeEvents;
 
-	// loop through all active events
-	for( let event of activeEvents ) {
-		// "9:00pm" will store [ "9:00pm", "9:00pm", "9", "00", "pm" ]
-		let endTimeArray = /((1[0-2]|0?[1-9]):([0-5][0-9]) ?([AaPp][Mm]))/.exec( event.endTime );
-		// if the event has a stored end time and is a valid date
-		if( endTimeArray ) {
-			// check if the time is AM or PM, then extract the hours and add 12 for PM times
-			let endTimeHours = endTimeArray[ 4 ].toLowerCase() === 'pm'
-				? parseInt( endTimeArray[ 2 ] ) + 12
-				: parseInt( endTimeArray[ 2 ] );
+		// attempt to fetch all events that are currently active in the system
+		try {
+			activeEvents = await this.getActiveEvents();
+		}
+		catch( err ) {
+			return reject( `error fetching active events - ${ err }` );
+		}
 
-			// use the extracted hours and day of the event to construct a date object for comparison
-			event.endDate.setHours( endTimeHours );
-			// if the event is not recurring and has ended before the current date/time
-			if( !event.isRecurringEvent && event.endDate < now ) {
-				// log a message for debugging purposes
-				console.log( `deactivating event ${ event.name }` );
-				// deactivate and save the event
-				event.set( 'isActive', false );
+		// loop through all active events
+		for( let event of activeEvents ) {
+			// "9:00pm" will store [ "9:00pm", "9:00pm", "9", "00", "pm" ]
+			let endTimeArray = /((1[0-2]|0?[1-9]):([0-5][0-9]) ?([AaPp][Mm]))/.exec( event.endTime );
+			// if the event has a stored end time and is a valid date
+			if( endTimeArray ) {
+				// check if the time is AM or PM, then extract the hours and add 12 for PM times
+				let endTimeHours = endTimeArray[ 4 ].toLowerCase() === 'pm'
+					? parseInt( endTimeArray[ 2 ] ) + 12
+					: parseInt( endTimeArray[ 2 ] );
 
-				await event.save( err => {
-					if( err ) {
-						console.err( `error saving deactivated event ${ event.name } - ${ err }` );
-					}
-				});
+				// use the extracted hours and day of the event to construct a date object for comparison
+				event.endDate.setHours( endTimeHours );
+				// if the event is not recurring and has ended before the current date/time
+				if( !event.isRecurringEvent && event.endDate < now ) {
+					// log a message for debugging purposes
+					console.log( `deactivating event ${ event.name }` );
+					// deactivate and save the event
+					event.set( 'isActive', false );
+
+					await event.save( err => {
+						if( err ) {
+							console.err( `error saving deactivated event ${ event.name } - ${ err }` );
+						}
+					});
+				}
 			}
 		}
-	}
+
+		resolve();
+	});
 };

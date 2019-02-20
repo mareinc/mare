@@ -73,6 +73,7 @@ exports = module.exports = app => {
 	app.get( '/events/:category/:key'					, routes.views.event );
 	app.post( '/events/register/:eventId'				, eventMiddleware.register );
 	app.post( '/events/unregister/:eventId'				, eventMiddleware.unregister );
+	app.post( '/events/edit-registration/:eventId'		, eventMiddleware.editRegistration );
 	// success stories
 	app.get( '/success-stories'							, routes.views.successStories );
 	app.get( '/success-stories/:key'					, routes.views.successStory );

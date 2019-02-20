@@ -10,7 +10,7 @@ exports = module.exports = ( req, res ) => {
 
     const view 		= new keystone.View( req, res ),
 		  locals 	= res.locals,
-		  userId	= req.user ? req.user.get( '_id' ) : undefined,
+		  userId	= req.user ? req.user.get( '_id' ).toString() : undefined,
     	  userType	= req.user ? req.user.userType : ''; // knowing the type of user visiting the page will allow us to display extra relevant information
 	// extract request object parameters into local constants
 	const { category, key } = req.params;
@@ -23,7 +23,7 @@ exports = module.exports = ( req, res ) => {
 	// TODO: these locals bindings can be removed and the ifeq handlebars helper can be used instead.  Need to update in events.js as well
 	switch( category ) {
 		case 'mapp-trainings'			: eventType = 'MAPP trainings'; break;
-		case 'mare-hosted-events'		: eventType = 'MARE hosted events'; break;
+		case 'mare-hosted-events'		: eventType = 'Mare hosted events'; break;
 		case 'partner-hosted-events'	: eventType = 'partner hosted events'; break;
 	}
 
@@ -34,12 +34,12 @@ exports = module.exports = ( req, res ) => {
 	// fetch all data needed to render this page
 	let fetchEvent					= eventService.getEventByKey( key ),
 		fetchSidebarItems			= pageService.getSidebarItems(),
-		fetchSocialWorkersChildren	= socialWorkerService.fetchRegisteredChildren( userId );
+		fetchSocialWorkersChildren	= socialWorkerService.fetchSocialWorkersChildren( userId );
 	
 	Promise.all( [ fetchEvent, fetchSidebarItems, fetchSocialWorkersChildren ] )
 		.then( values => {
 			// assign local variables to the values returned by the promises
-			const [ event, sidebarItems, registeredChildren ] = values;
+			const [ event, sidebarItems, socialWorkersChildren ] = values;
 			// the sidebar items are a success story and event in an array, assign local variables to the two objects
 			const [ randomSuccessStory, randomEvent ] = sidebarItems;
 
@@ -52,12 +52,12 @@ exports = module.exports = ( req, res ) => {
 			// track whether it is an event users can register for through the site
 			// admin can't register, and everyone else can only register for select types of events if registration isn't blocked in the event model
 			locals.canRegister = userType !== 'admin'
-				&& eventType === 'MARE hosted events'
+				&& eventType === 'Mare hosted events'
 				&& !isRegistrationBlocked;
 
 			// only social workers can submit events, and only for specific types of events
 			locals.canSubmitEvent = userType === 'social worker'
-				&& eventType !== 'MARE hosted events';
+				&& eventType !== 'Mare hosted events';
 
 			// check to see if the event spans multiple days
 			const multidayEvent = event.startDate
@@ -81,12 +81,14 @@ exports = module.exports = ( req, res ) => {
 			event.hasAddress = event.address && event.address.street1;
 			
 			// store data on whether any attendees exist for each group
-			// NOTE: used to determine whether we should render headers for each list during templating
-			event.hasStaffAttendees			= event.staffAttendees.length > 0;
-			event.hasFamilyAttendees		= event.familyAttendees.length > 0;
-			event.hasSocialWorkerAttendees	= event.socialWorkerAttendees.length > 0;
-			event.hasSiteVisitorAttendees	= event.siteVisitorAttendees.length > 0;
-			event.hasChildAttendees			= event.childAttendees.length > 0;
+			// NOTE: used to determine whether we should render headers for each list during templating when displaying to admin users
+			event.hasStaffAttendees				= event.staffAttendees.length > 0;
+			event.hasFamilyAttendees			= event.familyAttendees.length > 0;
+			event.hasSocialWorkerAttendees		= event.socialWorkerAttendees.length > 0;
+			event.hasSiteVisitorAttendees		= event.siteVisitorAttendees.length > 0;
+			event.hasChildAttendees				= event.childAttendees.length > 0;
+			event.hasUnregisteredChildAttendees	= event.unregisteredChildAttendees.length > 0;
+			event.hasUnregisteredAdultAttendees = event.unregisteredAdultAttendees.length > 0;
 
 			// if the user is logged in
 			if( req.user ) {
@@ -103,15 +105,27 @@ exports = module.exports = ( req, res ) => {
 				};
 			}
 
+			// get a list of registered and unregistered children/adults the user said they were bringing when they registered
+			const allChildAttendeeIds = event.childAttendees.map( child => child.get( '_id' ).toString() );
+			const registeredChildrenUserIsBringing = socialWorkersChildren.filter( attendee => allChildAttendeeIds.includes( attendee._id.toString() ) );
+			const unregisteredChildrenUserIsBringing = event.unregisteredChildAttendees.filter( child => child.registrantID === userId );
+			const unregisteredAdultsUserIsBringing = event.unregisteredAdultAttendees.filter( adult => adult.registrantID === userId );
+
 			// assign properties to locals for access during templating
-			locals.event				= event;
-			locals.isEventMissing		= _.isEmpty( event );
-			locals.randomSuccessStory	= randomSuccessStory;
-			locals.randomEvent			= randomEvent;
-			locals.displayName			= req.user ? req.user.displayName : undefined;
-			locals.hasChildren			= registeredChildren.length > 0;
-			locals.registeredChildren	= registeredChildren;
-			locals.redirectPath			= req.url;
+			locals.event								= event;
+			locals.isEventMissing						= _.isEmpty( event );
+			locals.randomSuccessStory					= randomSuccessStory;
+			locals.randomEvent							= randomEvent;
+			locals.displayName							= req.user ? req.user.displayName : undefined;
+			locals.hasSocialWorkersChildren				= socialWorkersChildren.length > 0;
+			locals.socialWorkersChildren				= socialWorkersChildren;
+			locals.redirectPath							= req.url;
+			locals.isUserBringingChildren				= registeredChildrenUserIsBringing.length > 0;
+			locals.isUserBringingUnregisteredChildren	= unregisteredChildrenUserIsBringing.length > 0;
+			locals.isUserBringingUnregisteredAdults		= unregisteredAdultsUserIsBringing.length > 0;
+			locals.registeredChildrenUserIsBringing		= registeredChildrenUserIsBringing.map( child => `{ "name": "${ child.name.full }", "id": "${ child._id }" }` );
+			locals.unregisteredChildrenUserIsBringing	= unregisteredChildrenUserIsBringing.map( child => `{ "name": { "first": "${ child.name.first }", "last": "${ child.name.last }" }, "age": ${ child.age }, "id": "${ child._id }" }` );
+			locals.unregisteredAdultsUserIsBringing		= unregisteredAdultsUserIsBringing.map( adult => `{ "name": { "first": "${adult.name.first }", "last": "${ adult.name.last }" }, "id": "${ adult._id }" }` );
 
 			// set the layout to render with the right sidebar
 			locals[ 'render-with-sidebar' ] = true;

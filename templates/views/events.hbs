@@ -43,7 +43,7 @@
 	<div class="card card--small-margin-below card-list__collapsible-trigger-container">
 		<div class="card__details card__details--centered">
 			<p class="card__details__body">
-				<h3 class="card-list__collapsible-trigger-text">{{ userRegion }} ({{ eventsInUsersRegion.length }})</h3>
+				<h3 class="card-list__collapsible-trigger-text">{{ userRegion }} ({{ eventsInUsersRegion.length }} {{#ifeq eventsInUsersRegion.length 1}}event{{else}}events{{/ifeq}})</h3>
 				<span class="card-list__collapsible-trigger-indicator card-list__collapsible-trigger-indicator--expanded">-</span>
 			</p>
 		</div>
@@ -53,7 +53,20 @@
 		
 		{{#each eventsInUsersRegion}}
 
-		<div class="card card--vertical card--medium-padding card--small-margin-below event" data-event-name="{{ name }}" data-event-date="{{ displayDate }}" data-event-id="{{ _id }}">
+		<div class="card card--vertical card--medium-padding card--small-margin-below event"
+			data-event-name="{{ name }}"
+			data-event-date="{{ displayDate }}"
+			data-event-id="{{ _id }}"
+			{{#if isUserBringingChildren}}
+			data-registered-children-user-is-bringing="[{{ registeredChildrenUserIsBringing }}]"
+			{{/if}}
+			{{#if isUserBringingUnregisteredChildren}}
+			data-unregistered-children-user-is-bringing="[{{ unregisteredChildrenUserIsBringing }}]"
+			{{/if}}
+			{{#if isUserBringingUnregisteredAdults}}
+			data-unregistered-adults-user-is-bringing="[{{ unregisteredAdultsUserIsBringing }}]"
+			{{/if}}
+		>
 			<h2 class="card__title event-title">{{ displayName }}</h2>
 			<div class="card__content">
 				<section class="card__content-group">
@@ -87,7 +100,7 @@
 					{{/if}}
 				</section>
 			</div>
-			<section class="button-group button-group--horizontal button-group--space-around button-group--large-margin-above button-group--small-margin-below">
+			<section class="button-group button-group--horizontal button-group--centered button-group--large-margin-above button-group--small-margin-below">
 				<button class="button button--large button--teal events__navigation-button" data-url="{{ url }}">View Details</button>
 				{{#if canRegister}}
 				{{#if ../user}}
@@ -96,8 +109,9 @@
 				<form action="/events/unregister/{{ _id }}" class="modal-form--event-registration" method="POST">
 					<input type="hidden" name="eventName" value="{{ name }}">
 					<input type="hidden" name="redirectPath" value="{{ ../redirectPath }}">
-					<button class="button button--large button--teal events__unregister-button" type="submit">Unregister</button>
+					<button class="button button--large button--teal" type="submit">Unregister</button>
 				</form>
+				<button class="button button--large button--teal events__edit-registration-button">Edit Registration</button>
 				{{else}}
 				<button class="button button--large button--teal events__register-button">Register</button>
 				{{/if}}
@@ -124,7 +138,7 @@
 	<div class="card card--small-margin-below card-list__collapsible-trigger-container">
 		<div class="card__details card__details--centered">
 			<p class="card__details__body">
-				<h3 class="card-list__collapsible-trigger-text">{{ region }} ({{ this.events.length }})</h3>
+				<h3 class="card-list__collapsible-trigger-text">{{ region }} ({{ this.events.length }} {{#ifeq this.events.length 1}}event{{else}}events{{/ifeq}})</h3>
 				<span class="card-list__collapsible-trigger-indicator card-list__collapsible-trigger-indicator--expanded">-</span>
 			</p>
 		</div>
@@ -134,7 +148,20 @@
 
 		{{#each events}}
 
-		<div class="card card--vertical card--medium-padding card--small-margin-below event" data-event-name="{{ name }}" data-event-date="{{ displayDate }}" data-event-id="{{ _id }}">
+		<div class="card card--vertical card--medium-padding card--small-margin-below event"
+			data-event-name="{{ name }}"
+			data-event-date="{{ displayDate }}"
+			data-event-id="{{ _id }}"
+			{{#if isUserBringingChildren}}
+			data-registered-children-user-is-bringing="[{{ registeredChildrenUserIsBringing }}]"
+			{{/if}}
+			{{#if isUserBringingUnregisteredChildren}}
+			data-unregistered-children-user-is-bringing="[{{ unregisteredChildrenUserIsBringing }}]"
+			{{/if}}
+			{{#if isUserBringingUnregisteredAdults}}
+			data-unregistered-adults-user-is-bringing="[{{ unregisteredAdultsUserIsBringing }}]"
+			{{/if}}
+		>
 			<h2 class="card__title event-title">{{ displayName }}</h2>
 			<div class="card__content">
 				<section class="card__content-group">
@@ -168,7 +195,7 @@
 					{{/if}}
 				</section>
 			</div>
-			<section class="button-group button-group--horizontal button-group--space-around button-group--large-margin-above button-group--small-margin-below">
+			<section class="button-group button-group--horizontal button-group--centered button-group--large-margin-above button-group--small-margin-below">
 				<button class="button button--large button--teal events__navigation-button" data-url="{{ url }}">View Details</button>
 				{{#if canRegister}}
 				{{#if ../user}}
@@ -177,8 +204,9 @@
 				<form action="/events/unregister/{{ _id }}" class="modal-form--event-registration" method="POST">
 					<input type="hidden" name="eventName" value="{{ name }}">
 					<input type="hidden" name="redirectPath" value="{{ ../redirectPath }}">
-					<button class="button button--large button--teal events__unregister-button" type="submit">Unregister</button>
+					<button class="button button--large button--teal" type="submit">Unregister</button>
 				</form>
+				<button class="button button--large button--teal events__edit-registration-button">Edit Registration</button>
 				{{else}}
 				<button class="button button--large button--teal events__register-button">Register</button>
 				{{/if}}
@@ -203,7 +231,7 @@
 	<div class="card card--small-margin-below card-list__collapsible-trigger-container">
 		<div class="card__details card__details--centered">
 			<p class="card__details__body">
-				<h3 class="card-list__collapsible-trigger-text">Available Statewide ({{ eventsWithNoRegion.length }})</h3>
+				<h3 class="card-list__collapsible-trigger-text">Available Statewide ({{ eventsWithNoRegion.length }} {{#ifeq eventsWithNoRegion.length 1}}event{{else}}events{{/ifeq}})</h3>
 				<span class="card-list__collapsible-trigger-indicator card-list__collapsible-trigger-indicator--expanded">-</span>
 			</p>
 		</div>
@@ -213,7 +241,20 @@
 		
 		{{#each eventsWithNoRegion}}
 
-		<div class="card card--vertical card--medium-padding card--small-margin-below event" data-event-name="{{ name }}" data-event-date="{{ displayDate }}" data-event-id="{{ _id }}">
+		<div class="card card--vertical card--medium-padding card--small-margin-below event"
+			data-event-name="{{ name }}"
+			data-event-date="{{ displayDate }}"
+			data-event-id="{{ _id }}"
+			{{#if isUserBringingChildren}}
+			data-registered-children-user-is-bringing="[{{ registeredChildrenUserIsBringing }}]"
+			{{/if}}
+			{{#if isUserBringingUnregisteredChildren}}
+			data-unregistered-children-user-is-bringing="[{{ unregisteredChildrenUserIsBringing }}]"
+			{{/if}}
+			{{#if isUserBringingUnregisteredAdults}}
+			data-unregistered-adults-user-is-bringing="[{{ unregisteredAdultsUserIsBringing }}]"
+			{{/if}}
+		>
 			<h2 class="card__title event-title">{{ displayName }}</h2>
 			<div class="card__content">
 				<section class="card__content-group">
@@ -247,7 +288,7 @@
 					{{/if}}
 				</section>
 			</div>
-			<section class="button-group button-group--horizontal button-group--space-around button-group--large-margin-above button-group--small-margin-below">
+			<section class="button-group button-group--horizontal button-group--centered button-group--large-margin-above button-group--small-margin-below">
 				<button class="button button--large button--teal events__navigation-button" data-url="{{ url }}">View Details</button>
 				{{#if canRegister}}
 				{{#if ../user}}
@@ -256,8 +297,9 @@
 				<form action="/events/unregister/{{ _id }}" class="modal-form--event-registration" method="POST">
 					<input type="hidden" name="eventName" value="{{ name }}">
 					<input type="hidden" name="redirectPath" value="{{ ../redirectPath }}">
-					<button class="button button--large button--teal events__unregister-button" type="submit">Unregister</button>
+					<button class="button button--large button--teal" type="submit">Unregister</button>
 				</form>
+				<button class="button button--large button--teal events__edit-registration-button">Edit Registration</button>
 				{{else}}
 				<button class="button button--large button--teal events__register-button">Register</button>
 				{{/if}}
@@ -282,7 +324,20 @@
 
 	{{#each MAREHostedEvents}}
 
-	<div class="card card--vertical card--medium-padding card--small-margin-below event" data-event-name="{{ name }}" data-event-date="{{ displayDate }}" data-event-id="{{ _id }}">
+	<div class="card card--vertical card--medium-padding card--small-margin-below event"
+		data-event-name="{{ name }}"
+		data-event-date="{{ displayDate }}"
+		data-event-id="{{ _id }}"
+		{{#if isUserBringingChildren}}
+		data-registered-children-user-is-bringing="[{{ registeredChildrenUserIsBringing }}]"
+		{{/if}}
+		{{#if isUserBringingUnregisteredChildren}}
+		data-unregistered-children-user-is-bringing="[{{ unregisteredChildrenUserIsBringing }}]"
+		{{/if}}
+		{{#if isUserBringingUnregisteredAdults}}
+		data-unregistered-adults-user-is-bringing="[{{ unregisteredAdultsUserIsBringing }}]"
+		{{/if}}
+	>
 		<h2 class="card__title event-title">{{ displayName }}</h2>
 		<div class="card__content">
 			<section class="card__content-group">
@@ -316,7 +371,7 @@
 				{{/if}}
 			</section>
 		</div>
-		<section class="button-group button-group--horizontal button-group--space-around button-group--large-margin-above button-group--small-margin-below">
+		<section class="button-group button-group--horizontal button-group--centered button-group--large-margin-above button-group--small-margin-below">
 			<button class="button button--large button--teal events__navigation-button" data-url="{{ url }}">View Details</button>
 			{{#if canRegister}}
 			{{#if ../user}}
@@ -325,15 +380,15 @@
 			<form action="/events/unregister/{{ _id }}" class="modal-form--event-registration" method="POST">
 				<input type="hidden" name="eventName" value="{{ name }}">
 				<input type="hidden" name="redirectPath" value="{{ ../redirectPath }}">
-				<button class="button button--large button--teal events__unregister-button" type="submit">Unregister</button>
+				<button class="button button--large button--teal" type="submit">Unregister</button>
 			</form>
+			<button class="button button--large button--teal events__edit-registration-button">Edit Registration</button>
 			{{else}}
 			<button class="button button--large button--teal events__register-button">Register</button>
 			{{/if}}
 			{{/if}}
 			{{/if}}
 		</section>
-
 	</div>
 
 	{{/each}}
@@ -344,6 +399,15 @@
 
 {{/if}}
 
-{{#ifeq userType 'site visitor'}}{{> event-registration-form}}{{/ifeq}}
-{{#ifeq userType 'family'}}{{> event-registration-form}}{{/ifeq}}
-{{#ifeq userType 'social worker'}}{{> event-social-worker-registration-form}}{{/ifeq}}
+{{#ifeq userType 'site visitor'}}
+{{> event-registration-form}}
+{{> event-edit-registration-form}}
+{{/ifeq}}
+{{#ifeq userType 'family'}}
+{{> event-registration-form}}
+{{> event-edit-registration-form}}
+{{/ifeq}}
+{{#ifeq userType 'social worker'}}
+{{> event-social-worker-registration-form}}
+{{> event-edit-social-worker-registration-form}}
+{{/ifeq}}

@@ -10,7 +10,8 @@
 			'mouseleave .card-list__collapsible-trigger-container'	: 'hideExpandCollapseIndicator',
 			'click .card-list__collapsible-trigger-container'		: 'toggleCollapsibleList',
             'click .events__navigation-button'						: 'navigate',
-			'click .events__register-button'						: 'showEventRegistrationForm'
+			'click .events__register-button'						: 'showEventRegistrationForm',
+			'click .events__edit-registration-button'				: 'editEventRegistrationForm'
 		},
 		
 		initialize: function initialize() {
@@ -59,7 +60,12 @@
 
 		showEventRegistrationForm: function showEventRegistrationForm( event ) {
 			// pass the request for opening the modal to the view in charge of the modal
-			mare.views.eventRegistrationForm.handleRegisterButtonClick( event );
+			mare.views.eventRegistrationForm.handleRegisterButtonClick( event, 'register' );
+		},
+
+		editEventRegistrationForm: function editEventRegistrationForm( event ) {
+			// pass the request for opening the modal to the view in charge of the modal
+			mare.views.eventRegistrationForm.handleRegisterButtonClick( event, 'edit' );
 		}
 	});
 }());

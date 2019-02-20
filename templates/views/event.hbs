@@ -39,7 +39,20 @@
 
 <section class="card-list">
 
-	<div class="card card--vertical card--medium-padding event" data-event-name="{{ event.name }}" data-event-date="{{ event.displayDate }}" data-event-id="{{ event._id }}">
+	<div class="card card--vertical card--medium-padding event"
+		data-event-name="{{ event.name }}"
+		data-event-date="{{ event.displayDate }}"
+		data-event-id="{{ event._id }}"
+		{{#if isUserBringingChildren}}
+		data-registered-children-user-is-bringing="[{{ registeredChildrenUserIsBringing }}]"
+		{{/if}}
+		{{#if isUserBringingUnregisteredChildren}}
+		data-unregistered-children-user-is-bringing="[{{ unregisteredChildrenUserIsBringing }}]"
+		{{/if}}
+		{{#if isUserBringingUnregisteredAdults}}
+		data-unregistered-adults-user-is-bringing="[{{ unregisteredAdultsUserIsBringing }}]"
+		{{/if}}
+	>
 		
 		<h2 class="card__title">{{ event.displayName }}</h2>
 		
@@ -144,8 +157,9 @@
 			<form action="/events/unregister/{{ event._id }}" class="modal-form--event-registration" method="POST">
 				<input type="hidden" name="eventName" value="{{ event.name }}">
 				<input type="hidden" name="redirectPath" value="{{ redirectPath }}">
-				<button class="button button--large button--teal events__unregister-button" type="submit">Unregister</button>
+				<button class="button button--large button--teal" type="submit">Unregister</button>
 			</form>
+			<button class="button button--large button--teal events__edit-registration-button">Edit Registration</button>
 			{{else}}
 			<button class="button button--large button--teal events__register-button">Register</button>
 			{{/if}}
@@ -160,6 +174,15 @@
 
 {{/if}}
 
-{{#ifeq userType 'site visitor'}}{{> event-registration-form}}{{/ifeq}}
-{{#ifeq userType 'family'}}{{> event-registration-form}}{{/ifeq}}
-{{#ifeq userType 'social worker'}}{{> event-social-worker-registration-form}}{{/ifeq}}
+{{#ifeq userType 'site visitor'}}
+{{> event-registration-form}}
+{{> event-edit-registration-form}}
+{{/ifeq}}
+{{#ifeq userType 'family'}}
+{{> event-registration-form}}
+{{> event-edit-registration-form}}
+{{/ifeq}}
+{{#ifeq userType 'social worker'}}
+{{> event-social-worker-registration-form}}
+{{> event-edit-social-worker-registration-form}}
+{{/ifeq}}
