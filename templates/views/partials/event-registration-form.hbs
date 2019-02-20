@@ -10,6 +10,9 @@
 			\{{ eventDate }}
 		</div>
 	</div>
+	<div class="row form-group">
+		<div class="col-sm-24 form-group event__user-display-name">Registration for {{ displayName }}</div>
+	</div>
 	<div class="modal-form__key">
 		<span class="required required-description">* Required</span>
 	</div>
@@ -18,12 +21,6 @@
 		<input type="hidden" name="redirectPath" value="{{ redirectPath }}">
 
 		<section class="form-section">
-			<div class="row form-group">
-				<div class="col-sm-24 form-group">
-					<input type="text" class="input" id="name" name="name" value="{{ displayName }}" disabled="disabled">
-					<label for="name" class="label">Registration For</label>
-				</div>
-			</div>
 			<div class="row form-group">
 				<div class="col-sm-12 form-group">
 					<select id="number-of-adults" class="input number-of-adults-select" name="numberOfAdults">
@@ -34,7 +31,7 @@
 						<option value="4">4</option>
 						<option value="5">5</option>
 					</select>
-					<label for="number-of-adults" class="label required-field">Number of adults attending</label>
+					<label for="number-of-adults" class="label required-field">Number of other adults attending</label>
 				</div>
 			</div>
 			<section class="row form-group adults-container"></section>
