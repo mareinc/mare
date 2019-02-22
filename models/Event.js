@@ -46,7 +46,7 @@ Event.add( 'General Information', {
 		zipCode: { type: Types.Text, label: 'zip code', initial: true, validate: Validators.zipValidator },
 		region: { type: Types.Relationship, label: 'region', ref: 'Region' }
 	},
-
+	// TODO: contact and contactEmail should be renamed as socialWorkerContact and socialWorkerContactEmail
 	contact: { type: Types.Relationship, label: 'gen./SW contact', ref: 'Admin', initial: true },
 	contactEmail: { type: Types.Email, label: 'gen./SW contact email', note: 'only fill out if no gen./SW contact is selected', initial: true },
 	familyContact: { type: Types.Relationship, label: 'family reg. contact', ref: 'Admin', initial: true },
