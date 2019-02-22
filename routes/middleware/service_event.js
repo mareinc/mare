@@ -4,7 +4,8 @@ const keystone						= require( 'keystone' ),
 	  eventEmailMiddleware			= require( './emails_event' ),
 	  emailTargetMiddleware			= require( './service_email-target' ),
 	  staffEmailContactMiddleware	= require( './service_staff-email-contact' ),
-	  eventService					= require( './service_event' );
+	  eventService					= require( './service_event' ),
+	  userService					= require( './service_user' );
 
 exports.getEventById = ( eventId, fieldsToPopulate = [] ) => {
 
@@ -594,6 +595,50 @@ exports.getEventStaffContactInfo = emailTarget => {
 				// reject the promise with the reason for the rejection
 				reject( `error fetching staff contact - ${ err }` );
 			});
+	});
+};
+
+exports.getEventContactEmail = eventId => {
+
+	return new Promise( async ( resolve, reject ) => {
+
+		// attempt to get the event that the user is registering for
+		try {
+			const event = await exports.getEventById( eventId );
+
+			let eventContactEmail;
+			// if a social worker contact has been selected ( this is a relationship pointing to an admin user )
+			if( event.contact ) {
+				// attempt to fetch the social worker contact
+				const socialWorkerContact = await userService.getUserByIdNew({
+					id: event.contact,
+					targetModel: keystone.list( 'Admin' )
+				});
+				// extract the email from the contact and store it as the event contact email
+				eventContactEmail = socialWorkerContact.get( 'email' );
+			// if no social worker contact has been set, fall back to the text field for their email if one exists
+			} else if( event.contactEmail ) {
+				eventContactEmail = event.contactEmail;
+			// if no social worker contact information has been provided, check for a family contact ( this is also a relationship pointing to an admin user )
+			} else if( event.familyContact ) {
+				// attempt to fetch the family contact
+				const familyContact = await userService.getUserByIdNew({
+					id: event.familyContact,
+					targetModel: keystone.list( 'Admin' )
+				});
+				// extract the email from the contact and store it as the event contact email
+				eventContactEmail = familyContact.get( 'email' );
+			// if not family contact has been set, fall back to the text field for the email if one exists
+			} else if( event.familyContactEmail ) {
+				eventContactEmail = event.familyContactEmail;
+			}
+			// resolve the promise with the event contact email if we could find a value to set for it
+			resolve( eventContactEmail );
+
+		}
+		catch( error ) {
+			reject( `error fetching event by id ${ eventDetails.eventId } - ${ error }` );
+		}
 	});
 };
 

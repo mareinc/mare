@@ -7,6 +7,7 @@ exports.register = async ( req, res ) => {
 	'use strict';
 
 	let emailTarget,
+		eventContactEmail,
 		staffContact,
 		staffContactEmail = 'web@mareinc.org', // default information for a staff email contact in case the real contact info can't be fetched
 		isRegisteredSuccessfully = false;
@@ -78,12 +79,22 @@ exports.register = async ( req, res ) => {
 	if( isRegisteredSuccessfully ) {
 		// attempt to fetch the correct staff contact email address
 		try {
-			// get the email target for an event registration
-			emailTarget = await emailTargetService.getEmailTargetByName( 'event registration' );
-			// get the staff contact assigned to the email target
-			staffContact = await staffEmailContactService.getStaffEmailContactByEmailTarget( emailTarget._id, [ 'staffEmailContact' ] );
-			// overwrite the default contact details with the returned object
-			staffContactEmail = staffContact.staffEmailContact.email;
+			// the social worker contact email should be used, if that doesn't exist, the family contact email, otherwise, fallback to the staff email contact for event registration
+			eventContactEmail = await eventService.getEventContactEmail( eventDetails.eventId );
+
+			// if a contact email was successfully retrieved
+			if( eventContactEmail ) {
+				// overwrite the default contact details with the fetched contact email
+				staffContactEmail = eventContactEmail;
+			// if no email target could be found in the event
+			} else {
+				// attempt to get the general staff email target for an event registration
+				emailTarget = await emailTargetService.getEmailTargetByName( 'event registration' );
+				// attempt to get the staff contact assigned to the email target
+				staffContact = await staffEmailContactService.getStaffEmailContactByEmailTarget( emailTarget._id, [ 'staffEmailContact' ] );
+				// overwrite the default contact details with the fetched contact email
+				staffContactEmail = staffContact.staffEmailContact.email;
+			}
 		}
 		// if there was an error determining the staff email contact
 		catch( err ) {
