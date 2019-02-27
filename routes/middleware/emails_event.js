@@ -36,7 +36,7 @@ exports.sendNewEventEmailToMARE = ( event, socialWorker, staffEmailContact ) => 
 				to: staffEmail,
 				from: {
 					name: 'MARE',
-					email: 'admin@adoptions.io'
+					email: 'web@mareinc.org'
 				},
 				subject: `new event created`
 			// callback
@@ -104,7 +104,7 @@ exports.sendEventRegistrationEmailToMARE = ( eventDetails, userDetails, host, st
 						to: staffContactEmail,
 						from: {
 							name: 'MARE',
-							email: 'admin@adoptions.io'
+							email: 'web@mareinc.org'
 						},
 						subject: `new event registration`,
 					// callback
@@ -166,7 +166,7 @@ exports.sendEventUnregistrationEmailToMARE = ( eventDetails, userDetails, host, 
 				to: staffContactEmail,
 				from: {
 					name: 'MARE',
-					email: 'admin@adoptions.io'
+					email: 'web@mareinc.org'
 				},
 				subject: `event unregistration`
 			// callback
@@ -187,6 +187,93 @@ exports.sendEventUnregistrationEmailToMARE = ( eventDetails, userDetails, host, 
 			});
 	});
 };
+
+exports.sendEventRegistrationEditedEmailToMARE = ({
+	eventDetails,
+	addedRegisteredChildren,
+	addedUnregisteredChildren,
+	addedUnregisteredAdults,
+	removedRegisteredChildren,
+	removedUnregisteredChildren,
+	removedUnregisteredAdults,
+	userDetails,
+	host,
+	staffContactEmail
+}) => {
+	return new Promise( async (resolve, reject ) => {
+		// if sending of the email is not currently allowed
+		if( process.env.SEND_EVENT_EDITED_EMAILS_TO_MARE !== 'true' ) {
+			// reject the promise with information about why
+			return reject( `sending of the event edited email is disabled` );
+		}
+
+		try {
+			const addedRegisteredChildrenData = await exports.getRegisteredChildData( addedRegisteredChildren );
+			const removedRegisteredChildrenData = await exports.getRegisteredChildData( removedRegisteredChildren );
+
+			// perform field-level validation for email templating
+			if( eventDetails.source === 'other' ) {
+				eventDetails.source = `Other: ${ eventDetails.otherSource }`;
+			}
+
+			// set custom display name if necessary
+			var displayName = userDetails.userType === 'family' ? userDetails.displayName : undefined;
+
+			// find the email template in templates/emails/
+			Email.send(
+				// template path
+				'event-registration-edited-notification-to-mare',
+				// email options
+				{
+					engine: 'hbs',
+					transport: 'mandrill',
+					root: 'templates/emails/'
+				// render options
+				}, {
+					event: eventDetails,
+					user: userDetails,
+					addedRegisteredChildren: addedRegisteredChildrenData,
+					addedUnregisteredChildren: addedUnregisteredChildren.length > 0 ? addedUnregisteredChildren : null,
+					addedUnregisteredAdults: addedUnregisteredAdults.length > 0 ? addedUnregisteredAdults : null,
+					removedRegisteredChildren: removedRegisteredChildrenData,
+					removedUnregisteredChildren: removedUnregisteredChildren.length > 0 ? removedUnregisteredChildren : null,
+					removedUnregisteredAdults: removedUnregisteredAdults.length > 0 ? removedUnregisteredAdults : null,
+					host,
+					displayName,
+					layout: false
+				// send options
+				}, {
+					apiKey: process.env.MANDRILL_APIKEY,
+					to: staffContactEmail,
+					from: {
+						name: 'MARE',
+						email: 'web@mareinc.org'
+					},
+					subject: `event registration change`
+				// callback
+				}, ( err, message ) => {
+					// log any errors
+					if( err ) {
+						return reject( `error sending event registration edited email to staff - ${ err }` );
+					}
+					// the response object is stored as the 0th element of the returned message
+					const response = message ? message[ 0 ] : undefined;
+					// if the email failed to send, or an error occurred ( which it does, rarely ) causing the response message to be empty
+					if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
+						// reject the promise with details
+						return reject( `new event registration edited email to staff failed to send: ${ message } - ${ err }` );
+					}
+
+					resolve();
+				});
+			}
+			catch( error ) {
+				console.error( `error sending event registration edited email to staff - ${ error }` );
+
+				reject();
+			}
+	});
+}
 
 exports.getRegisteredChildData = (registeredChildren) => {
 
