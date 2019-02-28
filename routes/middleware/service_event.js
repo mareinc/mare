@@ -702,6 +702,9 @@ exports.getEventContactEmail = ( { eventId, userType } ) => {
 
 			// if the user is a social worker, get the social worker contact before the family contact
 			if( userType === 'social worker' ) {
+
+				console.log( `TEST - user is a social worker, fetching staff email contact` );
+
 				// if a social worker contact has been selected ( this is a relationship pointing to an admin user )
 				if( event.contact ) {
 					// fetch the social worker contact
@@ -729,6 +732,9 @@ exports.getEventContactEmail = ( { eventId, userType } ) => {
 				}
 			// if the user is a family, attempt to get the family contact before the social worker contact
 			} else if( userType === 'family' ) {
+
+				console.log( `TEST - user is a family, fetching staff email contact` );
+
 				// if a family contact has been selected ( this is a relationship pointing to an admin user )
 				if( event.familyContact ) {
 					// attempt to fetch the family contact

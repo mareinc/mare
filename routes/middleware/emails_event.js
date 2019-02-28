@@ -219,6 +219,8 @@ exports.sendEventRegistrationEditedEmailToMARE = ({
 			// set custom display name if necessary
 			var displayName = userDetails.userType === 'family' ? userDetails.displayName : undefined;
 
+			console.log( `TEST - sending email to ${ staffContactEmail } for ${ userDetails.userType }` );
+
 			// find the email template in templates/emails/
 			Email.send(
 				// template path

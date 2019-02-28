@@ -354,6 +354,8 @@ exports.editRegistration = async ( req, res, next ) => {
 				userType: req.user.userType
 			});
 
+			console.log( `TEST - about to send email for successful edit to ${ eventContactEmail } for ${ userDetails.userType }` );
+
 			// send an email to the staff contact with the registration info if changes exist
 			if( addedUnregisteredAdults.size > 0
 				|| addedUnregisteredChildren.size > 0
