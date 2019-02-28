@@ -354,7 +354,7 @@ exports.editRegistration = async ( req, res, next ) => {
 				userType: req.user.userType
 			});
 
-			console.log( `TEST - about to send email for successful edit to ${ eventContactEmail } for ${ userDetails.userType }` );
+			console.log( `TEST - about to send email for successful edit to ${ eventContactEmail } for ${ req.user.userType }` );
 
 			// send an email to the staff contact with the registration info if changes exist
 			if( addedUnregisteredAdults.size > 0
@@ -380,7 +380,7 @@ exports.editRegistration = async ( req, res, next ) => {
 		}
 		catch( err ) {
 			// log the error for debugging purposes
-			console.error( `error sending event registration email about ${ req.user.displayName } for ${ eventDetails.eventName } - ${ err }` );
+			console.error( `error sending event registration edited email about ${ req.user.displayName } for ${ eventDetails.eventName } - ${ err }` );
 		}
 	}
 
