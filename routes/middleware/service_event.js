@@ -1,13 +1,12 @@
+// TODO: anything that needs to fetch the event to work should have a parameter for event, and if it's passed in, it uses that instead of fetching.  This would save several DB lookups
+
 const keystone						= require( 'keystone' ),
-	  async							= require( 'async' ),
-	  moment						= require( 'moment' ),
 	  eventEmailMiddleware			= require( './emails_event' ),
-	  emailTargetMiddleware			= require( './service_email-target' ),
-	  staffEmailContactMiddleware	= require( './service_staff-email-contact' ),
-	  eventService					= require( './service_event' ),
+		emailTargetService		= require( './service_email-target' ),
+	  staffEmailContactService	= require( './service_staff-email-contact' ),
 	  userService					= require( './service_user' );
 
-exports.getEventById = ( eventId, fieldsToPopulate = [] ) => {
+exports.getEventById = ( { eventId, fieldsToPopulate = [] } ) => {
 
 	return new Promise( ( resolve, reject ) => {
 		keystone.list( 'Event' ).model
@@ -259,11 +258,11 @@ exports.submitEvent = function submitEvent( req, res, next ) {
 					};
 
 					// fetch the email target model matching 'event created by social worker'
-					const fetchEmailTarget = emailTargetMiddleware.getEmailTargetByName( 'event created by social worker' );
+					const fetchEmailTarget = emailTargetService.getEmailTargetByName( 'event created by social worker' );
 
 					fetchEmailTarget
 						// fetch contact info for the staff contact for 'event created by social worker'
-						.then( emailTarget => staffEmailContactMiddleware.getStaffEmailContactByEmailTarget( emailTarget.get( '_id' ), [ 'staffEmailContact' ] ) )
+						.then( emailTarget => staffEmailContactService.getStaffEmailContactByEmailTarget( emailTarget.get( '_id' ), [ 'staffEmailContact' ] ) )
 						// overwrite the default contact details with the returned object
 						.then( staffEmailContact => staffEmailContactInfo = staffEmailContact.staffEmailContact )
 						// log any errors fetching the staff email contact
@@ -350,7 +349,7 @@ exports.register = ( eventDetails, user ) => {
 		let attendeeType =  exports.getEventGroup( user.userType );
 
 		// get the event that the user is registering for
-		exports.getEventById( eventDetails.eventId )
+		exports.getEventById( { eventId: eventDetails.eventId } )
 			.then( event => {
 
 				// add the user as an attendee to the existing list
@@ -404,7 +403,7 @@ exports.unregister = ( eventDetails, user ) => {
 		let attendeeType =  exports.getEventGroup( user.userType );
 
 		// get the event that the user is registering for
-		exports.getEventById( eventDetails.eventId )
+		exports.getEventById( { eventId: eventDetails.eventId } )
 			// remove the attendee from the event
 			.then( event => {
 
@@ -569,7 +568,100 @@ exports.removeUnregisteredAdults = ( event, registrantId ) => {
 	return unregisteredAdultsRemoved;
 };
 
-/* returns an array of staff email contacts */
+/* 
+ * Fetches the array of unregistered child attendee objects.
+ *
+ * @return [{
+    "age": 5,
+    "registrantID": "5a6ff5a82d436123456b5511",
+    "_id": {
+        "$oid": "5c758d9f81e123456481dd22"
+    },
+    "name": {
+        "first": "firstName",
+        "last": "lastName"
+    }
+}]
+ */
+exports.getUnregisteredChildren = eventId => {
+
+	return new Promise( async ( resolve, reject ) => {
+
+        try {
+            const event = await exports.getEventById( { eventId } );
+
+            if( !event.unregisteredChildAttendees ) {
+                return resolve( [] );
+            }
+
+            resolve( event.unregisteredChildAttendees );
+        }
+        catch( error ) {
+            reject( `error fetching unregistered child attendees for event with id ${ eventId }` );
+        }
+	});
+};
+
+/* 
+ * Fetches the array of unregistered adult attendee objects.
+ *
+ * @return [{
+    "registrantID": "5a6ff5a82d436123456b5511",
+        "_id": {
+            "$oid": "5c758d9f81e123456481dd22"
+        },
+        "name": {
+            "first": "firstName",
+            "last": "lastName"
+        }
+    }]
+ */
+exports.getUnregisteredAdults = eventId => {
+
+	return new Promise( async ( resolve, reject ) => {
+        try {
+            const event = await exports.getEventById( { eventId } );
+
+            if( !event.unregisteredAdultAttendees ) {
+                return resolve( [] );
+            }
+
+            resolve( event.unregisteredAdultAttendees );
+            
+        }
+        catch( error ) {
+            reject( `error fetching unregistered adult attendees for event with id ${ eventId }` );
+        }
+	})
+};
+
+/* 
+ * Fetches the array of registered child attendee objects.
+ *
+ * @return [Child models]
+ */
+exports.getRegisteredChildren = eventId => {
+
+	return new Promise( async ( resolve, reject ) => {
+        try {
+			// set the array of fields to populate when the event model is fetched
+			const fieldsToPopulate = [ 'childAttendees' ];
+
+            const event = await exports.getEventById( { eventId, fieldsToPopulate } );
+
+            if( !event.childAttendees ) {
+                return resolve( [] );
+            }
+
+            resolve( event.childAttendees );
+            
+        }
+        catch( error ) {
+            reject( `error fetching registered child attendees for event with id ${ eventId }` );
+        }
+	})
+};
+
 exports.getEventStaffContactInfo = emailTarget => {
 
 	return new Promise( ( resolve, reject ) => {
@@ -581,11 +673,11 @@ exports.getEventStaffContactInfo = emailTarget => {
 		// TODO: it was nearly impossible to create a readable comma separated list of links in the template with more than one address,
 		// 	     so we're only fetching one contact when we should fetch them all
 		// get the database id of the admin contact set to handle registration questions for the email target
-		emailTargetMiddleware
+		emailTargetService
 			.getTargetId( emailTarget )
 			.then( targetId => {
 				// get the contact details of the admin contact set to handle registration questions for the email target
-				return staffEmailContactMiddleware.getContactById( targetId );
+				return staffEmailContactService.getContactById( targetId );
 			})
 			.then( contactInfo => {
 				// resolve the promise with the full name and email address of the contact
@@ -598,46 +690,89 @@ exports.getEventStaffContactInfo = emailTarget => {
 	});
 };
 
-exports.getEventContactEmail = eventId => {
+exports.getEventContactEmail = ( { eventId, userType } ) => {
 
 	return new Promise( async ( resolve, reject ) => {
 
-		// attempt to get the event that the user is registering for
+		// get the event that the user is registering for
 		try {
-			const event = await exports.getEventById( eventId );
+			const event = await exports.getEventById( { eventId } );
 
 			let eventContactEmail;
-			// if a social worker contact has been selected ( this is a relationship pointing to an admin user )
-			if( event.contact ) {
-				// attempt to fetch the social worker contact
-				const socialWorkerContact = await userService.getUserByIdNew({
-					id: event.contact,
-					targetModel: keystone.list( 'Admin' )
-				});
-				// extract the email from the contact and store it as the event contact email
-				eventContactEmail = socialWorkerContact.get( 'email' );
-			// if no social worker contact has been set, fall back to the text field for their email if one exists
-			} else if( event.contactEmail ) {
-				eventContactEmail = event.contactEmail;
-			// if no social worker contact information has been provided, check for a family contact ( this is also a relationship pointing to an admin user )
-			} else if( event.familyContact ) {
-				// attempt to fetch the family contact
-				const familyContact = await userService.getUserByIdNew({
-					id: event.familyContact,
-					targetModel: keystone.list( 'Admin' )
-				});
-				// extract the email from the contact and store it as the event contact email
-				eventContactEmail = familyContact.get( 'email' );
-			// if not family contact has been set, fall back to the text field for the email if one exists
-			} else if( event.familyContactEmail ) {
-				eventContactEmail = event.familyContactEmail;
+
+			// if the user is a social worker, get the social worker contact before the family contact
+			if( userType === 'social worker' ) {
+				// if a social worker contact has been selected ( this is a relationship pointing to an admin user )
+				if( event.contact ) {
+					// fetch the social worker contact
+					const socialWorkerContact = await userService.getUserByIdNew({
+						id: event.contact,
+						targetModel: keystone.list( 'Admin' )
+					});
+					// extract the email from the contact and store it as the event contact email
+					eventContactEmail = socialWorkerContact.get( 'email' );
+				// if no social worker contact has been set, fall back to the text field for their email if one exists
+				} else if( event.contactEmail ) {
+					eventContactEmail = event.contactEmail;
+				// if no social worker contact information has been provided, check for a family contact ( this is also a relationship pointing to an admin user )
+				} else if( event.familyContact ) {
+					// fetch the family contact
+					const familyContact = await userService.getUserByIdNew({
+						id: event.familyContact,
+						targetModel: keystone.list( 'Admin' )
+					});
+
+					// extract the email from the contact and store it as the event contact email
+					eventContactEmail = familyContact.get( 'email' );
+				// if no family contact has been set, fall back to the text field for the email if one exists
+				} else if( event.familyContactEmail ) {
+					eventContactEmail = event.familyContactEmail;
+				}
+			// if the user is a family, attempt to get the family contact before the social worker contact
+			} else if( userType === 'family' ) {
+				// if a family contact has been selected ( this is a relationship pointing to an admin user )
+				if( event.familyContact ) {
+					// attempt to fetch the family contact
+					const familyContact = await userService.getUserByIdNew({
+						id: event.familyContact,
+						targetModel: keystone.list( 'Admin' )
+					});
+					// extract the email from the contact and store it as the event contact email
+					eventContactEmail = familyContact.get( 'email' );
+				// if no family contact has been set, fall back to the text field for the email if one exists
+				} else if( event.familyContactEmail ) {
+					eventContactEmail = event.familyContactEmail;
+				// if no family contact information has been provided, check for a social worker contact ( this is also a relationship pointing to an admin user )
+				} else if( event.contact ) {
+					// attempt to fetch the social worker contact
+					const socialWorkerContact = await userService.getUserByIdNew({
+						id: event.contact,
+						targetModel: keystone.list( 'Admin' )
+					});
+					// extract the email from the contact and store it as the event contact email
+					eventContactEmail = socialWorkerContact.get( 'email' );
+				// if no social worker contact has been set, fall back to the text field for their email if one exists
+				} else if( event.contactEmail ) {
+					eventContactEmail = event.contactEmail;
+				}
 			}
+			// if no contact fields were filled out, fall back to the staff email contact for event registration
+			if( !eventContactEmail ) {
+				// get the general staff email target for an event registration
+				const emailTarget = await emailTargetService.getEmailTargetByName( 'event registration' );
+				// get the staff contact assigned to the email target
+				const staffContact = await staffEmailContactService.getStaffEmailContactByEmailTarget( emailTarget._id, [ 'staffEmailContact' ] );
+				// set the contact details to the fetched contact email
+				eventContactEmail = staffContact.staffEmailContact.email;
+			}
+			// if there is still no contact email address to send to, default to web@mareinc.org
+			eventContactEmail = eventContactEmail || 'web@mareinc.org';
 			// resolve the promise with the event contact email if we could find a value to set for it
 			resolve( eventContactEmail );
 
 		}
 		catch( error ) {
-			reject( `error fetching event by id ${ eventDetails.eventId } - ${ error }` );
+			reject( `error fetching event contact email for event with id ${ eventDetails.eventId } - ${ error }` );
 		}
 	});
 };
