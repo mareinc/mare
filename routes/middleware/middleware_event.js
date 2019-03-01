@@ -73,17 +73,11 @@ exports.register = async ( req, res ) => {
 	if( isRegisteredSuccessfully ) {
 		// fetch the correct staff contact email address
 		try {
-
-			console.log( `TEST REGISTER - about to fetch staff email contact for ${ req.user.userType } ${ req.user.displayName } - ${ eventDetails.eventName }` );
-
 			// fetch the correct email contact based on the user type and what information is available on the event
 			const eventContactEmail = await eventService.getEventContactEmail({
 				eventId: eventDetails.eventId,
 				userType: req.user.userType
 			});
-
-			console.log( `TEST REGISTER - about to send email for successful registration to ${ eventContactEmail } for ${ req.user.userType } ${ req.user.displayName } - ${ eventDetails.eventName }` );
-
 			// send an email to the staff contact with the registration info
 			await eventEmailMiddleware.sendEventRegistrationEmailToMARE( eventDetails, req.user, res.host, eventContactEmail );
 		}
@@ -223,17 +217,11 @@ exports.unregister = async ( req, res ) => {
 	if( isUnregisteredSuccessfully ) {
 		// fetch the correct staff contact email address
 		try {
-
-			console.log( `TEST UNREGISTER - about to fetch staff email contact for ${ req.user.userType } ${ req.user.displayName } - ${ eventDetails.eventName }` );
-
 			// fetch the correct email contact based on the user type and what information is available on the event
 			const eventContactEmail = await eventService.getEventContactEmail({
 				eventId: eventDetails.eventId,
 				userType: req.user.userType
 			});
-
-			console.log( `TEST UNREGISTER - about to send email for successful registration to ${ eventContactEmail } for ${ req.user.userType } ${ req.user.displayName } - ${ eventDetails.eventName }` );
-
 			// send an email to the staff contact with the registration info
 			await eventEmailMiddleware.sendEventUnregistrationEmailToMARE( eventDetails, req.user, res.host, eventContactEmail );
 		}
@@ -360,15 +348,11 @@ exports.editRegistration = async ( req, res, next ) => {
 			const addedRegisteredChildren = submittedRegisteredChildSet.leftOuterJoin( registeredChildSet );
 			const removedRegisteredChildren = submittedRegisteredChildSet.rightOuterJoin( registeredChildSet );
 
-			console.log( `TEST EDIT - about to fetch staff email contact for ${ req.user.userType } ${ req.user.displayName } - ${ eventDetails.eventName }` );
-
 			// fetch the correct email contact based on the user type and what information is available on the event
 			const eventContactEmail = await eventService.getEventContactEmail({
 				eventId: eventDetails.eventId,
 				userType: req.user.userType
 			});
-
-			console.log( `TEST EDIT - about to send email for successful edit to ${ eventContactEmail } for ${ req.user.userType } ${ req.user.displayName } - ${ eventDetails.eventName }` );
 
 			// send an email to the staff contact with the registration info if changes exist
 			if( addedUnregisteredAdults.size > 0

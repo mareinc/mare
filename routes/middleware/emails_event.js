@@ -79,8 +79,6 @@ exports.sendEventRegistrationEmailToMARE = ( eventDetails, userDetails, host, st
 					eventDetails.source = `Other: ${ eventDetails.otherSource }`;
 				}
 
-				console.log( `TEST REGISTRATION - sending email to ${ staffContactEmail } for event ${ eventDetails.eventName } - ${ userDetails.userType } ${ userDetails.displayName }` );
-
 				// find the email template in templates/emails/
 				Email.send(
 					// template path
@@ -139,8 +137,6 @@ exports.sendEventUnregistrationEmailToMARE = ( eventDetails, userDetails, host, 
 			// reject the promise with information about why
 			return reject( `sending of the event unregistration email to MARE staff is disabled` );
 		}
-
-		console.log( `TEST UNREGISTRATION - sending email to ${ staffContactEmail } for event ${ eventDetails.eventName } - ${ userDetails.userType } ${ userDetails.displayName }` );
 
 		// find the email template in templates/emails/
 		Email.send(
@@ -214,8 +210,6 @@ exports.sendEventRegistrationEditedEmailToMARE = ({
 				eventDetails.source = `Other: ${ eventDetails.otherSource }`;
 			}
 
-			console.log( `TEST EDIT - sending email to ${ staffContactEmail } for event ${ eventDetails.eventName } - ${ userDetails.userType } ${ userDetails.displayName }` );
-
 			// find the email template in templates/emails/
 			Email.send(
 				// template path
@@ -249,9 +243,6 @@ exports.sendEventRegistrationEditedEmailToMARE = ({
 					subject: `event registration change`
 				// callback
 				}, ( err, message ) => {
-
-					console.log( `TEST EDIT - email sent successfully` );
-
 					// log any errors
 					if( err ) {
 						return reject( `error sending event registration edited email to MARE staff: ${ message } - ${ err }` );
