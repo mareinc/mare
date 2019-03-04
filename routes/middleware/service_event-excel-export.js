@@ -101,19 +101,23 @@ exports.createChildrenWorksheet = ({ event, workbook, attendees = [], unregister
 					});
 				});
 
-				const adoptionWorkerFieldsToPopulate = [ 'agency', 'city' ];
+				const adoptionWorkerFieldsToPopulate = [ 'agency' ];
 
 				await new Promise( ( resolve, reject ) => {
-					// populate adoption worker fields on the child model
-					child.get( 'adoptionWorker' ).populate( adoptionWorkerFieldsToPopulate, err => {
+					if( child.get( 'adoptionWorker' ) ) {
+						// populate adoption worker fields on the child model
+						child.get( 'adoptionWorker' ).populate( adoptionWorkerFieldsToPopulate, err => {
 
-						if( err ) {
-							// log the error for debugging purposes
-							console.error( `error populating adoption worker fields on child ${ child.get( 'displayNameAndRegistration' ) } -${ err }` );
-						}
+							if( err ) {
+								// log the error for debugging purposes
+								console.error( `error populating adoption worker fields on child ${ child.get( 'displayNameAndRegistration' ) } -${ err }` );
+							}
 
+							resolve();
+						});
+					} else {
 						resolve();
-					});
+					}
 				});
 
 				const adoptionWorkerCityId = child.get( 'adoptionWorker.address.city' )
@@ -126,17 +130,23 @@ exports.createChildrenWorksheet = ({ event, workbook, attendees = [], unregister
 					const cityModel = await listService.getCityOrTownById( adoptionWorkerCityId );
 
 					await new Promise( ( resolve, reject ) => {
-						cityModel.populate( 'region', err => {
+						if( cityModel ) {
+							cityModel.populate( 'region', err => {
 
-							if( err ) {
-								console.error( `error populating adoption worker region field on child ${ child.get( 'displayNameAndRegistration' ) } -${ err }` );
-							}
+								if( err ) {
+									console.error( `error populating adoption worker region field on child ${ child.get( 'displayNameAndRegistration' ) } -${ err }` );
+								}
 
+								resolve();
+							});
+						} else {
 							resolve();
-						});
+						}
 					});
 
-					adoptionWorkerRegion = cityModel.get( 'region.region' );
+					adoptionWorkerRegion = cityModel
+						? cityModel.get( 'region.region' )
+						: '';
 				}
 				catch( error ) {
 					console.error( `error fetching adoption worker region - ${ error }` );
@@ -382,17 +392,23 @@ exports.createSocialWorkersWorksheet = ({ event, workbook, attendees, childAtten
 				const cityModel = await listService.getCityOrTownById( cityId );
 
 				await new Promise( ( resolve, reject ) => {
-					cityModel.populate( 'region', err => {
+					if( cityModel ) {
+						cityModel.populate( 'region', err => {
 
-						if( err ) {
-							console.error( `error populating adoption worker region field on child ${ child.get( 'displayNameAndRegistration' ) } -${ err }` );
-						}
+							if( err ) {
+								console.error( `error populating adoption worker region field on child ${ child.get( 'displayNameAndRegistration' ) } -${ err }` );
+							}
 
+							resolve();
+						});
+					} else {
 						resolve();
-					});
+					}
 				});
 
-				region = cityModel.get( 'region.region' );
+				region = cityModel
+					? cityModel.get( 'region.region' )
+					: '';
 			}
 			catch( error ) {
 				console.error( `error fetching adoption worker region - ${ error }` );
