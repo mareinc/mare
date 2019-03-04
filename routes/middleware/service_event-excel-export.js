@@ -19,14 +19,16 @@ exports.createChildrenWorksheet = ({ event, workbook, attendees = [], unregister
 		const headerCellStyleOptions = exports.getCellStyle({
 			options: {
 				border: true,
-				centered: true
+				centered: true,
+				wrapText: true
 			}
 		});
 
 		const cellStyleOptions = exports.getCellStyle({
 			options: {
 				border: true,
-				leftAligned: true
+				leftAligned: true,
+				wrapText: true
 			}
 		});
 
@@ -54,6 +56,7 @@ exports.createChildrenWorksheet = ({ event, workbook, attendees = [], unregister
 		worksheet.cell( 7, 9 ).string( 'adoption worker name' ).style( headerCellStyle );
 		worksheet.cell( 7, 10 ).string( 'adoption worker agency' ).style( headerCellStyle );
 		worksheet.cell( 7, 11 ).string( 'adoption worker region' ).style( headerCellStyle );
+		worksheet.cell( 7, 12 ).string( 'notes' ).style( headerCellStyle );
 
 		// set the row to 1 to begin entering attendee information
 		let row = 8;
@@ -72,6 +75,7 @@ exports.createChildrenWorksheet = ({ event, workbook, attendees = [], unregister
 			worksheet.cell( row, 9 ).style( cellStyle );
 			worksheet.cell( row, 10 ).style( cellStyle );
 			worksheet.cell( row, 11 ).style( cellStyle );
+			worksheet.cell( row, 12 ).style( cellStyle );
 			
 			// increment the row data will be written to
 			row++;
@@ -138,9 +142,10 @@ exports.createChildrenWorksheet = ({ event, workbook, attendees = [], unregister
 				worksheet.cell( row, 6 ).string( siblingsToBePlacedWith.join( ', ' ) ).style( cellStyle );
 				worksheet.cell( row, 7 ).number( child.get( 'registrationNumber' ) ).style( cellStyle );
 				worksheet.cell( row, 8 ).string( child.get( 'status' ).childStatus ).style( cellStyle );
-				worksheet.cell( row, 9 ).string( '' ).style( cellStyle );
-				worksheet.cell( row, 10 ).string( '' ).style( cellStyle );
-				worksheet.cell( row, 11 ).string( '' ).style( cellStyle );
+				worksheet.cell( row, 9 ).style( cellStyle );
+				worksheet.cell( row, 10 ).style( cellStyle );
+				worksheet.cell( row, 11 ).style( cellStyle );
+				worksheet.cell( row, 12 ).style( cellStyle );
 				
 				// increment the row data will be written to
 				row++;
@@ -167,14 +172,16 @@ exports.createFamiliesWorksheet = ({ event, workbook, attendees, unregisteredChi
 		const headerCellStyleOptions = exports.getCellStyle({
 			options: {
 				border: true,
-				centered: true
+				centered: true,
+				wrapText: true
 			}
 		});
 
 		const cellStyleOptions = exports.getCellStyle({
 			options: {
 				border: true,
-				leftAligned: true
+				leftAligned: true,
+				wrapText: true
 			}
 		});
 
@@ -198,12 +205,12 @@ exports.createFamiliesWorksheet = ({ event, workbook, attendees, unregisteredChi
 		worksheet.cell( 7, 5 ).string( 'last name' ).style( headerCellStyle );
 		worksheet.cell( 7, 6 ).string( 'city' ).style( headerCellStyle );
 		worksheet.cell( 7, 7 ).string( 'state' ).style( headerCellStyle );
-		worksheet.cell( 7, 8 ).string( 'telephone' ).style( headerCellStyle );
-		worksheet.cell( 7, 9 ).string( 'contact 1 email' ).style( headerCellStyle );
-		worksheet.cell( 7, 10 ).string( 'contact 2 email' ).style( headerCellStyle );
-		worksheet.cell( 7, 11 ).string( 'most recent state' ).style( headerCellStyle );
-		worksheet.cell( 7, 12 ).string( 'other adults' ).style( headerCellStyle );
-		worksheet.cell( 7, 13 ).string( 'other children' ).style( headerCellStyle );
+		worksheet.cell( 7, 8 ).string( 'contact 1 email' ).style( headerCellStyle );
+		worksheet.cell( 7, 9 ).string( 'contact 2 email' ).style( headerCellStyle );
+		worksheet.cell( 7, 10 ).string( 'most recent state' ).style( headerCellStyle );
+		worksheet.cell( 7, 11 ).string( 'other adults' ).style( headerCellStyle );
+		worksheet.cell( 7, 12 ).string( 'other children' ).style( headerCellStyle );
+		worksheet.cell( 7, 13 ).string( 'notes' ).style( headerCellStyle );
 
 		// set the row to 1 to begin entering attendee information
 		let row = 8;
@@ -226,13 +233,6 @@ exports.createFamiliesWorksheet = ({ event, workbook, attendees, unregisteredChi
 					resolve();
 				});
 			});
-
-			// fetch the first available phone number, prioritizing mobile over work, and contact 1 over contact 2
-			let phone = attendee.get( 'contact1.phone.mobile' )
-				|| attendee.get( 'contact1.phone.work' )
-				|| attendee.get( 'contact2.phone.mobile' )
-				|| attendee.get( 'contact2.phone.work' )
-				|| '';
 
 			// determine the users farthest completed stage
 			let stage = '';
@@ -264,12 +264,15 @@ exports.createFamiliesWorksheet = ({ event, workbook, attendees, unregisteredChi
 			worksheet.cell( row, 5 ).string( attendee.get( 'contact2.name.last' ) || '' ).style( cellStyle );
 			worksheet.cell( row, 6 ).string( attendee.get( 'address.displayCity' ) || '' ).style( cellStyle );
 			worksheet.cell( row, 7 ).string( attendee.get( 'address.state' ) ? attendee.get( 'address.state' ).state : '' ).style( cellStyle );
-			worksheet.cell( row, 8 ).string( phone ).style( cellStyle );
-			worksheet.cell( row, 9 ).string( attendee.get( 'contact1.email' ) || '' ).style( cellStyle );
-			worksheet.cell( row, 10 ).string( attendee.get( 'contact2.email' ) || '' ).style( cellStyle );
-			worksheet.cell( row, 11 ).string( stage ).style( cellStyle );
-			worksheet.cell( row, 12 ).string( unregisteredAdultNames.join( ', ' ) ).style( cellStyle );
-			worksheet.cell( row, 13 ).string( unregisteredChildNames.join( ', ' ) ).style( cellStyle );
+			worksheet.cell( row, 8 ).string( attendee.get( 'contact1.email' ) || '' ).style( cellStyle );
+			worksheet.cell( row, 9 ).string( attendee.get( 'contact2.email' ) || '' ).style( cellStyle );
+			worksheet.cell( row, 10 ).string( stage ).style( cellStyle );
+			worksheet.cell( row, 11 ).string( unregisteredAdultNames.join( ', ' ) ).style( cellStyle );
+			worksheet.cell( row, 12 ).string( unregisteredChildNames.join( ', ' ) ).style( cellStyle );
+			worksheet.cell( row, 13 ).style( cellStyle );
+
+			// increment the row data will be written to
+			row++;
 		}
 
 		resolve();
@@ -286,14 +289,16 @@ exports.createSocialWorkersWorksheet = ({ event, workbook, attendees, childAtten
 		const headerCellStyleOptions = exports.getCellStyle({
 			options: {
 				border: true,
-				centered: true
+				centered: true,
+				wrapText: true
 			}
 		});
 
 		const cellStyleOptions = exports.getCellStyle({
 			options: {
 				border: true,
-				leftAligned: true
+				leftAligned: true,
+				wrapText: true
 			}
 		});
 
@@ -317,6 +322,7 @@ exports.createSocialWorkersWorksheet = ({ event, workbook, attendees, childAtten
 		worksheet.cell( 7, 5 ).string( 'email' ).style( headerCellStyle );
 		worksheet.cell( 7, 6 ).string( 'bringing' ).style( headerCellStyle );
 		worksheet.cell( 7, 7 ).string( 'region' ).style( headerCellStyle );
+		worksheet.cell( 7, 8 ).string( 'notes' ).style( headerCellStyle );
 
 		// set the row to 1 to begin entering attendee information
 		let row = 8;
@@ -361,6 +367,9 @@ exports.createSocialWorkersWorksheet = ({ event, workbook, attendees, childAtten
 			worksheet.cell( row, 5 ).string( attendee.get( 'email' ) || '' ).style( cellStyle );
 			worksheet.cell( row, 6 ).string( allChildNames.join( ', ' ) ).style( cellStyle );
 			worksheet.cell( row, 7 ).string( attendee.get( 'region' ) ? attendee.get( 'region' ).region : '' ).style( cellStyle );
+			worksheet.cell( row, 8 ).style( cellStyle );
+			// increment the row data will be written to
+			row++;
 		}
 
 		resolve();
@@ -375,14 +384,16 @@ exports.createStaffWorksheet = ({ event, workbook, attendees }) => {
 	const headerCellStyleOptions = exports.getCellStyle({
 		options: {
 			border: true,
-			centered: true
+			centered: true,
+			wrapText: true
 		}
 	});
 
 	const cellStyleOptions = exports.getCellStyle({
 		options: {
 			border: true,
-			leftAligned: true
+			leftAligned: true,
+			wrapText: true
 		}
 	});
 
@@ -404,6 +415,7 @@ exports.createStaffWorksheet = ({ event, workbook, attendees }) => {
 	worksheet.cell( 7, 3 ).string( 'last name' ).style( headerCellStyle );
 	worksheet.cell( 7, 4 ).string( 'email' ).style( headerCellStyle );
 	worksheet.cell( 7, 5 ).string( 'phone' ).style( headerCellStyle );
+	worksheet.cell( 7, 6 ).string( 'notes' ).style( headerCellStyle );
 	// set the row to 1 to begin entering attendee information
 	let row = 8;
 	// loop through each staff member attending the event
@@ -438,6 +450,7 @@ exports.createStaffWorksheet = ({ event, workbook, attendees }) => {
 		worksheet.cell( row, 3 ).string( attendee.get( 'name.last' ) || '' ).style( cellStyle );
 		worksheet.cell( row, 4 ).string( attendee.get( 'email' ) || '' ).style( cellStyle );
 		worksheet.cell( row, 5 ).string( phone || '' ).style( cellStyle );
+		worksheet.cell( row, 6 ).style( cellStyle );
 		// increment the row data will be written to
 		row++;
 	}
@@ -453,14 +466,16 @@ exports.createSiteVisitorsWorksheet = ({ event, workbook, attendees }) => {
 		const headerCellStyleOptions = exports.getCellStyle({
 			options: {
 				border: true,
-				centered: true
+				centered: true,
+				wrapText: true
 			}
 		});
 
 		const cellStyleOptions = exports.getCellStyle({
 			options: {
 				border: true,
-				leftAligned: true
+				leftAligned: true,
+				wrapText: true
 			}
 		});
 
@@ -484,6 +499,7 @@ exports.createSiteVisitorsWorksheet = ({ event, workbook, attendees }) => {
 		worksheet.cell( 7, 5 ).string( 'phone' ).style( headerCellStyle );
 		worksheet.cell( 7, 6 ).string( 'city' ).style( headerCellStyle );
 		worksheet.cell( 7, 7 ).string( 'state' ).style( headerCellStyle );
+		worksheet.cell( 7, 8 ).string( 'notes' ).style( headerCellStyle );
 		
 		// set the row to 1 to begin entering attendee information
 		let row = 8;
@@ -559,6 +575,7 @@ exports.createSiteVisitorsWorksheet = ({ event, workbook, attendees }) => {
 			worksheet.cell( row, 5 ).string( phone ).style( cellStyle );
 			worksheet.cell( row, 6 ).string( city ).style( cellStyle );
 			worksheet.cell( row, 7 ).string( state ).style( cellStyle );
+			worksheet.cell( row, 8 ).style( cellStyle );
 			// increment the row data will be written to
 			row++;
 		}
@@ -577,14 +594,16 @@ exports.createOutsideContactsWorksheet = ({ event, workbook, attendees }) => {
 		const headerCellStyleOptions = exports.getCellStyle({
 			options: {
 				border: true,
-				centered: true
+				centered: true,
+				wrapText: true
 			}
 		});
 
 		const cellStyleOptions = exports.getCellStyle({
 			options: {
 				border: true,
-				leftAligned: true
+				leftAligned: true,
+				wrapText: true
 			}
 		});
 
@@ -606,6 +625,7 @@ exports.createOutsideContactsWorksheet = ({ event, workbook, attendees }) => {
 		worksheet.cell( 7, 4 ).string( 'phone' ).style( headerCellStyle );
 		worksheet.cell( 7, 5 ).string( 'city' ).style( headerCellStyle );
 		worksheet.cell( 7, 6 ).string( 'state' ).style( headerCellStyle );
+		worksheet.cell( 7, 7 ).string( 'notes' ).style( headerCellStyle );
 		
 		// set the row to 1 to begin entering attendee information
 		let row = 8;
@@ -645,6 +665,7 @@ exports.createOutsideContactsWorksheet = ({ event, workbook, attendees }) => {
 			worksheet.cell( row, 4 ).string( phone || '' ).style( cellStyle );
 			worksheet.cell( row, 5 ).string( attendee.get( 'address.city' ) || '' ).style( cellStyle );
 			worksheet.cell( row, 6 ).string( state || '' ).style( cellStyle );
+			worksheet.cell( row, 7 ).style( cellStyle );
 			// increment the row data will be written to
 			row++;
 		}
@@ -691,32 +712,38 @@ exports.appendEventHeader = ( { event, workbook, worksheet, label, attendeeCount
 
 exports.getCellStyle = ( { options = {} } ) => {
 
-	let styles = {};
+	let styles = {
+		alignment: {},
+		font: {},
+		border: {}
+	};
 
 	if( options.centered ) {
-		styles.alignment = {
+		styles.alignment = Object.assign( styles.alignment, {
 			horizontal: 'center',
 			vertical: 'center'
-		};
+		});
 	}
 
 	if( options.leftAligned ) {
-		styles.alignment = {
-			horizontal: 'left'
-		};
+		styles.alignment = Object.assign( styles.alignment, { horizontal: 'left' } );
+	}
+
+	if( options.wrapText ) {
+		styles.alignment = Object.assign( styles.alignment, { wrapText: true } );
 	}
 
 	if( options.bold ) {
-		styles.font = { bold: true };
+		styles.font = Object.assign( styles.font, { bold: true } );
 	}
 
 	if( options.border ) {
-		styles.border = {
+		styles.border = Object.assign( styles.border, {
 			left: { style: 'thin' },
 			right: { style: 'thin' },
 			top: { style: 'thin' },
 			bottom: { style: 'thin' }
-		};
+		} );
 	}
 
 	return styles;
@@ -725,8 +752,8 @@ exports.getCellStyle = ( { options = {} } ) => {
 exports.getSheetOptions = ( options = {} ) => {
 	return {
 		'sheetFormat': {
-			'defaultColWidth': options.cellWidth === 'small' ? 16 : 28,
-			'defaultRowHeight': 28
+			'defaultColWidth': options.cellWidth === 'small' ? 20 : 28,
+			'defaultRowHeight': 32
 		},
 		'printOptions': {
 			'centerHorizontal': true,
