@@ -529,6 +529,11 @@ exports.getAllCitiesAndTowns = () => {
 exports.getCityOrTownById = id => {
 
 	return new Promise( ( resolve, reject ) => {
+
+		if( !id ) {
+			return reject( 'no id provided' );
+		}
+		
 		// query the database for the city or town with the matching _id
 		keystone.list( 'City or Town' ).model
 			.findById( id )

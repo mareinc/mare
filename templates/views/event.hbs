@@ -71,6 +71,12 @@
 		</section>
 
 		{{#ifeq userType 'admin'}}
+		<section class="button-group button-group--horizontal button-group--space-around button-group--extra-large-margin-above">
+			<button class="button button--large button--teal events__excel-export-button">Export to Excel</button>
+		</section>
+		{{/ifeq}}
+
+		{{#ifeq userType 'admin'}}
 		<hr class="card__content-divider"></hr>
 		<aside class="card__content-group">
 			<h3 class="card__title">Attendees</h3>
