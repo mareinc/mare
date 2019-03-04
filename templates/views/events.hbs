@@ -118,9 +118,9 @@
 				{{/if}}
 				{{/if}}
 				{{/if}}
-				{{#ifeq ../../userType 'admin'}}
+				{{#if ../../canExportEvent}}
 				<button class="button button--large button--teal events__excel-export-button">Export to Excel</button>
-				{{/ifeq}}
+				{{/if}}
 			</section>
 
 		</div>
@@ -216,9 +216,9 @@
 				{{/if}}
 				{{/if}}
 				{{/if}}
-				{{#ifeq ../../userType 'admin'}}
+				{{#if ../../canExportEvent}}
 				<button class="button button--large button--teal events__excel-export-button">Export to Excel</button>
-				{{/ifeq}}
+				{{/if}}
 			</section>
 
 		</div>
@@ -312,9 +312,9 @@
 				{{/if}}
 				{{/if}}
 				{{/if}}
-				{{#ifeq ../userType 'admin'}}
+				{{#if ../canExportEvent}}
 				<button class="button button--large button--teal events__excel-export-button">Export to Excel</button>
-				{{/ifeq}}
+				{{/if}}
 			</section>
 
 		</div>
@@ -398,9 +398,9 @@
 			{{/if}}
 			{{/if}}
 			{{/if}}
-			{{#ifeq ../userType 'admin'}}
+			{{#if ../canExportEvent}}
 			<button class="button button--large button--teal events__excel-export-button">Export to Excel</button>
-			{{/ifeq}}
+			{{/if}}
 		</section>
 	</div>
 

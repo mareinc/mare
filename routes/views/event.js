@@ -59,6 +59,10 @@ exports = module.exports = ( req, res ) => {
 			locals.canSubmitEvent = userType === 'social worker'
 				&& eventType !== 'Mare hosted events';
 
+			// only admin can export events to excel, and only for MARE hosted events
+			locals.canExportEvent = userType === 'admin'
+				&& eventType === 'Mare hosted events';
+
 			// check to see if the event spans multiple days
 			const multidayEvent = event.startDate
 				&& event.endDate

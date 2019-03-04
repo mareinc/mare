@@ -50,6 +50,10 @@ exports = module.exports = async ( req, res ) => {
 	// only social workers can submit events, and only for specific types of events
 	locals.canSubmitEvent = userType === 'social worker'
 		&& eventType !== 'Mare hosted events';
+	
+	// only admin can export events to excel, and only for MARE hosted events
+	locals.canExportEvent = userType === 'admin'
+		&& eventType === 'Mare hosted events';
 
 	// store on locals for access during templating
 	locals.category = category;
