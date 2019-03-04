@@ -11,7 +11,8 @@
 			'click .card-list__collapsible-trigger-container'		: 'toggleCollapsibleList',
             'click .events__navigation-button'						: 'navigate',
 			'click .events__register-button'						: 'showEventRegistrationForm',
-			'click .events__edit-registration-button'				: 'editEventRegistrationForm'
+			'click .events__edit-registration-button'				: 'editEventRegistrationForm',
+			'click .events__excel-export-button'					: 'exportToExcel'
 		},
 		
 		initialize: function initialize() {
@@ -66,6 +67,13 @@
 		editEventRegistrationForm: function editEventRegistrationForm( event ) {
 			// pass the request for opening the modal to the view in charge of the modal
 			mare.views.eventRegistrationForm.handleRegisterButtonClick( event, 'edit' );
+		},
+
+		exportToExcel: function exportToExcel( event ) {
+			// get the id for the current event
+			var eventId = $( event.currentTarget ).closest( '.event' ).data( 'event-id' );
+
+			window.location.href = '/events/export/' + eventId;
 		}
 	});
 }());
