@@ -70,11 +70,11 @@
 			{{/if}}
 		</section>
 
-		{{#ifeq userType 'admin'}}
+		{{#if canExportEvent}}
 		<section class="button-group button-group--horizontal button-group--space-around button-group--extra-large-margin-above">
 			<button class="button button--large button--teal events__excel-export-button">Export to Excel</button>
 		</section>
-		{{/ifeq}}
+		{{/if}}
 
 		{{#ifeq userType 'admin'}}
 		<hr class="card__content-divider"></hr>
