@@ -38,6 +38,7 @@
 <!-- the following three blocks are only rendered when viewing non-MARE hosted events -->
 
 {{#if eventsInUsersRegionExist}}
+
 <section class="card-list card-list--collapsible">
 
 	<div class="card card--small-margin-below card-list__collapsible-trigger-container">
@@ -117,6 +118,9 @@
 				{{/if}}
 				{{/if}}
 				{{/if}}
+				{{#ifeq ../../userType 'admin'}}
+				<button class="button button--large button--teal events__excel-export-button">Export to Excel</button>
+				{{/ifeq}}
 			</section>
 
 		</div>
@@ -212,6 +216,9 @@
 				{{/if}}
 				{{/if}}
 				{{/if}}
+				{{#ifeq ../../userType 'admin'}}
+				<button class="button button--large button--teal events__excel-export-button">Export to Excel</button>
+				{{/ifeq}}
 			</section>
 
 		</div>
@@ -305,6 +312,9 @@
 				{{/if}}
 				{{/if}}
 				{{/if}}
+				{{#ifeq ../userType 'admin'}}
+				<button class="button button--large button--teal events__excel-export-button">Export to Excel</button>
+				{{/ifeq}}
 			</section>
 
 		</div>
@@ -388,6 +398,9 @@
 			{{/if}}
 			{{/if}}
 			{{/if}}
+			{{#ifeq ../userType 'admin'}}
+			<button class="button button--large button--teal events__excel-export-button">Export to Excel</button>
+			{{/ifeq}}
 		</section>
 	</div>
 

@@ -1,4 +1,5 @@
 const eventService			= require( './service_event' ),
+	  eventExcelService		= require( './service_event-excel-export' );
 	  eventEmailMiddleware	= require( './emails_event' );
 
 exports.register = async ( req, res ) => {
@@ -385,3 +386,115 @@ exports.editRegistration = async ( req, res, next ) => {
 	// once all actions have been completed, redirect the user to the path specified in the request. Needed because otherwise it would be impossible to determine which page they registered from
 	res.redirect( 303, eventDetails.redirectPath );
 };
+
+exports.exportToExcel = async ( req, res, next ) => {
+	// extract request object parameters into local constants
+	const eventId = req.params.eventId;
+
+	try {
+		// create an array of fields that need to be populated
+		const fieldsToPopulate = [
+			'staffAttendees',
+			'siteVisitorAttendees',
+			'socialWorkerAttendees',
+			'familyAttendees',
+			'childAttendees',
+			'outsideContactAttendees'
+		];
+		// fetch the event
+		const event = await eventService.getEventById( { eventId, fieldsToPopulate } );
+
+		// extract the attendees into variables
+		const staffAttendees = event.get( 'staffAttendees' );
+		const siteVisitorAttendees = event.get( 'siteVisitorAttendees' );
+		const socialWorkerAttendees = event.get( 'socialWorkerAttendees' );
+		const familyAttendees = event.get( 'familyAttendees' );
+		const childAttendees = event.get( 'childAttendees' );
+		const outsideContactAttendees = event.get( 'outsideContactAttendees' );
+		
+		// extract hidden unregistered attendees from the event
+		const unregisteredAdultAttendees = event.unregisteredAdultAttendees;
+		const unregisteredChildAttendees = event.unregisteredChildAttendees;
+
+		// if no one is attending the event
+		if( staffAttendees.length === 0
+			&& siteVisitorAttendees.length === 0
+			&& socialWorkerAttendees.length === 0
+			&& familyAttendees.length === 0
+			&& childAttendees.length === 0
+			&& outsideContactAttendees.length === 0 ) {
+			
+			// send a flash message to the user notifying them that an export couldn't be generated
+			req.flash( 'info', { title: 'The export could not be generated',
+				detail: 'There are no attendees registered for that event' });
+			// redirect the user back to the page they came from
+			return res.redirect( 303, req.headers.referer );
+		}
+
+		// create a new excel workbook
+		const workbook = eventExcelService.createWorkbook();
+
+		if( childAttendees.length > 0 || unregisteredChildAttendees.length > 0 ) {
+			await eventExcelService.createChildrenWorksheet({
+				event,
+				workbook,
+				attendees: childAttendees,
+				unregisteredAttendees: unregisteredChildAttendees,
+				socialWorkers: socialWorkerAttendees,
+				families: familyAttendees
+			});
+		}
+
+		if( familyAttendees.length > 0 ) {
+			await eventExcelService.createFamiliesWorksheet({
+				event,
+				workbook,
+				attendees: familyAttendees,
+				unregisteredChildAttendees,
+				unregisteredAdultAttendees
+			});
+		}
+
+		if( socialWorkerAttendees.length > 0 ) {
+			await eventExcelService.createSocialWorkersWorksheet({
+				event,
+				workbook,
+				attendees: socialWorkerAttendees,
+				unregisteredChildAttendees,
+				childAttendees
+			});
+		}
+
+		if( staffAttendees.length > 0 ) {
+			eventExcelService.createStaffWorksheet({
+				event,
+				workbook,
+				attendees: staffAttendees
+			});
+		}
+
+		if( siteVisitorAttendees.length > 0 ) {
+			await eventExcelService.createSiteVisitorsWorksheet({
+				event,
+				workbook,
+				attendees: siteVisitorAttendees
+			});
+		}
+
+		if( outsideContactAttendees.length > 0 ) {
+			await eventExcelService.createOutsideContactsWorksheet({
+				event,
+				workbook,
+				attendees: outsideContactAttendees
+			});
+		}
+
+		workbook.write( `${ event.get( 'key' ) }.xlsx`, res );
+	}
+	catch( error ) {
+		console.error( `error exporting event with id ${ eventId } to excel - ${ error }` );
+
+		// notify the user of the error
+		req.flash( 'error', { title: 'There was an issue exporting this event' } );
+	}
+}
