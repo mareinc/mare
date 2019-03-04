@@ -439,9 +439,7 @@ exports.exportToExcel = async ( req, res, next ) => {
 				event,
 				workbook,
 				attendees: childAttendees,
-				unregisteredAttendees: unregisteredChildAttendees,
-				socialWorkers: socialWorkerAttendees,
-				families: familyAttendees
+				unregisteredAttendees: unregisteredChildAttendees
 			});
 		}
 

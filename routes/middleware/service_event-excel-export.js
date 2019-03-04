@@ -7,7 +7,7 @@ exports.createWorkbook = () => {
   return new excel.Workbook();
 };
 
-exports.createChildrenWorksheet = ({ event, workbook, attendees = [], unregisteredAttendees = [], socialWorkers = [], families = [] }) => {
+exports.createChildrenWorksheet = ({ event, workbook, attendees = [], unregisteredAttendees = [] }) => {
 
 	return new Promise( async ( resolve, reject ) => {
 		// create a worksheet and label it
@@ -83,7 +83,7 @@ exports.createChildrenWorksheet = ({ event, workbook, attendees = [], unregister
 
 		if( attendees.length > 0 ) {
 			// set the fields to populate on the child model
-			const fieldsToPopulate = [ 'siblingsToBePlacedWith', 'status', 'legalStatus', 'adoptionWorker', 'recruitmentWorker' ];
+			const fieldsToPopulate = [ 'siblingsToBePlacedWith', 'status', 'legalStatus', 'adoptionWorker' ];
 
 			// loop through each registered child attending the event
 			for( const child of attendees ) {
@@ -101,6 +101,56 @@ exports.createChildrenWorksheet = ({ event, workbook, attendees = [], unregister
 					});
 				});
 
+				const adoptionWorkerFieldsToPopulate = [ 'agency', 'city' ];
+
+				await new Promise( ( resolve, reject ) => {
+					// populate adoption worker fields on the child model
+					child.get( 'adoptionWorker' ).populate( adoptionWorkerFieldsToPopulate, err => {
+
+						if( err ) {
+							// log the error for debugging purposes
+							console.error( `error populating adoption worker fields on child ${ child.get( 'displayNameAndRegistration' ) } -${ err }` );
+						}
+
+						resolve();
+					});
+				});
+
+				const adoptionWorkerCityId = child.get( 'adoptionWorker.address.city' )
+					? child.get( 'adoptionWorker.address.city' ).toString()
+					: null;
+
+				let adoptionWorkerRegion = '';
+
+				try {
+					const cityModel = await listService.getCityOrTownById( adoptionWorkerCityId );
+
+					await new Promise( ( resolve, reject ) => {
+						cityModel.populate( 'region', err => {
+
+							if( err ) {
+								console.error( `error populating adoption worker region field on child ${ child.get( 'displayNameAndRegistration' ) } -${ err }` );
+							}
+
+							resolve();
+						});
+					});
+
+					adoptionWorkerRegion = cityModel.get( 'region.region' );
+				}
+				catch( error ) {
+					console.error( `error fetching adoption worker region - ${ error }` );
+				}
+
+				// get the adoption worker fields
+				const adoptionWorkerName = child.get( 'adoptionWorker.name.full' )
+					? child.get( 'adoptionWorker.name.full' )
+					: '';
+
+				const adoptionWorkerAgency = child.get( 'adoptionWorker.agency.name' )
+					? child.get( 'adoptionWorker.agency.name' )
+					: '';
+
 				// convert the siblings array into a comma separated string
 				const siblingsToBePlacedWith = child.get( 'siblingsToBePlacedWith' ).map( child => `${ child.get( 'name.first' ) }` );
 
@@ -108,31 +158,7 @@ exports.createChildrenWorksheet = ({ event, workbook, attendees = [], unregister
 				const age = child.get( 'birthDate' )
 					? moment().diff( child.get( 'birthDate' ), 'years' ).toString()
 					: '';
-
-				// // use the social worker attendees to figure out who is bringing the child
-				// const recruitmentWorkerId = child.get( 'recruitmentWorker' )
-				// 	? child.get( 'recruitmentWorker._id' ).toString()
-				// 	: null;
-
-				// const adoptionWorkerId = child.get( 'adoptionWorker' )
-				// 	? child.get( 'adoptionWorker._id' ).toString()
-				// 	: null;
-
-				// let comingWithSocialWorker;
 				
-				// if( recruitmentWorkerId ) {
-				// 	comingWithSocialWorker = socialWorkers.find( socialWorker => socialWorker.get( '_id' ).toString() === recruitmentWorkerId );
-				// }
-				
-				// if( adoptionWorkerId && !comingWithSocialWorker ) {
-				// 	comingWithSocialWorker = socialWorkers.find( socialWorker => socialWorker.get( '_id' ).toString() === adoptionWorkerId );
-				// }
-
-				// if( comingWithSocialWorker ) {
-				// 	// TODO: finish fetching agency and social worker name
-				// }
-				
-
 				// fill attendee data in the appropriate cells
 				worksheet.cell( row, 1 ).style( cellStyle );
 				worksheet.cell( row, 2 ).string( child.get( 'name.first' ) || '' ).style( cellStyle );
@@ -142,9 +168,9 @@ exports.createChildrenWorksheet = ({ event, workbook, attendees = [], unregister
 				worksheet.cell( row, 6 ).string( siblingsToBePlacedWith.join( ', ' ) ).style( cellStyle );
 				worksheet.cell( row, 7 ).number( child.get( 'registrationNumber' ) ).style( cellStyle );
 				worksheet.cell( row, 8 ).string( child.get( 'status' ).childStatus ).style( cellStyle );
-				worksheet.cell( row, 9 ).style( cellStyle );
-				worksheet.cell( row, 10 ).style( cellStyle );
-				worksheet.cell( row, 11 ).style( cellStyle );
+				worksheet.cell( row, 9 ).string( adoptionWorkerName ).style( cellStyle );
+				worksheet.cell( row, 10 ).string( adoptionWorkerAgency ).style( cellStyle );
+				worksheet.cell( row, 11 ).string( adoptionWorkerRegion || '' ).style( cellStyle );
 				worksheet.cell( row, 12 ).style( cellStyle );
 				
 				// increment the row data will be written to
@@ -328,7 +354,7 @@ exports.createSocialWorkersWorksheet = ({ event, workbook, attendees, childAtten
 		let row = 8;
 
 		// set the fields to populate on the social worker model
-		const fieldsToPopulate = [ 'agency', 'region' ];
+		const fieldsToPopulate = [ 'agency', 'city' ];
 
 		// loop through each social worker attending the event
 		for( let attendee of attendees ) {
@@ -346,10 +372,36 @@ exports.createSocialWorkersWorksheet = ({ event, workbook, attendees, childAtten
 				});
 			});
 
+			const cityId = attendee.get( 'address.city' )
+					? attendee.get( 'address.city' ).toString()
+					: null;
+
+			let region = '';
+
+			try {
+				const cityModel = await listService.getCityOrTownById( cityId );
+
+				await new Promise( ( resolve, reject ) => {
+					cityModel.populate( 'region', err => {
+
+						if( err ) {
+							console.error( `error populating adoption worker region field on child ${ child.get( 'displayNameAndRegistration' ) } -${ err }` );
+						}
+
+						resolve();
+					});
+				});
+
+				region = cityModel.get( 'region.region' );
+			}
+			catch( error ) {
+				console.error( `error fetching adoption worker region - ${ error }` );
+			}
+
 			// TODO: this is sloppy as the adoption and recruitment workers were populated in a prior step.  Consider copying the object before populating at each step
 			const registeredChildren = childAttendees.filter( child => {
-				return ( child.get( 'adoptionWorker' ) && child.get( 'adoptionWorker._id' ).toString() === attendee.get( '_id' ).toString() )
-					|| ( child.get( 'recruitmentWorker' ) && child.get( 'recruitmentWorker._id' ).toString() === attendee.get( '_id' ).toString() );
+				return ( child.get( 'adoptionWorker._id' ) && child.get( 'adoptionWorker._id' ).toString() === attendee.get( '_id' ).toString() )
+					|| ( child.get( 'recruitmentWorker' ) && child.get( 'recruitmentWorker' ).toString() === attendee.get( '_id' ).toString() );
 			});
 			// get just the unregistered children being brought by the current social worker
 			const unregisteredChildren = unregisteredChildAttendees.filter( child => child.registrantID === attendee.get( '_id' ).toString() );
@@ -366,7 +418,7 @@ exports.createSocialWorkersWorksheet = ({ event, workbook, attendees, childAtten
 			worksheet.cell( row, 4 ).string( attendee.get( 'agency' ) ? attendee.get( 'agency' ).name : '' ).style( cellStyle );
 			worksheet.cell( row, 5 ).string( attendee.get( 'email' ) || '' ).style( cellStyle );
 			worksheet.cell( row, 6 ).string( allChildNames.join( ', ' ) ).style( cellStyle );
-			worksheet.cell( row, 7 ).string( attendee.get( 'region' ) ? attendee.get( 'region' ).region : '' ).style( cellStyle );
+			worksheet.cell( row, 7 ).string( region || '' ).style( cellStyle );
 			worksheet.cell( row, 8 ).style( cellStyle );
 			// increment the row data will be written to
 			row++;
