@@ -16,7 +16,7 @@ exports.createChildrenWorksheet = ({ event, workbook, attendees = [], unregister
 		}));
 
 		// get the styles to apply to the content cells and create a reusable style
-		const centeredCellStyleOptions = exports.getCellStyle({
+		const headerCellStyleOptions = exports.getCellStyle({
 			options: {
 				border: true,
 				centered: true
@@ -31,7 +31,7 @@ exports.createChildrenWorksheet = ({ event, workbook, attendees = [], unregister
 		});
 
 		const cellStyle = workbook.createStyle( cellStyleOptions );
-		const centeredCellStyle = workbook.createStyle( centeredCellStyleOptions );
+		const headerCellStyle = workbook.createStyle( headerCellStyleOptions );
 
 		// add the event header information to the worksheet
 		exports.appendEventHeader({
@@ -43,18 +43,17 @@ exports.createChildrenWorksheet = ({ event, workbook, attendees = [], unregister
 		});
 
 		// create the column headers
-		worksheet.cell( 7, 1 ).string( 'attended' ).style( centeredCellStyle );
-		worksheet.cell( 7, 2 ).string( 'first name' ).style( centeredCellStyle );
-		worksheet.cell( 7, 3 ).string( 'last name' ).style( centeredCellStyle );
-		worksheet.cell( 7, 4 ).string( 'sibling(s)' ).style( centeredCellStyle );
-		worksheet.cell( 7, 5 ).string( 'race' ).style( centeredCellStyle );
-		worksheet.cell( 7, 6 ).string( 'age' ).style( centeredCellStyle );
-		worksheet.cell( 7, 7 ).string( 'reg. #' ).style( centeredCellStyle );
-		worksheet.cell( 7, 8 ).string( 'page' ).style( centeredCellStyle );
-		worksheet.cell( 7, 9 ).string( 'status' ).style( centeredCellStyle );
-		worksheet.cell( 7, 10 ).string( 'legal status' ).style( centeredCellStyle );
-		worksheet.cell( 7, 11 ).string( 'coming with' ).style( centeredCellStyle );
-		worksheet.cell( 7, 12 ).string( 'notes' ).style( centeredCellStyle );
+		worksheet.cell( 7, 1 ).string( 'attended' ).style( headerCellStyle );
+		worksheet.cell( 7, 2 ).string( 'first name' ).style( headerCellStyle );
+		worksheet.cell( 7, 3 ).string( 'last name' ).style( headerCellStyle );
+		worksheet.cell( 7, 4 ).string( 'legal status' ).style( headerCellStyle );
+		worksheet.cell( 7, 5 ).string( 'age' ).style( headerCellStyle );
+		worksheet.cell( 7, 6 ).string( 'sibling(s)' ).style( headerCellStyle );
+		worksheet.cell( 7, 7 ).string( 'record number' ).style( headerCellStyle );
+		worksheet.cell( 7, 8 ).string( 'status' ).style( headerCellStyle );
+		worksheet.cell( 7, 9 ).string( 'adoption worker name' ).style( headerCellStyle );
+		worksheet.cell( 7, 10 ).string( 'adoption worker agency' ).style( headerCellStyle );
+		worksheet.cell( 7, 11 ).string( 'adoption worker region' ).style( headerCellStyle );
 
 		// set the row to 1 to begin entering attendee information
 		let row = 8;
@@ -66,14 +65,13 @@ exports.createChildrenWorksheet = ({ event, workbook, attendees = [], unregister
 			worksheet.cell( row, 2 ).string( child.get( 'name.first' ) || '' ).style( cellStyle );
 			worksheet.cell( row, 3 ).string( child.get( 'name.last' ) || '' ).style( cellStyle );
 			worksheet.cell( row, 4 ).style( cellStyle );
-			worksheet.cell( row, 5 ).style( cellStyle );
-			worksheet.cell( row, 6 ).string( child.get( 'age' ) ? child.get( 'age' ).toString() : '' ).style( cellStyle );
+			worksheet.cell( row, 5 ).string( child.get( 'age' ) ? child.get( 'age' ).toString() : '' ).style( cellStyle );
+			worksheet.cell( row, 6 ).style( cellStyle );
 			worksheet.cell( row, 7 ).string( 'not reg.' ).style( cellStyle );
-			worksheet.cell( row, 8 ).style( cellStyle );
-			worksheet.cell( row, 9 ).string( 'not reg.' ).style( cellStyle );
+			worksheet.cell( row, 8 ).string( 'not reg.' ).style( cellStyle );
+			worksheet.cell( row, 9 ).style( cellStyle );
 			worksheet.cell( row, 10 ).style( cellStyle );
 			worksheet.cell( row, 11 ).style( cellStyle );
-			worksheet.cell( row, 12 ).style( cellStyle );
 			
 			// increment the row data will be written to
 			row++;
@@ -81,7 +79,7 @@ exports.createChildrenWorksheet = ({ event, workbook, attendees = [], unregister
 
 		if( attendees.length > 0 ) {
 			// set the fields to populate on the child model
-			const fieldsToPopulate = [ 'siblings', 'race', 'status', 'legalStatus', 'adoptionWorker', 'recruitmentWorker' ];
+			const fieldsToPopulate = [ 'siblingsToBePlacedWith', 'status', 'legalStatus', 'adoptionWorker', 'recruitmentWorker' ];
 
 			// loop through each registered child attending the event
 			for( const child of attendees ) {
@@ -100,10 +98,7 @@ exports.createChildrenWorksheet = ({ event, workbook, attendees = [], unregister
 				});
 
 				// convert the siblings array into a comma separated string
-				const siblings = child.get( 'siblings' ).map( child => `${ child.get( 'name.first' ) } ${ child.get( 'name.last' ) }` ).join( ', ' )
-
-				// convert the races array into a comma separated string
-				const race = child.get( 'race' ).map( race => race.race ).join( ', ' );
+				const siblingsToBePlacedWith = child.get( 'siblingsToBePlacedWith' ).map( child => `${ child.get( 'name.first' ) }` );
 
 				// calculate the child's age based on their birthday
 				const age = child.get( 'birthDate' )
@@ -138,15 +133,14 @@ exports.createChildrenWorksheet = ({ event, workbook, attendees = [], unregister
 				worksheet.cell( row, 1 ).style( cellStyle );
 				worksheet.cell( row, 2 ).string( child.get( 'name.first' ) || '' ).style( cellStyle );
 				worksheet.cell( row, 3 ).string( child.get( 'name.last' ) || '' ).style( cellStyle );
-				worksheet.cell( row, 4 ).string( siblings ).style( cellStyle );
-				worksheet.cell( row, 5 ).string( race ).style( cellStyle );
-				worksheet.cell( row, 6 ).string( age ).style( cellStyle );
+				worksheet.cell( row, 4 ).string( child.get( 'legalStatus' ).legalStatus ).style( cellStyle );
+				worksheet.cell( row, 5 ).string( age ).style( cellStyle );
+				worksheet.cell( row, 6 ).string( siblingsToBePlacedWith.join( ', ' ) ).style( cellStyle );
 				worksheet.cell( row, 7 ).number( child.get( 'registrationNumber' ) ).style( cellStyle );
-				worksheet.cell( row, 8 ).string( child.get( 'photolistingPageNumber' ) || '' ).style( cellStyle );
-				worksheet.cell( row, 9 ).string( child.get( 'status' ).childStatus ).style( cellStyle );
-				worksheet.cell( row, 10 ).string( child.get( 'legalStatus' ).legalStatus ).style( cellStyle );
+				worksheet.cell( row, 8 ).string( child.get( 'status' ).childStatus ).style( cellStyle );
+				worksheet.cell( row, 9 ).string( '' ).style( cellStyle );
+				worksheet.cell( row, 10 ).string( '' ).style( cellStyle );
 				worksheet.cell( row, 11 ).string( '' ).style( cellStyle );
-				worksheet.cell( row, 12 ).style( cellStyle );
 				
 				// increment the row data will be written to
 				row++;
@@ -170,7 +164,7 @@ exports.createFamiliesWorksheet = ({ event, workbook, attendees, unregisteredChi
 		}));
 
 		// get the styles to apply to the content cells and create a reusable style
-		const centeredCellStyleOptions = exports.getCellStyle({
+		const headerCellStyleOptions = exports.getCellStyle({
 			options: {
 				border: true,
 				centered: true
@@ -185,7 +179,7 @@ exports.createFamiliesWorksheet = ({ event, workbook, attendees, unregisteredChi
 		});
 
 		const cellStyle = workbook.createStyle( cellStyleOptions );
-		const centeredCellStyle = workbook.createStyle( centeredCellStyleOptions );
+		const headerCellStyle = workbook.createStyle( headerCellStyleOptions );
 
 		// add the event header information to the worksheet
 		exports.appendEventHeader({
@@ -197,21 +191,19 @@ exports.createFamiliesWorksheet = ({ event, workbook, attendees, unregisteredChi
 		});
 
 		// create the column headers
-		worksheet.cell( 7, 1 ).string( 'attended' ).style( centeredCellStyle );
-		worksheet.cell( 7, 2 ).string( 'first name' ).style( centeredCellStyle );
-		worksheet.cell( 7, 3 ).string( 'last name' ).style( centeredCellStyle );
-		worksheet.cell( 7, 4 ).string( 'first name' ).style( centeredCellStyle );
-		worksheet.cell( 7, 5 ).string( 'last name' ).style( centeredCellStyle );
-		worksheet.cell( 7, 6 ).string( 'other(s)' ).style( centeredCellStyle );
-		worksheet.cell( 7, 7 ).string( 'street' ).style( centeredCellStyle );
-		worksheet.cell( 7, 8 ).string( 'city' ).style( centeredCellStyle );
-		worksheet.cell( 7, 9 ).string( 'state' ).style( centeredCellStyle );
-		worksheet.cell( 7, 10 ).string( 'zip' ).style( centeredCellStyle );
-		worksheet.cell( 7, 11 ).string( 'telephone' ).style( centeredCellStyle );
-		worksheet.cell( 7, 12 ).string( 'email' ).style( centeredCellStyle );
-		worksheet.cell( 7, 13 ).string( 'registration' ).style( centeredCellStyle );
-		worksheet.cell( 7, 14 ).string( 'homestudy' ).style( centeredCellStyle );
-		worksheet.cell( 7, 15 ).string( 'source' ).style( centeredCellStyle );
+		worksheet.cell( 7, 1 ).string( 'attended' ).style( headerCellStyle );
+		worksheet.cell( 7, 2 ).string( 'first name' ).style( headerCellStyle );
+		worksheet.cell( 7, 3 ).string( 'last name' ).style( headerCellStyle );
+		worksheet.cell( 7, 4 ).string( 'first name' ).style( headerCellStyle );
+		worksheet.cell( 7, 5 ).string( 'last name' ).style( headerCellStyle );
+		worksheet.cell( 7, 6 ).string( 'city' ).style( headerCellStyle );
+		worksheet.cell( 7, 7 ).string( 'state' ).style( headerCellStyle );
+		worksheet.cell( 7, 8 ).string( 'telephone' ).style( headerCellStyle );
+		worksheet.cell( 7, 9 ).string( 'contact 1 email' ).style( headerCellStyle );
+		worksheet.cell( 7, 10 ).string( 'contact 2 email' ).style( headerCellStyle );
+		worksheet.cell( 7, 11 ).string( 'most recent state' ).style( headerCellStyle );
+		worksheet.cell( 7, 12 ).string( 'other adults' ).style( headerCellStyle );
+		worksheet.cell( 7, 13 ).string( 'other children' ).style( headerCellStyle );
 
 		// set the row to 1 to begin entering attendee information
 		let row = 8;
@@ -242,22 +234,42 @@ exports.createFamiliesWorksheet = ({ event, workbook, attendees, unregisteredChi
 				|| attendee.get( 'contact2.phone.work' )
 				|| '';
 
+			// determine the users farthest completed stage
+			let stage = '';
+
+			if( attendee.get( 'homestudy.completed' ) ) {
+				stage = 'homestudy completed';
+			} else if( attendee.get( 'stages.MAPPTrainingCompleted.completed' ) ) {
+				stage = 'MAPP training completed';
+			} else if( attendee.get( 'stages.workingWithAgency.started' ) ) {
+				stage = 'working with agency';
+			} else if( attendee.get( 'stages.lookingForAgency.started' ) ) {
+				stage = 'looking for agency';
+			} else if( attendee.get( 'stages.gatheringInformation.started' ) ) {
+				stage = 'gathering information';
+			}
+
+			// get just the unregistered children and adults being brought by the current family
+			const unregisteredChildren = unregisteredChildAttendees.filter( child => child.registrantID === attendee.get( '_id' ).toString() );
+			const unregisteredAdults = unregisteredAdultAttendees.filter( adult => adult.registrantID === attendee.get( '_id' ).toString() );
+			// extract the names of all unregistered children and adults into arrays
+			const unregisteredChildNames = unregisteredChildren.map( child => `${ child.name.first } ${ child.name.last }` );
+			const unregisteredAdultNames = unregisteredAdults.map( adult => `${ adult.name.first } ${ adult.name.last }` );
+
 			// fill attendee data in the appropriate cells
 			worksheet.cell( row, 1 ).style( cellStyle );
 			worksheet.cell( row, 2 ).string( attendee.get( 'contact1.name.first' ) || '' ).style( cellStyle );
 			worksheet.cell( row, 3 ).string( attendee.get( 'contact1.name.last' ) || '' ).style( cellStyle );
 			worksheet.cell( row, 4 ).string( attendee.get( 'contact2.name.first' ) || '' ).style( cellStyle );
 			worksheet.cell( row, 5 ).string( attendee.get( 'contact2.name.last' ) || '' ).style( cellStyle );
-			worksheet.cell( row, 6 ).string( '?' ).style( cellStyle );
-			worksheet.cell( row, 7 ).string( attendee.get( 'address.street1' ) || '' ).style( cellStyle );
-			worksheet.cell( row, 8 ).string( attendee.get( 'address.displayCity' ) || '' ).style( cellStyle );
-			worksheet.cell( row, 9 ).string( attendee.get( 'address.state' ) ? attendee.get( 'address.state' ).state : '' ).style( cellStyle );
-			worksheet.cell( row, 10 ).string( attendee.get( 'address.zipCode' ) || '' ).style( cellStyle );
-			worksheet.cell( row, 11 ).string( phone ).style( cellStyle );
-			worksheet.cell( row, 12 ).string( attendee.get( 'email' ) || '' ).style( cellStyle );
-			worksheet.cell( row, 13 ).string( '?' ).style( cellStyle );
-			worksheet.cell( row, 14 ).string( attendee.get( 'homestudy.completed' ) ? 'Y' : 'N' ).style( cellStyle );
-			worksheet.cell( row, 15 ).string( '?' ).style( cellStyle );		
+			worksheet.cell( row, 6 ).string( attendee.get( 'address.displayCity' ) || '' ).style( cellStyle );
+			worksheet.cell( row, 7 ).string( attendee.get( 'address.state' ) ? attendee.get( 'address.state' ).state : '' ).style( cellStyle );
+			worksheet.cell( row, 8 ).string( phone ).style( cellStyle );
+			worksheet.cell( row, 9 ).string( attendee.get( 'contact1.email' ) || '' ).style( cellStyle );
+			worksheet.cell( row, 10 ).string( attendee.get( 'contact2.email' ) || '' ).style( cellStyle );
+			worksheet.cell( row, 11 ).string( stage ).style( cellStyle );
+			worksheet.cell( row, 12 ).string( unregisteredAdultNames.join( ', ' ) ).style( cellStyle );
+			worksheet.cell( row, 13 ).string( unregisteredChildNames.join( ', ' ) ).style( cellStyle );
 		}
 
 		resolve();
@@ -271,7 +283,7 @@ exports.createSocialWorkersWorksheet = ({ event, workbook, attendees, childAtten
 		const worksheet = workbook.addWorksheet( 'Social Workers', exports.getSheetOptions() );
 
 		// get the styles to apply to the content cells and create a reusable style
-		const centeredCellStyleOptions = exports.getCellStyle({
+		const headerCellStyleOptions = exports.getCellStyle({
 			options: {
 				border: true,
 				centered: true
@@ -286,7 +298,7 @@ exports.createSocialWorkersWorksheet = ({ event, workbook, attendees, childAtten
 		});
 
 		const cellStyle = workbook.createStyle( cellStyleOptions );
-		const centeredCellStyle = workbook.createStyle( centeredCellStyleOptions );
+		const headerCellStyle = workbook.createStyle( headerCellStyleOptions );
 
 		// add the event header information to the worksheet
 		exports.appendEventHeader({
@@ -298,17 +310,19 @@ exports.createSocialWorkersWorksheet = ({ event, workbook, attendees, childAtten
 		});
 
 		// create the column headers
-		worksheet.cell( 7, 1 ).string( 'attended' ).style( centeredCellStyle );
-		worksheet.cell( 7, 2 ).string( 'first name' ).style( centeredCellStyle );
-		worksheet.cell( 7, 3 ).string( 'last name' ).style( centeredCellStyle );
-		worksheet.cell( 7, 4 ).string( 'bringing' ).style( centeredCellStyle );
-		worksheet.cell( 7, 5 ).string( 'agency' ).style( centeredCellStyle );
+		worksheet.cell( 7, 1 ).string( 'attended' ).style( headerCellStyle );
+		worksheet.cell( 7, 2 ).string( 'first name' ).style( headerCellStyle );
+		worksheet.cell( 7, 3 ).string( 'last name' ).style( headerCellStyle );
+		worksheet.cell( 7, 4 ).string( 'agency' ).style( headerCellStyle );
+		worksheet.cell( 7, 5 ).string( 'email' ).style( headerCellStyle );
+		worksheet.cell( 7, 6 ).string( 'bringing' ).style( headerCellStyle );
+		worksheet.cell( 7, 7 ).string( 'region' ).style( headerCellStyle );
 
 		// set the row to 1 to begin entering attendee information
 		let row = 8;
 
 		// set the fields to populate on the social worker model
-		const fieldsToPopulate = [ 'agency' ];
+		const fieldsToPopulate = [ 'agency', 'region' ];
 
 		// loop through each social worker attending the event
 		for( let attendee of attendees ) {
@@ -331,7 +345,7 @@ exports.createSocialWorkersWorksheet = ({ event, workbook, attendees, childAtten
 				return ( child.get( 'adoptionWorker' ) && child.get( 'adoptionWorker._id' ).toString() === attendee.get( '_id' ).toString() )
 					|| ( child.get( 'recruitmentWorker' ) && child.get( 'recruitmentWorker._id' ).toString() === attendee.get( '_id' ).toString() );
 			});
-			// get just the registered children with the current social worker set as their adoption worker or recruitment worker
+			// get just the unregistered children being brought by the current social worker
 			const unregisteredChildren = unregisteredChildAttendees.filter( child => child.registrantID === attendee.get( '_id' ).toString() );
 			// extract the names of all registered and unregistered children into arrays
 			const registeredChildNames = registeredChildren.map( child => `${ child.name.first } ${ child.name.last }` );
@@ -343,8 +357,10 @@ exports.createSocialWorkersWorksheet = ({ event, workbook, attendees, childAtten
 			worksheet.cell( row, 1 ).style( cellStyle );
 			worksheet.cell( row, 2 ).string( attendee.get( 'name.first' ) || '' ).style( cellStyle );
 			worksheet.cell( row, 3 ).string( attendee.get( 'name.last' ) || '' ).style( cellStyle );
-			worksheet.cell( row, 4 ).string( allChildNames.join( ', ' ) ).style( cellStyle );
-			worksheet.cell( row, 5 ).string( attendee.get( 'agency' ) ? attendee.get( 'agency' ).name : '' ).style( cellStyle );
+			worksheet.cell( row, 4 ).string( attendee.get( 'agency' ) ? attendee.get( 'agency' ).name : '' ).style( cellStyle );
+			worksheet.cell( row, 5 ).string( attendee.get( 'email' ) || '' ).style( cellStyle );
+			worksheet.cell( row, 6 ).string( allChildNames.join( ', ' ) ).style( cellStyle );
+			worksheet.cell( row, 7 ).string( attendee.get( 'region' ) ? attendee.get( 'region' ).region : '' ).style( cellStyle );
 		}
 
 		resolve();
@@ -356,7 +372,7 @@ exports.createStaffWorksheet = ({ event, workbook, attendees }) => {
 	const worksheet = workbook.addWorksheet( 'Staff', exports.getSheetOptions() );
 
 	// get the styles to apply to the content cells and create a reusable style
-	const centeredCellStyleOptions = exports.getCellStyle({
+	const headerCellStyleOptions = exports.getCellStyle({
 		options: {
 			border: true,
 			centered: true
@@ -371,7 +387,7 @@ exports.createStaffWorksheet = ({ event, workbook, attendees }) => {
 	});
 
 	const cellStyle = workbook.createStyle( cellStyleOptions );
-	const centeredCellStyle = workbook.createStyle( centeredCellStyleOptions );
+	const headerCellStyle = workbook.createStyle( headerCellStyleOptions );
 
 	// add the event header information to the worksheet
 	exports.appendEventHeader({
@@ -383,11 +399,11 @@ exports.createStaffWorksheet = ({ event, workbook, attendees }) => {
 	});
 
 	// create the column headers
-	worksheet.cell( 7, 1 ).string( 'attended' ).style( centeredCellStyle );
-	worksheet.cell( 7, 2 ).string( 'first name' ).style( centeredCellStyle );
-	worksheet.cell( 7, 3 ).string( 'last name' ).style( centeredCellStyle );
-	worksheet.cell( 7, 4 ).string( 'email' ).style( centeredCellStyle );
-	worksheet.cell( 7, 5 ).string( 'phone' ).style( centeredCellStyle );
+	worksheet.cell( 7, 1 ).string( 'attended' ).style( headerCellStyle );
+	worksheet.cell( 7, 2 ).string( 'first name' ).style( headerCellStyle );
+	worksheet.cell( 7, 3 ).string( 'last name' ).style( headerCellStyle );
+	worksheet.cell( 7, 4 ).string( 'email' ).style( headerCellStyle );
+	worksheet.cell( 7, 5 ).string( 'phone' ).style( headerCellStyle );
 	// set the row to 1 to begin entering attendee information
 	let row = 8;
 	// loop through each staff member attending the event
@@ -434,7 +450,7 @@ exports.createSiteVisitorsWorksheet = ({ event, workbook, attendees }) => {
 		const worksheet = workbook.addWorksheet( 'Site Visitors', exports.getSheetOptions() );
 
 		// get the styles to apply to the content cells and create a reusable style
-		const centeredCellStyleOptions = exports.getCellStyle({
+		const headerCellStyleOptions = exports.getCellStyle({
 			options: {
 				border: true,
 				centered: true
@@ -449,7 +465,7 @@ exports.createSiteVisitorsWorksheet = ({ event, workbook, attendees }) => {
 		});
 
 		const cellStyle = workbook.createStyle( cellStyleOptions );
-		const centeredCellStyle = workbook.createStyle( centeredCellStyleOptions );
+		const headerCellStyle = workbook.createStyle( headerCellStyleOptions );
 
 		// add the event header information to the worksheet
 		exports.appendEventHeader({
@@ -461,13 +477,13 @@ exports.createSiteVisitorsWorksheet = ({ event, workbook, attendees }) => {
 		});
 
 		// create the column headers
-		worksheet.cell( 7, 1 ).string( 'attended' ).style( centeredCellStyle );
-		worksheet.cell( 7, 2 ).string( 'first name' ).style( centeredCellStyle );
-		worksheet.cell( 7, 3 ).string( 'last name' ).style( centeredCellStyle );
-		worksheet.cell( 7, 4 ).string( 'email' ).style( centeredCellStyle );
-		worksheet.cell( 7, 5 ).string( 'phone' ).style( centeredCellStyle );
-		worksheet.cell( 7, 6 ).string( 'city' ).style( centeredCellStyle );
-		worksheet.cell( 7, 7 ).string( 'state' ).style( centeredCellStyle );
+		worksheet.cell( 7, 1 ).string( 'attended' ).style( headerCellStyle );
+		worksheet.cell( 7, 2 ).string( 'first name' ).style( headerCellStyle );
+		worksheet.cell( 7, 3 ).string( 'last name' ).style( headerCellStyle );
+		worksheet.cell( 7, 4 ).string( 'email' ).style( headerCellStyle );
+		worksheet.cell( 7, 5 ).string( 'phone' ).style( headerCellStyle );
+		worksheet.cell( 7, 6 ).string( 'city' ).style( headerCellStyle );
+		worksheet.cell( 7, 7 ).string( 'state' ).style( headerCellStyle );
 		
 		// set the row to 1 to begin entering attendee information
 		let row = 8;
@@ -476,7 +492,7 @@ exports.createSiteVisitorsWorksheet = ({ event, workbook, attendees }) => {
 			// pull the preferred phone number listed for the admin
 			const preferredPhone = attendee.get( 'phone.preferred' );
 			// create a variable to store the best phone number to reach the user at based on their preferences
-			let phone;
+			let phone = '';
 			// if the user specified their work phone as the preferred number
 			if( preferredPhone === 'work' ) {
 				// pull the first available phone number, prioritizing work, then mobile, then home phone
@@ -497,16 +513,20 @@ exports.createSiteVisitorsWorksheet = ({ event, workbook, attendees }) => {
 					|| attendee.get( 'phone.mobile' );
 			}
 			// create a variable to store the site visitor's city
-			let city;
+			let city = '';
 
 			// if the attendee is outside Massachusetts, the city will be entered in the free text field
 			if( attendee.get( 'address.isOutsideMassachusetts' ) ) {    
 				city = attendee.get( 'address.cityText' );
 			// if the attendee is in Massachusetts, the city will be a relationship field that we need to fetch
 			} else {
+				// get the family's city
+				const familyCity = attendee.get( 'address.city' )
+					? attendee.get( 'address.city' ).toString()
+					: null;
 				// fetch the city model and extract the name of the city or town
 				try {
-					const cityModel = await listService.getCityOrTownById( attendee.get( 'address.city' ).toString() );
+					const cityModel = await listService.getCityOrTownById( familyCity );
 					city = cityModel.get( 'cityOrTown' );
 				}
 				catch( error ) {
@@ -515,11 +535,16 @@ exports.createSiteVisitorsWorksheet = ({ event, workbook, attendees }) => {
 			}
 
 			// create a variable to store the site visitor's city
-			let state;
+			let state = '';
+
+			// get the family's state
+			const familyState = attendee.get( 'address.state' )
+				? attendee.get( 'address.state' ).toString()
+				: null;
 
 			// fetch the state model and extract the name of the state
 			try {
-				const stateModel = await listService.getStateById( attendee.get( 'address.state' ).toString() );
+				const stateModel = await listService.getStateById( familyState );
 				state = stateModel.get( 'state' );
 			}
 			catch( error ) {
@@ -531,9 +556,9 @@ exports.createSiteVisitorsWorksheet = ({ event, workbook, attendees }) => {
 			worksheet.cell( row, 2 ).string( attendee.get( 'name.first' ) || '' ).style( cellStyle );
 			worksheet.cell( row, 3 ).string( attendee.get( 'name.last' ) || '' ).style( cellStyle );
 			worksheet.cell( row, 4 ).string( attendee.get( 'email' ) || '' ).style( cellStyle );
-			worksheet.cell( row, 5 ).string( phone || '' ).style( cellStyle );
-			worksheet.cell( row, 6 ).string( city || '' ).style( cellStyle );
-			worksheet.cell( row, 7 ).string( state || '' ).style( cellStyle );
+			worksheet.cell( row, 5 ).string( phone ).style( cellStyle );
+			worksheet.cell( row, 6 ).string( city ).style( cellStyle );
+			worksheet.cell( row, 7 ).string( state ).style( cellStyle );
 			// increment the row data will be written to
 			row++;
 		}
@@ -549,7 +574,7 @@ exports.createOutsideContactsWorksheet = ({ event, workbook, attendees }) => {
 		const worksheet = workbook.addWorksheet( 'Outside Contacts', exports.getSheetOptions() );
 
 		// get the styles to apply to the content cells and create a reusable style
-		const centeredCellStyleOptions = exports.getCellStyle({
+		const headerCellStyleOptions = exports.getCellStyle({
 			options: {
 				border: true,
 				centered: true
@@ -564,7 +589,7 @@ exports.createOutsideContactsWorksheet = ({ event, workbook, attendees }) => {
 		});
 
 		const cellStyle = workbook.createStyle( cellStyleOptions );
-		const centeredCellStyle = workbook.createStyle( centeredCellStyleOptions );
+		const headerCellStyle = workbook.createStyle( headerCellStyleOptions );
 
 		// add the event header information to the worksheet
 		exports.appendEventHeader({ event,
@@ -575,12 +600,12 @@ exports.createOutsideContactsWorksheet = ({ event, workbook, attendees }) => {
 		});
 
 		// create the column headers
-		worksheet.cell( 7, 1 ).string( 'attended' ).style( centeredCellStyle );
-		worksheet.cell( 7, 2 ).string( 'name' ).style( centeredCellStyle );
-		worksheet.cell( 7, 3 ).string( 'email' ).style( centeredCellStyle );
-		worksheet.cell( 7, 4 ).string( 'phone' ).style( centeredCellStyle );
-		worksheet.cell( 7, 5 ).string( 'city' ).style( centeredCellStyle );
-		worksheet.cell( 7, 6 ).string( 'state' ).style( centeredCellStyle );
+		worksheet.cell( 7, 1 ).string( 'attended' ).style( headerCellStyle );
+		worksheet.cell( 7, 2 ).string( 'name' ).style( headerCellStyle );
+		worksheet.cell( 7, 3 ).string( 'email' ).style( headerCellStyle );
+		worksheet.cell( 7, 4 ).string( 'phone' ).style( headerCellStyle );
+		worksheet.cell( 7, 5 ).string( 'city' ).style( headerCellStyle );
+		worksheet.cell( 7, 6 ).string( 'state' ).style( headerCellStyle );
 		
 		// set the row to 1 to begin entering attendee information
 		let row = 8;
