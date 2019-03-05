@@ -156,14 +156,3 @@ exports.updateSubscriberEmail = function updateSubscriberEmail( currentEmail, up
 
     });
 };
-
-exports.MCTEST = function MCTEST(req, res, next) {
-    exports.removeSubscriberFromList('noahweinert+new@gmail.com', '0ac72cf9ba')
-        .then( results => {
-            console.log(results);
-            res.send('success!');
-        })
-        .catch( error => {
-            res.send('error!');
-        });
-};

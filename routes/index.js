@@ -13,7 +13,6 @@ const keystone						= require( 'keystone' ),
 	  eventMiddleware				= require( './middleware/middleware_event' ),
 	  passwordResetService 			= require( './middleware/service_password-reset'),
       accountVerificationService	= require( './middleware/service_account-verification' ),
-      mailChimpService              = require( './middleware/service_mailchimp' ),
 	  enforce						= require( 'express-sslify' ),
 	  importRoutes					= keystone.importer( __dirname );
 
@@ -114,8 +113,6 @@ exports = module.exports = app => {
 	app.post( '/services/add-sibling-group-bookmark'	, familyService.addSiblingGroupBookmark );
 	app.post( '/services/remove-sibling-group-bookmark'	, familyService.removeSiblingGroupBookmark );
     app.post( '/services/get-gallery-permissions'		, permissionsService.getGalleryPermissions );
-
-    app.get( '/test-service'                            , mailChimpService.MCTEST );
 
 	app.get( '/chron/nightly'							, chronMiddleware.runNightlyChronJob );
 };
