@@ -6,7 +6,6 @@ const MAILCHIMP_API_KEY = process.env.MAILCHIMP_API_KEY;
 // configure the MailChimp connection instance
 const _mailchimp = new Mailchimp( MAILCHIMP_API_KEY );
 
-
 /**
  * getMailingLists
  * ===============
@@ -34,13 +33,12 @@ exports.getMailingLists = function getMailingLists() {
  * ==============
  * @description get a specific mailing list by id
  * @param {String} mailingListId the id of the mailing list to get
- * @returns {Object} schema: https://us20.api.mailchimp.com/schema/3.0/Definitions/Lists/CollectionResponse.json
+ * @returns {Object} schema: https://us20.api.mailchimp.com/schema/3.0/Definitions/Lists/Response.json
  */
 exports.getMailingList = function getMailingList( mailingListId ) {
 
     return new Promise( ( resolve, reject ) => {
 
-        // check to ensure a mailing list id was provided
         if ( !mailingListId ) {
             return reject( 'getMailingList failed - no mailingListId was provided.' );
         }
@@ -57,7 +55,6 @@ exports.getMailingList = function getMailingList( mailingListId ) {
             console.error( error );
             reject( error );
         });
-
     });
 };
 
@@ -66,7 +63,7 @@ exports.getMailingList = function getMailingList( mailingListId ) {
  * ===================
  * @description adds a subscriber to a mailing list
  * @param {String} email the email with which to register the subscriber
- * @param {String} mailingListId the id of the mailing list to subscribe the email to
+ * @param {String} mailingListId the id of the mailing list to subscribe to
  * @returns {Object} schema: https://us20.api.mailchimp.com/schema/3.0/Definitions/Lists/Members/Response.json
  */
 exports.addSubscriberToList = function addSubscriberToList( email, mailingListId ) {
@@ -102,12 +99,16 @@ exports.addSubscriberToList = function addSubscriberToList( email, mailingListId
  * ========================
  * @description removes a subscriber from a mailing list
  * @param {String} email the email of the subscriber to remove
- * @param {String} mailingListId the id of the mailing list to subscribe the email to
- * @returns {Object} statusCode of operation
+ * @param {String} mailingListId the id of the mailing list to remove the subscriber from
+ * @returns {Object} status of the operation
  */
  exports.removeSubscriberFromList = function removeSubscriberFromList( email, mailingListId ) {
 
     return new Promise( ( resolve, reject ) => {
+
+        if ( !email || !mailingListId ) {
+            return reject( 'removeSubscriberFromList failed - email or mailingListId was not provided.' );
+        }
 
         _mailchimp.request({
             method: 'delete',
@@ -131,11 +132,16 @@ exports.addSubscriberToList = function addSubscriberToList( email, mailingListId
  * @description updates a subscribers email address in a particular mailing list
  * @param {String} currentEmail the currently subscribed email address
  * @param {String} updatedEmail the new email address that will replace the current email address
+ * @param {String} mailingListId the id of the mailing list in which to update the subscriber
  * @returns {Object} schema: https://us20.api.mailchimp.com/schema/3.0/Definitions/Lists/Members/Response.json
  */
 exports.updateSubscriberEmail = function updateSubscriberEmail( currentEmail, updatedEmail, mailingListId ) {
 
     return new Promise( ( resolve, reject ) => {
+
+        if ( !currentEmail || !updatedEmail || !mailingListId ) {
+            return reject( 'updateSubscriberEmail failed - currentEmail, updatedEmail, or mailingListId was not provided.' );
+        }
 
         _mailchimp.request({
             method: 'patch',
@@ -153,6 +159,5 @@ exports.updateSubscriberEmail = function updateSubscriberEmail( currentEmail, up
             console.error( error );
             reject( error );
         });
-
     });
 };
