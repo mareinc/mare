@@ -12,7 +12,8 @@ const keystone						= require( 'keystone' ),
 	  chronMiddleware				= require( './middleware/middleware_chron' ),
 	  eventMiddleware				= require( './middleware/middleware_event' ),
 	  passwordResetService 			= require( './middleware/service_password-reset'),
-	  accountVerificationService	= require( './middleware/service_account-verification' ),
+      accountVerificationService	= require( './middleware/service_account-verification' ),
+      mailChimpService              = require( './middleware/service_mailchimp' ),
 	  enforce						= require( 'express-sslify' ),
 	  importRoutes					= keystone.importer( __dirname );
 
@@ -32,11 +33,11 @@ exports = module.exports = app => {
 	'use strict';
 
 	// set up forwarding to HTTPS at the app level when http is explicitly used
-	// use enforce.HTTPS({ trustProtoHeader: true }) in case you are behind a load balancer (e.g. Heroku) 
+	// use enforce.HTTPS({ trustProtoHeader: true }) in case you are behind a load balancer (e.g. Heroku)
 	if( keystone.get( 'env' ) === 'production' ) {
 		app.use( enforce.HTTPS( { trustProtoHeader: true } ) );
 	}
-	
+
 	// serve robots.txt based on the runtime environment
 	if ( process.env.ALLOW_ROBOTS === 'true' ) {
 		// if running in production, allow robots to crawl by serving the production robots.txt
@@ -54,16 +55,16 @@ exports = module.exports = app => {
 	// forms
 	app.get( '/forms/agency-event-submission'			, routes.views.form_agencyEventSubmission );
 	app.post( '/forms/agency-event-submission'			, eventService.submitEvent );
-	
+
 	app.get( '/forms/social-worker-child-registration'	, routes.views.form_childRegistration );
 	app.post( '/forms/social-worker-child-registration'	, childService.registerChild );
-	
+
 	app.get( '/forms/social-worker-family-registration'	, routes.views.form_familyRegistration );
 	app.post( '/forms/social-worker-family-registration', familyService.registerFamily );
-	
+
 	app.get( '/forms/information-request'				, routes.views.form_informationRequest );
 	app.post( '/forms/information-request'				, formService.submitInquiry );
-	
+
 	app.get( '/forms/have-a-question'					, routes.views.form_haveAQuestion );
 	app.post( '/forms/have-a-question'					, formService.submitQuestion );
 	// steps in the process
@@ -112,7 +113,9 @@ exports = module.exports = app => {
 	app.post( '/services/remove-child-bookmark'			, familyService.removeChildBookmark );
 	app.post( '/services/add-sibling-group-bookmark'	, familyService.addSiblingGroupBookmark );
 	app.post( '/services/remove-sibling-group-bookmark'	, familyService.removeSiblingGroupBookmark );
-	app.post( '/services/get-gallery-permissions'		, permissionsService.getGalleryPermissions );
+    app.post( '/services/get-gallery-permissions'		, permissionsService.getGalleryPermissions );
+
+    app.get( '/test-service'                            , mailChimpService.MCTEST );
 
 	app.get( '/chron/nightly'							, chronMiddleware.runNightlyChronJob );
 };
