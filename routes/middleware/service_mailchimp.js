@@ -1,4 +1,5 @@
-const Mailchimp = require( 'mailchimp-api-v3' );
+const   Mailchimp = require( 'mailchimp-api-v3' ),
+        MD5       = require( 'md5' );
 
 // set constants
 const MAILCHIMP_API_KEY = process.env.MAILCHIMP_API_KEY;
@@ -30,7 +31,7 @@ exports.getMailingLists = function getMailingLists() {
 
 /**
  * getMailingList
- * ===============
+ * ==============
  * @description get a specific mailing list by id
  * @param {String} mailingListId the id of the mailing list to get
  * @returns {Object} schema: https://us20.api.mailchimp.com/schema/3.0/Definitions/Lists/CollectionResponse.json
@@ -62,18 +63,18 @@ exports.getMailingList = function getMailingList( mailingListId ) {
 
 /**
  * addSubscriberToList
- * ===============
+ * ===================
  * @description adds a subscriber to a mailing list
- * @param {Document} userDoc a User document representing the subscriber
- * @param {String} mailingListId the id of the mailing list to get
+ * @param {String} email the email with which to register the subscriber
+ * @param {String} mailingListId the id of the mailing list to subscribe the email to
  * @returns {Object} schema: https://us20.api.mailchimp.com/schema/3.0/Definitions/Lists/Members/Response.json
  */
-exports.addSubscriberToList = function addSubscriberToList( userDoc, mailingListId ) {
+exports.addSubscriberToList = function addSubscriberToList( email, mailingListId ) {
 
     return new Promise( ( resolve, reject ) => {
 
-        if ( !userDoc || !mailingListId ) {
-            return reject( 'addSubscriberToList failed - User or mailingListId was not provided.' );
+        if ( !email || !mailingListId ) {
+            return reject( 'addSubscriberToList failed - email or mailingListId was not provided.' );
         }
 
         _mailchimp.request({
@@ -83,7 +84,7 @@ exports.addSubscriberToList = function addSubscriberToList( userDoc, mailingList
                 list_id: mailingListId
             },
             body: {
-                email_address: userDoc.email,
+                email_address: email,
                 // we may want the ability to set the status value dynamically in the future
 	            status: 'subscribed'
             }
@@ -96,8 +97,40 @@ exports.addSubscriberToList = function addSubscriberToList( userDoc, mailingList
     });
 };
 
+/**
+ * updateSubscriberEmail
+ * =====================
+ * @description updates a subscribers email address in a particular mailing list
+ * @param {String} currentEmail the currently subscribed email address
+ * @param {String} updatedEmail the new email address that will replace the current email address
+ * @returns {Object} schema: https://us20.api.mailchimp.com/schema/3.0/Definitions/Lists/Members/Response.json
+ */
+exports.updateSubscriberEmail = function updateSubscriberEmail( currentEmail, updatedEmail, mailingListId ) {
+
+    return new Promise( ( resolve, reject ) => {
+
+        _mailchimp.request({
+            method: 'patch',
+            path: '/lists/{list_id}/members/{subscriber_hash}',
+            path_params: {
+                list_id: mailingListId,
+                subscriber_hash: MD5( currentEmail )
+            },
+            body: {
+                email_address: updatedEmail
+            }
+        })
+        .then( subscriber => resolve( subscriber ) )
+        .catch( error => {
+            console.error( error );
+            reject( error );
+        });
+
+    });
+};
+
 exports.MCTEST = function MCTEST(req, res, next) {
-    exports.addSubscriberToList({}, '0ac72cf9ba')
+    exports.updateSubscriberEmail('noahweinert@gmail.com', 'noahweinert+updated@gmail.com', '0ac72cf9ba')
         .then( results => {
             console.log(results);
             res.send('success!');
