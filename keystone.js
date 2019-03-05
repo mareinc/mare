@@ -149,6 +149,8 @@ keystone.set( 'nav', {
 
 // Start Keystone to connect to the database and initialise the web server
 keystone.start( () => {
-	// schedule an hourly task to deactivate events in the past
+	// set up an hourly task to deactivate events in the past
 	chron.scheduleEventDeactivator();
+	// set up a nightly task to save models meant to keep siblings in sync and data propagating through models
+	chron.scheduleModelSaver();
 });

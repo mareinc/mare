@@ -608,28 +608,148 @@ exports.getInquiryMethodByName = name => {
 
 exports.getSourceByName = name => {
 
-		return new Promise( ( resolve, reject ) => {
-			// attempt to find a single source matching the passed in name
-			keystone.list( 'Source' ).model
-				.findOne()
-				.where( 'source' ).equals( name )
-				.exec()
-				.then( source => {
-					// if the target source could not be found
-					if( !source ) {
-						// log an error for debugging purposes
-						console.error( `no source matching name '${ name } could be found` );
-						// reject the promise
-						return reject();
-					}
-					// if the target source was found, resolve the promise with the lean version of the object
-					resolve( source );
-				// if there was an error fetching from the database
-				}, err => {
+	return new Promise( ( resolve, reject ) => {
+		// attempt to find a single source matching the passed in name
+		keystone.list( 'Source' ).model
+			.findOne()
+			.where( 'source' ).equals( name )
+			.exec()
+			.then( source => {
+				// if the target source could not be found
+				if( !source ) {
 					// log an error for debugging purposes
-					console.error( `error fetching source matching ${ name } - ${ err }` );
-					// and reject the promise
-					reject();
-				});
-		});
-	};
+					console.error( `no source matching name '${ name } could be found` );
+					// reject the promise
+					return reject();
+				}
+				// if the target source was found, resolve the promise with the lean version of the object
+				resolve( source );
+			// if there was an error fetching from the database
+			}, err => {
+				// log an error for debugging purposes
+				console.error( `error fetching source matching ${ name } - ${ err }` );
+				// and reject the promise
+				reject();
+			});
+	});
+};
+
+/*
+ * Chron job functions used to batch save models
+ */
+
+exports.saveAllAgencies = () => {
+
+	return new Promise( ( resolve, reject ) => {
+
+		keystone.list( 'Agency' ).model
+			.find()
+			.then( async agencies => {
+				// create an array of errors to display once all models have been saved
+				let errors = [];
+				// loop through each agency
+				for( let [ index, agency ] of agencies.entries() ) {
+
+					if( index % 100 === 0 ) {
+						console.log( `saving agency ${ index } of ${ agencies.length }` );
+					}
+
+					try {
+						await agency.save();
+					}
+					catch( e ) {
+						errors.push( `chron: error saving agency ${ agency.code } - ${ e }` );
+					}
+				};
+				// log each of the errors to the console
+				for( let error of errors ) {
+					console.error( error );
+				}
+
+				resolve();
+
+			}, err => {
+
+				console.error( `chron: error fetching agencies for nightly chron job - ${ err }` );
+				reject();
+			});	
+	});
+};
+
+exports.saveAllSocialWorkers = () => {
+
+	return new Promise( ( resolve, reject ) => {
+
+		keystone.list( 'Social Worker' ).model
+			.find()
+			.then( async socialWorkers => {
+				// create an array of errors to display once all models have been saved
+				let errors = [];
+				// loop through each social worker
+				for( let [ index, socialWorker ] of socialWorkers.entries() ) {
+
+					if( index % 100 === 0 ) {
+						console.log( `saving social worker ${ index } of ${ socialWorkers.length }` );
+					}
+
+					try {
+						await socialWorker.save();
+					}
+					catch( e ) {
+						errors.push( `chron: error saving social worker ${ socialWorker.name.full } - ${ socialWorker._id } - ${ e }` );
+					}
+				};
+				// log each of the errors to the console
+				for( let error of errors ) {
+					console.error( error );
+				}
+
+				resolve();
+
+			}, err => {
+
+				console.error( `error fetching social workers for nightly chron job - ${ err }` );
+				reject();
+			});	
+		
+	});
+};
+
+exports.saveAllChildren = () => {
+
+	return new Promise( ( resolve, reject ) => {
+
+		keystone.list( 'Child' ).model
+			.find()
+			.then( async children => {
+				// create an array of errors to display once all models have been saved
+				let errors = [];
+				// loop through each child
+				for( let [ index, child ] of children.entries() ) {
+
+					if( index % 100 === 0 ) {
+						console.log( `saving child ${ index } of ${ children.length }` );
+					}
+
+					try {
+						await child.save();
+					}
+					catch( e ) {
+						errors.push( `chron: error saving child ${ child.displayNameAndRegistration } - ${ e }` );
+					}
+				};
+				// log each of the errors to the console
+				for( let error of errors ) {
+					console.error( error );
+				}
+
+				resolve();
+
+			}, err => {
+
+				console.error( `error fetching children for nightly chron job - ${ err }` );
+				reject();
+			});	
+		
+	});
+};

@@ -9,7 +9,6 @@ const keystone						= require( 'keystone' ),
 	  permissionsService			= require( './middleware/service_permissions' ),
 	  registrationMiddleware		= require( './middleware/service_register' ),
 	  accountMiddleware				= require( './middleware/service_account' ),
-	  chronMiddleware				= require( './middleware/middleware_chron' ),
 	  eventMiddleware				= require( './middleware/middleware_event' ),
 	  passwordResetService 			= require( './middleware/service_password-reset'),
 	  accountVerificationService	= require( './middleware/service_account-verification' ),
@@ -113,6 +112,4 @@ exports = module.exports = app => {
 	app.post( '/services/add-sibling-group-bookmark'	, familyService.addSiblingGroupBookmark );
 	app.post( '/services/remove-sibling-group-bookmark'	, familyService.removeSiblingGroupBookmark );
 	app.post( '/services/get-gallery-permissions'		, permissionsService.getGalleryPermissions );
-
-	app.get( '/chron/nightly'							, chronMiddleware.runNightlyChronJob );
 };
