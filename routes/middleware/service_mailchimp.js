@@ -98,6 +98,34 @@ exports.addSubscriberToList = function addSubscriberToList( email, mailingListId
 };
 
 /**
+ * removeSubscriberFromList
+ * ========================
+ * @description removes a subscriber from a mailing list
+ * @param {String} email the email of the subscriber to remove
+ * @param {String} mailingListId the id of the mailing list to subscribe the email to
+ * @returns {Object} statusCode of operation
+ */
+ exports.removeSubscriberFromList = function removeSubscriberFromList( email, mailingListId ) {
+
+    return new Promise( ( resolve, reject ) => {
+
+        _mailchimp.request({
+            method: 'delete',
+            path: '/lists/{list_id}/members/{subscriber_hash}',
+            path_params: {
+                list_id: mailingListId,
+                subscriber_hash: MD5( email )
+            }
+        })
+        .then( status => resolve( status ) )
+        .catch( error => {
+            console.error( error );
+            reject( error );
+        });
+    });
+ };
+
+/**
  * updateSubscriberEmail
  * =====================
  * @description updates a subscribers email address in a particular mailing list
@@ -130,7 +158,7 @@ exports.updateSubscriberEmail = function updateSubscriberEmail( currentEmail, up
 };
 
 exports.MCTEST = function MCTEST(req, res, next) {
-    exports.updateSubscriberEmail('noahweinert@gmail.com', 'noahweinert+updated@gmail.com', '0ac72cf9ba')
+    exports.removeSubscriberFromList('noahweinert+new@gmail.com', '0ac72cf9ba')
         .then( results => {
             console.log(results);
             res.send('success!');
