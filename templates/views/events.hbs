@@ -424,3 +424,7 @@
 {{> event-social-worker-registration-form}}
 {{> event-edit-social-worker-registration-form}}
 {{/ifeq}}
+{{#ifeq userType 'admin'}}
+{{> event-admin-registration-form}}
+{{> event-edit-registration-form}}
+{{/ifeq}}

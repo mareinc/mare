@@ -1,0 +1,59 @@
+<!-- client side template for rendering the event registration form in a modal -->
+<script id="event-registration-form-template" type="text/x-handlebars-template">
+
+<section class="event-registration-form event-registration__container">
+	<div class="modal-form__header">
+		<div class="modal-form-header__text"> {{!-- should be h1 etc --}}
+			\{{ eventName }}
+		</div>
+		<div class="modal-form__subheader"> {{!-- should be h3 etc --}}
+			\{{ eventDate }}
+		</div>
+	</div>
+	<div class="row form-group">
+		<div class="col-sm-24 form-group event__user-display-name">Registration for {{ displayName }}</div>
+	</div>
+	<div class="modal-form__key">
+		<span class="required required-description">* Required</span>
+	</div>
+	<form action="/events/register/\{{ eventId }}" class="modal-form--register-for-event" method="POST">
+		<input type="hidden" name="eventName" value="\{{ eventName }}">
+		<input type="hidden" name="redirectPath" value="{{ redirectPath }}">
+
+		<section class="form-section">
+			<div class="row form-group">
+				<div class="col-sm-12 form-group">
+					<select id="number-of-adults" class="input number-of-adults-select" name="numberOfAdults">
+						<option value="0">0</option>
+						<option value="1">1</option>
+						<option value="2">2</option>
+						<option value="3">3</option>
+						<option value="4">4</option>
+						<option value="5">5</option>
+					</select>
+					<label for="number-of-adults" class="label required-field">Number of adults attending</label>
+				</div>
+			</div>
+			<section class="row form-group adults-container"></section>
+			<div class="row form-group">
+				<div class="col-sm-12 form-group">
+					<select id="number-of-children" class="input number-of-children-select" name="numberOfChildren">
+						<option value="0">0</option>
+						<option value="1">1</option>
+						<option value="2">2</option>
+						<option value="3">3</option>
+						<option value="4">4</option>
+						<option value="5">5</option>
+					</select>
+					<label for="number-of-children" class="label required-field">Number of children attending</label>
+				</div>
+			</div>
+			<section class="row form-group unregistered-children-container"></section>
+		</section>
+		<button class="button button--teal" type="submit">Register</button>
+	</form>
+</section>
+
+</script>
+
+{{> event-registration-form_person-details}}
