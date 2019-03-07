@@ -83,12 +83,12 @@ exports = module.exports = async ( req, res ) => {
 					userType === 'site visitor' ? !!event.preventSiteVisitorRegistration
 					: userType === 'family' ? !!event.preventFamilyRegistration
 					: userType === 'social worker' ? !!event.preventSocialWorkerRegistration
+					: userType === 'admin' ? !!event.preventAdminRegistration
 					: false;
 
 				// track whether it is an event users can register for through the site
-				// admin can't register, and everyone else can only register for select types of events if registration isn't blocked in the event model
-				event.canRegister = userType !== 'admin'
-					&& eventType === 'Mare hosted events'
+				// everyone else can only register for select types of events if registration isn't blocked in the event model
+				event.canRegister = eventType === 'Mare hosted events'
 					&& !isRegistrationBlocked;
 
 				// the list page needs truncated details information to keep the cards they're displayed on small

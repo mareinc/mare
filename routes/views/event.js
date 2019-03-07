@@ -47,12 +47,12 @@ exports = module.exports = ( req, res ) => {
 				userType === 'site visitor' ? !!event.preventSiteVisitorRegistration
 				: userType === 'family' ? !!event.preventFamilyRegistration
 				: userType === 'social worker' ? !!event.preventSocialWorkerRegistration
+				: userType === 'admin' ? !!event.preventAdminRegistration
 				: false;
 
 			// track whether it is an event users can register for through the site
-			// admin can't register, and everyone else can only register for select types of events if registration isn't blocked in the event model
-			locals.canRegister = userType !== 'admin'
-				&& eventType === 'Mare hosted events'
+			// everyone can only register for select types of events if registration isn't blocked in the event model
+			locals.canRegister = eventType === 'Mare hosted events'
 				&& !isRegistrationBlocked;
 
 			// only social workers can submit events, and only for specific types of events
