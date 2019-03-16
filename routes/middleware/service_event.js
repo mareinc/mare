@@ -108,7 +108,7 @@ exports.getActiveEventsByUserId = ( userId, eventGroup ) => {
 		keystone.list( 'Event' ).model
 			.find()
 			.where( 'isActive', true ) // we don't want to show inactive events
-			.where( eventGroup ).in( [userId] ) // only show events for this user
+			.where( eventGroup ).in( [ userId ] ) // only show events for this user
 			.populate( eventGroup )
 			.populate( 'address.state' )
 			.lean()
@@ -131,57 +131,27 @@ exports.getActiveEventsByUserId = ( userId, eventGroup ) => {
 		});
 };
 
-exports.getAllActiveEvents = eventGroup => {
-
-	return new Promise( ( resolve, reject ) => {
-
-		keystone.list( 'Event' ).model
-			.find()
-			.where( 'isActive', true ) // we don't want to show inactive events
-			.populate( eventGroup )
-			.populate( 'address.state' )
-			.exec()
-			.then( events => {
-				// if no active events could be found
-				if( events.length === 0 ) {
-					// log an error for debugging purposes
-					console.error( `no active events could be found` );
-				}
-				// resolve the promise with the events
-				resolve( events );
-			// if there was an error fetching from the database
-			}, err => {
-				// log an error for debugging purposes
-				console.error( `error fetching active events - ${ err }` );
-				// and reject the promise
-				reject();
-			});
-		})
-	;
-};
-
-exports.getActiveEvents = () => {
+exports.getActiveEvents = ( fieldsToPopulate = [] ) => {
 
 	return new Promise( ( resolve, reject ) => {
 
 		keystone.list( 'Event' ).model
 			.find()
 			.where( 'isActive', true )
+			.populate( fieldsToPopulate )
 			.exec()
 			.then( events => {
 				// if no active events could be found
 				if( events.length === 0 ) {
 					// log an error for debugging purposes
-					console.error( `no active events could be found` );
+					console.info( `no active events could be found` );
 				}
-				// resolve the promise with the events
+				// resolve the promise with the events if there are any
 				resolve( events );
 			// if there was an error fetching from the database
 			}, err => {
 				// log an error for debugging purposes
-				console.error( `error fetching active events - ${ err }` );
-				// and reject the promise
-				reject();
+				reject( `error fetching active events - ${ err }` );
 			});
 		})
 	;
@@ -777,51 +747,84 @@ exports.getEventContactEmail = ( { eventId, userType } ) => {
 	});
 };
 
-exports.checkForOldEvents = () => {
+exports.getPastEvents = () => {
 
 	return new Promise( async ( resolve, reject ) => {
 		// store the current date/time
 		const now = new Date();
-
-		let activeEvents;
+		// store any events that have passed in an array to return
+		let pastEvents = [];
 
 		// attempt to fetch all events that are currently active in the system
 		try {
-			activeEvents = await this.getActiveEvents();
+			let activeEvents = await this.getActiveEvents();
+
+			// loop through all active events
+			for( let event of activeEvents ) {
+				// "9:00pm" will store [ "9:00pm", "9:00pm", "9", "00", "pm" ]
+				let endTimeArray = /((1[0-2]|0?[1-9]):([0-5][0-9]) ?([AaPp][Mm]))/.exec( event.endTime );
+				// if the event has a stored end time and is a valid date
+				if( endTimeArray ) {
+					// check if the time is AM or PM, then extract the hours and add 12 for PM times
+					let endTimeHours = endTimeArray[ 4 ].toLowerCase() === 'pm'
+						? parseInt( endTimeArray[ 2 ] ) + 12
+						: parseInt( endTimeArray[ 2 ] );
+
+					// make a copy of the event end date if it exists and update the hours based on when the event ends in 24h time
+					let endDate = event.endDate instanceof Date
+						? new Date( event.endDate.getTime() ).setHours( endTimeHours )
+						: undefined;
+					// if the event is not recurring and has ended before the current date/time, add it to the array to return
+					if( !event.isRecurringEvent && endDate < now ) {
+						pastEvents.push( event );
+					}
+				}
+			}
 		}
 		catch( err ) {
 			return reject( `error fetching active events - ${ err }` );
 		}
 
-		// loop through all active events
-		for( let event of activeEvents ) {
-			// "9:00pm" will store [ "9:00pm", "9:00pm", "9", "00", "pm" ]
-			let endTimeArray = /((1[0-2]|0?[1-9]):([0-5][0-9]) ?([AaPp][Mm]))/.exec( event.endTime );
-			// if the event has a stored end time and is a valid date
-			if( endTimeArray ) {
-				// check if the time is AM or PM, then extract the hours and add 12 for PM times
-				let endTimeHours = endTimeArray[ 4 ].toLowerCase() === 'pm'
-					? parseInt( endTimeArray[ 2 ] ) + 12
-					: parseInt( endTimeArray[ 2 ] );
+		resolve( pastEvents );
+	});
+};
 
-				// use the extracted hours and day of the event to construct a date object for comparison
-				event.endDate.setHours( endTimeHours );
-				// if the event is not recurring and has ended before the current date/time
-				if( !event.isRecurringEvent && event.endDate < now ) {
-					// log a message for debugging purposes
-					console.log( `deactivating event ${ event.name }` );
-					// deactivate and save the event
-					event.set( 'isActive', false );
-
-					await event.save( err => {
-						if( err ) {
-							console.err( `error saving deactivated event ${ event.name } - ${ err }` );
-						}
-					});
-				}
+exports.deactivateEvents = ( events = [] ) => {
+	return new Promise( async ( resolve, reject ) => {
+		for( let event of events ) {
+			try {
+				await exports.deactivateEvent( event );
+			}
+			catch( error ) {
+				console.error( `error deactivating event ${ event.name } - ${ error }` );
 			}
 		}
 
 		resolve();
 	});
-};
+}
+
+exports.deactivateEvent = event => {
+	return new Promise( async ( resolve, reject ) => {
+		// if no event was passed in, reject the promise
+		if( !event ) {
+			return reject( `no event provided to deactivateEvent()` );
+		}
+		// log a message for debugging purposes
+		console.log( `deactivating event ${ event.name }` );
+
+		// deactivate and save the event
+		event.set( 'isActive', false );
+
+		await event.save( err => {
+			// if there was an error deactivating the event, return an error
+			if( err ) {
+				return reject( `error saving deactivated event ${ event.name } - ${ err }` );
+			}
+		});
+
+		console.log( `event ${ event.name } deactivated successfully` );
+
+		resolve( event );
+	});
+}

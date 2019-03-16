@@ -11,7 +11,9 @@ exports.scheduleEventDeactivator = () => {
 			console.log( 'chron - beginning scheduled task to deactivate events that have passed' );
 
 			try {
-				await eventService.checkForOldEvents();
+				const pastEvents = await eventService.getPastEvents();
+
+				await eventService.deactivateEvents( pastEvents );
 			}
 			catch( err ) {
 				console.error( `error running scheduled task to deactivate events that have passed - ${ err }` );
