@@ -67,7 +67,7 @@ Event.add( 'General Information', {
 	preventSiteVisitorRegistration: { type: Types.Boolean, label: 'prevent site visitor registration', initial: true },
 	preventFamilyRegistration: { type: Types.Boolean, label: 'prevent family registration', initial: true },
 	preventSocialWorkerRegistration: { type: Types.Boolean, label: 'prevent social worker registration', initial: true },
-	preventAdminRegistration: { type: Types.Boolean, label: 'prevent MARE staff registration', initial: true }
+	preventAdminRegistration: { type: Types.Boolean, label: 'prevent MARE staff child/adult registration', initial: true }
 
 }, 'Attendees', {
 

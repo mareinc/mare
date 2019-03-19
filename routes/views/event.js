@@ -47,12 +47,15 @@ exports = module.exports = ( req, res ) => {
 				userType === 'site visitor' ? !!event.preventSiteVisitorRegistration
 				: userType === 'family' ? !!event.preventFamilyRegistration
 				: userType === 'social worker' ? !!event.preventSocialWorkerRegistration
-				: userType === 'admin' ? !!event.preventAdminRegistration
 				: false;
+
+			locals.isUnregisteredChildAndAdultRegistrationAllowed = userType === 'admin'
+				&& !event.preventAdminRegistration;
 
 			// track whether it is an event users can register for through the site
 			// everyone can only register for select types of events if registration isn't blocked in the event model
-			locals.canRegister = eventType === 'Mare hosted events'
+			locals.canRegister = userType !== 'admin'
+				&& eventType === 'Mare hosted events'
 				&& !isRegistrationBlocked;
 
 			// only social workers can submit events, and only for specific types of events
@@ -128,8 +131,8 @@ exports = module.exports = ( req, res ) => {
 			locals.isUserBringingUnregisteredChildren	= unregisteredChildrenUserIsBringing.length > 0;
 			locals.isUserBringingUnregisteredAdults		= unregisteredAdultsUserIsBringing.length > 0;
 			locals.registeredChildrenUserIsBringing		= registeredChildrenUserIsBringing.map( child => `{ "name": "${ child.name.full }", "id": "${ child._id }" }` );
-			locals.unregisteredChildrenUserIsBringing	= unregisteredChildrenUserIsBringing.map( child => `{ "name": { "first": "${ child.name.first }", "last": "${ child.name.last }" }, "age": ${ child.age }, "id": "${ child._id }" }` );
-			locals.unregisteredAdultsUserIsBringing		= unregisteredAdultsUserIsBringing.map( adult => `{ "name": { "first": "${adult.name.first }", "last": "${ adult.name.last }" }, "id": "${ adult._id }" }` );
+			locals.unregisteredChildrenUserIsBringing	= unregisteredChildrenUserIsBringing.map( child => `{ "name": { "first": "${ child.name.first }", "last": "${ child.name.last }" }, "id": "${ child._id }" }` );
+			locals.unregisteredAdultsUserIsBringing		= unregisteredAdultsUserIsBringing.map( adult => `{ "name": { "first": "${ adult.name.first }", "last": "${ adult.name.last }" }, "id": "${ adult._id }" }` );
 
 			// set the layout to render with the right sidebar
 			locals[ 'render-with-sidebar' ] = true;
