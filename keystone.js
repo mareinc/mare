@@ -1,6 +1,6 @@
 // Simulate config options from your production environment by
 // customising the .env file in your project's root folder.
-require( 'dotenv' ).load();
+require( 'dotenv' ).config();
 
 // Initialise New Relic if an app name and license key exists
 if( process.env.NEW_RELIC_APP_NAME && process.env.NEW_RELIC_LICENSE_KEY ) {
