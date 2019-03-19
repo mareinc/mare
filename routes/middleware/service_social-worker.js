@@ -16,7 +16,7 @@ exports.getSocialWorkerById = id => {
 				// if no social worker was found with a matching id
 				if( !socialWorker ) {
 					// reject the promise with the reason why
-					reject( `no social worker found matching id ${ id } could be found` );
+					reject( `no social worker could be found matching id ${ id }` );
 				}
 				// resolve the promise with the returned social worker
 				resolve( socialWorker );
