@@ -12,3 +12,11 @@
 .events__contact-link {
 	margin-left: .5em;
 }
+
+.events__add-unregistered-attendee {
+	display: inline-block;
+	margin-top: 1em;
+	margin-left: 1em;
+	color: #006400; /* TODO: change to color before saving */
+	cursor: pointer;
+}

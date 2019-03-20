@@ -6,9 +6,6 @@
 		tagName: 'section',
 		// give the container for our view a class we can hook into
   		className: 'child-details',
-		// bind standard events to functions within the view
-		events: {
-		},
 
 		/* initialize the add unregistered child modal */
 		initialize: function initialize() {
@@ -38,9 +35,6 @@
 
 		/* render the view onto the page */
 		render: function render( options ) {
-			// store a reference to the view for inside callbacks where context is lost
-			var view = this;
-
 			// pass the child model to through the template we stored during initialization
 			var html = this.template( { child: options.child, action: options.action } );
 			this.$el.html( html );
@@ -52,7 +46,7 @@
 		},
 
 		/* open the edit child modal with the child's details */
-		showEditModal: function edit( child ) {
+		showEditModal: function showEditModal( child ) {
 			// render the child's details into the modal
 			this.render( { child: child, action: 'edit' } );
 			// display the modal
@@ -62,9 +56,9 @@
 		},
 
 		/* open the add new child modal */
-		showAddModal: function edit( child ) {
-			// render the child's details into the modal
-			this.render( { action: 'add' } );
+		showAddModal: function showAddModal( id ) {
+			// render the modal, passing in the id for the new child
+			this.render( { action: 'add', child: { id: id } } );
 			// display the modal
 			this.openModal();
 			// bind click events for the newly rendered elements
@@ -86,10 +80,13 @@
 		saveNewChild: function saveNewChild() {
 			// send an event notifying the parent view that a child has been added
 			this.trigger( 'childAdded', {
+				id: this.$( '#id' ).val(),
 				firstName: this.$( '#firstName' ).val(),
 				lastName: this.$( '#lastName' ).val(),
 				age: this.$( '#age' ).val()
 			});
+
+			this.closeModal();
 		},
 
 		/* open the modal container */

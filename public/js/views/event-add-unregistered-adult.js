@@ -6,9 +6,6 @@
 		tagName: 'section',
 		// give the container for our view a class we can hook into
   		className: 'adult-details',
-		// bind standard events to functions within the view
-		events: {
-		},
 
 		/* initialize the add unregistered adult modal */
 		initialize: function initialize() {
@@ -38,9 +35,6 @@
 
 		/* render the view onto the page */
 		render: function render( options ) {
-			// store a reference to the view for inside callbacks where context is lost
-			var view = this;
-
 			// pass the adult model to through the template we stored during initialization
 			var html = this.template( { adult: options.adult, action: options.action } );
 			this.$el.html( html );
@@ -52,7 +46,7 @@
 		},
 
 		/* open the edit adult modal with the adult's details */
-		showEditModal: function edit( adult ) {
+		showEditModal: function showEditModal( adult ) {
 			// render the adult's details into the modal
 			this.render( { adult: adult, action: 'edit' } );
 			// display the modal
@@ -62,9 +56,9 @@
 		},
 
 		/* open the add new adult modal */
-		showAddModal: function edit( adult ) {
-			// render the adult's details into the modal
-			this.render( { action: 'add' } );
+		showAddModal: function showAddModal( id ) {
+			// render the modal, passing in the id for the new adult
+			this.render( { action: 'add', adult: { id: id } } );
 			// display the modal
 			this.openModal();
 			// bind click events for the newly rendered elements
@@ -76,8 +70,7 @@
 			this.trigger( 'adultEdited', {
 				id: this.$( '#id' ).val(),
 				firstName: this.$( '#firstName' ).val(),
-				lastName: this.$( '#lastName' ).val(),
-				age: this.$( '#age' ).val()
+				lastName: this.$( '#lastName' ).val()
 			});
 
 			this.closeModal();
@@ -86,10 +79,12 @@
 		saveNewAdult: function saveNewAdult() {
 			// send an event notifying the parent view that a adult has been added
 			this.trigger( 'adultAdded', {
+				id: this.$( '#id' ).val(),
 				firstName: this.$( '#firstName' ).val(),
-				lastName: this.$( '#lastName' ).val(),
-				age: this.$( '#age' ).val()
+				lastName: this.$( '#lastName' ).val()
 			});
+
+			this.closeModal();
 		},
 
 		/* open the modal container */

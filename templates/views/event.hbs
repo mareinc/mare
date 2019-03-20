@@ -151,7 +151,7 @@
 
 			<section class="card__list-container">
 				<h4 class="card__list-title">Unregistered Children</h4>
-				<ul class="card__list">
+				<ul class="card__list events__unregistered-attendees events__unregistered-child-attendees">
 					{{#if event.hasUnregisteredChildAttendees}}
 					{{#each event.unregisteredChildAttendees}}
 					{{#if ../isUnregisteredChildAndAdultRegistrationAllowed}}
@@ -178,11 +178,14 @@
 					<li class="card__list-item card__list-item--disabled card__list-item--no-data">no unregistered children attending</li>
 					{{/if}}
 				</ul>
+				{{#if isUnregisteredChildAndAdultRegistrationAllowed}}
+				<span class="events__add-unregistered-attendee">+ add unregistered child</span>
+				{{/if}}
 			</section>
 
 			<section class="card__list-container">
 				<h4 class="card__list-title">Unregistered Adults</h4>
-				<ul class="card__list">
+				<ul class="card__list events__unregistered-attendees events__unregistered-adult-attendees">
 					{{#if event.hasUnregisteredAdultAttendees}}
 					{{#each event.unregisteredAdultAttendees}}
 					{{#if ../isUnregisteredChildAndAdultRegistrationAllowed}}
@@ -207,6 +210,9 @@
 					<li class="card__list-item card__list-item--disabled card__list-item--no-data">no unregistered adults attending</li>
 					{{/if}}
 				</ul>
+				{{#if isUnregisteredChildAndAdultRegistrationAllowed}}
+				<span class="events__add-unregistered-attendee">+ add unregistered adult</span>
+				{{/if}}
 			</section>
 		</aside>
 
@@ -259,5 +265,7 @@
 {{#if isUnregisteredChildAndAdultRegistrationAllowed}}
 {{> event-add-unregistered-child-form}}
 {{> event-add-unregistered-adult-form}}
+{{> event-unregistered-child}}
+{{> event-unregistered-adult}}
 {{/if}}
 {{/ifeq}}

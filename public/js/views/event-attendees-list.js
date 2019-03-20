@@ -10,10 +10,19 @@
 			'mouseleave .card__list-item--editable': 'hideControls',
 			'click .card__list-item-delete-content': 'handleDeleteAttendeeClick',
 			'click .card__list-item-edit-content': 'handleEditAttendeeClick',
-			'click .card__list-item-undo-edit': 'handleUndoAttendeeChangesClick'
+			'click .card__list-item-undo-edit': 'handleUndoAttendeeChangesClick',
+			'click .events__add-unregistered-attendee': 'handleAddUnregisteredAttendeeClick'
 		},
 
 		initialize: function initialize() {
+
+			// create a hook to access the template for rendering unregistered child/adult list items
+			var unregisteredChildHtml = $( '#event-unregistered-child-template' ).html();
+			var unregisteredAdultHtml = $( '#event-unregistered-adult-template' ).html();
+			// compile the template to be used when adding a new unregistered child/adult list item
+			this.unregisteredChildTemplate = Handlebars.compile( unregisteredChildHtml );
+			this.unregisteredAdultTemplate = Handlebars.compile( unregisteredAdultHtml );	
+
 			// create a collection to hold the returned social worker information
 			mare.collections.socialWorkers = mare.collections.socialWorkers || new mare.collections.SocialWorkers();
 			// create a promis to resolve once we have data for all active social workers
@@ -27,6 +36,31 @@
 
 			mare.views.eventAddUnregisteredChild.bind( 'childEdited', this.handleChildEdited.bind( this ) );
 			mare.views.eventAddUnregisteredAdult.bind( 'adultEdited', this.handleAdultEdited.bind( this ) );
+
+			mare.views.eventAddUnregisteredChild.bind( 'childAdded', this.handleChildAdded.bind( this ) );
+			mare.views.eventAddUnregisteredAdult.bind( 'adultAdded', this.handleAdultAdded.bind( this ) );
+
+			// create an id value to be used and incremented when adding new children/adults
+			this.nextId = 1;
+		},
+
+		renderNewAttendee: function renderNewAttendee( options ) {
+			var attendeeType = options.type;
+			var attendee = options.attendee;
+
+			if( options.type === 'child' ) {
+				// pass the child model to through the unregistered child template we stored during initialization
+				var html = this.unregisteredChildTemplate( { child: options.attendee } );
+				this.$( '.events__unregistered-child-attendees' ).append( html );
+
+			} else if( options.type === 'adult' ) {
+				// pass the child model to through the unregistered adult template we stored during initialization
+				var html = this.unregisteredAdultTemplate( { adult: options.attendee } );
+				this.$( '.events__unregistered-adult-attendees' ).append( html );
+			}
+
+			console.log( attendeeType );
+			console.log( attendee );
 		},
 
 		/* get all active social worker names and ids */
@@ -64,7 +98,7 @@
 			var $attendee = $( event.currentTarget ).closest( '.card__list-item' )
 
 			// add a data attribute indicating the attendee has been deleted
-			$attendee.data( 'edited', false );
+			$attendee.data( 'deleted', true );
 			// mark the list item as deleted
 			$attendee.addClass( 'card__list-item--deleted' );
 
@@ -93,31 +127,26 @@
 				// only children will have an age set
 				var attendeeAge = attendee.data( 'age' );
 				// pass the child details in the the editChildAttendee function for handling
-				this.editChildAttendee({
+				var childDetails = {
 					id: attendeeId,
 					firstName: attendeeFirstName,
 					lastName: attendeeLastName,
 					age: attendeeAge
-				});
+				};
+
+				// pass the request for editing the child to the subview in charge of the details modal
+				mare.views.eventAddUnregisteredChild.showEditModal( childDetails );
 
 			} else if( attendeeType === 'adult' ) {
-				// pass the child details in the the editAdultAttendee function for handling
-				this.editAdultAttendee({
+
+				var adultDetails = {
 					id: attendeeId,
 					firstName: attendeeFirstName,
 					lastName: attendeeLastName
-				})
+				}
+				// pass the request for editing the adult to the subview in charge of the details modal
+				mare.views.eventAddUnregisteredAdult.showEditModal( adultDetails );
 			}
-
-			// create the form to edit content
-			// 	first/last name, and for children an age and social worker field
-			//	QUESTION: should adults be able to be tied to a family?
-			// populate the modal with the current information
-			// populate the modal social worker selection field with the current social worker
-			// show the modal
-			// the modal should be able to handle a save or undo button click that will send an event back here
-
-			// TODO: before to trim before saving
 		},
 
 		handleUndoAttendeeChangesClick: function handleUndoAttendeeChangesClick( event ) {
@@ -165,24 +194,29 @@
 			$( event.currentTarget ).siblings( '.card__list-item-delete-content' ).removeClass( 'card__list-item-content-control--disabled' );
 		},
 
-		editChildAttendee: function editChildAttendee( child ) {
-			/* pass the request for editing the child to the subview in charge of the details modal */
-			mare.views.eventAddUnregisteredChild.showEditModal( child );
-		},
+		handleAddUnregisteredAttendeeClick: function handleAddUnregisteredAttendeeClick() {
+			// fetch the child/adult data
+			var attendee = $( event.target ).siblings( '.events__unregistered-attendees' ).find( '.events__attendee' );
+			var attendeeType = attendee.data( 'attendeeType' );
 
-		editAdultAttendee: function editAdultAttendee( adult ) {
-			/* pass the request for editing the child to the subview in charge of the details modal */
-			mare.views.eventAddUnregisteredAdult.showEditModal( adult );
+			if( attendeeType === 'child' ) {
+
+				mare.views.eventAddUnregisteredChild.showAddModal( this.nextId );
+
+			} else if( attendeeType === 'adult' ) {
+
+				mare.views.eventAddUnregisteredAdult.showAddModal( this.nextId );
+			}
 		},
 
 		handleChildEdited: function handleChildEdited( child ) {
 			// get the DOM element for the child matching the returned id
-			var $childNode = this.$('.events__unregistered-child-attendee[data-id*='+ child.id + ']');
+			var $childNode = this.$('.events__unregistered-child-attendee[data-id='+ child.id + ']');
 
 			// update the data attributes for the DOM element
-			$childNode.data( 'firstName', child.firstName );
-			$childNode.data( 'lastName', child.lastName );
-			$childNode.data( 'age', child.age );
+			$childNode.data( 'firstName', child.firstName.trim() );
+			$childNode.data( 'lastName', child.lastName.trim() );
+			$childNode.data( 'age', child.age.trim() );
 
 			// if the child data matches the original values
 			if( child.firstName === $childNode.data( 'originalFirstName' )
@@ -212,11 +246,11 @@
 
 		handleAdultEdited: function handleAdultEdited( adult ) {
 			// get the DOM element for the adult matching the returned id
-			var $adultNode = this.$('.events__unregistered-adult-attendee[data-id*='+ adult.id + ']');
+			var $adultNode = this.$('.events__unregistered-adult-attendee[data-id='+ adult.id + ']');
 
 			// update the data attributes for the DOM element
-			$adultNode.data( 'firstName', adult.firstName );
-			$adultNode.data( 'lastName', adult.lastName );
+			$adultNode.data( 'firstName', adult.firstName.trim() );
+			$adultNode.data( 'lastName', adult.lastName.trim() );
 			$adultNode.data( 'edited', true );
 
 			// if the child data matches the original values
@@ -243,5 +277,17 @@
 			// update the HTML of the DOM element
 			$adultNode.find( '.events__attendee-name' ).html( adult.firstName + ' ' + adult.lastName );
 		},
+
+		handleChildAdded: function handleChildAdded( child ) {
+			this.renderNewAttendee( { type: 'child', attendee: child } );
+
+			this.nextId++;
+		},
+
+		handleAdultAdded: function handleAdultAdded( adult ) {
+			this.renderNewAttendee( { type: 'adult', attendee: adult } );
+
+			this.nextId++;
+		}
 	});
 }());

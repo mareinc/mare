@@ -7,17 +7,17 @@
 
 		<div class="row form-group">
 			<div class="col-sm-24 form-group">
-				\{{#ifeq action 'edit'}}
+
 				<input type="text" class="input" id="socialWorker" value="\{{ displayName }}" disabled="disabled">
-				\{{/ifeq}}
+
 				<label for="name" class="label">Social Worker</label>
 			</div>
 		</div>
 
 		<section class="row form-group unregistered-child-container">
-			\{{#ifeq action 'edit'}}
+
 			<input type="text" class="input hidden" id="id" value="\{{ child.id }}">
-			\{{/ifeq}}
+
 			<div class="col-sm-10 form-group">
 				<input type="text" class="input" id="firstName" value="\{{ child.firstName }}">
 				<label for="name" class="label">First Name</label>
@@ -27,7 +27,7 @@
 				<label for="name" class="label">Last Name</label>
 			</div>
 			<div class="col-sm-4 form-group">
-				<input type="text" class="input" id="age" value="\{{ child.age }}">
+				<input type="number" min="0" class="input" id="age" value="\{{ child.age }}">
 				<label for="name" class="label">Age</label>
 			</div>
 		</section>
