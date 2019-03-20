@@ -362,8 +362,12 @@
 		cursor: pointer;
 	}
 
+	&--edited {
+		color: #0000ff;
+	}
+
 	&--deleted {
-		color: red;
+		color: #ff0000;
 	}
 }
 
