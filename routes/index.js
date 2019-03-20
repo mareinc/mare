@@ -71,6 +71,7 @@ exports = module.exports = app => {
 	app.get( '/events/export/:eventId'					, eventMiddleware.exportToExcel );
 	app.get( '/events/:category'						, routes.views.events );
 	app.get( '/events/:category/:key'					, routes.views.event );
+	app.post( '/events/get/social-worker-data'			, eventMiddleware.getActiveSocialWorkers );
 	app.post( '/events/register/:eventId'				, eventMiddleware.register );
 	app.post( '/events/unregister/:eventId'				, eventMiddleware.unregister );
 	app.post( '/events/edit-registration/:eventId'		, eventMiddleware.editRegistration );

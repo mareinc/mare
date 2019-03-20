@@ -52,6 +52,9 @@
 		{{#if isUserBringingUnregisteredAdults}}
 		data-unregistered-adults-user-is-bringing="[{{ unregisteredAdultsUserIsBringing }}]"
 		{{/if}}
+		{{#if isUnregisteredChildAndAdultRegistrationAllowed}}
+		data-is-unregistered-child-and-adult-registration-allowed="true"
+		{{/if}}
 	>
 		
 		<h2 class="card__title">{{ event.displayName }}</h2>
@@ -78,7 +81,7 @@
 
 		{{#ifeq userType 'admin'}}
 		<hr class="card__content-divider"></hr>
-		<aside class="card__content-group">
+		<aside class="card__content-group events__attendees">
 			<h3 class="card__title">Attendees</h3>
 
 			<section class="card__list-container">
@@ -86,7 +89,7 @@
 				<ul class="card__list" data-group="admin">
 					{{#if event.hasStaffAttendees}}
 					{{#each event.staffAttendees}}
-					<li class="card__list-item">{{ name.full }}</li>
+					<li class="card__list-item events__attendee">{{ name.full }}</li>
 					{{/each}}
 					{{else}}
 					<li class="card__list-item card__list-item--disabled card__list-item--no-data">no staff attending</li>
@@ -99,7 +102,7 @@
 				<ul class="card__list" data-group="social worker">
 					{{#if event.hasSocialWorkerAttendees}}
 					{{#each event.socialWorkerAttendees}}
-					<li class="card__list-item">{{ name.full }}</li>
+					<li class="card__list-item events__attendee">{{ name.full }}</li>
 					{{/each}}
 					{{else}}
 					<li class="card__list-item card__list-item--disabled card__list-item--no-data">no social workers attending</li>
@@ -112,7 +115,7 @@
 				<ul class="card__list" data-group="family">
 					{{#if event.hasFamilyAttendees}}
 					{{#each event.familyAttendees}}
-					<li class="card__list-item">{{ displayName }}</li>
+					<li class="card__list-item events__attendee">{{ displayName }}</li>
 					{{/each}}
 					{{else}}
 					<li class="card__list-item card__list-item--disabled card__list-item--no-data">no families attending</li>
@@ -125,7 +128,7 @@
 				<ul class="card__list" data-group="site visitor">
 					{{#if event.hasSiteVisitorAttendees}}
 					{{#each event.siteVisitorAttendees}}
-					<li class="card__list-item">{{ name.full }}</li>
+					<li class="card__list-item events__attendee">{{ name.full }}</li>
 					{{/each}}
 					{{else}}
 					<li class="card__list-item card__list-item--disabled card__list-item--no-data">no site visitors attending</li>
@@ -138,7 +141,7 @@
 				<ul class="card__list">
 					{{#if event.hasChildAttendees}}
 					{{#each event.childAttendees}}
-					<li class="card__list-item">{{ name.full }}</li>
+					<li class="card__list-item events__attendee">{{ name.full }}</li>
 					{{/each}}
 					{{else}}
 					<li class="card__list-item card__list-item--disabled card__list-item--no-data">no registered children attending</li>
@@ -152,11 +155,23 @@
 					{{#if event.hasUnregisteredChildAttendees}}
 					{{#each event.unregisteredChildAttendees}}
 					{{#if ../isUnregisteredChildAndAdultRegistrationAllowed}}
-					<li class="card__list-item card__list-item--editable card__list-item--deletable" data-id="{{ _id }}">
-						{{ name.first }} {{ name.last }}
+					<li class="card__list-item card__list-item--editable events__attendee events__unregistered-child-attendee"
+						data-id="{{ _id }}"
+						data-original-first-name="{{ name.first }}"
+						data-original-last-name="{{ name.last }}"
+						data-original-age="{{ age }}"
+						data-first-name="{{ name.first }}"
+						data-last-name="{{ name.last }}"
+						data-age="{{ age }}"
+						data-attendee-type="child"
+					>
+						<span class="card__list-item-content events__attendee-name">{{ name.first }} {{ name.last }}</span>
+						<i class="fa fa-trash card__list-item-content-control card__list-item-content-control--hidden card__list-item-delete-content" aria-hidden="true"></i>
+						<i class="fa fa-pencil card__list-item-content-control card__list-item-content-control--hidden card__list-item-edit-content" aria-hidden="true"></i>
+						<i class="fa fa-undo card__list-item-content-control card__list-item-content-control--hidden card__list-item-content-control--disabled card__list-item-undo-edit" aria-hidden="true"></i>
 					</li>
 					{{else}}
-					<li class="card__list-item">{{ name.first }} {{ name.last }}</li>
+					<li class="card__list-item events__attendee">{{ name.first }} {{ name.last }}</li>
 					{{/if}}
 					{{/each}}
 					{{else}}
@@ -170,12 +185,22 @@
 				<ul class="card__list">
 					{{#if event.hasUnregisteredAdultAttendees}}
 					{{#each event.unregisteredAdultAttendees}}
-					{{#if isUnregisteredChildAndAdultRegistrationAllowed}}
-					<li class="card__list-item card__list-item--editable card__list-item--deletable" data-id="{{ _id }}">
-						{{ name.first }} {{ name.last }}
+					{{#if ../isUnregisteredChildAndAdultRegistrationAllowed}}
+					<li class="card__list-item card__list-item--editable events__attendee events__unregistered-adult-attendee"
+						data-id="{{ _id }}"
+						data-original-first-name="{{ name.first }}"
+						data-original-last-name="{{ name.last }}"
+						data-first-name="{{ name.first }}"
+						data-last-name="{{ name.last }}"
+						data-attendee-type="adult"
+					>
+						<span class="card__list-item-content events__attendee-name">{{ name.first }} {{ name.last }}</span>
+						<i class="fa fa-trash card__list-item-content-control card__list-item-content-control--hidden card__list-item-delete-content" aria-hidden="true"></i>
+						<i class="fa fa-pencil card__list-item-content-control card__list-item-content-control--hidden card__list-item-edit-content" aria-hidden="true"></i>
+						<i class="fa fa-undo card__list-item-content-control card__list-item-content-control--hidden card__list-item-content-control--disabled card__list-item-undo-edit" aria-hidden="true"></i>
 					</li>
 					{{else}}
-					<li class="card__list-item">{{ name.first }} {{ name.last }}</li>
+					<li class="card__list-item events__attendee">{{ name.first }} {{ name.last }}</li>
 					{{/if}}
 					{{/each}}
 					{{else}}
@@ -229,4 +254,10 @@
 {{#ifeq userType 'social worker'}}
 {{> event-social-worker-registration-form}}
 {{> event-edit-social-worker-registration-form}}
+{{/ifeq}}
+{{#ifeq userType 'admin'}}
+{{#if isUnregisteredChildAndAdultRegistrationAllowed}}
+{{> event-add-unregistered-child-form}}
+{{> event-add-unregistered-adult-form}}
+{{/if}}
 {{/ifeq}}

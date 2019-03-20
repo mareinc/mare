@@ -1,0 +1,36 @@
+<!-- client side template for rendering the add unregistered adult form in a modal -->
+<script id="event-add-unregistered-adult-template" type="text/x-handlebars-template">
+
+<section class="add-unregistered-adult">
+
+	<section class="form-section">
+
+		<section class="row form-group unregistered-adult-container">
+			\{{#ifeq action 'edit'}}
+			<input type="text" class="input hidden" id="id" value="\{{ adult.id }}">
+			\{{/ifeq}}
+			<div class="col-sm-12 form-group">
+				<input type="text" class="input" id="firstName" value="\{{ adult.firstName }}">
+				<label for="name" class="label">First Name</label>
+			</div>
+			<div class="col-sm-12 form-group">
+				<input type="text" class="input" id="lastName" value="\{{ adult.lastName }}">
+				<label for="name" class="label">Last Name</label>
+			</div>
+		</section>
+
+	</section>
+
+	<section class="button-group button-group--horizontal button-group--space-around button-group--large-margin-above button-group--small-margin-below">
+		\{{#ifeq action 'edit'}}
+		<button class="button button--teal events__edit-adult">Edit Adult</button>
+		\{{/ifeq}}
+		\{{#ifeq action 'add'}}
+		<button class="button button--teal events__add-adult">Add Adult</button>
+		\{{/ifeq}}
+		<button class="button button--teal events__cancel-add-adult">Cancel</button>
+	</section>
+
+</section>
+
+</script>

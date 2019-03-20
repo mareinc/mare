@@ -357,6 +357,33 @@
 	&--disabled {
 		color: $text-color-1;
 	}
+
+	&--editable {
+		cursor: pointer;
+	}
+
+	&--deleted {
+		color: red;
+	}
+}
+
+.card__list-item-content-control {
+
+	padding: 0 0.25em;
+	color: #000;
+
+	&--disabled {
+		opacity: 0.25;
+		cursor: default;
+	}
+
+	&--hidden {
+		transform: translateX( -50% );
+		opacity: 0;
+	}
+
+	transition: opacity 0.4s ease-in-out,
+				transform 0.4s ease-in-out;
 }
 
 .card__content-divider {

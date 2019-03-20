@@ -1,10 +1,10 @@
 // TODO: anything that needs to fetch the event to work should have a parameter for event, and if it's passed in, it uses that instead of fetching.  This would save several DB lookups
 
-const keystone						= require( 'keystone' ),
-	  eventEmailMiddleware			= require( './emails_event' ),
-		emailTargetService		= require( './service_email-target' ),
+const keystone					= require( 'keystone' ),
+	  eventEmailMiddleware		= require( './emails_event' ),
+	  emailTargetService		= require( './service_email-target' ),
 	  staffEmailContactService	= require( './service_staff-email-contact' ),
-	  userService					= require( './service_user' );
+	  userService				= require( './service_user' );
 
 exports.getEventById = ( { eventId, fieldsToPopulate = [] } ) => {
 

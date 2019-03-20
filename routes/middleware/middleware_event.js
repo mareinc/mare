@@ -1,4 +1,5 @@
-const eventService			= require( './service_event' ),
+const keystone				= require( 'keystone' ),
+	  eventService			= require( './service_event' ),
 	  eventExcelService		= require( './service_event-excel-export' );
 	  eventEmailMiddleware	= require( './emails_event' );
 
@@ -496,3 +497,34 @@ exports.exportToExcel = async ( req, res, next ) => {
 		req.flash( 'error', { title: 'There was an issue exporting this event' } );
 	}
 }
+
+exports.getActiveSocialWorkers = ( req, res, next ) => {
+
+	return new Promise( async ( resolve, reject ) => {
+
+		keystone.list( 'Social Worker' ).model
+			.find()
+			.where( 'isActive' ).equals( true )
+			.select( '_id name.full' )
+			.lean()
+			.exec()
+			.then( socialWorkers => {
+
+				if( !socialWorkers ) {
+					console.error( `no active social workers could be found` );
+				}
+
+				// rename the fields before returning to protect the database
+				const cleanSocialWorkers = socialWorkers.map( socialWorker => {
+					return { uid: socialWorker._id, name: socialWorker.name.full };
+				});
+				
+				res.send( cleanSocialWorkers );
+				
+			}, err => {
+				console.error( 'error fetching active social workers' );
+
+				res.send();
+			});
+	});
+};

@@ -75,7 +75,7 @@
 
 		/* render the view onto the page */
 		render: function render( doneCallback ) {
-			// store a reference to this for insde callbacks where context is lost
+			// store a reference to this for inside callbacks where context is lost
 			var view = this;
 			// unbind any existing media box plugins
 			this.unbindMediaBoxes();
