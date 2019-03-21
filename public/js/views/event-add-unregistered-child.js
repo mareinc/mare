@@ -109,8 +109,8 @@
 			this.trigger( 'childAdded', {
 				id: this.$( '#id' ).val(),
 				registrantId: this.$( '#registrant' ).find( ':selected' ).val(),
-				firstName: this.$( '#firstName' ).val(),
-				lastName: this.$( '#lastName' ).val(),
+				firstName: this.$( '#first-name' ).val(),
+				lastName: this.$( '#last-name' ).val(),
 				age: this.$( '#age' ).val()
 			});
 

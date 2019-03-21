@@ -45,8 +45,7 @@
 		},
 
 		renderNewAttendee: function renderNewAttendee( options ) {
-			var attendeeType = options.type;
-			var attendee = options.attendee;
+
 			var html = '';
 
 			if( options.type === 'child' ) {

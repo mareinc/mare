@@ -80,8 +80,8 @@
 			// send an event notifying the parent view that a adult has been added
 			this.trigger( 'adultAdded', {
 				id: this.$( '#id' ).val(),
-				firstName: this.$( '#firstName' ).val(),
-				lastName: this.$( '#lastName' ).val()
+				firstName: this.$( '#first-name' ).val(),
+				lastName: this.$( '#last-name' ).val()
 			});
 
 			this.closeModal();
