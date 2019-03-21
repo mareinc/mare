@@ -368,9 +368,9 @@
 			if( addedChildren.length > 0
 				|| deletedChildren.length > 0
 				|| editedChildren.length > 0
-				|| addedChildren.length > 0
-				|| deletedChildren.length > 0
-				|| editedChildren.length > 0
+				|| addedAdults.length > 0
+				|| deletedAdults.length > 0
+				|| editedAdults.length > 0
 			) {
 				$( '.events__save-changes' ).removeClass( 'events__save-changes--hidden' );
 			} else {
