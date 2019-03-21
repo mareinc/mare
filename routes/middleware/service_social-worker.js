@@ -59,3 +59,29 @@ exports.fetchSocialWorkersChildren = id => {
 			});
 	});
 };
+
+exports.getActiveSocialWorkerIds = () => {
+
+	return new Promise( ( resolve, reject ) => {
+
+		keystone.list( 'Social Worker' ).model
+			.find()
+			.where( 'isActive' ).equals( true )
+			.select( '_id' )
+			.lean()
+			.exec()
+			.then( socialWorkers => {
+
+				if( !socialWorkers ) {
+					return reject( `no active social workers could be found` );
+				}
+
+				const socialWorkerIds = socialWorkers.map( socialWorker => socialWorker._id.toString() );
+				
+				resolve( socialWorkerIds );
+				
+			}, err => {
+				reject( 'error fetching active social workers' );
+			});
+	});
+};

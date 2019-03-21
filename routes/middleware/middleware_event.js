@@ -1,7 +1,8 @@
 const keystone				= require( 'keystone' ),
 	  eventService			= require( './service_event' ),
 	  eventExcelService		= require( './service_event-excel-export' );
-	  eventEmailMiddleware	= require( './emails_event' );
+	  eventEmailMiddleware	= require( './emails_event' ),
+	  socialWorkerService	= require( './service_social-worker' );
 
 exports.register = async ( req, res ) => {
 	'use strict';
@@ -412,10 +413,24 @@ exports.exportToExcel = async ( req, res, next ) => {
 		const familyAttendees = event.get( 'familyAttendees' );
 		const childAttendees = event.get( 'childAttendees' );
 		const outsideContactAttendees = event.get( 'outsideContactAttendees' );
+
+		let unregisteredChildAttendees = [];
+
+		// unregistered child attendees should only be added to the children tab if they're registered by a social worker
+		try {
+			const activeSocialWorkerIds = await socialWorkerService.getActiveSocialWorkerIds();
+
+			unregisteredChildAttendees = event.unregisteredChildAttendees.filter( child => {
+				return activeSocialWorkerIds.includes( child.get( 'registrantID' ) );
+			});
+			
+		}
+		catch( error ) {
+			console.error( `error fetching active social workers for event export - ${ err }`)
+		}
 		
-		// extract hidden unregistered attendees from the event
+		// extract hidden unregistered adult attendees from the event
 		const unregisteredAdultAttendees = event.unregisteredAdultAttendees;
-		const unregisteredChildAttendees = event.unregisteredChildAttendees;
 
 		// if no one is attending the event
 		if( staffAttendees.length === 0
@@ -527,4 +542,8 @@ exports.getActiveSocialWorkers = ( req, res, next ) => {
 				res.send();
 			});
 	});
+};
+
+exports.updateEventAttendees = ( req, res, next ) => {
+	// TODO
 };
