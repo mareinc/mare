@@ -17,6 +17,21 @@
 	display: inline-block;
 	margin-top: 1em;
 	margin-left: 1em;
-	color: #006400; /* TODO: change to color before saving */
+	color: #006400; /* TODO: change to color variable before saving */
 	cursor: pointer;
+}
+
+.events__save-changes-container {
+	width: 100%;
+}
+
+.events__save-changes {
+
+	&--hidden {
+		transform: translateY( 50% );
+		opacity: 0;
+	}
+
+	transition: opacity 0.4s ease-in-out,
+				transform 0.4s ease-in-out;
 }

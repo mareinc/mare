@@ -105,6 +105,9 @@
 
 			// enable the undo edits control for the list item
 			$( event.currentTarget ).siblings( '.card__list-item-undo-edit' ).removeClass( 'card__list-item-content-control--disabled' );
+
+			// check for changes, and display the save changes button if there are
+			this.toggleSaveChangesButton();
 		},
 
 		handleEditAttendeeClick: function handleEditAttendeeClick( event ) {
@@ -193,6 +196,9 @@
 			// enable the delete and edit controls for the list item
 			$( event.currentTarget ).siblings( '.card__list-item-edit-content' ).removeClass( 'card__list-item-content-control--disabled' );
 			$( event.currentTarget ).siblings( '.card__list-item-delete-content' ).removeClass( 'card__list-item-content-control--disabled' );
+
+			// check for changes, and display the save changes button if there are
+			this.toggleSaveChangesButton();
 		},
 
 		handleAddUnregisteredAttendeeClick: function handleAddUnregisteredAttendeeClick() {
@@ -245,6 +251,9 @@
 
 			// update the HTML of the DOM element
 			$childNode.find( '.events__attendee-name' ).html( child.firstName + ' ' + child.lastName );
+
+			// check for changes, and display the save changes button if there are
+			this.toggleSaveChangesButton();
 		},
 
 		handleAdultEdited: function handleAdultEdited( adult ) {
@@ -279,18 +288,94 @@
 
 			// update the HTML of the DOM element
 			$adultNode.find( '.events__attendee-name' ).html( adult.firstName + ' ' + adult.lastName );
+
+			// check for changes, and display the save changes button if there are
+			this.toggleSaveChangesButton();
 		},
 
 		handleChildAdded: function handleChildAdded( child ) {
 			this.renderNewAttendee( { type: 'child', attendee: child } );
 
 			this.nextId++;
+
+			// check for changes, and display the save changes button if there are
+			this.toggleSaveChangesButton();
 		},
 
 		handleAdultAdded: function handleAdultAdded( adult ) {
 			this.renderNewAttendee( { type: 'adult', attendee: adult } );
 
 			this.nextId++;
+
+			// check for changes, and display the save changes button if there are
+			this.toggleSaveChangesButton();
+		},
+
+		toggleSaveChangesButton: function toggleSaveChangesButton() {
+			
+			var unregisteredChildAttendees = this.$el.find( '.events__unregistered-child-attendees' );
+			var unregisteredAdultAttendees = this.$el.find( '.events__unregistered-adult-attendees' );
+
+			// only consider children who have been added, but aren't marked for deletion
+			var addedChildren = unregisteredChildAttendees
+				.find( '.events__unregistered-child-attendee' )
+				.filter( function ( index, child ) {
+					return $( child ).data( 'added' ) === true
+						&& $( child ).data( 'deleted' ) !== true
+				});
+			
+			// consider any child marked for deletion
+			var deletedChildren = unregisteredChildAttendees
+				.find( '.events__unregistered-child-attendee' )
+				.filter( function( index, child ) {
+					return $( child ).data( 'deleted' ) === true;
+				});
+			
+			// only consider edited children who aren't newly created and haven't been marked for deletion
+			var editedChildren = unregisteredChildAttendees
+				.find( '.events__unregistered-child-attendee' )
+				.filter( function( index, child ) {
+					return $( child ).data( 'edited' ) === true
+						&& $( child ).data( 'added' ) !== true
+						&& $( child ).data( 'deleted' ) !== true
+				});
+
+			// only consider adults who have been added, but aren't marked for deletion
+			var addedAdults = unregisteredAdultAttendees
+				.find( '.events__unregistered-adult-attendee' )
+				.filter( function ( index, adult ) {
+					return $( adult ).data( 'added' ) === true
+						&& $( adult ).data( 'deleted' ) !== true
+				});
+			
+			// consider any adult marked for deletion
+			var deletedAdults = unregisteredAdultAttendees
+				.find( '.events__unregistered-adult-attendee' )
+				.filter( function( index, adult ) {
+					return $( adult ).data( 'deleted' ) === true;
+				});
+			
+			// only consider edited adults who aren't newly created and haven't been marked for deletion
+			var editedAdults = unregisteredAdultAttendees
+				.find( '.events__unregistered-adult-attendee' )
+				.filter( function( index, adult ) {
+					return $( adult ).data( 'edited' ) === true
+						&& $( adult ).data( 'added' ) !== true
+						&& $( adult ).data( 'deleted' ) !== true
+				});
+
+			// if there are any added/deleted/edited children/adults, show the save changes button
+			if( addedChildren.length > 0
+				|| deletedChildren.length > 0
+				|| editedChildren.length > 0
+				|| addedChildren.length > 0
+				|| deletedChildren.length > 0
+				|| editedChildren.length > 0
+			) {
+				$( '.events__save-changes' ).removeClass( 'events__save-changes--hidden' );
+			} else {
+				$( '.events__save-changes' ).addClass( 'events__save-changes--hidden' );
+			}
 		}
 	});
 }());
