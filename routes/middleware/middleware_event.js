@@ -414,13 +414,13 @@ exports.exportToExcel = async ( req, res, next ) => {
 		const childAttendees = event.get( 'childAttendees' );
 		const outsideContactAttendees = event.get( 'outsideContactAttendees' );
 
-		let unregisteredChildAttendees = [];
+		let unregisteredChildAttendeesBroughtBySocialWorkers = [];
 
 		// unregistered child attendees should only be added to the children tab if they're registered by a social worker
 		try {
 			const activeSocialWorkerIds = await socialWorkerService.getActiveSocialWorkerIds();
 
-			unregisteredChildAttendees = event.unregisteredChildAttendees.filter( child => {
+			unregisteredChildAttendeesBroughtBySocialWorkers = event.unregisteredChildAttendees.filter( child => {
 				return activeSocialWorkerIds.includes( child.get( 'registrantID' ) );
 			});
 			
@@ -429,8 +429,9 @@ exports.exportToExcel = async ( req, res, next ) => {
 			console.error( `error fetching active social workers for event export - ${ err }`)
 		}
 		
-		// extract hidden unregistered adult attendees from the event
+		// extract hidden unregistered attendees from the event
 		const unregisteredAdultAttendees = event.unregisteredAdultAttendees;
+		const unregisteredChildAttendees = event.unregisteredChildAttendees;
 
 		// if no one is attending the event
 		if( staffAttendees.length === 0
@@ -438,7 +439,8 @@ exports.exportToExcel = async ( req, res, next ) => {
 			&& socialWorkerAttendees.length === 0
 			&& familyAttendees.length === 0
 			&& childAttendees.length === 0
-			&& outsideContactAttendees.length === 0 ) {
+			&& outsideContactAttendees.length === 0
+			&& unregisteredChildAttendeesBroughtBySocialWorkers.length === 0 ) {
 			
 			// send a flash message to the user notifying them that an export couldn't be generated
 			req.flash( 'info', { title: 'The export could not be generated',
@@ -450,12 +452,12 @@ exports.exportToExcel = async ( req, res, next ) => {
 		// create a new excel workbook
 		const workbook = eventExcelService.createWorkbook();
 
-		if( childAttendees.length > 0 || unregisteredChildAttendees.length > 0 ) {
+		if( childAttendees.length > 0 || unregisteredChildAttendeesBroughtBySocialWorkers.length > 0 ) {
 			await eventExcelService.createChildrenWorksheet({
 				event,
 				workbook,
 				attendees: childAttendees,
-				unregisteredAttendees: unregisteredChildAttendees
+				unregisteredAttendees: unregisteredChildAttendeesBroughtBySocialWorkers
 			});
 		}
 
