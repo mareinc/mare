@@ -16,7 +16,7 @@ exports.getSocialWorkerById = id => {
 				// if no social worker was found with a matching id
 				if( !socialWorker ) {
 					// reject the promise with the reason why
-					reject( `no social worker found matching id ${ id } could be found` );
+					reject( `no social worker could be found matching id ${ id }` );
 				}
 				// resolve the promise with the returned social worker
 				resolve( socialWorker );
@@ -56,6 +56,32 @@ exports.fetchSocialWorkersChildren = id => {
 				console.error( `an error occurred fetching the children registered by social worker with id ${ id } - ${ err }` );
 				// allow further processing beyond this middleware
 				reject();
+			});
+	});
+};
+
+exports.getActiveSocialWorkerIds = () => {
+
+	return new Promise( ( resolve, reject ) => {
+
+		keystone.list( 'Social Worker' ).model
+			.find()
+			.where( 'isActive' ).equals( true )
+			.select( '_id' )
+			.lean()
+			.exec()
+			.then( socialWorkers => {
+
+				if( !socialWorkers ) {
+					return reject( `no active social workers could be found` );
+				}
+
+				const socialWorkerIds = socialWorkers.map( socialWorker => socialWorker._id.toString() );
+				
+				resolve( socialWorkerIds );
+				
+			}, err => {
+				reject( 'error fetching active social workers' );
 			});
 	});
 };

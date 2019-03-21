@@ -1,0 +1,53 @@
+<!-- client side template for rendering the add unregistered child form in a modal -->
+<script id="event-add-unregistered-child-template" type="text/x-handlebars-template">
+
+<section class="add-unregistered-child">
+
+	<section class="form-section">
+
+		<section class="row form-group unregistered-child-container">
+
+			<input type="text" id="id" class="input hidden" value="\{{ child.id }}">
+
+			<div class="col-sm-24 form-group">
+				<select id="registrant" class="col-sm-24 events__registrant-select" name="registrant">
+					<option value=""></option>
+					\{{#each socialWorkers}}
+					<option value="\{{ id }}" \{{#if selected}}selected="selected"\{{/if}}>
+						\{{ name }}
+					</option>
+					\{{/each}}
+				</select>
+				<label for="registrant" class="label">Social Worker</label>
+			</div>
+
+			<div class="col-sm-10 form-group">
+				<input type="text" id="first-name" class="input" name="first-name" value="\{{ child.firstName }}">
+				<label for="first-name" class="label">First Name</label>
+			</div>
+			<div class="col-sm-10 form-group">
+				<input type="text" id="last-name" class="input" name="last-name" value="\{{ child.lastName }}">
+				<label for="last-name" class="label">Last Name</label>
+			</div>
+			<div class="col-sm-4 form-group">
+				<input type="number" min="0" id="age" class="input" name="age" value="\{{ child.age }}">
+				<label for="age" class="label">Age</label>
+			</div>
+		</section>
+
+	</section>
+
+	<section class="button-group button-group--horizontal button-group--space-around button-group--large-margin-above button-group--small-margin-below">
+		\{{#ifeq action 'edit'}}
+		<button class="button button--teal events__edit-child">Edit Child</button>
+		\{{/ifeq}}
+		\{{#ifeq action 'add'}}
+		<button class="button button--teal events__add-child">Add Child</button>
+		\{{/ifeq}}
+		<button class="button button--teal events__cancel-add-child">Cancel</button>
+	</section>
+	
+
+</section>
+
+</script>

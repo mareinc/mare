@@ -52,6 +52,34 @@ exports.getRegionByName = name => {
 	});
 };
 
+exports.getRegionById = id => {
+
+	return new Promise( ( resolve, reject ) => {
+		// if no id value was passed into the function
+		if ( !id ) {
+			// reject the promise with a description of the error
+			return reject( 'getRegionById cannot execute - no region ID provided' );
+		}
+		// query the database for the region with the matching _id
+		keystone.list( 'Region' ).model
+			.findById( id )
+			.exec()
+			.then( region => {
+				// if no region could not be found
+				if( !region ) {
+					// reject the promise with an error message
+					return reject( `region could not be found` );
+				}
+				// if the region was successfully returned, resolve with the model
+				resolve( region );
+			// if an error was encountered fetching from the database
+			}, err => {
+				// reject the promise
+				reject( err );
+			});
+	});
+};
+
 exports.getAllSocialWorkerPositions = () => {
 
 	return new Promise( ( resolve, reject ) => {
@@ -163,7 +191,7 @@ exports.getStateById = id => {
 		// if no id value was passed into the function
 		if ( !id ) {
 			// reject the promise with a description of the error
-			return reject( 'getStateById cannot execute - no state ID provided' );
+			return reject( 'no id provided' );
 		}
 		// query the database for the state with the matching _id
 		keystone.list( 'State' ).model

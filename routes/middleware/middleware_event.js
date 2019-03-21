@@ -1,6 +1,8 @@
-const eventService			= require( './service_event' ),
+const keystone				= require( 'keystone' ),
+	  eventService			= require( './service_event' ),
 	  eventExcelService		= require( './service_event-excel-export' );
-	  eventEmailMiddleware	= require( './emails_event' );
+	  eventEmailMiddleware	= require( './emails_event' ),
+	  socialWorkerService	= require( './service_social-worker' );
 
 exports.register = async ( req, res ) => {
 	'use strict';
@@ -411,6 +413,21 @@ exports.exportToExcel = async ( req, res, next ) => {
 		const familyAttendees = event.get( 'familyAttendees' );
 		const childAttendees = event.get( 'childAttendees' );
 		const outsideContactAttendees = event.get( 'outsideContactAttendees' );
+
+		let unregisteredChildAttendeesBroughtBySocialWorkers = [];
+
+		// unregistered child attendees should only be added to the children tab if they're registered by a social worker
+		try {
+			const activeSocialWorkerIds = await socialWorkerService.getActiveSocialWorkerIds();
+
+			unregisteredChildAttendeesBroughtBySocialWorkers = event.unregisteredChildAttendees.filter( child => {
+				return activeSocialWorkerIds.includes( child.get( 'registrantID' ) );
+			});
+			
+		}
+		catch( error ) {
+			console.error( `error fetching active social workers for event export - ${ err }`)
+		}
 		
 		// extract hidden unregistered attendees from the event
 		const unregisteredAdultAttendees = event.unregisteredAdultAttendees;
@@ -422,7 +439,8 @@ exports.exportToExcel = async ( req, res, next ) => {
 			&& socialWorkerAttendees.length === 0
 			&& familyAttendees.length === 0
 			&& childAttendees.length === 0
-			&& outsideContactAttendees.length === 0 ) {
+			&& outsideContactAttendees.length === 0
+			&& unregisteredChildAttendeesBroughtBySocialWorkers.length === 0 ) {
 			
 			// send a flash message to the user notifying them that an export couldn't be generated
 			req.flash( 'info', { title: 'The export could not be generated',
@@ -434,12 +452,12 @@ exports.exportToExcel = async ( req, res, next ) => {
 		// create a new excel workbook
 		const workbook = eventExcelService.createWorkbook();
 
-		if( childAttendees.length > 0 || unregisteredChildAttendees.length > 0 ) {
+		if( childAttendees.length > 0 || unregisteredChildAttendeesBroughtBySocialWorkers.length > 0 ) {
 			await eventExcelService.createChildrenWorksheet({
 				event,
 				workbook,
 				attendees: childAttendees,
-				unregisteredAttendees: unregisteredChildAttendees
+				unregisteredAttendees: unregisteredChildAttendeesBroughtBySocialWorkers
 			});
 		}
 
@@ -496,3 +514,38 @@ exports.exportToExcel = async ( req, res, next ) => {
 		req.flash( 'error', { title: 'There was an issue exporting this event' } );
 	}
 }
+
+exports.getActiveSocialWorkers = ( req, res, next ) => {
+
+	return new Promise( async ( resolve, reject ) => {
+
+		keystone.list( 'Social Worker' ).model
+			.find()
+			.where( 'isActive' ).equals( true )
+			.select( '_id name.full' )
+			.lean()
+			.exec()
+			.then( socialWorkers => {
+
+				if( !socialWorkers ) {
+					console.error( `no active social workers could be found` );
+				}
+
+				// rename the fields before returning to protect the database
+				const cleanSocialWorkers = socialWorkers.map( socialWorker => {
+					return { uid: socialWorker._id, name: socialWorker.name.full };
+				});
+				
+				res.send( cleanSocialWorkers );
+				
+			}, err => {
+				console.error( 'error fetching active social workers' );
+
+				res.send();
+			});
+	});
+};
+
+exports.updateEventAttendees = ( req, res, next ) => {
+	// TODO
+};

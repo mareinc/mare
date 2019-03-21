@@ -18,6 +18,10 @@
 		initialize: function initialize() {
 			// initialize a view for the event registration modal if it doesn't already exist
 			mare.views.eventRegistrationForm = mare.views.eventRegistrationForm || new mare.views.EventRegistrationForm();
+			// initialize a view for the attendee lists if the user is an admin and is allowed to edit unregistered adult and child attendee information
+			if( $( '.event' ).data( 'is-unregistered-child-and-adult-registration-allowed' ) ) {
+				mare.views.eventAttendeeList = mare.views.eventAttendeeList || new mare.views.EventAttendees();
+			}
 		},
 		
 		// TODO: consider putting this in a more global space since it's used for button navigation
