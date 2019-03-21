@@ -5,30 +5,33 @@
 
 	<section class="form-section">
 
-		<div class="row form-group">
-			<div class="col-sm-24 form-group">
-
-				<input type="text" class="input" id="socialWorker" value="\{{ displayName }}" disabled="disabled">
-
-				<label for="name" class="label">Social Worker</label>
-			</div>
-		</div>
-
 		<section class="row form-group unregistered-child-container">
 
-			<input type="text" class="input hidden" id="id" value="\{{ child.id }}">
+			<input type="text" id="id" class="input hidden" value="\{{ child.id }}">
+
+			<div class="col-sm-24 form-group">
+				<select id="registrant" class="col-sm-24 events__registrant-select" name="registrant">
+					<option value=""></option>
+					\{{#each socialWorkers}}
+					<option value="\{{ id }}" \{{#if selected}}selected="selected"\{{/if}}>
+						\{{ name }}
+					</option>
+					\{{/each}}
+				</select>
+				<label for="registrant" class="label">Social Worker</label>
+			</div>
 
 			<div class="col-sm-10 form-group">
-				<input type="text" class="input" id="firstName" value="\{{ child.firstName }}">
-				<label for="name" class="label">First Name</label>
+				<input type="text" id="first-name" class="input" name="first-name" value="\{{ child.firstName }}">
+				<label for="first-name" class="label">First Name</label>
 			</div>
 			<div class="col-sm-10 form-group">
-				<input type="text" class="input" id="lastName" value="\{{ child.lastName }}">
-				<label for="name" class="label">Last Name</label>
+				<input type="text" id="last-name" class="input" name="last-name" value="\{{ child.lastName }}">
+				<label for="last-name" class="label">Last Name</label>
 			</div>
 			<div class="col-sm-4 form-group">
-				<input type="number" min="0" class="input" id="age" value="\{{ child.age }}">
-				<label for="name" class="label">Age</label>
+				<input type="number" min="0" id="age" class="input" name="age" value="\{{ child.age }}">
+				<label for="age" class="label">Age</label>
 			</div>
 		</section>
 

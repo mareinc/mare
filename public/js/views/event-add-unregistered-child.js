@@ -15,7 +15,13 @@
 			this.template = Handlebars.compile( html );	
 			// initialize the modal once we've fetched the social worker data needed to display the social worker dropdown
 			mare.promises.socialWorkerDataLoaded.done( function() {
-				this.socialWorkers = mare.collections.socialWorkers;
+				// extract the relevant data from the stored social worker models
+				this.socialWorkers = mare.collections.socialWorkers.map( function( socialWorker ) {
+					return {
+						name: socialWorker.get( 'name' ),
+						id: socialWorker.get( 'uid' )
+					}
+				});
 			}.bind( this ) );
 		},
 
@@ -33,16 +39,32 @@
 			$( '.modal__close' ).unbind( 'click' );
 		},
 
+		bindDropdown: function bundDropdown() {
+			this.$( '.events__registrant-select' ).select2();
+		},
+
 		/* render the view onto the page */
 		render: function render( options ) {
-			// pass the child model to through the template we stored during initialization
-			var html = this.template( { child: options.child, action: options.action } );
-			this.$el.html( html );
-			// render the contents area and tabs
-			$( '.modal-container__contents' ).html( this.$el );
-			// remove the loading indicator and display the details content
-			$( '.modal-container__loading' ).hide();
-			$( '.modal-container__contents' ).show();
+			mare.promises.socialWorkerDataLoaded.done( function() {
+
+				var selectedSocialWorker = this.socialWorkers.find( function( socialWorker ) {
+					return socialWorker.id === options.child.registrantId;
+				});
+
+				if( selectedSocialWorker ) {
+					selectedSocialWorker.selected = true;
+				}
+
+				// pass the child model to through the template we stored during initialization
+				var html = this.template( { child: options.child, action: options.action, socialWorkers: this.socialWorkers } );
+				this.$el.html( html );
+				// render the contents area and tabs
+				$( '.modal-container__contents' ).html( this.$el );
+				// remove the loading indicator and display the details content
+				$( '.modal-container__loading' ).hide();
+				$( '.modal-container__contents' ).show();
+
+			}.bind( this ) );
 		},
 
 		/* open the edit child modal with the child's details */
@@ -53,6 +75,8 @@
 			this.openModal();
 			// bind click events for the newly rendered elements
 			this.bindEvents();
+			// bind the jquery dropdown plugin to the social worker select
+			this.bindDropdown();
 		},
 
 		/* open the add new child modal */
@@ -63,14 +87,17 @@
 			this.openModal();
 			// bind click events for the newly rendered elements
 			this.bindEvents();
+			// bind the jquery dropdown plugin to the social worker select
+			this.bindDropdown();
 		},
 
 		saveEditedChild: function saveEditedChild() {
 			// send an event notifying the parent view that a child has been edited
 			this.trigger( 'childEdited', {
 				id: this.$( '#id' ).val(),
-				firstName: this.$( '#firstName' ).val(),
-				lastName: this.$( '#lastName' ).val(),
+				registrantId: this.$( '#registrant' ).find( ':selected' ).val(),
+				firstName: this.$( '#first-name' ).val(),
+				lastName: this.$( '#last-name' ).val(),
 				age: this.$( '#age' ).val()
 			});
 
@@ -81,6 +108,7 @@
 			// send an event notifying the parent view that a child has been added
 			this.trigger( 'childAdded', {
 				id: this.$( '#id' ).val(),
+				registrantId: this.$( '#registrant' ).find( ':selected' ).val(),
 				firstName: this.$( '#firstName' ).val(),
 				lastName: this.$( '#lastName' ).val(),
 				age: this.$( '#age' ).val()
@@ -111,11 +139,20 @@
 			this.clearModalContents();
 
 			this.unbindEvents();
+
+			// deselect the currentlly selected social worker
+			var selectedSocialWorker = this.socialWorkers.find( function( socialWorker ) {
+				return socialWorker.selected;
+			});
+
+			if( selectedSocialWorker ) {
+				delete selectedSocialWorker.selected;
+			}
 		},
 
 		/* clear out the current contents of the modal */
 		clearModalContents: function clearModalContents() {
 			$( '.modal-container__contents' ).html( '' );
-		},
+		}
 	});
 }());

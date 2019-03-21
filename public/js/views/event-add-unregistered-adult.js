@@ -69,8 +69,8 @@
 			// send an event notifying the parent view that a adult has been edited
 			this.trigger( 'adultEdited', {
 				id: this.$( '#id' ).val(),
-				firstName: this.$( '#firstName' ).val(),
-				lastName: this.$( '#lastName' ).val()
+				firstName: this.$( '#first-name' ).val(),
+				lastName: this.$( '#last-name' ).val()
 			});
 
 			this.closeModal();
@@ -114,6 +114,6 @@
 		/* clear out the current contents of the modal */
 		clearModalContents: function clearModalContents() {
 			$( '.modal-container__contents' ).html( '' );
-		},
+		}
 	});
 }());

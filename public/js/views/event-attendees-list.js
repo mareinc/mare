@@ -47,20 +47,18 @@
 		renderNewAttendee: function renderNewAttendee( options ) {
 			var attendeeType = options.type;
 			var attendee = options.attendee;
+			var html = '';
 
 			if( options.type === 'child' ) {
 				// pass the child model to through the unregistered child template we stored during initialization
-				var html = this.unregisteredChildTemplate( { child: options.attendee } );
+				html = this.unregisteredChildTemplate( { child: options.attendee } );
 				this.$( '.events__unregistered-child-attendees' ).append( html );
 
 			} else if( options.type === 'adult' ) {
 				// pass the child model to through the unregistered adult template we stored during initialization
-				var html = this.unregisteredAdultTemplate( { adult: options.attendee } );
+				html = this.unregisteredAdultTemplate( { adult: options.attendee } );
 				this.$( '.events__unregistered-adult-attendees' ).append( html );
 			}
-
-			console.log( attendeeType );
-			console.log( attendee );
 		},
 
 		/* get all active social worker names and ids */
@@ -124,14 +122,16 @@
 			var attendeeLastName = attendee.data( 'lastName' );
 
 			if( attendeeType === 'child' ) {
-				// only children will have an age set
+				// only children will have an age and social worker set
 				var attendeeAge = attendee.data( 'age' );
+				var registrantId = attendee.data( 'registrantId' );
 				// pass the child details in the the editChildAttendee function for handling
 				var childDetails = {
 					id: attendeeId,
 					firstName: attendeeFirstName,
 					lastName: attendeeLastName,
-					age: attendeeAge
+					age: attendeeAge,
+					registrantId: registrantId
 				};
 
 				// pass the request for editing the child to the subview in charge of the details modal
@@ -159,22 +159,24 @@
 			var $currentTarget = $( event.currentTarget );
 			var $attendee = $currentTarget.closest( '.card__list-item' );
 
-			var attendeeType = $attendee.data( 'attendee-type' );
-			var originalFirstName = $attendee.data( 'original-first-name' );
-			var originalLastName = $attendee.data( 'original-last-name' );
+			var attendeeType = $attendee.data( 'attendeeType' );
+			var originalFirstName = $attendee.data( 'originalFirstName' );
+			var originalLastName = $attendee.data( 'originalLastName' );
 
 			// reset the data attributes to their original values
-			$attendee.data( 'first-name', originalFirstName );
-			$attendee.data( 'last-name', originalLastName );
+			$attendee.data( 'firstName', originalFirstName );
+			$attendee.data( 'lastName', originalLastName );
 
 			// remove data attributes indicating the attendee has been edited or deleted
 			$attendee.data( 'edited', false );
 			$attendee.data( 'deleted', false );
 
 			if( attendeeType === 'child' ) {
-				var originalAge = $attendee.data( 'original-age' );
+				var originalAge = $attendee.data( 'originalAge' );
+				var originalRegistrantId = $attendee.data( 'originalRegistrantId' );
 
 				$attendee.data( 'age', originalAge );
+				$attendee.data( 'registrantId', originalRegistrantId );
 			}
 
 			// reset the visible name field
@@ -216,11 +218,13 @@
 			// update the data attributes for the DOM element
 			$childNode.data( 'firstName', child.firstName.trim() );
 			$childNode.data( 'lastName', child.lastName.trim() );
+			$childNode.data( 'registrantId', child.registrantId.trim() );
 			$childNode.data( 'age', child.age.trim() );
 
 			// if the child data matches the original values
 			if( child.firstName === $childNode.data( 'originalFirstName' )
 				&& child.lastName === $childNode.data( 'originalLastName' )
+				&& child.registrantId === $childNode.data( 'originalRegistrantId' )
 				&& child.age === $childNode.data( 'originalAge' ).toString() ) {
 				// remove the edited class from the DOM element
 				$childNode.removeClass( 'card__list-item--edited' )
