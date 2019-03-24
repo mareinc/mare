@@ -11,10 +11,13 @@
 			'click .card__list-item-delete-content': 'handleDeleteAttendeeClick',
 			'click .card__list-item-edit-content': 'handleEditAttendeeClick',
 			'click .card__list-item-undo-edit': 'handleUndoAttendeeChangesClick',
-			'click .events__add-unregistered-attendee': 'handleAddUnregisteredAttendeeClick'
+			'click .events__add-unregistered-attendee': 'handleAddUnregisteredAttendeeClick',
+			'click .events__save-changes': 'saveChanges'
 		},
 
 		initialize: function initialize() {
+
+			this.eventId = $( '.event' ).data( 'eventId' );
 
 			// create a hook to access the template for rendering unregistered child/adult list items
 			var unregisteredChildHtml = $( '#event-unregistered-child-template' ).html();
@@ -313,56 +316,12 @@
 
 		toggleSaveChangesButton: function toggleSaveChangesButton() {
 			
-			var unregisteredChildAttendees = this.$el.find( '.events__unregistered-child-attendees' );
-			var unregisteredAdultAttendees = this.$el.find( '.events__unregistered-adult-attendees' );
-
-			// only consider children who have been added, but aren't marked for deletion
-			var addedChildren = unregisteredChildAttendees
-				.find( '.events__unregistered-child-attendee' )
-				.filter( function ( index, child ) {
-					return $( child ).data( 'added' ) === true
-						&& $( child ).data( 'deleted' ) !== true
-				});
-			
-			// consider any child marked for deletion
-			var deletedChildren = unregisteredChildAttendees
-				.find( '.events__unregistered-child-attendee' )
-				.filter( function( index, child ) {
-					return $( child ).data( 'deleted' ) === true;
-				});
-			
-			// only consider edited children who aren't newly created and haven't been marked for deletion
-			var editedChildren = unregisteredChildAttendees
-				.find( '.events__unregistered-child-attendee' )
-				.filter( function( index, child ) {
-					return $( child ).data( 'edited' ) === true
-						&& $( child ).data( 'added' ) !== true
-						&& $( child ).data( 'deleted' ) !== true
-				});
-
-			// only consider adults who have been added, but aren't marked for deletion
-			var addedAdults = unregisteredAdultAttendees
-				.find( '.events__unregistered-adult-attendee' )
-				.filter( function ( index, adult ) {
-					return $( adult ).data( 'added' ) === true
-						&& $( adult ).data( 'deleted' ) !== true
-				});
-			
-			// consider any adult marked for deletion
-			var deletedAdults = unregisteredAdultAttendees
-				.find( '.events__unregistered-adult-attendee' )
-				.filter( function( index, adult ) {
-					return $( adult ).data( 'deleted' ) === true;
-				});
-			
-			// only consider edited adults who aren't newly created and haven't been marked for deletion
-			var editedAdults = unregisteredAdultAttendees
-				.find( '.events__unregistered-adult-attendee' )
-				.filter( function( index, adult ) {
-					return $( adult ).data( 'edited' ) === true
-						&& $( adult ).data( 'added' ) !== true
-						&& $( adult ).data( 'deleted' ) !== true
-				});
+			var addedChildren = this.getAddedChildren();
+			var deletedChildren = this.getDeletedChildren();
+			var editedChildren = this.getEditedChildren();
+			var addedAdults = this.getAddedAdults();
+			var deletedAdults = this.getDeletedAdults();
+			var editedAdults = this.getEditedAdults();
 
 			// if there are any added/deleted/edited children/adults, show the save changes button
 			if( addedChildren.length > 0
@@ -376,6 +335,160 @@
 			} else {
 				$( '.events__save-changes' ).addClass( 'events__save-changes--hidden' );
 			}
+		},
+
+		saveChanges: function saveChanges( event ) {
+
+			var changes = {
+				addedChildren: [],
+				deletedChildren: [],
+				editedChildren: [],
+				addedAdults: [],
+				deletedAdults: [],
+				editedAdults: []
+			};
+
+			this.getAddedChildren()
+				.map( function( index, child ) {
+					// cache the jquery wrapped child element
+					var $child = $( child );
+
+					changes.addedChildren.push({
+						firstName: $child.data( 'firstName' ),
+						lastName: $child.data( 'lastName' ),
+						age: $child.data( 'age' ),
+						registrantId: $child.data( 'registrantId' )
+					});
+				});
+
+			this.getDeletedChildren()
+				.map( function( index, child ) {
+					changes.deletedChildren.push( $( child ).data( 'id' ) );
+				});
+
+			this.getEditedChildren()
+				.map( function( index, child ) {
+					// cache the jquery wrapped child element
+					var $child = $( child );
+
+					changes.editedChildren.push({
+						id: $child.data( 'id' ),
+						firstName: $child.data( 'firstName' ),
+						lastName: $child.data( 'lastName' ),
+						age: $child.data( 'age' ),
+						registrantId: $child.data( 'registrantId' )
+					});
+				});
+
+			this.getAddedAdults()
+				.map( function( index, adult ) {
+					// cache the jquery wrapped adult element
+					var $adult = $( adult );
+
+					changes.addedAdults.push({
+						firstName: $adult.data( 'firstName' ),
+						lastName: $adult.data( 'lastName' )
+					});
+				});
+
+			this.getDeletedAdults()
+				.map( function( index, adult ) {
+					changes.deletedAdults.push( $( adult ).data( 'id' ) );
+				});
+
+			this.getEditedAdults()
+				.map( function( index, adult ) {
+					// cache the jquery wrapped adult element
+					var $adult = $( adult );
+
+					changes.editedAdults.push({
+						id: $adult.data( 'id' ),
+						firstName: $adult.data( 'firstName' ),
+						lastName: $adult.data( 'lastName' )
+					});
+				});
+
+			$.ajax({
+				type: 'PUT',
+				url: '/events/' + this.eventId + '/attendees',
+				data: changes
+			// reload the current page regardless of the actions success.  This is needed to make the changes appear permanent and display the flash message
+			}).always( function() {
+				window.location.reload()
+
+			});
+		},
+
+		getAddedChildren: function getAddedChildren() {
+			var unregisteredChildAttendees = this.$el.find( '.events__unregistered-child-attendees' );
+			
+			// only consider children who have been added, but aren't marked for deletion
+			return unregisteredChildAttendees
+				.find( '.events__unregistered-child-attendee' )
+				.filter( function ( index, child ) {
+					return $( child ).data( 'added' ) === true
+						&& $( child ).data( 'deleted' ) !== true
+				});
+		},
+
+		getDeletedChildren: function getDeletedChildren() {
+			var unregisteredChildAttendees = this.$el.find( '.events__unregistered-child-attendees' );
+
+			// consider any child marked for deletion
+			return unregisteredChildAttendees
+				.find( '.events__unregistered-child-attendee' )
+				.filter( function( index, child ) {
+					return $( child ).data( 'deleted' ) === true;
+				});
+		},
+
+		getEditedChildren: function getEditedChildren() {
+			var unregisteredChildAttendees = this.$el.find( '.events__unregistered-child-attendees' );
+
+			// only consider edited children who aren't newly created and haven't been marked for deletion
+			return unregisteredChildAttendees
+				.find( '.events__unregistered-child-attendee' )
+				.filter( function( index, child ) {
+					return $( child ).data( 'edited' ) === true
+						&& $( child ).data( 'added' ) !== true
+						&& $( child ).data( 'deleted' ) !== true
+				});
+		},
+
+		getAddedAdults: function getAddedAdults() {
+			var unregisteredAdultAttendees = this.$el.find( '.events__unregistered-adult-attendees' );
+
+			// only consider adults who have been added, but aren't marked for deletion
+			return unregisteredAdultAttendees
+				.find( '.events__unregistered-adult-attendee' )
+				.filter( function ( index, adult ) {
+					return $( adult ).data( 'added' ) === true
+						&& $( adult ).data( 'deleted' ) !== true
+				});
+		},
+
+		getDeletedAdults: function getDeletedAdults() {
+			var unregisteredAdultAttendees = this.$el.find( '.events__unregistered-adult-attendees' );
+
+			// consider any adult marked for deletion
+			return unregisteredAdultAttendees
+				.find( '.events__unregistered-adult-attendee' )
+				.filter( function( index, adult ) {
+					return $( adult ).data( 'deleted' ) === true;
+				});
+		},
+
+		getEditedAdults: function getEditedAdults() {
+			var unregisteredAdultAttendees = this.$el.find( '.events__unregistered-adult-attendees' );
+
+			// only consider edited adults who aren't newly created and haven't been marked for deletion
+			return unregisteredAdultAttendees
+				.find( '.events__unregistered-adult-attendee' )
+				.filter( function( index, adult ) {
+					return $( adult ).data( 'edited' ) === true
+						&& $( adult ).data( 'added' ) !== true
+						&& $( adult ).data( 'deleted' ) !== true
+				});
 		}
 	});
 }());

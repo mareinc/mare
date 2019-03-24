@@ -1,8 +1,9 @@
 const keystone				= require( 'keystone' ),
 	  eventService			= require( './service_event' ),
-	  eventExcelService		= require( './service_event-excel-export' );
+	  eventExcelService		= require( './service_event-excel-export' ),
 	  eventEmailMiddleware	= require( './emails_event' ),
-	  socialWorkerService	= require( './service_social-worker' );
+	  socialWorkerService	= require( './service_social-worker' ),
+	  flashMessageMiddleware	= require( './service_flash-messages' );
 
 exports.register = async ( req, res ) => {
 	'use strict';
@@ -546,6 +547,111 @@ exports.getActiveSocialWorkers = ( req, res, next ) => {
 	});
 };
 
-exports.updateEventAttendees = ( req, res, next ) => {
-	// TODO
+exports.updateEventAttendees = async ( req, res ) => {
+	
+	try {
+		const event = await eventService.getEventById( { eventId: req.params.id } );
+
+		// extract all available edits from the passed in data
+		const { addedChildren, deletedChildren, editedChildren, addedAdults, deletedAdults, editedAdults } = req.body;
+
+		// loop through the children added and create records
+		if( addedChildren ) {
+			
+			for( let addedChild of addedChildren ) {
+				const newChild = {
+					name: {
+						first: addedChild.firstName,
+						last: addedChild.lastName
+					},
+					age: addedChild.age,
+					registrantID: addedChild.registrantId
+				}
+
+				event.unregisteredChildAttendees = [ newChild, ...event.unregisteredChildAttendees ];
+			}
+		}
+		// loop through the adults added and create records
+		if( addedAdults ) {
+			
+			for( let addedAdult of addedAdults ) {
+				const newAdult = {
+					name: {
+						first: addedAdult.firstName,
+						last: addedAdult.lastName
+					},
+					registrantID: addedAdult.registrantId
+				}
+
+				event.unregisteredAdultAttendees = [ newAdult, ...event.unregisteredAdultAttendees ];
+			}
+		}
+
+		// loop through the children deleted and delete the records
+		if( deletedChildren ) {
+			
+			for( let deletedChildId of deletedChildren ) {
+				let deletedChildIndex = event.unregisteredChildAttendees.findIndex( child => child.get( '_id' ).toString() === deletedChildId );
+
+				event.unregisteredChildAttendees.splice( deletedChildIndex, 1 );
+			}
+		}
+		// loop through the adults deleted and delete the records
+		if( deletedAdults ) {
+			
+			for( let deletedAdultId of deletedAdults ) {
+				let deletedAdultIndex = event.unregisteredAdultAttendees.findIndex( adult => adult.get( '_id' ).toString() === deletedAdultId );
+
+				event.unregisteredAdultAttendees.splice( deletedAdultIndex, 1 );
+			}
+		}
+
+		// lopo through the children edited and edit the records
+		if( editedChildren ) {
+			
+			for( let editedChild of editedChildren ) {
+				let targetChild = event.unregisteredChildAttendees.find( child => child.get( '_id' ).toString() === editedChild.id );
+
+				targetChild.set( 'name.first', editedChild.firstName );
+				targetChild.set( 'name.last', editedChild.lastName );
+				targetChild.set( 'age', editedChild.age );
+				targetChild.set( 'registrantID', editedChild.registrantId );
+			}
+		}
+		// loop through the adults edited and edit the records
+		if( editedAdults ) {
+			
+			for( let editedAdult of editedAdults ) {
+				let targetAdult = event.unregisteredAdultAttendees.find( adult => adult.get( '_id' ).toString() === editedAdult.id );
+
+				targetAdult.set( 'name.first', editedAdult.firstName );
+				targetAdult.set( 'name.last', editedAdult.lastName );
+			}
+		}
+
+		// attempt to save the updated event model
+		await new Promise( ( resolve, reject ) => {
+
+			event.save( ( err, savedModel ) => {
+
+				if( err ) {
+					// log the error for debugging purposes
+					return reject( `error saving changes to the unregistered attendees for ${ event.name } - ${ err }` );
+				}
+
+				resolve();
+			});
+		});
+
+		// notify the user that they were successful ( the code to notify MARE executes after this message is sent )
+		req.flash( 'success', { title: 'Success',
+			detail: 'your changes to unregistered attendees have been saved' });
+	}
+	catch( error ) {
+		// notify the user of the error
+		req.flash( 'error', { title: 'There was an issue editing the event',
+			detail: 'If this error persists, please notify MARE at <a href="mailto:web@mareinc.org">web@mareinc.org</a>' } );
+	}
+
+	res.send();
 };
