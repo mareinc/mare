@@ -140,8 +140,8 @@ Child.add( 'Display Options', {
 
 	disabilities: { type: Types.Relationship, label: 'disabilities', ref: 'Disability', many: true, initial: true },
 
-	healthNotesNew: { type: Types.Textarea, label: 'health notes - new', initial: true },
-	healthNotesOld: { type: Types.Textarea, label: 'health notes - old', initial: true }
+	healthNotesNew: { type: Types.Textarea, label: 'health notes', initial: true },
+	healthNotesOld: { type: Types.Textarea, label: 'child inquiry summary', initial: true }
 
 }, 'Placement Considerations', {
 
