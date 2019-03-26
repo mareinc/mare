@@ -183,8 +183,8 @@ Child.add( 'Display Options', {
 
 	hasPhotolistingWriteup: { type: Types.Boolean, label: 'photolisting writeup', default: false, initial: true },
 	photolistingWriteupDate: { type: Types.Date, label: 'date of photolisting writeup', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { hasPhotolistingWriteup: true }, initial: true },
-	hasPhotolistingPhoto: { type: Types.Boolean, label: 'photolisting photo', default: false, initial: true },
-	photolistingPhotoDate: { type: Types.Date, label: 'date of photolisting photo', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { hasPhotolistingPhoto: true }, initial: true },
+	hasPhotolistingPhoto: { type: Types.Boolean, label: 'professional photo', default: false, initial: true },
+	photolistingPhotoDate: { type: Types.Date, label: 'date of professional photo', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { hasPhotolistingPhoto: true }, initial: true },
 	isCurrentlyInPhotoListing: { type: Types.Boolean, label: 'currently in photolisting', default: false, initial: true },
 	dateOfLastPhotoListing: { type: Types.Date, label: 'date of last photolisting', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: {isCurrentlyInPhotoListing: true }, initial: true },
 	photolistingPageNumber: { type: Types.Text, label: 'photolisting page', initial: true },
@@ -366,8 +366,6 @@ Child.schema.pre( 'save', function( next ) {
 	this.setFullName();
 	// if there are no siblings to be placed with, uncheck the box, otherwise check it
 	this.updateMustBePlacedWithSiblingsCheckbox();
-	// if there are no siblings to be placed with, clear the group bio
-	// this.updateSiblingGroupInfo();
 
 	// set the registration number for the family
 	const registrationNumberSet = this.setRegistrationNumber();
@@ -376,7 +374,7 @@ Child.schema.pre( 'save', function( next ) {
 	// set the noedit fields associated with the recruitment worker's agency
 	const recruitmentWorkerAgencyFieldsSet = this.setRecruitmentWorkerAgencyFields();
 
-	// check to see if the siblings groups have been changed
+	// check to see if the content of the siblings or siblings to be placed with fields have changed
 	let hasSiblingsChanged = this.checkSiblingsForChanges();
 	let hasSiblingsToBePlacedWithChanged = this.checkSiblingsToBePlacedWithForChanges();
 	// if both groups have been changed
@@ -391,15 +389,15 @@ Child.schema.pre( 'save', function( next ) {
 		.resolve()
 		// process updates to sibling groups
 		.then( () => {
-			// if the siblings group has been updated
+			// if the list of siblings has been changed
 			if ( hasSiblingsChanged ) {
 				// batch the siblings group updates
 				return ChildMiddleware.batchAllSiblingUpdates( this );
-			// if the siblings to be placed with group has been updated
+			// if the siblings to be placed with list has changed
 			} else if ( hasSiblingsToBePlacedWithChanged ) {
 				// batch the siblings to be placed with group updates
 				return ChildMiddleware.batchAllSiblingsToBePlacedWithUpdates( this );
-			// if neither group has been updated
+			// if neither list has changed
 			} else {
 				// continue execution
 				return;
@@ -410,7 +408,7 @@ Child.schema.pre( 'save', function( next ) {
 			// log any errors
 			console.error( error );
 		})
-		// perform the rest of the pre-save processing
+		// ensure the rest of the pre-save processing has finished executing
 		.then( () => {
 
 			return Promise.all( [ registrationNumberSet, adoptionWorkerAgencyFieldsSet, recruitmentWorkerAgencyFieldsSet ] );
@@ -436,6 +434,7 @@ Child.schema.post( 'save', function() {
 		// process updates for other siblings
 		this.updateSiblingGroup();
 	// if the siblings group has not changed, replicate fields to each sibling to be placed with that should be identical across records
+	// NOTE: this can't check this.checkSiblingsToBePlacedWithForChanges() because a lack of changes would prevent the chron job from replicating fields across siblings to be placed with
 	} else {
 		// process updates for other siblings in the group
 		this.updateSiblingsToBePlacedWithGroup();
@@ -908,13 +907,15 @@ Child.schema.methods.updateSiblingsToBePlacedWithGroup = function() {
 						wednesdaysChildSiblingGroup: this.get( 'wednesdaysChildSiblingGroup' ),
 						wednesdaysChildSiblingGroupDate: this.get( 'wednesdaysChildSiblingGroupDate' ),
 						wednesdaysChildSiblingGroupVideo: this.get( 'wednesdaysChildSiblingGroupVideo' ) } )
-					.then( updatedChildId => {
+					.then( () => {
 						// unlock the sibling to be placed with after update is complete
-						saveLock.unlock( updatedChildId );
+						saveLock.unlock( siblingId );
 					})
-					.catch( updatedChildId => {
-						// unlock the sibling to be placed with after update is complete
-						saveLock.unlock( updatedChildId );
+					.catch( error => {
+						// log the error for debugging purposes
+						console.error( `error updating fields for sibling of child ${ this.name.full } - ${ error }` );
+						// unlock the sibling to be placed with so future saves can occur
+						saveLock.unlock( siblingId );
 					});
 			}
 		});
