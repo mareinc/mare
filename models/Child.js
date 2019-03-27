@@ -1462,13 +1462,13 @@ Child.schema.methods.setChangeHistory = function() {
 				done => {
 					ChangeHistoryMiddleware.checkFieldForChanges({
 												name: 'healthNotesNew',
-												label: 'old health notes',
+												label: 'child inquiry summary',
 												type: 'string' }, model, modelBefore, changeHistory, done );
 				},
 				done => {
 					ChangeHistoryMiddleware.checkFieldForChanges({
 												name: 'healthNotesOld',
-												label: 'new health notes',
+												label: 'health notes',
 												type: 'string' }, model, modelBefore, changeHistory, done );
 				},
 				done => {
@@ -1622,13 +1622,13 @@ Child.schema.methods.setChangeHistory = function() {
 				done => {
 					ChangeHistoryMiddleware.checkFieldForChanges({
 												name: 'hasPhotolistingPhoto',
-												label: 'has photolisting page',
+												label: 'has professional photo',
 												type: 'boolean' }, model, modelBefore, changeHistory, done );
 				},
 				done => {
 					ChangeHistoryMiddleware.checkFieldForChanges({
 												name: 'photolistingPhotoDate',
-												label: 'date of photolisting photo',
+												label: 'date of professional photo',
 												type: 'date' }, model, modelBefore, changeHistory, done );
 				},
 				done => {
