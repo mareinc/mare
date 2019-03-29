@@ -78,7 +78,7 @@ Child.add( 'Display Options', {
 
 	siteVisibility: { type: Types.Select, label: 'child is visible to', options: 'everyone, only registered social workers and families', required: true, initial: true },
 	isVisibleInGallery: { type: Types.Boolean, label: 'activate child profile on website to group selected', note: 'authorized staff only', default: false, initial: true },
-	visibleInGalleryDate: { type: Types.Date, label: 'date added to MARE web', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: {isVisibleInGallery: true }, initial: true }
+	visibleInGalleryDate: { type: Types.Date, label: 'date added/updated to MARE web', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: {isVisibleInGallery: true }, initial: true }
 
 }, 'Child Information', {
 
@@ -1171,7 +1171,7 @@ Child.schema.methods.setChangeHistory = function() {
 				done => {
 					ChangeHistoryMiddleware.checkFieldForChanges({
 												name: 'visibleInGalleryDate',
-												label: 'visible in gallery date',
+												label: 'date added/updated to MARE web',
 												type: 'date' }, model, modelBefore, changeHistory, done );
 				},
 				done => {
