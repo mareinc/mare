@@ -333,8 +333,8 @@ exports.applySiblingsToBePlacedWithGroupToChild = ( { childToUpdateId, recommend
 						child.wednesdaysChildSiblingGroupVideo !== wednesdaysChildSiblingGroupVideo ) {
 							// update the child to be placed with with values that should replicate across records
 							child.recommendedFamilyConstellation = recommendedFamilyConstellation;
-							child.adoptionWorker = adoptionWorker;
-							child.recruitmentWorker = recruitmentWorker;
+							child.adoptionWorker = adoptionWorker ? adoptionWorker : undefined;
+							child.recruitmentWorker = recruitmentWorker ? recruitmentWorker : undefined;
 							child.isVisibleInGallery = isVisibleInGallery;
 							// update the child to be placed with with the shared bio information
 							child.groupProfile.quote	= newGroupQuote;
