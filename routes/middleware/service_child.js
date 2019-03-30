@@ -928,11 +928,13 @@ exports.saveAllChildren = () => {
 		try {
 			// start with the first page of children
 			let page = 1,
-				childrenPerPage = 100;
+				childrenPerPage = 25;
 			// pages will increment until there are no more pages, at which point it will be set to false
 			while( page ) {
 				// log the progress to make tracking of each run easier to monitor
-				console.log( `saving child ${ page * childrenPerPage }` );
+				if( ( page * childrenPerPage ) % 100 === 0 ) {
+					console.log( `saving child ${ page * childrenPerPage }` );
+				}
 				// fetch the current page of children
 				try {
 					// destructure the results of the fetch into two local variables
@@ -963,7 +965,7 @@ exports.saveAllChildren = () => {
 	});
 };
 
-exports.fetchChildrenByPage = ( { page = 1, childrenPerPage = 100, filters = {} } ) => {
+exports.fetchChildrenByPage = ( { page = 1, childrenPerPage = 25, filters = {} } ) => {
 
 	return new Promise( ( resolve, reject ) => {
 		// fetch the requested page of child records, 
