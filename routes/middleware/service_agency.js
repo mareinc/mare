@@ -26,4 +26,43 @@ exports.getAgencyById = id => {
 				reject( `error fetching agency by id ${ id } - ${ err }` );
 			});
 	});
- }
+};
+
+/* Chron job function used to batch save all agency models */
+exports.saveAllAgencies = () => {
+
+	return new Promise( ( resolve, reject ) => {
+
+		keystone.list( 'Agency' ).model
+			.find()
+			.then( async agencies => {
+				// create an array of errors to display once all models have been saved
+				let errors = [];
+				// loop through each agency
+				for( let [ index, agency ] of agencies.entries() ) {
+
+					if( index % 100 === 0 ) {
+						console.log( `saving agency ${ index } of ${ agencies.length }` );
+					}
+
+					try {
+						await agency.save();
+					}
+					catch( e ) {
+						errors.push( `chron: error saving agency ${ agency.code } - ${ e }` );
+					}
+				};
+				// log each of the errors to the console
+				for( let error of errors ) {
+					console.error( error );
+				}
+
+				resolve();
+
+			}, err => {
+
+				console.error( `chron: error fetching agencies for nightly chron job - ${ err }` );
+				reject();
+			});	
+	});
+};

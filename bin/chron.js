@@ -1,6 +1,8 @@
 const cronJob = require( 'cron' ).CronJob,
 	  eventService = require( '../routes/middleware/service_event' ),
-	  listService = require( '../routes/middleware/service_lists' );
+	  childService = require( '../routes/middleware/service_child' ),
+	  socialWorkerService = require( '../routes/middleware/service_social-worker' ),
+	  agencyService = require( '../routes/middleware/service_agency' );
 
 exports.scheduleEventDeactivator = () => {
 	// don't do anything if the chron job is turned off via environment variables
@@ -34,9 +36,9 @@ exports.scheduleModelSaver = () => {
 			console.log( 'chron - beginning scheduled task to save models' );
 
 			try {
-				await listService.saveAllAgencies();
-				await listService.saveAllSocialWorkers();
-				await listService.saveAllChildren();
+				await agencyService.saveAllAgencies();
+				await socialWorkerService.saveAllSocialWorkers();
+				await childService.saveAllChildren();
 			}
 			catch( err ) {
 				console.error( `error running scheduled task to save models - ${ err }` );

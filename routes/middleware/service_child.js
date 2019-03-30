@@ -354,6 +354,7 @@ exports.setNoChildImage = ( req, res, child, canViewAllChildren ) => {
 		}
 	}
 };
+
 // TODO: combine the below two functions, and adjust the calling code to pass and accept arrays
 exports.getChildByRegistrationNumber = ( req, res, done, registrationNumber ) => {
 	// store a reference to locals
@@ -733,6 +734,7 @@ exports.getSiblingGroupDetails = ( req, res, next ) => {
 			done();
 		});
 };
+
 // TODO: this shouldn't return the id, but the entire model to be manipulated by the caller, as should all of these fetch functions
 // TODO: this should be moved to the list service
 exports.fetchChildStatusId = status => {
@@ -916,7 +918,76 @@ exports.saveChild = ( child, activeChildStatusId ) => {
 			resolve( model );
 		});
 	});
-}
+};
+
+/* Chron job function used to batch save all child models */
+exports.saveAllChildren = () => {
+
+	return new Promise( async ( resolve, reject ) => {
+
+		try {
+			// start with the first page of children
+			let page = 1,
+				childrenPerPage = 100;
+			// pages will increment until there are no more pages, at which point it will be set to false
+			while( page ) {
+				// log the progress to make tracking of each run easier to monitor
+				console.log( `saving child ${ page * childrenPerPage }` );
+				// fetch the current page of children
+				try {
+					// destructure the results of the fetch into two local variables
+					const { children, nextPage } = await exports.fetchChildrenByPage( { page, childrenPerPage } );
+					// loop through the fetched page of children
+					for( let child of children ) {
+						// attempt to save the child and log an error if one occurred
+						try {
+							await child.save();
+						}
+						catch( error ) {
+							console.error( `error saving child ${ child.displayNameAndRegistration } - ${ error }` );
+						}
+					}
+					// increment the page to allow fetching of the next batch of children
+					page = nextPage;
+				}
+				// if there was an error, log it and don't increment the page to allow another attempt at fetching it
+				catch( error ) {
+					console.error( `error fetching page ${ page } of children - ${ error }` );
+				}
+			}
+		}
+		catch( error ) {
+			console.error( `error saving all children - ${ error }` );
+		}
+		
+	});
+};
+
+exports.fetchChildrenByPage = ( { page = 1, childrenPerPage = 100, filters = {} } ) => {
+
+	return new Promise( ( resolve, reject ) => {
+		// fetch the requested page of child records, 
+		keystone.list( 'Child' )
+			.paginate ({
+				page: page,
+				perPage: childrenPerPage,
+				filters: filters
+			})
+			.exec ( ( err, children ) => {
+				// if there was an error fetching the children
+				if( err ) {
+					// reject the promise with the error
+					return reject( new Error( `page ${ page } could not be fetched` ) );
+				}
+
+				// resolve the promise with the children and the next page to fetch ( false if this is the last page )
+				resolve({
+					children: children.results,
+					nextPage: children.next
+				});
+			});
+	});
+};
 
 // ------------------------------------------------------------------------------------------ //
 
