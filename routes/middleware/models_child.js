@@ -28,7 +28,7 @@ exports.batchAllSiblingUpdates = ( childModel ) => {
 			  siblingsAfterSave						= new Set( siblingsArrayAfterSave ),
 			  childId								= childModel._id.toString();
 
-		// create an initial version of the set of record that will describe the final sibling group to save
+		// create an initial version of the set of records that will describe the final sibling group to save
 		let siblingGroup = siblingsAfterSave;
 
 		// create a set of all siblings added to the original child by the save operation
@@ -36,7 +36,7 @@ exports.batchAllSiblingUpdates = ( childModel ) => {
 
 		// if there were no siblings added by the save operation
 		if ( siblingsAddedBySave.size === 0 ) {
-			// ensure that the sibling list is still unique
+			// ensure that the sibling list is comprised of only unique entries
 			childModel.siblings = Array.from( siblingsAfterSave );
 			// return before doing any additional processing
 			return resolve();
@@ -265,15 +265,15 @@ exports.applySiblingsToBePlacedWithGroupToChild = ( { childToUpdateId, recommend
 			  newGroupProfilePart1		= siblingGroupProfile.part1 || '',
 			  newGroupProfilePart2		= siblingGroupProfile.part2 || '',
 			  newGroupProfilePart3		= siblingGroupProfile.part3 || '',
-			  newSiblingGroupImage		= siblingGroupImage || {},
-			  childsAdoptionWorker		= child.adoptionWorker ? child.adoptionWorker.toString() : '',
-			  childsRecruitmentWorker	= child.recruitmentWorker ? child.recruitmentWorker.toString() : '';
-
+			  newSiblingGroupImage		= siblingGroupImage || {};
 
 		// get the child model to update
 		childService
 			.getChildById( { id: childToUpdateId } )
 			.then( child => {
+
+				const childsAdoptionWorker 		= child.adoptionWorker ? child.adoptionWorker.toString() : '',
+					  childsRecruitmentWorker	= child.recruitmentWorker ? child.recruitmentWorker.toString() : '';
 
 				// create a flag to determine if there are updates to the siblings to be placed with group that need to be saved
 				let saveUpdatesToSiblingsToBePlacedWithGroup = false;
@@ -374,17 +374,15 @@ exports.applySiblingsToBePlacedWithGroupToChild = ( { childToUpdateId, recommend
 							console.error( error );
 						}
 						// resolve the promise
-						resolve( childToUpdateId );
+						resolve();
 					});
 				} else {
-					resolve( childToUpdateId );
+					resolve();
 				}
 			})
 			.catch( error => {
-				// log the error
-				console.error( error );
 				// reject the promise with the error
-				reject( childToUpdateId );
+				reject( error );
 			});
 	});
 };

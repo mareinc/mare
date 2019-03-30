@@ -85,3 +85,43 @@ exports.getActiveSocialWorkerIds = () => {
 			});
 	});
 };
+
+/* Chron job function used to batch save all social worker models */
+exports.saveAllSocialWorkers = () => {
+
+	return new Promise( ( resolve, reject ) => {
+
+		keystone.list( 'Social Worker' ).model
+			.find()
+			.then( async socialWorkers => {
+				// create an array of errors to display once all models have been saved
+				let errors = [];
+				// loop through each social worker
+				for( let [ index, socialWorker ] of socialWorkers.entries() ) {
+
+					if( index % 100 === 0 ) {
+						console.log( `saving social worker ${ index } of ${ socialWorkers.length }` );
+					}
+
+					try {
+						await socialWorker.save();
+					}
+					catch( e ) {
+						errors.push( `chron: error saving social worker ${ socialWorker.name.full } - ${ socialWorker._id } - ${ e }` );
+					}
+				};
+				// log each of the errors to the console
+				for( let error of errors ) {
+					console.error( error );
+				}
+
+				resolve();
+
+			}, err => {
+
+				console.error( `error fetching social workers for nightly chron job - ${ err }` );
+				reject();
+			});	
+		
+	});
+};
