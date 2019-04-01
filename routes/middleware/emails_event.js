@@ -266,6 +266,63 @@ exports.sendEventRegistrationEditedEmailToMARE = ({
 	});
 }
 
+exports.sendDroppedEventAttendeesEmailToMARE = ({
+	staffContactEmail = 'web@mareinc.org',
+	droppedAttendees = [],
+	eventName
+}) => {
+
+	return new Promise( ( resolve, reject ) => {
+
+		// if sending of the email is not currently allowed
+		if( process.env.SEND_DROPPED_EVENT_ATTENDEE_EMAILS_TO_MARE !== 'true' ) {
+			// reject the promise with information about why
+			return reject( `sending of the dropped event attendees email is disabled` );
+		}
+
+		// find the email template in templates/emails/
+		Email.send(
+			// template path
+			'event-attendees-dropped-notification-to-mare',
+			// email options
+			{
+				engine: 'hbs',
+                transport: 'mandrill',
+				root: 'templates/emails/'
+			// render options
+			}, {
+				droppedAttendees,
+				eventName,
+				layout: false
+			// send options
+			}, {
+				apiKey: process.env.MANDRILL_APIKEY,
+				to: staffContactEmail,
+				from: {
+					name: 'MARE',
+					email: 'web@mareinc.org'
+				},
+				subject: `event attendees dropped`
+			// callback
+			}, ( err, message ) => {
+				// if there was an error sending the email
+				if( err ) {
+					// reject the promise with details
+					return reject( `error sending new event created notification email to MARE - ${ err }` );
+				}
+				// the response object is stored as the 0th element of the returned message
+				const response = message ? message[ 0 ] : undefined;
+				// if the email failed to send, or an error occurred ( which it does, rarely ) causing the response message to be empty
+				if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
+					// reject the promise with details
+					return reject( `error sending new event created notification email to MARE - ${ response.status } - ${ response.email } - ${ response.reject_reason } - ${ err }` );
+				}
+
+				resolve();
+			});
+	});
+};
+
 exports.getRegisteredChildData = (registeredChildren) => {
 
 	return new Promise( ( resolve, reject ) => {
