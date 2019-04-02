@@ -929,6 +929,10 @@ exports.saveAllChildren = () => {
 			// start with the first page of children
 			let page = 1,
 				childrenPerPage = 25;
+
+			// create an array of errors to display once all models have been saved
+			let errors = [];
+
 			// pages will increment until there are no more pages, at which point it will be set to false
 			while( page ) {
 				// log the progress to make tracking of each run easier to monitor
@@ -946,7 +950,7 @@ exports.saveAllChildren = () => {
 							await child.save();
 						}
 						catch( error ) {
-							console.error( `error saving child ${ child.displayNameAndRegistration } - ${ error }` );
+							errors.push( `chron: error saving child ${ child.displayNameAndRegistration } - ${ error }` );
 						}
 					}
 					// increment the page to allow fetching of the next batch of children
@@ -961,7 +965,13 @@ exports.saveAllChildren = () => {
 		catch( error ) {
 			console.error( `error saving all children - ${ error }` );
 		}
-		
+
+		// log each of the errors to the console
+		for( let error of errors ) {
+			console.error( error );
+		}
+
+		resolve();	
 	});
 };
 

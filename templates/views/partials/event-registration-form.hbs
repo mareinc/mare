@@ -10,11 +10,14 @@
 			\{{ eventDate }}
 		</div>
 	</div>
-	<div class="row form-group">
-		<div class="col-sm-24 form-group event__user-display-name">Registration for {{ displayName }}</div>
-	</div>
+
 	<div class="modal-form__key">
 		<span class="required required-description">* Required</span>
+	</div>
+	
+	<div class="row form-group">
+		<div class="col-sm-24 form-group form-group__header">You are registering as</div>
+		<div class="col-sm-24 form-group">{{ displayName }}</div>
 	</div>
 	<form action="/events/register/\{{ eventId }}" class="modal-form--register-for-event" method="POST">
 		<input type="hidden" name="eventName" value="\{{ eventName }}">
@@ -22,6 +25,7 @@
 
 		<section class="form-section">
 			<div class="row form-group">
+				<div class="col-sm-24 form-group form-group__header">Are you bringing any additional adults?</div>
 				<div class="col-sm-12 form-group">
 					<select id="number-of-adults" class="input number-of-adults-select" name="numberOfAdults">
 						<option value="0">0</option>
@@ -31,11 +35,12 @@
 						<option value="4">4</option>
 						<option value="5">5</option>
 					</select>
-					<label for="number-of-adults" class="label required-field">Number of other adults attending</label>
+					<label for="number-of-adults" class="label required-field">Number of additional adults attending</label>
 				</div>
 			</div>
 			<section class="row form-group adults-container"></section>
 			<div class="row form-group">
+				<div class="col-sm-24 form-group form-group__header">Are you bringing any additional children?</div>
 				<div class="col-sm-12 form-group">
 					<select id="number-of-children" class="input number-of-children-select" name="numberOfChildren">
 						<option value="0">0</option>

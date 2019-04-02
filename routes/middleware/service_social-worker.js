@@ -89,39 +89,80 @@ exports.getActiveSocialWorkerIds = () => {
 /* Chron job function used to batch save all social worker models */
 exports.saveAllSocialWorkers = () => {
 
+	return new Promise( async ( resolve, reject ) => {
+
+		try {
+			// start with the first page of social workers
+			let page = 1,
+				socialWorkersPerPage = 25;
+
+			// create an array of errors to display once all models have been saved
+			let errors = [];
+
+			// pages will increment until there are no more pages, at which point it will be set to false
+			while( page ) {
+				// log the progress to make tracking of each run easier to monitor
+				if( ( page * socialWorkersPerPage ) % 100 === 0 ) {
+					console.log( `saving social worker ${ page * socialWorkersPerPage }` );
+				}
+				// fetch the current page of social workers
+				try {
+					// destructure the results of the fetch into two local variables
+					const { socialWorkers, nextPage } = await exports.fetchSocialWorkersByPage( { page, socialWorkersPerPage } );
+					// loop through the fetched page of social workers
+					for( let socialWorker of socialWorkers ) {
+						// attempt to save the child and log an error if one occurred
+						try {
+							await socialWorker.save();
+						}
+						catch( error ) {
+							errors.push( `chron: error saving social worker ${ socialWorker.name.full } (${ socialWorker._id } - ${ error }` );
+						}
+					}
+					// increment the page to allow fetching of the next batch of social workers
+					page = nextPage;
+				}
+				// if there was an error, log it and don't increment the page to allow another attempt at fetching it
+				catch( error ) {
+					console.error( `error fetching page ${ page } of social workers - ${ error }` );
+				}
+			}
+		}
+		catch( error ) {
+			console.error( `error saving all social workers - ${ error }` );
+		}
+
+		// log each of the errors to the console
+		for( let error of errors ) {
+			console.error( error );
+		}
+
+		resolve();		
+	});
+};
+
+exports.fetchSocialWorkersByPage = ( { page = 1, socialWorkersPerPage = 25, filters = {} } ) => {
+
 	return new Promise( ( resolve, reject ) => {
-
-		keystone.list( 'Social Worker' ).model
-			.find()
-			.then( async socialWorkers => {
-				// create an array of errors to display once all models have been saved
-				let errors = [];
-				// loop through each social worker
-				for( let [ index, socialWorker ] of socialWorkers.entries() ) {
-
-					if( index % 100 === 0 ) {
-						console.log( `saving social worker ${ index } of ${ socialWorkers.length }` );
-					}
-
-					try {
-						await socialWorker.save();
-					}
-					catch( e ) {
-						errors.push( `chron: error saving social worker ${ socialWorker.name.full } - ${ socialWorker._id } - ${ e }` );
-					}
-				};
-				// log each of the errors to the console
-				for( let error of errors ) {
-					console.error( error );
+		// fetch the requested page of social worker records, 
+		keystone.list( 'Social Worker' )
+			.paginate ({
+				page: page,
+				perPage: socialWorkersPerPage,
+				filters: filters
+			})
+			.exec ( ( err, socialWorkers ) => {
+				// if there was an error fetching the social workers
+				if( err ) {
+					// reject the promise with the error
+					return reject( new Error( `page ${ page } could not be fetched` ) );
 				}
 
-				resolve();
-
-			}, err => {
-
-				console.error( `error fetching social workers for nightly chron job - ${ err }` );
-				reject();
-			});	
-		
+				// resolve the promise with the social workers and the next page to fetch ( false if this is the last page )
+				resolve({
+					children: socialWorkers.results,
+					nextPage: socialWorkers.next
+				});
+			});
 	});
 };

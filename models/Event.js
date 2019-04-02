@@ -1,11 +1,14 @@
-const keystone			= require( 'keystone' ),
-	  Types				= keystone.Field.Types,
-	  random			= require( 'mongoose-simple-random' ),
-	  SourceMiddleware	= require( '../routes/middleware/models_source' ),
-	  Validators		= require( '../routes/middleware/validators' );
+const keystone						= require( 'keystone' ),
+	  Types							= keystone.Field.Types,
+	  random						= require( 'mongoose-simple-random' ),
+	  SourceMiddleware				= require( '../routes/middleware/models_source' ),
+	  Validators					= require( '../routes/middleware/validators' ),
+	  emailTargetMiddleware			= require( '../routes/middleware/service_email-target' ),
+	  eventEmailMiddleware			= require( '../routes/middleware/emails_event' ),
+	  staffEmailContactMiddleware	= require( '../routes/middleware/service_staff-email-contact' );
 
 // create model. Additional options allow event name to be used what auto-generating URLs
-var Event = new keystone.List('Event', {
+const Event = new keystone.List( 'Event', {
 	autokey: { path: 'key', from: 'name', unique: true },
 	map: { name: 'name' },
 	defaultSort: '-startDate'
@@ -122,32 +125,62 @@ Event.schema.virtual( 'hasImage' ).get( function() {
 	return this.image.exists;
 });
 
+Event.schema.post( 'init', function() {
+	'use strict';
+
+	this._savedVersion = this.toObject();
+});
+
 // pre save hook
 Event.schema.pre( 'save', function( next ) {
 	'use strict';
+
 	// trim whitespace characters from any type.Text fields
 	this.trimTextFields();
 
 	this.setUrl();
 
 	// attempt to update the no-edit source field
-	const setSourceField = this.setSourceField();
+	this.setSourceField()
+		.then( sourceId => {
 
-	setSourceField.then( sourceId => {
+			this.source = sourceId;
+			next();
+		})
+		.catch( () => {
 
-		this.source = sourceId;
-		next();
-	})
-	.catch( () => {
-
-		next();
-	});
+			next();
+		});
 });
 
-// TODO IMPORTANT: this is a temporary solution to fix a problem where the autokey generation from Keystone
-// 				   occurs after the pre-save hook for this model, preventing the url from being set.  Remove
-//				   this hook once that issue is resolved.
-Event.schema.post( 'save', function() {
+Event.schema.post( 'save', async function() {
+	// check for a large number of dropped attendees ( > 5 ) in any group, and send an email if it occurred
+	// NOTE: attendees have gone missing from events and this is a way to track changes and send alerts if any are found
+	const droppedAttendees = this.getDroppedAttendees();
+
+	if( droppedAttendees.length > 0 ) {
+		try {
+			// fetch the email target model matching 'dropped event attendees'
+			const emailTarget = await emailTargetMiddleware.getEmailTargetByName( 'dropped event attendees' );
+			// fetch contact info for the staff contact for 'dropped event attendees'
+			const staffEmailContact = await staffEmailContactMiddleware.getStaffEmailContactByEmailTarget( emailTarget.get( '_id' ), [ 'staffEmailContact' ] );
+			// overwrite the default contact details with the returned object
+			const staffEmailContactInfo = staffEmailContact.staffEmailContact;
+
+			eventEmailMiddleware.sendDroppedEventAttendeesEmailToMARE({
+				staffContactEmail: staffEmailContactInfo.email,
+				eventName: this.name,
+				droppedAttendees
+			});
+		}
+		catch( error ) {
+			console.error( `error sending email notification about dropped event attendees for ${ this.name }`, error );
+		}
+	}
+
+	// TODO IMPORTANT: this is a temporary solution to fix a problem where the autokey generation from Keystone
+	// 				   occurs after the pre-save hook for this model, preventing the url from being set.  Remove
+	//				   this hook once that issue is resolved.
 	if( !this.get( 'url' ) ) {
 		this.save();
 	}
@@ -251,6 +284,123 @@ Event.schema.methods.setSourceField = function() {
 		// reject the promise
 		reject();
 	});
+};
+
+Event.schema.methods.getDroppedAttendees = function getDroppedAttendees() {
+
+	const droppedStaffAttendees = this.checkForDroppedAttendees({
+		original: this._savedVersion.staffAttendees,
+		updated: this.staffAttendees
+	});
+
+	const droppedSiteVisitorAttendees = this.checkForDroppedAttendees({
+		original: this._savedVersion.siteVisitorAttendees,
+		updated: this.siteVisitorAttendees
+	});
+
+	const droppedSocialWorkerAttendees = this.checkForDroppedAttendees({
+		original: this._savedVersion.socialWorkerAttendees,
+		updated: this.socialWorkerAttendees
+	});
+
+	const droppedFamilyAttendees = this.checkForDroppedAttendees({
+		original: this._savedVersion.familyAttendees,
+		updated: this.familyAttendees
+	});
+
+	const droppedChildAttendees = this.checkForDroppedAttendees({
+		original: this._savedVersion.childAttendees,
+		updated: this.childAttendees
+	});
+
+	const droppedOutsideContactAttendees = this.checkForDroppedAttendees({
+		original: this._savedVersion.outsideContactAttendees,
+		updated: this.outsideContactAttendees
+	});
+
+	const droppedUnregisteredChildAttendees = this.checkForDroppedAttendees({
+		original: this._savedVersion.unregisteredChildAttendees,
+		updated: this.unregisteredChildAttendees
+	});
+
+	const droppedUnregisteredAdultAttendees = this.checkForDroppedAttendees({
+		original: this._savedVersion.unregisteredAdultAttendees,
+		updated: this.unregisteredAdultAttendees
+	});
+
+	let droppedAttendees = [];
+
+	if( droppedStaffAttendees.length > 5 ) {
+		droppedAttendees.push({
+			groupName: 'staff',
+			attendees: droppedStaffAttendees
+		});
+	}
+
+	if( droppedSiteVisitorAttendees.length > 5 ) {
+		droppedAttendees.push({
+			groupName: 'site visitors',
+			attendees: droppedSiteVisitorAttendees
+		});
+	}
+
+	if( droppedSocialWorkerAttendees.length > 5 ) {
+		droppedAttendees.push({
+			groupName: 'social workers',
+			attendees: droppedSocialWorkerAttendees
+		});
+	}
+
+	if( droppedFamilyAttendees.length > 5 ) {
+		droppedAttendees.push({
+			groupName: 'families',
+			attendees: droppedFamilyAttendees
+		});
+	}
+
+	if( droppedChildAttendees.length > 5 ) {
+		droppedAttendees.push({
+			groupName: 'children',
+			attendees: droppedChildAttendees
+		});
+	}
+
+	if( droppedOutsideContactAttendees.length > 5 ) {
+		droppedAttendees.push({
+			groupName: 'outside contacts',
+			attendees: droppedOutsideContactAttendees
+		});
+	}
+
+	if( droppedUnregisteredChildAttendees.length > 5 ) {
+		droppedAttendees.push({
+			groupName: 'unregistered children',
+			attendees: droppedUnregisteredChildAttendees
+		});
+	}
+
+	if( droppedUnregisteredAdultAttendees.length > 5 ) {
+		droppedAttendees.push({
+			groupName: 'unregistered adults',
+			attendees: droppedUnregisteredAdultAttendees
+		});
+	}
+
+	return droppedAttendees;
+
+};
+
+Event.schema.methods.checkForDroppedAttendees = function checkForDroppedAttendees({ original = {}, updated = {} }) {
+
+	const originalAttendees = original.map( id => id.toString() );
+	const updatedAttendees = updated.map( id => id.toString() );
+
+	const originalAttendeeSet = new Set( originalAttendees );
+	const updatedAttendeeSet = new Set( updatedAttendees );
+
+	const droppedAttendeeSet = originalAttendeeSet.leftOuterJoin( updatedAttendeeSet );
+
+	return [ ...droppedAttendeeSet ];
 };
 
 Event.schema.plugin( random );
