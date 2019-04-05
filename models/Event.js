@@ -173,8 +173,8 @@ Event.schema.post( 'save', async function() {
 				droppedAttendees
 			});
 		}
-		catch( error ) {
-			console.error( `error sending email notification about dropped event attendees for ${ this.name }`, error );
+		catch( err ) {
+			console.error( `error sending email notification about dropped event attendees for ${ this.name }`, err );
 		}
 	}
 
@@ -275,7 +275,7 @@ Event.schema.methods.setSourceField = function() {
 		})
 		.catch( err => {
 			// log the error for debugging purposes
-			console.error( `error saving source from ${ this.name } - ${ err }` );
+			console.error( `error saving source from ${ this.name }`, err );
 			// reject the promise
 			reject();
 		});

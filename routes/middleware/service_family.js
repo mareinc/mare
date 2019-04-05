@@ -39,7 +39,7 @@ exports.getFamilyById = ( id, fieldsToPopulate = [] ) => {
 			// if there was an error fetching from the database
 			}, err => {
 				// log an error for debugging purposes
-				console.error( `error fetching family matching id ${ id } - ${ err }` );
+				console.error( `error fetching family matching id ${ id }`, err );
 				// and reject the promise
 				reject();
 			});
@@ -61,7 +61,7 @@ exports.getMaxRegistrationNumber = function() {
 
 				resolve( 0 );
 			}, err => {
-				reject( `error fetching maximum registration number for families` );
+				reject( new Error( `error fetching maximum registration number for families` ) );
 			});
 	});
 };
@@ -342,19 +342,19 @@ exports.registerFamily = ( req, res, next ) => {
 				// overwrite the default contact details with the returned object
 				.then( staffEmailContact => staffEmailContactInfo = staffEmailContact.staffEmailContact )
 				// log any errors fetching the staff email contact
-				.catch( err => console.error( `error fetching email contact for social worker family registration, default contact info will be used instead - ${ err }` ) )
+				.catch( err => console.error( `error fetching email contact for social worker family registration, default contact info will be used instead`, err ) )
 				// check on the attempt to fetch the newly saved family
 				.then( () => fetchFamily )
 				// send a notification email to MARE
 				.then( fetchedFamily => socialWorkerFamilyRegistrationEmailService.sendNewSocialWorkerFamilyRegistrationNotificationEmailToMARE( socialWorkerName, rawFamilyData, fetchedFamily, staffEmailContactInfo, host ) )
 				// if there was an error sending the email
-				.catch( err => console.error( `error sending new family registered by social worker email to MARE - ${ err }` ) )
+				.catch( err => console.error( `error sending new family registered by social worker email to MARE`, err ) )
 				// check on the attempt to fetch the newly saved family ( needed again to give us access to the fetched family data at this point in the promise chain )
 				.then( () => fetchFamily )
 				// send a notification email to the social worker
 				.then( fetchedFamily => socialWorkerFamilyRegistrationEmailService.sendNewSocialWorkerFamilyRegistrationNotificationEmailToSocialWorker( socialWorkerName, rawFamilyData, fetchedFamily, socialWorkerEmail, host ) )
 				// if there was an error sending the email to the social worker
-				.catch( err => console.error( `error sending new family registered by social worker email to social worker ${ req.user.get( 'name.full' ) } - ${ err }` ) )
+				.catch( err => console.error( `error sending new family registered by social worker email to social worker ${ req.user.get( 'name.full' ) }`, err ) )
 				// check on the attempt to fetch the newly saved family and create the verification record ( needed again to give us access to the fetched family data at this point in the promise chain )
 				.then( () => Promise.all( [ fetchFamily, createVerificationRecord ] ) )
 				// send a notification email to the family registered by the social worker
@@ -365,7 +365,7 @@ exports.registerFamily = ( req, res, next ) => {
 					return socialWorkerFamilyRegistrationEmailService.sendNewSocialWorkerFamilyRegistrationNotificationEmailToFamily( rawFamilyData, fetchedFamily, staffEmailContactInfo, host, verificationRecord );
 				})
 				// if there was an error sending the email to the new family
-				.catch( err => console.error( `error sending new family registered by social worker email to family ${ newFamily.get( 'displayName' ) } - ${ err }` ) );
+				.catch( err => console.error( `error sending new family registered by social worker email to family ${ newFamily.get( 'displayName' ) }`, err ) );
 
 			// create a success flash message
 			req.flash( 'success', {

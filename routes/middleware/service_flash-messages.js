@@ -33,10 +33,11 @@ exports = module.exports = {
         return new Promise( ( resolve, reject ) => {
 
             // read the hbs template
-            fs.readFile( templatePath, ( error, data ) => {
+            fs.readFile( templatePath, ( err, data ) => {
 
+                // TODO: flip this check so we return if there's an error and proceed normally if not
                 // generate the markup for the flash messages
-                if ( !error ) {
+                if ( !err ) {
 
                     // get the contents of the file as a string
                     const templateString = data.toString();
@@ -52,7 +53,7 @@ exports = module.exports = {
 
                 // reject with error
                 } else {
-                    reject( error );
+                    reject( err );
                 }
 
                 // clear the message list

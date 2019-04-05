@@ -154,7 +154,7 @@ SocialWorker.schema.post( 'save', function() {
 		// if there was an error fetching the bot user
 		.catch( err => {
 			// log it for debugging purposes
-			console.error( `Website Bot could not be fetched for social worker ${ this.name.full } - ${ err }` );
+			console.error( `Website Bot could not be fetched for social worker ${ this.name.full }`, err );
 		})
 		// execute the following regardless of whether the promises were resolved or rejected
 		// TODO: this should be replaced with ES6 Promise.prototype.finally() once it's finalized, assuming we can update to the latest version of Node if we upgrade Keystone
@@ -261,7 +261,7 @@ SocialWorker.schema.methods.setChangeHistory = function() {
 			// if there was an error saving the record
 			}, err => {
 				// log the error for debugging purposes
-				console.error( `initial change history record could not be saved for social worker ${ this.name.full } - ${ err }` );
+				console.error( `initial change history record could not be saved for social worker ${ this.name.full }`, err );
 				// reject the promise
 				reject();
 			});
@@ -465,7 +465,7 @@ SocialWorker.schema.methods.setChangeHistory = function() {
 					// if there was an error saving the record
 					}, err => {
 						// log the error for debugging purposes
-						console.error( `change history record could not be saved for social worker ${ this.name.full } - ${ err }` );
+						console.error( `change history record could not be saved for social worker ${ this.name.full }`, err );
 						// reject the promise
 						reject();
 					});

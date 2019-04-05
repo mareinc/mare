@@ -20,7 +20,7 @@ exports.fetchSlideshow = ( { title = 'Main Page Slideshow' } ) => {
 
 			}, err => {
 				// log the error for debugging purposes
-				console.error( `error fetching the slideshow ${ title } - ${ err }` );
+				console.error( `error fetching the slideshow ${ title }`, err );
 				// if there was an error while fetching the model, reject the promise and return the error 
 				reject();
 			});
@@ -46,7 +46,7 @@ exports.fetchSlides = ( { slideshowId } ) => {
 
 			}, err => {
 				// log the error for debugging purposes
-				console.error( `error fetching the slides for slideshow with id ${ slideshowId } - ${ err }` );
+				console.error( `error fetching the slides for slideshow with id ${ slideshowId }`, err );
 				// if there was an error while fetching the model, reject the promise and return the error 
 				reject();
 			});

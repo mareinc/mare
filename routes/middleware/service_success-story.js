@@ -12,7 +12,7 @@ exports.getRandomStory = () => {
 				// if there was an error
 				if ( err ) {
 					// log the error for debugging purposes
-					console.error( `error fetching random success story - ${ err }` );
+					console.error( `error fetching random success story`, err );
 					// reject the promise
 					return reject();
 				}
@@ -42,7 +42,7 @@ exports.getAllSuccessStories = () => {
 			// if an error was encountered fetching from the database
 			}, err => {
 				// log the error for debugging purposes
-				console.error( `error fetching all success stories - ${ err }` );
+				console.error( `error fetching all success stories`, err );
 				// reject the promise
 				reject();
 			});
@@ -68,7 +68,7 @@ exports.getSuccessStoryByKey = key => {
 			// if there was an error fetching from the database
 			}, err => {
 				// log an error for debugging purposes
-				console.error( `error fetching success story matching key ${ key } - ${ err }` );
+				console.error( `error fetching success story matching key ${ key }`, err );
 				// and reject the promise
 				reject();
 			});

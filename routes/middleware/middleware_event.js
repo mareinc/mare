@@ -68,7 +68,7 @@ exports.register = async ( req, res ) => {
 	// if there was an error registering the user for the event
 	catch ( err ) {
 		// log the error for debugging purposes
-		console.error( `error registering ${ req.user.displayName } for ${ eventDetails.eventName } - ${ err }` );
+		console.error( `error registering ${ req.user.displayName } for ${ eventDetails.eventName }`, err );
 		// notify the user of the error
 		req.flash( 'error', { title: 'There was an issue registering you for this event',
 			detail: 'If this error persists, please notify MARE at <a href="mailto:web@mareinc.org">web@mareinc.org</a>' } );
@@ -87,7 +87,7 @@ exports.register = async ( req, res ) => {
 		}
 		catch( err ) {
 			// log the error for debugging purposes
-			console.error( `error sending event registration email about ${ req.user.displayName } for ${ eventDetails.eventName } - ${ err }` );
+			console.error( `error sending event registration email about ${ req.user.displayName } for ${ eventDetails.eventName }`, err );
 		}
 	}
 	// update the stage for families only if they successfully registered for the event
@@ -165,7 +165,7 @@ exports.register = async ( req, res ) => {
 		if( isSaveNeeded ) {
 			family.save( () => {}, err => {
 				// log the error for debugging purposes
-				console.error( `there was an error updating the stage for family ${ family.displayName } with id ${ family._id } while they were registering for event ${ eventDetails.eventName } - ${ err }` );
+				console.error( `there was an error updating the stage for family ${ family.displayName } with id ${ family._id } while they were registering for event ${ eventDetails.eventName }`, err );
 			});
 		}
 	}
@@ -209,9 +209,9 @@ exports.unregister = async ( req, res ) => {
 			detail: 'For additional questions contact <a href="mailto:web@mareinc.org">web@mareinc.org</a>' } );
 	}
 	// if there was an issue registering the attendee
-	catch( error ) {
+	catch( err ) {
 		// log the error for debugging purposes
-		console.error( `error unregistering ${ req.user.displayName } for ${ eventDetails.eventName } - ${ error }` );
+		console.error( `error unregistering ${ req.user.displayName } for ${ eventDetails.eventName }`, err );
 		// notify the user of the error
 		req.flash( 'error', { title: 'There was an issue changing your registration for this event',
 			detail: 'If this error persists, please notify MARE at <a href="mailto:web@mareinc.org">web@mareinc.org</a>' } );
@@ -231,7 +231,7 @@ exports.unregister = async ( req, res ) => {
 		}
 		catch( err ) {
 			// log the error for debugging purposes
-			console.error( `error sending event unregistration email about ${ req.user.displayName } for ${ eventDetails.eventName } - ${ err }` );
+			console.error( `error sending event unregistration email about ${ req.user.displayName } for ${ eventDetails.eventName }`, err );
 		}
 	}
 	// once all actions have been completed, redirect the user to the path specified in the request. Needed because otherwise it would be impossible to determine which page they registered from
@@ -305,7 +305,7 @@ exports.editRegistration = async ( req, res, next ) => {
 	// if there was an error registering the user for the event
 	catch ( err ) {
 		// log the error for debugging purposes
-		console.error( `error editing registration for ${ req.user.displayName } for ${ eventDetails.eventName } - ${ err }` );
+		console.error( `error editing registration for ${ req.user.displayName } for ${ eventDetails.eventName }`, err );
 		// notify the user of the error
 		req.flash( 'error', { title: 'There was an issue editing your registration for this event',
 			detail: 'If this error persists, please notify MARE at <a href="mailto:web@mareinc.org">web@mareinc.org</a>' } );
@@ -382,7 +382,7 @@ exports.editRegistration = async ( req, res, next ) => {
 		}
 		catch( err ) {
 			// log the error for debugging purposes
-			console.error( `error sending event registration edited email about ${ req.user.displayName } for ${ eventDetails.eventName } - ${ err }` );
+			console.error( `error sending event registration edited email about ${ req.user.displayName } for ${ eventDetails.eventName }`, err );
 		}
 	}
 
@@ -426,8 +426,8 @@ exports.exportToExcel = async ( req, res, next ) => {
 			});
 			
 		}
-		catch( error ) {
-			console.error( `error fetching active social workers for event export - ${ err }`)
+		catch( err ) {
+			console.error( `error fetching active social workers for event export`, err );
 		}
 		
 		// extract hidden unregistered attendees from the event
@@ -508,8 +508,8 @@ exports.exportToExcel = async ( req, res, next ) => {
 
 		workbook.write( `${ event.get( 'key' ) }.xlsx`, res );
 	}
-	catch( error ) {
-		console.error( `error exporting event with id ${ eventId } to excel - ${ error }` );
+	catch( err ) {
+		console.error( `error exporting event with id ${ eventId } to excel`, err );
 
 		// notify the user of the error
 		req.flash( 'error', { title: 'There was an issue exporting this event' } );
@@ -636,7 +636,7 @@ exports.updateEventAttendees = async ( req, res ) => {
 
 				if( err ) {
 					// log the error for debugging purposes
-					return reject( `error saving changes to the unregistered attendees for ${ event.name } - ${ err }` );
+					return reject( new Error( `error saving changes to the unregistered attendees for ${ event.name }` ) );
 				}
 
 				resolve();
@@ -647,7 +647,7 @@ exports.updateEventAttendees = async ( req, res ) => {
 		req.flash( 'success', { title: 'Success',
 			detail: 'your changes to unregistered attendees have been saved' });
 	}
-	catch( error ) {
+	catch( err ) {
 		// notify the user of the error
 		req.flash( 'error', { title: 'There was an issue editing the event',
 			detail: 'If this error persists, please notify MARE at <a href="mailto:web@mareinc.org">web@mareinc.org</a>' } );

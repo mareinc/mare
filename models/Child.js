@@ -404,9 +404,9 @@ Child.schema.pre( 'save', function( next ) {
 			}
 		})
 		// catch and log any errors
-		.catch( error => {
+		.catch( err => {
 			// log any errors
-			console.error( error );
+			console.error( err );
 		})
 		// ensure the rest of the pre-save processing has finished executing
 		.then( () => {
@@ -455,7 +455,7 @@ Child.schema.post( 'save', function() {
 		// if there was an error fetching the bot user
 		.catch( err => {
 			// log it for debugging purposes
-			console.error( `Website Bot could not be fetched for family ${ this.name.full } ( registration number: ${ this.registrationNumber } ) - ${ err }` );
+			console.error( `Website Bot could not be fetched for family ${ this.name.full } ( registration number: ${ this.registrationNumber } )`, err );
 		})
 		// execute the following regardless of whether the promises were resolved or rejected
 		// TODO: this should be replaced with ES6 Promise.prototype.finally() once it's finalized, assuming we can update to the latest version of Node if we upgrade Keystone
@@ -664,7 +664,7 @@ Child.schema.methods.setRegistrationNumber = function() {
 				// if there was an error fetching the max registration number
 				.catch( err => {
 					// log the error for debugging purposes
-					console.error( `registration number could not be updated for child ${ this.fullName } ( registration number: ${ this.registrationNumber } ) - ${ err }` );
+					console.error( `registration number could not be updated for child ${ this.fullName } ( registration number: ${ this.registrationNumber } )`, err );
 					// resolve the promise so that the Promise.all() in the pre-save hook does not fail
 					resolve();
 				});
@@ -911,9 +911,9 @@ Child.schema.methods.updateSiblingsToBePlacedWithGroup = function() {
 						// unlock the sibling to be placed with after update is complete
 						saveLock.unlock( siblingId );
 					})
-					.catch( error => {
+					.catch( err => {
 						// log the error for debugging purposes
-						console.error( `error updating fields for sibling of child ${ this.name.full } - ${ error }` );
+						console.error( `error updating fields for sibling of child ${ this.name.full }`, err );
 						// unlock the sibling to be placed with so future saves can occur
 						saveLock.unlock( siblingId );
 					});
@@ -1146,7 +1146,7 @@ Child.schema.methods.setChangeHistory = function() {
 			// if there was an error saving the record
 			}, err => {
 				// log the error for debugging purposes
-				console.error( `initial change history record could not be saved for child ${ this.name.full } ( registration number: ${ this.registrationNumber } ) - ${ err }` );
+				console.error( `initial change history record could not be saved for child ${ this.name.full } ( registration number: ${ this.registrationNumber } )`, err );
 				// reject the promise
 				reject();
 			});
@@ -1843,7 +1843,7 @@ Child.schema.methods.setChangeHistory = function() {
 					// if there was an error saving the record
 					}, err => {
 						// log the error for debugging purposes
-						console.error( `change history record could not be saved for child ${ this.name.full } ( registration number: ${ this.registrationNumber } ) - ${ err }` );
+						console.error( `change history record could not be saved for child ${ this.name.full } ( registration number: ${ this.registrationNumber } )`, err );
 						// reject the promise
 						reject();
 					});

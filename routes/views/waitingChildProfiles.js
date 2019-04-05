@@ -50,7 +50,7 @@ exports = module.exports = ( req, res ) => {
 		})
 		.catch( err => {
 			// log an error for debugging purposes
-			console.error( `error loading data for the waiting child profiles page - ${ err }` );
+			console.error( `error loading data for the waiting child profiles page`, err );
 			// render the view using the waiting-child-profiles.hbs template
 			view.render( 'waiting-child-profiles' );
 		});

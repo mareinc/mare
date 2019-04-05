@@ -57,7 +57,7 @@ exports = module.exports = ( req, res ) => {
 		})
 		.catch( err => {
 			// log an error for debugging purposes
-			console.error( `error loading data for the success stories page - ${ err }` );	
+			console.error( `error loading data for the success stories page`, err );	
 			// render the view using the success-stories.hbs template
 			view.render( 'success-stories' );
 		});

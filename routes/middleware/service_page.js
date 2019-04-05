@@ -26,7 +26,7 @@ exports.getPageByKey = key => {
 				// if there was an error fetching from the database
 				}, err => {
 					// log an error for debugging purposes
-					console.error( `error fetching page matching url ${ key } - ${ err }` );
+					console.error( `error fetching page matching url ${ key }`, err );
 					// and reject the promise
 					reject();
 				});
@@ -61,7 +61,7 @@ exports.getSidebarItems = () => {
 			// if any of the promises were rejected
 			.catch( err => {
 				// reject the promise with details about the error
-				reject( `error fetching random success story and random event` );
+				reject( new Error( `error fetching random success story and random event` ) );
 			})
 	});
 };

@@ -121,9 +121,9 @@ exports.sendEventRegistrationEmailToMARE = ( eventDetails, userDetails, host, st
 						resolve();
 					});
 			})
-			.catch( error => {
+			.catch( err => {
 
-				reject( error );
+				reject( err );
 			});
 	});
 };
@@ -258,8 +258,8 @@ exports.sendEventRegistrationEditedEmailToMARE = ({
 					resolve();
 				});
 			}
-			catch( error ) {
-				console.error( `error sending event registration edited email to staff - ${ error }` );
+			catch( err ) {
+				console.error( `error sending event registration edited email to staff`, err );
 
 				reject();
 			}
@@ -394,9 +394,9 @@ exports.getRegisteredChildData = (registeredChildren) => {
 
 					resolve( childrenData );
 				})
-				.catch( error => {
+				.catch( err => {
 
-					reject( error );
+					reject( err );
 				});
 
 			// if the event registration doesn't include registered children attendees

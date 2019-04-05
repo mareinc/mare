@@ -90,13 +90,13 @@ exports.flashMessages = function(req, res, next) {
 	'use strict';
 
 	var flashMessages = {
-		info: req.flash('info'),
-		success: req.flash('success'),
-		warning: req.flash('warning'),
-		error: req.flash('error')
+		info: req.flash( 'info' ),
+		success: req.flash( 'success' ),
+		warning: req.flash( 'warning' ),
+		error: req.flash( 'error' )
 	};
 
-	res.locals.messages = _.any(flashMessages, function(msgs) { return msgs.length; }) ? flashMessages : false;
+	res.locals.messages = _.any( flashMessages, function( msgs ) { return msgs.length; }) ? flashMessages : false;
 
 	next();
 
@@ -104,7 +104,7 @@ exports.flashMessages = function(req, res, next) {
 
 
 /* prevents people from accessing protected pages when they're not signed in */
-exports.requireUser = function(req, res, next) {
+exports.requireUser = function( req, res, next ) {
 	'use strict';
 	// if there is no req.user object, the user isn't signed in
 	if ( !req.user ) {
@@ -248,9 +248,9 @@ exports.loginAjax = function loginAjax( req, res, next ) {
 					flashMessage: flashMessageMarkup 
 				});
 			})
-			.catch( error => {
+			.catch( err => {
 
-				next( error );
+				next( err );
 			});
 	}
 };
