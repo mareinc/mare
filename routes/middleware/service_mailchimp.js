@@ -161,3 +161,43 @@ exports.updateSubscriberEmail = function updateSubscriberEmail( currentEmail, up
         });
     });
 };
+
+/**
+ * addTagToSubscriber
+ * ==================
+ * @description adds a tag to a subscriber
+ * @param {String} email the email of the subscriber to add a tag to
+ * @param {String} mailingListId the id of the mailing list in which to update the subscriber
+ * @returns {Object} status code of the operation
+ */
+exports.addTagToSubscriber = function addTagToSubscriber( tagName, email, mailingListId ) {
+
+    return new Promise( ( resolve, reject ) => {
+
+        if ( !tagName || !email || !mailingListId ) {
+            return reject( 'addTagToSubscriber failed - tagName, email, or mailingListId was not provided.' );
+        }
+
+        _mailchimp.request({
+            method: 'post',
+            path: '/lists/{list_id}/members/{subscriber_hash}/tags',
+            path_params: {
+                list_id: mailingListId,
+                subscriber_hash: MD5( email )
+            },
+            body: {
+                tags: [
+                    {
+                        name: tagName,
+                        status: 'active'
+                    }
+                ]
+            }
+        })
+        .then( status => resolve( status ) )
+        .catch( error => {
+            console.error( error );
+            reject( error );
+        });
+    });
+}
