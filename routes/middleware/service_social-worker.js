@@ -6,7 +6,7 @@ exports.getSocialWorkerById = id => {
 		// if no id was passed in
 		if( !id ) {
 			// reject the promise with details of the error
-			return reject( `no id value provided` );
+			return reject( new Error( `no id value provided` ) );
 		}
 		// fetch the social worker record
 		keystone.list( 'Social Worker' ).model
@@ -16,14 +16,14 @@ exports.getSocialWorkerById = id => {
 				// if no social worker was found with a matching id
 				if( !socialWorker ) {
 					// reject the promise with the reason why
-					reject( `no social worker could be found matching id ${ id }` );
+					reject( new Error( `no social worker could be found matching id ${ id }` ) );
 				}
 				// resolve the promise with the returned social worker
 				resolve( socialWorker );
 			// if an error occurred fetching from the database
 			}, err => {
 				// reject the promise with details of the error
-				reject( `error fetching social worker matching id ${ id } - ${ err }` );
+				reject( new Error( `error fetching social worker matching id ${ id }` ) );
 			});
 	});
 };
@@ -53,7 +53,7 @@ exports.fetchSocialWorkersChildren = id => {
 
 			}, err => {
 				// log the error for debugging purposes
-				console.error( `an error occurred fetching the children registered by social worker with id ${ id } - ${ err }` );
+				console.error( `an error occurred fetching the children registered by social worker with id ${ id }`, err );
 				// allow further processing beyond this middleware
 				reject();
 			});
@@ -73,7 +73,7 @@ exports.getActiveSocialWorkerIds = () => {
 			.then( socialWorkers => {
 
 				if( !socialWorkers ) {
-					return reject( `no active social workers could be found` );
+					return reject( new Error( `no active social workers could be found` ) );
 				}
 
 				const socialWorkerIds = socialWorkers.map( socialWorker => socialWorker._id.toString() );
@@ -115,16 +115,16 @@ exports.saveAllSocialWorkers = () => {
 						try {
 							await socialWorker.save();
 						}
-						catch( error ) {
-							errors.push( `error saving social worker ${ socialWorker.name.full } - ${ error }` );
+						catch( err ) {
+							errors.push( `error saving social worker ${ socialWorker.name.full } - ${ err }` );
 						}
 					}
 					// increment the page to allow fetching of the next batch of social workers
 					page = nextPage;
 				}
 				// if there was an error, log it and don't increment the page to allow another attempt at fetching it
-				catch( error ) {
-					console.error( `error fetching page ${ page } of social workers - ${ error }` );
+				catch( err ) {
+					console.error( `error fetching page ${ page } of social workers`, err );
 				}
 			}
 
@@ -145,8 +145,8 @@ exports.saveAllSocialWorkers = () => {
 				status: 'success'
 			});
 		}
-		catch( error ) {
-			console.error( `error saving all social workers - ${ error }` );
+		catch( err ) {
+			console.error( `error saving all social workers`, err );
 		}
 	});
 };

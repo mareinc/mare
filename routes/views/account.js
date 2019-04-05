@@ -125,7 +125,7 @@ exports = module.exports = ( req, res ) => {
 		})
 		.catch( err => {
 			// log an error for debugging purposes
-			console.error( `error loading data for the account page - ${ err }` );
+			console.error( `error loading data for the account page`, err );
 			// render the view using the account.hbs template
 			view.render( 'account' );
 		});

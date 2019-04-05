@@ -7,7 +7,7 @@ exports.sendNewInquiryEmailToMARE = ( { inquiryData, inquirerData, staffEmail } 
 		// if sending of the email is not currently allowed
 		if( process.env.SEND_INQUIRY_RECEIVED_EMAILS_TO_MARE !== 'true' ) {
 			// reject the promise with details about the reason
-			return reject( `sending of the email is disabled` );
+			return reject( new Error( `sending of the email is disabled` ) );
 		}
 		// TODO: move the base-64 encoded image to a global place for defining these images, both in CSS and JavaScript
 		// find the email template in templates/emails/
@@ -41,14 +41,14 @@ exports.sendNewInquiryEmailToMARE = ( { inquiryData, inquirerData, staffEmail } 
 				// if there was an error sending the email
 				if( err ) {
 					// reject the promise with details
-					return reject( `error sending new inquiry notification email to MARE - ${ err }` );
+					return reject( new Error( `error sending new inquiry notification email to MARE` ) );
 				}
 				// the response object is stored as the 0th element of the returned message
 				const response = message ? message[ 0 ] : undefined;
 				// if the email failed to send, or an error occurred ( which it does, rarely ) causing the response message to be empty
 				if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
 					// reject the promise with details
-					return reject( `error sending new inquiry notification email to MARE - ${ response.status } - ${ response.email } - ${ response.reject_reason } - ${ err }` );
+					return reject( new Error( `error sending new inquiry notification email to MARE - ${ response.status } - ${ response.email } - ${ response.reject_reason }` ) );
 				}
 
 				resolve();
@@ -88,15 +88,14 @@ exports.sendThankYouEmailToFamilyOnBehalfOfInquirer = ( inquiry, inquiryData, do
 		}, ( err, message ) => {
 			// log any errors
 			if( err ) {
-				console.log( `error sending staff email: ${ err }` );
+				console.log( `error sending staff email`, err );
 				return done();
 			}
 			// the response object is stored as the 0th element of the returned message
 			const response = message ? message[ 0 ] : undefined;
 			// if the email failed to send, or an error occurred ( which is does, rarely ) causing the response message to be empty
 			if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
-				console.log( `thank you to family on behalf of inquirer email failed to send: ${ message }` );
-				console.log( `error: ${ err }` );
+				console.log( `thank you to family on behalf of inquirer email failed to send`, message, err );
 				return done();
 			}
 
@@ -139,15 +138,14 @@ exports.sendInquiryAcceptedEmailToInquirer = ( inquiry, inquiryData, done ) => {
 		}, ( err, message ) => {
 			// log any errors
 			if( err ) {
-				console.log( `error sending staff email: ${ err }` );
+				console.log( `error sending staff email`, err );
 				return done();
 			}
 			// the response object is stored as the 0th element of the returned message
 			const response = message ? message[ 0 ] : undefined;
 			// if the email failed to send, or an error occurred ( which is does, rarely ) causing the response message to be empty
 			if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
-				console.log( `inquiry accepted inquirer email failed to send: ${ message }` );
-				console.log( `error: ${ err }` );
+				console.log( `inquiry accepted inquirer email failed to send`, message, err );
 				return done();
 			}
 			console.log( `inquiry accepted email successfully sent to inquirer` );
@@ -189,15 +187,14 @@ exports.sendInquiryAcceptedEmailToFamilyOnBehalfOfInquirer = ( inquiry, inquiryD
 		}, ( err, message ) => {
 			// log any errors
 			if( err ) {
-				console.log( `error sending staff email: ${ err }` );
+				console.log( `error sending staff email`, err );
 				return done();
 			}
 			// the response object is stored as the 0th element of the returned message
 			const response = message ? message[ 0 ] : undefined;
 			// if the email failed to send, or an error occurred ( which is does, rarely ) causing the response message to be empty
 			if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
-				console.log( `inquiry accepted on behalf of email failed to send: ${ message }` );
-				console.log( `error: ${ err }` );
+				console.log( `inquiry accepted on behalf of email failed to send`, message, err );
 				return done();
 			}
 			console.log( `inquiry accepted on behalf of email successfully sent to family` );
@@ -239,15 +236,14 @@ exports.sendInquiryAcceptedEmailToChildsSocialWorker = ( inquiry, inquiryData, d
 		}, ( err, message ) => {
 			// log any errors
 			if( err ) {
-				console.log( `error sending staff email: ${ err }` );
+				console.log( `error sending staff email`, err );
 				return done();
 			}
 			// the response object is stored as the 0th element of the returned message
 			const response = message ? message[ 0 ] : undefined;
 			// if the email failed to send, or an error occurred ( which is does, rarely ) causing the response message to be empty
 			if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
-				console.log( `inquiry accepted email to child's social worker failed to send: ${ message }` );
-				console.log( `error: ${ err }` );
+				console.log( `inquiry accepted email to child's social worker failed to send`, message, err );
 				return done();
 			}
 			console.log( `inquiry accepted email successfully sent to child's social worker` );
@@ -289,15 +285,14 @@ exports.sendInquiryAcceptedEmailToAgencyContacts = ( inquiry, inquiryData, done 
 		}, ( err, message ) => {
 			// log any errors
 			if( err ) {
-				console.log( `error sending staff email: ${ err }` );
+				console.log( `error sending staff email`, err );
 				return done();
 			}
 			// the response object is stored as the 0th element of the returned message
 			const response = message ? message[ 0 ] : undefined;
 			// if the email failed to send, or an error occurred ( which is does, rarely ) causing the response message to be empty
 			if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
-				console.log( `inquiry accepted email to agency contacts failed to send: ${ message }` );
-				console.log( `error: ${ err }` );
+				console.log( `inquiry accepted email to agency contacts failed to send`, message, err );
 				return done();
 			}
 			console.log( `inquiry accepted email successfully sent to agency contacts` );

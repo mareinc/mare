@@ -57,7 +57,7 @@ exports.resetPassword = ( req, res ) => {
 							detail: 'Please try using the forgot password button again.  If the issue persists, please contact MARE at <a href="mailto:communications@mareinc.org">communications@mareinc.org</a>'
 						});
 
-						throw new Error( `error sending reset password email - ${ err }` );
+						throw new Error( `error sending reset password email`, err );
 					});
 				// TODO: saving the reset token to the user should come first, and an email should only be sent if successful
 				user.save( err => {
@@ -69,7 +69,7 @@ exports.resetPassword = ( req, res ) => {
 							detail: 'Please try using the forgot password button again.  If the issue persists, please contact MARE at <a href="mailto:communications@mareinc.org">communications@mareinc.org</a>'
 						});
 
-						throw new Error( `error saving password reset token to user with email ${ req.body.email } - ${ err }` );
+						throw new Error( `error saving password reset token to user with email ${ req.body.email }`, err );
 					}
 				});
 				// TODO: this should only be set if the two promises above resolve successfully
@@ -187,7 +187,7 @@ exports.changePassword = ( req, res ) => {
 							detail: 'Please try using the forgot password button again.  If the issue persists, please contact MARE at <a href="mailto:communications@mareinc.org">communications@mareinc.org</a>'
 						});
 						
-						throw new Error( `error saving user model with new password - ${ err }` );
+						throw new Error( `error saving user model with new password`, err );
 					}
 				});
 

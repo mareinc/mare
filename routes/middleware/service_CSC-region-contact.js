@@ -6,7 +6,7 @@ exports.getCSCRegionContactById = ( id, fieldsToPopulate = [] ) => {
 		// if no id was passed in
 		if( !id ) {
 			// reject the promise with details about the error
-			reject( `no id provided` );
+			reject( new Error( `no id provided` ) );
 		}
 		// attempt to find a single CSC region contact matching the passed in registration number
 		keystone.list( 'CSC Region Contact' ).model
@@ -17,14 +17,14 @@ exports.getCSCRegionContactById = ( id, fieldsToPopulate = [] ) => {
 				// if the target CSC region contact could not be found
 				if( !CSCRegionContact ) {
 					// reject the promise with details about the error
-					return reject( `no CSC region contact matching id '${ id } could be found` );
+					return reject( new Error( `no CSC region contact matching id '${ id } could be found` ) );
 				}
 				// if the target CSC region contact was found, resolve the promise with the model
 				resolve( CSCRegionContact );
 			// if there was an error fetching from the database
 			}, err => {
 				// reject the promise with details about the error
-				reject( `error fetching CSC region contact matching id ${ id } - ${ err }` );
+				reject( new Error( `error fetching CSC region contact matching id ${ id }` ) );
 			});
 	});
 };

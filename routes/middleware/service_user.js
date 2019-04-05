@@ -90,7 +90,7 @@ exports.getUserByEmail = ( email ) => {
 			.then( user => {
 				resolve( user );
 			}, err => {
-				console.error( `error fetching user by email ${ email } - ${ err } ` );
+				console.error( `error fetching user by email ${ email }`, err );
 				reject( err );
 			});
 	});
@@ -108,7 +108,7 @@ exports.getUserByPasswordResetToken = ( resetToken ) => {
 			.then( user => {
 				resolve( user );
 			}, err => {
-				console.error( `error fetching user by password reset token ${ resetToken } - ${ err }` );
+				console.error( `error fetching user by password reset token ${ resetToken }`, err );
 				reject( err );
 			});
 	});
@@ -128,14 +128,14 @@ exports.getUserByFullName = ( name, userType ) => {
 			.then( user => {
 				// if a user with the current email doesn't exist
 				if( !user ) {
-					return reject( `error fetching user by name ${ name } - no user record found with matching name` );
+					return reject( new Error( `error fetching user by name ${ name } - no user record found with matching name` ) );
 				}
 				// if the user exists, resolve the promise, returning the user object
 				resolve( user );
 			// if there was an error finding the user
 			}, err => {
 				// log the error for debugging purposes
-				console.error( `error fetching user by name: ${ name } - ${ err }` );
+				console.error( `error fetching user by name: ${ name }`, err );
 				reject();
 			});
 	});
@@ -149,9 +149,9 @@ exports.getUserByIdNew = ( { id, targetModel, fieldsToPopulate = [] } ) => {
 	return new Promise( ( resolve, reject ) => {
 		// stop execution if required information is missing
 		if( !id ) {
-			return reject( `error fetching user by id - no id passed in` );
+			return reject( new Error( `error fetching user by id - no id passed in` ) );
 		} else if( !targetModel ) {
-			return reject( `error fetching user by id - no target model passed in` );
+			return reject( new Error( `error fetching user by id - no target model passed in` ) );
 		}
 		// fetch the record from the specified model type using the passed in id value
 		targetModel.model
@@ -172,7 +172,7 @@ exports.getUserByIdNew = ( { id, targetModel, fieldsToPopulate = [] } ) => {
 			// if there was an error fetching the user model
 			}, err => {
 				// log the error for debugging purposes
-				console.error( `there was an error fetching user by id ${ id } - ${ err }` );
+				console.error( `there was an error fetching user by id ${ id }`, err );
 				// reject the promise
 				reject();
 			});

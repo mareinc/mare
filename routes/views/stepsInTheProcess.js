@@ -38,7 +38,7 @@ exports = module.exports = ( req, res ) => {
 		})
 		.catch( err => {
 			// log an error for debugging purposes
-			console.error( `error loading data for the steps in the process page - ${ err }` );
+			console.error( `error loading data for the steps in the process page`, err );
 			// render the view using the steps-in-the-process.hbs template
 			view.render( 'steps-in-the-process' );
 		});

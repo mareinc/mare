@@ -69,7 +69,7 @@ module.exports = ( req, res ) => {
 				});
 		}, err => {
 
-			console.error( `error processing verification email - ${ err }` );
+			console.error( `error processing verification email`, err );
 
 			req.flash( 'error', {
 				title: 'There was an error verifying your account',

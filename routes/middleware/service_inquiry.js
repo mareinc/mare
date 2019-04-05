@@ -18,7 +18,7 @@ exports.createInquiry = ( { inquiry, user } ) => {
 		// if no inquiry object was received, abort execution and reject the promise
 		if( !inquiry ) {
 			// reject the promise with details of the error
-			return reject( `no inquiry data received` );
+			return reject( new Error( `no inquiry data received` ) );
 		}
 
 		// create variables to store the inquiry and inquirer data
@@ -53,7 +53,7 @@ exports.createInquiry = ( { inquiry, user } ) => {
 		// otherwise, it's an unrecognized inquiry type and
 		} else {
 			// reject the promise with details of the error
-			return reject( `invalid interest value ${ interest }` );
+			return reject( new Error( `invalid interest value ${ interest }` ) );
 		}
 
 		createInquiry
@@ -76,7 +76,7 @@ exports.createInquiry = ( { inquiry, user } ) => {
 						})
 						.catch( err => {
 							// log the error
-							console.error( `error fetching region for inquiry with id ${ inquiry.get( '_id' ) } - ${ err }` );
+							console.error( `error fetching region for inquiry with id ${ inquiry.get( '_id' ) }`, err );
 							// resolve the promise with the new inquiry model
 							resolve( newInquiry );
 						});
@@ -84,27 +84,27 @@ exports.createInquiry = ( { inquiry, user } ) => {
 					resolve( newInquiry );
 				}
 			})
-			.catch( err => reject( `error saving inquiry - ${ err }` ) )
+			.catch( err => reject( new Error( `error saving inquiry` ) ) )
 			// extract only the relevant fields from the inquiry, storing the results in a variable for future processing
 			.then( () => extractInquiryData( newInquiry ) )
 			.then( data => inquiryData = data )
-			.catch( err => console.error( `error populating inquiry data for new inquiry staff email - inquiry id ${ newInquiry.get( '_id' ) } - ${ err }` ) )
+			.catch( err => console.error( `error populating inquiry data for new inquiry staff email - inquiry id ${ newInquiry.get( '_id' ) }`, err ) )
 			// extract only the relevant fields from the inquirer, storing the results in a variable for future processing
 			.then( () => fetchInquirerData )
 			.then( data => inquirerData = data )
-			.catch( err => console.error( `error populating inquirer data for new inquiry staff email - inquiry id ${ newInquiry.get( '_id' ) } - ${ err }` ) )
+			.catch( err => console.error( `error populating inquirer data for new inquiry staff email - inquiry id ${ newInquiry.get( '_id' ) }`, err ) )
 			// fetch the staff email contact for child inquiries, overwriting the default contact details with the returned staff email
 			.then( () => fetchEmailTarget )
 			.then( emailTarget => staffEmailContactService.getStaffEmailContactByEmailTarget( emailTarget.get( '_id' ), [ 'staffEmailContact' ] ) )
 			.then( contact => staffEmail = contact.staffEmailContact.email )
-			.catch( err => console.error( `error fetching email contact for child inquiry submission, default contact info will be used instead - ${ err }` ) )
+			.catch( err => console.error( `error fetching email contact for child inquiry submission, default contact info will be used instead`, err ) )
 			// fetch the staff region contact, overwriting the default contact or staff email contact details with the returned staff email
 			.then( () => staffRegionContactService.getContactByRegion( { region: targetRegion, fieldsToPopulate: [ 'cscRegionContact' ] } ) )
 			.then( contact => staffEmail = contact.cscRegionContact.email )
-			.catch( err => console.error( `error fetching region contact for region with id ${ targetRegion }, default or staff email contact info will be used instead - ${ err }` ) )			
+			.catch( err => console.error( `error fetching region contact for region with id ${ targetRegion }, default or staff email contact info will be used instead`, err ) )			
 			// send a notification email to MARE staff
 			.then( () => inquiryEmailService.sendNewInquiryEmailToMARE( { inquiryData, inquirerData, staffEmail } ) )
-			.catch( err => console.error( `error sending new inquiry email to MARE contact about inquiry with id ${ newInquiry.get( '_id' ) } - ${ err }` ) );
+			.catch( err => console.error( `error sending new inquiry email to MARE contact about inquiry with id ${ newInquiry.get( '_id' ) }`, err ) );
 	});
 }
 
@@ -155,7 +155,7 @@ function saveChildInquiry( { inquiry, user } ) {
 					// if there was an issue saving the new inquiry
 					if( err ) {
 						// reject the promise with information about the error
-						return reject( `error saving inquiry model - ${ err }` );
+						return reject( new Error( `error saving inquiry model` ) );
 					}
 					// if the inquiry was saved successfully, resolve the promise with the newly saved inquiry model
 					resolve( model );
@@ -213,7 +213,7 @@ function saveGeneralInquiry( { inquiry, user } ) {
 				// if there was an issue saving the new inquiry
 				if( err ) {
 					// reject the promise with information about the error
-					return reject( `error saving inquiry model - ${ err }` );
+					return reject( new Error( `error saving inquiry model` ) );
 				}
 				// if the inquiry was saved successfully, resolve the promise with the newly saved inquiry model
 				resolve( model );
@@ -233,7 +233,7 @@ function extractInquiryData( inquiry ) {
 		// if no inquiry was passed in
 		if( !inquiry ) {
 			// reject the promise with details of the error and prevent further code from executing
-			return reject( `no inquiry provided` );
+			return reject( new Error( `no inquiry provided` ) );
 		}
 		// set the fields to populate on the inquiry model
 		const fieldsToPopulate = [
@@ -245,7 +245,7 @@ function extractInquiryData( inquiry ) {
 			// if there was an error populating the specified fields
 			if ( err ) {
 				// reject the promise with details about the error
-				return reject( `error populating fields for inquiry with id ${ inquiry.get( '_id' ) }` );
+				return reject( new Error( `error populating fields for inquiry with id ${ inquiry.get( '_id' ) }` ) );
 			}
 
 			// fill in all immediately available information
@@ -283,7 +283,7 @@ function extractInquirerData( inquirer ) {
 		// if no inquirer was passed in
 		if( !inquirer ) {
 			// reject the promise with details of the error and prevent further code from executing
-			return reject( `no inquirer provided` );
+			return reject( new Error( `no inquirer provided` ) );
 		}
 		// set the fields to populate on the inquirer model
 		const fieldsToPopulate = [ 'address.state', 'contact1.gender', 'contact1.race', 'contact2.gender', 'contact2.race', 'socialWorker', 'socialWorker.agency' ];
@@ -452,7 +452,7 @@ function extractInquirerData( inquirer ) {
 					})
 					.catch( err => {
 						// log the error for debugging purposes
-						console.error( `error loading social worker agency - ${ err }` );
+						console.error( `error loading social worker agency`, err );
 						resolve( relevantData );
 					});
 			} else {

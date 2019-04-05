@@ -248,7 +248,7 @@ exports = module.exports = async ( req, res ) => {
 		})
 		.catch( err => {
 			// log an error for debugging purposes
-			console.error( `error loading data for the event list page - ${ err }` );	
+			console.error( `error loading data for the event list page`, err );	
 			// render the view using the events.hbs template
 			view.render( 'events' );
 		});

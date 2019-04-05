@@ -26,7 +26,7 @@ exports = module.exports = ( req, res ) => {
 		})
 		.catch( err => {
 			// log an error for debugging purposes
-			console.error( `error loading data for the have a question form - ${ err }` );
+			console.error( `error loading data for the have a question form`, err );
 			// render the view using the form_have-a-question.hbs template
 			view.render( 'form_have-a-question' );
 		});

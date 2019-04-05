@@ -21,7 +21,7 @@ exports.scheduleEventDeactivator = () => {
 				await eventService.deactivateEvents( pastEvents );
 			}
 			catch( err ) {
-				console.error( `error running scheduled task to deactivate events that have passed - ${ err }` );
+				console.error( `error running scheduled task to deactivate events that have passed`, err );
 			}
 
 			console.log( 'cron - completed scheduled task to deactivate events that have passed' );
@@ -67,13 +67,13 @@ exports.scheduleModelSaver = () => {
 								childErrors: childSaveResults.errors
 							});
 						}
-						catch( error ) {
-							console.error( `error sending email notification about model saving cron job errors`, error );
+						catch( err ) {
+							console.error( `error sending email notification about model saving cron job errors`, err );
 						}
 					}
 			}
 			catch( err ) {
-				console.error( `error running scheduled task to save models - ${ err }` );
+				console.error( `error running scheduled task to save models`, err );
 			}
 
 			console.log( 'cron - completed scheduled task to save models' );

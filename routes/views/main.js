@@ -36,7 +36,7 @@ exports = module.exports = ( req, res ) => {
 		})
 		.catch( err => {
 			// log an error for debugging purposes
-			console.error( `error loading data for the homepage - ${ err }` );
+			console.error( `error loading data for the homepage`, err );
 			// set the layout to render without a wrapper needed to display the full width slideshow
 			locals[ 'render-homepage' ] = true;
 			// render the view using the main.hbs template

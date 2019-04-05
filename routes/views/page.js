@@ -98,7 +98,7 @@ exports = module.exports = function( req, res ) {
 	})
 	.catch( err => {
 		// log an error for debugging purposes
-		console.error( `error loading data for the generic page with key ${ key } - ${ err }` );
+		console.error( `error loading data for the generic page with key ${ key }`, err );
 		// set the layout to add classes designating this a WYSIWYG page
 		locals[ 'wysiwyg-page' ] = true;
 		// render the view using the page.hbs template

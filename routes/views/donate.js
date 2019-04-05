@@ -29,7 +29,7 @@ exports = module.exports = ( req, res ) => {
 		// overwrite the default contact details with the returned object
 		.then( staffEmailContact => locals.donationsQuestionContact = staffEmailContact.staffEmailContact )
 		// log any errors fetching the staff email contact
-		.catch( err => console.error( `error fetching email contact for donation questions, default contact info will be used instead - ${ err }` ) )
+		.catch( err => console.error( `error fetching email contact for donation questions, default contact info will be used instead`, err ) )
 		// fetch the sidebar items
 		.then( () => pageService.getSidebarItems() )
 		// assign returned sidebar items to locals for templating
@@ -50,7 +50,7 @@ exports = module.exports = ( req, res ) => {
 		// if there was an error fetching the sidebar items
 		.catch( err => {
 			// log an error for debugging purposes
-			console.error( `error loading sidebar data for the donation page - ${ err }` );
+			console.error( `error loading sidebar data for the donation page`, err );
 			// render the view using the donate.hbs template
 			view.render( 'donate' );
 		});

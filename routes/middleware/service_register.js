@@ -84,7 +84,7 @@ exports.registerUser = ( req, res, next ) => {
 								// overwrite the default contact details with the returned object
 								.then( staffEmailContact => staffEmailContactInfo = staffEmailContact.staffEmailContact )
 								// log any errors fetching the staff email contact
-								.catch( err => console.error( `error fetching email contact for site visitor registration, default contact info will be used instead - ${ err }` ) )
+								.catch( err => console.error( `error fetching email contact for site visitor registration, default contact info will be used instead`, err ) )
 								// fetch the user information and whether they were successfully added to each mailing list
 								.then( () => Promise.all( [ fetchUser, addUserToMailingLists ] ) )
 								// send out the new site visitor registered email to MARE
@@ -97,17 +97,17 @@ exports.registerUser = ( req, res, next ) => {
 									return registrationEmailMiddleware.sendNewSiteVisitorNotificationEmailToMARE( newUser, staffEmailContactInfo, mailingListNames );
 								})
 								// if the email couldn't be sent, log the error for debugging purposes
-								.catch( err => console.error( `error sending new site visitor notification email to MARE contact about ${ newSiteVisitor.get( 'name.full' ) } (${ newSiteVisitor.get( 'email' ) }) - ${ err }` ) );
+								.catch( err => console.error( `error sending new site visitor notification email to MARE contact about ${ newSiteVisitor.get( 'name.full' ) } (${ newSiteVisitor.get( 'email' ) })`, err ) );
 
 							createVerificationRecord
 								// send the account verification email to the user
 								.then( verificationRecord => registrationEmailMiddleware.sendAccountVerificationEmailToUser( newSiteVisitor.get( 'email' ), userType, verificationCode, locals.host ) )
 								// if the email couldn't be send, log the error for debugging purposes
-								.catch( err => console.error( `error sending account verification email to site visitor ${ newSiteVisitor.get( 'name.full' ) } at ${ newSiteVisitor.get( 'email' ) } - ${ err }` ) );
+								.catch( err => console.error( `error sending account verification email to site visitor ${ newSiteVisitor.get( 'name.full' ) } at ${ newSiteVisitor.get( 'email' ) }`, err ) );
 
 							addUserToMailingLists
 								// if the user couldn't be added to one or more mailing lists
-								.catch( err => console.error( `error adding new site visitor ${ newSiteVisitor.get( 'name.full' ) } (${ newSiteVisitor.get( 'email' ) }) to mailing lists - ${ err }` ) );
+								.catch( err => console.error( `error adding new site visitor ${ newSiteVisitor.get( 'name.full' ) } (${ newSiteVisitor.get( 'email' ) }) to mailing lists`, err ) );
 
 							// set the redirect path to the success target route
 							req.body.target = redirectPath;
@@ -117,7 +117,7 @@ exports.registerUser = ( req, res, next ) => {
 						// if there was an error saving the new site visitor
 						.catch( err => {
 							// log the error for debugging purposes
-							console.error( `error saving new site visitor - ${ err }` );
+							console.error( `error saving new site visitor`, err );
 							// create an error flash message to send back to the user
 							flashMessages.appendFlashMessage({
 								messageType: flashMessages.MESSAGE_TYPES.ERROR,
@@ -171,7 +171,7 @@ exports.registerUser = ( req, res, next ) => {
 								// overwrite the default contact details with the returned object
 								.then( staffEmailContact => staffEmailContactInfo = staffEmailContact.staffEmailContact )
 								// log any errors fetching the staff email contact
-								.catch( err => console.error( `error fetching email contact for social worker registration, default contact info will be used instead - ${ err }` ) )
+								.catch( err => console.error( `error fetching email contact for social worker registration, default contact info will be used instead`, err ) )
 								// fetch the user information and whether they were successfully added to each mailing list
 								.then( () => Promise.all( [ fetchUser, addUserToMailingLists ] ) )
 								// send out the new social worker registered email to MARE
@@ -184,18 +184,18 @@ exports.registerUser = ( req, res, next ) => {
 									return registrationEmailMiddleware.sendNewSocialWorkerNotificationEmailToMARE( newUser, staffEmailContactInfo, mailingListNames );
 								})
 								// if the email couldn't be sent, log the error for debugging purposes
-								.catch( err => console.error( `error sending new social worker notification email to MARE contact for ${ newSocialWorker.get( 'name.full' ) } (${ newSocialWorker.get( 'email' ) }) - ${ err }` ) );
+								.catch( err => console.error( `error sending new social worker notification email to MARE contact for ${ newSocialWorker.get( 'name.full' ) } (${ newSocialWorker.get( 'email' ) })`, err ) );
 
 							// once the verification record has been saved
 							createVerificationRecord
 								// send the account verification email to the user
 								.then( verificationRecord => registrationEmailMiddleware.sendAccountVerificationEmailToUser( newSocialWorker.get( 'email' ), userType, verificationCode, locals.host ) )
 								// if the email couldn't be send, log the error for debugging purposes
-								.catch( err => console.error( `error sending account verification email to social worker ${ newSocialWorker.get( 'name.full' ) } at ${ newSocialWorker.get( 'email' ) } - ${ err }` ) );
+								.catch( err => console.error( `error sending account verification email to social worker ${ newSocialWorker.get( 'name.full' ) } at ${ newSocialWorker.get( 'email' ) }`, err ) );
 
 							addUserToMailingLists
 								// if the user couldn't be added to one or more mailing lists
-								.catch( err => console.error( `error adding new social worker ${ newSocialWorker.get( 'name.full' ) } (${ newSocialWorker.get( 'email' ) }) to mailing lists - ${ err }` ) );
+								.catch( err => console.error( `error adding new social worker ${ newSocialWorker.get( 'name.full' ) } (${ newSocialWorker.get( 'email' ) }) to mailing lists`, err ) );
 
 							// set the redirect path to the success target route
 							req.body.target = redirectPath;
@@ -205,7 +205,7 @@ exports.registerUser = ( req, res, next ) => {
 						// if there was an error saving the new social worker
 						.catch( err => {
 							// log the error for debugging purposes
-							console.error( `error saving new social worker - ${ err }` );
+							console.error( `error saving new social worker`, err );
 							// create an error flash message to send back to the user
 							flashMessages.appendFlashMessage({
 								messageType: flashMessages.MESSAGE_TYPES.ERROR,
@@ -272,7 +272,7 @@ exports.registerUser = ( req, res, next ) => {
 								// overwrite the default contact details with the returned object
 								.then( staffEmailContact => staffEmailContactInfo = staffEmailContact.staffEmailContact )
 								// log any errors fetching the staff email contact
-								.catch( err => console.error( `error fetching email contact for family registration, default contact info will be used instead - ${ err }` ) )
+								.catch( err => console.error( `error fetching email contact for family registration, default contact info will be used instead`, err ) )
 								// fetch the user information and whether they were successfully added to each mailing list
 								.then( () => Promise.all( [ fetchUser, addUserToMailingLists ] ) )
 								// send out the new family registered email to MARE
@@ -285,18 +285,18 @@ exports.registerUser = ( req, res, next ) => {
 									return registrationEmailMiddleware.sendNewFamilyNotificationEmailToMARE( newUser, staffEmailContactInfo, mailingListNames );
 								})
 								// if the email couldn't be sent, log the error for debugging purposes
-								.catch( err => console.error( `error sending new family notification email to MARE contact about ${ newFamily.get( 'displayName' ) } (${ newFamily.get( 'email' ) }) - ${ err }` ) );
+								.catch( err => console.error( `error sending new family notification email to MARE contact about ${ newFamily.get( 'displayName' ) } (${ newFamily.get( 'email' ) })`, err ) );
 
 							// once the verification record has been saved
 							createVerificationRecord
 								// send the account verification email to the user
 								.then( verificationRecord => registrationEmailMiddleware.sendAccountVerificationEmailToUser( newFamily.get( 'email' ), userType, verificationCode, locals.host ) )
 								// if the email couldn't be send, log the error for debugging purposes
-								.catch( err => console.error( `error sending account verification email to family ${ newFamily.get( 'displayName' ) } at ${ newFamily.get( 'email' ) } - ${ err }` ) );
+								.catch( err => console.error( `error sending account verification email to family ${ newFamily.get( 'displayName' ) } at ${ newFamily.get( 'email' ) }`, err ) );
 
 							addUserToMailingLists
 								// if the user couldn't be added to one or more mailing lists
-								.catch( err => console.error( `error adding new family ${ newFamily.get( 'displayName' ) } (${ newFamily.get( 'email' ) }) to mailing lists - ${ err }` ) );
+								.catch( err => console.error( `error adding new family ${ newFamily.get( 'displayName' ) } (${ newFamily.get( 'email' ) }) to mailing lists`, err ) );
 
 							// set the redirect path to the success target route
 							req.body.target = redirectPath;
@@ -306,7 +306,7 @@ exports.registerUser = ( req, res, next ) => {
 						// if there was an error saving the new family
 						.catch( err => {
 							// log the error for debugging purposes
-							console.error( `error saving new family - ${ err }` );
+							console.error( `error saving new family`, err );
 							// create an error flash message to send back to the user
 							flashMessages.appendFlashMessage({
 								messageType: flashMessages.MESSAGE_TYPES.ERROR,
@@ -389,7 +389,7 @@ exports.saveSiteVisitor = user => {
 			// if there was an issue saving the new site visitor
 			if( err ) {
 				// reject the promise with a descriptive message
-				return reject( `error saving new site visitor -  ${ err }` );
+				return reject( new Error( `error saving new site visitor` ) );
 			}
 			// resolve the promise with the newly saved site visitor model
 			resolve( model );
@@ -440,7 +440,7 @@ exports.saveSocialWorker = user => {
 			// if there was an issue saving the new site visitor
 			if( err ) {
 				// reject the promise with a descriptive message
-				return reject( `error saving new social worker ${ err }` );
+				return reject( new Error( `error saving new social worker` ) );
 			}
 			// resolve the promise with the newly saved site visitor model
 			resolve( model );
@@ -593,7 +593,7 @@ exports.saveFamily = user => {
 			// if there was an issue saving the new site visitor
 			if( err ) {
 				// reject the promise with a description
-				return reject( `error saving new family ${ err }` );
+				return reject( new Error( `error saving new family` ) );
 			}
 			// resolve the promise with the newly saved site visitor model
 			resolve( model );
@@ -629,7 +629,7 @@ exports.checkForDuplicateEmail = email => {
 
 			}, err => {
 
-				console.error( `error testing for duplicate email - ${ err }` );
+				console.error( `error testing for duplicate email`, err );
 
 				reject();
 			});
@@ -713,7 +713,7 @@ exports.addToMailingList = ( user, mailingListId, registrationType ) => {
 				// if the mailing list wasn't found
 				if( !mailingList ) {
 					// reject the promise with the id of the list the user couldn't be added to
-					return reject( `no mailing list could be found with the id ${ mailingListId }` );
+					return reject( new Error( `no mailing list could be found with the id ${ mailingListId }` ) );
 				}
 				// add the user id to the correct Relationship field in the mailing list based on what type of user they are
 				switch( registrationType ) {
@@ -726,7 +726,7 @@ exports.addToMailingList = ( user, mailingListId, registrationType ) => {
 					// if there was an error saving the updated mailing list model
 					if( err ) {
 						// reject the promise with details about the failure
-						return reject( `error saving user to mailing list ${ mailingList.mailingList } - ${ err }` );
+						return reject( new Error( `error saving user to mailing list ${ mailingList.mailingList }` ) );
 					}
 					// if there was no error, resolve the promise
 					resolve( mailingList );
@@ -763,7 +763,7 @@ exports.uploadFile = ( userModel, targetFieldPrefix, targetField, file ) => {
 	// 				});
 
 	// 			}, err => {
-	// 				console.log( `error fetching user to save file attachment: ${ err }` );
+	// 				console.log( `error fetching user to save file attachment`, err );
 
 	// 				done();
 	// 			});
@@ -847,7 +847,7 @@ exports.createNewVerificationRecord = ( verificationCode, userId ) => {
 			// if there was an error saving the new model to the database
 			if( err ) {
 				// reject the promise with the reason for the rejection
-				return reject( `error saving new verification code model for user with id ${ userId } - ${ err }` );
+				return reject( new Error( `error saving new verification code model for user with id ${ userId }` ) );
 			}
 			// if the model saved successfully, resolve the promise, returning the newly saved model
 			resolve( model );

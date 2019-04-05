@@ -64,7 +64,7 @@ exports = module.exports = ( req, res ) => {
 		})
 		.catch( err => {
 			// log an error for debugging purposes
-			console.error( `error loading data for the social worker child registration form ${ err }` );
+			console.error( `error loading data for the social worker child registration form`, err );
 			// render the view using the form_social-worker-child-registration.hbs template
 			view.render( 'form_social-worker-child-registration' );
 		});

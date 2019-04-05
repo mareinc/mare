@@ -84,7 +84,7 @@ exports.createChildrenWorksheet = ({ event, workbook, attendees = [], unregister
 
 							if( err ) {
 								// log the error for debugging purposes
-								console.error( `error populating agency field on social worker ${ socialWorker.get( 'name.full' ) } - ${ err }`);
+								console.error( `error populating agency field on social worker ${ socialWorker.get( 'name.full' ) }`, err );
 							}
 
 							resolve();
@@ -99,7 +99,7 @@ exports.createChildrenWorksheet = ({ event, workbook, attendees = [], unregister
 	
 							if( err ) {
 								// log the error for debugging purposes
-								console.error( `error populating region on social worker ${ socialWorker.get( 'name.full' ) } - ${ err }`);
+								console.error( `error populating region on social worker ${ socialWorker.get( 'name.full' ) }`, err );
 							}
 	
 							resolve();
@@ -109,8 +109,8 @@ exports.createChildrenWorksheet = ({ event, workbook, attendees = [], unregister
 					socialWorkerRegion = socialWorker.get( 'agency.address.region.region' );
 				}
 			}
-			catch( error ) {
-				console.error( `error fetching social worker information for child ${ child.get( 'name.full' )} - ${ error }` );
+			catch( err ) {
+				console.error( `error fetching social worker information for child ${ child.get( 'name.full' ) }`, err );
 			}
 
 			// fill attendee data in the appropriate cells
@@ -144,7 +144,7 @@ exports.createChildrenWorksheet = ({ event, workbook, attendees = [], unregister
 
 						if( err ) {
 							// log the error for debugging purposes
-							console.error( `error populating fields on child ${ child.get( 'displayNameAndRegistration' ) } - ${ err }`);
+							console.error( `error populating fields on child ${ child.get( 'displayNameAndRegistration' ) }`, err);
 						}
 
 						resolve();
@@ -165,7 +165,7 @@ exports.createChildrenWorksheet = ({ event, workbook, attendees = [], unregister
 
 							if( err ) {
 								// log the error for debugging purposes
-								console.error( `error populating adoption worker fields on child ${ child.get( 'displayNameAndRegistration' ) } -${ err }` );
+								console.error( `error populating adoption worker fields on child ${ child.get( 'displayNameAndRegistration' ) }`, err );
 							}
 
 							resolve();
@@ -186,7 +186,7 @@ exports.createChildrenWorksheet = ({ event, workbook, attendees = [], unregister
 								cityModel.populate( 'region', err => {
 
 									if( err ) {
-										console.error( `error populating adoption worker region field on child ${ child.get( 'displayNameAndRegistration' ) } -${ err }` );
+										console.error( `error populating adoption worker region field on child ${ child.get( 'displayNameAndRegistration' ) }`, err );
 									}
 
 									resolve();
@@ -196,8 +196,8 @@ exports.createChildrenWorksheet = ({ event, workbook, attendees = [], unregister
 							adoptionWorkerRegion = cityModel.get( 'region.region' );
 						}
 					}
-					catch( error ) {
-						console.error( `error fetching adoption worker region - ${ error }` );
+					catch( err ) {
+						console.error( `error fetching adoption worker region`, err );
 					}
 
 					// set the adoption worker fields
@@ -307,7 +307,7 @@ exports.createFamiliesWorksheet = ({ event, workbook, attendees, unregisteredChi
 
 					if( err ) {
 						// log the error for debugging purposes
-						console.error( `error populating fields on family ${ attendee.get( 'displayName' ) } - ${ err }`);
+						console.error( `error populating fields on family ${ attendee.get( 'displayName' ) }`, err);
 					}
 
 					resolve();
@@ -419,7 +419,7 @@ exports.createSocialWorkersWorksheet = ({ event, workbook, attendees, childAtten
 
 					if( err ) {
 						// log the error for debugging purposes
-						console.error( `error populating fields on social worker ${ attendee.get( 'displayName' ) } - ${ err }`);
+						console.error( `error populating fields on social worker ${ attendee.get( 'displayName' ) }`, err);
 					}
 
 					resolve();
@@ -440,7 +440,7 @@ exports.createSocialWorkersWorksheet = ({ event, workbook, attendees, childAtten
 						cityModel.populate( 'region', err => {
 
 							if( err ) {
-								console.error( `error populating adoption worker region field on child ${ child.get( 'displayNameAndRegistration' ) } -${ err }` );
+								console.error( `error populating adoption worker region field on child ${ child.get( 'displayNameAndRegistration' ) }`, err );
 							}
 
 							resolve();
@@ -454,8 +454,8 @@ exports.createSocialWorkersWorksheet = ({ event, workbook, attendees, childAtten
 					? cityModel.get( 'region.region' )
 					: '';
 			}
-			catch( error ) {
-				console.error( `error fetching adoption worker region - ${ error }` );
+			catch( err ) {
+				console.error( `error fetching adoption worker region`, err );
 			}
 
 			// TODO: this is sloppy as the adoption and recruitment workers were populated in a prior step.  Consider copying the object before populating at each step
@@ -657,8 +657,8 @@ exports.createSiteVisitorsWorksheet = ({ event, workbook, attendees }) => {
 					const cityModel = await listService.getCityOrTownById( familyCity );
 					city = cityModel.get( 'cityOrTown' );
 				}
-				catch( error ) {
-					console.error( `error fetching city for site visitor ${ attendee.get( 'name.full' ) } - ${ error }` );
+				catch( err ) {
+					console.error( `error fetching city for site visitor ${ attendee.get( 'name.full' ) }`, err );
 				}
 			}
 
@@ -675,8 +675,8 @@ exports.createSiteVisitorsWorksheet = ({ event, workbook, attendees }) => {
 				const stateModel = await listService.getStateById( familyState );
 				state = stateModel.get( 'state' );
 			}
-			catch( error ) {
-				console.error( `error fetching state for site visitor ${ attendee.get( 'name.full' ) } - ${ error }` );
+			catch( err ) {
+				console.error( `error fetching state for site visitor ${ attendee.get( 'name.full' ) }`, err );
 			}
 
 			// fill attendee data in the appropriate cells
@@ -766,8 +766,8 @@ exports.createOutsideContactsWorksheet = ({ event, workbook, attendees }) => {
 				const stateModel = await listService.getStateById( attendee.get( 'address.state' ).toString() );
 				state = stateModel.get( 'state' );
 			}
-			catch( error ) {
-				console.error( `error fetching state for site visitor ${ attendee.get( 'name.full' ) } - ${ error }` );
+			catch( err ) {
+				console.error( `error fetching state for site visitor ${ attendee.get( 'name.full' ) }`, err );
 			}
 
 			// fill attendee data in the appropriate cells

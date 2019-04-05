@@ -6,7 +6,7 @@ exports.getContactByRegion = ( { region, fieldsToPopulate } ) => {
         // if no region id was passed in
         if( !region ) {
             // reject the promise with details of the error
-            return reject( `no region provided` );
+            return reject( new Error( `no region provided` ) );
         }
 
         keystone.list( 'CSC Region Contact' ).model
@@ -19,14 +19,14 @@ exports.getContactByRegion = ( { region, fieldsToPopulate } ) => {
                 // if no matching CSC region contact was found in the database
                 if( !CSCRegionContact ) {
                     // reject the promise with the reason for the rejection
-                    return reject( `no CSC region contact found for the region with id ${ region }` );
+                    return reject( new Error( `no CSC region contact found for the region with id ${ region }` ) );
                 }
                 // resolve the promise with an object containing the name and email address of the target contact
                 resolve( CSCRegionContact );
             // if there was an error fetching data from the database
             }, err => {
                 // reject the promise with the reason for the rejection
-                reject( `error fetching CSC region contact for the region with id ${ region }` );
+                reject( new Error( `error fetching CSC region contact for the region with id ${ region }` ) );
             });
     });
 };

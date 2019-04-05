@@ -38,7 +38,7 @@ InternalNotes.schema.pre( 'save', function( next ) {
 		// Add the note to all siblingsToBePlacedWith:
 		Child.model.findOne( { _id: this.child } ).populate('siblingsToBePlacedWith').exec( function( err, child ) {
 			if ( err ) {
-				console.error( `Error while loading Child object: ${ err } ` );
+				console.error( `Error while loading Child object`, err );
 				next();
 			}
 			
@@ -59,7 +59,7 @@ InternalNotes.schema.pre( 'save', function( next ) {
 						// Save the note
 						newInternalNotes.save( ( err, model ) => {
 							if ( err ) {
-								return reject( `error saving new internal note for sibling -  ${ err }` );
+								return reject( new Error( `error saving new internal note for sibling` ) );
 							}
 							resolve();
 						});

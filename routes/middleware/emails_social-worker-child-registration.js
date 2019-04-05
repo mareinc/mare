@@ -7,11 +7,11 @@ exports.sendNewSocialWorkerChildRegistrationNotificationEmailToMARE = ( rawChild
 		// if sending of the email is not currently allowed
 		if( process.env.SEND_SOCIAL_WORKER_CHILD_REGISTRATION_EMAILS_TO_MARE !== 'true' ) {
 			// reject the promise with information about why
-			return reject( `sending of the email is disabled` );
+			return reject( new Error( `sending of the new social worker child registration notification email to MARE is disabled` ) );
 		}
 
 		if( !registrationStaffContact ) {
-			return reject( `no staff contact was provided` );
+			return reject( new Error( `no staff contact was provided` ) );
 		}
 
 		// arrays was used instead of a Maps because Mustache templates apparently can't handle Maps
@@ -393,14 +393,14 @@ exports.sendNewSocialWorkerChildRegistrationNotificationEmailToMARE = ( rawChild
 				// if there was an error sending the email
 				if( err ) {
 					// reject the promise with details
-					return reject( `error sending new social worker child registration notification email to MARE - ${ err }` );
+					return reject( new Error( `error sending new social worker child registration notification email to MARE` ) );
 				}
 				// the response object is stored as the 0th element of the returned message
 				const response = message ? message[ 0 ] : undefined;
 				// if the email failed to send, or an error occurred ( which it does, rarely ) causing the response message to be empty
 				if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
 					// reject the promise with details
-					return reject( `error sending new social worker child registration notification email to MARE - ${ response.status } - ${ response.email } - ${ response.reject_reason } - ${ err }` );
+					return reject( new Error( `error sending new social worker child registration notification email to MARE - ${ response.status } - ${ response.email } - ${ response.reject_reason }` ) );
 				}
 
 				resolve();
@@ -414,11 +414,11 @@ exports.sendNewSocialWorkerChildRegistrationNotificationEmailToSocialWorker = ( 
 		// if sending of the email is not currently allowed
 		if( process.env.SEND_SOCIAL_WORKER_CHILD_REGISTRATION_EMAILS_TO_SOCIAL_WORKER !== 'true' ) {
 			// reject the promise with information about why
-			return reject( `sending of the email is disabled` );
+			return reject( new Error( `sending of the new social worker child registration notification email to social worker is disabled` ) );
 		}
 
 		if( !socialWorkerEmail ) {
-			return reject( `no social worker email was provided` );
+			return reject( new Error( `no social worker email was provided` ) );
 		}
 
 		// arrays was used instead of a Maps because Mustache templates apparently can't handle Maps
@@ -786,14 +786,14 @@ exports.sendNewSocialWorkerChildRegistrationNotificationEmailToSocialWorker = ( 
 				// if there was an error sending the email
 				if( err ) {
 					// reject the promise with details
-					return reject( `error sending new social worker child registration notification email to social worker - ${ err }` );
+					return reject( new Error( `error sending new social worker child registration notification email to social worker` ) );
 				}
 				// the response object is stored as the 0th element of the returned message
 				const response = message ? message[ 0 ] : undefined;
 				// if the email failed to send, or an error occurred ( which it does, rarely ) causing the response message to be empty
 				if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
 					// reject the promise with details
-					return reject( `error sending new social worker child registration notification email to social worker - ${ response.status } - ${ response.email } - ${ response.reject_reason } - ${ err }` );
+					return reject( new Error( `error sending new social worker child registration notification email to social worker - ${ response.status } - ${ response.email } - ${ response.reject_reason }` ) );
 				}
 
 				resolve();
