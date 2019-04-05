@@ -920,7 +920,7 @@ exports.saveChild = ( child, activeChildStatusId ) => {
 	});
 };
 
-/* Chron job function used to batch save all child models */
+/* Cron job function used to batch save all child models */
 exports.saveAllChildren = () => {
 
 	return new Promise( async ( resolve, reject ) => {
@@ -950,7 +950,7 @@ exports.saveAllChildren = () => {
 							await child.save();
 						}
 						catch( error ) {
-							errors.push( `chron: error saving child ${ child.displayNameAndRegistration } - ${ error }` );
+							errors.push( `error saving child ${ child.displayNameAndRegistration } - ${ error }` );
 						}
 					}
 					// increment the page to allow fetching of the next batch of children
@@ -961,17 +961,27 @@ exports.saveAllChildren = () => {
 					console.error( `error fetching page ${ page } of children - ${ error }` );
 				}
 			}
+
+			// log each of the errors to the console
+			for( let error of errors ) {
+				console.error( error );
+			}
+			
+			// if there were errors, resolve the promise with an error state and return the errors
+			if( errors.length > 0 ) {
+				return resolve( {
+					status: 'errors',
+					errors
+				});
+			}
+			// if there were no errors, resolve the pormise with a success state
+			return resolve({
+				status: 'success'
+			});
 		}
 		catch( error ) {
 			console.error( `error saving all children - ${ error }` );
 		}
-
-		// log each of the errors to the console
-		for( let error of errors ) {
-			console.error( error );
-		}
-
-		resolve();	
 	});
 };
 

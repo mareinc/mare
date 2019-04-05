@@ -164,11 +164,11 @@ Event.schema.post( 'save', async function() {
 			const emailTarget = await emailTargetMiddleware.getEmailTargetByName( 'dropped event attendees' );
 			// fetch contact info for the staff contact for 'dropped event attendees'
 			const staffEmailContact = await staffEmailContactMiddleware.getStaffEmailContactByEmailTarget( emailTarget.get( '_id' ), [ 'staffEmailContact' ] );
-			// overwrite the default contact details with the returned object
-			const staffEmailContactInfo = staffEmailContact.staffEmailContact;
+			// set the contact details from the returned object if one was retrieved
+			const staffEmailContactInfo = staffEmailContact ? staffEmailContact.staffEmailContact.email : null;
 
 			eventEmailMiddleware.sendDroppedEventAttendeesEmailToMARE({
-				staffContactEmail: staffEmailContactInfo.email,
+				staffContactEmail: staffEmailContactInfo,
 				eventName: this.name,
 				droppedAttendees
 			});

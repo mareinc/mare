@@ -434,7 +434,7 @@ Child.schema.post( 'save', function() {
 		// process updates for other siblings
 		this.updateSiblingGroup();
 	// if the siblings group has not changed, replicate fields to each sibling to be placed with that should be identical across records
-	// NOTE: this can't check this.checkSiblingsToBePlacedWithForChanges() because a lack of changes would prevent the chron job from replicating fields across siblings to be placed with
+	// NOTE: this can't check this.checkSiblingsToBePlacedWithForChanges() because a lack of changes would prevent the cron job from replicating fields across siblings to be placed with
 	} else {
 		// process updates for other siblings in the group
 		this.updateSiblingsToBePlacedWithGroup();
@@ -714,7 +714,7 @@ Child.schema.methods.setAdoptionWorkerAgencyFields = function() {
 			// if any of the promises were rejected
 			.catch( err => {
 				// log the error for debugging purposes
-				console.error( `error saving the child's adoption worker agency fields - ${ err }` );
+				console.error( `error saving the adoption worker agency field for ${ this.displayNameAndRegistration }`, err );
 				// remove the adoption worker agency and region fields
 				this.adoptionWorkerAgency = undefined;
 				this.adoptionWorkerAgencyRegion = undefined;
@@ -756,7 +756,7 @@ Child.schema.methods.setRecruitmentWorkerAgencyFields = function() {
 			// if any of the promises were rejected
 			.catch( err => {
 				// log the error for debugging purposes
-				console.error( `error saving the child's recruitment worker agency fields - ${ err }` );
+				console.error( `error saving the recruitment worker agency field for ${ this.displayNameAndRegistration }`, err );
 				// remove the recruitment worker agency and region fields
 				this.adoptionWorkerAgency = undefined;
 				this.adoptionWorkerAgencyRegion = undefined;

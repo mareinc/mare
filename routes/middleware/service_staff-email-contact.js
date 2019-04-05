@@ -54,3 +54,28 @@ exports.getStaffEmailContactByEmailTarget = ( emailTargetId, fieldsToPopulate = 
             });
     });
 };
+
+exports.getStaffEmailContactsByEmailTarget = ({ emailTargetId, fieldsToPopulate = [] }) => {
+
+    return new Promise( ( resolve, reject ) => {
+
+        keystone.list( 'Staff Email Contact' ).model
+            .find()
+            .where( 'emailTarget', emailTargetId )
+            .populate( fieldsToPopulate )
+            .exec()
+            .then( staffEmailContacts => {
+                // if no matching staff email contacts were found
+                if( !staffEmailContacts ) {
+                    // reject the promise with the reason for the rejection
+                    return reject( new Error( `no staff email contacts matching ids '${ emailTargetIds } could be found` ) );
+                }
+                // if any staff email contacts were found, resolve the promise with the array of models
+				resolve( staffEmailContacts );
+            // if there was an error fetching data from the database
+            }, err => {
+                // reject the promise with the reason for the rejection
+                reject( new Error( `error fetching staff email contacts matching ids ${ emailTargetIds }` ) );
+            });
+    });
+};
