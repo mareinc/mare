@@ -139,10 +139,10 @@ exports.applySiblingGroupToChild = ( { childToUpdateId, siblingGroup = [] } ) =>
 							console.error( err );
 						}
 						// resolve the promise
-						resolve( childToUpdateId );
+						resolve();
 					});
 				} else {
-					resolve( childToUpdateId );
+					resolve();
 				}
 			})
 			.catch( err => {
@@ -182,12 +182,12 @@ exports.removeSiblingFromChild = ( { childToUpdateId, siblingToRemoveId } ) => {
 							console.error( err );
 						}
 						// resolve the promise
-						resolve( childToUpdateId );
+						resolve();
 					});
 				// if the size of the sibling set did not change after the delete action
 				} else {
 					// no update necessary - resolve the promise
-					resolve( childToUpdateId );
+					resolve();
 				}
 			})
 			.catch( err => {
@@ -411,12 +411,12 @@ exports.removeSiblingToBePlacedWithFromChild = ( { childToUpdateId, siblingToBeP
 							console.error( err );
 						}
 						// resolve the promise
-						resolve( childToUpdateId );
+						resolve();
 					});
 				// if the size of the siblings to be placed with set did not change after the delete action
 				} else {
 					// no update necessary - resolve the promise
-					resolve( childToUpdateId );
+					resolve();
 				}
 			})
 			.catch( err => {

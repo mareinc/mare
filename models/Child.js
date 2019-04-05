@@ -824,13 +824,15 @@ Child.schema.methods.updateSiblingGroup = function() {
 				// update the sibling with the new sibling group
 				let siblingGroupPromise = ChildMiddleware
 					.applySiblingGroupToChild( { childToUpdateId: siblingId, siblingGroup: updatedSiblingGroup } )
-					.then( updatedChildId => {
+					.then( () => {
 						// unlock the sibling after update is complete
-						saveLock.unlock( updatedChildId );
+						saveLock.unlock( siblingId );
 					})
-					.catch( updatedChildId => {
-						// unlock the sibling after update is complete
-						saveLock.unlock( updatedChildId );
+					.catch( err => {
+						// log the error for debugging purposes
+						console.error( `error updating fields for sibling of child ${ this.name.full }`, err );
+						// unlock the sibling to be placed with so future saves can occur
+						saveLock.unlock( siblingId );
 					});
 
 				siblingGroupPromises.push( siblingGroupPromise );
@@ -847,13 +849,15 @@ Child.schema.methods.updateSiblingGroup = function() {
 				// remove this child from a sibling
 				let siblingGroupPromise = ChildMiddleware
 					.removeSiblingFromChild( { childToUpdateId: siblingId, siblingToRemoveId: this._id.toString() } )
-					.then( updatedChildId => {
+					.then( () => {
 						// unlock the sibling after update is complete
-						saveLock.unlock( updatedChildId );
+						saveLock.unlock( siblingId );
 					})
-					.catch( updatedChildId => {
-						// unlock the sibling after update is complete
-						saveLock.unlock( updatedChildId );
+					.catch( err => {
+						// log the error for debugging purposes
+						console.error( `error updating fields for sibling of child ${ this.name.full }`, err );
+						// unlock the sibling to be placed with so future saves can occur
+						saveLock.unlock( siblingId );
 					});
 
 				siblingGroupPromises.push( siblingGroupPromise );
@@ -933,13 +937,15 @@ Child.schema.methods.updateSiblingsToBePlacedWithGroup = function() {
 						childToUpdateId: siblingId,
 						siblingToBePlacedWithToRemoveId: this._id.toString()
 					})
-					.then( updatedChildId => {
+					.then( () => {
 						// unlock the sibling to be placed with after update is complete
-						saveLock.unlock( updatedChildId );
+						saveLock.unlock( siblingId );
 					})
-					.catch( updatedChildId => {
-						// unlock the sibling to be placed with after update is complete
-						saveLock.unlock( updatedChildId );
+					.catch( err => {
+						// log the error for debugging purposes
+						console.error( `error updating fields for sibling of child ${ this.name.full }`, err );
+						// unlock the sibling to be placed with so future saves can occur
+						saveLock.unlock( siblingId );
 					});
 			}
 		});
