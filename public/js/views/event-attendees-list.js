@@ -206,8 +206,7 @@
 
 		handleAddUnregisteredAttendeeClick: function handleAddUnregisteredAttendeeClick() {
 			// fetch the child/adult data
-			var attendee = $( event.target ).siblings( '.events__unregistered-attendees' ).find( '.events__attendee' );
-			var attendeeType = attendee.data( 'attendeeType' );
+			var attendeeType = $( event.target ).siblings( '.events__unregistered-attendees' ).data( 'attendeeType' );
 
 			if( attendeeType === 'child' ) {
 
