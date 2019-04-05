@@ -20,7 +20,7 @@ exports.getAllMAREInTheNewsStories = () => {
             // if an error was encountered fetching from the database
             }, err => {
                 // log the error for debugging purposes
-                console.error( `error fetching all MARE in the news stories - ${ err }` );
+                console.error( `error fetching all MARE in the news stories`, err );
                 // reject the promise
                 reject();
             });
@@ -47,7 +47,7 @@ exports.getMAREInTheNewsStoryByKey = key => {
             // if an error was encountered fetching from the database
             }, err => {
                 // log the error for debugging purposes
-                console.error( `error fetching the MARE in the news story with key ${ key } - ${ err }` );
+                console.error( `error fetching the MARE in the news story with key ${ key }`, err );
                 // reject the promise
                 reject();
             });

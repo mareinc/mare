@@ -83,6 +83,7 @@ exports = module.exports = async ( req, res ) => {
 					userType === 'site visitor' ? !!event.preventSiteVisitorRegistration
 					: userType === 'family' ? !!event.preventFamilyRegistration
 					: userType === 'social worker' ? !!event.preventSocialWorkerRegistration
+					: userType === 'admin' ? !!event.preventAdminRegistration
 					: false;
 
 				// track whether it is an event users can register for through the site
@@ -247,7 +248,7 @@ exports = module.exports = async ( req, res ) => {
 		})
 		.catch( err => {
 			// log an error for debugging purposes
-			console.error( `error loading data for the event list page - ${ err }` );	
+			console.error( `error loading data for the event list page`, err );	
 			// render the view using the events.hbs template
 			view.render( 'events' );
 		});

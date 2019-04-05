@@ -11,7 +11,7 @@ exports.sendNewEventEmailToMARE = ( event, socialWorker, staffEmailContact ) => 
 		// if sending of the email is not currently allowed
 		if( process.env.SEND_EVENT_CREATED_EMAILS_TO_MARE !== 'true' ) {
 			// reject the promise with information about why
-			return reject( `sending of the email is disabled` );
+			return reject( new Error( `sending of the new event email to MARE staff is disabled` ) );
 		}
 
 		// find the email template in templates/emails/
@@ -44,14 +44,14 @@ exports.sendNewEventEmailToMARE = ( event, socialWorker, staffEmailContact ) => 
 				// if there was an error sending the email
 				if( err ) {
 					// reject the promise with details
-					return reject( `error sending new event created notification email to MARE - ${ err }` );
+					return reject( new Error( `error sending new event created notification email to MARE` ) );
 				}
 				// the response object is stored as the 0th element of the returned message
 				const response = message ? message[ 0 ] : undefined;
 				// if the email failed to send, or an error occurred ( which it does, rarely ) causing the response message to be empty
 				if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
 					// reject the promise with details
-					return reject( `error sending new event created notification email to MARE - ${ response.status } - ${ response.email } - ${ response.reject_reason } - ${ err }` );
+					return reject( new Error( `error sending new event created notification email to MARE - ${ response.status } - ${ response.email } - ${ response.reject_reason }` ) );
 				}
 
 				resolve();
@@ -65,7 +65,7 @@ exports.sendEventRegistrationEmailToMARE = ( eventDetails, userDetails, host, st
 		// if sending of the email is not currently allowed
 		if ( process.env.SEND_EVENT_REGISTRATION_TO_MARE !== 'true' ) {
 			// reject the promise with information about why
-			return reject( `sending of the event registration email to MARE staff is disabled` );
+			return reject( new Error( `sending of the event registration email to MARE staff is disabled` ) );
 		}
 
 		exports.getRegisteredChildData( eventDetails.registeredChildren )
@@ -108,22 +108,22 @@ exports.sendEventRegistrationEmailToMARE = ( eventDetails, userDetails, host, st
 					}, ( err, message ) => {
 						// log any errors
 						if( err ) {
-							return reject( `error sending event registration email to MARE staff: ${ message } - ${ err }` );
+							return reject( new Error( `error sending event registration email to MARE staff: ${ message }` ) );
 						}
 						// the response object is stored as the 0th element of the returned message
 						const response = message ? message[ 0 ] : undefined;
 						// if the email failed to send, or an error occurred ( which it does, rarely ) causing the response message to be empty
 						if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
 							// reject the promise with details
-							return reject( `new event registration email to MARE staff failed to send: ${ message } - ${ err }` );
+							return reject( new Error( `new event registration email to MARE staff failed to send: ${ message }` ) );
 						}
 
 						resolve();
 					});
 			})
-			.catch( error => {
+			.catch( err => {
 
-				reject( error );
+				reject( err );
 			});
 	});
 };
@@ -135,7 +135,7 @@ exports.sendEventUnregistrationEmailToMARE = ( eventDetails, userDetails, host, 
 		// if sending of the email is not currently allowed
 		if( process.env.SEND_EVENT_UNREGISTRATION_TO_MARE !== 'true' ) {
 			// reject the promise with information about why
-			return reject( `sending of the event unregistration email to MARE staff is disabled` );
+			return reject( new Error( `sending of the event unregistration email to MARE staff is disabled` ) );
 		}
 
 		// find the email template in templates/emails/
@@ -167,14 +167,14 @@ exports.sendEventUnregistrationEmailToMARE = ( eventDetails, userDetails, host, 
 			}, ( err, message ) => {
 				// log any errors
 				if( err ) {
-					return reject( `error sending event unregistration email to MARE staff: ${ message } - ${ err }` );
+					return reject( new Error( `error sending event unregistration email to MARE staff: ${ message }` ) );
 				}
 				// the response object is stored as the 0th element of the returned message
 				const response = message ? message[ 0 ] : undefined;
 				// if the email failed to send, or an error occurred ( which it does, rarely ) causing the response message to be empty
 				if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
 					// reject the promise with details
-					return reject( `new event unregistration email to MARE staff failed to send: ${ message } - ${ err }` );
+					return reject( new Error( `new event unregistration email to MARE staff failed to send: ${ message }` ) );
 				}
 
 				resolve();
@@ -198,7 +198,7 @@ exports.sendEventRegistrationEditedEmailToMARE = ({
 		// if sending of the email is not currently allowed
 		if( process.env.SEND_EVENT_EDITED_EMAILS_TO_MARE !== 'true' ) {
 			// reject the promise with information about why
-			return reject( `sending of the event edited email is disabled` );
+			return reject( new Error( `sending of the event edited email to MARE staff is disabled` ) );
 		}
 
 		try {
@@ -245,26 +245,141 @@ exports.sendEventRegistrationEditedEmailToMARE = ({
 				}, ( err, message ) => {
 					// log any errors
 					if( err ) {
-						return reject( `error sending event registration edited email to MARE staff: ${ message } - ${ err }` );
+						return reject( new Error( `error sending event registration edited email to MARE staff: ${ message }` ) );
 					}
 					// the response object is stored as the 0th element of the returned message
 					const response = message ? message[ 0 ] : undefined;
 					// if the email failed to send, or an error occurred ( which it does, rarely ) causing the response message to be empty
 					if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
 						// reject the promise with details
-						return reject( `new event registration edited email to MARE staff failed to send: ${ message } - ${ err }` );
+						return reject( new Error( `new event registration edited email to MARE staff failed to send: ${ message }` ) );
 					}
 
 					resolve();
 				});
 			}
-			catch( error ) {
-				console.error( `error sending event registration edited email to staff - ${ error }` );
+			catch( err ) {
+				console.error( `error sending event registration edited email to staff`, err );
 
 				reject();
 			}
 	});
 }
+
+exports.sendDroppedEventAttendeesEmailToMARE = ({
+	staffContactEmail = 'web@mareinc.org',
+	droppedAttendees = [],
+	eventName
+}) => {
+
+	return new Promise( ( resolve, reject ) => {
+
+		// if sending of the email is not currently allowed
+		if( process.env.SEND_DROPPED_EVENT_ATTENDEE_EMAILS_TO_MARE !== 'true' ) {
+			// reject the promise with information about why
+			return reject( new Error( `sending of the dropped event attendees email to MARE staff is disabled` ) );
+		}
+
+		// find the email template in templates/emails/
+		Email.send(
+			// template path
+			'event-attendees-dropped-notification-to-mare',
+			// email options
+			{
+				engine: 'hbs',
+                transport: 'mandrill',
+				root: 'templates/emails/'
+			// render options
+			}, {
+				droppedAttendees,
+				eventName,
+				layout: false
+			// send options
+			}, {
+				apiKey: process.env.MANDRILL_APIKEY,
+				to: staffContactEmail,
+				from: {
+					name: 'MARE',
+					email: 'web@mareinc.org'
+				},
+				subject: `event attendees dropped`
+			// callback
+			}, ( err, message ) => {
+				// if there was an error sending the email
+				if( err ) {
+					// reject the promise with details
+					return reject( new Error( `error sending new event created notification email to MARE` ) );
+				}
+				// the response object is stored as the 0th element of the returned message
+				const response = message ? message[ 0 ] : undefined;
+				// if the email failed to send, or an error occurred ( which it does, rarely ) causing the response message to be empty
+				if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
+					// reject the promise with details
+					return reject( new Error( `error sending new event created notification email to MARE - ${ response.status } - ${ response.email } - ${ response.reject_reason }` ) );
+				}
+
+				resolve();
+			});
+	});
+};
+
+exports.sendCronJobErrorsEmailToMARE = ({
+	staffContactEmails = [],
+	agencyErrors = [],
+	socialWorkerErrors = [],
+	childErrors = []
+}) => {
+	return new Promise( ( resolve, reject ) => {
+
+		// if sending of the email is not currently allowed
+		if( process.env.SEND_CRON_JOB_ERRORS_EMAILS_TO_MARE !== 'true' ) {
+			// reject the promise with information about why
+			return reject( new Error( `sending of the cron job errors email to MARE staff is disabled` ) );
+		}
+
+		// find the email template in templates/emails/
+		Email.send(
+			// template path
+			'cron-job-errors-notification-to-mare',
+			// email options
+			{
+				engine: 'hbs',
+                transport: 'mandrill',
+				root: 'templates/emails/'
+			// render options
+			}, {
+				agencyErrors,
+				socialWorkerErrors,
+				childErrors,
+				layout: false
+			// send options
+			}, {
+				apiKey: process.env.MANDRILL_APIKEY,
+				to: staffContactEmails,
+				from: {
+					name: 'MARE',
+					email: 'web@mareinc.org'
+				},
+				subject: `cron job errors`
+			// callback
+			}, ( err, message ) => {
+				// if there was an error sending the email
+				if( err ) {
+					// reject the promise with details
+					return reject( new Error( `error sending cron job errors notification email to MARE` ) );
+				}
+				// the response object is stored as the 0th element of the returned message
+				const response = message ? message[ 0 ] : undefined;
+				// if the email failed to send, or an error occurred ( which it does, rarely ) causing the response message to be empty
+				if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
+					// reject the promise with details
+					return reject( new Error( `error sending cron job errors notification email to MARE - ${ response.status } - ${ response.email } - ${ response.reject_reason }` ) );
+				}
+
+				resolve();
+			});
+	});
+};
 
 exports.getRegisteredChildData = (registeredChildren) => {
 
@@ -279,9 +394,9 @@ exports.getRegisteredChildData = (registeredChildren) => {
 
 					resolve( childrenData );
 				})
-				.catch( error => {
+				.catch( err => {
 
-					reject( error );
+					reject( err );
 				});
 
 			// if the event registration doesn't include registered children attendees

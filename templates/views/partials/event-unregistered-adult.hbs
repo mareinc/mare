@@ -1,0 +1,19 @@
+<!-- client side template for rendering an unregistered adult list item -->
+<script id="event-unregistered-adult-template" type="text/x-handlebars-template">
+
+<li class="card__list-item card__list-item--editable card__list-item--added events__attendee events__unregistered-adult-attendee"
+	data-id="\{{ adult.id }}"
+	data-original-first-name="\{{ adult.firstName }}"
+	data-original-last-name="\{{ adult.lastName }}"
+	data-first-name="\{{ adult.firstName }}"
+	data-last-name="\{{ adult.lastName }}"
+	data-attendee-type="adult"
+	data-added="true"
+>
+	<span class="card__list-item-content events__attendee-name">\{{ adult.firstName }} \{{ adult.lastName }}</span>
+	<i class="fa fa-trash card__list-item-content-control card__list-item-content-control--hidden card__list-item-delete-content" aria-hidden="true"></i>
+	<i class="fa fa-pencil card__list-item-content-control card__list-item-content-control--hidden card__list-item-edit-content" aria-hidden="true"></i>
+	<i class="fa fa-undo card__list-item-content-control card__list-item-content-control--hidden card__list-item-content-control--disabled card__list-item-undo-edit" aria-hidden="true"></i>
+</li>
+
+</script>

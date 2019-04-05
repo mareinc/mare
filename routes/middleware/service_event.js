@@ -1,10 +1,10 @@
 // TODO: anything that needs to fetch the event to work should have a parameter for event, and if it's passed in, it uses that instead of fetching.  This would save several DB lookups
 
-const keystone						= require( 'keystone' ),
-	  eventEmailMiddleware			= require( './emails_event' ),
-		emailTargetService		= require( './service_email-target' ),
+const keystone					= require( 'keystone' ),
+	  eventEmailMiddleware		= require( './emails_event' ),
+	  emailTargetService		= require( './service_email-target' ),
 	  staffEmailContactService	= require( './service_staff-email-contact' ),
-	  userService					= require( './service_user' );
+	  userService				= require( './service_user' );
 
 exports.getEventById = ( { eventId, fieldsToPopulate = [] } ) => {
 
@@ -16,20 +16,16 @@ exports.getEventById = ( { eventId, fieldsToPopulate = [] } ) => {
 			.then( event => {
 				// if the target event could not be found
 				if( !event ) {
-					// log an error for debugging purposes
-					console.error( `no event matching id '${ eventId } could be found` );
-					// reject the promise
-					return reject();
+					// reject the promise with the error
+					return reject( new Error( `no event matching id '${ eventId } could be found` ) );
 				}
 
 				// if the target event was found, resolve the promise with the event
 				resolve( event );
 			// if there was an error fetching from the database
 			}, err => {
-				// log an error for debugging purposes
-				console.error( `error fetching event matching id ${ eventId } - ${ err }` );
-				// and reject the promise
-				reject();
+				// reject the promise with the error
+				reject( new Error( `error fetching event matching id ${ eventId }` ) );
 			});
 	});
 };
@@ -60,10 +56,8 @@ exports.getEventByKey = key => {
 				resolve( event );
 			// if there was an error fetching from the database
 			}, err => {
-				// log an error for debugging purposes
-				console.error( `error fetching event matching key ${ key } - ${ err }` );
-				// and reject the promise
-				reject();
+				// reject the promise with the error
+				reject( new Error( `error fetching event matching key ${ key }` ) );
 			});
 		});
 };
@@ -93,10 +87,8 @@ exports.getActiveEventsByEventType = ( eventType, eventGroup ) => {
 				resolve( events );
 			// if there was an error fetching from the database
 			}, err => {
-				// log an error for debugging purposes
-				console.error( `error fetching active events matching ${ eventType } - ${ err }` );
-				// and reject the promise
-				reject();
+				// reject the promise with the error
+				reject( new Error( `error fetching active events matching ${ eventType }` ) );
 			});
 		});
 };
@@ -108,7 +100,7 @@ exports.getActiveEventsByUserId = ( userId, eventGroup ) => {
 		keystone.list( 'Event' ).model
 			.find()
 			.where( 'isActive', true ) // we don't want to show inactive events
-			.where( eventGroup ).in( [userId] ) // only show events for this user
+			.where( eventGroup ).in( [ userId ] ) // only show events for this user
 			.populate( eventGroup )
 			.populate( 'address.state' )
 			.lean()
@@ -123,65 +115,33 @@ exports.getActiveEventsByUserId = ( userId, eventGroup ) => {
 				resolve( events );
 			// if there was an error fetching from the database
 			}, err => {
-				// log an error for debugging purposes
-				console.error( `error fetching active events for user with id ${ userId } - ${ err }` );
-				// and reject the promise
-				reject();
+				// reject the promise with the error
+				reject( new Error( `error fetching active events for user with id ${ userId }` ) );
 			});
 		});
 };
 
-exports.getAllActiveEvents = eventGroup => {
-
-	return new Promise( ( resolve, reject ) => {
-
-		keystone.list( 'Event' ).model
-			.find()
-			.where( 'isActive', true ) // we don't want to show inactive events
-			.populate( eventGroup )
-			.populate( 'address.state' )
-			.exec()
-			.then( events => {
-				// if no active events could be found
-				if( events.length === 0 ) {
-					// log an error for debugging purposes
-					console.error( `no active events could be found` );
-				}
-				// resolve the promise with the events
-				resolve( events );
-			// if there was an error fetching from the database
-			}, err => {
-				// log an error for debugging purposes
-				console.error( `error fetching active events - ${ err }` );
-				// and reject the promise
-				reject();
-			});
-		})
-	;
-};
-
-exports.getActiveEvents = () => {
+exports.getActiveEvents = ( fieldsToPopulate = [] ) => {
 
 	return new Promise( ( resolve, reject ) => {
 
 		keystone.list( 'Event' ).model
 			.find()
 			.where( 'isActive', true )
+			.populate( fieldsToPopulate )
 			.exec()
 			.then( events => {
 				// if no active events could be found
 				if( events.length === 0 ) {
 					// log an error for debugging purposes
-					console.error( `no active events could be found` );
+					console.info( `no active events could be found` );
 				}
-				// resolve the promise with the events
+				// resolve the promise with the events if there are any
 				resolve( events );
 			// if there was an error fetching from the database
 			}, err => {
-				// log an error for debugging purposes
-				console.error( `error fetching active events - ${ err }` );
-				// and reject the promise
-				reject();
+				// reject the promise with the error
+				reject( new Error( `error fetching active events` ) );
 			});
 		})
 	;
@@ -211,10 +171,8 @@ exports.getRandomEvent = () => {
 			}, ( err, event ) => {
 				// if there was an error
 				if ( err ) {
-					// log the error for debugging purposes
-					console.error( `error fetching random event - ${ err }` );
-					// reject the promise
-					return reject();
+					// reject the promise with the error
+					return reject( new Error( `error fetching random event` ) );
 				}
 				// the single random event will be the 0th element in the returned array
 				const randomEvent = event ? event[ 0 ] : {}; // TODO: make sure an empty response comes back as undefined instead of an empty array
@@ -266,7 +224,7 @@ exports.submitEvent = function submitEvent( req, res, next ) {
 						// overwrite the default contact details with the returned object
 						.then( staffEmailContact => staffEmailContactInfo = staffEmailContact.staffEmailContact )
 						// log any errors fetching the staff email contact
-						.catch( err => console.error( `error fetching email contact for event submission, default contact info will be used instead - ${ err }` ) )
+						.catch( err => console.error( `error fetching email contact for event submission, default contact info will be used instead`, err ) )
 						// send a notification email to MARE staff to allow them to enter the information in the old system
 						.then( () => eventEmailMiddleware.sendNewEventEmailToMARE( event, socialWorker, staffEmailContactInfo ) )
 						// if there was an error sending the email to MARE staff
@@ -274,7 +232,7 @@ exports.submitEvent = function submitEvent( req, res, next ) {
 							// convert the event date from a date object into a readable string
 							const eventDate = `${ event.startDate.getMonth() + 1 }/${ event.startDate.getDate() }/${ event.startDate.getFullYear() }`;
 							// throw an error with details about what went wrong
-							console.error( `error sending new event created email to MARE contact about ${ event.get( 'name' ) } on ${ eventDate } from ${ event.get( 'startTime' ) } to ${ event.get( 'endTime' ) } - ${ err }` );
+							console.error( `error sending new event created email to MARE contact about ${ event.get( 'name' ) } on ${ eventDate } from ${ event.get( 'startTime' ) } to ${ event.get( 'endTime' ) }`, err );
 						});
 				}
 			});
@@ -330,10 +288,8 @@ exports.createEvent = event => {
 		newEvent.save( ( err, model ) => {
 			// if there was an error saving the new event to the database
 			if( err ) {
-				// log an error for debugging purposes
-				console.error( `there was an error creating the new event - ${ err }` );
-				// reject the promise
-				return reject();
+				// reject the promise with the error
+				return reject( new Error( `there was an error creating the new event` ) );
 			}
 
 			// resolve the promise with the newly saved event model
@@ -374,22 +330,18 @@ exports.register = ( eventDetails, user ) => {
 				}
 
 				// save the updated event
-				event.save( error => {
+				event.save( err => {
 
-					if ( error ) {
+					if ( err ) {
+						return reject( new Error( `error saving an update to event ${ event._id }` ) );
+					} 
 
-						console.error( `error saving an update to event ${ event._id } - ${ error }` );
-						reject( error );
-					} else {
-
-						resolve();
-					}
+					resolve();
 				});
 			})
-			.catch( error => {
+			.catch( err => {
 
-				console.error( `error registering user ${ user._id } for event ${ eventDetails.eventId } - ${ error }` );
-				reject( error );
+				reject( new Error( `error registering user ${ user._id } for event ${ eventDetails.eventId }` ) );
 			});
 	});
 };
@@ -424,37 +376,37 @@ exports.unregister = ( eventDetails, user ) => {
 				}
 			})
 			.then( data => unregistrationData = data )
-			.catch( err => console.error( `error removing registered children from event with id ${ eventDetails.eventId } - ${ err }` ) )
+			.catch( err => console.error( `error removing registered children from event with id ${ eventDetails.eventId }`, err ) )
 			// remove any unregistered child attendees
 			.then( () => exports.removeUnregisteredChildren( unregistrationData.eventModel, user._id ) )
 			.then( data => unregistrationData.unregisteredChildrenRemoved = data )
-			.catch( err => console.error( `error removing unregistered children from event with id ${ eventDetails.eventId } - ${ err }` ) )
+			.catch( err => console.error( `error removing unregistered children from event with id ${ eventDetails.eventId }`, err ) )
 			// remove any unregistered adult attendees
 			.then( () => exports.removeUnregisteredAdults( unregistrationData.eventModel, user._id ) )
 			.then( data => unregistrationData.unregisteredAdultsRemoved = data )
-			.catch( err => console.error( `error removing unregistered adults from event with id ${ eventDetails.eventId } - ${ err }` ) )
+			.catch( err => console.error( `error removing unregistered adults from event with id ${ eventDetails.eventId }`, err ) )
 			// save the updated event
 			.then( () => {
 
 				// save the updated event
-				unregistrationData.eventModel.save( error => {
+				unregistrationData.eventModel
+					.save( err => {
 
-					if ( error ) {
-						// reject the promise with details of what went wrong
-						reject( `error unregistering user ${ user._id } from event ${ eventDetails.eventId } - ${ error }` );
-					} else {
+						if ( err ) {
+							// reject the promise with details of what went wrong
+							return reject( new Error( `error unregistering user ${ user._id } from event ${ eventDetails.eventId }` ) );
+						}
 
 						resolve({
 							registeredChildrenRemoved: unregistrationData.registeredChildrenRemoved,
 							unregisteredChildrenRemoved: unregistrationData.unregisteredChildrenRemoved,
 							unregisteredAdultsRemoved: unregistrationData.unregisteredAdultsRemoved
 						});
-					}
-				});
+					});
 			})
-			.catch( error => {
+			.catch( err => {
 				// reject the promise with details about the error
-				reject( `error unregistering user ${ user._id } for event ${ eventDetails.eventId } - ${ error }` );
+				reject( new Error( `error unregistering user ${ user._id } for event ${ eventDetails.eventId }` ) );
 			});
 	});
 };
@@ -468,7 +420,7 @@ exports.editRegistration = ( eventDetails, user ) => {
 			resolve();
 		}
 		catch( err ) {
-			reject( `error editing user registration for event - ${ err }` );
+			reject( new Error( `error editing user registration for event` ) );
 		}
 	});
 };
@@ -477,39 +429,38 @@ exports.removeRegisteredChildren = ( event, registrantId ) => {
 
 	return new Promise( ( resolve, reject ) => {
 		// populate the registered children attendees of the event and remove any children that were signed up by the social worker that is unregistering for the event
-		event.populate( 'childAttendees', error => {
+		event.populate( 'childAttendees', err => {
 
-			if ( error ) {
+			if ( err ) {
 				// reject the promise with information about the error
-				reject( `error populating the child attendees of event ${ event._id } - ${ error }` );
-			} else {
-
-				let registeredChildrenToRemoveIndexes = [];
-				let registeredChildrenRemoved = [];
-
-				// capture all registered children ( and their indexes ) that were signed up by the social worker that is unregistering
-				event.childAttendees.forEach( ( child, index ) => {
-
-					if ( child.adoptionWorker && ( registrantId.toString() === child.adoptionWorker.toString() || registrantId.toString() === child.recruitmentWorker.toString() ) ) {
-
-						registeredChildrenToRemoveIndexes.push( index );
-						registeredChildrenRemoved.push( child );
-					}
-				});
-
-				// reverse the registeredChildrenToRemoveIndexes array to prevent the splicing process from messing with the array indexes
-				registeredChildrenToRemoveIndexes.reverse();
-				// remove each registered child from the list of child attendees
-				registeredChildrenToRemoveIndexes.forEach( indexOfChild => {
-
-					event.childAttendees.splice( indexOfChild, 1 );
-				});
-
-				resolve({
-					eventModel: event,
-					registeredChildrenRemoved
-				});
+				return reject( new Error( `error populating the child attendees of event ${ event._id }` ) );
 			}
+
+			let registeredChildrenToRemoveIndexes = [];
+			let registeredChildrenRemoved = [];
+
+			// capture all registered children ( and their indexes ) that were signed up by the social worker that is unregistering
+			event.childAttendees.forEach( ( child, index ) => {
+
+				if ( child.adoptionWorker && ( registrantId.toString() === child.adoptionWorker.toString() || registrantId.toString() === child.recruitmentWorker.toString() ) ) {
+
+					registeredChildrenToRemoveIndexes.push( index );
+					registeredChildrenRemoved.push( child );
+				}
+			});
+
+			// reverse the registeredChildrenToRemoveIndexes array to prevent the splicing process from messing with the array indexes
+			registeredChildrenToRemoveIndexes.reverse();
+			// remove each registered child from the list of child attendees
+			registeredChildrenToRemoveIndexes.forEach( indexOfChild => {
+
+				event.childAttendees.splice( indexOfChild, 1 );
+			});
+
+			resolve({
+				eventModel: event,
+				registeredChildrenRemoved
+			});
 		});
 	});
 };
@@ -596,8 +547,8 @@ exports.getUnregisteredChildren = eventId => {
 
             resolve( event.unregisteredChildAttendees );
         }
-        catch( error ) {
-            reject( `error fetching unregistered child attendees for event with id ${ eventId }` );
+        catch( err ) {
+            reject( new Error( `error fetching unregistered child attendees for event with id ${ eventId }` ) );
         }
 	});
 };
@@ -629,8 +580,8 @@ exports.getUnregisteredAdults = eventId => {
             resolve( event.unregisteredAdultAttendees );
             
         }
-        catch( error ) {
-            reject( `error fetching unregistered adult attendees for event with id ${ eventId }` );
+        catch( err ) {
+            reject( new Error( `error fetching unregistered adult attendees for event with id ${ eventId }` ) );
         }
 	})
 };
@@ -656,8 +607,8 @@ exports.getRegisteredChildren = eventId => {
             resolve( event.childAttendees );
             
         }
-        catch( error ) {
-            reject( `error fetching registered child attendees for event with id ${ eventId }` );
+        catch( err ) {
+            reject( new Error( `error fetching registered child attendees for event with id ${ eventId }` ) );
         }
 	})
 };
@@ -668,7 +619,7 @@ exports.getEventStaffContactInfo = emailTarget => {
 		// if the email target was unrecognized, the email target can't be set
 		if( !emailTarget ) {
 			// reject the promise with details of the issue
-			return reject( `no event email target provided` );
+			return reject( new Error( `no event email target provided` ) );
 		}
 		// TODO: it was nearly impossible to create a readable comma separated list of links in the template with more than one address,
 		// 	     so we're only fetching one contact when we should fetch them all
@@ -685,7 +636,7 @@ exports.getEventStaffContactInfo = emailTarget => {
 			})
 			.catch( err => {
 				// reject the promise with the reason for the rejection
-				reject( `error fetching staff contact - ${ err }` );
+				reject( new Error( `error fetching staff contact` ) );
 			});
 	});
 };
@@ -771,57 +722,90 @@ exports.getEventContactEmail = ( { eventId, userType } ) => {
 			resolve( eventContactEmail );
 
 		}
-		catch( error ) {
-			reject( `error fetching event contact email for event with id ${ eventDetails.eventId } - ${ error }` );
+		catch( err ) {
+			reject( new Error( `error fetching event contact email for event with id ${ eventDetails.eventId }` ) );
 		}
 	});
 };
 
-exports.checkForOldEvents = () => {
+exports.getPastEvents = () => {
 
 	return new Promise( async ( resolve, reject ) => {
 		// store the current date/time
 		const now = new Date();
-
-		let activeEvents;
+		// store any events that have passed in an array to return
+		let pastEvents = [];
 
 		// attempt to fetch all events that are currently active in the system
 		try {
-			activeEvents = await this.getActiveEvents();
+			let activeEvents = await this.getActiveEvents();
+
+			// loop through all active events
+			for( let event of activeEvents ) {
+				// "9:00pm" will store [ "9:00pm", "9:00pm", "9", "00", "pm" ]
+				let endTimeArray = /((1[0-2]|0?[1-9]):([0-5][0-9]) ?([AaPp][Mm]))/.exec( event.endTime );
+				// if the event has a stored end time and is a valid date
+				if( endTimeArray ) {
+					// check if the time is AM or PM, then extract the hours and add 12 for PM times
+					let endTimeHours = endTimeArray[ 4 ].toLowerCase() === 'pm'
+						? parseInt( endTimeArray[ 2 ] ) + 12
+						: parseInt( endTimeArray[ 2 ] );
+
+					// make a copy of the event end date if it exists and update the hours based on when the event ends in 24h time
+					let endDate = event.endDate instanceof Date
+						? new Date( event.endDate.getTime() ).setHours( endTimeHours )
+						: undefined;
+					// if the event is not recurring and has ended before the current date/time, add it to the array to return
+					if( !event.isRecurringEvent && endDate < now ) {
+						pastEvents.push( event );
+					}
+				}
+			}
 		}
 		catch( err ) {
-			return reject( `error fetching active events - ${ err }` );
+			return reject( new Error( `error fetching active events` ) );
 		}
 
-		// loop through all active events
-		for( let event of activeEvents ) {
-			// "9:00pm" will store [ "9:00pm", "9:00pm", "9", "00", "pm" ]
-			let endTimeArray = /((1[0-2]|0?[1-9]):([0-5][0-9]) ?([AaPp][Mm]))/.exec( event.endTime );
-			// if the event has a stored end time and is a valid date
-			if( endTimeArray ) {
-				// check if the time is AM or PM, then extract the hours and add 12 for PM times
-				let endTimeHours = endTimeArray[ 4 ].toLowerCase() === 'pm'
-					? parseInt( endTimeArray[ 2 ] ) + 12
-					: parseInt( endTimeArray[ 2 ] );
+		resolve( pastEvents );
+	});
+};
 
-				// use the extracted hours and day of the event to construct a date object for comparison
-				event.endDate.setHours( endTimeHours );
-				// if the event is not recurring and has ended before the current date/time
-				if( !event.isRecurringEvent && event.endDate < now ) {
-					// log a message for debugging purposes
-					console.log( `deactivating event ${ event.name }` );
-					// deactivate and save the event
-					event.set( 'isActive', false );
-
-					await event.save( err => {
-						if( err ) {
-							console.err( `error saving deactivated event ${ event.name } - ${ err }` );
-						}
-					});
-				}
+exports.deactivateEvents = ( events = [] ) => {
+	return new Promise( async ( resolve, reject ) => {
+		for( let event of events ) {
+			try {
+				await exports.deactivateEvent( event );
+			}
+			catch( err ) {
+				console.error( `error deactivating event ${ event.name }`, err );
 			}
 		}
 
 		resolve();
 	});
-};
+}
+
+exports.deactivateEvent = event => {
+	return new Promise( async ( resolve, reject ) => {
+		// if no event was passed in, reject the promise
+		if( !event ) {
+			return reject( new Error( `no event provided` ) );
+		}
+		// log a message for debugging purposes
+		console.log( `deactivating event ${ event.name }` );
+
+		// deactivate and save the event
+		event.set( 'isActive', false );
+
+		await event.save( err => {
+			// if there was an error deactivating the event, return an error
+			if( err ) {
+				return reject( new Error( `error saving deactivated event ${ event.name }` ) );
+			}
+		});
+
+		console.log( `event ${ event.name } deactivated successfully` );
+
+		resolve( event );
+	});
+}

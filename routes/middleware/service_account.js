@@ -53,12 +53,12 @@ exports.updateUser = ( req, res, next ) => {
 		if ( user.isModified() ) {
 
 			// if so, save the updated user model
-			user.save( error => {
+			user.save( err => {
 
-				if ( error ) {
+				if ( err ) {
 
 					// log any errors
-					console.error( `there was an error saving an update to ${ userType } ${ user._id } : ${ error }` );
+					console.error( `there was an error saving an update to ${ userType } ${ user._id }`, err );
 					// create an error flash message to send back to the user
 					flashMessages.appendFlashMessage({
 						messageType: flashMessages.MESSAGE_TYPES.ERROR,
@@ -135,10 +135,10 @@ function promisifySaveOperation( modelToSave ) {
 
 	return new Promise( ( resolve, reject ) => {
 
-		modelToSave.save( error => {
+		modelToSave.save( err => {
 
-			if ( error ) {
-				console.error( error );
+			if ( err ) {
+				console.error( err );
 			}
 
 			resolve();
@@ -202,9 +202,9 @@ exports.updateUserEmailLists = ( req, res, next ) => {
 				// add the mailing list to the updates
 				if ( isModified ) {
 					mailingListModelUpdates.push( new Promise( ( resolve, reject ) => {
-							mailingList.save( error => {
-								if ( error ) {
-									console.error( error );
+							mailingList.save( err => {
+								if ( err ) {
+									console.error( err );
 									reject();
 								}
 								resolve();
@@ -232,9 +232,9 @@ exports.updateUserEmailLists = ( req, res, next ) => {
 							});
 						});;
 				})
-				.catch( error => {
+				.catch( err => {
 					// log an error for debugging purposes
-					console.error( `there was an error saving e-mail lists of ${ userType } ${ userId } : ${ error }` );
+					console.error( `there was an error saving e-mail lists of ${ userType } ${ userId }`, err );
 					
 					// create an error flash message to send back to the user
 					flashMessages.appendFlashMessage({
@@ -254,7 +254,7 @@ exports.updateUserEmailLists = ( req, res, next ) => {
 		})
 		.catch( err => {
 			// log an error for debugging purposes
-			console.error( `error loading e-mail lists${ err }` );
+			console.error( `error loading e-mail lists`, err );
 			
 			// create an error flash message to send back to the user
 			flashMessages.appendFlashMessage({

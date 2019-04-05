@@ -1,6 +1,9 @@
-const eventService			= require( './service_event' ),
-	  eventExcelService		= require( './service_event-excel-export' );
-	  eventEmailMiddleware	= require( './emails_event' );
+const keystone				= require( 'keystone' ),
+	  eventService			= require( './service_event' ),
+	  eventExcelService		= require( './service_event-excel-export' ),
+	  eventEmailMiddleware	= require( './emails_event' ),
+	  socialWorkerService	= require( './service_social-worker' ),
+	  flashMessageMiddleware	= require( './service_flash-messages' );
 
 exports.register = async ( req, res ) => {
 	'use strict';
@@ -65,7 +68,7 @@ exports.register = async ( req, res ) => {
 	// if there was an error registering the user for the event
 	catch ( err ) {
 		// log the error for debugging purposes
-		console.error( `error registering ${ req.user.displayName } for ${ eventDetails.eventName } - ${ err }` );
+		console.error( `error registering ${ req.user.displayName } for ${ eventDetails.eventName }`, err );
 		// notify the user of the error
 		req.flash( 'error', { title: 'There was an issue registering you for this event',
 			detail: 'If this error persists, please notify MARE at <a href="mailto:web@mareinc.org">web@mareinc.org</a>' } );
@@ -84,7 +87,7 @@ exports.register = async ( req, res ) => {
 		}
 		catch( err ) {
 			// log the error for debugging purposes
-			console.error( `error sending event registration email about ${ req.user.displayName } for ${ eventDetails.eventName } - ${ err }` );
+			console.error( `error sending event registration email about ${ req.user.displayName } for ${ eventDetails.eventName }`, err );
 		}
 	}
 	// update the stage for families only if they successfully registered for the event
@@ -162,7 +165,7 @@ exports.register = async ( req, res ) => {
 		if( isSaveNeeded ) {
 			family.save( () => {}, err => {
 				// log the error for debugging purposes
-				console.error( `there was an error updating the stage for family ${ family.displayName } with id ${ family._id } while they were registering for event ${ eventDetails.eventName } - ${ err }` );
+				console.error( `there was an error updating the stage for family ${ family.displayName } with id ${ family._id } while they were registering for event ${ eventDetails.eventName }`, err );
 			});
 		}
 	}
@@ -206,9 +209,9 @@ exports.unregister = async ( req, res ) => {
 			detail: 'For additional questions contact <a href="mailto:web@mareinc.org">web@mareinc.org</a>' } );
 	}
 	// if there was an issue registering the attendee
-	catch( error ) {
+	catch( err ) {
 		// log the error for debugging purposes
-		console.error( `error unregistering ${ req.user.displayName } for ${ eventDetails.eventName } - ${ error }` );
+		console.error( `error unregistering ${ req.user.displayName } for ${ eventDetails.eventName }`, err );
 		// notify the user of the error
 		req.flash( 'error', { title: 'There was an issue changing your registration for this event',
 			detail: 'If this error persists, please notify MARE at <a href="mailto:web@mareinc.org">web@mareinc.org</a>' } );
@@ -228,7 +231,7 @@ exports.unregister = async ( req, res ) => {
 		}
 		catch( err ) {
 			// log the error for debugging purposes
-			console.error( `error sending event unregistration email about ${ req.user.displayName } for ${ eventDetails.eventName } - ${ err }` );
+			console.error( `error sending event unregistration email about ${ req.user.displayName } for ${ eventDetails.eventName }`, err );
 		}
 	}
 	// once all actions have been completed, redirect the user to the path specified in the request. Needed because otherwise it would be impossible to determine which page they registered from
@@ -302,7 +305,7 @@ exports.editRegistration = async ( req, res, next ) => {
 	// if there was an error registering the user for the event
 	catch ( err ) {
 		// log the error for debugging purposes
-		console.error( `error editing registration for ${ req.user.displayName } for ${ eventDetails.eventName } - ${ err }` );
+		console.error( `error editing registration for ${ req.user.displayName } for ${ eventDetails.eventName }`, err );
 		// notify the user of the error
 		req.flash( 'error', { title: 'There was an issue editing your registration for this event',
 			detail: 'If this error persists, please notify MARE at <a href="mailto:web@mareinc.org">web@mareinc.org</a>' } );
@@ -379,7 +382,7 @@ exports.editRegistration = async ( req, res, next ) => {
 		}
 		catch( err ) {
 			// log the error for debugging purposes
-			console.error( `error sending event registration edited email about ${ req.user.displayName } for ${ eventDetails.eventName } - ${ err }` );
+			console.error( `error sending event registration edited email about ${ req.user.displayName } for ${ eventDetails.eventName }`, err );
 		}
 	}
 
@@ -411,6 +414,21 @@ exports.exportToExcel = async ( req, res, next ) => {
 		const familyAttendees = event.get( 'familyAttendees' );
 		const childAttendees = event.get( 'childAttendees' );
 		const outsideContactAttendees = event.get( 'outsideContactAttendees' );
+
+		let unregisteredChildAttendeesBroughtBySocialWorkers = [];
+
+		// unregistered child attendees should only be added to the children tab if they're registered by a social worker
+		try {
+			const activeSocialWorkerIds = await socialWorkerService.getActiveSocialWorkerIds();
+
+			unregisteredChildAttendeesBroughtBySocialWorkers = event.unregisteredChildAttendees.filter( child => {
+				return activeSocialWorkerIds.includes( child.get( 'registrantID' ) );
+			});
+			
+		}
+		catch( err ) {
+			console.error( `error fetching active social workers for event export`, err );
+		}
 		
 		// extract hidden unregistered attendees from the event
 		const unregisteredAdultAttendees = event.unregisteredAdultAttendees;
@@ -422,7 +440,8 @@ exports.exportToExcel = async ( req, res, next ) => {
 			&& socialWorkerAttendees.length === 0
 			&& familyAttendees.length === 0
 			&& childAttendees.length === 0
-			&& outsideContactAttendees.length === 0 ) {
+			&& outsideContactAttendees.length === 0
+			&& unregisteredChildAttendeesBroughtBySocialWorkers.length === 0 ) {
 			
 			// send a flash message to the user notifying them that an export couldn't be generated
 			req.flash( 'info', { title: 'The export could not be generated',
@@ -434,12 +453,12 @@ exports.exportToExcel = async ( req, res, next ) => {
 		// create a new excel workbook
 		const workbook = eventExcelService.createWorkbook();
 
-		if( childAttendees.length > 0 || unregisteredChildAttendees.length > 0 ) {
+		if( childAttendees.length > 0 || unregisteredChildAttendeesBroughtBySocialWorkers.length > 0 ) {
 			await eventExcelService.createChildrenWorksheet({
 				event,
 				workbook,
 				attendees: childAttendees,
-				unregisteredAttendees: unregisteredChildAttendees
+				unregisteredAttendees: unregisteredChildAttendeesBroughtBySocialWorkers
 			});
 		}
 
@@ -489,10 +508,150 @@ exports.exportToExcel = async ( req, res, next ) => {
 
 		workbook.write( `${ event.get( 'key' ) }.xlsx`, res );
 	}
-	catch( error ) {
-		console.error( `error exporting event with id ${ eventId } to excel - ${ error }` );
+	catch( err ) {
+		console.error( `error exporting event with id ${ eventId } to excel`, err );
 
 		// notify the user of the error
 		req.flash( 'error', { title: 'There was an issue exporting this event' } );
 	}
 }
+
+exports.getActiveSocialWorkers = ( req, res, next ) => {
+
+	return new Promise( async ( resolve, reject ) => {
+
+		keystone.list( 'Social Worker' ).model
+			.find()
+			.where( 'isActive' ).equals( true )
+			.select( '_id name.full' )
+			.lean()
+			.exec()
+			.then( socialWorkers => {
+
+				if( !socialWorkers ) {
+					console.error( `no active social workers could be found` );
+				}
+
+				// rename the fields before returning to protect the database
+				const cleanSocialWorkers = socialWorkers.map( socialWorker => {
+					return { uid: socialWorker._id, name: socialWorker.name.full };
+				});
+				
+				res.send( cleanSocialWorkers );
+				
+			}, err => {
+				console.error( 'error fetching active social workers' );
+
+				res.send();
+			});
+	});
+};
+
+exports.updateEventAttendees = async ( req, res ) => {
+	
+	try {
+		const event = await eventService.getEventById( { eventId: req.params.id } );
+
+		// extract all available edits from the passed in data
+		const { addedChildren, deletedChildren, editedChildren, addedAdults, deletedAdults, editedAdults } = req.body;
+
+		// loop through the children added and create records
+		if( addedChildren ) {
+			
+			for( let addedChild of addedChildren ) {
+				const newChild = {
+					name: {
+						first: addedChild.firstName,
+						last: addedChild.lastName
+					},
+					age: addedChild.age,
+					registrantID: addedChild.registrantId
+				}
+
+				event.unregisteredChildAttendees = [ newChild, ...event.unregisteredChildAttendees ];
+			}
+		}
+		// loop through the adults added and create records
+		if( addedAdults ) {
+			
+			for( let addedAdult of addedAdults ) {
+				const newAdult = {
+					name: {
+						first: addedAdult.firstName,
+						last: addedAdult.lastName
+					},
+					registrantID: addedAdult.registrantId
+				}
+
+				event.unregisteredAdultAttendees = [ newAdult, ...event.unregisteredAdultAttendees ];
+			}
+		}
+
+		// loop through the children deleted and delete the records
+		if( deletedChildren ) {
+			
+			for( let deletedChildId of deletedChildren ) {
+				let deletedChildIndex = event.unregisteredChildAttendees.findIndex( child => child.get( '_id' ).toString() === deletedChildId );
+
+				event.unregisteredChildAttendees.splice( deletedChildIndex, 1 );
+			}
+		}
+		// loop through the adults deleted and delete the records
+		if( deletedAdults ) {
+			
+			for( let deletedAdultId of deletedAdults ) {
+				let deletedAdultIndex = event.unregisteredAdultAttendees.findIndex( adult => adult.get( '_id' ).toString() === deletedAdultId );
+
+				event.unregisteredAdultAttendees.splice( deletedAdultIndex, 1 );
+			}
+		}
+
+		// lopo through the children edited and edit the records
+		if( editedChildren ) {
+			
+			for( let editedChild of editedChildren ) {
+				let targetChild = event.unregisteredChildAttendees.find( child => child.get( '_id' ).toString() === editedChild.id );
+
+				targetChild.set( 'name.first', editedChild.firstName );
+				targetChild.set( 'name.last', editedChild.lastName );
+				targetChild.set( 'age', editedChild.age );
+				targetChild.set( 'registrantID', editedChild.registrantId );
+			}
+		}
+		// loop through the adults edited and edit the records
+		if( editedAdults ) {
+			
+			for( let editedAdult of editedAdults ) {
+				let targetAdult = event.unregisteredAdultAttendees.find( adult => adult.get( '_id' ).toString() === editedAdult.id );
+
+				targetAdult.set( 'name.first', editedAdult.firstName );
+				targetAdult.set( 'name.last', editedAdult.lastName );
+			}
+		}
+
+		// attempt to save the updated event model
+		await new Promise( ( resolve, reject ) => {
+
+			event.save( ( err, savedModel ) => {
+
+				if( err ) {
+					// log the error for debugging purposes
+					return reject( new Error( `error saving changes to the unregistered attendees for ${ event.name }` ) );
+				}
+
+				resolve();
+			});
+		});
+
+		// notify the user that they were successful ( the code to notify MARE executes after this message is sent )
+		req.flash( 'success', { title: 'Success',
+			detail: 'your changes to unregistered attendees have been saved' });
+	}
+	catch( err ) {
+		// notify the user of the error
+		req.flash( 'error', { title: 'There was an issue editing the event',
+			detail: 'If this error persists, please notify MARE at <a href="mailto:web@mareinc.org">web@mareinc.org</a>' } );
+	}
+
+	res.send();
+};

@@ -1,6 +1,6 @@
 // Simulate config options from your production environment by
 // customising the .env file in your project's root folder.
-require( 'dotenv' ).load();
+require( 'dotenv' ).config();
 
 // Initialise New Relic if an app name and license key exists
 if( process.env.NEW_RELIC_APP_NAME && process.env.NEW_RELIC_LICENSE_KEY ) {
@@ -10,7 +10,7 @@ if( process.env.NEW_RELIC_APP_NAME && process.env.NEW_RELIC_LICENSE_KEY ) {
 // Initialize application
 const keystone = require( 'keystone' ),
 	  handlebars = require( 'express-handlebars' ),
-	  chron = require( './bin/chron' ),
+	  cron = require( './bin/cron' ),
 	  fs = require( 'fs' );
 
 keystone.init({
@@ -149,6 +149,8 @@ keystone.set( 'nav', {
 
 // Start Keystone to connect to the database and initialise the web server
 keystone.start( () => {
-	// schedule an hourly task to deactivate events in the past
-	chron.scheduleEventDeactivator();
+	// set up an hourly task to deactivate events in the past
+	cron.scheduleEventDeactivator();
+	// set up a nightly task to save models meant to keep siblings in sync and data propagating through models
+	cron.scheduleModelSaver();
 });

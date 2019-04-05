@@ -23,7 +23,7 @@ exports.getRegistrationMailingLists = () => {
 			// if an error was encountered fetching from the database
 			}, err => {
 				// log the error for debugging purposes
-				console.error( `error fetching the mailing lists for the registration page - ${ err }` );
+				console.error( `error fetching the mailing lists for the registration page`, err );
 				// reject the promise
 				reject();
 			});
@@ -58,7 +58,7 @@ exports.getMailingListsByUserType = userType => {
 			// if an error was encountered fetching from the database
 			}, err => {
 				// log the error for debugging purposes
-				console.error( `error fetching the mailing lists by user type ${ userType } - ${ err }` );
+				console.error( `error fetching the mailing lists by user type ${ userType }`, err );
 				// reject the promise
 				reject();
 			});

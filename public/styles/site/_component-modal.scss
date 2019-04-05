@@ -48,10 +48,10 @@
 	z-index: 10;
 	position: absolute;
 	top: 0.5em;
-    right: 0.5em;
+    right: 1em;
     color: $modal-color-1;
     cursor: pointer;
-    background-color: $background-color-light;
+    background-color: $background-color-light !important; /* needed to override the font awesome black background color displaying a black box by the icon */
 }
 
 .modal-container__loading {

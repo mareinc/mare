@@ -78,7 +78,7 @@ Child.add( 'Display Options', {
 
 	siteVisibility: { type: Types.Select, label: 'child is visible to', options: 'everyone, only registered social workers and families', required: true, initial: true },
 	isVisibleInGallery: { type: Types.Boolean, label: 'activate child profile on website to group selected', note: 'authorized staff only', default: false, initial: true },
-	visibleInGalleryDate: { type: Types.Date, label: 'date added to MARE web', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: {isVisibleInGallery: true }, initial: true }
+	visibleInGalleryDate: { type: Types.Date, label: 'date added/updated to MARE web', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: {isVisibleInGallery: true }, initial: true }
 
 }, 'Child Information', {
 
@@ -140,8 +140,8 @@ Child.add( 'Display Options', {
 
 	disabilities: { type: Types.Relationship, label: 'disabilities', ref: 'Disability', many: true, initial: true },
 
-	healthNotesNew: { type: Types.Textarea, label: 'health notes - new', initial: true },
-	healthNotesOld: { type: Types.Textarea, label: 'health notes - old', initial: true }
+	healthNotesNew: { type: Types.Textarea, label: 'health notes', initial: true },
+	healthNotesOld: { type: Types.Textarea, label: 'child inquiry summary', initial: true }
 
 }, 'Placement Considerations', {
 
@@ -183,8 +183,8 @@ Child.add( 'Display Options', {
 
 	hasPhotolistingWriteup: { type: Types.Boolean, label: 'photolisting writeup', default: false, initial: true },
 	photolistingWriteupDate: { type: Types.Date, label: 'date of photolisting writeup', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { hasPhotolistingWriteup: true }, initial: true },
-	hasPhotolistingPhoto: { type: Types.Boolean, label: 'photolisting photo', default: false, initial: true },
-	photolistingPhotoDate: { type: Types.Date, label: 'date of photolisting photo', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { hasPhotolistingPhoto: true }, initial: true },
+	hasPhotolistingPhoto: { type: Types.Boolean, label: 'professional photo', default: false, initial: true },
+	photolistingPhotoDate: { type: Types.Date, label: 'date of professional photo', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { hasPhotolistingPhoto: true }, initial: true },
 	isCurrentlyInPhotoListing: { type: Types.Boolean, label: 'currently in photolisting', default: false, initial: true },
 	dateOfLastPhotoListing: { type: Types.Date, label: 'date of last photolisting', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: {isCurrentlyInPhotoListing: true }, initial: true },
 	photolistingPageNumber: { type: Types.Text, label: 'photolisting page', initial: true },
@@ -366,8 +366,6 @@ Child.schema.pre( 'save', function( next ) {
 	this.setFullName();
 	// if there are no siblings to be placed with, uncheck the box, otherwise check it
 	this.updateMustBePlacedWithSiblingsCheckbox();
-	// if there are no siblings to be placed with, clear the group bio
-	// this.updateSiblingGroupInfo();
 
 	// set the registration number for the family
 	const registrationNumberSet = this.setRegistrationNumber();
@@ -376,7 +374,7 @@ Child.schema.pre( 'save', function( next ) {
 	// set the noedit fields associated with the recruitment worker's agency
 	const recruitmentWorkerAgencyFieldsSet = this.setRecruitmentWorkerAgencyFields();
 
-	// check to see if the siblings groups have been changed
+	// check to see if the content of the siblings or siblings to be placed with fields have changed
 	let hasSiblingsChanged = this.checkSiblingsForChanges();
 	let hasSiblingsToBePlacedWithChanged = this.checkSiblingsToBePlacedWithForChanges();
 	// if both groups have been changed
@@ -391,26 +389,26 @@ Child.schema.pre( 'save', function( next ) {
 		.resolve()
 		// process updates to sibling groups
 		.then( () => {
-			// if the siblings group has been updated
+			// if the list of siblings has been changed
 			if ( hasSiblingsChanged ) {
 				// batch the siblings group updates
 				return ChildMiddleware.batchAllSiblingUpdates( this );
-			// if the siblings to be placed with group has been updated
+			// if the siblings to be placed with list has changed
 			} else if ( hasSiblingsToBePlacedWithChanged ) {
 				// batch the siblings to be placed with group updates
 				return ChildMiddleware.batchAllSiblingsToBePlacedWithUpdates( this );
-			// if neither group has been updated
+			// if neither list has changed
 			} else {
 				// continue execution
 				return;
 			}
 		})
 		// catch and log any errors
-		.catch( error => {
+		.catch( err => {
 			// log any errors
-			console.error( error );
+			console.error( err );
 		})
-		// perform the rest of the pre-save processing
+		// ensure the rest of the pre-save processing has finished executing
 		.then( () => {
 
 			return Promise.all( [ registrationNumberSet, adoptionWorkerAgencyFieldsSet, recruitmentWorkerAgencyFieldsSet ] );
@@ -436,6 +434,7 @@ Child.schema.post( 'save', function() {
 		// process updates for other siblings
 		this.updateSiblingGroup();
 	// if the siblings group has not changed, replicate fields to each sibling to be placed with that should be identical across records
+	// NOTE: this can't check this.checkSiblingsToBePlacedWithForChanges() because a lack of changes would prevent the cron job from replicating fields across siblings to be placed with
 	} else {
 		// process updates for other siblings in the group
 		this.updateSiblingsToBePlacedWithGroup();
@@ -456,7 +455,7 @@ Child.schema.post( 'save', function() {
 		// if there was an error fetching the bot user
 		.catch( err => {
 			// log it for debugging purposes
-			console.error( `Website Bot could not be fetched for family ${ this.name.full } ( registration number: ${ this.registrationNumber } ) - ${ err }` );
+			console.error( `Website Bot could not be fetched for family ${ this.name.full } ( registration number: ${ this.registrationNumber } )`, err );
 		})
 		// execute the following regardless of whether the promises were resolved or rejected
 		// TODO: this should be replaced with ES6 Promise.prototype.finally() once it's finalized, assuming we can update to the latest version of Node if we upgrade Keystone
@@ -665,7 +664,7 @@ Child.schema.methods.setRegistrationNumber = function() {
 				// if there was an error fetching the max registration number
 				.catch( err => {
 					// log the error for debugging purposes
-					console.error( `registration number could not be updated for child ${ this.fullName } ( registration number: ${ this.registrationNumber } ) - ${ err }` );
+					console.error( `registration number could not be updated for child ${ this.fullName } ( registration number: ${ this.registrationNumber } )`, err );
 					// resolve the promise so that the Promise.all() in the pre-save hook does not fail
 					resolve();
 				});
@@ -715,7 +714,7 @@ Child.schema.methods.setAdoptionWorkerAgencyFields = function() {
 			// if any of the promises were rejected
 			.catch( err => {
 				// log the error for debugging purposes
-				console.error( `error saving the child's adoption worker agency fields - ${ err }` );
+				console.error( `error saving the adoption worker agency field for ${ this.displayNameAndRegistration }`, err );
 				// remove the adoption worker agency and region fields
 				this.adoptionWorkerAgency = undefined;
 				this.adoptionWorkerAgencyRegion = undefined;
@@ -757,7 +756,7 @@ Child.schema.methods.setRecruitmentWorkerAgencyFields = function() {
 			// if any of the promises were rejected
 			.catch( err => {
 				// log the error for debugging purposes
-				console.error( `error saving the child's recruitment worker agency fields - ${ err }` );
+				console.error( `error saving the recruitment worker agency field for ${ this.displayNameAndRegistration }`, err );
 				// remove the recruitment worker agency and region fields
 				this.adoptionWorkerAgency = undefined;
 				this.adoptionWorkerAgencyRegion = undefined;
@@ -825,13 +824,15 @@ Child.schema.methods.updateSiblingGroup = function() {
 				// update the sibling with the new sibling group
 				let siblingGroupPromise = ChildMiddleware
 					.applySiblingGroupToChild( { childToUpdateId: siblingId, siblingGroup: updatedSiblingGroup } )
-					.then( updatedChildId => {
+					.then( () => {
 						// unlock the sibling after update is complete
-						saveLock.unlock( updatedChildId );
+						saveLock.unlock( siblingId );
 					})
-					.catch( updatedChildId => {
-						// unlock the sibling after update is complete
-						saveLock.unlock( updatedChildId );
+					.catch( err => {
+						// log the error for debugging purposes
+						console.error( `error updating fields for sibling of child ${ this.name.full }`, err );
+						// unlock the sibling to be placed with so future saves can occur
+						saveLock.unlock( siblingId );
 					});
 
 				siblingGroupPromises.push( siblingGroupPromise );
@@ -848,13 +849,15 @@ Child.schema.methods.updateSiblingGroup = function() {
 				// remove this child from a sibling
 				let siblingGroupPromise = ChildMiddleware
 					.removeSiblingFromChild( { childToUpdateId: siblingId, siblingToRemoveId: this._id.toString() } )
-					.then( updatedChildId => {
+					.then( () => {
 						// unlock the sibling after update is complete
-						saveLock.unlock( updatedChildId );
+						saveLock.unlock( siblingId );
 					})
-					.catch( updatedChildId => {
-						// unlock the sibling after update is complete
-						saveLock.unlock( updatedChildId );
+					.catch( err => {
+						// log the error for debugging purposes
+						console.error( `error updating fields for sibling of child ${ this.name.full }`, err );
+						// unlock the sibling to be placed with so future saves can occur
+						saveLock.unlock( siblingId );
 					});
 
 				siblingGroupPromises.push( siblingGroupPromise );
@@ -908,13 +911,15 @@ Child.schema.methods.updateSiblingsToBePlacedWithGroup = function() {
 						wednesdaysChildSiblingGroup: this.get( 'wednesdaysChildSiblingGroup' ),
 						wednesdaysChildSiblingGroupDate: this.get( 'wednesdaysChildSiblingGroupDate' ),
 						wednesdaysChildSiblingGroupVideo: this.get( 'wednesdaysChildSiblingGroupVideo' ) } )
-					.then( updatedChildId => {
+					.then( () => {
 						// unlock the sibling to be placed with after update is complete
-						saveLock.unlock( updatedChildId );
+						saveLock.unlock( siblingId );
 					})
-					.catch( updatedChildId => {
-						// unlock the sibling to be placed with after update is complete
-						saveLock.unlock( updatedChildId );
+					.catch( err => {
+						// log the error for debugging purposes
+						console.error( `error updating fields for sibling of child ${ this.name.full }`, err );
+						// unlock the sibling to be placed with so future saves can occur
+						saveLock.unlock( siblingId );
 					});
 			}
 		});
@@ -932,13 +937,15 @@ Child.schema.methods.updateSiblingsToBePlacedWithGroup = function() {
 						childToUpdateId: siblingId,
 						siblingToBePlacedWithToRemoveId: this._id.toString()
 					})
-					.then( updatedChildId => {
+					.then( () => {
 						// unlock the sibling to be placed with after update is complete
-						saveLock.unlock( updatedChildId );
+						saveLock.unlock( siblingId );
 					})
-					.catch( updatedChildId => {
-						// unlock the sibling to be placed with after update is complete
-						saveLock.unlock( updatedChildId );
+					.catch( err => {
+						// log the error for debugging purposes
+						console.error( `error updating fields for sibling of child ${ this.name.full }`, err );
+						// unlock the sibling to be placed with so future saves can occur
+						saveLock.unlock( siblingId );
 					});
 			}
 		});
@@ -1145,7 +1152,7 @@ Child.schema.methods.setChangeHistory = function() {
 			// if there was an error saving the record
 			}, err => {
 				// log the error for debugging purposes
-				console.error( `initial change history record could not be saved for child ${ this.name.full } ( registration number: ${ this.registrationNumber } ) - ${ err }` );
+				console.error( `initial change history record could not be saved for child ${ this.name.full } ( registration number: ${ this.registrationNumber } )`, err );
 				// reject the promise
 				reject();
 			});
@@ -1170,7 +1177,7 @@ Child.schema.methods.setChangeHistory = function() {
 				done => {
 					ChangeHistoryMiddleware.checkFieldForChanges({
 												name: 'visibleInGalleryDate',
-												label: 'visible in gallery date',
+												label: 'date added/updated to MARE web',
 												type: 'date' }, model, modelBefore, changeHistory, done );
 				},
 				done => {
@@ -1461,13 +1468,13 @@ Child.schema.methods.setChangeHistory = function() {
 				done => {
 					ChangeHistoryMiddleware.checkFieldForChanges({
 												name: 'healthNotesNew',
-												label: 'old health notes',
+												label: 'child inquiry summary',
 												type: 'string' }, model, modelBefore, changeHistory, done );
 				},
 				done => {
 					ChangeHistoryMiddleware.checkFieldForChanges({
 												name: 'healthNotesOld',
-												label: 'new health notes',
+												label: 'health notes',
 												type: 'string' }, model, modelBefore, changeHistory, done );
 				},
 				done => {
@@ -1621,13 +1628,13 @@ Child.schema.methods.setChangeHistory = function() {
 				done => {
 					ChangeHistoryMiddleware.checkFieldForChanges({
 												name: 'hasPhotolistingPhoto',
-												label: 'has photolisting page',
+												label: 'has professional photo',
 												type: 'boolean' }, model, modelBefore, changeHistory, done );
 				},
 				done => {
 					ChangeHistoryMiddleware.checkFieldForChanges({
 												name: 'photolistingPhotoDate',
-												label: 'date of photolisting photo',
+												label: 'date of professional photo',
 												type: 'date' }, model, modelBefore, changeHistory, done );
 				},
 				done => {
@@ -1842,7 +1849,7 @@ Child.schema.methods.setChangeHistory = function() {
 					// if there was an error saving the record
 					}, err => {
 						// log the error for debugging purposes
-						console.error( `change history record could not be saved for child ${ this.name.full } ( registration number: ${ this.registrationNumber } ) - ${ err }` );
+						console.error( `change history record could not be saved for child ${ this.name.full } ( registration number: ${ this.registrationNumber } )`, err );
 						// reject the promise
 						reject();
 					});

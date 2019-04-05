@@ -95,7 +95,7 @@ Donation.schema.pre( 'save', function( next ) {
 
 			}, err => {
 				// log the error for debugging purposes
-				console.error( `an error occurred fetching the user model to set the donator name for donation with id ${this.get( 'id' )} - ${ err }` );
+				console.error( `an error occurred fetching the user model to set the donator name for donation with id ${this.get( 'id' )}`, err );
 				// allow further processing beyond this middleware
 				next();
 			});

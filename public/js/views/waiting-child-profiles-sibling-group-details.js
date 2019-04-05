@@ -128,7 +128,7 @@
 
 		/* make a call to fetch data for the current child to show detailed information for */
 		getDetails: function getDetails( siblingGroupModel, targetRegistrationNumber ) {
-			// store a reference to this for insde callbacks where context is lost
+			// store a reference to this for inside callbacks where context is lost
 			var view = this;
 			// submit a request to the service layer to fetch child data if we don't have it
 			if( !siblingGroupModel.get( 'hasDetails' ) ) {

@@ -59,7 +59,7 @@ Agency.schema.pre( 'save', function( next ) {
 			next();
 		})
 		.catch( err => {
-			console.error( `errors saving agency ${ this.code }: ${ err }` );
+			console.error( `errors saving agency ${ this.code }`, err );
 
 			next();
 		});
@@ -124,7 +124,7 @@ Agency.schema.methods.updateRegion = function() {
 				// if there was an error fetching the region
 				.catch( err => {
 					// reject the promise with the error
-					reject( `region could not be updated - ${ err }` );
+					reject( new Error( `region could not be updated` ) );
 				});
 		// otherwise, if the agency is in MA
 		} else {
@@ -141,7 +141,7 @@ Agency.schema.methods.updateRegion = function() {
 				// if there was an error fetching the city or town
 				.catch( err => {
 					// reject the promise with the error
-					reject( `region could not be updated - ${ err }` );
+					reject( new Error( `region could not be updated` ) );
 				});
 		}
 	});

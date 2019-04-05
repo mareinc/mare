@@ -141,10 +141,10 @@
 						window.location.href = responseData.targetPage;
 					}
 				})
-				.fail( function( error ) {
+				.fail( function( err ) {
 					
 					// TODO handle errors between the browser and the server
-					console.error( error.status + ' - ' + error.statusText );
+					console.error( err.status + ' - ' + err.statusText );
 				});
 		}
 	});

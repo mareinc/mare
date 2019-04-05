@@ -7,10 +7,10 @@ function promisifySaveOperation( modelToSave ) {
 
 	return new Promise( ( resolve, reject ) => {
 
-		modelToSave.save( error => {
+		modelToSave.save( err => {
 
-			if ( error ) {
-				console.error( error );
+			if ( err ) {
+				console.error( err );
 			}
 
 			resolve();
@@ -28,7 +28,7 @@ exports.batchAllSiblingUpdates = ( childModel ) => {
 			  siblingsAfterSave						= new Set( siblingsArrayAfterSave ),
 			  childId								= childModel._id.toString();
 
-		// create an initial version of the set of record that will describe the final sibling group to save
+		// create an initial version of the set of records that will describe the final sibling group to save
 		let siblingGroup = siblingsAfterSave;
 
 		// create a set of all siblings added to the original child by the save operation
@@ -36,7 +36,7 @@ exports.batchAllSiblingUpdates = ( childModel ) => {
 
 		// if there were no siblings added by the save operation
 		if ( siblingsAddedBySave.size === 0 ) {
-			// ensure that the sibling list is still unique
+			// ensure that the sibling list is comprised of only unique entries
 			childModel.siblings = Array.from( siblingsAfterSave );
 			// return before doing any additional processing
 			return resolve();
@@ -64,11 +64,11 @@ exports.batchAllSiblingUpdates = ( childModel ) => {
 				resolve();
 			})
 			// catch any errors
-			.catch( error => {
+			.catch( err => {
 				// log the error
-				console.error( error );
+				console.error( err );
 				// reject the promise with the error
-				reject( error );
+				reject( err );
 			});
 	});
 };
@@ -133,23 +133,21 @@ exports.applySiblingGroupToChild = ( { childToUpdateId, siblingGroup = [] } ) =>
 					child._disableReplicateFieldsToSiblings = true;
 
 					// save the updated child model
-					child.save( error => {
+					child.save( err => {
 						// log any errors
-						if ( error ) {
-							console.error( error );
+						if ( err ) {
+							console.error( err );
 						}
 						// resolve the promise
-						resolve( childToUpdateId );
+						resolve();
 					});
 				} else {
-					resolve( childToUpdateId );
+					resolve();
 				}
 			})
-			.catch( error => {
-				// log the error
-				console.error( error );
+			.catch( err => {
 				// reject the promise with the error
-				reject( childToUpdateId );
+				reject( err );
 			});
 	});
 };
@@ -178,25 +176,23 @@ exports.removeSiblingFromChild = ( { childToUpdateId, siblingToRemoveId } ) => {
 					// disable future replication of fields to siblings ( this is presumably done to prevent siblings from updating eachother in an infinite loop )
 					child._disableReplicateFieldsToSiblings = true;
 					// save the updated child model
-					child.save( error => {
+					child.save( err => {
 						// log any errors\
-						if ( error ) {
-							console.error( error );
+						if ( err ) {
+							console.error( err );
 						}
 						// resolve the promise
-						resolve( childToUpdateId );
+						resolve();
 					});
 				// if the size of the sibling set did not change after the delete action
 				} else {
 					// no update necessary - resolve the promise
-					resolve( childToUpdateId );
+					resolve();
 				}
 			})
-			.catch( error => {
-				// log the error
-				console.error( error );
+			.catch( err => {
 				// reject the promise with the error
-				reject( childToUpdateId );
+				reject( err );
 			});
 	});
 };
@@ -247,11 +243,11 @@ exports.batchAllSiblingsToBePlacedWithUpdates = ( childModel ) => {
 				resolve();
 			})
 			// catch any errors
-			.catch( error => {
+			.catch( err => {
 				// log the error
-				console.error( error );
+				console.error( err );
 				// reject the promise with the error
-				reject( error );
+				reject( err );
 			});
 	});
 };
@@ -265,15 +261,15 @@ exports.applySiblingsToBePlacedWithGroupToChild = ( { childToUpdateId, recommend
 			  newGroupProfilePart1		= siblingGroupProfile.part1 || '',
 			  newGroupProfilePart2		= siblingGroupProfile.part2 || '',
 			  newGroupProfilePart3		= siblingGroupProfile.part3 || '',
-			  newSiblingGroupImage		= siblingGroupImage || {},
-			  childsAdoptionWorker		= child.adoptionWorker ? child.adoptionWorker.toString() : '',
-			  childsRecruitmentWorker	= child.recruitmentWorker ? child.recruitmentWorker.toString() : '';
-
+			  newSiblingGroupImage		= siblingGroupImage || {};
 
 		// get the child model to update
 		childService
 			.getChildById( { id: childToUpdateId } )
 			.then( child => {
+
+				const childsAdoptionWorker 		= child.adoptionWorker ? child.adoptionWorker.toString() : '',
+					  childsRecruitmentWorker	= child.recruitmentWorker ? child.recruitmentWorker.toString() : '';
 
 				// create a flag to determine if there are updates to the siblings to be placed with group that need to be saved
 				let saveUpdatesToSiblingsToBePlacedWithGroup = false;
@@ -333,8 +329,8 @@ exports.applySiblingsToBePlacedWithGroupToChild = ( { childToUpdateId, recommend
 						child.wednesdaysChildSiblingGroupVideo !== wednesdaysChildSiblingGroupVideo ) {
 							// update the child to be placed with with values that should replicate across records
 							child.recommendedFamilyConstellation = recommendedFamilyConstellation;
-							child.adoptionWorker = adoptionWorker;
-							child.recruitmentWorker = recruitmentWorker;
+							child.adoptionWorker = adoptionWorker ? adoptionWorker : undefined;
+							child.recruitmentWorker = recruitmentWorker ? recruitmentWorker : undefined;
 							child.isVisibleInGallery = isVisibleInGallery;
 							// update the child to be placed with with the shared bio information
 							child.groupProfile.quote	= newGroupQuote;
@@ -368,23 +364,21 @@ exports.applySiblingsToBePlacedWithGroupToChild = ( { childToUpdateId, recommend
 				if ( saveUpdatesToSiblingsToBePlacedWithGroup ) {
 
 					// save the updated child model
-					child.save( error => {
+					child.save( err => {
 						// log any errors
-						if ( error ) {
-							console.error( error );
+						if ( err ) {
+							console.error( err );
 						}
 						// resolve the promise
-						resolve( childToUpdateId );
+						resolve();
 					});
 				} else {
-					resolve( childToUpdateId );
+					resolve();
 				}
 			})
-			.catch( error => {
-				// log the error
-				console.error( error );
+			.catch( err => {
 				// reject the promise with the error
-				reject( childToUpdateId );
+				reject( err );
 			});
 	});
 };
@@ -411,25 +405,23 @@ exports.removeSiblingToBePlacedWithFromChild = ( { childToUpdateId, siblingToBeP
 					// update the child's siblings to be placed with group
 					child.siblingsToBePlacedWith = Array.from( siblingsToBePlacedWithSet );
 					// save the updated child model
-					child.save( error => {
+					child.save( err => {
 						// log any errors
-						if ( error ) {
-							console.error( error );
+						if ( err ) {
+							console.error( err );
 						}
 						// resolve the promise
-						resolve( childToUpdateId );
+						resolve();
 					});
 				// if the size of the siblings to be placed with set did not change after the delete action
 				} else {
 					// no update necessary - resolve the promise
-					resolve( childToUpdateId );
+					resolve();
 				}
 			})
-			.catch( error => {
-				// log the error
-				console.error( error );
+			.catch( err => {
 				// reject the promise with the error
-				reject( childToUpdateId );
+				reject( err );
 			});
 	});
 };
@@ -478,9 +470,9 @@ exports.updateMySiblings = ( mySiblings, childId, done ) => {
 
 					done();
 				})
-				.catch( error => {
+				.catch( err => {
 
-					console.error( error );
+					console.error( err );
 					done();
 				});
 		// TODO: Update all error messages to make it clear what action failed (THIS IS A UNIVERSAL CHANGE)
@@ -528,9 +520,9 @@ exports.updateMyRemainingSiblings = ( remainingSiblings, removedSiblings, childI
 
 					done();
 				})
-				.catch( error => {
+				.catch( err => {
 
-					console.error( error );
+					console.error( err );
 					done();
 				});
 		// TODO: update all error messages to make it clear what action failed (THIS IS A UNIVERSAL CHANGE)
@@ -585,9 +577,9 @@ exports.updateMyRemovedSiblings = ( allSiblings, removedSiblings, childId, done 
 
 					done();
 				})
-				.catch( error => {
+				.catch( err => {
 
-					console.error( error );
+					console.error( err );
 					done();
 				});
 		// TODO: update all error messages to make it clear what action failed (THIS IS A UNIVERSAL CHANGE)
@@ -672,9 +664,9 @@ exports.updateMySiblingsToBePlacedWith = ( mySiblings, childId, groupProfile, si
 
 					done();
 				})
-				.catch( error => {
+				.catch( err => {
 
-					console.error( error );
+					console.error( err );
 					done();
 				});
 		// TODO: update all error messages to make it clear what action failed (THIS IS A UNIVERSAL CHANGE)
@@ -722,9 +714,9 @@ exports.updateMyRemainingSiblingsToBePlacedWith = ( remainingSiblings, removedSi
 
 					done();
 				})
-				.catch( error => {
+				.catch( err => {
 
-					console.error( error );
+					console.error( err );
 					done();
 				});
 		// TODO: update all error messages to make it clear what action failed (THIS IS A UNIVERSAL CHANGE)
@@ -779,9 +771,9 @@ exports.updateMyRemovedSiblingsToBePlacedWith = ( allSiblings, removedSiblings, 
 
 					done();
 				})
-				.catch( error => {
+				.catch( err => {
 
-					console.error( error );
+					console.error( err );
 					done();
 				});
 		// TODO: update all error messages to make it clear what action failed (THIS IS A UNIVERSAL CHANGE)

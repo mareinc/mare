@@ -70,7 +70,7 @@ exports = module.exports = ( req, res ) => {
 		})
 		.catch( err => {
 			// log an error for debugging purposes
-			console.error( `error loading data for the registration page - ${ err }` );
+			console.error( `error loading data for the registration page`, err );
 			// render the view using the register.hbs template
 			view.render( 'register' );
 		});

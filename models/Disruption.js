@@ -150,7 +150,7 @@ Disruption.schema.methods.populateAgency = function() {
 				// if there was an error populating the family field
 				if ( err ) {
 					// reject the promise with details of the error, preventing the rest of the function from executing
-					return reject( `error populating family field for placement with id ${ this.get( '_id' ) } - ${ err }` );
+					return reject( new Error( `error populating family field for placement with id ${ this.get( '_id' ) }` ) );
 				}
 				// if there were no errors and a MARE family has been selected
 				if( this.family ) {

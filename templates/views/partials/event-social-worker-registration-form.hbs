@@ -23,10 +23,11 @@
 
 			<div class="row form-group">
 				<div class="col-sm-24 form-group">
-					<input type="text" class="input" id="name" value="{{ displayName }}" disabled="disabled">
-					<label for="name" class="label">Registration For</label>
+					<div class="form-group form-group__header">You are registering as</div>
+					<div class="form-group">{{ displayName }}</div>
 				</div>
 			</div>
+			<div class="form-group form-group__header">Are you bringing any additional children?</div>
 			{{#if hasSocialWorkersChildren}}
 			<div class="row form-group">
 				<div class="col-sm-12 form-group">
