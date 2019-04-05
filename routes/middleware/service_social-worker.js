@@ -86,7 +86,7 @@ exports.getActiveSocialWorkerIds = () => {
 	});
 };
 
-/* Chron job function used to batch save all social worker models */
+/* Cron job function used to batch save all social worker models */
 exports.saveAllSocialWorkers = () => {
 
 	return new Promise( async ( resolve, reject ) => {
@@ -116,7 +116,7 @@ exports.saveAllSocialWorkers = () => {
 							await socialWorker.save();
 						}
 						catch( error ) {
-							errors.push( `chron: error saving social worker ${ socialWorker.name.full } (${ socialWorker._id } - ${ error }` );
+							errors.push( `error saving social worker ${ socialWorker.name.full } - ${ error }` );
 						}
 					}
 					// increment the page to allow fetching of the next batch of social workers
@@ -127,17 +127,27 @@ exports.saveAllSocialWorkers = () => {
 					console.error( `error fetching page ${ page } of social workers - ${ error }` );
 				}
 			}
+
+			// log each of the errors to the console
+			for( let error of errors ) {
+				console.error( error );
+			}
+
+			// if there were errors, resolve the promise with an error state and return the errors
+			if( errors.length > 0 ) {
+				return resolve( {
+					status: 'errors',
+					errors
+				});
+			}
+			// if there were no errors, resolve the pormise with a success state
+			return resolve({
+				status: 'success'
+			});
 		}
 		catch( error ) {
 			console.error( `error saving all social workers - ${ error }` );
 		}
-
-		// log each of the errors to the console
-		for( let error of errors ) {
-			console.error( error );
-		}
-
-		resolve();		
 	});
 };
 
@@ -160,7 +170,7 @@ exports.fetchSocialWorkersByPage = ( { page = 1, socialWorkersPerPage = 25, filt
 
 				// resolve the promise with the social workers and the next page to fetch ( false if this is the last page )
 				resolve({
-					children: socialWorkers.results,
+					socialWorkers: socialWorkers.results,
 					nextPage: socialWorkers.next
 				});
 			});

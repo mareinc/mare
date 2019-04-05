@@ -28,7 +28,7 @@ exports.getAgencyById = id => {
 	});
 };
 
-/* Chron job function used to batch save all agency models */
+/* Cron job function used to batch save all agency models */
 exports.saveAllAgencies = () => {
 
 	return new Promise( ( resolve, reject ) => {
@@ -49,7 +49,7 @@ exports.saveAllAgencies = () => {
 						await agency.save();
 					}
 					catch( e ) {
-						errors.push( `chron: error saving agency ${ agency.code } - ${ e }` );
+						errors.push( `error saving agency ${ agency.code } - ${ e }` );
 					}
 				};
 				// log each of the errors to the console
@@ -57,11 +57,21 @@ exports.saveAllAgencies = () => {
 					console.error( error );
 				}
 
-				resolve();
+				// if there were errors, resolve the promise with an error state and return the errors
+				if( errors.length > 0 ) {
+					return resolve( {
+						status: 'errors',
+						errors
+					});
+				}
+				// if there were no errors, resolve the pormise with a success state
+				return resolve({
+					status: 'success'
+				});
 
 			}, err => {
 
-				console.error( `chron: error fetching agencies for nightly chron job - ${ err }` );
+				console.error( `cron: error fetching agencies for nightly cron job - ${ err }` );
 				reject();
 			});	
 	});
