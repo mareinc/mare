@@ -69,7 +69,9 @@ exports = module.exports = ( req, res ) => {
 				event.hasAddress = event.address && event.address.street1;
 
 				// check to see if the event spans multiple days
-				const multidayEvent = event.startDate.getTime() !== event.endDate.getTime();
+				const multidayEvent = event.startDate && event.endDate
+					? event.startDate.getTime() !== event.endDate.getTime()
+					: false;
 
 				// Pull the date and time into a string for easier templating
 				if( multidayEvent ) {
