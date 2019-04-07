@@ -46,31 +46,32 @@ exports.scheduleModelSaver = () => {
 				// send an email to the appropriate staff contact if there were errors saving any of the records
 				if( agencySaveResults.status === 'errors'
 					|| socialWorkerSaveResults.status === 'errors'
-					|| childSaveResults.status === 'errors' ) {
-						try {
-							// fetch the email targets model matching 'cron job errors'
-							const emailTarget = await emailTargetMiddleware.getEmailTargetByName( 'cron job errors' );
-							// fetch contact info for the staff contacts for 'cron job errors'
-							const staffEmailContacts = await staffEmailContactMiddleware.getStaffEmailContactsByEmailTarget({
-								emailTargetId: emailTarget.get( '_id' ),
-								fieldsToPopulate: [ 'staffEmailContact' ]
-							});
-							// set the contact details from the returned objects if any were retrieved
-							const staffEmailContactsInfo = staffEmailContacts.length > 0
-								? staffEmailContacts.map( contact => contact.staffEmailContact.email )
-								: null;
+					|| childSaveResults.status === 'errors'
+				) {
+					try {
+						// fetch the email targets model matching 'cron job errors'
+						const emailTarget = await emailTargetMiddleware.getEmailTargetByName( 'cron job errors' );
+						// fetch contact info for the staff contacts for 'cron job errors'
+						const staffEmailContacts = await staffEmailContactMiddleware.getStaffEmailContactsByEmailTarget({
+							emailTargetId: emailTarget.get( '_id' ),
+							fieldsToPopulate: [ 'staffEmailContact' ]
+						});
+						// set the contact details from the returned objects if any were retrieved
+						const staffEmailContactsInfo = staffEmailContacts.length > 0
+							? staffEmailContacts.map( contact => contact.staffEmailContact.email )
+							: null;
 
-							eventEmailMiddleware.sendCronJobErrorsEmailToMARE({
-								staffContactEmails: staffEmailContactsInfo,
-								agencyErrors: agencySaveResults.errors,
-								socialWorkerErrors: socialWorkerSaveResults.errors,
-								childErrors: childSaveResults.errors
-							});
-						}
-						catch( err ) {
-							console.error( `error sending email notification about model saving cron job errors`, err );
-						}
+						eventEmailMiddleware.sendCronJobErrorsEmailToMARE({
+							staffContactEmails: staffEmailContactsInfo,
+							agencyErrors: agencySaveResults.errors,
+							socialWorkerErrors: socialWorkerSaveResults.errors,
+							childErrors: childSaveResults.errors
+						});
 					}
+					catch( err ) {
+						console.error( `error sending email notification about model saving cron job errors`, err );
+					}
+				}
 			}
 			catch( err ) {
 				console.error( `error running scheduled task to save models`, err );
