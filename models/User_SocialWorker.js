@@ -57,9 +57,7 @@ SocialWorker.add( 'Permissions', {
 		work: { type: Types.Text, label: 'work phone number', initial: true, validate: Validators.phoneValidator },
 		mobile: { type: Types.Text, label: 'mobile phone number', initial: true, validate: Validators.phoneValidator },
 		preferred: { type: Types.Select, label: 'preferred phone', options: 'work, mobile', initial: true }
-    },
-
-    mailingLists: { type: Types.Relationship, ref: 'MailChimpList', many: true }
+    }
 
 }, 'Social Worker Information', {
 

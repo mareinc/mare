@@ -56,9 +56,7 @@ SiteVisitor.add( 'Permissions', {
 		cityText: { type: Types.Text, label: 'city', dependsOn: { 'address.isOutsideMassachusetts': true }, initial: true },
 		state: { type: Types.Relationship, label: 'state', ref: 'State', initial: true },
 		zipCode: { type: Types.Text, label: 'zip code', initial: true, validate: Validators.zipValidator }
-    },
-
-    mailingLists: { type: Types.Relationship, ref: 'MailChimpList', many: true }
+    }
 
 }, 'Info Preferences', {
 

@@ -113,8 +113,7 @@ Family.add( 'Permissions', {
 	contactGroups: { type: Types.Relationship, label: 'contact groups', ref: 'Contact Group', many: true, initial: true },
 
 	displayName: { type: Types.Text, label: 'name', hidden: true, noedit: true },
-    displayNameAndRegistration: { type: Types.Text, label: 'name and registration number', default: 'new family', hidden: true, noedit: true },
-    mailingLists: { type: Types.Relationship, ref: 'MailChimpList', many: true }
+    displayNameAndRegistration: { type: Types.Text, label: 'name and registration number', default: 'new family', hidden: true, noedit: true }
 
 }, 'Contact 1', {
 
