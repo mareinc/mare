@@ -37,7 +37,8 @@ exports = module.exports = ( req, res ) => {
 		fetchRaces					= listsService.getAllRaces( raceOptions ),
 		fetchStates					= listsService.getAllStates( stateOptions ),
 		fetchChildTypes				= listsService.getChildTypesForWebsite(),
-		fetchMailingLists			= mailingListService.getMailingListsByUserType( userType );
+        fetchMailingLists			= mailingListService.getMailingListsByUserType( userType ),
+        fetchUserMailingLists       = req.user.populate('mailingLists').execPopulate();
 
 	// check to see if the Children tab should be rendered
 	locals.shouldRenderChildrenSection = ( userType === 'social worker' || userType === 'family' );
@@ -52,7 +53,7 @@ exports = module.exports = ( req, res ) => {
 	}
 
 	Promise.all( [ fetchEvents, fetchCitiesAndTowns, fetchDisabilities, fetchGenders, fetchLanguages, fetchLegalStatuses,
-		fetchSocialWorkerPositions, fetchRaces, fetchStates, fetchChildTypes, fetchMailingLists ] )
+		fetchSocialWorkerPositions, fetchRaces, fetchStates, fetchChildTypes, fetchMailingLists, fetchUserMailingLists ] )
 		.then( values => {
 
 			// assign local variables to the values returned by the promises
@@ -78,11 +79,10 @@ exports = module.exports = ( req, res ) => {
 					event.dateString = moment( event.startDate ).utc().format( 'dddd MMMM Do, YYYY' );
 				}
 			}
-			
+
 			// loop through all the mailing lists and mark the current selection
 			for( let mailingList of mailingLists ) {
-				const subscribers = [ ...mailingList.adminSubscribers, ...mailingList.siteVisitorSubscribers, ...mailingList.socialWorkerSubscribers, ...mailingList.familySubscribers ];
-				mailingList.isSelected = subscribers.map( subscriber => subscriber.toString() ).includes(req.user._id.toString());
+				mailingList.isSelected = req.user.mailingLists.find( userMailingList => userMailingList.id === mailingList.id );
 			}
 
 			// assign properties to locals for access during templating
@@ -97,9 +97,9 @@ exports = module.exports = ( req, res ) => {
 			locals.socialWorkerPositions 	= socialWorkerPositions;
 			locals.races					= races;
 			locals.states					= states;
-			locals.childTypes				= childTypes;
-			locals.mailingLists				= mailingLists;
-			locals.familyChildren			= [];
+            locals.childTypes				= childTypes;
+            locals.mailingLists				= mailingLists;
+            locals.familyChildren			= [];
 
 			// check to see if the user has an address/state defined
 			if ( isUserStateDefined ) {

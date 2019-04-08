@@ -56,7 +56,9 @@ Admin.add( 'Permissions', {
 		city: { type: Types.Text, label: 'city', initial: true },
 		state: { type: Types.Relationship, label: 'state', ref: 'State', initial: true },
 		zipCode: { type: Types.Text, label: 'zip code', initial: true, validate: Validators.zipValidator }
-	}
+    },
+
+    mailingLists: { type: Types.Relationship, ref: 'MailChimpList', many: true }
 
 /* Container for data migration fields ( these should be kept until after phase 2 and the old system is phased out completely ) */
 }, {
@@ -67,7 +69,6 @@ Admin.add( 'Permissions', {
 
 // Set up relationship values to show up at the bottom of the model if any exist
 Admin.relationship( { ref: 'CSC Region Contact', refPath: 'cscRegionContact', path: 'cscRegionContact', label: 'contact for the following regions' } );
-Admin.relationship( { ref: 'Mailing List', refPath: 'adminSubscribers', path: 'mailing-lists', label: 'mailing lists' } );
 Admin.relationship( { ref: 'Event', refPath: 'staffAttendees', path: 'events', label: 'events' } );
 Admin.relationship( { ref: 'Donation', refPath: 'admin', path: 'donations', label: 'donations' } );
 

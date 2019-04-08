@@ -10,9 +10,16 @@ const MailChimpList = new keystone.List('MailChimpList', {
 // Create fields
 MailChimpList.add({
     name:      { type: Types.Text, required: true, initial: true },
-    listId:    { type: Types.Text, required: true, initial: true }
+    }, 'Display on Website', {
+    displayText: { type: Types.Text, label: 'label on website', initial: true },
+    displayOnWebsite: { type: Types.Boolean, initial: true },
+    showOnSiteVisitorRegistrationPage: { type: Types.Boolean, label: 'show on the site visitor registration page', initial: true },
+    showOnSocialWorkerRegistrationPage: { type: Types.Boolean, label: 'show on the social worker registration page', initial: true },
+    showOnFamilyRegistrationPage: { type: Types.Boolean, label: 'show on the family registration page', initial: true }
+    }, 'MailChimp Configuration', {
+    mailChimpId:    { type: Types.Text, label: 'MailChimp List ID', required: true, initial: true }
 });
 
 // Define default columns in the admin interface and register the model
-MailChimpList.defaultColumns = 'name, listId';
+MailChimpList.defaultColumns = 'name, mailChimpId';
 MailChimpList.register();

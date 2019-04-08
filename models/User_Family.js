@@ -113,7 +113,8 @@ Family.add( 'Permissions', {
 	contactGroups: { type: Types.Relationship, label: 'contact groups', ref: 'Contact Group', many: true, initial: true },
 
 	displayName: { type: Types.Text, label: 'name', hidden: true, noedit: true },
-	displayNameAndRegistration: { type: Types.Text, label: 'name and registration number', default: 'new family', hidden: true, noedit: true }
+    displayNameAndRegistration: { type: Types.Text, label: 'name and registration number', default: 'new family', hidden: true, noedit: true },
+    mailingLists: { type: Types.Relationship, ref: 'MailChimpList', many: true }
 
 }, 'Contact 1', {
 
@@ -389,11 +390,11 @@ Family.add( 'Permissions', {
 	fileAttachment3: { type: Types.File, storage: fileStorage, label: 'file attachment 3' },
 	fileAttachment4: { type: Types.File, storage: fileStorage, label: 'file attachment 4' },
 	fileAttachment5: { type: Types.File, storage: fileStorage, label: 'file attachment 5' }
-	
+
 }, 'Image Attachments', {
 
 	imageAttachment1: { type: Types.File, storage: imageStorage, label: 'image attachment' }
-	
+
 /* Container for data migration fields ( these should be kept until after phase 2 and the old system is phased out completely ) */
 }, {
 	// system field to store an appropriate file prefix

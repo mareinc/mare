@@ -34,19 +34,20 @@ exports.getMailingListsByUserType = userType => {
 
 	return new Promise( ( resolve, reject ) => {
 		let query;
-		
+
 		switch( userType ) {
 			case 'social worker'	: query = { 'showOnSocialWorkerRegistrationPage': true }; break;
 			case 'site visitor'		: query = { 'showOnSiteVisitorRegistrationPage': true }; break;
-			case 'family'			: query = { 'showOnFamilyRegistrationPage': true }; break;
+            case 'family'			: query = { 'showOnFamilyRegistrationPage': true }; break;
+            case 'admin'            : query = {}; break;
 			default					: return resolve( [] );
 		}
 
-		keystone.list( 'Mailing List' ).model
+		keystone.list( 'MailChimpList' ).model
 			.find( query )
 			.exec()
 			.then( mailingLists => {
-				// if no mailing lists could not be found
+				// if no mailing lists could be found
 				if( mailingLists.length === 0 ) {
 					// log a message for debugging purposes
 					console.log( `no mailing lists could be found for user type ${ userType }` );
