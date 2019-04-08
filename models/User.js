@@ -18,7 +18,9 @@ User.add( 'Login Information', {
 	userType: { type: Types.Text, hidden: true }
 
 }, 'Mailing List Subscriptions', {
+
     mailingLists: { type: Types.Relationship, label: 'mailing lists', ref: 'MailChimpList', many: true }
+
 });
 
 // Define default columns in the admin interface and register the model
