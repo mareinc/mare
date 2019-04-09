@@ -36,8 +36,8 @@ Featured.add({
 }, 'Success Story', {
 
 	successStory: {
-		title: { type: Types.Text, label: 'success story title', initial: true, default: 'Success Stories' },
-		target: { type: Types.Relationship, ref: 'Success Story', label: 'success story', required: true, initial: true },
+		title: { type: Types.Text, label: 'adoption story title', initial: true, default: 'Adoption Stories' },
+		target: { type: Types.Relationship, ref: 'Success Story', label: 'adoption story', required: true, initial: true },
 		image: {
 			type: Types.CloudinaryImage,
 			label: 'success story image',
@@ -98,7 +98,7 @@ Featured.schema.pre( 'save', function( next ) {
 
 	// create objects of values to pass into the updateFieldsFunction
 	const aboutUsOptions		= { id: this.aboutUs.target, targetModel: 'Page', field: 'aboutUs' },
-		  successStoryOptions	= { id: this.successStory.target, targetModel: 'Success Story', field: 'successStory', url: '/success-stories' },
+		  successStoryOptions	= { id: this.successStory.target, targetModel: 'Success Story', field: 'successStory', url: '/adoption-stories' },
 		  eventOptions			= { id: this.event.target, targetModel: 'Event', field: 'event' };
 	// call updateFields for each of the three main model sections and receive a promise back for each
 	const aboutUsUpdated		= this.updateFields( aboutUsOptions ),
