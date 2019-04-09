@@ -66,13 +66,18 @@ exports.getMailingList = function getMailingList( mailingListId ) {
  * @param {String} mailingListId the id of the mailing list to subscribe to
  * @returns {Object} schema: https://us20.api.mailchimp.com/schema/3.0/Definitions/Lists/Members/Response.json
  */
-exports.addSubscriberToList = function addSubscriberToList( { firstName = '', lastName = '', email, mailingListId } ) {
+exports.addSubscriberToList = function addSubscriberToList( { email, mailingListId, userType, firstName = '', lastName = '' } ) {
 
     return new Promise( ( resolve, reject ) => {
 
         if ( !email || !mailingListId ) {
             return reject( 'addSubscriberToList failed - email or mailingListId was not provided.' );
         }
+
+        // tag the member with their user type (if known)
+        let tags = userType
+            ? [ userType ]
+            : [];
 
         _mailchimp.request({
             method: 'post',
@@ -87,7 +92,8 @@ exports.addSubscriberToList = function addSubscriberToList( { firstName = '', la
                 merge_fields: {
                     FNAME: firstName,
                     LNAME: lastName
-                }
+                },
+                tags
             }
         })
         .then( subscriber => resolve( subscriber ) )

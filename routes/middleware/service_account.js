@@ -191,7 +191,8 @@ exports.updateUserEmailLists = ( req, res, next ) => {
                         : req.user.name.first,
                     lastName: userType === 'family'
                         ? req.user.contact1.name.last
-                        : req.user.name.last
+                        : req.user.name.last,
+                    userType: req.user.userType
                 });
             });
 
