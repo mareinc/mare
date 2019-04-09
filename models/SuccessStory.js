@@ -54,7 +54,7 @@ SuccessStory.schema.virtual( 'hasImage' ).get( function() {
 SuccessStory.schema.pre( 'save', function( next ) {
 	'use strict';
 
-	this.url = this.get( 'key' ) ? '/adoption-stories/' + this.get( 'key' ) : undefined;
+	this.url = this.get( 'key' ) ? '/success-stories/' + this.get( 'key' ) : undefined;
 
 	next();
 
