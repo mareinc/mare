@@ -66,7 +66,7 @@ exports.getMailingList = function getMailingList( mailingListId ) {
  * @param {String} mailingListId the id of the mailing list to subscribe to
  * @returns {Object} schema: https://us20.api.mailchimp.com/schema/3.0/Definitions/Lists/Members/Response.json
  */
-exports.addSubscriberToList = function addSubscriberToList( email, mailingListId ) {
+exports.addSubscriberToList = function addSubscriberToList( { firstName = '', lastName = '', email, mailingListId } ) {
 
     return new Promise( ( resolve, reject ) => {
 
@@ -83,7 +83,11 @@ exports.addSubscriberToList = function addSubscriberToList( email, mailingListId
             body: {
                 email_address: email,
                 // we may want the ability to set the status value dynamically in the future
-	            status: 'subscribed'
+                status: 'subscribed',
+                merge_fields: {
+                    FNAME: firstName,
+                    LNAME: lastName
+                }
             }
         })
         .then( subscriber => resolve( subscriber ) )

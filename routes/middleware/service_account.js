@@ -183,7 +183,16 @@ exports.updateUserEmailLists = ( req, res, next ) => {
                 return mailChimpService.removeSubscriberFromList( req.user.email, list.mailChimpId );
             });
             let subscribePromises = listsToSubscribe.map( list => {
-                return mailChimpService.addSubscriberToList( req.user.email, list.mailChimpId );
+                return mailChimpService.addSubscriberToList( {
+                    email: req.user.email,
+                    mailingListId: list.mailChimpId,
+                    firstName: userType === 'family'
+                        ? req.user.contact1.name.first
+                        : req.user.name.first,
+                    lastName: userType === 'family'
+                        ? req.user.contact1.name.last
+                        : req.user.name.last
+                });
             });
 
             return Promise.all( unsubscribePromises.concat( subscribePromises ) );
