@@ -52,13 +52,13 @@ exports = module.exports = ( req, res ) => {
 
 			// set the layout to render with the right sidebar
 			locals[ 'render-with-sidebar' ] = true;
-			// render the view using the success-stories.hbs template
-			view.render( 'success-stories' );
+			// render the view using the adoption-stories.hbs template
+			view.render( 'adoption-stories' );
 		})
 		.catch( err => {
 			// log an error for debugging purposes
 			console.error( `error loading data for the success stories page`, err );	
-			// render the view using the success-stories.hbs template
-			view.render( 'success-stories' );
+			// render the view using the adoption-stories.hbs template
+			view.render( 'adoption-stories' );
 		});
 };
