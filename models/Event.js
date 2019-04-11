@@ -335,56 +335,56 @@ Event.schema.methods.getDroppedAttendees = function getDroppedAttendees() {
 
 	let droppedAttendees = [];
 
-	if( droppedStaffAttendees.length > 5 ) {
+	if( droppedStaffAttendees.length >= 5 ) {
 		droppedAttendees.push({
 			groupName: 'staff',
 			attendees: droppedStaffAttendees
 		});
 	}
 
-	if( droppedSiteVisitorAttendees.length > 5 ) {
+	if( droppedSiteVisitorAttendees.length >= 5 ) {
 		droppedAttendees.push({
 			groupName: 'site visitors',
 			attendees: droppedSiteVisitorAttendees
 		});
 	}
 
-	if( droppedSocialWorkerAttendees.length > 5 ) {
+	if( droppedSocialWorkerAttendees.length >= 5 ) {
 		droppedAttendees.push({
 			groupName: 'social workers',
 			attendees: droppedSocialWorkerAttendees
 		});
 	}
 
-	if( droppedFamilyAttendees.length > 5 ) {
+	if( droppedFamilyAttendees.length >= 5 ) {
 		droppedAttendees.push({
 			groupName: 'families',
 			attendees: droppedFamilyAttendees
 		});
 	}
 
-	if( droppedChildAttendees.length > 5 ) {
+	if( droppedChildAttendees.length >= 5 ) {
 		droppedAttendees.push({
 			groupName: 'children',
 			attendees: droppedChildAttendees
 		});
 	}
 
-	if( droppedOutsideContactAttendees.length > 5 ) {
+	if( droppedOutsideContactAttendees.length >= 5 ) {
 		droppedAttendees.push({
 			groupName: 'outside contacts',
 			attendees: droppedOutsideContactAttendees
 		});
 	}
 
-	if( droppedUnregisteredChildAttendees.length > 5 ) {
+	if( droppedUnregisteredChildAttendees.length >= 5 ) {
 		droppedAttendees.push({
 			groupName: 'unregistered children',
 			attendees: droppedUnregisteredChildAttendees
 		});
 	}
 
-	if( droppedUnregisteredAdultAttendees.length > 5 ) {
+	if( droppedUnregisteredAdultAttendees.length >= 5 ) {
 		droppedAttendees.push({
 			groupName: 'unregistered adults',
 			attendees: droppedUnregisteredAdultAttendees
