@@ -288,6 +288,10 @@ Event.schema.methods.setSourceField = function() {
 };
 
 Event.schema.methods.getDroppedAttendees = function getDroppedAttendees() {
+	// return an empty array of changes if the event is being saved for the first time
+	if( !this._savedVersion ) {
+		return [];
+	}
 
 	const droppedStaffAttendees = this.checkForDroppedAttendees({
 		original: this._savedVersion.staffAttendees,
