@@ -43,6 +43,3 @@ public/dist/*
 
 # Ignore Visual Studio Code directory
 .vscode
-
-# node and npm trickery
-package-lock.json
