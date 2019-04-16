@@ -675,11 +675,8 @@ Child.schema.methods.setRegistrationNumber = function() {
 Child.schema.methods.setFullNameAndRegistrationLabel = function() {
 	'use strict';
 
-	// if a registration number exists, add it to the full name and registration label
-	let registrationNumberString = this.registrationNumber ? ` - ${ this.registrationNumber }` : '';
-
 	// combine the first & last names and registration number to create a unique label for all Child models
-	this.displayNameAndRegistration = `${ this.name.first } ${ this.name.last }${ registrationNumberString }`;
+	this.displayNameAndRegistration = `${ this.name.first } ${ this.name.last }${ this.registrationNumber ? ` - ${ this.registrationNumber }` : '' }`;
 };
 
 Child.schema.methods.setAdoptionWorkerAgencyFields = function() {
