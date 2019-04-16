@@ -11,18 +11,15 @@ const keystone				= require( 'keystone' ),
 exports = module.exports = ( req, res ) => {
     'use strict';
 
-	const
-		view						= new keystone.View( req, res ),
-		locals						= res.locals,
-		userType					= req.user ? req.user.userType : '', // knowing the type of user visiting the page will allow us to display extra relevant information
-		userId						= req.user ? req.user._id : '',
+	const view		= new keystone.View( req, res ),
+		locals		= res.locals,
+		userType	= req.user ? req.user.userType : '', // knowing the type of user visiting the page will allow us to display extra relevant information
+		userId		= req.user ? req.user._id : '',
 
 		// find the field the user belongs to in the event model based on their user type
 		eventGroup					= eventService.getEventGroup( userType ),
 
 		// Options for fetching
-		isUserStateDefined			= ( locals.user.address && locals.user.address.state ) ? true : false,
-		stateOptions     		   	= isUserStateDefined ? undefined : { default: 'Massachusetts' },
 		raceOptions        			= { other: true },
 
 		// fetch all data needed to render this page
@@ -35,7 +32,7 @@ exports = module.exports = ( req, res ) => {
 		fetchLegalStatuses			= listsService.getAllLegalStatuses(),
 		fetchSocialWorkerPositions	= listsService.getAllSocialWorkerPositions(),
 		fetchRaces					= listsService.getAllRaces( raceOptions ),
-		fetchStates					= listsService.getAllStates( stateOptions ),
+		fetchStates					= listsService.getAllStates(),
 		fetchChildTypes				= listsService.getChildTypesForWebsite(),
         fetchMailingLists			= mailingListService.getMailingLists(),
         fetchUserMailingLists       = req.user.populate('mailingLists').execPopulate();
@@ -60,9 +57,6 @@ exports = module.exports = ( req, res ) => {
 			const [ events, citiesAndTowns, disabilities, genders, languages, legalStatuses,
 				socialWorkerPositions, races, states, childTypes, mailingLists ] = values;
 
-			// options to define how truncation will be handled
-			const truncateOptions = { targetLength: 400 };
-
 			// loop through all the events
 			for( let event of events ) {
 				// determine whether or not address information exists for the event, which is helpful during rendering
@@ -70,7 +64,9 @@ exports = module.exports = ( req, res ) => {
 				event.hasAddress = event.address && event.address.street1;
 
 				// check to see if the event spans multiple days
-				const multidayEvent = event.startDate.getTime() !== event.endDate.getTime();
+				const multidayEvent = event.startDate && event.endDate
+					? event.startDate.getTime() !== event.endDate.getTime()
+					: false;
 
 				// Pull the date and time into a string for easier templating
 				if( multidayEvent ) {
@@ -85,6 +81,27 @@ exports = module.exports = ( req, res ) => {
 				mailingList.isSelected = req.user.mailingLists.find( userMailingList => userMailingList.id === mailingList.id );
 			}
 
+			// check to see if the user has an address/state defined
+			if ( req.user.address && req.user.address.state ) {
+				// find the user's state in the state list
+				let userState = states.find( state => state._id.toString() === req.user.address.state.toString() );
+				// set it to be default selection
+				userState.defaultSelection = true;
+			}
+
+			let familyChildren = [];
+
+			// check to see if the user is a family and has children
+			if ( userType === 'family' && req.user.numberOfChildren !== 0 ) {
+
+				// loop through all child definitions
+				for ( let i = 1; i <= req.user.numberOfChildren; i++ ) {
+
+					// add each child to the familyChildren array
+					familyChildren.push( req.user[ `child${ i }` ] );
+				}
+			}
+
 			// assign properties to locals for access during templating
 			locals.user						= req.user;
 			locals.events					= events;
@@ -97,28 +114,9 @@ exports = module.exports = ( req, res ) => {
 			locals.socialWorkerPositions 	= socialWorkerPositions;
 			locals.races					= races;
 			locals.states					= states;
-            locals.childTypes				= childTypes;
-            locals.mailingLists				= mailingLists;
-            locals.familyChildren			= [];
-
-			// check to see if the user has an address/state defined
-			if ( isUserStateDefined ) {
-				// find the user's state in the state list
-				let userState = locals.states.find( state => state._id.id.toString() === locals.user.address.state.id.toString() );
-				// set it to be default selection
-				userState.defaultSelection = true;
-			}
-
-			// check to see if the user is a family and has children
-			if ( userType === 'family' && locals.user.numberOfChildren !== 0 ) {
-
-				// loop through all child definitions
-				for ( let i = 1; i <= locals.user.numberOfChildren; i++ ) {
-
-					// add each child to the familyChildren array
-					locals.familyChildren.push( locals.user[ `child${ i }` ] );
-				}
-			}
+			locals.childTypes				= childTypes;
+			locals.mailingLists				= mailingLists;
+			locals.familyChildren			= familyChildren;
 
 			// render the view using the account.hbs template
 			view.render( 'account' );

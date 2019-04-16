@@ -154,12 +154,13 @@ Event.schema.pre( 'save', function( next ) {
 });
 
 Event.schema.post( 'save', async function() {
-	// check for a large number of dropped attendees ( > 5 ) in any group, and send an email if it occurred
-	// NOTE: attendees have gone missing from events and this is a way to track changes and send alerts if any are found
-	const droppedAttendees = this.getDroppedAttendees();
+	
+	try {
+		// check for a large number of dropped attendees ( > 5 ) in any group, and send an email if it occurred
+		// NOTE: attendees have gone missing from events and this is a way to track changes and send alerts if any are found
+		const droppedAttendees = this.getDroppedAttendees();
 
-	if( droppedAttendees.length > 0 ) {
-		try {
+		if( droppedAttendees.length > 0 ) {
 			// fetch the email target model matching 'dropped event attendees'
 			const emailTarget = await emailTargetMiddleware.getEmailTargetByName( 'dropped event attendees' );
 			// fetch contact info for the staff contact for 'dropped event attendees'
@@ -173,9 +174,9 @@ Event.schema.post( 'save', async function() {
 				droppedAttendees
 			});
 		}
-		catch( err ) {
-			console.error( `error sending email notification about dropped event attendees for ${ this.name }`, err );
-		}
+	}
+	catch( err ) {
+		console.error( `error sending email notification about dropped event attendees for ${ this.name }`, err );
 	}
 
 	// TODO IMPORTANT: this is a temporary solution to fix a problem where the autokey generation from Keystone
@@ -287,6 +288,10 @@ Event.schema.methods.setSourceField = function() {
 };
 
 Event.schema.methods.getDroppedAttendees = function getDroppedAttendees() {
+	// return an empty array of changes if the event is being saved for the first time
+	if( !this._savedVersion ) {
+		return [];
+	}
 
 	const droppedStaffAttendees = this.checkForDroppedAttendees({
 		original: this._savedVersion.staffAttendees,
@@ -330,56 +335,56 @@ Event.schema.methods.getDroppedAttendees = function getDroppedAttendees() {
 
 	let droppedAttendees = [];
 
-	if( droppedStaffAttendees.length > 5 ) {
+	if( droppedStaffAttendees.length >= 5 ) {
 		droppedAttendees.push({
 			groupName: 'staff',
 			attendees: droppedStaffAttendees
 		});
 	}
 
-	if( droppedSiteVisitorAttendees.length > 5 ) {
+	if( droppedSiteVisitorAttendees.length >= 5 ) {
 		droppedAttendees.push({
 			groupName: 'site visitors',
 			attendees: droppedSiteVisitorAttendees
 		});
 	}
 
-	if( droppedSocialWorkerAttendees.length > 5 ) {
+	if( droppedSocialWorkerAttendees.length >= 5 ) {
 		droppedAttendees.push({
 			groupName: 'social workers',
 			attendees: droppedSocialWorkerAttendees
 		});
 	}
 
-	if( droppedFamilyAttendees.length > 5 ) {
+	if( droppedFamilyAttendees.length >= 5 ) {
 		droppedAttendees.push({
 			groupName: 'families',
 			attendees: droppedFamilyAttendees
 		});
 	}
 
-	if( droppedChildAttendees.length > 5 ) {
+	if( droppedChildAttendees.length >= 5 ) {
 		droppedAttendees.push({
 			groupName: 'children',
 			attendees: droppedChildAttendees
 		});
 	}
 
-	if( droppedOutsideContactAttendees.length > 5 ) {
+	if( droppedOutsideContactAttendees.length >= 5 ) {
 		droppedAttendees.push({
 			groupName: 'outside contacts',
 			attendees: droppedOutsideContactAttendees
 		});
 	}
 
-	if( droppedUnregisteredChildAttendees.length > 5 ) {
+	if( droppedUnregisteredChildAttendees.length >= 5 ) {
 		droppedAttendees.push({
 			groupName: 'unregistered children',
 			attendees: droppedUnregisteredChildAttendees
 		});
 	}
 
-	if( droppedUnregisteredAdultAttendees.length > 5 ) {
+	if( droppedUnregisteredAdultAttendees.length >= 5 ) {
 		droppedAttendees.push({
 			groupName: 'unregistered adults',
 			attendees: droppedUnregisteredAdultAttendees
