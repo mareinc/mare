@@ -146,6 +146,7 @@ exports.getAllRaces = options => {
 	});
 };
 
+// TODO: setting the default state doesn't make sense here, this should be a pure fetch function
 exports.getAllStates = options => {
 
 	return new Promise( ( resolve, reject ) => {
@@ -171,7 +172,6 @@ exports.getAllStates = options => {
 							state.defaultSelection = true;
 						}
 					};
-
 				}
 				// resolve with the returned array of states
 				resolve( states );

@@ -264,12 +264,20 @@ exports.sendEventRegistrationEditedEmailToMARE = ({
 				reject();
 			}
 	});
-}
+};
 
 exports.sendDroppedEventAttendeesEmailToMARE = ({
-	staffContactEmail = 'web@mareinc.org',
-	droppedAttendees = [],
-	eventName
+	staffContactEmails = [ 'web@mareinc.org' ],
+	eventName,
+	changedBy,
+	droppedStaff = [],
+	droppedSiteVisitors = [],
+	droppedSocialWorkers = [],
+	droppedFamilies = [],
+	droppedChildren = [],
+	droppedOutsideContacts = [],
+	droppedUnregisteredChildren = [],
+	droppedUnregisteredAdults = []
 }) => {
 
 	return new Promise( ( resolve, reject ) => {
@@ -291,13 +299,21 @@ exports.sendDroppedEventAttendeesEmailToMARE = ({
 				root: 'templates/emails/'
 			// render options
 			}, {
-				droppedAttendees,
 				eventName,
+				changedBy,
+				droppedStaff,
+				droppedSiteVisitors,
+				droppedSocialWorkers,
+				droppedFamilies,
+				droppedChildren,
+				droppedOutsideContacts,
+				droppedUnregisteredChildren,
+				droppedUnregisteredAdults,
 				layout: false
 			// send options
 			}, {
 				apiKey: process.env.MANDRILL_APIKEY,
-				to: staffContactEmail,
+				to: staffContactEmails,
 				from: {
 					name: 'MARE',
 					email: 'web@mareinc.org'
@@ -324,7 +340,7 @@ exports.sendDroppedEventAttendeesEmailToMARE = ({
 };
 
 exports.sendCronJobErrorsEmailToMARE = ({
-	staffContactEmails = [],
+	staffContactEmails = [ 'web@mareinc.org' ],
 	agencyErrors = [],
 	socialWorkerErrors = [],
 	childErrors = []
