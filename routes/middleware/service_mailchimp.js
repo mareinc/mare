@@ -210,7 +210,16 @@ exports.addTagToSubscriber = function addTagToSubscriber( tagName, email, mailin
             reject( error );
         });
     });
-}
+};
+
+/**
+ * validateWebhook
+ * ==================
+ * @description sends a success (200) response when Mailchimp makes a GET request to validate the webhook URL
+ */
+exports.validateWebhookURL = function validateWebhookURL( req, res, next ) {
+    res.status(200).send();
+};
 
 /**
  * processWebhookUpdates
@@ -232,8 +241,6 @@ exports.processWebhookUpdates = function processWebhookUpdates( req, res, next )
         }
     } = req.body;
 
-    console.log(`Mailchimp Webhook Processed with Data:\n${req.body}`);
-
     switch ( action ) {
         case 'subscribe':
             console.log(`user subscribed: ${userEmail}`);
@@ -245,4 +252,4 @@ exports.processWebhookUpdates = function processWebhookUpdates( req, res, next )
             return next(`Error processing Mailchimp webhook - unknown action encountered: ${action}`);
     }
     res.status(200).send();
-}
+};

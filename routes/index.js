@@ -116,5 +116,6 @@ exports = module.exports = app => {
 	app.post( '/services/remove-sibling-group-bookmark'	, familyService.removeSiblingGroupBookmark );
     app.post( '/services/get-gallery-permissions'		, permissionsService.getGalleryPermissions );
     // webhooks
-    app.all('/webhooks/mailchimp'                       , mailchimpService.processWebhookUpdates );
+    app.get( '/webhooks/mailchimp'                      , mailchimpService.validateWebhookURL );
+    app.post( '/webhooks/mailchimp'                     , mailchimpService.processWebhookUpdates );
 };
