@@ -59,19 +59,19 @@ exports.getMailingList = function getMailingList( mailingListId ) {
 };
 
 /**
- * addSubscriberToList
+ * subsribeMemberToList
  * ===================
- * @description adds a subscriber to a mailing list
- * @param {String} email the email with which to register the subscriber
+ * @description subscribes a member to a mailing list
+ * @param {String} email the email with which to register the member
  * @param {String} mailingListId the id of the mailing list to subscribe to
  * @returns {Object} schema: https://us20.api.mailchimp.com/schema/3.0/Definitions/Lists/Members/Response.json
  */
-exports.addSubscriberToList = function addSubscriberToList( { email, mailingListId, userType, firstName = '', lastName = '' } ) {
+exports.subsribeMemberToList = function subsribeMemberToList( { email, mailingListId, userType, firstName = '', lastName = '' } ) {
 
     return new Promise( ( resolve, reject ) => {
 
         if ( !email || !mailingListId ) {
-            return reject( 'addSubscriberToList failed - email or mailingListId was not provided.' );
+            return reject( 'subsribeMemberToList failed - email or mailingListId was not provided.' );
         }
 
         // tag the member with their user type (if known)
@@ -80,14 +80,15 @@ exports.addSubscriberToList = function addSubscriberToList( { email, mailingList
             : [];
 
         _mailchimp.request({
-            method: 'post',
-            path: '/lists/{list_id}/members',
+            method: 'put',
+            path: '/lists/{list_id}/members/{subscriber_hash}',
             path_params: {
-                list_id: mailingListId
+                list_id: mailingListId,
+                subscriber_hash: MD5( email )
             },
             body: {
                 email_address: email,
-                // we may want the ability to set the status value dynamically in the future
+                status_if_new: 'subscribed',
                 status: 'subscribed',
                 merge_fields: {
                     FNAME: firstName,
@@ -105,27 +106,30 @@ exports.addSubscriberToList = function addSubscriberToList( { email, mailingList
 };
 
 /**
- * removeSubscriberFromList
+ * unsubscribeMemberFromList
  * ========================
- * @description removes a subscriber from a mailing list
- * @param {String} email the email of the subscriber to remove
- * @param {String} mailingListId the id of the mailing list to remove the subscriber from
+ * @description unsubscribes a member from a mailing list
+ * @param {String} email the email of the member to unsubscribe
+ * @param {String} mailingListId the id of the mailing list to unsubscribe the member from
  * @returns {Object} status of the operation
  */
- exports.removeSubscriberFromList = function removeSubscriberFromList( email, mailingListId ) {
+ exports.unsubscribeMemberFromList = function unsubscribeMemberFromList( email, mailingListId ) {
 
     return new Promise( ( resolve, reject ) => {
 
         if ( !email || !mailingListId ) {
-            return reject( 'removeSubscriberFromList failed - email or mailingListId was not provided.' );
+            return reject( 'unsubscribeMemberFromList failed - email or mailingListId was not provided.' );
         }
 
         _mailchimp.request({
-            method: 'delete',
+            method: 'patch',
             path: '/lists/{list_id}/members/{subscriber_hash}',
             path_params: {
                 list_id: mailingListId,
                 subscriber_hash: MD5( email )
+            },
+            body: {
+                status: 'unsubscribed'
             }
         })
         .then( status => resolve( status ) )
@@ -137,20 +141,20 @@ exports.addSubscriberToList = function addSubscriberToList( { email, mailingList
  };
 
 /**
- * updateSubscriberEmail
+ * updateMemberEmail
  * =====================
- * @description updates a subscribers email address in a particular mailing list
- * @param {String} currentEmail the currently subscribed email address
+ * @description updates a member's email address in a particular mailing list
+ * @param {String} currentEmail the member's current email address
  * @param {String} updatedEmail the new email address that will replace the current email address
- * @param {String} mailingListId the id of the mailing list in which to update the subscriber
+ * @param {String} mailingListId the id of the mailing list in which to update the member
  * @returns {Object} schema: https://us20.api.mailchimp.com/schema/3.0/Definitions/Lists/Members/Response.json
  */
-exports.updateSubscriberEmail = function updateSubscriberEmail( currentEmail, updatedEmail, mailingListId ) {
+exports.updateMemberEmail = function updateMemberEmail( currentEmail, updatedEmail, mailingListId ) {
 
     return new Promise( ( resolve, reject ) => {
 
         if ( !currentEmail || !updatedEmail || !mailingListId ) {
-            return reject( 'updateSubscriberEmail failed - currentEmail, updatedEmail, or mailingListId was not provided.' );
+            return reject( 'updateMemberEmail failed - currentEmail, updatedEmail, or mailingListId was not provided.' );
         }
 
         _mailchimp.request({
@@ -173,19 +177,19 @@ exports.updateSubscriberEmail = function updateSubscriberEmail( currentEmail, up
 };
 
 /**
- * addTagToSubscriber
+ * addTagToMember
  * ==================
- * @description adds a tag to a subscriber
- * @param {String} email the email of the subscriber to add a tag to
- * @param {String} mailingListId the id of the mailing list in which to update the subscriber
+ * @description adds a tag to a member
+ * @param {String} email the email of the member to add a tag to
+ * @param {String} mailingListId the id of the mailing list in which to update the member
  * @returns {Object} status code of the operation
  */
-exports.addTagToSubscriber = function addTagToSubscriber( tagName, email, mailingListId ) {
+exports.addTagToMember = function addTagToMember( tagName, email, mailingListId ) {
 
     return new Promise( ( resolve, reject ) => {
 
         if ( !tagName || !email || !mailingListId ) {
-            return reject( 'addTagToSubscriber failed - tagName, email, or mailingListId was not provided.' );
+            return reject( 'addTagToMember failed - tagName, email, or mailingListId was not provided.' );
         }
 
         _mailchimp.request({
