@@ -3,7 +3,7 @@ const   Mailchimp = require( 'mailchimp-api-v3' ),
 
 // set constants
 const MAILCHIMP_API_KEY = process.env.MAILCHIMP_API_KEY;
-// configure the MailChimp connection instance
+// configure the Mailchimp connection instance
 const _mailchimp = new Mailchimp( MAILCHIMP_API_KEY );
 
 /**

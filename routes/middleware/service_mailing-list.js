@@ -4,7 +4,7 @@ exports.getMailingLists = () => {
 
 	return new Promise( ( resolve, reject ) => {
 
-		keystone.list( 'MailChimpList' ).model
+		keystone.list( 'Mailchimp List' ).model
 			.find()
 			.exec()
 			.then( mailingLists => {

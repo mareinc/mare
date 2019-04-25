@@ -132,7 +132,7 @@ keystone.set( 'nav', {
 						   'contact-groups' ],
 	'other'				: [ 'account-verification-codes', 'agencies', 'inquiries', 'internal-notes', 'mare-in-the-news' ],
 	'events'			: [ 'events' ],
-	'mailing lists'		: [ 'MailChimpList' ],
+	'mailing lists'		: [ 'mailchimp-lists' ],
 	'placements'		: [ 'matches', 'placements', 'legalizations', 'disruptions' ],
 	'relationships'		: [ 'csc-region-contacts', 'staff-email-contacts', 'media-features' ],
 	'change tracking'	: [ 'child-histories', 'family-histories', 'social-worker-histories' ],

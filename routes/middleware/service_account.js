@@ -9,7 +9,7 @@ const _						= require( 'lodash' ),
       keystone				= require( 'keystone' ),
 	  userService			= require( './service_user' ),
 	  flashMessages			= require( './service_flash-messages' ),
-	  mailChimpService	    = require( './service_mailchimp' );
+	  mailchimpService	    = require( './service_mailchimp' );
 
 exports.updateUser = ( req, res, next ) => {
 	const updates	= req.body,
@@ -165,27 +165,27 @@ exports.updateUserEmailLists = ( req, res, next ) => {
     let listsToSubscribeIds = _.difference(updatedMailingListIds, currentMailingListIds);
     // get mailing list documents from mailing list ids
     Promise.all([
-        keystone.list( 'MailChimpList' ).model
+        keystone.list( 'Mailchimp List' ).model
             .find()
             .where( '_id' )
             .in( listsToUnsubscribeIds )
             .exec(),
-        keystone.list( 'MailChimpList' ).model
+        keystone.list( 'Mailchimp List' ).model
             .find()
             .where( '_id' )
             .in( listsToSubscribeIds )
             .exec()
         ])
-        .then( mailChimpLists => {
-            // perform subscribe/unsubscribe actions via MailChimp service
-            let [ listsToUnsubscribe, listsToSubscribe ] = mailChimpLists;
+        .then( mailchimpLists => {
+            // perform subscribe/unsubscribe actions via Mailchimp service
+            let [ listsToUnsubscribe, listsToSubscribe ] = mailchimpLists;
             let unsubscribePromises = listsToUnsubscribe.map( list => {
-                return mailChimpService.removeSubscriberFromList( req.user.email, list.mailChimpId );
+                return mailchimpService.removeSubscriberFromList( req.user.email, list.mailchimpId );
             });
             let subscribePromises = listsToSubscribe.map( list => {
-                return mailChimpService.addSubscriberToList( {
+                return mailchimpService.addSubscriberToList( {
                     email: req.user.email,
-                    mailingListId: list.mailChimpId,
+                    mailingListId: list.mailchimpId,
                     firstName: userType === 'family'
                         ? req.user.contact1.name.first
                         : req.user.name.first,
