@@ -19,7 +19,7 @@ User.add( 'Login Information', {
 
 }, 'Mailing List Subscriptions', {
 
-    mailingLists: { type: Types.Relationship, label: 'mailing lists', ref: 'Mailchimp List', many: true }
+    mailingLists: { type: Types.Relationship, label: 'mailing lists', ref: 'Mailchimp List', many: true, noedit: true }
 
 });
 
