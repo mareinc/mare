@@ -211,3 +211,38 @@ exports.addTagToSubscriber = function addTagToSubscriber( tagName, email, mailin
         });
     });
 }
+
+/**
+ * processWebhookUpdates
+ * ==================
+ * @description processess subscriber updates broadcast from Mailchimp
+ */
+exports.processWebhookUpdates = function processWebhookUpdates( req, res, next ) {
+
+    // ensure the request data exists in the expected format
+    if ( !req.body || !req.body.data ) {
+        return next('Error processing Mailchimp webhook - empty or malformed request body');
+    }
+    // destructure request data
+    let {
+        type: action,
+        data: {
+            email: userEmail,
+            list_id: sourceList
+        }
+    } = req.body;
+
+    console.log(`Mailchimp Webhook Processed with Data:\n${req.body}`);
+
+    switch ( action ) {
+        case 'subscribe':
+            console.log(`user subscribed: ${userEmail}`);
+            break;
+        case 'unsubscribe':
+            console.log(`user unsubscribed: ${userEmail}`);
+            break;
+        default:
+            return next(`Error processing Mailchimp webhook - unknown action encountered: ${action}`);
+    }
+    res.status(200).send();
+}
