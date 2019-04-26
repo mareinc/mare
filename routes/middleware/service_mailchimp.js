@@ -1,4 +1,5 @@
-const   Mailchimp = require( 'mailchimp-api-v3' ),
+const   keystone  = require( 'keystone' ),
+        Mailchimp = require( 'mailchimp-api-v3' ),
         MD5       = require( 'md5' );
 
 // set constants
@@ -241,19 +242,50 @@ exports.processWebhookUpdates = function processWebhookUpdates( req, res, next )
         type: action,
         data: {
             email: userEmail,
-            list_id: sourceList
+            list_id: mailingListId
         }
     } = req.body;
 
     switch ( action ) {
         case 'subscribe':
-            console.log(`user subscribed: ${userEmail}`);
+            Promise.all([
+                keystone.list( 'User' ).model
+                    .findOne()
+                    .where( 'email', userEmail )
+                    .exec(),
+                keystone.list( 'Mailchimp List' ).model
+                    .findOne()
+                    .where( 'mailchimpId', mailingListId )
+                    .exec()
+            ])
+            .then( data => {
+                let [ userDoc, mailchimpListDoc ] = data;
+                userDoc.mailingLists.addToSet( mailchimpListDoc._id.toString() );
+                return userDoc.save();
+            })
+            .then( () => res.status( 200 ).send() )
+            .catch( error => {
+                console.error( error );
+                next( error );
+            });
             break;
         case 'unsubscribe':
-            console.log(`user unsubscribed: ${userEmail}`);
+            keystone.list( 'User' ).model
+                .findOne()
+                .where( 'email', userEmail )
+                .populate( 'mailingLists' )
+                .exec()
+                .then( userDoc => {
+                    userDoc.mailingLists = userDoc.mailingLists.filter( mailingList => mailingList.mailchimpId != mailingListId );
+                    return userDoc.save();
+                 })
+                .then( () => res.status( 200 ).send() )
+                .catch( error => {
+                    console.error( error );
+                    next( error );
+                });
             break;
         default:
             return next(`Error processing Mailchimp webhook - unknown action encountered: ${action}`);
     }
-    res.status(200).send();
 };
