@@ -46,7 +46,7 @@ exports.getMailingList = function getMailingList( mailingListId ) {
 
         _mailchimp.request({
             method: 'get',
-            path: '/lists/{list_id}',
+            path: '/lists/{list_id}', // this is not a template string, rather a mailchimp-api-v3 library convention
             path_params: {
                 list_id: mailingListId
             }
@@ -82,7 +82,7 @@ exports.subscribeMemberToList = function subscribeMemberToList( { email, mailing
 
         _mailchimp.request({
             method: 'put',
-            path: '/lists/{list_id}/members/{subscriber_hash}',
+            path: '/lists/{list_id}/members/{subscriber_hash}', // this is not a template string, rather a mailchimp-api-v3 library convention
             path_params: {
                 list_id: mailingListId,
                 subscriber_hash: MD5( email )
@@ -124,7 +124,7 @@ exports.subscribeMemberToList = function subscribeMemberToList( { email, mailing
 
         _mailchimp.request({
             method: 'patch',
-            path: '/lists/{list_id}/members/{subscriber_hash}',
+            path: '/lists/{list_id}/members/{subscriber_hash}', // this is not a template string, rather a mailchimp-api-v3 library convention
             path_params: {
                 list_id: mailingListId,
                 subscriber_hash: MD5( email )
@@ -160,7 +160,7 @@ exports.updateMemberEmail = function updateMemberEmail( currentEmail, updatedEma
 
         _mailchimp.request({
             method: 'patch',
-            path: '/lists/{list_id}/members/{subscriber_hash}',
+            path: '/lists/{list_id}/members/{subscriber_hash}', // this is not a template string, rather a mailchimp-api-v3 library convention
             path_params: {
                 list_id: mailingListId,
                 subscriber_hash: MD5( currentEmail )
@@ -195,7 +195,7 @@ exports.addTagToMember = function addTagToMember( tagName, email, mailingListId 
 
         _mailchimp.request({
             method: 'post',
-            path: '/lists/{list_id}/members/{subscriber_hash}/tags',
+            path: '/lists/{list_id}/members/{subscriber_hash}/tags', // this is not a template string, rather a mailchimp-api-v3 library convention
             path_params: {
                 list_id: mailingListId,
                 subscriber_hash: MD5( email )
