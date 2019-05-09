@@ -255,7 +255,7 @@ exports.processWebhookUpdates = function processWebhookUpdates( req, res, next )
                 .populate( 'mailingLists' )
                 .exec()
                 .then( userDoc => {
-                    userDoc.mailingLists = userDoc.mailingLists.filter( mailingList => mailingList.mailchimpId != mailingListId );
+                    userDoc.mailingLists = userDoc.mailingLists.filter( mailingList => mailingList.mailchimpId !== mailingListId );
                     return userDoc.save();
                  })
                 .then( () => res.status( 200 ).send() )
