@@ -702,7 +702,7 @@ exports.addToMailingLists = ( user, mailingListIds ) => {
 			subscribedMailingLists = mailingListDocs;
 			// add the user to each mailing list via the Mailchimp API
 			return Promise.all(
-				mailingListDocs.map( mailingList => mailchimpService.subsribeMemberToList({
+				mailingListDocs.map( mailingList => mailchimpService.subscribeMemberToList({
 					email: user.email,
 					mailingListId: mailingList.mailchimpId,
 					userType: user.userType,

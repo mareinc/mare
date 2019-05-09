@@ -183,7 +183,7 @@ exports.updateUserEmailLists = ( req, res, next ) => {
                 return mailchimpService.unsubscribeMemberFromList( req.user.email, list.mailchimpId );
             });
             let subscribePromises = listsToSubscribe.map( list => {
-                return mailchimpService.subsribeMemberToList( {
+                return mailchimpService.subscribeMemberToList( {
                     email: req.user.email,
                     mailingListId: list.mailchimpId,
                     firstName: userType === 'family'

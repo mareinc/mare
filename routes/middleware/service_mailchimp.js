@@ -60,19 +60,19 @@ exports.getMailingList = function getMailingList( mailingListId ) {
 };
 
 /**
- * subsribeMemberToList
+ * subscribeMemberToList
  * ===================
  * @description subscribes a member to a mailing list
  * @param {String} email the email with which to register the member
  * @param {String} mailingListId the id of the mailing list to subscribe to
  * @returns {Object} schema: https://us20.api.mailchimp.com/schema/3.0/Definitions/Lists/Members/Response.json
  */
-exports.subsribeMemberToList = function subsribeMemberToList( { email, mailingListId, userType, firstName = '', lastName = '' } ) {
+exports.subscribeMemberToList = function subscribeMemberToList( { email, mailingListId, userType, firstName = '', lastName = '' } ) {
 
     return new Promise( ( resolve, reject ) => {
 
         if ( !email || !mailingListId ) {
-            return reject( 'subsribeMemberToList failed - email or mailingListId was not provided.' );
+            return reject( 'subscribeMemberToList failed - email or mailingListId was not provided.' );
         }
 
         // tag the member with their user type (if known)
