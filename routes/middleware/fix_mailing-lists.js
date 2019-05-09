@@ -1,6 +1,6 @@
 const keystone          = require( 'keystone' ),
       Mailchimp         = require( 'mailchimp-api-v3' ),
-      MD5               = require( 'md5' );;
+      MD5               = require( 'md5' );
 
 // set constants
 const MAILCHIMP_API_KEY = process.env.MAILCHIMP_API_KEY;
@@ -25,7 +25,7 @@ module.exports.fixMailingLists = function fixMailingLists( req, res, next ) {
 
     if (!mailingListId) {
         let err = new Error( 'cannot fix mailing lists without a mailing list ID' );
-        console.error( err  );
+        console.error( err );
         return res.status( 500 ).send( err.message );
     }
 
