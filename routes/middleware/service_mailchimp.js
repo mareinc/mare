@@ -22,7 +22,7 @@ exports.getMailingLists = function getMailingLists() {
             path: '/lists'
         })
         .then( mailingLists => resolve( mailingLists ) )
-        .catch( err => reject( err ) );
+        .catch( err => reject( new Error( err.message ) ) );
     });
 };
 
@@ -49,7 +49,7 @@ exports.getMailingList = function getMailingList( mailingListId ) {
             }
         })
         .then( mailingList => resolve( mailingList ) )
-        .catch( err => reject( err ) );
+        .catch( err => reject( new Error( err.message ) ) );
     });
 };
 
@@ -93,7 +93,7 @@ exports.subscribeMemberToList = function subscribeMemberToList( { email, mailing
             }
         })
         .then( subscriber => resolve( subscriber ) )
-        .catch( err => reject( err ) );
+        .catch( err => reject( new Error( err.message ) ) );
     });
 };
 
@@ -125,7 +125,7 @@ exports.subscribeMemberToList = function subscribeMemberToList( { email, mailing
             }
         })
         .then( status => resolve( status ) )
-        .catch( err => reject( err ) );
+        .catch( err => reject( new Error( err.message ) ) );
     });
  };
 
@@ -158,7 +158,7 @@ exports.updateMemberEmail = function updateMemberEmail( currentEmail, updatedEma
             }
         })
         .then( subscriber => resolve( subscriber ) )
-        .catch( err => reject( err ) );
+        .catch( err => reject( new Error( err.message ) ) );
     });
 };
 
@@ -195,7 +195,7 @@ exports.addTagToMember = function addTagToMember( tagName, email, mailingListId 
             }
         })
         .then( status => resolve( status ) )
-        .catch( err => reject( err ) );
+        .catch( err => reject( new Error( err.message ) ) );
     });
 };
 
@@ -246,7 +246,7 @@ exports.processWebhookUpdates = function processWebhookUpdates( req, res, next )
                 return userDoc.save();
             })
             .then( () => res.status( 200 ).send() )
-            .catch( err => next ( err ) );
+            .catch( err => next( new Error( err.message ) ) );
             break;
         case 'unsubscribe':
             keystone.list( 'User' ).model
@@ -259,7 +259,7 @@ exports.processWebhookUpdates = function processWebhookUpdates( req, res, next )
                     return userDoc.save();
                  })
                 .then( () => res.status( 200 ).send() )
-                .catch( err => next ( err ) );
+                .catch( err => next( new Error( err.message ) ) );
             break;
         default:
             return next( new Error( `Error processing Mailchimp webhook - unknown action encountered: ${action}` ) );
