@@ -34,7 +34,7 @@ exports = module.exports = ( req, res ) => {
 		})
 		.catch( err => {
 			// log an error for debugging purposes
-			console.error( `error loading data for the information request form - ${ err }` );
+			console.error( `error loading data for the information request form`, err );
 			// render the view using the form_information-request.hbs template
 			view.render( 'form_information-request' );
 		});

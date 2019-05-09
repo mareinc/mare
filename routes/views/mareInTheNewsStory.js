@@ -45,7 +45,7 @@ exports = module.exports = ( req, res ) => {
 		})
 		.catch( err => {
 			// log an error for debugging purposes
-			console.error( `error loading data for the MARE in the news story page - ${ err }` );	
+			console.error( `error loading data for the MARE in the news story page`, err );	
 			// render the view using the mare-in-the-news-story.hbs template
 			view.render( 'mare-in-the-news-story' );
 		});

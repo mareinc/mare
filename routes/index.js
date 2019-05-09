@@ -9,10 +9,10 @@ const keystone							= require( 'keystone' ),
 	  permissionsService				= require( './middleware/service_permissions' ),
 	  registrationMiddleware			= require( './middleware/service_register' ),
 	  accountMiddleware					= require( './middleware/service_account' ),
-	  chronMiddleware					= require( './middleware/middleware_chron' ),
 	  eventMiddleware					= require( './middleware/middleware_event' ),
 	  passwordResetService 				= require( './middleware/service_password-reset'),
-	  accountVerificationService		= require( './middleware/service_account-verification' ),
+      accountVerificationService		= require( './middleware/service_account-verification' ),
+      mailchimpService              	= require( './middleware/service_mailchimp' ),
 	  enforce							= require( 'express-sslify' ),
 	  agencyAdjustmentService			= require( './middleware/fix_agency' ),
 	  childAdjustmentService			= require( './middleware/fix_child' ),
@@ -24,7 +24,6 @@ const keystone							= require( 'keystone' ),
 	  socialWorkerAdjustmentService		= require( './middleware/fix_social-worker' ),
 	  dateAdjustmentService				= require( './middleware/fix_dates' ),
 	  importRoutes						= keystone.importer( __dirname );
-
 
 // common middleware
 keystone.pre( 'routes', middleware.initLocals );
@@ -42,11 +41,11 @@ exports = module.exports = app => {
 	'use strict';
 
 	// set up forwarding to HTTPS at the app level when http is explicitly used
-	// use enforce.HTTPS({ trustProtoHeader: true }) in case you are behind a load balancer (e.g. Heroku) 
+	// use enforce.HTTPS({ trustProtoHeader: true }) in case you are behind a load balancer (e.g. Heroku)
 	if( keystone.get( 'env' ) === 'production' ) {
 		app.use( enforce.HTTPS( { trustProtoHeader: true } ) );
 	}
-	
+
 	// serve robots.txt based on the runtime environment
 	if ( process.env.ALLOW_ROBOTS === 'true' ) {
 		// if running in production, allow robots to crawl by serving the production robots.txt
@@ -64,25 +63,29 @@ exports = module.exports = app => {
 	// forms
 	app.get( '/forms/agency-event-submission'			, routes.views.form_agencyEventSubmission );
 	app.post( '/forms/agency-event-submission'			, eventService.submitEvent );
-	
+
 	app.get( '/forms/social-worker-child-registration'	, routes.views.form_childRegistration );
 	app.post( '/forms/social-worker-child-registration'	, childService.registerChild );
-	
+
 	app.get( '/forms/social-worker-family-registration'	, routes.views.form_familyRegistration );
 	app.post( '/forms/social-worker-family-registration', familyService.registerFamily );
-	
+
 	app.get( '/forms/information-request'				, routes.views.form_informationRequest );
 	app.post( '/forms/information-request'				, formService.submitInquiry );
-	
+
 	app.get( '/forms/have-a-question'					, routes.views.form_haveAQuestion );
 	app.post( '/forms/have-a-question'					, formService.submitQuestion );
 	// steps in the process
 	app.get( '/steps-in-the-process'					, routes.views.stepsInTheProcess );
 	// events
+	app.get( '/events/export/:eventId'					, eventMiddleware.exportToExcel );
 	app.get( '/events/:category'						, routes.views.events );
 	app.get( '/events/:category/:key'					, routes.views.event );
+	app.post( '/events/get/social-worker-data'			, eventMiddleware.getActiveSocialWorkers );
 	app.post( '/events/register/:eventId'				, eventMiddleware.register );
 	app.post( '/events/unregister/:eventId'				, eventMiddleware.unregister );
+	app.post( '/events/edit-registration/:eventId'		, eventMiddleware.editRegistration );
+	app.put( '/events/:id/attendees'					, eventMiddleware.updateEventAttendees );
 	// success stories
 	app.get( '/success-stories'							, routes.views.successStories );
 	app.get( '/success-stories/:key'					, routes.views.successStory );
@@ -120,7 +123,13 @@ exports = module.exports = app => {
 	app.post( '/services/remove-child-bookmark'			, familyService.removeChildBookmark );
 	app.post( '/services/add-sibling-group-bookmark'	, familyService.addSiblingGroupBookmark );
 	app.post( '/services/remove-sibling-group-bookmark'	, familyService.removeSiblingGroupBookmark );
+
 	app.post( '/services/get-gallery-permissions'		, permissionsService.getGalleryPermissions );
+
+	// webhooks
+    app.get( '/webhooks/mailchimp'                      , mailchimpService.validateWebhookURL );
+	app.post( '/webhooks/mailchimp'                     , mailchimpService.processWebhookUpdates );
+	
 	// app.post( '/services/register-for-event'			, eventService.addUser ); // TODO: I'm leaving these commented out so I don't forget they exist when I need to implement adding/removing users to an event automatically
 	// app.post( '/services/unregister-for-event'		, eventService.removeUser ); // TODO: I'm leaving these commented out so I don't forget they exist when I need to implement adding/removing users to an event automatically
 

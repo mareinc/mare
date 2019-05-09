@@ -11,7 +11,7 @@ exports.sendNewEventEmailToMARE = ( event, socialWorker, staffEmailContact ) => 
 		// if sending of the email is not currently allowed
 		if( process.env.SEND_EVENT_CREATED_EMAILS_TO_MARE !== 'true' ) {
 			// reject the promise with information about why
-			return reject( `sending of the email is disabled` );
+			return reject( new Error( `sending of the new event email to MARE staff is disabled` ) );
 		}
 
 		// find the email template in templates/emails/
@@ -36,7 +36,7 @@ exports.sendNewEventEmailToMARE = ( event, socialWorker, staffEmailContact ) => 
 				to: staffEmail,
 				from: {
 					name: 'MARE',
-					email: 'admin@adoptions.io'
+					email: 'web@mareinc.org'
 				},
 				subject: `new event created`
 			// callback
@@ -44,14 +44,14 @@ exports.sendNewEventEmailToMARE = ( event, socialWorker, staffEmailContact ) => 
 				// if there was an error sending the email
 				if( err ) {
 					// reject the promise with details
-					return reject( `error sending new event created notification email to MARE - ${ err }` );
+					return reject( new Error( `error sending new event created notification email to MARE` ) );
 				}
 				// the response object is stored as the 0th element of the returned message
 				const response = message ? message[ 0 ] : undefined;
 				// if the email failed to send, or an error occurred ( which it does, rarely ) causing the response message to be empty
 				if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
 					// reject the promise with details
-					return reject( `error sending new event created notification email to MARE - ${ response.status } - ${ response.email } - ${ response.reject_reason } - ${ err }` );
+					return reject( new Error( `error sending new event created notification email to MARE - ${ response.status } - ${ response.email } - ${ response.reject_reason }` ) );
 				}
 
 				resolve();
@@ -65,7 +65,7 @@ exports.sendEventRegistrationEmailToMARE = ( eventDetails, userDetails, host, st
 		// if sending of the email is not currently allowed
 		if ( process.env.SEND_EVENT_REGISTRATION_TO_MARE !== 'true' ) {
 			// reject the promise with information about why
-			return reject( `sending of the email is disabled` );
+			return reject( new Error( `sending of the event registration email to MARE staff is disabled` ) );
 		}
 
 		exports.getRegisteredChildData( eventDetails.registeredChildren )
@@ -78,9 +78,6 @@ exports.sendEventRegistrationEmailToMARE = ( eventDetails, userDetails, host, st
 				if( eventDetails.source === 'other' ) {
 					eventDetails.source = `Other: ${ eventDetails.otherSource }`;
 				}
-
-				// set custom display name if necessary
-				var displayName = userDetails.userType === 'family' ? userDetails.displayName : undefined;
 
 				// find the email template in templates/emails/
 				Email.send(
@@ -96,7 +93,7 @@ exports.sendEventRegistrationEmailToMARE = ( eventDetails, userDetails, host, st
 						event: eventDetails,
 						user: userDetails,
 						host,
-						displayName,
+						displayName: userDetails.displayName,
 						layout: false
 					// send options
 					}, {
@@ -104,29 +101,29 @@ exports.sendEventRegistrationEmailToMARE = ( eventDetails, userDetails, host, st
 						to: staffContactEmail,
 						from: {
 							name: 'MARE',
-							email: 'admin@adoptions.io'
+							email: 'web@mareinc.org'
 						},
 						subject: `new event registration`,
 					// callback
 					}, ( err, message ) => {
 						// log any errors
 						if( err ) {
-							return reject( `error sending event registration thank you email - ${ err }` );
+							return reject( new Error( `error sending event registration email to MARE staff: ${ message }` ) );
 						}
 						// the response object is stored as the 0th element of the returned message
 						const response = message ? message[ 0 ] : undefined;
 						// if the email failed to send, or an error occurred ( which it does, rarely ) causing the response message to be empty
 						if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
 							// reject the promise with details
-							return reject( `new event registration email to staff failed to send: ${ message } - ${ err }` );
+							return reject( new Error( `new event registration email to MARE staff failed to send: ${ message }` ) );
 						}
 
 						resolve();
 					});
 			})
-			.catch( error => {
+			.catch( err => {
 
-				reject( error );
+				reject( err );
 			});
 	});
 };
@@ -138,11 +135,8 @@ exports.sendEventUnregistrationEmailToMARE = ( eventDetails, userDetails, host, 
 		// if sending of the email is not currently allowed
 		if( process.env.SEND_EVENT_UNREGISTRATION_TO_MARE !== 'true' ) {
 			// reject the promise with information about why
-			return reject( `sending of the email is disabled` );
+			return reject( new Error( `sending of the event unregistration email to MARE staff is disabled` ) );
 		}
-
-		// set custom display name if necessary
-		var displayName = userDetails.userType === 'family' ? userDetails.displayName : undefined;
 
 		// find the email template in templates/emails/
 		Email.send(
@@ -158,7 +152,7 @@ exports.sendEventUnregistrationEmailToMARE = ( eventDetails, userDetails, host, 
 				event: eventDetails,
 				user: userDetails,
 				host,
-				displayName,
+				displayName: userDetails.displayName,
 				layout: false
 			// send options
 			}, {
@@ -166,21 +160,236 @@ exports.sendEventUnregistrationEmailToMARE = ( eventDetails, userDetails, host, 
 				to: staffContactEmail,
 				from: {
 					name: 'MARE',
-					email: 'admin@adoptions.io'
+					email: 'web@mareinc.org'
 				},
 				subject: `event unregistration`
 			// callback
 			}, ( err, message ) => {
 				// log any errors
 				if( err ) {
-					return reject( `error sending event unregistration thank you email - ${ err }` );
+					return reject( new Error( `error sending event unregistration email to MARE staff: ${ message }` ) );
 				}
 				// the response object is stored as the 0th element of the returned message
 				const response = message ? message[ 0 ] : undefined;
 				// if the email failed to send, or an error occurred ( which it does, rarely ) causing the response message to be empty
 				if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
 					// reject the promise with details
-					return reject( `new event unregistration email to staff failed to send: ${ message } - ${ err }` );
+					return reject( new Error( `new event unregistration email to MARE staff failed to send: ${ message }` ) );
+				}
+
+				resolve();
+			});
+	});
+};
+
+exports.sendEventRegistrationEditedEmailToMARE = ({
+	eventDetails,
+	addedRegisteredChildren,
+	addedUnregisteredChildren,
+	addedUnregisteredAdults,
+	removedRegisteredChildren,
+	removedUnregisteredChildren,
+	removedUnregisteredAdults,
+	userDetails,
+	host,
+	staffContactEmail
+}) => {
+	return new Promise( async (resolve, reject ) => {
+		// if sending of the email is not currently allowed
+		if( process.env.SEND_EVENT_EDITED_EMAILS_TO_MARE !== 'true' ) {
+			// reject the promise with information about why
+			return reject( new Error( `sending of the event edited email to MARE staff is disabled` ) );
+		}
+
+		try {
+			const addedRegisteredChildrenData = await exports.getRegisteredChildData( addedRegisteredChildren );
+			const removedRegisteredChildrenData = await exports.getRegisteredChildData( removedRegisteredChildren );
+
+			// perform field-level validation for email templating
+			if( eventDetails.source === 'other' ) {
+				eventDetails.source = `Other: ${ eventDetails.otherSource }`;
+			}
+
+			// find the email template in templates/emails/
+			Email.send(
+				// template path
+				'event-registration-edited-notification-to-mare',
+				// email options
+				{
+					engine: 'hbs',
+					transport: 'mandrill',
+					root: 'templates/emails/'
+				// render options
+				}, {
+					event: eventDetails,
+					user: userDetails,
+					addedRegisteredChildren: addedRegisteredChildrenData,
+					addedUnregisteredChildren: addedUnregisteredChildren.length > 0 ? addedUnregisteredChildren : null,
+					addedUnregisteredAdults: addedUnregisteredAdults.length > 0 ? addedUnregisteredAdults : null,
+					removedRegisteredChildren: removedRegisteredChildrenData,
+					removedUnregisteredChildren: removedUnregisteredChildren.length > 0 ? removedUnregisteredChildren : null,
+					removedUnregisteredAdults: removedUnregisteredAdults.length > 0 ? removedUnregisteredAdults : null,
+					host,
+					displayName: userDetails.displayName,
+					layout: false
+				// send options
+				}, {
+					apiKey: process.env.MANDRILL_APIKEY,
+					to: staffContactEmail,
+					from: {
+						name: 'MARE',
+						email: 'web@mareinc.org'
+					},
+					subject: `event registration change`
+				// callback
+				}, ( err, message ) => {
+					// log any errors
+					if( err ) {
+						return reject( new Error( `error sending event registration edited email to MARE staff: ${ message }` ) );
+					}
+					// the response object is stored as the 0th element of the returned message
+					const response = message ? message[ 0 ] : undefined;
+					// if the email failed to send, or an error occurred ( which it does, rarely ) causing the response message to be empty
+					if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
+						// reject the promise with details
+						return reject( new Error( `new event registration edited email to MARE staff failed to send: ${ message }` ) );
+					}
+
+					resolve();
+				});
+			}
+			catch( err ) {
+				console.error( `error sending event registration edited email to staff`, err );
+
+				reject();
+			}
+	});
+};
+
+exports.sendDroppedEventAttendeesEmailToMARE = ({
+	staffContactEmails = [ 'web@mareinc.org' ],
+	eventName,
+	changedBy,
+	droppedStaff = [],
+	droppedSiteVisitors = [],
+	droppedSocialWorkers = [],
+	droppedFamilies = [],
+	droppedChildren = [],
+	droppedOutsideContacts = [],
+	droppedUnregisteredChildren = [],
+	droppedUnregisteredAdults = []
+}) => {
+
+	return new Promise( ( resolve, reject ) => {
+
+		// if sending of the email is not currently allowed
+		if( process.env.SEND_DROPPED_EVENT_ATTENDEE_EMAILS_TO_MARE !== 'true' ) {
+			// reject the promise with information about why
+			return reject( new Error( `sending of the dropped event attendees email to MARE staff is disabled` ) );
+		}
+
+		// find the email template in templates/emails/
+		Email.send(
+			// template path
+			'event-attendees-dropped-notification-to-mare',
+			// email options
+			{
+				engine: 'hbs',
+                transport: 'mandrill',
+				root: 'templates/emails/'
+			// render options
+			}, {
+				eventName,
+				changedBy,
+				droppedStaff,
+				droppedSiteVisitors,
+				droppedSocialWorkers,
+				droppedFamilies,
+				droppedChildren,
+				droppedOutsideContacts,
+				droppedUnregisteredChildren,
+				droppedUnregisteredAdults,
+				layout: false
+			// send options
+			}, {
+				apiKey: process.env.MANDRILL_APIKEY,
+				to: staffContactEmails,
+				from: {
+					name: 'MARE',
+					email: 'web@mareinc.org'
+				},
+				subject: `event attendees dropped`
+			// callback
+			}, ( err, message ) => {
+				// if there was an error sending the email
+				if( err ) {
+					// reject the promise with details
+					return reject( new Error( `error sending new event created notification email to MARE` ) );
+				}
+				// the response object is stored as the 0th element of the returned message
+				const response = message ? message[ 0 ] : undefined;
+				// if the email failed to send, or an error occurred ( which it does, rarely ) causing the response message to be empty
+				if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
+					// reject the promise with details
+					return reject( new Error( `error sending new event created notification email to MARE - ${ response.status } - ${ response.email } - ${ response.reject_reason }` ) );
+				}
+
+				resolve();
+			});
+	});
+};
+
+exports.sendCronJobErrorsEmailToMARE = ({
+	staffContactEmails = [ 'web@mareinc.org' ],
+	agencyErrors = [],
+	socialWorkerErrors = [],
+	childErrors = []
+}) => {
+	return new Promise( ( resolve, reject ) => {
+
+		// if sending of the email is not currently allowed
+		if( process.env.SEND_CRON_JOB_ERRORS_EMAILS_TO_MARE !== 'true' ) {
+			// reject the promise with information about why
+			return reject( new Error( `sending of the cron job errors email to MARE staff is disabled` ) );
+		}
+
+		// find the email template in templates/emails/
+		Email.send(
+			// template path
+			'cron-job-errors-notification-to-mare',
+			// email options
+			{
+				engine: 'hbs',
+                transport: 'mandrill',
+				root: 'templates/emails/'
+			// render options
+			}, {
+				agencyErrors,
+				socialWorkerErrors,
+				childErrors,
+				layout: false
+			// send options
+			}, {
+				apiKey: process.env.MANDRILL_APIKEY,
+				to: staffContactEmails,
+				from: {
+					name: 'MARE',
+					email: 'web@mareinc.org'
+				},
+				subject: `cron job errors`
+			// callback
+			}, ( err, message ) => {
+				// if there was an error sending the email
+				if( err ) {
+					// reject the promise with details
+					return reject( new Error( `error sending cron job errors notification email to MARE` ) );
+				}
+				// the response object is stored as the 0th element of the returned message
+				const response = message ? message[ 0 ] : undefined;
+				// if the email failed to send, or an error occurred ( which it does, rarely ) causing the response message to be empty
+				if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
+					// reject the promise with details
+					return reject( new Error( `error sending cron job errors notification email to MARE - ${ response.status } - ${ response.email } - ${ response.reject_reason }` ) );
 				}
 
 				resolve();
@@ -201,9 +410,9 @@ exports.getRegisteredChildData = (registeredChildren) => {
 
 					resolve( childrenData );
 				})
-				.catch( error => {
+				.catch( err => {
 
-					reject( error );
+					reject( err );
 				});
 
 			// if the event registration doesn't include registered children attendees

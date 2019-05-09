@@ -18,6 +18,13 @@ select {
     margin-bottom: 15px;
 }
 
+.form-group__header {
+    font-size: 1.2em;
+    margin-bottom: 1.5em;
+    color: $teal;
+    font-weight: 600;
+}
+
 .checkbox-inline,
 .radio-inline {
     position: relative;

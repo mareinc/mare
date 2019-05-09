@@ -2,12 +2,12 @@
 
 	{{#ifeq category 'mare-hosted-events'}}
 		<h1 class="card__title">MARE Hosted Events</h1>
-		{{> events-adoption-party-info}}
+		{{> events-mare-hosted-events-info}}
 	{{/ifeq}}
 
 	{{#ifeq category 'partner-hosted-events'}}
 		<h1 class="card__title">Partner Hosted Events</h1>
-		{{> events-agency-info-meetings-info}}
+		{{> events-partner-hosted-events-info}}
 	{{/ifeq}}
 
 	{{#ifeq category 'mapp-trainings'}}
@@ -35,25 +35,340 @@
 
 {{else}}
 
+<!-- the following three blocks are only rendered when viewing non-MARE hosted events -->
+
+{{#if eventsInUsersRegionExist}}
+
+<section class="card-list card-list--collapsible">
+
+	<div class="card card--small-margin-below card-list__collapsible-trigger-container">
+		<div class="card__details card__details--centered">
+			<p class="card__details__body">
+				<h3 class="card-list__collapsible-trigger-text">{{ userRegion }} ({{ eventsInUsersRegion.length }} {{#ifeq eventsInUsersRegion.length 1}}event{{else}}events{{/ifeq}})</h3>
+				<span class="card-list__collapsible-trigger-indicator card-list__collapsible-trigger-indicator--expanded">-</span>
+			</p>
+		</div>
+	</div>
+
+	<div class="card-list__collapsible-content card-list__collapsible-content--expanded">
+		
+		{{#each eventsInUsersRegion}}
+
+		<div class="card card--vertical card--medium-padding card--small-margin-below event"
+			data-event-name="{{ name }}"
+			data-event-date="{{ displayDate }}"
+			data-event-id="{{ _id }}"
+			{{#if isUserBringingChildren}}
+			data-registered-children-user-is-bringing="[{{ registeredChildrenUserIsBringing }}]"
+			{{/if}}
+			{{#if isUserBringingUnregisteredChildren}}
+			data-unregistered-children-user-is-bringing="[{{ unregisteredChildrenUserIsBringing }}]"
+			{{/if}}
+			{{#if isUserBringingUnregisteredAdults}}
+			data-unregistered-adults-user-is-bringing="[{{ unregisteredAdultsUserIsBringing }}]"
+			{{/if}}
+		>
+			<h2 class="card__title event-title">{{ displayName }}</h2>
+			<div class="card__content">
+				<section class="card__content-group">
+					{{#if isRecurringEvent}}
+					<span class="card__overview">
+						<i class="fa fa-2x fa-calendar-o card__overview-icon" aria-hidden="true"></i>
+						<span class="card__overview-text">{{ scheduleDescription }}</span>
+					</span>
+					{{else if startDate}}
+					<span class="card__overview">
+						<i class="fa fa-2x fa-calendar-o card__overview-icon" aria-hidden="true"></i>
+						<span class="card__overview-text">{{ displayDate }}</span>
+					</span>
+					{{/if}}		
+					{{#if startTime}}
+					{{#unless isRecurringEvent}}
+					<span class="card__overview">
+						<i class="fa fa-2x fa-clock-o card__overview-icon" aria-hidden="true"></i>
+						<span class="card__overview-text">{{ startTime }} - {{ endTime }}</span>
+					</span>
+					{{/unless}}
+					{{/if}}
+					{{#if address}}
+					<span class="card__overview">
+						<i class="fa fa-2x fa-map-marker card__overview-icon" aria-hidden="true"></i>
+						<address class="card__overview-text card__overview-text--normal">
+							{{ address.street1 }} {{ address.street2 }}<br>
+							{{ address.city }}, {{ address.state.state }} {{ address.zipCode }}
+						</address>
+					</span>
+					{{/if}}
+				</section>
+			</div>
+			<section class="button-group button-group--horizontal button-group--centered button-group--large-margin-above button-group--small-margin-below">
+				<button class="button button--large button--teal events__navigation-button" data-url="{{ url }}">View Details</button>
+				{{#if canRegister}}
+				{{#if ../user}}
+				{{!-- TODO: this handling of unregistering through forms was only done for consistency in flash messaging and NEEDS to be reworked --}}
+				{{#if attended}}
+				<form action="/events/unregister/{{ _id }}" class="modal-form--event-registration" method="POST">
+					<input type="hidden" name="eventName" value="{{ name }}">
+					<input type="hidden" name="redirectPath" value="{{ ../redirectPath }}">
+					<button class="button button--large button--teal" type="submit">Unregister</button>
+				</form>
+				<button class="button button--large button--teal events__edit-registration-button">Edit Registration</button>
+				{{else}}
+				<button class="button button--large button--teal events__register-button">Register</button>
+				{{/if}}
+				{{/if}}
+				{{/if}}
+				{{#if ../../canExportEvent}}
+				<button class="button button--large button--teal events__excel-export-button">Export to Excel</button>
+				{{/if}}
+			</section>
+
+		</div>
+
+		{{/each}}
+
+	</div>
+
+</section>
+
+{{/if}}
+
+{{#if eventsOutsideUsersRegionExist}}
+
+{{#each eventsOutsideUsersRegion}}
+
 <section class="card-list">
 
-	{{#each events}}
+	<div class="card card--small-margin-below card-list__collapsible-trigger-container">
+		<div class="card__details card__details--centered">
+			<p class="card__details__body">
+				<h3 class="card-list__collapsible-trigger-text">{{ region }} ({{ this.events.length }} {{#ifeq this.events.length 1}}event{{else}}events{{/ifeq}})</h3>
+				<span class="card-list__collapsible-trigger-indicator card-list__collapsible-trigger-indicator--expanded">-</span>
+			</p>
+		</div>
+	</div>
 
-	<div class="card card--vertical card--medium-padding card--small-margin-below event" data-event-name="{{ name }}" data-event-date="{{ displayDate }}" data-event-id="{{ _id }}">
-		<h2 class="card__title event-title">{{ name }}</h2>
+	<div class="card-list__collapsible-content card-list__collapsible-content--expanded">
+
+		{{#each events}}
+
+		<div class="card card--vertical card--medium-padding card--small-margin-below event"
+			data-event-name="{{ name }}"
+			data-event-date="{{ displayDate }}"
+			data-event-id="{{ _id }}"
+			{{#if isUserBringingChildren}}
+			data-registered-children-user-is-bringing="[{{ registeredChildrenUserIsBringing }}]"
+			{{/if}}
+			{{#if isUserBringingUnregisteredChildren}}
+			data-unregistered-children-user-is-bringing="[{{ unregisteredChildrenUserIsBringing }}]"
+			{{/if}}
+			{{#if isUserBringingUnregisteredAdults}}
+			data-unregistered-adults-user-is-bringing="[{{ unregisteredAdultsUserIsBringing }}]"
+			{{/if}}
+		>
+			<h2 class="card__title event-title">{{ displayName }}</h2>
+			<div class="card__content">
+				<section class="card__content-group">
+					{{#if isRecurringEvent}}
+					<span class="card__overview">
+						<i class="fa fa-2x fa-calendar-o card__overview-icon" aria-hidden="true"></i>
+						<span class="card__overview-text">{{ scheduleDescription }}</span>
+					</span>
+					{{else if startDate}}
+					<span class="card__overview">
+						<i class="fa fa-2x fa-calendar-o card__overview-icon" aria-hidden="true"></i>
+						<span class="card__overview-text">{{ displayDate }}</span>
+					</span>
+					{{/if}}		
+					{{#if startTime}}
+					{{#unless isRecurringEvent}}
+					<span class="card__overview">
+						<i class="fa fa-2x fa-clock-o card__overview-icon" aria-hidden="true"></i>
+						<span class="card__overview-text">{{ startTime }} - {{ endTime }}</span>
+					</span>
+					{{/unless}}
+					{{/if}}
+					{{#if address}}
+					<span class="card__overview">
+						<i class="fa fa-2x fa-map-marker card__overview-icon" aria-hidden="true"></i>
+						<address class="card__overview-text card__overview-text--normal">
+							{{ address.street1 }} {{ address.street2 }}<br>
+							{{ address.city }}, {{ address.state.state }} {{ address.zipCode }}
+						</address>
+					</span>
+					{{/if}}
+				</section>
+			</div>
+			<section class="button-group button-group--horizontal button-group--centered button-group--large-margin-above button-group--small-margin-below">
+				<button class="button button--large button--teal events__navigation-button" data-url="{{ url }}">View Details</button>
+				{{#if canRegister}}
+				{{#if ../user}}
+				{{!-- TODO: this handling of unregistering through forms was only done for consistency in flash messaging and NEEDS to be reworked --}}
+				{{#if attended}}
+				<form action="/events/unregister/{{ _id }}" class="modal-form--event-registration" method="POST">
+					<input type="hidden" name="eventName" value="{{ name }}">
+					<input type="hidden" name="redirectPath" value="{{ ../redirectPath }}">
+					<button class="button button--large button--teal" type="submit">Unregister</button>
+				</form>
+				<button class="button button--large button--teal events__edit-registration-button">Edit Registration</button>
+				{{else}}
+				<button class="button button--large button--teal events__register-button">Register</button>
+				{{/if}}
+				{{/if}}
+				{{/if}}
+				{{#if ../../canExportEvent}}
+				<button class="button button--large button--teal events__excel-export-button">Export to Excel</button>
+				{{/if}}
+			</section>
+
+		</div>
+
+		{{/each}}
+
+	</div>
+
+</section>
+{{/each}}
+
+{{/if}}
+
+{{#if eventsWithNoRegionExist}}
+<section class="card-list">
+
+	<div class="card card--small-margin-below card-list__collapsible-trigger-container">
+		<div class="card__details card__details--centered">
+			<p class="card__details__body">
+				<h3 class="card-list__collapsible-trigger-text">Available Statewide ({{ eventsWithNoRegion.length }} {{#ifeq eventsWithNoRegion.length 1}}event{{else}}events{{/ifeq}})</h3>
+				<span class="card-list__collapsible-trigger-indicator card-list__collapsible-trigger-indicator--expanded">-</span>
+			</p>
+		</div>
+	</div>
+
+	<div class="card-list__collapsible-content card-list__collapsible-content--expanded">
+		
+		{{#each eventsWithNoRegion}}
+
+		<div class="card card--vertical card--medium-padding card--small-margin-below event"
+			data-event-name="{{ name }}"
+			data-event-date="{{ displayDate }}"
+			data-event-id="{{ _id }}"
+			{{#if isUserBringingChildren}}
+			data-registered-children-user-is-bringing="[{{ registeredChildrenUserIsBringing }}]"
+			{{/if}}
+			{{#if isUserBringingUnregisteredChildren}}
+			data-unregistered-children-user-is-bringing="[{{ unregisteredChildrenUserIsBringing }}]"
+			{{/if}}
+			{{#if isUserBringingUnregisteredAdults}}
+			data-unregistered-adults-user-is-bringing="[{{ unregisteredAdultsUserIsBringing }}]"
+			{{/if}}
+		>
+			<h2 class="card__title event-title">{{ displayName }}</h2>
+			<div class="card__content">
+				<section class="card__content-group">
+					{{#if isRecurringEvent}}
+					<span class="card__overview">
+						<i class="fa fa-2x fa-calendar-o card__overview-icon" aria-hidden="true"></i>
+						<span class="card__overview-text">{{ scheduleDescription }}</span>
+					</span>
+					{{else if startDate}}
+					<span class="card__overview">
+						<i class="fa fa-2x fa-calendar-o card__overview-icon" aria-hidden="true"></i>
+						<span class="card__overview-text">{{ displayDate }}</span>
+					</span>
+					{{/if}}		
+					{{#if startTime}}
+					{{#unless isRecurringEvent}}
+					<span class="card__overview">
+						<i class="fa fa-2x fa-clock-o card__overview-icon" aria-hidden="true"></i>
+						<span class="card__overview-text">{{ startTime }} - {{ endTime }}</span>
+					</span>
+					{{/unless}}
+					{{/if}}
+					{{#if address}}
+					<span class="card__overview">
+						<i class="fa fa-2x fa-map-marker card__overview-icon" aria-hidden="true"></i>
+						<address class="card__overview-text card__overview-text--normal">
+							{{ address.street1 }} {{ address.street2 }}<br>
+							{{ address.city }}, {{ address.state.state }} {{ address.zipCode }}
+						</address>
+					</span>
+					{{/if}}
+				</section>
+			</div>
+			<section class="button-group button-group--horizontal button-group--centered button-group--large-margin-above button-group--small-margin-below">
+				<button class="button button--large button--teal events__navigation-button" data-url="{{ url }}">View Details</button>
+				{{#if canRegister}}
+				{{#if ../user}}
+				{{!-- TODO: this handling of unregistering through forms was only done for consistency in flash messaging and NEEDS to be reworked --}}
+				{{#if attended}}
+				<form action="/events/unregister/{{ _id }}" class="modal-form--event-registration" method="POST">
+					<input type="hidden" name="eventName" value="{{ name }}">
+					<input type="hidden" name="redirectPath" value="{{ ../redirectPath }}">
+					<button class="button button--large button--teal" type="submit">Unregister</button>
+				</form>
+				<button class="button button--large button--teal events__edit-registration-button">Edit Registration</button>
+				{{else}}
+				<button class="button button--large button--teal events__register-button">Register</button>
+				{{/if}}
+				{{/if}}
+				{{/if}}
+				{{#if ../canExportEvent}}
+				<button class="button button--large button--teal events__excel-export-button">Export to Excel</button>
+				{{/if}}
+			</section>
+
+		</div>
+
+		{{/each}}
+
+	</div>
+
+</section>
+
+{{/if}}
+
+<!-- the following block is only rendered when viewing MARE hosted events -->
+
+{{#if MAREHostedEventsExist}}
+<section class="card-list">
+
+	{{#each MAREHostedEvents}}
+
+	<div class="card card--vertical card--medium-padding card--small-margin-below event"
+		data-event-name="{{ name }}"
+		data-event-date="{{ displayDate }}"
+		data-event-id="{{ _id }}"
+		{{#if isUserBringingChildren}}
+		data-registered-children-user-is-bringing="[{{ registeredChildrenUserIsBringing }}]"
+		{{/if}}
+		{{#if isUserBringingUnregisteredChildren}}
+		data-unregistered-children-user-is-bringing="[{{ unregisteredChildrenUserIsBringing }}]"
+		{{/if}}
+		{{#if isUserBringingUnregisteredAdults}}
+		data-unregistered-adults-user-is-bringing="[{{ unregisteredAdultsUserIsBringing }}]"
+		{{/if}}
+	>
+		<h2 class="card__title event-title">{{ displayName }}</h2>
 		<div class="card__content">
 			<section class="card__content-group">
-				{{#if startDate}}
+				{{#if isRecurringEvent}}
+				<span class="card__overview">
+					<i class="fa fa-2x fa-calendar-o card__overview-icon" aria-hidden="true"></i>
+					<span class="card__overview-text">{{ scheduleDescription }}</span>
+				</span>
+				{{else if startDate}}
 				<span class="card__overview">
 					<i class="fa fa-2x fa-calendar-o card__overview-icon" aria-hidden="true"></i>
 					<span class="card__overview-text">{{ displayDate }}</span>
 				</span>
-				{{/if}}
+				{{/if}}		
 				{{#if startTime}}
+				{{#unless isRecurringEvent}}
 				<span class="card__overview">
 					<i class="fa fa-2x fa-clock-o card__overview-icon" aria-hidden="true"></i>
 					<span class="card__overview-text">{{ startTime }} - {{ endTime }}</span>
 				</span>
+				{{/unless}}
 				{{/if}}
 				{{#if address}}
 				<span class="card__overview">
@@ -66,7 +381,7 @@
 				{{/if}}
 			</section>
 		</div>
-		<section class="button-group button-group--horizontal button-group--space-around button-group--large-margin-above button-group--small-margin-below">
+		<section class="button-group button-group--horizontal button-group--centered button-group--large-margin-above button-group--small-margin-below">
 			<button class="button button--large button--teal events__navigation-button" data-url="{{ url }}">View Details</button>
 			{{#if canRegister}}
 			{{#if ../user}}
@@ -75,15 +390,18 @@
 			<form action="/events/unregister/{{ _id }}" class="modal-form--event-registration" method="POST">
 				<input type="hidden" name="eventName" value="{{ name }}">
 				<input type="hidden" name="redirectPath" value="{{ ../redirectPath }}">
-				<button class="button button--large button--teal events__unregister-button" type="submit">Unregister</button>
+				<button class="button button--large button--teal" type="submit">Unregister</button>
 			</form>
+			<button class="button button--large button--teal events__edit-registration-button">Edit Registration</button>
 			{{else}}
 			<button class="button button--large button--teal events__register-button">Register</button>
 			{{/if}}
 			{{/if}}
 			{{/if}}
+			{{#if ../canExportEvent}}
+			<button class="button button--large button--teal events__excel-export-button">Export to Excel</button>
+			{{/if}}
 		</section>
-
 	</div>
 
 	{{/each}}
@@ -92,6 +410,17 @@
 
 {{/if}}
 
-{{#ifeq userType 'site visitor'}}{{> event-registration-form}}{{/ifeq}}
-{{#ifeq userType 'family'}}{{> event-registration-form}}{{/ifeq}}
-{{#ifeq userType 'social worker'}}{{> event-social-worker-registration-form}}{{/ifeq}}
+{{/if}}
+
+{{#ifeq userType 'site visitor'}}
+{{> event-registration-form}}
+{{> event-edit-registration-form}}
+{{/ifeq}}
+{{#ifeq userType 'family'}}
+{{> event-registration-form}}
+{{> event-edit-registration-form}}
+{{/ifeq}}
+{{#ifeq userType 'social worker'}}
+{{> event-social-worker-registration-form}}
+{{> event-edit-social-worker-registration-form}}
+{{/ifeq}}

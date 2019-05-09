@@ -48,7 +48,7 @@ exports = module.exports = ( req, res ) => {
 			locals.childTypes			= childTypes;
 		})
 		// if there was an error fetching form selection element data
-		.catch( err => console.err( `error fetching data to populate social worker family registration form selection elements - ${ err }` ) )
+		.catch( err => console.err( `error fetching data to populate social worker family registration form selection elements`, err ) )
 		// fetch the email target model matching 'social worker family registration question'
 		.then( () => emailTargetMiddleware.getEmailTargetByName( 'social worker family registration question' ) )
 		// fetch contact info for the staff contact for 'social worker family registration question'
@@ -56,7 +56,7 @@ exports = module.exports = ( req, res ) => {
 		// overwrite the default contact details with the returned object
 		.then( staffEmailContact => locals.socialWorkerFamilyRegistrationQuestionContact = staffEmailContact.staffEmailContact )
 		// log any errors fetching the staff email contact
-		.catch( err => console.error( `error fetching email contact for social worker family registration questions, default contact info will be used instead - ${ err }` ) )
+		.catch( err => console.error( `error fetching email contact for social worker family registration questions, default contact info will be used instead`, err ) )
 		// fetch the sidebar items
 		.then( () => pageService.getSidebarItems() )
 		// assign returned sidebar items to locals for templating
@@ -77,7 +77,7 @@ exports = module.exports = ( req, res ) => {
 		// if there was an error fetching the sidebar items
 		.catch( err => {
 			// log an error for debugging purposes
-			console.error( `error loading data for the social worker family registration form - ${ err }` );
+			console.error( `error loading data for the social worker family registration form`, err );
 			// render the view using the form_social-worker-family-registration.hbs template
 			view.render( 'form_social-worker-family-registration' );
 		});

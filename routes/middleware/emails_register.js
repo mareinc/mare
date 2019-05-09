@@ -7,11 +7,11 @@ exports.sendNewSiteVisitorNotificationEmailToMARE = ( user, registrationStaffCon
 		// if sending of the email is not currently allowed
 		if( process.env.SEND_NEW_SITE_VISITOR_REGISTERED_EMAILS_TO_MARE !== 'true' ) {
 			// reject the promise with information about why
-			return reject( `sending of the email is disabled` );
+			return reject( new Error( `sending of the email is disabled` ) );
 		}
 
 		if( !registrationStaffContact ) {
-			return reject( `no staff was contact provided` );
+			return reject( new Error( `no staff was contact provided` ) );
 		}
 
 		// an array was used instead of a Map because Mustache templates apparently can't handle maps
@@ -162,14 +162,14 @@ exports.sendNewSiteVisitorNotificationEmailToMARE = ( user, registrationStaffCon
 				// if there was an error sending the email
 				if( err ) {
 					// reject the promise with details
-					return reject( `error sending new site visitor notification email to MARE - ${ err }` );
+					return reject( new Error( `error sending new site visitor notification email to MARE` ) );
 				}
 				// the response object is stored as the 0th element of the returned message
 				const response = message ? message[ 0 ] : undefined;
 				// if the email failed to send, or an error occurred ( which it does, rarely ) causing the response message to be empty
 				if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
 					// reject the promise with details
-					return reject( `error sending new site visitor notification email to MARE - ${ response.status } - ${ response.email } - ${ response.reject_reason } - ${ err }` );
+					return reject( new Error( `error sending new site visitor notification email to MARE - ${ response.status } - ${ response.email } - ${ response.reject_reason }` ) );
 				}
 
 				resolve();
@@ -183,11 +183,11 @@ exports.sendNewSocialWorkerNotificationEmailToMARE = ( user, registrationStaffCo
 		// if sending of the email is not currently allowed
 		if( process.env.SEND_NEW_SOCIAL_WORKER_REGISTERED_EMAILS_TO_MARE !== 'true' ) {
 			// reject the promise with information about why
-			return reject( `sending of the email is disabled` );
+			return reject( new Error( `sending of the email is disabled` ) );
 		}
 
 		if( !registrationStaffContact ) {
-			return reject( `no staff contact was provided` );
+			return reject( new Error( `no staff contact was provided` ) );
 		}
 		// an array was used instead of a Map because Mustache templates apparently can't handle maps
 		let userData = [];
@@ -341,14 +341,14 @@ exports.sendNewSocialWorkerNotificationEmailToMARE = ( user, registrationStaffCo
 				// if there was an error sending the email
 				if( err  ) {
 					// reject the promise with details
-					return reject( `error sending new social worker notification email to MARE - ${ err }` );
+					return reject( new Error( `error sending new social worker notification email to MARE` ) );
 				}
 				// the response object is stored as the 0th element of the returned message
 				const response = message ? message[ 0 ] : undefined;
 				// if the email failed to send, or an error occurred ( which it does, rarely ) causing the response message to be empty
 				if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
 					// reject the promise with details
-					return reject( `error sending new social worker notification email to MARE - ${ response.status } - ${ response.email } - ${ response.reject_reason } - ${ err }` );
+					return reject( new Error( `error sending new social worker notification email to MARE - ${ response.status } - ${ response.email } - ${ response.reject_reason }` ) );
 				}
 
 				resolve();
@@ -362,11 +362,11 @@ exports.sendNewFamilyNotificationEmailToMARE = ( user, registrationStaffContact,
 		// if sending of the email is not currently allowed
 		if( process.env.SEND_NEW_FAMILY_REGISTERED_EMAILS_TO_MARE !== 'true' ) {
 			// reject the promise with information about why
-			return reject( `sending of the email is disabled` );
+			return reject( new Error( `sending of the email is disabled` ) );
 		}
 
 		if( !registrationStaffContact ) {
-			return reject( `no staff contact was provided` );
+			return reject( new Error( `no staff contact was provided` ) );
 		}
 		// arrays was used instead of a Maps because Mustache templates apparently can't handle Maps
 		let userData = [],
@@ -870,14 +870,14 @@ exports.sendNewFamilyNotificationEmailToMARE = ( user, registrationStaffContact,
 				// if there was an error sending the email
 				if( err ) {
 					// reject the promise with details
-					return reject( `error sending new family notification email to MARE - ${ err }` );
+					return reject( new Error( `error sending new family notification email to MARE` ) );
 				}
 				// the response object is stored as the 0th element of the returned message
 				const response = message ? message[ 0 ] : undefined;
 				// if the email failed to send, or an error occurred ( which it does, rarely ) causing the response message to be empty
 				if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
 					// reject the promise with details
-					return reject( `error sending new family notification email to MARE - ${ response.status } - ${ response.email } - ${ response.reject_reason } - ${ err }` );
+					return reject( new Error( `error sending new family notification email to MARE - ${ response.status } - ${ response.email } - ${ response.reject_reason }` ) );
 				}
 
 				resolve();
@@ -891,11 +891,11 @@ exports.sendAccountVerificationEmailToUser = ( userEmail, userType, verification
 		// if sending of the email is not currently allowed
 		if( process.env.SEND_ACCOUNT_VERIFICATION_EMAILS_TO_USER !== 'true' ) {
 			// reject the promise with information about why
-			return reject( `sending of the email is disabled` );
+			return reject( new Error( `sending of the email is disabled` ) );
 		}
 
 		if( !userEmail ) {
-			return reject( `no user email was provided` );
+			return reject( new Error( `no user email was provided` ) );
 		}
 
 		// find the email template in templates/emails/
@@ -927,14 +927,14 @@ exports.sendAccountVerificationEmailToUser = ( userEmail, userType, verification
 				// if there was an error sending the email
 				if( err ) {
 					// reject the promise with details
-					return reject( `error sending account verification email to newly registered user - ${ err }` );
+					return reject( new Error( `error sending account verification email to newly registered user` ) );
 				}
 				// the response object is stored as the 0th element of the returned message
 				const response = message ? message[ 0 ] : undefined;
 				// if the email failed to send, or an error occurred ( which it does, rarely ) causing the response message to be empty
 				if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
 					// reject the promise with details
-					return reject( `error sending account verification email to newly registered user - ${ response.status } - ${ response.email } - ${ response.reject_reason } - ${ err }` );
+					return reject( new Error( `error sending account verification email to newly registered user - ${ response.status } - ${ response.email } - ${ response.reject_reason }` ) );
 				}
 
 				resolve();

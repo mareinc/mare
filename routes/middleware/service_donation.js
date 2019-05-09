@@ -44,11 +44,11 @@ function oneTimeDonation( donationData ) {
 			description:	`${ usdFormatter.format( donationData.amountDollars ) } One-Time Donation`,
 			receipt_email:	donationData.email,
 			source: 		donationData.token
-		}, function( error, charge ) {
+		}, function( err, charge ) {
 
-			if ( error ) {
+			if ( err ) {
 
-				reject( error );
+				reject( err );
 			} else {
 
 				resolve( charge );
@@ -125,12 +125,12 @@ function saveDonation( user, donationData, stripeTransactionId  ) {
 		});
 
 		// save the Donation model to the db
-		donation.save( error => {
+		donation.save( err => {
 
-			if ( error ) {
+			if ( err ) {
 
 				// if the Donation model save fails, log the error along with the Stripe transaction ID so that the Donation can be manually saved later
-				console.error( `error saving donation model - ${ error } - Donation Payment Processed ( Stripe Transaction ID: ${ stripeTransactionId } )` );
+				console.error( `error saving donation model`, err, `Donation Payment Processed ( Stripe Transaction ID: ${ stripeTransactionId } )` );
 
 				// resolve the promise so that the user is still presented with a success message on the front end, as the donation payment has processed succesfully
 				resolve();
@@ -150,9 +150,9 @@ function createCustomer( donationData ) {
 		stripe.customers.create({
 			email: donationData.email,
 			source: donationData.token
-		}, ( error, customer ) => {
+		}, ( err, customer ) => {
 
-			error ? reject( error ) : resolve( customer );
+			err ? reject( err ) : resolve( customer );
 		});
 	});
 }
@@ -184,11 +184,11 @@ function createPlan( customer, donationData ) {
 				interval_count	: donationData.frequency,
 				amount			: donationData.amountPennies,
 				currency		: 'usd'
-			}, ( error, plan ) => {
+			}, ( err, plan ) => {
 
-				if ( error ) {
+				if ( err ) {
 
-					reject( error );
+					reject( err );
 
 				} else {
 
@@ -210,11 +210,11 @@ function createSubscription( plan ) {
 		stripe.subscriptions.create({
 			customer: plan.customer.id,
 			items: [ { plan: plan.id } ]
-		}, function( error, subscription ) {
+		}, function( err, subscription ) {
 
-			if ( error ) {
+			if ( err ) {
 
-				reject( error );
+				reject( err );
 			} else {
 
 				resolve( subscription );

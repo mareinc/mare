@@ -25,7 +25,7 @@ exports = module.exports = ( req, res ) => {
 		fetchSocialWorkerPositions	= listsService.getAllSocialWorkerPositions(),
 		fetchStates					= listsService.getAllStates( stateOptions ),
 		fetchWaysToHearAboutMARE	= listsService.getAllWaysToHearAboutMARE( waysToHearOptions ),
-		fetchMailingLists			= mailingListService.getRegistrationMailingLists(),
+		fetchMailingLists			= mailingListService.getMailingLists(),
 		fetchSidebarItems			= pageService.getSidebarItems();
 
 	Promise.all( [ fetchChildTypes, fetchCitiesAndTowns, fetchGenders, fetchLanguages,
@@ -38,7 +38,7 @@ exports = module.exports = ( req, res ) => {
 					states, waysToHearAboutMARE, mailingLists, sidebarItems ] = values;
 			// the sidebar items are a success story and event in an array, assign local variables to the two objects
 			const [ randomSuccessStory, randomEvent ] = sidebarItems;
-			
+
 			// assign properties to locals for access during templating
 			locals.childTypes				= childTypes;
 			locals.citiesAndTowns			= citiesAndTowns;
@@ -50,10 +50,10 @@ exports = module.exports = ( req, res ) => {
 			locals.socialWorkerPositions	= socialWorkerPositions;
 			locals.states					= states;
 			locals.waysToHearAboutMARE		= waysToHearAboutMARE;
-			locals.mailingLists				= mailingLists;
+            locals.mailingLists				= mailingLists;
 			locals.randomSuccessStory		= randomSuccessStory;
 			locals.randomEvent				= randomEvent;
-			
+
 			if (typeof req.headers.referer !== 'undefined') {
 				let recognizedReferers = ['/page/register-a-child', '/page/register-a-familys-homestudy', '/events/adoption-parties/', '/events/fundraising-events/'];
 				recognizedReferers.forEach(path => {
@@ -62,7 +62,7 @@ exports = module.exports = ( req, res ) => {
 					}
 				});
 			}
-			
+
 			// set the layout to render with the right sidebar
 			locals[ 'render-with-sidebar' ] = true;
 			// render the view using the register.hbs template
@@ -70,7 +70,7 @@ exports = module.exports = ( req, res ) => {
 		})
 		.catch( err => {
 			// log an error for debugging purposes
-			console.error( `error loading data for the registration page - ${ err }` );
+			console.error( `error loading data for the registration page`, err );
 			// render the view using the register.hbs template
 			view.render( 'register' );
 		});

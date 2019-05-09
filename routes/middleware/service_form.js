@@ -33,7 +33,7 @@ exports.submitInquiry = function submitInquiry( req, res, next ) {
 		// if an error occurred
 		.catch( err => {
 			// log the error for debugging purposes
-			console.error( `inquiry could not be created through the information request form - ${ err }` );
+			console.error( `inquiry could not be created through the information request form`, err );
 			// create a flash message to notify the user of the error
 			req.flash( 'error', {
 				title: `There was an error processing your request.`,
@@ -67,7 +67,7 @@ exports.submitQuestion = function submitQuestion( req, res, next ) {
 		// overwrite the default contact details with the returned object
 		.then( staffEmailContact => staffEmailContactInfo = staffEmailContact.staffEmailContact )
 		// log any errors fetching the staff email contact
-		.catch( err => console.error( `error fetching email contact for have a question submission, default contact info will be used instead - ${ err }` ) )
+		.catch( err => console.error( `error fetching email contact for have a question submission, default contact info will be used instead`, err ) )
 		// send a notification email to MARE staff
 		.then( () => haveAQuestionEmailService.sendNewQuestionNotificationEmailToMARE( question, staffEmailContactInfo ) )		
 		// if the email was successfully sent to MARE staff
@@ -80,7 +80,7 @@ exports.submitQuestion = function submitQuestion( req, res, next ) {
 		// if there was an error sending the email to MARE staff
 		.catch( err => {
 			// log the error for debugging purposes
-			console.error( `error sending new question email to MARE staff - ${ err }` );
+			console.error( `error sending new question email to MARE staff`, err );
 			// create a flash message to notify the user of the error
 			req.flash( 'error', {
 				title: `There was an error submitting your question`,
@@ -101,7 +101,7 @@ exports.getRegistrationStaffContactInfo = emailTarget => {
 			// if the user type was unrecognized, the email target can't be set
 			if( !emailTarget ) {
 				// reject the promise with details of the issue
-				return reject( `error fetching staff contact - unknown email target ${ emailTarget }` );
+				return reject( new Error( `error fetching staff contact - unknown email target ${ emailTarget }` ) );
 			}
 			// TODO: it was nearly impossible to create a readable comma separated list of links in the template with more than one address,
 			// 	     so we're only fetching one contact when we should fetch them all
@@ -117,7 +117,7 @@ exports.getRegistrationStaffContactInfo = emailTarget => {
 				})
 				.catch( err => {
 					// reject the promise with the reason for the rejection
-					reject( `error fetching staff contact - ${ err }` );
+					reject( new Error( `error fetching staff contact` ) );
 				});
 		});
 	}

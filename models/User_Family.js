@@ -113,7 +113,7 @@ Family.add( 'Permissions', {
 	contactGroups: { type: Types.Relationship, label: 'contact groups', ref: 'Contact Group', many: true, initial: true },
 
 	displayName: { type: Types.Text, label: 'name', hidden: true, noedit: true },
-	displayNameAndRegistration: { type: Types.Text, label: 'name and registration number', default: 'new family', hidden: true, noedit: true }
+    displayNameAndRegistration: { type: Types.Text, label: 'name and registration number', default: 'new family', hidden: true, noedit: true }
 
 }, 'Contact 1', {
 
@@ -389,11 +389,11 @@ Family.add( 'Permissions', {
 	fileAttachment3: { type: Types.File, storage: fileStorage, label: 'file attachment 3' },
 	fileAttachment4: { type: Types.File, storage: fileStorage, label: 'file attachment 4' },
 	fileAttachment5: { type: Types.File, storage: fileStorage, label: 'file attachment 5' }
-	
+
 }, 'Image Attachments', {
 
 	imageAttachment1: { type: Types.File, storage: imageStorage, label: 'image attachment' }
-	
+
 /* Container for data migration fields ( these should be kept until after phase 2 and the old system is phased out completely ) */
 }, {
 	// system field to store an appropriate file prefix
@@ -407,7 +407,6 @@ Family.relationship( { ref: 'Match', refPath: 'family', path: 'matches', label: 
 Family.relationship( { ref: 'Placement', refPath: 'family', path: 'placements', label: 'placements' } );
 Family.relationship( { ref: 'Legalization', refPath: 'family', path: 'legalizations', label: 'legalizations' } );
 Family.relationship( { ref: 'Disruption', refPath: 'family', path: 'disruptions', label: 'disruptions' } );
-Family.relationship( { ref: 'Mailing List', refPath: 'familySubscribers', path: 'mailing-lists', label: 'mailing lists' } );
 Family.relationship( { ref: 'Event', refPath: 'familyAttendees', path: 'events', label: 'events' } );
 Family.relationship( { ref: 'Donation', refPath: 'family', path: 'donations', label: 'donations' } );
 Family.relationship( { ref: 'Internal Note', refPath: 'family', path: 'internal-notes', label: 'internal notes' } );
@@ -441,14 +440,14 @@ Family.relationship( { ref: 'Family History', refPath: 'family', path: 'family-h
 	// // attempt to update the no-edit region field
 	// const regionUpdated = this.updateRegion();
 	// set the noedit fields associated with the social worker's agency
-	// const socialWorkerAgencyFieldsSet = this.setSocialWorkerAgencyFields();
-	// // determine whether the family can view all children or just the publicly visible ones
-	// const galleryViewingPermissionsSet = this.setGalleryViewingPermissions();
-	// // set the registration number for the family
-	// const registrationNumberSet = this.setRegistrationNumber();
 
-	// Promise.all( [ displayCityUpdated, regionUpdated, socialWorkerAgencyFieldsSet, galleryViewingPermissionsSet, registrationNumberSet ] )
-// 	socialWorkerAgencyFieldsSet
+// 	const socialWorkerAgencyFieldsSet = this.setSocialWorkerAgencyFields();
+// 	// determine whether the family can view all children or just the publicly visible ones
+// 	const galleryViewingPermissionsSet = this.setGalleryViewingPermissions();
+// 	// set the registration number for the family
+// 	const registrationNumberSet = this.setRegistrationNumber();
+
+// 	Promise.all( [ displayCityUpdated, regionUpdated, socialWorkerAgencyFieldsSet, galleryViewingPermissionsSet, registrationNumberSet ] )
 // 		// if there was an error with any of the promises
 // 		.catch( err => {
 // 			// log it for debugging purposes
@@ -478,7 +477,7 @@ Family.relationship( { ref: 'Family History', refPath: 'family', path: 'family-h
 // 		// if there was an error fetching the bot user
 // 		.catch( err => {
 // 			// log it for debugging purposes
-// 			console.error( `Website Bot could not be fetched for family ${ this.displayName } ( registration number: ${ this.registrationNumber } ) - ${ err }` );
+// 			console.error( `Website Bot could not be fetched for family ${ this.displayName } ( registration number: ${ this.registrationNumber } )`, err );
 // 		})
 // 		// execute the following regardless of whether the promises were resolved or rejected
 // 		// TODO: this should be replaced with ES6 Promise.prototype.finally() once it's finalized, assuming we can update to the latest version of Node if we upgrade Keystone
@@ -736,7 +735,7 @@ Family.schema.methods.setDisplayCity = function() {
 				// if there was an error fetching the city or town
 				.catch( err => {
 					// log the error for debugging purposes
-					console.error( `display city could not be updated for family ${ this.displayName } ( registration number: ${ this.registrationNumber } ) - ${ err }` );
+					console.error( `display city could not be updated for family ${ this.displayName } ( registration number: ${ this.registrationNumber } )`, err );
 					// resolve the promise so that the Promise.all() in the pre-save hook does not fail
 					resolve();
 				});
@@ -779,7 +778,7 @@ Family.schema.methods.updateRegion = function() {
 				// if there was an error fetching the region
 				.catch( err => {
 					// log the error for debugging purposes
-					console.error( `region could not be updated for family ${ this.displayName } ( registration number: ${ this.registrationNumber } ) - ${ err }` );
+					console.error( `region could not be updated for family ${ this.displayName } ( registration number: ${ this.registrationNumber } )`, err );
 					// resolve the promise so that the Promise.all() in the pre-save hook does not fail
 					resolve();
 				});
@@ -798,7 +797,7 @@ Family.schema.methods.updateRegion = function() {
 				// if there was an error fetching the city or town
 				.catch( err => {
 					// log the error for debugging purposes
-					console.error( `region could not be updated for family ${ this.displayName } ( registration number: ${ this.registrationNumber } ) - ${ err }` );
+					console.error( `region could not be updated for family ${ this.displayName } ( registration number: ${ this.registrationNumber } )`, err );
 					// resolve the promise so that the Promise.all() in the pre-save hook does not fail
 					resolve();
 				});
@@ -834,7 +833,7 @@ Family.schema.methods.setSocialWorkerAgencyFields = function() {
 			// if any of the promises were rejected
 			.catch( err => {
 				// log the error for debugging purposes
-				console.error( `error saving the family's social worker agency fields - ${ err }` );
+				console.error( `error saving the family's social worker agency fields`, err );
 				// clear out the social worker agency fields
 				this.socialWorkerAgency = undefined;
 				this.socialWorkerAgencyRegion = undefined;
@@ -877,7 +876,7 @@ Family.schema.methods.setGalleryViewingPermissions = function() {
 				// allow them to view only unrestricted children in the gallery
 				this.permissions.canViewAllChildren = false;
 				// log the error for debugging purposes
-				console.error( `gallery viewing permissions restricted by default for family ${ this.displayName } ( registration number: ${ this.registrationNumber } ) - ${ err }` );
+				console.error( `gallery viewing permissions restricted by default for family ${ this.displayName } ( registration number: ${ this.registrationNumber } )`, err );
 				// resolve the promise so that the Promise.all() in the pre-save hook does not fail
 				resolve();
 			});
@@ -908,7 +907,7 @@ Family.schema.methods.setRegistrationNumber = function() {
 				// if there was an error fetching the max registration number
 				.catch( err => {
 					// log the error for debugging purposes
-					console.error( `registration number could not be updated for family ${ this.displayName } ( registration number: ${ this.registrationNumber } ) - ${ err }` );
+					console.error( `registration number could not be updated for family ${ this.displayName } ( registration number: ${ this.registrationNumber } )`, err );
 					// resolve the promise so that the Promise.all() in the pre-save hook does not fail
 					resolve();
 				});
@@ -947,7 +946,7 @@ Family.schema.methods.setChangeHistory = function setChangeHistory() {
 			// if there was an error saving the record
 			}, err => {
 				// log the error for debugging purposes
-				console.error( `initial change history record could not be saved for family ${ this.displayName } ( registration number: ${ this.registrationNumber } ) - ${ err }` );
+				console.error( `initial change history record could not be saved for family ${ this.displayName } ( registration number: ${ this.registrationNumber } )`, err );
 				// reject the promise
 				reject();
 			});
@@ -2011,7 +2010,7 @@ Family.schema.methods.setChangeHistory = function setChangeHistory() {
 					// if there was an error saving the record
 					}, err => {
 						// log the error for debugging purposes
-						console.error( `change history record could not be saved for family ${ this.displayName } ( registration number: ${ this.registrationNumber } ) - ${ err }` );
+						console.error( `change history record could not be saved for family ${ this.displayName } ( registration number: ${ this.registrationNumber } )`, err );
 						// reject the promise
 						reject();
 					});

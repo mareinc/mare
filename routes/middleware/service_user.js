@@ -1,5 +1,5 @@
-const keystone = require('keystone'),
-	  User	   = require('../../models/User');
+const keystone = require( 'keystone' ),
+	  User	   = require( '../../models/User' );
 
 /* root through the passed in options and get/set the necessary information on res.locals for processing by each service request */
 exports.exposeGlobalOptions = function exposeGlobalOptions( req, res, options ) {
@@ -90,7 +90,7 @@ exports.getUserByEmail = ( email ) => {
 			.then( user => {
 				resolve( user );
 			}, err => {
-				console.error( `error fetching user by email ${ email } - ${ err } ` );
+				console.error( `error fetching user by email ${ email }`, err );
 				reject( err );
 			});
 	});
@@ -108,7 +108,7 @@ exports.getUserByPasswordResetToken = ( resetToken ) => {
 			.then( user => {
 				resolve( user );
 			}, err => {
-				console.error( `error fetching user by password reset token ${ resetToken } - ${ err }` );
+				console.error( `error fetching user by password reset token ${ resetToken }`, err );
 				reject( err );
 			});
 	});
@@ -128,23 +128,31 @@ exports.getUserByFullName = ( name, userType ) => {
 			.then( user => {
 				// if a user with the current email doesn't exist
 				if( !user ) {
-					return reject( `error fetching user by name ${ name } - no user record found with matching name` );
+					return reject( new Error( `error fetching user by name ${ name } - no user record found with matching name` ) );
 				}
 				// if the user exists, resolve the promise, returning the user object
 				resolve( user );
 			// if there was an error finding the user
 			}, err => {
 				// log the error for debugging purposes
-				console.error( `error fetching user by name: ${ name } - ${ err }` );
+				console.error( `error fetching user by name: ${ name }`, err );
 				reject();
 			});
 	});
 };
 
 /* IMPORTANT NOTE: The function below is a copy of one above that's bound to async.  Merge them once async is removed */
-exports.getUserByIdNew = ( id, targetModel, fieldsToPopulate = [] ) => {
+// TODO: targetModel should be a string, not a Keystone model (change in call locations)
+// TODO: rejecting the promise might cause downstream problems in the places this function is called (until they're switched to async/await)
+exports.getUserByIdNew = ( { id, targetModel, fieldsToPopulate = [] } ) => {
 
 	return new Promise( ( resolve, reject ) => {
+		// stop execution if required information is missing
+		if( !id ) {
+			return reject( new Error( `error fetching user by id - no id passed in` ) );
+		} else if( !targetModel ) {
+			return reject( new Error( `error fetching user by id - no target model passed in` ) );
+		}
 		// fetch the record from the specified model type using the passed in id value
 		targetModel.model
 			.findById( id )
@@ -164,7 +172,7 @@ exports.getUserByIdNew = ( id, targetModel, fieldsToPopulate = [] ) => {
 			// if there was an error fetching the user model
 			}, err => {
 				// log the error for debugging purposes
-				console.error( `there was an error fetching user by id ${ id } - ${ err }` );
+				console.error( `there was an error fetching user by id ${ id }`, err );
 				// reject the promise
 				reject();
 			});

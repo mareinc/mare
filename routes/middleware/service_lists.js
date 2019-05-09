@@ -21,7 +21,7 @@ exports.getAllRegions = () => {
 			// if an error was encountered fetching from the database
 			}, err => {
 				// log the error for debugging purposes
-				console.error( `error fetching the list of all regions - ${ err }` );
+				console.error( `error fetching the list of all regions`, err );
 				// reject the promise
 				reject();
 			});
@@ -40,7 +40,35 @@ exports.getRegionByName = name => {
 				// if no region could not be found
 				if( !region ) {
 					// reject the promise with an error message
-					return reject( `region could not be found by name: ${ name }` );
+					return reject( new Error( `region could not be found by name: ${ name }` ) );
+				}
+				// if the region was successfully returned, resolve with the model
+				resolve( region );
+			// if an error was encountered fetching from the database
+			}, err => {
+				// reject the promise
+				reject( err );
+			});
+	});
+};
+
+exports.getRegionById = id => {
+
+	return new Promise( ( resolve, reject ) => {
+		// if no id value was passed into the function
+		if ( !id ) {
+			// reject the promise with a description of the error
+			return reject( 'getRegionById cannot execute - no region ID provided' );
+		}
+		// query the database for the region with the matching _id
+		keystone.list( 'Region' ).model
+			.findById( id )
+			.exec()
+			.then( region => {
+				// if no region could not be found
+				if( !region ) {
+					// reject the promise with an error message
+					return reject( new Error( `region could not be found` ) );
 				}
 				// if the region was successfully returned, resolve with the model
 				resolve( region );
@@ -72,7 +100,7 @@ exports.getAllSocialWorkerPositions = () => {
 			// if an error was encountered fetching from the database
 			}, err => {
 				// log the error for debugging putposes
-				console.error( `error fetching the list of all social worker positions - ${ err }` );
+				console.error( `error fetching the list of all social worker positions`, err );
 				// reject the promise
 				reject();
 			});
@@ -111,13 +139,14 @@ exports.getAllRaces = options => {
 			// if an error was encountered fetching from the database
 			}, err => {
 				// log the error for debugging purposes
-				console.error( `error fetching the list of races - ${ err }` );
+				console.error( `error fetching the list of races`, err );
 				// reject the promise
 				reject();
 			});
 	});
 };
 
+// TODO: setting the default state doesn't make sense here, this should be a pure fetch function
 exports.getAllStates = options => {
 
 	return new Promise( ( resolve, reject ) => {
@@ -143,14 +172,13 @@ exports.getAllStates = options => {
 							state.defaultSelection = true;
 						}
 					};
-
 				}
 				// resolve with the returned array of states
 				resolve( states );
 			// if an error was encountered fetching from the database
 			}, err => {
 				// log the error for debugging purposes
-				console.error( `error fetching the list of all states - ${ err }` );
+				console.error( `error fetching the list of all states`, err );
 				// reject the promise
 				reject();
 			});
@@ -163,7 +191,7 @@ exports.getStateById = id => {
 		// if no id value was passed into the function
 		if ( !id ) {
 			// reject the promise with a description of the error
-			return reject( 'getStateById cannot execute - no state ID provided' );
+			return reject( 'no id provided' );
 		}
 		// query the database for the state with the matching _id
 		keystone.list( 'State' ).model
@@ -173,7 +201,7 @@ exports.getStateById = id => {
 				// if no state could not be found
 				if( !state ) {
 					// reject the promise with an error message
-					return reject( `state could not be found` );
+					return reject( new Error( `state could not be found` ) );
 				}
 				// if the state was successfully returned, resolve with the model
 				resolve( state );
@@ -205,7 +233,7 @@ exports.getAllGenders = () => {
 			// if an error was encountered fetching from the database
 			}, err => {
 				// log the error for debugging purposes
-				console.error( `error fetching the list of all genders - ${ err }` );
+				console.error( `error fetching the list of all genders`, err );
 				// reject the promise
 				reject();
 			});
@@ -232,7 +260,7 @@ exports.getAllLegalStatuses = () => {
 			// if an error was encountered fetching from the database
 			}, err => {
 				// log the error for debugging purposes
-				console.error( `error fetching the list of all legal statuses - ${ err }` );
+				console.error( `error fetching the list of all legal statuses`, err );
 				// reject the promise
 				reject();
 			});
@@ -259,7 +287,7 @@ exports.getAllLanguages = () => {
 			// if an error was encountered fetching from the database
 			}, err => {
 				// log the error for debugging purposes
-				console.error( `error fetching the list of all languages - ${ err }` );
+				console.error( `error fetching the list of all languages`, err );
 				// reject the promise
 				reject();
 			});
@@ -286,7 +314,7 @@ exports.getAllFamilyConstellations = () => {
 			// if an error was encountered fetching from the database
 			}, err => {
 				// log the error for debugging purposes
-				console.error( `error fetching the list of all family constellations - ${ err }` );
+				console.error( `error fetching the list of all family constellations`, err );
 				// reject the promise
 				reject();
 			});
@@ -313,7 +341,7 @@ exports.getAllDisabilities = () => {
 			// if an error was encountered fetching from the database
 			}, err => {
 				// log the error for debugging purposes
-				console.error( `error fetching the list of all disabilities - ${ err }` );
+				console.error( `error fetching the list of all disabilities`, err );
 				// reject the promise
 				reject();
 			});
@@ -340,7 +368,7 @@ exports.getAllOtherConsiderations = () => {
 			// if an error was encountered fetching from the database
 			}, err => {
 				// log the error for debugging purposes
-				console.error( `error fetching the list of all other considerations - ${ err }` );
+				console.error( `error fetching the list of all other considerations`, err );
 				// reject the promise
 				reject();
 
@@ -369,7 +397,7 @@ exports.getChildTypesForWebsite = () => {
 			// if an error was encountered fetching from the database
 			}, err => {
 				// log the error for debugging purposes
-				console.error( `error fetching the list of all child types meant for website display - ${ err }` );
+				console.error( `error fetching the list of all child types meant for website display`, err );
 				// reject the promise
 				reject();
 
@@ -398,7 +426,7 @@ exports.getEventTypesForWebsite = () => {
 			// if an error was encountered fetching from the database
 			}, err => {
 				// log the error for debugging purposes
-				console.error( `error fetching the list of all event types meant for website display - ${ err }` );
+				console.error( `error fetching the list of all event types meant for website display`, err );
 				// reject the promise
 				reject();
 			});
@@ -437,7 +465,7 @@ exports.getAllWaysToHearAboutMARE = options => {
 		// if an error was encountered fetching from the database
 		}, err => {
 			// log the error for debugging purposes
-			console.error( `error fetching the list of ways to hear about MARE - ${ err }` );
+			console.error( `error fetching the list of ways to hear about MARE`, err );
 			// reject the promise
 			reject();
 		});
@@ -464,7 +492,7 @@ exports.getAllResidences = () => {
 			// if an error was encountered fetching from the database
 			}, err => {
 				// log the error for debugging purposes
-				console.error( `error fetching the list of residences - ${ err }` );
+				console.error( `error fetching the list of residences`, err );
 				// reject the promise
 				reject();
 			});
@@ -491,7 +519,7 @@ exports.getAllOtherFamilyConstellationConsiderations = () => {
 			// if an error was encountered fetching from the database
 			}, err => {
 				// log the error for debugging purposes
-				console.error( `error fetching the list of other family constellation considerations - ${ err }` );
+				console.error( `error fetching the list of other family constellation considerations`, err );
 				// reject the promise
 				reject();
 			});
@@ -519,7 +547,7 @@ exports.getAllCitiesAndTowns = () => {
 			// if an error was encountered fetching from the database
 			}, err => {
 				// log the error for debugging purposes
-				console.error( `error fetching the list of cities and towns - ${ err }` );
+				console.error( `error fetching the list of cities and towns`, err );
 				// reject the promise
 				reject();
 			});
@@ -529,6 +557,11 @@ exports.getAllCitiesAndTowns = () => {
 exports.getCityOrTownById = id => {
 
 	return new Promise( ( resolve, reject ) => {
+
+		if( !id ) {
+			return reject( 'no id provided' );
+		}
+		
 		// query the database for the city or town with the matching _id
 		keystone.list( 'City or Town' ).model
 			.findById( id )
@@ -537,7 +570,7 @@ exports.getCityOrTownById = id => {
 				// if no city or town could not be found
 				if( !city ) {
 					// reject the promise with an error message
-					return reject( `city or town could not be found` );
+					return reject( new Error( `city or town could not be found` ) );
 				}
 				// if the city or town was successfully returned, resolve with the model
 				resolve( city );
@@ -594,7 +627,7 @@ exports.getInquiryMethodByName = name => {
 			// if there was an error fetching from the database
 			}, err => {
 				// log an error for debugging purposes
-				console.error( `error fetching inquiry method matching ${ name } - ${ err }` );
+				console.error( `error fetching inquiry method matching ${ name }`, err );
 				// and reject the promise
 				reject();
 			});
@@ -603,28 +636,28 @@ exports.getInquiryMethodByName = name => {
 
 exports.getSourceByName = name => {
 
-		return new Promise( ( resolve, reject ) => {
-			// attempt to find a single source matching the passed in name
-			keystone.list( 'Source' ).model
-				.findOne()
-				.where( 'source' ).equals( name )
-				.exec()
-				.then( source => {
-					// if the target source could not be found
-					if( !source ) {
-						// log an error for debugging purposes
-						console.error( `no source matching name '${ name } could be found` );
-						// reject the promise
-						return reject();
-					}
-					// if the target source was found, resolve the promise with the lean version of the object
-					resolve( source );
-				// if there was an error fetching from the database
-				}, err => {
+	return new Promise( ( resolve, reject ) => {
+		// attempt to find a single source matching the passed in name
+		keystone.list( 'Source' ).model
+			.findOne()
+			.where( 'source' ).equals( name )
+			.exec()
+			.then( source => {
+				// if the target source could not be found
+				if( !source ) {
 					// log an error for debugging purposes
-					console.error( `error fetching source matching ${ name } - ${ err }` );
-					// and reject the promise
-					reject();
-				});
-		});
-	};
+					console.error( `no source matching name '${ name } could be found` );
+					// reject the promise
+					return reject();
+				}
+				// if the target source was found, resolve the promise with the lean version of the object
+				resolve( source );
+			// if there was an error fetching from the database
+			}, err => {
+				// log an error for debugging purposes
+				console.error( `error fetching source matching ${ name }`, err );
+				// and reject the promise
+				reject();
+			});
+	});
+};

@@ -24,7 +24,7 @@ exports.getMaxRegistrationNumber = function() {
 
 				resolve( 0 );
 			}, err => {
-				reject( `error fetching maximum registration number for children` );
+				reject( new Error( `error fetching maximum registration number for children` ) );
 			});
 	});
 };
@@ -233,14 +233,14 @@ exports.getChildrenByIds = idsArray => {
 				// if no children were returned
 				if( children.length === 0 ) {
 					// reject the promise with the reason why
-					reject( `error fetching children by id array - no children found with ids ${ idsArray }` );
+					reject( new Error( `error fetching children by id array - no children found with ids ${ idsArray }` ) );
 				}
 				// resolve the promise with the returned children
 				resolve( children );
 			// if an error occurred fetching from the database
 			}, err => {
 				// reject the promise with details of the error
-				reject( `error fetching children by id array ${ idsArray } - ${ err }` );
+				reject( new Error( `error fetching children by id array ${ idsArray }` ) );
 			});
 	});
 };
@@ -354,6 +354,7 @@ exports.setNoChildImage = ( req, res, child, canViewAllChildren ) => {
 		}
 	}
 };
+
 // TODO: combine the below two functions, and adjust the calling code to pass and accept arrays
 exports.getChildByRegistrationNumber = ( req, res, done, registrationNumber ) => {
 	// store a reference to locals
@@ -733,6 +734,7 @@ exports.getSiblingGroupDetails = ( req, res, next ) => {
 			done();
 		});
 };
+
 // TODO: this shouldn't return the id, but the entire model to be manipulated by the caller, as should all of these fetch functions
 // TODO: this should be moved to the list service
 exports.fetchChildStatusId = status => {
@@ -757,7 +759,7 @@ exports.fetchChildStatusId = status => {
 			// if an error was encountered
 			}, err => {
 				// reject the promise with details of the error
-				reject( `error fetching child status matching ${ status }` );
+				reject( new Error( `error fetching child status matching ${ status }` ) );
 			});
 	});
 };
@@ -812,7 +814,7 @@ exports.registerChild = ( req, res, next ) => {
 				// overwrite the default contact details with the returned object
 				.then( staffEmailContact => staffEmailContactInfo = staffEmailContact.staffEmailContact )
 				// log any errors fetching the staff email contact
-				.catch( err => console.error( `error fetching email contact for social worker child registration, default contact info will be used instead - ${ err }` ) )
+				.catch( err => console.error( `error fetching email contact for social worker child registration, default contact info will be used instead`, err ) )
 				// check on the attempt to fetch the newly saved child
 				.then( () => fetchChild )
 				// send a notification email to MARE
@@ -822,19 +824,19 @@ exports.registerChild = ( req, res, next ) => {
 					return socialWorkerChildRegistrationEmailService.sendNewSocialWorkerChildRegistrationNotificationEmailToMARE( rawChildData, fetchedChild, staffEmailContactInfo );
 				})
 				// if there was an error sending the email to MARE staff
-				.catch( err => console.error( `error sending new child registered by social worker email to MARE staff - ${ err }` ) );
+				.catch( err => console.error( `error sending new child registered by social worker email to MARE staff`, err ) );
 
 			fetchChild
 				// send a notification email to the social worker
 				// NOTE: both the form data and the newly saved child are passed in as both contain information that belongs in the email
 				.then( fetchedChild => socialWorkerChildRegistrationEmailService.sendNewSocialWorkerChildRegistrationNotificationEmailToSocialWorker( rawChildData, fetchedChild, req.user.get( 'email' ), locals.host ) )
 				// if there was an error sending the email to MARE staff
-				.catch( err => console.error( `error sending new child registered by social worker email to social worker ${ req.user.name.full } - ${ err }` ) );
+				.catch( err => console.error( `error sending new child registered by social worker email to social worker ${ req.user.name.full }`, err ) );
 		})
 		// if there was an error saving the new child record
 		.catch( err => {
 			// log the error for debugging purposes
-			console.error( `error saving social worker registered child - ${ err }` );
+			console.error( `error saving social worker registered child`, err );
 			// create an error flash message
 			req.flash( 'error', {
 					title: `There was an error submitting this child registration.`,
@@ -910,13 +912,104 @@ exports.saveChild = ( child, activeChildStatusId ) => {
 			// if there was an issue saving the new child
 			if( err ) {
 				// reject the promise with a descriptive message
-				return reject( `error saving new child registered by social worker -  ${ err }` );
+				return reject( new Error( `error saving new child registered by social worker` ) );
 			}
 			// resolve the promise with the newly saved child model
 			resolve( model );
 		});
 	});
-}
+};
+
+/* Cron job function used to batch save all child models */
+exports.saveAllChildren = () => {
+
+	return new Promise( async ( resolve, reject ) => {
+
+		try {
+			// start with the first page of children
+			let page = 1,
+				childrenPerPage = 25;
+
+			// create an array of errors to display once all models have been saved
+			let errors = [];
+
+			// pages will increment until there are no more pages, at which point it will be set to false
+			while( page ) {
+				// log the progress to make tracking of each run easier to monitor
+				if( ( page * childrenPerPage ) % 100 === 0 ) {
+					console.log( `saving child ${ page * childrenPerPage }` );
+				}
+				// fetch the current page of children
+				try {
+					// destructure the results of the fetch into two local variables
+					const { children, nextPage } = await exports.fetchChildrenByPage( { page, childrenPerPage } );
+					// loop through the fetched page of children
+					for( let child of children ) {
+						// attempt to save the child and log an error if one occurred
+						try {
+							await child.save();
+						}
+						catch( err ) {
+							errors.push( `error saving child ${ child.displayNameAndRegistration } - ${ err }` );
+						}
+					}
+					// increment the page to allow fetching of the next batch of children
+					page = nextPage;
+				}
+				// if there was an error, log it and don't increment the page to allow another attempt at fetching it
+				catch( err ) {
+					console.error( `error fetching page ${ page } of children`, err );
+				}
+			}
+
+			// log each of the errors to the console
+			for( let error of errors ) {
+				console.error( error );
+			}
+			
+			// if there were errors, resolve the promise with an error state and return the errors
+			if( errors.length > 0 ) {
+				return resolve( {
+					status: 'errors',
+					errors
+				});
+			}
+			// if there were no errors, resolve the pormise with a success state
+			return resolve({
+				status: 'success'
+			});
+		}
+		catch( err ) {
+			console.error( `error saving all children`, err );
+		}
+	});
+};
+
+exports.fetchChildrenByPage = ( { page = 1, childrenPerPage = 25, filters = {} } ) => {
+
+	return new Promise( ( resolve, reject ) => {
+		// fetch the requested page of child records, 
+		keystone.list( 'Child' )
+			.paginate ({
+				page: page,
+				perPage: childrenPerPage,
+				filters: filters
+			})
+			.exec ( ( err, children ) => {
+				// if there was an error fetching the children
+				if( err ) {
+					// reject the promise with the error
+					return reject( new Error( `page ${ page } could not be fetched` ) );
+				}
+
+				// resolve the promise with the children and the next page to fetch ( false if this is the last page )
+				resolve({
+					children: children.results,
+					nextPage: children.next
+				});
+			});
+	});
+};
 
 // ------------------------------------------------------------------------------------------ //
 
@@ -962,7 +1055,7 @@ exports.getChildByRegistrationNumberNew = ( registrationNumber, fieldsToPopulate
 			// if there was an error fetching from the database
 			}, err => {
 				// log an error for debugging purposes
-				console.error( `error fetching child matching registration number ${ registrationNumber } - ${ err }` );
+				console.error( `error fetching child matching registration number ${ registrationNumber }`, err );
 				// and reject the promise
 				reject();
 			});
@@ -1006,7 +1099,7 @@ exports.getChildrenByRegistrationNumbersNew = registrationNumbers => {
 			// if there was an error fetching from the database
 			}, err => {
 				// log an error for debugging purposes
-				console.error( `error fetching children matching registration numbers ${ registrationNumbers.join( ', ' ) } - ${ err }` );
+				console.error( `error fetching children matching registration numbers ${ registrationNumbers.join( ', ' ) }`, err );
 				// and reject the promise
 				reject();
 			});
@@ -1019,7 +1112,7 @@ exports.getChildById = ( { id, fieldsToPopulate = [] } ) => {
 		// if no id was passed in
 		if( !id ) {
 			// reject the promise with details about the error
-			reject( `no id provided` );
+			reject( new Error( `no id provided` ) );
 		}
 		// attempt to find a single child matching the passed in registration number
 		keystone.list( 'Child' ).model
@@ -1030,14 +1123,14 @@ exports.getChildById = ( { id, fieldsToPopulate = [] } ) => {
 				// if the target child could not be found
 				if( !child ) {
 					// reject the promise with details about the error
-					return reject( `no child matching id '${ id } could be found` );
+					return reject( new Error( `no child matching id '${ id } could be found` ) );
 				}
 				// if the target child was found, resolve the promise with the model
 				resolve( child );
 			// if there was an error fetching from the database
 			}, err => {
 				// reject the promise with details about the error
-				reject( `error fetching child matching id ${ id } - ${ err }` );
+				reject( new Error( `error fetching child matching id ${ id }` ) );
 			});
 	});
 };

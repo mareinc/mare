@@ -56,7 +56,7 @@ SiteVisitor.add( 'Permissions', {
 		cityText: { type: Types.Text, label: 'city', dependsOn: { 'address.isOutsideMassachusetts': true }, initial: true },
 		state: { type: Types.Relationship, label: 'state', ref: 'State', initial: true },
 		zipCode: { type: Types.Text, label: 'zip code', initial: true, validate: Validators.zipValidator }
-	}
+    }
 
 }, 'Info Preferences', {
 
@@ -74,7 +74,6 @@ SiteVisitor.add( 'Permissions', {
 });
 
 // Set up relationship values to show up at the bottom of the model if any exist
-SiteVisitor.relationship( { ref: 'Mailing List', refPath: 'siteVisitorSubscribers', path: 'mailing-lists', label: 'mailing lists' } );
 SiteVisitor.relationship( { ref: 'Event', refPath: 'siteVisitorAttendees', path: 'events', label: 'events' } );
 SiteVisitor.relationship( { ref: 'Donation', refPath: 'siteVisitor', path: 'donations', label: 'donations' } );
 

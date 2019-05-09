@@ -1,6 +1,6 @@
 // Simulate config options from your production environment by
 // customising the .env file in your project's root folder.
-require( 'dotenv' ).load();
+require( 'dotenv' ).config();
 
 // Initialise New Relic if an app name and license key exists
 if( process.env.NEW_RELIC_APP_NAME && process.env.NEW_RELIC_LICENSE_KEY ) {
@@ -8,9 +8,10 @@ if( process.env.NEW_RELIC_APP_NAME && process.env.NEW_RELIC_LICENSE_KEY ) {
 }
 
 // Initialize application
-var keystone = require( 'keystone' ),
-	handlebars = require( 'express-handlebars' ),
-	fs = require( 'fs' );
+const keystone = require( 'keystone' ),
+	  handlebars = require( 'express-handlebars' ),
+	  cron = require( './bin/cron' ),
+	  fs = require( 'fs' );
 
 keystone.init({
 
@@ -120,7 +121,7 @@ keystone.set( 'email locals', {
 		if ( keystone.get( 'env' ) === 'development' ) { return 'http://development.adoptions.io'; }
 		if ( keystone.get( 'env' ) === 'staging' ) { return 'http://staging.adoptions.io'; }
 		if ( keystone.get( 'env' ) === 'production' ) { return 'https://www.mareinc.org'; }
-		
+
 		return ( keystone.get( 'host' ) || 'http://localhost:' ) + (keystone.get( 'port' ) || '3000' );
 	})()
 });
@@ -131,7 +132,7 @@ keystone.set( 'nav', {
 						   'contact-groups' ],
 	'other'				: [ 'account-verification-codes', 'agencies', 'inquiries', 'internal-notes', 'mare-in-the-news' ],
 	'events'			: [ 'events' ],
-	'mailing lists'		: [ 'mailing-lists' ],
+	'mailing lists'		: [ 'mailchimp-lists' ],
 	'placements'		: [ 'matches', 'placements', 'legalizations', 'disruptions' ],
 	'relationships'		: [ 'csc-region-contacts', 'staff-email-contacts', 'media-features' ],
 	'change tracking'	: [ 'child-histories', 'family-histories', 'social-worker-histories' ],
@@ -139,12 +140,17 @@ keystone.set( 'nav', {
 	'images'			: [ 'featured-items', 'slideshows', 'slideshow-items' ],
 	'content pages'		: [ 'pages' ],
 	'content snippets'	: [ 'success-stories' ],
-	'lists'				: [ 'child-statuses', 'child-types', 'city-or-towns', 'closed-reasons', 'communication-methods', 'disabilities', 
+	'lists'				: [ 'child-statuses', 'child-types', 'city-or-towns', 'closed-reasons', 'communication-methods', 'disabilities',
 						    'email-targets', 'event-types', 'family-constellations', 'family-statuses', 'genders', 'inquiry-methods',
 						    'inquiry-types', 'languages', 'legal-statuses', 'match-determinations', 'media-eligibilities',
 							'media-types', 'other-considerations', 'other-family-constellation-considerations', 'races', 'regions',
 							'residences', 'social-worker-positions', 'sources', 'states', 'way-to-hear-about-mares' ]
 });
 
-// Start Keystone to connect to your database and initialise the web server
-keystone.start();
+// Start Keystone to connect to the database and initialise the web server
+keystone.start( () => {
+	// set up an hourly task to deactivate events in the past
+	cron.scheduleEventDeactivator();
+	// set up a nightly task to save models meant to keep siblings in sync and data propagating through models
+	cron.scheduleModelSaver();
+});

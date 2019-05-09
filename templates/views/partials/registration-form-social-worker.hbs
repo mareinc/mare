@@ -150,19 +150,25 @@
 
 		<section class="social-worker-mare-and-you-section">
 			<div class="form-section-header">Mare &amp; You</div>
-			{{#each mailingLists }}
-			{{#if showOnSocialWorkerRegistrationPage}}
-			<div class="row form-group">
-				<div class="col-sm-12">
-					<label class="label marg-bottom-xs-5">{{ displayText }}</label>
+			<div class="row">
+				<div class="col-sm-24 form-group">
+					<label class="label marg-bottom-xs-5">Which mailing lists would you like to receive?</label>
 				</div>
-				<div class="col-sm-12">
-					<label class="radio-inline"><input type="radio" name="mailingLists[{{@index}}]" value={{ _id }} checked="checked">Yes</label>
-					<label class="radio-inline"><input type="radio" name="mailingLists[{{@index}}]" value="">No</label>
+				<div class="col-sm-16">
+					{{#each mailingLists}}
+					<div class="row form-group">
+						<div class="col-sm-12">
+							<label class="label marg-bottom-xs-5">{{ displayText }}</label>
+						</div>
+						<div class="col-sm-12">
+							<label class="radio-inline"><input type="radio" name="mailingLists[{{@index}}]" value={{ _id }}
+									checked="checked">Yes</label>
+							<label class="radio-inline"><input type="radio" name="mailingLists[{{@index}}]" value="">No</label>
+						</div>
+					</div>
+					{{/each}}
 				</div>
 			</div>
-			{{/if}}
-			{{/each}}
 		</section>
 
 		<button class="button button--teal register" type="submit">Register</button>

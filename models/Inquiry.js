@@ -75,7 +75,7 @@ Inquiry.schema.pre( 'save', function( next ) {
 	// attempt to populate any derived fields for child inquiries
 	this.populateDerivedFields()
 		// if there was an error populating the derived fields, log the error
-		.catch( err => console.error( `error populating fields for inquiry with id ${ this.get( '_id' ) } - ${ err }` ) )
+		.catch( err => console.error( `error populating fields for inquiry with id ${ this.get( '_id' ) }`, err ) )
 		// TODO: this should be moved into it's own method
 		.then( () => {
 			
@@ -164,7 +164,7 @@ Inquiry.schema.pre( 'save', function( next ) {
 	// 	// if the child was fetched successfully, add them to the inquiryData object for future reference
 	// 	.then( child => inquiryData.child = child )
 	// 	// if the child wasn't fetched successfully, log an error
-	// 	.catch( err => console.error( `error fetching child for ${ inquiryData.inquiryType } ${ this.get( '_id' ) } - ${ err }` ) )
+	// 	.catch( err => console.error( `error fetching child for ${ inquiryData.inquiryType } ${ this.get( '_id' ) }`, err ) )
 	// 	// fetch the child's social worker
 	// 	.then( () => {
 	// 		// if a child should have been fetched, but wasn't
@@ -181,7 +181,7 @@ Inquiry.schema.pre( 'save', function( next ) {
 	// 	// if the child's social worker was fetched successfully, add them to the inquiryData object for future reference
 	// 	.then( socialWorker => inquiryData.childsSocialWorker = socialWorker )
 	// 	// if there was an error fetching the child's social worker, log the error
-	// 	.catch( err => console.error( `error fetching the CSC region contact for ${ inquiryData.inquiryType } ${ this.get( '_id' ) } - ${ err }` ) )
+	// 	.catch( err => console.error( `error fetching the CSC region contact for ${ inquiryData.inquiryType } ${ this.get( '_id' ) }`, err ) )
 	// 	// fetch the CSC contact for the child's region
 	// 	// REFACTOR NOTE: not applicable for general inquiries, would set inquiryData.childsSocialWorker and inquiryData.hasChildsSocialWorker
 	// 	.then( () => {
@@ -199,7 +199,7 @@ Inquiry.schema.pre( 'save', function( next ) {
 	// 	// if the CSC region contact was fetched successfully, add them to the inquiryData object for future reference
 	// 	.then( CSCRegionContact => inquiryData.CSCRegionContact = CSCRegionContact )
 	// 	// if there was an error fetching the CSC region contact, log the error
-	// 	.catch( err => console.error( `error fetching the CSC region contact for ${ inquiryData.inquiryType } ${ this.get( '_id' ) } - ${ err }` ) )
+	// 	.catch( err => console.error( `error fetching the CSC region contact for ${ inquiryData.inquiryType } ${ this.get( '_id' ) }`, err ) )
 
 
 	// NOTE: all checks for whether to run each function below exist within the functions themselves
@@ -238,7 +238,7 @@ Inquiry.schema.methods.populateDerivedFields = function() {
 			// if there was an error populating the specified fields on the inquiry model
 			if ( err ) {
 				// reject the promise with details of the error, preventing the rest of the function from executing
-				return reject( `error populating inquiry fields with id ${ this.get( '_id' ) }` );
+				return reject( new Error( `error populating inquiry fields with id ${ this.get( '_id' ) }` ) );
 			}
 
 			const firstChild = this.get( 'children' ).length > 0 ? this.get( 'children' )[ 0 ] : undefined;
@@ -253,7 +253,7 @@ Inquiry.schema.methods.populateDerivedFields = function() {
 				// if there was an error populating the child model fields
 				if ( err ) {
 					// reject the promise with details of the error, preventing the rest of the function from executing
-					return reject( `error populating child with registration number ${ firstChild.get( 'registrationNumber' ) } for inquiry with id ${ this.get( '_id' ) }` );
+					return reject( new Error( `error populating child with registration number ${ firstChild.get( 'registrationNumber' ) } for inquiry with id ${ this.get( '_id' ) }` ) );
 				}
 				// store the child's adoption worker
 				const adoptionWorker = firstChild.get( 'adoptionWorker' );
