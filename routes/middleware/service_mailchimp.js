@@ -22,10 +22,7 @@ exports.getMailingLists = function getMailingLists() {
             path: '/lists'
         })
         .then( mailingLists => resolve( mailingLists ) )
-        .catch( error => {
-            console.error( error );
-            reject( error );
-        });
+        .catch( err => reject( err ) );
     });
 };
 
@@ -41,7 +38,7 @@ exports.getMailingList = function getMailingList( mailingListId ) {
     return new Promise( ( resolve, reject ) => {
 
         if ( !mailingListId ) {
-            return reject( 'getMailingList failed - no mailingListId was provided.' );
+            return reject( new Error( 'getMailingList failed - no mailingListId was provided.' ) );
         }
 
         _mailchimp.request({
@@ -52,10 +49,7 @@ exports.getMailingList = function getMailingList( mailingListId ) {
             }
         })
         .then( mailingList => resolve( mailingList ) )
-        .catch( error => {
-            console.error( error );
-            reject( error );
-        });
+        .catch( err => reject( err ) );
     });
 };
 
@@ -72,7 +66,7 @@ exports.subscribeMemberToList = function subscribeMemberToList( { email, mailing
     return new Promise( ( resolve, reject ) => {
 
         if ( !email || !mailingListId ) {
-            return reject( 'subscribeMemberToList failed - email or mailingListId was not provided.' );
+            return reject( new Error( 'subscribeMemberToList failed - email or mailingListId was not provided.' ) );
         }
 
         // tag the member with their user type (if known)
@@ -99,10 +93,7 @@ exports.subscribeMemberToList = function subscribeMemberToList( { email, mailing
             }
         })
         .then( subscriber => resolve( subscriber ) )
-        .catch( error => {
-            console.error( error );
-            reject( error );
-        });
+        .catch( err => reject( err ) );
     });
 };
 
@@ -119,7 +110,7 @@ exports.subscribeMemberToList = function subscribeMemberToList( { email, mailing
     return new Promise( ( resolve, reject ) => {
 
         if ( !email || !mailingListId ) {
-            return reject( 'unsubscribeMemberFromList failed - email or mailingListId was not provided.' );
+            return reject( new Error( 'unsubscribeMemberFromList failed - email or mailingListId was not provided.' ) );
         }
 
         _mailchimp.request({
@@ -134,10 +125,7 @@ exports.subscribeMemberToList = function subscribeMemberToList( { email, mailing
             }
         })
         .then( status => resolve( status ) )
-        .catch( error => {
-            console.error( error );
-            reject( error );
-        });
+        .catch( err => reject( err ) );
     });
  };
 
@@ -155,7 +143,7 @@ exports.updateMemberEmail = function updateMemberEmail( currentEmail, updatedEma
     return new Promise( ( resolve, reject ) => {
 
         if ( !currentEmail || !updatedEmail || !mailingListId ) {
-            return reject( 'updateMemberEmail failed - currentEmail, updatedEmail, or mailingListId was not provided.' );
+            return reject( new Error( 'updateMemberEmail failed - currentEmail, updatedEmail, or mailingListId was not provided.' ) );
         }
 
         _mailchimp.request({
@@ -170,10 +158,7 @@ exports.updateMemberEmail = function updateMemberEmail( currentEmail, updatedEma
             }
         })
         .then( subscriber => resolve( subscriber ) )
-        .catch( error => {
-            console.error( error );
-            reject( error );
-        });
+        .catch( err => reject( err ) );
     });
 };
 
@@ -190,7 +175,7 @@ exports.addTagToMember = function addTagToMember( tagName, email, mailingListId 
     return new Promise( ( resolve, reject ) => {
 
         if ( !tagName || !email || !mailingListId ) {
-            return reject( 'addTagToMember failed - tagName, email, or mailingListId was not provided.' );
+            return reject( new Error( 'addTagToMember failed - tagName, email, or mailingListId was not provided.' ) );
         }
 
         _mailchimp.request({
@@ -210,10 +195,7 @@ exports.addTagToMember = function addTagToMember( tagName, email, mailingListId 
             }
         })
         .then( status => resolve( status ) )
-        .catch( error => {
-            console.error( error );
-            reject( error );
-        });
+        .catch( err => reject( err ) );
     });
 };
 
@@ -235,7 +217,7 @@ exports.processWebhookUpdates = function processWebhookUpdates( req, res, next )
 
     // ensure the request data exists in the expected format
     if ( !req.body || !req.body.data ) {
-        return next('Error processing Mailchimp webhook - empty or malformed request body');
+        return next( new Error( 'Error processing Mailchimp webhook - empty or malformed request body') );
     }
     // destructure request data
     let {
@@ -264,10 +246,7 @@ exports.processWebhookUpdates = function processWebhookUpdates( req, res, next )
                 return userDoc.save();
             })
             .then( () => res.status( 200 ).send() )
-            .catch( error => {
-                console.error( error );
-                next( error );
-            });
+            .catch( err => next ( err ) );
             break;
         case 'unsubscribe':
             keystone.list( 'User' ).model
@@ -280,12 +259,9 @@ exports.processWebhookUpdates = function processWebhookUpdates( req, res, next )
                     return userDoc.save();
                  })
                 .then( () => res.status( 200 ).send() )
-                .catch( error => {
-                    console.error( error );
-                    next( error );
-                });
+                .catch( err => next ( err ) );
             break;
         default:
-            return next(`Error processing Mailchimp webhook - unknown action encountered: ${action}`);
+            return next( new Error( `Error processing Mailchimp webhook - unknown action encountered: ${action}` ) );
     }
 };
