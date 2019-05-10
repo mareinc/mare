@@ -294,7 +294,7 @@ Family.add( 'Permissions', {
 	registeredWithMARE: {
 		registered: { type: Types.Boolean, label: 'registered with MARE', default: false, initial: true },
 		date: { type: Types.Date, label: 'date registered with MARE', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { 'registeredWithMARE.registered': true }, initial: true },
-		status: { type: Types.Relationship, label: 'status', ref: 'Child Status', dependsOn: { 'registeredWithMARE.registered': true }, initial: true }
+		status: { type: Types.Relationship, label: 'status', ref: 'Family Status', dependsOn: { 'registeredWithMARE.registered': true }, initial: true }
 	},
 
 	familyProfile: {
