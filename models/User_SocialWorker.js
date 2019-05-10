@@ -57,7 +57,7 @@ SocialWorker.add( 'Permissions', {
 		work: { type: Types.Text, label: 'work phone number', initial: true, validate: Validators.phoneValidator },
 		mobile: { type: Types.Text, label: 'mobile phone number', initial: true, validate: Validators.phoneValidator },
 		preferred: { type: Types.Select, label: 'preferred phone', options: 'work, mobile', initial: true }
-	}
+    }
 
 }, 'Social Worker Information', {
 
@@ -97,7 +97,6 @@ SocialWorker.relationship( { ref: 'Child', refPath: 'recruitmentWorker', path: '
 SocialWorker.relationship( { ref: 'Family', refPath: 'socialWorker', path: 'families', label: 'families' } );
 SocialWorker.relationship( { ref: 'Inquiry', refPath: 'socialWorker', path: 'my-inquiries', label: 'my inquiries' } );
 SocialWorker.relationship( { ref: 'Inquiry', refPath: 'childsSocialWorker', path: 'family-inquiries', label: 'family inquiries' } );
-SocialWorker.relationship( { ref: 'Mailing List', refPath: 'socialWorkerSubscribers', path: 'mailing-lists', label: 'mailing lists' } );
 SocialWorker.relationship( { ref: 'Event', refPath: 'socialWorkerAttendees', path: 'events', label: 'events' } );
 SocialWorker.relationship( { ref: 'Donation', refPath: 'socialWorker', path: 'donations', label: 'donations' } );
 SocialWorker.relationship( { ref: 'Internal Note', refPath: 'socialWorker', path: 'internal-notes', label: 'internal notes' } );
@@ -136,7 +135,7 @@ SocialWorker.schema.pre( 'save', function( next ) {
 	this.setFullName();
 	// all user types that can log in derive from the User model, this allows us to identify users better
 	this.setUserType();
-	
+
 	 next();
 });
 
@@ -144,7 +143,7 @@ SocialWorker.schema.post( 'save', function() {
 
 	// we need this id in case the family was created via the website and updatedBy is empty
 	const websiteBotFetched = UserServiceMiddleware.getUserByFullName( 'Website Bot', 'admin' );
-	
+
 	// if the bot user was fetched successfully
 	websiteBotFetched
 		.then( bot => {
@@ -166,7 +165,7 @@ SocialWorker.schema.post( 'save', function() {
 
 /* text fields don't automatically trim(), this is to ensure no leading or trailing whitespace gets saved into url, text, or text area fields */
 SocialWorker.schema.methods.trimTextFields = function() {
-	
+
 	if( this.get( 'name.first' ) ) {
 		this.set( 'name.first', this.get( 'name.first' ).trim() );
 	}
@@ -276,7 +275,7 @@ SocialWorker.schema.methods.setChangeHistory = function() {
 												name: 'email',
 												label: 'email address',
 												type: 'string' }, model, modelBefore, changeHistory, done);
-				},		
+				},
 				done => {
 					ChangeHistoryMiddleware.checkFieldForChanges({
 												name: 'isActive',

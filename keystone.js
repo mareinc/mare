@@ -121,7 +121,7 @@ keystone.set( 'email locals', {
 		if ( keystone.get( 'env' ) === 'development' ) { return 'http://development.adoptions.io'; }
 		if ( keystone.get( 'env' ) === 'staging' ) { return 'http://staging.adoptions.io'; }
 		if ( keystone.get( 'env' ) === 'production' ) { return 'https://www.mareinc.org'; }
-		
+
 		return ( keystone.get( 'host' ) || 'http://localhost:' ) + (keystone.get( 'port' ) || '3000' );
 	})()
 });
@@ -132,7 +132,7 @@ keystone.set( 'nav', {
 						   'contact-groups' ],
 	'other'				: [ 'account-verification-codes', 'agencies', 'inquiries', 'internal-notes', 'mare-in-the-news' ],
 	'events'			: [ 'events' ],
-	'mailing lists'		: [ 'mailing-lists' ],
+	'mailing lists'		: [ 'mailchimp-lists' ],
 	'placements'		: [ 'matches', 'placements', 'legalizations', 'disruptions' ],
 	'relationships'		: [ 'csc-region-contacts', 'staff-email-contacts', 'media-features' ],
 	'change tracking'	: [ 'child-histories', 'family-histories', 'social-worker-histories' ],
@@ -140,7 +140,7 @@ keystone.set( 'nav', {
 	'images'			: [ 'featured-items', 'slideshows', 'slideshow-items' ],
 	'content pages'		: [ 'pages' ],
 	'content snippets'	: [ 'success-stories' ],
-	'lists'				: [ 'child-statuses', 'child-types', 'city-or-towns', 'closed-reasons', 'communication-methods', 'disabilities', 
+	'lists'				: [ 'child-statuses', 'child-types', 'city-or-towns', 'closed-reasons', 'communication-methods', 'disabilities',
 						    'email-targets', 'event-types', 'family-constellations', 'family-statuses', 'genders', 'inquiry-methods',
 						    'inquiry-types', 'languages', 'legal-statuses', 'match-determinations', 'media-eligibilities',
 							'media-types', 'other-considerations', 'other-family-constellation-considerations', 'races', 'regions',
