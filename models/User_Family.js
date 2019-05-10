@@ -333,7 +333,7 @@ Family.add( 'Permissions', {
 }, 'Info Preferences', {
 
 	infoPacket: {
-		packet: { type: Types.Select, options: 'English, Spanish, none', label: 'Packet', initial: true },
+		packet: { type: Types.Select, options: 'Email, Hard Copy, Referred to AUK', label: 'Packet', initial: true },
 		date: { type: Types.Date, label: 'date info packet sent', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, initial: true },
 		notes: { type: Types.Textarea, label: 'notes', initial: true }
 	}
