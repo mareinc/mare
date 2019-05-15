@@ -10,6 +10,7 @@ const keystone					= require( 'keystone' ),
 	  UserService				= require( '../routes/middleware/service_user' ),
 	  FamilyService				= require( '../routes/middleware/service_family' ),
 	  ListService				= require( '../routes/middleware/service_lists' ),
+	  MailchimpService			= require( '../routes/middleware/service_mailchimp' ),
 	  Validators  				= require( '../routes/middleware/validators' );
 
 // configure the s3 storage adapters
@@ -445,8 +446,13 @@ Family.schema.pre( 'save', function( next ) {
 	const galleryViewingPermissionsSet = this.setGalleryViewingPermissions();
 	// set the registration number for the family
 	const registrationNumberSet = this.setRegistrationNumber();
+	// if this is the first save, subscribe the user to their mailing lists via Mailchimp API
+	const subscribedToMailingLists = !this._original
+		? this.subscribeToMailingLists()
+		: [];
 
-	Promise.all( [ displayCityUpdated, regionUpdated, socialWorkerAgencyFieldsSet, galleryViewingPermissionsSet, registrationNumberSet ] )
+
+	Promise.all( [ displayCityUpdated, regionUpdated, socialWorkerAgencyFieldsSet, galleryViewingPermissionsSet, registrationNumberSet, subscribedToMailingLists ] )
 		// if there was an error with any of the promises
 		.catch( err => {
 			// log it for debugging purposes
@@ -526,6 +532,46 @@ Family.schema.methods.setDisplayNameAndRegistrationLabel = function() {
 
 	// combine the display name and registration number  to create a unique label for all Family models
 	this.displayNameAndRegistration = `${ this.displayName }${ registrationNumberString }`;
+};
+
+Family.schema.methods.subscribeToMailingLists = function() {
+	'use strict';
+
+	return new Promise( ( resolve, reject ) => {
+
+		// if the user didn't opt in to any mailing lists
+		if ( this.mailingLists.length === 0 ) {
+
+			// no action required, resolve the promise immediately
+			resolve();
+		} else {
+
+			// get the mailchimp list ids for the mailing lists the user has opted-in to
+			keystone.list( 'Mailchimp List' ).model
+				.find()
+				.where('_id')
+				.in(this.mailingLists)
+				.lean()
+				.exec()
+				.then( mailchimpListDocs => {
+
+					// subscribe the user to all mailing lists via Mailchimp API
+					return Promise.all(
+						mailchimpListDocs.map( mailchimpListDoc => {
+							return MailchimpService.subscribeMemberToList({
+								email: this.email,
+								mailingListId: mailchimpListDoc.mailchimpId,
+								userType: this.userType,
+								firstName: this.contact1.name.first,
+								lastName: this.contact1.name.last
+							});
+						})
+					);
+				})
+				.then( () => resolve() )
+				.catch( err => reject( err ) );
+		}
+	});
 };
 
 /* text fields don't automatically trim(), this is to ensure no leading or trailing whitespace gets saved into url, text, or text area fields */
