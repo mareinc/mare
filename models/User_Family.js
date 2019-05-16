@@ -446,13 +446,8 @@ Family.schema.pre( 'save', function( next ) {
 	const galleryViewingPermissionsSet = this.setGalleryViewingPermissions();
 	// set the registration number for the family
 	const registrationNumberSet = this.setRegistrationNumber();
-	// if this is the first save, subscribe the user to their mailing lists via Mailchimp API
-	const subscribedToMailingLists = !this._original
-		? this.subscribeToMailingLists()
-		: [];
 
-
-	Promise.all( [ displayCityUpdated, regionUpdated, socialWorkerAgencyFieldsSet, galleryViewingPermissionsSet, registrationNumberSet, subscribedToMailingLists ] )
+	Promise.all( [ displayCityUpdated, regionUpdated, socialWorkerAgencyFieldsSet, galleryViewingPermissionsSet, registrationNumberSet ] )
 		// if there was an error with any of the promises
 		.catch( err => {
 			// log it for debugging purposes
@@ -490,6 +485,25 @@ Family.schema.post( 'save', function() {
 			// process change history
 			this.setChangeHistory();
 		});
+
+	// if the save was initiated from the admin UI and this is the first save, subscribe the user to all mailing lists
+	// createdBy will be set to some id if it was created from the admin UI, otherwise it will be undefined
+	// createdAt and updatedAt will be the same value only on the first save
+	if ( this.createdBy && this.createdAt == this.updatedAt ) {
+
+		// subscribe to all mailing lists
+		this.subscribeToMailingLists()
+			.then( mailingListIds => {
+				// update the mailing list subscriptions on the model to ensure preferences are in sync
+				this.mailingLists = mailingListIds;
+				// save the update
+				this.save();
+			})
+			.catch( err => {
+				// log any errors with subscription process
+				console.error( new Error( `Automatic subscription to mailing lists failed for family ${ this.displayName }`, err ) );
+			});
+	}
 });
 
 /* TODO: VERY IMPORTANT:  Need to fix this to provide the link to access the keystone admin panel again */
@@ -539,38 +553,39 @@ Family.schema.methods.subscribeToMailingLists = function() {
 
 	return new Promise( ( resolve, reject ) => {
 
-		// if the user didn't opt in to any mailing lists
-		if ( this.mailingLists.length === 0 ) {
+		let mailingListIds = [];
 
-			// no action required, resolve the promise immediately
-			resolve();
-		} else {
+		// get the mailchimp email lists and opt the user in to them
+		keystone.list( 'Mailchimp List' ).model
+		.find()
+		.lean()
+		.exec()
+		.then( mailchimpListDocs => {
 
-			// get the mailchimp list ids for the mailing lists the user has opted-in to
-			keystone.list( 'Mailchimp List' ).model
-				.find()
-				.where('_id')
-				.in(this.mailingLists)
-				.lean()
-				.exec()
-				.then( mailchimpListDocs => {
+			// subscribe the user to all mailing lists via Mailchimp API
+			return Promise.all(
+				mailchimpListDocs.map( mailchimpListDoc => {
 
-					// subscribe the user to all mailing lists via Mailchimp API
-					return Promise.all(
-						mailchimpListDocs.map( mailchimpListDoc => {
-							return MailchimpService.subscribeMemberToList({
-								email: this.email,
-								mailingListId: mailchimpListDoc.mailchimpId,
-								userType: this.userType,
-								firstName: this.contact1.name.first,
-								lastName: this.contact1.name.last
-							});
-						})
-					);
+					// add the current mailing list ids to an array to later the mailingList relationships
+					mailingListIds.push( mailchimpListDoc._id );
+
+					// subscribe the user to the current mailing list
+					return MailchimpService.subscribeMemberToList({
+						email: this.email,
+						mailingListId: mailchimpListDoc.mailchimpId,
+						userType: this.userType,
+						firstName: this.contact1.name.first,
+						lastName: this.contact1.name.last
+					});
 				})
-				.then( () => resolve() )
-				.catch( err => reject( err ) );
-		}
+			);
+		})
+		.then( () => {
+
+			// mailchimp subscriptions succeeded, return subscribed mailing list ids
+			resolve(mailingListIds);
+		})
+		.catch( err => reject( err ) );
 	});
 };
 
