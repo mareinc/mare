@@ -12,8 +12,10 @@ const imageStorage = new keystone.Storage({
 		bucket: process.env.S3_BUCKET_NAME, // required; defaults to process.env.S3_BUCKET
 		region: process.env.S3_REGION, // optional; defaults to process.env.S3_REGION, or if that's not specified, us-east-1
 		path: '/Site Visitors/Images',
-		generateFilename: file => file.originalname,
-		publicUrl: file => `${ process.env.CLOUDFRONT_URL }/Site Visitors/Images/${ file.originalname }`
+		// use the file name with spaces replaced by dashes instead of randomly generating a value
+		// NOTE: this is needed to prevent access errors when trying to view the files
+		generateFilename: file => file.originalname.replace( /\s/g, '-' ),
+		publicUrl: file => `${ process.env.CLOUDFRONT_URL }/Site Visitors/Images/${ file.originalname.replace( /\s/g, '-' ) }`
 	},
 	schema: {
 		bucket: true, // optional; store the bucket the file was uploaded to in your db
