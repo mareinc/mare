@@ -163,19 +163,19 @@ exports.updateMemberEmail = function updateMemberEmail( currentEmail, updatedEma
 };
 
 /**
- * addTagToMember
+ * updateMemberTag
  * ==================
- * @description adds a tag to a member
- * @param {String} email the email of the member to add a tag to
+ * @description update the tag for a member
+ * @param {String} email the email of the member to update
  * @param {String} mailingListId the id of the mailing list in which to update the member
  * @returns {Object} status code of the operation
  */
-exports.addTagToMember = function addTagToMember( tagName, email, mailingListId ) {
+exports.updateMemberTags = function updateMemberTags( { tagName, email, mailingListId, removeTag = false } ) {
 
     return new Promise( ( resolve, reject ) => {
 
         if ( !tagName || !email || !mailingListId ) {
-            return reject( new Error( 'addTagToMember failed - tagName, email, or mailingListId was not provided.' ) );
+            return reject( new Error( 'updateMemberTags failed - tagName, email, or mailingListId was not provided.' ) );
         }
 
         _mailchimp.request({
@@ -189,7 +189,7 @@ exports.addTagToMember = function addTagToMember( tagName, email, mailingListId 
                 tags: [
                     {
                         name: tagName,
-                        status: 'active'
+                        status: removeTag ? 'inactive' : 'active'
                     }
                 ]
             }

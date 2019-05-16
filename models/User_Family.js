@@ -497,11 +497,25 @@ Family.schema.post( 'save', function() {
 				// update the mailing list subscriptions on the model to ensure preferences are in sync
 				this.mailingLists = mailingListIds;
 				// save the update
-				this.save();
+				return this.save();
 			})
+			// now that the mailing list subscriptions have been saved, apply Family status tags to any Mailchimp mailing lists the Family is subscribed to
+			.then( () => this.applyFamilyStatusTagsToMailingLists() )
 			.catch( err => {
 				// log any errors with subscription process
-				console.error( new Error( `Automatic subscription to mailing lists failed for family ${ this.displayName }`, err ) );
+				console.error( new Error( `Automatic subscription to mailing lists failed for family ${ this.displayName }` ) );
+				console.error( err );
+			});
+
+	// if this is not the first save or the save was initiated from a registration form, the mailing lists will already be saved to the Family model
+	} else {
+
+		// apply Family status tags to any Mailchimp mailing lists the Family is subscribed to
+		this.applyFamilyStatusTagsToMailingLists()
+			.catch( err => {
+				// log any errors with tag update process
+				console.error( new Error( `Tag updates failed for family ${ this.displayName }` ) );
+				console.error( err );
 			});
 	}
 });
@@ -586,6 +600,57 @@ Family.schema.methods.subscribeToMailingLists = function() {
 			resolve(mailingListIds);
 		})
 		.catch( err => reject( err ) );
+	});
+};
+
+Family.schema.methods.applyFamilyStatusTagsToMailingLists = function() {
+
+	return new Promise( ( resolve, reject ) => {
+
+		// get tag labels from schema definition
+		const MAPPTrainingLabel = Family.model.schema.tree.stages.MAPPTrainingCompleted.completed.label,
+			  homestudyLabel = Family.model.schema.tree.homestudy.completed.label;
+
+		const tagUpdates = [];
+
+		// get the mailchimp list ids for the mailing lists the user has opted-in to
+		keystone.list( 'Mailchimp List' ).model
+			.find()
+			.where( '_id' )
+			.in( this.mailingLists )
+			.lean()
+			.exec()
+			.then( mailchimpListDocs => {
+
+				// update user's tags on each mailing list they're subscribed to
+				mailchimpListDocs.forEach( mailchimpListDoc => {
+
+					// update MAPP training completed tag
+					tagUpdates.push(
+						MailchimpService.updateMemberTags({
+							tagName: MAPPTrainingLabel,
+							email: this.email,
+							mailingListId: mailchimpListDoc.mailchimpId,
+							removeTag: !this.stages.MAPPTrainingCompleted.completed
+						})
+					);
+
+					// update homestudy completed tag
+					tagUpdates.push(
+						MailchimpService.updateMemberTags({
+							tagName: homestudyLabel,
+							email: this.email,
+							mailingListId: mailchimpListDoc.mailchimpId,
+							removeTag: !this.homestudy.completed
+						})
+					);
+				});
+
+				// wait for all tag updates to be applied
+				return Promise.all( tagUpdates );
+			})
+			.then( () => resolve() )
+			.catch( err => reject( err ) );
 	});
 };
 
