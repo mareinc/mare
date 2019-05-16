@@ -28,7 +28,7 @@ var fileStorage = new keystone.Storage({
 		generateFilename: function( item ) {
 			// use the file name with spaces replaced by dashes instead of randomly generating a value.
 			// NOTE: this is needed to prevent access errors when trying to view the files
-			return item.originalname.replace( /\s/g, '-' );
+			return item.originalname.replace( /\s/g, '_' );
 		}
 	},
 	schema: {
@@ -49,8 +49,8 @@ var imageStorage = new keystone.Storage({
 		path: '/Families/Images',
 		// use the file name with spaces replaced by dashes instead of randomly generating a value
 		// NOTE: this is needed to prevent access errors when trying to view the files
-		generateFilename: file => file.originalname.replace( /\s/g, '-' ),
-		publicUrl: file => `${ process.env.CLOUDFRONT_URL }/Families/Images/${ file.originalname.replace( /\s/g, '-' ) }`
+		generateFilename: file => file.originalname.replace( /\s/g, '_' ),
+		publicUrl: file => `${ process.env.CLOUDFRONT_URL }/Families/Images/${ file.originalname.replace( /\s/g, '_' ) }`
 	},
 	schema: {
 		bucket: true, // optional; store the bucket the file was uploaded to in your db

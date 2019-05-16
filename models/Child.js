@@ -29,7 +29,7 @@ const fileStorage = new keystone.Storage({
 		generateFilename: function( item ) {
 			// use the file name with spaces replaced by dashes instead of randomly generating a value
 			// NOTE: this is needed to prevent access errors when trying to view the files
-			return item.originalname.replace( /\s/g, '-' );
+			return item.originalname.replace( /\s/g, '_' );
 		}
 	},
 	schema: {
@@ -54,7 +54,7 @@ const imageStorage = new keystone.Storage({
 		generateFilename: function( item ) {
 			// use the file name with spaces replaced by dashes instead of randomly generating a value
 			// NOTE: this is needed to prevent access errors when trying to view the files
-			return item.originalname.replace( /\s/g, '-' );
+			return item.originalname.replace( /\s/g, '_' );
 		}
 	},
 	schema: {
@@ -75,8 +75,8 @@ const displayImageStorage = new keystone.Storage({
 		path: '/Children/Images/Individuals',
 		// use the file name with spaces replaced by dashes instead of randomly generating a value
 		// NOTE: this is needed to prevent access errors when trying to view the files
-		generateFilename: file => file.originalname.replace( /\s/g, '-' ),
-		publicUrl: file => `${ process.env.CLOUDFRONT_URL }/Children/Images/Individuals/${ file.originalname.replace( /\s/g, '-' ) }`
+		generateFilename: file => file.originalname.replace( /\s/g, '_' ),
+		publicUrl: file => `${ process.env.CLOUDFRONT_URL }/Children/Images/Individuals/${ file.originalname.replace( /\s/g, '_' ) }`
 	},
 	schema: {
 		bucket: true, // optional; store the bucket the file was uploaded to in your db
@@ -96,8 +96,8 @@ const displaySiblingGroupImageStorage = new keystone.Storage({
 		path: '/Children/Images/Sibling Groups',
 		// use the file name with spaces replaced by dashes instead of randomly generating a value
 		// NOTE: this is needed to prevent access errors when trying to view the files
-		generateFilename: file => file.originalname.replace( /\s/g, '-' ),
-		publicUrl: file => `${ process.env.CLOUNDFRONT_URL }/Children/Images/Sibling Groups/${ file.originalname.replace( /\s/g, '-' ) }`
+		generateFilename: file => file.originalname.replace( /\s/g, '_' ),
+		publicUrl: file => `${ process.env.CLOUNDFRONT_URL }/Children/Images/Sibling Groups/${ file.originalname.replace( /\s/g, '_' ) }`
 	},
 	schema: {
 		bucket: true, // optional; store the bucket the file was uploaded to in your db
