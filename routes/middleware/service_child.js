@@ -325,7 +325,7 @@ exports.setNoChildImage = ( req, res, child, canViewAllChildren ) => {
 			child.siblingGroupDisplayImage = NO_IMAGE_SIBLING_GROUP;
 		// if it is acceptable to show the sibling group's image
 		} else {
-			child.siblingGroupDisplayImage = child.siblingGroupImage.secure_url;
+			child.siblingGroupDisplayImage = child.siblingGroupImage.url;
 		}
 	// if the child is not part of a sibling group
 	} else {
@@ -350,7 +350,7 @@ exports.setNoChildImage = ( req, res, child, canViewAllChildren ) => {
 			}
 		// if it is acceptable to show the child's image
 		} else {
-			child.displayImage = child.image.secure_url;
+			child.displayImage = child.image.url;
 		}
 	}
 };
