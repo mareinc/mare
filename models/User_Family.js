@@ -597,7 +597,7 @@ Family.schema.methods.subscribeToMailingLists = function() {
 		.then( () => {
 
 			// mailchimp subscriptions succeeded, return subscribed mailing list ids
-			resolve(mailingListIds);
+			resolve( mailingListIds );
 		})
 		.catch( err => reject( err ) );
 	});
