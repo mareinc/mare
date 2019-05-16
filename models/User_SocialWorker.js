@@ -319,7 +319,7 @@ SocialWorker.schema.methods.setChangeHistory = function() {
 				done => {
 					ChangeHistoryMiddleware.checkFieldForChanges({
 												parent: 'avatar',
-												name: 'secure_url',
+												name: 'url',
 												label: 'avatar',
 												type: 'string' }, model, modelBefore, changeHistory, done );
 				},

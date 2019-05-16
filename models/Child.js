@@ -1694,14 +1694,14 @@ Child.schema.methods.setChangeHistory = function() {
 				done => {
 					ChangeHistoryMiddleware.checkFieldForChanges({
 												parent: 'image',
-												name: 'secure_url',
+												name: 'url',
 												label: 'image',
 												type: 'string' }, model, modelBefore, changeHistory, done );
 				},
 				done => {
 					ChangeHistoryMiddleware.checkFieldForChanges({
 												parent: 'siblingGroupImage',
-												name: 'secure_url',
+												name: 'url',
 												label: 'sibling group image',
 												type: 'string' }, model, modelBefore, changeHistory, done );
 				},

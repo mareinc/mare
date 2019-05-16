@@ -1111,7 +1111,7 @@ Family.schema.methods.setChangeHistory = function setChangeHistory() {
 				done => {
 					ChangeHistoryMiddleware.checkFieldForChanges({
 												parent: 'avatar',
-												name: 'secure_url',
+												name: 'url',
 												label: 'avatar',
 												type: 'string' }, model, modelBefore, changeHistory, done );
 				},
