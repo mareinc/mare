@@ -1,18 +1,38 @@
 require( './Tracking_SocialWorkerHistory' );
 
-var keystone				= require( 'keystone' ),
-	async 					= require( 'async' ),
-	Types					= keystone.Field.Types,
-	User					= require( './User' ),
-	ChangeHistoryMiddleware	= require( '../routes/middleware/models_change-history' ),
-	UserServiceMiddleware	= require( '../routes/middleware/service_user' ),
-	Validators  			= require( '../routes/middleware/validators' );
+const keystone					= require( 'keystone' ),
+	  async 					= require( 'async' ),
+	  Types						= keystone.Field.Types,
+	  User						= require( './User' ),
+	  ChangeHistoryMiddleware	= require( '../routes/middleware/models_change-history' ),
+	  UserServiceMiddleware		= require( '../routes/middleware/service_user' ),
+	  Validators  				= require( '../routes/middleware/validators' );
 
 // Export to make it available using require.  The keystone.list import throws a ReferenceError when importing a list that comes later when sorting alphabetically
 const ContactGroup = require( './ContactGroup' );
 
+// configure the s3 storage adapters
+const imageStorage = new keystone.Storage({
+	adapter: require( 'keystone-storage-adapter-s3' ),
+	s3: {
+		key: process.env.S3_KEY, // required; defaults to process.env.S3_KEY
+		secret: process.env.S3_SECRET, // required; defaults to process.env.S3_SECRET
+		bucket: process.env.S3_BUCKET_NAME, // required; defaults to process.env.S3_BUCKET
+		region: process.env.S3_REGION, // optional; defaults to process.env.S3_REGION, or if that's not specified, us-east-1
+		path: '/Social Workers/Images',
+		generateFilename: file => file.originalname,
+		publicUrl: file => `${ process.env.CLOUDFRONT_URL }/Social Workers/Images/${ file.originalname }`
+	},
+	schema: {
+		bucket: true, // optional; store the bucket the file was uploaded to in your db
+		etag: true, // optional; store the etag for the resource
+		path: true, // optional; store the path of the file in your db
+		url: true // optional; generate & store a public URL
+	}
+});
+
 // Create model
-var SocialWorker = new keystone.List( 'Social Worker', {
+const SocialWorker = new keystone.List( 'Social Worker', {
 	inherits	: User,
 	track		: true,
 	map			: { name: 'name.full' },
@@ -38,16 +58,7 @@ SocialWorker.add( 'Permissions', {
 		full: { type: Types.Text, label: 'name', hidden: true, noedit: true, initial: false }
 	},
 
-	avatar: {
-		type: Types.CloudinaryImage,
-		label: 'avatar',
-		folder: `${ process.env.CLOUDINARY_DIRECTORY }/users/social-workers`,
-		select: true,
-		selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/users/social-workers`,
-		autoCleanup: true,
-		whenExists: 'overwrite',
-		filenameAsPublicID: true
-	},
+	avatar: { type: Types.File, storage: imageStorage, label: 'avatar' },
 
 	contactGroups: { type: Types.Relationship, label: 'contact groups', ref: 'Contact Group', many: true, initial: true }
 

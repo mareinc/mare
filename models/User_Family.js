@@ -34,7 +34,7 @@ var fileStorage = new keystone.Storage({
 		bucket: true, // optional; store the bucket the file was uploaded to in your db
 		etag: true, // optional; store the etag for the resource
 		path: true, // optional; store the path of the file in your db
-		url: true, // optional; generate & store a public URL
+		url: true // optional; generate & store a public URL
 	}
 });
 
@@ -46,20 +46,14 @@ var imageStorage = new keystone.Storage({
 		bucket: process.env.S3_BUCKET_NAME, // required; defaults to process.env.S3_BUCKET
 		region: process.env.S3_REGION, // optional; defaults to process.env.S3_REGION, or if that's not specified, us-east-1
 		path: '/Families/Images',
-		uploadParams: { // optional; add S3 upload params; see below for details
-			ACL: 'public-read'
-		},
-		generateFilename: function( item ) {
-			// use the file name with spaces replaced by dashes instead of randomly generating a value.
-			// NOTE: this is needed to prevent access errors when trying to view the files
-			return item.originalname.replace( /\s/g, '-' );
-		}
+		generateFilename: file => file.originalname,
+		publicUrl: file => `${ process.env.CLOUDFRONT_URL }/Families/Images/${ file.originalname }`
 	},
 	schema: {
 		bucket: true, // optional; store the bucket the file was uploaded to in your db
 		etag: true, // optional; store the etag for the resource
 		path: true, // optional; store the path of the file in your db
-		url: true, // optional; generate & store a public URL
+		url: true // optional; generate & store a public URL
 	}
 });
 
@@ -92,16 +86,7 @@ Family.add( 'Permissions', {
 
 },  'General Information', {
 
-	avatar: {
-		type: Types.CloudinaryImage,
-		label: 'avatar',
-		folder: `${ process.env.CLOUDINARY_DIRECTORY }/users/families`,
-		select: true,
-		selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/users/families`,
-		autoCleanup: true,
-		whenExists: 'overwrite',
-		filenameAsPublicID: true
-	},
+	avatar: { type: Types.File, storage: imageStorage, label: 'avatar' },
 
 	registrationNumber: { type: Number, label: 'registration number', format: false, noedit: true },
 	initialContact: { type: Types.Date, label: 'initial contact', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, initial: true }, // was required: data migration change ( undo if possible )

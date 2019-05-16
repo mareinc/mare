@@ -1,10 +1,30 @@
-var keystone	= require( 'keystone' ),
-	Types		= keystone.Field.Types,
-	User		= require( './User' ),
-	Validators  = require( '../routes/middleware/validators' );
+const keystone		= require( 'keystone' ),
+	  Types			= keystone.Field.Types,
+	  User			= require( './User' ),
+	  Validators	= require( '../routes/middleware/validators' );
+
+// configure the s3 storage adapters
+const imageStorage = new keystone.Storage({
+	adapter: require( 'keystone-storage-adapter-s3' ),
+	s3: {
+		key: process.env.S3_KEY, // required; defaults to process.env.S3_KEY
+		secret: process.env.S3_SECRET, // required; defaults to process.env.S3_SECRET
+		bucket: process.env.S3_BUCKET_NAME, // required; defaults to process.env.S3_BUCKET
+		region: process.env.S3_REGION, // optional; defaults to process.env.S3_REGION, or if that's not specified, us-east-1
+		path: '/Site Visitors/Images',
+		generateFilename: file => file.originalname,
+		publicUrl: file => `${ process.env.CLOUDFRONT_URL }/Site Visitors/Images/${ file.originalname }`
+	},
+	schema: {
+		bucket: true, // optional; store the bucket the file was uploaded to in your db
+		etag: true, // optional; store the etag for the resource
+		path: true, // optional; store the path of the file in your db
+		url: true // optional; generate & store a public URL
+	}
+});
 
 // Create model
-var SiteVisitor = new keystone.List( 'Site Visitor', {
+const SiteVisitor = new keystone.List( 'Site Visitor', {
 	inherits: User,
 	map: { name: 'name.full' },
 	defaultSort: 'name.full',
@@ -28,16 +48,7 @@ SiteVisitor.add( 'Permissions', {
 		full: { type: Types.Text, label: 'name', hidden: true, noedit: true, initial: false }
 	},
 
-	avatar: {
-		type: Types.CloudinaryImage,
-		label: 'avatar',
-		folder: `${ process.env.CLOUDINARY_DIRECTORY }/users/site visitors`,
-		select: true,
-		selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/users/site visitors`,
-		autoCleanup: true,
-		whenExists: 'overwrite',
-		filenameAsPublicID: true
-	}
+	avatar: { type: Types.File, storage: imageStorage, label: 'avatar' }
 
 }, 'Contact Information', {
 

@@ -1,6 +1,26 @@
 var keystone	= require( 'keystone' ),
 	Types		= keystone.Field.Types;
 
+// configure the s3 storage adapters
+const imageStorage = new keystone.Storage({
+	adapter: require( 'keystone-storage-adapter-s3' ),
+	s3: {
+		key: process.env.S3_KEY, // required; defaults to process.env.S3_KEY
+		secret: process.env.S3_SECRET, // required; defaults to process.env.S3_SECRET
+		bucket: process.env.S3_BUCKET_NAME, // required; defaults to process.env.S3_BUCKET
+		region: process.env.S3_REGION, // optional; defaults to process.env.S3_REGION, or if that's not specified, us-east-1
+		path: '/MARE in the News/Images',
+		generateFilename: file => file.originalname,
+		publicUrl: file => `${ process.env.CLOUDFRONT_URL }/MARE in the News/Images/${ file.originalname }`
+	},
+	schema: {
+		bucket: true, // optional; store the bucket the file was uploaded to in your db
+		etag: true, // optional; store the etag for the resource
+		path: true, // optional; store the path of the file in your db
+		url: true // optional; generate & store a public URL
+	}
+});
+
 // Create model. Additional options allow menu name to be used what auto-generating URLs
 var MAREInTheNews = new keystone.List( 'MARE in the News', {
 	autokey: { path: 'key', from: 'heading', unique: true },
@@ -15,16 +35,7 @@ MAREInTheNews.add({
 	url: { type: Types.Url, label: 'url', noedit: true },
 	subHeading: { type: Types.Text, label: 'sub-heading', initial: true },
 	content: { type: Types.Html, wysiwyg: true, initial: true },
-	image: {
-		type: Types.CloudinaryImage,
-		note: 'needed to display in the sidebar, MARE in the news page, and the home page',
-		folder: `${ process.env.CLOUDINARY_DIRECTORY }/mare-in-the-news/`,
-		select: true,
-		selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/mare-in-the-news/`,
-		autoCleanup: true,
-		whenExists: 'overwrite',
-		filenameAsPublicID: true
-	},
+	image: { type: Types.File, storage: imageStorage, label: 'image', note: 'needed to display in the sidebar, MARE in the news page, and the home page' },
 	video: { type: Types.Url, label: 'video', initial: true }
 
 });

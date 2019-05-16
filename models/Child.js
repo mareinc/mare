@@ -36,7 +36,7 @@ const fileStorage = new keystone.Storage({
 		bucket: true, // optional; store the bucket the file was uploaded to in your db
 		etag: true, // optional; store the etag for the resource
 		path: true, // optional; store the path of the file in your db
-		url: true, // optional; generate & store a public URL
+		url: true // optional; generate & store a public URL
 	}
 });
 
@@ -61,9 +61,73 @@ const imageStorage = new keystone.Storage({
 		bucket: true, // optional; store the bucket the file was uploaded to in your db
 		etag: true, // optional; store the etag for the resource
 		path: true, // optional; store the path of the file in your db
-		url: true, // optional; generate & store a public URL
+		url: true // optional; generate & store a public URL
 	}
 });
+
+const displayImageStorage = new keystone.Storage({
+	adapter: require( 'keystone-storage-adapter-s3' ),
+	s3: {
+		key: process.env.S3_KEY, // required; defaults to process.env.S3_KEY
+		secret: process.env.S3_SECRET, // required; defaults to process.env.S3_SECRET
+		bucket: process.env.S3_BUCKET_NAME, // required; defaults to process.env.S3_BUCKET
+		region: process.env.S3_REGION, // optional; defaults to process.env.S3_REGION, or if that's not specified, us-east-1
+		path: '/Children/Images/Individuals',
+		generateFilename: file => file.originalname,
+		publicUrl: file => `${ process.env.CLOUDFRONT_URL }/Children/Images/Individuals/${ file.originalname }`
+	},
+	schema: {
+		bucket: true, // optional; store the bucket the file was uploaded to in your db
+		etag: true, // optional; store the etag for the resource
+		path: true, // optional; store the path of the file in your db
+		url: true // optional; generate & store a public URL
+	}
+});
+
+const displaySiblingGroupImageStorage = new keystone.Storage({
+	adapter: require( 'keystone-storage-adapter-s3' ),
+	s3: {
+		key: process.env.S3_KEY, // required; defaults to process.env.S3_KEY
+		secret: process.env.S3_SECRET, // required; defaults to process.env.S3_SECRET
+		bucket: process.env.S3_BUCKET_NAME, // required; defaults to process.env.S3_BUCKET
+		region: process.env.S3_REGION, // optional; defaults to process.env.S3_REGION, or if that's not specified, us-east-1
+		path: '/Children/Images/Sibling Groups',
+		generateFilename: file => file.originalname,
+		publicUrl: file => `${ process.env.CLOUNDFRONT_URL }/Children/Images/Sibling Groups/${ file }`
+	},
+	schema: {
+		bucket: true, // optional; store the bucket the file was uploaded to in your db
+		etag: true, // optional; store the etag for the resource
+		path: true, // optional; store the path of the file in your db
+		url: true // optional; generate & store a public URL
+	}
+});
+
+const imageExtensionMap = {
+    bmp: 'image/bmp',
+    cod: 'image/cis-cod',
+    gif: 'image/gif',
+    ief: 'image/ief',
+    jpe: 'image/jpeg',
+    jpeg: 'image/jpeg',
+    jpg: 'image/jpeg',
+    jfif: 'image/pipeg',
+    svg: 'image/svg+xml',
+    tif: 'image/tiff',
+    tiff: 'image/tiff',
+    ras: 'image/x-cmu-raster',
+    cmx: 'image/x-cmx',
+    ico: 'image/x-icon',
+    pnm: 'image/x-portable-anymap',
+    pbm: 'image/x-portable-bitmap',
+    pgm: 'image/x-portable-graymap',
+    ppm: 'image/x-portable-pixmap',
+    rgb: 'image/x-rgb',
+    xbm: 'image/x-xbitmap',
+    xpm: 'image/x-xpixmap',
+    xwd: 'image/x-xwindowdump'
+}
+
 
 // Create model
 const Child = new keystone.List( 'Child', {
@@ -200,17 +264,6 @@ Child.add( 'Display Options', {
 		whenExists: 'overwrite',
 		filenameAsPublicID: true
 	},
-	allImages: {
-		type: Types.CloudinaryImages,
-		label: 'all images',
-		folder: `${ process.env.CLOUDINARY_DIRECTORY }/children/`,
-		select: true,
-		selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/children/`,
-		hidden: true,
-		autoCleanup: true,
-		whenExists: 'overwrite',
-		filenameAsPublicID: true
-	},
 	siblingGroupImage: {
 		type: Types.CloudinaryImage,
 		label: 'sibling group image',
@@ -269,6 +322,8 @@ Child.add( 'Display Options', {
 
 }, 'Image Attachments', {
 
+	tempImage: { type: Types.File, storage: displayImageStorage, label: 'display image' },
+	tempSiblingGroupImage: { type: Types.File, storage: displaySiblingGroupImageStorage, label: 'sibling group image' },
 	imageAttachment1: { type: Types.File, storage: imageStorage, label: 'image attachment 1' },
 	imageAttachment2: { type: Types.File, storage: imageStorage, label: 'image attachment 2' },
 	imageAttachment3: { type: Types.File, storage: imageStorage, label: 'image attachment 3' },
@@ -312,158 +367,199 @@ Child.schema.virtual( 'hasSiblingGroupImage' ).get( function() {
 
 // pre init hook - initialize default recommendedFamilyConstellation values for new child records
 // Doing it here via pre init because it does not seem to work when setting in the post init hook via field default options or via direct assignment to this.recommendedFamilyConstellation
-Child.schema.pre('init', function (next, data) {
+// Child.schema.pre( 'init', function (next, data) {
 	
-	// We are using a custom key of the Child const: _mareDefaultFamilyConstellations
-	// it will hold default recommendedFamilyConstellation values
-	if( typeof Child._mareDefaultFamilyConstellations === 'undefined' ) {
-		// load data
-		keystone.list( 'Family Constellation' ).model
-			.find()
-			.exec()
-			.then( constellations => {
-				Child._mareDefaultFamilyConstellations = [];
-				constellations.forEach( (familyConstellation, i ) => {
-					// assign all family constellation records as default except for other and unknown
-					if( familyConstellation.key !== 'unknown' && familyConstellation.key !== 'other' ) {
-						Child._mareDefaultFamilyConstellations.push( familyConstellation._id );
-					}
-				} );
-				// assign as default field values
-				Child.fields.recommendedFamilyConstellation.__options.defaultValue = Child._mareDefaultFamilyConstellations;
-				next();
+// 	// We are using a custom key of the Child const: _mareDefaultFamilyConstellations
+// 	// it will hold default recommendedFamilyConstellation values
+// 	if( typeof Child._mareDefaultFamilyConstellations === 'undefined' ) {
+// 		// load data
+// 		keystone.list( 'Family Constellation' ).model
+// 			.find()
+// 			.exec()
+// 			.then( constellations => {
+// 				Child._mareDefaultFamilyConstellations = [];
+// 				constellations.forEach( (familyConstellation, i ) => {
+// 					// assign all family constellation records as default except for other and unknown
+// 					if( familyConstellation.key !== 'unknown' && familyConstellation.key !== 'other' ) {
+// 						Child._mareDefaultFamilyConstellations.push( familyConstellation._id );
+// 					}
+// 				} );
+// 				// assign as default field values
+// 				Child.fields.recommendedFamilyConstellation.__options.defaultValue = Child._mareDefaultFamilyConstellations;
+// 				next();
 				
-			}, err => {
-				console.error( 'error populating default recommendedFamilyConstellation' );
-			});
+// 			}, err => {
+// 				console.error( 'error populating default recommendedFamilyConstellation' );
+// 			});
 			
-	} else {
-		// assign as default field values
-		Child.fields.recommendedFamilyConstellation.__options.defaultValue = Child._mareDefaultFamilyConstellations;
-		next();
+// 	} else {
+// 		// assign as default field values
+// 		Child.fields.recommendedFamilyConstellation.__options.defaultValue = Child._mareDefaultFamilyConstellations;
+// 		next();
 	
-	}
-});
+// 	}
+// });
 
-// Post Init - used to store all the values before anything is changed
-Child.schema.post( 'init', function() {
-	'use strict';
+// // Post Init - used to store all the values before anything is changed
+// Child.schema.post( 'init', function() {
+// 	'use strict';
 
-	this._original = this.toObject();
+// 	this._original = this.toObject();
 
-	// if there are any siblingsToBePlacedWith, set mustBePlacedWithSiblings to true
-	if ( this.siblingsToBePlacedWith ) {
-		this.mustBePlacedWithSiblings = this.siblingsToBePlacedWith.length > 0 ? true : false;
-	}
-});
+// 	// if there are any siblingsToBePlacedWith, set mustBePlacedWithSiblings to true
+// 	if ( this.siblingsToBePlacedWith ) {
+// 		this.mustBePlacedWithSiblings = this.siblingsToBePlacedWith.length > 0 ? true : false;
+// 	}
+// });
 
 Child.schema.pre( 'save', function( next ) {
 	'use strict';
 
-	// trim whitespace characters from any type.Text fields
-	this.trimTextFields();
-	// create a full name for the child based on their first, middle, and last names
-	this.setFullName();
-	// if there are no siblings to be placed with, uncheck the box, otherwise check it
-	this.updateMustBePlacedWithSiblingsCheckbox();
+	const cloudinaryImage = this.get( 'image' );
+	const cloudinarySiblingImage = this.get( 'siblingGroupImage' );
 
-	// set the registration number for the family
-	const registrationNumberSet = this.setRegistrationNumber();
-	// set the noedit fields associated with the adoption worker's agency
-	const adoptionWorkerAgencyFieldsSet = this.setAdoptionWorkerAgencyFields();
-	// set the noedit fields associated with the recruitment worker's agency
-	const recruitmentWorkerAgencyFieldsSet = this.setRecruitmentWorkerAgencyFields();
+	if( Object.entries( cloudinaryImage )
+		&& Object.entries( cloudinaryImage ).length > 0
+	) {
 
-	// check to see if the content of the siblings or siblings to be placed with fields have changed
-	let hasSiblingsChanged = this.checkSiblingsForChanges();
-	let hasSiblingsToBePlacedWithChanged = this.checkSiblingsToBePlacedWithForChanges();
-	// if both groups have been changed
-	if ( hasSiblingsChanged && hasSiblingsToBePlacedWithChanged ) {
-		// revert the changes to the siblingsToBePlacedWith group
-		this.siblingsToBePlacedWith = this._original ? this._original.siblingsToBePlacedWith : [];
-		hasSiblingsToBePlacedWithChanged = false;
+		const cloudinaryImageName = cloudinaryImage.url.substr( cloudinaryImage.url.lastIndexOf( '/' ) + 1 );
+		const cloudinaryImageExtension = cloudinaryImage.url.substr( cloudinaryImage.url.lastIndexOf( '.' ) + 1 );
+
+		let awsImage = {
+			url: `${ process.env.CLOUDFRONT_URL }/Children/Images/Individuals/${ cloudinaryImageName }`,
+			bucket: process.env.S3_BUCKET_NAME,
+			path: '/Children/Images/Individuals',
+			filename: cloudinaryImageName,
+			mimetype: imageExtensionMap[ cloudinaryImageExtension ]
+		};
+
+		this.set( 'tempImage', awsImage );
 	}
 
-	// perform async processing
-	Promise
-		.resolve()
-		// process updates to sibling groups
-		.then( () => {
-			// if the list of siblings has been changed
-			if ( hasSiblingsChanged ) {
-				// batch the siblings group updates
-				return ChildMiddleware.batchAllSiblingUpdates( this );
-			// if the siblings to be placed with list has changed
-			} else if ( hasSiblingsToBePlacedWithChanged ) {
-				// batch the siblings to be placed with group updates
-				return ChildMiddleware.batchAllSiblingsToBePlacedWithUpdates( this );
-			// if neither list has changed
-			} else {
-				// continue execution
-				return;
-			}
-		})
-		// catch and log any errors
-		.catch( err => {
-			// log any errors
-			console.error( err );
-		})
-		// ensure the rest of the pre-save processing has finished executing
-		.then( () => {
+	if( Object.entries( cloudinarySiblingImage )
+		&& Object.entries( cloudinarySiblingImage ).length > 0
+	) {
 
-			return Promise.all( [ registrationNumberSet, adoptionWorkerAgencyFieldsSet, recruitmentWorkerAgencyFieldsSet ] );
-		})
-		// if there was an error with any of the promises
-		.catch( err => {
-			// log it for debugging purposes
-			console.error( `child ${ this.name.full } ( registration number: ${ this.registrationNumber } ) saved with errors` );
-		})
-		// execute the following regardless of whether the promises were resolved or rejected
-		// TODO: this should be replaced with ES6 Promise.prototype.finally() once it's finalized, assuming we can update to the latest version of Node if we upgrade Keystone
-		.then( () => {
-			// create a unique label for each child based on their first & last names and their registration number
-			this.setFullNameAndRegistrationLabel();
-			next();
-		});
-});
+		const cloudinarySiblingImageName = cloudinarySiblingImage.Objurl.substr( cloudinarySiblingImage.url.lastIndexOf( '/' ) + 1 );
+		const cloudinarySiblingImageExtension = cloudinarySiblingImage.url.substr( cloudinarySiblingImage.url.lastIndexOf( '.' ) + 1 );
 
-Child.schema.post( 'save', function() {
+		let awsSiblingImage = {
+			url: `${ process.env.CLOUDFRONT_URL }/Children/Images/Sibling Groups/${ cloudinarySiblingImageName }`,
+			bucket: process.env.S3_BUCKET_NAME,
+			path: '/Children/Images/Sibling Groups',
+			filename: cloudinarySiblingImageName,
+			mimetype: imageExtensionMap[ cloudinarySiblingImageExtension ]
+		};
 
-	// if the list of siblings has been changed
-	if ( this.checkSiblingsForChanges() ) {
-		// process updates for other siblings
-		this.updateSiblingGroup();
-	// if the siblings group has not changed, replicate fields to each sibling to be placed with that should be identical across records
-	// NOTE: this can't check this.checkSiblingsToBePlacedWithForChanges() because a lack of changes would prevent the cron job from replicating fields across siblings to be placed with
-	} else {
-		// process updates for other siblings in the group
-		this.updateSiblingsToBePlacedWithGroup();
+		this.set( 'tempSiblingGroupImage', awsSiblingImage );
 	}
 
-	// update saved bookmarks for families and social workers in the event of a status change or sibling group change
-	this.updateBookmarks();
+	next();
 
-	// we need this id in case the family was created via the website and updatedBy is empty
-	const websiteBotFetched = UserServiceMiddleware.getUserByFullName( 'Website Bot', 'admin' );
+	// // trim whitespace characters from any type.Text fields
+	// this.trimTextFields();
+	// // create a full name for the child based on their first, middle, and last names
+	// this.setFullName();
+	// // if there are no siblings to be placed with, uncheck the box, otherwise check it
+	// this.updateMustBePlacedWithSiblingsCheckbox();
 
-	// if the bot user was fetched successfully
-	websiteBotFetched
-		.then( bot => {
-			// set the updatedBy field to the bot's _id if the field isn't already set ( meaning it was saved in the admin UI and we know the user based on their session info )
-			this.updatedBy = this.updatedBy || bot.get( '_id' );
-		})
-		// if there was an error fetching the bot user
-		.catch( err => {
-			// log it for debugging purposes
-			console.error( `Website Bot could not be fetched for family ${ this.name.full } ( registration number: ${ this.registrationNumber } )`, err );
-		})
-		// execute the following regardless of whether the promises were resolved or rejected
-		// TODO: this should be replaced with ES6 Promise.prototype.finally() once it's finalized, assuming we can update to the latest version of Node if we upgrade Keystone
-		.then( () => {
-			// process change history
-			this.setChangeHistory();
-		});
+	// // set the registration number for the family
+	// const registrationNumberSet = this.setRegistrationNumber();
+	// // set the noedit fields associated with the adoption worker's agency
+	// const adoptionWorkerAgencyFieldsSet = this.setAdoptionWorkerAgencyFields();
+	// // set the noedit fields associated with the recruitment worker's agency
+	// const recruitmentWorkerAgencyFieldsSet = this.setRecruitmentWorkerAgencyFields();
+
+	// // check to see if the content of the siblings or siblings to be placed with fields have changed
+	// let hasSiblingsChanged = this.checkSiblingsForChanges();
+	// let hasSiblingsToBePlacedWithChanged = this.checkSiblingsToBePlacedWithForChanges();
+	// // if both groups have been changed
+	// if ( hasSiblingsChanged && hasSiblingsToBePlacedWithChanged ) {
+	// 	// revert the changes to the siblingsToBePlacedWith group
+	// 	this.siblingsToBePlacedWith = this._original ? this._original.siblingsToBePlacedWith : [];
+	// 	hasSiblingsToBePlacedWithChanged = false;
+	// }
+
+	// // perform async processing
+	// Promise
+	// 	.resolve()
+	// 	// process updates to sibling groups
+	// 	.then( () => {
+	// 		// if the list of siblings has been changed
+	// 		if ( hasSiblingsChanged ) {
+	// 			// batch the siblings group updates
+	// 			return ChildMiddleware.batchAllSiblingUpdates( this );
+	// 		// if the siblings to be placed with list has changed
+	// 		} else if ( hasSiblingsToBePlacedWithChanged ) {
+	// 			// batch the siblings to be placed with group updates
+	// 			return ChildMiddleware.batchAllSiblingsToBePlacedWithUpdates( this );
+	// 		// if neither list has changed
+	// 		} else {
+	// 			// continue execution
+	// 			return;
+	// 		}
+	// 	})
+	// 	// catch and log any errors
+	// 	.catch( err => {
+	// 		// log any errors
+	// 		console.error( err );
+	// 	})
+	// 	// ensure the rest of the pre-save processing has finished executing
+	// 	.then( () => {
+
+	// 		return Promise.all( [ registrationNumberSet, adoptionWorkerAgencyFieldsSet, recruitmentWorkerAgencyFieldsSet ] );
+	// 	})
+	// 	// if there was an error with any of the promises
+	// 	.catch( err => {
+	// 		// log it for debugging purposes
+	// 		console.error( `child ${ this.name.full } ( registration number: ${ this.registrationNumber } ) saved with errors` );
+	// 	})
+	// 	// execute the following regardless of whether the promises were resolved or rejected
+	// 	// TODO: this should be replaced with ES6 Promise.prototype.finally() once it's finalized, assuming we can update to the latest version of Node if we upgrade Keystone
+	// 	.then( () => {
+	// 		// create a unique label for each child based on their first & last names and their registration number
+	// 		this.setFullNameAndRegistrationLabel();
+	// 		next();
+	// 	});
 });
+
+// Child.schema.post( 'save', function() {
+
+// 	// if the list of siblings has been changed
+// 	if ( this.checkSiblingsForChanges() ) {
+// 		// process updates for other siblings
+// 		this.updateSiblingGroup();
+// 	// if the siblings group has not changed, replicate fields to each sibling to be placed with that should be identical across records
+// 	// NOTE: this can't check this.checkSiblingsToBePlacedWithForChanges() because a lack of changes would prevent the cron job from replicating fields across siblings to be placed with
+// 	} else {
+// 		// process updates for other siblings in the group
+// 		this.updateSiblingsToBePlacedWithGroup();
+// 	}
+
+// 	// update saved bookmarks for families and social workers in the event of a status change or sibling group change
+// 	this.updateBookmarks();
+
+// 	// we need this id in case the family was created via the website and updatedBy is empty
+// 	const websiteBotFetched = UserServiceMiddleware.getUserByFullName( 'Website Bot', 'admin' );
+
+// 	// if the bot user was fetched successfully
+// 	websiteBotFetched
+// 		.then( bot => {
+// 			// set the updatedBy field to the bot's _id if the field isn't already set ( meaning it was saved in the admin UI and we know the user based on their session info )
+// 			this.updatedBy = this.updatedBy || bot.get( '_id' );
+// 		})
+// 		// if there was an error fetching the bot user
+// 		.catch( err => {
+// 			// log it for debugging purposes
+// 			console.error( `Website Bot could not be fetched for family ${ this.name.full } ( registration number: ${ this.registrationNumber } )`, err );
+// 		})
+// 		// execute the following regardless of whether the promises were resolved or rejected
+// 		// TODO: this should be replaced with ES6 Promise.prototype.finally() once it's finalized, assuming we can update to the latest version of Node if we upgrade Keystone
+// 		.then( () => {
+// 			// process change history
+// 			this.setChangeHistory();
+// 		});
+// });
 
 /* text fields don't automatically trim(), this is to ensure no leading or trailing whitespace gets saved into url, text, or text area fields */
 Child.schema.methods.trimTextFields = function() {
