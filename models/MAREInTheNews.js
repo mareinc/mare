@@ -37,7 +37,17 @@ MAREInTheNews.add({
 	url: { type: Types.Url, label: 'url', noedit: true },
 	subHeading: { type: Types.Text, label: 'sub-heading', initial: true },
 	content: { type: Types.Html, wysiwyg: true, initial: true },
-	image: { type: Types.File, storage: imageStorage, label: 'image', note: 'needed to display in the sidebar, MARE in the news page, and the home page' },
+	tempImage: { type: Types.File, storage: imageStorage, label: 'temp image', note: 'needed to display in the sidebar, MARE in the news page, and the home page' },
+	image: {
+		type: Types.CloudinaryImage,
+		note: 'needed to display in the sidebar, MARE in the news page, and the home page',
+		folder: `${ process.env.CLOUDINARY_DIRECTORY }/mare-in-the-news/`,
+		select: true,
+		selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/mare-in-the-news/`,
+		autoCleanup: true,
+		whenExists: 'overwrite',
+		filenameAsPublicID: true
+	},
 	video: { type: Types.Url, label: 'video', initial: true }
 
 });

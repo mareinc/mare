@@ -231,6 +231,7 @@ Child.add( 'Display Options', {
 	dateOfLastPhotoListing: { type: Types.Date, label: 'date of last photolisting', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: {isCurrentlyInPhotoListing: true }, initial: true },
 	photolistingPageNumber: { type: Types.Text, label: 'photolisting page', initial: true },
 	previousPhotolistingPageNumbers: { type: Types.Text, label: 'previous photolisting pages', initial: true },
+	tempImage: { type: Types.File, storage: displayImageStorage, label: 'temp display image', dependsOn: { mustBePlacedWithSiblings: false } },
 	image: {
 		type: Types.CloudinaryImage,
 		label: 'display image',
@@ -242,6 +243,7 @@ Child.add( 'Display Options', {
 		whenExists: 'overwrite',
 		filenameAsPublicID: true
 	},
+	tempSiblingGroupImage: { type: Types.File, storage: displaySiblingGroupImageStorage, label: 'temp sibling group image', dependsOn: { mustBePlacedWithSiblings: true } },
 	siblingGroupImage: {
 		type: Types.CloudinaryImage,
 		label: 'sibling group image',
@@ -300,8 +302,6 @@ Child.add( 'Display Options', {
 
 }, 'Image Attachments', {
 
-	tempImage: { type: Types.File, storage: displayImageStorage, label: 'display image' },
-	tempSiblingGroupImage: { type: Types.File, storage: displaySiblingGroupImageStorage, label: 'sibling group image' },
 	imageAttachment1: { type: Types.File, storage: imageStorage, label: 'image attachment 1' },
 	imageAttachment2: { type: Types.File, storage: imageStorage, label: 'image attachment 2' },
 	imageAttachment3: { type: Types.File, storage: imageStorage, label: 'image attachment 3' },

@@ -39,7 +39,19 @@ Featured.add({
 	aboutUs: {
 		title: { type: Types.Text, label: 'about us title', initial: true, default: 'Our Services' },
 		target: { type: Types.Relationship, ref: 'Page', label: 'about us page', filter: { type: 'aboutUs' }, required: true, initial: true },
-		image: { type: Types.File, storage: imageStorage, label: 'about us image' },
+		tempImage: { type: Types.File, storage: imageStorage, label: 'temp about us image' },
+		image: {
+			type: Types.CloudinaryImage,
+			label: 'about us image',
+			folder: `${ process.env.CLOUDINARY_DIRECTORY }/featured/`,
+			select: true,
+			selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/featured/`,
+			autoCleanup: true,
+			whenExists: 'overwrite',
+			generateFilename: function() {
+				return 'about-us';
+			}
+		},
 		url: { type: Types.Url, label: 'about us url', noedit: true }
 	}
 
@@ -48,7 +60,19 @@ Featured.add({
 	successStory: {
 		title: { type: Types.Text, label: 'success story title', initial: true, default: 'Success Stories' },
 		target: { type: Types.Relationship, ref: 'Success Story', label: 'success story', required: true, initial: true },
-		image: { type: Types.File, storage: imageStorage, label: 'success story image' },
+		tempImage: { type: Types.File, storage: imageStorage, label: 'temp success story image' },
+		image: {
+			type: Types.CloudinaryImage,
+			label: 'success story image',
+			folder: `${ process.env.CLOUDINARY_DIRECTORY }/featured/`,
+			select: true,
+			selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/featured/`,
+			autoCleanup: true,
+			whenExists: 'overwrite',
+			generateFilename: function() {
+				return 'success-story';
+			}
+		},
 		url: { type: Types.Url, label: 'success story url', noedit: true }
 	}
 
@@ -57,7 +81,19 @@ Featured.add({
 	event: {
 		title: { type: Types.Text, label: 'event title', initial: true, default: 'Events' },
 		target: { type: Types.Relationship, ref: 'Event', label: 'event', filters: { isActive: true }, required: true, initial: true },
-		image: { type: Types.File, storage: imageStorage, label: 'event image' },
+		tempImage: { type: Types.File, storage: imageStorage, label: 'temp event image' },
+		image: {
+			type: Types.CloudinaryImage,
+			label: 'event image',
+			folder: `${ process.env.CLOUDINARY_DIRECTORY }/featured/`,
+			select: true,
+			selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/featured/`,
+			autoCleanup: true,
+			whenExists: 'overwrite',
+			generateFilename: function() {
+				return 'event';
+			}
+		},
 		url: { type: Types.Url, label: 'event url', noedit: true }
 	}
 });
