@@ -8,7 +8,7 @@ const keystone 					= require('keystone'),
 	  flashMessageMiddleware	= require( './service_flash-messages' );
 
 // initialize the standard view locals
-exports.initLocals = function(req, res, next) {
+exports.initLocals = function( req, res, next ) {
 	'use strict';
 
 	var locals = res.locals;
@@ -25,6 +25,8 @@ exports.initLocals = function(req, res, next) {
 	locals.user = req.user;
 	// store whether the user is logged in
 	locals.isLoggedIn = !!req.user;
+	// store the CloudFront url for image urls
+	locals.cloudfrontUrl = process.env.CLOUDFRONT_URL;
 
 	// create the main menu navigation.
 	locals.mainNav = [
