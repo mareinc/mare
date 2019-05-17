@@ -2,18 +2,11 @@ var moment = require('moment');
 var _ = require('underscore');
 var hbs = require('handlebars');
 var keystone = require('keystone');
-var cloudinary = require('cloudinary');
-
-
-// Declare Constants
-var CLOUDINARY_HOST = 'http://res.cloudinary.com';
 
 // Collection of templates to interpolate
 var linkTemplate = _.template('<a href="<%= url %>"><%= text %></a>');
 var scriptTemplate = _.template('<script src="<%= src %>"></script>');
 var cssLinkTemplate = _.template('<link href="<%= href %>" rel="stylesheet">');
-var cloudinaryUrlLimit = _.template(CLOUDINARY_HOST + '/<%= cloudinaryUser %>/image/upload/c_limit,f_auto,h_<%= height %>,w_<%= width %>/<%= publicId %>.jpg');
-
 
 module.exports = function() {
 
@@ -190,7 +183,7 @@ module.exports = function() {
 	  * Environment specific helpers
 	  * ==========================
 	  */
-	  // TODO: Combine the two functions below using context to pass CSS or JS. See cloudinaryUrl example below
+	  // TODO: Combine the two functions below using context to pass CSS or JS
 	  _helpers.isProductionCSS = function isProductionCSS(context) {
 	  	var output = '';
 
@@ -255,40 +248,6 @@ module.exports = function() {
 			'id': options
 		});
 		return rtn;
-	};
-
-	// ### CloudinaryUrl Helper
-	// Direct support of the cloudinary.url method from Handlebars (see
-	// cloudinary package documentation for more details).
-	//
-	// *Usage examples:*
-	// `{{{cloudinaryUrl image width=640 height=480 crop='fill' gravity='north'}}}`
-	// `{{#each images}} {{cloudinaryUrl width=640 height=480}} {{/each}}`
-	//
-	// Returns an src-string for a cloudinary image
-
-	_helpers.cloudinaryUrl = function cloudinaryUrl(context, options) {
-
-		// if we dont pass in a context and just kwargs
-		// then `this` refers to our default scope block and kwargs
-		// are stored in context.hash
-		if (!options && context.hasOwnProperty('hash')) {
-			// strategy is to place context kwargs into options
-			options = context;
-			// bind our default inherited scope into context
-			context = this;
-		}
-
-		// safe guard to ensure context is never null
-		context = context === null ? undefined : context;
-
-		if ((context) && (context.public_id)) {
-			var imageName = context.public_id.concat('.',context.format);
-			return cloudinary.url(imageName, options.hash);
-		}
-		else {
-			return null;
-		}
 	};
 
 	// ### Content Url Helpers

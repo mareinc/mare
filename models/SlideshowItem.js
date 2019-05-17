@@ -34,15 +34,6 @@ SlideshowItem.add({
 
 	tempImage: { type: Types.File, storage: imageStorage, label: 'temp image' },
 	image: { type: Types.File, storage: imageStorage, label: 'image' },
-	// image: {
-	// 	type: Types.CloudinaryImage,
-	// 	folder: `${ process.env.CLOUDINARY_DIRECTORY }/slideshow/`,
-	// 	select: true,
-	// 	selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/slideshow/`,
-	// 	autoCleanup: true,
-	// 	whenExists: 'overwrite',
-	// 	filenameAsPublicID: true
-	// },
 	parent: { type: Types.Relationship, label: 'slideshow', ref: 'Slideshow', initial: true },
 	order: { type: Types.Number, label: 'order', initial: true }
 

@@ -233,30 +233,8 @@ Child.add( 'Display Options', {
 	previousPhotolistingPageNumbers: { type: Types.Text, label: 'previous photolisting pages', initial: true },
 	tempImage: { type: Types.File, storage: displayImageStorage, label: 'temp display image', dependsOn: { mustBePlacedWithSiblings: false } },
 	image: { type: Types.File, storage: displayImageStorage, label: 'display image', dependsOn: { mustBePlacedWithSiblings: false } },
-	// image: {
-	// 	type: Types.CloudinaryImage,
-	// 	label: 'display image',
-	// 	folder: `${ process.env.CLOUDINARY_DIRECTORY }/children/`,
-	// 	select: true,
-	// 	selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/children/`,
-	// 	dependsOn: { mustBePlacedWithSiblings: false },
-	// 	autoCleanup: false,
-	// 	whenExists: 'overwrite',
-	// 	filenameAsPublicID: true
-	// },
 	tempSiblingGroupImage: { type: Types.File, storage: displaySiblingGroupImageStorage, label: 'temp sibling group image', dependsOn: { mustBePlacedWithSiblings: true } },
 	siblingGroupImage: { type: Types.File, storage: displaySiblingGroupImageStorage, label: 'sibling group image', dependsOn: { mustBePlacedWithSiblings: true } },
-	// siblingGroupImage: {
-	// 	type: Types.CloudinaryImage,
-	// 	label: 'sibling group image',
-	// 	folder: `${ process.env.CLOUDINARY_DIRECTORY }/sibling-groups/`,
-	// 	select: true,
-	// 	selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/sibling-groups/`,
-	// 	dependsOn: { mustBePlacedWithSiblings: true },
-	// 	autoCleanup: false,
-	// 	whenExists: 'overwrite',
-	// 	filenameAsPublicID: true
-	// },
 	extranetUrl: { type: Types.Url, label: 'extranet and related profile url', initial: true } // TODO: Since this is redundant as this just points the the url where the photo exists (the child's page), we may hide this field.  This must be kept in as it will help us track down the child information in the old system in the event of an issue.
 
 }, 'Recruitment Options', {
