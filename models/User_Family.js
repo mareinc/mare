@@ -321,7 +321,8 @@ Family.add( 'Permissions', {
 }, 'Info Preferences', {
 
 	infoPacket: {
-		packet: { type: Types.Select, options: 'Email, Hard Copy, Referred to AUK', label: 'Packet', initial: true },
+		preference: { type: Types.Select, options: 'Email, Hard Copy, Referred to AUK', label: 'packet', initial: true },
+		packet: { type: Types.Select, options: 'English, Spanish, none', label: 'old info packet field', hidden: true },
 		date: { type: Types.Date, label: 'date info packet sent', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, initial: true },
 		notes: { type: Types.Textarea, label: 'notes', initial: true }
 	}
@@ -1938,8 +1939,8 @@ Family.schema.methods.setChangeHistory = function setChangeHistory() {
 				done => {
 					ChangeHistoryMiddleware.checkFieldForChanges({
 												parent: 'infoPacket',
-												name: 'packet',
-												label: 'info packet language',
+												name: 'preference',
+												label: 'info packet preference',
 												type: 'string' }, model, modelBefore, changeHistory, done);
 				},
 				done => {
