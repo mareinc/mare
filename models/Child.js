@@ -334,13 +334,13 @@ Child.relationship( { ref: 'Child History', refPath: 'child', path: 'child-histo
 Child.schema.virtual( 'hasImage' ).get( function() {
 	'use strict';
 
-	return this.image.exists;
+	return !!this.image.url;
 });
 
 Child.schema.virtual( 'hasSiblingGroupImage' ).get( function() {
 	'use strict';
 
-	return this.siblingGroupImage.exists;
+	return !!this.siblingGroupImage.url;
 });
 
 // pre init hook - initialize default recommendedFamilyConstellation values for new child records

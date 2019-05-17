@@ -50,7 +50,7 @@ SlideshowItem.add({
 SlideshowItem.schema.virtual( 'hasImage' ).get( function() {
 	'use strict';
 
-	return this.image.exists;
+	return !!this.image.url;
 });
 
 // Define default columns in the admin interface and register the model

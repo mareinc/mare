@@ -70,7 +70,7 @@ MAREInTheNews.schema.statics.findRandom = function( callback ) {
 MAREInTheNews.schema.virtual( 'hasImage' ).get( function() {
 	'use strict';
 
-	return this.image.exists;
+	return !!this.image.url;
 });
 
 // Pre Save

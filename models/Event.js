@@ -146,7 +146,7 @@ Event.schema.add({
 Event.schema.virtual( 'hasImage' ).get( function() {
 	'use strict';
 
-	return this.image.exists;
+	return !!this.image.url;
 });
 
 Event.schema.post( 'init', function() {

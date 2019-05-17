@@ -70,7 +70,7 @@ SuccessStory.schema.statics.findRandom = function( callback ) {
 SuccessStory.schema.virtual( 'hasImage' ).get( function() {
 	'use strict';
 
-	return this.image.exists;
+	return !!this.image.url;
 });
 
 // Pre Save

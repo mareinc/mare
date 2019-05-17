@@ -619,7 +619,7 @@ exports.getRelevantSiblingGroupInformation = ( siblingGroups, locals ) => {
 			ages									: _.sortBy( agesArray ),
 			agesConverted							: _.sortBy( children.map( child => middleware.convertDate( child.birthDate ) ) ),
 			agesString								: middleware.getArrayAsList( _.sortBy( agesArray ) ),
-			image									: _.uniq( children.map( child => child.siblingGroupDisplayImage ) ).indexOf( NO_IMAGE_SIBLING_GROUP_PATH ) !== -1 ? NO_IMAGE_SIBLING_GROUP_PATH : children[ 0 ].siblingGroupDisplayImage,
+			image									: _.uniq( children.map( child => child.siblingGroupDisplayImage ) ).indexOf( NO_IMAGE_SIBLING_GROUP_PATH ) !== -1 ? NO_IMAGE_SIBLING_GROUP_PATH : children[ 0 ].siblingGroupDisplayImage.replace( ' ', '%20' ),
 			disabilities							: _.uniq( _.flatten( children.map( child => _.pluck( child.disabilities, 'disability' ) ) ) ),
 			emotionalNeeds							: _.uniq( children.map( child => needsMap[ child.emotionalNeeds ] ) ),
 			genders									: _.uniq( children.map( child => child.gender.gender ) ),
