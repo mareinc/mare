@@ -55,7 +55,6 @@ keystone.init({
 		' directionality, emoticons, hr, media, pagebreak,' +
 		' paste, preview, print, searchreplace, table, template' +
 		' visualblocks, visualchars, wordcount',
-	'wysiwyg cloudinary images': true,
 
 	'wysiwyg additional options': {
 
@@ -70,12 +69,6 @@ keystone.init({
 
 	'cookie secret': process.env.COOKIE_SECRET || '-eRWCqW&S~{bTw-|nG=]av*#2X*u}<?$v44|LV^|K*.q>.a<&rC[A~6%9rVcgh~)'
 });
-
-// Cloudinary configuration
-// optional, will prefix each image public_id with [{prefix}]/{list.path}/{field.path}/
-keystone.set( 'cloudinary folders', true );
-// optional, will force cloudinary to serve images over https
-keystone.set( 'cloudinary secure', true );
 
 // Mandrill configuration
 keystone.set( 'mandrill api key', process.env.MANDRILL_APIKEY );

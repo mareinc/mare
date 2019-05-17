@@ -50,16 +50,6 @@ Event.add( 'General Information', {
 	source: { type: Types.Relationship, label: 'source', ref: 'Source', dependsOn: { shouldCreateSource: true }, noedit: true, initial: true },
 	tempImage: { type: Types.File, storage: imageStorage, label: 'temp image', note: 'needed to display in the sidebar, events page, and home page' },
 	image: { type: Types.File, storage: imageStorage, label: 'image', note: 'needed to display in the sidebar, events page, and home page' },
-	// image: {
-	// 	type: Types.CloudinaryImage,
-	// 	note: 'needed to display in the sidebar, events page, and home page',
-	// 	folder: `${ process.env.CLOUDINARY_DIRECTORY }/events/`,
-	// 	select: true,
-	// 	selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/events/`,
-	// 	autoCleanup: true,
-	// 	whenExists: 'overwrite',
-	// 	filenameAsPublicID: true
-	// },
 
 	areBuddiesAllowed: { type: Types.Boolean, label: 'buddies allowed', initial: true },
 	isMatchingEvent: { type: Types.Boolean, label: 'matching event', initial: true }
