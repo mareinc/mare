@@ -101,19 +101,19 @@ Featured.add({
 Featured.schema.virtual( 'hasAboutUsImage' ).get( function() {
 	'use strict';
 
-	return this.aboutUs.image.exists;
+	return !!this.aboutUs.image.url;
 });
 
 Featured.schema.virtual( 'hasSuccessStoryImage' ).get( function() {
 	'use strict';
 
-	return this.successStory.image.exists;
+	return !!this.successStory.image.url;
 });
 
 Featured.schema.virtual( 'hasEventImage' ).get( function() {
 	'use strict';
 
-	return this.event.image.exists;
+	return !!this.event.image.url;
 });
 
 // pre save
