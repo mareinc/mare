@@ -10,6 +10,7 @@ const keystone					= require( 'keystone' ),
 	  UserService				= require( '../routes/middleware/service_user' ),
 	  FamilyService				= require( '../routes/middleware/service_family' ),
 	  ListService				= require( '../routes/middleware/service_lists' ),
+	  MailchimpService			= require( '../routes/middleware/service_mailchimp' ),
 	  Validators  				= require( '../routes/middleware/validators' );
 
 // configure the s3 storage adapters
@@ -27,14 +28,14 @@ var fileStorage = new keystone.Storage({
 		generateFilename: function( item ) {
 			// use the file name with spaces replaced by dashes instead of randomly generating a value.
 			// NOTE: this is needed to prevent access errors when trying to view the files
-			return item.originalname.replace( /\s/g, '-' );
+			return item.originalname.replace( /\s/g, '_' );
 		}
 	},
 	schema: {
 		bucket: true, // optional; store the bucket the file was uploaded to in your db
 		etag: true, // optional; store the etag for the resource
 		path: true, // optional; store the path of the file in your db
-		url: true, // optional; generate & store a public URL
+		url: true // optional; generate & store a public URL
 	}
 });
 
@@ -46,20 +47,16 @@ var imageStorage = new keystone.Storage({
 		bucket: process.env.S3_BUCKET_NAME, // required; defaults to process.env.S3_BUCKET
 		region: process.env.S3_REGION, // optional; defaults to process.env.S3_REGION, or if that's not specified, us-east-1
 		path: '/Families/Images',
-		uploadParams: { // optional; add S3 upload params; see below for details
-			ACL: 'public-read'
-		},
-		generateFilename: function( item ) {
-			// use the file name with spaces replaced by dashes instead of randomly generating a value.
-			// NOTE: this is needed to prevent access errors when trying to view the files
-			return item.originalname.replace( /\s/g, '-' );
-		}
+		// use the file name with spaces replaced by dashes instead of randomly generating a value
+		// NOTE: this is needed to prevent access errors when trying to view the files
+		generateFilename: file => file.originalname.replace( /\s/g, '_' ),
+		publicUrl: file => `${ process.env.CLOUDFRONT_URL }/Families/Images/${ file.originalname.replace( /\s/g, '_' ) }`
 	},
 	schema: {
 		bucket: true, // optional; store the bucket the file was uploaded to in your db
 		etag: true, // optional; store the etag for the resource
 		path: true, // optional; store the path of the file in your db
-		url: true, // optional; generate & store a public URL
+		url: true // optional; generate & store a public URL
 	}
 });
 
@@ -92,16 +89,7 @@ Family.add( 'Permissions', {
 
 },  'General Information', {
 
-	avatar: {
-		type: Types.CloudinaryImage,
-		label: 'avatar',
-		folder: `${ process.env.CLOUDINARY_DIRECTORY }/users/families`,
-		select: true,
-		selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/users/families`,
-		autoCleanup: true,
-		whenExists: 'overwrite',
-		filenameAsPublicID: true
-	},
+	avatar: { type: Types.File, storage: imageStorage, label: 'avatar' },
 
 	registrationNumber: { type: Number, label: 'registration number', format: false, noedit: true },
 	initialContact: { type: Types.Date, label: 'initial contact', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, initial: true }, // was required: data migration change ( undo if possible )
@@ -294,7 +282,7 @@ Family.add( 'Permissions', {
 	registeredWithMARE: {
 		registered: { type: Types.Boolean, label: 'registered with MARE', default: false, initial: true },
 		date: { type: Types.Date, label: 'date registered with MARE', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { 'registeredWithMARE.registered': true }, initial: true },
-		status: { type: Types.Relationship, label: 'status', ref: 'Child Status', dependsOn: { 'registeredWithMARE.registered': true }, initial: true }
+		status: { type: Types.Relationship, label: 'status', ref: 'Family Status', dependsOn: { 'registeredWithMARE.registered': true }, initial: true }
 	},
 
 	familyProfile: {
@@ -333,7 +321,7 @@ Family.add( 'Permissions', {
 }, 'Info Preferences', {
 
 	infoPacket: {
-		packet: { type: Types.Select, options: 'English, Spanish, none', label: 'Packet', initial: true },
+		packet: { type: Types.Select, options: 'Email, Hard Copy, Referred to AUK', label: 'Packet', initial: true },
 		date: { type: Types.Date, label: 'date info packet sent', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, initial: true },
 		notes: { type: Types.Textarea, label: 'notes', initial: true }
 	}
@@ -484,6 +472,39 @@ Family.schema.post( 'save', function() {
 			// process change history
 			this.setChangeHistory();
 		});
+
+	// if the save was initiated from the admin UI and this is the first save, subscribe the user to all mailing lists
+	// createdBy will be set to some id if it was created from the admin UI, otherwise it will be undefined
+	// createdAt and updatedAt will be the same value only on the first save
+	if ( this.createdBy && this.createdAt == this.updatedAt ) {
+
+		// subscribe to all mailing lists
+		this.subscribeToMailingLists()
+			.then( mailingListIds => {
+				// update the mailing list subscriptions on the model to ensure preferences are in sync
+				this.mailingLists = mailingListIds;
+				// save the update
+				return this.save();
+			})
+			// now that the mailing list subscriptions have been saved, apply Family status tags to any Mailchimp mailing lists the Family is subscribed to
+			.then( () => this.applyFamilyStatusTagsToMailingLists() )
+			.catch( err => {
+				// log any errors with subscription process
+				console.error( new Error( `Automatic subscription to mailing lists failed for family ${ this.displayName }` ) );
+				console.error( err );
+			});
+
+	// if this is not the first save or the save was initiated from a registration form, the mailing lists will already be saved to the Family model
+	} else {
+
+		// apply Family status tags to any Mailchimp mailing lists the Family is subscribed to
+		this.applyFamilyStatusTagsToMailingLists()
+			.catch( err => {
+				// log any errors with tag update process
+				console.error( new Error( `Tag updates failed for family ${ this.displayName }` ) );
+				console.error( err );
+			});
+	}
 });
 
 /* TODO: VERY IMPORTANT:  Need to fix this to provide the link to access the keystone admin panel again */
@@ -526,6 +547,98 @@ Family.schema.methods.setDisplayNameAndRegistrationLabel = function() {
 
 	// combine the display name and registration number  to create a unique label for all Family models
 	this.displayNameAndRegistration = `${ this.displayName }${ registrationNumberString }`;
+};
+
+Family.schema.methods.subscribeToMailingLists = function() {
+	'use strict';
+
+	return new Promise( ( resolve, reject ) => {
+
+		let mailingListIds = [];
+
+		// get the mailchimp email lists and opt the user in to them
+		keystone.list( 'Mailchimp List' ).model
+		.find()
+		.lean()
+		.exec()
+		.then( mailchimpListDocs => {
+
+			// subscribe the user to all mailing lists via Mailchimp API
+			return Promise.all(
+				mailchimpListDocs.map( mailchimpListDoc => {
+
+					// add the current mailing list ids to an array to later the mailingList relationships
+					mailingListIds.push( mailchimpListDoc._id );
+
+					// subscribe the user to the current mailing list
+					return MailchimpService.subscribeMemberToList({
+						email: this.email,
+						mailingListId: mailchimpListDoc.mailchimpId,
+						userType: this.userType,
+						firstName: this.contact1.name.first,
+						lastName: this.contact1.name.last
+					});
+				})
+			);
+		})
+		.then( () => {
+
+			// mailchimp subscriptions succeeded, return subscribed mailing list ids
+			resolve( mailingListIds );
+		})
+		.catch( err => reject( err ) );
+	});
+};
+
+Family.schema.methods.applyFamilyStatusTagsToMailingLists = function() {
+
+	return new Promise( ( resolve, reject ) => {
+
+		// get tag labels from schema definition
+		const MAPPTrainingLabel = Family.model.schema.tree.stages.MAPPTrainingCompleted.completed.label,
+			  homestudyLabel = Family.model.schema.tree.homestudy.completed.label;
+
+		const tagUpdates = [];
+
+		// get the mailchimp list ids for the mailing lists the user has opted-in to
+		keystone.list( 'Mailchimp List' ).model
+			.find()
+			.where( '_id' )
+			.in( this.mailingLists )
+			.lean()
+			.exec()
+			.then( mailchimpListDocs => {
+
+				// update user's tags on each mailing list they're subscribed to
+				mailchimpListDocs.forEach( mailchimpListDoc => {
+
+					// update MAPP training completed tag
+					tagUpdates.push(
+						MailchimpService.updateMemberTags({
+							tagName: MAPPTrainingLabel,
+							email: this.email,
+							mailingListId: mailchimpListDoc.mailchimpId,
+							removeTag: !this.stages.MAPPTrainingCompleted.completed
+						})
+					);
+
+					// update homestudy completed tag
+					tagUpdates.push(
+						MailchimpService.updateMemberTags({
+							tagName: homestudyLabel,
+							email: this.email,
+							mailingListId: mailchimpListDoc.mailchimpId,
+							removeTag: !this.homestudy.completed
+						})
+					);
+				});
+
+				// wait for all tag updates to be applied
+				return Promise.all( tagUpdates );
+			})
+			.then( () => resolve() )
+			.catch( err => reject( err ) );
+	});
 };
 
 /* text fields don't automatically trim(), this is to ensure no leading or trailing whitespace gets saved into url, text, or text area fields */
@@ -998,7 +1111,7 @@ Family.schema.methods.setChangeHistory = function setChangeHistory() {
 				done => {
 					ChangeHistoryMiddleware.checkFieldForChanges({
 												parent: 'avatar',
-												name: 'secure_url',
+												name: 'url',
 												label: 'avatar',
 												type: 'string' }, model, modelBefore, changeHistory, done );
 				},

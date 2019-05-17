@@ -27,16 +27,16 @@ const fileStorage = new keystone.Storage({
 			ACL: 'public-read'
 		},
 		generateFilename: function( item ) {
-			// use the file name with spaces replaced by dashes instead of randomly generating a value.
+			// use the file name with spaces replaced by dashes instead of randomly generating a value
 			// NOTE: this is needed to prevent access errors when trying to view the files
-			return item.originalname.replace( /\s/g, '-' );
+			return item.originalname.replace( /\s/g, '_' );
 		}
 	},
 	schema: {
 		bucket: true, // optional; store the bucket the file was uploaded to in your db
 		etag: true, // optional; store the etag for the resource
 		path: true, // optional; store the path of the file in your db
-		url: true, // optional; generate & store a public URL
+		url: true // optional; generate & store a public URL
 	}
 });
 
@@ -52,16 +52,58 @@ const imageStorage = new keystone.Storage({
 			ACL: 'public-read'
 		},
 		generateFilename: function( item ) {
-			// use the file name with spaces replaced by dashes instead of randomly generating a value.
+			// use the file name with spaces replaced by dashes instead of randomly generating a value
 			// NOTE: this is needed to prevent access errors when trying to view the files
-			return item.originalname.replace( /\s/g, '-' );
+			return item.originalname.replace( /\s/g, '_' );
 		}
 	},
 	schema: {
 		bucket: true, // optional; store the bucket the file was uploaded to in your db
 		etag: true, // optional; store the etag for the resource
 		path: true, // optional; store the path of the file in your db
-		url: true, // optional; generate & store a public URL
+		url: true // optional; generate & store a public URL
+	}
+});
+
+const displayImageStorage = new keystone.Storage({
+	adapter: require( 'keystone-storage-adapter-s3' ),
+	s3: {
+		key: process.env.S3_KEY, // required; defaults to process.env.S3_KEY
+		secret: process.env.S3_SECRET, // required; defaults to process.env.S3_SECRET
+		bucket: process.env.S3_BUCKET_NAME, // required; defaults to process.env.S3_BUCKET
+		region: process.env.S3_REGION, // optional; defaults to process.env.S3_REGION, or if that's not specified, us-east-1
+		path: '/Children/Images/Individuals',
+		// use the file name with spaces replaced by dashes instead of randomly generating a value
+		// NOTE: this is needed to prevent access errors when trying to view the files
+		generateFilename: file => file.originalname.replace( /\s/g, '_' ),
+		publicUrl: file => `${ process.env.CLOUDFRONT_URL }/Children/Images/Individuals/${ file.originalname.replace( /\s/g, '_' ) }`
+	},
+	schema: {
+		bucket: true, // optional; store the bucket the file was uploaded to in your db
+		etag: true, // optional; store the etag for the resource
+		path: true, // optional; store the path of the file in your db
+		url: true // optional; generate & store a public URL
+	}
+});
+
+const displaySiblingGroupImageStorage = new keystone.Storage({
+	adapter: require( 'keystone-storage-adapter-s3' ),
+	s3: {
+		key: process.env.S3_KEY, // required; defaults to process.env.S3_KEY
+		secret: process.env.S3_SECRET, // required; defaults to process.env.S3_SECRET
+		bucket: process.env.S3_BUCKET_NAME, // required; defaults to process.env.S3_BUCKET
+		region: process.env.S3_REGION, // optional; defaults to process.env.S3_REGION, or if that's not specified, us-east-1
+		path: '/Children/Images/Sibling Groups',
+		// use the file name with spaces replaced by dashes instead of randomly generating a value
+		// NOTE: this is needed to prevent access errors when trying to view the files
+		generateFilename: file => file.originalname.replace( /\s/g, '_' ),
+		publicUrl: file => `${ process.env.CLOUNDFRONT_URL }/Children/Images/Sibling Groups/${ file.originalname.replace( /\s/g, '_' ) }`
+	},
+	schema: {
+		bucket: true, // optional; store the bucket the file was uploaded to in your db
+		etag: true, // optional; store the etag for the resource
+		path: true, // optional; store the path of the file in your db
+		url: true // optional; generate & store a public URL
 	}
 });
 
@@ -189,6 +231,7 @@ Child.add( 'Display Options', {
 	dateOfLastPhotoListing: { type: Types.Date, label: 'date of last photolisting', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: {isCurrentlyInPhotoListing: true }, initial: true },
 	photolistingPageNumber: { type: Types.Text, label: 'photolisting page', initial: true },
 	previousPhotolistingPageNumbers: { type: Types.Text, label: 'previous photolisting pages', initial: true },
+	tempImage: { type: Types.File, storage: displayImageStorage, label: 'temp display image', dependsOn: { mustBePlacedWithSiblings: false } },
 	image: {
 		type: Types.CloudinaryImage,
 		label: 'display image',
@@ -200,17 +243,7 @@ Child.add( 'Display Options', {
 		whenExists: 'overwrite',
 		filenameAsPublicID: true
 	},
-	allImages: {
-		type: Types.CloudinaryImages,
-		label: 'all images',
-		folder: `${ process.env.CLOUDINARY_DIRECTORY }/children/`,
-		select: true,
-		selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/children/`,
-		hidden: true,
-		autoCleanup: true,
-		whenExists: 'overwrite',
-		filenameAsPublicID: true
-	},
+	tempSiblingGroupImage: { type: Types.File, storage: displaySiblingGroupImageStorage, label: 'temp sibling group image', dependsOn: { mustBePlacedWithSiblings: true } },
 	siblingGroupImage: {
 		type: Types.CloudinaryImage,
 		label: 'sibling group image',
@@ -301,18 +334,18 @@ Child.relationship( { ref: 'Child History', refPath: 'child', path: 'child-histo
 Child.schema.virtual( 'hasImage' ).get( function() {
 	'use strict';
 
-	return this.image.exists;
+	return !!this.image.url;
 });
 
 Child.schema.virtual( 'hasSiblingGroupImage' ).get( function() {
 	'use strict';
 
-	return this.siblingGroupImage.exists;
+	return !!this.siblingGroupImage.url;
 });
 
 // pre init hook - initialize default recommendedFamilyConstellation values for new child records
 // Doing it here via pre init because it does not seem to work when setting in the post init hook via field default options or via direct assignment to this.recommendedFamilyConstellation
-Child.schema.pre('init', function (next, data) {
+Child.schema.pre( 'init', function (next, data) {
 	
 	// We are using a custom key of the Child const: _mareDefaultFamilyConstellations
 	// it will hold default recommendedFamilyConstellation values
@@ -1661,14 +1694,14 @@ Child.schema.methods.setChangeHistory = function() {
 				done => {
 					ChangeHistoryMiddleware.checkFieldForChanges({
 												parent: 'image',
-												name: 'secure_url',
+												name: 'url',
 												label: 'image',
 												type: 'string' }, model, modelBefore, changeHistory, done );
 				},
 				done => {
 					ChangeHistoryMiddleware.checkFieldForChanges({
 												parent: 'siblingGroupImage',
-												name: 'secure_url',
+												name: 'url',
 												label: 'sibling group image',
 												type: 'string' }, model, modelBefore, changeHistory, done );
 				},

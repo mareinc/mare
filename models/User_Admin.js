@@ -1,10 +1,32 @@
-var keystone	= require( 'keystone' ),
-	Types		= keystone.Field.Types,
-	User		= require( './User' ),
-	Validators  = require( '../routes/middleware/validators' );
+const keystone		= require( 'keystone' ),
+	  Types			= keystone.Field.Types,
+	  User			= require( './User' ),
+	  Validators	= require( '../routes/middleware/validators' );
+
+// configure the s3 storage adapters
+const imageStorage = new keystone.Storage({
+	adapter: require( 'keystone-storage-adapter-s3' ),
+	s3: {
+		key: process.env.S3_KEY, // required; defaults to process.env.S3_KEY
+		secret: process.env.S3_SECRET, // required; defaults to process.env.S3_SECRET
+		bucket: process.env.S3_BUCKET_NAME, // required; defaults to process.env.S3_BUCKET
+		region: process.env.S3_REGION, // optional; defaults to process.env.S3_REGION, or if that's not specified, us-east-1
+		path: '/Staff/Images',
+		// use the file name with spaces replaced by dashes instead of randomly generating a value
+		// NOTE: this is needed to prevent access errors when trying to view the files
+		generateFilename: file => file.originalname.replace( /\s/g, '_' ),
+		publicUrl: file => `${ process.env.CLOUDFRONT_URL }/Staff/Images/${ file.originalname.replace( /\s/g, '_' ) }`
+	},
+	schema: {
+		bucket: true, // optional; store the bucket the file was uploaded to in your db
+		etag: true, // optional; store the etag for the resource
+		path: true, // optional; store the path of the file in your db
+		url: true // optional; generate & store a public URL
+	}
+});
 
 // Create model
-var Admin = new keystone.List( 'Admin', {
+const Admin = new keystone.List( 'Admin', {
 	inherits: User,
 	map: { name: 'name.full' },
 	defaultSort: 'name.full',
@@ -30,16 +52,7 @@ Admin.add( 'Permissions', {
 		full: { type: Types.Text, label: 'name', hidden: true, noedit: true, initial: false }
 	},
 
-	avatar: {
-		type: Types.CloudinaryImage,
-		label: 'avatar',
-		folder: `${ process.env.CLOUDINARY_DIRECTORY }/users/admin`,
-		select: true,
-		selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/users/admin`,
-		autoCleanup: true,
-		whenExists: 'overwrite',
-		filenameAsPublicID: true
-	}
+	avatar: { type: Types.File, storage: imageStorage, label: 'avatar' },
 
 }, 'Contact Information', {
 

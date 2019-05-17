@@ -1,5 +1,27 @@
-const keystone			= require( 'keystone' );
-const Types				= keystone.Field.Types;
+const keystone			= require( 'keystone' ),
+	  Types				= keystone.Field.Types;
+
+// configure the s3 storage adapters
+const imageStorage = new keystone.Storage({
+	adapter: require( 'keystone-storage-adapter-s3' ),
+	s3: {
+		key: process.env.S3_KEY, // required; defaults to process.env.S3_KEY
+		secret: process.env.S3_SECRET, // required; defaults to process.env.S3_SECRET
+		bucket: process.env.S3_BUCKET_NAME, // required; defaults to process.env.S3_BUCKET
+		region: process.env.S3_REGION, // optional; defaults to process.env.S3_REGION, or if that's not specified, us-east-1
+		path: '/Featured Items/Images',
+		// use the file name with spaces replaced by dashes instead of randomly generating a value
+		// NOTE: this is needed to prevent access errors when trying to view the files
+		generateFilename: file => file.originalname.replace( /\s/g, '_' ),
+		publicUrl: file => `${ process.env.CLOUDFRONT_URL }/Featured Items/Images/${ file.originalname.replace( /\s/g, '_' ) }`
+	},
+	schema: {
+		bucket: true, // optional; store the bucket the file was uploaded to in your db
+		etag: true, // optional; store the etag for the resource
+		path: true, // optional; store the path of the file in your db
+		url: true // optional; generate & store a public URL
+	}
+});
 
 // create model
 var Featured = new keystone.List( 'Featured Item', {
@@ -17,6 +39,7 @@ Featured.add({
 	aboutUs: {
 		title: { type: Types.Text, label: 'about us title', initial: true, default: 'Our Services' },
 		target: { type: Types.Relationship, ref: 'Page', label: 'about us page', filter: { type: 'aboutUs' }, required: true, initial: true },
+		tempImage: { type: Types.File, storage: imageStorage, label: 'temp about us image' },
 		image: {
 			type: Types.CloudinaryImage,
 			label: 'about us image',
@@ -29,7 +52,6 @@ Featured.add({
 				return 'about-us';
 			}
 		},
-
 		url: { type: Types.Url, label: 'about us url', noedit: true }
 	}
 
@@ -38,6 +60,7 @@ Featured.add({
 	successStory: {
 		title: { type: Types.Text, label: 'success story title', initial: true, default: 'Success Stories' },
 		target: { type: Types.Relationship, ref: 'Success Story', label: 'success story', required: true, initial: true },
+		tempImage: { type: Types.File, storage: imageStorage, label: 'temp success story image' },
 		image: {
 			type: Types.CloudinaryImage,
 			label: 'success story image',
@@ -58,6 +81,7 @@ Featured.add({
 	event: {
 		title: { type: Types.Text, label: 'event title', initial: true, default: 'Events' },
 		target: { type: Types.Relationship, ref: 'Event', label: 'event', filters: { isActive: true }, required: true, initial: true },
+		tempImage: { type: Types.File, storage: imageStorage, label: 'temp event image' },
 		image: {
 			type: Types.CloudinaryImage,
 			label: 'event image',
@@ -77,19 +101,19 @@ Featured.add({
 Featured.schema.virtual( 'hasAboutUsImage' ).get( function() {
 	'use strict';
 
-	return this.aboutUs.image.exists;
+	return !!this.aboutUs.image.url;
 });
 
 Featured.schema.virtual( 'hasSuccessStoryImage' ).get( function() {
 	'use strict';
 
-	return this.successStory.image.exists;
+	return !!this.successStory.image.url;
 });
 
 Featured.schema.virtual( 'hasEventImage' ).get( function() {
 	'use strict';
 
-	return this.event.image.exists;
+	return !!this.event.image.url;
 });
 
 // pre save

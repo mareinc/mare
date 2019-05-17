@@ -4,7 +4,7 @@
 		<div class="card__columns">
 			<div class="card__column card__column--left">
 				{{#if mareInTheNewsStory.hasImage}}
-				<img class="card__image" src="{{ mareInTheNewsStory.image.secure_url }}" alt="{{ mareInTheNewsStory.heading }}">
+				<img class="card__image" src="{{ mareInTheNewsStory.image.url }}" alt="{{ mareInTheNewsStory.heading }}">
 				{{/if}}
 				{{#if mareInTheNewsStory.imageCaption}}
 				<div class="card__image-text card__image-text--centered card__image-text--smaller card__image-text--italic card__image-text--small-padding-top">{{ mareInTheNewsStory.imageCaption }}</div>

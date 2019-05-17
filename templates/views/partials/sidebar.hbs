@@ -15,7 +15,7 @@
 	<aside class="card card--vertical card--small-padding sidebar__card">	
 		<a href="{{ randomSuccessStory.url }}">
 			{{#if randomSuccessStory.hasImage}}
-			<img class="card__image" src="{{ randomSuccessStory.image.secure_url }}" alt="success story image">
+			<img class="card__image" src="{{ randomSuccessStory.image.url }}" alt="success story image">
 			{{/if}}
 			<span class="card__image-text">
 				<div class="card__image-description">{{{randomSuccessStory.shortContent}}}</div>
@@ -29,7 +29,7 @@
 	<aside class="card card--vertical card--small-padding sidebar__card sidebar__card--small-margin-bottom">
 		<a href="{{ randomEvent.url }}">
 			{{#if randomEvent.hasImage}}
-			<img class="card__image" src="{{ randomEvent.image.secure_url }}" alt="event image">
+			<img class="card__image" src="{{ randomEvent.image.url }}" alt="event image">
 			{{/if}}
 			<span class="card__image-text">
 				<!-- TODO: do we need the date/time in the description? -->

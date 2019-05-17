@@ -1,8 +1,30 @@
-var keystone = require( 'keystone' ),
-	Types = keystone.Field.Types;
+const keystone	= require( 'keystone' ),
+	  Types		= keystone.Field.Types;
+
+// configure the s3 storage adapters
+const imageStorage = new keystone.Storage({
+	adapter: require( 'keystone-storage-adapter-s3' ),
+	s3: {
+		key: process.env.S3_KEY, // required; defaults to process.env.S3_KEY
+		secret: process.env.S3_SECRET, // required; defaults to process.env.S3_SECRET
+		bucket: process.env.S3_BUCKET_NAME, // required; defaults to process.env.S3_BUCKET
+		region: process.env.S3_REGION, // optional; defaults to process.env.S3_REGION, or if that's not specified, us-east-1
+		path: '/Success Stories/Images',
+		// use the file name with spaces replaced by dashes instead of randomly generating a value
+		// NOTE: this is needed to prevent access errors when trying to view the files
+		generateFilename: file => file.originalname.replace( /\s/g, '_' ),
+		publicUrl: file => `${ process.env.CLOUDFRONT_URL }/Success Stories/Images/${ file.originalname.replace( /\s/g, '_' ) }`
+	},
+	schema: {
+		bucket: true, // optional; store the bucket the file was uploaded to in your db
+		etag: true, // optional; store the etag for the resource
+		path: true, // optional; store the path of the file in your db
+		url: true // optional; generate & store a public URL
+	}
+});
 
 // Create model. Additional options allow menu name to be used what auto-generating URLs
-var SuccessStory = new keystone.List( 'Success Story', {
+const SuccessStory = new keystone.List( 'Success Story', {
 	autokey: { path: 'key', from: 'heading', unique: true },
 	map: { name: 'heading' }
 });
@@ -14,6 +36,7 @@ SuccessStory.add({
 	url: { type: Types.Url, label: 'url', noedit: true },
 	subHeading: { type: Types.Text, label: 'sub-heading', initial: true },
 	content: { type: Types.Html, wysiwyg: true, note: 'do not add images or video, instead use the fields below', initial: true },
+	tempImage: { type: Types.File, storage: imageStorage, label: 'temp image', note: 'needed to display in the sidebar, success story page, and home page' },
 	image: {
 		type: Types.CloudinaryImage,
 		note: 'needed to display in the sidebar, success story page, and home page',
@@ -47,7 +70,7 @@ SuccessStory.schema.statics.findRandom = function( callback ) {
 SuccessStory.schema.virtual( 'hasImage' ).get( function() {
 	'use strict';
 
-	return this.image.exists;
+	return !!this.image.url;
 });
 
 // Pre Save
