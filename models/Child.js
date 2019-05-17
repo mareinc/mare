@@ -231,9 +231,7 @@ Child.add( 'Display Options', {
 	dateOfLastPhotoListing: { type: Types.Date, label: 'date of last photolisting', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: {isCurrentlyInPhotoListing: true }, initial: true },
 	photolistingPageNumber: { type: Types.Text, label: 'photolisting page', initial: true },
 	previousPhotolistingPageNumbers: { type: Types.Text, label: 'previous photolisting pages', initial: true },
-	tempImage: { type: Types.File, storage: displayImageStorage, label: 'temp display image', dependsOn: { mustBePlacedWithSiblings: false } },
 	image: { type: Types.File, storage: displayImageStorage, label: 'display image', dependsOn: { mustBePlacedWithSiblings: false } },
-	tempSiblingGroupImage: { type: Types.File, storage: displaySiblingGroupImageStorage, label: 'temp sibling group image', dependsOn: { mustBePlacedWithSiblings: true } },
 	siblingGroupImage: { type: Types.File, storage: displaySiblingGroupImageStorage, label: 'sibling group image', dependsOn: { mustBePlacedWithSiblings: true } },
 	extranetUrl: { type: Types.Url, label: 'extranet and related profile url', initial: true } // TODO: Since this is redundant as this just points the the url where the photo exists (the child's page), we may hide this field.  This must be kept in as it will help us track down the child information in the old system in the event of an issue.
 

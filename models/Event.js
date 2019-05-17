@@ -48,7 +48,6 @@ Event.add( 'General Information', {
 	// type: { type: Types.Relationship, label: 'Event Type', ref: 'Event Type', required: true, initial: true }
 	type: { type: Types.Select, label: 'event type', options: 'Mare hosted events, partner hosted events, MAPP trainings', required: true, initial: true }, // TODO: this fixes an issue in pre-save which can be updated to fetch the live results and not hardcode this list.
 	source: { type: Types.Relationship, label: 'source', ref: 'Source', dependsOn: { shouldCreateSource: true }, noedit: true, initial: true },
-	tempImage: { type: Types.File, storage: imageStorage, label: 'temp image', note: 'needed to display in the sidebar, events page, and home page' },
 	image: { type: Types.File, storage: imageStorage, label: 'image', note: 'needed to display in the sidebar, events page, and home page' },
 
 	areBuddiesAllowed: { type: Types.Boolean, label: 'buddies allowed', initial: true },

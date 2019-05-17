@@ -32,7 +32,6 @@ var SlideshowItem = new keystone.List('Slideshow Item', {
 // Create fields
 SlideshowItem.add({
 
-	tempImage: { type: Types.File, storage: imageStorage, label: 'temp image' },
 	image: { type: Types.File, storage: imageStorage, label: 'image' },
 	parent: { type: Types.Relationship, label: 'slideshow', ref: 'Slideshow', initial: true },
 	order: { type: Types.Number, label: 'order', initial: true }

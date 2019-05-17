@@ -39,7 +39,6 @@ Featured.add({
 	aboutUs: {
 		title: { type: Types.Text, label: 'about us title', initial: true, default: 'Our Services' },
 		target: { type: Types.Relationship, ref: 'Page', label: 'about us page', filter: { type: 'aboutUs' }, required: true, initial: true },
-		tempImage: { type: Types.File, storage: imageStorage, label: 'temp about us image' },
 		image: { type: Types.File, storage: imageStorage, label: 'about us image' },
 		url: { type: Types.Url, label: 'about us url', noedit: true }
 	}
@@ -49,7 +48,6 @@ Featured.add({
 	successStory: {
 		title: { type: Types.Text, label: 'success story title', initial: true, default: 'Success Stories' },
 		target: { type: Types.Relationship, ref: 'Success Story', label: 'success story', required: true, initial: true },
-		tempImage: { type: Types.File, storage: imageStorage, label: 'temp success story image' },
 		image: { type: Types.File, storage: imageStorage, label: 'success story image' },
 		url: { type: Types.Url, label: 'success story url', noedit: true }
 	}
@@ -59,7 +57,6 @@ Featured.add({
 	event: {
 		title: { type: Types.Text, label: 'event title', initial: true, default: 'Events' },
 		target: { type: Types.Relationship, ref: 'Event', label: 'event', filters: { isActive: true }, required: true, initial: true },
-		tempImage: { type: Types.File, storage: imageStorage, label: 'temp event image' },
 		image: { type: Types.File, storage: imageStorage, label: 'event image' },
 		url: { type: Types.Url, label: 'event url', noedit: true }
 	}
