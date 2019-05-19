@@ -3,7 +3,7 @@
 	<!-- Meet the Children -->
 	<aside class="card card--vertical card--small-padding sidebar__card">	
 		<a href="/waiting-child-profiles">
-			<img class="card__image" src="https://s3.amazonaws.com/mare-production/Web+Front+End/siderail-children/isabella-siderail.jpg" alt="meet the children">	
+			<img class="card__image" src="{{ cloudfrontUrl }}/Web+Front+End/siderail-children/isabella-siderail.jpg" alt="meet the children">	
 			<span class="card__image-text">
 				{{!-- TODO: this shouldn't be a link anymore, update with classes to style text the way the link does --}}
 				<span class="card__image-title card__image-title--large card__image-title--centered">Meet the Children</span>
@@ -15,7 +15,7 @@
 	<aside class="card card--vertical card--small-padding sidebar__card">	
 		<a href="{{ randomSuccessStory.url }}">
 			{{#if randomSuccessStory.hasImage}}
-			<img class="card__image" src="{{ randomSuccessStory.image.secure_url }}" alt="success story image">
+			<img class="card__image" src="{{ randomSuccessStory.image.url }}" alt="success story image">
 			{{/if}}
 			<span class="card__image-text">
 				<div class="card__image-description">{{{randomSuccessStory.shortContent}}}</div>
@@ -29,7 +29,7 @@
 	<aside class="card card--vertical card--small-padding sidebar__card sidebar__card--small-margin-bottom">
 		<a href="{{ randomEvent.url }}">
 			{{#if randomEvent.hasImage}}
-			<img class="card__image" src="{{ randomEvent.image.secure_url }}" alt="event image">
+			<img class="card__image" src="{{ randomEvent.image.url }}" alt="event image">
 			{{/if}}
 			<span class="card__image-text">
 				<!-- TODO: do we need the date/time in the description? -->

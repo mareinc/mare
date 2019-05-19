@@ -322,7 +322,7 @@ exports.applySiblingsToBePlacedWithGroupToChild = ( { childToUpdateId, recommend
 						child.groupProfile.part1 !== siblingGroupProfile.part1 ||
 						child.groupProfile.part2 !== siblingGroupProfile.part2 ||
 						child.groupProfile.part3 !== siblingGroupProfile.part3 ||
-						child.siblingGroupImage.secure_url !== newSiblingGroupImage.secure_url || // when checking that the objects are different, we only need to test a single attribute
+						child.siblingGroupImage.url !== newSiblingGroupImage.url || // when checking that the objects are different, we only need to test a single attribute
 						child.siblingGroupVideo !== siblingGroupVideo ||
 						child.wednesdaysChildSiblingGroup !== wednesdaysChildSiblingGroup ||
 						hasWednesdaysChildSiblingGroupDateChanged ||
@@ -632,7 +632,7 @@ exports.updateMySiblingsToBePlacedWith = ( mySiblings, childId, groupProfile, si
 					child.groupProfile.part1 !== groupProfile.part1 ||
 					child.groupProfile.part2 !== groupProfile.part2 ||
 					child.groupProfile.part3 !== groupProfile.part3 ||
-					child.siblingGroupImage.secure_url !== siblingGroupImage.secure_url || // when checking that the objects are different, we only need to test a single attribute
+					child.siblingGroupImage.url !== siblingGroupImage.url || // when checking that the objects are different, we only need to test a single attribute
 					child.siblingGroupVideo !== siblingGroupVideo ||
 					child.wednesdaysChildSiblingGroup !== wednesdaysChildSiblingGroup ||
 					child.wednesdaysChildSiblingGroupDate.toString() !== wednesdaysChildSiblingGroupDate.toString() ||

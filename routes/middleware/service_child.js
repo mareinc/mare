@@ -325,7 +325,7 @@ exports.setNoChildImage = ( req, res, child, canViewAllChildren ) => {
 			child.siblingGroupDisplayImage = NO_IMAGE_SIBLING_GROUP;
 		// if it is acceptable to show the sibling group's image
 		} else {
-			child.siblingGroupDisplayImage = child.siblingGroupImage.secure_url;
+			child.siblingGroupDisplayImage = child.siblingGroupImage.url;
 		}
 	// if the child is not part of a sibling group
 	} else {
@@ -350,7 +350,7 @@ exports.setNoChildImage = ( req, res, child, canViewAllChildren ) => {
 			}
 		// if it is acceptable to show the child's image
 		} else {
-			child.displayImage = child.image.secure_url;
+			child.displayImage = child.image.url;
 		}
 	}
 };
@@ -619,7 +619,7 @@ exports.getRelevantSiblingGroupInformation = ( siblingGroups, locals ) => {
 			ages									: _.sortBy( agesArray ),
 			agesConverted							: _.sortBy( children.map( child => middleware.convertDate( child.birthDate ) ) ),
 			agesString								: middleware.getArrayAsList( _.sortBy( agesArray ) ),
-			image									: _.uniq( children.map( child => child.siblingGroupDisplayImage ) ).indexOf( NO_IMAGE_SIBLING_GROUP_PATH ) !== -1 ? NO_IMAGE_SIBLING_GROUP_PATH : children[ 0 ].siblingGroupDisplayImage,
+			image									: _.uniq( children.map( child => child.siblingGroupDisplayImage ) ).indexOf( NO_IMAGE_SIBLING_GROUP_PATH ) !== -1 ? NO_IMAGE_SIBLING_GROUP_PATH : children[ 0 ].siblingGroupDisplayImage.replace( ' ', '%20' ),
 			disabilities							: _.uniq( _.flatten( children.map( child => _.pluck( child.disabilities, 'disability' ) ) ) ),
 			emotionalNeeds							: _.uniq( children.map( child => needsMap[ child.emotionalNeeds ] ) ),
 			genders									: _.uniq( children.map( child => child.gender.gender ) ),

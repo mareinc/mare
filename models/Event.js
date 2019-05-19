@@ -8,6 +8,28 @@ const keystone						= require( 'keystone' ),
 	  staffEmailContactMiddleware	= require( '../routes/middleware/service_staff-email-contact' ),
 	  modelService					= require( '../routes/middleware/service_model' );
 
+// configure the s3 storage adapters
+const imageStorage = new keystone.Storage({
+	adapter: require( 'keystone-storage-adapter-s3' ),
+	s3: {
+		key: process.env.S3_KEY, // required; defaults to process.env.S3_KEY
+		secret: process.env.S3_SECRET, // required; defaults to process.env.S3_SECRET
+		bucket: process.env.S3_BUCKET_NAME, // required; defaults to process.env.S3_BUCKET
+		region: process.env.S3_REGION, // optional; defaults to process.env.S3_REGION, or if that's not specified, us-east-1
+		path: '/Events/Images',
+		// use the file name with spaces replaced by dashes instead of randomly generating a value
+		// NOTE: this is needed to prevent access errors when trying to view the files
+		generateFilename: file => file.originalname.replace( /\s/g, '_' ),
+		publicUrl: file => `${ process.env.CLOUDFRONT_URL }/Events/Images/${ file.originalname.replace( /\s/g, '_' ) }`
+	},
+	schema: {
+		bucket: true, // optional; store the bucket the file was uploaded to in your db
+		etag: true, // optional; store the etag for the resource
+		path: true, // optional; store the path of the file in your db
+		url: true // optional; generate & store a public URL
+	}
+});
+
 // create model. Additional options allow event name to be used what auto-generating URLs
 const Event = new keystone.List( 'Event', {
 	autokey: { path: 'key', from: 'name', unique: true },
@@ -26,16 +48,7 @@ Event.add( 'General Information', {
 	// type: { type: Types.Relationship, label: 'Event Type', ref: 'Event Type', required: true, initial: true }
 	type: { type: Types.Select, label: 'event type', options: 'Mare hosted events, partner hosted events, MAPP trainings', required: true, initial: true }, // TODO: this fixes an issue in pre-save which can be updated to fetch the live results and not hardcode this list.
 	source: { type: Types.Relationship, label: 'source', ref: 'Source', dependsOn: { shouldCreateSource: true }, noedit: true, initial: true },
-	image: {
-		type: Types.CloudinaryImage,
-		note: 'needed to display in the sidebar, events page, and home page',
-		folder: `${ process.env.CLOUDINARY_DIRECTORY }/events/`,
-		select: true,
-		selectPrefix: `${ process.env.CLOUDINARY_DIRECTORY }/events/`,
-		autoCleanup: true,
-		whenExists: 'overwrite',
-		filenameAsPublicID: true
-	},
+	image: { type: Types.File, storage: imageStorage, label: 'image', note: 'needed to display in the sidebar, events page, and home page' },
 
 	areBuddiesAllowed: { type: Types.Boolean, label: 'buddies allowed', initial: true },
 	isMatchingEvent: { type: Types.Boolean, label: 'matching event', initial: true }
@@ -123,7 +136,7 @@ Event.schema.add({
 Event.schema.virtual( 'hasImage' ).get( function() {
 	'use strict';
 
-	return this.image.exists;
+	return !!this.image.url;
 });
 
 Event.schema.post( 'init', function() {
