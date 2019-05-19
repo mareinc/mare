@@ -615,7 +615,7 @@ Family.schema.methods.applyFamilyStatusTagsToMailingLists = function() {
 
 					// update MAPP training completed tag
 					tagUpdates.push(
-						MailchimpService.updateMemberTags({
+						MailchimpService.updateMemberTag({
 							tagName: MAPPTrainingLabel,
 							email: this.email,
 							mailingListId: mailchimpListDoc.mailchimpId,
@@ -625,7 +625,7 @@ Family.schema.methods.applyFamilyStatusTagsToMailingLists = function() {
 
 					// update homestudy completed tag
 					tagUpdates.push(
-						MailchimpService.updateMemberTags({
+						MailchimpService.updateMemberTag({
 							tagName: homestudyLabel,
 							email: this.email,
 							mailingListId: mailchimpListDoc.mailchimpId,

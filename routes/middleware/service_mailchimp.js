@@ -4,6 +4,7 @@ const   keystone  = require( 'keystone' ),
 
 // set constants
 const MAILCHIMP_API_KEY = process.env.MAILCHIMP_API_KEY;
+const ALLOW_MAILCHIMP_API_UPDATES = process.env.ALLOW_MAILCHIMP_API_UPDATES === 'true';
 // configure the Mailchimp connection instance
 const _mailchimp = new Mailchimp( MAILCHIMP_API_KEY );
 
@@ -65,8 +66,13 @@ exports.subscribeMemberToList = function subscribeMemberToList( { email, mailing
 
     return new Promise( ( resolve, reject ) => {
 
+        // check to ensure required params were passed
         if ( !email || !mailingListId ) {
             return reject( new Error( 'subscribeMemberToList failed - email or mailingListId was not provided.' ) );
+
+        // check to ensure Mailchimp updates are turned on for the current enviornment
+        } else if ( !ALLOW_MAILCHIMP_API_UPDATES ) {
+            return resolve();
         }
 
         // tag the member with their user type (if known)
@@ -109,8 +115,13 @@ exports.subscribeMemberToList = function subscribeMemberToList( { email, mailing
 
     return new Promise( ( resolve, reject ) => {
 
+        // check to ensure required params were passed
         if ( !email || !mailingListId ) {
             return reject( new Error( 'unsubscribeMemberFromList failed - email or mailingListId was not provided.' ) );
+
+        // check to ensure Mailchimp updates are turned on for the current enviornment
+        } else if ( !ALLOW_MAILCHIMP_API_UPDATES ) {
+            return resolve();
         }
 
         _mailchimp.request({
@@ -142,8 +153,13 @@ exports.updateMemberEmail = function updateMemberEmail( currentEmail, updatedEma
 
     return new Promise( ( resolve, reject ) => {
 
+        // check to ensure required params were passed
         if ( !currentEmail || !updatedEmail || !mailingListId ) {
             return reject( new Error( 'updateMemberEmail failed - currentEmail, updatedEmail, or mailingListId was not provided.' ) );
+
+        // check to ensure Mailchimp updates are turned on for the current enviornment
+        } else if ( !ALLOW_MAILCHIMP_API_UPDATES ) {
+            return resolve();
         }
 
         _mailchimp.request({
@@ -170,12 +186,17 @@ exports.updateMemberEmail = function updateMemberEmail( currentEmail, updatedEma
  * @param {String} mailingListId the id of the mailing list in which to update the member
  * @returns {Object} status code of the operation
  */
-exports.updateMemberTags = function updateMemberTags( { tagName, email, mailingListId, removeTag = false } ) {
+exports.updateMemberTag = function updateMemberTag( { tagName, email, mailingListId, removeTag = false } ) {
 
     return new Promise( ( resolve, reject ) => {
 
+        // check to ensure required params were passed
         if ( !tagName || !email || !mailingListId ) {
-            return reject( new Error( 'updateMemberTags failed - tagName, email, or mailingListId was not provided.' ) );
+            return reject( new Error( 'updateMemberTag failed - tagName, email, or mailingListId was not provided.' ) );
+
+        // check to ensure Mailchimp updates are turned on for the current enviornment
+        } else if ( !ALLOW_MAILCHIMP_API_UPDATES ) {
+            return resolve();
         }
 
         _mailchimp.request({
