@@ -147,6 +147,7 @@ exports = module.exports = app => {
 	/* NOTE: this is for a one-time fix to timezones in dates and should be removed.  Keeping as a reference for async/await in data migration */
 	app.get( '/fix/dates'								, middleware.requireAdmin, dateAdjustmentService.fixDates );
 	app.get( '/fix/mailing-lists/:mailingListId'		, middleware.requireAdmin, fixService.fixMailingLists );
+	app.get( '/fix/tag-families/:mailingListId'			, middleware.requireAdmin, fixService.addFamilyStatusTags );
 
 	//app.get( '/chron/nightly'							, chronMiddleware.runNightlyChronJob );
 };

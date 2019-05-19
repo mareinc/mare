@@ -23,7 +23,7 @@ module.exports.fixMailingLists = function fixMailingLists( req, res, next ) {
 
     let mailingListId = req.params.mailingListId;
 
-    if (!mailingListId) {
+    if ( !mailingListId ) {
         let err = new Error( 'cannot fix mailing lists without a mailing list ID' );
         console.error( err );
         return res.status( 500 ).send( err.message );
@@ -110,4 +110,83 @@ module.exports.fixMailingLists = function fixMailingLists( req, res, next ) {
         console.error( new Error( err.message ) );
         res.status( 500 ).send( err );
     });
+};
+
+module.exports.addFamilyStatusTags = function addFamilyStatusTags( req, res, next ) {
+
+     // if the user is trying to run this script against the production database
+     if( /^.*\/production.*$/.test( process.env.MONGO_URI ) ) {
+        // alert them of what they're doing and how to get around this message
+        return res.send(`
+
+            WARNING:
+
+            You are running this script against the production database.
+
+            To allow execution, open fix_mailing_lists.js and comment out the if block in addFamilyStatusTags()` );
+    }
+
+    const mailingListId = req.params.mailingListId;
+
+    if ( !mailingListId ) {
+        let err = new Error( 'cannot add tags to family subscribers without a mailing list ID' );
+        console.error( err );
+        return res.status( 500 ).send( err.message );
+    }
+
+    // get tag labels from schema definition
+    const MAPPTrainingLabel = keystone.list( 'Family' ).model.schema.tree.stages.MAPPTrainingCompleted.completed.label,
+          homestudyLabel = keystone.list( 'Family' ).model.schema.tree.homestudy.completed.label;
+
+    // Newsletter ID
+    // 5cd4b1fd3d63a400f53acd75
+
+    // Events ID
+    // 5cd4b1b23d63a400f53acd73
+
+    // Fundraising ID
+    // 5cd4b1e13d63a400f53acd74
+
+    keystone.list( 'Family' ).model
+        .find( { mailingLists: { $in: [ mailingListId ] } } )
+        .lean()
+        .exec()
+        .then( familyUserDocs => {
+
+            // create a batch of tag update operations to set family status tags in Mailchimp
+            let tagUpdateBatch = familyUserDocs.map( familyUserDoc => {
+
+                return {
+                    method: 'post',
+                    path: '/lists/{list_id}/members/{subscriber_hash}/tags', // this is not a template string, rather a mailchimp-api-v3 library convention
+                    path_params: {
+                        list_id: mailingListId,
+                        subscriber_hash: MD5( familyUserDoc.email )
+                    },
+                    body: {
+                        tags: [
+                            {
+                                name: MAPPTrainingLabel,
+                                status: familyUserDoc.stages.MAPPTrainingCompleted.completed ? 'active' : 'inactive'
+                            },
+                            {
+                                name: homestudyLabel,
+                                status: familyUserDoc.homestudy.completed ? 'active' : 'inactive'
+                            }
+                        ]
+                    }
+                };
+            });
+
+            // execute batch operation
+            return _mailchimp.batch( tagUpdateBatch );
+        })
+        .then( returnedItems => {
+            console.log( returnedItems );
+            res.status( 200 ).send( 'great success' );
+        })
+        .catch( err => {
+            console.error( err );
+            res.status( 500 ).send();
+        });
 };
