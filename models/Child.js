@@ -357,16 +357,16 @@ Child.schema.pre( 'init', function (next, data) {
 });
 
 // Post Init - used to store all the values before anything is changed
-Child.schema.post( 'init', function() {
-	'use strict';
+// Child.schema.post( 'init', function() {
+// 	'use strict';
 
-	this._original = this.toObject();
+// 	this._original = this.toObject();
 
-	// if there are any siblingsToBePlacedWith, set mustBePlacedWithSiblings to true
-	if ( this.siblingsToBePlacedWith ) {
-		this.mustBePlacedWithSiblings = this.siblingsToBePlacedWith.length > 0 ? true : false;
-	}
-});
+// 	// if there are any siblingsToBePlacedWith, set mustBePlacedWithSiblings to true
+// 	if ( this.siblingsToBePlacedWith ) {
+// 		this.mustBePlacedWithSiblings = this.siblingsToBePlacedWith.length > 0 ? true : false;
+// 	}
+// });
 
 Child.schema.pre( 'save', function( next ) {
 	'use strict';
@@ -380,6 +380,8 @@ Child.schema.pre( 'save', function( next ) {
 
 	// set the registration number for the family
 	const registrationNumberSet = this.setRegistrationNumber();
+	// the checkbox to show the child in the gallery should only be check if the child is active
+	const galleryVisibilityUpdated = this.updateIsVisibleInGallery();
 	// set the noedit fields associated with the adoption worker's agency
 	const adoptionWorkerAgencyFieldsSet = this.setAdoptionWorkerAgencyFields();
 	// set the noedit fields associated with the recruitment worker's agency
@@ -421,8 +423,7 @@ Child.schema.pre( 'save', function( next ) {
 		})
 		// ensure the rest of the pre-save processing has finished executing
 		.then( () => {
-
-			return Promise.all( [ registrationNumberSet, adoptionWorkerAgencyFieldsSet, recruitmentWorkerAgencyFieldsSet ] );
+			return Promise.all( [ registrationNumberSet, galleryVisibilityUpdated, adoptionWorkerAgencyFieldsSet, recruitmentWorkerAgencyFieldsSet ] );
 		})
 		// if there was an error with any of the promises
 		.catch( err => {
@@ -434,6 +435,7 @@ Child.schema.pre( 'save', function( next ) {
 		.then( () => {
 			// create a unique label for each child based on their first & last names and their registration number
 			this.setFullNameAndRegistrationLabel();
+
 			next();
 		});
 });
@@ -781,7 +783,28 @@ Child.schema.methods.updateMustBePlacedWithSiblingsCheckbox = function() {
 	if ( this.siblingsToBePlacedWith ) {
 		this.mustBePlacedWithSiblings = this.siblingsToBePlacedWith.length > 0 ? true : false;
 	}
-}
+};
+
+Child.schema.methods.updateIsVisibleInGallery = function() {
+	'use strict';
+
+	return new Promise( ( resolve, reject ) => {
+
+		this.populate( 'status', err => {
+
+			if( err ) {
+				return reject( `error updating child visibility for ${ this.name.full } - could not fetch status value - ${ err }` );
+			}
+
+			if( this.status.childStatus !== 'active' ) {
+				this.isVisibleInGallery = false;
+				this.visibleInGalleryDate = null;
+			}
+
+			resolve();
+		});
+	});
+};
 
 Child.schema.methods.updateSiblingGroupInfo = function() {
 	'use strict';

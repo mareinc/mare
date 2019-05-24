@@ -20,5 +20,5 @@ SocialWorkerHistory.add({
 });
 
 // Define default columns in the admin interface and register the model
-SocialWorkerHistory.defaultColumns = 'date|10%, summary|65%, modifiedBy|15%';
+SocialWorkerHistory.defaultColumns = 'date|20%, summary|55%, modifiedBy|15%';
 SocialWorkerHistory.register();
