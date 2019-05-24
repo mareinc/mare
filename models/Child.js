@@ -22,7 +22,7 @@ const fileStorage = new keystone.Storage({
 		secret: process.env.S3_SECRET, // required; defaults to process.env.S3_SECRET
 		bucket: process.env.S3_BUCKET_NAME, // required; defaults to process.env.S3_BUCKET
 		region: process.env.S3_REGION, // optional; defaults to process.env.S3_REGION, or if that's not specified, us-east-1
-		path: '/Children/Files',
+		path: '/children/files',
 		uploadParams: { // optional; add S3 upload params; see below for details
 			ACL: 'public-read'
 		},
@@ -47,7 +47,7 @@ const imageStorage = new keystone.Storage({
 		secret: process.env.S3_SECRET, // required; defaults to process.env.S3_SECRET
 		bucket: process.env.S3_BUCKET_NAME, // required; defaults to process.env.S3_BUCKET
 		region: process.env.S3_REGION, // optional; defaults to process.env.S3_REGION, or if that's not specified, us-east-1
-		path: '/Children/Images',
+		path: '/children/images',
 		uploadParams: { // optional; add S3 upload params; see below for details
 			ACL: 'public-read'
 		},
@@ -72,11 +72,11 @@ const displayImageStorage = new keystone.Storage({
 		secret: process.env.S3_SECRET, // required; defaults to process.env.S3_SECRET
 		bucket: process.env.S3_BUCKET_NAME, // required; defaults to process.env.S3_BUCKET
 		region: process.env.S3_REGION, // optional; defaults to process.env.S3_REGION, or if that's not specified, us-east-1
-		path: '/Children/Images/Individuals',
+		path: '/children/images/individuals',
 		// use the file name with spaces replaced by dashes instead of randomly generating a value
 		// NOTE: this is needed to prevent access errors when trying to view the files
 		generateFilename: file => file.originalname.replace( /\s/g, '_' ),
-		publicUrl: file => `${ process.env.CLOUDFRONT_URL }/Children/Images/Individuals/${ file.originalname.replace( /\s/g, '_' ) }`
+		publicUrl: file => `${ process.env.CLOUDFRONT_URL }/children/images/individuals/${ file.originalname.replace( /\s/g, '_' ) }`
 	},
 	schema: {
 		bucket: true, // optional; store the bucket the file was uploaded to in your db
@@ -93,11 +93,11 @@ const displaySiblingGroupImageStorage = new keystone.Storage({
 		secret: process.env.S3_SECRET, // required; defaults to process.env.S3_SECRET
 		bucket: process.env.S3_BUCKET_NAME, // required; defaults to process.env.S3_BUCKET
 		region: process.env.S3_REGION, // optional; defaults to process.env.S3_REGION, or if that's not specified, us-east-1
-		path: '/Children/Images/Sibling Groups',
+		path: '/children/images/sibling-groups',
 		// use the file name with spaces replaced by dashes instead of randomly generating a value
 		// NOTE: this is needed to prevent access errors when trying to view the files
 		generateFilename: file => file.originalname.replace( /\s/g, '_' ),
-		publicUrl: file => `${ process.env.CLOUDFRONT_URL }/Children/Images/Sibling Groups/${ file.originalname.replace( /\s/g, '_' ) }`
+		publicUrl: file => `${ process.env.CLOUDFRONT_URL }/children/images/sibling-groups/${ file.originalname.replace( /\s/g, '_' ) }`
 	},
 	schema: {
 		bucket: true, // optional; store the bucket the file was uploaded to in your db
