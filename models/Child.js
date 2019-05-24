@@ -157,8 +157,8 @@ Child.add( 'Display Options', {
 
 	residence: { type: Types.Relationship, label: 'where does the child presently live?', ref: 'Residence', initial: true },
 	isOutsideMassachusetts: { type: Types.Boolean, label: 'is outside Massachusetts', default: false, initial: true },
-	city: { type: Types.Relationship, label: 'city/town of child\'s current location', ref: 'City or Town', dependsOn: { isOutsideMassachusetts: false }, initial: true },
-	cityText: { type: Types.Text, label: 'city/town of child\'s current location', dependsOn: { isOutsideMassachusetts: true }, initial: true },
+	city: { type: Types.Relationship, label: `city/town of child's current location`, ref: 'City or Town', dependsOn: { isOutsideMassachusetts: false }, initial: true },
+	cityText: { type: Types.Text, label: `city/town of child's current location`, dependsOn: { isOutsideMassachusetts: true }, initial: true },
 	careFacilityName: { type: Types.Text, label: 'name of residential/group care facility', initial: true },
 	dateMovedToResidence: { type: Types.Date, label: 'date moved to current residence', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, initial: true }
 
@@ -245,13 +245,13 @@ Child.add( 'Display Options', {
 	onAdoptuskids: { type: Types.Boolean, label: 'Adoptuskids website', default: false, initial: true },
 	onAdoptuskidsDate: { type: Types.Date, label: 'date on Adoptuskids', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { onAdoptuskids: true }, initial: true },
 
-	wednesdaysChild: { type: Types.Boolean, label: 'Wednesday\'s Child', dependsOn: { mustBePlacedWithSiblings: false }, default: false, initial: true },
-	wednesdaysChildDate: { type: Types.Date, label: 'date of Wednesday\'s Child', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { mustBePlacedWithSiblings: false, wednesdaysChild: true }, initial: true },
-	wednesdaysChildVideo: { type: Types.Url, label: 'Wednesday\'s Child video', dependsOn: { mustBePlacedWithSiblings: false, wednesdaysChild: true } },
+	wednesdaysChild: { type: Types.Boolean, label: `Wednesday's Child`, dependsOn: { mustBePlacedWithSiblings: false }, default: false, initial: true },
+	wednesdaysChildDate: { type: Types.Date, label: `date of Wednesday's Child`, inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { mustBePlacedWithSiblings: false, wednesdaysChild: true }, initial: true },
+	wednesdaysChildVideo: { type: Types.Url, label: `Wednesday's Child video`, dependsOn: { mustBePlacedWithSiblings: false, wednesdaysChild: true } },
 
-	wednesdaysChildSiblingGroup: { type: Types.Boolean, label: 'Wednesday\'s Child for sibling group?', dependsOn: { mustBePlacedWithSiblings: true }, default: false, initial: true },
-	wednesdaysChildSiblingGroupDate: { type: Types.Date, label: 'date of sibling group\'s Wednesday\'s Child', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { mustBePlacedWithSiblings: true, wednesdaysChildSiblingGroup: true }, initial: true },
-	wednesdaysChildSiblingGroupVideo: { type: Types.Url, label: 'Wednesday\'s Child sibling group video', dependsOn: { mustBePlacedWithSiblings: true, wednesdaysChildSiblingGroup: true } },
+	wednesdaysChildSiblingGroup: { type: Types.Boolean, label: `Wednesday's Child for sibling group`, dependsOn: { mustBePlacedWithSiblings: true }, default: false, initial: true },
+	wednesdaysChildSiblingGroupDate: { type: Types.Date, label: `date of sibling group's Wednesday's Child`, inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { mustBePlacedWithSiblings: true, wednesdaysChildSiblingGroup: true }, initial: true },
+	wednesdaysChildSiblingGroupVideo: { type: Types.Url, label: `Wednesday's Child sibling group video`, dependsOn: { mustBePlacedWithSiblings: true, wednesdaysChildSiblingGroup: true } },
 
 	coalitionMeeting: { type: Types.Boolean, label: 'coalition meeting', default: false, initial: true },
 	coalitionMeetingDate: { type: Types.Date, label: 'date of coalition meeting', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { coalitionMeeting: true }, initial: true },
@@ -262,7 +262,7 @@ Child.add( 'Display Options', {
 	adoptionParties: { type: Types.Relationship, label: 'adoption parties', ref: 'Event', filters: { type: 'adoption party', isActive: true }, many: true, initial: true },
 
 	mediaEligibility: { type: Types.Relationship, label: 'media eligibility', ref: 'Media Eligibility', many: true, initial: true },
-	otherMediaDescription: { type: Types.Textarea, label: 'description', note: 'only fill out if \'other\' is selected for media eligibility' , initial: true }, // TODO: THIS DOESN'T WORK BECAUSE IT REFERENCES A RELATIONSHIP FIELD SO ALL WE HAVE IS THE _id, MAKE IT WORK!
+	otherMediaDescription: { type: Types.Textarea, label: 'description', note: `only fill out if 'other' is selected for media eligibility` , initial: true }, // TODO: should be dependsOn the field above being selected, but we can't do that test against Relationship fields
 
 	locationAlert: { type: Types.Boolean, label: 'location alert', default: false, initial: true },
 	place: { type: Types.Text, label: 'place', initial: true, dependsOn: { locationAlert: true } },
@@ -1781,7 +1781,7 @@ Child.schema.methods.setChangeHistory = function() {
 				done => {
 					ChangeHistoryMiddleware.checkFieldForChanges({
 												name: 'wednesdaysChildSiblingGroup',
-												label: 'wednesdays child for sibling group?',
+												label: 'wednesdays child for sibling group',
 												type: 'boolean' }, model, modelBefore, changeHistory, done );
 				},
 				done => {
