@@ -14,7 +14,7 @@
 		"del": "^4.0.0",
 		"dotenv": "^8.0.0",
 		"excel4node": "^1.7.0",
-		"express-handlebars": "~3.0.0",
+		"express-handlebars": "~3.1.0",
 		"express-robots": "^0.1.6",
 		"express-sslify": "^1.2.0",
 		"gifsicle": "^4.0.1",
@@ -35,7 +35,7 @@
 		"handlebars": "~4.1.0",
 		"hbs": "^4.0.1",
 		"jpegtran-bin": "^4.0.0",
-		"keystone": "https://github.com/keystonejs/keystone.git#17976c3001e0dd79033d1e0398eff714fd102566",
+		"keystone": "^4.1.0",
 		"keystone-email": "^1.1.0",
 		"keystone-storage-adapter-s3": "^2.0.0",
 		"mailchimp-api-v3": "^1.12.1",
@@ -46,7 +46,7 @@
 		"node-sass": "^4.12.0",
 		"node-sass-middleware": "^0.11.0",
 		"optipng-bin": "^5.1.0",
-		"stripe": "^6.20.1",
+		"stripe": "^7.1.0",
 		"underscore": "~1.9.0"
 	},
 	"engines": {
