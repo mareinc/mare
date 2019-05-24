@@ -16,6 +16,6 @@ exports.create = {
 	}, {
 		wayToHearAboutMARE: 'web'
 	}, {
-		wayToHearAboutMARE: 'wednesday\'s child'
+		wayToHearAboutMARE: `wednesday's child`
 	}]
 };

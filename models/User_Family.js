@@ -299,7 +299,7 @@ Family.add( 'Permissions', {
 }, 'Social Worker Information', {
 
 	socialWorker: { type: Types.Relationship, label: 'social worker', ref: 'Social Worker', initial: true },
-	socialWorkerNotListed: { type: Types.Boolean, label: 'social worker isn\'t listed', default: false, initial: true },
+	socialWorkerNotListed: { type: Types.Boolean, label: `social worker isn't listed`, default: false, initial: true },
 	socialWorkerText: { type: Types.Text, label: 'social worker', dependsOn: { socialWorkerNotListed: true }, initial: true },
 	socialWorkerAgency: { type: Types.Relationship, label: `social worker's agency`, dependsOn: { socialWorkerNotListed: false }, ref: 'Agency', noedit: true },
 	socialWorkerAgencyRegion: { type: Types.Relationship, label: `social worker's region`, dependsOn: { socialWorkerNotListed: false }, ref: 'Region', noedit: true }

@@ -37,7 +37,7 @@ Placement.add( 'Placement', {
 	familyDetails: {
 		name: { type: Types.Text, label: 'family name', dependsOn: { isUnregisteredFamily: true }, initial: true },
 
-		agency: { type: Types.Relationship, label: 'family\'s agency', ref: 'Agency', note: 'this will be populated automatically if the family is registered with MARE and nothing has been selected', filters: { isActive: true }, initial: true },
+		agency: { type: Types.Relationship, label: `family's agency`, ref: 'Agency', note: 'this will be populated automatically if the family is registered with MARE and nothing has been selected', filters: { isActive: true }, initial: true },
 		constellation: { type: Types.Relationship, label: 'constellation', ref: 'Family Constellation', dependsOn: { isUnregisteredFamily: true }, initial: true },
 		race: { type: Types.Relationship, label: 'race', ref: 'Race', dependsOn: { isUnregisteredFamily: true }, many: true, initial: true },
 
