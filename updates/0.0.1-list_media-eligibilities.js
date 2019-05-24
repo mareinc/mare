@@ -22,9 +22,9 @@ exports.create = {
 	}, {
 		mediaEligibility: 'Spanish print'
 	}, {
-		mediaEligibility: 'Sunday\'s Child'
+		mediaEligibility: `Sunday's Child`
 	}, {
-		mediaEligibility: 'Wednesday\'s Child'
+		mediaEligibility: `Wednesday's Child`
 	}, {
 		mediaEligibility: 'WWK'
 	}]
