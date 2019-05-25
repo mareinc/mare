@@ -23,14 +23,10 @@ const fileStorage = new keystone.Storage({
 		bucket: process.env.S3_BUCKET_NAME, // required; defaults to process.env.S3_BUCKET
 		region: process.env.S3_REGION, // optional; defaults to process.env.S3_REGION, or if that's not specified, us-east-1
 		path: '/children/files',
-		uploadParams: { // optional; add S3 upload params; see below for details
-			ACL: 'public-read'
-		},
-		generateFilename: function( item ) {
-			// use the file name with spaces replaced by dashes instead of randomly generating a value
-			// NOTE: this is needed to prevent access errors when trying to view the files
-			return item.originalname.replace( /\s/g, '_' );
-		}
+		// use the file name with spaces replaced by dashes instead of randomly generating a value
+		// NOTE: this is needed to prevent access errors when trying to view the files
+		generateFilename: file => file.originalname.replace( /\s/g, '_' ),
+		publicUrl: file => `${ process.env.CLOUDFRONT_URL }/children/files/${ file.originalname.replace( /\s/g, '_' ) }`
 	},
 	schema: {
 		bucket: true, // optional; store the bucket the file was uploaded to in your db
@@ -40,22 +36,18 @@ const fileStorage = new keystone.Storage({
 	}
 });
 
-const imageStorage = new keystone.Storage({
+const attachmentImageStorage = new keystone.Storage({
 	adapter: require( 'keystone-storage-adapter-s3' ),
 	s3: {
 		key: process.env.S3_KEY, // required; defaults to process.env.S3_KEY
 		secret: process.env.S3_SECRET, // required; defaults to process.env.S3_SECRET
 		bucket: process.env.S3_BUCKET_NAME, // required; defaults to process.env.S3_BUCKET
 		region: process.env.S3_REGION, // optional; defaults to process.env.S3_REGION, or if that's not specified, us-east-1
-		path: '/children/images',
-		uploadParams: { // optional; add S3 upload params; see below for details
-			ACL: 'public-read'
-		},
-		generateFilename: function( item ) {
-			// use the file name with spaces replaced by dashes instead of randomly generating a value
-			// NOTE: this is needed to prevent access errors when trying to view the files
-			return item.originalname.replace( /\s/g, '_' );
-		}
+		path: '/children/images/attachments',
+		// use the file name with spaces replaced by dashes instead of randomly generating a value
+		// NOTE: this is needed to prevent access errors when trying to view the files
+		generateFilename: file => file.originalname.replace( /\s/g, '_' ),
+		publicUrl: file => `${ process.env.CLOUDFRONT_URL }/children/images/attachments/${ file.originalname.replace( /\s/g, '_' ) }`
 	},
 	schema: {
 		bucket: true, // optional; store the bucket the file was uploaded to in your db
@@ -280,11 +272,11 @@ Child.add( 'Display Options', {
 
 }, 'Image Attachments', {
 
-	imageAttachment1: { type: Types.File, storage: imageStorage, label: 'image attachment 1' },
-	imageAttachment2: { type: Types.File, storage: imageStorage, label: 'image attachment 2' },
-	imageAttachment3: { type: Types.File, storage: imageStorage, label: 'image attachment 3' },
-	imageAttachment4: { type: Types.File, storage: imageStorage, label: 'image attachment 4' },
-	imageAttachment5: { type: Types.File, storage: imageStorage, label: 'image attachment 5' }
+	imageAttachment1: { type: Types.File, storage: attachmentImageStorage, label: 'image attachment 1' },
+	imageAttachment2: { type: Types.File, storage: attachmentImageStorage, label: 'image attachment 2' },
+	imageAttachment3: { type: Types.File, storage: attachmentImageStorage, label: 'image attachment 3' },
+	imageAttachment4: { type: Types.File, storage: attachmentImageStorage, label: 'image attachment 4' },
+	imageAttachment5: { type: Types.File, storage: attachmentImageStorage, label: 'image attachment 5' }
 
 /* Container for data migration fields ( these should be kept until after phase 2 and the old system is phased out completely ) */
 }, {
