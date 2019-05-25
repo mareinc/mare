@@ -357,16 +357,16 @@ Child.schema.pre( 'init', function (next, data) {
 });
 
 // Post Init - used to store all the values before anything is changed
-// Child.schema.post( 'init', function() {
-// 	'use strict';
+Child.schema.post( 'init', function() {
+	'use strict';
 
-// 	this._original = this.toObject();
+	this._original = this.toObject();
 
-// 	// if there are any siblingsToBePlacedWith, set mustBePlacedWithSiblings to true
-// 	if ( this.siblingsToBePlacedWith ) {
-// 		this.mustBePlacedWithSiblings = this.siblingsToBePlacedWith.length > 0 ? true : false;
-// 	}
-// });
+	// if there are any siblingsToBePlacedWith, set mustBePlacedWithSiblings to true
+	if ( this.siblingsToBePlacedWith ) {
+		this.mustBePlacedWithSiblings = this.siblingsToBePlacedWith.length > 0 ? true : false;
+	}
+});
 
 Child.schema.pre( 'save', function( next ) {
 	'use strict';
