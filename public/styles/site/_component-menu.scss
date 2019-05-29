@@ -18,27 +18,34 @@ nav ul {
 }
 
 .top-nav {
-	display: flex;
+	display: none;
+
+	@media all and (min-width: 655px) {
+		display: flex;
+	}
 }
 
 .top-nav__items {
 	align-items: center;
 	display: flex;
-	padding: 2em 1em 0 0;
+	padding-top: 2em 1em;
+}
+
+.mobile-nav__items {
+	padding-top: 2em;
+
+	@media all and (min-width: 655px) {
+		display: none;
+	}
 }
 
 .top-nav__item {
 	color: $text-color-light;
 	cursor: pointer;
-	display: none;
+	display: flex;
 	
 	&:first-child {
 		margin-left: 0;
-	}
-
-	@media all and (min-width: 655px) {
-		display: flex;
-		margin-left: 1em;
 	}
 }
 
