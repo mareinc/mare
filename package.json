@@ -58,9 +58,8 @@
 		"start": "node keystone",
 		"start:dev": "nodemon keystone",
 		"build": "gulp",
-		"heroku-postbuild": "gulp build",
 		"cypress:open": "cypress open",
-		"cypress:ci": "gulp travis && npm run cypress:open"
+		"heroku-postbuild": "gulp build"
 	},
 	"main": "keystone.js",
 	"devDependencies": {

@@ -20,5 +20,8 @@ cache:
   directories:
     # cache the folder with the Cypress binary
     - ~/.cache
+install:
+  - npm ci
 script:
-  - npm run cypress:ci
+  - gulp travis
+  - $(npm bin)/cypress run --record --key ec953034-c177-4f0d-85c5-175ecb8604a8
