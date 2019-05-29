@@ -60,7 +60,7 @@
 		"build": "gulp",
 		"heroku-postbuild": "gulp build",
 		"cypress:open": "cypress open",
-		"cypress:ci": "gulp travis && wait-on http://localhost:3000 && npm run cypress:open"
+		"cypress:ci": "gulp travis && npm run cypress:open"
 	},
 	"main": "keystone.js",
 	"devDependencies": {
