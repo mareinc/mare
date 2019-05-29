@@ -47,7 +47,8 @@
 		"node-sass-middleware": "^0.11.0",
 		"optipng-bin": "^6.0.0",
 		"stripe": "^7.1.0",
-		"underscore": "~1.9.0"
+		"underscore": "~1.9.0",
+		"wait-on": "^3.2.0"
 	},
 	"engines": {
 		"node": "^11.14.0",
@@ -58,12 +59,12 @@
 		"start:dev": "nodemon keystone",
 		"build": "gulp",
 		"heroku-postbuild": "gulp build",
-		"cypress:open": "cypress open"
+		"cypress:open": "cypress open",
+		"cypress:ci": "gulp travis && npm start && wait-on http://localhost:3000 && npm run cypress:open"
 	},
 	"main": "keystone.js",
 	"devDependencies": {
 		"cypress": "^3.3.1",
-		"eslint-plugin-cypress": "^2.2.1",
-		"wait-on": "^3.2.0"
+		"eslint-plugin-cypress": "^2.2.1"
 	}
 }
