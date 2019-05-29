@@ -54,14 +54,16 @@
 		"npm": "^6.7.0"
 	},
 	"scripts": {
-		"start": "node keystone.js",
-		"heroku-postbuild": "gulp build"
+		"start": "node keystone",
+		"start:dev": "nodemon keystone",
+		"build": "gulp",
+		"heroku-postbuild": "gulp build",
+		"cypress:open": "cypress open"
 	},
 	"main": "keystone.js",
 	"devDependencies": {
-		"chai": "^4.1.2",
-		"mocha": "^6.1.4",
-		"sinon": "^7.3.1",
-		"sinon-chai": "^3.0.0"
+		"cypress": "^3.3.1",
+		"eslint-plugin-cypress": "^2.2.1",
+		"wait-on": "^3.2.0"
 	}
 }

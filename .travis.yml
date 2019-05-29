@@ -1,27 +1,27 @@
 language: node_js
 node_js:
   - "11.14.0"
-
 sudo: false
-
 before_script:
   - npm install -g gulp
   - npm rebuild node-sass
-
-script: gulp travis
-
 notifications:
   email:
     - jared.j.collier@gmail.com
-
 services:
   - mongodb
-
 git:
   depth:
     10
-
 cache:
-  yarn: true
+  # cache $HOME/.npm when npm ci is default script command
+  # cache node_modules in all other cases
+  npm: true
   directories:
-    - "node_modules"
+    # cache the folder with the Cypress binary
+    - ~/.cache
+install:
+  - npm ci
+script:
+  - gulp travis
+  - $(npm bin)/cypress run --record
