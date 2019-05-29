@@ -1,14 +1,14 @@
 <nav class="top-nav">
 	<!-- TODO: based on the new design, this should no longer be an unordered list -->
 	<ul class="nav top-nav__items">
-		<li class="top-nav__item"><a class="top-nav__link" href="/">Home</a></li>
+		<li class="top-nav__item"><a class="top-nav__link top-nav__link--home" href="/">Home</a></li>
 		<li class="top-nav__item">|</li>
 		{{#if user}}
-		<li class="top-nav__item"><a class="top-nav__link" href="/account">My Account</a></li>
+		<li class="top-nav__item"><a class="top-nav__link top-nav__link--account" href="/account">My Account</a></li>
 		<!-- TODO: these should have a class of button and share the generic button styles -->
 		<li class="top-nav__item top-nav__button top-nav__button--log-out top-nav__button--relative top-nav__button--extra-space-left">Log Out</li>
 		{{else}}
-		<li class="top-nav__item"><a class="top-nav__link" href="/register">Register</a></li>
+		<li class="top-nav__item"><a class="top-nav__link top-nav__link--register" href="/register">Register</a></li>
 		<!-- TODO: these should have a class of button and share the generic button styles -->
 		<li class="top-nav__item top-nav__button top-nav__button--log-in top-nav__button--relative top-nav__button--extra-space-left">Log In</li>
 		{{/if}}

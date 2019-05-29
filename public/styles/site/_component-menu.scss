@@ -85,6 +85,44 @@ nav ul {
 	text-decoration: none;
 }
 
+.mobile-menu__buttons {
+	margin-left: 2em;
+}
+
+.mobile-menu__button {
+	align-items: center;
+	background-color: $teal;
+	cursor: pointer;
+	padding: 0.75em 3em;
+	transition: background 100ms ease-in-out;
+	width: 100%;
+
+	&:hover {
+		background-color: $hover-teal;
+	}
+
+	&--extra-space-left {
+		margin-left: 2em;
+	}
+
+	&--green {
+		background-color: $green;
+
+		&:hover {
+			background-color: $hover-green;
+		}
+	}  
+
+	&--relative {
+		position: relative;
+	}
+
+	@media all and (min-width: 655px) {
+		border-radius: 3px;
+		width: inherit;
+	}
+}
+
 .main-nav {
 	display: none;
 	padding: 0 0.25em;
