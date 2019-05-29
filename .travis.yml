@@ -24,4 +24,4 @@ install:
   - npm ci
 script:
   - gulp travis
-  - $(npm bin)/cypress run --record
+  - $(npm bin)/cypress run
