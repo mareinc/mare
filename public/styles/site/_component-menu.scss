@@ -18,21 +18,22 @@ nav ul {
 }
 
 .top-nav {
+	display: flex;
+}
+
+.top-nav__items {
 	display: none;
+	padding: 2em 1em 0 0;
+	align-items: center;
 
 	@media all and (min-width: 655px) {
 		display: flex;
 	}
 }
 
-.top-nav__items {
-	align-items: center;
-	display: flex;
-	padding-top: 2em 1em;
-}
-
 .mobile-nav__items {
-	padding-top: 2em;
+	padding: 2.5em 0 0 1em;
+	display: flex;
 
 	@media all and (min-width: 655px) {
 		display: none;
@@ -43,6 +44,7 @@ nav ul {
 	color: $text-color-light;
 	cursor: pointer;
 	display: flex;
+	margin-left: 1em;
 	
 	&:first-child {
 		margin-left: 0;
