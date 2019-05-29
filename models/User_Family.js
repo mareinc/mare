@@ -22,14 +22,10 @@ var fileStorage = new keystone.Storage({
 		bucket: process.env.S3_BUCKET_NAME, // required; defaults to process.env.S3_BUCKET
 		region: process.env.S3_REGION, // optional; defaults to process.env.S3_REGION, or if that's not specified, us-east-1
 		path: '/families/files',
-		uploadParams: { // optional; add S3 upload params; see below for details
-			ACL: 'public-read'
-		},
-		generateFilename: function( item ) {
-			// use the file name with spaces replaced by dashes instead of randomly generating a value.
-			// NOTE: this is needed to prevent access errors when trying to view the files
-			return item.originalname.replace( /\s/g, '_' );
-		}
+		// use the file name with spaces replaced by dashes instead of randomly generating a value.
+		// NOTE: this is needed to prevent access errors when trying to view the files
+		generateFilename: item => item.originalname.replace( /\s/g, '_' ),
+		publicUrl: file => `${ process.env.CLOUDFRONT_URL }/families/files/${ file.originalname.replace( /\s/g, '_' ) }`
 	},
 	schema: {
 		bucket: true, // optional; store the bucket the file was uploaded to in your db
