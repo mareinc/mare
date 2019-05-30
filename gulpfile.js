@@ -143,16 +143,9 @@ gulp.task( 'test', () => {
 		.pipe( mocha( { reporter: 'nyan' } ) );
 });
 
-// // gulp build task
-// gulp.task( 'build', gulp.parallel( 'standalone-styles', 'styles', 'standalone-scripts', 'scripts', 'images', 'fonts' ) );
-// // custom build for travis CI
-// gulp.task( 'travis', gulp.series( 'clean', 'test', 'build' ) );
-// // default tasks to run when 'gulp' is called
-// gulp.task( 'default', gulp.series( 'clean', 'eslint-watch', 'test', 'build', 'watch' ) );
-
 // gulp build task
 gulp.task( 'build', gulp.parallel( 'standalone-styles', 'styles', 'standalone-scripts', 'scripts', 'images', 'fonts' ) );
 // custom build for travis CI
-gulp.task( 'travis', gulp.series( 'clean', 'build' ) );
+gulp.task( 'travis', gulp.series( 'clean', 'test', 'build' ) );
 // default tasks to run when 'gulp' is called
-gulp.task( 'default', gulp.series( 'clean', 'eslint-watch', 'build', 'watch' ) );
+gulp.task( 'default', gulp.series( 'clean', 'eslint-watch', 'test', 'build', 'watch' ) );
