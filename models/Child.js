@@ -245,6 +245,18 @@ Child.add( 'Display Options', {
 	wednesdaysChildSiblingGroupDate: { type: Types.Date, label: `date of sibling group's Wednesday's Child`, inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { mustBePlacedWithSiblings: true, wednesdaysChildSiblingGroup: true }, initial: true },
 	wednesdaysChildSiblingGroupVideo: { type: Types.Url, label: `Wednesday's Child sibling group video`, dependsOn: { mustBePlacedWithSiblings: true, wednesdaysChildSiblingGroup: true } },
 
+	wendysWonderfulKidsCaseloadEast: { type: Types.Boolean, label: `Wendy's Wonderful Kids Caseload East`, dependsOn: { mustBePlacedWithSiblings: false }, default: false, initial: true },
+	wendysWonderfulKidsCaseloadEastDate: { type: Types.Date, label: `date added to caseload`, inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { mustBePlacedWithSiblings: false, wendysWonderfulKidsCaseloadEast: true }, initial: true },
+
+	wendysWonderfulKidsCaseloadEastSiblingGroup: { type: Types.Boolean, label: `Wendy's Wonderful Kids Caseload East for sibling group`, dependsOn: { mustBePlacedWithSiblings: true }, default: false, initial: true },
+	wendysWonderfulKidsCaseloadEastSiblingGroupDate: { type: Types.Date, label: `date added to caseload`, inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { mustBePlacedWithSiblings: true, wendysWonderfulKidsCaseloadEastSiblingGroup: true }, initial: true },
+
+	wendysWonderfulKidsCaseloadWest: { type: Types.Boolean, label: `Wendy's Wonderful Kids Caseload West`, dependsOn: { mustBePlacedWithSiblings: false }, default: false, initial: true },
+	wendysWonderfulKidsCaseloadWestDate: { type: Types.Date, label: `date added to caseload`, inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { mustBePlacedWithSiblings: false, wendysWonderfulKidsCaseloadWest: true }, initial: true },
+
+	wendysWonderfulKidsCaseloadWestSiblingGroup: { type: Types.Boolean, label: `Wendy's Wonderful Kids Caseload West for sibling group`, dependsOn: { mustBePlacedWithSiblings: true }, default: false, initial: true },
+	wendysWonderfulKidsCaseloadWestSiblingGroupDate: { type: Types.Date, label: `date added to caseload`, inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { mustBePlacedWithSiblings: true, wendysWonderfulKidsCaseloadWestSiblingGroup: true }, initial: true },
+
 	coalitionMeeting: { type: Types.Boolean, label: 'coalition meeting', default: false, initial: true },
 	coalitionMeetingDate: { type: Types.Date, label: 'date of coalition meeting', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { coalitionMeeting: true }, initial: true },
 
@@ -806,11 +818,15 @@ Child.schema.methods.updateSiblingGroupInfo = function() {
 		this.groupProfile.part1 = '';
 		this.groupProfile.part2 = '';
 		this.groupProfile.part3 = '';
+		this.siblingGroupImage = null;
+		this.siblingGroupVideo = null;
 		this.wednesdaysChildSiblingGroup = false;
-		this.wednesdaysChildSiblingGroupDate = undefined;
-		this.wednesdaysChildSiblingGroupVideo = undefined;
-		this.siblingGroupImage = undefined;
-		this.siblingGroupVideo = undefined;
+		this.wednesdaysChildSiblingGroupDate = null;
+		this.wednesdaysChildSiblingGroupVideo = null;
+		this.wendysWonderfulKidsCaseloadEastSiblingGroup = false;
+		this.wendysWonderfulKidsCaseloadEastSiblingGroupDate = null;
+		this.wendysWonderfulKidsCaseloadWestSiblingGroup = false;
+		this.wendysWonderfulKidsCaseloadWestSiblingGroupDate = null;
 	}
 };
 
@@ -933,7 +949,12 @@ Child.schema.methods.updateSiblingsToBePlacedWithGroup = function() {
 						siblingGroupVideo: this.get( 'siblingGroupVideo' ),
 						wednesdaysChildSiblingGroup: this.get( 'wednesdaysChildSiblingGroup' ),
 						wednesdaysChildSiblingGroupDate: this.get( 'wednesdaysChildSiblingGroupDate' ),
-						wednesdaysChildSiblingGroupVideo: this.get( 'wednesdaysChildSiblingGroupVideo' ) } )
+						wednesdaysChildSiblingGroupVideo: this.get( 'wednesdaysChildSiblingGroupVideo' ),
+						wendysWonderfulKidsCaseloadEastSiblingGroup: this.get( 'wendysWonderfulKidsCaseloadEastSiblingGroup' ),
+						wendysWonderfulKidsCaseloadEastSiblingGroupDate: this.get( 'wendysWonderfulKidsCaseloadEastSiblingGroupDate' ),
+						wendysWonderfulKidsCaseloadWestSiblingGroup: this.get( 'wendysWonderfulKidsCaseloadWestSiblingGroup' ),
+						wendysWonderfulKidsCaseloadWestSiblingGroupDate: this.get( 'wendysWonderfulKidsCaseloadWestSiblingGroupDate' )
+					})
 					.then( () => {
 						// unlock the sibling to be placed with after update is complete
 						saveLock.unlock( siblingId );
@@ -1045,15 +1066,21 @@ Child.schema.methods.updateSiblingFields = function() {
 			}
 		},
 		done => {
-			ChildMiddleware.updateMySiblingsToBePlacedWith( siblingsToBePlacedWithAfterSave,
-															childId,
-															this.get( 'groupProfile' ),
-															this.get( 'siblingGroupImage' ),
-															this.get( 'siblingGroupVideo' ),
-															this.get( 'wednesdaysChildSiblingGroup' ),
-															this.get( 'wednesdaysChildSiblingGroupDate' ),
-															this.get( 'wednesdaysChildSiblingGroupVideo' ),
-															done );
+			ChildMiddleware.updateMySiblingsToBePlacedWith({
+				mySiblings: siblingsToBePlacedWithAfterSave,
+				childId,
+				groupProfile: this.get( 'groupProfile' ),
+				siblingGroupImage: this.get( 'siblingGroupImage' ),
+				siblingGroupVideo: this.get( 'siblingGroupVideo' ),
+				wednesdaysChildSiblingGroup: this.get( 'wednesdaysChildSiblingGroup' ),
+				wednesdaysChildSiblingGroupDate: this.get( 'wednesdaysChildSiblingGroupDate' ),
+				wednesdaysChildSiblingGroupVideo: this.get( 'wednesdaysChildSiblingGroupVideo' ),
+				wendysWonderfulKidsCaseloadEastSiblingGroup: this.get( 'wendysWonderfulKidsCaseloadEastSiblingGroup' ),
+				wendysWonderfulKidsCaseloadEastSiblingGroupDate: this.get( 'wendysWonderfulKidsCaseloadEastSiblingGroupDate' ),
+				wendysWonderfulKidsCaseloadWestSiblingGroup: this.get( 'wendysWonderfulKidsCaseloadWestSiblingGroup' ),
+				wendysWonderfulKidsCaseloadWestSiblingGroupDate: this.get( 'wendysWonderfulKidsCaseloadWestSiblingGroupDate' )},
+				done
+			);
 		},
 		done => { ChildMiddleware.updateMyRemainingSiblingsToBePlacedWith( remainingSiblingsToBePlacedWith, removedSiblingsToBePlacedWith, childId, done ); },
 		done => {
@@ -1787,6 +1814,30 @@ Child.schema.methods.setChangeHistory = function() {
 												name: 'wednesdaysChildSiblingGroupVideo',
 												label: 'wednesdays child sibling group video',
 												type: 'string' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'wendysWonderfulKidsCaseloadEastSiblingGroup',
+												label: `Wendy's Wonderful Kids Caseload East`,
+												type: 'boolean' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'wendysWonderfulKidsCaseloadEastSiblingGroupDate',
+												label: 'date added to caseload',
+												type: 'date' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'wendysWonderfulKidsCaseloadWestSiblingGroup',
+												label: `Wendy's Wonderful Kids Caseload West`,
+												type: 'boolean' }, model, modelBefore, changeHistory, done );
+				},
+				done => {
+					ChangeHistoryMiddleware.checkFieldForChanges({
+												name: 'wendysWonderfulKidsCaseloadWestSiblingGroupDate',
+												label: 'date added to caseload (sibling group)',
+												type: 'date' }, model, modelBefore, changeHistory, done );
 				},
 				done => {
 					ChangeHistoryMiddleware.checkFieldForChanges({

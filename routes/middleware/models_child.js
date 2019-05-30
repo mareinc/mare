@@ -252,7 +252,24 @@ exports.batchAllSiblingsToBePlacedWithUpdates = ( childModel ) => {
 	});
 };
 
-exports.applySiblingsToBePlacedWithGroupToChild = ( { childToUpdateId, recommendedFamilyConstellation = [], adoptionWorker = '', recruitmentWorker = '', isVisibleInGallery = false, siblingsToBePlacedWithGroup = [], siblingGroupProfile, siblingGroupImage, siblingGroupVideo, wednesdaysChildSiblingGroup, wednesdaysChildSiblingGroupDate, wednesdaysChildSiblingGroupVideo } ) => {
+exports.applySiblingsToBePlacedWithGroupToChild = ({
+	childToUpdateId,
+	recommendedFamilyConstellation = [],
+	adoptionWorker = '',
+	recruitmentWorker = '',
+	isVisibleInGallery = false,
+	siblingsToBePlacedWithGroup = [],
+	siblingGroupProfile,
+	siblingGroupImage,
+	siblingGroupVideo,
+	wednesdaysChildSiblingGroup,
+	wednesdaysChildSiblingGroupDate,
+	wednesdaysChildSiblingGroupVideo,
+	wendysWonderfulKidsCaseloadEastSiblingGroup,
+	wendysWonderfulKidsCaseloadEastSiblingGroupDate,
+	wendysWonderfulKidsCaseloadWestSiblingGroup,
+	wendysWonderfulKidsCaseloadWestSiblingGroupDate
+}) => {
 
 	return new Promise( ( resolve, reject ) => {
 
@@ -298,6 +315,7 @@ exports.applySiblingsToBePlacedWithGroupToChild = ( { childToUpdateId, recommend
 
 					// protect against items being undefined
 					child.siblingGroupImage = child.siblingGroupImage || {};
+
 					// test if wednesday's child group date has changed
 					let hasWednesdaysChildSiblingGroupDateChanged = false;
 					// try to cast both values to dates
@@ -311,22 +329,52 @@ exports.applySiblingsToBePlacedWithGroupToChild = ( { childToUpdateId, recommend
 						hasWednesdaysChildSiblingGroupDateChanged = currentwednesdaysChildSiblingGroupDate != newWednesdaysChildSiblingGroupDate;
 					}
 
+					// test if Wendy's Wonderful Kids Caseload East group date has changed
+					let hasWendysWonderfulKidsCaseloadEastSiblingGroupDateChanged = false;
+					// try to cast both values to dates
+					let currentWendysWonderfulKidsCaseloadEastSiblingGroupDate = child.wendysWonderfulKidsCaseloadEastSiblingGroupDate instanceof Date ? child.wendysWonderfulKidsCaseloadEastSiblingGroupDate : undefined;
+					let newWendysWonderfulKidsCaseloadEastSiblingGroupDate = wendysWonderfulKidsCaseloadEastSiblingGroupDate instanceof Date ? wendysWonderfulKidsCaseloadEastSiblingGroupDate : undefined;
+					// if both values are dates
+					if ( currentWendysWonderfulKidsCaseloadEastSiblingGroupDate && newWendysWonderfulKidsCaseloadEastSiblingGroupDate ) {
+						hasWendysWonderfulKidsCaseloadEastSiblingGroupDateChanged = currentWendysWonderfulKidsCaseloadEastSiblingGroupDate.toString() !== newWendysWonderfulKidsCaseloadEastSiblingGroupDate.toString();
+					// if either value is not a date
+					} else {
+						hasWendysWonderfulKidsCaseloadEastSiblingGroupDateChanged = currentWendysWonderfulKidsCaseloadEastSiblingGroupDate != newWendysWonderfulKidsCaseloadEastSiblingGroupDate;
+					}
+
+					// test if Wendy's Wonderful Kids Caseload West group date has changed
+					let hasWendysWonderfulKidsCaseloadWestSiblingGroupDateChanged = false;
+					// try to cast both values to dates
+					let currentWendysWonderfulKidsCaseloadWestSiblingGroupDate = child.wendysWonderfulKidsCaseloadWestSiblingGroupDate instanceof Date ? child.wendysWonderfulKidsCaseloadWestSiblingGroupDate : undefined;
+					let newWendysWonderfulKidsCaseloadWestSiblingGroupDate = wendysWonderfulKidsCaseloadWestSiblingGroupDate instanceof Date ? wendysWonderfulKidsCaseloadWestSiblingGroupDate : undefined;
+					// if both values are dates
+					if ( currentWendysWonderfulKidsCaseloadWestSiblingGroupDate && newWendysWonderfulKidsCaseloadWestSiblingGroupDate ) {
+						hasWendysWonderfulKidsCaseloadWestSiblingGroupDateChanged = currentWendysWonderfulKidsCaseloadWestSiblingGroupDate.toString() !== newWendysWonderfulKidsCaseloadWestSiblingGroupDate.toString();
+					// if either value is not a date
+					} else {
+						hasWendysWonderfulKidsCaseloadWestSiblingGroupDateChanged = currentWendysWonderfulKidsCaseloadWestSiblingGroupDate != newWendysWonderfulKidsCaseloadWestSiblingGroupDate;
+					}
+
 					// test to see if any group profile attributes need to be updated
 					// NOTE: this first check converts the _id arrays to strings, ensures both are sorted, then converts them into single strings for comparison
 					// TODO: make a utility function for more readable array comparison
-					if( child.recommendedFamilyConstellation.map( familyConstellation => familyConstellation.toString() ).sort().join( '' ) !== recommendedFamilyConstellation.map( familyConstellation => familyConstellation.toString() ).sort().join( '' ) ||
-						childsAdoptionWorker !== adoptionWorker.toString() ||
-						childsRecruitmentWorker !== recruitmentWorker.toString() ||
-						child.isVisibleInGallery !== isVisibleInGallery ||
-						child.groupProfile.quote !== siblingGroupProfile.quote ||
-						child.groupProfile.part1 !== siblingGroupProfile.part1 ||
-						child.groupProfile.part2 !== siblingGroupProfile.part2 ||
-						child.groupProfile.part3 !== siblingGroupProfile.part3 ||
-						child.siblingGroupImage.url !== newSiblingGroupImage.url || // when checking that the objects are different, we only need to test a single attribute
-						child.siblingGroupVideo !== siblingGroupVideo ||
-						child.wednesdaysChildSiblingGroup !== wednesdaysChildSiblingGroup ||
-						hasWednesdaysChildSiblingGroupDateChanged ||
-						child.wednesdaysChildSiblingGroupVideo !== wednesdaysChildSiblingGroupVideo ) {
+					if( child.recommendedFamilyConstellation.map( familyConstellation => familyConstellation.toString() ).sort().join( '' ) !== recommendedFamilyConstellation.map( familyConstellation => familyConstellation.toString() ).sort().join( '' )
+						|| childsAdoptionWorker !== adoptionWorker.toString()
+						|| childsRecruitmentWorker !== recruitmentWorker.toString()
+						|| child.isVisibleInGallery !== isVisibleInGallery
+						|| child.groupProfile.quote !== siblingGroupProfile.quote
+						|| child.groupProfile.part1 !== siblingGroupProfile.part1
+						|| child.groupProfile.part2 !== siblingGroupProfile.part2
+						|| child.groupProfile.part3 !== siblingGroupProfile.part3
+						|| child.siblingGroupImage.url !== newSiblingGroupImage.url // when checking that the objects are different, we only need to test a single attribute
+						|| child.siblingGroupVideo !== siblingGroupVideo
+						|| child.wednesdaysChildSiblingGroup !== wednesdaysChildSiblingGroup
+						|| hasWednesdaysChildSiblingGroupDateChanged
+						|| child.wednesdaysChildSiblingGroupVideo !== wednesdaysChildSiblingGroupVideo
+						|| child.wendysWonderfulKidsCaseloadEastSiblingGroup !== wendysWonderfulKidsCaseloadEastSiblingGroup
+						|| hasWendysWonderfulKidsCaseloadEastSiblingGroupDateChanged
+						|| child.wendysWonderfulKidsCaseloadWestSiblingGroup !== wendysWonderfulKidsCaseloadWestSiblingGroup
+				 		|| hasWendysWonderfulKidsCaseloadWestSiblingGroupDateChanged ) {
 							// update the child to be placed with with values that should replicate across records
 							child.recommendedFamilyConstellation = recommendedFamilyConstellation;
 							child.adoptionWorker = adoptionWorker ? adoptionWorker : undefined;
@@ -344,6 +392,12 @@ exports.applySiblingsToBePlacedWithGroupToChild = ( { childToUpdateId, recommend
 							child.wednesdaysChildSiblingGroup       = wednesdaysChildSiblingGroup;
 							child.wednesdaysChildSiblingGroupDate   = newWednesdaysChildSiblingGroupDate;
 							child.wednesdaysChildSiblingGroupVideo  = wednesdaysChildSiblingGroupVideo;
+							// update the group Wendy's Wonderful Kids Caseload East fields
+							child.wendysWonderfulKidsCaseloadEastSiblingGroup = wendysWonderfulKidsCaseloadEastSiblingGroup;
+							child.wendysWonderfulKidsCaseloadEastSiblingGroupDate = newWendysWonderfulKidsCaseloadEastSiblingGroupDate;
+							// update the group Wendy's Wonderful Kids Caseload West fields
+							child.wendysWonderfulKidsCaseloadWestSiblingGroup = wendysWonderfulKidsCaseloadWestSiblingGroup;
+							child.wendysWonderfulKidsCaseloadWestSiblingGroupDate = newWendysWonderfulKidsCaseloadWestSiblingGroupDate
 							// set the save updates flag to true
 							saveUpdatesToSiblingsToBePlacedWithGroup = true;
 						}
@@ -482,7 +536,7 @@ exports.updateMySiblings = ( mySiblings, childId, done ) => {
 			done();
 		});
 };
-// TODO: childId isn't used in this function, as well as some below.  Remove them here as well as every place these functions are invoked
+
 exports.updateMyRemainingSiblings = ( remainingSiblings, removedSiblings, childId, done ) => {
 
 	// Fetch all siblings who remain after siblings have been removed from the target child ( childId )
@@ -495,7 +549,6 @@ exports.updateMyRemainingSiblings = ( remainingSiblings, removedSiblings, childI
 			let childModelUpdates = [];
 			// loop through each added sibling
 			_.each( siblings, child => {
-				const targetChildId = child.get('_id').toString();
 				// store the childs current sibling as an array of strings
 				const currentSiblingsArray = child.siblings ? child.siblings.map( sibling => sibling.toString() ) : [];
 				// convert the array to a set
@@ -591,14 +644,28 @@ exports.updateMyRemovedSiblings = ( allSiblings, removedSiblings, childId, done 
 };
 
 /* updates sibling fields for chidren listed as siblings by adding missing entries */
-exports.updateMySiblingsToBePlacedWith = ( mySiblings, childId, groupProfile, siblingGroupImage, siblingGroupVideo, wednesdaysChildSiblingGroup, wednesdaysChildSiblingGroupDate, wednesdaysChildSiblingGroupVideo, done ) => {
+exports.updateMySiblingsToBePlacedWith = ({
+	mySiblings,
+	childId,
+	groupProfile,
+	siblingGroupImage,
+	siblingGroupVideo,
+	wednesdaysChildSiblingGroup,
+	wednesdaysChildSiblingGroupDate,
+	wednesdaysChildSiblingGroupVideo,
+	wendysWonderfulKidsCaseloadEastSiblingGroup,
+	wendysWonderfulKidsCaseloadEastSiblingGroupDate,
+	wendysWonderfulKidsCaseloadWestSiblingGroup,
+	wendysWonderfulKidsCaseloadWestSiblingGroupDate },
+	done
+) => {
 
 	// create the group profile object based on what was passed in
 	const newGroupProfile		= groupProfile || {},
-		  newGroupQuote			= groupProfile.quote || '',
-		  newGroupProfilePart1	= groupProfile.part1 || '',
-		  newGroupProfilePart2	= groupProfile.part2 || '',
-		  newGroupProfilePart3	= groupProfile.part3 || '';
+		  newGroupQuote			= newGroupProfile.quote || '',
+		  newGroupProfilePart1	= newGroupProfile.part1 || '',
+		  newGroupProfilePart2	= newGroupProfile.part2 || '',
+		  newGroupProfilePart3	= newGroupProfile.part3 || '';
 
 	// fetch all siblings who were added
 	keystone.list( 'Child' ).model
@@ -627,16 +694,21 @@ exports.updateMySiblingsToBePlacedWith = ( mySiblings, childId, groupProfile, si
 				// ensures that the group profile object exists
 				child.groupProfile = child.groupProfile || {};
 				// if there are siblings to add to the child or any shared sibling group data fields have changed
-				if( siblingsToAdd.size > 0 ||
-					child.groupProfile.quote !== groupProfile.quote ||
-					child.groupProfile.part1 !== groupProfile.part1 ||
-					child.groupProfile.part2 !== groupProfile.part2 ||
-					child.groupProfile.part3 !== groupProfile.part3 ||
-					child.siblingGroupImage.url !== siblingGroupImage.url || // when checking that the objects are different, we only need to test a single attribute
-					child.siblingGroupVideo !== siblingGroupVideo ||
-					child.wednesdaysChildSiblingGroup !== wednesdaysChildSiblingGroup ||
-					child.wednesdaysChildSiblingGroupDate.toString() !== wednesdaysChildSiblingGroupDate.toString() ||
-					child.wednesdaysChildSiblingGroupVideo !== wednesdaysChildSiblingGroupVideo ) {
+				if( siblingsToAdd.size > 0
+					|| child.groupProfile.quote !== groupProfile.quote
+					|| child.groupProfile.part1 !== groupProfile.part1
+					|| child.groupProfile.part2 !== groupProfile.part2
+					|| child.groupProfile.part3 !== groupProfile.part3
+					|| child.siblingGroupImage.url !== siblingGroupImage.url // when checking that the objects are different, we only need to test a single attribute
+					|| child.siblingGroupVideo !== siblingGroupVideo
+					|| child.wednesdaysChildSiblingGroup !== wednesdaysChildSiblingGroup
+					|| child.wednesdaysChildSiblingGroupDate.toString() !== wednesdaysChildSiblingGroupDate.toString()
+					|| child.wednesdaysChildSiblingGroupVideo !== wednesdaysChildSiblingGroupVideo
+					|| child.wendysWonderfulKidsCaseloadEastSiblingGroup !== wendysWonderfulKidsCaseloadEastSiblingGroup
+					|| child.wendysWonderfulKidsCaseloadEastSiblingGroupDate.toString() !== wendysWonderfulKidsCaseloadEastSiblingGroupDate.toString()
+					|| child.wendysWonderfulKidsCaseloadWestSiblingGroup !== wendysWonderfulKidsCaseloadWestSiblingGroup
+					|| child.wendysWonderfulKidsCaseloadWestSiblingGroupDate.toString() !== wendysWonderfulKidsCaseloadWestSiblingGroupDate.toString()
+				) {
 					// TODO: possibly simplify this with an Object.assign
 					// update the child to be placed with with the shared bio information
 					child.groupProfile.quote	= newGroupQuote;
@@ -650,6 +722,12 @@ exports.updateMySiblingsToBePlacedWith = ( mySiblings, childId, groupProfile, si
 					child.wednesdaysChildSiblingGroup       = wednesdaysChildSiblingGroup;
 					child.wednesdaysChildSiblingGroupDate   = wednesdaysChildSiblingGroupDate;
 					child.wednesdaysChildSiblingGroupVideo  = wednesdaysChildSiblingGroupVideo;
+					// update the group Wendy's Wonderful Kids Caseload East
+					child.wendysWonderfulKidsCaseloadEastSiblingGroup = wendysWonderfulKidsCaseloadEastSiblingGroup;
+					child.wendysWonderfulKidsCaseloadEastSiblingGroupDate = wendysWonderfulKidsCaseloadEastSiblingGroupDate;
+					// update the group Wendy's Wonderful Kids Caseload West
+					child.wendysWonderfulKidsCaseloadWestSiblingGroup = wendysWonderfulKidsCaseloadWestSiblingGroup;
+					child.wendysWonderfulKidsCaseloadWestSiblingGroupDate = wendysWonderfulKidsCaseloadWestSiblingGroupDate;
 					// add any new siblings to the child
 					child.siblingsToBePlacedWith.push( ...siblingsToAdd );
 					// add the updated model to the list of child updates to be saved
@@ -689,7 +767,6 @@ exports.updateMyRemainingSiblingsToBePlacedWith = ( remainingSiblings, removedSi
 			let childModelUpdates = [];
 			// loop through each added sibling
 			_.each( siblings, child => {
-				const targetChildId = child.get('_id').toString();
 				// store the childs current sibling as an array of strings
 				const currentSiblingsArray = child.siblingsToBePlacedWith ? child.siblingsToBePlacedWith.map( sibling => sibling.toString() ) : [];
 				// convert the array to a set
