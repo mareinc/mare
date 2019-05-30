@@ -140,9 +140,18 @@ Set.prototype.intersection = function( setB ) {
 /* add functionality to ES6 Set type for finding the difference between two sets */
 /* { a, b, c }, { b, c, d } => { a, d } */
 Set.prototype.difference = function( setB ) {
-	var difference = new Set( this );
+	var difference = new Set();
+
+	for ( var elem of this ) {
+		if( !setB.has( elem ) ) {
+			difference.add( elem );
+		}
+	}
+
 	for ( var elem of setB ) {
-		difference.delete( elem );
+		if( !this.has( elem ) ) {
+			difference.add( elem );
+		}
 	}
 	return difference;
 }
