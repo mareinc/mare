@@ -238,7 +238,8 @@ function extractInquiryData( inquiry ) {
 		// set the fields to populate on the inquiry model
 		const fieldsToPopulate = [
 			'inquiryMethod', 'source', 'children', 'childsSocialWorker',
-			'family', 'onBehalfOfFamily', 'agency', 'agencyReferrals' ];
+			'family', 'onBehalfOfFamily', 'agency', 'agencyReferrals'
+		];
 
 		// populate fields on the inquiry model
 		inquiry.populate( fieldsToPopulate, err => {
@@ -286,7 +287,7 @@ function extractInquirerData( inquirer ) {
 			return reject( new Error( `no inquirer provided` ) );
 		}
 		// set the fields to populate on the inquirer model
-		const fieldsToPopulate = [ 'address.state', 'contact1.gender', 'contact1.race', 'contact2.gender', 'contact2.race', 'socialWorker', 'socialWorker.agency' ];
+		const fieldsToPopulate = [ 'address.state', 'contact1.gender', 'contact1.race', 'contact2.gender', 'contact2.race', 'socialWorker', 'socialWorkerAgency' ];
 
 		// populate fields on the inquirer model
 		inquirer.populate( fieldsToPopulate, err => {
@@ -331,8 +332,11 @@ function extractInquirerData( inquirer ) {
 							  inquirer.socialWorker.name.full :
 							  inquirer.userType === 'family' && inquirer.socialWorkerNotListed ?
 							  inquirer.socialWorkerText :
-							  undefined
-			}
+							  undefined,
+				socialWorkerAgency: inquirer.userType === 'family' && inquirer.socialWorkerAgency ?
+									`${ inquirer.socialWorkerAgency.name } (${ inquirer.socialWorkerAgency.code })` :
+									undefined
+			};
 			
 			// add social worker details:
 			if ( inquirer.socialWorker ) {
@@ -440,24 +444,8 @@ function extractInquirerData( inquirer ) {
 					started: inquirer.homestudy.initialDate instanceof Date ? moment( inquirer.homestudy.initialDate ).utc().format( 'MM/DD/YYYY' ) : undefined
 				}
 			}
-			
-			// resolve the promise with the relevant inquirer data
-			if ( inquirer.socialWorker && inquirer.socialWorker.agency ) {
-				const fetchSocialWorkerAgency = agencyService.getAgencyById( inquirer.socialWorker.agency );
-				fetchSocialWorkerAgency
-					.then( agency => {
-						// append agency name:
-						relevantData[ 'socialWorkerAgency' ] = agency.name;
-						resolve( relevantData );
-					})
-					.catch( err => {
-						// log the error for debugging purposes
-						console.error( `error loading social worker agency`, err );
-						resolve( relevantData );
-					});
-			} else {
-				resolve( relevantData );
-			}
+
+			resolve( relevantData );
 		});
 	});
 }
