@@ -75,6 +75,7 @@ SiteVisitor.add( 'Permissions', {
 
 	infoPacket: {
 		preference: { type: Types.Select, options: 'Email, Hard Copy, Referred to AUK', label: 'packet', initial: true },
+		packet: { type: Types.Select, options: 'English, Spanish, none', label: 'old packet preference', note: 'this is just a reference from when the info packet options were different', noedit: true },
 		date: { type: Types.Date, label: 'date info packet sent', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, initial: true },
 		notes: { type: Types.Textarea, label: 'notes', initial: true }
 	}
