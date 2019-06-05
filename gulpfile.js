@@ -23,6 +23,8 @@ const paths = {
 	'css':[
 		'public/modules/**/*.css',
 		'public/styles/**/*.scss' ],
+	'dashboard-css':[
+		'public/dashboard-styles/dashboard.scss' ],
 	'standalone-css':[
 		'public/styles/font-awesome/*.css' ],
 	'js':[
@@ -68,6 +70,20 @@ gulp.task( 'styles', () => {
 		.pipe( sourcemaps.write( '.' ) )
 		.pipe( gulp.dest( 'public/dist' ) );
 });
+// dashboard styles task
+gulp.task( 'dashboard-styles', () => {
+	return gulp.src( paths[ 'dashboard-css' ])
+		.pipe( sourcemaps.init() )
+		.pipe( sass() )
+		.pipe( autoprefixer() )
+		.pipe( concat( 'dashboard.css' ) )
+		.pipe( gulp.dest( 'public/dist' ) )
+		.pipe( cleanCSS( { compatibility: 'ie8' } ) )
+		.pipe( rename( { suffix: '.min' } ) )
+		.pipe( sourcemaps.write( '.' ) )
+		.pipe( gulp.dest( 'public/dist' ) );
+});
+
 
 // TODO: need to figure out why it's not coming in with the Bootstrap styles for the minified output.
 // task for styles which are meant to remain separate from the concatenated, minified styles file
@@ -126,6 +142,7 @@ gulp.task( 'eslint-watch', () => {
 // Watch task
 gulp.task( 'watch', () => {
 	gulp.watch( paths.css, gulp.series( 'styles' ) );
+	gulp.watch( paths['dashboard-css'], { usePolling: true }, gulp.series( 'dashboard-styles' ) );
 	gulp.watch( paths.js, gulp.series( 'eslint-watch', 'scripts' ) );
 	gulp.watch( paths.img, gulp.series( 'images' ) );
 	gulp.watch( paths.tests, gulp.series( 'test' ) );
@@ -144,7 +161,7 @@ gulp.task( 'test', () => {
 });
 
 // gulp build task
-gulp.task( 'build', gulp.parallel( 'standalone-styles', 'styles', 'standalone-scripts', 'scripts', 'images', 'fonts' ) );
+gulp.task( 'build', gulp.parallel( 'standalone-styles', 'dashboard-styles', 'styles', 'standalone-scripts', 'scripts', 'images', 'fonts' ) );
 // custom build for travis CI
 gulp.task( 'travis', gulp.series( 'clean', 'test', 'build' ) );
 // default tasks to run when 'gulp' is called

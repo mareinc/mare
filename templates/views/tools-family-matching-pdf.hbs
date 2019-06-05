@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>MARE</title>
+		
+		<style type="text/css">
+			table tr th {
+				text-decoration: underline;
+			}
+		</style>
+	</head>
+	<body>
+		<table width="100%">
+			<tr>
+				<th>Reg Num</th>
+				<th>Name</th>
+				{{#each fieldNames}}
+					<th>{{this}}</th>
+				{{/each}}
+			</tr>
+			{{#each results}}
+				<tr data-id="{{ id }}">
+					<td>{{ registrationNumber }}</td>
+					<td>{{ name }}</td>
+					{{#each fields}}
+						<td>{{this}}</td>
+					{{/each}}
+				</tr>
+				{{#if unmatchedSiblings }}
+					<tr>
+						<td></td>
+						<td colspan="{{ ../siblingsCellColSpan }}">
+							<i>The following siblings didn't match:</i>
+							<table width="100%">
+								<tr>
+									<th width="100" align="left">Reg Num</th>
+									<th width="200" align="left">Name</th>
+									<th align="left">Reason(s)</th>
+								</tr>
+								{{#each unmatchedSiblings}}
+									<tr data-id="{{ id }}">
+										<td>{{ registrationNumber }}</td>
+										<td>{{ name }}</td>
+										<td>{{ reasons }}</td>
+									</tr>
+								{{/each}}
+							</table>
+						</td>
+					</tr>
+				{{/if}}
+				{{#if matchedSiblings }}
+					<tr>
+						<td></td>
+						<td colspan="{{ ../siblingsCellColSpan }}">
+							<i>The following siblings match:</i>
+							<table width="100%">
+								<tr>
+									<th width="100" align="left">Reg Num</th>
+									<th align="left">Name</th>
+								</tr>
+								{{#each matchedSiblings}}
+									<tr data-id="{{ id }}">
+										<td>{{ registrationNumber }}</td>
+										<td>{{ name }}</td>
+									</tr>
+								{{/each}}
+							</table>
+						</td>
+					</tr>
+				{{/if}}
+			{{/each}}
+		</table>
+	</body>
+</html>
+
+		

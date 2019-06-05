@@ -46,6 +46,30 @@ exports.getFamilyById = ( id, fieldsToPopulate = [] ) => {
 	});
 };
 
+exports.getFamiliesByIds = idsArray => {
+
+	return new Promise( ( resolve, reject ) => {
+
+		keystone.list( 'Family' ).model
+			.find()
+			.where( '_id' ).in( idsArray )
+			.exec()
+			.then( families => {
+				// if no families were returned
+				if( families.length === 0 ) {
+					// reject the promise with the reason why
+					reject( `error fetching families by id array - no families found with ids ${ idsArray }` );
+				}
+				// resolve the promise with the returned families
+				resolve( families );
+			// if an error occurred fetching from the database
+			}, err => {
+				// reject the promise with details of the error
+				reject( `error fetching families by id array ${ idsArray } - ${ err }` );
+			});
+	});
+};
+
 exports.getMaxRegistrationNumber = function() {
 
 	return new Promise( ( resolve, reject ) => {
