@@ -298,8 +298,6 @@ Child.add( 'Display Options', {
 });
 
 // Set up relationship values to show up at the bottom of the model if any exist
-Child.relationship( { ref: 'Family Matching History', refPath: 'child', path: 'family-matching-histories', label: 'family matching history' } );
-Child.relationship( { ref: 'Child Matching History', refPath: 'child', path: 'child-matching-histories', label: 'child matching history' } );
 Child.relationship( { ref: 'Child', refPath: 'siblings', path: 'children', label: 'siblings' } );
 Child.relationship( { ref: 'Match', refPath: 'child', path: 'matches', label: 'matches' } );
 Child.relationship( { ref: 'Placement', refPath: 'child', path: 'placements', label: 'placements' } );
