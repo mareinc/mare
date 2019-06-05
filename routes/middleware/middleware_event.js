@@ -29,8 +29,7 @@ exports.register = async ( req, res ) => {
 					last: eventDetails.childLastName[ i ]
 				},
 				age: eventDetails.childAge[ i ],
-				registrantID: req.user._id,
-				registrantType: req.user.userType
+				registrantID: req.user._id
 			};
 
 			eventDetails.unregisteredChildren.push( unregisteredChildAttendee );
@@ -266,8 +265,7 @@ exports.editRegistration = async ( req, res, next ) => {
 					last: eventDetails.childLastName[ i ]
 				},
 				age: eventDetails.childAge[ i ],
-				registrantID: req.user._id,
-				registrantType: req.user.userType
+				registrantID: req.user._id
 			};
 
 			eventDetails.unregisteredChildren.push( unregisteredChildAttendee );
@@ -567,8 +565,7 @@ exports.updateEventAttendees = async ( req, res ) => {
 						last: addedChild.lastName
 					},
 					age: addedChild.age,
-					registrantID: addedChild.registrantId,
-					registrantType: req.user.userType
+					registrantID: addedChild.registrantId
 				}
 
 				event.unregisteredChildAttendees = [ newChild, ...event.unregisteredChildAttendees ];
@@ -619,7 +616,6 @@ exports.updateEventAttendees = async ( req, res ) => {
 				targetChild.set( 'name.last', editedChild.lastName );
 				targetChild.set( 'age', editedChild.age );
 				targetChild.set( 'registrantID', editedChild.registrantId );
-				targetChild.set( 'registrantType', req.user.userType );
 			}
 		}
 		// loop through the adults edited and edit the records

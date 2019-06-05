@@ -155,7 +155,7 @@
 					{{#if event.hasUnregisteredChildAttendees}}
 					{{#each event.unregisteredChildAttendees}}
 					{{#if ../isUnregisteredChildAndAdultRegistrationAllowed}}
-					<li class="card__list-item card__list-item--editable events__attendee events__unregistered-child-attendee {{#ifeq registrantType 'family'}}hidden{{/ifeq}}"
+					<li class="card__list-item card__list-item--editable events__attendee events__unregistered-child-attendee"
 						data-id="{{ _id }}"
 						data-original-first-name="{{ name.first }}"
 						data-original-last-name="{{ name.last }}"
@@ -165,7 +165,6 @@
 						data-last-name="{{ name.last }}"
 						data-age="{{ age }}"
 						data-registrant-id="{{ registrantID }}"
-						{{#if registrantType}}data-registrant-type="{{ registrantType }}"{{/if}}
 						data-attendee-type="child"
 					>
 						<span class="card__list-item-content events__attendee-name">{{ name.first }} {{ name.last }}</span>
@@ -174,13 +173,12 @@
 						<i class="fa fa-undo card__list-item-content-control card__list-item-content-control--hidden card__list-item-content-control--disabled card__list-item-undo-edit" aria-hidden="true"></i>
 					</li>
 					{{else}}
-					<li class="card__list-item events__attendee {{#ifeq registrantType 'family'}}hidden{{/ifeq}}">{{ name.first }} {{ name.last }}</li>
+					<li class="card__list-item events__attendee">{{ name.first }} {{ name.last }}</li>
 					{{/if}}
 					{{/each}}
-					{{/if}}
-					{{#unless event.hasNonFamilyUnregisteredChildAttendees}}
+					{{else}}
 					<li class="card__list-item card__list-item--disabled card__list-item--no-data">no unregistered children attending</li>
-					{{/unless}}
+					{{/if}}
 				</ul>
 				{{#if isUnregisteredChildAndAdultRegistrationAllowed}}
 				<span class="events__add-unregistered-attendee">+ add unregistered child</span>

@@ -89,14 +89,13 @@ exports = module.exports = ( req, res ) => {
 			
 			// store data on whether any attendees exist for each group
 			// NOTE: used to determine whether we should render headers for each list during templating when displaying to admin users
-			event.hasStaffAttendees							= event.staffAttendees.length > 0;
-			event.hasFamilyAttendees						= event.familyAttendees.length > 0;
-			event.hasSocialWorkerAttendees					= event.socialWorkerAttendees.length > 0;
-			event.hasSiteVisitorAttendees					= event.siteVisitorAttendees.length > 0;
-			event.hasChildAttendees							= event.childAttendees.length > 0;
-			event.hasNonFamilyUnregisteredChildAttendees 	= event.unregisteredChildAttendees.filter( child => child.registrantType !== 'family' ).length > 0;
-			event.hasUnregisteredChildAttendees				= event.unregisteredChildAttendees.length > 0;
-			event.hasUnregisteredAdultAttendees 			= event.unregisteredAdultAttendees.length > 0;
+			event.hasStaffAttendees				= event.staffAttendees.length > 0;
+			event.hasFamilyAttendees			= event.familyAttendees.length > 0;
+			event.hasSocialWorkerAttendees		= event.socialWorkerAttendees.length > 0;
+			event.hasSiteVisitorAttendees		= event.siteVisitorAttendees.length > 0;
+			event.hasChildAttendees				= event.childAttendees.length > 0;
+			event.hasUnregisteredChildAttendees	= event.unregisteredChildAttendees.length > 0;
+			event.hasUnregisteredAdultAttendees = event.unregisteredAdultAttendees.length > 0;
 
 			// if the user is logged in
 			if( req.user ) {
@@ -132,7 +131,7 @@ exports = module.exports = ( req, res ) => {
 			locals.isUserBringingUnregisteredChildren	= unregisteredChildrenUserIsBringing.length > 0;
 			locals.isUserBringingUnregisteredAdults		= unregisteredAdultsUserIsBringing.length > 0;
 			locals.registeredChildrenUserIsBringing		= registeredChildrenUserIsBringing.map( child => `{ "name": "${ child.name.full }", "id": "${ child._id }" }` );
-			locals.unregisteredChildrenUserIsBringing	= unregisteredChildrenUserIsBringing.map( child => `{ "name": { "first": "${ child.name.first }", "last": "${ child.name.last }" }, "age": "${ child.age }", "id": "${ child._id }" }` );
+			locals.unregisteredChildrenUserIsBringing	= unregisteredChildrenUserIsBringing.map( child => `{ "name": { "first": "${ child.name.first }", "last": "${ child.name.last }" }, "id": "${ child._id }" }` );
 			locals.unregisteredAdultsUserIsBringing		= unregisteredAdultsUserIsBringing.map( adult => `{ "name": { "first": "${ adult.name.first }", "last": "${ adult.name.last }" }, "id": "${ adult._id }" }` );
 
 			// set the layout to render with the right sidebar
