@@ -34,7 +34,8 @@ const imageStorage = new keystone.Storage({
 const Event = new keystone.List( 'Event', {
 	autokey: { path: 'key', from: 'name', unique: true },
 	map: { name: 'name' },
-	defaultSort: '-startDate'
+	defaultSort: '-startDate',
+	searchFields: 'name, displayName',
 });
 
 // create fields
@@ -118,7 +119,8 @@ Event.schema.add({
 			last: String
 		},
 		age: Number,
-		registrantID: String
+		registrantID: String,
+		registrantType: String
 	}]
 });
 
