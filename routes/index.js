@@ -11,8 +11,9 @@ const keystone						= require( 'keystone' ),
 	  accountMiddleware				= require( './middleware/service_account' ),
 	  eventMiddleware				= require( './middleware/middleware_event' ),
 	  passwordResetService 			= require( './middleware/service_password-reset'),
-      accountVerificationService	= require( './middleware/service_account-verification' ),
-      mailchimpService              = require( './middleware/service_mailchimp' ),
+	  accountVerificationService	= require( './middleware/service_account-verification' ),
+	  toolsService					= require( './middleware/service_tools' ),
+	  mailchimpService				= require( './middleware/service_mailchimp' ),
 	  enforce						= require( 'express-sslify' ),
 	  importRoutes					= keystone.importer( __dirname );
 
@@ -114,8 +115,20 @@ exports = module.exports = app => {
 	app.post( '/services/remove-child-bookmark'			, familyService.removeChildBookmark );
 	app.post( '/services/add-sibling-group-bookmark'	, familyService.addSiblingGroupBookmark );
 	app.post( '/services/remove-sibling-group-bookmark'	, familyService.removeSiblingGroupBookmark );
-    app.post( '/services/get-gallery-permissions'		, permissionsService.getGalleryPermissions );
-    // webhooks
-    app.get( '/webhooks/mailchimp'                      , mailchimpService.validateWebhookURL );
-    app.post( '/webhooks/mailchimp'                     , mailchimpService.processWebhookUpdates );
+	app.post( '/services/get-gallery-permissions'		, permissionsService.getGalleryPermissions );
+	
+	// reporting tools
+	app.get( '/dashboard'											, routes.views.dashboard );
+	app.get( '/tools/child-matching'								, routes.views.toolsChildMatching );
+	app.get( '/tools/family-matching'								, routes.views.toolsFamilyMatching );
+	app.get( '/tools/services/get-agencies-data'					, toolsService.getAgenciesData );
+	app.get( '/tools/services/get-social-workers-data'				, toolsService.getSocialWorkersData );
+	app.get( '/tools/services/get-families-data'					, toolsService.getFamiliesData );
+	app.get( '/tools/services/get-children-data'					, toolsService.getChildrenData );
+	app.post( '/tools/services/save-children-matching-history'		, toolsService.saveChildrenMatchingHistory );
+	app.post( '/tools/services/save-families-matching-history'		, toolsService.saveFamiliesMatchingHistory );
+
+	// webhooks
+	app.get( '/webhooks/mailchimp'                      , mailchimpService.validateWebhookURL );
+	app.post( '/webhooks/mailchimp'                     , mailchimpService.processWebhookUpdates );
 };
