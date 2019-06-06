@@ -74,12 +74,12 @@
 			var checkboxes = this.$el.find('.entry-selection:checked');
 			var ids = checkboxes.map( function() { return $( this ).val() } ).get();
 			if ( ids.length === 0 ) {
-				alert( 'There are no entries selected' );
+				console.error( 'There are no entries selected' );
 				return;
 			}
 			var familyID = this.$el.find('[name="family"]').val();
 			if ( !familyID || familyID.length === 0 ) {
-				alert( 'There is no family selected' );
+				console.error( 'There is no family selected' );
 				return;
 			}
 			
@@ -91,10 +91,10 @@
 			jQuery.post( '/tools/services/save-children-matching-history', postData )
 				.done(function() {
 					checkboxes.prop('checked', false);
-					alert( "All entries have been saved" );
+					console.error( "All entries have been saved" );
 				})
 				.fail(function() {
-					alert( "Error while saving the entries" );
+					console.error( "Error while saving the entries" );
 				});
 		},
 		
@@ -102,12 +102,12 @@
 			var checkboxes = this.$el.find('.entry-selection:checked');
 			var ids = checkboxes.map( function() { return $( this ).val() } ).get();
 			if ( ids.length === 0 ) {
-				alert( 'There are no entries selected' );
+				console.error( 'There are no entries selected' );
 				return;
 			}
 			var childID = this.$el.find('[name="child"]').val();
 			if ( !childID || childID.length === 0 ) {
-				alert( 'There is no child selected' );
+				console.error( 'There is no child selected' );
 				return;
 			}
 			
@@ -119,10 +119,10 @@
 			jQuery.post( '/tools/services/save-families-matching-history', postData )
 				.done(function() {
 					checkboxes.prop('checked', false);
-					alert( "All entries have been saved" );
+					console.error( "All entries have been saved" );
 				})
 				.fail(function() {
-					alert( "Error while saving the entries" );
+					console.error( "Error while saving the entries" );
 				});
 		}
 		
