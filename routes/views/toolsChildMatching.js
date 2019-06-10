@@ -373,11 +373,7 @@ exports = module.exports = ( req, res ) => {
 								footerTemplate : '<span class="pageNumber" style="font-size: 10px; margin-left: 45px; text-align: center;"></span><span class="date" style="font-size: 10px; margin-left: 45px; text-align: right"></span>'
 							};
 							
-							const puppeterArguments = {
-								executablePath: process.env.CHROME_PATH
-							}
-							
-							convertHTMLToPDF( toolsService.unescapeHTML( html ), callback, pageOptions, puppeterArguments );
+							convertHTMLToPDF( toolsService.unescapeHTML( html ), callback, pageOptions );
 						});
 						
 					} else {
