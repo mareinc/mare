@@ -91,10 +91,10 @@
 			jQuery.post( '/tools/services/save-children-matching-history', postData )
 				.done(function() {
 					checkboxes.prop('checked', false);
-					console.error( "All entries have been saved" );
+					alert( 'All entries have been saved' );
 				})
 				.fail(function() {
-					console.error( "Error while saving the entries" );
+					console.error( 'Error while saving the entries' );
 				});
 		},
 		
@@ -119,10 +119,10 @@
 			jQuery.post( '/tools/services/save-families-matching-history', postData )
 				.done(function() {
 					checkboxes.prop('checked', false);
-					console.error( "All entries have been saved" );
+					alert( 'All entries have been saved' );
 				})
 				.fail(function() {
-					console.error( "Error while saving the entries" );
+					console.error( 'Error while saving the entries' );
 				});
 		}
 		
