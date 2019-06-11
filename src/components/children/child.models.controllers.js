@@ -1,6 +1,6 @@
 const keystone		= require( 'keystone' ),
 	  _				= require( 'underscore' ),
-	  childService	= require( './service_child' );
+	  childService	= require( './child.controllers' );
 
 // wraps a model.save() operation in a Promise
 function promisifySaveOperation( modelToSave ) {

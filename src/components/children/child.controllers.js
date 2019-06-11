@@ -1,13 +1,13 @@
 const keystone									= require( 'keystone' ),
 	  _											= require( 'underscore' ),
 	  async										= require( 'async' ),
-	  middleware								= require( './middleware' ),
-	  emailTargetMiddleware						= require( './service_email-target' ),
-	  staffEmailContactMiddleware				= require( './service_staff-email-contact' ),
-	  familyService								= require( './service_family' ),
-	  listsService								= require( './service_lists' ),
-	  userService								= require( './service_user' ),
-	  socialWorkerChildRegistrationEmailService	= require( './emails_social-worker-child-registration' );
+	  middleware								= require( '../../routes/middleware/middleware' ),
+	  emailTargetMiddleware						= require( '../../routes/middleware/service_email-target' ),
+	  staffEmailContactMiddleware				= require( '../../routes/middleware/service_staff-email-contact' ),
+	  familyService								= require( '../../routes/middleware/service_family' ),
+	  listsService								= require( '../../routes/middleware/service_lists' ),
+	  userService								= require( '../../routes/middleware/service_user' ),
+	  socialWorkerChildRegistrationEmailService	= require( '../../routes/middleware/emails_social-worker-child-registration' );
 
 exports.getMaxRegistrationNumber = function() {
 

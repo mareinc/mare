@@ -1,6 +1,6 @@
 const keystone 			= require( 'keystone' ),
 	  listsService		= require( './service_lists' ),
-	  childService		= require( './service_child' ),
+	  childService		= require( '../../components/children/child.controllers' ),
 	  familyService		= require( './service_family' ),
 	  ObjectId 			= require('mongodb').ObjectId;
 	  
