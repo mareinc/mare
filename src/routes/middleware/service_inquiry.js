@@ -8,7 +8,7 @@ const keystone					= require( 'keystone' ),
 	  emailTargetService		= require( './service_email-target' ),
 	  staffEmailContactService	= require( './service_staff-email-contact' ),
 	  staffRegionContactService	= require( './service_staff-region-contact' ),
-	  inquiryEmailService		= require( './emails_inquiry' ),
+	  inquiryEmailService		= require( '../../components/inquiries/inquiry.email.controllers' ),
 	  utilities					= require( './utilities' );
 
 /* public - creates an inquiry from data submitted through the information request form on the website */
