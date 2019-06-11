@@ -2,7 +2,7 @@ const keystone	= require( 'keystone' );
 const Types		= keystone.Field.Types;
 const async		= require( 'async' );
 // Export to make it available using require.  The keystone.list import throws a ReferenceError when importing a list that comes later when sorting alphabetically
-const ContactGroup = require( '../contact groups/contactGroup.model' );
+const ContactGroup = require( '../contact groups/contact-group.model' );
 const Validators = require( '../../routes/middleware/validators' );
 
 // Create model

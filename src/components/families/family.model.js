@@ -1,4 +1,4 @@
-require( '../change histories/familyHistory.model' );
+require( '../change histories/family-history.model' );
 
 const keystone					= require( 'keystone' ),
 	  async 					= require( 'async' ),
@@ -57,7 +57,7 @@ var imageStorage = new keystone.Storage({
 });
 
 // Export to make it available using require.  The keystone.list import throws a ReferenceError when importing a list that comes later when sorting alphabetically
-const ContactGroup = require( '../contact groups/contactGroup.model' );
+const ContactGroup = require( '../contact groups/contact-group.model' );
 
 // Create model
 var Family = new keystone.List( 'Family', {

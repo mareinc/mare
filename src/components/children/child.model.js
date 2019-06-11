@@ -1,4 +1,4 @@
-require( '../change histories/childHistory.model' );
+require( '../change histories/child-history.model' );
 
 const keystone						= require( 'keystone' ),
 	  async 						= require( 'async' ),

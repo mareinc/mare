@@ -1,7 +1,7 @@
 const keystone 		= require( 'keystone' ),
 	  Types 		= keystone.Field.Types,
 	  // the keystone.list import throws a ReferenceError when importing a list that comes later when sorting alphabetically
-	  SiteVisitor	= require( '../site visitors/siteVisitor.model' ),
+	  SiteVisitor	= require( '../site visitors/site-visitor.model' ),
 	  SocialWorker	= require( '../social workers/social-worker.model' ),
 	  Family		= require( '../families/family.model' ),
 	  Admin			= require( '../administrators/admin.model' ),
