@@ -1,6 +1,6 @@
 /* this file is used for processing all forms except registration in the system */
 // TODO: break this out into a file for each form
-const inquiryService				= require( './service_inquiry' ),
+const inquiryService				= require( '../../components/inquiries/inquiry.controllers' ),
 	  emailTargetMiddleware			= require( './service_email-target' ),
 	  staffEmailContactMiddleware	= require( './service_staff-email-contact' ),
 	  haveAQuestionEmailService		= require( './emails_have-a-question' );

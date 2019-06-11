@@ -1,15 +1,15 @@
 const keystone					= require( 'keystone' ),
 	  Inquiry					= keystone.list( 'Inquiry' ),
 	  moment					= require( 'moment' ),
-	  userService				= require( './service_user' ),
-	  listsService				= require( './service_lists' ),
-	  childService				= require( '../../components/children/child.controllers' ),
-	  agencyService				= require( './service_agency' ),
-	  emailTargetService		= require( './service_email-target' ),
-	  staffEmailContactService	= require( './service_staff-email-contact' ),
-	  staffRegionContactService	= require( './service_staff-region-contact' ),
-	  inquiryEmailService		= require( '../../components/inquiries/inquiry.email.controllers' ),
-	  utilities					= require( './utilities' );
+	  userService				= require( '../../routes/middleware/service_user' ),
+	  listsService				= require( '../../routes/middleware/service_lists' ),
+	  childService				= require( '../children/child.controllers' ),
+	  agencyService				= require( '../../routes/middleware/service_agency' ),
+	  emailTargetService		= require( '../../routes/middleware/service_email-target' ),
+	  staffEmailContactService	= require( '../../routes/middleware/service_staff-email-contact' ),
+	  staffRegionContactService	= require( '../../routes/middleware/service_staff-region-contact' ),
+	  inquiryEmailService		= require( './inquiry.email.controllers' ),
+	  utilities					= require( '../../routes/middleware/utilities' );
 
 /* public - creates an inquiry from data submitted through the information request form on the website */
 exports.createInquiry = ( { inquiry, user } ) => {
