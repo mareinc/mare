@@ -10,7 +10,7 @@ const keystone						= require( 'keystone' ),
 	  UserServiceMiddleware			= require( '../../routes/middleware/service_user' ),
 	  agencyMiddleware				= require( '../../routes/middleware/service_agency' ),
 	  ChildMiddleware				= require( './child.models.controllers' ),
-	  FamilyMiddleware				= require( '../../routes/middleware/models_family' ),
+	  FamilyMiddleware				= require( '../families/family.models.controllers' ),
 	  SocialWorkerMiddleware		= require( '../../routes/middleware/models_social-worker' ),
 	  saveLock						= require( '../../routes/middleware/model_save_lock' );
 

@@ -1,13 +1,13 @@
 const keystone										= require( 'keystone' ),
 	  async											= require( 'async' ),
-	  emailTargetMiddleware							= require( './service_email-target' ),
-	  staffEmailContactMiddleware					= require( './service_staff-email-contact' ),
-	  childService									= require( '../../components/children/child.controllers' ),
-	  userService 									= require( './service_user' ),
-	  registrationService							= require( './service_register' ),
-	  registrationEmailMiddleware					= require( './emails_register' ),
-	  socialWorkerFamilyRegistrationEmailService	= require( './emails_social-worker-family-registration' );
-	  utilities         							= require( './utilities' );
+	  emailTargetMiddleware							= require( '../../routes/middleware/service_email-target' ),
+	  staffEmailContactMiddleware					= require( '../../routes/middleware/service_staff-email-contact' ),
+	  childService									= require( '../children/child.controllers' ),
+	  userService 									= require( '../../routes/middleware/service_user' ),
+	  registrationService							= require( '../../routes/middleware/service_register' ),
+	  registrationEmailMiddleware					= require( '../../routes/middleware/emails_register' ),
+	  socialWorkerFamilyRegistrationEmailService	= require( '../../routes/middleware/emails_social-worker-family-registration' );
+	  utilities         							= require( '../../routes/middleware/utilities' );
 
 /* fetch a single family by their id */
 exports.getFamilyById = ( id, fieldsToPopulate = [] ) => {

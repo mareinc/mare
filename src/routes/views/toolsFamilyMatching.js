@@ -2,7 +2,7 @@ const keystone				= require( 'keystone' ),
 	  _						= require( 'underscore' ),
 	  moment				= require( 'moment' ),
 	  toolsService			= require( '../middleware/service_tools' ),
-	  familyService			= require( '../middleware/service_family' ),
+	  familyService			= require( '../../components/families/family.controllers' ),
 	  ObjectId 				= require('mongodb').ObjectId;
 
 const FIELD_NAMES = {
