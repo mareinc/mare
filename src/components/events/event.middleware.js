@@ -1,9 +1,9 @@
 const keystone				= require( 'keystone' ),
-	  eventService			= require( './service_event' ),
-	  eventExcelService		= require( './service_event-excel-export' ),
-	  eventEmailMiddleware	= require( './emails_event' ),
-	  socialWorkerService	= require( './service_social-worker' ),
-	  flashMessageMiddleware	= require( './service_flash-messages' );
+	  eventService			= require( './event.controllers' ),
+	  eventExcelService		= require( './event.excel-export.controllers' ),
+	  eventEmailMiddleware	= require( './event.email.controllers' ),
+	  socialWorkerService	= require( '../../routes/middleware/service_social-worker' ),
+	  flashMessageMiddleware	= require( '../../routes/middleware/service_flash-messages' );
 
 exports.register = async ( req, res ) => {
 	'use strict';

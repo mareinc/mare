@@ -4,7 +4,7 @@ const keystone						= require( 'keystone' ),
 	  SourceMiddleware				= require( '../../routes/middleware/models_source' ),
 	  Validators					= require( '../../routes/middleware/validators' ),
 	  emailTargetMiddleware			= require( '../../routes/middleware/service_email-target' ),
-	  eventEmailMiddleware			= require( '../../routes/middleware/emails_event' ),
+	  eventEmailMiddleware			= require( './event.email.controllers' ),
 	  staffEmailContactMiddleware	= require( '../../routes/middleware/service_staff-email-contact' ),
 	  modelService					= require( '../../routes/middleware/service_model' );
 

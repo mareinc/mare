@@ -1,5 +1,5 @@
-const listService = require( './service_lists' ),
-	  socialWorkerService = require( './service_social-worker' ),
+const listService = require( '../../routes/middleware/service_lists' ),
+	  socialWorkerService = require( '../../routes/middleware/service_social-worker' ),
 	  excel = require( 'excel4node' ),
 	  moment = require( 'moment' );
 

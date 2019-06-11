@@ -1,7 +1,7 @@
 const keystone				= require( 'keystone' ),
 	  moment				= require( 'moment' ),
 	  Utils					= require( './utilities' ),
-	  eventService			= require( './service_event' ),
+	  eventService			= require( '../../components/events/event.controllers' ),
 	  successStoryService	= require( './service_success-story' );
 
 exports.getPageByKey = key => {

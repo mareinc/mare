@@ -1,6 +1,6 @@
 const Email = require( 'keystone-email' ),
 	  hbs = require( 'hbs' ),
-	  childService = require('./service_child');
+	  childService = require('../../routes/middleware/service_child');
 
 exports.sendNewEventEmailToMARE = ( event, socialWorker, staffEmailContact ) => {
 

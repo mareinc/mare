@@ -1,7 +1,7 @@
 const keystone				= require( 'keystone' ),
 	  moment				= require( 'moment' ),
 	  userService			= require( '../middleware/service_user' ),
-	  eventService			= require( '../middleware/service_event' ),
+	  eventService			= require( '../../components/events/event.controllers' ),
 	  donationService		= require( '../middleware/service_donation' ),
 	  familyService			= require( '../middleware/service_family' ),
 	  listsService			= require( '../middleware/service_lists' ),

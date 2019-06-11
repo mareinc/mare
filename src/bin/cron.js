@@ -1,10 +1,10 @@
 const cronJob = require( 'cron' ).CronJob,
-	  eventService = require( '../routes/middleware/service_event' ),
+	  eventService = require( '../components/events/event.controllers' ),
 	  childService = require( '../routes/middleware/service_child' ),
 	  socialWorkerService = require( '../routes/middleware/service_social-worker' ),
 	  agencyService = require( '../routes/middleware/service_agency' ),
 	  emailTargetMiddleware = require( '../routes/middleware/service_email-target' ),
-	  eventEmailMiddleware = require( '../routes/middleware/emails_event' ),
+	  eventEmailMiddleware = require( '../components/events/event.email.controllers' ),
 	  staffEmailContactMiddleware = require( '../routes/middleware/service_staff-email-contact' );
 
 exports.scheduleEventDeactivator = () => {
