@@ -10,7 +10,7 @@ if( process.env.NEW_RELIC_APP_NAME && process.env.NEW_RELIC_LICENSE_KEY ) {
 // Initialize application
 const keystone = require( 'keystone' ),
 	  handlebars = require( 'express-handlebars' ),
-	  cron = require( './bin/cron' ),
+	  cron = require( './src/bin/cron' ),
 	  fs = require( 'fs' );
 
 keystone.init({
@@ -20,21 +20,21 @@ keystone.init({
 
 	'sass': 'public',
 	'static': 'public',
-	'favicon': 'public/dist/img/favicons/favicon.ico',
+	'favicon': './public/dist/img/favicons/favicon.ico',
 
-	'views': 'templates/views',
+	'views': 'src/templates/views',
 	'view engine': 'hbs',
 	'view cache': false,
 
 	'custom engine': handlebars.create({
-		layoutsDir: 'templates/views/layouts',
-		partialsDir: 'templates/views/partials',
+		layoutsDir: './src/templates/views/layouts',
+		partialsDir: './src/templates/views/partials',
 		defaultLayout: 'default',
-		helpers: new require( './templates/views/helpers' )(),
+		helpers: new require( './src/templates/views/helpers' )(),
 		extname: '.hbs'
 	}).engine,
 
-	'emails': 'templates/emails',
+	'emails': 'src/templates/emails',
 
 	'auto update': true,
 	'session': true,
@@ -75,10 +75,10 @@ keystone.set( 'mandrill api key', process.env.MANDRILL_APIKEY );
 keystone.set( 'mandrill username', process.env.MANDRILL_USERNAME );
 
 // Load project's Models
-keystone.import( 'models' );
+keystone.import( './src/models' );
 
 // Load project Routes
-keystone.set( 'routes', require('./routes' ) );
+keystone.set( 'routes', require('./src/routes' ) );
 
 // Setup common locals for your templates. The following are required for the
 // bundled templates and layouts. Any runtime locals (that should be set uniquely
@@ -95,7 +95,7 @@ keystone.set( 'locals', {
 // Setup common locals for your emails. The following are required by Keystone's
 // default email templates, you may remove them if you're using your own.
 keystone.set( 'email locals', {
-	logo_src: '/public/dist/img/mare-logo.png',
+	logo_src: './public/dist/img/mare-logo.png',
 	logo_width: 194,
 	logo_height: 76,
 	logo: `data:image/png;base64,${ Buffer.from( fs.readFileSync( './public/dist/img/mare-logo.png' ) ).toString( 'base64' ) }`,
