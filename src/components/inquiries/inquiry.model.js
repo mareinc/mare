@@ -1,7 +1,7 @@
 const keystone					= require( 'keystone' ),
 	  async 					= require( 'async' ),
 	  Types 					= keystone.Field.Types,
-	  inquiryMiddleware			= require( '../../routes/middleware/models_inquiry' ),
+	  inquiryMiddleware			= require( './inquiry.models.controllers' ),
 	  inquiryEmailService		= require( './inquiry.email.controllers' ),
 	  childService				= require( '../children/child.controllers' ),
 	  socialWorkerService		= require( '../../routes/middleware/service_social-worker' ),
