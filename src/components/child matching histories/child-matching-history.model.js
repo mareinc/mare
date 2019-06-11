@@ -1,7 +1,7 @@
 const keystone			= require( 'keystone' ),
 	  Types				= keystone.Field.Types,
 	  random			= require( 'mongoose-simple-random' ),
-	  SourceMiddleware	= require( '../../routes/middleware/models_source' ),
+	  SourceMiddleware	= require( '../events/event.source.controllers' ),
 	  Validators		= require( '../../routes/middleware/validators' );
 
 // create model
