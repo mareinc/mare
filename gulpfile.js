@@ -16,7 +16,7 @@ const mocha			= require( 'gulp-mocha' );
 // path variables
 const paths = {
 	'src':[
-		'./src/models/**/*.js',
+		'./src/components/**/*.model.js',
 		'./src/routes/**/*.js',
 		'./src/keystone.js',
 		'package.json' ],

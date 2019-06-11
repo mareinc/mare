@@ -1,15 +1,17 @@
-var keystone	= require( 'keystone' ),
-Types			= keystone.Field.Types,
-Validators		= require( '../routes/middleware/validators' );
+const keystone	= require( 'keystone' ),
+	  Types		= keystone.Field.Types,
+	  Validators = require( '../../routes/middleware/validators' );
 
-// create model. Additional options allow menu name to be used what auto-generating URLs
-var Legalization = new keystone.List( 'Legalization' );
+// Create model
+var Placement = new keystone.List( 'Placement', {
+	defaultSort: '-placementDate'
+});
 
-// create fields
-Legalization.add( 'Legalization', {
+// Create fields
+Placement.add( 'Placement', {
 
-	legalizationDate: { type: Types.Date, label: 'legalization date', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, initial: true },
-
+	placementDate: { type: Types.Date, label: 'placement date', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, initial: true },
+	
 	source: { type: Types.Relationship, label: 'source', ref: 'Source', filters: { isActive: true }, initial: true },
 	additionalSources: { type: Types.Relationship, label: 'additional sources', ref: 'Source', filters: { isActive: true }, many: true, initial: true },
 	notes: { type: Types.Textarea, label: 'notes', initial: true }
@@ -60,7 +62,7 @@ Legalization.add( 'Legalization', {
 	}
 });
 
-Legalization.schema.pre( 'save', function( next ) {
+Placement.schema.pre( 'save', function( next ) {
 	'use strict';
 	// trim whitespace characters from any type.Text fields
 	this.trimTextFields();
@@ -81,7 +83,7 @@ Legalization.schema.pre( 'save', function( next ) {
 });
 
 /* text fields don't automatically trim(), this is to ensure no leading or trailing whitespace gets saved into url, text, or text area fields */
-Legalization.schema.methods.trimTextFields = function() {
+Placement.schema.methods.trimTextFields = function() {
 
 	if( this.get( 'notes' ) ) {
 		this.set( 'notes', this.get( 'notes' ).trim() );
@@ -136,11 +138,11 @@ Legalization.schema.methods.trimTextFields = function() {
 	}
 };
 
-Legalization.schema.methods.populateAgency = function() {
+Placement.schema.methods.populateAgency = function() {
 
-	return new Promise( ( resolve, reject ) => {	
-		// if the family is unregistered or an agency has already been selected
-		if( this.isUnregisteredFamily || this.familyDetails.agency ) {
+	return new Promise( ( resolve, reject ) => {
+		// if the family is unregistered, an agency has already been selected, or the family is registered by no family is selected
+		if( this.isUnregisteredFamily || this.familyDetails.agency || ( !this.isUnregisteredFamily && !this.family ) ) {
 			// resolve the promise and prevent the rest of the function from executing
 			return resolve();
 		// if the family is registered and the agency hasn't already been selected
@@ -165,5 +167,5 @@ Legalization.schema.methods.populateAgency = function() {
 };
 
 // Define default columns in the admin interface and register the model
-Legalization.defaultColumns = 'legalizationDate, child, family, familyDetails.name, source';
-Legalization.register();
+Placement.defaultColumns = 'placementDate, child, family, familyDetails.name, source';
+Placement.register();

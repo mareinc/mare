@@ -1,15 +1,16 @@
-var keystone	= require( 'keystone' ),
-Types			= keystone.Field.Types,
-Validators		= require( '../routes/middleware/validators' );
+const keystone	= require( 'keystone' );
+const Types		= keystone.Field.Types;
+const Validators = require( '../../routes/middleware/validators' );
 
-// create model
-var Disruption = new keystone.List( 'Disruption' );
+// Create model. Additional options allow menu name to be used what auto-generating URLs
+var Match = new keystone.List( 'Match' );
 
-// create fields
-Disruption.add( 'Disruption', {
+// Create fields
+Match.add( 'Match', {
 
-	disruptionDate: { type: Types.Date, label: 'disruption date', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, initial: true },
+	matchDate: { type: Types.Date, label: 'match date', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, required: true, initial: true },
 
+	status: { type: Types.Select, label: 'status', options: 'matched, not matched', required: true, initial: true },
 	source: { type: Types.Relationship, label: 'source', ref: 'Source', filters: { isActive: true }, initial: true },
 	additionalSources: { type: Types.Relationship, label: 'additional sources', ref: 'Source', filters: { isActive: true }, many: true, initial: true },
 	notes: { type: Types.Textarea, label: 'notes', initial: true }
@@ -24,8 +25,8 @@ Disruption.add( 'Disruption', {
     	firstName: { type: Types.Text, label: 'first name', dependsOn: { isUnregisteredChild: true }, initial: true },
 		lastName: { type: Types.Text, label: 'last name', dependsOn: { isUnregisteredChild: true }, initial: true },
 		status: { type: Types.Relationship, label: 'status', ref: 'Child Status', dependsOn: { isUnregisteredChild: true }, initial: true }
-    }
-
+	}
+	
 }, 'Family', {
 
 	isUnregisteredFamily: { type: Types.Boolean, label: 'unregistered family', initial: true },
@@ -60,7 +61,7 @@ Disruption.add( 'Disruption', {
 	}
 });
 
-Disruption.schema.pre( 'save', function( next ) {
+Match.schema.pre( 'save', function( next ) {
 	'use strict';
 	// trim whitespace characters from any type.Text fields
 	this.trimTextFields();
@@ -81,7 +82,7 @@ Disruption.schema.pre( 'save', function( next ) {
 });
 
 /* text fields don't automatically trim(), this is to ensure no leading or trailing whitespace gets saved into url, text, or text area fields */
-Disruption.schema.methods.trimTextFields = function() {
+Match.schema.methods.trimTextFields = function() {
 
 	if( this.get( 'notes' ) ) {
 		this.set( 'notes', this.get( 'notes' ).trim() );
@@ -136,7 +137,7 @@ Disruption.schema.methods.trimTextFields = function() {
 	}
 };
 
-Disruption.schema.methods.populateAgency = function() {
+Match.schema.methods.populateAgency = function() {
 
 	return new Promise( ( resolve, reject ) => {	
 		// if the family is unregistered or an agency has already been selected
@@ -165,5 +166,5 @@ Disruption.schema.methods.populateAgency = function() {
 };
 
 // Define default columns in the admin interface and register the model
-Disruption.defaultColumns = 'disruptionDate, child, family, familyDetails.name, notes';
-Disruption.register();
+Match.defaultColumns = 'matchDate, child, family, source';
+Match.register();

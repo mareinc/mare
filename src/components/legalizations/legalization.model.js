@@ -1,16 +1,15 @@
-const keystone	= require( 'keystone' );
-const Types		= keystone.Field.Types;
-const Validators = require( '../routes/middleware/validators' );
+var keystone	= require( 'keystone' ),
+Types			= keystone.Field.Types,
+Validators		= require( '../../routes/middleware/validators' );
 
-// Create model. Additional options allow menu name to be used what auto-generating URLs
-var Match = new keystone.List( 'Match' );
+// create model. Additional options allow menu name to be used what auto-generating URLs
+var Legalization = new keystone.List( 'Legalization' );
 
-// Create fields
-Match.add( 'Match', {
+// create fields
+Legalization.add( 'Legalization', {
 
-	matchDate: { type: Types.Date, label: 'match date', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, required: true, initial: true },
+	legalizationDate: { type: Types.Date, label: 'legalization date', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, initial: true },
 
-	status: { type: Types.Select, label: 'status', options: 'matched, not matched', required: true, initial: true },
 	source: { type: Types.Relationship, label: 'source', ref: 'Source', filters: { isActive: true }, initial: true },
 	additionalSources: { type: Types.Relationship, label: 'additional sources', ref: 'Source', filters: { isActive: true }, many: true, initial: true },
 	notes: { type: Types.Textarea, label: 'notes', initial: true }
@@ -25,8 +24,8 @@ Match.add( 'Match', {
     	firstName: { type: Types.Text, label: 'first name', dependsOn: { isUnregisteredChild: true }, initial: true },
 		lastName: { type: Types.Text, label: 'last name', dependsOn: { isUnregisteredChild: true }, initial: true },
 		status: { type: Types.Relationship, label: 'status', ref: 'Child Status', dependsOn: { isUnregisteredChild: true }, initial: true }
-	}
-	
+    }
+
 }, 'Family', {
 
 	isUnregisteredFamily: { type: Types.Boolean, label: 'unregistered family', initial: true },
@@ -61,7 +60,7 @@ Match.add( 'Match', {
 	}
 });
 
-Match.schema.pre( 'save', function( next ) {
+Legalization.schema.pre( 'save', function( next ) {
 	'use strict';
 	// trim whitespace characters from any type.Text fields
 	this.trimTextFields();
@@ -82,7 +81,7 @@ Match.schema.pre( 'save', function( next ) {
 });
 
 /* text fields don't automatically trim(), this is to ensure no leading or trailing whitespace gets saved into url, text, or text area fields */
-Match.schema.methods.trimTextFields = function() {
+Legalization.schema.methods.trimTextFields = function() {
 
 	if( this.get( 'notes' ) ) {
 		this.set( 'notes', this.get( 'notes' ).trim() );
@@ -137,7 +136,7 @@ Match.schema.methods.trimTextFields = function() {
 	}
 };
 
-Match.schema.methods.populateAgency = function() {
+Legalization.schema.methods.populateAgency = function() {
 
 	return new Promise( ( resolve, reject ) => {	
 		// if the family is unregistered or an agency has already been selected
@@ -166,5 +165,5 @@ Match.schema.methods.populateAgency = function() {
 };
 
 // Define default columns in the admin interface and register the model
-Match.defaultColumns = 'matchDate, child, family, source';
-Match.register();
+Legalization.defaultColumns = 'legalizationDate, child, family, familyDetails.name, source';
+Legalization.register();

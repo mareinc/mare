@@ -11,7 +11,8 @@ if( process.env.NEW_RELIC_APP_NAME && process.env.NEW_RELIC_LICENSE_KEY ) {
 const keystone = require( 'keystone' ),
 	  handlebars = require( 'express-handlebars' ),
 	  cron = require( './src/bin/cron' ),
-	  fs = require( 'fs' );
+	  fs = require( 'fs' ),
+	  glob = require( 'glob' );
 
 keystone.init({
 
@@ -75,7 +76,11 @@ keystone.set( 'mandrill api key', process.env.MANDRILL_APIKEY );
 keystone.set( 'mandrill username', process.env.MANDRILL_USERNAME );
 
 // Load project's Models
-keystone.import( './src/models' );
+const modelPaths = glob.sync(`*.model.js`, { matchBase: true });
+
+for( let modelPath of modelPaths ) {
+	keystone.importFile( modelPath );
+}
 
 // Load project Routes
 keystone.set( 'routes', require('./src/routes' ) );

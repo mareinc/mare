@@ -1,18 +1,18 @@
-require( './Tracking_ChildHistory' );
+require( '../change histories/childHistory.model' );
 
 const keystone						= require( 'keystone' ),
 	  async 						= require( 'async' ),
 	  _ 							= require( 'underscore' ),
 	  Types							= keystone.Field.Types,
-	  ChangeHistoryMiddleware		= require( '../routes/middleware/models_change-history' ),
-	  ChildServiceMiddleware		= require( '../routes/middleware/service_child' ),
-	  SocialWorkerServiceMiddleware	= require( '../routes/middleware/service_social-worker' ),
-	  UserServiceMiddleware			= require( '../routes/middleware/service_user' ),
-	  agencyMiddleware				= require( '../routes/middleware/service_agency' ),
-	  ChildMiddleware				= require( '../routes/middleware/models_child' ),
-	  FamilyMiddleware				= require( '../routes/middleware/models_family' ),
-	  SocialWorkerMiddleware		= require( '../routes/middleware/models_social-worker' ),
-	  saveLock						= require( '../routes/middleware/model_save_lock' );
+	  ChangeHistoryMiddleware		= require( '../../routes/middleware/models_change-history' ),
+	  ChildServiceMiddleware		= require( '../../routes/middleware/service_child' ),
+	  SocialWorkerServiceMiddleware	= require( '../../routes/middleware/service_social-worker' ),
+	  UserServiceMiddleware			= require( '../../routes/middleware/service_user' ),
+	  agencyMiddleware				= require( '../../routes/middleware/service_agency' ),
+	  ChildMiddleware				= require( '../../routes/middleware/models_child' ),
+	  FamilyMiddleware				= require( '../../routes/middleware/models_family' ),
+	  SocialWorkerMiddleware		= require( '../../routes/middleware/models_social-worker' ),
+	  saveLock						= require( '../../routes/middleware/model_save_lock' );
 
 // configure the s3 storage adapters
 const fileStorage = new keystone.Storage({

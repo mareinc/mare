@@ -1,17 +1,17 @@
-require( './Tracking_FamilyHistory' );
+require( '../change histories/familyHistory.model' );
 
 const keystone					= require( 'keystone' ),
 	  async 					= require( 'async' ),
 	  Types						= keystone.Field.Types,
-	  User						= require( './User' ),
-	  ChangeHistoryMiddleware	= require( '../routes/middleware/models_change-history' ),
-	  SocialWorkerService		= require( '../routes/middleware/service_social-worker' ),
-	  AgencyService				= require( '../routes/middleware/service_agency' ),
-	  UserService				= require( '../routes/middleware/service_user' ),
-	  FamilyService				= require( '../routes/middleware/service_family' ),
-	  ListService				= require( '../routes/middleware/service_lists' ),
-	  MailchimpService			= require( '../routes/middleware/service_mailchimp' ),
-	  Validators  				= require( '../routes/middleware/validators' );
+	  User						= require( '../users/user.model' ),
+	  ChangeHistoryMiddleware	= require( '../../routes/middleware/models_change-history' ),
+	  SocialWorkerService		= require( '../../routes/middleware/service_social-worker' ),
+	  AgencyService				= require( '../../routes/middleware/service_agency' ),
+	  UserService				= require( '../../routes/middleware/service_user' ),
+	  FamilyService				= require( '../../routes/middleware/service_family' ),
+	  ListService				= require( '../../routes/middleware/service_lists' ),
+	  MailchimpService			= require( '../../routes/middleware/service_mailchimp' ),
+	  Validators  				= require( '../../routes/middleware/validators' );
 
 // configure the s3 storage adapters
 var fileStorage = new keystone.Storage({
@@ -57,7 +57,7 @@ var imageStorage = new keystone.Storage({
 });
 
 // Export to make it available using require.  The keystone.list import throws a ReferenceError when importing a list that comes later when sorting alphabetically
-const ContactGroup = require( './ContactGroup' );
+const ContactGroup = require( '../contact groups/contactGroup.model' );
 
 // Create model
 var Family = new keystone.List( 'Family', {

@@ -1,17 +1,15 @@
-const keystone	= require( 'keystone' ),
-	  Types		= keystone.Field.Types,
-	  Validators = require( '../routes/middleware/validators' );
+var keystone	= require( 'keystone' ),
+Types			= keystone.Field.Types,
+Validators		= require( '../../routes/middleware/validators' );
 
-// Create model
-var Placement = new keystone.List( 'Placement', {
-	defaultSort: '-placementDate'
-});
+// create model
+var Disruption = new keystone.List( 'Disruption' );
 
-// Create fields
-Placement.add( 'Placement', {
+// create fields
+Disruption.add( 'Disruption', {
 
-	placementDate: { type: Types.Date, label: 'placement date', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, initial: true },
-	
+	disruptionDate: { type: Types.Date, label: 'disruption date', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, initial: true },
+
 	source: { type: Types.Relationship, label: 'source', ref: 'Source', filters: { isActive: true }, initial: true },
 	additionalSources: { type: Types.Relationship, label: 'additional sources', ref: 'Source', filters: { isActive: true }, many: true, initial: true },
 	notes: { type: Types.Textarea, label: 'notes', initial: true }
@@ -62,7 +60,7 @@ Placement.add( 'Placement', {
 	}
 });
 
-Placement.schema.pre( 'save', function( next ) {
+Disruption.schema.pre( 'save', function( next ) {
 	'use strict';
 	// trim whitespace characters from any type.Text fields
 	this.trimTextFields();
@@ -83,7 +81,7 @@ Placement.schema.pre( 'save', function( next ) {
 });
 
 /* text fields don't automatically trim(), this is to ensure no leading or trailing whitespace gets saved into url, text, or text area fields */
-Placement.schema.methods.trimTextFields = function() {
+Disruption.schema.methods.trimTextFields = function() {
 
 	if( this.get( 'notes' ) ) {
 		this.set( 'notes', this.get( 'notes' ).trim() );
@@ -138,11 +136,11 @@ Placement.schema.methods.trimTextFields = function() {
 	}
 };
 
-Placement.schema.methods.populateAgency = function() {
+Disruption.schema.methods.populateAgency = function() {
 
-	return new Promise( ( resolve, reject ) => {
-		// if the family is unregistered, an agency has already been selected, or the family is registered by no family is selected
-		if( this.isUnregisteredFamily || this.familyDetails.agency || ( !this.isUnregisteredFamily && !this.family ) ) {
+	return new Promise( ( resolve, reject ) => {	
+		// if the family is unregistered or an agency has already been selected
+		if( this.isUnregisteredFamily || this.familyDetails.agency ) {
 			// resolve the promise and prevent the rest of the function from executing
 			return resolve();
 		// if the family is registered and the agency hasn't already been selected
@@ -167,5 +165,5 @@ Placement.schema.methods.populateAgency = function() {
 };
 
 // Define default columns in the admin interface and register the model
-Placement.defaultColumns = 'placementDate, child, family, familyDetails.name, source';
-Placement.register();
+Disruption.defaultColumns = 'disruptionDate, child, family, familyDetails.name, notes';
+Disruption.register();

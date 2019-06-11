@@ -1,12 +1,12 @@
 const keystone					= require( 'keystone' ),
 	  async 					= require( 'async' ),
 	  Types 					= keystone.Field.Types,
-	  inquiryMiddleware			= require( '../routes/middleware/models_inquiry' ),
-	  inquiryEmailService		= require( '../routes/middleware/emails_inquiry' ),
-	  childService				= require( '../routes/middleware/service_child' ),
-	  socialWorkerService		= require( '../routes/middleware/service_social-worker' ),
-	  CSCRegionContactService 	= require( '../routes/middleware/service_CSC-region-contact' ),
-	  ChildServiceMiddleware	= require( '../routes/middleware/service_child' );
+	  inquiryMiddleware			= require( '../../routes/middleware/models_inquiry' ),
+	  inquiryEmailService		= require( '../../routes/middleware/emails_inquiry' ),
+	  childService				= require( '../../routes/middleware/service_child' ),
+	  socialWorkerService		= require( '../../routes/middleware/service_social-worker' ),
+	  CSCRegionContactService 	= require( '../../routes/middleware/service_CSC-region-contact' ),
+	  ChildServiceMiddleware	= require( '../../routes/middleware/service_child' );
 
 // Create model. Additional options allow menu name to be used to auto-generate the URL
 var Inquiry = new keystone.List( 'Inquiry', {

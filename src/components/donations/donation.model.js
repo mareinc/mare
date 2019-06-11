@@ -1,11 +1,11 @@
 const keystone 		= require( 'keystone' ),
 	  Types 		= keystone.Field.Types,
 	  // the keystone.list import throws a ReferenceError when importing a list that comes later when sorting alphabetically
-	  SiteVisitor	= require( './User_SiteVisitor' ),
-	  SocialWorker	= require( './User_SocialWorker' ),
-	  Family		= require( './User_Family' ),
-	  Admin			= require( './User_Admin' ),
-	  Validators	= require( '../routes/middleware/validators' );
+	  SiteVisitor	= require( '../site visitors/siteVisitor.model' ),
+	  SocialWorker	= require( '../social workers/socialWorker.model' ),
+	  Family		= require( '../families/family.model' ),
+	  Admin			= require( '../administrators/admin.model' ),
+	  Validators	= require( '../../routes/middleware/validators' );
 
 // create model
 var Donation = new keystone.List( 'Donation' );

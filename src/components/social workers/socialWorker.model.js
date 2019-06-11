@@ -1,15 +1,15 @@
-require( './Tracking_SocialWorkerHistory' );
+require( '../change histories/socialWorkerHistory.model' );
 
 const keystone					= require( 'keystone' ),
 	  async 					= require( 'async' ),
 	  Types						= keystone.Field.Types,
-	  User						= require( './User' ),
-	  ChangeHistoryMiddleware	= require( '../routes/middleware/models_change-history' ),
-	  UserServiceMiddleware		= require( '../routes/middleware/service_user' ),
-	  Validators  				= require( '../routes/middleware/validators' );
+	  User						= require( '../users/user.model' ),
+	  ChangeHistoryMiddleware	= require( '../../routes/middleware/models_change-history' ),
+	  UserServiceMiddleware		= require( '../../routes/middleware/service_user' ),
+	  Validators  				= require( '../../routes/middleware/validators' );
 
 // Export to make it available using require.  The keystone.list import throws a ReferenceError when importing a list that comes later when sorting alphabetically
-const ContactGroup = require( './ContactGroup' );
+const ContactGroup = require( '../contact groups/contactGroup.model' );
 
 // configure the s3 storage adapters
 const imageStorage = new keystone.Storage({

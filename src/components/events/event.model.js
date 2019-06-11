@@ -1,12 +1,12 @@
 const keystone						= require( 'keystone' ),
 	  Types							= keystone.Field.Types,
 	  random						= require( 'mongoose-simple-random' ),
-	  SourceMiddleware				= require( '../routes/middleware/models_source' ),
-	  Validators					= require( '../routes/middleware/validators' ),
-	  emailTargetMiddleware			= require( '../routes/middleware/service_email-target' ),
-	  eventEmailMiddleware			= require( '../routes/middleware/emails_event' ),
-	  staffEmailContactMiddleware	= require( '../routes/middleware/service_staff-email-contact' ),
-	  modelService					= require( '../routes/middleware/service_model' );
+	  SourceMiddleware				= require( '../../routes/middleware/models_source' ),
+	  Validators					= require( '../../routes/middleware/validators' ),
+	  emailTargetMiddleware			= require( '../../routes/middleware/service_email-target' ),
+	  eventEmailMiddleware			= require( '../../routes/middleware/emails_event' ),
+	  staffEmailContactMiddleware	= require( '../../routes/middleware/service_staff-email-contact' ),
+	  modelService					= require( '../../routes/middleware/service_model' );
 
 // configure the s3 storage adapters
 const imageStorage = new keystone.Storage({
