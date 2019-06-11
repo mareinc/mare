@@ -4,7 +4,7 @@ const keystone					= require( 'keystone' ),
 	  inquiryMiddleware			= require( './inquiry.models.controllers' ),
 	  inquiryEmailService		= require( './inquiry.email.controllers' ),
 	  childService				= require( '../children/child.controllers' ),
-	  socialWorkerService		= require( '../../routes/middleware/service_social-worker' ),
+	  socialWorkerService		= require( '../social workers/social-worker.controllers' ),
 	  CSCRegionContactService 	= require( '../../routes/middleware/service_CSC-region-contact' );
 
 // Create model. Additional options allow menu name to be used to auto-generate the URL

@@ -3,7 +3,7 @@ const keystone 				= require( 'keystone' ),
 	  Utils					= require( '../middleware/utilities' ),
 	  eventService			= require( '../../components/events/event.controllers' ),
 	  pageService			= require( '../middleware/service_page' ),
-	  socialWorkerService	= require( '../middleware/service_social-worker' ),
+	  socialWorkerService	= require( '../../components/social workers/social-worker.controllers' ),
 	  userService			= require( '../middleware/service_user' );
 
 exports = module.exports = async ( req, res ) => {

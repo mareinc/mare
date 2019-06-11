@@ -1,6 +1,6 @@
 const keystone = require( 'keystone' );
 
-// TODO: these functions are also in models_social-worker.js middleware, they should be combined
+// TODO: these functions are also in social-worker.models.controllers.js, they should be combined
 /* take in an array of child ids and returns an array of their registration numbers */
 exports.removeChildBookmarks = bookmarkedChildrenToRemove => {
 

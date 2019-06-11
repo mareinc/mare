@@ -3,7 +3,7 @@ const keystone				= require( 'keystone' ),
 	  moment				= require( 'moment' ),
 	  eventService			= require( '../../components/events/event.controllers' ),
 	  pageService			= require( '../middleware/service_page' ),
-	  socialWorkerService	= require( '../middleware/service_social-worker' );
+	  socialWorkerService	= require( '../../components/social workers/social-worker.controllers' );
 
 exports = module.exports = ( req, res ) => {
     'use strict';

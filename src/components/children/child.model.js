@@ -6,12 +6,12 @@ const keystone						= require( 'keystone' ),
 	  Types							= keystone.Field.Types,
 	  ChangeHistoryMiddleware		= require( '../change histories/change-history.controllers' ),
 	  ChildServiceMiddleware		= require( './child.controllers' ),
-	  SocialWorkerServiceMiddleware	= require( '../../routes/middleware/service_social-worker' ),
+	  SocialWorkerServiceMiddleware	= require( '../social workers/social-worker.controllers' ),
 	  UserServiceMiddleware			= require( '../../routes/middleware/service_user' ),
 	  agencyMiddleware				= require( '../../routes/middleware/service_agency' ),
 	  ChildMiddleware				= require( './child.models.controllers' ),
 	  FamilyMiddleware				= require( '../families/family.models.controllers' ),
-	  SocialWorkerMiddleware		= require( '../../routes/middleware/models_social-worker' ),
+	  SocialWorkerMiddleware		= require( '../social workers/social-worker.models.controllers' ),
 	  saveLock						= require( '../../routes/middleware/model_save_lock' );
 
 // configure the s3 storage adapters

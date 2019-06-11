@@ -2,7 +2,7 @@ const keystone				= require( 'keystone' ),
 	  eventService			= require( './event.controllers' ),
 	  eventExcelService		= require( './event.excel-export.controllers' ),
 	  eventEmailMiddleware	= require( './event.email.controllers' ),
-	  socialWorkerService	= require( '../../routes/middleware/service_social-worker' ),
+	  socialWorkerService	= require( '../social workers/social-worker.controllers' ),
 	  flashMessageMiddleware	= require( '../../routes/middleware/service_flash-messages' );
 
 exports.register = async ( req, res ) => {

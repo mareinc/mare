@@ -1,7 +1,7 @@
 const cronJob = require( 'cron' ).CronJob,
 	  eventService = require( '../components/events/event.controllers' ),
 	  childService = require( '../components/children/child.controllers' ),
-	  socialWorkerService = require( '../routes/middleware/service_social-worker' ),
+	  socialWorkerService = require( '../components/social workers/social-worker.controllers' ),
 	  agencyService = require( '../routes/middleware/service_agency' ),
 	  emailTargetMiddleware = require( '../routes/middleware/service_email-target' ),
 	  eventEmailMiddleware = require( '../components/events/event.email.controllers' ),
