@@ -4,7 +4,7 @@ const keystone					= require( 'keystone' ),
 	  async 					= require( 'async' ),
 	  Types						= keystone.Field.Types,
 	  User						= require( '../users/user.model' ),
-	  ChangeHistoryMiddleware	= require( '../../routes/middleware/models_change-history' ),
+	  ChangeHistoryMiddleware	= require( '../../components/change histories/change-history.controllers' ),
 	  UserServiceMiddleware		= require( '../../routes/middleware/service_user' ),
 	  Validators  				= require( '../../routes/middleware/validators' );
 
