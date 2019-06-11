@@ -1,7 +1,7 @@
 const keystone						= require( 'keystone' ),
 	  Types							= keystone.Field.Types,
 	  random						= require( 'mongoose-simple-random' ),
-	  SourceMiddleware				= require( '../../routes/middleware/models_source' ),
+	  SourceMiddleware				= require( './event.source.controllers' ),
 	  Validators					= require( '../../routes/middleware/validators' ),
 	  emailTargetMiddleware			= require( '../../routes/middleware/service_email-target' ),
 	  eventEmailMiddleware			= require( './event.email.controllers' ),
