@@ -4,7 +4,7 @@
 const keystone 					= require('keystone'),
 	  _ 						= require('underscore'),
 	  async						= require( 'async' ),
-	  UserMiddleware			= require( './service_user' ),
+	  UserMiddleware			= require( '../../components/users/user.controllers' ),
 	  flashMessageMiddleware	= require( './service_flash-messages' );
 
 // initialize the standard view locals

@@ -4,7 +4,7 @@ const keystone					= require( 'keystone' ),
 	  eventEmailMiddleware		= require( './event.email.controllers' ),
 	  emailTargetService		= require( '../../routes/middleware/service_email-target' ),
 	  staffEmailContactService	= require( '../../routes/middleware/service_staff-email-contact' ),
-	  userService				= require( '../../routes/middleware/service_user' );
+	  userService				= require( '../users/user.controllers' );
 
 exports.getEventById = ( { eventId, fieldsToPopulate = [] } ) => {
 

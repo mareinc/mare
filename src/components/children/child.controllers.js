@@ -6,7 +6,7 @@ const keystone									= require( 'keystone' ),
 	  staffEmailContactMiddleware				= require( '../../routes/middleware/service_staff-email-contact' ),
 	  familyService								= require( '../families/family.controllers' ),
 	  listsService								= require( '../../routes/middleware/service_lists' ),
-	  userService								= require( '../../routes/middleware/service_user' ),
+	  userService								= require( '../users/user.controllers' ),
 	  socialWorkerChildRegistrationEmailService	= require( '../../routes/middleware/emails_social-worker-child-registration' );
 
 exports.getMaxRegistrationNumber = function() {

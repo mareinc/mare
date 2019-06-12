@@ -1,7 +1,7 @@
 const keystone					= require( 'keystone' ),
 	  Inquiry					= keystone.list( 'Inquiry' ),
 	  moment					= require( 'moment' ),
-	  userService				= require( '../../routes/middleware/service_user' ),
+	  userService				= require( '../users/user.controllers' ),
 	  listsService				= require( '../../routes/middleware/service_lists' ),
 	  childService				= require( '../children/child.controllers' ),
 	  agencyService				= require( '../agencies/agency.controllers' ),

@@ -1,5 +1,5 @@
 const keystone = require( 'keystone' ),
-	  User	   = require( '../../components/users/user.model' );
+	  User	   = require( './user.model' );
 
 /* root through the passed in options and get/set the necessary information on res.locals for processing by each service request */
 exports.exposeGlobalOptions = function exposeGlobalOptions( req, res, options ) {
