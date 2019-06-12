@@ -2,7 +2,7 @@
 // TODO: break this out into a file for each form
 const inquiryService				= require( '../../components/inquiries/inquiry.controllers' ),
 	  listService					= require( '../../components/lists/list.controllers' ),
-	  staffEmailContactMiddleware	= require( './service_staff-email-contact' ),
+	  staffEmailContactMiddleware	= require( '../../components/staff email contacts/staff-email-contact.controllers' ),
 	  haveAQuestionEmailService		= require( './emails_have-a-question' );
 
 exports.submitInquiry = function submitInquiry( req, res, next ) {

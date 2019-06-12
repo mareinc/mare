@@ -8,7 +8,7 @@
 const keystone 						= require( 'keystone' ),
 	  registrationEmailMiddleware	= require( './emails_register' ),
 	  listService					= require( '../../components/lists/list.controllers' ),
-	  staffEmailContactMiddleware	= require( './service_staff-email-contact' ),
+	  staffEmailContactMiddleware	= require( '../../components/staff email contacts/staff-email-contact.controllers' ),
 	  userService					= require( '../../components/users/user.controllers' ),
 	  mailchimpService				= require( '../../components/mailchimp lists/mailchimp-list.controllers' ),
 	  utilities						= require( './utilities' ),

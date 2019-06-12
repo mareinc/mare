@@ -1,7 +1,7 @@
 const keystone										= require( 'keystone' ),
 	  async											= require( 'async' ),
 	  listService									= require( '../lists/list.controllers' ),
-	  staffEmailContactMiddleware					= require( '../../routes/middleware/service_staff-email-contact' ),
+	  staffEmailContactMiddleware					= require( '../staff email contacts/staff-email-contact.controllers' ),
 	  childService									= require( '../children/child.controllers' ),
 	  userService 									= require( '../users/user.controllers' ),
 	  registrationService							= require( '../../routes/middleware/service_register' ),

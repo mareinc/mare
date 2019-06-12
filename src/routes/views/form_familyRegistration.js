@@ -1,7 +1,7 @@
 const keystone						= require( 'keystone' ),
 	  listService					= require( '../../components/lists/list.controllers' ),
 	  pageService					= require( '../../components/pages/page.controllers' ),
-	  staffEmailContactMiddleware	= require( '../middleware/service_staff-email-contact' );
+	  staffEmailContactMiddleware	= require( '../../components/staff email contacts/staff-email-contact.controllers' );
 
 exports = module.exports = ( req, res ) => {
 	'use strict';

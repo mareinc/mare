@@ -5,7 +5,7 @@ const keystone						= require( 'keystone' ),
 	  Validators					= require( '../../routes/middleware/validators' ),
 	  listService					= require( '../lists/list.controllers' ),
 	  eventEmailMiddleware			= require( './event.email.controllers' ),
-	  staffEmailContactMiddleware	= require( '../../routes/middleware/service_staff-email-contact' ),
+	  staffEmailContactMiddleware	= require( '../staff email contacts/staff-email-contact.controllers' ),
 	  modelService					= require( '../../routes/middleware/service_model' );
 
 // configure the s3 storage adapters

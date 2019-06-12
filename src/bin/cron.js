@@ -5,7 +5,7 @@ const cronJob = require( 'cron' ).CronJob,
 	  agencyService = require( '../components/agencies/agency.controllers' ),
 	  listService = require( '../components/lists/list.controllers' ),
 	  eventEmailMiddleware = require( '../components/events/event.email.controllers' ),
-	  staffEmailContactMiddleware = require( '../routes/middleware/service_staff-email-contact' );
+	  staffEmailContactMiddleware = require( '../components/staff email contacts/staff-email-contact.controllers' );
 
 exports.scheduleEventDeactivator = () => {
 	// don't do anything if the cron job is turned off via environment variables
