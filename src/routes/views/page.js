@@ -1,5 +1,5 @@
 const keystone 	    = require( 'keystone' ),
-	  pageService	= require( '../middleware/service_page' );
+	  pageService	= require( '../../components/pages/page.controllers' );
 
 exports = module.exports = function( req, res ) {
 	'use strict';

@@ -1,7 +1,7 @@
 const keystone 				= require( 'keystone' ),
 	  Utils					= require( '../middleware/utilities' ),
 	  mareInTheNewsService	= require( '../../components/mare in the news stories/mare-in-the-news.controllers' ),
-	  pageService			= require( '../middleware/service_page' );
+	  pageService			= require( '../../components/pages/page.controllers' );
 
 exports = module.exports = ( req, res ) => {
     'use strict';

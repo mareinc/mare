@@ -5,7 +5,7 @@ const keystone				= require( 'keystone' ),
 	  donationService		= require( '../../components/donations/donation.controllers' ),
 	  familyService			= require( '../../components/families/family.controllers' ),
 	  listsService			= require( '../../components/lists/list.controllers' ),
-	  pageService			= require( '../middleware/service_page' ),
+	  pageService			= require( '../../components/pages/page.controllers' ),
 	  mailingListService	= require( '../../components/mailing lists/mailing-list.controllers' );
 
 exports = module.exports = ( req, res ) => {

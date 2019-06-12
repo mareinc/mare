@@ -1,7 +1,7 @@
 const keystone		= require( 'keystone' ),
 	  userService	= require( '../../components/users/user.controllers' ),
 	  listsService	= require( '../../components/lists/list.controllers' ),
-	  pageService	= require( '../middleware/service_page' );
+	  pageService	= require( '../../components/pages/page.controllers' );
 
 exports = module.exports = ( req, res ) => {
 	'use strict';
