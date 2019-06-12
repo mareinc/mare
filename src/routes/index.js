@@ -13,7 +13,7 @@ const keystone						= require( 'keystone' ),
 	  passwordResetService 			= require( './middleware/service_password-reset'),
 	  accountVerificationService	= require( '../components/account verification codes/account-verification-code.middleware' ),
 	  toolsService					= require( './middleware/service_tools' ),
-	  mailchimpService				= require( './middleware/service_mailchimp' ),
+	  mailchimpService				= require( '../components/mailchimp lists/mailchimp-list.controllers' ),
 	  enforce						= require( 'express-sslify' ),
 	  importRoutes					= keystone.importer( __dirname );
 

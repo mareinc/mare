@@ -10,7 +10,7 @@ const keystone 						= require( 'keystone' ),
 	  emailTargetMiddleware			= require( './service_email-target' ),
 	  staffEmailContactMiddleware	= require( './service_staff-email-contact' ),
 	  userService					= require( '../../components/users/user.controllers' ),
-	  mailchimpService				= require( './service_mailchimp' ),
+	  mailchimpService				= require( '../../components/mailchimp lists/mailchimp-list.controllers' ),
 	  utilities						= require( './utilities' ),
 	  flashMessages					= require( './service_flash-messages' );
 

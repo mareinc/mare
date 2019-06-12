@@ -10,7 +10,7 @@ const keystone					= require( 'keystone' ),
 	  UserService				= require( '../../components/users/user.controllers' ),
 	  FamilyService				= require( './family.controllers' ),
 	  ListService				= require( '../../components/lists/list.controllers' ),
-	  MailchimpService			= require( '../../routes/middleware/service_mailchimp' ),
+	  MailchimpService			= require( '../../components/mailchimp lists/mailchimp-list.controllers' ),
 	  Validators  				= require( '../../routes/middleware/validators' );
 
 // configure the s3 storage adapters

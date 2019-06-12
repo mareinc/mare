@@ -9,7 +9,7 @@ const _						= require( 'lodash' ),
       keystone				= require( 'keystone' ),
 	  userService			= require( './user.controllers' ),
 	  flashMessages			= require( '../../routes/middleware/service_flash-messages' ),
-	  mailchimpService	    = require( '../../routes/middleware/service_mailchimp' );
+	  mailchimpService	    = require( '../mailchimp lists/mailchimp-list.controllers' );
 
 exports.updateUser = ( req, res, next ) => {
 	const updates	= req.body,
