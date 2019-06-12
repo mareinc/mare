@@ -1,6 +1,6 @@
 const keystone				= require( 'keystone' ),
 	  Types					= keystone.Field.Types,
-	  ListServiceMiddleware	= require( '../../routes/middleware/service_lists' ),
+	  ListServiceMiddleware	= require( '../../components/lists/list.controllers' ),
 	  Validators			= require( '../../routes/middleware/validators' );
 
 // create model

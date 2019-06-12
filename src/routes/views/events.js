@@ -4,7 +4,7 @@ const keystone 				= require( 'keystone' ),
 	  eventService			= require( '../../components/events/event.controllers' ),
 	  pageService			= require( '../middleware/service_page' ),
 	  socialWorkerService	= require( '../../components/social workers/social-worker.controllers' ),
-	  userService			= require( '../middleware/service_user' );
+	  userService			= require( '../../components/users/user.controllers' );
 
 exports = module.exports = async ( req, res ) => {
 	'use strict';

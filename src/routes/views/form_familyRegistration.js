@@ -1,5 +1,5 @@
 const keystone						= require( 'keystone' ),
-	  listsService					= require( '../middleware/service_lists' ),
+	  listsService					= require( '../../components/lists/list.controllers' ),
 	  pageService					= require( '../middleware/service_page' ),
 	  emailTargetMiddleware			= require( '../middleware/service_email-target' ),
 	  staffEmailContactMiddleware	= require( '../middleware/service_staff-email-contact' );

@@ -89,7 +89,7 @@ exports.getMaxRegistrationNumber = function() {
 			});
 	});
 };
-// TODO: this has a copy in service_user which should be used instead.  This needs to be phased out, but is in use in several places
+// TODO: this has a copy in user.controllers which should be used instead.  This needs to be phased out, but is in use in several places
 exports.setGalleryPermissions = ( req, res ) => {
 
 	let locals		= res.locals;

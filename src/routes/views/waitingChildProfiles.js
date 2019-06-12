@@ -1,6 +1,6 @@
 const keystone		= require( 'keystone' ),
-	  userService	= require( '../middleware/service_user' ),
-	  listsService	= require( '../middleware/service_lists' ),
+	  userService	= require( '../../components/users/user.controllers' ),
+	  listsService	= require( '../../components/lists/list.controllers' ),
 	  pageService	= require( '../middleware/service_page' );
 
 exports = module.exports = ( req, res ) => {

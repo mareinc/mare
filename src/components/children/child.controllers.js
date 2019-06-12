@@ -5,7 +5,7 @@ const keystone									= require( 'keystone' ),
 	  emailTargetMiddleware						= require( '../../routes/middleware/service_email-target' ),
 	  staffEmailContactMiddleware				= require( '../../routes/middleware/service_staff-email-contact' ),
 	  familyService								= require( '../families/family.controllers' ),
-	  listsService								= require( '../../routes/middleware/service_lists' ),
+	  listsService								= require( '../lists/list.controllers' ),
 	  userService								= require( '../users/user.controllers' ),
 	  socialWorkerChildRegistrationEmailService	= require( '../../routes/middleware/emails_social-worker-child-registration' );
 

@@ -1,4 +1,4 @@
-/* TODO: this should be moved to service_user.js */
+/* TODO: this should be moved to user.controllers.js */
 const keystone	= require( 'keystone' ),
 	  _			= require( 'underscore' ),
 	  async		= require( 'async' );

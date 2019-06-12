@@ -1,10 +1,10 @@
 const keystone				= require( 'keystone' ),
 	  moment				= require( 'moment' ),
-	  userService			= require( '../middleware/service_user' ),
+	  userService			= require( '../../components/users/user.controllers' ),
 	  eventService			= require( '../../components/events/event.controllers' ),
 	  donationService		= require( '../middleware/service_donation' ),
 	  familyService			= require( '../../components/families/family.controllers' ),
-	  listsService			= require( '../middleware/service_lists' ),
+	  listsService			= require( '../../components/lists/list.controllers' ),
 	  pageService			= require( '../middleware/service_page' ),
 	  mailingListService	= require( '../middleware/service_mailing-list' );
 

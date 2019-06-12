@@ -1,5 +1,5 @@
 const keystone 			= require( 'keystone' ),
-	  listsService		= require( './service_lists' );
+	  listsService		= require( '../../components/lists/list.controllers' );
 	  
 	  
 function getChildStatusByName(name) {

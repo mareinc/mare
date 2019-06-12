@@ -7,9 +7,9 @@ const keystone					= require( 'keystone' ),
 	  ChangeHistoryMiddleware	= require( '../../components/change histories/change-history.controllers' ),
 	  SocialWorkerService		= require( '../social workers/social-worker.controllers' ),
 	  AgencyService				= require( '../../components/agencies/agency.controllers' ),
-	  UserService				= require( '../../routes/middleware/service_user' ),
+	  UserService				= require( '../../components/users/user.controllers' ),
 	  FamilyService				= require( './family.controllers' ),
-	  ListService				= require( '../../routes/middleware/service_lists' ),
+	  ListService				= require( '../../components/lists/list.controllers' ),
 	  MailchimpService			= require( '../../routes/middleware/service_mailchimp' ),
 	  Validators  				= require( '../../routes/middleware/validators' );
 
