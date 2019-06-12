@@ -1,7 +1,7 @@
 const keystone				= require( 'keystone' ),
 	  _						= require( 'underscore' ),
 	  slideshowService		= require( '../middleware/service_slideshow' ),
-	  featuredItemService	= require( '../middleware/service_featured-item' );
+	  featuredItemService	= require( '../../components/featured items/featured-item.controllers' );
 
 exports = module.exports = ( req, res ) => {
 	'use strict';
