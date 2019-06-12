@@ -5,7 +5,7 @@ const keystone					= require( 'keystone' ),
 	  inquiryEmailService		= require( './inquiry.email.controllers' ),
 	  childService				= require( '../children/child.controllers' ),
 	  socialWorkerService		= require( '../social workers/social-worker.controllers' ),
-	  CSCRegionContactService 	= require( '../../routes/middleware/service_CSC-region-contact' );
+	  CSCRegionContactService 	= require( '../csc region contacts/csc-region-contact.controllers' );
 
 // Create model. Additional options allow menu name to be used to auto-generate the URL
 var Inquiry = new keystone.List( 'Inquiry', {
