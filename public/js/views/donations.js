@@ -36,7 +36,7 @@
 				// normalized donation amount ( represented in pennies )
 				amount: 0,
 				// frequency of the donation in months ( 0 represents a one-time donation )
-				// see plan_types in service_donation.js for more details
+				// see plan_types in donation.controllers.js for more details
 				frequency: 0
 			};
 

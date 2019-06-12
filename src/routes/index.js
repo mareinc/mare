@@ -1,7 +1,7 @@
 const keystone						= require( 'keystone' ),
 	  robots						= require( 'express-robots' ),
 	  childService					= require( '../components/children/child.controllers' ),
-	  donationService				= require( './middleware/service_donation')
+	  donationService				= require( '../components/donations/donation.controllers' ),
 	  eventService					= require( '../components/events/event.controllers' ),
 	  familyService					= require( '../components/families/family.controllers' ),
 	  formService					= require( './middleware/service_form' ),

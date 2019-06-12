@@ -1,5 +1,5 @@
 const keystone		= require( 'keystone' ),
-	  flashMessages	= require( './service_flash-messages' ),
+	  flashMessages	= require( '../../routes/middleware/service_flash-messages' ),
 	  stripe		= require( 'stripe' )( process.env.STRIPE_SECRET_API_KEY );
 
 // define the various donation plan types ( stripe plans are used for recurring donations )
