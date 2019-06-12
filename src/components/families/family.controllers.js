@@ -1,6 +1,6 @@
 const keystone										= require( 'keystone' ),
 	  async											= require( 'async' ),
-	  emailTargetMiddleware							= require( '../../routes/middleware/service_email-target' ),
+	  listService									= require( '../lists/list.controllers' ),
 	  staffEmailContactMiddleware					= require( '../../routes/middleware/service_staff-email-contact' ),
 	  childService									= require( '../children/child.controllers' ),
 	  userService 									= require( '../users/user.controllers' ),
@@ -354,7 +354,7 @@ exports.registerFamily = ( req, res, next ) => {
 			// create a new verification code model in the database to allow users to verify their accounts
 			const createVerificationRecord = registrationService.createNewVerificationRecord( verificationCode, familyId );
 			// fetch the email target model matching 'social worker family registration'
-			const fetchEmailTarget = emailTargetMiddleware.getEmailTargetByName( 'social worker family registration' );
+			const fetchEmailTarget = listService.getEmailTargetByName( 'social worker family registration' );
 
 			// save any submitted files and append them to the newly created user
 			// TODO: this still need to be implemented when file uploads are added to the system

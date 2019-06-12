@@ -2,10 +2,9 @@ const keystone					= require( 'keystone' ),
 	  Inquiry					= keystone.list( 'Inquiry' ),
 	  moment					= require( 'moment' ),
 	  userService				= require( '../users/user.controllers' ),
-	  listsService				= require( '../lists/list.controllers' ),
+	  listService				= require( '../lists/list.controllers' ),
 	  childService				= require( '../children/child.controllers' ),
 	  agencyService				= require( '../agencies/agency.controllers' ),
-	  emailTargetService		= require( '../../routes/middleware/service_email-target' ),
 	  staffEmailContactService	= require( '../../routes/middleware/service_staff-email-contact' ),
 	  staffRegionContactService	= require( '../../routes/middleware/service_staff-region-contact' ),
 	  inquiryEmailService		= require( './inquiry.email.controllers' ),
@@ -43,13 +42,13 @@ exports.createInquiry = ( { inquiry, user } ) => {
 			// attempt to create a new child inquiry
 			createInquiry = saveChildInquiry( { inquiry, user } );
 			// fetch the email target for child inquiries
-			fetchEmailTarget = emailTargetService.getEmailTargetByName( 'child inquiry' );
+			fetchEmailTarget = listService.getEmailTargetByName( 'child inquiry' );
 		// if we've received a general inquiry
 		} else if (inquiry.interest === 'general info' ) {
 			// attempt to create the new general inquiry
 			createInquiry = saveGeneralInquiry( { inquiry, user } );
 			// fetch the email target for child inquiries
-			fetchEmailTarget = emailTargetService.getEmailTargetByName( 'general inquiry' );
+			fetchEmailTarget = listService.getEmailTargetByName( 'general inquiry' );
 		// otherwise, it's an unrecognized inquiry type and
 		} else {
 			// reject the promise with details of the error
@@ -122,7 +121,7 @@ function saveChildInquiry( { inquiry, user } ) {
 			  isSiteVisitor		= user.userType === 'site visitor';
 
 		let fetchWebsiteBot		= userService.getUserByFullName( 'Website Bot', 'admin' ),
-			fetchInquiryMethod	= listsService.getInquiryMethodByName( 'website' ),
+			fetchInquiryMethod	= listService.getInquiryMethodByName( 'website' ),
 			fetchChildren		= childService.getChildrenByRegistrationNumbersNew( targetChildren );
 		
 		Promise.all( [ fetchWebsiteBot, fetchInquiryMethod, fetchChildren ] )
@@ -178,7 +177,7 @@ function saveGeneralInquiry( { inquiry, user } ) {
 			  isSocialWorker	= user.userType === 'social worker';
 
 		let fetchWebsiteBot		= userService.getUserByFullName( 'Website Bot', 'admin' ),
-			fetchInquiryMethod	= listsService.getInquiryMethodByName( 'website' );
+			fetchInquiryMethod	= listService.getInquiryMethodByName( 'website' );
 		
 		Promise.all( [ fetchWebsiteBot, fetchInquiryMethod ] ).then( values => {
 

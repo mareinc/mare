@@ -1,5 +1,5 @@
 const keystone		= require( 'keystone' ),
-	  listsService	= require( '../../components/lists/list.controllers' ),
+	  listService	= require( '../../components/lists/list.controllers' ),
 	  pageService	= require( '../../components/pages/page.controllers' );
 
 exports = module.exports = ( req, res ) => {
@@ -12,8 +12,8 @@ exports = module.exports = ( req, res ) => {
 	const stateOptions	= { default: 'Massachusetts' };
 
 	// fetch all data needed to render this page
-	let fetchStates			= listsService.getAllStates( stateOptions ),
-		fetchEventTypes		= listsService.getEventTypesForWebsite(),
+	let fetchStates			= listService.getAllStates( stateOptions ),
+		fetchEventTypes		= listService.getEventTypesForWebsite(),
 		fetchSidebarItems	= pageService.getSidebarItems();
 
 	Promise.all( [ fetchStates, fetchEventTypes, fetchSidebarItems ] )

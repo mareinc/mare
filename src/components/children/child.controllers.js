@@ -2,10 +2,9 @@ const keystone									= require( 'keystone' ),
 	  _											= require( 'underscore' ),
 	  async										= require( 'async' ),
 	  middleware								= require( '../../routes/middleware/middleware' ),
-	  emailTargetMiddleware						= require( '../../routes/middleware/service_email-target' ),
+	  listService								= require( '../lists/list.controllers' ),
 	  staffEmailContactMiddleware				= require( '../../routes/middleware/service_staff-email-contact' ),
 	  familyService								= require( '../families/family.controllers' ),
-	  listsService								= require( '../lists/list.controllers' ),
 	  userService								= require( '../users/user.controllers' ),
 	  socialWorkerChildRegistrationEmailService	= require( '../../routes/middleware/emails_social-worker-child-registration' );
 
@@ -438,7 +437,7 @@ exports.getGalleryData = ( req, res, next ) => {
 							siblingGroupVideo`;
 
 	async.series([
-		done => { listsService.getChildStatusIdByName( req, res, done, 'active' ) },
+		done => { listService.getChildStatusIdByName( req, res, done, 'active' ) },
 		done => {
 
 			// fetch the appropriate set of children based on the user's permissions and the page that's being requested
@@ -806,7 +805,7 @@ exports.registerChild = ( req, res, next ) => {
 			// fetch the newly saved child model.  Needed because the saved child object doesn't have the Relationship fields populated
 			const fetchChild = exports.getChildByRegistrationNumberNew( childId, fieldsToPopulate );
 			// fetch the email target model matching 'social worker child registration'
-			const fetchEmailTarget = emailTargetMiddleware.getEmailTargetByName( 'social worker child registration' );
+			const fetchEmailTarget = listService.getEmailTargetByName( 'social worker child registration' );
 
 			fetchEmailTarget
 				// fetch contact info for the staff contact for 'social worker child registration'

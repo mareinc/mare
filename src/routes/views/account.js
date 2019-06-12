@@ -4,7 +4,7 @@ const keystone				= require( 'keystone' ),
 	  eventService			= require( '../../components/events/event.controllers' ),
 	  donationService		= require( '../../components/donations/donation.controllers' ),
 	  familyService			= require( '../../components/families/family.controllers' ),
-	  listsService			= require( '../../components/lists/list.controllers' ),
+	  listService			= require( '../../components/lists/list.controllers' ),
 	  pageService			= require( '../../components/pages/page.controllers' ),
 	  mailingListService	= require( '../../components/mailing lists/mailing-list.controllers' );
 
@@ -25,15 +25,15 @@ exports = module.exports = ( req, res ) => {
 		// fetch all data needed to render this page
 		fetchEvents					= eventService.getActiveEventsByUserId( userId, eventGroup ),
 
-		fetchCitiesAndTowns			= listsService.getAllCitiesAndTowns(),
-		fetchDisabilities			= listsService.getAllDisabilities(),
-		fetchGenders				= listsService.getAllGenders(),
-		fetchLanguages				= listsService.getAllLanguages(),
-		fetchLegalStatuses			= listsService.getAllLegalStatuses(),
-		fetchSocialWorkerPositions	= listsService.getAllSocialWorkerPositions(),
-		fetchRaces					= listsService.getAllRaces( raceOptions ),
-		fetchStates					= listsService.getAllStates(),
-		fetchChildTypes				= listsService.getChildTypesForWebsite(),
+		fetchCitiesAndTowns			= listService.getAllCitiesAndTowns(),
+		fetchDisabilities			= listService.getAllDisabilities(),
+		fetchGenders				= listService.getAllGenders(),
+		fetchLanguages				= listService.getAllLanguages(),
+		fetchLegalStatuses			= listService.getAllLegalStatuses(),
+		fetchSocialWorkerPositions	= listService.getAllSocialWorkerPositions(),
+		fetchRaces					= listService.getAllRaces( raceOptions ),
+		fetchStates					= listService.getAllStates(),
+		fetchChildTypes				= listService.getChildTypesForWebsite(),
         fetchMailingLists			= mailingListService.getMailingLists(),
         fetchUserMailingLists       = req.user.populate('mailingLists').execPopulate();
 

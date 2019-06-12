@@ -3,7 +3,7 @@ const keystone						= require( 'keystone' ),
 	  random						= require( 'mongoose-simple-random' ),
 	  SourceMiddleware				= require( './event.source.controllers' ),
 	  Validators					= require( '../../routes/middleware/validators' ),
-	  emailTargetMiddleware			= require( '../../routes/middleware/service_email-target' ),
+	  listService					= require( '../lists/list.controllers' ),
 	  eventEmailMiddleware			= require( './event.email.controllers' ),
 	  staffEmailContactMiddleware	= require( '../../routes/middleware/service_staff-email-contact' ),
 	  modelService					= require( '../../routes/middleware/service_model' );
@@ -284,7 +284,7 @@ Event.schema.post( 'save', async function() {
 			|| removedUnregisteredAdults.length >= 5
 		) {
 			// fetch the email target model matching 'dropped event attendees'
-			const emailTarget = await emailTargetMiddleware.getEmailTargetByName( 'dropped event attendees' );
+			const emailTarget = await listService.getEmailTargetByName( 'dropped event attendees' );
 			
 			// fetch contact info for the staff contacts for 'dropped event attendees'
 			const staffEmailContacts = await staffEmailContactMiddleware.getStaffEmailContactsByEmailTarget({

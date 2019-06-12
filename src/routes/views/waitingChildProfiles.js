@@ -1,6 +1,6 @@
 const keystone		= require( 'keystone' ),
 	  userService	= require( '../../components/users/user.controllers' ),
-	  listsService	= require( '../../components/lists/list.controllers' ),
+	  listService	= require( '../../components/lists/list.controllers' ),
 	  pageService	= require( '../../components/pages/page.controllers' );
 
 exports = module.exports = ( req, res ) => {
@@ -19,11 +19,11 @@ exports = module.exports = ( req, res ) => {
 	locals.canSeeAdvancedSearchOptions	= canSeeAdvancedSearchOptions;
 	
 	// fetch all data needed to render this page
-	let fetchDisabilities			= listsService.getAllDisabilities(),
-		fetchFamilyConstellations	= listsService.getAllFamilyConstellations(),
-		fetchGenders				= listsService.getAllGenders(),
-		fetchLanguages				= listsService.getAllLanguages(),
-		fetchRaces					= listsService.getAllRaces(),
+	let fetchDisabilities			= listService.getAllDisabilities(),
+		fetchFamilyConstellations	= listService.getAllFamilyConstellations(),
+		fetchGenders				= listService.getAllGenders(),
+		fetchLanguages				= listService.getAllLanguages(),
+		fetchRaces					= listService.getAllRaces(),
 		fetchSidebarItems			= pageService.getSidebarItems();
 
 	Promise.all( [ fetchDisabilities, fetchFamilyConstellations, fetchGenders, fetchLanguages,

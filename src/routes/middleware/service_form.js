@@ -1,7 +1,7 @@
 /* this file is used for processing all forms except registration in the system */
 // TODO: break this out into a file for each form
 const inquiryService				= require( '../../components/inquiries/inquiry.controllers' ),
-	  emailTargetMiddleware			= require( './service_email-target' ),
+	  listService					= require( '../../components/lists/list.controllers' ),
 	  staffEmailContactMiddleware	= require( './service_staff-email-contact' ),
 	  haveAQuestionEmailService		= require( './emails_have-a-question' );
 
@@ -59,7 +59,7 @@ exports.submitQuestion = function submitQuestion( req, res, next ) {
 	};
 
 	// fetch the email target model matching 'have a question'
-	const fetchEmailTarget = emailTargetMiddleware.getEmailTargetByName( 'have a question' );
+	const fetchEmailTarget = listService.getEmailTargetByName( 'have a question' );
 
 	fetchEmailTarget
 		// fetch contact info for the staff contact for 'have a question'
@@ -106,7 +106,7 @@ exports.getRegistrationStaffContactInfo = emailTarget => {
 			// TODO: it was nearly impossible to create a readable comma separated list of links in the template with more than one address,
 			// 	     so we're only fetching one contact when we should fetch them all
 			// get the database id of the admin contact set to handle registration questions for the target user type
-			emailTargetMiddleware.getTargetId( emailTarget )
+			listService.getEmailTargetId( emailTarget )
 				.then( targetId => {
 					// get the contact details of the admin contact set to thandle registration questions for the target user type
 					return staffEmailContactMiddleware.getContactById( targetId );

@@ -1,5 +1,5 @@
 const keystone		= require( 'keystone' ),
-	  listsService	= require( '../../components/lists/list.controllers' ),
+	  listService	= require( '../../components/lists/list.controllers' ),
 	  pageService	= require( '../../components/pages/page.controllers' );
 
 exports = module.exports = ( req, res ) => {
@@ -13,16 +13,16 @@ exports = module.exports = ( req, res ) => {
 		  stateOptions		= { default: 'Massachusetts' };
 	
 	// fetch all data needed to render this page
-	let fetchCitiesAndTowns							= listsService.getAllCitiesAndTowns(),
-		fetchDisabilities							= listsService.getAllDisabilities(),
-		fetchFamilyConstellations					= listsService.getAllFamilyConstellations(),
-		fetchGenders								= listsService.getAllGenders(),
-		fetchLanguages								= listsService.getAllLanguages(),
-		fetchLegalStatuses							= listsService.getAllLegalStatuses(),
-		fetchOtherFamilyConstellationConsiderations	= listsService.getAllOtherFamilyConstellationConsiderations(),
-		fetchRaces									= listsService.getAllRaces( raceOptions ),
-		fetchResidences								= listsService.getAllResidences(),
-		fetchStates									= listsService.getAllStates( stateOptions ),
+	let fetchCitiesAndTowns							= listService.getAllCitiesAndTowns(),
+		fetchDisabilities							= listService.getAllDisabilities(),
+		fetchFamilyConstellations					= listService.getAllFamilyConstellations(),
+		fetchGenders								= listService.getAllGenders(),
+		fetchLanguages								= listService.getAllLanguages(),
+		fetchLegalStatuses							= listService.getAllLegalStatuses(),
+		fetchOtherFamilyConstellationConsiderations	= listService.getAllOtherFamilyConstellationConsiderations(),
+		fetchRaces									= listService.getAllRaces( raceOptions ),
+		fetchResidences								= listService.getAllResidences(),
+		fetchStates									= listService.getAllStates( stateOptions ),
 		fetchSidebarItems							= pageService.getSidebarItems();
 
 	Promise.all( [ fetchCitiesAndTowns, fetchDisabilities, fetchFamilyConstellations, fetchGenders, fetchLanguages,

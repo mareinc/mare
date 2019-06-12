@@ -1,5 +1,5 @@
 const keystone					= require( 'keystone' ),
-	  listsService				= require( '../../components/lists/list.controllers' ),
+	  listService				= require( '../../components/lists/list.controllers' ),
 	  pageService				= require( '../../components/pages/page.controllers' ),
 	  mailingListService		= require( '../../components/mailing lists/mailing-list.controllers' );
 
@@ -15,16 +15,16 @@ exports = module.exports = ( req, res ) => {
 		  waysToHearOptions	= { other: true };
 
 	// fetch all data needed to render this page
-	let fetchChildTypes				= listsService.getChildTypesForWebsite(),
-		fetchCitiesAndTowns			= listsService.getAllCitiesAndTowns(),
-		fetchGenders				= listsService.getAllGenders(),
-		fetchLanguages				= listsService.getAllLanguages(),
-		fetchLegalStatuses			= listsService.getAllLegalStatuses(),
-		fetchRaces					= listsService.getAllRaces( raceOptions ),
-		fetchRegions				= listsService.getAllRegions(),
-		fetchSocialWorkerPositions	= listsService.getAllSocialWorkerPositions(),
-		fetchStates					= listsService.getAllStates( stateOptions ),
-		fetchWaysToHearAboutMARE	= listsService.getAllWaysToHearAboutMARE( waysToHearOptions ),
+	let fetchChildTypes				= listService.getChildTypesForWebsite(),
+		fetchCitiesAndTowns			= listService.getAllCitiesAndTowns(),
+		fetchGenders				= listService.getAllGenders(),
+		fetchLanguages				= listService.getAllLanguages(),
+		fetchLegalStatuses			= listService.getAllLegalStatuses(),
+		fetchRaces					= listService.getAllRaces( raceOptions ),
+		fetchRegions				= listService.getAllRegions(),
+		fetchSocialWorkerPositions	= listService.getAllSocialWorkerPositions(),
+		fetchStates					= listService.getAllStates( stateOptions ),
+		fetchWaysToHearAboutMARE	= listService.getAllWaysToHearAboutMARE( waysToHearOptions ),
 		fetchMailingLists			= mailingListService.getMailingLists(),
 		fetchSidebarItems			= pageService.getSidebarItems();
 

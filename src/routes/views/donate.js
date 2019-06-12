@@ -1,7 +1,7 @@
 const keystone						= require( 'keystone' ),
 	  pageService					= require( '../../components/pages/page.controllers' ),
 	  donationService				= require( '../../components/donations/donation.controllers' ),
-	  emailTargetMiddleware			= require( '../middleware/service_email-target' ),
+	  listService					= require( '../../components/lists/list.controllers' ),
 	  staffEmailContactMiddleware	= require( '../middleware/service_staff-email-contact' );
 
 // TODO: add code for a logged in user showing their previous donations/donation dates
@@ -23,7 +23,7 @@ exports = module.exports = ( req, res ) => {
 	// initialize a promise chain
 	Promise.resolve()
 		// fetch the email target model matching 'donation question'
-		.then( () => emailTargetMiddleware.getEmailTargetByName( 'donation question' ) )
+		.then( () => listService.getEmailTargetByName( 'donation question' ) )
 		// fetch contact info for the staff contact for 'donation question'
 		.then( emailTarget => staffEmailContactMiddleware.getStaffEmailContactByEmailTarget( emailTarget.get( '_id' ), [ 'staffEmailContact' ] ) )
 		// overwrite the default contact details with the returned object

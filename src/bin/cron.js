@@ -3,7 +3,7 @@ const cronJob = require( 'cron' ).CronJob,
 	  childService = require( '../components/children/child.controllers' ),
 	  socialWorkerService = require( '../components/social workers/social-worker.controllers' ),
 	  agencyService = require( '../components/agencies/agency.controllers' ),
-	  emailTargetMiddleware = require( '../routes/middleware/service_email-target' ),
+	  listService = require( '../components/lists/list.controllers' ),
 	  eventEmailMiddleware = require( '../components/events/event.email.controllers' ),
 	  staffEmailContactMiddleware = require( '../routes/middleware/service_staff-email-contact' );
 
@@ -50,7 +50,7 @@ exports.scheduleModelSaver = () => {
 				) {
 					try {
 						// fetch the email targets model matching 'cron job errors'
-						const emailTarget = await emailTargetMiddleware.getEmailTargetByName( 'cron job errors' );
+						const emailTarget = await listService.getEmailTargetByName( 'cron job errors' );
 						// fetch contact info for the staff contacts for 'cron job errors'
 						const staffEmailContacts = await staffEmailContactMiddleware.getStaffEmailContactsByEmailTarget({
 							emailTargetId: emailTarget.get( '_id' ),

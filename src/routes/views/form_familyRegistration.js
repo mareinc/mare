@@ -1,7 +1,6 @@
 const keystone						= require( 'keystone' ),
-	  listsService					= require( '../../components/lists/list.controllers' ),
+	  listService					= require( '../../components/lists/list.controllers' ),
 	  pageService					= require( '../../components/pages/page.controllers' ),
-	  emailTargetMiddleware			= require( '../middleware/service_email-target' ),
 	  staffEmailContactMiddleware	= require( '../middleware/service_staff-email-contact' );
 
 exports = module.exports = ( req, res ) => {
@@ -21,13 +20,13 @@ exports = module.exports = ( req, res ) => {
 		  raceOptions		= { other: true };
 
 	// fetch all data needed to render this page
-	let fetchCitiesAndTowns			= listsService.getAllCitiesAndTowns(),
-		fetchGenders				= listsService.getAllGenders(),
-		fetchLanguages				= listsService.getAllLanguages(),
-		fetchLegalStatuses			= listsService.getAllLegalStatuses(),
-		fetchRaces					= listsService.getAllRaces( raceOptions ),
-		fetchStates					= listsService.getAllStates( stateOptions ),
-		fetchChildTypes				= listsService.getChildTypesForWebsite();
+	let fetchCitiesAndTowns			= listService.getAllCitiesAndTowns(),
+		fetchGenders				= listService.getAllGenders(),
+		fetchLanguages				= listService.getAllLanguages(),
+		fetchLegalStatuses			= listService.getAllLegalStatuses(),
+		fetchRaces					= listService.getAllRaces( raceOptions ),
+		fetchStates					= listService.getAllStates( stateOptions ),
+		fetchChildTypes				= listService.getChildTypesForWebsite();
 	
 	// initialize a promise chain
 	Promise.resolve()
@@ -50,7 +49,7 @@ exports = module.exports = ( req, res ) => {
 		// if there was an error fetching form selection element data
 		.catch( err => console.err( `error fetching data to populate social worker family registration form selection elements`, err ) )
 		// fetch the email target model matching 'social worker family registration question'
-		.then( () => emailTargetMiddleware.getEmailTargetByName( 'social worker family registration question' ) )
+		.then( () => listService.getEmailTargetByName( 'social worker family registration question' ) )
 		// fetch contact info for the staff contact for 'social worker family registration question'
 		.then( emailTarget => staffEmailContactMiddleware.getStaffEmailContactByEmailTarget( emailTarget.get( '_id' ), [ 'staffEmailContact' ] ) )
 		// overwrite the default contact details with the returned object

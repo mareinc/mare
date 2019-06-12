@@ -2,7 +2,7 @@
 
 const keystone					= require( 'keystone' ),
 	  eventEmailMiddleware		= require( './event.email.controllers' ),
-	  emailTargetService		= require( '../../routes/middleware/service_email-target' ),
+	  listService				= require( '../lists/list.controllers' ),
 	  staffEmailContactService	= require( '../../routes/middleware/service_staff-email-contact' ),
 	  userService				= require( '../users/user.controllers' );
 
@@ -216,7 +216,7 @@ exports.submitEvent = function submitEvent( req, res, next ) {
 					};
 
 					// fetch the email target model matching 'event created by social worker'
-					const fetchEmailTarget = emailTargetService.getEmailTargetByName( 'event created by social worker' );
+					const fetchEmailTarget = listService.getEmailTargetByName( 'event created by social worker' );
 
 					fetchEmailTarget
 						// fetch contact info for the staff contact for 'event created by social worker'
@@ -624,8 +624,8 @@ exports.getEventStaffContactInfo = emailTarget => {
 		// TODO: it was nearly impossible to create a readable comma separated list of links in the template with more than one address,
 		// 	     so we're only fetching one contact when we should fetch them all
 		// get the database id of the admin contact set to handle registration questions for the email target
-		emailTargetService
-			.getTargetId( emailTarget )
+		listService
+			.getEmailTargetId( emailTarget )
 			.then( targetId => {
 				// get the contact details of the admin contact set to handle registration questions for the email target
 				return staffEmailContactService.getContactById( targetId );
@@ -710,7 +710,7 @@ exports.getEventContactEmail = ( { eventId, userType } ) => {
 			// if no contact fields were filled out, fall back to the staff email contact for event registration
 			if( !eventContactEmail ) {
 				// get the general staff email target for an event registration
-				const emailTarget = await emailTargetService.getEmailTargetByName( 'event registration' );
+				const emailTarget = await listService.getEmailTargetByName( 'event registration' );
 				// get the staff contact assigned to the email target
 				const staffContact = await staffEmailContactService.getStaffEmailContactByEmailTarget( emailTarget._id, [ 'staffEmailContact' ] );
 				// set the contact details to the fetched contact email

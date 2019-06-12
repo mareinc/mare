@@ -1,5 +1,5 @@
 const keystone 			= require( 'keystone' ),
-	  listsService		= require( '../../components/lists/list.controllers' );
+	  listService		= require( '../../components/lists/list.controllers' );
 	  
 	  
 function getChildStatusByName(name) {
@@ -90,7 +90,7 @@ exports.getNumberOfChildrenByRegionID = ( regionID ) => {
 
 exports.getChildrenNumbersGroupedByRegions = ( ) => {
 	return new Promise( ( resolve, reject ) => {
-		listsService.getAllRegions()
+		listService.getAllRegions()
 			.then( regions => {
 				let promises = [];
 				

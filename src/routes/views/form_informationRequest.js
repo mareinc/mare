@@ -1,5 +1,5 @@
 const keystone		= require( 'keystone' ),
-	  listsService	= require( '../../components/lists/list.controllers' ),
+	  listService	= require( '../../components/lists/list.controllers' ),
 	  pageService	= require( '../../components/pages/page.controllers' );
 
 exports = module.exports = ( req, res ) => {

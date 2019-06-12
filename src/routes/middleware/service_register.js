@@ -7,7 +7,7 @@
 
 const keystone 						= require( 'keystone' ),
 	  registrationEmailMiddleware	= require( './emails_register' ),
-	  emailTargetMiddleware			= require( './service_email-target' ),
+	  listService					= require( '../../components/lists/list.controllers' ),
 	  staffEmailContactMiddleware	= require( './service_staff-email-contact' ),
 	  userService					= require( '../../components/users/user.controllers' ),
 	  mailchimpService				= require( '../../components/mailchimp lists/mailchimp-list.controllers' ),
@@ -73,7 +73,7 @@ exports.registerUser = ( req, res, next ) => {
 							// fetch the user model.  Needed because the copies we have don't have the Relationship fields populated
 							const fetchUser = userService.getUserByIdNew( { id: userId, targetModel: keystone.list( 'Site Visitor' ), fieldsToPopulate } );
 							// fetch the email target model matching 'site visitor registration'
-							const fetchEmailTarget = emailTargetMiddleware.getEmailTargetByName( 'site visitor registration' );
+							const fetchEmailTarget = listService.getEmailTargetByName( 'site visitor registration' );
 							// create a new verification code model in the database to allow users to verify their accounts
 							const createVerificationRecord = exports.createNewVerificationRecord( verificationCode, userId );
 							// add the user to any mailing lists they've opted into
@@ -160,7 +160,7 @@ exports.registerUser = ( req, res, next ) => {
 							// fetch the user model.  Needed because the copies we have don't have the Relationship fields populated
 							const fetchUser = userService.getUserByIdNew( { id: userId, targetModel: keystone.list( 'Social Worker' ), fieldsToPopulate } );
 							// fetch the email target model matching 'social worker registration'
-							const fetchEmailTarget = emailTargetMiddleware.getEmailTargetByName( 'social worker registration' );
+							const fetchEmailTarget = listService.getEmailTargetByName( 'social worker registration' );
 							// create a new verification code model in the database to allow users to verify their accounts
 							const createVerificationRecord = exports.createNewVerificationRecord( verificationCode, userId );
 							// add the user to any mailing lists they've opted into
@@ -259,7 +259,7 @@ exports.registerUser = ( req, res, next ) => {
 							// fetch the user model.  Needed because the copies we have don't have the Relationship fields populated
 							const fetchUser = userService.getUserByIdNew( { id: userId, targetModel: keystone.list( 'Family' ), fieldsToPopulate } );
 							// fetch the email target model matching 'family registration'
-							const fetchEmailTarget = emailTargetMiddleware.getEmailTargetByName( 'family registration' );
+							const fetchEmailTarget = listService.getEmailTargetByName( 'family registration' );
 							// create a new verification code model in the database to allow users to verify their accounts
 							const createVerificationRecord = exports.createNewVerificationRecord( verificationCode, userId );
 							// add the user to any mailing lists they've opted into
