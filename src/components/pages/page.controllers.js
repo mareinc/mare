@@ -2,7 +2,7 @@ const keystone				= require( 'keystone' ),
 	  moment				= require( 'moment' ),
 	  Utils					= require( '../../routes/middleware/utilities' ),
 	  eventService			= require( '../events/event.controllers' ),
-	  successStoryService	= require( '../../routes/middleware/service_success-story' );
+	  successStoryService	= require( '../success stories/success-story.controllers' );
 
 exports.getPageByKey = key => {
 

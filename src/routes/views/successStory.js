@@ -1,6 +1,6 @@
 const keystone 				= require( 'keystone' ),
 	  Utils					= require( '../middleware/utilities' ),
-	  successStoryService	= require( '../middleware/service_success-story' ),
+	  successStoryService	= require( '../../components/success stories/success-story.controllers' ),
 	  pageService			= require( '../../components/pages/page.controllers' );
 
 exports = module.exports = ( req, res ) => {

@@ -1,6 +1,6 @@
 const keystone	= require( 'keystone' ),
 	  async		= require( 'async' ),
-	  Utils		= require( './utilities' );
+	  Utils		= require( '../../routes/middleware/utilities' );
 
 exports.getRandomStory = () => {
 
