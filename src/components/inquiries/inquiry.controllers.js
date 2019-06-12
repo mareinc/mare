@@ -6,7 +6,7 @@ const keystone					= require( 'keystone' ),
 	  childService				= require( '../children/child.controllers' ),
 	  agencyService				= require( '../agencies/agency.controllers' ),
 	  staffEmailContactService	= require( '../staff email contacts/staff-email-contact.controllers' ),
-	  staffRegionContactService	= require( '../../routes/middleware/service_staff-region-contact' ),
+	  cscRegionContactService	= require( '../csc region contacts/csc-region-contact.controllers' ),
 	  inquiryEmailService		= require( './inquiry.email.controllers' ),
 	  utilities					= require( '../../routes/middleware/utilities' );
 
@@ -98,7 +98,7 @@ exports.createInquiry = ( { inquiry, user } ) => {
 			.then( contact => staffEmail = contact.staffEmailContact.email )
 			.catch( err => console.error( `error fetching email contact for child inquiry submission, default contact info will be used instead`, err ) )
 			// fetch the staff region contact, overwriting the default contact or staff email contact details with the returned staff email
-			.then( () => staffRegionContactService.getContactByRegion( { region: targetRegion, fieldsToPopulate: [ 'cscRegionContact' ] } ) )
+			.then( () => cscRegionContactService.getCSCRegionContactByRegion( { region: targetRegion, fieldsToPopulate: [ 'cscRegionContact' ] } ) )
 			.then( contact => staffEmail = contact.cscRegionContact.email )
 			.catch( err => console.error( `error fetching region contact for region with id ${ targetRegion }, default or staff email contact info will be used instead`, err ) )			
 			// send a notification email to MARE staff
