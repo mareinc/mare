@@ -1,7 +1,7 @@
 const keystone						= require( 'keystone' ),
 	  _								= require( 'underscore' ),
 	  async							= require( 'async' ),
-	  utilities						= require( '../../utils/utilities.controllers' ),
+	  utilities						= require( '../../utils/utility.controllers' ),
 	  listService					= require( '../lists/list.controllers' ),
 	  staffEmailContactMiddleware	= require( '../staff email contacts/staff-email-contact.controllers' ),
 	  familyService					= require( '../families/family.controllers' ),

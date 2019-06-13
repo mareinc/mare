@@ -1,5 +1,5 @@
 const keystone 				= require( 'keystone' ),
-	  utils					= require( '../../utils/utilities.controllers' ),
+	  utils					= require( '../../utils/utility.controllers' ),
 	  successStoryService	= require( '../../components/success stories/success-story.controllers' ),
 	  pageService			= require( '../../components/pages/page.controllers' );
 

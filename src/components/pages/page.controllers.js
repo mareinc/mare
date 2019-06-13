@@ -1,6 +1,6 @@
 const keystone				= require( 'keystone' ),
 	  moment				= require( 'moment' ),
-	  utils					= require( '../../utils/utilities.controllers' ),
+	  utils					= require( '../../utils/utility.controllers' ),
 	  eventService			= require( '../events/event.controllers' ),
 	  successStoryService	= require( '../success stories/success-story.controllers' );
 

@@ -10,7 +10,7 @@ const keystone 						= require( 'keystone' ),
 	  staffEmailContactMiddleware	= require( '../staff email contacts/staff-email-contact.controllers' ),
 	  userService					= require( '../users/user.controllers' ),
 	  mailchimpService				= require( '../mailchimp lists/mailchimp-list.controllers' ),
-	  utilities						= require( '../../utils/utilities.controllers' ),
+	  utilities						= require( '../../utils/utility.controllers' ),
 	  flashMessages					= require( '../../utils/notification.middleware' );
 
 exports.registerUser = ( req, res, next ) => {

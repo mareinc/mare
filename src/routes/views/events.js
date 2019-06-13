@@ -1,6 +1,6 @@
 const keystone 				= require( 'keystone' ),
 	  moment				= require( 'moment' ),
-	  utils					= require( '../../utils/utilities.controllers' ),
+	  utils					= require( '../../utils/utility.controllers' ),
 	  eventService			= require( '../../components/events/event.controllers' ),
 	  pageService			= require( '../../components/pages/page.controllers' ),
 	  socialWorkerService	= require( '../../components/social workers/social-worker.controllers' ),

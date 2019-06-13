@@ -7,7 +7,7 @@ const keystone						= require( 'keystone' ),
 	  registrationService			= require( '../accounts/account.controllers' ),
 	  registrationEmailMiddleware	= require( '../accounts/account.registration-email.controllers' ),
 	  familyEmailService			= require( './family.email.controllers' );
-	  utilities         			= require( '../../utils/utilities.controllers' );
+	  utilities         			= require( '../../utils/utility.controllers' );
 
 /* fetch a single family by their id */
 exports.getFamilyById = ( id, fieldsToPopulate = [] ) => {
