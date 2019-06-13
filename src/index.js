@@ -1,22 +1,22 @@
 const keystone						= require( 'keystone' ),
 	  robots						= require( 'express-robots' ),
-	  setupMiddleware				= require( '../utils/setup.middleware' ),
-	  notificationMiddleware		= require( '../utils/notification.middleware' ),
-	  childService					= require( '../components/children/child.controllers' ),
-	  donationService				= require( '../components/donations/donation.controllers' ),
-	  eventService					= require( '../components/events/event.controllers' ),
-	  familyService					= require( '../components/families/family.controllers' ),
-	  questionMiddleware			= require( '../components/questions/have-a-question.middleware' ),
-	  inquiryMiddleware				= require( '../components/inquiries/inquiry.middleware' ),
-	  accountMiddleware				= require( '../components/accounts/account.middleware' ),
-	  userService					= require( '../components/users/user.middleware' ),
-	  registrationMiddleware		= require( '../components/accounts/account.controllers' ),
-	  userMiddleware				= require( '../components/users/user.middleware' ),
-	  eventMiddleware				= require( '../components/events/event.middleware' ),
-	  passwordResetService 			= require( '../components/accounts/account.password-reset.controllers'),
-	  accountVerificationService	= require( '../components/account verification codes/account-verification-code.middleware' ),
-	  toolsService					= require( '../components/reporting dashboard/tools.controllers' ),
-	  mailchimpService				= require( '../components/mailchimp lists/mailchimp-list.controllers' ),
+	  setupMiddleware				= require( './utils/setup.middleware' ),
+	  notificationMiddleware		= require( './utils/notification.middleware' ),
+	  childService					= require( './components/children/child.controllers' ),
+	  donationService				= require( './components/donations/donation.controllers' ),
+	  eventService					= require( './components/events/event.controllers' ),
+	  familyService					= require( './components/families/family.controllers' ),
+	  questionMiddleware			= require( './components/questions/have-a-question.middleware' ),
+	  inquiryMiddleware				= require( './components/inquiries/inquiry.middleware' ),
+	  accountMiddleware				= require( './components/accounts/account.middleware' ),
+	  userService					= require( './components/users/user.middleware' ),
+	  registrationMiddleware		= require( './components/accounts/account.controllers' ),
+	  userMiddleware				= require( './components/users/user.middleware' ),
+	  eventMiddleware				= require( './components/events/event.middleware' ),
+	  passwordResetService 			= require( './components/accounts/account.password-reset.controllers'),
+	  accountVerificationService	= require( './components/account verification codes/account-verification-code.middleware' ),
+	  toolsService					= require( './components/reporting dashboard/tools.controllers' ),
+	  mailchimpService				= require( './components/mailchimp lists/mailchimp-list.controllers' ),
 	  enforce						= require( 'express-sslify' ),
 	  importRoutes					= keystone.importer( __dirname );
 
@@ -44,10 +44,10 @@ exports = module.exports = app => {
 	// serve robots.txt based on the runtime environment
 	if ( process.env.ALLOW_ROBOTS === 'true' ) {
 		// if running in production, allow robots to crawl by serving the production robots.txt
-		app.use( robots( `${ __dirname }/robots/robots-production.txt` ) );
+		app.use( robots( `${ __dirname }/config/robots/robots-production.txt` ) );
 	} else {
 		// otherwise, serve the dev robots.txt ( i.e. disallow all crawlers )
-		app.use( robots( `${ __dirname }/robots/robots-development.txt` ) );
+		app.use( robots( `${ __dirname }/config/robots/robots-development.txt` ) );
 	}
 
 	// home page

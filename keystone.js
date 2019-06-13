@@ -83,7 +83,7 @@ for( let modelPath of modelPaths ) {
 }
 
 // Load project Routes
-keystone.set( 'routes', require('./src/routes' ) );
+keystone.set( 'routes', require('./src' ) );
 
 // Setup common locals for your templates. The following are required for the
 // bundled templates and layouts. Any runtime locals (that should be set uniquely

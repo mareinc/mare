@@ -1,9 +1,9 @@
 const keystone				= require( 'keystone' ),
 	  _						= require( 'underscore' ),
 	  moment				= require( 'moment' ),
-	  eventService			= require( '../../components/events/event.controllers' ),
-	  pageService			= require( '../../components/pages/page.controllers' ),
-	  socialWorkerService	= require( '../../components/social workers/social-worker.controllers' );
+	  eventService			= require( '../components/events/event.controllers' ),
+	  pageService			= require( '../components/pages/page.controllers' ),
+	  socialWorkerService	= require( '../components/social workers/social-worker.controllers' );
 
 exports = module.exports = ( req, res ) => {
     'use strict';

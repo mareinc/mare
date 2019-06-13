@@ -1,8 +1,8 @@
 const keystone						= require( 'keystone' ),
-	  pageService					= require( '../../components/pages/page.controllers' ),
-	  donationService				= require( '../../components/donations/donation.controllers' ),
-	  listService					= require( '../../components/lists/list.controllers' ),
-	  staffEmailContactMiddleware	= require( '../../components/staff email contacts/staff-email-contact.controllers' );
+	  pageService					= require( '../components/pages/page.controllers' ),
+	  donationService				= require( '../components/donations/donation.controllers' ),
+	  listService					= require( '../components/lists/list.controllers' ),
+	  staffEmailContactMiddleware	= require( '../components/staff email contacts/staff-email-contact.controllers' );
 
 // TODO: add code for a logged in user showing their previous donations/donation dates
 exports = module.exports = ( req, res ) => {

@@ -1,9 +1,9 @@
 const keystone				= require( 'keystone' ),
 	  _						= require( 'underscore' ),
 	  moment				= require( 'moment' ),
-	  toolsService			= require( '../../components/reporting dashboard/tools.controllers' ),
-	  childService			= require( '../../components/children/child.controllers' ),
-	  ObjectId 				= require('mongodb').ObjectId;
+	  toolsService			= require( '../components/reporting dashboard/tools.controllers' ),
+	  childService			= require( '../components/children/child.controllers' ),
+	  ObjectId 				= require( 'mongodb' ).ObjectId;
 
 // TODO:
 const FIELD_NAMES = {

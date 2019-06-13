@@ -1,7 +1,7 @@
 const keystone		= require( 'keystone' ),
-	  userService	= require( '../../components/users/user.controllers' ),
-	  listService	= require( '../../components/lists/list.controllers' ),
-	  pageService	= require( '../../components/pages/page.controllers' );
+	  userService	= require( '../components/users/user.controllers' ),
+	  listService	= require( '../components/lists/list.controllers' ),
+	  pageService	= require( '../components/pages/page.controllers' );
 
 exports = module.exports = ( req, res ) => {
 	'use strict';

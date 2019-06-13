@@ -1,10 +1,10 @@
 const keystone 				= require( 'keystone' ),
 	  moment				= require( 'moment' ),
-	  utils					= require( '../../utils/utility.controllers' ),
-	  eventService			= require( '../../components/events/event.controllers' ),
-	  pageService			= require( '../../components/pages/page.controllers' ),
-	  socialWorkerService	= require( '../../components/social workers/social-worker.controllers' ),
-	  userService			= require( '../../components/users/user.controllers' );
+	  utils					= require( '../utils/utility.controllers' ),
+	  eventService			= require( '../components/events/event.controllers' ),
+	  pageService			= require( '../components/pages/page.controllers' ),
+	  socialWorkerService	= require( '../components/social workers/social-worker.controllers' ),
+	  userService			= require( '../components/users/user.controllers' );
 
 exports = module.exports = async ( req, res ) => {
 	'use strict';

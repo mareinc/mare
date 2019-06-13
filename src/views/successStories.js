@@ -1,7 +1,7 @@
 const keystone 				= require( 'keystone' ),
-	  utils					= require( '../../utils/utility.controllers' ),
-	  successStoryService	= require( '../../components/success stories/success-story.controllers' ),
-	  pageService			= require( '../../components/pages/page.controllers' );
+	  utils					= require( '../utils/utility.controllers' ),
+	  successStoryService	= require( '../components/success stories/success-story.controllers' ),
+	  pageService			= require( '../components/pages/page.controllers' );
 
 exports = module.exports = ( req, res ) => {
     'use strict';

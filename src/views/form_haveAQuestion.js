@@ -1,5 +1,5 @@
 const keystone		= require( 'keystone' ),
-	  pageService	= require( '../../components/pages/page.controllers' );
+	  pageService	= require( '../components/pages/page.controllers' );
 
 exports = module.exports = ( req, res ) => {
 	'use strict';

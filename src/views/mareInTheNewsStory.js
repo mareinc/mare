@@ -1,7 +1,7 @@
 const keystone 				= require( 'keystone' ),
-	  utils					= require( '../../utils/utility.controllers' ),
-	  successStoryService	= require( '../../components/success stories/success-story.controllers' ),
-	  pageService			= require( '../../components/pages/page.controllers' );
+	  utils					= require( '../utils/utility.controllers' ),
+	  mareInTheNewsService	= require( '../components/mare in the news stories/mare-in-the-news.controllers' ),
+	  pageService			= require( '../components/pages/page.controllers' );
 
 exports = module.exports = ( req, res ) => {
     'use strict';
@@ -17,41 +17,36 @@ exports = module.exports = ( req, res ) => {
 		element: 'p',
 		classesToAdd: 'card-details__paragraph',
 		targetAll: true
-	}, {
-		action: 'add more links',
-		element: 'p',
-		targetAll: false,
-		targetsArray: [ 0 ]
 	}];
 
 	// fetch all data needed to render this page
-	let fetchSuccessStory 	= successStoryService.getSuccessStoryByKey( key ),
-		fetchSidebarItems	= pageService.getSidebarItems();
+	let fetchMAREInTheNewsStory = mareInTheNewsService.getMAREInTheNewsStoryByKey( key ),
+		fetchSidebarItems		= pageService.getSidebarItems();
 
-	Promise.all( [ fetchSuccessStory, fetchSidebarItems ] )
+	Promise.all( [ fetchMAREInTheNewsStory, fetchSidebarItems ] )
 		.then( values => {
 			// assign local variables to the values returned by the promises
-			const [ successStory, sidebarItems ] = values;
+			const [ mareInTheNewsStory, sidebarItems ] = values;
 			// the sidebar items are a success story and event in an array, assign local variables to the two objects
 			const [ randomSuccessStory, randomEvent ] = sidebarItems;
 
 			// modify the WYSIWYG generated content to allow for styling
-			utils.modifyWYSIWYGContent( successStory, 'content', WYSIWYGModificationOptions );
+			utils.modifyWYSIWYGContent( mareInTheNewsStory, 'content', WYSIWYGModificationOptions );
 
 			// assign properties to locals for access during templating
-			locals.successStory			= successStory;
+			locals.mareInTheNewsStory	= mareInTheNewsStory;
 			locals.randomSuccessStory	= randomSuccessStory;
 			locals.randomEvent			= randomEvent;
 
 			// set the layout to render with the right sidebar
 			locals[ 'render-with-sidebar' ] = true;
-			// render the view using the success-story.hbs template
-			view.render( 'success-story' );
+			// render the view using the mare-in-the-news-story.hbs template
+			view.render( 'mare-in-the-news-story' );
 		})
 		.catch( err => {
 			// log an error for debugging purposes
-			console.error( `error loading page data for the success story with key ${ key }`, err );	
-			// render the view using the success-story.hbs template
-			view.render( 'success-story' );
+			console.error( `error loading data for the MARE in the news story page`, err );	
+			// render the view using the mare-in-the-news-story.hbs template
+			view.render( 'mare-in-the-news-story' );
 		});
 };
