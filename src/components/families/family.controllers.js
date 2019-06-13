@@ -1,13 +1,13 @@
-const keystone										= require( 'keystone' ),
-	  async											= require( 'async' ),
-	  listService									= require( '../lists/list.controllers' ),
-	  staffEmailContactMiddleware					= require( '../staff email contacts/staff-email-contact.controllers' ),
-	  childService									= require( '../children/child.controllers' ),
-	  userService 									= require( '../users/user.controllers' ),
-	  registrationService							= require( '../users/user.registration.controllers' ),
-	  registrationEmailMiddleware					= require( '../users/user.registration-email.controllers' ),
-	  socialWorkerFamilyRegistrationEmailService	= require( '../../routes/middleware/emails_social-worker-family-registration' );
-	  utilities         							= require( '../../routes/middleware/utilities' );
+const keystone						= require( 'keystone' ),
+	  async							= require( 'async' ),
+	  listService					= require( '../lists/list.controllers' ),
+	  staffEmailContactMiddleware	= require( '../staff email contacts/staff-email-contact.controllers' ),
+	  childService					= require( '../children/child.controllers' ),
+	  userService 					= require( '../users/user.controllers' ),
+	  registrationService			= require( '../users/user.registration.controllers' ),
+	  registrationEmailMiddleware	= require( '../users/user.registration-email.controllers' ),
+	  familyEmailService			= require( './family.email.controllers' );
+	  utilities         			= require( '../../routes/middleware/utilities' );
 
 /* fetch a single family by their id */
 exports.getFamilyById = ( id, fieldsToPopulate = [] ) => {
@@ -370,13 +370,13 @@ exports.registerFamily = ( req, res, next ) => {
 				// check on the attempt to fetch the newly saved family
 				.then( () => fetchFamily )
 				// send a notification email to MARE
-				.then( fetchedFamily => socialWorkerFamilyRegistrationEmailService.sendNewSocialWorkerFamilyRegistrationNotificationEmailToMARE( socialWorkerName, rawFamilyData, fetchedFamily, staffEmailContactInfo, host ) )
+				.then( fetchedFamily => familyEmailService.sendNewSocialWorkerFamilyRegistrationNotificationEmailToMARE( socialWorkerName, rawFamilyData, fetchedFamily, staffEmailContactInfo, host ) )
 				// if there was an error sending the email
 				.catch( err => console.error( `error sending new family registered by social worker email to MARE`, err ) )
 				// check on the attempt to fetch the newly saved family ( needed again to give us access to the fetched family data at this point in the promise chain )
 				.then( () => fetchFamily )
 				// send a notification email to the social worker
-				.then( fetchedFamily => socialWorkerFamilyRegistrationEmailService.sendNewSocialWorkerFamilyRegistrationNotificationEmailToSocialWorker( socialWorkerName, rawFamilyData, fetchedFamily, socialWorkerEmail, host ) )
+				.then( fetchedFamily => familyEmailService.sendNewSocialWorkerFamilyRegistrationNotificationEmailToSocialWorker( socialWorkerName, rawFamilyData, fetchedFamily, socialWorkerEmail, host ) )
 				// if there was an error sending the email to the social worker
 				.catch( err => console.error( `error sending new family registered by social worker email to social worker ${ req.user.get( 'name.full' ) }`, err ) )
 				// check on the attempt to fetch the newly saved family and create the verification record ( needed again to give us access to the fetched family data at this point in the promise chain )
@@ -386,7 +386,7 @@ exports.registerFamily = ( req, res, next ) => {
 					// assign local variables to the values returned by the promises
 					const [ fetchedFamily, verificationRecord ] = values;
 					// send the notification email to family the social worker registered
-					return socialWorkerFamilyRegistrationEmailService.sendNewSocialWorkerFamilyRegistrationNotificationEmailToFamily( rawFamilyData, fetchedFamily, staffEmailContactInfo, host, verificationRecord );
+					return familyEmailService.sendNewSocialWorkerFamilyRegistrationNotificationEmailToFamily( rawFamilyData, fetchedFamily, staffEmailContactInfo, host, verificationRecord );
 				})
 				// if there was an error sending the email to the new family
 				.catch( err => console.error( `error sending new family registered by social worker email to family ${ newFamily.get( 'displayName' ) }`, err ) );
