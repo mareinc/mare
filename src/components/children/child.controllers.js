@@ -1,12 +1,12 @@
-const keystone									= require( 'keystone' ),
-	  _											= require( 'underscore' ),
-	  async										= require( 'async' ),
-	  middleware								= require( '../../routes/middleware/middleware' ),
-	  listService								= require( '../lists/list.controllers' ),
-	  staffEmailContactMiddleware				= require( '../staff email contacts/staff-email-contact.controllers' ),
-	  familyService								= require( '../families/family.controllers' ),
-	  userService								= require( '../users/user.controllers' ),
-	  socialWorkerChildRegistrationEmailService	= require( '../../routes/middleware/emails_social-worker-child-registration' );
+const keystone						= require( 'keystone' ),
+	  _								= require( 'underscore' ),
+	  async							= require( 'async' ),
+	  middleware					= require( '../../routes/middleware/middleware' ),
+	  listService					= require( '../lists/list.controllers' ),
+	  staffEmailContactMiddleware	= require( '../staff email contacts/staff-email-contact.controllers' ),
+	  familyService					= require( '../families/family.controllers' ),
+	  userService					= require( '../users/user.controllers' ),
+	  childEmailService				= require( './child.email.controllers' );
 
 exports.getMaxRegistrationNumber = function() {
 
@@ -820,7 +820,7 @@ exports.registerChild = ( req, res, next ) => {
 				.then( fetchedChild => {
 					// send a notification email to MARE staff to allow them to enter the information in the old system
 					// NOTE: both the form data and the newly saved child are passed in as both contain information that belongs in the email
-					return socialWorkerChildRegistrationEmailService.sendNewSocialWorkerChildRegistrationNotificationEmailToMARE( rawChildData, fetchedChild, staffEmailContactInfo );
+					return childEmailService.sendNewSocialWorkerChildRegistrationNotificationEmailToMARE( rawChildData, fetchedChild, staffEmailContactInfo );
 				})
 				// if there was an error sending the email to MARE staff
 				.catch( err => console.error( `error sending new child registered by social worker email to MARE staff`, err ) );
@@ -828,7 +828,7 @@ exports.registerChild = ( req, res, next ) => {
 			fetchChild
 				// send a notification email to the social worker
 				// NOTE: both the form data and the newly saved child are passed in as both contain information that belongs in the email
-				.then( fetchedChild => socialWorkerChildRegistrationEmailService.sendNewSocialWorkerChildRegistrationNotificationEmailToSocialWorker( rawChildData, fetchedChild, req.user.get( 'email' ), locals.host ) )
+				.then( fetchedChild => childEmailService.sendNewSocialWorkerChildRegistrationNotificationEmailToSocialWorker( rawChildData, fetchedChild, req.user.get( 'email' ), locals.host ) )
 				// if there was an error sending the email to MARE staff
 				.catch( err => console.error( `error sending new child registered by social worker email to social worker ${ req.user.name.full }`, err ) );
 		})
