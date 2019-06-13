@@ -1,18 +1,16 @@
-// TODO: this is a big one.  Review all middleware and come up with a better division of labor.  All email sending in email_ middleware
-//		 but we might want to find a better separation of concerns for fetching model data, modifying models, and utility functions to make
-//		 all these middleware files more readable and maintainable.  This involves a review of every middleware function.
+// TODO: the saving for each type (child, family, social worker) needs to be moved to the correct file in each respective component
+//		 Many of these functions need to be moved to different files, whether component specific, or utilities.
 
-// TODO: a lot of this functionality is needed for social worker child/family registration and should potentially be broken out and placed in more
-//		 appropriate files
+// TODO: these functions are too large and do too many things.  Break them apart if possible
 
 const keystone 						= require( 'keystone' ),
-	  registrationEmailMiddleware	= require( './emails_register' ),
-	  listService					= require( '../../components/lists/list.controllers' ),
-	  staffEmailContactMiddleware	= require( '../../components/staff email contacts/staff-email-contact.controllers' ),
-	  userService					= require( '../../components/users/user.controllers' ),
-	  mailchimpService				= require( '../../components/mailchimp lists/mailchimp-list.controllers' ),
-	  utilities						= require( './utilities' ),
-	  flashMessages					= require( './service_flash-messages' );
+	  registrationEmailMiddleware	= require( './user.registration-email.controllers' ),
+	  listService					= require( '../lists/list.controllers' ),
+	  staffEmailContactMiddleware	= require( '../staff email contacts/staff-email-contact.controllers' ),
+	  userService					= require( './user.controllers' ),
+	  mailchimpService				= require( '../mailchimp lists/mailchimp-list.controllers' ),
+	  utilities						= require( '../../routes/middleware/utilities' ),
+	  flashMessages					= require( '../../routes/middleware/service_flash-messages' );
 
 exports.registerUser = ( req, res, next ) => {
 	// store a reference to locals

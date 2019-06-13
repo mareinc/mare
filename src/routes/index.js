@@ -6,11 +6,11 @@ const keystone						= require( 'keystone' ),
 	  familyService					= require( '../components/families/family.controllers' ),
 	  formService					= require( './middleware/service_form' ),
 	  middleware					= require( './middleware/middleware' ),
-	  permissionsService			= require( './middleware/service_permissions' ),
-	  registrationMiddleware		= require( './middleware/service_register' ),
+	  userService					= require( '../components/users/user.middleware' ),
+	  registrationMiddleware		= require( '../components/users/user.registration.controllers' ),
 	  accountMiddleware				= require( '../components/users/user.middleware' ),
 	  eventMiddleware				= require( '../components/events/event.middleware' ),
-	  passwordResetService 			= require( './middleware/service_password-reset'),
+	  passwordResetService 			= require( '../components/users/user.password-reset.controllers'),
 	  accountVerificationService	= require( '../components/account verification codes/account-verification-code.middleware' ),
 	  toolsService					= require( './middleware/service_tools' ),
 	  mailchimpService				= require( '../components/mailchimp lists/mailchimp-list.controllers' ),
@@ -115,7 +115,7 @@ exports = module.exports = app => {
 	app.post( '/services/remove-child-bookmark'			, familyService.removeChildBookmark );
 	app.post( '/services/add-sibling-group-bookmark'	, familyService.addSiblingGroupBookmark );
 	app.post( '/services/remove-sibling-group-bookmark'	, familyService.removeSiblingGroupBookmark );
-	app.post( '/services/get-gallery-permissions'		, permissionsService.getGalleryPermissions );
+	app.post( '/services/get-gallery-permissions'		, userService.getGalleryPermissions );
 	
 	// reporting tools
 	app.get( '/dashboard'											, routes.views.dashboard );
