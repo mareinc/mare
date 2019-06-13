@@ -1,7 +1,7 @@
 const keystone 			= require( 'keystone' ),
-	  listService		= require( '../../components/lists/list.controllers' ),
-	  childService		= require( '../../components/children/child.controllers' ),
-	  familyService		= require( '../../components/families/family.controllers' ),
+	  listService		= require( '../lists/list.controllers' ),
+	  childService		= require( '../children/child.controllers' ),
+	  familyService		= require( '../families/family.controllers' ),
 	  ObjectId 			= require('mongodb').ObjectId;
 	  
 function getObjects( modelName, mapFunction ) {

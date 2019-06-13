@@ -1,7 +1,7 @@
 const keystone				= require( 'keystone' ),
 	  _						= require( 'underscore' ),
 	  moment				= require( 'moment' ),
-	  toolsService			= require( '../middleware/service_tools' ),
+	  toolsService			= require( '../../components/reporting dashboard/tools.controllers' ),
 	  familyService			= require( '../../components/families/family.controllers' ),
 	  ObjectId 				= require('mongodb').ObjectId;
 

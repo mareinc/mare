@@ -1,7 +1,7 @@
 const keystone				= require( 'keystone' ),
 	  _						= require( 'underscore' ),
 	  moment				= require( 'moment' ),
-	  dashboardService		= require( '../middleware/service_dashboard' );
+	  dashboardService		= require( '../../components/reporting dashboard/dashboard.controllers' );
 
 exports = module.exports = ( req, res ) => {
 	'use strict';
