@@ -3,7 +3,7 @@ const Types		= keystone.Field.Types;
 const async		= require( 'async' );
 // Export to make it available using require.  The keystone.list import throws a ReferenceError when importing a list that comes later when sorting alphabetically
 const ContactGroup = require( '../contact groups/contact-group.model' );
-const Validators = require( '../../routes/middleware/validators' );
+const Validators = require( '../../utils/field-validator.controllers' );
 
 // Create model
 var OutsideContact = new keystone.List( 'Outside Contact', {

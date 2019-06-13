@@ -1,5 +1,5 @@
 const keystone		= require( 'keystone' ),
-	  flashMessages	= require( '../../routes/middleware/service_flash-messages' ),
+	  flashMessages	= require( '../../utils/notification.middleware' ),
 	  stripe		= require( 'stripe' )( process.env.STRIPE_SECRET_API_KEY );
 
 // define the various donation plan types ( stripe plans are used for recurring donations )
@@ -132,7 +132,7 @@ function saveDonation( user, donationData, stripeTransactionId  ) {
 				// if the Donation model save fails, log the error along with the Stripe transaction ID so that the Donation can be manually saved later
 				console.error( `error saving donation model`, err, `Donation Payment Processed ( Stripe Transaction ID: ${ stripeTransactionId } )` );
 
-				// resolve the promise so that the user is still presented with a success message on the front end, as the donation payment has processed succesfully
+				// resolve the promise so that the user is still presented with a success message on the front end, as the donation payment has processed successfully
 				resolve();
 			} else {
 

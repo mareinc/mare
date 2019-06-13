@@ -1,7 +1,7 @@
 const keystone		= require( 'keystone' ),
 	  Types			= keystone.Field.Types,
 	  User			= require( '../users/user.model' ),
-	  Validators	= require( '../../routes/middleware/validators' );
+	  Validators	= require( '../../utils/field-validator.controllers' );
 
 // configure the s3 storage adapters
 const imageStorage = new keystone.Storage({

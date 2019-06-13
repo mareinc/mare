@@ -12,7 +12,7 @@ const keystone						= require( 'keystone' ),
 	  ChildMiddleware				= require( './child.models.controllers' ),
 	  FamilyMiddleware				= require( '../families/family.models.controllers' ),
 	  SocialWorkerMiddleware		= require( '../social workers/social-worker.models.controllers' ),
-	  saveLock						= require( '../../utils/model-save-lock.controllers' );
+	  saveLock						= require( '../../utils/model.controllers' );
 
 // configure the s3 storage adapters
 const fileStorage = new keystone.Storage({

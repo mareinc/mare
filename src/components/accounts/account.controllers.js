@@ -10,8 +10,8 @@ const keystone 						= require( 'keystone' ),
 	  staffEmailContactMiddleware	= require( '../staff email contacts/staff-email-contact.controllers' ),
 	  userService					= require( '../users/user.controllers' ),
 	  mailchimpService				= require( '../mailchimp lists/mailchimp-list.controllers' ),
-	  utilities						= require( '../../routes/middleware/utilities' ),
-	  flashMessages					= require( '../../routes/middleware/service_flash-messages' );
+	  utilities						= require( '../../utils/utilities.controllers' ),
+	  flashMessages					= require( '../../utils/notification.middleware' );
 
 exports.registerUser = ( req, res, next ) => {
 	// store a reference to locals

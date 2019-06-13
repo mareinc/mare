@@ -1,5 +1,5 @@
 const keystone 				= require( 'keystone' ),
-	  Utils					= require( '../middleware/utilities' ),
+	  utils					= require( '../../utils/utilities.controllers' ),
 	  successStoryService	= require( '../../components/success stories/success-story.controllers' ),
 	  pageService			= require( '../../components/pages/page.controllers' );
 
@@ -36,7 +36,7 @@ exports = module.exports = ( req, res ) => {
 			const [ randomSuccessStory, randomEvent ] = sidebarItems;
 
 			// modify the WYSIWYG generated content to allow for styling
-			Utils.modifyWYSIWYGContent( successStory, 'content', WYSIWYGModificationOptions );
+			utils.modifyWYSIWYGContent( successStory, 'content', WYSIWYGModificationOptions );
 
 			// assign properties to locals for access during templating
 			locals.successStory			= successStory;

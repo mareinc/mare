@@ -1,7 +1,7 @@
 const keystone = require( 'keystone' );
 const async = require( 'async' );
 const userMiddleware = require( '../users/user.controllers' );
-const flashMessageMiddleware = require( '../../routes/middleware/service_flash-messages' );
+const flashMessageMiddleware = require( '../../utils/notification.middleware' );
 
 /* prevents people from accessing protected pages when they're not signed in */
 exports.requireUser = function( req, res, next ) {

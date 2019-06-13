@@ -1,6 +1,6 @@
 var keystone	= require( 'keystone' ),
 Types			= keystone.Field.Types,
-Validators		= require( '../../routes/middleware/validators' );
+Validators		= require( '../../utils/field-validator.controllers' );
 
 // create model
 var Disruption = new keystone.List( 'Disruption' );

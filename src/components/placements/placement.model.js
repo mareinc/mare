@@ -1,6 +1,6 @@
 const keystone	= require( 'keystone' ),
 	  Types		= keystone.Field.Types,
-	  Validators = require( '../../routes/middleware/validators' );
+	  Validators = require( '../../utils/field-validator.controllers' );
 
 // Create model
 var Placement = new keystone.List( 'Placement', {

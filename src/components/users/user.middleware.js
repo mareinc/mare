@@ -8,7 +8,7 @@
 const _						= require( 'lodash' ),
       keystone				= require( 'keystone' ),
 	  userService			= require( './user.controllers' ),
-	  flashMessages			= require( '../../routes/middleware/service_flash-messages' ),
+	  flashMessages			= require( '../../utils/notification.middleware' ),
 	  mailchimpService	    = require( '../mailchimp lists/mailchimp-list.controllers' );
 
 exports.updateUser = ( req, res, next ) => {
@@ -79,7 +79,7 @@ exports.updateUser = ( req, res, next ) => {
 					// create an error flash message to send back to the user
 					flashMessages.appendFlashMessage({
 						messageType: flashMessages.MESSAGE_TYPES.SUCCESS,
-						title: 'Your account was updated succesfully'
+						title: 'Your account was updated successfully'
 					});
 					// send the error status and flash message markup
 					flashMessages.generateFlashMessageMarkup()
@@ -199,7 +199,7 @@ exports.updateUserEmailLists = ( req, res, next ) => {
             return Promise.all( unsubscribePromises.concat( subscribePromises ) );
         })
         .then( () => {
-            // all subscribe/unsubscribe actions completed succesfully, update subscription list on user doc
+            // all subscribe/unsubscribe actions completed successfully, update subscription list on user doc
             req.user.mailingLists = updates.emailLists || [];
             return req.user.save();
         })
@@ -207,7 +207,7 @@ exports.updateUserEmailLists = ( req, res, next ) => {
             // create an error flash message to send back to the user
             flashMessages.appendFlashMessage({
                 messageType: flashMessages.MESSAGE_TYPES.SUCCESS,
-                title: 'Your e-mail lists were updated succesfully'
+                title: 'Your e-mail lists were updated successfully'
             });
             // send the error status and flash message markup
             flashMessages.generateFlashMessageMarkup()

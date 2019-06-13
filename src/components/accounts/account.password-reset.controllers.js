@@ -1,5 +1,5 @@
 const keystone                      = require( 'keystone' ),
-	  utilities                     = require( '../../routes/middleware/utilities' ),
+	  utilities                     = require( '../../utils/utilities.controllers' ),
 	  PasswordResetEmailMiddleware  = require( './account.email.controllers' ),
 	  UserMiddleware                = require( '../users/user.controllers' );
 

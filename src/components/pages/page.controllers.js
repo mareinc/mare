@@ -1,6 +1,6 @@
 const keystone				= require( 'keystone' ),
 	  moment				= require( 'moment' ),
-	  Utils					= require( '../../routes/middleware/utilities' ),
+	  utils					= require( '../../utils/utilities.controllers' ),
 	  eventService			= require( '../events/event.controllers' ),
 	  successStoryService	= require( '../success stories/success-story.controllers' );
 
@@ -49,12 +49,12 @@ exports.getSidebarItems = () => {
 				// if a success story was returned
 				if( successStory ) {
 					// create a truncated content element for a nicer display in summary cards
-					successStory.shortContent = Utils.truncateText( { text: successStory.content, options: truncateOptions } );
+					successStory.shortContent = utils.truncateText( { text: successStory.content, options: truncateOptions } );
 				}
 				// create a formatted date for display in the UI
 				event.prettyDate = moment( event.date ).utc().format( 'dddd, MMMM Do' );
 				// truncated content and remove HTML tags from the description, storing the result in a new field
-				event.shortDescription = Utils.truncateText( { text: Utils.stripTags( event.description ), options: truncateOptions } );
+				event.shortDescription = utils.truncateText( { text: utils.stripTags( event.description ), options: truncateOptions } );
 				// resolve the promise with the fetched success story and event
 				resolve( [ successStory, event ] );
 			})

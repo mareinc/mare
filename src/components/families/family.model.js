@@ -11,7 +11,7 @@ const keystone					= require( 'keystone' ),
 	  FamilyService				= require( './family.controllers' ),
 	  ListService				= require( '../../components/lists/list.controllers' ),
 	  MailchimpService			= require( '../../components/mailchimp lists/mailchimp-list.controllers' ),
-	  Validators  				= require( '../../routes/middleware/validators' );
+	  Validators  				= require( '../../utils/field-validator.controllers' );
 
 // configure the s3 storage adapters
 var fileStorage = new keystone.Storage({

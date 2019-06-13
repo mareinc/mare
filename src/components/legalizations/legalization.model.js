@@ -1,6 +1,6 @@
 var keystone	= require( 'keystone' ),
 Types			= keystone.Field.Types,
-Validators		= require( '../../routes/middleware/validators' );
+Validators		= require( '../../utils/field-validator.controllers' );
 
 // create model. Additional options allow menu name to be used what auto-generating URLs
 var Legalization = new keystone.List( 'Legalization' );

@@ -1,6 +1,6 @@
 const keystone 				= require( 'keystone' ),
 	  moment				= require( 'moment' ),
-	  Utils					= require( '../middleware/utilities' ),
+	  utils					= require( '../../utils/utilities.controllers' ),
 	  eventService			= require( '../../components/events/event.controllers' ),
 	  pageService			= require( '../../components/pages/page.controllers' ),
 	  socialWorkerService	= require( '../../components/social workers/social-worker.controllers' ),
@@ -93,7 +93,7 @@ exports = module.exports = async ( req, res ) => {
 					&& !isRegistrationBlocked;
 
 				// the list page needs truncated details information to keep the cards they're displayed on small
-				event.shortContent = Utils.truncateText( { text: event.description, options: truncateOptions } );
+				event.shortContent = utils.truncateText( { text: event.description, options: truncateOptions } );
 				// determine whether or not address information exists for the event, which is helpful during rendering
 				// street1 is required, so this is enough to tell us if the address has been populated
 				event.hasAddress = event.address && event.address.street1;

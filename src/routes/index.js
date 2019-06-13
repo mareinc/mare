@@ -6,7 +6,8 @@ const keystone						= require( 'keystone' ),
 	  donationService				= require( '../components/donations/donation.controllers' ),
 	  eventService					= require( '../components/events/event.controllers' ),
 	  familyService					= require( '../components/families/family.controllers' ),
-	  formService					= require( './middleware/service_form' ),
+	  questionMiddleware			= require( '../components/questions/have-a-question.middleware' ),
+	  inquiryMiddleware				= require( '../components/inquiries/inquiry.middleware' ),
 	  accountMiddleware				= require( '../components/accounts/account.middleware' ),
 	  userService					= require( '../components/users/user.middleware' ),
 	  registrationMiddleware		= require( '../components/accounts/account.controllers' ),
@@ -65,10 +66,10 @@ exports = module.exports = app => {
 	app.post( '/forms/social-worker-family-registration', familyService.registerFamily );
 
 	app.get( '/forms/information-request'				, routes.views.form_informationRequest );
-	app.post( '/forms/information-request'				, formService.submitInquiry );
+	app.post( '/forms/information-request'				, inquiryMiddleware.submitInquiry );
 
 	app.get( '/forms/have-a-question'					, routes.views.form_haveAQuestion );
-	app.post( '/forms/have-a-question'					, formService.submitQuestion );
+	app.post( '/forms/have-a-question'					, questionMiddleware.submitQuestion );
 	// steps in the process
 	app.get( '/steps-in-the-process'					, routes.views.stepsInTheProcess );
 	// events

@@ -8,7 +8,7 @@ const keystone					= require( 'keystone' ),
 	  staffEmailContactService	= require( '../staff email contacts/staff-email-contact.controllers' ),
 	  cscRegionContactService	= require( '../csc region contacts/csc-region-contact.controllers' ),
 	  inquiryEmailService		= require( './inquiry.email.controllers' ),
-	  utilities					= require( '../../routes/middleware/utilities' );
+	  utilities					= require( '../../utils/utilities.controllers' );
 
 /* public - creates an inquiry from data submitted through the information request form on the website */
 exports.createInquiry = ( { inquiry, user } ) => {

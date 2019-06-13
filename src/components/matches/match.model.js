@@ -1,6 +1,6 @@
 const keystone	= require( 'keystone' );
 const Types		= keystone.Field.Types;
-const Validators = require( '../../routes/middleware/validators' );
+const Validators = require( '../../utils/field-validator.controllers' );
 
 // Create model. Additional options allow menu name to be used what auto-generating URLs
 var Match = new keystone.List( 'Match' );

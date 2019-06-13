@@ -5,7 +5,7 @@ const keystone 		= require( 'keystone' ),
 	  SocialWorker	= require( '../social workers/social-worker.model' ),
 	  Family		= require( '../families/family.model' ),
 	  Admin			= require( '../administrators/admin.model' ),
-	  Validators	= require( '../../routes/middleware/validators' );
+	  Validators	= require( '../../utils/field-validator.controllers' );
 
 // create model
 var Donation = new keystone.List( 'Donation' );

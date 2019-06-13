@@ -6,7 +6,7 @@ const keystone					= require( 'keystone' ),
 	  User						= require( '../users/user.model' ),
 	  ChangeHistoryMiddleware	= require( '../change histories/change-history.controllers' ),
 	  UserServiceMiddleware		= require( '../../components/users/user.controllers' ),
-	  Validators  				= require( '../../routes/middleware/validators' );
+	  Validators  				= require( '../../utils/field-validator.controllers' );
 
 // Export to make it available using require.  The keystone.list import throws a ReferenceError when importing a list that comes later when sorting alphabetically
 const ContactGroup = require( '../contact groups/contact-group.model' );

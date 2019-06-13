@@ -1,7 +1,7 @@
 const keystone				= require( 'keystone' ),
 	  Types					= keystone.Field.Types,
 	  ListServiceMiddleware	= require( '../../components/lists/list.controllers' ),
-	  Validators			= require( '../../routes/middleware/validators' );
+	  Validators			= require( '../../utils/field-validator.controllers' );
 
 // create model
 var Agency = new keystone.List('Agency', {

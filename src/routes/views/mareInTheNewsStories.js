@@ -1,5 +1,5 @@
 const keystone 				= require( 'keystone' ),
-	  Utils					= require( '../middleware/utilities' ),
+	  utils					= require( '../../utils/utilities.controllers' ),
 	  mareInTheNewsService	= require( '../../components/mare in the news stories/mare-in-the-news.controllers' ),
 	  pageService			= require( '../../components/pages/page.controllers' );
 
@@ -26,9 +26,9 @@ exports = module.exports = ( req, res ) => {
 			// loop through all success stories
 			for( let story of stories ) { 
 				
-				story.shortContent = Utils.truncateText( { text: story.content, options: truncateOptions } );
+				story.shortContent = utils.truncateText( { text: story.content, options: truncateOptions } );
 				// append classes to the WYSIWYG generated content to allow for styling
-				// Utils.modifyWYSIWYGContent( story, 'shortContent', WYSIWYGModificationOptions );
+				// utils.modifyWYSIWYGContent( story, 'shortContent', WYSIWYGModificationOptions );
 			}
 			
 			// assign properties to locals for access during templating
