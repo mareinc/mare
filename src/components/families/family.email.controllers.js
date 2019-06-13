@@ -1,7 +1,7 @@
 const Email = require( 'keystone-email' ),
       hbs = require( 'hbs' );
 
-// TODO: several email functions in this file are nearly identical to those in user.registration-email.controllers.js.  They should be consolidated to keep it DRY
+// TODO: several email functions in this file are nearly identical to those in account.registration-email.controllers.js.  They should be consolidated to keep it DRY
 exports.sendNewSocialWorkerFamilyRegistrationNotificationEmailToMARE = ( socialWorkerName, rawFamilyData, family, registrationStaffContact, host ) => {
 
 	return new Promise( ( resolve, reject ) => {
@@ -555,7 +555,7 @@ exports.sendNewSocialWorkerFamilyRegistrationNotificationEmailToMARE = ( socialW
 	});
 };
 
-// TODO: the bulk of this function is repeated in the function above as well as in user.registration-email.controllers.js.  It should be consolodated to keep it DRY
+// TODO: the bulk of this function is repeated in the function above as well as in account.registration-email.controllers.js.  It should be consolodated to keep it DRY
 exports.sendNewSocialWorkerFamilyRegistrationNotificationEmailToSocialWorker = ( socialWorkerName, rawFamilyData, family, socialWorkerEmail, host ) => {
 
 	return new Promise( ( resolve, reject ) => {

@@ -4,8 +4,8 @@ const keystone						= require( 'keystone' ),
 	  staffEmailContactMiddleware	= require( '../staff email contacts/staff-email-contact.controllers' ),
 	  childService					= require( '../children/child.controllers' ),
 	  userService 					= require( '../users/user.controllers' ),
-	  registrationService			= require( '../users/user.registration.controllers' ),
-	  registrationEmailMiddleware	= require( '../users/user.registration-email.controllers' ),
+	  registrationService			= require( '../accounts/account.controllers' ),
+	  registrationEmailMiddleware	= require( '../accounts/account.registration-email.controllers' ),
 	  familyEmailService			= require( './family.email.controllers' );
 	  utilities         			= require( '../../routes/middleware/utilities' );
 

@@ -1,16 +1,18 @@
 const keystone						= require( 'keystone' ),
 	  robots						= require( 'express-robots' ),
+	  setupMiddleware				= require( '../utils/setup.middleware' ),
+	  notificationMiddleware		= require( '../utils/notification.middleware' ),
 	  childService					= require( '../components/children/child.controllers' ),
 	  donationService				= require( '../components/donations/donation.controllers' ),
 	  eventService					= require( '../components/events/event.controllers' ),
 	  familyService					= require( '../components/families/family.controllers' ),
 	  formService					= require( './middleware/service_form' ),
-	  middleware					= require( './middleware/middleware' ),
+	  accountMiddleware				= require( '../components/accounts/account.middleware' ),
 	  userService					= require( '../components/users/user.middleware' ),
-	  registrationMiddleware		= require( '../components/users/user.registration.controllers' ),
-	  accountMiddleware				= require( '../components/users/user.middleware' ),
+	  registrationMiddleware		= require( '../components/accounts/account.controllers' ),
+	  userMiddleware				= require( '../components/users/user.middleware' ),
 	  eventMiddleware				= require( '../components/events/event.middleware' ),
-	  passwordResetService 			= require( '../components/users/user.password-reset.controllers'),
+	  passwordResetService 			= require( '../components/accounts/account.password-reset.controllers'),
 	  accountVerificationService	= require( '../components/account verification codes/account-verification-code.middleware' ),
 	  toolsService					= require( '../components/reporting dashboard/tools.controllers' ),
 	  mailchimpService				= require( '../components/mailchimp lists/mailchimp-list.controllers' ),
@@ -18,8 +20,8 @@ const keystone						= require( 'keystone' ),
 	  importRoutes					= keystone.importer( __dirname );
 
 // common middleware
-keystone.pre( 'routes', middleware.initLocals );
-keystone.pre( 'render', middleware.flashMessages );
+keystone.pre( 'routes', setupMiddleware.initLocals );
+keystone.pre( 'render', notificationMiddleware.flashMessages );
 
 // import route controllers
 var routes = {
@@ -85,10 +87,10 @@ exports = module.exports = app => {
 	app.get( '/waiting-child-profiles'					, routes.views.waitingChildProfiles );
 	// registration
 	app.get( '/register'								, routes.views.register );
-	app.post( '/register'								, registrationMiddleware.registerUser, middleware.loginAjax );
+	app.post( '/register'								, registrationMiddleware.registerUser, accountMiddleware.loginAjax );
 	// login / logout
-	app.get( '/logout'									, middleware.logout );
-	app.post('/login'									, middleware.login );
+	app.get( '/logout'									, accountMiddleware.logout );
+	app.post('/login'									, accountMiddleware.login );
 	// TODO: refactor these routes and their processing
 	//login forgot password
 	app.post('/recover/generate'						, passwordResetService.resetPassword );
@@ -101,9 +103,9 @@ exports = module.exports = app => {
 	app.get( '/donate'									, routes.views.donate );
 	app.post( '/donate'									, donationService.validateDonationRequest, donationService.processDonation );
 	// user account management
-	app.get( '/account'									, middleware.requireUser, routes.views.account );
-	app.put( '/account/user-info'						, accountMiddleware.updateUser );
-	app.put( '/account/user-email-lists'				, accountMiddleware.updateUserEmailLists );
+	app.get( '/account'									, accountMiddleware.requireUser, routes.views.account );
+	app.put( '/account/user-info'						, userMiddleware.updateUser );
+	app.put( '/account/user-email-lists'				, userMiddleware.updateUserEmailLists );
 	// verification code handling after user registers
 	app.get('/verifyAccount'							, accountVerificationService );
 	/* TODO: all these routes below need to be moved and prefixed with appropriate REST verbs like put */

@@ -4,10 +4,11 @@
 // TODO: these functions are too large and do too many things.  Break them apart if possible
 
 const keystone 						= require( 'keystone' ),
-	  registrationEmailMiddleware	= require( './user.registration-email.controllers' ),
+	  accountEmailMiddleware		= require( './account.email.controllers' ),
+	  registrationEmailMiddleware	= require( './account.registration-email.controllers' ),
 	  listService					= require( '../lists/list.controllers' ),
 	  staffEmailContactMiddleware	= require( '../staff email contacts/staff-email-contact.controllers' ),
-	  userService					= require( './user.controllers' ),
+	  userService					= require( '../users/user.controllers' ),
 	  mailchimpService				= require( '../mailchimp lists/mailchimp-list.controllers' ),
 	  utilities						= require( '../../routes/middleware/utilities' ),
 	  flashMessages					= require( '../../routes/middleware/service_flash-messages' );
@@ -100,7 +101,7 @@ exports.registerUser = ( req, res, next ) => {
 
 							createVerificationRecord
 								// send the account verification email to the user
-								.then( verificationRecord => registrationEmailMiddleware.sendAccountVerificationEmailToUser( newSiteVisitor.get( 'email' ), userType, verificationCode, locals.host ) )
+								.then( verificationRecord => accountEmailMiddleware.sendAccountVerificationEmailToUser( newSiteVisitor.get( 'email' ), userType, verificationCode, locals.host ) )
 								// if the email couldn't be send, log the error for debugging purposes
 								.catch( err => console.error( `error sending account verification email to site visitor ${ newSiteVisitor.get( 'name.full' ) } at ${ newSiteVisitor.get( 'email' ) }`, err ) );
 
@@ -188,7 +189,7 @@ exports.registerUser = ( req, res, next ) => {
 							// once the verification record has been saved
 							createVerificationRecord
 								// send the account verification email to the user
-								.then( verificationRecord => registrationEmailMiddleware.sendAccountVerificationEmailToUser( newSocialWorker.get( 'email' ), userType, verificationCode, locals.host ) )
+								.then( verificationRecord => accountEmailMiddleware.sendAccountVerificationEmailToUser( newSocialWorker.get( 'email' ), userType, verificationCode, locals.host ) )
 								// if the email couldn't be send, log the error for debugging purposes
 								.catch( err => console.error( `error sending account verification email to social worker ${ newSocialWorker.get( 'name.full' ) } at ${ newSocialWorker.get( 'email' ) }`, err ) );
 
@@ -289,7 +290,7 @@ exports.registerUser = ( req, res, next ) => {
 							// once the verification record has been saved
 							createVerificationRecord
 								// send the account verification email to the user
-								.then( verificationRecord => registrationEmailMiddleware.sendAccountVerificationEmailToUser( newFamily.get( 'email' ), userType, verificationCode, locals.host ) )
+								.then( verificationRecord => accountEmailMiddleware.sendAccountVerificationEmailToUser( newFamily.get( 'email' ), userType, verificationCode, locals.host ) )
 								// if the email couldn't be send, log the error for debugging purposes
 								.catch( err => console.error( `error sending account verification email to family ${ newFamily.get( 'displayName' ) } at ${ newFamily.get( 'email' ) }`, err ) );
 

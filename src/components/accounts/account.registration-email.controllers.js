@@ -1,6 +1,8 @@
 const Email = require( 'keystone-email' ),
       hbs = require( 'hbs' );
 
+/* TODO IMPORTANT: all of these functions below need to be moved to their correct component files */
+
 exports.sendNewSiteVisitorNotificationEmailToMARE = ( user, registrationStaffContact, mailingListNames ) => {
 
 	return new Promise( ( resolve, reject ) => {
@@ -878,63 +880,6 @@ exports.sendNewFamilyNotificationEmailToMARE = ( user, registrationStaffContact,
 				if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
 					// reject the promise with details
 					return reject( new Error( `error sending new family notification email to MARE - ${ response.status } - ${ response.email } - ${ response.reject_reason }` ) );
-				}
-
-				resolve();
-			});
-	});
-};
-
-exports.sendAccountVerificationEmailToUser = ( userEmail, userType, verificationCode, host ) => {
-
-	return new Promise( ( resolve, reject ) => {
-		// if sending of the email is not currently allowed
-		if( process.env.SEND_ACCOUNT_VERIFICATION_EMAILS_TO_USER !== 'true' ) {
-			// reject the promise with information about why
-			return reject( new Error( `sending of the email is disabled` ) );
-		}
-
-		if( !userEmail ) {
-			return reject( new Error( `no user email was provided` ) );
-		}
-
-		// find the email template in templates/emails/
-		Email.send(
-			// template path
-            'register_account-verification-to-user',
-            // email options
-            {
-                engine: 'hbs',
-                transport: 'mandrill',
-                root: 'templates/emails/'
-            // render options
-            }, {
-                host,
-				userType,
-				verificationCode,
-                layout: false
-            // send options
-            }, {
-                apiKey: process.env.MANDRILL_APIKEY,
-                to: userEmail,
-				from: {
-					name: 'MARE',
-					email: 'communications@mareinc.org' // TODO: this should be in a model or ENV variable
-				},
-				subject: 'please verify your MARE account'
-			// callback
-			}, ( err, message ) => {
-				// if there was an error sending the email
-				if( err ) {
-					// reject the promise with details
-					return reject( new Error( `error sending account verification email to newly registered user` ) );
-				}
-				// the response object is stored as the 0th element of the returned message
-				const response = message ? message[ 0 ] : undefined;
-				// if the email failed to send, or an error occurred ( which it does, rarely ) causing the response message to be empty
-				if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
-					// reject the promise with details
-					return reject( new Error( `error sending account verification email to newly registered user - ${ response.status } - ${ response.email } - ${ response.reject_reason }` ) );
 				}
 
 				resolve();

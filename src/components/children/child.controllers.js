@@ -1,7 +1,7 @@
 const keystone						= require( 'keystone' ),
 	  _								= require( 'underscore' ),
 	  async							= require( 'async' ),
-	  middleware					= require( '../../routes/middleware/middleware' ),
+	  utilities						= require( '../../routes/middleware/utilities' ),
 	  listService					= require( '../lists/list.controllers' ),
 	  staffEmailContactMiddleware	= require( '../staff email contacts/staff-email-contact.controllers' ),
 	  familyService					= require( '../families/family.controllers' ),
@@ -53,9 +53,9 @@ exports.getAllChildren = ( req, res, done, fieldsToSelect ) => {
 				// adjust the image to the blank male/female image if needed
 				exports.setNoChildImage( req, res, child, locals.targetChildren === 'all' );
 				// set extra information needed for rendering the child to the page
-				child.age						= middleware.getAge( child.birthDate );
-				child.ageConverted				= middleware.convertDate( child.birthDate );
-				child.registrationDateConverted	= middleware.convertDate( child.registrationDate );
+				child.age						= utilities.getAge( child.birthDate );
+				child.ageConverted				= utilities.convertDate( child.birthDate );
+				child.registrationDateConverted	= utilities.convertDate( child.registrationDate );
 			});
 
 			locals.allChildren = children;
@@ -141,9 +141,9 @@ exports.getChildrenForSocialWorkerAccount = ( req, res, done, fieldsToSelect ) =
 										// adjust the image to the blank male/female image if needed
 										exports.setNoChildImage( req, res, child, locals.targetChildren === 'all' );
 										// set extra information needed for rendering the child to the page
-										child.age						= middleware.getAge( child.birthDate );
-										child.ageConverted				= middleware.convertDate( child.birthDate );
-										child.registrationDateConverted	= middleware.convertDate( child.registrationDate );
+										child.age						= utilities.getAge( child.birthDate );
+										child.ageConverted				= utilities.convertDate( child.birthDate );
+										child.registrationDateConverted	= utilities.convertDate( child.registrationDate );
 									});
 
 									// filter out any children that are not active or on hold
@@ -208,9 +208,9 @@ exports.getChildrenForFamilyAccount = ( req, res, done, fieldsToSelect ) => {
 					// adjust the image to the blank male/female image if needed
 					exports.setNoChildImage( req, res, child, locals.targetChildren === 'all' );
 					// set extra information needed for rendering the child to the page
-					child.age						= middleware.getAge( child.birthDate );
-					child.ageConverted				= middleware.convertDate( child.birthDate );
-					child.registrationDateConverted	= middleware.convertDate( child.registrationDate );
+					child.age						= utilities.getAge( child.birthDate );
+					child.ageConverted				= utilities.convertDate( child.birthDate );
+					child.registrationDateConverted	= utilities.convertDate( child.registrationDate );
 				});
 
 				locals.allChildren = children;
@@ -271,9 +271,9 @@ exports.getUnrestrictedChildren = ( req, res, done, fieldsToSelect ) => {
 				// adjust the image to the blank male/female image if needed
 				exports.setNoChildImage( req, res, child, locals.targetChildren === 'all' );
 				// set extra information needed for rendering the child to the page
-				child.age						= middleware.getAge( child.birthDate );
-				child.ageConverted				= middleware.convertDate( child.birthDate );
-				child.registrationDateConverted	= middleware.convertDate( child.registrationDate );
+				child.age						= utilities.getAge( child.birthDate );
+				child.ageConverted				= utilities.convertDate( child.birthDate );
+				child.registrationDateConverted	= utilities.convertDate( child.registrationDate );
 
 			});
 
@@ -554,8 +554,8 @@ exports.getRelevantChildInformation = ( children, locals ) => {
 		var otherFamilyConstellationConsiderations = _.pluck( child.otherFamilyConstellationConsideration, 'otherFamilyConstellationConsideration' );
 
 		return {
-			age										: middleware.getAge( child.birthDate ),
-			ageConverted							: middleware.convertDate( child.birthDate ),
+			age										: utilities.getAge( child.birthDate ),
+			ageConverted							: utilities.convertDate( child.birthDate ),
 			image									: child.displayImage,
 			disabilities							: _.pluck( child.disabilities, 'disability' ),
 			emotionalNeeds							: needsMap[child.emotionalNeeds],
@@ -574,7 +574,7 @@ exports.getRelevantChildInformation = ( children, locals ) => {
 			physicalNeeds							: needsMap[child.physicalNeeds],
 			race									: _.pluck( child.race, 'race' ),
 			recommendedFamilyConstellation			: _.pluck( child.recommendedFamilyConstellation, 'familyConstellation' ),
-			registrationDateConverted				: middleware.convertDate( child.registrationDate ),
+			registrationDateConverted				: utilities.convertDate( child.registrationDate ),
 			registrationNumber						: child.registrationNumber,
 			requiresNoSiblings						: otherFamilyConstellationConsiderations.indexOf( 'childless home' ) !== -1,
 			olderChildrenAcceptable					: otherFamilyConstellationConsiderations.indexOf( 'older children acceptable' ) !== -1,
@@ -587,6 +587,7 @@ exports.getRelevantChildInformation = ( children, locals ) => {
 	});
 }
 
+/* TODO IMPORTANT: there are several places where children are being mapped over and otherFamilyConstellationConsiderations is being checked.  The map doesn't do anything. */
 exports.getRelevantSiblingGroupInformation = ( siblingGroups, locals ) => {
 	// create a mapping for the emotional, intellectual, and physical needs
 	const needsMap = {
@@ -609,15 +610,15 @@ exports.getRelevantSiblingGroupInformation = ( siblingGroups, locals ) => {
 		}));
 
 		const namesArray				= children.map( child => child.name.first );
-		const agesArray					= children.map( child => middleware.getAge( child.birthDate ) );
+		const agesArray					= children.map( child => utilities.getAge( child.birthDate ) );
 		const registrationNumbersArray	= children.map( child => child.registrationNumber );
 		const legalStatusesArray		= _.uniq( children.map( child => child.legalStatus.legalStatus ) );
 
 		return {
 
 			ages									: _.sortBy( agesArray ),
-			agesConverted							: _.sortBy( children.map( child => middleware.convertDate( child.birthDate ) ) ),
-			agesString								: middleware.getArrayAsList( _.sortBy( agesArray ) ),
+			agesConverted							: _.sortBy( children.map( child => utilities.convertDate( child.birthDate ) ) ),
+			agesString								: utilities.getReadableStringFromArray( { array: _.sortBy( agesArray ) } ),
 			image									: _.uniq( children.map( child => child.siblingGroupDisplayImage ) ).indexOf( NO_IMAGE_SIBLING_GROUP_PATH ) !== -1 ? NO_IMAGE_SIBLING_GROUP_PATH : children[ 0 ].siblingGroupDisplayImage.replace( ' ', '%20' ),
 			disabilities							: _.uniq( _.flatten( children.map( child => _.pluck( child.disabilities, 'disability' ) ) ) ),
 			emotionalNeeds							: _.uniq( children.map( child => needsMap[ child.emotionalNeeds ] ) ),
@@ -629,18 +630,18 @@ exports.getRelevantSiblingGroupInformation = ( siblingGroups, locals ) => {
 			isBookmarked							: children.map( child => child.isBookmarked ).indexOf( true ) !== -1, // set to true if any of the children have true for isBookmarked
 			languages								: _.uniq( _.flatten( children.map( child => _.pluck(child.languages, 'language' ) ) ) ),
 			legalStatuses							: legalStatusesArray,
-			legalStatusesString						: middleware.getArrayAsList( legalStatusesArray ),
+			legalStatusesString						: utilities.getReadableStringFromArray( { array: legalStatusesArray } ),
 			names									: _.sortBy( namesArray ),
-			namesString								: middleware.getArrayAsList( _.sortBy( namesArray ) ),
+			namesString								: utilities.getReadableStringFromArray( { array: _.sortBy( namesArray ) } ),
 			noPets									: _.uniq( children.map( child => otherFamilyConstellationConsiderations.indexOf( 'no pets' ) !== -1 ) ),
 			numberOfSiblings						: _.uniq( children.map( child => child.siblings.length ) ), // TODO: Ask Lisa if the number of siblings between children can vary (think half siblings)
 			otherConsiderations						: _.uniq( _.flatten( children.map( child => _.pluck( child.otherConsiderations, 'otherConsideration' ) ) ) ),
 			physicalNeeds							: _.uniq( children.map( child => needsMap[ child.physicalNeeds ] ) ),
 			races									: _.uniq( _.flatten( children.map( child => _.pluck(child.race, 'race' ) ) ) ),
 			recommendedFamilyConstellations			: _.uniq( _.flatten( children.map( child => _.pluck( child.recommendedFamilyConstellation, 'familyConstellation' ) ) ) ),
-			registrationDatesConverted				: _.sortBy( children.map( child => middleware.convertDate( child.registrationDate ) ) ),
+			registrationDatesConverted				: _.sortBy( children.map( child => utilities.convertDate( child.registrationDate ) ) ),
 			registrationNumbers						: _.sortBy( registrationNumbersArray ),
-			registrationNumbersString				: middleware.getArrayAsList( _.sortBy( registrationNumbersArray ) ),
+			registrationNumbersString				: utilities.getReadableStringFromArray( { array: _.sortBy( registrationNumbersArray ) } ),
 			requiresNoSiblings						: _.uniq( children.map( child => otherFamilyConstellationConsiderations.indexOf( 'childless home' ) !== -1 ) ),
 			requiresSiblings						: _.uniq( children.map( child => otherFamilyConstellationConsiderations.indexOf( 'multi-child home' ) !== -1 ) ),
 			olderChildrenAcceptable					: _.uniq( children.map( child => otherFamilyConstellationConsiderations.indexOf( 'older children acceptable' ) !== -1 ) ),

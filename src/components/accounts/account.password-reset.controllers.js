@@ -1,7 +1,7 @@
 const keystone                      = require( 'keystone' ),
 	  utilities                     = require( '../../routes/middleware/utilities' ),
-	  PasswordResetEmailMiddleware  = require( './user.email.controllers' ),
-	  UserMiddleware                = require( './user.controllers' );
+	  PasswordResetEmailMiddleware  = require( './account.email.controllers' ),
+	  UserMiddleware                = require( '../users/user.controllers' );
 
 exports.resetPassword = ( req, res ) => {
 	// store a reference to locals

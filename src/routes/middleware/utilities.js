@@ -179,3 +179,24 @@ Set.prototype.rightOuterJoin = function( setB ) {
 	};
 	return difference;
 }
+
+// TODO: these were moved from other files when everything was reorganized from a monolith to component directories.  Review of each is needed
+
+/* date objects are easily compared for sorting purposes when converted to milliseconds */
+exports.convertDate = function convertDate( date ) {
+	return new Date( date ).getTime();
+};
+
+exports.getAge = function getAge( dateOfBirth ) {
+
+	var today = new Date();
+	var birthDate = new Date( dateOfBirth );
+	var age = today.getFullYear() - birthDate.getFullYear();
+	var month = today.getMonth() - birthDate.getMonth();
+
+	if ( month < 0 || ( month === 0 && today.getDate() < birthDate.getDate() ) ) {
+		age--;
+	}
+
+	return age;
+};
