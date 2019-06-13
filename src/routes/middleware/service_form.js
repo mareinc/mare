@@ -3,7 +3,7 @@
 const inquiryService				= require( '../../components/inquiries/inquiry.controllers' ),
 	  listService					= require( '../../components/lists/list.controllers' ),
 	  staffEmailContactMiddleware	= require( '../../components/staff email contacts/staff-email-contact.controllers' ),
-	  haveAQuestionEmailService		= require( './emails_have-a-question' );
+	  haveAQuestionEmailService		= require( '../../components/questions/have-a-question.email.controllers' );
 
 exports.submitInquiry = function submitInquiry( req, res, next ) {
 	// store the inquiry information in a local variable
