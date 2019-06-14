@@ -252,6 +252,7 @@ exports = module.exports = ( req, res ) => {
 	const view		= new keystone.View( req, res ),
 		  userType	= req.user ? req.user.userType : '',
 		  locals	= res.locals;
+
 	let childId = req.query.child;
 	
 	// access to admins only
@@ -263,136 +264,147 @@ exports = module.exports = ( req, res ) => {
 	}
 	
 	if ( typeof childId === 'undefined' ) {
-		view.render( 'tools-child-matching-request-child', { layout: 'dashboard' } );
-	} else {
-		childService.getChildById( { id: childId } ).then( child => {
-			
-			let preferences = child;
-			let criteria = getValidCriteria( req.query );
-			let emptyCriteria = _.isEmpty( criteria );
-			let statusesPromise = toolsService.getChildStatusesOptions(
-					emptyCriteria && child.status ? [ child.status.toString() ] : req.query.status
-				),
-				gendersPromise = toolsService.getGendersOptions(
-					emptyCriteria && child.gender ? [ child.gender.toString() ] : req.query.gender 
-				),
-				racesPromise = toolsService.getRacesOptions(
-					emptyCriteria && Array.isArray( child.race ) ? child.race.map( ( race ) => race.toString() ) : req.query.race
-				),
-				legalStatusesPromise = toolsService.getLegalStatusesOptions(
-					emptyCriteria && child.legalStatus ?  [ child.legalStatus.toString() ] : req.query.legalStatus
-				),
-				familyConstellationsPromise = toolsService.getFamilyConstellationsOptions(
-					emptyCriteria && Array.isArray( child.recommendedFamilyConstellation ) ? child.recommendedFamilyConstellation.map( ( constellation ) => constellation.toString() ) : req.query.familyConstellation
-				),
-				socialWorkersPromise = toolsService.getSocialWorkersOptions(
-					emptyCriteria && child.adoptionWorker ? [ child.adoptionWorker.toString() ] : req.query.socialWorkers
-				),
-				socialWorkersAgenciesPromise = toolsService.getAgenciesOptions( 
-					emptyCriteria && child.adoptionWorkerAgency ? [ child.adoptionWorkerAgency.toString() ] : req.query.socialWorkersAgency
-				),
-				resultsPromise = getResultsPromise( criteria )
-				;
-
-			Promise.all( [ 
-					statusesPromise, gendersPromise, racesPromise, familyConstellationsPromise,
-					legalStatusesPromise, socialWorkersPromise, socialWorkersAgenciesPromise, resultsPromise
-				] )
-				.then( values => {
-					// assign local variables to the values returned by the promises
-					const [ statuses, genders, races, familyConstellations,
-						legalStatuses, socialWorkers, socialWorkersAgencies, results ] = values;
-					
-					// assign properties to locals for access during templating
-					locals.child = child._id;
-					locals.childDisplayNameAndRegistration = child.displayNameAndRegistration;
-					locals.statuses = statuses;
-					locals.genders = genders;
-					locals.races = races;
-					locals.legalStatuses = legalStatuses;
-					locals.familyConstellations = familyConstellations;
-					locals.agesFrom = toolsService.getAgesOptions(
-						emptyCriteria && preferences.birthDate ? moment().diff(preferences.birthDate, 'years') : req.query.agesFrom
-					);
-					locals.agesTo = toolsService.getAgesOptions(
-						req.query.agesTo
-					);
-					locals.siblingGroupSizeFrom = toolsService.getSiblingGroupSizesOptions(
-						emptyCriteria && preferences.siblings ? preferences.siblings.length : req.query.siblingGroupSizeFrom
-					);
-					locals.siblingGroupSizeTo = toolsService.getSiblingGroupSizesOptions(
-						req.query.siblingGroupSizeTo
-					);
-					locals.physicalNeedsFrom = toolsService.getPhysicalNeedsOptions(
-						emptyCriteria && preferences.physicalNeeds ? preferences.physicalNeeds : req.query.physicalNeedsFrom
-					);
-					locals.physicalNeedsTo = toolsService.getPhysicalNeedsOptions(
-						req.query.physicalNeedsTo
-					);
-					locals.intellectualNeedsFrom = toolsService.getIntellectualNeedsOptions(
-						emptyCriteria && preferences.intellectualNeeds ? preferences.intellectualNeeds : req.query.intellectualNeedsFrom
-					);
-					locals.intellectualNeedsTo = toolsService.getIntellectualNeedsOptions(
-						req.query.intellectualNeedsTo
-					);
-					locals.emotionalNeedsFrom = toolsService.getEmotionalNeedsOptions(
-						emptyCriteria && preferences.emotionalNeeds ? preferences.emotionalNeeds : req.query.emotionalNeedsFrom
-					);
-					locals.emotionalNeedsTo = toolsService.getEmotionalNeedsOptions(
-						req.query.emotionalNeedsTo
-					);
-					locals.socialWorkers = socialWorkers;
-					locals.socialWorkersAgencies = socialWorkersAgencies;
-					locals.fields = getFieldsFromQuery( req.query );
-					locals.fieldNames = getReportFieldNamesFromQuery( req.query );
-					locals.siblingsCellColSpan = Object.keys( locals.fields ).length + 1;
-					locals.nonEmptyCriteria = !emptyCriteria;
-					locals.results = sortResults( processResults( results, criteria, locals.fields ) );
-					
-					if ( req.query.pdf ) {
-						view.render( 'tools-child-matching-pdf', { layout: null }, function(error, html) {
-							//res.send( unescapeHTML( html ) );
-							
-							const convertHTMLToPDF = require( "pdf-puppeteer" );
-							var callback = function ( pdf ) {
-								res.setHeader( "Content-Type", "application/pdf" );
-								res.send( pdf );
-							}
-							
-							const pageOptions = {
-								width: "11 in",
-								height: "8.5 in",
-								margin : {
-									top: '1 in',
-									right: '0.5 in',
-									bottom: '0.5 in',
-									left: '0.5 in'
-								},
-								displayHeaderFooter: true,
-								headerTemplate: '<span style="font-size: 18px; margin-left: 45px;">Massachusetts Adoption Resource Exchange, Inc.<br><span style="font-size: 16px;">Child Match Criteria Listing</span></span>',	
-								footerTemplate : '<span class="pageNumber" style="font-size: 10px; margin-left: 45px; text-align: center;"></span><span class="date" style="font-size: 10px; margin-left: 45px; text-align: right"></span>'
-							};
-							
-							convertHTMLToPDF( toolsService.unescapeHTML( html ), callback, pageOptions );
-						});
-						
-					} else {
-						view.render( 'tools-child-matching', { layout: 'dashboard' } );
-					}
-				})
-				.catch( err => {
-					console.error( `error loading data for the dashboard - ${ err }` );
-					
-					view.render( 'tools-child-matching', { layout: 'dashboard' } );
-				});
-		})
-		.catch( err => {
-			console.error( `error loading data for the dashboard - ${ err }` );
-			
-			locals.familyNotFound = true;
-			
-			view.render( 'tools-child-matching-request-child', { layout: 'dashboard' } );
-		});
+		return view.render( 'tools-child-matching-request-child', { layout: 'dashboard' } );
 	}
-	
+
+	childService
+		.getChildById( { id: childId } )
+		.then( child => {
+		
+		let preferences = child;
+		let criteria = getValidCriteria( req.query );
+		let emptyCriteria = _.isEmpty( criteria );
+
+		let statusesPromise = toolsService.getChildStatusesOptions( emptyCriteria && child.status
+			? [ child.status.toString() ]
+			: req.query.status );
+
+		let gendersPromise = toolsService.getGendersOptions( emptyCriteria && child.gender
+			? [ child.gender.toString() ]
+			: req.query.gender );
+
+		let racesPromise = toolsService.getRacesOptions( emptyCriteria && Array.isArray( child.race )
+			? child.race.map( ( race ) => race.toString() ) : req.query.race );
+
+		let legalStatusesPromise = toolsService.getLegalStatusesOptions( emptyCriteria && child.legalStatus
+			?  [ child.legalStatus.toString() ]
+			: req.query.legalStatus );
+
+		let familyConstellationsPromise = toolsService.getFamilyConstellationsOptions( emptyCriteria && Array.isArray( child.recommendedFamilyConstellation )
+			? child.recommendedFamilyConstellation.map( constellation => constellation.toString() )
+			: req.query.familyConstellation );
+
+		let socialWorkersPromise = toolsService.getSocialWorkersOptions( emptyCriteria && child.adoptionWorker
+			? [ child.adoptionWorker.toString() ]
+			: req.query.socialWorkers );
+
+		let socialWorkersAgenciesPromise = toolsService.getAgenciesOptions( emptyCriteria && child.adoptionWorkerAgency
+			? [ child.adoptionWorkerAgency.toString() ]
+			: req.query.socialWorkersAgency );
+
+		let resultsPromise = getResultsPromise( criteria );
+
+		Promise.all( [ 
+				statusesPromise, gendersPromise, racesPromise, familyConstellationsPromise, legalStatusesPromise,
+				socialWorkersPromise, socialWorkersAgenciesPromise, resultsPromise
+			] )
+			.then( values => {
+				// assign local variables to the values returned by the promises
+				const [ statuses, genders, races, familyConstellations,
+					legalStatuses, socialWorkers, socialWorkersAgencies, results ] = values;
+				
+				// assign properties to locals for access during templating
+				locals.child = child._id;
+				locals.childDisplayNameAndRegistration = child.displayNameAndRegistration;
+				locals.statuses = statuses;
+				locals.genders = genders;
+				locals.races = races;
+				locals.legalStatuses = legalStatuses;
+				locals.familyConstellations = familyConstellations;
+				locals.agesFrom = toolsService.getAgesOptions(
+					emptyCriteria && preferences.birthDate ? moment().diff(preferences.birthDate, 'years') : req.query.agesFrom
+				);
+				locals.agesTo = toolsService.getAgesOptions(
+					req.query.agesTo
+				);
+				locals.siblingGroupSizeFrom = toolsService.getSiblingGroupSizesOptions(
+					emptyCriteria && preferences.siblings ? preferences.siblings.length : req.query.siblingGroupSizeFrom
+				);
+				locals.siblingGroupSizeTo = toolsService.getSiblingGroupSizesOptions(
+					req.query.siblingGroupSizeTo
+				);
+				locals.physicalNeedsFrom = toolsService.getPhysicalNeedsOptions(
+					emptyCriteria && preferences.physicalNeeds ? preferences.physicalNeeds : req.query.physicalNeedsFrom
+				);
+				locals.physicalNeedsTo = toolsService.getPhysicalNeedsOptions(
+					req.query.physicalNeedsTo
+				);
+				locals.intellectualNeedsFrom = toolsService.getIntellectualNeedsOptions(
+					emptyCriteria && preferences.intellectualNeeds ? preferences.intellectualNeeds : req.query.intellectualNeedsFrom
+				);
+				locals.intellectualNeedsTo = toolsService.getIntellectualNeedsOptions(
+					req.query.intellectualNeedsTo
+				);
+				locals.emotionalNeedsFrom = toolsService.getEmotionalNeedsOptions(
+					emptyCriteria && preferences.emotionalNeeds ? preferences.emotionalNeeds : req.query.emotionalNeedsFrom
+				);
+				locals.emotionalNeedsTo = toolsService.getEmotionalNeedsOptions(
+					req.query.emotionalNeedsTo
+				);
+				locals.socialWorkers = socialWorkers;
+				locals.socialWorkersAgencies = socialWorkersAgencies;
+				locals.fields = getFieldsFromQuery( req.query );
+				locals.fieldNames = getReportFieldNamesFromQuery( req.query );
+				locals.siblingsCellColSpan = Object.keys( locals.fields ).length + 1;
+				locals.nonEmptyCriteria = !emptyCriteria;
+				locals.results = sortResults( processResults( results, criteria, locals.fields ) );
+				
+				if ( req.query.pdf ) {
+					view.render( 'tools-child-matching-pdf', { layout: null }, ( error, html ) => {
+						
+						const convertHTMLToPDF = require( 'pdf-puppeteer' );
+						
+						const callback = pdf => {
+							res.setHeader( 'Content-Type', 'application/pdf' );
+							res.send( pdf );
+						}
+						
+						const pageOptions = {
+							width: '11 in',
+							height: '8.5 in',
+							margin : {
+								top: '1 in',
+								right: '0.5 in',
+								bottom: '0.5 in',
+								left: '0.5 in'
+							},
+							displayHeaderFooter: true,
+							headerTemplate: '<span style="font-size: 18px; margin-left: 45px;">Massachusetts Adoption Resource Exchange, Inc.<br><span style="font-size: 16px;">Child Match Criteria Listing</span></span>',	
+							footerTemplate : '<span class="pageNumber" style="font-size: 10px; margin-left: 45px; text-align: center;"></span><span class="date" style="font-size: 10px; margin-left: 45px; text-align: right"></span>'
+						};
+
+						const puppeteerArgs = {
+							args: [ '--no-sandbox' ]
+						};
+						
+						convertHTMLToPDF( toolsService.unescapeHTML( html ), callback, pageOptions, puppeteerArgs );
+					});
+					
+				} else {
+					view.render( 'tools-child-matching', { layout: 'dashboard' } );
+				}
+			})
+			.catch( err => {
+				console.error( `error loading data for the dashboard - ${ err }` );
+				
+				view.render( 'tools-child-matching', { layout: 'dashboard' } );
+			});
+	})
+	.catch( err => {
+		console.error( `error loading data for the dashboard - ${ err }` );
+		
+		locals.familyNotFound = true;
+		
+		view.render( 'tools-child-matching-request-child', { layout: 'dashboard' } );
+	});	
 };
