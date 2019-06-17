@@ -220,26 +220,26 @@ exports.getChildrenForFamilyAccount = ( req, res, done, fieldsToSelect ) => {
 		});
 };
 
-exports.getChildrenByIds = idsArray => {
+exports.getChildrenByIds = ids => {
 
 	return new Promise( ( resolve, reject ) => {
 
 		keystone.list( 'Child' ).model
 			.find()
-			.where( '_id' ).in( idsArray )
+			.where( '_id' ).in( ids )
 			.exec()
 			.then( children => {
 				// if no children were returned
 				if( children.length === 0 ) {
 					// reject the promise with the reason why
-					reject( new Error( `error fetching children by id array - no children found with ids ${ idsArray }` ) );
+					reject( new Error( `error fetching children by id array - no children found with ids ${ ids }` ) );
 				}
 				// resolve the promise with the returned children
 				resolve( children );
 			// if an error occurred fetching from the database
 			}, err => {
 				// reject the promise with details of the error
-				reject( new Error( `error fetching children by id array ${ idsArray }` ) );
+				reject( new Error( `error fetching children by id array ${ ids }` ) );
 			});
 	});
 };

@@ -1,22 +1,9 @@
-<div class="wrapper">
-	<!-- Sidebar -->
-     <nav id="sidebar" class="bg-primary text-white">
-			<button type="button" class="sidebarCollapse btn btn-info mb-4">
-				Close
-			</button>
-            <div class="sidebar-header">
-                <h3>Reports:</h3>
-            </div>
-			<div class="list-group list-group-flush">
-			  <a class="list-group-item" href="/tools/family-matching"><span class="list-group-icon"><img src="/dashboard-styles/images/icon-family-matching.png" alt="#"></span> Family Matching</a>
-			  <a class="list-group-item active" href="/tools/child-matching"><span class="list-group-icon"><img src="/dashboard-styles/images/icon-child-matching.png" alt="#"></span> Child Matching</a>
-			</div>
-						
-
-        </nav>
+<div class="dashboard-wrapper">
+	
+	{{> dashboard-sidebar}}
 		
 	<!-- Page Content -->
-    <div id="content">
+    <div class="dashboard-content">
 		<form class="matching-form" method="get" action="/tools/child-matching" method="get">
 			
 			<input type="hidden" name="child" value="{{ child }}" />

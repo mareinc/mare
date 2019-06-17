@@ -20,13 +20,11 @@
 		{{!-- This file provides the default styling for the KeystoneJS Content Editor
 		- only renders when user is logged in and admin--}}
 		{{{isAdminEditorCSS user}}}
-<link rel="stylesheet" href="/dist/dashboard.css">
-		<!--<link rel="stylesheet" href="/dist/font-awesome.min.css">
-		<link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,600,700,800" rel="stylesheet">
-
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
-		-->
+		
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+		<link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.4.0/css/bootstrap4-toggle.min.css" rel="stylesheet">
+		
+		<link rel="stylesheet" href="/dist/dashboard.css">
 		
 		<script src="/dist/modernizr.custom.min.js"></script>
 
@@ -35,32 +33,20 @@
 		<!--[if lt IE 9]>
 		<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js" />
 		<![endif]-->
-
-		
-		
-    <!--<link href="https://unpkg.com/gijgo@1.9.11/css/gijgo.min.css" rel="stylesheet" type="text/css" />-->
-
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-
-<link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.4.0/css/bootstrap4-toggle.min.css" rel="stylesheet">
-
-		
+	
 	</head>
 	<body>
-
-		{{> mobile-menu}}
-		{{> modal}}
 		
-		<div class="global-header">
-			<div class="content-wrapper content-wrapper--mobile-centered">
+		<div class="global-header global-header--dashboard">
+			<div class="content-wrapper content-wrapper--mobile-centered content-wrapper--dashboard">
 				<a href="/" class="logo-offset-left">
-					<img class="logo logo--horizontal" src="/dist/img/mare-logo-horizontal.svg" alt="Massachusetts Adoption Resource Exchange">
+					<img class="logo logo--horizontal logo--dashboard" src="/dist/img/mare-logo-horizontal.svg" alt="Massachusetts Adoption Resource Exchange">
 				</a>
 				<a href="/">
 					<img class="logo logo--vertical" src="/dist/img/mare-logo-vertical.svg" alt="Massachusetts Adoption Resource Exchange">
 				</a>
 				<span class="header-navigation-container">
-					{{> top-nav}}
+					{{> dashboard-top-nav}}
 				</span>
 			</div>
 		</div>
@@ -70,21 +56,11 @@
 		{{> flash-messages}}
 
 		<div class="body">
-			{{!-- Each page has a data value for the type of content area to display, use that to render a partial template which has a placeholder for {{{body}}} --}}
-			{{#if render-with-sidebar}}
-			<div class="content-wrapper">
-				{{> content-with-sidebar}}
-			</div>
-			{{else}}
-				{{#if render-homepage}}
-				{{> content-without-sidebar}}
-				{{else}}
-				<div class="content-wrapper">
-					{{> content-without-sidebar}}
-				</div>
-				{{/if}}
-			{{/if}}
-			</div>
+			<section class="content">
+				<section class="content__body">
+					{{{body}}}
+                </section>
+            </section>
 		</div>
 
 		<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -101,50 +77,47 @@
 			  only renders when user is logged in and admin--}}
 		{{{isAdminEditorJS user}}}
 	
-	
-	
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-    
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
-    <script type="text/javascript">
-        $(document).ready(function () {
-						
-			function headerOffset(){
-				headerHeight = $(".global-header").outerHeight();
-				$(".content").css("padding-top",headerHeight);
-				$("#sidebar").css("top",headerHeight);
-			}
-			headerOffset();
-			$(window).resize(function(){
+		<script type="text/javascript">
+			$(document).ready(function () {
+							
+				function headerOffset(){
+					headerHeight = $(".global-header").outerHeight();
+					$(".content").css("padding-top",headerHeight);
+					$("#sidebar").css("top",headerHeight);
+				}
 				headerOffset();
-			})
-            $('.sidebarCollapse').on('click', function () {
-                $('#sidebar').toggleClass('active');
-            });
-        });
-    </script>
+				$(window).resize(function(){
+					headerOffset();
+				})
+				$('.sidebarCollapse').on('click', function () {
+					$('#sidebar').toggleClass('dashboard-sidebar--active');
+				});
+			});
+		</script>
 
-<script src="https://unpkg.com/gijgo@1.9.11/js/gijgo.min.js" type="text/javascript"></script>
-    <script>
-        var today = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
-        $('#fromDate').datepicker({
-            uiLibrary: 'bootstrap4',
-            iconsLibrary: 'fontawesome',
-            minDate: today,
-            maxDate: function () {
-                return $('#fromDate').val();
-            }
-        });
-        $('#toDate').datepicker({
-            uiLibrary: 'bootstrap4',
-            iconsLibrary: 'fontawesome',
-            minDate: function () {
-                return $('#toDate').val();
-            }
-        });
-    </script>
-	<script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.4.0/js/bootstrap4-toggle.min.js"></script>
-	
+		<script src="https://unpkg.com/gijgo@1.9.11/js/gijgo.min.js" type="text/javascript"></script>
+		<script>
+			var today = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
+			$('#fromDate').datepicker({
+				uiLibrary: 'bootstrap4',
+				iconsLibrary: 'fontawesome',
+				minDate: today,
+				maxDate: function () {
+					return $('#fromDate').val();
+				}
+			});
+			$('#toDate').datepicker({
+				uiLibrary: 'bootstrap4',
+				iconsLibrary: 'fontawesome',
+				minDate: function () {
+					return $('#toDate').val();
+				}
+			});
+		</script>
+		<script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.4.0/js/bootstrap4-toggle.min.js"></script>
+
 	</body>
 </html>

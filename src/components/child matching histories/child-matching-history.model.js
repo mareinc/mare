@@ -14,8 +14,8 @@ var ChildMatchingHistory = new keystone.List( 'Child Matching History', {
 ChildMatchingHistory.add( 'General Information', {
 	
 	registrationNumber: { type: Types.Text, label: 'child registration number', required: true, initial: true },
-	family: { type: Types.Relationship, label: 'family', ref: 'Family', many: false, initial: true },
-	child: { type: Types.Relationship, label: 'child', ref: 'Child', many: false, initial: true },
+	family: { type: Types.Relationship, label: 'family', ref: 'Family', initial: true },
+	child: { type: Types.Relationship, label: 'child', ref: 'Child', initial: true },
 	createdBy: { type: Types.Relationship, label: 'created by', ref: 'Admin', required: true, noedit: true, initial: true },
 	homestudySent: { type: Types.Boolean, label: 'homestudy sent', default: false, initial: true },
 	notes: { type: Types.Textarea, label: 'notes', initial: true },

@@ -12,10 +12,28 @@
 		},
 		
 		initialize: function initialize() {
+			
+			mare.views.dashboard = mare.views.dashboard || new mare.views.Dashboard();
+			mare.views.familyMatching = mare.views.familyMatching || new mare.views.FamilyMatching();
+			mare.views.childMatching = mare.views.childMatching || new mare.views.ChildMatching();
+			
+			
 			this.initializeAgencySelects();
 			this.initializeSocialWorkerSelects();
 			this.initializeFamilySelects();
 			this.initializeChildSelects();
+		},
+		
+		showDashboard: function(fromDate, toDate) {
+			mare.views.dashboard.render(fromDate, toDate);
+		},
+		
+		showFamilyMatching: function() {
+			mare.views.familyMatching.render();
+		},
+		
+		showChildMatching: function() {
+			mare.views.childMatching.render();
 		},
 		
 		initializeAgencySelects: function() {

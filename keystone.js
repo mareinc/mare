@@ -133,6 +133,7 @@ keystone.set( 'nav', {
 	'mailing lists'		: [ 'mailchimp-lists' ],
 	'placements'		: [ 'matches', 'placements', 'legalizations', 'disruptions' ],
 	'relationships'		: [ 'csc-region-contacts', 'staff-email-contacts', 'media-features' ],
+	'matching histories': [ 'child-matching-histories', 'family-matching-histories' ],
 	'change tracking'	: [ 'child-histories', 'family-histories', 'social-worker-histories' ],
 	'donations'			: [ 'donations' ],
 	'images'			: [ 'featured-items', 'slideshows', 'slideshow-items' ],

@@ -2,7 +2,9 @@ const keystone 			= require( 'keystone' ),
 	  listService		= require( '../lists/list.controllers' ),
 	  childService		= require( '../children/child.controllers' ),
 	  familyService		= require( '../families/family.controllers' ),
-	  ObjectId 			= require('mongodb').ObjectId;
+	  ObjectId 			= require('mongodb').ObjectId,
+	  moment			= require( 'moment' ),
+	  dashboardService	= require( './dashboard.controllers' );
 	  
 function getObjects( modelName, mapFunction ) {
 	
@@ -446,6 +448,60 @@ exports.saveFamiliesMatchingHistory = ( req, res, next ) => {
 		
 		res.send( { status: 'ERROR', message: 'Error loading the child record' } );
 	});
+};
+
+exports.getDashboardData = ( req, res, next ) => {
+	const userType	= req.user ? req.user.userType : '',
+		  daysRange = 30;
+	
+	// access for admins only
+	if ( userType.length === 0 || userType !== 'admin' ) {
+		res.statusCode = 403;
+		res.setHeader( 'Content-Type', 'text/plain' );
+		res.end( 'Access denied' );
+		return;
+	}
+	
+	let result = {};
+	let fromDate = typeof req.query.fromDate !== 'undefined' ? req.query.fromDate : moment().subtract(daysRange, "days").format( 'YYYY-MM-DD' );
+	let toDate = typeof req.query.toDate !== 'undefined' ? req.query.toDate : moment().format( 'YYYY-MM-DD' );
+	let ytdFromDate = ( moment().month() >= 7 ? moment().year() : moment().year() - 1 ) + '-07-01';
+	
+	result.fromDate = fromDate;
+	result.toDate = toDate;
+	
+	let getNumberOfFamilies = dashboardService.getNumberOfModels( 'Family', fromDate, toDate, 'createdAt' ),
+		getNumberOfChildren = dashboardService.getNumberOfModels( 'Child', fromDate, toDate, 'createdAt' ),
+		getNumberOfInquiries = dashboardService.getNumberOfModels( 'Inquiry', fromDate, toDate, 'takenOn' ),
+		getNumberOfPlacements = dashboardService.getNumberOfModels( 'Placement', ytdFromDate, toDate, 'placementDate' ),
+		getNumberOfActiveChildren = dashboardService.getNumberOfChildrenByStatusNameAndRegionID( 'active', undefined ),
+		getNumberOfOnHoldChildren = dashboardService.getNumberOfChildrenByStatusNameAndRegionID( 'on hold', undefined ),
+		getNumberOfAllChildren = dashboardService.getNumberOfChildrenByRegionID( undefined ),
+		getChildrenNumbersGroupedByRegions = dashboardService.getChildrenNumbersGroupedByRegions( );
+	
+	Promise.all( [ getNumberOfFamilies, getNumberOfChildren, getNumberOfInquiries, getNumberOfPlacements, getNumberOfActiveChildren, getNumberOfOnHoldChildren, getNumberOfAllChildren, getChildrenNumbersGroupedByRegions ] )
+		.then( values => {
+			// assign local variables to the values returned by the promises
+			const [ numberOfFamilies, numberOfChildren, numberOfInquiries, numberOfPlacements, numberOfActiveChildren, numberOfOnHoldChildren, numberOfAllChildren, childrenNumbersGroupedByRegions ] = values;
+			
+			result.numberOfFamilies = numberOfFamilies;
+			result.numberOfChildren = numberOfChildren;
+			result.numberOfInquiries = numberOfInquiries;
+			result.numberOfPlacements = numberOfPlacements;
+			result.numberOfActiveChildren = numberOfActiveChildren;
+			result.numberOfOnHoldChildren = numberOfOnHoldChildren;
+			result.numberOfActiveAndOnHoldChildren = numberOfActiveChildren + numberOfOnHoldChildren;
+			result.numberOfAllChildren = numberOfAllChildren;
+			result.childrenNumbersGroupedByRegions = childrenNumbersGroupedByRegions;
+
+			res.send( result );
+		})
+		.catch( err => {
+			// log an error for debugging purposes
+			console.error( `error loading data for the dashboard - ${ err }` );
+
+			res.send( { status: 'ERROR', message: 'Error loading the dashboard data' } );
+		});
 };
 
 exports.unescapeHTML= (str) => {
