@@ -22,6 +22,7 @@
 		render: function render( fromDate, toDate ) {
 			var view = this;
 
+			view.$el.html( '' );
 			this.getDataPromise( fromDate, toDate ).done( function( data ) {
 				var dashboardHtml = view.dashboardTemplate( data );
 

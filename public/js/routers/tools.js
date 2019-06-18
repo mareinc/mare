@@ -7,8 +7,10 @@
 			''								: 'loadDefault',
 			'dashboard'						: 'loadDashboard',
 			'dashboard/:fromDate/:toDate'	: 'loadDashboardByDateRange',
-			'family-matching'				: 'loadFamilyMatching',
-			'child-matching'				: 'loadChildMatching',
+			'family-matching'				: 'loadFamilyMatchingRequest',
+			'family-matching/:familyID'		: 'loadFamilyMatching',
+			'child-matching'				: 'loadChildMatchingRequest',
+			'child-matching/:childID'		: 'loadChildMatching',
 			'*other'						: 'loadDefault'
 		},
 
@@ -24,12 +26,20 @@
 			mare.views.tools.showDashboard( fromDate, toDate );
 		},
 		
-		loadFamilyMatching: function() {
-			mare.views.tools.showFamilyMatching();
+		loadFamilyMatching: function( familyID ) {
+			mare.views.tools.showFamilyMatching( familyID );
 		},
 		
-		loadChildMatching: function() {
-			mare.views.tools.showChildMatching();
+		loadChildMatching: function( childID ) {
+			mare.views.tools.showChildMatching( childID );
+		},
+		
+		loadFamilyMatchingRequest: function() {
+			mare.views.tools.showFamilyMatchingRequest();
+		},
+		
+		loadChildMatchingRequest: function() {
+			mare.views.tools.showChildMatchingRequest();
 		},
 		
 		loadDefault: function() {

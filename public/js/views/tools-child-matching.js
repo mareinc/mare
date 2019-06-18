@@ -12,13 +12,17 @@
 
 		/* initialize the view */
 		initialize: function initialize() {
+			var templateHtml = $( '#tools-child-matching-template' ).html();
 			
-			
+			// compile the templates to be used during rendering/repainting
+			this.template = Handlebars.compile( templateHtml );
 		},
 
 		/* render the view onto the page */
-		render: function render( doneCallback ) {
-			console.log('render ChildMatching');
+		render: function render( childID ) {
+			var html = this.template( { } );
+
+			this.$el.html( html );
 		}
 		
 	});

@@ -16,24 +16,37 @@
 			mare.views.dashboard = mare.views.dashboard || new mare.views.Dashboard();
 			mare.views.familyMatching = mare.views.familyMatching || new mare.views.FamilyMatching();
 			mare.views.childMatching = mare.views.childMatching || new mare.views.ChildMatching();
+			mare.views.familyMatchingRequest = mare.views.familyMatchingRequest || new mare.views.FamilyMatchingRequest();
+			mare.views.childMatchingRequest = mare.views.childMatchingRequest || new mare.views.ChildMatchingRequest();
 			
+			/*
+			TODO:
 			
 			this.initializeAgencySelects();
 			this.initializeSocialWorkerSelects();
 			this.initializeFamilySelects();
 			this.initializeChildSelects();
+			*/
 		},
 		
-		showDashboard: function(fromDate, toDate) {
-			mare.views.dashboard.render(fromDate, toDate);
+		showDashboard: function( fromDate, toDate ) {
+			mare.views.dashboard.render( fromDate, toDate );
 		},
 		
-		showFamilyMatching: function() {
-			mare.views.familyMatching.render();
+		showFamilyMatching: function( familyID ) {
+			mare.views.familyMatching.render( familyID );
 		},
 		
-		showChildMatching: function() {
-			mare.views.childMatching.render();
+		showChildMatching: function( childID ) {
+			mare.views.childMatching.render( childID );
+		},
+		
+		showFamilyMatchingRequest: function() {
+			mare.views.familyMatchingRequest.render();
+		},
+		
+		showChildMatchingRequest: function() {
+			mare.views.childMatchingRequest.render();
 		},
 		
 		initializeAgencySelects: function() {
