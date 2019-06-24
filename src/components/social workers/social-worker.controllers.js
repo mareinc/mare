@@ -28,6 +28,37 @@ exports.getSocialWorkerById = id => {
 	});
 };
 
+
+exports.getSocialWorkersByIds = ids => {
+
+	return new Promise( ( resolve, reject ) => {
+		// if no ids was passed in
+		if( !Array.isArray(ids) ) {
+			// reject the promise with details of the error
+			return reject( new Error( `no ids value provided` ) );
+		}
+		// fetch the social worker record
+		keystone.list( 'Social Worker' ).model
+			.find( {
+				'_id': { $in: ids }
+			})
+			.exec()
+			.then( socialWorkers => {
+				// if no social worker was found
+				if( !socialWorkers ) {
+					// reject the promise with the reason why
+					reject( new Error( `no social worker could be found matching the ids` ) );
+				}
+				// resolve the promise with the returned social workers
+				resolve( socialWorkers );
+			// if an error occurred fetching from the database
+			}, err => {
+				// reject the promise with details of the error
+				reject( new Error( `error fetching social worker matching the ids` ) );
+			});
+	});
+};
+
 exports.fetchSocialWorkersChildren = id => {
 
 	return new Promise( ( resolve, reject ) => {

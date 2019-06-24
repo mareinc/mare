@@ -376,6 +376,33 @@ exports.getAllOtherConsiderations = () => {
 	});
 };
 
+exports.getAllChildStatuses = () => {
+
+	return new Promise( ( resolve, reject ) => {
+		// query the database for all child statuses
+		keystone.list( 'Child Status' ).model
+			.find()
+			.exec()
+			.then( childStatuses => {
+				// if no child statuses could not be found
+				if( childStatuses.length === 0 ) {
+					// log an error for debugging purposes
+					console.error( `no child statuses could be found` );
+					// reject the promise
+					return reject();
+				}
+				// if child statuses were successfully returned, resolve with the array
+				resolve( childStatuses );
+			// if an error was encountered fetching from the database
+			}, err => {
+				// log the error for debugging purposes
+				console.error( `error fetching the list of all child statuses`, err );
+				// reject the promise
+				reject();
+			});
+	});
+};
+
 exports.getChildTypesForWebsite = () => {
 
 	return new Promise( ( resolve, reject ) => {

@@ -131,6 +131,7 @@ exports = module.exports = app => {
 	app.post( '/tools/services/save-children-matching-history'		, toolsService.saveChildrenMatchingHistory );
 	app.post( '/tools/services/save-families-matching-history'		, toolsService.saveFamiliesMatchingHistory );
 	app.get( '/tools/services/get-dashboard-data'					, toolsService.getDashboardData );
+	app.get( '/tools/services/get-child-matching-data'				, toolsService.getChildMatchingData );
 	
 	app.get( '/tools'									, routes.views.tools );
 

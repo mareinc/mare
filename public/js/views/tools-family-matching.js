@@ -19,7 +19,7 @@
 		},
 
 		/* render the view onto the page */
-		render: function render( familyID ) {
+		render: function render( familyID, params ) {
 			var html = this.template( { } );
 
 			this.$el.html( html );

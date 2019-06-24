@@ -1,11 +1,172 @@
-const keystone 			= require( 'keystone' ),
-	  listService		= require( '../lists/list.controllers' ),
-	  childService		= require( '../children/child.controllers' ),
-	  familyService		= require( '../families/family.controllers' ),
-	  ObjectId 			= require('mongodb').ObjectId,
-	  moment			= require( 'moment' ),
-	  dashboardService	= require( './dashboard.controllers' );
-	  
+const keystone 				= require( 'keystone' ),
+	  flashMessages			= require( '../../utils/notification.middleware' ),
+	  listService			= require( '../lists/list.controllers' ),
+	  childService			= require( '../children/child.controllers' ),
+	  familyService			= require( '../families/family.controllers' ),
+	  socialWorkerService	= require( '../social workers/social-worker.controllers' ),
+	  agenciesService		= require( '../agencies/agency.controllers' ),
+	  ObjectId 				= require('mongodb').ObjectId,
+	  moment				= require( 'moment' ),
+	  _						= require( 'underscore' ),
+	  dashboardService		= require( './dashboard.controllers' ),
+	  childMatchingService	= require( './child-matching.controllers' ),
+	  utilsService			= require( './utils.controllers' );
+
+
+exports.getChildMatchingData = ( req, res, next ) => {
+	const userType	= req.user ? req.user.userType : '',
+			childID = req.query.childID;
+	
+	// access for admins only
+	if ( userType.length === 0 || userType !== 'admin' ) {
+		res.statusCode = 403;
+		res.setHeader( 'Content-Type', 'text/plain' );
+		res.end( 'Access denied' );
+		return;
+	}
+	
+	let fetchChild = childService.getChildById( { id: childID } ),
+		criteria = childMatchingService.getValidCriteria( req.query ),
+		resultsPromise = childMatchingService.getResultsPromise( criteria );
+
+	// fetch the social workers and agencies for rendering purposes on the client side
+	let fetchSocialWorkers = Array.isArray( req.query.socialWorkers ) ? socialWorkerService.getSocialWorkersByIds( req.query.socialWorkers ) : [],
+		fetchAgencies = Array.isArray( req.query.socialWorkersAgency ) ? agenciesService.getAgenciesByIds( req.query.socialWorkersAgency ) : [];
+
+	Promise.all( [ fetchChild, fetchSocialWorkers, fetchAgencies, resultsPromise ] )
+		.then( values => {
+			let result = {};
+			
+			// assign local variables to the values returned by the promises
+			const [ child, socialWorkers, agencies, results ] = values;
+			
+			// output requested child record details
+			result.child = childMatchingService.extractChildData( child );
+			
+			// if no criteria were detected prepare and send the default parameters set based on the child record
+			if ( _.isEmpty( criteria ) ) {
+				let fetchSocialWorkers = child.adoptionWorker ? socialWorkerService.getSocialWorkersByIds( [ child.adoptionWorker.toString() ] ) : [],
+					fetchAgencies = child.adoptionWorkerAgency ? agenciesService.getAgenciesByIds( [ child.adoptionWorkerAgency.toString() ] ) : [],
+					params = {};
+				
+				Promise.all( [ fetchSocialWorkers, fetchAgencies ] )
+					.then( values => {
+						const [ socialWorkers, agencies ] = values;
+						
+						// collect the default parameters
+						params.status = [ child.status.toString() ];
+						params.gender = [ child.gender.toString() ];
+						params.race = Array.isArray( child.race ) ? child.race.map( ( race ) => race.toString() ) : [];
+						params.legalStatus = child.legalStatus ?  [ child.legalStatus.toString() ] : [];
+						params.familyConstellation = Array.isArray( child.recommendedFamilyConstellation ) ? child.recommendedFamilyConstellation.map( ( constellation ) => constellation.toString() ) : [];
+						params.agesFrom = child.birthDate ? moment().diff( child.birthDate, 'years' ) : '';
+						params.siblingGroupSizeFrom = child.siblings ? child.siblings.length : '';
+						params.physicalNeedsFrom = child.physicalNeeds ? child.physicalNeeds : '';
+						params.intellectualNeedsFrom = child.intellectualNeeds ? child.intellectualNeeds : '';
+						params.emotionalNeedsFrom = child.emotionalNeeds ? child.emotionalNeeds : '';
+				
+						result.params = params;
+						
+						// append the social workers and agencies for rendering purposes on the client side
+						result.socialWorkers = childMatchingService.extractSocialWorkersData( socialWorkers );
+						result.socialWorkersAgencies = childMatchingService.extractAgenicesData( agencies );
+						
+						res.send( result );
+					})
+					.catch( err => {
+						console.error( `error loading the default parameters for the child matching report - ${ err }` );
+
+						utilsService.sendErrorFlashMessage( res, 'Error', 'Error loading the default parameters' );
+					});
+			} else {
+				// if criteria were detected send the results
+				result.socialWorkers = childMatchingService.extractSocialWorkersData( socialWorkers );
+				result.socialWorkersAgencies = childMatchingService.extractAgenicesData( agencies );
+				result.results = childMatchingService.sortResults( childMatchingService.processResults( results, criteria ) );
+				
+				// send the results in PDF format if 'pdf' parameter was detected in the query string
+				if ( req.query.pdf ) {
+					childMatchingService.sendPDF( req, res, result.results );
+				} else {
+					res.send( result );
+				}
+			}
+
+		})
+		.catch( err => {
+			console.error( `error loading data for the child matching report - ${ err }` );
+			
+			utilsService.sendErrorFlashMessage( res, 'Error', 'Error loading the data' );
+		});
+}
+
+exports.saveFamiliesMatchingHistory = ( req, res, next ) => {
+	const childID = req.body.childID;
+	
+	if ( ! Array.isArray( req.body.ids ) || req.body.ids.length === 0 ) {
+		utilsService.sendErrorFlashMessage( res, 'Error', 'There are no entries selected' );
+		return;
+	}
+	
+	childService.getChildById( { id: childID } ).then( child => {
+		familyService.getFamiliesByIds( req.body.ids ).then( families => {
+			let tasks = [],
+				allChildrenIDs = [ childID ];
+			
+			// append all siblings:
+			if ( Array.isArray( child.siblingsToBePlacedWith ) ) {
+				child.siblingsToBePlacedWith.forEach( ( sibling ) => {
+					allChildrenIDs.push( sibling.toString() );
+				});
+			}
+			
+			families.forEach( family => {
+				allChildrenIDs.forEach( ( targetChildID ) => {
+					const FamilyMatchingHistory = keystone.list( 'Family Matching History' ),
+						familyMatchingHistory = new FamilyMatchingHistory.model({
+							child: ObjectId( targetChildID ),
+							family: family,
+							createdBy: req.user,
+							homestudySent: false,
+							registrationNumber: family.registrationNumber
+						});
+					
+					tasks.push( familyMatchingHistory.save() );
+				});
+			});
+			
+			Promise.all( tasks )
+				.then( ( results ) => {
+					utilsService.sendSuccessFlashMessage( res, 'Information', 'All entries have been saved' );
+				})
+				.catch( err => {
+					console.error( `error saving family matching histories - ${ err }` );
+					
+					utilsService.sendErrorFlashMessage( res, 'Error', 'Error saving history entries' );
+				});
+		})
+		.catch( err => {
+			console.error( `error loading families - ${ err }` );
+			
+			utilsService.sendErrorFlashMessage( res, 'Error', 'Error saving history entries' );
+		});
+	})
+	.catch( err => {
+		console.error( `error saving family matching histories - could not load the child record- ${ err }` );
+		
+		utilsService.sendErrorFlashMessage( res, 'Error', 'Error saving history entries' );
+	});
+};
+
+
+
+
+
+
+
+
+
+
 function getObjects( modelName, mapFunction ) {
 	
 	return new Promise( ( resolve, reject ) => {
@@ -396,59 +557,7 @@ exports.saveChildrenMatchingHistory = ( req, res, next ) => {
 	
 };
 
-exports.saveFamiliesMatchingHistory = ( req, res, next ) => {
-	
-	const childID = req.body.childID;
-	
-	childService.getChildById( { id: childID } ).then( child => {
-		familyService.getFamiliesByIds( req.body.ids ).then( families => {
-			let tasks = [];
-			let allChildrenIDs = [ childID ];
-			
-			// append all siblings:
-			if ( Array.isArray( child.siblingsToBePlacedWith ) ) {
-				child.siblingsToBePlacedWith.forEach( ( sibling ) => {
-					allChildrenIDs.push( sibling.toString() );
-				});
-			}
-			
-			families.forEach( family => {
-				allChildrenIDs.forEach( ( targetChildID ) => {
-					const FamilyMatchingHistory = keystone.list( 'Family Matching History' );
-					const familyMatchingHistory = new FamilyMatchingHistory.model({
-						child: ObjectId( targetChildID ),
-						family: family,
-						createdBy: req.user,
-						homestudySent: false,
-						registrationNumber: family.registrationNumber
-					});
-					
-					tasks.push( familyMatchingHistory.save() );
-				});
-			});
-			
-			Promise.all(tasks)
-				.then( (results) => {
-					res.send( { status: 'OK' } );
-				})
-				.catch( err => {
-					console.error( `error saving family matching histories - ${ err }` );
-					
-					res.send( { status: 'ERROR', message: 'Error saving history entries' } );
-				});
-		})
-		.catch( err => {
-			console.error( `error loading families - ${ err }` );
-			
-			res.send( { status: 'ERROR', message: 'Error loading families' } );
-		});
-	})
-	.catch( err => {
-		console.error( `error saving family matching histories - could not load the child record- ${ err }` );
-		
-		res.send( { status: 'ERROR', message: 'Error loading the child record' } );
-	});
-};
+
 
 exports.getDashboardData = ( req, res, next ) => {
 	const userType	= req.user ? req.user.userType : '',
@@ -502,37 +611,4 @@ exports.getDashboardData = ( req, res, next ) => {
 
 			res.send( { status: 'ERROR', message: 'Error loading the dashboard data' } );
 		});
-};
-
-exports.unescapeHTML= (str) => {
-	const htmlEntities = {
-		nbsp: ' ',
-		cent: '¢',
-		pound: '£',
-		yen: '¥',
-		euro: '€',
-		copy: '©',
-		reg: '®',
-		lt: '<',
-		gt: '>',
-		quot: '"',
-		amp: '&',
-		apos: '\''
-	};
-
-	return str.replace(/\&([^;]+);/g, function (entity, entityCode) {
-		var match;
-
-		if (entityCode in htmlEntities) {
-			return htmlEntities[entityCode];
-			/*eslint no-cond-assign: 0*/
-		} else if (match = entityCode.match(/^#x([\da-fA-F]+)$/)) {
-			return String.fromCharCode(parseInt(match[1], 16));
-			/*eslint no-cond-assign: 0*/
-		} else if (match = entityCode.match(/^#(\d+)$/)) {
-			return String.fromCharCode(~~match[1]);
-		} else {
-			return entity;
-		}
-	});
 };

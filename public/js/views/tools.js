@@ -5,10 +5,9 @@
 		el: 'body',
 		
 		events: {
-			'click .export-xlsx-button'	 : 'handleXlsxExportClick',
-			'click .export-pdf-button'	 : 'handlePDFExportClick',
-			'click .save-entries-button' : 'saveChildEntriesClick',
-			'click .save-family-entries-button' : 'saveFamilyEntriesClick'
+			//'click .export-xlsx-button'	 : 'handleXlsxExportClick',
+			//'click .export-pdf-button'	 : 'handlePDFExportClick',
+			//'click .save-entries-button' : 'saveChildEntriesClick',
 		},
 		
 		initialize: function initialize() {
@@ -33,12 +32,12 @@
 			mare.views.dashboard.render( fromDate, toDate );
 		},
 		
-		showFamilyMatching: function( familyID ) {
-			mare.views.familyMatching.render( familyID );
+		showFamilyMatching: function( familyID, params ) {
+			mare.views.familyMatching.render( familyID, params );
 		},
 		
-		showChildMatching: function( childID ) {
-			mare.views.childMatching.render( childID );
+		showChildMatching: function( childID, params ) {
+			mare.views.childMatching.render( childID, params );
 		},
 		
 		showFamilyMatchingRequest: function() {
@@ -120,34 +119,6 @@
 			};
 			
 			jQuery.post( '/tools/services/save-children-matching-history', postData )
-				.done(function() {
-					checkboxes.prop('checked', false);
-					alert( 'All entries have been saved' );
-				})
-				.fail(function() {
-					console.error( 'Error while saving the entries' );
-				});
-		},
-		
-		saveFamilyEntriesClick: function() {
-			var checkboxes = this.$el.find('.entry-selection:checked');
-			var ids = checkboxes.map( function() { return $( this ).val() } ).get();
-			if ( ids.length === 0 ) {
-				console.error( 'There are no entries selected' );
-				return;
-			}
-			var childID = this.$el.find('[name="child"]').val();
-			if ( !childID || childID.length === 0 ) {
-				console.error( 'There is no child selected' );
-				return;
-			}
-			
-			var postData = {
-				ids: ids,
-				childID: childID
-			};
-			
-			jQuery.post( '/tools/services/save-families-matching-history', postData )
 				.done(function() {
 					checkboxes.prop('checked', false);
 					alert( 'All entries have been saved' );

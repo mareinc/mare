@@ -28,6 +28,36 @@ exports.getAgencyById = id => {
 	});
 };
 
+exports.getAgenciesByIds = ids => {
+
+	return new Promise( ( resolve, reject ) => {
+		// if no id was passed in
+		if( !Array.isArray( ids ) ) {
+			// return control to the calling context
+			return reject( new Error( `error fetching agencies by ids - no ids value passed in` ) );
+		}
+		// fetch the agency records
+		keystone.list( 'Agency' ).model
+			.find( {
+				'_id': { $in: ids }
+			})
+			.exec()
+			.then( agencies => {
+				// if no agency was found with a matching ids
+				if( !agencies ) {
+					// reject the promise with the reason why
+					reject( new Error( `error fetching agencies by id - no agencies found with the ids` ) );
+				}
+				// resolve the promise with the returned agencies
+				resolve( agencies );
+			// if an error occurred fetching from the database
+			}, err => {
+				// reject the promise with details of the error
+				reject( new Error( `error fetching agencies by id ${ id }` ) );
+			});
+	});
+};
+
 /* Cron job function used to batch save all agency models */
 exports.saveAllAgencies = () => {
 

@@ -63,7 +63,7 @@
 					defer.reject();
 				});
 			}).promise();
-		},
+		}
 		
 	});
 }());
