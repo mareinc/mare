@@ -88,7 +88,7 @@ exports.getNumberOfChildrenByRegionID = ( regionID ) => {
 	});
 };
 
-exports.getChildrenNumbersGroupedByRegions = ( ) => {
+exports.getChildrenNumbersGroupedByRegions = () => {
 	return new Promise( ( resolve, reject ) => {
 		listService.getAllRegions()
 			.then( regions => {

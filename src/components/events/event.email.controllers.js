@@ -22,7 +22,7 @@ exports.sendNewEventEmailToMARE = ( event, socialWorker, staffEmailContact ) => 
 			{
 				engine: 'hbs',
                 transport: 'mandrill',
-				root: 'templates/emails/'
+				root: 'src/templates/emails/'
 			// render options
 			}, {
                 startDate: `${ event.startDate.getMonth() + 1 }/${ event.startDate.getDate() }/${ event.startDate.getFullYear() }`,
@@ -87,7 +87,7 @@ exports.sendEventRegistrationEmailToMARE = ( eventDetails, userDetails, host, st
 					{
 						engine: 'hbs',
 						transport: 'mandrill',
-						root: 'templates/emails/'
+						root: 'src/templates/emails/'
 					// render options
 					}, {
 						event: eventDetails,
@@ -146,7 +146,7 @@ exports.sendEventUnregistrationEmailToMARE = ( eventDetails, userDetails, host, 
 			{
 				engine: 'hbs',
 				transport: 'mandrill',
-				root: 'templates/emails/'
+				root: 'src/templates/emails/'
 			// render options
 			}, {
 				event: eventDetails,
@@ -218,7 +218,7 @@ exports.sendEventRegistrationEditedEmailToMARE = ({
 				{
 					engine: 'hbs',
 					transport: 'mandrill',
-					root: 'templates/emails/'
+					root: 'src/templates/emails/'
 				// render options
 				}, {
 					event: eventDetails,
@@ -296,7 +296,7 @@ exports.sendDroppedEventAttendeesEmailToMARE = ({
 			{
 				engine: 'hbs',
                 transport: 'mandrill',
-				root: 'templates/emails/'
+				root: 'src/templates/emails/'
 			// render options
 			}, {
 				eventName,
@@ -361,7 +361,7 @@ exports.sendCronJobErrorsEmailToMARE = ({
 			{
 				engine: 'hbs',
                 transport: 'mandrill',
-				root: 'templates/emails/'
+				root: 'src/templates/emails/'
 			// render options
 			}, {
 				agencyErrors,

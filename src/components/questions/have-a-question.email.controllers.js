@@ -25,7 +25,7 @@ exports.sendNewQuestionNotificationEmailToMARE = ( question, staffEmailContact )
             {
                 engine: 'hbs',
                 transport: 'mandrill',
-                root: 'templates/emails/'
+                root: 'src/templates/emails/'
             // render options
             }, {
                 question,

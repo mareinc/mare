@@ -18,7 +18,7 @@ exports.sendNewInquiryEmailToMARE = ( { inquiryData, inquirerData, staffEmail } 
             {
                 engine: 'hbs',
                 transport: 'mandrill',
-                root: 'templates/emails/'
+                root: 'src/templates/emails/'
             // render options
             }, {
                 inquiryData,
@@ -69,7 +69,7 @@ exports.sendThankYouEmailToFamilyOnBehalfOfInquirer = ( inquiry, inquiryData, do
 		{
 			engine: 'hbs',
 			transport: 'mandrill',
-			root: 'templates/emails/'
+			root: 'src/templates/emails/'
 		// render options
 		}, {
 			inquiry,
@@ -119,7 +119,7 @@ exports.sendInquiryAcceptedEmailToInquirer = ( inquiry, inquiryData, done ) => {
 		{
 			engine: 'hbs',
 			transport: 'mandrill',
-			root: 'templates/emails/'
+			root: 'src/templates/emails/'
 		// render options
 		}, {
 			inquiry,
@@ -168,7 +168,7 @@ exports.sendInquiryAcceptedEmailToFamilyOnBehalfOfInquirer = ( inquiry, inquiryD
 		{
 			engine: 'hbs',
 			transport: 'mandrill',
-			root: 'templates/emails/'
+			root: 'src/templates/emails/'
 		// render options
 		}, {
 			inquiry,
@@ -217,7 +217,7 @@ exports.sendInquiryAcceptedEmailToChildsSocialWorker = ( inquiry, inquiryData, d
 		{
 			engine: 'hbs',
 			transport: 'mandrill',
-			root: 'templates/emails/'
+			root: 'src/templates/emails/'
 		// render options
 		}, {
 			inquiry,
@@ -266,7 +266,7 @@ exports.sendInquiryAcceptedEmailToAgencyContacts = ( inquiry, inquiryData, done 
 		{
 			engine: 'hbs',
 			transport: 'mandrill',
-			root: 'templates/emails/'
+			root: 'src/templates/emails/'
 		// render options
 		}, {
 			inquiry,

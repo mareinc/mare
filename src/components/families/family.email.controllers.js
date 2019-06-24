@@ -519,7 +519,7 @@ exports.sendNewSocialWorkerFamilyRegistrationNotificationEmailToMARE = ( socialW
             {
                 engine: 'hbs',
                 transport: 'mandrill',
-                root: 'templates/emails/'
+                root: 'src/templates/emails/'
             // render options
             }, {
                 socialWorkerName,
@@ -1072,7 +1072,7 @@ exports.sendNewSocialWorkerFamilyRegistrationNotificationEmailToSocialWorker = (
             {
                 engine: 'hbs',
                 transport: 'mandrill',
-                root: 'templates/emails/'
+                root: 'src/templates/emails/'
             // render options
             }, {
                 familyName: family.displayName,
@@ -1129,7 +1129,7 @@ exports.sendNewSocialWorkerFamilyRegistrationNotificationEmailToFamily = ( rawFa
             {
                 engine: 'hbs',
                 transport: 'mandrill',
-                root: 'templates/emails/'
+                root: 'src/templates/emails/'
             // render options
             }, {
                 rawFamilyData,

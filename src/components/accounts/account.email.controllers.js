@@ -18,7 +18,7 @@ exports.sendPasswordResetEmail = ( name, email, host, resetToken ) => {
             {
                 engine: 'hbs',
                 transport: 'mandrill',
-                root: 'templates/emails/'
+                root: 'src/templates/emails/'
             // render options
             }, {
                 name,
@@ -79,7 +79,7 @@ exports.sendAccountVerificationEmailToUser = ( userEmail, userType, verification
             {
                 engine: 'hbs',
                 transport: 'mandrill',
-                root: 'templates/emails/'
+                root: 'src/templates/emails/'
             // render options
             }, {
                 host,

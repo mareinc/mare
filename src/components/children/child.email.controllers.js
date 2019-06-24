@@ -372,7 +372,7 @@ exports.sendNewSocialWorkerChildRegistrationNotificationEmailToMARE = ( rawChild
             {
                 engine: 'hbs',
                 transport: 'mandrill',
-                root: 'templates/emails/'
+                root: 'src/templates/emails/'
             // render options
             }, {
                 childData,
@@ -764,7 +764,7 @@ exports.sendNewSocialWorkerChildRegistrationNotificationEmailToSocialWorker = ( 
             {
                 engine: 'hbs',
                 transport: 'mandrill',
-                root: 'templates/emails/'
+                root: 'src/templates/emails/'
             // render options
             }, {
                 childName: child.name.full,

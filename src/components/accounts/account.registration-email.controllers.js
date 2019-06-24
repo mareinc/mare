@@ -144,7 +144,7 @@ exports.sendNewSiteVisitorNotificationEmailToMARE = ( user, registrationStaffCon
             {
                 engine: 'hbs',
                 transport: 'mandrill',
-                root: 'templates/emails/'
+                root: 'src/templates/emails/'
             // render options
             }, {
                 userType: user.userType,
@@ -323,7 +323,7 @@ exports.sendNewSocialWorkerNotificationEmailToMARE = ( user, registrationStaffCo
             {
                 engine: 'hbs',
                 transport: 'mandrill',
-                root: 'templates/emails/'
+                root: 'src/templates/emails/'
             // render options
             }, {
                 userType: user.userType,
@@ -852,7 +852,7 @@ exports.sendNewFamilyNotificationEmailToMARE = ( user, registrationStaffContact,
             {
                 engine: 'hbs',
                 transport: 'mandrill',
-                root: 'templates/emails/'
+                root: 'src/templates/emails/'
             // render options
             }, {
                 userType: user.userType,
