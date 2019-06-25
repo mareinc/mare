@@ -44,8 +44,8 @@
 			});
 		},
 		
+		/* fills in the form based on parameters */
 		initializeTheForm: function( params ) {
-			// fill the form based on parameters
 			for ( var paramName in params ) {
 				this.$el.find( '[name="' + paramName + '"], [name="' + paramName + '[]"]' ).each( function() {
 					var input = jQuery( this );
@@ -69,7 +69,7 @@
 			
 			// remove empty values
 			params = _.filter( params, function( value ) {
-				return value && value.value && value.value.length > 0;
+				return value && value.value && value.value.length > 0 && value.name != 'childID';
 			});
 			
 			// build the query string
@@ -140,12 +140,13 @@
 				var html = view.template( data );
 
 				view.$el.html( html );
+				
+				// initialize all form values, if params were sent from the server then this is an initial request without the query string and
+				// the form must be initialized using the received set of parameters
+				view.initializeTheForm( data.params ? data.params : params );
+				
 				view.initializeAgencySelects();
 				view.initializeSocialWorkerSelects();
-				
-				// initialize all form values, if params were send from the server then this is an initial request without the query string and
-				// the form should be initialized using the received set of parameters
-				view.initializeTheForm( data.params ? data.params : params );
 			});
 		},
 		

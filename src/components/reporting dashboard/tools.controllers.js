@@ -10,8 +10,8 @@ const keystone 				= require( 'keystone' ),
 	  _						= require( 'underscore' ),
 	  dashboardService		= require( './dashboard.controllers' ),
 	  childMatchingService	= require( './child-matching.controllers' ),
+	  familyMatchingService	= require( './family-matching.controllers' ),
 	  utilsService			= require( './utils.controllers' );
-
 
 exports.getChildMatchingData = ( req, res, next ) => {
 	const userType	= req.user ? req.user.userType : '',
@@ -68,8 +68,8 @@ exports.getChildMatchingData = ( req, res, next ) => {
 						result.params = params;
 						
 						// append the social workers and agencies for rendering purposes on the client side
-						result.socialWorkers = childMatchingService.extractSocialWorkersData( socialWorkers );
-						result.socialWorkersAgencies = childMatchingService.extractAgenicesData( agencies );
+						result.socialWorkers = utilsService.extractSocialWorkersData( socialWorkers );
+						result.socialWorkersAgencies = utilsService.extractAgenicesData( agencies );
 						
 						res.send( result );
 					})
@@ -80,8 +80,8 @@ exports.getChildMatchingData = ( req, res, next ) => {
 					});
 			} else {
 				// if criteria were detected send the results
-				result.socialWorkers = childMatchingService.extractSocialWorkersData( socialWorkers );
-				result.socialWorkersAgencies = childMatchingService.extractAgenicesData( agencies );
+				result.socialWorkers = utilsService.extractSocialWorkersData( socialWorkers );
+				result.socialWorkersAgencies = utilsService.extractAgenicesData( agencies );
 				result.results = childMatchingService.sortResults( childMatchingService.processResults( results, criteria ) );
 				
 				// send the results in PDF format if 'pdf' parameter was detected in the query string
@@ -158,259 +158,141 @@ exports.saveFamiliesMatchingHistory = ( req, res, next ) => {
 	});
 };
 
-
-
-
-
-
-
-
-
-
-function getObjects( modelName, mapFunction ) {
+exports.getFamilyMatchingData = ( req, res, next ) => {
+	const userType	= req.user ? req.user.userType : '',
+			familyID = req.query.familyID;
 	
-	return new Promise( ( resolve, reject ) => {
-		keystone.list( modelName ).model
-			.find()
-			.exec()
-			.then( results => {
-				resolve( results.map( mapFunction ) );
-			}, err => {
-				reject( err );
-			});
-	});
+	// access for admins only
+	if ( userType.length === 0 || userType !== 'admin' ) {
+		res.statusCode = 403;
+		res.setHeader( 'Content-Type', 'text/plain' );
+		res.end( 'Access denied' );
+		return;
+	}
 	
-}
+	let fetchFamily = familyService.getFamilyById( familyID ),
+		criteria = familyMatchingService.getValidCriteria( req.query ),
+		resultsPromise = familyMatchingService.getResultsPromise( criteria );
 
-function getRangeFromArrayOfNoneEmptyStrings( array, fromElement, toElement ) {
-	let include = typeof fromElement === 'undefined' || fromElement.length === 0;
-	let forceDontInclude = false;
-	let results = [];
-	
-	array.forEach( ( item ) => {
-		if ( item === fromElement && ! forceDontInclude ) {
-			include = true;
-		}
-		if ( include ) {
-			results.push( item );
-		}
-		if ( item === toElement ) {
-			include = false;
-			forceDontInclude = true;
-		}
-	});
-	
-	return results;
-}
+	// fetch the social workers and agencies for rendering purposes on the client side
+	let fetchAdoptionWorkers = Array.isArray( req.query.adoptionWorkers ) ? socialWorkerService.getSocialWorkersByIds( req.query.adoptionWorkers ) : [],
+		fetchRecruitmentWorkers = Array.isArray( req.query.recruitmentWorkers ) ? socialWorkerService.getSocialWorkersByIds( req.query.recruitmentWorkers ) : [],
+		fetchAdoptionWorkersAgency = Array.isArray( req.query.adoptionWorkersAgency ) ? agenciesService.getAgenciesByIds( req.query.adoptionWorkersAgency ) : [],
+		fetchRecruitmentWorkersAgency = Array.isArray( req.query.recruitmentWorkersAgency ) ? agenciesService.getAgenciesByIds( req.query.recruitmentWorkersAgency ) : [];
 
-exports.getChildStatusesOptions = ( currentValues, selectDefault ) => {
-	
-	return getObjects( 'Child Status', ( value ) => {
-		
-			let selected = false;
-			if ( selectDefault === true ) {
-				selected = value.childStatus == 'active';
+	Promise.all( [ fetchFamily, fetchAdoptionWorkers, fetchRecruitmentWorkers, fetchAdoptionWorkersAgency, fetchRecruitmentWorkersAgency, resultsPromise ] )
+		.then( values => {
+			let result = {};
+			
+			// assign local variables to the values returned by the promises
+			const [ family, adoptionWorkers, recruitmentWorkers, adoptionWorkersAgency, recruitmentWorkersAgency, results ] = values;
+			
+			// output requested child record details
+			result.family = familyMatchingService.extractFamilyData( family );
+			
+			// if no criteria were detected prepare and send the default parameters set based on the child record
+			if ( _.isEmpty( criteria ) ) {
+				let fetchAdoptionWorkers = family.socialWorker ? socialWorkerService.getSocialWorkersByIds( [ family.socialWorker.toString() ] ) : [],
+					fetchAdoptionWorkersAgency = family.socialWorkerAgency ? agenciesService.getAgenciesByIds( [ family.socialWorkerAgency.toString() ] ) : [],
+					params = {};
+					
+				Promise.all( [ fetchAdoptionWorkers, fetchAdoptionWorkersAgency ] )
+					.then( values => {
+						const [ adoptionWorkers, adoptionWorkersAgency ] = values;
+								preferences = family.matchingPreferences;
+						
+						// collect the default parameters
+						params.gender = Array.isArray( preferences.gender ) && preferences.gender.length > 0 ? preferences.gender.map( ( gender ) => gender.toString() ) : [];
+						params.race = Array.isArray( preferences.race ) && preferences.race.length > 0  ? preferences.race.map( ( race ) => race.toString() ) : [];
+						params.legalStatus = Array.isArray( preferences.legalStatus ) && preferences.legalStatus.length > 0 ? preferences.legalStatus.map( ( legalStatus ) => legalStatus.toString() ) : [];
+						params.familyConstellation = family.familyConstellation ? [ family.familyConstellation.toString() ] : [];
+						params.agesFrom = preferences.adoptionAges.from ? preferences.adoptionAges.from : '';
+						params.agesTo = preferences.adoptionAges.to ? preferences.adoptionAges.to : '';
+						params.siblingGroupSizeFrom = preferences.minNumberOfChildrenToAdopt ? preferences.minNumberOfChildrenToAdopt : '';
+						params.siblingGroupSizeTo = preferences.maxNumberOfChildrenToAdopt ? preferences.maxNumberOfChildrenToAdopt : '';
+						params.physicalNeedsFrom = preferences.maxNeeds.physical ? preferences.maxNeeds.physical : '';
+						params.intellectualNeedsFrom = preferences.maxNeeds.intellectual ? preferences.maxNeeds.intellectual : '';
+						params.emotionalNeedsFrom = preferences.maxNeeds.emotional ? preferences.maxNeeds.emotional : '';
+						
+						result.params = params;
+						
+						// append the social workers and agencies for rendering purposes on the client side
+						result.adoptionWorkers = utilsService.extractSocialWorkersData( adoptionWorkers );
+						result.adoptionWorkersAgency = utilsService.extractAgenicesData( adoptionWorkersAgency );
+						
+						res.send( result );
+					})
+					.catch( err => {
+						console.error( `error loading the default parameters for the family matching report - ${ err }` );
+
+						utilsService.sendErrorFlashMessage( res, 'Error', 'Error loading the default parameters' );
+					});
 			} else {
-				selected = Array.isArray( currentValues ) ? currentValues.includes( value._id.toString() ) : false;
+				// if criteria were detected send the results
+				result.adoptionWorkers = utilsService.extractSocialWorkersData( adoptionWorkers );
+				result.recruitmentWorkers = utilsService.extractSocialWorkersData( recruitmentWorkers );
+				result.adoptionWorkersAgency = utilsService.extractAgenicesData( adoptionWorkersAgency );
+				result.recruitmentWorkersAgency = utilsService.extractAgenicesData( recruitmentWorkersAgency );
+				
+				result.fields = familyMatchingService.getFieldsFromQuery( req.query );
+				result.fieldNames = familyMatchingService.getReportFieldNamesFromQuery( req.query );
+				
+				result.results = familyMatchingService.sortResults( familyMatchingService.processResults( results, criteria, result.fields ) );
+				
+				// send the results in PDF format if 'pdf' parameter was detected in the query string
+				if ( req.query.pdf ) {
+					familyMatchingService.sendPDF( req, res, result.results );
+				} else {
+					res.send( result );
+				}
 			}
+
+		})
+		.catch( err => {
+			console.error( `error loading data for the family matching report - ${ err }` );
+			
+			utilsService.sendErrorFlashMessage( res, 'Error', 'Error loading the data' );
+		});
+}
+
+exports.saveChildrenMatchingHistory = ( req, res, next ) => {
+	const familyID = req.body.familyID;
+	
+	if ( ! Array.isArray( req.body.ids ) || req.body.ids.length === 0 ) {
+		utilsService.sendErrorFlashMessage( res, 'Error', 'There are no entries selected' );
+		return;
+	}
+	
+	childService.getChildrenByIds( req.body.ids ).then( children => {
+		let tasks = [];
 		
-			return {
-				id: value._id.toString(),
-				name: value.childStatus,
-				selected: selected
-			}
-		}
-	);
-	
-};
-
-exports.getGendersOptions = ( currentValues ) => {
-	
-	return getObjects( 'Gender', ( value ) => {
-			return {
-				id: value._id.toString(),
-				name: value.gender,
-				selected: Array.isArray( currentValues ) ? currentValues.includes( value._id.toString() ) : false
-			}
-		}
-	);
-	
-};
-
-exports.getRacesOptions = ( currentValues ) => {
-	return getObjects( 'Race', ( value ) => {
-			return {
-				id: value._id.toString(),
-				name: value.race,
-				selected: Array.isArray( currentValues ) ? currentValues.includes( value._id.toString() ) : false
-			}
-		}
-	);
-	
-};
-
-exports.getLegalStatusesOptions = ( currentValues ) => {
-	
-	return getObjects( 'Legal Status', ( value ) => {
-			return {
-				id: value._id.toString(),
-				name: value.legalStatus,
-				selected: Array.isArray( currentValues ) ? currentValues.includes( value._id.toString() ) : false
-			}
-		}
-	);
-	
-};
-
-exports.getFamilyConstellationsOptions = ( currentValues ) => {
-	
-	return getObjects( 'Family Constellation', ( value ) => {
-			return {
-				id: value._id.toString(),
-				name: value.familyConstellation,
-				selected: Array.isArray( currentValues ) ? currentValues.includes( value._id.toString() ) : false
-			}
-		}
-	);
-	
-};
-
-exports.getAgesOptions = ( currentValue ) => {
-	const MAX_AGE = 21;
-	let results = [];
-	let currentValueParsed = parseInt( currentValue );
-	
-	for ( let i = 0; i < MAX_AGE; i++  ) {
-		results.push( {
-			id: i,
-			name: i,
-			selected: i === currentValueParsed
-		});
-	}
-	
-	return results;
-};
-
-exports.getSiblingGroupSizesOptions = ( currentValue ) => {
-	const MAX_SIZE = 10;
-	let results = [];
-	let currentValueParsed = parseInt( currentValue );
-	
-	for ( let i = 1; i < MAX_SIZE; i++  ) {
-		results.push( {
-			id: i,
-			name: i,
-			selected: i === currentValueParsed
-		});
-	}
-	
-	return results;
-};
-
-const PHYSICAL_NEEDS_OPTIONS = [ 'none', 'mild', 'moderate', 'severe' ];
-exports.getPhysicalNeedsOptions = ( currentValue ) => {
-	return PHYSICAL_NEEDS_OPTIONS.map( ( value ) => {
-		return {
-			id: value,
-			name: value,
-			selected: value === currentValue
-		}
-	});
-	
-};
-
-exports.getPhysicalNeedsRange = ( fromNeed, toNeed ) => {
-	return getRangeFromArrayOfNoneEmptyStrings( PHYSICAL_NEEDS_OPTIONS, fromNeed, toNeed );
-};
-
-const INTELLECTUAL_NEEDS_OPTIONS = [ 'none', 'mild', 'moderate', 'severe' ];
-exports.getIntellectualNeedsOptions = ( currentValue ) => {
-	return INTELLECTUAL_NEEDS_OPTIONS.map( ( value ) => {
-		return {
-			id: value,
-			name: value,
-			selected: value === currentValue
-		}
-	});
-	
-};
-exports.getIntellectualNeedsRange = ( fromNeed, toNeed ) => {
-	return getRangeFromArrayOfNoneEmptyStrings( INTELLECTUAL_NEEDS_OPTIONS, fromNeed, toNeed );
-};
-
-const EMOTIONAL_NEEDS_OPTIONS = [ 'none', 'mild', 'moderate', 'severe' ];
-exports.getEmotionalNeedsOptions = ( currentValue ) => {
-	return EMOTIONAL_NEEDS_OPTIONS.map( ( value ) => {
-		return {
-			id: value,
-			name: value,
-			selected: value === currentValue
-		}
-	});
-	
-};
-exports.getEmotionalNeedsRange = ( fromNeed, toNeed ) => {
-	return getRangeFromArrayOfNoneEmptyStrings( EMOTIONAL_NEEDS_OPTIONS, fromNeed, toNeed );
-};
-
-const SOCIAL_NEEDS_OPTIONS = [ 'none', 'mild', 'moderate', 'severe' ];
-exports.getSocialNeedsOptions = ( currentValue ) => {
-	return SOCIAL_NEEDS_OPTIONS.map( ( value ) => {
-		return {
-			id: value,
-			name: value,
-			selected: value === currentValue
-		}
-	});
-};
-exports.getSocialNeedsRange = ( fromNeed, toNeed ) => {
-	return getRangeFromArrayOfNoneEmptyStrings( SOCIAL_NEEDS_OPTIONS, fromNeed, toNeed );
-};
-
-exports.getAgenciesOptions = ( currentValues ) => {
-	
-	let mapFunction = ( value ) => {
-		return {
-			id: value._id,
-			name: value.name
-		}
-	};
-	
-	return new Promise( ( resolve, reject ) => {
-		keystone.list( 'Agency' ).model
-			.find( {
-				'_id': { $in: Array.isArray(currentValues) ? currentValues : [] }
-			})
-			.exec()
-			.then( results => {
-				resolve( results.map( mapFunction ) );
-			}, err => {
-				reject( err );
+		children.forEach( child => {
+			const ChildMatchingHistory = keystone.list( 'Child Matching History' );
+			const childMatchingHistory = new ChildMatchingHistory.model({
+				family: ObjectId( familyID ),
+				child: child,
+				createdBy: req.user,
+				homestudySent: false,
+				registrationNumber: child.registrationNumber
 			});
-	});
-	
-};
-
-exports.getSocialWorkersOptions = ( currentValues ) => {
-	
-	let mapFunction = ( value ) => {
-		return {
-			id: value._id.toString(),
-			name: value.name.full
-		}
-	};
-	
-	return new Promise( ( resolve, reject ) => {
-		keystone.list( 'Social Worker' ).model
-			.find( {
-				'_id': { $in: Array.isArray(currentValues) ? currentValues : [] }
+			
+			tasks.push( childMatchingHistory.save() );
+		});
+		
+		Promise.all( tasks )
+			.then( ( results ) => {
+				utilsService.sendSuccessFlashMessage( res, 'Information', 'All entries have been saved' );
 			})
-			.exec()
-			.then( results => {
-				resolve( results.map( mapFunction ) );
-			}, err => {
-				reject( err );
+			.catch( err => {
+				console.error( `error saving child matching histories - ${ err }` );
+				
+				utilsService.sendErrorFlashMessage( res, 'Error', 'Error saving history entries' );
 			});
+	})
+	.catch( err => {
+		console.error( `error loading children - ${ err }` );
+		
+		utilsService.sendErrorFlashMessage( res, 'Error', 'Error saving history entries' );
 	});
 	
 };
@@ -435,6 +317,7 @@ exports.getAgenciesData = ( req, res, next ) => {
 				pagination: { more: false } 
 			});
 		}, err => {
+			console.error( `error while loading agencies - ${ err }` );
 			res.send( { results: [], pagination: { more: false } } );
 		});
 	
@@ -460,6 +343,7 @@ exports.getSocialWorkersData = ( req, res, next ) => {
 				pagination: { more: false } 
 			});
 		}, err => {
+			console.error( `error while loading social workers - ${ err }` );
 			res.send( { results: [], pagination: { more: false } } );
 		});
 	
@@ -485,6 +369,7 @@ exports.getFamiliesData = ( req, res, next ) => {
 				pagination: { more: false } 
 			});
 		}, err => {
+			console.error( `error while loading families - ${ err }` );
 			res.send( { results: [], pagination: { more: false } } );
 		});
 	
@@ -510,54 +395,11 @@ exports.getChildrenData = ( req, res, next ) => {
 				pagination: { more: false } 
 			});
 		}, err => {
+			console.error( `error while loading children - ${ err }` );
 			res.send( { results: [], pagination: { more: false } } );
 		});
 	
 };
-
-exports.saveChildrenMatchingHistory = ( req, res, next ) => {
-	
-	const familyID = req.body.familyID;
-	
-	
-	childService.getChildrenByIds( req.body.ids ).then( children => {
-		let tasks = [];
-		
-		children.forEach( child => {
-			
-			const ChildMatchingHistory = keystone.list( 'Child Matching History' );
-			const childMatchingHistory = new ChildMatchingHistory.model({
-				family: ObjectId( familyID ),
-				child: child,
-				createdBy: req.user,
-				homestudySent: false,
-				registrationNumber: child.registrationNumber
-			});
-			
-			tasks.push( childMatchingHistory.save() );
-		});
-		
-		Promise.all(tasks)
-			.then( (results) => {
-				res.send( { status: 'OK' } );
-			})
-			.catch( err => {
-				console.error( `error saving child matching histories - ${ err }` );
-				
-				res.send( { status: 'ERROR', message: 'Error saving history entries' } );
-			});
-		
-		
-	})
-	.catch( err => {
-		console.error( `error loading children - ${ err }` );
-		
-		res.send( { status: 'ERROR', message: 'Error loading children' } );
-	});
-	
-};
-
-
 
 exports.getDashboardData = ( req, res, next ) => {
 	const userType	= req.user ? req.user.userType : '',

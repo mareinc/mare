@@ -186,60 +186,10 @@ exports.sendPDF = ( req, res, results ) => {
 			footerTemplate : '<span class="pageNumber" style="font-size: 10px; margin-left: 45px; text-align: center;"></span><span class="date" style="font-size: 10px; margin-left: 45px; text-align: right"></span>'
 		};
 		
-		convertHTMLToPDF( exports.unescapeHTML( html ), callback, pageOptions, {
-			executablePath: process.env.CHROME_PATH
+		convertHTMLToPDF( utilsService.unescapeHTML( html ), callback, pageOptions, {
+			executablePath: process.env.CHROME_PATH,
+			args: [ '--no-sandbox' ]
 		});
-	});
-}
-
-exports.unescapeHTML = (str) => {
-	const htmlEntities = {
-		nbsp: ' ',
-		cent: '¢',
-		pound: '£',
-		yen: '¥',
-		euro: '€',
-		copy: '©',
-		reg: '®',
-		lt: '<',
-		gt: '>',
-		quot: '"',
-		amp: '&',
-		apos: '\''
-	};
-
-	return str.replace(/\&([^;]+);/g, function (entity, entityCode) {
-		var match;
-
-		if (entityCode in htmlEntities) {
-			return htmlEntities[entityCode];
-			/*eslint no-cond-assign: 0*/
-		} else if (match = entityCode.match(/^#x([\da-fA-F]+)$/)) {
-			return String.fromCharCode(parseInt(match[1], 16));
-			/*eslint no-cond-assign: 0*/
-		} else if (match = entityCode.match(/^#(\d+)$/)) {
-			return String.fromCharCode(~~match[1]);
-		} else {
-			return entity;
-		}
-	});
-};
-
-exports.extractSocialWorkersData = ( socialWorkers ) => {
-	return socialWorkers.map( ( socialWorker ) => {
-		return {
-			id: socialWorker._id,
-			name: socialWorker.name
-		}
-	});
-}
-
-exports.extractAgenicesData = ( agencies ) => {
-	return agencies.map( ( agency ) => {
-		return {
-			id: agency._id,
-			name: agency.name
-		}
 	});
 }
 

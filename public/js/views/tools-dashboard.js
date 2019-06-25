@@ -11,7 +11,7 @@
 		},
 
 		/* initialize the view */
-		initialize: function initialize() {
+		initialize: function() {
 			var toolsDashboardTemplateHtml = $( '#tools-dashboard-template' ).html();
 			
 			// compile the templates to be used during rendering/repainting the gallery
@@ -19,7 +19,7 @@
 		},
 
 		/* render the view onto the page */
-		render: function render( fromDate, toDate ) {
+		render: function( fromDate, toDate ) {
 			var view = this;
 
 			view.$el.html( '' );
@@ -30,7 +30,7 @@
 			});
 		},
 		
-		handleSearchClick: function handleSearchClick() {
+		handleSearchClick: function() {
 			mare.routers.tools.navigate( 'dashboard/' + this.$el.find('[name="fromDate"]').val() + '/' + this.$el.find('[name="toDate"]').val(), { trigger: true } );
 		},
 		

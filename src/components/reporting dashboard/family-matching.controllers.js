@@ -1,9 +1,8 @@
-const keystone				= require( 'keystone' ),
-	  _						= require( 'underscore' ),
-	  moment				= require( 'moment' ),
-	  toolsService			= require( '../components/reporting dashboard/tools.controllers' ),
-	  familyService			= require( '../components/families/family.controllers' ),
-	  ObjectId 				= require('mongodb').ObjectId;
+const keystone 		= require( 'keystone' ),
+	  ObjectId 		= require('mongodb').ObjectId,
+	  _				= require( 'underscore' ),
+	  moment		= require( 'moment' ),
+	  utilsService	= require( './utils.controllers' );
 
 const FIELD_NAMES = {
 	status: "Status",
@@ -22,30 +21,30 @@ const FIELD_NAMES = {
 	adoptionWorker: "Adoption Workers",
 	recruitmentWorker: "Recruitment Workers"
 };
-const MAX_RESULTS = 10000;
+const MAX_RESULTS = 100;
 
-function getValidCriteria( query ) {
+exports.getValidCriteria = ( query ) => {
 	let criteria = {};
 	
 	// status criteria (multiple)
-	if ( Array.isArray( query.childStatus ) && query.childStatus.length > 0 ) {
-		let filtered = query.childStatus.filter( ( objectId ) => ObjectId.isValid( objectId ) );
+	if ( Array.isArray( query.status ) && query.status.length > 0 ) {
+		let filtered = query.status.filter( ( objectId ) => ObjectId.isValid( objectId ) );
 		if ( filtered.length > 0 ) {
 			criteria[ 'status' ] = { $in: filtered };
 		}
 	}
 	
 	// gender criteria (multiple)
-	if ( Array.isArray( query.childGender ) && query.childGender.length > 0 ) {
-		let filtered = query.childGender.filter( ( objectId ) => ObjectId.isValid( objectId ) );
+	if ( Array.isArray( query.gender ) && query.gender.length > 0 ) {
+		let filtered = query.gender.filter( ( objectId ) => ObjectId.isValid( objectId ) );
 		if ( filtered.length > 0 ) {
 			criteria[ 'gender' ] = { $in: filtered };
 		}
 	}
 	
 	// race criteria (multiple)
-	if ( Array.isArray( query.childRace ) && query.childRace.length > 0 ) {
-		let filtered = query.childRace.filter( ( objectId ) => ObjectId.isValid( objectId ) );
+	if ( Array.isArray( query.race ) && query.race.length > 0 ) {
+		let filtered = query.race.filter( ( objectId ) => ObjectId.isValid( objectId ) );
 		if ( filtered.length > 0 ) {
 			criteria[ 'race' ] = { $in: filtered };
 		}
@@ -99,7 +98,7 @@ function getValidCriteria( query ) {
 	
 	// physical needs:
 	if ( query.physicalNeedsFrom || query.physicalNeedsTo ) {
-		let physicalNeedsCriteria = toolsService.getPhysicalNeedsRange( query.physicalNeedsFrom, query.physicalNeedsTo );
+		let physicalNeedsCriteria = utilsService.getPhysicalNeedsRange( query.physicalNeedsFrom, query.physicalNeedsTo );
 		if ( physicalNeedsCriteria.length > 0 ) {
 			criteria[ 'physicalNeeds' ] = { $in: physicalNeedsCriteria };
 		}
@@ -107,7 +106,7 @@ function getValidCriteria( query ) {
 	
 	// intellectual needs:
 	if ( query.intellectualNeedsFrom || query.intellectualNeedsTo ) {
-		let intellectualNeedsCriteria = toolsService.getIntellectualNeedsRange( query.intellectualNeedsFrom, query.intellectualNeedsTo );
+		let intellectualNeedsCriteria = utilsService.getIntellectualNeedsRange( query.intellectualNeedsFrom, query.intellectualNeedsTo );
 		if ( intellectualNeedsCriteria.length > 0 ) {
 			criteria[ 'intellectualNeeds' ] = { $in: intellectualNeedsCriteria };
 		}
@@ -115,7 +114,7 @@ function getValidCriteria( query ) {
 	
 	// emotional needs:
 	if ( query.emotionalNeedsFrom || query.emotionalNeedsTo ) {
-		let emotionalNeedsCriteria = toolsService.getIntellectualNeedsRange( query.emotionalNeedsFrom, query.emotionalNeedsTo );
+		let emotionalNeedsCriteria = utilsService.getIntellectualNeedsRange( query.emotionalNeedsFrom, query.emotionalNeedsTo );
 		if ( emotionalNeedsCriteria.length > 0 ) {
 			criteria[ 'emotionalNeeds' ] = { $in: emotionalNeedsCriteria };
 		}
@@ -244,7 +243,7 @@ function getReasonsIfUnmatchingChild( child, criteria ) {
 	return reasons;
 }
 
-function getResultsPromise( criteria ) {
+exports.getResultsPromise = ( criteria ) => {
 	if ( ! _.isEmpty( criteria ) ) {
 		return new Promise( ( resolve, reject ) => {
 			keystone.list( 'Child' ).model
@@ -298,7 +297,7 @@ function getUnmatchedSiblings( child, criteria ) {
 	return [ matchedSiblings, unmatchedSiblings ];
 }
 
-function processResults( results, criteria, includeFields ) {
+exports.processResults = ( results, criteria, includeFields ) => {
 	let mapper = ( child ) => {
 		let fields = [];
 		
@@ -372,11 +371,11 @@ function processResults( results, criteria, includeFields ) {
 	return results.map( mapper );
 }
 
-function sortResults( results ) {
+exports.sortResults = ( results ) => {
 	return results.sort( ( a, b ) => ( a.unmatchedSiblings.length > b.unmatchedSiblings.length ) ? 1 : ( ( b.unmatchedSiblings.length > a.unmatchedSiblings.length ) ? -1 : a.name.localeCompare( b.name ) ) );
 }
 
-function getFieldsFromQuery( query ) {
+exports.getFieldsFromQuery = ( query ) => {
 	let fields = {};
 	
 	if ( Array.isArray( query.fields ) ) {
@@ -388,157 +387,48 @@ function getFieldsFromQuery( query ) {
 	return fields;
 }
 
-function getReportFieldNamesFromQuery( query ) {
+exports.getReportFieldNamesFromQuery = ( query ) => {
 	return Array.isArray( query.fields ) ? query.fields.filter( ( field ) => FIELD_NAMES[ field ] ).map( ( field ) => FIELD_NAMES[ field ] ) : [];
 }
 
-exports = module.exports = ( req, res ) => {
-	'use strict';
-
-	const view		= new keystone.View( req, res ),
-		  userType	= req.user ? req.user.userType : '',
+exports.sendPDF = ( req, res, results ) => {
+	const view	= new keystone.View( req, res ),
 		  locals	= res.locals;
-	let familyId = req.query.family;
-	
-	// access to admins only
-	if ( userType.length === 0 || userType !== 'admin' ) {
-		res.statusCode = 403;
-		res.setHeader( 'Content-Type', 'text/plain' );
-		res.end( 'Access denied' );
-		return;
-	}
-	
-	if ( typeof familyId === 'undefined' ) {
-		view.render( 'tools-family-matching-request-family', { layout: 'dashboard' } );
-	} else {
-		familyService.getFamilyById( familyId ).then( family => {
-			
-			let preferences = family.matchingPreferences;
-			let criteria = getValidCriteria( req.query );
-			let emptyCriteria = _.isEmpty( criteria );
-			let childStatusesPromise = toolsService.getChildStatusesOptions( req.query.childStatus, emptyCriteria ),
-				childGendersPromise = toolsService.getGendersOptions(
-					emptyCriteria && Array.isArray( preferences.gender ) && preferences.gender.length > 0 ? preferences.gender.map( ( gender ) => gender.toString() ) : req.query.childGender 
-				),
-				childRacesPromise = toolsService.getRacesOptions(
-					emptyCriteria && Array.isArray( preferences.race ) && preferences.race.length > 0  ? preferences.race.map( ( race ) => race.toString() ) : req.query.childRace
-				),
-				childLegalStatusesPromise = toolsService.getLegalStatusesOptions(
-					emptyCriteria && Array.isArray( preferences.legalStatus ) && preferences.legalStatus.length > 0 ? preferences.legalStatus.map( ( legalStatus ) => legalStatus.toString() ) : req.query.legalStatus
-				),
-				familyConstellationsPromise = toolsService.getFamilyConstellationsOptions(
-					emptyCriteria && family.familyConstellation ? [ family.familyConstellation.toString() ] : req.query.familyConstellation
-				),
-				adoptionWorkersAgenciesPromise = toolsService.getAgenciesOptions(
-					emptyCriteria && family.socialWorkerAgency ? [ family.socialWorkerAgency.toString() ] : req.query.adoptionWorkersAgency
-				),
-				recruitmentWorkersAgenciesPromise = toolsService.getAgenciesOptions( req.query.recruitmentWorkersAgency ),
-				adoptionWorkersPromise = toolsService.getSocialWorkersOptions(
-					emptyCriteria && family.socialWorker ? [ family.socialWorker.toString() ] : req.query.adoptionWorkers
-				),
-				recruitmentWorkersPromise = toolsService.getSocialWorkersOptions( req.query.recruitmentWorkers ),
-				resultsPromise = getResultsPromise( criteria )
-				;
 
-			Promise.all( [ 
-					childStatusesPromise, childGendersPromise, childRacesPromise, familyConstellationsPromise,
-					childLegalStatusesPromise, adoptionWorkersAgenciesPromise, recruitmentWorkersAgenciesPromise,
-					adoptionWorkersPromise, recruitmentWorkersPromise, resultsPromise
-				] )
-				.then( values => {
-					// assign local variables to the values returned by the promises
-					const [ childStatuses, childGenders, childRaces, familyConstellations,
-						childLegalStatuses, adoptionWorkersAgencies, recruitmentWorkersAgencies, 
-						adoptionWorkers, recruitmentWorkers, results ] = values;
-					
-					// assign properties to locals for access during templating
-					locals.family = family._id;
-					locals.familyDisplayName = family.displayName;
-					locals.familyRegistrationNumber = family.registrationNumber;
-					locals.childStatuses = childStatuses;
-					locals.childGenders = childGenders;
-					locals.childRaces = childRaces;
-					locals.childLegalStatuses = childLegalStatuses;
-					locals.familyConstellations = familyConstellations;
-					locals.agesFrom = toolsService.getAgesOptions(
-						emptyCriteria && preferences.adoptionAges.from ? preferences.adoptionAges.from : req.query.agesFrom
-					);
-					locals.agesTo = toolsService.getAgesOptions(
-						emptyCriteria && preferences.adoptionAges.to ? preferences.adoptionAges.to : req.query.agesTo
-					);
-					locals.siblingGroupSizeFrom = toolsService.getSiblingGroupSizesOptions(
-						emptyCriteria && preferences.minNumberOfChildrenToAdopt ? preferences.minNumberOfChildrenToAdopt : req.query.siblingGroupSizeFrom
-					);
-					locals.siblingGroupSizeTo = toolsService.getSiblingGroupSizesOptions(
-						emptyCriteria && preferences.maxNumberOfChildrenToAdopt ? preferences.maxNumberOfChildrenToAdopt : req.query.siblingGroupSizeTo
-					);
-					locals.physicalNeedsFrom = toolsService.getPhysicalNeedsOptions( req.query.physicalNeedsFrom );
-					locals.physicalNeedsTo = toolsService.getPhysicalNeedsOptions(
-						emptyCriteria && preferences.maxNeeds.physical ? preferences.maxNeeds.physical : req.query.physicalNeedsTo
-					);
-					locals.intellectualNeedsFrom = toolsService.getIntellectualNeedsOptions( req.query.intellectualNeedsFrom );
-					locals.intellectualNeedsTo = toolsService.getIntellectualNeedsOptions(
-						emptyCriteria && preferences.maxNeeds.intellectual ? preferences.maxNeeds.intellectual : req.query.intellectualNeedsTo
-					);
-					locals.emotionalNeedsFrom = toolsService.getEmotionalNeedsOptions( req.query.emotionalNeedsFrom );
-					locals.emotionalNeedsTo = toolsService.getEmotionalNeedsOptions(
-						emptyCriteria && preferences.maxNeeds.emotional ? preferences.maxNeeds.emotional : req.query.emotionalNeedsTo
-					);
-					locals.socialNeeds = toolsService.getSocialNeedsOptions( req.query.socialNeeds );
-					locals.adoptionWorkersAgency = adoptionWorkersAgencies;
-					locals.recruitmentWorkersAgency = recruitmentWorkersAgencies;
-					locals.adoptionWorkers = adoptionWorkers;
-					locals.recruitmentWorkers = recruitmentWorkers;
-					locals.fields = getFieldsFromQuery( req.query );
-					locals.fieldNames = getReportFieldNamesFromQuery( req.query );
-					locals.siblingsCellColSpan = Object.keys( locals.fields ).length + 1;
-					locals.nonEmptyCriteria = !emptyCriteria;
-					locals.results = sortResults( processResults( results, criteria, locals.fields ) );
-					
-					if ( req.query.pdf ) {
-						view.render( 'tools-family-matching-pdf', { layout: null }, function(error, html) {
-							//res.send( unescapeHTML( html ) );
-							
-							const convertHTMLToPDF = require( "pdf-puppeteer" );
-							var callback = function ( pdf ) {
-								res.setHeader( "Content-Type", "application/pdf" );
-								res.send( pdf );
-							}
-							
-							const pageOptions = {
-								width: "11 in",
-								height: "8.5 in",
-								margin : {
-									top: '1 in',
-									right: '0.5 in',
-									bottom: '0.5 in',
-									left: '0.5 in'
-								},
-								displayHeaderFooter: true,
-								headerTemplate: '<span style="font-size: 18px; margin-left: 45px;">Massachusetts Adoption Resource Exchange, Inc.<br><span style="font-size: 16px;">Family Match Criteria Listing</span></span>',	
-								footerTemplate : '<span class="pageNumber" style="font-size: 10px; margin-left: 45px; text-align: center;"></span><span class="date" style="font-size: 10px; margin-left: 45px; text-align: right"></span>'
-							};
-							
-							convertHTMLToPDF( toolsService.unescapeHTML( html ), callback, pageOptions );
-						});
-						
-					} else {
-						view.render( 'tools-family-matching', { layout: 'dashboard' } );
-					}
-				})
-				.catch( err => {
-					console.error( `error loading data for the dashboard - ${ err }` );
-					
-					view.render( 'tools-family-matching', { layout: 'dashboard' } );
-				});
-		})
-		.catch( err => {
-			console.error( `error loading data for the dashboard - ${ err }` );
-			
-			locals.familyNotFound = true;
-			
-			view.render( 'tools-family-matching-request-family', { layout: 'dashboard' } );
-		});
-	}
+	locals.results = results;
 	
-};
+	// render HTML table and convert to PDF using Puppeteer (Chrome under the hood)
+	view.render( 'tools-family-matching-pdf', { layout: null }, function( error, html ) {
+		const convertHTMLToPDF = require( "pdf-puppeteer" );
+		const callback = ( pdf ) => {
+			res.setHeader( "Content-Type", "application/pdf" );
+			res.send( pdf );
+		};
+		const pageOptions = {
+			width: "11 in",
+			height: "8.5 in",
+			margin : {
+				top: '1 in',
+				right: '0.5 in',
+				bottom: '0.5 in',
+				left: '0.5 in'
+			},
+			displayHeaderFooter: true,
+			headerTemplate: '<span style="font-size: 18px; margin-left: 45px;">Massachusetts Adoption Resource Exchange, Inc.<br><span style="font-size: 16px;">Family Match Criteria Listing</span></span>',	
+			footerTemplate : '<span class="pageNumber" style="font-size: 10px; margin-left: 45px; text-align: center;"></span><span class="date" style="font-size: 10px; margin-left: 45px; text-align: right"></span>'
+		};
+		
+		convertHTMLToPDF( utilsService.unescapeHTML( html ), callback, pageOptions, {
+			executablePath: process.env.CHROME_PATH,
+			args: [ '--no-sandbox' ]
+		});
+	});
+}
+	  
+exports.extractFamilyData = ( family ) => {
+	return {
+		_id: family._id,
+		displayName: family.displayName,
+		registrationNumber: family.registrationNumber
+	}
+}

@@ -32,9 +32,8 @@ exports = module.exports = ( req, res ) => {
 			locals.physicalNeeds = needs;
 			locals.intellectualNeeds = needs;
 			locals.emotionalNeeds = needs;
+			locals.socialNeeds = needs;
 			
-			console.log(keystone.list('Child').model);
-			console.log(keystone.list('Child').model.physicalNeeds);
 
 			// render the view using the tools.hbs template
 			view.render( 'tools', { layout: 'tools' } );
