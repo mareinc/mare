@@ -1,24 +1,24 @@
 const flashMessages	= require( '../../utils/notification.middleware' );
 
-const 	PHYSICAL_NEEDS_OPTIONS = [ 'none', 'mild', 'moderate', 'severe' ],
-		INTELLECTUAL_NEEDS_OPTIONS = [ 'none', 'mild', 'moderate', 'severe' ],
-		EMOTIONAL_NEEDS_OPTIONS = [ 'none', 'mild', 'moderate', 'severe' ],
-		SOCIAL_NEEDS_OPTIONS = [ 'none', 'mild', 'moderate', 'severe' ];
+exports.PHYSICAL_NEEDS_OPTIONS = [ 'none', 'mild', 'moderate', 'severe' ];
+exports.INTELLECTUAL_NEEDS_OPTIONS = [ 'none', 'mild', 'moderate', 'severe' ];
+exports.EMOTIONAL_NEEDS_OPTIONS = [ 'none', 'mild', 'moderate', 'severe' ];
+exports.SOCIAL_NEEDS_OPTIONS = [ 'none', 'mild', 'moderate', 'severe' ];
 
 exports.getPhysicalNeedsRange = ( fromNeed, toNeed ) => {
-	return getRangeFromArrayOfNoneEmptyStrings( PHYSICAL_NEEDS_OPTIONS, fromNeed, toNeed );
+	return getRangeFromArrayOfNoneEmptyStrings( exports.PHYSICAL_NEEDS_OPTIONS, fromNeed, toNeed );
 };
 
 exports.getIntellectualNeedsRange = ( fromNeed, toNeed ) => {
-	return getRangeFromArrayOfNoneEmptyStrings( INTELLECTUAL_NEEDS_OPTIONS, fromNeed, toNeed );
+	return getRangeFromArrayOfNoneEmptyStrings( exports.INTELLECTUAL_NEEDS_OPTIONS, fromNeed, toNeed );
 };
 
 exports.getEmotionalNeedsRange = ( fromNeed, toNeed ) => {
-	return getRangeFromArrayOfNoneEmptyStrings( EMOTIONAL_NEEDS_OPTIONS, fromNeed, toNeed );
+	return getRangeFromArrayOfNoneEmptyStrings( exports.EMOTIONAL_NEEDS_OPTIONS, fromNeed, toNeed );
 };
 
 exports.getSocialNeedsRange = ( fromNeed, toNeed ) => {
-	return getRangeFromArrayOfNoneEmptyStrings( SOCIAL_NEEDS_OPTIONS, fromNeed, toNeed );
+	return getRangeFromArrayOfNoneEmptyStrings( exports.SOCIAL_NEEDS_OPTIONS, fromNeed, toNeed );
 };
 
 exports.sendSuccessFlashMessage = ( res, title, message ) => {

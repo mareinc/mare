@@ -1,6 +1,4 @@
 const keystone 				= require( 'keystone' ),
-	  flashMessages			= require( '../../utils/notification.middleware' ),
-	  listService			= require( '../lists/list.controllers' ),
 	  childService			= require( '../children/child.controllers' ),
 	  familyService			= require( '../families/family.controllers' ),
 	  socialWorkerService	= require( '../social workers/social-worker.controllers' ),
@@ -413,10 +411,10 @@ exports.getDashboardData = ( req, res, next ) => {
 		return;
 	}
 	
-	let result = {};
-	let fromDate = typeof req.query.fromDate !== 'undefined' ? req.query.fromDate : moment().subtract(daysRange, "days").format( 'YYYY-MM-DD' );
-	let toDate = typeof req.query.toDate !== 'undefined' ? req.query.toDate : moment().format( 'YYYY-MM-DD' );
-	let ytdFromDate = ( moment().month() >= 7 ? moment().year() : moment().year() - 1 ) + '-07-01';
+	let result = {},
+		fromDate = typeof req.query.fromDate !== 'undefined' ? req.query.fromDate : moment().subtract( daysRange, "days" ).format( 'YYYY-MM-DD' ),
+		toDate = typeof req.query.toDate !== 'undefined' ? req.query.toDate : moment().format( 'YYYY-MM-DD' ),
+		ytdFromDate = ( moment().month() >= 7 ? moment().year() : moment().year() - 1 ) + '-07-01';
 	
 	result.fromDate = fromDate;
 	result.toDate = toDate;

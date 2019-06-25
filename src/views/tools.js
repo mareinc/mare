@@ -1,7 +1,6 @@
 const keystone		= require( 'keystone' ),
-	  userService	= require( '../components/users/user.controllers' ),
-	  listService	= require( '../components/lists/list.controllers' ),
-	  pageService	= require( '../components/pages/page.controllers' );
+	  listService	= require( '../components/lists/list.controllers' );
+	  utilsService	= require( '../components/reporting dashboard/utils.controllers' );
 
 exports = module.exports = ( req, res ) => {
 	'use strict';
@@ -19,7 +18,6 @@ exports = module.exports = ( req, res ) => {
 		.then( values => {
 			// assign local variables to the values returned by the promises
 			const [ childStatuses, genders, races, legalStatuses, familyConstellations ] = values;
-			const needs = [ 'none', 'mild', 'moderate', 'severe' ];
 			
 			// assign properties to locals for access during templating
 			locals.childStatuses = childStatuses;
@@ -29,11 +27,10 @@ exports = module.exports = ( req, res ) => {
 			locals.familyConstellations = familyConstellations;
 			locals.ages = Array( 21 ).fill().map( ( _, i ) => i );
 			locals.siblingGroupSizes = Array( 10 ).fill().map( ( _, i ) => i );
-			locals.physicalNeeds = needs;
-			locals.intellectualNeeds = needs;
-			locals.emotionalNeeds = needs;
-			locals.socialNeeds = needs;
-			
+			locals.physicalNeeds = utilsService.PHYSICAL_NEEDS_OPTIONS;
+			locals.intellectualNeeds = utilsService.INTELLECTUAL_NEEDS_OPTIONS;
+			locals.emotionalNeeds = utilsService.EMOTIONAL_NEEDS_OPTIONS;
+			locals.socialNeeds = utilsService.SOCIAL_NEEDS_OPTIONS;
 
 			// render the view using the tools.hbs template
 			view.render( 'tools', { layout: 'tools' } );
