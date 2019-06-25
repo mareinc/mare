@@ -56,10 +56,10 @@
 					var componentSplit = component.split( '=' );
 					
 					if ( componentSplit.length >= 1 ) {
-						var value = undefined,
+						var value,
 							name = componentSplit[ 0 ];
 						
-						if ( componentSplit.length == 2 ) {
+						if ( componentSplit.length === 2 ) {
 							value = componentSplit[ 1 ];
 						}
 						

@@ -46,18 +46,23 @@
 		
 		/* fills in the form based on parameters */
 		initializeTheForm: function( params ) {
+			
+			function fillIn() {
+				var input = jQuery( this );
+						
+				if ( input.attr( 'type' ) === 'checkbox' && _.contains( params[ paramName ], input.val() )) {
+					input.prop( "checked", true );
+				}
+				
+				if ( input.prop( "tagName" ).toLowerCase() === 'select' ) {
+					input.val( params[ paramName ] );
+				}
+			}
+			
 			for ( var paramName in params ) {
-				this.$el.find( '[name="' + paramName + '"], [name="' + paramName + '[]"]' ).each( function() {
-					var input = jQuery( this );
-					
-					if ( input.attr( 'type' ) == 'checkbox' && _.contains( params[ paramName ], input.val() )) {
-						input.prop( "checked", true );
-					}
-					
-					if ( input.prop( "tagName" ).toLowerCase() == 'select' ) {
-						input.val( params[ paramName ] );
-					}
-				});
+				if ( params.hasOwnProperty( paramName ) ) {
+					this.$el.find( '[name="' + paramName + '"], [name="' + paramName + '[]"]' ).each( fillIn );
+				}
 			}
 		},
 		
@@ -69,7 +74,7 @@
 			
 			// remove empty values
 			params = _.filter( params, function( value ) {
-				return value && value.value && value.value.length > 0 && value.name != 'childID';
+				return value && value.value && value.value.length > 0 && value.name !== 'childID';
 			});
 			
 			// build the query string
