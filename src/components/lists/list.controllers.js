@@ -403,6 +403,33 @@ exports.getAllChildStatuses = () => {
 	});
 };
 
+exports.getChildStatusByName = (name) => {
+	return new Promise( ( resolve, reject ) => {
+
+		if( !name ) {
+			return reject( 'no name provided' );
+		}
+
+		keystone.list( 'Child Status' ).model
+			.findOne()
+			.where( 'childStatus' ).equals( name )
+			.lean()
+			.exec()
+			.then( childStatus => {
+				if( !childStatus ) {
+					return reject( `child status  ${ name } could not be found` );
+				}
+				
+				resolve( childStatus );
+			}, err => {
+				// log the error for debugging purposes
+				console.error( `error fetching the child status by name ${ name }`, err );
+				// reject the promise
+				reject( err );
+			});
+	});
+};
+
 exports.getChildTypesForWebsite = () => {
 
 	return new Promise( ( resolve, reject ) => {

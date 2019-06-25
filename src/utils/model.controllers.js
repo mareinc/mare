@@ -45,6 +45,21 @@ exports.getModels = query = ( { ids, targetModel, fieldsToSelect = [], fieldsToP
 	});
 };
 
+exports.getNumberOfModelsByDatesAndDateFieldName = ( modelName, fromDate, toDate, dateFieldName ) => {
+	return new Promise( ( resolve, reject ) => {
+		keystone.list( modelName ).model
+			.count({
+				[ dateFieldName ] : { "$gte": new Date( fromDate + "T00:00:00.000Z" ), "$lte": new Date( toDate + "T00:00:00.000Z" ) }
+			})
+			.exec()
+			.then( total => {
+				resolve( total );
+			}, err => {
+				reject( err );
+			});
+	});
+};
+
 // NOTE: The functions below allow locking of Models while they are being saved to prevent multiple saves from occuring simultaneously
 
 // creates a private Set to store all locked models

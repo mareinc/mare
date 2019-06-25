@@ -1,4 +1,5 @@
 const keystone 				= require( 'keystone' ),
+	  modelUtilsService		= require( '../../utils/model.controllers' ),
 	  childService			= require( '../children/child.controllers' ),
 	  familyService			= require( '../families/family.controllers' ),
 	  socialWorkerService	= require( '../social workers/social-worker.controllers' ),
@@ -419,13 +420,13 @@ exports.getDashboardData = ( req, res, next ) => {
 	result.fromDate = fromDate;
 	result.toDate = toDate;
 	
-	let getNumberOfFamilies = dashboardService.getNumberOfModels( 'Family', fromDate, toDate, 'createdAt' ),
-		getNumberOfChildren = dashboardService.getNumberOfModels( 'Child', fromDate, toDate, 'createdAt' ),
-		getNumberOfInquiries = dashboardService.getNumberOfModels( 'Inquiry', fromDate, toDate, 'takenOn' ),
-		getNumberOfPlacements = dashboardService.getNumberOfModels( 'Placement', ytdFromDate, toDate, 'placementDate' ),
-		getNumberOfActiveChildren = dashboardService.getNumberOfChildrenByStatusNameAndRegionID( 'active', undefined ),
-		getNumberOfOnHoldChildren = dashboardService.getNumberOfChildrenByStatusNameAndRegionID( 'on hold', undefined ),
-		getNumberOfAllChildren = dashboardService.getNumberOfChildrenByRegionID( undefined ),
+	let getNumberOfFamilies = modelUtilsService.getNumberOfModelsByDatesAndDateFieldName( 'Family', fromDate, toDate, 'createdAt' ),
+		getNumberOfChildren = modelUtilsService.getNumberOfModelsByDatesAndDateFieldName( 'Child', fromDate, toDate, 'createdAt' ),
+		getNumberOfInquiries = modelUtilsService.getNumberOfModelsByDatesAndDateFieldName( 'Inquiry', fromDate, toDate, 'takenOn' ),
+		getNumberOfPlacements = modelUtilsService.getNumberOfModelsByDatesAndDateFieldName( 'Placement', ytdFromDate, toDate, 'placementDate' ),
+		getNumberOfActiveChildren = dashboardService.getNumberOfChildrenByStatusNameAndRegionID( 'active' ),
+		getNumberOfOnHoldChildren = dashboardService.getNumberOfChildrenByStatusNameAndRegionID( 'on hold' ),
+		getNumberOfAllChildren = dashboardService.getNumberOfChildrenByRegionID( ),
 		getChildrenNumbersGroupedByRegions = dashboardService.getChildrenNumbersGroupedByRegions( );
 	
 	Promise.all( [ getNumberOfFamilies, getNumberOfChildren, getNumberOfInquiries, getNumberOfPlacements, getNumberOfActiveChildren, getNumberOfOnHoldChildren, getNumberOfAllChildren, getChildrenNumbersGroupedByRegions ] )

@@ -1,49 +1,9 @@
 const keystone 			= require( 'keystone' ),
 	  listService		= require( '../lists/list.controllers' );
-	  
-	  
-function getChildStatusByName(name) {
-	return new Promise( ( resolve, reject ) => {
-
-		if( !name ) {
-			return reject( 'no name provided' );
-		}
-
-		keystone.list( 'Child Status' ).model
-			.findOne()
-			.where( 'childStatus' ).equals( name )
-			.lean()
-			.exec()
-			.then( childStatus => {
-				if( !childStatus ) {
-					return reject( `status could not be found` );
-				}
-				
-				resolve( childStatus );
-			}, err => {
-				reject( err );
-			});
-	});
-};
-
-exports.getNumberOfModels = ( modelName, fromDate, toDate, dateFieldName ) => {
-	return new Promise( ( resolve, reject ) => {
-		keystone.list( modelName ).model
-			.count({
-				[ dateFieldName ] : { "$gte": new Date( fromDate + "T00:00:00.000Z" ), "$lte": new Date( toDate + "T00:00:00.000Z" ) }
-			})
-			.exec()
-			.then( total => {
-				resolve( total );
-			}, err => {
-				reject( err );
-			});
-	});
-};
 
 exports.getNumberOfChildrenByStatusNameAndRegionID = ( statusName, regionID ) => {
 	return new Promise( ( resolve, reject ) => {
-		getChildStatusByName( statusName )
+		listService.getChildStatusByName( statusName )
 			.then( childStatus => {
 				let conditions = {
 					status: childStatus
