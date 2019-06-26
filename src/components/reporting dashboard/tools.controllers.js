@@ -4,7 +4,7 @@ const keystone 				= require( 'keystone' ),
 	  familyService			= require( '../families/family.controllers' ),
 	  socialWorkerService	= require( '../social workers/social-worker.controllers' ),
 	  agenciesService		= require( '../agencies/agency.controllers' ),
-	  ObjectId 				= require('mongodb').ObjectId,
+	  ObjectId 				= require( 'mongodb' ).ObjectId,
 	  moment				= require( 'moment' ),
 	  _						= require( 'underscore' ),
 	  dashboardService		= require( './dashboard.controllers' ),
@@ -102,6 +102,7 @@ exports.getChildMatchingData = ( req, res, next ) => {
 exports.saveFamiliesMatchingHistory = ( req, res, next ) => {
 	const childID = req.body.childID;
 	
+	// verify the number of IDs
 	if ( ! Array.isArray( req.body.ids ) || req.body.ids.length === 0 ) {
 		utilsService.sendErrorFlashMessage( res, 'Error', 'There are no entries selected' );
 		return;
@@ -119,6 +120,7 @@ exports.saveFamiliesMatchingHistory = ( req, res, next ) => {
 				});
 			}
 			
+			// prepare save tasks
 			families.forEach( family => {
 				allChildrenIDs.forEach( ( targetChildID ) => {
 					const FamilyMatchingHistory = keystone.list( 'Family Matching History' ),
@@ -134,6 +136,7 @@ exports.saveFamiliesMatchingHistory = ( req, res, next ) => {
 				});
 			});
 			
+			// wait for all tasks to be done
 			Promise.all( tasks )
 				.then( ( results ) => {
 					utilsService.sendSuccessFlashMessage( res, 'Information', 'All entries have been saved' );
@@ -233,9 +236,11 @@ exports.getFamilyMatchingData = ( req, res, next ) => {
 				result.adoptionWorkersAgency = utilsService.extractAgenicesData( adoptionWorkersAgency );
 				result.recruitmentWorkersAgency = utilsService.extractAgenicesData( recruitmentWorkersAgency );
 				
+				// append selected fields and their names
 				result.fields = familyMatchingService.getFieldsFromQuery( req.query );
 				result.fieldNames = familyMatchingService.getReportFieldNamesFromQuery( req.query );
 				
+				// prepare results
 				result.results = familyMatchingService.sortResults( familyMatchingService.processResults( results, criteria, result.fields ) );
 				
 				// send the results in PDF format if 'pdf' parameter was detected in the query string
@@ -257,6 +262,7 @@ exports.getFamilyMatchingData = ( req, res, next ) => {
 exports.saveChildrenMatchingHistory = ( req, res, next ) => {
 	const familyID = req.body.familyID;
 	
+	// verify the number of IDs
 	if ( ! Array.isArray( req.body.ids ) || req.body.ids.length === 0 ) {
 		utilsService.sendErrorFlashMessage( res, 'Error', 'There are no entries selected' );
 		return;
@@ -265,6 +271,7 @@ exports.saveChildrenMatchingHistory = ( req, res, next ) => {
 	childService.getChildrenByIds( req.body.ids ).then( children => {
 		let tasks = [];
 		
+		// prepare save tasks
 		children.forEach( child => {
 			const ChildMatchingHistory = keystone.list( 'Child Matching History' );
 			const childMatchingHistory = new ChildMatchingHistory.model({
@@ -278,6 +285,7 @@ exports.saveChildrenMatchingHistory = ( req, res, next ) => {
 			tasks.push( childMatchingHistory.save() );
 		});
 		
+		// wait for all tasks to be done
 		Promise.all( tasks )
 			.then( ( results ) => {
 				utilsService.sendSuccessFlashMessage( res, 'Information', 'All entries have been saved' );
@@ -296,58 +304,63 @@ exports.saveChildrenMatchingHistory = ( req, res, next ) => {
 	
 };
 
+/* Returns agencies based on keyword query */
 exports.getAgenciesData = ( req, res, next ) => {
 	const MAX_RESULTS = 10;
-	let query = req.query.q;
-	
-	keystone.list( 'Agency' ).model
-		.find( { 'name' : new RegExp( query, 'i' ) } )
-		.sort( { 'name' : 'asc' } )
-		.limit( MAX_RESULTS )
-		.exec()
-		.then( results => {
-			res.send( { 
-				results: results.map( ( agency ) => {
-					return {
-						id: agency._id.toString(),
-						text: agency.name
-					}
-				}),
-				pagination: { more: false } 
-			});
-		}, err => {
-			console.error( `error while loading agencies - ${ err }` );
-			res.send( { results: [], pagination: { more: false } } );
+
+	agenciesService.getAgenciesByName( req.query.q, MAX_RESULTS ).then( agencies => {
+		res.send( { 
+			results: agencies.map( ( agency ) => {
+				return {
+					id: agency._id.toString(),
+					text: agency.name
+				}
+			}),
+			pagination: {
+				more: false
+			} 
 		});
-	
+	})
+	.catch( err => {
+		console.error( `error while loading agencies`, err );
+		res.send( {
+			results: [], 
+			pagination: {
+				more: false
+			}
+		});
+	});
 };
 
+/* Returns social workers based on keyword query */
 exports.getSocialWorkersData = ( req, res, next ) => {
 	const MAX_RESULTS = 10;
-	let query = req.query.q;
-	
-	keystone.list( 'Social Worker' ).model
-		.find( { 'name.full' : new RegExp( query, 'i' ) } )
-		.sort( { 'name.full' : 'asc' } )
-		.limit( MAX_RESULTS )
-		.exec()
-		.then( results => {
-			res.send( { 
-				results: results.map( ( socialWorker ) => {
-					return {
-						id: socialWorker._id.toString(),
-						text: socialWorker.name.full
-					}
-				}),
-				pagination: { more: false } 
-			});
-		}, err => {
-			console.error( `error while loading social workers - ${ err }` );
-			res.send( { results: [], pagination: { more: false } } );
+
+	socialWorkerService.getSocialWorkersByName( req.query.q, MAX_RESULTS ).then( socialWorkers => {
+		res.send( { 
+			results: socialWorkers.map( ( socialWorker ) => {
+				return {
+					id: socialWorker._id.toString(),
+					text: socialWorker.name.full
+				}
+			}),
+			pagination: {
+				more: false
+			} 
 		});
-	
+	})
+	.catch( err => {
+		console.error( `error while loading social workers`, err );
+		res.send( {
+			results: [], 
+			pagination: {
+				more: false
+			}
+		});
+	});
 };
 
+/* Returns families based on keyword */
 exports.getFamiliesData = ( req, res, next ) => {
 	const MAX_RESULTS = 10;
 	let query = req.query.q;
@@ -374,6 +387,7 @@ exports.getFamiliesData = ( req, res, next ) => {
 	
 };
 
+/* Returns children based on keyword */
 exports.getChildrenData = ( req, res, next ) => {
 	const MAX_RESULTS = 10;
 	let query = req.query.q;
@@ -424,10 +438,10 @@ exports.getDashboardData = ( req, res, next ) => {
 		getNumberOfChildren = modelUtilsService.getNumberOfModelsByDatesAndDateFieldName( 'Child', fromDate, toDate, 'createdAt' ),
 		getNumberOfInquiries = modelUtilsService.getNumberOfModelsByDatesAndDateFieldName( 'Inquiry', fromDate, toDate, 'takenOn' ),
 		getNumberOfPlacements = modelUtilsService.getNumberOfModelsByDatesAndDateFieldName( 'Placement', ytdFromDate, toDate, 'placementDate' ),
-		getNumberOfActiveChildren = dashboardService.getNumberOfChildrenByStatusNameAndRegionID( 'active' ),
-		getNumberOfOnHoldChildren = dashboardService.getNumberOfChildrenByStatusNameAndRegionID( 'on hold' ),
-		getNumberOfAllChildren = dashboardService.getNumberOfChildrenByRegionID( ),
-		getChildrenNumbersGroupedByRegions = dashboardService.getChildrenNumbersGroupedByRegions( );
+		getNumberOfActiveChildren = childService.getNumberOfChildrenByStatusNameAndRegionID( 'active' ),
+		getNumberOfOnHoldChildren = childService.getNumberOfChildrenByStatusNameAndRegionID( 'on hold' ),
+		getNumberOfAllChildren = childService.getNumberOfChildrenByRegionID(),
+		getChildrenNumbersGroupedByRegions = dashboardService.getChildrenNumbersGroupedByRegions();
 	
 	Promise.all( [ getNumberOfFamilies, getNumberOfChildren, getNumberOfInquiries, getNumberOfPlacements, getNumberOfActiveChildren, getNumberOfOnHoldChildren, getNumberOfAllChildren, getChildrenNumbersGroupedByRegions ] )
 		.then( values => {
@@ -450,6 +464,6 @@ exports.getDashboardData = ( req, res, next ) => {
 			// log an error for debugging purposes
 			console.error( `error loading data for the dashboard - ${ err }` );
 
-			res.send( { status: 'ERROR', message: 'Error loading the dashboard data' } );
+			utilsService.sendErrorFlashMessage( res, 'Error', 'Error loading the dashboard data' );
 		});
 };

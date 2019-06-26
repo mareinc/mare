@@ -403,11 +403,14 @@ exports.getAllChildStatuses = () => {
 	});
 };
 
-exports.getChildStatusByName = (name) => {
+exports.getChildStatusByName = ( name ) => {
+
 	return new Promise( ( resolve, reject ) => {
 
+		// if no status name was passed in
 		if( !name ) {
-			return reject( 'no name provided' );
+			// reject the promise with details about the error
+			return reject( new Error( `no status name provided` ) );
 		}
 
 		keystone.list( 'Child Status' ).model
@@ -417,15 +420,18 @@ exports.getChildStatusByName = (name) => {
 			.exec()
 			.then( childStatus => {
 				if( !childStatus ) {
-					return reject( `child status  ${ name } could not be found` );
+					// log an error for debugging purposes
+					console.error( `child status  ${ name } could not be found` );
+					// reject the promise
+					return reject( new Error( `child status  ${ name } could not be found` ) );
 				}
 				
 				resolve( childStatus );
 			}, err => {
-				// log the error for debugging purposes
+				// log an error for debugging purposes
 				console.error( `error fetching the child status by name ${ name }`, err );
 				// reject the promise
-				reject( err );
+				reject( new Error( `error fetching the child status by name ${ name } - ${ err }` ) );
 			});
 	});
 };

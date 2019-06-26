@@ -1,5 +1,5 @@
 const keystone 		= require( 'keystone' ),
-	  ObjectId 		= require('mongodb').ObjectId,
+	  ObjectId 		= require( 'mongodb' ).ObjectId,
 	  _				= require( 'underscore' ),
 	  utilsService	= require( './utils.controllers' );
 	  
@@ -127,11 +127,14 @@ exports.getResultsPromise = ( criteria ) => {
 				.exec()
 				.then(
 					results => resolve( results ), 
-					err => reject( err )
+					err => {
+						// reject the promise
+						reject( new Error( `error fetching families - ${ err }` ) );
+					}
 				);
 		});
 	} else {
-		return new Promise( ( resolve, reject ) => resolve( [] ) );
+		return [];
 	}
 }
 
@@ -193,6 +196,7 @@ exports.sendPDF = ( req, res, results ) => {
 	});
 }
 
+/* Extracts minimal child data */
 exports.extractChildData = ( child ) => {
 	return {
 		_id: child._id,

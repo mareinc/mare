@@ -117,6 +117,38 @@ exports.getActiveSocialWorkerIds = () => {
 	});
 };
 
+/* get all social workers that match the query in the name field and sort them by name */
+exports.getSocialWorkersByName = ( nameQuery, maxResults ) => {
+
+	return new Promise( ( resolve, reject ) => {
+		// if no maxResults was passed in
+		if( !maxResults ) {
+			// return control to the calling context
+			return reject( new Error( `error fetching social workers by name - no maxResults passed in` ) );
+		}
+		
+		// fetch the social worker records
+		keystone.list( 'Social Worker' ).model
+			.find( {
+				'name.full' : new RegExp( nameQuery, 'i' )
+			})
+			.sort( {
+				'name.full' : 'asc'
+			})
+			.limit( maxResults )
+			.exec()
+			.then( socialWorkers => {
+				// resolve the promise with the returned social workers
+				resolve( socialWorkers );
+			}, err => {
+				// log an error for debugging purposes
+				console.error( `error fetching social workers by name ${ nameQuery } and max results ${ maxResults }`, err );
+				// reject the promise with details about the error
+				reject( new Error( `error fetching social workers by name ${ nameQuery } and max results ${ maxResults } - ${ err }` ) );
+			});
+	});
+};
+
 /* Cron job function used to batch save all social worker models */
 exports.saveAllSocialWorkers = () => {
 

@@ -1,5 +1,5 @@
 const keystone 		= require( 'keystone' ),
-	  ObjectId 		= require('mongodb').ObjectId,
+	  ObjectId 		= require( 'mongodb' ).ObjectId,
 	  _				= require( 'underscore' ),
 	  moment		= require( 'moment' ),
 	  utilsService	= require( './utils.controllers' );
@@ -264,11 +264,14 @@ exports.getResultsPromise = ( criteria ) => {
 				.exec()
 				.then(
 					results => resolve( results ), 
-					err => reject( err )
+					err => {
+						// reject the promise
+						reject( new Error( `error fetching children - ${ err }` ) );
+					}
 				);
 		});
 	} else {
-		return new Promise( ( resolve, reject ) => resolve( [] ) );
+		return [];
 	}
 }
 
@@ -283,7 +286,7 @@ function getUnmatchedSiblings( child, criteria ) {
 				id: sibling._id,
 				registrationNumber: sibling.registrationNumber,
 				name: sibling.name.full,
-				reasons: reasons.join(', ')
+				reasons: reasons.join( ', ' )
 			});
 		} else {
 			matchedSiblings.push( {
@@ -425,6 +428,7 @@ exports.sendPDF = ( req, res, results ) => {
 	});
 }
 	  
+/* Extracts minimal family data */
 exports.extractFamilyData = ( family ) => {
 	return {
 		_id: family._id,

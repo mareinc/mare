@@ -19,7 +19,7 @@
 		},
 		
 		initializeFamilySelects: function() {
-			this.$el.find('.family-select').select2({
+			this.$el.find( '.family-select' ).select2({
 				placeholder: 'Select family',
 				ajax: {
 					url: '/tools/services/get-families-data',
@@ -29,7 +29,7 @@
 		},
 		
 		handleSearchClick: function handleSearchClick() {
-			mare.routers.tools.navigate( 'family-matching/' + this.$el.find('.family-select').val(), { trigger: true } );
+			mare.routers.tools.navigate( 'family-matching/' + this.$el.find( '.family-select' ).val(), { trigger: true } );
 		},
 
 		/* render the view onto the page */

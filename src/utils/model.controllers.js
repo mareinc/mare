@@ -55,7 +55,7 @@ exports.getNumberOfModelsByDatesAndDateFieldName = ( modelName, fromDate, toDate
 			.then( total => {
 				resolve( total );
 			}, err => {
-				reject( err );
+				reject( new Error( `error fetching the number of models ${ modelName } by dates and date field name - ${ err }` ) );
 			});
 	});
 };

@@ -1134,3 +1134,75 @@ exports.getChildById = ( { id, fieldsToPopulate = [] } ) => {
 			});
 	});
 };
+
+/* fetch the number of children by status name and region ID; if regionID is undefined then only status is taken into account */
+exports.getNumberOfChildrenByStatusNameAndRegionID = ( statusName, regionID ) => {
+
+	return new Promise( ( resolve, reject ) => {
+		// if no status name was passed in
+		if( !statusName ) {
+			// reject the promise with details about the error
+			return reject( new Error( `no status name provided` ) );
+		}
+		
+		// get the status by name
+		listService.getChildStatusByName( statusName )
+			.then( childStatus => {
+				let conditions = {
+					status: childStatus
+				};
+				
+				// search by region if provided
+				if ( regionID ) {
+					conditions[ 'adoptionWorkerAgencyRegion' ] = regionID;
+				}
+				
+				// attempt to find the number of children by status and region ID (optional)
+				keystone.list( 'Child' ).model
+					.count( conditions )
+					.exec()
+					.then( total => {
+						resolve( total );
+					}, err => {
+						// log an error for debugging purposes
+						console.error( `error counting the number of children by status ${ statusName } and region ID ${ regionID }`, err );
+						// reject the promise with details about the error
+						reject( new Error( `error counting the number of children by status ${ statusName } and region ID ${ regionID } - ${ err }` ) );
+					});
+			})
+			.catch( err => {
+				// log an error for debugging purposes
+				console.error( `error fetching the number of children by status ${ statusName } and region ID ${ regionID }`, err );
+				// reject the promise with details about the error
+				reject( new Error( `error fetching the number of children by status ${ statusName } and region ID ${ regionID } - ${ err }` ) );
+			});
+	});
+};
+
+/* fetch the number of children by region ID; if regionID is undefined then the total number of all children is returned */
+exports.getNumberOfChildrenByRegionID = ( regionID ) => {
+
+	return new Promise( ( resolve, reject ) => {
+		let conditions = {};
+		
+		// search by region if provided
+		if ( regionID ) {
+			conditions = {
+				adoptionWorkerAgencyRegion: regionID
+			};
+		}
+
+		// attempt to find the number of children by region ID (optional)
+		keystone.list( 'Child' ).model
+			.count( conditions )
+			.exec()
+			.then( total => {
+				resolve( total );
+			}, err => {
+				// log an error for debugging purposes
+				console.error( `error fetching the number of children by region ID ${ regionID }`, err );
+				// reject the promise with details about the error
+				reject( new Error( `error fetching the number of children by region ID ${ regionID } - ${ err }` ) );
+			});
+	});
+};

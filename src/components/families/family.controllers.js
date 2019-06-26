@@ -57,15 +57,19 @@ exports.getFamiliesByIds = ids => {
 			.then( families => {
 				// if no families were returned
 				if( families.length === 0 ) {
+					// log an error for debugging purposes
+					console.error( `no families found matching ids ${ ids.join( ', ' ) }` );
 					// reject the promise with the reason why
-					reject( `error fetching families by id array - no families found with ids ${ ids }` );
+					reject( new Error( `no families found matching ids ${ ids.join( ', ' ) }` ) );
 				}
 				// resolve the promise with the returned families
 				resolve( families );
 			// if an error occurred fetching from the database
 			}, err => {
+				// log an error for debugging purposes
+				console.error( `error fetching families by id array ${ ids.join( ', ' ) } - ${ err }`, err );
 				// reject the promise with details of the error
-				reject( `error fetching families by id array ${ ids } - ${ err }` );
+				reject( new Error( `error fetching families by id array ${ ids.join( ', ' ) } - ${ err }` ) );
 			});
 	});
 };

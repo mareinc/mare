@@ -31,7 +31,7 @@
 		},
 		
 		handleSearchClick: function() {
-			mare.routers.tools.navigate( 'dashboard/' + this.$el.find('[name="fromDate"]').val() + '/' + this.$el.find('[name="toDate"]').val(), { trigger: true } );
+			mare.routers.tools.navigate( 'dashboard/' + this.$el.find( '[name="fromDate"]' ).val() + '/' + this.$el.find( '[name="toDate"]' ).val(), { trigger: true } );
 		},
 		
 		getDataPromise: function( fromDate, toDate ) {
@@ -41,25 +41,25 @@
 				queryParams = {
 					fromDate: fromDate,
 					toDate: toDate
-				}
+				};
 			}
 			
-			return $.Deferred(function( defer ) {
+			return $.Deferred( function( defer ) {
 				$.ajax({
 					dataType: 'json',
 					url: '/tools/services/get-dashboard-data',
 					data: queryParams,
 					type: 'GET'
 				}).done( function( data ) {
-					if ( data.status === 'ERROR' ) {
-						mare.views.flashMessages.initializeAJAX( data.message );
+					if ( data.status === 'error' ) {
+						// display the flash message
+						mare.views.flashMessages.initializeAJAX( data.flashMessage );
 						defer.reject();
 					} else {
-						defer.resolve(data);
+						defer.resolve( data );
 					}
 				}).fail( function( err ) {
 					console.log( err );
-					mare.views.flashMessages.initializeAJAX( 'Could not load the data' );
 					defer.reject();
 				});
 			}).promise();

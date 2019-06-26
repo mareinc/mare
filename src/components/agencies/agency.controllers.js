@@ -58,6 +58,38 @@ exports.getAgenciesByIds = ids => {
 	});
 };
 
+/* get all agencies that match the query in the name field and sort them by name */
+exports.getAgenciesByName = ( nameQuery, maxResults ) => {
+
+	return new Promise( ( resolve, reject ) => {
+		// if no maxResults was passed in
+		if( !maxResults ) {
+			// return control to the calling context
+			return reject( new Error( `error fetching agencies by name - no maxResults passed in` ) );
+		}
+		
+		// fetch the agency records
+		keystone.list( 'Agency' ).model
+			.find( {
+				'name' : new RegExp( nameQuery, 'i' )
+			})
+			.sort( {
+				'name' : 'asc'
+			})
+			.limit( maxResults )
+			.exec()
+			.then( agencies => {
+				// resolve the promise with the returned agencies
+				resolve( agencies );
+			}, err => {
+				// log an error for debugging purposes
+				console.error( `error fetching agencies by name ${ nameQuery } and max results ${ maxResults }`, err );
+				// reject the promise with details about the error
+				reject( new Error( `error fetching agencies by name ${ nameQuery } and max results ${ maxResults } - ${ err }` ) );
+			});
+	});
+};
+
 /* Cron job function used to batch save all agency models */
 exports.saveAllAgencies = () => {
 

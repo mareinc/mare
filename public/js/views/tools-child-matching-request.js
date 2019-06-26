@@ -19,7 +19,7 @@
 		},
 		
 		initializeChildSelects: function() {
-			this.$el.find('.child-select').select2({
+			this.$el.find( '.child-select' ).select2({
 				placeholder: 'Select child',
 				ajax: {
 					url: '/tools/services/get-children-data',
@@ -29,7 +29,7 @@
 		},
 		
 		handleSearchClick: function handleSearchClick() {
-			mare.routers.tools.navigate( 'child-matching/' + this.$el.find('.child-select').val(), { trigger: true } );
+			mare.routers.tools.navigate( 'child-matching/' + this.$el.find( '.child-select' ).val(), { trigger: true } );
 		},
 
 		/* render the view onto the page */
