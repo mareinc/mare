@@ -1,5 +1,15 @@
 .filter-form {
 
+	&__label {
+		background: #2f4e87;
+		color: #fff;
+	}
+	
+	&__label p {
+		padding: 9px 15px;
+		margin: 0;
+	}
+	
 	.input-daterange .input-group-addon span {
 		display: block;
 		width: 17px;
@@ -22,16 +32,6 @@
 		right: 6px;
 		top: 50%;
 		transform: translateY(-50%);
-	}
-	
-	.label {
-		background: #2f4e87;
-		color: #fff;
-	}
-	
-	.label p {
-		padding: 9px 15px;
-		margin: 0;
 	}
 	
 	label {

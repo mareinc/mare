@@ -1,6 +1,10 @@
-
-
-
+/* include bootstrap4 styles as needed for the dashboard pages, specifically reboot and grid are needed */
+@import "../styles/bootstrap/functions";
+@import "../styles/bootstrap/variables";
+@import "../styles/bootstrap/mixins";
+@import "../styles/bootstrap/root";
+@import "../styles/bootstrap/reboot";
+@import "../styles/bootstrap/grid";
 
 @import "_page-dashboard";
 
