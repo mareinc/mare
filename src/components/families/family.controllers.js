@@ -67,9 +67,41 @@ exports.getFamiliesByIds = ids => {
 			// if an error occurred fetching from the database
 			}, err => {
 				// log an error for debugging purposes
-				console.error( `error fetching families by id array ${ ids.join( ', ' ) } - ${ err }`, err );
+				console.error( `error fetching families by id array ${ ids.join( ', ' ) }`, err );
 				// reject the promise with details of the error
 				reject( new Error( `error fetching families by id array ${ ids.join( ', ' ) } - ${ err }` ) );
+			});
+	});
+};
+
+/* get all families that match the query in the name field and sort them by name */
+exports.getFamiliesByName = ( nameQuery, maxResults ) => {
+
+	return new Promise( ( resolve, reject ) => {
+		// if no maxResults was passed in
+		if( !maxResults ) {
+			// return control to the calling context
+			return reject( new Error( `error fetching families by name - no maxResults passed in` ) );
+		}
+		
+		// fetch the families records
+		keystone.list( 'Family' ).model
+			.find( {
+				'displayNameAndRegistration' : new RegExp( nameQuery, 'i' )
+			})
+			.sort( {
+				'displayNameAndRegistration' : 'asc'
+			})
+			.limit( maxResults )
+			.exec()
+			.then( families => {
+				// resolve the promise with the returned families
+				resolve( families );
+			}, err => {
+				// log an error for debugging purposes
+				console.error( `error fetching families by name ${ nameQuery } and max results ${ maxResults }`, err );
+				// reject the promise with details about the error
+				reject( new Error( `error fetching families by name ${ nameQuery } and max results ${ maxResults } - ${ err }` ) );
 			});
 	});
 };

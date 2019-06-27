@@ -1,4 +1,6 @@
-const flashMessages	= require( '../../utils/notification.middleware' );
+const keystone			= require( 'keystone' ),
+	  flashMessages	 	= require( '../../utils/notification.middleware' ),
+	  utilityService 	= require( '../../utils/utility.controllers' );
 
 exports.PHYSICAL_NEEDS_OPTIONS = [ 'none', 'mild', 'moderate', 'severe' ];
 exports.INTELLECTUAL_NEEDS_OPTIONS = [ 'none', 'mild', 'moderate', 'severe' ];
@@ -6,19 +8,19 @@ exports.EMOTIONAL_NEEDS_OPTIONS = [ 'none', 'mild', 'moderate', 'severe' ];
 exports.SOCIAL_NEEDS_OPTIONS = [ 'none', 'mild', 'moderate', 'severe' ];
 
 exports.getPhysicalNeedsRange = ( fromNeed, toNeed ) => {
-	return getRangeFromArrayOfNoneEmptyStrings( exports.PHYSICAL_NEEDS_OPTIONS, fromNeed, toNeed );
+	return utilityService.arrayCut( exports.PHYSICAL_NEEDS_OPTIONS, fromNeed, toNeed );
 };
 
 exports.getIntellectualNeedsRange = ( fromNeed, toNeed ) => {
-	return getRangeFromArrayOfNoneEmptyStrings( exports.INTELLECTUAL_NEEDS_OPTIONS, fromNeed, toNeed );
+	return utilityService.arrayCut( exports.INTELLECTUAL_NEEDS_OPTIONS, fromNeed, toNeed );
 };
 
 exports.getEmotionalNeedsRange = ( fromNeed, toNeed ) => {
-	return getRangeFromArrayOfNoneEmptyStrings( exports.EMOTIONAL_NEEDS_OPTIONS, fromNeed, toNeed );
+	return utilityService.arrayCut( exports.EMOTIONAL_NEEDS_OPTIONS, fromNeed, toNeed );
 };
 
 exports.getSocialNeedsRange = ( fromNeed, toNeed ) => {
-	return getRangeFromArrayOfNoneEmptyStrings( exports.SOCIAL_NEEDS_OPTIONS, fromNeed, toNeed );
+	return utilityService.arrayCut( exports.SOCIAL_NEEDS_OPTIONS, fromNeed, toNeed );
 };
 
 exports.sendSuccessFlashMessage = ( res, title, message ) => {
@@ -66,6 +68,31 @@ exports.extractSocialWorkersData = ( socialWorkers ) => {
 	});
 }
 
+/* fetch an array of models, map them and send them in jQuery Select2 format */
+exports.fetchModelsMapAndSendResults = ( fetchPromise, mapFunction, res ) => {
+	
+	// fetch models, map them and send
+	fetchPromise.then( models => {
+		res.send( {
+			results: models.map( mapFunction ),
+			pagination: {
+				more: false
+			} 
+		});
+	})
+	.catch( err => {
+		console.error( `error while loading models`, err );
+
+		// send empty result
+		res.send( {
+			results: [], 
+			pagination: {
+				more: false
+			}
+		});
+	});
+}
+
 exports.extractAgenicesData = ( agencies ) => {
 	return agencies.map( ( agency ) => {
 		return {
@@ -75,56 +102,40 @@ exports.extractAgenicesData = ( agencies ) => {
 	});
 }
 
-exports.unescapeHTML = (str) => {
-	const htmlEntities = {
-		nbsp: ' ',
-		cent: '¢',
-		pound: '£',
-		yen: '¥',
-		euro: '€',
-		copy: '©',
-		reg: '®',
-		lt: '<',
-		gt: '>',
-		quot: '"',
-		amp: '&',
-		apos: '\''
-	};
-
-	return str.replace(/\&([^;]+);/g, function (entity, entityCode) {
-		var match;
-
-		if (entityCode in htmlEntities) {
-			return htmlEntities[entityCode];
-			/*eslint no-cond-assign: 0*/
-		} else if (match = entityCode.match(/^#x([\da-fA-F]+)$/)) {
-			return String.fromCharCode(parseInt(match[1], 16));
-			/*eslint no-cond-assign: 0*/
-		} else if (match = entityCode.match(/^#(\d+)$/)) {
-			return String.fromCharCode(~~match[1]);
-		} else {
-			return entity;
-		}
-	});
-};
-
-function getRangeFromArrayOfNoneEmptyStrings( array, fromElement, toElement ) {
-	let include = typeof fromElement === 'undefined' || fromElement.length === 0;
-	let forceDontInclude = false;
-	let results = [];
+/* render data using htmlViewTemplate template file, convert the HTML output to PDF using Puppeteer and send it */
+exports.sendPDF = ( req, res, data, htmlViewTemplate, { headerTitle } ) => {
+	const view = new keystone.View( req, res );
 	
-	array.forEach( ( item ) => {
-		if ( item === fromElement && ! forceDontInclude ) {
-			include = true;
-		}
-		if ( include ) {
-			results.push( item );
-		}
-		if ( item === toElement ) {
-			include = false;
-			forceDontInclude = true;
-		}
-	});
+	// merge res.locals with the data
+	res.locals = {
+		...res.locals,
+		...data
+	}
 	
-	return results;
+	// render HTML and convert to PDF using Puppeteer (Chrome under the hood)
+	view.render( htmlViewTemplate, { layout: null }, function( error, html ) {
+		const convertHTMLToPDF = require( "pdf-puppeteer" );
+		const callback = ( pdf ) => {
+			res.setHeader( "Content-Type", "application/pdf" );
+			res.send( pdf );
+		};
+		const pageOptions = {
+			width: "11 in",
+			height: "8.5 in",
+			margin : {
+				top: '1 in',
+				right: '0.5 in',
+				bottom: '0.5 in',
+				left: '0.5 in'
+			},
+			displayHeaderFooter: true,
+			headerTemplate: `<span style="font-size: 18px; margin-left: 45px;">Massachusetts Adoption Resource Exchange, Inc.<br><span style="font-size: 16px;">${ headerTitle }</span></span>`,	
+			footerTemplate : '<span class="pageNumber" style="font-size: 10px; margin-left: 45px; text-align: center;"></span><span class="date" style="font-size: 10px; margin-left: 45px; text-align: right"></span>'
+		};
+		
+		convertHTMLToPDF( utilityService.unescapeHTML( html ), callback, pageOptions, {
+			executablePath: process.env.CHROME_PATH,
+			args: [ '--no-sandbox' ]
+		});
+	});
 }

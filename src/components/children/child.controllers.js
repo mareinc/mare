@@ -244,6 +244,38 @@ exports.getChildrenByIds = ids => {
 	});
 };
 
+/* get all children that match the query in the name field and sort them by name */
+exports.getChildrenByName = ( nameQuery, maxResults ) => {
+
+	return new Promise( ( resolve, reject ) => {
+		// if no maxResults was passed in
+		if( !maxResults ) {
+			// return control to the calling context
+			return reject( new Error( `error fetching children by name - no maxResults passed in` ) );
+		}
+		
+		// fetch the children records
+		keystone.list( 'Child' ).model
+			.find( {
+				'displayNameAndRegistration' : new RegExp( nameQuery, 'i' )
+			})
+			.sort( {
+				'displayNameAndRegistration' : 'asc'
+			})
+			.limit( maxResults )
+			.exec()
+			.then( children => {
+				// resolve the promise with the returned children
+				resolve( children );
+			}, err => {
+				// log an error for debugging purposes
+				console.error( `error fetching children by name ${ nameQuery } and max results ${ maxResults }`, err );
+				// reject the promise with details about the error
+				reject( new Error( `error fetching children by name ${ nameQuery } and max results ${ maxResults } - ${ err }` ) );
+			});
+	});
+};
+
 exports.getUnrestrictedChildren = ( req, res, done, fieldsToSelect ) => {
 	// store a reference to locals
 	const locals = res.locals;

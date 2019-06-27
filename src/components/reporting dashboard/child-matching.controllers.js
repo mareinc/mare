@@ -1,7 +1,8 @@
-const keystone 		= require( 'keystone' ),
-	  ObjectId 		= require( 'mongodb' ).ObjectId,
-	  _				= require( 'underscore' ),
-	  utilsService	= require( './utils.controllers' );
+const keystone 			= require( 'keystone' ),
+	  ObjectId 			= require( 'mongodb' ).ObjectId,
+	  _					= require( 'underscore' ),
+	  utilsService		= require( './utils.controllers' ),
+	  utilityService 	= require( '../../utils/utility.controllers' );
 	  
 const MAX_RESULTS = 100;
 
@@ -160,40 +161,6 @@ exports.processResults = ( results, criteria, includeFields ) => {
 
 exports.sortResults = ( results ) => {
 	return results.sort( ( a, b ) => a.name.localeCompare( b.name ) );
-}
-
-exports.sendPDF = ( req, res, results ) => {
-	const view	= new keystone.View( req, res ),
-		  locals	= res.locals;
-
-	locals.results = results;
-	
-	// render HTML table and convert to PDF using Puppeteer (Chrome under the hood)
-	view.render( 'tools-child-matching-pdf', { layout: null }, function( error, html ) {
-		const convertHTMLToPDF = require( "pdf-puppeteer" );
-		const callback = ( pdf ) => {
-			res.setHeader( "Content-Type", "application/pdf" );
-			res.send( pdf );
-		};
-		const pageOptions = {
-			width: "11 in",
-			height: "8.5 in",
-			margin : {
-				top: '1 in',
-				right: '0.5 in',
-				bottom: '0.5 in',
-				left: '0.5 in'
-			},
-			displayHeaderFooter: true,
-			headerTemplate: '<span style="font-size: 18px; margin-left: 45px;">Massachusetts Adoption Resource Exchange, Inc.<br><span style="font-size: 16px;">Child Match Criteria Listing</span></span>',	
-			footerTemplate : '<span class="pageNumber" style="font-size: 10px; margin-left: 45px; text-align: center;"></span><span class="date" style="font-size: 10px; margin-left: 45px; text-align: right"></span>'
-		};
-		
-		convertHTMLToPDF( utilsService.unescapeHTML( html ), callback, pageOptions, {
-			executablePath: process.env.CHROME_PATH,
-			args: [ '--no-sandbox' ]
-		});
-	});
 }
 
 /* Extracts minimal child data */

@@ -85,7 +85,9 @@ exports.getChildMatchingData = ( req, res, next ) => {
 				
 				// send the results in PDF format if 'pdf' parameter was detected in the query string
 				if ( req.query.pdf ) {
-					childMatchingService.sendPDF( req, res, result.results );
+					utilsService.sendPDF( req, res, result, 'tools-child-matching-pdf', {
+						headerTitle: 'Child Match Criteria Listing'
+					});
 				} else {
 					res.send( result );
 				}
@@ -245,7 +247,9 @@ exports.getFamilyMatchingData = ( req, res, next ) => {
 				
 				// send the results in PDF format if 'pdf' parameter was detected in the query string
 				if ( req.query.pdf ) {
-					familyMatchingService.sendPDF( req, res, result.results );
+					utilsService.sendPDF( req, res, result, 'tools-family-matching-pdf', {
+						headerTitle: 'Family Match Criteria Listing'
+					});
 				} else {
 					res.send( result );
 				}
@@ -304,114 +308,76 @@ exports.saveChildrenMatchingHistory = ( req, res, next ) => {
 	
 };
 
-/* Returns agencies based on keyword query */
+/* return agencies based on keyword query */
 exports.getAgenciesData = ( req, res, next ) => {
-	const MAX_RESULTS = 10;
 
-	agenciesService.getAgenciesByName( req.query.q, MAX_RESULTS ).then( agencies => {
-		res.send( { 
-			results: agencies.map( ( agency ) => {
-				return {
-					id: agency._id.toString(),
-					text: agency.name
-				}
-			}),
-			pagination: {
-				more: false
-			} 
-		});
-	})
-	.catch( err => {
-		console.error( `error while loading agencies`, err );
-		res.send( {
-			results: [], 
-			pagination: {
-				more: false
+	const MAX_RESULTS = 10;
+	
+	utilsService.fetchModelsMapAndSendResults(
+		agenciesService.getAgenciesByName( req.query.q, MAX_RESULTS ),
+		( agency ) => {
+			return {
+				id: agency._id.toString(),
+				text: agency.name
 			}
-		});
-	});
+		},
+		res
+	);
+
 };
 
-/* Returns social workers based on keyword query */
+/* return social workers based on keyword query */
 exports.getSocialWorkersData = ( req, res, next ) => {
+
 	const MAX_RESULTS = 10;
 
-	socialWorkerService.getSocialWorkersByName( req.query.q, MAX_RESULTS ).then( socialWorkers => {
-		res.send( { 
-			results: socialWorkers.map( ( socialWorker ) => {
-				return {
-					id: socialWorker._id.toString(),
-					text: socialWorker.name.full
-				}
-			}),
-			pagination: {
-				more: false
-			} 
-		});
-	})
-	.catch( err => {
-		console.error( `error while loading social workers`, err );
-		res.send( {
-			results: [], 
-			pagination: {
-				more: false
+	utilsService.fetchModelsMapAndSendResults(
+		socialWorkerService.getSocialWorkersByName( req.query.q, MAX_RESULTS ),
+		( socialWorker ) => {
+			return {
+				id: socialWorker._id.toString(),
+				text: socialWorker.name.full
 			}
-		});
-	});
+		},
+		res
+	);
+
 };
 
-/* Returns families based on keyword */
+/* return families based on keyword */
 exports.getFamiliesData = ( req, res, next ) => {
+	
 	const MAX_RESULTS = 10;
-	let query = req.query.q;
-	
-	keystone.list( 'Family' ).model
-		.find( { 'displayNameAndRegistration' : new RegExp( query, 'i' ) } )
-		.sort( { 'displayNameAndRegistration' : 'asc' } )
-		.limit( MAX_RESULTS )
-		.exec()
-		.then( results => {
-			res.send( { 
-				results: results.map( ( family ) => {
-					return {
-						id: family._id.toString(),
-						text: family.displayNameAndRegistration
-					}
-				}),
-				pagination: { more: false } 
-			});
-		}, err => {
-			console.error( `error while loading families - ${ err }` );
-			res.send( { results: [], pagination: { more: false } } );
-		});
-	
+
+	utilsService.fetchModelsMapAndSendResults(
+		familyService.getFamiliesByName( req.query.q, MAX_RESULTS ),
+		( family ) => {
+			return {
+				id: family._id.toString(),
+				text: family.displayNameAndRegistration
+			}
+		},
+		res
+	);
+
 };
 
 /* Returns children based on keyword */
 exports.getChildrenData = ( req, res, next ) => {
+	
 	const MAX_RESULTS = 10;
-	let query = req.query.q;
-	
-	keystone.list( 'Child' ).model
-		.find( { 'displayNameAndRegistration' : new RegExp( query, 'i' ) } )
-		.sort( { 'displayNameAndRegistration' : 'asc' } )
-		.limit( MAX_RESULTS )
-		.exec()
-		.then( results => {
-			res.send( { 
-				results: results.map( ( child ) => {
-					return {
-						id: child._id.toString(),
-						text: child.displayNameAndRegistration
-					}
-				}),
-				pagination: { more: false } 
-			});
-		}, err => {
-			console.error( `error while loading children - ${ err }` );
-			res.send( { results: [], pagination: { more: false } } );
-		});
-	
+
+	utilsService.fetchModelsMapAndSendResults(
+		childService.getChildrenByName( req.query.q, MAX_RESULTS ),
+		( child ) => {
+			return {
+				id: child._id.toString(),
+				text: child.displayNameAndRegistration
+			}
+		},
+		res
+	);
+
 };
 
 exports.getDashboardData = ( req, res, next ) => {
