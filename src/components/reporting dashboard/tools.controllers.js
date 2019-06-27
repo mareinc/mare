@@ -3,6 +3,7 @@ const keystone 				= require( 'keystone' ),
 	  childService			= require( '../children/child.controllers' ),
 	  familyService			= require( '../families/family.controllers' ),
 	  socialWorkerService	= require( '../social workers/social-worker.controllers' ),
+	  flashMessages	 		= require( '../../utils/notification.middleware' ),
 	  agenciesService		= require( '../agencies/agency.controllers' ),
 	  ObjectId 				= require( 'mongodb' ).ObjectId,
 	  moment				= require( 'moment' ),
@@ -15,15 +16,7 @@ const keystone 				= require( 'keystone' ),
 exports.getChildMatchingData = ( req, res, next ) => {
 	const userType	= req.user ? req.user.userType : '',
 			childID = req.query.childID;
-	
-	// access for admins only
-	if ( userType.length === 0 || userType !== 'admin' ) {
-		res.statusCode = 403;
-		res.setHeader( 'Content-Type', 'text/plain' );
-		res.end( 'Access denied' );
-		return;
-	}
-	
+
 	let fetchChild = childService.getChildById( { id: childID } ),
 		criteria = childMatchingService.getValidCriteria( req.query ),
 		resultsPromise = childMatchingService.getResultsPromise( criteria );
@@ -75,7 +68,7 @@ exports.getChildMatchingData = ( req, res, next ) => {
 					.catch( err => {
 						console.error( `error loading the default parameters for the child matching report - ${ err }` );
 
-						utilsService.sendErrorFlashMessage( res, 'Error', 'Error loading the default parameters' );
+						flashMessages.sendErrorFlashMessage( res, 'Error', 'Error loading the default parameters' );
 					});
 			} else {
 				// if criteria were detected send the results
@@ -97,7 +90,7 @@ exports.getChildMatchingData = ( req, res, next ) => {
 		.catch( err => {
 			console.error( `error loading data for the child matching report - ${ err }` );
 			
-			utilsService.sendErrorFlashMessage( res, 'Error', 'Error loading the data' );
+			flashMessages.sendErrorFlashMessage( res, 'Error', 'Error loading the data' );
 		});
 }
 
@@ -106,7 +99,7 @@ exports.saveFamiliesMatchingHistory = ( req, res, next ) => {
 	
 	// verify the number of IDs
 	if ( ! Array.isArray( req.body.ids ) || req.body.ids.length === 0 ) {
-		utilsService.sendErrorFlashMessage( res, 'Error', 'There are no entries selected' );
+		flashMessages.sendErrorFlashMessage( res, 'Error', 'There are no entries selected' );
 		return;
 	}
 	
@@ -141,39 +134,31 @@ exports.saveFamiliesMatchingHistory = ( req, res, next ) => {
 			// wait for all tasks to be done
 			Promise.all( tasks )
 				.then( ( results ) => {
-					utilsService.sendSuccessFlashMessage( res, 'Information', 'All entries have been saved' );
+					flashMessages.sendSuccessFlashMessage( res, 'Information', 'All entries have been saved' );
 				})
 				.catch( err => {
 					console.error( `error saving family matching histories - ${ err }` );
 					
-					utilsService.sendErrorFlashMessage( res, 'Error', 'Error saving history entries' );
+					flashMessages.sendErrorFlashMessage( res, 'Error', 'Error saving history entries' );
 				});
 		})
 		.catch( err => {
 			console.error( `error loading families - ${ err }` );
 			
-			utilsService.sendErrorFlashMessage( res, 'Error', 'Error saving history entries' );
+			flashMessages.sendErrorFlashMessage( res, 'Error', 'Error saving history entries' );
 		});
 	})
 	.catch( err => {
 		console.error( `error saving family matching histories - could not load the child record- ${ err }` );
 		
-		utilsService.sendErrorFlashMessage( res, 'Error', 'Error saving history entries' );
+		flashMessages.sendErrorFlashMessage( res, 'Error', 'Error saving history entries' );
 	});
 };
 
 exports.getFamilyMatchingData = ( req, res, next ) => {
 	const userType	= req.user ? req.user.userType : '',
 			familyID = req.query.familyID;
-	
-	// access for admins only
-	if ( userType.length === 0 || userType !== 'admin' ) {
-		res.statusCode = 403;
-		res.setHeader( 'Content-Type', 'text/plain' );
-		res.end( 'Access denied' );
-		return;
-	}
-	
+
 	let fetchFamily = familyService.getFamilyById( familyID ),
 		criteria = familyMatchingService.getValidCriteria( req.query ),
 		resultsPromise = familyMatchingService.getResultsPromise( criteria );
@@ -229,7 +214,7 @@ exports.getFamilyMatchingData = ( req, res, next ) => {
 					.catch( err => {
 						console.error( `error loading the default parameters for the family matching report - ${ err }` );
 
-						utilsService.sendErrorFlashMessage( res, 'Error', 'Error loading the default parameters' );
+						flashMessages.sendErrorFlashMessage( res, 'Error', 'Error loading the default parameters' );
 					});
 			} else {
 				// if criteria were detected send the results
@@ -259,7 +244,7 @@ exports.getFamilyMatchingData = ( req, res, next ) => {
 		.catch( err => {
 			console.error( `error loading data for the family matching report - ${ err }` );
 			
-			utilsService.sendErrorFlashMessage( res, 'Error', 'Error loading the data' );
+			flashMessages.sendErrorFlashMessage( res, 'Error', 'Error loading the data' );
 		});
 }
 
@@ -268,7 +253,7 @@ exports.saveChildrenMatchingHistory = ( req, res, next ) => {
 	
 	// verify the number of IDs
 	if ( ! Array.isArray( req.body.ids ) || req.body.ids.length === 0 ) {
-		utilsService.sendErrorFlashMessage( res, 'Error', 'There are no entries selected' );
+		flashMessages.sendErrorFlashMessage( res, 'Error', 'There are no entries selected' );
 		return;
 	}
 	
@@ -292,18 +277,18 @@ exports.saveChildrenMatchingHistory = ( req, res, next ) => {
 		// wait for all tasks to be done
 		Promise.all( tasks )
 			.then( ( results ) => {
-				utilsService.sendSuccessFlashMessage( res, 'Information', 'All entries have been saved' );
+				flashMessages.sendSuccessFlashMessage( res, 'Information', 'All entries have been saved' );
 			})
 			.catch( err => {
 				console.error( `error saving child matching histories - ${ err }` );
 				
-				utilsService.sendErrorFlashMessage( res, 'Error', 'Error saving history entries' );
+				flashMessages.sendErrorFlashMessage( res, 'Error', 'Error saving history entries' );
 			});
 	})
 	.catch( err => {
 		console.error( `error loading children - ${ err }` );
 		
-		utilsService.sendErrorFlashMessage( res, 'Error', 'Error saving history entries' );
+		flashMessages.sendErrorFlashMessage( res, 'Error', 'Error saving history entries' );
 	});
 	
 };
@@ -430,6 +415,6 @@ exports.getDashboardData = ( req, res, next ) => {
 			// log an error for debugging purposes
 			console.error( `error loading data for the dashboard - ${ err }` );
 
-			utilsService.sendErrorFlashMessage( res, 'Error', 'Error loading the dashboard data' );
+			flashMessages.sendErrorFlashMessage( res, 'Error', 'Error loading the dashboard data' );
 		});
 };

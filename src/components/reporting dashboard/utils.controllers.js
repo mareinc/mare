@@ -1,5 +1,4 @@
 const keystone			= require( 'keystone' ),
-	  flashMessages	 	= require( '../../utils/notification.middleware' ),
 	  utilityService 	= require( '../../utils/utility.controllers' );
 
 exports.PHYSICAL_NEEDS_OPTIONS = [ 'none', 'mild', 'moderate', 'severe' ];
@@ -23,47 +22,22 @@ exports.getSocialNeedsRange = ( fromNeed, toNeed ) => {
 	return utilityService.arrayCut( exports.SOCIAL_NEEDS_OPTIONS, fromNeed, toNeed );
 };
 
-exports.sendSuccessFlashMessage = ( res, title, message ) => {
-	// create a flash message to send back to the user
-	flashMessages.appendFlashMessage({
-		messageType: flashMessages.MESSAGE_TYPES.SUCCESS,
-		title: title,
-		message: message,
-	});
-	
-	// send the status and flash message markup
-	flashMessages.generateFlashMessageMarkup()
-		.then( flashMessageMarkup => {
-			res.send({
-				status: 'success',
-				flashMessage: flashMessageMarkup
-			});
-		});
-}
-
-exports.sendErrorFlashMessage = ( res, title, message ) => {
-	// create a flash message to send back to the user
-	flashMessages.appendFlashMessage({
-		messageType: flashMessages.MESSAGE_TYPES.ERROR,
-		title: title,
-		message: message,
-	});
-	
-	// send the status and flash message markup
-	flashMessages.generateFlashMessageMarkup()
-		.then( flashMessageMarkup => {
-			res.send({
-				status: 'error',
-				flashMessage: flashMessageMarkup
-			});
-		});
-}
-
+/* map social workers array to the array of simple objects */
 exports.extractSocialWorkersData = ( socialWorkers ) => {
 	return socialWorkers.map( ( socialWorker ) => {
 		return {
 			id: socialWorker._id,
 			name: socialWorker.name
+		}
+	});
+}
+
+/* map agencies array to the array of simple objects */
+exports.extractAgenicesData = ( agencies ) => {
+	return agencies.map( ( agency ) => {
+		return {
+			id: agency._id,
+			name: agency.name
 		}
 	});
 }
@@ -90,15 +64,6 @@ exports.fetchModelsMapAndSendResults = ( fetchPromise, mapFunction, res ) => {
 				more: false
 			}
 		});
-	});
-}
-
-exports.extractAgenicesData = ( agencies ) => {
-	return agencies.map( ( agency ) => {
-		return {
-			id: agency._id,
-			name: agency.name
-		}
 	});
 }
 

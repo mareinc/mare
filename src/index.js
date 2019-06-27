@@ -121,16 +121,16 @@ exports = module.exports = app => {
 	app.post( '/services/get-gallery-permissions'		, userService.getGalleryPermissions );
 	
 	// reporting tools
-	app.get( '/tools'											, routes.views.tools );
-	app.get( '/tools/services/get-agencies-data'				, toolsService.getAgenciesData );
-	app.get( '/tools/services/get-social-workers-data'			, toolsService.getSocialWorkersData );
-	app.get( '/tools/services/get-families-data'				, toolsService.getFamiliesData );
-	app.get( '/tools/services/get-children-data'				, toolsService.getChildrenData );
-	app.post( '/tools/services/save-children-matching-history'	, toolsService.saveChildrenMatchingHistory );
-	app.post( '/tools/services/save-families-matching-history'	, toolsService.saveFamiliesMatchingHistory );
-	app.get( '/tools/services/get-dashboard-data'				, toolsService.getDashboardData );
-	app.get( '/tools/services/get-child-matching-data'			, toolsService.getChildMatchingData );
-	app.get( '/tools/services/get-family-matching-data'			, toolsService.getFamilyMatchingData );
+	app.get( '/tools'											, accountMiddleware.requireAdmin, routes.views.tools );
+	app.get( '/tools/services/get-agencies-data'				, accountMiddleware.requireAdmin, toolsService.getAgenciesData );
+	app.get( '/tools/services/get-social-workers-data'			, accountMiddleware.requireAdmin, toolsService.getSocialWorkersData );
+	app.get( '/tools/services/get-families-data'				, accountMiddleware.requireAdmin, toolsService.getFamiliesData );
+	app.get( '/tools/services/get-children-data'				, accountMiddleware.requireAdmin, toolsService.getChildrenData );
+	app.post( '/tools/services/save-children-matching-history'	, accountMiddleware.requireAdmin, toolsService.saveChildrenMatchingHistory );
+	app.post( '/tools/services/save-families-matching-history'	, accountMiddleware.requireAdmin, toolsService.saveFamiliesMatchingHistory );
+	app.get( '/tools/services/get-dashboard-data'				, accountMiddleware.requireAdmin, toolsService.getDashboardData );
+	app.get( '/tools/services/get-child-matching-data'			, accountMiddleware.requireAdmin, toolsService.getChildMatchingData );
+	app.get( '/tools/services/get-family-matching-data'			, accountMiddleware.requireAdmin, toolsService.getFamilyMatchingData );
 
 	// webhooks
 	app.get( '/webhooks/mailchimp'                      , mailchimpService.validateWebhookURL );
