@@ -6,7 +6,8 @@ const keystone 			= require( 'keystone' ),
 	  
 const MAX_RESULTS = 100;
 
-exports.getValidCriteria = ( query ) => {
+/* parse query parameters and output MongoDB search criteria */
+exports.getCriteria = ( query ) => {
 	let criteria = {};
 	
 	// status criteria (multiple)
@@ -69,7 +70,7 @@ exports.getValidCriteria = ( query ) => {
 		criteria[ 'matchingPreferences.maxNumberOfChildrenToAdopt' ] = { $lte: siblingGroupSizeTo };
 	}
 	
-	// physical needs:
+	// physical needs
 	if ( query.physicalNeedsFrom || query.physicalNeedsTo ) {
 		let physicalNeedsCriteria = utilsService.getPhysicalNeedsRange( query.physicalNeedsFrom, query.physicalNeedsTo );
 		if ( physicalNeedsCriteria.length > 0 ) {
@@ -77,7 +78,7 @@ exports.getValidCriteria = ( query ) => {
 		}
 	}
 	
-	// intellectual needs:
+	// intellectual needs
 	if ( query.intellectualNeedsFrom || query.intellectualNeedsTo ) {
 		let intellectualNeedsCriteria = utilsService.getIntellectualNeedsRange( query.intellectualNeedsFrom, query.intellectualNeedsTo );
 		if ( intellectualNeedsCriteria.length > 0 ) {
@@ -85,7 +86,7 @@ exports.getValidCriteria = ( query ) => {
 		}
 	}
 	
-	// emotional needs:
+	// emotional needs
 	if ( query.emotionalNeedsFrom || query.emotionalNeedsTo ) {
 		let emotionalNeedsCriteria = utilsService.getIntellectualNeedsRange( query.emotionalNeedsFrom, query.emotionalNeedsTo );
 		if ( emotionalNeedsCriteria.length > 0 ) {
@@ -112,12 +113,17 @@ exports.getValidCriteria = ( query ) => {
 	return criteria;
 }
 
-exports.getResultsPromise = ( criteria ) => {
-	if ( ! _.isEmpty( criteria ) ) {
-		return new Promise( ( resolve, reject ) => {
+exports.getFamiliesByCriteria = ( criteria ) => {
+
+	return new Promise( ( resolve, reject ) => {
+		if ( _.isEmpty( criteria ) ) {
+			resolve( [] );
+		} else {
 			keystone.list( 'Family' ).model
 				.find( criteria )
-				.sort( { 'displayName' : 'asc' } )
+				.sort( {
+					'displayName' : 'asc'
+				})
 				.limit( MAX_RESULTS )
 				.populate( 'contact1.race' )
 				.populate( 'contact2.race' )
@@ -133,13 +139,13 @@ exports.getResultsPromise = ( criteria ) => {
 						reject( new Error( `error fetching families - ${ err }` ) );
 					}
 				);
-		});
-	} else {
-		return [];
-	}
+		}
+	});
 }
 
-exports.processResults = ( results, criteria, includeFields ) => {
+/* map the array of families to plain objects */
+exports.mapFamiliesToPlainObjects = ( families ) => {
+
 	let mapper = ( family ) => {
 		return {
 			id: family._id,
@@ -156,11 +162,12 @@ exports.processResults = ( results, criteria, includeFields ) => {
 		}
 	};
 	
-	return results.map( mapper );
+	return families.map( mapper );
 }
 
-exports.sortResults = ( results ) => {
-	return results.sort( ( a, b ) => a.name.localeCompare( b.name ) );
+/* sort families plain objects by name property */
+exports.sortFunction = ( a, b ) => {
+	return a.name.localeCompare( b.name );
 }
 
 /* Extracts minimal child data */

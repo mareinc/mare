@@ -18,8 +18,8 @@ exports.getChildMatchingData = ( req, res, next ) => {
 			childID = req.query.childID;
 
 	let fetchChild = childService.getChildById( { id: childID } ),
-		criteria = childMatchingService.getValidCriteria( req.query ),
-		resultsPromise = childMatchingService.getResultsPromise( criteria );
+		criteria = childMatchingService.getCriteria( req.query ),
+		resultsPromise = childMatchingService.getFamiliesByCriteria( criteria );
 
 	// fetch the social workers and agencies for rendering purposes on the client side
 	let fetchSocialWorkers = Array.isArray( req.query.socialWorkers ) ? socialWorkerService.getSocialWorkersByIds( req.query.socialWorkers ) : [],
@@ -74,7 +74,12 @@ exports.getChildMatchingData = ( req, res, next ) => {
 				// if criteria were detected send the results
 				result.socialWorkers = utilsService.extractSocialWorkersData( socialWorkers );
 				result.socialWorkersAgencies = utilsService.extractAgenicesData( agencies );
-				result.results = childMatchingService.sortResults( childMatchingService.processResults( results, criteria ) );
+				
+				// map array to plain objects including additional data
+				result.results = childMatchingService.mapFamiliesToPlainObjects( results );
+				
+				// sort results
+				result.results.sort( childMatchingService.sortFunction );
 				
 				// send the results in PDF format if 'pdf' parameter was detected in the query string
 				if ( req.query.pdf ) {
@@ -160,14 +165,22 @@ exports.getFamilyMatchingData = ( req, res, next ) => {
 			familyID = req.query.familyID;
 
 	let fetchFamily = familyService.getFamilyById( familyID ),
-		criteria = familyMatchingService.getValidCriteria( req.query ),
-		resultsPromise = familyMatchingService.getResultsPromise( criteria );
+		criteria = familyMatchingService.getCriteria( req.query ),
+		resultsPromise = familyMatchingService.getChildrenByCriteria( criteria );
 
 	// fetch the social workers and agencies for rendering purposes on the client side
-	let fetchAdoptionWorkers = Array.isArray( req.query.adoptionWorkers ) ? socialWorkerService.getSocialWorkersByIds( req.query.adoptionWorkers ) : [],
-		fetchRecruitmentWorkers = Array.isArray( req.query.recruitmentWorkers ) ? socialWorkerService.getSocialWorkersByIds( req.query.recruitmentWorkers ) : [],
-		fetchAdoptionWorkersAgency = Array.isArray( req.query.adoptionWorkersAgency ) ? agenciesService.getAgenciesByIds( req.query.adoptionWorkersAgency ) : [],
-		fetchRecruitmentWorkersAgency = Array.isArray( req.query.recruitmentWorkersAgency ) ? agenciesService.getAgenciesByIds( req.query.recruitmentWorkersAgency ) : [];
+	let fetchAdoptionWorkers = Array.isArray( req.query.adoptionWorkers ) ? 
+								socialWorkerService.getSocialWorkersByIds( req.query.adoptionWorkers ) :
+								[],
+		fetchRecruitmentWorkers = Array.isArray( req.query.recruitmentWorkers ) ?
+									socialWorkerService.getSocialWorkersByIds( req.query.recruitmentWorkers ) :
+									[],
+		fetchAdoptionWorkersAgency = Array.isArray( req.query.adoptionWorkersAgency ) ?
+										agenciesService.getAgenciesByIds( req.query.adoptionWorkersAgency ) :
+										[],
+		fetchRecruitmentWorkersAgency = Array.isArray( req.query.recruitmentWorkersAgency ) ?
+										agenciesService.getAgenciesByIds( req.query.recruitmentWorkersAgency ) :
+										[];
 
 	Promise.all( [ fetchFamily, fetchAdoptionWorkers, fetchRecruitmentWorkers, fetchAdoptionWorkersAgency, fetchRecruitmentWorkersAgency, resultsPromise ] )
 		.then( values => {
@@ -176,7 +189,7 @@ exports.getFamilyMatchingData = ( req, res, next ) => {
 			// assign local variables to the values returned by the promises
 			const [ family, adoptionWorkers, recruitmentWorkers, adoptionWorkersAgency, recruitmentWorkersAgency, results ] = values;
 			
-			// output requested child record details
+			// output requested family record details
 			result.family = familyMatchingService.extractFamilyData( family );
 			
 			// if no criteria were detected prepare and send the default parameters set based on the child record
@@ -225,10 +238,13 @@ exports.getFamilyMatchingData = ( req, res, next ) => {
 				
 				// append selected fields and their names
 				result.fields = familyMatchingService.getFieldsFromQuery( req.query );
-				result.fieldNames = familyMatchingService.getReportFieldNamesFromQuery( req.query );
+				result.fieldNames = familyMatchingService.getFieldNamesFromQuery( req.query );
 				
-				// prepare results
-				result.results = familyMatchingService.sortResults( familyMatchingService.processResults( results, criteria, result.fields ) );
+				// map array to plain objects including additional data and requested fields
+				result.results = familyMatchingService.mapChildrenToPlainObjects( results, criteria, result.fields );
+				
+				// sort the results
+				result.results.sort( familyMatchingService.sortFunction );
 				
 				// send the results in PDF format if 'pdf' parameter was detected in the query string
 				if ( req.query.pdf ) {

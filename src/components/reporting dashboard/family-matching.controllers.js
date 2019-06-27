@@ -24,7 +24,8 @@ const FIELD_NAMES = {
 };
 const MAX_RESULTS = 100;
 
-exports.getValidCriteria = ( query ) => {
+/* parse query parameters and output MongoDB search criteria */
+exports.getCriteria = ( query ) => {
 	let criteria = {};
 	
 	// status criteria (multiple)
@@ -97,7 +98,7 @@ exports.getValidCriteria = ( query ) => {
 		criteria.$and = siblingsCriteria;
 	}
 	
-	// physical needs:
+	// physical needs
 	if ( query.physicalNeedsFrom || query.physicalNeedsTo ) {
 		let physicalNeedsCriteria = utilsService.getPhysicalNeedsRange( query.physicalNeedsFrom, query.physicalNeedsTo );
 		if ( physicalNeedsCriteria.length > 0 ) {
@@ -105,7 +106,7 @@ exports.getValidCriteria = ( query ) => {
 		}
 	}
 	
-	// intellectual needs:
+	// intellectual needs
 	if ( query.intellectualNeedsFrom || query.intellectualNeedsTo ) {
 		let intellectualNeedsCriteria = utilsService.getIntellectualNeedsRange( query.intellectualNeedsFrom, query.intellectualNeedsTo );
 		if ( intellectualNeedsCriteria.length > 0 ) {
@@ -113,7 +114,7 @@ exports.getValidCriteria = ( query ) => {
 		}
 	}
 	
-	// emotional needs:
+	// emotional needs
 	if ( query.emotionalNeedsFrom || query.emotionalNeedsTo ) {
 		let emotionalNeedsCriteria = utilsService.getIntellectualNeedsRange( query.emotionalNeedsFrom, query.emotionalNeedsTo );
 		if ( emotionalNeedsCriteria.length > 0 ) {
@@ -121,7 +122,7 @@ exports.getValidCriteria = ( query ) => {
 		}
 	}
 	
-	// social needs:
+	// social needs
 	if ( query.socialNeeds ) {
 		criteria[ 'socialNeeds' ] = query.socialNeeds;
 	}
@@ -161,7 +162,158 @@ exports.getValidCriteria = ( query ) => {
 	return criteria;
 }
 
-function getReasonsIfUnmatchingChild( child, criteria ) {
+exports.getChildrenByCriteria = ( criteria ) => {
+	
+	return new Promise( ( resolve, reject ) => {
+		if ( _.isEmpty( criteria ) ) {
+			resolve( [] );
+		} else {
+			keystone.list( 'Child' ).model
+				.find( criteria )
+				.sort( {
+					'name.full' : 'asc'
+				})
+				.limit( MAX_RESULTS )
+				.populate( 'status' )
+				.populate( 'gender' )
+				.populate( 'race' )
+				.populate( 'legalStatus' )
+				.populate( 'recommendedFamilyConstellation' )
+				.populate( 'siblings' )
+				.populate( 'siblingsToBePlacedWith' )
+				.populate( 'adoptionWorkerAgency' )
+				.populate( 'recruitmentWorkerAgency' )
+				.populate( 'adoptionWorker' )
+				.populate( 'recruitmentWorker' )
+				.exec()
+				.then(
+					results => resolve( results ), 
+					err => {
+						// reject the promise
+						reject( new Error( `error fetching children - ${ err }` ) );
+					}
+				);
+		}
+	});
+}
+
+/* map the array of children to plain objects including requested fields and matching / unmatching siblings */
+exports.mapChildrenToPlainObjects = ( children, criteria, requestedFields ) => {
+	let mapper = ( child ) => {
+		let fields = [];
+		
+		// loop through all requested Child model fields and return their string representation
+		for ( let field in requestedFields ) {
+			let value = '';
+
+			switch ( field ) {
+				case 'status':
+					value = child.status ? child.status.childStatus : '';
+					break;
+				case 'gender':
+					value = child.gender ? child.gender.gender : '';
+					break;
+				case 'race':
+					value = Array.isArray( child.race ) ? child.race.map( ( race ) => race.race ).join( ', ' ) : '';
+					break;
+				case 'familyConstellation':
+					value = Array.isArray( child.recommendedFamilyConstellation ) ? child.recommendedFamilyConstellation.map( ( constellation ) => constellation.familyConstellation ).join( ', ' ) : '';
+					break;
+				case 'legalStatus':
+					value = child.legalStatus ? child.legalStatus.legalStatus : '';
+					break;
+				case 'age':
+					value = child.birthDate ? moment().diff( child.birthDate, 'years', false ) : '';
+					break;	
+				case 'siblingGroupSize':
+					value = Array.isArray( child.siblingsToBePlacedWith ) ? child.siblingsToBePlacedWith.length + 1 : '';
+					break;
+				case 'physicalNeeds':
+					value = child.physicalNeeds ? child.physicalNeeds : '';
+					break;
+				case 'intellectualNeeds':
+					value = child.intellectualNeeds ? child.intellectualNeeds : '';
+					break;
+				case 'emotionalNeeds':
+					value = child.emotionalNeeds ? child.emotionalNeeds : '';
+					break;
+				case 'socialNeeds':
+					value = child.socialNeeds ? child.socialNeeds : '';
+					break;
+				case 'adoptionWorkersAgency':
+					value = child.adoptionWorkerAgency ? child.adoptionWorkerAgency.name : '';
+					break;
+				case 'recruitmentWorkersAgency':
+					value = child.recruitmentWorkerAgency ? child.recruitmentWorkerAgency.name : '';
+					break;
+				case 'adoptionWorker':
+					value = child.adoptionWorker ? child.adoptionWorker.name.full : '';
+					break;
+				case 'recruitmentWorker':
+					value = child.recruitmentWorker ? child.recruitmentWorker.name.full : '';
+					break;
+			}
+			
+			fields.push( value );
+		}
+		
+		// get siblings who match or do not match the criteria
+		const [ matchedSiblings, unmatchedSiblings ] = getSiblingsMatchingStatus( child, criteria );
+		
+		// return the plain object
+		return {
+			id: child._id,
+			registrationNumber: child.registrationNumber,
+			name: child.name.full,
+			fields: fields,
+			siblingsNumber: Array.isArray( child.siblingsToBePlacedWith ) ? child.siblingsToBePlacedWith.length : 0,
+			unmatchedSiblings: unmatchedSiblings,
+			matchedSiblings: matchedSiblings
+		}
+	};
+	
+	return children.map( mapper );
+}
+
+/* sort an array by the number of unmatching siblings and name, children with all matching siblings are first */
+exports.sortFunction = ( a, b ) => {
+	return ( a.unmatchedSiblings.length > b.unmatchedSiblings.length ) ?
+			1 :
+			( ( b.unmatchedSiblings.length > a.unmatchedSiblings.length ) ?
+				-1 :
+				a.name.localeCompare( b.name )
+			);
+}
+
+/* get all requested fields from the query */
+exports.getFieldsFromQuery = ( query ) => {
+	let fields = {};
+	
+	if ( Array.isArray( query.fields ) ) {
+		query.fields.forEach( ( field ) => {
+			fields[ field ] = true;
+		});
+	}
+	
+	return fields;
+}
+
+/* get requested fields labels to display in the report */
+exports.getFieldNamesFromQuery = ( query ) => {
+	return Array.isArray( query.fields ) ? query.fields.filter( ( field ) => FIELD_NAMES[ field ] ).map( ( field ) => FIELD_NAMES[ field ] ) : [];
+}
+	  
+/* extracts minimal family data */
+exports.extractFamilyData = ( family ) => {
+	return {
+		_id: family._id,
+		displayName: family.displayName,
+		registrationNumber: family.registrationNumber
+	}
+}
+
+/* return an array of all reasons why the child does not match the criteria */
+function getReasonsWhyTheChildDoesNotMatchTheCriteria( child, criteria ) {
 	let reasons = [];
 	
 	// status conflict detection (multiple)
@@ -244,44 +396,15 @@ function getReasonsIfUnmatchingChild( child, criteria ) {
 	return reasons;
 }
 
-exports.getResultsPromise = ( criteria ) => {
-	if ( ! _.isEmpty( criteria ) ) {
-		return new Promise( ( resolve, reject ) => {
-			keystone.list( 'Child' ).model
-				.find( criteria )
-				.sort( { 'name.full' : 'asc' } )
-				.limit( MAX_RESULTS )
-				.populate( 'status' )
-				.populate( 'gender' )
-				.populate( 'race' )
-				.populate( 'legalStatus' )
-				.populate( 'recommendedFamilyConstellation' )
-				.populate( 'siblings' )
-				.populate( 'siblingsToBePlacedWith' )
-				.populate( 'adoptionWorkerAgency' )
-				.populate( 'recruitmentWorkerAgency' )
-				.populate( 'adoptionWorker' )
-				.populate( 'recruitmentWorker' )
-				.exec()
-				.then(
-					results => resolve( results ), 
-					err => {
-						// reject the promise
-						reject( new Error( `error fetching children - ${ err }` ) );
-					}
-				);
-		});
-	} else {
-		return [];
-	}
-}
-
-function getUnmatchedSiblings( child, criteria ) {
-	let unmatchedSiblings = [];
-	let matchedSiblings = [];
+/* get siblings who match and do not match the criteria */
+function getSiblingsMatchingStatus( child, criteria ) {
+	
+	let unmatchedSiblings = [],
+		matchedSiblings = [];
 	
 	child.siblingsToBePlacedWith.forEach( ( sibling ) => {
-		let reasons = getReasonsIfUnmatchingChild( sibling, criteria );
+		let reasons = getReasonsWhyTheChildDoesNotMatchTheCriteria( sibling, criteria );
+		
 		if ( reasons.length > 0 ) {
 			unmatchedSiblings.push( {
 				id: sibling._id,
@@ -299,107 +422,4 @@ function getUnmatchedSiblings( child, criteria ) {
 	});
 	
 	return [ matchedSiblings, unmatchedSiblings ];
-}
-
-exports.processResults = ( results, criteria, includeFields ) => {
-	let mapper = ( child ) => {
-		let fields = [];
-		
-		for ( let field in includeFields ) {
-			let value = '';
-
-			switch ( field ) {
-				case 'status':
-					value = child.status ? child.status.childStatus : '';
-					break;
-				case 'gender':
-					value = child.gender ? child.gender.gender : '';
-					break;
-				case 'race':
-					value = Array.isArray( child.race ) ? child.race.map( ( race ) => race.race ).join( ', ' ) : '';
-					break;
-				case 'familyConstellation':
-					value = Array.isArray( child.recommendedFamilyConstellation ) ? child.recommendedFamilyConstellation.map( ( constellation ) => constellation.familyConstellation ).join( ', ' ) : '';
-					break;
-				case 'legalStatus':
-					value = child.legalStatus ? child.legalStatus.legalStatus : '';
-					break;
-				case 'age':
-					value = child.birthDate ? moment().diff( child.birthDate, 'years', false ) : '';
-					break;	
-				case 'siblingGroupSize':
-					value = Array.isArray( child.siblingsToBePlacedWith ) ? child.siblingsToBePlacedWith.length + 1 : '';
-					break;
-				case 'physicalNeeds':
-					value = child.physicalNeeds ? child.physicalNeeds : '';
-					break;
-				case 'intellectualNeeds':
-					value = child.intellectualNeeds ? child.intellectualNeeds : '';
-					break;
-				case 'emotionalNeeds':
-					value = child.emotionalNeeds ? child.emotionalNeeds : '';
-					break;
-				case 'socialNeeds':
-					value = child.socialNeeds ? child.socialNeeds : '';
-					break;
-				case 'adoptionWorkersAgency':
-					value = child.adoptionWorkerAgency ? child.adoptionWorkerAgency.name : '';
-					break;
-				case 'recruitmentWorkersAgency':
-					value = child.recruitmentWorkerAgency ? child.recruitmentWorkerAgency.name : '';
-					break;
-				case 'adoptionWorker':
-					value = child.adoptionWorker ? child.adoptionWorker.name.full : '';
-					break;
-				case 'recruitmentWorker':
-					value = child.recruitmentWorker ? child.recruitmentWorker.name.full : '';
-					break;
-			}
-			
-			fields.push( value );
-		}
-		
-		const [ matchedSiblings, unmatchedSiblings ] = getUnmatchedSiblings( child, criteria );
-		
-		return {
-			id: child._id,
-			registrationNumber: child.registrationNumber,
-			name: child.name.full,
-			fields: fields,
-			siblingsNumber: Array.isArray( child.siblingsToBePlacedWith ) ? child.siblingsToBePlacedWith.length : 0,
-			unmatchedSiblings: unmatchedSiblings,
-			matchedSiblings: matchedSiblings
-		}
-	};
-	
-	return results.map( mapper );
-}
-
-exports.sortResults = ( results ) => {
-	return results.sort( ( a, b ) => ( a.unmatchedSiblings.length > b.unmatchedSiblings.length ) ? 1 : ( ( b.unmatchedSiblings.length > a.unmatchedSiblings.length ) ? -1 : a.name.localeCompare( b.name ) ) );
-}
-
-exports.getFieldsFromQuery = ( query ) => {
-	let fields = {};
-	
-	if ( Array.isArray( query.fields ) ) {
-		query.fields.forEach( ( field ) => {
-			fields[ field ] = true;
-		});
-	}
-	
-	return fields;
-}
-
-exports.getReportFieldNamesFromQuery = ( query ) => {
-	return Array.isArray( query.fields ) ? query.fields.filter( ( field ) => FIELD_NAMES[ field ] ).map( ( field ) => FIELD_NAMES[ field ] ) : [];
-}
-	  
-/* Extracts minimal family data */
-exports.extractFamilyData = ( family ) => {
-	return {
-		_id: family._id,
-		displayName: family.displayName,
-		registrationNumber: family.registrationNumber
-	}
 }
