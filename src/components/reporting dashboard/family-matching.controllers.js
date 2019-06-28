@@ -22,7 +22,7 @@ const FIELD_NAMES = {
 	adoptionWorker: "Adoption Workers",
 	recruitmentWorker: "Recruitment Workers"
 };
-const MAX_RESULTS = 100;
+const MAX_RESULTS = 10000;
 
 /* parse query parameters and output MongoDB search criteria */
 exports.getCriteria = ( query ) => {

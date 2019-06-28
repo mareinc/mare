@@ -4,7 +4,7 @@ const keystone 			= require( 'keystone' ),
 	  utilsService		= require( './utils.controllers' ),
 	  utilityService 	= require( '../../utils/utility.controllers' );
 	  
-const MAX_RESULTS = 100;
+const MAX_RESULTS = 10000;
 
 /* parse query parameters and output MongoDB search criteria */
 exports.getCriteria = ( query ) => {
