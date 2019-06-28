@@ -81,7 +81,7 @@
 
 		<script type="text/javascript">
 			$(document).ready(function () {
-							
+				/* apply header offset as needed for the fixed header */
 				function headerOffset(){
 					headerHeight = $(".global-header").outerHeight();
 					$(".content").css("padding-top",headerHeight);
@@ -90,8 +90,10 @@
 				headerOffset();
 				$(window).resize(function(){
 					headerOffset();
-				})
-				$('.sidebarCollapse').on('click', function () {
+				});
+				
+				/* sidebar collapse button handler */
+				$(document).on('click', '.sidebarCollapse', function () {
 					$('#sidebar').toggleClass('dashboard-sidebar--active');
 				});
 			});
