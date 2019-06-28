@@ -215,7 +215,7 @@ exports.getFamilyMatchingData = ( req, res, next ) => {
 						params.physicalNeedsFrom = preferences.maxNeeds.physical ? preferences.maxNeeds.physical : '';
 						params.intellectualNeedsFrom = preferences.maxNeeds.intellectual ? preferences.maxNeeds.intellectual : '';
 						params.emotionalNeedsFrom = preferences.maxNeeds.emotional ? preferences.maxNeeds.emotional : '';
-						
+
 						result.params = params;
 						
 						// append the social workers and agencies for rendering purposes on the client side

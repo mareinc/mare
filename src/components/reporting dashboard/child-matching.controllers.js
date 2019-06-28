@@ -121,19 +121,20 @@ exports.getFamiliesByCriteria = ( criteria ) => {
 		} else {
 			keystone.list( 'Family' ).model
 				.find( criteria )
-				.sort( {
-					'displayName' : 'asc'
-				})
+				.select( '_id registrationNumber displayName contact1.name contact2.name address.isOutsideMassachusetts address.cityText' )
+				.sort( { 'displayName': 'asc' } )
 				.limit( MAX_RESULTS )
-				.populate( 'contact1.race' )
-				.populate( 'contact2.race' )
-				.populate( 'address.city' )
-				.populate( 'address.state' )
-				.populate( 'socialWorker' )
-				.populate( 'socialWorkerAgency' )
+				.populate( 'contact1.race', { race: 1 } )
+				.populate( 'contact2.race', { race: 1 } )
+				.populate( 'address.city', { cityOrTown: 1 } )
+				.populate( 'address.state', { abbreviation: 1 } )
+				.populate( 'socialWorker', { name: 1 } )
+				.populate( 'socialWorkerAgency', { code: 1 } )
 				.exec()
 				.then(
-					results => resolve( results ), 
+					results => {
+						resolve( results )
+					}, 
 					err => {
 						// reject the promise
 						reject( new Error( `error fetching families - ${ err }` ) );
@@ -157,7 +158,7 @@ exports.mapFamiliesToPlainObjects = ( families ) => {
 			contact2race: family.contact2.race.map( ( race) => race.race ).join( ', ' ),
 			socialWorker: family.socialWorker ? family.socialWorker.name.full : family.socialWorkerText,
 			socialWorkerAgency: family.socialWorkerAgency ? family.socialWorkerAgency.code : '',
-			city: family.address.city ? family.address.city.cityOrTown : family.address.cityText,
+			city: !family.address.isOutsideMassachusetts && family.address.city ? family.address.city.cityOrTown : family.address.cityText,
 			state: family.address.state ? family.address.state.abbreviation : ''
 		}
 	};

@@ -170,24 +170,40 @@ exports.getChildrenByCriteria = ( criteria ) => {
 		} else {
 			keystone.list( 'Child' ).model
 				.find( criteria )
-				.sort( {
-					'name.full' : 'asc'
-				})
+				.sort( { 'name.full' : 'asc' } )
 				.limit( MAX_RESULTS )
-				.populate( 'status' )
-				.populate( 'gender' )
-				.populate( 'race' )
-				.populate( 'legalStatus' )
-				.populate( 'recommendedFamilyConstellation' )
-				.populate( 'siblings' )
-				.populate( 'siblingsToBePlacedWith' )
-				.populate( 'adoptionWorkerAgency' )
-				.populate( 'recruitmentWorkerAgency' )
-				.populate( 'adoptionWorker' )
-				.populate( 'recruitmentWorker' )
+				.populate( 'status', { childStatus: 1 } )
+				.populate( 'gender', { gender: 1 } )
+				.populate( 'race', { race: 1 } )
+				.populate( 'legalStatus', { legalStatus: 1 } )
+				.populate( 'recommendedFamilyConstellation', { familyConstellation: 1 } )
+				.populate( 'siblingsToBePlacedWith', {
+					registrationNumber: 1,
+					name: 1,
+					status: 1,
+					gender: 1,
+					race: 1,
+					legalStatus: 1,
+					recommendedFamilyConstellation: 1,
+					birthDate: 1,
+					physicalNeeds: 1,
+					intellectualNeeds: 1,
+					emotionalNeeds: 1,
+					socialNeeds: 1,
+					adoptionWorkerAgency: 1,
+					recruitmentWorkerAgency: 1,
+					adoptionWorker: 1,
+					recruitmentWorker: 1
+				})
+				.populate( 'adoptionWorkerAgency', { name: 1 } )
+				.populate( 'recruitmentWorkerAgency', { name: 1 } )
+				.populate( 'adoptionWorker', { name: 1 } )
+				.populate( 'recruitmentWorker', { name: 1 } )
 				.exec()
 				.then(
-					results => resolve( results ), 
+					results => {
+						resolve( results )
+					}, 
 					err => {
 						// reject the promise
 						reject( new Error( `error fetching children - ${ err }` ) );
@@ -404,7 +420,7 @@ function getSiblingsMatchingStatus( child, criteria ) {
 	
 	child.siblingsToBePlacedWith.forEach( ( sibling ) => {
 		let reasons = getReasonsWhyTheChildDoesNotMatchTheCriteria( sibling, criteria );
-		
+
 		if ( reasons.length > 0 ) {
 			unmatchedSiblings.push( {
 				id: sibling._id,
