@@ -5,10 +5,6 @@
 	padding: 1.25rem 1rem;
 	background-color: #2e4e87 !important;
 	
-	&--active {
-		margin-left: -323px;
-	}
-	
 	@media all and ( max-width: 768px ) {
 		& {
 			margin-left: -323px;
