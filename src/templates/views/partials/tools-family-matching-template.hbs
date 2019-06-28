@@ -4,6 +4,10 @@
 		
 		<h4>\{{ family.displayName }} - \{{ family.registrationNumber }}</h4>
 		
+		\{{#unless family }}
+			<h4>Loading ... </h4>
+		\{{/unless}}
+		
 		<div class="row">
 			<div class="col-sm-3">
 				<div class="row form-group">
@@ -332,6 +336,16 @@
 		<button type="button" class="btn btn-primary children-search-button">Search</button>
 		<button type="button" class="btn btn-default children-search-reset-button">Reset</button>
 	</form>
+	
+	\{{#if waitingForResults }}
+		<br /><br />
+		Loading the data ...
+	\{{/if}}
+	
+	\{{#if noResultsFound }}
+		<br /><br />
+		No results found
+	\{{/if}}
 	
 	\{{#if results }}
 		<h3>Results: </h3>

@@ -38,6 +38,8 @@
 
 			this.$el.html( html );
 			this.initializeFamilySelects();
+			
+			$( window ).scrollTop( 0 );
 		}
 		
 	});

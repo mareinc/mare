@@ -71,12 +71,25 @@
 
 		/* render the view onto the page */
 		render: function render( familyID, params ) {
-			var view = this;
-			view.$el.html( '' );
+			var view = this,
+				html;
 			
+			// display the form based on passed params and wait for the results
+			html = view.template( {
+				waitingForResults: !_.isEmpty( params )
+			});
+			view.$el.html( html );
+			view.initializeTheForm( params );
+			view.initializeAgencySelects();
+			view.initializeSocialWorkerSelects();
+			view.initializeBootstrapToggles();
+
+			// fetch the data from server and render it
 			this.getDataPromise( familyID, params ).done( function( data ) {
-				var html = view.template( data );
+				// if there is no parameters in the response (no default parameters) and no results were found
+				data.noResultsFound = !data.params && data.results.length === 0;
 				
+				html = view.template( data );
 				view.$el.html( html );
 				
 				// initialize all form values, if params were sent from the server then this is an initial request without the query string and

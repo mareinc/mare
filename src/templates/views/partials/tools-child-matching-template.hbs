@@ -1,6 +1,10 @@
 <script id="tools-child-matching-template" type="text/x-handlebars-template">		
 
 	<h4>\{{ child.displayNameAndRegistration }}</h4>
+	
+	\{{#unless child }}
+		<h4>Loading ... </h4>
+	\{{/unless}}
 	<form class="matching-form">
 		<input type="hidden" name="childID" value="\{{ child._id }}" />
 		<div class="row">
@@ -8,16 +12,12 @@
 				<div class="row form-group">
 					<div class="col-sm-6">
 						<div class="group-label float-left float-sm-right"><h5>Family Status</h5></div>
-						<div class="form-check text-sm-right float-right matching-form__toggle-button invisible">
-							<input data-toggle="toggle" data-size="xs" data-on="Display" data-off="No Display" id="displayFamilyStatus" class="form-check-input" type="checkbox" name="fields[]" value="status" {{#if fields.status }}checked{{/if}} />
-							<label class="sr-only" for="displayFamilyStatus">Display</label>
-						</div>
 					</div>
 					<div class="col-sm-6">
 						{{#each childStatuses}}
 						<div class="form-check">
-							<input id="status{{ childStatus }}" class="form-check-input" type="checkbox" name="status[]" value="{{ id }}" {{#if selected }}checked{{/if}} />
-							<label class="form-check-label" for="status{{ childStatus }}">{{ childStatus }} </label>
+							<input id="status{{ childStatus }}" class="form-check-input" type="checkbox" name="status[]" value="{{ id }}" />
+							<label class="form-check-label" for="status{{ childStatus }}">{{ childStatus }}</label>
 						</div>
 						{{/each}}
 					</div>
@@ -26,16 +26,12 @@
 				<div class="row form-group">
 					<div class="col-sm-6">
 						<div class="group-label float-left float-sm-right"><h5>Gender Preference:</h5></div>
-						<div class="form-check text-sm-right float-right matching-form__toggle-button invisible">
-							<input data-toggle="toggle" data-size="xs" data-on="Display" data-off="No Display" id="genderDisplaytype" type="checkbox" name="fields[]" value="gender" {{#if fields.gender }}checked{{/if}} />
-							<label class="sr-only" for="genderDisplaytype">Display</label>
-						</div>
 					</div>
 					<div class="col-sm-6">
 						{{#each genders}}
 						<div class="form-check  form-check">
-							<input id="gender{{ gender }}" class="form-check-input" type="checkbox" name="gender[]" value="{{ id }}" {{#if selected }}checked{{/if}} />
-							<label  class="form-check-label" for="gender{{ gender }}">{{gender }} </label>
+							<input id="gender{{ gender }}" class="form-check-input" type="checkbox" name="gender[]" value="{{ id }}" />
+							<label class="form-check-label" for="gender{{ gender }}">{{gender }}</label>
 						</div>
 						{{/each}}
 					</div>
@@ -44,16 +40,12 @@
 				<div class="row form-group">
 					<div class="col-sm-6">
 						<div class="group-label float-left float-sm-right"><h5>Race Preference:</h5></div>
-						<div class="form-check text-sm-right float-right matching-form__toggle-button invisible">
-							<input data-toggle="toggle" data-size="xs" data-on="Display" data-off="No Display" id="raceDisplay" type="checkbox" name="fields[]" value="race" {{#if fields.race }}checked{{/if}} />
-							<label class="sr-only" for="raceDisplay">Display</label>
-						</div>
 					</div>
 					<div class="col-sm-6">
 						{{#each races}}
 						<div class="form-check">
-							<input id="race{{ race }}" class="form-check-input" type="checkbox" name="race[]" value="{{ id }}" {{#if selected }}checked{{/if}} />
-							<label class="form-check-label" for="race{{ race }}">{{ race }} </label>
+							<input id="race{{ race }}" class="form-check-input" type="checkbox" name="race[]" value="{{ id }}" />
+							<label class="form-check-label" for="race{{ race }}">{{ race }}</label>
 						</div>
 						{{/each}}
 					</div>
@@ -62,16 +54,12 @@
 				<div class="row form-group">
 					<div class="col-sm-6">
 						<div class="group-label float-left float-sm-right"><h5>Legal Status Preference:</h5></div>
-						<div class="form-check text-sm-right float-right matching-form__toggle-button invisible">
-							<input  data-toggle="toggle" data-size="xs" data-on="Display" data-off="No Display" id="legalStatusDisplay" type="checkbox" name="fields[]" value="legalStatus" {{#if fields.legalStatus }}checked{{/if}} />
-							<label class="sr-only" for="legalStatusDisplay">Display</label>
-						</div>
 					</div>
 					<div class="col-sm-6">
 						{{#each legalStatuses}}
 							<div class="form-check">
-								<input id="legal{{ legalStatus }}" class="form-check-input" type="checkbox" name="legalStatus[]" value="{{ id }}" {{#if selected }}checked{{/if}} />
-								<label class="form-check-label" for="legal{{ legalStatus }}">{{ legalStatus }} </label>
+								<input id="legal{{ legalStatus }}" class="form-check-input" type="checkbox" name="legalStatus[]" value="{{ id }}" />
+								<label class="form-check-label" for="legal{{ legalStatus }}">{{ legalStatus }}</label>
 							</div>
 						{{/each}}
 					</div>
@@ -81,17 +69,13 @@
 				<div class="row form-group">
 					<div class="col-sm-4 group-label text-sm-right">
 						<h5>Age Range Preference</h5>
-						<div class="form-check float-right matching-form__toggle-button invisible">
-							<input  data-toggle="toggle" data-size="xs" data-on="Display" data-off="No Display" id="ageDisplay" type="checkbox" name="fields[]" value="age" {{#if fields.age }}checked{{/if}} />
-							<label class="sr-only" for="ageDisplay">Display</label>
-						</div>
 					</div>
 					<div class="col-sm-4">
 						<label for="agesFrom">From</label>
 						<select id="agesFrom" name="agesFrom" class="form-control">
 							<option value="">Any</option>
 							{{#each ages}}
-								<option value="{{ . }}" {{#if selected }}selected{{/if}}>{{ . }}</option>
+								<option value="{{ . }}">{{ . }}</option>
 							{{/each}}
 						</select>
 					</div>
@@ -100,7 +84,7 @@
 						<select id="agesTo" name="agesTo" class="form-control">
 							<option value="">Any</option>
 							{{#each ages}}
-								<option value="{{ . }}" {{#if selected }}selected{{/if}}>{{ . }}</option>
+								<option value="{{ . }}">{{ . }}</option>
 							{{/each}}
 						</select>
 					</div>
@@ -109,17 +93,13 @@
 				<div class="row form-group">
 					<div class="col-sm-4 group-label text-sm-right">
 						<h5>Sibling Group Size Preference</h5>
-						<div class="form-check float-right matching-form__toggle-button invisible">
-							<input  data-toggle="toggle" data-size="xs" data-on="Display" data-off="No Display" id="groupSizeDisplay" type="checkbox" name="fields[]" value="siblingGroupSize" {{#if fields.siblingGroupSize }}checked{{/if}} />
-							<label class="sr-only" for="groupSizeDisplay">Display</label>
-						</div>
 					</div>
 					<div class="col-sm-4">
 						<label for="siblingGroupSizeFrom">From</label>
 						<select id="siblingGroupSizeFrom" name="siblingGroupSizeFrom" class="form-control">
 							<option value="">Any</option>
 							{{#each siblingGroupSizes}}
-								<option value="{{ . }}" {{#if selected }}selected{{/if}}>{{ . }}</option>
+								<option value="{{ . }}">{{ . }}</option>
 							{{/each}}
 						</select>
 					</div>
@@ -128,7 +108,7 @@
 						<select id="siblingGroupSizeTo" name="siblingGroupSizeTo" class="form-control">
 							<option value="">Any</option>
 							{{#each siblingGroupSizes}}
-								<option value="{{ . }}" {{#if selected }}selected{{/if}}>{{ . }}</option>
+								<option value="{{ . }}">{{ . }}</option>
 							{{/each}}
 						</select>
 					</div>
@@ -137,17 +117,13 @@
 				<div class="row form-group">
 					<div class="col-sm-4 group-label text-sm-right">
 						<h5>Physical Needs Preference</h5>
-						<div class="form-check float-right matching-form__toggle-buttoninvisible">
-							<input  data-toggle="toggle" data-size="xs" data-on="Display" data-off="No Display" id="phsycialNeedsDisplay" type="checkbox" name="fields[]" value="physicalNeeds" {{#if fields.physicalNeeds }}checked{{/if}} />
-							<label class="sr-only" for="phsycialNeedsDisplay">Display</label>
-						</div>
 					</div>
 					<div class="col-sm-4">
 						<label for="physicalNeedsFrom">From</label>
 						<select id="physicalNeedsFrom" name="physicalNeedsFrom" class="form-control">
 							<option value="">Any</option>
 							{{#each physicalNeeds}}
-								<option value="{{ . }}" {{#if selected }}selected{{/if}}>{{ . }}</option>
+								<option value="{{ . }}">{{ . }}</option>
 							{{/each}}
 						</select>
 					</div>
@@ -156,7 +132,7 @@
 						<select id="physicalNeedsTo" name="physicalNeedsTo" class="form-control">
 							<option value="">Any</option>
 							{{#each physicalNeeds}}
-								<option value="{{ . }}" {{#if selected }}selected{{/if}}>{{ . }}</option>
+								<option value="{{ . }}">{{ . }}</option>
 							{{/each}}
 						</select>
 					</div>
@@ -165,17 +141,13 @@
 				<div class="row form-group">
 					<div class="col-sm-4 group-label text-sm-right">
 						<h5>Intellectual Needs Preference</h5>
-						<div class="form-check float-right matching-form__toggle-button invisible">
-							<input  data-toggle="toggle" data-size="xs" data-on="Display" data-off="No Display" id="intellectualNeedsDisplay" type="checkbox" name="fields[]" value="intellectualNeeds" {{#if fields.intellectualNeeds }}checked{{/if}} />
-							<label class="sr-only" for="intellectualNeedsDisplay">Display</label>
-						</div>
 					</div>
 					<div class="col-sm-4">
 						<label for="intellectualNeedsFrom">From</label>
 						<select id="intellectualNeedsFrom" name="intellectualNeedsFrom" class="form-control">
 							<option value="">Any</option>
 							{{#each intellectualNeeds}}
-								<option value="{{ . }}" {{#if selected }}selected{{/if}}>{{ . }}</option>
+								<option value="{{ . }}">{{ . }}</option>
 							{{/each}}
 						</select>
 					</div>
@@ -184,7 +156,7 @@
 						<select id="intellectualNeedsTo" name="intellectualNeedsTo" class="form-control">
 							<option value="">Any</option>
 							{{#each intellectualNeeds}}
-								<option value="{{ . }}" {{#if selected }}selected{{/if}}>{{ . }}</option>
+								<option value="{{ . }}">{{ . }}</option>
 							{{/each}}
 						</select>
 					</div>
@@ -193,17 +165,13 @@
 				<div class="row form-group">
 					<div class="col-sm-4 group-label text-sm-right">
 						<h5>Emotional Needs Preference</h5>
-						<div class="form-check float-right matching-form__toggle-button invisible">
-							<input data-toggle="toggle" data-size="xs" data-on="Display" data-off="No Display" id="emotionalNeedsDisplay" type="checkbox" name="fields[]" value="emotionalNeeds" {{#if fields.emotionalNeeds }}checked{{/if}} />
-							<label class="sr-only" for="emotionalNeedsDisplay">Display</label>
-						</div>
 					</div>
 					<div class="col-sm-4">
 						<label for="emotionalNeedsFrom">From</label>
 						<select id="emotionalNeedsFrom" name="emotionalNeedsFrom" class="form-control">
 							<option value="">Any</option>
 							{{#each emotionalNeeds}}
-								<option value="{{ . }}" {{#if selected }}selected{{/if}}>{{ . }}</option>
+								<option value="{{ . }}">{{ . }}</option>
 							{{/each}}
 						</select>
 					</div>
@@ -212,7 +180,7 @@
 						<select id="emotionalNeedsTo" name="emotionalNeedsTo" class="form-control">
 							<option value="">Any</option>
 							{{#each emotionalNeeds}}
-								<option value="{{ . }}" {{#if selected }}selected{{/if}}>{{ . }}</option>
+								<option value="{{ . }}">{{ . }}</option>
 							{{/each}}
 						</select>
 					</div>
@@ -224,10 +192,6 @@
 				<div class="row form-group">
 					<div class="col-sm-4 text-sm-right" >
 						<label for="socialWorkers" class="bold">Social Workers:</label>
-						<div class="form-check float-right matching-form__toggle-button invisible">
-							<input data-toggle="toggle" data-size="xs" data-on="Display" data-off="No Display" id="socialWorkersDisplay" type="checkbox" name="fields[]" value="socialWorker" {{#if fields.socialWorker }}checked{{/if}} />
-							<label  class="sr-only" for="socialWorkersDisplay">Display</label>
-						</div>
 					</div>
 					<div class="col-sm-8">
 						<select id="socialWorkers" name="socialWorkers[]" class="form-control social-worker-select" multiple>
@@ -241,10 +205,6 @@
 				<div class="row form-group">
 					<div class="col-sm-4 text-sm-right" >
 						<label for="socialWorkersAgency" class="bold">Social Worker's Agency:</label>
-						<div class="form-check float-right matching-form__toggle-button invisible">
-							<input data-toggle="toggle" data-size="xs" data-on="Display" data-off="No Display" id="socialWorkersAgencyDisplay" type="checkbox" name="fields[]" value="socialWorkersAgency" {{#if fields.socialWorkersAgency }}checked{{/if}} />
-							<label class="sr-only" for="socialWorkersAgencyDisplay">Display</label>
-						</div>
 					</div>
 					<div class="col-sm-8">
 						<select id="socialWorkersAgency" name="socialWorkersAgency[]" class="form-control agency-select" multiple>
@@ -258,15 +218,11 @@
 				<div class="row form-group">
 					<div class="col-sm-4 group-label text-sm-right">
 						<div class="group-label float-left float-sm-right"><h5>Family Constellation:</h5></div>
-						<div class="form-check text-sm-right float-right matching-form__toggle-button invisible">
-							<input  data-toggle="toggle" data-size="xs" data-on="Display" data-off="No Display" id="familyConstellationDisplay" type="checkbox" name="fields[]" value="familyConstellation" {{#if fields.familyConstellation }}checked{{/if}} />
-							<label class="sr-only" for="familyConstellationDisplay">Display</label>
-						</div>
 					</div>
 					<div class="col-sm-8">
 						{{#each familyConstellations}}
 							<div class="form-check">
-								<input id="familyConstellation{{ familyConstellation }}" class="form-check-input" type="checkbox" name="familyConstellation[]" value="{{ id }}" {{#if selected }}checked{{/if}} />
+								<input id="familyConstellation{{ familyConstellation }}" class="form-check-input" type="checkbox" name="familyConstellation[]" value="{{ id }}" />
 								<label class="form-check-label" for="familyConstellation{{ familyConstellation }}">{{ familyConstellation }} </label>
 							</div>
 						{{/each}}
@@ -279,6 +235,16 @@
 	<button type="button" class="btn btn-primary families-search-button">Search</button>
 	<button type="button" class="btn btn-default families-search-reset-button">Reset</button>
 
+	\{{#if waitingForResults }}
+		<br /><br />
+		Loading the data ...
+	\{{/if}}
+	
+	\{{#if noResultsFound }}
+		<br /><br />
+		No results found
+	\{{/if}}
+	
 	\{{#if results }}
 		<h3>Results: </h3>
 		<input type="button" class="button button--teal export-pdf-button" value="PDF Export" />
