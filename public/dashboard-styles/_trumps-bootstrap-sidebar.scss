@@ -1,23 +1,4 @@
 .dashboard-sidebar {
-	min-width: 323px;
-	max-width: 323px;
-	transition: all 0.3s;
-	padding: 1.25rem 1rem;
-	background-color: #2e4e87 !important;
-	
-	&--active {
-		margin-left: -323px;
-	}
-	
-	@media all and ( max-width: 768px ) {
-		& {
-			margin-left: -323px;
-		}
-		&--active {
-			margin-left: 0;
-		}
-	}
-	
 	.list-group {
 		position: relative;
 		left: -1rem;
@@ -55,13 +36,9 @@
 		max-height: 45px;
 		max-height: 35px;
 		width: auto;
-	} 
-
+	}
+	
 	@media all and ( min-width: 768px ) {
-		position: fixed;
-		height: 100%;
-		padding: 3.25rem 1rem;
-		
 		.list-group-item img {
 			display: inline-block;
 		} 
@@ -70,19 +47,6 @@
 			width: 4rem;
 			display: inline-block;
 			text-align: right;
-		} 
-		.sidebarCollapse {
-			display: none;
 		}
 	}
 }
-
-.dashboard-sidebar__h3 {
-	color: #839ed3;
-	font-weight: 600;
-	
-	@media all and ( min-width: 768px ) {
-		font-size: 1.3rem;
-	}
-}
-

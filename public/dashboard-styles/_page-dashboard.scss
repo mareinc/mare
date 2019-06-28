@@ -50,3 +50,11 @@ h2, h3, h5 {
 	}
 }
 
+/* workaround for being able to click the date field (vs just the native calendar arrow) to trigger the html5 calendar in webkit */
+input::-webkit-calendar-picker-indicator {
+	position: absolute;
+    width: 100%;
+    opacity: 0;
+}
+
+
