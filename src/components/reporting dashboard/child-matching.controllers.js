@@ -1,13 +1,12 @@
 const keystone 			= require( 'keystone' ),
 	  ObjectId 			= require( 'mongodb' ).ObjectId,
 	  _					= require( 'underscore' ),
-	  utilsService		= require( './utils.controllers' ),
-	  utilityService 	= require( '../../utils/utility.controllers' );
+	  utilsService		= require( './utils.controllers' );
 	  
 const MAX_RESULTS = 10000;
 
 /* parse query parameters and output MongoDB search criteria */
-exports.getCriteria = ( query ) => {
+exports.getCriteria = query => {
 	let criteria = {};
 	
 	// status criteria (multiple)
@@ -113,7 +112,7 @@ exports.getCriteria = ( query ) => {
 	return criteria;
 }
 
-exports.getFamiliesByCriteria = ( criteria ) => {
+exports.getFamiliesByCriteria = criteria => {
 
 	return new Promise( ( resolve, reject ) => {
 		if ( _.isEmpty( criteria ) ) {
@@ -145,9 +144,9 @@ exports.getFamiliesByCriteria = ( criteria ) => {
 }
 
 /* map the array of families to plain objects */
-exports.mapFamiliesToPlainObjects = ( families ) => {
+exports.mapFamiliesToPlainObjects = families => {
 
-	let mapper = ( family ) => {
+	let mapper = family => {
 		return {
 			id: family._id,
 			registrationNumber: family.registrationNumber,
@@ -172,7 +171,7 @@ exports.sortFunction = ( a, b ) => {
 }
 
 /* Extracts minimal child data */
-exports.extractChildData = ( child ) => {
+exports.extractChildData = child => {
 	return {
 		_id: child._id,
 		displayNameAndRegistration: child.displayNameAndRegistration

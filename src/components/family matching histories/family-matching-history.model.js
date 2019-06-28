@@ -1,8 +1,5 @@
 const keystone			= require( 'keystone' ),
-	  Types				= keystone.Field.Types,
-	  random			= require( 'mongoose-simple-random' ),
-	  SourceMiddleware	= require( '../events/event.source.controllers' ),
-	  Validators		= require( '../../utils/field-validator.controllers' );
+	  Types				= keystone.Field.Types;
 
 // create model
 var FamilyMatchingHistory = new keystone.List( 'Family Matching History', {

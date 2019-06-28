@@ -23,8 +23,8 @@ exports.getSocialNeedsRange = ( fromNeed, toNeed ) => {
 };
 
 /* map social workers array to the array of simple objects */
-exports.extractSocialWorkersData = ( socialWorkers ) => {
-	return socialWorkers.map( ( socialWorker ) => {
+exports.extractSocialWorkersData = socialWorkers => {
+	return socialWorkers.map( socialWorker => {
 		return {
 			id: socialWorker._id,
 			name: socialWorker.name
@@ -33,8 +33,8 @@ exports.extractSocialWorkersData = ( socialWorkers ) => {
 }
 
 /* map agencies array to the array of simple objects */
-exports.extractAgenicesData = ( agencies ) => {
-	return agencies.map( ( agency ) => {
+exports.extractAgenicesData = agencies => {
+	return agencies.map( agency => {
 		return {
 			id: agency._id,
 			name: agency.name
@@ -80,7 +80,7 @@ exports.sendPDF = ( req, res, data, htmlViewTemplate, { headerTitle } ) => {
 	// render HTML and convert to PDF using Puppeteer (Chrome under the hood)
 	view.render( htmlViewTemplate, { layout: null }, function( error, html ) {
 		const convertHTMLToPDF = require( "pdf-puppeteer" );
-		const callback = ( pdf ) => {
+		const callback = pdf => {
 			res.setHeader( "Content-Type", "application/pdf" );
 			res.send( pdf );
 		};

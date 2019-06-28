@@ -2,8 +2,7 @@ const keystone 			= require( 'keystone' ),
 	  ObjectId 			= require( 'mongodb' ).ObjectId,
 	  _					= require( 'underscore' ),
 	  moment			= require( 'moment' ),
-	  utilsService		= require( './utils.controllers' ),
-	  utilityService 	= require( '../../utils/utility.controllers' );
+	  utilsService		= require( './utils.controllers' );
 
 const FIELD_NAMES = {
 	status: "Status",
@@ -25,7 +24,7 @@ const FIELD_NAMES = {
 const MAX_RESULTS = 10000;
 
 /* parse query parameters and output MongoDB search criteria */
-exports.getCriteria = ( query ) => {
+exports.getCriteria = query => {
 	let criteria = {};
 	
 	// status criteria (multiple)
@@ -162,7 +161,7 @@ exports.getCriteria = ( query ) => {
 	return criteria;
 }
 
-exports.getChildrenByCriteria = ( criteria ) => {
+exports.getChildrenByCriteria = criteria => {
 	
 	return new Promise( ( resolve, reject ) => {
 		if ( _.isEmpty( criteria ) ) {
@@ -215,7 +214,7 @@ exports.getChildrenByCriteria = ( criteria ) => {
 
 /* map the array of children to plain objects including requested fields and matching / unmatching siblings */
 exports.mapChildrenToPlainObjects = ( children, criteria, requestedFields ) => {
-	let mapper = ( child ) => {
+	let mapper = child => {
 		let fields = [];
 		
 		// loop through all requested Child model fields and return their string representation
@@ -302,11 +301,11 @@ exports.sortFunction = ( a, b ) => {
 }
 
 /* get all requested fields from the query */
-exports.getFieldsFromQuery = ( query ) => {
+exports.getFieldsFromQuery = query => {
 	let fields = {};
 	
 	if ( Array.isArray( query.fields ) ) {
-		query.fields.forEach( ( field ) => {
+		query.fields.forEach( field => {
 			fields[ field ] = true;
 		});
 	}
@@ -315,12 +314,12 @@ exports.getFieldsFromQuery = ( query ) => {
 }
 
 /* get requested fields labels to display in the report */
-exports.getFieldNamesFromQuery = ( query ) => {
+exports.getFieldNamesFromQuery = query => {
 	return Array.isArray( query.fields ) ? query.fields.filter( ( field ) => FIELD_NAMES[ field ] ).map( ( field ) => FIELD_NAMES[ field ] ) : [];
 }
 	  
 /* extracts minimal family data */
-exports.extractFamilyData = ( family ) => {
+exports.extractFamilyData = family => {
 	return {
 		_id: family._id,
 		displayName: family.displayName,
@@ -418,7 +417,7 @@ function getSiblingsMatchingStatus( child, criteria ) {
 	let unmatchedSiblings = [],
 		matchedSiblings = [];
 	
-	child.siblingsToBePlacedWith.forEach( ( sibling ) => {
+	child.siblingsToBePlacedWith.forEach( sibling => {
 		let reasons = getReasonsWhyTheChildDoesNotMatchTheCriteria( sibling, criteria );
 
 		if ( reasons.length > 0 ) {

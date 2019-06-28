@@ -115,14 +115,14 @@ exports.saveFamiliesMatchingHistory = ( req, res, next ) => {
 			
 			// append all siblings:
 			if ( Array.isArray( child.siblingsToBePlacedWith ) ) {
-				child.siblingsToBePlacedWith.forEach( ( sibling ) => {
+				child.siblingsToBePlacedWith.forEach( sibling => {
 					allChildrenIDs.push( sibling.toString() );
 				});
 			}
 			
 			// prepare save tasks
 			families.forEach( family => {
-				allChildrenIDs.forEach( ( targetChildID ) => {
+				allChildrenIDs.forEach( targetChildID => {
 					const FamilyMatchingHistory = keystone.list( 'Family Matching History' ),
 						familyMatchingHistory = new FamilyMatchingHistory.model({
 							child: ObjectId( targetChildID ),
@@ -138,7 +138,7 @@ exports.saveFamiliesMatchingHistory = ( req, res, next ) => {
 			
 			// wait for all tasks to be done
 			Promise.all( tasks )
-				.then( ( results ) => {
+				.then( results => {
 					flashMessages.sendSuccessFlashMessage( res, 'Information', 'All entries have been saved' );
 				})
 				.catch( err => {
@@ -292,7 +292,7 @@ exports.saveChildrenMatchingHistory = ( req, res, next ) => {
 		
 		// wait for all tasks to be done
 		Promise.all( tasks )
-			.then( ( results ) => {
+			.then( results => {
 				flashMessages.sendSuccessFlashMessage( res, 'Information', 'All entries have been saved' );
 			})
 			.catch( err => {
@@ -316,7 +316,7 @@ exports.getAgenciesData = ( req, res, next ) => {
 	
 	utilsService.fetchModelsMapAndSendResults(
 		agenciesService.getAgenciesByName( req.query.q, MAX_RESULTS ),
-		( agency ) => {
+		agency => {
 			return {
 				id: agency._id.toString(),
 				text: agency.name
@@ -334,7 +334,7 @@ exports.getSocialWorkersData = ( req, res, next ) => {
 
 	utilsService.fetchModelsMapAndSendResults(
 		socialWorkerService.getSocialWorkersByName( req.query.q, MAX_RESULTS ),
-		( socialWorker ) => {
+		socialWorker => {
 			return {
 				id: socialWorker._id.toString(),
 				text: socialWorker.name.full
@@ -352,7 +352,7 @@ exports.getFamiliesData = ( req, res, next ) => {
 
 	utilsService.fetchModelsMapAndSendResults(
 		familyService.getFamiliesByName( req.query.q, MAX_RESULTS ),
-		( family ) => {
+		family => {
 			return {
 				id: family._id.toString(),
 				text: family.displayNameAndRegistration
@@ -370,7 +370,7 @@ exports.getChildrenData = ( req, res, next ) => {
 
 	utilsService.fetchModelsMapAndSendResults(
 		childService.getChildrenByName( req.query.q, MAX_RESULTS ),
-		( child ) => {
+		child => {
 			return {
 				id: child._id.toString(),
 				text: child.displayNameAndRegistration
