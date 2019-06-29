@@ -5,7 +5,7 @@
 		el: '.form--child-registration',
 
 		events: {
-			'change #is-not-ma-city-checkbox' 	: 'toggleCitySelect',
+			'change #is-not-ma-city-checkbox'		: 'toggleCitySelect',
 			'change [name="isPartOfSiblingGroup"]'	: 'toggleSiblingNamesTextbox'
 		},
 
@@ -18,13 +18,22 @@
 			this.$siblingNamesContainer	= this.$( '.sibling-names-container' );
 			this.$siblingNames			= this.$( '#sibling-names' );
 
+			// initialize a view for fetching and restoring form data
+			mare.views.restoreFormData = mare.views.restoreFormData || new mare.views.RestoreFormData( { formClass: 'form--child-registration', form: this } );
+			// restore the form data when the restore form view registers a restore click
+			mare.views.restoreFormData.on( 'restore', this.restoreFormData, this );
+			// emit an event when the form data changes
+			$( '.form--child-registration' ).on( 'formInputChanged', function( a ) {
+				this.trigger( 'formInputChanged' );
+			}.bind( this ));
+
 			// initialize parsley validation on the form
 			this.form = this.$el.parsley();
 			// bind the city form elements individually to allow for binding/unbinding parsley validation
-			this.MACityValidator 		= this.$MACity.parsley();
-			this.nonMACityValidator		= this.$NonMACity.parsley();
+			this.MACityValidator = this.$MACity.parsley();
+			this.nonMACityValidator = this.$NonMACity.parsley();
 			// bind the sibling names textbox individually to allow for binding/unbinding parsley validation
-			this.siblingNamesValidator	= this.$siblingNames.parsley();
+			this.siblingNamesValidator = this.$siblingNames.parsley();
 			// triggers parsley validation when the form is submitted
 			this.form.on( 'field:validated', this.validateForm );
 		},
@@ -96,6 +105,11 @@
 				// and reset validation on the field.  If it was already validated, we need to clear out the check so the form can be submitted
 				this.siblingNamesValidator.reset();
 			}
+		},
+
+		restoreFormData: function restoreFormData() {
+			mare.utils.restoreFormData( 'form--child-registration', this );
+			this.trigger( 'formDataRestored' );
 		}
 	});
 }());

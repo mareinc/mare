@@ -15,6 +15,8 @@
 
 		<form enctype="multipart/form-data" action="/forms/social-worker-child-registration" class="form--child-registration" method="POST">
 		
+			{{> restore-form-data}}
+			
 			<section class="child-information-section">
 				<div class="form-section-header">Child Information</div>
 				
@@ -66,12 +68,21 @@
 					</div>
 				</div>
 				<div class="row form-group">
+					<div class="col-sm-24">
+						<label class="required-field">Gender</label>
+					</div>
+				</div>
+				<div class="row form-group">
 					<div class="col-sm-16">
-						<span class="required-field">Gender</span> &nbsp;&nbsp;
-						<span id="gender-error-container" class="error-container">
+						<div id="gender-error-container" class="row error-container">
 						{{#each genders}}
-							<label class="radio-inline"><input type="radio" name="gender" value="{{_id}}" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#gender-error-container" required="">{{gender}}</label>
+							<div class="col-sm-12 form-group">
+								<label class="radio-inline">
+									<input type="radio" name="gender" value="{{_id}}" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#gender-error-container" required="">{{gender}}
+								</label>
+							</div>
 						{{/each}}
+						</div>
 					</div>
 				</div>
 				<div class="row form-group">
@@ -143,13 +154,21 @@
 					</div>
 				</div>
 				<div class="row form-group">
+					<div class="col-sm-24">
+						<label class="required-field">Legal Status</label>
+					</div>
+				</div>
+				<div class="row form-group">
 					<div class="col-sm-16">
-						<span class="required-field">Legal Status</span> &nbsp;&nbsp;
-						<span id="preferred-legal-status-error-container" class="error-container">
-							{{#each legalStatuses}}
-								<label class="radio-inline"><input type="radio" name="legalStatus" value="{{_id}}" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#preferred-legal-status-error-container" required="">{{legalStatus}}</label>
-							{{/each}}
-						</span>
+						<div id="preferred-legal-status-error-container" class="row error-container">
+						{{#each legalStatuses}}
+							<div class="col-sm-12 form-group">
+								<label class="radio-inline">
+									<input type="radio" name="legalStatus" value="{{_id}}" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#preferred-legal-status-error-container" required="">{{legalStatus}}
+								</label>
+							</div>
+						{{/each}}
+						</div>
 					</div>
 				</div>
 				<div class="row form-group">
