@@ -1,0 +1,25 @@
+.restore-form-data__container {
+    margin-top: 1em;
+    font-size: 0.9em;
+    padding: 0.75em 2em;
+    background-color: $background-color-13;
+    margin-left: -2em;
+    margin-right: -2em;
+    color: $text-color-light;
+}
+
+.restore-form-data__controls {
+    margin-top: 1.5em;
+}
+
+.restore-form-data__control {
+    cursor: pointer;
+
+    &:hover {
+        color: $text-color-dark;
+    }
+}
+
+.restore-form-data__control:nth-child(n + 2) {
+    margin-left: 2em;
+}

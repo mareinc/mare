@@ -13,22 +13,25 @@
         utils: {
 
         	storeUrlInfo: function storeUrlInfo() {
-				var host		= window.location.host,
-					pathName	=  window.location.pathname.substr( 1 ), // get the pathname without the leading '/'
-					pathArray	= pathName.split( '/' ),
-					href		= window.location.href;
+				var pathName =  window.location.pathname.substr( 1 ), // get the pathname without the leading '/'
+					pathArray = pathName.split( '/' );
 
 				// store relevant url information in mare namespace
-				mare.url.protocol	= window.location.protocol;
-				mare.url.siteArea	= pathArray[ 0 ];
-				mare.url.page		= pathArray[ 1 ];
-				mare.url.target		= pathArray[ 2 ];
+				mare.url.protocol = window.location.protocol;
+				mare.url.siteArea = pathArray[ 0 ];
+				mare.url.page = pathArray[ 1 ];
+				mare.url.target = pathArray[ 2 ];
 
 				// store redirect information for log in / log out actions
 				mare.url.redirect = '';
 				mare.url.redirect += mare.url.siteArea ? mare.url.siteArea : '';
 				mare.url.redirect += mare.url.page ? '/' + mare.url.page : '';
 				mare.url.redirect += mare.url.target ? '/' + mare.url.target : '';
+
+				// store the host name
+				mare.host = window.location.host;
+
+				mare.href = window.location.href;
         	},
 
 			bindTouch: function bindTouch() {
@@ -74,6 +77,70 @@
 						opts.fn( this ) :
 						opts.inverse( this );
 				});
+			},
+
+			convertFormToObject: function convertFormToObject( formClass ) {
+				var allFormFields = $( '.' + formClass ).serializeArray();
+
+				var formObject = {};
+
+				allFormFields.map( function( field ) {
+					if( field.name.indexOf('[]') === -1 ) {
+						formObject[ field.name ] = field.value;
+					} else {
+
+						if( formObject[ field.name ] ) {
+							formObject[ field.name ].push( field.value );
+						} else {
+							formObject[ field.name ] = [ field.value ];
+						}
+					}
+				});
+
+				return formObject;
+			},
+
+			addFormSaving: function addFormSaving( formClass ) {
+				$( '.' + formClass + ' :input' ).change( function() {
+
+					var formAsObject = mare.utils.convertFormToObject( formClass );
+					var formData = JSON.stringify( formAsObject );
+
+					mare.utils.saveFormDataToLocalStorage( formClass, formData );
+
+					$( '.' + formClass ).trigger( 'formInputChanged' );
+				});
+			},
+
+			removeFormSaving: function removeFormSaving( formClass ) {
+				$( '.' + formClass ).unbind( 'change' );
+			},
+
+			restoreFormData: function restoreFormData( formClass, view ) {
+				var savedFormData = JSON.parse( mare.utils.getFormDataFromLocalStorage( formClass ) );
+
+				_.each( savedFormData, function( value, key ) {
+					// restore radio buttons
+					if( view.$( '[value="' + value + '"]' )[0] && view.$( '[value="' + value + '"]' )[0].type === 'radio' ) {
+						view.$( '[value="' + value + '"]' )[0].checked = true;
+					} else {			
+						// NOTE: the double quotes are necessary to handle checkboxes with [] in the name
+						// restore non-radio button inputs
+						view.$( '[name="' + key + '"]' ).val( value );
+					}
+				});
+			},
+
+			saveFormDataToLocalStorage: function saveFormDataToLocalStorage( key, formData ) {
+				localStorage.setItem( key, formData );
+			},
+
+			getFormDataFromLocalStorage: function getFormDataFromLocalStorage( key ) {
+				return localStorage.getItem( key );
+			},
+
+			removeFormDataFromLocalStorage: function removeFormDataFromLocalStorage( key ) {
+				localStorage.removeItem( key );
 			}
 		}
 	};
