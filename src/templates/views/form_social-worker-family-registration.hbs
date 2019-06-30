@@ -18,6 +18,8 @@
 		<form enctype="multipart/form-data" action="/forms/social-worker-family-registration" class="form--family-registration" method="POST">
 			<input type="hidden" class="registration-type" name="registrationType" value="family">
 
+			{{> restore-form-data}}
+
 			<section class="family-contact-1-section">
 				<div class="form-section-header">Contact 1</div>
 
@@ -76,7 +78,7 @@
 							{{#each races}}
 							<div class="col-sm-12 form-group">
 								<label class="checkbox-inline">
-									<input type="checkbox" name="contact1Race" value="{{_id}}" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#contact1-race-error-container" required="">{{race}}
+									<input type="checkbox" name="contact1Race[]" value="{{_id}}" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#contact1-race-error-container" required="">{{race}}
 								</label>
 							</div>
 							{{/each}}
@@ -132,7 +134,7 @@
 				</div>
 				<div class="row">
 					<div class="col-sm-24 form-group">
-						<span class="gender-select-text">Gender:</span> &nbsp;&nbsp;
+						<span class="gender-select-text">Gender</span> &nbsp;&nbsp;
 						{{#each genders}}
 							<label class="radio-inline"><input type="radio" name="contact2Gender" value="{{_id}}">{{gender}}</label>
 						{{/each}}
@@ -149,7 +151,7 @@
 							{{#each races}}
 							<div class="col-sm-12 form-group">
 								<label class="checkbox-inline">
-									<input type="checkbox" name="contact2Race" value="{{_id}}">{{race}}
+									<input type="checkbox" name="contact2Race[]" value="{{_id}}">{{race}}
 								</label>
 							</div>
 							{{/each}}
@@ -198,7 +200,7 @@
 					</div>
 					<div class="col-sm-12 form-group">
 						<label class="checkbox-inline">
-							<input type="checkbox" id="is-not-ma-city-checkbox" name="isNotMACity">Family lives outside MA
+							<input type="checkbox" id="is-not-ma-city-checkbox" name="isNotMACity[]" data-trigger-on-restore="change">Family lives outside MA
 						</label>
 					</div>
 				</div>
@@ -310,7 +312,7 @@
 						<label for="children-in-home" class="label marg-bottom-xs-5">Total number of children currently living at home</label>
 					</div>
 					<div class="col-sm-12">
-						<select id="children-in-home" name="childrenInHome" class="input form__number-select">
+						<select id="children-in-home" name="childrenInHome" class="input form__number-select" data-trigger-on-restore="change">
 							<option>0</option>
 							<option>1</option>
 							<option>2</option>
@@ -350,7 +352,7 @@
 				<div class="row form-group">
 					<div class="col-sm-24">
 						<label class="checkbox-inline">
-							<input type="checkbox" name="havePets" value="yes">Have pets in the home
+							<input type="checkbox" name="havePets[]" value="yes">Have pets in the home
 						</label>
 					</div>
 				</div>
@@ -378,7 +380,7 @@
 						{{#each languages}}
 							<div class="col-sm-12 form-group">
 								<label class="checkbox-inline">
-									<input type="checkbox" name="otherLanguagesInHome" value="{{_id}}">{{language}}
+									<input type="checkbox" name="otherLanguagesInHome[]" value="{{_id}}">{{language}}
 								</label>
 							</div>
 						{{/each}}
@@ -399,7 +401,7 @@
 						{{#each genders}}
 							<div class="col-sm-12 form-group">
 								<label class="checkbox-inline">
-									<input type="checkbox" name="preferredGender" value="{{_id}}" class="preferred-gender required" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#preferred-gender-error-container" data-parsley-required="true" required="">{{gender}}
+									<input type="checkbox" name="preferredGender[]" value="{{_id}}" class="preferred-gender required" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#preferred-gender-error-container" data-parsley-required="true" required="">{{gender}}
 								</label>
 							</div>
 						{{/each}}
@@ -415,7 +417,7 @@
 						{{#each legalStatuses}}
 							<div class="col-sm-12 form-group">
 								<label class="checkbox-inline">
-									<input type="checkbox" name="legalStatus" value="{{_id}}" class="legal-status required" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#preferred-legal-status-error-container" data-parsley-required="true" required="">{{legalStatus}}
+									<input type="checkbox" name="legalStatus[]" value="{{_id}}" class="legal-status required" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#preferred-legal-status-error-container" data-parsley-required="true" required="">{{legalStatus}}
 								</label>
 							</div>
 						{{/each}}

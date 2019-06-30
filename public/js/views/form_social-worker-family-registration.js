@@ -32,6 +32,15 @@
 			this.$childrenInHome 						= this.$( '#children-in-home' );
 			this.$childrenInHomeDetails 				= this.$( '.children-in-home-details' );
 
+			// initialize a view for fetching and restoring form data
+			mare.views.restoreFormData = mare.views.restoreFormData || new mare.views.RestoreFormData( { formClass: 'form--family-registration', form: this } );
+			// restore the form data when the restore form view registers a restore click
+			mare.views.restoreFormData.on( 'restore', this.restoreFormData, this );
+			// emit an event when the form data changes
+			$( '.form--family-registration' ).on( 'formInputChanged', function( a ) {
+				this.trigger( 'formInputChanged' );
+			}.bind( this ));
+
 			// initialize parsley validation on the form
 			this.form = this.$el.parsley();
 			// bind the city form elements individually to allow for binding/unbinding parsley validation
@@ -179,6 +188,11 @@
 			var ok = $( '.parsley-error' ).length === 0;
 			$( '.bs-callout-info' ).toggleClass( 'hidden', !ok );
 			$( '.bs-callout-warning' ).toggleClass( 'hidden', ok );
+		},
+
+		restoreFormData: function restoreFormData() {
+			mare.utils.restoreFormData( 'form--family-registration', this );
+			this.trigger( 'formDataRestored' );
 		}
 	});
 }());
