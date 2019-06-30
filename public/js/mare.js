@@ -120,13 +120,24 @@
 				var savedFormData = JSON.parse( mare.utils.getFormDataFromLocalStorage( formClass ) );
 
 				_.each( savedFormData, function( value, key ) {
+					// an input will either be of type radio button, or something else
+					var targetElement = view.$( '[name="' + key + '"]' );
+					var targetRadioButton = view.$( '[name="' + key + '"][value="' + value + '"]' )[0];
 					// restore radio buttons
-					if( view.$( '[value="' + value + '"]' )[0] && view.$( '[value="' + value + '"]' )[0].type === 'radio' ) {
-						view.$( '[value="' + value + '"]' )[0].checked = true;
+					if( targetRadioButton && targetRadioButton.type === 'radio' ) {
+						targetRadioButton.checked = true;
+
+						if( $( targetRadioButton ).data( 'triggerOnRestore' ) === 'change' ) {
+							$( targetRadioButton ).trigger( 'change' );
+						}
 					} else {			
 						// NOTE: the double quotes are necessary to handle checkboxes with [] in the name
 						// restore non-radio button inputs
-						view.$( '[name="' + key + '"]' ).val( value );
+						targetElement.val( value );
+
+						if( targetElement.data( 'triggerOnRestore' ) === 'change' ) {
+							targetElement.trigger( 'change' );
+						}
 					}
 				});
 			},
