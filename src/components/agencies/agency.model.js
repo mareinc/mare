@@ -28,7 +28,9 @@ Agency.add({
 		cityText: { type: Types.Text, label: 'city/town', dependsOn: { 'address.isOutsideMassachusetts': true }, initial: true },
 		state: { type: Types.Relationship, label: 'state', ref: 'State', initial: true },
 		zipCode: { type: Types.Text, label: 'zip code', initial: true, validate: Validators.zipValidator },
-		region: { type: Types.Relationship, label: 'region', ref: 'Region', noedit: true }
+		region: { type: Types.Relationship, label: 'region', ref: 'Region', noedit: true },
+		isRegionOverridden: { type: Types.Boolean, label: 'override region' },
+		regionOverride: { type: Types.Relationship, label: 'region override', ref: 'Region', dependsOn: { 'address.isRegionOverridden': true } }
 	},
 
 	url: { type: Types.Text, label: 'agency url', initial: true },

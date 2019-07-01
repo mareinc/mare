@@ -723,7 +723,9 @@ Child.schema.methods.setAdoptionWorkerAgencyFields = function() {
 				// set the adoption worker agency for the child
 				this.adoptionWorkerAgency = agency.get( '_id' );
 				// set the adoption worker agency region for the child
-				this.adoptionWorkerAgencyRegion = agency.address.region;
+				this.adoptionWorkerAgencyRegion = agency.address.isRegionOverridden
+					? agency.address.regionOverride
+					: agency.address.region;
 				// resolve the promise
 				resolve();
 			})
@@ -765,7 +767,9 @@ Child.schema.methods.setRecruitmentWorkerAgencyFields = function() {
 				// set the recruitment worker agency for the child
 				this.recruitmentWorkerAgency = agency.get( '_id' );
 				// set the recruitment worker agency region for the child
-				this.recruitmentWorkerAgencyRegion = agency.address.region;
+				this.recruitmentWorkerAgencyRegion = agency.address.isRegionOverridden
+					? agency.address.regionOverride
+					: agency.address.region;
 				// resolve the promise
 				resolve();
 			})

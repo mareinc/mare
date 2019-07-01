@@ -937,7 +937,9 @@ Family.schema.methods.setSocialWorkerAgencyFields = function() {
 				// set the social worker agency for the child
 				this.socialWorkerAgency = agency.get( '_id' );
 				// set the social worker agency region for the child
-				this.socialWorkerAgencyRegion = agency.address.region;
+				this.socialWorkerAgencyRegion = agency.address.isRegionOverridden
+					? agency.address.regionOverride
+					: agency.address.region;
 				// resolve the promise
 				resolve();
 			})
