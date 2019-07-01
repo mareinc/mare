@@ -207,10 +207,10 @@ Child.add( 'Display Options', {
 }, 'Sibling Group Profile', {
 
 	groupProfile: {
-		quote: { type: Types.Textarea, label: 'group quote', initial: true },
-		part1: { type: Types.Textarea, label: '1st paragraph', note: 'Age, Race, Interests, Hobbies, Strengths', initial: true },
-		part2: { type: Types.Textarea, label: '2nd paragraph', note: 'Physical, Social, Emotional and Academic Functioning', initial: true },
-		part3: { type: Types.Textarea, label: '3rd paragraph', note: 'Legal Status, Sibling/Family Contact, Family Constellation and Placement requirements', initial: true }
+		quote: { type: Types.Textarea, label: 'group quote', initial: true, collapse: true },
+		part1: { type: Types.Textarea, label: '1st paragraph', note: 'Age, Race, Interests, Hobbies, Strengths', initial: true, collapse: true },
+		part2: { type: Types.Textarea, label: '2nd paragraph', note: 'Physical, Social, Emotional and Academic Functioning', initial: true, collapse: true },
+		part3: { type: Types.Textarea, label: '3rd paragraph', note: 'Legal Status, Sibling/Family Contact, Family Constellation and Placement requirements', initial: true, collapse: true }
 	},
 
 }, 'Photolisting Information', {
