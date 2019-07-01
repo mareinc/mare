@@ -110,98 +110,98 @@ const Child = new keystone.List( 'Child', {
 // Create fields
 Child.add( 'Display Options', {
 
-	siteVisibility: { type: Types.Select, label: 'child is visible to', options: 'everyone, only registered social workers and families', required: true, initial: true },
+	siteVisibility: { type: Types.Select, label: 'child is visible to', options: 'everyone, only registered social workers and families', required: true, initial: true, collapse: true },
 	isVisibleInGallery: { type: Types.Boolean, label: 'activate child profile on website to group selected', note: 'authorized staff only', default: false, initial: true },
-	visibleInGalleryDate: { type: Types.Date, label: 'date added/updated to MARE web', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: {isVisibleInGallery: true }, initial: true }
+	visibleInGalleryDate: { type: Types.Date, label: 'date added/updated to MARE web', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: {isVisibleInGallery: true }, initial: true, collapse: true }
 
 }, 'Child Information', {
 
-	registrationNumber: { type: Number, label: 'registration number', format: false, noedit: true },
-	registrationDate: { type: Types.Date, label: 'registration date', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, required: true, initial: true },
-	displayNameAndRegistration: { type: Types.Text, label: 'name and registration number', default: 'new child', hidden: true, noedit: true },
+	registrationNumber: { type: Types.Number, label: 'registration number', format: false, noedit: true, collapse: true },
+	registrationDate: { type: Types.Date, label: 'registration date', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, required: true, initial: true, collapse: true },
+	displayNameAndRegistration: { type: Types.Text, label: 'name and registration number', default: 'new child', hidden: true, noedit: true, collapse: true },
 
 	name: {
-		first: { type: Types.Text, label: 'first name', required: true, initial: true },
-		middle: { type: Types.Text, label: 'middle name', initial: true },
-		last: { type: Types.Text, label: 'last name', required: true, initial: true },
-		alias: { type: Types.Text, label: 'alias', initial: true },
-		nickName: { type: Types.Text, label: 'nickname', initial: true },
-		full: { type: Types.Text, label: 'name', hidden: true, noedit: true, initial: false }
+		first: { type: Types.Text, label: 'first name', required: true, initial: true, collapse: true },
+		middle: { type: Types.Text, label: 'middle name', initial: true, collapse: true },
+		last: { type: Types.Text, label: 'last name', required: true, initial: true, collapse: true },
+		alias: { type: Types.Text, label: 'alias', initial: true, collapse: true },
+		nickName: { type: Types.Text, label: 'nickname', initial: true, collapse: true },
+		full: { type: Types.Text, label: 'name', hidden: true, noedit: true, initial: false, collapse: true }
 	},
 
-	birthDate: { type: Types.Date, label: 'date of birth', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', todayButton: false, utc: true, required: true, initial: true },
-	languages: { type: Types.Relationship, label: 'languages', ref: 'Language', many: true, required: true, initial: true },
-	statusChangeDate: { type: Types.Date, label: 'status change date', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, initial: true }, // TODO: Logic needed, see line 14 of https://docs.google.com/spreadsheets/d/1Opb9qziX2enTehJx5K1J9KAT7v-j2yAdqwyQUMSsFwc/edit#gid=1235141373
-	status: { type: Types.Relationship, label: 'status', ref: 'Child Status', required: true, initial: true },
-	gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', required: true, initial: true },
-	race: { type: Types.Relationship, label: 'race', ref: 'Race', many: true, required: true, initial: true },
-	raceNotes: { type: Types.Text, label: 'race notes', initial: true },
-	legalStatus: { type: Types.Relationship, label: 'legal status', ref: 'Legal Status', required: true, initial: true },
-	yearEnteredCare: { type: Types.Text, label: 'year entered care', note: 'yyyy - required', initial: true },
+	birthDate: { type: Types.Date, label: 'date of birth', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', todayButton: false, utc: true, required: true, initial: true, collapse: true },
+	languages: { type: Types.Relationship, label: 'languages', ref: 'Language', many: true, required: true, initial: true, collapse: true },
+	statusChangeDate: { type: Types.Date, label: 'status change date', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, initial: true, collapse: true }, // TODO: Logic needed, see line 14 of https://docs.google.com/spreadsheets/d/1Opb9qziX2enTehJx5K1J9KAT7v-j2yAdqwyQUMSsFwc/edit#gid=1235141373
+	status: { type: Types.Relationship, label: 'status', ref: 'Child Status', required: true, initial: true, collapse: true },
+	gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', required: true, initial: true, collapse: true },
+	race: { type: Types.Relationship, label: 'race', ref: 'Race', many: true, required: true, initial: true, collapse: true },
+	raceNotes: { type: Types.Text, label: 'race notes', initial: true, collapse: true },
+	legalStatus: { type: Types.Relationship, label: 'legal status', ref: 'Legal Status', required: true, initial: true, collapse: true },
+	yearEnteredCare: { type: Types.Text, label: 'year entered care', note: 'yyyy - required', initial: true, collapse: true },
 
 	hasContactWithSiblings: { type: Types.Boolean, label: 'has contact with siblings?', default: false, initial: true },
-	siblingTypeOfContact: { type: Types.Text, label: 'type of contact', initial: true },
-	siblings: { type: Types.Relationship, label: 'siblings', ref: 'Child', many: true, initial: true, note: 'siblings cannot be updated at the same time as siblings to be placed with - save your changes to one, then update the other' },
+	siblingTypeOfContact: { type: Types.Text, label: 'type of contact', initial: true, collapse: true },
+	siblings: { type: Types.Relationship, label: 'siblings', ref: 'Child', many: true, initial: true, collapse: true, note: 'siblings cannot be updated at the same time as siblings to be placed with - save your changes to one, then update the other', collapse: true },
 	mustBePlacedWithSiblings: { type: Types.Boolean, label: 'must be placed with one or more sibling', default: false, initial: true, noedit: true, note: 'this field will update automatically when the child is saved' },
-	siblingsToBePlacedWith: { type: Types.Relationship, label: 'siblings to be placed with', ref: 'Child', many: true, initial: true, note: 'siblings to be placed with cannot be updated at the same time as siblings - save your changes to one, then update the other' },
+	siblingsToBePlacedWith: { type: Types.Relationship, label: 'siblings to be placed with', ref: 'Child', many: true, initial: true, note: 'siblings to be placed with cannot be updated at the same time as siblings - save your changes to one, then update the other', collapse: true },
 	hasContactWithBirthFamily: { type: Types.Boolean, label: 'has contact with birth family?', default: false, initial: true },
-	birthFamilyTypeOfContact: { type: Types.Text, label: 'type of contact', initial: true },
+	birthFamilyTypeOfContact: { type: Types.Text, label: 'type of contact', initial: true, collapse: true },
 
-	residence: { type: Types.Relationship, label: 'where does the child presently live?', ref: 'Residence', initial: true },
+	residence: { type: Types.Relationship, label: 'where does the child presently live?', ref: 'Residence', initial: true, collapse: true },
 	isOutsideMassachusetts: { type: Types.Boolean, label: 'is outside Massachusetts', default: false, initial: true },
-	city: { type: Types.Relationship, label: `city/town of child's current location`, ref: 'City or Town', dependsOn: { isOutsideMassachusetts: false }, initial: true },
-	cityText: { type: Types.Text, label: `city/town of child's current location`, dependsOn: { isOutsideMassachusetts: true }, initial: true },
-	careFacilityName: { type: Types.Text, label: 'name of residential/group care facility', initial: true },
-	dateMovedToResidence: { type: Types.Date, label: 'date moved to current residence', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, initial: true }
+	city: { type: Types.Relationship, label: `city/town of child's current location`, ref: 'City or Town', dependsOn: { isOutsideMassachusetts: false }, initial: true, collapse: true },
+	cityText: { type: Types.Text, label: `city/town of child's current location`, dependsOn: { isOutsideMassachusetts: true }, initial: true, collapse: true },
+	careFacilityName: { type: Types.Text, label: 'name of residential/group care facility', initial: true, collapse: true },
+	dateMovedToResidence: { type: Types.Date, label: 'date moved to current residence', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, initial: true, collapse: true }
 
 }, 'Special Needs', {
 
-	physicalNeeds: { type: Types.Select, label: 'physical needs', options: 'none, mild, moderate, severe', required: true, initial: true },
-	physicalNeedsDescription: { type: Types.Textarea, label: 'description of physical needs', initial: true },
-	emotionalNeeds: { type: Types.Select, label: 'emotional needs', options: 'none, mild, moderate, severe', required: true, initial: true },
-	emotionalNeedsDescription: { type: Types.Textarea, label: 'description of emotional needs', initial: true },
-	intellectualNeeds: { type: Types.Select, label: 'intellectual needs', options: 'none, mild, moderate, severe', required: true, initial: true },
-	intellectualNeedsDescription: { type: Types.Textarea, label: 'description of intellectual needs', initial: true },
-	socialNeeds: { type: Types.Select, label: 'social needs', options: 'none, mild, moderate, severe', required: true, initial: true },
-	socialNeedsDescription: { type: Types.Textarea, label: 'description of social needs', initial: true },
+	physicalNeeds: { type: Types.Select, label: 'physical needs', options: 'none, mild, moderate, severe', required: true, initial: true, collapse: true },
+	physicalNeedsDescription: { type: Types.Textarea, label: 'description of physical needs', initial: true, collapse: true },
+	emotionalNeeds: { type: Types.Select, label: 'emotional needs', options: 'none, mild, moderate, severe', required: true, initial: true, collapse: true },
+	emotionalNeedsDescription: { type: Types.Textarea, label: 'description of emotional needs', initial: true, collapse: true },
+	intellectualNeeds: { type: Types.Select, label: 'intellectual needs', options: 'none, mild, moderate, severe', required: true, initial: true, collapse: true },
+	intellectualNeedsDescription: { type: Types.Textarea, label: 'description of intellectual needs', initial: true, collapse: true },
+	socialNeeds: { type: Types.Select, label: 'social needs', options: 'none, mild, moderate, severe', required: true, initial: true, collapse: true },
+	socialNeedsDescription: { type: Types.Textarea, label: 'description of social needs', initial: true, collapse: true },
 
-	aspirations: { type: Types.Textarea, label: 'interests, talents, and aspirations', initial: true },
+	aspirations: { type: Types.Textarea, label: 'interests, talents, and aspirations', initial: true, collapse: true },
 
-	schoolLife: { type: Types.Textarea, label: 'school life', initial: true },
-	familyLife: { type: Types.Textarea, label: 'family life', initial: true },
-	personality: { type: Types.Textarea, label: 'personality', initial: true },
-	otherRecruitmentConsiderations: { type: Types.Textarea, label: 'other recruitment considerations', initial: true },
+	schoolLife: { type: Types.Textarea, label: 'school life', initial: true, collapse: true },
+	familyLife: { type: Types.Textarea, label: 'family life', initial: true, collapse: true },
+	personality: { type: Types.Textarea, label: 'personality', initial: true, collapse: true },
+	otherRecruitmentConsiderations: { type: Types.Textarea, label: 'other recruitment considerations', initial: true, collapse: true },
 
-	disabilities: { type: Types.Relationship, label: 'disabilities', ref: 'Disability', many: true, initial: true },
+	disabilities: { type: Types.Relationship, label: 'disabilities', ref: 'Disability', many: true, initial: true, collapse: true },
 
-	healthNotesNew: { type: Types.Textarea, label: 'health notes', initial: true },
-	healthNotesOld: { type: Types.Textarea, label: 'child inquiry summary', initial: true }
+	healthNotesNew: { type: Types.Textarea, label: 'health notes', initial: true, collapse: true },
+	healthNotesOld: { type: Types.Textarea, label: 'child inquiry summary', initial: true, collapse: true }
 
 }, 'Placement Considerations', {
 
 	// TODO: NEEDS TO BE PLURAL BEFORE SAVE, FIX ACROSS THE CODEBASE
-	recommendedFamilyConstellation: { type: Types.Relationship, label: 'recommended family constellations', ref: 'Family Constellation', many: true, required: true, initial: true },
+	recommendedFamilyConstellation: { type: Types.Relationship, label: 'recommended family constellations', ref: 'Family Constellation', many: true, required: true, initial: true, collapse: true },
 	// TODO: NEEDS TO BE PLURAL BEFORE SAVE, FIX ACROSS THE CODEBASE
-	otherFamilyConstellationConsideration: { type: Types.Relationship, label: 'other family constellation consideration', ref: 'Other Family Constellation Consideration', many: true, initial: true },
-	otherConsiderations: { type: Types.Relationship, label: 'other considerations', ref: 'Other Consideration', many: true, initial: true }
+	otherFamilyConstellationConsideration: { type: Types.Relationship, label: 'other family constellation consideration', ref: 'Other Family Constellation Consideration', many: true, initial: true, collapse: true },
+	otherConsiderations: { type: Types.Relationship, label: 'other considerations', ref: 'Other Consideration', many: true, initial: true, collapse: true }
 
 }, 'Agency Information', {
 
-	registeredBy: { type: Types.Select, label: 'registered by', options: 'unknown, adoption worker, recruitment worker', required: true, initial: true },
-	adoptionWorker: { type: Types.Relationship, label: 'adoption worker', ref: 'Social Worker', initial: true },
-	adoptionWorkerAgency: { type: Types.Relationship, label: `adoption worker's agency`, ref: 'Agency', noedit: true },
-	adoptionWorkerAgencyRegion: { type: Types.Relationship, label: `adoption worker's region`, ref: 'Region', noedit: true },
-	recruitmentWorker: { type: Types.Relationship, label: 'recruitment worker', ref: 'Social Worker', initial: true },
-	recruitmentWorkerAgency: { type: Types.Relationship, label: `recruitment worker's agency`, ref: 'Agency', noedit: true },
-	recruitmentWorkerAgencyRegion: { type: Types.Relationship, label: `recruitment worker's region`, ref: 'Region', noedit: true },
+	registeredBy: { type: Types.Select, label: 'registered by', options: 'unknown, adoption worker, recruitment worker', required: true, initial: true, collapse: true },
+	adoptionWorker: { type: Types.Relationship, label: 'adoption worker', ref: 'Social Worker', initial: true, collapse: true },
+	adoptionWorkerAgency: { type: Types.Relationship, label: `adoption worker's agency`, ref: 'Agency', noedit: true, collapse: true },
+	adoptionWorkerAgencyRegion: { type: Types.Relationship, label: `adoption worker's region`, ref: 'Region', noedit: true, collapse: true },
+	recruitmentWorker: { type: Types.Relationship, label: 'recruitment worker', ref: 'Social Worker', initial: true, collapse: true },
+	recruitmentWorkerAgency: { type: Types.Relationship, label: `recruitment worker's agency`, ref: 'Agency', noedit: true, collapse: true },
+	recruitmentWorkerAgencyRegion: { type: Types.Relationship, label: `recruitment worker's region`, ref: 'Region', noedit: true, collapse: true },
 
 }, 'Child Profile', {
 
 	profile: {
-		quote: { type: Types.Textarea, label: 'personal quote', initial: true },
-		part1: { type: Types.Textarea, label: '1st paragraph', note: 'Age, Race, Interests, Hobbies, Strengths', initial: true },
-		part2: { type: Types.Textarea, label: '2nd paragraph', note: 'Physical, Social, Emotional and Academic Functioning', initial: true },
-		part3: { type: Types.Textarea, label: '3rd paragraph', note: 'Legal Status, Sibling/Family Contact, Family Constellation and Placement requirements', initial: true }
+		quote: { type: Types.Textarea, label: 'personal quote', initial: true, collapse: true },
+		part1: { type: Types.Textarea, label: '1st paragraph', note: 'Age, Race, Interests, Hobbies, Strengths', initial: true, collapse: true },
+		part2: { type: Types.Textarea, label: '2nd paragraph', note: 'Physical, Social, Emotional and Academic Functioning', initial: true, collapse: true },
+		part3: { type: Types.Textarea, label: '3rd paragraph', note: 'Legal Status, Sibling/Family Contact, Family Constellation and Placement requirements', initial: true, collapse: true }
 	}
 
 }, 'Sibling Group Profile', {
@@ -216,79 +216,79 @@ Child.add( 'Display Options', {
 }, 'Photolisting Information', {
 
 	hasPhotolistingWriteup: { type: Types.Boolean, label: 'photolisting writeup', default: false, initial: true },
-	photolistingWriteupDate: { type: Types.Date, label: 'date of photolisting writeup', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { hasPhotolistingWriteup: true }, initial: true },
+	photolistingWriteupDate: { type: Types.Date, label: 'date of photolisting writeup', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { hasPhotolistingWriteup: true }, initial: true, collapse: true },
 	hasPhotolistingPhoto: { type: Types.Boolean, label: 'professional photo', default: false, initial: true },
-	photolistingPhotoDate: { type: Types.Date, label: 'date of professional photo', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { hasPhotolistingPhoto: true }, initial: true },
+	photolistingPhotoDate: { type: Types.Date, label: 'date of professional photo', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { hasPhotolistingPhoto: true }, initial: true, collapse: true },
 	isCurrentlyInPhotoListing: { type: Types.Boolean, label: 'currently in photolisting', default: false, initial: true },
-	dateOfLastPhotoListing: { type: Types.Date, label: 'date of last photolisting', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: {isCurrentlyInPhotoListing: true }, initial: true },
-	photolistingPageNumber: { type: Types.Text, label: 'photolisting page', initial: true },
-	previousPhotolistingPageNumbers: { type: Types.Text, label: 'previous photolisting pages', initial: true },
-	image: { type: Types.File, storage: displayImageStorage, label: 'display image', dependsOn: { mustBePlacedWithSiblings: false } },
-	siblingGroupImage: { type: Types.File, storage: displaySiblingGroupImageStorage, label: 'sibling group image', dependsOn: { mustBePlacedWithSiblings: true } },
-	extranetUrl: { type: Types.Url, label: 'extranet and related profile url', initial: true } // TODO: Since this is redundant as this just points the the url where the photo exists (the child's page), we may hide this field.  This must be kept in as it will help us track down the child information in the old system in the event of an issue.
+	dateOfLastPhotoListing: { type: Types.Date, label: 'date of last photolisting', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: {isCurrentlyInPhotoListing: true }, initial: true, collapse: true },
+	photolistingPageNumber: { type: Types.Text, label: 'photolisting page', initial: true, collapse: true },
+	previousPhotolistingPageNumbers: { type: Types.Text, label: 'previous photolisting pages', initial: true, collapse: true },
+	image: { type: Types.File, storage: displayImageStorage, label: 'display image', dependsOn: { mustBePlacedWithSiblings: false }, collapse: true },
+	siblingGroupImage: { type: Types.File, storage: displaySiblingGroupImageStorage, label: 'sibling group image', dependsOn: { mustBePlacedWithSiblings: true }, collapse: true },
+	extranetUrl: { type: Types.Url, label: 'extranet and related profile url', initial: true, collapse: true } // TODO: Since this is redundant as this just points the the url where the photo exists (the child's page), we may hide this field.  This must be kept in as it will help us track down the child information in the old system in the event of an issue.
 
 }, 'Recruitment Options', {
 
 	hasVideoSnapshot: { type: Types.Boolean, label: 'video snapshot', default: false, initial: true },
-	videoSnapshotDate: { type: Types.Date, label: 'date of video snapshot', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { hasVideoSnapshot: true }, initial: true },
-	video: { type: Types.Url, label: 'video', dependsOn: { hasVideoSnapshot: true, mustBePlacedWithSiblings: false } },
-	siblingGroupVideo: { type: Types.Url, label: 'sibling group video', dependsOn: { hasVideoSnapshot: true, mustBePlacedWithSiblings: true } },
+	videoSnapshotDate: { type: Types.Date, label: 'date of video snapshot', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { hasVideoSnapshot: true }, initial: true, collapse: true },
+	video: { type: Types.Url, label: 'video', dependsOn: { hasVideoSnapshot: true, mustBePlacedWithSiblings: false }, collapse: true },
+	siblingGroupVideo: { type: Types.Url, label: 'sibling group video', dependsOn: { hasVideoSnapshot: true, mustBePlacedWithSiblings: true }, collapse: true },
 
 	onAdoptuskids: { type: Types.Boolean, label: 'Adoptuskids website', default: false, initial: true },
-	onAdoptuskidsDate: { type: Types.Date, label: 'date on Adoptuskids', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { onAdoptuskids: true }, initial: true },
+	onAdoptuskidsDate: { type: Types.Date, label: 'date on Adoptuskids', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { onAdoptuskids: true }, initial: true, collapse: true },
 
 	wednesdaysChild: { type: Types.Boolean, label: `Wednesday's Child`, dependsOn: { mustBePlacedWithSiblings: false }, default: false, initial: true },
-	wednesdaysChildDate: { type: Types.Date, label: `date of Wednesday's Child`, inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { mustBePlacedWithSiblings: false, wednesdaysChild: true }, initial: true },
-	wednesdaysChildVideo: { type: Types.Url, label: `Wednesday's Child video`, dependsOn: { mustBePlacedWithSiblings: false, wednesdaysChild: true } },
+	wednesdaysChildDate: { type: Types.Date, label: `date of Wednesday's Child`, inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { mustBePlacedWithSiblings: false, wednesdaysChild: true }, initial: true, collapse: true },
+	wednesdaysChildVideo: { type: Types.Url, label: `Wednesday's Child video`, dependsOn: { mustBePlacedWithSiblings: false, wednesdaysChild: true }, collapse: true },
 
 	wednesdaysChildSiblingGroup: { type: Types.Boolean, label: `Wednesday's Child for sibling group`, dependsOn: { mustBePlacedWithSiblings: true }, default: false, initial: true },
-	wednesdaysChildSiblingGroupDate: { type: Types.Date, label: `date of sibling group's Wednesday's Child`, inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { mustBePlacedWithSiblings: true, wednesdaysChildSiblingGroup: true }, initial: true },
-	wednesdaysChildSiblingGroupVideo: { type: Types.Url, label: `Wednesday's Child sibling group video`, dependsOn: { mustBePlacedWithSiblings: true, wednesdaysChildSiblingGroup: true } },
+	wednesdaysChildSiblingGroupDate: { type: Types.Date, label: `date of sibling group's Wednesday's Child`, inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { mustBePlacedWithSiblings: true, wednesdaysChildSiblingGroup: true }, initial: true, collapse: true },
+	wednesdaysChildSiblingGroupVideo: { type: Types.Url, label: `Wednesday's Child sibling group video`, dependsOn: { mustBePlacedWithSiblings: true, wednesdaysChildSiblingGroup: true }, collapse: true },
 
 	wendysWonderfulKidsCaseloadEast: { type: Types.Boolean, label: `Wendy's Wonderful Kids Caseload East`, dependsOn: { mustBePlacedWithSiblings: false }, default: false, initial: true },
-	wendysWonderfulKidsCaseloadEastDate: { type: Types.Date, label: `date added to caseload`, inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { mustBePlacedWithSiblings: false, wendysWonderfulKidsCaseloadEast: true }, initial: true },
+	wendysWonderfulKidsCaseloadEastDate: { type: Types.Date, label: `date added to caseload`, inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { mustBePlacedWithSiblings: false, wendysWonderfulKidsCaseloadEast: true }, initial: true, collapse: true },
 
 	wendysWonderfulKidsCaseloadEastSiblingGroup: { type: Types.Boolean, label: `Wendy's Wonderful Kids Caseload East for sibling group`, dependsOn: { mustBePlacedWithSiblings: true }, default: false, initial: true },
-	wendysWonderfulKidsCaseloadEastSiblingGroupDate: { type: Types.Date, label: `date added to caseload`, inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { mustBePlacedWithSiblings: true, wendysWonderfulKidsCaseloadEastSiblingGroup: true }, initial: true },
+	wendysWonderfulKidsCaseloadEastSiblingGroupDate: { type: Types.Date, label: `date added to caseload`, inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { mustBePlacedWithSiblings: true, wendysWonderfulKidsCaseloadEastSiblingGroup: true }, initial: true, collapse: true },
 
 	wendysWonderfulKidsCaseloadWest: { type: Types.Boolean, label: `Wendy's Wonderful Kids Caseload West`, dependsOn: { mustBePlacedWithSiblings: false }, default: false, initial: true },
-	wendysWonderfulKidsCaseloadWestDate: { type: Types.Date, label: `date added to caseload`, inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { mustBePlacedWithSiblings: false, wendysWonderfulKidsCaseloadWest: true }, initial: true },
+	wendysWonderfulKidsCaseloadWestDate: { type: Types.Date, label: `date added to caseload`, inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { mustBePlacedWithSiblings: false, wendysWonderfulKidsCaseloadWest: true }, initial: true, collapse: true },
 
 	wendysWonderfulKidsCaseloadWestSiblingGroup: { type: Types.Boolean, label: `Wendy's Wonderful Kids Caseload West for sibling group`, dependsOn: { mustBePlacedWithSiblings: true }, default: false, initial: true },
-	wendysWonderfulKidsCaseloadWestSiblingGroupDate: { type: Types.Date, label: `date added to caseload`, inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { mustBePlacedWithSiblings: true, wendysWonderfulKidsCaseloadWestSiblingGroup: true }, initial: true },
+	wendysWonderfulKidsCaseloadWestSiblingGroupDate: { type: Types.Date, label: `date added to caseload`, inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { mustBePlacedWithSiblings: true, wendysWonderfulKidsCaseloadWestSiblingGroup: true }, initial: true, collapse: true },
 
 	coalitionMeeting: { type: Types.Boolean, label: 'coalition meeting', default: false, initial: true },
-	coalitionMeetingDate: { type: Types.Date, label: 'date of coalition meeting', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { coalitionMeeting: true }, initial: true },
+	coalitionMeetingDate: { type: Types.Date, label: 'date of coalition meeting', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { coalitionMeeting: true }, initial: true, collapse: true },
 
 	matchingEvent: { type: Types.Boolean, label: 'matching event', default: false, initial: true },
-	matchingEventDate: { type: Types.Date, label: 'date of matching event', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { matchingEvent: true }, initial: true },
+	matchingEventDate: { type: Types.Date, label: 'date of matching event', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { matchingEvent: true }, initial: true, collapse: true },
 
-	adoptionParties: { type: Types.Relationship, label: 'adoption parties', ref: 'Event', filters: { type: 'adoption party', isActive: true }, many: true, initial: true },
+	adoptionParties: { type: Types.Relationship, label: 'adoption parties', ref: 'Event', filters: { type: 'adoption party', isActive: true }, many: true, initial: true, collapse: true },
 
-	mediaEligibility: { type: Types.Relationship, label: 'media eligibility', ref: 'Media Eligibility', many: true, initial: true },
-	otherMediaDescription: { type: Types.Textarea, label: 'description', note: `only fill out if 'other' is selected for media eligibility` , initial: true }, // TODO: should be dependsOn the field above being selected, but we can't do that test against Relationship fields
+	mediaEligibility: { type: Types.Relationship, label: 'media eligibility', ref: 'Media Eligibility', many: true, initial: true, collapse: true },
+	otherMediaDescription: { type: Types.Textarea, label: 'description', note: `only fill out if 'other' is selected for media eligibility` , initial: true, collapse: true }, // TODO: should be dependsOn the field above being selected, but we can't do that test against Relationship fields
 
 	locationAlert: { type: Types.Boolean, label: 'location alert', default: false, initial: true },
-	place: { type: Types.Text, label: 'place', initial: true, dependsOn: { locationAlert: true } },
+	place: { type: Types.Text, label: 'place', initial: true, dependsOn: { locationAlert: true }, collapse: true },
 
 	communicationsCollateral: { type: Types.Boolean, label: 'communications collateral', default: false, initial: true },
-	communicationsCollateralDetails: { type: Types.Text, label: 'details', dependsOn: { communicationsCollateral: true }, initial: true },
+	communicationsCollateralDetails: { type: Types.Text, label: 'details', dependsOn: { communicationsCollateral: true }, initial: true, collapse: true },
 
 }, 'File Attachments', {
 
-	fileAttachment1: { type: Types.File, storage: fileStorage, label: 'file attachment 1' },
-	fileAttachment2: { type: Types.File, storage: fileStorage, label: 'file attachment 2' },
-	fileAttachment3: { type: Types.File, storage: fileStorage, label: 'file attachment 3' },
-	fileAttachment4: { type: Types.File, storage: fileStorage, label: 'file attachment 4' },
-	fileAttachment5: { type: Types.File, storage: fileStorage, label: 'file attachment 5' }
+	fileAttachment1: { type: Types.File, storage: fileStorage, label: 'file attachment 1', collapse: true },
+	fileAttachment2: { type: Types.File, storage: fileStorage, label: 'file attachment 2', collapse: true },
+	fileAttachment3: { type: Types.File, storage: fileStorage, label: 'file attachment 3', collapse: true },
+	fileAttachment4: { type: Types.File, storage: fileStorage, label: 'file attachment 4', collapse: true },
+	fileAttachment5: { type: Types.File, storage: fileStorage, label: 'file attachment 5', collapse: true }
 
 }, 'Image Attachments', {
 
-	imageAttachment1: { type: Types.File, storage: attachmentImageStorage, label: 'image attachment 1' },
-	imageAttachment2: { type: Types.File, storage: attachmentImageStorage, label: 'image attachment 2' },
-	imageAttachment3: { type: Types.File, storage: attachmentImageStorage, label: 'image attachment 3' },
-	imageAttachment4: { type: Types.File, storage: attachmentImageStorage, label: 'image attachment 4' },
-	imageAttachment5: { type: Types.File, storage: attachmentImageStorage, label: 'image attachment 5' }
+	imageAttachment1: { type: Types.File, storage: attachmentImageStorage, label: 'image attachment 1', collapse: true },
+	imageAttachment2: { type: Types.File, storage: attachmentImageStorage, label: 'image attachment 2', collapse: true },
+	imageAttachment3: { type: Types.File, storage: attachmentImageStorage, label: 'image attachment 3', collapse: true },
+	imageAttachment4: { type: Types.File, storage: attachmentImageStorage, label: 'image attachment 4', collapse: true },
+	imageAttachment5: { type: Types.File, storage: attachmentImageStorage, label: 'image attachment 5', collapse: true }
 
 /* Container for data migration fields ( these should be kept until after phase 2 and the old system is phased out completely ) */
 }, {
