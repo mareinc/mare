@@ -45,7 +45,7 @@ h2, h3, h5 {
 	min-height: 100vh;
 	transition: all 0.3s;
 	
-	@media all and ( min-width: 768px ) {
+	@media all and ( min-width: 992px ) {
 		margin-left: 323px;
 	}
 }
@@ -57,8 +57,8 @@ input::-webkit-calendar-picker-indicator {
     opacity: 0;
 }
 
-.sidebarCollapse--content {
-	@media all and ( min-width: 768px ) {
-		display: none;
-	}
+/* workaround for select2 responsive issues */
+.select2 {
+	width: 100% !important;
 }
+

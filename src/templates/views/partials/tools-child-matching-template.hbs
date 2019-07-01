@@ -12,10 +12,10 @@
 		<div class="row">
 			<div class="col-sm-3">
 				<div class="row form-group">
-					<div class="col-sm-6">
-						<div class="group-label float-left float-sm-right"><h5>Family Status</h5></div>
+					<div class="col-lg-6">
+						<div class="group-label float-left float-sm-right"><h5>Family Status:</h5></div>
 					</div>
-					<div class="col-sm-6">
+					<div class="col-lg-6">
 						{{#each childStatuses}}
 						<div class="form-check">
 							<input id="status{{ childStatus }}" class="form-check-input" type="checkbox" name="status[]" value="{{ id }}" />
@@ -26,10 +26,10 @@
 				</div>
 
 				<div class="row form-group">
-					<div class="col-sm-6">
+					<div class="col-lg-6">
 						<div class="group-label float-left float-sm-right"><h5>Gender Preference:</h5></div>
 					</div>
-					<div class="col-sm-6">
+					<div class="col-lg-6">
 						{{#each genders}}
 						<div class="form-check  form-check">
 							<input id="gender{{ gender }}" class="form-check-input" type="checkbox" name="gender[]" value="{{ id }}" />
@@ -40,10 +40,10 @@
 				</div>
 
 				<div class="row form-group">
-					<div class="col-sm-6">
+					<div class="col-lg-6">
 						<div class="group-label float-left float-sm-right"><h5>Race Preference:</h5></div>
 					</div>
-					<div class="col-sm-6">
+					<div class="col-lg-6">
 						{{#each races}}
 						<div class="form-check">
 							<input id="race{{ race }}" class="form-check-input" type="checkbox" name="race[]" value="{{ id }}" />
@@ -54,10 +54,10 @@
 				</div>
 
 				<div class="row form-group">
-					<div class="col-sm-6">
+					<div class="col-lg-6">
 						<div class="group-label float-left float-sm-right"><h5>Legal Status Preference:</h5></div>
 					</div>
-					<div class="col-sm-6">
+					<div class="col-lg-6">
 						{{#each legalStatuses}}
 							<div class="form-check">
 								<input id="legal{{ legalStatus }}" class="form-check-input" type="checkbox" name="legalStatus[]" value="{{ id }}" />
@@ -67,12 +67,12 @@
 					</div>
 				</div>
 			</div>
-			<div class="col-sm-4">
+			<div class="col-sm-5">
 				<div class="row form-group">
-					<div class="col-sm-4 group-label text-sm-right">
-						<h5>Age Range Preference</h5>
+					<div class="col-lg-4 col-md-12 group-label text-sm-right">
+						<h5>Age Range Preference:</h5>
 					</div>
-					<div class="col-sm-4">
+					<div class="col-lg-4 col-sm-6">
 						<label for="agesFrom">From</label>
 						<select id="agesFrom" name="agesFrom" class="form-control">
 							<option value="">Any</option>
@@ -81,7 +81,7 @@
 							{{/each}}
 						</select>
 					</div>
-					<div class="col-sm-4">
+					<div class="col-lg-4 col-sm-6">
 						<label for="agesTo">To</label>
 						<select id="agesTo" name="agesTo" class="form-control">
 							<option value="">Any</option>
@@ -93,10 +93,10 @@
 				</div>
 		
 				<div class="row form-group">
-					<div class="col-sm-4 group-label text-sm-right">
-						<h5>Sibling Group Size Preference</h5>
+					<div class="col-lg-4 col-md-12 group-label text-sm-right">
+						<h5>Sibling Group Size Preference:</h5>
 					</div>
-					<div class="col-sm-4">
+					<div class="col-lg-4 col-sm-6">
 						<label for="siblingGroupSizeFrom">From</label>
 						<select id="siblingGroupSizeFrom" name="siblingGroupSizeFrom" class="form-control">
 							<option value="">Any</option>
@@ -105,7 +105,7 @@
 							{{/each}}
 						</select>
 					</div>
-					<div class="col-sm-4">
+					<div class="col-lg-4 col-sm-6">
 						<label for="siblingGroupSizeTo">To</label>
 						<select id="siblingGroupSizeTo" name="siblingGroupSizeTo" class="form-control">
 							<option value="">Any</option>
@@ -117,10 +117,10 @@
 				</div>
 
 				<div class="row form-group">
-					<div class="col-sm-4 group-label text-sm-right">
-						<h5>Physical Needs Preference</h5>
+					<div class="col-lg-4 col-md-12 group-label text-sm-right">
+						<h5>Physical Needs Preference:</h5>
 					</div>
-					<div class="col-sm-4">
+					<div class="col-lg-4 col-sm-6">
 						<label for="physicalNeedsFrom">From</label>
 						<select id="physicalNeedsFrom" name="physicalNeedsFrom" class="form-control">
 							<option value="">Any</option>
@@ -129,7 +129,7 @@
 							{{/each}}
 						</select>
 					</div>
-					<div class="col-sm-4">
+					<div class="col-lg-4 col-sm-6">
 						<label for="physicalNeedsTo">To</label>
 						<select id="physicalNeedsTo" name="physicalNeedsTo" class="form-control">
 							<option value="">Any</option>
@@ -141,10 +141,10 @@
 				</div>
 
 				<div class="row form-group">
-					<div class="col-sm-4 group-label text-sm-right">
-						<h5>Intellectual Needs Preference</h5>
+					<div class="col-lg-4 col-md-12 group-label text-sm-right">
+						<h5>Intellectual Needs Preference:</h5>
 					</div>
-					<div class="col-sm-4">
+					<div class="col-lg-4 col-sm-6">
 						<label for="intellectualNeedsFrom">From</label>
 						<select id="intellectualNeedsFrom" name="intellectualNeedsFrom" class="form-control">
 							<option value="">Any</option>
@@ -153,7 +153,7 @@
 							{{/each}}
 						</select>
 					</div>
-					<div class="col-sm-4">
+					<div class="col-lg-4 col-sm-6">
 						<label for="intellectualNeedsTo">To</label>
 						<select id="intellectualNeedsTo" name="intellectualNeedsTo" class="form-control">
 							<option value="">Any</option>
@@ -165,10 +165,10 @@
 				</div>
 
 				<div class="row form-group">
-					<div class="col-sm-4 group-label text-sm-right">
-						<h5>Emotional Needs Preference</h5>
+					<div class="col-lg-4 col-md-12 group-label text-sm-right">
+						<h5>Emotional Needs Preference:</h5>
 					</div>
-					<div class="col-sm-4">
+					<div class="col-lg-4 col-sm-6">
 						<label for="emotionalNeedsFrom">From</label>
 						<select id="emotionalNeedsFrom" name="emotionalNeedsFrom" class="form-control">
 							<option value="">Any</option>
@@ -177,7 +177,7 @@
 							{{/each}}
 						</select>
 					</div>
-					<div class="col-sm-4">
+					<div class="col-lg-4 col-sm-6">
 						<label for="emotionalNeedsTo">To</label>
 						<select id="emotionalNeedsTo" name="emotionalNeedsTo" class="form-control">
 							<option value="">Any</option>
@@ -192,10 +192,10 @@
 			<div class="col-sm-4">
 
 				<div class="row form-group">
-					<div class="col-sm-4 text-sm-right" >
+					<div class="col-sm-12 col-md-4 text-sm-right" >
 						<label for="socialWorkers" class="bold">Social Workers:</label>
 					</div>
-					<div class="col-sm-8">
+					<div class="col-sm-12 col-md-8">
 						<select id="socialWorkers" name="socialWorkers[]" class="form-control social-worker-select" multiple>
 							\{{#each socialWorkers}}
 								<option value="\{{ id }}" selected>\{{ name.full }}</option>
@@ -205,10 +205,10 @@
 				</div>
 				
 				<div class="row form-group">
-					<div class="col-sm-4 text-sm-right" >
+					<div class="col-sm-12 col-md-4 text-sm-right" >
 						<label for="socialWorkersAgency" class="bold">Social Worker's Agency:</label>
 					</div>
-					<div class="col-sm-8">
+					<div class="col-sm-12 col-md-8">
 						<select id="socialWorkersAgency" name="socialWorkersAgency[]" class="form-control agency-select" multiple>
 							\{{#each socialWorkersAgencies}}
 								<option value="\{{ id }}" selected>\{{ name }}</option>
@@ -218,10 +218,10 @@
 				</div>
 				
 				<div class="row form-group">
-					<div class="col-sm-4 group-label text-sm-right">
+					<div class="col-sm-12 col-md-4 group-label text-sm-right">
 						<div class="group-label float-left float-sm-right"><h5>Family Constellation:</h5></div>
 					</div>
-					<div class="col-sm-8">
+					<div class="col-sm-12 col-md-8">
 						{{#each familyConstellations}}
 							<div class="form-check">
 								<input id="familyConstellation{{ familyConstellation }}" class="form-check-input" type="checkbox" name="familyConstellation[]" value="{{ id }}" />

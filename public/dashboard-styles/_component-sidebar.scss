@@ -5,7 +5,7 @@
 	padding: 1.25rem 1rem;
 	background-color: #2e4e87 !important;
 	
-	@media all and ( max-width: 768px ) {
+	@media all and ( max-width: 992px ) {
 		& {
 			margin-left: -323px;
 		}
@@ -14,7 +14,7 @@
 		}
 	}
 	
-	@media all and ( min-width: 768px ) {
+	@media all and ( min-width: 992px ) {
 		position: fixed;
 		height: 100%;
 		padding: 3.25rem 1rem;
@@ -29,8 +29,13 @@
 	color: #839ed3;
 	font-weight: 600;
 	
-	@media all and ( min-width: 768px ) {
+	@media all and ( min-width: 992px ) {
 		font-size: 1.3rem;
 	}
 }
 
+.sidebarCollapse--content {
+	@media all and ( min-width: 992px ) {
+		display: none;
+	}
+}
