@@ -12,7 +12,7 @@ var Agency = new keystone.List('Agency', {
 // create fields
 Agency.add({
 
-	isActive: { type: Boolean, label: 'is active' },
+	isActive: { type: Types.Boolean, label: 'is active' },
 
 	code: { type: Types.Text, label: 'agency code', required: true, initial: true },
 	name: { type: Types.Text, label: 'agency name', required: true, initial: true },

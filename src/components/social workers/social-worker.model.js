@@ -45,11 +45,11 @@ const SocialWorker = new keystone.List( 'Social Worker', {
 // Create fields
 SocialWorker.add( 'Permissions', {
 
-	isActive: { type: Boolean, label: 'is active' },
+	isActive: { type: Types.Boolean, label: 'is active' },
 
 	permissions: {
-		isVerified: { type: Boolean, label: 'has a verified email address', default: false, noedit: true },
-		canViewAllChildren: { type: Boolean, label: 'verified access to legal risk children', default: false }
+		isVerified: { type: Types.Boolean, label: 'has a verified email address', default: false, noedit: true },
+		canViewAllChildren: { type: Types.Boolean, label: 'verified access to legal risk children', default: false }
 	}
 
 }, 'General Information', {

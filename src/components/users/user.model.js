@@ -11,7 +11,7 @@ User.add( 'Login Information', {
 
 	email: { type: Types.Email, label: 'email address', initial: true },
 	password: { type: Types.Password, label: 'password', min: 0, initial: true },
-	resetPasswordToken: { type: String, hidden: true, noedit: true }
+	resetPasswordToken: { type: Types.Text, hidden: true, noedit: true }
 
 }, {
 
