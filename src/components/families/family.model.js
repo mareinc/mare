@@ -126,22 +126,22 @@ Family.add( 'Permissions', {
 
 	contact2: {
 		name: {
-			first: { type: Types.Text, label: 'first name', initial: true },
-			last: { type: Types.Text, label: 'last name', initial: true },
-			full: { type: Types.Text, label: 'name', hidden: true, noedit: true }
+			first: { type: Types.Text, label: 'first name', initial: true, collapse: true },
+			last: { type: Types.Text, label: 'last name', initial: true, collapse: true },
+			full: { type: Types.Text, label: 'name', hidden: true, noedit: true, collapse: true }
 		},
 
 		phone: {
-			mobile: { type: Types.Text, label: 'mobile phone number', initial: true, validate: Validators.phoneValidator },
-			work: { type: Types.Text, label: 'work phone number', initial: true, validate: Validators.phoneValidator }
+			mobile: { type: Types.Text, label: 'mobile phone number', initial: true, validate: Validators.phoneValidator, collapse: true },
+			work: { type: Types.Text, label: 'work phone number', initial: true, validate: Validators.phoneValidator, collapse: true }
 		},
 
-		email: { type: Types.Email, label: 'email address', initial: true },
-		preferredCommunicationMethod: { type: Types.Select, label: 'preferred communication method', options: 'email, home phone, mobile phone, work phone, unknown', initial: true },
-		gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', initial: true },
-		race: { type: Types.Relationship, label: 'race', ref: 'Race', many: true, initial: true },
-		occupation: { type: Types.Text, label: 'occupation', initial: true },
-		birthDate: { type: Types.Date, label: 'date of birth', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', todayButton: false, default: '', utc: true, initial: true }
+		email: { type: Types.Email, label: 'email address', initial: true, collapse: true },
+		preferredCommunicationMethod: { type: Types.Select, label: 'preferred communication method', options: 'email, home phone, mobile phone, work phone, unknown', initial: true, collapse: true },
+		gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', initial: true, collapse: true },
+		race: { type: Types.Relationship, label: 'race', ref: 'Race', many: true, initial: true, collapse: true },
+		occupation: { type: Types.Text, label: 'occupation', initial: true, collapse: true },
+		birthDate: { type: Types.Date, label: 'date of birth', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', todayButton: false, default: '', utc: true, initial: true, collapse: true }
 	}
 
 }, 'Home Contact Information', {
