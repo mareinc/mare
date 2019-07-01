@@ -191,7 +191,7 @@
 		},
 
 		restoreFormData: function restoreFormData() {
-			mare.utils.restoreFormData( 'form--family-registration', this );
+			mare.views.restoreFormData.restore( 'form--family-registration', this );
 			this.trigger( 'formDataRestored' );
 		}
 	});

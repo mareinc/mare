@@ -108,7 +108,7 @@
 		},
 
 		restoreFormData: function restoreFormData() {
-			mare.utils.restoreFormData( 'form--child-registration', this );
+			mare.views.restoreFormData.restore( 'form--child-registration', this );
 			this.trigger( 'formDataRestored' );
 		}
 	});
