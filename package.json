@@ -9,9 +9,9 @@
 	"dependencies": {
 		"async": "^3.0.1",
 		"browserify": "^16.1.0",
-		"connect-mongo": "^2.0.1",
+		"connect-mongo": "^3.0.0",
 		"cron": "^1.6.0",
-		"del": "^4.0.0",
+		"del": "^5.0.0",
 		"dotenv": "^8.0.0",
 		"excel4node": "^1.7.0",
 		"express-handlebars": "~3.1.0",
@@ -23,7 +23,7 @@
 		"gulp-autoprefixer": "^6.0.0",
 		"gulp-clean-css": "^4.0.0",
 		"gulp-concat": "^2.6.1",
-		"gulp-eslint": "^5.0.0",
+		"gulp-eslint": "^6.0.0",
 		"gulp-filter": "^6.0.0",
 		"gulp-ignore": "^2.0.2",
 		"gulp-imagemin": "^6.0.0",
@@ -48,7 +48,7 @@
 		"node-sass-middleware": "^0.11.0",
 		"optipng-bin": "^6.0.0",
 		"pdf-puppeteer": "~1.1.6",
-		"stripe": "^7.1.0",
+		"stripe": "^7.4.0",
 		"underscore": "~1.9.0"
 	},
 	"engines": {
