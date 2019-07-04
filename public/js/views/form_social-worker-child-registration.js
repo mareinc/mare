@@ -34,8 +34,10 @@
 			this.nonMACityValidator = this.$NonMACity.parsley();
 			// bind the sibling names textbox individually to allow for binding/unbinding parsley validation
 			this.siblingNamesValidator = this.$siblingNames.parsley();
-			// triggers parsley validation when the form is submitted
+			// triggers parsley validation on each field when the form is submitted
 			this.form.on( 'field:validated', this.validateForm );
+			// fires an event when the form is successfully submitted
+			this.form.on( 'form:validated', this.announceSubmit.bind( this ) );
 		},
 
 		validateForm: function validateForm() {
@@ -110,6 +112,12 @@
 		restoreFormData: function restoreFormData() {
 			mare.views.restoreFormData.restore( 'form--child-registration', this );
 			this.trigger( 'formDataRestored' );
+		},
+
+		announceSubmit: function announceSubmit() {
+			if( this.form.validationResult ) {
+				this.trigger( 'formSubmitted' );
+			}
 		}
 	});
 }());

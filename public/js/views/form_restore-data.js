@@ -10,9 +10,12 @@
 		},
 
 		initialize: function( options ) {
+			// make the options accessible to the rest of the view
+			this.options = options;
 
 			options.form.on( 'formInputChanged', this.hide, this );
 			options.form.on( 'formDataRestored', this.hide, this );
+			options.form.on( 'formSubmitted', this.removeFormDataFromLocalStorage, this );
 
 			// create input type constants to allow for better event binding
 			this.setElementConstants();
@@ -100,7 +103,7 @@
 
 					}.bind( this ) );
 				}
-				
+
 			}.bind( this ) );
 		},
 
@@ -145,7 +148,9 @@
 		},
 
 		removeFormDataFromLocalStorage: function removeFormDataFromLocalStorage( key ) {
-			localStorage.removeItem( key );
+			key
+				? localStorage.removeItem( key )
+				: localStorage.removeItem( this.options.formClass );
 		},
 
 		setElementConstants: function setElementConstants() {

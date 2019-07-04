@@ -54,7 +54,10 @@
 			this.socialWorkerPhoneValidator 		= this.$socialWorkerPhone.parsley();
 			this.socialWorkerEmailValidator 		= this.$socialWorkerEmail.parsley();
 
+			// triggers parsley validation on each field when the form is submitted
 			this.form.on( 'field:validated', this.validateForm );
+			// fires an event when the form is successfully submitted
+			this.form.on( 'form:validated', this.announceSubmit.bind( this ) );
 		},
 
 		toggleCitySelect: function toggleCitySelect( event ) {
@@ -193,6 +196,12 @@
 		restoreFormData: function restoreFormData() {
 			mare.views.restoreFormData.restore( 'form--family-registration', this );
 			this.trigger( 'formDataRestored' );
+		},
+
+		announceSubmit: function announceSubmit() {
+			if( this.form.validationResult ) {
+				this.trigger( 'formSubmitted' );
+			}
 		}
 	});
 }());
