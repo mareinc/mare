@@ -14,6 +14,9 @@
 			options.form.on( 'formInputChanged', this.hide, this );
 			options.form.on( 'formDataRestored', this.hide, this );
 
+			// create input type constants to allow for better event binding
+			this.setElementConstants();
+
 			// bind all form elements to trigger data saving to local storage on form change
 			this.addFormSaving( options.formClass );
 			// get any existing form data saved in local storage
@@ -62,14 +65,42 @@
 		},
 
 		addFormSaving: function addFormSaving( formClass ) {
-			$( '.' + formClass + ' :input' ).change( function() {
 
-				var formAsObject = this.convertFormToObject( formClass );
-				var formData = JSON.stringify( formAsObject );
+			var formInputs = $( '.' + formClass + ' :input' );
 
-				this.saveFormDataToLocalStorage( formClass, formData );
+			formInputs.each( function( index, input) {
 
-				$( '.' + formClass ).trigger( 'formInputChanged' );
+				var inputType = $( input ).attr( 'type' )
+					? $( input ).attr( 'type' ).toLowerCase()
+					: 'select';
+
+				if( this.constants.TEXT_INPUTS.includes( inputType ) ) {
+
+					$( '.' + formClass + ' :input' ).keyup( function() {
+
+						var formAsObject = this.convertFormToObject( formClass );
+						var formData = JSON.stringify( formAsObject );
+		
+						this.saveFormDataToLocalStorage( formClass, formData );
+		
+						$( '.' + formClass ).trigger( 'formInputChanged' );
+
+					}.bind( this ) );
+
+				} else if (this.constants.NON_TEXT_INPUTS.includes( inputType ) ) {
+
+					$( '.' + formClass + ' :input' ).change( function() {
+
+						var formAsObject = this.convertFormToObject( formClass );
+						var formData = JSON.stringify( formAsObject );
+		
+						this.saveFormDataToLocalStorage( formClass, formData );
+		
+						$( '.' + formClass ).trigger( 'formInputChanged' );
+
+					}.bind( this ) );
+				}
+				
 			}.bind( this ) );
 		},
 
@@ -115,6 +146,13 @@
 
 		removeFormDataFromLocalStorage: function removeFormDataFromLocalStorage( key ) {
 			localStorage.removeItem( key );
+		},
+
+		setElementConstants: function setElementConstants() {
+			this.constants = {
+				NON_TEXT_INPUTS: [ 'button', 'checkbox', 'file', 'hidden', 'image', 'password', 'radio', 'select' ],
+				TEXT_INPUTS: [ 'color', 'date', 'datetime-local', 'email', 'month', 'number', 'range', 'search', 'tel', 'text', 'time', 'url', 'week', 'datetime' ]
+			};
 		}
 	});
 }());
