@@ -4,31 +4,18 @@ const userMiddleware = require( '../users/user.controllers' );
 const flashMessageMiddleware = require( '../../utils/notification.middleware' );
 
 /* prevents people from accessing protected pages when they're not signed in */
-exports.requireUser = function( req, res, next ) {
-	'use strict';
-	// if there is no req.user object, the user isn't signed in
-	if ( !req.user ) {
-		// redirect them to the home page
-		res.redirect( 303, '/' );
-	// otherwise, the user must be signed in
-	} else {
-		// allow the next middleware function to process by calling next()
+exports.requireUser = function( userType ) {
+	
+	return function( req, res, next ) {
+		'use strict';
+
+		if( !req.user
+			|| ( userType && req.user.userType !== userType ) ) {
+			return res.redirect( 303, '/' );
+		}
+		
 		next();
 	}
-};
-
-exports.requireAdmin = function( req, res, next ) {
-	'use strict';
-	// if the user isn't logged in as an administrator
-	if ( !req.user || !req.user.userType === 'admin' ) {
-		// return them to the home page
-		res.redirect( 303, '/' );
-	// if the user is logged in as an administrator
-	} else {
-		// return control to allow the next middlware to execute
-		return next();
-	}
-
 };
 
 exports.login = function( req, res, next ) {

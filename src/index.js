@@ -59,11 +59,11 @@ exports = module.exports = app => {
 	app.get( '/forms/agency-event-submission'			, routes.views.form_agencyEventSubmission );
 	app.post( '/forms/agency-event-submission'			, eventService.submitEvent );
 
-	app.get( '/forms/social-worker-child-registration'	, routes.views.form_childRegistration );
-	app.post( '/forms/social-worker-child-registration'	, childService.registerChild );
+	app.get( '/forms/social-worker-child-registration'	, accountMiddleware.requireUser( 'social worker' ), routes.views.form_childRegistration );
+	app.post( '/forms/social-worker-child-registration'	, accountMiddleware.requireUser( 'social worker' ), childService.registerChild );
 
-	app.get( '/forms/social-worker-family-registration'	, routes.views.form_familyRegistration );
-	app.post( '/forms/social-worker-family-registration', familyService.registerFamily );
+	app.get( '/forms/social-worker-family-registration'	, accountMiddleware.requireUser( 'social worker' ), routes.views.form_familyRegistration );
+	app.post( '/forms/social-worker-family-registration', accountMiddleware.requireUser( 'social worker' ), familyService.registerFamily );
 
 	app.get( '/forms/information-request'				, routes.views.form_informationRequest );
 	app.post( '/forms/information-request'				, inquiryMiddleware.submitInquiry );
@@ -104,7 +104,7 @@ exports = module.exports = app => {
 	app.get( '/donate'									, routes.views.donate );
 	app.post( '/donate'									, donationService.validateDonationRequest, donationService.processDonation );
 	// user account management
-	app.get( '/account'									, accountMiddleware.requireUser, routes.views.account );
+	app.get( '/account'									, accountMiddleware.requireUser(), routes.views.account );
 	app.put( '/account/user-info'						, userMiddleware.updateUser );
 	app.put( '/account/user-email-lists'				, userMiddleware.updateUserEmailLists );
 	// verification code handling after user registers
