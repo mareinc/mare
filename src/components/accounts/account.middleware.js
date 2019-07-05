@@ -9,8 +9,15 @@ exports.requireUser = function( userType ) {
 	return function( req, res, next ) {
 		'use strict';
 
-		if( !req.user
-			|| ( userType && req.user.userType !== userType ) ) {
+		if( !req.user || ( userType && req.user.userType !== userType ) ) {
+
+			req.flash( 'error', {
+				title: `You don't have access to that page`,
+				detail: req.user && req.user.userType === 'admin'
+					? 'Please log in as the correct user type to continue'
+					: 'Please log in to continue'
+			});
+
 			return res.redirect( 303, '/' );
 		}
 		
