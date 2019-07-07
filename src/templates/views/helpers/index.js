@@ -74,6 +74,11 @@ module.exports = function() {
 		return new Date().getFullYear();
 	};
 
+	// converts object to a JSON string
+	_helpers.json = function json( obj ) {
+		return JSON.stringify( obj );
+	};
+
 	/**
 	 * Port of Ghost helpers to support cross-theming
 	 * ==============================================
