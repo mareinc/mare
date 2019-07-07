@@ -148,9 +148,11 @@
 		},
 
 		removeFormDataFromLocalStorage: function removeFormDataFromLocalStorage( key ) {
-			key
-				? localStorage.removeItem( key )
-				: localStorage.removeItem( this.options.formClass );
+			if( key ) {
+				localStorage.removeItem( key );
+			} else {
+				localStorage.removeItem( this.options.formClass );
+			}
 		},
 
 		setElementConstants: function setElementConstants() {

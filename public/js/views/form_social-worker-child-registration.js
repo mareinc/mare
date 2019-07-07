@@ -6,7 +6,8 @@
 
 		events: {
 			'change #is-not-ma-city-checkbox'		: 'toggleCitySelect',
-			'change [name="isPartOfSiblingGroup"]'	: 'toggleSiblingNamesTextbox'
+			'change [name="isPartOfSiblingGroup"]'	: 'toggleSiblingNamesTextbox',
+			'change #registered-children'			: 'populateFromRegisteredChild'
 		},
 
 		initialize: function() {
@@ -112,6 +113,32 @@
 		restoreFormData: function restoreFormData() {
 			mare.views.restoreFormData.restore( 'form--child-registration', this );
 			this.trigger( 'formDataRestored' );
+		},
+
+		populateFromRegisteredChild: function populateFromRegisteredChild( event ) {
+			var childDetails = $( event.currentTarget ).find( 'option:selected' ).data( 'child-details' );
+
+			_.each( childDetails, function( value, key ) {
+				// an input will either be of type radio button, or something else
+				var targetElement = $( '[name="' + key + '"]' );
+				var targetRadioButton = $( '[name="' + key + '"][value="' + value + '"]' )[0];
+				// restore radio buttons
+				if( targetRadioButton && targetRadioButton.type === 'radio' ) {
+					targetRadioButton.checked = true;
+
+					if( $( targetRadioButton ).data( 'triggerOnRestore' ) === 'change' ) {
+						$( targetRadioButton ).trigger( 'change' );
+					}
+				} else {			
+					// NOTE: the double quotes are necessary to handle checkboxes with [] in the name
+					// restore non-radio button inputs
+					targetElement.val( value );
+
+					if( targetElement.data( 'triggerOnRestore' ) === 'change' ) {
+						targetElement.trigger( 'change' );
+					}
+				}
+			})
 		},
 
 		announceSubmit: function announceSubmit() {

@@ -38,6 +38,7 @@ exports = module.exports = ( req, res ) => {
 			
 			// add 'default' value
 			let familyConstellationsAltered = [];
+
 			familyConstellations.forEach( ( familyConstellation, i ) => {
 				familyConstellation.set( 'default', familyConstellation.key !== 'unknown' && familyConstellation.key !== 'other', { strict: false } );
 				familyConstellationsAltered.push( familyConstellation.toObject() );
@@ -56,6 +57,7 @@ exports = module.exports = ( req, res ) => {
 			locals.states									= states;
 			locals.randomSuccessStory						= randomSuccessStory;
 			locals.randomEvent								= randomEvent;
+			locals.hasRegisteredChildren					= locals.recruitmentWorkersChildren && locals.recruitmentWorkersChildren.length > 0;
 			
 			// set the layout to render with the right sidebar
 			locals[ 'render-with-sidebar' ] = true;

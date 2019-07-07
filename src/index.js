@@ -3,6 +3,7 @@ const keystone						= require( 'keystone' ),
 	  setupMiddleware				= require( './utils/setup.middleware' ),
 	  notificationMiddleware		= require( './utils/notification.middleware' ),
 	  childService					= require( './components/children/child.controllers' ),
+	  childMiddleware				= require( './components/children/child.middleware' ),
 	  donationService				= require( './components/donations/donation.controllers' ),
 	  eventService					= require( './components/events/event.controllers' ),
 	  familyService					= require( './components/families/family.controllers' ),
@@ -59,7 +60,7 @@ exports = module.exports = app => {
 	app.get( '/forms/agency-event-submission'			, routes.views.form_agencyEventSubmission );
 	app.post( '/forms/agency-event-submission'			, eventService.submitEvent );
 
-	app.get( '/forms/social-worker-child-registration'	, accountMiddleware.requireUser( 'social worker' ), routes.views.form_childRegistration );
+	app.get( '/forms/social-worker-child-registration'	, accountMiddleware.requireUser( 'social worker' ), childMiddleware.getChildrenByRecruitmentWorker, routes.views.form_childRegistration );
 	app.post( '/forms/social-worker-child-registration'	, accountMiddleware.requireUser( 'social worker' ), childService.registerChild );
 
 	app.get( '/forms/social-worker-family-registration'	, accountMiddleware.requireUser( 'social worker' ), routes.views.form_familyRegistration );
