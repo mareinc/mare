@@ -1,13 +1,13 @@
 (function () {
 	'use strict';
 
-	mare.views.ChildRegistration = Backbone.View.extend({
-		el: '.form--child-registration',
+	mare.views.EditChild = Backbone.View.extend({
+		el: '.edit-child-form-container',
 
 		events: {
 			'change #is-not-ma-city-checkbox'		: 'toggleCitySelect',
 			'change [name="isPartOfSiblingGroup"]'	: 'toggleSiblingNamesTextbox',
-			'change #registered-children'			: 'populateFromRegisteredChild'
+			'change #registered-children'			: 'loadRegisteredChild'
 		},
 
 		initialize: function() {
@@ -19,17 +19,8 @@
 			this.$siblingNamesContainer	= this.$( '.sibling-names-container' );
 			this.$siblingNames			= this.$( '#sibling-names' );
 
-			// initialize a view for fetching and restoring form data
-			mare.views.restoreFormData = mare.views.restoreFormData || new mare.views.RestoreFormData( { formClass: 'form--child-registration', form: this } );
-			// restore the form data when the restore form view registers a restore click
-			mare.views.restoreFormData.on( 'restore', this.restoreFormData, this );
-			// emit an event when the form data changes
-			$( '.form--child-registration' ).on( 'formInputChanged', function( a ) {
-				this.trigger( 'formInputChanged' );
-			}.bind( this ));
-
 			// initialize parsley validation on the form
-			this.form = this.$el.parsley();
+			this.form = this.$( '.edit-child-form' ).parsley();
 			// bind the city form elements individually to allow for binding/unbinding parsley validation
 			this.MACityValidator = this.$MACity.parsley();
 			this.nonMACityValidator = this.$NonMACity.parsley();
@@ -37,8 +28,6 @@
 			this.siblingNamesValidator = this.$siblingNames.parsley();
 			// triggers parsley validation on each field when the form is submitted
 			this.form.on( 'field:validated', this.validateForm );
-			// fires an event when the form is successfully submitted
-			this.form.on( 'form:validated', this.announceSubmit.bind( this ) );
 		},
 
 		validateForm: function validateForm() {
@@ -110,18 +99,15 @@
 			}
 		},
 
-		restoreFormData: function restoreFormData() {
-			mare.views.restoreFormData.restore( 'form--child-registration', this );
-			this.trigger( 'formDataRestored' );
-		},
-
-		populateFromRegisteredChild: function populateFromRegisteredChild( event ) {
-			var childDetails = $( event.currentTarget ).find( 'option:selected' ).data( 'child-details' );
+		loadRegisteredChild: function loadRegisteredChild( event ) {
+			// TODO: referencing the view by it's declared name is brittle, but Backbone doesn't provide another way to access context outside the click
+			var childDetails = mare.views.editChild.$( event.currentTarget ).find( 'option:selected' ).data( 'child-details' );
 
 			_.each( childDetails, function( value, key ) {
+				// NOTE: the double quotes are necessary to handle checkboxes with [] in the name
 				// an input will either be of type radio button, or something else
-				var targetElement = $( '[name="' + key + '"]' );
-				var targetRadioButton = $( '[name="' + key + '"][value="' + value + '"]' )[0];
+				var targetElement = mare.views.editChild.$( '[name="' + key + '"]' );
+				var targetRadioButton = mare.views.editChild.$( '[name="' + key + '"][value="' + value + '"]' )[0];
 				// restore radio buttons
 				if( targetRadioButton && targetRadioButton.type === 'radio' ) {
 					targetRadioButton.checked = true;
@@ -129,8 +115,13 @@
 					if( $( targetRadioButton ).data( 'triggerOnRestore' ) === 'change' ) {
 						$( targetRadioButton ).trigger( 'change' );
 					}
-				} else {			
-					// NOTE: the double quotes are necessary to handle checkboxes with [] in the name
+				} else {
+					// NOTE: this handles checking single checkboxes
+					if( targetElement.attr( 'type' ) === 'checkbox' && targetElement.length === 1 ) {
+						if( value === 'on' ) {
+							targetElement.prop( 'checked', true );
+						}
+					}			
 					// restore non-radio button inputs
 					targetElement.val( value );
 
@@ -139,12 +130,6 @@
 					}
 				}
 			})
-		},
-
-		announceSubmit: function announceSubmit() {
-			if( this.form.validationResult ) {
-				this.trigger( 'formSubmitted' );
-			}
 		}
 	});
 }());

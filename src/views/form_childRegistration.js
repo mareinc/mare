@@ -57,17 +57,17 @@ exports = module.exports = ( req, res ) => {
 			locals.states									= states;
 			locals.randomSuccessStory						= randomSuccessStory;
 			locals.randomEvent								= randomEvent;
-			locals.hasRegisteredChildren					= locals.recruitmentWorkersChildren && locals.recruitmentWorkersChildren.length > 0;
+			locals.hasRegisteredChildren					= locals.recruitmentWorkersChildren.saveDetails && locals.recruitmentWorkersChildren.saveDetails.length > 0;
 			
 			// set the layout to render with the right sidebar
 			locals[ 'render-with-sidebar' ] = true;
-			// render the view using the form_social-worker-child-registration.hbs template
-			view.render( 'form_social-worker-child-registration' );
+			// render the view using the social-worker-child-registration.hbs template
+			view.render( 'social-worker-child-registration' );
 		})
 		.catch( err => {
 			// log an error for debugging purposes
 			console.error( `error loading data for the social worker child registration form`, err );
-			// render the view using the form_social-worker-child-registration.hbs template
-			view.render( 'form_social-worker-child-registration' );
+			// render the view using the social-worker-child-registration.hbs template
+			view.render( 'social-worker-child-registration' );
 		});
 };

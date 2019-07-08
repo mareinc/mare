@@ -18,7 +18,7 @@
 			options.form.on( 'formSubmitted', this.removeFormDataFromLocalStorage, this );
 
 			// create input type constants to allow for better event binding
-			this.setElementConstants();
+			this.setHtmlElementConstants();
 
 			// bind all form elements to trigger data saving to local storage on form change
 			this.addFormSaving( options.formClass );
@@ -115,9 +115,10 @@
 			var savedFormData = JSON.parse( this.getFormDataFromLocalStorage( formClass ) );
 
 			_.each( savedFormData, function( value, key ) {
+				// NOTE: the double quotes are necessary to handle checkboxes with [] in the name
 				// an input will either be of type radio button, or something else
-				var targetElement = $( '[name="' + key + '"]' );
-				var targetRadioButton = $( '[name="' + key + '"][value="' + value + '"]' )[0];
+				var targetElement = $( '.' + formClass + ' [name="' + key + '"]' );
+				var targetRadioButton = $( '.' + formClass + ' [name="' + key + '"][value="' + value + '"]' )[0];
 				// restore radio buttons
 				if( targetRadioButton && targetRadioButton.type === 'radio' ) {
 					targetRadioButton.checked = true;
@@ -126,7 +127,6 @@
 						$( targetRadioButton ).trigger( 'change' );
 					}
 				} else {			
-					// NOTE: the double quotes are necessary to handle checkboxes with [] in the name
 					// restore non-radio button inputs
 					targetElement.val( value );
 
@@ -155,7 +155,7 @@
 			}
 		},
 
-		setElementConstants: function setElementConstants() {
+		setHtmlElementConstants: function setHtmlElementConstants() {
 			this.constants = {
 				NON_TEXT_INPUTS: [ 'button', 'checkbox', 'file', 'hidden', 'image', 'password', 'radio', 'select' ],
 				TEXT_INPUTS: [ 'color', 'date', 'datetime-local', 'email', 'month', 'number', 'range', 'search', 'tel', 'text', 'time', 'url', 'week', 'datetime' ]

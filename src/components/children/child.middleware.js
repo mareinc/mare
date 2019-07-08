@@ -1,46 +1,108 @@
 const keystone = require( 'keystone' );
-const modelController = require( '../../utils/model.controllers' );
 
 /* NOTE: the accessing user must be a social worker */
 exports.getChildrenByRecruitmentWorker = async function( req, res, next ) {
 	'use strict';
-	
+
+	const fieldsToPopulate = [ 'adoptionWorker', 'adoptionWorkerAgency', 'recruitmentWorker', 'recruitmentWorkerAgency', 'siblings' ];
+
 	// fetch the models of the removed staff attendees, populating only the full name field
 	const children = await keystone.list( 'Child' ).model
 		.find()
 		.where( 'adoptionWorker', req.user.get( '_id' ) )
-		.populate( [ 'adoptionWorker', 'adoptionWorkerAgency', 'recruitmentWorker', 'recruitmentWorkerAgency' ] )
-		.select( [ 'name', 'adoptionWorker', 'adoptionWorkerAgency', 'recruitmentWorker', 'recruitmentWorkerAgency', 'recommendedFamilyConstellation', 'otherFamilyConstellationConsideration' ] )
+		.populate( fieldsToPopulate )
 		.exec()
 		.then( children => {
 
-			res.locals.recruitmentWorkersChildren = children.map( child => {
+			res.locals.recruitmentWorkersChildren = {
+				saveDetails: children.map( child => {
 
-				const adoptionWorkersPreferredPhone = child.get( 'adoptionWorker.phone.preferred' );
-				const recruitmentWorkersPreferredPhone = child.get( 'recruitmentWorker.phone.preferred' );
-				
-				let adoptionWorkerPhone = adoptionWorkersPreferredPhone === 'work'
-					? child.get( 'adoptionWorker.phone.work' ) || child.get( 'adoptionWorker.phone.mobile' )
-					: child.get( 'adoptionWorker.phone.mobile' ) || child.get( 'adoptionWorker.phone.work' );
+					const adoptionWorkersPreferredPhone = child.get( 'adoptionWorker.phone.preferred' );
+					const recruitmentWorkersPreferredPhone = child.get( 'recruitmentWorker.phone.preferred' );
+					
+					let adoptionWorkerPhone = adoptionWorkersPreferredPhone === 'work'
+						? child.get( 'adoptionWorker.phone.work' ) || child.get( 'adoptionWorker.phone.mobile' )
+						: child.get( 'adoptionWorker.phone.mobile' ) || child.get( 'adoptionWorker.phone.work' );
 
-				let recruitmentWorkerPhone = recruitmentWorkersPreferredPhone === 'work'
-					? child.get( 'recruitmentWorker.phone.work' ) || child.get( 'recruitmentWorker.phone.mobile' )
-					: child.get( 'recruitmentWorker.phone.mobile' ) || child.get( 'recruitmentWorker.phone.work' );
+					let recruitmentWorkerPhone = recruitmentWorkersPreferredPhone === 'work'
+						? child.get( 'recruitmentWorker.phone.work' ) || child.get( 'recruitmentWorker.phone.mobile' )
+						: child.get( 'recruitmentWorker.phone.mobile' ) || child.get( 'recruitmentWorker.phone.work' );
+					
+					return {
+						name: child.get( 'name.full' ),
+						adoptionWorker: child.get( 'adoptionWorker.name.full' ),
+						adoptionWorkerAgency: child.get( 'adoptionWorkerAgency.name' ),
+						adoptionWorkerPhone,
+						adoptionWorkerEmail: child.get( 'adoptionWorker.email' ),
+						recruitmentWorker: child.get( 'recruitmentWorker.name.full' ),
+						recruitmentWorkerAgency: child.get( 'recruitmentWorkerAgency.name' ),
+						recruitmentWorkerPhone,
+						recruitmentWorkerEmail: child.get( 'recruitmentWorker.email' ),
+						'recommendedFamilyConstellations[]': child.get( 'recommendedFamilyConstellation' ),
+						'otherFamilyConstellationConsiderations[]': child.get( 'otherFamilyConstellationConsideration' )
+					};
+				}),
+				editDetails: children.map( child => {
 
-				return {
-					name: child.get( 'name.full' ),
-					adoptionWorker: child.get( 'adoptionWorker.name.full' ),
-					adoptionWorkerAgency: child.get( 'adoptionWorkerAgency.name' ),
-					adoptionWorkerPhone,
-					adoptionWorkerEmail: child.get( 'adoptionWorker.email' ),
-					recruitmentWorker: child.get( 'recruitmentWorker.name.full' ),
-					recruitmentWorkerAgency: child.get( 'recruitmentWorkerAgency.name' ),
-					recruitmentWorkerPhone,
-					recruitmentWorkerEmail: child.get( 'recruitmentWorker.email' ),
-					'recommendedFamilyConstellations[]': child.get( 'recommendedFamilyConstellation' ),
-					'otherFamilyConstellationConsiderations[]': child.get( 'otherFamilyConstellationConsideration' )
-				};
-			});
+					const adoptionWorkersPreferredPhone = child.get( 'adoptionWorker.phone.preferred' );
+					const recruitmentWorkersPreferredPhone = child.get( 'recruitmentWorker.phone.preferred' );
+					
+					let adoptionWorkerPhone = adoptionWorkersPreferredPhone === 'work'
+						? child.get( 'adoptionWorker.phone.work' ) || child.get( 'adoptionWorker.phone.mobile' )
+						: child.get( 'adoptionWorker.phone.mobile' ) || child.get( 'adoptionWorker.phone.work' );
+
+					let recruitmentWorkerPhone = recruitmentWorkersPreferredPhone === 'work'
+						? child.get( 'recruitmentWorker.phone.work' ) || child.get( 'recruitmentWorker.phone.mobile' )
+						: child.get( 'recruitmentWorker.phone.mobile' ) || child.get( 'recruitmentWorker.phone.work' );
+
+					return {
+						name: child.get( 'name.full' ),
+						firstName: child.get( 'name.first' ),
+						lastName: child.get( 'name.last' ),
+						alias: child.get( 'name.alias' ),
+						adoptionWorker: child.get( 'adoptionWorker.name.full' ),
+						adoptionWorkerAgency: child.get( 'adoptionWorkerAgency.name' ),
+						adoptionWorkerPhone,
+						adoptionWorkerEmail: child.get( 'adoptionWorker.email' ),
+						recruitmentWorker: child.get( 'recruitmentWorker.name.full' ),
+						recruitmentWorkerAgency: child.get( 'recruitmentWorkerAgency.name' ),
+						recruitmentWorkerPhone,
+						recruitmentWorkerEmail: child.get( 'recruitmentWorker.email' ),
+						'recommendedFamilyConstellations[]': child.get( 'recommendedFamilyConstellation' ),
+						'otherFamilyConstellationConsiderations[]': child.get( 'otherFamilyConstellationConsideration' ),
+						aspirations: child.get( 'aspirations' ),
+						careFacility: child.get( 'careFacilityName' ),
+						// childInvalidFamilyConstellationReason: don't have this info, it's the reason a child can't be placed with same-sex couples
+						city: child.get( 'city' ),
+						currentResidence: child.get( 'residence' ),
+						dateOfBirth: `${ child.get( 'birthDate' ).getMonth() + 1 }/${ child.get( 'birthDate' ).getDate() }/${ child.get( 'birthDate' ).getFullYear() }`,
+						'disabilities[]': child.get( 'disabilities' ),
+						emotionalNeeds: child.get( 'emotionalNeedsDescription' ),
+						familyContactDescription: child.get( 'birthFamilyTypeOfContact' ),
+						familyLife: child.get( 'familyLife' ),
+						gender: child.get( 'gender' ),
+						intellectualNeeds: child.get( 'intellectualNeedsDescription' ),
+						isFamilyContactNeeded: child.get( 'hasContactWithBirthFamily' ) ? 'Yes' : 'No',
+						isNotMACity: child.get( 'isOutsideMassachusetts' ) ? 'on' : 'off',
+						isPartOfSiblingGroup: child.get( 'hasContactWithSiblings' ) ? 'Yes' : 'No', // ?
+						isSiblingContactNeeded: child.get( 'hasContactWithSiblings' ) ? 'Yes': 'No', // ?
+						'languages[]': child.get( 'languages' ),
+						legalStatus: child.get( 'legalStatus' ),
+						nickName: child.get( 'name.nickName' ),
+						nonMACity: child.get( 'cityText' ),
+						// otherEthnicBackground: "test" // don't have this info
+						otherRecruitmentConsiderations: child.get( 'otherRecruitmentConsiderations' ),
+						personality: child.get( 'personality' ),
+						physicalNeeds: child.get( 'physicalNeedsDescription' ),
+						'race[]': child.get( 'race' ),
+						schoolLife: child.get( 'schoolLife' ),
+						siblingContactDescription: child.get( 'siblingTypeOfContact' ),
+						siblingNames: child.get( 'siblings' ).map( child => child.get( 'name.full' ) ),
+						socialNeeds: child.get( 'socialNeedsDescription' ),
+						yearEnteredCare: child.get( 'yearEnteredCare' )
+					}
+				})
+			};
 
 			next();
 		})
