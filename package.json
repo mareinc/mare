@@ -41,7 +41,7 @@
 		"keystone-storage-adapter-s3": "^2.0.0",
 		"mailchimp-api-v3": "^1.12.1",
 		"md5": "^2.2.1",
-		"moment": "~2.22.0",
+		"moment": "~2.24.0",
 		"mongoose-simple-random": "^0.4.1",
 		"newrelic": "^5.0.0",
 		"node-sass": "^4.12.0",
