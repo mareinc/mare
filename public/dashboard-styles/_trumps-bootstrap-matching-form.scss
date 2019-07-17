@@ -1,0 +1,54 @@
+.matching-form {
+	
+	.group-label h5 {
+		display: inline-block;
+		margin-bottom: .5rem;
+		margin-top: 0px;
+		font-size: .8rem;
+		font-weight: 700;
+		color: #66584d;
+	}
+	label {
+		margin-top: 0;
+		font-size: .8rem;
+	} 
+	
+	.select2-container--default .select2-selection--multiple .select2-selection__rendered li {
+		font-size: .8rem
+	}
+	label.bold {
+		font-weight: 700;
+	}
+	> .row {
+		margin-bottom: 1rem;
+	}
+	> .row > [class*="col-"] {
+		background: #eee;
+		padding-top: 1rem;
+		border-style: dotted;
+		border-color: #ccc;
+		border-width: 1px 0 1px 1px;
+	} 
+	> .row > [class*="col-"] + [class*="col-"] {
+		background: #f4f4f4;
+	} 
+	> .row > [class*="col-"] + [class*="col-"] + [class*="col-"] {
+		background: #eee;
+		border-right-width: 1px;
+	}
+	
+	.form-group + .form-group {
+		border-top: #aaa 1px dotted;
+		padding-top: 1rem
+	}
+	
+	.btn-group-xs>.btn, 
+	.btn-xs {
+		font-size: .6rem;
+		padding: .5rem .4rem .25rem;
+	}
+	
+	&__toggle-button {
+		clear: right;
+	}
+}

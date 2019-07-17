@@ -21,9 +21,6 @@
 				<th>Race</th>
 				<th>City / State</th>
 				<th>Social Worker</th>
-				{{#each fieldNames}}
-					<th>{{this}}</th>
-				{{/each}}
 			</tr>
 			{{#each results}}
 				<tr>
@@ -34,9 +31,6 @@
 					<td>{{ contact2race }}</td>
 					<td>{{ city }}, {{ state }}</td>
 					<td>{{ socialWorker }} {{#if socialWorkerAgency }}({{ socialWorkerAgency }}){{/if}}</td>
-					{{#each fields}}
-						<td>{{this}}</td>
-					{{/each}}
 				</tr>
 			{{/each}}
 		</table>

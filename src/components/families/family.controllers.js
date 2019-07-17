@@ -46,26 +46,62 @@ exports.getFamilyById = ( id, fieldsToPopulate = [] ) => {
 	});
 };
 
-exports.getFamiliesByIds = idsArray => {
+exports.getFamiliesByIds = ids => {
 
 	return new Promise( ( resolve, reject ) => {
 
 		keystone.list( 'Family' ).model
 			.find()
-			.where( '_id' ).in( idsArray )
+			.where( '_id' ).in( ids )
 			.exec()
 			.then( families => {
 				// if no families were returned
 				if( families.length === 0 ) {
+					// log an error for debugging purposes
+					console.error( `no families found matching ids ${ ids.join( ', ' ) }` );
 					// reject the promise with the reason why
-					reject( `error fetching families by id array - no families found with ids ${ idsArray }` );
+					reject( new Error( `no families found matching ids ${ ids.join( ', ' ) }` ) );
 				}
 				// resolve the promise with the returned families
 				resolve( families );
 			// if an error occurred fetching from the database
 			}, err => {
+				// log an error for debugging purposes
+				console.error( `error fetching families by id array ${ ids.join( ', ' ) }`, err );
 				// reject the promise with details of the error
-				reject( `error fetching families by id array ${ idsArray } - ${ err }` );
+				reject( new Error( `error fetching families by id array ${ ids.join( ', ' ) } - ${ err }` ) );
+			});
+	});
+};
+
+/* get all families that match the query in the name field and sort them by name */
+exports.getFamiliesByName = ( nameQuery, maxResults ) => {
+
+	return new Promise( ( resolve, reject ) => {
+		// if no maxResults was passed in
+		if( !maxResults ) {
+			// return control to the calling context
+			return reject( new Error( `error fetching families by name - no maxResults passed in` ) );
+		}
+		
+		// fetch the families records
+		keystone.list( 'Family' ).model
+			.find( {
+				'displayNameAndRegistration' : new RegExp( nameQuery, 'i' )
+			})
+			.sort( {
+				'displayNameAndRegistration' : 'asc'
+			})
+			.limit( maxResults )
+			.exec()
+			.then( families => {
+				// resolve the promise with the returned families
+				resolve( families );
+			}, err => {
+				// log an error for debugging purposes
+				console.error( `error fetching families by name ${ nameQuery } and max results ${ maxResults }`, err );
+				// reject the promise with details about the error
+				reject( new Error( `error fetching families by name ${ nameQuery } and max results ${ maxResults } - ${ err }` ) );
 			});
 	});
 };

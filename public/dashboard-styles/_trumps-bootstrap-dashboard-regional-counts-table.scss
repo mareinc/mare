@@ -1,0 +1,53 @@
+.table.regional-counts-table {
+	@extend .table;
+	
+	th,
+	td {
+		border-bottom: 4px solid #f4f4f4;
+		border-right: 4px solid #f4f4f4;
+		border-top: none;
+		padding-top: .5rem;
+		padding-bottom: .5rem;
+		vertical-align: middle;
+	}
+	th:last-child,
+	td:last-child {
+		border-right: none;
+	}
+	th {
+		background: #2e4e87;
+		color: #fff;
+	}
+	th.clear {
+		background: #fff;
+	}
+	td {
+		color: #333;
+	}
+	td:first-child {
+		font-weight: 600;
+	}
+	&.table-striped tbody tr:nth-of-type(odd) {
+		background-color: #cad6ee;
+	}
+	tfoot td {
+		font-weight:700 !important;
+		color: #2e4e87;
+	}
+	
+	@media all and ( min-width: 768px ) {
+		th,
+		td {
+			border-bottom-width: 8px;
+			border-right-width: 8px;
+			border-bottom-width: 4px;
+			border-right-width: 4px;
+		} 
+		th {
+			font-weight: 500;
+		}
+		td:first-child {
+			font-weight: 600;
+		}
+	}
+}

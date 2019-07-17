@@ -1,0 +1,49 @@
+.dashboard-sidebar {
+	min-width: 323px;
+	max-width: 323px;
+	transition: all 0.3s;
+	padding: 1.25rem 1rem;
+	background-color: #2e4e87 !important;
+	
+	@media all and ( max-width: 992px ) {
+		& {
+			margin-left: -323px;
+		}
+		&--active {
+			margin-left: 0;
+		}
+	}
+	
+	@media all and ( min-width: 992px ) {
+		position: fixed;
+		height: 100%;
+		padding: 3.25rem 1rem;
+		
+		.sidebarCollapse {
+			display: none;
+		}
+	}
+}
+
+.dashboard-sidebar__h3 {
+	color: #839ed3;
+	font-weight: 600;
+	
+	@media all and ( min-width: 992px ) {
+		font-size: 1.3rem;
+	}
+}
+
+.sidebarCollapse--content {
+	@media all and ( min-width: 992px ) {
+		display: none;
+	}
+}
+
+/* Highlight active tools navigation item based on the current page */
+body.tools__dashboard .tools__dashboard,
+body.tools__family-matching .tools__family-matching,
+body.tools__child-matching .tools__child-matching {
+	background: #1cb0b0;
+    border: none;
+}

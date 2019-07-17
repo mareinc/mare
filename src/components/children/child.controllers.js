@@ -220,26 +220,58 @@ exports.getChildrenForFamilyAccount = ( req, res, done, fieldsToSelect ) => {
 		});
 };
 
-exports.getChildrenByIds = idsArray => {
+exports.getChildrenByIds = ids => {
 
 	return new Promise( ( resolve, reject ) => {
 
 		keystone.list( 'Child' ).model
 			.find()
-			.where( '_id' ).in( idsArray )
+			.where( '_id' ).in( ids )
 			.exec()
 			.then( children => {
 				// if no children were returned
 				if( children.length === 0 ) {
 					// reject the promise with the reason why
-					reject( new Error( `error fetching children by id array - no children found with ids ${ idsArray }` ) );
+					reject( new Error( `error fetching children by id array - no children found with ids ${ ids }` ) );
 				}
 				// resolve the promise with the returned children
 				resolve( children );
 			// if an error occurred fetching from the database
 			}, err => {
 				// reject the promise with details of the error
-				reject( new Error( `error fetching children by id array ${ idsArray }` ) );
+				reject( new Error( `error fetching children by id array ${ ids }` ) );
+			});
+	});
+};
+
+/* get all children that match the query in the name field and sort them by name */
+exports.getChildrenByName = ( nameQuery, maxResults ) => {
+
+	return new Promise( ( resolve, reject ) => {
+		// if no maxResults was passed in
+		if( !maxResults ) {
+			// return control to the calling context
+			return reject( new Error( `error fetching children by name - no maxResults passed in` ) );
+		}
+		
+		// fetch the children records
+		keystone.list( 'Child' ).model
+			.find( {
+				'displayNameAndRegistration' : new RegExp( nameQuery, 'i' )
+			})
+			.sort( {
+				'displayNameAndRegistration' : 'asc'
+			})
+			.limit( maxResults )
+			.exec()
+			.then( children => {
+				// resolve the promise with the returned children
+				resolve( children );
+			}, err => {
+				// log an error for debugging purposes
+				console.error( `error fetching children by name ${ nameQuery } and max results ${ maxResults }`, err );
+				// reject the promise with details about the error
+				reject( new Error( `error fetching children by name ${ nameQuery } and max results ${ maxResults } - ${ err }` ) );
 			});
 	});
 };
@@ -1131,6 +1163,78 @@ exports.getChildById = ( { id, fieldsToPopulate = [] } ) => {
 			}, err => {
 				// reject the promise with details about the error
 				reject( new Error( `error fetching child matching id ${ id }` ) );
+			});
+	});
+};
+
+/* fetch the number of children by status name and region ID; if regionID is undefined then only status is taken into account */
+exports.getNumberOfChildrenByStatusNameAndRegionID = ( statusName, regionID ) => {
+
+	return new Promise( ( resolve, reject ) => {
+		// if no status name was passed in
+		if( !statusName ) {
+			// reject the promise with details about the error
+			return reject( new Error( `no status name provided` ) );
+		}
+		
+		// get the status by name
+		listService.getChildStatusByName( statusName )
+			.then( childStatus => {
+				let conditions = {
+					status: childStatus
+				};
+				
+				// search by region if provided
+				if ( regionID ) {
+					conditions[ 'adoptionWorkerAgencyRegion' ] = regionID;
+				}
+				
+				// attempt to find the number of children by status and region ID (optional)
+				keystone.list( 'Child' ).model
+					.count( conditions )
+					.exec()
+					.then( total => {
+						resolve( total );
+					}, err => {
+						// log an error for debugging purposes
+						console.error( `error counting the number of children by status ${ statusName } and region ID ${ regionID }`, err );
+						// reject the promise with details about the error
+						reject( new Error( `error counting the number of children by status ${ statusName } and region ID ${ regionID } - ${ err }` ) );
+					});
+			})
+			.catch( err => {
+				// log an error for debugging purposes
+				console.error( `error fetching the number of children by status ${ statusName } and region ID ${ regionID }`, err );
+				// reject the promise with details about the error
+				reject( new Error( `error fetching the number of children by status ${ statusName } and region ID ${ regionID } - ${ err }` ) );
+			});
+	});
+};
+
+/* fetch the number of children by region ID; if regionID is undefined then the total number of all children is returned */
+exports.getNumberOfChildrenByRegionID = ( regionID ) => {
+
+	return new Promise( ( resolve, reject ) => {
+		let conditions = {};
+		
+		// search by region if provided
+		if ( regionID ) {
+			conditions = {
+				adoptionWorkerAgencyRegion: regionID
+			};
+		}
+
+		// attempt to find the number of children by region ID (optional)
+		keystone.list( 'Child' ).model
+			.count( conditions )
+			.exec()
+			.then( total => {
+				resolve( total );
+			}, err => {
+				// log an error for debugging purposes
+				console.error( `error fetching the number of children by region ID ${ regionID }`, err );
+				// reject the promise with details about the error
+				reject( new Error( `error fetching the number of children by region ID ${ regionID } - ${ err }` ) );
 			});
 	});
 };

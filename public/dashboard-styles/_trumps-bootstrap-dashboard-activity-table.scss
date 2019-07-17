@@ -1,0 +1,60 @@
+.table.activity-table {
+	@extend .table;
+	
+	margin: 0;
+	
+	th {
+		border-right: 4px solid #f4f4f4;
+	}
+	th,
+	td {
+		border-bottom: 4px solid #f4f4f4;
+		border-top: none;
+		padding-top: .5rem;
+		padding-bottom: .5rem;
+		vertical-align: middle;
+	}
+	th {
+		font-weight: normal;
+		background: #cad6ee;
+		color: #333;
+	}
+	th img {
+		display: none;
+		margin-right: 1.75rem;
+		max-height: 45px;
+		max-height: 35px;
+		width: auto;
+	} 
+	td {
+		color: #2e4e87;
+		text-align: center;
+		background: #fff;
+	}
+	
+	@media all and ( min-width: 768px ) {
+		th {
+			border-right-width: 8px;
+			border-right-width: 4px;
+		}
+		th,
+		td {
+			border-bottom-width: 8px;
+			border-bottom-width: 4px;
+		}
+		th img {
+			display: inline-block;
+		}
+		th .row-icon {
+			width: 5rem;
+			width: 4rem;
+			display: inline-block;
+			text-align: right;
+		}
+		td {
+			padding-left: 3rem;
+			padding-right: 3rem;
+		}
+	}
+
+}

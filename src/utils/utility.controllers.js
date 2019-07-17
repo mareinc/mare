@@ -13,6 +13,44 @@ exports.stripTags = text => {
 	return text.replace( /(<([^>]+)>)/ig, '' );
 }
 
+/* replace all HTML entities by corresponding Unicode characters */
+exports.unescapeHTML = ( html ) => {
+	const htmlEntities = {
+		nbsp: ' ',
+		cent: '¢',
+		pound: '£',
+		yen: '¥',
+		euro: '€',
+		copy: '©',
+		reg: '®',
+		lt: '<',
+		gt: '>',
+		quot: '"',
+		amp: '&',
+		apos: '\''
+	};
+
+	// find all HTML entities and replace them by Unicode characters
+	return html.replace( /\&([^;]+);/g, ( entity, entityCode ) => {
+		let matchesDecimalEntityNumber = entityCode.match( /^#(\d+)$/ ),
+			matchesHexadecimalEntityNumber = entityCode.match( /^#x([\da-fA-F]+)$/ );
+
+		if ( entityCode in htmlEntities ) {
+			// if the entity code is given by its name
+			return htmlEntities[ entityCode ];
+		} else if ( matchesHexadecimalEntityNumber ) {
+			// if the entity code is given in hexadecimal format
+			return String.fromCharCode( parseInt( matchesHexadecimalEntityNumber[ 1 ], 16 ) );
+		} else if ( matchesDecimalEntityNumber ) {
+			// if the entity code is given in decimal format
+			return String.fromCharCode( ~~matchesDecimalEntityNumber[ 1 ] );
+		} else {
+			// otherwise return the entity untouched
+			return entity;
+		}
+	});
+}
+
 // TODO: add in a failure case similar to getReadableStringFromArray()
 exports.truncateText = ( { text = '', options = {} } ) => {
 	// if the text is empty, return an empty string
@@ -200,3 +238,25 @@ exports.getAge = function getAge( dateOfBirth ) {
 
 	return age;
 };
+
+/* cut the array starting from startElement to endElement, if startElement is undefined or is an empty string then the array is cut beginning from the first element */
+exports.arrayCut = ( array, startElement, endElement ) => {
+	let isInRange = typeof startElement === 'undefined' || startElement.length === 0;
+	let isOutOfRange = false;
+	let results = [];
+	
+	array.forEach( ( item ) => {
+		if ( item === startElement && ! isOutOfRange ) {
+			isInRange = true;
+		}
+		if ( isInRange ) {
+			results.push( item );
+		}
+		if ( item === endElement ) {
+			isInRange = false;
+			isOutOfRange = true;
+		}
+	});
+	
+	return results;
+}

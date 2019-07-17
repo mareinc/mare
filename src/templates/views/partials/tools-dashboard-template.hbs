@@ -1,0 +1,110 @@
+<script id="tools-dashboard-template" type="text/x-handlebars-template">
+	<button type="button" class="sidebarCollapse sidebarCollapse--content btn btn-info mb-4">
+		Reports
+	</button>
+	<div class="panel">
+		<h2 class="panel__h2 mb-2">Activity</h2>
+		<div class="filter-form mb-2">
+			<div class="row">
+				<div class="col-lg-2 align-middle">
+					<div class="filter-form__label mh-100">
+					<p>Date range:</p>
+					</div>
+				</div>
+				<div class="col-6 col-md-6 col-lg-4">
+					<div class="form-group">
+						<div class="input-daterange">
+							<label for="fromDate"><span class="sr-only">To Date</span>
+								<input  class="form-control" type="date" name="fromDate" id="fromDate" value="\{{ fromDate }}" required />
+							
+								<div class="input-group-addon">
+									<span></span>
+								</div>
+							</label>								
+						</div>
+					</div>
+				</div>
+				<div class="col-6 col-md-6 col-lg-4">
+					<div class="form-group">
+						<div class="input-daterange">
+							<label for="toDate"><span class="sr-only">To Date</span>
+								<input class="form-control" type="date" name="toDate" id="toDate" value="\{{ toDate }}" required />
+								<div class="input-group-addon">
+									<span></span>
+								</div>
+							</label>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-2">
+					<input type="button" value="Submit" class="btn btn-primary btn-block btn-dashboard" />
+				</div>
+			</div>
+		</div>
+		<div class="filter-results">
+			<div class="table-responsive">
+				<table class="table activity-table">
+					<tbody>
+						<tr>
+							<th scope="row">
+								<span class="row-icon"><img src="/dist/img/icon-new-families-registered.png" alt="New Family Accounts Created"></span>
+								New Family Accounts Created</th>
+							<td>\{{ numberOfFamilies }}</td>
+						</tr>
+						<tr>
+							<th scope="row">
+								<span class="row-icon"><img src="/dist/img/icon-added-children.png" alt="New Child Records"></span>
+								New Child Records</th>
+							<td>\{{ numberOfChildren }}</td>
+						</tr>
+						<tr>
+							<th scope="row">
+								<span class="row-icon"><img src="/dist/img/icon-new-inquiries.png" alt="New Inquiries"></span>
+								New Inquiries</th>
+							<td>\{{ numberOfInquiries }}</td>
+						</tr>
+						<tr>
+							<th scope="row">
+								<span class="row-icon"><img src="/dist/img/icon-placements.png" alt="Placements in Fiscal YTD"></span>
+								Placements in Fiscal YTD</th>
+							<td>\{{ numberOfPlacements }}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div class="panel">
+		<h2 class="panel__h2">Regional Counts</h2>
+		<div class="table-responsive">
+			<table class="table table-striped regional-counts-table">
+				<thead class="thead-dark">
+					<tr>
+						<th class="clear"><span class="sr-only">Region</span></th>
+						<th>Active</th>
+						<th>On Hold</th>
+						<th>Region Total</th>
+					</tr>
+				</thead>
+				<tbody>
+					\{{#each childrenNumbersGroupedByRegions}}
+						<tr>
+							<td>\{{ region }}</td>
+							<td>\{{ active }}</td>
+							<td>\{{ onHold }}</td>
+							<td>\{{ activeAndOnHold }}</td>
+						</tr>
+					\{{/each}}
+				</tbody>
+				<tfoot>
+					<tr>
+						<td>Total:</td>
+						<td>\{{ numberOfActiveChildren }}</td>
+						<td>\{{ numberOfOnHoldChildren }}</td>
+						<td>\{{ numberOfActiveAndOnHoldChildren }}</td>
+					</tr>
+				</tfoot>
+			</table>
+		</div>
+	</div>
+</script>

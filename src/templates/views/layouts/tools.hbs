@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<title>MARE</title>
+		<meta name="description" content="Massachusetts Adoption Resource Exchange (MARE) exists to find adoptive homes for children and teens in foster care. If you are considering adoption from foster care in Massachusetts, we can provide you with support, information, and guidance in the process.">
+
+		{{!-- cross device favicon from realfavicongenerator.net --}}
+		<link rel="apple-touch-icon" sizes="180x180" href="/dist/img/favicons/apple-touch-icon.png">
+		<link rel="icon" type="image/png" href="/dist/img/favicons/favicon-32x32.png" sizes="32x32">
+		<link rel="icon" type="image/png" href="/dist/img/favicons/favicon-16x16.png" sizes="16x16">
+		<link rel="manifest" href="/dist/img/favicons/manifest.json">
+		<link rel="mask-icon" href="/dist/img/favicons/safari-pinned-tab.svg" color="#5bbad5">
+		<meta name="theme-color" content="#ffffff">
+		{{!-- This uses the NODE_ENV environment variable to serve either the production uglified CSS, or regular CSS for development.  See helpers in templates/views/helpers/index.js --}}
+		{{{isProductionCSS}}}
+		{{!-- This file provides the default styling for the KeystoneJS Content Editor
+		- only renders when user is logged in and admin--}}
+		{{{isAdminEditorCSS user}}}
+		
+		<link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.4.0/css/bootstrap4-toggle.min.css" rel="stylesheet">
+		
+		<link rel="stylesheet" href="/dist/dashboard.css">
+		
+		<script src="/dist/modernizr.custom.min.js"></script>
+
+		{{!-- Respond.js IE8 support of HTML5 elements and media queries
+		//- Safely remove this block if you are not targeting IE8 --}}
+		<!--[if lt IE 9]>
+		<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js" />
+		<![endif]-->
+	
+	</head>
+	<body>
+		
+		<div class="global-header global-header--dashboard">
+			<div class="content-wrapper content-wrapper--mobile-centered content-wrapper--dashboard">
+				<a href="/" class="logo-offset-left">
+					<img class="logo logo--horizontal logo--dashboard" src="/dist/img/mare-logo-horizontal.svg" alt="Massachusetts Adoption Resource Exchange">
+				</a>
+				<a href="/">
+					<img class="logo logo--vertical" src="/dist/img/mare-logo-vertical.svg" alt="Massachusetts Adoption Resource Exchange">
+				</a>
+				<span class="header-navigation-container">
+					{{> tools-top-nav}}
+				</span>
+			</div>
+		</div>
+		<!-- append the Backbone template for rendering the log in modal -->
+		{{> log-in}}
+		
+		{{> flash-messages}}
+
+		<div class="body">
+			<section class="content">
+				<section class="content__body">
+					{{{body}}}
+                </section>
+            </section>
+		</div>
+
+		<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.3.1/backbone-min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.6.0/parsley.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.14.2/xlsx.full.min.js"></script>
+		{{!-- This uses the NODE_ENV environment variable to serve either the production uglified JavaScript, or regular JavaScript for development.
+			  See helpers in templates/views/helpers/index.js --}}
+		{{{isProductionJS}}}
+		{{!-- This file provides the necessary JavaScript for the KeystoneJS Content Editor
+			  only renders when user is logged in and admin--}}
+		{{{isAdminEditorJS user}}}
+	
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+		<script type="text/javascript">
+			$(document).ready(function () {
+				/* apply header offset as needed for the fixed header */
+				function headerOffset(){
+					headerHeight = $(".global-header").outerHeight();
+					$(".content").css("padding-top",headerHeight);
+					$("#sidebar").css("top",headerHeight);
+				}
+				headerOffset();
+				$(window).resize(function(){
+					headerOffset();
+				});
+				
+				/* sidebar collapse button handler */
+				$(document).on('click', '.sidebarCollapse', function () {
+					$('#sidebar').toggleClass('dashboard-sidebar--active');
+				});
+			});
+		</script>
+
+		<script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.4.0/js/bootstrap4-toggle.min.js"></script>
+
+	</body>
+</html>

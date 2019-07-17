@@ -82,3 +82,39 @@ exports.flashMessages = function(req, res, next) {
 
 	next();
 };
+
+exports.sendSuccessFlashMessage = ( res, title, message ) => {
+	// create a flash message to send back to the user
+	exports.appendFlashMessage({
+		messageType: exports.MESSAGE_TYPES.SUCCESS,
+		title: title,
+		message: message,
+	});
+	
+	// send the status and flash message markup
+	exports.generateFlashMessageMarkup()
+		.then( flashMessageMarkup => {
+			res.send({
+				status: 'success',
+				flashMessage: flashMessageMarkup
+			});
+		});
+}
+
+exports.sendErrorFlashMessage = ( res, title, message ) => {
+	// create a flash message to send back to the user
+	exports.appendFlashMessage({
+		messageType: exports.MESSAGE_TYPES.ERROR,
+		title: title,
+		message: message,
+	});
+	
+	// send the status and flash message markup
+	exports.generateFlashMessageMarkup()
+		.then( flashMessageMarkup => {
+			res.send({
+				status: 'error',
+				flashMessage: flashMessageMarkup
+			});
+		});
+}
