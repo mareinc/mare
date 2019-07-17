@@ -122,16 +122,16 @@ exports = module.exports = app => {
 	app.post( '/services/get-gallery-permissions'		, userService.getGalleryPermissions );
 	
 	// reporting tools
-	app.get( '/tools'											, accountMiddleware.requireAdmin, routes.views.tools );
-	app.get( '/tools/services/get-agencies-data'				, accountMiddleware.requireAdmin, toolsService.getAgenciesData );
-	app.get( '/tools/services/get-social-workers-data'			, accountMiddleware.requireAdmin, toolsService.getSocialWorkersData );
-	app.get( '/tools/services/get-families-data'				, accountMiddleware.requireAdmin, toolsService.getFamiliesData );
-	app.get( '/tools/services/get-children-data'				, accountMiddleware.requireAdmin, toolsService.getChildrenData );
-	app.post( '/tools/services/save-children-matching-history'	, accountMiddleware.requireAdmin, toolsService.saveChildrenMatchingHistory );
-	app.post( '/tools/services/save-families-matching-history'	, accountMiddleware.requireAdmin, toolsService.saveFamiliesMatchingHistory );
-	app.get( '/tools/services/get-dashboard-data'				, accountMiddleware.requireAdmin, toolsService.getDashboardData );
-	app.get( '/tools/services/get-child-matching-data'			, accountMiddleware.requireAdmin, toolsService.getChildMatchingData );
-	app.get( '/tools/services/get-family-matching-data'			, accountMiddleware.requireAdmin, toolsService.getFamilyMatchingData );
+	app.get( '/tools'											, accountMiddleware.requireUser( 'admin' ), routes.views.tools );
+	app.get( '/tools/services/get-agencies-data'				, accountMiddleware.requireUser( 'admin' ), toolsService.getAgenciesData );
+	app.get( '/tools/services/get-social-workers-data'			, accountMiddleware.requireUser( 'admin' ), toolsService.getSocialWorkersData );
+	app.get( '/tools/services/get-families-data'				, accountMiddleware.requireUser( 'admin' ), toolsService.getFamiliesData );
+	app.get( '/tools/services/get-children-data'				, accountMiddleware.requireUser( 'admin' ), toolsService.getChildrenData );
+	app.post( '/tools/services/save-children-matching-history'	, accountMiddleware.requireUser( 'admin' ), toolsService.saveChildrenMatchingHistory );
+	app.post( '/tools/services/save-families-matching-history'	, accountMiddleware.requireUser( 'admin' ), toolsService.saveFamiliesMatchingHistory );
+	app.get( '/tools/services/get-dashboard-data'				, accountMiddleware.requireUser( 'admin' ), toolsService.getDashboardData );
+	app.get( '/tools/services/get-child-matching-data'			, accountMiddleware.requireUser( 'admin' ), toolsService.getChildMatchingData );
+	app.get( '/tools/services/get-family-matching-data'			, accountMiddleware.requireUser( 'admin' ), toolsService.getFamilyMatchingData );
 
 	// webhooks
 	app.get( '/webhooks/mailchimp'                      , mailchimpService.validateWebhookURL );
