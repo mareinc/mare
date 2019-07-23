@@ -7,7 +7,7 @@
 
 		// bind standard events to functions within the view
 		events: {
-			'click .btn-dashboard'	: 'handleSearchClick'
+			'click .btn-dashboard': 'handleSearchClick'
 		},
 
 		/* initialize the view */
@@ -23,15 +23,20 @@
 			var view = this;
 
 			view.$el.html( '' );
-			this.getDataPromise( fromDate, toDate ).done( function( data ) {
-				var dashboardHtml = view.dashboardTemplate( data );
+			this.getDataPromise( fromDate, toDate )
+				.done( function( data ) {
+					var dashboardHtml = view.dashboardTemplate( data );
 
-				view.$el.html( dashboardHtml );
-			});
+					view.$el.html( dashboardHtml );
+				});
 		},
 		
 		handleSearchClick: function() {
-			mare.routers.tools.navigate( 'dashboard/' + this.$el.find( '[name="fromDate"]' ).val() + '/' + this.$el.find( '[name="toDate"]' ).val(), { trigger: true } );
+
+			var fromDate = this.$el.find( '[name="fromDate"]' ).val();
+			var toDate = this.$el.find( '[name="toDate"]' ).val();
+
+			mare.routers.tools.navigate( 'dashboard/' + fromDate + '/' + toDate, { trigger: true } );
 		},
 		
 		getDataPromise: function( fromDate, toDate ) {
@@ -50,7 +55,8 @@
 					url: '/tools/services/get-dashboard-data',
 					data: queryParams,
 					type: 'GET'
-				}).done( function( data ) {
+				})
+				.done( function( data ) {
 					if ( data.status === 'error' ) {
 						// display the flash message
 						mare.views.flashMessages.initializeAJAX( data.flashMessage );
@@ -58,7 +64,8 @@
 					} else {
 						defer.resolve( data );
 					}
-				}).fail( function( err ) {
+				})
+				.fail( function( err ) {
 					console.log( err );
 					defer.reject();
 				});

@@ -8,9 +8,9 @@
 			'dashboard'									: 'loadDashboard',
 			'dashboard/:fromDate/:toDate'				: 'loadDashboardByDateRange',
 			'family-matching'							: 'loadFamilyMatchingRequest',
-			'family-matching/:familyID(?*queryString)'	: 'loadFamilyMatching',
+			'family-matching/:familyId(?*queryString)'	: 'loadFamilyMatching',
 			'child-matching'							: 'loadChildMatchingRequest',
-			'child-matching/:childID(?*queryString)'	: 'loadChildMatching',
+			'child-matching/:childId(?*queryString)'	: 'loadChildMatching',
 			'*other'									: 'loadDefault'
 		},
 
@@ -26,12 +26,12 @@
 			mare.views.tools.showDashboard( fromDate, toDate );
 		},
 		
-		loadFamilyMatching: function( familyID, queryString ) {
-			mare.views.tools.showFamilyMatching( familyID, this.parseQueryString( queryString ) );
+		loadFamilyMatching: function( familyId, queryString ) {
+			mare.views.tools.showFamilyMatching( familyId, this.parseQueryString( queryString ) );
 		},
 		
-		loadChildMatching: function( childID, queryString ) {
-			mare.views.tools.showChildMatching( childID, this.parseQueryString( queryString ) );
+		loadChildMatching: function( childId, queryString ) {
+			mare.views.tools.showChildMatching( childId, this.parseQueryString( queryString ) );
 		},
 		
 		loadFamilyMatchingRequest: function() {

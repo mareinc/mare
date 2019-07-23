@@ -70,7 +70,7 @@
 		},
 
 		/* render the view onto the page */
-		render: function render( familyID, params ) {
+		render: function render( familyId, params ) {
 			var view = this,
 				html;
 			
@@ -85,7 +85,7 @@
 			view.initializeBootstrapToggles();
 
 			// fetch the data from server and render it
-			this.getDataPromise( familyID, params ).done( function( data ) {
+			this.getDataPromise( familyId, params ).done( function( data ) {
 				// if there is no parameters in the response (no default parameters) and no results were found
 				data.noResultsFound = !data.params && data.results.length === 0;
 				
@@ -102,9 +102,9 @@
 			});
 		},
 		
-		getDataPromise: function( familyID, params ) {
+		getDataPromise: function( familyId, params ) {
 			// append family ID to the params
-			params.familyID = familyID;
+			params.familyId = familyId;
 			
 			return $.Deferred( function( defer ) {
 				$.ajax({
@@ -127,26 +127,26 @@
 		},
 		
 		handleSearchClick: function() {
-			var familyID = this.$el.find( '[name="familyID"]' ).val();
+			var familyId = this.$el.find( '[name="familyId"]' ).val();
 			
 			// collect all values of the form
 			var params = this.$el.find( 'form' ).serializeArray();
 			
-			// remove empty values and familyID parameter
+			// remove empty values and familyId parameter
 			params = _.filter( params, function( value ) {
-				return value && value.value && value.value.length > 0 && value.name !== 'familyID';
+				return value && value.value && value.value.length > 0 && value.name !== 'familyId';
 			});
 			
 			// build the query string
 			var queryString = jQuery.param( params );
 			
-			mare.routers.tools.navigate( 'family-matching/' + familyID + ( queryString.length > 0 ? '?' + queryString : '' ), { trigger: true } );
+			mare.routers.tools.navigate( 'family-matching/' + familyId + ( queryString.length > 0 ? '?' + queryString : '' ), { trigger: true } );
 		},
 		
 		handleResetClick: function() {
-			var familyID = this.$el.find( '[name="familyID"]' ).val();
+			var familyId = this.$el.find( '[name="familyId"]' ).val();
 			
-			mare.routers.tools.navigate( 'family-matching/' + familyID, { trigger: true } );
+			mare.routers.tools.navigate( 'family-matching/' + familyId, { trigger: true } );
 		},
 		
 		handleXlsxExportClick: function() {
@@ -176,12 +176,12 @@
 		handleSaveChildEntriesClick: function() {
 			var checkboxes = this.$el.find( '.entry-selection:checked' ),
 				ids = checkboxes.map( function() { return $( this ).val() } ).get(),
-				familyID = this.$el.find( '[name="familyID"]' ).val();
+				familyId = this.$el.find( '[name="familyId"]' ).val();
 			
 			// collect the POST data
 			var postData = {
 				ids: ids,
-				familyID: familyID
+				familyId: familyId
 			};
 			
 			jQuery.post( '/tools/services/save-children-matching-history', postData )

@@ -1,3 +1,5 @@
+// TODO: some of this logic needs to be moved to middleware, calling controllers from there
+
 const keystone 				= require( 'keystone' ),
 	  modelUtilsService		= require( '../../utils/model.controllers' ),
 	  childService			= require( '../children/child.controllers' ),
@@ -15,9 +17,9 @@ const keystone 				= require( 'keystone' ),
 
 exports.getChildMatchingData = ( req, res, next ) => {
 	const userType	= req.user ? req.user.userType : '',
-			childID = req.query.childID;
+			childId = req.query.childId;
 
-	let fetchChild = childService.getChildById( { id: childID } ),
+	let fetchChild = childService.getChildById( { id: childId } ),
 		criteria = childMatchingService.getCriteria( req.query ),
 		resultsPromise = childMatchingService.getFamiliesByCriteria( criteria );
 
@@ -100,7 +102,7 @@ exports.getChildMatchingData = ( req, res, next ) => {
 }
 
 exports.saveFamiliesMatchingHistory = ( req, res, next ) => {
-	const childID = req.body.childID;
+	const childId = req.body.childId;
 	
 	// verify the number of IDs
 	if ( ! Array.isArray( req.body.ids ) || req.body.ids.length === 0 ) {
@@ -108,10 +110,10 @@ exports.saveFamiliesMatchingHistory = ( req, res, next ) => {
 		return;
 	}
 	
-	childService.getChildById( { id: childID } ).then( child => {
+	childService.getChildById( { id: childId } ).then( child => {
 		familyService.getFamiliesByIds( req.body.ids ).then( families => {
 			let tasks = [],
-				allChildrenIDs = [ childID ];
+				allChildrenIDs = [ childId ];
 			
 			// append all siblings:
 			if ( Array.isArray( child.siblingsToBePlacedWith ) ) {
@@ -122,10 +124,10 @@ exports.saveFamiliesMatchingHistory = ( req, res, next ) => {
 			
 			// prepare save tasks
 			families.forEach( family => {
-				allChildrenIDs.forEach( targetChildID => {
+				allChildrenIDs.forEach( targetChildId => {
 					const FamilyMatchingHistory = keystone.list( 'Family Matching History' ),
 						familyMatchingHistory = new FamilyMatchingHistory.model({
-							child: ObjectId( targetChildID ),
+							child: ObjectId( targetChildId ),
 							family: family,
 							createdBy: req.user,
 							homestudySent: false,
@@ -162,9 +164,9 @@ exports.saveFamiliesMatchingHistory = ( req, res, next ) => {
 
 exports.getFamilyMatchingData = ( req, res, next ) => {
 	const userType	= req.user ? req.user.userType : '',
-			familyID = req.query.familyID;
+			familyId = req.query.familyId;
 
-	let fetchFamily = familyService.getFamilyById( familyID ),
+	let fetchFamily = familyService.getFamilyById( familyId ),
 		criteria = familyMatchingService.getCriteria( req.query ),
 		resultsPromise = familyMatchingService.getChildrenByCriteria( criteria );
 
@@ -265,7 +267,7 @@ exports.getFamilyMatchingData = ( req, res, next ) => {
 }
 
 exports.saveChildrenMatchingHistory = ( req, res, next ) => {
-	const familyID = req.body.familyID;
+	const familyId = req.body.familyId;
 	
 	// verify the number of IDs
 	if ( ! Array.isArray( req.body.ids ) || req.body.ids.length === 0 ) {
@@ -280,7 +282,7 @@ exports.saveChildrenMatchingHistory = ( req, res, next ) => {
 		children.forEach( child => {
 			const ChildMatchingHistory = keystone.list( 'Child Matching History' );
 			const childMatchingHistory = new ChildMatchingHistory.model({
-				family: ObjectId( familyID ),
+				family: ObjectId( familyId ),
 				child: child,
 				createdBy: req.user,
 				homestudySent: false,

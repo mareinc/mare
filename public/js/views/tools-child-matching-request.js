@@ -7,7 +7,7 @@
 
 		// bind standard events to functions within the view
 		events: {
-			'click .child-search-button'	: 'handleSearchClick'
+			'click .child-search-button': 'handleSearchClick'
 		},
 
 		/* initialize the view */
@@ -29,7 +29,9 @@
 		},
 		
 		handleSearchClick: function handleSearchClick() {
-			mare.routers.tools.navigate( 'child-matching/' + this.$el.find( '.child-select' ).val(), { trigger: true } );
+			var selectedChild = this.$el.find( '.child-select' ).val();
+
+			mare.routers.tools.navigate( 'child-matching/' + selectedChild, { trigger: true } );
 		},
 
 		/* render the view onto the page */
