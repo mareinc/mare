@@ -387,6 +387,7 @@ exports.getDashboardData = ( req, res, next ) => {
 	const userType	= req.user ? req.user.userType : '',
 		  daysRange = 30;
 	
+	// TOOD: this should be handled through middleware
 	// access for admins only
 	if ( userType.length === 0 || userType !== 'admin' ) {
 		res.statusCode = 403;
@@ -395,10 +396,23 @@ exports.getDashboardData = ( req, res, next ) => {
 		return;
 	}
 	
-	let result = {},
-		fromDate = typeof req.query.fromDate !== 'undefined' ? req.query.fromDate : moment().subtract( daysRange, "days" ).format( 'YYYY-MM-DD' ),
-		toDate = typeof req.query.toDate !== 'undefined' ? req.query.toDate : moment().format( 'YYYY-MM-DD' ),
-		ytdFromDate = ( moment().month() >= 7 ? moment().year() : moment().year() - 1 ) + '-07-01';
+	let result = {};
+	
+	let fromDate = typeof req.query.fromDate !== 'undefined'
+		? req.query.fromDate
+		: moment().subtract( daysRange, "days" ).format( 'YYYY-MM-DD' );
+
+	let toDate = typeof req.query.toDate !== 'undefined'
+		? req.query.toDate
+		: moment().format( 'YYYY-MM-DD' );
+
+	let ytdFromDate = moment().month() >= 7
+		? `${ moment().year() }-07-01`
+		: `${ moment().year() - 1 }-07-01`;
+
+	let ytdToDate = moment().month() >= 7
+		? `${ moment().year() + 1 }-06-30`
+		: `${ moment().year() }-06-30`;
 	
 	result.fromDate = fromDate;
 	result.toDate = toDate;
@@ -406,7 +420,7 @@ exports.getDashboardData = ( req, res, next ) => {
 	let getNumberOfFamilies = modelUtilsService.getNumberOfModelsByDatesAndDateFieldName( 'Family', fromDate, toDate, 'createdAt' ),
 		getNumberOfChildren = modelUtilsService.getNumberOfModelsByDatesAndDateFieldName( 'Child', fromDate, toDate, 'createdAt' ),
 		getNumberOfInquiries = modelUtilsService.getNumberOfModelsByDatesAndDateFieldName( 'Inquiry', fromDate, toDate, 'takenOn' ),
-		getNumberOfPlacements = modelUtilsService.getNumberOfModelsByDatesAndDateFieldName( 'Placement', ytdFromDate, toDate, 'placementDate' ),
+		getNumberOfPlacements = modelUtilsService.getNumberOfModelsByDatesAndDateFieldName( 'Placement', ytdFromDate, ytdToDate, 'placementDate' ),
 		getNumberOfActiveChildren = childService.getNumberOfChildrenByStatusNameAndRegionID( 'active' ),
 		getNumberOfOnHoldChildren = childService.getNumberOfChildrenByStatusNameAndRegionID( 'on hold' ),
 		getNumberOfAllChildren = childService.getNumberOfChildrenByRegionID(),
