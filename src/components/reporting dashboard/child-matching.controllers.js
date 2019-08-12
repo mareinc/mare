@@ -49,6 +49,11 @@ exports.getCriteria = query => {
 			criteria[ 'familyConstellation' ] = { $in: filtered };
 		}
 	}
+
+	// location criteria
+	if ( !query.includeOutOfStateFamilies || query.includeOutOfStateFamilies !== 'on') {
+		criteria[ 'address.isOutsideMassachusetts' ] = false;
+	}
 	
 	// lower and upper ages criteria
 	let dateQuery = {};

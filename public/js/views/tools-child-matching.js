@@ -50,7 +50,7 @@
 			function fillIn() {
 				var input = jQuery( this );
 						
-				if ( input.attr( 'type' ) === 'checkbox' && _.contains( params[ paramName ], input.val() )) {
+				if ( input.attr( 'type' ) === 'checkbox' && ( _.contains( params[ paramName ], input.val() ) || params[ paramName ] === input.val() ) ) {
 					input.prop( 'checked', true );
 				}
 				
