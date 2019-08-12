@@ -8,6 +8,12 @@ const MAX_RESULTS = 10000;
 /* parse query parameters and output MongoDB search criteria */
 exports.getCriteria = query => {
 	let criteria = {};
+
+	// ensure criteria remains empty if the only query param is the child id
+	// if criteria is modified in any way it will cause a family search, which is not the desired behavior when only a child id is passed
+	if ( Object.keys( query ).length === 1 && query.childId ) {
+		return criteria;
+	}
 	
 	// status criteria (multiple)
 	if ( Array.isArray( query.status ) && query.status.length > 0 ) {
@@ -51,7 +57,7 @@ exports.getCriteria = query => {
 	}
 
 	// location criteria
-	if ( !query.includeOutOfStateFamilies || query.includeOutOfStateFamilies !== 'on') {
+	if ( !query.includeOutOfStateFamilies || query.includeOutOfStateFamilies !== 'on' ) {
 		criteria[ 'address.isOutsideMassachusetts' ] = false;
 	}
 	
