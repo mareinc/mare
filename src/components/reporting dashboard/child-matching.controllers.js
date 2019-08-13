@@ -125,13 +125,19 @@ exports.getCriteria = query => {
 
 exports.getFamiliesByCriteria = criteria => {
 
+	const fieldsToSelectFromFamilyModel = [ '_id', 'registrationNumber', 'displayName', 'contact1.name', 'contact2.name', 'address.isOutsideMassachusetts',
+	'address.cityText', 'numberOfChildren', 'matchingPreferences.minNumberOfChildrenToAdopt', 'matchingPreferences.maxNumberOfChildrenToAdopt',
+	'matchingPreferences.adoptionAges.from', 'matchingPreferences.adoptionAges.to' ];
+
+	console.log(fieldsToSelectFromFamilyModel.join( ' ' ) );
+
 	return new Promise( ( resolve, reject ) => {
 		if ( _.isEmpty( criteria ) ) {
 			resolve( [] );
 		} else {
 			keystone.list( 'Family' ).model
 				.find( criteria )
-				.select( '_id registrationNumber displayName contact1.name contact2.name address.isOutsideMassachusetts address.cityText' )
+				.select( fieldsToSelectFromFamilyModel.join( ' ' ) )
 				.sort( { 'displayName': 'asc' } )
 				.limit( MAX_RESULTS )
 				.populate( 'contact1.race', { race: 1 } )
@@ -164,6 +170,11 @@ exports.mapFamiliesToPlainObjects = families => {
 			contact1race: family.contact1.race.map( ( race) => race.race ).join( ', ' ),
 			contact2name: family.contact2.name.full,
 			contact2race: family.contact2.race.map( ( race) => race.race ).join( ', ' ),
+			currentNumberOfChildren: family.numberOfChildren,
+			minNumberOfChildren: family.matchingPreferences.minNumberOfChildrenToAdopt,
+			maxNumberOfChildren: family.matchingPreferences.maxNumberOfChildrenToAdopt,
+			minPreferredAge: family.matchingPreferences.adoptionAges.from,
+			maxPreferredAge: family.matchingPreferences.adoptionAges.to,
 			city: !family.address.isOutsideMassachusetts && family.address.city ? family.address.city.cityOrTown : family.address.cityText,
 			state: family.address.state ? family.address.state.abbreviation : ''
 		}

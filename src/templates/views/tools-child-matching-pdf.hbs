@@ -9,6 +9,9 @@
 			table tr th {
 				text-decoration: underline;
 			}
+			.center-align {
+				text-align: center;
+			}
 		</style>
 	</head>
 	<body>
@@ -19,6 +22,9 @@
 				<th>Race</th>
 				<th>Contact 2</th>
 				<th>Race</th>
+				<th>Current # of Children</th>
+				<th>Preferred # of Children</th>
+				<th>Preferred Age Range</th>
 				<th>City / State</th>
 			</tr>
 			{{#each results}}
@@ -28,6 +34,9 @@
 					<td>{{ contact1race }}</td>
 					<td>{{ contact2name }}</td>
 					<td>{{ contact2race }}</td>
+					<td class="center-align">{{ currentNumberOfChildren }}</td>
+					<td class="center-align">{{ minNumberOfChildren }} - {{ maxNumberOfChildren }}</td>
+					<td class="center-align">{{ minPreferredAge }} - {{ maxPreferredAge }}</td>
 					<td>{{ city }}, {{ state }}</td>
 				</tr>
 			{{/each}}

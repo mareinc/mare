@@ -274,6 +274,9 @@
 				<th>Race</th>
 				<th>Contact 2</th>
 				<th>Race</th>
+				<th>Current # of Children</th>
+				<th>Preferred # of Children</th>
+				<th>Preferred Age Range</th>
 				<th>City / State</th>
 			</tr>
 			\{{#each results}}
@@ -286,11 +289,14 @@
 					<td>\{{ contact1race }}</td>
 					<td>\{{ contact2name }}</td>
 					<td>\{{ contact2race }}</td>
+					<td>\{{ currentNumberOfChildren }}</td>
+					<td>\{{ minNumberOfChildren }} - \{{ maxNumberOfChildren }}</td>
+					<td>\{{ minPreferredAge }} - \{{ maxPreferredAge }}</td>
 					<td>\{{ city }}, \{{ state }}</td>
 				</tr>
 			\{{else}}
 				<tr>
-					<td colspan="7">No results found</td>
+					<td colspan="10">No results found</td>
 				</tr>
 			\{{/each}}
 		</table>
@@ -303,6 +309,9 @@
 				<th>Race</th>
 				<th>Contact 2</th>
 				<th>Race</th>
+				<th>Current # of Children</th>
+				<th>Preferred # of Children</th>
+				<th>Preferred Age Range</th>
 				<th>City / State</th>
 			</tr>
 			\{{#each results}}
@@ -312,6 +321,9 @@
 					<td>\{{ contact1race }}</td>
 					<td>\{{ contact2name }}</td>
 					<td>\{{ contact2race }}</td>
+					<td>\{{ currentNumberOfChildren }}</td>
+					<td>\{{ minNumberOfChildren }} - \{{ maxNumberOfChildren }}</td>
+					<td>\{{ minPreferredAge }} - \{{ maxPreferredAge }}</td>
 					<td>\{{ city }}, \{{ state }}</td>
 				</tr>
 			\{{else}}
