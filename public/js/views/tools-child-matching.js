@@ -43,6 +43,14 @@
 				}
 			});
 		},
+
+		initializeOtherConsiderationsSelect: function() {
+			this.$el.find( '.other-considerations-select' ).select2();
+		},
+
+		initializeDisabiltiesSelect: function() {
+			this.$el.find( '.disabilities-select' ).select2();
+		},
 		
 		/* fills in the form based on parameters */
 		initializeTheForm: function( params ) {
@@ -149,6 +157,8 @@
 			view.initializeTheForm( params );
 			view.initializeAgencySelects();
 			view.initializeSocialWorkerSelects();
+			view.initializeOtherConsiderationsSelect();
+			view.initializeDisabiltiesSelect();
 			
 			// fetch the data from server and render it
 			this.getDataPromise( childId, params ).done( function( data ) {
@@ -164,6 +174,8 @@
 				
 				view.initializeAgencySelects();
 				view.initializeSocialWorkerSelects();
+				view.initializeOtherConsiderationsSelect();
+				view.initializeDisabiltiesSelect();
 			});
 		},
 		

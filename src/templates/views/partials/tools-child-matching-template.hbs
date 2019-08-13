@@ -242,6 +242,32 @@
 						{{/each}}
 					</div>
 				</div>
+
+				<div class="row form-group">
+					<div class="col-sm-12 col-md-4 text-sm-right" >
+						<label for="otherConsiderations" class="bold">Other Considerations:</label>
+					</div>
+					<div class="col-sm-12 col-md-8">
+						<select id="otherConsiderations" name="otherConsiderations[]" class="form-control other-considerations-select" multiple>
+							\{{#each otherConsiderations}}
+								<option value="\{{ id }}" \{{#if selected}}selected\{{/if}}>\{{ name }}</option>
+							\{{/each}}
+						</select>
+					</div>
+				</div>
+
+				<div class="row form-group">
+					<div class="col-sm-12 col-md-4 text-sm-right" >
+						<label for="disabilities" class="bold">Disabilities:</label>
+					</div>
+					<div class="col-sm-12 col-md-8">
+						<select id="disabilities" name="disabilities[]" class="form-control disabilities-select" multiple>
+							\{{#each disabilities}}
+								<option value="\{{ id }}" \{{#if selected}}selected\{{/if}}>\{{ name }}</option>
+							\{{/each}}
+						</select>
+					</div>
+				</div>
 			</div>
 		</div>
 	</form>

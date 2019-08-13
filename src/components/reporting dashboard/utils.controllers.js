@@ -42,6 +42,34 @@ exports.extractAgenicesData = agencies => {
 	});
 }
 
+/* 
+	create an array of plain JS objects to serve as <select> options and determine which options should be selected
+	options represent Other Consideration documents
+*/
+exports.extractOtherConsiderationsData = ( otherConsiderationsDocs, selectedOtherConsiderations = [] ) => {
+	return otherConsiderationsDocs.map( otherConsideration => {
+		return {
+			id: otherConsideration._id,
+			name: otherConsideration.otherConsideration,
+			selected: selectedOtherConsiderations.includes( otherConsideration._id.toString() ) 
+		}
+	});
+};
+
+/* 
+	create an array of plain JS objects to serve as <select> options and determine which options should be selected
+	options represent Disability documents
+*/
+exports.extractDisabilitiesData = ( disabilityDocs, selectedDisability = [] ) => {
+	return disabilityDocs.map( disability => {
+		return {
+			id: disability._id,
+			name: disability.disability,
+			selected: selectedDisability.includes( disability._id.toString() ) 
+		}
+	});
+};
+
 /* fetch an array of models, map them and send them in jQuery Select2 format */
 exports.fetchModelsMapAndSendResults = ( fetchPromise, mapFunction, res ) => {
 	

@@ -25,14 +25,16 @@ exports.getChildMatchingData = ( req, res, next ) => {
 
 	// fetch the social workers and agencies for rendering purposes on the client side
 	let fetchSocialWorkers = Array.isArray( req.query.socialWorkers ) ? socialWorkerService.getSocialWorkersByIds( req.query.socialWorkers ) : [],
-		fetchAgencies = Array.isArray( req.query.socialWorkersAgency ) ? agenciesService.getAgenciesByIds( req.query.socialWorkersAgency ) : [];
+		fetchAgencies = Array.isArray( req.query.socialWorkersAgency ) ? agenciesService.getAgenciesByIds( req.query.socialWorkersAgency ) : [],
+		fetchOtherConsiderations = keystone.list( 'Other Consideration' ).model.find().lean().exec(),
+		fetchDisabilities = keystone.list( 'Disability' ).model.find().lean().exec();
 
-	Promise.all( [ fetchChild, fetchSocialWorkers, fetchAgencies, resultsPromise ] )
+	Promise.all( [ fetchChild, fetchSocialWorkers, fetchAgencies, fetchOtherConsiderations, fetchDisabilities, resultsPromise ] )
 		.then( values => {
 			let result = {};
 			
 			// assign local variables to the values returned by the promises
-			const [ child, socialWorkers, agencies, results ] = values;
+			const [ child, socialWorkers, agencies, otherConsiderations, disabilities, results ] = values;
 			
 			// output requested child record details
 			result.child = childMatchingService.extractChildData( child );
@@ -65,6 +67,10 @@ exports.getChildMatchingData = ( req, res, next ) => {
 						result.socialWorkers = utilsService.extractSocialWorkersData( socialWorkers );
 						result.socialWorkersAgencies = utilsService.extractAgenicesData( agencies );
 						
+						// append all other consideration and disability options and mark which options to select based on the child record
+						result.otherConsiderations = utilsService.extractOtherConsiderationsData( otherConsiderations, child.otherConsiderations.map( otherConsideration => otherConsideration.toString() ) );
+						result.disabilities = utilsService.extractDisabilitiesData( disabilities, child.disabilities.map( disability => disability.toString() ) );
+						
 						res.send( result );
 					})
 					.catch( err => {
@@ -76,6 +82,8 @@ exports.getChildMatchingData = ( req, res, next ) => {
 				// if criteria were detected send the results
 				result.socialWorkers = utilsService.extractSocialWorkersData( socialWorkers );
 				result.socialWorkersAgencies = utilsService.extractAgenicesData( agencies );
+				result.otherConsiderations = utilsService.extractOtherConsiderationsData( otherConsiderations );
+				result.disabilities = utilsService.extractDisabilitiesData( disabilities );
 				
 				// map array to plain objects including additional data
 				result.results = childMatchingService.mapFamiliesToPlainObjects( results );

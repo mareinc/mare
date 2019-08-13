@@ -119,6 +119,22 @@ exports.getCriteria = query => {
 			criteria[ 'socialWorker' ] = { $in: filtered };
 		}
 	}
+
+	// other considerations criteria (multiple)
+	if ( Array.isArray( query.otherConsiderations ) && query.otherConsiderations.length > 0 ) {
+		let filtered = query.otherConsiderations.filter( objectId => ObjectId.isValid( objectId ) );
+		if ( filtered.length > 0 ) {
+			criteria[ 'matchingPreferences.otherConsiderations' ] = { $in: filtered };
+		}
+	}
+
+	// disabilities criteria (multiple)
+	if ( Array.isArray( query.disabilities ) && query.disabilities.length > 0 ) {
+		let filtered = query.disabilities.filter( objectId => ObjectId.isValid( objectId ) );
+		if ( filtered.length > 0 ) {
+			criteria[ 'matchingPreferences.disabilities' ] = { $in: filtered };
+		}
+	}
 	
 	return criteria;
 }
@@ -128,8 +144,6 @@ exports.getFamiliesByCriteria = criteria => {
 	const fieldsToSelectFromFamilyModel = [ '_id', 'registrationNumber', 'displayName', 'contact1.name', 'contact2.name', 'address.isOutsideMassachusetts',
 	'address.cityText', 'numberOfChildren', 'matchingPreferences.minNumberOfChildrenToAdopt', 'matchingPreferences.maxNumberOfChildrenToAdopt',
 	'matchingPreferences.adoptionAges.from', 'matchingPreferences.adoptionAges.to' ];
-
-	console.log(fieldsToSelectFromFamilyModel.join( ' ' ) );
 
 	return new Promise( ( resolve, reject ) => {
 		if ( _.isEmpty( criteria ) ) {
@@ -170,11 +184,11 @@ exports.mapFamiliesToPlainObjects = families => {
 			contact1race: family.contact1.race.map( ( race) => race.race ).join( ', ' ),
 			contact2name: family.contact2.name.full,
 			contact2race: family.contact2.race.map( ( race) => race.race ).join( ', ' ),
-			currentNumberOfChildren: family.numberOfChildren,
-			minNumberOfChildren: family.matchingPreferences.minNumberOfChildrenToAdopt,
-			maxNumberOfChildren: family.matchingPreferences.maxNumberOfChildrenToAdopt,
-			minPreferredAge: family.matchingPreferences.adoptionAges.from,
-			maxPreferredAge: family.matchingPreferences.adoptionAges.to,
+			currentNumberOfChildren: family.numberOfChildren ? family.numberOfChildren : 'Unspecified',
+			minNumberOfChildren: family.matchingPreferences.minNumberOfChildrenToAdopt ? family.matchingPreferences.minNumberOfChildrenToAdopt : '0',
+			maxNumberOfChildren: family.matchingPreferences.maxNumberOfChildrenToAdopt ? family.matchingPreferences.maxNumberOfChildrenToAdopt : 'Any',
+			minPreferredAge: family.matchingPreferences.adoptionAges.from ? family.matchingPreferences.adoptionAges.from : '0',
+			maxPreferredAge: family.matchingPreferences.adoptionAges.to ? family.matchingPreferences.adoptionAges.to : 'Any',
 			city: !family.address.isOutsideMassachusetts && family.address.city ? family.address.city.cityOrTown : family.address.cityText,
 			state: family.address.state ? family.address.state.abbreviation : ''
 		}
