@@ -20,7 +20,6 @@
 				<th>Contact 2</th>
 				<th>Race</th>
 				<th>City / State</th>
-				<th>Social Worker</th>
 			</tr>
 			{{#each results}}
 				<tr>
@@ -30,7 +29,6 @@
 					<td>{{ contact2name }}</td>
 					<td>{{ contact2race }}</td>
 					<td>{{ city }}, {{ state }}</td>
-					<td>{{ socialWorker }} {{#if socialWorkerAgency }}({{ socialWorkerAgency }}){{/if}}</td>
 				</tr>
 			{{/each}}
 		</table>

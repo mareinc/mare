@@ -138,8 +138,6 @@ exports.getFamiliesByCriteria = criteria => {
 				.populate( 'contact2.race', { race: 1 } )
 				.populate( 'address.city', { cityOrTown: 1 } )
 				.populate( 'address.state', { abbreviation: 1 } )
-				.populate( 'socialWorker', { name: 1 } )
-				.populate( 'socialWorkerAgency', { code: 1 } )
 				.exec()
 				.then(
 					results => {
@@ -166,8 +164,6 @@ exports.mapFamiliesToPlainObjects = families => {
 			contact1race: family.contact1.race.map( ( race) => race.race ).join( ', ' ),
 			contact2name: family.contact2.name.full,
 			contact2race: family.contact2.race.map( ( race) => race.race ).join( ', ' ),
-			socialWorker: family.socialWorker ? family.socialWorker.name.full : family.socialWorkerText,
-			socialWorkerAgency: family.socialWorkerAgency ? family.socialWorkerAgency.code : '',
 			city: !family.address.isOutsideMassachusetts && family.address.city ? family.address.city.cityOrTown : family.address.cityText,
 			state: family.address.state ? family.address.state.abbreviation : ''
 		}
