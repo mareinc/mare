@@ -292,17 +292,17 @@
 		
 		<input type="button" class="button button--teal save-family-entries-button" value="Save entries to the child" />
 		
-		<table width="100%">
+		<table width="100%" class="matching-results-table">
 			<tr>
 				<th></th>
-				<th>Reg. Num</th>
+				<th class="column--numerical">Reg. Num</th>
 				<th>Contact 1</th>
 				<th>Race</th>
 				<th>Contact 2</th>
 				<th>Race</th>
-				<th>Current # of Children</th>
-				<th>Preferred # of Children</th>
-				<th>Preferred Age Range</th>
+				<th class="column--numerical">Current # of Children</th>
+				<th class="column--numerical">Preferred # of Children</th>
+				<th class="column--numerical">Preferred Age Range</th>
 				<th>City / State</th>
 			</tr>
 			\{{#each results}}
@@ -310,14 +310,14 @@
 					<td width="20">
 						<input type="checkbox" class="entry-selection" value="\{{ id }}" />
 					</td>
-					<td><a href="/keystone/families/\{{ id }}">\{{ registrationNumber }}</a></td>
+					<td class="column--numerical"><a href="/keystone/families/\{{ id }}">\{{ registrationNumber }}</a></td>
 					<td>\{{ contact1name }}</td>
 					<td>\{{ contact1race }}</td>
 					<td>\{{ contact2name }}</td>
 					<td>\{{ contact2race }}</td>
-					<td>\{{ currentNumberOfChildren }}</td>
-					<td>\{{ minNumberOfChildren }} - \{{ maxNumberOfChildren }}</td>
-					<td>\{{ minPreferredAge }} - \{{ maxPreferredAge }}</td>
+					<td class="column--numerical">\{{ currentNumberOfChildren }}</td>
+					<td class="column--numerical">\{{ minNumberOfChildren }} - \{{ maxNumberOfChildren }}</td>
+					<td class="column--numerical">\{{ minPreferredAge }} - \{{ maxPreferredAge }}</td>
 					<td>\{{ city }}, \{{ state }}</td>
 				</tr>
 			\{{else}}
