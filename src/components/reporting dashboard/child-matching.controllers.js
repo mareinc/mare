@@ -185,10 +185,10 @@ exports.mapFamiliesToPlainObjects = families => {
 			contact2name: family.contact2.name.full,
 			contact2race: family.contact2.race.map( ( race) => race.race ).join( ', ' ),
 			currentNumberOfChildren: family.numberOfChildren ? family.numberOfChildren : 'Unspecified',
-			minNumberOfChildren: family.matchingPreferences.minNumberOfChildrenToAdopt ? family.matchingPreferences.minNumberOfChildrenToAdopt : '0',
-			maxNumberOfChildren: family.matchingPreferences.maxNumberOfChildrenToAdopt ? family.matchingPreferences.maxNumberOfChildrenToAdopt : 'Any',
-			minPreferredAge: family.matchingPreferences.adoptionAges.from ? family.matchingPreferences.adoptionAges.from : '0',
-			maxPreferredAge: family.matchingPreferences.adoptionAges.to ? family.matchingPreferences.adoptionAges.to : 'Any',
+			minNumberOfChildren: family.matchingPreferences.minNumberOfChildrenToAdopt ? family.matchingPreferences.minNumberOfChildrenToAdopt : 'Unspecified',
+			maxNumberOfChildren: family.matchingPreferences.maxNumberOfChildrenToAdopt ? family.matchingPreferences.maxNumberOfChildrenToAdopt : 'Unspecified',
+			minPreferredAge: family.matchingPreferences.adoptionAges.from ? family.matchingPreferences.adoptionAges.from : 'Unspecified',
+			maxPreferredAge: family.matchingPreferences.adoptionAges.to ? family.matchingPreferences.adoptionAges.to : 'Unspecified',
 			city: !family.address.isOutsideMassachusetts && family.address.city ? family.address.city.cityOrTown : family.address.cityText,
 			state: family.address.state ? family.address.state.abbreviation : ''
 		}
