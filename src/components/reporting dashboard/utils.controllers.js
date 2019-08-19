@@ -22,6 +22,16 @@ exports.getSocialNeedsRange = ( fromNeed, toNeed ) => {
 	return utilityService.arrayCut( exports.SOCIAL_NEEDS_OPTIONS, fromNeed, toNeed );
 };
 
+exports.generatePreferredAgeRange = ( fromAge, toAge ) => {
+	let prefererredAgeRange = [];
+
+	for ( let age = fromAge; age <= toAge; age++ ) {
+		prefererredAgeRange.push( age );
+	}
+
+	return prefererredAgeRange;
+};
+
 /* map social workers array to the array of simple objects */
 exports.extractSocialWorkersData = socialWorkers => {
 	return socialWorkers.map( socialWorker => {

@@ -260,3 +260,7 @@ exports.arrayCut = ( array, startElement, endElement ) => {
 	
 	return results;
 }
+
+exports.isNil = valueToTest => {
+	return valueToTest === null || valueToTest === undefined;
+};

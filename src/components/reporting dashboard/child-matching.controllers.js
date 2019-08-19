@@ -1,7 +1,8 @@
 const keystone 			= require( 'keystone' ),
 	  ObjectId 			= require( 'mongodb' ).ObjectId,
 	  _					= require( 'underscore' ),
-	  utilsService		= require( './utils.controllers' );
+	  utilsService		= require( './utils.controllers' ),
+	  globalUtils 		= require( '../../utils/utility.controllers' );
 	  
 const MAX_RESULTS = 10000;
 
@@ -60,14 +61,31 @@ exports.getCriteria = query => {
 	if ( !query.includeOutOfStateFamilies || query.includeOutOfStateFamilies !== 'on' ) {
 		criteria[ 'address.isOutsideMassachusetts' ] = false;
 	}
-	
-	// lower and upper ages criteria
-	let dateQuery = {};
-	if ( !isNaN( parseInt( query.agesFrom ) ) ) {
-		criteria[ 'matchingPreferences.adoptionAges.from' ] = { $gte: parseInt( query.agesFrom ) };
-	}
-	if ( !isNaN( parseInt( query.agesTo ) ) ) {
-		criteria[ 'matchingPreferences.adoptionAges.to' ] = { $lte: parseInt( query.agesTo ) };
+
+	// age range criteria
+	let isMinimumAgeSpecified = !isNaN( parseInt( query.agesFrom ) );
+	let isMaximumAgeSpecified = !isNaN( parseInt( query.agesTo ) ); 
+	if ( isMinimumAgeSpecified || isMaximumAgeSpecified ) {
+		let preferredAgeRange = utilsService.generatePreferredAgeRange(
+			isMinimumAgeSpecified ? parseInt( query.agesFrom ) : 0,
+			isMaximumAgeSpecified ? parseInt( query.agesTo ) : 20
+		);
+		criteria[ '$or' ] = [
+			{ $or: [
+				{ 'matchingPreferences.adoptionAges.from': { $in: preferredAgeRange } },
+				{ $and: [
+					{ 'matchingPreferences.adoptionAges.from': { $type: 10 } },
+					{ 'matchingPreferences.adoptionAges.to': { $gt: preferredAgeRange[ preferredAgeRange.length - 1 ] } }
+				]}
+			]},
+			{ $or: [
+				{ 'matchingPreferences.adoptionAges.to': { $in: preferredAgeRange } },
+				{ $and: [
+					{ 'matchingPreferences.adoptionAges.to': { $type: 10 } },
+					{ 'matchingPreferences.adoptionAges.from': { $lt: preferredAgeRange[ 0 ] } }
+				]}
+			]}
+		];
 	}
 	
 	// lower and upper number of siblings
@@ -181,14 +199,14 @@ exports.mapFamiliesToPlainObjects = families => {
 			registrationNumber: family.registrationNumber,
 			name: family.displayName,
 			contact1name: family.contact1.name.full,
-			contact1race: family.contact1.race.map( ( race) => race.race ).join( ', ' ),
+			contact1race: family.contact1.race.map( race => race.race ).join( ', ' ),
 			contact2name: family.contact2.name.full,
-			contact2race: family.contact2.race.map( ( race) => race.race ).join( ', ' ),
+			contact2race: family.contact2.race.map( race => race.race ).join( ', ' ),
 			currentNumberOfChildren: family.numberOfChildren ? family.numberOfChildren : 'Unspecified',
-			minNumberOfChildren: family.matchingPreferences.minNumberOfChildrenToAdopt ? family.matchingPreferences.minNumberOfChildrenToAdopt : 'Unspecified',
-			maxNumberOfChildren: family.matchingPreferences.maxNumberOfChildrenToAdopt ? family.matchingPreferences.maxNumberOfChildrenToAdopt : 'Unspecified',
-			minPreferredAge: family.matchingPreferences.adoptionAges.from ? family.matchingPreferences.adoptionAges.from : 'Unspecified',
-			maxPreferredAge: family.matchingPreferences.adoptionAges.to ? family.matchingPreferences.adoptionAges.to : 'Unspecified',
+			minNumberOfChildren: !globalUtils.isNil(family.matchingPreferences.minNumberOfChildrenToAdopt) ? family.matchingPreferences.minNumberOfChildrenToAdopt : 'Unspecified',
+			maxNumberOfChildren: !globalUtils.isNil(family.matchingPreferences.maxNumberOfChildrenToAdopt) ? family.matchingPreferences.maxNumberOfChildrenToAdopt : 'Unspecified',
+			minPreferredAge: !globalUtils.isNil(family.matchingPreferences.adoptionAges.from) ? family.matchingPreferences.adoptionAges.from : 'Unspecified',
+			maxPreferredAge: !globalUtils.isNil(family.matchingPreferences.adoptionAges.to) ? family.matchingPreferences.adoptionAges.to : 'Unspecified',
 			city: !family.address.isOutsideMassachusetts && family.address.city ? family.address.city.cityOrTown : family.address.cityText,
 			state: family.address.state ? family.address.state.abbreviation : ''
 		}
