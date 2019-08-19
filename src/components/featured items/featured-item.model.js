@@ -12,8 +12,8 @@ const imageStorage = new keystone.Storage({
 		path: '/featured-items/images',
 		// use the file name with spaces replaced by dashes instead of randomly generating a value
 		// NOTE: this is needed to prevent access errors when trying to view the files
-		generateFilename: file => file.originalname.replace( /\s/g, '_' ),
-		publicUrl: file => `${ process.env.CLOUDFRONT_URL }/featured-items/images/${ file.originalname.replace( /\s/g, '_' ) }`
+		generateFilename: file => file.originalname,
+		publicUrl: file => `${ process.env.CLOUDFRONT_URL }/featured-items/images/${ file.originalname }`
 	},
 	schema: {
 		bucket: true, // optional; store the bucket the file was uploaded to in your db

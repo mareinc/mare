@@ -38,7 +38,7 @@
 		"jpegtran-bin": "^4.0.0",
 		"keystone": "https://github.com/autoboxer/keystone.git#d8f408a4ae44f6abac6249ace5b2b790aa50ad9c",
 		"keystone-email": "^1.1.0",
-		"keystone-storage-adapter-s3": "^2.0.0",
+		"keystone-storage-adapter-s3": "github:n-devr/keystone-storage-adapter-s3",
 		"mailchimp-api-v3": "^1.13.1",
 		"md5": "^2.2.1",
 		"moment": "~2.24.0",
