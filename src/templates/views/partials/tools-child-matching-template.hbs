@@ -16,12 +16,7 @@
 						<div class="group-label float-left float-sm-right"><h5>Child Status:</h5></div>
 					</div>
 					<div class="col-lg-6">
-						{{#each childStatuses}}
-						<div class="form-check">
-							<input id="status{{ childStatus }}" class="form-check-input" type="checkbox" name="status[]" value="{{ id }}" />
-							<label class="form-check-label" for="status{{ childStatus }}">{{ childStatus }}</label>
-						</div>
-						{{/each}}
+						<div class="group-label float-left"><h5 style="font-weight: normal;">\{{ child.status }}</h5></div>
 					</div>
 				</div>
 

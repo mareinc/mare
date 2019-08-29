@@ -19,7 +19,7 @@ exports.getChildMatchingData = ( req, res, next ) => {
 	const userType	= req.user ? req.user.userType : '',
 			childId = req.query.childId;
 
-	let fetchChild = childService.getChildById( { id: childId } ),
+	let fetchChild = childService.getChildById( { id: childId, fieldsToPopulate: [ 'status' ] } ),
 		criteria = childMatchingService.getCriteria( req.query ),
 		resultsPromise = childMatchingService.getFamiliesByCriteria( criteria );
 

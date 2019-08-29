@@ -19,15 +19,10 @@ exports.getCriteria = query => {
 	if ( Object.keys( query ).length === 1 && query.childId ) {
 		return criteria;
 	}
-	
+
 	// status criteria (multiple)
-	if ( Array.isArray( query.status ) && query.status.length > 0 ) {
-		let filtered = query.status.filter( ( objectId ) => ObjectId.isValid( objectId ) );
-		if ( filtered.length > 0 ) {
-			criteria[ 'registeredWithMARE.status' ] = { $in: filtered };
-			criteria[ 'registeredWithMARE.registered' ] = true;
-		}
-	}
+	criteria[ 'registeredWithMARE.registered' ] = true;
+	criteria[ 'isActive' ] = true;
 	
 	// gender criteria (multiple)
 	if ( Array.isArray( query.gender ) && query.gender.length > 0 ) {
@@ -239,6 +234,7 @@ exports.sortFunction = ( a, b ) => {
 exports.extractChildData = child => {
 	return {
 		_id: child._id,
-		displayNameAndRegistration: child.displayNameAndRegistration
+		displayNameAndRegistration: child.displayNameAndRegistration,
+		status: child.status.childStatus
 	}
 }
