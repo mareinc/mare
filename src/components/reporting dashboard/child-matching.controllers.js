@@ -10,6 +10,10 @@ const MAX_RESULTS = 10000;
 exports.getCriteria = query => {
 	let criteria = {};
 
+	// a mongoose find() query can only have one top-level $or condition, so we store all $or criteria in this array and
+	// wrap them in an $and if necessary, which we can determine once all criteria have been set
+	let orCriteria = [];
+
 	// ensure criteria remains empty if the only query param is the child id
 	// if criteria is modified in any way it will cause a family search, which is not the desired behavior when only a child id is passed
 	if ( Object.keys( query ).length === 1 && query.childId ) {
@@ -59,7 +63,11 @@ exports.getCriteria = query => {
 
 	// location criteria
 	if ( !query.includeOutOfStateFamilies || query.includeOutOfStateFamilies !== 'on' ) {
-		criteria[ 'address.isOutsideMassachusetts' ] = false;
+		orCriteria.push([
+			{ 'address.isOutsideMassachusetts': false }, // if the record exists in the database and is set to false 
+			{ 'address.isOutsideMassachusetts': { $exists: false } }, // if the record doesn't exist at all in the database we can assume it's false
+			{ 'address.isOutsideMassachusetts': { $type: 10 } } // catch-all in case the record exists but the value is somehow set to null ( not 100% sure we need this )
+		]);
 	}
 
 	// age range criteria
@@ -70,7 +78,7 @@ exports.getCriteria = query => {
 			isMinimumAgeSpecified ? parseInt( query.agesFrom ) : 0,
 			isMaximumAgeSpecified ? parseInt( query.agesTo ) : 20
 		);
-		criteria[ '$or' ] = [
+		orCriteria.push([
 			{ $or: [
 				{ 'matchingPreferences.adoptionAges.from': { $in: preferredAgeRange } },
 				{ $and: [
@@ -85,7 +93,7 @@ exports.getCriteria = query => {
 					{ 'matchingPreferences.adoptionAges.from': { $lt: preferredAgeRange[ 0 ] } }
 				]}
 			]}
-		];
+		]);
 	}
 	
 	// lower and upper number of siblings
@@ -152,6 +160,13 @@ exports.getCriteria = query => {
 		if ( filtered.length > 0 ) {
 			criteria[ 'matchingPreferences.disabilities' ] = { $in: filtered };
 		}
+	}
+
+	// append $or criteria
+	if ( orCriteria.length === 1 ) {
+		criteria[ '$or' ] = orCriteria[ 0 ];
+	} else if ( orCriteria.length > 1 ) {
+		criteria[ '$and' ] = orCriteria.map( criterion => ( { $or: criterion } ) );
 	}
 	
 	return criteria;
