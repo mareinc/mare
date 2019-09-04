@@ -324,7 +324,12 @@ exports.extractFamilyData = family => {
 	return {
 		_id: family._id,
 		displayName: family.displayName,
-		registrationNumber: family.registrationNumber
+		registrationNumber: family.registrationNumber,
+		status: family.registeredWithMARE.registered
+			? family.registeredWithMARE.status
+				? family.registeredWithMARE.status.familyStatus
+				: 'registered - no status'
+			: 'not registered'
 	}
 }
 

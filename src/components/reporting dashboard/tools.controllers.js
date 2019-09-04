@@ -174,7 +174,7 @@ exports.getFamilyMatchingData = ( req, res, next ) => {
 	const userType	= req.user ? req.user.userType : '',
 			familyId = req.query.familyId;
 
-	let fetchFamily = familyService.getFamilyById( familyId ),
+	let fetchFamily = familyService.getFamilyById( familyId, [ 'registeredWithMARE.status' ] ),
 		criteria = familyMatchingService.getCriteria( req.query ),
 		resultsPromise = familyMatchingService.getChildrenByCriteria( criteria );
 

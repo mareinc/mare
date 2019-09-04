@@ -15,6 +15,14 @@
 			<div class="col-sm-3">
 				<div class="row form-group">
 					<div class="col-lg-6">
+						<div class="group-label float-left float-sm-right"><h5>Family Status:</h5></div>
+					</div>
+					<div class="col-lg-6">
+						<div class="read-only-value float-left"><h5>\{{ family.status }}</h5></div>
+					</div>
+				</div>
+				<div class="row form-group">
+					<div class="col-lg-6">
 						<div class="group-label float-left float-sm-right"><h5>Child Status:</h5></div>
 						<div class="form-check text-sm-right float-right matching-form__toggle-button">
 							<input data-toggle="toggle" data-size="xs" data-on="Display" data-off="No Display" id="displayChildStatus" class="form-check-input" type="checkbox" name="fields[]" value="status" />
@@ -24,7 +32,7 @@
 					<div class="col-lg-6">
 						{{#each childStatuses}}
 						<div class="form-check">
-							<input id="status{{ childStatus }}" class="form-check-input" type="checkbox" name="status[]" value="{{ id }}" />
+							<input id="status{{ childStatus }}" class="form-check-input" type="checkbox" name="status[]" value="{{ id }}" {{#ifeq childStatus "active"}}checked{{else}}{{/ifeq}} />
 							<label class="form-check-label" for="status{{ childStatus }}">{{ childStatus }} </label>
 						</div>
 						{{/each}}
