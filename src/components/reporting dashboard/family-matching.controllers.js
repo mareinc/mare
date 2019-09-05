@@ -328,8 +328,8 @@ exports.extractFamilyData = family => {
 		status: family.registeredWithMARE.registered
 			? family.registeredWithMARE.status
 				? family.registeredWithMARE.status.familyStatus
-				: 'registered - no status'
-			: 'not registered'
+				: 'Set Family Status'
+			: 'Not Registered with MARE'
 	}
 }
 
