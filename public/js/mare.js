@@ -77,6 +77,38 @@
 						opts.fn( this ) :
 						opts.inverse( this );
 				});
+			},
+
+			initializeModalPrintSupport: function initializeModalPrintSupport( modalContents, styleSheetID ) {
+				// create a new stylesheet
+				var printStylesheet = document.createElement( 'style' );
+				printStylesheet.type = 'text/css';
+				// assign an ID so the stylesheet can be removed later
+				printStylesheet.id = styleSheetID;
+
+				// set screen styles to ensure the printable content isn't visible
+				var screenStyles = '@media screen { #printSection { display: none; } }';
+				// set print styles to display only the printable section
+				var printStyles = '@media print { body * { display: none; } #printSection, #printSection * { display: block; } #printSection { position: absolute; left: 0; top: 0; } }';
+				// concatenate the two styles
+				var css = ''.concat( screenStyles, ' ', printStyles );
+				// append the styles to the stylesheet
+				printStylesheet.appendChild( document.createTextNode( css ) );
+				// append the stylesheet to the document head
+				document.head.appendChild( printStylesheet );
+
+				// see if a print section has already been added to the DOM
+				var printSection = document.getElementById( 'printSection' );
+				// if not, create and append a print section
+				if ( !printSection ) {
+					printSection = document.createElement( 'div' );
+					printSection.id = 'printSection';
+					document.body.appendChild( printSection );
+				}
+				// ensure the contents of the print section are empty
+				printSection.innerHTML = '';
+				// append the modal contents to the print section
+				printSection.appendChild( modalContents );
 			}
 		}
 	};

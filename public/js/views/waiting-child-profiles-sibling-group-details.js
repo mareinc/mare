@@ -57,7 +57,13 @@
 			this.initializeModalTabs();
 			// bind click events for the newly rendered elements
 			this.bindEvents();
-
+			// add support for printing the modal...
+			// clone the modal contents
+			var $modalContentClone = this.$el.find( '.profile-tab__contents' ).clone();
+			// remove the inquiry button
+			$modalContentClone.find( '.button-group' ).remove();
+			// create a print-friendly representation of the modal DOM and inject print styles
+			mare.utils.initializeModalPrintSupport( $modalContentClone[ 0 ], 'modal-print-styles' );
 		},
 
 		setNavigation: function setNavigation(siblingGroupModel) {
@@ -179,6 +185,9 @@
 			mare.utils.enablePageScrolling();
 
 			this.clearModalContents();
+
+			// remove styles that were generated for modal print support
+			$( '#modal-print-styles' ).remove();
 			
 			// update the url
 			Backbone.history.navigate( 'gallery' );
