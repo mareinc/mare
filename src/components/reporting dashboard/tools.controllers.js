@@ -222,9 +222,15 @@ exports.getFamilyMatchingData = ( req, res, next ) => {
 						params.agesTo = preferences.adoptionAges.to ? preferences.adoptionAges.to : '';
 						params.siblingGroupSizeFrom = preferences.minNumberOfChildrenToAdopt ? preferences.minNumberOfChildrenToAdopt : '';
 						params.siblingGroupSizeTo = preferences.maxNumberOfChildrenToAdopt ? preferences.maxNumberOfChildrenToAdopt : '';
-						params.physicalNeedsFrom = preferences.maxNeeds.physical ? preferences.maxNeeds.physical : '';
-						params.intellectualNeedsFrom = preferences.maxNeeds.intellectual ? preferences.maxNeeds.intellectual : '';
-						params.emotionalNeedsFrom = preferences.maxNeeds.emotional ? preferences.maxNeeds.emotional : '';
+						// physical needs
+						params.physicalNeedsFrom = 'none';
+						params.physicalNeedsTo = preferences.maxNeeds.physical ? preferences.maxNeeds.physical : 'severe';
+						// intellectual needs
+						params.intellectualNeedsFrom = 'none';
+						params.intellectualNeedsTo = preferences.maxNeeds.intellectual ? preferences.maxNeeds.intellectual : 'severe';
+						// emotional needs
+						params.emotionalNeedsFrom = 'none';
+						params.emotionalNeedsTo = preferences.maxNeeds.emotional ? preferences.maxNeeds.emotional : 'severe';
 
 						result.params = params;
 						
