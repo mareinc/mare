@@ -186,16 +186,17 @@ exports.getFamiliesByCriteria = criteria => {
 				.populate( 'contact2.race', { race: 1 } )
 				.populate( 'address.city', { cityOrTown: 1 } )
 				.populate( 'address.state', { abbreviation: 1 } )
+				.populate( 'registeredWithMARE.status' )
 				.exec()
-				.then(
-					results => {
-						resolve( results )
-					}, 
-					err => {
-						// reject the promise
-						reject( new Error( `error fetching families - ${ err }` ) );
-					}
-				);
+				.then( families => {
+					// ensure only active families are displayed on the matching dashboard
+					let activeFamilies  = families.filter( family => family.registeredWithMARE.status && family.registeredWithMARE.status.familyStatus === 'active' );
+					resolve( activeFamilies );
+				})
+				.catch( err => {
+					// reject the promise
+					reject( new Error( `error fetching families - ${ err }` ) );
+				});
 		}
 	});
 }
