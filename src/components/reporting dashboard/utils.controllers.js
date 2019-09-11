@@ -22,14 +22,14 @@ exports.getSocialNeedsRange = ( fromNeed, toNeed ) => {
 	return utilityService.arrayCut( exports.SOCIAL_NEEDS_OPTIONS, fromNeed, toNeed );
 };
 
-exports.generatePreferredAgeRange = ( fromAge, toAge ) => {
-	let prefererredAgeRange = [];
+exports.generateNumericCriteriaRange = ( rangeMin, rangeMax ) => {
+	let numericRange = [];
 
-	for ( let age = fromAge; age <= toAge; age++ ) {
-		prefererredAgeRange.push( age );
+	for ( let num = rangeMin; num <= rangeMax; num++ ) {
+		numericRange.push( num );
 	}
 
-	return prefererredAgeRange;
+	return numericRange;
 };
 
 /* map social workers array to the array of simple objects */

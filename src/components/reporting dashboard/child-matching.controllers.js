@@ -69,20 +69,27 @@ exports.getCriteria = query => {
 	let isMinimumAgeSpecified = !isNaN( parseInt( query.agesFrom ) );
 	let isMaximumAgeSpecified = !isNaN( parseInt( query.agesTo ) ); 
 	if ( isMinimumAgeSpecified || isMaximumAgeSpecified ) {
-		let preferredAgeRange = utilsService.generatePreferredAgeRange(
+		let preferredAgeRange = utilsService.generateNumericCriteriaRange(
 			isMinimumAgeSpecified ? parseInt( query.agesFrom ) : 0,
 			isMaximumAgeSpecified ? parseInt( query.agesTo ) : 20
 		);
 		orCriteria.push([
 			{ $or: [
+				// if the 'from' age is in the preferred age range
 				{ 'matchingPreferences.adoptionAges.from': { $in: preferredAgeRange } },
+				// if the 'to' age is in the preferred age range
+				{ 'matchingPreferences.adoptionAges.to': { $in: preferredAgeRange } },
+				// if the 'from' age is lower than the lowest preferred age AND the 'to' age is higher than the highest preferred age
+				{ $and: [
+					{ 'matchingPreferences.adoptionAges.to': { $gt: preferredAgeRange[ preferredAgeRange.length - 1 ] } },
+					{ 'matchingPreferences.adoptionAges.from': { $lt: preferredAgeRange[ 0 ] } }
+				]},
+				// if the preferred 'from' age isn't specified AND the 'to' age is higher than the highest preferred age
 				{ $and: [
 					{ 'matchingPreferences.adoptionAges.from': { $type: 10 } },
 					{ 'matchingPreferences.adoptionAges.to': { $gt: preferredAgeRange[ preferredAgeRange.length - 1 ] } }
-				]}
-			]},
-			{ $or: [
-				{ 'matchingPreferences.adoptionAges.to': { $in: preferredAgeRange } },
+				]},
+				// if the preferred 'to' age isn't specified AND the 'from' age is lower than the lowest preferred age
 				{ $and: [
 					{ 'matchingPreferences.adoptionAges.to': { $type: 10 } },
 					{ 'matchingPreferences.adoptionAges.from': { $lt: preferredAgeRange[ 0 ] } }
