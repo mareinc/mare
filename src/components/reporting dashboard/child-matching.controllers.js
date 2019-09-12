@@ -98,14 +98,40 @@ exports.getCriteria = query => {
 		]);
 	}
 	
-	// lower and upper number of siblings
-	let siblingGroupSizeFrom = parseInt( query.siblingGroupSizeFrom );
-	if ( !isNaN( siblingGroupSizeFrom ) && siblingGroupSizeFrom >= 1 ) {
-		criteria[ 'matchingPreferences.minNumberOfChildrenToAdopt' ] = { $gte: siblingGroupSizeFrom };
-	}
-	let siblingGroupSizeTo = parseInt( query.siblingGroupSizeTo );
-	if ( !isNaN( siblingGroupSizeTo ) && siblingGroupSizeTo >= 1 ) {
-		criteria[ 'matchingPreferences.maxNumberOfChildrenToAdopt' ] = { $lte: siblingGroupSizeTo };
+	// sibling range criteria
+	let isSiblingGroupSizeFromSpecified = !isNaN( parseInt( query.siblingGroupSizeFrom ) );
+	let isSiblingGroupSizeToSpecified = !isNaN( parseInt( query.siblingGroupSizeTo ) );
+	if ( isSiblingGroupSizeFromSpecified || isSiblingGroupSizeToSpecified ) {
+		let preferredNumberOfChildrenRange = utilsService.generateNumericCriteriaRange(
+			isSiblingGroupSizeFromSpecified ? parseInt( query.siblingGroupSizeFrom ) : 1,
+			isSiblingGroupSizeToSpecified ? parseInt( query.siblingGroupSizeTo ) : 10
+		);
+		orCriteria.push([
+			{ $or: [
+				// if the min number of children to adpot is in the preferred sibling group size ranage
+				{ 'matchingPreferences.minNumberOfChildrenToAdopt': { $in: preferredNumberOfChildrenRange } },
+				// if the max number of children to adopt is in the preferred sibling group size ranage
+				{ 'matchingPreferences.maxNumberOfChildrenToAdopt': { $in: preferredNumberOfChildrenRange } },
+				// if the min number of children to adpot is less than the smallest preferred sibling group size 
+				// AND the max number of children to adopt is greater than the largest sibling group size
+				{ $and: [
+					{ 'matchingPreferences.maxNumberOfChildrenToAdopt': { $gt: preferredNumberOfChildrenRange[ preferredNumberOfChildrenRange.length - 1 ] } },
+					{ 'matchingPreferences.minNumberOfChildrenToAdopt': { $lt: preferredNumberOfChildrenRange[ 0 ] } }
+				]},
+				// if the preferred min number of children to adpot isn't specified 
+				// AND the max number of children to adopt is greater than the largest sibling group size
+				{ $and: [
+					{ 'matchingPreferences.minNumberOfChildrenToAdopt': { $type: 10 } },
+					{ 'matchingPreferences.maxNumberOfChildrenToAdopt': { $gt: preferredNumberOfChildrenRange[ preferredNumberOfChildrenRange.length - 1 ] } }
+				]},
+				// if the preferred max number of children to adopt isn't specified
+				// AND the min number of children to adpot is lower than the smallest sibling group size
+				{ $and: [
+					{ 'matchingPreferences.maxNumberOfChildrenToAdopt': { $type: 10 } },
+					{ 'matchingPreferences.minNumberOfChildrenToAdopt': { $lt: preferredNumberOfChildrenRange[ 0 ] } }
+				]}
+			]}
+		]);
 	}
 	
 	// physical needs
