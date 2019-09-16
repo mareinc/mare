@@ -269,6 +269,11 @@ exports.extractChildData = child => {
 	return {
 		_id: child._id,
 		displayNameAndRegistration: child.displayNameAndRegistration,
-		status: child.status.childStatus
+		status: child.status.childStatus,
+		siblingsToBePlacedWith: child.siblingsToBePlacedWith.map( sibling => ({
+			name: sibling.name.full,
+			registrationNumber: sibling.registrationNumber,
+			id: sibling._id
+		}))
 	}
 }

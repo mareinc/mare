@@ -22,6 +22,21 @@
 
 				<div class="row form-group">
 					<div class="col-lg-6">
+						<div class="group-label float-left float-sm-right"><h5>Siblings:</h5></div>
+					</div>
+					<div class="col-lg-6">
+						\{{#ifeq child.siblingsToBePlacedWith.length 0}}
+						<div class="read-only-value float-left"><h5>none</h5></div>
+						\{{else}}
+							\{{#each child.siblingsToBePlacedWith as |sibling|}}
+							<div class="read-only-value float-left"><h5><a href="/keystone/children/\{{ sibling.id }}">\{{ sibling.registrationNumber }}</a> - \{{ sibling.name }}</h5></div>
+							\{{/each}}
+						\{{/ifeq}}
+					</div>
+				</div>
+
+				<div class="row form-group">
+					<div class="col-lg-6">
 						<div class="group-label float-left float-sm-right"><h5>Gender Preference:</h5></div>
 					</div>
 					<div class="col-lg-6">
