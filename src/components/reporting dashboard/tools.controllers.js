@@ -57,9 +57,24 @@ exports.getChildMatchingData = ( req, res, next ) => {
 						params.familyConstellation = Array.isArray( child.recommendedFamilyConstellation ) ? child.recommendedFamilyConstellation.map( ( constellation ) => constellation.toString() ) : [];
 						params.agesFrom = child.birthDate ? moment().diff( child.birthDate, 'years' ) : '';
 						params.siblingGroupSizeFrom = child.siblingsToBePlacedWith && child.siblingsToBePlacedWith.length > 0 ? child.siblingsToBePlacedWith.length + 1 : 1;
-						params.physicalNeedsFrom = child.physicalNeeds ? child.physicalNeeds : '';
-						params.intellectualNeedsFrom = child.intellectualNeeds ? child.intellectualNeeds : '';
-						params.emotionalNeedsFrom = child.emotionalNeeds ? child.emotionalNeeds : '';
+						
+						// determine default needs ranges
+						const childHasSiblings = params.siblingGroupSizeFrom > 1;
+						// physical needs
+						const childPhysicalNeeds = child.physicalNeeds ? child.physicalNeeds : '';
+						params.physicalNeedsFrom = childHasSiblings
+							? childMatchingService.findMaxLevelOfNeeds( [ childPhysicalNeeds ].concat( child.siblingsToBePlacedWith.map( sibling => sibling.physicalNeeds ? sibling.physicalNeeds : '' ) ) )
+							: childPhysicalNeeds;
+						// intellectual needsa
+						const childIntellectualNeeds = child.intellectualNeeds ? child.intellectualNeeds : '';
+						params.intellectualNeedsFrom = childHasSiblings
+							? childMatchingService.findMaxLevelOfNeeds( [ childIntellectualNeeds ].concat( child.siblingsToBePlacedWith.map( sibling => sibling.intellectualNeeds ? sibling.intellectualNeeds : '' ) ) )
+							: childIntellectualNeeds;
+						// emotional needs
+						const childEmotionalNeeds = child.emotionalNeeds ? child.emotionalNeeds : '';
+						params.emotionalNeedsFrom = childHasSiblings
+							? childMatchingService.findMaxLevelOfNeeds( [ childEmotionalNeeds ].concat( child.siblingsToBePlacedWith.map( sibling => sibling.emotionalNeeds ? sibling.emotionalNeeds : '' ) ) )
+							: childEmotionalNeeds;
 				
 						result.params = params;
 						

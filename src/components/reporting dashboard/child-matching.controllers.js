@@ -198,7 +198,7 @@ exports.getCriteria = query => {
 	}
 	
 	return criteria;
-}
+};
 
 exports.getFamiliesByCriteria = criteria => {
 
@@ -232,7 +232,7 @@ exports.getFamiliesByCriteria = criteria => {
 				});
 		}
 	});
-}
+};
 
 /* map the array of families to plain objects */
 exports.mapFamiliesToPlainObjects = families => {
@@ -257,12 +257,12 @@ exports.mapFamiliesToPlainObjects = families => {
 	};
 	
 	return families.map( mapper );
-}
+};
 
 /* sort families plain objects by name property */
 exports.sortFunction = ( a, b ) => {
 	return a.name.localeCompare( b.name );
-}
+};
 
 /* Extracts minimal child data */
 exports.extractChildData = child => {
@@ -276,4 +276,28 @@ exports.extractChildData = child => {
 			id: sibling._id
 		}))
 	}
-}
+};
+
+// create a dictionary to map the various levels of need to a number to allow comparison
+const NEEDS_SPECTRUM_DICTIONARY = {
+	none: 1,
+	mild: 2,
+	moderate: 3,
+	severe: 4
+};
+
+/* find the maximum level of needs in list of needs */
+exports.findMaxLevelOfNeeds = needs => {
+	
+	// set the default max needs to the lowest level of needs
+	let maxNeeds = 'none';
+
+	// check each need to see if is greater than the current max needs
+	needs.forEach( need => {
+		if ( NEEDS_SPECTRUM_DICTIONARY[ need ] && NEEDS_SPECTRUM_DICTIONARY[ need ] > NEEDS_SPECTRUM_DICTIONARY[ maxNeeds ] ) {
+			maxNeeds = need;
+		}
+	});
+
+	return maxNeeds;
+};
