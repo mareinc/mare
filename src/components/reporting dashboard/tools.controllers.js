@@ -56,7 +56,7 @@ exports.getChildMatchingData = ( req, res, next ) => {
 						params.legalStatus = child.legalStatus ?  [ child.legalStatus.toString() ] : [];
 						params.familyConstellation = Array.isArray( child.recommendedFamilyConstellation ) ? child.recommendedFamilyConstellation.map( ( constellation ) => constellation.toString() ) : [];
 						params.agesFrom = child.birthDate ? moment().diff( child.birthDate, 'years' ) : '';
-						params.siblingGroupSizeFrom = child.siblings && child.siblings.length > 0 ? child.siblings.length + 1 : 1;
+						params.siblingGroupSizeFrom = child.siblingsToBePlacedWith && child.siblingsToBePlacedWith.length > 0 ? child.siblingsToBePlacedWith.length + 1 : 1;
 						params.physicalNeedsFrom = child.physicalNeeds ? child.physicalNeeds : '';
 						params.intellectualNeedsFrom = child.intellectualNeeds ? child.intellectualNeeds : '';
 						params.emotionalNeedsFrom = child.emotionalNeeds ? child.emotionalNeeds : '';
