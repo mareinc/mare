@@ -32,7 +32,7 @@ $(function() {
 		case 'recover'								: mare.routers.recover = new mare.routers.Recover();										break;
 		case 'register'                 			: mare.routers.registration = new mare.routers.Registration();								break;
 		case 'steps-in-the-process'					: mare.routers.stepsInTheProcess = new mare.routers.StepsInTheProcess();					break;
-		case 'success-stories'          			: mare.routers.successStories = new mare.routers.SuccessStories();							break;
+		case 'adoption-stories'          			: mare.routers.successStories = new mare.routers.SuccessStories();							break;
 		case 'waiting-child-profiles'				: mare.routers.waitingChildProfiles = new mare.routers.WaitingChildProfiles();				break;
 		case 'tools'								: mare.routers.tools = new mare.routers.Tools();											break;
 	}
