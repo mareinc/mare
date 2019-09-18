@@ -46,7 +46,7 @@ Featured.add({
 }, 'Success Story', {
 
 	successStory: {
-		title: { type: Types.Text, label: 'success story title', initial: true, default: 'Success Stories' },
+		title: { type: Types.Text, label: 'success story title', initial: true, default: 'Adoption Stories' },
 		target: { type: Types.Relationship, ref: 'Success Story', label: 'success story', required: true, initial: true },
 		image: { type: Types.File, storage: imageStorage, label: 'success story image' },
 		url: { type: Types.Url, label: 'success story url', noedit: true }
