@@ -11,6 +11,7 @@
 			'family-matching/:familyId(?*queryString)'	: 'loadFamilyMatching',
 			'child-matching'							: 'loadChildMatchingRequest',
 			'child-matching/:childId(?*queryString)'	: 'loadChildMatching',
+			'inquiry-report'							: 'loadInquiryReport',
 			'*other'									: 'loadDefault'
 		},
 
@@ -40,6 +41,10 @@
 		
 		loadChildMatchingRequest: function() {
 			mare.views.tools.showChildMatchingRequest();
+		},
+
+		loadInquiryReport: function() {
+			mare.views.tools.showInquiryReport();
 		},
 		
 		loadDefault: function() {

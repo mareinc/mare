@@ -43,7 +43,8 @@
 /* Highlight active tools navigation item based on the current page */
 body.tools__dashboard .tools__dashboard,
 body.tools__family-matching .tools__family-matching,
-body.tools__child-matching .tools__child-matching {
+body.tools__child-matching .tools__child-matching,
+body.tools__inquiry-report .tools__inquiry-report {
 	background: #1cb0b0;
     border: none;
 }
