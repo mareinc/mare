@@ -4,41 +4,40 @@
 	</button>
 	
     <h2 class="panel__h2 mb-2">Inquiry Report</h2>
-    <div class="filter-form mb-2">
-        <div class="row">
-            <div class="col-lg-2 align-middle">
-                <div class="filter-form__label mh-100">
-                <p>Date range:</p>
-                </div>
-            </div>
-            <div class="col-6 col-lg-5">
-                <div class="form-group">
-                    <div class="input-daterange">
-                        <label for="fromDate"><span class="sr-only">To Date</span>
-                            <input  class="form-control" type="date" name="fromDate" id="fromDate" value="{{ fromDate }}" required />
-                            <div class="input-group-addon">
-                                <span></span>
-                            </div>
-                        </label>								
+    <div class="inquiry-report">
+        <div class="filter-form mb-2">
+            <div class="row">
+                <div class="col-lg-2 align-middle">
+                    <div class="filter-form__label mh-100">
+                    <p>Date range:</p>
                     </div>
                 </div>
-            </div>
-            <div class="col-6 col-lg-5">
-                <div class="form-group">
-                    <div class="input-daterange">
-                        <label for="toDate"><span class="sr-only">To Date</span>
-                            <input class="form-control" type="date" name="toDate" id="toDate" value="\{{ toDate }}" required />
-                            <div class="input-group-addon">
-                                <span></span>
-                            </div>
-                        </label>
+                <div class="col-6 col-lg-5">
+                    <div class="form-group">
+                        <div class="input-daterange">
+                            <label for="fromDate"><span class="sr-only">To Date</span>
+                                <input  class="form-control" type="date" name="fromDate" id="fromDate" value="{{ fromDate }}" required />
+                                <div class="input-group-addon">
+                                    <span></span>
+                                </div>
+                            </label>								
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-lg-5">
+                    <div class="form-group">
+                        <div class="input-daterange">
+                            <label for="toDate"><span class="sr-only">To Date</span>
+                                <input class="form-control" type="date" name="toDate" id="toDate" value="\{{ toDate }}" required />
+                                <div class="input-group-addon">
+                                    <span></span>
+                                </div>
+                            </label>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    
-    <div class="inquiry-report">
         <form class="matching-form">
             <input type="hidden" id="defaultFromDate" name="defaultFromDate" value="{{ defaultInquiryDateRange.fromDate }}" />
             <input type="hidden" id="defaultToDate" name="defaultToDate" value="{{ defaultInquiryDateRange.toDate }}" />

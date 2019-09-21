@@ -63,4 +63,32 @@
 	&__toggle-button {
 		clear: right;
 	}
+
+	.inquiry-report > & > .row {
+
+		// workaround to ensure that the inquiry report form fields line up with the date filter fields
+		// that have custom row styles applied to them (filter-form styles)
+		margin-left: 0;
+		margin-right: 0;
+
+		& > [class*="col-"] {
+			background-color: #eee;
+
+			&:nth-child(1) {
+				border-width: 1px;
+			}
+
+			&:nth-child(2) {
+				border-width: 1px 1px 1px 0;
+			}
+
+			&:nth-child(3) {
+				border-width: 0 1px 1px 1px;
+			}
+
+			&:nth-child(4) {
+				border-width: 0 1px 1px 0;
+			}
+		}
+	}
 }

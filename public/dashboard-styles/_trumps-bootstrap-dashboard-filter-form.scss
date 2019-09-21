@@ -54,6 +54,11 @@
 	.row {
 		margin-left: -2px;
 		margin-right: 2px;
+
+		// workaround to ensure that the inquiry report form fields line up with the date filter fields
+		.inquiry-report & {
+			margin-right: -2px;
+		}
 		
 		div[class*="col-"] {
 			padding-left: 2px;
