@@ -491,3 +491,37 @@ exports.getDashboardData = ( req, res, next ) => {
 			flashMessages.sendErrorFlashMessage( res, 'Error', 'Error loading the dashboard data' );
 		});
 };
+
+exports.getInquiryData = ( req, res, next ) => {
+	console.log(req.query);
+	
+	let fromDate = new Date( req.query.fromDate );
+	let toDate = new Date( req.query.toDate );
+
+	keystone.list( 'Inquiry' ).model
+		.find({
+			$and: [
+				{ takenOn: { $gte: fromDate } },
+				{ takenOn: { $lte: toDate } }
+			]
+		})
+		.lean()
+		.exec()
+		.then( inquiryDocs => {
+			let responseData = {};
+
+			if ( !inquiryDocs || inquiryDocs.length === 0 ) {
+				responseData.noResultsFound = true;
+			} else {
+				responseData.results = inquiryDocs;
+			}
+			
+			res.send( responseData );
+		})
+		.catch( err => {
+			// log an error for debugging purposes
+			console.error( `error loading inquiries for the dashboard - ${ err }` );
+
+			flashMessages.sendErrorFlashMessage( res, 'Error', 'Error loading inquiry data' );
+		});
+};

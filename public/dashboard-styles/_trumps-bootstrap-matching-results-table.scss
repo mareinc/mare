@@ -4,4 +4,28 @@
         text-align: right;
         padding-right: 5px;
     }
+
+    &__button-bar {
+        margin-bottom: 1em;
+        width: 100%;
+        display: flex;
+        flex-flow: row wrap;
+        align-items: center;
+
+        .button {
+            margin-bottom: 0; // ensures consistent vertical alignment for button-bar content
+        }
+    }
+
+    &__record-count {
+        margin-left: auto;
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: flex-end;
+
+        .record-count__label {
+            margin-right: 3px;
+            font-weight: 700;
+        }
+    }
 }

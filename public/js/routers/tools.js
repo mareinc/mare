@@ -12,6 +12,7 @@
 			'child-matching'							: 'loadChildMatchingRequest',
 			'child-matching/:childId(?*queryString)'	: 'loadChildMatching',
 			'inquiry-report'							: 'loadInquiryReport',
+			'inquiry-report/:fromDate/:toDate'			: 'loadInquiryReportByDateRange',
 			'*other'									: 'loadDefault'
 		},
 
@@ -45,6 +46,10 @@
 
 		loadInquiryReport: function() {
 			mare.views.tools.showInquiryReport();
+		},
+
+		loadInquiryReportByDateRange: function( fromDate, toDate ) {
+			mare.views.tools.showInquiryReport( fromDate, toDate );
 		},
 		
 		loadDefault: function() {

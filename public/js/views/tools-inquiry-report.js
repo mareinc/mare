@@ -2,10 +2,10 @@
 	'use strict';
 
 	mare.views.InquiryReport = Backbone.View.extend({
+		
 		// this view controls everything inside the element with class 'dashboard-content'
 		el: '.dashboard-content',
 
-		/* initialize the view */
 		initialize: function() {
 			var toolsInquiryReportTemplate = $( '#tools-inquiry-report-template' ).html();
 			
@@ -41,23 +41,82 @@
             });
         },
 
-		/* render the view onto the page */
 		render: function( fromDate, toDate ) {
             var view = this;
-
-            view.$el.html( view.template() );
-
-            // initialize select inputs
-            view.initializeSourceSelect();
-            view.initializeInquirerSelect();
-			view.initializeInquiryMethodSelect();
-			view.initializeInquiryTypeSelect();
 			
 			// if the from and to dates are not passed in, set them using the defaults
 			if ( !fromDate || !toDate ) {
-				this.$el.find( '[name="fromDate"]' ).val( this.$el.find( '[name="defaultFromDate"]' ).val() );
-				this.$el.find( '[name="toDate"]' ).val( this.$el.find( '[name="defaultToDate"]' ).val() );
+				view.$el.html( view.template() );
+
+				// initialize select inputs
+				view.initializeSourceSelect();
+				view.initializeInquirerSelect();
+				view.initializeInquiryMethodSelect();
+				view.initializeInquiryTypeSelect();
+
+				view.$el.find( '[name="fromDate"]' ).val( view.$el.find( '[name="defaultFromDate"]' ).val() );
+				view.$el.find( '[name="toDate"]' ).val( view.$el.find( '[name="defaultToDate"]' ).val() );
+				
+			// otherwise, set the from and to dates using the route params
+			} else {
+
+				view.$el.html( view.template({
+					waitingForResults: true
+				}));
+				view.initializeSourceSelect();
+				view.initializeInquirerSelect();
+				view.initializeInquiryMethodSelect();
+				view.initializeInquiryTypeSelect();
+
+				view.getInquiryData( fromDate, toDate )
+					.done( function( data ) {
+
+						console.log(data);
+
+						view.$el.html( view.template( data ) );
+
+						view.$el.find( '[name="fromDate"]' ).val( fromDate );
+						view.$el.find( '[name="toDate"]' ).val( toDate );
+
+						view.initializeSourceSelect();
+						view.initializeInquirerSelect();
+						view.initializeInquiryMethodSelect();
+						view.initializeInquiryTypeSelect();
+					});
 			}
+		},
+
+		getInquiryData: function( fromDate, toDate ) {
+			var queryParams = {};
+			
+			if ( fromDate && toDate ) {
+				queryParams = {
+					fromDate: fromDate,
+					toDate: toDate
+				};
+			}
+			
+			return $.Deferred( function( defer ) {
+				$.ajax({
+					dataType: 'json',
+					url: '/tools/services/get-inquiry-data',
+					data: queryParams,
+					type: 'GET'
+				})
+				.done( function( data ) {
+					if ( data.status === 'error' ) {
+						// display the flash message
+						mare.views.flashMessages.initializeAJAX( data.flashMessage );
+						defer.reject();
+					} else {
+						defer.resolve( data );
+					}
+				})
+				.fail( function( err ) {
+					console.log( err );
+					defer.reject();
+				});
+			}).promise();
 		}
 	});
 }());

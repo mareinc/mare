@@ -133,6 +133,7 @@ exports = module.exports = app => {
 	app.get( '/tools/services/get-dashboard-data'				, accountMiddleware.requireUser( 'admin' ), toolsService.getDashboardData );
 	app.get( '/tools/services/get-child-matching-data'			, accountMiddleware.requireUser( 'admin' ), toolsService.getChildMatchingData );
 	app.get( '/tools/services/get-family-matching-data'			, accountMiddleware.requireUser( 'admin' ), toolsService.getFamilyMatchingData );
+	app.get( '/tools/services/get-inquiry-data'					, accountMiddleware.requireUser( 'admin' ), toolsService.getInquiryData );
 
 	// webhooks
 	app.get( '/webhooks/mailchimp'                      , mailchimpService.validateWebhookURL );
