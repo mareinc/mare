@@ -666,6 +666,34 @@ exports.getChildStatusIdByName = ( req, res, done, name ) => {
 		});
 };
 
+exports.getAllInquiryMethods = () => {
+	
+	return new Promise( ( resolve, reject ) => {
+
+		keystone.list( 'Inquiry Method').model
+			.find()
+			.lean()
+			.exec()
+			.then( inquiryMethods => {
+				// if no inquiry methods could be found
+				if ( !inquiryMethods || inquiryMethods.length === 0 ) {
+					// log an error for debugging purposes
+					console.error( 'no inquiry methods could be found' );
+					// reject the promise
+					return reject();
+				}
+				// otherwise, resolve with inquiry methods
+				resolve( inquiryMethods );
+			})
+			.catch( err => {
+				// log an error for debugging purposes
+				console.error( 'error fetching inquiry methods', err );
+				// and reject the promise
+				reject();
+			});
+	});
+};
+
 exports.getInquiryMethodByName = name => {
 
 	return new Promise( ( resolve, reject ) => {
@@ -688,6 +716,34 @@ exports.getInquiryMethodByName = name => {
 			}, err => {
 				// log an error for debugging purposes
 				console.error( `error fetching inquiry method matching ${ name }`, err );
+				// and reject the promise
+				reject();
+			});
+	});
+};
+
+exports.getAllInquiryTypes = () => {
+	
+	return new Promise( ( resolve, reject ) => {
+
+		keystone.list( 'Inquiry Type').model
+			.find()
+			.lean()
+			.exec()
+			.then( inquiryTypes => {
+				// if no inquiry types could be found
+				if ( !inquiryTypes || inquiryTypes.length === 0 ) {
+					// log an error for debugging purposes
+					console.error( 'no inquiry types could be found' );
+					// reject the promise
+					return reject();
+				}
+				// otherwise, resolve with inquiry types
+				resolve( inquiryTypes );
+			})
+			.catch( err => {
+				// log an error for debugging purposes
+				console.error( 'error fetching inquiry types', err );
 				// and reject the promise
 				reject();
 			});
@@ -718,6 +774,35 @@ exports.getSourceByName = name => {
 				console.error( `error fetching source matching ${ name }`, err );
 				// and reject the promise
 				reject();
+			});
+	});
+};
+
+exports.getSourcesByNameFragment = ( nameQuery, maxResults ) => {
+
+	return new Promise( ( resolve, reject ) => {
+		// if no maxResults was passed in
+		if( !maxResults ) {
+			// return control to the calling context
+			return reject( new Error( `error fetching sources by name - no maxResults passed in` ) );
+		}
+		
+		// fetch the sources
+		keystone.list( 'Source' ).model
+			.find( {
+				'source' : new RegExp( nameQuery, 'i' )
+			})
+			.sort( {
+				'source' : 'asc'
+			})
+			.limit( maxResults )
+			.exec()
+			.then( sources => resolve( sources ) )
+			.catch( err => {
+				// log an error for debugging purposes
+				console.error( `error fetching sources by name ${ nameQuery } and max results ${ maxResults }`, err );
+				// reject the promise with details about the error
+				reject( new Error( `error fetching sources by name ${ nameQuery } and max results ${ maxResults } - ${ err }` ) );
 			});
 	});
 };

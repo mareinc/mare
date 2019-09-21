@@ -13,7 +13,8 @@ const keystone 				= require( 'keystone' ),
 	  dashboardService		= require( './dashboard.controllers' ),
 	  childMatchingService	= require( './child-matching.controllers' ),
 	  familyMatchingService	= require( './family-matching.controllers' ),
-	  utilsService			= require( './utils.controllers' );
+	  utilsService			= require( './utils.controllers' ),
+	  listsService			= require( '../lists/list.controllers' );
 
 exports.getChildMatchingData = ( req, res, next ) => {
 	const userType	= req.user ? req.user.userType : '',
@@ -410,6 +411,17 @@ exports.getChildrenData = ( req, res, next ) => {
 		res
 	);
 
+};
+
+exports.getSourcesData = ( req, res, next ) => {
+
+	const MAX_RESULTS = 10;
+
+	utilsService.fetchModelsMapAndSendResults(
+		listsService.getSourcesByNameFragment( req.query.q, MAX_RESULTS ),
+		source => ( { id: source._id.toString(), text: source.source } ),
+		res
+	);
 };
 
 exports.getDashboardData = ( req, res, next ) => {

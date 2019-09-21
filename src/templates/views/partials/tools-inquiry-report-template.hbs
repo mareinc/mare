@@ -2,41 +2,101 @@
 	<button type="button" class="sidebarCollapse sidebarCollapse--content btn btn-info mb-4">
 		Reports
 	</button>
-	<div class="panel">
-		<h2 class="panel__h2 mb-2">Inquiry Report</h2>
-		<div class="filter-form mb-2">
-			<div class="row">
-				<div class="col-lg-2 align-middle">
-					<div class="filter-form__label mh-100">
-					<p>Date range:</p>
-					</div>
-				</div>
-				<div class="col-6 col-lg-5">
-					<div class="form-group">
-						<div class="input-daterange">
-							<label for="fromDate"><span class="sr-only">To Date</span>
-								<input  class="form-control" type="date" name="fromDate" id="fromDate" value="\{{ fromDate }}" required />
-							
-								<div class="input-group-addon">
-									<span></span>
-								</div>
-							</label>								
-						</div>
-					</div>
-				</div>
-				<div class="col-6 col-lg-5">
-					<div class="form-group">
-						<div class="input-daterange">
-							<label for="toDate"><span class="sr-only">To Date</span>
-								<input class="form-control" type="date" name="toDate" id="toDate" value="\{{ toDate }}" required />
-								<div class="input-group-addon">
-									<span></span>
-								</div>
-							</label>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+	
+    <h2 class="panel__h2 mb-2">Inquiry Report</h2>
+    <div class="filter-form mb-2">
+        <div class="row">
+            <div class="col-lg-2 align-middle">
+                <div class="filter-form__label mh-100">
+                <p>Date range:</p>
+                </div>
+            </div>
+            <div class="col-6 col-lg-5">
+                <div class="form-group">
+                    <div class="input-daterange">
+                        <label for="fromDate"><span class="sr-only">To Date</span>
+                            <input  class="form-control" type="date" name="fromDate" id="fromDate" value="{{ fromDate }}" required />
+                            <div class="input-group-addon">
+                                <span></span>
+                            </div>
+                        </label>								
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-lg-5">
+                <div class="form-group">
+                    <div class="input-daterange">
+                        <label for="toDate"><span class="sr-only">To Date</span>
+                            <input class="form-control" type="date" name="toDate" id="toDate" value="\{{ toDate }}" required />
+                            <div class="input-group-addon">
+                                <span></span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="inquiry-report">
+        <form class="matching-form">
+            <input type="hidden" id="defaultFromDate" name="defaultFromDate" value="{{ defaultInquiryDateRange.fromDate }}" />
+            <input type="hidden" id="defaultToDate" name="defaultToDate" value="{{ defaultInquiryDateRange.toDate }}" />
+            <div class="row">
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right" >
+                            <label for="source" class="bold">Source:</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                            <select id="source" name="source[]" class="form-control source-select" multiple>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right" >
+                            <label for="inquirer" class="bold">Inquirer:</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                            <select id="inquirer" name="inquirer[]" class="form-control inquirer-select" multiple>
+                                {{#each inquirers as |inquirer|}}
+                                    <option value="{{ inquirer }}">{{ inquirer }}</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right" >
+                            <label for="inquiry-type" class="bold">Inquiry Type:</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                            <select id="inquiry-type" name="inquiry-type[]" class="form-control inquiry-type-select" multiple>
+                                {{#each inquiryTypes as |inquiryType|}}
+                                    <option value="{{ inquiryType._id }}">{{ inquiryType.inquiryType }}</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right" >
+                            <label for="inquiry-method" class="bold">Inquiry Method:</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                            <select id="inquiry-method" name="inquiry-method[]" class="form-control inquiry-method-select" multiple>
+                                {{#each inquiryMethods as |inquiryMethod|}}
+                                    <option value="{{ inquiryMethod._id }}">{{ inquiryMethod.inquiryMethod }}</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
 </script>

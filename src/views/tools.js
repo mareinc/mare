@@ -1,4 +1,5 @@
 const keystone		= require( 'keystone' ),
+	  moment		= require( 'moment' ),
 	  listService	= require( '../components/lists/list.controllers' );
 	  utilsService	= require( '../components/reporting dashboard/utils.controllers' );
 
@@ -12,12 +13,14 @@ exports = module.exports = ( req, res ) => {
 		fetchGenders = listService.getAllGenders(),
 		fetchRaces = listService.getAllRaces(),
 		fetchLegalStatuses = listService.getAllLegalStatuses(),
-		fetchFamilyConstellations = listService.getAllFamilyConstellations();
+		fetchFamilyConstellations = listService.getAllFamilyConstellations(),
+		fetchInquiryMethods = listService.getAllInquiryMethods(),
+		fetchInquiryTypes = listService.getAllInquiryTypes();
 
-	Promise.all( [ fetchChildStatuses, fetchGenders, fetchRaces, fetchLegalStatuses, fetchFamilyConstellations ] )
+	Promise.all( [ fetchChildStatuses, fetchGenders, fetchRaces, fetchLegalStatuses, fetchFamilyConstellations, fetchInquiryMethods, fetchInquiryTypes ] )
 		.then( values => {
 			// assign local variables to the values returned by the promises
-			const [ childStatuses, genders, races, legalStatuses, familyConstellations ] = values;
+			const [ childStatuses, genders, races, legalStatuses, familyConstellations, inquiryMethods, inquiryTypes ] = values;
 			
 			// assign properties to locals for access during templating
 			locals.childStatuses = childStatuses;
@@ -31,6 +34,14 @@ exports = module.exports = ( req, res ) => {
 			locals.intellectualNeeds = utilsService.INTELLECTUAL_NEEDS_OPTIONS;
 			locals.emotionalNeeds = utilsService.EMOTIONAL_NEEDS_OPTIONS;
 			locals.socialNeeds = utilsService.SOCIAL_NEEDS_OPTIONS;
+			locals.inquirers = utilsService.INQUIRER_OPTIONS;
+			locals.inquiryMethods = inquiryMethods;
+			locals.inquiryTypes = inquiryTypes;
+			// create a range from 30 days ago to today
+			locals.defaultInquiryDateRange = {
+				fromDate: moment().subtract( 30, "days" ).format( 'YYYY-MM-DD' ),
+				toDate: moment().format( 'YYYY-MM-DD' )
+			};
 
 			// render the view using the tools.hbs template
 			view.render( 'tools', { layout: 'tools' } );

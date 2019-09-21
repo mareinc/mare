@@ -127,6 +127,7 @@ exports = module.exports = app => {
 	app.get( '/tools/services/get-social-workers-data'			, accountMiddleware.requireUser( 'admin' ), toolsService.getSocialWorkersData );
 	app.get( '/tools/services/get-families-data'				, accountMiddleware.requireUser( 'admin' ), toolsService.getFamiliesData );
 	app.get( '/tools/services/get-children-data'				, accountMiddleware.requireUser( 'admin' ), toolsService.getChildrenData );
+	app.get( '/tools/services/get-sources-data'					, accountMiddleware.requireUser( 'admin' ), toolsService.getSourcesData );
 	app.post( '/tools/services/save-children-matching-history'	, accountMiddleware.requireUser( 'admin' ), toolsService.saveChildrenMatchingHistory );
 	app.post( '/tools/services/save-families-matching-history'	, accountMiddleware.requireUser( 'admin' ), toolsService.saveFamiliesMatchingHistory );
 	app.get( '/tools/services/get-dashboard-data'				, accountMiddleware.requireUser( 'admin' ), toolsService.getDashboardData );
