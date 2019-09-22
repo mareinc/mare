@@ -538,17 +538,62 @@ exports.getInquiryData = ( req, res, next ) => {
 
 	keystone.list( 'Inquiry' ).model
 		.find( searchCriteria )
+		.populate( 'inquiryMethod children family' )
+		.populate({
+			path: 'childsSocialWorker',
+			populate: {
+				path: 'agency',
+				populate: {
+					path: 'address.region'
+				}
+			}
+		})
 		.lean()
 		.exec()
 		.then( inquiryDocs => {
 			let responseData = {};
-
+			// if no results were returned, send the 'noResults' flag
 			if ( !inquiryDocs || inquiryDocs.length === 0 ) {
 				responseData.noResultsFound = true;
+			// if the query returned results, map the relevant fields
 			} else {
-				responseData.results = inquiryDocs;
+				responseData.results = inquiryDocs.map( inquiryDoc => {
+					// get the child from the inquiry document
+					let child = inquiryDoc.children && inquiryDoc.children.length > 0 ? inquiryDoc.children[ 0 ] : undefined;
+					// get any additional children (as siblings)
+					let siblings = child && inquiryDoc.children.length > 1 ? inquiryDoc.children.slice( 1 ) : undefined;
+					// get the family from the inquiry document
+					let family = inquiryDoc.family ? inquiryDoc.family : undefined;
+					// create a response object
+					return {
+						childId: child ? child._id.toString() : '',
+						childRegistrationNumber: child ? child.registrationNumber : '',
+						childNameFirst: child ? child.name.first : 'Not',
+						childNameLast: child ? child.name.last : 'Specified',
+						siblings: siblings 
+							? siblings.map( sibling => ({
+								siblingId: sibling._id.toString(),
+								siblingRegistrationNumber: sibling.registrationNumber,
+								siblingName: sibling.name.full
+							}))
+							: undefined,
+						childsSWAgencyRegion: inquiryDoc.childsSocialWorker
+							? inquiryDoc.childsSocialWorker.agency
+								? inquiryDoc.childsSocialWorker.agency.address.region
+									? inquiryDoc.childsSocialWorker.agency.address.region.region
+									: undefined
+								: undefined
+							: undefined,
+						familyId: family ? family._id.toString() : '',
+						familyRegistrationNumber: family ? family.registrationNumber : '',
+						familyContact1: family ? family.contact1.name.full : 'Not Specified',
+						familyContact2: family ? family.contact2.name.full : 'Not Specified',
+						inquiryType: inquiryDoc.inquiryType,
+						inquiryMethod: inquiryDoc.inquiryMethod.inquiryMethod
+					}
+				});
 			}
-			
+			// send the response data
 			res.send( responseData );
 		})
 		.catch( err => {
