@@ -7,7 +7,8 @@
 		el: '.dashboard-content',
 
 		events: {
-			'click .inquiries-search-button'	: 'handleSearchClick'
+			'click .inquiries-search-button'		: 'handleSearchClick',
+			'click .inquiries-search-reset-button'	: 'handleResetClick'
 		},
 
 		initialize: function() {
@@ -84,6 +85,10 @@
 
 			// perform the search
 			mare.routers.tools.navigate( 'inquiry-report/' + fromDate + '/' + toDate + ( queryString.length > 0 ? '?' + queryString : '' ), { trigger: true } );
+		},
+
+		handleResetClick: function() {
+			mare.routers.tools.navigate( 'inquiry-report', { trigger: true } );
 		},
 
 		render: function( fromDate, toDate, params ) {
