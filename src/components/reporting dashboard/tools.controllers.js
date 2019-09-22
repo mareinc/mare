@@ -531,75 +531,105 @@ exports.getInquiryData = ( req, res, next ) => {
 	}
 
 	// source criteria (multiple)
+	let sourcesCriteria;
 	if ( Array.isArray( query.source ) && query.source.length > 0 ) {
-		let filteredCriteria = query.source.filter( ( objectId ) => ObjectId.isValid( objectId ) );
-		searchCriteria[ 'source' ] = { $in: filteredCriteria };
+		sourcesCriteria = query.source.filter( ( objectId ) => ObjectId.isValid( objectId ) );
+		searchCriteria[ 'source' ] = { $in: sourcesCriteria };
 	}
 
-	keystone.list( 'Inquiry' ).model
-		.find( searchCriteria )
-		.populate( 'inquiryMethod children family' )
-		.populate({
-			path: 'childsSocialWorker',
-			populate: {
-				path: 'agency',
+	Promise.all([
+		// get the inquiries that match the specified date range and criteria
+		keystone.list( 'Inquiry' ).model
+			.find( searchCriteria )
+			.populate( 'inquiryMethod children family' )
+			.populate({
+				path: 'childsSocialWorker',
 				populate: {
-					path: 'address.region'
-				}
-			}
-		})
-		.lean()
-		.exec()
-		.then( inquiryDocs => {
-			let responseData = {};
-			// if no results were returned, send the 'noResults' flag
-			if ( !inquiryDocs || inquiryDocs.length === 0 ) {
-				responseData.noResultsFound = true;
-			// if the query returned results, map the relevant fields
-			} else {
-				responseData.results = inquiryDocs.map( inquiryDoc => {
-					// get the child from the inquiry document
-					let child = inquiryDoc.children && inquiryDoc.children.length > 0 ? inquiryDoc.children[ 0 ] : undefined;
-					// get any additional children (as siblings)
-					let siblings = child && inquiryDoc.children.length > 1 ? inquiryDoc.children.slice( 1 ) : undefined;
-					// get the family from the inquiry document
-					let family = inquiryDoc.family ? inquiryDoc.family : undefined;
-					// create a response object
-					return {
-						childId: child ? child._id.toString() : '',
-						childRegistrationNumber: child ? child.registrationNumber : '',
-						childNameFirst: child ? child.name.first : 'Not',
-						childNameLast: child ? child.name.last : 'Specified',
-						siblings: siblings 
-							? siblings.map( sibling => ({
-								siblingId: sibling._id.toString(),
-								siblingRegistrationNumber: sibling.registrationNumber,
-								siblingName: sibling.name.full
-							}))
-							: undefined,
-						childsSWAgencyRegion: inquiryDoc.childsSocialWorker
-							? inquiryDoc.childsSocialWorker.agency
-								? inquiryDoc.childsSocialWorker.agency.address.region
-									? inquiryDoc.childsSocialWorker.agency.address.region.region
-									: undefined
-								: undefined
-							: undefined,
-						familyId: family ? family._id.toString() : '',
-						familyRegistrationNumber: family ? family.registrationNumber : '',
-						familyContact1: family ? family.contact1.name.full : 'Not Specified',
-						familyContact2: family ? family.contact2.name.full : 'Not Specified',
-						inquiryType: inquiryDoc.inquiryType,
-						inquiryMethod: inquiryDoc.inquiryMethod.inquiryMethod
+					path: 'agency',
+					populate: {
+						path: 'address.region'
 					}
-				});
-			}
-			// send the response data
-			res.send( responseData );
-		})
-		.catch( err => {
-			// log an error for debugging purposes
-			console.error( `error loading inquiries for the dashboard - ${ err }` );
+				}
+			})
+			.lean()
+			.exec(),
+		// if thare are sources specified, get the sources docs to seed the select on the search form
+		sourcesCriteria
+			? keystone.list( 'Source' ).model
+				.find({
+					_id: { $in: sourcesCriteria }
+				})
+				.lean()
+				.exec()
+				.catch( err => {
+					// log an error for debugging purposes
+					console.error( `error loading sources for the inquiry report dashboard - ${ err }` );
+					// return false to allow the view to render regardless of the error
+					return false;
+				})
+			: false
+	])
+	.then( results => {
 
-			flashMessages.sendErrorFlashMessage( res, 'Error', 'Error loading inquiry data' );
-		});
+		let [ inquiryDocs, sourceDocs ] = results;
+		let responseData = {
+			// if there are sources, parse them and add them to the response
+			sources: sourceDocs
+				? sourceDocs.map( source => ({ 
+					id: source._id.toString(), 
+					text: source.source 
+				}))
+				: false
+		};
+
+		// if no results were returned, send the 'noResults' flag
+		if ( !inquiryDocs || inquiryDocs.length === 0 ) {
+			responseData.noResultsFound = true;
+		// if the query returned results, map the relevant fields
+		} else {
+			responseData.results = inquiryDocs.map( inquiryDoc => {
+				// get the child from the inquiry document
+				let child = inquiryDoc.children && inquiryDoc.children.length > 0 ? inquiryDoc.children[ 0 ] : undefined;
+				// get any additional children (as siblings)
+				let siblings = child && inquiryDoc.children.length > 1 ? inquiryDoc.children.slice( 1 ) : undefined;
+				// get the family from the inquiry document
+				let family = inquiryDoc.family ? inquiryDoc.family : undefined;
+				// create a response object
+				return {
+					childId: child ? child._id.toString() : '',
+					childRegistrationNumber: child ? child.registrationNumber : '',
+					childNameFirst: child ? child.name.first : 'Child Not',
+					childNameLast: child ? child.name.last : 'Specified',
+					siblings: siblings 
+						? siblings.map( sibling => ({
+							siblingId: sibling._id.toString(),
+							siblingRegistrationNumber: sibling.registrationNumber,
+							siblingName: sibling.name.full
+						}))
+						: undefined,
+					childsSWAgencyRegion: inquiryDoc.childsSocialWorker
+						? inquiryDoc.childsSocialWorker.agency
+							? inquiryDoc.childsSocialWorker.agency.address.region
+								? inquiryDoc.childsSocialWorker.agency.address.region.region
+								: undefined
+							: undefined
+						: undefined,
+					familyId: family ? family._id.toString() : '',
+					familyRegistrationNumber: family ? family.registrationNumber : '',
+					familyContact1: family ? family.contact1.name.full : 'Not Specified',
+					familyContact2: family ? family.contact2.name.full : 'Not Specified',
+					inquiryType: inquiryDoc.inquiryType,
+					inquiryMethod: inquiryDoc.inquiryMethod.inquiryMethod
+				}
+			});
+		}
+		// send the response data
+		res.send( responseData );
+	})
+	.catch( err => {
+		// log an error for debugging purposes
+		console.error( `error loading inquiries for the dashboard - ${ err }` );
+
+		flashMessages.sendErrorFlashMessage( res, 'Error', 'Error loading inquiry data' );
+	});
 };

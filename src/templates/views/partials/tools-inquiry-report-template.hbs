@@ -51,6 +51,9 @@
                         </div>
                         <div class="col-sm-12 col-md-8">
                             <select id="source" name="source[]" class="form-control source-select" multiple>
+                                \{{#each sources as |source|}}
+                                    <option value="\{{ source.id }}" selected>\{{ source.text }}</option>
+                                \{{/each}}
                             </select>
                         </div>
                     </div>
@@ -141,6 +144,8 @@
                         <td class="column--numerical">
                             \{{#if result.childId}}
                                 <a href="/keystone/children/\{{ result.childId }}">\{{ result.childRegistrationNumber }}</a>
+                            \{{else}}
+                                --
                             \{{/if}}
                         </td>
                         <td>\{{ result.childNameFirst }}</td>
@@ -151,6 +156,8 @@
                         <td class="column--numerical">
                             \{{#if result.familyId}}
                                 <a href="/keystone/families/\{{ result.familyId }}">\{{ result.familyRegistrationNumber }}</a>
+                            \{{else}}
+                                --
                             \{{/if}}
                         </td>
                         <td>\{{ result.familyContact1 }}</td>
