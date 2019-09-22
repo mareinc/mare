@@ -14,13 +14,12 @@ exports = module.exports = ( req, res ) => {
 		fetchRaces = listService.getAllRaces(),
 		fetchLegalStatuses = listService.getAllLegalStatuses(),
 		fetchFamilyConstellations = listService.getAllFamilyConstellations(),
-		fetchInquiryMethods = listService.getAllInquiryMethods(),
-		fetchInquiryTypes = listService.getAllInquiryTypes();
+		fetchInquiryMethods = listService.getAllInquiryMethods();
 
-	Promise.all( [ fetchChildStatuses, fetchGenders, fetchRaces, fetchLegalStatuses, fetchFamilyConstellations, fetchInquiryMethods, fetchInquiryTypes ] )
+	Promise.all( [ fetchChildStatuses, fetchGenders, fetchRaces, fetchLegalStatuses, fetchFamilyConstellations, fetchInquiryMethods ] )
 		.then( values => {
 			// assign local variables to the values returned by the promises
-			const [ childStatuses, genders, races, legalStatuses, familyConstellations, inquiryMethods, inquiryTypes ] = values;
+			const [ childStatuses, genders, races, legalStatuses, familyConstellations, inquiryMethods ] = values;
 			
 			// assign properties to locals for access during templating
 			locals.childStatuses = childStatuses;
@@ -35,8 +34,8 @@ exports = module.exports = ( req, res ) => {
 			locals.emotionalNeeds = utilsService.EMOTIONAL_NEEDS_OPTIONS;
 			locals.socialNeeds = utilsService.SOCIAL_NEEDS_OPTIONS;
 			locals.inquirers = utilsService.INQUIRER_OPTIONS;
+			locals.inquiryTypes = utilsService.INQUIRY_TYPES;
 			locals.inquiryMethods = inquiryMethods;
-			locals.inquiryTypes = inquiryTypes;
 			// create a range from 30 days ago to today
 			locals.defaultInquiryDateRange = {
 				fromDate: moment().subtract( 30, "days" ).format( 'YYYY-MM-DD' ),

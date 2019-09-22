@@ -5,7 +5,8 @@ exports.PHYSICAL_NEEDS_OPTIONS = [ 'none', 'mild', 'moderate', 'severe' ];
 exports.INTELLECTUAL_NEEDS_OPTIONS = [ 'none', 'mild', 'moderate', 'severe' ];
 exports.EMOTIONAL_NEEDS_OPTIONS = [ 'none', 'mild', 'moderate', 'severe' ];
 exports.SOCIAL_NEEDS_OPTIONS = [ 'none', 'mild', 'moderate', 'severe' ];
-exports.INQUIRER_OPTIONS = [ 'site visitor', 'family', 'social worker '];
+exports.INQUIRER_OPTIONS = [ 'site visitor', 'family', 'social worker' ];
+exports.INQUIRY_TYPES = [ 'child inquiry', 'complaint', 'family support consultation', 'general inquiry' ];
 
 exports.getPhysicalNeedsRange = ( fromNeed, toNeed ) => {
 	return utilityService.arrayCut( exports.PHYSICAL_NEEDS_OPTIONS, fromNeed, toNeed );

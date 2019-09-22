@@ -493,18 +493,51 @@ exports.getDashboardData = ( req, res, next ) => {
 };
 
 exports.getInquiryData = ( req, res, next ) => {
-	console.log(req.query);
 	
-	let fromDate = new Date( req.query.fromDate );
-	let toDate = new Date( req.query.toDate );
+	// get the query from the request object
+	let query = req.query;
+	
+	// get the date range of the inquiry search
+	let fromDate = new Date( query.fromDate );
+	let toDate = new Date( query.toDate );
+
+	// ensure both fromDate and toDate are valid dates
+	if ( isNaN( fromDate.getTime() ) || isNaN( toDate.getTime() ) ) {
+		return flashMessages.sendErrorFlashMessage( res, 'Error', 'Error loading inquiry data' );
+	}
+
+	// create the baseline search criteria with a date range
+	let searchCriteria = {
+		$and: [
+			{ takenOn: { $gte: fromDate } },
+			{ takenOn: { $lte: toDate } }
+		]
+	};
+
+	// inquirer criteria (multiple)
+	if ( Array.isArray( query.inquirer ) && query.inquirer.length > 0 ) {
+		searchCriteria[ 'inquirer' ] = { $in: query.inquirer };
+	}
+
+	// inquiry type criteria (multiple)
+	if ( Array.isArray( query.inquiryType ) && query.inquiryType.length > 0 ) {
+		searchCriteria[ 'inquiryType' ] = { $in: query.inquiryType };
+	}
+
+	// inquiry method criteria (multiple)
+	if ( Array.isArray( query.inquiryMethod ) && query.inquiryMethod.length > 0 ) {
+		let filteredCriteria = query.inquiryMethod.filter( ( objectId ) => ObjectId.isValid( objectId ) );
+		searchCriteria[ 'inquiryMethod' ] = { $in: filteredCriteria };
+	}
+
+	// source criteria (multiple)
+	if ( Array.isArray( query.source ) && query.source.length > 0 ) {
+		let filteredCriteria = query.source.filter( ( objectId ) => ObjectId.isValid( objectId ) );
+		searchCriteria[ 'source' ] = { $in: filteredCriteria };
+	}
 
 	keystone.list( 'Inquiry' ).model
-		.find({
-			$and: [
-				{ takenOn: { $gte: fromDate } },
-				{ takenOn: { $lte: toDate } }
-			]
-		})
+		.find( searchCriteria )
 		.lean()
 		.exec()
 		.then( inquiryDocs => {

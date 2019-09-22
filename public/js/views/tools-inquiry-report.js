@@ -108,7 +108,6 @@
 				// search for inquiries using the date range and query params
 				view.getInquiryData( fromDate, toDate, params )
 					.done( function( data ) {
-						console.log(data);
 						// render the view with the search results
 						view.$el.html( view.template( data ) );
 						view.initializeSearchForm( fromDate, toDate, params );
