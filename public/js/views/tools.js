@@ -44,8 +44,8 @@
 			this.$el.attr('class', 'tools__child-matching');
 		},
 
-		showInquiryReport: function( fromDate, toDate ) {
-			mare.views.inquiryReport.render( fromDate, toDate );
+		showInquiryReport: function( fromDate, toDate, params ) {
+			mare.views.inquiryReport.render( fromDate, toDate, params );
 			// update the body class to indicate what screen this is
 			this.$el.attr('class', 'tools__inquiry-report');
 		}

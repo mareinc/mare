@@ -4,16 +4,16 @@
 	mare.routers.Tools = Backbone.Router.extend({
 		
 		routes: {
-			''											: 'loadDefault',
-			'dashboard'									: 'loadDashboard',
-			'dashboard/:fromDate/:toDate'				: 'loadDashboardByDateRange',
-			'family-matching'							: 'loadFamilyMatchingRequest',
-			'family-matching/:familyId(?*queryString)'	: 'loadFamilyMatching',
-			'child-matching'							: 'loadChildMatchingRequest',
-			'child-matching/:childId(?*queryString)'	: 'loadChildMatching',
-			'inquiry-report'							: 'loadInquiryReport',
-			'inquiry-report/:fromDate/:toDate'			: 'loadInquiryReportByDateRange',
-			'*other'									: 'loadDefault'
+			''													: 'loadDefault',
+			'dashboard'											: 'loadDashboard',
+			'dashboard/:fromDate/:toDate'						: 'loadDashboardByDateRange',
+			'family-matching'									: 'loadFamilyMatchingRequest',
+			'family-matching/:familyId(?*queryString)'			: 'loadFamilyMatching',
+			'child-matching'									: 'loadChildMatchingRequest',
+			'child-matching/:childId(?*queryString)'			: 'loadChildMatching',
+			'inquiry-report'									: 'loadInquiryReport',
+			'inquiry-report/:fromDate/:toDate(?*queryString)'	: 'loadInquiryReport',
+			'*other'											: 'loadDefault'
 		},
 
 		initialize: function() {
@@ -44,12 +44,8 @@
 			mare.views.tools.showChildMatchingRequest();
 		},
 
-		loadInquiryReport: function() {
-			mare.views.tools.showInquiryReport();
-		},
-
-		loadInquiryReportByDateRange: function( fromDate, toDate ) {
-			mare.views.tools.showInquiryReport( fromDate, toDate );
+		loadInquiryReport: function( fromDate, toDate, queryString ) {
+			mare.views.tools.showInquiryReport( fromDate, toDate, this.parseQueryString( queryString ) );
 		},
 		
 		loadDefault: function() {
