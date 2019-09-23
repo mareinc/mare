@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>MARE</title>
+		
+		<style type="text/css">
+			table tr th {
+				text-decoration: underline;
+			}
+
+            table th,
+            table td {
+                text-align: left;
+            }
+		</style>
+	</head>
+	<body>
+		<table width="100%">
+			<tr>
+				<tr>
+                    <th>Reg #</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Child SW Region</th>
+                    <th>Inquiry Type</th>
+                    <th>Inquiry Method</th>
+                    <th>Reg #</th>
+                    <th>Contact 1</th>
+                    <th>Contact 2</th>
+                </tr>
+			</tr>
+			{{#each results as |result|}}
+                <tr>
+                    <td>
+                        {{#if result.childId}}
+                            {{ result.childRegistrationNumber }}
+                        {{else}}
+                            --
+                        {{/if}}
+                    </td>
+                    <td>{{ result.childNameFirst }}</td>
+                    <td>{{ result.childNameLast }}</td>
+                    <td>{{ result.childsSWAgencyRegion }}</td>
+                    <td>{{ result.inquiryType }}</td>
+                    <td>{{ result.inquiryMethod }}</td>
+                    <td>
+                        {{#if result.familyId}}
+                            {{ result.familyRegistrationNumber }}
+                        {{else}}
+                            --
+                        {{/if}}
+                    </td>
+                    <td>{{ result.familyContact1 }}</td>
+                    <td>{{ result.familyContact2 }}</td>
+                </tr>
+                {{#if result.siblings}}
+                    <tr>
+                        <td></td>
+                        <td colspan="100">
+                            <i>{{ result.childNameFirst }} has the following siblings:</i>
+                            <table width="100%">
+                                <tr>
+                                    <th width="100px">Reg #</th>
+                                    <th>Name</th>
+                                </tr>
+                                {{#each result.siblings as |sibling|}}
+                                    <tr>
+                                        <td width="100px">{{ sibling.siblingRegistrationNumber }}</td>
+                                        <td>{{ sibling.siblingName }}</td>
+                                    </tr>
+                                {{/each}}
+                            </table>
+                        </td>
+                    </tr>
+                {{/if}}
+            {{/each}}
+		</table>
+	</body>
+</html>
+
+		

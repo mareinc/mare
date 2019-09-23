@@ -623,8 +623,16 @@ exports.getInquiryData = ( req, res, next ) => {
 				}
 			});
 		}
-		// send the response data
-		res.send( responseData );
+		
+		// if 'pdf' parameter was detected in the query, send the response as a PDF
+		if ( query.pdf ) {
+			utilsService.sendPDF( req, res, responseData, 'tools-inquiry-report-pdf', {
+				headerTitle: 'Inquiry Report Listing'
+			});
+		// otherwise, send the response data as an object to be rendered as a grid on the page
+		} else {
+			res.send( responseData );
+		}
 	})
 	.catch( err => {
 		// log an error for debugging purposes

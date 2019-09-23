@@ -9,7 +9,8 @@
 		events: {
 			'click .inquiries-search-button'		: 'handleSearchClick',
 			'click .inquiries-search-reset-button'	: 'handleResetClick',
-			'click .inquiry-export-xlsx-button'		: 'handleXlsxExportClick'
+			'click .inquiry-export-xlsx-button'		: 'handleXlsxExportClick',
+			'click .inquiry-export-pdf-button'		: 'handlePDFExportClick'
 		},
 
 		initialize: function() {
@@ -98,6 +99,32 @@
 				
 			// convert HTML table to XLSX file
 			XLSX.writeFile( wb, table.data( 'filename' ) );
+		},
+
+		handlePDFExportClick: function() {
+
+			// collect the state of the form
+			var params = this.$el.find( 'form' ).serializeArray();
+			
+			// remove empty values
+			params = _.filter( params, function( value ) {
+				return value && value.value && value.value.length > 0;
+			});
+
+			// add the date range to the params
+			params.push({
+				name: 'fromDate',
+				value: this.$el.find( '[name="fromDate"]' ).val()
+			}, {
+				name: 'toDate',
+				value: this.$el.find( '[name="toDate"]' ).val()
+			});
+			
+			// build the query string
+			var queryString = jQuery.param( params );
+			
+			// redirect to the PDF report download URL
+			window.location = '/tools/services/get-inquiry-data?' + queryString + '&pdf=1';
 		},
 
 		render: function( fromDate, toDate, params ) {
