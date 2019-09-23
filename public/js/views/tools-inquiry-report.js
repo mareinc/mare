@@ -8,7 +8,8 @@
 
 		events: {
 			'click .inquiries-search-button'		: 'handleSearchClick',
-			'click .inquiries-search-reset-button'	: 'handleResetClick'
+			'click .inquiries-search-reset-button'	: 'handleResetClick',
+			'click .inquiry-export-xlsx-button'		: 'handleXlsxExportClick'
 		},
 
 		initialize: function() {
@@ -89,6 +90,14 @@
 
 		handleResetClick: function() {
 			mare.routers.tools.navigate( 'inquiry-report', { trigger: true } );
+		},
+
+		handleXlsxExportClick: function() {
+			var table = this.$el.find( '.results-table' ),
+				wb = XLSX.utils.table_to_book( table[ 0 ] );
+				
+			// convert HTML table to XLSX file
+			XLSX.writeFile( wb, table.data( 'filename' ) );
 		},
 
 		render: function( fromDate, toDate, params ) {
