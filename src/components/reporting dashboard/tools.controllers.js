@@ -541,7 +541,7 @@ exports.getInquiryData = ( req, res, next ) => {
 		// get the inquiries that match the specified date range and criteria
 		keystone.list( 'Inquiry' ).model
 			.find( searchCriteria )
-			.populate( 'inquiryMethod children family' )
+			.populate( 'inquiryMethod children family source' )
 			.populate({
 				path: 'childsSocialWorker',
 				populate: {
@@ -619,7 +619,14 @@ exports.getInquiryData = ( req, res, next ) => {
 					familyContact1: family ? family.contact1.name.full : 'Not Specified',
 					familyContact2: family ? family.contact2.name.full : 'Not Specified',
 					inquiryType: inquiryDoc.inquiryType,
-					inquiryMethod: inquiryDoc.inquiryMethod.inquiryMethod
+					inquiryMethod: inquiryDoc.inquiryMethod.inquiryMethod,
+					sourceName: inquiryDoc.isSourceUnlisted
+						? inquiryDoc.sourceText
+							? inquiryDoc.sourceText
+							: 'Source Not Listed'
+						: inquiryDoc.source
+							? inquiryDoc.source.source
+							: 'Source Not Listed'
 				}
 			});
 		}
