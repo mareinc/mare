@@ -21,7 +21,9 @@
                 <tr>
                     <th>Taken On</th>
                     <th>Children and Reg #s</th>
-                    <th>Sources</th>
+                    <th>Source</th>
+                    <th>Additional Source(s)</th>
+                    <th>Intake Source</th>
                     <th>Family and Reg #</th>
                     <th>Inquiry Type</th>
                     <th>Inquiry Method</th>
@@ -40,12 +42,9 @@
                                 <br>{{ sibling.siblingName }} ({{ sibling.siblingRegistrationNumber }})
                             {{/each}}
                         </td>
-                        <td>
-                            {{ result.source }}
-                            {{#each result.additionalSources as |additionalSource|}}
-                                <br>{{ additionalSource }}
-                            {{/each}}
-                        </td>
+                        <td>{{ result.source }}</td>
+                        <td>{{ result.additionalSources }}</td>
+                        <td>{{ result.intakeSource }}</td>
                         <td>{{ result.familyContact1 }} 
                             {{#if result.familyRegistrationNumber}} ({{ result.familyRegistrationNumber }}) {{/if}}
                         </td>

@@ -627,7 +627,7 @@ exports.getInquiryData = ( req, res, next ) => {
 						? inquiryDoc.children.reduce( ( disabilities, child ) => {
 								disabilities = disabilities.concat( child.disabilities && child.disabilities.map( disability => disability.disability ) );
 								return _.uniq( disabilities );
-							}, [])
+							}, []).join( ', ' )
 						: undefined,
 					familyId: family ? family._id.toString() : '',
 					familyRegistrationNumber: family ? family.registrationNumber : '',
@@ -636,16 +636,11 @@ exports.getInquiryData = ( req, res, next ) => {
 					inquiryType: inquiryDoc.inquiryType,
 					inquiryMethod: inquiryDoc.inquiryMethod.inquiryMethod,
 					inquiryDate: moment.utc( inquiryDoc.takenOn ).format( 'MM/DD/YYYY' ),
-					source: inquiryDoc.isSourceUnlisted
-						? inquiryDoc.sourceText
-							? inquiryDoc.sourceText
-							: 'Source Not Listed'
-						: inquiryDoc.source
-							? inquiryDoc.source.source
-							: 'Source Not Listed',
+					source: inquiryDoc.source ? inquiryDoc.source.source : 'Not Specified',
 					additionalSources: inquiryDoc.additionalSources && inquiryDoc.additionalSources.length > 0
-						? inquiryDoc.additionalSources.map( additionalSource => additionalSource.source )
-						: undefined
+						? inquiryDoc.additionalSources.map( additionalSource => additionalSource.source ).join( ', ' )
+						: 'Not Specified',
+					intakeSource: inquiryDoc.sourceText ? inquiryDoc.sourceText : 'Not Specified'	
 				}
 			});
 		}
