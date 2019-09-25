@@ -47,6 +47,30 @@
                 <div class="col-6">
                     <div class="row form-group">
                         <div class="col-sm-12 col-md-4 text-sm-right" >
+                            <label for="children" class="bold">Children:</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                            <select id="children" name="children[]" class="form-control children-select" multiple>
+                                \{{#each children as |child|}}
+                                    <option value="\{{ child.id }}" selected>\{{ child.text }}</option>
+                                \{{/each}}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right" >
+                            <label for="source" class="bold">Fiscal Years:</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                            Coming Soon to a Dashboard Near You!
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right" >
                             <label for="source" class="bold">Source:</label>
                         </div>
                         <div class="col-sm-12 col-md-8">

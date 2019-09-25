@@ -537,6 +537,13 @@ exports.getInquiryData = ( req, res, next ) => {
 		searchCriteria[ 'source' ] = { $in: sourcesCriteria };
 	}
 
+	// children criteria (multiple)
+	let childrenCriteria;
+	if ( Array.isArray( query.children ) && query.children.length > 0 ) {
+		childrenCriteria = query.children.filter( ( objectId ) => ObjectId.isValid( objectId ) );
+		searchCriteria[ 'children' ] = { $in: childrenCriteria };
+	}
+
 	Promise.all([
 		// get the inquiries that match the specified date range and criteria
 		keystone.list( 'Inquiry' ).model
@@ -559,12 +566,10 @@ exports.getInquiryData = ( req, res, next ) => {
 			})
 			.lean()
 			.exec(),
-		// if thare are sources specified, get the sources docs to seed the select on the search form
+		// if thare are sources criteria specified, get the sources docs to seed the select on the search form
 		sourcesCriteria
 			? keystone.list( 'Source' ).model
-				.find({
-					_id: { $in: sourcesCriteria }
-				})
+				.find( { _id: { $in: sourcesCriteria } } )
 				.lean()
 				.exec()
 				.catch( err => {
@@ -573,17 +578,36 @@ exports.getInquiryData = ( req, res, next ) => {
 					// return false to allow the view to render regardless of the error
 					return false;
 				})
+			: false,
+		// if thare are children criteria specified, get the sources docs to seed the select on the search form
+		childrenCriteria
+			? keystone.list( 'Child' ).model
+				.find( { _id: { $in: childrenCriteria } } )
+				.lean()
+				.exec()
+				.catch( err => {
+					// log an error for debugging purposes
+					console.error( `error loading children for the inquiry report dashboard - ${ err }` );
+					// return false to allow the view to render regardless of the error
+					return false;
+				})
 			: false
 	])
 	.then( results => {
 
-		let [ inquiryDocs, sourceDocs ] = results;
+		let [ inquiryDocs, sourceDocs, childrenDocs ] = results;
 		let responseData = {
 			// if there are sources, parse them and add them to the response
 			sources: sourceDocs
 				? sourceDocs.map( source => ({ 
 					id: source._id.toString(), 
 					text: source.source 
+				}))
+				: false,
+			children: childrenDocs
+				? childrenDocs.map( child => ({ 
+					id: child._id.toString(), 
+					text: child.displayNameAndRegistration 
 				}))
 				: false
 		};

@@ -55,6 +55,14 @@
 				}
 			});
 
+			this.$el.find( '.children-select' ).select2({
+				placeholder: 'All Children',
+				ajax: {
+					url: '/tools/services/get-children-data',
+					dataType: 'json'
+				}
+            });
+
 			this.$el.find( '.inquirer-select' ).select2({
                 placeholder: 'All Inquirers'
 			});
@@ -64,8 +72,8 @@
 			});
 
 			this.$el.find( '.inquiry-type-select' ).select2({
-                placeholder: 'All Inquiry Types'
-            });
+				placeholder: 'All Inquiry Types'
+			});
 		},
 		
 		handleSearchClick: function() {
