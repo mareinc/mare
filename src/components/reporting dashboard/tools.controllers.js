@@ -66,7 +66,7 @@ exports.getChildMatchingData = ( req, res, next ) => {
 						params.physicalNeedsFrom = childHasSiblings
 							? childMatchingService.findMaxLevelOfNeeds( [ childPhysicalNeeds ].concat( child.siblingsToBePlacedWith.map( sibling => sibling.physicalNeeds ? sibling.physicalNeeds : '' ) ) )
 							: childPhysicalNeeds;
-						// intellectual needsa
+						// intellectual needs
 						const childIntellectualNeeds = child.intellectualNeeds ? child.intellectualNeeds : '';
 						params.intellectualNeedsFrom = childHasSiblings
 							? childMatchingService.findMaxLevelOfNeeds( [ childIntellectualNeeds ].concat( child.siblingsToBePlacedWith.map( sibling => sibling.intellectualNeeds ? sibling.intellectualNeeds : '' ) ) )
@@ -541,7 +541,7 @@ exports.getInquiryData = ( req, res, next ) => {
 		// get the inquiries that match the specified date range and criteria
 		keystone.list( 'Inquiry' ).model
 			.find( searchCriteria )
-			.populate( 'inquiryMethod children family source' )
+			.populate( 'inquiryMethod family source additionalSources' )
 			.populate({
 				path: 'childsSocialWorker',
 				populate: {
@@ -549,6 +549,12 @@ exports.getInquiryData = ( req, res, next ) => {
 					populate: {
 						path: 'address.region'
 					}
+				}
+			})
+			.populate({
+				path: 'children',
+				populate: {
+					path: 'disabilities'
 				}
 			})
 			.lean()
@@ -596,15 +602,15 @@ exports.getInquiryData = ( req, res, next ) => {
 				let family = inquiryDoc.family ? inquiryDoc.family : undefined;
 				// create a response object
 				return {
-					childId: child ? child._id.toString() : '',
-					childRegistrationNumber: child ? child.registrationNumber : '',
+					childId: child ? child._id.toString() : undefined,
+					childRegistrationNumber: child ? child.registrationNumber : undefined,
 					childNameFirst: child ? child.name.first : 'Child Not',
 					childNameLast: child ? child.name.last : 'Specified',
 					siblings: siblings 
 						? siblings.map( sibling => ({
 							siblingId: sibling._id.toString(),
 							siblingRegistrationNumber: sibling.registrationNumber,
-							siblingName: sibling.name.full
+							siblingName: `${sibling.name.first} ${sibling.name.last}`
 						}))
 						: undefined,
 					childsSWAgencyRegion: inquiryDoc.childsSocialWorker
@@ -614,19 +620,32 @@ exports.getInquiryData = ( req, res, next ) => {
 								: undefined
 							: undefined
 						: undefined,
+					maxPhysicalNeeds: childMatchingService.findMaxLevelOfNeeds( inquiryDoc.children.map( child => child.physicalNeeds ? child.physicalNeeds : '' ) ),
+					maxIntellectualNeeds: childMatchingService.findMaxLevelOfNeeds( inquiryDoc.children.map( child => child.intellectualNeeds ? child.intellectualNeeds : '' ) ),
+					maxEmotionalNeeds: childMatchingService.findMaxLevelOfNeeds( inquiryDoc.children.map( child => child.emotionalNeeds ? child.emotionalNeeds : '' ) ),
+					disabilities: inquiryDoc.children && inquiryDoc.children.length > 0
+						? inquiryDoc.children.reduce( ( disabilities, child ) => {
+								disabilities = disabilities.concat( child.disabilities && child.disabilities.map( disability => disability.disability ) );
+								return _.uniq( disabilities );
+							}, [])
+						: undefined,
 					familyId: family ? family._id.toString() : '',
 					familyRegistrationNumber: family ? family.registrationNumber : '',
 					familyContact1: family ? family.contact1.name.full : 'Not Specified',
-					familyContact2: family ? family.contact2.name.full : 'Not Specified',
+					familyContact2: family && family.contact2.name.full ? family.contact2.name.full : 'Not Specified',
 					inquiryType: inquiryDoc.inquiryType,
 					inquiryMethod: inquiryDoc.inquiryMethod.inquiryMethod,
-					sourceName: inquiryDoc.isSourceUnlisted
+					inquiryDate: moment.utc( inquiryDoc.takenOn ).format( 'MM/DD/YYYY' ),
+					source: inquiryDoc.isSourceUnlisted
 						? inquiryDoc.sourceText
 							? inquiryDoc.sourceText
 							: 'Source Not Listed'
 						: inquiryDoc.source
 							? inquiryDoc.source.source
-							: 'Source Not Listed'
+							: 'Source Not Listed',
+					additionalSources: inquiryDoc.additionalSources && inquiryDoc.additionalSources.length > 0
+						? inquiryDoc.additionalSources.map( additionalSource => additionalSource.source )
+						: undefined
 				}
 			});
 		}

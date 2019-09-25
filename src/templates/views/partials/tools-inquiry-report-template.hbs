@@ -197,28 +197,48 @@
             <table width="100%" class="results-table hidden" data-filename="InquiryReportExport.xlsx">
                 <tr>
                     <th>Taken On</th>
-                    <th>Child</th>
-                    <th>Source</th>
-                    <th>Family Name and Registration Number</th>
+                    <th>Children and Reg #s</th>
+                    <th>Sources</th>
+                    <th>Family and Reg #</th>
                     <th>Inquiry Type</th>
                     <th>Inquiry Method</th>
-                    <th>Maximum Physical Needs</th>
-                    <th>Maximum Intellectual Needs</th>
-                    <th>Maximum Emotional Needs</th>
+                    <th>Max Physical Needs</th>
+                    <th>Max Intellectual Needs</th>
+                    <th>Max Emotional Needs</th>
                     <th>Disabilities</th>
                 </tr>
                 \{{#each results as |result|}}
                     <tr>
-                        <td>12/12/12</td>
-                        <td>\{{ result.childNameFirst }} \{{ result.childNameLast }}</td>
-                        <td>\{{ result.sourceName }}</td>
-                        <td>\{{ result.familyContact1 }} - \{{ result.familyRegistrationNumber }}</td>
+                        <td>\{{ result.inquiryDate }}</td>
+                        <td>
+                            \{{ result.childNameFirst }} \{{ result.childNameLast }} 
+                            \{{#if result.childRegistrationNumber}} (\{{ result.childRegistrationNumber }}) \{{/if}}
+                            \{{#each result.siblings as |sibling|}}
+                                <br>\{{ sibling.siblingName }} (\{{ sibling.siblingRegistrationNumber }})
+                            \{{/each}}
+                        </td>
+                        <td>
+                            \{{ result.source }}
+                            \{{#each result.additionalSources as |additionalSource|}}
+                                <br>\{{ additionalSource }}
+                            \{{/each}}
+                        </td>
+                        <td>\{{ result.familyContact1 }} 
+                            \{{#if result.familyRegistrationNumber}} (\{{ result.familyRegistrationNumber }}) \{{/if}}
+                        </td>
                         <td>\{{ result.inquiryType }}</td>
                         <td>\{{ result.inquiryMethod }}</td>
-                        <td>None</td>
-                        <td>None</td>
-                        <td>None</td>
-                        <td>None</td>
+                        <td>\{{ result.maxPhysicalNeeds }}</td>
+                        <td>\{{ result.maxIntellectualNeeds }}</td>
+                        <td>\{{ result.maxEmotionalNeeds }}</td>
+                        <td>
+                            \{{#each result.disabilities as |disability|}}
+                                \{{#ifeq @index 0}}
+                                    \{{ disability }}
+                                \{{else}}
+                                    <br>\{{ disability }}
+                                \{{/ifeq}}
+                            \{{/each}}
                     </tr>
                 \{{/each}}
             </table>
