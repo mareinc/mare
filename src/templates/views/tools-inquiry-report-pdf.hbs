@@ -18,65 +18,53 @@
 	</head>
 	<body>
 		<table width="100%">
-			<tr>
-				<tr>
-                    <th>Reg #</th>
-                    <th>First Name</th>
-                    <th>Last Name</th>
-                    <th>Child SW Region</th>
+                <tr>
+                    <th>Taken On</th>
+                    <th>Children and Reg #s</th>
+                    <th>Sources</th>
+                    <th>Family and Reg #</th>
                     <th>Inquiry Type</th>
                     <th>Inquiry Method</th>
-                    <th>Reg #</th>
-                    <th>Contact 1</th>
-                    <th>Contact 2</th>
+                    <th>Max Physical Needs</th>
+                    <th>Max Intellectual Needs</th>
+                    <th>Max Emotional Needs</th>
+                    <th>Disabilities</th>
                 </tr>
-			</tr>
-			{{#each results as |result|}}
-                <tr>
-                    <td>
-                        {{#if result.childId}}
-                            {{ result.childRegistrationNumber }}
-                        {{else}}
-                            --
-                        {{/if}}
-                    </td>
-                    <td>{{ result.childNameFirst }}</td>
-                    <td>{{ result.childNameLast }}</td>
-                    <td>{{ result.childsSWAgencyRegion }}</td>
-                    <td>{{ result.inquiryType }}</td>
-                    <td>{{ result.inquiryMethod }}</td>
-                    <td>
-                        {{#if result.familyId}}
-                            {{ result.familyRegistrationNumber }}
-                        {{else}}
-                            --
-                        {{/if}}
-                    </td>
-                    <td>{{ result.familyContact1 }}</td>
-                    <td>{{ result.familyContact2 }}</td>
-                </tr>
-                {{#if result.siblings}}
+                {{#each results as |result|}}
                     <tr>
-                        <td></td>
-                        <td colspan="100">
-                            <i>{{ result.childNameFirst }} has the following siblings:</i>
-                            <table width="100%">
-                                <tr>
-                                    <th width="100px">Reg #</th>
-                                    <th>Name</th>
-                                </tr>
-                                {{#each result.siblings as |sibling|}}
-                                    <tr>
-                                        <td width="100px">{{ sibling.siblingRegistrationNumber }}</td>
-                                        <td>{{ sibling.siblingName }}</td>
-                                    </tr>
-                                {{/each}}
-                            </table>
+                        <td>{{ result.inquiryDate }}</td>
+                        <td>
+                            {{ result.childNameFirst }} {{ result.childNameLast }} 
+                            {{#if result.childRegistrationNumber}} ({{ result.childRegistrationNumber }}) {{/if}}
+                            {{#each result.siblings as |sibling|}}
+                                <br>{{ sibling.siblingName }} ({{ sibling.siblingRegistrationNumber }})
+                            {{/each}}
                         </td>
+                        <td>
+                            {{ result.source }}
+                            {{#each result.additionalSources as |additionalSource|}}
+                                <br>{{ additionalSource }}
+                            {{/each}}
+                        </td>
+                        <td>{{ result.familyContact1 }} 
+                            {{#if result.familyRegistrationNumber}} ({{ result.familyRegistrationNumber }}) {{/if}}
+                        </td>
+                        <td>{{ result.inquiryType }}</td>
+                        <td>{{ result.inquiryMethod }}</td>
+                        <td>{{ result.maxPhysicalNeeds }}</td>
+                        <td>{{ result.maxIntellectualNeeds }}</td>
+                        <td>{{ result.maxEmotionalNeeds }}</td>
+                        <td>
+                            {{#each result.disabilities as |disability|}}
+                                {{#ifeq @index 0}}
+                                    {{ disability }}
+                                {{else}}
+                                    <br>{{ disability }}
+                                {{/ifeq}}
+                            {{/each}}
                     </tr>
-                {{/if}}
-            {{/each}}
-		</table>
+                {{/each}}
+            </table>
 	</body>
 </html>
 
