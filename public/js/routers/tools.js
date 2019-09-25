@@ -13,6 +13,7 @@
 			'child-matching/:childId(?*queryString)'			: 'loadChildMatching',
 			'inquiry-report'									: 'loadInquiryReport',
 			'inquiry-report/:fromDate/:toDate(?*queryString)'	: 'loadInquiryReport',
+			'placement-report'									: 'loadPlacementReport',
 			'*other'											: 'loadDefault'
 		},
 
@@ -46,6 +47,10 @@
 
 		loadInquiryReport: function( fromDate, toDate, queryString ) {
 			mare.views.tools.showInquiryReport( fromDate, toDate, this.parseQueryString( queryString ) );
+		},
+
+		loadPlacementReport: function() {
+			mare.views.tools.showPlacementReport();
 		},
 		
 		loadDefault: function() {

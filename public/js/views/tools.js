@@ -11,6 +11,7 @@
 			mare.views.familyMatchingRequest = mare.views.familyMatchingRequest || new mare.views.FamilyMatchingRequest();
 			mare.views.childMatchingRequest = mare.views.childMatchingRequest || new mare.views.ChildMatchingRequest();
 			mare.views.inquiryReport = mare.views.inquiryReport || new mare.views.InquiryReport();
+			mare.views.placementReport = mare.views.placementReport || new mare.views.PlacementReport();
 		},
 		// TODO: all the functions below should use a data-attribute instead of a class to specify what's shown
 		// TODO: in order to save state in each area, they shouldn't render over eachother, but instead show/hide
@@ -48,7 +49,13 @@
 			mare.views.inquiryReport.render( fromDate, toDate, params );
 			// update the body class to indicate what screen this is
 			this.$el.attr('class', 'tools__inquiry-report');
-		}
 		
+		},
+
+		showPlacementReport: function() {
+			mare.views.placementReport.render();
+			// update the body class to indicate what screen this is
+			this.$el.attr('class', 'tools__placement-report');
+		}
 	});
 }());
