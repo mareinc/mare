@@ -34,7 +34,7 @@
 		"gulp-uglify": "^3.0.0",
 		"gulp-watch": "~5.0.0",
 		"handlebars": "~4.1.0",
-		"hbs": "^4.0.1",
+		"hbs": "^4.0.5",
 		"jpegtran-bin": "^4.0.0",
 		"keystone": "https://github.com/autoboxer/keystone.git#d8f408a4ae44f6abac6249ace5b2b790aa50ad9c",
 		"keystone-email": "^1.1.0",
