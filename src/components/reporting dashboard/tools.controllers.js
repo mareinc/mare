@@ -561,7 +561,7 @@ exports.getInquiryData = ( req, res, next ) => {
 			.populate({
 				path: 'children',
 				populate: {
-					path: 'disabilities'
+					path: 'disabilities legalStatus',
 				}
 			})
 			.lean()
@@ -653,6 +653,7 @@ exports.getInquiryData = ( req, res, next ) => {
 								return _.uniq( disabilities );
 							}, []).join( ', ' )
 						: undefined,
+					legalStatuses: inquiryDoc.children.map( child => child.legalStatus.legalStatus ),
 					familyId: family ? family._id.toString() : '',
 					familyRegistrationNumber: family ? family.registrationNumber : '',
 					familyContact1: family ? family.contact1.name.full : 'Not Specified',

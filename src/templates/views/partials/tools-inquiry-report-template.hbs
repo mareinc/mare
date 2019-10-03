@@ -223,6 +223,7 @@
                     <th>Taken On</th>
                     <th>Children and Reg #s</th>
                     <th>Child SW Region</th>
+                    <th>Child Legal Status</th>
                     <th>Source</th>
                     <th>Additional Source(s)</th>
                     <th>Intake Source</th>
@@ -245,6 +246,11 @@
                             \{{/each}}
                         </td>
                         <td>\{{ result.childsSWAgencyRegion }}</td>
+                        <td>
+                            \{{#each result.legalStatuses as |legalStatus|}}
+                                \{{#ifeq @index 0}}\{{else}}<br>\{{/ifeq}}\{{ legalStatus }}
+                            \{{/each}}
+                        </td>
                         <td>\{{ result.source }}</td>
                         <td>\{{ result.additionalSources }}</td>
                         <td>\{{ result.intakeSource }}</td>
