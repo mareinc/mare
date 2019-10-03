@@ -41,6 +41,20 @@ exports = module.exports = ( req, res ) => {
 				fromDate: moment().subtract( 30, "days" ).format( 'YYYY-MM-DD' ),
 				toDate: moment().format( 'YYYY-MM-DD' )
 			};
+			// generate the date ranges of the previous three fiscal years to support pre-filling search dates by fiscal year
+			// on the inquiry report search form
+			const PREVIOUS_YEARS = 3;
+			const CURRENT_YEAR = moment.utc().year();
+			const IS_PAST_FISCAL_YEAR_END = moment.utc().dayOfYear() > moment.utc('06/30', 'MM/DD').dayOfYear();
+			let fiscalYears = [];
+			for ( let i = 0; i < PREVIOUS_YEARS; i++ ) {
+				fiscalYears.push({
+					startDate: moment.utc(`07/01/${CURRENT_YEAR - (IS_PAST_FISCAL_YEAR_END ? i + 1 : i + 2)}`, 'MM/DD/YYYY').format( 'YYYY-MM-DD' ),
+					endDate: moment.utc(`06/30/${CURRENT_YEAR - (IS_PAST_FISCAL_YEAR_END ? i : i + 1)}`, 'MM/DD/YYYY').format( 'YYYY-MM-DD' ),
+					fiscalYear: moment.utc().year() - (IS_PAST_FISCAL_YEAR_END ? i : i + 1)
+				});
+			}
+			locals.fiscalYears = fiscalYears.reverse();
 
 			// render the view using the tools.hbs template
 			view.render( 'tools', { layout: 'tools' } );

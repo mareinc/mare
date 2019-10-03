@@ -63,8 +63,14 @@
                         <div class="col-sm-12 col-md-4 text-sm-right" >
                             <label for="source" class="bold">Fiscal Years:</label>
                         </div>
-                        <div class="col-sm-12 col-md-8">
-                            Coming Soon to a Dashboard Near You!
+                        <div class="col-sm-12 col-md-8 fiscal-year-buttons">
+                            {{#each fiscalYears as |fiscalYear|}}
+                                <button class="btn btn-outline-primary" 
+                                    data-year-start="{{ fiscalYear.startDate }}" 
+                                    data-year-end="{{ fiscalYear.endDate }}">
+                                        {{ fiscalYear.fiscalYear }}
+                                </button>
+                            {{/each}}
                         </div>
                     </div>
                 </div>

@@ -10,7 +10,8 @@
 			'click .inquiries-search-button'		: 'handleSearchClick',
 			'click .inquiries-search-reset-button'	: 'handleResetClick',
 			'click .inquiry-export-xlsx-button'		: 'handleXlsxExportClick',
-			'click .inquiry-export-pdf-button'		: 'handlePDFExportClick'
+			'click .inquiry-export-pdf-button'		: 'handlePDFExportClick',
+			'click .fiscal-year-buttons .btn'		: 'handleFiscalYearClick'
 		},
 
 		initialize: function() {
@@ -133,6 +134,14 @@
 			
 			// redirect to the PDF report download URL
 			window.location = '/tools/services/get-inquiry-data?' + queryString + '&pdf=1';
+		},
+
+		handleFiscalYearClick: function(event) {
+			event.preventDefault();
+
+			// set the search date range
+			this.$el.find( '[name="fromDate"]' ).val( $(event.target).data('yearStart') );
+			this.$el.find( '[name="toDate"]' ).val( $(event.target).data('yearEnd') );
 		},
 
 		render: function( fromDate, toDate, params ) {
