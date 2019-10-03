@@ -222,6 +222,7 @@
                 <tr>
                     <th>Taken On</th>
                     <th>Children and Reg #s</th>
+                    <th>Child SW Region</th>
                     <th>Source</th>
                     <th>Additional Source(s)</th>
                     <th>Intake Source</th>
@@ -243,6 +244,7 @@
                                 <br>\{{ sibling.siblingName }} (\{{ sibling.siblingRegistrationNumber }})
                             \{{/each}}
                         </td>
+                        <td>\{{ result.childsSWAgencyRegion }}</td>
                         <td>\{{ result.source }}</td>
                         <td>\{{ result.additionalSources }}</td>
                         <td>\{{ result.intakeSource }}</td>
