@@ -3,6 +3,10 @@
 
 	mare.views.Tools = Backbone.View.extend({
 		el: 'body',
+
+		events: {
+			'click .sidebarCollapse' : 'toggleSidebar'
+		},
 		
 		initialize: function initialize() {
 			mare.views.dashboard = mare.views.dashboard || new mare.views.Dashboard();
@@ -13,6 +17,12 @@
 			mare.views.inquiryReport = mare.views.inquiryReport || new mare.views.InquiryReport();
 			mare.views.placementReport = mare.views.placementReport || new mare.views.PlacementReport();
 		},
+
+		toggleSidebar: function() {
+			this.$el.find('#sidebar').toggleClass('dashboard-sidebar--active');
+			this.$el.find('.sidebarCollapse--show').toggle();
+		},
+
 		// TODO: all the functions below should use a data-attribute instead of a class to specify what's shown
 		// TODO: in order to save state in each area, they shouldn't render over eachother, but instead show/hide
 		showDashboard: function( fromDate, toDate ) {

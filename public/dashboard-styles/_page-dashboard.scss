@@ -44,10 +44,6 @@ h2, h3, h5 {
 	padding: 20px;
 	min-height: 100vh;
 	transition: all 0.3s;
-	
-	@media all and ( min-width: 992px ) {
-		margin-left: 323px;
-	}
 }
 
 /* workaround for being able to click the date field (vs just the native calendar arrow) to trigger the html5 calendar in webkit */
