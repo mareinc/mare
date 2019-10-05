@@ -37,6 +37,7 @@ h2, h3, h5 {
 	display: flex;
 	width: 100%;
 	align-items: stretch;
+	overflow: hidden;
 }
 
 .dashboard-content {
@@ -58,3 +59,30 @@ input::-webkit-calendar-picker-indicator {
 	width: 100% !important;
 }
 
+// define vertical offset based on global header sizes (specified in global-header.js)
+:root {
+	--globalNavHeightOffset: 90px;
+
+	@media all and ( min-width: 655px ) {
+		--globalNavHeightOffset: 112px;
+	}
+
+	@media all and ( min-width: 765px ) {
+		--globalNavHeightOffset: 97px;
+	}
+
+	@media all and ( min-width: 800px ) {
+		--globalNavHeightOffset: 73px;
+	}
+}
+
+// apply vertical offset to main page content
+.content {
+	padding-top: var(--globalNavHeightOffset);
+}
+
+// apply vertical offset to sidebar and grid fixed header
+#sidebar,
+.fixedHeader-floating {
+	top: var(--globalNavHeightOffset) !important;
+}

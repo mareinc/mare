@@ -169,6 +169,41 @@
 						// render the view with the search results
 						view.$el.html( view.template( data ) );
 						view.initializeSearchForm( fromDate, toDate, params );
+
+						$('#inquiry-results').DataTable({
+							data: data.results,
+							columns: [
+								{ 
+									title: 'Reg #',
+									data: 'childRegistrationNumber',
+									render: function( data, type, row, meta ) {
+										return row.childId
+											? '<a href="/keystone/children/' + row.childId + '">' + data + '</a>'
+											: '--';
+									}
+								},
+								{ title: 'First Name', data: 'childNameFirst' },
+								{ title: 'Last Name', data: 'childNameLast' },
+								{ 
+									title: 'Child SW Region',
+									data: 'childsSWAgencyRegion',
+									defaultContent: '--'
+								},
+								{ title: 'Inquiry Type', data: 'inquiryType' },
+								{ title: 'Inquiry Date', data: 'inquiryDate' },
+								{ 
+									title: 'Reg #',
+									data: function( row ) {
+										return row.familyRegistrationNumber === '' ? '--' : row.familyRegistrationNumber;
+									}
+								},
+								{ title: 'Contact 1', data: 'familyContact1' },
+								{ title: 'Contact 2', data: 'familyContact2' }
+							],
+							fixedHeader: true,
+							order: [[5, 'desc']],
+							pageLength: 100
+						});
 					});
 			}
 		},
