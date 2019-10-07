@@ -210,9 +210,17 @@
 							buttons: [
 								'colvis'
 							],
-							createdRow: function( row, data, index ) {
-								var api = this.api();
-								api.row(row).child('<tr><td>Row Details</td></tr>').show();
+							createdRow: function( row, data ) {
+								// create a detail row if the child has siblings to display
+								if (data.siblings) {
+									var api = this.api();
+									var detailsHeader = '<div class="details-row__header">' + data.childNameFirst + ' has the following siblings:</div>';
+									var detailsRows = data.siblings.map( function( sibling ) {
+										return '<div class="details-row__body"><a href="/keystone/children/' + sibling.siblingId + '">' + sibling.siblingRegistrationNumber + '</a>' + sibling.siblingName + '</div>';
+									});
+									var detailsContent = '<div class="details-row">' + detailsHeader + detailsRows.join('') + '</div>';
+									api.row( row ).child( detailsContent ).show();
+								}
 							}
 						});
 					});

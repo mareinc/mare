@@ -84,14 +84,29 @@ input::-webkit-calendar-picker-indicator {
 	top: var(--globalNavHeightOffset) !important;
 }
 
-// apply data table row striping to child rows
+// dataTable styles
 $oddBackgroundColor: #f9f9f9;
-.dataTable.stripe {
 
-	tr.odd + tr:not(.even) {
-		
-		&, td {
-			background-color: $oddBackgroundColor;
+.dataTable {
+
+	// normalize cell padding
+	tbody td {
+		padding: 10px 18px !important;
+	}
+
+	// adjust padding of detail rows
+	tr:not([role="row"]) td {
+		padding-top: 0 !important;
+	}
+
+	// ensure child rows inherit striped background
+	&.stripe {
+
+		tr.odd + tr:not(.even) {
+			
+			&, td {
+				background-color: $oddBackgroundColor;
+			}
 		}
 	}
 }
