@@ -86,3 +86,15 @@ input::-webkit-calendar-picker-indicator {
 .fixedHeader-floating {
 	top: var(--globalNavHeightOffset) !important;
 }
+
+// apply data table row striping to child rows
+$oddBackgroundColor: #f9f9f9;
+.dataTable.stripe {
+
+	tr.odd + tr:not(.even) {
+		
+		&, td {
+			background-color: $oddBackgroundColor;
+		}
+	}
+}

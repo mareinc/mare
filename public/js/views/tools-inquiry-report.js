@@ -202,7 +202,18 @@
 							],
 							fixedHeader: true,
 							order: [[5, 'desc']],
-							pageLength: 100
+							pageLength: 100,
+							responsive: {
+								details: false
+							},
+							dom: 'Bfrtip',
+							buttons: [
+								'colvis'
+							],
+							createdRow: function( row, data, index ) {
+								var api = this.api();
+								api.row(row).child('<tr><td>Row Details</td></tr>').show();
+							}
 						});
 					});
 			}
