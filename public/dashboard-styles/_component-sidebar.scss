@@ -1,14 +1,10 @@
 .dashboard-sidebar {
-	min-width: 323px;
-	max-width: 323px;
+	position: fixed;
+	left: -323px;
+	width: 323px;
 	padding: 1.25rem 1rem;
 	background-color: #2e4e87 !important;
-
-	margin-left: -323px;
-	transition: all 0.3s;
-	&--active {
-		margin-left: 0;
-	}
+	z-index: 10;
 }
 
 .dashboard-sidebar__h3 {
@@ -28,9 +24,4 @@ body.tools__inquiry-report .tools__inquiry-report,
 body.tools__placement-report .tools__placement-report {
 	background: #1cb0b0;
     border: none;
-}
-
-// button to show the sidebar - hidden initially because the sidebar displays by default
-.sidebarCollapse--show {
-	display: none;
 }

@@ -34,17 +34,14 @@ h2, h3, h5 {
 }
 
 .dashboard-wrapper {
-	display: flex;
 	width: 100%;
-	align-items: stretch;
 	overflow: hidden;
+	padding: 20px;
+	min-height: 100vh;
 }
 
 .dashboard-content {
 	width: 100%;
-	padding: 20px;
-	min-height: 100vh;
-	transition: all 0.3s;
 }
 
 /* workaround for being able to click the date field (vs just the native calendar arrow) to trigger the html5 calendar in webkit */
