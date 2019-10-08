@@ -75,22 +75,20 @@
 		& > [class*="col-"] {
 			background-color: #eee;
 
-			&:nth-child(1),
-			&:nth-child(5) {
+			&:first-child() {
 				border-width: 1px;
 			}
 
-			&:nth-child(2),
-			&:nth-child(6) {
+			&:nth-child(2) {
 				border-width: 1px 1px 1px 0;
 			}
 
-			&:nth-child(3) {
-				border-width: 0 1px;
+			&:nth-child(2n+3) {
+				border-width: 0 1px 1px 1px;
 			}
 
-			&:nth-child(4) {
-				border-width: 0 1px 0 0;
+			&:nth-child(2n+4) {
+				border-width: 0 1px 1px 0;
 			}
 		}
 	}
