@@ -51,6 +51,9 @@
                         </div>
                         <div class="col-sm-12 col-md-8">
                             <select id="placementType" name="placementType[]" class="form-control placementType-select" multiple>
+                                {{#each placementTypes as |type|}}
+                                    <option value="{{ type }}">{{ type }}</option>
+                                {{/each}}
                             </select>
                         </div>
                     </div>
@@ -81,6 +84,9 @@
                 </div>
             </div>
         </form>
+
+        <button class="btn btn-primary placement-search-button">Search</button>
+	    <button class="btn btn-default placement-search-reset-button">Reset</button>
     </div>
 
 </script>
