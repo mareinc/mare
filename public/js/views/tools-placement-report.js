@@ -113,7 +113,6 @@
 				// search for placements using the date range and query params
 				view.getPlacementData( fromDate, toDate, params )
 					.done( function( data ) {
-						console.log(data);
 						// render the view with the search results
 						view.$el.html( view.template( data ) );
 						view.initializeSearchForm( fromDate, toDate, params );

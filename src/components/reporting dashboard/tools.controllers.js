@@ -795,6 +795,7 @@ exports.getPlacementData = ( req, res, next ) => {
 						text: source.source 
 					}))
 					: false,
+				// if there are additional sources, parse them and add them to the response
 				additionalSources: additionalSourceDocs
 					? additionalSourceDocs.map( source => ({ 
 						id: source._id.toString(), 
@@ -803,8 +804,32 @@ exports.getPlacementData = ( req, res, next ) => {
 					: false
 			};
 
+			// helper function to map placement data and include type
+			function mapPlacementDataWithPlacementType( placementType, placementData ) {
+				// get the date field for each placement type model
+				const typeSpecificDateField = `${placementType.toLowerCase()}Date`;
+				// map placement data to results object
+				return placementData.map( placement => ({
+					id: placement._id,
+					type: placementType,
+					date: moment.utc( placement[typeSpecificDateField] ).format( 'MM/DD/YYYY' )
+				}));
+			}
+
 			// merge results of different placement types into a single list
-			responseData.results = placementDocs.concat( matchDocs, legalizationDocs, disruptionDocs );
+			let mergedResults = mapPlacementDataWithPlacementType( 'Placement', placementDocs ).concat(
+				mapPlacementDataWithPlacementType( 'Match', matchDocs ),
+				mapPlacementDataWithPlacementType( 'Legalization', legalizationDocs ),
+				mapPlacementDataWithPlacementType( 'Disruption', disruptionDocs )
+			);
+
+			// if no results were returned, send the 'noResults' flag
+			if ( !mergedResults || mergedResults.length === 0 ) {
+				responseData.noResultsFound = true;
+			// if the query returned results, map the relevant fields
+			}  else {
+				responseData.results = mergedResults;
+			}
 
 			// send the response data
 			res.send( responseData );

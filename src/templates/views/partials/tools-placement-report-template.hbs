@@ -93,6 +93,43 @@
 
         <button class="btn btn-primary placement-search-button">Search</button>
 	    <button class="btn btn-default placement-search-reset-button">Reset</button>
+
+        \{{#if waitingForResults }}
+            <br /><br />
+            Loading the data ...
+        \{{/if}}
+        
+        \{{#if noResultsFound }}
+            <br /><br />
+            No results found
+        \{{/if}}
+
+        \{{#if results }}
+            <h3>Results: </h3>
+            <div class="matching-results-table__button-bar">
+                <button class="button button--teal inquiry-export-pdf-button">PDF Export</button>
+                <button class="button button--teal inquiry-export-xlsx-button">XLSX Export</button>
+                <div class="matching-results-table__record-count">
+                    <div class="record-count__label">Total Inquiries:</div>
+                    \{{ results.length }}
+                </div>
+            </div>
+
+            <table width="100%" class="matching-results-table">
+                <tr>
+                    <th>ID</th>
+                    <th>Type</th>
+                    <th>Date</th>
+                </tr>
+                \{{#each results}}
+                    <tr>
+                        <td>\{{ id }}</td>
+                        <td>\{{ type }}</td>
+                        <td>\{{ date }}</td>
+                    </tr>
+                \{{/each}}
+            </table>
+        \{{/if}}
     </div>
 
 </script>
