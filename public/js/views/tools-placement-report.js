@@ -94,18 +94,60 @@
 		render: function( fromDate, toDate, params ) {
 
 			var view = this;
-			view.$el.html( view.template() );
-			
+				
 			// if the from and to dates are not passed in, initialize the form using the default date range
 			if ( !fromDate || !toDate ) {
 
+				view.$el.html( view.template() );
 				view.initializeSearchForm( view.$el.find( '#defaultFromDate' ).val(), view.$el.find( '#defaultToDate' ).val() );
 				
 			// otherwise, set the from and to dates using the route params and perform a search using the query params
 			} else {
 
+				// render the view while the results are being loaded
+				view.$el.html( view.template({
+					waitingForResults: true
+				}));
 				view.initializeSearchForm( fromDate, toDate, params );
+
+				// search for placements using the date range and query params
+				view.getPlacementData( fromDate, toDate, params )
+					.done( function( data ) {
+						console.log(data);
+						// render the view with the search results
+						view.$el.html( view.template( data ) );
+						view.initializeSearchForm( fromDate, toDate, params );
+					});
 			}
+		},
+
+		getPlacementData: function( fromDate, toDate, params ) {
+			
+			var queryParams = params;
+			queryParams.fromDate = fromDate;
+			queryParams.toDate = toDate;
+			
+			return $.Deferred( function( defer ) {
+				$.ajax({
+					dataType: 'json',
+					url: '/tools/services/get-placement-data',
+					data: queryParams,
+					type: 'GET'
+				})
+				.done( function( data ) {
+					if ( data.status === 'error' ) {
+						// display the flash message
+						mare.views.flashMessages.initializeAJAX( data.flashMessage );
+						defer.reject();
+					} else {
+						defer.resolve( data );
+					}
+				})
+				.fail( function( err ) {
+					console.log( err );
+					defer.reject();
+				});
+			}).promise();
 		}
 	});
 }());

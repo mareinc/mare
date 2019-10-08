@@ -38,7 +38,7 @@
             </div>
         </div>
 
-         <form class="matching-form">
+        <form class="matching-form">
 
             <input type="hidden" id="defaultFromDate" value="{{ defaultDateRange.fromDate }}" />
             <input type="hidden" id="defaultToDate" value="{{ defaultDateRange.toDate }}" />
@@ -65,6 +65,9 @@
                         </div>
                         <div class="col-sm-12 col-md-8">
                             <select id="source" name="source[]" class="form-control source-select" multiple>
+                                \{{#each sources as |source|}}
+                                    <option value="\{{ source.id }}" selected>\{{ source.text }}</option>
+                                \{{/each}}
                             </select>
                         </div>
                     </div>
@@ -78,6 +81,9 @@
                         </div>
                         <div class="col-sm-12 col-md-8">
                             <select id="additionalSource" name="additionalSource[]" class="form-control additionalSource-select" multiple>
+                                \{{#each additionalSources as |source|}}
+                                    <option value="\{{ source.id }}" selected>\{{ source.text }}</option>
+                                \{{/each}}
                             </select>
                         </div>
                     </div>

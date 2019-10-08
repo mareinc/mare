@@ -687,3 +687,132 @@ exports.getInquiryData = ( req, res, next ) => {
 		flashMessages.sendErrorFlashMessage( res, 'Error', 'Error loading inquiry data' );
 	});
 };
+
+exports.getPlacementData = ( req, res, next ) => {
+
+	// get the query from the request object
+	let query = req.query;
+	
+	// get the date range of the inquiry search
+	let fromDate = new Date( query.fromDate );
+	let toDate = new Date( query.toDate );
+
+	// ensure both fromDate and toDate are valid dates
+	if ( isNaN( fromDate.getTime() ) || isNaN( toDate.getTime() ) ) {
+		return flashMessages.sendErrorFlashMessage( res, 'Error', 'Error loading inquiry data' );
+	}
+
+	// create the search criteria
+	let searchCriteria = {};
+
+	// source criteria (multiple)
+	let sourcesCriteria;
+	if ( Array.isArray( query.source ) && query.source.length > 0 ) {
+		sourcesCriteria = query.source.filter( ( objectId ) => ObjectId.isValid( objectId ) );
+		searchCriteria[ 'source' ] = { $in: sourcesCriteria };
+	}
+
+	// source criteria (multiple)
+	let additionalSourcesCriteria;
+	if ( Array.isArray( query.additionalSource ) && query.additionalSource.length > 0 ) {
+		additionalSourcesCriteria = query.additionalSource.filter( ( objectId ) => ObjectId.isValid( objectId ) );
+		searchCriteria[ 'additionalSources' ] = { $in: additionalSourcesCriteria };
+	}
+
+	// placement type criteria (multiple)
+	// get the subset of placement types specified in the query, otherwise default to all placement types
+	let placementTypeCriteria = query.placementType || utilsService.PLACEMENT_TYPES;
+
+	// create queries for each of the different placement types 
+	let placementQueries = utilsService.PLACEMENT_TYPES.map( placementType => {
+
+		// check to ensure the placement type is in the search criteria
+		if ( !placementTypeCriteria.find( placementTypeCriterion => placementTypeCriterion === placementType ) ) {
+			// if not, return an empty array to ensure result concatenation can still occur successfully
+			return [];
+		}
+
+		// get the date field for each placement type model
+		const typeSpecificDateField = `${placementType.toLowerCase()}Date`;
+
+		// add the date range criteria to the search criteria
+		let _searchCriteria = {
+			$and: [
+				{ [typeSpecificDateField]: { $gte: fromDate } },
+				{ [typeSpecificDateField]: { $lte: toDate } }
+			],
+			...searchCriteria
+		};
+
+		// create a query with the search criteria
+		return keystone.list( placementType ).model
+			.find( _searchCriteria )
+			.lean()
+			.exec();
+	});
+
+	Promise.all([
+		// if thare are sources criteria specified, get the sources docs to seed the select on the search form
+		sourcesCriteria
+			? keystone.list( 'Source' ).model
+				.find( { _id: { $in: sourcesCriteria } } )
+				.lean()
+				.exec()
+				.catch( err => {
+					// log an error for debugging purposes
+					console.error( `error loading sources for the placement report dashboard - ${ err }` );
+					// return false to allow the view to render regardless of the error
+					return false;
+				})
+			: false,
+		// if thare are additional sources criteria specified, get the sources docs to seed the select on the search form
+		additionalSourcesCriteria
+			? keystone.list( 'Source' ).model
+				.find( { _id: { $in: additionalSourcesCriteria } } )
+				.lean()
+				.exec()
+				.catch( err => {
+					// log an error for debugging purposes
+					console.error( `error loading additional sources for the placement report dashboard - ${ err }` );
+					// return false to allow the view to render regardless of the error
+					return false;
+				})
+			: false,
+		// append the placement queries
+		...placementQueries
+		])
+		.then(results => {
+
+			// destructure results
+			// placement type order return order: 'Placement', 'Match', 'Legalization', 'Disruption'
+			let [ sourceDocs, additionalSourceDocs, placementDocs, matchDocs, legalizationDocs, disruptionDocs ] = results;
+
+			let responseData = {
+				// if there are sources, parse them and add them to the response
+				sources: sourceDocs
+					? sourceDocs.map( source => ({ 
+						id: source._id.toString(), 
+						text: source.source 
+					}))
+					: false,
+				additionalSources: additionalSourceDocs
+					? additionalSourceDocs.map( source => ({ 
+						id: source._id.toString(), 
+						text: source.source 
+					}))
+					: false
+			};
+
+			// merge results of different placement types into a single list
+			responseData.results = placementDocs.concat( matchDocs, legalizationDocs, disruptionDocs );
+
+			// send the response data
+			res.send( responseData );
+		})
+		.catch(err => {
+			// log an error for debugging purposes
+			console.error( `error loading placements for the dashboard - ${ err }` );
+
+			flashMessages.sendErrorFlashMessage( res, 'Error', 'Error loading placement data' );
+		});
+};
