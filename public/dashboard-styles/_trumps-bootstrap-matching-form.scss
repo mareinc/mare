@@ -64,9 +64,10 @@
 		clear: right;
 	}
 
-	.inquiry-report > & > .row {
+	.inquiry-report > & > .row,
+	.placement-report > & > .row {
 
-		// workaround to ensure that the inquiry report form fields line up with the date filter fields
+		// workaround to ensure that report form fields line up with the date filter fields
 		// that have custom row styles applied to them (filter-form styles)
 		margin-left: 0;
 		margin-right: 0;

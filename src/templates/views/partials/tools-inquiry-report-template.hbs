@@ -26,7 +26,7 @@
                     <div class="form-group">
                         <div class="input-daterange">
                             <label for="toDate"><span class="sr-only">To Date</span>
-                                <input class="form-control" type="date" name="toDate" id="toDate" value="\{{ toDate }}" required />
+                                <input class="form-control" type="date" name="toDate" id="toDate" value="{{ toDate }}" required />
                                 <div class="input-group-addon">
                                     <span></span>
                                 </div>
@@ -38,8 +38,8 @@
         </div>
         
         <form class="matching-form">
-            <input type="hidden" id="defaultFromDate" value="{{ defaultInquiryDateRange.fromDate }}" />
-            <input type="hidden" id="defaultToDate" value="{{ defaultInquiryDateRange.toDate }}" />
+            <input type="hidden" id="defaultFromDate" value="{{ defaultDateRange.fromDate }}" />
+            <input type="hidden" id="defaultToDate" value="{{ defaultDateRange.toDate }}" />
             <div class="row">
                 <div class="col-6">
                     <div class="row form-group">
@@ -58,7 +58,7 @@
                 <div class="col-6">
                     <div class="row form-group">
                         <div class="col-sm-12 col-md-4 text-sm-right" >
-                            <label for="source" class="bold">Fiscal Years:</label>
+                            <label class="bold">Fiscal Years:</label>
                         </div>
                         <div class="col-sm-12 col-md-8 fiscal-year-buttons">
                             {{#each fiscalYears as |fiscalYear|}}

@@ -37,7 +37,7 @@ exports = module.exports = ( req, res ) => {
 			locals.inquiryTypes = utilsService.INQUIRY_TYPES;
 			locals.inquiryMethods = inquiryMethods;
 			// create a range from 30 days ago to today
-			locals.defaultInquiryDateRange = {
+			locals.defaultDateRange = {
 				fromDate: moment().subtract( 30, "days" ).format( 'YYYY-MM-DD' ),
 				toDate: moment().format( 'YYYY-MM-DD' )
 			};

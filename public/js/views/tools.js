@@ -101,8 +101,8 @@
 		
 		},
 
-		showPlacementReport: function() {
-			mare.views.placementReport.render();
+		showPlacementReport: function( fromDate, toDate, params ) {
+			mare.views.placementReport.render( fromDate, toDate, params );
 			// update the body class to indicate what screen this is
 			this.$el.attr('class', 'tools__placement-report');
 			// initialize the side nav

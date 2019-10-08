@@ -1,5 +1,86 @@
 <script id="tools-placement-report-template" type="text/x-handlebars-template">
-	
-	
+
     <h2 class="panel__h2 mb-2">Placement Report</h2>
+
+    <div class="placement-report">
+        
+        <div class="filter-form mb-2">
+            <div class="row">
+                <div class="col-lg-2 align-middle">
+                    <div class="filter-form__label mh-100">
+                    <p>Date range:</p>
+                    </div>
+                </div>
+                <div class="col-6 col-lg-5">
+                    <div class="form-group">
+                        <div class="input-daterange">
+                            <label for="fromDate"><span class="sr-only">To Date</span>
+                                <input  class="form-control" type="date" name="fromDate" id="fromDate" value="{{ fromDate }}" required />
+                                <div class="input-group-addon">
+                                    <span></span>
+                                </div>
+                            </label>								
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-lg-5">
+                    <div class="form-group">
+                        <div class="input-daterange">
+                            <label for="toDate"><span class="sr-only">To Date</span>
+                                <input class="form-control" type="date" name="toDate" id="toDate" value="{{ toDate }}" required />
+                                <div class="input-group-addon">
+                                    <span></span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+         <form class="matching-form">
+
+            <input type="hidden" id="defaultFromDate" value="{{ defaultDateRange.fromDate }}" />
+            <input type="hidden" id="defaultToDate" value="{{ defaultDateRange.toDate }}" />
+
+            <div class="row">
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right" >
+                            <label for="placementType" class="bold">Type:</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                            <select id="placementType" name="placementType[]" class="form-control placementType-select" multiple>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right" >
+                            <label for="source" class="bold">Source:</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                            <select id="source" name="source[]" class="form-control source-select" multiple>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                </div>
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right" >
+                            <label for="additionalSource" class="bold">Additional Source:</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                            <select id="additionalSource" name="additionalSource[]" class="form-control additionalSource-select" multiple>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
 </script>
