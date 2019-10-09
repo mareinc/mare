@@ -8,7 +8,9 @@
 
 		events: {
 			'click .placement-search-button'		: 'handleSearchClick',
-			'click .placement-search-reset-button'	: 'handleResetClick'
+			'click .placement-search-reset-button'	: 'handleResetClick',
+			'click .placement-export-xlsx-button'	: 'handleXlsxExportClick',
+			'click .placement-export-pdf-button'	: 'handlePDFExportClick'
 		},
 
 		initialize: function() {
@@ -91,6 +93,40 @@
 			mare.routers.tools.navigate( 'placement-report', { trigger: true } );
 		},
 
+		handleXlsxExportClick: function() {
+			var table = this.$el.find( '.results-table' ),
+				wb = XLSX.utils.table_to_book( table[ 0 ] );
+				
+			// convert HTML table to XLSX file
+			XLSX.writeFile( wb, table.data( 'filename' ) );
+		},
+
+		handlePDFExportClick: function() {
+
+			// collect the state of the form
+			var params = this.$el.find( 'form' ).serializeArray();
+			
+			// remove empty values
+			params = _.filter( params, function( value ) {
+				return value && value.value && value.value.length > 0;
+			});
+
+			// add the date range to the params
+			params.push({
+				name: 'fromDate',
+				value: this.$el.find( '[name="fromDate"]' ).val()
+			}, {
+				name: 'toDate',
+				value: this.$el.find( '[name="toDate"]' ).val()
+			});
+			
+			// build the query string
+			var queryString = jQuery.param( params );
+			
+			// redirect to the PDF report download URL
+			window.location = '/tools/services/get-placement-data?' + queryString + '&pdf=1';
+		},
+
 		render: function( fromDate, toDate, params ) {
 
 			var view = this;
@@ -161,8 +197,11 @@
 								},
 								{
 									title: 'Siblings',
-									data: 'siblings',
-									defaultContent: 'None'
+									data: function( row ) {
+										return row.siblings && row.siblings.length > 0
+											? row.siblings.join( ', ')
+											: 'None';
+									}
 								},
 								{
 									title: 'Reg #',

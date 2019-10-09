@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>MARE</title>
+		
+		<style type="text/css">
+			table tr th {
+				text-decoration: underline;
+			}
+
+            table th,
+            table td {
+                text-align: left;
+            }
+		</style>
+	</head>
+	<body>
+		<table width="100%">
+            <tr>
+                <th>Reg #</th>
+                <th>First Name</th>
+                <th>Last name</th>
+                <th>Reg Date</th>
+                <th>Child SW Region</th>
+                <th>Siblings</th>
+                <th>Reg #</th>
+                <th>Contact 1</th>
+                <th>Contact 2</th>
+                <th>Source</th>
+                <th>Type</th>
+            </tr>
+            {{#each results as |result|}}
+                <tr>
+                    <td>{{ result.childRegistrationNumber }}</td>
+                    <td>{{ result.childNameFirst }}</td>
+                    <td>{{ result.childNameLast }}</td>
+                    <td>{{ result.childRegistrationDate }}</td>
+                    <td>{{ result.childSWAgencyRegion }}</td>
+                    <td>
+                        {{#each result.siblings as |sibling|}}
+                            {{#ifeq @index 0}}
+                                {{ sibling }}
+                            {{else}}
+                                <br>{{ sibling }}
+                            {{/ifeq}}
+                        {{/each}}
+                    </td>
+                    <td>{{ result.familyRegistrationNumber }}</td>
+                    <td>{{ result.familyContact1 }}</td>
+                    <td>{{ result.familyContact2 }}</td>
+                    <td>{{ result.source }}</td>
+                    <td>{{ result.type }}</td>
+                </tr>
+            {{/each}}
+        </table>
+	</body>
+</html>
+
+		

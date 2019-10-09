@@ -107,8 +107,8 @@
         \{{#if results }}
             <h3>Results: </h3>
             <div class="matching-results-table__button-bar">
-                <button class="button button--teal inquiry-export-pdf-button">PDF Export</button>
-                <button class="button button--teal inquiry-export-xlsx-button">XLSX Export</button>
+                <button class="button button--teal placement-export-pdf-button">PDF Export</button>
+                <button class="button button--teal placement-export-xlsx-button">XLSX Export</button>
                 <div class="matching-results-table__record-count">
                     <div class="record-count__label">Total Inquiries:</div>
                     \{{ results.length }}
@@ -118,7 +118,8 @@
             {{!-- Results table for site display --}}            
             <table id="placement-results" class="stripe" width="100%"></table>
 
-            {{!-- <table width="100%" class="matching-results-table">
+            {{!-- Results table for Excel export (hidden) --}}
+            <table width="100%" class="results-table hidden" data-filename="PlacementReportExport.xlsx">
                 <tr>
                     <th>Reg #</th>
                     <th>First Name</th>
@@ -141,7 +142,11 @@
                         <td>\{{ result.childSWAgencyRegion }}</td>
                         <td>
                             \{{#each result.siblings as |sibling|}}
-                                \{{ sibling }}
+                                \{{#ifeq @index 0}}
+                                    \{{ sibling }}
+                                \{{else}}
+                                    <br>\{{ sibling }}
+                                \{{/ifeq}}
                             \{{/each}}
                         </td>
                         <td>\{{ result.familyRegistrationNumber }}</td>
@@ -151,9 +156,7 @@
                         <td>\{{ result.type }}</td>
                     </tr>
                 \{{/each}}
-            </table> --}}
-
-            
+            </table>            
         \{{/if}}
     </div>
 
