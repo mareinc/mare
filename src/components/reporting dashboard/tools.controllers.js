@@ -661,6 +661,7 @@ exports.getInquiryData = ( req, res, next ) => {
 					inquiryType: inquiryDoc.inquiryType,
 					inquiryMethod: inquiryDoc.inquiryMethod.inquiryMethod,
 					inquiryDate: moment.utc( inquiryDoc.takenOn ).format( 'MM/DD/YYYY' ),
+					inquiryDateISO: moment( inquiryDoc.takenOn ).toISOString(),
 					source: inquiryDoc.source ? inquiryDoc.source.source : 'Not Specified',
 					additionalSources: inquiryDoc.additionalSources && inquiryDoc.additionalSources.length > 0
 						? inquiryDoc.additionalSources.map( additionalSource => additionalSource.source ).join( ', ' )

@@ -190,7 +190,12 @@
 									defaultContent: '--'
 								},
 								{ title: 'Inquiry Type', data: 'inquiryType' },
-								{ title: 'Inquiry Date', data: 'inquiryDate' },
+								{ 
+									title: 'Inquiry Date', 
+									data: function( row, type ) {
+										return type === 'sort' ? row.inquiryDateISO : row.inquiryDate;
+									}
+								},
 								{ 
 									title: 'Reg #',
 									data: function( row ) {
@@ -208,7 +213,8 @@
 							},
 							dom: 'Bfrtip',
 							buttons: [
-								'colvis'
+								'colvis',
+								'pageLength'
 							],
 							createdRow: function( row, data ) {
 								// create a detail row if the child has siblings to display
