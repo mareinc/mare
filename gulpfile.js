@@ -24,7 +24,7 @@ const paths = {
 		'public/modules/**/*.css',
 		'public/styles/**/*.scss' ],
 	'dashboard-css':[
-		'public/dashboard-styles/dashboard.scss' ],
+		'public/dashboard-styles/*.scss' ],
 	'standalone-css':[
 		'public/styles/font-awesome/*.css' ],
 	'js':[
@@ -142,7 +142,7 @@ gulp.task( 'eslint-watch', () => {
 // Watch task
 gulp.task( 'watch', () => {
 	gulp.watch( paths.css, gulp.series( 'styles' ) );
-	gulp.watch( paths['dashboard-css'], { usePolling: true }, gulp.series( 'dashboard-styles' ) );
+	gulp.watch( paths['dashboard-css'], gulp.series( 'dashboard-styles' ) );
 	gulp.watch( paths.js, gulp.series( 'eslint-watch', 'scripts' ) );
 	gulp.watch( paths.img, gulp.series( 'images' ) );
 	gulp.watch( paths.tests, gulp.series( 'test' ) );
