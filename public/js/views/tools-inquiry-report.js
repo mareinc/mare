@@ -170,7 +170,8 @@
 						view.$el.html( view.template( data ) );
 						view.initializeSearchForm( fromDate, toDate, params );
 
-						$('#inquiry-results').DataTable({
+						// save a reference to the table so it can be destroyed when the view changes
+						mare.views.tools.table = $('#inquiry-results').DataTable({
 							data: data.results,
 							columns: [
 								{ 
