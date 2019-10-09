@@ -747,6 +747,13 @@ exports.getPlacementData = ( req, res, next ) => {
 		// create a query with the search criteria
 		return keystone.list( placementType ).model
 			.find( _searchCriteria )
+			.populate( 'family source' )
+			.populate({
+				path: 'child',
+				populate: {
+					path: 'adoptionWorkerAgencyRegion siblingsToBePlacedWith',
+				}
+			})
 			.lean()
 			.exec();
 	});
@@ -812,7 +819,47 @@ exports.getPlacementData = ( req, res, next ) => {
 				return placementData.map( placement => ({
 					id: placement._id,
 					type: placementType,
-					date: moment.utc( placement[typeSpecificDateField] ).format( 'MM/DD/YYYY' )
+					date: moment.utc( placement[typeSpecificDateField] ).format( 'MM/DD/YYYY' ),
+					source: placement.source ? placement.source.source : undefined,
+					childId: placement.child ? placement.child._id.toString() : undefined,
+					childRegistrationNumber: placement.child ? placement.child.registrationNumber : undefined,
+					childNameFirst: placement.isUnregisteredChild && placement.childDetails.firstName
+						? placement.childDetails.firstName !== ''
+							? placement.childDetails.firstName
+							: ''
+						: placement.child
+							? placement.child.name.first
+							: '',
+					childNameLast: placement.isUnregisteredChild && placement.childDetails.lastName
+						? placement.childDetails.lastName !== ''
+							? placement.childDetails.lastName
+							: ''
+						: placement.child
+							? placement.child.name.last
+							: '',
+					childRegistrationDate: placement.child 
+						? moment.utc(placement.child.registrationDate).format( 'MM/DD/YYYY' )
+						: undefined,
+					childSWAgencyRegion: placement.child && placement.child.adoptionWorkerAgencyRegion
+						? placement.child.adoptionWorkerAgencyRegion.region
+						: undefined,
+					siblings: placement.child 
+						&& placement.child.siblingsToBePlacedWith
+						&& placement.child.siblingsToBePlacedWith.length > 0
+							? placement.child.siblingsToBePlacedWith.map( sibling => `${sibling.name.first} ${sibling.name.last}` )
+							: undefined,
+					familyId: placement.family ? placement.family._id.toString() : undefined,
+					familyRegistrationNumber: placement.family ? placement.family.registrationNumber : undefined,
+					familyContact1: placement.family
+						? placement.family.contact1.name.full
+							? placement.family.contact1.name.full
+							: 'Not Specified'
+						: placement.familyDetails.name
+							? placement.familyDetails.name && placement.familyDetails.name !== ''
+							: 'Not Specified',
+					familyContact2: placement.family && placement.family.contact2.name.full
+							? placement.family.contact2.name.full
+							: 'Not Specified'
 				}));
 			}
 
