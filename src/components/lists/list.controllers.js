@@ -565,6 +565,7 @@ exports.getAllOtherFamilyConstellationConsiderations = () => {
 		// query the database for all other family constellation considerations
 		keystone.list( 'Other Family Constellation Consideration' ).model
 			.find()
+			.sort( 'sortOrder' )
 			.exec()
 			.then( otherFamilyConstellationConsiderations => {
 				// if no other family constellation considerations could not be found
