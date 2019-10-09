@@ -33,7 +33,7 @@
 		"gulp-sourcemaps": "^2.6.3",
 		"gulp-uglify": "^3.0.0",
 		"gulp-watch": "~5.0.0",
-		"handlebars": "~4.1.0",
+		"handlebars": "~4.4.3",
 		"hbs": "^4.0.1",
 		"jpegtran-bin": "^4.0.0",
 		"keystone": "https://github.com/autoboxer/keystone.git#d8f408a4ae44f6abac6249ace5b2b790aa50ad9c",
