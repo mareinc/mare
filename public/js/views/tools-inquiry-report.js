@@ -199,8 +199,11 @@
 								},
 								{ 
 									title: 'Reg #',
-									data: function( row ) {
-										return row.familyRegistrationNumber === '' ? '--' : row.familyRegistrationNumber;
+									data: 'familyRegistrationNumber',
+									render: function( data, type, row, meta ) {
+										return row.familyId
+											? '<a href="/keystone/families/' + row.familyId + '">' + data + '</a>'
+											: '--';
 									}
 								},
 								{ title: 'Contact 1', data: 'familyContact1' },
