@@ -115,7 +115,10 @@
                 </div>
             </div>
 
-            <table width="100%" class="matching-results-table">
+            {{!-- Results table for site display --}}            
+            <table id="placement-results" class="stripe" width="100%"></table>
+
+            {{!-- <table width="100%" class="matching-results-table">
                 <tr>
                     <th>Reg #</th>
                     <th>First Name</th>
@@ -148,7 +151,9 @@
                         <td>\{{ result.type }}</td>
                     </tr>
                 \{{/each}}
-            </table>
+            </table> --}}
+
+            
         \{{/if}}
     </div>
 

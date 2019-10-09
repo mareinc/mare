@@ -116,6 +116,84 @@
 						// render the view with the search results
 						view.$el.html( view.template( data ) );
 						view.initializeSearchForm( fromDate, toDate, params );
+
+						// initialize a DataTable for the query results and save a reference on the main
+						// dashboard view so it can be destroyed on dashboard view change
+						mare.views.tools.table = $('#placement-results').DataTable({
+							data: data.results,
+							fixedHeader: true,
+							pageLength: 100,
+							responsive: {
+								details: false
+							},
+							dom: 'Bfrtip',
+							buttons: [
+								'colvis',
+								'pageLength'
+							],
+							columns: [
+								{ 
+									title: 'Reg #',
+									data: 'childRegistrationNumber',
+									render: function( data, type, row, meta ) {
+										return row.childId
+											? '<a href="/keystone/children/' + row.childId + '">' + data + '</a>'
+											: '--';
+									}
+								},
+								{ 
+									title: 'First name',
+									data: 'childNameFirst' 
+								},
+								{ 
+									title: 'Last Name',
+									data: 'childNameLast'
+								},
+								{
+									title: 'Reg Date',
+									data: 'childRegistrationDate',
+									defaultContent: '--'
+								},
+								{ 
+									title: 'Child SW Region',
+									data: 'childSWAgencyRegion',
+									defaultContent: '--'
+								},
+								{
+									title: 'Siblings',
+									data: 'siblings',
+									defaultContent: 'None'
+								},
+								{
+									title: 'Reg #',
+									data: 'familyRegistrationNumber',
+									render: function( data, type, row, meta ) {
+										return row.familyId
+											? '<a href="/keystone/families/' + row.familyId + '">' + data + '</a>'
+											: '--';
+									}
+								},
+								{
+									title: 'Contact 1',
+									data: 'familyContact1',
+									defaultContent: '--'
+								},
+								{
+									title: 'Contact 2',
+									data: 'familyContact2',
+									defaultContent: '--'
+								},
+								{
+									title: 'Source',
+									data: 'source',
+									defaultContent: '--'
+								},
+								{
+									title: 'Type',
+									data: 'type'
+								}
+							]
+						});
 					});
 			}
 		},
