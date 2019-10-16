@@ -109,4 +109,11 @@ $oddBackgroundColor: #f9f9f9;
 			}
 		}
 	}
+
+	.details-row {
+
+		&__body {
+			padding-top: 5px;
+		}
+	}
 }
