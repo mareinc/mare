@@ -162,12 +162,21 @@
 							responsive: {
 								details: false
 							},
+							order: [[2, 'asc']],
 							dom: 'Bfrtip',
 							buttons: [
 								'colvis',
 								'pageLength'
 							],
 							columns: [
+								{
+									title: '',
+									data: 'placementId',
+									orderable: false,
+									render: function( data, type, row ) {
+										return '<a href="/keystone/' + row.placementDatabasePath + '/' + data + '"><i class="fa fa-external-link" aria-hidden="true"></i></a>';
+									}
+								},
 								{ 
 									title: 'Reg #',
 									data: 'childRegistrationNumber',

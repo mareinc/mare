@@ -626,6 +626,7 @@ exports.getInquiryData = ( req, res, next ) => {
 				let family = inquiryDoc.family ? inquiryDoc.family : undefined;
 				// create a response object
 				return {
+					inquiryId: inquiryDoc._id.toString(),
 					childId: child ? child._id.toString() : undefined,
 					childRegistrationNumber: child ? child.registrationNumber : undefined,
 					childNameFirst: child ? child.name.first : 'Child Not',
@@ -818,7 +819,8 @@ exports.getPlacementData = ( req, res, next ) => {
 				const typeSpecificDateField = `${placementType.toLowerCase()}Date`;
 				// map placement data to results object
 				return placementData.map( placement => ({
-					id: placement._id,
+					placementId: placement._id.toString(),
+					placementDatabasePath: utilsService.PLACEMENT_TYPES_TO_DATABASE_LOCATION_DICTIONARY[placementType],
 					type: placementType,
 					date: moment.utc( placement[typeSpecificDateField] ).format( 'MM/DD/YYYY' ),
 					source: placement.source ? placement.source.source : undefined,

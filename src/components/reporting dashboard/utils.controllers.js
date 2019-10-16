@@ -8,6 +8,12 @@ exports.SOCIAL_NEEDS_OPTIONS = [ 'none', 'mild', 'moderate', 'severe' ];
 exports.INQUIRER_OPTIONS = [ 'site visitor', 'family', 'social worker' ];
 exports.INQUIRY_TYPES = [ 'child inquiry', 'complaint', 'family support consultation', 'general inquiry' ];
 exports.PLACEMENT_TYPES = [ 'Placement', 'Match', 'Legalization', 'Disruption' ];
+exports.PLACEMENT_TYPES_TO_DATABASE_LOCATION_DICTIONARY = {
+	Placement: 'placements',
+	Match: 'matches',
+	Disruption: 'disruptions',
+	Legalization: 'legalizations'
+};
 
 exports.getPhysicalNeedsRange = ( fromNeed, toNeed ) => {
 	return utilityService.arrayCut( exports.PHYSICAL_NEEDS_OPTIONS, fromNeed, toNeed );

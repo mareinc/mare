@@ -174,6 +174,14 @@
 						mare.views.tools.table = $('#inquiry-results').DataTable({
 							data: data.results,
 							columns: [
+								{
+									title: '',
+									data: 'inquiryId',
+									orderable: false,
+									render: function( data ) {
+										return '<a href="/keystone/inquiries/' + data + '"><i class="fa fa-external-link" aria-hidden="true"></i></a>';
+									}
+								},
 								{ 
 									title: 'Reg #',
 									data: 'childRegistrationNumber',
@@ -210,7 +218,7 @@
 								{ title: 'Contact 2', data: 'familyContact2' }
 							],
 							fixedHeader: true,
-							order: [[5, 'desc']],
+							order: [[6, 'desc']],
 							pageLength: 100,
 							responsive: {
 								details: false
