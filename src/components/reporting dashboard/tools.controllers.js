@@ -749,11 +749,31 @@ exports.getPlacementData = ( req, res, next ) => {
 		// create a query with the search criteria
 		return keystone.list( placementType ).model
 			.find( _searchCriteria )
-			.populate( 'family source' )
+			.populate( 'source additionalSources familyDetails.agency familyDetails.race familyDetails.familyConstellation familyDetails.address.region' )
 			.populate({
 				path: 'child',
 				populate: {
-					path: 'adoptionWorkerAgencyRegion siblingsToBePlacedWith',
+					path: [
+						'gender',
+						'race',
+						'legalStatus',
+						'adoptionWorker',
+						'adoptionWorkerAgency',
+						'adoptionWorkerAgencyRegion',
+						'siblingsToBePlacedWith'
+					].join( ' ' )
+				}
+			})
+			.populate({
+				path: 'family',
+				populate: {
+					path: [
+						'socialWorkerAgency',
+						'familyConstellation',
+						'address.region',
+						'contact1.race',
+						'contact2.race'
+					].join( ' ' )
 				}
 			})
 			.lean()
@@ -821,9 +841,20 @@ exports.getPlacementData = ( req, res, next ) => {
 				return placementData.map( placement => ({
 					placementId: placement._id.toString(),
 					placementDatabasePath: utilsService.PLACEMENT_TYPES_TO_DATABASE_LOCATION_DICTIONARY[placementType],
-					type: placementType,
-					date: moment.utc( placement[typeSpecificDateField] ).format( 'MM/DD/YYYY' ),
+					placementType,
+					placementDate: moment.utc( placement[typeSpecificDateField] ).format( 'MM/DD/YYYY' ),
+					placementDateISO: moment( placement[typeSpecificDateField] ).toISOString(),
+					daysBeforePlacement: placement.child 
+						? moment.utc( placement[placement[typeSpecificDateField]] ).diff( moment.utc( placement.child.registrationDate ), 'days' )
+						: undefined,
+					ageAtPlacement: placement.child
+						? moment.utc( placement[placement[typeSpecificDateField]] ).diff( moment.utc( placement.child.birthDate ), 'years' )
+						: undefined,
 					source: placement.source ? placement.source.source : undefined,
+					additionalSources: placement.additionalSources && placement.additionalSources.length > 0
+						? placement.additionalSources.map( additionalSource => additionalSource.source ).join( ', ' )
+						: undefined,
+					notes: placement.notes,
 					childId: placement.child ? placement.child._id.toString() : undefined,
 					childRegistrationNumber: placement.child ? placement.child.registrationNumber : undefined,
 					childNameFirst: placement.isUnregisteredChild && placement.childDetails.firstName
@@ -840,12 +871,27 @@ exports.getPlacementData = ( req, res, next ) => {
 						: placement.child
 							? placement.child.name.last
 							: '',
+					childRace: placement.child && placement.child.race && placement.child.race.length > 0
+						? placement.child.race.map( race => race.race ).join( ', ' )
+						: undefined,
+					childGender: placement.child ? placement.child.gender.gender : undefined,
+					childLegalStatus: placement.child ? placement.child.legalStatus.legalStatus : undefined,
 					childRegistrationDate: placement.child 
-						? moment.utc(placement.child.registrationDate).format( 'MM/DD/YYYY' )
+						? moment.utc( placement.child.registrationDate ).format( 'MM/DD/YYYY' )
+						: undefined,
+					childSW: placement.child && placement.child.adoptionWorker
+						? placement.child.adoptionWorker.name.full
+						: undefined,
+					childSWAgency: placement.child && placement.child.adoptionWorkerAgency
+						? placement.child.adoptionWorkerAgency.name
 						: undefined,
 					childSWAgencyRegion: placement.child && placement.child.adoptionWorkerAgencyRegion
 						? placement.child.adoptionWorkerAgencyRegion.region
 						: undefined,
+					childPhysicalNeeds: placement.child ? placement.child.physicalNeeds : undefined,
+					childEmotionalNeeds: placement.child ? placement.child.emotionalNeeds : undefined,
+					childIntellectualNeeds: placement.child ? placement.child.intellectualNeeds : undefined,
+					childSocialNeeds: placement.child ? placement.child.socialNeeds : undefined,
 					siblings: placement.child 
 						&& placement.child.siblingsToBePlacedWith
 						&& placement.child.siblingsToBePlacedWith.length > 0
@@ -860,9 +906,43 @@ exports.getPlacementData = ( req, res, next ) => {
 						: placement.familyDetails.name
 							? placement.familyDetails.name && placement.familyDetails.name !== ''
 							: 'Not Specified',
+					familyContact1Race: placement.family
+						? placement.family.contact1.race && placement.family.contact1.race.length > 0
+							? placement.family.contact1.race.map( race => race.race ).join( ', ' )
+							: undefined
+						: placement.familyDetails.race && placement.familyDetails.race.length > 0
+							? placement.familyDetails.race.map( race => race.race ).join( ', ' )
+							: undefined,
+					familyContact2Race: placement.family
+						? placement.family.contact2.race && placement.family.contact2.race.length > 0
+							? placement.family.contact2.race.map( race => race.race ).join( ', ' )
+							: undefined
+						: undefined,
 					familyContact2: placement.family && placement.family.contact2.name.full
-							? placement.family.contact2.name.full
-							: 'Not Specified'
+						? placement.family.contact2.name.full
+						: 'Not Specified',
+					familySWAgency: placement.familyDetails.agency
+						? placement.familyDetails.agency.name
+						: undefined,
+					familyRegion: placement.family
+						? placement.family.address.region
+							? placement.family.address.region.region
+							: undefined
+						: placement.familyDetails.address && placement.familyDetails.address.region
+							? placement.familyDetails.address.region.region
+							: undefined,
+					familyConstellation: placement.family
+						? placement.family.familyConstellation
+							? placement.family.familyConstellation.familyConstellation
+							: undefined
+						: placement.familyDetails.familyConstellation
+							? placement.familyDetails.familyConstellation.familyConstellation
+							: undefined,
+					familyRegisteredWithMARE: placement.family 
+						? placement.family.registeredWithMARE.registered
+							? 'Y'
+							: 'N'
+						: 'N'
 				}));
 			}
 

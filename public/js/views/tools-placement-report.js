@@ -153,92 +153,24 @@
 						view.$el.html( view.template( data ) );
 						view.initializeSearchForm( fromDate, toDate, params );
 
-						// initialize a DataTable for the query results and save a reference on the main
-						// dashboard view so it can be destroyed on dashboard view change
+						
+						// initialize a DataTable (https://datatables.net/) with the placement results
+						// save a reference to the table so it can be destroyed when the view changes
 						mare.views.tools.table = $('#placement-results').DataTable({
-							data: data.results,
-							fixedHeader: true,
-							pageLength: 100,
-							responsive: {
-								details: false
+							data: data.results, 				// set results data as table source
+							columns: view.reportGridColumns, 	// configure columns
+							order: [[2, 'desc']], 				// define default sort (column index, direction)
+							fixedHeader: true, 					// fix the header to the top of the viewport on vertical scroll
+							pageLength: 100,					// set default number of rows to display
+							responsive: {						// hide columns from right-to-left when the viewport is too narrow
+								details: false					// do not display overflow columns in details row (overwrites default content)
 							},
-							order: [[2, 'asc']],
-							dom: 'Bfrtip',
+							dom: 'Bfrtip',						// define the placement of the grid options (buttons)
 							buttons: [
-								'colvis',
-								'pageLength'
-							],
-							columns: [
+								'pageLength',					// adds toggle for number of rows to display
 								{
-									title: '',
-									data: 'placementId',
-									orderable: false,
-									render: function( data, type, row ) {
-										return '<a href="/keystone/' + row.placementDatabasePath + '/' + data + '"><i class="fa fa-external-link" aria-hidden="true"></i></a>';
-									}
-								},
-								{ 
-									title: 'Reg #',
-									data: 'childRegistrationNumber',
-									render: function( data, type, row, meta ) {
-										return row.childId
-											? '<a href="/keystone/children/' + row.childId + '">' + data + '</a>'
-											: '--';
-									}
-								},
-								{ 
-									title: 'First name',
-									data: 'childNameFirst' 
-								},
-								{ 
-									title: 'Last Name',
-									data: 'childNameLast'
-								},
-								{
-									title: 'Reg Date',
-									data: 'childRegistrationDate',
-									defaultContent: '--'
-								},
-								{ 
-									title: 'Child SW Region',
-									data: 'childSWAgencyRegion',
-									defaultContent: '--'
-								},
-								{
-									title: 'Siblings',
-									data: function( row ) {
-										return row.siblings && row.siblings.length > 0
-											? row.siblings.join( ', ')
-											: 'None';
-									}
-								},
-								{
-									title: 'Reg #',
-									data: 'familyRegistrationNumber',
-									render: function( data, type, row, meta ) {
-										return row.familyId
-											? '<a href="/keystone/families/' + row.familyId + '">' + data + '</a>'
-											: '--';
-									}
-								},
-								{
-									title: 'Contact 1',
-									data: 'familyContact1',
-									defaultContent: '--'
-								},
-								{
-									title: 'Contact 2',
-									data: 'familyContact2',
-									defaultContent: '--'
-								},
-								{
-									title: 'Source',
-									data: 'source',
-									defaultContent: '--'
-								},
-								{
-									title: 'Type',
-									data: 'type'
+									extend: 'colvis',			// adds column visibility toggle menu
+									columns: ':gt(0)'			// allows toggling of all columns except the first one
 								}
 							]
 						});
@@ -273,6 +205,173 @@
 					defer.reject();
 				});
 			}).promise();
-		}
+		},
+
+		reportGridColumns: [
+			{
+				title: '',
+				data: 'placementId',
+				orderable: false,
+				className: 'icon-link-column',
+				render: function( data, type, row ) {
+					return '<a href="/keystone/' + row.placementDatabasePath + '/' + data + '"><i class="fa fa-external-link" aria-hidden="true"></i></a>';
+				}
+			},
+			{ title: 'Type', data: 'placementType' },
+			{
+				title: 'Date',
+				data: function( row, type ) {
+					// return date in ISO format to enable column sorting
+					return type === 'sort' ? row.placementDateISO : row.placementDate;
+				}
+			},
+			{ title: 'Notes', data: 'notes' },
+			{ title: 'First name', data: 'childNameFirst' },
+			{ title: 'Last Name', data: 'childNameLast' },
+			{
+				title: 'Reg #',
+				data: 'childRegistrationNumber',
+				render: function( data, type, row, meta ) {
+					return row.childId
+						? '<a href="/keystone/children/' + row.childId + '">' + data + '</a>'
+						: '--';
+				}
+			},
+			{
+				title: 'Siblings',
+				data: function( row ) {
+					return row.siblings && row.siblings.length > 0
+						? row.siblings.join( ', ')
+						: 'None';
+				}
+			},
+			{ title: 'Contact 1', data: 'familyContact1', defaultContent: '--' },
+			{ title: 'Contact 2', data: 'familyContact2', defaultContent: '--' },
+			{
+				title: 'Reg #',
+				data: 'familyRegistrationNumber',
+				render: function( data, type, row, meta ) {
+					return row.familyId
+						? '<a href="/keystone/families/' + row.familyId + '">' + data + '</a>'
+						: '--';
+				}
+			},
+			{ title: 'Source', data: 'source', defaultContent: '--' },
+			{ title: 'Additonal Sources', data: 'additionalSources', defaultContent: '--' },
+			// the remaining columns are hidden by default
+			{ 
+				title: 'Race', 
+				data: 'childRace', 
+				defaultContent: '--',
+				visible: false
+			},
+			{ 
+				title: 'Gender',
+				data: 'childGender',
+				defaultContent: '--',
+				visible: false
+			},
+			{ 
+				title: 'Legal Status',
+				data: 'childLegalStatus',
+				defaultContent: '--',
+				visible: false
+			},
+			{
+				title: 'Child SW',
+				data: 'childSW',
+				defaultContent: '--',
+				visible: false
+			},
+			{
+				title: 'Child SW Agency',
+				data: 'childSWAgency',
+				defaultContent: '--',
+				visible: false
+			},
+			{ 
+				title: 'Child SW Region',
+				data: 'childSWAgencyRegion',
+				defaultContent: '--',
+				visible: false
+			},
+			{
+				title: 'Reg Date',
+				data: 'childRegistrationDate',
+				defaultContent: '--',
+				visible: false
+			},
+			{
+				title: 'Days Before Placement',
+				data: 'daysBeforePlacement',
+				defaultContent: '--',
+				visible: false
+			},
+			{
+				title: 'Age At Placement',
+				data: 'ageAtPlacement',
+				defaultContent: '--',
+				visible: false
+			},
+			{
+				title: 'Physical Needs',
+				data: 'childPhysicalNeeds',
+				defaultContent: '--',
+				visible: false
+			},
+			{
+				title: 'Emotional Needs',
+				data: 'childEmotionalNeeds',
+				defaultContent: '--',
+				visible: false
+			},
+			{
+				title: 'Intellectual Needs',
+				data: 'childIntellectualNeeds',
+				defaultContent: '--',
+				visible: false
+			},
+			{
+				title: 'Social Needs',
+				data: 'childSocialNeeds',
+				defaultContent: '--',
+				visible: false
+			},
+			{
+				title: 'Family SW Agency',
+				data: 'familySWAgency',
+				defaultContent: '--',
+				visible: false
+			},
+			{
+				title: 'Family Region',
+				data: 'familyRegion',
+				defaultContent: '--',
+				visible: false
+			},
+			{
+				title: 'Family Constellation',
+				data: 'familyConstellation',
+				defaultContent: '--',
+				visible: false
+			},
+			{
+				title: 'Contact 1 Race',
+				data: 'familyContact1Race',
+				defaultContent: '--',
+				visible: false
+			},
+			{
+				title: 'Contact 2 Race',
+				data: 'familyContact2Race',
+				defaultContent: '--',
+				visible: false
+			},
+			{
+				title: 'Registered With MARE',
+				data: 'familyRegisteredWithMARE',
+				visible: false
+			}
+		]
 	});
 }());
