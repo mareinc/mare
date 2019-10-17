@@ -170,66 +170,25 @@
 						view.$el.html( view.template( data ) );
 						view.initializeSearchForm( fromDate, toDate, params );
 
+						// initialize a DataTable (https://datatables.net/) with the inquiry results
 						// save a reference to the table so it can be destroyed when the view changes
 						mare.views.tools.table = $('#inquiry-results').DataTable({
-							data: data.results,
-							columns: [
-								{
-									title: '',
-									data: 'inquiryId',
-									orderable: false,
-									render: function( data ) {
-										return '<a href="/keystone/inquiries/' + data + '"><i class="fa fa-external-link" aria-hidden="true"></i></a>';
-									}
-								},
-								{ 
-									title: 'Reg #',
-									data: 'childRegistrationNumber',
-									render: function( data, type, row, meta ) {
-										return row.childId
-											? '<a href="/keystone/children/' + row.childId + '">' + data + '</a>'
-											: '--';
-									}
-								},
-								{ title: 'First Name', data: 'childNameFirst' },
-								{ title: 'Last Name', data: 'childNameLast' },
-								{ 
-									title: 'Child SW Region',
-									data: 'childsSWAgencyRegion',
-									defaultContent: '--'
-								},
-								{ title: 'Inquiry Type', data: 'inquiryType' },
-								{ 
-									title: 'Inquiry Date', 
-									data: function( row, type ) {
-										return type === 'sort' ? row.inquiryDateISO : row.inquiryDate;
-									}
-								},
-								{ 
-									title: 'Reg #',
-									data: 'familyRegistrationNumber',
-									render: function( data, type, row, meta ) {
-										return row.familyId
-											? '<a href="/keystone/families/' + row.familyId + '">' + data + '</a>'
-											: '--';
-									}
-								},
-								{ title: 'Contact 1', data: 'familyContact1' },
-								{ title: 'Contact 2', data: 'familyContact2' }
-							],
-							fixedHeader: true,
-							order: [[6, 'desc']],
-							pageLength: 100,
-							responsive: {
-								details: false
+							data: data.results, 				// set results data as table source
+							columns: view.reportGridColumns, 	// configure columns
+							order: [[1, 'desc']], 				// define default sort (column index, direction)
+							fixedHeader: true, 					// fix the header to the top of the viewport on vertical scroll
+							pageLength: 100,					// set default number of rows to display
+							responsive: {						// hide columns from right-to-left when the viewport is too narrow
+								details: false					// do not display overflow columns in details row (overwrites default content)
 							},
-							dom: 'Bfrtip',
+							dom: 'Bfrtip',						// define the placement of the grid options (buttons)
 							buttons: [
-								'colvis',
-								'pageLength'
+								'colvis',						// adds column visibility toggle menu
+								'pageLength'					// adds toggle for number of rows to display
 							],
+							// callback for each grid row when it is created
 							createdRow: function( row, data ) {
-								// create a detail row if the child has siblings to display
+								// if the inquiry has multiple children create a detail row to display their information
 								if (data.siblings) {
 									var api = this.api();
 									var detailsHeader = '<div class="details-row__header">Other children included in this inquiry:</div>';
@@ -272,6 +231,53 @@
 					defer.reject();
 				});
 			}).promise();
-		}
+		},
+
+		reportGridColumns: [
+			{
+				title: '',
+				data: 'inquiryId',
+				orderable: false,
+				className: 'icon-link-column',
+				render: function( data ) {
+					return '<a href="/keystone/inquiries/' + data + '"><i class="fa fa-external-link" aria-hidden="true"></i></a>';
+				}
+			},
+			{ 
+				title: 'Inquiry Date', 
+				data: function( row, type ) {
+					// return date in ISO format to enable column sorting
+					return type === 'sort' ? row.inquiryDateISO : row.inquiryDate;
+				}
+			},
+			{ title: 'Inquiry Type', data: 'inquiryType' },
+			{ title: 'First Name', data: 'childNameFirst' },
+			{ title: 'Last Name', data: 'childNameLast' },
+			{ 
+				title: 'Reg #',
+				data: 'childRegistrationNumber',
+				render: function( data, type, row, meta ) {
+					return row.childId
+						? '<a href="/keystone/children/' + row.childId + '">' + data + '</a>'
+						: '--';
+				}
+			},
+			{ 
+				title: 'Child SW Region',
+				data: 'childsSWAgencyRegion',
+				defaultContent: '--'
+			},
+			{ title: 'Contact 1', data: 'familyContact1' },
+			{ title: 'Contact 2', data: 'familyContact2' },
+			{ 
+				title: 'Reg #',
+				data: 'familyRegistrationNumber',
+				render: function( data, type, row, meta ) {
+					return row.familyId
+						? '<a href="/keystone/families/' + row.familyId + '">' + data + '</a>'
+						: '--';
+				}
+			}
+		]
 	});
 }());
