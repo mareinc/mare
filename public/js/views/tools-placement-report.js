@@ -7,10 +7,11 @@
 		el: '.dashboard-content',
 
 		events: {
-			'click .placement-search-button'		: 'handleSearchClick',
-			'click .placement-search-reset-button'	: 'handleResetClick',
-			'click .placement-export-xlsx-button'	: 'handleXlsxExportClick',
-			'click .placement-export-pdf-button'	: 'handlePDFExportClick'
+			'click .placement-search-button'			: 'handleSearchClick',
+			'click .placement-search-reset-button'		: 'handleResetClick',
+			'click .placement-export-xlsx-button'		: 'handleXlsxExportClick',
+			'click .placement-export-pdf-button'		: 'handlePDFExportClick',
+			'click .placement-fiscal-year-buttons .btn'	: 'handleFiscalYearClick'
 		},
 
 		initialize: function() {
@@ -127,6 +128,14 @@
 			window.location = '/tools/services/get-placement-data?' + queryString + '&pdf=1';
 		},
 
+		handleFiscalYearClick: function(event) {
+			event.preventDefault();
+
+			// set the search date range
+			this.$el.find( '[name="fromDate"]' ).val( $(event.target).data('yearStart') );
+			this.$el.find( '[name="toDate"]' ).val( $(event.target).data('yearEnd') );
+		},
+
 		render: function( fromDate, toDate, params ) {
 
 			var view = this;
@@ -225,7 +234,7 @@
 					return type === 'sort' ? row.placementDateISO : row.placementDate;
 				}
 			},
-			{ title: 'Notes', data: 'notes' },
+			{ title: 'Notes', data: 'notes', defaultContent: '' },
 			{ title: 'First name', data: 'childNameFirst' },
 			{ title: 'Last Name', data: 'childNameLast' },
 			{

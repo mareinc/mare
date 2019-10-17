@@ -7,11 +7,11 @@
 		el: '.dashboard-content',
 
 		events: {
-			'click .inquiries-search-button'		: 'handleSearchClick',
-			'click .inquiries-search-reset-button'	: 'handleResetClick',
-			'click .inquiry-export-xlsx-button'		: 'handleXlsxExportClick',
-			'click .inquiry-export-pdf-button'		: 'handlePDFExportClick',
-			'click .fiscal-year-buttons .btn'		: 'handleFiscalYearClick'
+			'click .inquiries-search-button'			: 'handleSearchClick',
+			'click .inquiries-search-reset-button'		: 'handleResetClick',
+			'click .inquiry-export-xlsx-button'			: 'handleXlsxExportClick',
+			'click .inquiry-export-pdf-button'			: 'handlePDFExportClick',
+			'click .inquiry-fiscal-year-buttons .btn'	: 'handleFiscalYearClick'
 		},
 
 		initialize: function() {

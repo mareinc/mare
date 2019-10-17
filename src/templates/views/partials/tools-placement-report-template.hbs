@@ -61,6 +61,22 @@
                 <div class="col-6">
                     <div class="row form-group">
                         <div class="col-sm-12 col-md-4 text-sm-right" >
+                            <label class="bold">Fiscal Years:</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8 placement-fiscal-year-buttons">
+                            {{#each fiscalYears as |fiscalYear|}}
+                                <button class="btn btn-outline-primary" 
+                                    data-year-start="{{ fiscalYear.startDate }}" 
+                                    data-year-end="{{ fiscalYear.endDate }}">
+                                        {{ fiscalYear.fiscalYear }}
+                                </button>
+                            {{/each}}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right" >
                             <label for="source" class="bold">Source:</label>
                         </div>
                         <div class="col-sm-12 col-md-8">
@@ -71,8 +87,6 @@
                             </select>
                         </div>
                     </div>
-                </div>
-                <div class="col-6">
                 </div>
                 <div class="col-6">
                     <div class="row form-group">
