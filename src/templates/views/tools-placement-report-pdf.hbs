@@ -18,43 +18,83 @@
 	</head>
 	<body>
 		<table width="100%">
-            <tr>
-                <th>Reg #</th>
-                <th>First Name</th>
-                <th>Last name</th>
-                <th>Reg Date</th>
-                <th>Child SW Region</th>
-                <th>Siblings</th>
-                <th>Reg #</th>
-                <th>Contact 1</th>
-                <th>Contact 2</th>
-                <th>Source</th>
-                <th>Type</th>
-            </tr>
-            {{#each results as |result|}}
                 <tr>
-                    <td>{{ result.childRegistrationNumber }}</td>
-                    <td>{{ result.childNameFirst }}</td>
-                    <td>{{ result.childNameLast }}</td>
-                    <td>{{ result.childRegistrationDate }}</td>
-                    <td>{{ result.childSWAgencyRegion }}</td>
-                    <td>
-                        {{#each result.siblings as |sibling|}}
-                            {{#ifeq @index 0}}
-                                {{ sibling }}
-                            {{else}}
-                                <br>{{ sibling }}
-                            {{/ifeq}}
-                        {{/each}}
-                    </td>
-                    <td>{{ result.familyRegistrationNumber }}</td>
-                    <td>{{ result.familyContact1 }}</td>
-                    <td>{{ result.familyContact2 }}</td>
-                    <td>{{ result.source }}</td>
-                    <td>{{ result.type }}</td>
+                    <th>Type</th>
+                    <th>Date</th>
+                    <th>Notes</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Reg #</th>
+                    <th>Siblings</th>
+                    <th>Contact 1</th>
+                    <th>Contact 2</th>
+                    <th>Reg #</th>
+                    <th>Source</th>
+                    <th>Additional Sources</th>
+                    <th>Race</th>
+                    <th>Gender</th>
+                    <th>Legal Status</th>
+                    <th>Child SW</th>
+                    <th>Child SW Agency</th>
+                    <th>Child SW Region</th>
+                    <th>Reg Date</th>
+                    <th>Days Before Placement</th>
+                    <th>Age At Placement</th>
+                    <th>Physical Needs</th>
+                    <th>Emotional Needs</th>
+                    <th>Intellectual Needs</th>
+                    <th>Social Needs</th>
+                    <th>Family SW Agency</th>
+                    <th>Family Region</th>
+                    <th>Family Constellation</th>
+                    <th>Contact 1 Race</th>
+                    <th>Contact 2 Race</th>
+                    <th>Registered With MARE</th>
                 </tr>
-            {{/each}}
-        </table>
+                {{#each results as |result|}}
+                    <tr>
+                        <td>{{ result.placementType }}</td>
+                        <td>{{ result.placementDate }}</td>
+                        <td>{{ result.notes }}</td>
+                        <td>{{ result.childNameFirst }}</td>
+                        <td>{{ result.childNameLast }}</td>
+                        <td>{{ result.childRegistrationNumber }}</td>
+                        <td>
+                            {{#each result.siblings as |sibling|}}
+                                {{#ifeq @index 0}}
+                                    {{ sibling }}
+                                {{else}}
+                                    <br>{{ sibling }}
+                                {{/ifeq}}
+                            {{/each}}
+                        </td>
+                        <td>{{ result.familyContact1 }}</td>
+                        <td>{{ result.familyContact2 }}</td>
+                        <td>{{ result.familyRegistrationNumber }}</td>
+                        <td>{{ result.source }}</td>
+                        <td>{{ result.additionalSources }}</td>
+                        <td>{{ result.childRace }}</td>
+                        <td>{{ result.childGender }}</td>
+                        <td>{{ result.childLegalStatus }}</td>
+                        <td>{{ result.childSW }}</td>
+                        <td>{{ result.childSWAgency }}</td>
+                        <td>{{ result.childSWAgencyRegion }}</td>
+                        <td>{{ result.childRegistrationDate }}</td>
+                        <td>{{ result.daysBeforePlacement }}</td>
+                        <td>{{ result.ageAtPlacement }}</td>
+                        <td>{{ result.childPhysicalNeeds }}</td>
+                        <td>{{ result.childEmotionalNeeds }}</td>
+                        <td>{{ result.childIntellectualNeeds }}</td>
+                        <td>{{ result.childSocialNeeds }}</td>
+                        <td>{{ result.familySWAgency }}</td>
+                        <td>{{ result.familyRegion }}</td>
+                        <td>{{ result.familyConstellation }}</td>
+                        <td>{{ result.familyContact1Race }}</td>
+                        <td>{{ result.familyContact2Race }}</td>
+                        <td>{{ result.familyRegisteredWithMARE }}</td>
+                    </tr>
+                {{/each}}
+            </table>      
 	</body>
 </html>
 
