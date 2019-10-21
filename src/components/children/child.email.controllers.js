@@ -349,6 +349,20 @@ exports.sendNewSocialWorkerChildRegistrationNotificationEmailToMARE = ( rawChild
 			})
 		}
 
+		if( rawChildData.secondaryADLUWorker ) {
+			additionalChildData.push( {
+				key: 'Child has been assigned a secondary worker in the ADLU',
+				value: rawChildData.secondaryADLUWorker
+			});
+		}
+
+		if( rawChildData.adoptionAssessment ) {
+			additionalChildData.push( {
+				key: 'Child has had an adoption assessment completed',
+				value: rawChildData.adoptionAssessment
+			});
+		}
+
 		// create a list of all the fields that need to be manually updated in the new system
 		const fieldsToUpdate = [
 			'site visibility',
