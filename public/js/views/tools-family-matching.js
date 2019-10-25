@@ -170,7 +170,7 @@
 			var queryString = jQuery.param( params );
 			
 			// redirect to the PDF report download URL
-			window.location = '/tools/services/get-family-matching-data?' + queryString + '&pdf=1';
+			window.open( '/tools/services/get-family-matching-data?' + queryString + '&pdf=1', '_blank' );
 		},
 		
 		handleSaveChildEntriesClick: function() {

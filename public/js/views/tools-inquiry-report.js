@@ -133,7 +133,7 @@
 			var queryString = jQuery.param( params );
 			
 			// redirect to the PDF report download URL
-			window.location = '/tools/services/get-inquiry-data?' + queryString + '&pdf=1';
+			window.open( '/tools/services/get-inquiry-data?' + queryString + '&pdf=1', '_blank' );
 		},
 
 		handleFiscalYearClick: function(event) {
