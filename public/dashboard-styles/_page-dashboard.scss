@@ -122,4 +122,16 @@ $oddBackgroundColor: #f9f9f9;
 			padding-top: 5px;
 		}
 	}
+
+	
+}
+
+// dataTable button overrides 
+.dt-buttons {
+	// ensures column visibility buttons do not overflow the browser viewport when
+	// limited results are returned to the report grid
+	.dt-button-collection {
+		max-height: 1000%;
+		overflow-y: auto;
+	}
 }
