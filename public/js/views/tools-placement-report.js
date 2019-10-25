@@ -234,7 +234,7 @@
 					return type === 'sort' ? row.placementDateISO : row.placementDate;
 				}
 			},
-			{ title: 'Notes', data: 'notes', defaultContent: '' },
+			{ title: 'Notes', data: 'notes', defaultContent: '', visible: false },
 			{ title: 'First name', data: 'childNameFirst' },
 			{ title: 'Last Name', data: 'childNameLast' },
 			{
