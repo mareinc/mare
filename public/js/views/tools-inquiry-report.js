@@ -183,8 +183,11 @@
 							},
 							dom: 'Bfrtip',						// define the placement of the grid options (buttons)
 							buttons: [
-								'colvis',						// adds column visibility toggle menu
-								'pageLength'					// adds toggle for number of rows to display
+								'pageLength',					// adds toggle for number of rows to display
+								{
+									extend: 'colvis',			// adds column visibility toggle menu
+									columns: ':gt(0)'			// allows toggling of all columns except the first one
+								}
 							],
 							// callback for each grid row when it is created
 							createdRow: function( row, data ) {
@@ -251,6 +254,7 @@
 				}
 			},
 			{ title: 'Inquiry Type', data: 'inquiryType' },
+			{ title: 'Inquiry Method', data: 'inquiryMethod', visible: false },
 			{ title: 'First Name', data: 'childNameFirst' },
 			{ title: 'Last Name', data: 'childNameLast' },
 			{ 
@@ -277,6 +281,48 @@
 						? '<a href="/keystone/families/' + row.familyId + '">' + data + '</a>'
 						: '--';
 				}
+			},
+			{
+				title: 'Source',
+				data: 'source',
+				defaultContent: '--',
+				visible: false
+			},
+			{
+				title: 'Additional Source(s)',
+				data: 'additionalSources',
+				defaultContent: '--',
+				visible: false
+			},
+			{
+				title: 'Intake Source',
+				data: 'intakeSource',
+				defaultContent: '--',
+				visible: false
+			},
+			{
+				title: 'Max Physical Needs',
+				data: 'maxPhysicalNeeds',
+				defaultContent: '--',
+				visible: false
+			},
+			{
+				title: 'Max Emotional Needs',
+				data: 'maxIntellectualNeeds',
+				defaultContent: '--',
+				visible: false
+			},
+			{
+				title: 'Max Intellectual Needs',
+				data: 'maxEmotionalNeeds',
+				defaultContent: '--',
+				visible: false
+			},
+			{
+				title: 'Disabilities',
+				data: 'disabilities',
+				defaultContent: '--',
+				visible: false
 			}
 		]
 	});
