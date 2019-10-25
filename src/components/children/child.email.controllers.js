@@ -351,14 +351,14 @@ exports.sendNewSocialWorkerChildRegistrationNotificationEmailToMARE = ( rawChild
 
 		if( rawChildData.secondaryADLUWorker ) {
 			additionalChildData.push( {
-				key: 'Child has been assigned a secondary worker in the ADLU',
+				key: 'child has been assigned a secondary worker in the ADLU',
 				value: rawChildData.secondaryADLUWorker
 			});
 		}
 
 		if( rawChildData.adoptionAssessment ) {
 			additionalChildData.push( {
-				key: 'Child has had an adoption assessment completed',
+				key: 'child has had an adoption assessment completed',
 				value: rawChildData.adoptionAssessment
 			});
 		}

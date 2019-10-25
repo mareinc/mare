@@ -56,16 +56,22 @@
                     <label for="date-of-birth" class="label required-field">Date of Birth</label>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-sm-12 form-group">
-                    <label class="checkbox-inline">
-                        <input type="checkbox" name="secondaryADLUWorker" value="Yes">Child has been assigned a secondary worker in the ADLU
-                    </label>
+            <div class="row form-group">
+                <div class="col-sm-24 form-group">
+                    <span class="required-field">Has child been assigned a secondary worker in the ADLU?</span> &nbsp;&nbsp;
+                    <span id="child-has-secondary-adlu-worker" class="error-container">
+                        <label class="radio-inline"><input type="radio" name="secondaryADLUWorker" value="Yes" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#child-has-secondary-adlu-worker" data-parsley-required="">Yes</label>
+                        <label class="radio-inline"><input type="radio" name="secondaryADLUWorker" value="No">No</label>
+                    </span>
                 </div>
-                <div class="col-sm-12 form-group">
-                    <label class="checkbox-inline">
-                        <input type="checkbox" name="adoptionAssessment" value="Yes">Child has had an adoption assessment completed
-                    </label>
+            </div>
+            <div class="row form-group">
+                <div class="col-sm-24 form-group">
+                    <span class="required-field">Has child had an adoption assessment completed?</span> &nbsp;&nbsp;
+                    <span id="child-adoption-assessment-complete" class="error-container">
+                        <label class="radio-inline"><input type="radio" name="adoptionAssessment" value="Yes" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#child-adoption-assessment-complete" data-parsley-required="">Yes</label>
+                        <label class="radio-inline"><input type="radio" name="adoptionAssessment" value="No">No</label>
+                    </span>
                 </div>
             </div>
             <div class="row">
