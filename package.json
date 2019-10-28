@@ -12,7 +12,7 @@
 		"connect-mongo": "^3.0.0",
 		"cron": "^1.7.2",
 		"del": "^5.1.0",
-		"dotenv": "^8.1.0",
+		"dotenv": "^8.2.0",
 		"excel4node": "^1.7.0",
 		"express-handlebars": "~3.1.0",
 		"express-robots": "^0.1.6",
