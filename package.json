@@ -43,7 +43,7 @@
 		"md5": "^2.2.1",
 		"moment": "~2.24.0",
 		"mongoose-simple-random": "^0.4.1",
-		"newrelic": "^5.13.1",
+		"newrelic": "^6.0.0",
 		"node-sass": "^4.12.0",
 		"node-sass-middleware": "^0.11.0",
 		"optipng-bin": "^6.0.0",
