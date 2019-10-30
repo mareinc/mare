@@ -595,8 +595,11 @@ exports.updateEventAttendees = async ( req, res ) => {
 			
 			for( let deletedChildId of deletedChildren ) {
 				let deletedChildIndex = event.unregisteredChildAttendees.findIndex( child => child.get( '_id' ).toString() === deletedChildId );
-
-				event.unregisteredChildAttendees.splice( deletedChildIndex, 1 );
+				if ( deletedChildIndex === -1 ) {
+					console.log( `Attempting to delete a child that is not registered for an event: ${event.name} - ignoring delete and continuing execution...`);
+				} else {
+					event.unregisteredChildAttendees.splice( deletedChildIndex, 1 );
+				}
 			}
 		}
 		// loop through the adults deleted and delete the records
@@ -604,8 +607,11 @@ exports.updateEventAttendees = async ( req, res ) => {
 			
 			for( let deletedAdultId of deletedAdults ) {
 				let deletedAdultIndex = event.unregisteredAdultAttendees.findIndex( adult => adult.get( '_id' ).toString() === deletedAdultId );
-
-				event.unregisteredAdultAttendees.splice( deletedAdultIndex, 1 );
+				if ( deletedAdultIndex === -1 ) {
+					console.log( `Attempting to delete an adult that is not registered for an event: ${event.name} - ignoring delete and continuing execution...`);
+				} else {
+					event.unregisteredAdultAttendees.splice( deletedAdultIndex, 1 );
+				}
 			}
 		}
 
@@ -615,11 +621,15 @@ exports.updateEventAttendees = async ( req, res ) => {
 			for( let editedChild of editedChildren ) {
 				let targetChild = event.unregisteredChildAttendees.find( child => child.get( '_id' ).toString() === editedChild.id );
 
-				targetChild.set( 'name.first', editedChild.firstName );
-				targetChild.set( 'name.last', editedChild.lastName );
-				targetChild.set( 'age', editedChild.age );
-				targetChild.set( 'registrantID', editedChild.registrantId );
-				targetChild.set( 'registrantType', req.user.userType );
+				if ( targetChild ) {
+					targetChild.set( 'name.first', editedChild.firstName );
+					targetChild.set( 'name.last', editedChild.lastName );
+					targetChild.set( 'age', editedChild.age );
+					targetChild.set( 'registrantID', editedChild.registrantId );
+					targetChild.set( 'registrantType', req.user.userType );
+				} else {
+					console.log( `Attempting to edit a child that is not registered for an event: ${event.name} - ignoring edits and continuing execution...`);
+				}
 			}
 		}
 		// loop through the adults edited and edit the records
@@ -628,8 +638,12 @@ exports.updateEventAttendees = async ( req, res ) => {
 			for( let editedAdult of editedAdults ) {
 				let targetAdult = event.unregisteredAdultAttendees.find( adult => adult.get( '_id' ).toString() === editedAdult.id );
 
-				targetAdult.set( 'name.first', editedAdult.firstName );
-				targetAdult.set( 'name.last', editedAdult.lastName );
+				if ( targetAdult ) {
+					targetAdult.set( 'name.first', editedAdult.firstName );
+					targetAdult.set( 'name.last', editedAdult.lastName );
+				} else {
+					console.log( `Attempting to edit an adult that is not registered for an event: ${event.name} - ignoring edits and continuing execution...`);
+				}
 			}
 		}
 
