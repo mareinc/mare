@@ -176,144 +176,150 @@ Event.schema.post( 'save', async function() {
 		return;
 	}
 
-	// check for a large number of dropped attendees ( >= 5 ) in any group, and send an email if it occurred
-	// NOTE: attendees have gone missing from events and this is a way to track changes and send alerts if any are found
-	try {
-		// fetch an array with the ids of the removed staff attendees
-		const removedStaffIds = this.getRemovedAttendeeIds({
-			original: this._savedVersion.staffAttendees,
-			updated: this.staffAttendees
-		});
-		// fetch an array with the ids of the removed site visitor attendees
-		const removedSiteVisitorIds = this.getRemovedAttendeeIds({
-			original: this._savedVersion.siteVisitorAttendees,
-			updated: this.siteVisitorAttendees
-		});
-		// fetch an array with the ids of the removed social worker attendees
-		const removedSocialWorkerIds = this.getRemovedAttendeeIds({
-			original: this._savedVersion.socialWorkerAttendees,
-			updated: this.socialWorkerAttendees
-		});
-		// fetch an array with the ids of the removed family attendees
-		const removedFamilyIds = this.getRemovedAttendeeIds({
-			original: this._savedVersion.familyAttendees,
-			updated: this.familyAttendees
-		});
-		// fetch an array with the ids of the removed child attendees
-		const removedChildIds = this.getRemovedAttendeeIds({
-			original: this._savedVersion.childAttendees,
-			updated: this.childAttendees
-		});
-		// fetch an array with the ids of the removed outside contact attendees
-		const removedOutsideContactIds = this.getRemovedAttendeeIds({
-			original: this._savedVersion.outsideContactAttendees,
-			updated: this.outsideContactAttendees
-		});
-		// fetch the models of the removed staff attendees, populating only the full name field
-		const removedStaff = await modelService.getModels({
-			ids: removedStaffIds,
-			targetModel: 'Admin',
-			fieldsToSelect: [ 'name.full' ]
-		});
-		// fetch the models of the removed site visitor attendees, populating only the full name field
-		const removedSiteVisitors = await modelService.getModels({
-			ids: removedSiteVisitorIds,
-			targetModel: 'Site Visitor',
-			fieldsToSelect: [ 'name.full' ]
-		});
-		// fetch the models of the removed social worker attendees, populating only the full name field
-		const removedSocialWorkers = await modelService.getModels({
-			ids: removedSocialWorkerIds,
-			targetModel: 'Social Worker',
-			fieldsToSelect: [ 'name.full' ]
-		});
-		// fetch the models of the removed family attendees, populating only the display name/registration number field
-		const removedFamilies = await modelService.getModels({
-			ids: removedFamilyIds,
-			targetModel: 'Family',
-			fieldsToSelect: [ 'displayNameAndRegistration' ]
-		});
-		// fetch the models of the removed child attendees, populating only the display name/registration number field
-		const removedChildren = await modelService.getModels({
-			ids: removedChildIds,
-			targetModel: 'Child',
-			fieldsToSelect: [ 'displayNameAndRegistration' ]
-		});
-		// fetch the models of the removed outside contact attendees, populating only the identifying name field
-		const removedOutsideContacts = await modelService.getModels({
-			ids: removedOutsideContactIds,
-			targetModel: 'Outside Contact',
-			fieldsToSelect: [ 'identifyingName' ]
-		});
-		// fetch an array of unregistered child objects that have been removed from the event
-		const removedUnregisteredChildren = this.getRemovedUnregisteredAttendees({
-			original: this._savedVersion.unregisteredChildAttendees,
-			updated: this.unregisteredChildAttendees
-		});
-		// fetch an array of unregistered adult objects that have been removed from the event
-		const removedUnregisteredAdults = this.getRemovedUnregisteredAttendees({
-			original: this._savedVersion.unregisteredAdultAttendees,
-			updated: this.unregisteredAdultAttendees
-		});
-		// loop through each of the children and fetch the name of the social worker who registered them for the event
-		for( let child of removedUnregisteredChildren ) {
+	// event registration edits can cause this code to report erroneous attendee drops, the SUPPRESS_EMAIL_WARNINGS
+	// flag allows this process to be skipped in certain scenarios
+	if (!this.SUPPRESS_EMAIL_WARNINGS) {
+		// check for a large number of dropped attendees ( >= 5 ) in any group, and send an email if it occurred
+		// NOTE: attendees have gone missing from events and this is a way to track changes and send alerts if any are found
+		try {
+			// fetch an array with the ids of the removed staff attendees
+			const removedStaffIds = this.getRemovedAttendeeIds({
+				original: this._savedVersion.staffAttendees,
+				updated: this.staffAttendees
+			});
+			// fetch an array with the ids of the removed site visitor attendees
+			const removedSiteVisitorIds = this.getRemovedAttendeeIds({
+				original: this._savedVersion.siteVisitorAttendees,
+				updated: this.siteVisitorAttendees
+			});
+			// fetch an array with the ids of the removed social worker attendees
+			const removedSocialWorkerIds = this.getRemovedAttendeeIds({
+				original: this._savedVersion.socialWorkerAttendees,
+				updated: this.socialWorkerAttendees
+			});
+			// fetch an array with the ids of the removed family attendees
+			const removedFamilyIds = this.getRemovedAttendeeIds({
+				original: this._savedVersion.familyAttendees,
+				updated: this.familyAttendees
+			});
+			// fetch an array with the ids of the removed child attendees
+			const removedChildIds = this.getRemovedAttendeeIds({
+				original: this._savedVersion.childAttendees,
+				updated: this.childAttendees
+			});
+			// fetch an array with the ids of the removed outside contact attendees
+			const removedOutsideContactIds = this.getRemovedAttendeeIds({
+				original: this._savedVersion.outsideContactAttendees,
+				updated: this.outsideContactAttendees
+			});
+			// fetch the models of the removed staff attendees, populating only the full name field
+			const removedStaff = await modelService.getModels({
+				ids: removedStaffIds,
+				targetModel: 'Admin',
+				fieldsToSelect: [ 'name.full' ]
+			});
+			// fetch the models of the removed site visitor attendees, populating only the full name field
+			const removedSiteVisitors = await modelService.getModels({
+				ids: removedSiteVisitorIds,
+				targetModel: 'Site Visitor',
+				fieldsToSelect: [ 'name.full' ]
+			});
+			// fetch the models of the removed social worker attendees, populating only the full name field
+			const removedSocialWorkers = await modelService.getModels({
+				ids: removedSocialWorkerIds,
+				targetModel: 'Social Worker',
+				fieldsToSelect: [ 'name.full' ]
+			});
+			// fetch the models of the removed family attendees, populating only the display name/registration number field
+			const removedFamilies = await modelService.getModels({
+				ids: removedFamilyIds,
+				targetModel: 'Family',
+				fieldsToSelect: [ 'displayNameAndRegistration' ]
+			});
+			// fetch the models of the removed child attendees, populating only the display name/registration number field
+			const removedChildren = await modelService.getModels({
+				ids: removedChildIds,
+				targetModel: 'Child',
+				fieldsToSelect: [ 'displayNameAndRegistration' ]
+			});
+			// fetch the models of the removed outside contact attendees, populating only the identifying name field
+			const removedOutsideContacts = await modelService.getModels({
+				ids: removedOutsideContactIds,
+				targetModel: 'Outside Contact',
+				fieldsToSelect: [ 'identifyingName' ]
+			});
+			// fetch an array of unregistered child objects that have been removed from the event
+			const removedUnregisteredChildren = this.getRemovedUnregisteredAttendees({
+				original: this._savedVersion.unregisteredChildAttendees,
+				updated: this.unregisteredChildAttendees
+			});
+			// fetch an array of unregistered adult objects that have been removed from the event
+			const removedUnregisteredAdults = this.getRemovedUnregisteredAttendees({
+				original: this._savedVersion.unregisteredAdultAttendees,
+				updated: this.unregisteredAdultAttendees
+			});
+			// loop through each of the children and fetch the name of the social worker who registered them for the event
+			for( let child of removedUnregisteredChildren ) {
 
-			try {
-				const registrant = await modelService.getModel({
-					id: child.registrantID,
-					targetModel: 'Social Worker',
-					fieldsToSelect: [ 'name.full' ]
-				});
-				// if a social worker was found, add details to make it easier to restore the child accurately
-				if( registrant ) {
-					child.registrant = registrant.name.full;
+				try {
+					const registrant = await modelService.getModel({
+						id: child.registrantID,
+						targetModel: 'Social Worker',
+						fieldsToSelect: [ 'name.full' ]
+					});
+					// if a social worker was found, add details to make it easier to restore the child accurately
+					if( registrant ) {
+						child.registrant = registrant.name.full;
+					}
+				}
+				catch( err ) {
+					console.error( `error populating registrant for unregistered child ${ child.name.first } ${ child.name.last }`, err );
 				}
 			}
-			catch( err ) {
-				console.error( `error populating registrant for unregistered child ${ child.name.first } ${ child.name.last }`, err );
+			// a notification email will only be sent if at least 5 of a single group of attendees have been removed
+			if( removedStaff.length >= 5
+				|| removedSiteVisitors.length >= 5
+				|| removedSocialWorkers.length >= 5
+				|| removedFamilies.length >= 5
+				|| removedChildren.length >= 5
+				|| removedOutsideContacts.length >= 5
+				|| removedUnregisteredChildren.length >= 5
+				|| removedUnregisteredAdults.length >= 5
+			) {
+				console.log('email sent');
+				// fetch the email target model matching 'dropped event attendees'
+				const emailTarget = await listService.getEmailTargetByName( 'dropped event attendees' );
+				
+				// fetch contact info for the staff contacts for 'dropped event attendees'
+				const staffEmailContacts = await staffEmailContactMiddleware.getStaffEmailContactsByEmailTarget({
+					emailTargetId: emailTarget.get( '_id' ),
+					fieldsToPopulate: [ 'staffEmailContact' ]
+				});
+
+				// set the contact details from the returned objects if any were retrieved
+				const staffEmailContactsInfo = staffEmailContacts.length > 0
+					? staffEmailContacts.map( contact => contact.staffEmailContact.email )
+					: null;
+
+				eventEmailMiddleware.sendDroppedEventAttendeesEmailToMARE({
+					staffContactEmails: staffEmailContactsInfo,
+					eventName: this.name,
+					changedBy: this._req_user,
+					droppedStaff: removedStaff.length >= 5 ? removedStaff : [],
+					droppedSiteVisitors: removedSiteVisitors.length >= 5 ? removedSiteVisitors : [],
+					droppedSocialWorkers: removedSocialWorkers.length >= 5 ? removedSocialWorkers : [],
+					droppedFamilies: removedFamilies.length >= 5 ? removedFamilies : [],
+					droppedChildren: removedChildren.length >= 5 ? removedChildren : [],
+					droppedOutsideContacts: removedOutsideContacts.length >= 5 ? removedOutsideContacts : [],
+					droppedUnregisteredAdults: removedUnregisteredAdults.length >= 5 ? removedUnregisteredAdults : [],
+					droppedUnregisteredChildren: removedUnregisteredChildren.length >= 5 ? removedUnregisteredChildren : []
+				})
+				.catch( err => console.error( err ) );
 			}
 		}
-		// a notification email will only be sent if at least 5 of a single group of attendees have been removed
-		if( removedStaff.length >= 5
-			|| removedSiteVisitors.length >= 5
-			|| removedSocialWorkers.length >= 5
-			|| removedFamilies.length >= 5
-			|| removedChildren.length >= 5
-			|| removedOutsideContacts.length >= 5
-			|| removedUnregisteredChildren.length >= 5
-			|| removedUnregisteredAdults.length >= 5
-		) {
-			// fetch the email target model matching 'dropped event attendees'
-			const emailTarget = await listService.getEmailTargetByName( 'dropped event attendees' );
-			
-			// fetch contact info for the staff contacts for 'dropped event attendees'
-			const staffEmailContacts = await staffEmailContactMiddleware.getStaffEmailContactsByEmailTarget({
-				emailTargetId: emailTarget.get( '_id' ),
-				fieldsToPopulate: [ 'staffEmailContact' ]
-			});
-
-			// set the contact details from the returned objects if any were retrieved
-			const staffEmailContactsInfo = staffEmailContacts.length > 0
-				? staffEmailContacts.map( contact => contact.staffEmailContact.email )
-				: null;
-
-			eventEmailMiddleware.sendDroppedEventAttendeesEmailToMARE({
-				staffContactEmails: staffEmailContactsInfo,
-				eventName: this.name,
-				changedBy: this._req_user,
-				droppedStaff: removedStaff.length >= 5 ? removedStaff : [],
-				droppedSiteVisitors: removedSiteVisitors.length >= 5 ? removedSiteVisitors : [],
-				droppedSocialWorkers: removedSocialWorkers.length >= 5 ? removedSocialWorkers : [],
-				droppedFamilies: removedFamilies.length >= 5 ? removedFamilies : [],
-				droppedChildren: removedChildren.length >= 5 ? removedChildren : [],
-				droppedOutsideContacts: removedOutsideContacts.length >= 5 ? removedOutsideContacts : [],
-				droppedUnregisteredAdults: removedUnregisteredAdults.length >= 5 ? removedUnregisteredAdults : [],
-				droppedUnregisteredChildren: removedUnregisteredChildren.length >= 5 ? removedUnregisteredChildren : []
-			});
+		catch( err ) {
+			console.error( `error sending email notification about dropped event attendees for ${ this.name }`, err );
 		}
-	}
-	catch( err ) {
-		console.error( `error sending email notification about dropped event attendees for ${ this.name }`, err );
 	}
 
 	// TODO IMPORTANT: this is a temporary solution to fix a problem where the autokey generation from Keystone

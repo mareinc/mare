@@ -388,6 +388,9 @@ exports.unregister = ( eventDetails, user ) => {
 			// save the updated event
 			.then( () => {
 
+				// suppress any attendee drop email warnings when unregistering attendees intentionally
+				unregistrationData.eventModel.SUPPRESS_EMAIL_WARNINGS = true;
+
 				// save the updated event
 				unregistrationData.eventModel
 					.save( err => {
