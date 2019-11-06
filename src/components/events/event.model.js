@@ -104,6 +104,8 @@ Event.add( 'General Information', {
 	// this is used to determine whether we should send an automatic email to the creator when their event becomes active
 	createdViaWebsite: { type: Types.Boolean, label: 'created through the website', noedit: true }
 
+}, 'Version Tracking', {
+	currentVersion: { type: Types.Number, default: 0, note: 'DO NOT EDIT THIS FIELD' }
 /* container for data migration fields ( these should be kept until after phase 2 and the old system is phased out completely ) */
 }, {
 	// system field to store an appropriate file prefix
@@ -150,6 +152,18 @@ Event.schema.post( 'init', function() {
 // pre save hook
 Event.schema.pre( 'save', function( next ) {
 	'use strict';
+
+	// check to ensure that the document hasn't been updated while the user is making edits
+	if ( this._savedVersion.currentVersion !== this.currentVersion ) {
+		// if the versions don't match, cancel the save and notify the user
+		throw new Error( `
+			Your updates could not be saved - changes were made to this event while you had the Admin UI open.
+			Please refresh the page and perform your updates again.
+		`);
+	} else {
+		// if the versions matches, allow the save to continue and increment the version number
+		this.currentVersion += 1;
+	}
 
 	// trim whitespace characters from any type.Text fields
 	this.trimTextFields();
