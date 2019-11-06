@@ -238,7 +238,7 @@ exports.processWebhookUpdates = function processWebhookUpdates( req, res, next )
 
     // ensure the request data exists in the expected format
     if ( !req.body || !req.body.data ) {
-        return next( new Error( 'Error processing Mailchimp webhook - empty or malformed request body') );
+        return next( new Error( 'Error processing Mailchimp webhook - empty or malformed request body' ) );
     }
     // destructure request data
     let {
@@ -263,11 +263,20 @@ exports.processWebhookUpdates = function processWebhookUpdates( req, res, next )
             ])
             .then( data => {
                 let [ userDoc, mailchimpListDoc ] = data;
-                userDoc.mailingLists.addToSet( mailchimpListDoc._id.toString() );
-                return userDoc.save();
+
+                if ( userDoc ) {
+                    userDoc.mailingLists.addToSet( mailchimpListDoc._id.toString() );
+                    return userDoc.save();
+                } else {
+                    console.log( `Subscriber with email: ${userEmail} subscribed to ${mailchimpListDoc.name}, but no matching user exists in Keystone.` );
+                    return false;
+                }
             })
             .then( () => res.status( 200 ).send() )
-            .catch( err => next( new Error( err.message ) ) );
+            .catch( err => {
+                console.error( err );
+                next( new Error( err.message ) );
+            });
             break;
         case 'unsubscribe':
             keystone.list( 'User' ).model
@@ -276,11 +285,19 @@ exports.processWebhookUpdates = function processWebhookUpdates( req, res, next )
                 .populate( 'mailingLists' )
                 .exec()
                 .then( userDoc => {
-                    userDoc.mailingLists = userDoc.mailingLists.filter( mailingList => mailingList.mailchimpId !== mailingListId );
-                    return userDoc.save();
+                    if ( userDoc ) {
+                        userDoc.mailingLists = userDoc.mailingLists.filter( mailingList => mailingList.mailchimpId !== mailingListId );
+                        return userDoc.save();
+                    } else {
+                        console.log( `Subscriber with email: ${userEmail} unsubscribed from a mailing list, but no matching user exists in Keystone.` );
+                        return false;
+                    }
                  })
                 .then( () => res.status( 200 ).send() )
-                .catch( err => next( new Error( err.message ) ) );
+                .catch( err => {
+                    console.error( err );
+                    next( new Error( err.message ) );
+                });
             break;
         default:
             return next( new Error( `Error processing Mailchimp webhook - unknown action encountered: ${action}` ) );
