@@ -57,6 +57,7 @@
 			var $event = $( event.currentTarget ).closest( '.event' ),
 				eventId = $event.data( 'event-id' ),
 				eventName = $event.data( 'event-name' ),
+				eventVersion = $event.data( 'event-version' ),
 				eventDate = $event.data( 'event-date' ),
 				registeredChildrenUserIsBringing = $event.data( 'registered-children-user-is-bringing' ) || [],
 				unregisteredChildrenUserIsBringing = $event.data( 'unregistered-children-user-is-bringing' ) || [],
@@ -75,6 +76,7 @@
 					eventName: eventName,
 					eventDate: eventDate,
 					eventId: eventId,
+					eventVersion: eventVersion,
 					registeredChildrenUserIsBringing: registeredChildrenUserIsBringing.map( function( child ) { return child.id } ),
 					unregisteredChildrenUserIsBringing: unregisteredChildrenUserIsBringing.map( function( child ) { return child.id } ),
 					unregisteredAdultsUserIsBringing: unregisteredAdultsUserIsBringing.map( function( adult ) { return adult.id } )

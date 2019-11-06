@@ -243,6 +243,7 @@ exports.editRegistration = async ( req, res, next ) => {
 	'use strict';
 
 	let isRegisteredSuccessfully = false;
+	let doVersionsMatch = false;
 
 	let unregisteredAdults,
 		unregisteredChildren,
@@ -291,26 +292,54 @@ exports.editRegistration = async ( req, res, next ) => {
 		}
 	}
 
+	// test to ensure the version of the event being edited on the front end matches the current version in the database
 	try {
-		// fetch all unregistered adult and child objects associated with the event
-		unregisteredAdults = await eventService.getUnregisteredAdults( eventDetails.eventId );
-		unregisteredChildren = await eventService.getUnregisteredChildren( eventDetails.eventId );
-		registeredChildren = await eventService.getRegisteredChildren( eventDetails.eventId );
-		// edit the users event registration
-		await eventService.editRegistration( eventDetails, req.user );
-		// notify the user that they were successful ( the code to notify MARE executes after this message is sent )
-		req.flash( 'success', { title: 'MARE has been notified of your changes',
-			detail: 'You can expect to receive a confirmation email with additional details prior to the event' });
-		// note that the registration was a success
-		isRegisteredSuccessfully = true;
+		// get the event that's being edited
+		let eventToEdit = await eventService.getEventById( { eventId: eventDetails.eventId } );
+		
+		// check the event versions
+		if ( eventToEdit.currentVersion == eventDetails.eventVersion ) {
+			// if they match, update the flag and continue with registration edit logic
+			doVersionsMatch = true;
+		} else {
+			// if they do no match, log the error and report the issue to the user
+			console.error( `error editing registration for ${ req.user.displayName } for ${ eventDetails.eventName }: event versions do not match.  Rejecting updates to prevent losing attendee data.` );
+			// notify the user of the error
+			req.flash( 'error', { title: 'There was an issue editing your registration for this event',
+				detail: 'The event details were being updated while you were making your changes, please make your changes and submit them again.' } );
+		}
 	}
-	// if there was an error registering the user for the event
+	// if there was an error fetching the event
 	catch ( err ) {
 		// log the error for debugging purposes
 		console.error( `error editing registration for ${ req.user.displayName } for ${ eventDetails.eventName }`, err );
 		// notify the user of the error
 		req.flash( 'error', { title: 'There was an issue editing your registration for this event',
 			detail: 'If this error persists, please notify MARE at <a href="mailto:web@mareinc.org">web@mareinc.org</a>' } );
+	}
+
+	if ( doVersionsMatch ) {
+		try {
+			// fetch all unregistered adult and child objects associated with the event
+			unregisteredAdults = await eventService.getUnregisteredAdults( eventDetails.eventId );
+			unregisteredChildren = await eventService.getUnregisteredChildren( eventDetails.eventId );
+			registeredChildren = await eventService.getRegisteredChildren( eventDetails.eventId );
+			// edit the users event registration
+			await eventService.editRegistration( eventDetails, req.user );
+			// notify the user that they were successful ( the code to notify MARE executes after this message is sent )
+			req.flash( 'success', { title: 'MARE has been notified of your changes',
+				detail: 'You can expect to receive a confirmation email with additional details prior to the event' });
+			// note that the registration was a success
+			isRegisteredSuccessfully = true;
+		}
+		// if there was an error registering the user for the event
+		catch ( err ) {
+			// log the error for debugging purposes
+			console.error( `error editing registration for ${ req.user.displayName } for ${ eventDetails.eventName }`, err );
+			// notify the user of the error
+			req.flash( 'error', { title: 'There was an issue editing your registration for this event',
+				detail: 'If this error persists, please notify MARE at <a href="mailto:web@mareinc.org">web@mareinc.org</a>' } );
+		}
 	}
 
 	// send out emails only if they successfully registered for the event
@@ -615,7 +644,7 @@ exports.updateEventAttendees = async ( req, res ) => {
 			}
 		}
 
-		// lopo through the children edited and edit the records
+		// loop through the children edited and edit the records
 		if( editedChildren ) {
 			
 			for( let editedChild of editedChildren ) {
