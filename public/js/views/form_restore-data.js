@@ -2,7 +2,7 @@
 	'use strict';
 
 	mare.views.RestoreFormData = Backbone.View.extend({
-		el: '.restore-form-data__container',
+		el: '.restore-form-data__container--action',
 
 		events: {
 			'click .restore-form-data__restore'		: 'handleRestoreClick',

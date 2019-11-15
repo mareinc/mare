@@ -2,10 +2,23 @@
     margin-top: 1em;
     font-size: 0.9em;
     padding: 0.75em 2em;
-    background-color: $background-color-13;
     margin-left: -2em;
     margin-right: -2em;
     color: $text-color-light;
+
+    &--info {
+        background-color: $background-color-13;
+    }
+
+    &--action {
+        background-color: $flash-message-color-8;
+    }
+}
+
+
+.restore-form-data__message-title {
+    font-weight: bold;
+    margin-bottom: 0.5em;
 }
 
 .restore-form-data__controls {
