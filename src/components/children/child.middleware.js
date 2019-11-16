@@ -30,6 +30,7 @@ exports.getChildrenByRecruitmentWorker = async function( req, res, next ) {
 					
 					return {
 						name: child.get( 'name.full' ),
+						isPartOfSiblingGroup: child.get( 'mustBePlacedWithSiblings' ) === true ? 'Yes' : 'No',
 						adoptionWorker: child.get( 'adoptionWorker.name.full' ),
 						adoptionWorkerAgency: child.get( 'adoptionWorkerAgency.name' ),
 						adoptionWorkerPhone,
