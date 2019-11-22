@@ -2,8 +2,10 @@
 
     <form enctype="multipart/form-data" action="/forms/social-worker-child-registration" class="create-child-form" method="POST">
 
+        <div class="change-form-text">If you'd like to register a new child for MARE services, submit the form below.</div>
         {{#if hasRegisteredChildren}}
-        <div class="change-form-text">If you'd like to edit an existing child record, <a href="/forms/social-worker-child-registration#edit">click here</a></div>
+        <div class="change-form-text">If you'd like to add a sibling to a child who was registered before today, select the sibling below who is already registered.</div>
+        <div class="change-form-text">If you'd like to update an existing MARE registration, <a href="/forms/social-worker-child-registration#edit">click here</a></div>
         {{/if}}
 
         {{> restore-form-data}}
