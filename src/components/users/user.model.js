@@ -1,5 +1,6 @@
-var keystone	= require( 'keystone' ),
-	Types		= keystone.Field.Types;
+var keystone			= require( 'keystone' ),
+	Types				= keystone.Field.Types,
+	MailchimpService 	= require( '../mailchimp lists/mailchimp-list.controllers' );
 
 // Create model
 var User = new keystone.List( 'User', {
@@ -21,6 +22,41 @@ User.add( 'Login Information', {
 
     mailingLists: { type: Types.Relationship, label: 'mailing lists', ref: 'Mailchimp List', many: true, noedit: true }
 
+});
+
+// Post Init - used to store all the values before anything is changed
+User.schema.post( 'init', function() {
+	'use strict';
+
+	this._original = this.toObject();
+});
+
+// Pre Save
+User.schema.pre( 'save', function( next ) {
+	'use strict';
+
+	// check to see if mailing list subscriptions should be updated
+	const hasMailingListSubscriptions = this.mailingLists && this.mailingLists.length > 0;
+	const oldEmailAddress = this._original.email;
+	const newEmailAddress = this.email;
+
+	if ( hasMailingListSubscriptions && oldEmailAddress !== newEmailAddress ) {
+		// if updates are required...
+		// get all mailing lists the user is subscribed to
+		keystone.list( 'Mailchimp List' ).model
+			.find( { _id: { $in: this.mailingLists } } )
+			.exec()
+			// update each mailing list with the new email address
+			.then( mailingListDocs => Promise.all( mailingListDocs.map( mailingListDoc => MailchimpService.updateMemberEmail( oldEmailAddress, newEmailAddress, mailingListDoc.mailchimpId ) ) ) )
+			// log any errors
+			.catch( error => console.error( `Failed to update user's email address on Mailchimp mailing lists. Old email address: ${oldEmailAddress}. New email address: ${newEmailAddress}\n${error}` ) )
+			// continue save execution regardless of success/failure of email subscription updates
+			.finally( () => next() );
+	} else {
+		// if no updates are required...
+		// continue save execution
+		next();
+	}
 });
 
 // Define default columns in the admin interface and register the model
