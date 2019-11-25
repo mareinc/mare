@@ -11,7 +11,8 @@
 			'click .inquiries-search-reset-button'		: 'handleResetClick',
 			'click .inquiry-export-xlsx-button'			: 'handleXlsxExportClick',
 			'click .inquiry-export-pdf-button'			: 'handlePDFExportClick',
-			'click .inquiry-fiscal-year-buttons .btn'	: 'handleFiscalYearClick'
+			'click .inquiry-fiscal-year-buttons .btn'	: 'handleFiscalYearClick',
+			'change #children'							: 'handleChildSelectChanged'
 		},
 
 		initialize: function() {
@@ -136,12 +137,37 @@
 			window.open( '/tools/services/get-inquiry-data?' + queryString + '&pdf=1', '_blank' );
 		},
 
-		handleFiscalYearClick: function(event) {
+		handleFiscalYearClick: function( event ) {
 			event.preventDefault();
 
 			// set the search date range
 			this.$el.find( '[name="fromDate"]' ).val( $(event.target).data('yearStart') );
 			this.$el.find( '[name="toDate"]' ).val( $(event.target).data('yearEnd') );
+		},
+
+		handleChildSelectChanged: function( event ) {
+
+			// get any selected children
+			var selectedChildren = this.$el.find( '#children' ).val();
+
+			// if there are any children selected, display the 'All' button in fiscal year button group
+			if ( selectedChildren && selectedChildren.length > 0 ) {
+
+				this.$el.find( '#all-years' ).removeClass( 'hidden' );
+
+			// otherwise, hide the 'All' button in fiscal year button group
+			} else {
+
+				this.$el.find( '#all-years' ).addClass( 'hidden' );
+
+				// if this function was called as the result of a change event
+				if ( event ) {
+
+					// reset the date ranges to their defaults because a child is no longer selected
+					this.$el.find( '[name="fromDate"]' ).val( this.$el.find( '#defaultFromDate' ).val() );
+					this.$el.find( '[name="toDate"]' ).val( this.$el.find( '#defaultToDate' ).val() );
+				}
+			}
 		},
 
 		render: function( fromDate, toDate, params ) {
@@ -153,6 +179,7 @@
 
 				view.$el.html( view.template() );
 				view.initializeSearchForm( view.$el.find( '#defaultFromDate' ).val(), view.$el.find( '#defaultToDate' ).val() );
+				view.handleChildSelectChanged();
 				
 			// otherwise, set the from and to dates using the route params and perform a search using the query params
 			} else {
@@ -162,6 +189,7 @@
 					waitingForResults: true
 				}));
 				view.initializeSearchForm( fromDate, toDate, params );
+				view.handleChildSelectChanged();
 
 				// search for inquiries using the date range and query params
 				view.getInquiryData( fromDate, toDate, params )
@@ -169,6 +197,7 @@
 						// render the view with the search results
 						view.$el.html( view.template( data ) );
 						view.initializeSearchForm( fromDate, toDate, params );
+						view.handleChildSelectChanged();
 
 						// initialize a DataTable (https://datatables.net/) with the inquiry results
 						// save a reference to the table so it can be destroyed when the view changes

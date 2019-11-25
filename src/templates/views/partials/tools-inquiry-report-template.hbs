@@ -61,6 +61,12 @@
                             <label class="bold">Fiscal Years:</label>
                         </div>
                         <div class="col-sm-12 col-md-8 inquiry-fiscal-year-buttons">
+                            <button id="all-years" 
+                                class="btn btn-outline-primary hidden"
+                                data-year-start="1900-01-01" 
+                                data-year-end="{{date format="YYYY-MM-DD"}}">
+                                All
+                            </button>
                             {{#each fiscalYears as |fiscalYear|}}
                                 <button class="btn btn-outline-primary" 
                                     data-year-start="{{ fiscalYear.startDate }}" 
