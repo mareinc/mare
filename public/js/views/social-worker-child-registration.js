@@ -13,13 +13,13 @@
 		},
 
 		showCreateChildForm: function showCreateChildForm() {
-			this.$( '.create-child-form-container' ).removeClass( 'hidden' );
-			this.$( '.edit-child-form-container' ).addClass( 'hidden' );
+			this.$( '.create-child-form-container, .create-child-content' ).removeClass( 'hidden' );
+			this.$( '.edit-child-form-container, .edit-child-content' ).addClass( 'hidden' );
 		},
 
 		showEditChildForm: function showEditChildForm() {
-			this.$( '.edit-child-form-container' ).removeClass( 'hidden' );
-			this.$( '.create-child-form-container' ).addClass( 'hidden' );
+			this.$( '.edit-child-form-container, .edit-child-content' ).removeClass( 'hidden' );
+			this.$( '.create-child-form-container, .create-child-content' ).addClass( 'hidden' );
 		}
 	});
 }());
