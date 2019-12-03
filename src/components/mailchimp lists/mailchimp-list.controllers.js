@@ -248,6 +248,8 @@ exports.processWebhookUpdates = function processWebhookUpdates( req, res, next )
             list_id: mailingListId
         }
     } = req.body;
+    // ensure Mailchimp email format matches Keystone format
+    userEmail = userEmail.toLowerCase();
 
     switch ( action ) {
         case 'subscribe':
