@@ -37,7 +37,7 @@ User.schema.pre( 'save', function( next ) {
 
 	// check to see if mailing list subscriptions should be updated
 	const hasMailingListSubscriptions = this.mailingLists && this.mailingLists.length > 0;
-	const oldEmailAddress = this._original.email;
+	const oldEmailAddress = this._original ? this._original.email : this.email;
 	const newEmailAddress = this.email;
 
 	if ( hasMailingListSubscriptions && oldEmailAddress !== newEmailAddress ) {
