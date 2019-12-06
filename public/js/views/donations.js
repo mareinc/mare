@@ -207,7 +207,20 @@
 				$.post( '/donate', data, function( responseData ) {
 
 					// handle success and error responses
-					if ( responseData.status === 'error' ||  responseData.status === 'success' ) {
+					if ( responseData.status === 'success' ) {
+
+						// display a flash message with the resulting status of the update action
+						mare.views.flashMessages.initializeAJAX( responseData.message );
+
+						// track the successful donation event using Google Analytics
+						ga( 'send', {
+							hitType: 'event',
+							eventCategory: 'Button - Donate',
+							eventAction: 'donation - submitted',
+							eventLabel: 'MARE Donation Page'
+						});
+
+					} else if ( responseData.status === 'error' ) {
 
 						// display a flash message with the resulting status of the update action
 						mare.views.flashMessages.initializeAJAX( responseData.message );
