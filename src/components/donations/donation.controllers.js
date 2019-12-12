@@ -270,7 +270,7 @@ exports = module.exports = {
 				flashMessages.appendFlashMessage({
 					messageType: flashMessages.MESSAGE_TYPES.SUCCESS,
 					title: 'Thank you!',
-					message: 'Your donation to the Massachusetts Adoption Resource Exchange (MARE) is complete. Your gift will support finding adoptive homes for children and teens in foster care. A confirmation transaction email will come from the donation platform and a thank you letter and tax receipt will come from MARE. Please contact Megan Dolan at megand@mareinc.org with any questions or to learn more.'
+					message: 'Your donation to the Massachusetts Adoption Resource Exchange (MARE) is complete. Your gift will support finding adoptive homes for children and teens in foster care. A confirmation transaction email will come from the donation platform and a thank you letter and tax receipt will come from MARE. Please contact Danielle Conti at daniellec@mareinc.org with any questions or to learn more.'
 				});
 
 				// generate flash message markup
