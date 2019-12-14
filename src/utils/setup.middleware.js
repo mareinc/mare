@@ -40,7 +40,7 @@ exports.initLocals = function( req, res, next ) {
 		]},
 		{ title: 'For Social Workers', subMenu: [
 			{ title: 'How MARE Can Help You', href: '/page/how-mare-can-help-you' },
-			{ title: 'Register a Child', href: '/page/register-a-child' },
+			{ title: 'Register/Update a Child', href: '/page/register-a-child' },
 			{ title: 'Attend Events', href: '/page/attend-events' },
 			{ title: `Register a Family's Homestudy`, href: '/page/register-a-familys-homestudy' }
 		]},
