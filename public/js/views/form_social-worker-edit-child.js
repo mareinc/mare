@@ -116,36 +116,35 @@
 			var isArrayField = fieldName.includes( '[]' );
 			// check for pre-existing child data for the field that was updated ( current state of child model )
 			var existingData = this.existingChildData[ fieldName ];
-			// get the new value for the field that was updated
-			var newData = event.currentTarget.value;
-
-			console.log('field updated: ' + fieldName);
+			// create a placeholder for the updated data
+			var newData;
 
 			// if the field represents an array of data...
 			if ( isArrayField ) {
 
-				console.log('existing:')
-				console.log(existingData);
-
 				// context: all array fields on the form are checkbox groups, so all logic will be written with that assumption
+
+				// convert existing data from id values to their label values
+				var existingLabelData = _.map( existingData, function( datum ) {
+					return $( '.edit-child-form-body input:checkbox[value="' + datum + '"]' ).parent().text().trim();
+				});
 
 				// check for existing updates to the field ( any update previously made during this session )
 				var existingUpdatedData = $( '.edit-child-form input[name="' + fieldName + '"]' ).map( function() {
 					return $( this ).val();
 				}).get();
 
-				console.log('existing updated:')
-				console.log(existingUpdatedData);
-
 				// get the most recent version of the data, either the pre-existing data on the child model
 				// or the updated data from changes made during the current session
 				var mostRecentData = existingUpdatedData.length === 0
-					? _.clone( existingData )
+					? _.clone( existingLabelData )
 					: existingUpdatedData;
+
+				// get the new value for the field that was updated
+				newData = $( event.currentTarget ).parent().text().trim();
 				
-				var isChecked = event.currentTarget.checked;
 				// if the checkbox is checked...
-				if ( isChecked ) {
+				if ( event.currentTarget.checked ) {
 
 					// add the datum to the dataset
 					mostRecentData.push( newData );
@@ -160,17 +159,19 @@
 				// ensure all datum in the dataset are unique
 				mostRecentData = _.uniq( mostRecentData );
 
-				console.log('after change:')
-				console.log(mostRecentData);
-
 				// remove any existing updates from the edit form
 				$( '.edit-child-form input[name="' + fieldName + '"]' ).remove();
 
 				// if the most recent data does not match the existing data...
-				if ( !_.isEqual( existingData, mostRecentData ) ) {
+				if ( !_.isEqual( existingLabelData, mostRecentData ) ) {
 					// add all new datum to the edit form
 					_.each( mostRecentData, function( datum ) {
-						$( '.edit-child-form' ).prepend( '<input type="hidden" name="' + fieldName + '" value="' + datum + '">');
+						$( '.edit-child-form' ).prepend( 
+							'<input type="hidden" ' 
+							+ 'name="' + fieldName 
+							+ '" value="' + datum
+							+ '">'
+						);
 					});
 				}
 				
@@ -180,11 +181,27 @@
 				// remove any existing updates from the edit form
 				$( '.edit-child-form input[name="' + fieldName + '"]' ).remove();
 
-				// if new data doesn't match the existing data
+				// get the new value for the field that was updated
+				newData = event.currentTarget.value;
+
+				// if new data doesn't match the existing data...
 				if ( existingData !== newData ) {
 
+					// get the type of input that was updated
+					var inputType = event.currentTarget.type;
+					// if the input is either a radio button use the label of the input as the value to send for the update email
+					// ( these are fields that have IDs for values, which are not human-readable )
+					newData = inputType === 'radio'
+						? $( event.currentTarget ).parent().text().trim()
+						: newData;
+
 					// add the updated data to the edit form
-					$( '.edit-child-form' ).prepend( '<input type="hidden" name="' + fieldName + '" value="' + newData + '">');
+					$( '.edit-child-form' ).prepend( 
+						'<input type="hidden" ' 
+						+ 'name="' + fieldName 
+						+ '" value="' + newData 
+						+ '">'
+					);
 				}
 			}
 
