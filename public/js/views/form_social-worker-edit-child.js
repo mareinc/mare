@@ -7,7 +7,7 @@
 		events: {
 			'change #is-not-ma-city-checkbox'		: 'toggleCitySelect',
 			'change [name="isPartOfSiblingGroup"]'	: 'toggleSiblingNamesTextbox',
-			'change #registered-children'			: 'loadRegisteredChild',
+			'change #registered-children-edit'		: 'loadRegisteredChild',
 			'change .edit-child-form-body input'	: 'onChildDataChanged'
 		},
 

@@ -5,10 +5,10 @@
     {{#if hasRegisteredChildren}}
         <div class="row">
             <div class="col-sm-8 form-group">
-                <label for="registeredChildren" class="label">Update existing registration for</label>
+                <label for="registered-children-edit" class="label">Update existing registration for</label>
             </div>
             <div class="col-sm-12 form-group">
-                <select id="registered-children" class="input" name="registeredChildren[]">
+                <select id="registered-children-edit" class="input" name="registeredChildren[]">
                     <option value=""></option>
                     {{#each recruitmentWorkersChildren.editDetails}}
                     <option value="{{ _id }}" data-child-details="{{json this}}">{{ this.name }}</option>
@@ -25,28 +25,28 @@
 
             <div class="row">
                 <div class="col-sm-12 form-group">
-                    <input type="text" id="first-name" class="input" name="firstName">
-                    <label for="first-name" class="label required-field">First Name</label>
+                    <input type="text" id="first-name-edit" class="input" name="firstName">
+                    <label for="first-name-edit" class="label required-field">First Name</label>
                 </div>
                 <div class="col-sm-12 form-group">
-                    <input type="text" id="last-name" class="input" name="lastName">
-                    <label for="last-name" class="label required-field">Last Name</label>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-12 form-group">
-                    <input type="text" id="alias" class="input" name="alias">
-                    <label for="alias" class="label">Alias (only for children who are legal risk)</label>
-                </div>
-                <div class="col-sm-12 form-group">
-                    <input type="text" id="nickname" class="input" name="nickName">
-                    <label for="nickname" class="label">Nickname</label>
+                    <input type="text" id="last-name-edit" class="input" name="lastName">
+                    <label for="last-name-edit" class="label required-field">Last Name</label>
                 </div>
             </div>
             <div class="row">
                 <div class="col-sm-12 form-group">
-                    <input type="text" id="date-of-birth" class="input" name="dateOfBirth" placeholder="MM/DD/YYYY">
-                    <label for="date-of-birth" class="label required-field">Date of Birth</label>
+                    <input type="text" id="alias-edit" class="input" name="alias">
+                    <label for="alias-edit" class="label">Alias (only for children who are legal risk)</label>
+                </div>
+                <div class="col-sm-12 form-group">
+                    <input type="text" id="nickname-edit" class="input" name="nickName">
+                    <label for="nickname-edit" class="label">Nickname</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12 form-group">
+                    <input type="text" id="date-of-birth-edit" class="input" name="dateOfBirth" placeholder="MM/DD/YYYY">
+                    <label for="date-of-birth-edit" class="label required-field">Date of Birth</label>
                 </div>
             </div>
             <div class="row">
@@ -56,7 +56,7 @@
             </div>
             <div class="row form-group">
                 <div class="col-sm-16">
-                    <div id="languages-error-container" class="row error-container">
+                    <div id="languages-error-container-edit" class="row error-container">
                     {{#each languages}}
                         <div class="col-sm-12 form-group">
                             <label class="checkbox-inline">
@@ -74,7 +74,7 @@
             </div>
             <div class="row form-group">
                 <div class="col-sm-16">
-                    <div id="gender-error-container" class="row error-container">
+                    <div id="gender-error-container-edit" class="row error-container">
                     {{#each genders}}
                         <div class="col-sm-12 form-group">
                             <label class="radio-inline">
@@ -92,7 +92,7 @@
             </div>
             <div class="row form-group">
                 <div class="col-sm-16">
-                    <div id="races-error-container" class="row error-container">
+                    <div id="races-error-container-edit" class="row error-container">
                     {{#each races}}
                         <div class="col-sm-12 form-group">
                             <label class="checkbox-inline">
@@ -105,8 +105,8 @@
             </div>
             <div class="row form-group">
                 <div class="col-sm-12 form-group">
-                    <textarea class="input" id="other-ethnic-background" name="otherEthnicBackground" rows="5"></textarea>
-                    <label for="other-ethnic-background" class="label">Other Information About child's ethnic Background</label>
+                    <textarea class="input" id="other-ethnic-background-edit" name="otherEthnicBackground" rows="5"></textarea>
+                    <label for="other-ethnic-background-edit" class="label">Other Information About child's ethnic Background</label>
                 </div>
             </div>
             <div class="row form-group">
@@ -116,7 +116,7 @@
             </div>
             <div class="row form-group">
                 <div class="col-sm-16">
-                    <div id="current-residence-error-container" class="row error-container">
+                    <div id="current-residence-error-container-edit" class="row error-container">
                     {{#each residences}}
                         <div class="col-sm-24 form-group">
                             <label class="radio-inline">
@@ -129,17 +129,17 @@
             </div>
             <div class="row form-group">
                 <div class="col-sm-12 form-group city-container">
-                    <select id="city" class="input" name="city">
+                    <select id="city-edit" class="input" name="city">
                         <option value=""></option>
                         {{#each citiesAndTowns}}
                         <option value="{{_id}}">{{cityOrTown}}</option>
                         {{/each}}
                     </select>
-                    <label for="city" class="label required-field">City of Child's Current Location</label>
+                    <label for="city-edit" class="label required-field">City of Child's Current Location</label>
                 </div>
                 <div class="col-sm-12 form-group non-ma-city-container hidden">
-                    <input type="text" id="non-ma-city" class="input" name="nonMACity">
-                    <label for="non-ma-city" class="label required-field">City of Child's Current Location</label>
+                    <input type="text" id="non-ma-city-edit" class="input" name="nonMACity">
+                    <label for="non-ma-city-edit" class="label required-field">City of Child's Current Location</label>
                 </div>
                 <div class="col-sm-12 form-group">
                     <label class="checkbox-inline">
@@ -149,8 +149,8 @@
             </div>
             <div class="row form-group">
                 <div class="col-sm-12 form-group">
-                    <input type="text" id="care-facility" class="input" name="careFacility">
-                    <label for="care-facility" class="label">Name of Residential/Group Care Facility (if applicable)</label>
+                    <input type="text" id="care-facility-edit" class="input" name="careFacility">
+                    <label for="care-facility-edit" class="label">Name of Residential/Group Care Facility (if applicable)</label>
                 </div>
             </div>
             <div class="row form-group">
@@ -160,7 +160,7 @@
             </div>
             <div class="row form-group">
                 <div class="col-sm-16">
-                    <div id="preferred-legal-status-error-container" class="row error-container">
+                    <div id="preferred-legal-status-error-container-edit" class="row error-container">
                     {{#each legalStatuses}}
                         <div class="col-sm-12 form-group">
                             <label class="radio-inline">
@@ -173,14 +173,14 @@
             </div>
             <div class="row form-group">
                 <div class="col-sm-12 form-group">
-                    <input type="text" class="input" id="year-entered-care" name="yearEnteredCare">
-                    <label for="year-entered-care" class="label required-field">Year Child Entered Care</label>
+                    <input type="text" class="input" id="year-entered-care-edit" name="yearEnteredCare">
+                    <label for="year-entered-care-edit" class="label required-field">Year Child Entered Care</label>
                 </div>
             </div>
             <div class="row form-group">
                 <div class="col-sm-24 form-group">
                     <span class="required-field">Is child to be adopted as part of a sibling group?</span> &nbsp;&nbsp;
-                    <span id="is-part-of-sibling-group-error-container" class="error-container">
+                    <span id="is-part-of-sibling-group-error-container-edit" class="error-container">
                         <label class="radio-inline"><input type="radio" name="isPartOfSiblingGroup" value="Yes">Yes</label>
                         <label class="radio-inline"><input type="radio" name="isPartOfSiblingGroup" value="No">No</label>
                     </span>
@@ -188,14 +188,14 @@
             </div>
             <div class="row form-group">
                 <div class="col-sm-16 form-group sibling-names-container hidden">
-                    <input type="text" class="input" id="sibling-names" name="siblingNames">
-                    <label for="sibling-names" class="label">names of siblings to be placed with</label>
+                    <input type="text" class="input" id="sibling-names-edit" name="siblingNames">
+                    <label for="sibling-names-edit" class="label">names of siblings to be placed with</label>
                 </div>
             </div>
             <div class="row form-group">
                 <div class="col-sm-24">
                     <span class="required-field">Does child need contact with other siblings?</span> &nbsp;&nbsp;
-                    <span id="is-sibling-contact-needed-error-container" class="error-container">
+                    <span id="is-sibling-contact-needed-error-container-edit" class="error-container">
                         <label class="radio-inline"><input type="radio" name="isSiblingContactNeeded" value="Yes">Yes</label>
                         <label class="radio-inline"><input type="radio" name="isSiblingContactNeeded" value="No">No</label>
                     </span>
@@ -203,14 +203,14 @@
             </div>
             <div class="row">
                 <div class="col-sm-12 form-group">
-                    <input type="text" class="input" id="sibling-contact-description" name="siblingContactDescription">
-                    <label for="sibling-contact-description" class="label">If yes, please describe (i.e. brother, sister, monthly, etc.)</label>
+                    <input type="text" class="input" id="sibling-contact-description-edit" name="siblingContactDescription">
+                    <label for="sibling-contact-description-edit" class="label">If yes, please describe (i.e. brother, sister, monthly, etc.)</label>
                 </div>
             </div>
             <div class="row form-group">
                 <div class="col-sm-24">
                     <span class="required-field">Does child need contact with other birth family?</span> &nbsp;&nbsp;
-                    <span id="is-family-contact-needed-error-container" class="error-container">
+                    <span id="is-family-contact-needed-error-container-edit" class="error-container">
                         <label class="radio-inline"><input type="radio" name="isFamilyContactNeeded" value="Yes">Yes</label>
                         <label class="radio-inline"><input type="radio" name="isFamilyContactNeeded" value="No">No</label>
                     </span>
@@ -218,8 +218,8 @@
             </div>
             <div class="row form-group">
                 <div class="col-sm-12 form-group">
-                    <input type="text" class="input" id="family-contact-description" name="familyContactDescription">
-                    <label for="family-contact-description" class="label">If yes, please describe</label>
+                    <input type="text" class="input" id="family-contact-description-edit" name="familyContactDescription">
+                    <label for="family-contact-description-edit" class="label">If yes, please describe</label>
                 </div>
             </div>
             <div class="row form-group">
@@ -229,7 +229,7 @@
             </div>
             <div class="row form-group">
                 <div class="col-sm-16">
-                    <div id="recommended-family-constellation-error-container" class="row error-container">
+                    <div id="recommended-family-constellation-error-container-edit" class="row error-container">
                     {{#each familyConstellations}}
                         <div class="col-sm-12 form-group">
                             <label class="checkbox-inline">
@@ -242,8 +242,8 @@
             </div>
             <div class="row form-group">
                 <div class="col-sm-14 form-group">
-                    <textarea class="input" id="child-invalid-constellation-reason" name="childInvalidFamilyConstellationReason" rows="5"></textarea>
-                    <label for="child-invalid-family-constellation-reason" class="label">If same-sex couples or single parents will not be considered, please give clinically appropriate reason</label>
+                    <textarea class="input" id="child-invalid-family-constellation-reason-edit" name="childInvalidFamilyConstellationReason" rows="5"></textarea>
+                    <label for="child-invalid-family-constellation-reason-edit" class="label">If same-sex couples or single parents will not be considered, please give clinically appropriate reason</label>
                 </div>
             </div>
             <div class="row form-group">
@@ -264,26 +264,26 @@
             </div>
             <div class="row form-group">
                 <div class="col-sm-14 form-group">
-                    <textarea class="input" id="physical-needs" name="physicalNeeds" rows="5"></textarea>
-                    <label for="physical-needs" class="label required-field">Physical Special Needs (Please be as descriptive as possible)</label>
+                    <textarea class="input" id="physical-needs-edit" name="physicalNeeds" rows="5"></textarea>
+                    <label for="physical-needs-edit" class="label required-field">Physical Special Needs (Please be as descriptive as possible)</label>
                 </div>
             </div>
             <div class="row form-group">
                 <div class="col-sm-14 form-group">
-                    <textarea class="input" id="intellectual-needs" name="intellectualNeeds" rows="5"></textarea>
-                    <label for="intellectual-needs" class="label required-field">Intellectual Special Needs (Please be as descriptive as possible)</label>
+                    <textarea class="input" id="intellectual-needs-edit" name="intellectualNeeds" rows="5"></textarea>
+                    <label for="intellectual-needs-edit" class="label required-field">Intellectual Special Needs (Please be as descriptive as possible)</label>
                 </div>
             </div>
             <div class="row form-group">
                 <div class="col-sm-14 form-group">
-                    <textarea class="input" id="emotional-needs" name="emotionalNeeds" rows="5"></textarea>
-                    <label for="emotional-needs" class="label required-field">Emotional Needs/Trauma History (Please be as descriptive as possible)</label>
+                    <textarea class="input" id="emotional-needs-edit" name="emotionalNeeds" rows="5"></textarea>
+                    <label for="emotional-needs-edit" class="label required-field">Emotional Needs/Trauma History (Please be as descriptive as possible)</label>
                 </div>
             </div>
             <div class="row form-group">
                 <div class="col-sm-14 form-group">
-                    <textarea class="input" id="social-needs" name="socialNeeds" rows="5"></textarea>
-                    <label for="social-needs" class="label required-field">Social Needs (Please be as descriptive as possible)</label>
+                    <textarea class="input" id="social-needs-edit" name="socialNeeds" rows="5"></textarea>
+                    <label for="social-needs-edit" class="label required-field">Social Needs (Please be as descriptive as possible)</label>
                 </div>
             </div>
             <div class="row form-group">
@@ -302,32 +302,32 @@
             </div>
             <div class="row form-group">
                 <div class="col-sm-14 form-group">
-                    <textarea class="input" id="aspirations" name="aspirations" rows="5"></textarea>
-                    <label for="aspirations" class="label required-field">Interests, Talents and Aspirations (Describe what child wants to be in the future –career or educational goals.)</label>
+                    <textarea class="input" id="aspirations-edit" name="aspirations" rows="5"></textarea>
+                    <label for="aspirations-edit" class="label required-field">Interests, Talents and Aspirations (Describe what child wants to be in the future –career or educational goals.)</label>
                 </div>
             </div>
             <div class="row form-group">
                 <div class="col-sm-14 form-group">
-                    <textarea class="input" id="school-life" name="schoolLife" rows="5"></textarea>
-                    <label for="school-life" class="label required-field">School Life (Describe child’s academic functioning, grade level, school behavior, peer relationship.)</label>
+                    <textarea class="input" id="school-life-edit" name="schoolLife" rows="5"></textarea>
+                    <label for="school-life-edit" class="label required-field">School Life (Describe child’s academic functioning, grade level, school behavior, peer relationship.)</label>
                 </div>
             </div>
             <div class="row form-group">
                 <div class="col-sm-14 form-group">
-                    <textarea class="input" id="family-life" name="familyLife" rows="5"></textarea>
-                    <label for="family-life" class="label required-field">Family Life (Describe child’s interaction and behavior in a family or residential setting.)</label>
+                    <textarea class="input" id="family-life-edit" name="familyLife" rows="5"></textarea>
+                    <label for="family-life-edit" class="label required-field">Family Life (Describe child’s interaction and behavior in a family or residential setting.)</label>
                 </div>
             </div>
             <div class="row form-group">
                 <div class="col-sm-14 form-group">
-                    <textarea class="input" id="personality" name="personality" rows="5"></textarea>
-                    <label for="personality" class="label required-field">Personality (How does child or others describe him/herself? What is unique about this child (e.g. sexual orientation/gender identity, temperament, sense of humor, etc.)</label>
+                    <textarea class="input" id="personality-edit" name="personality" rows="5"></textarea>
+                    <label for="personality-edit" class="label required-field">Personality (How does child or others describe him/herself? What is unique about this child (e.g. sexual orientation/gender identity, temperament, sense of humor, etc.)</label>
                 </div>
             </div>
             <div class="row form-group">
                 <div class="col-sm-14 form-group">
-                    <textarea class="input" id="other-recruitment-considerations" name="otherRecruitmentConsiderations" rows="5"></textarea>
-                    <label for="other-recruitment-considerations" class="label required-field">Other Recruitment Considerations (Qualities of the ideal family, child’s wishes for a family, worker’s recommendation, geographical considerations)</label>
+                    <textarea class="input" id="other-recruitment-considerations-edit" name="otherRecruitmentConsiderations" rows="5"></textarea>
+                    <label for="other-recruitment-considerations-edit" class="label required-field">Other Recruitment Considerations (Qualities of the ideal family, child’s wishes for a family, worker’s recommendation, geographical considerations)</label>
                 </div>
             </div>
         </section>
@@ -336,22 +336,22 @@
             <div class="form-section-header">Recruitment Worker Information</div>
             <div class="row">
                 <div class="col-sm-12 form-group">
-                    <input type="text" class="input" id="recruitment-worker" name="recruitmentWorker">
-                    <label for="recruitment-worker" class="label required-field">Recruitment Worker</label>
+                    <input type="text" class="input" id="recruitment-worker-edit" name="recruitmentWorker">
+                    <label for="recruitment-worker-edit" class="label required-field">Recruitment Worker</label>
                 </div>
                 <div class="col-sm-12 form-group">
-                    <input type="text" class="input" id="recruitment-worker-agency" name="recruitmentWorkerAgency">
-                    <label for="recruitment-worker-agency" class="label required-field">Agency</label>
+                    <input type="text" class="input" id="recruitment-worker-agency-edit" name="recruitmentWorkerAgency">
+                    <label for="recruitment-worker-agency-edit" class="label required-field">Agency</label>
                 </div>
             </div>
             <div class="row">
                 <div class="col-sm-12 form-group">
-                    <input type="text" class="input" id="recruitment-worker-phone" name="recruitmentWorkerPhone">
-                    <label for="recruitment-worker-phone" class="label required-field">Phone</label>
+                    <input type="text" class="input" id="recruitment-worker-phone-edit" name="recruitmentWorkerPhone">
+                    <label for="recruitment-worker-phone-edit" class="label required-field">Phone</label>
                 </div>
                 <div class="col-sm-12 form-group">
-                    <input type="text" class="input" id="recruitment-worker-email" name="recruitmentWorkerEmail">
-                    <label for="recruitment-worker-email" class="label required-field">Email</label>
+                    <input type="text" class="input" id="recruitment-worker-email-edit" name="recruitmentWorkerEmail">
+                    <label for="recruitment-worker-email-edit" class="label required-field">Email</label>
                 </div>
             </div>
         </section>
@@ -360,22 +360,22 @@
             <div class="form-section-header">Adoption Worker Information</div>
             <div class="row">
                 <div class="col-sm-12 form-group">
-                    <input type="text" class="input" id="adoption-worker" name="adoptionWorker">
-                    <label for="adoption-worker" class="label required-field">Adoption Worker</label>
+                    <input type="text" class="input" id="adoption-worker-edit" name="adoptionWorker">
+                    <label for="adoption-worker-edit" class="label required-field">Adoption Worker</label>
                 </div>
                 <div class="col-sm-12 form-group">
-                    <input type="text" class="input" id="adoption-worker-agency" name="adoptionWorkerAgency">
-                    <label for="adoption-worker-agency" class="label required-field">Agency</label>
+                    <input type="text" class="input" id="adoption-worker-agency-edit" name="adoptionWorkerAgency">
+                    <label for="adoption-worker-agency-edit" class="label required-field">Agency</label>
                 </div>
             </div>
             <div class="row">
                 <div class="col-sm-12 form-group">
-                    <input type="text" class="input" id="adoption-worker-phone" name="adoptionWorkerPhone">
-                    <label for="adoption-worker-phone" class="label required-field">Phone</label>
+                    <input type="text" class="input" id="adoption-worker-phone-edit" name="adoptionWorkerPhone">
+                    <label for="adoption-worker-phone-edit" class="label required-field">Phone</label>
                 </div>
                 <div class="col-sm-12 form-group">
-                    <input type="text" class="input" id="adoption-worker-email" name="adoptionWorkerEmail">
-                    <label for="adoption-worker-email" class="label required-field">Email</label>
+                    <input type="text" class="input" id="adoption-worker-email-edit" name="adoptionWorkerEmail">
+                    <label for="adoption-worker-email-edit" class="label required-field">Email</label>
                 </div>
             </div>
         </section>
