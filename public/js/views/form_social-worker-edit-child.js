@@ -8,7 +8,9 @@
 			'change #is-not-ma-city-checkbox'		: 'toggleCitySelect',
 			'change [name="isPartOfSiblingGroup"]'	: 'toggleSiblingNamesTextbox',
 			'change #registered-children-edit'		: 'loadRegisteredChild',
-			'change .edit-child-form-body input'	: 'onChildDataChanged'
+			'change .edit-child-form-body input'	: 'onChildDataChanged',
+			'change .edit-child-form-body select'	: 'onChildDataChanged',
+			'change .edit-child-form-body textarea'	: 'onChildDataChanged'
 		},
 
 		initialize: function() {
@@ -80,14 +82,20 @@
 						// NOTE: this handles checking single checkboxes
 						if( targetElement.attr( 'type' ) === 'checkbox' && targetElement.length === 1 ) {
 							if( value === 'on' ) {
+								// check the checkbox
 								targetElement.prop( 'checked', true );
+								// trigger change event
+								if( targetElement.data( 'triggerOnRestore' ) === 'change' ) {
+									targetElement.trigger( 'change' );
+								}
 							}
-						}			
-						// restore non-radio button inputs
-						targetElement.val( value );
-	
-						if( targetElement.data( 'triggerOnRestore' ) === 'change' ) {
-							targetElement.trigger( 'change' );
+						} else {
+							// restore data for non radio/checkbox inputs
+							targetElement.val( value );
+							// trigger change event
+							if( targetElement.data( 'triggerOnRestore' ) === 'change' ) {
+								targetElement.trigger( 'change' );
+							}
 						}
 					}
 				});
@@ -189,11 +197,23 @@
 
 					// get the type of input that was updated
 					var inputType = event.currentTarget.type;
-					// if the input is either a radio button use the label of the input as the value to send for the update email
-					// ( these are fields that have IDs for values, which are not human-readable )
-					newData = inputType === 'radio'
-						? $( event.currentTarget ).parent().text().trim()
-						: newData;
+					
+					switch ( inputType ) {
+						// if the input is a radio button use the label of the input as the value to send for the update email
+						// ( these are fields that have IDs for values, which are not human-readable )
+						case 'radio':
+							newData = $( event.currentTarget ).parent().text().trim();
+							break;
+						// if the input is a select use the label of the selected option as the value to send for the update email
+						// ( these are fields that have IDs for values, which are not human-readable )
+						case 'select-one':
+							console.log(event.currentTarget);
+							newData = $( event.currentTarget ).find( 'option:selected' ).text().trim();
+							break;
+						// otherwise, use the current value of newData
+						default:
+							break; 
+					}
 
 					// add the updated data to the edit form
 					$( '.edit-child-form' ).prepend( 
@@ -204,7 +224,6 @@
 					);
 				}
 			}
-
 		}
 	});
 }());
