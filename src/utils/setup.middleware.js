@@ -53,7 +53,8 @@ exports.initLocals = function( req, res, next ) {
 			{ title: 'Why give?', href: '/page/why-give' },
 			{ title: 'How you can help', href: '/page/how-you-can-help' },
 			{ title: 'How businesses and organizations can help', href: '/page/how-businesses-and-organizations-can-help' },
-			{ title: 'Experienced families', href: '/page/experienced-families' }
+			{ title: 'Experienced families', href: '/page/experienced-families' },
+			{ title: 'Weekend Family Connections', href: '/page/weekend-family-connections' }
 		]},
 		{ title: 'About Us', lastMenu: true, subMenu: [
 			{ title: 'Mission & Vision', href: '/page/mission-and-vision' },
