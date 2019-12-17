@@ -99,7 +99,17 @@
 						}
 					}
 				});
-				
+
+				// remove any existing data from the child edit form
+				$( '.edit-child-form input[type="hidden"]' ).remove();
+				// add child name and registration to edit form
+				$( '.edit-child-form' ).prepend( 
+					'<input type="hidden" name="childName" value="' + childDetails.name + '">'
+				);
+				$( '.edit-child-form' ).prepend( 
+					'<input type="hidden" name="registrationNumber" value="' + childDetails.registrationNumber + '">'
+				);
+
 				// show the form body
 				this.$updateChildFormBody.removeClass( 'hidden' );
 

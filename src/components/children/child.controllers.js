@@ -1046,17 +1046,48 @@ exports.fetchChildrenByPage = ( { page = 1, childrenPerPage = 25, filters = {} }
 /* called when a social worker attempts to edit a child's registration */
 exports.editChildRegistration = ( req, res, next ) => {
 	
-	console.log(req.body);
-	
-	childEmailService.sendEditSocialWorkerChildRegistrationNotificationEmailToMARE( req.body, 'staff' )
-		.then(() => {
-			console.log('success');
+	// get the updated child data from the request body
+	let updatedChildData = req.body;
+
+	// set default information for a staff email contact in case the real contact info can't be fetched
+	let staffEmailContactInfo = {
+		name: { full: 'MARE' },
+		email: 'noahweinert@gmail.com'
+	};
+
+	// fetch the email target model matching 'social worker child registration'
+	listService.getEmailTargetByName( 'test social worker child edit' )
+		// fetch contact info for the staff contact for 'social worker child registration'
+		.then( emailTarget => staffEmailContactMiddleware.getStaffEmailContactByEmailTarget( emailTarget.get( '_id' ), [ 'staffEmailContact' ] ) )
+		// overwrite the default contact details with the returned object
+		.then( staffEmailContact => staffEmailContactInfo = staffEmailContact.staffEmailContact )
+		// log any errors fetching the staff email contact
+		.catch( err => console.error( `error fetching email contact for social worker child registration, default contact info will be used instead`, err ) )
+		// generate an email with the social worker child record edits
+		.then( () => childEmailService.sendEditSocialWorkerChildRegistrationNotificationEmailToMARE( updatedChildData, staffEmailContactInfo ) )
+		// create a success flash message
+		.then( () => {
+
+			req.flash( 'success', {
+				title: `Congratulations, the edits you requested to the child record have been submitted to MARE.`,
+				detail: `Your MARE Child Services Coordinator will update the child record and will be in touch if additional information is needed.` } 
+			);
 		})
-		.catch(error => {
-			console.error(error);
+		// create an error flash message
+		.catch( err => {
+
+			req.flash( 'error', {
+				title: `There was an error editing this child registration.`,
+				detail: `If this error persists, please notify MARE at <a href="mailto:communications@mareinc.org">communications@mareinc.org</a>` }
+			);
+
+			// log the error for debugging purposes
+			console.error( `error editing social worker registered child`, err );
 		})
-		.finally(() => {
-			res.redirect('/forms/social-worker-child-registration#edit');
+		.finally( () => {
+
+			// redirect the user back to the appropriate page
+			res.redirect( 303, '/forms/social-worker-child-registration#edit' );
 		});
 };
 

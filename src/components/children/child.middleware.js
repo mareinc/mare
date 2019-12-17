@@ -58,6 +58,7 @@ exports.getChildrenByRecruitmentWorker = async function( req, res, next ) {
 
 					return {
 						name: child.get( 'name.full' ),
+						registrationNumber: child.get( 'registrationNumber' ),
 						firstName: child.get( 'name.first' ),
 						lastName: child.get( 'name.last' ),
 						alias: child.get( 'name.alias' ),

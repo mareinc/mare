@@ -827,6 +827,12 @@ exports.sendEditSocialWorkerChildRegistrationNotificationEmailToMARE = ( rawChil
 			return reject( new Error( `no staff contact was provided` ) );
 		}
 
+		// get the name and registration details of the edited child record
+		let {
+			childName,
+			registrationNumber
+		} = rawChildData;
+
 		// arrays was used instead of a Maps because Mustache templates apparently can't handle Maps
 		let childData = [],
 			languagesArray = rawChildData.languages || [],
@@ -1138,6 +1144,10 @@ exports.sendEditSocialWorkerChildRegistrationNotificationEmailToMARE = ( rawChil
 			});
 		}
 
+		if( childData.length < 1 ) {
+			return resolve( 'no updates were made' );
+		}
+
 		// the email template can be found in templates/emails/
 		Email.send(
 			// template path
@@ -1149,12 +1159,14 @@ exports.sendEditSocialWorkerChildRegistrationNotificationEmailToMARE = ( rawChil
                 root: 'src/templates/emails/'
             // render options
             }, {
+				childName,
+				registrationNumber,
                 childData,
                 layout: false
             // send options
             }, {
                 apiKey: process.env.MANDRILL_APIKEY,
-                to: 'noahweinert@gmail.com',
+                to: registrationStaffContact.email,
 				from: {
 					name: 'MARE',
 					email: 'communications@mareinc.org' // TODO: this should be in a model or ENV variable
