@@ -154,7 +154,7 @@ Event.schema.pre( 'save', function( next ) {
 	'use strict';
 
 	// check to ensure that the document hasn't been updated while the user is making edits
-	if ( this._savedVersion.currentVersion !== this.currentVersion ) {
+	if ( this._savedVersion && this._savedVersion.currentVersion !== this.currentVersion ) {
 		// if the versions don't match, cancel the save and notify the user
 		throw new Error( `
 			Your updates could not be saved - changes were made to this event while you had the Admin UI open.
