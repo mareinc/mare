@@ -1049,6 +1049,12 @@ exports.editChildRegistration = ( req, res, next ) => {
 	// get the updated child data from the request body
 	let updatedChildData = req.body;
 
+	// get the info of the social worker requesting the updates
+	let socialWorkerInfo = {
+		name: req.user.name.full,
+		email: req.user.email
+	};
+
 	// set default information for a staff email contact in case the real contact info can't be fetched
 	let staffEmailContactInfo = {
 		name: { full: 'MARE' },
@@ -1064,7 +1070,7 @@ exports.editChildRegistration = ( req, res, next ) => {
 		// log any errors fetching the staff email contact
 		.catch( err => console.error( `error fetching email contact for social worker child registration, default contact info will be used instead`, err ) )
 		// generate an email with the social worker child record edits
-		.then( () => childEmailService.sendEditSocialWorkerChildRegistrationNotificationEmailToMARE( updatedChildData, staffEmailContactInfo ) )
+		.then( () => childEmailService.sendEditSocialWorkerChildRegistrationNotificationEmailToMARE( updatedChildData, socialWorkerInfo, staffEmailContactInfo ) )
 		// create a success flash message
 		.then( () => {
 

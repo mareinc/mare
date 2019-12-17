@@ -814,7 +814,7 @@ exports.sendNewSocialWorkerChildRegistrationNotificationEmailToSocialWorker = ( 
 	});
 };
 
-exports.sendEditSocialWorkerChildRegistrationNotificationEmailToMARE = ( rawChildData, registrationStaffContact ) => {
+exports.sendEditSocialWorkerChildRegistrationNotificationEmailToMARE = ( rawChildData, socialWorkerInfo = {}, registrationStaffContact ) => {
 
 	return new Promise( ( resolve, reject ) => {
 		// if sending of the email is not currently allowed
@@ -1161,7 +1161,9 @@ exports.sendEditSocialWorkerChildRegistrationNotificationEmailToMARE = ( rawChil
             }, {
 				childName,
 				registrationNumber,
-                childData,
+				childData,
+				socialWorkerName: socialWorkerInfo.name,
+				socialWorkerEmail: socialWorkerInfo.email,
                 layout: false
             // send options
             }, {
