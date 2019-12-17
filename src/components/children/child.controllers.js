@@ -1071,15 +1071,32 @@ exports.editChildRegistration = ( req, res, next ) => {
 		.catch( err => console.error( `error fetching email contact for social worker child registration, default contact info will be used instead`, err ) )
 		// generate an email with the social worker child record edits
 		.then( () => childEmailService.sendEditSocialWorkerChildRegistrationNotificationEmailToMARE( updatedChildData, socialWorkerInfo, staffEmailContactInfo ) )
-		// create a success flash message
-		.then( () => {
+		// generate a response flash message
+		.then( wereUpdatesMade => {
 
-			req.flash( 'success', {
-				title: `Congratulations, the edits you requested to the child record have been submitted to MARE.`,
-				detail: `Your MARE Child Services Coordinator will update the child record and will be in touch if additional information is needed.` } 
-			);
+			// if updates were made and an email was successfully generated...
+			if ( wereUpdatesMade ) {
+
+				// generate a success message
+				req.flash( 'success', {
+					title: `Congratulations, the edits you requested to the child record have been submitted to MARE.`,
+					detail: `Your MARE Child Services Coordinator will update the child record and will be in touch if additional information is needed.` } 
+				);
+
+			// if no updates were made...
+			} else {
+
+				// generate an error flash message
+				req.flash( 'error', {
+					title: `There was an error editing this child registration - no updates were detected.`,
+					detail: `If this error persists, please notify MARE at <a href="mailto:communications@mareinc.org">communications@mareinc.org</a>` }
+				);
+				
+				// log the error for debugging purposes
+				console.error( 'error editing social worker registered child: ', 'no updates were detected' );
+			}
 		})
-		// create an error flash message
+		// generate an error flash message
 		.catch( err => {
 
 			req.flash( 'error', {

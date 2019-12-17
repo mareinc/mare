@@ -1144,8 +1144,11 @@ exports.sendEditSocialWorkerChildRegistrationNotificationEmailToMARE = ( rawChil
 			});
 		}
 
+		// if no updates were detected...
 		if( childData.length < 1 ) {
-			return resolve( 'no updates were made' );
+
+			// resolve false to denote that no updates were requested and prevent email from being sent
+			return resolve( false );
 		}
 
 		// the email template can be found in templates/emails/
@@ -1189,7 +1192,8 @@ exports.sendEditSocialWorkerChildRegistrationNotificationEmailToMARE = ( rawChil
 					return reject( new Error( `error sending edit social worker child registration notification email to MARE - ${ response.status } - ${ response.email } - ${ response.reject_reason }` ) );
 				}
 
-				resolve();
+				// resolve true to denote that updates were requested succesfully
+				resolve( true );
 			});
 	});
 };

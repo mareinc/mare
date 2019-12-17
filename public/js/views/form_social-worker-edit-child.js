@@ -55,8 +55,6 @@
 			if ( selectedOptionText !== '' ) {
 
 				var view = this;
-				this.$submitButton.removeAttr( 'disabled' );
-				this.$submitButton.removeClass( 'button--disabled' );
 				
 				// get the child details from the selected option
 				var childDetails = $selectedOption.data( 'child-details' );
@@ -118,16 +116,20 @@
 
 				// hide the form body
 				this.$updateChildFormBody.addClass( 'hidden' );
-				// disable the submit button
-				this.$submitButton.attr( 'disabled', true );
-				this.$submitButton.addClass( 'button--disabled' );
 				// reset the existing data
 				this.existingChildData = {};
 			}
+
+			// disable the submit button
+			this.$submitButton.attr( 'disabled', true );
+			this.$submitButton.addClass( 'button--disabled' );
 		},
 
 		onChildDataChanged: function onChildDataChanged( event ) {
 
+			// ensure the submit button is enabled
+			this.$submitButton.removeAttr( 'disabled' );
+			this.$submitButton.removeClass( 'button--disabled' );
 			// get the field name of the child data that was changed
 			var fieldName = event.currentTarget.name;
 			// check if the field represents an array of values or a single value
