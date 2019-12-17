@@ -1043,6 +1043,23 @@ exports.fetchChildrenByPage = ( { page = 1, childrenPerPage = 25, filters = {} }
 	});
 };
 
+/* called when a social worker attempts to edit a child's registration */
+exports.editChildRegistration = ( req, res, next ) => {
+	
+	console.log(req.body);
+	
+	childEmailService.sendEditSocialWorkerChildRegistrationNotificationEmailToMARE( req.body, 'staff' )
+		.then(() => {
+			console.log('success');
+		})
+		.catch(error => {
+			console.error(error);
+		})
+		.finally(() => {
+			res.redirect('/forms/social-worker-child-registration#edit');
+		});
+};
+
 // ------------------------------------------------------------------------------------------ //
 
 // TODO: these functions below are copies of functions above built with async.  They're rewritten with Promises

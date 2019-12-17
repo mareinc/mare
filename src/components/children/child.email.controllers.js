@@ -1,5 +1,4 @@
-const Email = require( 'keystone-email' ),
-      hbs = require( 'hbs' );
+const Email	= require( 'keystone-email' );
 
 exports.sendNewSocialWorkerChildRegistrationNotificationEmailToMARE = ( rawChildData, child, registrationStaffContact ) => {
 
@@ -808,6 +807,372 @@ exports.sendNewSocialWorkerChildRegistrationNotificationEmailToSocialWorker = ( 
 				if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
 					// reject the promise with details
 					return reject( new Error( `error sending new social worker child registration notification email to social worker - ${ response.status } - ${ response.email } - ${ response.reject_reason }` ) );
+				}
+
+				resolve();
+			});
+	});
+};
+
+exports.sendEditSocialWorkerChildRegistrationNotificationEmailToMARE = ( rawChildData, registrationStaffContact ) => {
+
+	return new Promise( ( resolve, reject ) => {
+		// if sending of the email is not currently allowed
+		// if( process.env.SEND_SOCIAL_WORKER_CHILD_REGISTRATION_EMAILS_TO_MARE !== 'true' ) {
+		// 	// reject the promise with information about why
+		// 	return reject( new Error( `sending of the edit social worker child registration notification email to MARE is disabled` ) );
+		// }
+
+		if( !registrationStaffContact ) {
+			return reject( new Error( `no staff contact was provided` ) );
+		}
+
+		// arrays was used instead of a Maps because Mustache templates apparently can't handle Maps
+		let childData = [],
+			languagesArray = rawChildData.languages || [],
+			raceArray = rawChildData.race || [],
+			recommendedFamilyConstellationArray = rawChildData.recommendedFamilyConstellations || [],
+			otherFamilyConstellationConsiderationArray = rawChildData.otherFamilyConstellationConsiderations || [],
+			disabilitiesArray = rawChildData.disabilities || [];
+
+		// send only the fields that have been updated by the social worker
+		if( rawChildData.firstName ) {
+			childData.push( {
+				key: 'first name',
+				value: rawChildData.firstName
+			});
+		}
+
+		if( rawChildData.lastName ) {
+			childData.push( {
+				key: 'last name',
+				value: rawChildData.lastName
+			});
+		}
+
+		if( rawChildData.alias ) {
+			childData.push( {
+				key: 'alias',
+				value: rawChildData.alias
+			});
+		}
+
+		if( rawChildData.nickName ) {
+			childData.push( {
+				key: 'nick name',
+				value: rawChildData.nickName
+			});
+		}
+
+		if( rawChildData.dateOfBirth ) {
+			childData.push( {
+				key: 'date of birth',
+				value: rawChildData.dateOfBirth
+			});
+		}
+
+		if( languagesArray.length !== 0 ) {
+			childData.push( {
+				key: 'languages spoken',
+				value: languagesArray.join( ', ' )
+			});
+		}
+
+		if( rawChildData.gender ) {
+			childData.push( {
+				key: 'gender',
+				value: rawChildData.gender
+			});
+		}
+
+		if( raceArray.length !== 0 ) {
+			childData.push( {
+				key: 'race',
+				value: raceArray.join( ', ' )
+			});
+		}
+
+		if( rawChildData.legalStatus ) {
+			childData.push( {
+				key: 'legal status',
+				value: rawChildData.legalStatus
+			});
+		}
+
+		if( rawChildData.yearEnteredCare ) {
+			childData.push( {
+				key: 'year entered care',
+				value: rawChildData.yearEnteredCare
+			});
+		}
+
+		if( rawChildData.hasContactWithSiblings ) {
+			childData.push( {
+				key: 'has contact with siblings',
+				value: rawChildData.hasContactWithSiblings
+			});
+		}
+
+		if( rawChildData.isSiblingContactNeeded ) {
+			childData.push( {
+				key: 'type of contact with siblings',
+				value: rawChildData.siblingContactDescription
+			});
+		}
+
+		if( rawChildData.isFamilyContactNeeded ) {
+			childData.push( {
+				key: 'has contact with birth family',
+				value: rawChildData.isFamilyContactNeeded
+			});
+		}
+
+		if( rawChildData.familyContactDescription ) {
+			childData.push( {
+				key: 'type of contact with birth family',
+				value: rawChildData.familyContactDescription
+			});
+		}
+
+		if( rawChildData.currentResidence ) {
+			childData.push( {
+				key: 'residence',
+				value: rawChildData.currentResidence
+			});
+		}
+
+		if( rawChildData.city ) {
+			childData.push( {
+				key: 'child lives outside MA',
+				value: 'no'
+			});
+			childData.push( {
+				key: 'city',
+				value: rawChildData.city
+			});
+		}
+
+		if( !rawChildData.city && rawChildData.nonMACity ) {
+			childData.push( {
+				key: 'child lives outside MA',
+				value: 'yes'
+			});
+			childData.push( {
+				key: 'city',
+				value: rawChildData.nonMACity
+			});
+		}
+
+		if( rawChildData.careFacility ) {
+			childData.push( {
+				key: 'care facility name',
+				value: rawChildData.careFacility
+			});
+		}
+
+		if( rawChildData.physicalNeeds ) {
+			childData.push( {
+				key: 'description of physical needs',
+				value: rawChildData.physicalNeeds
+			});
+		}
+
+		if( rawChildData.emotionalNeeds ) {
+			childData.push( {
+				key: 'description of emotional needs',
+				value: rawChildData.emotionalNeeds
+			});
+		}
+
+		if( rawChildData.intellectualNeeds ) {
+			childData.push( {
+				key: 'description of intellectual needs',
+				value: rawChildData.intellectualNeeds
+			});
+		}
+
+		if( rawChildData.socialNeeds ) {
+			childData.push( {
+				key: 'description of social needs',
+				value: rawChildData.socialNeeds
+			});
+		}
+
+		if( rawChildData.aspirations ) {
+			childData.push( {
+				key: 'aspirations',
+				value: rawChildData.aspirations
+			});
+		}
+
+		if( rawChildData.schoolLife ) {
+			childData.push( {
+				key: 'school life',
+				value: rawChildData.schoolLife
+			});
+		}
+
+		if( rawChildData.familyLife ) {
+			childData.push( {
+				key: 'family life',
+				value: rawChildData.familyLife
+			});
+		}
+
+		if( rawChildData.personality ) {
+			childData.push( {
+				key: 'personality',
+				value: rawChildData.personality
+			});
+		}
+
+		if( rawChildData.otherRecruitmentConsiderations ) {
+			childData.push( {
+				key: 'other recruitment considerations',
+				value: rawChildData.otherRecruitmentConsiderations
+			});
+		}
+
+		if( recommendedFamilyConstellationArray.length !== 0 ) {
+			childData.push( {
+				key: 'recommended family constellations',
+				value: recommendedFamilyConstellationArray.join( ', ' )
+			});
+		}
+
+		if( otherFamilyConstellationConsiderationArray.length !== 0 ) {
+			childData.push( {
+				key: 'other family constellation considerations',
+				value: otherFamilyConstellationConsiderationArray.join( ', ' )
+			});
+		}
+
+		if( disabilitiesArray.length !== 0 ) {
+			childData.push( {
+				key: 'disabilities',
+				value: disabilitiesArray.join( ', ' )
+			});
+		}
+
+		if( rawChildData.otherEthnicBackground ) {
+			childData.push( {
+				key: `other information about child's ethnic background`,
+				value: rawChildData.otherEthnicBackground
+			})
+		}
+		
+		if( rawChildData.childInvalidFamilyConstellationReason ) {
+			childData.push( {
+				key: 'reason same-sex couples should not be considered',
+				value: rawChildData.childInvalidFamilyConstellationReason
+			})
+		}
+		
+		if( rawChildData.recruitmentWorker ) {
+			childData.push( {
+				key: 'recruitment worker',
+				value: rawChildData.recruitmentWorker
+			})
+		}
+		
+		if( rawChildData.recruitmentWorkerAgency ) {
+			childData.push( {
+				key: 'recruitment worker agency',
+				value: rawChildData.recruitmentWorkerAgency
+			})
+		}
+		
+		if( rawChildData.recruitmentWorkerEmail ) {
+			childData.push( {
+				key: 'recruitment worker email',
+				value: rawChildData.recruitmentWorkerEmail
+			})
+		}
+		
+		if( rawChildData.recruitmentWorkerPhone ) {
+			childData.push( {
+				key: 'recruitment worker phone',
+				value: rawChildData.recruitmentWorkerPhone
+			})
+		}
+		
+		if( rawChildData.adoptionWorker ) {
+			childData.push( {
+				key: 'adoption worker',
+				value: rawChildData.adoptionWorker
+			})
+		}
+		
+		if( rawChildData.adoptionWorkerAgency ) {
+			childData.push( {
+				key: 'adoption worker agency',
+				value: rawChildData.adoptionWorkerAgency
+			})
+		}
+		
+		if( rawChildData.adoptionWorkerEmail ) {
+			childData.push( {
+				key: 'adoption worker email',
+				value: rawChildData.adoptionWorkerEmail
+			})
+		}
+		
+		if( rawChildData.adoptionWorkerPhone ) {
+			childData.push( {
+				key: 'adoption worker phone',
+				value: rawChildData.adoptionWorkerPhone
+			})
+		}
+
+		if( rawChildData.secondaryADLUWorker ) {
+			childData.push( {
+				key: 'child has been assigned a secondary worker in the ADLU',
+				value: rawChildData.secondaryADLUWorker
+			});
+		}
+
+		if( rawChildData.adoptionAssessment ) {
+			childData.push( {
+				key: 'child has had an adoption assessment completed',
+				value: rawChildData.adoptionAssessment
+			});
+		}
+
+		// the email template can be found in templates/emails/
+		Email.send(
+			// template path
+            'social-worker-edit-child-notification-to-mare',
+            // email options
+            {
+                engine: 'hbs',
+                transport: 'mandrill',
+                root: 'src/templates/emails/'
+            // render options
+            }, {
+                childData,
+                layout: false
+            // send options
+            }, {
+                apiKey: process.env.MANDRILL_APIKEY,
+                to: 'noahweinert@gmail.com',
+				from: {
+					name: 'MARE',
+					email: 'communications@mareinc.org' // TODO: this should be in a model or ENV variable
+				},
+				subject: `edit social worker child registration`
+            // callback
+			}, ( err, message ) => {
+				// if there was an error sending the email
+				if( err ) {
+					// reject the promise with details
+					return reject( new Error( `error sending edit social worker child registration notification email to MARE` ) );
+				}
+				// the response object is stored as the 0th element of the returned message
+				const response = message ? message[ 0 ] : undefined;
+				// if the email failed to send, or an error occurred ( which it does, rarely ) causing the response message to be empty
+				if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
+					// reject the promise with details
+					return reject( new Error( `error sending edit social worker child registration notification email to MARE - ${ response.status } - ${ response.email } - ${ response.reject_reason }` ) );
 				}
 
 				resolve();
