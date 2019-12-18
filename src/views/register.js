@@ -55,7 +55,7 @@ exports = module.exports = ( req, res ) => {
 			locals.randomEvent				= randomEvent;
 
 			if (typeof req.headers.referer !== 'undefined') {
-				let recognizedReferers = ['/page/register-a-child', '/page/register-a-familys-homestudy', '/events/adoption-parties/', '/events/fundraising-events/'];
+				let recognizedReferers = ['/page/register-update-a-child', '/page/register-a-familys-homestudy', '/events/adoption-parties/', '/events/fundraising-events/'];
 				recognizedReferers.forEach(path => {
 					if (req.headers.referer.includes(path)) {
 						locals.redirectUrl = req.headers.referer;

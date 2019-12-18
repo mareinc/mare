@@ -26,14 +26,14 @@ exports = module.exports = function( req, res ) {
 			// the sidebar items are a success story and event in an array, assign local variables to the two objects
 			const [ randomSuccessStory, randomEvent ] = sidebarItems;
  
-			// if the user requested the 'Register a child' page
-			if( page.key === 'register-a-child' ) {
+			// if the user requested the 'Register/Update a child' page
+			if( page.key === 'register-update-a-child' ) {
 				// if the user is logged in as a social worker
 				if( locals.user && locals.user.userType === 'social worker' ) {
 					// specify that it should render a button after the content
 					pageActions.hasButtons = true;
 					// set the button contents
-					pageActions.buttons.push( { text: 'Register a Child',
+					pageActions.buttons.push( { text: 'Register/Update a Child',
 												target: '/forms/social-worker-child-registration' } );
 				// if the user is not a logged in social worker
 				} else {
