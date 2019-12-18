@@ -4,7 +4,8 @@ var keystone = require('keystone'),
 // Create model. Additional options allow menu name to be used what auto-generating URLs
 var MailingList = new keystone.List('Mailing List', {
 	autokey: { path: 'key', from: 'mailingList', unique: true },
-	map: { name: 'mailingList' }
+	map: { name: 'mailingList' },
+	hidden: true
 });
 
 // Create fields
