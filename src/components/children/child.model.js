@@ -274,6 +274,8 @@ Child.add( 'Display Options', {
 	communicationsCollateral: { type: Types.Boolean, label: 'communications collateral', default: false, initial: true },
 	communicationsCollateralDetails: { type: Types.Text, label: 'details', dependsOn: { communicationsCollateral: true }, initial: true, collapse: true },
 
+	weekendFamilyConnections: { type: Types.Boolean, label: 'Weekend Family Connections', default: false, initial: true }
+
 }, 'File Attachments', {
 
 	fileAttachment1: { type: Types.File, storage: fileStorage, label: 'file attachment 1', collapse: true },

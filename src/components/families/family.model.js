@@ -312,6 +312,15 @@ Family.add( 'Permissions', {
 		MARESupportGroupLeader: { type: Types.Boolean, label: 'MARE support group leader', default: false, initial: true },
 		MARESupportGroupParticipant: { type: Types.Boolean, label: 'MARE support group participant', default: false, initial: true },
 		receivesConsultationServices: { type: Types.Boolean, label: 'receives consultation services', default: false, initial: true }
+	},
+
+	weekendFamilyConnectionsEnabled: { type: Types.Boolean, label: 'Weekend Family Connections', default: false },
+	weekendFamilyConnections: {
+		applicationDate: { type: Types.Date, label: 'WFC Application Date', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { 'weekendFamilyConnectionsEnabled': true }, collapse: true },
+		trainingDate: { type: Types.Date, label: 'WFC Training Date', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { 'weekendFamilyConnectionsEnabled': true }, collapse: true },
+		licensedDate: { type: Types.Date, label: 'WFC Licensed Date', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { 'weekendFamilyConnectionsEnabled': true }, collapse: true },
+		connectedDate: { type: Types.Date, label: 'WFC Connected Date', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { 'weekendFamilyConnectionsEnabled': true }, collapse: true },
+		closedDate: { type: Types.Date, label: 'WFC Closed Date', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { 'weekendFamilyConnectionsEnabled': true }, collapse: true }
 	}
 
 }, 'Info Preferences', {
