@@ -912,14 +912,28 @@ exports.sendEditSocialWorkerChildRegistrationNotificationEmailToMARE = ( rawChil
 			});
 		}
 
-		if( rawChildData.hasContactWithSiblings ) {
+		if( rawChildData.isPartOfSiblingGroup ) {
 			childData.push( {
-				key: 'has contact with siblings',
-				value: rawChildData.hasContactWithSiblings
+				key: 'is part of sibling group',
+				value: rawChildData.isPartOfSiblingGroup
+			});
+		}
+
+		if( rawChildData.siblingNames ) {
+			childData.push( {
+				key: 'sibling names',
+				value: rawChildData.siblingNames
 			});
 		}
 
 		if( rawChildData.isSiblingContactNeeded ) {
+			childData.push( {
+				key: 'is sibling contact needed',
+				value: rawChildData.isSiblingContactNeeded
+			});
+		}
+
+		if( rawChildData.siblingContactDescription ) {
 			childData.push( {
 				key: 'type of contact with siblings',
 				value: rawChildData.siblingContactDescription
@@ -1176,7 +1190,7 @@ exports.sendEditSocialWorkerChildRegistrationNotificationEmailToMARE = ( rawChil
 					name: 'MARE',
 					email: 'communications@mareinc.org' // TODO: this should be in a model or ENV variable
 				},
-				subject: `edit social worker child registration`
+				subject: 'Update to child registration'
             // callback
 			}, ( err, message ) => {
 				// if there was an error sending the email

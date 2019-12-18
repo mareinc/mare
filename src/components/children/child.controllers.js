@@ -1058,7 +1058,7 @@ exports.editChildRegistration = ( req, res, next ) => {
 	// set default information for a staff email contact in case the real contact info can't be fetched
 	let staffEmailContactInfo = {
 		name: { full: 'MARE' },
-		email: 'noahweinert@gmail.com'
+		email: 'web@mareinc.org'
 	};
 
 	// fetch the email target model matching 'social worker child registration'
