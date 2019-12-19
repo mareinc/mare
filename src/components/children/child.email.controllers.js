@@ -817,11 +817,12 @@ exports.sendNewSocialWorkerChildRegistrationNotificationEmailToSocialWorker = ( 
 exports.sendEditSocialWorkerChildRegistrationNotificationEmailToMARE = ( rawChildData, socialWorkerInfo = {}, registrationStaffContact ) => {
 
 	return new Promise( ( resolve, reject ) => {
+		
 		// if sending of the email is not currently allowed
-		// if( process.env.SEND_SOCIAL_WORKER_CHILD_REGISTRATION_EMAILS_TO_MARE !== 'true' ) {
-		// 	// reject the promise with information about why
-		// 	return reject( new Error( `sending of the edit social worker child registration notification email to MARE is disabled` ) );
-		// }
+		if( process.env.SEND_SOCIAL_WORKER_CHILD_REGISTRATION_EMAILS_TO_MARE !== 'true' ) {
+			// reject the promise with information about why
+			return reject( new Error( `sending of the edit social worker child registration notification email to MARE is disabled` ) );
+		}
 
 		if( !registrationStaffContact ) {
 			return reject( new Error( `no staff contact was provided` ) );

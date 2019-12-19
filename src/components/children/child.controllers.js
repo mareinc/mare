@@ -1062,7 +1062,7 @@ exports.editChildRegistration = ( req, res, next ) => {
 	};
 
 	// fetch the email target model matching 'social worker child registration'
-	listService.getEmailTargetByName( 'test social worker child edit' )
+	listService.getEmailTargetByName( 'social worker child registration' )
 		// fetch contact info for the staff contact for 'social worker child registration'
 		.then( emailTarget => staffEmailContactMiddleware.getStaffEmailContactByEmailTarget( emailTarget.get( '_id' ), [ 'staffEmailContact' ] ) )
 		// overwrite the default contact details with the returned object
