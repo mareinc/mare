@@ -197,15 +197,18 @@ Child.add( 'Display Options', {
 
 }, 'Child Profile', {
 
+	image: { type: Types.File, storage: displayImageStorage, label: 'display image', dependsOn: { mustBePlacedWithSiblings: false }, collapse: true },
 	profile: {
 		quote: { type: Types.Textarea, label: 'personal quote', initial: true, collapse: true },
 		part1: { type: Types.Textarea, label: '1st paragraph', note: 'Age, Race, Interests, Hobbies, Strengths', initial: true, collapse: true },
 		part2: { type: Types.Textarea, label: '2nd paragraph', note: 'Physical, Social, Emotional and Academic Functioning', initial: true, collapse: true },
 		part3: { type: Types.Textarea, label: '3rd paragraph', note: 'Legal Status, Sibling/Family Contact, Family Constellation and Placement requirements', initial: true, collapse: true }
-	}
+	},
+	extranetUrl: { type: Types.Url, label: 'extranet and related profile url', initial: true, collapse: true } // TODO: Since this is redundant as this just points the the url where the photo exists (the child's page), we may hide this field.  This must be kept in as it will help us track down the child information in the old system in the event of an issue.
 
 }, 'Sibling Group Profile', {
 
+	siblingGroupImage: { type: Types.File, storage: displaySiblingGroupImageStorage, label: 'sibling group image', dependsOn: { mustBePlacedWithSiblings: true }, collapse: true },
 	groupProfile: {
 		quote: { type: Types.Textarea, label: 'group quote', initial: true, collapse: true },
 		part1: { type: Types.Textarea, label: '1st paragraph', note: 'Age, Race, Interests, Hobbies, Strengths', initial: true, collapse: true },
@@ -213,19 +216,14 @@ Child.add( 'Display Options', {
 		part3: { type: Types.Textarea, label: '3rd paragraph', note: 'Legal Status, Sibling/Family Contact, Family Constellation and Placement requirements', initial: true, collapse: true }
 	},
 
-}, 'Photolisting Information', {
-
-	hasPhotolistingWriteup: { type: Types.Boolean, label: 'photolisting writeup', default: false, initial: true },
-	photolistingWriteupDate: { type: Types.Date, label: 'date of photolisting writeup', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { hasPhotolistingWriteup: true }, initial: true, collapse: true },
-	hasPhotolistingPhoto: { type: Types.Boolean, label: 'professional photo', default: false, initial: true },
-	photolistingPhotoDate: { type: Types.Date, label: 'date of professional photo', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { hasPhotolistingPhoto: true }, initial: true, collapse: true },
-	isCurrentlyInPhotoListing: { type: Types.Boolean, label: 'currently in photolisting', default: false, initial: true },
-	dateOfLastPhotoListing: { type: Types.Date, label: 'date of last photolisting', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: {isCurrentlyInPhotoListing: true }, initial: true, collapse: true },
-	photolistingPageNumber: { type: Types.Text, label: 'photolisting page', initial: true, collapse: true },
-	previousPhotolistingPageNumbers: { type: Types.Text, label: 'previous photolisting pages', initial: true, collapse: true },
-	image: { type: Types.File, storage: displayImageStorage, label: 'display image', dependsOn: { mustBePlacedWithSiblings: false }, collapse: true },
-	siblingGroupImage: { type: Types.File, storage: displaySiblingGroupImageStorage, label: 'sibling group image', dependsOn: { mustBePlacedWithSiblings: true }, collapse: true },
-	extranetUrl: { type: Types.Url, label: 'extranet and related profile url', initial: true, collapse: true } // TODO: Since this is redundant as this just points the the url where the photo exists (the child's page), we may hide this field.  This must be kept in as it will help us track down the child information in the old system in the event of an issue.
+	hasPhotolistingWriteup: { type: Types.Boolean, label: 'photolisting writeup', default: false, initial: true, hidden: true },
+	photolistingWriteupDate: { type: Types.Date, label: 'date of photolisting writeup', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { hasPhotolistingWriteup: true }, initial: true, hidden: true },
+	hasPhotolistingPhoto: { type: Types.Boolean, label: 'professional photo', default: false, initial: true, hidden: true },
+	photolistingPhotoDate: { type: Types.Date, label: 'date of professional photo', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { hasPhotolistingPhoto: true }, initial: true, hidden: true },
+	isCurrentlyInPhotoListing: { type: Types.Boolean, label: 'currently in photolisting', default: false, initial: true, hidden: true },
+	dateOfLastPhotoListing: { type: Types.Date, label: 'date of last photolisting', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: {isCurrentlyInPhotoListing: true }, initial: true, hidden: true },
+	photolistingPageNumber: { type: Types.Text, label: 'photolisting page', initial: true, hidden: true },
+	previousPhotolistingPageNumbers: { type: Types.Text, label: 'previous photolisting pages', initial: true, hidden: true }
 
 }, 'Recruitment Options', {
 
@@ -302,16 +300,11 @@ Child.add( 'Display Options', {
 // Set up relationship values to show up at the bottom of the model if any exist
 Child.relationship( { ref: 'Family Matching History', refPath: 'child', path: 'family-matching-histories', label: 'family matching history' } );
 Child.relationship( { ref: 'Child Matching History', refPath: 'child', path: 'child-matching-histories', label: 'child matching history' } );
-Child.relationship( { ref: 'Child', refPath: 'siblings', path: 'children', label: 'siblings' } );
 Child.relationship( { ref: 'Match', refPath: 'child', path: 'matches', label: 'matches' } );
 Child.relationship( { ref: 'Placement', refPath: 'child', path: 'placements', label: 'placements' } );
 Child.relationship( { ref: 'Legalization', refPath: 'child', path: 'legalizations', label: 'legalizations' } );
 Child.relationship( { ref: 'Disruption', refPath: 'child', path: 'disruptions', label: 'disruptions' } );
 Child.relationship( { ref: 'Inquiry', refPath: 'children', path: 'inquiries', label: 'inquiries' } );
-Child.relationship( { ref: 'Family', refPath: 'bookmarkedChildren', path: 'families', label: 'bookmarked by families' } );
-Child.relationship( { ref: 'Family', refPath: 'bookmarkedSiblings', path: 'families', label: 'sibling group bookmarked by families' } );
-Child.relationship( { ref: 'Social Worker', refPath: 'bookmarkedChildren', path: 'social-workers', label: 'bookmarked by social workers' } );
-Child.relationship( { ref: 'Social Worker', refPath: 'bookmarkedSiblings', path: 'social-workers', label: 'sibling group bookmarked by social workers' } );
 Child.relationship( { ref: 'Event', refPath: 'childAttendees', path: 'events', label: 'events' } );
 Child.relationship( { ref: 'Media Feature', refPath: 'children', path: 'media-features', label: 'media features' } );
 Child.relationship( { ref: 'Internal Note', refPath: 'child', path: 'internal-notes', label: 'internal notes' } );

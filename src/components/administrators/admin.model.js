@@ -78,11 +78,6 @@ Admin.add( 'Permissions', {
 
 });
 
-// Set up relationship values to show up at the bottom of the model if any exist
-Admin.relationship( { ref: 'CSC Region Contact', refPath: 'cscRegionContact', path: 'cscRegionContact', label: 'contact for the following regions' } );
-Admin.relationship( { ref: 'Event', refPath: 'staffAttendees', path: 'events', label: 'events' } );
-Admin.relationship( { ref: 'Donation', refPath: 'admin', path: 'donations', label: 'donations' } );
-
 /* TODO: VERY IMPORTANT:  Need to fix this to provide the link to access the keystone admin panel again */
 /* 						  Changing names or reworking this file changed the check in node_modules/keystone/templates/views/signin.jade
 /*						  for user.isAdmin on line 14 */

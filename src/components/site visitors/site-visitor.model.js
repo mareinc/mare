@@ -87,10 +87,6 @@ SiteVisitor.add( 'Permissions', {
 
 });
 
-// Set up relationship values to show up at the bottom of the model if any exist
-SiteVisitor.relationship( { ref: 'Event', refPath: 'siteVisitorAttendees', path: 'events', label: 'events' } );
-SiteVisitor.relationship( { ref: 'Donation', refPath: 'siteVisitor', path: 'donations', label: 'donations' } );
-
 /* TODO: VERY IMPORTANT:  Need to fix this to provide the link to access the keystone admin panel again */
 /* 						  Changing names or reworking this file changed the check in node_modules/keystone/templates/views/signin.jade
 /*						  for user.isAdmin on line 14 */

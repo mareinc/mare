@@ -405,7 +405,6 @@ Family.relationship( { ref: 'Legalization', refPath: 'family', path: 'legalizati
 Family.relationship( { ref: 'Disruption', refPath: 'family', path: 'disruptions', label: 'disruptions' } );
 Family.relationship( { ref: 'Weekend Family Connection', refPath: 'family', path: 'weekend-family-connections', label: 'weekend family connections'} );
 Family.relationship( { ref: 'Event', refPath: 'familyAttendees', path: 'events', label: 'events' } );
-Family.relationship( { ref: 'Donation', refPath: 'family', path: 'donations', label: 'donations' } );
 Family.relationship( { ref: 'Internal Note', refPath: 'family', path: 'internal-notes', label: 'internal notes' } );
 Family.relationship( { ref: 'Family History', refPath: 'family', path: 'family-histories', label: 'change history' } );
 
