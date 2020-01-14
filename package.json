@@ -36,7 +36,7 @@
 		"handlebars": "~4.4.5",
 		"hbs": "^4.0.6",
 		"jpegtran-bin": "^4.0.0",
-		"keystone": "https://github.com/autoboxer/keystone.git#d8f408a4ae44f6abac6249ace5b2b790aa50ad9c",
+		"keystone": "git+https://github.com/n-devr/keystone-classic.git#mare-upgrade",
 		"keystone-email": "^1.1.0",
 		"keystone-storage-adapter-s3": "https://github.com/keystonejs/keystone-storage-adapter-s3.git#855f7c6f2c07dcde9b4fb566e6c57dd0e80cc4cf",
 		"mailchimp-api-v3": "^1.13.1",
