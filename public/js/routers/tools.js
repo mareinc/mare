@@ -15,6 +15,7 @@
 			'inquiry-report/:fromDate/:toDate(?*queryString)'	: 'loadInquiryReport',
 			'placement-report'									: 'loadPlacementReport',
 			'placement-report/:fromDate/:toDate(?*queryString)'	: 'loadPlacementReport',
+			'media-features-report'								: 'loadMediaFeaturesReport',
 			'*other'											: 'loadDefault'
 		},
 
@@ -52,6 +53,10 @@
 
 		loadPlacementReport: function( fromDate, toDate, queryString ) {
 			mare.views.tools.showPlacementReport( fromDate, toDate, this.parseQueryString( queryString ) );
+		},
+
+		loadMediaFeaturesReport: function( fromDate, toDate, queryString ) {
+			mare.views.tools.showMediaFeaturesReport( fromDate, toDate, this.parseQueryString( queryString ) );
 		},
 		
 		loadDefault: function() {
