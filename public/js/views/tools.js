@@ -20,7 +20,7 @@
 			var view = this;
 
 			// initialize the side nav if it isn't already
-			if (!view.sideNavAPI) {
+			if ( !view.sideNavAPI ) {
 
 				// save a reference to the side nav API to allow future programmatic updates
 				view.sideNavAPI = ( view.$el.find( '.menu-link' ).bigSlide({
@@ -40,7 +40,7 @@
 
 		closeSideNav: function() {
 			// if the side nav is open, close it
-			if (this.sideNavAPI.model.state === 'open') {
+			if ( this.sideNavAPI.model.state === 'open' ) {
 				this.sideNavAPI.view.toggleClose();
 			}
 		},
@@ -56,66 +56,66 @@
 		// TODO: all the functions below should use a data-attribute instead of a class to specify what's shown
 		// TODO: in order to save state in each area, they shouldn't render over eachother, but instead show/hide
 		showDashboard: function( fromDate, toDate ) {
-			// destroy an existing tables
+			// destroy existing table
 			this.destroyTable();
 			mare.views.dashboard.render( fromDate, toDate );
 			// update the body class to indicate what screen this is
-			this.$el.attr('class', 'tools__dashboard');
+			this.$el.attr( 'class', 'tools__dashboard' );
 			// initialize the side nav
 			this.initializeSideNav();
 			this.closeSideNav();
 		},
 		
 		showFamilyMatching: function( familyId, params ) {
-			// destroy an existing tables
+			// destroy existing table
 			this.destroyTable();
 			mare.views.familyMatching.render( familyId, params );
 			// update the body class to indicate what screen this is
-			this.$el.attr('class', 'tools__family-matching');
+			this.$el.attr( 'class', 'tools__family-matching' );
 			// initialize the side nav
 			this.initializeSideNav();
 			this.closeSideNav();
 		},
 		
 		showChildMatching: function( childId, params ) {
-			// destroy an existing tables
+			// destroy existing table
 			this.destroyTable();
 			mare.views.childMatching.render( childId, params );
 			// update the body class to indicate what screen this is
-			this.$el.attr('class', 'tools__child-matching');
+			this.$el.attr( 'class', 'tools__child-matching' );
 			// initialize the side nav
 			this.initializeSideNav();
 			this.closeSideNav();
 		},
 		
 		showFamilyMatchingRequest: function() {
-			// destroy an existing tables
+			// destroy existing table
 			this.destroyTable();
 			mare.views.familyMatchingRequest.render();
 			// update the body class to indicate what screen this is
-			this.$el.attr('class', 'tools__family-matching');
+			this.$el.attr( 'class', 'tools__family-matching' );
 			// initialize the side nav
 			this.initializeSideNav();
 			this.closeSideNav();
 		},
 		
 		showChildMatchingRequest: function() {
-			// destroy an existing tables
+			// destroy existing table
 			this.destroyTable();
 			mare.views.childMatchingRequest.render();
 			// update the body class to indicate what screen this is
-			this.$el.attr('class', 'tools__child-matching');
+			this.$el.attr( 'class', 'tools__child-matching' );
 			// initialize the side nav
 			this.initializeSideNav();
 			this.closeSideNav();
 		},
 
 		showInquiryReport: function( fromDate, toDate, params ) {
-			// destroy an existing tables
+			// destroy existing table
 			this.destroyTable();
 			mare.views.inquiryReport.render( fromDate, toDate, params );
 			// update the body class to indicate what screen this is
-			this.$el.attr('class', 'tools__inquiry-report');
+			this.$el.attr( 'class', 'tools__inquiry-report' );
 			// initialize the side nav
 			this.initializeSideNav();
 			this.closeSideNav();
@@ -123,22 +123,22 @@
 		},
 
 		showPlacementReport: function( fromDate, toDate, params ) {
-			// destroy an existing tables
+			// destroy existing table
 			this.destroyTable();
 			mare.views.placementReport.render( fromDate, toDate, params );
 			// update the body class to indicate what screen this is
-			this.$el.attr('class', 'tools__placement-report');
+			this.$el.attr( 'class', 'tools__placement-report' );
 			// initialize the side nav
 			this.initializeSideNav();
 			this.closeSideNav();
 		},
 
 		showMediaFeaturesReport: function( fromDate, toDate, params ) {
-			// destroy an existing tables
+			// destroy existing table
 			this.destroyTable();
 			mare.views.mediaFeaturesReport.render( fromDate, toDate, params );
 			// update the body class to indicate what screen this is
-			this.$el.attr('class', 'tools__media-features-report');
+			this.$el.attr( 'class', 'tools__media-features-report' );
 			// initialize the side nav
 			this.initializeSideNav();
 			this.closeSideNav();
