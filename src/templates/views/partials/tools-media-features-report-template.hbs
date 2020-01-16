@@ -2,6 +2,102 @@
 
     <h2 class="panel__h2 mb-2">Media Features Report</h2>
 
-    <div class="media-features-report"></div>
+    <div class="media-features-report">
+        
+        <div class="filter-form mb-2">
+            <div class="row">
+                <div class="col-lg-2 align-middle">
+                    <div class="filter-form__label mh-100">
+                    <p>Date range:</p>
+                    </div>
+                </div>
+                <div class="col-6 col-lg-5">
+                    <div class="form-group">
+                        <div class="input-daterange">
+                            <label for="fromDate"><span class="sr-only">To Date</span>
+                                <input  class="form-control" type="date" name="fromDate" id="fromDate" value="{{ fromDate }}" required />
+                                <div class="input-group-addon">
+                                    <span></span>
+                                </div>
+                            </label>								
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-lg-5">
+                    <div class="form-group">
+                        <div class="input-daterange">
+                            <label for="toDate"><span class="sr-only">To Date</span>
+                                <input class="form-control" type="date" name="toDate" id="toDate" value="{{ toDate }}" required />
+                                <div class="input-group-addon">
+                                    <span></span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <form class="matching-form">
+            <input type="hidden" id="defaultFromDate" value="{{ defaultDateRange.fromDate }}" />
+            <input type="hidden" id="defaultToDate" value="{{ defaultDateRange.toDate }}" />
+            <div class="row">
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right" >
+                            <label for="children" class="bold">Children:</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                            <select id="children" name="children[]" class="form-control children-select" multiple>
+                                \{{#each children as |child|}}
+                                    <option value="\{{ child.id }}" selected>\{{ child.text }}</option>
+                                \{{/each}}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right" >
+                            <label class="bold">Fiscal Years:</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8 inquiry-fiscal-year-buttons">
+                            <button id="all-years" 
+                                class="btn btn-outline-primary hidden"
+                                data-year-start="1900-01-01" 
+                                data-year-end="{{date format="YYYY-MM-DD"}}">
+                                All
+                            </button>
+                            {{#each fiscalYears as |fiscalYear|}}
+                                <button class="btn btn-outline-primary" 
+                                    data-year-start="{{ fiscalYear.startDate }}" 
+                                    data-year-end="{{ fiscalYear.endDate }}">
+                                        {{ fiscalYear.fiscalYear }}
+                                </button>
+                            {{/each}}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right" >
+                            <label for="source" class="bold">Source:</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                            <select id="source" name="source[]" class="form-control source-select" multiple>
+                                \{{#each sources as |source|}}
+                                    <option value="\{{ source.id }}" selected>\{{ source.text }}</option>
+                                \{{/each}}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <button class="btn btn-primary media-features-search-button">Search</button>
+	    <button class="btn btn-default media-features-search-reset-button">Reset</button>
+
+    </div>
 
 </script>

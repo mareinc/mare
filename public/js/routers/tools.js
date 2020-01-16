@@ -4,19 +4,20 @@
 	mare.routers.Tools = Backbone.Router.extend({
 		
 		routes: {
-			''													: 'loadDefault',
-			'dashboard'											: 'loadDashboard',
-			'dashboard/:fromDate/:toDate'						: 'loadDashboardByDateRange',
-			'family-matching'									: 'loadFamilyMatchingRequest',
-			'family-matching/:familyId(?*queryString)'			: 'loadFamilyMatching',
-			'child-matching'									: 'loadChildMatchingRequest',
-			'child-matching/:childId(?*queryString)'			: 'loadChildMatching',
-			'inquiry-report'									: 'loadInquiryReport',
-			'inquiry-report/:fromDate/:toDate(?*queryString)'	: 'loadInquiryReport',
-			'placement-report'									: 'loadPlacementReport',
-			'placement-report/:fromDate/:toDate(?*queryString)'	: 'loadPlacementReport',
-			'media-features-report'								: 'loadMediaFeaturesReport',
-			'*other'											: 'loadDefault'
+			''														: 'loadDefault',
+			'dashboard'												: 'loadDashboard',
+			'dashboard/:fromDate/:toDate'							: 'loadDashboardByDateRange',
+			'family-matching'										: 'loadFamilyMatchingRequest',
+			'family-matching/:familyId(?*queryString)'				: 'loadFamilyMatching',
+			'child-matching'										: 'loadChildMatchingRequest',
+			'child-matching/:childId(?*queryString)'				: 'loadChildMatching',
+			'inquiry-report'										: 'loadInquiryReport',
+			'inquiry-report/:fromDate/:toDate(?*queryString)'		: 'loadInquiryReport',
+			'placement-report'										: 'loadPlacementReport',
+			'placement-report/:fromDate/:toDate(?*queryString)'		: 'loadPlacementReport',
+			'media-features-report'									: 'loadMediaFeaturesReport',
+			'media-features-report/:fromDate/:toDate(?*queryString)': 'loadMediaFeaturesReport',
+			'*other'												: 'loadDefault'
 		},
 
 		initialize: function() {
