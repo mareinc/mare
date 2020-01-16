@@ -7,8 +7,9 @@
 
 		// bind standard events to functions within the view
 		events: {
-			'click .media-features-search-button'   	: 'handleSearchClick',
-			'click .media-features-search-reset-button'	: 'handleResetClick'
+			'click .media-features-search-button'   			: 'handleSearchClick',
+			'click .media-features-search-reset-button'			: 'handleResetClick',
+			'click .media-features-fiscal-year-buttons .btn'	: 'handleFiscalYearClick'
         },
 
 		/* initialize the view */
@@ -85,6 +86,14 @@
 
 		handleResetClick: function() {
 			mare.routers.tools.navigate( 'media-features-report', { trigger: true } );
+		},
+
+		handleFiscalYearClick: function( event ) {
+			event.preventDefault();
+
+			// set the search date range
+			this.$el.find( '[name="fromDate"]' ).val( $(event.target).data('yearStart') );
+			this.$el.find( '[name="toDate"]' ).val( $(event.target).data('yearEnd') );
 		},
 
 		/* render the view onto the page */
