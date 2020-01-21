@@ -115,6 +115,31 @@
         <button class="btn btn-primary media-features-search-button">Search</button>
 	    <button class="btn btn-default media-features-search-reset-button">Reset</button>
 
+        \{{#if waitingForResults }}
+            <br /><br />
+            Loading the data ...
+        \{{/if}}
+        
+        \{{#if noResultsFound }}
+            <br /><br />
+            No results found
+        \{{/if}}
+
+        \{{#if results }}
+            <h3>Results: </h3>
+            <div class="matching-results-table__button-bar">
+                <button class="button button--teal media-features-export-pdf-button">PDF Export</button>
+                <button class="button button--teal media-features-export-xlsx-button">XLSX Export</button>
+                <div class="matching-results-table__record-count">
+                    <div class="record-count__label">Total Media Features:</div>
+                    \{{ results.length }}
+                </div>
+            </div>
+
+            {{!-- Results table for site display --}}            
+            <table id="media-features-results" class="stripe" width="100%"></table>
+        \{{/if}}
+
     </div>
 
 </script>

@@ -114,9 +114,92 @@
 				view.$el.html( view.template({
 					waitingForResults: true
 				}));
-                view.initializeSearchForm( fromDate, toDate );
+				view.initializeSearchForm( fromDate, toDate, params );
+				
+				// search for media features using the date range and query params
+				view.getMediaFeaturesData( fromDate, toDate, params )
+					.done( function( data ) {
+
+						// render the view with the search results
+						view.$el.html( view.template( data ) );
+						view.initializeSearchForm( fromDate, toDate, params );
+
+						// initialize a DataTable (https://datatables.net/) with the inquiry results
+						// save a reference to the table so it can be destroyed when the view changes
+						mare.views.tools.table = $('#media-features-results').DataTable({
+							data: data.results, 						// set results data as table source
+							columns: view.mediaFeatureReportColumns, 	// configure columns
+							order: [[1, 'desc']], 						// define default sort (column index, direction)
+							fixedHeader: true, 							// fix the header to the top of the viewport on vertical scroll
+							pageLength: 100,							// set default number of rows to display
+							responsive: {								// hide columns from right-to-left when the viewport is too narrow
+								details: false							// do not display overflow columns in details row (overwrites default content)
+							},
+							dom: 'Bfrtip',								// define the placement of the grid options (buttons)
+							buttons: [
+								'pageLength',							// adds toggle for number of rows to display
+								{
+									extend: 'colvis',					// adds column visibility toggle menu
+									columns: ':gt(0)'					// allows toggling of all columns except the first one
+								}
+							]
+						});
+					});
             }
-		}
-		
+		},
+
+		getMediaFeaturesData: function( fromDate, toDate, params ) {
+			
+			var queryParams = params;
+			queryParams.fromDate = fromDate;
+			queryParams.toDate = toDate;
+			
+			return $.Deferred( function( defer ) {
+				$.ajax({
+					dataType: 'json',
+					url: '/tools/services/get-media-features-data',
+					data: queryParams,
+					type: 'GET'
+				})
+				.done( function( data ) {
+					if ( data.status === 'error' ) {
+						// display the flash message
+						mare.views.flashMessages.initializeAJAX( data.flashMessage );
+						defer.reject();
+					} else {
+						defer.resolve( data );
+					}
+				})
+				.fail( function( err ) {
+					console.log( err );
+					defer.reject();
+				});
+			}).promise();
+		},
+
+		mediaFeatureReportColumns: [
+			{
+				title: '',
+				data: 'childId',
+				orderable: false,
+				className: 'icon-link-column',
+				render: function( data ) {
+					return '<a href="/keystone/children/' + data + '"><i class="fa fa-external-link" aria-hidden="true"></i></a>';
+				}
+			},
+			{ title: 'First Name', data: 'childNameFirst' },
+			{ title: 'Last Name', data: 'childNameLast' },
+			{ title: 'Status', data: 'childStatus' },
+			{ title: 'Source', data: 'mediaFeatureSource' },
+			{ 
+				title: 'Date', 
+				data: function( row, type ) {
+					// return date in ISO format to enable column sorting
+					return type === 'sort' ? row.mediaFeatureDateISO : row.mediaFeatureDate;
+				}
+			},
+			{ title: 'Professional Photo', data: 'childHasProfessionalPhoto' },
+			{ title: 'Video Snapshot', data: 'childHasVideoSnapshot' }
+		]
 	});
 }());

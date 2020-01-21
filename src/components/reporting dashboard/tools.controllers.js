@@ -978,3 +978,161 @@ exports.getPlacementData = ( req, res, next ) => {
 			flashMessages.sendErrorFlashMessage( res, 'Error', 'Error loading placement data' );
 		});
 };
+
+exports.getMediaFeaturesData = ( req, res, next ) => {
+
+	// get the query from the request object
+	let query = req.query;
+	
+	// get the date range of the media feature search
+	let fromDate = new Date( query.fromDate );
+	let toDate = new Date( query.toDate );
+
+	// ensure both fromDate and toDate are valid dates
+	if ( isNaN( fromDate.getTime() ) || isNaN( toDate.getTime() ) ) {
+		return flashMessages.sendErrorFlashMessage( res, 'Error', 'Error loading inquiry data' );
+	}
+
+	// create the baseline search criteria with a date range
+	let searchCriteria = {
+		$and: [
+			{ date: { $gte: fromDate } },
+			{ date: { $lte: toDate } }
+		]
+	};
+
+	// children criteria (multiple)
+	let childrenCriteria;
+	if ( Array.isArray( query.children ) && query.children.length > 0 ) {
+		childrenCriteria = query.children.filter( ( objectId ) => ObjectId.isValid( objectId ) );
+		searchCriteria[ 'children' ] = { $in: childrenCriteria };
+	}
+
+	// source criteria (multiple)
+	let sourcesCriteria;
+	if ( Array.isArray( query.source ) && query.source.length > 0 ) {
+		sourcesCriteria = query.source.filter( ( objectId ) => ObjectId.isValid( objectId ) );
+		searchCriteria[ 'source' ] = { $in: sourcesCriteria };
+	}
+
+	// add any filter criteria that are specified in the media feature search params
+	let filterCriteria = [];
+
+	// professional photo criteria
+	if ( query.professionalPhoto ) {
+		filterCriteria.push( 'hasPhotolistingPhoto' );
+	}
+
+	// video snapshot criteria
+	if ( query.videoSnapshot ) {
+		filterCriteria.push( 'hasVideoSnapshot' );
+	}
+
+	Promise.all([
+		// get the media features that match the specified date range and criteria
+		keystone.list( 'Media Feature' ).model
+			.find( searchCriteria )
+			.populate( 'source' )
+			.populate({
+				path: 'children',
+				populate: {
+					path: 'status'
+				}
+			})
+			.lean()
+			.exec(),
+		// if thare are children criteria specified, get the sources docs to seed the select on the search form
+		childrenCriteria
+			? keystone.list( 'Child' ).model
+				.find( { _id: { $in: childrenCriteria } } )
+				.lean()
+				.exec()
+				.catch( err => {
+					// log an error for debugging purposes
+					console.error( `error loading children for the media feature report dashboard - ${ err }` );
+					// return false to allow the view to render regardless of the error
+					return false;
+				})
+			: false,
+		// if thare are sources criteria specified, get the sources docs to seed the select on the search form
+		sourcesCriteria
+			? keystone.list( 'Source' ).model
+				.find( { _id: { $in: sourcesCriteria } } )
+				.lean()
+				.exec()
+				.catch( err => {
+					// log an error for debugging purposes
+					console.error( `error loading sources for the placement report dashboard - ${ err }` );
+					// return false to allow the view to render regardless of the error
+					return false;
+				})
+			: false
+	])
+	.then( results => {
+		
+		let [ mediaFeatureDocs, childrenDocs, sourceDocs ] = results;
+
+		let responseData = {
+			// if there are children, parse them and add them to the response
+			children: childrenDocs
+				? childrenDocs.map( child => ({ 
+					id: child._id.toString(), 
+					text: child.displayNameAndRegistration 
+				}))
+				: false,
+			// if there are sources, parse them and add them to the response
+			sources: sourceDocs
+				? sourceDocs.map( source => ({ 
+					id: source._id.toString(), 
+					text: source.source 
+				}))
+				: false
+		};
+
+		// if no results were returned, send the 'noResults' flag
+		if ( !mediaFeatureDocs || mediaFeatureDocs.length === 0 ) {
+			responseData.noResultsFound = true;
+		// if the query returned results, map the relevant fields
+		} else {
+
+			let childPassesFilterCriteria = childDoc => {
+				let passesFilterCriteria = filterCriteria.length === 0 || filterCriteria.every( criterion => childDoc[ criterion ] );
+				let passesChildCriteria = !childrenCriteria || childrenCriteria.find( child => child === childDoc._id.toString() );
+				return passesFilterCriteria && passesChildCriteria;
+			};
+
+			responseData.results = mediaFeatureDocs.reduce( ( results, mediaFeatureDoc ) => {
+
+				// create a result for each child associated with the media feature
+				mediaFeatureDoc.children.forEach( childDoc => {
+
+					// ensure child passes any filter criteria specified
+					if ( childPassesFilterCriteria( childDoc ) ) {
+						results.push({
+							childId: childDoc._id.toString(),
+							childNameFirst: childDoc.name.first,
+							childNameLast: childDoc.name.last,
+							childStatus: childDoc.status.childStatus,
+							childHasProfessionalPhoto: childDoc.hasPhotolistingPhoto ? 'Yes' : 'No',
+							childHasVideoSnapshot: childDoc.hasVideoSnapshot ? 'Yes' : 'No',
+							mediaFeatureSource: mediaFeatureDoc.source.source,
+							mediaFeatureDate: moment.utc( mediaFeatureDoc.date ).format( 'MM/DD/YYYY' ),
+							mediaFeatureDateISO: moment( mediaFeatureDoc.date ).toISOString(),
+						});
+					}
+				});
+				
+				return results;
+			}, []);
+		}
+
+		res.send( responseData );
+	})
+	.catch( err => {
+
+		// log an error for debugging purposes
+		console.error( `error loading media features for the dashboard - ${ err }` );
+
+		flashMessages.sendErrorFlashMessage( res, 'Error', 'Error loading media feature data' );
+	});
+};
