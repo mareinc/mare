@@ -1028,6 +1028,8 @@ exports.getMediaFeaturesData = ( req, res, next ) => {
 		filterCriteria.push( 'hasVideoSnapshot' );
 	}
 
+	let responseData = {};
+
 	Promise.all([
 		// get the media features that match the specified date range and criteria
 		keystone.list( 'Media Feature' ).model
@@ -1072,7 +1074,7 @@ exports.getMediaFeaturesData = ( req, res, next ) => {
 		
 		let [ mediaFeatureDocs, childrenDocs, sourceDocs ] = results;
 
-		let responseData = {
+		responseData = {
 			// if there are children, parse them and add them to the response
 			children: childrenDocs
 				? childrenDocs.map( child => ({ 
@@ -1092,6 +1094,7 @@ exports.getMediaFeaturesData = ( req, res, next ) => {
 		// if no results were returned, send the 'noResults' flag
 		if ( !mediaFeatureDocs || mediaFeatureDocs.length === 0 ) {
 			responseData.noResultsFound = true;
+			return;
 		// if the query returned results, map the relevant fields
 		} else {
 
@@ -1101,6 +1104,7 @@ exports.getMediaFeaturesData = ( req, res, next ) => {
 				return passesFilterCriteria && passesChildCriteria;
 			};
 
+			// create a result set from the matching media features
 			responseData.results = mediaFeatureDocs.reduce( ( results, mediaFeatureDoc ) => {
 
 				// create a result for each child associated with the media feature
@@ -1115,6 +1119,7 @@ exports.getMediaFeaturesData = ( req, res, next ) => {
 							childStatus: childDoc.status.childStatus,
 							childHasProfessionalPhoto: childDoc.hasPhotolistingPhoto ? 'Yes' : 'No',
 							childHasVideoSnapshot: childDoc.hasVideoSnapshot ? 'Yes' : 'No',
+							childRegistrationDate: moment.utc( childDoc.registrationDate ),
 							mediaFeatureSource: mediaFeatureDoc.source.source,
 							mediaFeatureDate: moment.utc( mediaFeatureDoc.date ).format( 'MM/DD/YYYY' ),
 							mediaFeatureDateISO: moment( mediaFeatureDoc.date ).toISOString(),
@@ -1124,6 +1129,33 @@ exports.getMediaFeaturesData = ( req, res, next ) => {
 				
 				return results;
 			}, []);
+
+			// get inquiry data for each result (child)
+			return keystone.list( 'Inquiry' ).model
+				.find( { children: { $in: responseData.results.map( result => result.childId ) } } )
+				.lean()
+				.exec();
+		}
+	})
+	.then( inquiryDocs => {
+
+		// if media feature results were found...
+		if ( !responseData.noResultsFound ) {
+			// add inquiry data to each result
+			responseData.results.forEach( result => {
+				
+				// get the total number of inquiries for the child of the result
+				let inquiryCount = inquiryDocs.filter( 
+					// must use find() to allow for proper comparison between childId on the inquiry model (which is a BSON object)
+					// and the childId on the result object (which is a String)
+					inquiryDoc => !!inquiryDoc.children.find( 
+						childId => childId.toString() === result.childId
+				)).length;
+				
+				// get the average number of inquiries before the media feature
+				let monthsSinceRegistrationDate = moment.utc( result.mediaFeatureDate, 'MM-DD-YYYY' ).startOf( 'day' ).diff( result.childRegistrationDate.startOf( 'day' ), 'days' ) / 30;
+				result.avgInquiriesBeforeFeature = ( inquiryCount / monthsSinceRegistrationDate ).toFixed( 2 );
+			});
 		}
 
 		res.send( responseData );

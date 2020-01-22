@@ -199,7 +199,8 @@
 				}
 			},
 			{ title: 'Professional Photo', data: 'childHasProfessionalPhoto' },
-			{ title: 'Video Snapshot', data: 'childHasVideoSnapshot' }
+			{ title: 'Video Snapshot', data: 'childHasVideoSnapshot' },
+			{ title: 'Inquiries per Month Before Feature', data: 'avgInquiriesBeforeFeature' }
 		]
 	});
 }());
