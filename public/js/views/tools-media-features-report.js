@@ -179,12 +179,11 @@
 
 		mediaFeatureReportColumns: [
 			{
-				title: '',
-				data: 'childId',
+				title: 'Reg #',
+				data: 'childRegistrationNumber',
 				orderable: false,
-				className: 'icon-link-column',
-				render: function( data ) {
-					return '<a href="/keystone/children/' + data + '"><i class="fa fa-external-link" aria-hidden="true"></i></a>';
+				render: function( data, type, row, meta ) {
+					return '<a href="/keystone/children/' + row.childId + '">' + data + '</a>';
 				}
 			},
 			{ title: 'First Name', data: 'childNameFirst' },

@@ -1114,6 +1114,7 @@ exports.getMediaFeaturesData = ( req, res, next ) => {
 					if ( childPassesFilterCriteria( childDoc ) ) {
 						results.push({
 							childId: childDoc._id.toString(),
+							childRegistrationNumber: childDoc.registrationNumber,
 							childNameFirst: childDoc.name.first,
 							childNameLast: childDoc.name.last,
 							childStatus: childDoc.status.childStatus,
