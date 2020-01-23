@@ -193,7 +193,7 @@
 				data: 'childStatus',
 				render: function( data, type, row, meta ) {
 					return data === 'placed'
-						? '<div>' + data + '</div><div>(' + row.childPlacementDate.formatted + ')</div>'
+						? '<div>' + data + '</div><div>(' + row.childPlacementDate + ')</div>'
 						: data;
 				}
 			},

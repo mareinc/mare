@@ -1121,12 +1121,7 @@ exports.getMediaFeaturesData = ( req, res, next ) => {
 							childHasProfessionalPhoto: childDoc.hasPhotolistingPhoto ? 'Yes' : 'No',
 							childHasVideoSnapshot: childDoc.hasVideoSnapshot ? 'Yes' : 'No',
 							childRegistrationDate: moment.utc( childDoc.registrationDate ),
-							childPlacementDate: {
-								raw: childDoc.status.childStatus === 'placed' 
-									? moment.utc( childDoc.statusChangeDate )
-									: moment.utc(), // if the child has not been placed, use today's date
-								formatted: moment.utc( childDoc.statusChangeDate ).format( 'MM/DD/YYYY' )
-							},
+							childPlacementDate: moment.utc( childDoc.statusChangeDate ).format( 'MM/DD/YYYY' ),
 							mediaFeatureSource: mediaFeatureDoc.source.source,
 							mediaFeatureDate: {
 								raw: moment.utc( mediaFeatureDoc.date ),
@@ -1157,8 +1152,8 @@ exports.getMediaFeaturesData = ( req, res, next ) => {
 
 				// get the number of months since the child associated with the result has registered (where month is any 30-day period)
 				let monthsSinceRegistrationDate = result.mediaFeatureDate.raw.diff( result.childRegistrationDate, 'days' ) / 30;
-				// get the number of months between the media feature date and the placement date (where month is any 30-day period)
-				let monthsAfterRegistrationDate = result.childPlacementDate.raw.diff( result.mediaFeatureDate.raw, 'days' ) / 30;
+				// get the number of months after the media feature date (where month is any 30-day period)
+				let monthsAfterRegistrationDate = moment.utc().diff( result.mediaFeatureDate.raw, 'days' ) / 30;
 				// get the month following the media feature date
 				let monthFollowingMediaFeature = result.mediaFeatureDate.raw.clone().add( 30, 'days' ); // clone to prevent mutation of original date
 				let inquiryCounts = {
@@ -1173,26 +1168,18 @@ exports.getMediaFeaturesData = ( req, res, next ) => {
 					if ( !!inquiryDoc.children.find( childId => childId.toString() === result.childId ) ) {
 
 						let inquiryDate = moment.utc( inquiryDoc.takenOn );
-						console.log(`inquiry date: ${inquiryDate}`);
 						
 						// if the inquiry was received before the media feature...
 						if ( inquiryDate.isBetween( result.childRegistrationDate, result.mediaFeatureDate.raw, '[)' ) ) {
 							inquiryCounts.beforeFeature++;
-							console.log('is before media feature');
 						
 						// if the inquiry was received after the media feature
 						} else {
-							
+
+							inquiryCounts.afterFeature++;
 							// check if the inquiry was received in the first month after the media feature...
 							if ( inquiryDate.isBetween( result.mediaFeatureDate.raw, monthFollowingMediaFeature, '[]' ) ) {
-								inquiryCounts.afterFeature++;
 								inquiryCounts.next30Days++;
-								console.log('is 30 days after media feature');
-
-							// ensure the inquiry was received before the placement date
-							} else if ( inquiryDate.isBetween( monthFollowingMediaFeature, result.childPlacementDate.raw, '(]' ) ) {
-								inquiryCounts.afterFeature++;
-								console.log('is after media feature');
 							}
 						}
 					}
