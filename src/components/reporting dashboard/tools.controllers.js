@@ -1091,7 +1091,7 @@ exports.getMediaFeaturesData = ( req, res, next ) => {
 				: false
 		};
 
-		// if no results were returned, send the 'noResults' flag
+		// if no results were returned, set the 'noResults' flag and skip results mapping
 		if ( !mediaFeatureDocs || mediaFeatureDocs.length === 0 ) {
 			responseData.noResultsFound = true;
 			return;
@@ -1120,9 +1120,18 @@ exports.getMediaFeaturesData = ( req, res, next ) => {
 							childHasProfessionalPhoto: childDoc.hasPhotolistingPhoto ? 'Yes' : 'No',
 							childHasVideoSnapshot: childDoc.hasVideoSnapshot ? 'Yes' : 'No',
 							childRegistrationDate: moment.utc( childDoc.registrationDate ),
+							childPlacementDate: {
+								raw: childDoc.status.childStatus === 'placed' 
+									? moment.utc( childDoc.statusChangeDate )
+									: moment.utc(), // if the child has not been placed, use today's date
+								formatted: moment.utc( childDoc.statusChangeDate ).format( 'MM/DD/YYYY' )
+							},
 							mediaFeatureSource: mediaFeatureDoc.source.source,
-							mediaFeatureDate: moment.utc( mediaFeatureDoc.date ).format( 'MM/DD/YYYY' ),
-							mediaFeatureDateISO: moment( mediaFeatureDoc.date ).toISOString(),
+							mediaFeatureDate: {
+								raw: moment.utc( mediaFeatureDoc.date ),
+								formattedString: moment.utc( mediaFeatureDoc.date ).format( 'MM/DD/YYYY' ),
+								formattedISO: moment( mediaFeatureDoc.date ).toISOString()
+							}
 						});
 					}
 				});
@@ -1141,20 +1150,57 @@ exports.getMediaFeaturesData = ( req, res, next ) => {
 
 		// if media feature results were found...
 		if ( !responseData.noResultsFound ) {
+			
 			// add inquiry data to each result
 			responseData.results.forEach( result => {
-				
-				// get the total number of inquiries for the child of the result
-				let inquiryCount = inquiryDocs.filter( 
-					// must use find() to allow for proper comparison between childId on the inquiry model (which is a BSON object)
-					// and the childId on the result object (which is a String)
-					inquiryDoc => !!inquiryDoc.children.find( 
-						childId => childId.toString() === result.childId
-				)).length;
-				
-				// get the average number of inquiries before the media feature
-				let monthsSinceRegistrationDate = moment.utc( result.mediaFeatureDate, 'MM-DD-YYYY' ).startOf( 'day' ).diff( result.childRegistrationDate.startOf( 'day' ), 'days' ) / 30;
-				result.avgInquiriesBeforeFeature = ( inquiryCount / monthsSinceRegistrationDate ).toFixed( 2 );
+
+				// get the number of months since the child associated with the result has registered (where month is any 30-day period)
+				let monthsSinceRegistrationDate = result.mediaFeatureDate.raw.diff( result.childRegistrationDate, 'days' ) / 30;
+				// get the number of months between the media feature date and the placement date (where month is any 30-day period)
+				let monthsAfterRegistrationDate = result.childPlacementDate.raw.diff( result.mediaFeatureDate.raw, 'days' ) / 30;
+				// get the month following the media feature date
+				let monthFollowingMediaFeature = result.mediaFeatureDate.raw.clone().add( 30, 'days' ); // clone to prevent mutation of original date
+				let inquiryCounts = {
+					beforeFeature: 0,
+					next30Days: 0,
+					afterFeature: 0
+				};
+
+				for ( const inquiryDoc of inquiryDocs ) {
+
+					// if the child is part of the inquiry...
+					if ( !!inquiryDoc.children.find( childId => childId.toString() === result.childId ) ) {
+
+						let inquiryDate = moment.utc( inquiryDoc.takenOn );
+						console.log(`inquiry date: ${inquiryDate}`);
+						
+						// if the inquiry was received before the media feature...
+						if ( inquiryDate.isBetween( result.childRegistrationDate, result.mediaFeatureDate.raw, '[)' ) ) {
+							inquiryCounts.beforeFeature++;
+							console.log('is before media feature');
+						
+						// if the inquiry was received after the media feature
+						} else {
+							
+							// check if the inquiry was received in the first month after the media feature...
+							if ( inquiryDate.isBetween( result.mediaFeatureDate.raw, monthFollowingMediaFeature, '[]' ) ) {
+								inquiryCounts.afterFeature++;
+								inquiryCounts.next30Days++;
+								console.log('is 30 days after media feature');
+
+							// ensure the inquiry was received before the placement date
+							} else if ( inquiryDate.isBetween( monthFollowingMediaFeature, result.childPlacementDate.raw, '(]' ) ) {
+								inquiryCounts.afterFeature++;
+								console.log('is after media feature');
+							}
+						}
+					}
+				}
+
+				// add inquiry statistics to the result object
+				result.avgInquiriesBeforeFeature = ( inquiryCounts.beforeFeature / monthsSinceRegistrationDate ).toFixed( 2 );
+				result.inquiriesMonthAfterFeature = inquiryCounts.next30Days;
+				result.avgInquiriesAfterFeature = ( inquiryCounts.afterFeature / monthsAfterRegistrationDate ).toFixed( 2 );
 			});
 		}
 

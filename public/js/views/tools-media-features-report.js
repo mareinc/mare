@@ -195,12 +195,14 @@
 				title: 'Date', 
 				data: function( row, type ) {
 					// return date in ISO format to enable column sorting
-					return type === 'sort' ? row.mediaFeatureDateISO : row.mediaFeatureDate;
+					return type === 'sort' ? row.mediaFeatureDate.formattedISO : row.mediaFeatureDate.formattedString;
 				}
 			},
 			{ title: 'Professional Photo', data: 'childHasProfessionalPhoto' },
 			{ title: 'Video Snapshot', data: 'childHasVideoSnapshot' },
-			{ title: 'Inquiries per Month Before Feature', data: 'avgInquiriesBeforeFeature' }
+			{ title: 'Inquiries per Month Before Feature', data: 'avgInquiriesBeforeFeature' },
+			{ title: 'Inquiries the Month After Feature', data: 'inquiriesMonthAfterFeature' },
+			{ title: 'Inquiries per Month After Feature', data: 'avgInquiriesAfterFeature' }
 		]
 	});
 }());
