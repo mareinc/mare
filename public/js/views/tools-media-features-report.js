@@ -189,7 +189,15 @@
 			},
 			{ title: 'First Name', data: 'childNameFirst' },
 			{ title: 'Last Name', data: 'childNameLast' },
-			{ title: 'Status', data: 'childStatus' },
+			{
+				title: 'Status',
+				data: 'childStatus',
+				render: function( data, type, row, meta ) {
+					return data === 'placed'
+						? '<div>' + data + '</div><div>(' + row.childPlacementDate.formatted + ')</div>'
+						: data;
+				}
+			},
 			{ title: 'Source', data: 'mediaFeatureSource' },
 			{ 
 				title: 'Date', 
