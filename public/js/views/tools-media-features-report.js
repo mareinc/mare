@@ -10,6 +10,7 @@
 			'click .media-features-search-button'   			: 'handleSearchClick',
 			'click .media-features-search-reset-button'			: 'handleResetClick',
 			'click .media-features-export-xlsx-button'			: 'handleXlsxExportClick',
+			'click .media-features-export-pdf-button'			: 'handlePDFExportClick',
 			'click .media-features-fiscal-year-buttons .btn'	: 'handleFiscalYearClick'
         },
 
@@ -95,6 +96,32 @@
 				
 			// convert HTML table to XLSX file
 			XLSX.writeFile( wb, table.data( 'filename' ) );
+		},
+
+		handlePDFExportClick: function() {
+
+			// collect the state of the form
+			var params = this.$el.find( 'form' ).serializeArray();
+			
+			// remove empty values
+			params = _.filter( params, function( value ) {
+				return value && value.value && value.value.length > 0;
+			});
+
+			// add the date range to the params
+			params.push({
+				name: 'fromDate',
+				value: this.$el.find( '[name="fromDate"]' ).val()
+			}, {
+				name: 'toDate',
+				value: this.$el.find( '[name="toDate"]' ).val()
+			});
+			
+			// build the query string
+			var queryString = jQuery.param( params );
+			
+			// redirect to the PDF report download URL
+			window.open( '/tools/services/get-media-features-data?' + queryString + '&pdf=1', '_blank' );
 		},
 
 		handleFiscalYearClick: function( event ) {

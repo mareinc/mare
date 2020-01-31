@@ -1192,7 +1192,15 @@ exports.getMediaFeaturesData = ( req, res, next ) => {
 			});
 		}
 
-		res.send( responseData );
+		// if 'pdf' parameter was detected in the query, send the response as a PDF
+		if ( query.pdf ) {
+			utilsService.sendPDF( req, res, responseData, 'tools-media-features-pdf', {
+				headerTitle: 'Media Features Report Listing'
+			});
+		// otherwise, send the response data as an object to be rendered as a grid on the page
+		} else {
+			res.send( responseData );
+		}
 	})
 	.catch( err => {
 

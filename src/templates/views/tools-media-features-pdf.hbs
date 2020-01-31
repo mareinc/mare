@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>MARE</title>
+		
+		<style type="text/css">
+			table tr th {
+				text-decoration: underline;
+			}
+
+            table th,
+            table td {
+                text-align: left;
+            }
+		</style>
+	</head>
+	<body>
+		<table width="100%">
+                <tr>
+                    <th>Reg #</th>
+                    <th>Child</th>
+                    <th>Status</th>
+                    <th>Source</th>
+                    <th>Date</th>
+                    <th>Professional Photo</th>
+                    <th>Video Snapshot</th>
+                    <th>Inquiries per Month Before Feature</th>
+                    <th>Inquiries the Month After Feature</th>
+                    <th>Inquiries per Month After Feature</th>
+                </tr>
+                {{#each results as |result|}}
+                    <tr>
+                        <td>{{ result.childRegistrationNumber }}</td>
+                        <td>
+                            {{ result.childNameFirst }} {{ result.childNameLast }} 
+                        </td>
+                        <td>
+                            {{ result.childStatus }}
+                            {{#ifeq result.childStatus 'placed'}}<br>({{ result.childPlacementDate }}){{else}}{{/ifeq}}
+                        </td>
+                        <td>{{ result.mediaFeatureSource }}</td>
+                        <td>{{ result.mediaFeatureDate.formattedString }}</td>
+                        <td>{{ result.childHasProfessionalPhoto }}</td>
+                        <td>{{ result.childHasVideoSnapshot }}</td>
+                        <td>{{ result.avgInquiriesBeforeFeature }}</td>
+                        <td>{{ result.inquiriesMonthAfterFeature }}</td>
+                        <td>{{ result.avgInquiriesAfterFeature }}</td>
+                    </tr>
+                {{/each}}
+            </table>      
+	</body>
+</html>
