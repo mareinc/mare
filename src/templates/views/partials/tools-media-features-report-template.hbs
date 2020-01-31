@@ -138,6 +138,41 @@
 
             {{!-- Results table for site display --}}            
             <table id="media-features-results" class="stripe" width="100%"></table>
+
+            {{!-- Results table for Excel export (hidden) --}}
+            <table width="100%" class="results-table hidden" data-filename="MediaFeaturesReportExport.xlsx">
+                <tr>
+                    <th>Reg #</th>
+                    <th>Child</th>
+                    <th>Status</th>
+                    <th>Source</th>
+                    <th>Date</th>
+                    <th>Professional Photo</th>
+                    <th>Video Snapshot</th>
+                    <th>Inquiries per Month Before Feature</th>
+                    <th>Inquiries the Month After Feature</th>
+                    <th>Inquiries per Month After Feature</th>
+                </tr>
+                \{{#each results as |result|}}
+                    <tr>
+                        <td>\{{ result.childRegistrationNumber }}</td>
+                        <td>
+                            \{{ result.childNameFirst }} \{{ result.childNameLast }} 
+                        </td>
+                        <td>
+                            \{{ result.childStatus }}
+                            \{{#ifeq result.childStatus 'placed'}}<br>(\{{ result.childPlacementDate }})\{{else}}\{{/ifeq}}
+                        </td>
+                        <td>\{{ result.mediaFeatureSource }}</td>
+                        <td>\{{ result.mediaFeatureDate.formattedString }}</td>
+                        <td>\{{ result.childHasProfessionalPhoto }}</td>
+                        <td>\{{ result.childHasVideoSnapshot }}</td>
+                        <td>\{{ result.avgInquiriesBeforeFeature }}</td>
+                        <td>\{{ result.inquiriesMonthAfterFeature }}</td>
+                        <td>\{{ result.avgInquiriesAfterFeature }}</td>
+                    </tr>
+                \{{/each}}
+            </table>
         \{{/if}}
 
     </div>

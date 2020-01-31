@@ -9,6 +9,7 @@
 		events: {
 			'click .media-features-search-button'   			: 'handleSearchClick',
 			'click .media-features-search-reset-button'			: 'handleResetClick',
+			'click .media-features-export-xlsx-button'			: 'handleXlsxExportClick',
 			'click .media-features-fiscal-year-buttons .btn'	: 'handleFiscalYearClick'
         },
 
@@ -86,6 +87,14 @@
 
 		handleResetClick: function() {
 			mare.routers.tools.navigate( 'media-features-report', { trigger: true } );
+		},
+
+		handleXlsxExportClick: function() {
+			var table = this.$el.find( '.results-table' ),
+				wb = XLSX.utils.table_to_book( table[ 0 ] );
+				
+			// convert HTML table to XLSX file
+			XLSX.writeFile( wb, table.data( 'filename' ) );
 		},
 
 		handleFiscalYearClick: function( event ) {
