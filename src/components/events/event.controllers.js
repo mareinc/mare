@@ -445,7 +445,10 @@ exports.removeRegisteredChildren = ( event, registrantId ) => {
 			// capture all registered children ( and their indexes ) that were signed up by the social worker that is unregistering
 			event.childAttendees.forEach( ( child, index ) => {
 
-				if ( child.adoptionWorker && ( registrantId.toString() === child.adoptionWorker.toString() || registrantId.toString() === child.recruitmentWorker.toString() ) ) {
+				let adoptionWorkerId = child.adoptionWorker && child.adoptionWorker.toString();
+				let recruitmentWorkerId = child.recruitmentWorker && child.recruitmentWorker.toString();
+
+				if ( registrantId.toString() === adoptionWorkerId || registrantId.toString() === recruitmentWorkerId ) {
 
 					registeredChildrenToRemoveIndexes.push( index );
 					registeredChildrenRemoved.push( child );
