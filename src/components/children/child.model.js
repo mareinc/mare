@@ -218,8 +218,6 @@ Child.add( 'Display Options', {
 
 	hasPhotolistingWriteup: { type: Types.Boolean, label: 'photolisting writeup', default: false, initial: true, hidden: true },
 	photolistingWriteupDate: { type: Types.Date, label: 'date of photolisting writeup', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { hasPhotolistingWriteup: true }, initial: true, hidden: true },
-	hasPhotolistingPhoto: { type: Types.Boolean, label: 'professional photo', default: false, initial: true, hidden: true },
-	photolistingPhotoDate: { type: Types.Date, label: 'date of professional photo', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { hasPhotolistingPhoto: true }, initial: true, hidden: true },
 	isCurrentlyInPhotoListing: { type: Types.Boolean, label: 'currently in photolisting', default: false, initial: true, hidden: true },
 	dateOfLastPhotoListing: { type: Types.Date, label: 'date of last photolisting', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: {isCurrentlyInPhotoListing: true }, initial: true, hidden: true },
 	photolistingPageNumber: { type: Types.Text, label: 'photolisting page', initial: true, hidden: true },
@@ -227,6 +225,8 @@ Child.add( 'Display Options', {
 
 }, 'Recruitment Options', {
 
+	hasPhotolistingPhoto: { type: Types.Boolean, label: 'professional photo', default: false, initial: true },
+	photolistingPhotoDate: { type: Types.Date, label: 'date of professional photo', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { hasPhotolistingPhoto: true }, initial: true, collapse: true },
 	hasVideoSnapshot: { type: Types.Boolean, label: 'video snapshot', default: false, initial: true },
 	videoSnapshotDate: { type: Types.Date, label: 'date of video snapshot', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { hasVideoSnapshot: true }, initial: true, collapse: true },
 	video: { type: Types.Url, label: 'video', dependsOn: { hasVideoSnapshot: true, mustBePlacedWithSiblings: false }, collapse: true },
