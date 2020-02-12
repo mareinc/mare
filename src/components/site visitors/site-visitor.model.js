@@ -36,7 +36,7 @@ const SiteVisitor = new keystone.List( 'Site Visitor', {
 // Create fields
 SiteVisitor.add( 'Permissions', {
 
-	isActive: { type: Types.Boolean, label: 'is active' },
+	isActive: { type: Types.Boolean, label: 'has active database account' },
 
 	permissions: {
 		isVerified: { type: Types.Boolean, label: 'has a verified email address', default: false, noedit: true }
