@@ -2,7 +2,12 @@
 	position: fixed;
 	left: -323px;
 	width: 323px;
-	padding: 1.25rem 1rem;
+	height: auto !important;
+	padding: 1.25rem 1rem 0 1rem;
+	display: flex;
+	flex-flow: column nowrap;
+	align-items: flex-start;
+	overflow: hidden;
 	background-color: #2e4e87 !important;
 	z-index: 10;
 }

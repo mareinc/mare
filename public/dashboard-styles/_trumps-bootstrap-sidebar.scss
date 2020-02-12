@@ -3,6 +3,10 @@
 		position: relative;
 		left: -1rem;
 		width: calc(100% + 2rem);
+
+		// required to allow scrolling of nav items
+		flex-grow: 1;
+		overflow-y: scroll;
 	}
 	.list-group-item {
 		background: #4c6697;
