@@ -13,6 +13,7 @@
 			mare.views.inquiryReport = mare.views.inquiryReport || new mare.views.InquiryReport();
 			mare.views.placementReport = mare.views.placementReport || new mare.views.PlacementReport();
 			mare.views.mediaFeaturesReport = mare.views.mediaFeaturesReport || new mare.views.MediaFeaturesReport();
+			mare.views.childListingReport = mare.views.childListingReport || new mare.views.ChildListingReport();
 		},
 
 		initializeSideNav: function() {
@@ -139,6 +140,17 @@
 			mare.views.mediaFeaturesReport.render( fromDate, toDate, params );
 			// update the body class to indicate what screen this is
 			this.$el.attr( 'class', 'tools__media-features-report' );
+			// initialize the side nav
+			this.initializeSideNav();
+			this.closeSideNav();
+		},
+
+		showChildListingReport: function() {
+			// destroy existing table
+			this.destroyTable();
+			mare.views.childListingReport.render();
+			// update the body class to indicate what screen this is
+			this.$el.attr( 'class', 'tools__child-listing-report' );
 			// initialize the side nav
 			this.initializeSideNav();
 			this.closeSideNav();

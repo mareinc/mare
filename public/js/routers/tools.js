@@ -17,6 +17,7 @@
 			'placement-report/:fromDate/:toDate(?*queryString)'		: 'loadPlacementReport',
 			'media-features-report'									: 'loadMediaFeaturesReport',
 			'media-features-report/:fromDate/:toDate(?*queryString)': 'loadMediaFeaturesReport',
+			'child-listing-report'									: 'loadChildListingReport',
 			'*other'												: 'loadDefault'
 		},
 
@@ -58,6 +59,10 @@
 
 		loadMediaFeaturesReport: function( fromDate, toDate, queryString ) {
 			mare.views.tools.showMediaFeaturesReport( fromDate, toDate, this.parseQueryString( queryString ) );
+		},
+
+		loadChildListingReport: function() {
+			mare.views.tools.showChildListingReport();
 		},
 		
 		loadDefault: function() {
