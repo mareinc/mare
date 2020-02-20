@@ -74,6 +74,146 @@
         <form class="matching-form">
             <input type="hidden" id="defaultFromDate" value="{{ defaultDateRange.fromDate }}" />
             <input type="hidden" id="defaultToDate" value="{{ defaultDateRange.toDate }}" />
+            <div class="row">
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right" >
+                            <label for="race" class="bold">Race:</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                            <select id="race" name="race[]" class="form-control race-select" multiple>
+                                {{#each races as |race|}}
+                                    <option value="{{ race.id }}">{{ race.race }}</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right" >
+                            <label for="worker-agency" class="bold">Adopt. Worker's Agency:</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                            <select id="worker-agency" name="worker-agency[]" class="form-control worker-agency-select" multiple>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right" >
+                            <label for="gender" class="bold">Gender:</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                            <select id="gender" name="gender[]" class="form-control gender-select" multiple>
+                                {{#each genders as |gender|}}
+                                    <option value="{{ gender.id }}">{{ gender.gender }}</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right" >
+                            <label for="worker-name" class="bold">Adopt. Worker's Name:</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                            <select id="worker-name" name="worker-name[]" class="form-control worker-name-select" multiple>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right" >
+                            <label for="status" class="bold">Status:</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                            <select id="status" name="status[]" class="form-control status-select" multiple>
+                                {{#each legalStatuses as |legalStatus|}}
+                                    <option value="{{ legalStatus.id }}">{{ legalStatus.legalStatus }}</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right" >
+                            <label for="worker-region" class="bold">Adopt. Worker's Region:</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                            <select id="worker-region" region="worker-region[]" class="form-control worker-region-select" multiple>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-lg-4 col-md-12 group-label text-sm-right">
+                            <h5>Age at Registration:</h5>
+                        </div>
+                        <div class="col-lg-4 col-sm-6">
+                            <label for="registrationAgeFrom">From</label>
+                            <select id="registrationAgeFrom" name="registrationAgeFrom" class="form-control">
+                                <option value="">Any</option>
+                                {{#each ages}}
+                                <option value="{{ . }}">{{ . }}</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                        <div class="col-lg-4 col-sm-6">
+                            <label for="registrationAgeTo">To</label>
+                            <select id="registrationAgeTo" name="registrationAgeTo" class="form-control">
+                                <option value="">Any</option>
+                                {{#each ages}}
+                                <option value="{{ . }}">{{ . }}</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-lg-4 col-md-12 group-label text-sm-right">
+                            <h5>Current Age:</h5>
+                        </div>
+                        <div class="col-lg-4 col-sm-6">
+                            <label for="currentAgeFrom">From</label>
+                            <select id="currentAgeFrom" name="currentAgeFrom" class="form-control">
+                                <option value="">Any</option>
+                                {{#each ages}}
+                                <option value="{{ . }}">{{ . }}</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                        <div class="col-lg-4 col-sm-6">
+                            <label for="currentAgeTo">To</label>
+                            <select id="currentAgeTo" name="currentAgeTo" class="form-control">
+                                <option value="">Any</option>
+                                {{#each ages}}
+                                <option value="{{ . }}">{{ . }}</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-lg-4 col-md-12 group-label text-sm-right">
+                            <h5>Addt'l Options:</h5>
+                        </div>
+                        <div class="col-lg-4 col-sm-12">
+                            <div class="form-check text-right">
+                                <input id="placedWithSiblings" class="form-check-input" type="checkbox" name="placedWithSiblings">
+                                <label class="form-check-label" for="placedWithSiblings">To be placed with siblings </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </form>
 
     </div>
