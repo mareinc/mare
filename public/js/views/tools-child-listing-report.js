@@ -42,6 +42,31 @@
 			this.$el.find( '[name="registrationDateTo"]' ).val( regDateTo );
 			this.$el.find( '[name="webAddedDateFrom"]' ).val( webDateFrom );
 			this.$el.find( '[name="webAddedDateTo"]' ).val( webDateTo );
+
+			// initialize select inputs
+			this.$el.find( '.race-select' ).select2({
+				placeholder: 'All Races'
+			});
+
+			this.$el.find( '.gender-select' ).select2({
+				placeholder: 'All Genders'
+			});
+
+			this.$el.find( '.status-select' ).select2({
+				placeholder: 'All Statuses'
+			});
+			
+			this.$el.find( '.worker-agency-select' ).select2({
+				placeholder: 'All Agencies'
+			});
+			
+			this.$el.find( '.worker-name-select' ).select2({
+				placeholder: 'All Social Workers'
+			});
+			
+			this.$el.find( '.worker-region-select' ).select2({
+				placeholder: 'All Regions'
+            });
         },
 
 		/* render the view onto the page */
