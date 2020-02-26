@@ -1156,6 +1156,7 @@ exports.getMediaFeaturesData = ( req, res, next ) => {
 				let monthsAfterRegistrationDate = moment.utc().diff( result.mediaFeatureDate.raw, 'days' ) / 30;
 				// get the month following the media feature date
 				let monthFollowingMediaFeature = result.mediaFeatureDate.raw.clone().add( 30, 'days' ); // clone to prevent mutation of original date
+				let sixMonthsFollowingMediaFeature = result.mediaFeatureDate.raw.clone().add( 180, 'days' ); // clone to prevent mutation of original date
 				let inquiryCounts = {
 					beforeFeature: 0,
 					next30Days: 0,
@@ -1176,10 +1177,14 @@ exports.getMediaFeaturesData = ( req, res, next ) => {
 						// if the inquiry was received after the media feature
 						} else {
 
-							inquiryCounts.afterFeature++;
 							// check if the inquiry was received in the first month after the media feature...
 							if ( inquiryDate.isBetween( result.mediaFeatureDate.raw, monthFollowingMediaFeature, '[]' ) ) {
 								inquiryCounts.next30Days++;
+							}
+
+							// check if the inquiry was received in the 6 months after the media feature...
+							if ( inquiryDate.isBetween( result.mediaFeatureDate.raw, sixMonthsFollowingMediaFeature, '[]' ) ) {
+								inquiryCounts.afterFeature++;
 							}
 						}
 					}
@@ -1188,7 +1193,7 @@ exports.getMediaFeaturesData = ( req, res, next ) => {
 				// add inquiry statistics to the result object
 				result.avgInquiriesBeforeFeature = ( inquiryCounts.beforeFeature / monthsSinceRegistrationDate ).toFixed( 2 );
 				result.inquiriesMonthAfterFeature = inquiryCounts.next30Days;
-				result.avgInquiriesAfterFeature = ( inquiryCounts.afterFeature / monthsAfterRegistrationDate ).toFixed( 2 );
+				result.avgInquiriesSixMonthsAfterFeature = ( inquiryCounts.afterFeature / Math.min( monthsAfterRegistrationDate, 6 ) ).toFixed( 2 );
 			});
 		}
 
