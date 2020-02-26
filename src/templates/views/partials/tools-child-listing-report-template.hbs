@@ -96,6 +96,9 @@
                         </div>
                         <div class="col-sm-12 col-md-8">
                             <select id="worker-agency" name="worker-agency[]" class="form-control worker-agency-select" multiple>
+                                \{{#each agencies as |agency|}}
+                                    <option value="\{{ agency.id }}" selected>\{{ agency.text }}</option>
+                                \{{/each}}
                             </select>
                         </div>
                     </div>
@@ -117,10 +120,13 @@
                 <div class="col-6">
                     <div class="row form-group">
                         <div class="col-sm-12 col-md-4 text-sm-right" >
-                            <label for="worker-name" class="bold">Adopt. Worker's Name:</label>
+                            <label for="worker" class="bold">Adopt. Worker:</label>
                         </div>
                         <div class="col-sm-12 col-md-8">
-                            <select id="worker-name" name="worker-name[]" class="form-control worker-name-select" multiple>
+                            <select id="worker" name="worker[]" class="form-control worker-select" multiple>
+                                \{{#each workers as |worker|}}
+                                    <option value="\{{ worker.id }}" selected>\{{ worker.text }}</option>
+                                \{{/each}}
                             </select>
                         </div>
                     </div>
@@ -145,7 +151,10 @@
                             <label for="worker-region" class="bold">Adopt. Worker's Region:</label>
                         </div>
                         <div class="col-sm-12 col-md-8">
-                            <select id="worker-region" region="worker-region[]" class="form-control worker-region-select" multiple>
+                            <select id="worker-region" name="worker-region[]" class="form-control worker-region-select" multiple>
+                                {{#each regions as |region|}}
+                                    <option value="{{ region.id }}">{{ region.region }}</option>
+                                {{/each}}
                             </select>
                         </div>
                     </div>
