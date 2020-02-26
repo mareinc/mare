@@ -216,6 +216,18 @@
             </div>
         </form>
 
+        <button class="btn btn-primary child-listing-search-button">Search</button>
+	    <button class="btn btn-default child-listing-search-reset-button">Reset</button>
+
+        \{{#if waitingForResults }}
+            <br /><br />
+            Loading the data ...
+        \{{/if}}
+        
+        \{{#if noResultsFound }}
+            <br /><br />
+            No results found
+        \{{/if}}
     </div>
 
 </script>
