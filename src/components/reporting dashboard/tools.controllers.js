@@ -1220,9 +1220,78 @@ exports.getChildListingData = ( req, res, next ) => {
 	
 	// get the query from the request object
 	let query = req.query;
-	
-	// send an empty result
-	res.send({
-		noResultsFound: true
+
+	// create the search criteria
+	let searchCriteria = {};
+
+	// social worker criteria (multiple)
+	let workerCriteria;
+	if ( Array.isArray( query.worker ) && query.worker.length > 0 ) {
+		workerCriteria = query.worker.filter( ( objectId ) => ObjectId.isValid( objectId ) );
+		searchCriteria[ 'socialworker' ] = { $in: workerCriteria };
+	}
+
+	// social worker agency criteria (multiple)
+	let agencyCriteria;
+	if ( Array.isArray( query[ 'worker-agency' ] ) && query[ 'worker-agency' ].length > 0 ) {
+		agencyCriteria = query[ 'worker-agency' ].filter( ( objectId ) => ObjectId.isValid( objectId ) );
+		searchCriteria[ 'agency' ] = { $in: agencyCriteria };
+	}
+
+	Promise.all([
+		// if thare are adoption worker criteria specified, get the adoption worker docs to seed the select on the search form
+		workerCriteria
+			? keystone.list( 'Social Worker' ).model
+				.find( { _id: { $in: workerCriteria } } )
+				.lean()
+				.exec()
+				.catch( err => {
+					// log an error for debugging purposes
+					console.error( `error loading social workers for the child listing report dashboard - ${ err }` );
+					// return false to allow the view to render regardless of the error
+					return false;
+				})
+			: false,
+		// if thare are adoption agency criteria specified, get the adoption agency docs to seed the select on the search form
+		workerCriteria
+			? keystone.list( 'Agency' ).model
+				.find( { _id: { $in: agencyCriteria } } )
+				.lean()
+				.exec()
+				.catch( err => {
+					// log an error for debugging purposes
+					console.error( `error loading agencies for the child listing report dashboard - ${ err }` );
+					// return false to allow the view to render regardless of the error
+					return false;
+				})
+			: false
+	])
+	.then( results => {
+
+		// destructure results
+		let [ workerDocs, agencyDocs ] = results;
+		
+		// send the results
+		res.send({
+			noResultsFound: true,
+			workers: workerDocs
+				? workerDocs.map( worker => ({ 
+					id: worker._id.toString(), 
+					text: `${worker.name.first} ${worker.name.last}`
+				}))
+				: false,
+			agencies: agencyDocs
+				? agencyDocs.map( agency => ({ 
+					id: agency._id.toString(), 
+					text: agency.name
+				}))
+				: false
+		});
+	})
+	.catch( err => {
+		// log an error for debugging purposes
+		console.error( `error loading child listing report for the dashboard - ${ err }` );
+
+		flashMessages.sendErrorFlashMessage( res, 'Error', 'Error loading child listing data' );
 	});
 };

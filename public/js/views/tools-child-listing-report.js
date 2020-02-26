@@ -57,18 +57,28 @@
 			this.$el.find( '.status-select' ).select2({
 				placeholder: 'All Statuses'
 			});
-			
-			this.$el.find( '.worker-agency-select' ).select2({
-				placeholder: 'All Agencies'
-			});
-			
-			this.$el.find( '.worker-name-select' ).select2({
-				placeholder: 'All Social Workers'
-			});
-			
+
 			this.$el.find( '.worker-region-select' ).select2({
 				placeholder: 'All Regions'
             });
+
+			this.$el.find( '.worker-agency-select' ).select2({
+				placeholder: 'All Agencies',
+				multiple: true,
+				ajax: {
+					url: '/tools/services/get-agencies-data',
+					dataType: 'json'
+				}
+			});
+			
+			this.$el.find( '.worker-select' ).select2({
+				placeholder: 'All Social Workers',
+				multiple: true,
+				ajax: {
+					url: '/tools/services/get-social-workers-data',
+					dataType: 'json'
+				}
+			});
 		},
 
 		handleSearchClick: function() {
