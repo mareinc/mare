@@ -6,7 +6,9 @@
 		el: '.dashboard-content',
 
 		// bind standard events to functions within the view
-		events: {},
+		events: {
+			'click .child-listing-search-button' : 'handleSearchClick'
+		},
 
 		/* initialize the view */
 		initialize: function initialize() {
@@ -67,7 +69,38 @@
 			this.$el.find( '.worker-region-select' ).select2({
 				placeholder: 'All Regions'
             });
-        },
+		},
+
+		handleSearchClick: function() {
+
+			// get the registration date range for the child listing search
+			var registrationDateFrom = this.$el.find( '[name="registrationDateFrom"]' ).val();
+			var registrationDateTo = this.$el.find( '[name="registrationDateTo"]' ).val();
+
+			// get the added to web date range for the child listing search
+			var webAddedDateFrom = this.$el.find( '[name="webAddedDateFrom"]' ).val();
+			var webAddedDateTo = this.$el.find( '[name="webAddedDateTo"]' ).val();
+
+			// collect all values of the form
+			var params = this.$el.find( 'form' ).serializeArray();
+			
+			// remove empty values
+			params = _.filter( params, function( value ) {
+				return value && value.value && value.value.length > 0 && value.name !== 'childId';
+			});
+
+			// build the query string
+			var queryString = jQuery.param( params );
+
+			// perform the search
+			mare.routers.tools.navigate(
+				'child-listing-report/' + 
+				registrationDateFrom + '/' + registrationDateTo + '/' +
+				webAddedDateFrom + '/' + webAddedDateTo +
+				( queryString.length > 0 ? '?' + queryString : '' ), 
+				{ trigger: true }
+			);
+		},
 
 		/* render the view onto the page */
 		render: function render( regDateFrom, regDateTo, webDateFrom, webDateTo, params ) {
@@ -85,8 +118,52 @@
 
 			// otherwise, set the date ranges using the route params and perform a search using the query params
 			} else {
+				// render the view while the results are being loaded
+				view.$el.html( view.template({
+					waitingForResults: true
+				}));
 				view.initializeSearchForm( regDateFrom, regDateTo, webDateFrom, webDateTo, params );
+
+				// search for children using the date range and query params
+				view.getChildListingData( regDateFrom, regDateTo, webDateFrom, webDateTo, params )
+					.done( function( data ) {
+
+						// render the view with the search results
+						view.$el.html( view.template( data ) );
+						view.initializeSearchForm( regDateFrom, regDateTo, webDateFrom, webDateTo, params );
+					});
 			}
+		},
+
+		getChildListingData: function( regDateFrom, regDateTo, webDateFrom, webDateTo, params ) {
+
+			var queryParams = params;
+			queryParams.regDateFrom = regDateFrom;
+			queryParams.regDateTo = regDateTo;
+			queryParams.webDateFrom = webDateFrom;
+			queryParams.webDateTo = webDateTo;
+			
+			return $.Deferred( function( defer ) {
+				$.ajax({
+					dataType: 'json',
+					url: '/tools/services/get-child-listing-data',
+					data: queryParams,
+					type: 'GET'
+				})
+				.done( function( data ) {
+					if ( data.status === 'error' ) {
+						// display the flash message
+						mare.views.flashMessages.initializeAJAX( data.flashMessage );
+						defer.reject();
+					} else {
+						defer.resolve( data );
+					}
+				})
+				.fail( function( err ) {
+					console.log( err );
+					defer.reject();
+				});
+			}).promise();
 		}
 	});
 }());

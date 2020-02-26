@@ -1210,3 +1210,14 @@ exports.getMediaFeaturesData = ( req, res, next ) => {
 		flashMessages.sendErrorFlashMessage( res, 'Error', 'Error loading media feature data' );
 	});
 };
+
+exports.getChildListingData = ( req, res, next ) => {
+	
+	// get the query from the request object
+	let query = req.query;
+	
+	// send an empty result
+	res.send({
+		noResultsFound: true
+	});
+};
