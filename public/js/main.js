@@ -8,6 +8,7 @@ $(function() {
 	mare.views.globalHeader = mare.views.globalHeader || new mare.views.GlobalHeader();
 	mare.views.mobileMenu = mare.views.mobileMenu || new mare.views.MobileMenu();
 	mare.views.flashMessages = mare.views.flashMessages || new mare.views.FlashMessages();
+	mare.views.globalAlert = mare.views.globalAlert || new mare.views.GlobalAlert();
 	// register Handlebars helpers
 	mare.utils.registerHandlebarsHelpers();
 	// handle basic routing, initializing based on the result
