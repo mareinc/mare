@@ -138,7 +138,7 @@ keystone.set( 'nav', {
 	'donations'			: [ 'donations' ],
 	'images'			: [ 'featured-items', 'slideshows', 'slideshow-items' ],
 	'content pages'		: [ 'pages' ],
-	'content snippets'	: [ 'success-stories' ],
+	'content snippets'	: [ 'success-stories', 'global-alerts' ],
 	'lists'				: [ 'child-statuses', 'child-types', 'city-or-towns', 'closed-reasons', 'communication-methods', 'disabilities',
 						    'email-targets', 'event-types', 'family-constellations', 'family-statuses', 'genders', 'inquiry-methods',
 						    'inquiry-types', 'languages', 'legal-statuses', 'match-determinations', 'media-eligibilities',

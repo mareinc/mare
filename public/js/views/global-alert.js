@@ -13,8 +13,6 @@
             // cache the container DOM element
             this.$globalAlertContainer = $( '.global-alert' );
 
-            console.log(sessionStorage.hasDismissedGlobalAlert);
-
             // if the alert has not been dismissed during the current session
             if ( !sessionStorage.hasDismissedGlobalAlert ) {
                 // slide the global alert into view

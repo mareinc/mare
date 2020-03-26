@@ -1,7 +1,7 @@
+{{#if globalAlert.isActive}}
 <div class="global-alert">
-    <div class="global-alert__title">In this time of public uncertainty, MARE is committed to continuing our mission to find adoptive homes for children and teens in foster care.</div>
-    <p class="global-alert__content">
-        Read about MARE's COVID-19 response <a href="/page/covid-19-response">here</a>
-    </p>
+    <div class="global-alert__title">{{globalAlert.title}}</div>
+    <p class="global-alert__content">{{{globalAlert.message}}}</p>
     <button class="btn btn-small btn-link global-alert__dismiss">Dismiss alert</button>
 </div>
+{{/if}}

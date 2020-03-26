@@ -2,6 +2,7 @@ const keystone						= require( 'keystone' ),
 	  robots						= require( 'express-robots' ),
 	  setupMiddleware				= require( './utils/setup.middleware' ),
 	  notificationMiddleware		= require( './utils/notification.middleware' ),
+	  globalAlertMiddleware			= require( './components/global alert/global-alert.middleware' ),
 	  childService					= require( './components/children/child.controllers' ),
 	  childMiddleware				= require( './components/children/child.middleware' ),
 	  donationService				= require( './components/donations/donation.controllers' ),
@@ -23,7 +24,7 @@ const keystone						= require( 'keystone' ),
 
 // common middleware
 keystone.pre( 'routes', setupMiddleware.initLocals );
-keystone.pre( 'render', notificationMiddleware.flashMessages );
+keystone.pre( 'render', notificationMiddleware.flashMessages, globalAlertMiddleware.globalAlert );
 
 // import route controllers
 var routes = {
