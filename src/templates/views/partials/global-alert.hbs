@@ -1,0 +1,7 @@
+{{#if globalAlert.isActive}}
+<div class="global-alert">
+    <div class="global-alert__title">{{globalAlert.title}}</div>
+    <p class="global-alert__content">{{{globalAlert.message}}}</p>
+    <button class="btn btn-small btn-link global-alert__dismiss">Dismiss alert</button>
+</div>
+{{/if}}

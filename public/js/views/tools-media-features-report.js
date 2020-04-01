@@ -243,9 +243,9 @@
 			},
 			{ title: 'Professional Photo', data: 'childHasProfessionalPhoto' },
 			{ title: 'Video Snapshot', data: 'childHasVideoSnapshot' },
-			{ title: 'Inquiries per Month Before Feature', data: 'avgInquiriesBeforeFeature' },
-			{ title: 'Inquiries the Month After Feature', data: 'inquiriesMonthAfterFeature' },
-			{ title: 'Inquiries per Month After Feature', data: 'avgInquiriesAfterFeature' }
+			{ title: 'Avg. Inq. per Month Before Feature', data: 'avgInquiriesBeforeFeature' },
+			{ title: 'Inq. the Month After Feature', data: 'inquiriesMonthAfterFeature' },
+			{ title: 'Avg. Inq. per Month 6 Months After Feature', data: 'avgInquiriesSixMonthsAfterFeature' }
 		]
 	});
 }());

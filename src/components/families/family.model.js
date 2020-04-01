@@ -73,13 +73,12 @@ var Family = new keystone.List( 'Family', {
 // Create fields
 Family.add( 'Permissions', {
 
-	isActive: { type: Types.Boolean, label: 'is active' },
+	isActive: { type: Types.Boolean, label: 'has active database account' },
 
 	permissions: {
 		isVerified: { type: Types.Boolean, label: 'has a verified email address', default: false, noedit: true },
-		isHomestudyVerified: { type: Types.Boolean, label: 'homestudy verified', default: false, initial: true },
+		isHomestudyVerified: { type: Types.Boolean, label: 'homestudy verified/family can see all children', default: false, initial: true },
 		homestudyVerifiedDate: { type: Types.Date, label: 'homestudy verified on', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { 'permissions.isHomestudyVerified': true }, noedit: true, collapse: true },
-		canViewAllChildrenOverride: { type: Types.Boolean, label: 'allow family to see all children', note: 'this will allow the family to see at risk children regardless of their homestudy or place of residence', default: false, initial: true },
 		canViewAllChildren: { type: Types.Boolean, default: false, hidden: true, noedit: true }
 	}
 

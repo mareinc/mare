@@ -1,0 +1,35 @@
+.global-alert {
+
+    position: fixed;
+    top: 0;
+    z-index: 200;
+
+    width: 100%;
+    padding: 1rem;    
+
+    background-color: $beeswax;
+
+    // position the global alert container offscreen initially
+    transform: translateY( -100% );
+    
+    // configure transition & animation props
+	transition: transform ease-in-out .2s;
+
+	// defines a class to slide the flash messages into view
+	&.slide-in {
+		transform: translateY( 0% );
+	}
+
+    &__title {
+        font-size: 1.1rem;
+        font-weight: bold;
+    }
+
+    &__content {
+        padding-top: 0.5rem;
+    }
+
+    &__dismiss {
+        padding: 0.5rem 0 !important;
+    }
+}

@@ -4,18 +4,27 @@ const keystone = require( 'keystone' );
 exports.getChildrenByRecruitmentWorker = async function( req, res, next ) {
 	'use strict';
 
-	const fieldsToPopulate = [ 'adoptionWorker', 'adoptionWorkerAgency', 'recruitmentWorker', 'recruitmentWorkerAgency', 'siblings' ];
+	const fieldsToPopulate = [ 'adoptionWorker', 'adoptionWorkerAgency', 'recruitmentWorker', 'recruitmentWorkerAgency', 'siblings', 'status' ];
 
 	// fetch the models of the removed staff attendees, populating only the full name field
 	const children = await keystone.list( 'Child' ).model
-		.find()
-		.where( 'adoptionWorker', req.user.get( '_id' ) )
+		.find({
+			$or: [
+				{ 'adoptionWorker': req.user.get( '_id' ) },
+				{ 'recruitmentWorker': req.user.get( '_id' ) }
+			]
+		})
 		.populate( fieldsToPopulate )
 		.exec()
 		.then( children => {
 
+			// filter out inactive children
+			let activeChildren = children.filter( child => 
+				child.status.childStatus === 'active' || child.status.childStatus === 'on hold'
+			);
+
 			res.locals.recruitmentWorkersChildren = {
-				saveDetails: children.map( child => {
+				saveDetails: activeChildren.map( child => {
 
 					const adoptionWorkersPreferredPhone = child.get( 'adoptionWorker.phone.preferred' );
 					const recruitmentWorkersPreferredPhone = child.get( 'recruitmentWorker.phone.preferred' );
@@ -43,7 +52,7 @@ exports.getChildrenByRecruitmentWorker = async function( req, res, next ) {
 						'otherFamilyConstellationConsiderations[]': child.get( 'otherFamilyConstellationConsideration' )
 					};
 				}),
-				editDetails: children.map( child => {
+				editDetails: activeChildren.map( child => {
 
 					const adoptionWorkersPreferredPhone = child.get( 'adoptionWorker.phone.preferred' );
 					const recruitmentWorkersPreferredPhone = child.get( 'recruitmentWorker.phone.preferred' );
