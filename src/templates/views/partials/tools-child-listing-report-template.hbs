@@ -92,20 +92,6 @@
                 <div class="col-6">
                     <div class="row form-group">
                         <div class="col-sm-12 col-md-4 text-sm-right" >
-                            <label for="worker-agency" class="bold">Adopt. Worker's Agency:</label>
-                        </div>
-                        <div class="col-sm-12 col-md-8">
-                            <select id="worker-agency" name="worker-agency[]" class="form-control worker-agency-select" multiple>
-                                \{{#each agencies as |agency|}}
-                                    <option value="\{{ agency.id }}" selected>\{{ agency.text }}</option>
-                                \{{/each}}
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6">
-                    <div class="row form-group">
-                        <div class="col-sm-12 col-md-4 text-sm-right" >
                             <label for="gender" class="bold">Gender:</label>
                         </div>
                         <div class="col-sm-12 col-md-8">
@@ -120,24 +106,10 @@
                 <div class="col-6">
                     <div class="row form-group">
                         <div class="col-sm-12 col-md-4 text-sm-right" >
-                            <label for="worker" class="bold">Adopt. Worker:</label>
+                            <label for="legal-status" class="bold">Legal Status:</label>
                         </div>
                         <div class="col-sm-12 col-md-8">
-                            <select id="worker" name="worker[]" class="form-control worker-select" multiple>
-                                \{{#each workers as |worker|}}
-                                    <option value="\{{ worker.id }}" selected>\{{ worker.text }}</option>
-                                \{{/each}}
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6">
-                    <div class="row form-group">
-                        <div class="col-sm-12 col-md-4 text-sm-right" >
-                            <label for="status" class="bold">Status:</label>
-                        </div>
-                        <div class="col-sm-12 col-md-8">
-                            <select id="status" name="status[]" class="form-control status-select" multiple>
+                            <select id="legal-status" name="legal-status[]" class="form-control legal-status-select" multiple>
                                 {{#each legalStatuses as |legalStatus|}}
                                     <option value="{{ legalStatus.id }}">{{ legalStatus.legalStatus }}</option>
                                 {{/each}}
@@ -148,10 +120,55 @@
                 <div class="col-6">
                     <div class="row form-group">
                         <div class="col-sm-12 col-md-4 text-sm-right" >
-                            <label for="worker-region" class="bold">Adopt. Worker's Region:</label>
+                            <label for="placement-status" class="bold">Placement Status:</label>
                         </div>
                         <div class="col-sm-12 col-md-8">
-                            <select id="worker-region" name="worker-region[]" class="form-control worker-region-select" multiple>
+                            <select id="placement-status" name="placement-status[]" class="form-control placement-status-select" multiple>
+                                {{#each legalStatuses as |legalStatus|}}
+                                    <option value="{{ legalStatus.id }}">{{ legalStatus.legalStatus }}</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right" >
+                            <label for="adoption-worker" class="bold">Adopt. Worker:</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                            <select id="adoption-worker" name="adoption-worker[]" class="form-control adoption-worker-select" multiple>
+                                \{{#each adoptionWorkers as |worker|}}
+                                    <option value="\{{ worker.id }}" selected>\{{ worker.text }}</option>
+                                \{{/each}}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right" >
+                            <label for="adoption-worker-agency" class="bold">Adopt. Worker's Agency:</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                            <select id="adoption-worker-agency" name="adoption-worker-agency[]" class="form-control adoption-worker-agency-select" multiple>
+                                \{{#each adoptionWorkerAgencies as |agency|}}
+                                    <option value="\{{ agency.id }}" selected>\{{ agency.text }}</option>
+                                \{{/each}}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                
+                
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right" >
+                            <label for="adoption-worker-region" class="bold">Adopt. Worker's Region:</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                            <select id="adoption-worker-region" name="adoption-worker-region[]" class="form-control adoption-worker-region-select" multiple>
                                 {{#each regions as |region|}}
                                     <option value="{{ region.id }}">{{ region.region }}</option>
                                 {{/each}}

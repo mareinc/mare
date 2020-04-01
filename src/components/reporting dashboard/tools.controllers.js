@@ -1224,25 +1224,25 @@ exports.getChildListingData = ( req, res, next ) => {
 	// create the search criteria
 	let searchCriteria = {};
 
-	// social worker criteria (multiple)
-	let workerCriteria;
-	if ( Array.isArray( query.worker ) && query.worker.length > 0 ) {
-		workerCriteria = query.worker.filter( ( objectId ) => ObjectId.isValid( objectId ) );
-		searchCriteria[ 'socialworker' ] = { $in: workerCriteria };
+	// adoption worker criteria (multiple)
+	let adoptionWorkerCriteria;
+	if ( Array.isArray( query[ 'adoption-worker' ] ) && query[ 'adoption-worker' ].length > 0 ) {
+		adoptionWorkerCriteria = query[ 'adoption-worker' ].filter( ( objectId ) => ObjectId.isValid( objectId ) );
+		searchCriteria[ 'adoptionworker' ] = { $in: adoptionWorkerCriteria };
 	}
 
-	// social worker agency criteria (multiple)
-	let agencyCriteria;
-	if ( Array.isArray( query[ 'worker-agency' ] ) && query[ 'worker-agency' ].length > 0 ) {
-		agencyCriteria = query[ 'worker-agency' ].filter( ( objectId ) => ObjectId.isValid( objectId ) );
-		searchCriteria[ 'agency' ] = { $in: agencyCriteria };
+	// adoption worker agency criteria (multiple)
+	let adoptionWorkerAgencyCriteria;
+	if ( Array.isArray( query[ 'adoption-worker-agency' ] ) && query[ 'adoption-worker-agency' ].length > 0 ) {
+		adoptionWorkerAgencyCriteria = query[ 'adoption-worker-agency' ].filter( ( objectId ) => ObjectId.isValid( objectId ) );
+		searchCriteria[ 'agency' ] = { $in: adoptionWorkerAgencyCriteria };
 	}
 
 	Promise.all([
 		// if thare are adoption worker criteria specified, get the adoption worker docs to seed the select on the search form
-		workerCriteria
+		adoptionWorkerCriteria
 			? keystone.list( 'Social Worker' ).model
-				.find( { _id: { $in: workerCriteria } } )
+				.find( { _id: { $in: adoptionWorkerCriteria } } )
 				.lean()
 				.exec()
 				.catch( err => {
@@ -1253,9 +1253,9 @@ exports.getChildListingData = ( req, res, next ) => {
 				})
 			: false,
 		// if thare are adoption agency criteria specified, get the adoption agency docs to seed the select on the search form
-		workerCriteria
+		adoptionWorkerAgencyCriteria
 			? keystone.list( 'Agency' ).model
-				.find( { _id: { $in: agencyCriteria } } )
+				.find( { _id: { $in: adoptionWorkerAgencyCriteria } } )
 				.lean()
 				.exec()
 				.catch( err => {
@@ -1269,19 +1269,19 @@ exports.getChildListingData = ( req, res, next ) => {
 	.then( results => {
 
 		// destructure results
-		let [ workerDocs, agencyDocs ] = results;
+		let [ adoptionWorkerDocs, adoptionWorkerAgencyDocs ] = results;
 		
 		// send the results
 		res.send({
 			noResultsFound: true,
-			workers: workerDocs
-				? workerDocs.map( worker => ({ 
+			adoptionWorkers: adoptionWorkerDocs
+				? adoptionWorkerDocs.map( worker => ({ 
 					id: worker._id.toString(), 
 					text: `${worker.name.first} ${worker.name.last}`
 				}))
 				: false,
-			agencies: agencyDocs
-				? agencyDocs.map( agency => ({ 
+			adoptionWorkerAgencies: adoptionWorkerAgencyDocs
+				? adoptionWorkerAgencyDocs.map( agency => ({ 
 					id: agency._id.toString(), 
 					text: agency.name
 				}))
