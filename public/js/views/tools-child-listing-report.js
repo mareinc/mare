@@ -75,7 +75,7 @@
 				}
 			});
 			
-			this.$el.find( '.adoption-worker-select' ).select2({
+			this.$el.find( '.adoption-worker-select, .recruitment-worker-select' ).select2({
 				placeholder: 'All Social Workers',
 				multiple: true,
 				ajax: {
