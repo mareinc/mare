@@ -54,15 +54,19 @@
 				placeholder: 'All Genders'
 			});
 
-			this.$el.find( '.status-select' ).select2({
+			this.$el.find( '.legal-status-select' ).select2({
 				placeholder: 'All Statuses'
 			});
 
-			this.$el.find( '.worker-region-select' ).select2({
+			this.$el.find( '.placement-status-select' ).select2({
+				placeholder: 'All Statuses'
+			});
+
+			this.$el.find( '.adoption-worker-region-select' ).select2({
 				placeholder: 'All Regions'
             });
 
-			this.$el.find( '.worker-agency-select' ).select2({
+			this.$el.find( '.adoption-worker-agency-select' ).select2({
 				placeholder: 'All Agencies',
 				multiple: true,
 				ajax: {
@@ -71,7 +75,7 @@
 				}
 			});
 			
-			this.$el.find( '.worker-select' ).select2({
+			this.$el.find( '.adoption-worker-select' ).select2({
 				placeholder: 'All Social Workers',
 				multiple: true,
 				ajax: {
