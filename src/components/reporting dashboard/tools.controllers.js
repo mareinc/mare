@@ -1231,16 +1231,16 @@ exports.getChildListingData = ( req, res, next ) => {
 	let adoptionWorkerCriteria;
 	if ( Array.isArray( query[ 'adoption-worker' ] ) && query[ 'adoption-worker' ].length > 0 ) {
 		adoptionWorkerCriteria = query[ 'adoption-worker' ].filter( ( objectId ) => ObjectId.isValid( objectId ) );
-		searchCriteria[ 'adoptionworker' ] = { $in: adoptionWorkerCriteria };
 		combinedSocialWorkerCriteria = combinedSocialWorkerCriteria.concat( adoptionWorkerCriteria );
+		searchCriteria[ 'adoptionWorker' ] = { $in: adoptionWorkerCriteria };
 	}
 
 	// recruitment worker criteria (multiple)
 	let recruitmentWorkerCriteria;
 	if ( Array.isArray( query[ 'recruitment-worker' ] ) && query[ 'recruitment-worker' ].length > 0 ) {
 		recruitmentWorkerCriteria = query[ 'recruitment-worker' ].filter( ( objectId ) => ObjectId.isValid( objectId ) );
-		searchCriteria[ 'recruitmentworker' ] = { $in: recruitmentWorkerCriteria };
 		combinedSocialWorkerCriteria = combinedSocialWorkerCriteria.concat( recruitmentWorkerCriteria );
+		searchCriteria[ 'recruitmentWorker' ] = { $in: recruitmentWorkerCriteria };
 	}
 
 	// maintain a combined recruitment and adoption worker agency criteria list so they can be retrieved using the same social worker query
@@ -1250,19 +1250,27 @@ exports.getChildListingData = ( req, res, next ) => {
 	let adoptionWorkerAgencyCriteria;
 	if ( Array.isArray( query[ 'adoption-worker-agency' ] ) && query[ 'adoption-worker-agency' ].length > 0 ) {
 		adoptionWorkerAgencyCriteria = query[ 'adoption-worker-agency' ].filter( ( objectId ) => ObjectId.isValid( objectId ) );
-		searchCriteria[ 'agency' ] = { $in: adoptionWorkerAgencyCriteria };
 		combinedSocialWorkerAgencyCriteria = combinedSocialWorkerAgencyCriteria.concat( adoptionWorkerAgencyCriteria );
+		searchCriteria[ 'adoptionWorkerAgency' ] = { $in: adoptionWorkerAgencyCriteria };
 	}
 
 	// adoption worker agency criteria (multiple)
 	let recruitmentWorkerAgencyCriteria;
 	if ( Array.isArray( query[ 'recruitment-worker-agency' ] ) && query[ 'recruitment-worker-agency' ].length > 0 ) {
 		recruitmentWorkerAgencyCriteria = query[ 'recruitment-worker-agency' ].filter( ( objectId ) => ObjectId.isValid( objectId ) );
-		searchCriteria[ 'agency' ] = { $in: recruitmentWorkerAgencyCriteria };
 		combinedSocialWorkerAgencyCriteria = combinedSocialWorkerAgencyCriteria.concat( recruitmentWorkerAgencyCriteria );
+		searchCriteria[ 'recruitmentWorkerAgency' ] = { $in: recruitmentWorkerAgencyCriteria };
+
 	}
 
 	Promise.all([
+		// get the media features that match the specified date range and criteria
+		keystone.list( 'Child' ).model
+			.find( searchCriteria )
+			.limit( 100 )
+			.populate( 'gender race status legalStatus' )
+			.lean()
+			.exec(),
 		// if thare are any social worker criteria specified, get the social worker docs to seed the social worker selects on the search form
 		combinedSocialWorkerCriteria.length > 0
 			? keystone.list( 'Social Worker' ).model
@@ -1293,7 +1301,19 @@ exports.getChildListingData = ( req, res, next ) => {
 	.then( results => {
 
 		// destructure results
-		let [ socialWorkerDocs, socialWorkerAgencyDocs ] = results;
+		let [ childDocs, socialWorkerDocs, socialWorkerAgencyDocs ] = results;
+
+		let childListings = childDocs.map( childDoc => ({
+			id: childDoc._id.toString(),
+			name: `${childDoc.name.first} ${childDoc.name.last}`,
+			registrationNumber: childDoc.registrationNumber,
+			gender: childDoc.gender.gender,
+			race: childDoc.race && childDoc.race.length > 0
+					? childDoc.race.map( race => race.race ).join( ', ' )
+					: '--',
+			placementStatus: childDoc.status.childStatus,
+			legalStatus: childDoc.legalStatus.legalStatus
+		}));
 
 		// retrieve the adoption workers from the social worker response
 		let adoptionWorkers = adoptionWorkerCriteria && adoptionWorkerCriteria.map( adoptionWorkerId => {
@@ -1333,7 +1353,8 @@ exports.getChildListingData = ( req, res, next ) => {
 		
 		// send the results
 		res.send({
-			noResultsFound: true,
+			noResultsFound: !childDocs || childDocs.length === 0,
+			results: childListings,
 			adoptionWorkers,
 			recruitmentWorkers,
 			adoptionWorkerAgencies,
