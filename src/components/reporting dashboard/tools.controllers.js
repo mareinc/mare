@@ -1260,14 +1260,50 @@ exports.getChildListingData = ( req, res, next ) => {
 		recruitmentWorkerAgencyCriteria = query[ 'recruitment-worker-agency' ].filter( ( objectId ) => ObjectId.isValid( objectId ) );
 		combinedSocialWorkerAgencyCriteria = combinedSocialWorkerAgencyCriteria.concat( recruitmentWorkerAgencyCriteria );
 		searchCriteria[ 'recruitmentWorkerAgency' ] = { $in: recruitmentWorkerAgencyCriteria };
-
 	}
+
+	// adoption worker agency region criteria (multiple)
+	let adoptionWorkerAgencyRegionCriteria;
+	if ( Array.isArray( query[ 'adoption-worker-region' ] ) && query[ 'adoption-worker-region' ].length > 0 ) {
+		adoptionWorkerAgencyRegionCriteria = query[ 'adoption-worker-region' ].filter( ( objectId ) => ObjectId.isValid( objectId ) );
+		combinedSocialWorkerAgencyCriteria = combinedSocialWorkerAgencyCriteria.concat( adoptionWorkerAgencyRegionCriteria );
+		searchCriteria[ 'adoptionWorkerAgencyRegion' ] = { $in: adoptionWorkerAgencyRegionCriteria };
+	}
+
+	let recruitmentWorkerAgencyRegionCriteria;
+	if ( Array.isArray( query[ 'recruitment-worker-region' ] ) && query[ 'recruitment-worker-region' ].length > 0 ) {
+		recruitmentWorkerAgencyRegionCriteria = query[ 'recruitment-worker-region' ].filter( ( objectId ) => ObjectId.isValid( objectId ) );
+		combinedSocialWorkerAgencyCriteria = combinedSocialWorkerAgencyCriteria.concat( recruitmentWorkerAgencyRegionCriteria );
+		searchCriteria[ 'recruitmentWorkerAgencyRegion' ] = { $in: recruitmentWorkerAgencyRegionCriteria };
+	}
+
+	// race criteria (multiple)
+	let raceCriteria;
+	if ( Array.isArray( query.race ) && query.race.length > 0 ) {
+		raceCriteria = query.race.filter( ( objectId ) => ObjectId.isValid( objectId ) );
+		searchCriteria[ 'race' ] = { $in: raceCriteria };
+	}
+
+	// gender criteria (multiple)
+	let genderCriteria;
+	if ( Array.isArray( query.gender ) && query.gender.length > 0 ) {
+		genderCriteria = query.gender.filter( ( objectId ) => ObjectId.isValid( objectId ) );
+		searchCriteria[ 'gender' ] = { $in: genderCriteria };
+	}
+
+	// legal status criteria (multiple)
+	let legalStatusCriteria;
+	if ( Array.isArray( query[ 'legal-status' ] ) && query[ 'legal-status' ].length > 0 ) {
+		legalStatusCriteria = query[ 'legal-status' ].filter( ( objectId ) => ObjectId.isValid( objectId ) );
+		searchCriteria[ 'legalStatus' ] = { $in: legalStatusCriteria };
+	}
+
 
 	Promise.all([
 		// get the media features that match the specified date range and criteria
 		keystone.list( 'Child' ).model
 			.find( searchCriteria )
-			.limit( 100 )
+			.limit( 200 )
 			.populate( 'gender race status legalStatus' )
 			.lean()
 			.exec(),
@@ -1333,7 +1369,7 @@ exports.getChildListingData = ( req, res, next ) => {
 			}
 		});
 
-		// retrive the adoption worker agencies from the social worker agency response
+		// retrieve the adoption worker agencies from the social worker agency response
 		let adoptionWorkerAgencies = adoptionWorkerAgencyCriteria && adoptionWorkerAgencyCriteria.map( agencyId => {
 			let adoptionWorkerAgencyDoc = socialWorkerAgencyDocs.find( adoptionWorkerAgencyDoc => adoptionWorkerAgencyDoc._id.toString() === agencyId );
 			return {
@@ -1342,7 +1378,7 @@ exports.getChildListingData = ( req, res, next ) => {
 			};
 		});
 
-		// retrive the recruitment worker agencies from the social worker agency response
+		// retrieve the recruitment worker agencies from the social worker agency response
 		let recruitmentWorkerAgencies = recruitmentWorkerAgencyCriteria && recruitmentWorkerAgencyCriteria.map( agencyId => {
 			let recruitmentWorkerAgencyDoc = socialWorkerAgencyDocs.find( recruitmentWorkerAgencyDoc => recruitmentWorkerAgencyDoc._id.toString() === agencyId );
 			return {
