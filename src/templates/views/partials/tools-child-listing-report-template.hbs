@@ -78,6 +78,40 @@
                 <div class="col-6">
                     <div class="row form-group">
                         <div class="col-sm-12 col-md-4 text-sm-right" >
+                            <label class="bold">Registration Date Fiscal Years:</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8 registration-date-fiscal-year-buttons">
+                            {{#each fiscalYears as |fiscalYear|}}
+                                <button class="btn btn-outline-primary"
+                                    data-target="registration"
+                                    data-year-start="{{ fiscalYear.startDate }}" 
+                                    data-year-end="{{ fiscalYear.endDate }}">
+                                        {{ fiscalYear.fiscalYear }}
+                                </button>
+                            {{/each}}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right" >
+                            <label class="bold">Added to Web Fiscal Years:</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8 added-to-web-fiscal-year-buttons">
+                            {{#each fiscalYears as |fiscalYear|}}
+                                <button class="btn btn-outline-primary"
+                                    data-target="web"
+                                    data-year-start="{{ fiscalYear.startDate }}" 
+                                    data-year-end="{{ fiscalYear.endDate }}">
+                                        {{ fiscalYear.fiscalYear }}
+                                </button>
+                            {{/each}}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right" >
                             <label for="race" class="bold">Race:</label>
                         </div>
                         <div class="col-sm-12 col-md-8">

@@ -7,7 +7,9 @@
 
 		// bind standard events to functions within the view
 		events: {
-			'click .child-listing-search-button' : 'handleSearchClick'
+			'click .child-listing-search-button' : 'handleSearchClick',
+			'click .added-to-web-fiscal-year-buttons .btn'	: 'handleFiscalYearClick',
+			'click .registration-date-fiscal-year-buttons .btn'	: 'handleFiscalYearClick'
 		},
 
 		/* initialize the view */
@@ -114,6 +116,21 @@
 				( queryString.length > 0 ? '?' + queryString : '' ), 
 				{ trigger: true }
 			);
+		},
+
+		handleFiscalYearClick: function( event ) {
+			event.preventDefault();
+
+			// set the search date range on the targeted range fields
+			if ( $( event.target ).data( 'target' ) === 'web' ) {
+				// the target is the date added to web range
+				this.$el.find( '[name="webAddedDateFrom"]' ).val( $( event.target ).data( 'yearStart' ) );
+				this.$el.find( '[name="webAddedDateTo"]' ).val( $( event.target ).data( 'yearEnd' ) );
+			} else {
+				// the traget is the registration date range
+				this.$el.find( '[name="registrationDateFrom"]' ).val( $( event.target ).data( 'yearStart' ) );
+				this.$el.find( '[name="registrationDateTo"]' ).val( $( event.target ).data( 'yearEnd' ) );
+			}
 		},
 
 		/* render the view onto the page */
