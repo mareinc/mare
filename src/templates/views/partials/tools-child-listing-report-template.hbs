@@ -187,9 +187,6 @@
                         </div>
                     </div>
                 </div>
-                
-                
-                
                 <div class="col-6">
                     <div class="row form-group">
                         <div class="col-sm-12 col-md-4 text-sm-right" >
@@ -197,6 +194,20 @@
                         </div>
                         <div class="col-sm-12 col-md-8">
                             <select id="adoption-worker-region" name="adoption-worker-region[]" class="form-control adoption-worker-region-select" multiple>
+                                {{#each regions as |region|}}
+                                    <option value="{{ region.id }}">{{ region.region }}</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right" >
+                            <label for="recruitment-worker-region" class="bold">Recruit. Worker's Region:</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                            <select id="recruitment-worker-region" name="recruitment-worker-region[]" class="form-control recruitment-worker-region-select" multiple>
                                 {{#each regions as |region|}}
                                     <option value="{{ region.id }}">{{ region.region }}</option>
                                 {{/each}}
