@@ -124,8 +124,8 @@
                         </div>
                         <div class="col-sm-12 col-md-8">
                             <select id="placement-status" name="placement-status[]" class="form-control placement-status-select" multiple>
-                                {{#each legalStatuses as |legalStatus|}}
-                                    <option value="{{ legalStatus.id }}">{{ legalStatus.legalStatus }}</option>
+                                {{#each childStatuses as |childStatus|}}
+                                    <option value="{{ childStatus.id }}">{{ childStatus.childStatus }}</option>
                                 {{/each}}
                             </select>
                         </div>

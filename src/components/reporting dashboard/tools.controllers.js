@@ -1298,6 +1298,12 @@ exports.getChildListingData = ( req, res, next ) => {
 		searchCriteria[ 'legalStatus' ] = { $in: legalStatusCriteria };
 	}
 
+	// placement status criteria (multiple)
+	let placementStatusCriteria;
+	if ( Array.isArray( query[ 'placement-status' ] ) && query[ 'placement-status' ].length > 0 ) {
+		placementStatusCriteria = query[ 'placement-status' ].filter( ( objectId ) => ObjectId.isValid( objectId ) );
+		searchCriteria[ 'status' ] = { $in: placementStatusCriteria };
+	}
 
 	Promise.all([
 		// get the media features that match the specified date range and criteria
