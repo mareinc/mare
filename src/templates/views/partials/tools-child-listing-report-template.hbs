@@ -173,6 +173,20 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right" >
+                            <label for="recruitment-worker-agency" class="bold">Recruit. Worker's Agency:</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                            <select id="recruitment-worker-agency" name="recruitment-worker-agency[]" class="form-control recruitment-worker-agency-select" multiple>
+                                \{{#each recruitmentWorkerAgencies as |agency|}}
+                                    <option value="\{{ agency.id }}" selected>\{{ agency.text }}</option>
+                                \{{/each}}
+                            </select>
+                        </div>
+                    </div>
+                </div>
                 
                 
                 

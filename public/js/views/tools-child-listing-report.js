@@ -66,7 +66,7 @@
 				placeholder: 'All Regions'
             });
 
-			this.$el.find( '.adoption-worker-agency-select' ).select2({
+			this.$el.find( '.adoption-worker-agency-select, .recruitment-worker-agency-select' ).select2({
 				placeholder: 'All Agencies',
 				multiple: true,
 				ajax: {
