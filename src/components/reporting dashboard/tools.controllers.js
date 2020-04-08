@@ -1243,11 +1243,23 @@ exports.getChildListingData = ( req, res, next ) => {
 		combinedSocialWorkerCriteria = combinedSocialWorkerCriteria.concat( recruitmentWorkerCriteria );
 	}
 
+	// maintain a combined recruitment and adoption worker agency criteria list so they can be retrieved using the same social worker query
+	let combinedSocialWorkerAgencyCriteria = [];
+
 	// adoption worker agency criteria (multiple)
 	let adoptionWorkerAgencyCriteria;
 	if ( Array.isArray( query[ 'adoption-worker-agency' ] ) && query[ 'adoption-worker-agency' ].length > 0 ) {
 		adoptionWorkerAgencyCriteria = query[ 'adoption-worker-agency' ].filter( ( objectId ) => ObjectId.isValid( objectId ) );
 		searchCriteria[ 'agency' ] = { $in: adoptionWorkerAgencyCriteria };
+		combinedSocialWorkerAgencyCriteria = combinedSocialWorkerAgencyCriteria.concat( adoptionWorkerAgencyCriteria );
+	}
+
+	// adoption worker agency criteria (multiple)
+	let recruitmentWorkerAgencyCriteria;
+	if ( Array.isArray( query[ 'recruitment-worker-agency' ] ) && query[ 'recruitment-worker-agency' ].length > 0 ) {
+		recruitmentWorkerAgencyCriteria = query[ 'recruitment-worker-agency' ].filter( ( objectId ) => ObjectId.isValid( objectId ) );
+		searchCriteria[ 'agency' ] = { $in: recruitmentWorkerAgencyCriteria };
+		combinedSocialWorkerAgencyCriteria = combinedSocialWorkerAgencyCriteria.concat( recruitmentWorkerAgencyCriteria );
 	}
 
 	Promise.all([
@@ -1265,9 +1277,9 @@ exports.getChildListingData = ( req, res, next ) => {
 				})
 			: false,
 		// if thare are adoption agency criteria specified, get the adoption agency docs to seed the select on the search form
-		adoptionWorkerAgencyCriteria
+		combinedSocialWorkerAgencyCriteria.length > 0
 			? keystone.list( 'Agency' ).model
-				.find( { _id: { $in: adoptionWorkerAgencyCriteria } } )
+				.find( { _id: { $in: combinedSocialWorkerAgencyCriteria } } )
 				.lean()
 				.exec()
 				.catch( err => {
@@ -1281,7 +1293,7 @@ exports.getChildListingData = ( req, res, next ) => {
 	.then( results => {
 
 		// destructure results
-		let [ socialWorkerDocs, adoptionWorkerAgencyDocs ] = results;
+		let [ socialWorkerDocs, socialWorkerAgencyDocs ] = results;
 
 		// retrieve the adoption workers from the social worker response
 		let adoptionWorkers = adoptionWorkerCriteria && adoptionWorkerCriteria.map( adoptionWorkerId => {
@@ -1300,18 +1312,32 @@ exports.getChildListingData = ( req, res, next ) => {
 				text: `${recruitmentWorkerDoc.name.first} ${recruitmentWorkerDoc.name.last}`
 			}
 		});
+
+		// retrive the adoption worker agencies from the social worker agency response
+		let adoptionWorkerAgencies = adoptionWorkerAgencyCriteria && adoptionWorkerAgencyCriteria.map( agencyId => {
+			let adoptionWorkerAgencyDoc = socialWorkerAgencyDocs.find( adoptionWorkerAgencyDoc => adoptionWorkerAgencyDoc._id.toString() === agencyId );
+			return {
+				id: adoptionWorkerAgencyDoc._id.toString(),
+				text: adoptionWorkerAgencyDoc.name
+			};
+		});
+
+		// retrive the recruitment worker agencies from the social worker agency response
+		let recruitmentWorkerAgencies = recruitmentWorkerAgencyCriteria && recruitmentWorkerAgencyCriteria.map( agencyId => {
+			let recruitmentWorkerAgencyDoc = socialWorkerAgencyDocs.find( recruitmentWorkerAgencyDoc => recruitmentWorkerAgencyDoc._id.toString() === agencyId );
+			return {
+				id: recruitmentWorkerAgencyDoc._id.toString(),
+				text: recruitmentWorkerAgencyDoc.name
+			};
+		});
 		
 		// send the results
 		res.send({
 			noResultsFound: true,
 			adoptionWorkers,
 			recruitmentWorkers,
-			adoptionWorkerAgencies: adoptionWorkerAgencyDocs
-				? adoptionWorkerAgencyDocs.map( agency => ({ 
-					id: agency._id.toString(), 
-					text: agency.name
-				}))
-				: false
+			adoptionWorkerAgencies,
+			recruitmentWorkerAgencies
 		});
 	})
 	.catch( err => {
