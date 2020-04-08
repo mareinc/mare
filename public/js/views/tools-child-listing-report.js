@@ -62,7 +62,7 @@
 				placeholder: 'All Statuses'
 			});
 
-			this.$el.find( '.adoption-worker-region-select' ).select2({
+			this.$el.find( '.adoption-worker-region-select, .recruitment-worker-region-select' ).select2({
 				placeholder: 'All Regions'
             });
 
@@ -145,6 +145,27 @@
 						// render the view with the search results
 						view.$el.html( view.template( data ) );
 						view.initializeSearchForm( regDateFrom, regDateTo, webDateFrom, webDateTo, params );
+
+						// initialize a DataTable (https://datatables.net/) with the inquiry results
+						// save a reference to the table so it can be destroyed when the view changes
+						mare.views.tools.table = $('#child-listing-results').DataTable({
+							data: data.results, 						// set results data as table source
+							columns: view.childListingColumns, 			// configure columns
+							order: [[1, 'asc']], 						// define default sort (column index, direction)
+							fixedHeader: true, 							// fix the header to the top of the viewport on vertical scroll
+							pageLength: 100,							// set default number of rows to display
+							responsive: {								// hide columns from right-to-left when the viewport is too narrow
+								details: false							// do not display overflow columns in details row (overwrites default content)
+							},
+							dom: 'Bfrtip',								// define the placement of the grid options (buttons)
+							buttons: [
+								'pageLength',							// adds toggle for number of rows to display
+								{
+									extend: 'colvis',					// adds column visibility toggle menu
+									columns: ':gt(0)'					// allows toggling of all columns except the first one
+								}
+							]
+						});
 					});
 			}
 		},
@@ -178,6 +199,15 @@
 					defer.reject();
 				});
 			}).promise();
-		}
+		},
+
+		childListingColumns: [
+			{ title: 'Reg #', data: 'registrationNumber' },
+			{ title: 'Name', data: 'name' },
+			{ title: 'Gender', data: 'gender' },
+			{ title: 'Race', data: 'race' },
+			{ title: 'Legal Status', data: 'legalStatus' },
+			{ title: 'Placement Status', data: 'placementStatus' }
+		]
 	});
 }());

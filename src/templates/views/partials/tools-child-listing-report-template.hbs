@@ -293,6 +293,21 @@
             <br /><br />
             No results found
         \{{/if}}
+
+        \{{#if results }}
+            <h3>Results: </h3>
+            <div class="matching-results-table__button-bar">
+                <button class="button button--teal child-listing-export-pdf-button">PDF Export</button>
+                <button class="button button--teal child-listing-export-xlsx-button">XLSX Export</button>
+                <div class="matching-results-table__record-count">
+                    <div class="record-count__label">Total Child Listings:</div>
+                    \{{ results.length }}
+                </div>
+            </div>
+
+            {{!-- Results table for site display --}}            
+            <table id="child-listing-results" class="stripe" width="100%"></table>
+        \{{/if}}
     </div>
 
 </script>
