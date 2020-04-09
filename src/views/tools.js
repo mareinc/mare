@@ -15,12 +15,13 @@ exports = module.exports = ( req, res ) => {
 		fetchLegalStatuses = listService.getAllLegalStatuses(),
 		fetchFamilyConstellations = listService.getAllFamilyConstellations(),
 		fetchInquiryMethods = listService.getAllInquiryMethods(),
-		fetchRegions = listService.getAllRegions();
+		fetchRegions = listService.getAllRegions(),
+		fetchResidences = listService.getAllResidences();
 
-	Promise.all( [ fetchChildStatuses, fetchGenders, fetchRaces, fetchLegalStatuses, fetchFamilyConstellations, fetchInquiryMethods, fetchRegions ] )
+	Promise.all( [ fetchChildStatuses, fetchGenders, fetchRaces, fetchLegalStatuses, fetchFamilyConstellations, fetchInquiryMethods, fetchRegions, fetchResidences ] )
 		.then( values => {
 			// assign local variables to the values returned by the promises
-			const [ childStatuses, genders, races, legalStatuses, familyConstellations, inquiryMethods, regions ] = values;
+			const [ childStatuses, genders, races, legalStatuses, familyConstellations, inquiryMethods, regions, residences ] = values;
 			
 			// assign properties to locals for access during templating
 			locals.childStatuses = childStatuses;
@@ -39,6 +40,7 @@ exports = module.exports = ( req, res ) => {
 			locals.placementTypes = utilsService.PLACEMENT_TYPES;
 			locals.inquiryMethods = inquiryMethods;
 			locals.regions = regions;
+			locals.residences = residences;
 			// create a range from 30 days ago to today
 			locals.defaultDateRange = {
 				fromDate: moment().subtract( 30, "days" ).format( 'YYYY-MM-DD' ),
