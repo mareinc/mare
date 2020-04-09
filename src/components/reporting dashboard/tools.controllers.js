@@ -1221,9 +1221,24 @@ exports.getChildListingData = ( req, res, next ) => {
 	// get the query from the request object
 	let query = req.query;
 
-	// create the search criteria
-	let searchCriteria = {};
+	// get the registration date range
+	let registrationDateFrom = new Date( query.regDateFrom );
+	let registrationDateTo = new Date( query.regDateTo );
 
+	// get the added to web date range
+	let webAddedDateFrom = new Date( query.webDateFrom );
+	let webAddedDateTo = new Date( query.webDateTo );
+
+	// create the baseline search criteria
+	let searchCriteria = {
+		$and: [
+			{ registrationDate: { $gte: registrationDateFrom } },
+			{ registrationDate: { $lte: registrationDateTo } },
+			{ visibleInGalleryDate: { $gte: webAddedDateFrom } },
+			{ visibleInGalleryDate: { $lte: webAddedDateTo } }
+		]
+	};
+	
 	// maintain a combined recruitment and adoption worker criteria list so they can be retrieved using the same social worker query
 	let combinedSocialWorkerCriteria = [];
 
@@ -1326,9 +1341,6 @@ exports.getChildListingData = ( req, res, next ) => {
 	if ( Array.isArray( query[ 'intellectual-needs' ] ) && query[ 'intellectual-needs' ].length > 0 ) {
 		searchCriteria[ 'intellectualNeeds' ] = { $in: query[ 'intellectual-needs' ] };
 	}
-
-	console.log('search criteria:');
-	console.log(searchCriteria);
 
 	Promise.all([
 		// get the media features that match the specified date range and criteria
