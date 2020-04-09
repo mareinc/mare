@@ -1221,24 +1221,36 @@ exports.getChildListingData = ( req, res, next ) => {
 	// get the query from the request object
 	let query = req.query;
 
-	// get the registration date range
+	// create the search criteria
+	let searchCriteria = {};
+
+	// registration date range criteria (required)
 	let registrationDateFrom = new Date( query.regDateFrom );
 	let registrationDateTo = new Date( query.regDateTo );
+	searchCriteria.registrationDate = { $gte: registrationDateFrom, $lte: registrationDateTo };
 
-	// get the added to web date range
+	// added to web date range criteria (required)
 	let webAddedDateFrom = new Date( query.webDateFrom );
 	let webAddedDateTo = new Date( query.webDateTo );
+	searchCriteria.visibleInGalleryDate = { $gte: webAddedDateFrom, $lte: webAddedDateTo };
 
-	// create the baseline search criteria
-	let searchCriteria = {
-		$and: [
-			{ registrationDate: { $gte: registrationDateFrom } },
-			{ registrationDate: { $lte: registrationDateTo } },
-			{ visibleInGalleryDate: { $gte: webAddedDateFrom } },
-			{ visibleInGalleryDate: { $lte: webAddedDateTo } }
-		]
-	};
-	
+	// age at registration date range
+	if ( query.registrationAgeFrom || query.registrationAgeTo ) {
+		// using $where is a performance concern, but I don't see any other way to query based on age at registration
+		// return a template string instead of a function to allow variables (e.g. dynamic age ranges) to be passed properly to mongo context
+		const MILLISECONDS_TO_YEARS_CONVERSION_FACTOR = 31536000000;
+		searchCriteria.$where = `function() {
+			const CHILD_AGE_IN_YEARS = ( this.registrationDate - this.birthDate ) / ${MILLISECONDS_TO_YEARS_CONVERSION_FACTOR};
+			return ${
+				query.registrationAgeFrom && query.registrationAgeTo
+					? `CHILD_AGE_IN_YEARS >= ${query.registrationAgeFrom} && CHILD_AGE_IN_YEARS <= ${query.registrationAgeTo}`
+					: query.registrationAgeFrom
+						? `CHILD_AGE_IN_YEARS >= ${query.registrationAgeFrom}`
+						: `CHILD_AGE_IN_YEARS <= ${query.registrationAgeTo}`
+			};
+		}`;
+	}	
+
 	// maintain a combined recruitment and adoption worker criteria list so they can be retrieved using the same social worker query
 	let combinedSocialWorkerCriteria = [];
 
