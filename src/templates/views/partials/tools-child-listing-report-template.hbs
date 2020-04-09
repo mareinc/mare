@@ -182,6 +182,48 @@
                 <div class="col-6">
                     <div class="row form-group">
                         <div class="col-sm-12 col-md-4 text-sm-right" >
+                            <label for="physical-needs" class="bold">Physical Needs:</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                            <select id="physical-needs" name="physical-needs[]" class="form-control physical-needs-select" multiple>
+                                {{#each physicalNeeds as |need|}}
+                                    <option value="{{ need }}">{{ need }}</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right" >
+                            <label for="emotional-needs" class="bold">Emotional Needs:</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                            <select id="emotional-needs" name="emotional-needs[]" class="form-control emotional-needs-select" multiple>
+                                {{#each emotionalNeeds as |need|}}
+                                    <option value="{{ need }}">{{ need }}</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right" >
+                            <label for="intellectual-needs" class="bold">Intellectual Needs:</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                            <select id="intellectual-needs" name="intellectual-needs[]" class="form-control intellectual-needs-select" multiple>
+                                {{#each intellectualNeeds as |need|}}
+                                    <option value="{{ need }}">{{ need }}</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right" >
                             <label for="adoption-worker" class="bold">Adopt. Worker:</label>
                         </div>
                         <div class="col-sm-12 col-md-8">

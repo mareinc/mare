@@ -1312,12 +1312,30 @@ exports.getChildListingData = ( req, res, next ) => {
 		searchCriteria[ 'residence' ] = { $in: residenceCriteria };
 	}
 
+	// physical needs criteria (multiple)
+	if ( Array.isArray( query[ 'physical-needs' ] ) && query[ 'physical-needs' ].length > 0 ) {
+		searchCriteria[ 'physicalNeeds' ] = { $in: query[ 'physical-needs' ] };
+	}
+
+	// emotional needs criteria (multiple)
+	if ( Array.isArray( query[ 'emotional-needs' ] ) && query[ 'emotional-needs' ].length > 0 ) {
+		searchCriteria[ 'emotionalNeeds' ] = { $in: query[ 'emotional-needs' ] };
+	}
+
+	// intellectual needs criteria (multiple)
+	if ( Array.isArray( query[ 'intellectual-needs' ] ) && query[ 'intellectual-needs' ].length > 0 ) {
+		searchCriteria[ 'intellectualNeeds' ] = { $in: query[ 'intellectual-needs' ] };
+	}
+
+	console.log('search criteria:');
+	console.log(searchCriteria);
+
 	Promise.all([
 		// get the media features that match the specified date range and criteria
 		keystone.list( 'Child' ).model
 			.find( searchCriteria )
 			.limit( 200 )
-			.populate( 'gender race status legalStatus residence' )
+			.populate( 'gender race status legalStatus residence adoptionWorker adoptionWorkerAgencyRegion' )
 			.lean()
 			.exec(),
 		// if thare are any social worker criteria specified, get the social worker docs to seed the social worker selects on the search form
@@ -1362,7 +1380,12 @@ exports.getChildListingData = ( req, res, next ) => {
 					: '--',
 			placementStatus: childDoc.status.childStatus,
 			legalStatus: childDoc.legalStatus.legalStatus,
-			residence: childDoc.residence ? childDoc.residence.residence : '--'
+			residence: childDoc.residence ? childDoc.residence.residence : '--',
+			physicalNeeds: childDoc.physicalNeeds || '--',
+			emotionalNeeds: childDoc.emotionalNeeds || '--',
+			intellectualNeeds: childDoc.intellectualNeeds || '--',
+			adoptionWorker: childDoc.adoptionWorker.name.full,
+			adoptionWorkerRegion: childDoc.adoptionWorkerAgencyRegion.region
 		}));
 
 		// retrieve the adoption workers from the social worker response

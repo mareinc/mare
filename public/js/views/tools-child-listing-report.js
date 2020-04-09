@@ -68,6 +68,10 @@
 				placeholder: 'All Residences'
 			});
 
+			this.$el.find( '.physical-needs-select, .emotional-needs-select, .intellectual-needs-select' ).select2({
+				placeholder: 'All Levels of Need'
+			});
+
 			this.$el.find( '.adoption-worker-region-select, .recruitment-worker-region-select' ).select2({
 				placeholder: 'All Regions'
             });
@@ -228,7 +232,13 @@
 			{ title: 'Gender', data: 'gender' },
 			{ title: 'Race', data: 'race' },
 			{ title: 'Legal Status', data: 'legalStatus' },
-			{ title: 'Placement Status', data: 'placementStatus' }
+			{ title: 'Placement Status', data: 'placementStatus' },
+			{ title: 'Adoption Worker', data: 'adoptionWorker' },
+			{ title: 'Adoption Worker Region', data: 'adoptionWorkerRegion' },
+			{ title: 'Residence', data: 'residence', visible: false },
+			{ title: 'Physical Needs', data: 'physicalNeeds', visible: false },
+			{ title: 'Emotional Needs', data: 'emotionalNeeds', visible: false },
+			{ title: 'Intellectual Needs', data: 'intellectualNeeds', visible: false }
 		]
 	});
 }());
