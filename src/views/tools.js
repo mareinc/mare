@@ -41,10 +41,16 @@ exports = module.exports = ( req, res ) => {
 			locals.inquiryMethods = inquiryMethods;
 			locals.regions = regions;
 			locals.residences = residences;
-			// create a range from 30 days ago to today
-			locals.defaultDateRange = {
-				fromDate: moment().subtract( 30, "days" ).format( 'YYYY-MM-DD' ),
-				toDate: moment().format( 'YYYY-MM-DD' )
+			// create default ranges to seed date range fields
+			locals.defaultDateRanges = {
+				month: {
+					fromDate: moment().subtract( 30, "days" ).format( 'YYYY-MM-DD' ),
+					toDate: moment().format( 'YYYY-MM-DD' )
+				},
+				year: {
+					fromDate: moment().subtract( 1, "years" ).format( 'YYYY-MM-DD' ),
+					toDate: moment().format( 'YYYY-MM-DD' )
+				}
 			};
 			// generate the date ranges of the previous three fiscal years to support pre-filling search dates by fiscal year
 			// on the inquiry report search form
