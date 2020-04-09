@@ -168,6 +168,20 @@
                 <div class="col-6">
                     <div class="row form-group">
                         <div class="col-sm-12 col-md-4 text-sm-right" >
+                            <label for="residence" class="bold">Residence:</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                            <select id="residence" name="residence[]" class="form-control residence-select" multiple>
+                                {{#each residences as |residence|}}
+                                    <option value="{{ residence.id }}">{{ residence.residence }}</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right" >
                             <label for="adoption-worker" class="bold">Adopt. Worker:</label>
                         </div>
                         <div class="col-sm-12 col-md-8">

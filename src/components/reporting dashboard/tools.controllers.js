@@ -1305,12 +1305,19 @@ exports.getChildListingData = ( req, res, next ) => {
 		searchCriteria[ 'status' ] = { $in: placementStatusCriteria };
 	}
 
+	// residence criteria (multiple)
+	let residenceCriteria;
+	if ( Array.isArray( query.residence ) && query.residence.length > 0 ) {
+		residenceCriteria = query.residence.filter( ( objectId ) => ObjectId.isValid( objectId ) );
+		searchCriteria[ 'residence' ] = { $in: residenceCriteria };
+	}
+
 	Promise.all([
 		// get the media features that match the specified date range and criteria
 		keystone.list( 'Child' ).model
 			.find( searchCriteria )
 			.limit( 200 )
-			.populate( 'gender race status legalStatus' )
+			.populate( 'gender race status legalStatus residence' )
 			.lean()
 			.exec(),
 		// if thare are any social worker criteria specified, get the social worker docs to seed the social worker selects on the search form
@@ -1354,7 +1361,8 @@ exports.getChildListingData = ( req, res, next ) => {
 					? childDoc.race.map( race => race.race ).join( ', ' )
 					: '--',
 			placementStatus: childDoc.status.childStatus,
-			legalStatus: childDoc.legalStatus.legalStatus
+			legalStatus: childDoc.legalStatus.legalStatus,
+			residence: childDoc.residence ? childDoc.residence.residence : '--'
 		}));
 
 		// retrieve the adoption workers from the social worker response

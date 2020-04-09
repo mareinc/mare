@@ -64,6 +64,10 @@
 				placeholder: 'All Statuses'
 			});
 
+			this.$el.find( '.residence-select' ).select2({
+				placeholder: 'All Residences'
+			});
+
 			this.$el.find( '.adoption-worker-region-select, .recruitment-worker-region-select' ).select2({
 				placeholder: 'All Regions'
             });
