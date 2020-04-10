@@ -236,11 +236,14 @@
 			{ title: 'Current Age', data: 'currentAge' },
 			{ title: 'Adoption Worker', data: 'adoptionWorker' },
 			{ title: 'Adoption Worker Region', data: 'adoptionWorkerRegion' },
+			{ title: 'Must be placed with siblings?', data: 'mustBePlacedWithSiblings' },
+			{ title: 'Siblings to be placed with', data: 'numSiblingsToBePlacedWith' },
 			{ title: 'Residence', data: 'residence', visible: false },
 			{ title: 'Physical Needs', data: 'physicalNeeds', visible: false },
 			{ title: 'Emotional Needs', data: 'emotionalNeeds', visible: false },
 			{ title: 'Intellectual Needs', data: 'intellectualNeeds', visible: false },
-			{ title: 'Age at Registration', data: 'ageAtRegistration', visible: false }
+			{ title: 'Age at Registration', data: 'ageAtRegistration', visible: false },
+			{ title: 'Days Waiting', data: 'daysSinceRegistration', visible: false }
 		]
 	});
 }());

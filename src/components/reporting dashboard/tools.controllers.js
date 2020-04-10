@@ -1380,11 +1380,16 @@ exports.getChildListingData = ( req, res, next ) => {
 		searchCriteria[ 'intellectualNeeds' ] = { $in: query[ 'intellectual-needs' ] };
 	}
 
+	// must be placed with siblings criteria
+	if ( !!query.placedWithSiblings ) {
+		searchCriteria.mustBePlacedWithSiblings = true;
+	}
+
 	Promise.all([
 		// get the media features that match the specified date range and criteria
 		keystone.list( 'Child' ).model
 			.find( searchCriteria )
-			.limit( 200 )
+			.limit( 1000 )
 			.populate( 'gender race status legalStatus residence adoptionWorker adoptionWorkerAgencyRegion' )
 			.lean()
 			.exec(),
@@ -1437,7 +1442,10 @@ exports.getChildListingData = ( req, res, next ) => {
 			adoptionWorker: childDoc.adoptionWorker.name.full,
 			adoptionWorkerRegion: childDoc.adoptionWorkerAgencyRegion.region,
 			ageAtRegistration: Math.floor( ( childDoc.registrationDate - childDoc.birthDate ) / MILLISECONDS_TO_YEARS_CONVERSION_FACTOR ),
-			currentAge: moment.utc().startOf( 'day' ).diff( moment.utc( childDoc.birthDate ), 'years' )
+			currentAge: moment.utc().startOf( 'day' ).diff( moment.utc( childDoc.birthDate ), 'years' ),
+			daysSinceRegistration: moment.utc().startOf( 'day' ).diff( moment.utc( childDoc.registrationDate ), 'days' ),
+			mustBePlacedWithSiblings: childDoc.mustBePlacedWithSiblings ? 'Yes' : 'No',
+			numSiblingsToBePlacedWith: childDoc.mustBePlacedWithSiblings ? childDoc.siblingsToBePlacedWith.length : 0
 		}));
 
 		// retrieve the adoption workers from the social worker response
