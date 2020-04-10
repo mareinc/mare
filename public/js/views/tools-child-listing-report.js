@@ -7,9 +7,10 @@
 
 		// bind standard events to functions within the view
 		events: {
-			'click .child-listing-search-button' : 'handleSearchClick',
-			'click .added-to-web-fiscal-year-buttons .btn'	: 'handleFiscalYearClick',
-			'click .registration-date-fiscal-year-buttons .btn'	: 'handleFiscalYearClick'
+			'click .child-listing-search-button' 				: 'handleSearchClick',
+			'click .added-to-web-fiscal-year-buttons .btn'		: 'handleFiscalYearClick',
+			'click .registration-date-fiscal-year-buttons .btn'	: 'handleFiscalYearClick',
+			'click .child-listing-export-xlsx-button'			: 'handleXlsxExportClick'
 		},
 
 		/* initialize the view */
@@ -139,6 +140,14 @@
 				this.$el.find( '[name="registrationDateFrom"]' ).val( $( event.target ).data( 'yearStart' ) );
 				this.$el.find( '[name="registrationDateTo"]' ).val( $( event.target ).data( 'yearEnd' ) );
 			}
+		},
+
+		handleXlsxExportClick: function() {
+			var table = this.$el.find( '.results-table' ),
+				wb = XLSX.utils.table_to_book( table[ 0 ] );
+				
+			// convert HTML table to XLSX file
+			XLSX.writeFile( wb, table.data( 'filename' ) );
 		},
 
 		/* render the view onto the page */
