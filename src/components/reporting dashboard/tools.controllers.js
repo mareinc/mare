@@ -1235,10 +1235,10 @@ exports.getChildListingData = ( req, res, next ) => {
 	searchCriteria.visibleInGalleryDate = { $gte: webAddedDateFrom, $lte: webAddedDateTo };
 
 	// age at registration date range
+	const MILLISECONDS_TO_YEARS_CONVERSION_FACTOR = 31536000000;
 	if ( query.registrationAgeFrom || query.registrationAgeTo ) {
 		// using $where is a performance concern, but I don't see any other way to query based on age at registration
 		// return a template string instead of a function to allow variables (e.g. dynamic age ranges) to be passed properly to mongo context
-		const MILLISECONDS_TO_YEARS_CONVERSION_FACTOR = 31536000000;
 		searchCriteria.$where = `function() {
 			const CHILD_AGE_IN_YEARS = ( this.registrationDate - this.birthDate ) / ${MILLISECONDS_TO_YEARS_CONVERSION_FACTOR};
 			return ${
@@ -1249,7 +1249,33 @@ exports.getChildListingData = ( req, res, next ) => {
 						: `CHILD_AGE_IN_YEARS <= ${query.registrationAgeTo}`
 			};
 		}`;
-	}	
+	}
+
+	// current age date range
+	if ( query.currentAgeFrom || query.currentAgeTo ) {
+		// if both upper and lower limit is set
+		if ( query.currentAgeFrom && query.currentAgeTo ) {
+			// determine the minimum and maximum birth dates that would match the age criteria specified
+			let minBirthDate = moment.utc().startOf( 'day' ).subtract( Number( query.currentAgeTo ) + 1, 'years' ); // add 1 to max age to capture children who are part way through their nth year
+			let maxBirthDate = moment.utc().startOf( 'day' ).subtract( query.currentAgeFrom, 'years' );
+			// create range criteria
+			searchCriteria.birthDate = { $gte: minBirthDate, $lte: maxBirthDate };
+
+		// if only the lower limit is set
+		} else if ( query.currentAgeFrom ) {
+			// determine the birth date that would match the age criteria
+			let targetBirthDate = moment.utc().startOf( 'day' ).subtract( query.currentAgeFrom, 'years' );
+			// create lte criteria ( dates that are less are further in the past, so the child would be older than the target date )
+			searchCriteria.birthDate = { $lte: targetBirthDate };
+
+		// if only upper limit is set
+		} else {
+			// determine the birth date that would match the age criteria
+			let targetBirthDate = moment.utc().startOf( 'day' ).subtract(  Number( query.currentAgeTo ) + 1, 'years' ); // add 1 to max age to capture children who are part way through their nth year
+			// create gte criteria ( dates that are greater are more recent, so the child would be younger than the target date )
+			searchCriteria.birthDate = { $gte: targetBirthDate };
+		}
+	}
 
 	// maintain a combined recruitment and adoption worker criteria list so they can be retrieved using the same social worker query
 	let combinedSocialWorkerCriteria = [];
@@ -1409,7 +1435,9 @@ exports.getChildListingData = ( req, res, next ) => {
 			emotionalNeeds: childDoc.emotionalNeeds || '--',
 			intellectualNeeds: childDoc.intellectualNeeds || '--',
 			adoptionWorker: childDoc.adoptionWorker.name.full,
-			adoptionWorkerRegion: childDoc.adoptionWorkerAgencyRegion.region
+			adoptionWorkerRegion: childDoc.adoptionWorkerAgencyRegion.region,
+			ageAtRegistration: Math.floor( ( childDoc.registrationDate - childDoc.birthDate ) / MILLISECONDS_TO_YEARS_CONVERSION_FACTOR ),
+			currentAge: moment.utc().startOf( 'day' ).diff( moment.utc( childDoc.birthDate ), 'years' )
 		}));
 
 		// retrieve the adoption workers from the social worker response
