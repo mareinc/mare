@@ -233,12 +233,14 @@
 			{ title: 'Race', data: 'race' },
 			{ title: 'Legal Status', data: 'legalStatus' },
 			{ title: 'Placement Status', data: 'placementStatus' },
+			{ title: 'Current Age', data: 'currentAge' },
 			{ title: 'Adoption Worker', data: 'adoptionWorker' },
 			{ title: 'Adoption Worker Region', data: 'adoptionWorkerRegion' },
 			{ title: 'Residence', data: 'residence', visible: false },
 			{ title: 'Physical Needs', data: 'physicalNeeds', visible: false },
 			{ title: 'Emotional Needs', data: 'emotionalNeeds', visible: false },
-			{ title: 'Intellectual Needs', data: 'intellectualNeeds', visible: false }
+			{ title: 'Intellectual Needs', data: 'intellectualNeeds', visible: false },
+			{ title: 'Age at Registration', data: 'ageAtRegistration', visible: false }
 		]
 	});
 }());
