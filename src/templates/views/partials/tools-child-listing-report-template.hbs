@@ -397,6 +397,50 @@
 
             {{!-- Results table for site display --}}            
             <table id="child-listing-results" class="stripe" width="100%"></table>
+
+             {{!-- Results table for Excel export (hidden) --}}
+            <table width="100%" class="results-table hidden" data-filename="ChildListingReportExport.xlsx">
+                <tr>
+                    <th>Reg #</th>
+                    <th>Child</th>
+                    <th>Gender</th>
+                    <th>Race</th>
+                    <th>Legal Status</th>
+                    <th>Placement Status</th>
+                    <th>Current Age</th>
+                    <th>Adoption Worker</th>
+                    <th>Adoption Worker Region</th>
+                    <th>Must be placed with siblings?</th>
+                    <th>Siblings to be placed with</th>
+                    <th>Residence</th>
+                    <th>Physical Needs</th>
+                    <th>Emotional Needs</th>
+                    <th>Intellectual Needs</th>
+                    <th>Age at Registration</th>
+                    <th>Days Waiting</th>
+                </tr>
+                \{{#each results as |result|}}
+                    <tr>
+                        <td>\{{ result.registrationNumber }}</td>
+                        <td>\{{ result.name }}</td>
+                        <td>\{{ result.gender }}</td>
+                        <td>\{{ result.race }}</td>
+                        <td>\{{ result.legalStatus }}</td>
+                        <td>\{{ result.placementStatus }}</td>
+                        <td>\{{ result.currentAge }}</td>
+                        <td>\{{ result.adoptionWorker }}</td>
+                        <td>\{{ result.adoptionWorkerRegion }}</td>
+                        <td>\{{ result.mustBePlacedWithSiblings }}</td>
+                        <td>\{{ result.numSiblingsToBePlacedWith }}</td>
+                        <td>\{{ result.residence }}</td>
+                        <td>\{{ result.physicalNeeds }}</td>
+                        <td>\{{ result.emotionalNeeds }}</td>
+                        <td>\{{ result.intellectualNeeds }}</td>
+                        <td>\{{ result.ageAtRegistration }}</td>
+                        <td>\{{ result.daysSinceRegistration }}</td>
+                    </tr>
+                \{{/each}}
+            </table>
         \{{/if}}
     </div>
 
