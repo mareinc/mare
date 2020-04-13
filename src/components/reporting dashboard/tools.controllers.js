@@ -1483,16 +1483,23 @@ exports.getChildListingData = ( req, res, next ) => {
 				text: recruitmentWorkerAgencyDoc.name
 			};
 		});
-		
-		// send the results
-		res.send({
-			noResultsFound: !childDocs || childDocs.length === 0,
-			results: childListings,
-			adoptionWorkers,
-			recruitmentWorkers,
-			adoptionWorkerAgencies,
-			recruitmentWorkerAgencies
-		});
+
+		// if 'pdf' parameter was detected in the query, send the response as a PDF
+		if ( query.pdf ) {
+			utilsService.sendPDF( req, res, { results: childListings }, 'tools-child-listing-pdf', {
+				headerTitle: 'Child Listing Report'
+			});
+		// otherwise, send the response data as an object to be rendered as a grid on the page
+		} else {
+			res.send({
+				noResultsFound: !childDocs || childDocs.length === 0,
+				results: childListings,
+				adoptionWorkers,
+				recruitmentWorkers,
+				adoptionWorkerAgencies,
+				recruitmentWorkerAgencies
+			});
+		}
 	})
 	.catch( err => {
 		// log an error for debugging purposes

@@ -10,7 +10,8 @@
 			'click .child-listing-search-button' 				: 'handleSearchClick',
 			'click .added-to-web-fiscal-year-buttons .btn'		: 'handleFiscalYearClick',
 			'click .registration-date-fiscal-year-buttons .btn'	: 'handleFiscalYearClick',
-			'click .child-listing-export-xlsx-button'			: 'handleXlsxExportClick'
+			'click .child-listing-export-xlsx-button'			: 'handleXlsxExportClick',
+			'click .child-listing-export-pdf-button'			: 'handlePDFExportClick'
 		},
 
 		/* initialize the view */
@@ -148,6 +149,38 @@
 				
 			// convert HTML table to XLSX file
 			XLSX.writeFile( wb, table.data( 'filename' ) );
+		},
+
+		handlePDFExportClick: function() {
+
+			// collect the state of the form
+			var params = this.$el.find( 'form' ).serializeArray();
+			
+			// remove empty values
+			params = _.filter( params, function( value ) {
+				return value && value.value && value.value.length > 0;
+			});
+
+			// add the date range to the params
+			params.push({
+				name: 'regDateFrom',
+				value: this.$el.find( '[name="registrationDateFrom"]' ).val()
+			}, {
+				name: 'regDateTo',
+				value: this.$el.find( '[name="registrationDateTo"]' ).val()
+			}, {
+				name: 'webDateFrom',
+				value: this.$el.find( '[name="webAddedDateFrom"]' ).val()
+			}, {
+				name: 'webDateTo',
+				value: this.$el.find( '[name="webAddedDateTo"]' ).val()
+			});
+			
+			// build the query string
+			var queryString = jQuery.param( params );
+			
+			// redirect to the PDF report download URL
+			window.open( '/tools/services/get-child-listing-data?' + queryString + '&pdf=1', '_blank' );
 		},
 
 		/* render the view onto the page */
