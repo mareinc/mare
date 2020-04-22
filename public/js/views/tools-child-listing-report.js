@@ -219,7 +219,7 @@
 						mare.views.tools.table = $('#child-listing-results').DataTable({
 							data: data.results, 						// set results data as table source
 							columns: view.childListingColumns, 			// configure columns
-							order: [[1, 'asc']], 						// define default sort (column index, direction)
+							order: [[2, 'asc']], 						// define default sort (column index, direction)
 							fixedHeader: true, 							// fix the header to the top of the viewport on vertical scroll
 							pageLength: 100,							// set default number of rows to display
 							responsive: {								// hide columns from right-to-left when the viewport is too narrow
@@ -271,7 +271,8 @@
 
 		childListingColumns: [
 			{ title: 'Reg #', data: 'registrationNumber' },
-			{ title: 'Name', data: 'name' },
+			{ title: 'First Name', data: 'firstName' },
+			{ title: 'Last Name', data: 'lastName' },
 			{ title: 'Gender', data: 'gender' },
 			{ title: 'Race', data: 'race' },
 			{ title: 'Legal Status', data: 'legalStatus' },

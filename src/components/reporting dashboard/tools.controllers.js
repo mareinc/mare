@@ -1467,7 +1467,8 @@ exports.getChildListingData = ( req, res, next ) => {
 
 		let childListings = childDocs.map( childDoc => ({
 			id: childDoc._id.toString(),
-			name: `${childDoc.name.first} ${childDoc.name.last}`,
+			firstName: childDoc.name.first,
+			lastName: childDoc.name.last,
 			registrationNumber: childDoc.registrationNumber,
 			gender: childDoc.gender.gender,
 			race: childDoc.race && childDoc.race.length > 0

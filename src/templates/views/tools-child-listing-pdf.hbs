@@ -20,6 +20,8 @@
 		<table width="100%">
                 <tr>
                     <th>Reg #</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
                     <th>Child</th>
                     <th>Gender</th>
                     <th>Race</th>
@@ -40,7 +42,8 @@
                 {{#each results as |result|}}
                     <tr>
                         <td>{{ result.registrationNumber }}</td>
-                        <td>{{ result.name }}</td>
+                        <td>{{ result.firstName }}</td>
+                        <td>{{ result.lastName }}</td>
                         <td>{{ result.gender }}</td>
                         <td>{{ result.race }}</td>
                         <td>{{ result.legalStatus }}</td>
