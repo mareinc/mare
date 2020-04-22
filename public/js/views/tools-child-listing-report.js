@@ -8,6 +8,7 @@
 		// bind standard events to functions within the view
 		events: {
 			'click .child-listing-search-button' 				: 'handleSearchClick',
+			'click .child-listing-search-reset-button'			: 'handleResetClick',
 			'click .added-to-web-fiscal-year-buttons .btn'		: 'handleFiscalYearClick',
 			'click .registration-date-fiscal-year-buttons .btn'	: 'handleFiscalYearClick',
 			'click .child-listing-export-xlsx-button'			: 'handleXlsxExportClick',
@@ -181,6 +182,10 @@
 			
 			// redirect to the PDF report download URL
 			window.open( '/tools/services/get-child-listing-data?' + queryString + '&pdf=1', '_blank' );
+		},
+
+		handleResetClick: function() {
+			mare.routers.tools.navigate( 'child-listing-report', { trigger: true } );
 		},
 
 		/* render the view onto the page */
