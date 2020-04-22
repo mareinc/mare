@@ -1425,6 +1425,11 @@ exports.getChildListingData = ( req, res, next ) => {
 		searchCriteria.matchingEvent = true;
 	}
 
+	// display image criteria
+	if ( !!query.displayImage ) {
+		searchCriteria[ 'image.url' ] = { $exists: true, $ne: null };
+	}
+
 	Promise.all([
 		// get the media features that match the specified date range and criteria
 		keystone.list( 'Child' ).model
@@ -1498,7 +1503,8 @@ exports.getChildListingData = ( req, res, next ) => {
 			wendysWonderfulKidsCaseloadEast: childDoc.wendysWonderfulKidsCaseloadEast ? 'Yes' : 'No',
 			wendysWonderfulKidsCaseloadWest: childDoc.wendysWonderfulKidsCaseloadWest ? 'Yes' : 'No',
 			coalitionMeeting: childDoc.coalitionMeeting ? 'Yes' : 'No',
-			matchingEvent: childDoc.matchingEvent ? 'Yes' : 'No'
+			matchingEvent: childDoc.matchingEvent ? 'Yes' : 'No',
+			displayImage: childDoc.image && childDoc.image.url ? childDoc.image.url : undefined
 		}));
 
 		// retrieve the adoption workers from the social worker response

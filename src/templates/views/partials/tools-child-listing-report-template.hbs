@@ -371,6 +371,10 @@
                                 <label class="form-check-label" for="professionalPhoto">Professional photo </label>
                             </div>
                             <div class="form-check mr-3">
+                                <input id="displayImage" class="form-check-input" type="checkbox" name="displayImage">
+                                <label class="form-check-label" for="displayImage">Display image </label>
+                            </div>
+                            <div class="form-check mr-3">
                                 <input id="videoSnapshot" class="form-check-input" type="checkbox" name="videoSnapshot">
                                 <label class="form-check-label" for="videoSnapshot">Video snapshot </label>
                             </div>
@@ -462,6 +466,7 @@
                     <th>Wendy's Kids West</th>
                     <th>Coalition Meeting</th>
                     <th>Matching Event</th>
+                    <th>Display Image</th>
                 </tr>
                 \{{#each results as |result|}}
                     <tr>
@@ -493,6 +498,7 @@
                         <td>\{{ result.wendysWonderfulKidsCaseloadWest }}</td>
                         <td>\{{ result.coalitionMeeting }}</td>
                         <td>\{{ result.matchingEvent }}</td>
+                        <td>\{{ result.displayImage }}</td>
                     </tr>
                 \{{/each}}
             </table>

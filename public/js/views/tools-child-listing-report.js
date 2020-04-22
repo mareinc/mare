@@ -297,7 +297,15 @@
 			{ title: 'Wendy\'s Kids East', data: 'wendysWonderfulKidsCaseloadEast', visible: false },
 			{ title: 'Wendy\'s Kids West', data: 'wendysWonderfulKidsCaseloadWest', visible: false },
 			{ title: 'Coalition Meeting', data: 'coalitionMeeting', visible: false },
-			{ title: 'Matching Event', data: 'matchingEvent', visible: false }
+			{ title: 'Matching Event', data: 'matchingEvent', visible: false },
+			{ 
+				title: 'Display Image',
+				data: 'displayImage',
+				render: function( data ) {
+					return data ? '<a href="' + data + '" target="_blank">Image</a>' : 'No Image';
+				},
+				visible: false
+			}
 		]
 	});
 }());
