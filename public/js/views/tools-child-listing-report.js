@@ -195,7 +195,8 @@
 				view.$el.html( view.template() );
 				var defaultFromDate = view.$el.find( '#defaultFromDate' ).val();
 				var defaultToDate = view.$el.find( '#defaultToDate' ).val();
-				view.initializeSearchForm( defaultFromDate, defaultToDate, defaultFromDate, defaultToDate  );
+				var allTimeFromDate = view.$el.find( '#allTimeFromDate' ).val();
+				view.initializeSearchForm( defaultFromDate, defaultToDate, allTimeFromDate, defaultToDate  );
 
 			// otherwise, set the date ranges using the route params and perform a search using the query params
 			} else {

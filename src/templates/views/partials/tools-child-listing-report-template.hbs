@@ -15,7 +15,7 @@
                     <div class="form-group">
                         <div class="input-daterange">
                             <label for="registrationDateFrom"><span class="sr-only">Registration Date - From</span>
-                                <input  class="form-control" type="date" name="registrationDateFrom" id="registrationDateFrom" value="{{ registrationDateFrom }}" required />
+                                <input  class="form-control" type="date" name="registrationDateFrom" id="registrationDateFrom" required />
                                 <div class="input-group-addon">
                                     <span></span>
                                 </div>
@@ -27,7 +27,7 @@
                     <div class="form-group">
                         <div class="input-daterange">
                             <label for="registrationDateTo"><span class="sr-only">Registration Date - To</span>
-                                <input class="form-control" type="date" name="registrationDateTo" id="registrationDateTo" value="{{ registrationDateTo }}" required />
+                                <input class="form-control" type="date" name="registrationDateTo" id="registrationDateTo" required />
                                 <div class="input-group-addon">
                                     <span></span>
                                 </div>
@@ -48,7 +48,7 @@
                     <div class="form-group">
                         <div class="input-daterange">
                             <label for="webAddedDateFrom"><span class="sr-only">Added to Web Date - From</span>
-                                <input  class="form-control" type="date" name="webAddedDateFrom" id="webAddedDateFrom" value="{{ addedToWebDateFrom }}" required />
+                                <input  class="form-control" type="date" name="webAddedDateFrom" id="webAddedDateFrom" required />
                                 <div class="input-group-addon">
                                     <span></span>
                                 </div>
@@ -60,7 +60,7 @@
                     <div class="form-group">
                         <div class="input-daterange">
                             <label for="webAddedDateTo"><span class="sr-only">Added to Web Date - To</span>
-                                <input class="form-control" type="date" name="webAddedDateTo" id="webAddedDateTo" value="{{ addedToWebDateTo }}" required />
+                                <input class="form-control" type="date" name="webAddedDateTo" id="webAddedDateTo" required />
                                 <div class="input-group-addon">
                                     <span></span>
                                 </div>
@@ -72,6 +72,7 @@
         </div>
 
         <form class="matching-form">
+            <input type="hidden" id="allTimeFromDate" value="1900-01-01" />
             <input type="hidden" id="defaultFromDate" value="{{ defaultDateRanges.year.fromDate }}" />
             <input type="hidden" id="defaultToDate" value="{{ defaultDateRanges.year.toDate }}" />
             <div class="row">
