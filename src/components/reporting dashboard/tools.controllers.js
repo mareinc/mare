@@ -1385,6 +1385,46 @@ exports.getChildListingData = ( req, res, next ) => {
 		searchCriteria.mustBePlacedWithSiblings = true;
 	}
 
+	// professional photo criteria
+	if ( !!query.professionalPhoto ) {
+		searchCriteria.hasPhotolistingPhoto = true;
+	}
+
+	// video snapshot criteria
+	if ( !!query.videoSnapshot ) {
+		searchCriteria.hasVideoSnapshot = true;
+	}
+
+	// Adoptuskids website criteria
+	if ( !!query.adoptUsKids ) {
+		searchCriteria.onAdoptuskids = true;
+	}
+
+	// wednesday's child criteria
+	if ( !!query.wednesdaysChild ) {
+		searchCriteria.wednesdaysChild = true;
+	}
+
+	// wendy's kids caseload east criteria
+	if ( !!query.wendysKidsEast ) {
+		searchCriteria.wendysWonderfulKidsCaseloadEast = true;
+	}
+
+	// wendy's kids caseload west criteria
+	if ( !!query.wendysKidsWest ) {
+		searchCriteria.wendysWonderfulKidsCaseloadWest = true;
+	}
+	
+	// coalition meeting criteria
+	if ( !!query.coalitionMeeting ) {
+		searchCriteria.coalitionMeeting = true;
+	}
+
+	// matching event criteria
+	if ( !!query.matchingEvent ) {
+		searchCriteria.matchingEvent = true;
+	}
+
 	Promise.all([
 		// get the media features that match the specified date range and criteria
 		keystone.list( 'Child' ).model
@@ -1445,7 +1485,15 @@ exports.getChildListingData = ( req, res, next ) => {
 			currentAge: moment.utc().startOf( 'day' ).diff( moment.utc( childDoc.birthDate ), 'years' ),
 			daysSinceRegistration: moment.utc().startOf( 'day' ).diff( moment.utc( childDoc.registrationDate ), 'days' ),
 			mustBePlacedWithSiblings: childDoc.mustBePlacedWithSiblings ? 'Yes' : 'No',
-			numSiblingsToBePlacedWith: childDoc.mustBePlacedWithSiblings ? childDoc.siblingsToBePlacedWith.length : 0
+			numSiblingsToBePlacedWith: childDoc.mustBePlacedWithSiblings ? childDoc.siblingsToBePlacedWith.length : 0,
+			hasPhotolistingPhoto: childDoc.hasPhotolistingPhoto ? 'Yes' : 'No',
+			hasVideoSnapshot: childDoc.hasVideoSnapshot ? 'Yes' : 'No',
+			onAdoptuskids: childDoc.onAdoptuskids ? 'Yes' : 'No',
+			wednesdaysChild: childDoc.wednesdaysChild ? 'Yes' : 'No',
+			wendysWonderfulKidsCaseloadEast: childDoc.wendysWonderfulKidsCaseloadEast ? 'Yes' : 'No',
+			wendysWonderfulKidsCaseloadWest: childDoc.wendysWonderfulKidsCaseloadWest ? 'Yes' : 'No',
+			coalitionMeeting: childDoc.coalitionMeeting ? 'Yes' : 'No',
+			matchingEvent: childDoc.matchingEvent ? 'Yes' : 'No'
 		}));
 
 		// retrieve the adoption workers from the social worker response

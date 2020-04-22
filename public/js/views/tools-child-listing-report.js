@@ -286,7 +286,15 @@
 			{ title: 'Emotional Needs', data: 'emotionalNeeds', visible: false },
 			{ title: 'Intellectual Needs', data: 'intellectualNeeds', visible: false },
 			{ title: 'Age at Registration', data: 'ageAtRegistration', visible: false },
-			{ title: 'Days Waiting', data: 'daysSinceRegistration', visible: false }
+			{ title: 'Days Waiting', data: 'daysSinceRegistration', visible: false },
+			{ title: 'Professional Photo', data: 'hasPhotolistingPhoto', visible: false },
+			{ title: 'Video Snapshot', data: 'hasVideoSnapshot', visible: false },
+			{ title: 'Adoptuskids website', data: 'onAdoptuskids', visible: false },
+			{ title: 'Wednesday\'s Child', data: 'wednesdaysChild', visible: false },
+			{ title: 'Wendy\'s Kids East', data: 'wendysWonderfulKidsCaseloadEast', visible: false },
+			{ title: 'Wendy\'s Kids West', data: 'wendysWonderfulKidsCaseloadWest', visible: false },
+			{ title: 'Coalition Meeting', data: 'coalitionMeeting', visible: false },
+			{ title: 'Matching Event', data: 'matchingEvent', visible: false }
 		]
 	});
 }());

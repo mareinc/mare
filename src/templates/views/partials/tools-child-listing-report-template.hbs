@@ -356,15 +356,47 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-6">
+                <div class="col-12">
                     <div class="row form-group">
-                        <div class="col-lg-4 col-md-12 group-label text-sm-right">
+                        <div class="col-2 group-label">
                             <h5>Addt'l Options:</h5>
                         </div>
-                        <div class="col-lg-4 col-sm-12">
-                            <div class="form-check text-right">
+                        <div class="col-10 d-flex flex-row flex-wrap justify-content-start">
+                            <div class="form-check mr-3">
                                 <input id="placedWithSiblings" class="form-check-input" type="checkbox" name="placedWithSiblings">
                                 <label class="form-check-label" for="placedWithSiblings">To be placed with siblings </label>
+                            </div>
+                            <div class="form-check mr-3">
+                                <input id="professionalPhoto" class="form-check-input" type="checkbox" name="professionalPhoto">
+                                <label class="form-check-label" for="professionalPhoto">Professional photo </label>
+                            </div>
+                            <div class="form-check mr-3">
+                                <input id="videoSnapshot" class="form-check-input" type="checkbox" name="videoSnapshot">
+                                <label class="form-check-label" for="videoSnapshot">Video snapshot </label>
+                            </div>
+                            <div class="form-check mr-3">
+                                <input id="adoptUsKids" class="form-check-input" type="checkbox" name="adoptUsKids">
+                                <label class="form-check-label" for="adoptUsKids">Adoptuskids website </label>
+                            </div>
+                            <div class="form-check mr-3">
+                                <input id="wednesdaysChild" class="form-check-input" type="checkbox" name="wednesdaysChild">
+                                <label class="form-check-label" for="wednesdaysChild">Wednesday's Child </label>
+                            </div>
+                            <div class="form-check mr-3">
+                                <input id="wendysKidsEast" class="form-check-input" type="checkbox" name="wendysKidsEast">
+                                <label class="form-check-label" for="wendysKidsEast">Wendy's Wonderful Kids Caseload East </label>
+                            </div>
+                             <div class="form-check mr-3">
+                                <input id="wendysKidsWest" class="form-check-input" type="checkbox" name="wendysKidsWest">
+                                <label class="form-check-label" for="wendysKidsWest">Wendy's Wonderful Kids Caseload West </label>
+                            </div>
+                            <div class="form-check mr-3">
+                                <input id="coalitionMeeting" class="form-check-input" type="checkbox" name="coalitionMeeting">
+                                <label class="form-check-label" for="coalitionMeeting">Coalition meeting </label>
+                            </div>
+                            <div class="form-check">
+                                <input id="matchingEvent" class="form-check-input" type="checkbox" name="matchingEvent">
+                                <label class="form-check-label" for="matchingEvent">Matching event </label>
                             </div>
                         </div>
                     </div>
@@ -419,6 +451,14 @@
                     <th>Intellectual Needs</th>
                     <th>Age at Registration</th>
                     <th>Days Waiting</th>
+                    <th>Professional Photo</th>
+                    <th>Video Snapshot</th>
+                    <th>Adoptuskids website</th>
+                    <th>Wednesday's Child</th>
+                    <th>Wendy's Kids East</th>
+                    <th>Wendy's Kids West</th>
+                    <th>Coalition Meeting</th>
+                    <th>Matching Event</th>
                 </tr>
                 \{{#each results as |result|}}
                     <tr>
@@ -439,6 +479,14 @@
                         <td>\{{ result.intellectualNeeds }}</td>
                         <td>\{{ result.ageAtRegistration }}</td>
                         <td>\{{ result.daysSinceRegistration }}</td>
+                        <td>\{{ result.hasPhotolistingPhoto }}</td>
+                        <td>\{{ result.hasVideoSnapshot }}</td>
+                        <td>\{{ result.onAdoptuskids }}</td>
+                        <td>\{{ result.wednesdaysChild }}</td>
+                        <td>\{{ result.wendysWonderfulKidsCaseloadEast }}</td>
+                        <td>\{{ result.wendysWonderfulKidsCaseloadWest }}</td>
+                        <td>\{{ result.coalitionMeeting }}</td>
+                        <td>\{{ result.matchingEvent }}</td>
                     </tr>
                 \{{/each}}
             </table>
