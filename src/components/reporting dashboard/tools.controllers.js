@@ -1430,7 +1430,7 @@ exports.getChildListingData = ( req, res, next ) => {
 		keystone.list( 'Child' ).model
 			.find( searchCriteria )
 			.limit( 1000 )
-			.populate( 'gender race status legalStatus residence adoptionWorker adoptionWorkerAgencyRegion' )
+			.populate( 'gender race status legalStatus residence adoptionWorker adoptionWorkerAgencyRegion siblingsToBePlacedWith' )
 			.lean()
 			.exec(),
 		// if thare are any social worker criteria specified, get the social worker docs to seed the social worker selects on the search form
@@ -1472,8 +1472,8 @@ exports.getChildListingData = ( req, res, next ) => {
 			registrationNumber: childDoc.registrationNumber,
 			gender: childDoc.gender.gender,
 			race: childDoc.race && childDoc.race.length > 0
-					? childDoc.race.map( race => race.race ).join( ', ' )
-					: '--',
+				? childDoc.race.map( race => race.race ).join( ', ' )
+				: '--',
 			placementStatus: childDoc.status.childStatus,
 			legalStatus: childDoc.legalStatus.legalStatus,
 			residence: childDoc.residence ? childDoc.residence.residence : '--',
@@ -1485,8 +1485,12 @@ exports.getChildListingData = ( req, res, next ) => {
 			ageAtRegistration: Math.floor( ( childDoc.registrationDate - childDoc.birthDate ) / MILLISECONDS_TO_YEARS_CONVERSION_FACTOR ),
 			currentAge: moment.utc().startOf( 'day' ).diff( moment.utc( childDoc.birthDate ), 'years' ),
 			daysSinceRegistration: moment.utc().startOf( 'day' ).diff( moment.utc( childDoc.registrationDate ), 'days' ),
+			registrationDate: moment.utc( childDoc.registrationDate ).format( 'MM/DD/YYYY' ),
+			addedToWebDate: moment.utc( childDoc.visibleInGalleryDate ).format( 'MM/DD/YYYY' ),
 			mustBePlacedWithSiblings: childDoc.mustBePlacedWithSiblings ? 'Yes' : 'No',
-			numSiblingsToBePlacedWith: childDoc.mustBePlacedWithSiblings ? childDoc.siblingsToBePlacedWith.length : 0,
+			siblingsToBePlacedWith: childDoc.siblingsToBePlacedWith && childDoc.siblingsToBePlacedWith.length > 0
+				? childDoc.siblingsToBePlacedWith.map( sibling => `${sibling.name.first} ${sibling.name.last}` ).join( ', ' )
+				: '',
 			hasPhotolistingPhoto: childDoc.hasPhotolistingPhoto ? 'Yes' : 'No',
 			hasVideoSnapshot: childDoc.hasVideoSnapshot ? 'Yes' : 'No',
 			onAdoptuskids: childDoc.onAdoptuskids ? 'Yes' : 'No',
