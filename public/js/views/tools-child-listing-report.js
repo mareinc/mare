@@ -275,7 +275,14 @@
 		},
 
 		childListingColumns: [
-			{ title: 'Reg #', data: 'registrationNumber' },
+			{
+				title: 'Reg #',
+				data: 'registrationNumber',
+				orderable: false,
+				render: function( data, type, row, meta ) {
+					return '<a href="/keystone/children/' + row.id + '">' + data + '</a>';
+				}
+			},
 			{ title: 'First Name', data: 'firstName' },
 			{ title: 'Last Name', data: 'lastName' },
 			{ title: 'Gender', data: 'gender' },
