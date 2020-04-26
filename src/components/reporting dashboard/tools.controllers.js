@@ -1238,10 +1238,10 @@ exports.getChildListingData = ( req, res, next ) => {
 			const CHILD_AGE_IN_YEARS = ( this.registrationDate - this.birthDate ) / ${MILLISECONDS_TO_YEARS_CONVERSION_FACTOR};
 			return ${
 				query.registrationAgeFrom && query.registrationAgeTo
-					? `CHILD_AGE_IN_YEARS >= ${query.registrationAgeFrom} && CHILD_AGE_IN_YEARS <= ${query.registrationAgeTo}`
+					? `CHILD_AGE_IN_YEARS >= ${query.registrationAgeFrom} && CHILD_AGE_IN_YEARS <= ${Number(query.registrationAgeTo) + 1}`
 					: query.registrationAgeFrom
 						? `CHILD_AGE_IN_YEARS >= ${query.registrationAgeFrom}`
-						: `CHILD_AGE_IN_YEARS <= ${query.registrationAgeTo}`
+						: `CHILD_AGE_IN_YEARS <= ${Number(query.registrationAgeTo) + 1}`
 			};
 		}`;
 	}
