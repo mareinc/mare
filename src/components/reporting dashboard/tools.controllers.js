@@ -1229,11 +1229,6 @@ exports.getChildListingData = ( req, res, next ) => {
 	let registrationDateTo = new Date( query.regDateTo );
 	searchCriteria.registrationDate = { $gte: registrationDateFrom, $lte: registrationDateTo };
 
-	// added to web date range criteria (required)
-	let webAddedDateFrom = new Date( query.webDateFrom );
-	let webAddedDateTo = new Date( query.webDateTo );
-	searchCriteria.visibleInGalleryDate = { $gte: webAddedDateFrom, $lte: webAddedDateTo };
-
 	// age at registration date range
 	const MILLISECONDS_TO_YEARS_CONVERSION_FACTOR = 31536000000;
 	if ( query.registrationAgeFrom || query.registrationAgeTo ) {
@@ -1430,6 +1425,8 @@ exports.getChildListingData = ( req, res, next ) => {
 		searchCriteria[ 'image.url' ] = { $exists: true, $ne: null };
 	}
 
+	console.log(searchCriteria);
+
 	Promise.all([
 		// get the media features that match the specified date range and criteria
 		keystone.list( 'Child' ).model
@@ -1485,13 +1482,13 @@ exports.getChildListingData = ( req, res, next ) => {
 			physicalNeeds: childDoc.physicalNeeds || '--',
 			emotionalNeeds: childDoc.emotionalNeeds || '--',
 			intellectualNeeds: childDoc.intellectualNeeds || '--',
-			adoptionWorker: childDoc.adoptionWorker.name.full,
-			adoptionWorkerRegion: childDoc.adoptionWorkerAgencyRegion.region,
+			adoptionWorker: childDoc.adoptionWorker ? childDoc.adoptionWorker.name.full : 'N/A',
+			adoptionWorkerRegion: childDoc.adoptionWorkerAgencyRegion ? childDoc.adoptionWorkerAgencyRegion.region : 'N/A',
 			ageAtRegistration: Math.floor( ( childDoc.registrationDate - childDoc.birthDate ) / MILLISECONDS_TO_YEARS_CONVERSION_FACTOR ),
 			currentAge: moment.utc().startOf( 'day' ).diff( moment.utc( childDoc.birthDate ), 'years' ),
 			daysSinceRegistration: moment.utc().startOf( 'day' ).diff( moment.utc( childDoc.registrationDate ), 'days' ),
 			registrationDate: moment.utc( childDoc.registrationDate ).format( 'MM/DD/YYYY' ),
-			addedToWebDate: moment.utc( childDoc.visibleInGalleryDate ).format( 'MM/DD/YYYY' ),
+			addedToWebDate: childDoc.visibleInGalleryDate ? moment.utc( childDoc.visibleInGalleryDate ).format( 'MM/DD/YYYY' ) : 'N/A',
 			mustBePlacedWithSiblings: childDoc.mustBePlacedWithSiblings ? 'Yes' : 'No',
 			siblingsToBePlacedWith: childDoc.siblingsToBePlacedWith && childDoc.siblingsToBePlacedWith.length > 0
 				? childDoc.siblingsToBePlacedWith.map( sibling => `${sibling.name.first} ${sibling.name.last}` ).join( ', ' )
@@ -1561,6 +1558,7 @@ exports.getChildListingData = ( req, res, next ) => {
 		}
 	})
 	.catch( err => {
+		console.error(err);
 		// log an error for debugging purposes
 		console.error( `error loading child listing report for the dashboard - ${ err }` );
 

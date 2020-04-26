@@ -47,8 +47,6 @@
 			// set the search date ranges
 			this.$el.find( '[name="registrationDateFrom"]' ).val( regDateFrom );
 			this.$el.find( '[name="registrationDateTo"]' ).val( regDateTo );
-			this.$el.find( '[name="webAddedDateFrom"]' ).val( webDateFrom );
-			this.$el.find( '[name="webAddedDateTo"]' ).val( webDateTo );
 
 			// initialize select inputs
 			this.$el.find( '.race-select' ).select2({
@@ -104,10 +102,6 @@
 			var registrationDateFrom = this.$el.find( '[name="registrationDateFrom"]' ).val();
 			var registrationDateTo = this.$el.find( '[name="registrationDateTo"]' ).val();
 
-			// get the added to web date range for the child listing search
-			var webAddedDateFrom = this.$el.find( '[name="webAddedDateFrom"]' ).val();
-			var webAddedDateTo = this.$el.find( '[name="webAddedDateTo"]' ).val();
-
 			// collect all values of the form
 			var params = this.$el.find( 'form' ).serializeArray();
 			
@@ -123,7 +117,6 @@
 			mare.routers.tools.navigate(
 				'child-listing-report/' + 
 				registrationDateFrom + '/' + registrationDateTo + '/' +
-				webAddedDateFrom + '/' + webAddedDateTo +
 				( queryString.length > 0 ? '?' + queryString : '' ), 
 				{ trigger: true }
 			);
@@ -169,12 +162,6 @@
 			}, {
 				name: 'regDateTo',
 				value: this.$el.find( '[name="registrationDateTo"]' ).val()
-			}, {
-				name: 'webDateFrom',
-				value: this.$el.find( '[name="webAddedDateFrom"]' ).val()
-			}, {
-				name: 'webDateTo',
-				value: this.$el.find( '[name="webAddedDateTo"]' ).val()
 			});
 			
 			// build the query string
@@ -189,19 +176,18 @@
 		},
 
 		/* render the view onto the page */
-		render: function render( regDateFrom, regDateTo, webDateFrom, webDateTo, params ) {
+		render: function render( regDateFrom, regDateTo, params ) {
 			
             var view = this;
 			view.$el.html( view.template() );
 			
 			// if the date ranges are not passed in, initialize the form using the default date ranges
-			if ( !regDateFrom || !regDateTo || !webDateFrom || !webDateTo ) {
+			if ( !regDateFrom || !regDateTo ) {
 
 				view.$el.html( view.template() );
 				var defaultFromDate = view.$el.find( '#defaultFromDate' ).val();
 				var defaultToDate = view.$el.find( '#defaultToDate' ).val();
-				var allTimeFromDate = view.$el.find( '#allTimeFromDate' ).val();
-				view.initializeSearchForm( defaultFromDate, defaultToDate, allTimeFromDate, defaultToDate  );
+				view.initializeSearchForm( defaultFromDate, defaultToDate  );
 
 			// otherwise, set the date ranges using the route params and perform a search using the query params
 			} else {
@@ -209,15 +195,15 @@
 				view.$el.html( view.template({
 					waitingForResults: true
 				}));
-				view.initializeSearchForm( regDateFrom, regDateTo, webDateFrom, webDateTo, params );
+				view.initializeSearchForm( regDateFrom, regDateTo, params );
 
 				// search for children using the date range and query params
-				view.getChildListingData( regDateFrom, regDateTo, webDateFrom, webDateTo, params )
+				view.getChildListingData( regDateFrom, regDateTo, params )
 					.done( function( data ) {
 
 						// render the view with the search results
 						view.$el.html( view.template( data ) );
-						view.initializeSearchForm( regDateFrom, regDateTo, webDateFrom, webDateTo, params );
+						view.initializeSearchForm( regDateFrom, regDateTo, params );
 
 						// initialize a DataTable (https://datatables.net/) with the inquiry results
 						// save a reference to the table so it can be destroyed when the view changes
@@ -243,13 +229,11 @@
 			}
 		},
 
-		getChildListingData: function( regDateFrom, regDateTo, webDateFrom, webDateTo, params ) {
+		getChildListingData: function( regDateFrom, regDateTo, params ) {
 
 			var queryParams = params;
 			queryParams.regDateFrom = regDateFrom;
 			queryParams.regDateTo = regDateTo;
-			queryParams.webDateFrom = webDateFrom;
-			queryParams.webDateTo = webDateTo;
 			
 			return $.Deferred( function( defer ) {
 				$.ajax({

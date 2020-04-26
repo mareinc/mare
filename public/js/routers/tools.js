@@ -18,7 +18,7 @@
 			'media-features-report'									: 'loadMediaFeaturesReport',
 			'media-features-report/:fromDate/:toDate(?*queryString)': 'loadMediaFeaturesReport',
 			'child-listing-report'									: 'loadChildListingReport',
-			'child-listing-report/:regDateFrom/:regDateTo/:webDateFrom/:webDateTo(?*queryString)'
+			'child-listing-report/:regDateFrom/:regDateTo/(?*queryString)'
 																	: 'loadChildListingReport',
 			'*other'												: 'loadDefault'
 		},
@@ -63,14 +63,8 @@
 			mare.views.tools.showMediaFeaturesReport( fromDate, toDate, this.parseQueryString( queryString ) );
 		},
 
-		loadChildListingReport: function( regDateFrom, regDateTo, webDateFrom, webDateTo, queryString ) {
-			mare.views.tools.showChildListingReport( 
-				regDateFrom,
-				regDateTo,
-				webDateFrom,
-				webDateTo,
-				this.parseQueryString( queryString ) 
-			);
+		loadChildListingReport: function( regDateFrom, regDateTo, queryString ) {
+			mare.views.tools.showChildListingReport( regDateFrom, regDateTo, this.parseQueryString( queryString ) );
 		},
 		
 		loadDefault: function() {
