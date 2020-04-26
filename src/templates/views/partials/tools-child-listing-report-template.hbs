@@ -37,39 +37,6 @@
                 </div>
             </div>
         </div>
-        <div class="filter-form mb-2">
-            <div class="row">
-                <div class="col-lg-2 align-middle">
-                    <div class="filter-form__label mh-100">
-                        <p>Date Added to Web</p>
-                    </div>
-                </div>
-                <div class="col-6 col-lg-5">
-                    <div class="form-group">
-                        <div class="input-daterange">
-                            <label for="webAddedDateFrom"><span class="sr-only">Added to Web Date - From</span>
-                                <input  class="form-control" type="date" name="webAddedDateFrom" id="webAddedDateFrom" required />
-                                <div class="input-group-addon">
-                                    <span></span>
-                                </div>
-                            </label>								
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6 col-lg-5">
-                    <div class="form-group">
-                        <div class="input-daterange">
-                            <label for="webAddedDateTo"><span class="sr-only">Added to Web Date - To</span>
-                                <input class="form-control" type="date" name="webAddedDateTo" id="webAddedDateTo" required />
-                                <div class="input-group-addon">
-                                    <span></span>
-                                </div>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <form class="matching-form">
             <input type="hidden" id="allTimeFromDate" value="1900-01-01" />
@@ -93,23 +60,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-6">
-                    <div class="row form-group">
-                        <div class="col-sm-12 col-md-4 text-sm-right" >
-                            <label class="bold">Added to Web Fiscal Years:</label>
-                        </div>
-                        <div class="col-sm-12 col-md-8 fiscal-year-button-container added-to-web-fiscal-year-buttons">
-                            {{#each fiscalYears as |fiscalYear|}}
-                                <button class="btn btn-outline-primary"
-                                    data-target="web"
-                                    data-year-start="{{ fiscalYear.startDate }}" 
-                                    data-year-end="{{ fiscalYear.endDate }}">
-                                        {{ fiscalYear.fiscalYear }}
-                                </button>
-                            {{/each}}
-                        </div>
-                    </div>
-                </div>
+                <div class="col-6"></div>
                 <div class="col-6">
                     <div class="row form-group">
                         <div class="col-sm-12 col-md-4 text-sm-right" >

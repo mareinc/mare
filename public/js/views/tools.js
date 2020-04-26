@@ -145,10 +145,10 @@
 			this.closeSideNav();
 		},
 
-		showChildListingReport: function( regDateFrom, regDateTo, webDateFrom, webDateTo, params ) {
+		showChildListingReport: function( regDateFrom, regDateTo, params ) {
 			// destroy existing table
 			this.destroyTable();
-			mare.views.childListingReport.render( regDateFrom, regDateTo, webDateFrom, webDateTo, params );
+			mare.views.childListingReport.render( regDateFrom, regDateTo, params );
 			// update the body class to indicate what screen this is
 			this.$el.attr( 'class', 'tools__child-listing-report' );
 			// initialize the side nav
