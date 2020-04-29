@@ -1402,12 +1402,20 @@ exports.getChildListingData = ( req, res, next ) => {
 
 	// wendy's kids caseload east criteria
 	if ( !!query.wendysKidsEast ) {
-		searchCriteria.wendysWonderfulKidsCaseloadEast = true;
+		searchCriteria[ '$or' ] = searchCriteria[ '$or' ] || [];
+		searchCriteria[ '$or' ].push(
+			{ wendysWonderfulKidsCaseloadEast: true },
+			{ wendysWonderfulKidsCaseloadEastSiblingGroup: true }
+		);
 	}
 
 	// wendy's kids caseload west criteria
 	if ( !!query.wendysKidsWest ) {
-		searchCriteria.wendysWonderfulKidsCaseloadWest = true;
+		searchCriteria[ '$or' ] = searchCriteria[ '$or' ] || [];
+		searchCriteria[ '$or' ].push(
+			{ wendysWonderfulKidsCaseloadWest: true },
+			{ wendysWonderfulKidsCaseloadWestSiblingGroup: true }
+		);
 	}
 	
 	// coalition meeting criteria
@@ -1500,8 +1508,8 @@ exports.getChildListingData = ( req, res, next ) => {
 			hasVideoSnapshot: childDoc.hasVideoSnapshot ? 'Yes' : 'No',
 			onAdoptuskids: childDoc.onAdoptuskids ? 'Yes' : 'No',
 			wednesdaysChild: childDoc.wednesdaysChild ? 'Yes' : 'No',
-			wendysWonderfulKidsCaseloadEast: childDoc.wendysWonderfulKidsCaseloadEast ? 'Yes' : 'No',
-			wendysWonderfulKidsCaseloadWest: childDoc.wendysWonderfulKidsCaseloadWest ? 'Yes' : 'No',
+			wendysWonderfulKidsCaseloadEast: childDoc.wendysWonderfulKidsCaseloadEast || childDoc.wendysWonderfulKidsCaseloadEastSiblingGroup ? 'Yes' : 'No',
+			wendysWonderfulKidsCaseloadWest: childDoc.wendysWonderfulKidsCaseloadWest || childDoc.wendysWonderfulKidsCaseloadWestSiblingGroup ? 'Yes' : 'No',
 			coalitionMeeting: childDoc.coalitionMeeting ? 'Yes' : 'No',
 			matchingEvent: childDoc.matchingEvent ? 'Yes' : 'No',
 			weekendFamilyConnections: childDoc.weekendFamilyConnections ? 'Yes' : 'No',
