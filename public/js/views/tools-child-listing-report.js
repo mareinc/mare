@@ -286,6 +286,7 @@
 			{ title: 'Wendy\'s Kids West', data: 'wendysWonderfulKidsCaseloadWest', visible: false },
 			{ title: 'Coalition Meeting', data: 'coalitionMeeting', visible: false },
 			{ title: 'Matching Event', data: 'matchingEvent', visible: false },
+			{ title: 'Weekend Family Connections ', data: 'weekendFamilyConnections', visible: false },
 			{ 
 				title: 'Display Image',
 				data: 'displayImage',
