@@ -4,6 +4,9 @@
 }
 
 .contact-card__name {
+    display: flex;
+    align-items: center;
+    height: 3.2em;
     font-size: 1.4em;
     font-weight: 300;
     line-height: 1.6em;
