@@ -1,48 +1,23 @@
 <script id="tools-child-listing-report-template" type="text/x-handlebars-template">
 
-    <h2 class="panel__h2 mb-2">Child Listing Report</h2>
+    <h2 class="panel__h2">Child Listing Report</h2>
 
     <div class="child-listing-report">
 
-        <div class="filter-form mb-1">
-            <div class="row">
-                <div class="col-lg-2 align-middle">
-                    <div class="filter-form__label mh-100">
-                        <p>Registration Date</p>
-                    </div>
-                </div>
-                <div class="col-6 col-lg-5">
-                    <div class="form-group">
-                        <div class="input-daterange">
-                            <label for="registrationDateFrom"><span class="sr-only">Registration Date - From</span>
-                                <input  class="form-control" type="date" name="registrationDateFrom" id="registrationDateFrom" required />
-                                <div class="input-group-addon">
-                                    <span></span>
-                                </div>
-                            </label>								
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6 col-lg-5">
-                    <div class="form-group">
-                        <div class="input-daterange">
-                            <label for="registrationDateTo"><span class="sr-only">Registration Date - To</span>
-                                <input class="form-control" type="date" name="registrationDateTo" id="registrationDateTo" required />
-                                <div class="input-group-addon">
-                                    <span></span>
-                                </div>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <form class="matching-form">
-            <input type="hidden" id="allTimeFromDate" value="1900-01-01" />
             <input type="hidden" id="defaultFromDate" value="{{ defaultDateRanges.year.fromDate }}" />
             <input type="hidden" id="defaultToDate" value="{{ defaultDateRanges.year.toDate }}" />
             <div class="row">
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right" >
+                            <label class="bold">Registration Date Range:</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                            <input type="text" class="date-range-picker" name="registration-date-range" />
+                        </div>
+                    </div>
+                </div>
                 <div class="col-6">
                     <div class="row form-group">
                         <div class="col-sm-12 col-md-4 text-sm-right" >
@@ -60,7 +35,6 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-6"></div>
                 <div class="col-6">
                     <div class="row form-group">
                         <div class="col-sm-12 col-md-4 text-sm-right" >

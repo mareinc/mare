@@ -43,6 +43,20 @@
 				}
 			}
 
+			// initialize the registration date range picker
+			var $dateRangeInput = this.$el.find( '[name="registration-date-range"]' );
+			$dateRangeInput.daterangepicker({
+				startDate: moment( regDateFrom ),
+    			endDate: moment( regDateTo ),
+				alwaysShowCalendars: true,
+				showDropdowns: true,
+				ranges: {
+					'Last 7 Days': [ moment().subtract( 6, 'days' ), moment() ],
+					'Last 30 Days': [ moment().subtract( 29, 'days' ), moment() ],
+					'Year to Date': [ moment().startOf( 'year' ), moment() ]
+				}
+			});
+
 			// set the search date ranges
 			this.$el.find( '[name="registrationDateFrom"]' ).val( regDateFrom );
 			this.$el.find( '[name="registrationDateTo"]' ).val( regDateTo );
@@ -98,15 +112,16 @@
 		handleSearchClick: function() {
 
 			// get the registration date range for the child listing search
-			var registrationDateFrom = this.$el.find( '[name="registrationDateFrom"]' ).val();
-			var registrationDateTo = this.$el.find( '[name="registrationDateTo"]' ).val();
+			var $dateRangeInputData = this.$el.find( '[name="registration-date-range"]' ).data( 'daterangepicker' );
+			var registrationDateFrom = $dateRangeInputData.startDate.format( 'YYYY-MM-DD' );
+			var registrationDateTo = $dateRangeInputData.endDate.format( 'YYYY-MM-DD' );
 
 			// collect all values of the form
 			var params = this.$el.find( 'form' ).serializeArray();
 			
-			// remove empty values
+			// remove empty values and ignore date range values
 			params = _.filter( params, function( value ) {
-				return value && value.value && value.value.length > 0 && value.name !== 'childId';
+				return value && value.value && value.value.length > 0 && value.name !== 'registration-date-range';
 			});
 
 			// build the query string
@@ -125,8 +140,9 @@
 			event.preventDefault();
 
 			// set the registration date range
-			this.$el.find( '[name="registrationDateFrom"]' ).val( $( event.target ).data( 'yearStart' ) );
-			this.$el.find( '[name="registrationDateTo"]' ).val( $( event.target ).data( 'yearEnd' ) );
+			var $dateRangeInputData = this.$el.find( '[name="registration-date-range"]' ).data( 'daterangepicker' );
+			$dateRangeInputData.setStartDate( moment( $( event.target ).data( 'yearStart' ) ) );
+			$dateRangeInputData.setEndDate( moment( $( event.target ).data( 'yearEnd' ) ) );
 		},
 
 		handleXlsxExportClick: function() {
@@ -171,7 +187,6 @@
 		render: function render( regDateFrom, regDateTo, params ) {
 			
             var view = this;
-			view.$el.html( view.template() );
 			
 			// if the date ranges are not passed in, initialize the form using the default date ranges
 			if ( !regDateFrom || !regDateTo ) {
