@@ -186,8 +186,8 @@
 
 			this.clearModalContents();
 
-			// remove styles that were generated for modal print support
-			$( '#modal-print-styles' ).remove();
+			// remove styles and DOM elements that were generated for modal print support
+			$( '#modal-print-styles, #printSection' ).remove();
 			
 			// update the url
 			Backbone.history.navigate( 'gallery' );
