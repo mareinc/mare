@@ -50,10 +50,13 @@
     			endDate: moment( regDateTo ),
 				alwaysShowCalendars: true,
 				showDropdowns: true,
+				linkedCalendars: false,
+				minYear: 1995,
+				maxYear: parseInt( moment().format( 'YYYY' ), 10 ),
 				ranges: {
-					'Last 7 Days': [ moment().subtract( 6, 'days' ), moment() ],
 					'Last 30 Days': [ moment().subtract( 29, 'days' ), moment() ],
-					'Year to Date': [ moment().startOf( 'year' ), moment() ]
+					'Year to Date': [ moment().startOf( 'year' ), moment() ],
+					'All Time': [ moment( '1995-01-01' ), moment() ]
 				}
 			});
 
