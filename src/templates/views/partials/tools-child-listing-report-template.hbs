@@ -358,6 +358,9 @@
                 <div class="matching-results-table__record-count">
                     <div class="record-count__label">Total Child Listings:</div>
                     \{{ results.length }}
+                    \{{#if limitReached}}
+                    <div class="recoord-count__limit">*Your search returned the maximum allowed number of results, some results could not be displayed.</div>
+                    \{{/if}}
                 </div>
             </div>
 

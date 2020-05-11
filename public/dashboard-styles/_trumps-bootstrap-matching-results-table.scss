@@ -20,12 +20,18 @@
     &__record-count {
         margin-left: auto;
         display: flex;
-        flex-flow: row nowrap;
+        flex-flow: row wrap;
         justify-content: flex-end;
 
         .record-count__label {
             margin-right: 3px;
             font-weight: 700;
+        }
+
+        .recoord-count__limit {
+            width: 100%;
+            text-align: right;
+            font-weight: bold;
         }
     }
 }

@@ -1217,6 +1217,9 @@ exports.getMediaFeaturesData = ( req, res, next ) => {
 };
 
 exports.getChildListingData = ( req, res, next ) => {
+
+	// set a maximum number of results that can be returned to prevent crashes/freezing
+	const MAX_RESULTS = 5000;
 	
 	// get the query from the request object
 	let query = req.query;
@@ -1442,7 +1445,7 @@ exports.getChildListingData = ( req, res, next ) => {
 		// get the media features that match the specified date range and criteria
 		keystone.list( 'Child' ).model
 			.find( searchCriteria )
-			.limit( 1000 )
+			.limit( MAX_RESULTS )
 			.populate( 'gender race status legalStatus residence adoptionWorker adoptionWorkerAgencyRegion siblingsToBePlacedWith' )
 			.lean()
 			.exec(),
@@ -1565,7 +1568,8 @@ exports.getChildListingData = ( req, res, next ) => {
 				adoptionWorkers,
 				recruitmentWorkers,
 				adoptionWorkerAgencies,
-				recruitmentWorkerAgencies
+				recruitmentWorkerAgencies,
+				limitReached: childListings.length === MAX_RESULTS
 			});
 		}
 	})
