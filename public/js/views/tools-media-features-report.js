@@ -43,9 +43,21 @@
 				}
 			}
 
-			// set the search date range
-			this.$el.find( '[name="fromDate"]' ).val( fromDate );
-            this.$el.find( '[name="toDate"]' ).val( toDate );
+			// initialize the search date range picker
+			this.$el.find( '[name="media-feature-date-range"]' ).daterangepicker({
+				startDate: moment( fromDate ),
+    			endDate: moment( toDate ),
+				alwaysShowCalendars: true,
+				showDropdowns: true,
+				linkedCalendars: false,
+				minYear: 1995,
+				maxYear: parseInt( moment().format( 'YYYY' ), 10 ),
+				ranges: {
+					'Last 30 Days': [ moment().subtract( 29, 'days' ), moment() ],
+					'Year to Date': [ moment().startOf( 'year' ), moment() ],
+					'All Time': [ moment( '1995-01-01' ), moment() ]
+				}
+			});
             
             // initialize select inputs
             this.$el.find( '.children-select' ).select2({
@@ -67,16 +79,17 @@
         
         handleSearchClick: function() {
 
-			// get the date range for the inquiry search
-			var fromDate = this.$el.find( '[name="fromDate"]' ).val();
-			var toDate = this.$el.find( '[name="toDate"]' ).val();
+			// get the date range for the media feature search
+			var $dateRangeInputData = this.$el.find( '[name="media-feature-date-range"]' ).data( 'daterangepicker' );
+			var fromDate = $dateRangeInputData.startDate.format( 'YYYY-MM-DD' );
+			var toDate = $dateRangeInputData.endDate.format( 'YYYY-MM-DD' );
 
 			// collect all values of the form
 			var params = this.$el.find( 'form' ).serializeArray();
 			
-			// remove empty values
+			// remove empty values & ignore date range values
 			params = _.filter( params, function( value ) {
-				return value && value.value && value.value.length > 0 && value.name !== 'childId';
+				return value && value.value && value.value.length > 0 && value.name !== 'media-feature-date-range';
 			});
 			
 			// build the query string
@@ -109,12 +122,13 @@
 			});
 
 			// add the date range to the params
+			var $dateRangeInputData = this.$el.find( '[name="media-feature-date-range"]' ).data( 'daterangepicker' );
 			params.push({
 				name: 'fromDate',
-				value: this.$el.find( '[name="fromDate"]' ).val()
+				value: $dateRangeInputData.startDate.format( 'YYYY-MM-DD' )
 			}, {
 				name: 'toDate',
-				value: this.$el.find( '[name="toDate"]' ).val()
+				value: $dateRangeInputData.endDate.format( 'YYYY-MM-DD' )
 			});
 			
 			// build the query string
@@ -128,8 +142,9 @@
 			event.preventDefault();
 
 			// set the search date range
-			this.$el.find( '[name="fromDate"]' ).val( $(event.target).data('yearStart') );
-			this.$el.find( '[name="toDate"]' ).val( $(event.target).data('yearEnd') );
+			var $dateRangeInputData = this.$el.find( '[name="media-feature-date-range"]' ).data( 'daterangepicker' );
+			$dateRangeInputData.setStartDate( moment( $( event.target ).data( 'yearStart' ) ) );
+			$dateRangeInputData.setEndDate( moment( $( event.target ).data( 'yearEnd' ) ) );
 		},
 
 		/* render the view onto the page */

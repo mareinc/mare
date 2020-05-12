@@ -1,43 +1,9 @@
 <script id="tools-media-features-report-template" type="text/x-handlebars-template">
 
-    <h2 class="panel__h2 mb-2">Media Features Report</h2>
+    <h2 class="panel__h2">Media Features Report</h2>
 
     <div class="media-features-report">
         
-        <div class="filter-form mb-2">
-            <div class="row">
-                <div class="col-lg-2 align-middle">
-                    <div class="filter-form__label mh-100">
-                    <p>Date range:</p>
-                    </div>
-                </div>
-                <div class="col-6 col-lg-5">
-                    <div class="form-group">
-                        <div class="input-daterange">
-                            <label for="fromDate"><span class="sr-only">To Date</span>
-                                <input  class="form-control" type="date" name="fromDate" id="fromDate" value="{{ fromDate }}" required />
-                                <div class="input-group-addon">
-                                    <span></span>
-                                </div>
-                            </label>								
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6 col-lg-5">
-                    <div class="form-group">
-                        <div class="input-daterange">
-                            <label for="toDate"><span class="sr-only">To Date</span>
-                                <input class="form-control" type="date" name="toDate" id="toDate" value="{{ toDate }}" required />
-                                <div class="input-group-addon">
-                                    <span></span>
-                                </div>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <form class="matching-form">
             <input type="hidden" id="defaultFromDate" value="{{ defaultDateRanges.month.fromDate }}" />
             <input type="hidden" id="defaultToDate" value="{{ defaultDateRanges.month.toDate }}" />
@@ -45,14 +11,10 @@
                 <div class="col-6">
                     <div class="row form-group">
                         <div class="col-sm-12 col-md-4 text-sm-right" >
-                            <label for="children" class="bold">Children:</label>
+                            <label class="bold">Media Feature Date Range:</label>
                         </div>
                         <div class="col-sm-12 col-md-8">
-                            <select id="children" name="children[]" class="form-control children-select" multiple>
-                                \{{#each children as |child|}}
-                                    <option value="\{{ child.id }}" selected>\{{ child.text }}</option>
-                                \{{/each}}
-                            </select>
+                            <input type="text" class="date-range-picker" name="media-feature-date-range" />
                         </div>
                     </div>
                 </div>
@@ -75,6 +37,20 @@
                                         {{ fiscalYear.fiscalYear }}
                                 </button>
                             {{/each}}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right" >
+                            <label for="children" class="bold">Children:</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                            <select id="children" name="children[]" class="form-control children-select" multiple>
+                                \{{#each children as |child|}}
+                                    <option value="\{{ child.id }}" selected>\{{ child.text }}</option>
+                                \{{/each}}
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -109,6 +85,7 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-6"></div>
             </div>
         </form>
 
@@ -133,6 +110,9 @@
                 <div class="matching-results-table__record-count">
                     <div class="record-count__label">Total Media Features:</div>
                     \{{ results.length }}
+                    \{{#if limitReached}}
+                    <div class="recoord-count__limit">*Your search returned the maximum allowed number of results, some results could not be displayed.</div>
+                    \{{/if}}
                 </div>
             </div>
 

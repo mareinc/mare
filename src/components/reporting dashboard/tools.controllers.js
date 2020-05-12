@@ -981,8 +981,14 @@ exports.getPlacementData = ( req, res, next ) => {
 
 exports.getMediaFeaturesData = ( req, res, next ) => {
 
+	// set a maximum number of results that can be returned to prevent crashes/freezing
+	const MAX_RESULTS = 1000;
+
 	// get the query from the request object
 	let query = req.query;
+
+	// create the search criteria object
+	let searchCriteria = {};
 	
 	// get the date range of the media feature search
 	let fromDate = new Date( query.fromDate );
@@ -993,13 +999,8 @@ exports.getMediaFeaturesData = ( req, res, next ) => {
 		return flashMessages.sendErrorFlashMessage( res, 'Error', 'Error loading inquiry data' );
 	}
 
-	// create the baseline search criteria with a date range
-	let searchCriteria = {
-		$and: [
-			{ date: { $gte: fromDate } },
-			{ date: { $lte: toDate } }
-		]
-	};
+	// set the search criteria date range
+	searchCriteria.date = { $gte: fromDate, $lte: toDate };
 
 	// children criteria (multiple)
 	let childrenCriteria;
@@ -1034,6 +1035,7 @@ exports.getMediaFeaturesData = ( req, res, next ) => {
 		// get the media features that match the specified date range and criteria
 		keystone.list( 'Media Feature' ).model
 			.find( searchCriteria )
+			.limit( MAX_RESULTS )
 			.populate( 'source' )
 			.populate({
 				path: 'children',
@@ -1071,7 +1073,7 @@ exports.getMediaFeaturesData = ( req, res, next ) => {
 			: false
 	])
 	.then( results => {
-		
+
 		let [ mediaFeatureDocs, childrenDocs, sourceDocs ] = results;
 
 		responseData = {
@@ -1134,6 +1136,9 @@ exports.getMediaFeaturesData = ( req, res, next ) => {
 				
 				return results;
 			}, []);
+
+			// check if media feature limit result has been reached
+			responseData.limitReached = mediaFeatureDocs.length === MAX_RESULTS;
 
 			// get inquiry data for each result (child)
 			return keystone.list( 'Inquiry' ).model
