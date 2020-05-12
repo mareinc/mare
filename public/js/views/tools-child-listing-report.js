@@ -44,8 +44,7 @@
 			}
 
 			// initialize the registration date range picker
-			var $dateRangeInput = this.$el.find( '[name="registration-date-range"]' );
-			$dateRangeInput.daterangepicker({
+			this.$el.find( '[name="registration-date-range"]' ).daterangepicker({
 				startDate: moment( regDateFrom ),
     			endDate: moment( regDateTo ),
 				alwaysShowCalendars: true,
@@ -59,10 +58,6 @@
 					'All Time': [ moment( '1995-01-01' ), moment() ]
 				}
 			});
-
-			// set the search date ranges
-			this.$el.find( '[name="registrationDateFrom"]' ).val( regDateFrom );
-			this.$el.find( '[name="registrationDateTo"]' ).val( regDateTo );
 
 			// initialize select inputs
 			this.$el.find( '.race-select' ).select2({
@@ -167,12 +162,13 @@
 			});
 
 			// add the date range to the params
+			var $dateRangeInputData = this.$el.find( '[name="registration-date-range"]' ).data( 'daterangepicker' );
 			params.push({
 				name: 'regDateFrom',
-				value: this.$el.find( '[name="registrationDateFrom"]' ).val()
+				value: $dateRangeInputData.startDate.format( 'YYYY-MM-DD' )
 			}, {
 				name: 'regDateTo',
-				value: this.$el.find( '[name="registrationDateTo"]' ).val()
+				value: $dateRangeInputData.endDate.format( 'YYYY-MM-DD' )
 			});
 			
 			// build the query string
