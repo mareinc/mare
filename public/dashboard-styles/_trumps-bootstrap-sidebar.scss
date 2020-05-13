@@ -6,7 +6,7 @@
 
 		// required to allow scrolling of nav items
 		flex-grow: 1;
-		overflow-y: scroll;
+		overflow-y: auto;
 	}
 	.list-group-item {
 		background: #4c6697;
