@@ -739,10 +739,7 @@ exports.getPlacementData = ( req, res, next ) => {
 
 		// add the date range criteria to the search criteria
 		let _searchCriteria = {
-			$and: [
-				{ [typeSpecificDateField]: { $gte: fromDate } },
-				{ [typeSpecificDateField]: { $lte: toDate } }
-			],
+			[typeSpecificDateField]: { $gte: fromDate, $lte: toDate },
 			...searchCriteria
 		};
 

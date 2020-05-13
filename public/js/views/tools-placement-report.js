@@ -11,9 +11,7 @@
 			'click .placement-search-reset-button'		: 'handleResetClick',
 			'click .placement-export-xlsx-button'		: 'handleXlsxExportClick',
 			'click .placement-export-pdf-button'		: 'handlePDFExportClick',
-			'click .placement-fiscal-year-buttons .btn'	: 'handleFiscalYearClick',
-			'change #source'							: 'handleSourceSelectChanged',
-			'change #additionalSource'					: 'handleSourceSelectChanged'
+			'click .placement-fiscal-year-buttons .btn'	: 'handleFiscalYearClick'
 		},
 
 		initialize: function() {
@@ -45,9 +43,21 @@
 				}
 			}
 
-			// set the search date range
-			this.$el.find( '[name="fromDate"]' ).val( fromDate );
-			this.$el.find( '[name="toDate"]' ).val( toDate );
+			// initialize the search date range picker
+			this.$el.find( '[name="placement-date-range"]' ).daterangepicker({
+				startDate: moment( fromDate ),
+    			endDate: moment( toDate ),
+				alwaysShowCalendars: true,
+				showDropdowns: true,
+				linkedCalendars: false,
+				minYear: 1995,
+				maxYear: parseInt( moment().format( 'YYYY' ), 10 ),
+				ranges: {
+					'Last 30 Days': [ moment().subtract( 29, 'days' ), moment() ],
+					'Year to Date': [ moment().startOf( 'year' ), moment() ],
+					'All Time': [ moment( '1995-01-01' ), moment() ]
+				}
+			});
 
 			// initialize select inputs
 			this.$el.find( '.source-select' ).select2({
@@ -73,16 +83,17 @@
 
 		handleSearchClick: function() {
 
-			// get the date range for the inquiry search
-			var fromDate = this.$el.find( '[name="fromDate"]' ).val();
-			var toDate = this.$el.find( '[name="toDate"]' ).val();
+			// get the date range for the placement search
+			var $dateRangeInputData = this.$el.find( '[name="placement-date-range"]' ).data( 'daterangepicker' );
+			var fromDate = $dateRangeInputData.startDate.format( 'YYYY-MM-DD' );
+			var toDate = $dateRangeInputData.endDate.format( 'YYYY-MM-DD' );
 
 			// collect all values of the form
 			var params = this.$el.find( 'form' ).serializeArray();
 			
 			// remove empty values
 			params = _.filter( params, function( value ) {
-				return value && value.value && value.value.length > 0 && value.name !== 'childId';
+				return value && value.value && value.value.length > 0 && value.name !== 'placement-date-range';
 			});
 			
 			// build the query string
@@ -115,12 +126,13 @@
 			});
 
 			// add the date range to the params
+			var $dateRangeInputData = this.$el.find( '[name="placement-date-range"]' ).data( 'daterangepicker' );
 			params.push({
 				name: 'fromDate',
-				value: this.$el.find( '[name="fromDate"]' ).val()
+				value: $dateRangeInputData.startDate.format( 'YYYY-MM-DD' )
 			}, {
 				name: 'toDate',
-				value: this.$el.find( '[name="toDate"]' ).val()
+				value: $dateRangeInputData.endDate.format( 'YYYY-MM-DD' )
 			});
 			
 			// build the query string
@@ -134,33 +146,9 @@
 			event.preventDefault();
 
 			// set the search date range
-			this.$el.find( '[name="fromDate"]' ).val( $(event.target).data('yearStart') );
-			this.$el.find( '[name="toDate"]' ).val( $(event.target).data('yearEnd') );
-		},
-
-		handleSourceSelectChanged: function( event ) {
-
-			// get any selected sources
-			var selectedSources = this.$el.find( '#source' ).val().concat( this.$el.find( '#additionalSource' ).val() );
-
-			// if there are any sources selected, display the 'All' button in fiscal year button group
-			if ( selectedSources && selectedSources.length > 0 ) {
-
-				this.$el.find( '#all-years' ).removeClass( 'hidden' );
-
-			// otherwise, hide the 'All' button in fiscal year button group
-			} else {
-
-				this.$el.find( '#all-years' ).addClass( 'hidden' );
-
-				// if this function was called as the result of a change event
-				if ( event ) {
-
-					// reset the date ranges to their defaults because a source is no longer selected
-					this.$el.find( '[name="fromDate"]' ).val( this.$el.find( '#defaultFromDate' ).val() );
-					this.$el.find( '[name="toDate"]' ).val( this.$el.find( '#defaultToDate' ).val() );
-				}
-			}
+			var $dateRangeInputData = this.$el.find( '[name="placement-date-range"]' ).data( 'daterangepicker' );
+			$dateRangeInputData.setStartDate( moment( $( event.target ).data( 'yearStart' ) ) );
+			$dateRangeInputData.setEndDate( moment( $( event.target ).data( 'yearEnd' ) ) );
 		},
 
 		render: function( fromDate, toDate, params ) {
@@ -172,7 +160,6 @@
 
 				view.$el.html( view.template() );
 				view.initializeSearchForm( view.$el.find( '#defaultFromDate' ).val(), view.$el.find( '#defaultToDate' ).val() );
-				view.handleSourceSelectChanged();
 				
 			// otherwise, set the from and to dates using the route params and perform a search using the query params
 			} else {
@@ -182,7 +169,6 @@
 					waitingForResults: true
 				}));
 				view.initializeSearchForm( fromDate, toDate, params );
-				view.handleSourceSelectChanged();
 
 				// search for placements using the date range and query params
 				view.getPlacementData( fromDate, toDate, params )
@@ -190,8 +176,6 @@
 						// render the view with the search results
 						view.$el.html( view.template( data ) );
 						view.initializeSearchForm( fromDate, toDate, params );
-						view.handleSourceSelectChanged();
-
 						
 						// initialize a DataTable (https://datatables.net/) with the placement results
 						// save a reference to the table so it can be destroyed when the view changes

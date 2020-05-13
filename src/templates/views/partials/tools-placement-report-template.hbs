@@ -1,42 +1,8 @@
 <script id="tools-placement-report-template" type="text/x-handlebars-template">
 
-    <h2 class="panel__h2 mb-2">Placement Report</h2>
+    <h2 class="panel__h2">Placement Report</h2>
 
     <div class="placement-report">
-        
-        <div class="filter-form mb-2">
-            <div class="row">
-                <div class="col-lg-2 align-middle">
-                    <div class="filter-form__label mh-100">
-                    <p>Date range:</p>
-                    </div>
-                </div>
-                <div class="col-6 col-lg-5">
-                    <div class="form-group">
-                        <div class="input-daterange">
-                            <label for="fromDate"><span class="sr-only">To Date</span>
-                                <input  class="form-control" type="date" name="fromDate" id="fromDate" value="{{ fromDate }}" required />
-                                <div class="input-group-addon">
-                                    <span></span>
-                                </div>
-                            </label>								
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6 col-lg-5">
-                    <div class="form-group">
-                        <div class="input-daterange">
-                            <label for="toDate"><span class="sr-only">To Date</span>
-                                <input class="form-control" type="date" name="toDate" id="toDate" value="{{ toDate }}" required />
-                                <div class="input-group-addon">
-                                    <span></span>
-                                </div>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <form class="matching-form">
 
@@ -44,6 +10,32 @@
             <input type="hidden" id="defaultToDate" value="{{ defaultDateRanges.month.toDate }}" />
 
             <div class="row">
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right" >
+                            <label class="bold">Placement Date Range:</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                            <input type="text" class="date-range-picker" name="placement-date-range" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right" >
+                            <label class="bold">Fiscal Years:</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8 fiscal-year-button-container placement-fiscal-year-buttons">
+                            {{#each fiscalYears as |fiscalYear|}}
+                                <button class="btn btn-outline-primary" 
+                                    data-year-start="{{ fiscalYear.startDate }}" 
+                                    data-year-end="{{ fiscalYear.endDate }}">
+                                        {{ fiscalYear.fiscalYear }}
+                                </button>
+                            {{/each}}
+                        </div>
+                    </div>
+                </div>
                 <div class="col-6">
                     <div class="row form-group">
                         <div class="col-sm-12 col-md-4 text-sm-right" >
@@ -55,28 +47,6 @@
                                     <option value="{{ type }}">{{ type }}</option>
                                 {{/each}}
                             </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6">
-                    <div class="row form-group">
-                        <div class="col-sm-12 col-md-4 text-sm-right" >
-                            <label class="bold">Fiscal Years:</label>
-                        </div>
-                        <div class="col-sm-12 col-md-8 fiscal-year-button-container placement-fiscal-year-buttons">
-                            <button id="all-years" 
-                                class="btn btn-outline-primary hidden"
-                                data-year-start="1900-01-01" 
-                                data-year-end="{{date format="YYYY-MM-DD"}}">
-                                All
-                            </button>
-                            {{#each fiscalYears as |fiscalYear|}}
-                                <button class="btn btn-outline-primary" 
-                                    data-year-start="{{ fiscalYear.startDate }}" 
-                                    data-year-end="{{ fiscalYear.endDate }}">
-                                        {{ fiscalYear.fiscalYear }}
-                                </button>
-                            {{/each}}
                         </div>
                     </div>
                 </div>
@@ -108,6 +78,7 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-6"></div>
             </div>
         </form>
 
