@@ -11,8 +11,7 @@
 			'click .inquiries-search-reset-button'		: 'handleResetClick',
 			'click .inquiry-export-xlsx-button'			: 'handleXlsxExportClick',
 			'click .inquiry-export-pdf-button'			: 'handlePDFExportClick',
-			'click .inquiry-fiscal-year-buttons .btn'	: 'handleFiscalYearClick',
-			'change #children'							: 'handleChildSelectChanged'
+			'click .inquiry-fiscal-year-buttons .btn'	: 'handleFiscalYearClick'
 		},
 
 		initialize: function() {
@@ -44,9 +43,21 @@
 				}
 			}
 
-			// set the search date range
-			this.$el.find( '[name="fromDate"]' ).val( fromDate );
-			this.$el.find( '[name="toDate"]' ).val( toDate );
+			// initialize the date range picker
+			this.$el.find( '[name="inquiry-date-range"]' ).daterangepicker({
+				startDate: moment( fromDate ),
+    			endDate: moment( toDate ),
+				alwaysShowCalendars: true,
+				showDropdowns: true,
+				linkedCalendars: false,
+				minYear: 1995,
+				maxYear: parseInt( moment().format( 'YYYY' ), 10 ),
+				ranges: {
+					'Last 30 Days': [ moment().subtract( 29, 'days' ), moment() ],
+					'Year to Date': [ moment().startOf( 'year' ), moment() ],
+					'All Time': [ moment( '1995-01-01' ), moment() ]
+				}
+			});
 
 			// initialize select inputs
 			this.$el.find( '.source-select' ).select2({
@@ -81,15 +92,16 @@
 		handleSearchClick: function() {
 
 			// get the date range for the inquiry search
-			var fromDate = this.$el.find( '[name="fromDate"]' ).val();
-			var toDate = this.$el.find( '[name="toDate"]' ).val();
+			var $dateRangeInputData = this.$el.find( '[name="inquiry-date-range"]' ).data( 'daterangepicker' );
+			var fromDate = $dateRangeInputData.startDate.format( 'YYYY-MM-DD' );
+			var toDate = $dateRangeInputData.endDate.format( 'YYYY-MM-DD' );
 
 			// collect all values of the form
 			var params = this.$el.find( 'form' ).serializeArray();
 			
 			// remove empty values
 			params = _.filter( params, function( value ) {
-				return value && value.value && value.value.length > 0 && value.name !== 'childId';
+				return value && value.value && value.value.length > 0 && value.name !== 'inquiry-date-range';
 			});
 			
 			// build the query string
@@ -118,16 +130,17 @@
 			
 			// remove empty values
 			params = _.filter( params, function( value ) {
-				return value && value.value && value.value.length > 0;
+				return value && value.value && value.value.length > 0 && value.name !== 'inquiry-date-range';
 			});
 
 			// add the date range to the params
+			var $dateRangeInputData = this.$el.find( '[name="inquiry-date-range"]' ).data( 'daterangepicker' );
 			params.push({
 				name: 'fromDate',
-				value: this.$el.find( '[name="fromDate"]' ).val()
+				value: $dateRangeInputData.startDate.format( 'YYYY-MM-DD' )
 			}, {
 				name: 'toDate',
-				value: this.$el.find( '[name="toDate"]' ).val()
+				value: $dateRangeInputData.endDate.format( 'YYYY-MM-DD' )
 			});
 			
 			// build the query string
@@ -141,33 +154,9 @@
 			event.preventDefault();
 
 			// set the search date range
-			this.$el.find( '[name="fromDate"]' ).val( $(event.target).data('yearStart') );
-			this.$el.find( '[name="toDate"]' ).val( $(event.target).data('yearEnd') );
-		},
-
-		handleChildSelectChanged: function( event ) {
-
-			// get any selected children
-			var selectedChildren = this.$el.find( '#children' ).val();
-
-			// if there are any children selected, display the 'All' button in fiscal year button group
-			if ( selectedChildren && selectedChildren.length > 0 ) {
-
-				this.$el.find( '#all-years' ).removeClass( 'hidden' );
-
-			// otherwise, hide the 'All' button in fiscal year button group
-			} else {
-
-				this.$el.find( '#all-years' ).addClass( 'hidden' );
-
-				// if this function was called as the result of a change event
-				if ( event ) {
-
-					// reset the date ranges to their defaults because a child is no longer selected
-					this.$el.find( '[name="fromDate"]' ).val( this.$el.find( '#defaultFromDate' ).val() );
-					this.$el.find( '[name="toDate"]' ).val( this.$el.find( '#defaultToDate' ).val() );
-				}
-			}
+			var $dateRangeInputData = this.$el.find( '[name="inquiry-date-range"]' ).data( 'daterangepicker' );
+			$dateRangeInputData.setStartDate( moment( $( event.target ).data( 'yearStart' ) ) );
+			$dateRangeInputData.setEndDate( moment( $( event.target ).data( 'yearEnd' ) ) );
 		},
 
 		render: function( fromDate, toDate, params ) {

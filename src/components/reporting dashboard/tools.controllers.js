@@ -493,6 +493,9 @@ exports.getDashboardData = ( req, res, next ) => {
 };
 
 exports.getInquiryData = ( req, res, next ) => {
+
+	// set a maximum number of results that can be returned to prevent crashes/freezing
+	const MAX_RESULTS = 20000;
 	
 	// get the query from the request object
 	let query = req.query;
@@ -508,10 +511,7 @@ exports.getInquiryData = ( req, res, next ) => {
 
 	// create the baseline search criteria with a date range
 	let searchCriteria = {
-		$and: [
-			{ takenOn: { $gte: fromDate } },
-			{ takenOn: { $lte: toDate } }
-		]
+		takenOn: { $gte: fromDate, $lte: toDate }
 	};
 
 	// inquirer criteria (multiple)
@@ -548,6 +548,7 @@ exports.getInquiryData = ( req, res, next ) => {
 		// get the inquiries that match the specified date range and criteria
 		keystone.list( 'Inquiry' ).model
 			.find( searchCriteria )
+			.limit( MAX_RESULTS )
 			.populate( 'inquiryMethod family source additionalSources' )
 			.populate({
 				path: 'childsSocialWorker',
@@ -667,9 +668,12 @@ exports.getInquiryData = ( req, res, next ) => {
 					additionalSources: inquiryDoc.additionalSources && inquiryDoc.additionalSources.length > 0
 						? inquiryDoc.additionalSources.map( additionalSource => additionalSource.source ).join( ', ' )
 						: 'Not Specified',
-					intakeSource: inquiryDoc.sourceText ? inquiryDoc.sourceText : 'Not Specified'	
+					intakeSource: inquiryDoc.sourceText ? inquiryDoc.sourceText : 'Not Specified'
 				}
 			});
+
+			// check if inquiry limit result has been reached
+			responseData.limitReached = inquiryDocs.length === MAX_RESULTS;
 		}
 		
 		// if 'pdf' parameter was detected in the query, send the response as a PDF
