@@ -28,13 +28,31 @@
 					var dashboardHtml = view.dashboardTemplate( data );
 
 					view.$el.html( dashboardHtml );
+
+					// initialize the date range picker
+					view.$el.find( '[name="dashboard-date-range"]' ).daterangepicker({
+						startDate: moment( fromDate ),
+						endDate: moment( toDate ),
+						alwaysShowCalendars: true,
+						showDropdowns: true,
+						linkedCalendars: false,
+						minYear: 1995,
+						maxYear: parseInt( moment().format( 'YYYY' ), 10 ),
+						ranges: {
+							'Last 30 Days': [ moment().subtract( 29, 'days' ), moment() ],
+							'Year to Date': [ moment().startOf( 'year' ), moment() ],
+							'All Time': [ moment( '1995-01-01' ), moment() ]
+						}
+					});
 				});
 		},
 		
 		handleSearchClick: function() {
 
-			var fromDate = this.$el.find( '[name="fromDate"]' ).val();
-			var toDate = this.$el.find( '[name="toDate"]' ).val();
+			// get the date range for the dashboard search
+			var $dateRangeInputData = this.$el.find( '[name="dashboard-date-range"]' ).data( 'daterangepicker' );
+			var fromDate = $dateRangeInputData.startDate.format( 'YYYY-MM-DD' );
+			var toDate = $dateRangeInputData.endDate.format( 'YYYY-MM-DD' );
 
 			mare.routers.tools.navigate( 'dashboard/' + fromDate + '/' + toDate, { trigger: true } );
 		},
