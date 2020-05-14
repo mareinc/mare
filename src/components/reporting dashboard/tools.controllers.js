@@ -347,11 +347,11 @@ exports.getAgenciesData = ( req, res, next ) => {
 	const MAX_RESULTS = 10;
 	
 	utilsService.fetchModelsMapAndSendResults(
-		agenciesService.getAgenciesByName( req.query.q, MAX_RESULTS ),
+		agenciesService.getAgenciesByCode( req.query.q, MAX_RESULTS ),
 		agency => {
 			return {
 				id: agency._id.toString(),
-				text: agency.name
+				text: `${agency.code} (${agency.name})`
 			}
 		},
 		res
@@ -1540,22 +1540,20 @@ exports.getChildListingData = ( req, res, next ) => {
 		});
 
 		// retrieve the adoption worker agencies from the social worker agency response
-		let adoptionWorkerAgencies = adoptionWorkerAgencyCriteria && adoptionWorkerAgencyCriteria.map( agencyId => {
-			let adoptionWorkerAgencyDoc = socialWorkerAgencyDocs.find( adoptionWorkerAgencyDoc => adoptionWorkerAgencyDoc._id.toString() === agencyId );
-			return {
-				id: adoptionWorkerAgencyDoc._id.toString(),
-				text: adoptionWorkerAgencyDoc.name
-			};
-		});
+		let adoptionWorkerAgencies;
+		if ( adoptionWorkerAgencyCriteria && adoptionWorkerAgencyCriteria.length > 0 ) {
+			adoptionWorkerAgencies = utilsService.extractAgenicesData(
+				adoptionWorkerAgencyCriteria.map( agencyId => socialWorkerAgencyDocs.find( adoptionWorkerAgencyDoc => adoptionWorkerAgencyDoc._id.toString() === agencyId ) )
+			);
+		}
 
 		// retrieve the recruitment worker agencies from the social worker agency response
-		let recruitmentWorkerAgencies = recruitmentWorkerAgencyCriteria && recruitmentWorkerAgencyCriteria.map( agencyId => {
-			let recruitmentWorkerAgencyDoc = socialWorkerAgencyDocs.find( recruitmentWorkerAgencyDoc => recruitmentWorkerAgencyDoc._id.toString() === agencyId );
-			return {
-				id: recruitmentWorkerAgencyDoc._id.toString(),
-				text: recruitmentWorkerAgencyDoc.name
-			};
-		});
+		let recruitmentWorkerAgencies;
+		if ( recruitmentWorkerAgencyCriteria && recruitmentWorkerAgencyCriteria.length > 0 ) {
+			recruitmentWorkerAgencies = utilsService.extractAgenicesData( 
+				recruitmentWorkerAgencyCriteria.map( agencyId => socialWorkerAgencyDocs.find( recruitmentWorkerAgencyDoc => recruitmentWorkerAgencyDoc._id.toString() === agencyId ) ) 
+			);
+		}
 
 		// if 'pdf' parameter was detected in the query, send the response as a PDF
 		if ( query.pdf ) {

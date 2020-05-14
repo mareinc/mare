@@ -55,8 +55,8 @@ exports.extractSocialWorkersData = socialWorkers => {
 exports.extractAgenicesData = agencies => {
 	return agencies.map( agency => {
 		return {
-			id: agency._id,
-			name: agency.name
+			id: agency._id.toString(),
+			text: `${agency.code} (${agency.name})`
 		}
 	});
 }
