@@ -168,7 +168,6 @@
 
 				view.$el.html( view.template() );
 				view.initializeSearchForm( view.$el.find( '#defaultFromDate' ).val(), view.$el.find( '#defaultToDate' ).val() );
-				view.handleChildSelectChanged();
 				
 			// otherwise, set the from and to dates using the route params and perform a search using the query params
 			} else {
@@ -178,7 +177,6 @@
 					waitingForResults: true
 				}));
 				view.initializeSearchForm( fromDate, toDate, params );
-				view.handleChildSelectChanged();
 
 				// search for inquiries using the date range and query params
 				view.getInquiryData( fromDate, toDate, params )
@@ -186,7 +184,6 @@
 						// render the view with the search results
 						view.$el.html( view.template( data ) );
 						view.initializeSearchForm( fromDate, toDate, params );
-						view.handleChildSelectChanged();
 
 						// initialize a DataTable (https://datatables.net/) with the inquiry results
 						// save a reference to the table so it can be destroyed when the view changes
