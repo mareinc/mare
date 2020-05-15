@@ -10,12 +10,9 @@
 
 			<div class="media-box-content card__image-text contact-card__details">
 				<div class="contact-card__details-row contact-card__name">\{{ name }}</div>
-				<div class="contact-card__details-row">
-					<span>Age \{{ age }}</span>
-					<span class="contact-card__details-divider">|</span>
-					<span>Status: \{{ legalStatus }}</span>
-					<div class="media-box-registration-number hidden">Registration #: \{{ registrationNumber }}</div class="media-box-registration-number">
-				</div>
+				<div class="contact-card__details-row contact-card__ages">Age \{{ age }}</div>
+				<div class="contact-card__details-row contact-card__legal-status">Status: \{{ legalStatus }}</div>
+				<div class="media-box-registration-number hidden">Registration #: \{{ registrationNumber }}</div class="media-box-registration-number">
 				<div class="contact-card__icons">
 				\{{#if hasVideo}}
 					<img class="contact-card__icon" src="/dist/img/icon-video.png">
