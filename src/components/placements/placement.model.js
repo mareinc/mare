@@ -66,9 +66,29 @@ Placement.schema.pre( 'save', function( next ) {
 	'use strict';
 	// trim whitespace characters from any type.Text fields
 	this.trimTextFields();
+
+	// define dynamically required fields
+	const DYNAMIC_REQUIREMENTS = [
+		{
+			condition: { path: 'isUnregisteredChild', value: true },
+			requiredFields: [
+				{ path: 'childDetails.firstName', type: 'text' },
+				{ path: 'childDetails.lastName', type: 'text' },
+				{ path: 'childDetails.status', type: 'relationship' }
+			]
+		},
+		{
+			condition: { path: 'isUnregisteredChild', value: false },
+			requiredFields: [
+				{ path: 'child', type: 'relationship' }
+			]
+		},
+	];
+	// ensure dynamic requirements are met
+	this.checkDynamicRequirements( DYNAMIC_REQUIREMENTS );
+	
 	// populate the family's agency field if it hasn't already been populated
 	const agencyPopulated = this.populateAgency();
-
 	agencyPopulated
 		// if there was an error populating the agency
 		.catch( err => {
@@ -141,7 +161,7 @@ Placement.schema.methods.trimTextFields = function() {
 Placement.schema.methods.populateAgency = function() {
 
 	return new Promise( ( resolve, reject ) => {
-		// if the family is unregistered, an agency has already been selected, or the family is registered by no family is selected
+		// if the family is unregistered, an agency has already been selected, or the family is registered but no family is selected
 		if( this.isUnregisteredFamily || this.familyDetails.agency || ( !this.isUnregisteredFamily && !this.family ) ) {
 			// resolve the promise and prevent the rest of the function from executing
 			return resolve();
@@ -164,6 +184,40 @@ Placement.schema.methods.populateAgency = function() {
 			})
 		}
 	});
+};
+
+// certain fields can be required based on the values of other fields - ensure those conditions are met here
+Placement.schema.methods.checkDynamicRequirements = function( requirements ) {
+	
+	for ( const requirement of requirements ) {
+		
+		// check to see if the dynamic require condition has been met
+		if ( this.get( requirement.condition.path ) === requirement.condition.value ) {
+
+			// check each of the required fields of the dynamic condition
+			for ( const requiredField of requirement.requiredFields ) {
+
+				// determine the empty state to check against based on the field type
+				let emptyState;
+				switch( requiredField.type ) {
+					case 'text':
+						emptyState = '';
+						break;
+					case 'relationship':
+						emptyState = [];
+					default:
+						emptyState = undefined;
+				}
+
+				// get the current value of the required field
+				let requiredFieldValue = this.get( requiredField.path );
+				// ensure the required field has a value
+				if ( requiredFieldValue === undefined || requiredFieldValue === emptyState ) {
+					throw new Error( `${ requiredField.path } is a required field` );
+				}
+			}
+		}
+	}
 };
 
 // Define default columns in the admin interface and register the model
