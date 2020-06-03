@@ -110,7 +110,9 @@ exports.getChildrenByRecruitmentWorker = async function( req, res, next ) {
 						siblingContactDescription: child.get( 'siblingTypeOfContact' ),
 						siblingNames: child.get( 'siblings' ).map( child => child.get( 'name.full' ) ),
 						socialNeeds: child.get( 'socialNeedsDescription' ),
-						yearEnteredCare: child.get( 'yearEnteredCare' )
+						yearEnteredCare: child.get( 'yearEnteredCare' ),
+						outOfStateFamiliesNewEngland: child.get( 'outOfStateFamilyNewEngland' ) ? 'Yes' : 'No',
+						outOfStateFamiliesAny: child.get( 'outOfStateFamilyAny' ) ? 'Yes' : 'No'
 					}
 				})
 			};
