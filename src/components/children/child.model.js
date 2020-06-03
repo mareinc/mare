@@ -146,6 +146,8 @@ Child.add( 'Display Options', {
 	siblingsToBePlacedWith: { type: Types.Relationship, label: 'siblings to be placed with', ref: 'Child', many: true, initial: true, note: 'siblings to be placed with cannot be updated at the same time as siblings - save your changes to one, then update the other', collapse: true },
 	hasContactWithBirthFamily: { type: Types.Boolean, label: 'has contact with birth family?', default: false, initial: true },
 	birthFamilyTypeOfContact: { type: Types.Text, label: 'type of contact', initial: true, collapse: true },
+	outOfStateFamilyNewEngland: { type: Types.Boolean, label: 'will consider out of state families from New England?', default: false, initial: true },
+	outOfStateFamilyAny: { type: Types.Boolean, label: 'will consider out of state families from anywhere?', default: false, initial: true },
 
 	residence: { type: Types.Relationship, label: 'where does the child presently live?', ref: 'Residence', initial: true, collapse: true },
 	isOutsideMassachusetts: { type: Types.Boolean, label: 'is outside Massachusetts', default: false, initial: true },

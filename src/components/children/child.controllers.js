@@ -882,7 +882,7 @@ exports.saveChild = ( child, activeChildStatusId ) => {
 
 	return new Promise( ( resolve, reject ) => {
 		// create a new Child model
-		const Child = keystone.list( 'Child' )
+		const Child = keystone.list( 'Child' );
 
 		const newChild = new Child.model({
 
@@ -911,6 +911,8 @@ exports.saveChild = ( child, activeChildStatusId ) => {
 			siblingTypeOfContact			: child.siblingContactDescription,
 			hasContactWithBirthFamily		: child.isFamilyContactNeeded.toLowerCase() === 'yes',
 			birthFamilyTypeOfContact		: child.familyContactDescription,
+			outOfStateFamilyNewEngland		: child.outOfStateFamiliesNewEngland.toLowerCase() === 'yes',
+			outOfStateFamilyAny				: child.outOfStateFamiliesAny.toLowerCase() === 'yes',
 
 			residence						: child.currentResidence,
 			isOutsideMassachusetts			: child.isNotMACity,
