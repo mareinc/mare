@@ -147,6 +147,18 @@ exports.sendNewSocialWorkerChildRegistrationNotificationEmailToMARE = ( rawChild
 			});
 		}
 
+		childData.push( {
+			key: 'is part of sibling group',
+			value: rawChildData.isPartOfSiblingGroup.toLowerCase()
+		});
+		
+		if( rawChildData.siblingNames ) {
+			childData.push( {
+				key: 'sibling names',
+				value: rawChildData.siblingNames
+			});
+		}
+
 		if( child.hasContactWithBirthFamily ) {
 			childData.push( {
 				key: 'has contact with birth family',
@@ -565,6 +577,18 @@ exports.sendNewSocialWorkerChildRegistrationNotificationEmailToSocialWorker = ( 
 			childData.push( {
 				key: 'type of contact with siblings',
 				value: child.siblingTypeOfContact
+			});
+		}
+
+		childData.push( {
+			key: 'is part of sibling group',
+			value: rawChildData.isPartOfSiblingGroup.toLowerCase()
+		});
+		
+		if( rawChildData.siblingNames ) {
+			childData.push( {
+				key: 'sibling names',
+				value: rawChildData.siblingNames
 			});
 		}
 
