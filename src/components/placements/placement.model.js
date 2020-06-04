@@ -1,6 +1,7 @@
-const keystone	= require( 'keystone' ),
-	  Types		= keystone.Field.Types,
-	  Validators = require( '../../utils/field-validator.controllers' );
+const keystone		= require( 'keystone' ),
+	  Types			= keystone.Field.Types,
+	  Validators	= require( '../../utils/field-validator.controllers' ),
+	  Utils 		= require( '../../utils/model.controllers' );
 
 // Create model
 var Placement = new keystone.List( 'Placement', {
@@ -74,18 +75,19 @@ Placement.schema.pre( 'save', function( next ) {
 			requiredFields: [
 				{ path: 'childDetails.firstName', type: 'text' },
 				{ path: 'childDetails.lastName', type: 'text' },
-				{ path: 'childDetails.status', type: 'relationship' }
+				{ path: 'childDetails.status', type: 'relationship-single' }
 			]
 		},
 		{
 			condition: { path: 'isUnregisteredChild', value: false },
 			requiredFields: [
-				{ path: 'child', type: 'relationship' }
+				{ path: 'child', type: 'relationship-single' }
 			]
 		},
 	];
+
 	// ensure dynamic requirements are met
-	this.checkDynamicRequirements( DYNAMIC_REQUIREMENTS );
+	Utils.validateDynamicRequiredFields( this, DYNAMIC_REQUIREMENTS );
 	
 	// populate the family's agency field if it hasn't already been populated
 	const agencyPopulated = this.populateAgency();
@@ -184,40 +186,6 @@ Placement.schema.methods.populateAgency = function() {
 			})
 		}
 	});
-};
-
-// certain fields can be required based on the values of other fields - ensure those conditions are met here
-Placement.schema.methods.checkDynamicRequirements = function( requirements ) {
-	
-	for ( const requirement of requirements ) {
-		
-		// check to see if the dynamic require condition has been met
-		if ( this.get( requirement.condition.path ) === requirement.condition.value ) {
-
-			// check each of the required fields of the dynamic condition
-			for ( const requiredField of requirement.requiredFields ) {
-
-				// determine the empty state to check against based on the field type
-				let emptyState;
-				switch( requiredField.type ) {
-					case 'text':
-						emptyState = '';
-						break;
-					case 'relationship':
-						emptyState = [];
-					default:
-						emptyState = undefined;
-				}
-
-				// get the current value of the required field
-				let requiredFieldValue = this.get( requiredField.path );
-				// ensure the required field has a value
-				if ( requiredFieldValue === undefined || requiredFieldValue === emptyState ) {
-					throw new Error( `${ requiredField.path } is a required field` );
-				}
-			}
-		}
-	}
 };
 
 // Define default columns in the admin interface and register the model
