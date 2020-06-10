@@ -62,6 +62,11 @@
 				// pre-fill form fields with child data
 				_.each( childDetails, function( value, key ) {
 
+					// create a safe variant of any string values to prevent quotation marks from breaking jQuery expressions
+					if ( typeof value === 'string' ) {
+						value = value.replace( /"/g, '\'' );
+					}
+
 					// add each datum to the existing child data dictionary
 					view.existingChildData[ key ] = value;
 					
