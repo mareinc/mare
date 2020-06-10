@@ -16,7 +16,7 @@ WeekendFamilyConnection.add( 'Weekend Family Connection', {
 
 }, 'Child', {
 
-	child: { type: Types.Relationship, label: 'child', ref: 'Child', initial: true }
+	child: { type: Types.Relationship, label: 'child', ref: 'Child', initial: true, required: true }
 
 }, 'Family', {
 

@@ -1,6 +1,7 @@
 const keystone	= require( 'keystone' );
 const Types		= keystone.Field.Types;
 const Validators = require( '../../utils/field-validator.controllers' );
+const Utils 	= require( '../../utils/model.controllers' );
 
 // Create model. Additional options allow menu name to be used what auto-generating URLs
 var Match = new keystone.List( 'Match' );
@@ -65,6 +66,30 @@ Match.schema.pre( 'save', function( next ) {
 	'use strict';
 	// trim whitespace characters from any type.Text fields
 	this.trimTextFields();
+
+	// define dynamically required fields
+	const DYNAMIC_REQUIREMENTS = [
+		{
+			// if 'isUnregisteredChild' is set to true...
+			condition: { path: 'isUnregisteredChild', value: true },
+			// treat the following fields as required
+			requiredFields: [
+				{ path: 'childDetails.firstName', type: 'text' },
+				{ path: 'childDetails.lastName', type: 'text' }
+			]
+		},
+		{
+			// if 'isUnregisteredChild' is set to false...
+			condition: { path: 'isUnregisteredChild', value: false },
+			// treat the following fields as required
+			requiredFields: [
+				{ path: 'child', type: 'relationship-single' }
+			]
+		}
+	];
+	// ensure dynamic requirements are met - if not, an Error message will be presented and the save will not occur
+	Utils.validateDynamicRequiredFields( this, DYNAMIC_REQUIREMENTS );
+
 	// populate the family's agency field if it hasn't already been populated
 	const agencyPopulated = this.populateAgency();
 
