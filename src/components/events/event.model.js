@@ -52,7 +52,7 @@ Event.add( 'General Information', {
 	image: { type: Types.File, storage: imageStorage, label: 'image', note: 'needed to display in the sidebar, events page, and home page' },
 
 	areBuddiesAllowed: { type: Types.Boolean, label: 'buddies allowed', initial: true },
-	isMatchingEvent: { type: Types.Boolean, label: 'matching event', initial: true }
+	isMatchingEvent: { type: Types.Boolean, label: 'matching event (no children)', initial: true }
 
 }, 'Address', {
 
