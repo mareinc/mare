@@ -173,6 +173,16 @@ exports.sendNewSocialWorkerChildRegistrationNotificationEmailToMARE = ( rawChild
 			});
 		}
 
+		childData.push( {
+			key: 'will consider out of state families from New England?',
+			value: child.outOfStateFamilyNewEngland ? 'yes' : 'no'
+		});
+
+		childData.push( {
+			key: 'will consider out of state families from anywhere?',
+			value: child.outOfStateFamilyAny ? 'yes' : 'no'
+		});
+
 		if( child.residence ) {
 			childData.push( {
 				key: 'residence',
@@ -606,6 +616,16 @@ exports.sendNewSocialWorkerChildRegistrationNotificationEmailToSocialWorker = ( 
 			});
 		}
 
+		childData.push( {
+			key: 'will consider out of state families from New England?',
+			value: child.outOfStateFamilyNewEngland ? 'yes' : 'no'
+		});
+
+		childData.push( {
+			key: 'will consider out of state families from anywhere?',
+			value: child.outOfStateFamilyAny ? 'yes' : 'no'
+		});
+
 		if( child.residence ) {
 			childData.push( {
 				key: 'residence',
@@ -976,6 +996,20 @@ exports.sendEditSocialWorkerChildRegistrationNotificationEmailToMARE = ( rawChil
 			childData.push( {
 				key: 'type of contact with birth family',
 				value: rawChildData.familyContactDescription
+			});
+		}
+
+		if( rawChildData.outOfStateFamiliesNewEngland ) {
+			childData.push( {
+				key: 'will consider out of state families from New England?',
+				value: rawChildData.outOfStateFamiliesNewEngland
+			});
+		}
+
+		if( rawChildData.outOfStateFamiliesAny ) {
+			childData.push( {
+				key: 'will consider out of state families from anywhere?',
+				value: rawChildData.outOfStateFamiliesAny
 			});
 		}
 
