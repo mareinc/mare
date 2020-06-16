@@ -47,6 +47,7 @@ exports.sendNewSocialWorkerChildRegistrationNotificationEmailToMARE = ( rawChild
 			// extract the text values associated with the model into the array
 			disabilitiesArray.push( entry.disability );
 		}
+
 		// store only the fields that have been populated by the user
 		if( child.registrationDate ) {
 			// extract the text values associated with the model into the array
@@ -133,55 +134,19 @@ exports.sendNewSocialWorkerChildRegistrationNotificationEmailToMARE = ( rawChild
 			});
 		}
 
-		if( child.hasContactWithSiblings ) {
+		if( rawChildData.secondaryADLUWorker ) {
 			childData.push( {
-				key: 'has contact with siblings',
-				value: child.hasContactWithSiblings
+				key: 'child has been assigned a secondary worker in the ADLU',
+				value: rawChildData.secondaryADLUWorker
 			});
 		}
 
-		if( child.siblingTypeOfContact ) {
+		if( rawChildData.adoptionAssessment ) {
 			childData.push( {
-				key: 'type of contact with siblings',
-				value: child.siblingTypeOfContact
+				key: 'child has had an adoption assessment completed',
+				value: rawChildData.adoptionAssessment
 			});
 		}
-
-		childData.push( {
-			key: 'is part of sibling group',
-			value: rawChildData.isPartOfSiblingGroup.toLowerCase()
-		});
-		
-		if( rawChildData.siblingNames ) {
-			childData.push( {
-				key: 'sibling names',
-				value: rawChildData.siblingNames
-			});
-		}
-
-		if( child.hasContactWithBirthFamily ) {
-			childData.push( {
-				key: 'has contact with birth family',
-				value: child.hasContactWithBirthFamily
-			});
-		}
-
-		if( child.birthFamilyTypeOfContact ) {
-			childData.push( {
-				key: 'type of contact with birth family',
-				value: child.birthFamilyTypeOfContact
-			});
-		}
-
-		childData.push( {
-			key: 'will consider out of state families from New England?',
-			value: child.outOfStateFamilyNewEngland ? 'yes' : 'no'
-		});
-
-		childData.push( {
-			key: 'will consider out of state families from anywhere?',
-			value: child.outOfStateFamilyAny ? 'yes' : 'no'
-		});
 
 		if( child.residence ) {
 			childData.push( {
@@ -209,12 +174,15 @@ exports.sendNewSocialWorkerChildRegistrationNotificationEmailToMARE = ( rawChild
 			});
 		}
 
-		if( child.careFacilityName ) {
-			childData.push( {
-				key: 'care facility name',
-				value: child.careFacilityName
-			});
-		}
+		childData.push( {
+			key: 'will consider out of state families from New England?',
+			value: child.outOfStateFamilyNewEngland ? 'yes' : 'no'
+		});
+
+		childData.push( {
+			key: 'will consider out of state families from anywhere?',
+			value: child.outOfStateFamilyAny ? 'yes' : 'no'
+		});
 
 		if( child.physicalNeedsDescription ) {
 			childData.push( {
@@ -293,6 +261,41 @@ exports.sendNewSocialWorkerChildRegistrationNotificationEmailToMARE = ( rawChild
 			});
 		}
 
+		if( child.hasContactWithSiblings ) {
+			childData.push( {
+				key: 'has contact with siblings',
+				value: child.hasContactWithSiblings
+			});
+		}
+
+		if( child.siblingTypeOfContact ) {
+			childData.push( {
+				key: 'type of contact with siblings',
+				value: child.siblingTypeOfContact
+			});
+		}
+
+		if( child.hasContactWithBirthFamily ) {
+			childData.push( {
+				key: 'has contact with birth family',
+				value: child.hasContactWithBirthFamily
+			});
+		}
+
+		if( child.birthFamilyTypeOfContact ) {
+			childData.push( {
+				key: 'type of contact with birth family',
+				value: child.birthFamilyTypeOfContact
+			});
+		}
+
+		if( child.careFacilityName ) {
+			childData.push( {
+				key: 'care facility name',
+				value: child.careFacilityName
+			});
+		}
+
 		if( disabilitiesArray.length !== 0 ) {
 			childData.push( {
 				key: 'disabilities',
@@ -300,20 +303,8 @@ exports.sendNewSocialWorkerChildRegistrationNotificationEmailToMARE = ( rawChild
 			});
 		}
 
-		if( rawChildData.otherEthnicBackground ) {
-			additionalChildData.push( {
-				key: `other information about child's ethnic background`,
-				value: rawChildData.otherEthnicBackground
-			})
-		}
-		
-		if( rawChildData.childInvalidFamilyConstellationReason ) {
-			additionalChildData.push( {
-				key: 'reason same-sex couples should not be considered',
-				value: rawChildData.childInvalidFamilyConstellationReason
-			})
-		}
-		
+		// add fields to 'additionalChildData' that are not automatically set on the child record or will require some manual work from staff
+
 		if( rawChildData.recruitmentWorker ) {
 			additionalChildData.push( {
 				key: 'recruitment worker',
@@ -370,33 +361,40 @@ exports.sendNewSocialWorkerChildRegistrationNotificationEmailToMARE = ( rawChild
 			})
 		}
 
-		if( rawChildData.secondaryADLUWorker ) {
+		additionalChildData.push( {
+			key: 'is part of sibling group',
+			value: rawChildData.isPartOfSiblingGroup.toLowerCase()
+		});
+		
+		if( rawChildData.siblingNames ) {
 			additionalChildData.push( {
-				key: 'child has been assigned a secondary worker in the ADLU',
-				value: rawChildData.secondaryADLUWorker
+				key: 'sibling names',
+				value: rawChildData.siblingNames
 			});
 		}
 
-		if( rawChildData.adoptionAssessment ) {
+		if( rawChildData.otherEthnicBackground ) {
 			additionalChildData.push( {
-				key: 'child has had an adoption assessment completed',
-				value: rawChildData.adoptionAssessment
-			});
+				key: `other information about child's ethnic background`,
+				value: rawChildData.otherEthnicBackground
+			})
 		}
-
-		// create a list of all the fields that need to be manually updated in the new system
+		
+		if( rawChildData.childInvalidFamilyConstellationReason ) {
+			additionalChildData.push( {
+				key: 'reason same-sex couples should not be considered',
+				value: rawChildData.childInvalidFamilyConstellationReason
+			})
+		}
+		
+		// create a list of fields that need to be manually updated in the new system but do not have a value
 		const fieldsToUpdate = [
-			'site visibility',
-			'is visible in gallery',
+			'child is visible to',
 			'registered by',
 			'physical needs',
 			'emotional needs',
 			'intellectual needs',
-			'social needs',
-			'siblings',
-			'siblings to be placed with',
-			'adoption worker',
-			'recruitment worker'
+			'social needs'
 		];
 
 		// the email template can be found in templates/emails/

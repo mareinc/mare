@@ -20,12 +20,7 @@
 							<table border="0" cellpadding="0" cellspacing="0" width="100%">
 								<tr>
 									<td style="color: #153643; font-family: Arial, sans-serif; font-size: 24px;">
-										<b>A new child has been created</b>
-									</td>
-								</tr>
-								<tr>
-									<td style="padding: 20px 0 10px 0; color: #153634; font-family: Ariel, sans-serif; font-size: 16px; line-height: 20px;">
-										<b><i>The following data will need to be entered in a new child record in the old database:</b></i>
+										<b>A new child has been registered</b>
 									</td>
 								</tr>
 								{{#childData}}
@@ -37,7 +32,7 @@
 								{{/childData}}
 								<tr>
 									<td style="padding: 60px 0 10px 0; color: #153634; font-family: Ariel, sans-serif; font-size: 16px; line-height: 20px;">
-										<b><i>The following is additional relevant information that is not part of the new child record, but will help in adjusting values and understanding submitted information:</b></i>
+										<b><i>The following information needs to be entered manually into the child record:</b></i>
 									</td>
 								</tr>
 								{{#additionalChildData}}
@@ -47,15 +42,10 @@
 									</td>
 								</tr>
 								{{/additionalChildData}}
-								<tr>
-									<td style="padding: 60px 0 30px 0; color: #153634; font-family: Ariel, sans-serif; font-size: 16px; line-height: 20px;">
-										<b><i>In addition, the following fields will need to be reviewed and manually updated in the new system:</b></i>
-									</td>
-								</tr>
-								{{#fieldsToUpdate as |value|}}
+								{{#fieldsToUpdate as |fieldToUpdate|}}
 								<tr>
 									<td style="padding: 5px 0 0 0; color: #153634; font-family: Ariel, sans-serif; font-size: 16px; line-height: 20px;">
-										<b>{{ value }}</b>
+										<b>{{ fieldToUpdate }}</b>
 									</td>
 								</tr>
 								{{/fieldsToUpdate}}
