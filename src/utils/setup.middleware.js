@@ -77,5 +77,10 @@ exports.initLocals = function( req, res, next ) {
 		locals.currentSection.selected = true;
 	}
 
+	// set a flag when in a production environment
+	if  ( process.env.NODE_ENV === 'production' ) {
+		locals.isProduction = true;
+	}
+
 	next();
 };
