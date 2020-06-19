@@ -28,6 +28,8 @@
 					<div class="form-group">{{ displayName }}</div>
 				</div>
 			</div>
+
+			\{{#unless isMatchingEvent}}
 			<div class="form-group form-group__header">Are you bringing any additional children?</div>
 			{{#if hasSocialWorkersChildren}}
 			<div class="row form-group">
@@ -60,7 +62,7 @@
 			</div>
 
 			<section class="row form-group unregistered-children-container"></section>
-
+			\{{/unless}}
 		</section>
 
 		<button class="button button--teal" type="submit">Edit Registration</button>
