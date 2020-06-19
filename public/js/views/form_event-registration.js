@@ -59,6 +59,7 @@
 				eventName = $event.data( 'event-name' ),
 				eventVersion = $event.data( 'event-version' ),
 				eventDate = $event.data( 'event-date' ),
+				isMatchingEvent = $event.data( 'is-matching-event' ),
 				registeredChildrenUserIsBringing = $event.data( 'registered-children-user-is-bringing' ) || [],
 				unregisteredChildrenUserIsBringing = $event.data( 'unregistered-children-user-is-bringing' ) || [],
 				unregisteredAdultsUserIsBringing = $event.data( 'unregistered-adults-user-is-bringing' ) || [],
@@ -69,13 +70,15 @@
 				html = this.registrationFormTemplate({
 					eventName: eventName,
 					eventDate: eventDate,
-					eventId: eventId
+					eventId: eventId,
+					isMatchingEvent: isMatchingEvent
 				});
 			} else if( action === 'edit' ) {
 				html = this.editRegistrationFormTemplate({
 					eventName: eventName,
 					eventDate: eventDate,
 					eventId: eventId,
+					isMatchingEvent: isMatchingEvent,
 					eventVersion: eventVersion,
 					registeredChildrenUserIsBringing: registeredChildrenUserIsBringing.map( function( child ) { return child.id } ),
 					unregisteredChildrenUserIsBringing: unregisteredChildrenUserIsBringing.map( function( child ) { return child.id } ),

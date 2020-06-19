@@ -27,6 +27,8 @@
 					<div class="form-group">{{ displayName }}</div>
 				</div>
 			</div>
+
+			\{{#unless isMatchingEvent}}
 			<div class="form-group form-group__header">Are you bringing any additional children?</div>
 			{{#if hasSocialWorkersChildren}}
 			<div class="row form-group">
@@ -41,7 +43,7 @@
 				</div>
 			</div>
 			{{/if}}
-
+			
 			<section class="row form-group registered-children-container"></section>
 
 			<div class="row form-group">
@@ -59,6 +61,7 @@
 			</div>
 
 			<section class="row form-group unregistered-children-container"></section>
+			\{{/unless}}
 
 			<div class="row form-group">
 				<div class="col-sm-24 form-group">
@@ -80,6 +83,7 @@
 				</div>
 			</div>
 
+			\{{#unless isMatchingEvent}}
 			<div class="row form-group attendance-capacity__container">
 				<div class="col-sm-24 form-group">
 					<select id="attendance-capacity" class="input attendance-capacity-select" name="attendanceCapacity" data-parsley-error-message="required" required="true">
@@ -90,6 +94,7 @@
 					<label for="attendance-capacity" class="label required-field">If not bringing children, I'm attending to</label>
 				</div>
 			</div>
+			\{{/unless}}
 
 			<div class="row form-group">
 				<div class="col-sm-24 form-group">
