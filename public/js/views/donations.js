@@ -213,12 +213,7 @@
 						mare.views.flashMessages.initializeAJAX( responseData.message );
 
 						// track the successful donation event using Google Analytics
-						ga( 'send', {
-							hitType: 'event',
-							eventCategory: 'Button - Donate',
-							eventAction: 'donation - submitted',
-							eventLabel: 'MARE Donation Page'
-						});
+						dataLayer.push({ 'event':'donation-submitted' });
 
 					} else if ( responseData.status === 'error' ) {
 
