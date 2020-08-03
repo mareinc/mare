@@ -464,7 +464,7 @@
         $.extend( IsotopeMB.prototype, {
             resize : function() {
 
-                // check to ensure that the resize event is firing for a container that actually
+                // check to ensure that the resize event is firing for a container that
                 // exists in the current DOM
                 if (this.size.width === 0 && this.size.height === 0) {
                     // if the container doesn't exist, do no execute resize handlers
@@ -1689,12 +1689,11 @@
 
     MediaBoxes.prototype.destroy = function () {
 
-        this.container_clone.insertBefore(this.container).removeData('mediaBoxes');
-
         this.container.removeClass(); // remove all classes! (if I don't the lazy load gets triggered)
         this.container.next('.media-boxes-load-more-button').remove();
         this.container.isotopeMB('destroy');
         this.container.remove();
+        this.container = undefined;
 
     }   
 

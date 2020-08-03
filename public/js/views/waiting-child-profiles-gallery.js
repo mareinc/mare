@@ -160,7 +160,10 @@
 		},
 
 		unbindMediaBoxes: function unbindMediaBoxes() {
+			// destroying the children grid will remove it from DOM
 			$( '#children-grid' ).mediaBoxes( 'destroy' );
+			// insert a replacement div so that the mediaboxes plugin can be re-initialized
+			$( 'section.profiles-container' ).prepend( '<div id="children-grid" class="card-grid"></div>' );
 		},
 
 		/* pass the request for child details to the subview in charge of the details modal */
