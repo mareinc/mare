@@ -463,6 +463,14 @@
         /* ****** Extending Isotope on resize event ****** */
         $.extend( IsotopeMB.prototype, {
             resize : function() {
+
+                // check to ensure that the resize event is firing for a container that actually
+                // exists in the current DOM
+                if (this.size.width === 0 && this.size.height === 0) {
+                    // if the container doesn't exist, do no execute resize handlers
+                    return;
+                }
+
                 /* Hack for seting the grid */
                 var container = $(this.element);
                 getAndSetColumnWidth(container);
