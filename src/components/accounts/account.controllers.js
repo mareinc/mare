@@ -117,7 +117,8 @@ exports.registerUser = ( req, res, next ) => {
 						// if there was an error saving the new site visitor
 						.catch( err => {
 							// log the error for debugging purposes
-							console.error( `error saving new site visitor`, err );
+							console.error( 'ERROR CODE:REG04 - Registration failure: User<SiteVisitor> model creation error.' );
+							console.error( err );
 							// create an error flash message to send back to the user
 							flashMessages.appendFlashMessage({
 								messageType: flashMessages.MESSAGE_TYPES.ERROR,
@@ -205,7 +206,8 @@ exports.registerUser = ( req, res, next ) => {
 						// if there was an error saving the new social worker
 						.catch( err => {
 							// log the error for debugging purposes
-							console.error( `error saving new social worker`, err );
+							console.error( 'ERROR CODE:REG04 - Registration failure: User<SocialWorker> model creation error.' );
+							console.error( err );
 							// create an error flash message to send back to the user
 							flashMessages.appendFlashMessage({
 								messageType: flashMessages.MESSAGE_TYPES.ERROR,
@@ -306,7 +308,8 @@ exports.registerUser = ( req, res, next ) => {
 						// if there was an error saving the new family
 						.catch( err => {
 							// log the error for debugging purposes
-							console.error( `error saving new family`, err );
+							console.error( 'ERROR CODE:REG04 - Registration failure: User<Family> model creation error.' );
+							console.error( err );
 							// create an error flash message to send back to the user
 							flashMessages.appendFlashMessage({
 								messageType: flashMessages.MESSAGE_TYPES.ERROR,
@@ -326,6 +329,10 @@ exports.registerUser = ( req, res, next ) => {
 			}
 		})
 		.catch( reason => {
+
+			// log error code for tracking purposes
+			console.error( 'ERROR CODE:REG00 - Registration failure: Unknown error.' );
+			console.error( reason );
 
 			// create an error flash message to send back to the user
 			flashMessages.appendFlashMessage({
@@ -646,26 +653,32 @@ exports.validatePassword = ( password, confirmPassword ) => {
 exports.setInitialErrorMessages = ( req, isEmailValid, isEmailDuplicate, isPasswordValid ) => {
 
 	if( !isEmailValid ) {
+		// log error code for tracking purposes
+		console.error( 'ERROR CODE:REG01 - Registration failure: invalid email format.' );
 		flashMessages.appendFlashMessage({
 			messageType: flashMessages.MESSAGE_TYPES.ERROR,
 			title: `There was a problem creating your account`,
-			message: `The email address you're trying to use is invalid`
+			message: `The email address you've entered is invalid.  Please enter in format <i>user@mareinc.org</i>`
 		});
 	}
 
 	if( isEmailDuplicate ) {
+		// log error code for tracking purposes
+		console.error( 'ERROR CODE:REG02 - Registration failure: existing email address.' );
 		flashMessages.appendFlashMessage({
 			messageType: flashMessages.MESSAGE_TYPES.ERROR,
 			title: `There was a problem creating your account`,
-			message: `The email you are trying to use already exists in the system. Please reset your password for this email address in order to gain access. If this error persists, please notify MARE at <a href="mailto:web@mareinc.org">web@mareinc.org</a>`
+			message: `There is already an account established with this email address.  If you've forgotten your password, please reset.`
 		});
 	}
 
 	if( !isPasswordValid ) {
+		// log error code for tracking purposes
+		console.error( 'ERROR CODE:REG03 - Registration failure: password mismatch.' );
 		flashMessages.appendFlashMessage({
 			messageType: flashMessages.MESSAGE_TYPES.ERROR,
 			title: `There was a problem creating your account`,
-			message: `The passwords you entered don't match`
+			message: `The passwords you entered don't match. Please re-enter.`
 		});
 	}
 };
