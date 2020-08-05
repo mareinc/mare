@@ -30,6 +30,10 @@ exports.login = function( req, res, next ) {
 	let locals = res.locals;
 
 	if ( !req.body.email || !req.body.password ) {
+		
+		// log the error for debugging purposes
+		console.error( 'ERROR CODE:LOGIN01 - Login failure: missing username or password' );
+
 		/* TODO: need a better message for the user, flash messages won't work because page reloads are stupid */
 		req.flash( 'error', { title: 'Something went wrong',
 							  detail: 'Please enter your username and password' } );
@@ -45,12 +49,19 @@ exports.login = function( req, res, next ) {
 
 		if( locals.userStatus === 'nonexistent' ) {
 
+			// log the error for debugging purposes
+			console.error( 'ERROR CODE:LOGIN02 - Login failure: non-existent username (email).' );
+
 			req.flash( 'error', { title: 'Something went wrong',
 							  	  detail: 'Your username or password is incorrect, please try again' } );
 			
 			res.redirect( req.body.target || '/' );
 
 		} else if( locals.userStatus === 'inactive' ) {
+
+			// log the error for debugging purposes
+			console.error( 'ERROR CODE:LOGIN03 - Login failure: account inactive.' );
+
 			// TODO: we need to figure out if they were once active, or change the message to handle that case as well
 			req.flash( 'error', {
 				detail: 'The email you are trying to use already exists in the system.  Please reset your password for this email address in order to gain access.    If this error persists, please notify MARE at <a href="mailto:web@mareinc.org">web@mareinc.org</a>'
@@ -69,6 +80,10 @@ exports.login = function( req, res, next ) {
 			}
 
 			var onFail = function() {
+
+				// log the error for debugging purposes
+				console.error( 'ERROR CODE:LOGIN00 - Login failure: unknown error.' );
+
 				/* TODO: need a better message for the user, flash messages won't work because page reloads are stupid */
 				req.flash( 'error', { title: 'Something went wrong',
 									  detail: 'Please try again.  If this error persists, please notify <a href="mailto:communications@mareinc.org">communications@mareinc.org</a>' } );
