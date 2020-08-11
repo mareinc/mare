@@ -21,9 +21,11 @@
 			this.$submitButton						= this.$( 'button[type="submit"]' );
 
 			// initialize parsley validation on the form
-			this.form = this.$el.parsley();
+			this.form = $( this.el ).parsley();
 			
-			this.form.on( 'field:validated', this.validateForm );
+			if ( this.form ) {
+				this.form.on( 'field:validated', this.validateForm );
+			}
 		},
 
 		onSubmit: function( event ) {
