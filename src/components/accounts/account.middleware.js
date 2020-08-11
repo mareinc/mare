@@ -79,10 +79,11 @@ exports.login = function( req, res, next ) {
 				}
 			}
 
-			var onFail = function() {
+			var onFail = function( error ) {
 
 				// log the error for debugging purposes
 				console.error( 'ERROR CODE:LOGIN00 - Login failure: unknown error.' );
+				console.error( error );
 
 				/* TODO: need a better message for the user, flash messages won't work because page reloads are stupid */
 				req.flash( 'error', { title: 'Something went wrong',
