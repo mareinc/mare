@@ -106,16 +106,16 @@ exports.login = function( req, res, next ) {
 
 				// if the failure occured for an unexpected reason
 				} else {
-					// log the error
-					console.error( error );
 					// get standardized error data
 					const errorData = errorUtils.ERRORS.LOGIN.UNEXPECTED_ERROR;
-					// log the error for debugging purposes
+					// log the coded error for debugging purposes
 					errorUtils.logCodedError(
 						errorData.code,
 						errorData.message,
 						`Attempted login with email: ${req.body.email}`
 					);
+					// log the thrown error
+					console.error( error );
 					// display a message to the user
 					req.flash( 'error', errorData.flashMessage );
 				}
@@ -226,16 +226,17 @@ exports.loginAjax = function loginAjax( req, res, next ) {
 					// if the failure occured for an unexpected reason
 					} else {
 
-						// log the error
-						console.error( error );
+						
 						// get standardized error data
 						const errorData = errorUtils.ERRORS.LOGIN.UNEXPECTED_ERROR;
-						// log the error for debugging purposes
+						// log the coded error for debugging purposes
 						errorUtils.logCodedError(
 							errorData.code,
 							errorData.message,
 							`Attempted login with email: ${req.body.email}`
 						);
+						// log the thrown error
+						console.error( error );
 						// display a message to the user
 						flashMessageMiddleware.appendFlashMessage({
 							messageType: flashMessageMiddleware.MESSAGE_TYPES.ERROR,

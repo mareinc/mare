@@ -11,6 +11,7 @@ const keystone 						= require( 'keystone' ),
 	  userService					= require( '../users/user.controllers' ),
 	  mailchimpService				= require( '../mailchimp lists/mailchimp-list.controllers' ),
 	  utilities						= require( '../../utils/utility.controllers' ),
+	  errorUtils					= require( '../../utils/errors.controllers' ),
 	  flashMessages					= require( '../../utils/notification.middleware' );
 
 exports.registerUser = ( req, res, next ) => {
@@ -116,14 +117,21 @@ exports.registerUser = ( req, res, next ) => {
 						})
 						// if there was an error saving the new site visitor
 						.catch( err => {
-							// log the error for debugging purposes
-							console.error( 'ERROR CODE:REG04 - Registration failure: User<SiteVisitor> model creation error.' );
+							// get standardized error data
+							const errorData = errorUtils.ERRORS.REGISTRATION.USER_SAVE_ERROR;
+							// log the coded error for debugging purposes
+							errorUtils.logCodedError( 
+								errorData.code,
+								errorData.message,
+								`Attempted User<SiteVisitor> registration with email: ${user.email}`
+							);
+							// log the thrown error
 							console.error( err );
-							// create an error flash message to send back to the user
+							// display a message to the user
 							flashMessages.appendFlashMessage({
 								messageType: flashMessages.MESSAGE_TYPES.ERROR,
-								title: 'There was an error creating your account',
-								message: 'If this error persists, please contact MARE for assistance'
+								title: errorData.flashMessage.title,
+								message: errorData.flashMessage.message
 							});
 							// send the error status and flash message markup
 							flashMessages.generateFlashMessageMarkup()
@@ -205,14 +213,21 @@ exports.registerUser = ( req, res, next ) => {
 						})
 						// if there was an error saving the new social worker
 						.catch( err => {
-							// log the error for debugging purposes
-							console.error( 'ERROR CODE:REG04 - Registration failure: User<SocialWorker> model creation error.' );
+							// get standardized error data
+							const errorData = errorUtils.ERRORS.REGISTRATION.USER_SAVE_ERROR;
+							// log the coded error for debugging purposes
+							errorUtils.logCodedError( 
+								errorData.code,
+								errorData.message,
+								`Attempted User<SocialWorker> registration with email: ${user.email}`
+							);
+							// log the thrown error
 							console.error( err );
-							// create an error flash message to send back to the user
+							// display a message to the user
 							flashMessages.appendFlashMessage({
 								messageType: flashMessages.MESSAGE_TYPES.ERROR,
-								title: 'There was an error creating your account',
-								message: 'If this error persists, please contact MARE for assistance'
+								title: errorData.flashMessage.title,
+								message: errorData.flashMessage.message
 							});
 							// send the error status and flash message markup
 							flashMessages.generateFlashMessageMarkup()
@@ -307,14 +322,21 @@ exports.registerUser = ( req, res, next ) => {
 						})
 						// if there was an error saving the new family
 						.catch( err => {
-							// log the error for debugging purposes
-							console.error( 'ERROR CODE:REG04 - Registration failure: User<Family> model creation error.' );
+							// get standardized error data
+							const errorData = errorUtils.ERRORS.REGISTRATION.USER_SAVE_ERROR;
+							// log the coded error for debugging purposes
+							errorUtils.logCodedError( 
+								errorData.code,
+								errorData.message,
+								`Attempted User<Family> registration with email: ${user.email}`
+							);
+							// log the thrown error
 							console.error( err );
-							// create an error flash message to send back to the user
+							// display a message to the user
 							flashMessages.appendFlashMessage({
 								messageType: flashMessages.MESSAGE_TYPES.ERROR,
-								title: 'There was an error creating your account',
-								message: 'If this error persists, please contact MARE for assistance'
+								title: errorData.flashMessage.title,
+								message: errorData.flashMessage.message
 							});
 							// send the error status and flash message markup
 							flashMessages.generateFlashMessageMarkup()
@@ -330,15 +352,21 @@ exports.registerUser = ( req, res, next ) => {
 		})
 		.catch( reason => {
 
-			// log error code for tracking purposes
-			console.error( 'ERROR CODE:REG00 - Registration failure: Unknown error.' );
+			// get standardized error data
+			const errorData = errorUtils.ERRORS.REGISTRATION.UNEXPECTED_ERROR;
+			// log the coded error for debugging purposes
+			errorUtils.logCodedError( 
+				errorData.code,
+				errorData.message,
+				`Attempted registration with email: ${req.body.email}`
+			);
+			// log the thrown error
 			console.error( reason );
-
-			// create an error flash message to send back to the user
+			// display a message to the user
 			flashMessages.appendFlashMessage({
 				messageType: flashMessages.MESSAGE_TYPES.ERROR,
-				title: 'There was an error creating your account',
-				message: 'If this error persists, please contact MARE for assistance'
+				title: errorData.flashMessage.title,
+				message: errorData.flashMessage.message
 			});
 			// send the error status and flash message markup
 			flashMessages.generateFlashMessageMarkup()
@@ -652,33 +680,35 @@ exports.validatePassword = ( password, confirmPassword ) => {
 /* create error flash messages if a problem was encountered */
 exports.setInitialErrorMessages = ( req, isEmailValid, isEmailDuplicate, isPasswordValid ) => {
 
+	// get standardized error data
+	let errorData;
+
 	if( !isEmailValid ) {
-		// log error code for tracking purposes
-		console.error( 'ERROR CODE:REG01 - Registration failure: invalid email format.' );
-		flashMessages.appendFlashMessage({
-			messageType: flashMessages.MESSAGE_TYPES.ERROR,
-			title: `There was a problem creating your account`,
-			message: `The email address you've entered is invalid.  Please enter in format <i>user@mareinc.org</i>`
-		});
+		errorData = errorUtils.ERRORS.REGISTRATION.INVALID_EMAIL_FORMAT;
 	}
 
 	if( isEmailDuplicate ) {
-		// log error code for tracking purposes
-		console.error( 'ERROR CODE:REG02 - Registration failure: existing email address.' );
-		flashMessages.appendFlashMessage({
-			messageType: flashMessages.MESSAGE_TYPES.ERROR,
-			title: `There was a problem creating your account`,
-			message: `There is already an account established with this email address.  If you've forgotten your password, please reset.`
-		});
+		errorData = errorUtils.ERRORS.REGISTRATION.DUPLICATE_EMAIL;
 	}
 
 	if( !isPasswordValid ) {
-		// log error code for tracking purposes
-		console.error( 'ERROR CODE:REG03 - Registration failure: password mismatch.' );
+		errorData = errorUtils.ERRORS.REGISTRATION.PASSWORD_MISMATCH;
+	}
+
+	if (errorData) {
+		
+		// log the error for debugging purposes
+		errorUtils.logCodedError( 
+			errorData.code,
+			errorData.message,
+			`Attempted registration with email: ${req.body.email}`
+		);
+		
+		// display a message to the user
 		flashMessages.appendFlashMessage({
 			messageType: flashMessages.MESSAGE_TYPES.ERROR,
-			title: `There was a problem creating your account`,
-			message: `The passwords you entered don't match. Please re-enter.`
+			title: errorData.flashMessage.title,
+			message: errorData.flashMessage.message
 		});
 	}
 };
