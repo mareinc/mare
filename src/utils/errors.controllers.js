@@ -10,7 +10,7 @@ exports.ERRORS = {
             message: 'Login failure: missing username or password.',
             flashMessage: {
                 title: LOGIN_ERROR_FLASH_MESSAGE_TITLE,
-                message: 'Please enter your username and password'
+                detail: 'Please enter your username and password'
             }
         },
         NO_MATCHING_EMAIL: {
@@ -18,7 +18,7 @@ exports.ERRORS = {
             message: 'Login failure: non-existent username (email).',
             flashMessage: {
                 title: LOGIN_ERROR_FLASH_MESSAGE_TITLE,
-                message: 'There is no account established with this email address.  Please try any alternative email addresses you use'
+                detail: 'There is no account established with this email address.  Please try any alternative email addresses you use'
             }
         },
         ACCOUNT_INACTIVE: {
@@ -26,7 +26,7 @@ exports.ERRORS = {
             message: 'Login failure: account inactive.',
             flashMessage: {
                 title: LOGIN_ERROR_FLASH_MESSAGE_TITLE,
-                message: 'The password for this account needs to be reset. Hit "Forgot?" to reset'
+                detail: 'The password for this account needs to be reset. Hit "Forgot?" to reset'
             }
         },
         INCORRECT_PASSWORD: {
@@ -34,7 +34,7 @@ exports.ERRORS = {
             message: 'Login failure: incorrect password.',
             flashMessage: {
                 title: LOGIN_ERROR_FLASH_MESSAGE_TITLE,
-                message: 'The password you entered is incorrect, please try again.  If you are unable to recall your password, hit "Forgot?" on the login form to reset it'
+                detail: 'The password you entered is incorrect, please try again.  If you are unable to recall your password, hit "Forgot?" on the login form to reset it'
             }
         },
         UNEXPECTED_ERROR: {
@@ -42,7 +42,7 @@ exports.ERRORS = {
             message: 'Login failure: unexpected error.',
             flashMessage: {
                 title: LOGIN_ERROR_FLASH_MESSAGE_TITLE,
-                message: 'Please try again.  If this error persists, please contact <a href="mailto:web@mareinc.org">web@mareinc.org</a>'
+                detail: 'Please try again.  If this error persists, please contact <a href="mailto:web@mareinc.org">web@mareinc.org</a>'
             }
         }
     },
@@ -52,7 +52,7 @@ exports.ERRORS = {
             message: 'Registration failure: invalid email format.',
             flashMessage: {
                 title: REGISTRATION_ERROR_FLASH_MESSAGE_TITLE,
-                message: "The email address you've entered is invalid.  Please enter in format <i>user@mareinc.org</i>"
+                detail: "The email address you've entered is invalid.  Please enter in format <i>user@mareinc.org</i>"
             }
         },
         DUPLICATE_EMAIL: {
@@ -60,7 +60,7 @@ exports.ERRORS = {
             message: 'Registration failure: existing email address.',
             flashMessage: {
                 title: REGISTRATION_ERROR_FLASH_MESSAGE_TITLE,
-                message: "There is already an account established with this email address.  If you've forgotten your password, please reset"
+                detail: "There is already an account established with this email address.  If you've forgotten your password, please reset"
             }
         },
         PASSWORD_MISMATCH: {
@@ -68,7 +68,7 @@ exports.ERRORS = {
             message: 'Registration failure: passwords do not match.',
             flashMessage: {
                 title: REGISTRATION_ERROR_FLASH_MESSAGE_TITLE,
-                message: 'The passwords you entered do not match. Please re-enter'
+                detail: 'The passwords you entered do not match. Please re-enter'
             }
         },
         USER_SAVE_ERROR: {
@@ -76,7 +76,7 @@ exports.ERRORS = {
             message: 'Registration failure: User model creation error.',
             flashMessage: {
                 title: REGISTRATION_ERROR_FLASH_MESSAGE_TITLE,
-                message: 'If this error persists, please contact <a href="mailto:web@mareinc.org">web@mareinc.org</a> for assistance'
+                detail: 'If this error persists, please contact <a href="mailto:web@mareinc.org">web@mareinc.org</a> for assistance'
             }
         },
         UNEXPECTED_ERROR: {
@@ -84,7 +84,7 @@ exports.ERRORS = {
             message: 'Registration failure: unexpected error.',
             flashMessage: {
                 title: REGISTRATION_ERROR_FLASH_MESSAGE_TITLE,
-                message: 'If this error persists, please contact <a href="mailto:web@mareinc.org">web@mareinc.org</a> for assistance'
+                detail: 'If this error persists, please contact <a href="mailto:web@mareinc.org">web@mareinc.org</a> for assistance'
             }
         }
     }

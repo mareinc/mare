@@ -131,7 +131,7 @@ exports.registerUser = ( req, res, next ) => {
 							flashMessages.appendFlashMessage({
 								messageType: flashMessages.MESSAGE_TYPES.ERROR,
 								title: errorData.flashMessage.title,
-								message: errorData.flashMessage.message
+								message: errorData.flashMessage.detail
 							});
 							// send the error status and flash message markup
 							flashMessages.generateFlashMessageMarkup()
@@ -227,7 +227,7 @@ exports.registerUser = ( req, res, next ) => {
 							flashMessages.appendFlashMessage({
 								messageType: flashMessages.MESSAGE_TYPES.ERROR,
 								title: errorData.flashMessage.title,
-								message: errorData.flashMessage.message
+								message: errorData.flashMessage.detail
 							});
 							// send the error status and flash message markup
 							flashMessages.generateFlashMessageMarkup()
@@ -336,7 +336,7 @@ exports.registerUser = ( req, res, next ) => {
 							flashMessages.appendFlashMessage({
 								messageType: flashMessages.MESSAGE_TYPES.ERROR,
 								title: errorData.flashMessage.title,
-								message: errorData.flashMessage.message
+								message: errorData.flashMessage.detail
 							});
 							// send the error status and flash message markup
 							flashMessages.generateFlashMessageMarkup()
@@ -366,7 +366,7 @@ exports.registerUser = ( req, res, next ) => {
 			flashMessages.appendFlashMessage({
 				messageType: flashMessages.MESSAGE_TYPES.ERROR,
 				title: errorData.flashMessage.title,
-				message: errorData.flashMessage.message
+				message: errorData.flashMessage.detail
 			});
 			// send the error status and flash message markup
 			flashMessages.generateFlashMessageMarkup()
@@ -708,7 +708,7 @@ exports.setInitialErrorMessages = ( req, isEmailValid, isEmailDuplicate, isPassw
 		flashMessages.appendFlashMessage({
 			messageType: flashMessages.MESSAGE_TYPES.ERROR,
 			title: errorData.flashMessage.title,
-			message: errorData.flashMessage.message
+			message: errorData.flashMessage.detail
 		});
 	}
 };

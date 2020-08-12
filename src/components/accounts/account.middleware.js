@@ -142,7 +142,7 @@ exports.loginAjax = function loginAjax( req, res, next ) {
 		flashMessageMiddleware.appendFlashMessage({
 			messageType: flashMessageMiddleware.MESSAGE_TYPES.ERROR,
 			title: errorData.flashMessage.title,
-			message: errorData.flashMessage.message
+			message: errorData.flashMessage.detail
 		});
 
 		generateAndSendFailureMessage();
@@ -167,7 +167,7 @@ exports.loginAjax = function loginAjax( req, res, next ) {
 				flashMessageMiddleware.appendFlashMessage({
 					messageType: flashMessageMiddleware.MESSAGE_TYPES.ERROR,
 					title: errorData.flashMessage.title,
-					message: errorData.flashMessage.message
+					message: errorData.flashMessage.detail
 				});
 
 				generateAndSendFailureMessage();
@@ -186,7 +186,7 @@ exports.loginAjax = function loginAjax( req, res, next ) {
 				flashMessageMiddleware.appendFlashMessage({
 					messageType: flashMessageMiddleware.MESSAGE_TYPES.ERROR,
 					title: errorData.flashMessage.title,
-					message: errorData.flashMessage.message
+					message: errorData.flashMessage.detail
 				});
 
 				generateAndSendFailureMessage();
@@ -220,7 +220,7 @@ exports.loginAjax = function loginAjax( req, res, next ) {
 						flashMessageMiddleware.appendFlashMessage({
 							messageType: flashMessageMiddleware.MESSAGE_TYPES.ERROR,
 							title: errorData.flashMessage.title,
-							message: errorData.flashMessage.message
+							message: errorData.flashMessage.detail
 						});
 
 					// if the failure occured for an unexpected reason
@@ -241,7 +241,7 @@ exports.loginAjax = function loginAjax( req, res, next ) {
 						flashMessageMiddleware.appendFlashMessage({
 							messageType: flashMessageMiddleware.MESSAGE_TYPES.ERROR,
 							title: errorData.flashMessage.title,
-							message: errorData.flashMessage.message
+							message: errorData.flashMessage.detail
 						});
 					}
 
