@@ -2,6 +2,7 @@ const keystone = require( 'keystone' );
 const async = require( 'async' );
 const userMiddleware = require( '../users/user.controllers' );
 const flashMessageMiddleware = require( '../../utils/notification.middleware' );
+const errorUtils = require('../../utils/errors.controllers');
 
 /* prevents people from accessing protected pages when they're not signed in */
 exports.requireUser = function( userType ) {
@@ -30,13 +31,13 @@ exports.login = function( req, res, next ) {
 	let locals = res.locals;
 
 	if ( !req.body.email || !req.body.password ) {
-		
-		// log the error for debugging purposes
-		console.error( 'ERROR CODE:LOGIN01 - Login failure: missing username or password' );
 
-		/* TODO: need a better message for the user, flash messages won't work because page reloads are stupid */
-		req.flash( 'error', { title: 'Something went wrong',
-							  detail: 'Please enter your username and password' } );
+		// get standardized error data
+		const errorData = errorUtils.ERRORS.LOGIN.NO_USER_OR_PASS;
+		// log the error for debugging purposes
+		errorUtils.logCodedError( errorData.code, errorData.message );
+		// display a message to the user
+		req.flash( 'error', errorData.flashMessage );
 		
 		res.redirect( req.body.target || '/' );
 
@@ -49,23 +50,31 @@ exports.login = function( req, res, next ) {
 
 		if( locals.userStatus === 'nonexistent' ) {
 
+			// get standardized error data
+			const errorData = errorUtils.ERRORS.LOGIN.NO_MATCHING_EMAIL;
 			// log the error for debugging purposes
-			console.error( 'ERROR CODE:LOGIN02 - Login failure: non-existent username (email).' );
-
-			req.flash( 'error', { title: 'Something went wrong',
-							  	  detail: 'Your username or password is incorrect, please try again' } );
+			errorUtils.logCodedError(
+				errorData.code,
+				errorData.message,
+				`Attempted login with email: ${req.body.email}`
+			);
+			// display a message to the user
+			req.flash( 'error', errorData.flashMessage );
 			
 			res.redirect( req.body.target || '/' );
 
 		} else if( locals.userStatus === 'inactive' ) {
 
+			// get standardized error data
+			const errorData = errorUtils.ERRORS.LOGIN.ACCOUNT_INACTIVE;
 			// log the error for debugging purposes
-			console.error( 'ERROR CODE:LOGIN03 - Login failure: account inactive.' );
-
-			// TODO: we need to figure out if they were once active, or change the message to handle that case as well
-			req.flash( 'error', {
-				detail: 'The email you are trying to use already exists in the system.  Please reset your password for this email address in order to gain access.    If this error persists, please notify MARE at <a href="mailto:web@mareinc.org">web@mareinc.org</a>'
-			});
+			errorUtils.logCodedError(
+				errorData.code,
+				errorData.message,
+				`Attempted login with email: ${req.body.email}`
+			);
+			// display a message to the user
+			req.flash( 'error', errorData.flashMessage );
 
 			res.redirect( req.body.target || '/' );
 
@@ -81,13 +90,36 @@ exports.login = function( req, res, next ) {
 
 			var onFail = function( error ) {
 
-				// log the error for debugging purposes
-				console.error( 'ERROR CODE:LOGIN00 - Login failure: unknown error.' );
-				console.error( error );
+				// if failure occured because of an incorrect password
+				if ( error.message === 'Incorrect email or password' ) {
 
-				/* TODO: need a better message for the user, flash messages won't work because page reloads are stupid */
-				req.flash( 'error', { title: 'Something went wrong',
-									  detail: 'Please try again.  If this error persists, please notify <a href="mailto:communications@mareinc.org">communications@mareinc.org</a>' } );
+					// get standardized error data
+					const errorData = errorUtils.ERRORS.LOGIN.INCORRECT_PASSWORD;
+					// log the error for debugging purposes
+					errorUtils.logCodedError(
+						errorData.code,
+						errorData.message,
+						`Attempted login with email: ${req.body.email}`
+					);
+					// display a message to the user
+					req.flash( 'error', errorData.flashMessage );
+
+				// if the failure occured for an unexpected reason
+				} else {
+					// log the error
+					console.error( error );
+					// get standardized error data
+					const errorData = errorUtils.ERRORS.LOGIN.UNEXPECTED_ERROR;
+					// log the error for debugging purposes
+					errorUtils.logCodedError(
+						errorData.code,
+						errorData.message,
+						`Attempted login with email: ${req.body.email}`
+					);
+					// display a message to the user
+					req.flash( 'error', errorData.flashMessage );
+				}
+
 				req.body.target ? res.redirect( req.body.target ) : res.redirect( '/' );
 			}
 
@@ -102,10 +134,15 @@ exports.loginAjax = function loginAjax( req, res, next ) {
 
 	if ( !req.body.email || !req.body.password ) {
 
+		// get standardized error data
+		const errorData = errorUtils.ERRORS.LOGIN.NO_USER_OR_PASS;
+		// log the error for debugging purposes
+		errorUtils.logCodedError( errorData.code, errorData.message );
+		// display a message to the user
 		flashMessageMiddleware.appendFlashMessage({
 			messageType: flashMessageMiddleware.MESSAGE_TYPES.ERROR,
-			title: 'Something went wrong',
-			message: 'Please enter your username and password.'
+			title: errorData.flashMessage.title,
+			message: errorData.flashMessage.message
 		});
 
 		generateAndSendFailureMessage();
@@ -117,21 +154,39 @@ exports.loginAjax = function loginAjax( req, res, next ) {
 		], () => {
 	
 			if ( locals.userStatus === 'nonexistent' ) {
-	
+
+				// get standardized error data
+				const errorData = errorUtils.ERRORS.LOGIN.NO_MATCHING_EMAIL;
+				// log the error for debugging purposes
+				errorUtils.logCodedError(
+					errorData.code,
+					errorData.message,
+					`Attempted login with email: ${req.body.email}`
+				);
+				// display a message to the user
 				flashMessageMiddleware.appendFlashMessage({
 					messageType: flashMessageMiddleware.MESSAGE_TYPES.ERROR,
-					title: 'Something went wrong',
-					message: 'Your username or password is incorrect, please try again.'
+					title: errorData.flashMessage.title,
+					message: errorData.flashMessage.message
 				});
 
 				generateAndSendFailureMessage();
 	
 			} else if ( locals.userStatus === 'inactive' ) {
-				
-				// TODO: we need to figure out if they were once active, or change the message to handle that case as well
+
+				// get standardized error data
+				const errorData = errorUtils.ERRORS.LOGIN.ACCOUNT_INACTIVE;
+				// log the error for debugging purposes
+				errorUtils.logCodedError(
+					errorData.code,
+					errorData.message,
+					`Attempted login with email: ${req.body.email}`
+				);
+				// display a message to the user
 				flashMessageMiddleware.appendFlashMessage({
 					messageType: flashMessageMiddleware.MESSAGE_TYPES.ERROR,
-					message: 'The email you are trying to use already exists in the system.  Please reset your password for this email address in order to gain access.    If this error persists, please notify MARE at <a href="mailto:web@mareinc.org">web@mareinc.org</a>'
+					title: errorData.flashMessage.title,
+					message: errorData.flashMessage.message
 				});
 
 				generateAndSendFailureMessage();
@@ -148,13 +203,46 @@ exports.loginAjax = function loginAjax( req, res, next ) {
 					});
 				}
 	
-				var onFail = function() {
-					
-					flashMessageMiddleware.appendFlashMessage({
-						messageType: flashMessageMiddleware.MESSAGE_TYPES.ERROR,
-						title: 'Your username or password is incorrect, please try again.',
-						message: ''
-					});
+				var onFail = function( error ) {
+
+					// if failure occured because of an incorrect password
+					if ( error.message === 'Incorrect email or password' ) {
+
+						// get standardized error data
+						const errorData = errorUtils.ERRORS.LOGIN.INCORRECT_PASSWORD;
+						// log the error for debugging purposes
+						errorUtils.logCodedError(
+							errorData.code,
+							errorData.message,
+							`Attempted login with email: ${req.body.email}`
+						);
+						// display a message to the user
+						flashMessageMiddleware.appendFlashMessage({
+							messageType: flashMessageMiddleware.MESSAGE_TYPES.ERROR,
+							title: errorData.flashMessage.title,
+							message: errorData.flashMessage.message
+						});
+
+					// if the failure occured for an unexpected reason
+					} else {
+
+						// log the error
+						console.error( error );
+						// get standardized error data
+						const errorData = errorUtils.ERRORS.LOGIN.UNEXPECTED_ERROR;
+						// log the error for debugging purposes
+						errorUtils.logCodedError(
+							errorData.code,
+							errorData.message,
+							`Attempted login with email: ${req.body.email}`
+						);
+						// display a message to the user
+						flashMessageMiddleware.appendFlashMessage({
+							messageType: flashMessageMiddleware.MESSAGE_TYPES.ERROR,
+							title: errorData.flashMessage.title,
+							message: errorData.flashMessage.message
+						});
+					}
 
 					generateAndSendFailureMessage();
 				}
