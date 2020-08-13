@@ -2,6 +2,7 @@
 // define error codes, logging, and messaging
 const LOGIN_ERROR_FLASH_MESSAGE_TITLE = 'Something went wrong';
 const REGISTRATION_ERROR_FLASH_MESSAGE_TITLE = 'There was a problem creating your account';
+const PASSWORD_RESET_ERROR_FLASH_MESSAGE_TITLE = 'There was an error with your password reset request'
 
 exports.ERRORS = {
     LOGIN: {
@@ -85,6 +86,48 @@ exports.ERRORS = {
             flashMessage: {
                 title: REGISTRATION_ERROR_FLASH_MESSAGE_TITLE,
                 detail: 'If this error persists, please contact <a href="mailto:web@mareinc.org">web@mareinc.org</a> for assistance'
+            }
+        }
+    },
+    PASSWORD_FORGOT: {
+        INVALID_EMAIL_FORMAT: {
+			code: 'PWF_01',
+            message: 'Forgotten password failure: invalid email format.',
+            flashMessage: {
+                title: PASSWORD_RESET_ERROR_FLASH_MESSAGE_TITLE,
+                detail: "The email address you've entered is invalid.  Please enter in format <i>user@mareinc.org</i>"
+            }
+        },
+        NO_MATCHING_EMAIL: {
+            code: 'PWF_02',
+            message: 'Forgotten password failure: non-existent username (email).',
+            flashMessage: {
+                title: PASSWORD_RESET_ERROR_FLASH_MESSAGE_TITLE,
+                detail: 'There is no account established with this email address.  Please try any alternative email addresses you use'
+            }
+        },
+        RESET_TOKEN_SAVE_FAIL: {
+            code: 'PWF_03',
+            message: 'Forgotten password failure: failed to save reset token on user model.',
+            flashMessage: {
+                title: PASSWORD_RESET_ERROR_FLASH_MESSAGE_TITLE,
+                detail: 'Please try using the forgot password button again.  If the issue persists, please contact <a href="mailto:web@mareinc.org">web@mareinc.org</a>'
+            }
+        },
+        RESET_EMAIL_SEND_FAIL: {
+            code: 'PWF_04',
+            message: 'Forgotten password failure: failed to send reset email to user.',
+            flashMessage: {
+                title: PASSWORD_RESET_ERROR_FLASH_MESSAGE_TITLE,
+                detail: 'Please try using the forgot password button again.  If the issue persists, please contact <a href="mailto:web@mareinc.org">web@mareinc.org</a>'
+            }
+        },
+        UNEXPECTED_ERROR: {
+            code: 'PWF_00',
+            message: 'Forgotten password failure: unexpected error.',
+            flashMessage: {
+                title: PASSWORD_RESET_ERROR_FLASH_MESSAGE_TITLE,
+                detail: 'Please try using the forgot password button again.  If the issue persists, please contact <a href="mailto:web@mareinc.org">web@mareinc.org</a>'
             }
         }
     }

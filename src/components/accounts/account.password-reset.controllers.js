@@ -1,5 +1,6 @@
 const keystone                      = require( 'keystone' ),
 	  utilities                     = require( '../../utils/utility.controllers' ),
+	  errorUtils					= require( '../../utils/errors.controllers' ),
 	  PasswordResetEmailMiddleware  = require( './account.email.controllers' ),
 	  UserMiddleware                = require( '../users/user.controllers' );
 
@@ -8,31 +9,46 @@ exports.resetPassword = ( req, res ) => {
 	const locals = res.locals;
 
 	if ( !req.body.email ) {
-		// log errors for debugging purposes
-		console.error( `error initiating reset password - email address invalid` );
 
-		req.flash( 'error', {
-			title: 'Please enter a valid email address',
-		});
+		// get standardized error data
+		const errorData = errorUtils.ERRORS.PASSWORD_FORGOT.INVALID_EMAIL_FORMAT;
+		// log the error for debugging purposes
+		errorUtils.logCodedError(
+			errorData.code,
+			errorData.message,
+			`Attempted password reset with email: ${req.body.email || 'No email provided'}`
+		);
+		// display a message to the user
+		req.flash( 'error', errorData.flashMessage );
 		
 		res.redirect( 303, '/' ); // TODO: this needs to be fixed as the token information will be lost on redirect
 	
 		return;
 	}
-	// attempt to fetch the user using the email provided
-	const fetchUser = UserMiddleware.getUserByEmail( req.body.email )
 
-	fetchUser
+	// placeholder for error data
+	let errorData;
+
+	// attempt to fetch the user using the email provided
+	UserMiddleware.getUserByEmail( req.body.email )
+		// handle errors from fetching user by email
+		.catch( error => {
+
+			// get standardized error data
+			errorData = errorUtils.ERRORS.PASSWORD_FORGOT.UNEXPECTED_ERROR;
+			// re-throw the error to break promise chain execution and skip to the next .catch block
+			throw error;
+		})
+		// create reset token and save it to user record
 		.then( user => {
 
+			// if no user could be found
 			if ( !user ) {
-				
-				req.flash( 'error', {
-					title: 'There is no account associated with this email address.',
-					detail: 'If applicable, please attempt to log in with a secondary/spouse email address.  Otherwise register to create a new account or contact MARE at <a href="mailto:communications@mareinc.org">communications@mareinc.org</a> for assistance.'
-				});
 
-				throw new Error( `error fetching user by email ${ req.body.email }` );
+				// get standardized error data
+				errorData = errorUtils.ERRORS.PASSWORD_FORGOT.NO_MATCHING_EMAIL;
+				// throw an error to break promise chain execution and skip to the next .catch block
+				throw new Error( `No account exists with email: ${req.body.email}` );
 
 			} else {
 				// TODO: should this be stored in a more permanent location?
@@ -40,54 +56,69 @@ exports.resetPassword = ( req, res ) => {
 				const resetToken = utilities.generateAlphanumericHash( 35 );
 				// set the reset password token for the user record
 				user.resetPasswordToken = resetToken;
+				// save the user record
+				return user.save();
+			}
+		})
+		// handle errors from token creation/record saving
+		.catch( error => {
 
-				// the name is stored differently for families than for other models
-				const name = user.get( 'userType' ) === 'family' ?
-							 user.get( 'displayName' ) :
-							 user.get( 'name.full' );
+			// if the error hasn't been caught
+			if ( !errorData ) {
+				// get standardized error data
+				errorData = errorUtils.ERRORS.PASSWORD_FORGOT.RESET_TOKEN_SAVE_FAIL;
+			}
+			// re-throw the error to break promise chain execution and skip to the next .catch block
+			throw error;
+		})
+		// send email with reset token to the user
+		.then( user => {
+			
+			// the name is stored differently for families than for other models
+			const name = user.get( 'userType' ) === 'family' ?
+							user.get( 'displayName' ) :
+							user.get( 'name.full' );
+
+			// create an email with the reset token and save the user entity
+			return PasswordResetEmailMiddleware.sendPasswordResetEmail( name, user.email, locals.host, user.resetPasswordToken );
+		})
+		// handle errors from email sending
+		.catch( error => {
+
+			// if the error hasn't been caught
+			if ( !errorData ) {
+				// get standardized error data
+				errorData = errorUtils.ERRORS.PASSWORD_FORGOT.RESET_EMAIL_SEND_FAIL;
+			}
+			
+			// this is the last .catch block, so log the coded error for debugging purposes
+			errorUtils.logCodedError(
+				errorData.code,
+				errorData.message,
+				`Attempted password reset with email: ${req.body.email}`
+			);
+
+			// log the thrown error
+			console.error( error );
+		})
+		// log any errors and send success/error message to user
+		.finally(() => {
+
+			// if no errors, send a success message to the user
+			if (!errorData) {
 				
-				// create an email with the reset token and save the user entity
-				const sendPasswordResetEmail = PasswordResetEmailMiddleware.sendPasswordResetEmail( name, user.email, locals.host, resetToken );
-				// if there was an error sending the password reset email
-				sendPasswordResetEmail
-					.catch( err => {
-						
-						req.flash( 'error', {
-							title: 'There was an error with your password reset request.',
-							detail: 'Please try using the forgot password button again.  If the issue persists, please contact MARE at <a href="mailto:communications@mareinc.org">communications@mareinc.org</a>'
-						});
-
-						throw new Error( `error sending reset password email`, err );
-					});
-				// TODO: saving the reset token to the user should come first, and an email should only be sent if successful
-				user.save( err => {
-
-					if( err ) {
-
-						req.flash( 'error', {
-							title: 'There was an error with your password reset request.',
-							detail: 'Please try using the forgot password button again.  If the issue persists, please contact MARE at <a href="mailto:communications@mareinc.org">communications@mareinc.org</a>'
-						});
-
-						throw new Error( `error saving password reset token to user with email ${ req.body.email }`, err );
-					}
-				});
-				// TODO: this should only be set if the two promises above resolve successfully
 				req.flash( 'success', {
 					title: 'Success',
 					detail: 'We have emailed you a link to reset your password.  Please follow the instructions in your email.'
 				});
 
-				res.redirect( 303, '/' );
+			// otherwise, display an error message
+			} else {
+				req.flash( 'error', errorData.flashMessage );
 			}
-		})
-		.catch( err => {
-			// log the error for debugging purposes
-			console.error( err );
-
+			
 			res.redirect( 303, '/' );
 		});
-
 };
 
 // TODO: make this an express view
