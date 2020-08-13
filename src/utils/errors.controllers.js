@@ -130,6 +130,40 @@ exports.ERRORS = {
                 detail: 'Please try using the forgot password button again.  If the issue persists, please contact <a href="mailto:web@mareinc.org">web@mareinc.org</a>'
             }
         }
+    },
+    PASSWORD_RESET: {
+        NO_RESET_TOKEN: {
+            code: 'PWR_01',
+            message: 'Reset password failure: no reset token provided.',
+            flashMessage: {
+                title: PASSWORD_RESET_ERROR_FLASH_MESSAGE_TITLE,
+                detail: 'Please try using the forgot password button again.  If the issue persists, please contact <a href="mailto:web@mareinc.org">web@mareinc.org</a>'
+            }
+        },
+        NO_USER_WITH_MATCHING_TOKEN: {
+            code: 'PWR_02',
+            message: 'Reset password failure: no user with matching reset token.',
+            flashMessage: {
+                title: PASSWORD_RESET_ERROR_FLASH_MESSAGE_TITLE,
+                detail: 'Please try using the forgot password button again.  If the issue persists, please contact <a href="mailto:web@mareinc.org">web@mareinc.org</a>'
+            }
+        },
+        PASSWORD_SAVE_FAIL: {
+            code: 'PWR_03',
+            message: 'Reset password failure: could not save user record with updated password.',
+            flashMessage: {
+                title: PASSWORD_RESET_ERROR_FLASH_MESSAGE_TITLE,
+                detail: 'Please try using the forgot password button again.  If the issue persists, please contact <a href="mailto:web@mareinc.org">web@mareinc.org</a>'
+            }
+        },
+        UNEXPECTED_ERROR: {
+            code: 'PWR_00',
+            message: 'Reset password failure: unexpected error.',
+            flashMessage: {
+                title: PASSWORD_RESET_ERROR_FLASH_MESSAGE_TITLE,
+                detail: 'Please try using the forgot password button again.  If the issue persists, please contact <a href="mailto:web@mareinc.org">web@mareinc.org</a>'
+            }
+        }
     }
 };
 

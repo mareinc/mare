@@ -102,10 +102,10 @@ exports.resetPassword = ( req, res ) => {
 			console.error( error );
 		})
 		// log any errors and send success/error message to user
-		.finally(() => {
+		.finally( () => {
 
 			// if no errors, send a success message to the user
-			if (!errorData) {
+			if ( !errorData ) {
 				
 				req.flash( 'success', {
 					title: 'Success',
@@ -125,49 +125,69 @@ exports.resetPassword = ( req, res ) => {
 exports.getForm = ( req, res ) => {
 
 	const resetToken = req.query.resetToken;
+	let errorData;
 
 	if ( !resetToken ) {
-		
-		console.error( `password reset error - reset token not provided` );
-		
-		req.flash( 'error', {
-			title: 'There was an error with your password reset request.',
-			detail: 'Please try using the forgot password button again.  If the issue persists, please contact MARE at <a href="mailto:communications@mareinc.org">communications@mareinc.org</a>'
-		});
 
-		res.redirect( 303, '/' );
-		
-		return;
+		// get standardized error data
+		errorData = errorUtils.ERRORS.PASSWORD_RESET.NO_RESET_TOKEN;
+		// log the error for debugging purposes
+		errorUtils.logCodedError(
+			errorData.code,
+			errorData.message
+		);
+		// display a message to the user
+		req.flash( 'error', errorData.flashMessage );
+
+		// redirect and display the error message
+		return res.redirect( 303, '/' );
 	}
 
 	UserMiddleware.getUserByPasswordResetToken( resetToken )
 		.then( user => {
 
+			// if no user with a matching password reset token could be found, log an error and halt execution
 			if ( !user ) {
-				
-				req.flash( 'error', {
-					title: 'There was an error with your password reset request.',
-					detail: 'Please try using the forgot password button again.  If the issue persists, please contact MARE at <a href="mailto:communications@mareinc.org">communications@mareinc.org</a>'
-				});
-				
-				throw new Error( `password reset error - no user found matching password reset token ${ resetToken }` );
+				// get standardized error data
+				errorData = errorUtils.ERRORS.PASSWORD_RESET.NO_USER_WITH_MATCHING_TOKEN;
+				throw new Error( `No user exists with reset token: ${resetToken}` );
 			}
-		
-
-			const view = new keystone.View( req, res ),
-		   
-			locals = res.locals;
-			// pass the reset token to the view
-			locals.resetToken = resetToken;
-
-			view.render( 'form_reset-password' );
-
 		})
-		.catch( err => {
-			// log errors for debugging purposes
-			console.error( err );
+		.catch( error => {
 
-			res.redirect( 303, '/' );
+			// if the error hasn't already been captured
+			if ( !errorData ) {
+				// get standardized error data
+				errorData = errorUtils.ERRORS.PASSWORD_RESET.UNEXPECTED_ERROR;
+			}
+
+			// log the error for debugging purposes
+			errorUtils.logCodedError(
+				errorData.code,
+				errorData.message,
+				`Attempted password reset with token: ${resetToken}`
+			);
+			
+			// log the thrown error
+			console.error( error );
+		})
+		.finally( () => {
+
+			// if the operation completed successfully
+			if ( !errorData ) {
+
+				// set the reset token on locals
+				res.locals.resetToken = resetToken;
+				// render the reset password form
+				new keystone.View( req, res ).render( 'form_reset-password' );
+
+			// if an error occurred
+			} else {
+
+				// display a message to the user
+				req.flash( 'error', errorData.flashMessage );
+				res.redirect( 303, '/' );
+			}			
 		});
 };
 
@@ -179,60 +199,89 @@ exports.changePassword = ( req, res ) => {
 
 	if ( !resetToken ) {
 
-		console.error( `change password error - reset token not provided` );
-		
-		return;
+		// get standardized error data
+		errorData = errorUtils.ERRORS.PASSWORD_RESET.NO_RESET_TOKEN;
+		// log the error for debugging purposes
+		errorUtils.logCodedError(
+			errorData.code,
+			errorData.message
+		);
+		// display a message to the user
+		req.flash( 'error', errorData.flashMessage );
+
+		// redirect and display the error message
+		return res.redirect( 303, '/' );
 	}
 
 	// TODO: check passwords are correct - validation is done through parsley on the front end, but should be checked here as well
 
-	//fetch user with the reset token 
-	const fetchUser = UserMiddleware.getUserByPasswordResetToken( resetToken )
-		
-	fetchUser
+	let userDoc, errorData;
+
+	// fetch user with the reset token
+	UserMiddleware.getUserByPasswordResetToken( resetToken )
+		.catch( error => {
+			// get standardized error data
+			errorData = errorUtils.ERRORS.PASSWORD_RESET.UNEXPECTED_ERROR;
+			// re-throw the error to break promise chain execution and skip to the next .catch block
+			throw error;
+		})
 		.then( user => {
 
+			// if no user with a matching password reset token could be found, log an error and halt execution
 			if ( !user ) {
 				
-				req.flash( 'error', {
-					title: 'There was an error with your password reset request.',
-					detail: 'Please try using the forgot password button again.  If the issue persists, please contact MARE at <a href="mailto:communications@mareinc.org">communications@mareinc.org</a>'
-				});
+				// get standardized error data
+				errorData = errorUtils.ERRORS.PASSWORD_RESET.NO_USER_WITH_MATCHING_TOKEN;
+				throw new Error( `No user exists with reset token: ${resetToken}` );
 
-				throw new Error( `Error fetching user by password reset token ${ resetToken }` );
-		   
 			} else {
+
+				userDoc = user;
 				// update the password field for the user
 				user.set( 'password', password );
-				//reset the password token so that users cant use the link anymore
+				// clear the password reset token to invalidate the password reset link
 				user.set( 'resetPasswordToken', '' );
 				// set the user to active, allowing them to log in
 				user.set( 'isActive', true );
 
-				user.save( err => {
-					
-					if( err ) {
+				return user.save();
+			}
+		})
+		.catch( error => {
 
-						req.flash( 'error', {
-							title: 'There was an error with your password reset request.',
-							detail: 'Please try using the forgot password button again.  If the issue persists, please contact MARE at <a href="mailto:communications@mareinc.org">communications@mareinc.org</a>'
-						});
-						
-						throw new Error( `error saving user model with new password`, err );
-					}
-				});
-
-				req.flash( 'success', {
-					title: 'Success',
-					detail: `The password for your account ${ user.get( 'email' ) } has been successfully updated.`
-				});
+			// if the error hasn't already been captured
+			if ( !errorData ) {
+				// get standardized error data
+				errorData = errorUtils.ERRORS.PASSWORD_RESET.PASSWORD_SAVE_FAIL;
 			}
 
-			res.redirect( 303, '/' );
+			// log the error for debugging purposes
+			errorUtils.logCodedError(
+				errorData.code,
+				errorData.message,
+				`Attempted password reset with token: ${resetToken}`
+			);
+			
+			// log the thrown error
+			console.error( error );
 		})
-		.catch( err => {
+		.finally( () => {
 
-			console.error( err );
+			// if the operation completed successfully
+			if ( !errorData ) {
+
+				// display a success message to the user
+				req.flash( 'success', {
+					title: 'Success',
+					detail: `The password for your account ${ userDoc.get( 'email' ) } has been successfully updated.`
+				});
+
+			// if an error occurred
+			} else {
+
+				// display an error message to the user
+				req.flash( 'error', errorData.flashMessage );
+			}
 
 			res.redirect( 303, '/' );
 		});
