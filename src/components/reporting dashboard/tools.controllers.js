@@ -773,6 +773,7 @@ exports.getPlacementData = ( req, res, next ) => {
 						'socialWorkerAgency',
 						'familyConstellation',
 						'address.region',
+						'address.state',
 						'contact1.race',
 						'contact2.race'
 					].join( ' ' )
@@ -935,6 +936,13 @@ exports.getPlacementData = ( req, res, next ) => {
 							: undefined
 						: placement.familyDetails.address && placement.familyDetails.address.region
 							? placement.familyDetails.address.region.region
+							: undefined,
+					familyState: placement.family
+						? placement.family.address.state
+							? placement.family.address.state.state
+							: undefined
+						: placement.familyDetails.address && placement.familyDetails.address.state
+							? placement.familyDetails.address.state.state
 							: undefined,
 					familyConstellation: placement.family
 						? placement.family.familyConstellation

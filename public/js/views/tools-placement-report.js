@@ -379,6 +379,12 @@
 				visible: false
 			},
 			{
+				title: 'Family State',
+				data: 'familyState',
+				defaultContent: '--',
+				visible: false
+			},
+			{
 				title: 'Family Constellation',
 				data: 'familyConstellation',
 				defaultContent: '--',
