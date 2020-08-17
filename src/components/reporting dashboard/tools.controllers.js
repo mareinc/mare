@@ -846,10 +846,10 @@ exports.getPlacementData = ( req, res, next ) => {
 					placementDate: moment.utc( placement[typeSpecificDateField] ).format( 'MM/DD/YYYY' ),
 					placementDateISO: moment( placement[typeSpecificDateField] ).toISOString(),
 					daysBeforePlacement: placement.child 
-						? moment.utc( placement[placement[typeSpecificDateField]] ).diff( moment.utc( placement.child.registrationDate ), 'days' )
+						? moment.utc( placement[typeSpecificDateField] ).diff( moment.utc( placement.child.registrationDate ), 'days' )
 						: undefined,
 					ageAtPlacement: placement.child
-						? moment.utc( placement[placement[typeSpecificDateField]] ).diff( moment.utc( placement.child.birthDate ), 'years' )
+						? moment.utc( placement[typeSpecificDateField] ).diff( moment.utc( placement.child.birthDate ), 'years' )
 						: undefined,
 					source: placement.source ? placement.source.source : undefined,
 					additionalSources: placement.additionalSources && placement.additionalSources.length > 0
