@@ -757,6 +757,7 @@ exports.getPlacementData = ( req, res, next ) => {
 					path: [
 						'gender',
 						'race',
+						'status',
 						'legalStatus',
 						'adoptionWorker',
 						'adoptionWorkerAgency',
@@ -878,6 +879,7 @@ exports.getPlacementData = ( req, res, next ) => {
 						? placement.child.race.map( race => race.race ).join( ', ' )
 						: undefined,
 					childGender: placement.child ? placement.child.gender.gender : undefined,
+					childStatus: placement.child ? placement.child.status.childStatus : undefined,
 					childLegalStatus: placement.child ? placement.child.legalStatus.legalStatus : undefined,
 					childRegistrationDate: placement.child 
 						? moment.utc( placement.child.registrationDate ).format( 'MM/DD/YYYY' )
