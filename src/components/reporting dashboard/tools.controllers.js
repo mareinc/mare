@@ -761,7 +761,8 @@ exports.getPlacementData = ( req, res, next ) => {
 						'adoptionWorker',
 						'adoptionWorkerAgency',
 						'adoptionWorkerAgencyRegion',
-						'siblingsToBePlacedWith'
+						'siblingsToBePlacedWith',
+						'residence'
 					].join( ' ' )
 				}
 			})
@@ -879,6 +880,9 @@ exports.getPlacementData = ( req, res, next ) => {
 					childLegalStatus: placement.child ? placement.child.legalStatus.legalStatus : undefined,
 					childRegistrationDate: placement.child 
 						? moment.utc( placement.child.registrationDate ).format( 'MM/DD/YYYY' )
+						: undefined,
+					childCurrentResidence: placement.child && placement.child.residence
+						? placement.child.residence.residence
 						: undefined,
 					childSW: placement.child && placement.child.adoptionWorker
 						? placement.child.adoptionWorker.name.full

@@ -361,6 +361,12 @@
 				visible: false
 			},
 			{
+				title: 'Current Residence',
+				data: 'childCurrentResidence',
+				defaultContent: '--',
+				visible: false
+			},
+			{
 				title: 'Family SW Agency',
 				data: 'familySWAgency',
 				defaultContent: '--',
