@@ -60,10 +60,7 @@ module.exports = ( req, res ) => {
 
 			// delete the verification record 
 			verificationRecord.remove()
-				.then(() => {
-					undefined.rhyme = time;
-				})
-			// continue execution even if this operation fails - it does not actually impact account verification
+				// catch errors but continue execution even if this operation fails - it does not actually impact account verification
 				.catch( error => {
 					console.error( `Error removing verification record with id: ${verificationRecord._id}` );
 					console.error( error );
