@@ -2,7 +2,8 @@
 // define error codes, logging, and messaging
 const LOGIN_ERROR_FLASH_MESSAGE_TITLE = 'Something went wrong';
 const REGISTRATION_ERROR_FLASH_MESSAGE_TITLE = 'There was a problem creating your account';
-const PASSWORD_RESET_ERROR_FLASH_MESSAGE_TITLE = 'There was an error with your password reset request'
+const PASSWORD_RESET_ERROR_FLASH_MESSAGE_TITLE = 'There was an error with your password reset request';
+const ACCOUNT_VERIFY_ERROR_FLASH_MESSAGE_TITLE = 'There was an error verifying your account';
 
 exports.ERRORS = {
     LOGIN: {
@@ -159,6 +160,40 @@ exports.ERRORS = {
         UNEXPECTED_ERROR: {
             code: 'PWR_00',
             message: 'Reset password failure: unexpected error.',
+            flashMessage: {
+                title: PASSWORD_RESET_ERROR_FLASH_MESSAGE_TITLE,
+                detail: 'Please try using the forgot password button again.  If the issue persists, please contact <a href="mailto:web@mareinc.org">web@mareinc.org</a>'
+            }
+        }
+    },
+    ACCOUNT_VERIFICATION: {
+        NO_VERIFICATION_CODE: {
+            code: 'VRFY_01',
+            message: 'Account verification failure: no verification code provided.',
+            flashMessage: {
+                title: ACCOUNT_VERIFY_ERROR_FLASH_MESSAGE_TITLE,
+                detail: 'Please try using the forgot password button again.  If the issue persists, please contact <a href="mailto:web@mareinc.org">web@mareinc.org</a>'
+            }
+        },
+        NO_MATCHING_VERIFICATION_RECORD: {
+            code: 'VRFY_02',
+            message: 'Account verification failure: no verification record with matching code.',
+            flashMessage: {
+                title: ACCOUNT_VERIFY_ERROR_FLASH_MESSAGE_TITLE,
+                detail: 'Please try using the forgot password button again.  If the issue persists, please contact <a href="mailto:web@mareinc.org">web@mareinc.org</a>'
+            }
+        },
+        USER_UPDATE_FAILED: {
+            code: 'VRFY_03',
+            message: 'Account verification failure: could not update verification status on user record.',
+            flashMessage: {
+                title: ACCOUNT_VERIFY_ERROR_FLASH_MESSAGE_TITLE,
+                detail: 'Please try using the forgot password button again.  If the issue persists, please contact <a href="mailto:web@mareinc.org">web@mareinc.org</a>'
+            }
+        },
+        UNEXPECTED_ERROR: {
+            code: 'VRFY_00',
+            message: 'Account verification failure: unexpected error.',
             flashMessage: {
                 title: PASSWORD_RESET_ERROR_FLASH_MESSAGE_TITLE,
                 detail: 'Please try using the forgot password button again.  If the issue persists, please contact <a href="mailto:web@mareinc.org">web@mareinc.org</a>'
