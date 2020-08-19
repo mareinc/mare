@@ -49,9 +49,11 @@ module.exports = ( req, res ) => {
 		.catch( error => {
 
 			// get standardized error data
-			errorData = errorData || error === 'USER_UPDATE_FAILED'
-				? errorUtils.ERRORS.ACCOUNT_VERIFICATION.USER_UPDATE_FAILED
-				: errorUtils.ERRORS.ACCOUNT_VERIFICATION.UNEXPECTED_ERROR;
+			if ( !errorData ) {
+				errorData = error === 'USER_UPDATE_FAILED'
+					? errorUtils.ERRORS.ACCOUNT_VERIFICATION.USER_UPDATE_FAILED
+					: errorUtils.ERRORS.ACCOUNT_VERIFICATION.UNEXPECTED_ERROR;
+			}
 
 			// re-throw the error to break promise chain execution and skip to the next .catch block
 			throw error;
