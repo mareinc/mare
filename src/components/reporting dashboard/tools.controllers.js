@@ -757,11 +757,13 @@ exports.getPlacementData = ( req, res, next ) => {
 					path: [
 						'gender',
 						'race',
+						'status',
 						'legalStatus',
 						'adoptionWorker',
 						'adoptionWorkerAgency',
 						'adoptionWorkerAgencyRegion',
-						'siblingsToBePlacedWith'
+						'siblingsToBePlacedWith',
+						'residence'
 					].join( ' ' )
 				}
 			})
@@ -772,6 +774,7 @@ exports.getPlacementData = ( req, res, next ) => {
 						'socialWorkerAgency',
 						'familyConstellation',
 						'address.region',
+						'address.state',
 						'contact1.race',
 						'contact2.race'
 					].join( ' ' )
@@ -846,10 +849,10 @@ exports.getPlacementData = ( req, res, next ) => {
 					placementDate: moment.utc( placement[typeSpecificDateField] ).format( 'MM/DD/YYYY' ),
 					placementDateISO: moment( placement[typeSpecificDateField] ).toISOString(),
 					daysBeforePlacement: placement.child 
-						? moment.utc( placement[placement[typeSpecificDateField]] ).diff( moment.utc( placement.child.registrationDate ), 'days' )
+						? moment.utc( placement[typeSpecificDateField] ).diff( moment.utc( placement.child.registrationDate ), 'days' )
 						: undefined,
 					ageAtPlacement: placement.child
-						? moment.utc( placement[placement[typeSpecificDateField]] ).diff( moment.utc( placement.child.birthDate ), 'years' )
+						? moment.utc( placement[typeSpecificDateField] ).diff( moment.utc( placement.child.birthDate ), 'years', true ).toFixed( 1 )
 						: undefined,
 					source: placement.source ? placement.source.source : undefined,
 					additionalSources: placement.additionalSources && placement.additionalSources.length > 0
@@ -876,9 +879,13 @@ exports.getPlacementData = ( req, res, next ) => {
 						? placement.child.race.map( race => race.race ).join( ', ' )
 						: undefined,
 					childGender: placement.child ? placement.child.gender.gender : undefined,
+					childStatus: placement.child ? placement.child.status.childStatus : undefined,
 					childLegalStatus: placement.child ? placement.child.legalStatus.legalStatus : undefined,
 					childRegistrationDate: placement.child 
 						? moment.utc( placement.child.registrationDate ).format( 'MM/DD/YYYY' )
+						: undefined,
+					childCurrentResidence: placement.child && placement.child.residence
+						? placement.child.residence.residence
 						: undefined,
 					childSW: placement.child && placement.child.adoptionWorker
 						? placement.child.adoptionWorker.name.full
@@ -931,6 +938,13 @@ exports.getPlacementData = ( req, res, next ) => {
 							: undefined
 						: placement.familyDetails.address && placement.familyDetails.address.region
 							? placement.familyDetails.address.region.region
+							: undefined,
+					familyState: placement.family
+						? placement.family.address.state
+							? placement.family.address.state.state
+							: undefined
+						: placement.familyDetails.address && placement.familyDetails.address.state
+							? placement.familyDetails.address.state.state
 							: undefined,
 					familyConstellation: placement.family
 						? placement.family.familyConstellation
@@ -1238,23 +1252,6 @@ exports.getChildListingData = ( req, res, next ) => {
 	let registrationDateTo = new Date( query.regDateTo );
 	searchCriteria.registrationDate = { $gte: registrationDateFrom, $lte: registrationDateTo };
 
-	// age at registration date range
-	const MILLISECONDS_TO_YEARS_CONVERSION_FACTOR = 31536000000;
-	if ( query.registrationAgeFrom || query.registrationAgeTo ) {
-		// using $where is a performance concern, but I don't see any other way to query based on age at registration
-		// return a template string instead of a function to allow variables (e.g. dynamic age ranges) to be passed properly to mongo context
-		searchCriteria.$where = `function() {
-			const CHILD_AGE_IN_YEARS = ( this.registrationDate - this.birthDate ) / ${MILLISECONDS_TO_YEARS_CONVERSION_FACTOR};
-			return ${
-				query.registrationAgeFrom && query.registrationAgeTo
-					? `CHILD_AGE_IN_YEARS >= ${query.registrationAgeFrom} && CHILD_AGE_IN_YEARS <= ${Number(query.registrationAgeTo) + 1}`
-					: query.registrationAgeFrom
-						? `CHILD_AGE_IN_YEARS >= ${query.registrationAgeFrom}`
-						: `CHILD_AGE_IN_YEARS <= ${Number(query.registrationAgeTo) + 1}`
-			};
-		}`;
-	}
-
 	// current age date range
 	if ( query.currentAgeFrom || query.currentAgeTo ) {
 		// if both upper and lower limit is set
@@ -1504,9 +1501,9 @@ exports.getChildListingData = ( req, res, next ) => {
 			intellectualNeeds: childDoc.intellectualNeeds || '--',
 			adoptionWorker: childDoc.adoptionWorker ? childDoc.adoptionWorker.name.full : 'N/A',
 			adoptionWorkerRegion: childDoc.adoptionWorkerAgencyRegion ? childDoc.adoptionWorkerAgencyRegion.region : 'N/A',
-			ageAtRegistration: Math.floor( ( childDoc.registrationDate - childDoc.birthDate ) / MILLISECONDS_TO_YEARS_CONVERSION_FACTOR ),
 			currentAge: moment.utc().startOf( 'day' ).diff( moment.utc( childDoc.birthDate ), 'years' ),
 			daysSinceRegistration: moment.utc().startOf( 'day' ).diff( moment.utc( childDoc.registrationDate ), 'days' ),
+			ageAtRegistration: ( moment.utc().startOf( 'day' ).diff( moment.utc( childDoc.birthDate ), 'years', true ) - moment.utc().startOf( 'day' ).diff( moment.utc( childDoc.registrationDate ), 'years', true ) ).toFixed( 1 ),
 			registrationDate: moment.utc( childDoc.registrationDate ).format( 'MM/DD/YYYY' ),
 			addedToWebDate: childDoc.visibleInGalleryDate ? moment.utc( childDoc.visibleInGalleryDate ).format( 'MM/DD/YYYY' ) : 'N/A',
 			mustBePlacedWithSiblings: childDoc.mustBePlacedWithSiblings ? 'Yes' : 'No',

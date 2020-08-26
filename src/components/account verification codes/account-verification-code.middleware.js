@@ -1,22 +1,30 @@
-const keystone = require( 'keystone' );
+const keystone 		= require( 'keystone' ),
+	  errorUtils	= require( '../../utils/errors.controllers' ); 
 
 module.exports = ( req, res ) => {
 
 	const verificationCode = req.query.verificationCode,
 		  userType         = req.query.userType;
 
+	let errorData,
+		verificationRecord;
+
 	if( !verificationCode || !userType ) {
-		// log the error
-		console.error( `account verification Error - bad request paramaters -> verificationCode: ${ verificationCode }, userType: ${ userType }` );
-		
-		req.flash( 'error', {
-			title: 'There was an error verifying your account',
-			detail: 'If this error persists, please notify MARE at <a href="mailto:communications@mareinc.org">communications@mareinc.org</a>'
-		});
-		
-		res.redirect( 303, '/' );
-		
-		return;
+
+		// get standardized error data
+		errorData = errorUtils.ERRORS.ACCOUNT_VERIFICATION.NO_VERIFICATION_CODE;
+		// log the error for debugging purposes
+		errorUtils.logCodedError(
+			errorData.code,
+			errorData.message,
+			`Attempted account verification with missing verification code and/or user type.
+			 verification code: ${verificationCode}
+			 user type: ${userType}`
+		);
+		// display a message to the user
+		req.flash( 'error', errorData.flashMessage );
+
+		return res.redirect( 303, '/' );
 	}
 
 	keystone.list( 'Account Verification Code' ).model
@@ -26,56 +34,70 @@ module.exports = ( req, res ) => {
 		.then( verificationEntity => {
 
 			if( !verificationEntity ){
+
+				// get standardized error data
+				errorData = errorUtils.ERRORS.ACCOUNT_VERIFICATION.NO_MATCHING_VERIFICATION_RECORD;
 				
-				console.error( `account verification error - could not find verification model based on verification code ${ verificationCode }` );
-				
-				req.flash( 'error', {
-					title: 'There was an error verifying your account',
-					detail: 'If this error persists, please notify MARE at <a href="mailto:communications@mareinc.org">communications@mareinc.org</a>'
+				// throw an error to break promise chain execution and skip to the next .catch block
+				throw new Error( `No Account Verification Code exists with code: ${verificationCode}` );
+			}
+
+			// we found the verificationEntity and we want to remove it
+			verificationRecord = verificationEntity;
+			return updateUser( verificationEntity.user, userType );
+		})
+		.catch( error => {
+
+			// get standardized error data
+			if ( !errorData ) {
+				errorData = error === 'USER_UPDATE_FAILED'
+					? errorUtils.ERRORS.ACCOUNT_VERIFICATION.USER_UPDATE_FAILED
+					: errorUtils.ERRORS.ACCOUNT_VERIFICATION.UNEXPECTED_ERROR;
+			}
+
+			// re-throw the error to break promise chain execution and skip to the next .catch block
+			throw error;
+		})
+		.then( () => {
+
+			// delete the verification record 
+			verificationRecord.remove()
+				// catch errors but continue execution even if this operation fails - it does not actually impact account verification
+				.catch( error => {
+					console.error( `Error removing verification record with id: ${verificationRecord._id}` );
+					console.error( error );
 				});
+		})
+		.catch( error => {
+
+			// get standardized error data
+			errorData = errorData || errorUtils.ERRORS.ACCOUNT_VERIFICATION.UNEXPECTED_ERROR;
+			
+			// this is the last .catch block, so log the coded error for debugging purposes
+			errorUtils.logCodedError(
+				errorData.code,
+				errorData.message,
+				`Attempted account verification with code: ${verificationCode}`
+			);
+
+			// log the thrown error
+			console.error( error );
+		})
+		.finally( () => {
+			
+			// if no errors, send a success message to the user
+			if ( !errorData ) {
 				
-				res.redirect( 303, '/' );
-				
-				return;
+				req.flash( 'success', {
+					title: 'Success',
+					detail: 'We have verified your email.'
+				});
+
+			// otherwise, display an error message
+			} else {
+				req.flash( 'error', errorData.flashMessage );
 			}
 			
-			// we found the verificationEntity and we want to remove it
-			var userId = verificationEntity.user;
-
-			updateUser( userId, userType )
-				.then( () => {
-					// delete the verification record 
-					verificationEntity.remove( err => {
-						
-						if( err ) {
-							console.error( 'account verification error - could not remove the verification model entity' );
-						}
-					});
-
-					req.flash( 'success', { title: 'Thank you for verifying your account' } );
-
-					res.redirect( 200, '/' );
-				})  
-				.catch( () =>{
-
-					console.error( 'account verification Error - could not update the user field' );
-
-					req.flash( 'error', {
-						title: 'There was an error verifying your account',
-						detail: 'If this error persists, please notify MARE at <a href="mailto:communications@mareinc.org">communications@mareinc.org</a>'
-					});
-
-					res.redirect( 303, '/' );
-				});
-		}, err => {
-
-			console.error( `error processing verification email`, err );
-
-			req.flash( 'error', {
-				title: 'There was an error verifying your account',
-				detail: 'If this error persists, please notify MARE at <a href="mailto:communications@mareinc.org">communications@mareinc.org</a>'
-			});
-
 			res.redirect( 303, '/' );
 		});
 };
@@ -83,7 +105,7 @@ module.exports = ( req, res ) => {
 /* updates the isVerified field of the user */
 function updateUser( userId, userType ){
 
-	return new Promise( ( resolve, reject ) =>{
+	return new Promise( ( resolve, reject ) => {
 
 		let targetModel;
 
@@ -104,12 +126,12 @@ function updateUser( userId, userType ){
 				user.save( err => {
 					if( err ) {
 						console.error( `account verification error - could not save updated user ${ userId }` );
-						reject();
+						console.error ( err );
+						reject( 'USER_UPDATE_FAILED' );
+					} else {
+						resolve();
 					}
 				});
-				
-				resolve();
-
 			}, err => {
 				if( err ){
 					console.error( `account verification error - could not find user ${ userId }` );

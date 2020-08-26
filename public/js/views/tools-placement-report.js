@@ -361,6 +361,12 @@
 				visible: false
 			},
 			{
+				title: 'Current Residence',
+				data: 'childCurrentResidence',
+				defaultContent: '--',
+				visible: false
+			},
+			{
 				title: 'Family SW Agency',
 				data: 'familySWAgency',
 				defaultContent: '--',
@@ -369,6 +375,12 @@
 			{
 				title: 'Family Region',
 				data: 'familyRegion',
+				defaultContent: '--',
+				visible: false
+			},
+			{
+				title: 'Family State',
+				data: 'familyState',
 				defaultContent: '--',
 				visible: false
 			},
