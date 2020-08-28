@@ -41,7 +41,7 @@
 		"keystone-storage-adapter-s3": "git+https://github.com/keystonejs/keystone-storage-adapter-s3.git#855f7c6f2c07dcde9b4fb566e6c57dd0e80cc4cf",
 		"mailchimp-api-v3": "^1.14.0",
 		"md5": "^2.3.0",
-		"moment": "~2.24.0",
+		"moment": "~2.27.0",
 		"mongoose-simple-random": "^0.4.1",
 		"newrelic": "^6.13.0",
 		"node-sass": "^4.14.1",
