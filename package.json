@@ -17,7 +17,7 @@
 		"express-handlebars": "~3.1.0",
 		"express-robots": "^0.1.6",
 		"express-sslify": "^1.2.0",
-		"gifsicle": "^4.0.1",
+		"gifsicle": "^5.1.0",
 		"glob": "^7.1.6",
 		"gulp": "^4.0.0",
 		"gulp-autoprefixer": "^7.0.1",
