@@ -27,7 +27,7 @@ exports.resetPassword = ( req, res ) => {
 	}
 
 	// placeholder for error data
-	let errorData;
+	let errorData, resetToken;
 
 	// attempt to fetch the user using the email provided
 	UserMiddleware.getUserByEmail( req.body.email )
@@ -53,7 +53,7 @@ exports.resetPassword = ( req, res ) => {
 			} else {
 				// TODO: should this be stored in a more permanent location?
 				// generate a new password reset token 
-				const resetToken = utilities.generateAlphanumericHash( 35 );
+				resetToken = utilities.generateAlphanumericHash( 35 );
 				// set the reset password token for the user record
 				user.resetPasswordToken = resetToken;
 				// save the user record
@@ -106,11 +106,18 @@ exports.resetPassword = ( req, res ) => {
 
 			// if no errors, send a success message to the user
 			if ( !errorData ) {
+
+				errorData = errorUtils.ERRORS.PASSWORD_FORGOT.SUCCESS;
+
+				// log the success for debugging purposes
+				errorUtils.logCodedError(
+					errorData.code,
+					errorData.message,
+					`Password reset token (${resetToken}) created for user: ${req.body.email}`,
+					true
+				);
 				
-				req.flash( 'success', {
-					title: 'Success',
-					detail: 'We have emailed you a link to reset your password.  Please follow the instructions in your email.'
-				});
+				req.flash( 'success', errorData.flashMessage );
 
 			// otherwise, display an error message
 			} else {

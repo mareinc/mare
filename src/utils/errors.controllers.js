@@ -138,6 +138,14 @@ exports.ERRORS = {
                 title: PASSWORD_RESET_ERROR_FLASH_MESSAGE_TITLE,
                 detail: 'Please try using the forgot password button again.  If the issue persists, please contact <a href="mailto:web@mareinc.org">web@mareinc.org</a>'
             }
+        },
+        SUCCESS: {
+            code: 'PWF_SUCCESS',
+            message: 'Forgotten password success: created reset token.',
+            flashMessage: {
+                title: 'Success',
+                detail: 'We have emailed you a link to reset your password.  Please follow the instructions in your email.'
+            }
         }
     },
     PASSWORD_RESET: {
