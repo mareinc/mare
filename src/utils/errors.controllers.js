@@ -46,6 +46,10 @@ exports.ERRORS = {
                 title: LOGIN_ERROR_FLASH_MESSAGE_TITLE,
                 detail: 'Please try again.  If this error persists, please contact <a href="mailto:web@mareinc.org">web@mareinc.org</a>'
             }
+        },
+        SUCCESS: {
+            code: 'LOGIN_SUCCESS',
+            message: 'Login success.'
         }
     },
     REGISTRATION: {
@@ -203,11 +207,11 @@ exports.ERRORS = {
 };
 
 // log errors in a standardized format with unique error codes
-exports.logCodedError = function logCodedError( code, message, detail ) {
+exports.logCodedError = function logCodedError( code, message, detail, isSuccess ) {
 
 	if ( code && message ) {
 		
-		console.error( `ERROR (CODE:${code}) - ${message}` );
+		console.error( `${isSuccess ? 'SUCCESS' : 'ERROR'} (CODE:${code}) - ${message}` );
 
 		if (detail) {
 			console.error( `DETAIL (CODE:${code}) - ${detail}` );

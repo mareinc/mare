@@ -81,6 +81,15 @@ exports.login = function( req, res, next ) {
 		} else if( locals.userStatus === 'active' ) {
 			// TODO: you can add a target to the signin of the current page and it will always route correctly back to where the user was
 			var onSuccess = function() {
+				
+				// log the success for debugging purposes
+				errorUtils.logCodedError(
+					errorUtils.ERRORS.LOGIN.SUCCESS.code,
+					errorUtils.ERRORS.LOGIN.SUCCESS.message,
+					`Successful login with email: ${req.body.email}`,
+					true
+				);
+
 				if ( req.body.target && !/join|signin/.test( req.body.target ) ) { // TODO: I don't think this is needed anymore
 					res.redirect( req.body.target || '/' );
 				} else {
@@ -195,6 +204,14 @@ exports.loginAjax = function loginAjax( req, res, next ) {
 				
 				// TODO: you can add a target to the signin of the current page and it will always route correctly back to where the user was
 				var onSuccess = function() {
+
+					// log the success for debugging purposes
+					errorUtils.logCodedError(
+						errorUtils.ERRORS.LOGIN.SUCCESS.code,
+						errorUtils.ERRORS.LOGIN.SUCCESS.message,
+						`Successful login with email: ${req.body.email}`,
+						true
+					);
 					
 					// send a success message along with the post-login destination page
 					res.send({ 
