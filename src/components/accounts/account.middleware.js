@@ -50,18 +50,78 @@ exports.login = function( req, res, next ) {
 
 		if( locals.userStatus === 'nonexistent' ) {
 
-			// get standardized error data
-			const errorData = errorUtils.ERRORS.LOGIN.NO_MATCHING_EMAIL;
-			// log the error for debugging purposes
-			errorUtils.logCodedError(
-				errorData.code,
-				errorData.message,
-				`Attempted login with email: ${req.body.email}`
-			);
-			// display a message to the user
-			req.flash( 'error', errorData.flashMessage );
-			
-			res.redirect( req.body.target || '/' );
+			// test to see if this is a MA social worker who might have multiple email domains
+			const MA_STATE_EMAIL_REGEX = /@mass\.gov|@state\.ma\.us|@massmail\.state\.ma\.us/i;
+			const isMAStateEmail = MA_STATE_EMAIL_REGEX.test( req.body.email );
+
+			if ( isMAStateEmail ) {
+
+				// get email username
+				const emailName = req.body.email.split( '@' )[0];
+
+				// generate potential alternate email adresses with different MA state domains
+				const potentialAlternateEmails = [
+					`${emailName}@mass.gov`,
+					`${emailName}@state.ma.us`,
+					`${emailName}@massmail.state.ma.us`
+				];
+				
+				let errorData;
+				// search for potential alternate email adresses with the same name but different domain
+				keystone.list( 'Social Worker' ).model
+					.findOne( { email: { $in: potentialAlternateEmails } } )
+					.lean()
+					.exec()
+					.then( userDoc => {
+
+						if ( userDoc ) {
+							// get standardized error data
+							errorData = errorUtils.ERRORS.LOGIN.ALTERNATIVE_EMAIL_DOMAIN;
+							// log the error for debugging purposes
+							errorUtils.logCodedError(
+								errorData.code,
+								errorData.message,
+								`Attempted login with email: ${req.body.email}, found potential alternate account: ${userDoc.email}`
+							);
+							// add dynamic detail to flash message
+							errorData.flashMessage.detail = `There is no account associated with the email address you entered: ${req.body.email}.` + 
+							`<br><br>There is an account on record with a different email domain: <strong>${userDoc.email}</strong>. If you have used the MARE website before, please try logging in with that email address.` +  
+							`<br><br>If this your first time using the MARE website, please create a new account <a href="/register">here</a>.`;
+						}
+					})
+					.catch( error => console.error( error ) )
+					.finally( () => {
+
+						if ( !errorData ) {
+							// get standardized error data
+							errorData = errorUtils.ERRORS.LOGIN.NO_MATCHING_EMAIL;
+							// log the error for debugging purposes
+							errorUtils.logCodedError(
+								errorData.code,
+								errorData.message,
+								`Attempted login with email: ${req.body.email}`
+							);
+						}
+						
+						// display a message to the user
+						req.flash( 'error', errorData.flashMessage );
+						res.redirect( req.body.target || '/' );
+					});
+			} else {
+
+				// get standardized error data
+				const errorData = errorUtils.ERRORS.LOGIN.NO_MATCHING_EMAIL;
+				// log the error for debugging purposes
+				errorUtils.logCodedError(
+					errorData.code,
+					errorData.message,
+					`Attempted login with email: ${req.body.email}`
+				);
+				// display a message to the user
+				req.flash( 'error', errorData.flashMessage );
+				
+				res.redirect( req.body.target || '/' );
+			}
 
 		} else if( locals.userStatus === 'inactive' ) {
 

@@ -23,6 +23,14 @@ exports.ERRORS = {
                 detail: 'There is no account established with this email address.  Please try any alternative email addresses you use'
             }
         },
+        ALTERNATIVE_EMAIL_DOMAIN: {
+            code: 'LOGIN_05',
+            message: 'Login failure: Social Worker attempted login with incorrect email domain.',
+            flashMessage: {
+                title: LOGIN_ERROR_FLASH_MESSAGE_TITLE
+                // detail will be created dynamically 
+            }
+        },
         ACCOUNT_INACTIVE: {
             code: 'LOGIN_03',
             message: 'Login failure: account inactive.',
