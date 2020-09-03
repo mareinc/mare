@@ -92,6 +92,10 @@ exports.ERRORS = {
                 title: REGISTRATION_ERROR_FLASH_MESSAGE_TITLE,
                 detail: 'If this error persists, please contact <a href="mailto:web@mareinc.org">web@mareinc.org</a> for assistance'
             }
+        },
+        SUCCESS: {
+            code: 'REG_SUCCESS',
+            message: 'Registration success.'
         }
     },
     PASSWORD_FORGOT: {

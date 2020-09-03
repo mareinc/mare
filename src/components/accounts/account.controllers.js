@@ -110,6 +110,13 @@ exports.registerUser = ( req, res, next ) => {
 								// if the user couldn't be added to one or more mailing lists
 								.catch( err => console.error( `error adding new site visitor ${ newSiteVisitor.get( 'name.full' ) } (${ newSiteVisitor.get( 'email' ) }) to mailing lists`, err ) );
 
+							// log the success for debugging purposes
+							errorUtils.logCodedError( 
+								errorUtils.ERRORS.REGISTRATION.SUCCESS.code,
+								errorUtils.ERRORS.REGISTRATION.SUCCESS.message,
+								`Successful User<SiteVisitor> registration with email: ${user.email}`,
+								true
+							);
 							// set the redirect path to the success target route
 							req.body.target = redirectPath;
 							// pass control to the login middleware
@@ -206,6 +213,13 @@ exports.registerUser = ( req, res, next ) => {
 								// if the user couldn't be added to one or more mailing lists
 								.catch( err => console.error( `error adding new social worker ${ newSocialWorker.get( 'name.full' ) } (${ newSocialWorker.get( 'email' ) }) to mailing lists`, err ) );
 
+							// log the success for debugging purposes
+							errorUtils.logCodedError( 
+								errorUtils.ERRORS.REGISTRATION.SUCCESS.code,
+								errorUtils.ERRORS.REGISTRATION.SUCCESS.message,
+								`Successful User<SocialWorker> registration with email: ${user.email}`,
+								true
+							);
 							// set the redirect path to the success target route
 							req.body.target = redirectPath;
 							// pass control to the login middleware
@@ -315,6 +329,13 @@ exports.registerUser = ( req, res, next ) => {
 								// if the user couldn't be added to one or more mailing lists
 								.catch( err => console.error( `error adding new family ${ newFamily.get( 'displayName' ) } (${ newFamily.get( 'email' ) }) to mailing lists`, err ) );
 
+							// log the success for debugging purposes
+							errorUtils.logCodedError( 
+								errorUtils.ERRORS.REGISTRATION.SUCCESS.code,
+								errorUtils.ERRORS.REGISTRATION.SUCCESS.message,
+								`Successful User<Family> registration with email: ${user.email}`,
+								true
+							);
 							// set the redirect path to the success target route
 							req.body.target = redirectPath;
 							// pass control to the login middleware
