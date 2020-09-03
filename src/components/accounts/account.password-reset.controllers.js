@@ -277,11 +277,18 @@ exports.changePassword = ( req, res ) => {
 			// if the operation completed successfully
 			if ( !errorData ) {
 
+				errorData = errorUtils.ERRORS.PASSWORD_RESET.SUCCESS;
+
+				// log the success for debugging purposes
+				errorUtils.logCodedError(
+					errorData.code,
+					errorData.message,
+					`Password reset for user: ${userDoc.get( 'email' )}`,
+					true
+				);
+
 				// display a success message to the user
-				req.flash( 'success', {
-					title: 'Success',
-					detail: `The password for your account ${ userDoc.get( 'email' ) } has been successfully updated.`
-				});
+				req.flash( 'success', errorData.flashMessage );
 
 			// if an error occurred
 			} else {

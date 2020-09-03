@@ -180,6 +180,14 @@ exports.ERRORS = {
                 title: PASSWORD_RESET_ERROR_FLASH_MESSAGE_TITLE,
                 detail: 'Please try using the forgot password button again.  If the issue persists, please contact <a href="mailto:web@mareinc.org">web@mareinc.org</a>'
             }
+        },
+        SUCCESS: {
+            code: 'PWR_SUCCESS',
+            message: 'Password reset success: password updated.',
+            flashMessage: {
+                title: 'Success',
+                detail: 'The password for your account has been successfully updated.'
+            }
         }
     },
     ACCOUNT_VERIFICATION: {
