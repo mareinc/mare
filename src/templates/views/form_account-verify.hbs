@@ -1,0 +1,26 @@
+<div class="card card--vertical card--large-padding">
+
+    <div class="page-header text-center pb-4">
+        <h1 class="card__title">Verify Your Account</h1>
+        <div class="form-intro">
+            {{#if noCodeFound}}
+            We are unable to verify your account. Please contact MARE for assistance.
+            {{else}}
+            Press verify to activate your <span class="text-capitalize">{{userType}}</span> MARE account with the email address <strong>{{userEmail}}</strong>.
+            {{/if}}
+        </div>
+    </div>
+
+    {{#unless noCodeFound}}
+    <section>
+        <form action="/account/verify" method="POST" class="text-center">
+            <div>
+                <input name="verificationCode" value="{{verificationCode}}" hidden="true" />
+                <input name="userType" value="{{userType}}" hidden="true" />
+                <button class="button button--teal" type="submit">Verify</button>
+            </div>
+        </form>
+    </section>
+    {{/unless}}
+
+</div>

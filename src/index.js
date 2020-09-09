@@ -111,7 +111,8 @@ exports = module.exports = app => {
 	app.put( '/account/user-info'						, userMiddleware.updateUser );
 	app.put( '/account/user-email-lists'				, userMiddleware.updateUserEmailLists );
 	// verification code handling after user registers
-	app.get('/verifyAccount'							, accountVerificationService );
+	app.get( '/verify'									, routes.views.form_accountVerify );
+	app.post( '/account/verify'							, accountVerificationService );
 	/* TODO: all these routes below need to be moved and prefixed with appropriate REST verbs like put */
 	// services for ajax calls
 	app.post( '/services/get-children-data'				, childService.getGalleryData );

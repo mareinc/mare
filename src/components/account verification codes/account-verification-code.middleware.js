@@ -3,8 +3,8 @@ const keystone 		= require( 'keystone' ),
 
 module.exports = ( req, res ) => {
 
-	const verificationCode = req.query.verificationCode,
-		  userType         = req.query.userType;
+	const verificationCode = req.body.verificationCode,
+		  userType         = req.body.userType;
 
 	let errorData,
 		verificationRecord;
