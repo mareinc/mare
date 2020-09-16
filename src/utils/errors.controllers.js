@@ -74,7 +74,7 @@ exports.ERRORS = {
             message: 'Registration failure: existing email address.',
             flashMessage: {
                 title: REGISTRATION_ERROR_FLASH_MESSAGE_TITLE,
-                detail: "There is already an account established with this email address.  If you've forgotten your password, please reset"
+                detail: 'There is already an account established with this email address.  If you\'ve forgotten your password, please reset it using the "Forgot?" link on the login form'
             }
         },
         PASSWORD_MISMATCH: {
@@ -93,6 +93,14 @@ exports.ERRORS = {
                 detail: 'If this error persists, please contact <a href="mailto:web@mareinc.org">web@mareinc.org</a> for assistance'
             }
         },
+        VERIFICATION_EMAIL_SEND_ERROR: {
+            code: 'REG_05',
+            message: 'Registration failure: Verification email send error.',
+            flashMessage: {
+                title: REGISTRATION_ERROR_FLASH_MESSAGE_TITLE,
+                detail: 'If this error persists, please contact <a href="mailto:web@mareinc.org">web@mareinc.org</a> for assistance'
+            }
+        },
         UNEXPECTED_ERROR: {
             code: 'REG_00',
             message: 'Registration failure: unexpected error.',
@@ -103,7 +111,11 @@ exports.ERRORS = {
         },
         SUCCESS: {
             code: 'REG_SUCCESS',
-            message: 'Registration success.'
+            message: 'Registration success.',
+            flashMessage: {
+                title: 'Success',
+                // detail will be created dynamically 
+            }
         }
     },
     PASSWORD_FORGOT: {

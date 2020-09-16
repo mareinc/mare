@@ -26,6 +26,8 @@ exports.registerUser = ( req, res, next ) => {
 	if (typeof user.redirectUrl !== 'undefined') {
 		redirectPath = user.redirectUrl;
 	}
+	// create a placeholder for error data
+	req.errorData = false;
 
 	// check for conditions that will prevent saving the model
 	const isEmailValid			= exports.validateEmail( user.email ),			// returns true/false
@@ -34,25 +36,17 @@ exports.registerUser = ( req, res, next ) => {
 
 	fetchDuplicateEmail
 		.then( isEmailDuplicate => {
+			
 			// set flash messages for any errors with the email/password information submitted
-			exports.setInitialErrorMessages( req, isEmailValid, isEmailDuplicate, isPasswordValid );
-			// if initial errors exist, prevent additional processing, alert the user via the flash messages above
-			if( !isEmailValid || isEmailDuplicate || !isPasswordValid ) {
-				// and send the error status and flash message markup
-				flashMessages.generateFlashMessageMarkup()
-					.then( flashMessageMarkup => {
-						res.send({
-							status: 'error',
-							flashMessage: flashMessageMarkup
-						});
-					});
-			// if there were no initial errors, proceed with creating the account
-			} else {
+			exports.setInitialErrorMessages( req, res, isEmailValid, isEmailDuplicate, isPasswordValid );
+			
+			// if no initial errors were found, register user
+			if( isEmailValid && !isEmailDuplicate && isPasswordValid ) {
+				
 				if( registrationType === 'siteVisitor' ) {
 					// save the site visitor model using the submitted user details
-					exports.saveSiteVisitor( user )
+					return exports.saveSiteVisitor( user )
 						.then( newSiteVisitor => {
-							// if the new site visitor model was saved successfully
 
 							// create a new random code for the user to verify their account with
 							const verificationCode = utilities.generateAlphanumericHash( 35 );
@@ -77,7 +71,10 @@ exports.registerUser = ( req, res, next ) => {
 							// create a new verification code model in the database to allow users to verify their accounts
 							const createVerificationRecord = exports.createNewVerificationRecord( verificationCode, userId );
 							// add the user to any mailing lists they've opted into
-							const addUserToMailingLists = exports.addToMailingLists( newSiteVisitor, mailingListIds );
+							const addUserToMailingLists = exports.addToMailingLists( newSiteVisitor, mailingListIds ).catch( err =>  {
+								console.error( `error adding new site visitor ${ newSiteVisitor.get( 'name.full' ) } (${ newSiteVisitor.get( 'email' ) }) to mailing lists` );
+								console.error( err );
+							});
 
 							fetchEmailTarget
 								// fetch contact info for the staff contact for 'site visitor registration'
@@ -100,56 +97,10 @@ exports.registerUser = ( req, res, next ) => {
 								// if the email couldn't be sent, log the error for debugging purposes
 								.catch( err => console.error( `error sending new site visitor notification email to MARE contact about ${ newSiteVisitor.get( 'name.full' ) } (${ newSiteVisitor.get( 'email' ) })`, err ) );
 
-							createVerificationRecord
-								// send the account verification email to the user
-								.then( verificationRecord => accountEmailMiddleware.sendAccountVerificationEmailToUser( newSiteVisitor.get( 'email' ), userType, verificationCode, locals.host ) )
-								// if the email couldn't be send, log the error for debugging purposes
-								.catch( err => console.error( `error sending account verification email to site visitor ${ newSiteVisitor.get( 'name.full' ) } at ${ newSiteVisitor.get( 'email' ) }`, err ) );
 
-							addUserToMailingLists
-								// if the user couldn't be added to one or more mailing lists
-								.catch( err => console.error( `error adding new site visitor ${ newSiteVisitor.get( 'name.full' ) } (${ newSiteVisitor.get( 'email' ) }) to mailing lists`, err ) );
-
-							// log the success for debugging purposes
-							errorUtils.logCodedError( 
-								errorUtils.ERRORS.REGISTRATION.SUCCESS.code,
-								errorUtils.ERRORS.REGISTRATION.SUCCESS.message,
-								`Successful User<SiteVisitor> registration with email: ${user.email}`,
-								true
-							);
-							// set the redirect path to the success target route
-							req.body.target = redirectPath;
-							// pass control to the login middleware
-							next();
-						})
-						// if there was an error saving the new site visitor
-						.catch( err => {
-							// get standardized error data
-							const errorData = errorUtils.ERRORS.REGISTRATION.USER_SAVE_ERROR;
-							// log the coded error for debugging purposes
-							errorUtils.logCodedError( 
-								errorData.code,
-								errorData.message,
-								`Attempted User<SiteVisitor> registration with email: ${user.email}`
-							);
-							// log the thrown error
-							console.error( err );
-							// display a message to the user
-							flashMessages.appendFlashMessage({
-								messageType: flashMessages.MESSAGE_TYPES.ERROR,
-								title: errorData.flashMessage.title,
-								message: errorData.flashMessage.detail
-							});
-							// send the error status and flash message markup
-							flashMessages.generateFlashMessageMarkup()
-								.then( flashMessageMarkup => {
-									res.send({
-										status: 'error',
-										flashMessage: flashMessageMarkup
-									});
-								});
+							// create a verification record for the new user and pass control back to the root promise chain
+							return exports.createNewVerificationRecord( verificationCode, userId );
 						});
-
 				} else if( registrationType === 'socialWorker' ) {
 					// save the social worker model using the submitted user details
 					exports.saveSocialWorker( user )
@@ -223,7 +174,7 @@ exports.registerUser = ( req, res, next ) => {
 							// set the redirect path to the success target route
 							req.body.target = redirectPath;
 							// pass control to the login middleware
-							next();
+							next(); // next-flow
 						})
 						// if there was an error saving the new social worker
 						.catch( err => {
@@ -339,7 +290,7 @@ exports.registerUser = ( req, res, next ) => {
 							// set the redirect path to the success target route
 							req.body.target = redirectPath;
 							// pass control to the login middleware
-							next();
+							next(); // next-flow
 						})
 						// if there was an error saving the new family
 						.catch( err => {
@@ -369,31 +320,106 @@ exports.registerUser = ( req, res, next ) => {
 								});
 						});
 				}
+			
+			// otherwise, throw an error to pass control to next catch block
+			} else {
+				throw new Error( 'Initial registration data validation failed' );
 			}
 		})
-		.catch( reason => {
+		.catch( error => {
 
-			// get standardized error data
-			const errorData = errorUtils.ERRORS.REGISTRATION.UNEXPECTED_ERROR;
-			// log the coded error for debugging purposes
-			errorUtils.logCodedError( 
-				errorData.code,
-				errorData.message,
-				`Attempted registration with email: ${req.body.email}`
-			);
+			// check if error has already been handled
+			if ( !req.errorData ) {
+				// get standardized error data
+				req.errorData = errorUtils.ERRORS.REGISTRATION.USER_SAVE_ERROR;
+				// log the coded error for debugging purposes
+				errorUtils.logCodedError( 
+					req.errorData.code,
+					req.errorData.message,
+					`Attempted User<${registrationType}> registration with email: ${user.email}`
+				);
+			}
+
+			// rethrow the error to skip then blocks and pass control to subsequent catch block
+			throw error;
+		})
+		.then( verificationDoc => {
+
+			// send the account verification email to the user
+			return accountEmailMiddleware
+				.sendAccountVerificationEmailToUser( user.email, registrationType, verificationDoc.code, locals.host )
+				// handle any errors specific to sending the account verification email
+				.catch( error => {
+
+					console.log('inner castch');
+
+					// get standardized error data
+					req.errorData = errorUtils.ERRORS.REGISTRATION.VERIFICATION_EMAIL_SEND_ERROR;
+					// log the coded error for debugging purposes
+					errorUtils.logCodedError( 
+						req.errorData.code,
+						req.errorData.message,
+						`Attempted User<${registrationType}> registration with email: ${user.email}`
+					);
+					// rethrow the error, to be handled by parent catch block
+					throw error;
+				});
+			
+		})
+		.catch( error => {
+
+			// check if error has already been handled
+			if ( !req.errorData ) {
+				// get standardized error data
+				req.errorData = errorUtils.ERRORS.REGISTRATION.UNEXPECTED_ERROR;
+				// log the coded error for debugging purposes
+				errorUtils.logCodedError( 
+					req.errorData.code,
+					req.errorData.message,
+					`Attempted registration with email: ${req.body.email}`
+				);
+			}
+
 			// log the thrown error
-			console.error( reason );
+			console.error( error );
+		})
+		.finally( () => {
+
+			// get response type
+			const isErrorResponse = !!req.errorData;
+			// set response data
+			let responseData = isErrorResponse ? req.errorData : null;
+
+			// if no errors, create success response
+			if ( !isErrorResponse ) {
+
+				// add success response data
+				responseData = errorUtils.ERRORS.REGISTRATION.SUCCESS;
+				// dynamically set detail message with user email
+				responseData.flashMessage.detail = `We have created your MARE account and sent a verification email to ${user.email} - please follow the instructions to verify your email address and activate your account.`
+
+				// log the success
+				errorUtils.logCodedError( 
+					responseData.code,
+					responseData.message,
+					`Successful User<${registrationType}> registration with email: ${user.email}`,
+					true
+				);
+			}
+
 			// display a message to the user
 			flashMessages.appendFlashMessage({
-				messageType: flashMessages.MESSAGE_TYPES.ERROR,
-				title: errorData.flashMessage.title,
-				message: errorData.flashMessage.detail
+				messageType: isErrorResponse ? flashMessages.MESSAGE_TYPES.ERROR : flashMessages.MESSAGE_TYPES.SUCCESS,
+				title: responseData.flashMessage.title,
+				message: responseData.flashMessage.detail
 			});
+
 			// send the error status and flash message markup
-			flashMessages.generateFlashMessageMarkup()
+			flashMessages
+				.generateFlashMessageMarkup()
 				.then( flashMessageMarkup => {
 					res.send({
-						status: 'error',
+						status: isErrorResponse ? 'error' : 'success',
 						flashMessage: flashMessageMarkup
 					});
 				});
@@ -699,38 +725,45 @@ exports.validatePassword = ( password, confirmPassword ) => {
 };
 
 /* create error flash messages if a problem was encountered */
-exports.setInitialErrorMessages = ( req, isEmailValid, isEmailDuplicate, isPasswordValid ) => {
+exports.setInitialErrorMessages = ( req, res, isEmailValid, isEmailDuplicate, isPasswordValid ) => {
 
-	// get standardized error data
-	let errorData;
-
+	// set standardized error data
 	if( !isEmailValid ) {
-		errorData = errorUtils.ERRORS.REGISTRATION.INVALID_EMAIL_FORMAT;
+		req.errorData = errorUtils.ERRORS.REGISTRATION.INVALID_EMAIL_FORMAT;
 	}
 
 	if( isEmailDuplicate ) {
-		errorData = errorUtils.ERRORS.REGISTRATION.DUPLICATE_EMAIL;
+		req.errorData = errorUtils.ERRORS.REGISTRATION.DUPLICATE_EMAIL;
 	}
 
 	if( !isPasswordValid ) {
-		errorData = errorUtils.ERRORS.REGISTRATION.PASSWORD_MISMATCH;
+		req.errorData = errorUtils.ERRORS.REGISTRATION.PASSWORD_MISMATCH;
 	}
 
-	if (errorData) {
+	if ( req.errorData ) {
 		
 		// log the error for debugging purposes
 		errorUtils.logCodedError( 
-			errorData.code,
-			errorData.message,
+			req.errorData.code,
+			req.errorData.message,
 			`Attempted registration with email: ${req.body.email}`
 		);
 		
 		// display a message to the user
-		flashMessages.appendFlashMessage({
-			messageType: flashMessages.MESSAGE_TYPES.ERROR,
-			title: errorData.flashMessage.title,
-			message: errorData.flashMessage.detail
-		});
+		// flashMessages.appendFlashMessage({
+		// 	messageType: flashMessages.MESSAGE_TYPES.ERROR,
+		// 	title: req.errorData.flashMessage.title,
+		// 	message: req.errorData.flashMessage.detail
+		// });
+
+		// send the error status and flash message markup
+		// flashMessages.generateFlashMessageMarkup()
+		// 	.then( flashMessageMarkup => {
+		// 		res.send({
+		// 			status: 'error',
+		// 			flashMessage: flashMessageMarkup
+		// 		});
+		// 	});
 	}
 };
 

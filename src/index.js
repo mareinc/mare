@@ -91,7 +91,7 @@ exports = module.exports = app => {
 	app.get( '/waiting-child-profiles'					, routes.views.waitingChildProfiles );
 	// registration
 	app.get( '/register'								, routes.views.register );
-	app.post( '/register'								, registrationMiddleware.registerUser, accountMiddleware.loginAjax );
+	app.post( '/register'								, registrationMiddleware.registerUser );
 	// login / logout
 	app.get( '/logout'									, accountMiddleware.logout );
 	app.post('/login'									, accountMiddleware.login );
