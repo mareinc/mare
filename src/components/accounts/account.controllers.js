@@ -44,6 +44,7 @@ exports.registerUser = ( req, res, next ) => {
 			if( isEmailValid && !isEmailDuplicate && isPasswordValid ) {
 				
 				if( registrationType === 'siteVisitor' ) {
+					
 					// save the site visitor model using the submitted user details
 					return exports.saveSiteVisitor( user )
 						.then( newSiteVisitor => {
@@ -68,8 +69,6 @@ exports.registerUser = ( req, res, next ) => {
 							const fetchUser = userService.getUserByIdNew( { id: userId, targetModel: keystone.list( 'Site Visitor' ), fieldsToPopulate } );
 							// fetch the email target model matching 'site visitor registration'
 							const fetchEmailTarget = listService.getEmailTargetByName( 'site visitor registration' );
-							// create a new verification code model in the database to allow users to verify their accounts
-							const createVerificationRecord = exports.createNewVerificationRecord( verificationCode, userId );
 							// add the user to any mailing lists they've opted into
 							const addUserToMailingLists = exports.addToMailingLists( newSiteVisitor, mailingListIds ).catch( err =>  {
 								console.error( `error adding new site visitor ${ newSiteVisitor.get( 'name.full' ) } (${ newSiteVisitor.get( 'email' ) }) to mailing lists` );
@@ -90,22 +89,22 @@ exports.registerUser = ( req, res, next ) => {
 									// assign local variables to the values returned by the promises
 									const [ newUser, mailingLists ] = values;
 									// fetch the names of the returned mailing lists
-									const mailingListNames = mailingLists.map( mailingList => mailingList.name );
+									const mailingListNames = mailingLists ? mailingLists.map( mailingList => mailingList.name ) : ['Error adding user to mailing lists'];
 									// send a notification email to MARE staff to allow them to enter the information in the old system
 									return registrationEmailMiddleware.sendNewSiteVisitorNotificationEmailToMARE( newUser, staffEmailContactInfo, mailingListNames );
 								})
 								// if the email couldn't be sent, log the error for debugging purposes
 								.catch( err => console.error( `error sending new site visitor notification email to MARE contact about ${ newSiteVisitor.get( 'name.full' ) } (${ newSiteVisitor.get( 'email' ) })`, err ) );
 
-
 							// create a verification record for the new user and pass control back to the root promise chain
 							return exports.createNewVerificationRecord( verificationCode, userId );
 						});
+
 				} else if( registrationType === 'socialWorker' ) {
+					
 					// save the social worker model using the submitted user details
-					exports.saveSocialWorker( user )
+					return exports.saveSocialWorker( user )
 						.then( newSocialWorker => {
-							// if the new social worker model was saved successfully
 
 							// create a new random code for the user to verify their account with
 							const verificationCode = utilities.generateAlphanumericHash( 35 );
@@ -127,10 +126,11 @@ exports.registerUser = ( req, res, next ) => {
 							const fetchUser = userService.getUserByIdNew( { id: userId, targetModel: keystone.list( 'Social Worker' ), fieldsToPopulate } );
 							// fetch the email target model matching 'social worker registration'
 							const fetchEmailTarget = listService.getEmailTargetByName( 'social worker registration' );
-							// create a new verification code model in the database to allow users to verify their accounts
-							const createVerificationRecord = exports.createNewVerificationRecord( verificationCode, userId );
 							// add the user to any mailing lists they've opted into
-							const addUserToMailingLists = exports.addToMailingLists( newSocialWorker, mailingListIds );
+							const addUserToMailingLists = exports.addToMailingLists( newSocialWorker, mailingListIds ).catch( err =>  {
+								console.error( `error adding new social worker ${ newSocialWorker.get( 'name.full' ) } (${ newSocialWorker.get( 'email' ) }) to mailing lists` );
+								console.error( err );
+							});
 
 							fetchEmailTarget
 								// fetch contact info for the staff contact for 'social worker registration'
@@ -146,62 +146,16 @@ exports.registerUser = ( req, res, next ) => {
 									// assign local variables to the values returned by the promises
 									const [ newUser, mailingLists ] = values;
 									// fetch the names of the returned mailing lists
-									const mailingListNames = mailingLists.map( mailingList => mailingList.name );
+									const mailingListNames = mailingLists ? mailingLists.map( mailingList => mailingList.name ) : ['Error adding user to mailing lists'];
 									// send a notification email to MARE staff to allow them to enter the information in the old system
 									return registrationEmailMiddleware.sendNewSocialWorkerNotificationEmailToMARE( newUser, staffEmailContactInfo, mailingListNames );
 								})
 								// if the email couldn't be sent, log the error for debugging purposes
 								.catch( err => console.error( `error sending new social worker notification email to MARE contact for ${ newSocialWorker.get( 'name.full' ) } (${ newSocialWorker.get( 'email' ) })`, err ) );
+								
 
-							// once the verification record has been saved
-							createVerificationRecord
-								// send the account verification email to the user
-								.then( verificationRecord => accountEmailMiddleware.sendAccountVerificationEmailToUser( newSocialWorker.get( 'email' ), userType, verificationCode, locals.host ) )
-								// if the email couldn't be send, log the error for debugging purposes
-								.catch( err => console.error( `error sending account verification email to social worker ${ newSocialWorker.get( 'name.full' ) } at ${ newSocialWorker.get( 'email' ) }`, err ) );
-
-							addUserToMailingLists
-								// if the user couldn't be added to one or more mailing lists
-								.catch( err => console.error( `error adding new social worker ${ newSocialWorker.get( 'name.full' ) } (${ newSocialWorker.get( 'email' ) }) to mailing lists`, err ) );
-
-							// log the success for debugging purposes
-							errorUtils.logCodedError( 
-								errorUtils.ERRORS.REGISTRATION.SUCCESS.code,
-								errorUtils.ERRORS.REGISTRATION.SUCCESS.message,
-								`Successful User<SocialWorker> registration with email: ${user.email}`,
-								true
-							);
-							// set the redirect path to the success target route
-							req.body.target = redirectPath;
-							// pass control to the login middleware
-							next(); // next-flow
-						})
-						// if there was an error saving the new social worker
-						.catch( err => {
-							// get standardized error data
-							const errorData = errorUtils.ERRORS.REGISTRATION.USER_SAVE_ERROR;
-							// log the coded error for debugging purposes
-							errorUtils.logCodedError( 
-								errorData.code,
-								errorData.message,
-								`Attempted User<SocialWorker> registration with email: ${user.email}`
-							);
-							// log the thrown error
-							console.error( err );
-							// display a message to the user
-							flashMessages.appendFlashMessage({
-								messageType: flashMessages.MESSAGE_TYPES.ERROR,
-								title: errorData.flashMessage.title,
-								message: errorData.flashMessage.detail
-							});
-							// send the error status and flash message markup
-							flashMessages.generateFlashMessageMarkup()
-								.then( flashMessageMarkup => {
-									res.send({
-										status: 'error',
-										flashMessage: flashMessageMarkup
-									});
-								});
+							// create a verification record for the new user and pass control back to the root promise chain
+							return exports.createNewVerificationRecord( verificationCode, userId );
 						});
 
 				} else if ( registrationType === 'family' ) {
@@ -350,8 +304,6 @@ exports.registerUser = ( req, res, next ) => {
 				.sendAccountVerificationEmailToUser( user.email, registrationType, verificationDoc.code, locals.host )
 				// handle any errors specific to sending the account verification email
 				.catch( error => {
-
-					console.log('inner castch');
 
 					// get standardized error data
 					req.errorData = errorUtils.ERRORS.REGISTRATION.VERIFICATION_EMAIL_SEND_ERROR;
