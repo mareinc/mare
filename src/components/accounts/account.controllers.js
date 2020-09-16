@@ -163,9 +163,8 @@ exports.registerUser = ( req, res, next ) => {
 					// TODO: these still need to be handled
 					const files = req.files;
 					// save the family model
-					exports.saveFamily( user )
+					return exports.saveFamily( user )
 						.then( newFamily => {
-							// if the new family model was saved successfully
 
 							// create a new random code for the user to verify their account with
 							const verificationCode = utilities.generateAlphanumericHash( 35 );
@@ -194,11 +193,12 @@ exports.registerUser = ( req, res, next ) => {
 							// fetch the user model.  Needed because the copies we have don't have the Relationship fields populated
 							const fetchUser = userService.getUserByIdNew( { id: userId, targetModel: keystone.list( 'Family' ), fieldsToPopulate } );
 							// fetch the email target model matching 'family registration'
-							const fetchEmailTarget = listService.getEmailTargetByName( 'family registration' );
-							// create a new verification code model in the database to allow users to verify their accounts
-							const createVerificationRecord = exports.createNewVerificationRecord( verificationCode, userId );
+							const fetchEmailTarget = listService.getEmailTargetByName( 'family registration' );					
 							// add the user to any mailing lists they've opted into
-							const addUserToMailingLists = exports.addToMailingLists( newFamily, mailingListIds );
+							const addUserToMailingLists = exports.addToMailingLists( newFamily, mailingListIds ).catch( err =>  {
+								console.error( `error adding new family ${ newFamily.get( 'displayName' ) } (${ newFamily.get( 'email' ) }) to mailing lists`, err );
+								console.error( err );
+							});
 							// save any submitted files and append them to the newly created user
 							// const userFilesUploaded = exports.uploadFile( newFamily, 'homestudy', 'homestudyFile_upload', files.homestudyFile_upload );
 
@@ -216,62 +216,15 @@ exports.registerUser = ( req, res, next ) => {
 									// assign local variables to the values returned by the promises
 									const [ newUser, mailingLists ] = values;
 									// fetch the names of the returned mailing lists
-									const mailingListNames = mailingLists.map( mailingList => mailingList.name );
+									const mailingListNames = mailingLists ? mailingLists.map( mailingList => mailingList.name ) : ['Error adding user to mailing lists'];
 									// send a notification email to MARE staff to allow them to enter the information in the old system
 									return registrationEmailMiddleware.sendNewFamilyNotificationEmailToMARE( newUser, staffEmailContactInfo, mailingListNames );
 								})
 								// if the email couldn't be sent, log the error for debugging purposes
 								.catch( err => console.error( `error sending new family notification email to MARE contact about ${ newFamily.get( 'displayName' ) } (${ newFamily.get( 'email' ) })`, err ) );
-
-							// once the verification record has been saved
-							createVerificationRecord
-								// send the account verification email to the user
-								.then( verificationRecord => accountEmailMiddleware.sendAccountVerificationEmailToUser( newFamily.get( 'email' ), userType, verificationCode, locals.host ) )
-								// if the email couldn't be send, log the error for debugging purposes
-								.catch( err => console.error( `error sending account verification email to family ${ newFamily.get( 'displayName' ) } at ${ newFamily.get( 'email' ) }`, err ) );
-
-							addUserToMailingLists
-								// if the user couldn't be added to one or more mailing lists
-								.catch( err => console.error( `error adding new family ${ newFamily.get( 'displayName' ) } (${ newFamily.get( 'email' ) }) to mailing lists`, err ) );
-
-							// log the success for debugging purposes
-							errorUtils.logCodedError( 
-								errorUtils.ERRORS.REGISTRATION.SUCCESS.code,
-								errorUtils.ERRORS.REGISTRATION.SUCCESS.message,
-								`Successful User<Family> registration with email: ${user.email}`,
-								true
-							);
-							// set the redirect path to the success target route
-							req.body.target = redirectPath;
-							// pass control to the login middleware
-							next(); // next-flow
-						})
-						// if there was an error saving the new family
-						.catch( err => {
-							// get standardized error data
-							const errorData = errorUtils.ERRORS.REGISTRATION.USER_SAVE_ERROR;
-							// log the coded error for debugging purposes
-							errorUtils.logCodedError( 
-								errorData.code,
-								errorData.message,
-								`Attempted User<Family> registration with email: ${user.email}`
-							);
-							// log the thrown error
-							console.error( err );
-							// display a message to the user
-							flashMessages.appendFlashMessage({
-								messageType: flashMessages.MESSAGE_TYPES.ERROR,
-								title: errorData.flashMessage.title,
-								message: errorData.flashMessage.detail
-							});
-							// send the error status and flash message markup
-							flashMessages.generateFlashMessageMarkup()
-								.then( flashMessageMarkup => {
-									res.send({
-										status: 'error',
-										flashMessage: flashMessageMarkup
-									});
-								});
+								
+							// create a verification record for the new user and pass control back to the root promise chain
+							return exports.createNewVerificationRecord( verificationCode, userId );
 						});
 				}
 			

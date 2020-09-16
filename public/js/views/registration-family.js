@@ -385,18 +385,12 @@
 					// handle error responses
 					if ( responseData.status === 'error' ) {
 
-						// display the error message to the user
-						mare.views.registration.displayFlashMessage( responseData.flashMessage );
-
 						// enable the register button
 						mare.views.familyRegistration.enableRegistrationButton();
-
-					// handle success responses
-					} else if ( responseData.status === 'success' ) {
-
-						// redirect the user to the success target page
-						window.location.href = responseData.targetPage;
 					}
+
+					// display the message to the user
+					mare.views.registration.displayFlashMessage( responseData.flashMessage );
 				})
 				.fail( function( err ) {
 
