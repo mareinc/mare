@@ -243,6 +243,14 @@ exports.ERRORS = {
                 detail: 'Please try to verify your account again by clicking on the link in the verification email.  Even if you are unable to verify your account, you are still be able to log in an use the site.  If you continue to experience issues, please contact <a href="mailto:web@mareinc.org">web@mareinc.org</a>'
             }
         },
+        ALREADY_VERIFIED: {
+            code: 'VRFY_04',
+            message: 'Account verification failure: account already verified.',
+            flashMessage: {
+                title: ACCOUNT_VERIFY_ERROR_FLASH_MESSAGE_TITLE,
+                detail: 'You have already verified this email address and should be able to log in to your MARE account. If you are experiencing issues logging in, please contact <a href="mailto:web@mareinc.org">web@mareinc.org</a>'
+            }
+        },
         UNEXPECTED_ERROR: {
             code: 'VRFY_00',
             message: 'Account verification failure: unexpected error.',

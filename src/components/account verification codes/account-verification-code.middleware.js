@@ -33,6 +33,7 @@ module.exports = ( req, res ) => {
 		.exec()
 		.then( verificationEntity => {
 
+			// if no matching verification code exists
 			if( !verificationEntity ){
 
 				// get standardized error data
@@ -40,11 +41,22 @@ module.exports = ( req, res ) => {
 				
 				// throw an error to break promise chain execution and skip to the next .catch block
 				throw new Error( `No Account Verification Code exists with code: ${verificationCode}` );
-			}
 
-			// we found the verificationEntity and we want to remove it
-			verificationRecord = verificationEntity;
-			return updateUser( verificationEntity.user, userType );
+			// if the verification code has already been used (i.e. account is already verified)
+			} else if ( verificationEntity.isExchanged ) {
+
+				// get standardized error data
+				errorData = errorUtils.ERRORS.ACCOUNT_VERIFICATION.ALREADY_VERIFIED;
+				
+				// throw an error to break promise chain execution and skip to the next .catch block
+				throw new Error( `Account Verification Code has already been exchanged: ${verificationCode}` );
+
+			// otherwise, exchange the token and mark the account verified
+			} else {
+
+				verificationRecord = verificationEntity;
+				return updateUser( verificationEntity.user, userType );
+			}
 		})
 		.catch( error => {
 
@@ -55,24 +67,6 @@ module.exports = ( req, res ) => {
 					: errorUtils.ERRORS.ACCOUNT_VERIFICATION.UNEXPECTED_ERROR;
 			}
 
-			// re-throw the error to break promise chain execution and skip to the next .catch block
-			throw error;
-		})
-		.then( () => {
-
-			// delete the verification record 
-			verificationRecord.remove()
-				// catch errors but continue execution even if this operation fails - it does not actually impact account verification
-				.catch( error => {
-					console.error( `Error removing verification record with id: ${verificationRecord._id}` );
-					console.error( error );
-				});
-		})
-		.catch( error => {
-
-			// get standardized error data
-			errorData = errorData || errorUtils.ERRORS.ACCOUNT_VERIFICATION.UNEXPECTED_ERROR;
-			
 			// this is the last .catch block, so log the coded error for debugging purposes
 			errorUtils.logCodedError(
 				errorData.code,
@@ -84,13 +78,16 @@ module.exports = ( req, res ) => {
 			console.error( error );
 		})
 		.finally( () => {
-			
-			// if no errors, send a success message to the user
+
+			// if no errors, send a success message to the user and mark the verification code as 'exchanged'
 			if ( !errorData ) {
+
+				verificationRecord.isExchanged = true;
+				verificationRecord.save();
 				
 				req.flash( 'success', {
 					title: 'Success',
-					detail: 'We have verified your email.'
+					detail: 'We have verified your email address.  You are now able to log in to your MARE account.'
 				});
 
 			// otherwise, display an error message
