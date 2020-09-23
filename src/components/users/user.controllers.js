@@ -55,16 +55,27 @@ exports.checkUserActiveStatus = function( email, locals, done ) {
 		.where( 'email', email )
 		.exec()
 		.then( user => {
+
 			// if a user with the current email doesn't exist
 			if( !user ) {
+				
 				// exit the login process and let the user know their email or password is invalid
 				locals.userStatus = 'nonexistent';
+				
 			// if the user exists but isn't active yet
 			} else if( !user.isActive || user.isActive === false ) {
+				
 				// exit the login process and let the user know their account isn't active yet
 				locals.userStatus = 'inactive';
-			// if the user exists and is active
+
+			// if the user exists, is active, but is not yet verified
+			} else if( !user.permissions.isVerified ) {
+
+				locals.userStatus = 'unverified';
+
+			// if the user exists, is active, and verified
 			} else {
+				
 				// let the system attempt to log the user in
 				locals.userStatus = 'active';
 			}

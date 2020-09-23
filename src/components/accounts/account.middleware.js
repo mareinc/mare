@@ -138,6 +138,21 @@ exports.login = function( req, res, next ) {
 
 			res.redirect( req.body.target || '/' );
 
+		} else if( locals.userStatus === 'unverified' ) {
+
+			// get standardized error data
+			const errorData = errorUtils.ERRORS.LOGIN.ACCOUNT_UNVERIFIED;
+			// log the error for debugging purposes
+			errorUtils.logCodedError(
+				errorData.code,
+				errorData.message,
+				`Attempted login with email: ${req.body.email}`
+			);
+			// display a message to the user
+			req.flash( 'error', errorData.flashMessage );
+
+			res.redirect( req.body.target || '/' );
+
 		} else if( locals.userStatus === 'active' ) {
 			// TODO: you can add a target to the signin of the current page and it will always route correctly back to where the user was
 			var onSuccess = function() {

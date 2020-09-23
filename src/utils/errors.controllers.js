@@ -39,6 +39,14 @@ exports.ERRORS = {
                 detail: 'The password for this account needs to be reset. Hit "Forgot?" to reset'
             }
         },
+        ACCOUNT_UNVERIFIED: {
+            code: 'LOGIN_06',
+            message: 'Login failure: account unverified.',
+            flashMessage: {
+                title: LOGIN_ERROR_FLASH_MESSAGE_TITLE,
+                detail: 'Your account has not been verified.  Please check your inbox for verification instructions from MARE'
+            }
+        },
         INCORRECT_PASSWORD: {
             code: 'LOGIN_04',
             message: 'Login failure: incorrect password.',
