@@ -103,6 +103,13 @@ SiteVisitor.schema.virtual( 'displayName' ).get( function() {
 	return `${ this.name.first } ${ this.name.last }`;
 });
 
+// Post Init - used to store all the values before anything is changed
+SiteVisitor.schema.post( 'init', function() {
+	'use strict';
+
+	this._original = this.toObject();
+});
+
 // Pre Save
 SiteVisitor.schema.pre( 'save', function( next ) {
 	'use strict';
@@ -112,6 +119,8 @@ SiteVisitor.schema.pre( 'save', function( next ) {
 	this.name.full = this.name.first + ' ' + this.name.last;
 	// Set the userType for role based page rendering
 	this.userType = 'site visitor';
+	// ensure the user's verification status is current
+	this.setVerifiedStatus();
 
 	next();
 });
@@ -165,6 +174,14 @@ SiteVisitor.schema.methods.trimTextFields = function() {
 
 	if( this.get( 'heardAboutMAREOther' ) ) {
 		this.set( 'heardAboutMAREOther', this.get( 'heardAboutMAREOther' ).trim() );
+	}
+};
+
+SiteVisitor.schema.methods.setVerifiedStatus = function() {
+
+	// if an admin has manually set a site visitor to active, verify their email address as well
+	if ( this.isActive && !this._original.isActive ) {
+		this.permissions.isVerified = true;
 	}
 };
 

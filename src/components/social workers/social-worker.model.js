@@ -148,6 +148,8 @@ SocialWorker.schema.pre( 'save', function( next ) {
 	this.setFullName();
 	// all user types that can log in derive from the User model, this allows us to identify users better
 	this.setUserType();
+	// ensure the user's verification status is current
+	this.setVerifiedStatus();
 
 	 next();
 });
@@ -240,6 +242,14 @@ SocialWorker.schema.methods.setUserType = function() {
 
 	// set the userType for role based page rendering
 	this.userType = 'social worker';
+};
+
+SocialWorker.schema.methods.setVerifiedStatus = function() {
+
+	// if an admin has manually set a social worker to active, verify their email address as well
+	if ( this.isActive && !this._original.isActive ) {
+		this.permissions.isVerified = true;
+	}
 };
 
 SocialWorker.schema.methods.setChangeHistory = function() {

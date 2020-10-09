@@ -429,6 +429,8 @@ Family.schema.pre( 'save', function( next ) {
 	this.setFileName();
 	// all user types that can log in derive from the User model, this allows us to identify users better
 	this.setUserType();
+	// ensure the user's verification status is current
+	this.setVerifiedStatus();
 
 	// there are two fields containing the city, depending on whether the family is in MA or not.  Save the value to a common field for display
 	const displayCityUpdated = this.setDisplayCity();
@@ -646,6 +648,14 @@ Family.schema.methods.applyFamilyStatusTagsToMailingLists = function() {
 			.then( () => resolve() )
 			.catch( err => reject( err ) );
 	});
+};
+
+Family.schema.methods.setVerifiedStatus = function() {
+
+	// if an admin has manually set a family to active, verify their email address as well
+	if ( this.isActive && !this._original.isActive ) {
+		this.permissions.isVerified = true;
+	}
 };
 
 /* text fields don't automatically trim(), this is to ensure no leading or trailing whitespace gets saved into url, text, or text area fields */
