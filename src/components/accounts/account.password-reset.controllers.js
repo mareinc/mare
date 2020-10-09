@@ -250,6 +250,8 @@ exports.changePassword = ( req, res ) => {
 				user.set( 'resetPasswordToken', '' );
 				// set the user to active, allowing them to log in
 				user.set( 'isActive', true );
+				// ensure the user's email address is verified
+				user.set ( 'permissions.isVerified', true );
 
 				return user.save();
 			}
