@@ -653,7 +653,7 @@ Family.schema.methods.applyFamilyStatusTagsToMailingLists = function() {
 Family.schema.methods.setVerifiedStatus = function() {
 
 	// if an admin has manually set a family to active, verify their email address as well
-	if ( this.isActive && !this._original.isActive ) {
+	if ( this._original && this.isActive && !this._original.isActive ) {
 		this.permissions.isVerified = true;
 	}
 };

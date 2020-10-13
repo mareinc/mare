@@ -375,6 +375,8 @@ exports.saveSiteVisitor = user => {
 		newUser.save( ( err, model ) => {
 			// if there was an issue saving the new site visitor
 			if( err ) {
+				// log the error
+				console.error( err );
 				// reject the promise with a descriptive message
 				return reject( new Error( `error saving new site visitor` ) );
 			}
@@ -426,6 +428,8 @@ exports.saveSocialWorker = user => {
 		newUser.save( ( err, model ) => {
 			// if there was an issue saving the new site visitor
 			if( err ) {
+				// log the error
+				console.error( err );
 				// reject the promise with a descriptive message
 				return reject( new Error( `error saving new social worker` ) );
 			}
@@ -579,6 +583,8 @@ exports.saveFamily = user => {
 		newUser.save( ( err, model ) => {
 			// if there was an issue saving the new site visitor
 			if( err ) {
+				// log the error
+				console.error( err );
 				// reject the promise with a description
 				return reject( new Error( `error saving new family` ) );
 			}
