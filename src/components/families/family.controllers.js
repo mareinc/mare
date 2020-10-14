@@ -6,8 +6,9 @@ const keystone						= require( 'keystone' ),
 	  userService 					= require( '../users/user.controllers' ),
 	  registrationService			= require( '../accounts/account.controllers' ),
 	  registrationEmailMiddleware	= require( '../accounts/account.registration-email.controllers' ),
-	  familyEmailService			= require( './family.email.controllers' );
-	  utilities         			= require( '../../utils/utility.controllers' );
+	  familyEmailService			= require( './family.email.controllers' )
+	  utilities         			= require( '../../utils/utility.controllers' ),
+	  errorUtils					= require('../../utils/errors.controllers');
 
 /* fetch a single family by their id */
 exports.getFamilyById = ( id, fieldsToPopulate = [] ) => {
@@ -299,6 +300,75 @@ exports.removeSiblingGroupBookmark = ( req, res, next ) => {
 			res.send( 'bookmark removed' );
 
 		});
+	});
+};
+
+exports.registerHomestudy = function registerHomestudy( req, res, next ) {
+	
+	let hasError = false;
+	const rawHomestudyData = req.body;
+	const socialWorkerName = req.user.get('name.full');
+	const getCity = !rawHomestudyData.isNotMACity && rawHomestudyData.city ? listService.getCityOrTownById( rawHomestudyData.city ) : false;
+	const getStaffEmailTarget = listService
+									.getEmailTargetByName( 'social worker homestudy registration' )
+									.then( emailTarget => staffEmailContactMiddleware.getStaffEmailContactByEmailTarget( emailTarget.get( '_id' ), [ 'staffEmailContact' ] ) )
+									.then( emailContact => emailContact.staffEmailContact.email );
+
+	Promise.all([
+		listService.getAllGenders(),
+		listService.getAllRaces(),
+		listService.getStateById( rawHomestudyData.state ),
+		getCity,
+		getStaffEmailTarget
+	])
+	.then(results => {
+		
+		const [ genders, races, state, city, staffEmailTarget ] = results;
+
+		// replace gender id values with text values
+		if ( rawHomestudyData.contact1Gender ) {
+			rawHomestudyData.contact1Gender = genders.find( gender => gender._id.toString() === rawHomestudyData.contact1Gender ).gender;
+		}
+		if ( rawHomestudyData.contact2Gender ) {
+			rawHomestudyData.contact2Gender = genders.find( gender => gender._id.toString() === rawHomestudyData.contact2Gender ).gender;
+		}
+
+		// replace race id values with text values
+		if ( rawHomestudyData.contact1Race ) {
+			rawHomestudyData.contact1Race = rawHomestudyData.contact1Race.map(contactRace => races.find( race => race._id.toString() === contactRace ).race );
+		}
+		if ( rawHomestudyData.contact2Race ) {
+			rawHomestudyData.contact2Race = rawHomestudyData.contact2Race.map(contactRace => races.find( race => race._id.toString() === contactRace ).race );
+		}
+
+		// replace city id value with text value
+		rawHomestudyData.city = rawHomestudyData.isNotMACity ? rawHomestudyData.nonMACity : city.cityOrTown;
+		
+		// replace state id value with text value
+		rawHomestudyData.state = state.state;
+
+		return familyEmailService.sendNewSocialWorkerHomestudyRegistrationToMARE( rawHomestudyData, socialWorkerName, staffEmailTarget )
+	})
+	.catch(error => {
+		// set the error flag
+		hasError = true;
+		// log the error
+		console.error(error);
+		// generate an error flash message
+		req.flash( 'error', {
+			title: `There was a problem registering the homestudy.`,
+			detail: 'Please try again.  If this error persists, please contact <a href="mailto:web@mareinc.org">web@mareinc.org</a>' } );
+	})
+	.finally(() => {
+		// if no errors were generated
+		if (!hasError) {
+			// create a success flash message
+			req.flash( 'success', {
+				title: `Success. The homestudy you submitted has been received by MARE.`,
+				detail: `To complete the registration process, a copy of the full license study must be emailed to Liz Joyal at <a href="mailto:lizj@mareinc.org">lizj@mareinc.org</a>` } );
+		}
+		// redirect the user back to the appropriate page
+		res.redirect( 303, '/forms/social-worker-family-registration' );
 	});
 };
 

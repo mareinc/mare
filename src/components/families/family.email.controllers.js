@@ -1165,3 +1165,257 @@ exports.sendNewSocialWorkerFamilyRegistrationNotificationEmailToFamily = ( rawFa
 			});
 	});
 };
+
+exports.sendNewSocialWorkerHomestudyRegistrationToMARE = function sendNewSocialWorkerHomestudyRegistrationToMARE( rawFamilyData, socialWorkerName, homestudayRegistrationStaffContact ) {
+	
+	return new Promise( ( resolve, reject ) => {
+		// if sending of the email is not currently allowed
+		if( process.env.SEND_SOCIAL_WORKER_HOMESTUDAY_REGISTRATION_EMAILS_TO_MARE !== 'true' ) {
+			// reject the promise with information about why
+			return reject( new Error( `sending of the new social worker homestudy registration email to MARE staff is disabled` ) );
+		}
+
+		if( !homestudayRegistrationStaffContact ) {
+			return reject( new Error( `no staff contact was provided` ) );
+		}
+
+		// arrays was used instead of a Maps because Mustache templates apparently can't handle Maps
+		let familyData = [];
+
+		// store only the fields that have been populated by the user
+		
+		// contact 1
+		if( rawFamilyData.contact1FirstName ) {
+			familyData.push( {
+				key: 'contact 1 first name',
+				value: rawFamilyData.contact1FirstName
+			});
+		}
+
+		if( rawFamilyData.contact1LastName ) {
+			familyData.push( {
+				key: 'contact 1 last name',
+				value: rawFamilyData.contact1LastName
+			});
+		}
+
+		if( rawFamilyData.contact1Email ) {
+			familyData.push( {
+				key: 'contact 1 email',
+				value: rawFamilyData.contact1Email
+			});
+		}
+
+		if( rawFamilyData.contact1Mobile ) {
+			familyData.push( {
+				key: 'contact 1 mobile phone',
+				value: rawFamilyData.contact1Mobile
+			});
+		}
+
+		if( rawFamilyData.contact1Gender ) {
+			familyData.push( {
+				key: 'contact 1 gender',
+				value: rawFamilyData.contact1Gender
+			});
+		}
+
+		if( rawFamilyData.contact1Race && rawFamilyData.contact1Race.length !== 0 ) {
+			familyData.push( {
+				key: 'contact 1 race',
+				value: rawFamilyData.contact1Race.join( ', ' )
+			});
+		}
+
+		if( rawFamilyData.contact1Occupation ) {
+			familyData.push( {
+				key: 'contact 1 occupation',
+				value: rawFamilyData.contact1Occupation
+			});
+		}
+
+		if( rawFamilyData.contact1DateOfBirth ) {
+			familyData.push( {
+				key: 'contact 1 date of birth',
+				value: rawFamilyData.contact1DateOfBirth
+			});
+		}
+
+		// contact 2
+		if( rawFamilyData.contact2FirstName ) {
+			familyData.push( {
+				key: 'contact 2 first name',
+				value: rawFamilyData.contact2FirstName
+			});
+		}
+
+		if( rawFamilyData.contact2LastName ) {
+			familyData.push( {
+				key: 'contact 2 last name',
+				value: rawFamilyData.contact2LastName
+			});
+		}
+
+		if( rawFamilyData.contact2Email ) {
+			familyData.push( {
+				key: 'contact 2 email',
+				value: rawFamilyData.contact2Email
+			});
+		}
+
+		if( rawFamilyData.contact2Mobile ) {
+			familyData.push( {
+				key: 'contact 2 mobile phone',
+				value: rawFamilyData.contact2Mobile
+			});
+		}
+
+		if( rawFamilyData.contact2Gender ) {
+			familyData.push( {
+				key: 'contact 2 gender',
+				value: rawFamilyData.contact2Gender
+			});
+		}
+
+		if( rawFamilyData.contact2Race && rawFamilyData.contact2Race.length !== 0 ) {
+			familyData.push( {
+				key: 'contact 2 race',
+				value: rawFamilyData.contact2Race.join( ', ' )
+			});
+		}
+
+		if( rawFamilyData.contact2Occupation ) {
+			familyData.push( {
+				key: 'contact 2 occupation',
+				value: rawFamilyData.contact2Occupation
+			});
+		}
+
+		if( rawFamilyData.contact2DateOfBirth ) {
+			familyData.push( {
+				key: 'contact 2 date of birth',
+				value: rawFamilyData.contact2DateOfBirth
+			});
+		}
+		
+		// home address
+
+		if( rawFamilyData.street1 ) {
+			familyData.push( {
+				key: 'street 1',
+				value: rawFamilyData.street1
+			});
+		}
+
+		if( rawFamilyData.street2 ) {
+			familyData.push( {
+				key: 'street 2',
+				value: rawFamilyData.street2
+			});
+		}
+
+		if( rawFamilyData.city ) {
+			familyData.push( {
+				key: 'city',
+				value: rawFamilyData.city
+			});
+		}
+
+		if( rawFamilyData.state ) {
+			familyData.push( {
+				key: 'state',
+				value: rawFamilyData.state
+			});
+		}
+
+		if( rawFamilyData.zipCode ) {
+			familyData.push( {
+				key: 'zip code',
+				value: rawFamilyData.zipCode
+			});
+		}
+
+		if( rawFamilyData.homePhone ) {
+			familyData.push( {
+				key: 'home phone',
+				value: rawFamilyData.homePhone
+			});
+		}
+
+		if ( rawFamilyData.homestudyDateComplete ) {
+			familyData.push( {
+				key: 'homestudy completion date',
+				value: rawFamilyData.homestudyDateComplete
+			});
+		}
+
+		if( rawFamilyData.socialWorkerName ) {
+			familyData.push( {
+				key: 'social worker name',
+				value: rawFamilyData.socialWorkerName
+			})
+		}
+
+		if( rawFamilyData.socialWorkerEmail ) {
+			familyData.push( {
+				key: 'social worker email',
+				value: rawFamilyData.socialWorkerEmail
+			})
+		}
+
+		if( rawFamilyData.socialWorkerPhone ) {
+			familyData.push( {
+				key: 'social worker phone',
+				value: rawFamilyData.socialWorkerPhone
+			})
+		}
+
+		if( rawFamilyData.socialWorkerAgency ) {
+			familyData.push( {
+				key: 'social worker agency',
+				value: rawFamilyData.socialWorkerAgency
+			})
+		}
+
+		// find the email template in templates/emails/
+		Email.send(
+			// template path
+            'social-worker-new-homestudy-notification-to-mare',
+            // email options
+            {
+                engine: 'hbs',
+                transport: 'mandrill',
+                root: 'src/templates/emails/'
+            // render options
+            }, {
+                socialWorkerName,
+				familyData,
+                layout: false
+            // send options
+            }, {
+                apiKey: process.env.MANDRILL_APIKEY,
+                to: homestudayRegistrationStaffContact,
+				from: {
+					name: 'MARE',
+					email: 'communications@mareinc.org' // TODO: this should be in a model or ENV variable
+				},
+				subject: `new social worker homestudy registration`
+            // callback
+			}, ( err, message ) => {
+				// if there was an error sending the email
+				if( err ) {
+					// reject the promise with details
+					return reject( new Error( `error sending new social worker homestudy registration notification email to MARE` ) );
+				}
+				// the response object is stored as the 0th element of the returned message
+				const response = message ? message[ 0 ] : undefined;
+				// if the email failed to send, or an error occurred ( which it does, rarely ) causing the response message to be empty
+				if( response && [ 'rejected', 'invalid', undefined ].includes( response.status ) ) {
+					// reject the promise with details
+					return reject( new Error( `error sending new homestudy notification email to MARE - ${ response.status } - ${ response.email } - ${ response.reject_reason }` ) );
+				}
+
+				resolve();
+			});
+	});
+};

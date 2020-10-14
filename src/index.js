@@ -66,7 +66,7 @@ exports = module.exports = app => {
 	app.post( '/forms/social-worker-child-edit'			, accountMiddleware.requireUser( 'social worker'), childService.editChildRegistration );
 
 	app.get( '/forms/social-worker-family-registration'	, accountMiddleware.requireUser( 'social worker' ), routes.views.form_familyRegistration );
-	app.post( '/forms/social-worker-family-registration', accountMiddleware.requireUser( 'social worker' ), familyService.registerFamily );
+	app.post( '/forms/social-worker-family-registration', accountMiddleware.requireUser( 'social worker' ), familyService.registerHomestudy );
 
 	app.get( '/forms/information-request'				, routes.views.form_informationRequest );
 	app.post( '/forms/information-request'				, inquiryMiddleware.submitInquiry );
