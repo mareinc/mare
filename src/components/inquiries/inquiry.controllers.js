@@ -122,12 +122,13 @@ function saveChildInquiry( { inquiry, user } ) {
 
 		let fetchWebsiteBot		= userService.getUserByFullName( 'Website Bot', 'admin' ),
 			fetchInquiryMethod	= listService.getInquiryMethodByName( 'website' ),
-			fetchChildren		= childService.getChildrenByRegistrationNumbersNew( targetChildren );
+			fetchChildren		= childService.getChildrenByRegistrationNumbersNew( targetChildren ),
+			fetchMAREWebSource	= keystone.list( 'Source' ).model.findOne( { key: 'mare-web' } ).exec();
 		
-		Promise.all( [ fetchWebsiteBot, fetchInquiryMethod, fetchChildren ] )
+		Promise.all( [ fetchWebsiteBot, fetchInquiryMethod, fetchChildren, fetchMAREWebSource ] )
 			.then( values => {
 				// assign local variables to the values returned by the promises
-				const [ websiteBot, inquiryMethod, children ] = values;
+				const [ websiteBot, inquiryMethod, children, mareWebSource ] = values;
 
 				let newInquiry = new Inquiry.model({
 
@@ -138,8 +139,8 @@ function saveChildInquiry( { inquiry, user } ) {
 					inquiryType: 'child inquiry',
 					inquiryMethod: inquiryMethod.get( '_id' ),
 
-					isSourceUnlisted: true,
-					sourceText: inquiry.source,
+					isSourceUnlisted: false,
+					source: mareWebSource.get( '_id' ),
 
 					children: children.map( child => child.get( '_id' ) ),
 					siteVisitor: isSiteVisitor ? user.get( '_id' ) : undefined,
@@ -177,12 +178,13 @@ function saveGeneralInquiry( { inquiry, user } ) {
 			  isSocialWorker	= user.userType === 'social worker';
 
 		let fetchWebsiteBot		= userService.getUserByFullName( 'Website Bot', 'admin' ),
-			fetchInquiryMethod	= listService.getInquiryMethodByName( 'website' );
+			fetchInquiryMethod	= listService.getInquiryMethodByName( 'website' ),
+			fetchMAREWebSource	= keystone.list( 'Source' ).model.findOne( { key: 'mare-web' } ).exec();
 		
-		Promise.all( [ fetchWebsiteBot, fetchInquiryMethod ] ).then( values => {
+		Promise.all( [ fetchWebsiteBot, fetchInquiryMethod, fetchMAREWebSource ] ).then( values => {
 
 			// assign local variables to the values returned by the promises
-			const [ websiteBot, inquiryMethod ] = values;
+			const [ websiteBot, inquiryMethod, mareWebSource ] = values;
 
 			const Inquiry = keystone.list( 'Inquiry' );
 			
@@ -195,8 +197,8 @@ function saveGeneralInquiry( { inquiry, user } ) {
 				inquiryType: 'general inquiry',
 				inquiryMethod: inquiryMethod.get( '_id' ),
 
-				isSourceUnlisted: true,
-				sourceText: inquiry.source,
+				isSourceUnlisted: false,
+				source: mareWebSource.get( '_id' ),
 
 				siteVisitor: isSiteVisitor ? user.get( '_id' ) : undefined,
 				socialWorker: isSocialWorker ? user.get( '_id' ) : undefined,
