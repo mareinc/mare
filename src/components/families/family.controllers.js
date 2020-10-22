@@ -364,11 +364,11 @@ exports.registerHomestudy = function registerHomestudy( req, res, next ) {
 		if (!hasError) {
 			// create a success flash message
 			req.flash( 'success', {
-				title: `Success. The homestudy you submitted has been received by MARE.`,
-				detail: `To complete the registration process, a copy of the full license study must be emailed to Liz Joyal at <a href="mailto:lizj@mareinc.org">lizj@mareinc.org</a>` } );
+				title: `Success. The registration you submitted has been received by MARE.`,
+				detail: `To complete the registration process, a copy of the full license study must be emailed to Ricardo Franco at <a href="mailto:ricardof@mareinc.org">ricardof@mareinc.org</a>` } );
 		}
 		// redirect the user back to the appropriate page
-		res.redirect( 303, '/forms/social-worker-family-registration' );
+		res.redirect( 303, '/page/register-a-familys-homestudy' );
 	});
 };
 

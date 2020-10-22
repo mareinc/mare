@@ -1170,7 +1170,7 @@ exports.sendNewSocialWorkerHomestudyRegistrationToMARE = function sendNewSocialW
 	
 	return new Promise( ( resolve, reject ) => {
 		// if sending of the email is not currently allowed
-		if( process.env.SEND_SOCIAL_WORKER_HOMESTUDAY_REGISTRATION_EMAILS_TO_MARE !== 'true' ) {
+		if( process.env.SEND_SOCIAL_WORKER_HOMESTUDY_REGISTRATION_EMAILS_TO_MARE !== 'true' ) {
 			// reject the promise with information about why
 			return reject( new Error( `sending of the new social worker homestudy registration email to MARE staff is disabled` ) );
 		}
