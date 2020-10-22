@@ -7,5 +7,7 @@ exports.create = {
 		inquiryType: 'family support consultation'
 	}, {
 		inquiryType: 'general inquiry'
+	}, {
+		inquiryType: 'other point of engagement'
 	}]
 };

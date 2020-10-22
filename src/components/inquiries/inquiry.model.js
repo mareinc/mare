@@ -18,7 +18,7 @@ Inquiry.add( 'General Information', {
 	takenOn: { type: Types.Date, label: 'taken on', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, required: true, initial: true },
 
 	inquirer: { type: Types.Select, label: 'inquirer', options: 'site visitor, family, social worker', default: 'family', initial: true },
-	inquiryType: { type: Types.Select, label: 'inquiry type', options: 'child inquiry, complaint, family support consultation, general inquiry', required: true, initial: true },
+	inquiryType: { type: Types.Select, label: 'inquiry type', options: 'child inquiry, complaint, family support consultation, general inquiry, other point of engagement', required: true, initial: true },
 	inquiryMethod: { type: Types.Relationship, label: 'inquiry method', ref: 'Inquiry Method', required: true, initial: true }
 
 }, 'Inquiry Details', {

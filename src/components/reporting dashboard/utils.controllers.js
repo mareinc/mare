@@ -6,7 +6,7 @@ exports.INTELLECTUAL_NEEDS_OPTIONS = [ 'none', 'mild', 'moderate', 'severe' ];
 exports.EMOTIONAL_NEEDS_OPTIONS = [ 'none', 'mild', 'moderate', 'severe' ];
 exports.SOCIAL_NEEDS_OPTIONS = [ 'none', 'mild', 'moderate', 'severe' ];
 exports.INQUIRER_OPTIONS = [ 'site visitor', 'family', 'social worker' ];
-exports.INQUIRY_TYPES = [ 'child inquiry', 'complaint', 'family support consultation', 'general inquiry' ];
+exports.INQUIRY_TYPES = [ 'child inquiry', 'complaint', 'family support consultation', 'general inquiry', 'other point of engagement' ];
 exports.PLACEMENT_TYPES = [ 'Placement', 'Match', 'Legalization', 'Disruption' ];
 exports.PLACEMENT_TYPES_TO_DATABASE_LOCATION_DICTIONARY = {
 	Placement: 'placements',
