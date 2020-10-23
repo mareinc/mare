@@ -668,7 +668,7 @@ exports.getInquiryData = ( req, res, next ) => {
 					additionalSources: inquiryDoc.additionalSources && inquiryDoc.additionalSources.length > 0
 						? inquiryDoc.additionalSources.map( additionalSource => additionalSource.source ).join( ', ' )
 						: 'Not Specified',
-					intakeSource: inquiryDoc.sourceText ? inquiryDoc.sourceText : 'Not Specified'
+					sourceDescription: inquiryDoc.sourceDescription ? inquiryDoc.sourceDescription : 'Not Specified'
 				}
 			});
 

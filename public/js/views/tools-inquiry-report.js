@@ -310,8 +310,8 @@
 				visible: false
 			},
 			{
-				title: 'Intake Source',
-				data: 'intakeSource',
+				title: 'Source Description',
+				data: 'sourceDescription',
 				defaultContent: '--',
 				visible: false
 			},

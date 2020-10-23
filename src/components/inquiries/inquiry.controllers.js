@@ -139,8 +139,8 @@ function saveChildInquiry( { inquiry, user } ) {
 					inquiryType: 'child inquiry',
 					inquiryMethod: inquiryMethod.get( '_id' ),
 
-					isSourceUnlisted: false,
 					source: mareWebSource.get( '_id' ),
+					sourceDescription: inquiry.source,
 
 					children: children.map( child => child.get( '_id' ) ),
 					siteVisitor: isSiteVisitor ? user.get( '_id' ) : undefined,
@@ -197,8 +197,8 @@ function saveGeneralInquiry( { inquiry, user } ) {
 				inquiryType: 'general inquiry',
 				inquiryMethod: inquiryMethod.get( '_id' ),
 
-				isSourceUnlisted: false,
 				source: mareWebSource.get( '_id' ),
+				sourceDescription: inquiry.source,
 
 				siteVisitor: isSiteVisitor ? user.get( '_id' ) : undefined,
 				socialWorker: isSocialWorker ? user.get( '_id' ) : undefined,
@@ -268,7 +268,7 @@ function extractInquiryData( inquiry ) {
 				inquiryType: inquiry.inquiryType,
 				isOnBehalfOfMAREFamily: inquiry.onBehalfOfMAREFamily,
 				onBehalfOfMAREFamily: inquiry.onBehalfOfFamilyText,
-				source: inquiry.sourceText.trim(),
+				source: inquiry.sourceDescription.trim(),
 				takenBy: 'Website Bot',
 				takenOn: inquiry.takenOn ? moment( inquiry.takenOn ).utc().format( 'MM/DD/YYYY' ) : undefined
 			};

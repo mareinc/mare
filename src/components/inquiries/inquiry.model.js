@@ -22,9 +22,8 @@ Inquiry.add( 'General Information', {
 	inquiryMethod: { type: Types.Relationship, label: 'inquiry method', ref: 'Inquiry Method', required: true, initial: true }
 
 }, 'Inquiry Details', {
-	isSourceUnlisted: { type: Types.Boolean, label: `source isn't listed`, default: false, initial: true },
-	source: { type: Types.Relationship, label: 'source', ref: 'Source', dependsOn: { isSourceUnlisted: false }, filters: { isActive: true }, initial: true },
-	sourceText: { type: Types.Text, label: 'source', dependsOn: { isSourceUnlisted: true }, initial: true },
+	source: { type: Types.Relationship, label: 'source', ref: 'Source', filters: { isActive: true }, initial: true },
+	sourceDescription: { type: Types.Text, initial: true },
 	additionalSources: { type: Types.Relationship, label: 'additional sources', ref: 'Source', filters: { isActive: true }, many: true, initial: true },
 
 	children: { type: Types.Relationship, label: 'children', ref: 'Child', dependsOn: { inquiryType: ['child inquiry', 'complaint', 'family support consultation'] }, many: true, initial: true, note: 'when the inquiry is saved all siblings are added too ' },
