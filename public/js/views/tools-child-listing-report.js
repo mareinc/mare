@@ -9,7 +9,7 @@
 		events: {
 			'click .child-listing-search-button' 				: 'handleSearchClick',
 			'click .child-listing-search-reset-button'			: 'handleResetClick',
-			'click .registration-date-fiscal-year-buttons .btn'	: 'handleFiscalYearClick',
+			'click .child-listing-fiscal-year-button'			: 'handleFiscalYearClick',
 			'click .child-listing-export-xlsx-button'			: 'handleXlsxExportClick',
 			'click .child-listing-export-pdf-button'			: 'handlePDFExportClick'
 		},

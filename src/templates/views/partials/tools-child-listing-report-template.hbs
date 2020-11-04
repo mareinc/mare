@@ -23,9 +23,9 @@
                         <div class="col-sm-12 col-md-4 text-sm-right" >
                             <label class="bold">Registration Date Fiscal Years:</label>
                         </div>
-                        <div class="col-sm-12 col-md-8 fiscal-year-button-container registration-date-fiscal-year-buttons">
+                        <div class="col-sm-12 col-md-8 fiscal-year-button-container">
                             {{#each fiscalYears as |fiscalYear|}}
-                                <button class="btn btn-outline-primary"
+                                <button class="btn btn-outline-primary child-listing-fiscal-year-button"
                                     data-target="registration"
                                     data-year-start="{{ fiscalYear.startDate }}" 
                                     data-year-end="{{ fiscalYear.endDate }}">
