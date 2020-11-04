@@ -14,6 +14,7 @@
 			mare.views.placementReport = mare.views.placementReport || new mare.views.PlacementReport();
 			mare.views.mediaFeaturesReport = mare.views.mediaFeaturesReport || new mare.views.MediaFeaturesReport();
 			mare.views.childListingReport = mare.views.childListingReport || new mare.views.ChildListingReport();
+			mare.views.familyListingReport = mare.views.familyListingReport || new mare.views.FamilyListingReport();
 		},
 
 		initializeSideNav: function() {
@@ -151,6 +152,17 @@
 			mare.views.childListingReport.render( regDateFrom, regDateTo, params );
 			// update the body class to indicate what screen this is
 			this.$el.attr( 'class', 'tools__child-listing-report' );
+			// initialize the side nav
+			this.initializeSideNav();
+			this.closeSideNav();
+		},
+
+		showFamilyListingReport: function( regDateFrom, regDateTo, params ) {
+			// destroy existing table
+			this.destroyTable();
+			mare.views.familyListingReport.render( regDateFrom, regDateTo, params );
+			// update the body class to indicate what screen this is
+			this.$el.attr( 'class', 'tools__family-listing-report' );
 			// initialize the side nav
 			this.initializeSideNav();
 			this.closeSideNav();

@@ -61,8 +61,9 @@
 		// workaround to ensure that report form fields line up with the date filter fields
 		.inquiry-report &,
 		.placement-report &,
-		.media-features-report,
-		.child-listing-report & {
+		.media-features-report &,
+		.child-listing-report &,
+		.family-listing-report & {
 			margin-right: -2px;
 		}
 		
