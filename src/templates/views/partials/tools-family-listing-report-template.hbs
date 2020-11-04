@@ -2,4 +2,230 @@
 
     <h2 class="panel__h2">Family Listing Report</h2>
 
+     <div class="family-listing-report">
+
+        <form class="matching-form">
+            <input type="hidden" id="defaultFromDate" value="{{ defaultDateRanges.year.fromDate }}" />
+            <input type="hidden" id="defaultToDate" value="{{ defaultDateRanges.year.toDate }}" />
+            <div class="row">
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right">
+                            <label class="bold">Registration Date Range:</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                            <input type="text" class="date-range-picker" name="registration-date-range" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right">
+                            <label class="bold">Registration Date Fiscal Years:</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8 fiscal-year-button-container">
+                            {{#each fiscalYears as |fiscalYear|}}
+                                <button class="btn btn-outline-primary family-listing-fiscal-year-button"
+                                    data-target="registration"
+                                    data-year-start="{{ fiscalYear.startDate }}" 
+                                    data-year-end="{{ fiscalYear.endDate }}">
+                                        {{ fiscalYear.fiscalYear }}
+                                </button>
+                            {{/each}}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right">
+                            <label class="bold" for="homestudyVerified">Homestudy Verified (Can See All Children)</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                            <input id="homestudyVerified" type="checkbox" name="homestudyVerified">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right">
+                            <label class="bold" for="hasActiveAccount">Has Active Database Account</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                            <input id="hasActiveAccount" type="checkbox" name="hasActiveAccount">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right">
+                            <label for="current-stage" class="bold">Current Stage:</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                            <select id="current-stage" name="current-stage" class="form-control">
+                                <option disabled="true" selected="true">Any Stage</option>
+                                {{#each familyStages as |stage|}}
+                                    <option value="{{ stage.path }}">{{ stage.label }}</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right">
+                            <label for="family-constellation" class="bold">Family Constellation:</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                            <select id="family-constellation" name="family-constellation[]" class="form-control family-constellation-select" multiple>
+                                {{#each familyConstellations as |constellation|}}
+                                    <option value="{{ constellation.id }}">{{ constellation.familyConstellation }}</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right">
+                            <label for="family-region" class="bold">Region:</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                            <select id="family-region" name="family-region[]" class="form-control family-region-select" multiple>
+                                {{#each regions as |region|}}
+                                    <option value="{{ region.id }}">{{ region.region }}</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right">
+                            <label for="family-state" class="bold">State:</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                            <select id="family-state" name="family-state[]" class="form-control family-state-select" multiple>
+                                {{#each states as |state|}}
+                                    <option value="{{ state.id }}">{{ state.state }}</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right">
+                            <label for="contact-1-gender" class="bold">Contact 1 Gender:</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                            <select id="contact-1-gender" name="contact-1-gender[]" class="form-control contact-1-gender-select" multiple>
+                                {{#each genders as |gender|}}
+                                    <option value="{{ gender.id }}">{{ gender.gender }}</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right">
+                            <label for="contact-2-gender" class="bold">Contact 2 Gender:</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                            <select id="contact-2-gender" name="contact-2-gender[]" class="form-control contact-2-gender-select" multiple>
+                                {{#each genders as |gender|}}
+                                    <option value="{{ gender.id }}">{{ gender.gender }}</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right">
+                            <label for="contact-1-race" class="bold">Contact 1 Race(s):</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                            <select id="contact-1-race" name="contact-1-race[]" class="form-control contact-1-race-select" multiple>
+                                {{#each races as |race|}}
+                                    <option value="{{ race.id }}">{{ race.race }}</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right">
+                            <label for="contact-2-race" class="bold">Contact 2 Race(s):</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                            <select id="contact-2-race" name="contact-2-race[]" class="form-control contact-2-race-select" multiple>
+                                {{#each races as |race|}}
+                                    <option value="{{ race.id }}">{{ race.race }}</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right">
+                            <label for="social-worker" class="bold">Social Worker:</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                            <select id="social-worker" name="social-worker[]" class="form-control social-worker-select" multiple>
+                                \{{#each socialWorker as |worker|}}
+                                    <option value="\{{ worker.id }}" selected>\{{ worker.text }}</option>
+                                \{{/each}}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right">
+                            <label for="social-worker-agency" class="bold">Social Worker's Agency:</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                            <select id="social-worker-agency" name="social-worker-agency[]" class="form-control social-worker-agency-select" multiple>
+                                \{{#each socialWorkerAgencies as |agency|}}
+                                    <option value="\{{ agency.id }}" selected>\{{ agency.text }}</option>
+                                \{{/each}}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right">
+                            <label for="social-worker-region" class="bold">Social Worker's Region:</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                            <select id="social-worker-region" name="social-worker-region[]" class="form-control social-worker-region-select" multiple>
+                                {{#each regions as |region|}}
+                                    <option value="{{ region.id }}">{{ region.region }}</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right">
+                            <label for="family-services" class="bold">Family Services:</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                            <select id="family-services" name="family-services[]" class="form-control family-services-select" multiple>
+                                {{#each familyServices as |service|}}
+                                    <option value="{{ service.path }}">{{ service.label }}</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
 </script>

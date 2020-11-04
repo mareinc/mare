@@ -14,6 +14,48 @@ exports.PLACEMENT_TYPES_TO_DATABASE_LOCATION_DICTIONARY = {
 	Disruption: 'disruptions',
 	Legalization: 'legalizations'
 };
+exports.FAMILY_STAGES = [{
+	label: 'gathering information',
+	path: 'stages.gatheringInformation.started'
+ }, {
+	label: 'looking for agency',
+	path: 'stages.lookingForAgency.started'
+ }, {
+	label: 'working with agency',
+	path: 'stages.workingWithAgency.started'
+ }, {
+	label: 'MAPP training completed',
+	path: 'stages.MAPPTrainingCompleted.completed'
+ }];
+
+exports.FAMILY_SERVICES = [{
+	label: 'mentee',
+	path: 'familyServices.mentee'
+ }, {
+	label: 'mentor',
+	path: 'familyServices.mentor'
+ }, {
+	label: 'media spokesperson',
+	path: 'familyServices.mediaSpokesperson'
+}, {
+	label: 'event presenter/spokesperson',
+	path: 'familyServices.eventPresenterOrSpokesperson'
+ }, {
+	label: 'community outreach',
+	path: 'familyServices.communityOutreach'
+}, {
+	label: 'fundraising',
+	path: 'familyServices.fundraising'
+ }, {
+	label: 'MARE support group leader',
+	path: 'familyServices.MARESupportGroupLeader'
+}, {
+	label: 'MARE support group participant',
+	path: 'familyServices.MARESupportGroupParticipant'
+}, {
+	label: 'mereceives consultation servicesntor',
+	path: 'familyServices.receivesConsultationServices'
+}];
 
 exports.getPhysicalNeedsRange = ( fromNeed, toNeed ) => {
 	return utilityService.arrayCut( exports.PHYSICAL_NEEDS_OPTIONS, fromNeed, toNeed );

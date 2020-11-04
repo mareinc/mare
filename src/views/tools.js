@@ -9,19 +9,20 @@ exports = module.exports = ( req, res ) => {
 	const view		= new keystone.View( req, res ),
 		  locals	= res.locals;
 	
-	let fetchChildStatuses = listService.getAllChildStatuses(),
-		fetchGenders = listService.getAllGenders(),
-		fetchRaces = listService.getAllRaces(),
-		fetchLegalStatuses = listService.getAllLegalStatuses(),
-		fetchFamilyConstellations = listService.getAllFamilyConstellations(),
-		fetchInquiryMethods = listService.getAllInquiryMethods(),
-		fetchRegions = listService.getAllRegions(),
-		fetchResidences = listService.getAllResidences();
+	let fetchChildStatuses 			= listService.getAllChildStatuses(),
+		fetchGenders 				= listService.getAllGenders(),
+		fetchRaces 					= listService.getAllRaces(),
+		fetchLegalStatuses 			= listService.getAllLegalStatuses(),
+		fetchFamilyConstellations 	= listService.getAllFamilyConstellations(),
+		fetchInquiryMethods 		= listService.getAllInquiryMethods(),
+		fetchRegions 				= listService.getAllRegions(),
+		fetchResidences 			= listService.getAllResidences(),
+		fetchStates					= listService.getAllStates();
 
-	Promise.all( [ fetchChildStatuses, fetchGenders, fetchRaces, fetchLegalStatuses, fetchFamilyConstellations, fetchInquiryMethods, fetchRegions, fetchResidences ] )
+	Promise.all( [ fetchChildStatuses, fetchGenders, fetchRaces, fetchLegalStatuses, fetchFamilyConstellations, fetchInquiryMethods, fetchRegions, fetchResidences, fetchStates ] )
 		.then( values => {
 			// assign local variables to the values returned by the promises
-			const [ childStatuses, genders, races, legalStatuses, familyConstellations, inquiryMethods, regions, residences ] = values;
+			const [ childStatuses, genders, races, legalStatuses, familyConstellations, inquiryMethods, regions, residences, states ] = values;
 			
 			// assign properties to locals for access during templating
 			locals.childStatuses = childStatuses;
@@ -41,6 +42,9 @@ exports = module.exports = ( req, res ) => {
 			locals.inquiryMethods = inquiryMethods;
 			locals.regions = regions;
 			locals.residences = residences;
+			locals.states = states;
+			locals.familyStages = utilsService.FAMILY_STAGES;
+			locals.familyServices = utilsService.FAMILY_SERVICES;
 			// create default ranges to seed date range fields
 			locals.defaultDateRanges = {
 				month: {
