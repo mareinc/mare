@@ -26,6 +26,15 @@ exports.FAMILY_STAGES = [{
  }, {
 	label: 'MAPP training completed',
 	path: 'stages.MAPPTrainingCompleted.completed'
+ }, {
+	 label: 'homestudy completed',
+	 path: 'homestudy.completed'
+ }, {
+	label: 'registered with MARE',
+	path: 'registeredWithMARE.registered'
+ }, {
+	 label: 'closed',
+	 path: 'closed.isClosed'
  }];
 
 exports.FAMILY_SERVICES = [{
@@ -53,7 +62,7 @@ exports.FAMILY_SERVICES = [{
 	label: 'MARE support group participant',
 	path: 'familyServices.MARESupportGroupParticipant'
 }, {
-	label: 'mereceives consultation servicesntor',
+	label: 'receives consultation services',
 	path: 'familyServices.receivesConsultationServices'
 }];
 
