@@ -7,7 +7,9 @@
 
 		// bind standard events to functions within the view
 		events: {
-			'click .family-listing-fiscal-year-button' : 'handleFiscalYearClick'
+			'click .family-listing-fiscal-year-button' 	: 'handleFiscalYearClick',
+			'click .family-listing-search-button' 		: 'handleSearchClick',
+			'click .family-listing-search-reset-button'	: 'handleResetClick'
 		},
 
 		/* initialize the view */
@@ -101,6 +103,37 @@
 					dataType: 'json'
 				}
 			});
+		},
+
+		handleSearchClick: function() {
+
+			// get the registration date range for the child listing search
+			var $dateRangeInputData = this.$el.find( '[name="registration-date-range"]' ).data( 'daterangepicker' );
+			var registrationDateFrom = $dateRangeInputData.startDate.format( 'YYYY-MM-DD' );
+			var registrationDateTo = $dateRangeInputData.endDate.format( 'YYYY-MM-DD' );
+
+			// collect all values of the form
+			var params = this.$el.find( 'form' ).serializeArray();
+			
+			// remove empty values and ignore date range values
+			params = _.filter( params, function( value ) {
+				return value && value.value && value.value.length > 0 && value.name !== 'registration-date-range';
+			});
+
+			// build the query string
+			var queryString = jQuery.param( params );
+
+			// perform the search
+			mare.routers.tools.navigate(
+				'family-listing-report/' + 
+				registrationDateFrom + '/' + registrationDateTo + '/' +
+				( queryString.length > 0 ? '?' + queryString : '' ), 
+				{ trigger: true }
+			);
+		},
+
+		handleResetClick: function() {
+			mare.routers.tools.navigate( 'family-listing-report', { trigger: true } );
 		},
 
 		handleFiscalYearClick: function( event ) {
