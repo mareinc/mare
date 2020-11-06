@@ -1445,7 +1445,7 @@ exports.getChildListingData = ( req, res, next ) => {
 	}
 
 	Promise.all([
-		// get the media features that match the specified date range and criteria
+		// get the children that match the specified date range and criteria
 		keystone.list( 'Child' ).model
 			.find( searchCriteria )
 			.limit( MAX_RESULTS )
@@ -1579,5 +1579,129 @@ exports.getChildListingData = ( req, res, next ) => {
 		console.error( `error loading child listing report for the dashboard - ${ err }` );
 
 		flashMessages.sendErrorFlashMessage( res, 'Error', 'Error loading child listing data' );
+	});
+};
+
+exports.getFamilyListingData = ( req, res, next ) => {
+
+	// set a maximum number of results that can be returned to prevent crashes/freezing
+	const MAX_RESULTS = 5000;
+	
+	// get the query from the request object
+	const query = req.query;
+
+	// create the search criteria
+	const searchCriteria = {};
+
+	// registration date range criteria (required)
+	const registrationDateFrom = new Date( query.regDateFrom );
+	const registrationDateTo = new Date( query.regDateTo );
+	searchCriteria.initialContact = { $gte: registrationDateFrom, $lte: registrationDateTo };
+
+	// family is homestudy verified
+	if ( !!query.homestudyVerified ) {
+		searchCriteria['permissions.isHomestudyVerified'] = true;
+	}
+
+	// family has an active database account
+	if ( !!query.hasActiveAccount ) {
+		searchCriteria.isActive = true;
+	}
+
+	// family's current stage
+	if ( query[ 'current-stage' ] ) {
+		// the value of the current stage is the path to the checkbox (bool) field on the family model
+		searchCriteria[ query[ 'current-stage' ] ] = true;
+	}
+	
+	// family constellation criteria (multiple)
+	if ( Array.isArray( query[ 'family-constellation' ] ) && query[ 'family-constellation' ].length > 0 ) {
+		searchCriteria.familyConstellation = { $in: query[ 'family-constellation' ] };
+	}
+
+	// family region criteria (multiple)
+	if ( Array.isArray( query[ 'family-region' ] ) && query[ 'family-region' ].length > 0 ) {
+		searchCriteria[ 'address.region' ] = { $in: query[ 'family-region' ] };
+	}
+
+	// family region criteria (multiple)
+	if ( Array.isArray( query[ 'family-state' ] ) && query[ 'family-state' ].length > 0 ) {
+		searchCriteria[ 'address.state' ] = { $in: query[ 'family-state' ] };
+	}
+
+	// contact 1 gender (multiple)
+	if ( Array.isArray( query[ 'contact-1-gender' ] ) && query[ 'contact-1-gender' ].length > 0 ) {
+		searchCriteria[ 'contact1.gender' ] = { $in: query[ 'contact-1-gender' ] };
+	}
+
+	// contact 2 gender (multiple)
+	if ( Array.isArray( query[ 'contact-2-gender' ] ) && query[ 'contact-2-gender' ].length > 0 ) {
+		searchCriteria[ 'contact2.gender' ] = { $in: query[ 'contact-2-gender' ] };
+	}
+
+	// contact 1 race (multiple)
+	if ( Array.isArray( query[ 'contact-1-race' ] ) && query[ 'contact-1-race' ].length > 0 ) {
+		searchCriteria[ 'contact1.race' ] = { $in: query[ 'contact-1-race' ] };
+	}
+
+	// contact 2 race (multiple)
+	if ( Array.isArray( query[ 'contact-2-race' ] ) && query[ 'contact-2-race' ].length > 0 ) {
+		searchCriteria[ 'contact2.race' ] = { $in: query[ 'contact-2-race' ] };
+	}
+
+	// family social worker (multiple)
+	if ( Array.isArray( query[ 'social-worker' ] ) && query[ 'social-worker' ].length > 0 ) {
+		searchCriteria.socialWorker = { $in: query[ 'social-worker' ] };
+	}
+
+	// family social worker agency (multiple)
+	if ( Array.isArray( query[ 'social-worker-agency' ] ) && query[ 'social-worker-agency' ].length > 0 ) {
+		searchCriteria.socialWorkerAgency = { $in: query[ 'social-worker-agency' ] };
+	}
+
+	// family social worker region (multiple)
+	if ( Array.isArray( query[ 'social-worker-region' ] ) && query[ 'social-worker-region' ].length > 0 ) {
+		searchCriteria.socialWorkerAgencyRegion = { $in: query[ 'social-worker-region' ] };
+	}
+
+	// family services (multiple)
+	if ( Array.isArray( query[ 'family-services' ] ) && query[ 'family-services' ].length > 0 ) {
+
+		searchCriteria[ '$or' ] = searchCriteria[ '$or' ] || [];
+		for ( const service of query[ 'family-services' ] ) {
+			searchCriteria[ '$or' ].push({ [service]: true });
+		}
+	}
+
+	Promise.all([
+		// get the families that match the specified date range and criteria
+		keystone.list( 'Family' ).model
+			.find( searchCriteria )
+			.limit( MAX_RESULTS )
+			.lean()
+			.exec()
+	])
+	.then( results => {
+
+		const [ familyDocs ] = results;
+
+		const familyListings = familyDocs.map(familyDoc => ({
+			registrationNumber: familyDoc.registrationNumber,
+			contact1: {
+				name: `${familyDoc.contact1.name.first} ${familyDoc.contact1.name.last}`
+			}
+		}));
+		
+		res.send({
+			noResultsFound: !familyDocs || familyDocs.length === 0,
+			results: familyListings,
+		});
+	})
+	.catch( err => {
+		
+		// log an error for debugging purposes
+		console.error( `error loading family listing report for the dashboard - ${ err }` );
+
+		flashMessages.sendErrorFlashMessage( res, 'Error', 'Error loading family listing data' );
 	});
 };

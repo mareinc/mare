@@ -149,11 +149,89 @@
 		render: function render( regDateFrom, regDateTo, params ) {
 			
             var view = this;
-			view.$el.html( view.template() );
 			
-			var defaultFromDate = view.$el.find( '#defaultFromDate' ).val();
-			var defaultToDate = view.$el.find( '#defaultToDate' ).val();
-			view.initializeSearchForm( defaultFromDate, defaultToDate  );
-		}
+			// if the date ranges are not passed in, initialize the form using the default date ranges
+			if ( !regDateFrom || !regDateTo ) {
+
+				view.$el.html( view.template() );
+				var defaultFromDate = view.$el.find( '#defaultFromDate' ).val();
+				var defaultToDate = view.$el.find( '#defaultToDate' ).val();
+				view.initializeSearchForm( defaultFromDate, defaultToDate  );
+
+			// otherwise, set the date ranges using the route params and perform a search using the query params
+			} else {
+				// render the view while the results are being loaded
+				view.$el.html( view.template({
+					waitingForResults: true
+				}));
+				view.initializeSearchForm( regDateFrom, regDateTo, params );
+
+				// search for families using the date range and query params
+				view.getFamilyListingData( regDateFrom, regDateTo, params )
+					.done( function( data ) {
+
+						console.log(data);
+
+						// render the view with the search results
+						view.$el.html( view.template( data ) );
+						view.initializeSearchForm( regDateFrom, regDateTo, params );
+
+						// initialize a DataTable (https://datatables.net/) with the inquiry results
+						// save a reference to the table so it can be destroyed when the view changes
+						mare.views.tools.table = $('#family-listing-results').DataTable({
+							data: data.results, 						// set results data as table source
+							columns: view.familyListingColumns, 			// configure columns
+							order: [[0, 'asc']], 						// define default sort (column index, direction)
+							fixedHeader: true, 							// fix the header to the top of the viewport on vertical scroll
+							pageLength: 100,							// set default number of rows to display
+							responsive: {								// hide columns from right-to-left when the viewport is too narrow
+								details: false							// do not display overflow columns in details row (overwrites default content)
+							},
+							dom: 'Bfrtip',								// define the placement of the grid options (buttons)
+							buttons: [
+								'pageLength',							// adds toggle for number of rows to display
+								{
+									extend: 'colvis',					// adds column visibility toggle menu
+									columns: ':gt(0)'					// allows toggling of all columns except the first one
+								}
+							]
+						});
+					});
+			}
+		},
+
+		getFamilyListingData: function( regDateFrom, regDateTo, params ) {
+
+			var queryParams = params;
+			queryParams.regDateFrom = regDateFrom;
+			queryParams.regDateTo = regDateTo;
+			
+			return $.Deferred( function( defer ) {
+				$.ajax({
+					dataType: 'json',
+					url: '/tools/services/get-family-listing-data',
+					data: queryParams,
+					type: 'GET'
+				})
+				.done( function( data ) {
+					if ( data.status === 'error' ) {
+						// display the flash message
+						mare.views.flashMessages.initializeAJAX( data.flashMessage );
+						defer.reject();
+					} else {
+						defer.resolve( data );
+					}
+				})
+				.fail( function( err ) {
+					console.log( err );
+					defer.reject();
+				});
+			}).promise();
+		},
+
+		familyListingColumns: [
+			{ title: 'Reg #', data: 'registrationNumber' },
+			{ title: 'Contact 1', data: 'contact1.name' }
+		]
 	});
 }());

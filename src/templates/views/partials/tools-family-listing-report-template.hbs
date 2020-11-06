@@ -62,7 +62,7 @@
                         </div>
                         <div class="col-sm-12 col-md-8">
                             <select id="current-stage" name="current-stage" class="form-control">
-                                <option disabled="true" selected="true">Any Stage</option>
+                                <option value="">any stage</option>
                                 {{#each familyStages as |stage|}}
                                     <option value="{{ stage.path }}">{{ stage.label }}</option>
                                 {{/each}}
@@ -229,7 +229,35 @@
 
         <button class="btn btn-primary family-listing-search-button">Search</button>
 	    <button class="btn btn-default family-listing-search-reset-button">Reset</button>
+
+        \{{#if waitingForResults }}
+            <br /><br />
+            Loading the data ...
+        \{{/if}}
         
+        \{{#if noResultsFound }}
+            <br /><br />
+            No results found
+        \{{/if}}
+
+        \{{#if results }}
+            <h3>Results: </h3>
+            <div class="matching-results-table__button-bar">
+                <button class="button button--teal family-listing-export-pdf-button">PDF Export</button>
+                <button class="button button--teal family-listing-export-xlsx-button">XLSX Export</button>
+                <div class="matching-results-table__record-count">
+                    <div class="record-count__label">Total Family Listings:</div>
+                    \{{ results.length }}
+                    \{{#if limitReached}}
+                    <div class="recoord-count__limit">*Your search returned the maximum allowed number of results, some results could not be displayed.</div>
+                    \{{/if}}
+                </div>
+            </div>
+
+            {{!-- Results table for site display --}}            
+            <table id="family-listing-results" class="stripe" width="100%"></table>
+
+        \{{/if}}
     </div>
 
 </script>
