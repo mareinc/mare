@@ -274,7 +274,7 @@
                     <th>Contact 2 Gender</th>
                     <th>Contact 1 Race(s)</th>
                     <th>Contact 2 Race(s)</th>
-                    {{!-- <th>Most Recent Stage</th> --}}
+                    <th>Current Stage</th>
                     <th>Social Worker</th>
                     <th>Social Worker Agency</th>
                     <th>Social Worker Region</th>
@@ -286,6 +286,13 @@
                     <th>Other Language(s)</th>
                     <th>Num Children in Family</th>
                     <th>Num Adults in Home</th>
+                    <th>Gathering Information</th>
+                    <th>Looking for Agency</th>
+                    <th>Working with Agency</th>
+                    <th>MAPP Training Completed</th>
+                    <th>Homestudy Completed</th>
+                    <th>Registered with MARE</th>
+                    <th>Closed</th>
                 </tr>
                 \{{#each results as |result|}}
                     <tr>
@@ -303,6 +310,7 @@
                         <td>\{{ result.contact2.gender }}</td>
                         <td>\{{ result.contact1.race }}</td>
                         <td>\{{ result.contact2.race }}</td>
+                        <td>\{{ result.currentStage.websiteDisplay }}</td>
                         <td>\{{ result.socialWorker }}</td>
                         <td>\{{ result.socialWorkerAgency }}</td>
                         <td>\{{ result.socialWorkerAgencyRegion }}</td>
@@ -313,6 +321,13 @@
                         <td>\{{ result.otherLanguages }}</td>
                         <td>\{{ result.numberOfChildren }}</td>
                         <td>\{{ result.numberOfAdults }}</td>
+                        <td>\{{ result.stages.[0].excelDisplay }}</td>
+                        <td>\{{ result.stages.[1].excelDisplay }}</td>
+                        <td>\{{ result.stages.[2].excelDisplay }}</td>
+                        <td>\{{ result.stages.[3].excelDisplay }}</td>
+                        <td>\{{ result.stages.[4].excelDisplay }}</td>
+                        <td>\{{ result.stages.[5].excelDisplay }}</td>
+                        <td>\{{ result.stages.[6].excelDisplay }}</td>
                     </tr>
                 \{{/each}}
             </table>

@@ -166,7 +166,8 @@ exports.getFamilyStagesData = familyDoc => {
 			label,
 			value: isComplete,
 			date: formattedDateComplete,
-			displayText: `${label} (${formattedDateComplete})`
+			websiteDisplay: `${label} (${formattedDateComplete})`,
+			excelDisplay: isComplete ? formattedDateComplete : 'not started'
 		};
 	});
 };
