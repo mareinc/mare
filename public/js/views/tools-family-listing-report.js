@@ -230,8 +230,33 @@
 		},
 
 		familyListingColumns: [
-			{ title: 'Reg #', data: 'registrationNumber' },
-			{ title: 'Contact 1', data: 'contact1.name' }
+			{
+				title: 'Reg #',
+				data: 'registrationNumber',
+				orderable: false,
+				render: function( data, type, row, meta ) {
+					return '<a href="/keystone/families/' + row.id + '" target="_blank">' + data + '</a>';
+				}
+			},
+			{ title: 'Contact 1', data: 'contact1.fullName', defaultContent: '--' },
+			{ title: 'Contact 2', data: 'contact2.fullName', defaultContent: '--' },
+			{ title: 'Email', data: 'contact1.email' },
+			{ title: 'Stage', data: 'contact1.fullName'  },
+			{ title: 'Constellation', data: 'constellation', defaultContent: '--' },
+			{ title: 'Region', data: 'region', defaultContent: '--' },
+			{ title: 'State', data: 'state', defaultContent: '--' },
+			{ title: 'Social Worker', data: 'socialWorker', defaultContent: '--' },
+			{ title: 'SW Agency', data: 'socialWorkerAgency', defaultContent: '--' },
+			{ title: 'SW Region', data: 'socialWorkerAgencyRegion', defaultContent: '--' },
+			{ title: 'Contact 1 Gender', data: 'contact1.gender', defaultContent: '--' },
+			{ title: 'Contact 2 Gender', data: 'contact2.gender', defaultContent: '--' },
+			{ title: 'Contact 1 race', data: 'contact1.race', defaultContent: '--' },
+			{ title: 'Contact 2 race', data: 'contact2.race', defaultContent: '--' },
+			{ title: 'Contact 2 email', data: 'contact2.email', defaultContent: '--', visible: false },
+			{ title: 'Language', data: 'language', defaultContent: '--', visible: false },
+			{ title: 'Other Languages', data: 'otherLanguages', defaultContent: '--', visible: false },
+			{ title: 'Num. Children', data: 'numberOfChildren', defaultContent: '--', visible: false },
+			{ title: 'Num. Adults', data: 'numberOfAdults', defaultContent: '--', visible: false }
 		]
 	});
 }());

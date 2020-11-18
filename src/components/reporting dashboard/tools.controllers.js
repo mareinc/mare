@@ -1678,6 +1678,20 @@ exports.getFamilyListingData = ( req, res, next ) => {
 		keystone.list( 'Family' ).model
 			.find( searchCriteria )
 			.limit( MAX_RESULTS )
+			.populate([
+				'familyConstellation',
+				'address.region',
+				'address.state',
+				'socialWorker',
+				'socialWorkerAgency',
+				'socialWorkerAgencyRegion',
+				'contact1.gender',
+				'contact1.race',
+				'contact2.gender',
+				'contact2.race',
+				'language',
+				'otherLanguages'
+			].join( ' ' ))
 			.lean()
 			.exec()
 	])
@@ -1686,12 +1700,42 @@ exports.getFamilyListingData = ( req, res, next ) => {
 		const [ familyDocs ] = results;
 
 		const familyListings = familyDocs.map(familyDoc => ({
+			id: familyDoc._id.toString(),
 			registrationNumber: familyDoc.registrationNumber,
 			contact1: {
-				name: `${familyDoc.contact1.name.first} ${familyDoc.contact1.name.last}`
-			}
+				firstName: familyDoc.contact1.name.first,
+				lastName: familyDoc.contact1.name.last,
+				fullName: `${familyDoc.contact1.name.first} ${familyDoc.contact1.name.last}`,
+				email: familyDoc.contact1.email,
+				gender: familyDoc.contact1.gender && familyDoc.contact1.gender.gender,
+				race: familyDoc.contact1.race && familyDoc.contact1.race.length > 0
+					? familyDoc.contact1.race.map( race => race.race ).join( ', ' )
+					: undefined
+			},
+			contact2: {
+				firstName: familyDoc.contact2.name.first,
+				lastName: familyDoc.contact2.name.last,
+				fullName: `${familyDoc.contact2.name.first} ${familyDoc.contact2.name.last}`,
+				email: familyDoc.contact2.email !== '' ? familyDoc.contact2.email : undefined,
+				gender: familyDoc.contact2.gender && familyDoc.contact2.gender.gender,
+				race: familyDoc.contact2.race && familyDoc.contact2.race.length > 0
+					? familyDoc.contact2.race.map( race => race.race ).join( ', ' )
+					: undefined
+			},
+			constellation: familyDoc.familyConstellation && familyDoc.familyConstellation.familyConstellation,
+			region: familyDoc.address.region && familyDoc.address.region.region,
+			state: familyDoc.address.state && familyDoc.address.state.state,
+			socialWorker: familyDoc.socialWorker && familyDoc.socialWorker.name.full,
+			socialWorkerAgency: familyDoc.socialWorkerAgency && familyDoc.socialWorkerAgency.code,
+			socialWorkerAgencyRegion: familyDoc.socialWorkerAgencyRegion && familyDoc.socialWorkerAgencyRegion.region,
+			language: familyDoc.language && familyDoc.language.language,
+			otherLanguages: familyDoc.otherLanguages && familyDoc.otherLanguages.length > 0
+				? familyDoc.otherLanguages.map( language => language.language ).join( ', ' )
+				: undefined,
+			numberOfChildren: familyDoc.numberOfChildren,
+			numberOfAdults: familyDoc.otherAdultsInHome && familyDoc.otherAdultsInHome.number
 		}));
-		
+
 		res.send({
 			noResultsFound: !familyDocs || familyDocs.length === 0,
 			results: familyListings,
