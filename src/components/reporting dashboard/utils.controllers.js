@@ -1,4 +1,5 @@
 const keystone			= require( 'keystone' ),
+	  moment			= require( 'moment' ),
 	  utilityService 	= require( '../../utils/utility.controllers' );
 
 exports.PHYSICAL_NEEDS_OPTIONS = [ 'none', 'mild', 'moderate', 'severe' ];
@@ -14,27 +15,37 @@ exports.PLACEMENT_TYPES_TO_DATABASE_LOCATION_DICTIONARY = {
 	Disruption: 'disruptions',
 	Legalization: 'legalizations'
 };
+
+// family stages are defined in an intentional, chronological, order - changing the order of the items 
+// in this list will impact the behavior of the family listing report (and potentially others)
 exports.FAMILY_STAGES = [{
 	label: 'gathering information',
-	path: 'stages.gatheringInformation.started'
+	path: 'stages.gatheringInformation.started',
+	datePath: 'stages.gatheringInformation.date'
  }, {
 	label: 'looking for agency',
-	path: 'stages.lookingForAgency.started'
+	path: 'stages.lookingForAgency.started',
+	datePath: 'stages.lookingForAgency.date'
  }, {
 	label: 'working with agency',
-	path: 'stages.workingWithAgency.started'
+	path: 'stages.workingWithAgency.started',
+	datePath: 'stages.workingWithAgency.date'
  }, {
 	label: 'MAPP training completed',
-	path: 'stages.MAPPTrainingCompleted.completed'
+	path: 'stages.MAPPTrainingCompleted.completed',
+	datePath: 'stages.MAPPTrainingCompleted.date'
  }, {
 	 label: 'homestudy completed',
-	 path: 'homestudy.completed'
+	 path: 'homestudy.completed',
+	 datePath: 'homestudy.initialDate'
  }, {
 	label: 'registered with MARE',
-	path: 'registeredWithMARE.registered'
+	path: 'registeredWithMARE.registered',
+	datePath: 'registeredWithMARE.date'
  }, {
 	 label: 'closed',
-	 path: 'closed.isClosed'
+	 path: 'closed.isClosed',
+	 datePath: 'closed.date'
  }];
 
 exports.FAMILY_SERVICES = [{
@@ -140,6 +151,32 @@ exports.extractDisabilitiesData = ( disabilityDocs, selectedDisability = [] ) =>
 	});
 };
 
+
+
+exports.getFamilyStagesData = familyDoc => {
+
+	return exports.FAMILY_STAGES.map( familyStage => {
+
+		const label = familyStage.label;
+		const isComplete = _getProperty( familyStage.path, familyDoc );
+		const dateComplete =  _getProperty( familyStage.datePath, familyDoc );
+		const formattedDateComplete = dateComplete ? moment.utc( dateComplete ).format( 'MM/DD/YYYY' ) : 'date not specified';
+		
+		return {
+			label,
+			value: isComplete,
+			date: formattedDateComplete,
+			displayText: `${label} (${formattedDateComplete})`
+		};
+	});
+};
+
+exports.getCurrentFamilyStage = familyDoc => {
+
+	// starting from the last stage (chronoligically), find the first stage that is complete
+	return exports.getFamilyStagesData( familyDoc ).reverse().find(stage => stage.value);
+};
+
 /* fetch an array of models, map them and send them in jQuery Select2 format */
 exports.fetchModelsMapAndSendResults = ( fetchPromise, mapFunction, res ) => {
 	
@@ -201,4 +238,18 @@ exports.sendPDF = ( req, res, data, htmlViewTemplate, { headerTitle } ) => {
 			args: [ '--no-sandbox' ]
 		});
 	});
+}
+
+// helper to access nested properties on mongooose docs using array syntax
+function _getProperty( propertyName, object ) {
+	var parts = propertyName.split( "." ),
+	  length = parts.length,
+	  i,
+	  property = object || this;
+  
+	for ( i = 0; i < length; i++ ) {
+	  property = property[parts[i]];
+	}
+  
+	return property;
 }

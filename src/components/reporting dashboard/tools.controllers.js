@@ -1702,6 +1702,7 @@ exports.getFamilyListingData = ( req, res, next ) => {
 		const familyListings = familyDocs.map(familyDoc => ({
 			id: familyDoc._id.toString(),
 			registrationNumber: familyDoc.registrationNumber,
+			email: familyDoc.email,
 			contact1: {
 				firstName: familyDoc.contact1.name.first,
 				lastName: familyDoc.contact1.name.last,
@@ -1736,7 +1737,9 @@ exports.getFamilyListingData = ( req, res, next ) => {
 			numberOfAdults: familyDoc.otherAdultsInHome && familyDoc.otherAdultsInHome.number,
 			initialContactDate: moment.utc( familyDoc.initialContact ).format( 'MM/DD/YYY' ),
 			isHomestudyVerified: familyDoc.permissions.isHomestudyVerified,
-			isActive: familyDoc.isActive
+			isActive: familyDoc.isActive,
+			stages: utilsService.getFamilyStagesData(familyDoc),
+			currentStage: utilsService.getCurrentFamilyStage(familyDoc)
 		}));
 
 		res.send({
