@@ -1690,7 +1690,8 @@ exports.getFamilyListingData = ( req, res, next ) => {
 				'contact2.gender',
 				'contact2.race',
 				'language',
-				'otherLanguages'
+				'otherLanguages',
+				'registeredWithMARE.status'
 			].join( ' ' ))
 			.lean()
 			.exec()
@@ -1738,6 +1739,11 @@ exports.getFamilyListingData = ( req, res, next ) => {
 			initialContactDate: moment.utc( familyDoc.initialContact ).format( 'MM/DD/YYY' ),
 			isHomestudyVerified: familyDoc.permissions.isHomestudyVerified,
 			isActive: familyDoc.isActive,
+			status: familyDoc.registeredWithMARE.registered 
+				? familyDoc.registeredWithMARE.status
+					? familyDoc.registeredWithMARE.status.familyStatus
+					: 'registered (no status)'
+				: 'ungregistered',
 			stages: utilsService.getFamilyStagesData(familyDoc),
 			currentStage: utilsService.getCurrentFamilyStage(familyDoc)
 		}));
