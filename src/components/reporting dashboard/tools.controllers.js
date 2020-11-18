@@ -1733,7 +1733,10 @@ exports.getFamilyListingData = ( req, res, next ) => {
 				? familyDoc.otherLanguages.map( language => language.language ).join( ', ' )
 				: undefined,
 			numberOfChildren: familyDoc.numberOfChildren,
-			numberOfAdults: familyDoc.otherAdultsInHome && familyDoc.otherAdultsInHome.number
+			numberOfAdults: familyDoc.otherAdultsInHome && familyDoc.otherAdultsInHome.number,
+			initialContactDate: moment.utc( familyDoc.initialContact ).format( 'MM/DD/YYY' ),
+			isHomestudyVerified: familyDoc.permissions.isHomestudyVerified,
+			isActive: familyDoc.isActive
 		}));
 
 		res.send({

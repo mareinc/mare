@@ -257,6 +257,66 @@
             {{!-- Results table for site display --}}            
             <table id="family-listing-results" class="stripe" width="100%"></table>
 
+            {{!-- Results table for Excel export (hidden) --}}
+            <table width="100%" class="results-table hidden" data-filename="FamilyListingReportExport.xlsx">
+                <tr>
+                    <th>Reg #</th>
+                    <th>Contact 1 First Name</th>
+                    <th>Contact 1 Last Name</th>
+                    <th>Contact 1 Email Address</th>
+                    <th>Contact 2 First Name</th>
+                    <th>Contact 2 Last Name</th>
+                    <th>Contact 2 Email Address</th>
+                    <th>Family Constellation</th>
+                    <th>Region</th>
+                    <th>State</th>
+                    <th>Contact 1 Gender</th>
+                    <th>Contact 2 Gender</th>
+                    <th>Contact 1 Race(s)</th>
+                    <th>Contact 2 Race(s)</th>
+                    {{!-- <th>Most Recent Stage</th> --}}
+                    <th>Social Worker</th>
+                    <th>Social Worker Agency</th>
+                    <th>Social Worker Region</th>
+                    {{!-- <th>Family Services</th> --}}
+                    <th>Record Created Date</th>
+                    <th>Homestudy Verified</th>
+                    <th>Active DB Account</th>
+                    <th>Language</th>
+                    <th>Other Language(s)</th>
+                    <th>Num Children in Family</th>
+                    <th>Num Adults in Home</th>
+                </tr>
+                \{{#each results as |result|}}
+                    <tr>
+                        <td>\{{ result.registrationNumber }}</td>
+                        <td>\{{ result.contact1.firstName }}</td>
+                        <td>\{{ result.contact1.lastName }}</td>
+                        <td>\{{ result.contact1.email }}</td>
+                        <td>\{{ result.contact2.firstName }}</td>
+                        <td>\{{ result.contact2.lastName }}</td>
+                        <td>\{{ result.contact2.email }}</td>
+                        <td>\{{ result.constellation }}</td>
+                        <td>\{{ result.region }}</td>
+                        <td>\{{ result.state }}</td>
+                        <td>\{{ result.contact1.gender }}</td>
+                        <td>\{{ result.contact2.gender }}</td>
+                        <td>\{{ result.contact1.race }}</td>
+                        <td>\{{ result.contact2.race }}</td>
+                        <td>\{{ result.socialWorker }}</td>
+                        <td>\{{ result.socialWorkerAgency }}</td>
+                        <td>\{{ result.socialWorkerAgencyRegion }}</td>
+                        <td>\{{ result.initialContactDate }}</td>
+                        <td>\{{ result.isHomestudyVerified }}</td>
+                        <td>\{{ result.isActive }}</td>
+                        <td>\{{ result.language }}</td>
+                        <td>\{{ result.otherLanguages }}</td>
+                        <td>\{{ result.numberOfChildren }}</td>
+                        <td>\{{ result.numberOfAdults }}</td>
+                    </tr>
+                \{{/each}}
+            </table>
+
         \{{/if}}
     </div>
 
