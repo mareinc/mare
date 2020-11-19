@@ -1694,11 +1694,37 @@ exports.getFamilyListingData = ( req, res, next ) => {
 				'registeredWithMARE.status'
 			].join( ' ' ))
 			.lean()
-			.exec()
+			.exec(),
+		// if thare are any social worker criteria specified, get the social worker docs to seed the social worker selects on the search form
+		searchCriteria.socialWorker
+			? keystone.list( 'Social Worker' ).model
+				.find( { _id: searchCriteria.socialWorker } )
+				.lean()
+				.exec()
+				.catch( err => {
+					// log an error for debugging purposes
+					console.error( `error loading social workers for the family listing report dashboard - ${ err }` );
+					// return false to allow the view to render regardless of the error
+					return false;
+				})
+			: false,
+		// if thare are adoption agency criteria specified, get the adoption agency docs to seed the select on the search form
+		searchCriteria.socialWorkerAgency
+			? keystone.list( 'Agency' ).model
+				.find( { _id: searchCriteria.socialWorkerAgency } )
+				.lean()
+				.exec()
+				.catch( err => {
+					// log an error for debugging purposes
+					console.error( `error loading agencies for the family listing report dashboard - ${ err }` );
+					// return false to allow the view to render regardless of the error
+					return false;
+				})
+			: false
 	])
 	.then( results => {
 
-		const [ familyDocs ] = results;
+		const [ familyDocs, socialWorkers, socialWorkerAgencies ] = results;
 
 		const familyListings = familyDocs.map(familyDoc => ({
 			id: familyDoc._id.toString(),
@@ -1759,6 +1785,8 @@ exports.getFamilyListingData = ( req, res, next ) => {
 			res.send({
 				noResultsFound: !familyDocs || familyDocs.length === 0,
 				results: familyListings,
+				socialWorkers: utilsService.extractSocialWorkersData( socialWorkers || [] ),
+				socialWorkerAgencies: utilsService.extractAgenicesData( socialWorkerAgencies || [] )
 			});
 		}
 	})

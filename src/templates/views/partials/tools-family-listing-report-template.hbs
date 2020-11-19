@@ -175,8 +175,8 @@
                         </div>
                         <div class="col-sm-12 col-md-8">
                             <select id="social-worker" name="social-worker[]" class="form-control social-worker-select" multiple>
-                                \{{#each socialWorker as |worker|}}
-                                    <option value="\{{ worker.id }}" selected>\{{ worker.text }}</option>
+                                \{{#each socialWorkers as |worker|}}
+                                    <option value="\{{ worker.id }}" selected>\{{ worker.name.full }}</option>
                                 \{{/each}}
                             </select>
                         </div>
