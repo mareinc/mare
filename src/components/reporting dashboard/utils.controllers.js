@@ -175,7 +175,21 @@ exports.getFamilyStagesData = familyDoc => {
 exports.getCurrentFamilyStage = familyDoc => {
 
 	// starting from the last stage (chronoligically), find the first stage that is complete
-	return exports.getFamilyStagesData( familyDoc ).reverse().find(stage => stage.value);
+	return exports.getFamilyStagesData( familyDoc ).reverse().find( stage => stage.value );
+};
+
+exports.getFamilyServices = familyDoc => {
+
+	return this.FAMILY_SERVICES.reduce( ( offeredServices, service ) => {
+
+		const doesFamilyOfferService = _getProperty( service.path, familyDoc );
+		
+		if ( doesFamilyOfferService ) {
+			offeredServices.push( service.label );
+		}
+
+		return offeredServices;
+	}, []).join( ', ' );
 };
 
 /* fetch an array of models, map them and send them in jQuery Select2 format */

@@ -1744,8 +1744,9 @@ exports.getFamilyListingData = ( req, res, next ) => {
 					? familyDoc.registeredWithMARE.status.familyStatus
 					: 'registered (no status)'
 				: 'ungregistered',
-			stages: utilsService.getFamilyStagesData(familyDoc),
-			currentStage: utilsService.getCurrentFamilyStage(familyDoc)
+			stages: utilsService.getFamilyStagesData( familyDoc ),
+			currentStage: utilsService.getCurrentFamilyStage( familyDoc ),
+			services: utilsService.getFamilyServices( familyDoc )
 		}));
 
 		res.send({
