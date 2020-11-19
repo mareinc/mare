@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>MARE</title>
+		
+		<style type="text/css">
+			table tr th {
+				text-decoration: underline;
+			}
+			.center-align {
+				text-align: center;
+			}
+		</style>
+	</head>
+	<body>
+		<table width="100%">
+			<tr>
+				<th>Reg. Num</th>
+				<th>Contact 1</th>
+				<th>Contact 2</th>
+				<th>Email</th>
+				<th>Current Stage</th>
+				<th>Constellation</th>
+				<th>Region</th>
+				<th>State</th>
+                <th>Contact 1 Gender</th>
+                <th>Contact 2 Gender</th>
+                <th>Contact 1 Race(s)</th>
+                <th>Contact 2 Race(s)</th>
+			</tr>
+			{{#each results}}
+				<tr>
+					<td>{{ registrationNumber }}</td>
+					<td>{{ contact1.fullName }}</td>
+					<td>{{ contact2.fullName }}</td>
+					<td>{{ email }}</td>
+					<td>{{ currentStage.websiteDisplay }}</td>
+					<td>{{ constellation }}</td>
+                    <td>{{ region }}</td>
+                    <td>{{ state }}</td>
+                    <td>{{ contact1.gender }}</td>
+                    <td>{{ contact2.gender }}</td>
+                    <td>{{ contact1.race }}</td>
+                    <td>{{ contact2.race }}</td>
+				</tr>
+			{{/each}}
+		</table>
+	</body>
+</html>
+
+		

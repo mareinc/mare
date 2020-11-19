@@ -1749,10 +1749,18 @@ exports.getFamilyListingData = ( req, res, next ) => {
 			services: utilsService.getFamilyServices( familyDoc )
 		}));
 
-		res.send({
-			noResultsFound: !familyDocs || familyDocs.length === 0,
-			results: familyListings,
-		});
+		// if 'pdf' parameter was detected in the query, send the response as a PDF
+		if ( query.pdf ) {
+			utilsService.sendPDF( req, res, { results: familyListings }, 'tools-family-listing-pdf', {
+				headerTitle: 'Family Listing Report'
+			});
+		// otherwise, send the response data as an object to be rendered as a grid on the page
+		} else {
+			res.send({
+				noResultsFound: !familyDocs || familyDocs.length === 0,
+				results: familyListings,
+			});
+		}
 	})
 	.catch( err => {
 		

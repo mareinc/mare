@@ -10,7 +10,8 @@
 			'click .family-listing-fiscal-year-button' 	: 'handleFiscalYearClick',
 			'click .family-listing-search-button' 		: 'handleSearchClick',
 			'click .family-listing-search-reset-button'	: 'handleResetClick',
-			'click .family-listing-export-xlsx-button'	: 'handleXlsxExportClick'
+			'click .family-listing-export-xlsx-button'	: 'handleXlsxExportClick',
+			'click .family-listing-export-pdf-button'	: 'handlePDFExportClick'
 		},
 
 		/* initialize the view */
@@ -154,6 +155,33 @@
 			XLSX.writeFile( wb, table.data( 'filename' ) );
 		},
 
+		handlePDFExportClick: function() {
+
+			// collect the state of the form
+			var params = this.$el.find( 'form' ).serializeArray();
+			
+			// remove empty values
+			params = _.filter( params, function( value ) {
+				return value && value.value && value.value.length > 0;
+			});
+
+			// add the date range to the params
+			var $dateRangeInputData = this.$el.find( '[name="registration-date-range"]' ).data( 'daterangepicker' );
+			params.push({
+				name: 'regDateFrom',
+				value: $dateRangeInputData.startDate.format( 'YYYY-MM-DD' )
+			}, {
+				name: 'regDateTo',
+				value: $dateRangeInputData.endDate.format( 'YYYY-MM-DD' )
+			});
+			
+			// build the query string
+			var queryString = jQuery.param( params );
+			
+			// redirect to the PDF report download URL
+			window.open( '/tools/services/get-family-listing-data?' + queryString + '&pdf=1', '_blank' );
+		},
+
 		/* render the view onto the page */
 		render: function render( regDateFrom, regDateTo, params ) {
 			
@@ -178,8 +206,6 @@
 				// search for families using the date range and query params
 				view.getFamilyListingData( regDateFrom, regDateTo, params )
 					.done( function( data ) {
-
-						console.log(data);
 
 						// render the view with the search results
 						view.$el.html( view.template( data ) );
@@ -250,7 +276,7 @@
 			{ title: 'Contact 1', data: 'contact1.fullName', defaultContent: '--' },
 			{ title: 'Contact 2', data: 'contact2.fullName', defaultContent: '--' },
 			{ title: 'Email', data: 'email' },
-			{ title: 'Stage', data: 'currentStage.websiteDisplay', defaultContent: '--'  },
+			{ title: 'Current Stage', data: 'currentStage.websiteDisplay', defaultContent: '--'  },
 			{ title: 'Constellation', data: 'constellation', defaultContent: '--' },
 			{ title: 'Region', data: 'region', defaultContent: '--' },
 			{ title: 'State', data: 'state', defaultContent: '--' },
