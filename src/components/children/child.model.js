@@ -304,6 +304,7 @@ Child.relationship( { ref: 'Family Matching History', refPath: 'child', path: 'f
 Child.relationship( { ref: 'Child Matching History', refPath: 'child', path: 'child-matching-histories', label: 'child matching history' } );
 Child.relationship( { ref: 'Match', refPath: 'child', path: 'matches', label: 'matches' } );
 Child.relationship( { ref: 'Placement', refPath: 'child', path: 'placements', label: 'placements' } );
+Child.relationship( { ref: 'Mentorship', refPath: 'child', path: 'mentorships', label: 'mentorships' } );
 Child.relationship( { ref: 'Legalization', refPath: 'child', path: 'legalizations', label: 'legalizations' } );
 Child.relationship( { ref: 'Disruption', refPath: 'child', path: 'disruptions', label: 'disruptions' } );
 Child.relationship( { ref: 'Inquiry', refPath: 'children', path: 'inquiries', label: 'inquiries' } );
