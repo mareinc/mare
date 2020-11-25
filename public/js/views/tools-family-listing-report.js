@@ -275,7 +275,7 @@
 			},
 			{ title: 'Contact 1', data: 'contact1.fullName', defaultContent: '--' },
 			{ title: 'Contact 2', data: 'contact2.fullName', defaultContent: '--' },
-			{ title: 'Email', data: 'email' },
+			{ title: 'Email', data: 'email',  defaultContent: '--' },
 			{ title: 'Current Stage', data: 'currentStage.websiteDisplay', defaultContent: '--'  },
 			{ title: 'Constellation', data: 'constellation', defaultContent: '--' },
 			{ title: 'Region', data: 'region', defaultContent: '--' },

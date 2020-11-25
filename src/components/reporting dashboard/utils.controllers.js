@@ -180,16 +180,20 @@ exports.getCurrentFamilyStage = familyDoc => {
 
 exports.getFamilyServices = familyDoc => {
 
-	return this.FAMILY_SERVICES.reduce( ( offeredServices, service ) => {
+	if ( familyDoc.familyServices ) {
+		return this.FAMILY_SERVICES.reduce( ( offeredServices, service ) => {
 
-		const doesFamilyOfferService = _getProperty( service.path, familyDoc );
-		
-		if ( doesFamilyOfferService ) {
-			offeredServices.push( service.label );
-		}
-
-		return offeredServices;
-	}, []).join( ', ' );
+			const doesFamilyOfferService = _getProperty( service.path, familyDoc );
+			
+			if ( doesFamilyOfferService ) {
+				offeredServices.push( service.label );
+			}
+	
+			return offeredServices;
+		}, []).join( ', ' );
+	} else {
+		return [];
+	}
 };
 
 /* fetch an array of models, map them and send them in jQuery Select2 format */
