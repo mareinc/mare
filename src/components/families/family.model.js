@@ -73,6 +73,8 @@ var Family = new keystone.List( 'Family', {
 // Create fields
 Family.add( 'Permissions', {
 
+	flagCalls: { type: Types.Boolean, label: 'flag calls', default: false, initial: true },
+	flagCallsWarning: { type: Types.Text, label: 'flag calls status', default: 'ATTENTION: CALLS FROM THIS FAMILY SHOULD BE FLAGGED', noedit: true, dependsOn: { flagCalls: true } },
 	isActive: { type: Types.Boolean, label: 'has active database account' },
 
 	permissions: {
@@ -88,7 +90,6 @@ Family.add( 'Permissions', {
 
 	registrationNumber: { type: Types.Number, label: 'registration number', format: false, noedit: true, collapse: true },
 	initialContact: { type: Types.Date, label: 'initial contact', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, initial: true, collapse: true }, // was required: data migration change ( undo if possible )
-	flagCalls: { type: Types.Boolean, label: 'flag calls', default: false, initial: true },
 	familyConstellation: { type: Types.Relationship, label: 'family constellation', ref: 'Family Constellation', initial: true, collapse: true },
 	language: { type: Types.Relationship, label: 'language', ref: 'Language', initial: true, collapse: true },
 	otherLanguages: { type: Types.Relationship, label: 'other languages', ref: 'Language', many: true, initial: true, collapse: true },
