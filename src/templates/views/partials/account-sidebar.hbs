@@ -15,7 +15,7 @@
         {{#if shouldRenderChildrenSection}}
         <li class="button button--teal account-nav-link \{{#ifeq selectedRoute 'children' }}account-nav-link--active\{{/ifeq}}" data-section="children">
             <i class="fa fa-users"></i>
-            <span class="account-nav-link__title">Children</span>
+            <span class="account-nav-link__title">{{#ifeq user.userType 'family'}}Bookmarked Children{{else}}Children{{/ifeq}}</span>
         </li>
         {{/if}}
 		
