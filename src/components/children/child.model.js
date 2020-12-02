@@ -191,9 +191,13 @@ Child.add( 'Display Options', {
 
 	registeredBy: { type: Types.Select, label: 'registered by', options: 'unknown, adoption worker, recruitment worker', required: true, initial: true, collapse: true },
 	adoptionWorker: { type: Types.Relationship, label: 'adoption worker', ref: 'Social Worker', initial: true, collapse: true },
+	adoptionWorkerEmail: { type: Types.Email, label: `adoption worker's email`, noedit: true, collapse: true },
+	adoptionWorkerPhone: { type: Types.Text, label: `adoption worker's phone`, noedit: true, collapse: true },
 	adoptionWorkerAgency: { type: Types.Relationship, label: `adoption worker's agency`, ref: 'Agency', noedit: true, collapse: true },
 	adoptionWorkerAgencyRegion: { type: Types.Relationship, label: `adoption worker's region`, ref: 'Region', noedit: true, collapse: true },
 	recruitmentWorker: { type: Types.Relationship, label: 'recruitment worker', ref: 'Social Worker', initial: true, collapse: true },
+	recruitmentWorkerEmail: { type: Types.Email, label: `recruitment worker's email`, noedit: true, collapse: true },
+	recruitmentWorkerPhone: { type: Types.Text, label: `recruitment worker's phone`, noedit: true, collapse: true },
 	recruitmentWorkerAgency: { type: Types.Relationship, label: `recruitment worker's agency`, ref: 'Agency', noedit: true, collapse: true },
 	recruitmentWorkerAgencyRegion: { type: Types.Relationship, label: `recruitment worker's region`, ref: 'Region', noedit: true, collapse: true },
 
@@ -713,6 +717,10 @@ Child.schema.methods.setAdoptionWorkerAgencyFields = function() {
 		// if the adoption worker was fetched successfully
 		fetchAdoptionWorker
 			.then( adoptionWorker => {
+				// set the adoption worker's email address
+				this.adoptionWorkerEmail = adoptionWorker.email;
+				// set the adoption worker's phone number
+				this.adoptionWorkerPhone = adoptionWorker.phone.work || adoptionWorker.phone.mobile;
 				// attempt to find the adoption worker's agency
 				return agencyMiddleware.getAgencyById( adoptionWorker.agency );
 			})
@@ -757,6 +765,10 @@ Child.schema.methods.setRecruitmentWorkerAgencyFields = function() {
 		// if the recruitment worker was fetched successfully
 		fetchRecruitmentWorker
 			.then( recruitmentWorker => {
+				// set the recruitment worker's email address
+				this.recruitmentWorkerEmail = recruitmentWorker.email;
+				// set the recruitment worker's phone number
+				this.recruitmentWorkerPhone = recruitmentWorker.phone.work || recruitmentWorker.phone.mobile;
 				// attempt to find the recruitment worker's agency
 				return agencyMiddleware.getAgencyById( recruitmentWorker.agency );
 			})
