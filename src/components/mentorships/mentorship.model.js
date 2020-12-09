@@ -8,16 +8,16 @@ const Mentorship = new keystone.List( 'Mentorship', {
 // Create fields
 Mentorship.add( 'Mentorship', {
 
-	mentorshipDate: { type: Types.Date, inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, required: true, initial: true },
+	mentorshipDate: { type: Types.Date, label: 'date of match', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, required: true, initial: true },
 	notes: { type: Types.Textarea, label: 'notes', initial: true }
 
-}, 'Child', {
+}, 'Mentor', {
 
-    child: { type: Types.Relationship, label: 'child', ref: 'Child', initial: true }
+    mentor: { type: Types.Relationship, label: 'mentor family', ref: 'Family', initial: true, required: true }
     
-}, 'Family', {
+}, 'Mentee', {
 
-	family: { type: Types.Relationship, label: 'family', ref: 'Family', initial: true }
+	mentee: { type: Types.Relationship, label: 'mentee family', ref: 'Family', initial: true, required: true }
 });
 
 Mentorship.schema.pre( 'save', function( next ) {
@@ -38,5 +38,5 @@ Mentorship.schema.methods.trimTextFields = function() {
 };
 
 // Define default columns in the admin interface and register the model
-Mentorship.defaultColumns = 'mentorshipDate, child, family';
+Mentorship.defaultColumns = 'mentorshipDate, mentor, mentee';
 Mentorship.register();
