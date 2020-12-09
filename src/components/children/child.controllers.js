@@ -594,7 +594,7 @@ exports.getRelevantChildInformation = ( children, locals ) => {
 			gender									: child.gender.gender,
 			hasContactWithBiologicalParents			: child.hasContactWithBirthFamily,
 			hasContactWithBiologicalSiblings		: child.hasContactWithSiblings,
-			hasVideo								: child.video && child.video.length > 0,
+			hasVideo								: child.hasVideo,
 			intellectualNeeds						: needsMap[ child.intellectualNeeds ],
 			isBookmarked							: child.isBookmarked,
 			language								: _.pluck( child.languages, 'language' ),
@@ -657,7 +657,7 @@ exports.getRelevantSiblingGroupInformation = ( siblingGroups, locals ) => {
 			genders									: _.uniq( children.map( child => child.gender.gender ) ),
 			hasContactWithBiologicalParents			: _.uniq( children.map( child => child.hasContactWithBirthFamily ) ),
 			hasContactWithBiologicalSiblings		: _.uniq( children.map( child => child.hasContactWithSiblings ) ),
-			hasVideo								: children.filter( child => child.siblingGroupVideo && child.siblingGroupVideo.length > 0 ).length > 0,
+			hasVideo								: children.filter( child => child.hasVideo ).length > 0,
 			intellectualNeeds						: _.uniq( children.map( child => needsMap[ child.intellectualNeeds ] ) ),
 			isBookmarked							: children.map( child => child.isBookmarked ).indexOf( true ) !== -1, // set to true if any of the children have true for isBookmarked
 			languages								: _.uniq( _.flatten( children.map( child => _.pluck(child.languages, 'language' ) ) ) ),

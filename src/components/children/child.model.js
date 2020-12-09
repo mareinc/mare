@@ -328,6 +328,19 @@ Child.schema.virtual( 'hasSiblingGroupImage' ).get( function() {
 	return !!this.siblingGroupImage.url;
 });
 
+// utility to check if the child or sibling group has any type of video for their gallery profile
+Child.schema.virtual( 'hasVideo' ).get( function() {
+	'use strict';
+
+	// perform sibling group logic
+	if ( this.mustBePlacedWithSiblings ) {
+		return ( this.siblingGroupVideo && this.siblingGroupVideo.length > 0 ) || ( this.wednesdaysChildSiblingGroupVideo && this.wednesdaysChildSiblingGroupVideo.length > 0 );
+	// perform solo child logic
+	} else {
+		return ( this.video && this.video.length > 0 ) || ( this.wednesdaysChildVideo && this.wednesdaysChildVideo.length > 0 );
+	}
+});
+
 // pre init hook - initialize default recommendedFamilyConstellation values for new child records
 // Doing it here via pre init because it does not seem to work when setting in the post init hook via field default options or via direct assignment to this.recommendedFamilyConstellation
 Child.schema.pre( 'init', function (next, data) {
