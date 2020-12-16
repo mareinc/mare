@@ -143,6 +143,6 @@ exports = module.exports = app => {
 	app.get( '/tools/services/get-family-listing-data'			, accountMiddleware.requireUser( 'admin' ), toolsService.getFamilyListingData );
 
 	// webhooks
-	app.get( '/webhooks/mailchimp'                      , mailchimpService.validateWebhookURL );
-	app.post( '/webhooks/mailchimp'                     , mailchimpService.processWebhookUpdates );
+	// app.get( '/webhooks/mailchimp'                      , mailchimpService.validateWebhookURL );
+	// app.post( '/webhooks/mailchimp'                     , mailchimpService.processWebhookUpdates );
 };
