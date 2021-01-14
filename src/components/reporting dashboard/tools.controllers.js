@@ -1762,7 +1762,7 @@ exports.getFamilyListingData = ( req, res, next ) => {
 				: undefined,
 			numberOfChildren: familyDoc.numberOfChildren,
 			numberOfAdults: familyDoc.otherAdultsInHome && familyDoc.otherAdultsInHome.number,
-			initialContactDate: moment.utc( familyDoc.initialContact ).format( 'MM/DD/YYY' ),
+			initialContactDate: moment.utc( familyDoc.initialContact ).format( 'MM/DD/YYYY' ),
 			isHomestudyVerified: familyDoc.permissions.isHomestudyVerified,
 			isActive: familyDoc.isActive,
 			status: familyDoc.registeredWithMARE.registered 
