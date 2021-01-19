@@ -1,0 +1,26 @@
+{{!--
+    Configurable date search field in the reporting dashboard.
+
+    Date search configurations:
+        1. any date (no date picker - this field is ignored)
+        2. before a date (1 date picker)
+        3. after a date (1 date picker)
+        4. between dates (2 date pickers)
+
+    Logical search configurations:
+        1. mandatory - every result must match this field 
+        2. optional - any result that matches this field is 
+--}}
+<div class="reporting-date-search-field">
+    <div>
+        <select class="form-control date-search-type-select">
+            <option value="ignore">any date</option>
+            <option value="before">before</option>
+            <option value="after">after</option>
+            <option value="between">between</option>
+        </select>
+    </div>
+    <div>
+        <input type="text" class="date-range-picker" name="{{name}}-ignore" data-field-name="{{name}}"/>
+    </div>
+</div>

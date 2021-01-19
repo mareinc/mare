@@ -48,10 +48,20 @@
                 <div class="col-6">
                     <div class="row form-group">
                         <div class="col-sm-12 col-md-4 text-sm-right">
-                            <label class="bold" for="homestudyVerified">Homestudy Verified (Can See All Children)</label>
+                            <label class="bold">Homestudy Verified (Can See All Children)</label>
                         </div>
                         <div class="col-sm-12 col-md-8">
-                            <input id="homestudyVerified" type="checkbox" name="homestudyVerified">
+                            {{> form-field-reporting-date-search name="homestudyVerifiedDate" }}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right">
+                            <label class="bold">Initial Contact</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                            {{> form-field-reporting-date-search name="initialContactDate" }}
                         </div>
                     </div>
                 </div>
