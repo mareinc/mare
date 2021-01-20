@@ -215,7 +215,7 @@
 						// save a reference to the table so it can be destroyed when the view changes
 						mare.views.tools.table = $('#family-listing-results').DataTable({
 							data: data.results, 						// set results data as table source
-							columns: view.familyListingColumns, 			// configure columns
+							columns: view.familyListingColumns, 		// configure columns
 							order: [[0, 'asc']], 						// define default sort (column index, direction)
 							fixedHeader: true, 							// fix the header to the top of the viewport on vertical scroll
 							pageLength: 100,							// set default number of rows to display

@@ -1798,3 +1798,116 @@ exports.getFamilyListingData = ( req, res, next ) => {
 		flashMessages.sendErrorFlashMessage( res, 'Error', 'Error loading family listing data' );
 	});
 };
+
+exports.getFamilyStagesData = ( req, res, next ) => {
+
+	// set a maximum number of results that can be returned to prevent crashes/freezing
+	const MAX_RESULTS = 5000;
+	
+	// get the query from the request object
+	const query = req.query;
+	console.log(query);
+
+	// create the search criteria
+	const searchCriteria = {};
+
+	// registration date range criteria (required)
+	const registrationDateFrom = new Date( query.regDateFrom );
+	const registrationDateTo = new Date( query.regDateTo );
+	searchCriteria.initialContact = { $gte: registrationDateFrom, $lte: registrationDateTo };
+
+	// family has an active database account
+	if ( !!query.hasActiveAccount ) {
+		searchCriteria.isActive = true;
+	}
+
+	// homestudy verified date queries
+	if ( query.homestudyVerifiedDateType && query.homestudyVerifiedDateType !== 'ignore' ) {
+
+		searchCriteria[ 'permissions.isHomestudyVerified' ] = true;
+
+		switch ( query.homestudyVerifiedDateType ) {
+			case 'before':
+				searchCriteria[ 'permissions.homestudyVerifiedDate' ] = { $lte: moment.utc( query.homestudyVerifiedDateValue, 'MM/DD/YYYY' ) };
+				break;
+			case 'after':
+				searchCriteria[ 'permissions.homestudyVerifiedDate' ] = { $gte: moment.utc( query.homestudyVerifiedDateValue, 'MM/DD/YYYY' ) };
+				break;
+			case 'between':
+				let dates = query.homestudyVerifiedDateValue.split( ' - ' );
+				searchCriteria[ 'permissions.homestudyVerifiedDate' ] = { $gte: moment.utc( dates[0], 'MM/DD/YYYY' ), $lte: moment.utc( dates[1], 'MM/DD/YYYY' ) };
+				break;
+			default:
+				console.error( `could not parse homestudy verified date query - unknown query type: ${ query.homestudyVerifiedDateType }` );
+				break;
+		}
+	}
+
+	// info packet date queries
+	if ( query.infoPacketSentDateType && query.infoPacketSentDateType !== 'ignore' ) {
+
+		switch ( query.infoPacketSentDateType ) {
+			case 'before':
+				searchCriteria[ 'infoPacket.date' ] = { $lte: moment.utc( query.infoPacketSentDateValue, 'MM/DD/YYYY' ) };
+				break;
+			case 'after':
+				searchCriteria[ 'infoPacket.date' ] = { $gte: moment.utc( query.infoPacketSentDateValue, 'MM/DD/YYYY' ) };
+				break;
+			case 'between':
+				let dates = query.infoPacketSentDateValue.split( ' - ' );
+				searchCriteria[ 'infoPacket.date' ] = { $gte: moment.utc( dates[0], 'MM/DD/YYYY' ), $lte: moment.utc( dates[1], 'MM/DD/YYYY' ) };
+				break;
+			default:
+				console.error( `could not parse homestudy verified date query - unknown query type: ${ query.infoPacketSentDateType }` );
+				break;
+		}
+	}
+	
+	console.log(searchCriteria);
+
+	// get the families that match the specified date range and criteria
+	keystone.list( 'Family' ).model
+		.find( searchCriteria )
+		.limit( MAX_RESULTS )
+		.lean()
+		.exec()
+		.then( familyDocs => {
+
+			const familyStages = familyDocs.map(familyDoc => ({
+				id: familyDoc._id.toString(),
+				registrationNumber: familyDoc.registrationNumber,
+				email: familyDoc.email,
+				contact1: {
+					firstName: familyDoc.contact1.name.first,
+					lastName: familyDoc.contact1.name.last,
+					fullName: `${familyDoc.contact1.name.first} ${familyDoc.contact1.name.last}`,
+					email: familyDoc.contact1.email,
+					gender: familyDoc.contact1.gender && familyDoc.contact1.gender.gender,
+					race: familyDoc.contact1.race && familyDoc.contact1.race.length > 0
+						? familyDoc.contact1.race.map( race => race.race ).join( ', ' )
+						: undefined
+				},
+				contact2: {
+					firstName: familyDoc.contact2.name.first,
+					lastName: familyDoc.contact2.name.last,
+					fullName: `${familyDoc.contact2.name.first} ${familyDoc.contact2.name.last}`,
+					email: familyDoc.contact2.email !== '' ? familyDoc.contact2.email : undefined,
+					gender: familyDoc.contact2.gender && familyDoc.contact2.gender.gender,
+					race: familyDoc.contact2.race && familyDoc.contact2.race.length > 0
+						? familyDoc.contact2.race.map( race => race.race ).join( ', ' )
+						: undefined
+				}
+			}));
+			
+			res.send({
+				noResultsFound: !familyDocs || familyDocs.length === 0,
+				results: familyStages
+			});
+		})
+		.catch( err => {
+
+			// log an error for debugging purposes
+			console.error( `error loading family stages report for the dashboard - ${ err }` );
+			flashMessages.sendErrorFlashMessage( res, 'Error', 'Error loading family stages data' );
+		});
+};

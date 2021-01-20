@@ -141,6 +141,7 @@ exports = module.exports = app => {
 	app.get( '/tools/services/get-media-features-data'			, accountMiddleware.requireUser( 'admin' ), toolsService.getMediaFeaturesData );
 	app.get( '/tools/services/get-child-listing-data'			, accountMiddleware.requireUser( 'admin' ), toolsService.getChildListingData );
 	app.get( '/tools/services/get-family-listing-data'			, accountMiddleware.requireUser( 'admin' ), toolsService.getFamilyListingData );
+	app.get( '/tools/services/get-family-stages-data'			, accountMiddleware.requireUser( 'admin' ), toolsService.getFamilyStagesData );
 
 	// webhooks
 	// app.get( '/webhooks/mailchimp'                      , mailchimpService.validateWebhookURL );

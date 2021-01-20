@@ -65,8 +65,19 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right">
+                            <label class="bold">Info Packet Sent</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                            {{> form-field-reporting-date-search name="infoPacketSentDate" }}
+                        </div>
+                    </div>
+                </div>
             </div>
         </form>
+
         <button class="btn btn-primary family-stages-search-button">Search</button>
 	    <button class="btn btn-default family-stages-search-reset-button">Reset</button>
 
@@ -85,20 +96,17 @@
             <div class="matching-results-table__button-bar">
                 <button class="button button--teal family-stages-export-pdf-button">PDF Export</button>
                 <button class="button button--teal family-stages-export-xlsx-button">XLSX Export</button>
+                <div class="matching-results-table__record-count">
+                    <div class="record-count__label">Total Families:</div>
+                    \{{ results.length }}
+                    \{{#if limitReached}}
+                    <div class="recoord-count__limit">*Your search returned the maximum allowed number of results, some results could not be displayed.</div>
+                    \{{/if}}
+                </div>
             </div>
 
             {{!-- Results table for site display --}}            
             <table id="family-stages-results" class="stripe" width="100%"></table>
-
-            {{!-- Results table for Excel export (hidden) --}}
-            <table width="100%" class="results-table hidden" data-filename="FamilyStagesReportExport.xlsx">
-                <tr>
-                </tr>
-                \{{#each results as |result|}}
-                    <tr>
-                    </tr>
-                \{{/each}}
-            </table>
 
         \{{/if}}
     </div>

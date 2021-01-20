@@ -13,7 +13,7 @@
 --}}
 <div class="reporting-date-search-field">
     <div>
-        <select class="form-control date-search-type-select">
+        <select class="form-control date-search-type-select" name="{{name}}Type">
             <option value="ignore">any date</option>
             <option value="before">before</option>
             <option value="after">after</option>
@@ -21,6 +21,6 @@
         </select>
     </div>
     <div>
-        <input type="text" class="date-range-picker" name="{{name}}-ignore" data-field-name="{{name}}"/>
+        <input type="text" class="date-range-picker" name="{{name}}Value"/>
     </div>
 </div>
