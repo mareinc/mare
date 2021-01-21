@@ -292,7 +292,8 @@
 			{ title: 'Language', data: 'language', defaultContent: '--', visible: false },
 			{ title: 'Other Languages', data: 'otherLanguages', defaultContent: '--', visible: false },
 			{ title: 'Num. Children', data: 'numberOfChildren', defaultContent: '--', visible: false },
-			{ title: 'Num. Adults', data: 'numberOfAdults', defaultContent: '--', visible: false }
+			{ title: 'Num. Adults', data: 'numberOfAdults', defaultContent: '--', visible: false },
+			{ title: 'Homestudy Verified', data: 'isHomestudyVerified', defaultContent: 'false', visible: false }
 		]
 	});
 }());
