@@ -15,6 +15,12 @@ exports.PLACEMENT_TYPES_TO_DATABASE_LOCATION_DICTIONARY = {
 	Disruption: 'disruptions',
 	Legalization: 'legalizations'
 };
+exports.DATE_QUERY_TYPES = {
+	IGNORE: 'ignore',
+	BEFORE: 'before',
+	AFTER: 'after',
+	BETWEEN: 'between'
+};
 
 // family stages are defined in an intentional, chronological, order - changing the order of the items 
 // in this list will impact the behavior of the family listing report (and potentially others)
@@ -258,6 +264,32 @@ exports.sendPDF = ( req, res, data, htmlViewTemplate, { headerTitle } ) => {
 		});
 	});
 }
+
+// helper to generate a mongoose query from a configurable date field in the reporting dashboard
+// date field types:
+// 	- before single date (dateValue format: MM/DD/YYYY)
+//	- after single date	(dateValue format: MM/DD/YYYY)
+//	- between two dates (dateValue format: MM/DD/YYYY - MM/DD/YYYY)
+exports.generateConfigurableDateFieldQuery = ( dateType, dateValue, propPath, queryObject ) => {
+
+	switch ( dateType ) {
+		case exports.DATE_QUERY_TYPES.IGNORE:
+			break;
+		case exports.DATE_QUERY_TYPES.BEFORE:
+			queryObject[ propPath ] = { $lte: moment.utc( dateValue, 'MM/DD/YYYY' ) };
+			break;
+		case exports.DATE_QUERY_TYPES.AFTER:
+			queryObject[ propPath ] = { $gte: moment.utc( dateValue, 'MM/DD/YYYY' ) };
+			break;
+		case exports.DATE_QUERY_TYPES.BETWEEN:
+			let dates = dateValue.split( ' - ' );
+			queryObject[ propPath ] = { $gte: moment.utc( dates[0], 'MM/DD/YYYY' ), $lte: moment.utc( dates[1], 'MM/DD/YYYY' ) };
+			break;
+		default:
+			console.error( `failed to generate date field query for prop: ${ propPath }. unknown date type: ${ dateType }` );
+			break;
+	}
+};
 
 // helper to access nested properties on mongooose docs using array syntax
 function _getProperty( propertyName, object ) {
