@@ -8,7 +8,8 @@
 		// bind standard events to functions within the view
 		events: {
 			'click .family-stages-fiscal-year-button' 	: 'handleFiscalYearClick',
-			'click .family-stages-search-button' 		: 'handleSearchClick'
+			'click .family-stages-search-button' 		: 'handleSearchClick',
+			'click .family-stages-search-reset-button'	: 'handleResetClick'
 		},
 
 		/* initialize the view */
@@ -157,6 +158,10 @@
 				( queryString.length > 0 ? '?' + queryString : '' ), 
 				{ trigger: true }
 			);
+		},
+
+		handleResetClick: function() {
+			mare.routers.tools.navigate( 'family-stages-report', { trigger: true } );
 		},
 
 		handleFiscalYearClick: function( event ) {
