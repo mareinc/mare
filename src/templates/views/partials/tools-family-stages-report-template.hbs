@@ -11,7 +11,7 @@
                 <div class="col-6">
                     <div class="row form-group">
                         <div class="col-sm-12 col-md-4 text-sm-right">
-                            <label class="bold">Record Created Date:</label>
+                            <label class="bold">Record Created Date</label>
                         </div>
                         <div class="col-sm-12 col-md-8">
                             <input type="text" class="date-range-picker" name="registration-date-range" />
@@ -21,7 +21,7 @@
                 <div class="col-6">
                     <div class="row form-group">
                         <div class="col-sm-12 col-md-4 text-sm-right">
-                            <label class="bold">Record Created Date Date Fiscal Years:</label>
+                            <label class="bold">Record Created Date Date Fiscal Years</label>
                         </div>
                         <div class="col-sm-12 col-md-8 fiscal-year-button-container">
                             {{#each fiscalYears as |fiscalYear|}}
@@ -38,10 +38,17 @@
                 <div class="col-6">
                     <div class="row form-group">
                         <div class="col-sm-12 col-md-4 text-sm-right">
-                            <label class="bold" for="hasActiveAccount">Has Active Database Account</label>
+                            <label class="bold" for="hasActiveAccount">Search Type</label>
                         </div>
                         <div class="col-sm-12 col-md-8">
-                            <input id="hasActiveAccount" type="checkbox" name="hasActiveAccount">
+                            <div class="text-sm-right text-md-left">   
+                                <input type="radio" id="searchTypeMatchAll" name="searchType" value="all" checked>
+                                <label for="searchTypeMatchAll">Match All Criteria</label>
+                            </div>
+                            <div class="text-sm-right text-md-left">
+                                <input type="radio" id="searchTypeMatchAny" name="searchType" value="any">
+                                <label for="searchTypeMatchAny">Match Any Criteria</label>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -72,6 +79,138 @@
                         </div>
                         <div class="col-sm-12 col-md-8">
                             {{> form-field-reporting-date-search name="infoPacketSentDate" }}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right">
+                            <label class="bold">Gathering Information</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                            {{> form-field-reporting-date-search name="gatheringInformationDate" }}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right">
+                            <label class="bold">Looking for Agency</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                            {{> form-field-reporting-date-search name="lookingForAgencyDate" }}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right">
+                            <label class="bold">Working with Agency</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                            {{> form-field-reporting-date-search name="workingWithAgencyDate" }}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right">
+                            <label class="bold">MAPP Training Completed</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                            {{> form-field-reporting-date-search name="mappTrainingCompletedDate" }}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right">
+                            <label class="bold">Homestudy Completed</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                            {{> form-field-reporting-date-search name="homestudyCompletedDate" }}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right">
+                            <label class="bold">Online Matching</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                            {{> form-field-reporting-date-search name="onlineMatchingDate" }}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right">
+                            <label class="bold">Registered with MARE</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                            {{> form-field-reporting-date-search name="registeredWithMAREDate" }}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right">
+                            <label for="family-region" class="bold">Family Status</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                            <select id="family-status" name="family-status[]" class="form-control family-status-select" multiple>
+                                {{#each familyStatus as |status|}}
+                                    <option value="{{ status.id }}">{{ status.status }}</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right">
+                            <label class="bold">Family Profile Created</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                            {{> form-field-reporting-date-search name="familyProfileCreatedDate" }}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right">
+                            <label class="bold">Closed</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                            {{> form-field-reporting-date-search name="closedDate" }}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right">
+                            <label for="family-region" class="bold">Region</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                            <select id="family-region" name="family-region[]" class="form-control family-region-select" multiple>
+                                {{#each regions as |region|}}
+                                    <option value="{{ region.id }}">{{ region.region }}</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right">
+                            <label for="family-state" class="bold">State</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                            <select id="family-state" name="family-state[]" class="form-control family-state-select" multiple>
+                                {{#each states as |state|}}
+                                    <option value="{{ state.id }}">{{ state.state }}</option>
+                                {{/each}}
+                            </select>
                         </div>
                     </div>
                 </div>

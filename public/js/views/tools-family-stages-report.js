@@ -26,7 +26,7 @@
 			function fillIn() {
 				var input = jQuery( this );
 						
-				if ( input.attr( 'type' ) === 'checkbox' && ( _.contains( params[ paramName ], input.val() ) || params[ paramName ] === input.val() ) ) {
+				if ( input.attr( 'type' ) === 'checkbox' || input.attr( 'type' ) === 'radio' && ( _.contains( params[ paramName ], input.val() ) || params[ paramName ] === input.val() ) ) {
 					input.prop( 'checked', true );
 				}
 				
@@ -61,6 +61,19 @@
 			// initialize all date search fields
 			this.$el.find( '.reporting-date-search-field' ).each( function() {
 				view.initializeDateSearchField( $( this ), moment( regDateFrom ), moment( regDateTo ) );
+			});
+
+			// initialize select inputs
+			this.$el.find( '.family-state-select' ).select2({
+				placeholder: 'All States'
+			});
+
+			this.$el.find( '.family-region-select' ).select2({
+				placeholder: 'All Regions'
+			});
+
+			this.$el.find( '.family-status-select' ).select2({
+				placeholder: 'All Statuses'
 			});
 		},
 
@@ -131,7 +144,7 @@
 			
 			// remove empty values and ignore date range values
 			params = _.filter( params, function( value ) {
-				return value && value.value && value.value.length > 0 && value.name !== 'registration-date-range' && !value.name.includes( '-ignore' );
+				return value && value.value && value.value.length > 0 && value.name !== 'registration-date-range';
 			});
 
 			// build the query string

@@ -1816,55 +1816,129 @@ exports.getFamilyStagesData = ( req, res, next ) => {
 	const registrationDateTo = new Date( query.regDateTo );
 	searchCriteria.initialContact = { $gte: registrationDateFrom, $lte: registrationDateTo };
 
-	// family has an active database account
-	if ( !!query.hasActiveAccount ) {
-		searchCriteria.isActive = true;
-	}
-
 	// homestudy verified date queries
-	if ( query.homestudyVerifiedDateType && query.homestudyVerifiedDateType !== 'ignore' ) {
-
-		searchCriteria[ 'permissions.isHomestudyVerified' ] = true;
-
-		switch ( query.homestudyVerifiedDateType ) {
-			case 'before':
-				searchCriteria[ 'permissions.homestudyVerifiedDate' ] = { $lte: moment.utc( query.homestudyVerifiedDateValue, 'MM/DD/YYYY' ) };
-				break;
-			case 'after':
-				searchCriteria[ 'permissions.homestudyVerifiedDate' ] = { $gte: moment.utc( query.homestudyVerifiedDateValue, 'MM/DD/YYYY' ) };
-				break;
-			case 'between':
-				let dates = query.homestudyVerifiedDateValue.split( ' - ' );
-				searchCriteria[ 'permissions.homestudyVerifiedDate' ] = { $gte: moment.utc( dates[0], 'MM/DD/YYYY' ), $lte: moment.utc( dates[1], 'MM/DD/YYYY' ) };
-				break;
-			default:
-				console.error( `could not parse homestudy verified date query - unknown query type: ${ query.homestudyVerifiedDateType }` );
-				break;
-		}
+	if ( query.homestudyVerifiedDateType ) {
+		utilsService.generateConfigurableDateFieldQuery(
+			query.homestudyVerifiedDateType,
+			query.homestudyVerifiedDateValue,
+			'permissions.homestudyVerifiedDate',
+			searchCriteria
+		);
 	}
 
 	// info packet date queries
-	if ( query.infoPacketSentDateType && query.infoPacketSentDateType !== 'ignore' ) {
-
-		switch ( query.infoPacketSentDateType ) {
-			case 'before':
-				searchCriteria[ 'infoPacket.date' ] = { $lte: moment.utc( query.infoPacketSentDateValue, 'MM/DD/YYYY' ) };
-				break;
-			case 'after':
-				searchCriteria[ 'infoPacket.date' ] = { $gte: moment.utc( query.infoPacketSentDateValue, 'MM/DD/YYYY' ) };
-				break;
-			case 'between':
-				let dates = query.infoPacketSentDateValue.split( ' - ' );
-				searchCriteria[ 'infoPacket.date' ] = { $gte: moment.utc( dates[0], 'MM/DD/YYYY' ), $lte: moment.utc( dates[1], 'MM/DD/YYYY' ) };
-				break;
-			default:
-				console.error( `could not parse homestudy verified date query - unknown query type: ${ query.infoPacketSentDateType }` );
-				break;
-		}
+	if ( query.infoPacketSentDateType ) {
+		utilsService.generateConfigurableDateFieldQuery(
+			query.infoPacketSentDateType,
+			query.infoPacketSentDateValue,
+			'infoPacket.date',
+			searchCriteria
+		);
 	}
-	
-	console.log(searchCriteria);
 
+	// gathering information date queries
+	if ( query.gatheringInformationDateType ) {
+		utilsService.generateConfigurableDateFieldQuery(
+			query.gatheringInformationDateType,
+			query.gatheringInformationDateValue,
+			'stages.gatheringInformation.date',
+			searchCriteria
+		);
+	}
+
+	// looking for agency date queries
+	if ( query.lookingForAgencyDateType ) {
+		utilsService.generateConfigurableDateFieldQuery(
+			query.lookingForAgencyDateType,
+			query.lookingForAgencyDateValue,
+			'stages.lookingForAgency.date',
+			searchCriteria
+		);
+	}
+
+	// working with agency date queries
+	if ( query.workingWithAgencyDateType ) {
+		utilsService.generateConfigurableDateFieldQuery(
+			query.workingWithAgencyDateType,
+			query.workingWithAgencyDateValue,
+			'stages.workingWithAgency.date',
+			searchCriteria
+		);
+	}
+
+	// MAPP training complete date queries
+	if ( query.mappTrainingCompletedDateType ) {
+		utilsService.generateConfigurableDateFieldQuery(
+			query.mappTrainingCompletedDateType,
+			query.mappTrainingCompletedDateValue,
+			'stages.MAPPTrainingCompleted.date',
+			searchCriteria
+		);
+	}
+
+	// homestudy completed date queries
+	if ( query.homestudyCompletedDateType ) {
+		utilsService.generateConfigurableDateFieldQuery(
+			query.homestudyCompletedDateType,
+			query.homestudyCompletedDateValue,
+			'homestudy.initialDate',
+			searchCriteria
+		);
+	}
+
+	// online matching date queries
+	if ( query.onlineMatchingDateType ) {
+		utilsService.generateConfigurableDateFieldQuery(
+			query.onlineMatchingDateType,
+			query.onlineMatchingDateValue,
+			'onlineMatching.date',
+			searchCriteria
+		);
+	}
+
+	// registered with MARE date queries
+	if ( query.registeredWithMAREDateType ) {
+		utilsService.generateConfigurableDateFieldQuery(
+			query.registeredWithMAREDateType,
+			query.registeredWithMAREDateValue,
+			'registeredWithMARE.date',
+			searchCriteria
+		);
+	}
+
+	// family profile created date queries
+	if ( query.familyProfileCreatedDateType ) {
+		utilsService.generateConfigurableDateFieldQuery(
+			query.familyProfileCreatedDateType,
+			query.familyProfileCreatedDateValue,
+			'familyProfile.date',
+			searchCriteria
+		);
+	}
+
+	// closed date queries
+	if ( query.closedDateType ) {
+		utilsService.generateConfigurableDateFieldQuery(
+			query.closedDateType,
+			query.closedDateValue,
+			'closed.date',
+			searchCriteria
+		);
+	}
+
+	// family region criteria (multiple)
+	if ( Array.isArray( query[ 'family-region' ] ) && query[ 'family-region' ].length > 0 ) {
+		searchCriteria[ 'address.region' ] = { $in: query[ 'family-region' ] };
+	}
+
+	// family region criteria (multiple)
+	if ( Array.isArray( query[ 'family-state' ] ) && query[ 'family-state' ].length > 0 ) {
+		searchCriteria[ 'address.state' ] = { $in: query[ 'family-state' ] };
+	}
+
+	// family status criteria (multiple)
+	// TODO
+	
 	// get the families that match the specified date range and criteria
 	keystone.list( 'Family' ).model
 		.find( searchCriteria )
