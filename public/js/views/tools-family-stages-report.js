@@ -61,7 +61,9 @@
 
 			// initialize all date search fields
 			this.$el.find( '.reporting-date-search-field' ).each( function() {
-				view.initializeDateSearchField( $( this ), moment( regDateFrom ), moment( regDateTo ) );
+				// check for a pre-existing value from a previous search
+				var preExistingValue = params && params[ $( this ).find( '.date-range-picker' ).attr( 'name' ) ];
+				view.initializeDateSearchField( $( this ), moment( regDateFrom ), moment( regDateTo ), preExistingValue );
 			});
 
 			// initialize select inputs
@@ -78,7 +80,7 @@
 			});
 		},
 
-		initializeDateSearchField: function( $el, defaultDateRangeStart, defaultDateRangeEnd ) {
+		initializeDateSearchField: function( $el, defaultDateRangeStart, defaultDateRangeEnd, preExistingValue ) {
 			
 			// initilize the search type select
 			var $dateSearchTypeField = $el.find( '.date-search-type-select' );
@@ -99,6 +101,7 @@
 					case 'after':
 						// show the picker, configure as a single date
 						$datePicker.daterangepicker({
+							startDate: preExistingValue ? moment( preExistingValue, 'MM/DD/YYYY' ) : moment(),
 							singleDatePicker: true,
 							showDropdowns: true,
 							minYear: 2000,
@@ -108,9 +111,10 @@
 						break;
 					case 'between':
 						// show the picker, configure as a date range
+						var preExistingDates = preExistingValue && preExistingValue.includes( '-' ) && preExistingValue.split( ' - ' );
 						$datePicker.daterangepicker({
-							startDate: defaultDateRangeStart,
-							endDate: defaultDateRangeEnd,
+							startDate: preExistingDates ? moment( preExistingDates[0], 'MM/DD/YYYY' ) : defaultDateRangeStart,
+							endDate: preExistingDates ? moment( preExistingDates[1], 'MM/DD/YYYY' ) : defaultDateRangeEnd,
 							alwaysShowCalendars: true,
 							showDropdowns: true,
 							linkedCalendars: false,
