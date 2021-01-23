@@ -1937,7 +1937,9 @@ exports.getFamilyStagesData = ( req, res, next ) => {
 	}
 
 	// family status criteria (multiple)
-	// TODO
+	if ( Array.isArray( query[ 'family-status' ] ) && query[ 'family-status' ].length > 0 ) {
+		searchCriteria[ 'registeredWithMARE.status' ] = { $in: query[ 'family-status' ] };
+	}
 	
 	// get the families that match the specified date range and criteria
 	keystone.list( 'Family' ).model

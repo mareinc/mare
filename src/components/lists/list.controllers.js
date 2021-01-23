@@ -403,6 +403,33 @@ exports.getAllChildStatuses = () => {
 	});
 };
 
+exports.getAllFamilyStatuses = () => {
+
+	return new Promise( ( resolve, reject ) => {
+		// query the database for all family statuses
+		keystone.list( 'Family Status' ).model
+			.find()
+			.exec()
+			.then( familyStatuses => {
+				// if no child statuses could not be found
+				if( familyStatuses.length === 0 ) {
+					// log an error for debugging purposes
+					console.error( `no family statuses could be found` );
+					// reject the promise
+					return reject();
+				}
+				// if child statuses were successfully returned, resolve with the array
+				resolve( familyStatuses );
+			// if an error was encountered fetching from the database
+			}, err => {
+				// log the error for debugging purposes
+				console.error( `error fetching the list of all family statuses`, err );
+				// reject the promise
+				reject();
+			});
+	});
+};
+
 exports.getChildStatusByName = ( name ) => {
 
 	return new Promise( ( resolve, reject ) => {

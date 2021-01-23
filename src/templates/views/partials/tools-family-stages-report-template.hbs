@@ -159,8 +159,8 @@
                         </div>
                         <div class="col-sm-12 col-md-8">
                             <select id="family-status" name="family-status[]" class="form-control family-status-select" multiple>
-                                {{#each familyStatus as |status|}}
-                                    <option value="{{ status.id }}">{{ status.status }}</option>
+                                {{#each familyStatuses as |status|}}
+                                    <option value="{{ status.id }}">{{ status.familyStatus }}</option>
                                 {{/each}}
                             </select>
                         </div>

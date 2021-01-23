@@ -10,6 +10,7 @@ exports = module.exports = ( req, res ) => {
 		  locals	= res.locals;
 	
 	let fetchChildStatuses 			= listService.getAllChildStatuses(),
+		fetchFamilyStatuses			= listService.getAllFamilyStatuses(),
 		fetchGenders 				= listService.getAllGenders(),
 		fetchRaces 					= listService.getAllRaces(),
 		fetchLegalStatuses 			= listService.getAllLegalStatuses(),
@@ -19,13 +20,14 @@ exports = module.exports = ( req, res ) => {
 		fetchResidences 			= listService.getAllResidences(),
 		fetchStates					= listService.getAllStates();
 
-	Promise.all( [ fetchChildStatuses, fetchGenders, fetchRaces, fetchLegalStatuses, fetchFamilyConstellations, fetchInquiryMethods, fetchRegions, fetchResidences, fetchStates ] )
+	Promise.all( [ fetchChildStatuses, fetchFamilyStatuses, fetchGenders, fetchRaces, fetchLegalStatuses, fetchFamilyConstellations, fetchInquiryMethods, fetchRegions, fetchResidences, fetchStates ] )
 		.then( values => {
 			// assign local variables to the values returned by the promises
-			const [ childStatuses, genders, races, legalStatuses, familyConstellations, inquiryMethods, regions, residences, states ] = values;
+			const [ childStatuses, familyStatuses, genders, races, legalStatuses, familyConstellations, inquiryMethods, regions, residences, states ] = values;
 			
 			// assign properties to locals for access during templating
 			locals.childStatuses = childStatuses;
+			locals.familyStatuses = familyStatuses;
 			locals.genders = genders;
 			locals.races = races;
 			locals.legalStatuses = legalStatuses;
