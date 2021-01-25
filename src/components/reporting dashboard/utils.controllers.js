@@ -291,6 +291,14 @@ exports.generateConfigurableDateFieldQuery = ( dateType, dateValue, propPath, qu
 	}
 };
 
+// verify that the value is a Date and return a formatted representation of the date
+// if the value is NOT a Date, return undefined
+exports.verifyAndFormatDate = ( date, format = 'MM/DD/YYYY' ) => {
+	return moment.isDate( date )
+		? moment.utc( date ).format( format )
+		: undefined
+};
+
 // helper to access nested properties on mongooose docs using array syntax
 function _getProperty( propertyName, object ) {
 	var parts = propertyName.split( "." ),

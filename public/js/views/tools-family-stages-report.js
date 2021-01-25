@@ -50,7 +50,7 @@
 				alwaysShowCalendars: true,
 				showDropdowns: true,
 				linkedCalendars: false,
-				minYear: 2000,
+				minYear: 1995,
 				maxYear: parseInt( moment().format( 'YYYY' ), 10 ),
 				ranges: {
 					'Last 30 Days': [ moment().subtract( 29, 'days' ), moment() ],
@@ -104,7 +104,7 @@
 							startDate: preExistingValue ? moment( preExistingValue, 'MM/DD/YYYY' ) : moment(),
 							singleDatePicker: true,
 							showDropdowns: true,
-							minYear: 2000,
+							minYear: 1995,
 							maxYear: parseInt( moment().format( 'YYYY' ), 10 )
 						});
 						$datePicker.show();
@@ -118,7 +118,7 @@
 							alwaysShowCalendars: true,
 							showDropdowns: true,
 							linkedCalendars: false,
-							minYear: 2000,
+							minYear: 1995,
 							maxYear: parseInt( moment().format( 'YYYY' ), 10 ),
 							ranges: {
 								'Last 30 Days': [ moment().subtract( 29, 'days' ), moment() ],
@@ -242,7 +242,40 @@
 			},
 			{ title: 'Email', data: 'email',  defaultContent: '--' },
 			{ title: 'Contact 1', data: 'contact1.fullName', defaultContent: '--' },
-			{ title: 'Contact 2', data: 'contact2.fullName', defaultContent: '--' }
+			{ title: 'Contact 2', data: 'contact2.fullName', defaultContent: '--' },
+			{ title: 'Most Recent Stage', data: 'currentStage.websiteDisplay', defaultContent: '--' },
+			{ title: 'Region', data: 'region', defaultContent: '--' },
+			{ title: 'State', data: 'state', defaultContent: '--' },
+			{ title: 'Constellation', data: 'constellation', defaultContent: '--' },
+			{ title: 'Contact 1 Gender', data: 'contact1.gender', defaultContent: '--' },
+			{ title: 'Contact 2 Gender', data: 'contact2.gender', defaultContent: '--' },
+			{ title: 'Contact 1 Race(s)', data: 'contact1.race', defaultContent: '--' },
+			{ title: 'Contact 2 Race(s)', data: 'contact2.race', defaultContent: '--' },
+			{ title: 'Contact 1 Email', data: 'contact1.email', defaultContent: '--' },
+			{ title: 'Contact 2 Email', data: 'contact2.email', defaultContent: '--' },
+			{ title: 'Social Worker', data: 'socialWorker', defaultContent: '--' },
+			{ title: 'SW Agency', data: 'socialWorkerAgency', defaultContent: '--' },
+			{ title: 'SW Region', data: 'socialWorkerAgencyRegion', defaultContent: '--' },
+			{ title: 'Language', data: 'language', defaultContent: '--' },
+			{ title: 'Other Languages', data: 'otherLanguages', defaultContent: '--' },
+			{ title: 'Num. Children', data: 'numberOfChildren', defaultContent: '--' },
+			{ title: 'Num. Adults', data: 'numberOfAdults', defaultContent: '--' },
+			{ title: 'Heard About MARE From', data: 'heardAboutMAREFrom', defaultContent: '--' },
+			{ title: 'Family Services', data: 'services', defaultContent: '--' },
+			{ title: 'Homestudy Verified', data: 'isHomestudyVerified', defaultContent: 'false' },
+			{ title: 'Active DB Account', data: 'isActive', defaultContent: 'false' },
+			{ title: 'Initial Contact Date', data: 'initialContactDate', defaultContent: '--' },
+			{ title: 'Homestudy Verified Date', data: 'homestudyVerifiedDate', defaultContent: '--' },
+			{ title: 'Info Packet Sent Date', data: 'infoPacketSentDate', defaultContent: '--' },
+			{ title: 'Gathering Information Date', data: 'gatheringInformationDate', defaultContent: '--' },
+			{ title: 'Looking For Agency Date', data: 'lookingForAgencyDate', defaultContent: '--' },
+			{ title: 'Working With Agency Date', data: 'workingWithAgencyDate', defaultContent: '--' },
+			{ title: 'MAPP Training Completed Date', data: 'mappTrainingCompletedDate', defaultContent: '--' },
+			{ title: 'Homestudy Completed Date', data: 'homestudyCompletedDate', defaultContent: '--' },
+			{ title: 'Online Matching Date', data: 'onlineMatchingDate', defaultContent: '--' },
+			{ title: 'Registered With MARE Date', data: 'registeredWithMAREDate', defaultContent: '--' },
+			{ title: 'Family Profile Created Date', data: 'familyProfileCreatedDate', defaultContent: '--' },
+			{ title: 'Closed Date', data: 'closedDate', defaultContent: '--' }
 		],
 
 		getFamilyStagesData: function( regDateFrom, regDateTo, params ) {

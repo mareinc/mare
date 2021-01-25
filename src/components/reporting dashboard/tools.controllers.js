@@ -1786,7 +1786,8 @@ exports.getFamilyListingData = ( req, res, next ) => {
 				noResultsFound: !familyDocs || familyDocs.length === 0,
 				results: familyListings,
 				socialWorkers: utilsService.extractSocialWorkersData( socialWorkers || [] ),
-				socialWorkerAgencies: utilsService.extractAgenicesData( socialWorkerAgencies || [] )
+				socialWorkerAgencies: utilsService.extractAgenicesData( socialWorkerAgencies || [] ),
+				limitReached: familyListings.length === MAX_RESULTS
 			});
 		}
 	})
@@ -1945,11 +1946,27 @@ exports.getFamilyStagesData = ( req, res, next ) => {
 	keystone.list( 'Family' ).model
 		.find( searchCriteria )
 		.limit( MAX_RESULTS )
+		.populate([
+			'address.region',
+			'address.state',
+			'registeredWithMARE.status',
+			'familyConstellation',
+			'contact1.gender',
+			'contact1.race',
+			'contact2.gender',
+			'contact2.race',
+			'socialWorker',
+			'socialWorkerAgency',
+			'socialWorkerAgencyRegion',
+			'language',
+			'otherLanguages',
+			'heardAboutMAREFrom'
+		].join( ' ' ))
 		.lean()
 		.exec()
 		.then( familyDocs => {
 
-			const familyStages = familyDocs.map(familyDoc => ({
+			const familyStages = familyDocs.map( familyDoc => ({
 				id: familyDoc._id.toString(),
 				registrationNumber: familyDoc.registrationNumber,
 				email: familyDoc.email,
@@ -1972,12 +1989,46 @@ exports.getFamilyStagesData = ( req, res, next ) => {
 					race: familyDoc.contact2.race && familyDoc.contact2.race.length > 0
 						? familyDoc.contact2.race.map( race => race.race ).join( ', ' )
 						: undefined
-				}
+				},
+				currentStage: utilsService.getCurrentFamilyStage( familyDoc ),
+				region: familyDoc.address.region && familyDoc.address.region.region,
+				state: familyDoc.address.state && familyDoc.address.state.state,
+				constellation: familyDoc.familyConstellation && familyDoc.familyConstellation.familyConstellation,
+				socialWorker: familyDoc.socialWorker && familyDoc.socialWorker.name.full,
+				socialWorkerAgency: familyDoc.socialWorkerAgency && familyDoc.socialWorkerAgency.code,
+				socialWorkerAgencyRegion: familyDoc.socialWorkerAgencyRegion && familyDoc.socialWorkerAgencyRegion.region,
+				language: familyDoc.language && familyDoc.language.language,
+				otherLanguages: familyDoc.otherLanguages && familyDoc.otherLanguages.length > 0
+					? familyDoc.otherLanguages.map( language => language.language ).join( ', ' )
+					: undefined,
+				numberOfChildren: familyDoc.numberOfChildren,
+				numberOfAdults: familyDoc.otherAdultsInHome && familyDoc.otherAdultsInHome.number,
+				heardAboutMAREFrom: familyDoc.heardAboutMAREFrom && familyDoc.heardAboutMAREFrom.length > 0
+					? familyDoc.heardAboutMAREFrom.map( source => source.wayToHearAboutMARE ).join( ', ' )
+					: familyDoc.heardAboutMAREOther && familyDoc.heardAboutMAREOther !== ''
+						? familyDoc.heardAboutMAREOther
+						: undefined,
+				services: utilsService.getFamilyServices( familyDoc ),
+				isHomestudyVerified: familyDoc.permissions.isHomestudyVerified,
+				isActive: familyDoc.isActive,
+				initialContactDate: utilsService.verifyAndFormatDate( familyDoc.initialContact ),
+				homestudyVerifiedDate: utilsService.verifyAndFormatDate( familyDoc.permissions.homestudyVerifiedDate ),
+				infoPacketSentDate: utilsService.verifyAndFormatDate( familyDoc.infoPacket.date ),
+				gatheringInformationDate: utilsService.verifyAndFormatDate( familyDoc.stages.gatheringInformation.date ),
+				lookingForAgencyDate: utilsService.verifyAndFormatDate( familyDoc.stages.lookingForAgency.date ),
+				workingWithAgencyDate: utilsService.verifyAndFormatDate( familyDoc.stages.workingWithAgency.date ),
+				mappTrainingCompletedDate: utilsService.verifyAndFormatDate( familyDoc.stages.MAPPTrainingCompleted.date ),
+				homestudyCompletedDate: utilsService.verifyAndFormatDate( familyDoc.homestudy.initialDate ),
+				onlineMatchingDate: utilsService.verifyAndFormatDate( familyDoc.onlineMatching.date ),
+				registeredWithMAREDate: utilsService.verifyAndFormatDate( familyDoc.registeredWithMARE.date ),
+				familyProfileCreatedDate: utilsService.verifyAndFormatDate( familyDoc.familyProfile.date ),
+				closedDate: utilsService.verifyAndFormatDate( familyDoc.closed.date )
 			}));
-			
+
 			res.send({
 				noResultsFound: !familyDocs || familyDocs.length === 0,
-				results: familyStages
+				results: familyStages,
+				limitReached: familyStages.length === MAX_RESULTS
 			});
 		})
 		.catch( err => {
