@@ -1810,7 +1810,7 @@ exports.getFamilyStagesData = ( req, res, next ) => {
 	console.log(query);
 
 	// create the search criteria
-	const searchCriteria = {};
+	let searchCriteria = {};
 
 	// registration date range criteria (required)
 	const registrationDateFrom = new Date( query.regDateFrom );
@@ -1940,6 +1940,17 @@ exports.getFamilyStagesData = ( req, res, next ) => {
 	// family status criteria (multiple)
 	if ( Array.isArray( query[ 'family-status' ] ) && query[ 'family-status' ].length > 0 ) {
 		searchCriteria[ 'registeredWithMARE.status' ] = { $in: query[ 'family-status' ] };
+	}
+
+	// if the search type is 'any', change root of query to an $or statement so that if a record matches any of the 
+	// search criteria it will be returned
+	if ( query.searchType === 'any' ) {
+		searchCriteria = Object.keys( searchCriteria ).reduce( ( _searchCriteria, currentCriterion ) => {
+			_searchCriteria.$or.push({
+				[ currentCriterion ]: searchCriteria[ currentCriterion ]
+			});
+			return _searchCriteria;
+		}, { $or: [] } );
 	}
 	
 	// get the families that match the specified date range and criteria
