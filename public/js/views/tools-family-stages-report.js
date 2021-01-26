@@ -9,7 +9,8 @@
 		events: {
 			'click .family-stages-fiscal-year-button' 	: 'handleFiscalYearClick',
 			'click .family-stages-search-button' 		: 'handleSearchClick',
-			'click .family-stages-search-reset-button'	: 'handleResetClick'
+			'click .family-stages-search-reset-button'	: 'handleResetClick',
+			'click .family-stages-export-xlsx-button'	: 'handleXlsxExportClick'
 		},
 
 		/* initialize the view */
@@ -175,6 +176,14 @@
 			var $dateRangeInputData = this.$el.find( '[name="registration-date-range"]' ).data( 'daterangepicker' );
 			$dateRangeInputData.setStartDate( moment( $( event.target ).data( 'yearStart' ) ) );
 			$dateRangeInputData.setEndDate( moment( $( event.target ).data( 'yearEnd' ) ) );
+		},
+
+		handleXlsxExportClick: function() {
+			var table = this.$el.find( '.results-table' ),
+				wb = XLSX.utils.table_to_book( table[ 0 ] );
+				
+			// convert HTML table to XLSX file
+			XLSX.writeFile( wb, table.data( 'filename' ) );
 		},
 
 		/* render the view onto the page */

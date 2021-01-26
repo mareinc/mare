@@ -1807,7 +1807,6 @@ exports.getFamilyStagesData = ( req, res, next ) => {
 	
 	// get the query from the request object
 	const query = req.query;
-	console.log(query);
 
 	// create the search criteria
 	let searchCriteria = {};
@@ -2024,7 +2023,7 @@ exports.getFamilyStagesData = ( req, res, next ) => {
 				isActive: familyDoc.isActive,
 				initialContactDate: utilsService.verifyAndFormatDate( familyDoc.initialContact ),
 				homestudyVerifiedDate: utilsService.verifyAndFormatDate( familyDoc.permissions.homestudyVerifiedDate ),
-				infoPacketSentDate: utilsService.verifyAndFormatDate( familyDoc.infoPacket.date ),
+				infoPacketSentDate: utilsService.verifyAndFormatDate( familyDoc.infoPacket && familyDoc.infoPacket.date ),
 				gatheringInformationDate: utilsService.verifyAndFormatDate( familyDoc.stages.gatheringInformation.date ),
 				lookingForAgencyDate: utilsService.verifyAndFormatDate( familyDoc.stages.lookingForAgency.date ),
 				workingWithAgencyDate: utilsService.verifyAndFormatDate( familyDoc.stages.workingWithAgency.date ),

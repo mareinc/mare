@@ -247,6 +247,92 @@
             {{!-- Results table for site display --}}            
             <table id="family-stages-results" class="stripe" width="100%"></table>
 
+            {{!-- Results table for Excel export (hidden) --}}
+            <table width="100%" class="results-table hidden" data-filename="FamilyStagesReportExport.xlsx">
+                <tr>
+                    <th>Reg #</th>
+                    <th>Email</th>
+                    <th>Contact 1 First Name</th>
+                    <th>Contact 1 Last Name</th>
+                    <th>Contact 2 First Name</th>
+                    <th>Contact 2 Last Name</th>
+                    <th>Most Recent Stage</th>
+                    <th>Region</th>
+                    <th>State</th>
+                    <th>Family Constellation</th>
+                    <th>Contact 1 Gender</th>
+                    <th>Contact 2 Gender</th>
+                    <th>Contact 1 Race(s)</th>
+                    <th>Contact 2 Race(s)</th>
+                    <th>Contact 1 Email Address</th>
+                    <th>Contact 2 Email Address</th>
+                    <th>Social Worker</th>
+                    <th>Social Worker Agency</th>
+                    <th>Social Worker Region</th>
+                    <th>Language</th>
+                    <th>Other Language(s)</th>
+                    <th>Num Children in Family</th>
+                    <th>Num Adults in Home</th>
+                    <th>Heard About MARE From</th>
+                    <th>Family Services</th>
+                    <th>Homestudy Verified</th>
+                    <th>Active DB Account</th>
+                    <th>Initial Contact Date</th>
+                    <th>Homestudy Verified Date</th>
+                    <th>Info Packet Sent Date</th>
+                    <th>Gathering Information Date</th>
+                    <th>Looking For Agency Date</th>
+                    <th>Working With Agency Date</th>
+                    <th>MAPP Training Completed Date</th>
+                    <th>Homestudy Completed Date</th>
+                    <th>Online Matching Date</th>
+                    <th>Registered With MARE Date</th>
+                    <th>Family Profile Created Date</th>
+                    <th>Closed Date</th>
+                </tr>
+                \{{#each results as |result|}}
+                    <tr>
+                        <td>\{{ result.registrationNumber }}</td>
+                        <td>\{{ result.email }}</td>
+                        <td>\{{ result.contact1.firstName }}</td>
+                        <td>\{{ result.contact1.lastName }}</td>
+                        <td>\{{ result.contact2.firstName }}</td>
+                        <td>\{{ result.contact2.lastName }}</td>
+                        <td>\{{ result.currentStage.websiteDisplay }}</td>
+                        <td>\{{ result.region }}</td>
+                        <td>\{{ result.state }}</td>
+                        <td>\{{ result.constellation }}</td>
+                        <td>\{{ result.contact1.gender }}</td>
+                        <td>\{{ result.contact2.gender }}</td>
+                        <td>\{{ result.contact1.race }}</td>
+                        <td>\{{ result.contact2.race }}</td>
+                        <td>\{{ result.contact1.email }}</td>
+                        <td>\{{ result.contact2.email }}</td>
+                        <td>\{{ result.socialWorker }}</td>
+                        <td>\{{ result.socialWorkerAgency }}</td>
+                        <td>\{{ result.socialWorkerAgencyRegion }}</td>
+                        <td>\{{ result.language }}</td>
+                        <td>\{{ result.otherLanguages }}</td>
+                        <td>\{{ result.numberOfChildren }}</td>
+                        <td>\{{ result.numberOfAdults }}</td>
+                        <td>\{{ result.heardAboutMAREFrom }}</td>
+                        <td>\{{ result.services }}</td>
+                        <td>\{{ result.isHomestudyVerified }}</td>
+                        <td>\{{ result.initialContactDate }}</td>
+                        <td>\{{ result.homestudyVerifiedDate }}</td>
+                        <td>\{{ result.infoPacketSentDate }}</td>
+                        <td>\{{ result.gatheringInformationDate }}</td>
+                        <td>\{{ result.lookingForAgencyDate }}</td>
+                        <td>\{{ result.workingWithAgencyDate }}</td>
+                        <td>\{{ result.mappTrainingCompletedDate }}</td>
+                        <td>\{{ result.homestudyCompletedDate }}</td>
+                        <td>\{{ result.onlineMatchingDate }}</td>
+                        <td>\{{ result.registeredWithMAREDate }}</td>
+                        <td>\{{ result.familyProfileCreatedDate }}</td>
+                        <td>\{{ result.closedDate }}</td>
+                    </tr>
+                \{{/each}}
+            </table>
         \{{/if}}
     </div>
 
