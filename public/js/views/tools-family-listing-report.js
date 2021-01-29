@@ -55,7 +55,7 @@
 				ranges: {
 					'Last 30 Days': [ moment().subtract( 29, 'days' ), moment() ],
 					'Year to Date': [ moment().startOf( 'year' ), moment() ],
-					'All Time': [ moment( '2000-01-01' ), moment() ]
+					'All Time': [ moment( '1995-01-01' ), moment() ]
 				}
 			});
 
