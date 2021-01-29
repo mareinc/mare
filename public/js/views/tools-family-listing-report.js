@@ -86,7 +86,11 @@
 			
 			this.$el.find( '.family-services-select' ).select2({
 				placeholder: 'All Services'
-            });
+			});
+			
+			this.$el.find( '.family-status-select' ).select2({
+				placeholder: 'All Statuses'
+			});
 
 			this.$el.find( '.social-worker-select' ).select2({
 				placeholder: 'All Social Workers',

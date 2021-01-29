@@ -38,26 +38,6 @@
                 <div class="col-6">
                     <div class="row form-group">
                         <div class="col-sm-12 col-md-4 text-sm-right">
-                            <label class="bold" for="homestudyVerified">Homestudy Verified (Can See All Children)</label>
-                        </div>
-                        <div class="col-sm-12 col-md-8">
-                            <input id="homestudyVerified" type="checkbox" name="homestudyVerified">
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6">
-                    <div class="row form-group">
-                        <div class="col-sm-12 col-md-4 text-sm-right">
-                            <label class="bold" for="hasActiveAccount">Has Active Database Account</label>
-                        </div>
-                        <div class="col-sm-12 col-md-8">
-                            <input id="hasActiveAccount" type="checkbox" name="hasActiveAccount">
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6">
-                    <div class="row form-group">
-                        <div class="col-sm-12 col-md-4 text-sm-right">
                             <label for="current-stage" class="bold">Current Stage:</label>
                         </div>
                         <div class="col-sm-12 col-md-8">
@@ -219,6 +199,30 @@
                             <select id="family-services" name="family-services[]" class="form-control family-services-select" multiple>
                                 {{#each familyServices as |service|}}
                                     <option value="{{ service.path }}">{{ service.label }}</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right">
+                            <label class="bold" for="homestudyVerified">Homestudy Verified (Can See All Children)</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                            <input id="homestudyVerified" type="checkbox" name="homestudyVerified">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row form-group">
+                        <div class="col-sm-12 col-md-4 text-sm-right">
+                            <label for="family-region" class="bold">Family Status</label>
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                            <select id="family-status" name="family-status[]" class="form-control family-status-select" multiple>
+                                {{#each familyStatuses as |status|}}
+                                    <option value="{{ status.id }}">{{ status.familyStatus }}</option>
                                 {{/each}}
                             </select>
                         </div>

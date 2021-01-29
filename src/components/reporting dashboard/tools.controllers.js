@@ -1603,11 +1603,6 @@ exports.getFamilyListingData = ( req, res, next ) => {
 		searchCriteria['permissions.isHomestudyVerified'] = true;
 	}
 
-	// family has an active database account
-	if ( !!query.hasActiveAccount ) {
-		searchCriteria.isActive = true;
-	}
-
 	// family's current stage
 	if ( query[ 'current-stage' ] ) {
 		// the value of the current stage is the path to the checkbox (bool) field on the family model
@@ -1671,6 +1666,11 @@ exports.getFamilyListingData = ( req, res, next ) => {
 		for ( const service of query[ 'family-services' ] ) {
 			searchCriteria[ '$or' ].push({ [service]: true });
 		}
+	}
+
+	// family status criteria (multiple)
+	if ( Array.isArray( query[ 'family-status' ] ) && query[ 'family-status' ].length > 0 ) {
+		searchCriteria[ 'registeredWithMARE.status' ] = { $in: query[ 'family-status' ] };
 	}
 
 	Promise.all([
