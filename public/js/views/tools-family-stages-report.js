@@ -9,7 +9,8 @@
 		events: {
 			'click .family-stages-search-button' 		: 'handleSearchClick',
 			'click .family-stages-search-reset-button'	: 'handleResetClick',
-			'click .family-stages-export-xlsx-button'	: 'handleXlsxExportClick'
+			'click .family-stages-export-xlsx-button'	: 'handleXlsxExportClick',
+			'change input[name="searchType"]'			: 'handleSearchTypeChange'
 		},
 
 		/* initialize the view */
@@ -44,10 +45,19 @@
 			}
 
 			// initialize all date search fields
+			var searchType = params && params.searchType;
 			this.$el.find( '.reporting-date-search-field' ).each( function() {
+
+				var $dateSearchField = $( this );
+				
+				// set visibility of required field based on search type
+				if ( searchType !== 'any' ) {
+					$dateSearchField.find( '.date-required' ).hide();
+				}
+
 				// check for a pre-existing value from a previous search
-				var preExistingValue = params && params[ $( this ).find( '.date-range-picker' ).attr( 'name' ) ];
-				view.initializeDateSearchField( $( this ), moment( defaultFromDate ), moment( defaultToDate ), preExistingValue );
+				var preExistingValue = params && params[ $dateSearchField.find( '.date-range-picker' ).attr( 'name' ) ];
+				view.initializeDateSearchField( $dateSearchField, moment( defaultFromDate ), moment( defaultToDate ), preExistingValue );
 			});
 
 			// initialize select inputs
@@ -73,13 +83,14 @@
 			$dateSearchTypeField.change( function() {
 				
 				var searchType = $( this ).val();
+				var $datePickerContainer = $el.find( '.date-range-picker-container' );
 				var $datePicker = $el.find( '.date-range-picker' );
 				
 				// update date picker visiblity and configuration
 				switch ( searchType ) {
 					case 'ignore':
 						// hide the date picker
-						$datePicker.hide();
+						$datePickerContainer.hide();
 						break;
 					case 'before':
 					case 'after':
@@ -91,7 +102,7 @@
 							minYear: 1995,
 							maxYear: parseInt( moment().format( 'YYYY' ), 10 )
 						});
-						$datePicker.show();
+						$datePickerContainer.show();
 						break;
 					case 'between':
 						// show the picker, configure as a date range
@@ -110,7 +121,7 @@
 								'All Time': [ moment( '1995-01-01' ), moment() ]
 							}
 						});
-						$datePicker.show();
+						$datePickerContainer.show();
 						break;
 					default:
 						
@@ -153,6 +164,20 @@
 				
 			// convert HTML table to XLSX file
 			XLSX.writeFile( wb, table.data( 'filename' ) );
+		},
+
+		handleSearchTypeChange: function( event ) {
+			
+			var searchType = $( event.currentTarget ).val();
+
+			// searchType is 'all'
+			if ( searchType === 'all' ) {
+				this.$el.find( '.date-required' ).hide();
+
+			// searchType is 'any'
+			} else {
+				this.$el.find( '.date-required' ).show();
+			}
 		},
 
 		/* render the view onto the page */
