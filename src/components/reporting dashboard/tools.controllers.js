@@ -1811,10 +1811,15 @@ exports.getFamilyStagesData = ( req, res, next ) => {
 	// create the search criteria
 	let searchCriteria = {};
 
-	// registration date range criteria (required)
-	const registrationDateFrom = new Date( query.regDateFrom );
-	const registrationDateTo = new Date( query.regDateTo );
-	searchCriteria.initialContact = { $gte: registrationDateFrom, $lte: registrationDateTo };
+	// initial contact date queries
+	if ( query.initialContactDateType ) {
+		utilsService.generateConfigurableDateFieldQuery(
+			query.initialContactDateType,
+			query.initialContactDateValue,
+			'initialContact',
+			searchCriteria
+		);
+	}
 
 	// homestudy verified date queries
 	if ( query.homestudyVerifiedDateType ) {

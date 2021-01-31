@@ -24,7 +24,7 @@
 			'family-listing-report/:regDateFrom/:regDateTo/(?*queryString)'
 																	: 'loadFamilyListingReport',
 			'family-stages-report'									: 'loadFamilyStagesReport',
-			'family-stages-report/:regDateFrom/:regDateTo/(?*queryString)'
+			'family-stages-report/(?*queryString)'
 																	: 'loadFamilyStagesReport',
 			'*other'												: 'loadDefault'
 		},
@@ -77,8 +77,8 @@
 			mare.views.tools.showFamilyListingReport( regDateFrom, regDateTo, this.parseQueryString( queryString ) );
 		},
 
-		loadFamilyStagesReport: function( regDateFrom, regDateTo, queryString ) {
-			mare.views.tools.showFamilyStagesReport( regDateFrom, regDateTo, this.parseQueryString( queryString ) );
+		loadFamilyStagesReport: function( queryString ) {
+			mare.views.tools.showFamilyStagesReport( this.parseQueryString( queryString ) );
 		},
 		
 		loadDefault: function() {

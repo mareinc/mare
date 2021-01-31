@@ -169,10 +169,10 @@
 			this.closeSideNav();
 		},
 
-		showFamilyStagesReport: function( regDateFrom, regDateTo, params ) {
+		showFamilyStagesReport: function( params ) {
 			// destroy existing table
 			this.destroyTable();
-			mare.views.familyStagesReport.render( regDateFrom, regDateTo, params );
+			mare.views.familyStagesReport.render( params );
 			// update the body class to indicate what screen this is
 			this.$el.attr( 'class', 'tools__family-stages-report' );
 			// initialize the side nav

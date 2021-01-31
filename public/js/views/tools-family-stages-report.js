@@ -7,7 +7,6 @@
 
 		// bind standard events to functions within the view
 		events: {
-			'click .family-stages-fiscal-year-button' 	: 'handleFiscalYearClick',
 			'click .family-stages-search-button' 		: 'handleSearchClick',
 			'click .family-stages-search-reset-button'	: 'handleResetClick',
 			'click .family-stages-export-xlsx-button'	: 'handleXlsxExportClick'
@@ -21,7 +20,7 @@
 			this.template = Handlebars.compile( templateHtml );
         },
         
-        initializeSearchForm: function( regDateFrom, regDateTo, params ) {
+        initializeSearchForm: function( defaultFromDate, defaultToDate, params ) {
 
 			var view = this;
 
@@ -44,27 +43,11 @@
 				}
 			}
 
-			// initialize the registration date range picker
-			this.$el.find( '[name="registration-date-range"]' ).daterangepicker({
-				startDate: moment( regDateFrom ),
-    			endDate: moment( regDateTo ),
-				alwaysShowCalendars: true,
-				showDropdowns: true,
-				linkedCalendars: false,
-				minYear: 1995,
-				maxYear: parseInt( moment().format( 'YYYY' ), 10 ),
-				ranges: {
-					'Last 30 Days': [ moment().subtract( 29, 'days' ), moment() ],
-					'Year to Date': [ moment().startOf( 'year' ), moment() ],
-					'All Time': [ moment( '2000-01-01' ), moment() ]
-				}
-			});
-
 			// initialize all date search fields
 			this.$el.find( '.reporting-date-search-field' ).each( function() {
 				// check for a pre-existing value from a previous search
 				var preExistingValue = params && params[ $( this ).find( '.date-range-picker' ).attr( 'name' ) ];
-				view.initializeDateSearchField( $( this ), moment( regDateFrom ), moment( regDateTo ), preExistingValue );
+				view.initializeDateSearchField( $( this ), moment( defaultFromDate ), moment( defaultToDate ), preExistingValue );
 			});
 
 			// initialize select inputs
@@ -140,26 +123,21 @@
 
 		handleSearchClick: function() {
 
-			// get the registration date range for the child stages search
-			var $dateRangeInputData = this.$el.find( '[name="registration-date-range"]' ).data( 'daterangepicker' );
-			var registrationDateFrom = $dateRangeInputData.startDate.format( 'YYYY-MM-DD' );
-			var registrationDateTo = $dateRangeInputData.endDate.format( 'YYYY-MM-DD' );
-
 			// collect all values of the form
 			var params = this.$el.find( 'form' ).serializeArray();
 			
 			// remove empty values and ignore date range values
-			params = _.filter( params, function( value ) {
-				return value && value.value && value.value.length > 0 && value.name !== 'registration-date-range';
+			params = _.filter( params, function( param ) {
+				return param && param.value && param.value.length > 0 && param.value !== 'ignore';
 			});
 
 			// build the query string
-			var queryString = jQuery.param( params );
+			// if the query string only includes a single param (searchType) ignore it
+			var queryString = jQuery.param( params.length === 1 && params[0].name === 'searchType' ? [] : params );
 
 			// perform the search
 			mare.routers.tools.navigate(
 				'family-stages-report/' + 
-				registrationDateFrom + '/' + registrationDateTo + '/' +
 				( queryString.length > 0 ? '?' + queryString : '' ), 
 				{ trigger: true }
 			);
@@ -167,15 +145,6 @@
 
 		handleResetClick: function() {
 			mare.routers.tools.navigate( 'family-stages-report', { trigger: true } );
-		},
-
-		handleFiscalYearClick: function( event ) {
-			event.preventDefault();
-
-			// set the registration date range
-			var $dateRangeInputData = this.$el.find( '[name="registration-date-range"]' ).data( 'daterangepicker' );
-			$dateRangeInputData.setStartDate( moment( $( event.target ).data( 'yearStart' ) ) );
-			$dateRangeInputData.setEndDate( moment( $( event.target ).data( 'yearEnd' ) ) );
 		},
 
 		handleXlsxExportClick: function() {
@@ -187,33 +156,34 @@
 		},
 
 		/* render the view onto the page */
-		render: function render( regDateFrom, regDateTo, params ) {
+		render: function render( params ) {
 			
-            var view = this;
+			var view = this;
+			var defaultFromDate = view.$el.find( '#defaultFromDate' ).val();
+			var defaultToDate = view.$el.find( '#defaultToDate' ).val();
 
-			// if the date ranges are not passed in, initialize the form using the default date ranges
-			if ( !regDateFrom || !regDateTo ) {
+			// if there are no params defined, initialize the default search form
+			if ( Object.keys( params ).length === 0 ) {
 
 				view.$el.html( view.template() );
-				var defaultFromDate = view.$el.find( '#defaultFromDate' ).val();
-				var defaultToDate = view.$el.find( '#defaultToDate' ).val();
 				view.initializeSearchForm( defaultFromDate, defaultToDate  );
 
-			// otherwise, set the date ranges using the route params and perform a search using the query params
+			// otherwise perform a search using the query params
 			} else {
+
 				// render the view while the results are being loaded
 				view.$el.html( view.template({
 					waitingForResults: true
 				}));
-				view.initializeSearchForm( regDateFrom, regDateTo, params );
+				view.initializeSearchForm( defaultFromDate, defaultToDate, params );
 
 				// search for families using the date range and query params
-				view.getFamilyStagesData( regDateFrom, regDateTo, params )
+				view.getFamilyStagesData( params )
 					.done( function( data ) {
 						
 						// render the view with the search results
 						view.$el.html( view.template( data ) );
-						view.initializeSearchForm( regDateFrom, regDateTo, params );
+						view.initializeSearchForm( defaultFromDate, defaultToDate, params );
 
 						// initialize a DataTable (https://datatables.net/) with the inquiry results
 						// save a reference to the table so it can be destroyed when the view changes
@@ -287,17 +257,13 @@
 			{ title: 'Closed Date', data: 'closedDate', defaultContent: '--' }
 		],
 
-		getFamilyStagesData: function( regDateFrom, regDateTo, params ) {
-
-			var queryParams = params;
-			queryParams.regDateFrom = regDateFrom;
-			queryParams.regDateTo = regDateTo;
+		getFamilyStagesData: function( params ) {
 			
 			return $.Deferred( function( defer ) {
 				$.ajax({
 					dataType: 'json',
 					url: '/tools/services/get-family-stages-data',
-					data: queryParams,
+					data: params,
 					type: 'GET'
 				})
 				.done( function( data ) {
