@@ -1810,6 +1810,8 @@ exports.getFamilyStagesData = ( req, res, next ) => {
 
 	// create the search criteria
 	let searchCriteria = {};
+	// create a list of required criteria
+	let requiredSearchCriteria = {};
 
 	// initial contact date queries
 	if ( query.initialContactDateType ) {
@@ -1819,6 +1821,7 @@ exports.getFamilyStagesData = ( req, res, next ) => {
 			'initialContact',
 			searchCriteria
 		);
+		requiredSearchCriteria[ 'initialContact' ] = !!query.initialContactDateRequired;
 	}
 
 	// homestudy verified date queries
@@ -1829,6 +1832,7 @@ exports.getFamilyStagesData = ( req, res, next ) => {
 			'permissions.homestudyVerifiedDate',
 			searchCriteria
 		);
+		requiredSearchCriteria[ 'permissions.homestudyVerifiedDate' ] = !!query.homestudyVerifiedDateRequired;
 	}
 
 	// info packet date queries
@@ -1839,6 +1843,7 @@ exports.getFamilyStagesData = ( req, res, next ) => {
 			'infoPacket.date',
 			searchCriteria
 		);
+		requiredSearchCriteria[ 'infoPacket.date' ] = !!query.infoPacketSentDateRequired;
 	}
 
 	// gathering information date queries
@@ -1849,6 +1854,7 @@ exports.getFamilyStagesData = ( req, res, next ) => {
 			'stages.gatheringInformation.date',
 			searchCriteria
 		);
+		requiredSearchCriteria[ 'stages.gatheringInformation.date' ] = !!query.gatheringInformationDateRequired;
 	}
 
 	// looking for agency date queries
@@ -1859,6 +1865,7 @@ exports.getFamilyStagesData = ( req, res, next ) => {
 			'stages.lookingForAgency.date',
 			searchCriteria
 		);
+		requiredSearchCriteria[ 'stages.lookingForAgency.date' ] = !!query.lookingForAgencyDateRequired;
 	}
 
 	// working with agency date queries
@@ -1869,6 +1876,7 @@ exports.getFamilyStagesData = ( req, res, next ) => {
 			'stages.workingWithAgency.date',
 			searchCriteria
 		);
+		requiredSearchCriteria[ 'stages.workingWithAgency.date' ] = !!query.workingWithAgencyDateRequired;
 	}
 
 	// MAPP training complete date queries
@@ -1879,6 +1887,7 @@ exports.getFamilyStagesData = ( req, res, next ) => {
 			'stages.MAPPTrainingCompleted.date',
 			searchCriteria
 		);
+		requiredSearchCriteria[ 'stages.MAPPTrainingCompleted.date' ] = !!query.mappTrainingCompletedDateRequired;
 	}
 
 	// homestudy completed date queries
@@ -1889,6 +1898,7 @@ exports.getFamilyStagesData = ( req, res, next ) => {
 			'homestudy.initialDate',
 			searchCriteria
 		);
+		requiredSearchCriteria[ 'homestudy.initialDate' ] = !!query.homestudyCompletedDateRequired;
 	}
 
 	// online matching date queries
@@ -1899,6 +1909,7 @@ exports.getFamilyStagesData = ( req, res, next ) => {
 			'onlineMatching.date',
 			searchCriteria
 		);
+		requiredSearchCriteria[ 'onlineMatching.date' ] = !!query.onlineMatchingDateRequired;
 	}
 
 	// registered with MARE date queries
@@ -1909,6 +1920,7 @@ exports.getFamilyStagesData = ( req, res, next ) => {
 			'registeredWithMARE.date',
 			searchCriteria
 		);
+		requiredSearchCriteria[ 'registeredWithMARE.date' ] = !!query.registeredWithMAREDateRequired;
 	}
 
 	// family profile created date queries
@@ -1919,6 +1931,7 @@ exports.getFamilyStagesData = ( req, res, next ) => {
 			'familyProfile.date',
 			searchCriteria
 		);
+		requiredSearchCriteria[ 'familyProfile.date' ] = !!query.familyProfileCreatedDateRequired;
 	}
 
 	// closed date queries
@@ -1929,6 +1942,7 @@ exports.getFamilyStagesData = ( req, res, next ) => {
 			'closed.date',
 			searchCriteria
 		);
+		requiredSearchCriteria[ 'closed.date' ] = !!query.closedDateRequired;
 	}
 
 	// family region criteria (multiple)
@@ -1949,12 +1963,22 @@ exports.getFamilyStagesData = ( req, res, next ) => {
 	// if the search type is 'any', change root of query to an $or statement so that if a record matches any of the 
 	// search criteria it will be returned
 	if ( query.searchType === 'any' ) {
-		searchCriteria = Object.keys( searchCriteria ).reduce( ( _searchCriteria, currentCriterion ) => {
-			_searchCriteria.$or.push({
-				[ currentCriterion ]: searchCriteria[ currentCriterion ]
-			});
-			return _searchCriteria;
-		}, { $or: [] } );
+
+		// keep a separate list of criteria required and optional criteria
+		const requiredCriteria = [];
+		const optionalCriteria = [];
+
+		for ( const criterion of Object.keys( searchCriteria ) ) {
+			// determine if criterion is required or optional
+			const criteriaList = requiredSearchCriteria[ criterion ] ? requiredCriteria : optionalCriteria;
+			// add criterion to appropriate list
+			criteriaList.push({ [ criterion ]: searchCriteria[ criterion ] });
+		}
+
+		// if all criteria are required, there's no need to modify the original searchCriteria
+		searchCriteria = optionalCriteria.length > 0
+			? { $and: [ ...requiredCriteria, { $or: optionalCriteria } ] }
+			: searchCriteria;
 	}
 	
 	// get the families that match the specified date range and criteria
