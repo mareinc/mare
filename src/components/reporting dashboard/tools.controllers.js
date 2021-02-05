@@ -1901,17 +1901,6 @@ exports.getFamilyStagesData = ( req, res, next ) => {
 		requiredSearchCriteria[ 'homestudy.initialDate' ] = !!query.homestudyCompletedDateRequired;
 	}
 
-	// online matching date queries
-	if ( query.onlineMatchingDateType ) {
-		utilsService.generateConfigurableDateFieldQuery(
-			query.onlineMatchingDateType,
-			query.onlineMatchingDateValue,
-			'onlineMatching.date',
-			searchCriteria
-		);
-		requiredSearchCriteria[ 'onlineMatching.date' ] = !!query.onlineMatchingDateRequired;
-	}
-
 	// registered with MARE date queries
 	if ( query.registeredWithMAREDateType ) {
 		utilsService.generateConfigurableDateFieldQuery(
