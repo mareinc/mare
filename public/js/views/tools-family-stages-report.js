@@ -45,20 +45,20 @@
 			}
 
 			// initialize all date search fields
-			var searchType = params && params.searchType;
 			this.$el.find( '.reporting-date-search-field' ).each( function() {
 
 				var $dateSearchField = $( this );
-				
-				// set visibility of required field based on search type
-				if ( searchType !== 'any' ) {
-					$dateSearchField.find( '.date-required' ).hide();
-				}
-
 				// check for a pre-existing value from a previous search
 				var preExistingValue = params && params[ $dateSearchField.find( '.date-range-picker' ).attr( 'name' ) ];
 				view.initializeDateSearchField( $dateSearchField, moment( defaultFromDate ), moment( defaultToDate ), preExistingValue );
 			});
+
+			// initialize required checkboxes
+			var searchType = params && params.searchType;
+			// set visibility of required field based on search type
+			if ( searchType !== 'any' ) {
+				this.$el.find( '.field-required' ).hide();
+			}
 
 			// initialize select inputs
 			this.$el.find( '.family-state-select' ).select2({
@@ -172,11 +172,11 @@
 
 			// searchType is 'all'
 			if ( searchType === 'all' ) {
-				this.$el.find( '.date-required' ).hide();
+				this.$el.find( '.field-required' ).hide();
 
 			// searchType is 'any'
 			} else {
-				this.$el.find( '.date-required' ).show();
+				this.$el.find( '.field-required' ).show();
 			}
 		},
 

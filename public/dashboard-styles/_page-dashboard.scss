@@ -140,7 +140,6 @@ $oddBackgroundColor: #f9f9f9;
 .date-range-picker {
 	width: 100%;
 	height: 32px;
-	margin-bottom: 3px;
 	line-height: 32px;
 	padding: 0 5px;
 	border: solid #aaaaaa 1px;
@@ -154,4 +153,8 @@ $oddBackgroundColor: #f9f9f9;
 	.date-search-type-select {
 		margin-bottom: 1rem;
 	}
+}
+
+.field-required {
+	margin-top: 0.25rem;
 }

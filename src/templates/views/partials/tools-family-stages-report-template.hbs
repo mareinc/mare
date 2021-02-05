@@ -126,6 +126,10 @@
                                     <option value="{{ status.id }}">{{ status.familyStatus }}</option>
                                 {{/each}}
                             </select>
+                            <div class="field-required">
+                                <input id="family-status-required" name="family-status-required" class="date-required-checkbox" type="checkbox">
+                                <label for="family-status-required">Required</label>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -160,6 +164,10 @@
                                     <option value="{{ region.id }}">{{ region.region }}</option>
                                 {{/each}}
                             </select>
+                            <div class="field-required">
+                                <input id="family-region-required" name="family-region-required" class="date-required-checkbox" type="checkbox">
+                                <label for="family-region-required">Required</label>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -174,6 +182,10 @@
                                     <option value="{{ state.id }}">{{ state.state }}</option>
                                 {{/each}}
                             </select>
+                            <div class="field-required">
+                                <input id="family-state-required" name="family-state-required" class="date-required-checkbox" type="checkbox">
+                                <label for="family-state-required">Required</label>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -196,7 +208,6 @@
         \{{#if results }}
             <h3>Results: </h3>
             <div class="matching-results-table__button-bar">
-                <button class="button button--teal family-stages-export-pdf-button">PDF Export</button>
                 <button class="button button--teal family-stages-export-xlsx-button">XLSX Export</button>
                 <div class="matching-results-table__record-count">
                     <div class="record-count__label">Total Families:</div>

@@ -1937,16 +1937,19 @@ exports.getFamilyStagesData = ( req, res, next ) => {
 	// family region criteria (multiple)
 	if ( Array.isArray( query[ 'family-region' ] ) && query[ 'family-region' ].length > 0 ) {
 		searchCriteria[ 'address.region' ] = { $in: query[ 'family-region' ] };
+		requiredSearchCriteria[ 'address.region' ] = !!query[ 'family-region-required' ];
 	}
 
 	// family region criteria (multiple)
 	if ( Array.isArray( query[ 'family-state' ] ) && query[ 'family-state' ].length > 0 ) {
 		searchCriteria[ 'address.state' ] = { $in: query[ 'family-state' ] };
+		requiredSearchCriteria[ 'address.state' ] = !!query[ 'family-state-required' ];
 	}
 
 	// family status criteria (multiple)
 	if ( Array.isArray( query[ 'family-status' ] ) && query[ 'family-status' ].length > 0 ) {
 		searchCriteria[ 'registeredWithMARE.status' ] = { $in: query[ 'family-status' ] };
+		requiredSearchCriteria[ 'registeredWithMARE.status' ] = !!query[ 'family-status-required' ];
 	}
 
 	// if the search type is 'any', change root of query to an $or statement so that if a record matches any of the 
