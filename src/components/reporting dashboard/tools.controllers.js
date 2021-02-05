@@ -2050,7 +2050,12 @@ exports.getFamilyStagesData = ( req, res, next ) => {
 				onlineMatchingDate: utilsService.verifyAndFormatDate( familyDoc.onlineMatching.date ),
 				registeredWithMAREDate: utilsService.verifyAndFormatDate( familyDoc.registeredWithMARE.date ),
 				familyProfileCreatedDate: utilsService.verifyAndFormatDate( familyDoc.familyProfile.date ),
-				closedDate: utilsService.verifyAndFormatDate( familyDoc.closed.date )
+				closedDate: utilsService.verifyAndFormatDate( familyDoc.closed.date ),
+				status: familyDoc.registeredWithMARE.registered 
+					? familyDoc.registeredWithMARE.status
+						? familyDoc.registeredWithMARE.status.familyStatus
+						: 'registered (no status)'
+					: 'ungregistered',
 			}));
 
 			res.send({

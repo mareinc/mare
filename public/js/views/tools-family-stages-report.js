@@ -268,6 +268,7 @@
 			{ title: 'Family Services', data: 'services', defaultContent: '--' },
 			{ title: 'Homestudy Verified', data: 'isHomestudyVerified', defaultContent: 'false' },
 			{ title: 'Active DB Account', data: 'isActive', defaultContent: 'false' },
+			{ title: 'Family Status', data: 'status', defaultContent: '--' },
 			{ title: 'Initial Contact Date', data: 'initialContactDate', defaultContent: '--' },
 			{ title: 'Homestudy Verified Date', data: 'homestudyVerifiedDate', defaultContent: '--' },
 			{ title: 'Info Packet Sent Date', data: 'infoPacketSentDate', defaultContent: '--' },
