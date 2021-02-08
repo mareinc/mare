@@ -1962,5 +1962,5 @@ Child.schema.methods.setChangeHistory = function() {
 };
 
 // Define default columns in the admin interface and register the model
-Child.defaultColumns = 'displayNameAndRegistration, race, status, legalStatus, gender';
+Child.defaultColumns = 'displayNameAndRegistration, race, status, legalStatus, gender, adoptionWorker, adoptionWorkerAgencyRegion';
 Child.register();
