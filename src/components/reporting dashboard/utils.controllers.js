@@ -8,13 +8,28 @@ exports.EMOTIONAL_NEEDS_OPTIONS = [ 'none', 'mild', 'moderate', 'severe' ];
 exports.SOCIAL_NEEDS_OPTIONS = [ 'none', 'mild', 'moderate', 'severe' ];
 exports.INQUIRER_OPTIONS = [ 'site visitor', 'family', 'social worker' ];
 exports.INQUIRY_TYPES = [ 'child inquiry', 'complaint', 'family support consultation', 'general inquiry', 'other point of engagement' ];
-exports.PLACEMENT_TYPES = [ 'Placement', 'Match', 'Legalization', 'Disruption' ];
-exports.PLACEMENT_TYPES_TO_DATABASE_LOCATION_DICTIONARY = {
-	Placement: 'placements',
-	Match: 'matches',
-	Disruption: 'disruptions',
-	Legalization: 'legalizations'
-};
+exports.PLACEMENT_TYPES = [{
+	modelName: 'Placement',
+	adminUIPath: 'placements',
+	datePath: 'placementDate'
+}, {
+	modelName: 'Match',
+	adminUIPath: 'matches',
+	datePath: 'matchDate'
+}, {
+	modelName: 'Legalization',
+	adminUIPath: 'legalizations',
+	datePath: 'legalizationDate'
+}, {
+	modelName: 'Disruption',
+	adminUIPath: 'disruptions',
+	datePath: 'disruptionDate'
+}, {
+	modelName: 'Weekend Family Connection',
+	adminUIPath: 'weekend-family-connections',
+	datePath: 'wfcDate'
+}];
+
 exports.DATE_QUERY_TYPES = {
 	IGNORE: 'ignore',
 	BEFORE: 'before',

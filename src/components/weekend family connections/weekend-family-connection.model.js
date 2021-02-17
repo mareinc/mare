@@ -16,13 +16,47 @@ WeekendFamilyConnection.add( 'Weekend Family Connection', {
 
 }, 'Child', {
 
-	child: { type: Types.Relationship, label: 'child', ref: 'Child', initial: true, required: true }
+	child: { type: Types.Relationship, label: 'child', ref: 'Child', initial: true, required: true },
+	
+	// these props are a shim to allow WFC to be compatible with Placement Reporting
+	childDetails: {
+    	firstName: { type: Types.Text, label: 'first name', default: 'shim', hidden: true },
+		lastName: { type: Types.Text, label: 'last name', hidden: true },
+		status: { type: Types.Relationship, label: 'status', ref: 'Child Status', hidden: true }
+	}
 
 }, 'Family', {
 
 	family: { type: Types.Relationship, label: 'family', ref: 'Family', initial: true },
-	familyAgency: { type: Types.Relationship, label: `family's agency`, ref: 'Agency', note: 'this will be populated automatically from the family record on save', noedit: true }
+	familyAgency: { type: Types.Relationship, label: `family's agency`, ref: 'Agency', note: 'this will be populated automatically from the family record on save', noedit: true },
 
+	// these props are a shim to allow WFC to be compatible with Placement Reporting
+	familyDetails: {
+		name: { type: Types.Text, label: 'family name', default: 'shim', hidden: true },
+
+		agency: { type: Types.Relationship, label: `family's agency`, ref: 'Agency', hidden: true },
+		constellation: { type: Types.Relationship, label: 'constellation', ref: 'Family Constellation', hidden: true },
+		race: { type: Types.Relationship, label: 'race', ref: 'Race', hidden: true },
+
+		address: {
+			street1: { type: Types.Text, label: 'address Line 1', hidden: true },
+			street2: { type: Types.Text, label: 'address Line 2', hidden: true },
+			city: { type: Types.Text, label: 'city', hidden: true },
+			state: { type: Types.Relationship, label: 'state', ref: 'State', hidden: true },
+			zipCode: { type: Types.Text, label: 'zip code', hidden: true },
+			country: { type: Types.Text, label: 'country', hidden: true },
+			region: { type: Types.Relationship, label: 'region', ref: 'Region', hidden: true }
+		},
+
+		phone: {
+			work: { type: Types.Text, label: 'work phone number', hidden: true },
+			home: { type: Types.Text, label: 'home phone number', hidden: true },
+			mobile: { type: Types.Text, label: 'mobile phone number', hidden: true },
+			preferred: { type: Types.Select, label: 'preferred phone', options: 'work, home, mobile', hidden: true }
+		},
+
+		email: { type: Types.Email, label: 'email address', hidden: true }
+	}
 });
 
 WeekendFamilyConnection.schema.pre( 'save', function( next ) {

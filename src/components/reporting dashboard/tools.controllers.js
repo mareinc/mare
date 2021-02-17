@@ -727,28 +727,25 @@ exports.getPlacementData = ( req, res, next ) => {
 
 	// placement type criteria (multiple)
 	// get the subset of placement types specified in the query, otherwise default to all placement types
-	let placementTypeCriteria = query.placementType || utilsService.PLACEMENT_TYPES;
+	let placementTypeCriteria = query.placementType || utilsService.PLACEMENT_TYPES.map( placementType => placementType.modelName );
 
 	// create queries for each of the different placement types 
 	let placementQueries = utilsService.PLACEMENT_TYPES.map( placementType => {
 
 		// check to ensure the placement type is in the search criteria
-		if ( !placementTypeCriteria.find( placementTypeCriterion => placementTypeCriterion === placementType ) ) {
+		if ( !placementTypeCriteria.find( placementTypeCriterion => placementTypeCriterion === placementType.modelName ) ) {
 			// if not, return an empty array to ensure result concatenation can still occur successfully
 			return [];
 		}
 
-		// get the date field for each placement type model
-		const typeSpecificDateField = `${placementType.toLowerCase()}Date`;
-
 		// add the date range criteria to the search criteria
 		let _searchCriteria = {
-			[typeSpecificDateField]: { $gte: fromDate, $lte: toDate },
+			[ placementType.datePath ]: { $gte: fromDate, $lte: toDate },
 			...searchCriteria
 		};
 
 		// create a query with the search criteria
-		return keystone.list( placementType ).model
+		return keystone.list( placementType.modelName ).model
 			.find( _searchCriteria )
 			.populate( 'source additionalSources familyDetails.agency familyDetails.race familyDetails.familyConstellation familyDetails.address.region' )
 			.populate({
@@ -817,8 +814,8 @@ exports.getPlacementData = ( req, res, next ) => {
 		.then(results => {
 
 			// destructure results
-			// placement type order return order: 'Placement', 'Match', 'Legalization', 'Disruption'
-			let [ sourceDocs, additionalSourceDocs, placementDocs, matchDocs, legalizationDocs, disruptionDocs ] = results;
+			// placement type order return order: 'Placement', 'Match', 'Legalization', 'Disruption', 'Weekend Family Connection'
+			let [ sourceDocs, additionalSourceDocs, placementDocs, matchDocs, legalizationDocs, disruptionDocs, weekendFamilyConnectionDocs ] = results;
 
 			let responseData = {
 				// if there are sources, parse them and add them to the response
@@ -840,12 +837,12 @@ exports.getPlacementData = ( req, res, next ) => {
 			// helper function to map placement data and include type
 			function mapPlacementDataWithPlacementType( placementType, placementData ) {
 				// get the date field for each placement type model
-				const typeSpecificDateField = `${placementType.toLowerCase()}Date`;
+				const typeSpecificDateField = placementType.datePath;
 				// map placement data to results object
 				return placementData.map( placement => ({
 					placementId: placement._id.toString(),
-					placementDatabasePath: utilsService.PLACEMENT_TYPES_TO_DATABASE_LOCATION_DICTIONARY[placementType],
-					placementType,
+					placementDatabasePath: placementType.adminUIPath,
+					placementType: placementType.modelName,
 					placementDate: moment.utc( placement[typeSpecificDateField] ).format( 'MM/DD/YYYY' ),
 					placementDateISO: moment( placement[typeSpecificDateField] ).toISOString(),
 					daysBeforePlacement: placement.child 
@@ -962,10 +959,11 @@ exports.getPlacementData = ( req, res, next ) => {
 			}
 
 			// merge results of different placement types into a single list
-			let mergedResults = mapPlacementDataWithPlacementType( 'Placement', placementDocs ).concat(
-				mapPlacementDataWithPlacementType( 'Match', matchDocs ),
-				mapPlacementDataWithPlacementType( 'Legalization', legalizationDocs ),
-				mapPlacementDataWithPlacementType( 'Disruption', disruptionDocs )
+			let mergedResults = mapPlacementDataWithPlacementType( utilsService.PLACEMENT_TYPES.find( placementType => placementType.modelName === 'Placement' ), placementDocs ).concat(
+				mapPlacementDataWithPlacementType( utilsService.PLACEMENT_TYPES.find( placementType => placementType.modelName === 'Match' ), matchDocs ),
+				mapPlacementDataWithPlacementType( utilsService.PLACEMENT_TYPES.find( placementType => placementType.modelName === 'Legalization' ), legalizationDocs ),
+				mapPlacementDataWithPlacementType( utilsService.PLACEMENT_TYPES.find( placementType => placementType.modelName === 'Disruption' ), disruptionDocs ),
+				mapPlacementDataWithPlacementType( utilsService.PLACEMENT_TYPES.find( placementType => placementType.modelName === 'Weekend Family Connection' ), weekendFamilyConnectionDocs )
 			);
 
 			// if no results were returned, send the 'noResults' flag

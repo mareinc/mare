@@ -40,7 +40,7 @@ exports = module.exports = ( req, res ) => {
 			locals.socialNeeds = utilsService.SOCIAL_NEEDS_OPTIONS;
 			locals.inquirers = utilsService.INQUIRER_OPTIONS;
 			locals.inquiryTypes = utilsService.INQUIRY_TYPES;
-			locals.placementTypes = utilsService.PLACEMENT_TYPES;
+			locals.placementTypes = utilsService.PLACEMENT_TYPES.map( placementType => placementType.modelName );
 			locals.inquiryMethods = inquiryMethods;
 			locals.regions = regions;
 			locals.residences = residences;
