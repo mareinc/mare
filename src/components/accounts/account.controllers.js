@@ -53,10 +53,7 @@ exports.registerUser = ( req, res, next ) => {
 							const verificationCode = utilities.generateAlphanumericHash( 35 );
 							// store the database id of the newly created user
 							const userId = newSiteVisitor.get( '_id' );
-							// store the user type found in the returned model
-							const userType = newSiteVisitor.userType;
 							// store the array of mailing list ids the user has opted into
-							const mailingListIds = user.mailingLists;
 							// set the fields to populate on the fetched user model
 							const fieldsToPopulate = [ 'address.city', 'address.state', 'heardAboutMAREFrom' ];
 							// set default information for a staff email contact in case the real contact info can't be fetched
@@ -65,36 +62,34 @@ exports.registerUser = ( req, res, next ) => {
 								email: 'web@mareinc.org'
 							};
 
-							// fetch the user model.  Needed because the copies we have don't have the Relationship fields populated
-							const fetchUser = userService.getUserByIdNew( { id: userId, targetModel: keystone.list( 'Site Visitor' ), fieldsToPopulate } );
 							// fetch the email target model matching 'site visitor registration'
-							const fetchEmailTarget = listService.getEmailTargetByName( 'site visitor registration' );
-							// add the user to any mailing lists they've opted into
-							const addUserToMailingLists = exports.addToMailingLists( newSiteVisitor, mailingListIds ).catch( err =>  {
-								console.error( `error adding new site visitor ${ newSiteVisitor.get( 'name.full' ) } (${ newSiteVisitor.get( 'email' ) }) to mailing lists` );
-								console.error( err );
-							});
-
-							fetchEmailTarget
+							listService.getEmailTargetByName( 'site visitor registration' )
 								// fetch contact info for the staff contact for 'site visitor registration'
 								.then( emailTarget => staffEmailContactMiddleware.getStaffEmailContactByEmailTarget( emailTarget.get( '_id' ), [ 'staffEmailContact' ] ) )
 								// overwrite the default contact details with the returned object
 								.then( staffEmailContact => staffEmailContactInfo = staffEmailContact.staffEmailContact )
 								// log any errors fetching the staff email contact
 								.catch( err => console.error( `error fetching email contact for site visitor registration, default contact info will be used instead`, err ) )
-								// fetch the user information and whether they were successfully added to each mailing list
-								.then( () => Promise.all( [ fetchUser, addUserToMailingLists ] ) )
-								// send out the new site visitor registered email to MARE
-								.then( values => {
-									// assign local variables to the values returned by the promises
-									const [ newUser, mailingLists ] = values;
-									// fetch the names of the returned mailing lists
-									const mailingListNames = mailingLists ? mailingLists.map( mailingList => mailingList.name ) : ['Error adding user to mailing lists'];
-									// send a notification email to MARE staff to allow them to enter the information in the old system
-									return registrationEmailMiddleware.sendNewSiteVisitorNotificationEmailToMARE( newUser, staffEmailContactInfo, mailingListNames );
+								// fetch the user model.  Needed because the copies we have don't have the Relationship fields populated
+								.then( () => userService.getUserByIdNew( { id: userId, targetModel: keystone.list( 'Site Visitor' ), fieldsToPopulate } ) )
+								// add the user to mailing list and send out the new site visitor registered email to MARE
+								.then( newSiteVisitorDoc => {
+
+										// send a notification email to MARE staff to allow them to enter the information in the old system
+										registrationEmailMiddleware.sendNewSiteVisitorNotificationEmailToMARE( newSiteVisitorDoc, staffEmailContactInfo, [] )
+											.catch( err => {
+												console.error( `error sending new site visitor notification email to MARE contact about ${ newSiteVisitorDoc.get( 'name.full' ) } (${ newSiteVisitorDoc.get( 'email' ) })`, err );
+											});
+										
+										// add the user to the the global mailing list
+										exports.addToMailingLists( newSiteVisitorDoc )
+											.catch( err =>  {
+												console.error( `error adding new site visitor ${ newSiteVisitorDoc.get( 'name.full' ) } (${ newSiteVisitorDoc.get( 'email' ) }) to mailing lists` );
+												console.error( err );
+											});
 								})
-								// if the email couldn't be sent, log the error for debugging purposes
-								.catch( err => console.error( `error sending new site visitor notification email to MARE contact about ${ newSiteVisitor.get( 'name.full' ) } (${ newSiteVisitor.get( 'email' ) })`, err ) );
+								// log any unhandled errors
+								.catch( error => console.error( error ) );
 
 							// create a verification record for the new user and pass control back to the root promise chain
 							return exports.createNewVerificationRecord( verificationCode, userId );
@@ -110,10 +105,6 @@ exports.registerUser = ( req, res, next ) => {
 							const verificationCode = utilities.generateAlphanumericHash( 35 );
 							// store the database id of the newly created user
 							const userId = newSocialWorker.get( '_id' );
-							// store the user type found in the returned model
-							const userType = newSocialWorker.userType;
-							// store the array of mailing list ids the user has opted into
-							const mailingListIds = user.mailingLists;
 							// set the fields to populate on the fetched user model
 							const fieldsToPopulate = [ 'address.city', 'address.state', 'positions' ];
 							// set default information for a staff email contact in case the real contact info can't be fetched
@@ -122,37 +113,35 @@ exports.registerUser = ( req, res, next ) => {
 								email: 'web@mareinc.org'
 							};
 
-							// fetch the user model.  Needed because the copies we have don't have the Relationship fields populated
-							const fetchUser = userService.getUserByIdNew( { id: userId, targetModel: keystone.list( 'Social Worker' ), fieldsToPopulate } );
 							// fetch the email target model matching 'social worker registration'
-							const fetchEmailTarget = listService.getEmailTargetByName( 'social worker registration' );
-							// add the user to any mailing lists they've opted into
-							const addUserToMailingLists = exports.addToMailingLists( newSocialWorker, mailingListIds ).catch( err =>  {
-								console.error( `error adding new social worker ${ newSocialWorker.get( 'name.full' ) } (${ newSocialWorker.get( 'email' ) }) to mailing lists` );
-								console.error( err );
-							});
-
-							fetchEmailTarget
+							listService.getEmailTargetByName( 'social worker registration' )
 								// fetch contact info for the staff contact for 'social worker registration'
 								.then( emailTarget => staffEmailContactMiddleware.getStaffEmailContactByEmailTarget( emailTarget.get( '_id' ), [ 'staffEmailContact' ] ) )
 								// overwrite the default contact details with the returned object
 								.then( staffEmailContact => staffEmailContactInfo = staffEmailContact.staffEmailContact )
 								// log any errors fetching the staff email contact
 								.catch( err => console.error( `error fetching email contact for social worker registration, default contact info will be used instead`, err ) )
-								// fetch the user information and whether they were successfully added to each mailing list
-								.then( () => Promise.all( [ fetchUser, addUserToMailingLists ] ) )
-								// send out the new social worker registered email to MARE
-								.then( values => {
-									// assign local variables to the values returned by the promises
-									const [ newUser, mailingLists ] = values;
-									// fetch the names of the returned mailing lists
-									const mailingListNames = mailingLists ? mailingLists.map( mailingList => mailingList.name ) : ['Error adding user to mailing lists'];
+								// fetch the user model.  Needed because the copies we have don't have the Relationship fields populated
+								.then( () => userService.getUserByIdNew( { id: userId, targetModel: keystone.list( 'Social Worker' ), fieldsToPopulate } ) )
+								// add the user to mailing list and send out the new social worker registered email to MARE
+								.then( newSocialWorkerDoc => {
+
 									// send a notification email to MARE staff to allow them to enter the information in the old system
-									return registrationEmailMiddleware.sendNewSocialWorkerNotificationEmailToMARE( newUser, staffEmailContactInfo, mailingListNames );
+									registrationEmailMiddleware.sendNewSocialWorkerNotificationEmailToMARE( newSocialWorkerDoc, staffEmailContactInfo, [] )
+										.catch( err => {
+											// if the email couldn't be sent, log the error for debugging purposes
+											console.error( `error sending new social worker notification email to MARE contact for ${ newSocialWorkerDoc.get( 'name.full' ) } (${ newSocialWorkerDoc.get( 'email' ) })`, err );
+										});
+
+									// add the user to the the global mailing list
+									exports.addToMailingLists( newSocialWorkerDoc )
+										.catch( err =>  {
+											console.error( `error adding new social worker ${ newSocialWorkerDoc.get( 'name.full' ) } (${ newSocialWorkerDoc.get( 'email' ) }) to mailing lists` );
+											console.error( err );
+										});
 								})
-								// if the email couldn't be sent, log the error for debugging purposes
-								.catch( err => console.error( `error sending new social worker notification email to MARE contact for ${ newSocialWorker.get( 'name.full' ) } (${ newSocialWorker.get( 'email' ) })`, err ) );
-								
+								// log any unhandled errors
+								.catch( error => console.error( error ) );
 
 							// create a verification record for the new user and pass control back to the root promise chain
 							return exports.createNewVerificationRecord( verificationCode, userId );
@@ -171,9 +160,6 @@ exports.registerUser = ( req, res, next ) => {
 							// store the database id of the newly created user
 							const userId = newFamily.get( '_id' );
 							// store the user type found in the returned model
-							const userType = newFamily.userType;
-							// store the array of mailing list ids the user has opted into
-							const mailingListIds = user.mailingLists;
 							// set the fields to populate on the fetched user model
 							const fieldsToPopulate = [ 'contact1.gender', 'contact1.race', 'contact2.gender',
 													   'contact2.race', 'address.city', 'address.region', 'address.state',
@@ -190,39 +176,39 @@ exports.registerUser = ( req, res, next ) => {
 								email: 'web@mareinc.org'
 							};
 
-							// fetch the user model.  Needed because the copies we have don't have the Relationship fields populated
-							const fetchUser = userService.getUserByIdNew( { id: userId, targetModel: keystone.list( 'Family' ), fieldsToPopulate } );
-							// fetch the email target model matching 'family registration'
-							const fetchEmailTarget = listService.getEmailTargetByName( 'family registration' );					
-							// add the user to any mailing lists they've opted into
-							const addUserToMailingLists = exports.addToMailingLists( newFamily, mailingListIds ).catch( err =>  {
-								console.error( `error adding new family ${ newFamily.get( 'displayName' ) } (${ newFamily.get( 'email' ) }) to mailing lists`, err );
-								console.error( err );
-							});
 							// save any submitted files and append them to the newly created user
 							// const userFilesUploaded = exports.uploadFile( newFamily, 'homestudy', 'homestudyFile_upload', files.homestudyFile_upload );
 
-							fetchEmailTarget
+							// fetch the email target model matching 'family registration'
+							listService.getEmailTargetByName( 'family registration' )
 								// fetch contact info for the staff contact for 'family registration'
 								.then( emailTarget => staffEmailContactMiddleware.getStaffEmailContactByEmailTarget( emailTarget.get( '_id' ), [ 'staffEmailContact' ] ) )
 								// overwrite the default contact details with the returned object
 								.then( staffEmailContact => staffEmailContactInfo = staffEmailContact.staffEmailContact )
 								// log any errors fetching the staff email contact
 								.catch( err => console.error( `error fetching email contact for family registration, default contact info will be used instead`, err ) )
-								// fetch the user information and whether they were successfully added to each mailing list
-								.then( () => Promise.all( [ fetchUser, addUserToMailingLists ] ) )
-								// send out the new family registered email to MARE
-								.then( values => {
-									// assign local variables to the values returned by the promises
-									const [ newUser, mailingLists ] = values;
-									// fetch the names of the returned mailing lists
-									const mailingListNames = mailingLists ? mailingLists.map( mailingList => mailingList.name ) : ['Error adding user to mailing lists'];
+								// fetch the user model.  Needed because the copies we have don't have the Relationship fields populated
+								.then( () => userService.getUserByIdNew( { id: userId, targetModel: keystone.list( 'Family' ), fieldsToPopulate } ) )
+								// add the user to mailing list and send out the new family registered email to MARE
+								.then( newFamilyDoc => {
+
 									// send a notification email to MARE staff to allow them to enter the information in the old system
-									return registrationEmailMiddleware.sendNewFamilyNotificationEmailToMARE( newUser, staffEmailContactInfo, mailingListNames );
+									registrationEmailMiddleware.sendNewFamilyNotificationEmailToMARE( newFamilyDoc, staffEmailContactInfo, [] )
+										.catch( err => {
+											// if the email couldn't be sent, log the error for debugging purposes
+											console.error( `error sending new family notification email to MARE contact about ${ newFamilyDoc.get( 'displayName' ) } (${ newFamilyDoc.get( 'email' ) })`, err );
+										});
+
+									// add the user to the the global mailing list
+									exports.addToMailingLists( newFamilyDoc )
+										.catch( err =>  {
+											console.error( `error adding new family ${ newFamilyDoc.get( 'displayName' ) } (${ newFamilyDoc.get( 'email' ) }) to mailing lists`, err );
+											console.error( err );
+										});
 								})
-								// if the email couldn't be sent, log the error for debugging purposes
-								.catch( err => console.error( `error sending new family notification email to MARE contact about ${ newFamily.get( 'displayName' ) } (${ newFamily.get( 'email' ) })`, err ) );
-								
+								// log any unhandled errors
+								.catch( error => console.error( error ) );
+
 							// create a verification record for the new user and pass control back to the root promise chain
 							return exports.createNewVerificationRecord( verificationCode, userId );
 						});
@@ -659,82 +645,39 @@ exports.setInitialErrorMessages = ( req, res, isEmailValid, isEmailDuplicate, is
 			req.errorData.message,
 			`Attempted registration with email: ${req.body.email}`
 		);
-		
-		// display a message to the user
-		// flashMessages.appendFlashMessage({
-		// 	messageType: flashMessages.MESSAGE_TYPES.ERROR,
-		// 	title: req.errorData.flashMessage.title,
-		// 	message: req.errorData.flashMessage.detail
-		// });
-
-		// send the error status and flash message markup
-		// flashMessages.generateFlashMessageMarkup()
-		// 	.then( flashMessageMarkup => {
-		// 		res.send({
-		// 			status: 'error',
-		// 			flashMessage: flashMessageMarkup
-		// 		});
-		// 	});
 	}
 };
 
 /* add the passed in user to the emails specified in the mailingListIds array */
-exports.addToMailingLists = ( user, mailingListIds ) => {
+exports.addToMailingLists = user => {
+
+	const MAILING_LIST_ID = process.env.MAILCHIMP_AUDIENCE_ID;
 
 	return new Promise( ( resolve, reject ) => {
-		// filter out any invalid strings.  False values from form submissions will result in an empty string
-		const validMailingListIds = mailingListIds ?
-									mailingListIds.filter( ( mailingListId ) => mailingListId !== '' ) :
-									undefined;
-		// if there were no mailing lists the user opted into
-		if( !validMailingListIds || validMailingListIds.length === 0 ) {
-			// resolve the promise with an empty array as it's meant to represent the absence of mailing lists which would normally be returned in array
-			return resolve( [] );
+
+		if ( !MAILING_LIST_ID ) {
+			console.error( `Cannot subscribe user '${user.email}' to mailing list - no mailing list ID provided.` );
+			return reject( `No mailing list ID provided` );
 		}
 
-		// create an array to hold the subscribed mailing lists so the final link in the promise chain can be resolved with their names
-		let subscribedMailingLists = [];
-
-		// retrieve all mailing lists the user opted in to using their id
-		Promise.all(
-			validMailingListIds.map( mailingListId =>
-				keystone.list( 'Mailchimp List' ).model
-					.findById( mailingListId )
-					.exec()
-			)
-		)
-		// once all mailing lists have been retrieved
-		.then( mailingListDocs => {
-			// store the mailing lists for access further down the chain
-			subscribedMailingLists = mailingListDocs;
-			// add the user to each mailing list via the Mailchimp API
-			return Promise.all(
-				mailingListDocs.map( mailingList => mailchimpService.subscribeMemberToList({
-					email: user.email,
-					mailingListId: mailingList.mailchimpId,
-					userType: user.userType,
-					firstName: user.userType === 'family'
-						? user.contact1.name.first
-						: user.name.first,
-					lastName: user.userType === 'family'
-						? user.contact1.name.last
-						: user.name.last
-				}))
-			);
-		// once the user has been added to the Mailchimp mailing lists
-		}).then( () => {
-			// save a reference to each mailing list the user subscribed to
-			user.mailingLists = validMailingListIds;
-			return user.save();
-		// once the user model has been updated with their mailing list subscriptions
-		}).then( () => {
-			// resolve the promise with mailing lists the user has subscribed to
-			resolve( subscribedMailingLists );
-		// if any error were encountered
-		}).catch( err => {
-			// reject the promise with the reason
-			reject( err );
-		});
+		mailchimpService
+			.subscribeMemberToList({
+				email: user.email,
+				mailingListId: MAILING_LIST_ID,
+				userType: user.userType,
+				firstName: user.userType === 'family'
+					? user.contact1.name.first
+					: user.name.first,
+				lastName: user.userType === 'family'
+					? user.contact1.name.last
+					: user.name.last,
+				stateOfResidence: user.address && user.address.state && user.address.state.abbreviation
+			})
+			.then( () => resolve() )
+			.catch( error => {
+				console.error( error );
+				reject( error );
+			});
 	});
 };
 

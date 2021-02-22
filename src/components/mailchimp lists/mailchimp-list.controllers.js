@@ -62,7 +62,7 @@ exports.getMailingList = function getMailingList( mailingListId ) {
  * @param {String} mailingListId the id of the mailing list to subscribe to
  * @returns {Object} schema: https://us20.api.mailchimp.com/schema/3.0/Definitions/Lists/Members/Response.json
  */
-exports.subscribeMemberToList = function subscribeMemberToList( { email, mailingListId, userType, firstName = '', lastName = '' } ) {
+exports.subscribeMemberToList = function subscribeMemberToList( { email, mailingListId, userType, firstName = '', lastName = '', stateOfResidence } ) {
 
     return new Promise( ( resolve, reject ) => {
 
@@ -76,9 +76,14 @@ exports.subscribeMemberToList = function subscribeMemberToList( { email, mailing
         }
 
         // tag the member with their user type (if known)
-        let tags = userType
+        const tags = userType
             ? [ userType ]
             : [];
+
+        // add the state of residence (abbr)
+        if ( stateOfResidence ) {
+            tags.push( stateOfResidence );
+        }
 
         _mailchimp.request({
             method: 'put',

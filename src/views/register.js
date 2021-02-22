@@ -25,17 +25,16 @@ exports = module.exports = ( req, res ) => {
 		fetchSocialWorkerPositions	= listService.getAllSocialWorkerPositions(),
 		fetchStates					= listService.getAllStates( stateOptions ),
 		fetchWaysToHearAboutMARE	= listService.getAllWaysToHearAboutMARE( waysToHearOptions ),
-		fetchMailingLists			= mailingListService.getMailingLists(),
 		fetchSidebarItems			= pageService.getSidebarItems();
 
 	Promise.all( [ fetchChildTypes, fetchCitiesAndTowns, fetchGenders, fetchLanguages,
 				   fetchLegalStatuses, fetchRaces, fetchRegions, fetchSocialWorkerPositions,
-				   fetchStates, fetchWaysToHearAboutMARE, fetchMailingLists, fetchSidebarItems ] )
+				   fetchStates, fetchWaysToHearAboutMARE, fetchSidebarItems ] )
 		.then( values => {
 			// assign local variables to the values returned by the promises
 			const [ childTypes, citiesAndTowns, genders, languages,
 					legalStatuses, races, regions, socialWorkerPositions,
-					states, waysToHearAboutMARE, mailingLists, sidebarItems ] = values;
+					states, waysToHearAboutMARE, sidebarItems ] = values;
 			// the sidebar items are a success story and event in an array, assign local variables to the two objects
 			const [ randomSuccessStory, randomEvent ] = sidebarItems;
 
@@ -50,7 +49,6 @@ exports = module.exports = ( req, res ) => {
 			locals.socialWorkerPositions	= socialWorkerPositions;
 			locals.states					= states;
 			locals.waysToHearAboutMARE		= waysToHearAboutMARE;
-            locals.mailingLists				= mailingLists;
 			locals.randomSuccessStory		= randomSuccessStory;
 			locals.randomEvent				= randomEvent;
 
