@@ -3,7 +3,7 @@ const Email = require( 'keystone-email' ),
 
 /* TODO IMPORTANT: all of these functions below need to be moved to their correct component files */
 
-exports.sendNewSiteVisitorNotificationEmailToMARE = ( user, registrationStaffContact, mailingListNames ) => {
+exports.sendNewSiteVisitorNotificationEmailToMARE = ( user, registrationStaffContact ) => {
 
 	return new Promise( ( resolve, reject ) => {
 		// if sending of the email is not currently allowed
@@ -129,13 +129,6 @@ exports.sendNewSiteVisitorNotificationEmailToMARE = ( user, registrationStaffCon
 			});
 		}
 
-		if( mailingListNames.length > 0 ) {
-			userData.push({
-				key: 'mailing lists',
-				value: mailingListNames.join( ', ' )
-			});
-		}
-
 		// find the email template in templates/emails/
 		Email.send(
 			// template path
@@ -179,7 +172,7 @@ exports.sendNewSiteVisitorNotificationEmailToMARE = ( user, registrationStaffCon
 	});
 };
 
-exports.sendNewSocialWorkerNotificationEmailToMARE = ( user, registrationStaffContact, mailingListNames ) => {
+exports.sendNewSocialWorkerNotificationEmailToMARE = ( user, registrationStaffContact ) => {
 
 	return new Promise( ( resolve, reject ) => {
 		// if sending of the email is not currently allowed
@@ -301,13 +294,6 @@ exports.sendNewSocialWorkerNotificationEmailToMARE = ( user, registrationStaffCo
 			});
 		}
 
-		if( mailingListNames.length > 0  ) {
-			userData.push({
-				key: 'mailing lists',
-				value: mailingListNames.join( ', ' )
-			});
-		}
-
 		if( positionsArray.length > 0  ) {
 			userData.push({
 				key: 'positions',
@@ -358,7 +344,7 @@ exports.sendNewSocialWorkerNotificationEmailToMARE = ( user, registrationStaffCo
 	});
 };
 
-exports.sendNewFamilyNotificationEmailToMARE = ( user, registrationStaffContact, mailingListNames ) => {
+exports.sendNewFamilyNotificationEmailToMARE = ( user, registrationStaffContact ) => {
 
 	return new Promise( ( resolve, reject ) => {
 		// if sending of the email is not currently allowed
@@ -834,13 +820,6 @@ exports.sendNewFamilyNotificationEmailToMARE = ( user, registrationStaffContact,
 			userData.push({
 				key: 'heard about MARE from - other',
 				value: user.heardAboutMAREOther
-			});
-		}
-
-		if( mailingListNames.length > 0 ) {
-			userData.push({
-				key: 'mailing lists',
-				value: mailingListNames.join( ', ' )
 			});
 		}
 

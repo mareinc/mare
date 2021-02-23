@@ -76,7 +76,7 @@ exports.registerUser = ( req, res, next ) => {
 								.then( newSiteVisitorDoc => {
 
 										// send a notification email to MARE staff to allow them to enter the information in the old system
-										registrationEmailMiddleware.sendNewSiteVisitorNotificationEmailToMARE( newSiteVisitorDoc, staffEmailContactInfo, [] )
+										registrationEmailMiddleware.sendNewSiteVisitorNotificationEmailToMARE( newSiteVisitorDoc, staffEmailContactInfo )
 											.catch( err => {
 												console.error( `error sending new site visitor notification email to MARE contact about ${ newSiteVisitorDoc.get( 'name.full' ) } (${ newSiteVisitorDoc.get( 'email' ) })`, err );
 											});
@@ -127,7 +127,7 @@ exports.registerUser = ( req, res, next ) => {
 								.then( newSocialWorkerDoc => {
 
 									// send a notification email to MARE staff to allow them to enter the information in the old system
-									registrationEmailMiddleware.sendNewSocialWorkerNotificationEmailToMARE( newSocialWorkerDoc, staffEmailContactInfo, [] )
+									registrationEmailMiddleware.sendNewSocialWorkerNotificationEmailToMARE( newSocialWorkerDoc, staffEmailContactInfo )
 										.catch( err => {
 											// if the email couldn't be sent, log the error for debugging purposes
 											console.error( `error sending new social worker notification email to MARE contact for ${ newSocialWorkerDoc.get( 'name.full' ) } (${ newSocialWorkerDoc.get( 'email' ) })`, err );
@@ -193,7 +193,7 @@ exports.registerUser = ( req, res, next ) => {
 								.then( newFamilyDoc => {
 
 									// send a notification email to MARE staff to allow them to enter the information in the old system
-									registrationEmailMiddleware.sendNewFamilyNotificationEmailToMARE( newFamilyDoc, staffEmailContactInfo, [] )
+									registrationEmailMiddleware.sendNewFamilyNotificationEmailToMARE( newFamilyDoc, staffEmailContactInfo )
 										.catch( err => {
 											// if the email couldn't be sent, log the error for debugging purposes
 											console.error( `error sending new family notification email to MARE contact about ${ newFamilyDoc.get( 'displayName' ) } (${ newFamilyDoc.get( 'email' ) })`, err );
