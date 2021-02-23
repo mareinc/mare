@@ -5,8 +5,7 @@ const keystone				= require( 'keystone' ),
 	  donationService		= require( '../components/donations/donation.controllers' ),
 	  familyService			= require( '../components/families/family.controllers' ),
 	  listService			= require( '../components/lists/list.controllers' ),
-	  pageService			= require( '../components/pages/page.controllers' ),
-	  mailingListService	= require( '../components/mailing lists/mailing-list.controllers' );
+	  pageService			= require( '../components/pages/page.controllers' );
 
 exports = module.exports = ( req, res ) => {
     'use strict';
@@ -33,9 +32,7 @@ exports = module.exports = ( req, res ) => {
 		fetchSocialWorkerPositions	= listService.getAllSocialWorkerPositions(),
 		fetchRaces					= listService.getAllRaces( raceOptions ),
 		fetchStates					= listService.getAllStates(),
-		fetchChildTypes				= listService.getChildTypesForWebsite(),
-        fetchMailingLists			= mailingListService.getMailingLists(),
-        fetchUserMailingLists       = req.user.populate('mailingLists').execPopulate();
+		fetchChildTypes				= listService.getChildTypesForWebsite();
 
 	// check to see if the Children tab should be rendered
 	locals.shouldRenderChildrenSection = ( userType === 'social worker' || userType === 'family' );
@@ -50,12 +47,12 @@ exports = module.exports = ( req, res ) => {
 	}
 
 	Promise.all( [ fetchEvents, fetchCitiesAndTowns, fetchDisabilities, fetchGenders, fetchLanguages, fetchLegalStatuses,
-		fetchSocialWorkerPositions, fetchRaces, fetchStates, fetchChildTypes, fetchMailingLists, fetchUserMailingLists ] )
+		fetchSocialWorkerPositions, fetchRaces, fetchStates, fetchChildTypes ] )
 		.then( values => {
 
 			// assign local variables to the values returned by the promises
 			const [ events, citiesAndTowns, disabilities, genders, languages, legalStatuses,
-				socialWorkerPositions, races, states, childTypes, mailingLists ] = values;
+				socialWorkerPositions, races, states, childTypes ] = values;
 
 			// loop through all the events
 			for( let event of events ) {
@@ -74,11 +71,6 @@ exports = module.exports = ( req, res ) => {
 				} else {
 					event.dateString = moment( event.startDate ).utc().format( 'dddd MMMM Do, YYYY' );
 				}
-			}
-
-			// loop through all the mailing lists and mark the current selection
-			for( let mailingList of mailingLists ) {
-				mailingList.isSelected = req.user.mailingLists.find( userMailingList => userMailingList.id === mailingList.id );
 			}
 
 			// check to see if the user has an address/state defined
@@ -115,7 +107,6 @@ exports = module.exports = ( req, res ) => {
 			locals.races					= races;
 			locals.states					= states;
 			locals.childTypes				= childTypes;
-			locals.mailingLists				= mailingLists;
 			locals.familyChildren			= familyChildren;
 
 			// render the view using the account.hbs template
