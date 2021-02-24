@@ -491,30 +491,33 @@ Family.schema.post( 'save', function() {
 	// createdAt and updatedAt will be the same value only on the first save
 	if ( this.createdBy && this.createdAt == this.updatedAt ) {
 
-		// subscribe to all mailing lists
-		this.subscribeToMailingLists()
-			.then( mailingListIds => {
-				// update the mailing list subscriptions on the model to ensure preferences are in sync
-				this.mailingLists = mailingListIds;
-				// save the update
-				return this.save();
+		// try to populate the state of residence
+		this.populate( 'address.state' )
+			.execPopulate()
+			.then( () => {
+				// subscribe to the global mailing list
+				return MailchimpService.subscribeMemberToList({
+					email: this.email,
+					mailingListId: process.env.MAILCHIMP_AUDIENCE_ID,
+					userType: this.userType,
+					firstName: this.contact1.name.first,
+					lastName: this.contact1.name.last,
+					tags: [ 
+						// user type tag
+						this.userType,
+						// mapp training complete
+						this.stages.MAPPTrainingCompleted.completed && Family.model.schema.tree.stages.MAPPTrainingCompleted.completed.label,
+						// homestudy complete
+						this.homestudy.completed && Family.model.schema.tree.homestudy.completed.label,
+						// state abbreviation
+						this.address.state && this.address.state.abbreviation
+					// filter out any undefined or empty tags
+					].filter( tag => !!tag )
+				});
 			})
-			// now that the mailing list subscriptions have been saved, apply Family status tags to any Mailchimp mailing lists the Family is subscribed to
-			.then( () => this.applyFamilyStatusTagsToMailingLists() )
 			.catch( err => {
 				// log any errors with subscription process
-				console.error( new Error( `Automatic subscription to mailing lists failed for family ${ this.displayName }` ) );
-				console.error( err );
-			});
-
-	// if this is not the first save or the save was initiated from a registration form, the mailing lists will already be saved to the Family model
-	} else {
-
-		// apply Family status tags to any Mailchimp mailing lists the Family is subscribed to
-		this.applyFamilyStatusTagsToMailingLists()
-			.catch( err => {
-				// log any errors with tag update process
-				console.error( new Error( `Tag updates failed for family ${ this.displayName }` ) );
+				console.error( new Error( `Automatic subscription to mailing lists failed for family ${ this.registrationNumber }` ) );
 				console.error( err );
 			});
 	}
@@ -560,98 +563,6 @@ Family.schema.methods.setDisplayNameAndRegistrationLabel = function() {
 
 	// combine the display name and registration number  to create a unique label for all Family models
 	this.displayNameAndRegistration = `${ this.displayName }${ registrationNumberString }`;
-};
-
-Family.schema.methods.subscribeToMailingLists = function() {
-	'use strict';
-
-	return new Promise( ( resolve, reject ) => {
-
-		let mailingListIds = [];
-
-		// get the mailchimp email lists and opt the user in to them
-		keystone.list( 'Mailchimp List' ).model
-		.find()
-		.lean()
-		.exec()
-		.then( mailchimpListDocs => {
-
-			// subscribe the user to all mailing lists via Mailchimp API
-			return Promise.all(
-				mailchimpListDocs.map( mailchimpListDoc => {
-
-					// add the current mailing list ids to an array to later the mailingList relationships
-					mailingListIds.push( mailchimpListDoc._id );
-
-					// subscribe the user to the current mailing list
-					return MailchimpService.subscribeMemberToList({
-						email: this.email,
-						mailingListId: mailchimpListDoc.mailchimpId,
-						userType: this.userType,
-						firstName: this.contact1.name.first,
-						lastName: this.contact1.name.last
-					});
-				})
-			);
-		})
-		.then( () => {
-
-			// mailchimp subscriptions succeeded, return subscribed mailing list ids
-			resolve( mailingListIds );
-		})
-		.catch( err => reject( err ) );
-	});
-};
-
-Family.schema.methods.applyFamilyStatusTagsToMailingLists = function() {
-
-	return new Promise( ( resolve, reject ) => {
-
-		// get tag labels from schema definition
-		const MAPPTrainingLabel = Family.model.schema.tree.stages.MAPPTrainingCompleted.completed.label,
-			  homestudyLabel = Family.model.schema.tree.homestudy.completed.label;
-
-		const tagUpdates = [];
-
-		// get the mailchimp list ids for the mailing lists the user has opted-in to
-		keystone.list( 'Mailchimp List' ).model
-			.find()
-			.where( '_id' )
-			.in( this.mailingLists )
-			.lean()
-			.exec()
-			.then( mailchimpListDocs => {
-
-				// update user's tags on each mailing list they're subscribed to
-				mailchimpListDocs.forEach( mailchimpListDoc => {
-
-					// update MAPP training completed tag
-					tagUpdates.push(
-						MailchimpService.updateMemberTag({
-							tagName: MAPPTrainingLabel,
-							email: this.email,
-							mailingListId: mailchimpListDoc.mailchimpId,
-							removeTag: !this.stages.MAPPTrainingCompleted.completed
-						})
-					);
-
-					// update homestudy completed tag
-					tagUpdates.push(
-						MailchimpService.updateMemberTag({
-							tagName: homestudyLabel,
-							email: this.email,
-							mailingListId: mailchimpListDoc.mailchimpId,
-							removeTag: !this.homestudy.completed
-						})
-					);
-				});
-
-				// wait for all tag updates to be applied
-				return Promise.all( tagUpdates );
-			})
-			.then( () => resolve() )
-			.catch( err => reject( err ) );
-	});
 };
 
 Family.schema.methods.setVerifiedStatus = function() {

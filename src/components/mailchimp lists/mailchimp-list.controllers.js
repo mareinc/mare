@@ -60,9 +60,12 @@ exports.getMailingList = function getMailingList( mailingListId ) {
  * @description subscribes a member to a mailing list
  * @param {String} email the email with which to register the member
  * @param {String} mailingListId the id of the mailing list to subscribe to
+ * @param {String} firstName the first name of the subscriber
+ * @param {String} lastName the last name of the subscriber
+ * @param {Array} tags a list of tags to apply to the user
  * @returns {Object} schema: https://us20.api.mailchimp.com/schema/3.0/Definitions/Lists/Members/Response.json
  */
-exports.subscribeMemberToList = function subscribeMemberToList( { email, mailingListId, userType, firstName = '', lastName = '', stateOfResidence } ) {
+exports.subscribeMemberToList = function subscribeMemberToList( { email, mailingListId, firstName = '', lastName = '', tags = [] } ) {
 
     return new Promise( ( resolve, reject ) => {
 
@@ -73,16 +76,6 @@ exports.subscribeMemberToList = function subscribeMemberToList( { email, mailing
         // check to ensure Mailchimp updates are turned on for the current enviornment
         } else if ( !ALLOW_MAILCHIMP_API_UPDATES ) {
             return resolve();
-        }
-
-        // tag the member with their user type (if known)
-        const tags = userType
-            ? [ userType ]
-            : [];
-
-        // add the state of residence (abbr)
-        if ( stateOfResidence ) {
-            tags.push( stateOfResidence );
         }
 
         _mailchimp.request({
@@ -189,15 +182,16 @@ exports.updateMemberEmail = function updateMemberEmail( currentEmail, updatedEma
  * @description update the tag for a member
  * @param {String} email the email of the member to update
  * @param {String} mailingListId the id of the mailing list in which to update the member
+ * @param {Array} tags a list of tags in the following format { name: 'tagName', status: 'inactive' || 'active' }
  * @returns {Object} status code of the operation
  */
-exports.updateMemberTag = function updateMemberTag( { tagName, email, mailingListId, removeTag = false } ) {
+exports.updateMemberTags = function updateMemberTags( { email, mailingListId, tags = [] } ) {
 
     return new Promise( ( resolve, reject ) => {
 
         // check to ensure required params were passed
-        if ( !tagName || !email || !mailingListId ) {
-            return reject( new Error( 'updateMemberTag failed - tagName, email, or mailingListId was not provided.' ) );
+        if ( tags.length === 0 || !email || !mailingListId ) {
+            return reject( new Error( 'updateMemberTag failed - email, mailingListId, or tags were not provided.' ) );
 
         // check to ensure Mailchimp updates are turned on for the current enviornment
         } else if ( !ALLOW_MAILCHIMP_API_UPDATES ) {
@@ -212,12 +206,7 @@ exports.updateMemberTag = function updateMemberTag( { tagName, email, mailingLis
                 subscriber_hash: MD5( email )
             },
             body: {
-                tags: [
-                    {
-                        name: tagName,
-                        status: removeTag ? 'inactive' : 'active'
-                    }
-                ]
+                tags
             }
         })
         .then( status => resolve( status ) )

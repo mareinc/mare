@@ -664,14 +664,19 @@ exports.addToMailingLists = user => {
 			.subscribeMemberToList({
 				email: user.email,
 				mailingListId: MAILING_LIST_ID,
-				userType: user.userType,
 				firstName: user.userType === 'family'
 					? user.contact1.name.first
 					: user.name.first,
 				lastName: user.userType === 'family'
 					? user.contact1.name.last
 					: user.name.last,
-				stateOfResidence: user.address && user.address.state && user.address.state.abbreviation
+				tags: [ 
+					// user type tag
+					user.userType,
+					// state abbreviation
+					user.address.state && user.address.state.abbreviation
+				// filter out any undefined or empty tags
+				].filter( tag => !!tag )
 			})
 			.then( () => resolve() )
 			.catch( error => {
