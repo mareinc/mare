@@ -6,10 +6,8 @@
 //		 appropriate files
 
 const _						= require( 'lodash' ),
-      keystone				= require( 'keystone' ),
 	  userService			= require( './user.controllers' ),
-	  flashMessages			= require( '../../utils/notification.middleware' ),
-	  mailchimpService	    = require( '../mailchimp lists/mailchimp-list.controllers' );
+	  flashMessages			= require( '../../utils/notification.middleware' );
 
 exports.updateUser = ( req, res, next ) => {
 	const updates	= req.body,

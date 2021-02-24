@@ -18,7 +18,6 @@ const keystone						= require( 'keystone' ),
 	  passwordResetService 			= require( './components/accounts/account.password-reset.controllers'),
 	  accountVerificationService	= require( './components/account verification codes/account-verification-code.middleware' ),
 	  toolsService					= require( './components/reporting dashboard/tools.controllers' ),
-	  mailchimpService				= require( './components/mailchimp lists/mailchimp-list.controllers' ),
 	  enforce						= require( 'express-sslify' ),
 	  importRoutes					= keystone.importer( __dirname );
 
@@ -141,8 +140,4 @@ exports = module.exports = app => {
 	app.get( '/tools/services/get-child-listing-data'			, accountMiddleware.requireUser( 'admin' ), toolsService.getChildListingData );
 	app.get( '/tools/services/get-family-listing-data'			, accountMiddleware.requireUser( 'admin' ), toolsService.getFamilyListingData );
 	app.get( '/tools/services/get-family-stages-data'			, accountMiddleware.requireUser( 'admin' ), toolsService.getFamilyStagesData );
-
-	// webhooks
-	// app.get( '/webhooks/mailchimp'                      , mailchimpService.validateWebhookURL );
-	// app.post( '/webhooks/mailchimp'                     , mailchimpService.processWebhookUpdates );
 };
