@@ -1,11 +1,8 @@
 const keystone				= require( 'keystone' ),
 	  moment				= require( 'moment' ),
-	  userService			= require( '../components/users/user.controllers' ),
 	  eventService			= require( '../components/events/event.controllers' ),
-	  donationService		= require( '../components/donations/donation.controllers' ),
 	  familyService			= require( '../components/families/family.controllers' ),
-	  listService			= require( '../components/lists/list.controllers' ),
-	  pageService			= require( '../components/pages/page.controllers' );
+	  listService			= require( '../components/lists/list.controllers' );
 
 exports = module.exports = ( req, res ) => {
     'use strict';
