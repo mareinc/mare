@@ -18,10 +18,6 @@ User.add( 'Login Information', {
 
 	userType: { type: Types.Text, hidden: true }
 
-}, 'Mailing List Subscriptions', {
-
-    mailingLists: { type: Types.Relationship, label: 'mailing lists', ref: 'Mailchimp List', many: true, noedit: true }
-
 });
 
 // Post Init - used to store all the values before anything is changed
