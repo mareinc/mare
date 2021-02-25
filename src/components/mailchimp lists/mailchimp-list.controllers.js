@@ -56,7 +56,7 @@ exports.getMailingList = function getMailingList( mailingListId ) {
 
 /**
  * subscribeMemberToList
- * ===================
+ * =====================
  * @description subscribes a member to a mailing list
  * @param {String} email the email with which to register the member
  * @param {String} mailingListId the id of the mailing list to subscribe to
@@ -103,7 +103,7 @@ exports.subscribeMemberToList = function subscribeMemberToList( { email, mailing
 
 /**
  * unsubscribeMemberFromList
- * ========================
+ * =========================
  * @description unsubscribes a member from a mailing list
  * @param {String} email the email of the member to unsubscribe
  * @param {String} mailingListId the id of the mailing list to unsubscribe the member from
@@ -140,7 +140,7 @@ exports.subscribeMemberToList = function subscribeMemberToList( { email, mailing
 
 /**
  * updateMemberEmail
- * =====================
+ * =================
  * @description updates a member's email address in a particular mailing list
  * @param {String} currentEmail the member's current email address
  * @param {String} updatedEmail the new email address that will replace the current email address
@@ -172,13 +172,13 @@ exports.updateMemberEmail = function updateMemberEmail( currentEmail, updatedEma
             }
         })
         .then( subscriber => resolve( subscriber ) )
-        .catch( err => reject( new Error( err.message ) ) );
+        .catch( err => reject( err ) );
     });
 };
 
 /**
  * updateMemberTag
- * ==================
+ * ===============
  * @description update the tag for a member
  * @param {String} email the email of the member to update
  * @param {String} mailingListId the id of the mailing list in which to update the member
@@ -213,6 +213,40 @@ exports.updateMemberTags = function updateMemberTags( { email, mailingListId, ta
         .catch( err => reject( new Error( err.message ) ) );
     });
 };
+
+/**
+ * getMemberFromList
+ * =================
+ * @description get a member from a mailing list
+ * @param {String} email the email of the member to unsubscribe
+ * @param {String} mailingListId the id of the mailing list to unsubscribe the member from
+ * @returns {Object} member object
+ */
+exports.getMemberFromList = function getMemberFromList( email, mailingListId ) {
+
+    return new Promise( ( resolve, reject ) => {
+
+        // check to ensure required params were passed
+        if ( !email || !mailingListId ) {
+            return reject( new Error( 'getMemberFromList failed - email or mailingListId was not provided.' ) );
+
+        // check to ensure Mailchimp updates are turned on for the current enviornment
+        } else if ( !ALLOW_MAILCHIMP_API_UPDATES ) {
+            return resolve();
+        }
+
+        _mailchimp.request({
+            method: 'get',
+            path: '/lists/{list_id}/members/{subscriber_hash}', // this is not a template string, rather a mailchimp-api-v3 library convention
+            path_params: {
+                list_id: mailingListId,
+                subscriber_hash: MD5( email )
+            }
+        })
+        .then( member => resolve( member ) )
+        .catch( err => reject( err ) );
+    });
+ };
 
 /**
  * validateWebhook

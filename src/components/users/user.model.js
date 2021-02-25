@@ -36,27 +36,27 @@ User.schema.pre( 'save', function( next ) {
 	'use strict';
 
 	// check to see if mailing list subscriptions should be updated
-	const hasMailingListSubscriptions = false; // disable this functionality until it can be updated to work with the new mailing list approach
 	const oldEmailAddress = this._original ? this._original.email : this.email;
 	const newEmailAddress = this.email;
 
-	if ( hasMailingListSubscriptions && oldEmailAddress !== newEmailAddress ) {
-		// if updates are required...
-		// get all mailing lists the user is subscribed to
-		keystone.list( 'Mailchimp List' ).model
-			.find( { _id: { $in: this.mailingLists } } )
-			.exec()
-			// update each mailing list with the new email address
-			.then( mailingListDocs => Promise.all( mailingListDocs.map( mailingListDoc => MailchimpService.updateMemberEmail( oldEmailAddress, newEmailAddress, mailingListDoc.mailchimpId ) ) ) )
-			// log any errors
-			.catch( error => console.error( `Failed to update user's email address on Mailchimp mailing lists. Old email address: ${oldEmailAddress}. New email address: ${newEmailAddress}\n${error}` ) )
-			// continue save execution regardless of success/failure of email subscription updates
-			.finally( () => next() );
-	} else {
-		// if no updates are required...
-		// continue save execution
-		next();
+	// if updates are required...
+	if ( oldEmailAddress !== newEmailAddress ) {
+		
+		MailchimpService.updateMemberEmail( oldEmailAddress, newEmailAddress, process.env.MAILCHIMP_AUDIENCE_ID )
+			.then( () => console.log( `Successfully updated user's email address in mailchimp - ${newEmailAddress}` ) )
+			.catch( error => {
+
+				// if the member simply does not exist in the list, ignore the error
+				if ( error.status !== 404 ) {
+					// otherwise, log the error
+					console.error( `Failed to upate user's email address in mailchimp - ${newEmailAddress}` );
+					console.error( error );
+				}
+			});
 	}
+
+	// continue saving the user
+	next();
 });
 
 // Define default columns in the admin interface and register the model
