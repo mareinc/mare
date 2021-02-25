@@ -177,21 +177,21 @@ exports.updateMemberEmail = function updateMemberEmail( currentEmail, updatedEma
 };
 
 /**
- * updateMemberTag
- * ===============
- * @description update the tag for a member
+ * updateMemberTags
+ * ================
+ * @description update the tags for a member
  * @param {String} email the email of the member to update
  * @param {String} mailingListId the id of the mailing list in which to update the member
  * @param {Array} tags a list of tags in the following format { name: 'tagName', status: 'inactive' || 'active' }
  * @returns {Object} status code of the operation
  */
-exports.updateMemberTags = function updateMemberTags( { email, mailingListId, tags = [] } ) {
+exports.updateMemberTags = function updateMemberTags( email, tags = [], mailingListId ) {
 
     return new Promise( ( resolve, reject ) => {
 
         // check to ensure required params were passed
         if ( tags.length === 0 || !email || !mailingListId ) {
-            return reject( new Error( 'updateMemberTag failed - email, mailingListId, or tags were not provided.' ) );
+            return reject( new Error( 'updateMemberTags failed - email, mailingListId, or tags were not provided.' ) );
 
         // check to ensure Mailchimp updates are turned on for the current enviornment
         } else if ( !ALLOW_MAILCHIMP_API_UPDATES ) {
@@ -210,7 +210,7 @@ exports.updateMemberTags = function updateMemberTags( { email, mailingListId, ta
             }
         })
         .then( status => resolve( status ) )
-        .catch( err => reject( new Error( err.message ) ) );
+        .catch( err => reject( err ) );
     });
 };
 
