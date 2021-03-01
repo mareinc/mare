@@ -30,7 +30,8 @@ const SiteVisitor = new keystone.List( 'Site Visitor', {
 	inherits: User,
 	map: { name: 'name.full' },
 	defaultSort: 'name.full',
-	hidden: false
+	hidden: false,
+	track: true
 });
 
 // Create fields

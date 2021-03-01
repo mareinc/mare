@@ -485,42 +485,6 @@ Family.schema.post( 'save', function() {
 			// process change history
 			this.setChangeHistory();
 		});
-
-	// if the save was initiated from the admin UI and this is the first save, subscribe the user to all mailing lists
-	// createdBy will be set to some id if it was created from the admin UI, otherwise it will be undefined
-	// createdAt and updatedAt will be the same value only on the first save
-	if ( this.createdBy && this.createdAt == this.updatedAt ) {
-
-		// try to populate the state of residence
-		this.populate( 'address.state' )
-			.execPopulate()
-			.then( () => {
-				// subscribe to the global mailing list
-				return MailchimpService.subscribeMemberToList({
-					email: this.email,
-					mailingListId: process.env.MAILCHIMP_AUDIENCE_ID,
-					userType: this.userType,
-					firstName: this.contact1.name.first,
-					lastName: this.contact1.name.last,
-					tags: [ 
-						// user type tag
-						this.userType,
-						// mapp training complete
-						this.stages.MAPPTrainingCompleted.completed && Family.model.schema.tree.stages.MAPPTrainingCompleted.completed.label,
-						// homestudy complete
-						this.homestudy.completed && Family.model.schema.tree.homestudy.completed.label,
-						// state abbreviation
-						this.address.state && this.address.state.abbreviation
-					// filter out any undefined or empty tags
-					].filter( tag => !!tag )
-				});
-			})
-			.catch( err => {
-				// log any errors with subscription process
-				console.error( new Error( `Automatic subscription to mailing lists failed for family ${ this.registrationNumber }` ) );
-				console.error( err );
-			});
-	}
 });
 
 /* TODO: VERY IMPORTANT:  Need to fix this to provide the link to access the keystone admin panel again */
