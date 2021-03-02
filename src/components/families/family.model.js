@@ -13,6 +13,40 @@ const keystone					= require( 'keystone' ),
 	  MailchimpService			= require( '../../components/mailchimp lists/mailchimp-list.controllers' ),
 	  Validators  				= require( '../../utils/field-validator.controllers' );
 
+const FAMILY_TAG_CONFIG = [{
+	propPath: 'stages.gatheringInformation.started',
+	activeTags: [ 'prospective family lead' ],
+	inactiveTags: []
+}, {
+	propPath: 'stages.lookingForAgency.started',
+	activeTags: [ 'prospective family lead - ready' ],
+	inactiveTags: []
+}, {
+	propPath: 'stages.MAPPTrainingCompleted.completed',
+	activeTags: [ 'MAPP training completed' ],
+	inactiveTags: [
+		'prospective family lead',
+		'prospective family lead - ready',
+		'prospective family lead - not ready',
+		'prospective family lead - applied',
+		'prospective family lead - not interested'
+	]
+}, {
+	propPath: 'homestudy.completed',
+	activeTags: [ 'homestudy completed' ],
+	inactiveTags: [
+		'prospective family lead',
+		'prospective family lead - ready',
+		'prospective family lead - not ready',
+		'prospective family lead - applied',
+		'prospective family lead - not interested'
+	]
+}, {
+	propPath: 'closed.isClosed',
+	activeTags: [ 'closed' ],
+	inactiveTags: []
+}];
+
 // configure the s3 storage adapters
 var fileStorage = new keystone.Storage({
 	adapter: require( 'keystone-storage-adapter-s3' ),
@@ -485,6 +519,9 @@ Family.schema.post( 'save', function() {
 			// process change history
 			this.setChangeHistory();
 		});
+	
+	// update the family's stage tags in mailchimp
+	this.updateMailchimpTags();
 });
 
 /* TODO: VERY IMPORTANT:  Need to fix this to provide the link to access the keystone admin panel again */
@@ -923,6 +960,81 @@ Family.schema.methods.setRegistrationNumber = function() {
 				});
 		}
 	});
+};
+
+Family.schema.methods.updateMailchimpTags = function() {
+	
+	const updatedTags = FAMILY_TAG_CONFIG.reduce( ( tagUpdates, tagSet ) => {
+
+		// if the tag set should be applied
+		if ( this.get( tagSet.propPath ) ) {
+
+			// apply active tags
+			tagSet.activeTags.forEach( activeTag => {
+
+				// add the active tag if there isn't already a tag with the same name.
+				// if there is already a tag with this name there's no need to duplicate it.
+				// (not necessary to duplicate active tags and inactive tags should override
+				// active tags)
+				if ( !tagUpdates.find( tagUpdate => tagUpdate.name === activeTag ) ) {
+					tagUpdates.push({
+						name: activeTag,
+						status: 'active'
+					});
+				}
+			});
+
+			// apply inactive tags
+			tagSet.inactiveTags.forEach( inactiveTag => {
+
+				const existingTagUpdate = tagUpdates.find( tagUpdate => tagUpdate.name === inactiveTag );
+
+				// if there are existing tag updates with the same name
+				if ( existingTagUpdate ) {
+
+					// if the existing tag is 'active', replace it with the 'inactive' tag
+					// if the existing tag is not 'active', do not add a duplicate 'inactive' tag
+					if ( existingTagUpdate.status === 'active' ) {
+						existingTagUpdate.status = 'inactive';
+					}
+					
+				// if there are no existing tag updates with the same name
+				} else {
+					
+					// add the inactive tag
+					tagUpdates.push({
+						name: inactiveTag,
+						status: 'inactive'
+					});
+				}
+			});
+
+		// if the tag set should be removed
+		} else {
+
+			// ensure tags for this tag set are removed
+			tagSet.activeTags.forEach( activeTag => {
+				tagUpdates.push({
+					name: activeTag,
+					status: 'inactive'
+				});
+			});
+		}
+
+		return tagUpdates;
+	}, []);
+
+	MailchimpService.updateMemberTags( this.email, updatedTags, process.env.MAILCHIMP_AUDIENCE_ID )
+		.then( () => console.log( `Successfully updated family stages tags for (${this.email}) in mailchimp` ) )
+		.catch( error => {
+
+			// if the member simply does not exist in the list, ignore the error
+			if ( error.status !== 404 ) {
+				// otherwise, log the error
+				console.error( `Failed to upate family stages tags for (${this.email}) in mailchimp` );
+				console.error( error );
+			}
+		});
 };
 
 Family.schema.methods.setChangeHistory = function setChangeHistory() {
