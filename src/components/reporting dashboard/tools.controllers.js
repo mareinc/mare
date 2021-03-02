@@ -747,7 +747,7 @@ exports.getPlacementData = ( req, res, next ) => {
 		// create a query with the search criteria
 		return keystone.list( placementType.modelName ).model
 			.find( _searchCriteria )
-			.populate( 'source additionalSources familyDetails.agency familyDetails.race familyDetails.familyConstellation familyDetails.address.region' )
+			.populate( 'source additionalSources familyDetails.agency familyDetails.race familyDetails.familyConstellation familyDetails.address.region familyAgency' )
 			.populate({
 				path: 'child',
 				populate: {
@@ -926,9 +926,11 @@ exports.getPlacementData = ( req, res, next ) => {
 					familyContact2: placement.family && placement.family.contact2.name.full
 						? placement.family.contact2.name.full
 						: 'Not Specified',
-					familySWAgency: placement.familyDetails.agency
+					familySWAgency: placement.familyDetails && placement.familyDetails.agency
 						? placement.familyDetails.agency.name
-						: undefined,
+						: placement.familyAgency
+							? placement.familyAgency.name
+							: undefined,
 					familyRegion: placement.family
 						? placement.family.address.region
 							? placement.family.address.region.region
