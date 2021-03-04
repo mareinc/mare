@@ -4,6 +4,7 @@ const keystone					= require( 'keystone' ),
 	  async 					= require( 'async' ),
 	  Types						= keystone.Field.Types,
 	  User						= require( '../users/user.model' ),
+	  MailchimpService			= require( '../../components/mailchimp lists/mailchimp-list.controllers' ),
 	  ChangeHistoryMiddleware	= require( '../change histories/change-history.controllers' ),
 	  UserServiceMiddleware		= require( '../../components/users/user.controllers' ),
 	  Validators  				= require( '../../utils/field-validator.controllers' );
@@ -176,6 +177,57 @@ SocialWorker.schema.post( 'save', function() {
 			// process change history
 			this.setChangeHistory();
 		});
+
+	// check to see if the agency region tags need to be updated
+	const newAgencyId = this.agency && this.agency.toString();
+	const oldAgencyId = this._original 
+		? this._original.agency && this._original.agency.toString() 
+		: newAgencyId;
+	
+	// if agency has been updated...
+	if ( oldAgencyId !== newAgencyId ) {
+		
+		// get the agency records so we can view the region data
+		keystone.list( 'Agency' ).model
+			.find({ _id: { $in: [ oldAgencyId, newAgencyId ] } } )
+			.populate( 'address.region' )
+			.exec()
+			.then( agencyDocs => {
+
+				// get the regions from the populated agency docs
+				const oldAgency = agencyDocs.find( agencyDoc => agencyDoc._id.toString() == oldAgencyId );
+				const newAgency = agencyDocs.find( agencyDoc => agencyDoc._id.toString() == newAgencyId );
+				const oldAgencyRegion = oldAgency && oldAgency.address.region && oldAgency.address.region.region;
+				const newAgencyRegion = newAgency && newAgency.address.region && newAgency.address.region.region;
+				
+				// configure the tag updates
+				const tagUpdates = [{
+					// remove the old agency region tag
+					name: oldAgencyRegion,
+					status: 'inactive'
+				}, {
+					// add the new agency region tag
+					name: newAgencyRegion,
+					status: 'active'
+				// remove any empty tags (e.g. if old or new state are undefined)
+				}].filter( tagUpdate => tagUpdate.name );
+
+				// apply the tag updates in mailchimp
+				return oldAgencyRegion != newAgencyRegion
+					? MailchimpService.updateMemberTags( this.email, tagUpdates, process.env.MAILCHIMP_AUDIENCE_ID )
+					: true; // if no updates are required, just return true
+			})
+			.then( () => console.log( `Successfully updated social worker's (${this.email}) agency region tag in mailchimp` ) )
+			.catch( error => {
+
+				// if the member simply does not exist in the list, ignore the error
+				if ( error.status !== 404 ) {
+					// otherwise, log the error
+					console.error( `Failed to upate social worker's (${this.email}) agency region tag in mailchimp` );
+					console.error( error );
+				}
+			});
+	}
 });
 
 /* text fields don't automatically trim(), this is to ensure no leading or trailing whitespace gets saved into url, text, or text area fields */
