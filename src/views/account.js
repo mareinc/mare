@@ -2,7 +2,8 @@ const keystone				= require( 'keystone' ),
 	  moment				= require( 'moment' ),
 	  eventService			= require( '../components/events/event.controllers' ),
 	  familyService			= require( '../components/families/family.controllers' ),
-	  listService			= require( '../components/lists/list.controllers' );
+	  listService			= require( '../components/lists/list.controllers' ),
+	  mailchimpService		= require( '../components/mailchimp lists/mailchimp-list.controllers' );
 
 exports = module.exports = ( req, res ) => {
     'use strict';
@@ -29,7 +30,9 @@ exports = module.exports = ( req, res ) => {
 		fetchSocialWorkerPositions	= listService.getAllSocialWorkerPositions(),
 		fetchRaces					= listService.getAllRaces( raceOptions ),
 		fetchStates					= listService.getAllStates(),
-		fetchChildTypes				= listService.getChildTypesForWebsite();
+		fetchChildTypes				= listService.getChildTypesForWebsite(),
+		fetchMailingListGroups		= mailchimpService.getInterests( process.env.MAILCHIMP_AUDIENCE_ID, process.env.MAILCHIMP_PREFERENCES_CATEGORY_ID ),
+		fetchMailingListMember		= mailchimpService.getMemberFromList( req.user.email, process.env.MAILCHIMP_AUDIENCE_ID );
 
 	// check to see if the Children tab should be rendered
 	locals.shouldRenderChildrenSection = ( userType === 'social worker' || userType === 'family' );
@@ -44,12 +47,12 @@ exports = module.exports = ( req, res ) => {
 	}
 
 	Promise.all( [ fetchEvents, fetchCitiesAndTowns, fetchDisabilities, fetchGenders, fetchLanguages, fetchLegalStatuses,
-		fetchSocialWorkerPositions, fetchRaces, fetchStates, fetchChildTypes ] )
+		fetchSocialWorkerPositions, fetchRaces, fetchStates, fetchChildTypes, fetchMailingListGroups, fetchMailingListMember ] )
 		.then( values => {
 
 			// assign local variables to the values returned by the promises
 			const [ events, citiesAndTowns, disabilities, genders, languages, legalStatuses,
-				socialWorkerPositions, races, states, childTypes ] = values;
+				socialWorkerPositions, races, states, childTypes, mailingListGroups, memberInfo ] = values;
 
 			// loop through all the events
 			for( let event of events ) {
@@ -105,6 +108,11 @@ exports = module.exports = ( req, res ) => {
 			locals.states					= states;
 			locals.childTypes				= childTypes;
 			locals.familyChildren			= familyChildren;
+			locals.mailingListPreferences	= mailingListGroups.interests.map( group => ({
+				name: group.name,
+				id: group.id,
+				isMember: memberInfo.interests[ group.id ]
+			}));
 
 			// render the view using the account.hbs template
 			view.render( 'account' );

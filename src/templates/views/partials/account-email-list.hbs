@@ -2,8 +2,17 @@
 
     <h1 class="account-current-section__title">Your Email Preferences</h1>
 
-	<div class="text-center">
-		<a href="https://mareinc.us13.list-manage.com/unsubscribe?u=39a670129a9168e61f6cdd94c&id=573d45ceed" target="_blank" class="button button--teal">Unsubscribe</a>
+	{{#each mailingListPreferences as |group|}}
+		<div class="form-group">
+			<input id="list{{@index}}" type="checkbox" class="checkbox-inline" name="mailingLists[]" value="{{ group.id }}" {{#if group.isMember}}checked{{/if}}>
+			<label for="list{{@index}}" class="label-inline ml-1">{{ group.name }}</label>
+		</div>
+	{{else}}
+		No mailing lists could be found
+	{{/each}}
+
+	<div class="text-center pt-3">
+		<button class="button button--teal">Update Preferences</button>
 	</div>
 
 </script>

@@ -55,6 +55,62 @@ exports.getMailingList = function getMailingList( mailingListId ) {
 };
 
 /**
+ * getInterests
+ * ============
+ * @description get the interests of a particular category (interests are called 'groups' in the mailchimp admin panel)
+ * @param {String} mailingListId the id of the mailing list to get interests from
+ * @param {String} categoryId the id of the category to get interests from
+ * @returns {Object} containing an array of interests
+ */
+ exports.getInterests = function getInterests( mailingListId, categoryId ) {
+
+    return new Promise( ( resolve, reject ) => {
+
+        if ( !mailingListId || !categoryId ) {
+            return reject( new Error( 'getInterests failed - either mailingListId or categoryId was not provided.' ) );
+        }
+
+        _mailchimp.request({
+            method: 'get',
+            path: '/lists/{list_id}/interest-categories/{interest_category_id}/interests', // this is not a template string, rather a mailchimp-api-v3 library convention
+            path_params: {
+                list_id: mailingListId,
+                interest_category_id: categoryId
+            }
+        })
+        .then( interests => resolve( interests ) )
+        .catch( err => reject( new Error( err.message ) ) );
+    });
+};
+
+/**
+ * getInterestCategories
+ * =====================
+ * @description get the interest categories for a mailing list (interests are called 'groups' in the mailchimp admin panel)
+ * @param {String} mailingListId the id of the mailing list to get categories from
+ * @returns {Object} containing an array of interest categories
+ */
+ exports.getInterestCategories = function getInterestCategories( mailingListId ) {
+
+    return new Promise( ( resolve, reject ) => {
+
+        if ( !mailingListId ) {
+            return reject( new Error( 'getInterestCategories failed - mailingListId was not provided.' ) );
+        }
+
+        _mailchimp.request({
+            method: 'get',
+            path: '/lists/{list_id}/interest-categories', // this is not a template string, rather a mailchimp-api-v3 library convention
+            path_params: {
+                list_id: mailingListId
+            }
+        })
+        .then( categories => resolve( categories ) )
+        .catch( err => reject( new Error( err.message ) ) );
+    });
+};
+
+/**
  * subscribeMemberToList
  * =====================
  * @description subscribes a member to a mailing list
