@@ -4,7 +4,8 @@
 
 	{{#each mailingListPreferences as |group|}}
 		<div class="form-group">
-			<input id="list{{@index}}" type="checkbox" class="checkbox-inline" name="mailingLists[]" value="{{ group.id }}" {{#if group.isMember}}checked{{/if}}>
+			<input type="checkbox" name="mailingLists[]" value="{{ group.id }}" data-initial-state="{{ group.isMember }}"
+				id="list{{@index}}" class="checkbox-inline mailing-list-preference" {{#if group.isMember}}checked{{/if}}>
 			<label for="list{{@index}}" class="label-inline ml-1">{{ group.name }}</label>
 		</div>
 	{{else}}
@@ -12,7 +13,7 @@
 	{{/each}}
 
 	<div class="text-center pt-3">
-		<button class="button button--teal">Update Preferences</button>
+		<button id="preference-btn" class="button button--teal button--disabled" disabled>Update Preferences</button>
 	</div>
 
 </script>
