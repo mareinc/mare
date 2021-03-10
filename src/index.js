@@ -18,6 +18,7 @@ const keystone						= require( 'keystone' ),
 	  passwordResetService 			= require( './components/accounts/account.password-reset.controllers'),
 	  accountVerificationService	= require( './components/account verification codes/account-verification-code.middleware' ),
 	  toolsService					= require( './components/reporting dashboard/tools.controllers' ),
+	  mailingListMiddleware			= require( './components/mailchimp lists/mailchimp-list-middleware' ),
 	  enforce						= require( 'express-sslify' ),
 	  importRoutes					= keystone.importer( __dirname );
 
@@ -121,6 +122,7 @@ exports = module.exports = app => {
 	app.post( '/services/add-sibling-group-bookmark'	, familyService.addSiblingGroupBookmark );
 	app.post( '/services/remove-sibling-group-bookmark'	, familyService.removeSiblingGroupBookmark );
 	app.post( '/services/get-gallery-permissions'		, userService.getGalleryPermissions );
+	app.post( '/services/update-mailing-lists'			, mailingListMiddleware.updateMailingListPreferences );
 	
 	// reporting tools
 	app.get( '/tools'											, accountMiddleware.requireUser( 'admin' ), routes.views.tools );

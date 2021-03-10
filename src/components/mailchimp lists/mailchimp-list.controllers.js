@@ -285,7 +285,7 @@ exports.getMemberFromList = function getMemberFromList( email, mailingListId ) {
         // check to ensure required params were passed
         if ( !email || !mailingListId ) {
             return reject( new Error( 'getMemberFromList failed - email or mailingListId was not provided.' ) );
-
+            
         // check to ensure Mailchimp updates are turned on for the current enviornment
         } else if ( !ALLOW_MAILCHIMP_API_UPDATES ) {
             return resolve();
@@ -302,7 +302,43 @@ exports.getMemberFromList = function getMemberFromList( email, mailingListId ) {
         .then( member => resolve( member ) )
         .catch( err => reject( err ) );
     });
- };
+};
+
+/**
+ * updateMemberInterests
+ * =====================
+ * @description get a member from a mailing list
+ * @param {String} email the email of the member to unsubscribe
+ * @param {String} mailingListId the id of the mailing list to unsubscribe the member from
+ * @param {Object} interests a map of interests in the following format { 'interestId': true || false }
+ * @returns {Object} member object
+ */
+exports.updateMemberInterests = function updateMemberInterests( email, mailingListId, interests ) {
+
+    return new Promise( ( resolve, reject ) => {
+
+        // check to ensure required params were passed
+        if ( !email || !mailingListId || !interests ) {
+            return reject( new Error( 'updateMemberInterests failed - email, mailingListId, or interests was not provided.' ) );
+        }
+
+        return reject('failed');
+
+        _mailchimp.request({
+            method: 'patch',
+            path: '/lists/{list_id}/members/{subscriber_hash}', // this is not a template string, rather a mailchimp-api-v3 library convention
+            path_params: {
+                list_id: mailingListId,
+                subscriber_hash: MD5( email )
+            },
+            body: {
+                interests
+            }
+        })
+        .then( member => resolve( member ) )
+        .catch( err => reject( err ) );
+    });
+};
 
 /**
  * validateWebhook
