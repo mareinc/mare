@@ -285,10 +285,6 @@ exports.getMemberFromList = function getMemberFromList( email, mailingListId ) {
         // check to ensure required params were passed
         if ( !email || !mailingListId ) {
             return reject( new Error( 'getMemberFromList failed - email or mailingListId was not provided.' ) );
-            
-        // check to ensure Mailchimp updates are turned on for the current enviornment
-        } else if ( !ALLOW_MAILCHIMP_API_UPDATES ) {
-            return resolve();
         }
 
         _mailchimp.request({
@@ -320,9 +316,11 @@ exports.updateMemberInterests = function updateMemberInterests( email, mailingLi
         // check to ensure required params were passed
         if ( !email || !mailingListId || !interests ) {
             return reject( new Error( 'updateMemberInterests failed - email, mailingListId, or interests was not provided.' ) );
-        }
 
-        return reject('failed');
+        // check to ensure Mailchimp updates are turned on for the current enviornment
+        } else if ( !ALLOW_MAILCHIMP_API_UPDATES ) {
+            return resolve();
+        }
 
         _mailchimp.request({
             method: 'patch',
