@@ -6,7 +6,8 @@
 
 		events: {
 			'change .mailing-list-preference'	: 'handleMailingListPreferenceChanged',
-			'click	#preference-btn'			: 'handleSaveButtonClicked'
+			'click	#preference-btn'			: 'handleSaveButtonClicked',
+			'click .modal-trigger'				: 'openModal'
 		},
 
 		initialize: function initialize() {
@@ -16,6 +17,8 @@
 			this.template = Handlebars.compile( html );
 			// create a placeholder for preference updates
 			this.mailingListUpdates = [];
+			// initialize the mailing list preferences modal
+			mare.views.mailingListPreferencesModal = mare.views.mailingListPreferencesModal || new mare.views.MailingListPreferencesModal();
 		},
 
 		render: function render() {
@@ -124,6 +127,11 @@
 		updateSaveButtonDisabledState: function updateSaveButtonDisabledState() {
 			$( '#preference-btn' ).prop( 'disabled', this.mailingListUpdates.length === 0 );
 			$( '#preference-btn' ).toggleClass( 'button--disabled', this.mailingListUpdates.length === 0 );
+		},
+
+		openModal: function openModal( event ) {
+			// open the modal
+			mare.views.mailingListPreferencesModal.openModal();
 		}
 	});
 }());

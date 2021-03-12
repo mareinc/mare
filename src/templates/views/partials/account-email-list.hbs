@@ -2,18 +2,36 @@
 
     <h1 class="account-current-section__title">Your Email Preferences</h1>
 
-	{{#each mailingListPreferences as |group|}}
-		<div class="form-group">
-			<input type="checkbox" name="mailingLists[]" value="{{ group.id }}" data-initial-state="{{ group.isMember }}"
-				id="list{{@index}}" class="checkbox-inline mailing-list-preference" {{#if group.isMember}}checked{{/if}}>
-			<label for="list{{@index}}" class="label-inline ml-1">{{ group.name }}</label>
+	{{#if isSubscriber}}
+		{{#each mailingListPreferences as |group|}}
+			<div class="form-group">
+				<input type="checkbox" name="mailingLists[]" value="{{ group.id }}" data-initial-state="{{ group.isMember }}"
+					id="list{{@index}}" class="checkbox-inline mailing-list-preference" {{#if group.isMember}}checked{{/if}}>
+				<label for="list{{@index}}" class="label-inline ml-1">{{ group.name }}</label>
+			</div>
+		{{else}}
+			No mailing lists could be found
+		{{/each}}
+
+		<div class="text-center py-3">
+			<button id="preference-btn" class="button button--teal button--disabled" disabled>Update Preferences</button>
 		</div>
 	{{else}}
-		No mailing lists could be found
-	{{/each}}
+		<p class="text-center pb-2">
+			You are currently not subscribed to our email list. If you would like to receive emails from MARE, please signup again by completing this
+			<a href="http://eepurl.com/hkB4-X">Email Signup Form</a>.
+		</p>
+		<p class="text-center font-italic pb-3">
+			Note: Be sure to use the same email address as your MARE account.
+		</p>
+	{{/if}}
 
-	<div class="text-center pt-3">
-		<button id="preference-btn" class="button button--teal button--disabled" disabled>Update Preferences</button>
-	</div>
-
+	{{#if isSubscriber}}
+		<p class="text-center pb-2">
+			If you would like to completely unsubscribe from all future MARE emails, please unsubscribe <a href="#email-list" class="modal-trigger">here</a>.
+		</p>
+		<p class="text-center">
+			For troubleshooting with email subscriptions, please contact <a href="mailto:web@mareinc.org">web@mareinc.org</a> for assistance.
+		</p>
+	{{/if}}
 </script>

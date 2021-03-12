@@ -32,7 +32,10 @@ exports = module.exports = ( req, res ) => {
 		fetchStates					= listService.getAllStates(),
 		fetchChildTypes				= listService.getChildTypesForWebsite(),
 		fetchMailingListGroups		= mailchimpService.getInterests( process.env.MAILCHIMP_AUDIENCE_ID, process.env.MAILCHIMP_PREFERENCES_CATEGORY_ID ),
-		fetchMailingListMember		= mailchimpService.getMemberFromList( req.user.email, process.env.MAILCHIMP_AUDIENCE_ID );
+		fetchMailingListMember		= mailchimpService.getMemberFromList( req.user.email, process.env.MAILCHIMP_AUDIENCE_ID ).catch( error => {
+			console.error( `Error retrieving mailing list info for user (${ req.user.email })` );
+			console.error( error );
+		});
 
 	// check to see if the Children tab should be rendered
 	locals.shouldRenderChildrenSection = ( userType === 'social worker' || userType === 'family' );
@@ -94,6 +97,13 @@ exports = module.exports = ( req, res ) => {
 				}
 			}
 
+			const isSubscriber = memberInfo && memberInfo.status === 'subscribed';
+			const mailingListPreferences = mailingListGroups.interests.map( group => ({
+				name: group.name,
+				id: group.id,
+				isMember: isSubscriber && memberInfo.interests[ group.id ]
+			}));
+
 			// assign properties to locals for access during templating
 			locals.user						= req.user;
 			locals.events					= events;
@@ -108,11 +118,8 @@ exports = module.exports = ( req, res ) => {
 			locals.states					= states;
 			locals.childTypes				= childTypes;
 			locals.familyChildren			= familyChildren;
-			locals.mailingListPreferences	= mailingListGroups.interests.map( group => ({
-				name: group.name,
-				id: group.id,
-				isMember: memberInfo.interests[ group.id ]
-			}));
+			locals.isSubscriber				= isSubscriber;
+			locals.mailingListPreferences	= mailingListPreferences;
 
 			// render the view using the account.hbs template
 			view.render( 'account' );

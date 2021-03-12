@@ -123,6 +123,7 @@ exports = module.exports = app => {
 	app.post( '/services/remove-sibling-group-bookmark'	, familyService.removeSiblingGroupBookmark );
 	app.post( '/services/get-gallery-permissions'		, userService.getGalleryPermissions );
 	app.post( '/services/update-mailing-lists'			, mailingListMiddleware.updateMailingListPreferences );
+	app.post( '/services/mailing-list-unsubscribe'		, mailingListMiddleware.unsubscribeUserFromMailingList );
 	
 	// reporting tools
 	app.get( '/tools'											, accountMiddleware.requireUser( 'admin' ), routes.views.tools );

@@ -1,5 +1,6 @@
 const mailchimpService = require( './mailchimp-list.controllers' );
 const flashMessages	= require( '../../utils/notification.middleware' );
+const MAILING_LIST_ID = process.env.MAILCHIMP_AUDIENCE_ID;
 
 exports.updateMailingListPreferences = function updateMailingListPreferences( req, res, next ) {
 
@@ -22,14 +23,14 @@ exports.updateMailingListPreferences = function updateMailingListPreferences( re
     let hasError = false;
 
     // update the member's interests (groups) in mailchimp
-    mailchimpService.updateMemberInterests( req.user.email, process.env.MAILCHIMP_AUDIENCE_ID, updatesObject )
+    mailchimpService.updateMemberInterests( req.user.email, MAILING_LIST_ID, updatesObject )
         .then( () => {
             
             // display a message to the user
 			flashMessages.appendFlashMessage({
 				messageType: flashMessages.MESSAGE_TYPES.SUCCESS,
-				title: 'Success',
-				message: 'Preferences updated'
+				title: 'Success!',
+				message: 'Your email preferences have been successfully updated.'
 			});
         })
         .catch( error => {
@@ -41,8 +42,8 @@ exports.updateMailingListPreferences = function updateMailingListPreferences( re
             // display a message to the user
 			flashMessages.appendFlashMessage({
 				messageType: flashMessages.MESSAGE_TYPES.ERROR,
-				title: 'Error',
-				message: 'Try again'
+				title: 'Something Went Wrong',
+				message: 'Please try updating your preferences again. If problems persist, please contact <a href="mailto:web@mareinc.org">web@mareinc.org</a>.'
 			});
         })
         .finally( () => {
@@ -57,3 +58,46 @@ exports.updateMailingListPreferences = function updateMailingListPreferences( re
                 });
         });
 };
+
+exports.unsubscribeUserFromMailingList = function unsubscribeUserFromMailingList( req, res, next ) {
+
+    // get the user email from the request body
+    const userEmail = req.user && req.user.email;
+    // initialize error flag
+    let hasError = false;
+
+    mailchimpService.unsubscribeMemberFromList( userEmail, MAILING_LIST_ID )
+        .then( () => {
+
+            // display a message to the user
+			flashMessages.appendFlashMessage({
+				messageType: flashMessages.MESSAGE_TYPES.SUCCESS,
+				title: 'Success!',
+				message: 'Your have been unsubscribed from the MARE email list.'
+			});
+        })
+        .catch( error => {
+
+            // log the error
+            console.error( error );
+            // update the error flag
+            hasError = true;
+            // display a message to the user
+			flashMessages.appendFlashMessage({
+				messageType: flashMessages.MESSAGE_TYPES.ERROR,
+				title: 'Something Went Wrong',
+				message: 'Please try unsubscribing again. If problems persist, please contact <a href="mailto:web@mareinc.org">web@mareinc.org</a>.'
+			});
+        })
+        .finally( () => {
+
+            // send the error status and flash message markup
+			flashMessages.generateFlashMessageMarkup()
+                .then( flashMessageMarkup => {
+                    res.send({
+                        status: hasError ? 'error' : 'success',
+                        flashMessage: flashMessageMarkup
+                    });
+                });
+        });
+}
