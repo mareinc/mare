@@ -57,7 +57,7 @@ exports.initLocals = function( req, res, next ) {
 			{ title: 'Weekend Family Connections', href: '/page/weekend-family-connections' }
 		]},
 		{ title: 'About Us', lastMenu: true, subMenu: [
-			{ title: 'Mission & Vision', href: '/page/mission-and-vision' },
+			{ title: 'Who We Are', href: '/page/who-we-are' },
 			{ title: 'History', href: '/page/history' },
 			{ title: 'Meet the Staff', href: '/page/meet-the-staff' },
 			{ title: 'Board of Directors', href: '/page/board-of-directors' },
