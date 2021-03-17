@@ -1444,6 +1444,11 @@ exports.getChildListingData = ( req, res, next ) => {
 		searchCriteria[ 'weekendFamilyConnections' ] = true;
 	}
 
+	// specialized recruitment coordination
+	if ( !!query.specializedRecruitmentCoordination ) {
+		searchCriteria[ 'specializedRecruitment' ] = true;
+	}
+
 	Promise.all([
 		// get the children that match the specified date range and criteria
 		keystone.list( 'Child' ).model
@@ -1519,6 +1524,7 @@ exports.getChildListingData = ( req, res, next ) => {
 			coalitionMeeting: childDoc.coalitionMeeting ? 'Yes' : 'No',
 			matchingEvent: childDoc.matchingEvent ? 'Yes' : 'No',
 			weekendFamilyConnections: childDoc.weekendFamilyConnections ? 'Yes' : 'No',
+			specializedRecruitment: childDoc.specializedRecruitment ? 'Yes' : 'No',
 			displayImage: childDoc.image && childDoc.image.url ? childDoc.image.url : undefined
 		}));
 
