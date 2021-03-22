@@ -32,6 +32,7 @@
 			this.$socialWorkerEmail						= this.$( '.social-worker-email' );
 			this.$homestudySection						= this.$( '.family-submit-your-homestudy-section' );
 			this.$homestudySubmissionSection			= this.$( '.family-homestudy-details-section' );
+			this.$adoptionPreferencesSection			= this.$( '.family-adoption-preferences-section' );
 			this.$howDidYouHearOther					= this.$( '#family-how-did-you-hear-other' );
 			this.$childrenInHome 						= this.$( '#children-in-home' );
 			this.$childrenInHomeDetails 				= this.$( '.children-in-home-details' );
@@ -211,13 +212,14 @@
 		/* check the 'where are you in the adoption process' checkboxes to determine whether to require the adoption preferences fields */
 		checkAdoptionPreferences: function checkAdoptionPreferences() {
 			// check the 'where are you in the adoption process' checkboxes to determine whether to require the adoption preferences fields
-			var workingWithAgency = document.getElementById( 'working-with-agency-checkbox' ).checked;
 			var mappTrainingCompleted = document.getElementById( 'mapp-training-completed-checkbox' ).checked;
 			var homestudyCompleted = document.getElementById( 'homestudy-completed-checkbox' ).checked;
 			// determine whether the adoption preferences section of the form should be required
-			if( workingWithAgency || mappTrainingCompleted || homestudyCompleted ) {
+			if( mappTrainingCompleted || homestudyCompleted ) {
 				this.makeAdoptionPreferencesRequired();
+				this.$adoptionPreferencesSection.show();
 			} else {
+				this.$adoptionPreferencesSection.hide();
 				this.makeAdoptionPreferencesNotRequired();
 			}
 		},
