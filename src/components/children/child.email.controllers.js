@@ -920,6 +920,13 @@ exports.sendEditSocialWorkerChildRegistrationNotificationEmailToMARE = ( rawChil
 			});
 		}
 
+		if( rawChildData.hasUpdatedPhoto === 'Yes' ) {
+			childData.push( {
+				key: 'has updated photo',
+				value: 'yes'
+			});
+		}
+
 		if( languagesArray.length !== 0 ) {
 			childData.push( {
 				key: 'languages spoken',
