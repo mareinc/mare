@@ -2,7 +2,7 @@
 	
 	<h4>\{{ child.displayNameAndRegistration }}</h4>
 	
-	\{{#unless child }}
+	\{{#unless child}}
 		<h4>Loading ... </h4>
 	\{{/unless}}
 	<form class="matching-form">
@@ -292,13 +292,15 @@
 		No results found
 	\{{/if}}
 	
-	\{{#if results }}
+	\{{#if results}}
 		<h3>Results: </h3>
 		<input type="button" class="button button--teal export-pdf-button" value="PDF Export" />
 		<input type="button" class="button button--teal export-xlsx-button" value="XLSX Export" />
 		
-		<input type="button" class="button button--teal save-family-entries-button" value="Save entries to the child" />
-		
+		\{{#unless isAnonymous}}
+			<input type="button" class="button button--teal save-family-entries-button" value="Save entries to the child" />
+		\{{/unless}}
+
 		<table width="100%" class="matching-results-table">
 			<tr>
 				<th></th>
@@ -346,6 +348,9 @@
 				<th>Preferred # of Children</th>
 				<th>Preferred Age Range</th>
 				<th>City / State</th>
+				<th>Social Worker</th>
+				<th>Social Worker Email</th>
+				<th>Social Worker Agency</th>
 			</tr>
 			\{{#each results}}
 				<tr data-id="\{{ id }}">
@@ -358,6 +363,9 @@
 					<td>\{{ minNumberOfChildren }} - \{{ maxNumberOfChildren }}</td>
 					<td>\{{ minPreferredAge }} - \{{ maxPreferredAge }}</td>
 					<td>\{{ city }}, \{{ state }}</td>
+					<td>\{{ socialWorkerName }}</td>
+					<td>\{{ socialWorkerEmail }}</td>
+					<td>\{{ socialWorkerAgency }}</td>
 				</tr>
 			\{{else}}
 				<tr>

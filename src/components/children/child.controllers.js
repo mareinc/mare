@@ -245,7 +245,7 @@ exports.getChildrenByIds = ids => {
 };
 
 /* get all children that match the query in the name field and sort them by name */
-exports.getChildrenByName = ( nameQuery, maxResults ) => {
+exports.getChildrenByName = ( nameQuery, maxResults, includeAnonymousResult ) => {
 
 	return new Promise( ( resolve, reject ) => {
 		// if no maxResults was passed in
@@ -265,6 +265,15 @@ exports.getChildrenByName = ( nameQuery, maxResults ) => {
 			.limit( maxResults )
 			.exec()
 			.then( children => {
+
+				// if an anonymous result should be included, insert it at the beginning of the result list
+				if ( includeAnonymousResult ) {
+					children.unshift({
+						displayNameAndRegistration: 'Anonymous Child',
+						_id: 'anonymous'
+					});
+				}
+
 				// resolve the promise with the returned children
 				resolve( children );
 			}, err => {

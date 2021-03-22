@@ -98,6 +98,16 @@ exports.FAMILY_SERVICES = [{
 	path: 'familyServices.receivesConsultationServices'
 }];
 
+// stub a result for seeding a search with an 'anonymous' child
+exports.ANONYMOUS_CHILD_RESULT = {
+	_id: 'anonymous',
+	displayNameAndRegistration: 'Anonymous Child',
+	status: {
+		childStatus: 'any'
+	},
+	siblingsToBePlacedWith: []
+};
+
 exports.getPhysicalNeedsRange = ( fromNeed, toNeed ) => {
 	return utilityService.arrayCut( exports.PHYSICAL_NEEDS_OPTIONS, fromNeed, toNeed );
 };

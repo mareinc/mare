@@ -164,6 +164,8 @@
 			this.getDataPromise( childId, params ).done( function( data ) {
 				// if there is no parameters in the response (no default parameters) and no results were found
 				data.noResultsFound = !data.params && data.results.length === 0;
+				// set anonymouse child flag
+				data.isAnonymous = data.child._id === 'anonymous';
 				
 				html = view.template( data );
 				view.$el.html( html );

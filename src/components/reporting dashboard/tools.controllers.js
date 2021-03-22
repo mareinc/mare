@@ -19,10 +19,15 @@ const keystone 				= require( 'keystone' ),
 exports.getChildMatchingData = ( req, res, next ) => {
 	const userType	= req.user ? req.user.userType : '',
 			childId = req.query.childId;
-
-	let fetchChild = childService.getChildById( { id: childId, fieldsToPopulate: [ 'status', 'siblingsToBePlacedWith' ] } ),
-		criteria = childMatchingService.getCriteria( req.query ),
-		resultsPromise = childMatchingService.getFamiliesByCriteria( criteria );
+	
+	// check if this is seach is using an anonymous child
+	const isAnonymousSearch = childId === 'anonymous';
+	// get the child data by ID or use the anonymous child placeholder
+	const fetchChild = isAnonymousSearch 
+		? Promise.resolve( utilsService.ANONYMOUS_CHILD_RESULT )
+		: childService.getChildById( { id: childId, fieldsToPopulate: [ 'status', 'siblingsToBePlacedWith' ] } );
+	const criteria = childMatchingService.getCriteria( req.query );
+	const resultsPromise = childMatchingService.getFamiliesByCriteria( criteria );
 
 	// fetch the social workers and agencies for rendering purposes on the client side
 	let fetchSocialWorkers = Array.isArray( req.query.socialWorkers ) ? socialWorkerService.getSocialWorkersByIds( req.query.socialWorkers ) : [],
@@ -42,6 +47,13 @@ exports.getChildMatchingData = ( req, res, next ) => {
 			
 			// if no criteria were detected prepare and send the default parameters set based on the child record
 			if ( _.isEmpty( criteria ) ) {
+
+				// if the search is using an anonymous child do not set any default params
+				if ( isAnonymousSearch ) {
+					result.params = {};
+					return res.send( result );
+				}
+
 				let fetchSocialWorkers = child.adoptionWorker ? socialWorkerService.getSocialWorkersByIds( [ child.adoptionWorker.toString() ] ) : [],
 					fetchAgencies = child.adoptionWorkerAgency ? agenciesService.getAgenciesByIds( [ child.adoptionWorkerAgency.toString() ] ) : [],
 					params = {};
@@ -399,9 +411,10 @@ exports.getFamiliesData = ( req, res, next ) => {
 exports.getChildrenData = ( req, res, next ) => {
 	
 	const MAX_RESULTS = 10;
+	const includeAnonymousResult = req.query && !!req.query.includeAnon;
 
 	utilsService.fetchModelsMapAndSendResults(
-		childService.getChildrenByName( req.query.q, MAX_RESULTS ),
+		childService.getChildrenByName( req.query.q, MAX_RESULTS, includeAnonymousResult ),
 		child => {
 			return {
 				id: child._id.toString(),

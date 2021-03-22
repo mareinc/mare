@@ -204,7 +204,7 @@ exports.getFamiliesByCriteria = criteria => {
 
 	const fieldsToSelectFromFamilyModel = [ '_id', 'registrationNumber', 'displayName', 'contact1.name', 'contact2.name', 'address.isOutsideMassachusetts',
 	'address.cityText', 'numberOfChildren', 'matchingPreferences.minNumberOfChildrenToAdopt', 'matchingPreferences.maxNumberOfChildrenToAdopt',
-	'matchingPreferences.adoptionAges.from', 'matchingPreferences.adoptionAges.to' ];
+	'matchingPreferences.adoptionAges.from', 'matchingPreferences.adoptionAges.to', 'socialWorkerText' ];
 
 	return new Promise( ( resolve, reject ) => {
 		if ( _.isEmpty( criteria ) ) {
@@ -220,6 +220,9 @@ exports.getFamiliesByCriteria = criteria => {
 				.populate( 'address.city', { cityOrTown: 1 } )
 				.populate( 'address.state', { abbreviation: 1 } )
 				.populate( 'registeredWithMARE.status' )
+				.populate( 'socialWorker' )
+				.populate( 'socialWorkerAgency' )
+				.populate( 'socialWorkerAgencyRegion' )
 				.exec()
 				.then( families => {
 					// ensure only active families are displayed on the matching dashboard
@@ -252,7 +255,12 @@ exports.mapFamiliesToPlainObjects = families => {
 			minPreferredAge: !globalUtils.isNil(family.matchingPreferences.adoptionAges.from) ? family.matchingPreferences.adoptionAges.from : 'Unspecified',
 			maxPreferredAge: !globalUtils.isNil(family.matchingPreferences.adoptionAges.to) ? family.matchingPreferences.adoptionAges.to : 'Unspecified',
 			city: !family.address.isOutsideMassachusetts && family.address.city ? family.address.city.cityOrTown : family.address.cityText,
-			state: family.address.state ? family.address.state.abbreviation : ''
+			state: family.address.state ? family.address.state.abbreviation : '',
+			socialWorkerName: family.socialWorker
+				? family.socialWorker.name.full
+				: family.socialWorkerText || 'Unspecified',
+			socialWorkerAgency: family.socialWorkerAgency ? family.socialWorkerAgency.name : 'Unspecified',
+			socialWorkerEmail: family.socialWorker ? family.socialWorker.email : 'Unspecified'
 		}
 	};
 	
