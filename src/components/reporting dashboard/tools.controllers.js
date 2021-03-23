@@ -202,9 +202,14 @@ exports.getFamilyMatchingData = ( req, res, next ) => {
 	const userType	= req.user ? req.user.userType : '',
 			familyId = req.query.familyId;
 
-	let fetchFamily = familyService.getFamilyById( familyId, [ 'registeredWithMARE.status' ] ),
-		criteria = familyMatchingService.getCriteria( req.query ),
-		resultsPromise = familyMatchingService.getChildrenByCriteria( criteria );
+	// check if this is seach is using an anonymous family
+	const isAnonymousSearch = familyId === 'anonymous';
+	// get the family data by ID or use the anonymous family placeholder
+	const fetchFamily = isAnonymousSearch 
+		? Promise.resolve( utilsService.ANONYMOUS_FAMILY_RESULT )
+		: familyService.getFamilyById( familyId, [ 'registeredWithMARE.status' ] );
+	const criteria = familyMatchingService.getCriteria( req.query );
+	const resultsPromise = familyMatchingService.getChildrenByCriteria( criteria );
 
 	// fetch the social workers and agencies for rendering purposes on the client side
 	let fetchAdoptionWorkers = Array.isArray( req.query.adoptionWorkers ) ? 
@@ -232,6 +237,13 @@ exports.getFamilyMatchingData = ( req, res, next ) => {
 			
 			// if no criteria were detected prepare and send the default parameters set based on the child record
 			if ( _.isEmpty( criteria ) ) {
+
+				// if the search is using an anonymous family do not set any default params
+				if ( isAnonymousSearch ) {
+					result.params = {};
+					return res.send( result );
+				}
+
 				let fetchAdoptionWorkers = family.socialWorker ? socialWorkerService.getSocialWorkersByIds( [ family.socialWorker.toString() ] ) : [],
 					fetchAdoptionWorkersAgency = family.socialWorkerAgency ? agenciesService.getAgenciesByIds( [ family.socialWorkerAgency.toString() ] ) : [],
 					params = {};
@@ -393,9 +405,10 @@ exports.getSocialWorkersData = ( req, res, next ) => {
 exports.getFamiliesData = ( req, res, next ) => {
 	
 	const MAX_RESULTS = 10;
+	const includeAnonymousResult = req.query && !!req.query.includeAnon;
 
 	utilsService.fetchModelsMapAndSendResults(
-		familyService.getFamiliesByName( req.query.q, MAX_RESULTS ),
+		familyService.getFamiliesByName( req.query.q, MAX_RESULTS, includeAnonymousResult ),
 		family => {
 			return {
 				id: family._id.toString(),

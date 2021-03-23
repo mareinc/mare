@@ -76,7 +76,7 @@ exports.getFamiliesByIds = ids => {
 };
 
 /* get all families that match the query in the name field and sort them by name */
-exports.getFamiliesByName = ( nameQuery, maxResults ) => {
+exports.getFamiliesByName = ( nameQuery, maxResults, includeAnonymousResult ) => {
 
 	return new Promise( ( resolve, reject ) => {
 		// if no maxResults was passed in
@@ -96,6 +96,15 @@ exports.getFamiliesByName = ( nameQuery, maxResults ) => {
 			.limit( maxResults )
 			.exec()
 			.then( families => {
+
+				// if an anonymous result should be included, insert it at the beginning of the result list
+				if ( includeAnonymousResult ) {
+					families.unshift({
+						displayNameAndRegistration: 'Anonymous Family',
+						_id: 'anonymous'
+					});
+				}
+
 				// resolve the promise with the returned families
 				resolve( families );
 			}, err => {

@@ -108,6 +108,18 @@ exports.ANONYMOUS_CHILD_RESULT = {
 	siblingsToBePlacedWith: []
 };
 
+exports.ANONYMOUS_FAMILY_RESULT = {
+	_id: 'anonymous',
+	displayName: 'Anonymous Family',
+	registrationNumber: 'N/A',
+	registeredWithMARE: {
+		registered: true,
+		status: {
+			familyStatus: 'N/A'
+		}
+	}
+};
+
 exports.getPhysicalNeedsRange = ( fromNeed, toNeed ) => {
 	return utilityService.arrayCut( exports.PHYSICAL_NEEDS_OPTIONS, fromNeed, toNeed );
 };

@@ -22,7 +22,7 @@
 			this.$el.find( '.family-select' ).select2({
 				placeholder: 'Select family',
 				ajax: {
-					url: '/tools/services/get-families-data',
+					url: '/tools/services/get-families-data?includeAnon=true',
 					dataType: 'json'
 				}
 			});

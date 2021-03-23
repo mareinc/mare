@@ -3,7 +3,7 @@
 	<form class="matching-form">
 		<input type="hidden" name="familyId" value="\{{ family._id }}" />
 		
-		<h4>\{{ family.displayName }} - \{{ family.registrationNumber }}</h4>
+		<h4>\{{ family.displayName }} \{{#unless isAnonymous}}- \{{ family.registrationNumber }}\{{/unless}}</h4>
 		
 		\{{#unless family }}
 			<h4>Loading ... </h4>
@@ -359,7 +359,9 @@
 		<input type="button" class="button button--teal children-export-pdf-button" value="PDF Export" />
 		<input type="button" class="button button--teal children-export-xlsx-button" value="XLSX Export" />
 		
-		<input type="button" class="button button--teal save-child-entries-button" value="Save entries to the family" />
+		\{{#unless isAnonymous}}
+			<input type="button" class="button button--teal save-child-entries-button" value="Save entries to the family" />
+		\{{/unless}}
 		
 		<table width="100%">
 			<tr>
