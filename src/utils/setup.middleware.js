@@ -58,10 +58,8 @@ exports.initLocals = function( req, res, next ) {
 		]},
 		{ title: 'About Us', lastMenu: true, subMenu: [
 			{ title: 'Who We Are', href: '/page/who-we-are' },
-			{ title: 'History', href: '/page/history' },
 			{ title: 'Meet the Staff', href: '/page/meet-the-staff' },
 			{ title: 'Board of Directors', href: '/page/board-of-directors' },
-			{ title: 'MARE in the News', href: '/mare-in-the-news' },
 			{ title: 'Annual Report', href: '/page/annual-report' },
 			{ title: 'Careers', href: '/page/careers' }
 		]}];
