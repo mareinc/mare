@@ -58,6 +58,7 @@ exports.initLocals = function( req, res, next ) {
 		]},
 		{ title: 'About Us', lastMenu: true, subMenu: [
 			{ title: 'Who We Are', href: '/page/who-we-are' },
+			{ title: 'What We Do', href: '/page/what-we-do' },
 			{ title: 'Meet the Staff', href: '/page/meet-the-staff' },
 			{ title: 'Board of Directors', href: '/page/board-of-directors' },
 			{ title: 'Annual Report', href: '/page/annual-report' },
