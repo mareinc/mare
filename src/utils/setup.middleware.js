@@ -26,7 +26,8 @@ exports.initLocals = function( req, res, next ) {
 			{ title: 'Types of Adoption', href: '/page/types-of-adoption' },
 			{ title: 'Can I adopt a Child from Foster Care?', href: '/page/can-i-adopt-a-child-from-foster-care' },
 			{ title: 'Steps in the Process', href: '/steps-in-the-process' },
-			{ title: 'How Can MARE Help?', href: '/page/how-can-mare-help' }
+			{ title: 'How Can MARE Help?', href: '/page/how-can-mare-help' },
+			{ title: 'Adoption Stories', href: '/adoption-stories' }
 		]},
 		{ title: 'Meet the Children', subMenu: [
 			{ title: 'Who are the Children?', href: '/page/who-are-the-children' },
@@ -57,11 +58,10 @@ exports.initLocals = function( req, res, next ) {
 			{ title: 'Weekend Family Connections', href: '/page/weekend-family-connections' }
 		]},
 		{ title: 'About Us', lastMenu: true, subMenu: [
-			{ title: 'Mission & Vision', href: '/page/mission-and-vision' },
-			{ title: 'History', href: '/page/history' },
+			{ title: 'Who We Are', href: '/page/who-we-are' },
+			{ title: 'What We Do', href: '/page/what-we-do' },
 			{ title: 'Meet the Staff', href: '/page/meet-the-staff' },
 			{ title: 'Board of Directors', href: '/page/board-of-directors' },
-			{ title: 'MARE in the News', href: '/mare-in-the-news' },
 			{ title: 'Annual Report', href: '/page/annual-report' },
 			{ title: 'Careers', href: '/page/careers' }
 		]}];
