@@ -2,7 +2,7 @@ const keystone				= require( 'keystone' ),
 	  userService			= require( '../components/users/user.controllers' ),
 	  listService			= require( '../components/lists/list.controllers' ),
 	  pageService			= require( '../components/pages/page.controllers' ),
-	  childSearchService	= require( '../components/child searches/child.search.controllers' );
+	  profileSearchService	= require( '../components/profile searches/profile.search.controllers' );
 
 exports = module.exports = ( req, res ) => {
 	'use strict';
@@ -26,7 +26,7 @@ exports = module.exports = ( req, res ) => {
 		fetchLanguages				= listService.getAllLanguages(),
 		fetchRaces					= listService.getAllRaces(),
 		fetchSidebarItems			= pageService.getSidebarItems(),
-		fetchSavedSearch			= childSearchService.getChildSearch( req.user && req.user._id.toString() );
+		fetchSavedSearch			= profileSearchService.getProfileSearch( req.user && req.user._id.toString() );
 
 	Promise.all( [ fetchDisabilities, fetchFamilyConstellations, fetchGenders, fetchLanguages,
 				   fetchRaces, fetchSidebarItems, fetchSavedSearch ] )

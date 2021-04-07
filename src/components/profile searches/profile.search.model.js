@@ -2,20 +2,20 @@ const keystone = require( 'keystone' );
 const Types = keystone.Field.Types;
 const moment = require( 'moment' );
 
-const ChildSearch = new keystone.List( 'Child Search', {
+const ProfileSearch = new keystone.List( 'Profile Search', {
     autokey: { path: 'key', from: 'user', unique: true },
     map: { name: 'email' },
     nocreate: true,
     noedit: true
 });
 
-ChildSearch.add( 'Search Details', {
+ProfileSearch.add( 'Search Details', {
     
     email:                  { type: Types.Text, label: 'searcher\'s email' },
     user:                   { type: Types.Relationship, label: 'search user', ref: 'User' },
     searchDate:             { type: Types.Date, label: 'date of last search', utc: true }
 
-}, 'Child Search Criteria', {
+}, 'Child Criteria', {
 
     genders:                { type: Types.TextArray },
     minChildren:            { type: Types.Number },
@@ -50,12 +50,12 @@ ChildSearch.add( 'Search Details', {
 
 });
 
-ChildSearch.schema.pre( 'save', function( next ) {
+ProfileSearch.schema.pre( 'save', function( next ) {
 
     this.searchDate = moment.utc();
     next();
 });
 
 // Define default columns in the admin interface and register the model
-ChildSearch.defaultColumns = 'email, searchDate';
-ChildSearch.register();
+ProfileSearch.defaultColumns = 'email, searchDate';
+ProfileSearch.register();

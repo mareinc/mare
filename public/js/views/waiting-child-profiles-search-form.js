@@ -429,7 +429,7 @@
 
 			$.ajax({
 				dataType: 'json',
-				url: '/services/save-child-search',
+				url: '/services/save-profile-search',
 				type: 'POST',
 				data: formFields
 			});
