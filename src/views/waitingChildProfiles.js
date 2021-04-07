@@ -1,7 +1,8 @@
-const keystone		= require( 'keystone' ),
-	  userService	= require( '../components/users/user.controllers' ),
-	  listService	= require( '../components/lists/list.controllers' ),
-	  pageService	= require( '../components/pages/page.controllers' );
+const keystone				= require( 'keystone' ),
+	  userService			= require( '../components/users/user.controllers' ),
+	  listService			= require( '../components/lists/list.controllers' ),
+	  pageService			= require( '../components/pages/page.controllers' ),
+	  childSearchService	= require( '../components/child searches/child.search.controllers' );
 
 exports = module.exports = ( req, res ) => {
 	'use strict';
@@ -24,13 +25,14 @@ exports = module.exports = ( req, res ) => {
 		fetchGenders				= listService.getAllGenders(),
 		fetchLanguages				= listService.getAllLanguages(),
 		fetchRaces					= listService.getAllRaces(),
-		fetchSidebarItems			= pageService.getSidebarItems();
+		fetchSidebarItems			= pageService.getSidebarItems(),
+		fetchSavedSearch			= childSearchService.getChildSearch( req.user && req.user._id.toString() );
 
 	Promise.all( [ fetchDisabilities, fetchFamilyConstellations, fetchGenders, fetchLanguages,
-				   fetchRaces, fetchSidebarItems ] )
+				   fetchRaces, fetchSidebarItems, fetchSavedSearch ] )
 		.then( values => {
 			// assign local variables to the values returned by the promises
-			const [ disabilities, familyConstellations, genders, languages, races, sidebarItems ] = values;
+			const [ disabilities, familyConstellations, genders, languages, races, sidebarItems, savedSearch ] = values;
 			// the sidebar items are a success story and event in an array, assign local variables to the two objects
 			const [ randomSuccessStory, randomEvent ] = sidebarItems;
 			// assign properties to locals for access during templating
@@ -44,6 +46,7 @@ exports = module.exports = ( req, res ) => {
 			locals.races				= races;
 			locals.randomSuccessStory	= randomSuccessStory;
 			locals.randomEvent			= randomEvent;
+			locals.savedSearch			= JSON.stringify( savedSearch );
 
 			// render the view using the waiting-child-profiles.hbs template
 			view.render( 'waiting-child-profiles' );

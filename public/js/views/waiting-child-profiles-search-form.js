@@ -12,6 +12,8 @@
 			'click .gallery-search-form__search-button' : 'displaySearchResults'
 		},
 
+		haveDefaultValuesBeenSet: false,
+
 		displaySearchResults: function displaySearchResults() {
 
 			this.getFormFields();
@@ -19,6 +21,7 @@
 			this.removeUneededFilters();
 			this.updateChildren();
 			this.updateSiblingGroups();
+			this.saveSearchCriteria(this.formFields);
 			// emit an event to allow the gallery to update it's display now that we have all matching models
 			this.trigger( 'searchResultsRetrieved' );
 		},
@@ -32,7 +35,7 @@
 			$( '#maximum-number-of-children > option:eq(8)' ).prop( 'selected', true );
 			// set minimum acceptable age of children to 0
 			$( '#youngest-age > option:eq(0)' ).prop( 'selected', true );
-			// set minimum acceptable age of children to 0
+			// set maximum acceptable age of children to 17
 			$( '#oldest-age > option:eq(17)' ).prop( 'selected', true );
 			// check all the race checkboxes
 			$( '.select-race' ).prop( 'checked', true );
@@ -58,6 +61,14 @@
 			$( '#oldest-child-age-in-home > option:eq(0)' ).prop( 'selected', true );
 			// uncheck the pets in home checkbox
 			$( '.select-pets-in-home' ).prop( 'checked', false );
+			// set maximum physical needs to severe
+			$( '.select-maximum-physical-needs[ value = "3" ]' ).prop( 'checked', true );
+			// set maximum emotional needs to severe
+			$( '.select-maximum-emotional-needs[ value = "3" ]' ).prop( 'checked', true );
+			// set maximum intellectual needs to severe
+			$( '.select-maximum-intellectual-needs[ value = "3" ]' ).prop( 'checked', true );
+			// allow all developmental needs
+			$( '.select-disabilities' ).prop( 'checked', true );
 		},
 
 		getFormFields: function getFormFields() {
@@ -412,6 +423,89 @@
 				// if the sibling group passes all checks, add them to the collection to display on the gallery
 				mare.collections.gallerySiblingGroups.add( siblingGroup );
 			});
+		},
+
+		saveSearchCriteria: function saveSearchCriteria( formFields ) {
+
+			$.ajax({
+				dataType: 'json',
+				url: '/services/save-child-search',
+				type: 'POST',
+				data: formFields
+			});
+		},
+
+		applySavedSearchCriteria: function applySavedSearchCriteria( savedSearchCriteria ) {
+
+			// apply the saved gender criteria
+			$.each( savedSearchCriteria.genders, function( index, gender ) {
+				$( '.select-gender[value="' + gender + '"]' ).prop( 'checked', true );
+			});
+			// apply minimum acceptable number of children criterion
+			$( '#minimum-number-of-children > option:eq(' + ( savedSearchCriteria.minChildren || 0 ) + ')' ).prop( 'selected', true );
+			// apply maximum acceptable number of children criterion
+			$( '#maximum-number-of-children > option:eq(' + ( savedSearchCriteria.maxChildren || 8 ) + ')' ).prop( 'selected', true );
+			// apply minimum acceptable age of children criterion
+			$( '#youngest-age > option:eq(' + ( savedSearchCriteria.minAge || 0 ) + ')' ).prop( 'selected', true );
+			// apply maximum acceptable age of children criterion
+			$( '#oldest-age > option:eq(' + ( savedSearchCriteria.maxAge || 17 ) + ')' ).prop( 'selected', true );
+			// apply the saved race criteria
+			$.each( savedSearchCriteria.races, function( index, race ) {
+				$( '.select-race[value="' + race + '"]' ).prop( 'checked', true );
+			});
+			// apply the saved primary language criteria
+			$.each( savedSearchCriteria.languages, function( index, language ) {
+				$( '.select-primary-language[value="' + language + '"]' ).prop( 'checked', true );
+			});
+			// apply the children who have contact with their biological siblings criterion
+			$( '.select-contact-with-biological-siblings[value = "' + ( savedSearchCriteria.contactWithSiblings ? 'yes' : 'no' ) + '" ]' ).prop( 'checked', true );
+			// apply the children who have contact with their biological parents criterion
+			$( '.select-contact-with-biological-parents[value = "' + ( savedSearchCriteria.contactWithParents ? 'yes' : 'no' ) + '" ]' ).prop( 'checked', true );
+			// apply child must have video criterion
+			$( '.select-video-only' ).prop( 'checked', savedSearchCriteria.mustHaveVideo );
+			// apply child must be legally free criterion
+			$( '.select-legally-free-only' ).prop( 'checked', savedSearchCriteria.mustBeLegallyFree );
+			// apply child's profile last updated criterion
+			$( '#updated-within > option[value="' + ( savedSearchCriteria.lastProfileUpdate ) + '"]' ).prop( 'selected', true );
+			// apply max physical needs criteria
+			$( '.select-maximum-physical-needs[value="' + ( savedSearchCriteria.maxPhysicalNeeds || 3 ) + '"]' ).prop( 'checked', true );
+			// apply max emotional needs criteria
+			$( '.select-maximum-emotional-needs[value="' + ( savedSearchCriteria.maxEmotionalNeeds || 3 ) + '"]' ).prop( 'checked', true );
+			// apply max intellectual needs criteria
+			$( '.select-maximum-intellectual-needs[value="' + ( savedSearchCriteria.maxIntellectualNeeds || 3 ) + '"]' ).prop( 'checked', true );
+			// apply developmental needs criteria
+			$.each( savedSearchCriteria.developmentalNeeds, function( index, need ) {
+				$( '.select-disabilities[value="' + need + '"]' ).prop( 'checked', true );
+			});
+			// apply selected radio button for family constellation criterion
+			$( '.select-family-constellation[value="' + savedSearchCriteria.familyConstellation + '"]' ).prop( 'checked', true );
+			// apply number of children in home criterion
+			$( '#number-of-children-in-home > option:eq(' + ( savedSearchCriteria.numChildrenInHome ? savedSearchCriteria.numChildrenInHome + 1 : 0 ) + ')' ).prop( 'selected', true );
+			// apply age of youngest child in home criterion
+			$( '#youngest-child-age-in-home > option:eq(' + ( savedSearchCriteria.youngestChildAge ? savedSearchCriteria.youngestChildAge + 1 : 0 ) + ')' ).prop( 'selected', true );
+			// apply age of oldest child in home criterion
+			$( '#oldest-child-age-in-home > option:eq(' + ( savedSearchCriteria.oldestChildAge ? savedSearchCriteria.oldestChildAge + 1 : 0 ) + ')' ).prop( 'selected', true );
+			// apply pets in home criterion
+			$( '.select-pets-in-home' ).prop( 'checked', savedSearchCriteria.hasPetsInHome );
+		},
+
+		setDefaultValues: function setDefaultFormValues() {
+
+			// make sure defaults have not already been set
+			if ( !this.haveDefaultValuesBeenSet ) {
+
+				// update flag
+				this.haveDefaultValuesBeenSet = true;
+				// get saved search criteria
+				var savedSearchCriteria = $('.gallery-search-form').data( 'savedSearch' );
+				
+				// seed form fields with saved search criteria or fall back to defaults
+				if ( savedSearchCriteria ) {
+					this.applySavedSearchCriteria( savedSearchCriteria );
+				} else {
+					this.reset();
+				}
+			}
 		}
 	});
 }() );

@@ -84,6 +84,10 @@
 
 		/* hide the gallery and show the gallery search form */
 		showSearchForm: function showSearchForm() {
+
+			// set the defaults values of the search form
+			mare.views.gallerySearchForm.setDefaultValues();
+
 			// fade the gallery out and fade the search form in
 			this.$gallery.fadeOut( function() {
 				// render the search form

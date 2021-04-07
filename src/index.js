@@ -5,6 +5,7 @@ const keystone						= require( 'keystone' ),
 	  globalAlertMiddleware			= require( './components/global alert/global-alert.middleware' ),
 	  childService					= require( './components/children/child.controllers' ),
 	  childMiddleware				= require( './components/children/child.middleware' ),
+	  childSearchService			= require( './components/child searches/child.search.controllers' ),
 	  donationService				= require( './components/donations/donation.controllers' ),
 	  eventService					= require( './components/events/event.controllers' ),
 	  familyService					= require( './components/families/family.controllers' ),
@@ -124,6 +125,7 @@ exports = module.exports = app => {
 	app.post( '/services/get-gallery-permissions'		, userService.getGalleryPermissions );
 	app.post( '/services/update-mailing-lists'			, mailingListMiddleware.updateMailingListPreferences );
 	app.post( '/services/mailing-list-unsubscribe'		, mailingListMiddleware.unsubscribeUserFromMailingList );
+	app.post( '/services/save-child-search'				, childSearchService.saveChildSearch );
 	
 	// reporting tools
 	app.get( '/tools'											, accountMiddleware.requireUser( 'admin' ), routes.views.tools );
