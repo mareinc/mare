@@ -128,7 +128,7 @@ keystone.set( 'email locals', {
 keystone.set( 'nav', {
 	'people'			: [ 'admins', 'site-visitors', 'families', 'social-workers', 'children', 'outside-contacts',
 						   'contact-groups' ],
-	'other'				: [ 'account-verification-codes', 'agencies', 'inquiries', 'internal-notes', 'mare-in-the-news' ],
+	'other'				: [ 'agencies', 'inquiries', 'internal-notes', 'mare-in-the-news' ],
 	'events'			: [ 'events' ],
 	'placements'		: [ 'matches', 'placements', 'legalizations', 'disruptions', 'weekend-family-connections', 'mentorships' ],
 	'relationships'		: [ 'csc-region-contacts', 'staff-email-contacts', 'media-features' ],
@@ -142,7 +142,8 @@ keystone.set( 'nav', {
 						    'email-targets', 'event-types', 'family-constellations', 'family-statuses', 'genders', 'inquiry-methods',
 						    'inquiry-types', 'languages', 'legal-statuses', 'match-determinations', 'media-eligibilities',
 							'media-types', 'other-considerations', 'other-family-constellation-considerations', 'races', 'regions',
-							'residences', 'social-worker-positions', 'sources', 'states', 'way-to-hear-about-mares' ]
+							'residences', 'social-worker-positions', 'sources', 'states', 'way-to-hear-about-mares' ],
+	'site activity data': [ 'account-verification-codes', 'profile-searches' ]
 });
 
 // Start Keystone to connect to the database and initialise the web server
