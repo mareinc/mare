@@ -136,6 +136,25 @@ User.schema.post( 'save', function() {
 	}
 });
 
+// Post delete
+User.schema.post( 'remove', function( userDoc ) {
+
+	// log the deletion
+	console.log( `User ${userDoc.email} has been removed` );
+
+	// unsubscribe the user from mailchimp
+	mailchimpService.unsubscribeMemberFromList( userDoc.email, process.env.MAILCHIMP_AUDIENCE_ID )
+		.then( () => console.log( `${userDoc.email} has been successfully unsubscribed from mailchimp` ) )
+		.catch( error => {
+			// if the member simply does not exist in the list, ignore the error
+			if ( error.status !== 404 ) {
+				// otherwise, log the error
+				console.error( `Failed to unsubscribe user (${userDoc.email}) from mailchimp` );
+				console.error( error );
+			}
+		});
+});
+
 // Define default columns in the admin interface and register the model
 User.defaultColumns = 'email';
 User.register();

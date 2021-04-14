@@ -153,7 +153,7 @@ exports.subscribeMemberToList = function subscribeMemberToList( { email, mailing
             }
         })
         .then( subscriber => resolve( subscriber ) )
-        .catch( err => reject( new Error( err.message ) ) );
+        .catch( err => reject( err ) );
     });
 };
 
@@ -190,7 +190,7 @@ exports.subscribeMemberToList = function subscribeMemberToList( { email, mailing
             }
         })
         .then( status => resolve( status ) )
-        .catch( err => reject( new Error( err.message ) ) );
+        .catch( err => reject( err ) );
     });
  };
 
