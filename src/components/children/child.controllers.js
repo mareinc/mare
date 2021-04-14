@@ -954,6 +954,8 @@ exports.saveChild = ( child, activeChildStatusId ) => {
 		newChild.save( ( err, model ) => {
 			// if there was an issue saving the new child
 			if( err ) {
+				// log the error
+				console.error( error );
 				// reject the promise with a descriptive message
 				return reject( new Error( `error saving new child registered by social worker` ) );
 			}
