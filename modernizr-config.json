@@ -1,0 +1,11 @@
+{
+    "crawl": false,
+    "customTests": [],
+    "tests": [
+      "touchevents",
+      "csstransitions"
+    ],
+    "options": [
+      "setClasses"
+    ]
+}

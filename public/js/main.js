@@ -6,7 +6,7 @@ $(function() {
 	mare.utils.bindTouch();
 	// every route needs to initialize views for scaffolded areas like the header and the navigation
 	mare.views.globalHeader = mare.views.globalHeader || new mare.views.GlobalHeader();
-	mare.views.mobileMenu = mare.views.mobileMenu || new mare.views.MobileMenu();
+	mare.views.mobileMenu = mare.url.siteArea !== 'tools' ? mare.views.mobileMenu || new mare.views.MobileMenu() : null;
 	mare.views.flashMessages = mare.views.flashMessages || new mare.views.FlashMessages();
 	mare.views.globalAlert = mare.views.globalAlert || new mare.views.GlobalAlert();
 	// register Handlebars helpers

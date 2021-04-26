@@ -1,49 +1,47 @@
-// TODO: append our own classes to the mmenu elements 
-//	      rather than targeting the existing mmenu classes
-// 		  or create a custom build of mmenu: http://mmenu.frebsite.nl/documentation/custom-build.html
-
-#mm-1 { 
-	padding-top: 0;
+.mm-navbar,
+.mm-panel {
+	background-color: $dark-moderate-blue;
 }
 
-#mm-1.mm-subopened { 
-	padding-top: 80px;
+.mm-navbars_top > .mm-navbar,
+.mm-navbar_sticky {
+	padding: 1.21428571em 0;
 }
 
 .mm-logo {
-	max-width: 132px;
+	max-width: 9.42857143em;
 	transition: all 0.25s ease-in-out;
+
+	&--smaller {
+		max-width: 80px;
+	}
 }
 
-.mm-logo--smaller {
-	max-width: 80px;
+.mm-btn_close {
+	margin-right: 1.25em;
 }
 
-.mm-menu > .mm-panel.mm-hasnavbar {
-    padding-top: 80px; 
+.mm-btn_close:before {
+	left: 2em;
 }
 
-.mm-navbar {
-	border-bottom: none;
-	height: inherit;
-	text-align: center;
+.mm-btn_close:before,
+.mm-btn_close:after,
+.mm-btn_next:after,
+.mm-btn_prev:before {
+	border-color: $gainsboro;
 }
 
-.mm-navbar .mm-title {
-	font-size: 21px; 
+.mm-btn_close:before,
+.mm-btn_close:after {
+	content: '';
+	display: block;
+	height: 0.85714286em;
+	width: 0.85714286em;
 }
 
-.mm-listview > li:hover {
-	background-color: #0A2B64
-}
-
-.mm-menu .mm-listview > li:hover .mm-next:after,
-.mm-menu .mm-listview > li:hover .mm-arrow:after {
-	border-color: #2E4E87; 
-}
-
-.mm-listview > li:hover > em.mm-counter {
-	color: #2E4E87; 
+.mm-navbar__title > span {
+	color: $white;
 }
 
 .mm-listview {
@@ -51,96 +49,19 @@
 	line-height: 30px; 
 }
 
-.mm-listview > li > span {
-	padding: 10px 10px 10px 40px;
+.mm-counter {
+	color: $white;
 }
 
-.mm-menu {
-	background: #2E4E87;
-	color: #FFFFFF;
+.mm-listitem__btn {
+    border: none !important;
 }
 
-.mm-menu .mm-navbar > *,
-.mm-menu .mm-navbar a {
-	color: #FFFFFF; 
+.mm-listview .mm-listitem__text {
+	background: inherit !important;
 }
 
-.mm-menu .mm-navbar .mm-prev {
-	margin-top: 40px; 
-}
-
-.mm-menu .mm-navbar .mm-btn:before, .mm-menu .mm-navbar .mm-btn:after {
-	border-color: #0A2B64; 
-}
-
-.mm-menu .mm-navbar .mm-prev:before {
-	border-color: #FFFFFF; 
-}
-
-.mm-menu .mm-navbar .mm-prev:after {
-	content: 'Back';
-	font-size: 15px;
-	padding-left: 20px; 
-}
-
-.mm-menu .mm-listview {
-	border-color: #0A2B64; 
-}
-
-.mm-menu .mm-listview > li .mm-next:after,
-.mm-menu .mm-listview > li .mm-arrow:after {
-	border-color: #0A2B64; 
-}
-
-.mm-menu .mm-listview > li.mm-selected > a:not(.mm-next),
-.mm-menu .mm-listview > li.mm-selected > span {
-	border-color: #0A2B64; 
-}
-
-em.mm-counter {
-	font-size: 15px;
-}
-
-.mm-menu em.mm-counter {
-	color: #0A2B64; 
-}
-
-.mm-navbar-bottom {
-	border: none;
-	line-height: 30px; 
-}
-
-.mm-close:after {
-	background: url('/dist/img/icon-close.svg');
-	content: '';
-	display: block;
-	height: 19px;
-	margin-top: 9px;
-	width: 19px; 
-}
-
-.mm-hasnavbar-top-2 .mm-panel--less-top {
-	top: 60px; 
-}
-
-.mm-hasnavbar-bottom-1 .mm-panel {
-	bottom: 60px; 
-}
-
-.mm-navbar-size-2--shorter {
-	height: 60px; 
-}
-
-.mm-search input {
-	font-size: 15px;
-}
-
-.mm-menu.mm-theme-dark .mm-listview > li.mm-selected > a:not(.mm-next),
-.mm-menu.mm-theme-dark .mm-listview > li.mm-selected > span {
-	background: #0A2B64 !important;
-}
-
-.mm-menu .mm-listview > li.mm-selected > a:not(.mm-next),
-.mm-menu .mm-listview > li.mm-selected > span {
-	background: #0A2B64; 
+.mm-listitem__text,
+.mm-menu a {
+	color: $white !important;
 }

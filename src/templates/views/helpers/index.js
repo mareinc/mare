@@ -184,41 +184,6 @@ module.exports = function() {
 	 *
 	 */
 
-	 /**
-	  * Environment specific helpers
-	  * ==========================
-	  */
-	  // TODO: Combine the two functions below using context to pass CSS or JS
-	  _helpers.isProductionCSS = function isProductionCSS(context) {
-	  	var output = '';
-
-	  	if(process.env.NODE_ENV && process.env.NODE_ENV === 'production') {
-
-	  		output = cssLinkTemplate({ href: "/dist/mare.min.css" });
-
-	  	} else {
-
-	  		output = cssLinkTemplate({ href: "/dist/mare.css" });
-	  	}
-
-	  	return new hbs.SafeString(output);
-	  };
-
-	  _helpers.isProductionJS = function isProductionJS(context) {
-	  	var output = '';
-
-	  	if(process.env.NODE_ENV && process.env.NODE_ENV === 'production') {
-
-	  		output = scriptTemplate({ src: "/dist/mare.min.js" });
-
-	  	} else {
-
-	  		output = scriptTemplate({ src: "/dist/mare.js" });
-	  	}
-
-	  	return new hbs.SafeString(output);
-	  };
-
 	/**
 	 * KeystoneJS specific helpers
 	 * ===========================
@@ -248,11 +213,10 @@ module.exports = function() {
 
 	// Used to generate the link for the admin edit post button
 	_helpers.adminEditableUrl = function adminEditableUrl(user, options) {
-		var rtn = keystone.app.locals.editable(user, {
+		return keystone.app.locals.editable(user, {
 			'list': 'Post',
 			'id': options
 		});
-		return rtn;
 	};
 
 	// ### Content Url Helpers
@@ -261,18 +225,18 @@ module.exports = function() {
 	// the routes by keynames to reduce the maintenance of changing urls
 
 	// Direct url link to a specific post
-	_helpers.postUrl = function postUrl(postSlug, options) {
+	_helpers.postUrl = function postUrl(postSlug) {
 		return ('/blog/post/' + postSlug);
 	};
 
 	// might be a ghost helper
 	// used for pagination urls on blog
-	_helpers.pageUrl = function pageUrl(pageNumber, options) {
+	_helpers.pageUrl = function pageUrl(pageNumber) {
 		return '/blog?page=' + pageNumber;
 	};
 
 	// create the category url for a blog-category page
-	_helpers.categoryUrl = function categoryUrl(categorySlug, options) {
+	_helpers.categoryUrl = function categoryUrl(categorySlug) {
 		return ('/blog/' + categorySlug);
 	};
 
