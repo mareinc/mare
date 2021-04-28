@@ -50,7 +50,11 @@ exports.getChildMatchingData = ( req, res, next ) => {
 
 				// if the search is using an anonymous child do not set any default params
 				if ( isAnonymousSearch ) {
+					// create an empty params object
 					result.params = {};
+					// append other consideration and disability options
+					result.otherConsiderations = utilsService.extractOtherConsiderationsData( otherConsiderations, [] );
+					result.disabilities = utilsService.extractDisabilitiesData( disabilities, [] );
 					return res.send( result );
 				}
 
