@@ -21,7 +21,7 @@ exports = module.exports = ( req, res ) => {
 
 		// fetch all data needed to render this page
 		fetchEvents					= eventService.getActiveEventsByUserId( userId, eventGroup ),
-
+		fetchSocialWorker			= userType === 'family' ? req.user.populate( 'socialWorker' ).execPopulate() : false,
 		fetchCitiesAndTowns			= listService.getAllCitiesAndTowns(),
 		fetchDisabilities			= listService.getAllDisabilities(),
 		fetchGenders				= listService.getAllGenders(),
@@ -33,8 +33,13 @@ exports = module.exports = ( req, res ) => {
 		fetchChildTypes				= listService.getChildTypesForWebsite(),
 		fetchMailingListGroups		= mailchimpService.getInterests( process.env.MAILCHIMP_AUDIENCE_ID, process.env.MAILCHIMP_PREFERENCES_CATEGORY_ID ),
 		fetchMailingListMember		= mailchimpService.getMemberFromList( req.user.email, process.env.MAILCHIMP_AUDIENCE_ID ).catch( error => {
+			// log error details
 			console.error( `Error retrieving mailing list info for user (${ req.user.email })` );
-			console.error( error );
+			if ( error.status === 404 ) {
+				console.error( 'subscriber does not exist in mailing list audience' );
+			} else {
+				console.error( error );
+			}
 		});
 
 	// check to see if the Children tab should be rendered
@@ -50,12 +55,12 @@ exports = module.exports = ( req, res ) => {
 	}
 
 	Promise.all( [ fetchEvents, fetchCitiesAndTowns, fetchDisabilities, fetchGenders, fetchLanguages, fetchLegalStatuses,
-		fetchSocialWorkerPositions, fetchRaces, fetchStates, fetchChildTypes, fetchMailingListGroups, fetchMailingListMember ] )
+		fetchSocialWorkerPositions, fetchRaces, fetchStates, fetchChildTypes, fetchMailingListGroups, fetchMailingListMember, fetchSocialWorker ] )
 		.then( values => {
 
 			// assign local variables to the values returned by the promises
 			const [ events, citiesAndTowns, disabilities, genders, languages, legalStatuses,
-				socialWorkerPositions, races, states, childTypes, mailingListGroups, memberInfo ] = values;
+				socialWorkerPositions, races, states, childTypes, mailingListGroups, memberInfo, hasSocialWorkerPopulated ] = values;
 
 			// loop through all the events
 			for( let event of events ) {
@@ -120,6 +125,9 @@ exports = module.exports = ( req, res ) => {
 			locals.familyChildren			= familyChildren;
 			locals.isSubscriber				= isSubscriber;
 			locals.mailingListPreferences	= mailingListPreferences;
+			locals.familySocialWorker		= req.user.socialWorkerNotListed ? req.user.socialWorkerText
+												: req.user.socialWorker ? req.user.socialWorker.name.full
+													: false;
 
 			// render the view using the account.hbs template
 			view.render( 'account' );
