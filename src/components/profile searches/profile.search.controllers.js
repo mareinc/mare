@@ -42,6 +42,7 @@ exports.saveProfileSearch = function saveProfileSearch( req, res, next ) {
             profileSearchDoc.mustHaveVideo = searchCriteria.videoOnly === 'true' ? true : false;
             profileSearchDoc.mustBeLegallyFree = searchCriteria.legallyFreeOnly === 'true' ? true : false;
             profileSearchDoc.lastProfileUpdate = searchCriteria.updatedWithin;
+            profileSearchDoc.socialWorkerRegion = searchCriteria.socialWorkerRegion;
             profileSearchDoc.maxPhysicalNeeds = searchCriteria.maximumPhysicalNeeds ? Number( searchCriteria.maximumPhysicalNeeds ) : 3;
             profileSearchDoc.maxEmotionalNeeds = searchCriteria.maximumEmotionalNeeds ? Number( searchCriteria.maximumEmotionalNeeds ) : 3;
             profileSearchDoc.maxIntellectualNeeds = searchCriteria.maximumIntellectualNeeds ? Number( searchCriteria.maximumIntellectualNeeds ) : 3;

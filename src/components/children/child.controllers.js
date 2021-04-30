@@ -46,6 +46,7 @@ exports.getAllChildren = ( req, res, done, fieldsToSelect ) => {
 		.populate( 'otherFamilyConstellationConsideration' )
 		.populate( 'status' )
 		.populate( 'legalStatus' )
+		.populate( 'adoptionWorkerAgencyRegion' )
 		.exec()
 		.then( children => {
 			// loop through each child
@@ -305,6 +306,7 @@ exports.getUnrestrictedChildren = ( req, res, done, fieldsToSelect ) => {
 		.populate( 'otherFamilyConstellationConsideration' )
 		.populate( 'status' )
 		.populate( 'legalStatus' )
+		.populate( 'adoptionWorkerAgencyRegion' )
 		.exec()
 		.then( children => {
 			// loop through each child
@@ -614,6 +616,7 @@ exports.getRelevantChildInformation = ( children, locals ) => {
 			otherConsiderations						: _.pluck( child.otherConsiderations, 'otherConsideration' ),
 			physicalNeeds							: needsMap[child.physicalNeeds],
 			race									: _.pluck( child.race, 'race' ),
+			region									: child.adoptionWorkerAgencyRegion.region,
 			recommendedFamilyConstellation			: _.pluck( child.recommendedFamilyConstellation, 'familyConstellation' ),
 			registrationDateConverted				: utilities.convertDate( child.registrationDate ),
 			registrationNumber						: child.registrationNumber,
@@ -679,6 +682,7 @@ exports.getRelevantSiblingGroupInformation = ( siblingGroups, locals ) => {
 			otherConsiderations						: _.uniq( _.flatten( children.map( child => _.pluck( child.otherConsiderations, 'otherConsideration' ) ) ) ),
 			physicalNeeds							: _.uniq( children.map( child => needsMap[ child.physicalNeeds ] ) ),
 			races									: _.uniq( _.flatten( children.map( child => _.pluck(child.race, 'race' ) ) ) ),
+			regions									: _.uniq( children.map( child => child.adoptionWorkerAgencyRegion.region ) ),
 			recommendedFamilyConstellations			: _.uniq( _.flatten( children.map( child => _.pluck( child.recommendedFamilyConstellation, 'familyConstellation' ) ) ) ),
 			registrationDatesConverted				: _.sortBy( children.map( child => utilities.convertDate( child.registrationDate ) ) ),
 			registrationNumbers						: _.sortBy( registrationNumbersArray ),

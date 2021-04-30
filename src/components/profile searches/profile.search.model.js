@@ -31,7 +31,8 @@ ProfileSearch.add( 'Search Details', {
 
     mustHaveVideo:          { type: Types.Boolean },
     mustBeLegallyFree:      { type: Types.Boolean },
-    lastProfileUpdate:      { type: Types.Text }
+    lastProfileUpdate:      { type: Types.Text },
+    socialWorkerRegion:     { type: Types.Text }
 
 }, 'Disability Criteria', {
 

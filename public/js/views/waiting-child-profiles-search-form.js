@@ -51,6 +51,8 @@
 			$( '.select-legally-free-only' ).prop( 'checked', false );
 			// remove restrictions on how recently the child's profile was updated
 			$( '#updated-within > option:eq(0)' ).prop( 'selected', true );
+			// remove any social worker region selection
+			$( '#social-worker-region > option:eq(0)' ).prop( 'selected', true );
 			// remove any selected radio buttons for family constellation
 			$( '.select-family-constellation' ).prop( 'checked', false );
 			// remove selection for number of children in home
@@ -87,6 +89,7 @@
 				videoOnly						: $( '.select-video-only:checked' ).length > 0,
 				legallyFreeOnly					: $( '.select-legally-free-only:checked' ).length > 0,
 				updatedWithin					: $( '#updated-within' ).val(),
+				socialWorkerRegion				: $( '#social-worker-region' ).val(),
 				maximumPhysicalNeeds			: $( '.select-maximum-physical-needs:checked' ).val(),
 				maximumEmotionalNeeds			: $( '.select-maximum-emotional-needs:checked' ).val(),
 				maximumIntellectualNeeds		: $( '.select-maximum-intellectual-needs:checked' ).val(),
@@ -164,6 +167,7 @@
 			if( !formFields.videoOnly )									{ delete formFields.videoOnly; }
 			if( !formFields.legallyFreeOnly )							{ delete formFields.legallyFreeOnly; }
 			if( formFields.updatedWithin === '' )						{ delete formFields.updatedWithin; }
+			if( formFields.socialWorkerRegion === '' )					{ delete formFields.socialWorkerRegion; }
 			if( formFields.maximumPhysicalNeeds === 3 )					{ delete formFields.maximumPhysicalNeeds; }
 			if( formFields.maximumEmotionalNeeds === 3 )				{ delete formFields.maximumEmotionalNeeds; }
 			if( formFields.maximumIntellectualNeeds === 3 )				{ delete formFields.maximumIntellectualNeeds; }
@@ -224,6 +228,10 @@
 					// break out of the current loop if the child wasn't updated within the timeframe specified by the user ( return is needed for this in _.each )
 					if( !isIncluded ) { return; }
 				}
+
+				// break out of the current loop if a social worker region is specified and doesn't match the child's social worker's region
+				if( formFields.socialWorkerRegion && formFields.socialWorkerRegion !== child.get( 'region' ) ) { return; }
+
 				// TODO: are these !== undefined checks necessary?
 				// break out of the loop if any of the child's needs exceed the maximum specified by the user ( return is needed for this in _.each )
 				if( formFields.maximumPhysicalNeeds !== undefined && child.get( 'physicalNeeds' ) > formFields.maximumPhysicalNeeds ) { return; }
@@ -354,6 +362,10 @@
 					// break out of the current loop if the sibling group wasn't updated within the timeframe specified by the user ( return is needed for this in _.each )
 					if( !isIncluded ) { return; }
 				}
+
+				// break out of the current loop if the sibling group's region wasn't selected ( return is needed for this in _.each )
+				if( formFields.socialWorkerRegion && siblingGroup.get( 'regions' ).indexOf( formFields.socialWorkerRegion ) === -1 ) { return; }
+
 				// TODO: are these !== undefined checks necessary?
 				// break out of the loop if any of the sibling group's needs exceed the maximum specified by the user ( return is needed for this in _.each )
 				if( formFields.maximumPhysicalNeeds !== undefined && _.max( siblingGroup.get( 'physicalNeeds' ) ) > formFields.maximumPhysicalNeeds ) { return; }
@@ -467,6 +479,8 @@
 			$( '.select-legally-free-only' ).prop( 'checked', savedSearchCriteria.mustBeLegallyFree );
 			// apply child's profile last updated criterion
 			$( '#updated-within > option[value="' + ( savedSearchCriteria.lastProfileUpdate ) + '"]' ).prop( 'selected', true );
+			// apply child's social worker region criterion
+			$( '#social-worker-region > option[value="' + ( savedSearchCriteria.socialWorkerRegion ) + '"]' ).prop( 'selected', true );
 			// apply max physical needs criteria
 			$( '.select-maximum-physical-needs[value="' + ( savedSearchCriteria.maxPhysicalNeeds || 3 ) + '"]' ).prop( 'checked', true );
 			// apply max emotional needs criteria

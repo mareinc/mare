@@ -25,14 +25,15 @@ exports = module.exports = ( req, res ) => {
 		fetchGenders				= listService.getAllGenders(),
 		fetchLanguages				= listService.getAllLanguages(),
 		fetchRaces					= listService.getAllRaces(),
+		fetchRegions				= listService.getAllRegions(),
 		fetchSidebarItems			= pageService.getSidebarItems(),
 		fetchSavedSearch			= profileSearchService.getProfileSearch( req.user && req.user._id.toString() );
 
 	Promise.all( [ fetchDisabilities, fetchFamilyConstellations, fetchGenders, fetchLanguages,
-				   fetchRaces, fetchSidebarItems, fetchSavedSearch ] )
+				   fetchRaces, fetchRegions, fetchSidebarItems, fetchSavedSearch ] )
 		.then( values => {
 			// assign local variables to the values returned by the promises
-			const [ disabilities, familyConstellations, genders, languages, races, sidebarItems, savedSearch ] = values;
+			const [ disabilities, familyConstellations, genders, languages, races, regions, sidebarItems, savedSearch ] = values;
 			// the sidebar items are a success story and event in an array, assign local variables to the two objects
 			const [ randomSuccessStory, randomEvent ] = sidebarItems;
 			// assign properties to locals for access during templating
@@ -44,6 +45,7 @@ exports = module.exports = ( req, res ) => {
 										  genders.filter( gender => gender.get( 'gender' ) !== 'transgender' );
 			locals.languages			= languages;
 			locals.races				= races;
+			locals.regions				= regions;
 			locals.randomSuccessStory	= randomSuccessStory;
 			locals.randomEvent			= randomEvent;
 			locals.savedSearch			= JSON.stringify( savedSearch );

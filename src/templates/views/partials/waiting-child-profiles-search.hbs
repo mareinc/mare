@@ -207,6 +207,19 @@
 					</select>
 				</div>
 			</div>
+			<div class="row form-group">
+				<div class="col-sm-12">
+					<label for="social-worker-region" class="label marg-bottom-xs-5">Region of Social Worker:</label>
+				</div>
+				<div class="col-sm-12">
+					<select id="social-worker-region" class="input">
+						<option value="">Any Region</option>
+						{{#each regions}}
+							<option value="{{ region }}">{{ region }}</option>
+						{{/each}}
+					</select>
+				</div>
+			</div>
 		</section>
 		{{#if canSeeAdvancedSearchOptions}}
 		<section class="form-section form-section--disability-levels">
