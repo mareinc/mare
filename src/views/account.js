@@ -128,6 +128,13 @@ exports = module.exports = ( req, res ) => {
 			locals.familySocialWorker		= req.user.socialWorkerNotListed ? req.user.socialWorkerText
 												: req.user.socialWorker ? req.user.socialWorker.name.full
 													: false;
+			locals.homestudyCompletedDate	= req.user.homestudy && req.user.homestudy.completed 
+												? req.user.homestudy.mostRecentDate 
+													? req.user._.homestudy.mostRecentDate.format()
+													: req.user.homestudy.initialDate
+														? req.user._.homestudy.initialDate.format()
+														: false
+												: false;
 
 			// render the view using the account.hbs template
 			view.render( 'account' );

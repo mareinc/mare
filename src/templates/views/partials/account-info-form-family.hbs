@@ -251,12 +251,11 @@
 
 		<div class="row form-group">
 			<div class="col-sm-12">
-				<input type="text" id="homestudy-date-complete" class="input" name="homestudyDateComplete" data-field-name="homestudy.completed" placeholder="MM/DD/YYYY"
-					data-parsley-pattern="/^((0?[1-9])|(1[0-2]))\/((0?[1-9])|([1-2]?[0-9])|(3[0-1]))\/\d{4}$/" data-parsley-pattern-message="Please use MM/DD/YYYY format">
+				<input type="text" id="homestudy-date-complete" class="input" placeholder="MM/DD/YYYY" value="{{#if homestudyCompletedDate}}{{homestudyCompletedDate}}{{/if}}" disabled="true">
 				<label for="homestudy-date-complete" class="label">Date Homestudy Completed/Updated</label>
 			</div>
 			<div class="col-sm-12">
-				<input type="text" id="social-worker-name" class="input" name="socialWorkerName" value="{{familySocialWorker}}" disabled="true">
+				<input type="text" id="social-worker-name" class="input" value="{{familySocialWorker}}" disabled="true">
 				<label for="social-worker-name" class="label">Social Worker Name</label>
 			</div>
 		</div>
