@@ -51,8 +51,8 @@
 			$( '.select-legally-free-only' ).prop( 'checked', false );
 			// remove restrictions on how recently the child's profile was updated
 			$( '#updated-within > option:eq(0)' ).prop( 'selected', true );
-			// remove any social worker region selection
-			$( '#social-worker-region > option:eq(0)' ).prop( 'selected', true );
+			// check all social worker region checkboxes
+			$( '.select-region' ).prop( 'checked', true );
 			// remove any selected radio buttons for family constellation
 			$( '.select-family-constellation' ).prop( 'checked', false );
 			// remove selection for number of children in home
@@ -89,7 +89,7 @@
 				videoOnly						: $( '.select-video-only:checked' ).length > 0,
 				legallyFreeOnly					: $( '.select-legally-free-only:checked' ).length > 0,
 				updatedWithin					: $( '#updated-within' ).val(),
-				socialWorkerRegion				: $( '#social-worker-region' ).val(),
+				socialWorkerRegions				: $( '.select-region:checked' ),
 				maximumPhysicalNeeds			: $( '.select-maximum-physical-needs:checked' ).val(),
 				maximumEmotionalNeeds			: $( '.select-maximum-emotional-needs:checked' ).val(),
 				maximumIntellectualNeeds		: $( '.select-maximum-intellectual-needs:checked' ).val(),
@@ -108,6 +108,7 @@
 			var gendersArray					= [],
 				raceArray						= [],
 				primaryLanguagesArray			= [],
+				regionsArray					= [],
 				disabilityArray					= [],
 				gendersOfChildrenInHomeArray	= [],
 				formFields						= this.formFields;
@@ -124,6 +125,10 @@
 				primaryLanguagesArray.push( language.getAttribute( 'value' ) );
 			});
 
+			_.each( formFields.socialWorkerRegions, function( region ) {
+				regionsArray.push( region.getAttribute( 'value' ) );
+			});
+
 			_.each( formFields.disabilities, function( disability ) {
 				disabilityArray.push( disability.getAttribute( 'value' ) );
 			});
@@ -135,6 +140,7 @@
 			formFields.genders					= gendersArray;
 			formFields.races					= raceArray;
 			formFields.primaryLanguages			= primaryLanguagesArray;
+			formFields.socialWorkerRegions		= regionsArray;
 			formFields.disabilities				= disabilityArray;
 			formFields.gendersOfChildrenInHome	= gendersOfChildrenInHomeArray;
 
@@ -167,7 +173,7 @@
 			if( !formFields.videoOnly )									{ delete formFields.videoOnly; }
 			if( !formFields.legallyFreeOnly )							{ delete formFields.legallyFreeOnly; }
 			if( formFields.updatedWithin === '' )						{ delete formFields.updatedWithin; }
-			if( formFields.socialWorkerRegion === '' )					{ delete formFields.socialWorkerRegion; }
+			if( formFields.socialWorkerRegions.length === 0 )			{ delete formFields.socialWorkerRegions; }
 			if( formFields.maximumPhysicalNeeds === 3 )					{ delete formFields.maximumPhysicalNeeds; }
 			if( formFields.maximumEmotionalNeeds === 3 )				{ delete formFields.maximumEmotionalNeeds; }
 			if( formFields.maximumIntellectualNeeds === 3 )				{ delete formFields.maximumIntellectualNeeds; }
@@ -229,8 +235,8 @@
 					if( !isIncluded ) { return; }
 				}
 
-				// break out of the current loop if a social worker region is specified and doesn't match the child's social worker's region
-				if( formFields.socialWorkerRegion && formFields.socialWorkerRegion !== child.get( 'region' ) ) { return; }
+				// break out of the current loop if the child's social worker region wasn't selected ( return is needed for this in _.each )
+				if( formFields.socialWorkerRegions && formFields.socialWorkerRegions.indexOf( child.get( 'region' ) ) === -1 ) { return; }
 
 				// TODO: are these !== undefined checks necessary?
 				// break out of the loop if any of the child's needs exceed the maximum specified by the user ( return is needed for this in _.each )
@@ -364,7 +370,7 @@
 				}
 
 				// break out of the current loop if the sibling group's region wasn't selected ( return is needed for this in _.each )
-				if( formFields.socialWorkerRegion && siblingGroup.get( 'regions' ).indexOf( formFields.socialWorkerRegion ) === -1 ) { return; }
+				if( formFields.socialWorkerRegions && _.difference( siblingGroup.get( 'regions' ), formFields.socialWorkerRegions ).length > 0 ) { return; }
 
 				// TODO: are these !== undefined checks necessary?
 				// break out of the loop if any of the sibling group's needs exceed the maximum specified by the user ( return is needed for this in _.each )
@@ -479,8 +485,10 @@
 			$( '.select-legally-free-only' ).prop( 'checked', savedSearchCriteria.mustBeLegallyFree );
 			// apply child's profile last updated criterion
 			$( '#updated-within > option[value="' + ( savedSearchCriteria.lastProfileUpdate ) + '"]' ).prop( 'selected', true );
-			// apply child's social worker region criterion
-			$( '#social-worker-region > option[value="' + ( savedSearchCriteria.socialWorkerRegion ) + '"]' ).prop( 'selected', true );
+			// apply the saved social worker region criteria
+			$.each( savedSearchCriteria.socialWorkerRegions, function( index, region ) {
+				$( '.select-region[value="' + region + '"]' ).prop( 'checked', true );
+			});
 			// apply max physical needs criteria
 			$( '.select-maximum-physical-needs[value="' + ( savedSearchCriteria.maxPhysicalNeeds || 3 ) + '"]' ).prop( 'checked', true );
 			// apply max emotional needs criteria
