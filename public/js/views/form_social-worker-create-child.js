@@ -18,6 +18,7 @@
 			this.$NonMACity				= this.$( '#non-ma-city' );
 			this.$siblingNamesContainer	= this.$( '.sibling-names-container' );
 			this.$siblingNames			= this.$( '#sibling-names' );
+            this.$submitButton          = this.$( 'button.register' );
 
 			// initialize a view for fetching and restoring form data
 			mare.views.restoreFormData = mare.views.restoreFormData || new mare.views.RestoreFormData( { formClass: 'create-child-form', form: this } );
@@ -144,7 +145,11 @@
 
 		announceSubmit: function announceSubmit() {
 			if( this.form.validationResult ) {
-				this.trigger( 'formSubmitted' );
+                // disable submit button to prevent duplicate form submissions
+                this.$submitButton.prop( 'disabled', true );
+                this.$submitButton.addClass( 'button--disabled' );
+                // trigger formSubmitted event
+			    this.trigger( 'formSubmitted' );
 			}
 		}
 	});
