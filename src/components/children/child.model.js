@@ -833,6 +833,14 @@ Child.schema.methods.updateIsVisibleInGallery = function() {
 				return reject( `error updating child visibility for ${ this.name.full } - could not fetch status value - ${ err }` );
 			}
 
+            // check if status has been changed
+            const previousStatus = this._original.status.toString();
+            const currentStatus = this.status._id.toString();
+            if( previousStatus !== currentStatus ) {
+                // if the status has changed, update the status change date to today's date
+                this.statusChangeDate = Date.now();
+            }
+
 			if( this.status.childStatus !== 'active' ) {
 				this.isVisibleInGallery = false;
 			}
