@@ -835,7 +835,6 @@ Child.schema.methods.updateIsVisibleInGallery = function() {
 
 			if( this.status.childStatus !== 'active' ) {
 				this.isVisibleInGallery = false;
-				this.visibleInGalleryDate = null;
 			}
 
 			resolve();
