@@ -33,7 +33,7 @@
 		"gulp-sourcemaps": "^2.6.3",
 		"gulp-uglify": "^3.0.0",
 		"gulp-watch": "~5.0.0",
-		"handlebars": "~4.4.5",
+		"handlebars": "~4.7.7",
 		"hbs": "^4.0.6",
 		"jpegtran-bin": "^4.0.0",
 		"keystone": "git+https://github.com/n-devr/keystone-classic.git#mare-upgrade",
