@@ -834,9 +834,9 @@ Child.schema.methods.updateIsVisibleInGallery = function() {
 			}
 
             // check if status has been changed
-            const previousStatus = this._original.status.toString();
+            const previousStatus = this._original && this._original.status.toString();
             const currentStatus = this.status._id.toString();
-            if( previousStatus !== currentStatus ) {
+            if( previousStatus && previousStatus !== currentStatus ) {
                 // if the status has changed, update the status change date to today's date
                 this.statusChangeDate = Date.now();
             }
