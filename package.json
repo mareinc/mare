@@ -14,7 +14,7 @@
 		"del": "^5.1.0",
 		"dotenv": "^8.2.0",
 		"excel4node": "^1.7.0",
-		"express-handlebars": "~3.1.0",
+		"express-handlebars": "~5.3.2",
 		"express-robots": "^0.1.6",
 		"express-sslify": "^1.2.0",
 		"gifsicle": "^4.0.1",
