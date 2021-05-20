@@ -3,7 +3,8 @@ const keystone				= require( 'keystone' ),
 	  eventService			= require( '../components/events/event.controllers' ),
 	  familyService			= require( '../components/families/family.controllers' ),
 	  listService			= require( '../components/lists/list.controllers' ),
-	  mailchimpService		= require( '../components/mailchimp lists/mailchimp-list.controllers' );
+	  mailchimpService		= require( '../components/mailchimp lists/mailchimp-list.controllers' )
+      inquiryService        = require( '../components/inquiries/inquiry.controllers' );
 
 exports = module.exports = ( req, res ) => {
     'use strict';
@@ -40,7 +41,8 @@ exports = module.exports = ( req, res ) => {
 			} else {
 				console.error( error );
 			}
-		});
+		}),
+        fetchInquiries              = inquiryService.getUserInquiries( userType, userId );
 
 	// check to see if the Children tab should be rendered
 	locals.shouldRenderChildrenSection = ( userType === 'social worker' || userType === 'family' );
@@ -55,12 +57,12 @@ exports = module.exports = ( req, res ) => {
 	}
 
 	Promise.all( [ fetchEvents, fetchCitiesAndTowns, fetchDisabilities, fetchGenders, fetchLanguages, fetchLegalStatuses,
-		fetchSocialWorkerPositions, fetchRaces, fetchStates, fetchChildTypes, fetchMailingListGroups, fetchMailingListMember, fetchSocialWorker ] )
+		fetchSocialWorkerPositions, fetchRaces, fetchStates, fetchChildTypes, fetchInquiries, fetchMailingListGroups, fetchMailingListMember, fetchSocialWorker ] )
 		.then( values => {
 
 			// assign local variables to the values returned by the promises
 			const [ events, citiesAndTowns, disabilities, genders, languages, legalStatuses,
-				socialWorkerPositions, races, states, childTypes, mailingListGroups, memberInfo, hasSocialWorkerPopulated ] = values;
+				socialWorkerPositions, races, states, childTypes, inquiries, mailingListGroups, memberInfo, hasSocialWorkerPopulated ] = values;
 
 			// loop through all the events
 			for( let event of events ) {
@@ -135,6 +137,14 @@ exports = module.exports = ( req, res ) => {
 														? req.user._.homestudy.initialDate.format()
 														: false
 												: false;
+            locals.hasInquiries             = inquiries && inquiries.length > 0;
+            locals.inquiries                = locals.hasInquiries && inquiries.map(inquiry => ({
+                                                dateTaken: moment.utc( inquiry.takenOn ).format( 'MM/DD/YYYY' ),
+                                                type: inquiry.inquiryType,
+                                                method: inquiry.inquiryMethod.inquiryMethod,
+                                                comments: inquiry.comments,
+                                                children: inquiryService.extractChildrenData( inquiry )
+                                            }));
 
 			// render the view using the account.hbs template
 			view.render( 'account' );

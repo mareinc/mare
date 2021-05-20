@@ -105,7 +105,61 @@ exports.createInquiry = ( { inquiry, user } ) => {
 			.then( () => inquiryEmailService.sendNewInquiryEmailToMARE( { inquiryData, inquirerData, staffEmail } ) )
 			.catch( err => console.error( `error sending new inquiry email to MARE contact about inquiry with id ${ newInquiry.get( '_id' ) }`, err ) );
 	});
-}
+};
+
+exports.getUserInquiries = ( userType, userId ) => {
+
+    return new Promise( ( resolve, reject ) => {
+        
+        let inquirerRelationshipField = '';
+        switch ( userType ) {
+            case 'family':
+                inquirerRelationshipField = 'family';
+                break;
+            case 'social worker':
+                inquirerRelationshipField = 'socialWorker';
+                break;
+            case 'site visitor':
+                inquirerRelationshipField = 'siteVisitor';
+                break;
+            default:
+                console.log('no user type specified');
+                return resolve([]);
+        }
+
+        Inquiry.model
+            .find({
+                [ inquirerRelationshipField ]: userId
+            })
+            .populate( 'inquiryMethod children' )
+            .sort( '-takenOn' )
+            .lean()
+            .exec()
+            .then( inquiryDocs => resolve( inquiryDocs ) )
+            .catch( error => {
+                console.error( error );
+                resolve( [] );
+            });
+    });
+};
+
+exports.extractChildrenData = inquiry => {
+
+    const hasChildren = inquiry.children && inquiry.children.length > 0;
+    const isSiblingGroup = hasChildren && inquiry.children.length > 1;
+    // sort children by registration number (low -> high)
+    const sortedChildren = inquiry.children.sort( ( child1, child2 ) => child1.registrationNumber - child2.registrationNumber );
+    
+    return {
+        hasChildren,
+        isSiblingGroup,
+        label: hasChildren && sortedChildren.map( child => child.displayNameAndRegistration ).join( ', ' ),
+        galleryLink: hasChildren && (isSiblingGroup
+            ? `/waiting-child-profiles#gallery/children/${sortedChildren.map( child => child.registrationNumber ).join( '-' )}`
+            : `/waiting-child-profiles#gallery/child/${sortedChildren[0].registrationNumber}`)
+    }
+
+};
 
 /* private - creates a child inquiry and saves it to the database */
 function saveChildInquiry( { inquiry, user } ) {

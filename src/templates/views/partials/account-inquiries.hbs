@@ -2,4 +2,25 @@
 
     <h1 class="account-current-section__title">Inquiries</h1>
 
+    {{#if hasInquiries}}
+        <div class="account-inquiries-list">
+        {{#each inquiries as |inquiry|}}
+            <div class="inquiry">
+                <div>Date Submitted: {{inquiry.dateTaken}}</div>
+                <div>Inquiry Type: {{inquiry.type}}</div>
+                <div>Inquiry Method: {{inquiry.method}}</div>
+                {{#if inquiry.children.hasChildren}}
+                <div>
+                    {{#if inquiry.children.isSiblingGroup}}Children:{{else}}Child:{{/if}}
+                    <a href="{{inquiry.children.galleryLink}}" target="_blank">{{inquiry.children.label}}</a>
+                </div>
+                {{/if}}
+                <div class="inquiry__comment">{{inquiry.comments}}</div>
+            </div>
+        {{/each}}
+        </div>
+    {{else}}
+        <p class="text-center">No inquiries on file.</p>
+    {{/if}}
+
 </script>

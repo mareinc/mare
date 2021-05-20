@@ -83,3 +83,31 @@
 		flex-direction: row;
 	}
 }
+
+.account-inquiries-list {
+
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+    align-items: stretch;
+
+    .inquiry {
+
+        padding: 0.5rem 0;
+        border-bottom: 1px solid $light-gray;
+        //text-align: center;
+
+        &:first-child {
+            padding-top: 0;
+        }
+
+        &:last-child {
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        &__comment {
+            padding-top: 0.5rem;
+        }
+    }
+}
