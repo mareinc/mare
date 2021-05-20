@@ -8,6 +8,7 @@
         <option value="children" \{{#ifeq selectedRoute 'children' }}selected="selected"\{{/ifeq}}>Children</option>
         {{/if}}
 		<option value="email-list" \{{#ifeq selectedRoute 'email-list' }}selected="selected"\{{/ifeq}}>Mailing Lists</option>
+        <option value="inquiries" \{{#ifeq selectedRoute 'inquiries' }}selected="selected"\{{/ifeq}}>Inquiries</option>
         {{#ifeq user.userType 'admin'}}
         <option value="admin">Admin</option>
         {{/ifeq}}

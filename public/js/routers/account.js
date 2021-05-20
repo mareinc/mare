@@ -9,6 +9,7 @@
 			'email-list'	: 'loadEmailList',
 			'events'		: 'loadEvents',
 			'children'		: 'loadChildren',
+            'inquiries'     : 'loadInquiries',
 			'*other'		: 'loadDefault'
 		},
 
@@ -56,6 +57,10 @@
 		loadEvents: function loadEvents() {
 			mare.views.account.openEventsSection();
 		},
+
+        loadInquiries: function loadInquiries() {
+            mare.views.account.openInquiriesSection();
+        },
 
 		/* handle any poorly formed routes or navigation to the account info page */
 		loadDefault: function loadDefault() {
