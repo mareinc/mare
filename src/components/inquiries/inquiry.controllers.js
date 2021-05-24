@@ -131,7 +131,7 @@ exports.getUserInquiries = ( userType, userId ) => {
             .find({
                 [ inquirerRelationshipField ]: userId
             })
-            .populate( 'inquiryMethod children' )
+            .populate( 'inquiryMethod children onBehalfOfFamily' )
             .sort( '-takenOn' )
             .lean()
             .exec()

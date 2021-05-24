@@ -143,7 +143,12 @@ exports = module.exports = ( req, res ) => {
                                                 type: inquiry.inquiryType,
                                                 method: inquiry.inquiryMethod.inquiryMethod,
                                                 comments: inquiry.comments,
-                                                children: inquiryService.extractChildrenData( inquiry )
+                                                children: inquiryService.extractChildrenData( inquiry ),
+                                                onBehalfOf: inquiry.onBehalfOfFamily
+                                                    ? inquiry.onBehalfOfFamily.displayName
+                                                    : inquiry.onBehalfOfFamilyText && inquiry.onBehalfOfFamilyText.trim() !== ''
+                                                        ? inquiry.onBehalfOfFamilyText
+                                                        : false
                                             }));
 
 			// render the view using the account.hbs template

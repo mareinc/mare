@@ -9,6 +9,9 @@
                 <div>Date Submitted: {{inquiry.dateTaken}}</div>
                 <div>Inquiry Type: {{inquiry.type}}</div>
                 <div>Inquiry Method: {{inquiry.method}}</div>
+                {{#if inquiry.onBehalfOf}}
+                <div>On Behalf Of: {{inquiry.onBehalfOf}}</div>
+                {{/if}}
                 {{#if inquiry.children.hasChildren}}
                 <div>
                     {{#if inquiry.children.isSiblingGroup}}Children:{{else}}Child:{{/if}}
