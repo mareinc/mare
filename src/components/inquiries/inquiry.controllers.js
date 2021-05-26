@@ -128,10 +128,14 @@ exports.getUserInquiries = ( userType, userId ) => {
         }
 
         Inquiry.model
-            .find({
-                [ inquirerRelationshipField ]: userId
-            })
-            .populate( 'inquiryMethod children onBehalfOfFamily' )
+            .find( { [ inquirerRelationshipField ]: userId } )
+            .populate( 'inquiryMethod onBehalfOfFamily' )
+            .populate({
+				path: 'children',
+				populate: {
+					path: 'status'
+				}
+			})
             .sort( '-takenOn' )
             .lean()
             .exec()
@@ -150,8 +154,9 @@ exports.extractChildrenData = inquiry => {
     // sort children by registration number (low -> high)
     const sortedChildren = inquiry.children.sort( ( child1, child2 ) => child1.registrationNumber - child2.registrationNumber );
     
-    return {
+    return { 
         hasChildren,
+        areChildrenActive: hasChildren && inquiry.children[0].status.childStatus === 'active',
         isSiblingGroup,
         label: hasChildren && sortedChildren.map( child => child.displayNameAndRegistration ).join( ', ' ),
         galleryLink: hasChildren && (isSiblingGroup

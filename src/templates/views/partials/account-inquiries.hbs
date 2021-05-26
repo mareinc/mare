@@ -15,7 +15,11 @@
                 {{#if inquiry.children.hasChildren}}
                 <div>
                     {{#if inquiry.children.isSiblingGroup}}Children:{{else}}Child:{{/if}}
+                    {{#if inquiry.children.areChildrenActive}}
                     <a href="{{inquiry.children.galleryLink}}" target="_blank">{{inquiry.children.label}}</a>
+                    {{else}}
+                    {{inquiry.children.label}}
+                    {{/if}}
                 </div>
                 {{/if}}
                 <div class="inquiry__comment">{{inquiry.comments}}</div>
