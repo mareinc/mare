@@ -128,7 +128,9 @@ exports.getUserInquiries = ( userType, userId ) => {
         }
 
         Inquiry.model
-            .find( { [ inquirerRelationshipField ]: userId } )
+            .find({ 
+                [ inquirerRelationshipField ]: userId
+            })
             .populate( 'inquiryMethod onBehalfOfFamily' )
             .populate({
 				path: 'children',
@@ -164,6 +166,29 @@ exports.extractChildrenData = inquiry => {
             : `/waiting-child-profiles#gallery/child/${sortedChildren[0].registrationNumber}`)
     }
 
+};
+
+exports.saveInquiryNote = ( inquiryId, notes ) => {
+
+    return new Promise( ( resolve, reject ) => {
+
+        Inquiry.model
+            .findById( inquiryId )
+            .then( inquiryDoc => {
+
+                // if an inquiry is found, update the note field
+                if ( inquiryDoc ) {
+                    inquiryDoc.notes = notes;
+                    return inquiryDoc.save();
+                
+                // if an inquiry could not be found, throw an error
+                } else {
+                    throw( `Could not find Inquiry with id: ${inquiryId}.  Note could not be saved.` );
+                }
+            })
+            .then(() => resolve())
+            .catch( error => reject( error ) );
+    });
 };
 
 /* private - creates a child inquiry and saves it to the database */

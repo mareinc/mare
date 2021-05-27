@@ -14,6 +14,7 @@ var Inquiry = new keystone.List( 'Inquiry', {
 
 // Create fields
 Inquiry.add( 'General Information', {
+
 	takenBy: { type: Types.Relationship, label: 'taken by', ref: 'Admin', required: false, initial: true, note: 'if no user is selected a current user will be used' },
 	takenOn: { type: Types.Date, label: 'taken on', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, required: true, initial: true },
 
@@ -22,6 +23,7 @@ Inquiry.add( 'General Information', {
 	inquiryMethod: { type: Types.Relationship, label: 'inquiry method', ref: 'Inquiry Method', required: true, initial: true }
 
 }, 'Inquiry Details', {
+
 	source: { type: Types.Relationship, label: 'source', ref: 'Source', filters: { isActive: true }, initial: true },
 	sourceDescription: { type: Types.Text, initial: true },
 	additionalSources: { type: Types.Relationship, label: 'additional sources', ref: 'Source', filters: { isActive: true }, many: true, initial: true },
@@ -34,7 +36,8 @@ Inquiry.add( 'General Information', {
 	onBehalfOfMAREFamily: { type: Types.Boolean, label: 'is the family registered?', dependsOn: { inquirer: 'social worker' }, initial: true },
 	onBehalfOfFamily: { type: Types.Relationship, label: 'on behalf of', ref: 'Family', dependsOn: { inquirer: 'social worker', onBehalfOfMAREFamily: true }, initial: true },
 	onBehalfOfFamilyText: { type: Types.Text, label: 'on behalf of', dependsOn: { inquirer: 'social worker', onBehalfOfMAREFamily: false }, initial: true },
-	comments: { type: Types.Textarea, label: 'comments', initial: true }
+	comments: { type: Types.Textarea, label: 'comments', initial: true },
+    notes: { type: Types.Textarea, label: 'inquirer notes', noedit: true, hidden: true }
 
 }, 'Agency', {
 

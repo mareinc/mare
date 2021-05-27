@@ -23,6 +23,11 @@
                 </div>
                 {{/if}}
                 <div class="inquiry__comment">{{inquiry.comments}}</div>
+                <div class="inquiry__note">
+                    <textarea class="inquiry__note-text" rows="5" placeholder="Enter notes here..." data-initial-note="{{inquiry.notes}}" data-index={{@index}}>{{inquiry.notes}}</textarea>
+                </div>
+                <button id="save-btn-{{@index}}" class="button button--teal button--disabled inquiry__save" disabled="true"
+                    data-note="{{inquiry.notes}}" data-id="{{inquiry.id}}">Save</button>
             </div>
         {{/each}}
         </div>

@@ -139,10 +139,12 @@ exports = module.exports = ( req, res ) => {
 												: false;
             locals.hasInquiries             = inquiries && inquiries.length > 0;
             locals.inquiries                = locals.hasInquiries && inquiries.map(inquiry => ({
+                                                id: inquiry._id.toString(),
                                                 dateTaken: moment.utc( inquiry.takenOn ).format( 'MM/DD/YYYY' ),
                                                 type: inquiry.inquiryType,
                                                 method: inquiry.inquiryMethod.inquiryMethod,
                                                 comments: inquiry.comments,
+                                                notes: inquiry.notes,
                                                 children: inquiryService.extractChildrenData( inquiry ),
                                                 onBehalfOf: inquiry.onBehalfOfFamily
                                                     ? inquiry.onBehalfOfFamily.displayName

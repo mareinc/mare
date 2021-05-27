@@ -110,6 +110,7 @@ exports = module.exports = app => {
 	// user account management
 	app.get( '/account'									, accountMiddleware.requireUser(), routes.views.account );
 	app.put( '/account/user-info'						, userMiddleware.updateUser );
+    app.put( '/account/inquiry-note'                    , inquiryMiddleware.saveInquiryNote );
 	// verification code handling after user registers
 	app.get( '/verify'									, routes.views.form_accountVerify );
 	app.post( '/account/verify'							, accountVerificationService );

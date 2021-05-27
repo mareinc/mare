@@ -39,3 +39,13 @@ exports.submitInquiry = function submitInquiry( req, res, next ) {
 			res.redirect( 303, redirectPath );
 		});
 };
+
+exports.saveInquiryNote = function saveInquiryNote( req, res, next ) {
+
+    // extract request data
+    const { id: inquiryId, notes } = req.body;
+
+    inquiryService.saveInquiryNote( inquiryId, notes )
+        .catch( error => console.error( error ) )
+        .finally( () => res.send() );
+};
