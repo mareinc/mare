@@ -160,7 +160,7 @@ exports.extractChildrenData = inquiry => {
         hasChildren,
         areChildrenActive: hasChildren && inquiry.children[0].status.childStatus === 'active',
         isSiblingGroup,
-        label: hasChildren && sortedChildren.map( child => child.displayNameAndRegistration ).join( ', ' ),
+        label: hasChildren && sortedChildren.map( child => `${child.name.first} (${child.registrationNumber})` ).join( ', ' ),
         galleryLink: hasChildren && (isSiblingGroup
             ? `/waiting-child-profiles#gallery/children/${sortedChildren.map( child => child.registrationNumber ).join( '-' )}`
             : `/waiting-child-profiles#gallery/child/${sortedChildren[0].registrationNumber}`)
