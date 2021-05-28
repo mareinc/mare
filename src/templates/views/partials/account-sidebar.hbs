@@ -24,10 +24,12 @@
             <span class="account-nav-link__title">Mailing Lists</span>
         </li>
 
+        {{#if shouldRenderInquiriesSection}}
         <li class="button button--teal account-nav-link \{{#ifeq selectedRoute 'inquiries' }}account-nav-link--active\{{/ifeq}}" data-section="inquiries">
             <i class="fa fa-inbox"></i>
             <span class="account-nav-link__title">Inquiries</span>
         </li>
+        {{/if}}
 
         {{#ifeq user.userType 'admin'}}
         <a href="/keystone"><li class="button button--green account-nav-link account-nav-link--admin">Admin Panel</li></a>

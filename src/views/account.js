@@ -46,6 +46,8 @@ exports = module.exports = ( req, res ) => {
 
 	// check to see if the Children tab should be rendered
 	locals.shouldRenderChildrenSection = ( userType === 'social worker' || userType === 'family' );
+    // check to see if the Inquiries tab should be rendered
+    locals.shouldRenderInquiriesSection = userType !== 'admin';
 	// determine if the user has permissions for bookmarking functionality
 	familyService.setGalleryPermissions( req, res );
 
