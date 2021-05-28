@@ -8,7 +8,6 @@
             <div class="inquiry">
                 <div>Date Submitted: {{inquiry.dateTaken}}</div>
                 <div>Inquiry Type: {{inquiry.type}}</div>
-                <div>Inquiry Method: {{inquiry.method}}</div>
                 {{#if inquiry.onBehalfOf}}
                 <div>On Behalf Of: {{inquiry.onBehalfOf}}</div>
                 {{/if}}
@@ -22,7 +21,10 @@
                     {{/if}}
                 </div>
                 {{/if}}
-                <div class="inquiry__comment">{{inquiry.comments}}</div>
+                <div class="inquiry__comment">
+                    <div class="pb-1">Inquiry Comments</div>
+                    {{inquiry.comments}}
+                </div>
                 <div class="inquiry__note">
                     <textarea class="inquiry__note-text" rows="5" placeholder="Enter notes here..." data-initial-note="{{inquiry.notes}}" data-index={{@index}}>{{inquiry.notes}}</textarea>
                 </div>
