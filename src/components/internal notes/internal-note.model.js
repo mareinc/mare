@@ -50,7 +50,8 @@ InternalNotes.schema.pre( 'save', function( next ) {
 							target: currentInternalNote.target,
 							child: childSibling._id,
 							employee: currentInternalNote.employee,
-							note: currentInternalNote.note
+							note: currentInternalNote.note,
+                            date: currentInternalNote.date
 						});
 						
 						// To disable an infinite loop:
