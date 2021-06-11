@@ -1,4 +1,5 @@
 const keystone 			= require( 'keystone' ),
+      moment            = require( 'moment' ),
 	  listService		= require( '../lists/list.controllers' ),
 	  childService		= require( '../children/child.controllers' );
 
@@ -54,4 +55,36 @@ exports.getChildrenNumbersGroupedByRegions = () => {
 			});
 			
 	});
+};
+
+exports.saveRegionalChildCounts = ( regionCounts = [] ) => {
+
+    return new Promise( (resolve, reject ) => {
+
+        const regionalCountModels = [];
+
+        // generate a new Regional Child Count model for each count
+        regionCounts.forEach( regionCount => {
+            regionalCountModels.push(
+                keystone.list( 'Regional Child Count' ).model({
+                    region: regionCount.region,
+                    date: moment.utc().startOf( 'day' ).subtract( 1, 'day' ),
+                    childCounts: {
+                        active: regionCount.active,
+                        onHold: regionCount.onHold,
+                        activeAndOnHold: regionCount.activeAndOnHold,
+                        total: regionCount.total
+                    }
+                })
+            );
+        });
+
+        // save all of the regional counts
+        Promise.all( regionalCountModels.map( model => model.save() ) )
+            .then( regionalCountDocs => resolve( regionalCountDocs ) )
+            .catch( error => {
+                console.error( error );
+                reject( error );
+            });
+    });
 };

@@ -1,11 +1,14 @@
 const cronJob = require( 'cron' ).CronJob,
+      keystone = require( 'keystone' ),
+      moment = require( 'moment' ),
 	  eventService = require( '../components/events/event.controllers' ),
 	  childService = require( '../components/children/child.controllers' ),
 	  socialWorkerService = require( '../components/social workers/social-worker.controllers' ),
 	  agencyService = require( '../components/agencies/agency.controllers' ),
 	  listService = require( '../components/lists/list.controllers' ),
 	  eventEmailMiddleware = require( '../components/events/event.email.controllers' ),
-	  staffEmailContactMiddleware = require( '../components/staff email contacts/staff-email-contact.controllers' );
+	  staffEmailContactMiddleware = require( '../components/staff email contacts/staff-email-contact.controllers' ),
+      reportingDashboardService = require( '../components/reporting dashboard/dashboard.controllers' );
 
 exports.scheduleEventDeactivator = () => {
 	// don't do anything if the cron job is turned off via environment variables
@@ -81,4 +84,51 @@ exports.scheduleModelSaver = () => {
 
 		}, null, true, 'America/New_York' );
 	}
+};
+
+exports.scheduleDailyReportGenerator = () => {
+
+    // don't do anything if the cron job is turned off via environment variables
+	if( process.env.RUN_DAILY_REPORT_CRON_JOB === 'true' ) {
+
+        // run the task every night at 12:00:05 AM EST
+		new cronJob( '05 00 00 * * *', () => {
+
+            console.log( 'cron - beginning scheduled task to generate a daily child report' );
+
+            // get the child counts for each region
+            reportingDashboardService.getChildrenNumbersGroupedByRegions()
+                .then( regionalChildCounts => {
+
+                    // save the regional counts and get the total count of children visible on the website
+                    return Promise.all([
+                        reportingDashboardService.saveRegionalChildCounts( regionalChildCounts ),
+                        keystone.list( 'Child' )
+                            .model
+                            .count({ isVisibleInGallery: true })
+                            .exec()
+                    ]);
+                })
+                .then( results => {
+
+                    // destructure results
+                    const [ regionalCountDocs, totalVisibleChildren ] = results;
+                    
+                    // create and save a Daily Child Count model
+                    return keystone.list( 'Daily Child Count' )
+                        .model({
+                            date: moment.utc().startOf( 'day' ).subtract( 1, 'day' ),
+                            regionalCounts: regionalCountDocs.map( regionalCountDoc => regionalCountDoc._id ),
+                            totalActiveProfiles: totalVisibleChildren
+                        })
+                        .save();
+                })
+                .then( () => console.log( 'cron - completed scheduled task to generate a daily child report' ) )
+                .catch( error => {
+                    console.error( 'error running scheduled task to generate a daily child report' );
+                    console.error( error );
+                });
+
+        }, null, true, 'America/New_York' );
+    }
 };

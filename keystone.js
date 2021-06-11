@@ -152,4 +152,6 @@ keystone.start( () => {
 	cron.scheduleEventDeactivator();
 	// set up a nightly task to save models meant to keep siblings in sync and data propagating through models
 	cron.scheduleModelSaver();
+    // set up a nightly task to create a report of children metrics for the previous day
+    cron.scheduleDailyReportGenerator();
 });
