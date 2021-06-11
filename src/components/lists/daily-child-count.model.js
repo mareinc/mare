@@ -2,7 +2,9 @@ const keystone = require('keystone');
 const Types = keystone.Field.Types;
 
 // Create model. Additional options allow menu name to be used what auto-generating URLs
-const DailyChildCount = new keystone.List( 'Daily Child Count' );
+const DailyChildCount = new keystone.List( 'Daily Child Count', {
+    hidden: true
+});
 
 // Create fields
 DailyChildCount.add({

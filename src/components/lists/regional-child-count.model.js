@@ -2,7 +2,9 @@ const keystone = require('keystone');
 const Types = keystone.Field.Types;
 
 // Create model. Additional options allow menu name to be used what auto-generating URLs
-const RegionalChildCount = new keystone.List( 'Regional Child Count' );
+const RegionalChildCount = new keystone.List( 'Regional Child Count', {
+    hidden: true
+});
 
 // Create fields
 RegionalChildCount.add({
