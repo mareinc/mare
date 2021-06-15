@@ -9,9 +9,10 @@ const DailyChildCount = new keystone.List( 'Daily Child Count', {
 // Create fields
 DailyChildCount.add({
     
-    date:                   { type: Types.Date, label: 'date', format: 'MM/DD/YYYY', utc: true, reuqired: true, initial: true },
-    regionalCounts:         { type: Types.Relationship, many: true, ref: 'Regional Child Count', requied: true, initial: true },
-    totalActiveProfiles:    { type: Types.Number, label: 'total children active on website', required: true, initial: true }    
+    date:                       { type: Types.Date, label: 'date', format: 'MM/DD/YYYY', utc: true, reuqired: true, initial: true },
+    regionalCounts:             { type: Types.Relationship, many: true, ref: 'Regional Child Count', requied: true, initial: true },
+    totalActiveProfiles:        { type: Types.Number, label: 'total children active on website', required: true, initial: true },
+    totalProfilesVisibleToAll:  { type: Types.Number, label: 'total children visible to everyone', required: true, initial: true }
 
 });
 

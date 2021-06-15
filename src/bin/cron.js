@@ -105,21 +105,23 @@ exports.scheduleDailyReportGenerator = () => {
                         reportingDashboardService.saveRegionalChildCounts( regionalChildCounts ),
                         keystone.list( 'Child' )
                             .model
-                            .count({ isVisibleInGallery: true })
+                            .find({ isVisibleInGallery: true })
+                            .lean()
                             .exec()
                     ]);
                 })
                 .then( results => {
 
                     // destructure results
-                    const [ regionalCountDocs, totalVisibleChildren ] = results;
+                    const [ regionalCountDocs, visibleChildrenDocs ] = results;
                     
                     // create and save a Daily Child Count model
                     return keystone.list( 'Daily Child Count' )
                         .model({
                             date: moment.utc().startOf( 'day' ).subtract( 1, 'day' ),
                             regionalCounts: regionalCountDocs.map( regionalCountDoc => regionalCountDoc._id ),
-                            totalActiveProfiles: totalVisibleChildren
+                            totalActiveProfiles: visibleChildrenDocs.length,
+                            totalProfilesVisibleToAll: visibleChildrenDocs.filter( visibleChild => visibleChild.siteVisibility === 'everyone' ).length
                         })
                         .save();
                 })
