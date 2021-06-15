@@ -347,7 +347,7 @@ Family.add( 'Permissions', {
 		MARESupportGroupParticipant: { type: Types.Boolean, label: 'MARE support group participant', default: false, initial: true },
 		familyStoryCreated: { type: Types.Boolean, label: 'family story created', default: false, initial: true },
 		videoCreated: { type: Types.Boolean, label: 'video created', default: false, initial: true },
-		visitingResource: { type: Types.Boolean, label: 'Visiting Resource', default: false, initial: true },
+		visitingResource: { type: Types.Boolean, label: 'Visiting Resource', default: false, initial: true }
 	},
 
 
