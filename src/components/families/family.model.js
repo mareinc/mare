@@ -346,8 +346,10 @@ Family.add( 'Permissions', {
 		MARESupportGroupLeader: { type: Types.Boolean, label: 'MARE support group leader', default: false, initial: true },
 		MARESupportGroupParticipant: { type: Types.Boolean, label: 'MARE support group participant', default: false, initial: true },
 		familyStoryCreated: { type: Types.Boolean, label: 'family story created', default: false, initial: true },
-		videoCreated: { type: Types.Boolean, label: 'video created', default: false, initial: true }
+		videoCreated: { type: Types.Boolean, label: 'video created', default: false, initial: true },
+		visitingResource: { type: Types.Boolean, label: 'Visiting Resource', default: false, initial: true }
 	},
+
 
 	weekendFamilyConnectionsEnabled: { type: Types.Boolean, label: 'Weekend Family Connections', default: false },
 	weekendFamilyConnections: {
@@ -519,7 +521,7 @@ Family.schema.post( 'save', function() {
 			// process change history
 			this.setChangeHistory();
 		});
-	
+
 	// update the family's stage tags in mailchimp
 	this.updateMailchimpTags();
 });
@@ -963,7 +965,7 @@ Family.schema.methods.setRegistrationNumber = function() {
 };
 
 Family.schema.methods.updateMailchimpTags = function() {
-	
+
 	const updatedTags = FAMILY_TAG_CONFIG.reduce( ( tagUpdates, tagSet ) => {
 
 		// if the tag set should be applied
@@ -997,10 +999,10 @@ Family.schema.methods.updateMailchimpTags = function() {
 					if ( existingTagUpdate.status === 'active' ) {
 						existingTagUpdate.status = 'inactive';
 					}
-					
+
 				// if there are no existing tag updates with the same name
 				} else {
-					
+
 					// add the inactive tag
 					tagUpdates.push({
 						name: inactiveTag,
