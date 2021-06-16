@@ -318,6 +318,7 @@ Child.relationship( { ref: 'Disruption', refPath: 'child', path: 'disruptions', 
 Child.relationship( { ref: 'Inquiry', refPath: 'children', path: 'inquiries', label: 'inquiries' } );
 Child.relationship( { ref: 'Event', refPath: 'childAttendees', path: 'events', label: 'events' } );
 Child.relationship( { ref: 'Media Feature', refPath: 'children', path: 'media-features', label: 'media features' } );
+Child.relationship( { ref: 'Weekend Family Connection', refPath: 'child', path: 'weekend-family-connections', label: 'weekend family connections' } );
 Child.relationship( { ref: 'Internal Note', refPath: 'child', path: 'internal-notes', label: 'internal notes' } );
 Child.relationship( { ref: 'Child History', refPath: 'child', path: 'child-histories', label: 'change history' } );
 
