@@ -230,7 +230,7 @@ function saveChildInquiry( { inquiry, user } ) {
 					siteVisitor: isSiteVisitor ? user.get( '_id' ) : undefined,
 					socialWorker: isSocialWorker ? user.get( '_id' ) : undefined,
 					family: isFamily ? user.get( '_id' ) : undefined,
-					onBehalfOfMAREFamily: inquiry.onBehalfOfFamily ? !!inquiry.onBehalfOfFamily.trim() : undefined,
+					onBehalfOfMAREFamily: false, // cannot create relationship definition from text entry in form, set to false until admin updates
 					onBehalfOfFamilyText: inquiry.onBehalfOfFamily ? inquiry.onBehalfOfFamily.trim() : undefined,
 					comments: inquiry.inquiry
 				});
@@ -287,7 +287,7 @@ function saveGeneralInquiry( { inquiry, user } ) {
 				siteVisitor: isSiteVisitor ? user.get( '_id' ) : undefined,
 				socialWorker: isSocialWorker ? user.get( '_id' ) : undefined,
 				family: isFamily ? user.get( '_id' ) : undefined,
-				onBehalfOfMAREFamily: inquiry.onBehalfOfFamily ? !!inquiry.onBehalfOfFamily.trim() : undefined,
+				onBehalfOfMAREFamily: false, // cannot create relationship definition from text entry in form, set to false until admin updates
 				onBehalfOfFamilyText: inquiry.onBehalfOfFamily ? inquiry.onBehalfOfFamily.trim() : undefined,
 				comments: inquiry.inquiry,
 
