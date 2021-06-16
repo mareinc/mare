@@ -281,8 +281,9 @@ Child.add( 'Display Options', {
 	weekendFamilyConnections: { type: Types.Boolean, label: 'Weekend Family Connections', default: false, initial: true },
 	weekendFamilyConnectionsReferredDate: { type: Types.Date, label: 'date of WFC referral', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: Date.now(), utc: true, dependsOn: { weekendFamilyConnections: true }, initial: true, collapse: true },
 	weekendFamilyConnectionsVisitsDate: { type: Types.Date, label: 'date WFC visits started', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, dependsOn: { weekendFamilyConnections: true }, initial: true, collapse: true },
-
-	specializedRecruitment: { type: Types.Boolean, label: 'Specialized Recruitment Coordination', default: false, initial: true },
+    weekendFamilyConnectionsSubsequentVisits: { type: Types.Textarea, label: 'subsequent visits', dependsOn: { weekendFamilyConnections: true }, initial: true, collapse: true },
+	
+    specializedRecruitment: { type: Types.Boolean, label: 'Specialized Recruitment Coordination', default: false, initial: true },
 	specializedRecruitmentReferredDate: { type: Types.Date, label: 'date of SRC referral', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: Date.now(), utc: true, dependsOn: { specializedRecruitment: true }, initial: true, collapse: true }
 
 }, 'File Attachments', {
