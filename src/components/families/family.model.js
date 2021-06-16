@@ -436,6 +436,7 @@ Family.add( 'Permissions', {
 Family.relationship( { ref: 'Child Matching History', refPath: 'family', path: 'child-matching-histories', label: 'child matching history' } );
 Family.relationship( { ref: 'Family Matching History', refPath: 'family', path: 'family-matching-histories', label: 'family matching history' } );
 Family.relationship( { ref: 'Inquiry', refPath: 'family', path: 'inquiries', label: 'inquiries' } );
+Family.relationship( { ref: 'Inquiry', refPath: 'onBehalfOfFamily', path: 'inquiries-on-behalf', label: 'inquiries on behalf of' } );
 Family.relationship( { ref: 'Match', refPath: 'family', path: 'matches', label: 'matches' } );
 Family.relationship( { ref: 'Placement', refPath: 'family', path: 'placements', label: 'placements' } );
 Family.relationship( { ref: 'Legalization', refPath: 'family', path: 'legalizations', label: 'legalizations' } );
