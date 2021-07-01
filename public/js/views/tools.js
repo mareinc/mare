@@ -16,6 +16,7 @@
 			mare.views.childListingReport = mare.views.childListingReport || new mare.views.ChildListingReport();
 			mare.views.familyListingReport = mare.views.familyListingReport || new mare.views.FamilyListingReport();
 			mare.views.familyStagesReport = mare.views.familyStagesReport || new mare.views.FamilyStagesReport();
+            mare.views.caseloadReport = mare.views.caseloadReport || new mare.views.CaseloadReport();
 		},
 
 		initializeSideNav: function() {
@@ -175,6 +176,17 @@
 			mare.views.familyStagesReport.render( params );
 			// update the body class to indicate what screen this is
 			this.$el.attr( 'class', 'tools__family-stages-report' );
+			// initialize the side nav
+			this.initializeSideNav();
+			this.closeSideNav();
+		},
+
+        showCaseloadReport: function( params ) {
+			// destroy existing table
+			this.destroyTable();
+			mare.views.caseloadReport.render( params );
+			// update the body class to indicate what screen this is
+			this.$el.attr( 'class', 'tools__caseload-report' );
 			// initialize the side nav
 			this.initializeSideNav();
 			this.closeSideNav();

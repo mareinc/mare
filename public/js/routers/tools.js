@@ -24,8 +24,8 @@
 			'family-listing-report/:regDateFrom/:regDateTo/(?*queryString)'
 																	: 'loadFamilyListingReport',
 			'family-stages-report'									: 'loadFamilyStagesReport',
-			'family-stages-report/(?*queryString)'
-																	: 'loadFamilyStagesReport',
+			'family-stages-report/(?*queryString)'                  : 'loadFamilyStagesReport',
+            'caseload-report'                                       : 'loadCaseloadReport',
 			'*other'												: 'loadDefault'
 		},
 
@@ -80,6 +80,10 @@
 		loadFamilyStagesReport: function( queryString ) {
 			mare.views.tools.showFamilyStagesReport( this.parseQueryString( queryString ) );
 		},
+
+        loadCaseloadReport: function( fromDate, toDate, queryString ) {
+            mare.views.tools.showCaseloadReport( this.parseQueryString( queryString ) );
+        },
 		
 		loadDefault: function() {
 			this.navigate( 'dashboard', { trigger: true, replace: true } );
