@@ -152,7 +152,25 @@ SocialWorker.schema.pre( 'save', function( next ) {
 	// ensure the user's verification status is current
 	this.setVerifiedStatus();
 
-	 next();
+    // check to see if the agency has been updated
+	const newAgencyId = this.agency && this.agency.toString();
+	const oldAgencyId = this._original 
+		? this._original.agency && this._original.agency.toString() 
+		: newAgencyId;
+    
+    // if agency has been updated...
+	if ( oldAgencyId !== newAgencyId ) {
+        
+        // update the agency address fields in the SW model
+        this.updateAgencyAddress( newAgencyId )
+            .finally( () => next() );
+    
+    // if agency has not been updated...
+    } else {
+        
+        // continue saving model
+        next();
+    }
 });
 
 SocialWorker.schema.post( 'save', function() {
@@ -547,6 +565,51 @@ SocialWorker.schema.methods.setChangeHistory = function() {
 			});
 		}
 	});
+};
+
+SocialWorker.schema.methods.updateAgencyAddress = function( newAgencyId ) {
+
+    return new Promise( ( resolve, reject ) => {
+
+        // get the agency records so we can view the region data
+        keystone.list( 'Agency' ).model
+            .findById( newAgencyId )
+            .lean()
+            .exec()
+            .then( agencyDoc => {
+
+                // if the new agency is a valid model
+                if ( !!agencyDoc && !!agencyDoc._id ) {
+                    
+                    // update the existing agency address data
+                    this.address = {
+                        street1: agencyDoc.address.street1,
+                        street2: agencyDoc.address.street2,
+                        isOutsideMassachusetts: agencyDoc.address.isOutsideMassachusetts,
+                        city: agencyDoc.address.city,
+                        cityText: agencyDoc.address.cityText,
+                        state: agencyDoc.address.state,
+                        zipCode: agencyDoc.address.zipCode
+                    };
+
+                // if the new agency is undefined
+                } else {
+
+                    // remove the existing agency address data
+                    this.address = {
+                        street1: null,
+                        street2: null,
+                        isOutsideMassachusetts: false,
+                        city: null,
+                        cityText: null,
+                        state: null,
+                        zipCode: null
+                    };
+                }
+            })
+            .catch( error => console.error( error ) )
+            .finally( () => resolve() );
+    });
 };
 
 // Define default columns in the admin interface and register the model
