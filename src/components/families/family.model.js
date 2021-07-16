@@ -1943,13 +1943,6 @@ Family.schema.methods.setChangeHistory = function setChangeHistory() {
 				},
 				done => {
 					ChangeHistoryMiddleware.checkFieldForChanges({
-												parent: 'familyServices',
-												name: 'receivesConsultationServices',
-												label: 'receives consultation services',
-												type: 'boolean' }, model, modelBefore, changeHistory, done);
-				},
-				done => {
-					ChangeHistoryMiddleware.checkFieldForChanges({
 												parent: 'infoPacket',
 												name: 'preference',
 												label: 'info packet preference',
