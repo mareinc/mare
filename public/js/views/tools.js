@@ -181,10 +181,10 @@
 			this.closeSideNav();
 		},
 
-        showCaseloadReport: function( params ) {
+        showCaseloadReport: function( fromDate, toDate, params ) {
 			// destroy existing table
 			this.destroyTable();
-			mare.views.caseloadReport.render( params );
+			mare.views.caseloadReport.render( fromDate, toDate, params );
 			// update the body class to indicate what screen this is
 			this.$el.attr( 'class', 'tools__caseload-report' );
 			// initialize the side nav

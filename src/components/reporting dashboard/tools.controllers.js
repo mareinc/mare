@@ -2110,3 +2110,50 @@ exports.getFamilyStagesData = ( req, res, next ) => {
 			flashMessages.sendErrorFlashMessage( res, 'Error', 'Error loading family stages data' );
 		});
 };
+
+exports.getChildCaseloadData = ( req, res, next ) => {
+
+    // set a maximum number of results that can be returned to prevent crashes/freezing
+	const MAX_RESULTS = 5000;
+	
+	// get the query from the request object
+	const query = req.query;
+
+    // get the date range of the caseload search
+	let fromDate = new Date( query.fromDate );
+	let toDate = new Date( query.toDate );
+
+	// ensure both fromDate and toDate are valid dates
+	if ( isNaN( fromDate.getTime() ) || isNaN( toDate.getTime() ) ) {
+		return flashMessages.sendErrorFlashMessage( res, 'Error', 'Error loading caseload data' );
+	}
+
+	// create the baseline search criteria with a date range
+	let searchCriteria = {
+		date: { $gte: fromDate, $lte: toDate }
+	};
+
+    keystone.list( 'Daily Child Count' ).model
+        .find( searchCriteria )
+        .exec()
+        .then( dailyCountDocs => {
+
+            const dailyCounts = dailyCountDocs.map( dailyCount => ({
+                date: moment.utc( dailyCount.date ).format( 'MM/DD/YYYY' ),
+                totalActiveCases: dailyCount.totalActiveProfiles,
+                totalVisibleProfiles: dailyCount.totalProfilesVisibleToAll
+            }));
+
+            res.send({
+                noResultsFound: !dailyCountDocs || dailyCountDocs.length === 0,
+				results: dailyCounts,
+            });
+        })
+        .catch( error => {
+
+            // log an error for debugging purposes
+            console.error( `error loading child caseload report for the dashboard - ${ error }` );
+
+            flashMessages.sendErrorFlashMessage( res, 'Error', 'Error loading child caseload data' );
+        })
+};

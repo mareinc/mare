@@ -26,6 +26,7 @@
 			'family-stages-report'									: 'loadFamilyStagesReport',
 			'family-stages-report/(?*queryString)'                  : 'loadFamilyStagesReport',
             'caseload-report'                                       : 'loadCaseloadReport',
+            'caseload-report/:fromDate/:toDate(?*queryString)'		: 'loadCaseloadReport',
 			'*other'												: 'loadDefault'
 		},
 
@@ -82,7 +83,7 @@
 		},
 
         loadCaseloadReport: function( fromDate, toDate, queryString ) {
-            mare.views.tools.showCaseloadReport( this.parseQueryString( queryString ) );
+            mare.views.tools.showCaseloadReport( fromDate, toDate, this.parseQueryString( queryString ) );
         },
 		
 		loadDefault: function() {
