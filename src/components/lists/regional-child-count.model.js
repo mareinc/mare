@@ -10,15 +10,15 @@ const RegionalChildCount = new keystone.List( 'Regional Child Count', {
 RegionalChildCount.add({
 
 	region:     { type: Types.Text, label: 'region', required: true, initial: true },
-    date:       { type: Types.Date, label: 'date', format: 'MM/DD/YYYY', utc: true, reuqired: true, initial: true }
+    date:       { type: Types.Date, label: 'date', format: 'MM/DD/YYYY', utc: true, required: true, initial: true }
 
 }, 'Child Counts', {
 
     childCounts: {
-        active: { type: Types.Number, label: 'active children', reuqired: true, initial: true },
-        onHold: { type: Types.Number, label: 'on-hold children', reuqired: true, initial: true },
-        activeAndOnHold: { type: Types.Number, label: 'active and on-hold children', reuqired: true, initial: true },
-        total: { type: Types.Number, label: 'total children', reuqired: true, initial: true }
+        active: { type: Types.Number, label: 'active children', required: true, initial: true },
+        onHold: { type: Types.Number, label: 'on-hold children', required: true, initial: true },
+        activeAndOnHold: { type: Types.Number, label: 'active and on-hold children', required: true, initial: true },
+        total: { type: Types.Number, label: 'total children', required: true, initial: true }
     }
 
 });
