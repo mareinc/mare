@@ -146,12 +146,7 @@
 			},
             {
                 title: 'Active Caseload',
-                data: 'totalActiveCases',
-				defaultContent: '--'
-            },
-            {
-                title: 'Total Visible Profiles',
-                data: 'totalVisibleProfiles',
+                data: 'totalCases',
 				defaultContent: '--'
             },
             {
@@ -187,6 +182,16 @@
             {
                 title: 'Active Caseload - Specialized',
                 data: 'regionalCounts.specialized.childCounts.active',
+				defaultContent: '--'
+            },
+            {
+                title: 'Total Profiles on Web',
+                data: 'totalActiveProfiles',
+				defaultContent: '--'
+            },
+            {
+                title: 'Total Profiles Visible to All',
+                data: 'totalProfilesVisibleToAll',
 				defaultContent: '--'
             }
 		]

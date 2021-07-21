@@ -2142,8 +2142,9 @@ exports.getChildCaseloadData = ( req, res, next ) => {
 
             const dailyCounts = dailyCountDocs.map( dailyCount => ({
                 date: moment.utc( dailyCount.date ).format( 'MM/DD/YYYY' ),
-                totalActiveCases: dailyCount.totalActiveProfiles,
-                totalVisibleProfiles: dailyCount.totalProfilesVisibleToAll,
+                totalCases: calculateTotalCases( dailyCount.regionalCounts ),
+                totalActiveProfiles: dailyCount.totalActiveProfiles,
+                totalProfilesVisibleToAll: dailyCount.totalProfilesVisibleToAll,
                 regionalCounts: {
                     boston: dailyCount.regionalCounts.find( regionalCount => regionalCount.region === 'Boston' ),
                     northern: dailyCount.regionalCounts.find( regionalCount => regionalCount.region === 'Northern' ),
@@ -2155,9 +2156,20 @@ exports.getChildCaseloadData = ( req, res, next ) => {
                 }
             }));
 
+            let totalCaseload = 0;
+            let totalActiveProfiles = 0;
+            dailyCounts.forEach( dailyCount => {
+                totalCaseload += dailyCount.totalCases;
+                totalActiveProfiles += dailyCount.totalActiveProfiles
+            });
+
             res.send({
                 noResultsFound: !dailyCountDocs || dailyCountDocs.length === 0,
 				results: dailyCounts,
+                averages: {
+                    activeCaseload: parseFloat( totalCaseload / dailyCounts.length ).toFixed( 2 ),
+                    activeProfiles: parseFloat( totalActiveProfiles / dailyCounts.length ).toFixed( 2 )
+                }
             });
         })
         .catch( error => {
@@ -2166,5 +2178,14 @@ exports.getChildCaseloadData = ( req, res, next ) => {
             console.error( `error loading child caseload report for the dashboard - ${ error }` );
 
             flashMessages.sendErrorFlashMessage( res, 'Error', 'Error loading child caseload data' );
-        })
+        });
+
+    function calculateTotalCases( regionalCounts ) {
+            
+        let totalCases = 0;
+        for ( const [key, value] of Object.entries( regionalCounts ) ) {
+            totalCases += value.childCounts.active;
+        }
+        return totalCases;
+    }
 };

@@ -34,6 +34,16 @@
             font-weight: bold;
         }
     }
+
+    &__caseload-averages {
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: center;
+
+        div + div {
+            margin-left: 15px;
+        }
+    }
 }
 
 #inquiry-results {

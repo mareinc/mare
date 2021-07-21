@@ -36,6 +36,16 @@
 
         \{{#if results }}
             <h3>Results: </h3>
+            <div class="matching-results-table__caseload-averages">
+                <div>
+                    <h4>Average Active Caseload</h4>
+                    <div>\{{averages.activeCaseload}}</div>
+                </div>
+                <div>
+                    <h4>Average Profiles on Web</h4>
+                    <div>\{{averages.activeProfiles}}</div>
+                </div>
+            </div>
             <div class="matching-results-table__button-bar">
                 <button class="button button--teal caseload-export-pdf-button">PDF Export</button>
                 <button class="button button--teal caseload-export-xlsx-button">XLSX Export</button>
