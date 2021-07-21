@@ -2159,16 +2159,19 @@ exports.getChildCaseloadData = ( req, res, next ) => {
             let totalCaseload = 0;
             let totalActiveProfiles = 0;
             dailyCounts.forEach( dailyCount => {
+                // increment totals
                 totalCaseload += dailyCount.totalCases;
-                totalActiveProfiles += dailyCount.totalActiveProfiles
+                totalActiveProfiles += dailyCount.totalActiveProfiles;
+                // calculate % of active cases without active profiles
+                dailyCount.inactiveProfilePercentage = `${parseFloat( ( 1 -  dailyCount.totalActiveProfiles / dailyCount.totalCases ) * 100 ).toFixed( 2 )}%`;
             });
 
             res.send({
                 noResultsFound: !dailyCountDocs || dailyCountDocs.length === 0,
 				results: dailyCounts,
                 averages: {
-                    activeCaseload: parseFloat( totalCaseload / dailyCounts.length ).toFixed( 2 ),
-                    activeProfiles: parseFloat( totalActiveProfiles / dailyCounts.length ).toFixed( 2 )
+                    activeCaseload: Math.round( totalCaseload / dailyCounts.length ),
+                    activeProfiles: Math.round( totalActiveProfiles / dailyCounts.length )
                 }
             });
         })

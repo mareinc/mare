@@ -105,7 +105,8 @@
                                     extend: 'colvis',			// adds column visibility toggle menu
                                     columns: ':gt(0)'			// allows toggling of all columns except the first one
                                 }
-                            ]
+                            ],
+                            searching: false                    // disables the search input
                         });
                     });
             }
@@ -179,7 +180,8 @@
             {
                 title: 'Active Caseload - Out of State',
                 data: 'regionalCounts.outOfState.childCounts.active',
-				defaultContent: '--'
+				defaultContent: '--',
+                visible: false
             },
             {
                 title: 'Active Caseload - Specialized',
@@ -194,6 +196,11 @@
             {
                 title: 'Total Profiles Visible to All',
                 data: 'totalProfilesVisibleToAll',
+				defaultContent: '--'
+            },
+            {
+                title: '% Active Cases w/ Inactive Profile',
+                data: 'inactiveProfilePercentage',
 				defaultContent: '--'
             }
 		]
