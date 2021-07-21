@@ -2135,13 +2135,24 @@ exports.getChildCaseloadData = ( req, res, next ) => {
 
     keystone.list( 'Daily Child Count' ).model
         .find( searchCriteria )
+        .populate( 'regionalCounts' )
+        .lean()
         .exec()
         .then( dailyCountDocs => {
 
             const dailyCounts = dailyCountDocs.map( dailyCount => ({
                 date: moment.utc( dailyCount.date ).format( 'MM/DD/YYYY' ),
                 totalActiveCases: dailyCount.totalActiveProfiles,
-                totalVisibleProfiles: dailyCount.totalProfilesVisibleToAll
+                totalVisibleProfiles: dailyCount.totalProfilesVisibleToAll,
+                regionalCounts: {
+                    boston: dailyCount.regionalCounts.find( regionalCount => regionalCount.region === 'Boston' ),
+                    northern: dailyCount.regionalCounts.find( regionalCount => regionalCount.region === 'Northern' ),
+                    southern: dailyCount.regionalCounts.find( regionalCount => regionalCount.region === 'Southern' ),
+                    western: dailyCount.regionalCounts.find( regionalCount => regionalCount.region === 'Western' ),
+                    central: dailyCount.regionalCounts.find( regionalCount => regionalCount.region === 'Central' ),
+                    specialized: dailyCount.regionalCounts.find( regionalCount => regionalCount.region === 'Specialized Recruitment Coordination' ),
+                    outOfState: dailyCount.regionalCounts.find( regionalCount => regionalCount.region === 'Out of state' )
+                }
             }));
 
             res.send({

@@ -153,6 +153,41 @@
                 title: 'Total Visible Profiles',
                 data: 'totalVisibleProfiles',
 				defaultContent: '--'
+            },
+            {
+                title: 'Active Caseload - Boston',
+                data: 'regionalCounts.boston.childCounts.active',
+				defaultContent: '--'
+            },
+            {
+                title: 'Active Caseload - Northern',
+                data: 'regionalCounts.northern.childCounts.active',
+				defaultContent: '--'
+            },
+            {
+                title: 'Active Caseload - Southern',
+                data: 'regionalCounts.southern.childCounts.active',
+				defaultContent: '--'
+            },
+            {
+                title: 'Active Caseload - Western',
+                data: 'regionalCounts.western.childCounts.active',
+				defaultContent: '--'
+            },
+            {
+                title: 'Active Caseload - Central',
+                data: 'regionalCounts.central.childCounts.active',
+				defaultContent: '--'
+            },
+            {
+                title: 'Active Caseload - Out of State',
+                data: 'regionalCounts.outOfState.childCounts.active',
+				defaultContent: '--'
+            },
+            {
+                title: 'Active Caseload - Specialized',
+                data: 'regionalCounts.specialized.childCounts.active',
+				defaultContent: '--'
             }
 		]
 	});
