@@ -27,12 +27,14 @@
 				alwaysShowCalendars: true,
 				showDropdowns: true,
 				linkedCalendars: false,
-				minYear: 1995,
+                minDate: moment( '2021-06-14' ),
+                maxDate: moment().subtract( 1, 'day' ),
+				minYear: 2021,
 				maxYear: parseInt( moment().format( 'YYYY' ), 10 ),
 				ranges: {
 					'Last 30 Days': [ moment().subtract( 29, 'days' ), moment() ],
 					'Year to Date': [ moment().startOf( 'year' ), moment() ],
-					'All Time': [ moment( '1995-01-01' ), moment() ]
+					'All Time': [ moment( '2021-06-14' ), moment() ]
 				}
 			});
         },
