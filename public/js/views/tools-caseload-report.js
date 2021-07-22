@@ -8,6 +8,7 @@
 
 		events: {
 			'click .caseload-search-button'         : 'handleSearchClick',
+            'click .caseload-search-reset-button'   : 'handleResetClick',
             'click .caseload-export-xlsx-button'    : 'handleXlsxExportClick'
 		},
 
@@ -33,7 +34,7 @@
 				minYear: 2021,
 				maxYear: parseInt( moment().format( 'YYYY' ), 10 ),
 				ranges: {
-					'Last 30 Days': [ moment().subtract( 29, 'days' ), moment() ],
+					'Last 30 Days': [ moment().subtract( 31, 'days' ), moment() ],
 					'Year to Date': [ moment().startOf( 'year' ), moment() ],
 					'All Time': [ moment( '2021-06-14' ), moment() ]
 				}
@@ -60,6 +61,10 @@
 
 			// perform the search
 			mare.routers.tools.navigate( 'caseload-report/' + fromDate + '/' + toDate + ( queryString.length > 0 ? '?' + queryString : '' ), { trigger: true } );
+		},
+
+        handleResetClick: function() {
+			mare.routers.tools.navigate( 'caseload-report', { trigger: true } );
 		},
 
         handleXlsxExportClick: function() {
