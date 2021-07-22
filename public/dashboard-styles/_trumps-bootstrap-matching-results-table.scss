@@ -36,12 +36,23 @@
     }
 
     &__caseload-averages {
+        
         display: flex;
-        flex-flow: row wrap;
+        flex-flow: column nowrap;
         justify-content: center;
+        align-items: center;
 
         div + div {
-            margin-left: 15px;
+            margin: 30px 0 0 0;
+        }
+       
+
+        @media all and ( min-width: 768px ) {
+            flex-flow: row wrap;
+
+            div + div {
+                margin: 0 0 0 30px;
+            }
         }
     }
 }
