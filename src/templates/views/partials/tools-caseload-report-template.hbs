@@ -59,6 +59,48 @@
 
             {{!-- Results table for site display --}}            
             <table id="caseload-results" class="stripe" width="100%"></table>
+
+            {{!-- Results table for Excel export (hidden) --}}
+            <table width="100%" class="results-table hidden" data-filename="\{{metadata.excelExportFilename}}">
+                <tr>
+                    <td>Average Active Caseload:</td>
+                    <td>\{{averages.activeCaseload}}</td>
+                    <td></td>
+                    <td>Average Profiles on Web:</td>
+                    <td>\{{averages.activeProfiles}}</td>
+                </tr>
+                <tr></tr>
+                <tr>
+                    <th>Date</th>
+                    <th>Active Caseload</th>
+                    <th>Active Caseload - Boston</th>
+                    <th>Active Caseload - Northern</th>
+                    <th>Active Caseload - Southern</th>
+                    <th>Active Caseload - Western</th>
+                    <th>Active Caseload - Central</th>
+                    <th>Active Caseload - Out of State</th>
+                    <th>Active Caseload - Specialized</th>
+                    <th>Total Profiles on Web</th>
+                    <th>Total Profiles Visible to All</th>
+                    <th>% Active Cases w/ Inactive Profile</th>
+                </tr>
+                \{{#each results as |result|}}
+                    <tr>
+                        <td>\{{ result.date }}</td>
+                        <td>\{{ result.totalCases }}</td>
+                        <td>\{{ result.regionalCounts.boston.childCounts.active }}</td>
+                        <td>\{{ result.regionalCounts.northern.childCounts.active }}</td>
+                        <td>\{{ result.regionalCounts.southern.childCounts.active }}</td>
+                        <td>\{{ result.regionalCounts.western.childCounts.active }}</td>
+                        <td>\{{ result.regionalCounts.central.childCounts.active }}</td>
+                        <td>\{{ result.regionalCounts.outOfState.childCounts.active }}</td>
+                        <td>\{{ result.regionalCounts.specialized.childCounts.active }}</td>
+                        <td>\{{ result.totalActiveProfiles }}</td>
+                        <td>\{{ result.totalProfilesVisibleToAll }}</td>
+                        <td>\{{ result.inactiveProfilePercentage }}</td>
+                    </tr>
+                \{{/each}}
+            </table>
         \{{/if}}
     </div>
 </script>

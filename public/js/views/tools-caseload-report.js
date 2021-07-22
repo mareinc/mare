@@ -7,7 +7,8 @@
 		el: '.dashboard-content',
 
 		events: {
-			'click .caseload-search-button' : 'handleSearchClick'
+			'click .caseload-search-button'         : 'handleSearchClick',
+            'click .caseload-export-xlsx-button'    : 'handleXlsxExportClick'
 		},
 
 		initialize: function() {
@@ -59,6 +60,14 @@
 
 			// perform the search
 			mare.routers.tools.navigate( 'caseload-report/' + fromDate + '/' + toDate + ( queryString.length > 0 ? '?' + queryString : '' ), { trigger: true } );
+		},
+
+        handleXlsxExportClick: function() {
+			var table = this.$el.find( '.results-table' ),
+				wb = XLSX.utils.table_to_book( table[ 0 ] );
+				
+			// convert HTML table to XLSX file
+			XLSX.writeFile( wb, table.data( 'filename' ) );
 		},
 
 		render: function( fromDate, toDate, params ) {

@@ -2172,6 +2172,9 @@ exports.getChildCaseloadData = ( req, res, next ) => {
                 averages: {
                     activeCaseload: Math.round( totalCaseload / dailyCounts.length ),
                     activeProfiles: Math.round( totalActiveProfiles / dailyCounts.length )
+                },
+                metadata: {
+                    excelExportFilename: `Caseload Report ${moment( fromDate ).format( 'YYYY-MM-DD' )} - ${moment( toDate ).format( 'YYYY-MM-DD' )}.xlsx`
                 }
             });
         })
