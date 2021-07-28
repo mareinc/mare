@@ -141,7 +141,7 @@ keystone.set( 'nav', {
 	'lists'				: [ 'child-statuses', 'child-types', 'city-or-towns', 'closed-reasons', 'communication-methods', 'disabilities',
 						    'email-targets', 'event-types', 'family-constellations', 'family-statuses', 'genders', 'inquiry-methods',
 						    'inquiry-types', 'languages', 'legal-statuses', 'match-determinations', 'media-eligibilities',
-							'media-types', 'other-considerations', 'other-family-constellation-considerations', 'races', 'regions',
+							'media-types', 'other-considerations', 'other-family-constellation-considerations', 'pronouns', 'races', 'regions',
 							'residences', 'social-worker-positions', 'sources', 'states', 'way-to-hear-about-mares' ],
 	'site activity data': [ 'account-verification-codes', 'profile-searches' ]
 });

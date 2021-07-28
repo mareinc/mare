@@ -134,6 +134,7 @@ Child.add( 'Display Options', {
 	statusChangeDate: { type: Types.Date, label: 'status change date', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, initial: true, collapse: true }, // TODO: Logic needed, see line 14 of https://docs.google.com/spreadsheets/d/1Opb9qziX2enTehJx5K1J9KAT7v-j2yAdqwyQUMSsFwc/edit#gid=1235141373
 	status: { type: Types.Relationship, label: 'status', ref: 'Child Status', required: true, initial: true, collapse: true },
 	gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', required: true, initial: true, collapse: true },
+    preferredPronouns: { type: Types.Relationship, label: 'preferred pronouns', ref: 'Pronoun', required: false, initial: true, collapse: true },
 	race: { type: Types.Relationship, label: 'race', ref: 'Race', many: true, required: true, initial: true, collapse: true },
 	raceNotes: { type: Types.Text, label: 'race notes', initial: true, collapse: true },
 	legalStatus: { type: Types.Relationship, label: 'legal status', ref: 'Legal Status', required: true, initial: true, collapse: true },
