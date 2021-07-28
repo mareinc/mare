@@ -7,7 +7,8 @@
 		events: {
 			'change #is-not-ma-city-checkbox'		: 'toggleCitySelect',
 			'change [name="isPartOfSiblingGroup"]'	: 'toggleSiblingNamesTextbox',
-			'change #registered-children'			: 'populateFromRegisteredChild'
+			'change #registered-children'			: 'populateFromRegisteredChild',
+            'change [name="doesIdentifyAsLGBTQ"]'	: 'toggleLGBTQCommentsTextArea'
 		},
 
 		initialize: function() {
@@ -18,6 +19,7 @@
 			this.$NonMACity				= this.$( '#non-ma-city' );
 			this.$siblingNamesContainer	= this.$( '.sibling-names-container' );
 			this.$siblingNames			= this.$( '#sibling-names' );
+            this.$lgbtqIdentityComments	= this.$( '.lgbtq-comments-container' );
             this.$submitButton          = this.$( 'button.register' );
 
 			// initialize a view for fetching and restoring form data
@@ -110,6 +112,16 @@
 				this.siblingNamesValidator.reset();
 			}
 		},
+
+        toggleLGBTQCommentsTextArea: function toggleLGBTQCommentsTextArea( event ) {
+
+            var value = this.$('[name="doesIdentifyAsLGBTQ"]:checked').val();
+            if ( value === 'Unknown' ) {
+                this.$lgbtqIdentityComments.removeClass( 'hidden' );
+            } else {
+                this.$lgbtqIdentityComments.addClass( 'hidden' );
+            }
+        },
 
 		restoreFormData: function restoreFormData() {
 			mare.views.restoreFormData.restore( 'create-child-form', this );

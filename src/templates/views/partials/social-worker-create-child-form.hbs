@@ -124,6 +124,28 @@
                 </div>
             </div>
             <div class="row form-group">
+                <div class="col-sm-24 form-group">
+                    <label class="required-field">Does child identify as part of the LGBTQ+ community?</label>
+                </div>
+                <div id="identify-as-lgbtq-error-container" class="error-container">
+                    <div class="col-sm-12 form-group">
+                        <label class="radio-inline"><input type="radio" name="doesIdentifyAsLGBTQ" value="Yes" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#identify-as-lgbtq-error-container" data-parsley-required="">Yes</label>
+                    </div>
+                    <div class="col-sm-12 form-group">
+                        <label class="radio-inline"><input type="radio" name="doesIdentifyAsLGBTQ" value="No" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#identify-as-lgbtq-error-container" data-parsley-required="">No</label>
+                    </div>
+                    <div class="col-sm-12">
+                        <label class="radio-inline"><input type="radio" name="doesIdentifyAsLGBTQ" value="Unknown" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#identify-as-lgbtq-error-container" data-parsley-required="">I don't know</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-16 form-group lgbtq-comments-container hidden">
+                    <textarea class="input" id="lgbtq-comments" name="lgbtqComments" rows="5"></textarea>
+                    <label for="lgbtq-comments" class="label">Comments</label>
+                </div>
+            </div>
+            <div class="row form-group">
                 <div class="col-sm-24">
                     <label class="label marg-bottom-xs-5 required-field">Race/Ethnicity (check all that apply)</label>
                 </div>
