@@ -113,6 +113,17 @@
                 </div>
             </div>
             <div class="row form-group">
+                <div class="col-sm-12">
+                    <select id="pronouns" class="input" name="pronouns" data-parsley-trigger="change" data-parsley-errors-messages-disabled="true" required="">
+                        <option value=""></option>
+                        {{#each pronouns}}
+                        <option value="{{_id}}">{{pronoun}}</option>
+                        {{/each}}
+                    </select>
+                    <label for="pronouns" class="label required-field">Pronouns Used</label>
+                </div>
+            </div>
+            <div class="row form-group">
                 <div class="col-sm-24">
                     <label class="label marg-bottom-xs-5 required-field">Race/Ethnicity (check all that apply)</label>
                 </div>

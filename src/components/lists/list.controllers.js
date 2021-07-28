@@ -884,3 +884,30 @@ exports.getEmailTargetByName = emailTarget => {
             });
 	});
 };
+
+exports.getAllPronouns = () => {
+
+	return new Promise( ( resolve, reject ) => {
+		// query the database for all pronoun models
+		keystone.list( 'Pronoun' ).model
+			.find()
+			.exec()
+			.then( pronouns => {
+				// if no pronouns could not be found
+				if( pronouns.length === 0 ) {
+					// log an error for debugging purposes
+					console.error( `no pronouns could be found` );
+					// reject the promise
+					return reject();
+				}
+				// if pronouns were successfully returned, resolve with the array
+				resolve( pronouns );
+			// if an error was encountered fetching from the database
+			}, err => {
+				// log the error for debugging purposes
+				console.error( `error fetching the list of all pronouns`, err );
+				// reject the promise
+				reject();
+			});
+	});
+};

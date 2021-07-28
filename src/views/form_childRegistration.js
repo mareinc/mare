@@ -23,16 +23,17 @@ exports = module.exports = ( req, res ) => {
 		fetchRaces									= listService.getAllRaces( raceOptions ),
 		fetchResidences								= listService.getAllResidences(),
 		fetchStates									= listService.getAllStates( stateOptions ),
+        fetchPronouns                               = listService.getAllPronouns(),
 		fetchSidebarItems							= pageService.getSidebarItems();
 
 	Promise.all( [ fetchCitiesAndTowns, fetchDisabilities, fetchFamilyConstellations, fetchGenders, fetchLanguages,
 				   fetchLegalStatuses, fetchOtherFamilyConstellationConsiderations,
-				   fetchRaces, fetchResidences, fetchStates, fetchSidebarItems ] )
+				   fetchRaces, fetchResidences, fetchStates, fetchPronouns, fetchSidebarItems ] )
 		.then( values => {
 			// assign local variables to the values returned by the promises
 			const [ citiesAndTowns, disabilities, familyConstellations, genders, languages,
 					legalStatuses, otherFamilyConstellationConsiderations,
-					races, residences, states, sidebarItems ] = values;
+					races, residences, states, pronouns, sidebarItems ] = values;
 			// the sidebar items are a success story and event in an array, assign local variables to the two objects
 			const [ randomSuccessStory, randomEvent ] = sidebarItems;
 			
@@ -55,6 +56,7 @@ exports = module.exports = ( req, res ) => {
 			locals.races									= races;
 			locals.residences								= residences;
 			locals.states									= states;
+            locals.pronouns                                 = pronouns;
 			locals.randomSuccessStory						= randomSuccessStory;
 			locals.randomEvent								= randomEvent;
 			locals.hasRegisteredChildren					= locals.recruitmentWorkersChildren.saveDetails && locals.recruitmentWorkersChildren.saveDetails.length > 0;
