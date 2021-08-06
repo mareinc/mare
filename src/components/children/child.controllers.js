@@ -916,6 +916,11 @@ exports.saveChild = ( child, activeChildStatusId ) => {
 			languages						: child.languages,
 			status							: activeChildStatusId,
 			gender							: child.gender,
+            pronouns                        : child.pronouns,
+            identifiesAsLGBTQ               : child.doesIdentifyAsLGBTQ,
+            identifiesAsLGBTQDetails        : child.lgbtqIdentityComments,
+            shareIdentity                   : child.shareIdentityInProfile,
+            shareIdentityDetails            : child.shareIdentityComments,
 			race							: child.race,
 			legalStatus						: child.legalStatus,
 			yearEnteredCare					: child.yearEnteredCare,
@@ -959,7 +964,7 @@ exports.saveChild = ( child, activeChildStatusId ) => {
 			// if there was an issue saving the new child
 			if( err ) {
 				// log the error
-				console.error( error );
+				console.error( err );
 				// reject the promise with a descriptive message
 				return reject( new Error( `error saving new child registered by social worker` ) );
 			}
