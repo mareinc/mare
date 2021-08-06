@@ -134,7 +134,7 @@ Child.add( 'Display Options', {
 	statusChangeDate: { type: Types.Date, label: 'status change date', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, initial: true, collapse: true }, // TODO: Logic needed, see line 14 of https://docs.google.com/spreadsheets/d/1Opb9qziX2enTehJx5K1J9KAT7v-j2yAdqwyQUMSsFwc/edit#gid=1235141373
 	status: { type: Types.Relationship, label: 'status', ref: 'Child Status', required: true, initial: true, collapse: true },
 	gender: { type: Types.Relationship, label: 'gender', ref: 'Gender', required: true, initial: true, collapse: true },
-    preferredPronouns: { type: Types.Relationship, label: 'preferred pronouns', ref: 'Pronoun', required: false, initial: true, collapse: true },
+    pronouns: { type: Types.Relationship, label: 'pronouns used', ref: 'Pronoun', required: false, initial: true, collapse: true },
 	race: { type: Types.Relationship, label: 'race', ref: 'Race', many: true, required: true, initial: true, collapse: true },
 	raceNotes: { type: Types.Text, label: 'race notes', initial: true, collapse: true },
 	legalStatus: { type: Types.Relationship, label: 'legal status', ref: 'Legal Status', required: true, initial: true, collapse: true },
@@ -155,7 +155,11 @@ Child.add( 'Display Options', {
 	city: { type: Types.Relationship, label: `city/town of child's current location`, ref: 'City or Town', dependsOn: { isOutsideMassachusetts: false }, initial: true, collapse: true },
 	cityText: { type: Types.Text, label: `city/town of child's current location`, dependsOn: { isOutsideMassachusetts: true }, initial: true, collapse: true },
 	careFacilityName: { type: Types.Text, label: 'name of residential/group care facility', initial: true, collapse: true },
-	dateMovedToResidence: { type: Types.Date, label: 'date moved to current residence', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, initial: true, collapse: true }
+	dateMovedToResidence: { type: Types.Date, label: 'date moved to current residence', inputFormat: 'MM/DD/YYYY', format: 'MM/DD/YYYY', default: '', utc: true, initial: true, collapse: true },
+    identifiesAsLGBTQ: { type: Types.Select, label: 'does child identify as LGBTQ+?', options: 'yes, no, unknown', required: true, initial: true, collapse: true },
+    identifiesAsLGBTQDetails: { type: Types.Textarea, label: 'additional identity details', initial: true, collapse: true },
+    shareIdentity: { type: Types.Select, label: 'is child comfortable sharing identify?', options: 'yes, no, unknown', required: true, initial: true, collapse: true },
+    shareIdentityDetails: { type: Types.Textarea, label: 'additional identity sharing details', initial: true, collapse: true }
 
 }, 'Special Needs', {
 
