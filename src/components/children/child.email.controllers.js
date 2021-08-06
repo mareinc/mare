@@ -113,6 +113,41 @@ exports.sendNewSocialWorkerChildRegistrationNotificationEmailToMARE = ( rawChild
 			});
 		}
 
+        if( child.pronouns ) {
+			childData.push( {
+				key: 'pronouns used',
+				value: child.pronouns.pronoun
+			});
+		}
+
+        if( child.identifiesAsLGBTQ ) {
+			childData.push( {
+				key: 'does child identify as LGBTQ+?',
+				value: child.identifiesAsLGBTQ
+			});
+		}
+
+        if( child.identifiesAsLGBTQDetails ) {
+			childData.push( {
+				key: 'additional identity details',
+				value: child.identifiesAsLGBTQDetails
+			});
+		}
+
+        if( child.shareIdentity ) {
+			childData.push( {
+				key: 'is child comfortable sharing their identity?',
+				value: child.shareIdentity
+			});
+		}
+
+        if( child.shareIdentityDetails ) {
+			childData.push( {
+				key: 'additional identity sharing details',
+				value: child.shareIdentityDetails
+			});
+		}
+
 		if( raceArray.length !== 0 ) {
 			childData.push( {
 				key: 'race',
