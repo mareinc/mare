@@ -129,7 +129,7 @@
                 </div>
                 <div id="identify-as-lgbtq-error-container" class="error-container">
                     <div class="col-sm-12 form-group">
-                        <label class="radio-inline"><input type="radio" name="doesIdentifyAsLGBTQ" value="Yes" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#identify-as-lgbtq-error-container" data-parsley-required="">Yes</label>
+                        <label class="radio-inline"><input type="radio" name="doesIdentifyAsLGBTQ" value="Yes" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#identify-as-lgbtq-error-container" data-parsley-required="">Yes (provide additional details)</label>
                     </div>
                     <div class="col-sm-12 form-group">
                         <label class="radio-inline"><input type="radio" name="doesIdentifyAsLGBTQ" value="No" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#identify-as-lgbtq-error-container" data-parsley-required="">No</label>
@@ -140,9 +140,31 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-sm-16 form-group lgbtq-comments-container hidden">
-                    <textarea class="input" id="lgbtq-comments" name="lgbtqComments" rows="5"></textarea>
-                    <label for="lgbtq-comments" class="label">Comments</label>
+                <div class="col-sm-16 form-group">
+                    <textarea class="input" id="lgbtq-identity-comments" name="lgbtqIdentityComments" rows="5"></textarea>
+                    <label for="lgbtq-identity-comments" class="label">Additional Details</label>
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-sm-24 form-group">
+                    <label class="required-field">Is child comfortable with their identity being shared in their recruitment profile?</label>
+                </div>
+                <div id="share-identity-in-profile" class="error-container">
+                    <div class="col-sm-12 form-group">
+                        <label class="radio-inline"><input type="radio" name="shareIdentityInProfile" value="Yes" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#share-identity-in-profile" data-parsley-required="">Yes</label>
+                    </div>
+                    <div class="col-sm-12 form-group">
+                        <label class="radio-inline"><input type="radio" name="shareIdentityInProfile" value="No" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#share-identity-in-profile" data-parsley-required="">No</label>
+                    </div>
+                    <div class="col-sm-12">
+                        <label class="radio-inline"><input type="radio" name="shareIdentityInProfile" value="Unknown" data-parsley-errors-messages-disabled="true" data-parsley-class-handler="#share-identity-in-profile" data-parsley-required="">I don't know</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-16 form-group">
+                    <textarea class="input" id="share-identity-comments" name="shareIdentityComments" rows="5"></textarea>
+                    <label for="share-identity-comments" class="label">Additional Comments</label>
                 </div>
             </div>
             <div class="row form-group">
